@@ -2,113 +2,93 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.3 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+	NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CF893C433E9
-	for <linux-mips@archiver.kernel.org>; Fri,  5 Mar 2021 10:40:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A250DC433DB
+	for <linux-mips@archiver.kernel.org>; Fri,  5 Mar 2021 10:53:02 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 79E4265020
-	for <linux-mips@archiver.kernel.org>; Fri,  5 Mar 2021 10:40:53 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 68E7F65020
+	for <linux-mips@archiver.kernel.org>; Fri,  5 Mar 2021 10:53:02 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229563AbhCEKkS (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 5 Mar 2021 05:40:18 -0500
-Received: from 3.mo5.mail-out.ovh.net ([46.105.40.108]:50038 "EHLO
-        3.mo5.mail-out.ovh.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229493AbhCEKjs (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Fri, 5 Mar 2021 05:39:48 -0500
-X-Greylist: delayed 1055 seconds by postgrey-1.27 at vger.kernel.org; Fri, 05 Mar 2021 05:39:48 EST
-Received: from player787.ha.ovh.net (unknown [10.108.20.147])
-        by mo5.mail-out.ovh.net (Postfix) with ESMTP id 6E15E2B3EE0
-        for <linux-mips@vger.kernel.org>; Fri,  5 Mar 2021 11:39:47 +0100 (CET)
+        id S229576AbhCEKw3 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 5 Mar 2021 05:52:29 -0500
+Received: from 3.mo4.mail-out.ovh.net ([46.105.57.129]:59607 "EHLO
+        3.mo4.mail-out.ovh.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229589AbhCEKwP (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Fri, 5 Mar 2021 05:52:15 -0500
+X-Greylist: delayed 1205 seconds by postgrey-1.27 at vger.kernel.org; Fri, 05 Mar 2021 05:52:14 EST
+Received: from player728.ha.ovh.net (unknown [10.108.35.211])
+        by mo4.mail-out.ovh.net (Postfix) with ESMTP id D1F7E26B2FB
+        for <linux-mips@vger.kernel.org>; Fri,  5 Mar 2021 11:16:50 +0100 (CET)
 Received: from milecki.pl (ip-194-187-74-233.konfederacka.maverick.com.pl [194.187.74.233])
         (Authenticated sender: rafal@milecki.pl)
-        by player787.ha.ovh.net (Postfix) with ESMTPSA id 46D2E1BE6FC32;
-        Fri,  5 Mar 2021 10:39:37 +0000 (UTC)
-Authentication-Results: garm.ovh; auth=pass (GARM-97G002147fd398-b58b-41e1-ab1a-00ab95efaa5d,
+        by player728.ha.ovh.net (Postfix) with ESMTPSA id B27BF1BA2AFF5;
+        Fri,  5 Mar 2021 10:16:41 +0000 (UTC)
+Authentication-Results: garm.ovh; auth=pass (GARM-104R0053d2b67e1-52e4-4304-9239-db9d36a7935d,
                     4F7D11A3904BD8E553EC742B87CBB6774FEDAA0F) smtp.auth=rafal@milecki.pl
 X-OVh-ClientIp: 194.187.74.233
-Subject: Re: [PATCH 2/2] nvmem: iomap: new driver exposing NVMEM accessible
- using I/O mapping
-To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mips@vger.kernel.org,
+Subject: Re: [PATCH V2 mips/linux.git] firmware: bcm47xx_nvram: refactor
+ finding & reading NVRAM
+To:     =?UTF-8?Q?Philippe_Mathieu-Daud=c3=a9?= <f4bug@amsat.org>,
+        =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
+Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
         Florian Fainelli <f.fainelli@gmail.com>,
         Vivek Unune <npcomplete13@gmail.com>,
-        bcm-kernel-feedback-list@broadcom.com, linux-kernel@vger.kernel.org
-References: <20210304144132.24098-1-zajec5@gmail.com>
- <20210304144132.24098-2-zajec5@gmail.com>
- <047bced8-6c20-4a0a-c7ea-e0ad83318461@linaro.org>
- <93708a21-3444-f68e-c834-a4f769a0acba@milecki.pl>
- <35e498b6-3b2c-d154-db00-d755af339b60@linaro.org>
+        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        kernel test robot <lkp@intel.com>
+References: <20210304072357.31108-1-zajec5@gmail.com>
+ <20210305055501.13099-1-zajec5@gmail.com>
+ <CAAdtpL7iWiumiOwMOH1xiBZvyOB0HB7W-9MMHoPPxkb3Srme=w@mail.gmail.com>
 From:   =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>
-Message-ID: <ba4e4376-7d75-4b0e-9d59-26e32dbe2029@milecki.pl>
-Date:   Fri, 5 Mar 2021 11:39:36 +0100
+Message-ID: <f4045af5-4866-6fc9-f34a-d789a7febb77@milecki.pl>
+Date:   Fri, 5 Mar 2021 11:16:40 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.6.1
 MIME-Version: 1.0
-In-Reply-To: <35e498b6-3b2c-d154-db00-d755af339b60@linaro.org>
+In-Reply-To: <CAAdtpL7iWiumiOwMOH1xiBZvyOB0HB7W-9MMHoPPxkb3Srme=w@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-Ovh-Tracer-Id: 752945565747678743
+X-Ovh-Tracer-Id: 365354524052524656
 X-VR-SPAMSTATE: OK
 X-VR-SPAMSCORE: -100
-X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgeduledruddtiedgudekucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuqfggjfdpvefjgfevmfevgfenuceurghilhhouhhtmecuhedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhepuffvfhfhkffffgggjggtgfesthekredttdefjeenucfhrhhomheptfgrfhgrlhcuofhilhgvtghkihcuoehrrghfrghlsehmihhlvggtkhhirdhplheqnecuggftrfgrthhtvghrnhepkeduheejheffudefhffghfegjeejleetkeevueelveegkefhhfffieehleelgfevnecukfhppedtrddtrddtrddtpdduleegrddukeejrdejgedrvdeffeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhhouggvpehsmhhtphdqohhuthdphhgvlhhopehplhgrhigvrhejkeejrdhhrgdrohhvhhdrnhgvthdpihhnvghtpedtrddtrddtrddtpdhmrghilhhfrhhomheprhgrfhgrlhesmhhilhgvtghkihdrphhlpdhrtghpthhtoheplhhinhhugidqmhhiphhssehvghgvrhdrkhgvrhhnvghlrdhorhhg
+X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgeduledruddtiedgudefucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuqfggjfdpvefjgfevmfevgfenuceurghilhhouhhtmecuhedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhepuffvfhfhkffffgggjggtgfesthekredttdefjeenucfhrhhomheptfgrfhgrlhcuofhilhgvtghkihcuoehrrghfrghlsehmihhlvggtkhhirdhplheqnecuggftrfgrthhtvghrnhepkeduheejheffudefhffghfegjeejleetkeevueelveegkefhhfffieehleelgfevnecukfhppedtrddtrddtrddtpdduleegrddukeejrdejgedrvdeffeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhhouggvpehsmhhtphdqohhuthdphhgvlhhopehplhgrhigvrhejvdekrdhhrgdrohhvhhdrnhgvthdpihhnvghtpedtrddtrddtrddtpdhmrghilhhfrhhomheprhgrfhgrlhesmhhilhgvtghkihdrphhlpdhrtghpthhtoheplhhinhhugidqmhhiphhssehvghgvrhdrkhgvrhhnvghlrdhorhhg
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On 05.03.2021 11:33, Srinivas Kandagatla wrote:
-> On 05/03/2021 10:24, Rafał Miłecki wrote:
->>>>
->>>> +static int iomap_read(void *context, unsigned int offset, void *val,
->>>> +              size_t bytes)
->>>> +{
->>>> +    struct iomap *priv = context;
->>>> +    u8 *src = priv->base + offset;
->>>> +    u8 *dst = val;
->>>> +    size_t tmp;
->>>> +
->>>> +    tmp = offset % 4;
->>>> +    memcpy_fromio(dst, src, tmp);
->>>> +    dst += tmp;
->>>> +    src += tmp;
->>>> +    bytes -= tmp;
->>>> +
->>>> +    tmp = rounddown(bytes, 4);
->>>> +    __ioread32_copy(dst, src, tmp / 4);
->>>> +    dst += tmp;
->>>> +    src += tmp;
->>>> +    bytes -= tmp;
->>>> +
->>>> +    memcpy_fromio(dst, src, bytes);
->>>> +
->>>
->>>
->>> You could just do this!
->>>
->>>      while (bytes--)
->>>          *val++ = readb(priv->base + offset + i++);
->>
->> Do you mean that as replacement for "memcpy_fromio" or the whole
->> function code?
-> 
-> Yes please!
-> 
->> The reason for using __ioread32_copy() was to improve reading
->> performance (using aligned 32 bit access where possible). I'm not sure
->> if that really matters?
-> 
-> Just simple while loop is much readable than the previous code TBH!
-> 
->>
-> 
->> P.S.
->> Please don't yell at me in every sentence :( Makes me a bit sad :(
-> Sorry!! I did not mean anything as such! :-)
+Hi,
 
-All clear (I hope)! Thanks for your review!
+On 05.03.2021 10:58, Philippe Mathieu-Daudé wrote:
+> On Fri, Mar 5, 2021 at 6:55 AM Rafał Miłecki <zajec5@gmail.com> wrote:
+>>
+>> From: Rafał Miłecki <rafal@milecki.pl>
+>>
+>> 1. Use meaningful variable names (e.g. "flash_start", "res_size" instead
+>>     of e.g. "iobase", "end")
+>> 2. Always operate on "offset" instead of mix of start, end, size, etc.
+> 
+> "instead of a mix"
+> 
+>> 3. Add helper checking for NVRAM to avoid duplicating code
+>> 4. Use "found" variable instead of goto
+>> 5. Use simpler checking of offsets and sizes (2 nested loops with
+>>     trivial check instead of extra function)
+> 
+> This could be a series of trivial patches, why did you choose to make a mixed
+> bag harder to review?
+
+It's a subjective thing and often a matter of maintainer taste. I can
+say that after contributing to various Linux subsystems. If you split a
+similar patch for MTD subsystem you'll get complains about making
+changes too small & too hard to review (sic!).
+
+This isn't a bomb really: 63 insertions(+), 48 deletions(-)
+
+That said I admit I don't know MIPS tree habits. Thomas: do you prefer
+smaller patches in case like this?

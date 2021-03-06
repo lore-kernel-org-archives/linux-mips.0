@@ -2,95 +2,136 @@ Return-Path: <SRS0=RFSC=IE=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-15.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6F2C2C433E0
-	for <linux-mips@archiver.kernel.org>; Sat,  6 Mar 2021 08:58:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A2E80C433DB
+	for <linux-mips@archiver.kernel.org>; Sat,  6 Mar 2021 09:02:25 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 355EC65015
-	for <linux-mips@archiver.kernel.org>; Sat,  6 Mar 2021 08:58:31 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 7005465015
+	for <linux-mips@archiver.kernel.org>; Sat,  6 Mar 2021 09:02:25 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229637AbhCFI5q (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Sat, 6 Mar 2021 03:57:46 -0500
-Received: from mail.loongson.cn ([114.242.206.163]:60722 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229626AbhCFI5p (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Sat, 6 Mar 2021 03:57:45 -0500
-Received: from [10.130.0.65] (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9AxGdX6Q0NgT0UVAA--.9869S3;
-        Sat, 06 Mar 2021 16:57:31 +0800 (CST)
-Subject: Re: [PATCH 2/2] MIPS: Loongson64: Move loongson_system_configuration
- to loongson.h
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+        id S229948AbhCFJBK (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Sat, 6 Mar 2021 04:01:10 -0500
+Received: from wout3-smtp.messagingengine.com ([64.147.123.19]:56859 "EHLO
+        wout3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229628AbhCFJAk (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Sat, 6 Mar 2021 04:00:40 -0500
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailout.west.internal (Postfix) with ESMTP id 326D6160C;
+        Sat,  6 Mar 2021 04:00:39 -0500 (EST)
+Received: from imap1 ([10.202.2.51])
+  by compute6.internal (MEProxy); Sat, 06 Mar 2021 04:00:39 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=flygoat.com; h=
+        mime-version:message-id:in-reply-to:references:date:from:to:cc
+        :subject:content-type; s=fm1; bh=XcI9UfKGq9VS03wAOXrCrlzRVRboagy
+        +xYHhmphtrGM=; b=h2Ev165Z4AR0TEPtjoPFBgYBTCFOXW9Oe7RD7w7tGhF1FWd
+        rwxfmUHt800QaCjeV58k6cT0igB11v7nEe7dgIdANdW/MAt7l8jr9s7+rTQ4e91Y
+        YqTRNAiLsfz3TmqeD7Gle9CdhrT00vKqHVeKIKV6x9jV1pbqQjZ3AkUcOEL8+RmQ
+        dzvWyeCAfZQdtrO2rBFvhXUkRcLvugdCh1NlZY1254zUPBOaF2rqukTaoPgDoEHI
+        2zMrDmXiMhYperXm8Lj8hlt8HDFCy3CrzuLv9UmrOpjxc84Ksw8UiFr8sB/ByepI
+        pSarE5zjGim3BrwfoQq/dsKhTBUBOxOx2s0z3Ag==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=XcI9Uf
+        KGq9VS03wAOXrCrlzRVRboagy+xYHhmphtrGM=; b=WPvHXwzfzntUkYahdI9mS1
+        DpiiLqMfyvDtUAA4ug4si1E8IgmB7E9sUrTR15L/nboIFxSyHZZaFsVDyH4a6hpm
+        eRImiaDskkEv088sf4Anb5CYwfv+bQ2Hgq/5szPP/Y9aOoVRiSnegfiLOkOqw0Mj
+        euwLCmNp4Jj0k3Pc6tzvEBt+fyPShwjD3O3gfVWrTt8o5ERZC6MsSafRJaqsOL5j
+        Qx4g9VdV0T5vU6yiVhMKyFHFJfCQl36calHskUAjq8p8eVcM5eNkYam06CnUL/2u
+        UlinkhLHrr+JLPzPdREj7Vk97e8WAMedBzw0AHcQFscSufNrZjMSvNkXAPYc5R+g
+        ==
+X-ME-Sender: <xms:tERDYLjiIOOWmeTNUhI3CIsPE_oX6nuod1Y__mbJnB1WUMsnfxkj0A>
+    <xme:tERDYID0RxqLQH3Yn0sQe3hS1WTzbAwpdQjBqSMEnV_ZsVgIXSyXaLVDCPj1-KFUU
+    eutz6Fkr322usD2xwc>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledruddtjedgudduiecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpefofgggkfgjfhffhffvufgtsehttdertderreejnecuhfhrohhmpedflfhi
+    rgiguhhnucgjrghnghdfuceojhhirgiguhhnrdihrghnghesfhhlhihgohgrthdrtghomh
+    eqnecuggftrfgrthhtvghrnhepvedtheevteekvddvhefhueeufeefudffudevveduieev
+    ueetvdehkeetueejgeeunecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrg
+    hilhhfrhhomhepjhhirgiguhhnrdihrghnghesfhhlhihgohgrthdrtghomh
+X-ME-Proxy: <xmx:tERDYLFyrjPa9AMapU62ovpbQ1T5mvYdKKA34X9DjjHuXdGhwuS4pw>
+    <xmx:tERDYIRHYToeOg8oCbucY5sFpo7mND8v82Dadm9_4HTc_tNXSPPBdQ>
+    <xmx:tERDYIzPn-PabhG-gcf-5iCHDzp8acTGk1X4wFxbRLu_HcnaCa42MA>
+    <xmx:tkRDYCszTkj98UdRqI1XdPKG7ARLSqhp0rseHr34lhmsBsMQFs2lAw>
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 46DE5130005D; Sat,  6 Mar 2021 04:00:36 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.5.0-alpha0-206-g078a48fda5-fm-20210226.001-g078a48fd
+Mime-Version: 1.0
+Message-Id: <d1072504-514b-4be0-85ba-69a6d885de58@www.fastmail.com>
+In-Reply-To: <20210306080337.GC4744@alpha.franken.de>
 References: <20210304110057.22144-1-zhangqing@loongson.cn>
  <20210304110057.22144-3-zhangqing@loongson.cn>
  <20210306080337.GC4744@alpha.franken.de>
-Cc:     Huacai Chen <chenhuacai@kernel.org>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>, linux-mips@vger.kernel.org,
+Date:   Sat, 06 Mar 2021 17:00:15 +0800
+From:   "Jiaxun Yang" <jiaxun.yang@flygoat.com>
+To:     "Thomas Bogendoerfer" <tsbogend@alpha.franken.de>,
+        "Qing Zhang" <zhangqing@loongson.cn>
+Cc:     "Huacai Chen" <chenhuacai@kernel.org>,
+        "Thomas Gleixner" <tglx@linutronix.de>,
+        "Marc Zyngier" <maz@kernel.org>,
+        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
         linux-kernel@vger.kernel.org
-From:   zhangqing <zhangqing@loongson.cn>
-Message-ID: <dc1a1651-59be-aaae-67cb-4734b4e54b5c@loongson.cn>
-Date:   Sat, 6 Mar 2021 16:57:30 +0800
-User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
- Thunderbird/45.4.0
-MIME-Version: 1.0
-In-Reply-To: <20210306080337.GC4744@alpha.franken.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: AQAAf9AxGdX6Q0NgT0UVAA--.9869S3
-X-Coremail-Antispam: 1UD129KBjvdXoWrKF4rGr4fJFW8Cr13ZFW5ZFb_yoW3Grc_ua
-        sFyr4xWw18Xw17J342qrnFyrWIqrW8Xas3ArZ0grn0v3yFvF9xCFWDt34fGr4S9w4DXrn3
-        urs5Gw12kwna9jkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbIAYjsxI4VWDJwAYFVCjjxCrM7AC8VAFwI0_Gr0_Xr1l1xkIjI8I
-        6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM2
-        8CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWUCVW8JwA2z4x0Y4vE2Ix0
-        cI8IcVCY1x0267AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIE14v26F4UJVW0owA2z4x0Y4vEx4
-        A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IE
-        w4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jrv_JF1lYx0Ex4A2jsIE14v26r4j6F4UMc
-        vjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvEwIxGrwCYjI0SjxkI62AI1cAE67vIY487MxkI
-        ecxEwVAFwVW8ZwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c
-        02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_
-        Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7
-        CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rWUJVWrZr1UMIIF0xvEx4A2jsIE
-        14v26r4j6F4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr1j6F4UJbIYCTnIWIevJa73UjIFyT
-        uYvjxU4RRRDUUUU
-X-CM-SenderInfo: x2kd0wptlqwqxorr0wxvrqhubq/
+Subject: =?UTF-8?Q?Re:_[PATCH_2/2]_MIPS:_Loongson64:_Move_loongson=5Fsystem=5Fcon?=
+ =?UTF-8?Q?figuration_to_loongson.h?=
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
 
 
-On 03/06/2021 04:03 PM, Thomas Bogendoerfer wrote:
+On Sat, Mar 6, 2021, at 4:03 PM, Thomas Bogendoerfer wrote:
+> On Thu, Mar 04, 2021 at 07:00:57PM +0800, Qing Zhang wrote:
+> > The purpose of separating loongson_system_configuration from boot_param.h
+> > is to keep the other structure consistent with the firmware.
+> > 
+> > Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+> > Signed-off-by: Qing Zhang <zhangqing@loongson.cn>
+> > ---
+> >  .../include/asm/mach-loongson64/boot_param.h   | 18 ------------------
+> >  .../include/asm/mach-loongson64/loongson.h     | 18 ++++++++++++++++++
+> 
 > as you are already touching mach-loongson64 files...
->
+> 
 > Is there a chance you clean up that up even further ? My goal is to
 > have only files in mach-<platform> files, which have an mach-generic
 > counterpart. Everything else should go to its own directory. So in
 > case of loongson something
->
+> 
 > like
->
+> 
 > arch/mips/include/asm/loongson		for common stuff
 > arch/mips/include/asm/loongson/32
 > arch/mips/include/asm/loongson/64
->
+
+Hi Thomas
+
+I'm object to this idea as loongson32/2ef/64 have nothing in common.
+
+They're different cores and different SoC designed by different team with different booting protocol.
+
+Maybe it's possible to merge loongson32 into generic platform but my LS1C borad is broken...
+
+Thanks.
+
+- Jiaxun
+
+> 
 > Comments ?
-
-Hi,Thomas
-
-I am very interested in cleaning up.
-Can you merge these two patches first?
-Submitting the remaining patches after other clean-up work is completed,
-it seems that the impact will not be significant.
-
-Thanks
-Qing
-
->
+> 
 > Thomas.
+> 
+> -- 
+> Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+> good idea.                                                [ RFC1925, 2.3 ]
+>
 
+-- 
+- Jiaxun

@@ -2,22 +2,23 @@ Return-Path: <SRS0=In0w=IF=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 84D4BC433DB
-	for <linux-mips@archiver.kernel.org>; Sun,  7 Mar 2021 20:29:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E1027C433DB
+	for <linux-mips@archiver.kernel.org>; Sun,  7 Mar 2021 20:30:07 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 404DE65165
-	for <linux-mips@archiver.kernel.org>; Sun,  7 Mar 2021 20:29:34 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id AAD7565168
+	for <linux-mips@archiver.kernel.org>; Sun,  7 Mar 2021 20:30:07 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232865AbhCGU3B (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Sun, 7 Mar 2021 15:29:01 -0500
-Received: from aposti.net ([89.234.176.197]:49564 "EHLO aposti.net"
+        id S232858AbhCGU3f (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Sun, 7 Mar 2021 15:29:35 -0500
+Received: from aposti.net ([89.234.176.197]:49668 "EHLO aposti.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232858AbhCGU3B (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Sun, 7 Mar 2021 15:29:01 -0500
+        id S232877AbhCGU31 (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Sun, 7 Mar 2021 15:29:27 -0500
 From:   Paul Cercueil <paul@crapouillou.net>
 To:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
         Maxime Ripard <mripard@kernel.org>,
@@ -27,53 +28,110 @@ To:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
 Cc:     Sam Ravnborg <sam@ravnborg.org>, od@zcrc.me,
         dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
         linux-mips@vger.kernel.org, Paul Cercueil <paul@crapouillou.net>
-Subject: [PATCH v2 0/5] Add option to mmap GEM buffers cached
-Date:   Sun,  7 Mar 2021 20:28:30 +0000
-Message-Id: <20210307202835.253907-1-paul@crapouillou.net>
+Subject: [PATCH v2 4/5] drm: Add and export function drm_gem_cma_sync_data
+Date:   Sun,  7 Mar 2021 20:28:34 +0000
+Message-Id: <20210307202835.253907-5-paul@crapouillou.net>
+In-Reply-To: <20210307202835.253907-1-paul@crapouillou.net>
+References: <20210307202835.253907-1-paul@crapouillou.net>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Rework of my previous patchset which added support for GEM buffers
-backed by non-coherent memory to the ingenic-drm driver.
+This function can be used by drivers that use damage clips and have
+CMA GEM objects backed by non-coherent memory. Calling this function
+in a plane's .atomic_update ensures that all the data in the backing
+memory have been written to RAM.
 
-Having GEM buffers backed by non-coherent memory is interesting in
-the particular case where it is faster to render to a non-coherent
-buffer then sync the data cache, than to render to a write-combine
-buffer, and (by extension) much faster than using a shadow buffer.
-This is true for instance on some Ingenic SoCs, where even simple
-blits (e.g. memcpy) are about three times faster using this method.
+Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+---
+ drivers/gpu/drm/drm_gem_cma_helper.c | 43 ++++++++++++++++++++++++++++
+ include/drm/drm_gem_cma_helper.h     |  5 ++++
+ 2 files changed, 48 insertions(+)
 
-For the record, the previous patchset was accepted for 5.10 then had
-to be reverted, as it conflicted with some changes made to the DMA API.
-
-This new patchset is pretty different as it adds the functionality to
-the DRM core. The first three patches add variants to existing functions
-but with the "non-coherent memory" twist, exported as GPL symbols. The
-fourth patch adds a function to be used with the damage helpers.
-Finally, the last patch adds support for non-coherent GEM buffers to the
-ingenic-drm driver. The functionality is enabled through a module
-parameter, and is disabled by default.
-
-Cheers,
--Paul
-
-Paul Cercueil (5):
-  drm: Add and export function drm_gem_cma_create_noncoherent
-  drm: Add and export function drm_gem_cma_dumb_create_noncoherent
-  drm: Add and export function drm_gem_cma_mmap_noncoherent
-  drm: Add and export function drm_gem_cma_sync_data
-  drm/ingenic: Add option to alloc cached GEM buffers
-
- drivers/gpu/drm/drm_gem_cma_helper.c      | 223 +++++++++++++++++++---
- drivers/gpu/drm/ingenic/ingenic-drm-drv.c |  49 ++++-
- drivers/gpu/drm/ingenic/ingenic-drm.h     |   4 +
- drivers/gpu/drm/ingenic/ingenic-ipu.c     |  14 +-
- include/drm/drm_gem_cma_helper.h          |  13 ++
- 5 files changed, 273 insertions(+), 30 deletions(-)
-
+diff --git a/drivers/gpu/drm/drm_gem_cma_helper.c b/drivers/gpu/drm/drm_gem_cma_helper.c
+index e39b0464e19d..fdae54a18670 100644
+--- a/drivers/gpu/drm/drm_gem_cma_helper.c
++++ b/drivers/gpu/drm/drm_gem_cma_helper.c
+@@ -18,9 +18,14 @@
+ #include <linux/slab.h>
+ 
+ #include <drm/drm.h>
++#include <drm/drm_damage_helper.h>
+ #include <drm/drm_device.h>
+ #include <drm/drm_drv.h>
++#include <drm/drm_fourcc.h>
++#include <drm/drm_fb_cma_helper.h>
++#include <drm/drm_framebuffer.h>
+ #include <drm/drm_gem_cma_helper.h>
++#include <drm/drm_plane.h>
+ #include <drm/drm_vma_manager.h>
+ 
+ /**
+@@ -684,3 +689,41 @@ drm_gem_cma_prime_import_sg_table_vmap(struct drm_device *dev,
+ 	return obj;
+ }
+ EXPORT_SYMBOL(drm_gem_cma_prime_import_sg_table_vmap);
++
++/**
++ * drm_gem_cma_sync_data - Sync GEM object to non-coherent backing memory
++ * @dev: DRM device
++ * @old_state: Old plane state
++ * @state: New plane state
++ *
++ * This function can be used by drivers that use damage clips and have
++ * CMA GEM objects backed by non-coherent memory. Calling this function
++ * in a plane's .atomic_update ensures that all the data in the backing
++ * memory have been written to RAM.
++ */
++void drm_gem_cma_sync_data(struct device *dev,
++			   struct drm_plane_state *old_state,
++			   struct drm_plane_state *state)
++{
++	const struct drm_format_info *finfo = state->fb->format;
++	struct drm_atomic_helper_damage_iter iter;
++	unsigned int offset, i;
++	struct drm_rect clip;
++	dma_addr_t daddr;
++
++	drm_atomic_helper_damage_iter_init(&iter, old_state, state);
++
++	drm_atomic_for_each_plane_damage(&iter, &clip) {
++		for (i = 0; i < finfo->num_planes; i++) {
++			daddr = drm_fb_cma_get_gem_addr(state->fb, state, i);
++
++			/* Ignore x1/x2 values, invalidate complete lines */
++			offset = clip.y1 * state->fb->pitches[i];
++
++			dma_sync_single_for_device(dev, daddr + offset,
++				       (clip.y2 - clip.y1) * state->fb->pitches[i],
++				       DMA_TO_DEVICE);
++		}
++	}
++}
++EXPORT_SYMBOL_GPL(drm_gem_cma_sync_data);
+diff --git a/include/drm/drm_gem_cma_helper.h b/include/drm/drm_gem_cma_helper.h
+index 6a3f7e1312cc..cdd3fb456916 100644
+--- a/include/drm/drm_gem_cma_helper.h
++++ b/include/drm/drm_gem_cma_helper.h
+@@ -7,6 +7,7 @@
+ #include <drm/drm_gem.h>
+ 
+ struct drm_mode_create_dumb;
++struct drm_plane_state;
+ 
+ /**
+  * struct drm_gem_cma_object - GEM object backed by CMA memory allocations
+@@ -190,4 +191,8 @@ drm_gem_cma_prime_import_sg_table_vmap(struct drm_device *drm,
+ 				       struct dma_buf_attachment *attach,
+ 				       struct sg_table *sgt);
+ 
++void drm_gem_cma_sync_data(struct device *dev,
++			   struct drm_plane_state *old_state,
++			   struct drm_plane_state *state);
++
+ #endif /* __DRM_GEM_CMA_HELPER_H__ */
 -- 
 2.30.1
 

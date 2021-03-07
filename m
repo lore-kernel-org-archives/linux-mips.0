@@ -5,67 +5,67 @@ X-Spam-Level:
 X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A578EC43333
-	for <linux-mips@archiver.kernel.org>; Sun,  7 Mar 2021 07:05:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 28906C4360C
+	for <linux-mips@archiver.kernel.org>; Sun,  7 Mar 2021 07:05:45 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 8E64E65138
-	for <linux-mips@archiver.kernel.org>; Sun,  7 Mar 2021 07:05:44 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 14A4D65125
+	for <linux-mips@archiver.kernel.org>; Sun,  7 Mar 2021 07:05:45 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230159AbhCGHE5 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Sun, 7 Mar 2021 02:04:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47220 "EHLO
+        id S230344AbhCGHFA (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Sun, 7 Mar 2021 02:05:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47246 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229971AbhCGHEb (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Sun, 7 Mar 2021 02:04:31 -0500
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEBB7C06174A;
-        Sat,  6 Mar 2021 23:04:30 -0800 (PST)
-Received: by mail-wm1-x32a.google.com with SMTP id 124-20020a1c00820000b029010b871409cfso1849723wma.4;
-        Sat, 06 Mar 2021 23:04:30 -0800 (PST)
+        with ESMTP id S230063AbhCGHEg (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Sun, 7 Mar 2021 02:04:36 -0500
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F472C06174A;
+        Sat,  6 Mar 2021 23:04:36 -0800 (PST)
+Received: by mail-wr1-x429.google.com with SMTP id h98so7796679wrh.11;
+        Sat, 06 Mar 2021 23:04:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=0Ub3gKGJwLJRaryXIKn0038/d6bzjLaWe3sRPb09LY0=;
-        b=AmB7IwiFXx0W13v8S9Z2zbPBM7+n887S+jm3NBBFN2lfZiaLPdECQRuUviS2w7wFOB
-         lfnxNHM7crl+YYuytYu9kMdbYXk+/1hAfwuN0dyE6tDZxNf9qe+LvS6m8eSKMcF4aDlr
-         WmlDmxGP9I/W75pwwP7GrLXpQAnA9YspWj1wYS9NKw/+TX0UCG/ypkjpoqEZtwAEu1PG
-         m0voZoS6zB0Pm/VsKV07sIur4MOdVFTL3tNxttVZed2zdPgHHI1IVSvUa7bxDOSZNdU3
-         GEr1sQfciYwpDA40lmawQ/Izsv57GkFB7jAQiz5bc/VVT0YB84/usK3zxDTRXtkuEccY
-         DqPw==
+        bh=jiX7X0M+t1Zm8HAFufsMGCFO60ftU2nIQxPg0v/LgAc=;
+        b=ZkK7FWrJfuSpUq6/z7zUYaLAQfToKIzzuh1PSitIK4/mVsPE3pER/rXpbaYLVzCs9r
+         SfpfktaLW3bN0oa0wWAX2jQCfVAbG+ZqQAxQhr8SR/zvcMl/R0SXmgr+IUjmlzEfkQl2
+         dzmIo0f/2iCV/396qZTq/maXPk0vZNmTOekiU1q5vlzOevWRyBvoCUY/s/xL8wnxohYN
+         OJRzonA7Liv9o7tLFNDcNWm6RTbVssgVgrLw7ih19z2INkbBf1igNoT0KefFrs/kqG1C
+         NWM+18bDbOCYX0YpUmbAPVmRbDaFvn9IH0VouHBHUzg4Vqtlrle71OMa6FDPcA5qkJop
+         6zkQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=0Ub3gKGJwLJRaryXIKn0038/d6bzjLaWe3sRPb09LY0=;
-        b=L3fIQEcbcZaCDkyOzXKp2/P0FK2H+9B2M5Byaw1N9NhOY6uZL87OOoy3bJCht/ZYGY
-         A+gTLd5jefQqzrkSRlstbRUgRnEanGQ4UlQ6iU5vvMDMjCyuZuM7B1CfT2+lGZrANwSP
-         YX0kZtMIyril6PiByleQFxtQuz60pC08zHpJcPYjM0Taaix7qgGoO2Q7pxXQf/6FQT4h
-         XtrcUNIL/UF/d+3FaDgTMhQRAsfsm089eKPDLxqeESIklhmeBDdMqQ8gSvziYEUiD97M
-         EyOnU7+OJERr+cL8SaJTJNDY5/NFaWLqkmP9aQfPz4Lik63P+jr6K8eidlbuYPckrSN0
-         7BAQ==
-X-Gm-Message-State: AOAM530odZviaD7cGqgXZfEccaerc6yZ/cFhcJI1spwfud4sC9ID9SbH
-        G52UYhHIVSCWzQqoctnjcRA=
-X-Google-Smtp-Source: ABdhPJyfKAoQsPOxQOdi2EBax2XgOCjp2YAIO/dGDM9G4jHSQUDuK5/fBT+8oLKopuFZb1bbS/3wAQ==
-X-Received: by 2002:a7b:c0c4:: with SMTP id s4mr16866001wmh.9.1615100669632;
-        Sat, 06 Mar 2021 23:04:29 -0800 (PST)
+        bh=jiX7X0M+t1Zm8HAFufsMGCFO60ftU2nIQxPg0v/LgAc=;
+        b=jT1Et54pss7QY8o1Qu0PbUuvxAqx2uvHSHy89eLrkpiSGCeXperFqsby1FGR0FdfSO
+         tKEPkmWktYQr2PXblSFFzz164Ad/rHlWabHUAUqK2LBkEDpDrinLNwc29INnqoUTCsvH
+         dZAVwgBvAbHVSBDcLz6iesh/snTFFv+kk6X9K0ATGIYgG0cuMsaKz01UuIlS8HZLJx4N
+         uykKBK9Mrny8/HVupizhEPoFrdoVFgxN9v3gmTi28yObdMyxQRU25NB56aBqjKoE416n
+         3LpZGer4PHvaoKR00Kk3rA1etKuzT4miJeY3VYv4sWfpwjPO8gGAdalBRvnDlC4t6PDR
+         pW3g==
+X-Gm-Message-State: AOAM532BsVkRbGAu3cYTMO5xXNpRK9PzL+Xcx3qiSRhnsnYbmD+cniNb
+        hTdN/ybp5UXX4TmpOdjPylk=
+X-Google-Smtp-Source: ABdhPJxBBivX7xNbxARtmrY+iRTQFW5/37DA2r3euj8VFCLaVfgR+Xx5MFMm2jAqGyNyXi/5ciEQOw==
+X-Received: by 2002:a5d:4523:: with SMTP id j3mr17603895wra.288.1615100674931;
+        Sat, 06 Mar 2021 23:04:34 -0800 (PST)
 Received: from localhost.localdomain (67.red-83-54-30.dynamicip.rima-tde.net. [83.54.30.67])
-        by smtp.gmail.com with ESMTPSA id j9sm12162533wmi.24.2021.03.06.23.04.28
+        by smtp.gmail.com with ESMTPSA id j9sm12162533wmi.24.2021.03.06.23.04.33
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sat, 06 Mar 2021 23:04:29 -0800 (PST)
+        Sat, 06 Mar 2021 23:04:34 -0800 (PST)
 From:   Sergio Paracuellos <sergio.paracuellos@gmail.com>
 To:     sboyd@kernel.org
 Cc:     robh+dt@kernel.org, john@phrozen.org, tsbogend@alpha.franken.de,
         gregkh@linuxfoundation.org, linux-clk@vger.kernel.org,
         devicetree@vger.kernel.org, linux-mips@vger.kernel.org,
         devel@driverdev.osuosl.org, neil@brown.name,
-        linux-kernel@vger.kernel.org, Rob Herring <robh@kernel.org>
-Subject: [PATCH v10 1/6] dt-bindings: clock: add dt binding header for mt7621 clocks
-Date:   Sun,  7 Mar 2021 08:04:21 +0100
-Message-Id: <20210307070426.15933-2-sergio.paracuellos@gmail.com>
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v10 6/6] MAINTAINERS: add MT7621 CLOCK maintainer
+Date:   Sun,  7 Mar 2021 08:04:26 +0100
+Message-Id: <20210307070426.15933-7-sergio.paracuellos@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210307070426.15933-1-sergio.paracuellos@gmail.com>
 References: <20210307070426.15933-1-sergio.paracuellos@gmail.com>
@@ -75,62 +75,30 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Adds dt binding header for 'mediatek,mt7621-clk' clocks.
+Adding myself as maintainer for mt7621 clock driver.
 
-Acked-by: Rob Herring <robh@kernel.org>
 Signed-off-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
 ---
- include/dt-bindings/clock/mt7621-clk.h | 41 ++++++++++++++++++++++++++
- 1 file changed, 41 insertions(+)
- create mode 100644 include/dt-bindings/clock/mt7621-clk.h
+ MAINTAINERS | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/include/dt-bindings/clock/mt7621-clk.h b/include/dt-bindings/clock/mt7621-clk.h
-new file mode 100644
-index 000000000000..1422badcf9de
---- /dev/null
-+++ b/include/dt-bindings/clock/mt7621-clk.h
-@@ -0,0 +1,41 @@
-+/* SPDX-License-Identifier: GPL-2.0-only */
-+/*
-+ * Author: Sergio Paracuellos <sergio.paracuellos@gmail.com>
-+ */
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 809a68af5efd..be5ada6b4309 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -11288,6 +11288,12 @@ L:	linux-wireless@vger.kernel.org
+ S:	Maintained
+ F:	drivers/net/wireless/mediatek/mt7601u/
+ 
++MEDIATEK MT7621 CLOCK DRIVER
++M:	Sergio Paracuellos <sergio.paracuellos@gmail.com>
++S:	Maintained
++F:	Documentation/devicetree/bindings/clock/mediatek,mt7621-clk.yaml
++F:	drivers/clk/ralink/clk-mt7621.c
 +
-+#ifndef _DT_BINDINGS_CLK_MT7621_H
-+#define _DT_BINDINGS_CLK_MT7621_H
-+
-+#define MT7621_CLK_XTAL		0
-+#define MT7621_CLK_CPU		1
-+#define MT7621_CLK_BUS		2
-+#define MT7621_CLK_50M		3
-+#define MT7621_CLK_125M		4
-+#define MT7621_CLK_150M		5
-+#define MT7621_CLK_250M		6
-+#define MT7621_CLK_270M		7
-+
-+#define MT7621_CLK_HSDMA	8
-+#define MT7621_CLK_FE		9
-+#define MT7621_CLK_SP_DIVTX	10
-+#define MT7621_CLK_TIMER	11
-+#define MT7621_CLK_PCM		12
-+#define MT7621_CLK_PIO		13
-+#define MT7621_CLK_GDMA		14
-+#define MT7621_CLK_NAND		15
-+#define MT7621_CLK_I2C		16
-+#define MT7621_CLK_I2S		17
-+#define MT7621_CLK_SPI		18
-+#define MT7621_CLK_UART1	19
-+#define MT7621_CLK_UART2	20
-+#define MT7621_CLK_UART3	21
-+#define MT7621_CLK_ETH		22
-+#define MT7621_CLK_PCIE0	23
-+#define MT7621_CLK_PCIE1	24
-+#define MT7621_CLK_PCIE2	25
-+#define MT7621_CLK_CRYPTO	26
-+#define MT7621_CLK_SHXC		27
-+
-+#define MT7621_CLK_MAX		28
-+
-+#endif /* _DT_BINDINGS_CLK_MT7621_H */
+ MEDIATEK MT7621/28/88 I2C DRIVER
+ M:	Stefan Roese <sr@denx.de>
+ L:	linux-i2c@vger.kernel.org
 -- 
 2.25.1
 

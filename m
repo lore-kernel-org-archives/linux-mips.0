@@ -7,18 +7,18 @@ X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A6EBCC4332B
-	for <linux-mips@archiver.kernel.org>; Sun,  7 Mar 2021 14:18:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C8049C4332B
+	for <linux-mips@archiver.kernel.org>; Sun,  7 Mar 2021 14:19:29 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 8A65865107
-	for <linux-mips@archiver.kernel.org>; Sun,  7 Mar 2021 14:18:57 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id AF8AE65109
+	for <linux-mips@archiver.kernel.org>; Sun,  7 Mar 2021 14:19:29 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232155AbhCGOSY (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Sun, 7 Mar 2021 09:18:24 -0500
-Received: from aposti.net ([89.234.176.197]:51642 "EHLO aposti.net"
+        id S232190AbhCGOS6 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Sun, 7 Mar 2021 09:18:58 -0500
+Received: from aposti.net ([89.234.176.197]:51666 "EHLO aposti.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232147AbhCGOSW (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Sun, 7 Mar 2021 09:18:22 -0500
+        id S230453AbhCGOSf (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Sun, 7 Mar 2021 09:18:35 -0500
 From:   Paul Cercueil <paul@crapouillou.net>
 To:     Michael Turquette <mturquette@baylibre.com>,
         Stephen Boyd <sboyd@kernel.org>,
@@ -27,9 +27,9 @@ To:     Michael Turquette <mturquette@baylibre.com>,
 Cc:     od@zcrc.me, linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
         Paul Cercueil <paul@crapouillou.net>
-Subject: [PATCH 1/6] dt-bindings: clock: ingenic: Add ingenic,jz4760{,b}-cgu compatibles
-Date:   Sun,  7 Mar 2021 14:17:54 +0000
-Message-Id: <20210307141759.30426-2-paul@crapouillou.net>
+Subject: [PATCH 3/6] clk: ingenic: Read bypass register only when there is one
+Date:   Sun,  7 Mar 2021 14:17:56 +0000
+Message-Id: <20210307141759.30426-4-paul@crapouillou.net>
 In-Reply-To: <20210307141759.30426-1-paul@crapouillou.net>
 References: <20210307141759.30426-1-paul@crapouillou.net>
 MIME-Version: 1.0
@@ -38,36 +38,55 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Add ingenic,jz4760-cgu and ingenic,jz4760b-cgu compatible strings for
-the JZ4760 and JZ4760B SoCs respectively.
+Rework the clock code so that the bypass register is only read when
+there is actually a bypass functionality.
 
 Signed-off-by: Paul Cercueil <paul@crapouillou.net>
 ---
- Documentation/devicetree/bindings/clock/ingenic,cgu.yaml | 4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/clk/ingenic/cgu.c | 19 +++++++++++--------
+ 1 file changed, 11 insertions(+), 8 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/clock/ingenic,cgu.yaml b/Documentation/devicetree/bindings/clock/ingenic,cgu.yaml
-index c65b9458c0b6..6d6236e02c22 100644
---- a/Documentation/devicetree/bindings/clock/ingenic,cgu.yaml
-+++ b/Documentation/devicetree/bindings/clock/ingenic,cgu.yaml
-@@ -22,6 +22,8 @@ select:
-         enum:
-           - ingenic,jz4740-cgu
-           - ingenic,jz4725b-cgu
-+          - ingenic,jz4760-cgu
-+          - ingenic,jz4760b-cgu
-           - ingenic,jz4770-cgu
-           - ingenic,jz4780-cgu
-           - ingenic,x1000-cgu
-@@ -49,6 +51,8 @@ properties:
-       - enum:
-           - ingenic,jz4740-cgu
-           - ingenic,jz4725b-cgu
-+          - ingenic,jz4760-cgu
-+          - ingenic,jz4760b-cgu
-           - ingenic,jz4770-cgu
-           - ingenic,jz4780-cgu
-           - ingenic,x1000-cgu
+diff --git a/drivers/clk/ingenic/cgu.c b/drivers/clk/ingenic/cgu.c
+index 0619d45a950c..7686072aff8f 100644
+--- a/drivers/clk/ingenic/cgu.c
++++ b/drivers/clk/ingenic/cgu.c
+@@ -99,13 +99,14 @@ ingenic_pll_recalc_rate(struct clk_hw *hw, unsigned long parent_rate)
+ 	od_enc = ctl >> pll_info->od_shift;
+ 	od_enc &= GENMASK(pll_info->od_bits - 1, 0);
+ 
+-	ctl = readl(cgu->base + pll_info->bypass_reg);
++	if (!pll_info->no_bypass_bit) {
++		ctl = readl(cgu->base + pll_info->bypass_reg);
+ 
+-	bypass = !pll_info->no_bypass_bit &&
+-		 !!(ctl & BIT(pll_info->bypass_bit));
++		bypass = !!(ctl & BIT(pll_info->bypass_bit));
+ 
+-	if (bypass)
+-		return parent_rate;
++		if (bypass)
++			return parent_rate;
++	}
+ 
+ 	for (od = 0; od < pll_info->od_max; od++) {
+ 		if (pll_info->od_encoding[od] == od_enc)
+@@ -225,11 +226,13 @@ static int ingenic_pll_enable(struct clk_hw *hw)
+ 	u32 ctl;
+ 
+ 	spin_lock_irqsave(&cgu->lock, flags);
+-	ctl = readl(cgu->base + pll_info->bypass_reg);
++	if (!pll_info->no_bypass_bit) {
++		ctl = readl(cgu->base + pll_info->bypass_reg);
+ 
+-	ctl &= ~BIT(pll_info->bypass_bit);
++		ctl &= ~BIT(pll_info->bypass_bit);
+ 
+-	writel(ctl, cgu->base + pll_info->bypass_reg);
++		writel(ctl, cgu->base + pll_info->bypass_reg);
++	}
+ 
+ 	ctl = readl(cgu->base + pll_info->reg);
+ 
 -- 
 2.30.1
 

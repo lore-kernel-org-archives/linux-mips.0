@@ -2,146 +2,74 @@ Return-Path: <SRS0=In0w=IF=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1BB22C43381
-	for <linux-mips@archiver.kernel.org>; Sun,  7 Mar 2021 20:30:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E6B79C433DB
+	for <linux-mips@archiver.kernel.org>; Sun,  7 Mar 2021 20:55:39 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id D541565171
-	for <linux-mips@archiver.kernel.org>; Sun,  7 Mar 2021 20:30:07 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 9E6016516B
+	for <linux-mips@archiver.kernel.org>; Sun,  7 Mar 2021 20:55:39 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232885AbhCGU3e (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Sun, 7 Mar 2021 15:29:34 -0500
-Received: from aposti.net ([89.234.176.197]:49626 "EHLO aposti.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232875AbhCGU3N (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Sun, 7 Mar 2021 15:29:13 -0500
-From:   Paul Cercueil <paul@crapouillou.net>
-To:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>
-Cc:     Sam Ravnborg <sam@ravnborg.org>, od@zcrc.me,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        linux-mips@vger.kernel.org, Paul Cercueil <paul@crapouillou.net>
-Subject: [PATCH v2 2/5] drm: Add and export function drm_gem_cma_dumb_create_noncoherent
-Date:   Sun,  7 Mar 2021 20:28:32 +0000
-Message-Id: <20210307202835.253907-3-paul@crapouillou.net>
-In-Reply-To: <20210307202835.253907-1-paul@crapouillou.net>
-References: <20210307202835.253907-1-paul@crapouillou.net>
+        id S232986AbhCGUzH (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Sun, 7 Mar 2021 15:55:07 -0500
+Received: from angie.orcam.me.uk ([157.25.102.26]:37496 "EHLO
+        angie.orcam.me.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233010AbhCGUyq (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Sun, 7 Mar 2021 15:54:46 -0500
+Received: by angie.orcam.me.uk (Postfix, from userid 500)
+        id EFA0692009D; Sun,  7 Mar 2021 21:54:43 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by angie.orcam.me.uk (Postfix) with ESMTP id E0A2C92009B;
+        Sun,  7 Mar 2021 21:54:43 +0100 (CET)
+Date:   Sun, 7 Mar 2021 21:54:43 +0100 (CET)
+From:   "Maciej W. Rozycki" <macro@orcam.me.uk>
+To:     Huang Pei <huangpei@loongson.cn>
+cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        ambrosehua@gmail.com, Bibo Mao <maobibo@loongson.cn>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-mips@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-mm@kvack.org, Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Paul Burton <paulburton@kernel.org>,
+        Li Xuefeng <lixuefeng@loongson.cn>,
+        Yang Tiezhu <yangtiezhu@loongson.cn>,
+        Gao Juxin <gaojuxin@loongson.cn>,
+        Fuxin Zhang <zhangfx@lemote.com>,
+        Huacai Chen <chenhc@lemote.com>
+Subject: Re: [PATCH] MIPS: clean up CONFIG_MIPS_PGD_C0_CONTEXT handling
+In-Reply-To: <20210305071322.srv5gv5sro5p4dll@ambrosehua-HP-xw6600-Workstation>
+Message-ID: <alpine.DEB.2.21.2103051752310.51127@angie.orcam.me.uk>
+References: <20210227061944.266415-1-huangpei@loongson.cn> <20210227061944.266415-2-huangpei@loongson.cn> <alpine.DEB.2.21.2102282346400.44210@angie.orcam.me.uk> <20210304010623.4tyzpzgllsdy3ssg@ambrosehua-HP-xw6600-Workstation>
+ <alpine.DEB.2.21.2103040227500.19637@angie.orcam.me.uk> <20210305071322.srv5gv5sro5p4dll@ambrosehua-HP-xw6600-Workstation>
+User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-This function can be used by drivers to create dumb buffers with
-non-coherent backing memory.
+On Fri, 5 Mar 2021, Huang Pei wrote:
 
-Signed-off-by: Paul Cercueil <paul@crapouillou.net>
----
- drivers/gpu/drm/drm_gem_cma_helper.c | 37 +++++++++++++++++++++++++---
- include/drm/drm_gem_cma_helper.h     |  5 ++++
- 2 files changed, 38 insertions(+), 4 deletions(-)
+> /home/hp/projects/Linux/temp/linux-stable/arch/mips/include/asm/io.h: In function ‘phys_to_virt’:
+> /home/hp/projects/Linux/temp/linux-stable/arch/mips/include/asm/io.h:122:9: error: cast to pointer 
+> from integer of different size [-Werror=int-to-pointer-cast]
+>   return (void *)(address + PAGE_OFFSET - PHYS_OFFSET);
+> 
+> 
+> .........
+> 
+> Only change CAC_BASE Does NOT work 
 
-diff --git a/drivers/gpu/drm/drm_gem_cma_helper.c b/drivers/gpu/drm/drm_gem_cma_helper.c
-index 917b092b23c2..d100c5f9c140 100644
---- a/drivers/gpu/drm/drm_gem_cma_helper.c
-+++ b/drivers/gpu/drm/drm_gem_cma_helper.c
-@@ -181,6 +181,7 @@ EXPORT_SYMBOL_GPL(drm_gem_cma_create);
-  * @drm: DRM device
-  * @size: size of the object to allocate
-  * @handle: return location for the GEM handle
-+ * @noncoherent: allocate object with non-coherent cache attribute
-  *
-  * This function creates a CMA GEM object, allocating a physically contiguous
-  * chunk of memory as backing store. The GEM object is then added to the list
-@@ -193,13 +194,13 @@ EXPORT_SYMBOL_GPL(drm_gem_cma_create);
- static struct drm_gem_cma_object *
- drm_gem_cma_create_with_handle(struct drm_file *file_priv,
- 			       struct drm_device *drm, size_t size,
--			       uint32_t *handle)
-+			       uint32_t *handle, bool noncoherent)
- {
- 	struct drm_gem_cma_object *cma_obj;
- 	struct drm_gem_object *gem_obj;
- 	int ret;
- 
--	cma_obj = drm_gem_cma_create(drm, size);
-+	cma_obj = drm_gem_cma_create_with_cache_param(drm, size, noncoherent);
- 	if (IS_ERR(cma_obj))
- 		return cma_obj;
- 
-@@ -276,7 +277,7 @@ int drm_gem_cma_dumb_create_internal(struct drm_file *file_priv,
- 		args->size = args->pitch * args->height;
- 
- 	cma_obj = drm_gem_cma_create_with_handle(file_priv, drm, args->size,
--						 &args->handle);
-+						 &args->handle, false);
- 	return PTR_ERR_OR_ZERO(cma_obj);
- }
- EXPORT_SYMBOL_GPL(drm_gem_cma_dumb_create_internal);
-@@ -309,11 +310,39 @@ int drm_gem_cma_dumb_create(struct drm_file *file_priv,
- 	args->size = args->pitch * args->height;
- 
- 	cma_obj = drm_gem_cma_create_with_handle(file_priv, drm, args->size,
--						 &args->handle);
-+						 &args->handle, false);
- 	return PTR_ERR_OR_ZERO(cma_obj);
- }
- EXPORT_SYMBOL_GPL(drm_gem_cma_dumb_create);
- 
-+/**
-+ * drm_gem_cma_dumb_create_noncoherent - create a dumb buffer object with
-+ *     non-coherent cache attribute
-+ * @file_priv: DRM file-private structure to create the dumb buffer for
-+ * @drm: DRM device
-+ * @args: IOCTL data
-+ *
-+ * Same as drm_gem_cma_dumb_create, but the dumb buffer object created has
-+ * the non-coherent cache attribute set.
-+ *
-+ * Returns:
-+ * 0 on success or a negative error code on failure.
-+ */
-+int drm_gem_cma_dumb_create_noncoherent(struct drm_file *file_priv,
-+					struct drm_device *drm,
-+					struct drm_mode_create_dumb *args)
-+{
-+	struct drm_gem_cma_object *cma_obj;
-+
-+	args->pitch = DIV_ROUND_UP(args->width * args->bpp, 8);
-+	args->size = args->pitch * args->height;
-+
-+	cma_obj = drm_gem_cma_create_with_handle(file_priv, drm, args->size,
-+						 &args->handle, true);
-+	return PTR_ERR_OR_ZERO(cma_obj);
-+}
-+EXPORT_SYMBOL_GPL(drm_gem_cma_dumb_create_noncoherent);
-+
- const struct vm_operations_struct drm_gem_cma_vm_ops = {
- 	.open = drm_gem_vm_open,
- 	.close = drm_gem_vm_close,
-diff --git a/include/drm/drm_gem_cma_helper.h b/include/drm/drm_gem_cma_helper.h
-index 360771f5f485..6b44e7492a63 100644
---- a/include/drm/drm_gem_cma_helper.h
-+++ b/include/drm/drm_gem_cma_helper.h
-@@ -76,6 +76,11 @@ int drm_gem_cma_dumb_create(struct drm_file *file_priv,
- 			    struct drm_device *drm,
- 			    struct drm_mode_create_dumb *args);
- 
-+/* create non-coherent memory region for DRM framebuffer */
-+int drm_gem_cma_dumb_create_noncoherent(struct drm_file *file_priv,
-+					struct drm_device *drm,
-+					struct drm_mode_create_dumb *args);
-+
- /* allocate physical memory */
- struct drm_gem_cma_object *drm_gem_cma_create(struct drm_device *drm,
- 					      size_t size);
--- 
-2.30.1
+ Thank you for checking.
 
+ Right.  I don't know why it fails for `phys_to_virt' where `address' is 
+of the `unsigned long' type, but there are other places where the macros 
+themselves are cast to `void *'.  We may want to rework that stuff, but 
+not necessarily on this occasion.
+
+ Use an explicit cast of the macro to `s64' here then, as my other 
+suggestion was.  Anything is better than hardcoded magic numbers.
+
+  Maciej

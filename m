@@ -2,76 +2,96 @@ Return-Path: <SRS0=rRLm=IG=vger.kernel.org=linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-15.2 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4A4ECC433E6
-	for <linux-mips@archiver.kernel.org>; Mon,  8 Mar 2021 09:51:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D44FEC433E0
+	for <linux-mips@archiver.kernel.org>; Mon,  8 Mar 2021 10:56:58 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 03000651F6
-	for <linux-mips@archiver.kernel.org>; Mon,  8 Mar 2021 09:51:26 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 833AA6512D
+	for <linux-mips@archiver.kernel.org>; Mon,  8 Mar 2021 10:56:58 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230439AbhCHJuu (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 8 Mar 2021 04:50:50 -0500
-Received: from elvis.franken.de ([193.175.24.41]:57382 "EHLO elvis.franken.de"
+        id S230323AbhCHK4X (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 8 Mar 2021 05:56:23 -0500
+Received: from elvis.franken.de ([193.175.24.41]:57506 "EHLO elvis.franken.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230455AbhCHJuT (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Mon, 8 Mar 2021 04:50:19 -0500
+        id S231142AbhCHK4G (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Mon, 8 Mar 2021 05:56:06 -0500
 Received: from uucp (helo=alpha)
         by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1lJCWn-0002nE-00; Mon, 08 Mar 2021 10:50:17 +0100
+        id 1lJDYR-0003M5-01; Mon, 08 Mar 2021 11:56:03 +0100
 Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 96E91C1214; Mon,  8 Mar 2021 10:49:47 +0100 (CET)
-Date:   Mon, 8 Mar 2021 10:49:47 +0100
+        id D599DC12B6; Mon,  8 Mar 2021 11:54:37 +0100 (CET)
+Date:   Mon, 8 Mar 2021 11:54:37 +0100
 From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Jiaxun Yang <jiaxun.yang@flygoat.com>
-Cc:     Qing Zhang <zhangqing@loongson.cn>,
+To:     "Maciej W. Rozycki" <macro@orcam.me.uk>
+Cc:     "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ralf Baechle <ralf@linux-mips.org>,
+        George Cherian <gcherian@marvell.com>,
         Huacai Chen <chenhuacai@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>,
-        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] MIPS: Loongson64: Move loongson_system_configuration
- to loongson.h
-Message-ID: <20210308094947.GA4924@alpha.franken.de>
-References: <20210304110057.22144-1-zhangqing@loongson.cn>
- <20210304110057.22144-3-zhangqing@loongson.cn>
- <20210306080337.GC4744@alpha.franken.de>
- <d1072504-514b-4be0-85ba-69a6d885de58@www.fastmail.com>
- <20210306095308.GA5751@alpha.franken.de>
- <3a5481f9-d1d5-4439-9679-ad7615ba8009@www.fastmail.com>
+        Jiaxun Yang <jiaxun.yang@flygoat.com>, stable@vger.kernel.org
+Subject: Re: [PATCH] crypto: mips/poly1305 - enable for all MIPS processors
+Message-ID: <20210308105437.GB6622@alpha.franken.de>
+References: <alpine.DEB.2.21.2103030122010.19637@angie.orcam.me.uk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <3a5481f9-d1d5-4439-9679-ad7615ba8009@www.fastmail.com>
+In-Reply-To: <alpine.DEB.2.21.2103030122010.19637@angie.orcam.me.uk>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Sat, Mar 06, 2021 at 06:55:41PM +0800, Jiaxun Yang wrote:
+On Wed, Mar 03, 2021 at 02:16:04AM +0100, Maciej W. Rozycki wrote:
+> The MIPS Poly1305 implementation is generic MIPS code written such as to 
+> support down to the original MIPS I and MIPS III ISA for the 32-bit and 
+> 64-bit variant respectively.  Lift the current limitation then to enable 
+> code for MIPSr1 ISA or newer processors only and have it available for 
+> all MIPS processors.
 > 
+> Signed-off-by: Maciej W. Rozycki <macro@orcam.me.uk>
+> Fixes: a11d055e7a64 ("crypto: mips/poly1305 - incorporate OpenSSL/CRYPTOGAMS optimized implementation")
+> Cc: stable@vger.kernel.org # v5.5+
+> ---
+> On Wed, 3 Mar 2021, Jason A. Donenfeld wrote:
 > 
-> On Sat, Mar 6, 2021, at 5:53 PM, Thomas Bogendoerfer wrote:
-> [...]
-> > Just to understand you, you want
+> > >> Would you mind sending this for 5.12 in an rc at some point, rather
+> > >> than waiting for 5.13? I'd like to see this backported to 5.10 and 5.4
+> > >> for OpenWRT.
+> > >
+> > > why is this so important for OpenWRT ? Just to select CRYPTO_POLY1305_MIPS
+> > > ?
 > > 
-> > arch/mips/include/asm/loongson/2ef
-> > arch/mips/include/asm/loongson/32
-> > arch/mips/include/asm/loongson/64
+> > Yes. The performance boost on Octeon is significant for WireGuard users.
 > 
-> Yeah it looks reasonable but from my point of view doing these movement
-> brings no actual benefit :-(
+>  But that's the wrong fix for that purpose.  I've skimmed over that module 
+> and there's nothing MIPS64-specific there.  In fact it's plain generic 
+> MIPS assembly, with some R2 optimisations enabled where applicable but not 
+> necessary (and then R6 tweaks, but that's irrelevant here).
+> 
+>  As a matter of interest I have just built it successfully for a MIPS I 
+> DECstation configuration:
+> 
+> $ file arch/mips/crypto/poly1305-mips.ko
+> arch/mips/crypto/poly1305-mips.ko: ELF 32-bit LSB relocatable, MIPS, MIPS-I version 1 (SYSV), BuildID[sha1]=d36384d94f60ba7deff638ca8a24500120b45b56, not stripped
+> $ 
+> 
+> Patch included, please apply.
+> 
+>  So while your change is surely right, what you want is this really.
+> 
+>   Maciej
+> ---
+>  arch/mips/crypto/Makefile |    4 ++--
+>  crypto/Kconfig            |    2 +-
+>  drivers/net/Kconfig       |    2 +-
+>  3 files changed, 4 insertions(+), 4 deletions(-)
 
-oh it does for sure. There will no more build errors for non loogson
-configs for things like
-
-#include <loongson_regs.h>
-
-because it will not work for loongson either. And it will be clear,
-which of the 3 loongson.h is used. Which then gives chances for even
-more cleanups.
+applied to mips-fixes.
 
 Thomas.
 

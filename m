@@ -5,45 +5,38 @@ X-Spam-Level:
 X-Spam-Status: No, score=-26.3 required=3.0 tests=BAYES_00,DKIMWL_WL_MED,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
 	INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_GIT,USER_IN_DEF_DKIM_WL autolearn=unavailable
+	URIBL_BLOCKED,USER_AGENT_GIT,USER_IN_DEF_DKIM_WL autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 83A81C4321A
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6982AC43333
 	for <linux-mips@archiver.kernel.org>; Tue,  9 Mar 2021 00:03:47 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 710D2652B2
+	by mail.kernel.org (Postfix) with ESMTP id 4A664652B7
 	for <linux-mips@archiver.kernel.org>; Tue,  9 Mar 2021 00:03:47 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232025AbhCIADQ (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 8 Mar 2021 19:03:16 -0500
-Received: from rcdn-iport-4.cisco.com ([173.37.86.75]:14880 "EHLO
+        id S231989AbhCIADO (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 8 Mar 2021 19:03:14 -0500
+Received: from rcdn-iport-4.cisco.com ([173.37.86.75]:14832 "EHLO
         rcdn-iport-4.cisco.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231990AbhCIADG (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Mon, 8 Mar 2021 19:03:06 -0500
+        with ESMTP id S231986AbhCIAC4 (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Mon, 8 Mar 2021 19:02:56 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=cisco.com; i=@cisco.com; l=4760; q=dns/txt; s=iport;
-  t=1615248185; x=1616457785;
+  d=cisco.com; i=@cisco.com; l=5627; q=dns/txt; s=iport;
+  t=1615248176; x=1616457776;
   h=from:to:cc:subject:date:message-id:mime-version:
    content-transfer-encoding;
-  bh=tQ2KjkNmJ1N6aeJwFCAC+GVVOXowsaBAtY9t5Zi/wUA=;
-  b=FpTIOXrHD+a0Dp7e01vzytK9EKfE0rLIzCHYMuqsAljdo+EAfb1wUn2K
-   mA0q1cFc7PBZv2oOKyboG6FFd1PxlvC/s8rY9KYnAS5p0iyZIvAti/IYM
-   /sUFBgNelkb2nk8o4X/EJqYIvC5KeT7mRh5ATh1IKLQhTf7iaRlStcL2A
-   w=;
-X-IronPort-Anti-Spam-Filtered: true
-X-IronPort-Anti-Spam-Result: =?us-ascii?q?A0BIAwAiukZg/4cNJK1iHAEBAQEBAQc?=
- =?us-ascii?q?BARIBAQQEAQGCD4IrgUwBOTGWG4opkicLAQEBDzQEAQGETYF8AiU4EwIDAQE?=
- =?us-ascii?q?LAQEFAQEBAgEGBHGFboZ9ATgOgQI8ARKCcIJWAy+sJIIoiBsNYoFFFIEliFx?=
- =?us-ascii?q?0hBgcgUlCgRGDWIIaiBkEgkYBdRkBCiUBgVSBG5AlBgSCbYozgR2aCluDCIE?=
- =?us-ascii?q?flVuFHQ8io2yUXY5HlA6BayOBVzMaCBsVgyRQGQ2OKxaNagFcIAMvOAIGCgE?=
- =?us-ascii?q?BAwmPJgEB?=
+  bh=djAQjtYwrMJu9fxe6w+8d3tJlP2NIiV3K6rQlAajVfs=;
+  b=bLG5j++1IH2C3UsTkV6YLV0zJbM1bTf3vjl00xC+HIhVLKwJ0qKDRt9g
+   FqO3n1TZn7YhVSBEPFxM41MF0g73Ln6EsbaYZq0WncceFZA7UBSKXrgSr
+   2nVhx6TwfLRZ1ZqMsVVTk/j+M13YSxsma/m5W7mHRFVW8rEfdbdd85sJq
+   c=;
 X-IronPort-AV: E=Sophos;i="5.81,233,1610409600"; 
-   d="scan'208";a="846417833"
+   d="scan'208";a="846417787"
 Received: from alln-core-2.cisco.com ([173.36.13.135])
-  by rcdn-iport-4.cisco.com with ESMTP/TLS/DHE-RSA-SEED-SHA; 09 Mar 2021 00:03:03 +0000
+  by rcdn-iport-4.cisco.com with ESMTP/TLS/DHE-RSA-SEED-SHA; 09 Mar 2021 00:02:55 +0000
 Received: from zorba.cisco.com ([10.24.7.91])
-        by alln-core-2.cisco.com (8.15.2/8.15.2) with ESMTP id 12902mKh014497;
-        Tue, 9 Mar 2021 00:03:01 GMT
+        by alln-core-2.cisco.com (8.15.2/8.15.2) with ESMTP id 12902mKe014497;
+        Tue, 9 Mar 2021 00:02:54 GMT
 From:   Daniel Walker <danielwa@cisco.com>
 To:     Will Deacon <will@kernel.org>,
         Christophe Leroy <christophe.leroy@csgroup.eu>,
@@ -51,16 +44,15 @@ To:     Will Deacon <will@kernel.org>,
         Daniel Gimpelevich <daniel@gimpelevich.san-francisco.ca.us>,
         Andrew Morton <akpm@linux-foundation.org>, x86@kernel.org,
         linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        xe-linux-external@cisco.com, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>
+        xe-linux-external@cisco.com, Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>
 Cc:     Ruslan Ruslichenko <rruslich@cisco.com>,
-        Ruslan Bilovol <ruslan.bilovol@gmail.com>,
-        Ard Biesheuvel <ardb@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-efi@vger.kernel.org
-Subject: [PATCH v2 7/7] CMDLINE: x86: convert to generic builtin command line
-Date:   Mon,  8 Mar 2021 16:02:43 -0800
-Message-Id: <20210309000247.2989531-8-danielwa@cisco.com>
+        Ruslan Bilovol <rbilovol@cisco.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2 4/7] CMDLINE: powerpc: convert to generic builtin command line
+Date:   Mon,  8 Mar 2021 16:02:40 -0800
+Message-Id: <20210309000247.2989531-5-danielwa@cisco.com>
 X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -71,137 +63,176 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-This updates the x86 code to use the CONFIG_GENERIC_CMDLINE
+This updates the powerpc code to use the CONFIG_GENERIC_CMDLINE
 option.
 
 Cc: xe-linux-external@cisco.com
 Signed-off-by: Ruslan Ruslichenko <rruslich@cisco.com>
-Signed-off-by: Ruslan Bilovol <ruslan.bilovol@gmail.com>
+Signed-off-by: Ruslan Bilovol <rbilovol@cisco.com>
 Signed-off-by: Daniel Walker <danielwa@cisco.com>
 ---
- arch/x86/Kconfig                        | 44 +------------------------
- arch/x86/kernel/setup.c                 | 18 ++--------
- drivers/firmware/efi/libstub/x86-stub.c |  2 +-
- 3 files changed, 4 insertions(+), 60 deletions(-)
+ arch/powerpc/Kconfig            | 37 +--------------------------------
+ arch/powerpc/kernel/prom.c      |  1 +
+ arch/powerpc/kernel/prom_init.c | 35 ++++++++++++++++++-------------
+ 3 files changed, 23 insertions(+), 50 deletions(-)
 
-diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index 21f851179ff0..3950f9bf9855 100644
---- a/arch/x86/Kconfig
-+++ b/arch/x86/Kconfig
-@@ -115,6 +115,7 @@ config X86
+diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
+index 107bb4319e0e..276b06d5c961 100644
+--- a/arch/powerpc/Kconfig
++++ b/arch/powerpc/Kconfig
+@@ -167,6 +167,7 @@ config PPC
  	select EDAC_SUPPORT
- 	select GENERIC_CLOCKEVENTS_BROADCAST	if X86_64 || (X86_32 && X86_LOCAL_APIC)
- 	select GENERIC_CLOCKEVENTS_MIN_ADJUST
+ 	select GENERIC_ATOMIC64			if PPC32
+ 	select GENERIC_CLOCKEVENTS_BROADCAST	if SMP
 +	select GENERIC_CMDLINE
  	select GENERIC_CMOS_UPDATE
  	select GENERIC_CPU_AUTOPROBE
- 	select GENERIC_CPU_VULNERABILITIES
-@@ -2368,49 +2369,6 @@ choice
+ 	select GENERIC_CPU_VULNERABILITIES	if PPC_BARRIER_NOSPEC
+@@ -906,42 +907,6 @@ config PPC_DENORMALISATION
+ 	  Add support for handling denormalisation of single precision
+ 	  values.  Useful for bare metal only.  If unsure say Y here.
  
- endchoice
- 
--config CMDLINE_BOOL
--	bool "Built-in kernel command line"
--	help
--	  Allow for specifying boot arguments to the kernel at
--	  build time.  On some systems (e.g. embedded ones), it is
--	  necessary or convenient to provide some or all of the
--	  kernel boot arguments with the kernel itself (that is,
--	  to not rely on the boot loader to provide them.)
--
--	  To compile command line arguments into the kernel,
--	  set this option to 'Y', then fill in the
--	  boot arguments in CONFIG_CMDLINE.
--
--	  Systems with fully functional boot loaders (i.e. non-embedded)
--	  should leave this option set to 'N'.
--
 -config CMDLINE
--	string "Built-in kernel command string"
--	depends on CMDLINE_BOOL
+-	string "Initial kernel command string"
 -	default ""
 -	help
--	  Enter arguments here that should be compiled into the kernel
--	  image and used at boot time.  If the boot loader provides a
--	  command line at boot time, it is appended to this string to
--	  form the full kernel command line, when the system boots.
+-	  On some platforms, there is currently no way for the boot loader to
+-	  pass arguments to the kernel. For these platforms, you can supply
+-	  some command-line options at build time by entering them here.  In
+-	  most cases you will need to specify the root device here.
 -
--	  However, you can use the CONFIG_CMDLINE_OVERRIDE option to
--	  change this behavior.
+-choice
+-	prompt "Kernel command line type" if CMDLINE != ""
+-	default CMDLINE_FROM_BOOTLOADER
 -
--	  In most cases, the command line (whether built-in or provided
--	  by the boot loader) should specify the device for the root
--	  file system.
--
--config CMDLINE_OVERRIDE
--	bool "Built-in command line overrides boot loader arguments"
--	depends on CMDLINE_BOOL && CMDLINE != ""
+-config CMDLINE_FROM_BOOTLOADER
+-	bool "Use bootloader kernel arguments if available"
 -	help
--	  Set this option to 'Y' to have the kernel ignore the boot loader
--	  command line, and use ONLY the built-in command line.
+-	  Uses the command-line options passed by the boot loader. If
+-	  the boot loader doesn't provide any, the default kernel command
+-	  string provided in CMDLINE will be used.
 -
--	  This is used to work around broken boot loaders.  This should
--	  be set to 'N' under normal conditions.
+-config CMDLINE_EXTEND
+-	bool "Extend bootloader kernel arguments"
+-	help
+-	  The command-line arguments provided by the boot loader will be
+-	  appended to the default kernel command string.
 -
- config MODIFY_LDT_SYSCALL
- 	bool "Enable the LDT (local descriptor table)" if EXPERT
- 	default y
-diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
-index 740f3bdb3f61..e748c3e5c1ae 100644
---- a/arch/x86/kernel/setup.c
-+++ b/arch/x86/kernel/setup.c
-@@ -48,6 +48,7 @@
- #include <asm/unwind.h>
- #include <asm/vsyscall.h>
- #include <linux/vmalloc.h>
+-config CMDLINE_FORCE
+-	bool "Always use the default kernel command string"
+-	help
+-	  Always use the default kernel command string, even if the boot
+-	  loader passes other arguments to the kernel.
+-	  This is useful if you cannot or don't want to change the
+-	  command-line options your boot loader passes to the kernel.
+-
+-endchoice
+-
+ config EXTRA_TARGETS
+ 	string "Additional default image types"
+ 	help
+diff --git a/arch/powerpc/kernel/prom.c b/arch/powerpc/kernel/prom.c
+index ae3c41730367..96d0a01be1b4 100644
+--- a/arch/powerpc/kernel/prom.c
++++ b/arch/powerpc/kernel/prom.c
+@@ -27,6 +27,7 @@
+ #include <linux/irq.h>
+ #include <linux/memblock.h>
+ #include <linux/of.h>
 +#include <linux/cmdline.h>
+ #include <linux/of_fdt.h>
+ #include <linux/libfdt.h>
+ #include <linux/cpu.h>
+diff --git a/arch/powerpc/kernel/prom_init.c b/arch/powerpc/kernel/prom_init.c
+index e9d4eb6144e1..657241534d69 100644
+--- a/arch/powerpc/kernel/prom_init.c
++++ b/arch/powerpc/kernel/prom_init.c
+@@ -27,6 +27,7 @@
+ #include <linux/initrd.h>
+ #include <linux/bitops.h>
+ #include <linux/pgtable.h>
++#include <linux/cmdline.h>
+ #include <asm/prom.h>
+ #include <asm/rtas.h>
+ #include <asm/page.h>
+@@ -242,15 +243,6 @@ static int __init prom_strcmp(const char *cs, const char *ct)
+ 	return 0;
+ }
  
- /*
-  * max_low_pfn_mapped: highest directly mapped pfn < 4 GB
-@@ -162,9 +163,6 @@ unsigned long saved_video_mode;
- #define RAMDISK_LOAD_FLAG		0x4000
- 
- static char __initdata command_line[COMMAND_LINE_SIZE];
--#ifdef CONFIG_CMDLINE_BOOL
--static char __initdata builtin_cmdline[COMMAND_LINE_SIZE] = CONFIG_CMDLINE;
--#endif
- 
- #if defined(CONFIG_EDD) || defined(CONFIG_EDD_MODULE)
- struct edd edd;
-@@ -884,19 +882,7 @@ void __init setup_arch(char **cmdline_p)
- 	bss_resource.start = __pa_symbol(__bss_start);
- 	bss_resource.end = __pa_symbol(__bss_stop)-1;
- 
--#ifdef CONFIG_CMDLINE_BOOL
--#ifdef CONFIG_CMDLINE_OVERRIDE
--	strlcpy(boot_command_line, builtin_cmdline, COMMAND_LINE_SIZE);
--#else
--	if (builtin_cmdline[0]) {
--		/* append boot loader cmdline to builtin */
--		strlcat(builtin_cmdline, " ", COMMAND_LINE_SIZE);
--		strlcat(builtin_cmdline, boot_command_line, COMMAND_LINE_SIZE);
--		strlcpy(boot_command_line, builtin_cmdline, COMMAND_LINE_SIZE);
--	}
--#endif
--#endif
+-static char __init *prom_strcpy(char *dest, const char *src)
+-{
+-	char *tmp = dest;
 -
-+	cmdline_add_builtin(boot_command_line, NULL, COMMAND_LINE_SIZE);
- 	strlcpy(command_line, boot_command_line, COMMAND_LINE_SIZE);
- 	*cmdline_p = command_line;
+-	while ((*dest++ = *src++) != '\0')
+-		/* nothing */;
+-	return tmp;
+-}
+-
+ static int __init prom_strncmp(const char *cs, const char *ct, size_t count)
+ {
+ 	unsigned char c1, c2;
+@@ -276,6 +268,20 @@ static size_t __init prom_strlen(const char *s)
+ 	return sc - s;
+ }
  
-diff --git a/drivers/firmware/efi/libstub/x86-stub.c b/drivers/firmware/efi/libstub/x86-stub.c
-index f14c4ff5839f..9538c9d4a0bc 100644
---- a/drivers/firmware/efi/libstub/x86-stub.c
-+++ b/drivers/firmware/efi/libstub/x86-stub.c
-@@ -736,7 +736,7 @@ unsigned long efi_main(efi_handle_t handle,
- 	}
++static size_t __init prom_strlcpy(char *dest, const char *src, size_t size)
++{
++	size_t ret = prom_strlen(src);
++
++	if (size) {
++		size_t len = (ret >= size) ? size - 1 : ret;
++
++		memcpy(dest, src, len);
++		dest[len] = '\0';
++	}
++	return ret;
++}
++
++
+ static int __init prom_memcmp(const void *cs, const void *ct, size_t count)
+ {
+ 	const unsigned char *su1, *su2;
+@@ -304,6 +310,7 @@ static char __init *prom_strstr(const char *s1, const char *s2)
+ 	return NULL;
+ }
  
- #ifdef CONFIG_CMDLINE_BOOL
--	status = efi_parse_options(CONFIG_CMDLINE);
-+	status = efi_parse_options(CONFIG_CMDLINE_PREPEND " " CONFIG_CMDLINE_APPEND);
- 	if (status != EFI_SUCCESS) {
- 		efi_err("Failed to parse options\n");
- 		goto fail;
++#ifdef GENERIC_CMDLINE_NEED_STRLCAT
+ static size_t __init prom_strlcat(char *dest, const char *src, size_t count)
+ {
+ 	size_t dsize = prom_strlen(dest);
+@@ -323,6 +330,7 @@ static size_t __init prom_strlcat(char *dest, const char *src, size_t count)
+ 	return res;
+ 
+ }
++#endif
+ 
+ #ifdef CONFIG_PPC_PSERIES
+ static int __init prom_strtobool(const char *s, bool *res)
+@@ -775,12 +783,11 @@ static void __init early_cmdline_parse(void)
+ 	prom_cmd_line[0] = 0;
+ 	p = prom_cmd_line;
+ 
+-	if (!IS_ENABLED(CONFIG_CMDLINE_FORCE) && (long)prom.chosen > 0)
++	if ((long)prom.chosen > 0)
+ 		l = prom_getprop(prom.chosen, "bootargs", p, COMMAND_LINE_SIZE-1);
+ 
+-	if (IS_ENABLED(CONFIG_CMDLINE_EXTEND) || l <= 0 || p[0] == '\0')
+-		prom_strlcat(prom_cmd_line, " " CONFIG_CMDLINE,
+-			     sizeof(prom_cmd_line));
++	cmdline_add_builtin_custom(prom_cmd_line, (l > 0 ? p : NULL), sizeof(prom_cmd_line),
++					__prombss, prom_strlcpy, prom_strlcat);
+ 
+ 	prom_printf("command line: %s\n", prom_cmd_line);
+ 
+@@ -2706,7 +2713,7 @@ static void __init flatten_device_tree(void)
+ 
+ 	/* Add "phandle" in there, we'll need it */
+ 	namep = make_room(&mem_start, &mem_end, 16, 1);
+-	prom_strcpy(namep, "phandle");
++	prom_strlcpy(namep, "phandle", 8);
+ 	mem_start = (unsigned long)namep + prom_strlen(namep) + 1;
+ 
+ 	/* Build string array */
 -- 
 2.25.1
 

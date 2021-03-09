@@ -2,131 +2,85 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-20.3 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,INCLUDES_PULL_REQUEST,
+	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 188C9C433E6
-	for <linux-mips@archiver.kernel.org>; Tue,  9 Mar 2021 14:49:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7A815C43381
+	for <linux-mips@archiver.kernel.org>; Tue,  9 Mar 2021 15:18:22 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id C319A6518F
-	for <linux-mips@archiver.kernel.org>; Tue,  9 Mar 2021 14:49:22 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 4F7136527C
+	for <linux-mips@archiver.kernel.org>; Tue,  9 Mar 2021 15:18:22 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231319AbhCIOsu (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 9 Mar 2021 09:48:50 -0500
-Received: from out4-smtp.messagingengine.com ([66.111.4.28]:38109 "EHLO
-        out4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231411AbhCIOss (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Tue, 9 Mar 2021 09:48:48 -0500
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailout.nyi.internal (Postfix) with ESMTP id 9723A5C01AF;
-        Tue,  9 Mar 2021 09:48:47 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute6.internal (MEProxy); Tue, 09 Mar 2021 09:48:47 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=flygoat.com; h=
-        subject:to:cc:references:from:message-id:date:mime-version
-        :in-reply-to:content-type:content-transfer-encoding; s=fm1; bh=U
-        MG15ISSnKPJhOBV2Dgx4rSJNGyk0C36ELY0EUXTpvo=; b=s4tv5j3/5yffP5QcJ
-        hBEsf/wF5Ht0B1mD4gdXBTilrhAOs+7s5P6TBum9Z67gU/kKxieOUu+8DSCuRXcL
-        Ss99mhSStv9dDCD7nKGqdL5G0SQzwL2zEEHyw89vneftL/VtWW+sjeSCKMGBdzWX
-        USj1x4Qd6BbWYmTTew7GV5J/AoTS2mXzpEgmRrvLeyVh8hV1VDb3JvEDyq9FU5Re
-        zK48yvPATem+0IYv+JUQmt42R2d5zn/OZfwiCtDKMHyC8/eW+BUoO6E1kKcLJoUX
-        0zpStrPpfVswltidpUASLhbLCEC6DyfdjNFU79qD+Lqr5NGmhPpYoA41sQ3acTLM
-        ugPhQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:content-type
-        :date:from:in-reply-to:message-id:mime-version:references
-        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm2; bh=UMG15ISSnKPJhOBV2Dgx4rSJNGyk0C36ELY0EUXTp
-        vo=; b=GG/aCOU6rom5z5B6U6NWS6I+lTY+pYivAADL//ypR2uG5cFYuifDceCkf
-        cpcjVQvM2FITAW+UO7Z0uhS7zotWGpjwWAmlXE1rGQbmu/Hy+plHpO8tsDV0GNmi
-        VNgD1AtGweqR65A5w27ZLVEzbYU0s2hL9W5WE154G7y7UNiU1UCJLvV8FIa+/BIc
-        Sxuaku0n3rSrS8KsMYdfl99jlYkHPkcSMlt73CxjGG5paUCA9jrW7C3k4qZjytMG
-        uvo65dpN4eqz7z1ySeJ7zapyNUA63c9XpsVCzm6jR95px75Xmgxzckp3M6XDONlL
-        SnC21BLmH/OrIon3wxoUcXlCSPzqQ==
-X-ME-Sender: <xms:zYpHYCiUd8d1k9gD9fuU6YC-ypUWLl9yBy1maM6bOis_c0w2ffoVQQ>
-    <xme:zYpHYDAh3OktMGX3cADHWHxmuH0xFObrpJxjpUxyO-TiFe_tbdUeqNaNAKEAcVlBl
-    F-qIA8gu3H5-EYIJ2w>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrudduiedgieelucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepuffvfhfhkffffgggjggtgfesthekredttdeftfenucfhrhhomheplfhirgig
-    uhhnucgjrghnghcuoehjihgrgihunhdrhigrnhhgsehflhihghhorghtrdgtohhmqeenuc
-    ggtffrrghtthgvrhhnpeefleduiedtvdekffeggfeukeejgeeffeetlefghfekffeuteei
-    jeeghefhueffvdenucfkphepiedurdduheekrdduhedvrdduleelnecuvehluhhsthgvrh
-    fuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepjhhirgiguhhnrdihrghnghes
-    fhhlhihgohgrthdrtghomh
-X-ME-Proxy: <xmx:zYpHYKGZK4iam5WkoJRT470cyoBYZD7C0HD1nPDiXObdi8I1RtScGw>
-    <xmx:zYpHYLR75qnAHsOIO0A2iwa99Ib72OsiJqnbALRh7Dp1ohIdNx9uFA>
-    <xmx:zYpHYPwnesijv9yWwvG8o3VgA3P6SJuAWsfgo48uG6tJCl6M8W25Hg>
-    <xmx:z4pHYBunZSgUZzZzPFmqEBN4jyEi3lcYjn0boOZLYFk3etWQuL2Amw>
-Received: from [192.168.21.101] (unknown [61.158.152.199])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 353111080054;
-        Tue,  9 Mar 2021 09:48:41 -0500 (EST)
-Subject: Re: [PATCH 2/2] MIPS: Loongson64: Move loongson_system_configuration
- to loongson.h
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc:     Qing Zhang <zhangqing@loongson.cn>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>,
-        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
-        linux-kernel@vger.kernel.org
-References: <20210304110057.22144-1-zhangqing@loongson.cn>
- <20210304110057.22144-3-zhangqing@loongson.cn>
- <20210306080337.GC4744@alpha.franken.de>
- <d1072504-514b-4be0-85ba-69a6d885de58@www.fastmail.com>
- <20210306095308.GA5751@alpha.franken.de>
- <3a5481f9-d1d5-4439-9679-ad7615ba8009@www.fastmail.com>
- <20210308094947.GA4924@alpha.franken.de>
-From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
-Message-ID: <0e15b92f-753e-76cf-cf6c-c9ff6910279e@flygoat.com>
-Date:   Tue, 9 Mar 2021 22:48:39 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+        id S231670AbhCIPRt (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 9 Mar 2021 10:17:49 -0500
+Received: from elvis.franken.de ([193.175.24.41]:35365 "EHLO elvis.franken.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231761AbhCIPRb (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Tue, 9 Mar 2021 10:17:31 -0500
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1lJe70-0002C8-01; Tue, 09 Mar 2021 16:17:30 +0100
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id 013C1C1C0B; Tue,  9 Mar 2021 16:17:22 +0100 (CET)
+Date:   Tue, 9 Mar 2021 16:17:22 +0100
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     torvalds@linux-foundation.org
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [GIT PULL] MIPS fixes for v5.12
+Message-ID: <20210309151722.GB12267@alpha.franken.de>
 MIME-Version: 1.0
-In-Reply-To: <20210308094947.GA4924@alpha.franken.de>
-Content-Type: text/plain; charset=gbk; format=flowed
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
+The following changes since commit a38fd8748464831584a19438cbb3082b5a2dab15:
 
+  Linux 5.12-rc2 (2021-03-05 17:33:41 -0800)
 
-ÔÚ 2021/3/8 17:49, Thomas Bogendoerfer Ð´µÀ:
-> On Sat, Mar 06, 2021 at 06:55:41PM +0800, Jiaxun Yang wrote:
->>
->> On Sat, Mar 6, 2021, at 5:53 PM, Thomas Bogendoerfer wrote:
->> [...]
->>> Just to understand you, you want
->>>
->>> arch/mips/include/asm/loongson/2ef
->>> arch/mips/include/asm/loongson/32
->>> arch/mips/include/asm/loongson/64
->> Yeah it looks reasonable but from my point of view doing these movement
->> brings no actual benefit :-(
-> oh it does for sure. There will no more build errors for non loogson
-> configs for things like
->
-> #include <loongson_regs.h>
+are available in the Git repository at:
 
-It should be loongson64_regs.h then....
+  git://git.kernel.org/pub/scm/linux/kernel/git/mips/linux.git/ tags/mips-fixes_5.12_1
 
->
-> because it will not work for loongson either. And it will be clear,
-> which of the 3 loongson.h is used. Which then gives chances for even
-> more cleanups.
+for you to fetch changes up to bd67b711bfaa02cf19e88aa2d9edae5c1c1d2739:
 
-Ahh, got your point. Probably we should rename all these loongson.h
-as they should be indepedent.
+  MIPS: kernel: Reserve exception base early to prevent corruption (2021-03-09 11:22:59 +0100)
 
-Thanks.
+----------------------------------------------------------------
+- fixes for boot breakage because of misaligned FDTs
+- fix for overwritten exception handlers
+- enable MIPS optimized crypto for all MIPS CPUs to improve wireguard
+  performance
 
-- Jiaxun
+----------------------------------------------------------------
+Bjørn Mork (1):
+      MIPS: vmlinux.lds.S: align raw appended dtb to 8 bytes
 
->
-> Thomas.
->
+Maciej W. Rozycki (1):
+      crypto: mips/poly1305 - enable for all MIPS processors
 
+Paul Cercueil (1):
+      MIPS: boot/compressed: Copy DTB to aligned address
+
+Thomas Bogendoerfer (1):
+      MIPS: kernel: Reserve exception base early to prevent corruption
+
+ arch/mips/boot/compressed/decompress.c |  8 ++++++++
+ arch/mips/crypto/Makefile              |  4 ++--
+ arch/mips/include/asm/traps.h          |  3 +++
+ arch/mips/kernel/cpu-probe.c           |  6 ++++++
+ arch/mips/kernel/cpu-r3k-probe.c       |  3 +++
+ arch/mips/kernel/traps.c               | 10 +++++-----
+ arch/mips/kernel/vmlinux.lds.S         |  6 ++++++
+ crypto/Kconfig                         |  2 +-
+ drivers/net/Kconfig                    |  2 +-
+ 9 files changed, 35 insertions(+), 9 deletions(-)
+
+-- 
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]

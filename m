@@ -2,262 +2,137 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.3 required=3.0 tests=BAYES_00,
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 31DFBC433DB
-	for <linux-mips@archiver.kernel.org>; Tue,  9 Mar 2021 07:57:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4B4D5C433DB
+	for <linux-mips@archiver.kernel.org>; Tue,  9 Mar 2021 08:03:12 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id F354A652A4
-	for <linux-mips@archiver.kernel.org>; Tue,  9 Mar 2021 07:57:35 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 1739D6512F
+	for <linux-mips@archiver.kernel.org>; Tue,  9 Mar 2021 08:03:12 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229527AbhCIH47 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 9 Mar 2021 02:56:59 -0500
-Received: from pegase1.c-s.fr ([93.17.236.30]:21195 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229681AbhCIH4v (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Tue, 9 Mar 2021 02:56:51 -0500
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4Dvnbh1xgVz9txlX;
-        Tue,  9 Mar 2021 08:56:48 +0100 (CET)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id w6xYnDel4M2J; Tue,  9 Mar 2021 08:56:48 +0100 (CET)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4Dvnbh0qTtz9txlW;
-        Tue,  9 Mar 2021 08:56:48 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 2035B8B7CE;
-        Tue,  9 Mar 2021 08:56:49 +0100 (CET)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id ebcmzNe1X4b6; Tue,  9 Mar 2021 08:56:49 +0100 (CET)
-Received: from [192.168.4.90] (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 340548B773;
-        Tue,  9 Mar 2021 08:56:48 +0100 (CET)
-Subject: Re: [PATCH v2 4/7] CMDLINE: powerpc: convert to generic builtin
- command line
-To:     Daniel Walker <danielwa@cisco.com>, Will Deacon <will@kernel.org>,
-        Rob Herring <robh@kernel.org>,
-        Daniel Gimpelevich <daniel@gimpelevich.san-francisco.ca.us>,
-        Andrew Morton <akpm@linux-foundation.org>, x86@kernel.org,
-        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        xe-linux-external@cisco.com, Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>
-Cc:     Ruslan Ruslichenko <rruslich@cisco.com>,
-        Ruslan Bilovol <rbilovol@cisco.com>,
-        linux-kernel@vger.kernel.org
-References: <20210309000247.2989531-5-danielwa@cisco.com>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Message-ID: <c5c8b57e-7954-ec02-188a-7f85cb0af731@csgroup.eu>
-Date:   Tue, 9 Mar 2021 08:56:47 +0100
-User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
-MIME-Version: 1.0
-In-Reply-To: <20210309000247.2989531-5-danielwa@cisco.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr
-Content-Transfer-Encoding: 8bit
+        id S229652AbhCIICh (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 9 Mar 2021 03:02:37 -0500
+Received: from mail.loongson.cn ([114.242.206.163]:60974 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229555AbhCIIC2 (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Tue, 9 Mar 2021 03:02:28 -0500
+Received: from localhost.localdomain (unknown [222.209.9.50])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9BxTeyEK0dgyU0XAA--.7938S3;
+        Tue, 09 Mar 2021 16:02:19 +0800 (CST)
+From:   Huang Pei <huangpei@loongson.cn>
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        ambrosehua@gmail.com
+Cc:     Bibo Mao <maobibo@loongson.cn>, linux-mips@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-mm@kvack.org,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Paul Burton <paulburton@kernel.org>,
+        Li Xuefeng <lixuefeng@loongson.cn>,
+        Yang Tiezhu <yangtiezhu@loongson.cn>,
+        Gao Juxin <gaojuxin@loongson.cn>,
+        Huacai Chen <chenhuacai@loongson.cn>,
+        Jinyang He <hejinyang@loongson.cn>
+Subject: [PATCH 1/2] MIPS: clean up CONFIG_MIPS_PGD_C0_CONTEXT handling
+Date:   Tue,  9 Mar 2021 16:02:09 +0800
+Message-Id: <20210309080210.25561-2-huangpei@loongson.cn>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20210309080210.25561-1-huangpei@loongson.cn>
+References: <20210309080210.25561-1-huangpei@loongson.cn>
+X-CM-TRANSID: AQAAf9BxTeyEK0dgyU0XAA--.7938S3
+X-Coremail-Antispam: 1UD129KBjvJXoWxJrW5Gw4xGF1rurW3Aw48Crg_yoW8KF13p3
+        92v3WkGr4xur98ur98ZFWkWrs5tayDAa90vF1DKas09FWqqFnYvw4fJwsIyF1DGFZ7Ja1x
+        WrZ0qry5JrnF9w7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUPG14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_Jr4l82xGYIkIc2
+        x26xkF7I0E14v26r4j6ryUM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2z4x0
+        Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Cr0_Gr1UM2
+        8EF7xvwVC2z280aVAFwI0_Cr1j6rxdM28EF7xvwVC2z280aVCY1x0267AKxVW0oVCq3wAS
+        0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2
+        IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0
+        Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628vn2kIc2
+        xKxwCY02Avz4vE14v_GFyl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1l
+        x2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14
+        v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IY
+        x2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87
+        Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIF
+        yTuYvjfUjVbyDUUUU
+X-CM-SenderInfo: xkxd0whshlqz5rrqw2lrqou0/
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
++. LOONGSON64 use 0x98xx_xxxx_xxxx_xxxx as xphys cached
 
++. let CONFIG_MIPS_PGD_C0_CONTEXT depend on 64bit
 
-Le 09/03/2021 à 01:02, Daniel Walker a écrit :
-> This updates the powerpc code to use the CONFIG_GENERIC_CMDLINE
-> option.
-> 
-> Cc: xe-linux-external@cisco.com
-> Signed-off-by: Ruslan Ruslichenko <rruslich@cisco.com>
-> Signed-off-by: Ruslan Bilovol <rbilovol@cisco.com>
-> Signed-off-by: Daniel Walker <danielwa@cisco.com>
-> ---
->   arch/powerpc/Kconfig            | 37 +--------------------------------
->   arch/powerpc/kernel/prom.c      |  1 +
->   arch/powerpc/kernel/prom_init.c | 35 ++++++++++++++++++-------------
->   3 files changed, 23 insertions(+), 50 deletions(-)
-> 
-> diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
-> index 107bb4319e0e..276b06d5c961 100644
-> --- a/arch/powerpc/Kconfig
-> +++ b/arch/powerpc/Kconfig
-> @@ -167,6 +167,7 @@ config PPC
->   	select EDAC_SUPPORT
->   	select GENERIC_ATOMIC64			if PPC32
->   	select GENERIC_CLOCKEVENTS_BROADCAST	if SMP
-> +	select GENERIC_CMDLINE
->   	select GENERIC_CMOS_UPDATE
->   	select GENERIC_CPU_AUTOPROBE
->   	select GENERIC_CPU_VULNERABILITIES	if PPC_BARRIER_NOSPEC
-> @@ -906,42 +907,6 @@ config PPC_DENORMALISATION
->   	  Add support for handling denormalisation of single precision
->   	  values.  Useful for bare metal only.  If unsure say Y here.
->   
-> -config CMDLINE
-> -	string "Initial kernel command string"
-> -	default ""
-> -	help
-> -	  On some platforms, there is currently no way for the boot loader to
-> -	  pass arguments to the kernel. For these platforms, you can supply
-> -	  some command-line options at build time by entering them here.  In
-> -	  most cases you will need to specify the root device here.
-> -
-> -choice
-> -	prompt "Kernel command line type" if CMDLINE != ""
-> -	default CMDLINE_FROM_BOOTLOADER
-> -
-> -config CMDLINE_FROM_BOOTLOADER
-> -	bool "Use bootloader kernel arguments if available"
-> -	help
-> -	  Uses the command-line options passed by the boot loader. If
-> -	  the boot loader doesn't provide any, the default kernel command
-> -	  string provided in CMDLINE will be used.
-> -
-> -config CMDLINE_EXTEND
-> -	bool "Extend bootloader kernel arguments"
-> -	help
-> -	  The command-line arguments provided by the boot loader will be
-> -	  appended to the default kernel command string.
-> -
-> -config CMDLINE_FORCE
-> -	bool "Always use the default kernel command string"
-> -	help
-> -	  Always use the default kernel command string, even if the boot
-> -	  loader passes other arguments to the kernel.
-> -	  This is useful if you cannot or don't want to change the
-> -	  command-line options your boot loader passes to the kernel.
-> -
-> -endchoice
-> -
->   config EXTRA_TARGETS
->   	string "Additional default image types"
->   	help
-> diff --git a/arch/powerpc/kernel/prom.c b/arch/powerpc/kernel/prom.c
-> index ae3c41730367..96d0a01be1b4 100644
-> --- a/arch/powerpc/kernel/prom.c
-> +++ b/arch/powerpc/kernel/prom.c
-> @@ -27,6 +27,7 @@
->   #include <linux/irq.h>
->   #include <linux/memblock.h>
->   #include <linux/of.h>
-> +#include <linux/cmdline.h>
++. cast CAC_BASE into u64 to silence warning on MIPS32
 
-Why is this needed in prom.c ?
+CP0 Context has enough room for wraping pgd into its 41-bit PTEBase field.
 
->   #include <linux/of_fdt.h>
->   #include <linux/libfdt.h>
->   #include <linux/cpu.h>
-> diff --git a/arch/powerpc/kernel/prom_init.c b/arch/powerpc/kernel/prom_init.c
-> index e9d4eb6144e1..657241534d69 100644
-> --- a/arch/powerpc/kernel/prom_init.c
-> +++ b/arch/powerpc/kernel/prom_init.c
-> @@ -27,6 +27,7 @@
->   #include <linux/initrd.h>
->   #include <linux/bitops.h>
->   #include <linux/pgtable.h>
-> +#include <linux/cmdline.h>
->   #include <asm/prom.h>
->   #include <asm/rtas.h>
->   #include <asm/page.h>
-> @@ -242,15 +243,6 @@ static int __init prom_strcmp(const char *cs, const char *ct)
->   	return 0;
->   }
->   
-> -static char __init *prom_strcpy(char *dest, const char *src)
-> -{
-> -	char *tmp = dest;
-> -
-> -	while ((*dest++ = *src++) != '\0')
-> -		/* nothing */;
-> -	return tmp;
-> -}
-> -
++. For XPHYS, the trick is that pgd is 4kB aligned, and the PABITS <= 48,
+only save 48 - 12 + 5(for bit[63:59]) = 41 bits, aka. :
 
-This game with prom_strcpy() should go a separate preceeding patch.
+   bit[63:59] | 0000 0000 000 |  bit[47:12] | 0000 0000 0000
 
-Also, it looks like checkpatch.pl recommends to use strscpy() instead of strlcpy().
++. for CKSEG0, only save 29 - 12 = 17 bits
 
->   static int __init prom_strncmp(const char *cs, const char *ct, size_t count)
->   {
->   	unsigned char c1, c2;
-> @@ -276,6 +268,20 @@ static size_t __init prom_strlen(const char *s)
->   	return sc - s;
->   }
->   
-> +static size_t __init prom_strlcpy(char *dest, const char *src, size_t size)
-> +{
-> +	size_t ret = prom_strlen(src);
-> +
-> +	if (size) {
-> +		size_t len = (ret >= size) ? size - 1 : ret;
-> +
-> +		memcpy(dest, src, len);
-> +		dest[len] = '\0';
-> +	}
-> +	return ret;
-> +}
-> +
-> +
->   static int __init prom_memcmp(const void *cs, const void *ct, size_t count)
->   {
->   	const unsigned char *su1, *su2;
-> @@ -304,6 +310,7 @@ static char __init *prom_strstr(const char *s1, const char *s2)
->   	return NULL;
->   }
->   
-> +#ifdef GENERIC_CMDLINE_NEED_STRLCAT
->   static size_t __init prom_strlcat(char *dest, const char *src, size_t count)
->   {
->   	size_t dsize = prom_strlen(dest);
-> @@ -323,6 +330,7 @@ static size_t __init prom_strlcat(char *dest, const char *src, size_t count)
->   	return res;
->   
->   }
-> +#endif
->   
->   #ifdef CONFIG_PPC_PSERIES
->   static int __init prom_strtobool(const char *s, bool *res)
-> @@ -775,12 +783,11 @@ static void __init early_cmdline_parse(void)
->   	prom_cmd_line[0] = 0;
->   	p = prom_cmd_line;
->   
-> -	if (!IS_ENABLED(CONFIG_CMDLINE_FORCE) && (long)prom.chosen > 0)
-> +	if ((long)prom.chosen > 0)
->   		l = prom_getprop(prom.chosen, "bootargs", p, COMMAND_LINE_SIZE-1);
->   
-> -	if (IS_ENABLED(CONFIG_CMDLINE_EXTEND) || l <= 0 || p[0] == '\0')
-> -		prom_strlcat(prom_cmd_line, " " CONFIG_CMDLINE,
-> -			     sizeof(prom_cmd_line));
-> +	cmdline_add_builtin_custom(prom_cmd_line, (l > 0 ? p : NULL), sizeof(prom_cmd_line),
-> +					__prombss, prom_strlcpy, prom_strlcat);
+Signed-off-by: Huang Pei <huangpei@loongson.cn>
+---
+ arch/mips/Kconfig    |  3 ++-
+ arch/mips/mm/tlbex.c | 10 +++++-----
+ 2 files changed, 7 insertions(+), 6 deletions(-)
 
-So we are referencing a function that doesn't exist (namely prom_strlcat).
-But it works because cmdline_add_builtin_custom() looks like a function but is in fact an obscure 
-macro that doesn't use prom_strlcat() unless GENERIC_CMDLINE_NEED_STRLCAT is defined.
+diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
+index 2000bb2b0220..5741dae35b74 100644
+--- a/arch/mips/Kconfig
++++ b/arch/mips/Kconfig
+@@ -2142,7 +2142,8 @@ config CPU_SUPPORTS_HUGEPAGES
+ 	depends on !(32BIT && (ARCH_PHYS_ADDR_T_64BIT || EVA))
+ config MIPS_PGD_C0_CONTEXT
+ 	bool
+-	default y if 64BIT && (CPU_MIPSR2 || CPU_MIPSR6) && !CPU_XLP
++	depends on 64BIT
++	default y if (CPU_MIPSR2 || CPU_MIPSR6) && !CPU_XLP
+ 
+ #
+ # Set to y for ptrace access to watch registers.
+diff --git a/arch/mips/mm/tlbex.c b/arch/mips/mm/tlbex.c
+index a7521b8f7658..591cfa0fca02 100644
+--- a/arch/mips/mm/tlbex.c
++++ b/arch/mips/mm/tlbex.c
+@@ -848,8 +848,8 @@ void build_get_pmde64(u32 **p, struct uasm_label **l, struct uasm_reloc **r,
+ 		/* Clear lower 23 bits of context. */
+ 		uasm_i_dins(p, ptr, 0, 0, 23);
+ 
+-		/* 1 0	1 0 1  << 6  xkphys cached */
+-		uasm_i_ori(p, ptr, ptr, 0x540);
++		/* insert bit[63:59] of CAC_BASE into bit[11:6] of ptr */
++		uasm_i_ori(p, ptr, ptr, ((u64)(CAC_BASE) >> 53));
+ 		uasm_i_drotr(p, ptr, ptr, 11);
+ #elif defined(CONFIG_SMP)
+ 		UASM_i_CPUID_MFC0(p, ptr, SMP_CPUID_REG);
+@@ -1164,8 +1164,9 @@ build_fast_tlb_refill_handler (u32 **p, struct uasm_label **l,
+ 
+ 	if (pgd_reg == -1) {
+ 		vmalloc_branch_delay_filled = 1;
+-		/* 1 0	1 0 1  << 6  xkphys cached */
+-		uasm_i_ori(p, ptr, ptr, 0x540);
++		/* insert bit[63:59] of CAC_BASE into bit[11:6] of ptr */
++		uasm_i_ori(p, ptr, ptr, ((u64)(CAC_BASE) >> 53));
++
+ 		uasm_i_drotr(p, ptr, ptr, 11);
+ 	}
+ 
+@@ -1292,7 +1293,6 @@ build_fast_tlb_refill_handler (u32 **p, struct uasm_label **l,
+ 
+ 	return rv;
+ }
+-
+ /*
+  * For a 64-bit kernel, we are using the 64-bit XTLB refill exception
+  * because EXL == 0.  If we wrap, we can also use the 32 instruction
+-- 
+2.17.1
 
-IMHO that's awful for readability and code maintenance.
-
->   
->   	prom_printf("command line: %s\n", prom_cmd_line);
->   
-> @@ -2706,7 +2713,7 @@ static void __init flatten_device_tree(void)
->   
->   	/* Add "phandle" in there, we'll need it */
->   	namep = make_room(&mem_start, &mem_end, 16, 1);
-> -	prom_strcpy(namep, "phandle");
-> +	prom_strlcpy(namep, "phandle", 8);
-
-Should be in a separate patch.
-
->   	mem_start = (unsigned long)namep + prom_strlen(namep) + 1;
->   
->   	/* Build string array */
-> 
-
-Christophe

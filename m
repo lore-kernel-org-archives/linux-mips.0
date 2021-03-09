@@ -2,228 +2,122 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-26.3 required=3.0 tests=BAYES_00,DKIMWL_WL_MED,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT,USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AB780C432C3
-	for <linux-mips@archiver.kernel.org>; Tue,  9 Mar 2021 00:03:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 38CF3C433E6
+	for <linux-mips@archiver.kernel.org>; Tue,  9 Mar 2021 01:56:17 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 899C1652B5
-	for <linux-mips@archiver.kernel.org>; Tue,  9 Mar 2021 00:03:47 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id EBC5665279
+	for <linux-mips@archiver.kernel.org>; Tue,  9 Mar 2021 01:56:16 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231903AbhCIADP (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 8 Mar 2021 19:03:15 -0500
-Received: from alln-iport-3.cisco.com ([173.37.142.90]:13293 "EHLO
-        alln-iport-3.cisco.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230070AbhCIADC (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Mon, 8 Mar 2021 19:03:02 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=cisco.com; i=@cisco.com; l=6015; q=dns/txt; s=iport;
-  t=1615248182; x=1616457782;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=8l0bK94TuqRd/jaDGX0hKXyHwTv+cw8NzkR9I9vUuIo=;
-  b=K3rY3r/UCiVcmx1nEh7q1paUAM/64R+NO8Yoke6gAUxnoTiTpYb66BAF
-   MXBDRyfAGxJuRTbIGQimBghWWE+SRnHjhViEOLAM03JS5CGnLlLUbeWLA
-   FmSYZSDfFnFFyWJ8MC8iUqHf2R0oc3h63ek5s7OXhw/136sd4WJVjfgMw
-   0=;
-X-IronPort-AV: E=Sophos;i="5.81,233,1610409600"; 
-   d="scan'208";a="658595592"
-Received: from alln-core-2.cisco.com ([173.36.13.135])
-  by alln-iport-3.cisco.com with ESMTP/TLS/DHE-RSA-SEED-SHA; 09 Mar 2021 00:03:00 +0000
-Received: from zorba.cisco.com ([10.24.7.91])
-        by alln-core-2.cisco.com (8.15.2/8.15.2) with ESMTP id 12902mKg014497;
-        Tue, 9 Mar 2021 00:02:59 GMT
-From:   Daniel Walker <danielwa@cisco.com>
-To:     Will Deacon <will@kernel.org>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Rob Herring <robh@kernel.org>,
-        Daniel Gimpelevich <daniel@gimpelevich.san-francisco.ca.us>,
-        Andrew Morton <akpm@linux-foundation.org>, x86@kernel.org,
-        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        xe-linux-external@cisco.com,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc:     Ruslan Ruslichenko <rruslich@cisco.com>,
-        Ruslan Bilovol <rbilovol@cisco.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2 6/7] CMDLINE: mips: convert to generic builtin command line
-Date:   Mon,  8 Mar 2021 16:02:42 -0800
-Message-Id: <20210309000247.2989531-7-danielwa@cisco.com>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Auto-Response-Suppress: DR, OOF, AutoReply
-X-Outbound-SMTP-Client: 10.24.7.91, [10.24.7.91]
-X-Outbound-Node: alln-core-2.cisco.com
+        id S229475AbhCIBzo (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 8 Mar 2021 20:55:44 -0500
+Received: from mail.loongson.cn ([114.242.206.163]:37644 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229611AbhCIBza (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Mon, 8 Mar 2021 20:55:30 -0500
+Received: from localhost.localdomain (unknown [196.245.9.44])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Ax2dVS1UZg+DIXAA--.8336S4;
+        Tue, 09 Mar 2021 09:55:22 +0800 (CST)
+From:   Huang Pei <huangpei@loongson.cn>
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        ambrosehua@gmail.com
+Cc:     Bibo Mao <maobibo@loongson.cn>, linux-mips@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-mm@kvack.org,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Paul Burton <paulburton@kernel.org>,
+        Li Xuefeng <lixuefeng@loongson.cn>,
+        Yang Tiezhu <yangtiezhu@loongson.cn>,
+        Gao Juxin <gaojuxin@loongson.cn>,
+        Huacai Chen <chenhuacai@loongson.cn>,
+        Jinyang He <hejinyang@loongson.cn>
+Subject: [PATCH 2/2] MIPS: loongson64: alloc pglist_data at run time
+Date:   Tue,  9 Mar 2021 09:54:21 +0800
+Message-Id: <20210309015421.32595-3-huangpei@loongson.cn>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20210309015421.32595-1-huangpei@loongson.cn>
+References: <20210309015421.32595-1-huangpei@loongson.cn>
+X-CM-TRANSID: AQAAf9Ax2dVS1UZg+DIXAA--.8336S4
+X-Coremail-Antispam: 1UD129KBjvJXoW7ZFyfXFykZr18JFy3Zw4rGrg_yoW8ur43pr
+        y3A3Wrtay5tr1S9FySqFW8ZrySyw18Ca1xtFW29FyxZa9rWryIgFy7KFy0g3y5tFWkZF15
+        JrZ0qF17WFs7JFUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUPl14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_Jryl82xGYIkIc2
+        x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2z4x0
+        Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Cr0_Gr1UM2
+        8EF7xvwVC2z280aVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Cr1j6rxd
+        M2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjx
+        v20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1l
+        F7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7M4IIrI8v6xkF7I0E8cxan2
+        IY04v7MxkIecxEwVCF1wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC2
+        0s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI
+        0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv2
+        0xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2js
+        IE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZF
+        pf9x0JUHbyAUUUUU=
+X-CM-SenderInfo: xkxd0whshlqz5rrqw2lrqou0/
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-This updates the mips code to use the CONFIG_GENERIC_CMDLINE
-option.
+Loongson64 allocates arrays of pglist_data statically and is located
+at Node 0, and cpu from Nodes other than 0 need remote access to
+pglist_data and zone info.
 
-This deletes the option for MIPS_CMDLINE_BUILTIN_EXTEND
-and replaces the functionality with generic code.
+Delay pglist_data allocation till run time, and make it NUMA-aware
 
-Cc: xe-linux-external@cisco.com
-Signed-off-by: Ruslan Ruslichenko <rruslich@cisco.com>
-Signed-off-by: Ruslan Bilovol <rbilovol@cisco.com>
-Signed-off-by: Daniel Walker <danielwa@cisco.com>
+Signed-off-by: Huang Pei <huangpei@loongson.cn>
 ---
- arch/mips/Kconfig        |  4 +---
- arch/mips/Kconfig.debug  | 44 ----------------------------------------
- arch/mips/kernel/setup.c | 36 ++++----------------------------
- 3 files changed, 5 insertions(+), 79 deletions(-)
+ arch/mips/loongson64/numa.c | 17 ++++++++++++++---
+ 1 file changed, 14 insertions(+), 3 deletions(-)
 
-diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-index 0a17bedf4f0d..7c07b3bca9fc 100644
---- a/arch/mips/Kconfig
-+++ b/arch/mips/Kconfig
-@@ -23,6 +23,7 @@ config MIPS
- 	select CPU_NO_EFFICIENT_FFS if (TARGET_ISA_REV < 1)
- 	select CPU_PM if CPU_IDLE
- 	select GENERIC_ATOMIC64 if !64BIT
-+	select GENERIC_CMDLINE
- 	select GENERIC_CMOS_UPDATE
- 	select GENERIC_CPU_AUTOPROBE
- 	select GENERIC_GETTIMEOFDAY
-@@ -3171,9 +3172,6 @@ choice
- 	config MIPS_CMDLINE_FROM_BOOTLOADER
- 		bool "Bootloader kernel arguments if available"
+diff --git a/arch/mips/loongson64/numa.c b/arch/mips/loongson64/numa.c
+index cf9459f79f9b..afafd367cb38 100644
+--- a/arch/mips/loongson64/numa.c
++++ b/arch/mips/loongson64/numa.c
+@@ -26,7 +26,6 @@
+ #include <asm/wbflush.h>
+ #include <boot_param.h>
  
--	config MIPS_CMDLINE_BUILTIN_EXTEND
--		depends on CMDLINE_BOOL
--		bool "Extend builtin kernel arguments with bootloader arguments"
- endchoice
+-static struct pglist_data prealloc__node_data[MAX_NUMNODES];
+ unsigned char __node_distances[MAX_NUMNODES][MAX_NUMNODES];
+ EXPORT_SYMBOL(__node_distances);
+ struct pglist_data *__node_data[MAX_NUMNODES];
+@@ -151,8 +150,12 @@ static void __init szmem(unsigned int node)
  
- endmenu
-diff --git a/arch/mips/Kconfig.debug b/arch/mips/Kconfig.debug
-index 7a8d94cdd493..b5a099c74eb6 100644
---- a/arch/mips/Kconfig.debug
-+++ b/arch/mips/Kconfig.debug
-@@ -30,50 +30,6 @@ config EARLY_PRINTK_8250
- config USE_GENERIC_EARLY_PRINTK_8250
- 	bool
- 
--config CMDLINE_BOOL
--	bool "Built-in kernel command line"
--	help
--	  For most systems, it is firmware or second stage bootloader that
--	  by default specifies the kernel command line options.  However,
--	  it might be necessary or advantageous to either override the
--	  default kernel command line or add a few extra options to it.
--	  For such cases, this option allows you to hardcode your own
--	  command line options directly into the kernel.  For that, you
--	  should choose 'Y' here, and fill in the extra boot arguments
--	  in CONFIG_CMDLINE.
--
--	  The built-in options will be concatenated to the default command
--	  line if CMDLINE_OVERRIDE is set to 'N'. Otherwise, the default
--	  command line will be ignored and replaced by the built-in string.
--
--	  Most MIPS systems will normally expect 'N' here and rely upon
--	  the command line from the firmware or the second-stage bootloader.
--
--config CMDLINE
--	string "Default kernel command string"
--	depends on CMDLINE_BOOL
--	help
--	  On some platforms, there is currently no way for the boot loader to
--	  pass arguments to the kernel.  For these platforms, and for the cases
--	  when you want to add some extra options to the command line or ignore
--	  the default command line, you can supply some command-line options at
--	  build time by entering them here.  In other cases you can specify
--	  kernel args so that you don't have to set them up in board prom
--	  initialization routines.
--
--	  For more information, see the CMDLINE_BOOL and CMDLINE_OVERRIDE
--	  options.
--
--config CMDLINE_OVERRIDE
--	bool "Built-in command line overrides firmware arguments"
--	depends on CMDLINE_BOOL
--	help
--	  By setting this option to 'Y' you will have your kernel ignore
--	  command line arguments from firmware or second stage bootloader.
--	  Instead, the built-in command line will be used exclusively.
--
--	  Normally, you will choose 'N' here.
--
- config SB1XXX_CORELIS
- 	bool "Corelis Debugger"
- 	depends on SIBYTE_SB1xxx_SOC
-diff --git a/arch/mips/kernel/setup.c b/arch/mips/kernel/setup.c
-index 7e1f8e277437..8ce763e03792 100644
---- a/arch/mips/kernel/setup.c
-+++ b/arch/mips/kernel/setup.c
-@@ -23,6 +23,7 @@
- #include <linux/debugfs.h>
- #include <linux/kexec.h>
- #include <linux/sizes.h>
-+#include <linux/cmdline.h>
- #include <linux/device.h>
- #include <linux/dma-map-ops.h>
- #include <linux/decompress/generic.h>
-@@ -67,12 +68,6 @@ EXPORT_SYMBOL(mips_machtype);
- static char __initdata command_line[COMMAND_LINE_SIZE];
- char __initdata arcs_cmdline[COMMAND_LINE_SIZE];
- 
--#ifdef CONFIG_CMDLINE_BOOL
--static const char builtin_cmdline[] __initconst = CONFIG_CMDLINE;
--#else
--static const char builtin_cmdline[] __initconst = "";
--#endif
--
- /*
-  * mips_io_port_base is the begin of the address space to which x86 style
-  * I/O ports are mapped.
-@@ -546,27 +541,7 @@ static void __init bootcmdline_init(void)
+ static void __init node_mem_init(unsigned int node)
  {
- 	bool dt_bootargs = false;
++	struct pglist_data *nd;
+ 	unsigned long node_addrspace_offset;
+ 	unsigned long start_pfn, end_pfn;
++	unsigned long nd_pa;
++	int tnid;
++	const size_t nd_size = roundup(sizeof(pg_data_t), SMP_CACHE_BYTES);
  
--	/*
--	 * If CMDLINE_OVERRIDE is enabled then initializing the command line is
--	 * trivial - we simply use the built-in command line unconditionally &
--	 * unmodified.
--	 */
--	if (IS_ENABLED(CONFIG_CMDLINE_OVERRIDE)) {
--		strlcpy(boot_command_line, builtin_cmdline, COMMAND_LINE_SIZE);
--		return;
--	}
+ 	node_addrspace_offset = nid_to_addrbase(node);
+ 	pr_info("Node%d's addrspace_offset is 0x%lx\n",
+@@ -162,8 +165,16 @@ static void __init node_mem_init(unsigned int node)
+ 	pr_info("Node%d: start_pfn=0x%lx, end_pfn=0x%lx\n",
+ 		node, start_pfn, end_pfn);
+ 
+-	__node_data[node] = prealloc__node_data + node;
 -
--	/*
--	 * If the user specified a built-in command line &
--	 * MIPS_CMDLINE_BUILTIN_EXTEND, then the built-in command line is
--	 * prepended to arguments from the bootloader or DT so we'll copy them
--	 * to the start of boot_command_line here. Otherwise, empty
--	 * boot_command_line to undo anything early_init_dt_scan_chosen() did.
--	 */
--	if (IS_ENABLED(CONFIG_MIPS_CMDLINE_BUILTIN_EXTEND))
--		strlcpy(boot_command_line, builtin_cmdline, COMMAND_LINE_SIZE);
--	else
--		boot_command_line[0] = 0;
-+	boot_command_line[0] = 0;
++	nd_pa = memblock_phys_alloc_try_nid(nd_size, SMP_CACHE_BYTES, node);
++	if (!nd_pa)
++		panic("Cannot allocate %zu bytes for node %d data\n",
++		      nd_size, node);
++	nd = __va(nd_pa);
++	memset(nd, 0, sizeof(struct pglist_data));
++	tnid = early_pfn_to_nid(nd_pa >> PAGE_SHIFT);
++	if (tnid != node)
++		pr_info("NODE_DATA(%d) on node %d\n", node, tnid);
++	__node_data[node] = nd;
+ 	NODE_DATA(node)->node_start_pfn = start_pfn;
+ 	NODE_DATA(node)->node_spanned_pages = end_pfn - start_pfn;
  
- #ifdef CONFIG_OF_EARLY_FLATTREE
- 	/*
-@@ -589,12 +564,9 @@ static void __init bootcmdline_init(void)
- 		bootcmdline_append(arcs_cmdline, COMMAND_LINE_SIZE);
- 
- 	/*
--	 * If the user specified a built-in command line & we didn't already
--	 * prepend it, we append it to boot_command_line here.
-+	 * Use the generic system for builtin prepend and append.
- 	 */
--	if (IS_ENABLED(CONFIG_CMDLINE_BOOL) &&
--	    !IS_ENABLED(CONFIG_MIPS_CMDLINE_BUILTIN_EXTEND))
--		bootcmdline_append(builtin_cmdline, COMMAND_LINE_SIZE);
-+	cmdline_add_builtin(boot_command_line, NULL, COMMAND_LINE_SIZE);
- }
- 
- /*
 -- 
-2.25.1
+2.17.1
 

@@ -8,64 +8,64 @@ X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 48064C4332D
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B9445C432C3
 	for <linux-mips@archiver.kernel.org>; Tue,  9 Mar 2021 05:23:37 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 32180652B6
+	by mail.kernel.org (Postfix) with ESMTP id 9B9C46527D
 	for <linux-mips@archiver.kernel.org>; Tue,  9 Mar 2021 05:23:37 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229929AbhCIFXG (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 9 Mar 2021 00:23:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53146 "EHLO
+        id S230035AbhCIFXI (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 9 Mar 2021 00:23:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53156 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229656AbhCIFWd (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Tue, 9 Mar 2021 00:22:33 -0500
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BA00C06174A;
-        Mon,  8 Mar 2021 21:22:33 -0800 (PST)
-Received: by mail-wr1-x42d.google.com with SMTP id l12so13818603wry.2;
-        Mon, 08 Mar 2021 21:22:33 -0800 (PST)
+        with ESMTP id S229873AbhCIFWg (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Tue, 9 Mar 2021 00:22:36 -0500
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C083AC06174A;
+        Mon,  8 Mar 2021 21:22:35 -0800 (PST)
+Received: by mail-wm1-x334.google.com with SMTP id f22-20020a7bc8d60000b029010c024a1407so5138151wml.2;
+        Mon, 08 Mar 2021 21:22:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=mHNdz7wiYLAaKp9tiPgIXb93/c7+pySo7q7uYWDN7Ww=;
-        b=glKHc/3GDe12dfQPlUheb+PEOpoI7QcdBK6XMSZU42PcAZrL0+1bs3TNe8seW7rUA5
-         rLgu0zWk9bUTBF3oqEm/w766GdDiuTsEv0O8reRzONZkWM+Nd8OVk+RSah3nQetzF6oT
-         kEFaXg3afvhijFo8JE0QTq62hiihcwA7L5WnHfPoIZFbM77+vlRj51phPOzUgvVQHXTh
-         donntP5ERhXqcA7S9KVULsTENYC38+5GBozlcPvcE2lLtZZTOepY8HopqLaFixQOHzRj
-         sGgoADyWo7n93S6EjzqkkbtaLhNGKRDX27kgvdb/d9cIxTmqjxFOZ+CMIKOoL5kNxtd0
-         iEYg==
+        bh=1Y7ZqJ7aphYkfKg9dEOtdy4V6nKSW7Mz/xYiwcmDq+A=;
+        b=Lxvwwia2GXpSC9P5X+B2nH4Je2AgxEdye8sPcuPOrkgTse3D/jEVc/KxAjzckQVI39
+         553ymFiMjCyAybqgzMLumAEkeO7fnnDdLCtDCJdxJXCRKmUtSuKMMVWZfP18esveFh6S
+         pqV+6nvH8cowaiCffEM4useCAtD7Hu455NgQyaGT1JjG/cc0HFwGG+D7sx9/MOGvJf+b
+         I/FMyVzKpgSbK6k+btQ/plFqXP9qNAH56bW09I5wpcsTJRMLfndqcFbkOeJ5tKAL09+e
+         XKC4U6JTB997/zPd4bo/zcOSqLxLMYAq0t/Ufca0I6VDlo1G5BigaGJ1JAooXJVFRHPn
+         oVpA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=mHNdz7wiYLAaKp9tiPgIXb93/c7+pySo7q7uYWDN7Ww=;
-        b=e1UuDRGRpuTAp7vfw5XMV51bh3ZFRiI9+0bexX5ruUo9v5rOlUrbYdSRJX3fx0Zf8i
-         KjNRXCVwBu9aN61X/Z4LdzUDY4Hioll18BwI3OdhL5vJkQ/sFdx1fMcv8kLRnbQBWLnu
-         xKOGP/DOWLvNbk58wG4iJ/xb6/soZcF9abU0yEhHiFCpz3hFNCAf1VGnA9G79l9oWmxd
-         rKPFCpEdoRwHMfkNSHxM2F4s6lY7Y3dibPeZaSqDw6TDGkBMJX6KqsurQNRFwgYMKYkC
-         AMwWfjkN7RwC+WMPSFD4umczGKBTc6kuXSBMwzJnLXsR6mAFr1FTpxknFcmcu2G6xGlP
-         wAxg==
-X-Gm-Message-State: AOAM532dIcWDo4L4CoajIx3FYFA6yLu99z5/Pdg3q4fUqAeNQZEL2VB3
-        Q687mUgnLJ1qjXi/d04WQAM=
-X-Google-Smtp-Source: ABdhPJxE7fLtfygneQFdky3FAeBtoVDsuoNVTpIuTmTFAmGi7hT2E24WpclEXHSBS1C+V3RuZdyazg==
-X-Received: by 2002:adf:f587:: with SMTP id f7mr26394681wro.147.1615267352124;
-        Mon, 08 Mar 2021 21:22:32 -0800 (PST)
+        bh=1Y7ZqJ7aphYkfKg9dEOtdy4V6nKSW7Mz/xYiwcmDq+A=;
+        b=LfdV5lmqIwYkhhR7hMLZyZMFhOrwK7BJZu03LyXSkttya5ygzk02+58wFob7rFPYK6
+         HyYE9YzQgItOVgg3Haf3A3x8Kj+NtHW+cM+WBnOxvK8EgTIfmejwAbgNmsC6TDhJTPwZ
+         P8KsloxqE9W4/hAgm6r141SbX9EyhmCyTEVAhJjhMXdmjoPPiCeUgh9FkfVO2WoKouro
+         vnojYLZiKSjglOJhJJv81DGHBt6cgSB2izWiKeKGgST6rIvasuR10U56vxC4XKmpfNXd
+         EFSnOPiB2YyZ/ORzjrHkkYf3iLqa3RB7CHI164Act4oDMW6SpYy+t1favYG24OCeuy+H
+         is/Q==
+X-Gm-Message-State: AOAM531zp23LOTRWbauPou9csNHPXoo+q82V2ZbnDU6SUfbbfke0aI0q
+        1TrLEih6y9r2PrIN3H+l6KY=
+X-Google-Smtp-Source: ABdhPJwwjmNqY0sH90gIqvcCbTwlvyJqV+xOmis6mW2f+uOLTJQNMRWo7a6n1vm8TSNmdA57Ler2CQ==
+X-Received: by 2002:a1c:f312:: with SMTP id q18mr1969785wmq.79.1615267354560;
+        Mon, 08 Mar 2021 21:22:34 -0800 (PST)
 Received: from localhost.localdomain (67.red-83-54-30.dynamicip.rima-tde.net. [83.54.30.67])
-        by smtp.gmail.com with ESMTPSA id c11sm23450743wrm.67.2021.03.08.21.22.31
+        by smtp.gmail.com with ESMTPSA id c11sm23450743wrm.67.2021.03.08.21.22.33
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 08 Mar 2021 21:22:31 -0800 (PST)
+        Mon, 08 Mar 2021 21:22:34 -0800 (PST)
 From:   Sergio Paracuellos <sergio.paracuellos@gmail.com>
 To:     sboyd@kernel.org
 Cc:     robh+dt@kernel.org, john@phrozen.org, tsbogend@alpha.franken.de,
         gregkh@linuxfoundation.org, linux-clk@vger.kernel.org,
         devicetree@vger.kernel.org, linux-mips@vger.kernel.org,
         devel@driverdev.osuosl.org, neil@brown.name,
-        linux-kernel@vger.kernel.org, Rob Herring <robh@kernel.org>
-Subject: [PATCH v11 2/6] dt: bindings: add mt7621-sysc device tree binding documentation
-Date:   Tue,  9 Mar 2021 06:22:22 +0100
-Message-Id: <20210309052226.29531-3-sergio.paracuellos@gmail.com>
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v11 4/6] staging: mt7621-dts: make use of new 'mt7621-clk'
+Date:   Tue,  9 Mar 2021 06:22:24 +0100
+Message-Id: <20210309052226.29531-5-sergio.paracuellos@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210309052226.29531-1-sergio.paracuellos@gmail.com>
 References: <20210309052226.29531-1-sergio.paracuellos@gmail.com>
@@ -75,90 +75,237 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Adds device tree binding documentation for clocks in the
-MT7621 SOC.
+Clocks for SoC mt7621 have been properly integrated so there is
+no need to declare fixed clocks at all in the device tree. Remove
+all of them, add new device tree nodes for mt7621-clk and update
+the rest of the nodes to use them.
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+Acked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
 ---
- .../bindings/clock/mediatek,mt7621-sysc.yaml  | 68 +++++++++++++++++++
- 1 file changed, 68 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/clock/mediatek,mt7621-sysc.yaml
+ drivers/staging/mt7621-dts/gbpc1.dts   | 11 ----
+ drivers/staging/mt7621-dts/mt7621.dtsi | 74 ++++++++++++--------------
+ 2 files changed, 33 insertions(+), 52 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/clock/mediatek,mt7621-sysc.yaml b/Documentation/devicetree/bindings/clock/mediatek,mt7621-sysc.yaml
-new file mode 100644
-index 000000000000..915f84efd763
---- /dev/null
-+++ b/Documentation/devicetree/bindings/clock/mediatek,mt7621-sysc.yaml
-@@ -0,0 +1,68 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/clock/mediatek,mt7621-sysc.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
+diff --git a/drivers/staging/mt7621-dts/gbpc1.dts b/drivers/staging/mt7621-dts/gbpc1.dts
+index a7c0d3115d72..7716d0efe524 100644
+--- a/drivers/staging/mt7621-dts/gbpc1.dts
++++ b/drivers/staging/mt7621-dts/gbpc1.dts
+@@ -100,17 +100,6 @@ partition@50000 {
+ 	};
+ };
+ 
+-&sysclock {
+-			compatible = "fixed-clock";
+-			/* This is normally 1/4 of cpuclock */
+-			clock-frequency = <225000000>;
+-};
+-
+-&cpuclock {
+-			compatible = "fixed-clock";
+-			clock-frequency = <900000000>;
+-};
+-
+ &pcie {
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&pcie_pins>;
+diff --git a/drivers/staging/mt7621-dts/mt7621.dtsi b/drivers/staging/mt7621-dts/mt7621.dtsi
+index 16fc94f65486..b68183e7e6ad 100644
+--- a/drivers/staging/mt7621-dts/mt7621.dtsi
++++ b/drivers/staging/mt7621-dts/mt7621.dtsi
+@@ -1,5 +1,6 @@
+ #include <dt-bindings/interrupt-controller/mips-gic.h>
+ #include <dt-bindings/gpio/gpio.h>
++#include <dt-bindings/clock/mt7621-clk.h>
+ 
+ / {
+ 	#address-cells = <1>;
+@@ -27,27 +28,6 @@ aliases {
+ 		serial0 = &uartlite;
+ 	};
+ 
+-	cpuclock: cpuclock@0 {
+-		#clock-cells = <0>;
+-		compatible = "fixed-clock";
+-
+-		/* FIXME: there should be way to detect this */
+-		clock-frequency = <880000000>;
+-	};
+-
+-	sysclock: sysclock@0 {
+-		#clock-cells = <0>;
+-		compatible = "fixed-clock";
+-
+-		/* This is normally 1/4 of cpuclock */
+-		clock-frequency = <220000000>;
+-	};
+-
+-	mmc_clock: mmc_clock@0 {
+-		#clock-cells = <0>;
+-		compatible = "fixed-clock";
+-		clock-frequency = <48000000>;
+-	};
+ 
+ 	mmc_fixed_3v3: fixedregulator@0 {
+ 		compatible = "regulator-fixed";
+@@ -76,8 +56,13 @@ palmbus: palmbus@1E000000 {
+ 		#size-cells = <1>;
+ 
+ 		sysc: sysc@0 {
+-			compatible = "mtk,mt7621-sysc";
++			compatible = "mtk,mt7621-sysc", "syscon";
+ 			reg = <0x0 0x100>;
++			#clock-cells = <1>;
++			ralink,memctl = <&memc>;
++			clock-output-names = "xtal", "cpu", "bus",
++					     "50m", "125m", "150m",
++					     "250m", "270m";
+ 		};
+ 
+ 		wdt: wdt@100 {
+@@ -101,8 +86,8 @@ i2c: i2c@900 {
+ 			compatible = "mediatek,mt7621-i2c";
+ 			reg = <0x900 0x100>;
+ 
+-			clocks = <&sysclock>;
+-
++			clocks = <&sysc MT7621_CLK_I2C>;
++			clock-names = "i2c";
+ 			resets = <&rstctrl 16>;
+ 			reset-names = "i2c";
+ 
+@@ -119,8 +104,8 @@ i2s: i2s@a00 {
+ 			compatible = "mediatek,mt7621-i2s";
+ 			reg = <0xa00 0x100>;
+ 
+-			clocks = <&sysclock>;
+-
++			clocks = <&sysc MT7621_CLK_I2S>;
++			clock-names = "i2s";
+ 			resets = <&rstctrl 17>;
+ 			reset-names = "i2s";
+ 
+@@ -138,7 +123,7 @@ i2s: i2s@a00 {
+ 		};
+ 
+ 		memc: memc@5000 {
+-			compatible = "mtk,mt7621-memc";
++			compatible = "mtk,mt7621-memc", "syscon";
+ 			reg = <0x5000 0x1000>;
+ 		};
+ 
+@@ -156,8 +141,8 @@ uartlite: uartlite@c00 {
+ 			compatible = "ns16550a";
+ 			reg = <0xc00 0x100>;
+ 
+-			clocks = <&sysclock>;
+-			clock-frequency = <50000000>;
++			clocks = <&sysc MT7621_CLK_UART1>;
++			clock-names = "uart1";
+ 
+ 			interrupt-parent = <&gic>;
+ 			interrupts = <GIC_SHARED 26 IRQ_TYPE_LEVEL_HIGH>;
+@@ -173,7 +158,8 @@ spi0: spi@b00 {
+ 			compatible = "ralink,mt7621-spi";
+ 			reg = <0xb00 0x100>;
+ 
+-			clocks = <&sysclock>;
++			clocks = <&sysc MT7621_CLK_SPI>;
++			clock-names = "spi";
+ 
+ 			resets = <&rstctrl 18>;
+ 			reset-names = "spi";
+@@ -189,6 +175,8 @@ gdma: gdma@2800 {
+ 			compatible = "ralink,rt3883-gdma";
+ 			reg = <0x2800 0x800>;
+ 
++			clocks = <&sysc MT7621_CLK_GDMA>;
++			clock-names = "gdma";
+ 			resets = <&rstctrl 14>;
+ 			reset-names = "dma";
+ 
+@@ -206,6 +194,8 @@ hsdma: hsdma@7000 {
+ 			compatible = "mediatek,mt7621-hsdma";
+ 			reg = <0x7000 0x1000>;
+ 
++			clocks = <&sysc MT7621_CLK_HSDMA>;
++			clock-names = "hsdma";
+ 			resets = <&rstctrl 5>;
+ 			reset-names = "hsdma";
+ 
+@@ -311,11 +301,6 @@ rstctrl: rstctrl {
+ 		#reset-cells = <1>;
+ 	};
+ 
+-	clkctrl: clkctrl {
+-		compatible = "ralink,rt2880-clock";
+-		#clock-cells = <1>;
+-	};
+-
+ 	sdhci: sdhci@1E130000 {
+ 		status = "disabled";
+ 
+@@ -334,7 +319,8 @@ sdhci: sdhci@1E130000 {
+ 		pinctrl-0 = <&sdhci_pins>;
+ 		pinctrl-1 = <&sdhci_pins>;
+ 
+-		clocks = <&mmc_clock &mmc_clock>;
++		clocks = <&sysc MT7621_CLK_SHXC>,
++			 <&sysc MT7621_CLK_50M>;
+ 		clock-names = "source", "hclk";
+ 
+ 		interrupt-parent = <&gic>;
+@@ -349,7 +335,7 @@ xhci: xhci@1E1C0000 {
+ 		       0x1e1d0700 0x0100>;
+ 		reg-names = "mac", "ippc";
+ 
+-		clocks = <&sysclock>;
++		clocks = <&sysc MT7621_CLK_XTAL>;
+ 		clock-names = "sys_ck";
+ 
+ 		interrupt-parent = <&gic>;
+@@ -368,7 +354,7 @@ gic: interrupt-controller@1fbc0000 {
+ 		timer {
+ 			compatible = "mti,gic-timer";
+ 			interrupts = <GIC_LOCAL 1 IRQ_TYPE_NONE>;
+-			clocks = <&cpuclock>;
++			clocks = <&sysc MT7621_CLK_CPU>;
+ 		};
+ 	};
+ 
+@@ -381,6 +367,9 @@ nand: nand@1e003000 {
+ 			0x1e003800 0x800>;
+ 		#address-cells = <1>;
+ 		#size-cells = <1>;
 +
-+title: MT7621 Clock Device Tree Bindings
-+
-+maintainers:
-+  - Sergio Paracuellos <sergio.paracuellos@gmail.com>
-+
-+description: |
-+  The MT7621 has a PLL controller from where the cpu clock is provided
-+  as well as derived clocks for the bus and the peripherals. It also
-+  can gate SoC device clocks.
-+
-+  Each clock is assigned an identifier and client nodes use this identifier
-+  to specify the clock which they consume.
-+
-+  All these identifiers could be found in:
-+  [1]: <include/dt-bindings/clock/mt7621-clk.h>.
-+
-+  The clocks are provided inside a system controller node.
-+
-+properties:
-+  compatible:
-+    items:
-+      - const: mediatek,mt7621-sysc
-+      - const: syscon
-+
-+  reg:
-+    maxItems: 1
-+
-+  "#clock-cells":
-+    description:
-+      The first cell indicates the clock number, see [1] for available
-+      clocks.
-+    const: 1
-+
-+  ralink,memctl:
-+    $ref: /schemas/types.yaml#/definitions/phandle
-+    description:
-+      phandle of syscon used to control memory registers
-+
-+  clock-output-names:
-+    maxItems: 8
-+
-+required:
-+  - compatible
-+  - reg
-+  - '#clock-cells'
-+  - ralink,memctl
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/clock/mt7621-clk.h>
-+
-+    sysc: sysc@0 {
-+      compatible = "mediatek,mt7621-sysc", "syscon";
-+      reg = <0x0 0x100>;
-+      #clock-cells = <1>;
-+      ralink,memctl = <&memc>;
-+      clock-output-names = "xtal", "cpu", "bus",
-+                           "50m", "125m", "150m",
-+                           "250m", "270m";
-+    };
++		clocks = <&sysc MT7621_CLK_NAND>;
++		clock-names = "nand";
+ 	};
+ 
+ 	ethsys: syscon@1e000000 {
+@@ -394,8 +383,9 @@ ethernet: ethernet@1e100000 {
+ 		compatible = "mediatek,mt7621-eth";
+ 		reg = <0x1e100000 0x10000>;
+ 
+-		clocks = <&sysclock>;
+-		clock-names = "ethif";
++		clocks = <&sysc MT7621_CLK_FE>,
++			 <&sysc MT7621_CLK_ETH>;
++		clock-names = "fe", "ethif";
+ 
+ 		#address-cells = <1>;
+ 		#size-cells = <0>;
+@@ -521,7 +511,9 @@ GIC_SHARED 24 IRQ_TYPE_LEVEL_HIGH
+ 
+ 		resets = <&rstctrl 24 &rstctrl 25 &rstctrl 26>;
+ 		reset-names = "pcie0", "pcie1", "pcie2";
+-		clocks = <&clkctrl 24 &clkctrl 25 &clkctrl 26>;
++		clocks = <&sysc MT7621_CLK_PCIE0>,
++			 <&sysc MT7621_CLK_PCIE1>,
++			 <&sysc MT7621_CLK_PCIE2>;
+ 		clock-names = "pcie0", "pcie1", "pcie2";
+ 		phys = <&pcie0_phy 1>, <&pcie2_phy 0>;
+ 		phy-names = "pcie-phy0", "pcie-phy2";
 -- 
 2.25.1
 

@@ -7,52 +7,81 @@ X-Spam-Status: No, score=-15.3 required=3.0 tests=BAYES_00,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3B73DC433E0
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 79C0EC433E6
 	for <linux-mips@archiver.kernel.org>; Wed, 10 Mar 2021 15:19:44 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id F077E64F52
-	for <linux-mips@archiver.kernel.org>; Wed, 10 Mar 2021 15:19:43 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 4FCB764F33
+	for <linux-mips@archiver.kernel.org>; Wed, 10 Mar 2021 15:19:44 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232733AbhCJPTL (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        id S230341AbhCJPTL (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
         Wed, 10 Mar 2021 10:19:11 -0500
-Received: from elvis.franken.de ([193.175.24.41]:42327 "EHLO elvis.franken.de"
+Received: from elvis.franken.de ([193.175.24.41]:42333 "EHLO elvis.franken.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230270AbhCJPS5 (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        id S232284AbhCJPS5 (ORCPT <rfc822;linux-mips@vger.kernel.org>);
         Wed, 10 Mar 2021 10:18:57 -0500
 Received: from uucp (helo=alpha)
         by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1lK0bw-00088y-04; Wed, 10 Mar 2021 16:18:56 +0100
+        id 1lK0bw-00088y-00; Wed, 10 Mar 2021 16:18:56 +0100
 Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 015FBC1D54; Wed, 10 Mar 2021 16:09:07 +0100 (CET)
-Date:   Wed, 10 Mar 2021 16:09:07 +0100
+        id 70C66C1C0B; Wed, 10 Mar 2021 16:07:05 +0100 (CET)
+Date:   Wed, 10 Mar 2021 16:07:05 +0100
 From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>
-Cc:     f.fainelli@gmail.com, bcm-kernel-feedback-list@broadcom.com,
-        linux-mips@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, rdunlap@infradead.org
-Subject: Re: [PATCH] arch: mips: bcm63xx: Spello fix in the file clk.c
-Message-ID: <20210310150907.GE12960@alpha.franken.de>
-References: <20210305020535.25006-1-unixbhaskar@gmail.com>
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Alexander Lobakin <alobakin@pm.me>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Sean Christopherson <seanjc@google.com>
+Subject: Re: [PATCH 1/2] mips: syscalls: switch to generic syscalltbl.sh
+Message-ID: <20210310150705.GA12960@alpha.franken.de>
+References: <20210301144825.357922-1-masahiroy@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210305020535.25006-1-unixbhaskar@gmail.com>
+In-Reply-To: <20210301144825.357922-1-masahiroy@kernel.org>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Fri, Mar 05, 2021 at 07:35:35AM +0530, Bhaskar Chowdhury wrote:
+On Mon, Mar 01, 2021 at 11:48:24PM +0900, Masahiro Yamada wrote:
+> Many architectures duplicate similar shell scripts.
 > 
+> This commit converts mips to use scripts/syscalltbl.sh. This also
+> unifies syscall_table_32_o32.h and syscall_table_64_o32.h into
+> syscall_table_o32.h.
 > 
-> s/revelant/relevant/
+> The offset parameters are unneeded here; __SYSCALL(nr, entry) is defined
+> as 'PTR entry', so the parameter 'nr' is not used in the first place.
 > 
-> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+> With this commit, syscall tables and generated files are straight
+> mapped,  which makes things easier to understand.
+> 
+>   syscall_n32.tbl  -->  syscall_table_n32.h
+>   syscall_n64.tbl  -->  syscall_table_n64.h
+>   syscall_o32.tbl  -->  syscall_table_o32.h
+> 
+> Then, the abi parameters are also unneeded.
+> 
+> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 > ---
->  arch/mips/bcm63xx/clk.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+>  arch/mips/include/asm/Kbuild            |  7 +++--
+>  arch/mips/kernel/scall32-o32.S          |  4 +--
+>  arch/mips/kernel/scall64-n32.S          |  3 +--
+>  arch/mips/kernel/scall64-n64.S          |  3 +--
+>  arch/mips/kernel/scall64-o32.S          |  4 +--
+>  arch/mips/kernel/syscalls/Makefile      | 31 ++++++---------------
+>  arch/mips/kernel/syscalls/syscalltbl.sh | 36 -------------------------
+>  7 files changed, 17 insertions(+), 71 deletions(-)
+>  delete mode 100644 arch/mips/kernel/syscalls/syscalltbl.sh
 
-applied to mips-next with fixed subject.
+applied to mips-next.
 
 Thomas.
 

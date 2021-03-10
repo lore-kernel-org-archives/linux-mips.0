@@ -3,25 +3,25 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
 X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8A66DC43381
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A50C7C4332D
 	for <linux-mips@archiver.kernel.org>; Wed, 10 Mar 2021 07:57:56 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 3E08C64FFC
+	by mail.kernel.org (Postfix) with ESMTP id 5EE8164E87
 	for <linux-mips@archiver.kernel.org>; Wed, 10 Mar 2021 07:57:56 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231815AbhCJH5Q (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        id S230458AbhCJH5Q (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
         Wed, 10 Mar 2021 02:57:16 -0500
-Received: from mail.loongson.cn ([114.242.206.163]:33358 "EHLO loongson.cn"
+Received: from mail.loongson.cn ([114.242.206.163]:33360 "EHLO loongson.cn"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229725AbhCJH4z (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        id S229828AbhCJH4z (ORCPT <rfc822;linux-mips@vger.kernel.org>);
         Wed, 10 Mar 2021 02:56:55 -0500
 Received: from localhost.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dxn_O3e0hg6KoXAA--.12657S4;
-        Wed, 10 Mar 2021 15:56:46 +0800 (CST)
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dxn_O3e0hg6KoXAA--.12657S2;
+        Wed, 10 Mar 2021 15:56:39 +0800 (CST)
 From:   Qing Zhang <zhangqing@loongson.cn>
 To:     Huacai Chen <chenhuacai@kernel.org>,
         Jiaxun Yang <jiaxun.yang@flygoat.com>,
@@ -29,150 +29,71 @@ To:     Huacai Chen <chenhuacai@kernel.org>,
         Thomas Gleixner <tglx@linutronix.de>,
         Marc Zyngier <maz@kernel.org>
 Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, Ming Wang <wangming01@loongson.cn>
-Subject: [PATCH v4 2/7] MIPS: Loongson64: Distinguish firmware dependencies DTB/LEFI
-Date:   Wed, 10 Mar 2021 15:56:34 +0800
-Message-Id: <20210310075639.20372-3-zhangqing@loongson.cn>
+        devicetree@vger.kernel.org
+Subject: [PATCH v4 0/7] Add basic support for Loongson-2K1000
+Date:   Wed, 10 Mar 2021 15:56:32 +0800
+Message-Id: <20210310075639.20372-1-zhangqing@loongson.cn>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210310075639.20372-1-zhangqing@loongson.cn>
-References: <20210310075639.20372-1-zhangqing@loongson.cn>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: AQAAf9Dxn_O3e0hg6KoXAA--.12657S4
-X-Coremail-Antispam: 1UD129KBjvJXoWxCrWkuFW3Gry5Kw15Kr17Wrg_yoWrXw47pa
-        93Aa4DWr4rWrsxCr95JrW8ZrWrAFZ5GFsFqF429ryjgasFga4Sqr15GF15Ar47AF4rGa4r
-        ZrWSgw4xWFs7C3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUBS14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_Jryl82xGYIkIc2
-        x26xkF7I0E14v26r4j6ryUM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2z4x0
-        Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Cr0_Gr1UM2
-        8EF7xvwVC2z280aVAFwI0_Cr1j6rxdM28EF7xvwVC2z280aVCY1x0267AKxVW0oVCq3wAS
-        0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2
-        IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0
-        Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCY02Avz4vE14v_GF4l42xK82
-        IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC2
-        0s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMI
-        IF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF
-        0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87
-        Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjfU1a0PDUUUU
+X-CM-TRANSID: AQAAf9Dxn_O3e0hg6KoXAA--.12657S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7urykAr1DAw4DKryfXFWDJwb_yoW8ArW3pw
+        43CwnxKF45Cry7Crn3JFyUuryrZrWfJrZrWF43Xr15GasIqa4Yvr13tFs8JwsrZr93ta4j
+        9ryrGFW7GFnrC3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUkIb7Iv0xC_Zr1lb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I2
+        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
+        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xII
+        jxv20xvEc7CjxVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_Cr1j6rxdM28EF7xvwV
+        C2z280aVCY1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC
+        0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr
+        1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JMxkIecxEwVAFwVW8CwCF04k2
+        0xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI
+        8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41l
+        IxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIx
+        AIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2
+        z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU890ePUUUUU==
 X-CM-SenderInfo: x2kd0wptlqwqxorr0wxvrqhubq/
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Add DTB boot support, only support Loongson-2K1000 processor
-for now, determine whether to use the built-in DTB or the DTB
-from the firmware by checking the range of CKSEG0 and XKPHYS.
-loongson_fw_interface will be used in the future.
+These patches support single-core DTS boot to the serial port login
+interface, which can be operated using conventional commands.
 
-Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
-Signed-off-by: Qing Zhang <zhangqing@loongson.cn>
-Tested-by: Ming Wang <wangming01@loongson.cn>
----
+I have successfully tested it on the Loongson 2K1000 machine.
+pmon: http://cgit.loongnix.org/cgit/pmon-loongson3/
 
-v3-v4: Standard submission of information
-       Fix error handling 
+Note:
+After the basic support is merged, 
+I will submit SMP and other peripheral support in the future. 
 
- .../include/asm/mach-loongson64/boot_param.h     |  6 ++++++
- arch/mips/include/asm/mach-loongson64/loongson.h |  3 ++-
- arch/mips/loongson64/env.c                       | 13 ++++++++++++-
- arch/mips/loongson64/init.c                      | 16 ++++++++++++++--
- 4 files changed, 34 insertions(+), 4 deletions(-)
+Qing Zhang (7):
+  MIPS: Loongson64: DeviceTree for Loongson-2K1000
+  MIPS: Loongson64: Distinguish firmware dependencies DTB/LEFI
+  MIPS: Loongson64: Add support for the Loongson-2K1000 to get
+    cpu_clock_freq
+  MIPS: Loongson64: Add Loongson-2K1000 early_printk_port
+  irqchip/loongson-liointc: irqchip add 2.0 version
+  dt-bindings: interrupt-controller: Add Loongson-2K1000 LIOINTC
+  MIPS: Loongson64: Add a Loongson-2K1000 default config file
 
-diff --git a/arch/mips/include/asm/mach-loongson64/boot_param.h b/arch/mips/include/asm/mach-loongson64/boot_param.h
-index 4592841b6b0c..43737401dc06 100644
---- a/arch/mips/include/asm/mach-loongson64/boot_param.h
-+++ b/arch/mips/include/asm/mach-loongson64/boot_param.h
-@@ -198,7 +198,13 @@ enum loongson_bridge_type {
- 	VIRTUAL = 3
- };
- 
-+enum loongson_fw_interface {
-+	LOONGSON_LEFI,
-+	LOONGSON_DTB,
-+};
-+
- struct loongson_system_configuration {
-+	enum loongson_fw_interface fw_interface;
- 	u32 nr_cpus;
- 	u32 nr_nodes;
- 	int cores_per_node;
-diff --git a/arch/mips/include/asm/mach-loongson64/loongson.h b/arch/mips/include/asm/mach-loongson64/loongson.h
-index ac1c20e172a2..3f885fa26ba6 100644
---- a/arch/mips/include/asm/mach-loongson64/loongson.h
-+++ b/arch/mips/include/asm/mach-loongson64/loongson.h
-@@ -23,7 +23,8 @@ extern u32 memsize, highmemsize;
- extern const struct plat_smp_ops loongson3_smp_ops;
- 
- /* loongson-specific command line, env and memory initialization */
--extern void __init prom_init_env(void);
-+extern void __init prom_dtb_init_env(void);
-+extern void __init prom_lefi_init_env(void);
- extern void __init szmem(unsigned int node);
- extern void *loongson_fdt_blob;
- 
-diff --git a/arch/mips/loongson64/env.c b/arch/mips/loongson64/env.c
-index 51a5d050a94c..e7d3a06175e3 100644
---- a/arch/mips/loongson64/env.c
-+++ b/arch/mips/loongson64/env.c
-@@ -43,7 +43,18 @@ const char *get_system_type(void)
- 	return "Generic Loongson64 System";
- }
- 
--void __init prom_init_env(void)
-+
-+void __init prom_dtb_init_env(void)
-+{
-+	if ((fw_arg2 < CKSEG0 || fw_arg2 > CKSEG1)
-+		&& (fw_arg2 < XKPHYS || fw_arg2 > XKSEG))
-+
-+		loongson_fdt_blob = __dtb_loongson64_2core_2k1000_begin;
-+	else
-+		loongson_fdt_blob = (void *)fw_arg2;
-+}
-+
-+void __init prom_lefi_init_env(void)
- {
- 	struct boot_params *boot_p;
- 	struct loongson_params *loongson_p;
-diff --git a/arch/mips/loongson64/init.c b/arch/mips/loongson64/init.c
-index cfa788bca871..ed280b73bf89 100644
---- a/arch/mips/loongson64/init.c
-+++ b/arch/mips/loongson64/init.c
-@@ -52,6 +52,10 @@ void __init szmem(unsigned int node)
- 	static unsigned long num_physpages;
- 	u64 node_id, node_psize, start_pfn, end_pfn, mem_start, mem_size;
- 
-+	/* Otherwise come from DTB */
-+	if (loongson_sysconf.fw_interface != LOONGSON_LEFI)
-+		return;
-+
- 	/* Parse memory information and activate */
- 	for (i = 0; i < loongson_memmap->nr_map; i++) {
- 		node_id = loongson_memmap->map[i].node_id;
-@@ -94,12 +98,20 @@ static void __init prom_init_memory(void)
- void __init prom_init(void)
- {
- 	fw_init_cmdline();
--	prom_init_env();
-+
-+	if (fw_arg2 == 0 || (fdt_magic(fw_arg2) == FDT_MAGIC)) {
-+		loongson_sysconf.fw_interface = LOONGSON_DTB;
-+		prom_dtb_init_env();
-+	} else {
-+		loongson_sysconf.fw_interface = LOONGSON_LEFI;
-+		prom_lefi_init_env();
-+	}
- 
- 	/* init base address of io space */
- 	set_io_port_base(PCI_IOBASE);
- 
--	loongson_sysconf.early_config();
-+	if (loongson_sysconf.early_config)
-+		loongson_sysconf.early_config();
- 
- #ifdef CONFIG_NUMA
- 	prom_init_numa_memory();
+ .../loongson,liointc.yaml                     |   7 +-
+ arch/mips/boot/dts/loongson/Makefile          |   1 +
+ .../boot/dts/loongson/loongson64-2k1000.dtsi  | 243 ++++++++++++
+ .../dts/loongson/loongson64_2core_2k1000.dts  |  10 +
+ arch/mips/configs/loongson2k_defconfig        | 353 ++++++++++++++++++
+ .../include/asm/mach-loongson64/boot_param.h  |   6 +
+ .../asm/mach-loongson64/builtin_dtbs.h        |   1 +
+ .../include/asm/mach-loongson64/loongson.h    |   3 +-
+ arch/mips/loongson64/env.c                    |  13 +-
+ arch/mips/loongson64/init.c                   |  21 +-
+ arch/mips/loongson64/time.c                   |  24 ++
+ drivers/irqchip/irq-loongson-liointc.c        |  58 ++-
+ 12 files changed, 723 insertions(+), 17 deletions(-)
+ create mode 100644 arch/mips/boot/dts/loongson/loongson64-2k1000.dtsi
+ create mode 100644 arch/mips/boot/dts/loongson/loongson64_2core_2k1000.dts
+ create mode 100644 arch/mips/configs/loongson2k_defconfig
+
 -- 
 2.20.1
 

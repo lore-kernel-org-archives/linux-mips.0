@@ -7,21 +7,21 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 26D0CC433DB
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8A66DC43381
 	for <linux-mips@archiver.kernel.org>; Wed, 10 Mar 2021 07:57:56 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id DF40B64FF3
-	for <linux-mips@archiver.kernel.org>; Wed, 10 Mar 2021 07:57:55 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 3E08C64FFC
+	for <linux-mips@archiver.kernel.org>; Wed, 10 Mar 2021 07:57:56 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231293AbhCJH5Q (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        id S231815AbhCJH5Q (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
         Wed, 10 Mar 2021 02:57:16 -0500
-Received: from mail.loongson.cn ([114.242.206.163]:33362 "EHLO loongson.cn"
+Received: from mail.loongson.cn ([114.242.206.163]:33358 "EHLO loongson.cn"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229851AbhCJH4z (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        id S229725AbhCJH4z (ORCPT <rfc822;linux-mips@vger.kernel.org>);
         Wed, 10 Mar 2021 02:56:55 -0500
 Received: from localhost.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dxn_O3e0hg6KoXAA--.12657S7;
-        Wed, 10 Mar 2021 15:56:47 +0800 (CST)
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dxn_O3e0hg6KoXAA--.12657S4;
+        Wed, 10 Mar 2021 15:56:46 +0800 (CST)
 From:   Qing Zhang <zhangqing@loongson.cn>
 To:     Huacai Chen <chenhuacai@kernel.org>,
         Jiaxun Yang <jiaxun.yang@flygoat.com>,
@@ -30,40 +30,40 @@ To:     Huacai Chen <chenhuacai@kernel.org>,
         Marc Zyngier <maz@kernel.org>
 Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
         devicetree@vger.kernel.org, Ming Wang <wangming01@loongson.cn>
-Subject: [PATCH v4 5/7] irqchip/loongson-liointc: irqchip add 2.0 version
-Date:   Wed, 10 Mar 2021 15:56:37 +0800
-Message-Id: <20210310075639.20372-6-zhangqing@loongson.cn>
+Subject: [PATCH v4 2/7] MIPS: Loongson64: Distinguish firmware dependencies DTB/LEFI
+Date:   Wed, 10 Mar 2021 15:56:34 +0800
+Message-Id: <20210310075639.20372-3-zhangqing@loongson.cn>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20210310075639.20372-1-zhangqing@loongson.cn>
 References: <20210310075639.20372-1-zhangqing@loongson.cn>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: AQAAf9Dxn_O3e0hg6KoXAA--.12657S7
-X-Coremail-Antispam: 1UD129KBjvJXoWxCF18CrWfCr45tw1DGr1fCrg_yoWrtw45pa
-        y8urZ8KFn8Ga47ur4ftFWkZa4avr1SgrZrua4fGFy7C3ZxA3s5AF4ruF1UAr4Sk3y8GFWY
-        vF4rKa4UGa15C37anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUBG14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_JF0E3s1l82xGYI
-        kIc2x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2
-        z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j6F
-        4UJwA2z4x0Y4vEx4A2jsIE14v26F4UJVW0owA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE
-        3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2I
-        x0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8
-        JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc2xSY4AK67AK6r4xMx
-        AIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_
-        Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwI
-        xGrwCI42IY6xIIjxv20xvE14v26r1I6r4UMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWxJVW8
-        Jr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0x
-        vEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUvg4hUUUUU=
+X-CM-TRANSID: AQAAf9Dxn_O3e0hg6KoXAA--.12657S4
+X-Coremail-Antispam: 1UD129KBjvJXoWxCrWkuFW3Gry5Kw15Kr17Wrg_yoWrXw47pa
+        93Aa4DWr4rWrsxCr95JrW8ZrWrAFZ5GFsFqF429ryjgasFga4Sqr15GF15Ar47AF4rGa4r
+        ZrWSgw4xWFs7C3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUBS14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_Jryl82xGYIkIc2
+        x26xkF7I0E14v26r4j6ryUM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2z4x0
+        Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Cr0_Gr1UM2
+        8EF7xvwVC2z280aVAFwI0_Cr1j6rxdM28EF7xvwVC2z280aVCY1x0267AKxVW0oVCq3wAS
+        0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2
+        IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0
+        Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCY02Avz4vE14v_GF4l42xK82
+        IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC2
+        0s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMI
+        IF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF
+        0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87
+        Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjfU1a0PDUUUU
 X-CM-SenderInfo: x2kd0wptlqwqxorr0wxvrqhubq/
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Add IO interrupt controller support for Loongson-2K1000, different
-from the Loongson-3A series is that 2K1000 has 64 interrupt sources,
-0-31 correspond to the device tree liointc0 device node, and the other
-correspond to liointc1 node.
+Add DTB boot support, only support Loongson-2K1000 processor
+for now, determine whether to use the built-in DTB or the DTB
+from the firmware by checking the range of CKSEG0 and XKPHYS.
+loongson_fw_interface will be used in the future.
 
 Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
 Signed-off-by: Qing Zhang <zhangqing@loongson.cn>
@@ -71,143 +71,108 @@ Tested-by: Ming Wang <wangming01@loongson.cn>
 ---
 
 v3-v4: Standard submission of information
+       Fix error handling 
 
- drivers/irqchip/irq-loongson-liointc.c | 58 ++++++++++++++++++++++----
- 1 file changed, 49 insertions(+), 9 deletions(-)
+ .../include/asm/mach-loongson64/boot_param.h     |  6 ++++++
+ arch/mips/include/asm/mach-loongson64/loongson.h |  3 ++-
+ arch/mips/loongson64/env.c                       | 13 ++++++++++++-
+ arch/mips/loongson64/init.c                      | 16 ++++++++++++++--
+ 4 files changed, 34 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/irqchip/irq-loongson-liointc.c b/drivers/irqchip/irq-loongson-liointc.c
-index 09b91b81851c..33219244c551 100644
---- a/drivers/irqchip/irq-loongson-liointc.c
-+++ b/drivers/irqchip/irq-loongson-liointc.c
-@@ -20,6 +20,7 @@
- 
- #define LIOINTC_CHIP_IRQ	32
- #define LIOINTC_NUM_PARENT 4
-+#define LIOINTC_NUM_CORES	4
- 
- #define LIOINTC_INTC_CHIP_START	0x20
- 
-@@ -42,6 +43,7 @@ struct liointc_handler_data {
- struct liointc_priv {
- 	struct irq_chip_generic		*gc;
- 	struct liointc_handler_data	handler[LIOINTC_NUM_PARENT];
-+	void __iomem			*core_isr[LIOINTC_NUM_CORES];
- 	u8				map_cache[LIOINTC_CHIP_IRQ];
- 	bool				has_lpc_irq_errata;
+diff --git a/arch/mips/include/asm/mach-loongson64/boot_param.h b/arch/mips/include/asm/mach-loongson64/boot_param.h
+index 4592841b6b0c..43737401dc06 100644
+--- a/arch/mips/include/asm/mach-loongson64/boot_param.h
++++ b/arch/mips/include/asm/mach-loongson64/boot_param.h
+@@ -198,7 +198,13 @@ enum loongson_bridge_type {
+ 	VIRTUAL = 3
  };
-@@ -51,11 +53,12 @@ static void liointc_chained_handle_irq(struct irq_desc *desc)
- 	struct liointc_handler_data *handler = irq_desc_get_handler_data(desc);
- 	struct irq_chip *chip = irq_desc_get_chip(desc);
- 	struct irq_chip_generic *gc = handler->priv->gc;
-+	int core = get_ebase_cpunum() % LIOINTC_NUM_CORES;
- 	u32 pending;
  
- 	chained_irq_enter(chip, desc);
++enum loongson_fw_interface {
++	LOONGSON_LEFI,
++	LOONGSON_DTB,
++};
++
+ struct loongson_system_configuration {
++	enum loongson_fw_interface fw_interface;
+ 	u32 nr_cpus;
+ 	u32 nr_nodes;
+ 	int cores_per_node;
+diff --git a/arch/mips/include/asm/mach-loongson64/loongson.h b/arch/mips/include/asm/mach-loongson64/loongson.h
+index ac1c20e172a2..3f885fa26ba6 100644
+--- a/arch/mips/include/asm/mach-loongson64/loongson.h
++++ b/arch/mips/include/asm/mach-loongson64/loongson.h
+@@ -23,7 +23,8 @@ extern u32 memsize, highmemsize;
+ extern const struct plat_smp_ops loongson3_smp_ops;
  
--	pending = readl(gc->reg_base + LIOINTC_REG_INTC_STATUS);
-+	pending = readl(handler->priv->core_isr[core]);
+ /* loongson-specific command line, env and memory initialization */
+-extern void __init prom_init_env(void);
++extern void __init prom_dtb_init_env(void);
++extern void __init prom_lefi_init_env(void);
+ extern void __init szmem(unsigned int node);
+ extern void *loongson_fdt_blob;
  
- 	if (!pending) {
- 		/* Always blame LPC IRQ if we have that bug */
-@@ -141,6 +144,18 @@ static void liointc_resume(struct irq_chip_generic *gc)
+diff --git a/arch/mips/loongson64/env.c b/arch/mips/loongson64/env.c
+index 51a5d050a94c..e7d3a06175e3 100644
+--- a/arch/mips/loongson64/env.c
++++ b/arch/mips/loongson64/env.c
+@@ -43,7 +43,18 @@ const char *get_system_type(void)
+ 	return "Generic Loongson64 System";
  }
  
- static const char * const parent_names[] = {"int0", "int1", "int2", "int3"};
-+static const char * const core_reg_names[] = {"isr0", "isr1", "isr2", "isr3"};
+-void __init prom_init_env(void)
 +
-+static void __iomem *liointc_get_reg_byname(struct device_node *node,
-+						const char *name)
++void __init prom_dtb_init_env(void)
 +{
-+	int index = of_property_match_string(node, "reg-names", name);
++	if ((fw_arg2 < CKSEG0 || fw_arg2 > CKSEG1)
++		&& (fw_arg2 < XKPHYS || fw_arg2 > XKSEG))
 +
-+	if (index < 0)
-+		return NULL;
-+
-+	return of_iomap(node, index);
++		loongson_fdt_blob = __dtb_loongson64_2core_2k1000_begin;
++	else
++		loongson_fdt_blob = (void *)fw_arg2;
 +}
- 
- static int __init liointc_of_init(struct device_node *node,
- 				  struct device_node *parent)
-@@ -159,10 +174,28 @@ static int __init liointc_of_init(struct device_node *node,
- 	if (!priv)
- 		return -ENOMEM;
- 
--	base = of_iomap(node, 0);
--	if (!base) {
--		err = -ENODEV;
--		goto out_free_priv;
-+	if (of_device_is_compatible(node, "loongson,liointc-2.0")) {
-+		base = liointc_get_reg_byname(node, "main");
-+		if (!base) {
-+			err = -ENODEV;
-+			goto out_free_priv;
-+		}
 +
-+		for (i = 0; i < LIOINTC_NUM_CORES; i++)
-+			priv->core_isr[i] = liointc_get_reg_byname(node, core_reg_names[i]);
-+		if (!priv->core_isr[0]) {
-+			err = -ENODEV;
-+			goto out_iounmap_base;
-+		}
++void __init prom_lefi_init_env(void)
+ {
+ 	struct boot_params *boot_p;
+ 	struct loongson_params *loongson_p;
+diff --git a/arch/mips/loongson64/init.c b/arch/mips/loongson64/init.c
+index cfa788bca871..ed280b73bf89 100644
+--- a/arch/mips/loongson64/init.c
++++ b/arch/mips/loongson64/init.c
+@@ -52,6 +52,10 @@ void __init szmem(unsigned int node)
+ 	static unsigned long num_physpages;
+ 	u64 node_id, node_psize, start_pfn, end_pfn, mem_start, mem_size;
+ 
++	/* Otherwise come from DTB */
++	if (loongson_sysconf.fw_interface != LOONGSON_LEFI)
++		return;
++
+ 	/* Parse memory information and activate */
+ 	for (i = 0; i < loongson_memmap->nr_map; i++) {
+ 		node_id = loongson_memmap->map[i].node_id;
+@@ -94,12 +98,20 @@ static void __init prom_init_memory(void)
+ void __init prom_init(void)
+ {
+ 	fw_init_cmdline();
+-	prom_init_env();
++
++	if (fw_arg2 == 0 || (fdt_magic(fw_arg2) == FDT_MAGIC)) {
++		loongson_sysconf.fw_interface = LOONGSON_DTB;
++		prom_dtb_init_env();
 +	} else {
-+		base = of_iomap(node, 0);
-+		if (!base) {
-+			err = -ENODEV;
-+			goto out_free_priv;
-+		}
-+
-+		for (i = 0; i < LIOINTC_NUM_CORES; i++)
-+			priv->core_isr[i] = base + LIOINTC_REG_INTC_STATUS;
- 	}
- 
- 	for (i = 0; i < LIOINTC_NUM_PARENT; i++) {
-@@ -172,7 +205,7 @@ static int __init liointc_of_init(struct device_node *node,
- 	}
- 	if (!have_parent) {
- 		err = -ENODEV;
--		goto out_iounmap;
-+		goto out_iounmap_isr;
- 	}
- 
- 	sz = of_property_read_variable_u32_array(node,
-@@ -183,7 +216,7 @@ static int __init liointc_of_init(struct device_node *node,
- 	if (sz < 4) {
- 		pr_err("loongson-liointc: No parent_int_map\n");
- 		err = -ENODEV;
--		goto out_iounmap;
-+		goto out_iounmap_isr;
- 	}
- 
- 	for (i = 0; i < LIOINTC_NUM_PARENT; i++)
-@@ -195,7 +228,7 @@ static int __init liointc_of_init(struct device_node *node,
- 	if (!domain) {
- 		pr_err("loongson-liointc: cannot add IRQ domain\n");
- 		err = -EINVAL;
--		goto out_iounmap;
-+		goto out_iounmap_isr;
- 	}
- 
- 	err = irq_alloc_domain_generic_chips(domain, 32, 1,
-@@ -260,7 +293,13 @@ static int __init liointc_of_init(struct device_node *node,
- 
- out_free_domain:
- 	irq_domain_remove(domain);
--out_iounmap:
-+out_iounmap_isr:
-+	for (i = 0; i < LIOINTC_NUM_CORES; i++) {
-+		if (!priv->core_isr[i])
-+			continue;
-+		iounmap(priv->core_isr[i]);
++		loongson_sysconf.fw_interface = LOONGSON_LEFI;
++		prom_lefi_init_env();
 +	}
-+out_iounmap_base:
- 	iounmap(base);
- out_free_priv:
- 	kfree(priv);
-@@ -270,3 +309,4 @@ static int __init liointc_of_init(struct device_node *node,
  
- IRQCHIP_DECLARE(loongson_liointc_1_0, "loongson,liointc-1.0", liointc_of_init);
- IRQCHIP_DECLARE(loongson_liointc_1_0a, "loongson,liointc-1.0a", liointc_of_init);
-+IRQCHIP_DECLARE(loongson_liointc_2_0, "loongson,liointc-2.0", liointc_of_init);
+ 	/* init base address of io space */
+ 	set_io_port_base(PCI_IOBASE);
+ 
+-	loongson_sysconf.early_config();
++	if (loongson_sysconf.early_config)
++		loongson_sysconf.early_config();
+ 
+ #ifdef CONFIG_NUMA
+ 	prom_init_numa_memory();
 -- 
 2.20.1
 

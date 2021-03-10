@@ -2,255 +2,117 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-26.3 required=3.0 tests=BAYES_00,DKIMWL_WL_MED,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT,USER_IN_DEF_DKIM_WL autolearn=unavailable autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EC9CAC43332
-	for <linux-mips@archiver.kernel.org>; Wed, 10 Mar 2021 00:31:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 730E5C433E0
+	for <linux-mips@archiver.kernel.org>; Wed, 10 Mar 2021 02:27:13 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id D698465111
-	for <linux-mips@archiver.kernel.org>; Wed, 10 Mar 2021 00:31:46 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 370B264F82
+	for <linux-mips@archiver.kernel.org>; Wed, 10 Mar 2021 02:27:13 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231559AbhCJAbP (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 9 Mar 2021 19:31:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48020 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231422AbhCJAap (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Tue, 9 Mar 2021 19:30:45 -0500
-Received: from mail-il1-x149.google.com (mail-il1-x149.google.com [IPv6:2607:f8b0:4864:20::149])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0182C06175F
-        for <linux-mips@vger.kernel.org>; Tue,  9 Mar 2021 16:30:45 -0800 (PST)
-Received: by mail-il1-x149.google.com with SMTP id f2so11558251ils.22
-        for <linux-mips@vger.kernel.org>; Tue, 09 Mar 2021 16:30:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=HYwIHVMurXa3R6as3OvUxWmJFUBMLjiRzzhIiiKP4ME=;
-        b=KlgzRB+CEZgxcFGOn//lNka3ixGNj1ZMzKq7WAvbwDFq3xRkgAS3kYK/JIV4nIxm/u
-         1FfbdecWvmBbdiWVheE3wUNE32IOWAGMhu8MeFMpPUxkNG6Ic6IXrOYz15juiE5W+eN/
-         UwufP8xnomHHhYJZizlFxCzJtMQMPP3AGyXKTMDhs5E9C0vskRVTcj7UvkXA1PH14ykl
-         ft27CoJWrjGy2SvqG2c1AGionh3n73Ki0G54VqY7GeECtpHBPlD1in+kzQ+UDi+3daXg
-         fS/ssqaH/09kuWnDkSliepIZRP1LHJvuV+kQD5aXzLq5vN3FattwTAMNMi+qTW2bJSmf
-         Tddw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=HYwIHVMurXa3R6as3OvUxWmJFUBMLjiRzzhIiiKP4ME=;
-        b=OM6CemxNcbC6MzOhdf29n7QY75u3YMtsiuOikTHVcY26VVxwox8OOlHvI+Cz/EQ/TK
-         CKb3XrdNNtVw0SvGFKtL7wIv26cQxsDDQMDxyc3lKYqWu/JYd2S0qRY4Tprxwx5W0zWR
-         EJYPQbcvNDnwGKToe7pPmA7omylIP3TZuNjQf1WaDpC+f8apER5UOkD1Xww7Kb/OHEi6
-         rNsUrqJSJZhrFLtBUWmQB7txpT+Ix83nK+PW9IXSsrPKELfuS/l63tnzDdztevfAcBlD
-         MiFrB44i+57xBTGaZaaVA17oyRCf3MnL2yAijRb7DrYQIqoIrn9igtP5NNzERY8+jtIR
-         o/Fw==
-X-Gm-Message-State: AOAM531qXCeAzWMh5VZa4qeuHD62gX/M6L0a4yFiCnI+jV8+snDwnPXx
-        S/C9U12IirPR95io4XkjEk0rfDLMHFiPp5CUOA==
-X-Google-Smtp-Source: ABdhPJza+jn+PY8flshTTgOAKq9hoAYgUHER9XS+P4s7skBsrShHEuKgzkWZTeYGcckPt9nBzOg82EPVRau5TPgGJA==
-X-Received: from jingzhangos.c.googlers.com ([fda3:e722:ac3:10:2b:ff92:c0a8:513])
- (user=jingzhangos job=sendgmr) by 2002:a6b:6f14:: with SMTP id
- k20mr642440ioc.52.1615336245163; Tue, 09 Mar 2021 16:30:45 -0800 (PST)
-Date:   Wed, 10 Mar 2021 00:30:23 +0000
-In-Reply-To: <20210310003024.2026253-1-jingzhangos@google.com>
-Message-Id: <20210310003024.2026253-4-jingzhangos@google.com>
-Mime-Version: 1.0
-References: <20210310003024.2026253-1-jingzhangos@google.com>
-X-Mailer: git-send-email 2.30.1.766.gb4fecdf3b7-goog
-Subject: [RFC PATCH 3/4] KVM: stats: Add ioctl commands to pull statistics in
- binary format
-From:   Jing Zhang <jingzhangos@google.com>
-To:     KVM <kvm@vger.kernel.org>, KVM ARM <kvmarm@lists.cs.columbia.edu>,
-        Linux MIPS <linux-mips@vger.kernel.org>,
-        KVM PPC <kvm-ppc@vger.kernel.org>,
-        Linux S390 <linux-s390@vger.kernel.org>,
-        Linux kselftest <linux-kselftest@vger.kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Marc Zyngier <maz@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
+        id S231673AbhCJC0l (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 9 Mar 2021 21:26:41 -0500
+Received: from mail.loongson.cn ([114.242.206.163]:47472 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231235AbhCJC0j (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Tue, 9 Mar 2021 21:26:39 -0500
+Received: from [10.130.0.65] (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9AxedRRLkhgUpQXAA--.29562S3;
+        Wed, 10 Mar 2021 10:26:25 +0800 (CST)
+Subject: Re: [PATCH v3 5/7] irqchip/loongson-liointc: irqchip add 2.0 version
+To:     Marc Zyngier <maz@kernel.org>
+References: <20210306023633.9579-1-zhangqing@loongson.cn>
+ <20210306023633.9579-6-zhangqing@loongson.cn> <87wnugy9oe.wl-maz@kernel.org>
+Cc:     Huacai Chen <chenhuacai@kernel.org>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
         Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Paul Mackerras <paulus@ozlabs.org>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Janosch Frank <frankja@linux.ibm.com>,
-        David Hildenbrand <david@redhat.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Jim Mattson <jmattson@google.com>,
-        Peter Shier <pshier@google.com>,
-        Oliver Upton <oupton@google.com>,
-        David Rientjes <rientjes@google.com>,
-        Emanuele Giuseppe Esposito <eesposit@redhat.com>
-Cc:     Jing Zhang <jingzhangos@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        wangming01@loongson.cn
+From:   zhangqing <zhangqing@loongson.cn>
+Message-ID: <5c5b2593-b07c-cd20-cd08-1d6542471260@loongson.cn>
+Date:   Wed, 10 Mar 2021 10:26:24 +0800
+User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
+ Thunderbird/45.4.0
+MIME-Version: 1.0
+In-Reply-To: <87wnugy9oe.wl-maz@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: AQAAf9AxedRRLkhgUpQXAA--.29562S3
+X-Coremail-Antispam: 1UD129KBjvdXoWrtr48Gw4UWF4kZF4xuF47XFb_yoWkKrc_Cr
+        4qg34UXF15ZryfJrs8Cr4UZF93JF9rKr43JFW0g3WIva40vw4UGrWkurZ3t3yIgFn2grna
+        kryFkay7CrW2qjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbVkFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
+        A2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j
+        6F4UJwA2z4x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjcxK6I8E87Iv6xkF7I0E14v26F
+        4UJVW0owAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv
+        7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r
+        1j6r4UM4x0Y48IcVAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCYjI0SjxkI62AI1cAE
+        67vIY487MxkIecxEwVAFwVW8JwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJV
+        W8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF
+        1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6x
+        IIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rWUJVWrZr1UMIIF
+        0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2Kf
+        nxnUUI43ZEXa7VUbpwZ7UUUUU==
+X-CM-SenderInfo: x2kd0wptlqwqxorr0wxvrqhubq/
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Three ioctl commands are added to support binary form statistics data
-retrieval. KVM_STATS_GET_INFO, KVM_STATS_GET_NAMES, KVM_STATS_GET_DATA.
-KVM_CAP_STATS_BINARY_FORM indicates the capability.
 
-Signed-off-by: Jing Zhang <jingzhangos@google.com>
----
- virt/kvm/kvm_main.c | 115 ++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 115 insertions(+)
+On 03/09/2021 05:10 PM, Marc Zyngier wrote:
+>
+>> +
+>> +static void __iomem *liointc_get_reg_byname(struct device_node *node,
+>> +						const char *name)
+>> +{
+>> +	int index = of_property_match_string(node, "reg-names", name);
+>> +
+>> +	return of_iomap(node, index);
+> So if of_property_match_string() returns an error, you feed that error
+> to of_iomap()? Somehow, I don't think that's a good idea.
 
-diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
-index 383df23514b9..87dd62516c8b 100644
---- a/virt/kvm/kvm_main.c
-+++ b/virt/kvm/kvm_main.c
-@@ -3464,6 +3464,51 @@ static long kvm_vcpu_ioctl(struct file *filp,
- 		r = kvm_arch_vcpu_ioctl_set_fpu(vcpu, fpu);
- 		break;
- 	}
-+	case KVM_STATS_GET_INFO: {
-+		struct kvm_stats_info stats_info;
-+
-+		r = -EFAULT;
-+		stats_info.num_stats = VCPU_STAT_COUNT;
-+		if (copy_to_user(argp, &stats_info, sizeof(stats_info)))
-+			goto out;
-+		r = 0;
-+		break;
-+	}
-+	case KVM_STATS_GET_NAMES: {
-+		struct kvm_stats_names stats_names;
-+
-+		r = -EFAULT;
-+		if (copy_from_user(&stats_names, argp, sizeof(stats_names)))
-+			goto out;
-+		r = -EINVAL;
-+		if (stats_names.size < VCPU_STAT_COUNT * KVM_STATS_NAME_LEN)
-+			goto out;
-+
-+		r = -EFAULT;
-+		if (copy_to_user(argp + sizeof(stats_names),
-+				kvm_vcpu_stat_strings,
-+				VCPU_STAT_COUNT * KVM_STATS_NAME_LEN))
-+			goto out;
-+		r = 0;
-+		break;
-+	}
-+	case KVM_STATS_GET_DATA: {
-+		struct kvm_stats_data stats_data;
-+
-+		r = -EFAULT;
-+		if (copy_from_user(&stats_data, argp, sizeof(stats_data)))
-+			goto out;
-+		r = -EINVAL;
-+		if (stats_data.size < sizeof(vcpu->stat))
-+			goto out;
-+
-+		r = -EFAULT;
-+		argp += sizeof(stats_data);
-+		if (copy_to_user(argp, &vcpu->stat, sizeof(vcpu->stat)))
-+			goto out;
-+		r = 0;
-+		break;
-+	}
- 	default:
- 		r = kvm_arch_vcpu_ioctl(filp, ioctl, arg);
- 	}
-@@ -3695,6 +3740,7 @@ static long kvm_vm_ioctl_check_extension_generic(struct kvm *kvm, long arg)
- 	case KVM_CAP_CHECK_EXTENSION_VM:
- 	case KVM_CAP_ENABLE_CAP_VM:
- 	case KVM_CAP_HALT_POLL:
-+	case KVM_CAP_STATS_BINARY_FORM:
- 		return 1;
- #ifdef CONFIG_KVM_MMIO
- 	case KVM_CAP_COALESCED_MMIO:
-@@ -3825,6 +3871,40 @@ static int kvm_vm_ioctl_enable_cap_generic(struct kvm *kvm,
- 	}
- }
- 
-+static long kvm_vm_ioctl_stats_get_data(struct kvm *kvm, unsigned long arg)
-+{
-+	void __user *argp = (void __user *)arg;
-+	struct kvm_vcpu *vcpu;
-+	struct kvm_stats_data stats_data;
-+	u64 *data = NULL, *pdata;
-+	int i, j, ret = 0;
-+	size_t dsize = (VM_STAT_COUNT + VCPU_STAT_COUNT) * sizeof(*data);
-+
-+
-+	if (copy_from_user(&stats_data, argp, sizeof(stats_data)))
-+		return -EFAULT;
-+	if (stats_data.size < dsize)
-+		return -EINVAL;
-+	data = kzalloc(dsize, GFP_KERNEL_ACCOUNT);
-+	if (!data)
-+		return -ENOMEM;
-+
-+	for (i = 0; i < VM_STAT_COUNT; i++)
-+		*(data + i) = *((ulong *)&kvm->stat + i);
-+
-+	kvm_for_each_vcpu(j, vcpu, kvm) {
-+		pdata = data + VM_STAT_COUNT;
-+		for (i = 0; i < VCPU_STAT_COUNT; i++, pdata++)
-+			*pdata += *((u64 *)&vcpu->stat + i);
-+	}
-+
-+	if (copy_to_user(argp + sizeof(stats_data), data, dsize))
-+		ret = -EFAULT;
-+
-+	kfree(data);
-+	return ret;
-+}
-+
- static long kvm_vm_ioctl(struct file *filp,
- 			   unsigned int ioctl, unsigned long arg)
- {
-@@ -4001,6 +4081,41 @@ static long kvm_vm_ioctl(struct file *filp,
- 		r = 0;
- 		break;
- 	}
-+	case KVM_STATS_GET_INFO: {
-+		struct kvm_stats_info stats_info;
-+
-+		r = -EFAULT;
-+		stats_info.num_stats = VM_STAT_COUNT + VCPU_STAT_COUNT;
-+		if (copy_to_user(argp, &stats_info, sizeof(stats_info)))
-+			goto out;
-+		r = 0;
-+		break;
-+	}
-+	case KVM_STATS_GET_NAMES: {
-+		struct kvm_stats_names stats_names;
-+
-+		r = -EFAULT;
-+		if (copy_from_user(&stats_names, argp, sizeof(stats_names)))
-+			goto out;
-+		r = -EINVAL;
-+		if (stats_names.size <
-+			(VM_STAT_COUNT + VCPU_STAT_COUNT) * KVM_STATS_NAME_LEN)
-+			goto out;
-+		r = -EFAULT;
-+		argp += sizeof(stats_names);
-+		if (copy_to_user(argp, kvm_vm_stat_strings,
-+				VM_STAT_COUNT * KVM_STATS_NAME_LEN))
-+			goto out;
-+		argp += VM_STAT_COUNT * KVM_STATS_NAME_LEN;
-+		if (copy_to_user(argp, kvm_vcpu_stat_strings,
-+				VCPU_STAT_COUNT * KVM_STATS_NAME_LEN))
-+			goto out;
-+		r = 0;
-+		break;
-+	}
-+	case KVM_STATS_GET_DATA:
-+		r =  kvm_vm_ioctl_stats_get_data(kvm, arg);
-+		break;
- 	case KVM_CHECK_EXTENSION:
- 		r = kvm_vm_ioctl_check_extension_generic(kvm, arg);
- 		break;
--- 
-2.30.1.766.gb4fecdf3b7-goog
+Hi, Marc
+
+Thank you for your suggestion, error handling is missing here,
+
+      +    if (index <0)
+      +           return NULL;
+
+             return of_iomap(node, index);
+
+It has been fixed in the fourth version, and I will send V4 soon.
+
+> +	if (of_device_is_compatible(node, "loongson,liointc-2.0")) {
+> +		base = liointc_get_reg_byname(node, "main");
+> +		if (!base) {
+> +			err = -ENODEV;
+> +			goto out_free_priv;
+> +		}
+> +		for (i = 0; i < LIOINTC_NUM_CORES; i++) {
+> +			priv->core_isr[i] =
+> +				liointc_get_reg_byname(node, core_reg_names[i]);
+> Please write assignments on a single line.
+
+In addition, write assignments on a single line
+
+                  for (i = 0; i <LIOINTC_NUM_CORES; i++)
+                          priv->core_isr[i] = 
+liointc_get_reg_byname(node, core_reg_names[i]);
+
+     It is 92 characters, more than 80 characters...
+
+
+    Thanks
+
+    -Qing
+
+>
+> Thanks,
+>
+> 	M.
+>
 

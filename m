@@ -5,23 +5,23 @@ X-Spam-Level:
 X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 25C01C43331
-	for <linux-mips@archiver.kernel.org>; Wed, 10 Mar 2021 07:57:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C36BDC4332B
+	for <linux-mips@archiver.kernel.org>; Wed, 10 Mar 2021 07:57:56 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id DB0E264FF1
+	by mail.kernel.org (Postfix) with ESMTP id 76B2964FF2
 	for <linux-mips@archiver.kernel.org>; Wed, 10 Mar 2021 07:57:56 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231843AbhCJH5R (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 10 Mar 2021 02:57:17 -0500
-Received: from mail.loongson.cn ([114.242.206.163]:33348 "EHLO loongson.cn"
+        id S232030AbhCJH5S (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 10 Mar 2021 02:57:18 -0500
+Received: from mail.loongson.cn ([114.242.206.163]:33352 "EHLO loongson.cn"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229584AbhCJH4z (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        id S229643AbhCJH4z (ORCPT <rfc822;linux-mips@vger.kernel.org>);
         Wed, 10 Mar 2021 02:56:55 -0500
 Received: from localhost.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dxn_O3e0hg6KoXAA--.12657S6;
-        Wed, 10 Mar 2021 15:56:47 +0800 (CST)
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dxn_O3e0hg6KoXAA--.12657S8;
+        Wed, 10 Mar 2021 15:56:48 +0800 (CST)
 From:   Qing Zhang <zhangqing@loongson.cn>
 To:     Huacai Chen <chenhuacai@kernel.org>,
         Jiaxun Yang <jiaxun.yang@flygoat.com>,
@@ -30,37 +30,37 @@ To:     Huacai Chen <chenhuacai@kernel.org>,
         Marc Zyngier <maz@kernel.org>
 Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
         devicetree@vger.kernel.org, Ming Wang <wangming01@loongson.cn>
-Subject: [PATCH v4 4/7] MIPS: Loongson64: Add Loongson-2K1000 early_printk_port
-Date:   Wed, 10 Mar 2021 15:56:36 +0800
-Message-Id: <20210310075639.20372-5-zhangqing@loongson.cn>
+Subject: [PATCH v4 6/7] dt-bindings: interrupt-controller: Add Loongson-2K1000 LIOINTC
+Date:   Wed, 10 Mar 2021 15:56:38 +0800
+Message-Id: <20210310075639.20372-7-zhangqing@loongson.cn>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20210310075639.20372-1-zhangqing@loongson.cn>
 References: <20210310075639.20372-1-zhangqing@loongson.cn>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: AQAAf9Dxn_O3e0hg6KoXAA--.12657S6
-X-Coremail-Antispam: 1UD129KBjvdXoWrZw1rWry8KryxWr1xGw4xCrg_yoWkGrcEgF
-        WSyw1kCrWrAr1xC3yrZrs3GFW5ua4jgF45uF1DAr1Fva4Yyrn3WF4DAa9xJFn3Jr1vvF13
-        Cws7JryfCrn29jkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbhAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k26cxKx2IYs7xG
-        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUAVCq3wA2048vs2
-        IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28E
-        F7xvwVC0I7IYx2IY67AKxVW5JVW7JwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVW8Jr0_Cr
-        1UM28EF7xvwVC2z280aVAFwI0_Cr1j6rxdM28EF7xvwVC2z280aVCY1x0267AKxVW0oVCq
-        3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7
-        IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4U
-        M4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCY02Avz4vE14v_GF4l42
-        xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWU
-        GwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI4
-        8JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4U
-        MIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I
-        8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjfUY3kuDUUUU
+X-CM-TRANSID: AQAAf9Dxn_O3e0hg6KoXAA--.12657S8
+X-Coremail-Antispam: 1UD129KBjvJXoW7Aw47JF18XrW3tF1xGw17Jrb_yoW8Xw4kpr
+        srC3ZIgF4UtF13uay8tFy0ka13Zr98AwnrGrsFy3y7GFnrtw1jqr1agF1kAayrCFW0qa4q
+        vFyF93W0gasFyF7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUBG14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_JF0E3s1l82xGYI
+        kIc2x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2
+        z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j6F
+        4UJwA2z4x0Y4vEx4A2jsIE14v26F4UJVW0owA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE
+        3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2I
+        x0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8
+        JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc2xSY4AK67AK6r4xMx
+        AIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_
+        Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwI
+        xGrwCI42IY6xIIjxv20xvE14v26r1I6r4UMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWxJVW8
+        Jr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0x
+        vEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUvg4hUUUUU=
 X-CM-SenderInfo: x2kd0wptlqwqxorr0wxvrqhubq/
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Distinguish between Loongson-3A series CPU and Loongson-2K1000 CPU UART0.
+Add liointc-2.0 properties support, so update the maxItems and description.
 
 Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
 Signed-off-by: Qing Zhang <zhangqing@loongson.cn>
@@ -69,25 +69,34 @@ Tested-by: Ming Wang <wangming01@loongson.cn>
 
 v3-v4: Standard submission of information
 
- arch/mips/loongson64/init.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ .../bindings/interrupt-controller/loongson,liointc.yaml    | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/arch/mips/loongson64/init.c b/arch/mips/loongson64/init.c
-index ed280b73bf89..d5a1eddb8202 100644
---- a/arch/mips/loongson64/init.c
-+++ b/arch/mips/loongson64/init.c
-@@ -120,7 +120,10 @@ void __init prom_init(void)
- #endif
+diff --git a/Documentation/devicetree/bindings/interrupt-controller/loongson,liointc.yaml b/Documentation/devicetree/bindings/interrupt-controller/loongson,liointc.yaml
+index f38e0113f360..5280cf60a9a7 100644
+--- a/Documentation/devicetree/bindings/interrupt-controller/loongson,liointc.yaml
++++ b/Documentation/devicetree/bindings/interrupt-controller/loongson,liointc.yaml
+@@ -10,9 +10,9 @@ maintainers:
+   - Jiaxun Yang <jiaxun.yang@flygoat.com>
  
- 	/* Hardcode to CPU UART 0 */
--	setup_8250_early_printk_port(TO_UNCAC(LOONGSON_REG_BASE + 0x1e0), 0, 1024);
-+	if ((read_c0_prid() & PRID_IMP_MASK) == PRID_IMP_LOONGSON_64R)
-+		setup_8250_early_printk_port(TO_UNCAC(LOONGSON_REG_BASE), 0, 1024);
-+	else
-+		setup_8250_early_printk_port(TO_UNCAC(LOONGSON_REG_BASE + 0x1e0), 0, 1024);
+ description: |
+-  This interrupt controller is found in the Loongson-3 family of chips as the primary
+-  package interrupt controller which can route local I/O interrupt to interrupt lines
+-  of cores.
++  This interrupt controller is found in the Loongson-3 family of chips and
++  Loongson-2K1000 chip, as the primary package interrupt controller which
++  can route local I/O interrupt to interrupt lines of cores.
  
- 	register_smp_ops(&loongson3_smp_ops);
- 	board_nmi_handler_setup = mips_nmi_setup;
+ allOf:
+   - $ref: /schemas/interrupt-controller.yaml#
+@@ -22,6 +22,7 @@ properties:
+     oneOf:
+       - const: loongson,liointc-1.0
+       - const: loongson,liointc-1.0a
++      - const: loongson,liointc-2.0
+ 
+   reg:
+     maxItems: 1
 -- 
 2.20.1
 

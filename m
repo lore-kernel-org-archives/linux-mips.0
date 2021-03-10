@@ -2,99 +2,212 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.3 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,MAILING_LIST_MULTI,
-	NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F0611C433E0
-	for <linux-mips@archiver.kernel.org>; Wed, 10 Mar 2021 06:03:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 26D0CC433DB
+	for <linux-mips@archiver.kernel.org>; Wed, 10 Mar 2021 07:57:56 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id AF7C464F84
-	for <linux-mips@archiver.kernel.org>; Wed, 10 Mar 2021 06:03:42 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id DF40B64FF3
+	for <linux-mips@archiver.kernel.org>; Wed, 10 Mar 2021 07:57:55 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229543AbhCJGDJ (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 10 Mar 2021 01:03:09 -0500
-Received: from foss.arm.com ([217.140.110.172]:38652 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229525AbhCJGDD (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Wed, 10 Mar 2021 01:03:03 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A5C521FB;
-        Tue,  9 Mar 2021 22:03:02 -0800 (PST)
-Received: from [10.163.67.114] (unknown [10.163.67.114])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id DDF513F70D;
-        Tue,  9 Mar 2021 22:02:57 -0800 (PST)
-Subject: Re: [PATCH V2] mm/memtest: Add ARCH_USE_MEMTEST
-To:     linux-mm@kvack.org
-Cc:     Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
+        id S231293AbhCJH5Q (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 10 Mar 2021 02:57:16 -0500
+Received: from mail.loongson.cn ([114.242.206.163]:33362 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229851AbhCJH4z (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Wed, 10 Mar 2021 02:56:55 -0500
+Received: from localhost.localdomain (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dxn_O3e0hg6KoXAA--.12657S7;
+        Wed, 10 Mar 2021 15:56:47 +0800 (CST)
+From:   Qing Zhang <zhangqing@loongson.cn>
+To:     Huacai Chen <chenhuacai@kernel.org>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
         Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Chris Zankel <chris@zankel.net>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-xtensa@linux-xtensa.org,
-        linux-kernel@vger.kernel.org
-References: <1614573126-7740-1-git-send-email-anshuman.khandual@arm.com>
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-Message-ID: <d8f959e4-8a8b-7f11-4ce5-32462c46c05f@arm.com>
-Date:   Wed, 10 Mar 2021 11:33:34 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Marc Zyngier <maz@kernel.org>
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, Ming Wang <wangming01@loongson.cn>
+Subject: [PATCH v4 5/7] irqchip/loongson-liointc: irqchip add 2.0 version
+Date:   Wed, 10 Mar 2021 15:56:37 +0800
+Message-Id: <20210310075639.20372-6-zhangqing@loongson.cn>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20210310075639.20372-1-zhangqing@loongson.cn>
+References: <20210310075639.20372-1-zhangqing@loongson.cn>
 MIME-Version: 1.0
-In-Reply-To: <1614573126-7740-1-git-send-email-anshuman.khandual@arm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: AQAAf9Dxn_O3e0hg6KoXAA--.12657S7
+X-Coremail-Antispam: 1UD129KBjvJXoWxCF18CrWfCr45tw1DGr1fCrg_yoWrtw45pa
+        y8urZ8KFn8Ga47ur4ftFWkZa4avr1SgrZrua4fGFy7C3ZxA3s5AF4ruF1UAr4Sk3y8GFWY
+        vF4rKa4UGa15C37anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUBG14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_JF0E3s1l82xGYI
+        kIc2x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2
+        z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j6F
+        4UJwA2z4x0Y4vEx4A2jsIE14v26F4UJVW0owA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE
+        3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2I
+        x0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8
+        JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc2xSY4AK67AK6r4xMx
+        AIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_
+        Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwI
+        xGrwCI42IY6xIIjxv20xvE14v26r1I6r4UMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWxJVW8
+        Jr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0x
+        vEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUvg4hUUUUU=
+X-CM-SenderInfo: x2kd0wptlqwqxorr0wxvrqhubq/
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
+Add IO interrupt controller support for Loongson-2K1000, different
+from the Loongson-3A series is that 2K1000 has 64 interrupt sources,
+0-31 correspond to the device tree liointc0 device node, and the other
+correspond to liointc1 node.
 
+Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+Signed-off-by: Qing Zhang <zhangqing@loongson.cn>
+Tested-by: Ming Wang <wangming01@loongson.cn>
+---
 
-On 3/1/21 10:02 AM, Anshuman Khandual wrote:
-> early_memtest() does not get called from all architectures. Hence enabling
-> CONFIG_MEMTEST and providing a valid memtest=[1..N] kernel command line
-> option might not trigger the memory pattern tests as would be expected in
-> normal circumstances. This situation is misleading.
-> 
-> The change here prevents the above mentioned problem after introducing a
-> new config option ARCH_USE_MEMTEST that should be subscribed on platforms
-> that call early_memtest(), in order to enable the config CONFIG_MEMTEST.
-> Conversely CONFIG_MEMTEST cannot be enabled on platforms where it would
-> not be tested anyway.
-> 
-> Cc: Russell King <linux@armlinux.org.uk>
-> Cc: Catalin Marinas <catalin.marinas@arm.com>
-> Cc: Will Deacon <will@kernel.org>
-> Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-> Cc: Michael Ellerman <mpe@ellerman.id.au>
-> Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
-> Cc: Paul Mackerras <paulus@samba.org>
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Ingo Molnar <mingo@redhat.com>
-> Cc: Chris Zankel <chris@zankel.net>
-> Cc: Max Filippov <jcmvbkbc@gmail.com>
-> Cc: linux-arm-kernel@lists.infradead.org
-> Cc: linux-mips@vger.kernel.org
-> Cc: linuxppc-dev@lists.ozlabs.org
-> Cc: linux-xtensa@linux-xtensa.org
-> Cc: linux-mm@kvack.org
-> Cc: linux-kernel@vger.kernel.org
-> Reviewed-by: Max Filippov <jcmvbkbc@gmail.com>
-> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
-> ---
-> This patch applies on v5.12-rc1 and has been tested on arm64 platform.
-> But it has been just build tested on all other platforms.
-> 
-> Changes in V2:
-> 
-> - Added ARCH_USE_MEMTEST in the sorted alphabetical order on platforms
+v3-v4: Standard submission of information
 
-Gentle ping, any updates or objections ?
+ drivers/irqchip/irq-loongson-liointc.c | 58 ++++++++++++++++++++++----
+ 1 file changed, 49 insertions(+), 9 deletions(-)
+
+diff --git a/drivers/irqchip/irq-loongson-liointc.c b/drivers/irqchip/irq-loongson-liointc.c
+index 09b91b81851c..33219244c551 100644
+--- a/drivers/irqchip/irq-loongson-liointc.c
++++ b/drivers/irqchip/irq-loongson-liointc.c
+@@ -20,6 +20,7 @@
+ 
+ #define LIOINTC_CHIP_IRQ	32
+ #define LIOINTC_NUM_PARENT 4
++#define LIOINTC_NUM_CORES	4
+ 
+ #define LIOINTC_INTC_CHIP_START	0x20
+ 
+@@ -42,6 +43,7 @@ struct liointc_handler_data {
+ struct liointc_priv {
+ 	struct irq_chip_generic		*gc;
+ 	struct liointc_handler_data	handler[LIOINTC_NUM_PARENT];
++	void __iomem			*core_isr[LIOINTC_NUM_CORES];
+ 	u8				map_cache[LIOINTC_CHIP_IRQ];
+ 	bool				has_lpc_irq_errata;
+ };
+@@ -51,11 +53,12 @@ static void liointc_chained_handle_irq(struct irq_desc *desc)
+ 	struct liointc_handler_data *handler = irq_desc_get_handler_data(desc);
+ 	struct irq_chip *chip = irq_desc_get_chip(desc);
+ 	struct irq_chip_generic *gc = handler->priv->gc;
++	int core = get_ebase_cpunum() % LIOINTC_NUM_CORES;
+ 	u32 pending;
+ 
+ 	chained_irq_enter(chip, desc);
+ 
+-	pending = readl(gc->reg_base + LIOINTC_REG_INTC_STATUS);
++	pending = readl(handler->priv->core_isr[core]);
+ 
+ 	if (!pending) {
+ 		/* Always blame LPC IRQ if we have that bug */
+@@ -141,6 +144,18 @@ static void liointc_resume(struct irq_chip_generic *gc)
+ }
+ 
+ static const char * const parent_names[] = {"int0", "int1", "int2", "int3"};
++static const char * const core_reg_names[] = {"isr0", "isr1", "isr2", "isr3"};
++
++static void __iomem *liointc_get_reg_byname(struct device_node *node,
++						const char *name)
++{
++	int index = of_property_match_string(node, "reg-names", name);
++
++	if (index < 0)
++		return NULL;
++
++	return of_iomap(node, index);
++}
+ 
+ static int __init liointc_of_init(struct device_node *node,
+ 				  struct device_node *parent)
+@@ -159,10 +174,28 @@ static int __init liointc_of_init(struct device_node *node,
+ 	if (!priv)
+ 		return -ENOMEM;
+ 
+-	base = of_iomap(node, 0);
+-	if (!base) {
+-		err = -ENODEV;
+-		goto out_free_priv;
++	if (of_device_is_compatible(node, "loongson,liointc-2.0")) {
++		base = liointc_get_reg_byname(node, "main");
++		if (!base) {
++			err = -ENODEV;
++			goto out_free_priv;
++		}
++
++		for (i = 0; i < LIOINTC_NUM_CORES; i++)
++			priv->core_isr[i] = liointc_get_reg_byname(node, core_reg_names[i]);
++		if (!priv->core_isr[0]) {
++			err = -ENODEV;
++			goto out_iounmap_base;
++		}
++	} else {
++		base = of_iomap(node, 0);
++		if (!base) {
++			err = -ENODEV;
++			goto out_free_priv;
++		}
++
++		for (i = 0; i < LIOINTC_NUM_CORES; i++)
++			priv->core_isr[i] = base + LIOINTC_REG_INTC_STATUS;
+ 	}
+ 
+ 	for (i = 0; i < LIOINTC_NUM_PARENT; i++) {
+@@ -172,7 +205,7 @@ static int __init liointc_of_init(struct device_node *node,
+ 	}
+ 	if (!have_parent) {
+ 		err = -ENODEV;
+-		goto out_iounmap;
++		goto out_iounmap_isr;
+ 	}
+ 
+ 	sz = of_property_read_variable_u32_array(node,
+@@ -183,7 +216,7 @@ static int __init liointc_of_init(struct device_node *node,
+ 	if (sz < 4) {
+ 		pr_err("loongson-liointc: No parent_int_map\n");
+ 		err = -ENODEV;
+-		goto out_iounmap;
++		goto out_iounmap_isr;
+ 	}
+ 
+ 	for (i = 0; i < LIOINTC_NUM_PARENT; i++)
+@@ -195,7 +228,7 @@ static int __init liointc_of_init(struct device_node *node,
+ 	if (!domain) {
+ 		pr_err("loongson-liointc: cannot add IRQ domain\n");
+ 		err = -EINVAL;
+-		goto out_iounmap;
++		goto out_iounmap_isr;
+ 	}
+ 
+ 	err = irq_alloc_domain_generic_chips(domain, 32, 1,
+@@ -260,7 +293,13 @@ static int __init liointc_of_init(struct device_node *node,
+ 
+ out_free_domain:
+ 	irq_domain_remove(domain);
+-out_iounmap:
++out_iounmap_isr:
++	for (i = 0; i < LIOINTC_NUM_CORES; i++) {
++		if (!priv->core_isr[i])
++			continue;
++		iounmap(priv->core_isr[i]);
++	}
++out_iounmap_base:
+ 	iounmap(base);
+ out_free_priv:
+ 	kfree(priv);
+@@ -270,3 +309,4 @@ static int __init liointc_of_init(struct device_node *node,
+ 
+ IRQCHIP_DECLARE(loongson_liointc_1_0, "loongson,liointc-1.0", liointc_of_init);
+ IRQCHIP_DECLARE(loongson_liointc_1_0a, "loongson,liointc-1.0a", liointc_of_init);
++IRQCHIP_DECLARE(loongson_liointc_2_0, "loongson,liointc-2.0", liointc_of_init);
+-- 
+2.20.1
+

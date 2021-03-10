@@ -2,84 +2,83 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.3 required=3.0 tests=BAYES_00,
+X-Spam-Status: No, score=-20.2 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham
-	autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 79C0EC433E6
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A0930C433E9
 	for <linux-mips@archiver.kernel.org>; Wed, 10 Mar 2021 15:19:44 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 4FCB764F33
+	by mail.kernel.org (Postfix) with ESMTP id 6070B64F60
 	for <linux-mips@archiver.kernel.org>; Wed, 10 Mar 2021 15:19:44 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230341AbhCJPTL (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 10 Mar 2021 10:19:11 -0500
-Received: from elvis.franken.de ([193.175.24.41]:42333 "EHLO elvis.franken.de"
+        id S232975AbhCJPTM (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 10 Mar 2021 10:19:12 -0500
+Received: from elvis.franken.de ([193.175.24.41]:42325 "EHLO elvis.franken.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232284AbhCJPS5 (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        id S231150AbhCJPS5 (ORCPT <rfc822;linux-mips@vger.kernel.org>);
         Wed, 10 Mar 2021 10:18:57 -0500
 Received: from uucp (helo=alpha)
         by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1lK0bw-00088y-00; Wed, 10 Mar 2021 16:18:56 +0100
+        id 1lK0bw-00088y-05; Wed, 10 Mar 2021 16:18:56 +0100
 Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 70C66C1C0B; Wed, 10 Mar 2021 16:07:05 +0100 (CET)
-Date:   Wed, 10 Mar 2021 16:07:05 +0100
+        id 411B9C1D54; Wed, 10 Mar 2021 16:09:41 +0100 (CET)
+Date:   Wed, 10 Mar 2021 16:09:41 +0100
 From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Masahiro Yamada <masahiroy@kernel.org>
+To:     Tiezhu Yang <yangtiezhu@loongson.cn>
 Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Sean Christopherson <seanjc@google.com>
-Subject: Re: [PATCH 1/2] mips: syscalls: switch to generic syscalltbl.sh
-Message-ID: <20210310150705.GA12960@alpha.franken.de>
-References: <20210301144825.357922-1-masahiroy@kernel.org>
+        Xuefeng Li <lixuefeng@loongson.cn>
+Subject: Re: [PATCH] MIPS: Enable some missed configs in loongson3_defconfig
+ to support bpftrace
+Message-ID: <20210310150941.GF12960@alpha.franken.de>
+References: <1615186098-2643-1-git-send-email-yangtiezhu@loongson.cn>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210301144825.357922-1-masahiroy@kernel.org>
+In-Reply-To: <1615186098-2643-1-git-send-email-yangtiezhu@loongson.cn>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Mon, Mar 01, 2021 at 11:48:24PM +0900, Masahiro Yamada wrote:
-> Many architectures duplicate similar shell scripts.
+On Mon, Mar 08, 2021 at 02:48:18PM +0800, Tiezhu Yang wrote:
+> bpftrace is a high-level tracing language for Linux enhanced Berkeley
+> Packet Filter (eBPF) available in recent Linux kernels (4.x). bpftrace
+> uses LLVM as a backend to compile scripts to BPF-bytecode and makes use
+> of BCC for interacting with the Linux BPF system, as well as existing
+> Linux tracing capabilities: kernel dynamic tracing (kprobes), user-level
+> dynamic tracing (uprobes), and tracepoints.
 > 
-> This commit converts mips to use scripts/syscalltbl.sh. This also
-> unifies syscall_table_32_o32.h and syscall_table_64_o32.h into
-> syscall_table_o32.h.
+> According to Linux Kernel Requirements in bpftrace/INSTALL.md [1], the
+> kernel needs to be built with the following options:
 > 
-> The offset parameters are unneeded here; __SYSCALL(nr, entry) is defined
-> as 'PTR entry', so the parameter 'nr' is not used in the first place.
+> CONFIG_BPF=y
+> CONFIG_BPF_SYSCALL=y
+> CONFIG_BPF_JIT=y
+> CONFIG_HAVE_EBPF_JIT=y
+> CONFIG_BPF_EVENTS=y
+> CONFIG_FTRACE_SYSCALLS=y
+> CONFIG_FUNCTION_TRACER=y
+> CONFIG_HAVE_DYNAMIC_FTRACE=y
+> CONFIG_DYNAMIC_FTRACE=y
+> CONFIG_HAVE_KPROBES=y
+> CONFIG_KPROBES=y
+> CONFIG_KPROBE_EVENTS=y
+> CONFIG_ARCH_SUPPORTS_UPROBES=y
+> CONFIG_UPROBES=y
+> CONFIG_UPROBE_EVENTS=y
+> CONFIG_DEBUG_FS=y
 > 
-> With this commit, syscall tables and generated files are straight
-> mapped,  which makes things easier to understand.
+> So enable some missed configs in loongson3_defconfig to make sure
+> the above configs are set after make loongson3_defconfig.
 > 
->   syscall_n32.tbl  -->  syscall_table_n32.h
->   syscall_n64.tbl  -->  syscall_table_n64.h
->   syscall_o32.tbl  -->  syscall_table_o32.h
+> [1] https://github.com/iovisor/bpftrace/blob/master/INSTALL.md
 > 
-> Then, the abi parameters are also unneeded.
-> 
-> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
 > ---
-> 
->  arch/mips/include/asm/Kbuild            |  7 +++--
->  arch/mips/kernel/scall32-o32.S          |  4 +--
->  arch/mips/kernel/scall64-n32.S          |  3 +--
->  arch/mips/kernel/scall64-n64.S          |  3 +--
->  arch/mips/kernel/scall64-o32.S          |  4 +--
->  arch/mips/kernel/syscalls/Makefile      | 31 ++++++---------------
->  arch/mips/kernel/syscalls/syscalltbl.sh | 36 -------------------------
->  7 files changed, 17 insertions(+), 71 deletions(-)
->  delete mode 100644 arch/mips/kernel/syscalls/syscalltbl.sh
+>  arch/mips/configs/loongson3_defconfig | 7 ++++++-
+>  1 file changed, 6 insertions(+), 1 deletion(-)
 
 applied to mips-next.
 

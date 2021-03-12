@@ -2,58 +2,65 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.2 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-15.2 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 285D1C4332E
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4DBDAC4332D
 	for <linux-mips@archiver.kernel.org>; Fri, 12 Mar 2021 10:35:20 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 0E41E65045
+	by mail.kernel.org (Postfix) with ESMTP id 2ADAC65048
 	for <linux-mips@archiver.kernel.org>; Fri, 12 Mar 2021 10:35:20 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233475AbhCLKer (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        id S233468AbhCLKer (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
         Fri, 12 Mar 2021 05:34:47 -0500
-Received: from elvis.franken.de ([193.175.24.41]:52580 "EHLO elvis.franken.de"
+Received: from elvis.franken.de ([193.175.24.41]:52601 "EHLO elvis.franken.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233201AbhCLKel (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        id S233401AbhCLKel (ORCPT <rfc822;linux-mips@vger.kernel.org>);
         Fri, 12 Mar 2021 05:34:41 -0500
 Received: from uucp (helo=alpha)
         by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1lKf7u-0007WV-06; Fri, 12 Mar 2021 11:34:38 +0100
+        id 1lKf7u-0007WV-03; Fri, 12 Mar 2021 11:34:38 +0100
 Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 01657C1E4A; Fri, 12 Mar 2021 11:33:41 +0100 (CET)
-Date:   Fri, 12 Mar 2021 11:33:41 +0100
+        id 14531C1E4A; Fri, 12 Mar 2021 11:28:03 +0100 (CET)
+Date:   Fri, 12 Mar 2021 11:28:03 +0100
 From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
-Cc:     John Crispin <john@phrozen.org>,
-        linux-mediatek@lists.infradead.org, linux-mips@vger.kernel.org,
+To:     Qing Zhang <zhangqing@loongson.cn>
+Cc:     Huacai Chen <chenhuacai@kernel.org>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>, linux-mips@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] MIPS: ralink: select WEAK_REORDERING_BEYOND_LLSC on
- MT7621
-Message-ID: <20210312103341.GG7027@alpha.franken.de>
-References: <20210307190806.5211-1-ilya.lipnitskiy@gmail.com>
+Subject: Re: [PATCH 1/2] MIPS: Loongson64: Remove unused sysconf members
+Message-ID: <20210312102803.GD7027@alpha.franken.de>
+References: <20210304110057.22144-1-zhangqing@loongson.cn>
+ <20210304110057.22144-2-zhangqing@loongson.cn>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210307190806.5211-1-ilya.lipnitskiy@gmail.com>
+In-Reply-To: <20210304110057.22144-2-zhangqing@loongson.cn>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Sun, Mar 07, 2021 at 11:08:06AM -0800, Ilya Lipnitskiy wrote:
-> Upstream a long-standing OpenWrt patch for RALINK MT7621 SoC. Selecting
-> WEAK_REORDERING_BEYOND_LLSC fixes random kernel hangs. This bug and fix
-> was reported by MediaTek WCN division [0].
+On Thu, Mar 04, 2021 at 07:00:56PM +0800, Qing Zhang wrote:
+> We don't need them anymore, They are uniform on all Loongson64 systems
+> and have been fixed in DeviceTree.loongson3_platform_init is replaced
+> with DTS + driver.
 > 
-> [0]: https://lists.infradead.org/pipermail/lede-commits/2017-August/004537.html
+> Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+> Signed-off-by: Qing Zhang <zhangqing@loongson.cn>
+> ---
+>  .../include/asm/mach-loongson64/boot_param.h  |  9 ----
+>  arch/mips/loongson64/Makefile                 |  2 +-
+>  arch/mips/loongson64/env.c                    | 20 ---------
+>  arch/mips/loongson64/platform.c               | 42 -------------------
+>  4 files changed, 1 insertion(+), 72 deletions(-)
+>  delete mode 100644 arch/mips/loongson64/platform.c
 
-I don't see the Mediatek WCN reporting there. Looking at the 1004K user
-manual I couldn't find a notice about such behaviour. So this looks
-more like a fix for papering over the real bug by just introducing
-a few more syncs. Could you please point me to where this is
-really documented ?
+applied to mips-next.
 
 Thomas.
 

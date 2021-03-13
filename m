@@ -2,133 +2,120 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
+X-Spam-Status: No, score=-15.3 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,
+	USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5274EC4321A
-	for <linux-mips@archiver.kernel.org>; Sat, 13 Mar 2021 06:43:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B7FFBC433DB
+	for <linux-mips@archiver.kernel.org>; Sat, 13 Mar 2021 08:08:13 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 30FB164F1A
-	for <linux-mips@archiver.kernel.org>; Sat, 13 Mar 2021 06:43:25 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 6214964F1E
+	for <linux-mips@archiver.kernel.org>; Sat, 13 Mar 2021 08:08:13 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232779AbhCMGmu (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Sat, 13 Mar 2021 01:42:50 -0500
-Received: from mail.loongson.cn ([114.242.206.163]:42756 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S232627AbhCMGms (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Sat, 13 Mar 2021 01:42:48 -0500
-Received: from localhost.localdomain (unknown [222.209.9.50])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9AxGda4XkxgjLUYAA--.9506S6;
-        Sat, 13 Mar 2021 14:42:13 +0800 (CST)
-From:   Huang Pei <huangpei@loongson.cn>
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        ambrosehua@gmail.com
-Cc:     Bibo Mao <maobibo@loongson.cn>, linux-mips@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-mm@kvack.org,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Paul Burton <paulburton@kernel.org>,
-        Li Xuefeng <lixuefeng@loongson.cn>,
-        Yang Tiezhu <yangtiezhu@loongson.cn>,
-        Gao Juxin <gaojuxin@loongson.cn>,
-        Huacai Chen <chenhuacai@loongson.cn>,
-        Jinyang He <hejinyang@loongson.cn>,
-        "Maciej W . Rozycki" <macro@orcam.me.uk>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Jisheng Zhang <Jisheng.Zhang@synaptics.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        "Naveen N . Rao" <naveen.n.rao@linux.vnet.ibm.com>
-Subject: [PATCH 4/6] kprobes/ftrace: Use ftrace_location() when [dis]arming probes
-Date:   Sat, 13 Mar 2021 14:41:47 +0800
-Message-Id: <20210313064149.29276-5-huangpei@loongson.cn>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210313064149.29276-1-huangpei@loongson.cn>
-References: <20210313064149.29276-1-huangpei@loongson.cn>
-X-CM-TRANSID: AQAAf9AxGda4XkxgjLUYAA--.9506S6
-X-Coremail-Antispam: 1UD129KBjvJXoW7Kw43WFy7tF4rKryrtw43Wrg_yoW8KrWrpa
-        s0kwn8tr48JFWvgF9Fgw4kZr1rtrn8t347ArW2y3yYyrnxJr1YgF42v3yDtrn8GrZYyFWS
-        yF42vFyjya1xu3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUmF14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_JF0E3s1l82xGYI
-        kIc2x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2
-        z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Cr0_Gr
-        1UM28EF7xvwVC2z280aVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Cr1j
-        6rxdM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6x
-        IIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_
-        Gr1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7M4IIrI8v6xkF7I0E8c
-        xan2IY04v7MxkIecxEwVAFwVW8AwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWU
-        JVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67
-        kF1VAFwI0_GFv_WrylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY
-        6xIIjxv20xvEc7CjxVAFwI0_Cr0_Gr1UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42
-        IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4UJVWxJrUvcSsGvfC2
-        KfnxnUUI43ZEXa7VUjgo2UUUUUU==
-X-CM-SenderInfo: xkxd0whshlqz5rrqw2lrqou0/
+        id S233120AbhCMIHi (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Sat, 13 Mar 2021 03:07:38 -0500
+Received: from out28-5.mail.aliyun.com ([115.124.28.5]:43082 "EHLO
+        out28-5.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229968AbhCMIHJ (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Sat, 13 Mar 2021 03:07:09 -0500
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.07466728|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_regular_dialog|0.112501-0.000359083-0.88714;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047187;MF=zhouyanjie@wanyeetech.com;NM=1;PH=DS;RN=12;RT=12;SR=0;TI=SMTPD_---.JkQU1yY_1615622823;
+Received: from 192.168.10.152(mailfrom:zhouyanjie@wanyeetech.com fp:SMTPD_---.JkQU1yY_1615622823)
+          by smtp.aliyun-inc.com(10.147.41.137);
+          Sat, 13 Mar 2021 16:07:04 +0800
+Subject: Re: [PATCH v2 1/6] pinctrl: Ingenic: Add missing pins to the JZ4770
+ MAC MII group.
+To:     Paul Cercueil <paul@crapouillou.net>
+Cc:     linus.walleij@linaro.org, robh+dt@kernel.org,
+        linux-mips@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        hns@goldelico.com, paul@boddie.org.uk, dongsheng.qiu@ingenic.com,
+        aric.pzqi@ingenic.com, sernia.zhou@foxmail.com
+References: <1615476112-113101-1-git-send-email-zhouyanjie@wanyeetech.com>
+ <1615476112-113101-2-git-send-email-zhouyanjie@wanyeetech.com>
+ <HOXUPQ.U0CJV6YXUOYX2@crapouillou.net>
+From:   Zhou Yanjie <zhouyanjie@wanyeetech.com>
+Message-ID: <f9b18c6d-1d56-7ad3-a7e4-4a52d92b4671@wanyeetech.com>
+Date:   Sat, 13 Mar 2021 16:07:02 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
+MIME-Version: 1.0
+In-Reply-To: <HOXUPQ.U0CJV6YXUOYX2@crapouillou.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-From: Jisheng Zhang <Jisheng.Zhang@synaptics.com>
+Hi Paul,
 
-Ftrace location could include more than a single instruction in case
-of some architectures (powerpc64, for now). In this case, kprobe is
-permitted on any of those instructions, and uses ftrace infrastructure
-for functioning.
+On 2021/3/12 下午9:05, Paul Cercueil wrote:
+> Hi,
+>
+> Le jeu. 11 mars 2021 à 23:21, 周琰杰 (Zhou Yanjie) 
+> <zhouyanjie@wanyeetech.com> a écrit :
+>> The MII group of JZ4770's MAC should have 7 pins, add missing
+>> pins to the MII group.
+>>
+>> Signed-off-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
+>
+> No Fixes: tag?
+> And if the bug wasn't introduced in 5.12-rc1 you'll need to Cc 
+> linux-stable as well.
+>
 
-However, [dis]arm_kprobe_ftrace() uses the kprobe address when setting
-up ftrace filter IP. This won't work if the address points to any
-instruction apart from the one that has a branch to _mcount(). To
-resolve this, have [dis]arm_kprobe_ftrace() use ftrace_function() to
-identify the filter IP.
+Sure, I will add it.
 
-Signed-off-by: Naveen N. Rao <naveen.n.rao@linux.vnet.ibm.com>
-Acked-by: Masami Hiramatsu <mhiramat@kernel.org>
----
- kernel/kprobes.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
 
-diff --git a/kernel/kprobes.c b/kernel/kprobes.c
-index 41fdbb7953c6..66ee28b071c2 100644
---- a/kernel/kprobes.c
-+++ b/kernel/kprobes.c
-@@ -1045,9 +1045,10 @@ static int prepare_kprobe(struct kprobe *p)
- static int __arm_kprobe_ftrace(struct kprobe *p, struct ftrace_ops *ops,
- 			       int *cnt)
- {
-+	unsigned long ftrace_ip = ftrace_location((unsigned long)p->addr);
- 	int ret = 0;
- 
--	ret = ftrace_set_filter_ip(ops, (unsigned long)p->addr, 0, 0);
-+	ret = ftrace_set_filter_ip(ops, ftrace_ip, 0, 0);
- 	if (ret) {
- 		pr_debug("Failed to arm kprobe-ftrace at %pS (%d)\n",
- 			 p->addr, ret);
-@@ -1070,7 +1071,7 @@ static int __arm_kprobe_ftrace(struct kprobe *p, struct ftrace_ops *ops,
- 	 * At this point, sinec ops is not registered, we should be sefe from
- 	 * registering empty filter.
- 	 */
--	ftrace_set_filter_ip(ops, (unsigned long)p->addr, 1, 0);
-+	ftrace_set_filter_ip(ops, ftrace_ip, 1, 0);
- 	return ret;
- }
- 
-@@ -1087,6 +1088,7 @@ static int arm_kprobe_ftrace(struct kprobe *p)
- static int __disarm_kprobe_ftrace(struct kprobe *p, struct ftrace_ops *ops,
- 				  int *cnt)
- {
-+	unsigned long ftrace_ip = ftrace_location((unsigned long)p->addr);
- 	int ret = 0;
- 
- 	if (*cnt == 1) {
-@@ -1097,7 +1099,7 @@ static int __disarm_kprobe_ftrace(struct kprobe *p, struct ftrace_ops *ops,
- 
- 	(*cnt)--;
- 
--	ret = ftrace_set_filter_ip(ops, (unsigned long)p->addr, 1, 0);
-+	ret = ftrace_set_filter_ip(ops, ftrace_ip, 1, 0);
- 	WARN_ONCE(ret < 0, "Failed to disarm kprobe-ftrace at %pS (%d)\n",
- 		  p->addr, ret);
- 	return ret;
--- 
-2.17.1
+>> ---
+>>
+>> Notes:
+>>     v2:
+>>     New patch.
+>>
+>>  drivers/pinctrl/pinctrl-ingenic.c | 4 +++-
+>>  1 file changed, 3 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/pinctrl/pinctrl-ingenic.c 
+>> b/drivers/pinctrl/pinctrl-ingenic.c
+>> index f274612..05dfa0a 100644
+>> --- a/drivers/pinctrl/pinctrl-ingenic.c
+>> +++ b/drivers/pinctrl/pinctrl-ingenic.c
+>> @@ -667,7 +667,9 @@ static int jz4770_pwm_pwm7_pins[] = { 0x6b, };
+>>  static int jz4770_mac_rmii_pins[] = {
+>>      0xa9, 0xab, 0xaa, 0xac, 0xa5, 0xa4, 0xad, 0xae, 0xa6, 0xa8,
+>>  };
+>> -static int jz4770_mac_mii_pins[] = { 0xa7, 0xaf, };
+>> +static int jz4770_mac_mii_pins[] = {
+>> +    0x7b, 0x7a, 0x7d, 0x7c, 0xa7, 0x24, 0xaf,
+>
+> Maybe list them in order?
+>
 
+I ordered them in the order of rxd3, rxd2, txd3, txd2, rxclk, crs, col.
+
+
+> And are you sure that's the whole list? The PM (section 12.2 in 
+> jz4770_pm_part3.pdf) lists more pins.
+>
+
+Here is the way to imitate the MMC. Use only RMII group when using RMII 
+function, use both RMII and MII groups when using MII function. If you 
+think it is necessary, I can redefine the MII group.
+
+
+Thanks and best regards!
+
+
+> Cheers,
+> -Paul
+>
+>> +};
+>>
+>>  static const struct group_desc jz4770_groups[] = {
+>>      INGENIC_PIN_GROUP("uart0-data", jz4770_uart0_data, 0),
+>> -- 
+>> 2.7.4
+>>
+>

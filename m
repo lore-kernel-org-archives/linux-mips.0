@@ -2,63 +2,84 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-14.0 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,
+	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id ECE11C433E9
-	for <linux-mips@archiver.kernel.org>; Sat, 13 Mar 2021 01:41:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5FFF2C43331
+	for <linux-mips@archiver.kernel.org>; Sat, 13 Mar 2021 03:36:47 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id B4A9464F9F
-	for <linux-mips@archiver.kernel.org>; Sat, 13 Mar 2021 01:41:04 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 2890464F89
+	for <linux-mips@archiver.kernel.org>; Sat, 13 Mar 2021 03:36:47 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232994AbhCMBkb (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 12 Mar 2021 20:40:31 -0500
-Received: from mail.loongson.cn ([114.242.206.163]:55524 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S232880AbhCMBkB (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Fri, 12 Mar 2021 20:40:01 -0500
-Received: from localhost.localdomain (unknown [222.209.9.50])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9AxKdbcF0xgiakYAA--.9125S2;
-        Sat, 13 Mar 2021 09:39:48 +0800 (CST)
-From:   Huang Pei <huangpei@loongson.cn>
+        id S233129AbhCMDeG (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 12 Mar 2021 22:34:06 -0500
+Received: from mail-m17635.qiye.163.com ([59.111.176.35]:38060 "EHLO
+        mail-m17635.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233156AbhCMDdz (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Fri, 12 Mar 2021 22:33:55 -0500
+Received: from vivo-HP-ProDesk-680-G4-PCI-MT.vivo.xyz (unknown [58.251.74.231])
+        by mail-m17635.qiye.163.com (Hmail) with ESMTPA id ABBB440012F;
+        Sat, 13 Mar 2021 11:33:53 +0800 (CST)
+From:   Wang Qing <wangqing@vivo.com>
 To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        ambrosehua@gmail.com
-Cc:     Bibo Mao <maobibo@loongson.cn>, linux-mips@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-mm@kvack.org,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Paul Burton <paulburton@kernel.org>,
-        Li Xuefeng <lixuefeng@loongson.cn>,
-        Yang Tiezhu <yangtiezhu@loongson.cn>,
-        Gao Juxin <gaojuxin@loongson.cn>,
-        Huacai Chen <chenhuacai@loongson.cn>,
-        Jinyang He <hejinyang@loongson.cn>
-Subject: [PATCH V5] MIPS: clean up MIPS_PGD_C0_CONTEXT
-Date:   Sat, 13 Mar 2021 09:39:26 +0800
-Message-Id: <20210313013927.26733-1-huangpei@loongson.cn>
-X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID: AQAAf9AxKdbcF0xgiakYAA--.9125S2
-X-Coremail-Antispam: 1UD129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
-        VFW2AGmfu7bjvjm3AaLaJ3UjIYCTnIWjp_UUUYD7AC8VAFwI0_Gr0_Xr1l1xkIjI8I6I8E
-        6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28Cjx
-        kF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWUJVWUCwA2z4x0Y4vE2Ix0cI8I
-        cVCY1x0267AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIE14v26F4j6r4UJwA2z4x0Y4vEx4A2js
-        IEc7CjxVAFwI0_Gr1j6F4UJwAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAK
-        zVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx
-        8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIF
-        xwACI402YVCY1x02628vn2kIc2xKxwCY02Avz4vE14v_KwCF04k20xvY0x0EwIxGrwCFx2
-        IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v2
-        6r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67
-        AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IY
-        s7xG6rWUJVWrZr1UMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI
-        0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUHpB-UUUUU=
-X-CM-SenderInfo: xkxd0whshlqz5rrqw2lrqou0/
+        Wang Qing <wangqing@vivo.com>, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] mips: kernel: use DEFINE_DEBUGFS_ATTRIBUTE with debugfs_create_file_unsafe()
+Date:   Sat, 13 Mar 2021 11:33:48 +0800
+Message-Id: <1615606429-2568-1-git-send-email-wangqing@vivo.com>
+X-Mailer: git-send-email 2.7.4
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
+        oVCBIfWUFZGBgZQktNQh8aGEoYVkpNSk5NS01PSEhCSkhVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
+        FZT0tIVUpKS0hNSlVLWQY+
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6PSI6Cyo5Mz8LPVEBEREhLi05
+        Lk8aCxdVSlVKTUpOTUtNT0hPSU9LVTMWGhIXVQwaFRwKEhUcOw0SDRRVGBQWRVlXWRILWUFZTkNV
+        SU5KVUxPVUlISllXWQgBWUFJSk5KNwY+
+X-HM-Tid: 0a7829a5c826d991kuwsabbb440012f
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-V5:
+debugfs_create_file_unsafe does not protect the fops handed to it
+against file removal. DEFINE_DEBUGFS_ATTRIBUTE makes the fops aware of
+the file lifetime and thus protects it against removal.
 
-correct the calculation error in commit and reformat the patch
+Signed-off-by: Wang Qing <wangqing@vivo.com>
+---
+ arch/mips/kernel/spinlock_test.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
+diff --git a/arch/mips/kernel/spinlock_test.c b/arch/mips/kernel/spinlock_test.c
+index ab4e3e1..90f53e0
+--- a/arch/mips/kernel/spinlock_test.c
++++ b/arch/mips/kernel/spinlock_test.c
+@@ -35,7 +35,7 @@ static int ss_get(void *data, u64 *val)
+ 	return 0;
+ }
+ 
+-DEFINE_SIMPLE_ATTRIBUTE(fops_ss, ss_get, NULL, "%llu\n");
++DEFINE_DEBUGFS_ATTRIBUTE(fops_ss, ss_get, NULL, "%llu\n");
+ 
+ 
+ 
+@@ -114,13 +114,13 @@ static int multi_get(void *data, u64 *val)
+ 	return 0;
+ }
+ 
+-DEFINE_SIMPLE_ATTRIBUTE(fops_multi, multi_get, NULL, "%llu\n");
++DEFINE_DEBUGFS_ATTRIBUTE(fops_multi, multi_get, NULL, "%llu\n");
+ 
+ static int __init spinlock_test(void)
+ {
+-	debugfs_create_file("spin_single", S_IRUGO, mips_debugfs_dir, NULL,
++	debugfs_create_file_unsafe("spin_single", S_IRUGO, mips_debugfs_dir, NULL,
+ 			    &fops_ss);
+-	debugfs_create_file("spin_multi", S_IRUGO, mips_debugfs_dir, NULL,
++	debugfs_create_file_unsafe("spin_multi", S_IRUGO, mips_debugfs_dir, NULL,
+ 			    &fops_multi);
+ 	return 0;
+ }
+-- 
+2.7.4
 

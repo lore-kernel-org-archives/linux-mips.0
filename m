@@ -2,62 +2,163 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 542CBC4332B
-	for <linux-mips@archiver.kernel.org>; Sun, 14 Mar 2021 13:12:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4D685C433E6
+	for <linux-mips@archiver.kernel.org>; Sun, 14 Mar 2021 16:35:55 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 1E75564EEC
-	for <linux-mips@archiver.kernel.org>; Sun, 14 Mar 2021 13:12:53 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 20CE064EE2
+	for <linux-mips@archiver.kernel.org>; Sun, 14 Mar 2021 16:35:55 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235327AbhCNNMV (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Sun, 14 Mar 2021 09:12:21 -0400
-Received: from elvis.franken.de ([193.175.24.41]:57616 "EHLO elvis.franken.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235420AbhCNNMS (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Sun, 14 Mar 2021 09:12:18 -0400
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1lLQXO-0007q5-00; Sun, 14 Mar 2021 14:12:06 +0100
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 7979DC214A; Sun, 14 Mar 2021 14:06:42 +0100 (CET)
-Date:   Sun, 14 Mar 2021 14:06:42 +0100
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Huang Pei <huangpei@loongson.cn>
-Cc:     ambrosehua@gmail.com, Bibo Mao <maobibo@loongson.cn>,
-        linux-mips@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-mm@kvack.org, Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        id S234512AbhCNQfW (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Sun, 14 Mar 2021 12:35:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51994 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234060AbhCNQeu (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Sun, 14 Mar 2021 12:34:50 -0400
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54976C061763;
+        Sun, 14 Mar 2021 09:34:50 -0700 (PDT)
+Received: by mail-wm1-x334.google.com with SMTP id g25so6721855wmh.0;
+        Sun, 14 Mar 2021 09:34:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=2TnKHjrEZiuelE3Ui49VfacWOqQUhvTdnSpyFks03cM=;
+        b=JBzf8gnkEXHFblO9EDqUwjHa0bzTtt0FyEdUocwpGSZoOYfz7CjMhQdgJlziH0L3Fn
+         sTguKCl/Vh3+SHA8j+liu4KbDapZ9DCyq2jUpTcRYMEtxBpOcwQ6S5+EV/GkjyDwubrn
+         gOvuZVEQzwVAEyzi2deL397yzxeCPaPK+/wexI1FDrCUVNzU7+Z97KmHMeGQPCpofW8X
+         NSDeOJuMMv9w80fdpVXOe/B6T8B2fN3B1VxaPF5CeGg3y+kt8t7N5xe7HPZHaSyQfNhM
+         DAjZt26APja8B2TFCWZKSJTZNtr4Ef3WgN7I8yKWfuBq/7jTGmEJcln0EeHw3YqXT8Xm
+         i6pw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=2TnKHjrEZiuelE3Ui49VfacWOqQUhvTdnSpyFks03cM=;
+        b=tpJ+igP+rZfnRsAcn5q317bni7/fpWNu+vG4uf0VKwjiggbTjflpfrc29d7D/EAjrD
+         /823NCJmUFgg1kCXCjZSMw1hos5IVUGCtVX0LUBRZJisrHINdng5Qt0B7PrAxTuUfxQY
+         AZZ21an0ya6SELlcxIHtGBZA7k4A5UYxb38eeVKqTAISwGJb3Xbbv9FmS+GMKLUkW/OQ
+         4DlUz0No+nk9nI2MsS42Cjwu+KX44+ThTclq7Wgemd5W6GrrOrbaasik51sQHYWlVQZb
+         MmhUD7M8Kr+iBnZuZO6gU/rK8Y0/0vfknZVPJRDmOoaYkqO8+ol+D1b3Tn9verhrlH3r
+         d/Tg==
+X-Gm-Message-State: AOAM5327HAIhaottE8UXTnarWXHkLbFITkGXG7eRCEZcnJzK5XxHx8U5
+        MSh4MKC2ctugQ73trukmaMc=
+X-Google-Smtp-Source: ABdhPJzjB+GrJ2Qs6h8kVrMLmamdOj8B8vLN3+Ih/pW6zEI3a18rrTFZmoAviBMZ7EH1h50i97nmLA==
+X-Received: by 2002:a1c:5f89:: with SMTP id t131mr21677507wmb.173.1615739689012;
+        Sun, 14 Mar 2021 09:34:49 -0700 (PDT)
+Received: from skynet.lan ([80.31.204.166])
+        by smtp.gmail.com with ESMTPSA id h62sm10547804wmf.37.2021.03.14.09.34.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 14 Mar 2021 09:34:48 -0700 (PDT)
+From:   =?UTF-8?q?=C3=81lvaro=20Fern=C3=A1ndez=20Rojas?= 
+        <noltari@gmail.com>
+To:     Florian Fainelli <f.fainelli@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        =?UTF-8?q?Philippe=20Mathieu-Daud=C3=A9?= <f4bug@amsat.org>,
         Paul Burton <paulburton@kernel.org>,
-        Li Xuefeng <lixuefeng@loongson.cn>,
-        Yang Tiezhu <yangtiezhu@loongson.cn>,
-        Gao Juxin <gaojuxin@loongson.cn>,
-        Huacai Chen <chenhuacai@loongson.cn>,
-        Jinyang He <hejinyang@loongson.cn>
-Subject: Re: [PATCH V5] MIPS: clean up MIPS_PGD_C0_CONTEXT
-Message-ID: <20210314130642.GA5165@alpha.franken.de>
-References: <20210313013927.26733-1-huangpei@loongson.cn>
+        Jonas Gorski <jonas.gorski@gmail.com>,
+        bcm-kernel-feedback-list@broadcom.com, linux-mips@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     =?UTF-8?q?=C3=81lvaro=20Fern=C3=A1ndez=20Rojas?= 
+        <noltari@gmail.com>
+Subject: [PATCH 1/5] mips: bmips: fix syscon-reboot nodes
+Date:   Sun, 14 Mar 2021 17:34:41 +0100
+Message-Id: <20210314163445.6976-2-noltari@gmail.com>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20210314163445.6976-1-noltari@gmail.com>
+References: <20210314163445.6976-1-noltari@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210313013927.26733-1-huangpei@loongson.cn>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Sat, Mar 13, 2021 at 09:39:26AM +0800, Huang Pei wrote:
-> V5:
-> 
-> correct the calculation error in commit and reformat the patch
+Commit a23c4134955e added the clock controller nodes, incorrectly changing the
+syscon-reboot nodes addresses.
 
-no need for a cover letter for a single patch. Please put the patch
-version into the patch subject itself (PATCH v5) and the version
-history below the --- line after the diffstat.
+Fixes: a23c4134955e ("MIPS: BMIPS: add clock controller nodes")
+Signed-off-by: Álvaro Fernández Rojas <noltari@gmail.com>
+---
+ arch/mips/boot/dts/brcm/bcm3368.dtsi  | 2 +-
+ arch/mips/boot/dts/brcm/bcm63268.dtsi | 2 +-
+ arch/mips/boot/dts/brcm/bcm6358.dtsi  | 2 +-
+ arch/mips/boot/dts/brcm/bcm6362.dtsi  | 2 +-
+ arch/mips/boot/dts/brcm/bcm6368.dtsi  | 2 +-
+ 5 files changed, 5 insertions(+), 5 deletions(-)
 
-Thomas.
-
+diff --git a/arch/mips/boot/dts/brcm/bcm3368.dtsi b/arch/mips/boot/dts/brcm/bcm3368.dtsi
+index db7e801dad55..883ca8bed8e7 100644
+--- a/arch/mips/boot/dts/brcm/bcm3368.dtsi
++++ b/arch/mips/boot/dts/brcm/bcm3368.dtsi
+@@ -62,7 +62,7 @@
+ 
+ 		periph_cntl: syscon@fff8c008 {
+ 			compatible = "syscon";
+-			reg = <0xfff8c000 0x4>;
++			reg = <0xfff8c008 0x4>;
+ 			native-endian;
+ 		};
+ 
+diff --git a/arch/mips/boot/dts/brcm/bcm63268.dtsi b/arch/mips/boot/dts/brcm/bcm63268.dtsi
+index 575c9d3eb4c8..052d2032d4e4 100644
+--- a/arch/mips/boot/dts/brcm/bcm63268.dtsi
++++ b/arch/mips/boot/dts/brcm/bcm63268.dtsi
+@@ -64,7 +64,7 @@
+ 
+ 		periph_cntl: syscon@10000008 {
+ 			compatible = "syscon";
+-			reg = <0x10000000 0xc>;
++			reg = <0x10000008 0x4>;
+ 			native-endian;
+ 		};
+ 
+diff --git a/arch/mips/boot/dts/brcm/bcm6358.dtsi b/arch/mips/boot/dts/brcm/bcm6358.dtsi
+index f8753becc164..f5549a056bff 100644
+--- a/arch/mips/boot/dts/brcm/bcm6358.dtsi
++++ b/arch/mips/boot/dts/brcm/bcm6358.dtsi
+@@ -63,7 +63,7 @@
+ 
+ 		periph_cntl: syscon@fffe0008 {
+ 			compatible = "syscon";
+-			reg = <0xfffe0000 0x4>;
++			reg = <0xfffe0008 0x4>;
+ 			native-endian;
+ 		};
+ 
+diff --git a/arch/mips/boot/dts/brcm/bcm6362.dtsi b/arch/mips/boot/dts/brcm/bcm6362.dtsi
+index a2dbbf062cd8..50c287bedc37 100644
+--- a/arch/mips/boot/dts/brcm/bcm6362.dtsi
++++ b/arch/mips/boot/dts/brcm/bcm6362.dtsi
+@@ -64,7 +64,7 @@
+ 
+ 		periph_cntl: syscon@10000008 {
+ 			compatible = "syscon";
+-			reg = <0x10000000 0xc>;
++			reg = <0x10000008 0x4>;
+ 			native-endian;
+ 		};
+ 
+diff --git a/arch/mips/boot/dts/brcm/bcm6368.dtsi b/arch/mips/boot/dts/brcm/bcm6368.dtsi
+index c4eb4b67ecbd..4837b1436714 100644
+--- a/arch/mips/boot/dts/brcm/bcm6368.dtsi
++++ b/arch/mips/boot/dts/brcm/bcm6368.dtsi
+@@ -63,7 +63,7 @@
+ 
+ 		periph_cntl: syscon@100000008 {
+ 			compatible = "syscon";
+-			reg = <0x10000000 0xc>;
++			reg = <0x10000008 0x4>;
+ 			native-endian;
+ 		};
+ 
 -- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+2.20.1
+

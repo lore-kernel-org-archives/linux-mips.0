@@ -2,159 +2,93 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0548FC433DB
-	for <linux-mips@archiver.kernel.org>; Mon, 15 Mar 2021 07:44:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EFBD8C432C3
+	for <linux-mips@archiver.kernel.org>; Mon, 15 Mar 2021 07:51:09 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id B2F5D64E6B
-	for <linux-mips@archiver.kernel.org>; Mon, 15 Mar 2021 07:44:35 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id BB47764E38
+	for <linux-mips@archiver.kernel.org>; Mon, 15 Mar 2021 07:51:09 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229995AbhCOHoD (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 15 Mar 2021 03:44:03 -0400
-Received: from mx2.suse.de ([195.135.220.15]:42650 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229939AbhCOHnb (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Mon, 15 Mar 2021 03:43:31 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id F0660ABD7;
-        Mon, 15 Mar 2021 07:43:29 +0000 (UTC)
-To:     Paul Cercueil <paul@crapouillou.net>,
-        Christoph Hellwig <hch@infradead.org>
-Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Sam Ravnborg <sam@ravnborg.org>, od@zcrc.me,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        linux-mips@vger.kernel.org
-References: <20210307202835.253907-1-paul@crapouillou.net>
- <20210307202835.253907-5-paul@crapouillou.net>
- <20210311122846.GC1739082@infradead.org>
- <VJ1TPQ.L5I3WNCQNB982@crapouillou.net>
-From:   Thomas Zimmermann <tzimmermann@suse.de>
-Subject: Re: [PATCH v2 4/5] drm: Add and export function drm_gem_cma_sync_data
-Message-ID: <9c3c8e15-9e8c-4413-e75b-de989a750954@suse.de>
-Date:   Mon, 15 Mar 2021 08:43:28 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S230433AbhCOHuk (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 15 Mar 2021 03:50:40 -0400
+Received: from mail.loongson.cn ([114.242.206.163]:41270 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230269AbhCOHuT (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Mon, 15 Mar 2021 03:50:19 -0400
+Received: from localhost.localdomain (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9AxydSsEU9gcqMZAA--.1167S6;
+        Mon, 15 Mar 2021 15:50:13 +0800 (CST)
+From:   Qing Zhang <zhangqing@loongson.cn>
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, Ming Wang <wangming01@loongson.cn>
+Subject: [PATCH v5 4/7] MIPS: Loongson64: Add Loongson-2K1000 early_printk_port
+Date:   Mon, 15 Mar 2021 15:50:01 +0800
+Message-Id: <20210315075004.15465-5-zhangqing@loongson.cn>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20210315075004.15465-1-zhangqing@loongson.cn>
+References: <20210315075004.15465-1-zhangqing@loongson.cn>
 MIME-Version: 1.0
-In-Reply-To: <VJ1TPQ.L5I3WNCQNB982@crapouillou.net>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="7x3zcl9GuxkElcs3Yao3OfSmPIusCl604"
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: AQAAf9AxydSsEU9gcqMZAA--.1167S6
+X-Coremail-Antispam: 1UD129KBjvdXoWrZw1rWry8KryxWr1xGw4xCrg_yoWDtwcEgF
+        WSyw1kCrWrCr1xCayrZrs3GFW5ua4jgF45uF1DAr1Fva4Yy3Z5WFWDAanxGFn3ArnYvF13
+        uws7JryfCrnFvjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbhkFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUAVCq3wA2048vs2
+        IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28E
+        F7xvwVC0I7IYx2IY67AKxVW5JVW7JwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVWxJVW8Jr
+        1l84ACjcxK6I8E87Iv67AKxVWxJr0_GcWl84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s0D
+        M2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjx
+        v20xvE14v26r1j6r18McIj6I8E87Iv67AKxVW8JVWxJwAm72CE4IkC6x0Yz7v_Jr0_Gr1l
+        F7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7MxkIecxEwVAFwVW8CwCF04
+        k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18
+        MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr4
+        1lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1l
+        IxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4
+        A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0JU-zVnUUUUU=
+X-CM-SenderInfo: x2kd0wptlqwqxorr0wxvrqhubq/
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---7x3zcl9GuxkElcs3Yao3OfSmPIusCl604
-Content-Type: multipart/mixed; boundary="1d80S5GLvRs1vi8HdXnlPyfLzdbqxjsE0";
- protected-headers="v1"
-From: Thomas Zimmermann <tzimmermann@suse.de>
-To: Paul Cercueil <paul@crapouillou.net>,
- Christoph Hellwig <hch@infradead.org>
-Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>, David Airlie <airlied@linux.ie>,
- Daniel Vetter <daniel@ffwll.ch>, Sam Ravnborg <sam@ravnborg.org>,
- od@zcrc.me, dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
- linux-mips@vger.kernel.org
-Message-ID: <9c3c8e15-9e8c-4413-e75b-de989a750954@suse.de>
-Subject: Re: [PATCH v2 4/5] drm: Add and export function drm_gem_cma_sync_data
-References: <20210307202835.253907-1-paul@crapouillou.net>
- <20210307202835.253907-5-paul@crapouillou.net>
- <20210311122846.GC1739082@infradead.org>
- <VJ1TPQ.L5I3WNCQNB982@crapouillou.net>
-In-Reply-To: <VJ1TPQ.L5I3WNCQNB982@crapouillou.net>
+Distinguish between Loongson-3A series CPU and Loongson-2K1000 CPU UART0.
 
---1d80S5GLvRs1vi8HdXnlPyfLzdbqxjsE0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+Signed-off-by: Qing Zhang <zhangqing@loongson.cn>
+Tested-by: Ming Wang <wangming01@loongson.cn>
+---
 
-Hi
+v4-v5:
+- No change
 
-Am 11.03.21 um 13:33 schrieb Paul Cercueil:
->=20
->=20
-> Le jeu. 11 mars 2021 =C3=A0 12:28, Christoph Hellwig <hch@infradead.org=
-> a=20
-> =C3=A9crit :
->> On Sun, Mar 07, 2021 at 08:28:34PM +0000, Paul Cercueil wrote:
->>> =C2=A0+=C2=A0=C2=A0=C2=A0 drm_atomic_for_each_plane_damage(&iter, &cl=
-ip) {
->>> =C2=A0+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 for (i =3D 0; i < f=
-info->num_planes; i++) {
->>> =C2=A0+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0 daddr =3D drm_fb_cma_get_gem_addr(state->fb, state, i);
->>> =C2=A0+
->>> =C2=A0+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0 /* Ignore x1/x2 values, invalidate complete lines */
->>> =C2=A0+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0 offset =3D clip.y1 * state->fb->pitches[i];
->>> =C2=A0+
->>> =C2=A0+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0 dma_sync_single_for_device(dev, daddr + offset,
->>> =C2=A0+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 (cl=
-ip.y2 - clip.y1) * state->fb->pitches[i],
->>> =C2=A0+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 DMA=
-_TO_DEVICE);
->>
->> Are these helpers only ever used to transfer data to the device and
->> never from it?=C2=A0 If so please clearly document that.
->=20
-> Yes. In the DRM world, are there cases where we transfer data from the =
+ arch/mips/loongson64/init.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-> device? I assume these cases are handled by v4l2 instead.
+diff --git a/arch/mips/loongson64/init.c b/arch/mips/loongson64/init.c
+index ed280b73bf89..d5a1eddb8202 100644
+--- a/arch/mips/loongson64/init.c
++++ b/arch/mips/loongson64/init.c
+@@ -120,7 +120,10 @@ void __init prom_init(void)
+ #endif
+ 
+ 	/* Hardcode to CPU UART 0 */
+-	setup_8250_early_printk_port(TO_UNCAC(LOONGSON_REG_BASE + 0x1e0), 0, 1024);
++	if ((read_c0_prid() & PRID_IMP_MASK) == PRID_IMP_LOONGSON_64R)
++		setup_8250_early_printk_port(TO_UNCAC(LOONGSON_REG_BASE), 0, 1024);
++	else
++		setup_8250_early_printk_port(TO_UNCAC(LOONGSON_REG_BASE + 0x1e0), 0, 1024);
+ 
+ 	register_smp_ops(&loongson3_smp_ops);
+ 	board_nmi_handler_setup = mips_nmi_setup;
+-- 
+2.20.1
 
-Software rendering (i.e., anything wrt dumb buffers) likely reads back=20
-framebuffer content during blit operations. For devices where this is a=20
-slow operation (e.g., PCI read) we set struct=20
-drm_mode_config.prefer_shadow to hint renderers to use shadow buffering.
-
-Best regards
-Thomas
-
->=20
-> -Paul
->=20
->=20
-
---=20
-Thomas Zimmermann
-Graphics Driver Developer
-SUSE Software Solutions Germany GmbH
-Maxfeldstr. 5, 90409 N=C3=BCrnberg, Germany
-(HRB 36809, AG N=C3=BCrnberg)
-Gesch=C3=A4ftsf=C3=BChrer: Felix Imend=C3=B6rffer
-
-
---1d80S5GLvRs1vi8HdXnlPyfLzdbqxjsE0--
-
---7x3zcl9GuxkElcs3Yao3OfSmPIusCl604
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
-
------BEGIN PGP SIGNATURE-----
-
-wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmBPECAFAwAAAAAACgkQlh/E3EQov+BQ
-OhAAo+n7QqrhXKWvVH/Re+piCvHUYFBgain+soNQJDbYOq5pZEaXmM+a/338ukTX/+kHDcJ6YbgW
-x72JTZ4v7mKWvoqcby3a1e0BPsiD3NEHSxctuvkK6JK1ujCujtDTbx7DLjS0oigSPToNe0JUZtR9
-Ck4yQWEccXejAETaKU0h9+tQ/+aylFrxX6zqffgivOYPG3BIhqNUa5OZo0QoSsRkx5sUncLz3b1F
-gIMV8OPxp8N2a5QHKkcylnmnjOZZgNMtz0a4N7dR8p8p179+w4DN7L6Yj6ctBW6bvMEAaWA0zJCC
-7TeE0//ENN57/74fvZq5Q2G23n5F5ImTF/yDanAzvfF9gsu6Mc7tceLEWMqh2msZBDOvfD2p7dOi
-wuuB1bEFzIUQ1xXQx2lhy3CoXnU+T+QIub/HkIoVKvgfv//AEWlli9+cvZKo6hv32GDHLQRtlrOy
-NV+imFnm79gKkB/B6Z7JuDrAcU49VY0wOoJqLQesPzRaLQkXtABF6WzKPmIyF67IZz/U2PtQ+RU9
-35UhNCbffnhPtz3PEqap8b5Tt11mMrr3hY3vK7gbajPdzcPNoXX/J+L7kCTuxpU3wpnMtiG8ssu2
-qJ613e5iGyxVlAGP/7cgopCx57GhzoTOOnpfberi7sY7giiy/0cyjNY89zRCpFWiHrDN84hApatz
-mWY=
-=0TxZ
------END PGP SIGNATURE-----
-
---7x3zcl9GuxkElcs3Yao3OfSmPIusCl604--

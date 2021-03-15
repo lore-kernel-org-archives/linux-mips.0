@@ -3,25 +3,25 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
 X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 49E42C41620
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 06420C28E88
 	for <linux-mips@archiver.kernel.org>; Mon, 15 Mar 2021 07:51:11 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 34E1464E49
-	for <linux-mips@archiver.kernel.org>; Mon, 15 Mar 2021 07:51:11 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id D706364EC3
+	for <linux-mips@archiver.kernel.org>; Mon, 15 Mar 2021 07:51:10 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230476AbhCOHuo (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 15 Mar 2021 03:50:44 -0400
-Received: from mail.loongson.cn ([114.242.206.163]:41278 "EHLO loongson.cn"
+        id S230453AbhCOHum (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 15 Mar 2021 03:50:42 -0400
+Received: from mail.loongson.cn ([114.242.206.163]:41290 "EHLO loongson.cn"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230280AbhCOHuU (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        id S230286AbhCOHuU (ORCPT <rfc822;linux-mips@vger.kernel.org>);
         Mon, 15 Mar 2021 03:50:20 -0400
 Received: from localhost.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9AxydSsEU9gcqMZAA--.1167S2;
-        Mon, 15 Mar 2021 15:50:05 +0800 (CST)
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9AxydSsEU9gcqMZAA--.1167S8;
+        Mon, 15 Mar 2021 15:50:14 +0800 (CST)
 From:   Qing Zhang <zhangqing@loongson.cn>
 To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
         Thomas Gleixner <tglx@linutronix.de>,
@@ -29,70 +29,113 @@ To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
         Huacai Chen <chenhuacai@kernel.org>,
         Jiaxun Yang <jiaxun.yang@flygoat.com>
 Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org
-Subject: [PATCH v5 0/7] Add basic support for Loongson-2K1000
-Date:   Mon, 15 Mar 2021 15:49:57 +0800
-Message-Id: <20210315075004.15465-1-zhangqing@loongson.cn>
+        devicetree@vger.kernel.org, Ming Wang <wangming01@loongson.cn>
+Subject: [PATCH v5 6/7] dt-bindings: interrupt-controller: Add Loongson-2K1000 LIOINTC
+Date:   Mon, 15 Mar 2021 15:50:03 +0800
+Message-Id: <20210315075004.15465-7-zhangqing@loongson.cn>
 X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20210315075004.15465-1-zhangqing@loongson.cn>
+References: <20210315075004.15465-1-zhangqing@loongson.cn>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: AQAAf9AxydSsEU9gcqMZAA--.1167S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7urykAr1DAw4DKryfXFWDJwb_yoW8Ww13pw
-        43Cw13Krs8Cry7Crn3JFyUur15ZrWrJrZrWF43Xr15G3sIqa4Yvr1fJFs8Jw47Zry8ta4j
-        vryrGFW7GFnrC3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUk2b7Iv0xC_KF4lb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I2
-        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
-        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xII
-        jxv20xvEc7CjxVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVWxJr0_GcWl84ACjcxK6I
-        8E87Iv6xkF7I0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI
-        64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVW8JVWxJw
-        Am72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lc2xSY4AK67AK6r4xMxAIw28I
-        cxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2
-        IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI
-        42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42
-        IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E
-        87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxU4sXODUUUU
+X-CM-TRANSID: AQAAf9AxydSsEU9gcqMZAA--.1167S8
+X-Coremail-Antispam: 1UD129KBjvJXoW7Aw47JrWDWFWftr4rAw48Xrb_yoW8Zr18pF
+        ZxCanxWF4UtF13u3y8tFy0ka15Zr95AwnrAan2y3y7GFsrtw1jqr4agF1kJay3Cr92qa4j
+        vFy0k3WUGasFyF7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUBl14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_JF0E3s1l82xGYI
+        kIc2x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2
+        z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Cr0_Gr
+        1UM28EF7xvwVC2z280aVAFwI0_Cr1j6rxdM28EF7xvwVC2z280aVCY1x0267AKxVW0oVCq
+        3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7
+        IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r4U
+        M4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCY02Avz4vE14v_GF4l42
+        xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWU
+        GwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI4
+        8JMIIF0xvE2Ix0cI8IcVAFwI0_JFI_Gr1lIxAIcVC0I7IYx2IY6xkF7I0E14v26F4j6r4U
+        JwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcV
+        C2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7VUjPEf3UUUUU==
 X-CM-SenderInfo: x2kd0wptlqwqxorr0wxvrqhubq/
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-These patches support single-core DTS boot to the serial port login
-interface, which can be operated using conventional commands.
+Add liointc-2.0 properties support, so update the maxItems and
+condition description.
 
-I have successfully tested it on the Loongson 2K1000 machine.
-pmon: http://cgit.loongnix.org/cgit/pmon-loongson3/
+Signed-off-by: Qing Zhang <zhangqing@loongson.cn>
+Tested-by: Ming Wang <wangming01@loongson.cn>
+---
 
-Note:
-After the basic support is merged,
-I will commit SMP and other driver support in the future.
+v4-v5:
+- Add reg condition description
 
-Qing Zhang (7):
-  MIPS: Loongson64: DeviceTree for Loongson-2K1000
-  MIPS: Loongson64: Distinguish firmware dependencies DTB/LEFI
-  MIPS: Loongson64: Add support for the Loongson-2K1000 to get
-    cpu_clock_freq
-  MIPS: Loongson64: Add Loongson-2K1000 early_printk_port
-  irqchip/loongson-liointc: irqchip add 2.0 version
-  dt-bindings: interrupt-controller: Add Loongson-2K1000 LIOINTC
-  MIPS: Loongson64: Add a Loongson-2K1000 default config file
+ .../loongson,liointc.yaml                     | 36 ++++++++++++++++---
+ 1 file changed, 32 insertions(+), 4 deletions(-)
 
- .../loongson,liointc.yaml                     |  36 +-
- arch/mips/boot/dts/loongson/Makefile          |   1 +
- .../boot/dts/loongson/loongson64-2k1000.dtsi  | 243 ++++++++++++
- .../dts/loongson/loongson64_2core_2k1000.dts  |  10 +
- arch/mips/configs/loongson2k_defconfig        | 353 ++++++++++++++++++
- .../asm/mach-loongson64/builtin_dtbs.h        |   1 +
- .../include/asm/mach-loongson64/loongson.h    |   9 +-
- arch/mips/loongson64/env.c                    |  13 +-
- arch/mips/loongson64/init.c                   |  21 +-
- arch/mips/loongson64/time.c                   |  24 ++
- drivers/irqchip/irq-loongson-liointc.c        |  58 ++-
- 11 files changed, 751 insertions(+), 18 deletions(-)
- create mode 100644 arch/mips/boot/dts/loongson/loongson64-2k1000.dtsi
- create mode 100644 arch/mips/boot/dts/loongson/loongson64_2core_2k1000.dts
- create mode 100644 arch/mips/configs/loongson2k_defconfig
-
+diff --git a/Documentation/devicetree/bindings/interrupt-controller/loongson,liointc.yaml b/Documentation/devicetree/bindings/interrupt-controller/loongson,liointc.yaml
+index f38e0113f360..067165c4b836 100644
+--- a/Documentation/devicetree/bindings/interrupt-controller/loongson,liointc.yaml
++++ b/Documentation/devicetree/bindings/interrupt-controller/loongson,liointc.yaml
+@@ -10,9 +10,9 @@ maintainers:
+   - Jiaxun Yang <jiaxun.yang@flygoat.com>
+ 
+ description: |
+-  This interrupt controller is found in the Loongson-3 family of chips as the primary
+-  package interrupt controller which can route local I/O interrupt to interrupt lines
+-  of cores.
++  This interrupt controller is found in the Loongson-3 family of chips and
++  Loongson-2K1000 chip, as the primary package interrupt controller which
++  can route local I/O interrupt to interrupt lines of cores.
+ 
+ allOf:
+   - $ref: /schemas/interrupt-controller.yaml#
+@@ -22,9 +22,17 @@ properties:
+     oneOf:
+       - const: loongson,liointc-1.0
+       - const: loongson,liointc-1.0a
++      - const: loongson,liointc-2.0
+ 
+   reg:
+-    maxItems: 1
++    minItems: 1
++    maxItems: 3
++
++  reg-names:
++    items:
++      - const: main
++      - const: isr0
++      - const: isr1
+ 
+   interrupt-controller: true
+ 
+@@ -69,6 +77,26 @@ required:
+ 
+ unevaluatedProperties: false
+ 
++if:
++  properties:
++    compatible:
++      contains:
++        enum:
++          - loongson,liointc-2.0
++
++then:
++  properties:
++    reg:
++      minItems: 3
++
++  required:
++    - reg-names
++
++else:
++  properties:
++    reg:
++      maxItems: 1
++
+ examples:
+   - |
+     iointc: interrupt-controller@3ff01400 {
 -- 
 2.20.1
 

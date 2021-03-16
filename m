@@ -2,76 +2,71 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 34369C43332
-	for <linux-mips@archiver.kernel.org>; Tue, 16 Mar 2021 15:46:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AD68FC43619
+	for <linux-mips@archiver.kernel.org>; Tue, 16 Mar 2021 17:03:07 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id E6A74650F7
-	for <linux-mips@archiver.kernel.org>; Tue, 16 Mar 2021 15:46:23 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 9359F65119
+	for <linux-mips@archiver.kernel.org>; Tue, 16 Mar 2021 17:03:07 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236725AbhCPPpy (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 16 Mar 2021 11:45:54 -0400
-Received: from aposti.net ([89.234.176.197]:42038 "EHLO aposti.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229749AbhCPPpr (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Tue, 16 Mar 2021 11:45:47 -0400
-From:   Paul Cercueil <paul@crapouillou.net>
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc:     od@zcrc.me, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Paul Cercueil <paul@crapouillou.net>,
-        =?UTF-8?q?Bj=C3=B8rn=20Mork?= <bjorn@mork.no>
-Subject: [PATCH] MIPS: vmlinux.lds.S: Fix appended dtb not properly aligned
-Date:   Tue, 16 Mar 2021 15:45:15 +0000
-Message-Id: <20210316154515.171543-1-paul@crapouillou.net>
+        id S238059AbhCPRCq (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 16 Mar 2021 13:02:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56824 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237156AbhCPRCU (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Tue, 16 Mar 2021 13:02:20 -0400
+Received: from canardo.mork.no (canardo.mork.no [IPv6:2001:4641::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4522EC06174A;
+        Tue, 16 Mar 2021 10:02:19 -0700 (PDT)
+Received: from miraculix.mork.no ([IPv6:2a01:799:c9e:a108:162d:5d96:d792:df29])
+        (authenticated bits=0)
+        by canardo.mork.no (8.15.2/8.15.2) with ESMTPSA id 12GH2BPZ032267
+        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NO);
+        Tue, 16 Mar 2021 18:02:11 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mork.no; s=b;
+        t=1615914132; bh=vp/GA9v/KL3JbZxcyD1G+bDAmVCA+mobz6mk5cdWMDQ=;
+        h=From:To:Cc:Subject:References:Date:Message-ID:From;
+        b=aO80HNtEntVZG3jsr+2F1tJDI2mlfxFYrDf3ENv/LheAubO0YpileTFd8VyXaRyPh
+         bb4Nsm0RRVy2VfeOSc7FcItoEAZaUU7QatRTZR36yBiTqmfu7vIVJubS8sJE8KEbyx
+         YV7UUuAPznMEa+nTk1/88wCdWM9f2Y8P75vU0bSk=
+Received: from bjorn by miraculix.mork.no with local (Exim 4.94)
+        (envelope-from <bjorn@mork.no>)
+        id 1lMD58-001Iip-O9; Tue, 16 Mar 2021 18:02:10 +0100
+From:   =?utf-8?Q?Bj=C3=B8rn_Mork?= <bjorn@mork.no>
+To:     Paul Cercueil <paul@crapouillou.net>
+Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>, od@zcrc.me,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] MIPS: vmlinux.lds.S: Fix appended dtb not properly aligned
+Organization: m
+References: <20210316154515.171543-1-paul@crapouillou.net>
+Date:   Tue, 16 Mar 2021 18:02:10 +0100
+In-Reply-To: <20210316154515.171543-1-paul@crapouillou.net> (Paul Cercueil's
+        message of "Tue, 16 Mar 2021 15:45:15 +0000")
+Message-ID: <87r1kfnib1.fsf@miraculix.mork.no>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Virus-Scanned: clamav-milter 0.102.4 at canardo
+X-Virus-Status: Clean
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Commit 6654111c893f ("MIPS: vmlinux.lds.S: align raw appended dtb to 8
-bytes") changed the alignment from STRUCT_ALIGNMENT bytes to 8 bytes.
+Paul Cercueil <paul@crapouillou.net> writes:
 
-The commit's message makes it sound like it was actually done on
-purpose, but this is not the case. The commit was written when raw
-appended dtb were not aligned at all. The STRUCT_ALIGN() was added a few
-days before, in commit 7a05293af39f ("MIPS: boot/compressed: Copy DTB to
-aligned address"). The true purpose of the commit was not to align
-specifically to 8 bytes, but to make sure that the generated vmlinux'
-size was properly padded to the alignment required for DTBs.
+> Commit 6654111c893f ("MIPS: vmlinux.lds.S: align raw appended dtb to 8
+> bytes") changed the alignment from STRUCT_ALIGNMENT bytes to 8 bytes.
 
-While the switch to 8-byte alignment worked for vmlinux-appended dtb
-blobs, it broke vmlinuz-appended dtb blobs, as the decompress routine
-moves the blob to a STRUCT_ALIGNMENT aligned address.
+Ouch.  That was not my intention.  I see that there was a mixup with my
+initial patch. My last version used STRUCT_ALIGNMENT, but might have
+been lost since I sent it only as an attachment during the discussion.
 
-Fix this by changing the raw appended dtb blob alignment from 8 bytes
-back to STRUCT_ALIGNMENT bytes in vmlinux.lds.S.
+Sorry for not catching this.  And thanks for fixing.
 
-Fixes: 6654111c893f ("MIPS: vmlinux.lds.S: align raw appended dtb to 8 bytes")
-Cc: Bjørn Mork <bjorn@mork.no>
-Signed-off-by: Paul Cercueil <paul@crapouillou.net>
----
- arch/mips/kernel/vmlinux.lds.S | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/mips/kernel/vmlinux.lds.S b/arch/mips/kernel/vmlinux.lds.S
-index 1234834cc4c4..1f98947fe715 100644
---- a/arch/mips/kernel/vmlinux.lds.S
-+++ b/arch/mips/kernel/vmlinux.lds.S
-@@ -176,7 +176,7 @@ SECTIONS
- 	.fill : {
- 		FILL(0);
- 		BYTE(0);
--		. = ALIGN(8);
-+		STRUCT_ALIGN();
- 	}
- 	__appended_dtb = .;
- 	/* leave space for appended DTB */
--- 
-2.30.2
-
+Bj=C3=B8rn

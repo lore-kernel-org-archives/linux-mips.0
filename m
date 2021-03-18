@@ -2,54 +2,70 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,UNPARSEABLE_RELAY,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-16.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 09831C433E9
-	for <linux-mips@archiver.kernel.org>; Thu, 18 Mar 2021 16:26:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 39C0CC433DB
+	for <linux-mips@archiver.kernel.org>; Thu, 18 Mar 2021 17:03:02 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id C32F764F1C
-	for <linux-mips@archiver.kernel.org>; Thu, 18 Mar 2021 16:26:44 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 0667264E38
+	for <linux-mips@archiver.kernel.org>; Thu, 18 Mar 2021 17:03:02 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231833AbhCRQ0N (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 18 Mar 2021 12:26:13 -0400
-Received: from out28-217.mail.aliyun.com ([115.124.28.217]:35578 "EHLO
-        out28-217.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230338AbhCRQZz (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Thu, 18 Mar 2021 12:25:55 -0400
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.1427447|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.018844-0.000811314-0.980345;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047206;MF=zhouyanjie@wanyeetech.com;NM=1;PH=DS;RN=9;RT=9;SR=0;TI=SMTPD_---.JmuzqJv_1616084746;
-Received: from zhouyanjie-virtual-machine.localdomain(mailfrom:zhouyanjie@wanyeetech.com fp:SMTPD_---.JmuzqJv_1616084746)
-          by smtp.aliyun-inc.com(10.147.41.138);
-          Fri, 19 Mar 2021 00:25:51 +0800
-From:   =?UTF-8?q?=E5=91=A8=E7=90=B0=E6=9D=B0=20=28Zhou=20Yanjie=29?= 
+        id S231970AbhCRRC3 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 18 Mar 2021 13:02:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39052 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230509AbhCRRCA (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Thu, 18 Mar 2021 13:02:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0AF8A64E07;
+        Thu, 18 Mar 2021 17:01:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1616086916;
+        bh=I+1tJaROjaJ2NLUs21QiIetoDQNwWx//QTiUSM9j4cg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=aNpMoVHPxFHJZw4WcY7Vu0ygCumpxDxXXnErqv2bxlUYJNawbUA/YRNMb+NSqG1oJ
+         4ohWHclFIBMD7KoZMao08chX3xqNFexR0as3skRjb1+vq1nlt1UNxwrfdmL8EEmsgp
+         0oZJf0DGlstrG0j0aYz3v0ccvt5Bf2hsJJpwPfnA=
+Date:   Thu, 18 Mar 2021 18:01:53 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     =?utf-8?B?5ZGo55Cw5p2wIChaaG91IFlhbmppZSk=?= 
         <zhouyanjie@wanyeetech.com>
-To:     wsa@kernel.org, paul@crapouillou.net
-Cc:     stable@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dongsheng.qiu@ingenic.com, aric.pzqi@ingenic.com,
-        sernia.zhou@foxmail.com
-Subject: Fix bug for Ingenic X1000.
-Date:   Fri, 19 Mar 2021 00:25:42 +0800
-Message-Id: <1616084743-112402-1-git-send-email-zhouyanjie@wanyeetech.com>
-X-Mailer: git-send-email 2.7.4
+Cc:     wsa@kernel.org, paul@crapouillou.net, stable@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-i2c@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dongsheng.qiu@ingenic.com,
+        aric.pzqi@ingenic.com, sernia.zhou@foxmail.com
+Subject: Re: [PATCH] I2C: JZ4780: Fix bug for Ingenic X1000.
+Message-ID: <YFOHgfEMrEhgbdyO@kroah.com>
+References: <1616084743-112402-1-git-send-email-zhouyanjie@wanyeetech.com>
+ <1616084743-112402-2-git-send-email-zhouyanjie@wanyeetech.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <1616084743-112402-2-git-send-email-zhouyanjie@wanyeetech.com>
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-For SoCs after X1000, only send "X1000_I2C_DC_STOP" when last byte,
-or it will cause error when I2C write operation.
+On Fri, Mar 19, 2021 at 12:25:43AM +0800, 周琰杰 (Zhou Yanjie) wrote:
+> Only send "X1000_I2C_DC_STOP" when last byte, or it will cause
+> error when I2C write operation.
+> 
+> Fixes: 21575a7a8d4c ("I2C: JZ4780: Add support for the X1000.")
+> 
+> Signed-off-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
+> ---
+>  drivers/i2c/busses/i2c-jz4780.c | 7 +++----
+>  1 file changed, 3 insertions(+), 4 deletions(-)
+> 
 
-周琰杰 (Zhou Yanjie) (1):
-  I2C: JZ4780: Fix bug for Ingenic X1000.
+<formletter>
 
- drivers/i2c/busses/i2c-jz4780.c | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+This is not the correct way to submit patches for inclusion in the
+stable kernel tree.  Please read:
+    https://www.kernel.org/doc/html/latest/process/stable-kernel-rules.html
+for how to do this properly.
 
--- 
-2.7.4
-
+</formletter>

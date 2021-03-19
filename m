@@ -2,85 +2,62 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.2 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.3 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9AD17C433E0
-	for <linux-mips@archiver.kernel.org>; Fri, 19 Mar 2021 12:35:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3EB1DC433E6
+	for <linux-mips@archiver.kernel.org>; Fri, 19 Mar 2021 13:04:53 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 7A95E64EE7
-	for <linux-mips@archiver.kernel.org>; Fri, 19 Mar 2021 12:35:13 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id EBF3964ECD
+	for <linux-mips@archiver.kernel.org>; Fri, 19 Mar 2021 13:04:52 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229805AbhCSMel (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 19 Mar 2021 08:34:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37230 "EHLO mail.kernel.org"
+        id S229914AbhCSNEX (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 19 Mar 2021 09:04:23 -0400
+Received: from verein.lst.de ([213.95.11.211]:46083 "EHLO verein.lst.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229766AbhCSMeU (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Fri, 19 Mar 2021 08:34:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4C25964EB6;
-        Fri, 19 Mar 2021 12:34:15 +0000 (UTC)
-Date:   Fri, 19 Mar 2021 12:34:12 +0000
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Anshuman Khandual <anshuman.khandual@arm.com>
-Cc:     linux-mm@kvack.org, Russell King <linux@armlinux.org.uk>,
-        Will Deacon <will@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        id S229941AbhCSNEC (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Fri, 19 Mar 2021 09:04:02 -0400
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id 6CB8568BFE; Fri, 19 Mar 2021 14:03:57 +0100 (CET)
+Date:   Fri, 19 Mar 2021 14:03:57 +0100
+From:   Christoph Hellwig <hch@lst.de>
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jens Axboe <axboe@kernel.dk>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Richard Henderson <rth@twiddle.net>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
         Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Chris Zankel <chris@zankel.net>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-xtensa@linux-xtensa.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V2] mm/memtest: Add ARCH_USE_MEMTEST
-Message-ID: <20210319123412.GB6832@arm.com>
-References: <1614573126-7740-1-git-send-email-anshuman.khandual@arm.com>
+        linux-ide@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-alpha@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org
+Subject: Re: [PATCH 08/10] MIPS: disable CONFIG_IDE in malta*_defconfig
+Message-ID: <20210319130356.GA2624@lst.de>
+References: <20210318045706.200458-1-hch@lst.de> <20210318045706.200458-9-hch@lst.de> <20210318141900.GA10554@alpha.franken.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1614573126-7740-1-git-send-email-anshuman.khandual@arm.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210318141900.GA10554@alpha.franken.de>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Mon, Mar 01, 2021 at 10:02:06AM +0530, Anshuman Khandual wrote:
-> early_memtest() does not get called from all architectures. Hence enabling
-> CONFIG_MEMTEST and providing a valid memtest=[1..N] kernel command line
-> option might not trigger the memory pattern tests as would be expected in
-> normal circumstances. This situation is misleading.
+On Thu, Mar 18, 2021 at 03:19:00PM +0100, Thomas Bogendoerfer wrote:
+> On Thu, Mar 18, 2021 at 05:57:04AM +0100, Christoph Hellwig wrote:
+> >  arch/mips/configs/malta_kvm_guest_defconfig | 3 ---
 > 
-> The change here prevents the above mentioned problem after introducing a
-> new config option ARCH_USE_MEMTEST that should be subscribed on platforms
-> that call early_memtest(), in order to enable the config CONFIG_MEMTEST.
-> Conversely CONFIG_MEMTEST cannot be enabled on platforms where it would
-> not be tested anyway.
+> that file is gone in mips-next.
 > 
-> Cc: Russell King <linux@armlinux.org.uk>
-> Cc: Catalin Marinas <catalin.marinas@arm.com>
-> Cc: Will Deacon <will@kernel.org>
-> Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-> Cc: Michael Ellerman <mpe@ellerman.id.au>
-> Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
-> Cc: Paul Mackerras <paulus@samba.org>
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Ingo Molnar <mingo@redhat.com>
-> Cc: Chris Zankel <chris@zankel.net>
-> Cc: Max Filippov <jcmvbkbc@gmail.com>
-> Cc: linux-arm-kernel@lists.infradead.org
-> Cc: linux-mips@vger.kernel.org
-> Cc: linuxppc-dev@lists.ozlabs.org
-> Cc: linux-xtensa@linux-xtensa.org
-> Cc: linux-mm@kvack.org
-> Cc: linux-kernel@vger.kernel.org
-> Reviewed-by: Max Filippov <jcmvbkbc@gmail.com>
-> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+> I could take all MIPS patches into mips-next, if you want...
 
-For arm64:
-
-Acked-by: Catalin Marinas <catalin.marinas@arm.com>
+Fine with me - it shouldn't really matter if the defconfig updates
+go in independently.  Do you want a resend with the typos fixed
+against mips-next or are you simply going to fix these things up?

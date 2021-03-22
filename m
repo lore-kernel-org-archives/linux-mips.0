@@ -7,36 +7,33 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8BC77C433C1
-	for <linux-mips@archiver.kernel.org>; Mon, 22 Mar 2021 14:56:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B4F08C433DB
+	for <linux-mips@archiver.kernel.org>; Mon, 22 Mar 2021 14:59:50 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 2A78761990
-	for <linux-mips@archiver.kernel.org>; Mon, 22 Mar 2021 14:56:15 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 6D35D619AA
+	for <linux-mips@archiver.kernel.org>; Mon, 22 Mar 2021 14:59:50 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230136AbhCVOzn (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 22 Mar 2021 10:55:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55106 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231205AbhCVOza (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Mon, 22 Mar 2021 10:55:30 -0400
-X-Greylist: delayed 389 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 22 Mar 2021 07:55:30 PDT
-Received: from leibniz.telenet-ops.be (leibniz.telenet-ops.be [IPv6:2a02:1800:110:4::f00:d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2054CC061574
-        for <linux-mips@vger.kernel.org>; Mon, 22 Mar 2021 07:55:30 -0700 (PDT)
+        id S229890AbhCVO7S (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 22 Mar 2021 10:59:18 -0400
+Received: from newton.telenet-ops.be ([195.130.132.45]:39574 "EHLO
+        newton.telenet-ops.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230009AbhCVO7C (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Mon, 22 Mar 2021 10:59:02 -0400
+X-Greylist: delayed 602 seconds by postgrey-1.27 at vger.kernel.org; Mon, 22 Mar 2021 10:59:02 EDT
 Received: from michel.telenet-ops.be (michel.telenet-ops.be [IPv6:2a02:1800:110:4::f00:18])
-        by leibniz.telenet-ops.be (Postfix) with ESMTPS id 4F3y794X8MzMqt5Y
+        by newton.telenet-ops.be (Postfix) with ESMTPS id 4F3y795FzTzMr38k
         for <linux-mips@vger.kernel.org>; Mon, 22 Mar 2021 15:48:53 +0100 (CET)
 Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed20:250b:f16c:c5e2:505d])
         by michel.telenet-ops.be with bizsmtp
-        id jSot2400m2HDxaV06SotqS; Mon, 22 Mar 2021 15:48:53 +0100
+        id jSot2400n2HDxaV06Sotqb; Mon, 22 Mar 2021 15:48:53 +0100
 Received: from rox.of.borg ([192.168.97.57])
         by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
         (Exim 4.93)
         (envelope-from <geert@linux-m68k.org>)
-        id 1lOLrQ-009ZWC-UW; Mon, 22 Mar 2021 15:48:52 +0100
+        id 1lOLrR-009ZWP-1G; Mon, 22 Mar 2021 15:48:53 +0100
 Received: from geert by rox.of.borg with local (Exim 4.93)
         (envelope-from <geert@linux-m68k.org>)
-        id 1lOLrP-004T5l-GS; Mon, 22 Mar 2021 15:48:51 +0100
+        id 1lOLrP-004T6Z-S7; Mon, 22 Mar 2021 15:48:51 +0100
 From:   Geert Uytterhoeven <geert@linux-m68k.org>
 To:     Robin van der Gracht <robin@protonic.nl>,
         Rob Herring <robh+dt@kernel.org>,
@@ -46,9 +43,9 @@ To:     Robin van der Gracht <robin@protonic.nl>,
 Cc:     devicetree@vger.kernel.org, linux-mips@vger.kernel.org,
         linux-kernel@vger.kernel.org,
         Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH 03/17] auxdisplay: img-ascii-lcd: Fix lock-up when displaying empty string
-Date:   Mon, 22 Mar 2021 15:48:34 +0100
-Message-Id: <20210322144848.1065067-4-geert@linux-m68k.org>
+Subject: [PATCH 13/17] auxdisplay: ht16k33: Move delayed work
+Date:   Mon, 22 Mar 2021 15:48:44 +0100
+Message-Id: <20210322144848.1065067-14-geert@linux-m68k.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210322144848.1065067-1-geert@linux-m68k.org>
 References: <20210322144848.1065067-1-geert@linux-m68k.org>
@@ -58,48 +55,72 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-While writing an empty string to a device attribute is a no-op, and thus
-does not need explicit safeguards, the user can still write a single
-newline to an attribute file:
+Move delayed_work from ht16k33_fbdev to ht16k33_priv, as it is not
+specific to dot-matrix displays, but common to all display types.
 
-    echo > .../message
-
-If that happens, img_ascii_lcd_display() trims the newline, yielding an
-empty string, and causing an infinite loop in img_ascii_lcd_scroll().
-
-Fix this by adding a check for empty strings.  Clear the display in case
-one is encountered.
-
-Fixes: 0cad855fbd083ee5 ("auxdisplay: img-ascii-lcd: driver for simple ASCII LCD displays")
 Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 ---
-Untested with img-ascii-lcd, but triggered with my initial version of
-linedisp.
----
- drivers/auxdisplay/img-ascii-lcd.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+ drivers/auxdisplay/ht16k33.c | 15 +++++++--------
+ 1 file changed, 7 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/auxdisplay/img-ascii-lcd.c b/drivers/auxdisplay/img-ascii-lcd.c
-index 1cce409ce5cacbc8..e33ce0151cdfd150 100644
---- a/drivers/auxdisplay/img-ascii-lcd.c
-+++ b/drivers/auxdisplay/img-ascii-lcd.c
-@@ -280,6 +280,16 @@ static int img_ascii_lcd_display(struct img_ascii_lcd_ctx *ctx,
- 	if (msg[count - 1] == '\n')
- 		count--;
+diff --git a/drivers/auxdisplay/ht16k33.c b/drivers/auxdisplay/ht16k33.c
+index 37fca1d44c3e73e1..91b039702270ab10 100644
+--- a/drivers/auxdisplay/ht16k33.c
++++ b/drivers/auxdisplay/ht16k33.c
+@@ -65,11 +65,11 @@ struct ht16k33_fbdev {
+ 	uint32_t refresh_rate;
+ 	uint8_t *buffer;
+ 	uint8_t *cache;
+-	struct delayed_work work;
+ };
  
-+	if (!count) {
-+		/* clear the LCD */
-+		devm_kfree(&ctx->pdev->dev, ctx->message);
-+		ctx->message = NULL;
-+		ctx->message_len = 0;
-+		memset(ctx->curr, ' ', ctx->cfg->num_chars);
-+		ctx->cfg->update(ctx);
-+		return 0;
-+	}
-+
- 	new_msg = devm_kmalloc(&ctx->pdev->dev, count + 1, GFP_KERNEL);
- 	if (!new_msg)
- 		return -ENOMEM;
+ struct ht16k33_priv {
+ 	struct i2c_client *client;
++	struct delayed_work work;
+ 	struct ht16k33_keypad keypad;
+ 	struct ht16k33_fbdev fbdev;
+ };
+@@ -117,7 +117,7 @@ static void ht16k33_fb_queue(struct ht16k33_priv *priv)
+ {
+ 	struct ht16k33_fbdev *fbdev = &priv->fbdev;
+ 
+-	schedule_delayed_work(&fbdev->work, HZ / fbdev->refresh_rate);
++	schedule_delayed_work(&priv->work, HZ / fbdev->refresh_rate);
+ }
+ 
+ /*
+@@ -125,10 +125,9 @@ static void ht16k33_fb_queue(struct ht16k33_priv *priv)
+  */
+ static void ht16k33_fb_update(struct work_struct *work)
+ {
+-	struct ht16k33_fbdev *fbdev =
+-		container_of(work, struct ht16k33_fbdev, work.work);
+-	struct ht16k33_priv *priv =
+-		container_of(fbdev, struct ht16k33_priv, fbdev);
++	struct ht16k33_priv *priv = container_of(work, struct ht16k33_priv,
++						 work.work);
++	struct ht16k33_fbdev *fbdev = &priv->fbdev;
+ 
+ 	uint8_t *p1, *p2;
+ 	int len, pos = 0, first = -1;
+@@ -436,7 +435,7 @@ static int ht16k33_probe(struct i2c_client *client)
+ 	}
+ 	fb_bl_default_curve(fbdev->info, 0, MIN_BRIGHTNESS, MAX_BRIGHTNESS);
+ 
+-	INIT_DELAYED_WORK(&fbdev->work, ht16k33_fb_update);
++	INIT_DELAYED_WORK(&priv->work, ht16k33_fb_update);
+ 	fbdev->info->fbops = &ht16k33_fb_ops;
+ 	fbdev->info->screen_base = (char __iomem *) fbdev->buffer;
+ 	fbdev->info->screen_size = HT16K33_FB_SIZE;
+@@ -502,7 +501,7 @@ static int ht16k33_remove(struct i2c_client *client)
+ 	struct ht16k33_priv *priv = i2c_get_clientdata(client);
+ 	struct ht16k33_fbdev *fbdev = &priv->fbdev;
+ 
+-	cancel_delayed_work_sync(&fbdev->work);
++	cancel_delayed_work_sync(&priv->work);
+ 	unregister_framebuffer(fbdev->info);
+ 	framebuffer_release(fbdev->info);
+ 	free_page((unsigned long) fbdev->buffer);
 -- 
 2.25.1
 

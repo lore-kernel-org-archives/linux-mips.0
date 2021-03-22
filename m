@@ -7,57 +7,57 @@ X-Spam-Status: No, score=-2.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
 	URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DF2E9C433E3
-	for <linux-mips@archiver.kernel.org>; Mon, 22 Mar 2021 17:04:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5C0FDC433E0
+	for <linux-mips@archiver.kernel.org>; Mon, 22 Mar 2021 17:06:04 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id B36E1619A6
-	for <linux-mips@archiver.kernel.org>; Mon, 22 Mar 2021 17:04:28 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 2885C619A6
+	for <linux-mips@archiver.kernel.org>; Mon, 22 Mar 2021 17:06:04 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231830AbhCVREA (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 22 Mar 2021 13:04:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54772 "EHLO
+        id S231346AbhCVRFc (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 22 Mar 2021 13:05:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55116 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231664AbhCVRDp (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Mon, 22 Mar 2021 13:03:45 -0400
-Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2390C061756;
-        Mon, 22 Mar 2021 10:03:44 -0700 (PDT)
-Received: by mail-yb1-xb30.google.com with SMTP id m3so7340585ybt.0;
-        Mon, 22 Mar 2021 10:03:44 -0700 (PDT)
+        with ESMTP id S232056AbhCVRFV (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Mon, 22 Mar 2021 13:05:21 -0400
+Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77C95C061574;
+        Mon, 22 Mar 2021 10:05:20 -0700 (PDT)
+Received: by mail-yb1-xb32.google.com with SMTP id h196so7319686ybg.1;
+        Mon, 22 Mar 2021 10:05:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=ZOljc04t5W0SUG7srUbPvSgsB/FGIZayT6DVZGLWN+w=;
-        b=exCPMSiK430a0FW4Meg32jeboSqL0KY5onrZn7kdcsnYhL+//3MXbtq6plUCPsCIpc
-         3CtAuVdmJrfpUuMOKNIW5NfsjMpgRTHwxRQ+WmgVrV9LKXWki9qW41ALRo80g4kbCj8q
-         X527/5eVBLx4xs9b39g2GacrGKz3x7edcvE7R3otWOyyvpGbFZ0EuWC66TsX4hmqzD9B
-         ppsYbB20l9ThMaQpjeHEqJDgJmVU4IG3O5rk6mCOZTIaTWE4IszsppmaqYlUhT16SfQK
-         Ne45xB1Tgzr6hVXoynozItYEt9FG3n8GvCqGqc5XxSRL02q/BkfEzG3zl210fOZxc1WS
-         ZymA==
+        bh=0TkNDlNKd0sFj/dXyqvxrf5TO/FH8XVuZf1hjeO1uBk=;
+        b=O0MtZPnpOja+H261XGih1GgiSLTGlg1zvGcF49cbfMD6+a5N5RRwR7WEloY/b3Z3gb
+         6nrPiV71ZA+pmcXwgjw0rppzZuxJx8kSPCw5QBE5AmzIUHDOoGBH4MZAJFue0QcTBnBm
+         mWjYEK2sl/cgmVCxtV3V6aAxUtl4NAJYCeNclGfDHgag8LLqtbzDttE7r/qwzsoDFPRz
+         TKLWVgebEbbYOgboBEonP6nnPhKAvc4z498KSjL5eIhnEb+6+f+DBhEcrcJigcaLu9Vc
+         Ncm+9R/P1g2He5GhEh3Bsxhvq03vQuvWWPtqIkszOLUcZZjn+asckof3ETDDzBWLDI7W
+         x7wQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=ZOljc04t5W0SUG7srUbPvSgsB/FGIZayT6DVZGLWN+w=;
-        b=o3QACyBLKIfeDX+ulsZIWy7YwklyfNd3sjmmGjLl5BF0ZiNm0458HKBJKPfitr6HBb
-         z6kRjaSaGPy1tuhGZjqJL/IvF3Egv5o2lCiVS567rbj3fCNJ7mVQD3MnyAX8F1+3TXix
-         LVBaqUHvdwrmpdkBR64CeT0Edvf6tmbBsistpJKg07Tp0eRi4cfvFmvjM6zUSeMTWGzY
-         e/Y+UcMif/DNJbTEBH6ga+1dIDZW2wcz4TJ1m5a/Cf1wX3Q7nsoiHSne5c7SWnUk8IWj
-         41Pf5DXGg5cIw39unJaLNuxQkqeQ5C3EIYJoIdpJwSucNJGonWMworaW5+DO15l4KeLE
-         d2IQ==
-X-Gm-Message-State: AOAM533mZl0MNSHGLAtGKS7vQPsADNf4lnopkRetetiIjc4Jjlhxlr8t
-        X1lE8XbCPPsc1hKHZ5OBYfwNhdHmhaUVsK4BEFc=
-X-Google-Smtp-Source: ABdhPJzXhhzm+9Km3ayepaExYQ/+mSazkf6ZWSZTXcZULZ9qdkRKq1tiyZI7pEJgOr/psRbhdunpq8Yj4+AyuxjBbZU=
-X-Received: by 2002:a25:d296:: with SMTP id j144mr643664ybg.33.1616432624083;
- Mon, 22 Mar 2021 10:03:44 -0700 (PDT)
+        bh=0TkNDlNKd0sFj/dXyqvxrf5TO/FH8XVuZf1hjeO1uBk=;
+        b=U2HZHaFCq79bYQHbUmZGfR+QbNBFoYggFAiCyfmtLHb+gknhyrnoIXBziztbosvTlK
+         uEcwGMR7brJyJ+iEFGLa2CYe21H86NbTMTrD61Tsrr5b6wIKjE5taTrJZtlmKDP4ZUAL
+         kl+fn0e5fFsydQonJC4B+tPbmbnU+vaLA0yvWqvnF3Vi9sv2Uivt/uNDxZFRDvSu+ZqB
+         SjwDX7qaoxwDlFKV10WNlJYHs25T+sNDi/ajVR0ga4Dg1dcWK+N87kGWMWtvIpjLm7aj
+         gJ1+IoOITVLVBG2JTdlpDR3HM8MRypOk8CyhC8UzNrEJagDHh2bb0LAQ7a+yk8SQ0rF3
+         aXMw==
+X-Gm-Message-State: AOAM533ghWzHNtthTx1ce+6MU03kVrElS3s2sZQo43LJUkjGNL+oEmnn
+        eNb5lJppwEQxL1ctQ3S2IkrC/88pEfNjnWMKs0g=
+X-Google-Smtp-Source: ABdhPJwDavBYqW3TIC/jAVoKZeDFXrZcq3fMeMq5h1YJHiDfMDfuB3LNmJH5CP9lwEN7n9ITjm5dQEKLFo8ArAeWtL8=
+X-Received: by 2002:a25:6e02:: with SMTP id j2mr622782ybc.247.1616432719824;
+ Mon, 22 Mar 2021 10:05:19 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210322144848.1065067-1-geert@linux-m68k.org>
-In-Reply-To: <20210322144848.1065067-1-geert@linux-m68k.org>
+References: <20210322144848.1065067-1-geert@linux-m68k.org> <20210322144848.1065067-2-geert@linux-m68k.org>
+In-Reply-To: <20210322144848.1065067-2-geert@linux-m68k.org>
 From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date:   Mon, 22 Mar 2021 18:03:33 +0100
-Message-ID: <CANiq72kFi2-xevrSgd86bNAUdLE4DLYcx_c8GaPeYV90oojz3Q@mail.gmail.com>
-Subject: Re: [PATCH 00/17] auxdisplay: ht16k33: Add character display support
+Date:   Mon, 22 Mar 2021 18:05:09 +0100
+Message-ID: <CANiq72nL=BRz8XE_mSUvOMZg8ssJ6jO43QoVD5SyLsiqgQpDEg@mail.gmail.com>
+Subject: Re: [PATCH 01/17] uapi: Add <linux/map_to_14segment.h>
 To:     Geert Uytterhoeven <geert@linux-m68k.org>
 Cc:     Robin van der Gracht <robin@protonic.nl>,
         Rob Herring <robh+dt@kernel.org>,
@@ -73,10 +73,10 @@ X-Mailing-List: linux-mips@vger.kernel.org
 
 On Mon, Mar 22, 2021 at 3:48 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
 >
-> Thanks for your comments!
+> You can find an image of the full character set at
+> https://drive.google.com/file/d/1h3EYFBWHIjh8B_cwPA5ocAD-lFYipRie/view
 
-We could use this as a showcase on how to structure and present a
-patch series! ;-)
+Should we put it in e.g. the Docs or just alongside this file?
 
 Cheers,
 Miguel

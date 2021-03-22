@@ -2,89 +2,104 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7AA91C433E0
-	for <linux-mips@archiver.kernel.org>; Mon, 22 Mar 2021 14:55:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8BC77C433C1
+	for <linux-mips@archiver.kernel.org>; Mon, 22 Mar 2021 14:56:15 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 2EF6D61930
-	for <linux-mips@archiver.kernel.org>; Mon, 22 Mar 2021 14:55:11 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 2A78761990
+	for <linux-mips@archiver.kernel.org>; Mon, 22 Mar 2021 14:56:15 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230051AbhCVOyi (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 22 Mar 2021 10:54:38 -0400
-Received: from verein.lst.de ([213.95.11.211]:56129 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231366AbhCVOyI (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Mon, 22 Mar 2021 10:54:08 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id A32F268BEB; Mon, 22 Mar 2021 15:54:03 +0100 (CET)
-Date:   Mon, 22 Mar 2021 15:54:03 +0100
-From:   Christoph Hellwig <hch@lst.de>
-To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jens Axboe <axboe@kernel.dk>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Richard Henderson <rth@twiddle.net>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        linux-ide@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-alpha@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH 02/10] ARM: disable CONFIG_IDE in footbridge_defconfig
-Message-ID: <20210322145403.GA30942@lst.de>
-References: <20210318045706.200458-1-hch@lst.de> <20210318045706.200458-3-hch@lst.de> <20210319170753.GV1463@shell.armlinux.org.uk> <20210319175311.GW1463@shell.armlinux.org.uk>
+        id S230136AbhCVOzn (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 22 Mar 2021 10:55:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55106 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231205AbhCVOza (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Mon, 22 Mar 2021 10:55:30 -0400
+X-Greylist: delayed 389 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 22 Mar 2021 07:55:30 PDT
+Received: from leibniz.telenet-ops.be (leibniz.telenet-ops.be [IPv6:2a02:1800:110:4::f00:d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2054CC061574
+        for <linux-mips@vger.kernel.org>; Mon, 22 Mar 2021 07:55:30 -0700 (PDT)
+Received: from michel.telenet-ops.be (michel.telenet-ops.be [IPv6:2a02:1800:110:4::f00:18])
+        by leibniz.telenet-ops.be (Postfix) with ESMTPS id 4F3y794X8MzMqt5Y
+        for <linux-mips@vger.kernel.org>; Mon, 22 Mar 2021 15:48:53 +0100 (CET)
+Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed20:250b:f16c:c5e2:505d])
+        by michel.telenet-ops.be with bizsmtp
+        id jSot2400m2HDxaV06SotqS; Mon, 22 Mar 2021 15:48:53 +0100
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1lOLrQ-009ZWC-UW; Mon, 22 Mar 2021 15:48:52 +0100
+Received: from geert by rox.of.borg with local (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1lOLrP-004T5l-GS; Mon, 22 Mar 2021 15:48:51 +0100
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+To:     Robin van der Gracht <robin@protonic.nl>,
+        Rob Herring <robh+dt@kernel.org>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Paul Burton <paulburton@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     devicetree@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH 03/17] auxdisplay: img-ascii-lcd: Fix lock-up when displaying empty string
+Date:   Mon, 22 Mar 2021 15:48:34 +0100
+Message-Id: <20210322144848.1065067-4-geert@linux-m68k.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210322144848.1065067-1-geert@linux-m68k.org>
+References: <20210322144848.1065067-1-geert@linux-m68k.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210319175311.GW1463@shell.armlinux.org.uk>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Fri, Mar 19, 2021 at 05:53:12PM +0000, Russell King - ARM Linux admin wrote:
-> If I extend the arch/arm/kernel/bios32.c code to kill BARs 2/3 (which
-> actually are not present on the CY82C693) then the IDE driver works
-> for me, but the PATA driver does not:
-> 
-> cy82c693 0000:00:06.1: IDE controller (0x1080:0xc693 rev 0x00)
-> cy82c693 0000:00:06.1: not 100% native mode: will probe irqs later
-> legacy IDE will be removed in 2021, please switch to libata
-> Report any missing HW support to linux-ide@vger.kernel.org
->     ide0: BM-DMA at 0x1080-0x1087
->     ide1: BM-DMA at 0x1088-0x108f
-> Probing IDE interface ide0...
-> hda: PIONEER DVD-RW DVR-105, ATAPI CD/DVD-ROM drive
-> hda: host max PIO4 wanted PIO255(auto-tune) selected PIO4
-> ...
-> 
-> (unbind Cypress_IDE and try binding pata_cypress)
-> 
-> pata_cypress 0000:00:06.1: no available native port
+While writing an empty string to a device attribute is a no-op, and thus
+does not need explicit safeguards, the user can still write a single
+newline to an attribute file:
 
-This comes from ata_pci_sff_init_host when it tails to initialize
-a port.  There are three cases why it can't initialize the port:
+    echo > .../message
 
- 1) because it is marked as dummy, which is the case for the second
-    port of the cypress controller, but you're not using that even
-    with the old ide driver, and we'd still not get that message just
-    because of that second port.
- 2) when ata_resources_present returns false because the BAR has
-    a zero start or length
- 3) because pcim_iomap_regions() fails.  This prints a warning to the
-    log ("failed to request/iomap BARs for port %d (errno=%d)") that you
-    should have seen
+If that happens, img_ascii_lcd_display() trims the newline, yielding an
+empty string, and causing an infinite loop in img_ascii_lcd_scroll().
 
-So the problem here has to be number two.  The legacy ide driver OTOH
-seems to lack a lot of these checks, although I'm not sure how it
-manages to actually work without those.
+Fix this by adding a check for empty strings.  Clear the display in case
+one is encountered.
 
-Can you show how the BAR assignment for the device looks using lscpi
-or a tool of your choice?
+Fixes: 0cad855fbd083ee5 ("auxdisplay: img-ascii-lcd: driver for simple ASCII LCD displays")
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+---
+Untested with img-ascii-lcd, but triggered with my initial version of
+linedisp.
+---
+ drivers/auxdisplay/img-ascii-lcd.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
+
+diff --git a/drivers/auxdisplay/img-ascii-lcd.c b/drivers/auxdisplay/img-ascii-lcd.c
+index 1cce409ce5cacbc8..e33ce0151cdfd150 100644
+--- a/drivers/auxdisplay/img-ascii-lcd.c
++++ b/drivers/auxdisplay/img-ascii-lcd.c
+@@ -280,6 +280,16 @@ static int img_ascii_lcd_display(struct img_ascii_lcd_ctx *ctx,
+ 	if (msg[count - 1] == '\n')
+ 		count--;
+ 
++	if (!count) {
++		/* clear the LCD */
++		devm_kfree(&ctx->pdev->dev, ctx->message);
++		ctx->message = NULL;
++		ctx->message_len = 0;
++		memset(ctx->curr, ' ', ctx->cfg->num_chars);
++		ctx->cfg->update(ctx);
++		return 0;
++	}
++
+ 	new_msg = devm_kmalloc(&ctx->pdev->dev, count + 1, GFP_KERNEL);
+ 	if (!new_msg)
+ 		return -ENOMEM;
+-- 
+2.25.1
+

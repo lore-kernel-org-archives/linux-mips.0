@@ -2,125 +2,162 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-21.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B4F08C433DB
-	for <linux-mips@archiver.kernel.org>; Mon, 22 Mar 2021 14:59:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CD811C433DB
+	for <linux-mips@archiver.kernel.org>; Mon, 22 Mar 2021 15:01:26 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 6D35D619AA
-	for <linux-mips@archiver.kernel.org>; Mon, 22 Mar 2021 14:59:50 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 809DA619B0
+	for <linux-mips@archiver.kernel.org>; Mon, 22 Mar 2021 15:01:26 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229890AbhCVO7S (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 22 Mar 2021 10:59:18 -0400
-Received: from newton.telenet-ops.be ([195.130.132.45]:39574 "EHLO
-        newton.telenet-ops.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230009AbhCVO7C (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Mon, 22 Mar 2021 10:59:02 -0400
-X-Greylist: delayed 602 seconds by postgrey-1.27 at vger.kernel.org; Mon, 22 Mar 2021 10:59:02 EDT
-Received: from michel.telenet-ops.be (michel.telenet-ops.be [IPv6:2a02:1800:110:4::f00:18])
-        by newton.telenet-ops.be (Postfix) with ESMTPS id 4F3y795FzTzMr38k
-        for <linux-mips@vger.kernel.org>; Mon, 22 Mar 2021 15:48:53 +0100 (CET)
-Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed20:250b:f16c:c5e2:505d])
-        by michel.telenet-ops.be with bizsmtp
-        id jSot2400n2HDxaV06Sotqb; Mon, 22 Mar 2021 15:48:53 +0100
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1lOLrR-009ZWP-1G; Mon, 22 Mar 2021 15:48:53 +0100
-Received: from geert by rox.of.borg with local (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1lOLrP-004T6Z-S7; Mon, 22 Mar 2021 15:48:51 +0100
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-To:     Robin van der Gracht <robin@protonic.nl>,
-        Rob Herring <robh+dt@kernel.org>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Paul Burton <paulburton@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     devicetree@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH 13/17] auxdisplay: ht16k33: Move delayed work
-Date:   Mon, 22 Mar 2021 15:48:44 +0100
-Message-Id: <20210322144848.1065067-14-geert@linux-m68k.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210322144848.1065067-1-geert@linux-m68k.org>
-References: <20210322144848.1065067-1-geert@linux-m68k.org>
+        id S231147AbhCVPAy (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 22 Mar 2021 11:00:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35000 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230113AbhCVPA2 (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Mon, 22 Mar 2021 11:00:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3FC4F619AA;
+        Mon, 22 Mar 2021 15:00:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1616425226;
+        bh=Tdl+jH0DCIHhMb38FkH2YhNtJCVJTdPV88LbcXPwM1U=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=VuDjKR5WvLIrDs4yXI1DXjAtxGW73aRo6U1NreSlOD5tU+Q4+Z7qVKuoBY6gln5VN
+         4KpYhsfzp70ugauxrjHmRc/oZY2SoVUEC4DOQotflhTPPLS57MRzfyq2ugmp/ZXcjS
+         3EFa4qkWQH4HD0dfjXxDio6zvI0jRroM97AtKrjs=
+Date:   Mon, 22 Mar 2021 16:00:24 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Naresh Kamboju <naresh.kamboju@linaro.org>
+Cc:     Kamal Dasu <kdasu.kdev@gmail.com>,
+        Serge Semin <fancer.lancer@gmail.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        linux-stable <stable@vger.kernel.org>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Sasha Levin <sashal@kernel.org>,
+        Serge Semin <Sergey.Semin@baikalelectronics.ru>,
+        lkft-triage@lists.linaro.org, linux-mips@vger.kernel.org
+Subject: Re: [PATCH 5.10 103/157] MIPS: kernel: Reserve exception base early
+ to prevent corruption
+Message-ID: <YFixCO3CMwh+TThB@kroah.com>
+References: <20210322121933.746237845@linuxfoundation.org>
+ <20210322121937.040307268@linuxfoundation.org>
+ <CA+G9fYuSdE7U-D+mn82bR3e33NzpDEFsD9B6EgXAj3sKMLxfeQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CA+G9fYuSdE7U-D+mn82bR3e33NzpDEFsD9B6EgXAj3sKMLxfeQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Move delayed_work from ht16k33_fbdev to ht16k33_priv, as it is not
-specific to dot-matrix displays, but common to all display types.
+On Mon, Mar 22, 2021 at 07:44:05PM +0530, Naresh Kamboju wrote:
+> On Mon, 22 Mar 2021 at 18:14, Greg Kroah-Hartman
+> <gregkh@linuxfoundation.org> wrote:
+> >
+> > From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+> >
+> > [ Upstream commit bd67b711bfaa02cf19e88aa2d9edae5c1c1d2739 ]
+> >
+> > BMIPS is one of the few platforms that do change the exception base.
+> > After commit 2dcb39645441 ("memblock: do not start bottom-up allocations
+> > with kernel_end") we started seeing BMIPS boards fail to boot with the
+> > built-in FDT being corrupted.
+> >
+> > Before the cited commit, early allocations would be in the [kernel_end,
+> > RAM_END] range, but after commit they would be within [RAM_START +
+> > PAGE_SIZE, RAM_END].
+> >
+> > The custom exception base handler that is installed by
+> > bmips_ebase_setup() done for BMIPS5000 CPUs ends-up trampling on the
+> > memory region allocated by unflatten_and_copy_device_tree() thus
+> > corrupting the FDT used by the kernel.
+> >
+> > To fix this, we need to perform an early reservation of the custom
+> > exception space. Additional we reserve the first 4k (1k for R3k) for
+> > either normal exception vector space (legacy CPUs) or special vectors
+> > like cache exceptions.
+> >
+> > Huge thanks to Serge for analysing and proposing a solution to this
+> > issue.
+> >
+> > Fixes: 2dcb39645441 ("memblock: do not start bottom-up allocations with kernel_end")
+> > Reported-by: Kamal Dasu <kdasu.kdev@gmail.com>
+> > Debugged-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+> > Acked-by: Mike Rapoport <rppt@linux.ibm.com>
+> > Tested-by: Florian Fainelli <f.fainelli@gmail.com>
+> > Reviewed-by: Serge Semin <fancer.lancer@gmail.com>
+> > Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+> > Signed-off-by: Sasha Levin <sashal@kernel.org>
+> > ---
+> >  arch/mips/include/asm/traps.h    |  3 +++
+> >  arch/mips/kernel/cpu-probe.c     |  6 ++++++
+> >  arch/mips/kernel/cpu-r3k-probe.c |  3 +++
+> >  arch/mips/kernel/traps.c         | 10 +++++-----
+> 
+> mipc tinyconfig and allnoconfig builds failed on stable-rc 5.10 branch
+> 
+> make --silent --keep-going --jobs=8
+> O=/home/tuxbuild/.cache/tuxmake/builds/1/tmp ARCH=mips
+> CROSS_COMPILE=mips-linux-gnu- 'CC=sccache mips-linux-gnu-gcc'
+> 'HOSTCC=sccache gcc'
+> WARNING: modpost: vmlinux.o(.text+0x6a88): Section mismatch in
+> reference from the function reserve_exception_space() to the function
+> .meminit.text:memblock_reserve()
+> The function reserve_exception_space() references
+> the function __meminit memblock_reserve().
+> This is often because reserve_exception_space lacks a __meminit
+> annotation or the annotation of memblock_reserve is wrong.
+> 
+> FATAL: modpost: Section mismatches detected.
+> Set CONFIG_SECTION_MISMATCH_WARN_ONLY=y to allow them.
+> make[2]: *** [/builds/linux/scripts/Makefile.modpost:59:
+> vmlinux.symvers] Error 1
+> 
+> Here is the list of build failed,
+>  - gcc-8-allnoconfig
+>  - gcc-8-tinyconfig
+>  - gcc-9-allnoconfig
+>  - gcc-9-tinyconfig
+>  - gcc-10-allnoconfig
+>  - gcc-10-tinyconfig
+>  - clang-10-tinyconfig
+>  - clang-10-allnoconfig
+>  - clang-11-allnoconfig
+>  - clang-11-tinyconfig
+>  - clang-12-tinyconfig
+>  - clang-12-allnoconfig
+> 
+> Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+> 
+> link:
+> https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc/-/jobs/1117167411#L142
+> 
+> steps to reproduce:
+> ---------------------------
+> # TuxMake is a command line tool and Python library that provides
+> # portable and repeatable Linux kernel builds across a variety of
+> # architectures, toolchains, kernel configurations, and make targets.
+> #
+> # TuxMake supports the concept of runtimes.
+> # See https://docs.tuxmake.org/runtimes/, for that to work it requires
+> # that you install podman or docker on your system.
+> #
+> # To install tuxmake on your system globally:
+> # sudo pip3 install -U tuxmake
+> #
+> # See https://docs.tuxmake.org/ for complete documentation.
+> 
+> 
+> tuxmake --runtime podman --target-arch mips --toolchain gcc-10
+> --kconfig tinyconfig
+> 
 
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
----
- drivers/auxdisplay/ht16k33.c | 15 +++++++--------
- 1 file changed, 7 insertions(+), 8 deletions(-)
+Thanks for letting me know, I'll go drop this and push out a new -rc...
 
-diff --git a/drivers/auxdisplay/ht16k33.c b/drivers/auxdisplay/ht16k33.c
-index 37fca1d44c3e73e1..91b039702270ab10 100644
---- a/drivers/auxdisplay/ht16k33.c
-+++ b/drivers/auxdisplay/ht16k33.c
-@@ -65,11 +65,11 @@ struct ht16k33_fbdev {
- 	uint32_t refresh_rate;
- 	uint8_t *buffer;
- 	uint8_t *cache;
--	struct delayed_work work;
- };
- 
- struct ht16k33_priv {
- 	struct i2c_client *client;
-+	struct delayed_work work;
- 	struct ht16k33_keypad keypad;
- 	struct ht16k33_fbdev fbdev;
- };
-@@ -117,7 +117,7 @@ static void ht16k33_fb_queue(struct ht16k33_priv *priv)
- {
- 	struct ht16k33_fbdev *fbdev = &priv->fbdev;
- 
--	schedule_delayed_work(&fbdev->work, HZ / fbdev->refresh_rate);
-+	schedule_delayed_work(&priv->work, HZ / fbdev->refresh_rate);
- }
- 
- /*
-@@ -125,10 +125,9 @@ static void ht16k33_fb_queue(struct ht16k33_priv *priv)
-  */
- static void ht16k33_fb_update(struct work_struct *work)
- {
--	struct ht16k33_fbdev *fbdev =
--		container_of(work, struct ht16k33_fbdev, work.work);
--	struct ht16k33_priv *priv =
--		container_of(fbdev, struct ht16k33_priv, fbdev);
-+	struct ht16k33_priv *priv = container_of(work, struct ht16k33_priv,
-+						 work.work);
-+	struct ht16k33_fbdev *fbdev = &priv->fbdev;
- 
- 	uint8_t *p1, *p2;
- 	int len, pos = 0, first = -1;
-@@ -436,7 +435,7 @@ static int ht16k33_probe(struct i2c_client *client)
- 	}
- 	fb_bl_default_curve(fbdev->info, 0, MIN_BRIGHTNESS, MAX_BRIGHTNESS);
- 
--	INIT_DELAYED_WORK(&fbdev->work, ht16k33_fb_update);
-+	INIT_DELAYED_WORK(&priv->work, ht16k33_fb_update);
- 	fbdev->info->fbops = &ht16k33_fb_ops;
- 	fbdev->info->screen_base = (char __iomem *) fbdev->buffer;
- 	fbdev->info->screen_size = HT16K33_FB_SIZE;
-@@ -502,7 +501,7 @@ static int ht16k33_remove(struct i2c_client *client)
- 	struct ht16k33_priv *priv = i2c_get_clientdata(client);
- 	struct ht16k33_fbdev *fbdev = &priv->fbdev;
- 
--	cancel_delayed_work_sync(&fbdev->work);
-+	cancel_delayed_work_sync(&priv->work);
- 	unregister_framebuffer(fbdev->info);
- 	framebuffer_release(fbdev->info);
- 	free_page((unsigned long) fbdev->buffer);
--- 
-2.25.1
-
+greg k-h

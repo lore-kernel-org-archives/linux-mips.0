@@ -7,32 +7,32 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2B86AC433E1
-	for <linux-mips@archiver.kernel.org>; Mon, 22 Mar 2021 14:49:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 08B5CC433F2
+	for <linux-mips@archiver.kernel.org>; Mon, 22 Mar 2021 14:49:55 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id F06FF61992
-	for <linux-mips@archiver.kernel.org>; Mon, 22 Mar 2021 14:49:57 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id D470A619B0
+	for <linux-mips@archiver.kernel.org>; Mon, 22 Mar 2021 14:49:54 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231176AbhCVOtd (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 22 Mar 2021 10:49:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53666 "EHLO
+        id S230313AbhCVOt0 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 22 Mar 2021 10:49:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53642 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230407AbhCVOtC (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Mon, 22 Mar 2021 10:49:02 -0400
-Received: from albert.telenet-ops.be (albert.telenet-ops.be [IPv6:2a02:1800:110:4::f00:1a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E46E4C0613AF
-        for <linux-mips@vger.kernel.org>; Mon, 22 Mar 2021 07:48:55 -0700 (PDT)
+        with ESMTP id S230290AbhCVOs5 (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Mon, 22 Mar 2021 10:48:57 -0400
+Received: from michel.telenet-ops.be (michel.telenet-ops.be [IPv6:2a02:1800:110:4::f00:18])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85536C0613E5
+        for <linux-mips@vger.kernel.org>; Mon, 22 Mar 2021 07:48:54 -0700 (PDT)
 Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed20:250b:f16c:c5e2:505d])
-        by albert.telenet-ops.be with bizsmtp
-        id jSot2401Q2HDxaV06Sot8G; Mon, 22 Mar 2021 15:48:53 +0100
+        by michel.telenet-ops.be with bizsmtp
+        id jSot240062HDxaV06Sotq1; Mon, 22 Mar 2021 15:48:53 +0100
 Received: from rox.of.borg ([192.168.97.57])
         by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
         (Exim 4.93)
         (envelope-from <geert@linux-m68k.org>)
-        id 1lOLrR-009ZWQ-1j; Mon, 22 Mar 2021 15:48:53 +0100
+        id 1lOLrQ-009ZWV-LC; Mon, 22 Mar 2021 15:48:52 +0100
 Received: from geert by rox.of.borg with local (Exim 4.93)
         (envelope-from <geert@linux-m68k.org>)
-        id 1lOLrP-004T6e-TA; Mon, 22 Mar 2021 15:48:51 +0100
+        id 1lOLrQ-004T6u-1L; Mon, 22 Mar 2021 15:48:52 +0100
 From:   Geert Uytterhoeven <geert@linux-m68k.org>
 To:     Robin van der Gracht <robin@protonic.nl>,
         Rob Herring <robh+dt@kernel.org>,
@@ -42,9 +42,9 @@ To:     Robin van der Gracht <robin@protonic.nl>,
 Cc:     devicetree@vger.kernel.org, linux-mips@vger.kernel.org,
         linux-kernel@vger.kernel.org,
         Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH 14/17] auxdisplay: ht16k33: Extract ht16k33_brightness_set()
-Date:   Mon, 22 Mar 2021 15:48:45 +0100
-Message-Id: <20210322144848.1065067-15-geert@linux-m68k.org>
+Subject: [PATCH 17/17] auxdisplay: ht16k33: Add segment display LED support
+Date:   Mon, 22 Mar 2021 15:48:48 +0100
+Message-Id: <20210322144848.1065067-18-geert@linux-m68k.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210322144848.1065067-1-geert@linux-m68k.org>
 References: <20210322144848.1065067-1-geert@linux-m68k.org>
@@ -54,58 +54,173 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Extract brightness handling into a helper function, so it can be called
-from multiple places.
+Instantiate a single LED for a segment display.  This allows the user to
+control display brightness and blinking through the LED class API and
+triggers, and exposes the display color.
 
 Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 ---
- drivers/auxdisplay/ht16k33.c | 25 +++++++++++++++++++------
- 1 file changed, 19 insertions(+), 6 deletions(-)
+For setting display brightness, this could use the existing backlight
+support for frame buffer devices instantiated for dot-matrix displays.
+However, using the leds subsystem instead has the advantage that the
+driver can make use of the HT16K33's hardware blinking support, and can
+expose the display color.
+---
+ drivers/auxdisplay/ht16k33.c | 81 ++++++++++++++++++++++++++++++++++--
+ 1 file changed, 77 insertions(+), 4 deletions(-)
 
 diff --git a/drivers/auxdisplay/ht16k33.c b/drivers/auxdisplay/ht16k33.c
-index 91b039702270ab10..7c34b7a7879deb1a 100644
+index 0b502a6039f89c6b..5821addd9aec5633 100644
 --- a/drivers/auxdisplay/ht16k33.c
 +++ b/drivers/auxdisplay/ht16k33.c
-@@ -113,6 +113,22 @@ static int ht16k33_display_off(struct ht16k33_priv *priv)
- 	return i2c_smbus_write_byte(priv->client, REG_DISPLAY_SETUP);
+@@ -29,6 +29,7 @@
+ #include <asm/unaligned.h>
+ 
+ #include "line-display.h"
++#include "../leds/leds.h"		/* for led_colors[] */
+ 
+ /* Registers */
+ #define REG_SYSTEM_SETUP		0x20
+@@ -36,6 +37,10 @@
+ 
+ #define REG_DISPLAY_SETUP		0x80
+ #define REG_DISPLAY_SETUP_ON		BIT(0)
++#define REG_DISPLAY_SETUP_BLINK_OFF	(0 << 1)
++#define REG_DISPLAY_SETUP_BLINK_2HZ	(1 << 1)
++#define REG_DISPLAY_SETUP_BLINK_1HZ	(2 << 1)
++#define REG_DISPLAY_SETUP_BLINK_0HZ5	(3 << 1)
+ 
+ #define REG_ROWINT_SET			0xA0
+ #define REG_ROWINT_SET_INT_EN		BIT(0)
+@@ -57,6 +62,8 @@
+ #define BYTES_PER_ROW		(HT16K33_MATRIX_LED_MAX_ROWS / 8)
+ #define HT16K33_FB_SIZE		(HT16K33_MATRIX_LED_MAX_COLS * BYTES_PER_ROW)
+ 
++#define COLOR_DEFAULT		LED_COLOR_ID_RED
++
+ enum display_type {
+ 	DISP_MATRIX = 0,
+ 	DISP_QUAD_7SEG,
+@@ -85,6 +92,7 @@ struct ht16k33_fbdev {
+ 
+ struct ht16k33_seg {
+ 	struct linedisp linedisp;
++	struct led_classdev led;
+ 	union {
+ 		struct seg7_conversion_map seg7;
+ 		struct seg14_conversion_map seg14;
+@@ -102,6 +110,7 @@ struct ht16k33_priv {
+ 		struct ht16k33_seg seg;
+ 	};
+ 	enum display_type type;
++	uint8_t blink;
+ };
+ 
+ static const struct fb_fix_screeninfo ht16k33_fb_fix = {
+@@ -160,7 +169,7 @@ static DEVICE_ATTR(map_seg14, 0644, map_seg_show, map_seg_store);
+ 
+ static int ht16k33_display_on(struct ht16k33_priv *priv)
+ {
+-	uint8_t data = REG_DISPLAY_SETUP | REG_DISPLAY_SETUP_ON;
++	uint8_t data = REG_DISPLAY_SETUP | REG_DISPLAY_SETUP_ON | priv->blink;
+ 
+ 	return i2c_smbus_write_byte(priv->client, data);
+ }
+@@ -175,8 +184,11 @@ static int ht16k33_brightness_set(struct ht16k33_priv *priv,
+ {
+ 	int error;
+ 
+-	if (brightness == 0)
++	if (brightness == 0) {
++		// Disable blink mode
++		priv->blink = REG_DISPLAY_SETUP_BLINK_OFF;
+ 		return ht16k33_display_off(priv);
++	}
+ 
+ 	error = ht16k33_display_on(priv);
+ 	if (error)
+@@ -186,6 +198,49 @@ static int ht16k33_brightness_set(struct ht16k33_priv *priv,
+ 				    REG_BRIGHTNESS | (brightness - 1));
  }
  
-+static int ht16k33_brightness_set(struct ht16k33_priv *priv,
-+				  unsigned int brightness)
++static int ht16k33_brightness_set_blocking(struct led_classdev *led_cdev,
++					   enum led_brightness brightness)
 +{
++	struct ht16k33_priv *priv = container_of(led_cdev, struct ht16k33_priv,
++						 seg.led);
++
++	return ht16k33_brightness_set(priv, brightness);
++}
++
++static int ht16k33_blink_set(struct led_classdev *led_cdev,
++			     unsigned long *delay_on, unsigned long *delay_off)
++{
++	struct ht16k33_priv *priv = container_of(led_cdev, struct ht16k33_priv,
++						 seg.led);
++	unsigned int delay;
++	uint8_t blink;
 +	int error;
 +
-+	if (brightness == 0)
-+		return ht16k33_display_off(priv);
++	if (!*delay_on && !*delay_off) {
++		blink = REG_DISPLAY_SETUP_BLINK_1HZ;
++		delay = 1000;
++	} else if (*delay_on <= 750) {
++		blink = REG_DISPLAY_SETUP_BLINK_2HZ;
++		delay = 500;
++	} else if (*delay_on <= 1500) {
++		blink = REG_DISPLAY_SETUP_BLINK_1HZ;
++		delay = 1000;
++	} else {
++		blink = REG_DISPLAY_SETUP_BLINK_0HZ5;
++		delay = 2000;
++	}
 +
-+	error = ht16k33_display_on(priv);
++	error = i2c_smbus_write_byte(priv->client,
++				     REG_DISPLAY_SETUP | REG_DISPLAY_SETUP_ON |
++				     blink);
 +	if (error)
 +		return error;
 +
-+	return i2c_smbus_write_byte(priv->client,
-+				    REG_BRIGHTNESS | (brightness - 1));
++	priv->blink = blink;
++	*delay_on = *delay_off = delay;
++	return 0;
 +}
 +
  static void ht16k33_fb_queue(struct ht16k33_priv *priv)
  {
  	struct ht16k33_fbdev *fbdev = &priv->fbdev;
-@@ -197,13 +213,10 @@ static int ht16k33_bl_update_status(struct backlight_device *bl)
+@@ -578,11 +633,29 @@ static int ht16k33_fbdev_probe(struct i2c_client *client,
+ static int ht16k33_seg_probe(struct i2c_client *client,
+ 			     struct ht16k33_priv *priv, uint32_t brightness)
+ {
+-	struct ht16k33_seg *seg = &priv->seg;
+ 	struct device *dev = &client->dev;
++	struct device_node *node = dev->of_node;
++	struct ht16k33_seg *seg = &priv->seg;
++	u32 color = COLOR_DEFAULT;
+ 	int err;
  
- 	if (bl->props.power != FB_BLANK_UNBLANK ||
- 	    bl->props.fb_blank != FB_BLANK_UNBLANK ||
--	    bl->props.state & BL_CORE_FBBLANK || brightness == 0) {
--		return ht16k33_display_off(priv);
--	}
-+	    bl->props.state & BL_CORE_FBBLANK)
-+		brightness = 0;
+-	err = ht16k33_brightness_set(priv, MAX_BRIGHTNESS);
++	of_property_read_u32(node, "color", &color);
++	seg->led.name = devm_kasprintf(dev, GFP_KERNEL,
++			DRIVER_NAME ":%s:" LED_FUNCTION_BACKLIGHT,
++			color < LED_COLOR_ID_MAX ? led_colors[color] : "");
++	seg->led.brightness_set_blocking = ht16k33_brightness_set_blocking;
++	seg->led.blink_set = ht16k33_blink_set;
++	seg->led.flags = LED_CORE_SUSPENDRESUME;
++	seg->led.brightness = brightness;
++	seg->led.max_brightness = MAX_BRIGHTNESS;
++
++	err = devm_led_classdev_register(dev, &seg->led);
++	if (err) {
++		dev_err(dev, "Failed to register LED\n");
++		return err;
++	}
++
++	err = ht16k33_brightness_set(priv, seg->led.brightness);
+ 	if (err)
+ 		return err;
  
--	ht16k33_display_on(priv);
--	return i2c_smbus_write_byte(priv->client,
--				    REG_BRIGHTNESS | (brightness - 1));
-+	return ht16k33_brightness_set(priv, brightness);
- }
- 
- static int ht16k33_bl_check_fb(struct backlight_device *bl, struct fb_info *fi)
 -- 
 2.25.1
 

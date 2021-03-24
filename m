@@ -2,130 +2,90 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D44B0C433E1
-	for <linux-mips@archiver.kernel.org>; Wed, 24 Mar 2021 02:33:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 021E2C433C1
+	for <linux-mips@archiver.kernel.org>; Wed, 24 Mar 2021 03:26:14 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id AAF69619EE
-	for <linux-mips@archiver.kernel.org>; Wed, 24 Mar 2021 02:33:43 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id AEF1B619E8
+	for <linux-mips@archiver.kernel.org>; Wed, 24 Mar 2021 03:26:13 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232107AbhCXCdK (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 23 Mar 2021 22:33:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36030 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231944AbhCXCcl (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Tue, 23 Mar 2021 22:32:41 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DE2DC061763;
-        Tue, 23 Mar 2021 19:32:41 -0700 (PDT)
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id F0E91883;
-        Wed, 24 Mar 2021 03:32:39 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1616553160;
-        bh=l7BD45qd1EreNw2oPGiKvtAPxI7dpJU1XkD1ZqEr9R0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=T5q51G7369lgTkBPV6hJMlzYWYozCdmLKtEGYFrjmEFkaBNH9Rnw3Uq0z46NnlOwo
-         hcSbaLCVEBIi18wZLAiEm2Ue/JNcTb1Efte23egBegX8BidBati2lzx0BObdcOK+/H
-         J/Ipten2UGI3SEPY7sqqHqrt7C1EBSl3h9sXXf/g=
-Date:   Wed, 24 Mar 2021 04:31:57 +0200
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Paul Cercueil <paul@crapouillou.net>
-Cc:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        linux-mips@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, od@zcrc.me, stable@vger.kernel.org,
-        Sam Ravnborg <sam@ravnborg.org>
-Subject: Re: [PATCH v3 4/4] drm/ingenic: Fix non-OSD mode
-Message-ID: <YFqknayQuJQmG7lm@pendragon.ideasonboard.com>
-References: <20210124085552.29146-1-paul@crapouillou.net>
- <20210124085552.29146-5-paul@crapouillou.net>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210124085552.29146-5-paul@crapouillou.net>
+        id S234990AbhCXDZm (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 23 Mar 2021 23:25:42 -0400
+Received: from mail.loongson.cn ([114.242.206.163]:37088 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S234999AbhCXDZN (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Tue, 23 Mar 2021 23:25:13 -0400
+Received: from localhost.localdomain (unknown [182.149.161.110])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9CxqckDsVpgywsAAA--.7S2;
+        Wed, 24 Mar 2021 11:24:56 +0800 (CST)
+From:   Huang Pei <huangpei@loongson.cn>
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        ambrosehua@gmail.com
+Cc:     Bibo Mao <maobibo@loongson.cn>, linux-mips@vger.kernel.org,
+        linux-arch@vger.kernel.org, Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Paul Burton <paulburton@kernel.org>,
+        Li Xuefeng <lixuefeng@loongson.cn>,
+        Yang Tiezhu <yangtiezhu@loongson.cn>,
+        Gao Juxin <gaojuxin@loongson.cn>,
+        Huacai Chen <chenhuacai@loongson.cn>,
+        Jinyang He <hejinyang@loongson.cn>
+Subject: [PATCH] MIPS: loongson64: fix bug when PAGE_SIZE > 16KB
+Date:   Wed, 24 Mar 2021 11:24:51 +0800
+Message-Id: <20210324032451.27569-1-huangpei@loongson.cn>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: AQAAf9CxqckDsVpgywsAAA--.7S2
+X-Coremail-Antispam: 1UD129KBjvdXoWrZF4xKr4ruF43XFWUZr15XFb_yoWkGFgEgF
+        W7tw4IgryFkrn7Ca47XrW7WF4a9a48GF4fuFyUJr9ag3sYvFnxJF4rurWjk3W3XrnYvryr
+        Gw4rKry0yw1S9jkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUb3xFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
+        A2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Cr0_
+        Gr1UM28EF7xvwVC2z280aVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Cr
+        1j6rxdM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj
+        6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr
+        0_Gr1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7M4IIrI8v6xkF7I0E
+        8cxan2IY04v7MxkIecxEwVAFwVW8GwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbV
+        WUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF
+        67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42
+        IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1l
+        IxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvf
+        C2KfnxnUUI43ZEXa7VUjQBMtUUUUU==
+X-CM-SenderInfo: xkxd0whshlqz5rrqw2lrqou0/
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Hi Paul,
+When page size larger than 16KB, arguments "vaddr + size(16KB)" in
+"ioremap_page_range(vaddr, vaddr + size,...)" called by
+"add_legacy_isa_io" is not page-aligned.
 
-Thank you for the patch.
+As loongson64 needs at least page size 16KB to get rid of cache alias,
+and "vaddr" is 64KB-aligned, and 64KB is largest page size supported,
+rounding "size" up to PAGE_SIZE is enough for all page size supported.
 
-On Sun, Jan 24, 2021 at 08:55:52AM +0000, Paul Cercueil wrote:
-> Even though the JZ4740 did not have the OSD mode, it had (according to
-> the documentation) two DMA channels, but there is absolutely no
-> information about how to select the second DMA channel.
-> 
-> Make the ingenic-drm driver work in non-OSD mode by using the
-> foreground0 plane (which is bound to the DMA0 channel) as the primary
-> plane, instead of the foreground1 plane, which is the primary plane
-> when in OSD mode.
-> 
-> Fixes: 3c9bea4ef32b ("drm/ingenic: Add support for OSD mode")
-> Cc: <stable@vger.kernel.org> # v5.8+
-> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
-> Acked-by: Daniel Vetter <daniel.vetter@ffwll.ch>
+Fixes: 6d0068ad15e4 ("MIPS: Loongson64: Process ISA Node in DeviceTree")
+Signed-off-by: Huang Pei <huangpei@loongson.cn>
+---
+ arch/mips/loongson64/init.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-I don't have much knowledge about this platform, but the change looks
-reasonable to me.
-
-Acked-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-
-> ---
->  drivers/gpu/drm/ingenic/ingenic-drm-drv.c | 11 +++++++----
->  1 file changed, 7 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
-> index b23011c1c5d9..59ce43862e16 100644
-> --- a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
-> +++ b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
-> @@ -554,7 +554,7 @@ static void ingenic_drm_plane_atomic_update(struct drm_plane *plane,
->  		height = state->src_h >> 16;
->  		cpp = state->fb->format->cpp[0];
->  
-> -		if (priv->soc_info->has_osd && plane->type == DRM_PLANE_TYPE_OVERLAY)
-> +		if (!priv->soc_info->has_osd || plane->type == DRM_PLANE_TYPE_OVERLAY)
->  			hwdesc = &priv->dma_hwdescs->hwdesc_f0;
->  		else
->  			hwdesc = &priv->dma_hwdescs->hwdesc_f1;
-> @@ -826,6 +826,7 @@ static int ingenic_drm_bind(struct device *dev, bool has_components)
->  	const struct jz_soc_info *soc_info;
->  	struct ingenic_drm *priv;
->  	struct clk *parent_clk;
-> +	struct drm_plane *primary;
->  	struct drm_bridge *bridge;
->  	struct drm_panel *panel;
->  	struct drm_encoder *encoder;
-> @@ -940,9 +941,11 @@ static int ingenic_drm_bind(struct device *dev, bool has_components)
->  	if (soc_info->has_osd)
->  		priv->ipu_plane = drm_plane_from_index(drm, 0);
->  
-> -	drm_plane_helper_add(&priv->f1, &ingenic_drm_plane_helper_funcs);
-> +	primary = priv->soc_info->has_osd ? &priv->f1 : &priv->f0;
->  
-> -	ret = drm_universal_plane_init(drm, &priv->f1, 1,
-> +	drm_plane_helper_add(primary, &ingenic_drm_plane_helper_funcs);
-> +
-> +	ret = drm_universal_plane_init(drm, primary, 1,
->  				       &ingenic_drm_primary_plane_funcs,
->  				       priv->soc_info->formats_f1,
->  				       priv->soc_info->num_formats_f1,
-> @@ -954,7 +957,7 @@ static int ingenic_drm_bind(struct device *dev, bool has_components)
->  
->  	drm_crtc_helper_add(&priv->crtc, &ingenic_drm_crtc_helper_funcs);
->  
-> -	ret = drm_crtc_init_with_planes(drm, &priv->crtc, &priv->f1,
-> +	ret = drm_crtc_init_with_planes(drm, &priv->crtc, primary,
->  					NULL, &ingenic_drm_crtc_funcs, NULL);
->  	if (ret) {
->  		dev_err(dev, "Failed to init CRTC: %i\n", ret);
-
+diff --git a/arch/mips/loongson64/init.c b/arch/mips/loongson64/init.c
+index ed75f7971261..052cce6a8a99 100644
+--- a/arch/mips/loongson64/init.c
++++ b/arch/mips/loongson64/init.c
+@@ -82,7 +82,7 @@ static int __init add_legacy_isa_io(struct fwnode_handle *fwnode, resource_size_
+ 		return -ENOMEM;
+ 
+ 	range->fwnode = fwnode;
+-	range->size = size;
++	range->size = size = round_up(size, PAGE_SIZE);
+ 	range->hw_start = hw_start;
+ 	range->flags = LOGIC_PIO_CPU_MMIO;
+ 
 -- 
-Regards,
+2.17.1
 
-Laurent Pinchart

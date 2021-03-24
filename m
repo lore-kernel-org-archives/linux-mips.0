@@ -2,116 +2,99 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1DF3BC433E0
-	for <linux-mips@archiver.kernel.org>; Wed, 24 Mar 2021 02:28:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B71B4C433C1
+	for <linux-mips@archiver.kernel.org>; Wed, 24 Mar 2021 02:33:43 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id DAC09619F7
-	for <linux-mips@archiver.kernel.org>; Wed, 24 Mar 2021 02:28:50 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 661E4619F5
+	for <linux-mips@archiver.kernel.org>; Wed, 24 Mar 2021 02:33:43 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231811AbhCXC2R (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 23 Mar 2021 22:28:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35010 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231734AbhCXC1z (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Tue, 23 Mar 2021 22:27:55 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 501F9C061763;
-        Tue, 23 Mar 2021 19:27:55 -0700 (PDT)
+        id S232040AbhCXCdL (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 23 Mar 2021 22:33:11 -0400
+Received: from perceval.ideasonboard.com ([213.167.242.64]:50618 "EHLO
+        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232108AbhCXCcw (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Tue, 23 Mar 2021 22:32:52 -0400
 Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 94871580;
-        Wed, 24 Mar 2021 03:27:53 +0100 (CET)
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 507D8580;
+        Wed, 24 Mar 2021 03:32:51 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1616552873;
-        bh=c7+kEyIoAOQeyLvRmP4n95GhCtkq6avlgEpmeNUVx18=;
+        s=mail; t=1616553171;
+        bh=SPT6PlC2qxMevfzY2I/dHdE0/CO5UmBJp6xZzw8hxQw=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Ih6A+94tDhI+I/348blbo/dUK/GbIo+4SUix7Ko8e0QSqbrHe5FxtM2V4tqmHEcSS
-         lLnU8FwudbI95WD7HXoZrRuAU/ej2ItJWN8o/g23UwsmS2/BBhzv+A/EX4VbCd6xCb
-         nQlEoqC8o/t6QtgW4AIhsTLtfYtRUh7NPIkxHDtM=
-Date:   Wed, 24 Mar 2021 04:27:11 +0200
+        b=OYOlaFZOtr5vJuMlYTG/Ji3sqhclbrRzX8VDYSZuW4NB8bsNPWn3nq2G+Crd1aZd/
+         bcznrGviJr0/F3309SLpJK9LfpqrpHo/z60Sn7RjHEyLq53XZbwQujdV9ZalUXcTgd
+         VKBIXk07KAXxn2aYQ3Ka/3hEE33Uhj0aqnp44zs4=
+Date:   Wed, 24 Mar 2021 04:32:09 +0200
 From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
 To:     Paul Cercueil <paul@crapouillou.net>
 Cc:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
-        linux-mips@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, od@zcrc.me, stable@vger.kernel.org,
-        Sam Ravnborg <sam@ravnborg.org>
-Subject: Re: [PATCH v3 3/4] drm/ingenic: Register devm action to cleanup
- encoders
-Message-ID: <YFqjf0GMiAPL6aBt@pendragon.ideasonboard.com>
+        od@zcrc.me, Sam Ravnborg <sam@ravnborg.org>,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-mips@vger.kernel.org
+Subject: Re: [PATCH v3 0/4] Fixes to bridge/panel and ingenic-drm
+Message-ID: <YFqkqQnTNvb0/Ng3@pendragon.ideasonboard.com>
 References: <20210124085552.29146-1-paul@crapouillou.net>
- <20210124085552.29146-4-paul@crapouillou.net>
+ <DUC1PQ.KO33KJE3BP5L@crapouillou.net>
+ <09JFQQ.5A8HP2TTVT5Z1@crapouillou.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210124085552.29146-4-paul@crapouillou.net>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <09JFQQ.5A8HP2TTVT5Z1@crapouillou.net>
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Hi Paul,
+On Tue, Mar 23, 2021 at 04:03:00PM +0000, Paul Cercueil wrote:
+> Le mer. 24 févr. 2021 à 13:44, Paul Cercueil a écrit :
+> > Hi,
+> > 
+> > Some feedback for patches 1-3? Laurent?
+> 
+> 1-month anniversary ping :)
 
-Thank you for the patch.
+Haaappy birth-day toooo youuuuuuu :-)
 
-On Sun, Jan 24, 2021 at 08:55:51AM +0000, Paul Cercueil wrote:
-> Since the encoders have been devm-allocated, they will be freed way
-> before drm_mode_config_cleanup() is called. To avoid use-after-free
-> conditions, we then must ensure that drm_encoder_cleanup() is called
-> before the encoders are freed.
-> 
-> v2: Use the new __drmm_simple_encoder_alloc() function
-> 
-> v3: Use the new drmm_plain_simple_encoder_alloc() macro
-> 
-> Fixes: c369cb27c267 ("drm/ingenic: Support multiple panels/bridges")
-> Cc: <stable@vger.kernel.org> # 5.8+
-> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+Patches reviewed.
 
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-
-> ---
-> 
-> Notes:
->     Use the V1 of this patch to fix v5.11 and older kernels. This V3 only
->     applies on the current drm-misc-next branch.
-> 
->  drivers/gpu/drm/ingenic/ingenic-drm-drv.c | 15 ++++++---------
->  1 file changed, 6 insertions(+), 9 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
-> index 7bb31fbee29d..b23011c1c5d9 100644
-> --- a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
-> +++ b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
-> @@ -1014,20 +1014,17 @@ static int ingenic_drm_bind(struct device *dev, bool has_components)
->  			bridge = devm_drm_panel_bridge_add_typed(dev, panel,
->  								 DRM_MODE_CONNECTOR_DPI);
->  
-> -		encoder = devm_kzalloc(dev, sizeof(*encoder), GFP_KERNEL);
-> -		if (!encoder)
-> -			return -ENOMEM;
-> +		encoder = drmm_plain_simple_encoder_alloc(drm, DRM_MODE_ENCODER_DPI);
-> +		if (IS_ERR(encoder)) {
-> +			ret = PTR_ERR(encoder);
-> +			dev_err(dev, "Failed to init encoder: %d\n", ret);
-> +			return ret;
-> +		}
->  
->  		encoder->possible_crtcs = 1;
->  
->  		drm_encoder_helper_add(encoder, &ingenic_drm_encoder_helper_funcs);
->  
-> -		ret = drm_simple_encoder_init(drm, encoder, DRM_MODE_ENCODER_DPI);
-> -		if (ret) {
-> -			dev_err(dev, "Failed to init encoder: %d\n", ret);
-> -			return ret;
-> -		}
-> -
->  		ret = drm_bridge_attach(encoder, bridge, NULL, 0);
->  		if (ret) {
->  			dev_err(dev, "Unable to attach bridge\n");
+> > Le dim. 24 janv. 2021 à 8:55, Paul Cercueil a  écrit :
+> >> Hi,
+> >> 
+> >> Here are three independent fixes. The first one addresses a
+> >> use-after-free in bridge/panel.c; the second one addresses a
+> >> use-after-free in the ingenic-drm driver; finally, the third one makes
+> >> the ingenic-drm driver work again on older Ingenic SoCs.
+> >> 
+> >> Changes from v2:
+> >> - patch [1/4] added a FIXME.
+> >> - patch [2/4] is new. It introduces a drmm_plain_simple_encoder_alloc()
+> >>   macro that will be used in patch [3/4].
+> >> - patch [3/4] uses the macro introduced in patch [2/4].
+> >> - patch [4/4] is unmodified.
+> >> 
+> >> Note to linux-stable guys: patch [v2 2/3] will only apply on the current
+> >> drm-misc-next branch, to fix it for v5.11 and older kernels, use the V1
+> >> of that patch.
+> >> 
+> >> Cheers,
+> >> -Paul
+> >> 
+> >> Paul Cercueil (4):
+> >>   drm: bridge/panel: Cleanup connector on bridge detach
+> >>   drm/simple_kms_helper: Add macro drmm_plain_simple_encoder_alloc()
+> >>   drm/ingenic: Register devm action to cleanup encoders
+> >>   drm/ingenic: Fix non-OSD mode
+> >> 
+> >>  drivers/gpu/drm/bridge/panel.c            | 12 +++++++++++
+> >>  drivers/gpu/drm/ingenic/ingenic-drm-drv.c | 26 +++++++++++------------
+> >>  include/drm/drm_simple_kms_helper.h       | 17 +++++++++++++++
+> >>  3 files changed, 42 insertions(+), 13 deletions(-)
+> >> 
 
 -- 
 Regards,

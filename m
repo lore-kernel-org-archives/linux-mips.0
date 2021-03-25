@@ -3,67 +3,86 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
 X-Spam-Status: No, score=-15.3 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E4F37C433E3
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BE35DC433E1
 	for <linux-mips@archiver.kernel.org>; Thu, 25 Mar 2021 10:02:12 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id BAB8A61A30
+	by mail.kernel.org (Postfix) with ESMTP id 9D61F61A2F
 	for <linux-mips@archiver.kernel.org>; Thu, 25 Mar 2021 10:02:12 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230007AbhCYKBc (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 25 Mar 2021 06:01:32 -0400
-Received: from elvis.franken.de ([193.175.24.41]:58851 "EHLO elvis.franken.de"
+        id S229839AbhCYKBb (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 25 Mar 2021 06:01:31 -0400
+Received: from elvis.franken.de ([193.175.24.41]:58863 "EHLO elvis.franken.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229519AbhCYKBM (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        id S229581AbhCYKBM (ORCPT <rfc822;linux-mips@vger.kernel.org>);
         Thu, 25 Mar 2021 06:01:12 -0400
 Received: from uucp (helo=alpha)
         by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1lPMnd-00074f-03; Thu, 25 Mar 2021 11:01:09 +0100
+        id 1lPMnd-00074f-02; Thu, 25 Mar 2021 11:01:09 +0100
 Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 44236C1C81; Thu, 25 Mar 2021 11:00:09 +0100 (CET)
-Date:   Thu, 25 Mar 2021 11:00:09 +0100
+        id D9DE4C1C81; Thu, 25 Mar 2021 10:58:51 +0100 (CET)
+Date:   Thu, 25 Mar 2021 10:58:51 +0100
 From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Huang Pei <huangpei@loongson.cn>
-Cc:     ambrosehua@gmail.com, Bibo Mao <maobibo@loongson.cn>,
-        linux-mips@vger.kernel.org, linux-arch@vger.kernel.org,
+To:     Qing Zhang <zhangqing@loongson.cn>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>,
+        Huacai Chen <chenhuacai@kernel.org>,
         Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Paul Burton <paulburton@kernel.org>,
-        Li Xuefeng <lixuefeng@loongson.cn>,
-        Yang Tiezhu <yangtiezhu@loongson.cn>,
-        Gao Juxin <gaojuxin@loongson.cn>,
-        Huacai Chen <chenhuacai@loongson.cn>,
-        Jinyang He <hejinyang@loongson.cn>
-Subject: Re: [PATCH] MIPS: loongson64: fix bug when PAGE_SIZE > 16KB
-Message-ID: <20210325100009.GD5775@alpha.franken.de>
-References: <20210324032451.27569-1-huangpei@loongson.cn>
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH v5 0/7] Add basic support for Loongson-2K1000
+Message-ID: <20210325095851.GC5775@alpha.franken.de>
+References: <20210315075004.15465-1-zhangqing@loongson.cn>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210324032451.27569-1-huangpei@loongson.cn>
+In-Reply-To: <20210315075004.15465-1-zhangqing@loongson.cn>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Wed, Mar 24, 2021 at 11:24:51AM +0800, Huang Pei wrote:
-> When page size larger than 16KB, arguments "vaddr + size(16KB)" in
-> "ioremap_page_range(vaddr, vaddr + size,...)" called by
-> "add_legacy_isa_io" is not page-aligned.
+On Mon, Mar 15, 2021 at 03:49:57PM +0800, Qing Zhang wrote:
+> These patches support single-core DTS boot to the serial port login
+> interface, which can be operated using conventional commands.
 > 
-> As loongson64 needs at least page size 16KB to get rid of cache alias,
-> and "vaddr" is 64KB-aligned, and 64KB is largest page size supported,
-> rounding "size" up to PAGE_SIZE is enough for all page size supported.
+> I have successfully tested it on the Loongson 2K1000 machine.
+> pmon: http://cgit.loongnix.org/cgit/pmon-loongson3/
 > 
-> Fixes: 6d0068ad15e4 ("MIPS: Loongson64: Process ISA Node in DeviceTree")
-> Signed-off-by: Huang Pei <huangpei@loongson.cn>
-> ---
->  arch/mips/loongson64/init.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> Note:
+> After the basic support is merged,
+> I will commit SMP and other driver support in the future.
+> 
+> Qing Zhang (7):
+>   MIPS: Loongson64: DeviceTree for Loongson-2K1000
+>   MIPS: Loongson64: Distinguish firmware dependencies DTB/LEFI
+>   MIPS: Loongson64: Add support for the Loongson-2K1000 to get
+>     cpu_clock_freq
+>   MIPS: Loongson64: Add Loongson-2K1000 early_printk_port
+>   irqchip/loongson-liointc: irqchip add 2.0 version
+>   dt-bindings: interrupt-controller: Add Loongson-2K1000 LIOINTC
+>   MIPS: Loongson64: Add a Loongson-2K1000 default config file
+> 
+>  .../loongson,liointc.yaml                     |  36 +-
+>  arch/mips/boot/dts/loongson/Makefile          |   1 +
+>  .../boot/dts/loongson/loongson64-2k1000.dtsi  | 243 ++++++++++++
+>  .../dts/loongson/loongson64_2core_2k1000.dts  |  10 +
+>  arch/mips/configs/loongson2k_defconfig        | 353 ++++++++++++++++++
+>  .../asm/mach-loongson64/builtin_dtbs.h        |   1 +
+>  .../include/asm/mach-loongson64/loongson.h    |   9 +-
+>  arch/mips/loongson64/env.c                    |  13 +-
+>  arch/mips/loongson64/init.c                   |  21 +-
+>  arch/mips/loongson64/time.c                   |  24 ++
+>  drivers/irqchip/irq-loongson-liointc.c        |  58 ++-
+>  11 files changed, 751 insertions(+), 18 deletions(-)
+>  create mode 100644 arch/mips/boot/dts/loongson/loongson64-2k1000.dtsi
+>  create mode 100644 arch/mips/boot/dts/loongson/loongson64_2core_2k1000.dts
+>  create mode 100644 arch/mips/configs/loongson2k_defconfig
 
-applied to mips-next.
+series applied to mips-next.
 
 Thomas.
 

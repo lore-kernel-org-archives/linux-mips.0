@@ -8,59 +8,59 @@ X-Spam-Status: No, score=-26.3 required=3.0 tests=BAYES_00,DKIMWL_WL_MED,
 	USER_AGENT_GIT,USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 95AF3C433EA
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EC791C433ED
 	for <linux-mips@archiver.kernel.org>; Fri, 26 Mar 2021 02:21:23 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 70D0161A42
+	by mail.kernel.org (Postfix) with ESMTP id D52A461A2B
 	for <linux-mips@archiver.kernel.org>; Fri, 26 Mar 2021 02:21:23 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231424AbhCZCUw (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 25 Mar 2021 22:20:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35290 "EHLO
+        id S231463AbhCZCUz (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 25 Mar 2021 22:20:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35380 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231174AbhCZCUZ (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Thu, 25 Mar 2021 22:20:25 -0400
+        with ESMTP id S231224AbhCZCUh (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Thu, 25 Mar 2021 22:20:37 -0400
 Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BE13C06174A
-        for <linux-mips@vger.kernel.org>; Thu, 25 Mar 2021 19:20:25 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id u128so8268760ybf.12
-        for <linux-mips@vger.kernel.org>; Thu, 25 Mar 2021 19:20:25 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBD49C0613D7
+        for <linux-mips@vger.kernel.org>; Thu, 25 Mar 2021 19:20:36 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id a19so2612984ybg.10
+        for <linux-mips@vger.kernel.org>; Thu, 25 Mar 2021 19:20:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=reply-to:date:in-reply-to:message-id:mime-version:references
          :subject:from:to:cc;
-        bh=3AgZ1tXB5fsmC9BqolsIozmnqnoXMTYWhC7BKZkiX/k=;
-        b=OyvJj/iJwjaokx6AiNv8/+wi/SJujMbURg54zi2DAFVIy7RKNlyW1Ofw2aezhxPHQP
-         xy8/NNmr7u1tpPIuhP6uc9BgCnU8BrSugIoZdqtBW73/dOdNpPLV9QXmd6E9y0pPi/tn
-         PCSaNnznpyI2+X88wTtVN5vrzM+ZHqRtvIeF5pxspwDgffYRwR2IPJYKwyvCuji2P9FJ
-         yVnWJ6dzjggzHLNmbV74iPSF1hkAWyqcacOxwSTrmuYjqCoAtbev52lw+POPWqErwIq/
-         DA3F9HAvpKzO+Nct8+cNLyAVcxRoCK6T7PHyd6ree/SliuWUS+uXs36MmQ6wMIEOrOCx
-         P5pg==
+        bh=ToXMoL2Kd2/SJp5pLlSeXZUeldhyd8WTEWaSFPITIQY=;
+        b=vYbzZt6VuoT8/2gGGWgm9PSqd3t+FSwTciToxgXXhjE1y1MU3KJy6WkEJlNfLXLkie
+         xxjVqRA8DnUzeGhmNepWRZgzCCLRKgZfM3tzRBzdMvH3AWYBsGv5yrxAG+SBFJukd0hd
+         YqDCDfmPyTv539NQ8Eoac3EKcUNCn+s1nxvUy/gUtRUV6xCYJOzHX+nzP140CEy8tBSX
+         jRQoy57NNEizpyKOft/OFh9r4JweTh++5JzyP6or14BiU622LYfnszXiecStaeCwN7Nc
+         pXPJ3mVCknAxAAGQ9Dej38P4WhmWVmCo0W/vHWm91ZJPQGCwtrHKID5jq7bvw40c7SFt
+         eU4Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:reply-to:date:in-reply-to:message-id
          :mime-version:references:subject:from:to:cc;
-        bh=3AgZ1tXB5fsmC9BqolsIozmnqnoXMTYWhC7BKZkiX/k=;
-        b=MjAgjj6t6QUx8PC0J6RqxOiUPqzMTiygBNeevuhBWgY4Snutcb2331VEexms9wCB6a
-         e8juQfYdJ0AylY3XNacno5X8OR527gymHzddiBov9jOAtbnT4tQj7klND6AgaRs4LYgy
-         gq7WTEf5uUxb8+XcZ70J/oTMDwBrHrY2ZFC1U5NPfYlG1XuqagXu/5ZdhvW7tPQczfLI
-         M5x3P656BpJu65DL8/XHFSBQhoeIjW/cf62o10TfjA60iR23NoU4jdc/HJOpnTG6P40C
-         4lhu5bvViLKmgiru7+v3Mn7mwztMThsgDYAu4cZ+vN1rEvNWlX5l6r8Qw+pD2EOEHqTy
-         uvww==
-X-Gm-Message-State: AOAM533/MyiVYAyFUZulBPE5J5T3E9JegflkfbbGVvGm5RKPsIn9JTgM
-        MEQQOq6m8wp1JJHm7eJLLxVsLIZC8UQ=
-X-Google-Smtp-Source: ABdhPJz4J4AlDNUuHmarx4p63A7F1ftWtx7VoOUQI0sOGW99e4CpULlCgcHiaKNZ+licKK4wHDqKcNjBUg8=
+        bh=ToXMoL2Kd2/SJp5pLlSeXZUeldhyd8WTEWaSFPITIQY=;
+        b=AckSglGpopbYz8EKWDUmKxNMif77MyLHzh5fNfbkd7genbQIu8prtDXMvkCLeCyW1k
+         3tsYbDzgu3XN4b7vxz3MwwEzZZjVk1BaZZ33mkomgd7fLfq3atL4pklG7RIuNTIsMVC4
+         V8xEcM7UtjL9/q2KiKL+cYEdV8xPlsYiTkcPpWZChetu0q3DafKrCOGIe5HZXIYFTkeM
+         yZO/g31u4AdJ0s7wl8VZ90vISgNbfkRnGPBasaPX64e2JK7t0w54FSgE0DHJXXUlQDdi
+         NqB9nHy1YTIDwdCo2Tz3L7b2u34h/Sbg75EZjNyAy/mV9ly6zyanh843o0CDnGJQLb9X
+         o9WQ==
+X-Gm-Message-State: AOAM530brDSOiFISUMUqEJDDtzeCvUL3TXrsbMvd8FCVJBJ2lEnm6y1e
+        bo1zB5iQGP/eDOfn909E45P3bzkXGIs=
+X-Google-Smtp-Source: ABdhPJzRVG48z8ZzycjiKCLwPZNN1glmgxA8blrqx2t14Bkqo8S2FlN8ubmdHUNXp/9csQMMt5MyDjtbz7k=
 X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:f:10:b1bb:fab2:7ef5:fc7d])
- (user=seanjc job=sendgmr) by 2002:a25:655:: with SMTP id 82mr14774831ybg.168.1616725224644;
- Thu, 25 Mar 2021 19:20:24 -0700 (PDT)
+ (user=seanjc job=sendgmr) by 2002:a25:aa63:: with SMTP id s90mr13063680ybi.393.1616725236043;
+ Thu, 25 Mar 2021 19:20:36 -0700 (PDT)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Thu, 25 Mar 2021 19:19:45 -0700
+Date:   Thu, 25 Mar 2021 19:19:50 -0700
 In-Reply-To: <20210326021957.1424875-1-seanjc@google.com>
-Message-Id: <20210326021957.1424875-7-seanjc@google.com>
+Message-Id: <20210326021957.1424875-12-seanjc@google.com>
 Mime-Version: 1.0
 References: <20210326021957.1424875-1-seanjc@google.com>
 X-Mailer: git-send-email 2.31.0.291.g576ba9dcdaf-goog
-Subject: [PATCH 06/18] KVM: x86/mmu: Pass address space ID to TDP MMU root walkers
+Subject: [PATCH 11/18] KVM: arm64: Convert to the gfn-based MMU notifier callbacks
 From:   Sean Christopherson <seanjc@google.com>
 To:     Marc Zyngier <maz@kernel.org>, Huacai Chen <chenhuacai@kernel.org>,
         Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
@@ -83,227 +83,199 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Move the address space ID check that is performed when iterating over
-roots into the macro helpers to consolidate code.
+Move arm64 to the gfn-base MMU notifier APIs, which do the hva->gfn
+lookup in common code.
 
-No functional change intended.
+Note, due to arch code being called if and only if a memslot is found,
+the clean_dcache_guest_page() call in kvm_set_spte_*() is will no longer
+be called for addresses that are not found in the guest memslots.
 
 Signed-off-by: Sean Christopherson <seanjc@google.com>
 ---
- arch/x86/kvm/mmu/mmu_internal.h |  7 ++-
- arch/x86/kvm/mmu/tdp_mmu.c      | 99 ++++++++++++---------------------
- 2 files changed, 42 insertions(+), 64 deletions(-)
+ arch/arm64/include/asm/kvm_host.h |   1 +
+ arch/arm64/kvm/mmu.c              | 117 ++++++++----------------------
+ 2 files changed, 33 insertions(+), 85 deletions(-)
 
-diff --git a/arch/x86/kvm/mmu/mmu_internal.h b/arch/x86/kvm/mmu/mmu_internal.h
-index db2faa806ab7..cead1d81e663 100644
---- a/arch/x86/kvm/mmu/mmu_internal.h
-+++ b/arch/x86/kvm/mmu/mmu_internal.h
-@@ -129,9 +129,14 @@ static inline bool kvm_mmu_put_root(struct kvm *kvm, struct kvm_mmu_page *sp)
- 	return !sp->root_count;
+diff --git a/arch/arm64/include/asm/kvm_host.h b/arch/arm64/include/asm/kvm_host.h
+index 72e6b4600264..1ad729cf7b0d 100644
+--- a/arch/arm64/include/asm/kvm_host.h
++++ b/arch/arm64/include/asm/kvm_host.h
+@@ -582,6 +582,7 @@ int __kvm_arm_vcpu_set_events(struct kvm_vcpu *vcpu,
+ 			      struct kvm_vcpu_events *events);
+ 
+ #define KVM_ARCH_WANT_MMU_NOTIFIER
++#define KVM_ARCH_WANT_NEW_MMU_NOTIFIER_APIS
+ 
+ void kvm_arm_halt_guest(struct kvm *kvm);
+ void kvm_arm_resume_guest(struct kvm *kvm);
+diff --git a/arch/arm64/kvm/mmu.c b/arch/arm64/kvm/mmu.c
+index 4b7e1e327337..35728231e9a0 100644
+--- a/arch/arm64/kvm/mmu.c
++++ b/arch/arm64/kvm/mmu.c
+@@ -839,7 +839,7 @@ static int user_mem_abort(struct kvm_vcpu *vcpu, phys_addr_t fault_ipa,
+ 	 * gfn_to_pfn_prot (which calls get_user_pages), so that we don't risk
+ 	 * the page we just got a reference to gets unmapped before we have a
+ 	 * chance to grab the mmu_lock, which ensure that if the page gets
+-	 * unmapped afterwards, the call to kvm_unmap_hva will take it away
++	 * unmapped afterwards, the call to kvm_unmap_gfn will take it away
+ 	 * from us again properly. This smp_rmb() interacts with the smp_wmb()
+ 	 * in kvm_mmu_notifier_invalidate_<page|range_end>.
+ 	 */
+@@ -1064,123 +1064,70 @@ int kvm_handle_guest_abort(struct kvm_vcpu *vcpu)
+ 	return ret;
  }
  
-+static inline int kvm_mmu_role_as_id(union kvm_mmu_page_role role)
-+{
-+	return role.smm ? 1 : 0;
-+}
+-static int handle_hva_to_gpa(struct kvm *kvm,
+-			     unsigned long start,
+-			     unsigned long end,
+-			     int (*handler)(struct kvm *kvm,
+-					    gpa_t gpa, u64 size,
+-					    void *data),
+-			     void *data)
+-{
+-	struct kvm_memslots *slots;
+-	struct kvm_memory_slot *memslot;
+-	int ret = 0;
+-
+-	slots = kvm_memslots(kvm);
+-
+-	/* we only care about the pages that the guest sees */
+-	kvm_for_each_memslot(memslot, slots) {
+-		unsigned long hva_start, hva_end;
+-		gfn_t gpa;
+-
+-		hva_start = max(start, memslot->userspace_addr);
+-		hva_end = min(end, memslot->userspace_addr +
+-					(memslot->npages << PAGE_SHIFT));
+-		if (hva_start >= hva_end)
+-			continue;
+-
+-		gpa = hva_to_gfn_memslot(hva_start, memslot) << PAGE_SHIFT;
+-		ret |= handler(kvm, gpa, (u64)(hva_end - hva_start), data);
+-	}
+-
+-	return ret;
+-}
+-
+-static int kvm_unmap_hva_handler(struct kvm *kvm, gpa_t gpa, u64 size, void *data)
+-{
+-	unsigned flags = *(unsigned *)data;
+-	bool may_block = flags & MMU_NOTIFIER_RANGE_BLOCKABLE;
+-
+-	__unmap_stage2_range(&kvm->arch.mmu, gpa, size, may_block);
+-	return 0;
+-}
+-
+-int kvm_unmap_hva_range(struct kvm *kvm,
+-			unsigned long start, unsigned long end, unsigned flags)
++bool kvm_unmap_gfn_range(struct kvm *kvm, struct kvm_gfn_range *range)
+ {
+ 	if (!kvm->arch.mmu.pgt)
+ 		return 0;
+ 
+-	handle_hva_to_gpa(kvm, start, end, &kvm_unmap_hva_handler, &flags);
+-	return 0;
+-}
++	__unmap_stage2_range(&kvm->arch.mmu, range->start << PAGE_SHIFT,
++			     (range->end - range->start) << PAGE_SHIFT,
++			     range->may_block);
+ 
+-static int kvm_set_spte_handler(struct kvm *kvm, gpa_t gpa, u64 size, void *data)
+-{
+-	kvm_pfn_t *pfn = (kvm_pfn_t *)data;
+-
+-	WARN_ON(size != PAGE_SIZE);
+-
+-	/*
+-	 * The MMU notifiers will have unmapped a huge PMD before calling
+-	 * ->change_pte() (which in turn calls kvm_set_spte_hva()) and
+-	 * therefore we never need to clear out a huge PMD through this
+-	 * calling path and a memcache is not required.
+-	 */
+-	kvm_pgtable_stage2_map(kvm->arch.mmu.pgt, gpa, PAGE_SIZE,
+-			       __pfn_to_phys(*pfn), KVM_PGTABLE_PROT_R, NULL);
+ 	return 0;
+ }
+ 
+-int kvm_set_spte_hva(struct kvm *kvm, unsigned long hva, pte_t pte)
++bool kvm_set_spte_gfn(struct kvm *kvm, struct kvm_gfn_range *range)
+ {
+-	unsigned long end = hva + PAGE_SIZE;
+-	kvm_pfn_t pfn = pte_pfn(pte);
++	kvm_pfn_t pfn = pte_pfn(range->pte);
+ 
+ 	if (!kvm->arch.mmu.pgt)
+ 		return 0;
+ 
++	WARN_ON(range->end - range->start != 1);
 +
- static inline int kvm_mmu_page_as_id(struct kvm_mmu_page *sp)
- {
--	return sp->role.smm ? 1 : 0;
-+	return kvm_mmu_role_as_id(sp->role);
- }
- 
- /*
-diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
-index bf279fff70ea..7fe5004b1565 100644
---- a/arch/x86/kvm/mmu/tdp_mmu.c
-+++ b/arch/x86/kvm/mmu/tdp_mmu.c
-@@ -76,14 +76,18 @@ static inline struct kvm_mmu_page *tdp_mmu_next_root(struct kvm *kvm,
-  * if exiting the loop early, the caller must drop the reference to the most
-  * recent root. (Unless keeping a live reference is desirable.)
-  */
--#define for_each_tdp_mmu_root_yield_safe(_kvm, _root)				\
-+#define for_each_tdp_mmu_root_yield_safe(_kvm, _root, _as_id)		\
- 	for (_root = list_first_entry(&_kvm->arch.tdp_mmu_roots,	\
- 				      typeof(*_root), link);		\
- 	     tdp_mmu_next_root_valid(_kvm, _root);			\
--	     _root = tdp_mmu_next_root(_kvm, _root))
-+	     _root = tdp_mmu_next_root(_kvm, _root))			\
-+		if (kvm_mmu_page_as_id(_root) != _as_id) {		\
-+		} else
- 
--#define for_each_tdp_mmu_root(_kvm, _root)				\
--	list_for_each_entry(_root, &_kvm->arch.tdp_mmu_roots, link)
-+#define for_each_tdp_mmu_root(_kvm, _root, _as_id)			\
-+	list_for_each_entry(_root, &_kvm->arch.tdp_mmu_roots, link)	\
-+		if (kvm_mmu_page_as_id(_root) != _as_id) {		\
-+		} else
- 
- static bool zap_gfn_range(struct kvm *kvm, struct kvm_mmu_page *root,
- 			  gfn_t start, gfn_t end, bool can_yield, bool flush);
-@@ -148,7 +152,7 @@ hpa_t kvm_tdp_mmu_get_vcpu_root_hpa(struct kvm_vcpu *vcpu)
- 	role = page_role_for_level(vcpu, vcpu->arch.mmu->shadow_root_level);
- 
- 	/* Check for an existing root before allocating a new one. */
--	for_each_tdp_mmu_root(kvm, root) {
-+	for_each_tdp_mmu_root(kvm, root, kvm_mmu_role_as_id(role)) {
- 		if (root->role.word == role.word) {
- 			kvm_mmu_get_root(kvm, root);
- 			goto out;
-@@ -709,11 +713,8 @@ bool __kvm_tdp_mmu_zap_gfn_range(struct kvm *kvm, int as_id, gfn_t start,
- {
- 	struct kvm_mmu_page *root;
- 
--	for_each_tdp_mmu_root_yield_safe(kvm, root) {
--		if (kvm_mmu_page_as_id(root) != as_id)
--			continue;
-+	for_each_tdp_mmu_root_yield_safe(kvm, root, as_id)
- 		flush = zap_gfn_range(kvm, root, start, end, can_yield, flush);
--	}
- 
- 	return flush;
- }
-@@ -893,27 +894,28 @@ static __always_inline int kvm_tdp_mmu_handle_hva_range(struct kvm *kvm,
- 	int ret = 0;
- 	int as_id;
- 
--	for_each_tdp_mmu_root_yield_safe(kvm, root) {
--		as_id = kvm_mmu_page_as_id(root);
--		slots = __kvm_memslots(kvm, as_id);
--		kvm_for_each_memslot(memslot, slots) {
--			unsigned long hva_start, hva_end;
--			gfn_t gfn_start, gfn_end;
-+	for (as_id = 0; as_id < KVM_ADDRESS_SPACE_NUM; as_id++) {
-+		for_each_tdp_mmu_root_yield_safe(kvm, root, as_id) {
-+			slots = __kvm_memslots(kvm, as_id);
-+			kvm_for_each_memslot(memslot, slots) {
-+				unsigned long hva_start, hva_end;
-+				gfn_t gfn_start, gfn_end;
- 
--			hva_start = max(start, memslot->userspace_addr);
--			hva_end = min(end, memslot->userspace_addr +
--				      (memslot->npages << PAGE_SHIFT));
--			if (hva_start >= hva_end)
--				continue;
--			/*
--			 * {gfn(page) | page intersects with [hva_start, hva_end)} =
--			 * {gfn_start, gfn_start+1, ..., gfn_end-1}.
--			 */
--			gfn_start = hva_to_gfn_memslot(hva_start, memslot);
--			gfn_end = hva_to_gfn_memslot(hva_end + PAGE_SIZE - 1, memslot);
-+				hva_start = max(start, memslot->userspace_addr);
-+				hva_end = min(end, memslot->userspace_addr +
-+					(memslot->npages << PAGE_SHIFT));
-+				if (hva_start >= hva_end)
-+					continue;
-+				/*
-+				 * {gfn(page) | page intersects with [hva_start, hva_end)} =
-+				 * {gfn_start, gfn_start+1, ..., gfn_end-1}.
-+				 */
-+				gfn_start = hva_to_gfn_memslot(hva_start, memslot);
-+				gfn_end = hva_to_gfn_memslot(hva_end + PAGE_SIZE - 1, memslot);
- 
--			ret |= handler(kvm, memslot, root, gfn_start,
--				       gfn_end, data);
-+				ret |= handler(kvm, memslot, root, gfn_start,
-+					gfn_end, data);
-+			}
- 		}
- 	}
- 
-@@ -1125,17 +1127,11 @@ bool kvm_tdp_mmu_wrprot_slot(struct kvm *kvm, struct kvm_memory_slot *slot,
- 			     int min_level)
- {
- 	struct kvm_mmu_page *root;
--	int root_as_id;
- 	bool spte_set = false;
- 
--	for_each_tdp_mmu_root_yield_safe(kvm, root) {
--		root_as_id = kvm_mmu_page_as_id(root);
--		if (root_as_id != slot->as_id)
--			continue;
--
-+	for_each_tdp_mmu_root_yield_safe(kvm, root, slot->as_id)
- 		spte_set |= wrprot_gfn_range(kvm, root, slot->base_gfn,
- 			     slot->base_gfn + slot->npages, min_level);
--	}
- 
- 	return spte_set;
- }
-@@ -1190,17 +1186,11 @@ static bool clear_dirty_gfn_range(struct kvm *kvm, struct kvm_mmu_page *root,
- bool kvm_tdp_mmu_clear_dirty_slot(struct kvm *kvm, struct kvm_memory_slot *slot)
- {
- 	struct kvm_mmu_page *root;
--	int root_as_id;
- 	bool spte_set = false;
- 
--	for_each_tdp_mmu_root_yield_safe(kvm, root) {
--		root_as_id = kvm_mmu_page_as_id(root);
--		if (root_as_id != slot->as_id)
--			continue;
--
-+	for_each_tdp_mmu_root_yield_safe(kvm, root, slot->as_id)
- 		spte_set |= clear_dirty_gfn_range(kvm, root, slot->base_gfn,
- 				slot->base_gfn + slot->npages);
--	}
- 
- 	return spte_set;
- }
-@@ -1262,16 +1252,10 @@ void kvm_tdp_mmu_clear_dirty_pt_masked(struct kvm *kvm,
- 				       bool wrprot)
- {
- 	struct kvm_mmu_page *root;
--	int root_as_id;
- 
- 	lockdep_assert_held_write(&kvm->mmu_lock);
--	for_each_tdp_mmu_root(kvm, root) {
--		root_as_id = kvm_mmu_page_as_id(root);
--		if (root_as_id != slot->as_id)
--			continue;
--
-+	for_each_tdp_mmu_root(kvm, root, slot->as_id)
- 		clear_dirty_pt_masked(kvm, root, gfn, mask, wrprot);
--	}
- }
- 
- /*
-@@ -1324,15 +1308,9 @@ bool kvm_tdp_mmu_zap_collapsible_sptes(struct kvm *kvm,
- 				       struct kvm_memory_slot *slot, bool flush)
- {
- 	struct kvm_mmu_page *root;
--	int root_as_id;
--
--	for_each_tdp_mmu_root_yield_safe(kvm, root) {
--		root_as_id = kvm_mmu_page_as_id(root);
--		if (root_as_id != slot->as_id)
--			continue;
- 
-+	for_each_tdp_mmu_root_yield_safe(kvm, root, slot->as_id)
- 		flush = zap_collapsible_spte_range(kvm, root, slot, flush);
--	}
- 
- 	return flush;
- }
-@@ -1376,17 +1354,12 @@ bool kvm_tdp_mmu_write_protect_gfn(struct kvm *kvm,
- 				   struct kvm_memory_slot *slot, gfn_t gfn)
- {
- 	struct kvm_mmu_page *root;
--	int root_as_id;
- 	bool spte_set = false;
- 
- 	lockdep_assert_held_write(&kvm->mmu_lock);
--	for_each_tdp_mmu_root(kvm, root) {
--		root_as_id = kvm_mmu_page_as_id(root);
--		if (root_as_id != slot->as_id)
--			continue;
--
-+	for_each_tdp_mmu_root(kvm, root, slot->as_id)
- 		spte_set |= write_protect_gfn(kvm, root, gfn);
--	}
+ 	/*
+ 	 * We've moved a page around, probably through CoW, so let's treat it
+ 	 * just like a translation fault and clean the cache to the PoC.
+ 	 */
+ 	clean_dcache_guest_page(pfn, PAGE_SIZE);
+-	handle_hva_to_gpa(kvm, hva, end, &kvm_set_spte_handler, &pfn);
 +
- 	return spte_set;
++	/*
++	 * The MMU notifiers will have unmapped a huge PMD before calling
++	 * ->change_pte() (which in turn calls kvm_set_spte_gfn()) and
++	 * therefore we never need to clear out a huge PMD through this
++	 * calling path and a memcache is not required.
++	 */
++	kvm_pgtable_stage2_map(kvm->arch.mmu.pgt, range->start << PAGE_SHIFT,
++			       PAGE_SIZE, __pfn_to_phys(pfn),
++			       KVM_PGTABLE_PROT_R, NULL);
++
+ 	return 0;
  }
  
+-static int kvm_age_hva_handler(struct kvm *kvm, gpa_t gpa, u64 size, void *data)
++bool kvm_age_gfn(struct kvm *kvm, struct kvm_gfn_range *range)
+ {
+-	pte_t pte;
++	u64 size = (range->end - range->start) << PAGE_SHIFT;
+ 	kvm_pte_t kpte;
++	pte_t pte;
++
++	if (!kvm->arch.mmu.pgt)
++		return 0;
+ 
+ 	WARN_ON(size != PAGE_SIZE && size != PMD_SIZE && size != PUD_SIZE);
+-	kpte = kvm_pgtable_stage2_mkold(kvm->arch.mmu.pgt, gpa);
++
++	kpte = kvm_pgtable_stage2_mkold(kvm->arch.mmu.pgt,
++					range->start << PAGE_SHIFT);
+ 	pte = __pte(kpte);
+ 	return pte_valid(pte) && pte_young(pte);
+ }
+ 
+-static int kvm_test_age_hva_handler(struct kvm *kvm, gpa_t gpa, u64 size, void *data)
+-{
+-	WARN_ON(size != PAGE_SIZE && size != PMD_SIZE && size != PUD_SIZE);
+-	return kvm_pgtable_stage2_is_young(kvm->arch.mmu.pgt, gpa);
+-}
+-
+-int kvm_age_hva(struct kvm *kvm, unsigned long start, unsigned long end)
+-{
+-	if (!kvm->arch.mmu.pgt)
+-		return 0;
+-
+-	return handle_hva_to_gpa(kvm, start, end, kvm_age_hva_handler, NULL);
+-}
+-
+-int kvm_test_age_hva(struct kvm *kvm, unsigned long hva)
++bool kvm_test_age_gfn(struct kvm *kvm, struct kvm_gfn_range *range)
+ {
+ 	if (!kvm->arch.mmu.pgt)
+ 		return 0;
+ 
+-	return handle_hva_to_gpa(kvm, hva, hva + PAGE_SIZE,
+-				 kvm_test_age_hva_handler, NULL);
++	return kvm_pgtable_stage2_is_young(kvm->arch.mmu.pgt,
++					   range->start << PAGE_SHIFT);
+ }
+ 
+ phys_addr_t kvm_mmu_get_httbr(void)
 -- 
 2.31.0.291.g576ba9dcdaf-goog
 

@@ -5,62 +5,63 @@ X-Spam-Level:
 X-Spam-Status: No, score=-26.3 required=3.0 tests=BAYES_00,DKIMWL_WL_MED,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
 	INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT,USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no
+	USER_AGENT_GIT,USER_IN_DEF_DKIM_WL autolearn=unavailable autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 319E2C433E1
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5E184C433E4
 	for <linux-mips@archiver.kernel.org>; Fri, 26 Mar 2021 02:21:51 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 0406161A2B
-	for <linux-mips@archiver.kernel.org>; Fri, 26 Mar 2021 02:21:50 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 385E961A60
+	for <linux-mips@archiver.kernel.org>; Fri, 26 Mar 2021 02:21:51 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231305AbhCZCVW (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 25 Mar 2021 22:21:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35490 "EHLO
+        id S231352AbhCZCVX (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 25 Mar 2021 22:21:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35476 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231152AbhCZCUw (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Thu, 25 Mar 2021 22:20:52 -0400
+        with ESMTP id S231388AbhCZCUu (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Thu, 25 Mar 2021 22:20:50 -0400
 Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B107C06174A
-        for <linux-mips@vger.kernel.org>; Thu, 25 Mar 2021 19:20:52 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id 19so2462540ybn.20
-        for <linux-mips@vger.kernel.org>; Thu, 25 Mar 2021 19:20:52 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55CD9C0613E2
+        for <linux-mips@vger.kernel.org>; Thu, 25 Mar 2021 19:20:50 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id a63so8343901yba.2
+        for <linux-mips@vger.kernel.org>; Thu, 25 Mar 2021 19:20:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=reply-to:date:in-reply-to:message-id:mime-version:references
          :subject:from:to:cc;
-        bh=EpijQ6V8FeVDkD7HX5egdlZ4dc07ENH1xKoxF44zfAY=;
-        b=vurensVFR3hrXyY1NMdpbwaru8VIWvzupZGNxIORfKUkaj6cZcAwrW4S7ZbldvFW0e
-         1pj7Sjtemz800HdNKoZvFp6F7/aMexhzotPHhhv54wbWGG2b5JKTkMRv9BDbN2E4Ey9T
-         8eW4Z03xVOLOX0hzRddgLv1Chs8SDkxnX6z2o6MpxhGggyvr5FcOq858GvWl6ZoPED7P
-         ykGFvoJ6wUIWXZYSEL8RaJGkOTiUZy0E1yO+uZS3qT3g2YOPbNYhWH0rLNLhU1rTGhtk
-         ls/hhgkUIDYTaauJwhgRarI2uGASQOz/snbsTpI3O7d7JXOpGXiLwzhMRARvAh1o2E/F
-         NZog==
+        bh=0E8BZ2STvuQIfso3dI+9aBVCstinNIkBYfQ3J4yTTGQ=;
+        b=Sztl/h9sZx/7ZaVx5hMPtB6lSzMSX4Gb28dHAMSquYqz7s8WUCP4uEoziz/kmtJK81
+         nfHzKFWV1WxfgApX8gx58e7JjhfWPaIW2HaXmQD7uuslC9BLVCHh4zkCoObl+QZ1dwPn
+         M+RVORS2wr6AeKLyKhtXnmkQmsacfxPFnoUqFW8APJAZRs8ZHxHOdTP5b/rKvbWd8T08
+         yeKRG0ZDrzCkkFO0+/kQKjyEP3OG8uUow+HKiNA9869LBY07Rkk4cdhbCro3XK38sXPM
+         CCkn5lXwZLRr5xUwqO5ob7s5/KEANR2XTByUOGreIF+7GYhUmFMMjzPbXWIu1eQORSa3
+         d2PQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:reply-to:date:in-reply-to:message-id
          :mime-version:references:subject:from:to:cc;
-        bh=EpijQ6V8FeVDkD7HX5egdlZ4dc07ENH1xKoxF44zfAY=;
-        b=LOv48uIVHNyQFG6Cyx9wEGueoI4oSyW2HL16TpPFDCPuJCqOgyCCAhKfMyr0XChcrT
-         IBYSTG4z6TP+r6G8Yq1YVf37+oCzCghsLydcG1bkv47VrarxG6gIt3avdY00aWZp0hk2
-         IfUATNKc0IuXu6JLZbIJaScqzsbQ/od7N5MPL8+7gYlBi3tc0lux+xdWpQ6PiHTYN4cf
-         hqLRtkHoeeWMxKa1JIBeorSqrA2qhKMJsY3AJAx5uOt4NX3Xv6fELw/UlRnAV8LgY/Tq
-         O0SH92WIpNr2CABgfZoHZ0V+A8QbqLaF019+li3nWLdbVSvOkXxxnkSFDFSAIL1atBxQ
-         JuYg==
-X-Gm-Message-State: AOAM531/eBFhc+NUsBz1/wYy6112Bb7PYtUHFl8nz77ueqYDChxtVa7x
-        oVzox6XEHLYlsVuNPfwMFQLspue4iY4=
-X-Google-Smtp-Source: ABdhPJzbNsIM618ZsZ/2M+kNXws+VM2rkDgsqZ/Jk+w2Zs+6fUW+W9XFuUI0Kj8VYAgdnJCOOVd45R9L9lU=
+        bh=0E8BZ2STvuQIfso3dI+9aBVCstinNIkBYfQ3J4yTTGQ=;
+        b=cPRphjEJH2S/IxI9wOVR9r1YClP8gmAcQFy2cx5cHW4Tgkn1dmnCowvR1Z4M0pMjsD
+         q8kIULlb8ML9nVIhvzmuMOZMx8eMQLz4usJtxSskTxg/3PP97woW8SvHlapmhh2TVJya
+         VQ5w0Be1QLqmQxQaydZxA1PfvWtdICcM0kCBHjzDlmxXX3tv4aFXlIQhabpq8bfiS2nm
+         UtHR1ABa0m+UyZ6R9WFisT5vf3yvrtj3FTey21Asc9lHViFzrTheyIXovyeplPkijIZ0
+         pe3jPQwWI5LSFvSFtkQVl8qEbxYfWH369ik+QgEgbnqiRdlgWiLkihkg50TEaYYMY0J0
+         Ua5w==
+X-Gm-Message-State: AOAM5331AJfkKPg63o4jMhbwWfn4h8YBnpiMFItgcC670F/8Vz4PdIFz
+        N6X6xxMvi3nfdfwphsbFiWVHJYQd3Tg=
+X-Google-Smtp-Source: ABdhPJzjEvSTUhG+uwIMtVfAPxRaQx8jIsDxAh63UurjJl6mHiAwbP0z55eNCAdH4rIDehEW/UWXRCNq+K0=
 X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:f:10:b1bb:fab2:7ef5:fc7d])
- (user=seanjc job=sendgmr) by 2002:a25:adc5:: with SMTP id d5mr15715734ybe.361.1616725251714;
- Thu, 25 Mar 2021 19:20:51 -0700 (PDT)
+ (user=seanjc job=sendgmr) by 2002:a25:be8d:: with SMTP id i13mr16186788ybk.320.1616725249585;
+ Thu, 25 Mar 2021 19:20:49 -0700 (PDT)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Thu, 25 Mar 2021 19:19:57 -0700
+Date:   Thu, 25 Mar 2021 19:19:56 -0700
 In-Reply-To: <20210326021957.1424875-1-seanjc@google.com>
-Message-Id: <20210326021957.1424875-19-seanjc@google.com>
+Message-Id: <20210326021957.1424875-18-seanjc@google.com>
 Mime-Version: 1.0
 References: <20210326021957.1424875-1-seanjc@google.com>
 X-Mailer: git-send-email 2.31.0.291.g576ba9dcdaf-goog
-Subject: [PATCH 18/18] KVM: x86/mmu: Drop trace_kvm_age_page() tracepoint
+Subject: [PATCH 17/18] KVM: x86/mmu: Allow yielding during MMU notifier
+ unmap/zap, if possible
 From:   Sean Christopherson <seanjc@google.com>
 To:     Marc Zyngier <maz@kernel.org>, Huacai Chen <chenhuacai@kernel.org>,
         Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
@@ -83,79 +84,41 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Remove x86's trace_kvm_age_page() tracepoint.  It's mostly redundant with
-the common trace_kvm_age_hva() tracepoint, and if there is a need for the
-extra details, e.g. gfn, referenced, etc... those details should be added
-to the common tracepoint so that all architectures and MMUs benefit from
-the info.
+Let the TDP MMU yield when unmapping a range in response to a MMU
+notification, if yielding is allowed by said notification.  There is no
+reason to disallow yielding in this case, and in theory the range being
+invalidated could be quite large.
 
+Cc: Ben Gardon <bgardon@google.com>
 Signed-off-by: Sean Christopherson <seanjc@google.com>
 ---
- arch/x86/kvm/mmu/mmu.c     |  1 -
- arch/x86/kvm/mmu/tdp_mmu.c |  2 --
- include/trace/events/kvm.h | 24 ------------------------
- 3 files changed, 27 deletions(-)
+ arch/x86/kvm/mmu/tdp_mmu.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-index 2070c7a91fdd..9eded46785b5 100644
---- a/arch/x86/kvm/mmu/mmu.c
-+++ b/arch/x86/kvm/mmu/mmu.c
-@@ -1467,7 +1467,6 @@ static bool kvm_age_rmapp(struct kvm *kvm, struct kvm_rmap_head *rmap_head,
- 	for_each_rmap_spte(rmap_head, &iter, sptep)
- 		young |= mmu_spte_age(sptep);
- 
--	trace_kvm_age_page(gfn, level, slot, young);
- 	return young;
- }
- 
 diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
-index 21bb8b68a553..2941beb6559a 100644
+index f6a82230baa5..21bb8b68a553 100644
 --- a/arch/x86/kvm/mmu/tdp_mmu.c
 +++ b/arch/x86/kvm/mmu/tdp_mmu.c
-@@ -949,8 +949,6 @@ static bool age_gfn_range(struct kvm *kvm, struct tdp_iter *iter,
+@@ -885,7 +885,7 @@ bool kvm_tdp_mmu_unmap_gfn_range(struct kvm *kvm, struct kvm_gfn_range *range,
  
- 	tdp_mmu_set_spte_no_acc_track(kvm, iter, new_spte);
+ 	for_each_tdp_mmu_root(kvm, root, range->slot->as_id)
+ 		flush |= zap_gfn_range(kvm, root, range->start, range->end,
+-				       false, flush);
++				       range->may_block, flush);
  
--	trace_kvm_age_page(iter->gfn, iter->level, range->slot, true);
--
- 	return true;
+ 	return flush;
  }
+@@ -903,6 +903,10 @@ static __always_inline bool kvm_tdp_mmu_handle_gfn(struct kvm *kvm,
  
-diff --git a/include/trace/events/kvm.h b/include/trace/events/kvm.h
-index 200eb7465530..37e1e1a2d67d 100644
---- a/include/trace/events/kvm.h
-+++ b/include/trace/events/kvm.h
-@@ -255,30 +255,6 @@ TRACE_EVENT(kvm_fpu,
- 	TP_printk("%s", __print_symbolic(__entry->load, kvm_fpu_load_symbol))
- );
+ 	rcu_read_lock();
  
--TRACE_EVENT(kvm_age_page,
--	TP_PROTO(ulong gfn, int level, struct kvm_memory_slot *slot, int ref),
--	TP_ARGS(gfn, level, slot, ref),
--
--	TP_STRUCT__entry(
--		__field(	u64,	hva		)
--		__field(	u64,	gfn		)
--		__field(	u8,	level		)
--		__field(	u8,	referenced	)
--	),
--
--	TP_fast_assign(
--		__entry->gfn		= gfn;
--		__entry->level		= level;
--		__entry->hva		= ((gfn - slot->base_gfn) <<
--					    PAGE_SHIFT) + slot->userspace_addr;
--		__entry->referenced	= ref;
--	),
--
--	TP_printk("hva %llx gfn %llx level %u %s",
--		  __entry->hva, __entry->gfn, __entry->level,
--		  __entry->referenced ? "YOUNG" : "OLD")
--);
--
- #ifdef CONFIG_KVM_ASYNC_PF
- DECLARE_EVENT_CLASS(kvm_async_get_page_class,
- 
++	/*
++	 * Don't support rescheduling, none of the MMU notifiers that funnel
++	 * into this helper allow blocking; it'd be dead, wasteful code.
++	 */
+ 	for_each_tdp_mmu_root(kvm, root, range->slot->as_id) {
+ 		tdp_root_for_each_leaf_pte(iter, root, range->start, range->end)
+ 			ret |= handler(kvm, &iter, range);
 -- 
 2.31.0.291.g576ba9dcdaf-goog
 

@@ -5,63 +5,62 @@ X-Spam-Level:
 X-Spam-Status: No, score=-26.3 required=3.0 tests=BAYES_00,DKIMWL_WL_MED,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
 	INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT,USER_IN_DEF_DKIM_WL autolearn=unavailable autolearn_force=no
+	USER_AGENT_GIT,USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A428EC433DB
-	for <linux-mips@archiver.kernel.org>; Fri, 26 Mar 2021 02:21:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 319E2C433E1
+	for <linux-mips@archiver.kernel.org>; Fri, 26 Mar 2021 02:21:51 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 8262861A3E
+	by mail.kernel.org (Postfix) with ESMTP id 0406161A2B
 	for <linux-mips@archiver.kernel.org>; Fri, 26 Mar 2021 02:21:50 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231281AbhCZCVT (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 25 Mar 2021 22:21:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35442 "EHLO
+        id S231305AbhCZCVW (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 25 Mar 2021 22:21:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35490 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231305AbhCZCUq (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Thu, 25 Mar 2021 22:20:46 -0400
+        with ESMTP id S231152AbhCZCUw (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Thu, 25 Mar 2021 22:20:52 -0400
 Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0AF8C061763
-        for <linux-mips@vger.kernel.org>; Thu, 25 Mar 2021 19:20:45 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id g9so8288434ybc.19
-        for <linux-mips@vger.kernel.org>; Thu, 25 Mar 2021 19:20:45 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B107C06174A
+        for <linux-mips@vger.kernel.org>; Thu, 25 Mar 2021 19:20:52 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id 19so2462540ybn.20
+        for <linux-mips@vger.kernel.org>; Thu, 25 Mar 2021 19:20:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=reply-to:date:in-reply-to:message-id:mime-version:references
          :subject:from:to:cc;
-        bh=TaRsW9hCT9gEJ/YVzW7kB9YFbRu5cnB3H0FViU1bRhk=;
-        b=kBPgGMYl4blfSBIqQ5FKhwNHBKbvitDKr+WZYdt/8IhMnlfsrTKNXxhUeD4Dfv4OdK
-         Qp85biDD6s+K+U5KksvGPm1ktvKtYdF7mnE9MrHxMeaVxGrZG5ap40dtbvhTh6LLvRmq
-         EVe4q3actfo6eycSfr6QO9c/QHHJUOWKxLFg2JRrhbugVxZPDZF4Tws0K8Q0zTr01x17
-         AhbFvngDP583OBSyiGm1/Mz3bjEOz7lQ/Yjo2wW5h41dxHGv5x1vrgqkeUC6D0RE05dK
-         3WjGfoR4fP8tf2U8RHVaSt/5IZ2QjRAtja0LwszjEpZxXU5VWS0iy7Sr4MaEgtMnRZgZ
-         ZNJQ==
+        bh=EpijQ6V8FeVDkD7HX5egdlZ4dc07ENH1xKoxF44zfAY=;
+        b=vurensVFR3hrXyY1NMdpbwaru8VIWvzupZGNxIORfKUkaj6cZcAwrW4S7ZbldvFW0e
+         1pj7Sjtemz800HdNKoZvFp6F7/aMexhzotPHhhv54wbWGG2b5JKTkMRv9BDbN2E4Ey9T
+         8eW4Z03xVOLOX0hzRddgLv1Chs8SDkxnX6z2o6MpxhGggyvr5FcOq858GvWl6ZoPED7P
+         ykGFvoJ6wUIWXZYSEL8RaJGkOTiUZy0E1yO+uZS3qT3g2YOPbNYhWH0rLNLhU1rTGhtk
+         ls/hhgkUIDYTaauJwhgRarI2uGASQOz/snbsTpI3O7d7JXOpGXiLwzhMRARvAh1o2E/F
+         NZog==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:reply-to:date:in-reply-to:message-id
          :mime-version:references:subject:from:to:cc;
-        bh=TaRsW9hCT9gEJ/YVzW7kB9YFbRu5cnB3H0FViU1bRhk=;
-        b=QS7k5bMjBkgHI7FQuPxXHS/sVBYB6wco94msYF4NrT0hVNpeC+Sc/Kv2qhcJgQPOF+
-         iISrxe7/So5OCyvXVNWuWqFhhXk2DO9Sk0PY0ITUqiPmoVeXb58M0IalRXpotTWus6Om
-         Xu4xWk6loIgvL+Ou+GjrpxuL8vczZdgsN2q9FXt+AitIo8YlWNplickLawvncBa+ifSu
-         G6o0Krz3+BiHjdkGeg8v/oOKZlEviOdVQtsvycIqAEUlp5+cgIMVMSjsf0vrm2vYdaVT
-         ZAnQinY2Pikx00/SXJrUJA80n2g3GzlVpyiqbfWhCpXMgkR/9JWe8Jw4FjXA4JnL/CIL
-         S9tw==
-X-Gm-Message-State: AOAM533OUchYa412CG9ytjAfz03bPxt082/c008WMgwfm4S8ZS5jmt9W
-        Cmz6LNByUv2dBgB1+e11kl78S7djBLM=
-X-Google-Smtp-Source: ABdhPJy2kLsKpNboktKYvRYtclaI6TLQhJXYHuQbVsBNzQbrVXujQcH971ASv0KdE05FkcrHFObwQrNjrD8=
+        bh=EpijQ6V8FeVDkD7HX5egdlZ4dc07ENH1xKoxF44zfAY=;
+        b=LOv48uIVHNyQFG6Cyx9wEGueoI4oSyW2HL16TpPFDCPuJCqOgyCCAhKfMyr0XChcrT
+         IBYSTG4z6TP+r6G8Yq1YVf37+oCzCghsLydcG1bkv47VrarxG6gIt3avdY00aWZp0hk2
+         IfUATNKc0IuXu6JLZbIJaScqzsbQ/od7N5MPL8+7gYlBi3tc0lux+xdWpQ6PiHTYN4cf
+         hqLRtkHoeeWMxKa1JIBeorSqrA2qhKMJsY3AJAx5uOt4NX3Xv6fELw/UlRnAV8LgY/Tq
+         O0SH92WIpNr2CABgfZoHZ0V+A8QbqLaF019+li3nWLdbVSvOkXxxnkSFDFSAIL1atBxQ
+         JuYg==
+X-Gm-Message-State: AOAM531/eBFhc+NUsBz1/wYy6112Bb7PYtUHFl8nz77ueqYDChxtVa7x
+        oVzox6XEHLYlsVuNPfwMFQLspue4iY4=
+X-Google-Smtp-Source: ABdhPJzbNsIM618ZsZ/2M+kNXws+VM2rkDgsqZ/Jk+w2Zs+6fUW+W9XFuUI0Kj8VYAgdnJCOOVd45R9L9lU=
 X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:f:10:b1bb:fab2:7ef5:fc7d])
- (user=seanjc job=sendgmr) by 2002:a25:5f46:: with SMTP id h6mr16551423ybm.255.1616725245154;
- Thu, 25 Mar 2021 19:20:45 -0700 (PDT)
+ (user=seanjc job=sendgmr) by 2002:a25:adc5:: with SMTP id d5mr15715734ybe.361.1616725251714;
+ Thu, 25 Mar 2021 19:20:51 -0700 (PDT)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Thu, 25 Mar 2021 19:19:54 -0700
+Date:   Thu, 25 Mar 2021 19:19:57 -0700
 In-Reply-To: <20210326021957.1424875-1-seanjc@google.com>
-Message-Id: <20210326021957.1424875-16-seanjc@google.com>
+Message-Id: <20210326021957.1424875-19-seanjc@google.com>
 Mime-Version: 1.0
 References: <20210326021957.1424875-1-seanjc@google.com>
 X-Mailer: git-send-email 2.31.0.291.g576ba9dcdaf-goog
-Subject: [PATCH 15/18] KVM: Take mmu_lock when handling MMU notifier iff the
- hva hits a memslot
+Subject: [PATCH 18/18] KVM: x86/mmu: Drop trace_kvm_age_page() tracepoint
 From:   Sean Christopherson <seanjc@google.com>
 To:     Marc Zyngier <maz@kernel.org>, Huacai Chen <chenhuacai@kernel.org>,
         Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
@@ -84,141 +83,79 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Defer acquiring mmu_lock in the MMU notifier paths until a "hit" has been
-detected in the memslots, i.e. don't take the lock for notifications that
-don't affect the guest.
+Remove x86's trace_kvm_age_page() tracepoint.  It's mostly redundant with
+the common trace_kvm_age_hva() tracepoint, and if there is a need for the
+extra details, e.g. gfn, referenced, etc... those details should be added
+to the common tracepoint so that all architectures and MMUs benefit from
+the info.
 
-For small VMs, spurious locking is a minor annoyance.  And for "volatile"
-setups where the majority of notifications _are_ relevant, this barely
-qualifies as an optimization.
-
-But, for large VMs (hundreds of threads) with static setups, e.g. no
-page migration, no swapping, etc..., the vast majority of MMU notifier
-callbacks will be unrelated to the guest, e.g. will often be in response
-to the userspace VMM adjusting its own virtual address space.  In such
-large VMs, acquiring mmu_lock can be painful as it blocks vCPUs from
-handling page faults.  In some scenarios it can even be "fatal" in the
-sense that it causes unacceptable brownouts, e.g. when rebuilding huge
-pages after live migration, a significant percentage of vCPUs will be
-attempting to handle page faults.
-
-x86's TDP MMU implementation is especially susceptible to spurious
-locking due it taking mmu_lock for read when handling page faults.
-Because rwlock is fair, a single writer will stall future readers, while
-the writer is itself stalled waiting for in-progress readers to complete.
-This is exacerbated by the MMU notifiers often firing multiple times in
-quick succession, e.g. moving a page will (always?) invoke three separate
-notifiers: .invalidate_range_start(), invalidate_range_end(), and
-.change_pte().  Unnecessarily taking mmu_lock each time means even a
-single spurious sequence can be problematic.
-
-Note, this optimizes only the unpaired callbacks.  Optimizing the
-.invalidate_range_{start,end}() pairs is more complex and will be done in
-a future patch.
-
-Suggested-by: Ben Gardon <bgardon@google.com>
 Signed-off-by: Sean Christopherson <seanjc@google.com>
 ---
- virt/kvm/kvm_main.c | 34 ++++++++++++++++------------------
- 1 file changed, 16 insertions(+), 18 deletions(-)
+ arch/x86/kvm/mmu/mmu.c     |  1 -
+ arch/x86/kvm/mmu/tdp_mmu.c |  2 --
+ include/trace/events/kvm.h | 24 ------------------------
+ 3 files changed, 27 deletions(-)
 
-diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
-index bfa43eea891a..0c2aff8a4aa1 100644
---- a/virt/kvm/kvm_main.c
-+++ b/virt/kvm/kvm_main.c
-@@ -458,6 +458,7 @@ struct kvm_hva_range {
- 	unsigned long end;
- 	pte_t pte;
- 	hva_handler_t handler;
-+	bool caller_locked;
- 	bool flush_on_ret;
- 	bool may_block;
- };
-@@ -465,14 +466,12 @@ struct kvm_hva_range {
- static __always_inline int __kvm_handle_hva_range(struct kvm *kvm,
- 						  const struct kvm_hva_range *range)
- {
--	struct kvm_memory_slot *slot;
--	struct kvm_memslots *slots;
-+	bool ret = false, locked = range->caller_locked;
- 	struct kvm_gfn_range gfn_range;
--	bool ret = false;
-+	struct kvm_memory_slot *slot;
-+	struct kvm_memslots *slots;
- 	int i, idx;
+diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+index 2070c7a91fdd..9eded46785b5 100644
+--- a/arch/x86/kvm/mmu/mmu.c
++++ b/arch/x86/kvm/mmu/mmu.c
+@@ -1467,7 +1467,6 @@ static bool kvm_age_rmapp(struct kvm *kvm, struct kvm_rmap_head *rmap_head,
+ 	for_each_rmap_spte(rmap_head, &iter, sptep)
+ 		young |= mmu_spte_age(sptep);
  
--	lockdep_assert_held_write(&kvm->mmu_lock);
--
- 	idx = srcu_read_lock(&kvm->srcu);
- 
- 	for (i = 0; i < KVM_ADDRESS_SPACE_NUM; i++) {
-@@ -503,6 +502,10 @@ static __always_inline int __kvm_handle_hva_range(struct kvm *kvm,
- 			gfn_range.end = hva_to_gfn_memslot(hva_end + PAGE_SIZE - 1, slot);
- 			gfn_range.slot = slot;
- 
-+			if (!locked) {
-+				locked = true;
-+				KVM_MMU_LOCK(kvm);
-+			}
- 			ret |= range->handler(kvm, &gfn_range);
- 		}
- 	}
-@@ -510,6 +513,9 @@ static __always_inline int __kvm_handle_hva_range(struct kvm *kvm,
- 	if (range->flush_on_ret && (ret || kvm->tlbs_dirty))
- 		kvm_flush_remote_tlbs(kvm);
- 
-+	if (locked && !range->caller_locked)
-+		KVM_MMU_UNLOCK(kvm);
-+
- 	srcu_read_unlock(&kvm->srcu, idx);
- 
- 	/* The notifiers are averse to booleans. :-( */
-@@ -528,16 +534,11 @@ static __always_inline int kvm_handle_hva_range(struct mmu_notifier *mn,
- 		.end		= end,
- 		.pte		= pte,
- 		.handler	= handler,
-+		.caller_locked	= false,
- 		.flush_on_ret	= true,
- 		.may_block	= false,
- 	};
--	int ret;
--
--	KVM_MMU_LOCK(kvm);
--	ret = __kvm_handle_hva_range(kvm, &range);
--	KVM_MMU_UNLOCK(kvm);
--
--	return ret;
-+	return __kvm_handle_hva_range(kvm, &range);
+-	trace_kvm_age_page(gfn, level, slot, young);
+ 	return young;
  }
  
- static __always_inline int kvm_handle_hva_range_no_flush(struct mmu_notifier *mn,
-@@ -551,16 +552,12 @@ static __always_inline int kvm_handle_hva_range_no_flush(struct mmu_notifier *mn
- 		.end		= end,
- 		.pte		= __pte(0),
- 		.handler	= handler,
-+		.caller_locked	= false,
- 		.flush_on_ret	= false,
- 		.may_block	= false,
- 	};
--	int ret;
+diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
+index 21bb8b68a553..2941beb6559a 100644
+--- a/arch/x86/kvm/mmu/tdp_mmu.c
++++ b/arch/x86/kvm/mmu/tdp_mmu.c
+@@ -949,8 +949,6 @@ static bool age_gfn_range(struct kvm *kvm, struct tdp_iter *iter,
  
--	KVM_MMU_LOCK(kvm);
--	ret = __kvm_handle_hva_range(kvm, &range);
--	KVM_MMU_UNLOCK(kvm);
+ 	tdp_mmu_set_spte_no_acc_track(kvm, iter, new_spte);
+ 
+-	trace_kvm_age_page(iter->gfn, iter->level, range->slot, true);
 -
--	return ret;
-+	return __kvm_handle_hva_range(kvm, &range);
+ 	return true;
  }
- static void kvm_mmu_notifier_change_pte(struct mmu_notifier *mn,
- 					struct mm_struct *mm,
-@@ -581,6 +578,7 @@ static int kvm_mmu_notifier_invalidate_range_start(struct mmu_notifier *mn,
- 		.end		= range->end,
- 		.pte		= __pte(0),
- 		.handler	= kvm_unmap_gfn_range,
-+		.caller_locked	= true,
- 		.flush_on_ret	= true,
- 		.may_block	= mmu_notifier_range_blockable(range),
- 	};
+ 
+diff --git a/include/trace/events/kvm.h b/include/trace/events/kvm.h
+index 200eb7465530..37e1e1a2d67d 100644
+--- a/include/trace/events/kvm.h
++++ b/include/trace/events/kvm.h
+@@ -255,30 +255,6 @@ TRACE_EVENT(kvm_fpu,
+ 	TP_printk("%s", __print_symbolic(__entry->load, kvm_fpu_load_symbol))
+ );
+ 
+-TRACE_EVENT(kvm_age_page,
+-	TP_PROTO(ulong gfn, int level, struct kvm_memory_slot *slot, int ref),
+-	TP_ARGS(gfn, level, slot, ref),
+-
+-	TP_STRUCT__entry(
+-		__field(	u64,	hva		)
+-		__field(	u64,	gfn		)
+-		__field(	u8,	level		)
+-		__field(	u8,	referenced	)
+-	),
+-
+-	TP_fast_assign(
+-		__entry->gfn		= gfn;
+-		__entry->level		= level;
+-		__entry->hva		= ((gfn - slot->base_gfn) <<
+-					    PAGE_SHIFT) + slot->userspace_addr;
+-		__entry->referenced	= ref;
+-	),
+-
+-	TP_printk("hva %llx gfn %llx level %u %s",
+-		  __entry->hva, __entry->gfn, __entry->level,
+-		  __entry->referenced ? "YOUNG" : "OLD")
+-);
+-
+ #ifdef CONFIG_KVM_ASYNC_PF
+ DECLARE_EVENT_CLASS(kvm_async_get_page_class,
+ 
 -- 
 2.31.0.291.g576ba9dcdaf-goog
 

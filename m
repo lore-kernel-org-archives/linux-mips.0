@@ -7,45 +7,45 @@ X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E4700C433F8
-	for <linux-mips@archiver.kernel.org>; Fri, 26 Mar 2021 13:46:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 394AEC43381
+	for <linux-mips@archiver.kernel.org>; Fri, 26 Mar 2021 13:46:20 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id C571461A1E
-	for <linux-mips@archiver.kernel.org>; Fri, 26 Mar 2021 13:46:19 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 0B8CC61A48
+	for <linux-mips@archiver.kernel.org>; Fri, 26 Mar 2021 13:46:20 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230289AbhCZNqA (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        id S230294AbhCZNqA (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
         Fri, 26 Mar 2021 09:46:00 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:42407 "EHLO pegase1.c-s.fr"
+Received: from pegase1.c-s.fr ([93.17.236.30]:48322 "EHLO pegase1.c-s.fr"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230179AbhCZNoz (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Fri, 26 Mar 2021 09:44:55 -0400
+        id S229951AbhCZNpZ (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Fri, 26 Mar 2021 09:45:25 -0400
 Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4F6NWM2kR9z9tyyX;
-        Fri, 26 Mar 2021 14:44:47 +0100 (CET)
+        by localhost (Postfix) with ESMTP id 4F6NWS60pgz9v03C;
+        Fri, 26 Mar 2021 14:44:52 +0100 (CET)
 X-Virus-Scanned: Debian amavisd-new at c-s.fr
 Received: from pegase1.c-s.fr ([192.168.12.234])
         by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id WniDc8Yabw7u; Fri, 26 Mar 2021 14:44:47 +0100 (CET)
+        with ESMTP id ua4xnFB1IzAD; Fri, 26 Mar 2021 14:44:52 +0100 (CET)
 Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4F6NWM1m9wz9tyyV;
-        Fri, 26 Mar 2021 14:44:47 +0100 (CET)
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4F6NWS560hz9v03B;
+        Fri, 26 Mar 2021 14:44:52 +0100 (CET)
 Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 18F9E8B8C9;
-        Fri, 26 Mar 2021 14:44:48 +0100 (CET)
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 702B98B8CB;
+        Fri, 26 Mar 2021 14:44:53 +0100 (CET)
 X-Virus-Scanned: amavisd-new at c-s.fr
 Received: from messagerie.si.c-s.fr ([127.0.0.1])
         by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id BZpKcB1zy9W0; Fri, 26 Mar 2021 14:44:48 +0100 (CET)
+        with ESMTP id nQgQ-Ws-8ZQe; Fri, 26 Mar 2021 14:44:53 +0100 (CET)
 Received: from po16121vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id C3A018B8C7;
-        Fri, 26 Mar 2021 14:44:47 +0100 (CET)
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id EC3738B8C7;
+        Fri, 26 Mar 2021 14:44:52 +0100 (CET)
 Received: by po16121vm.idsi0.si.c-s.fr (Postfix, from userid 0)
-        id 4859067611; Fri, 26 Mar 2021 13:44:48 +0000 (UTC)
-Message-Id: <878228ad88df38f8914c7aa25dede3ed05c50f48.1616765869.git.christophe.leroy@csgroup.eu>
+        id 78A0A67611; Fri, 26 Mar 2021 13:44:53 +0000 (UTC)
+Message-Id: <29e44feb9254a462e23513cc4279dae6af0f2ae6.1616765870.git.christophe.leroy@csgroup.eu>
 In-Reply-To: <cover.1616765869.git.christophe.leroy@csgroup.eu>
 References: <cover.1616765869.git.christophe.leroy@csgroup.eu>
 From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Subject: [PATCH v3 01/17] cmdline: Add generic function to build command line.
+Subject: [PATCH v3 06/17] arm64: Convert to GENERIC_CMDLINE
 To:     will@kernel.org, danielwa@cisco.com, robh@kernel.org,
         daniel@gimpelevich.san-francisco.ca.us
 Cc:     linux-arch@vger.kernel.org, devicetree@vger.kernel.org,
@@ -57,88 +57,98 @@ Cc:     linux-arch@vger.kernel.org, devicetree@vger.kernel.org,
         linux-hexagon@vger.kernel.org, linux-riscv@lists.infradead.org,
         x86@kernel.org, linux-xtensa@linux-xtensa.org,
         linux-sh@vger.kernel.org, sparclinux@vger.kernel.org
-Date:   Fri, 26 Mar 2021 13:44:48 +0000 (UTC)
+Date:   Fri, 26 Mar 2021 13:44:53 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-This code provides architectures with a way to build command line
-based on what is built in the kernel and what is handed over by the
-bootloader, based on selected compile-time options.
+This converts the architecture to GENERIC_CMDLINE.
 
 Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
 ---
-v3:
-- Addressed comments from Will
-- Added capability to have src == dst
----
- include/linux/cmdline.h | 57 +++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 57 insertions(+)
- create mode 100644 include/linux/cmdline.h
+ arch/arm64/Kconfig                 | 33 +-----------------------------
+ arch/arm64/kernel/idreg-override.c |  9 ++++----
+ 2 files changed, 5 insertions(+), 37 deletions(-)
 
-diff --git a/include/linux/cmdline.h b/include/linux/cmdline.h
-new file mode 100644
-index 000000000000..dea87edd41be
---- /dev/null
-+++ b/include/linux/cmdline.h
-@@ -0,0 +1,57 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef _LINUX_CMDLINE_H
-+#define _LINUX_CMDLINE_H
-+
-+#include <linux/string.h>
-+
-+/* Allow architectures to override strlcat, powerpc can't use strings so early */
-+#ifndef cmdline_strlcat
-+#define cmdline_strlcat strlcat
-+#endif
-+
-+/*
-+ * This function will append or prepend a builtin command line to the command
-+ * line provided by the bootloader. Kconfig options can be used to alter
-+ * the behavior of this builtin command line.
-+ * @dst: The destination of the final appended/prepended string.
-+ * @src: The starting string or NULL if there isn't one.
-+ * @len: the length of dest buffer.
-+ */
-+static __always_inline void __cmdline_build(char *dst, const char *src, size_t len)
-+{
-+	if (!len || src == dst)
-+		return;
-+
-+	if (IS_ENABLED(CONFIG_CMDLINE_FORCE) || !src) {
-+		dst[0] = 0;
-+		cmdline_strlcat(dst, CONFIG_CMDLINE, len);
-+		return;
-+	}
-+
-+	if (dst != src)
-+		dst[0] = 0;
-+
-+	if (IS_ENABLED(CONFIG_CMDLINE_PREPEND))
-+		cmdline_strlcat(dst, CONFIG_CMDLINE " ", len);
-+
-+	cmdline_strlcat(dst, src, len);
-+
-+	if (IS_ENABLED(CONFIG_CMDLINE_EXTEND))
-+		cmdline_strlcat(dst, " " CONFIG_CMDLINE, len);
-+}
-+
-+#define cmdline_build(dst, src, len) do {				\
-+	char *__c_dst = (dst);						\
-+	const char *__c_src = (src);					\
-+									\
-+	if (__c_src == __c_dst) {					\
-+		static char __c_tmp[COMMAND_LINE_SIZE] __initdata = "";	\
-+									\
-+		cmdline_strlcat(__c_tmp, __c_src, COMMAND_LINE_SIZE);	\
-+		__cmdline_build(__c_dst, __c_tmp, (len));		\
-+	} else {							\
-+		__cmdline_build(__c_dst, __c_src, (len));		\
-+	}								\
-+} while (0)
-+
-+#endif /* _LINUX_CMDLINE_H */
+diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
+index 5656e7aacd69..eeff7730ccf0 100644
+--- a/arch/arm64/Kconfig
++++ b/arch/arm64/Kconfig
+@@ -105,6 +105,7 @@ config ARM64
+ 	select GENERIC_ALLOCATOR
+ 	select GENERIC_ARCH_TOPOLOGY
+ 	select GENERIC_CLOCKEVENTS_BROADCAST
++	select GENERIC_CMDLINE
+ 	select GENERIC_CPU_AUTOPROBE
+ 	select GENERIC_CPU_VULNERABILITIES
+ 	select GENERIC_EARLY_IOREMAP
+@@ -1831,38 +1832,6 @@ config ARM64_ACPI_PARKING_PROTOCOL
+ 	  protocol even if the corresponding data is present in the ACPI
+ 	  MADT table.
+ 
+-config CMDLINE
+-	string "Default kernel command string"
+-	default ""
+-	help
+-	  Provide a set of default command-line options at build time by
+-	  entering them here. As a minimum, you should specify the the
+-	  root device (e.g. root=/dev/nfs).
+-
+-choice
+-	prompt "Kernel command line type" if CMDLINE != ""
+-	default CMDLINE_FROM_BOOTLOADER
+-	help
+-	  Choose how the kernel will handle the provided default kernel
+-	  command line string.
+-
+-config CMDLINE_FROM_BOOTLOADER
+-	bool "Use bootloader kernel arguments if available"
+-	help
+-	  Uses the command-line options passed by the boot loader. If
+-	  the boot loader doesn't provide any, the default kernel command
+-	  string provided in CMDLINE will be used.
+-
+-config CMDLINE_FORCE
+-	bool "Always use the default kernel command string"
+-	help
+-	  Always use the default kernel command string, even if the boot
+-	  loader passes other arguments to the kernel.
+-	  This is useful if you cannot or don't want to change the
+-	  command-line options your boot loader passes to the kernel.
+-
+-endchoice
+-
+ config EFI_STUB
+ 	bool
+ 
+diff --git a/arch/arm64/kernel/idreg-override.c b/arch/arm64/kernel/idreg-override.c
+index 83f1c4b92095..8bc955cdcf82 100644
+--- a/arch/arm64/kernel/idreg-override.c
++++ b/arch/arm64/kernel/idreg-override.c
+@@ -9,6 +9,7 @@
+ #include <linux/ctype.h>
+ #include <linux/kernel.h>
+ #include <linux/libfdt.h>
++#include <linux/cmdline.h>
+ 
+ #include <asm/cacheflush.h>
+ #include <asm/cpufeature.h>
+@@ -187,12 +188,10 @@ static __init const u8 *get_bootargs_cmdline(void)
+ static __init void parse_cmdline(void)
+ {
+ 	const u8 *prop = get_bootargs_cmdline();
++	static char __initdata cmdline[COMMAND_LINE_SIZE];
+ 
+-	if (IS_ENABLED(CONFIG_CMDLINE_FORCE) || !prop)
+-		__parse_cmdline(CONFIG_CMDLINE, true);
+-
+-	if (!IS_ENABLED(CONFIG_CMDLINE_FORCE) && prop)
+-		__parse_cmdline(prop, true);
++	cmdline_build(cmdline, prop, COMMAND_LINE_SIZE);
++	__parse_cmdline(cmdline, true);
+ }
+ 
+ /* Keep checkers quiet */
 -- 
 2.25.0
 

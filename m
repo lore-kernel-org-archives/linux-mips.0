@@ -8,60 +8,60 @@ X-Spam-Status: No, score=-26.3 required=3.0 tests=BAYES_00,DKIMWL_WL_MED,
 	USER_AGENT_GIT,USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A0F54C433E1
-	for <linux-mips@archiver.kernel.org>; Fri, 26 Mar 2021 02:21:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 73E7CC433E8
+	for <linux-mips@archiver.kernel.org>; Fri, 26 Mar 2021 02:21:23 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 6D01561A3E
-	for <linux-mips@archiver.kernel.org>; Fri, 26 Mar 2021 02:21:22 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 599DA61A5F
+	for <linux-mips@archiver.kernel.org>; Fri, 26 Mar 2021 02:21:23 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230445AbhCZCUt (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 25 Mar 2021 22:20:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35228 "EHLO
+        id S230527AbhCZCUx (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 25 Mar 2021 22:20:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35312 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230423AbhCZCUQ (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Thu, 25 Mar 2021 22:20:16 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCD63C06174A
-        for <linux-mips@vger.kernel.org>; Thu, 25 Mar 2021 19:20:15 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id v124so8260456ybc.15
-        for <linux-mips@vger.kernel.org>; Thu, 25 Mar 2021 19:20:15 -0700 (PDT)
+        with ESMTP id S231180AbhCZCU2 (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Thu, 25 Mar 2021 22:20:28 -0400
+Received: from mail-qk1-x74a.google.com (mail-qk1-x74a.google.com [IPv6:2607:f8b0:4864:20::74a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C26FDC0613D7
+        for <linux-mips@vger.kernel.org>; Thu, 25 Mar 2021 19:20:27 -0700 (PDT)
+Received: by mail-qk1-x74a.google.com with SMTP id x11so5173354qki.22
+        for <linux-mips@vger.kernel.org>; Thu, 25 Mar 2021 19:20:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=reply-to:date:in-reply-to:message-id:mime-version:references
          :subject:from:to:cc;
-        bh=8Eo/ejufJftePnvgXQFd5kbV9TMjCK+DUzEIWSLNHic=;
-        b=J4NBszqz0qYCjVKsOP65Ukhsxf/vaS7LS6yFdbgFAh2sUgBQG0ogA/cQxk794uXzjP
-         RY9KWD9YNpzjGBLdWOTPyshz2TFnTG+tnYPlCC99vnayJJ8x/1vz0RyuxQBRKNswIoqx
-         u7caOX3ZY3ljHIlIuV5UDQD7orO9CacchKaW4wZWVQ1KulpoGRsgS3HncjI2rDTBW85e
-         0LzSSCSzQyzj0qFJEDJj1/5vO/M+e6fGvrqJcu73hE+6xaV3PGahPlecwL8l+6KqIgxm
-         +0hE0fM1McrNq/V5ahNrq1hMd2o01ghMEWLbLn93kMCLrtd6e1hGFJmudhcDtPpnJwkT
-         0OzA==
+        bh=6DC92nb/KI7jWYCp6JOuoACO+r7yp8IjmJZ11jFmVcc=;
+        b=JbUTKZPl/W/MrrvWQUZUwB6/PNz+uprjL43QoBtU1wD/mAej30Q8jYby+47AHKHhaD
+         qBqEBSQiu2bEr1qfUHbwQYlI6gWDl4chgn5S8D90qIehLlVx/nchC3vJJMtesz8zy8/Y
+         M1LbviODPL1MGWHOIgE4Z5dpFy6id4wLzGJaHGzRuSpy/ZC1eQarGzMJCuDST+iapHDq
+         hqHQp6qA6x7NQdKxbbnSJd/iB8Dkv/td88Lb87UdQ6D804kTiRc9d9Vha8oDU/N1jtA7
+         3mxTxHygoTzC20DEx3ttGZ8pl2+fGX8Q1O74BGCQbeoumy93ZYjiqrVLI4BWvrM36iOI
+         OzrQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:reply-to:date:in-reply-to:message-id
          :mime-version:references:subject:from:to:cc;
-        bh=8Eo/ejufJftePnvgXQFd5kbV9TMjCK+DUzEIWSLNHic=;
-        b=iehUw3qJh5lQE5VVZxZOxqnqu9F0e4nVOB+d4kydIFlVkHcZKERc9GUT8a42ie6qZi
-         LVyUt6KcQ7AZ0sRpBNUo8wsXdQUSpp+KtBoGoruhIkXMU6/JdHcSz/xvwXDEDPuJTPxx
-         3CpFOddObby0QkC2HEhXEuTaKTubPvAghqXOyzQ9wbco3H9N4k4bzuJN5COTIodlLd7O
-         dp0d0jnEc76NGE7T+pwanMVmxm4RqnOtJ83T2wJ0UW9eaU5ZtIcR/cCAymuPzS1PTNh3
-         8C98sxzsPuUL5jG/1+lanff48AODuPlcgbS3XJsq6bYydTLSBWYsbSDIAJmHUQeELBIY
-         ZwzQ==
-X-Gm-Message-State: AOAM532b00WGN8X0RBYTjYk+55W7h7elE+/a7dDKl+I89jRfLu2VnGUq
-        XQlvgU02C+CcxvxKzDAHcy5sXj0TJuM=
-X-Google-Smtp-Source: ABdhPJwV8LHyLDP6hqXuH/hYE4HksnD0YFc19NvHc8Jf2O8EQ8BbTBUtjDn7cvQ5x0SPUFyfrReRDGiHTIk=
+        bh=6DC92nb/KI7jWYCp6JOuoACO+r7yp8IjmJZ11jFmVcc=;
+        b=QMPvKi3dpAGaQ5CRHKXT6WhxwOOJLaYfrb5mKYu8xzqY1YOCqKSLUQgfHUtsZhrZew
+         rHU/caQRQuhL+9CnqTo8GryWELR9R0k003oTGVdvmj2NJ1hQnHK65bctM2prchUcxmvf
+         R8t/yCl4ku5EBC1GWy+TxWbL0mbbMEeij6DrGDS6EoRjSyd999mhC9ytJYWKc4qMGsgL
+         jUBAtNAtFfUlCSISQvd5ep2jgJJy+zbCtrfZlk6ntRm2FMjOA1BNu/OKH816VNzbzKZT
+         mpfTex59cDynabo2wWuEGYxrDLjCBk9nNVQEyab6hRX6LCMEB59FKioveCwfa86pbQWj
+         4l3A==
+X-Gm-Message-State: AOAM532x8Fgj0H2KuYwfIg2KcoDICGKVb5ZYV2BNPyYTVeF9FZABONcy
+        L8GRmhdM4L+DW5f8FUwvAIdBRXE19fU=
+X-Google-Smtp-Source: ABdhPJxJS3G4Tp3oACq1aE0Kk13Vb4BteCkja1S5xuHowEheSpbEGJ6yFi11Vc4ofL1uuJo1KA/BTZTheoY=
 X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:f:10:b1bb:fab2:7ef5:fc7d])
- (user=seanjc job=sendgmr) by 2002:a25:9982:: with SMTP id p2mr17272898ybo.457.1616725215166;
- Thu, 25 Mar 2021 19:20:15 -0700 (PDT)
+ (user=seanjc job=sendgmr) by 2002:ad4:5812:: with SMTP id dd18mr10836929qvb.7.1616725226899;
+ Thu, 25 Mar 2021 19:20:26 -0700 (PDT)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Thu, 25 Mar 2021 19:19:41 -0700
+Date:   Thu, 25 Mar 2021 19:19:46 -0700
 In-Reply-To: <20210326021957.1424875-1-seanjc@google.com>
-Message-Id: <20210326021957.1424875-3-seanjc@google.com>
+Message-Id: <20210326021957.1424875-8-seanjc@google.com>
 Mime-Version: 1.0
 References: <20210326021957.1424875-1-seanjc@google.com>
 X-Mailer: git-send-email 2.31.0.291.g576ba9dcdaf-goog
-Subject: [PATCH 02/18] KVM: x86/mmu: Move flushing for "slot" handlers to
- caller for legacy MMU
+Subject: [PATCH 07/18] KVM: x86/mmu: Use leaf-only loop for walking TDP SPTEs
+ when changing SPTE
 From:   Sean Christopherson <seanjc@google.com>
 To:     Marc Zyngier <maz@kernel.org>, Huacai Chen <chenhuacai@kernel.org>,
         Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
@@ -84,119 +84,32 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Place the onus on the caller of slot_handle_*() to flush the TLB, rather
-than handling the flush in the helper, and rename parameters accordingly.
-This will allow future patches to coalesce flushes between address spaces
-and between the legacy and TDP MMUs.
+Use the leaf-only TDP iterator when changing the SPTE in reaction to a
+MMU notifier.  Practically speaking, this is a nop since the guts of the
+loop explicitly looks for 4k SPTEs, which are always leaf SPTEs.  Switch
+the iterator to match age_gfn_range() and test_age_gfn() so that a future
+patch can consolidate the core iterating logic.
 
-No functional change intended.
+No real functional change intended.
 
 Signed-off-by: Sean Christopherson <seanjc@google.com>
 ---
- arch/x86/kvm/mmu/mmu.c | 37 +++++++++++++++++++------------------
- 1 file changed, 19 insertions(+), 18 deletions(-)
+ arch/x86/kvm/mmu/tdp_mmu.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-index 7a99e59c8c1c..d5c9fb34971a 100644
---- a/arch/x86/kvm/mmu/mmu.c
-+++ b/arch/x86/kvm/mmu/mmu.c
-@@ -5227,7 +5227,7 @@ typedef bool (*slot_level_handler) (struct kvm *kvm, struct kvm_rmap_head *rmap_
- static __always_inline bool
- slot_handle_level_range(struct kvm *kvm, struct kvm_memory_slot *memslot,
- 			slot_level_handler fn, int start_level, int end_level,
--			gfn_t start_gfn, gfn_t end_gfn, bool lock_flush_tlb)
-+			gfn_t start_gfn, gfn_t end_gfn, bool flush_on_yield)
- {
- 	struct slot_rmap_walk_iterator iterator;
- 	bool flush = false;
-@@ -5238,7 +5238,7 @@ slot_handle_level_range(struct kvm *kvm, struct kvm_memory_slot *memslot,
- 			flush |= fn(kvm, iterator.rmap, memslot);
+diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
+index 7fe5004b1565..a2b3d9699320 100644
+--- a/arch/x86/kvm/mmu/tdp_mmu.c
++++ b/arch/x86/kvm/mmu/tdp_mmu.c
+@@ -1042,7 +1042,7 @@ static int set_tdp_spte(struct kvm *kvm, struct kvm_memory_slot *slot,
  
- 		if (need_resched() || rwlock_needbreak(&kvm->mmu_lock)) {
--			if (flush && lock_flush_tlb) {
-+			if (flush && flush_on_yield) {
- 				kvm_flush_remote_tlbs_with_address(kvm,
- 						start_gfn,
- 						iterator.gfn - start_gfn + 1);
-@@ -5248,32 +5248,26 @@ slot_handle_level_range(struct kvm *kvm, struct kvm_memory_slot *memslot,
- 		}
- 	}
+ 	new_pfn = pte_pfn(*ptep);
  
--	if (flush && lock_flush_tlb) {
--		kvm_flush_remote_tlbs_with_address(kvm, start_gfn,
--						   end_gfn - start_gfn + 1);
--		flush = false;
--	}
--
- 	return flush;
- }
+-	tdp_root_for_each_pte(iter, root, gfn, gfn + 1) {
++	tdp_root_for_each_leaf_pte(iter, root, gfn, gfn + 1) {
+ 		if (iter.level != PG_LEVEL_4K)
+ 			continue;
  
- static __always_inline bool
- slot_handle_level(struct kvm *kvm, struct kvm_memory_slot *memslot,
- 		  slot_level_handler fn, int start_level, int end_level,
--		  bool lock_flush_tlb)
-+		  bool flush_on_yield)
- {
- 	return slot_handle_level_range(kvm, memslot, fn, start_level,
- 			end_level, memslot->base_gfn,
- 			memslot->base_gfn + memslot->npages - 1,
--			lock_flush_tlb);
-+			flush_on_yield);
- }
- 
- static __always_inline bool
- slot_handle_leaf(struct kvm *kvm, struct kvm_memory_slot *memslot,
--		 slot_level_handler fn, bool lock_flush_tlb)
-+		 slot_level_handler fn, bool flush_on_yield)
- {
- 	return slot_handle_level(kvm, memslot, fn, PG_LEVEL_4K,
--				 PG_LEVEL_4K, lock_flush_tlb);
-+				 PG_LEVEL_4K, flush_on_yield);
- }
- 
- static void free_mmu_pages(struct kvm_mmu *mmu)
-@@ -5509,10 +5503,14 @@ void kvm_zap_gfn_range(struct kvm *kvm, gfn_t gfn_start, gfn_t gfn_end)
- 			if (start >= end)
- 				continue;
- 
--			slot_handle_level_range(kvm, memslot, kvm_zap_rmapp,
--						PG_LEVEL_4K,
--						KVM_MAX_HUGEPAGE_LEVEL,
--						start, end - 1, true);
-+			flush = slot_handle_level_range(kvm, memslot, kvm_zap_rmapp,
-+							PG_LEVEL_4K,
-+							KVM_MAX_HUGEPAGE_LEVEL,
-+							start, end - 1, true);
-+
-+			if (flush)
-+				kvm_flush_remote_tlbs_with_address(kvm, gfn_start,
-+								   gfn_end);
- 		}
- 	}
- 
-@@ -5605,9 +5603,12 @@ void kvm_mmu_zap_collapsible_sptes(struct kvm *kvm,
- {
- 	/* FIXME: const-ify all uses of struct kvm_memory_slot.  */
- 	struct kvm_memory_slot *slot = (struct kvm_memory_slot *)memslot;
-+	bool flush;
- 
- 	write_lock(&kvm->mmu_lock);
--	slot_handle_leaf(kvm, slot, kvm_mmu_zap_collapsible_spte, true);
-+	flush = slot_handle_leaf(kvm, slot, kvm_mmu_zap_collapsible_spte, true);
-+	if (flush)
-+		kvm_arch_flush_remote_tlbs_memslot(kvm, slot);
- 
- 	if (is_tdp_mmu_enabled(kvm))
- 		kvm_tdp_mmu_zap_collapsible_sptes(kvm, slot);
-@@ -5619,7 +5620,7 @@ void kvm_arch_flush_remote_tlbs_memslot(struct kvm *kvm,
- {
- 	/*
- 	 * All current use cases for flushing the TLBs for a specific memslot
--	 * are related to dirty logging, and do the TLB flush out of mmu_lock.
-+	 * related to dirty logging, and many do the TLB flush out of mmu_lock.
- 	 * The interaction between the various operations on memslot must be
- 	 * serialized by slots_locks to ensure the TLB flush from one operation
- 	 * is observed by any other operation on the same memslot.
 -- 
 2.31.0.291.g576ba9dcdaf-goog
 

@@ -8,59 +8,59 @@ X-Spam-Status: No, score=-26.3 required=3.0 tests=BAYES_00,DKIMWL_WL_MED,
 	USER_AGENT_GIT,USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8CE14C43381
-	for <linux-mips@archiver.kernel.org>; Fri, 26 Mar 2021 02:21:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 472F6C433E6
+	for <linux-mips@archiver.kernel.org>; Fri, 26 Mar 2021 02:21:23 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 7043461A50
-	for <linux-mips@archiver.kernel.org>; Fri, 26 Mar 2021 02:21:24 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 0F88961A2B
+	for <linux-mips@archiver.kernel.org>; Fri, 26 Mar 2021 02:21:23 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231470AbhCZCUz (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 25 Mar 2021 22:20:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35396 "EHLO
+        id S231400AbhCZCUv (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 25 Mar 2021 22:20:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35278 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231235AbhCZCUj (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Thu, 25 Mar 2021 22:20:39 -0400
-Received: from mail-qt1-x84a.google.com (mail-qt1-x84a.google.com [IPv6:2607:f8b0:4864:20::84a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21AFDC061761
-        for <linux-mips@vger.kernel.org>; Thu, 25 Mar 2021 19:20:39 -0700 (PDT)
-Received: by mail-qt1-x84a.google.com with SMTP id w8so2246713qtk.3
-        for <linux-mips@vger.kernel.org>; Thu, 25 Mar 2021 19:20:39 -0700 (PDT)
+        with ESMTP id S231142AbhCZCUX (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Thu, 25 Mar 2021 22:20:23 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1BAEC061763
+        for <linux-mips@vger.kernel.org>; Thu, 25 Mar 2021 19:20:22 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id v124so8260751ybc.15
+        for <linux-mips@vger.kernel.org>; Thu, 25 Mar 2021 19:20:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=reply-to:date:in-reply-to:message-id:mime-version:references
          :subject:from:to:cc;
-        bh=xpO0R+6AZcVTsryAmfa1csIhFbdIpj6scMCyrGXKA2A=;
-        b=uQMp99nW6RHB2f3cTnLRvct0FzbjC1V4VwapmMNa65kI5zh0Epe6k/+qnHl8c3g8XI
-         e+074i6mSZD8oxFjqCkK5zLR1cZfynVaB3eyCkzjeytIhfBHuUzJZL1sNBHnGCSHySCb
-         gqwIe0mkUcqzZHZbNRRFPQ2+K7MWmTXsScaQdxvetXfBiYptWDMmPvMzOCAlfll1mbAs
-         NbHnAtChhSnK32WHWUvzYwrT2Dn+3HYLcIO7c93cikxTnn3anhGE7PKj43vC0iOMSt+t
-         4y5TRJe0rxO98n7YswSmBa8pY1cxaoRDJJFukkwjscg/G4XY1gweSfbik6p/N31wcvHF
-         FAvA==
+        bh=wa2HBnHEdugpF8GI82/VnGsbMbCyax7Usmida2hsXks=;
+        b=ntRnGtewMrQnJ0ZyoywcfyJoY3VXcJKm1/k0N8vnJz2sS/sLUavVYbXyZjmGfLujWs
+         A7OpVuVgrge9g6sIHyA8kKuuxCVJF4LHDfnRC57c3LwcZMFB52xHIkGZYPVRV7LmBtRX
+         cWP26TbhKCHtihLdf8ro8Ar6sN9KG09UTt+Nqp+iYYP5QggYHELX9BtW7vC45YuqRmLX
+         +1SmkA8iHzw6bh5WdqcLT6PNv0Z6mPgkElc6VIZ568ErC9hQHNFLULnTTb0JHUFeOKYG
+         OVxzIBDlPyjxENSnw4f8tOUFmE9kUrLxpEbgsdwoFB2DPFP1sPp9Ubk2TCAp2h46mMxC
+         zPNA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:reply-to:date:in-reply-to:message-id
          :mime-version:references:subject:from:to:cc;
-        bh=xpO0R+6AZcVTsryAmfa1csIhFbdIpj6scMCyrGXKA2A=;
-        b=GvbGyysM7YqiJGS69NpwUpKYhmxGptmM3vVXsyZuDr7JTzptxb31p8vV7vkX2JPxea
-         Ftjmk1RkdRc0r1AiZeUU48ZJNnsnrOEY40aUb8NrFYfkDSPA9jaMpErs9DX2V9JbhxFt
-         CP+TDk1jg0GKoj06+k4JmEt9DROM1XKZAziQd+Arw8zvp5TP96ODtryV+PDgmEM/6cEd
-         ZmI63ApZFu1FJLNmxQKlpQso5jL5lCGdhmADzoYiEAcPFxmlDlGKxCRsGl73pHELH8LC
-         vDo2azqsVa1PnrOLCNjfAzsEkUZtvaeMyxTb0U8mpI1u+Bi40CWOqS6tfbUcynAKKqUs
-         ZWjw==
-X-Gm-Message-State: AOAM532QwxTdyh+AUZv2v76av7J2dQtDWxeFyMKHIu7v1lnUpUQ4OdaN
-        VW5FZQ4OVGuPQjWva8/HQ60n9pV7LpU=
-X-Google-Smtp-Source: ABdhPJxBd8XQox7hj6Ay7ePLmzDoNDRNC6Ku6UeU/xYURVhIi+zWH8AcpMshGJmfzY+BzyCGVqg0RjgGsVQ=
+        bh=wa2HBnHEdugpF8GI82/VnGsbMbCyax7Usmida2hsXks=;
+        b=qyCslF1CPnQPXEC5y1eToiMGcnOEanwlwOgq2fEzyoRgW+ouoEtXVpoD4otPeDPrqy
+         Ohx0d4YVm7lbDWG05YinNSBZvhXiFry5PuDhcD/Zttk2JwbmbUe2n6cGVT8TacUJXxFU
+         boFptR26rDu4moXY/jRkoCxnK/VzdfoyLSu/dA6U5fsiMG27qLvPJ28bUWma87ed2Ewg
+         e85YjuBigY8NroEpDOZio8k3LZZraipQ980fQ+q3KcuTdRnmWic7iQuSEbSb85fwfctx
+         n6/VwvjugUyFm+zJhqM4NypIiYNDUIhD77PccguRY/iTlVVrtcOPnV2/wjHVE0AQnKsE
+         2vmQ==
+X-Gm-Message-State: AOAM5330gDgYYxzVSTtiwF3SUhuOCP0itn0+v6r2bZOV7Rdw3PSGBDB/
+        phjT5E6IN8nlTye0SPZ6KEjtGEpJsQY=
+X-Google-Smtp-Source: ABdhPJzHMxoOuIYzjF4gA1CiN58yUH1BUsmjnfOuZHCxx1/JoBQt3Lta5tuRC1MywTz941gtZrU1EG9DA4g=
 X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:f:10:b1bb:fab2:7ef5:fc7d])
- (user=seanjc job=sendgmr) by 2002:a0c:cd8b:: with SMTP id v11mr4012312qvm.60.1616725238277;
- Thu, 25 Mar 2021 19:20:38 -0700 (PDT)
+ (user=seanjc job=sendgmr) by 2002:a25:6f44:: with SMTP id k65mr15773485ybc.218.1616725222218;
+ Thu, 25 Mar 2021 19:20:22 -0700 (PDT)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Thu, 25 Mar 2021 19:19:51 -0700
+Date:   Thu, 25 Mar 2021 19:19:44 -0700
 In-Reply-To: <20210326021957.1424875-1-seanjc@google.com>
-Message-Id: <20210326021957.1424875-13-seanjc@google.com>
+Message-Id: <20210326021957.1424875-6-seanjc@google.com>
 Mime-Version: 1.0
 References: <20210326021957.1424875-1-seanjc@google.com>
 X-Mailer: git-send-email 2.31.0.291.g576ba9dcdaf-goog
-Subject: [PATCH 12/18] KVM: MIPS/MMU: Convert to the gfn-based MMU notifier callbacks
+Subject: [PATCH 05/18] KVM: x86/mmu: Pass address space ID to __kvm_tdp_mmu_zap_gfn_range()
 From:   Sean Christopherson <seanjc@google.com>
 To:     Marc Zyngier <maz@kernel.org>, Huacai Chen <chenhuacai@kernel.org>,
         Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
@@ -83,183 +83,155 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Move MIPS to the gfn-based MMU notifier APIs, which do the hva->gfn
-lookup in common code, and whose code is nearly identical to MIPS'
-lookup.
+Pass the address space ID to TDP MMU's primary "zap gfn range" helper to
+allow the MMU notifier paths to iterate over memslots exactly once.
+Currently, both the legacy MMU and TDP MMU iterate over memslots when
+looking for an overlapping hva range, which can be quite costly if there
+are a large number of memslots.
 
-No meaningful functional change intended, though the exact order of
-operations is slightly different since the memslot lookups occur before
-calling into arch code.
+Add a "flush" parameter so that iterating over multiple address spaces
+in the caller will continue to do the right thing when yielding while a
+flush is pending from a previous address space.
+
+Note, this also has a functional change in the form of coalescing TLB
+flushes across multiple address spaces in kvm_zap_gfn_range(), and also
+optimizes the TDP MMU to utilize range-based flushing when running as L1
+with Hyper-V enlightenments.
 
 Signed-off-by: Sean Christopherson <seanjc@google.com>
 ---
- arch/mips/include/asm/kvm_host.h |  1 +
- arch/mips/kvm/mmu.c              | 97 ++++++--------------------------
- 2 files changed, 17 insertions(+), 81 deletions(-)
+ arch/x86/kvm/mmu/mmu.c          | 10 ++++------
+ arch/x86/kvm/mmu/mmu_internal.h |  5 +++++
+ arch/x86/kvm/mmu/tdp_mmu.c      | 22 +++++++++++-----------
+ arch/x86/kvm/mmu/tdp_mmu.h      | 13 +++++++------
+ 4 files changed, 27 insertions(+), 23 deletions(-)
 
-diff --git a/arch/mips/include/asm/kvm_host.h b/arch/mips/include/asm/kvm_host.h
-index feaa77036b67..374a3c8806e8 100644
---- a/arch/mips/include/asm/kvm_host.h
-+++ b/arch/mips/include/asm/kvm_host.h
-@@ -967,6 +967,7 @@ enum kvm_mips_fault_result kvm_trap_emul_gva_fault(struct kvm_vcpu *vcpu,
- 						   bool write);
+diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+index e6e02360ef67..36c231d6bff9 100644
+--- a/arch/x86/kvm/mmu/mmu.c
++++ b/arch/x86/kvm/mmu/mmu.c
+@@ -5508,17 +5508,15 @@ void kvm_zap_gfn_range(struct kvm *kvm, gfn_t gfn_start, gfn_t gfn_end)
+ 							KVM_MAX_HUGEPAGE_LEVEL,
+ 							start, end - 1, true, flush);
+ 		}
++
++		if (is_tdp_mmu_enabled(kvm))
++			flush = kvm_tdp_mmu_zap_gfn_range(kvm, i, gfn_start,
++							  gfn_end, flush);
+ 	}
  
- #define KVM_ARCH_WANT_MMU_NOTIFIER
-+#define KVM_ARCH_WANT_NEW_MMU_NOTIFIER_APIS
+ 	if (flush)
+ 		kvm_flush_remote_tlbs_with_address(kvm, gfn_start, gfn_end);
  
- /* Emulation */
- int kvm_get_inst(u32 *opc, struct kvm_vcpu *vcpu, u32 *out);
-diff --git a/arch/mips/kvm/mmu.c b/arch/mips/kvm/mmu.c
-index 3dabeda82458..3dc885df2e32 100644
---- a/arch/mips/kvm/mmu.c
-+++ b/arch/mips/kvm/mmu.c
-@@ -439,85 +439,36 @@ static int kvm_mips_mkold_gpa_pt(struct kvm *kvm, gfn_t start_gfn,
- 				  end_gfn << PAGE_SHIFT);
- }
- 
--static int handle_hva_to_gpa(struct kvm *kvm,
--			     unsigned long start,
--			     unsigned long end,
--			     int (*handler)(struct kvm *kvm, gfn_t gfn,
--					    gpa_t gfn_end,
--					    struct kvm_memory_slot *memslot,
--					    void *data),
--			     void *data)
-+bool kvm_unmap_gfn_range(struct kvm *kvm, struct kvm_gfn_range *range)
- {
--	struct kvm_memslots *slots;
--	struct kvm_memory_slot *memslot;
--	int ret = 0;
--
--	slots = kvm_memslots(kvm);
--
--	/* we only care about the pages that the guest sees */
--	kvm_for_each_memslot(memslot, slots) {
--		unsigned long hva_start, hva_end;
--		gfn_t gfn, gfn_end;
--
--		hva_start = max(start, memslot->userspace_addr);
--		hva_end = min(end, memslot->userspace_addr +
--					(memslot->npages << PAGE_SHIFT));
--		if (hva_start >= hva_end)
--			continue;
--
--		/*
--		 * {gfn(page) | page intersects with [hva_start, hva_end)} =
--		 * {gfn_start, gfn_start+1, ..., gfn_end-1}.
--		 */
--		gfn = hva_to_gfn_memslot(hva_start, memslot);
--		gfn_end = hva_to_gfn_memslot(hva_end + PAGE_SIZE - 1, memslot);
--
--		ret |= handler(kvm, gfn, gfn_end, memslot, data);
+-	if (is_tdp_mmu_enabled(kvm)) {
+-		flush = kvm_tdp_mmu_zap_gfn_range(kvm, gfn_start, gfn_end);
+-		if (flush)
+-			kvm_flush_remote_tlbs(kvm);
 -	}
 -
--	return ret;
+ 	write_unlock(&kvm->mmu_lock);
+ }
+ 
+diff --git a/arch/x86/kvm/mmu/mmu_internal.h b/arch/x86/kvm/mmu/mmu_internal.h
+index 5fe9123fc932..db2faa806ab7 100644
+--- a/arch/x86/kvm/mmu/mmu_internal.h
++++ b/arch/x86/kvm/mmu/mmu_internal.h
+@@ -129,6 +129,11 @@ static inline bool kvm_mmu_put_root(struct kvm *kvm, struct kvm_mmu_page *sp)
+ 	return !sp->root_count;
+ }
+ 
++static inline int kvm_mmu_page_as_id(struct kvm_mmu_page *sp)
++{
++	return sp->role.smm ? 1 : 0;
++}
++
+ /*
+  * Return values of handle_mmio_page_fault, mmu.page_fault, and fast_page_fault().
+  *
+diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
+index ff2bb0c8012e..bf279fff70ea 100644
+--- a/arch/x86/kvm/mmu/tdp_mmu.c
++++ b/arch/x86/kvm/mmu/tdp_mmu.c
+@@ -190,11 +190,6 @@ static void handle_changed_spte(struct kvm *kvm, int as_id, gfn_t gfn,
+ 				u64 old_spte, u64 new_spte, int level,
+ 				bool shared);
+ 
+-static int kvm_mmu_page_as_id(struct kvm_mmu_page *sp)
+-{
+-	return sp->role.smm ? 1 : 0;
 -}
 -
--
--static int kvm_unmap_hva_handler(struct kvm *kvm, gfn_t gfn, gfn_t gfn_end,
--				 struct kvm_memory_slot *memslot, void *data)
--{
--	kvm_mips_flush_gpa_pt(kvm, gfn, gfn_end);
--	return 1;
--}
--
--int kvm_unmap_hva_range(struct kvm *kvm, unsigned long start, unsigned long end,
--			unsigned flags)
--{
--	handle_hva_to_gpa(kvm, start, end, &kvm_unmap_hva_handler, NULL);
-+	kvm_mips_flush_gpa_pt(kvm, range->start, range->end);
- 
- 	kvm_mips_callbacks->flush_shadow_all(kvm);
- 	return 0;
- }
- 
--static int kvm_set_spte_handler(struct kvm *kvm, gfn_t gfn, gfn_t gfn_end,
--				struct kvm_memory_slot *memslot, void *data)
-+static bool __kvm_set_spte_gfn(struct kvm *kvm, struct kvm_gfn_range *range)
+ static void handle_changed_spte_acc_track(u64 old_spte, u64 new_spte, int level)
  {
--	gpa_t gpa = gfn << PAGE_SHIFT;
--	pte_t hva_pte = *(pte_t *)data;
-+	gpa_t gpa = range->start << PAGE_SHIFT;
-+	pte_t hva_pte = range->pte;
- 	pte_t *gpa_pte = kvm_mips_pte_for_gpa(kvm, NULL, gpa);
- 	pte_t old_pte;
- 
- 	if (!gpa_pte)
--		return 0;
-+		return false;
- 
- 	/* Mapping may need adjusting depending on memslot flags */
- 	old_pte = *gpa_pte;
--	if (memslot->flags & KVM_MEM_LOG_DIRTY_PAGES && !pte_dirty(old_pte))
-+	if (range->slot->flags & KVM_MEM_LOG_DIRTY_PAGES && !pte_dirty(old_pte))
- 		hva_pte = pte_mkclean(hva_pte);
--	else if (memslot->flags & KVM_MEM_READONLY)
-+	else if (range->slot->flags & KVM_MEM_READONLY)
- 		hva_pte = pte_wrprotect(hva_pte);
- 
- 	set_pte(gpa_pte, hva_pte);
- 
- 	/* Replacing an absent or old page doesn't need flushes */
- 	if (!pte_present(old_pte) || !pte_young(old_pte))
--		return 0;
-+		return false;
- 
- 	/* Pages swapped, aged, moved, or cleaned require flushes */
- 	return !pte_present(hva_pte) ||
-@@ -526,27 +477,21 @@ static int kvm_set_spte_handler(struct kvm *kvm, gfn_t gfn, gfn_t gfn_end,
- 	       (pte_dirty(old_pte) && !pte_dirty(hva_pte));
- }
- 
--int kvm_set_spte_hva(struct kvm *kvm, unsigned long hva, pte_t pte)
-+bool kvm_set_spte_gfn(struct kvm *kvm, struct kvm_gfn_range *range)
+ 	if (!is_shadow_present_pte(old_spte) || !is_last_spte(old_spte, level))
+@@ -709,14 +704,16 @@ static bool zap_gfn_range(struct kvm *kvm, struct kvm_mmu_page *root,
+  * SPTEs have been cleared and a TLB flush is needed before releasing the
+  * MMU lock.
+  */
+-bool __kvm_tdp_mmu_zap_gfn_range(struct kvm *kvm, gfn_t start, gfn_t end,
+-				 bool can_yield)
++bool __kvm_tdp_mmu_zap_gfn_range(struct kvm *kvm, int as_id, gfn_t start,
++				 gfn_t end, bool can_yield, bool flush)
  {
--	unsigned long end = hva + PAGE_SIZE;
--	int ret;
--
--	ret = handle_hva_to_gpa(kvm, hva, end, &kvm_set_spte_handler, &pte);
--	if (ret)
-+	if (__kvm_set_spte_gfn(kvm, range))
- 		kvm_mips_callbacks->flush_shadow_all(kvm);
--	return 0;
-+	return false;
- }
+ 	struct kvm_mmu_page *root;
+-	bool flush = false;
  
--static int kvm_age_hva_handler(struct kvm *kvm, gfn_t gfn, gfn_t gfn_end,
--			       struct kvm_memory_slot *memslot, void *data)
-+bool kvm_age_gfn(struct kvm *kvm, struct kvm_gfn_range *range)
+-	for_each_tdp_mmu_root_yield_safe(kvm, root)
++	for_each_tdp_mmu_root_yield_safe(kvm, root) {
++		if (kvm_mmu_page_as_id(root) != as_id)
++			continue;
+ 		flush = zap_gfn_range(kvm, root, start, end, can_yield, flush);
++	}
+ 
+ 	return flush;
+ }
+@@ -724,9 +721,12 @@ bool __kvm_tdp_mmu_zap_gfn_range(struct kvm *kvm, gfn_t start, gfn_t end,
+ void kvm_tdp_mmu_zap_all(struct kvm *kvm)
  {
--	return kvm_mips_mkold_gpa_pt(kvm, gfn, gfn_end);
-+	return kvm_mips_mkold_gpa_pt(kvm, range->start, range->end);
- }
+ 	gfn_t max_gfn = 1ULL << (shadow_phys_bits - PAGE_SHIFT);
+-	bool flush;
++	bool flush = false;
++	int i;
++
++	for (i = 0; i < KVM_ADDRESS_SPACE_NUM; i++)
++		flush = kvm_tdp_mmu_zap_gfn_range(kvm, i, 0, max_gfn, flush);
  
--static int kvm_test_age_hva_handler(struct kvm *kvm, gfn_t gfn, gfn_t gfn_end,
--				    struct kvm_memory_slot *memslot, void *data)
-+bool kvm_test_age_gfn(struct kvm *kvm, struct kvm_gfn_range *range)
+-	flush = kvm_tdp_mmu_zap_gfn_range(kvm, 0, max_gfn);
+ 	if (flush)
+ 		kvm_flush_remote_tlbs(kvm);
+ }
+diff --git a/arch/x86/kvm/mmu/tdp_mmu.h b/arch/x86/kvm/mmu/tdp_mmu.h
+index 9ecd8f79f861..f224df334382 100644
+--- a/arch/x86/kvm/mmu/tdp_mmu.h
++++ b/arch/x86/kvm/mmu/tdp_mmu.h
+@@ -8,12 +8,12 @@
+ hpa_t kvm_tdp_mmu_get_vcpu_root_hpa(struct kvm_vcpu *vcpu);
+ void kvm_tdp_mmu_free_root(struct kvm *kvm, struct kvm_mmu_page *root);
+ 
+-bool __kvm_tdp_mmu_zap_gfn_range(struct kvm *kvm, gfn_t start, gfn_t end,
+-				 bool can_yield);
+-static inline bool kvm_tdp_mmu_zap_gfn_range(struct kvm *kvm, gfn_t start,
+-					     gfn_t end)
++bool __kvm_tdp_mmu_zap_gfn_range(struct kvm *kvm, int as_id, gfn_t start,
++				 gfn_t end, bool can_yield, bool flush);
++static inline bool kvm_tdp_mmu_zap_gfn_range(struct kvm *kvm, int as_id,
++					     gfn_t start, gfn_t end, bool flush)
  {
--	gpa_t gpa = gfn << PAGE_SHIFT;
-+	gpa_t gpa = range->start << PAGE_SHIFT;
- 	pte_t *gpa_pte = kvm_mips_pte_for_gpa(kvm, NULL, gpa);
- 
- 	if (!gpa_pte)
-@@ -554,16 +499,6 @@ static int kvm_test_age_hva_handler(struct kvm *kvm, gfn_t gfn, gfn_t gfn_end,
- 	return pte_young(*gpa_pte);
+-	return __kvm_tdp_mmu_zap_gfn_range(kvm, start, end, true);
++	return __kvm_tdp_mmu_zap_gfn_range(kvm, as_id, start, end, true, flush);
  }
+ static inline bool kvm_tdp_mmu_zap_sp(struct kvm *kvm, struct kvm_mmu_page *sp)
+ {
+@@ -28,7 +28,8 @@ static inline bool kvm_tdp_mmu_zap_sp(struct kvm *kvm, struct kvm_mmu_page *sp)
+ 	 * requirement), its "step sideways" will always step beyond the bounds
+ 	 * of the shadow page's gfn range and stop iterating before yielding.
+ 	 */
+-	return __kvm_tdp_mmu_zap_gfn_range(kvm, sp->gfn, end, false);
++	return __kvm_tdp_mmu_zap_gfn_range(kvm, kvm_mmu_page_as_id(sp),
++					   sp->gfn, end, false, false);
+ }
+ void kvm_tdp_mmu_zap_all(struct kvm *kvm);
  
--int kvm_age_hva(struct kvm *kvm, unsigned long start, unsigned long end)
--{
--	return handle_hva_to_gpa(kvm, start, end, kvm_age_hva_handler, NULL);
--}
--
--int kvm_test_age_hva(struct kvm *kvm, unsigned long hva)
--{
--	return handle_hva_to_gpa(kvm, hva, hva, kvm_test_age_hva_handler, NULL);
--}
--
- /**
-  * _kvm_mips_map_page_fast() - Fast path GPA fault handler.
-  * @vcpu:		VCPU pointer.
 -- 
 2.31.0.291.g576ba9dcdaf-goog
 

@@ -8,59 +8,59 @@ X-Spam-Status: No, score=-26.3 required=3.0 tests=BAYES_00,DKIMWL_WL_MED,
 	USER_AGENT_GIT,USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EC791C433ED
-	for <linux-mips@archiver.kernel.org>; Fri, 26 Mar 2021 02:21:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DF9B5C43446
+	for <linux-mips@archiver.kernel.org>; Fri, 26 Mar 2021 02:21:24 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id D52A461A2B
-	for <linux-mips@archiver.kernel.org>; Fri, 26 Mar 2021 02:21:23 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id B12CC61A52
+	for <linux-mips@archiver.kernel.org>; Fri, 26 Mar 2021 02:21:24 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231463AbhCZCUz (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 25 Mar 2021 22:20:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35380 "EHLO
+        id S231478AbhCZCU4 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 25 Mar 2021 22:20:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35428 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231224AbhCZCUh (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Thu, 25 Mar 2021 22:20:37 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBD49C0613D7
-        for <linux-mips@vger.kernel.org>; Thu, 25 Mar 2021 19:20:36 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id a19so2612984ybg.10
-        for <linux-mips@vger.kernel.org>; Thu, 25 Mar 2021 19:20:36 -0700 (PDT)
+        with ESMTP id S231288AbhCZCUn (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Thu, 25 Mar 2021 22:20:43 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77BC7C061763
+        for <linux-mips@vger.kernel.org>; Thu, 25 Mar 2021 19:20:43 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id o129so8212783ybg.23
+        for <linux-mips@vger.kernel.org>; Thu, 25 Mar 2021 19:20:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=reply-to:date:in-reply-to:message-id:mime-version:references
          :subject:from:to:cc;
-        bh=ToXMoL2Kd2/SJp5pLlSeXZUeldhyd8WTEWaSFPITIQY=;
-        b=vYbzZt6VuoT8/2gGGWgm9PSqd3t+FSwTciToxgXXhjE1y1MU3KJy6WkEJlNfLXLkie
-         xxjVqRA8DnUzeGhmNepWRZgzCCLRKgZfM3tzRBzdMvH3AWYBsGv5yrxAG+SBFJukd0hd
-         YqDCDfmPyTv539NQ8Eoac3EKcUNCn+s1nxvUy/gUtRUV6xCYJOzHX+nzP140CEy8tBSX
-         jRQoy57NNEizpyKOft/OFh9r4JweTh++5JzyP6or14BiU622LYfnszXiecStaeCwN7Nc
-         pXPJ3mVCknAxAAGQ9Dej38P4WhmWVmCo0W/vHWm91ZJPQGCwtrHKID5jq7bvw40c7SFt
-         eU4Q==
+        bh=rP9VVmFz9tTW29ncW9PtW1i1icgd+TNgOdydaeZ7DTc=;
+        b=YyE+zmkk6pXH2RexyDWG978Xxjj/u4QqerJ0Jdw4GGdLj6uS0ndq1vKuD/VORg3L2R
+         emNhkpttx/IuToGZmFKMIkDu7iXiG7FVS3QRceqd/AOHh0eqpYPT6TKoSFSW+9x6GNsM
+         AZdvcQD3IUjnKU64d8fzC/K9ynz3IygOPqdKizQJTopaYaQMP9UL8f45tGgj0d9KIVl2
+         eVFNycjEVd/khAwRS9le7deOfUgMqS0LnRV6WYuL8fO0WYEcOzWmUiZhBDBYJSSH4hTZ
+         Gi4MYxmLUOWZ6K872dKITkehA2W+OaUiWLEXSr2ExaVuXH5TNSYthD0Bh3BZGr3eU6EW
+         MXog==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:reply-to:date:in-reply-to:message-id
          :mime-version:references:subject:from:to:cc;
-        bh=ToXMoL2Kd2/SJp5pLlSeXZUeldhyd8WTEWaSFPITIQY=;
-        b=AckSglGpopbYz8EKWDUmKxNMif77MyLHzh5fNfbkd7genbQIu8prtDXMvkCLeCyW1k
-         3tsYbDzgu3XN4b7vxz3MwwEzZZjVk1BaZZ33mkomgd7fLfq3atL4pklG7RIuNTIsMVC4
-         V8xEcM7UtjL9/q2KiKL+cYEdV8xPlsYiTkcPpWZChetu0q3DafKrCOGIe5HZXIYFTkeM
-         yZO/g31u4AdJ0s7wl8VZ90vISgNbfkRnGPBasaPX64e2JK7t0w54FSgE0DHJXXUlQDdi
-         NqB9nHy1YTIDwdCo2Tz3L7b2u34h/Sbg75EZjNyAy/mV9ly6zyanh843o0CDnGJQLb9X
-         o9WQ==
-X-Gm-Message-State: AOAM530brDSOiFISUMUqEJDDtzeCvUL3TXrsbMvd8FCVJBJ2lEnm6y1e
-        bo1zB5iQGP/eDOfn909E45P3bzkXGIs=
-X-Google-Smtp-Source: ABdhPJzRVG48z8ZzycjiKCLwPZNN1glmgxA8blrqx2t14Bkqo8S2FlN8ubmdHUNXp/9csQMMt5MyDjtbz7k=
+        bh=rP9VVmFz9tTW29ncW9PtW1i1icgd+TNgOdydaeZ7DTc=;
+        b=g/3SAJCPn2kAstvUzdFLX6jptWwROD4rfeKGhkFYCMr46tDV2ojn8b7RFBBo40wErv
+         eGw5thA27P5KDMm3ds327drcaBlGIY7Ei22gzeujeSoNaBwCO0s0CZh4h/2F9TSNpL4v
+         49aOr8se4dxj5fb9I6cRp239gHKTjBYFlL2KZqVUIak6c3Ss2l7/ncFFVQlOyDwKJadX
+         ipmAkYJ9L9aXgQO38InN9Q4e1UCtBy5tTTYwJpiFLnpjyI21Z3NfNe+9k9wOc6+gUR4B
+         izALElCunc84mHYA9TatIF8buBq/J4KflFG2xB2W0RFjIdDlqjIJAHhTyoK5pl3ZAP7q
+         2g+g==
+X-Gm-Message-State: AOAM5300JiZ4iRg3Gwv2/pgE1MPlx9Ia7VHKhNQAPFqSh7PFIYQw4qjT
+        QcdxlDNYms0TkEYFScT4stMraSj5TFw=
+X-Google-Smtp-Source: ABdhPJwfMrzwJJK8gTYL6dVUS+tgYBhdYKKYyjZN9qKivIP6nH/vKKwBT9/mFEMjx4GL+u4YavlIG3nVM6Y=
 X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:f:10:b1bb:fab2:7ef5:fc7d])
- (user=seanjc job=sendgmr) by 2002:a25:aa63:: with SMTP id s90mr13063680ybi.393.1616725236043;
- Thu, 25 Mar 2021 19:20:36 -0700 (PDT)
+ (user=seanjc job=sendgmr) by 2002:a25:d714:: with SMTP id o20mr18028837ybg.385.1616725242737;
+ Thu, 25 Mar 2021 19:20:42 -0700 (PDT)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Thu, 25 Mar 2021 19:19:50 -0700
+Date:   Thu, 25 Mar 2021 19:19:53 -0700
 In-Reply-To: <20210326021957.1424875-1-seanjc@google.com>
-Message-Id: <20210326021957.1424875-12-seanjc@google.com>
+Message-Id: <20210326021957.1424875-15-seanjc@google.com>
 Mime-Version: 1.0
 References: <20210326021957.1424875-1-seanjc@google.com>
 X-Mailer: git-send-email 2.31.0.291.g576ba9dcdaf-goog
-Subject: [PATCH 11/18] KVM: arm64: Convert to the gfn-based MMU notifier callbacks
+Subject: [PATCH 14/18] KVM: Kill off the old hva-based MMU notifier callbacks
 From:   Sean Christopherson <seanjc@google.com>
 To:     Marc Zyngier <maz@kernel.org>, Huacai Chen <chenhuacai@kernel.org>,
         Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
@@ -83,199 +83,272 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Move arm64 to the gfn-base MMU notifier APIs, which do the hva->gfn
-lookup in common code.
+Yank out the hva-based MMU notifier APIs now that all architectures that
+use the notifiers have moved to the gfn-based APIs.
 
-Note, due to arch code being called if and only if a memslot is found,
-the clean_dcache_guest_page() call in kvm_set_spte_*() is will no longer
-be called for addresses that are not found in the guest memslots.
+No functional change intended.
 
 Signed-off-by: Sean Christopherson <seanjc@google.com>
 ---
- arch/arm64/include/asm/kvm_host.h |   1 +
- arch/arm64/kvm/mmu.c              | 117 ++++++++----------------------
- 2 files changed, 33 insertions(+), 85 deletions(-)
+ arch/arm64/include/asm/kvm_host.h   |  1 -
+ arch/mips/include/asm/kvm_host.h    |  1 -
+ arch/powerpc/include/asm/kvm_host.h |  1 -
+ arch/x86/include/asm/kvm_host.h     |  1 -
+ include/linux/kvm_host.h            |  8 ---
+ virt/kvm/kvm_main.c                 | 93 ++---------------------------
+ 6 files changed, 5 insertions(+), 100 deletions(-)
 
 diff --git a/arch/arm64/include/asm/kvm_host.h b/arch/arm64/include/asm/kvm_host.h
-index 72e6b4600264..1ad729cf7b0d 100644
+index 1ad729cf7b0d..72e6b4600264 100644
 --- a/arch/arm64/include/asm/kvm_host.h
 +++ b/arch/arm64/include/asm/kvm_host.h
-@@ -582,6 +582,7 @@ int __kvm_arm_vcpu_set_events(struct kvm_vcpu *vcpu,
+@@ -582,7 +582,6 @@ int __kvm_arm_vcpu_set_events(struct kvm_vcpu *vcpu,
  			      struct kvm_vcpu_events *events);
  
  #define KVM_ARCH_WANT_MMU_NOTIFIER
-+#define KVM_ARCH_WANT_NEW_MMU_NOTIFIER_APIS
+-#define KVM_ARCH_WANT_NEW_MMU_NOTIFIER_APIS
  
  void kvm_arm_halt_guest(struct kvm *kvm);
  void kvm_arm_resume_guest(struct kvm *kvm);
-diff --git a/arch/arm64/kvm/mmu.c b/arch/arm64/kvm/mmu.c
-index 4b7e1e327337..35728231e9a0 100644
---- a/arch/arm64/kvm/mmu.c
-+++ b/arch/arm64/kvm/mmu.c
-@@ -839,7 +839,7 @@ static int user_mem_abort(struct kvm_vcpu *vcpu, phys_addr_t fault_ipa,
- 	 * gfn_to_pfn_prot (which calls get_user_pages), so that we don't risk
- 	 * the page we just got a reference to gets unmapped before we have a
- 	 * chance to grab the mmu_lock, which ensure that if the page gets
--	 * unmapped afterwards, the call to kvm_unmap_hva will take it away
-+	 * unmapped afterwards, the call to kvm_unmap_gfn will take it away
- 	 * from us again properly. This smp_rmb() interacts with the smp_wmb()
- 	 * in kvm_mmu_notifier_invalidate_<page|range_end>.
- 	 */
-@@ -1064,123 +1064,70 @@ int kvm_handle_guest_abort(struct kvm_vcpu *vcpu)
+diff --git a/arch/mips/include/asm/kvm_host.h b/arch/mips/include/asm/kvm_host.h
+index 374a3c8806e8..feaa77036b67 100644
+--- a/arch/mips/include/asm/kvm_host.h
++++ b/arch/mips/include/asm/kvm_host.h
+@@ -967,7 +967,6 @@ enum kvm_mips_fault_result kvm_trap_emul_gva_fault(struct kvm_vcpu *vcpu,
+ 						   bool write);
+ 
+ #define KVM_ARCH_WANT_MMU_NOTIFIER
+-#define KVM_ARCH_WANT_NEW_MMU_NOTIFIER_APIS
+ 
+ /* Emulation */
+ int kvm_get_inst(u32 *opc, struct kvm_vcpu *vcpu, u32 *out);
+diff --git a/arch/powerpc/include/asm/kvm_host.h b/arch/powerpc/include/asm/kvm_host.h
+index 1335f0001bdd..1e83359f286b 100644
+--- a/arch/powerpc/include/asm/kvm_host.h
++++ b/arch/powerpc/include/asm/kvm_host.h
+@@ -55,7 +55,6 @@
+ #include <linux/mmu_notifier.h>
+ 
+ #define KVM_ARCH_WANT_MMU_NOTIFIER
+-#define KVM_ARCH_WANT_NEW_MMU_NOTIFIER_APIS
+ 
+ #define HPTEG_CACHE_NUM			(1 << 15)
+ #define HPTEG_HASH_BITS_PTE		13
+diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
+index a21e3698f4dc..99778ac51243 100644
+--- a/arch/x86/include/asm/kvm_host.h
++++ b/arch/x86/include/asm/kvm_host.h
+@@ -1718,7 +1718,6 @@ asmlinkage void kvm_spurious_fault(void);
+ 	_ASM_EXTABLE(666b, 667b)
+ 
+ #define KVM_ARCH_WANT_MMU_NOTIFIER
+-#define KVM_ARCH_WANT_NEW_MMU_NOTIFIER_APIS
+ 
+ int kvm_cpu_has_injectable_intr(struct kvm_vcpu *v);
+ int kvm_cpu_has_interrupt(struct kvm_vcpu *vcpu);
+diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
+index e6bb401dd856..40ac2d40bb5a 100644
+--- a/include/linux/kvm_host.h
++++ b/include/linux/kvm_host.h
+@@ -219,7 +219,6 @@ int kvm_async_pf_wakeup_all(struct kvm_vcpu *vcpu);
+ #endif
+ 
+ #ifdef KVM_ARCH_WANT_MMU_NOTIFIER
+-#ifdef KVM_ARCH_WANT_NEW_MMU_NOTIFIER_APIS
+ struct kvm_gfn_range {
+ 	struct kvm_memory_slot *slot;
+ 	gfn_t start;
+@@ -231,13 +230,6 @@ bool kvm_unmap_gfn_range(struct kvm *kvm, struct kvm_gfn_range *range);
+ bool kvm_age_gfn(struct kvm *kvm, struct kvm_gfn_range *range);
+ bool kvm_test_age_gfn(struct kvm *kvm, struct kvm_gfn_range *range);
+ bool kvm_set_spte_gfn(struct kvm *kvm, struct kvm_gfn_range *range);
+-#else
+-int kvm_unmap_hva_range(struct kvm *kvm,
+-			unsigned long start, unsigned long end, unsigned flags);
+-int kvm_set_spte_hva(struct kvm *kvm, unsigned long hva, pte_t pte);
+-int kvm_age_hva(struct kvm *kvm, unsigned long start, unsigned long end);
+-int kvm_test_age_hva(struct kvm *kvm, unsigned long hva);
+-#endif /* KVM_ARCH_WANT_NEW_MMU_NOTIFIER_APIS */
+ #endif
+ 
+ enum {
+diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+index de74379a96ca..bfa43eea891a 100644
+--- a/virt/kvm/kvm_main.c
++++ b/virt/kvm/kvm_main.c
+@@ -451,8 +451,6 @@ static void kvm_mmu_notifier_invalidate_range(struct mmu_notifier *mn,
+ 	srcu_read_unlock(&kvm->srcu, idx);
+ }
+ 
+-#ifdef KVM_ARCH_WANT_NEW_MMU_NOTIFIER_APIS
+-
+ typedef bool (*hva_handler_t)(struct kvm *kvm, struct kvm_gfn_range *range);
+ 
+ struct kvm_hva_range {
+@@ -564,40 +562,20 @@ static __always_inline int kvm_handle_hva_range_no_flush(struct mmu_notifier *mn
+ 
  	return ret;
  }
- 
--static int handle_hva_to_gpa(struct kvm *kvm,
--			     unsigned long start,
--			     unsigned long end,
--			     int (*handler)(struct kvm *kvm,
--					    gpa_t gpa, u64 size,
--					    void *data),
--			     void *data)
--{
--	struct kvm_memslots *slots;
--	struct kvm_memory_slot *memslot;
--	int ret = 0;
+-#endif /* KVM_ARCH_WANT_NEW_MMU_NOTIFIER_APIS */
 -
--	slots = kvm_memslots(kvm);
--
--	/* we only care about the pages that the guest sees */
--	kvm_for_each_memslot(memslot, slots) {
--		unsigned long hva_start, hva_end;
--		gfn_t gpa;
--
--		hva_start = max(start, memslot->userspace_addr);
--		hva_end = min(end, memslot->userspace_addr +
--					(memslot->npages << PAGE_SHIFT));
--		if (hva_start >= hva_end)
--			continue;
--
--		gpa = hva_to_gfn_memslot(hva_start, memslot) << PAGE_SHIFT;
--		ret |= handler(kvm, gpa, (u64)(hva_end - hva_start), data);
--	}
--
--	return ret;
--}
--
--static int kvm_unmap_hva_handler(struct kvm *kvm, gpa_t gpa, u64 size, void *data)
--{
--	unsigned flags = *(unsigned *)data;
--	bool may_block = flags & MMU_NOTIFIER_RANGE_BLOCKABLE;
--
--	__unmap_stage2_range(&kvm->arch.mmu, gpa, size, may_block);
--	return 0;
--}
--
--int kvm_unmap_hva_range(struct kvm *kvm,
--			unsigned long start, unsigned long end, unsigned flags)
-+bool kvm_unmap_gfn_range(struct kvm *kvm, struct kvm_gfn_range *range)
+ static void kvm_mmu_notifier_change_pte(struct mmu_notifier *mn,
+ 					struct mm_struct *mm,
+ 					unsigned long address,
+ 					pte_t pte)
  {
- 	if (!kvm->arch.mmu.pgt)
- 		return 0;
- 
--	handle_hva_to_gpa(kvm, start, end, &kvm_unmap_hva_handler, &flags);
--	return 0;
--}
-+	__unmap_stage2_range(&kvm->arch.mmu, range->start << PAGE_SHIFT,
-+			     (range->end - range->start) << PAGE_SHIFT,
-+			     range->may_block);
- 
--static int kvm_set_spte_handler(struct kvm *kvm, gpa_t gpa, u64 size, void *data)
--{
--	kvm_pfn_t *pfn = (kvm_pfn_t *)data;
+-#ifdef KVM_ARCH_WANT_NEW_MMU_NOTIFIER_APIS
+-	kvm_handle_hva_range(mn, address, address + 1, pte, kvm_set_spte_gfn);
+-#else
+-	struct kvm *kvm = mmu_notifier_to_kvm(mn);
+-	int idx;
 -
--	WARN_ON(size != PAGE_SIZE);
+ 	trace_kvm_set_spte_hva(address);
+ 
+-	idx = srcu_read_lock(&kvm->srcu);
 -
--	/*
--	 * The MMU notifiers will have unmapped a huge PMD before calling
--	 * ->change_pte() (which in turn calls kvm_set_spte_hva()) and
--	 * therefore we never need to clear out a huge PMD through this
--	 * calling path and a memcache is not required.
--	 */
--	kvm_pgtable_stage2_map(kvm->arch.mmu.pgt, gpa, PAGE_SIZE,
--			       __pfn_to_phys(*pfn), KVM_PGTABLE_PROT_R, NULL);
- 	return 0;
+-	KVM_MMU_LOCK(kvm);
+-
+-	kvm->mmu_notifier_seq++;
+-
+-	if (kvm_set_spte_hva(kvm, address, pte))
+-		kvm_flush_remote_tlbs(kvm);
+-
+-	KVM_MMU_UNLOCK(kvm);
+-	srcu_read_unlock(&kvm->srcu, idx);
+-#endif
++	kvm_handle_hva_range(mn, address, address + 1, pte, kvm_set_spte_gfn);
  }
  
--int kvm_set_spte_hva(struct kvm *kvm, unsigned long hva, pte_t pte)
-+bool kvm_set_spte_gfn(struct kvm *kvm, struct kvm_gfn_range *range)
+ static int kvm_mmu_notifier_invalidate_range_start(struct mmu_notifier *mn,
+ 					const struct mmu_notifier_range *range)
  {
--	unsigned long end = hva + PAGE_SIZE;
--	kvm_pfn_t pfn = pte_pfn(pte);
-+	kvm_pfn_t pfn = pte_pfn(range->pte);
+ 	struct kvm *kvm = mmu_notifier_to_kvm(mn);
+-#ifdef KVM_ARCH_WANT_NEW_MMU_NOTIFIER_APIS
+ 	const struct kvm_hva_range hva_range = {
+ 		.start		= range->start,
+ 		.end		= range->end,
+@@ -606,14 +584,9 @@ static int kvm_mmu_notifier_invalidate_range_start(struct mmu_notifier *mn,
+ 		.flush_on_ret	= true,
+ 		.may_block	= mmu_notifier_range_blockable(range),
+ 	};
+-#else
+-	int need_tlb_flush = 0, idx;
  
- 	if (!kvm->arch.mmu.pgt)
- 		return 0;
+ 	trace_kvm_unmap_hva_range(range->start, range->end);
  
-+	WARN_ON(range->end - range->start != 1);
-+
+-	idx = srcu_read_lock(&kvm->srcu);
+-#endif
+-
+ 	KVM_MMU_LOCK(kvm);
  	/*
- 	 * We've moved a page around, probably through CoW, so let's treat it
- 	 * just like a translation fault and clean the cache to the PoC.
- 	 */
- 	clean_dcache_guest_page(pfn, PAGE_SIZE);
--	handle_hva_to_gpa(kvm, hva, end, &kvm_set_spte_handler, &pfn);
-+
-+	/*
-+	 * The MMU notifiers will have unmapped a huge PMD before calling
-+	 * ->change_pte() (which in turn calls kvm_set_spte_gfn()) and
-+	 * therefore we never need to clear out a huge PMD through this
-+	 * calling path and a memcache is not required.
-+	 */
-+	kvm_pgtable_stage2_map(kvm->arch.mmu.pgt, range->start << PAGE_SHIFT,
-+			       PAGE_SIZE, __pfn_to_phys(pfn),
-+			       KVM_PGTABLE_PROT_R, NULL);
-+
+ 	 * The count increase must become visible at unlock time as no
+@@ -640,20 +613,9 @@ static int kvm_mmu_notifier_invalidate_range_start(struct mmu_notifier *mn,
+ 			max(kvm->mmu_notifier_range_end, range->end);
+ 	}
+ 
+-#ifdef KVM_ARCH_WANT_NEW_MMU_NOTIFIER_APIS
+ 	__kvm_handle_hva_range(kvm, &hva_range);
+-#else
+-	need_tlb_flush = kvm_unmap_hva_range(kvm, range->start, range->end,
+-					     range->flags);
+-	/* we've to flush the tlb before the pages can be freed */
+-	if (need_tlb_flush || kvm->tlbs_dirty)
+-		kvm_flush_remote_tlbs(kvm);
+-#endif
+ 
+ 	KVM_MMU_UNLOCK(kvm);
+-#ifndef KVM_ARCH_WANT_NEW_MMU_NOTIFIER_APIS
+-	srcu_read_unlock(&kvm->srcu, idx);
+-#endif
+ 
  	return 0;
  }
- 
--static int kvm_age_hva_handler(struct kvm *kvm, gpa_t gpa, u64 size, void *data)
-+bool kvm_age_gfn(struct kvm *kvm, struct kvm_gfn_range *range)
+@@ -687,26 +649,9 @@ static int kvm_mmu_notifier_clear_flush_young(struct mmu_notifier *mn,
+ 					      unsigned long start,
+ 					      unsigned long end)
  {
--	pte_t pte;
-+	u64 size = (range->end - range->start) << PAGE_SHIFT;
- 	kvm_pte_t kpte;
-+	pte_t pte;
+-#ifdef KVM_ARCH_WANT_NEW_MMU_NOTIFIER_APIS
++	trace_kvm_age_hva(start, end);
 +
-+	if (!kvm->arch.mmu.pgt)
-+		return 0;
- 
- 	WARN_ON(size != PAGE_SIZE && size != PMD_SIZE && size != PUD_SIZE);
--	kpte = kvm_pgtable_stage2_mkold(kvm->arch.mmu.pgt, gpa);
-+
-+	kpte = kvm_pgtable_stage2_mkold(kvm->arch.mmu.pgt,
-+					range->start << PAGE_SHIFT);
- 	pte = __pte(kpte);
- 	return pte_valid(pte) && pte_young(pte);
+ 	return kvm_handle_hva_range(mn, start, end, __pte(0), kvm_age_gfn);
+-#else
+-	struct kvm *kvm = mmu_notifier_to_kvm(mn);
+-	int young, idx;
+-
+-	trace_kvm_age_hva(start, end);
+-
+-	idx = srcu_read_lock(&kvm->srcu);
+-	KVM_MMU_LOCK(kvm);
+-
+-	young = kvm_age_hva(kvm, start, end);
+-	if (young)
+-		kvm_flush_remote_tlbs(kvm);
+-
+-	KVM_MMU_UNLOCK(kvm);
+-	srcu_read_unlock(&kvm->srcu, idx);
+-
+-	return young;
+-#endif
  }
  
--static int kvm_test_age_hva_handler(struct kvm *kvm, gpa_t gpa, u64 size, void *data)
--{
--	WARN_ON(size != PAGE_SIZE && size != PMD_SIZE && size != PUD_SIZE);
--	return kvm_pgtable_stage2_is_young(kvm->arch.mmu.pgt, gpa);
--}
--
--int kvm_age_hva(struct kvm *kvm, unsigned long start, unsigned long end)
--{
--	if (!kvm->arch.mmu.pgt)
--		return 0;
--
--	return handle_hva_to_gpa(kvm, start, end, kvm_age_hva_handler, NULL);
--}
--
--int kvm_test_age_hva(struct kvm *kvm, unsigned long hva)
-+bool kvm_test_age_gfn(struct kvm *kvm, struct kvm_gfn_range *range)
+ static int kvm_mmu_notifier_clear_young(struct mmu_notifier *mn,
+@@ -714,15 +659,8 @@ static int kvm_mmu_notifier_clear_young(struct mmu_notifier *mn,
+ 					unsigned long start,
+ 					unsigned long end)
  {
- 	if (!kvm->arch.mmu.pgt)
- 		return 0;
+-#ifndef KVM_ARCH_WANT_NEW_MMU_NOTIFIER_APIS
+-	struct kvm *kvm = mmu_notifier_to_kvm(mn);
+-	int young, idx;
+-
+ 	trace_kvm_age_hva(start, end);
  
--	return handle_hva_to_gpa(kvm, hva, hva + PAGE_SIZE,
--				 kvm_test_age_hva_handler, NULL);
-+	return kvm_pgtable_stage2_is_young(kvm->arch.mmu.pgt,
-+					   range->start << PAGE_SHIFT);
+-	idx = srcu_read_lock(&kvm->srcu);
+-	KVM_MMU_LOCK(kvm);
+-#endif
+ 	/*
+ 	 * Even though we do not flush TLB, this will still adversely
+ 	 * affect performance on pre-Haswell Intel EPT, where there is
+@@ -736,38 +674,17 @@ static int kvm_mmu_notifier_clear_young(struct mmu_notifier *mn,
+ 	 * cadence. If we find this inaccurate, we might come up with a
+ 	 * more sophisticated heuristic later.
+ 	 */
+-#ifdef KVM_ARCH_WANT_NEW_MMU_NOTIFIER_APIS
+ 	return kvm_handle_hva_range_no_flush(mn, start, end, kvm_age_gfn);
+-#else
+-	young = kvm_age_hva(kvm, start, end);
+-	KVM_MMU_UNLOCK(kvm);
+-	srcu_read_unlock(&kvm->srcu, idx);
+-
+-	return young;
+-#endif
  }
  
- phys_addr_t kvm_mmu_get_httbr(void)
+ static int kvm_mmu_notifier_test_young(struct mmu_notifier *mn,
+ 				       struct mm_struct *mm,
+ 				       unsigned long address)
+ {
+-#ifdef KVM_ARCH_WANT_NEW_MMU_NOTIFIER_APIS
++	trace_kvm_test_age_hva(address);
++
+ 	return kvm_handle_hva_range_no_flush(mn, address, address + 1,
+ 					     kvm_test_age_gfn);
+-#else
+-	struct kvm *kvm = mmu_notifier_to_kvm(mn);
+-	int young, idx;
+-
+-	trace_kvm_test_age_hva(address);
+-
+-	idx = srcu_read_lock(&kvm->srcu);
+-	KVM_MMU_LOCK(kvm);
+-	young = kvm_test_age_hva(kvm, address);
+-	KVM_MMU_UNLOCK(kvm);
+-	srcu_read_unlock(&kvm->srcu, idx);
+-
+-	return young;
+-#endif
+ }
+ 
+ static void kvm_mmu_notifier_release(struct mmu_notifier *mn,
 -- 
 2.31.0.291.g576ba9dcdaf-goog
 

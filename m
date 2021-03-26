@@ -2,104 +2,107 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-16.6 required=3.0 tests=BAYES_00,DKIM_INVALID,
+	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3DD59C433DB
-	for <linux-mips@archiver.kernel.org>; Fri, 26 Mar 2021 05:35:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 79A9BC433DB
+	for <linux-mips@archiver.kernel.org>; Fri, 26 Mar 2021 13:44:38 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id EB0D261A36
-	for <linux-mips@archiver.kernel.org>; Fri, 26 Mar 2021 05:35:54 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 4294B61949
+	for <linux-mips@archiver.kernel.org>; Fri, 26 Mar 2021 13:44:38 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229551AbhCZFfW (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 26 Mar 2021 01:35:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49106 "EHLO
+        id S230093AbhCZNoF (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 26 Mar 2021 09:44:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41610 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229458AbhCZFfO (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Fri, 26 Mar 2021 01:35:14 -0400
-Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com [IPv6:2607:f8b0:4864:20::834])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08D42C0613AA;
-        Thu, 25 Mar 2021 22:35:14 -0700 (PDT)
-Received: by mail-qt1-x834.google.com with SMTP id u8so3477219qtq.12;
-        Thu, 25 Mar 2021 22:35:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Fio+eNqKIZMGxoTBS2oX9UsnA5xkc2RWawLuG0+HOLI=;
-        b=Db6EG7LpLtDK5ttxJY5gmbz2BnXdPp9k1UPT7O/u58DyyGlBySDBRPoHHe0WbTJdSN
-         z2aTP83Ka6wdx3k2YjUgy/Dg6NqS+lu99Ufdh/fya/LARDehr0QVOWVVyfqOS/6bPZ20
-         VXWaAuej4UbCOyV/sBVqV1bV0YRC7zHYiZ2Hj9J5nXenoLrAAJ8KcR0ovT5szR8LSzFd
-         dz5xIZmEo5/H6i07d3U0ebMTBtYkz6B22vYUNgnly1YTPPziRFYDfYHjIdN2fOwGFzqs
-         zgT4iDQqHqdRPGsPBmRViA4Qzgs7Byz9c/o4nQVvqV7pkKR729MWD9kxLmJDptmTiCRP
-         uJtA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :mime-version:content-transfer-encoding;
-        bh=Fio+eNqKIZMGxoTBS2oX9UsnA5xkc2RWawLuG0+HOLI=;
-        b=AJvotqX7e4hYVV5IbcUfKDeE9tvubKNRGMyAg4AJ06OalzH/Hwpdv+NHglg0fWoMo5
-         rbptdOFTAOmiRxe2fy6Ktfj8dOULhTvYjV6yijuXxyLQP3iAaLIAqgnNmpyYcSwcYA1J
-         Q/pWww1XGls0T3UMNh6rjjGo3fe4AzX9EXJh1Bd7khwxE9L+WDYbVU5YU2k8X9+P8T8n
-         XNEaJhBqXMZtZtMCm0v+Z7vCkzxCo37U0bv1Z7pr6XGwfYkeLtqCtGIpDd2YR23N2NHR
-         MA0i3H6e4kvwVmphdPKRhqhCr9YUvPZqCRS7ThzXy0VjRTsUp71nPRuVJav1HPAFkmWN
-         idOw==
-X-Gm-Message-State: AOAM530HVOlhyHWvFspCt4TcIts4f+Boq+Db5hbf/VMUTbKmYtVM8T3s
-        qk5HUuz+lUyXdFvzKZTm6U1MKpRiAFM/Kjre
-X-Google-Smtp-Source: ABdhPJzHtAujBAwUPJjS0E2pAusfcfAtaNANtzYoRJ+uUm3R/HBC7RqPCy+Nz1tHg5nl+VoP2mFbMQ==
-X-Received: by 2002:a05:622a:250:: with SMTP id c16mr10625902qtx.7.1616736913057;
-        Thu, 25 Mar 2021 22:35:13 -0700 (PDT)
-Received: from kde-neon-desktop.orld.fl.wtsky.net ([208.64.158.251])
-        by smtp.gmail.com with ESMTPSA id j24sm5945325qka.67.2021.03.25.22.35.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Mar 2021 22:35:12 -0700 (PDT)
-Sender: Julian Braha <julian.braha@gmail.com>
-From:   Julian Braha <julianbraha@gmail.com>
-To:     tsbogend@alpha.franken.de
-Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        fazilyildiran@gmail.com
-Subject: [PATCH] arch: mips: fix unmet dependency for MTD_COMPLEX_MAPPINGS
-Date:   Fri, 26 Mar 2021 01:34:56 -0400
-Message-Id: <20210326053456.42020-1-julianbraha@gmail.com>
+        with ESMTP id S230016AbhCZNnu (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Fri, 26 Mar 2021 09:43:50 -0400
+Received: from mail.kapsi.fi (mail.kapsi.fi [IPv6:2001:67c:1be8::25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB8F6C0613B1
+        for <linux-mips@vger.kernel.org>; Fri, 26 Mar 2021 06:43:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=kapsi.fi;
+         s=20161220; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        List-Post:List-Owner:List-Archive;
+        bh=+PWFOY20tJDgWd9J5NDfLGT0pY3SBgm8+NCY/mgM8zs=; b=zbTsjG+Z6tfn0nYNDlacK1y1Pk
+        peN6WGEsIrP02S6wZ7yRxO5vwzYqqlFArpYPiA5pnszY8vu7NojmXZ2izEsgl3f14rKggnhNBn7xF
+        n1Ks+M9iD5o1TGTUJt5mloc7tPvTS0ZzFrjDIofZFlJudIh6Fix9dJNdldMs0eth03AFI1Mim9UuU
+        0SLmaL0IsiO/FSkAlZadXr8JMONI6eHk0S9MJ2sw9oAczmkI//dJCdEhV+MxRD9/ll9ep4mvccQx6
+        YhM/RsmMTfHKlpocNl/O4G9feJaVsyQm/uLxaukX2mVaO1GKEsOj6Lm1lTEOowxenuyQDcSNDtabK
+        +mx/afUg==;
+Received: from 97-173-191-90.dyn.estpak.ee ([90.191.173.97] helo=ubuntu)
+        by mail.kapsi.fi with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.89)
+        (envelope-from <sandberg@mailfence.com>)
+        id 1lPmka-0008Ry-TW; Fri, 26 Mar 2021 15:43:45 +0200
+Received: by ubuntu (sSMTP sendmail emulation); Fri, 26 Mar 2021 15:43:45 +0200
+From:   Mauri Sandberg <sandberg@mailfence.com>
+To:     linux-mips@vger.kernel.org
+Cc:     tsbogend@alpha.franken.de, f.fainelli@gmail.com,
+        Mauri Sandberg <sandberg@mailfence.com>
+Subject: [PATCH 1/1] MIPS: kernel: setup.c: fix compilation error
+Date:   Fri, 26 Mar 2021 15:41:58 +0200
+Message-Id: <20210326134158.268164-2-sandberg@mailfence.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210326134158.268164-1-sandberg@mailfence.com>
+References: <20210326134158.268164-1-sandberg@mailfence.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 90.191.173.97
+X-SA-Exim-Mail-From: sandberg@mailfence.com
+X-SA-Exim-Scanned: No (on mail.kapsi.fi); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-When CAVIUM_OCTEON_SOC is enabled, and MTD is disabled,
-Kbuild gives the following warning:
+Developing against mips/mips-next I get a compilation error.
+With the attached patch compilation succeeds.
 
-WARNING: unmet direct dependencies detected for MTD_COMPLEX_MAPPINGS
-  Depends on [n]: MTD [=n] && HAS_IOMEM [=y]
-  Selected by [y]:
-  - CAVIUM_OCTEON_SOC [=y] && <choice>
+Build log:
+...
+  CC      kernel/locking/percpu-rwsem.o
+../arch/mips/kernel/setup.c:46:39: error: conflicting types for
+'__appended_dtb'
+ const char __section(".appended_dtb") __appended_dtb[0x100000];
+                                       ^~~~~~~~~~~~~~
+In file included from ../arch/mips/kernel/setup.c:34:
+../arch/mips/include/asm/bootinfo.h:118:13: note: previous declaration
+of '__appended_dtb' was here
+ extern char __appended_dtb[];
+             ^~~~~~~~~~~~~~
+  CC      fs/attr.o
+make[4]: *** [../scripts/Makefile.build:271: arch/mips/kernel/setup.o]
+ Error 1
+make[3]: *** [../scripts/Makefile.build:514: arch/mips/kernel] Error 2
+make[2]: *** [/home/ubuntu/git/linux/Makefile:1849: arch/mips] Error 2
+make[2]: *** Waiting for unfinished jobs....
+...
 
-This is because CAVIUM_OCTEON_SOC selects MTD_COMPLEX_MAPPINGS,
-without selecting or depending on MTD, despite MTD_COMPLEX_MAPPINGS
-depending on MTD.
+Root cause seems to be:
+commit b83ba0b9df56 ("MIPS: of: Introduce helper function to get DTB")
 
-Signed-off-by: Julian Braha <julianbraha@gmail.com>
+Signed-off-by: Mauri Sandberg <sandberg@mailfence.com>
 ---
- arch/mips/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+ arch/mips/kernel/setup.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-index d89efba3d8a4..39b1c8030842 100644
---- a/arch/mips/Kconfig
-+++ b/arch/mips/Kconfig
-@@ -998,6 +998,7 @@ config CAVIUM_OCTEON_SOC
- 	select NR_CPUS_DEFAULT_64
- 	select MIPS_NR_CPU_NR_MAP_1024
- 	select BUILTIN_DTB
-+	select MTD
- 	select MTD_COMPLEX_MAPPINGS
- 	select SWIOTLB
- 	select SYS_SUPPORTS_RELOCATABLE
+diff --git a/arch/mips/kernel/setup.c b/arch/mips/kernel/setup.c
+index 279be0153f8b..23a140327a0b 100644
+--- a/arch/mips/kernel/setup.c
++++ b/arch/mips/kernel/setup.c
+@@ -43,7 +43,7 @@
+ #include <asm/prom.h>
+ 
+ #ifdef CONFIG_MIPS_ELF_APPENDED_DTB
+-const char __section(".appended_dtb") __appended_dtb[0x100000];
++char __section(".appended_dtb") __appended_dtb[0x100000];
+ #endif /* CONFIG_MIPS_ELF_APPENDED_DTB */
+ 
+ struct cpuinfo_mips cpu_data[NR_CPUS] __read_mostly;
 -- 
 2.25.1
 

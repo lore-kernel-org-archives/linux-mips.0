@@ -8,60 +8,59 @@ X-Spam-Status: No, score=-26.3 required=3.0 tests=BAYES_00,DKIMWL_WL_MED,
 	USER_AGENT_GIT,USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0E603C433E5
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 95AF3C433EA
 	for <linux-mips@archiver.kernel.org>; Fri, 26 Mar 2021 02:21:23 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id CD4B561A3F
-	for <linux-mips@archiver.kernel.org>; Fri, 26 Mar 2021 02:21:22 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 70D0161A42
+	for <linux-mips@archiver.kernel.org>; Fri, 26 Mar 2021 02:21:23 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230434AbhCZCUw (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        id S231424AbhCZCUw (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
         Thu, 25 Mar 2021 22:20:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35270 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35290 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230510AbhCZCUW (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Thu, 25 Mar 2021 22:20:22 -0400
-Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B718C0613E0
-        for <linux-mips@vger.kernel.org>; Thu, 25 Mar 2021 19:20:21 -0700 (PDT)
-Received: by mail-qk1-x749.google.com with SMTP id j14so5212143qka.7
-        for <linux-mips@vger.kernel.org>; Thu, 25 Mar 2021 19:20:21 -0700 (PDT)
+        with ESMTP id S231174AbhCZCUZ (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Thu, 25 Mar 2021 22:20:25 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BE13C06174A
+        for <linux-mips@vger.kernel.org>; Thu, 25 Mar 2021 19:20:25 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id u128so8268760ybf.12
+        for <linux-mips@vger.kernel.org>; Thu, 25 Mar 2021 19:20:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=reply-to:date:in-reply-to:message-id:mime-version:references
          :subject:from:to:cc;
-        bh=VHU0N9D6gGMpxInyb7jHcZ3k9rh6QrJlzBumSAqwO8c=;
-        b=KYqLsSM1DKlBrG0n9fQu+QMpt6MzQ+SF1jMhC3bYjxbl9xg4rj1BheBGS3DzK7UmeZ
-         lEiUMH+TeBdSLBPrIvxR3WM8v0OjxY1qKJaVm29X0psiCjFVMfGvfr9a6gzWD5VEwqyZ
-         PTrYiDzsZw/v2/D39aFUEmHMnVwwN61npU9LP0PYtwpLM4aTVEN8sgSgy2zcL1SLjU+s
-         cNlLWLnvWQOuO9HWx+Er8e6OJdhijecdyBbriyZu1Is1pGK2S2+5wuqQOFlxCFoM/xsU
-         eQR71XOtqIazbUL52wALyTWqjz+bTXi58NvjtGUL28QVGyfYAPq06SdoWnsvNDwuuaFo
-         szxA==
+        bh=3AgZ1tXB5fsmC9BqolsIozmnqnoXMTYWhC7BKZkiX/k=;
+        b=OyvJj/iJwjaokx6AiNv8/+wi/SJujMbURg54zi2DAFVIy7RKNlyW1Ofw2aezhxPHQP
+         xy8/NNmr7u1tpPIuhP6uc9BgCnU8BrSugIoZdqtBW73/dOdNpPLV9QXmd6E9y0pPi/tn
+         PCSaNnznpyI2+X88wTtVN5vrzM+ZHqRtvIeF5pxspwDgffYRwR2IPJYKwyvCuji2P9FJ
+         yVnWJ6dzjggzHLNmbV74iPSF1hkAWyqcacOxwSTrmuYjqCoAtbev52lw+POPWqErwIq/
+         DA3F9HAvpKzO+Nct8+cNLyAVcxRoCK6T7PHyd6ree/SliuWUS+uXs36MmQ6wMIEOrOCx
+         P5pg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:reply-to:date:in-reply-to:message-id
          :mime-version:references:subject:from:to:cc;
-        bh=VHU0N9D6gGMpxInyb7jHcZ3k9rh6QrJlzBumSAqwO8c=;
-        b=ELbow78TgnYfMwYdWatG9cgXqHb41XXJORuvIrVJiF9xRQwZzng5trsogOiAVQTjDT
-         eIedxJCbwuHo4pmFRzNfEtslGkEb1+vhgtxAMwTadLW2NBk/PK6yE9aiHLPOhwfgy3qm
-         6nypXhBQFPbx/ZUWJ+a8XvupLcIwOyRAu+MNBR82Rs1VI9XwtOQHJ2Y5L9h4PesSlTN0
-         rPBKnkodI6i7XT8phSZJh2m4ZZdl58LRKr128JOj5sUP5Hqk/OBwfj6QBeD3L9Y0hs0P
-         P5WSwwnrikSVJZ00XNrEFfgtUZlRdGYe4rtwTl4gYb4Pij3s39Exdo7IlRxvNvc2N66U
-         PoZA==
-X-Gm-Message-State: AOAM533fLtsBW4m4sTWMnWnV8aEnW26mdEIzoj+h+h5vhsjVeAeLV42L
-        W3e0w6GrY3iCHUGIWYXU0oDs5g+zpVI=
-X-Google-Smtp-Source: ABdhPJy0HL2v9roIhKh4ewViQpaZol5eRjI0NnfVDZGOKQXEnK2GcjlR+0ZiLbksT/yFSNKZXmeXIxYd4GQ=
+        bh=3AgZ1tXB5fsmC9BqolsIozmnqnoXMTYWhC7BKZkiX/k=;
+        b=MjAgjj6t6QUx8PC0J6RqxOiUPqzMTiygBNeevuhBWgY4Snutcb2331VEexms9wCB6a
+         e8juQfYdJ0AylY3XNacno5X8OR527gymHzddiBov9jOAtbnT4tQj7klND6AgaRs4LYgy
+         gq7WTEf5uUxb8+XcZ70J/oTMDwBrHrY2ZFC1U5NPfYlG1XuqagXu/5ZdhvW7tPQczfLI
+         M5x3P656BpJu65DL8/XHFSBQhoeIjW/cf62o10TfjA60iR23NoU4jdc/HJOpnTG6P40C
+         4lhu5bvViLKmgiru7+v3Mn7mwztMThsgDYAu4cZ+vN1rEvNWlX5l6r8Qw+pD2EOEHqTy
+         uvww==
+X-Gm-Message-State: AOAM533/MyiVYAyFUZulBPE5J5T3E9JegflkfbbGVvGm5RKPsIn9JTgM
+        MEQQOq6m8wp1JJHm7eJLLxVsLIZC8UQ=
+X-Google-Smtp-Source: ABdhPJz4J4AlDNUuHmarx4p63A7F1ftWtx7VoOUQI0sOGW99e4CpULlCgcHiaKNZ+licKK4wHDqKcNjBUg8=
 X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:f:10:b1bb:fab2:7ef5:fc7d])
- (user=seanjc job=sendgmr) by 2002:a05:6214:176e:: with SMTP id
- et14mr11147707qvb.35.1616725219917; Thu, 25 Mar 2021 19:20:19 -0700 (PDT)
+ (user=seanjc job=sendgmr) by 2002:a25:655:: with SMTP id 82mr14774831ybg.168.1616725224644;
+ Thu, 25 Mar 2021 19:20:24 -0700 (PDT)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Thu, 25 Mar 2021 19:19:43 -0700
+Date:   Thu, 25 Mar 2021 19:19:45 -0700
 In-Reply-To: <20210326021957.1424875-1-seanjc@google.com>
-Message-Id: <20210326021957.1424875-5-seanjc@google.com>
+Message-Id: <20210326021957.1424875-7-seanjc@google.com>
 Mime-Version: 1.0
 References: <20210326021957.1424875-1-seanjc@google.com>
 X-Mailer: git-send-email 2.31.0.291.g576ba9dcdaf-goog
-Subject: [PATCH 04/18] KVM: x86/mmu: Coalesce TLB flushes across address
- spaces for gfn range zap
+Subject: [PATCH 06/18] KVM: x86/mmu: Pass address space ID to TDP MMU root walkers
 From:   Sean Christopherson <seanjc@google.com>
 To:     Marc Zyngier <maz@kernel.org>, Huacai Chen <chenhuacai@kernel.org>,
         Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
@@ -84,72 +83,227 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Gather pending TLB flushes across both address spaces when zapping a
-given gfn range.  This requires feeding "flush" back into subsequent
-calls, but on the plus side sets the stage for further batching
-between the legacy MMU and TDP MMU.  It also allows refactoring the
-address space iteration to cover the legacy and TDP MMUs without
-introducing truly ugly code.
+Move the address space ID check that is performed when iterating over
+roots into the macro helpers to consolidate code.
+
+No functional change intended.
 
 Signed-off-by: Sean Christopherson <seanjc@google.com>
 ---
- arch/x86/kvm/mmu/mmu.c | 17 ++++++++---------
- 1 file changed, 8 insertions(+), 9 deletions(-)
+ arch/x86/kvm/mmu/mmu_internal.h |  7 ++-
+ arch/x86/kvm/mmu/tdp_mmu.c      | 99 ++++++++++++---------------------
+ 2 files changed, 42 insertions(+), 64 deletions(-)
 
-diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-index 37e2432c78ca..e6e02360ef67 100644
---- a/arch/x86/kvm/mmu/mmu.c
-+++ b/arch/x86/kvm/mmu/mmu.c
-@@ -5227,10 +5227,10 @@ typedef bool (*slot_level_handler) (struct kvm *kvm, struct kvm_rmap_head *rmap_
- static __always_inline bool
- slot_handle_level_range(struct kvm *kvm, struct kvm_memory_slot *memslot,
- 			slot_level_handler fn, int start_level, int end_level,
--			gfn_t start_gfn, gfn_t end_gfn, bool flush_on_yield)
-+			gfn_t start_gfn, gfn_t end_gfn, bool flush_on_yield,
-+			bool flush)
- {
- 	struct slot_rmap_walk_iterator iterator;
--	bool flush = false;
- 
- 	for_each_slot_rmap_range(memslot, start_level, end_level, start_gfn,
- 			end_gfn, &iterator) {
-@@ -5259,7 +5259,7 @@ slot_handle_level(struct kvm *kvm, struct kvm_memory_slot *memslot,
- 	return slot_handle_level_range(kvm, memslot, fn, start_level,
- 			end_level, memslot->base_gfn,
- 			memslot->base_gfn + memslot->npages - 1,
--			flush_on_yield);
-+			flush_on_yield, false);
+diff --git a/arch/x86/kvm/mmu/mmu_internal.h b/arch/x86/kvm/mmu/mmu_internal.h
+index db2faa806ab7..cead1d81e663 100644
+--- a/arch/x86/kvm/mmu/mmu_internal.h
++++ b/arch/x86/kvm/mmu/mmu_internal.h
+@@ -129,9 +129,14 @@ static inline bool kvm_mmu_put_root(struct kvm *kvm, struct kvm_mmu_page *sp)
+ 	return !sp->root_count;
  }
  
- static __always_inline bool
-@@ -5490,7 +5490,7 @@ void kvm_zap_gfn_range(struct kvm *kvm, gfn_t gfn_start, gfn_t gfn_end)
- 	struct kvm_memslots *slots;
- 	struct kvm_memory_slot *memslot;
- 	int i;
--	bool flush;
-+	bool flush = false;
++static inline int kvm_mmu_role_as_id(union kvm_mmu_page_role role)
++{
++	return role.smm ? 1 : 0;
++}
++
+ static inline int kvm_mmu_page_as_id(struct kvm_mmu_page *sp)
+ {
+-	return sp->role.smm ? 1 : 0;
++	return kvm_mmu_role_as_id(sp->role);
+ }
  
- 	write_lock(&kvm->mmu_lock);
- 	for (i = 0; i < KVM_ADDRESS_SPACE_NUM; i++) {
-@@ -5506,14 +5506,13 @@ void kvm_zap_gfn_range(struct kvm *kvm, gfn_t gfn_start, gfn_t gfn_end)
- 			flush = slot_handle_level_range(kvm, memslot, kvm_zap_rmapp,
- 							PG_LEVEL_4K,
- 							KVM_MAX_HUGEPAGE_LEVEL,
--							start, end - 1, true);
--
--			if (flush)
--				kvm_flush_remote_tlbs_with_address(kvm, gfn_start,
--								   gfn_end);
-+							start, end - 1, true, flush);
+ /*
+diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
+index bf279fff70ea..7fe5004b1565 100644
+--- a/arch/x86/kvm/mmu/tdp_mmu.c
++++ b/arch/x86/kvm/mmu/tdp_mmu.c
+@@ -76,14 +76,18 @@ static inline struct kvm_mmu_page *tdp_mmu_next_root(struct kvm *kvm,
+  * if exiting the loop early, the caller must drop the reference to the most
+  * recent root. (Unless keeping a live reference is desirable.)
+  */
+-#define for_each_tdp_mmu_root_yield_safe(_kvm, _root)				\
++#define for_each_tdp_mmu_root_yield_safe(_kvm, _root, _as_id)		\
+ 	for (_root = list_first_entry(&_kvm->arch.tdp_mmu_roots,	\
+ 				      typeof(*_root), link);		\
+ 	     tdp_mmu_next_root_valid(_kvm, _root);			\
+-	     _root = tdp_mmu_next_root(_kvm, _root))
++	     _root = tdp_mmu_next_root(_kvm, _root))			\
++		if (kvm_mmu_page_as_id(_root) != _as_id) {		\
++		} else
+ 
+-#define for_each_tdp_mmu_root(_kvm, _root)				\
+-	list_for_each_entry(_root, &_kvm->arch.tdp_mmu_roots, link)
++#define for_each_tdp_mmu_root(_kvm, _root, _as_id)			\
++	list_for_each_entry(_root, &_kvm->arch.tdp_mmu_roots, link)	\
++		if (kvm_mmu_page_as_id(_root) != _as_id) {		\
++		} else
+ 
+ static bool zap_gfn_range(struct kvm *kvm, struct kvm_mmu_page *root,
+ 			  gfn_t start, gfn_t end, bool can_yield, bool flush);
+@@ -148,7 +152,7 @@ hpa_t kvm_tdp_mmu_get_vcpu_root_hpa(struct kvm_vcpu *vcpu)
+ 	role = page_role_for_level(vcpu, vcpu->arch.mmu->shadow_root_level);
+ 
+ 	/* Check for an existing root before allocating a new one. */
+-	for_each_tdp_mmu_root(kvm, root) {
++	for_each_tdp_mmu_root(kvm, root, kvm_mmu_role_as_id(role)) {
+ 		if (root->role.word == role.word) {
+ 			kvm_mmu_get_root(kvm, root);
+ 			goto out;
+@@ -709,11 +713,8 @@ bool __kvm_tdp_mmu_zap_gfn_range(struct kvm *kvm, int as_id, gfn_t start,
+ {
+ 	struct kvm_mmu_page *root;
+ 
+-	for_each_tdp_mmu_root_yield_safe(kvm, root) {
+-		if (kvm_mmu_page_as_id(root) != as_id)
+-			continue;
++	for_each_tdp_mmu_root_yield_safe(kvm, root, as_id)
+ 		flush = zap_gfn_range(kvm, root, start, end, can_yield, flush);
+-	}
+ 
+ 	return flush;
+ }
+@@ -893,27 +894,28 @@ static __always_inline int kvm_tdp_mmu_handle_hva_range(struct kvm *kvm,
+ 	int ret = 0;
+ 	int as_id;
+ 
+-	for_each_tdp_mmu_root_yield_safe(kvm, root) {
+-		as_id = kvm_mmu_page_as_id(root);
+-		slots = __kvm_memslots(kvm, as_id);
+-		kvm_for_each_memslot(memslot, slots) {
+-			unsigned long hva_start, hva_end;
+-			gfn_t gfn_start, gfn_end;
++	for (as_id = 0; as_id < KVM_ADDRESS_SPACE_NUM; as_id++) {
++		for_each_tdp_mmu_root_yield_safe(kvm, root, as_id) {
++			slots = __kvm_memslots(kvm, as_id);
++			kvm_for_each_memslot(memslot, slots) {
++				unsigned long hva_start, hva_end;
++				gfn_t gfn_start, gfn_end;
+ 
+-			hva_start = max(start, memslot->userspace_addr);
+-			hva_end = min(end, memslot->userspace_addr +
+-				      (memslot->npages << PAGE_SHIFT));
+-			if (hva_start >= hva_end)
+-				continue;
+-			/*
+-			 * {gfn(page) | page intersects with [hva_start, hva_end)} =
+-			 * {gfn_start, gfn_start+1, ..., gfn_end-1}.
+-			 */
+-			gfn_start = hva_to_gfn_memslot(hva_start, memslot);
+-			gfn_end = hva_to_gfn_memslot(hva_end + PAGE_SIZE - 1, memslot);
++				hva_start = max(start, memslot->userspace_addr);
++				hva_end = min(end, memslot->userspace_addr +
++					(memslot->npages << PAGE_SHIFT));
++				if (hva_start >= hva_end)
++					continue;
++				/*
++				 * {gfn(page) | page intersects with [hva_start, hva_end)} =
++				 * {gfn_start, gfn_start+1, ..., gfn_end-1}.
++				 */
++				gfn_start = hva_to_gfn_memslot(hva_start, memslot);
++				gfn_end = hva_to_gfn_memslot(hva_end + PAGE_SIZE - 1, memslot);
+ 
+-			ret |= handler(kvm, memslot, root, gfn_start,
+-				       gfn_end, data);
++				ret |= handler(kvm, memslot, root, gfn_start,
++					gfn_end, data);
++			}
  		}
  	}
  
-+	if (flush)
-+		kvm_flush_remote_tlbs_with_address(kvm, gfn_start, gfn_end);
+@@ -1125,17 +1127,11 @@ bool kvm_tdp_mmu_wrprot_slot(struct kvm *kvm, struct kvm_memory_slot *slot,
+ 			     int min_level)
+ {
+ 	struct kvm_mmu_page *root;
+-	int root_as_id;
+ 	bool spte_set = false;
+ 
+-	for_each_tdp_mmu_root_yield_safe(kvm, root) {
+-		root_as_id = kvm_mmu_page_as_id(root);
+-		if (root_as_id != slot->as_id)
+-			continue;
+-
++	for_each_tdp_mmu_root_yield_safe(kvm, root, slot->as_id)
+ 		spte_set |= wrprot_gfn_range(kvm, root, slot->base_gfn,
+ 			     slot->base_gfn + slot->npages, min_level);
+-	}
+ 
+ 	return spte_set;
+ }
+@@ -1190,17 +1186,11 @@ static bool clear_dirty_gfn_range(struct kvm *kvm, struct kvm_mmu_page *root,
+ bool kvm_tdp_mmu_clear_dirty_slot(struct kvm *kvm, struct kvm_memory_slot *slot)
+ {
+ 	struct kvm_mmu_page *root;
+-	int root_as_id;
+ 	bool spte_set = false;
+ 
+-	for_each_tdp_mmu_root_yield_safe(kvm, root) {
+-		root_as_id = kvm_mmu_page_as_id(root);
+-		if (root_as_id != slot->as_id)
+-			continue;
+-
++	for_each_tdp_mmu_root_yield_safe(kvm, root, slot->as_id)
+ 		spte_set |= clear_dirty_gfn_range(kvm, root, slot->base_gfn,
+ 				slot->base_gfn + slot->npages);
+-	}
+ 
+ 	return spte_set;
+ }
+@@ -1262,16 +1252,10 @@ void kvm_tdp_mmu_clear_dirty_pt_masked(struct kvm *kvm,
+ 				       bool wrprot)
+ {
+ 	struct kvm_mmu_page *root;
+-	int root_as_id;
+ 
+ 	lockdep_assert_held_write(&kvm->mmu_lock);
+-	for_each_tdp_mmu_root(kvm, root) {
+-		root_as_id = kvm_mmu_page_as_id(root);
+-		if (root_as_id != slot->as_id)
+-			continue;
+-
++	for_each_tdp_mmu_root(kvm, root, slot->as_id)
+ 		clear_dirty_pt_masked(kvm, root, gfn, mask, wrprot);
+-	}
+ }
+ 
+ /*
+@@ -1324,15 +1308,9 @@ bool kvm_tdp_mmu_zap_collapsible_sptes(struct kvm *kvm,
+ 				       struct kvm_memory_slot *slot, bool flush)
+ {
+ 	struct kvm_mmu_page *root;
+-	int root_as_id;
+-
+-	for_each_tdp_mmu_root_yield_safe(kvm, root) {
+-		root_as_id = kvm_mmu_page_as_id(root);
+-		if (root_as_id != slot->as_id)
+-			continue;
+ 
++	for_each_tdp_mmu_root_yield_safe(kvm, root, slot->as_id)
+ 		flush = zap_collapsible_spte_range(kvm, root, slot, flush);
+-	}
+ 
+ 	return flush;
+ }
+@@ -1376,17 +1354,12 @@ bool kvm_tdp_mmu_write_protect_gfn(struct kvm *kvm,
+ 				   struct kvm_memory_slot *slot, gfn_t gfn)
+ {
+ 	struct kvm_mmu_page *root;
+-	int root_as_id;
+ 	bool spte_set = false;
+ 
+ 	lockdep_assert_held_write(&kvm->mmu_lock);
+-	for_each_tdp_mmu_root(kvm, root) {
+-		root_as_id = kvm_mmu_page_as_id(root);
+-		if (root_as_id != slot->as_id)
+-			continue;
+-
++	for_each_tdp_mmu_root(kvm, root, slot->as_id)
+ 		spte_set |= write_protect_gfn(kvm, root, gfn);
+-	}
 +
- 	if (is_tdp_mmu_enabled(kvm)) {
- 		flush = kvm_tdp_mmu_zap_gfn_range(kvm, gfn_start, gfn_end);
- 		if (flush)
+ 	return spte_set;
+ }
+ 
 -- 
 2.31.0.291.g576ba9dcdaf-goog
 

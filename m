@@ -2,92 +2,117 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.6 required=3.0 tests=BAYES_00,DKIM_INVALID,
-	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8A858C433E0
-	for <linux-mips@archiver.kernel.org>; Fri, 26 Mar 2021 13:44:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0BCFEC433E6
+	for <linux-mips@archiver.kernel.org>; Fri, 26 Mar 2021 13:46:17 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 5877A61A24
-	for <linux-mips@archiver.kernel.org>; Fri, 26 Mar 2021 13:44:38 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id CD1EF61A24
+	for <linux-mips@archiver.kernel.org>; Fri, 26 Mar 2021 13:46:16 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230016AbhCZNoH (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 26 Mar 2021 09:44:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41608 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229986AbhCZNnu (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Fri, 26 Mar 2021 09:43:50 -0400
-Received: from mail.kapsi.fi (mail.kapsi.fi [IPv6:2001:67c:1be8::25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B585AC0613AA
-        for <linux-mips@vger.kernel.org>; Fri, 26 Mar 2021 06:43:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=kapsi.fi;
-         s=20161220; h=Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Subject
-        :Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:Content-Description:
-        Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-        In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=IsLDh/9zb6GI45K97NG+VYP4yjQ30bO8WIfXv0zSurs=; b=Vlw3DqKjCdPNdcvm9hNV59onaL
-        XNdVVosCwsn7oXYiorqgy4LOsUYLremUbI5ALDNBQp6fiL/1+M1Sbeq3cBZtFLXZ5bS57rEQdI0Yx
-        UBKqiRF+MSnDb5d33mfOh9IdBORdlPC85zMYh2esMOShTpOys0j7IYuoczMTpYWYeykW86OcPwyJv
-        Eze5wPGUtck2tC/zNzXZ8l4yVoJoAO1qNJjbeamLfL3FxWx9BkCYsTQ8ZvqZ9+vliubX/otMkl54E
-        wmmZXeaZ64Ew4O6PHPgkJGSnkY7A/NGXv9AGlDzsFAFAcQrK+AmG58MWFuCkqy0m0Z6bi0DRPhJYA
-        aZLALD7Q==;
-Received: from 97-173-191-90.dyn.estpak.ee ([90.191.173.97] helo=ubuntu)
-        by mail.kapsi.fi with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.89)
-        (envelope-from <sandberg@mailfence.com>)
-        id 1lPmkZ-0008Rl-J6; Fri, 26 Mar 2021 15:43:44 +0200
-Received: by ubuntu (sSMTP sendmail emulation); Fri, 26 Mar 2021 15:43:43 +0200
-From:   Mauri Sandberg <sandberg@mailfence.com>
-To:     linux-mips@vger.kernel.org
-Cc:     tsbogend@alpha.franken.de, f.fainelli@gmail.com,
-        Mauri Sandberg <sandberg@mailfence.com>
-Subject: [PATCH 0/1] MIPS: fix compilation error
-Date:   Fri, 26 Mar 2021 15:41:57 +0200
-Message-Id: <20210326134158.268164-1-sandberg@mailfence.com>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 90.191.173.97
-X-SA-Exim-Mail-From: sandberg@mailfence.com
-X-SA-Exim-Scanned: No (on mail.kapsi.fi); SAEximRunCond expanded to false
+        id S230240AbhCZNpy (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 26 Mar 2021 09:45:54 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:10388 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230159AbhCZNoz (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Fri, 26 Mar 2021 09:44:55 -0400
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4F6NWN2bwmz9tyyY;
+        Fri, 26 Mar 2021 14:44:48 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id WXR477eJDIpw; Fri, 26 Mar 2021 14:44:48 +0100 (CET)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4F6NWN1k0Gz9tyyV;
+        Fri, 26 Mar 2021 14:44:48 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 196218B8C9;
+        Fri, 26 Mar 2021 14:44:49 +0100 (CET)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id um4ZFYXC0Irt; Fri, 26 Mar 2021 14:44:49 +0100 (CET)
+Received: from po16121vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id CD9DC8B8C7;
+        Fri, 26 Mar 2021 14:44:48 +0100 (CET)
+Received: by po16121vm.idsi0.si.c-s.fr (Postfix, from userid 0)
+        id 5A96B67611; Fri, 26 Mar 2021 13:44:49 +0000 (UTC)
+Message-Id: <f57bc57d4032a1893b22c39adcd671297610b31c.1616765869.git.christophe.leroy@csgroup.eu>
+In-Reply-To: <cover.1616765869.git.christophe.leroy@csgroup.eu>
+References: <cover.1616765869.git.christophe.leroy@csgroup.eu>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Subject: [PATCH v3 02/17] drivers: of: use cmdline building function
+To:     will@kernel.org, danielwa@cisco.com, robh@kernel.org,
+        daniel@gimpelevich.san-francisco.ca.us
+Cc:     linux-arch@vger.kernel.org, devicetree@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org,
+        linux-arm-kernel@lists.infradead.org,
+        microblaze <monstr@monstr.eu>, linux-mips@vger.kernel.org,
+        nios2 <ley.foon.tan@intel.com>, openrisc@lists.librecores.org,
+        linux-hexagon@vger.kernel.org, linux-riscv@lists.infradead.org,
+        x86@kernel.org, linux-xtensa@linux-xtensa.org,
+        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org
+Date:   Fri, 26 Mar 2021 13:44:49 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Hello!
+This patch uses the new cmdline building function to
+concatenate the of provided cmdline with built-in parts
+based on compile-time options.
 
-I hit into a compilation error while making a build for ath79
-It apparently seems to have a trivial fix but I cannot say for sure with
-superficial investigation. Adding into CC: the author and reviewer of the
-commit that appears to be the root cause. You might have a better
-understanding of the causes and consequences.
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+---
+ drivers/of/fdt.c | 23 ++++-------------------
+ 1 file changed, 4 insertions(+), 19 deletions(-)
 
-Root cause:
-commit b83ba0b9df56 ("MIPS: of: Introduce helper function to get DTB")
-
-When reproducing the error my diff of the default ath79_defconfig is:
--# CONFIG_RD_GZIP is not set
-+CONFIG_INITRAMFS_SOURCE="initramfs.txt"
--CONFIG_MIPS_CMDLINE_FROM_DTB=y
-+CONFIG_PRINTK_TIME=y
--CONFIG_CMDLINE="rootfstype=squashfs,jffs2"
-+CONFIG_CMDLINE="console=ttyS0,115200 rootfstype=ramfs"
-+CONFIG_CMDLINE_OVERRIDE=y
-
-Cheers,
-Mauri
-
-Mauri Sandberg (1):
-  MIPS: kernel: setup.c: fix compilation error
-
- arch/mips/kernel/setup.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-
-base-commit: 509d36a941a3466b78d4377913623d210b162458
+diff --git a/drivers/of/fdt.c b/drivers/of/fdt.c
+index dcc1dd96911a..cf2b95b8f298 100644
+--- a/drivers/of/fdt.c
++++ b/drivers/of/fdt.c
+@@ -25,6 +25,7 @@
+ #include <linux/serial_core.h>
+ #include <linux/sysfs.h>
+ #include <linux/random.h>
++#include <linux/cmdline.h>
+ 
+ #include <asm/setup.h>  /* for COMMAND_LINE_SIZE */
+ #include <asm/page.h>
+@@ -1050,26 +1051,10 @@ int __init early_init_dt_scan_chosen(unsigned long node, const char *uname,
+ 
+ 	/* Retrieve command line */
+ 	p = of_get_flat_dt_prop(node, "bootargs", &l);
+-	if (p != NULL && l > 0)
+-		strlcpy(data, p, min(l, COMMAND_LINE_SIZE));
++	if (l <= 0)
++		p = NULL;
+ 
+-	/*
+-	 * CONFIG_CMDLINE is meant to be a default in case nothing else
+-	 * managed to set the command line, unless CONFIG_CMDLINE_FORCE
+-	 * is set in which case we override whatever was found earlier.
+-	 */
+-#ifdef CONFIG_CMDLINE
+-#if defined(CONFIG_CMDLINE_EXTEND)
+-	strlcat(data, " ", COMMAND_LINE_SIZE);
+-	strlcat(data, CONFIG_CMDLINE, COMMAND_LINE_SIZE);
+-#elif defined(CONFIG_CMDLINE_FORCE)
+-	strlcpy(data, CONFIG_CMDLINE, COMMAND_LINE_SIZE);
+-#else
+-	/* No arguments from boot loader, use kernel's  cmdl*/
+-	if (!((char *)data)[0])
+-		strlcpy(data, CONFIG_CMDLINE, COMMAND_LINE_SIZE);
+-#endif
+-#endif /* CONFIG_CMDLINE */
++	cmdline_build(data, p, COMMAND_LINE_SIZE);
+ 
+ 	pr_debug("Command line is: %s\n", (char *)data);
+ 
 -- 
-2.25.1
+2.25.0
 

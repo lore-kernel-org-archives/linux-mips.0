@@ -2,170 +2,56 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 555D3C433E0
-	for <linux-mips@archiver.kernel.org>; Sat, 27 Mar 2021 05:39:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 16F84C433C1
+	for <linux-mips@archiver.kernel.org>; Sat, 27 Mar 2021 09:45:24 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 2DA5161A05
-	for <linux-mips@archiver.kernel.org>; Sat, 27 Mar 2021 05:39:51 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id CD70661A02
+	for <linux-mips@archiver.kernel.org>; Sat, 27 Mar 2021 09:45:23 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229904AbhC0FjS (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Sat, 27 Mar 2021 01:39:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49074 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230150AbhC0Fiu (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Sat, 27 Mar 2021 01:38:50 -0400
-Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06204C0613AA;
-        Fri, 26 Mar 2021 22:38:50 -0700 (PDT)
-Received: by mail-pf1-x433.google.com with SMTP id x126so6236029pfc.13;
-        Fri, 26 Mar 2021 22:38:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=6elHr9wS3U+eOcpmBW2sX0scmKlp2BHQ2gfORMO1D9I=;
-        b=Hx9qKJF2vlXl+JLiMrwH8TEugZ/+bawo8E1VhTfuOIAnl2SgJu9bmDvCTpBpLjjMF3
-         iK7AVxvwn6djDc9oU9WA2OaxfvIIoiFFhNW07Ayeh7mwvywHkO57XYZebmYoc8rEfNDr
-         nNNjQZiBXxYjEIUfXNpyRHegljFo+WKl1FTk1xYo3yJ2CYCUFvfSwTkaXrYU4P70Inku
-         gX1iqlMficNvLuNr5sQFtXQcUJF9M7XXhkP0UOzNJ4Gy4894imHXMsbxc/YqU7C2pe1I
-         XHJoOPy8wQoeWrvuU/aMaD/O2E838PoCiGYJB1IeO2w2NCj7klZsirsrQYiylAb4dLw0
-         QCFw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=6elHr9wS3U+eOcpmBW2sX0scmKlp2BHQ2gfORMO1D9I=;
-        b=PBdTFTLt3RBHI0O68rU6i3dOrJ3FBqYzavC/zc3+1AWh4wznEx/ASFM46B7Xx5DJdp
-         dlHrtG1d5v8zkxQtBE1nL/mtxf8nqZXieLQfzZNVmMn1H3+npagPvmhOdZvMGSaYrmav
-         EtzVmn7QWEEAaH49+PrxWtIuOJRilTs3mMldW85UenDPPyFv8h86Bh0/TrbpskE7H0UN
-         pJaQuQjJ9mVsv1FSjtwRFIwGDV3u75s9SiB5gcVG7FNfEUSFv+s6y/LKd6UTpJfHp3XC
-         bruNsPYfuLgObdgZkLP1XGtKSMFwyvXSHZNmkIQGOHNFYgTxPLOmtioCcEo+grEOpi+s
-         L+IQ==
-X-Gm-Message-State: AOAM5309Jw3drrBcxiiwl+qZ48xT0PLzEOkUG6lwJ6eVt63xp46niFJ5
-        wR/Q9eCmqfAkekUis0G31HE=
-X-Google-Smtp-Source: ABdhPJzU5qXpd/hIC+jISW+cbPtDA42XgPMp+ggAA33zGl/07esw8SwP/gORLOkJCLZI8jzpfaYASw==
-X-Received: by 2002:a63:4c4:: with SMTP id 187mr15291676pge.187.1616823529541;
-        Fri, 26 Mar 2021 22:38:49 -0700 (PDT)
-Received: from z640-arch.lan ([2602:61:7344:f100::678])
-        by smtp.gmail.com with ESMTPSA id k128sm10701933pfd.137.2021.03.26.22.38.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Mar 2021 22:38:48 -0700 (PDT)
-From:   Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
-To:     John Crispin <john@phrozen.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-Cc:     Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
-Subject: [PATCH 1/2] MIPS: ralink: annotate prom_soc_init() with __init
-Date:   Fri, 26 Mar 2021 22:38:39 -0700
-Message-Id: <20210327053840.471155-1-ilya.lipnitskiy@gmail.com>
-X-Mailer: git-send-email 2.31.0
+        id S231240AbhC0JmL (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Sat, 27 Mar 2021 05:42:11 -0400
+Received: from elvis.franken.de ([193.175.24.41]:53063 "EHLO elvis.franken.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230322AbhC0Jlo (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Sat, 27 Mar 2021 05:41:44 -0400
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1lQ5Rt-00055c-00; Sat, 27 Mar 2021 10:41:41 +0100
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id F0151C1D41; Sat, 27 Mar 2021 10:40:11 +0100 (CET)
+Date:   Sat, 27 Mar 2021 10:40:11 +0100
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Mauri Sandberg <sandberg@mailfence.com>
+Cc:     f.fainelli@gmail.com, linux-mips@vger.kernel.org
+Subject: Re: [PATCH v2 0/1] MIPS: fix compilation error
+Message-ID: <20210327094011.GA4259@alpha.franken.de>
+References: <20210326134158.268164-1-sandberg@mailfence.com>
+ <20210326164645.433147-1-sandberg@mailfence.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210326164645.433147-1-sandberg@mailfence.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-prom_soc_init is only called from prom_init in arch/mips/ralink/prom.c,
-which is already annotated with __init, so annotate prom_soc_init with
-__init too.
+On Fri, Mar 26, 2021 at 06:46:44PM +0200, Mauri Sandberg wrote:
+> Earlier I had some confusion with my configuration as compared to
+> ath79_defconfig but now it looks like that enabling
+> CONFIG_MIPS_ELF_APPENDED_DTB alone will break compilation.
+> 
+> Simple fix of removing 'const' did not work and something more is needed.
 
-Signed-off-by: Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
----
- arch/mips/ralink/common.h | 2 +-
- arch/mips/ralink/mt7620.c | 2 +-
- arch/mips/ralink/mt7621.c | 2 +-
- arch/mips/ralink/rt288x.c | 2 +-
- arch/mips/ralink/rt305x.c | 2 +-
- arch/mips/ralink/rt3883.c | 2 +-
- 6 files changed, 6 insertions(+), 6 deletions(-)
+your first fix works perfect for me. Could please describe what the error
+is ?
 
-diff --git a/arch/mips/ralink/common.h b/arch/mips/ralink/common.h
-index 4bc65b7a3241..49ae370d023d 100644
---- a/arch/mips/ralink/common.h
-+++ b/arch/mips/ralink/common.h
-@@ -27,7 +27,7 @@ extern void ralink_clk_add(const char *dev, unsigned long rate);
- 
- extern void ralink_rst_init(void);
- 
--extern void prom_soc_init(struct ralink_soc_info *soc_info);
-+extern void __init prom_soc_init(struct ralink_soc_info *soc_info);
- 
- __iomem void *plat_of_remap_node(const char *node);
- 
-diff --git a/arch/mips/ralink/mt7620.c b/arch/mips/ralink/mt7620.c
-index fcf010038054..53a5969e61af 100644
---- a/arch/mips/ralink/mt7620.c
-+++ b/arch/mips/ralink/mt7620.c
-@@ -639,7 +639,7 @@ mt7628_dram_init(struct ralink_soc_info *soc_info)
- 	}
- }
- 
--void prom_soc_init(struct ralink_soc_info *soc_info)
-+void __init prom_soc_init(struct ralink_soc_info *soc_info)
- {
- 	void __iomem *sysc = (void __iomem *) KSEG1ADDR(MT7620_SYSC_BASE);
- 	unsigned char *name = NULL;
-diff --git a/arch/mips/ralink/mt7621.c b/arch/mips/ralink/mt7621.c
-index ca0ac607b0f3..ec87ce561049 100644
---- a/arch/mips/ralink/mt7621.c
-+++ b/arch/mips/ralink/mt7621.c
-@@ -146,7 +146,7 @@ static void soc_dev_init(struct ralink_soc_info *soc_info, u32 rev)
- 	}
- }
- 
--void prom_soc_init(struct ralink_soc_info *soc_info)
-+void __init prom_soc_init(struct ralink_soc_info *soc_info)
- {
- 	void __iomem *sysc = (void __iomem *) KSEG1ADDR(MT7621_SYSC_BASE);
- 	unsigned char *name = NULL;
-diff --git a/arch/mips/ralink/rt288x.c b/arch/mips/ralink/rt288x.c
-index 3f096897858c..34083c70ec68 100644
---- a/arch/mips/ralink/rt288x.c
-+++ b/arch/mips/ralink/rt288x.c
-@@ -77,7 +77,7 @@ void __init ralink_of_remap(void)
- 		panic("Failed to remap core resources");
- }
- 
--void prom_soc_init(struct ralink_soc_info *soc_info)
-+void __init prom_soc_init(struct ralink_soc_info *soc_info)
- {
- 	void __iomem *sysc = (void __iomem *) KSEG1ADDR(RT2880_SYSC_BASE);
- 	const char *name;
-diff --git a/arch/mips/ralink/rt305x.c b/arch/mips/ralink/rt305x.c
-index 496f966c05f9..c5b63c142705 100644
---- a/arch/mips/ralink/rt305x.c
-+++ b/arch/mips/ralink/rt305x.c
-@@ -214,7 +214,7 @@ void __init ralink_of_remap(void)
- 		panic("Failed to remap core resources");
- }
- 
--void prom_soc_init(struct ralink_soc_info *soc_info)
-+void __init prom_soc_init(struct ralink_soc_info *soc_info)
- {
- 	void __iomem *sysc = (void __iomem *) KSEG1ADDR(RT305X_SYSC_BASE);
- 	unsigned char *name;
-diff --git a/arch/mips/ralink/rt3883.c b/arch/mips/ralink/rt3883.c
-index 8f3fe3106708..ff91f3531ad0 100644
---- a/arch/mips/ralink/rt3883.c
-+++ b/arch/mips/ralink/rt3883.c
-@@ -113,7 +113,7 @@ void __init ralink_of_remap(void)
- 		panic("Failed to remap core resources");
- }
- 
--void prom_soc_init(struct ralink_soc_info *soc_info)
-+void __init prom_soc_init(struct ralink_soc_info *soc_info)
- {
- 	void __iomem *sysc = (void __iomem *) KSEG1ADDR(RT3883_SYSC_BASE);
- 	const char *name;
+Thomas.
+
 -- 
-2.31.0
-
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]

@@ -2,95 +2,89 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.2 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 14E11C433E0
-	for <linux-mips@archiver.kernel.org>; Sun, 28 Mar 2021 02:41:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DA9CDC433C1
+	for <linux-mips@archiver.kernel.org>; Sun, 28 Mar 2021 21:07:14 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id D8DC261984
-	for <linux-mips@archiver.kernel.org>; Sun, 28 Mar 2021 02:41:49 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id A21B46193F
+	for <linux-mips@archiver.kernel.org>; Sun, 28 Mar 2021 21:07:14 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230493AbhC1CkM (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Sat, 27 Mar 2021 22:40:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35234 "EHLO
+        id S231477AbhC1VGl (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Sun, 28 Mar 2021 17:06:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45124 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230451AbhC1Cjs (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Sat, 27 Mar 2021 22:39:48 -0400
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AC7FC0613B1;
-        Sat, 27 Mar 2021 19:39:48 -0700 (PDT)
-Received: by mail-pl1-x62e.google.com with SMTP id t20so2752816plr.13;
-        Sat, 27 Mar 2021 19:39:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=KY07dtiSbQ3SbfmuZCvFR/go4sGKiptIa+i0kD0WZqc=;
-        b=tdjkd1nOHESNUMfs/T4ucw6BA6QQBvW/f5fplya6uOf0fq/Xmw3o38e5XnxDdwcsGb
-         Wf9pTIaUsK0LvpWrAlkwhOY2xG+5IRRq9tWRUJoyQHM+Q/SEJRfjKd1mrwlWpXeVf4PY
-         Kn5e9vs+FefkbLun0kGdJRUslQ+83PuitX2yMPl34WdFrUar2vsONQRicMiK9bafb+hm
-         ioTW9D4xG8XMC8uRQQk+pwI1B/wAZuTXGE6OhlAjGfi8lxaQqS1yyoeXtE2FDCb8+9/S
-         aenuPQGzaO1BOKM2/Qzwr0rxpD87QQDg8eJ93+w/B1AO3kcsJf1FHa11vgEEZzRJXmAT
-         FMyg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=KY07dtiSbQ3SbfmuZCvFR/go4sGKiptIa+i0kD0WZqc=;
-        b=Tig+vymru3jep8HgpkdDV17eqYNv77d0JSzWhDh0i6sInbEkG1SvLaHS4Y3fituOEp
-         D8QQuzonB5JlEx+4fgu7Xzq7ruLjOTG16XmQbeuK+iOrTMBHs52x09reSJETgZiyW7Z1
-         nf5W65eDTW40gkmdTOKKhWLv6jA2O4NgoO3qG1r4qBXSon837f7Wm6h789WMk8oUutJI
-         5DGpKa+oNsJcIYdVBxj5AyPGIE2U6rib8wC/N9eKgPE8p1cs3VnO8T3kRay93Jm19i2L
-         CD7fu2lgSiBebPK21tcaIoLk7EQLEpt25PbzeDfq0Q/LMbbV3QBrM1+V7heMIl69KqeL
-         N5Ng==
-X-Gm-Message-State: AOAM5329wumBNvudfABJS0O6xhZjHwNWenfGJkPjwBDHhv6KoUryLYYY
-        c+udtDNoMEFqLATmg1t964k=
-X-Google-Smtp-Source: ABdhPJxh7tUNCHZD2GFQe0k6tjBkNKtK98QJ158nUaZyll9zaON5o/PeyEk5/WE0c9bYkn7F7pZSwQ==
-X-Received: by 2002:a17:90a:2c4b:: with SMTP id p11mr21428264pjm.75.1616899187997;
-        Sat, 27 Mar 2021 19:39:47 -0700 (PDT)
-Received: from z640-arch.lan ([2602:61:7344:f100::678])
-        by smtp.gmail.com with ESMTPSA id c128sm13209952pfc.76.2021.03.27.19.39.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 27 Mar 2021 19:39:47 -0700 (PDT)
-From:   Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
-To:     davem@davemloft.net, herbert@gondor.apana.org.au,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mips@vger.kernel.org, tsbogend@alpha.franken.de
-Cc:     ilya.lipnitskiy@gmail.com, ardb@kernel.org
-Subject: [PATCH v3] crypto: mips: add poly1305-core.S to .gitignore
-Date:   Sat, 27 Mar 2021 19:39:43 -0700
-Message-Id: <20210328023943.15540-1-ilya.lipnitskiy@gmail.com>
-X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20210328014052.8645-1-ilya.lipnitskiy@gmail.com>
-References: <20210328014052.8645-1-ilya.lipnitskiy@gmail.com>
+        with ESMTP id S231446AbhC1VGL (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Sun, 28 Mar 2021 17:06:11 -0400
+Received: from angie.orcam.me.uk (angie.orcam.me.uk [IPv6:2001:4190:8020::4])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 0650AC061756;
+        Sun, 28 Mar 2021 14:06:10 -0700 (PDT)
+Received: by angie.orcam.me.uk (Postfix, from userid 500)
+        id A295D92009C; Sun, 28 Mar 2021 23:06:08 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by angie.orcam.me.uk (Postfix) with ESMTP id 9B44B92009B;
+        Sun, 28 Mar 2021 23:06:08 +0200 (CEST)
+Date:   Sun, 28 Mar 2021 23:06:08 +0200 (CEST)
+From:   "Maciej W. Rozycki" <macro@orcam.me.uk>
+To:     Tiezhu Yang <yangtiezhu@loongson.cn>
+cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        linux-mips@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>,
+        Christoph Hellwig <hch@lst.de>
+Subject: Re: [PATCH v2] MIPS/bpf: Enable bpf_probe_read{, str}() on MIPS
+ again
+In-Reply-To: <38cf6f7c-28dd-20a0-8193-776fa7bdb83a@loongson.cn>
+Message-ID: <alpine.DEB.2.21.2103282240420.18977@angie.orcam.me.uk>
+References: <1616034557-5844-1-git-send-email-yangtiezhu@loongson.cn> <alpine.DEB.2.21.2103220540591.21463@angie.orcam.me.uk> <f36f4ca6-a3bb-8db9-01e6-65fec0916b58@loongson.cn> <20210325101712.GA6893@alpha.franken.de>
+ <38cf6f7c-28dd-20a0-8193-776fa7bdb83a@loongson.cn>
+User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-poly1305-core.S is an auto-generated file, so it should be ignored.
+On Thu, 25 Mar 2021, Tiezhu Yang wrote:
 
-Fixes: a11d055e7a64 ("crypto: mips/poly1305 - incorporate OpenSSL/CRYPTOGAMS optimized implementation")
-Signed-off-by: Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
-Cc: Ard Biesheuvel <ardb@kernel.org>
----
- arch/mips/crypto/.gitignore | 2 ++
- 1 file changed, 2 insertions(+)
- create mode 100644 arch/mips/crypto/.gitignore
+> > > I wonder whether MIPS EVA will generate overlapping address ranges?
+> > they can overlap in EVA mode.
+> > 
+> > > If yes, it is better to make ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE depend
+> > > on !EVA on MIPS.
+> > Could please add the change ?
+> 
+> OK, thank you, I will do it soon.
 
-diff --git a/arch/mips/crypto/.gitignore b/arch/mips/crypto/.gitignore
-new file mode 100644
-index 000000000000..0d47d4f21c6d
---- /dev/null
-+++ b/arch/mips/crypto/.gitignore
-@@ -0,0 +1,2 @@
-+# SPDX-License-Identifier: GPL-2.0-only
-+poly1305-core.S
--- 
-2.31.0
+ For the record this is clearly described and accompanied with a drawing 
+[1][2] in the architecture specification.  I do encourage you and anyone 
+serious about contributing to the MIPS/Linux project to make yourselves 
+familiar with the architecture beyond the area of your immediate interest 
+so as to offload the maintainers who are often overloaded and sometimes do 
+their work in their precious free time.  There are so many contributors 
+and so few maintainers, so please help everyone and spread the work.
 
+ Also please pay attention to quality change descriptions.  It's your task 
+to convince the maintainer your work is worth including, and in your best 
+interest to make the decision easy to make for the maintainer.  Think in 
+terms of an exam at the university and what you would do to persuade your 
+professor to give you a good score.  This is what the change description 
+is for, beyond the quality of the change itself of course.
+
+ This general rule of course applies to any community-maintained projects 
+and not only MIPS/Linux.
+
+References:
+
+[1] "MIPS Architecture For Programmers, Vol. III: MIPS32/microMIPS32
+    Privileged Resource Architecture", Document Number: MD00090, Revision 
+    5.05, November 14, 2014, Figure 4.5 "EVA addressability", p. 51, 
+    <https://wavecomp.ai/mips-technology/>
+
+[2] "MIPS Architecture For Programmers, Volume III: The MIPS64 and 
+    microMIPS64 Privileged Resource Architecture", Document Number: 
+    MD00091, Revision 5.04, January 15, 2014, Figure 4.5 "EVA 
+    addressability", p. 58, <https://wavecomp.ai/mips-technology/>
+
+  Maciej

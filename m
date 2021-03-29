@@ -7,77 +7,52 @@ X-Spam-Status: No, score=-15.3 required=3.0 tests=BAYES_00,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 90F9CC433EA
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B3E2EC433E9
 	for <linux-mips@archiver.kernel.org>; Mon, 29 Mar 2021 09:31:18 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 8038F6195E
+	by mail.kernel.org (Postfix) with ESMTP id 910F8619AA
 	for <linux-mips@archiver.kernel.org>; Mon, 29 Mar 2021 09:31:18 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232027AbhC2Jaq (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        id S232013AbhC2Jaq (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
         Mon, 29 Mar 2021 05:30:46 -0400
-Received: from elvis.franken.de ([193.175.24.41]:33835 "EHLO elvis.franken.de"
+Received: from elvis.franken.de ([193.175.24.41]:33856 "EHLO elvis.franken.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231853AbhC2JaX (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Mon, 29 Mar 2021 05:30:23 -0400
+        id S231882AbhC2JaY (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Mon, 29 Mar 2021 05:30:24 -0400
 Received: from uucp (helo=alpha)
         by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1lQoE1-0003qb-01; Mon, 29 Mar 2021 11:30:21 +0200
+        id 1lQoE1-0003qb-06; Mon, 29 Mar 2021 11:30:21 +0200
 Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 9A93BC1D90; Mon, 29 Mar 2021 11:24:49 +0200 (CEST)
-Date:   Mon, 29 Mar 2021 11:24:49 +0200
+        id 94A85C1D90; Mon, 29 Mar 2021 11:26:48 +0200 (CEST)
+Date:   Mon, 29 Mar 2021 11:26:48 +0200
 From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Tiezhu Yang <yangtiezhu@loongson.cn>
-Cc:     linux-mips@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>
-Subject: Re: [PATCH v3] MIPS/bpf: Enable bpf_probe_read{, str}() on MIPS again
-Message-ID: <20210329092449.GA8484@alpha.franken.de>
-References: <1616676601-14478-1-git-send-email-yangtiezhu@loongson.cn>
+To:     Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
+Cc:     davem@davemloft.net, herbert@gondor.apana.org.au,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mips@vger.kernel.org, ardb@kernel.org
+Subject: Re: [PATCH v3] crypto: mips: add poly1305-core.S to .gitignore
+Message-ID: <20210329092648.GF8484@alpha.franken.de>
+References: <20210328014052.8645-1-ilya.lipnitskiy@gmail.com>
+ <20210328023943.15540-1-ilya.lipnitskiy@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1616676601-14478-1-git-send-email-yangtiezhu@loongson.cn>
+In-Reply-To: <20210328023943.15540-1-ilya.lipnitskiy@gmail.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Thu, Mar 25, 2021 at 08:50:01PM +0800, Tiezhu Yang wrote:
-> After commit 0ebeea8ca8a4 ("bpf: Restrict bpf_probe_read{, str}() only to
-> archs where they work"), bpf_probe_read{, str}() functions were no longer
-> available on MIPS, so there exist some errors when running bpf program:
+On Sat, Mar 27, 2021 at 07:39:43PM -0700, Ilya Lipnitskiy wrote:
+> poly1305-core.S is an auto-generated file, so it should be ignored.
 > 
-> root@linux:/home/loongson/bcc# python examples/tracing/task_switch.py
-> bpf: Failed to load program: Invalid argument
-> [...]
-> 11: (85) call bpf_probe_read#4
-> unknown func bpf_probe_read#4
-> [...]
-> Exception: Failed to load BPF program count_sched: Invalid argument
-> 
-> ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE should be restricted to archs
-> with non-overlapping address ranges, but they can overlap in EVA mode
-> on MIPS, so select ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE if !EVA in
-> arch/mips/Kconfig, otherwise the bpf old helper bpf_probe_read() will
-> not be available.
-> 
-> This is similar with the commit d195b1d1d119 ("powerpc/bpf: Enable
-> bpf_probe_read{, str}() on powerpc again").
-> 
-> Fixes: 0ebeea8ca8a4 ("bpf: Restrict bpf_probe_read{, str}() only to archs where they work")
-> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+> Fixes: a11d055e7a64 ("crypto: mips/poly1305 - incorporate OpenSSL/CRYPTOGAMS optimized implementation")
+> Signed-off-by: Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
+> Cc: Ard Biesheuvel <ardb@kernel.org>
 > ---
-> 
-> v3: Select ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE if !EVA
->     on MIPS.
-> 
-> v2: update the commit message to fix typos found by
->     Sergei Shtylyov, thank you!
-> 
->     not longer --> no longer
->     there exists --> there exist
-> 
->  arch/mips/Kconfig | 1 +
->  1 file changed, 1 insertion(+)
+>  arch/mips/crypto/.gitignore | 2 ++
+>  1 file changed, 2 insertions(+)
+>  create mode 100644 arch/mips/crypto/.gitignore
 
 applied to mips-next.
 

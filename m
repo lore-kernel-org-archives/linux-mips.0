@@ -5,59 +5,59 @@ X-Spam-Level:
 X-Spam-Status: No, score=-9.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,MAILING_LIST_MULTI,
-	NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham
+	NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C703CC433C1
-	for <linux-mips@archiver.kernel.org>; Tue, 30 Mar 2021 17:04:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 66654C433E3
+	for <linux-mips@archiver.kernel.org>; Tue, 30 Mar 2021 17:10:04 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 984D3619CC
-	for <linux-mips@archiver.kernel.org>; Tue, 30 Mar 2021 17:04:06 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 2DA18619CC
+	for <linux-mips@archiver.kernel.org>; Tue, 30 Mar 2021 17:10:04 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232599AbhC3RDl (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 30 Mar 2021 13:03:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50688 "EHLO
+        id S232439AbhC3RJe (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 30 Mar 2021 13:09:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52366 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232608AbhC3RCy (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Tue, 30 Mar 2021 13:02:54 -0400
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C30F9C0613DA;
-        Tue, 30 Mar 2021 10:02:20 -0700 (PDT)
-Received: by mail-pj1-x102e.google.com with SMTP id gb6so8097803pjb.0;
-        Tue, 30 Mar 2021 10:02:20 -0700 (PDT)
+        with ESMTP id S232313AbhC3RJW (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Tue, 30 Mar 2021 13:09:22 -0400
+Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E577C061574;
+        Tue, 30 Mar 2021 10:09:22 -0700 (PDT)
+Received: by mail-pg1-x52a.google.com with SMTP id f3so2971962pgv.0;
+        Tue, 30 Mar 2021 10:09:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=subject:to:references:from:message-id:date:user-agent:mime-version
          :in-reply-to:content-language:content-transfer-encoding;
-        bh=VZ7hPMfkkH0ClkPZrlLHv0WaV7eFxnm7svjyAEo3eSA=;
-        b=aN1+dAsUo/o/qwn6zz/8bJmkfICFTI0Fb8ueK8UmCji2EK2452V6bKSRAIO4/jUj60
-         Gj6vk/ssTwmCpoLkWLW6XTL3csEG8eRBRlfKK+qy+JnYblK6g1Rw77ebQfF9tw8JmMy6
-         c2wxI76UFz2AvepjXZTtgKeL7Txp2ZhFpQTdeKIVbZWn3yOP4UU7WSdvzSYPG9clj+q1
-         loWRlJzlnMQLsDyHBtQbTKFlIU3IQpQzOVFGodmuY+M1A5ODw1g2Z3X8q9m8a7G+Bb/z
-         uZlhlg89RzCAcCzqSZdd2uhSpHEit9CUNzAboe/7utL4HBadHUj+CSLfZpx4H+baaCAy
-         IicQ==
+        bh=sL9bNDuKXHYmKoepsSJVXWaG2nXWGx8Q3zU239iY94o=;
+        b=t20Kj4BxJQaDZe9LmRWNVaEYEg/t0nIRhPUfhIRj+n8VPMNnbyLKd9S0RuOtOqsxyn
+         TlH8ivpiUJ2nw2KOpLlYW4X9otulGyCzsmovAWhjiYOgAkWl/WCf8mam9d4LZCAOGbvR
+         p0NWI2c3CdBq3j2SeJ/5MbgcVznBdaWD4OXZfXDnMuUOYB1A55dS3qqW7qyKsuzKBTBP
+         rmXQ8Ry51GSHVXz0aC/9Zd6EXWBybYbe+eB+oB0L2e55nbW6lgDZT5HKqaDkF98dAC/9
+         Fq5nx3q6ONDh9jiKDapbPiXe7JoY93un1R0WVjTXW83u1BKZxJx35ygsvtEEAOh3bt3p
+         7zQA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=VZ7hPMfkkH0ClkPZrlLHv0WaV7eFxnm7svjyAEo3eSA=;
-        b=Quohzjtn3zxayzxUh3xJEH77KE2uxjZLcQZbMWIREZt87Eu6iSSp3Z33nZ/OHP39Ch
-         00vOzU3tWAbpWRqLvbtBc3hfkdjhZQey8ZwN4tZq7ygVHN8V2VApQEQuWrBXs2cixzvP
-         esXIyAeqUMKolL0lalhzVhLui+6FYnT32ofiUHSlZKVGqJ7VJ5X2U7jD7UzMK8D54Ktb
-         wMrmaoobdDHYpAGlDDTRRziqZeOkNKzethUfjzEXQAQO5nKX3ASUq1vG+7ysd23hoAc5
-         Q+SsaQNW4CecaQHxkG//c7qpbRCvhOYBFzr8c7GebGBp6nJ2RWmt74pxG+kCV6DJNlsi
-         k35g==
-X-Gm-Message-State: AOAM532FbXLmgQ2kCwjJVsO/jM1FjrUjTprfuZAmf6R8F+oJPXi+Er9t
-        2AncpdSv4JuAwWWAnBjRZMymB00Yn7c=
-X-Google-Smtp-Source: ABdhPJxDfQB3ZfQXm1ZS29uvkL7YqpNtHkHIN11UDP+eTFtwxIM+9SC9wx2gkvGY5DfdhFJ3B7m2jA==
-X-Received: by 2002:a17:90a:488a:: with SMTP id b10mr5222218pjh.2.1617123739964;
-        Tue, 30 Mar 2021 10:02:19 -0700 (PDT)
+        bh=sL9bNDuKXHYmKoepsSJVXWaG2nXWGx8Q3zU239iY94o=;
+        b=Rz5z15z0SnQ+2w/mn0OSJcnJjab0Lg5H59vVST6o4X00Q/km9SdPoGIx9prxpRsDXc
+         BzvQC4XTPO8QoHJaNex5IolenWtU9FCLzNTVT5h+tOsBKhhohnTzNLNqFvN8wQ6ZTBFq
+         K055stmX9UP9X+bhTnOf1XYUI41OxMzDMCArqt+RXovdoLaF/jQAJ7l1FpJE6PAUW21y
+         OgCdNTzmCERL/B61TnBVDRuxaj6Aj9jO9xVwioO+yarjooJ34psPgQD3DI87CvZ51OOy
+         YxKaNWmeBxFCTMX+lkF6U8PuNNZqPYUp2s+u7fcZjXdgWjejcoxtIGeX7gujTYd+9HhI
+         2W3g==
+X-Gm-Message-State: AOAM531Zj/2zJv61fH4bWdE3fm2VnrqLQaW2mSImCkiX2MprTsy3xec3
+        TzXk1u+X1z7+B08BXBRcc9pfZ/Q5Iio=
+X-Google-Smtp-Source: ABdhPJx838Rcu3KOX6ahsAB38SrhtZtrmoDngwV5tx+o/iUFEq2YWIq8rhole1MzjaIlms/KKT+MrQ==
+X-Received: by 2002:aa7:814e:0:b029:20e:f3fa:2900 with SMTP id d14-20020aa7814e0000b029020ef3fa2900mr30551526pfn.62.1617124161591;
+        Tue, 30 Mar 2021 10:09:21 -0700 (PDT)
 Received: from [10.67.49.104] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id 4sm3235448pjl.51.2021.03.30.10.02.18
+        by smtp.googlemail.com with ESMTPSA id k63sm21509382pfd.48.2021.03.30.10.09.19
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 30 Mar 2021 10:02:19 -0700 (PDT)
-Subject: Re: [PATCH v2 1/6] mips: bmips: fix syscon-reboot nodes
+        Tue, 30 Mar 2021 10:09:21 -0700 (PDT)
+Subject: Re: [PATCH v2 3/6] mips: bmips: bcm6358: populate device tree nodes
 To:     =?UTF-8?Q?=c3=81lvaro_Fern=c3=a1ndez_Rojas?= <noltari@gmail.com>,
         Florian Fainelli <f.fainelli@gmail.com>,
         Rob Herring <robh+dt@kernel.org>,
@@ -68,14 +68,14 @@ To:     =?UTF-8?Q?=c3=81lvaro_Fern=c3=a1ndez_Rojas?= <noltari@gmail.com>,
         bcm-kernel-feedback-list@broadcom.com, linux-mips@vger.kernel.org,
         devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
 References: <20210314164351.24665-1-noltari@gmail.com>
- <20210314164351.24665-2-noltari@gmail.com>
+ <20210314164351.24665-4-noltari@gmail.com>
 From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <cd7be816-1d88-23de-615c-ae217dda284b@gmail.com>
-Date:   Tue, 30 Mar 2021 10:02:17 -0700
+Message-ID: <9b1da888-db09-53e7-6b7b-7265df0583d9@gmail.com>
+Date:   Tue, 30 Mar 2021 10:09:17 -0700
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.7.1
 MIME-Version: 1.0
-In-Reply-To: <20210314164351.24665-2-noltari@gmail.com>
+In-Reply-To: <20210314164351.24665-4-noltari@gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -84,12 +84,16 @@ List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
 On 3/14/21 9:43 AM, Álvaro Fernández Rojas wrote:
-> Commit a23c4134955e added the clock controller nodes, incorrectly changing the
-> syscon-reboot nodes addresses.
+> - Rename periph_clk to periph_osc.
+> - Rename clkctl to periph_clk.
+> - Move syscon-reboot to subnode.
+> - Add watchdog.
+> - Add SPI controller.
+> - Add USBH PHY.
+> - Add cfi-flash.
 > 
-> Fixes: a23c4134955e ("MIPS: BMIPS: add clock controller nodes")
 > Signed-off-by: Álvaro Fernández Rojas <noltari@gmail.com>
 
-Acked-by: Florian Fainelli <f.fainelli@gmail.com>
+Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
 -- 
 Florian

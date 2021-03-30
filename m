@@ -8,62 +8,61 @@ X-Spam-Status: No, score=-26.3 required=3.0 tests=BAYES_00,DKIMWL_WL_MED,
 	URIBL_BLOCKED,USER_AGENT_GIT,USER_IN_DEF_DKIM_WL autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4D564C433E3
-	for <linux-mips@archiver.kernel.org>; Tue, 30 Mar 2021 17:58:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2BF6EC433E9
+	for <linux-mips@archiver.kernel.org>; Tue, 30 Mar 2021 17:58:06 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 3081A619D7
+	by mail.kernel.org (Postfix) with ESMTP id EFF7E619B1
 	for <linux-mips@archiver.kernel.org>; Tue, 30 Mar 2021 17:58:05 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232672AbhC3R5d (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 30 Mar 2021 13:57:33 -0400
-Received: from rcdn-iport-7.cisco.com ([173.37.86.78]:53935 "EHLO
-        rcdn-iport-7.cisco.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232648AbhC3R5M (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Tue, 30 Mar 2021 13:57:12 -0400
+        id S232584AbhC3R5f (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 30 Mar 2021 13:57:35 -0400
+Received: from alln-iport-3.cisco.com ([173.37.142.90]:49033 "EHLO
+        alln-iport-3.cisco.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232656AbhC3R5Y (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Tue, 30 Mar 2021 13:57:24 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=cisco.com; i=@cisco.com; l=1834; q=dns/txt; s=iport;
-  t=1617127032; x=1618336632;
+  d=cisco.com; i=@cisco.com; l=3559; q=dns/txt; s=iport;
+  t=1617127044; x=1618336644;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=+iehyumbVkfLozRt/wihMfSdEK+81ZluPnT+4IxME2U=;
-  b=GfZIQwzPQTOK7JIrrYeK2vmWrNaGmJSPMuezxyRH/cQlNQy4pSK1n6Zl
-   UBa/putiqTdY+kthlR/2d1KEa9Q2v1Q2Pl3ZeoLClj4cEflZuq2FYMjOa
-   dt3eyBCKLfwWbwZZBNWjaaSKOQpfdg1e9F4ApsbU03b7QRAxZ3w1DBmpi
-   c=;
-IronPort-HdrOrdr: =?us-ascii?q?A9a23=3AprIAGKp9/k4nNGkSrZAhj+AaV5t2L9V00z?=
- =?us-ascii?q?AX/kB9WHVpW+aT/vrDoN0w0xjohDENHEw6kdebN6WaBV/a/5h54Y4eVI3SOD?=
- =?us-ascii?q?XOlWO0IOhZg7fK7CbnH0TFnNJ19aAlSKRmDc21MF4St7eY3CCdM/INhOaK67?=
- =?us-ascii?q?qpg+C29QYJcShPZ7t75wl0TiaXe3cWeCB8CZA0FIWR66N8zlLKRV0tYsu2HX?=
- =?us-ascii?q?UDVeTYzue79q7OWwIMBBIs9WC14g+A1biSKXWl9yZbey9Tx/MY/XLdlQvi6u?=
- =?us-ascii?q?GYr+ij0RPHzQbonvNrseqk7tNCAcCW4/J0FhzcziC1eY9mR7qO+Bcyre3H0i?=
- =?us-ascii?q?dSrPD85zE9Is9093TdOluQnCKo8Qzh3DEygkWSr2OlvQ=3D=3D?=
+  bh=qd9oUIm458Aa8NrbzxxHcRM50MFT4YpUd/nN6uaHB5Q=;
+  b=GgjxOOgB8qlwWHS9j5Hiw8e40WhxT58C8EeN26k90JOk5k1XylNGJcDF
+   Vygm06NJfF0nIjOPo7w2Bj1MOeAr2IT/tX5ed24Q+iLpdcsBiAMYobFuJ
+   dg/lcEdNG052i2yb7+h+KhQJ+VOiM1qkC2tIAUyZn2pJzqeZdQ1yxlXgi
+   0=;
+X-IPAS-Result: =?us-ascii?q?A0AEAACmZWNg/5ldJa1aGgEBAQEBAQEBAQEDAQEBARIBA?=
+ =?us-ascii?q?QEBAgIBAQEBgXwFAQEBAQsBgiqBTAE5MYxlpBKBfAsBAQEPNAQBAYRQAoF6A?=
+ =?us-ascii?q?iU0CQ4CAwEBAQMCAwEBAQEBBQEBAQIBBgRxhW6GRQYyAUYQUVcGARKFeKsyg?=
+ =?us-ascii?q?imJC4FEFIElAYhjdINyJhyBSUKBEjODJ4o2BIJGAYEPggSRYgSNPpwigxGBI?=
+ =?us-ascii?q?5tFIqRSlQeeLYUHgVQ6gVkzGggbFYMkUBkNjisWjWoBWyEDLzgCBgoBAQMJi?=
+ =?us-ascii?q?R8BAQ?=
+IronPort-HdrOrdr: A9a23:zZeFBaHz0wV689mgpLqFtZHXdLJzesId70hD6mlaQ3VuHvCwvc
+ aogfgdyFvIkz4XQn4tgpStP6OHTHPa+/dOkO0sFJqrQQWOggWVBa5464+K+VfdMg34stVQzK
+ JxN5V5YeeAbmRSqebfzE2GH807wN+BmZrY4Nv263t2VwllZ+VB4m5CazqzKUF9SAlYCZdRLv
+ P1jfZvnDaudW8aac62HBA+Lor+jufWn5HrawNuPXEawTSJ5AnE1JfKVzCFwxFbaD9U2LEk62
+ SAqRDh/76uqevT8G6660bjq7BfmN7s0bJ4ZPCku4wyNijmjBquacBHXbCP1QpF2d2H2RINjM
+ TGpQsmMoBIz07pOkuxoRfrxmDboVAT10M=
 X-IronPort-Anti-Spam-Filtered: true
-X-IronPort-Anti-Spam-Result: =?us-ascii?q?A0ANAAAXZmNg/5ldJa1aGwEBAQEBAQE?=
- =?us-ascii?q?BBQEBARIBAQEDAwEBAYF8BgEBAQsBgiqBTAE5MYxlpBKBfAsBAQEPNAQBAYR?=
- =?us-ascii?q?QAoF6AiU0CQ4CAwEBDAEBBQEBAQIBBgRxhW6GRQYyAUYQUVcGARKFeKs0gim?=
- =?us-ascii?q?JC4FEFIElAYhjdINyJhyBSUKBRYMnijYEgkeBDoJxApB4jT6cIoMRgSObRSK?=
- =?us-ascii?q?kUi2UWp4tX4QogVQ6gVkzGggbFYMkUBkNjisWjWoBWyEDLzgCBgoBAQMJiR8?=
- =?us-ascii?q?BAQ?=
 X-IronPort-AV: E=Sophos;i="5.81,291,1610409600"; 
-   d="scan'208";a="865117068"
+   d="scan'208";a="671912618"
 Received: from rcdn-core-2.cisco.com ([173.37.93.153])
-  by rcdn-iport-7.cisco.com with ESMTP/TLS/DHE-RSA-SEED-SHA; 30 Mar 2021 17:57:11 +0000
+  by alln-iport-3.cisco.com with ESMTP/TLS/DHE-RSA-SEED-SHA; 30 Mar 2021 17:57:24 +0000
 Received: from zorba.cisco.com ([10.24.8.123])
-        by rcdn-core-2.cisco.com (8.15.2/8.15.2) with ESMTP id 12UHv6CG024502;
-        Tue, 30 Mar 2021 17:57:09 GMT
+        by rcdn-core-2.cisco.com (8.15.2/8.15.2) with ESMTP id 12UHv6CL024502;
+        Tue, 30 Mar 2021 17:57:22 GMT
 From:   Daniel Walker <danielwa@cisco.com>
 To:     Will Deacon <will@kernel.org>,
         Christophe Leroy <christophe.leroy@csgroup.eu>,
         ob Herring <robh@kernel.org>,
         Daniel Gimpelevich <daniel@gimpelevich.san-francisco.ca.us>,
         Andrew Morton <akpm@linux-foundation.org>, x86@kernel.org,
-        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Cc:     xe-linux-external@cisco.com, Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>, linux-kernel@vger.kernel.org
-Subject: [PATCH 3/8] powerpc: convert strcpy to strlcpy in prom_init
-Date:   Tue, 30 Mar 2021 10:56:58 -0700
-Message-Id: <0c80a08ad4cf788c75043c1615c05bad893f4fde.1617126961.git.danielwa@cisco.com>
+        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        Catalin Marinas <catalin.marinas@arm.com>
+Cc:     xe-linux-external@cisco.com, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 8/8] CMDLINE: arm64: convert to generic builtin command line
+Date:   Tue, 30 Mar 2021 10:57:03 -0700
+Message-Id: <be8847438abbfa4972dd792eb616973816af9290.1617126961.git.danielwa@cisco.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <41021d66db2ab427c14255d2a24bb4517c8b58fd.1617126961.git.danielwa@cisco.com>
 References: <41021d66db2ab427c14255d2a24bb4517c8b58fd.1617126961.git.danielwa@cisco.com>
@@ -76,67 +75,118 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-There's only two users of strcpy and one is the command
-line handling. The generic command line handling uses strlcpy
-and it makes sense to convert this one other user to strlcpy to
-keep prom_init size consistent.
+This updates the arm64 code to use the CONFIG_GENERIC_CMDLINE
+option.
 
 Cc: xe-linux-external@cisco.com
 Signed-off-by: Daniel Walker <danielwa@cisco.com>
 ---
- arch/powerpc/kernel/prom_init.c | 25 +++++++++++++++----------
- 1 file changed, 15 insertions(+), 10 deletions(-)
+ arch/arm64/Kconfig                 | 33 +-----------------------------
+ arch/arm64/kernel/idreg-override.c |  8 +++++---
+ arch/arm64/kernel/setup.c          |  4 ++++
+ 3 files changed, 10 insertions(+), 35 deletions(-)
 
-diff --git a/arch/powerpc/kernel/prom_init.c b/arch/powerpc/kernel/prom_init.c
-index ccf77b985c8f..2c2f33155317 100644
---- a/arch/powerpc/kernel/prom_init.c
-+++ b/arch/powerpc/kernel/prom_init.c
-@@ -242,15 +242,6 @@ static int __init prom_strcmp(const char *cs, const char *ct)
- 	return 0;
+diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
+index e4e1b6550115..9781ba3758b1 100644
+--- a/arch/arm64/Kconfig
++++ b/arch/arm64/Kconfig
+@@ -105,6 +105,7 @@ config ARM64
+ 	select GENERIC_ALLOCATOR
+ 	select GENERIC_ARCH_TOPOLOGY
+ 	select GENERIC_CLOCKEVENTS_BROADCAST
++	select GENERIC_CMDLINE
+ 	select GENERIC_CPU_AUTOPROBE
+ 	select GENERIC_CPU_VULNERABILITIES
+ 	select GENERIC_EARLY_IOREMAP
+@@ -1841,38 +1842,6 @@ config ARM64_ACPI_PARKING_PROTOCOL
+ 	  protocol even if the corresponding data is present in the ACPI
+ 	  MADT table.
+ 
+-config CMDLINE
+-	string "Default kernel command string"
+-	default ""
+-	help
+-	  Provide a set of default command-line options at build time by
+-	  entering them here. As a minimum, you should specify the the
+-	  root device (e.g. root=/dev/nfs).
+-
+-choice
+-	prompt "Kernel command line type" if CMDLINE != ""
+-	default CMDLINE_FROM_BOOTLOADER
+-	help
+-	  Choose how the kernel will handle the provided default kernel
+-	  command line string.
+-
+-config CMDLINE_FROM_BOOTLOADER
+-	bool "Use bootloader kernel arguments if available"
+-	help
+-	  Uses the command-line options passed by the boot loader. If
+-	  the boot loader doesn't provide any, the default kernel command
+-	  string provided in CMDLINE will be used.
+-
+-config CMDLINE_FORCE
+-	bool "Always use the default kernel command string"
+-	help
+-	  Always use the default kernel command string, even if the boot
+-	  loader passes other arguments to the kernel.
+-	  This is useful if you cannot or don't want to change the
+-	  command-line options your boot loader passes to the kernel.
+-
+-endchoice
+-
+ config EFI_STUB
+ 	bool
+ 
+diff --git a/arch/arm64/kernel/idreg-override.c b/arch/arm64/kernel/idreg-override.c
+index 83f1c4b92095..fb10cd860a26 100644
+--- a/arch/arm64/kernel/idreg-override.c
++++ b/arch/arm64/kernel/idreg-override.c
+@@ -9,6 +9,7 @@
+ #include <linux/ctype.h>
+ #include <linux/kernel.h>
+ #include <linux/libfdt.h>
++#include <linux/cmdline.h>
+ 
+ #include <asm/cacheflush.h>
+ #include <asm/cpufeature.h>
+@@ -188,11 +189,12 @@ static __init void parse_cmdline(void)
+ {
+ 	const u8 *prop = get_bootargs_cmdline();
+ 
+-	if (IS_ENABLED(CONFIG_CMDLINE_FORCE) || !prop)
+-		__parse_cmdline(CONFIG_CMDLINE, true);
++	__parse_cmdline(CMDLINE_PREPEND, true);
+ 
+-	if (!IS_ENABLED(CONFIG_CMDLINE_FORCE) && prop)
++	if (IS_ENABLED(CMDLINE_OVERRIDE) && prop)
+ 		__parse_cmdline(prop, true);
++
++	__parse_cmdline(CMDLINE_APPEND, true);
  }
  
--static char __init *prom_strcpy(char *dest, const char *src)
--{
--	char *tmp = dest;
--
--	while ((*dest++ = *src++) != '\0')
--		/* nothing */;
--	return tmp;
--}
--
- static int __init prom_strncmp(const char *cs, const char *ct, size_t count)
- {
- 	unsigned char c1, c2;
-@@ -276,6 +267,20 @@ static size_t __init prom_strlen(const char *s)
- 	return sc - s;
- }
+ /* Keep checkers quiet */
+diff --git a/arch/arm64/kernel/setup.c b/arch/arm64/kernel/setup.c
+index 61845c0821d9..01791ce5244c 100644
+--- a/arch/arm64/kernel/setup.c
++++ b/arch/arm64/kernel/setup.c
+@@ -30,6 +30,7 @@
+ #include <linux/psci.h>
+ #include <linux/sched/task.h>
+ #include <linux/mm.h>
++#include <linux/cmdline.h>
  
-+static size_t __init prom_strlcpy(char *dest, const char *src, size_t size)
-+{
-+	size_t ret = prom_strlen(src);
+ #include <asm/acpi.h>
+ #include <asm/fixmap.h>
+@@ -322,6 +323,9 @@ void __init __no_sanitize_address setup_arch(char **cmdline_p)
+ 	 * cpufeature code and early parameters.
+ 	 */
+ 	jump_label_init();
 +
-+	if (size) {
-+		size_t len = (ret >= size) ? size - 1 : ret;
++	cmdline_add_builtin(boot_command_line, NULL, COMMAND_LINE_SIZE);
 +
-+		memcpy(dest, src, len);
-+		dest[len] = '\0';
-+	}
-+	return ret;
-+}
-+
-+
- static int __init prom_memcmp(const void *cs, const void *ct, size_t count)
- {
- 	const unsigned char *su1, *su2;
-@@ -2702,7 +2707,7 @@ static void __init flatten_device_tree(void)
+ 	parse_early_param();
  
- 	/* Add "phandle" in there, we'll need it */
- 	namep = make_room(&mem_start, &mem_end, 16, 1);
--	prom_strcpy(namep, "phandle");
-+	prom_strlcpy(namep, "phandle", 8);
- 	mem_start = (unsigned long)namep + prom_strlen(namep) + 1;
- 
- 	/* Build string array */
+ 	/*
 -- 
 2.25.1
 

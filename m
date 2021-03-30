@@ -2,115 +2,75 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-4.0 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NORMAL_HTTP_TO_IP,
-	NUMERIC_HTTP_ADDR,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1,
-	WEIRD_PORT autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 06B74C433DB
-	for <linux-mips@archiver.kernel.org>; Tue, 30 Mar 2021 12:35:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A91A1C433DB
+	for <linux-mips@archiver.kernel.org>; Tue, 30 Mar 2021 13:00:56 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id DC3A4619B7
-	for <linux-mips@archiver.kernel.org>; Tue, 30 Mar 2021 12:35:36 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 893B2619C9
+	for <linux-mips@archiver.kernel.org>; Tue, 30 Mar 2021 13:00:56 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231910AbhC3MfD (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 30 Mar 2021 08:35:03 -0400
-Received: from elvis.franken.de ([193.175.24.41]:37610 "EHLO elvis.franken.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230369AbhC3Meb (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Tue, 30 Mar 2021 08:34:31 -0400
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1lRDZl-0003nX-00; Tue, 30 Mar 2021 14:34:29 +0200
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 64DA4C1D90; Tue, 30 Mar 2021 14:24:37 +0200 (CEST)
-Date:   Tue, 30 Mar 2021 14:24:37 +0200
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     YunQiang Su <wzssyqa@gmail.com>
-Cc:     YunQiang Su <yunqiang.su@cipunited.com>,
-        linux-mips <linux-mips@vger.kernel.org>,
-        "Maciej W. Rozycki" <macro@orcam.me.uk>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Philippe =?iso-8859-1?Q?Mathieu-Daud=E9?= <f4bug@amsat.org>,
-        stable@vger.kernel.org
-Subject: Re: [PATCH v9] MIPS: force use FR=0 for FPXX binaries
-Message-ID: <20210330122437.GA10355@alpha.franken.de>
-References: <20210322015902.18451-1-yunqiang.su@cipunited.com>
- <CAKcpw6UPQFOt2DyY9EbKxziWyJXOsUwcf4khrAyFC=yTX1EuAg@mail.gmail.com>
- <20210329090058.GA6564@alpha.franken.de>
- <CAKcpw6Vd6pCT2PB4pZATnEq8Y4pSj4cwNFZgg6yK6VjoeY+N-Q@mail.gmail.com>
+        id S231622AbhC3NAY (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 30 Mar 2021 09:00:24 -0400
+Received: from mail-40136.protonmail.ch ([185.70.40.136]:55911 "EHLO
+        mail-40136.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232138AbhC3NAS (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Tue, 30 Mar 2021 09:00:18 -0400
+Date:   Tue, 30 Mar 2021 12:59:54 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=emersion.fr;
+        s=protonmail3; t=1617109216;
+        bh=nQumvZO7k2adxWbuuWRUUjrAO0hDimI1WyGmzZ72k6Y=;
+        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
+        b=MXEFZuKv9U1YOGPmBHoOT1TB7fu7j1AXDA20G3PQzfLp1iei5Diip2TDX2yZDLwtg
+         tXfYzD/Rsk0PXApszamq4O4HVVjHSeRbSbZb6v4/Z9A9/33mIflziROwyxbT0LPDcE
+         YoLZvbgqDlS8jINRANGrVJnEOa46QKDPNZOJyEUk4H8Mwg2UmIWOZZJLJ7iN2LDsbt
+         BWJOuH8q4lj0Pjj7f7j3BNcFX38hU12lEXdIjcY/Jd+Zv0XTR5QlAv4CiMYbpCSsc7
+         Dnfv7n4LFoe3xLAN/0JgBH2S7H95LAG42GL6pduD0lUEcmlEs8s5Lyrn7qYwYFEH+G
+         R47kopOnny1nQ==
+To:     Paul Cercueil <paul@crapouillou.net>
+From:   Simon Ser <contact@emersion.fr>
+Cc:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Sam Ravnborg <sam@ravnborg.org>, od@zcrc.me,
+        linux-mips@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Reply-To: Simon Ser <contact@emersion.fr>
+Subject: Re: [PATCH 1/2] drm/ingenic: Switch IPU plane to type OVERLAY
+Message-ID: <X2G0dUjYzRbISgSRQgMfjkybzYl-AXZR8nUGHdzBk6Wi_aQFCiir_c9fmBM2fV9N9FIxYl5emBtyGrDk0AfpFx4RRNys4Grco3CKsNZsxPU=@emersion.fr>
+In-Reply-To: <GC6SQQ.1R937FBY9A9A1@crapouillou.net>
+References: <20210329175046.214629-1-paul@crapouillou.net> <20210329175046.214629-2-paul@crapouillou.net> <BH3N8QICMyp64pmUQyXLwYMnCNBvXxThwvKJIOmyMU0XIgTtorcGd7s7AjnIFXQrLGEoJMuvPcWTiv38syiYOTCDv-bSxswFBX6y3UYqTwE=@emersion.fr> <GC6SQQ.1R937FBY9A9A1@crapouillou.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAKcpw6Vd6pCT2PB4pZATnEq8Y4pSj4cwNFZgg6yK6VjoeY+N-Q@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Mon, Mar 29, 2021 at 06:28:40PM +0800, YunQiang Su wrote:
-> Thomas Bogendoerfer <tsbogend@alpha.franken.de> 于2021年3月29日周一 下午5:30写道：
-> >
-> > On Mon, Mar 29, 2021 at 01:09:18PM +0800, YunQiang Su wrote:
-> > > YunQiang Su <yunqiang.su@cipunited.com> 于2021年3月22日周一 上午10:00写道：
-> > > >
-> > > > The MIPS FPU may have 3 mode:
-> > > >   FR=0: MIPS I style, all of the FPR are single.
-> > > >   FR=1: all 32 FPR can be double.
-> > > >   FRE: redirecting the rw of odd-FPR to the upper 32bit of even-double FPR.
-> > > >
-> > > > The binary may have 3 mode:
-> > > >   FP32: can only work with FR=0 and FRE mode
-> > > >   FPXX: can work with all of FR=0/FR=1/FRE mode.
-> > > >   FP64: can only work with FR=1 mode
-> > > >
-> > > > Some binary, for example the output of golang, may be mark as FPXX,
-> > > > while in fact they are FP32. It is caused by the bug of design and linker:
-> > > >   Object produced by pure Go has no FP annotation while in fact they are FP32;
-> > > >   if we link them with the C module which marked as FPXX,
-> > > >   the result will be marked as FPXX. If these fake-FPXX binaries is executed
-> > > >   in FR=1 mode, some problem will happen.
-> > > >
-> > > > In Golang, now we add the FP32 annotation, so the future golang programs
-> > > > won't have this problem. While for the existing binaries, we need a
-> > > > kernel workaround.
-> > > >
-> > >
-> > > We meet a new problem in Debian: with the O32_FP64 enabled kernel,
-> > > mips64el may also be affected.
-> > > https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=983583
-> >
-> > hmm, raising this issue in this context before knowing more details,
-> > feels very trigger happy to me and this doesn't help accepting anything,
-> > jfyi...
-> >
-> > Could you please provide a link for downloading a golang binary, which
-> > would need this patch to run ?
-> >
-> 
-> For rootfs, you can download
->    http://58.246.137.130:20180/debian-from/rootfs/buster-mipsel.tar.xz
-> or create by:
->     sudo debootstrap --arch mipsel  --include golang-1.11-go \
->                      buster buster-mipsel http://deb.debian.org/debian
-> 
-> For binary packages, you can download:
->     https://packages.debian.org/buster/mipsel/golang-1.11-go/download
-> 
-> just chroot the rootfs and run:
->     /usr/lib/go-1.11/bin/go
-> It will crash if kernel's O32_FP64 option is enabled.
+On Tuesday, March 30th, 2021 at 1:53 PM, Paul Cercueil <paul@crapouillou.ne=
+t> wrote:
 
-now I'm confused. Do go binaries crash the kernel ? Or is this just
-the issue _not_ related to this patch ?
+> > I don't know about this driver but=E2=80=A6 is this really the same as =
+the
+> > previous
+> > condition? The previous condition would match two planes, this one
+> > seems to
+> > match only a single plane. What am I missing?
+>
+> There are three planes, which we will call here f0, f1, and ipu.
+> Previously, the "plane->type =3D=3D DRM_PLANE_TYPE_PRIMARY" matched f1 an=
+d
+> ipu. Since ipu is now OVERLAY we have to change the condition or the
+> behaviour will be different, as otherwise it would only match the f1
+> plane.
 
-I want a single go binary, which I can inspect about the FPXX thing and
-see how easy it would be to just patch the binary and make it run without
-this patch.
+Oh okay, I thought f0 was one of the primary planes, but it's not.
+Thanks for the explanation.
 
-Thomas.
+For the user-space visible change:
 
--- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+Acked-by: Simon Ser <contact@emersion.fr>

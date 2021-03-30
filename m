@@ -2,73 +2,71 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.3 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-15.2 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B3961C433DB
-	for <linux-mips@archiver.kernel.org>; Tue, 30 Mar 2021 13:12:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4ED72C433E3
+	for <linux-mips@archiver.kernel.org>; Tue, 30 Mar 2021 13:12:13 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 8B9736190A
-	for <linux-mips@archiver.kernel.org>; Tue, 30 Mar 2021 13:12:11 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 2977C619CD
+	for <linux-mips@archiver.kernel.org>; Tue, 30 Mar 2021 13:12:13 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231819AbhC3NLk (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        id S232220AbhC3NLk (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
         Tue, 30 Mar 2021 09:11:40 -0400
-Received: from elvis.franken.de ([193.175.24.41]:37687 "EHLO elvis.franken.de"
+Received: from elvis.franken.de ([193.175.24.41]:37693 "EHLO elvis.franken.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231894AbhC3NLb (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Tue, 30 Mar 2021 09:11:31 -0400
+        id S231971AbhC3NLi (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Tue, 30 Mar 2021 09:11:38 -0400
 Received: from uucp (helo=alpha)
         by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1lRE9V-000488-00; Tue, 30 Mar 2021 15:11:25 +0200
+        id 1lRE9U-000488-00; Tue, 30 Mar 2021 15:11:24 +0200
 Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 28385C1E48; Tue, 30 Mar 2021 15:09:44 +0200 (CEST)
-Date:   Tue, 30 Mar 2021 15:09:44 +0200
+        id 405B2C1DF5; Tue, 30 Mar 2021 15:07:40 +0200 (CEST)
+Date:   Tue, 30 Mar 2021 15:07:40 +0200
 From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Florian Fainelli <f.fainelli@gmail.com>
-Cc:     =?iso-8859-1?Q?=C1lvaro_Fern=E1ndez?= Rojas <noltari@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Philippe =?iso-8859-1?Q?Mathieu-Daud=E9?= <f4bug@amsat.org>,
-        Paul Burton <paulburton@kernel.org>,
-        Jonas Gorski <jonas.gorski@gmail.com>,
-        bcm-kernel-feedback-list@broadcom.com, linux-mips@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 0/6] mips: bmips: fix and improve reboot nodes
-Message-ID: <20210330130944.GB11217@alpha.franken.de>
-References: <20210314164351.24665-1-noltari@gmail.com>
+To:     Wang Qing <wangqing@vivo.com>
+Cc:     Adaptec OEM Raid Solutions <aacraid@microsemi.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Luis de Bethencourt <luisbg@kernel.org>,
+        Salah Triki <salah.triki@gmail.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Richard Weinberger <richard@nod.at>,
+        Ralf Baechle <ralf@linux-mips.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
+        linux-mtd@lists.infradead.org, linux-hams@vger.kernel.org,
+        netdev@vger.kernel.org, linux-decnet-user@lists.sourceforge.net,
+        gregkh@linuxfoundation.org
+Subject: Re: [PATCH 1/6] mips/sgi-ip27: Delete obsolete TODO file
+Message-ID: <20210330130740.GA11217@alpha.franken.de>
+References: <1617087773-7183-1-git-send-email-wangqing@vivo.com>
+ <1617087773-7183-2-git-send-email-wangqing@vivo.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210314164351.24665-1-noltari@gmail.com>
+In-Reply-To: <1617087773-7183-2-git-send-email-wangqing@vivo.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Sun, Mar 14, 2021 at 05:43:45PM +0100, Álvaro Fernández Rojas wrote:
-> These patches improve bmips bcm63xx device tree nodes.
+On Tue, Mar 30, 2021 at 03:02:44PM +0800, Wang Qing wrote:
+> The TODO file here has not been updated for 15 years, and the function 
+> development described in the file have been implemented or abandoned.
 > 
-> v2: add missing BCM63268 patch.
+> Its existence will mislead developers seeking to view outdated information.
 > 
-> Álvaro Fernández Rojas (6):
->   mips: bmips: fix syscon-reboot nodes
->   mips: bmips: bcm6328: populate device tree nodes
->   mips: bmips: bcm6358: populate device tree nodes
->   mips: bmips: bcm6362: populate device tree nodes
->   mips: bmips: bcm6368: populate device tree nodes
->   mips: bmips: bcm63268: populate device tree nodes
-> 
->  arch/mips/boot/dts/brcm/bcm3368.dtsi  |   2 +-
->  arch/mips/boot/dts/brcm/bcm63268.dtsi | 132 +++++++++++++++++++++++---
->  arch/mips/boot/dts/brcm/bcm6328.dtsi  | 119 ++++++++++++++++++++---
->  arch/mips/boot/dts/brcm/bcm6358.dtsi  |  85 ++++++++++++++---
->  arch/mips/boot/dts/brcm/bcm6362.dtsi  | 129 ++++++++++++++++++++++---
->  arch/mips/boot/dts/brcm/bcm6368.dtsi  | 129 ++++++++++++++++++++++---
->  6 files changed, 530 insertions(+), 66 deletions(-)
+> Signed-off-by: Wang Qing <wangqing@vivo.com>
+> ---
+>  arch/mips/sgi-ip27/TODO | 19 -------------------
+>  1 file changed, 19 deletions(-)
+>  delete mode 100644 arch/mips/sgi-ip27/TODO
 
-Florian, are you ok with this changes ? If yes, I'm going to apply them
-to mips-next.
+applied to mips-next.
 
 Thomas.
 

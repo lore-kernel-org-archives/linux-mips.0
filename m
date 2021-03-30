@@ -2,149 +2,101 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.3 required=3.0 tests=BAYES_00,DKIMWL_WL_MED,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_IN_DEF_DKIM_WL autolearn=no
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CC14EC433E0
-	for <linux-mips@archiver.kernel.org>; Tue, 30 Mar 2021 19:59:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B9FF0C433C1
+	for <linux-mips@archiver.kernel.org>; Tue, 30 Mar 2021 20:13:58 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id A1CB1619B9
-	for <linux-mips@archiver.kernel.org>; Tue, 30 Mar 2021 19:59:02 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 93D33617ED
+	for <linux-mips@archiver.kernel.org>; Tue, 30 Mar 2021 20:13:58 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233293AbhC3T6a (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 30 Mar 2021 15:58:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60588 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233239AbhC3T6Z (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Tue, 30 Mar 2021 15:58:25 -0400
-Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0349BC061574
-        for <linux-mips@vger.kernel.org>; Tue, 30 Mar 2021 12:58:25 -0700 (PDT)
-Received: by mail-pg1-x52c.google.com with SMTP id t140so5155591pgb.13
-        for <linux-mips@vger.kernel.org>; Tue, 30 Mar 2021 12:58:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=wTEyxuaapP4d1SHF7RcerzFayP475kgkIctZEDORCvY=;
-        b=envgQwKOhZLGzYbrjTo3+nEI/ILCJz7AV2GNZ37sA4tCFJ/jO9jwiK5voJwg3r/eds
-         n/zOAXzsVLcOacfLuS5VHUc/Z+MqB19zQ52tsRetZLD7hBDRRdqbtww6YeIzEisRIyMw
-         UnfTrppUFQicAdk3Yb3QZQbrg/qIsNA3dGPVEIftHW0s1SOq7Hgyee3Ke9l4JB7cfcim
-         WfxyAvKImmJ2KZPyBj2tHvhaebrjJjZxU5509A9Ch4WA/EkIVJwDkd6/BmVOdrShBU9j
-         tfeAKC2/dsPTX8UPAidLNUSrGVz0OIl962YLH0QZ9VroDrpQvyJk5f+1O5KmnTp/LVWY
-         h0QA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=wTEyxuaapP4d1SHF7RcerzFayP475kgkIctZEDORCvY=;
-        b=uXZ5xfDK2sCkw1X7201i30/Hrvm9LbrR/54USeobRR4wDu6HmeX7aKjaNVf3oNpDFF
-         TUvI1oByEQnJFJNWOdBv2BRig6/trKeftw3PkPXAiLF/BrqRDE0q4WumRB4QpXrC4bix
-         bI4xW6wtKdL0aXMYQt67Wu7uNJISp8NrV4DD9aGalhbm+6RYTAUu74O3qxjUXH8Lntik
-         2TBoKv+LbjjUpAgQQqnHtcyl9zsDbJbItFBixnBgrRBRjhIBRnFsAOpmFyiM7Wc9ylI1
-         RFYuatS8LPfJd75/uOA/ga7CAEVxOEFA8DP69I5PWoLxtl5AT/eW2nIQNG8hzdiEsDQZ
-         WbwQ==
-X-Gm-Message-State: AOAM533QG3kazfUS1+LJUcpjMYORie8rHkMk5zIPQ6Q5e2IIFqPhf9iu
-        7hCllxvj2qq2OLXvgoIQ0+H26g==
-X-Google-Smtp-Source: ABdhPJy/H3xYrm77zteXXmXwOlrnRIg3rQpdyEYIba7syOVncG/8FqBI2t2hNnALYH3MbklxzEVjZA==
-X-Received: by 2002:a63:5361:: with SMTP id t33mr29952003pgl.439.1617134304318;
-        Tue, 30 Mar 2021 12:58:24 -0700 (PDT)
-Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
-        by smtp.gmail.com with ESMTPSA id f16sm10723866pfj.220.2021.03.30.12.58.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Mar 2021 12:58:23 -0700 (PDT)
-Date:   Tue, 30 Mar 2021 19:58:19 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Ben Gardon <bgardon@google.com>
-Cc:     Marc Zyngier <maz@kernel.org>, Huacai Chen <chenhuacai@kernel.org>,
-        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
-        Paul Mackerras <paulus@ozlabs.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-mips@vger.kernel.org, kvm <kvm@vger.kernel.org>,
-        kvm-ppc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 00/18] KVM: Consolidate and optimize MMU notifiers
-Message-ID: <YGOC2wqn5k9WkY39@google.com>
-References: <20210326021957.1424875-1-seanjc@google.com>
- <CANgfPd_gpWsa4F3VdcpoBYqPR4dSBWNYCW1YdeOnu1wQdUz+0A@mail.gmail.com>
+        id S231979AbhC3UN1 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 30 Mar 2021 16:13:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46716 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230125AbhC3UNQ (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Tue, 30 Mar 2021 16:13:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2E85D6196C;
+        Tue, 30 Mar 2021 20:13:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1617135196;
+        bh=a0u6btj9eABWcxyPcMcImxEQD72LmDexfcRuz0Fotaw=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=oxcTEFt8SZA7Bx7749WETP1GMcz8oii+pSej4jE7fgG7WS52nFSAy0fAei47dgGTT
+         q+Qb1Vck6k9rwb/VKFbpxYLCRwW8Zmp1NygRTYvTbkrtN8tcJTYHnYqP37zGDxtl3E
+         fLVdYj+EF8UqAvR0aWxEGFZxJkFSDv4Byhn8kleGogmKDj7PTae42Z1E5/o+jWQsb1
+         HYw1Fo55Tqy0SK39VzMpcr/2Pwo8JaJitq/88PjP/eTbN9nL6pj+wOZyP2ryfIX68I
+         bA376/UXRBuXIyfqtJFeQh4VhT/oB3BGehfnYkXzNHHRLkOJra/md8EVxl2jTS73e4
+         GEFqd0oC0lteg==
+Received: by mail-qv1-f54.google.com with SMTP id 30so8813831qva.9;
+        Tue, 30 Mar 2021 13:13:16 -0700 (PDT)
+X-Gm-Message-State: AOAM531pTxjlDjbOgwQ6qfgV4UuikDTpmHki1hsHSEmWgzy9kDF6NECc
+        z8ifOsWSZ5FZoMn8wQa3fU7YzrhmoS9s36B+xg==
+X-Google-Smtp-Source: ABdhPJw55amAUhZyFZAQITDAaWCWvjRQ4s0B/xEdY/mzymYT1/HSrfDlYWJbEwEmGzlU1vhNgrIIF8xwK9tMaYRV82Y=
+X-Received: by 2002:a05:6214:12a1:: with SMTP id w1mr32724714qvu.57.1617135195251;
+ Tue, 30 Mar 2021 13:13:15 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CANgfPd_gpWsa4F3VdcpoBYqPR4dSBWNYCW1YdeOnu1wQdUz+0A@mail.gmail.com>
+References: <20210309000247.2989531-4-danielwa@cisco.com> <5f865584-09c9-d21f-ffb7-23cf07cf058e@csgroup.eu>
+ <20210309212944.GR109100@zorba> <e4899874-1684-fa1b-443e-f4e478e05e31@csgroup.eu>
+ <CAL_JsqKm76jRQYDcu3rGyUWKPLspoO=EZW_WFy=zAK+m_JYCTg@mail.gmail.com>
+ <20fd7d44-8c39-48bc-25c3-990be9d9d911@csgroup.eu> <20210325195956.GM109100@zorba>
+ <CAL_Jsq+10nucQSRkrTKe9BD5wBScqEb7-Rdg=9TsPiKuiuPG7w@mail.gmail.com> <20210330173254.GS109100@zorba>
+In-Reply-To: <20210330173254.GS109100@zorba>
+From:   Rob Herring <robh@kernel.org>
+Date:   Tue, 30 Mar 2021 15:13:04 -0500
+X-Gmail-Original-Message-ID: <CAL_JsqJKBeAgaHQJwOL9G2qLbQSh32L5LtN+cSUgn5sV_P8How@mail.gmail.com>
+Message-ID: <CAL_JsqJKBeAgaHQJwOL9G2qLbQSh32L5LtN+cSUgn5sV_P8How@mail.gmail.com>
+Subject: Re: [PATCH v2 3/7] powerpc: convert config files to generic cmdline
+To:     Daniel Walker <danielwa@cisco.com>
+Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Will Deacon <will@kernel.org>,
+        Daniel Gimpelevich <daniel@gimpelevich.san-francisco.ca.us>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        X86 ML <x86@kernel.org>,
+        "open list:MIPS" <linux-mips@vger.kernel.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        xe-linux-external@cisco.com, Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Tue, Mar 30, 2021, Ben Gardon wrote:
-> On Thu, Mar 25, 2021 at 7:20 PM Sean Christopherson <seanjc@google.com> wrote:
-> > Patch 10 moves x86's memslot walkers into common KVM.  I chose x86 purely
-> > because I could actually test it.  All architectures use nearly identical
-> > code, so I don't think it actually matters in the end.
-> 
-> I'm still reviewing 10 and 14-18. 10 is a huge change and the diff is
-> pretty hard to parse.
-
-Ya :-/  I don't see an easy way to break it up without creating a massive diff,
-e.g. it could be staged in x86 and moved to common, but I don't think that would
-fundamentally change the diff.  Although I admittedly didn't spend _that_ much
-time thinking about how to break it up.
-
-> > Patches 11-13 move arm64, MIPS, and PPC to the new APIs.
+On Tue, Mar 30, 2021 at 12:33 PM Daniel Walker <danielwa@cisco.com> wrote:
+>
+> On Thu, Mar 25, 2021 at 05:29:44PM -0600, Rob Herring wrote:
+> > On Thu, Mar 25, 2021 at 2:00 PM Daniel Walker <danielwa@cisco.com> wrote:
+> > >
+> > > On Thu, Mar 25, 2021 at 01:03:55PM +0100, Christophe Leroy wrote:
+> > > >
+> > > > Ok, so you agree we don't need to provide two CMDLINE, one to be appended and one to be prepended.
+> > > >
+> > > > Let's only provide once CMDLINE as of today, and ask the user to select
+> > > > whether he wants it appended or prepended or replacee. Then no need to
+> > > > change all existing config to rename CONFIG_CMDLINE into either of the new
+> > > > ones.
+> > > >
+> > > > That's the main difference between my series and Daniel's series. So I'll
+> > > > finish taking Will's comment into account and we'll send out a v3 soon.
+> > >
+> > > It doesn't solve the needs of Cisco, I've stated many times your changes have
+> > > little value. Please stop submitting them.
 > >
-> > Patch 14 yanks out the old APIs.
-> >
-> > Patch 15 adds the mmu_lock elision, but only for unpaired notifications.
-> 
-> Reading through all this code and considering the changes I'm
-> preparing for the TDP MMU have me wondering if it might help to have a
-> more general purpose MMU lock context struct which could be embedded
-> in the structs added in this patch. I'm thinking something like:
-> enum kvm_mmu_lock_mode {
->     KVM_MMU_LOCK_NONE,
->     KVM_MMU_LOCK_READ,
->     KVM_MMU_LOCK_WRITE,
-> };
-> 
-> struct kvm_mmu_lock_context {
->     enum kvm_mmu_lock_mode lock_mode;
->     bool can_block;
->     bool can_yield;
+> > Can you please outline what those needs are which aren't met?
+>
+> append AND prepend at the same time on all architectures. Christophe doesn't
+> understand the need, and hence tries to minimize the feature set which is
+> incompatible with Cisco needs and all the other out of tree users.
 
-Not that it matters right now, but can_block and can_yield are the same thing.
-I considered s/can_yield/can_block to make it all consistent, but that felt like
-unnecessary thrash.
+Okay, but that's never been a feature in upstream. For upstream, we
+refactor first and add features 2nd. In this case, the difference is
+largely the kconfig and it would be better to not change the options
+twice, but that's not a blocker for taking the refactoring. You won't
+find a maintainer that's going to take adding a feature over cleanups
+and unification.
 
->     bool flush;
-
-Drat.  This made me realize that the 'struct kvm_gfn_range' passed to arch code
-isn't tagged 'const'.  I thought I had done that, but obviously not.
-
-Anyways, what I was going to say before that realization is that the downside to
-putting flush into kvm_gfn_range is that it would have to lose its 'const'
-qualifier.  That's all a moot point if it's not easily constified though.
-
-Const aside, my gut reaction is that it will probably be cleaner to keep the
-flush stuff in arch code, separate from the kvm_gfn_range passed in by common
-KVM.  Looping 'flush' back into the helpers is x86 specific at this point, and
-AFAICT that's not likely to change any time soon.
-
-For rwlock support, if we get to the point where kvm_age_gfn() and/or
-kvm_test_age_gfn() can take mmu_lock for read, then it definitely makes sense to
-track locking in kvm_gfn_range, assuming it isn't the sole entity that prevents
-consifying kvm_range_range.
-
-> };
-> 
-> This could yield some grossly long lines, but it would also have
-> potential to unify a bunch of ad-hoc handling.
-> The above struct could also fit into a single byte, so it'd be pretty
-> easy to pass it around.
+Rob

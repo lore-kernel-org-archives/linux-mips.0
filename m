@@ -2,901 +2,123 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-23.3 required=3.0 tests=BAYES_00,DKIMWL_WL_MED,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED,USER_IN_DEF_DKIM_WL autolearn=unavailable autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 56360C433E1
-	for <linux-mips@archiver.kernel.org>; Tue, 30 Mar 2021 17:27:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 78624C433C1
+	for <linux-mips@archiver.kernel.org>; Tue, 30 Mar 2021 17:28:21 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 1FB55619D1
-	for <linux-mips@archiver.kernel.org>; Tue, 30 Mar 2021 17:27:45 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 4F5B66196C
+	for <linux-mips@archiver.kernel.org>; Tue, 30 Mar 2021 17:28:21 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232292AbhC3R1O (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 30 Mar 2021 13:27:14 -0400
-Received: from mx2.suse.de ([195.135.220.15]:38430 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232421AbhC3R1G (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Tue, 30 Mar 2021 13:27:06 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 7EC07B32E;
-        Tue, 30 Mar 2021 17:27:05 +0000 (UTC)
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     hch@lst.de
-Subject: [PATCH 2/3] MIPS: uaccess: Remove get_fs/set_fs call sites
-Date:   Tue, 30 Mar 2021 19:26:59 +0200
-Message-Id: <20210330172702.146909-3-tsbogend@alpha.franken.de>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210330172702.146909-1-tsbogend@alpha.franken.de>
-References: <20210330172702.146909-1-tsbogend@alpha.franken.de>
+        id S232450AbhC3R1p (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 30 Mar 2021 13:27:45 -0400
+Received: from rcdn-iport-6.cisco.com ([173.37.86.77]:12754 "EHLO
+        rcdn-iport-6.cisco.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232422AbhC3R1U (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Tue, 30 Mar 2021 13:27:20 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=cisco.com; i=@cisco.com; l=1640; q=dns/txt; s=iport;
+  t=1617125240; x=1618334840;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=DLlq6Eg2HUUvE9Fdg0Ebob6Tw5pX5R4uRXQoNV4sDwc=;
+  b=S3AM+TL3QruYfqeMp+6vgY8hAlMuc26v6MTPbQoBaVTtuaYcQUDMTLtv
+   YMIx4slyUxrVeNQY1bYf3KcYQpt5MAzNiBdGmrhqo2w3IxuaehFXbZdkp
+   RLSQAvV0NrNp3mH+o+VcmM/VXEAvjt8lzHELqAzH8H/BMLD98MoPApiLd
+   w=;
+IronPort-HdrOrdr: =?us-ascii?q?A9a23=3AoTmckqE8NgKcaaN3pLqEVceALOonbusQ8z?=
+ =?us-ascii?q?AX/mp6ICY7TuWzkceykPMHkTL1ki8WQnE8mdaGUZPwJE/035hz/IUXIPOeTB?=
+ =?us-ascii?q?Dr0VHYTr1KwIP+z1TbcRHW2fVa0c5bHpRWKNq1NlRiiNa/3Q/QKadF/PCi0I?=
+ =?us-ascii?q?SFwdjT1G1sSwYCUdAC0y5cBhyAGkN7AClqbKBZKLOm6sBKpyWtdB0sB6zROl?=
+ =?us-ascii?q?A/U+fOvNHNnp79CCRnOzcc9AKMgTm0gYSVLzGk2H4lPw9n8PMF7XXPlRD/6+?=
+ =?us-ascii?q?GFtfy2oyWssVP73tBxhMbrzMdFCYi3rvUtbh/oigquee1aKtq/gAw=3D?=
+X-IronPort-Anti-Spam-Filtered: true
+X-IronPort-Anti-Spam-Result: =?us-ascii?q?A0BhAABKXmNg/4UNJK1aHAEBAQEBAQc?=
+ =?us-ascii?q?BARIBAQQEAQFAgTwHAQELAYIqgUwBOTGMZYkukAgWikWBfAsBAQENAQE0BAE?=
+ =?us-ascii?q?BhFACgXoCJTQJDgIDAQEMAQEFAQEBAgEGBHGFboZFAQU6PxALGC48GwYThXi?=
+ =?us-ascii?q?rInWBNIkLgUQigRcBjUkmHIFJQoESgm4uPoo2BIJHgQ6CMCyeTZwigxGBI5s?=
+ =?us-ascii?q?2MRCkQrgSAgQGBQIWgVQ6gVkzGggbFYMkUBkNnQchAy84AgYKAQEDCYkfAQE?=
+X-IronPort-AV: E=Sophos;i="5.81,291,1610409600"; 
+   d="scan'208";a="880406225"
+Received: from alln-core-11.cisco.com ([173.36.13.133])
+  by rcdn-iport-6.cisco.com with ESMTP/TLS/DHE-RSA-SEED-SHA; 30 Mar 2021 17:27:19 +0000
+Received: from zorba ([10.24.8.123])
+        by alln-core-11.cisco.com (8.15.2/8.15.2) with ESMTPS id 12UHREPN013894
+        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO);
+        Tue, 30 Mar 2021 17:27:16 GMT
+Date:   Tue, 30 Mar 2021 10:27:14 -0700
+From:   Daniel Walker <danielwa@cisco.com>
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc:     will@kernel.org, robh@kernel.org,
+        daniel@gimpelevich.san-francisco.ca.us, linux-arch@vger.kernel.org,
+        devicetree@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        microblaze <monstr@monstr.eu>, linux-mips@vger.kernel.org,
+        nios2 <ley.foon.tan@intel.com>, openrisc@lists.librecores.org,
+        linux-hexagon@vger.kernel.org, linux-riscv@lists.infradead.org,
+        x86@kernel.org, linux-xtensa@linux-xtensa.org,
+        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org
+Subject: Re: [PATCH v3 01/17] cmdline: Add generic function to build command
+ line.
+Message-ID: <20210330172714.GR109100@zorba>
+References: <cover.1616765869.git.christophe.leroy@csgroup.eu>
+ <878228ad88df38f8914c7aa25dede3ed05c50f48.1616765869.git.christophe.leroy@csgroup.eu>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <878228ad88df38f8914c7aa25dede3ed05c50f48.1616765869.git.christophe.leroy@csgroup.eu>
+X-Outbound-SMTP-Client: 10.24.8.123, [10.24.8.123]
+X-Outbound-Node: alln-core-11.cisco.com
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Use new __get_data macro to access user/kernel for functions, which
-are used with user/kernel pointers. Instead of dealing with get_fs/set_fs
-this macro uses a parameter to select user/kernel access.
+On Fri, Mar 26, 2021 at 01:44:48PM +0000, Christophe Leroy wrote:
+> This code provides architectures with a way to build command line
+> based on what is built in the kernel and what is handed over by the
+> bootloader, based on selected compile-time options.
+> 
+> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+> ---
+> v3:
+> - Addressed comments from Will
+> - Added capability to have src == dst
+> ---
+>  include/linux/cmdline.h | 57 +++++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 57 insertions(+)
+>  create mode 100644 include/linux/cmdline.h
+> 
+> diff --git a/include/linux/cmdline.h b/include/linux/cmdline.h
+> new file mode 100644
+> index 000000000000..dea87edd41be
+> --- /dev/null
+> +++ b/include/linux/cmdline.h
+> @@ -0,0 +1,57 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +#ifndef _LINUX_CMDLINE_H
+> +#define _LINUX_CMDLINE_H
+> +
+> +#include <linux/string.h>
+> +
+> +/* Allow architectures to override strlcat, powerpc can't use strings so early */
+> +#ifndef cmdline_strlcat
+> +#define cmdline_strlcat strlcat
+> +#endif
+> +
+> +/*
+> + * This function will append or prepend a builtin command line to the command
+> + * line provided by the bootloader. Kconfig options can be used to alter
+> + * the behavior of this builtin command line.
+> + * @dst: The destination of the final appended/prepended string.
+> + * @src: The starting string or NULL if there isn't one.
+> + * @len: the length of dest buffer.
+> + */
 
-Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
----
- arch/mips/include/asm/uaccess.h |  23 ++++
- arch/mips/kernel/traps.c        |  72 ++++--------
- arch/mips/kernel/unaligned.c    | 197 ++++++++++++--------------------
- 3 files changed, 116 insertions(+), 176 deletions(-)
+Append or prepend ? Cisco requires both at the same time. This is why my
+implementation provides both. I can't use this with both at once.
 
-diff --git a/arch/mips/include/asm/uaccess.h b/arch/mips/include/asm/uaccess.h
-index c5cab0b8f902..8b3a4b992ebc 100644
---- a/arch/mips/include/asm/uaccess.h
-+++ b/arch/mips/include/asm/uaccess.h
-@@ -355,6 +355,29 @@ do {									\
- 	(val) = __gu_tmp.t;						\
- }
- 
-+#define __get_udata(x, ptr, size)					\
-+({									\
-+	int __gu_err;							\
-+									\
-+	__chk_user_ptr(ptr);						\
-+	__get_user_common((x), size, ptr);				\
-+									\
-+	__gu_err;							\
-+})
-+
-+#define __get_kdata(x, ptr, size)					\
-+({									\
-+	int __gu_err;							\
-+									\
-+	__get_kernel_common((x), size, ptr);				\
-+									\
-+	__gu_err;							\
-+})
-+
-+#define __get_data(x, ptr, u)						\
-+	(((u) == true) ? __get_udata((x), (ptr), sizeof(*(ptr))) :	\
-+			__get_kdata((x), (ptr), sizeof(*(ptr))))
-+
- #define HAVE_GET_KERNEL_NOFAULT
- 
- #define __get_kernel_nofault(dst, src, type, err_label)			\
-diff --git a/arch/mips/kernel/traps.c b/arch/mips/kernel/traps.c
-index 808b8b61ded1..6561c0c7841d 100644
---- a/arch/mips/kernel/traps.c
-+++ b/arch/mips/kernel/traps.c
-@@ -108,7 +108,8 @@ void (*board_bind_eic_interrupt)(int irq, int regset);
- void (*board_ebase_setup)(void);
- void(*board_cache_error_setup)(void);
- 
--static void show_raw_backtrace(unsigned long reg29, const char *loglvl)
-+static void show_raw_backtrace(unsigned long reg29, const char *loglvl,
-+			       bool user)
- {
- 	unsigned long *sp = (unsigned long *)(reg29 & ~3);
- 	unsigned long addr;
-@@ -120,7 +121,7 @@ static void show_raw_backtrace(unsigned long reg29, const char *loglvl)
- 	while (!kstack_end(sp)) {
- 		unsigned long __user *p =
- 			(unsigned long __user *)(unsigned long)sp++;
--		if (__get_user(addr, p)) {
-+		if (__get_data(addr, p, user)) {
- 			printk("%s (Bad stack address)", loglvl);
- 			break;
- 		}
-@@ -141,7 +142,7 @@ __setup("raw_show_trace", set_raw_show_trace);
- #endif
- 
- static void show_backtrace(struct task_struct *task, const struct pt_regs *regs,
--			   const char *loglvl)
-+			   const char *loglvl, bool user)
- {
- 	unsigned long sp = regs->regs[29];
- 	unsigned long ra = regs->regs[31];
-@@ -151,7 +152,7 @@ static void show_backtrace(struct task_struct *task, const struct pt_regs *regs,
- 		task = current;
- 
- 	if (raw_show_trace || user_mode(regs) || !__kernel_text_address(pc)) {
--		show_raw_backtrace(sp, loglvl);
-+		show_raw_backtrace(sp, loglvl, user);
- 		return;
- 	}
- 	printk("%sCall Trace:\n", loglvl);
-@@ -167,7 +168,7 @@ static void show_backtrace(struct task_struct *task, const struct pt_regs *regs,
-  * with at least a bit of error checking ...
-  */
- static void show_stacktrace(struct task_struct *task,
--	const struct pt_regs *regs, const char *loglvl)
-+	const struct pt_regs *regs, const char *loglvl, bool user)
- {
- 	const int field = 2 * sizeof(unsigned long);
- 	long stackdata;
-@@ -186,7 +187,7 @@ static void show_stacktrace(struct task_struct *task,
- 			break;
- 		}
- 
--		if (__get_user(stackdata, sp++)) {
-+		if (__get_data(stackdata, sp++, user)) {
- 			pr_cont(" (Bad stack address)");
- 			break;
- 		}
-@@ -195,13 +196,12 @@ static void show_stacktrace(struct task_struct *task,
- 		i++;
- 	}
- 	pr_cont("\n");
--	show_backtrace(task, regs, loglvl);
-+	show_backtrace(task, regs, loglvl, user);
- }
- 
- void show_stack(struct task_struct *task, unsigned long *sp, const char *loglvl)
- {
- 	struct pt_regs regs;
--	mm_segment_t old_fs = get_fs();
- 
- 	regs.cp0_status = KSU_KERNEL;
- 	if (sp) {
-@@ -217,16 +217,10 @@ void show_stack(struct task_struct *task, unsigned long *sp, const char *loglvl)
- 			prepare_frametrace(&regs);
- 		}
- 	}
--	/*
--	 * show_stack() deals exclusively with kernel mode, so be sure to access
--	 * the stack in the kernel (not user) address space.
--	 */
--	set_fs(KERNEL_DS);
--	show_stacktrace(task, &regs, loglvl);
--	set_fs(old_fs);
-+	show_stacktrace(task, &regs, loglvl, false);
- }
- 
--static void show_code(unsigned int __user *pc)
-+static void show_code(unsigned int __user *pc, bool user)
- {
- 	long i;
- 	unsigned short __user *pc16 = NULL;
-@@ -237,7 +231,8 @@ static void show_code(unsigned int __user *pc)
- 		pc16 = (unsigned short __user *)((unsigned long)pc & ~1);
- 	for(i = -3 ; i < 6 ; i++) {
- 		unsigned int insn;
--		if (pc16 ? __get_user(insn, pc16 + i) : __get_user(insn, pc + i)) {
-+		if (pc16 ? __get_data(insn, pc16 + i, user) :
-+			   __get_data(insn, pc + i, user)) {
- 			pr_cont(" (Bad address in epc)\n");
- 			break;
- 		}
-@@ -356,7 +351,6 @@ void show_regs(struct pt_regs *regs)
- void show_registers(struct pt_regs *regs)
- {
- 	const int field = 2 * sizeof(unsigned long);
--	mm_segment_t old_fs = get_fs();
- 
- 	__show_regs(regs);
- 	print_modules();
-@@ -371,13 +365,9 @@ void show_registers(struct pt_regs *regs)
- 			printk("*HwTLS: %0*lx\n", field, tls);
- 	}
- 
--	if (!user_mode(regs))
--		/* Necessary for getting the correct stack content */
--		set_fs(KERNEL_DS);
--	show_stacktrace(current, regs, KERN_DEFAULT);
--	show_code((unsigned int __user *) regs->cp0_epc);
-+	show_stacktrace(current, regs, KERN_DEFAULT, user_mode(regs));
-+	show_code((unsigned int __user *) regs->cp0_epc, user_mode(regs));
- 	printk("\n");
--	set_fs(old_fs);
- }
- 
- static DEFINE_RAW_SPINLOCK(die_lock);
-@@ -1022,18 +1012,14 @@ asmlinkage void do_bp(struct pt_regs *regs)
- 	unsigned long epc = msk_isa16_mode(exception_epc(regs));
- 	unsigned int opcode, bcode;
- 	enum ctx_state prev_state;
--	mm_segment_t seg;
--
--	seg = get_fs();
--	if (!user_mode(regs))
--		set_fs(KERNEL_DS);
-+	bool user = user_mode(regs);
- 
- 	prev_state = exception_enter();
- 	current->thread.trap_nr = (regs->cp0_cause >> 2) & 0x1f;
- 	if (get_isa16_mode(regs->cp0_epc)) {
- 		u16 instr[2];
- 
--		if (__get_user(instr[0], (u16 __user *)epc))
-+		if (__get_data(instr[0], (u16 __user *)epc, user))
- 			goto out_sigsegv;
- 
- 		if (!cpu_has_mmips) {
-@@ -1044,13 +1030,13 @@ asmlinkage void do_bp(struct pt_regs *regs)
- 			bcode = instr[0] & 0xf;
- 		} else {
- 			/* 32-bit microMIPS BREAK */
--			if (__get_user(instr[1], (u16 __user *)(epc + 2)))
-+			if (__get_data(instr[1], (u16 __user *)(epc + 2), user))
- 				goto out_sigsegv;
- 			opcode = (instr[0] << 16) | instr[1];
- 			bcode = (opcode >> 6) & ((1 << 20) - 1);
- 		}
- 	} else {
--		if (__get_user(opcode, (unsigned int __user *)epc))
-+		if (__get_data(opcode, (unsigned int __user *)epc, user))
- 			goto out_sigsegv;
- 		bcode = (opcode >> 6) & ((1 << 20) - 1);
- 	}
-@@ -1100,7 +1086,6 @@ asmlinkage void do_bp(struct pt_regs *regs)
- 	do_trap_or_bp(regs, bcode, TRAP_BRKPT, "Break");
- 
- out:
--	set_fs(seg);
- 	exception_exit(prev_state);
- 	return;
- 
-@@ -1114,25 +1099,21 @@ asmlinkage void do_tr(struct pt_regs *regs)
- 	u32 opcode, tcode = 0;
- 	enum ctx_state prev_state;
- 	u16 instr[2];
--	mm_segment_t seg;
-+	bool user = user_mode(regs);
- 	unsigned long epc = msk_isa16_mode(exception_epc(regs));
- 
--	seg = get_fs();
--	if (!user_mode(regs))
--		set_fs(KERNEL_DS);
--
- 	prev_state = exception_enter();
- 	current->thread.trap_nr = (regs->cp0_cause >> 2) & 0x1f;
- 	if (get_isa16_mode(regs->cp0_epc)) {
--		if (__get_user(instr[0], (u16 __user *)(epc + 0)) ||
--		    __get_user(instr[1], (u16 __user *)(epc + 2)))
-+		if (__get_data(instr[0], (u16 __user *)(epc + 0), user) ||
-+		    __get_data(instr[1], (u16 __user *)(epc + 2), user))
- 			goto out_sigsegv;
- 		opcode = (instr[0] << 16) | instr[1];
- 		/* Immediate versions don't provide a code.  */
- 		if (!(opcode & OPCODE))
- 			tcode = (opcode >> 12) & ((1 << 4) - 1);
- 	} else {
--		if (__get_user(opcode, (u32 __user *)epc))
-+		if (__get_data(opcode, (u32 __user *)epc, user))
- 			goto out_sigsegv;
- 		/* Immediate versions don't provide a code.  */
- 		if (!(opcode & OPCODE))
-@@ -1142,7 +1123,6 @@ asmlinkage void do_tr(struct pt_regs *regs)
- 	do_trap_or_bp(regs, tcode, 0, "Trap");
- 
- out:
--	set_fs(seg);
- 	exception_exit(prev_state);
- 	return;
- 
-@@ -1591,7 +1571,6 @@ asmlinkage void do_mcheck(struct pt_regs *regs)
- {
- 	int multi_match = regs->cp0_status & ST0_TS;
- 	enum ctx_state prev_state;
--	mm_segment_t old_fs = get_fs();
- 
- 	prev_state = exception_enter();
- 	show_regs(regs);
-@@ -1602,12 +1581,7 @@ asmlinkage void do_mcheck(struct pt_regs *regs)
- 		dump_tlb_all();
- 	}
- 
--	if (!user_mode(regs))
--		set_fs(KERNEL_DS);
--
--	show_code((unsigned int __user *) regs->cp0_epc);
--
--	set_fs(old_fs);
-+	show_code((unsigned int __user *) regs->cp0_epc, user_mode(regs));
- 
- 	/*
- 	 * Some chips may have other causes of machine check (e.g. SB1
-diff --git a/arch/mips/kernel/unaligned.c b/arch/mips/kernel/unaligned.c
-index 126a5f3f4e4c..fa005cdee0c7 100644
---- a/arch/mips/kernel/unaligned.c
-+++ b/arch/mips/kernel/unaligned.c
-@@ -112,9 +112,8 @@ static void emulate_load_store_insn(struct pt_regs *regs,
- 	unsigned long origpc, orig31, value;
- 	union mips_instruction insn;
- 	unsigned int res;
--#ifdef	CONFIG_EVA
--	mm_segment_t seg;
--#endif
-+	bool user = user_mode(regs);
-+
- 	origpc = (unsigned long)pc;
- 	orig31 = regs->regs[31];
- 
-@@ -123,7 +122,7 @@ static void emulate_load_store_insn(struct pt_regs *regs,
- 	/*
- 	 * This load never faults.
- 	 */
--	__get_user(insn.word, pc);
-+	__get_data(insn.word, pc, user);
- 
- 	switch (insn.i_format.opcode) {
- 		/*
-@@ -163,7 +162,7 @@ static void emulate_load_store_insn(struct pt_regs *regs,
- 		if (insn.dsp_format.func == lx_op) {
- 			switch (insn.dsp_format.op) {
- 			case lwx_op:
--				if (!access_ok(addr, 4))
-+				if (user && !access_ok(addr, 4))
- 					goto sigbus;
- 				LoadW(addr, value, res);
- 				if (res)
-@@ -172,7 +171,7 @@ static void emulate_load_store_insn(struct pt_regs *regs,
- 				regs->regs[insn.dsp_format.rd] = value;
- 				break;
- 			case lhx_op:
--				if (!access_ok(addr, 2))
-+				if (user && !access_ok(addr, 2))
- 					goto sigbus;
- 				LoadHW(addr, value, res);
- 				if (res)
-@@ -191,93 +190,66 @@ static void emulate_load_store_insn(struct pt_regs *regs,
- 			 * memory, so we need to "switch" the address limit to
- 			 * user space, so that address check can work properly.
- 			 */
--			seg = force_uaccess_begin();
- 			switch (insn.spec3_format.func) {
- 			case lhe_op:
--				if (!access_ok(addr, 2)) {
--					force_uaccess_end(seg);
-+				if (!access_ok(addr, 2))
- 					goto sigbus;
--				}
- 				LoadHWE(addr, value, res);
--				if (res) {
--					force_uaccess_end(seg);
-+				if (res)
- 					goto fault;
--				}
- 				compute_return_epc(regs);
- 				regs->regs[insn.spec3_format.rt] = value;
- 				break;
- 			case lwe_op:
--				if (!access_ok(addr, 4)) {
--					force_uaccess_end(seg);
-+				if (!access_ok(addr, 4))
- 					goto sigbus;
--				}
- 				LoadWE(addr, value, res);
--				if (res) {
--					force_uaccess_end(seg);
-+				if (res)
- 					goto fault;
--				}
- 				compute_return_epc(regs);
- 				regs->regs[insn.spec3_format.rt] = value;
- 				break;
- 			case lhue_op:
--				if (!access_ok(addr, 2)) {
--					force_uaccess_end(seg);
-+				if (!access_ok(addr, 2))
- 					goto sigbus;
--				}
- 				LoadHWUE(addr, value, res);
--				if (res) {
--					force_uaccess_end(seg);
-+				if (res)
- 					goto fault;
--				}
- 				compute_return_epc(regs);
- 				regs->regs[insn.spec3_format.rt] = value;
- 				break;
- 			case she_op:
--				if (!access_ok(addr, 2)) {
--					force_uaccess_end(seg);
-+				if (!access_ok(addr, 2))
- 					goto sigbus;
--				}
- 				compute_return_epc(regs);
- 				value = regs->regs[insn.spec3_format.rt];
- 				StoreHWE(addr, value, res);
--				if (res) {
--					force_uaccess_end(seg);
-+				if (res)
- 					goto fault;
--				}
- 				break;
- 			case swe_op:
--				if (!access_ok(addr, 4)) {
--					force_uaccess_end(seg);
-+				if (!access_ok(addr, 4))
- 					goto sigbus;
--				}
- 				compute_return_epc(regs);
- 				value = regs->regs[insn.spec3_format.rt];
- 				StoreWE(addr, value, res);
--				if (res) {
--					force_uaccess_end(seg);
-+				if (res)
- 					goto fault;
--				}
- 				break;
- 			default:
--				force_uaccess_end(seg);
- 				goto sigill;
- 			}
--			force_uaccess_end(seg);
- 		}
- #endif
- 		break;
- 	case lh_op:
--		if (!access_ok(addr, 2))
-+		if (user && !access_ok(addr, 2))
- 			goto sigbus;
- 
--		if (IS_ENABLED(CONFIG_EVA)) {
--			if (uaccess_kernel())
--				LoadHW(addr, value, res);
--			else
--				LoadHWE(addr, value, res);
--		} else {
-+		if (IS_ENABLED(CONFIG_EVA) && user)
-+			LoadHWE(addr, value, res);
-+		else
- 			LoadHW(addr, value, res);
--		}
- 
- 		if (res)
- 			goto fault;
-@@ -286,17 +258,13 @@ static void emulate_load_store_insn(struct pt_regs *regs,
- 		break;
- 
- 	case lw_op:
--		if (!access_ok(addr, 4))
-+		if (user && !access_ok(addr, 4))
- 			goto sigbus;
- 
--		if (IS_ENABLED(CONFIG_EVA)) {
--			if (uaccess_kernel())
--				LoadW(addr, value, res);
--			else
--				LoadWE(addr, value, res);
--		} else {
-+		if (IS_ENABLED(CONFIG_EVA) && user)
-+			LoadWE(addr, value, res);
-+		else
- 			LoadW(addr, value, res);
--		}
- 
- 		if (res)
- 			goto fault;
-@@ -305,17 +273,13 @@ static void emulate_load_store_insn(struct pt_regs *regs,
- 		break;
- 
- 	case lhu_op:
--		if (!access_ok(addr, 2))
-+		if (user && !access_ok(addr, 2))
- 			goto sigbus;
- 
--		if (IS_ENABLED(CONFIG_EVA)) {
--			if (uaccess_kernel())
--				LoadHWU(addr, value, res);
--			else
--				LoadHWUE(addr, value, res);
--		} else {
-+		if (IS_ENABLED(CONFIG_EVA) && user)
-+			LoadHWUE(addr, value, res);
-+		else
- 			LoadHWU(addr, value, res);
--		}
- 
- 		if (res)
- 			goto fault;
-@@ -332,7 +296,7 @@ static void emulate_load_store_insn(struct pt_regs *regs,
- 		 * would blow up, so for now we don't handle unaligned 64-bit
- 		 * instructions on 32-bit kernels.
- 		 */
--		if (!access_ok(addr, 4))
-+		if (user && !access_ok(addr, 4))
- 			goto sigbus;
- 
- 		LoadWU(addr, value, res);
-@@ -355,7 +319,7 @@ static void emulate_load_store_insn(struct pt_regs *regs,
- 		 * would blow up, so for now we don't handle unaligned 64-bit
- 		 * instructions on 32-bit kernels.
- 		 */
--		if (!access_ok(addr, 8))
-+		if (user && !access_ok(addr, 8))
- 			goto sigbus;
- 
- 		LoadDW(addr, value, res);
-@@ -370,40 +334,32 @@ static void emulate_load_store_insn(struct pt_regs *regs,
- 		goto sigill;
- 
- 	case sh_op:
--		if (!access_ok(addr, 2))
-+		if (user && !access_ok(addr, 2))
- 			goto sigbus;
- 
- 		compute_return_epc(regs);
- 		value = regs->regs[insn.i_format.rt];
- 
--		if (IS_ENABLED(CONFIG_EVA)) {
--			if (uaccess_kernel())
--				StoreHW(addr, value, res);
--			else
--				StoreHWE(addr, value, res);
--		} else {
-+		if (IS_ENABLED(CONFIG_EVA) && user)
-+			StoreHWE(addr, value, res);
-+		else
- 			StoreHW(addr, value, res);
--		}
- 
- 		if (res)
- 			goto fault;
- 		break;
- 
- 	case sw_op:
--		if (!access_ok(addr, 4))
-+		if (user && !access_ok(addr, 4))
- 			goto sigbus;
- 
- 		compute_return_epc(regs);
- 		value = regs->regs[insn.i_format.rt];
- 
--		if (IS_ENABLED(CONFIG_EVA)) {
--			if (uaccess_kernel())
--				StoreW(addr, value, res);
--			else
--				StoreWE(addr, value, res);
--		} else {
-+		if (IS_ENABLED(CONFIG_EVA) && user)
-+			StoreWE(addr, value, res);
-+		else
- 			StoreW(addr, value, res);
--		}
- 
- 		if (res)
- 			goto fault;
-@@ -418,7 +374,7 @@ static void emulate_load_store_insn(struct pt_regs *regs,
- 		 * would blow up, so for now we don't handle unaligned 64-bit
- 		 * instructions on 32-bit kernels.
- 		 */
--		if (!access_ok(addr, 8))
-+		if (user && !access_ok(addr, 8))
- 			goto sigbus;
- 
- 		compute_return_epc(regs);
-@@ -626,6 +582,7 @@ static void emulate_load_store_microMIPS(struct pt_regs *regs,
- 	unsigned long origpc, contpc;
- 	union mips_instruction insn;
- 	struct mm_decoded_insn mminsn;
-+	bool user = user_mode(regs);
- 
- 	origpc = regs->cp0_epc;
- 	orig31 = regs->regs[31];
-@@ -689,7 +646,7 @@ static void emulate_load_store_microMIPS(struct pt_regs *regs,
- 			if (reg == 31)
- 				goto sigbus;
- 
--			if (!access_ok(addr, 8))
-+			if (user && !access_ok(addr, 8))
- 				goto sigbus;
- 
- 			LoadW(addr, value, res);
-@@ -708,7 +665,7 @@ static void emulate_load_store_microMIPS(struct pt_regs *regs,
- 			if (reg == 31)
- 				goto sigbus;
- 
--			if (!access_ok(addr, 8))
-+			if (user && !access_ok(addr, 8))
- 				goto sigbus;
- 
- 			value = regs->regs[reg];
-@@ -728,7 +685,7 @@ static void emulate_load_store_microMIPS(struct pt_regs *regs,
- 			if (reg == 31)
- 				goto sigbus;
- 
--			if (!access_ok(addr, 16))
-+			if (user && !access_ok(addr, 16))
- 				goto sigbus;
- 
- 			LoadDW(addr, value, res);
-@@ -751,7 +708,7 @@ static void emulate_load_store_microMIPS(struct pt_regs *regs,
- 			if (reg == 31)
- 				goto sigbus;
- 
--			if (!access_ok(addr, 16))
-+			if (user && !access_ok(addr, 16))
- 				goto sigbus;
- 
- 			value = regs->regs[reg];
-@@ -774,10 +731,10 @@ static void emulate_load_store_microMIPS(struct pt_regs *regs,
- 			if ((rvar > 9) || !reg)
- 				goto sigill;
- 			if (reg & 0x10) {
--				if (!access_ok(addr, 4 * (rvar + 1)))
-+				if (user && !access_ok(addr, 4 * (rvar + 1)))
- 					goto sigbus;
- 			} else {
--				if (!access_ok(addr, 4 * rvar))
-+				if (user && !access_ok(addr, 4 * rvar))
- 					goto sigbus;
- 			}
- 			if (rvar == 9)
-@@ -810,10 +767,10 @@ static void emulate_load_store_microMIPS(struct pt_regs *regs,
- 			if ((rvar > 9) || !reg)
- 				goto sigill;
- 			if (reg & 0x10) {
--				if (!access_ok(addr, 4 * (rvar + 1)))
-+				if (user && !access_ok(addr, 4 * (rvar + 1)))
- 					goto sigbus;
- 			} else {
--				if (!access_ok(addr, 4 * rvar))
-+				if (user && !access_ok(addr, 4 * rvar))
- 					goto sigbus;
- 			}
- 			if (rvar == 9)
-@@ -847,10 +804,10 @@ static void emulate_load_store_microMIPS(struct pt_regs *regs,
- 			if ((rvar > 9) || !reg)
- 				goto sigill;
- 			if (reg & 0x10) {
--				if (!access_ok(addr, 8 * (rvar + 1)))
-+				if (user && !access_ok(addr, 8 * (rvar + 1)))
- 					goto sigbus;
- 			} else {
--				if (!access_ok(addr, 8 * rvar))
-+				if (user && !access_ok(addr, 8 * rvar))
- 					goto sigbus;
- 			}
- 			if (rvar == 9)
-@@ -888,10 +845,10 @@ static void emulate_load_store_microMIPS(struct pt_regs *regs,
- 			if ((rvar > 9) || !reg)
- 				goto sigill;
- 			if (reg & 0x10) {
--				if (!access_ok(addr, 8 * (rvar + 1)))
-+				if (user && !access_ok(addr, 8 * (rvar + 1)))
- 					goto sigbus;
- 			} else {
--				if (!access_ok(addr, 8 * rvar))
-+				if (user && !access_ok(addr, 8 * rvar))
- 					goto sigbus;
- 			}
- 			if (rvar == 9)
-@@ -1010,7 +967,7 @@ static void emulate_load_store_microMIPS(struct pt_regs *regs,
- 		case mm_lwm16_op:
- 			reg = insn.mm16_m_format.rlist;
- 			rvar = reg + 1;
--			if (!access_ok(addr, 4 * rvar))
-+			if (user && !access_ok(addr, 4 * rvar))
- 				goto sigbus;
- 
- 			for (i = 16; rvar; rvar--, i++) {
-@@ -1030,7 +987,7 @@ static void emulate_load_store_microMIPS(struct pt_regs *regs,
- 		case mm_swm16_op:
- 			reg = insn.mm16_m_format.rlist;
- 			rvar = reg + 1;
--			if (!access_ok(addr, 4 * rvar))
-+			if (user && !access_ok(addr, 4 * rvar))
- 				goto sigbus;
- 
- 			for (i = 16; rvar; rvar--, i++) {
-@@ -1084,7 +1041,7 @@ static void emulate_load_store_microMIPS(struct pt_regs *regs,
- 	}
- 
- loadHW:
--	if (!access_ok(addr, 2))
-+	if (user && !access_ok(addr, 2))
- 		goto sigbus;
- 
- 	LoadHW(addr, value, res);
-@@ -1094,7 +1051,7 @@ static void emulate_load_store_microMIPS(struct pt_regs *regs,
- 	goto success;
- 
- loadHWU:
--	if (!access_ok(addr, 2))
-+	if (user && !access_ok(addr, 2))
- 		goto sigbus;
- 
- 	LoadHWU(addr, value, res);
-@@ -1104,7 +1061,7 @@ static void emulate_load_store_microMIPS(struct pt_regs *regs,
- 	goto success;
- 
- loadW:
--	if (!access_ok(addr, 4))
-+	if (user && !access_ok(addr, 4))
- 		goto sigbus;
- 
- 	LoadW(addr, value, res);
-@@ -1122,7 +1079,7 @@ static void emulate_load_store_microMIPS(struct pt_regs *regs,
- 	 * would blow up, so for now we don't handle unaligned 64-bit
- 	 * instructions on 32-bit kernels.
- 	 */
--	if (!access_ok(addr, 4))
-+	if (user && !access_ok(addr, 4))
- 		goto sigbus;
- 
- 	LoadWU(addr, value, res);
-@@ -1144,7 +1101,7 @@ static void emulate_load_store_microMIPS(struct pt_regs *regs,
- 	 * would blow up, so for now we don't handle unaligned 64-bit
- 	 * instructions on 32-bit kernels.
- 	 */
--	if (!access_ok(addr, 8))
-+	if (user && !access_ok(addr, 8))
- 		goto sigbus;
- 
- 	LoadDW(addr, value, res);
-@@ -1158,7 +1115,7 @@ static void emulate_load_store_microMIPS(struct pt_regs *regs,
- 	goto sigill;
- 
- storeHW:
--	if (!access_ok(addr, 2))
-+	if (user && !access_ok(addr, 2))
- 		goto sigbus;
- 
- 	value = regs->regs[reg];
-@@ -1168,7 +1125,7 @@ static void emulate_load_store_microMIPS(struct pt_regs *regs,
- 	goto success;
- 
- storeW:
--	if (!access_ok(addr, 4))
-+	if (user && !access_ok(addr, 4))
- 		goto sigbus;
- 
- 	value = regs->regs[reg];
-@@ -1186,7 +1143,7 @@ static void emulate_load_store_microMIPS(struct pt_regs *regs,
- 	 * would blow up, so for now we don't handle unaligned 64-bit
- 	 * instructions on 32-bit kernels.
- 	 */
--	if (!access_ok(addr, 8))
-+	if (user && !access_ok(addr, 8))
- 		goto sigbus;
- 
- 	value = regs->regs[reg];
-@@ -1243,6 +1200,7 @@ static void emulate_load_store_MIPS16e(struct pt_regs *regs, void __user * addr)
- 	union mips16e_instruction mips16inst, oldinst;
- 	unsigned int opcode;
- 	int extended = 0;
-+	bool user = user_mode(regs);
- 
- 	origpc = regs->cp0_epc;
- 	orig31 = regs->regs[31];
-@@ -1344,7 +1302,7 @@ static void emulate_load_store_MIPS16e(struct pt_regs *regs, void __user * addr)
- 		goto sigbus;
- 
- 	case MIPS16e_lh_op:
--		if (!access_ok(addr, 2))
-+		if (user && !access_ok(addr, 2))
- 			goto sigbus;
- 
- 		LoadHW(addr, value, res);
-@@ -1355,7 +1313,7 @@ static void emulate_load_store_MIPS16e(struct pt_regs *regs, void __user * addr)
- 		break;
- 
- 	case MIPS16e_lhu_op:
--		if (!access_ok(addr, 2))
-+		if (user && !access_ok(addr, 2))
- 			goto sigbus;
- 
- 		LoadHWU(addr, value, res);
-@@ -1368,7 +1326,7 @@ static void emulate_load_store_MIPS16e(struct pt_regs *regs, void __user * addr)
- 	case MIPS16e_lw_op:
- 	case MIPS16e_lwpc_op:
- 	case MIPS16e_lwsp_op:
--		if (!access_ok(addr, 4))
-+		if (user && !access_ok(addr, 4))
- 			goto sigbus;
- 
- 		LoadW(addr, value, res);
-@@ -1387,7 +1345,7 @@ static void emulate_load_store_MIPS16e(struct pt_regs *regs, void __user * addr)
- 		 * would blow up, so for now we don't handle unaligned 64-bit
- 		 * instructions on 32-bit kernels.
- 		 */
--		if (!access_ok(addr, 4))
-+		if (user && !access_ok(addr, 4))
- 			goto sigbus;
- 
- 		LoadWU(addr, value, res);
-@@ -1411,7 +1369,7 @@ static void emulate_load_store_MIPS16e(struct pt_regs *regs, void __user * addr)
- 		 * would blow up, so for now we don't handle unaligned 64-bit
- 		 * instructions on 32-bit kernels.
- 		 */
--		if (!access_ok(addr, 8))
-+		if (user && !access_ok(addr, 8))
- 			goto sigbus;
- 
- 		LoadDW(addr, value, res);
-@@ -1426,7 +1384,7 @@ static void emulate_load_store_MIPS16e(struct pt_regs *regs, void __user * addr)
- 		goto sigill;
- 
- 	case MIPS16e_sh_op:
--		if (!access_ok(addr, 2))
-+		if (user && !access_ok(addr, 2))
- 			goto sigbus;
- 
- 		MIPS16e_compute_return_epc(regs, &oldinst);
-@@ -1439,7 +1397,7 @@ static void emulate_load_store_MIPS16e(struct pt_regs *regs, void __user * addr)
- 	case MIPS16e_sw_op:
- 	case MIPS16e_swsp_op:
- 	case MIPS16e_i8_op:	/* actually - MIPS16e_swrasp_func */
--		if (!access_ok(addr, 4))
-+		if (user && !access_ok(addr, 4))
- 			goto sigbus;
- 
- 		MIPS16e_compute_return_epc(regs, &oldinst);
-@@ -1459,7 +1417,7 @@ static void emulate_load_store_MIPS16e(struct pt_regs *regs, void __user * addr)
- 		 * would blow up, so for now we don't handle unaligned 64-bit
- 		 * instructions on 32-bit kernels.
- 		 */
--		if (!access_ok(addr, 8))
-+		if (user && !access_ok(addr, 8))
- 			goto sigbus;
- 
- 		MIPS16e_compute_return_epc(regs, &oldinst);
-@@ -1516,7 +1474,6 @@ asmlinkage void do_ade(struct pt_regs *regs)
- {
- 	enum ctx_state prev_state;
- 	unsigned int __user *pc;
--	mm_segment_t seg;
- 
- 	prev_state = exception_enter();
- 	perf_sw_event(PERF_COUNT_SW_ALIGNMENT_FAULTS,
-@@ -1551,24 +1508,14 @@ asmlinkage void do_ade(struct pt_regs *regs)
- 			show_registers(regs);
- 
- 		if (cpu_has_mmips) {
--			seg = get_fs();
--			if (!user_mode(regs))
--				set_fs(KERNEL_DS);
- 			emulate_load_store_microMIPS(regs,
- 				(void __user *)regs->cp0_badvaddr);
--			set_fs(seg);
--
- 			return;
- 		}
- 
- 		if (cpu_has_mips16) {
--			seg = get_fs();
--			if (!user_mode(regs))
--				set_fs(KERNEL_DS);
- 			emulate_load_store_MIPS16e(regs,
- 				(void __user *)regs->cp0_badvaddr);
--			set_fs(seg);
--
- 			return;
- 		}
- 
-@@ -1579,11 +1526,7 @@ asmlinkage void do_ade(struct pt_regs *regs)
- 		show_registers(regs);
- 	pc = (unsigned int __user *)exception_epc(regs);
- 
--	seg = get_fs();
--	if (!user_mode(regs))
--		set_fs(KERNEL_DS);
- 	emulate_load_store_insn(regs, (void __user *)regs->cp0_badvaddr, pc);
--	set_fs(seg);
- 
- 	return;
- 
--- 
-2.29.2
-
+Daniel

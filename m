@@ -8,56 +8,56 @@ X-Spam-Status: No, score=-9.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 30B8BC433E0
-	for <linux-mips@archiver.kernel.org>; Tue, 30 Mar 2021 17:10:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D92E3C433DB
+	for <linux-mips@archiver.kernel.org>; Tue, 30 Mar 2021 17:11:07 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 0DACF619CE
-	for <linux-mips@archiver.kernel.org>; Tue, 30 Mar 2021 17:10:04 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id B0936619D1
+	for <linux-mips@archiver.kernel.org>; Tue, 30 Mar 2021 17:11:07 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232400AbhC3RJc (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 30 Mar 2021 13:09:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52150 "EHLO
+        id S232477AbhC3RKg (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 30 Mar 2021 13:10:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52608 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232367AbhC3RIk (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Tue, 30 Mar 2021 13:08:40 -0400
-Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D7CAC061574;
-        Tue, 30 Mar 2021 10:08:03 -0700 (PDT)
-Received: by mail-pg1-x52a.google.com with SMTP id q10so983880pgj.2;
-        Tue, 30 Mar 2021 10:08:03 -0700 (PDT)
+        with ESMTP id S232400AbhC3RK2 (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Tue, 30 Mar 2021 13:10:28 -0400
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7609C061574;
+        Tue, 30 Mar 2021 10:10:28 -0700 (PDT)
+Received: by mail-pl1-x629.google.com with SMTP id g10so6497615plt.8;
+        Tue, 30 Mar 2021 10:10:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=subject:to:references:from:message-id:date:user-agent:mime-version
          :in-reply-to:content-language:content-transfer-encoding;
-        bh=zjYrAF4ZzvpKQ1l5vfNst6OJLZcB5yoAFqCigpxLEP0=;
-        b=lglQoa/2FLvuVXX570JvH4L8xT8TGJVZSdeKR3lhkGTGWal0tJBLqsaSIcKqaJvrWy
-         EEbbSOKSVy6Gtd+wpo9lLjGrnGZN4ZkzPlJAWWibYZCjg6u4LDmnRHo9FWL8SJA0XtAF
-         rZVb7hymXHkOc8WbDdumYn6F3MmtgrCpSVIGYM2IipmbeAglVNWGt84sH7bTwXQrQ68d
-         +bnsdh4QGMQZGwwe3/JX2zfNNFcbwknsGU+aFRC0d1kvz+DXIZQ4joTYR1YaTfRkGoB7
-         UYhBMSkuTFSx4s/NxhqKzXTlkhA8HMNNKmMIcRjHl9rtZSqzmxbRtyiScb29/IEzF3ob
-         ++VA==
+        bh=L5BSH6Fc1zfxMGrlUaI9HN5laBUuyjNlDLOWtR8mnqM=;
+        b=BI4ixLmc8GxIB6RcpoVzm1e64qgdZ/grRtIdBmmHU9LoT5dmjZGvNZD7Fcmm+dDnEo
+         3imZXua8sxCJV4kst806+xUr2zACmuPDyxNaVLJ4KPifbUqTmqJEuVL0GpAE3TOJfHbW
+         0Nr/+NXNI33ZHlfKXTqV7wsC340dSCHTVKhfgXyLBJkgE1iXNf2jip4Bj18cvS+lZIOL
+         wqzMZLY7rg8OqZeRH3QI4P+/o4Spy9gf+CXaqTUdHpIrDL/v+maFh69ABShr2stT0E1f
+         zby2JA8Qwyq0AYYSg1cSMYIrteQYbqytpCO7014QuYOpuiOg47lCPG7jMsN3t4VO0A0R
+         KpOg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=zjYrAF4ZzvpKQ1l5vfNst6OJLZcB5yoAFqCigpxLEP0=;
-        b=jaJdz+TuAafZOwXs3C0SHJkB+5xp4gY4tJaqbB7pCBTUOcNBPBNJGWkTegaZq3CS1n
-         e8bWqL0a74LjyUI86OmVTD2Pjbf0uhR3uLeZ/4ihPJO4v7Pa8RP3JmwbLjsGsqu8CRO9
-         BHPKS4c09/h9rF5e/w5usROLXvUaiOBUwqQ72JYXj+levAvqkEkxmVBxqrdXC9QejSSd
-         zJIJHng8vxDd+DAGma2/4+gJ9++r4Ncp1tMDnio/UeKCFbTQ8XnQn3jSPLcN8NIJgQPQ
-         akFhdM+F6SS+VPxHAMUswHzJI1SZ2HAKvwD2TUHyH1zktIpsEpdhQwzvo4ssP6b5Ji44
-         Xr5g==
-X-Gm-Message-State: AOAM5333YO1+6tqb+WzKh/DIDfhlT5QEmW1kSjB5rgiVE72NMJ1Vq11Q
-        hMn0fCRO8hKkbxOGEHhJ/xVhj83c3kk=
-X-Google-Smtp-Source: ABdhPJzCefx57UoP0dIwbaDwdrLKEqTnjJy/7LgNcochkJg1DOW36jTnpkFq+CNjh8SuXiILGdUhmQ==
-X-Received: by 2002:a62:928f:0:b029:1ef:2370:2600 with SMTP id o137-20020a62928f0000b02901ef23702600mr31622202pfd.9.1617124082297;
-        Tue, 30 Mar 2021 10:08:02 -0700 (PDT)
+        bh=L5BSH6Fc1zfxMGrlUaI9HN5laBUuyjNlDLOWtR8mnqM=;
+        b=OXl8darI65xvGcirmybXlhhGaiSQgD9+RmIumUYmgJ2vYKDiYZdROhA9hDq0tGh2py
+         gd1LqEqcdbbRiv40uwUIltOcDPjj04DGKP/DDKJt8QQUikZ7erz/ykK8TVP7SBRTb8HX
+         LyPhTqi1QTpFvDlRASBDzaUbNbtsnr5WOqMGuketJnlEwi6wJX4pb1ZBDzU9mGpkbdRf
+         /sl9/yNbGAH7MuE6a23O1rdeI81oynDgCUjB2V/U2GBac6b+3J9gM8gDczvTjSdQiLnU
+         j6g/iFw8jx3pc1XwPq27lBOIRNHKiOX25IRl/SKcsgMZIvGuwVCSQAkxvWyU/+HLvKOG
+         HjeQ==
+X-Gm-Message-State: AOAM5305ecBv8rHw3+Vac7Y80TJs/7KZwm954SY2+oFOJlUWxgu8w/Wd
+        z9whBGcOZoUhu9QjC0HNa76Ww5/h4P8=
+X-Google-Smtp-Source: ABdhPJzddz4fB/cvY6SN/0kzbyusWxgerQifHYw8ZrQJ0COePpMXLHjdZfYi513ZNw8TCUJkRPdZhg==
+X-Received: by 2002:a17:902:e74e:b029:e5:bde4:2b80 with SMTP id p14-20020a170902e74eb02900e5bde42b80mr34548480plf.44.1617124228001;
+        Tue, 30 Mar 2021 10:10:28 -0700 (PDT)
 Received: from [10.67.49.104] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id q184sm21064541pfc.78.2021.03.30.10.08.00
+        by smtp.googlemail.com with ESMTPSA id z3sm21227934pff.40.2021.03.30.10.10.25
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 30 Mar 2021 10:08:01 -0700 (PDT)
-Subject: Re: [PATCH v2 2/6] mips: bmips: bcm6328: populate device tree nodes
+        Tue, 30 Mar 2021 10:10:27 -0700 (PDT)
+Subject: Re: [PATCH v2 4/6] mips: bmips: bcm6362: populate device tree nodes
 To:     =?UTF-8?Q?=c3=81lvaro_Fern=c3=a1ndez_Rojas?= <noltari@gmail.com>,
         Florian Fainelli <f.fainelli@gmail.com>,
         Rob Herring <robh+dt@kernel.org>,
@@ -68,14 +68,14 @@ To:     =?UTF-8?Q?=c3=81lvaro_Fern=c3=a1ndez_Rojas?= <noltari@gmail.com>,
         bcm-kernel-feedback-list@broadcom.com, linux-mips@vger.kernel.org,
         devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
 References: <20210314164351.24665-1-noltari@gmail.com>
- <20210314164351.24665-3-noltari@gmail.com>
+ <20210314164351.24665-5-noltari@gmail.com>
 From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <95e75721-ff59-1f75-e622-08a4fef2e460@gmail.com>
-Date:   Tue, 30 Mar 2021 10:07:59 -0700
+Message-ID: <202dda1a-3d56-df99-029f-e2104659fee3@gmail.com>
+Date:   Tue, 30 Mar 2021 10:10:24 -0700
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.7.1
 MIME-Version: 1.0
-In-Reply-To: <20210314164351.24665-3-noltari@gmail.com>
+In-Reply-To: <20210314164351.24665-5-noltari@gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -89,6 +89,7 @@ On 3/14/21 9:43 AM, Álvaro Fernández Rojas wrote:
 > - Move syscon-reboot to subnode.
 > - Add hsspi-osc clock.
 > - Add watchdog.
+> - Add SPI controller.
 > - Add HS SPI controller.
 > - Add NAND controller.
 > - Add USBH PHY.

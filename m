@@ -2,25 +2,26 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id ACFC7C433C1
-	for <linux-mips@archiver.kernel.org>; Tue, 30 Mar 2021 07:14:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A099DC433E0
+	for <linux-mips@archiver.kernel.org>; Tue, 30 Mar 2021 07:14:06 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 6AEC661989
-	for <linux-mips@archiver.kernel.org>; Tue, 30 Mar 2021 07:14:05 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 62A5561989
+	for <linux-mips@archiver.kernel.org>; Tue, 30 Mar 2021 07:14:06 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231278AbhC3HNd (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 30 Mar 2021 03:13:33 -0400
-Received: from mail-m118208.qiye.163.com ([115.236.118.208]:37808 "EHLO
+        id S231246AbhC3HNg (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 30 Mar 2021 03:13:36 -0400
+Received: from mail-m118208.qiye.163.com ([115.236.118.208]:37836 "EHLO
         mail-m118208.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230248AbhC3HNA (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Tue, 30 Mar 2021 03:13:00 -0400
+        with ESMTP id S230344AbhC3HNB (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Tue, 30 Mar 2021 03:13:01 -0400
 Received: from vivo-HP-ProDesk-680-G4-PCI-MT.vivo.xyz (unknown [58.251.74.232])
-        by mail-m118208.qiye.163.com (Hmail) with ESMTPA id 1D894E0131;
-        Tue, 30 Mar 2021 15:03:36 +0800 (CST)
+        by mail-m118208.qiye.163.com (Hmail) with ESMTPA id B2F54E02FC;
+        Tue, 30 Mar 2021 15:05:19 +0800 (CST)
 From:   Wang Qing <wangqing@vivo.com>
 To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
         Adaptec OEM Raid Solutions <aacraid@microsemi.com>,
@@ -38,52 +39,77 @@ To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
         linux-mtd@lists.infradead.org, linux-hams@vger.kernel.org,
         netdev@vger.kernel.org, linux-decnet-user@lists.sourceforge.net
 Cc:     gregkh@linuxfoundation.org
-Subject: [PATCH 0/6] Clean up obsolete TODO files
-Date:   Tue, 30 Mar 2021 15:02:43 +0800
-Message-Id: <1617087773-7183-1-git-send-email-wangqing@vivo.com>
+Subject: [PATCH 4/6] fs/jffs2: Delete obsolete TODO file
+Date:   Tue, 30 Mar 2021 15:02:47 +0800
+Message-Id: <1617087773-7183-5-git-send-email-wangqing@vivo.com>
 X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1617087773-7183-1-git-send-email-wangqing@vivo.com>
+References: <1617087773-7183-1-git-send-email-wangqing@vivo.com>
 X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
-        oVCBIfWUFZH0sYSUJISR1PS0gYVkpNSkxLQ0xDSkxISk5VEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
+        oVCBIfWUFZTBkfQ0wZQ0lCSUNNVkpNSkxLQ0xCSUtNSk9VEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
         FZT0tIVUpKS0hKQ1VLWQY+
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6NAg6FTo5ST8SNDcJPjwVHT8f
-        MhRPCi1VSlVKTUpMS0NMQ0pMTUtMVTMWGhIXVQwaFRwKEhUcOw0SDRRVGBQWRVlXWRILWUFZTkNV
-        SU5KVUxPVUlISVlXWQgBWUFISkNONwY+
-X-HM-Tid: 0a7881f1e60a2c17kusn1d894e0131
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6NhQ6CSo*AT8cQzcyEB5KTiEu
+        IwsaCk5VSlVKTUpMS0NMQklLQkhNVTMWGhIXVQwaFRwKEhUcOw0SDRRVGBQWRVlXWRILWUFZTkNV
+        SU5KVUxPVUlISVlXWQgBWUFPTEhLNwY+
+X-HM-Tid: 0a7881f3797d2c17kusnb2f54e02fc
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-It is mentioned in the official documents of the Linux Foundation and WIKI 
-that you can participate in its development according to the TODO files of 
-each module.
-
-But the TODO files here has not been updated for 15 years, and the function 
+The TODO file here has not been updated for 14 years, and the function 
 development described in the file have been implemented or abandoned.
 
 Its existence will mislead developers seeking to view outdated information.
 
-Wang Qing (6):
-  mips/sgi-ip27: Delete obsolete TODO file
-  scsi/aacraid: Delete obsolete TODO file
-  fs/befs: Delete obsolete TODO file
-  fs/jffs2: Delete obsolete TODO file
-  net/ax25: Delete obsolete TODO file
-  net/decnet: Delete obsolete TODO file
-
- arch/mips/sgi-ip27/TODO   | 19 -------------------
- drivers/scsi/aacraid/TODO |  3 ---
- fs/befs/TODO              | 14 --------------
- fs/jffs2/TODO             | 37 -------------------------------------
- net/ax25/TODO             | 20 --------------------
- net/decnet/TODO           | 40 ----------------------------------------
- 6 files changed, 133 deletions(-)
- delete mode 100644 arch/mips/sgi-ip27/TODO
- delete mode 100644 drivers/scsi/aacraid/TODO
- delete mode 100644 fs/befs/TODO
+Signed-off-by: Wang Qing <wangqing@vivo.com>
+---
+ fs/jffs2/TODO | 37 -------------------------------------
+ 1 file changed, 37 deletions(-)
  delete mode 100644 fs/jffs2/TODO
- delete mode 100644 net/ax25/TODO
- delete mode 100644 net/decnet/TODO
 
+diff --git a/fs/jffs2/TODO b/fs/jffs2/TODO
+deleted file mode 100644
+index ca28964..0000000
+--- a/fs/jffs2/TODO
++++ /dev/null
+@@ -1,37 +0,0 @@
+-
+- - support asynchronous operation -- add a per-fs 'reserved_space' count,
+-   let each outstanding write reserve the _maximum_ amount of physical
+-   space it could take. Let GC flush the outstanding writes because the
+-   reservations will necessarily be pessimistic. With this we could even
+-   do shared writable mmap, if we can have a fs hook for do_wp_page() to
+-   make the reservation.
+- - disable compression in commit_write()?
+- - fine-tune the allocation / GC thresholds
+- - chattr support - turning on/off and tuning compression per-inode
+- - checkpointing (do we need this? scan is quite fast)
+- - make the scan code populate real inodes so read_inode just after 
+-	mount doesn't have to read the flash twice for large files.
+-	Make this a per-inode option, changeable with chattr, so you can
+-	decide which inodes should be in-core immediately after mount.
+- - test, test, test
+-
+- - NAND flash support:
+-	- almost done :)
+-	- use bad block check instead of the hardwired byte check
+-
+- - Optimisations:
+-   - Split writes so they go to two separate blocks rather than just c->nextblock.
+-	By writing _new_ nodes to one block, and garbage-collected REF_PRISTINE
+-	nodes to a different one, we can separate clean nodes from those which
+-	are likely to become dirty, and end up with blocks which are each far
+-	closer to 100% or 0% clean, hence speeding up later GC progress dramatically.
+-   - Stop keeping name in-core with struct jffs2_full_dirent. If we keep the hash in 
+-     the full dirent, we only need to go to the flash in lookup() when we think we've
+-     got a match, and in readdir(). 
+-   - Doubly-linked next_in_ino list to allow us to free obsoleted raw_node_refs immediately?
+-   - Remove size from jffs2_raw_node_frag. 
+-
+-dedekind:
+-1. __jffs2_flush_wbuf() has a strange 'pad' parameter. Eliminate.
+-2. get_sb()->build_fs()->scan() path... Why get_sb() removes scan()'s crap in
+-   case of failure? scan() does not clean everything. Fix.
 -- 
 2.7.4
 

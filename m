@@ -2,77 +2,126 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 06EF0C433E2
-	for <linux-mips@archiver.kernel.org>; Wed, 31 Mar 2021 11:57:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C42DBC433E0
+	for <linux-mips@archiver.kernel.org>; Wed, 31 Mar 2021 11:57:09 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id AB67E619C2
+	by mail.kernel.org (Postfix) with ESMTP id 4A74D619C1
 	for <linux-mips@archiver.kernel.org>; Wed, 31 Mar 2021 11:57:09 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235140AbhCaL4g (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        id S235317AbhCaL4g (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
         Wed, 31 Mar 2021 07:56:36 -0400
-Received: from mx2.suse.de ([195.135.220.15]:51718 "EHLO mx2.suse.de"
+Received: from mx2.suse.de ([195.135.220.15]:51748 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234377AbhCaL4G (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        id S235019AbhCaL4G (ORCPT <rfc822;linux-mips@vger.kernel.org>);
         Wed, 31 Mar 2021 07:56:06 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id BF396B1DE;
-        Wed, 31 Mar 2021 11:56:04 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id A2D03B1E6;
+        Wed, 31 Mar 2021 11:56:05 +0000 (UTC)
 From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+To:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
 Cc:     hch@lst.de
-Subject: [PATCH v2 0/4] MIPS: Remove get_fs/set_fs
-Date:   Wed, 31 Mar 2021 13:55:57 +0200
-Message-Id: <20210331115603.146159-1-tsbogend@alpha.franken.de>
+Subject: [PATCH v2 2/4] MIPS: uaccess: Added __get/__put_kernel_nofault
+Date:   Wed, 31 Mar 2021 13:55:59 +0200
+Message-Id: <20210331115603.146159-3-tsbogend@alpha.franken.de>
 X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20210331115603.146159-1-tsbogend@alpha.franken.de>
+References: <20210331115603.146159-1-tsbogend@alpha.franken.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-This series replaces get_fs/set_fs and removes it from MIPS arch code.
+Added __get/__put_kernel_nofault as preparation for removing
+get/set_fs.
 
-Changes in v2:
-- added copy_from_kernel_nofault_allowed() for !EVA to restrict
-  access of __get/__put_kernel_nofault
-- replaced __get_data macro by helper functions
-- removed leftover set_fs calls in ftrace.c
-- further cleanup uaccess.h
-
-Thomas Bogendoerfer (4):
-  MIPS: kernel: Remove not needed set_fs calls
-  MIPS: uaccess: Added __get/__put_kernel_nofault
-  MIPS: uaccess: Remove get_fs/set_fs call sites
-  MIPS: Remove get_fs/set_fs
-
- arch/mips/Kconfig                   |   1 -
- arch/mips/include/asm/processor.h   |   4 -
- arch/mips/include/asm/thread_info.h |   6 -
- arch/mips/include/asm/uaccess.h     | 436 +++++++++++-----------------
- arch/mips/kernel/access-helper.h    |  53 ++++
- arch/mips/kernel/asm-offsets.c      |   1 -
- arch/mips/kernel/ftrace.c           |   8 -
- arch/mips/kernel/process.c          |   2 -
- arch/mips/kernel/scall32-o32.S      |   4 +-
- arch/mips/kernel/traps.c            | 105 +++----
- arch/mips/kernel/unaligned.c        | 199 +++++--------
- arch/mips/lib/memcpy.S              |  28 +-
- arch/mips/lib/memset.S              |   3 -
- arch/mips/lib/strncpy_user.S        |  48 +--
- arch/mips/lib/strnlen_user.S        |  44 +--
- arch/mips/mm/Makefile               |   4 +
- arch/mips/mm/maccess.c              |  10 +
- 17 files changed, 392 insertions(+), 564 deletions(-)
- create mode 100644 arch/mips/kernel/access-helper.h
+Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+---
+ arch/mips/include/asm/uaccess.h | 24 ++++++++++++++++++++++++
+ arch/mips/mm/Makefile           |  4 ++++
+ arch/mips/mm/maccess.c          | 10 ++++++++++
+ 3 files changed, 38 insertions(+)
  create mode 100644 arch/mips/mm/maccess.c
 
+diff --git a/arch/mips/include/asm/uaccess.h b/arch/mips/include/asm/uaccess.h
+index d273a3857809..c5cab0b8f902 100644
+--- a/arch/mips/include/asm/uaccess.h
++++ b/arch/mips/include/asm/uaccess.h
+@@ -355,6 +355,18 @@ do {									\
+ 	(val) = __gu_tmp.t;						\
+ }
+ 
++#define HAVE_GET_KERNEL_NOFAULT
++
++#define __get_kernel_nofault(dst, src, type, err_label)			\
++do {									\
++	int __gu_err;							\
++									\
++	__get_kernel_common(*((type *)(dst)), sizeof(type),		\
++			    (__force type *)(src));			\
++	if (unlikely(__gu_err))						\
++		goto err_label;						\
++} while (0)
++
+ #ifndef CONFIG_EVA
+ #define __put_kernel_common(ptr, size) __put_user_common(ptr, size)
+ #else
+@@ -483,6 +495,18 @@ do {									\
+ 
+ extern void __put_user_unknown(void);
+ 
++#define __put_kernel_nofault(dst, src, type, err_label)			\
++do {									\
++	type __pu_val;					\
++	int __pu_err = 0;						\
++									\
++	__pu_val = *(__force type *)(src);				\
++	__put_kernel_common(((type *)(dst)), sizeof(type));		\
++	if (unlikely(__pu_err))						\
++		goto err_label;						\
++} while (0)
++
++
+ /*
+  * We're generating jump to subroutines which will be outside the range of
+  * jump instructions
+diff --git a/arch/mips/mm/Makefile b/arch/mips/mm/Makefile
+index 865926a37775..76e3ee8882fa 100644
+--- a/arch/mips/mm/Makefile
++++ b/arch/mips/mm/Makefile
+@@ -22,6 +22,10 @@ else
+ obj-y				+= uasm-mips.o
+ endif
+ 
++ifndef CONFIG_EVA
++obj-y				+= maccess.o
++endif
++
+ obj-$(CONFIG_32BIT)		+= ioremap.o pgtable-32.o
+ obj-$(CONFIG_64BIT)		+= ioremap64.o pgtable-64.o
+ obj-$(CONFIG_HIGHMEM)		+= highmem.o
+diff --git a/arch/mips/mm/maccess.c b/arch/mips/mm/maccess.c
+new file mode 100644
+index 000000000000..58173842c6be
+--- /dev/null
++++ b/arch/mips/mm/maccess.c
+@@ -0,0 +1,10 @@
++// SPDX-License-Identifier: GPL-2.0-only
++
++#include <linux/uaccess.h>
++#include <linux/kernel.h>
++
++bool copy_from_kernel_nofault_allowed(const void *unsafe_src, size_t size)
++{
++	/* highest bit set means kernel space */
++	return (unsigned long)unsafe_src >> (BITS_PER_LONG - 1);
++}
 -- 
 2.29.2
 

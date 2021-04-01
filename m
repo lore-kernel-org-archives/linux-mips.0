@@ -2,47 +2,80 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.7 required=3.0 tests=BAYES_00,DATE_IN_PAST_03_06,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A12CDC001B6
-	for <linux-mips@archiver.kernel.org>; Thu,  1 Apr 2021 17:48:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 613CCC43460
+	for <linux-mips@archiver.kernel.org>; Thu,  1 Apr 2021 17:49:01 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 7AC536101A
-	for <linux-mips@archiver.kernel.org>; Thu,  1 Apr 2021 17:48:08 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 23803611ED
+	for <linux-mips@archiver.kernel.org>; Thu,  1 Apr 2021 17:49:01 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235132AbhDARsE (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 1 Apr 2021 13:48:04 -0400
-Received: from verein.lst.de ([213.95.11.211]:40003 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234062AbhDARnC (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Thu, 1 Apr 2021 13:43:02 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id F18FE68BEB; Thu,  1 Apr 2021 16:04:48 +0200 (CEST)
-Date:   Thu, 1 Apr 2021 16:04:48 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        hch@lst.de
-Subject: Re: [PATCH v3 3/4] MIPS: uaccess: Remove get_fs/set_fs call sites
-Message-ID: <20210401140447.GA24331@lst.de>
-References: <20210401125639.42963-1-tsbogend@alpha.franken.de> <20210401125639.42963-4-tsbogend@alpha.franken.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210401125639.42963-4-tsbogend@alpha.franken.de>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+        id S235110AbhDARs7 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 1 Apr 2021 13:48:59 -0400
+Received: from mail.loongson.cn ([114.242.206.163]:43916 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S235018AbhDARq4 (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Thu, 1 Apr 2021 13:46:56 -0400
+Received: from loongson.localdomain (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9DxX8s0ymVgtFkDAA--.7389S3;
+        Thu, 01 Apr 2021 21:27:17 +0800 (CST)
+From:   Jinyang He <hejinyang@loongson.cn>
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Paul Burton <paulburton@kernel.org>
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH RFC 1/3] MIPS: relocate: Only compile relocs when CONFIG_RELOCATABLE is enabled
+Date:   Thu,  1 Apr 2021 21:27:11 +0800
+Message-Id: <1617283633-18598-2-git-send-email-hejinyang@loongson.cn>
+X-Mailer: git-send-email 2.1.0
+In-Reply-To: <1617283633-18598-1-git-send-email-hejinyang@loongson.cn>
+References: <1617283633-18598-1-git-send-email-hejinyang@loongson.cn>
+X-CM-TRANSID: AQAAf9DxX8s0ymVgtFkDAA--.7389S3
+X-Coremail-Antispam: 1UD129KBjvdXoWrZF15Kry5Kw45ur4fZFyUGFg_yoWxtFg_K3
+        y7Kw4rKw1rJryDW3y7W3WrWryUu3y8urn5CF4qqwn8J34Yyr13GFWDt3sxJF45ua1q9rWr
+        tF93ZFnrCrs2kjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbfxYjsxI4VWkCwAYFVCjjxCrM7AC8VAFwI0_Gr0_Xr1l1xkIjI8I
+        6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l82xGYIkIc2x26280x7
+        IE14v26r18M28IrcIa0xkI8VCY1x0267AKxVWUXVWUCwA2ocxC64kIII0Yj41l84x0c7CE
+        w4AK67xGY2AK021l84ACjcxK6xIIjxv20xvE14v26ryj6F1UM28EF7xvwVC0I7IYx2IY6x
+        kF7I0E14v26F4j6r4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY
+        1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4
+        xG6I80ewAv7VC0I7IYx2IY67AKxVWUAVWUtwAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCa
+        FVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JMxkIecxEwVAFwVW5GwCF04k20xvY0x0EwI
+        xGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480
+        Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7
+        IYx2IY67AKxVWUCVW8JwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k2
+        6cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxV
+        AFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07j46wZUUUUU=
+X-CM-SenderInfo: pkhmx0p1dqwqxorr0wxvrqhubq/
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Thu, Apr 01, 2021 at 02:56:36PM +0200, Thomas Bogendoerfer wrote:
-> Use new helpers to access user/kernel for functions, which are used with
-> user/kernel pointers. Instead of dealing with get_fs/set_fs select
-> user/kernel access via parameter.
+Relocs is used for create relocate information, only CONFIG_RELOCATABLE
+is enabled can it be used.
 
-Looks good,
+Signed-off-by: Jinyang He <hejinyang@loongson.cn>
+---
+ arch/mips/Makefile | 2 ++
+ 1 file changed, 2 insertions(+)
 
-Reviewed-by: Christoph Hellwig <hch@lst.de>
+diff --git a/arch/mips/Makefile b/arch/mips/Makefile
+index e71d587..cb54d86 100644
+--- a/arch/mips/Makefile
++++ b/arch/mips/Makefile
+@@ -17,7 +17,9 @@ archscripts: scripts_basic
+ ifeq ($(CONFIG_CPU_LOONGSON3_WORKAROUNDS),y)
+ 	$(Q)$(MAKE) $(build)=arch/mips/tools loongson3-llsc-check
+ endif
++ifeq ($(CONFIG_RELOCATABLE),y)
+ 	$(Q)$(MAKE) $(build)=arch/mips/boot/tools relocs
++endif
+ 
+ KBUILD_DEFCONFIG := 32r2el_defconfig
+ KBUILD_DTBS      := dtbs
+-- 
+2.1.0
+

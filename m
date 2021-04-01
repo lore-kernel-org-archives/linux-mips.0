@@ -2,252 +2,80 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B1311C433B4
-	for <linux-mips@archiver.kernel.org>; Thu,  1 Apr 2021 17:49:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 263CCC4360C
+	for <linux-mips@archiver.kernel.org>; Thu,  1 Apr 2021 18:03:27 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 8FDAB60234
-	for <linux-mips@archiver.kernel.org>; Thu,  1 Apr 2021 17:49:01 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id D63096112E
+	for <linux-mips@archiver.kernel.org>; Thu,  1 Apr 2021 18:03:26 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235216AbhDARtA (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 1 Apr 2021 13:49:00 -0400
-Received: from mail.loongson.cn ([114.242.206.163]:43912 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S234743AbhDARq4 (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Thu, 1 Apr 2021 13:46:56 -0400
-Received: from loongson.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9DxX8s0ymVgtFkDAA--.7389S4;
-        Thu, 01 Apr 2021 21:27:17 +0800 (CST)
-From:   Jinyang He <hejinyang@loongson.cn>
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Paul Burton <paulburton@kernel.org>
+        id S236799AbhDASDY (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 1 Apr 2021 14:03:24 -0400
+Received: from elvis.franken.de ([193.175.24.41]:44820 "EHLO elvis.franken.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236822AbhDAR6q (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Thu, 1 Apr 2021 13:58:46 -0400
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1lRx0R-0006B4-00; Thu, 01 Apr 2021 15:05:03 +0200
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id 0A5EDC2095; Thu,  1 Apr 2021 14:51:00 +0200 (CEST)
+Date:   Thu, 1 Apr 2021 14:51:00 +0200
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Christoph Hellwig <hch@lst.de>
 Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH RFC 2/3] MIPS: relocate: Use CONFIG_RANDOMIZE_BASE to configure kaslr
-Date:   Thu,  1 Apr 2021 21:27:12 +0800
-Message-Id: <1617283633-18598-3-git-send-email-hejinyang@loongson.cn>
-X-Mailer: git-send-email 2.1.0
-In-Reply-To: <1617283633-18598-1-git-send-email-hejinyang@loongson.cn>
-References: <1617283633-18598-1-git-send-email-hejinyang@loongson.cn>
-X-CM-TRANSID: AQAAf9DxX8s0ymVgtFkDAA--.7389S4
-X-Coremail-Antispam: 1UD129KBjvJXoWxtFyUGw1fJr1fCF1xWw15Arb_yoWxXryrpr
-        s5Ar4kJay8Wr1xJ3yFv34kur98Aan5Wryfua1DK34rX3WSq3W8XF1vqr1kXryvqFW0ka1S
-        gFykWry2yw4FyaUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUB0b7Iv0xC_Kw4lb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I2
-        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI
-        8067AKxVWUXwA2048vs2IY020Ec7CjxVAFwI0_JFI_Gr1l8cAvFVAK0II2c7xJM28CjxkF
-        64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW5JVW7JwA2z4x0Y4vE2Ix0cI8IcV
-        CY1x0267AKxVWxJVW8Jr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIE
-        c7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I
-        8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_JF0_Jw1lYx0Ex4A2jsIE14v26r4j6F4UMcvjeVCF
-        s4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwCY02Avz4vE14v_Xr4l42xK82IYc2Ij64
-        vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8G
-        jcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE2I
-        x0cI8IcVAFwI0_JFI_Gr1lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK
-        8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I
-        0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUk2-eUUUUU
-X-CM-SenderInfo: pkhmx0p1dqwqxorr0wxvrqhubq/
+Subject: Re: [PATCH v2 3/4] MIPS: uaccess: Remove get_fs/set_fs call sites
+Message-ID: <20210401125100.GA9556@alpha.franken.de>
+References: <20210331115603.146159-1-tsbogend@alpha.franken.de>
+ <20210331115603.146159-4-tsbogend@alpha.franken.de>
+ <20210401063055.GB25514@lst.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210401063055.GB25514@lst.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Currently, the difference between using CONFIG_RELOCATABLE and
-CONFIG_RANDOMIZE_BASE is determine_relocation_address().
-CONFIG_RANDOMIZE_BASE achieves randomization, but CONFIG_RELOCATABLE
-relocate the kernel is very limited, currently returns a constant.
-Therefore, abandoned determine_relocation_address() on CONFIG_RELOCATABLE.
-Rename relocate.c to kaslr.c and use CONFIG_RANDOMIZE_BASE to configure
-the kaslr function.
+On Thu, Apr 01, 2021 at 08:30:55AM +0200, Christoph Hellwig wrote:
+> On Wed, Mar 31, 2021 at 01:56:00PM +0200, Thomas Bogendoerfer wrote:
+> > +#define __get_user_nofault(dst, src, type, err_label)			\
+> > +do {									\
+> > +	int __gu_err;							\
+> > +									\
+> > +	__get_user_common(*((type *)(dst)), sizeof(type),		\
+> > +			  (__force type *)(src));			\
+> > +	if (unlikely(__gu_err))						\
+> > +		goto err_label;						\
+> > +} while (0)
+> > +
+> > +
+> > +static inline int __get_addr(unsigned long *a, unsigned long *p, bool user)
+> > +{
+> > +	if (user)
+> > +		__get_user_nofault(a, p, unsigned long, fault);
+> > +	else
+> > +		__get_kernel_nofault(a, p, unsigned long, fault);
+> > +
+> > +	return 0;
+> > +
+> > +fault:
+> > +	return -EFAULT;
+> > +}
+> 
+> Why can't these use plain old get_user and get_kernel_nofault?
+> You "optimize" away the access_ok / get_kernel_nofaul_allowed checks
+> here, but now use totally non-standard and possibly dangerous APIs.
 
-Signed-off-by: Jinyang He <hejinyang@loongson.cn>
----
- arch/mips/cavium-octeon/smp.c                             |  8 ++++----
- arch/mips/generic/init.c                                  |  4 ++--
- arch/mips/include/asm/bootinfo.h                          |  4 ++--
- .../include/asm/mach-cavium-octeon/kernel-entry-init.h    |  4 ++--
- arch/mips/kernel/Makefile                                 |  2 +-
- arch/mips/kernel/head.S                                   |  6 +++---
- arch/mips/kernel/{relocate.c => kaslr.c}                  | 15 ---------------
- 7 files changed, 14 insertions(+), 29 deletions(-)
- rename arch/mips/kernel/{relocate.c => kaslr.c} (97%)
+thanks, I was too deep into the macro wormhole... using standard API
+makes this even look nicer. Posting v3 in a few minutes.
 
-diff --git a/arch/mips/cavium-octeon/smp.c b/arch/mips/cavium-octeon/smp.c
-index 66ce552..dfdbc79 100644
---- a/arch/mips/cavium-octeon/smp.c
-+++ b/arch/mips/cavium-octeon/smp.c
-@@ -28,9 +28,9 @@
- volatile unsigned long octeon_processor_boot = 0xff;
- volatile unsigned long octeon_processor_sp;
- volatile unsigned long octeon_processor_gp;
--#ifdef CONFIG_RELOCATABLE
-+#ifdef CONFIG_RANDOMIZE_BASE
- volatile unsigned long octeon_processor_relocated_kernel_entry;
--#endif /* CONFIG_RELOCATABLE */
-+#endif /* CONFIG_RANDOMIZE_BASE */
- 
- #ifdef CONFIG_HOTPLUG_CPU
- uint64_t octeon_bootloader_entry_addr;
-@@ -190,7 +190,7 @@ static void __init octeon_smp_setup(void)
- }
- 
- 
--#ifdef CONFIG_RELOCATABLE
-+#ifdef CONFIG_RANDOMIZE_BASE
- int plat_post_relocation(long offset)
- {
- 	unsigned long entry = (unsigned long)kernel_entry;
-@@ -200,7 +200,7 @@ int plat_post_relocation(long offset)
- 
- 	return 0;
- }
--#endif /* CONFIG_RELOCATABLE */
-+#endif /* CONFIG_RANDOMIZE_BASE */
- 
- /**
-  * Firmware CPU startup hook
-diff --git a/arch/mips/generic/init.c b/arch/mips/generic/init.c
-index 1842cdd..f7a4e29 100644
---- a/arch/mips/generic/init.c
-+++ b/arch/mips/generic/init.c
-@@ -82,7 +82,7 @@ void __init *plat_get_fdt(void)
- 	return (void *)fdt;
- }
- 
--#ifdef CONFIG_RELOCATABLE
-+#ifdef CONFIG_RANDOMIZE_BASE
- 
- void __init plat_fdt_relocated(void *new_location)
- {
-@@ -97,7 +97,7 @@ void __init plat_fdt_relocated(void *new_location)
- 		fw_arg1 = (unsigned long)new_location;
- }
- 
--#endif /* CONFIG_RELOCATABLE */
-+#endif /* CONFIG_RANDOMIZE_BASE */
- 
- void __init plat_mem_setup(void)
- {
-diff --git a/arch/mips/include/asm/bootinfo.h b/arch/mips/include/asm/bootinfo.h
-index 5be10ece..6b37663 100644
---- a/arch/mips/include/asm/bootinfo.h
-+++ b/arch/mips/include/asm/bootinfo.h
-@@ -169,7 +169,7 @@ static inline void plat_swiotlb_setup(void) {}
-  */
- extern void *plat_get_fdt(void);
- 
--#ifdef CONFIG_RELOCATABLE
-+#ifdef CONFIG_RANDOMIZE_BASE
- 
- /**
-  * plat_fdt_relocated() - Update platform's information about relocated dtb
-@@ -180,7 +180,7 @@ extern void *plat_get_fdt(void);
-  */
- void plat_fdt_relocated(void *new_location);
- 
--#endif /* CONFIG_RELOCATABLE */
-+#endif /* CONFIG_RANDOMIZE_BASE */
- #endif /* CONFIG_USE_OF */
- 
- #endif /* _ASM_BOOTINFO_H */
-diff --git a/arch/mips/include/asm/mach-cavium-octeon/kernel-entry-init.h b/arch/mips/include/asm/mach-cavium-octeon/kernel-entry-init.h
-index c38b38c..e66767d 100644
---- a/arch/mips/include/asm/mach-cavium-octeon/kernel-entry-init.h
-+++ b/arch/mips/include/asm/mach-cavium-octeon/kernel-entry-init.h
-@@ -100,7 +100,7 @@
- 	#
- 
- octeon_spin_wait_boot:
--#ifdef CONFIG_RELOCATABLE
-+#ifdef CONFIG_RANDOMIZE_BASE
- 	PTR_LA	t0, octeon_processor_relocated_kernel_entry
- 	LONG_L	t0, (t0)
- 	beq	zero, t0, 1f
-@@ -109,7 +109,7 @@
- 	jr	t0
- 	nop
- 1:
--#endif /* CONFIG_RELOCATABLE */
-+#endif /* CONFIG_RANDOMIZE_BASE */
- 
- 	# This is the variable where the next core to boot is stored
- 	PTR_LA	t0, octeon_processor_boot
-diff --git a/arch/mips/kernel/Makefile b/arch/mips/kernel/Makefile
-index b4a57f1..bf7ac86 100644
---- a/arch/mips/kernel/Makefile
-+++ b/arch/mips/kernel/Makefile
-@@ -92,7 +92,7 @@ obj-$(CONFIG_I8253)		+= i8253.o
- 
- obj-$(CONFIG_GPIO_TXX9)		+= gpio_txx9.o
- 
--obj-$(CONFIG_RELOCATABLE)	+= relocate.o
-+obj-$(CONFIG_RANDOMIZE_BASE)	+= kaslr.o
- 
- obj-$(CONFIG_KEXEC)		+= machine_kexec.o relocate_kernel.o crash.o
- obj-$(CONFIG_CRASH_DUMP)	+= crash_dump.o
-diff --git a/arch/mips/kernel/head.S b/arch/mips/kernel/head.S
-index b825ed4..a25af1d 100644
---- a/arch/mips/kernel/head.S
-+++ b/arch/mips/kernel/head.S
-@@ -118,7 +118,7 @@ NESTED(kernel_entry, 16, sp)			# kernel entry point
- 	set_saved_sp	sp, t0, t1
- 	PTR_SUBU	sp, 4 * SZREG		# init stack pointer
- 
--#ifdef CONFIG_RELOCATABLE
-+#ifdef CONFIG_RANDOMIZE_BASE
- 	/* Copy kernel and apply the relocations */
- 	jal		relocate_kernel
- 
-@@ -136,9 +136,9 @@ NESTED(kernel_entry, 16, sp)			# kernel entry point
- 	 * newly sync'd icache.
- 	 */
- 	jr.hb		v0
--#else  /* !CONFIG_RELOCATABLE */
-+#else  /* !CONFIG_RANDOMIZE_BASE */
- 	j		start_kernel
--#endif /* !CONFIG_RELOCATABLE */
-+#endif /* !CONFIG_RANDOMIZE_BASE */
- 	END(kernel_entry)
- 
- #ifdef CONFIG_SMP
-diff --git a/arch/mips/kernel/relocate.c b/arch/mips/kernel/kaslr.c
-similarity index 97%
-rename from arch/mips/kernel/relocate.c
-rename to arch/mips/kernel/kaslr.c
-index 499a535..6742d58 100644
---- a/arch/mips/kernel/relocate.c
-+++ b/arch/mips/kernel/kaslr.c
-@@ -188,8 +188,6 @@ static int __init relocate_exception_table(long offset)
- 	return 0;
- }
- 
--#ifdef CONFIG_RANDOMIZE_BASE
--
- static inline __init unsigned long rotate_xor(unsigned long hash,
- 					      const void *area, size_t size)
- {
-@@ -280,19 +278,6 @@ static inline void __init *determine_relocation_address(void)
- 	return RELOCATED(dest);
- }
- 
--#else
--
--static inline void __init *determine_relocation_address(void)
--{
--	/*
--	 * Choose a new address for the kernel
--	 * For now we'll hard code the destination
--	 */
--	return (void *)0xffffffff81000000;
--}
--
--#endif
--
- static inline int __init relocation_addr_valid(void *loc_new)
- {
- 	if ((unsigned long)loc_new & 0x0000ffff) {
+Thomas.
+
 -- 
-2.1.0
-
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]

@@ -7,45 +7,45 @@ X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 91A17C001B9
-	for <linux-mips@archiver.kernel.org>; Fri,  2 Apr 2021 15:18:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E65B7C41603
+	for <linux-mips@archiver.kernel.org>; Fri,  2 Apr 2021 15:18:44 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 6D4016115B
-	for <linux-mips@archiver.kernel.org>; Fri,  2 Apr 2021 15:18:53 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id BC41161166
+	for <linux-mips@archiver.kernel.org>; Fri,  2 Apr 2021 15:18:44 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236372AbhDBPSw (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 2 Apr 2021 11:18:52 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:38234 "EHLO pegase1.c-s.fr"
+        id S236284AbhDBPSn (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 2 Apr 2021 11:18:43 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:18530 "EHLO pegase1.c-s.fr"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235953AbhDBPS1 (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Fri, 2 Apr 2021 11:18:27 -0400
+        id S235695AbhDBPSS (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Fri, 2 Apr 2021 11:18:18 -0400
 Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4FBkG32LP9z9v2mF;
-        Fri,  2 Apr 2021 17:18:19 +0200 (CEST)
+        by localhost (Postfix) with ESMTP id 4FBkFx03zqz9v2m3;
+        Fri,  2 Apr 2021 17:18:13 +0200 (CEST)
 X-Virus-Scanned: Debian amavisd-new at c-s.fr
 Received: from pegase1.c-s.fr ([192.168.12.234])
         by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id l6-zcpN14Qua; Fri,  2 Apr 2021 17:18:19 +0200 (CEST)
+        with ESMTP id A8kam4b7TJbi; Fri,  2 Apr 2021 17:18:12 +0200 (CEST)
 Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4FBkG31Gsmz9v2ls;
-        Fri,  2 Apr 2021 17:18:19 +0200 (CEST)
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4FBkFw53rLz9v2ls;
+        Fri,  2 Apr 2021 17:18:12 +0200 (CEST)
 Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 1C3F28BB7D;
-        Fri,  2 Apr 2021 17:18:21 +0200 (CEST)
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 7C7E18BB7F;
+        Fri,  2 Apr 2021 17:18:14 +0200 (CEST)
 X-Virus-Scanned: amavisd-new at c-s.fr
 Received: from messagerie.si.c-s.fr ([127.0.0.1])
         by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id yvlVdRkNlJmU; Fri,  2 Apr 2021 17:18:20 +0200 (CEST)
+        with ESMTP id H5LeedaB8gob; Fri,  2 Apr 2021 17:18:14 +0200 (CEST)
 Received: from po16121vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 6DEC28BB82;
-        Fri,  2 Apr 2021 17:18:20 +0200 (CEST)
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 25D4A8BB79;
+        Fri,  2 Apr 2021 17:18:14 +0200 (CEST)
 Received: by po16121vm.idsi0.si.c-s.fr (Postfix, from userid 0)
-        id 45A3267989; Fri,  2 Apr 2021 15:18:20 +0000 (UTC)
-Message-Id: <ab0fd4477964cdbf99e3dd2965a455aa3e738e4b.1617375802.git.christophe.leroy@csgroup.eu>
+        id 0385767989; Fri,  2 Apr 2021 15:18:13 +0000 (UTC)
+Message-Id: <9b4899b0abc156eb207b19fe0b24dd5bf0355b99.1617375802.git.christophe.leroy@csgroup.eu>
 In-Reply-To: <cover.1617375802.git.christophe.leroy@csgroup.eu>
 References: <cover.1617375802.git.christophe.leroy@csgroup.eu>
 From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Subject: [PATCH v4 18/20] x86: Convert to GENERIC_CMDLINE
+Subject: [PATCH v4 12/20] nios2: Convert to GENERIC_CMDLINE
 To:     will@kernel.org, danielwa@cisco.com, robh@kernel.org,
         daniel@gimpelevich.san-francisco.ca.us, arnd@kernel.org,
         akpm@linux-foundation.org
@@ -59,7 +59,7 @@ Cc:     linux-arch@vger.kernel.org, devicetree@vger.kernel.org,
         x86@kernel.org, linux-xtensa@linux-xtensa.org,
         linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
         linux-mm@kvack.org
-Date:   Fri,  2 Apr 2021 15:18:20 +0000 (UTC)
+Date:   Fri,  2 Apr 2021 15:18:13 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
@@ -68,122 +68,95 @@ This converts the architecture to GENERIC_CMDLINE.
 
 Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
 ---
- arch/x86/Kconfig        | 45 ++---------------------------------------
- arch/x86/kernel/setup.c | 17 ++--------------
- 2 files changed, 4 insertions(+), 58 deletions(-)
+v4: Added missing selection of CONFIG_GENERIC_CMDLINE in Kconfig
+---
+ arch/nios2/Kconfig        | 25 ++-----------------------
+ arch/nios2/kernel/setup.c | 13 ++++---------
+ 2 files changed, 6 insertions(+), 32 deletions(-)
 
-diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index a20684d56b4b..66b384228ca3 100644
---- a/arch/x86/Kconfig
-+++ b/arch/x86/Kconfig
-@@ -104,6 +104,7 @@ config X86
- 	select ARCH_USE_QUEUED_SPINLOCKS
- 	select ARCH_USE_SYM_ANNOTATIONS
- 	select ARCH_WANT_BATCHED_UNMAP_TLB_FLUSH
-+	select ARCH_WANT_CMDLINE_PREPEND_BY_DEFAULT
- 	select ARCH_WANT_DEFAULT_BPF_JIT	if X86_64
- 	select ARCH_WANTS_DYNAMIC_TASK_STRUCT
- 	select ARCH_WANT_HUGE_PMD_SHARE
-@@ -118,6 +119,7 @@ config X86
- 	select EDAC_SUPPORT
- 	select GENERIC_CLOCKEVENTS_BROADCAST	if X86_64 || (X86_32 && X86_LOCAL_APIC)
- 	select GENERIC_CLOCKEVENTS_MIN_ADJUST
+diff --git a/arch/nios2/Kconfig b/arch/nios2/Kconfig
+index c24955c81c92..6018f3d626f8 100644
+--- a/arch/nios2/Kconfig
++++ b/arch/nios2/Kconfig
+@@ -10,6 +10,7 @@ config NIOS2
+ 	select COMMON_CLK
+ 	select TIMER_OF
+ 	select GENERIC_ATOMIC64
 +	select GENERIC_CMDLINE
- 	select GENERIC_CMOS_UPDATE
- 	select GENERIC_CPU_AUTOPROBE
- 	select GENERIC_CPU_VULNERABILITIES
-@@ -2358,49 +2360,6 @@ choice
+ 	select GENERIC_CPU_DEVICES
+ 	select GENERIC_IRQ_PROBE
+ 	select GENERIC_IRQ_SHOW
+@@ -90,31 +91,9 @@ config NIOS2_ALIGNMENT_TRAP
  
- endchoice
+ comment "Boot options"
  
 -config CMDLINE_BOOL
--	bool "Built-in kernel command line"
--	help
--	  Allow for specifying boot arguments to the kernel at
--	  build time.  On some systems (e.g. embedded ones), it is
--	  necessary or convenient to provide some or all of the
--	  kernel boot arguments with the kernel itself (that is,
--	  to not rely on the boot loader to provide them.)
--
--	  To compile command line arguments into the kernel,
--	  set this option to 'Y', then fill in the
--	  boot arguments in CONFIG_CMDLINE.
--
--	  Systems with fully functional boot loaders (i.e. non-embedded)
--	  should leave this option set to 'N'.
+-	bool "Default bootloader kernel arguments"
+-	default y
 -
 -config CMDLINE
--	string "Built-in kernel command string"
--	depends on CMDLINE_BOOL
+-	string "Default kernel command string"
 -	default ""
+-	depends on CMDLINE_BOOL
 -	help
--	  Enter arguments here that should be compiled into the kernel
--	  image and used at boot time.  If the boot loader provides a
--	  command line at boot time, it is appended to this string to
--	  form the full kernel command line, when the system boots.
--
--	  However, you can use the CONFIG_CMDLINE_FORCE option to
--	  change this behavior.
--
--	  In most cases, the command line (whether built-in or provided
--	  by the boot loader) should specify the device for the root
--	  file system.
+-	  On some platforms, there is currently no way for the boot loader to
+-	  pass arguments to the kernel. For these platforms, you can supply
+-	  some command-line options at build time by entering them here.  In
+-	  other cases you can specify kernel args so that you don't have
+-	  to set them up in board prom initialization routines.
 -
 -config CMDLINE_FORCE
--	bool "Built-in command line overrides boot loader arguments"
--	depends on CMDLINE_BOOL && CMDLINE != ""
+-	bool "Force default kernel command string"
+-	depends on CMDLINE_BOOL
 -	help
--	  Set this option to 'Y' to have the kernel ignore the boot loader
--	  command line, and use ONLY the built-in command line.
+-	  Set this to have arguments from the default kernel command string
+-	  override those passed by the boot loader.
 -
--	  This is used to work around broken boot loaders.  This should
--	  be set to 'N' under normal conditions.
--
- config MODIFY_LDT_SYSCALL
- 	bool "Enable the LDT (local descriptor table)" if EXPERT
+ config NIOS2_CMDLINE_IGNORE_DTB
+ 	bool "Ignore kernel command string from DTB"
+-	depends on CMDLINE_BOOL
++	depends on CMDLINE != ""
+ 	depends on !CMDLINE_FORCE
  	default y
-diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
-index 6f2de58eeb54..3f274b02e51c 100644
---- a/arch/x86/kernel/setup.c
-+++ b/arch/x86/kernel/setup.c
-@@ -5,6 +5,7 @@
-  * This file contains the setup_arch() code, which handles the architecture-dependent
-  * parts of early kernel initialization.
-  */
+ 	help
+diff --git a/arch/nios2/kernel/setup.c b/arch/nios2/kernel/setup.c
+index d2f21957e99c..5b38d3d0ad64 100644
+--- a/arch/nios2/kernel/setup.c
++++ b/arch/nios2/kernel/setup.c
+@@ -20,6 +20,7 @@
+ #include <linux/initrd.h>
+ #include <linux/of_fdt.h>
+ #include <linux/screen_info.h>
 +#include <linux/cmdline.h>
- #include <linux/console.h>
- #include <linux/crash_dump.h>
- #include <linux/dma-map-ops.h>
-@@ -161,9 +162,6 @@ unsigned long saved_video_mode;
- #define RAMDISK_LOAD_FLAG		0x4000
  
- static char __initdata command_line[COMMAND_LINE_SIZE];
--#ifdef CONFIG_CMDLINE_BOOL
--static char __initdata builtin_cmdline[COMMAND_LINE_SIZE] = CONFIG_CMDLINE;
--#endif
+ #include <asm/mmu_context.h>
+ #include <asm/sections.h>
+@@ -108,7 +109,7 @@ asmlinkage void __init nios2_boot_init(unsigned r4, unsigned r5, unsigned r6,
+ 				       unsigned r7)
+ {
+ 	unsigned dtb_passed = 0;
+-	char cmdline_passed[COMMAND_LINE_SIZE] __maybe_unused = { 0, };
++	char cmdline_passed[COMMAND_LINE_SIZE] = { 0, };
  
- #if defined(CONFIG_EDD) || defined(CONFIG_EDD_MODULE)
- struct edd edd;
-@@ -883,18 +881,7 @@ void __init setup_arch(char **cmdline_p)
- 	bss_resource.start = __pa_symbol(__bss_start);
- 	bss_resource.end = __pa_symbol(__bss_stop)-1;
+ #if defined(CONFIG_NIOS2_PASS_CMDLINE)
+ 	if (r4 == 0x534f494e) { /* r4 is magic NIOS */
+@@ -127,14 +128,8 @@ asmlinkage void __init nios2_boot_init(unsigned r4, unsigned r5, unsigned r6,
  
--#ifdef CONFIG_CMDLINE_BOOL
--#ifdef CONFIG_CMDLINE_FORCE
--	strlcpy(boot_command_line, builtin_cmdline, COMMAND_LINE_SIZE);
--#else
--	if (builtin_cmdline[0]) {
--		/* append boot loader cmdline to builtin */
--		strlcat(builtin_cmdline, " ", COMMAND_LINE_SIZE);
--		strlcat(builtin_cmdline, boot_command_line, COMMAND_LINE_SIZE);
--		strlcpy(boot_command_line, builtin_cmdline, COMMAND_LINE_SIZE);
--	}
+ 	early_init_devtree((void *)dtb_passed);
+ 
+-#ifndef CONFIG_CMDLINE_FORCE
+-	if (cmdline_passed[0])
+-		strlcpy(boot_command_line, cmdline_passed, COMMAND_LINE_SIZE);
+-#ifdef CONFIG_NIOS2_CMDLINE_IGNORE_DTB
+-	else
+-		strlcpy(boot_command_line, CONFIG_CMDLINE, COMMAND_LINE_SIZE);
 -#endif
 -#endif
-+	cmdline_build(boot_command_line, boot_command_line);
++	if (cmdline_passed[0] || IS_ENABLED(CONFIG_NIOS2_CMDLINE_IGNORE_DTB))
++		cmdline_build(boot_command_line, cmdline_passed);
  
- 	strlcpy(command_line, boot_command_line, COMMAND_LINE_SIZE);
- 	*cmdline_p = command_line;
+ 	parse_early_param();
+ }
 -- 
 2.25.0
 

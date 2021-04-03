@@ -7,29 +7,29 @@ X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4CFC5C43461
-	for <linux-mips@archiver.kernel.org>; Sat,  3 Apr 2021 11:50:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 080D1C433ED
+	for <linux-mips@archiver.kernel.org>; Sat,  3 Apr 2021 11:50:16 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 1A3FA61243
+	by mail.kernel.org (Postfix) with ESMTP id D7AAE61244
 	for <linux-mips@archiver.kernel.org>; Sat,  3 Apr 2021 11:50:15 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236824AbhDCLuQ (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Sat, 3 Apr 2021 07:50:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38608 "EHLO
+        id S236727AbhDCLuR (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Sat, 3 Apr 2021 07:50:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38616 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236758AbhDCLtO (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Sat, 3 Apr 2021 07:49:14 -0400
+        with ESMTP id S236730AbhDCLtN (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Sat, 3 Apr 2021 07:49:13 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DE0AC0617AB
-        for <linux-mips@vger.kernel.org>; Sat,  3 Apr 2021 04:49:10 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE923C0617AA
+        for <linux-mips@vger.kernel.org>; Sat,  3 Apr 2021 04:49:09 -0700 (PDT)
 Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <ore@pengutronix.de>)
-        id 1lSelp-0000eu-6z; Sat, 03 Apr 2021 13:48:53 +0200
+        id 1lSelp-0000er-6s; Sat, 03 Apr 2021 13:48:53 +0200
 Received: from ore by dude.hi.pengutronix.de with local (Exim 4.92)
         (envelope-from <ore@pengutronix.de>)
-        id 1lSell-0007y7-QX; Sat, 03 Apr 2021 13:48:49 +0200
+        id 1lSell-0007xg-Nc; Sat, 03 Apr 2021 13:48:49 +0200
 From:   Oleksij Rempel <o.rempel@pengutronix.de>
 To:     Andrew Lunn <andrew@lunn.ch>,
         Vivien Didelot <vivien.didelot@gmail.com>,
@@ -42,9 +42,9 @@ Cc:     Oleksij Rempel <o.rempel@pengutronix.de>,
         Pengutronix Kernel Team <kernel@pengutronix.de>,
         netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-mips@vger.kernel.org
-Subject: [PATCH net-next v1 5/9] net: dsa: qca: ar9331: add forwarding database support
-Date:   Sat,  3 Apr 2021 13:48:44 +0200
-Message-Id: <20210403114848.30528-6-o.rempel@pengutronix.de>
+Subject: [PATCH net-next v1 2/9] net: dsa: tag_ar9331: detect IGMP and MLD packets
+Date:   Sat,  3 Apr 2021 13:48:41 +0200
+Message-Id: <20210403114848.30528-3-o.rempel@pengutronix.de>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20210403114848.30528-1-o.rempel@pengutronix.de>
 References: <20210403114848.30528-1-o.rempel@pengutronix.de>
@@ -58,404 +58,183 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-This switch provides simple address resolution table, without VLAN or
-multicast specific information.
-With this patch we are able now to read, modify unicast and mulicast
-addresses.
+The ar9331 switch is not forwarding IGMP and MLD packets if IGMP
+snooping is enabled. This patch is trying to mimic the HW heuristic to take
+same decisions as this switch would do to be able to tell the linux
+bridge if some packet was prabably forwarded or not.
 
 Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
 ---
- drivers/net/dsa/qca/ar9331.c | 356 +++++++++++++++++++++++++++++++++++
- 1 file changed, 356 insertions(+)
+ net/dsa/tag_ar9331.c | 130 +++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 130 insertions(+)
 
-diff --git a/drivers/net/dsa/qca/ar9331.c b/drivers/net/dsa/qca/ar9331.c
-index a3de3598fbf5..4a98f14f31f4 100644
---- a/drivers/net/dsa/qca/ar9331.c
-+++ b/drivers/net/dsa/qca/ar9331.c
-@@ -66,6 +66,47 @@
- #define AR9331_SW_REG_GLOBAL_CTRL		0x30
- #define AR9331_SW_GLOBAL_CTRL_MFS_M		GENMASK(13, 0)
+diff --git a/net/dsa/tag_ar9331.c b/net/dsa/tag_ar9331.c
+index 002cf7f952e2..0ba90e0f91bb 100644
+--- a/net/dsa/tag_ar9331.c
++++ b/net/dsa/tag_ar9331.c
+@@ -6,6 +6,8 @@
  
-+/* Size of the address resolution table (ARL) */
-+#define AR9331_SW_NUM_ARL_RECORDS		1024
-+
-+#define AR9331_SW_REG_ADDR_TABLE_FUNCTION0	0x50
-+#define AR9331_SW_AT_ADDR_BYTES4		GENMASK(31, 24)
-+#define AR9331_SW_AT_ADDR_BYTES5		GENMASK(23, 16)
-+#define AR9331_SW_AT_FULL_VIO			BIT(12)
-+#define AR9331_SW_AT_PORT_NUM			GENMASK(11, 8)
-+#define AR9331_SW_AT_FLUSH_STATIC_EN		BIT(4)
-+#define AR9331_SW_AT_BUSY			BIT(3)
-+#define AR9331_SW_AT_FUNC			GENMASK(2, 0)
-+#define AR9331_SW_AT_FUNC_NOP			0
-+#define AR9331_SW_AT_FUNC_FLUSH_ALL		1
-+#define AR9331_SW_AT_FUNC_LOAD_ENTRY		2
-+#define AR9331_SW_AT_FUNC_PURGE_ENTRY		3
-+#define AR9331_SW_AT_FUNC_FLUSH_ALL_UNLOCKED	4
-+#define AR9331_SW_AT_FUNC_FLUSH_PORT		5
-+#define AR9331_SW_AT_FUNC_GET_NEXT		6
-+#define AR9331_SW_AT_FUNC_FIND_MAC		7
-+
-+#define AR9331_SW_REG_ADDR_TABLE_FUNCTION1	0x54
-+#define AR9331_SW_AT_ADDR_BYTES0		GENMASK(31, 24)
-+#define AR9331_SW_AT_ADDR_BYTES1		GENMASK(23, 16)
-+#define AR9331_SW_AT_ADDR_BYTES2		GENMASK(15, 8)
-+#define AR9331_SW_AT_ADDR_BYTES3		GENMASK(7, 0)
-+
-+#define AR9331_SW_REG_ADDR_TABLE_FUNCTION2	0x58
-+#define AR9331_SW_AT_COPY_TO_CPU		BIT(26)
-+#define AR9331_SW_AT_REDIRECT_TOCPU		BIT(25)
-+#define AR9331_SW_AT_LEAKY_EN			BIT(24)
-+#define AR9331_SW_AT_STATUS			GENMASK(19, 16)
-+#define AR9331_SW_AT_STATUS_EMPTY		0
-+/* STATUS values from 7 to 1 are different aging levels */
-+#define AR9331_SW_AT_STATUS_STATIC		0xf
-+
-+#define AR9331_SW_AT_SA_DROP_EN			BIT(14)
-+#define AR9331_SW_AT_MIRROR_EN			BIT(13)
-+#define AR9331_SW_AT_PRIORITY_EN		BIT(12)
-+#define AR9331_SW_AT_PRIORITY			GENMASK(11, 10)
-+#define AR9331_SW_AT_DES_PORT			GENMASK(5, 0)
-+
- #define AR9331_SW_REG_ADDR_TABLE_CTRL		0x5c
- #define AR9331_SW_AT_ARP_EN			BIT(20)
- #define AR9331_SW_AT_LEARN_CHANGE_EN		BIT(18)
-@@ -266,6 +307,12 @@ struct ar9331_sw_port {
- 	struct spinlock stats_lock;
- };
+ #include <linux/bitfield.h>
+ #include <linux/etherdevice.h>
++#include <linux/igmp.h>
++#include <net/addrconf.h>
  
-+struct ar9331_sw_fdb {
-+	u8 port_mask;
-+	u8 aging;
-+	u8 mac[ETH_ALEN];
-+};
+ #include "dsa_priv.h"
+ 
+@@ -24,6 +26,69 @@
+ #define AR9331_HDR_RESERVED_MASK	GENMASK(5, 4)
+ #define AR9331_HDR_PORT_NUM_MASK	GENMASK(3, 0)
+ 
++/*
++ * This code replicated MLD detection more or less in the same way as the
++ * switch is doing it
++ */
++static int ipv6_mc_check_ip6hdr(struct sk_buff *skb)
++{
++	const struct ipv6hdr *ip6h;
++	unsigned int offset;
 +
- struct ar9331_sw_priv {
- 	struct device *dev;
- 	struct dsa_switch ds;
-@@ -765,6 +812,309 @@ static void ar9331_get_stats64(struct dsa_switch *ds, int port,
- 	spin_unlock(&p->stats_lock);
++	offset = skb_network_offset(skb) + sizeof(*ip6h);
++
++	if (!pskb_may_pull(skb, offset))
++		return -EINVAL;
++
++	ip6h = ipv6_hdr(skb);
++
++	if (ip6h->version != 6)
++		return -EINVAL;
++
++	skb_set_transport_header(skb, offset);
++
++	return 0;
++}
++
++static int ipv6_mc_check_exthdrs(struct sk_buff *skb)
++{
++	const struct ipv6hdr *ip6h;
++	int offset;
++	u8 nexthdr;
++	__be16 frag_off;
++
++	ip6h = ipv6_hdr(skb);
++
++	if (ip6h->nexthdr != IPPROTO_HOPOPTS)
++		return -ENOMSG;
++
++	nexthdr = ip6h->nexthdr;
++	offset = skb_network_offset(skb) + sizeof(*ip6h);
++	offset = ipv6_skip_exthdr(skb, offset, &nexthdr, &frag_off);
++
++	if (offset < 0)
++		return -EINVAL;
++
++	if (nexthdr != IPPROTO_ICMPV6)
++		return -ENOMSG;
++
++	skb_set_transport_header(skb, offset);
++
++	return 0;
++}
++
++static int my_ipv6_mc_check_mld(struct sk_buff *skb)
++{
++	int ret;
++
++	ret = ipv6_mc_check_ip6hdr(skb);
++	if (ret < 0)
++		return ret;
++
++	return ipv6_mc_check_exthdrs(skb);
++}
++
++
+ static struct sk_buff *ar9331_tag_xmit(struct sk_buff *skb,
+ 				       struct net_device *dev)
+ {
+@@ -31,6 +96,13 @@ static struct sk_buff *ar9331_tag_xmit(struct sk_buff *skb,
+ 	__le16 *phdr;
+ 	u16 hdr;
+ 
++	if (dp->stp_state == BR_STATE_BLOCKING) {
++		/* TODO: should we reflect it in the stats? */
++		netdev_warn_once(dev, "%s:%i dropping blocking packet\n",
++				 __func__, __LINE__);
++		return NULL;
++	}
++
+ 	phdr = skb_push(skb, AR9331_HDR_LEN);
+ 
+ 	hdr = FIELD_PREP(AR9331_HDR_VERSION_MASK, AR9331_HDR_VERSION);
+@@ -80,11 +152,69 @@ static struct sk_buff *ar9331_tag_rcv(struct sk_buff *skb,
+ 	return skb;
  }
  
-+static int ar9331_sw_fdb_wait(struct ar9331_sw_priv *priv, u32 *f0)
++static void ar9331_tag_rcv_post(struct sk_buff *skb)
 +{
-+	struct regmap *regmap = priv->regmap;
-+
-+	return regmap_read_poll_timeout(regmap,
-+					AR9331_SW_REG_ADDR_TABLE_FUNCTION0,
-+					*f0, !(*f0 & AR9331_SW_AT_BUSY),
-+					10, 2000);
-+}
-+
-+static int ar9331_sw_port_fdb_write(struct ar9331_sw_priv *priv,
-+				    u32 f0, u32 f1, u32 f2)
-+{
-+	struct regmap *regmap = priv->regmap;
++	const struct iphdr *iph;
++	unsigned char *dest;
 +	int ret;
 +
-+	ret = regmap_write(regmap, AR9331_SW_REG_ADDR_TABLE_FUNCTION2, f2);
-+	if (ret)
-+		return ret;
++	/*
++	 * Since the switch do not tell us which packets was offloaded we assume
++	 * that all of them did. Except:
++	 * - port is not configured for forwarding to any other ports
++	 * - igmp/mld snooping is enabled
++	 * - unicast or multicast flood is disabled on some of bridged ports
++	 * - if we have two port bridge and one is not in forwarding state.
++	 * - packet was dropped on the output port..
++	 * - any other reasons?
++	 */
++	skb->offload_fwd_mark = true;
 +
-+	ret = regmap_write(regmap, AR9331_SW_REG_ADDR_TABLE_FUNCTION1, f1);
-+	if (ret)
-+		return ret;
++	dest = eth_hdr(skb)->h_dest;
++	/*
++	 * Complete not multicast traffic seems to be forwarded automatically,
++	 * as long as multicast and unicast flood are enabled
++	 */
++	if (!(is_multicast_ether_addr(dest) && !is_broadcast_ether_addr(dest)))
++		return;
 +
-+	return regmap_write(regmap, AR9331_SW_REG_ADDR_TABLE_FUNCTION0, f0);
-+}
-+
-+static int ar9331_sw_fdb_next(struct ar9331_sw_priv *priv,
-+			      struct ar9331_sw_fdb *fdb, int port)
-+{
-+	struct regmap *regmap = priv->regmap;
-+	unsigned int status, ports;
-+	u32 f0, f1, f2;
-+	int ret;
-+
-+	/* Keep AT_ADDR_BYTES4/5 to search next entry after current */
-+	ret = regmap_update_bits(regmap, AR9331_SW_REG_ADDR_TABLE_FUNCTION0,
-+				 AR9331_SW_AT_FUNC | AR9331_SW_AT_BUSY,
-+				 AR9331_SW_AT_BUSY |
-+				 FIELD_PREP(AR9331_SW_AT_FUNC,
-+					    AR9331_SW_AT_FUNC_GET_NEXT));
-+	if (ret)
-+		return ret;
-+
-+	ret = ar9331_sw_fdb_wait(priv, &f0);
-+	if (ret)
-+		return ret;
-+
-+	ret = regmap_read(regmap, AR9331_SW_REG_ADDR_TABLE_FUNCTION2, &f2);
-+	if (ret)
-+		return ret;
 +
 +	/*
-+	 * If the hardware returns an MAC != 0 and the AT_STATUS is zero, there
-+	 * is no next valid entry in the address table.
++	 * Documentation do not providing any usable information on how the
++	 * igmp/mld snooping is implemented on this switch. Following
++	 * implementation is based on testing, by sending correct and malformed
++	 * packets to the switch.
++	 * It is not trying to find sane and properly formated packets. Instead
++	 * it is trying to be as close to the switch behavior as possible.
 +	 */
-+	status = FIELD_GET(AR9331_SW_AT_STATUS, f2);
-+	fdb->aging = status;
-+	if (!status)
-+		return 0;
++	skb_reset_network_header(skb);
++	switch (ntohs(skb->protocol)) {
++	case ETH_P_IP:
 +
-+	ret = regmap_read(regmap, AR9331_SW_REG_ADDR_TABLE_FUNCTION1, &f1);
-+	if (ret)
-+		return ret;
-+
-+	fdb->mac[0] = FIELD_GET(AR9331_SW_AT_ADDR_BYTES0, f1);
-+	fdb->mac[1] = FIELD_GET(AR9331_SW_AT_ADDR_BYTES1, f1);
-+	fdb->mac[2] = FIELD_GET(AR9331_SW_AT_ADDR_BYTES2, f1);
-+	fdb->mac[3] = FIELD_GET(AR9331_SW_AT_ADDR_BYTES3, f1);
-+	fdb->mac[4] = FIELD_GET(AR9331_SW_AT_ADDR_BYTES4, f0);
-+	fdb->mac[5] = FIELD_GET(AR9331_SW_AT_ADDR_BYTES5, f0);
-+
-+	ports = FIELD_GET(AR9331_SW_AT_DES_PORT, f2);
-+	if (!(ports & BIT(port)))
-+		return -EAGAIN;
-+
-+	return 0;
-+}
-+
-+static void ar9331_sw_port_fdb_prepare(const unsigned char *mac, u32 *f0,
-+				       u32 *f1, unsigned int func)
-+{
-+	*f1 = FIELD_PREP(AR9331_SW_AT_ADDR_BYTES0, mac[0]) |
-+	      FIELD_PREP(AR9331_SW_AT_ADDR_BYTES1, mac[1]) |
-+	      FIELD_PREP(AR9331_SW_AT_ADDR_BYTES2, mac[2]) |
-+	      FIELD_PREP(AR9331_SW_AT_ADDR_BYTES3, mac[3]);
-+	*f0 = FIELD_PREP(AR9331_SW_AT_ADDR_BYTES4, mac[4]) |
-+	      FIELD_PREP(AR9331_SW_AT_ADDR_BYTES5, mac[5]) |
-+	      FIELD_PREP(AR9331_SW_AT_FUNC, func) | AR9331_SW_AT_BUSY;
-+}
-+
-+static int ar9331_sw_port_fdb_dump(struct dsa_switch *ds, int port,
-+				   dsa_fdb_dump_cb_t *cb, void *data)
-+{
-+	struct ar9331_sw_priv *priv = (struct ar9331_sw_priv *)ds->priv;
-+	int cnt = AR9331_SW_NUM_ARL_RECORDS;
-+	struct ar9331_sw_fdb _fdb = { 0 };
-+	bool is_static;
-+	int ret;
-+	u32 f0;
-+
-+	/*
-+	 * Make sure no pending operation is in progress. Since no timeout and
-+	 * interval values are documented, we use here "seems to be sane, works
-+	 * for me" values.
-+	 */
-+	ret = ar9331_sw_fdb_wait(priv, &f0);
-+	if (ret)
-+		return ret;
-+
-+	/*
-+	 * If the address and the AT_STATUS are both zero, the hardware will
-+	 * search the first valid entry from entry0.
-+	 * If the address is set to zero and the AT_STATUS is not zero, the
-+	 * hardware will discover the next valid entry which has an address
-+	 * of 0x0.
-+	 */
-+	ret = ar9331_sw_port_fdb_write(priv, 0, 0, 0);
-+	if (ret)
-+		return ret;
-+
-+	while (cnt--) {
-+		ret = ar9331_sw_fdb_next(priv, &_fdb, port);
-+		if (ret == -EAGAIN)
-+			continue;
-+		else if (ret)
-+			return ret;
-+
-+		if (!_fdb.aging)
++		if (!pskb_network_may_pull(skb, sizeof(*iph)))
 +			break;
 +
-+		is_static = (_fdb.aging == AR9331_SW_AT_STATUS_STATIC);
-+		ret = cb(_fdb.mac, 0, is_static, data);
-+		if (ret)
-+			break;
++		iph = ip_hdr(skb);
++		if (iph->protocol == IPPROTO_IGMP)
++			skb->offload_fwd_mark = false;
++
++		break;
++	case ETH_P_IPV6:
++		ret = my_ipv6_mc_check_mld(skb);
++		if (!ret)
++			skb->offload_fwd_mark = false;
++
++		break;
 +	}
-+
-+	return ret;
-+}
-+
-+static int ar9331_sw_port_fdb_rmw(struct ar9331_sw_priv *priv,
-+				  const unsigned char *mac,
-+				  u8 port_mask_set,
-+				  u8 port_mask_clr)
-+{
-+	struct regmap *regmap = priv->regmap;
-+	u32 f0, f1, f2;
-+	u8 port_mask, port_mask_new, status, func;
-+	int ret;
-+
-+	ret = ar9331_sw_fdb_wait(priv, &f0);
-+	if (ret)
-+		return ret;
-+
-+	ar9331_sw_port_fdb_prepare(mac, &f0, &f1, AR9331_SW_AT_FUNC_FIND_MAC);
-+
-+	ret = ar9331_sw_port_fdb_write(priv, f0, f1, f2);
-+	if (ret)
-+		return ret;
-+
-+	ret = ar9331_sw_fdb_wait(priv, &f0);
-+	if (ret)
-+		return ret;
-+
-+	ret = regmap_read(regmap, AR9331_SW_REG_ADDR_TABLE_FUNCTION2, &f2);
-+	if (ret)
-+		return ret;
-+
-+	port_mask = FIELD_GET(AR9331_SW_AT_DES_PORT, f2);
-+	status = FIELD_GET(AR9331_SW_AT_STATUS, f2);
-+	if (status > 0 && status < AR9331_SW_AT_STATUS_STATIC) {
-+		dev_err_ratelimited(priv->dev, "%s: found existing dynamic entry on %x\n",
-+				    __func__, port_mask);
-+
-+		if (port_mask_set && port_mask_set != port_mask)
-+			dev_err_ratelimited(priv->dev, "%s: found existing dynamic entry on %x, replacing it with static on %x\n",
-+					    __func__, port_mask, port_mask_set);
-+		port_mask = 0;
-+	} else if (!status && !port_mask_set) {
-+		return 0;
-+	}
-+
-+	port_mask_new = port_mask & ~port_mask_clr;
-+	port_mask_new |= port_mask_set;
-+
-+	if (port_mask_new == port_mask &&
-+	    status == AR9331_SW_AT_STATUS_STATIC) {
-+		dev_info(priv->dev, "%s: no need to overwrite existing valid entry on %x\n",
-+				    __func__, port_mask_new);
-+		return 0;
-+	}
-+
-+	if (port_mask_new) {
-+		func = AR9331_SW_AT_FUNC_LOAD_ENTRY;
-+	} else {
-+		func = AR9331_SW_AT_FUNC_PURGE_ENTRY;
-+		port_mask_new = port_mask;
-+	}
-+
-+	f2 = FIELD_PREP(AR9331_SW_AT_DES_PORT, port_mask_new) |
-+		FIELD_PREP(AR9331_SW_AT_STATUS, AR9331_SW_AT_STATUS_STATIC);
-+
-+	ar9331_sw_port_fdb_prepare(mac, &f0, &f1, func);
-+
-+	ret = ar9331_sw_port_fdb_write(priv, f0, f1, f2);
-+	if (ret)
-+		return ret;
-+
-+	ret = ar9331_sw_fdb_wait(priv, &f0);
-+	if (ret)
-+		return ret;
-+
-+	if (f0 & AR9331_SW_AT_FULL_VIO) {
-+		/* cleanup error status */
-+		regmap_write(regmap, AR9331_SW_REG_ADDR_TABLE_FUNCTION0, 0);
-+		dev_err_ratelimited(priv->dev, "%s: can't add new entry, ATU is full\n", __func__);
-+		return -ENOMEM;
-+	}
-+
-+	return 0;
 +}
 +
 +
-+
-+static int ar9331_sw_port_fdb_add(struct dsa_switch *ds, int port,
-+				  const unsigned char *mac, u16 vid)
-+{
-+	struct ar9331_sw_priv *priv = (struct ar9331_sw_priv *)ds->priv;
-+	u16 port_mask = BIT(port);
-+
-+	dev_info(priv->dev, "%s(%pM, %x)\n", __func__, mac, port);
-+
-+	if (vid)
-+		return -EINVAL;
-+
-+	return ar9331_sw_port_fdb_rmw(priv, mac, port_mask, 0);
-+}
-+
-+static int ar9331_sw_port_fdb_del(struct dsa_switch *ds, int port,
-+			       const unsigned char *mac, u16 vid)
-+{
-+	struct ar9331_sw_priv *priv = (struct ar9331_sw_priv *)ds->priv;
-+	u16 port_mask = BIT(port);
-+
-+	if (vid)
-+		return -EINVAL;
-+
-+	return ar9331_sw_port_fdb_rmw(priv, mac, 0, port_mask);
-+}
-+
-+static int ar9331_sw_port_mdb_add(struct dsa_switch *ds, int port,
-+				  const struct switchdev_obj_port_mdb *mdb)
-+{
-+	struct ar9331_sw_priv *priv = (struct ar9331_sw_priv *)ds->priv;
-+	u16 port_mask = BIT(port);
-+
-+	if (mdb->vid)
-+		return -EOPNOTSUPP;
-+
-+	return ar9331_sw_port_fdb_rmw(priv, mdb->addr, port_mask, 0);
-+}
-+
-+static int ar9331_sw_port_mdb_del(struct dsa_switch *ds, int port,
-+				  const struct switchdev_obj_port_mdb *mdb)
-+{
-+	struct ar9331_sw_priv *priv = (struct ar9331_sw_priv *)ds->priv;
-+	u16 port_mask = BIT(port);
-+
-+	if (mdb->vid)
-+		return -EOPNOTSUPP;
-+
-+	return ar9331_sw_port_fdb_rmw(priv, mdb->addr, 0, port_mask);
-+}
-+
-+static void ar9331_sw_port_fast_age(struct dsa_switch *ds, int port)
-+{
-+	struct ar9331_sw_priv *priv = (struct ar9331_sw_priv *)ds->priv;
-+	struct regmap *regmap = priv->regmap;
-+	int ret;
-+	u32 f0;
-+
-+	ret = ar9331_sw_fdb_wait(priv, &f0);
-+	if (ret)
-+		goto error;
-+
-+	/* Flush all non static unicast address on a given port */
-+	f0 = FIELD_PREP(AR9331_SW_AT_PORT_NUM, port) |
-+		FIELD_PREP(AR9331_SW_AT_FUNC, AR9331_SW_AT_FUNC_FLUSH_PORT) |
-+		AR9331_SW_AT_BUSY;
-+
-+	ret = regmap_write(regmap, AR9331_SW_REG_ADDR_TABLE_FUNCTION0, f0);
-+	if (ret)
-+		goto error;
-+
-+	ret = ar9331_sw_fdb_wait(priv, &f0);
-+	if (ret)
-+		goto error;
-+
-+	return;
-+error:
-+	dev_err_ratelimited(priv->dev, "%s: error: %i\n", __func__, ret);
-+}
-+
- static const struct dsa_switch_ops ar9331_sw_ops = {
- 	.get_tag_protocol	= ar9331_sw_get_tag_protocol,
- 	.setup			= ar9331_sw_setup,
-@@ -774,6 +1124,12 @@ static const struct dsa_switch_ops ar9331_sw_ops = {
- 	.phylink_mac_link_down	= ar9331_sw_phylink_mac_link_down,
- 	.phylink_mac_link_up	= ar9331_sw_phylink_mac_link_up,
- 	.get_stats64		= ar9331_get_stats64,
-+	.port_fast_age          = ar9331_sw_port_fast_age,
-+	.port_fdb_del		= ar9331_sw_port_fdb_del,
-+	.port_fdb_add		= ar9331_sw_port_fdb_add,
-+	.port_fdb_dump		= ar9331_sw_port_fdb_dump,
-+	.port_mdb_add           = ar9331_sw_port_mdb_add,
-+	.port_mdb_del           = ar9331_sw_port_mdb_del,
+ static const struct dsa_device_ops ar9331_netdev_ops = {
+ 	.name	= "ar9331",
+ 	.proto	= DSA_TAG_PROTO_AR9331,
+ 	.xmit	= ar9331_tag_xmit,
+ 	.rcv	= ar9331_tag_rcv,
++	.rcv_post = ar9331_tag_rcv_post,
+ 	.overhead = AR9331_HDR_LEN,
  };
  
- static irqreturn_t ar9331_sw_irq(int irq, void *data)
 -- 
 2.29.2
 

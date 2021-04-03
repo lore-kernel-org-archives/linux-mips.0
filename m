@@ -7,29 +7,29 @@ X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D6123C43462
-	for <linux-mips@archiver.kernel.org>; Sat,  3 Apr 2021 11:49:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 88C92C43460
+	for <linux-mips@archiver.kernel.org>; Sat,  3 Apr 2021 11:49:15 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 9E8046127B
-	for <linux-mips@archiver.kernel.org>; Sat,  3 Apr 2021 11:49:13 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 6645C61243
+	for <linux-mips@archiver.kernel.org>; Sat,  3 Apr 2021 11:49:14 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236762AbhDCLtO (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Sat, 3 Apr 2021 07:49:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38608 "EHLO
+        id S236782AbhDCLtP (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Sat, 3 Apr 2021 07:49:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38612 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236736AbhDCLtN (ORCPT
+        with ESMTP id S236732AbhDCLtN (ORCPT
         <rfc822;linux-mips@vger.kernel.org>); Sat, 3 Apr 2021 07:49:13 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB8C9C061793
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE0D9C0617A7
         for <linux-mips@vger.kernel.org>; Sat,  3 Apr 2021 04:49:09 -0700 (PDT)
 Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <ore@pengutronix.de>)
-        id 1lSelp-0000es-7B; Sat, 03 Apr 2021 13:48:53 +0200
+        id 1lSelp-0000ex-76; Sat, 03 Apr 2021 13:48:53 +0200
 Received: from ore by dude.hi.pengutronix.de with local (Exim 4.92)
         (envelope-from <ore@pengutronix.de>)
-        id 1lSell-0007xp-OX; Sat, 03 Apr 2021 13:48:49 +0200
+        id 1lSell-0007yY-TJ; Sat, 03 Apr 2021 13:48:49 +0200
 From:   Oleksij Rempel <o.rempel@pengutronix.de>
 To:     Andrew Lunn <andrew@lunn.ch>,
         Vivien Didelot <vivien.didelot@gmail.com>,
@@ -42,9 +42,9 @@ Cc:     Oleksij Rempel <o.rempel@pengutronix.de>,
         Pengutronix Kernel Team <kernel@pengutronix.de>,
         netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-mips@vger.kernel.org
-Subject: [PATCH net-next v1 3/9] net: dsa: qca: ar9331: reorder MDIO write sequence
-Date:   Sat,  3 Apr 2021 13:48:42 +0200
-Message-Id: <20210403114848.30528-4-o.rempel@pengutronix.de>
+Subject: [PATCH net-next v1 8/9] net: dsa: qca: ar9331: add STP support
+Date:   Sat,  3 Apr 2021 13:48:47 +0200
+Message-Id: <20210403114848.30528-9-o.rempel@pengutronix.de>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20210403114848.30528-1-o.rempel@pengutronix.de>
 References: <20210403114848.30528-1-o.rempel@pengutronix.de>
@@ -58,47 +58,118 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-In case of this switch we work with 32bit registers on top of 16bit
-bus. Some registers (for example access to forwarding database) have
-trigger bit on the first 16bit half of request and the result +
-configuration of request in the second half. Without this this patch, we would
-trigger database operation and overwrite result in one run.
-
-To make it work properly, we should do the second part of transfer
-before the first one is done.
-
-So far, this rule seems to work for all registers on this switch.
+According to the datasheet, this switch has configurable STP port
+states. Suddenly LISTENING and BLOCKING states didn't forwarded packets
+to the CPU and linux bridge continuously re enabled ports even if a  loop
+was detected. To make it work, I reused bridge functionality to isolate
+port in LISTENING and BLOCKING states.
 
 Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
 ---
- drivers/net/dsa/qca/ar9331.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ drivers/net/dsa/qca/ar9331.c | 69 ++++++++++++++++++++++++++++++++++++
+ 1 file changed, 69 insertions(+)
 
 diff --git a/drivers/net/dsa/qca/ar9331.c b/drivers/net/dsa/qca/ar9331.c
-index ca2ad77b71f1..9a5035b2f0ff 100644
+index bf9588574205..83b59e771a5f 100644
 --- a/drivers/net/dsa/qca/ar9331.c
 +++ b/drivers/net/dsa/qca/ar9331.c
-@@ -837,16 +837,17 @@ static int ar9331_mdio_write(void *ctx, u32 reg, u32 val)
- 		return 0;
- 	}
+@@ -327,6 +327,7 @@ struct ar9331_sw_priv {
+ 	struct reset_control *sw_reset;
+ 	struct ar9331_sw_port port[AR9331_SW_PORTS];
+ 	int cpu_port;
++	u32 isolated_ports;
+ };
  
--	ret = __ar9331_mdio_write(sbus, AR9331_SW_MDIO_PHY_MODE_REG, reg, val);
-+	ret = __ar9331_mdio_write(sbus, AR9331_SW_MDIO_PHY_MODE_REG, reg + 2,
-+				  val >> 16);
- 	if (ret < 0)
- 		goto error;
+ static struct ar9331_sw_priv *ar9331_sw_port_to_priv(struct ar9331_sw_port *port)
+@@ -1151,6 +1152,10 @@ static int ar9331_sw_port_bridge_join(struct dsa_switch *ds, int port,
+ 		if (!dsa_is_user_port(ds, port))
+ 			continue;
  
--	ret = __ar9331_mdio_write(sbus, AR9331_SW_MDIO_PHY_MODE_REG, reg + 2,
--				  val >> 16);
-+	ret = __ar9331_mdio_write(sbus, AR9331_SW_MDIO_PHY_MODE_REG, reg, val);
- 	if (ret < 0)
- 		goto error;
- 
- 	return 0;
++		/* part of the bridge but should be isolated for now */
++		if (priv->isolated_ports & BIT(i))
++			continue;
 +
- error:
- 	dev_err_ratelimited(&sbus->dev, "Bus error. Failed to write register.\n");
- 	return ret;
+ 		val = FIELD_PREP(AR9331_SW_PORT_VLAN_PORT_VID_MEMBER, BIT(port));
+ 		ret = regmap_set_bits(regmap, AR9331_SW_REG_PORT_VLAN(i), val);
+ 		if (ret)
+@@ -1205,6 +1210,69 @@ static void ar9331_sw_port_bridge_leave(struct dsa_switch *ds, int port,
+ 	dev_err_ratelimited(priv->dev, "%s: error: %i\n", __func__, ret);
+ }
+ 
++static void ar9331_sw_port_stp_state_set(struct dsa_switch *ds, int port,
++					 u8 state)
++{
++	struct ar9331_sw_priv *priv = (struct ar9331_sw_priv *)ds->priv;
++	struct net_device *br = dsa_to_port(ds, port)->bridge_dev;
++	struct regmap *regmap = priv->regmap;
++	u32 port_ctrl = 0, port_state = 0;
++	bool join = false;
++	int ret;
++
++	/*
++	 * STP hw support is buggy or I didn't understood it. So, it seems to
++	 * be easier to make hand crafted implementation by using bridge
++	 * functionality. Similar implementation can be found on ksz9477 switch
++	 * and may be we need some generic code to so for all related devices
++	 */
++	switch (state) {
++	case BR_STATE_FORWARDING:
++		join = true;
++		fallthrough;
++	case BR_STATE_LEARNING:
++		port_ctrl = AR9331_SW_PORT_CTRL_LEARN_EN;
++		fallthrough;
++	case BR_STATE_LISTENING:
++	case BR_STATE_BLOCKING:
++		port_state = AR9331_SW_PORT_CTRL_PORT_STATE_FORWARD;
++		break;
++	case BR_STATE_DISABLED:
++	default:
++		port_state = AR9331_SW_PORT_CTRL_PORT_STATE_DISABLED;
++		break;
++	}
++
++	port_ctrl |= FIELD_PREP(AR9331_SW_PORT_CTRL_PORT_STATE, port_state);
++
++	ret = regmap_update_bits(regmap, AR9331_SW_REG_PORT_CTRL(port),
++				 AR9331_SW_PORT_CTRL_LEARN_EN |
++				 AR9331_SW_PORT_CTRL_PORT_STATE, port_ctrl);
++	if (ret)
++		goto error;
++
++	if (!dsa_is_user_port(ds, port))
++		return;
++
++	/*
++	 * here we care only about user ports. CPU port do not need this
++	 * configuration
++	 */
++	if (join) {
++		priv->isolated_ports &= ~BIT(port);
++		if (br)
++			ar9331_sw_port_bridge_join(ds, port, br);
++	} else {
++		priv->isolated_ports |= BIT(port);
++		if (br)
++			ar9331_sw_port_bridge_leave(ds, port, br);
++	}
++
++	return;
++error:
++	dev_err_ratelimited(priv->dev, "%s: error: %i\n", __func__, ret);
++}
++
+ static const struct dsa_switch_ops ar9331_sw_ops = {
+ 	.get_tag_protocol	= ar9331_sw_get_tag_protocol,
+ 	.setup			= ar9331_sw_setup,
+@@ -1223,6 +1291,7 @@ static const struct dsa_switch_ops ar9331_sw_ops = {
+ 	.set_ageing_time	= ar9331_sw_set_ageing_time,
+ 	.port_bridge_join	= ar9331_sw_port_bridge_join,
+ 	.port_bridge_leave	= ar9331_sw_port_bridge_leave,
++	.port_stp_state_set	= ar9331_sw_port_stp_state_set,
+ };
+ 
+ static irqreturn_t ar9331_sw_irq(int irq, void *data)
 -- 
 2.29.2
 

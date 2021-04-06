@@ -2,65 +2,66 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.3 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D5C17C43460
-	for <linux-mips@archiver.kernel.org>; Tue,  6 Apr 2021 13:18:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 84BD1C43461
+	for <linux-mips@archiver.kernel.org>; Tue,  6 Apr 2021 13:18:44 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 92678613C6
-	for <linux-mips@archiver.kernel.org>; Tue,  6 Apr 2021 13:18:43 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 43F8D613B7
+	for <linux-mips@archiver.kernel.org>; Tue,  6 Apr 2021 13:18:44 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243580AbhDFNSr (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 6 Apr 2021 09:18:47 -0400
-Received: from elvis.franken.de ([193.175.24.41]:59069 "EHLO elvis.franken.de"
+        id S243614AbhDFNSt (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 6 Apr 2021 09:18:49 -0400
+Received: from elvis.franken.de ([193.175.24.41]:59097 "EHLO elvis.franken.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229720AbhDFNSr (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        id S243573AbhDFNSr (ORCPT <rfc822;linux-mips@vger.kernel.org>);
         Tue, 6 Apr 2021 09:18:47 -0400
 Received: from uucp (helo=alpha)
         by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1lTlbK-0006qP-06; Tue, 06 Apr 2021 15:18:38 +0200
+        id 1lTlbK-0006qP-00; Tue, 06 Apr 2021 15:18:38 +0200
 Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 91B91C24D9; Tue,  6 Apr 2021 15:11:01 +0200 (CEST)
-Date:   Tue, 6 Apr 2021 15:11:01 +0200
+        id D3612C24D9; Tue,  6 Apr 2021 15:01:33 +0200 (CEST)
+Date:   Tue, 6 Apr 2021 15:01:33 +0200
 From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
-Cc:     John Crispin <john@phrozen.org>, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Mike Rapoport <rppt@kernel.org>
-Subject: Re: [PATCH] MIPS: ralink: rt288x: select MIPS_AUTO_PFN_OFFSET
-Message-ID: <20210406131101.GH9505@alpha.franken.de>
-References: <20210307194030.8007-1-ilya.lipnitskiy@gmail.com>
- <20210404021126.1399920-1-ilya.lipnitskiy@gmail.com>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 0/4] MIPS: Remove get_fs/set_fs
+Message-ID: <20210406130133.GB9505@alpha.franken.de>
+References: <20210401125639.42963-1-tsbogend@alpha.franken.de>
+ <20210406072443.GA7626@lst.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210404021126.1399920-1-ilya.lipnitskiy@gmail.com>
+In-Reply-To: <20210406072443.GA7626@lst.de>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Sat, Apr 03, 2021 at 07:11:26PM -0700, Ilya Lipnitskiy wrote:
-> RT288X systems may have a non-zero ramstart causing problems with memory
-> reservations and boot hangs, as well as messages like:
->   Wasting 1048576 bytes for tracking 32768 unused pages
+On Tue, Apr 06, 2021 at 09:24:43AM +0200, Christoph Hellwig wrote:
+> Btw, there is a bunch of cleanups that would fit in nicely on top of
+> this:
 > 
-> Both are alleviated by selecting MIPS_AUTO_PFN_OFFSET for such
-> platforms.
-> 
-> Tested on a Belkin F5D8235 v1 RT2880 device.
-> 
-> Link: https://lore.kernel.org/linux-mips/20180820233111.xww5232dxbuouf4n@pburton-laptop/
-> 
-> Signed-off-by: Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
-> Cc: Mike Rapoport <rppt@kernel.org>
-> ---
->  arch/mips/ralink/Kconfig | 1 +
->  1 file changed, 1 insertion(+)
+>  - remove the unused __invoke_copy_from function
 
-applied to mips-next.
+I've removed in the last patch before applying to mips-next.
+
+>  - fold __get_user_check into get_user as it is the only caller
+>  - fold __get_user_nocheck into __get_user as it is the only caller
+>  - fold __put_user_check into put_user as it is the only caller
+>  - fold __put_user_nocheck into __put_user as it is the only caller
+>  - implement get_user in terms of __get_user to document the difference
+>    better and to remove __get_user_common
+>  - implement put_user in terms of __put_user to document the difference
+>    better and to remove __get_user_common
+>  - remove __put_user_unknown/__get_user_unknown and replace them with
+>    BUILD_BUG_ON()
+
+I'll prepare a follow-up patch. Thank you for your cleanup hints.
 
 Thomas.
 

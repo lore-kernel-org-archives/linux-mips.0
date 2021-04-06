@@ -2,72 +2,90 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.2 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-15.2 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,USER_AGENT_SANE_1 autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1A0BDC43603
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B6D7FC43460
 	for <linux-mips@archiver.kernel.org>; Tue,  6 Apr 2021 13:18:46 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id E618C613CD
-	for <linux-mips@archiver.kernel.org>; Tue,  6 Apr 2021 13:18:45 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 881F1613CD
+	for <linux-mips@archiver.kernel.org>; Tue,  6 Apr 2021 13:18:46 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243643AbhDFNSw (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 6 Apr 2021 09:18:52 -0400
-Received: from elvis.franken.de ([193.175.24.41]:59073 "EHLO elvis.franken.de"
+        id S243641AbhDFNSx (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 6 Apr 2021 09:18:53 -0400
+Received: from elvis.franken.de ([193.175.24.41]:59104 "EHLO elvis.franken.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S242503AbhDFNSr (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Tue, 6 Apr 2021 09:18:47 -0400
+        id S243603AbhDFNSu (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Tue, 6 Apr 2021 09:18:50 -0400
 Received: from uucp (helo=alpha)
         by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1lTlbK-0006qP-02; Tue, 06 Apr 2021 15:18:38 +0200
+        id 1lTlbK-0006qP-01; Tue, 06 Apr 2021 15:18:38 +0200
 Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 3CFE1C24D9; Tue,  6 Apr 2021 15:02:45 +0200 (CEST)
-Date:   Tue, 6 Apr 2021 15:02:45 +0200
+        id CDF68C24D9; Tue,  6 Apr 2021 15:02:04 +0200 (CEST)
+Date:   Tue, 6 Apr 2021 15:02:04 +0200
 From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     =?iso-8859-1?Q?=C1lvaro_Fern=E1ndez?= Rojas <noltari@gmail.com>
-Cc:     Florian Fainelli <f.fainelli@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Philippe =?iso-8859-1?Q?Mathieu-Daud=E9?= <f4bug@amsat.org>,
-        Paul Burton <paulburton@kernel.org>,
-        Jonas Gorski <jonas.gorski@gmail.com>,
-        bcm-kernel-feedback-list@broadcom.com, linux-mips@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 0/6] mips: bmips: fix and improve reboot nodes
-Message-ID: <20210406130245.GD9505@alpha.franken.de>
-References: <20210314164351.24665-1-noltari@gmail.com>
+To:     Florian Fainelli <f.fainelli@gmail.com>
+Cc:     linux-mips@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jinyang He <hejinyang@loongson.cn>,
+        Kees Cook <keescook@chromium.org>,
+        Liangliang Huang <huanglllzu@gmail.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Michel Lespinasse <walken@google.com>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v4] MIPS: Add support for CONFIG_DEBUG_VIRTUAL
+Message-ID: <20210406130204.GC9505@alpha.franken.de>
+References: <20210331032228.21251-1-f.fainelli@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210314164351.24665-1-noltari@gmail.com>
+In-Reply-To: <20210331032228.21251-1-f.fainelli@gmail.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Sun, Mar 14, 2021 at 05:43:45PM +0100, Álvaro Fernández Rojas wrote:
-> These patches improve bmips bcm63xx device tree nodes.
+On Tue, Mar 30, 2021 at 08:22:07PM -0700, Florian Fainelli wrote:
+> Provide hooks to intercept bad usages of virt_to_phys() and
+> __pa_symbol() throughout the kernel. To make this possible, we need to
+> rename the current implement of virt_to_phys() into
+> __virt_to_phys_nodebug() and wrap it around depending on
+> CONFIG_DEBUG_VIRTUAL.
 > 
-> v2: add missing BCM63268 patch.
+> A similar thing is needed for __pa_symbol() which is now aliased to
+> __phys_addr_symbol() whose implementation is either the direct return of
+> RELOC_HIDE or goes through the debug version.
 > 
-> Álvaro Fernández Rojas (6):
->   mips: bmips: fix syscon-reboot nodes
->   mips: bmips: bcm6328: populate device tree nodes
->   mips: bmips: bcm6358: populate device tree nodes
->   mips: bmips: bcm6362: populate device tree nodes
->   mips: bmips: bcm6368: populate device tree nodes
->   mips: bmips: bcm63268: populate device tree nodes
+> Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+> ---
+> Changes in v4:
 > 
->  arch/mips/boot/dts/brcm/bcm3368.dtsi  |   2 +-
->  arch/mips/boot/dts/brcm/bcm63268.dtsi | 132 +++++++++++++++++++++++---
->  arch/mips/boot/dts/brcm/bcm6328.dtsi  | 119 ++++++++++++++++++++---
->  arch/mips/boot/dts/brcm/bcm6358.dtsi  |  85 ++++++++++++++---
->  arch/mips/boot/dts/brcm/bcm6362.dtsi  | 129 ++++++++++++++++++++++---
->  arch/mips/boot/dts/brcm/bcm6368.dtsi  | 129 ++++++++++++++++++++++---
->  6 files changed, 530 insertions(+), 66 deletions(-)
+> - properly address sparse warning in arch/mips/kernel/vdso.c and
+>   eliminate it entirely
+> 
+> Changes in v3:
+> 
+> - added missing SDPX license tag in physaddr.c
+> 
+> Changes in v2:
+> - fixed sparse warning in arch/mips/kernel/vdso.c
+> 
+>  arch/mips/Kconfig            |  1 +
+>  arch/mips/include/asm/io.h   | 14 ++++++++-
+>  arch/mips/include/asm/page.h |  9 +++++-
+>  arch/mips/kernel/vdso.c      |  5 ++--
+>  arch/mips/mm/Makefile        |  2 ++
+>  arch/mips/mm/physaddr.c      | 56 ++++++++++++++++++++++++++++++++++++
+>  6 files changed, 83 insertions(+), 4 deletions(-)
+>  create mode 100644 arch/mips/mm/physaddr.c
 
-series applied to mips-next.
+applied to mips-next.
 
 Thomas.
 

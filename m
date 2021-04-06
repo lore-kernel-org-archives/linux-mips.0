@@ -2,137 +2,155 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE autolearn=ham
+X-Spam-Status: No, score=-14.0 required=3.0 tests=BAYES_00,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1F0E4C433B4
-	for <linux-mips@archiver.kernel.org>; Tue,  6 Apr 2021 12:46:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D7F74C433ED
+	for <linux-mips@archiver.kernel.org>; Tue,  6 Apr 2021 13:02:45 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id E03C8613E3
-	for <linux-mips@archiver.kernel.org>; Tue,  6 Apr 2021 12:46:09 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 9B839613CD
+	for <linux-mips@archiver.kernel.org>; Tue,  6 Apr 2021 13:02:45 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344173AbhDFMqQ (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 6 Apr 2021 08:46:16 -0400
-Received: from mo4-p01-ob.smtp.rzone.de ([85.215.255.54]:32675 "EHLO
-        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344176AbhDFMqO (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Tue, 6 Apr 2021 08:46:14 -0400
-ARC-Seal: i=1; a=rsa-sha256; t=1617712980; cv=none;
-    d=strato.com; s=strato-dkim-0002;
-    b=Y78HonEAaha70sgYDGvWOD4+Kenu7QUyZa+36BOrN2VOCW2QcwJKRkPWV86G0wlGEd
-    pc1fKJECCzCzCTAzoS9EfnO8ATqq1Nv4WXq7j4VTf+Tz1KW7r1LzgQlCZVOsiSi3GD2o
-    wSJemJaf+GeHB74Kt/gF1/DGnK0NZ2MwYUh6Jbso2YIkuY1UgnK8JGOY8MTPrXu14NxY
-    0pzSvpQGKr1OWqyIGBryIPXa+ZPYaz1uQrvllDPF+tI5B5CchIgCMXKQnSaNGBigEMxe
-    9OZAGv0kIZthgjzvGD0Ux1GpygMcFsPrCsfWsiUxnUSbUPStL1ccxv6X3FfPG3nVBtEW
-    Xiqw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1617712980;
-    s=strato-dkim-0002; d=strato.com;
-    h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:Cc:Date:
-    From:Subject:Sender;
-    bh=+JRkNZWJdvpS0lwSChZeG8R/ziyRjOEOnXVswiuBtao=;
-    b=Z1rM3x0Qpv87kNJINDbOqSvg5zxSPW9EIwUj2fCCFYnnuVyyEsbxqp+1/MAOYXgZtQ
-    a9uk5gJ87FOjPmTFArRTSWnjW1kIVgjX8Ip1ksxmWiA6W53vgxUM7iy3+Zy3QJzGOfwW
-    o+mdT74ZFINEPzZWc9Hm/VGxTw26Ihe/zDPx+JTmDU6yqZDAozChGqIReSngEafI6a42
-    1ywwLLLzHVwkZeg9ZWaqqEaz5SLZTDtXCOsS+ntPL1rEKici/AyytpPIzgl7jrQzI+Lt
-    2tgiU5+aqEiNzCi1dDhgCxDw0W6M1IFsAXJCUIp8ZFMSjNpP0bbcE1SIpG0bQCQV12jJ
-    Dz+Q==
-ARC-Authentication-Results: i=1; strato.com;
-    dkim=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1617712980;
-    s=strato-dkim-0002; d=goldelico.com;
-    h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:Cc:Date:
-    From:Subject:Sender;
-    bh=+JRkNZWJdvpS0lwSChZeG8R/ziyRjOEOnXVswiuBtao=;
-    b=K1xnkP5ZnBejsBaLDo+v2iCQRkQFlDpoWIICkoqtLFJQsi7VUTpbTSDmE4Rf5rea6J
-    4cGMdp+0ta7tWmsRbLCu9VQG+Yi+sjrP1pj9w2y+0Nz8aBAJSr50tFWnzRvEoip7rhKT
-    RKyBWWnCm2+F6/SOSHF7nET6gPE7Rs3nAGsAcGWpfdAyVBPef+wvievb+AEjuy97MuFW
-    r/f8RiJJ8P2Yh4XBJr49/0hidmsQYYzldQ+fcgfL04IWAyP2c+S+HT/4sHplnIFKxepb
-    rY3N3YScC1mX/DTWs46b7Xj00xNE2GvAxzPp1KflWDpPOSWG+5MtgY5zJhq44jZXjU82
-    aR5w==
-Authentication-Results: strato.com;
-    dkim=none
-X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMgPgp8VKxflSZ1P34KBj5Qpw97WFDlaYXA0OGUo="
-X-RZG-CLASS-ID: mo00
-Received: from imac.fritz.box
-    by smtp.strato.de (RZmta 47.23.1 DYNA|AUTH)
-    with ESMTPSA id h03350x36CgxhXr
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (curve X9_62_prime256v1 with 256 ECDH bits, eq. 3072 bits RSA))
-        (Client did not present a certificate);
-    Tue, 6 Apr 2021 14:42:59 +0200 (CEST)
-Subject: Re: [PATCH] MIPS: Fix a longstanding error in div64.h
-Mime-Version: 1.0 (Mac OS X Mail 9.3 \(3124\))
-Content-Type: text/plain; charset=us-ascii
-From:   "H. Nikolaus Schaller" <hns@goldelico.com>
-In-Reply-To: <20210406112404.2671507-1-chenhuacai@loongson.cn>
-Date:   Tue, 6 Apr 2021 14:42:59 +0200
-Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        linux-mips <linux-mips@vger.kernel.org>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Huacai Chen <chenhuacai@loongson.cn>, stable@vger.kernel.org,
-        Discussions about the Letux Kernel 
-        <letux-kernel@openphoenux.org>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <0338A250-3BF9-4B96-B9DE-61BE573CBB4C@goldelico.com>
-References: <20210406112404.2671507-1-chenhuacai@loongson.cn>
-To:     Huacai Chen <chenhuacai@kernel.org>
-X-Mailer: Apple Mail (2.3124)
+        id S239139AbhDFNCw convert rfc822-to-8bit (ORCPT
+        <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 6 Apr 2021 09:02:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52512 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233048AbhDFNCw (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Tue, 6 Apr 2021 09:02:52 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 19E9F613CA;
+        Tue,  6 Apr 2021 13:02:44 +0000 (UTC)
+Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1lTlLu-005rUM-0s; Tue, 06 Apr 2021 14:02:42 +0100
+Date:   Tue, 06 Apr 2021 14:02:41 +0100
+Message-ID: <87im4zpnv2.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        Linux-sh list <linux-sh@vger.kernel.org>,
+        Daniel Mack <daniel@zonque.org>,
+        Robert Jarzmik <robert.jarzmik@free.fr>,
+        Haojian Zhuang <haojian.zhuang@gmail.com>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [PATCH 4/9] sh: intc: Drop the use of irq_create_identity_mapping()
+In-Reply-To: <CAMuHMdU3vo1AWuDr69WK8-1w38+Q7KturAoL=cFpspZiYr2ssA@mail.gmail.com>
+References: <20210406093557.1073423-1-maz@kernel.org>
+        <20210406093557.1073423-5-maz@kernel.org>
+        <CAMuHMdU3vo1AWuDr69WK8-1w38+Q7KturAoL=cFpspZiYr2ssA@mail.gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
+X-SA-Exim-Connect-IP: 62.31.163.78
+X-SA-Exim-Rcpt-To: geert@linux-m68k.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, linux-sh@vger.kernel.org, daniel@zonque.org, robert.jarzmik@free.fr, haojian.zhuang@gmail.com, ysato@users.sourceforge.jp, dalias@libc.org, tsbogend@alpha.franken.de, mpe@ellerman.id.au, tglx@linutronix.de
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
+On Tue, 06 Apr 2021 11:32:13 +0100,
+Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+> 
+> Hi Marc,
+> 
+> On Tue, Apr 6, 2021 at 11:44 AM Marc Zyngier <maz@kernel.org> wrote:
+> > Instead of playing games with using irq_create_identity_mapping()
+> > and irq_domain_associate(), drop the use of the former and only
+> > use the latter, together with the allocation of the irq_desc
+> > as needed.
+> >
+> > It doesn't make the code less awful, but at least the intent
+> > is clearer.
+> >
+> > Signed-off-by: Marc Zyngier <maz@kernel.org>
+> 
+> Thanks for your patch!
+> 
+> > --- a/drivers/sh/intc/core.c
+> > +++ b/drivers/sh/intc/core.c
+> > @@ -179,6 +179,23 @@ static unsigned int __init save_reg(struct intc_desc_int *d,
+> >         return 0;
+> >  }
+> >
+> > +static bool __init intc_map(struct irq_domain *domain, int irq)
+> > +{
+> > +       int res;
+> 
+> warning: unused variable ‘res’ [-Wunused-variable]
+> 
+> > +
+> > +       if (!irq_to_desc(irq) && irq_alloc_desc_at(irq, NUMA_NO_NODE) != irq) {
+> > +               pr_err("uname to allocate IRQ %d\n", irq);
+> > +               return false;
+> > +       }
+> > +
+> > +       if (irq_domain_associate(domain, irq, irq)) {
+> > +               pr_err("domain association failure\n");
+> > +               return false;
+> > +       }
+> > +
+> > +       return true;
+> > +}
+> > +
+> >  int __init register_intc_controller(struct intc_desc *desc)
+> >  {
+> >         unsigned int i, k, smp;
+> > @@ -316,19 +333,8 @@ int __init register_intc_controller(struct intc_desc *desc)
+> 
+> warning: unused variable ‘res’ [-Wunused-variable]
 
-> Am 06.04.2021 um 13:24 schrieb Huacai Chen <chenhuacai@kernel.org>:
->=20
-> Only 32bit kernel need __div64_32(), but commit =
-c21004cd5b4cb7d479514d4
-> ("MIPS: Rewrite <asm/div64.h> to work with gcc 4.4.0.") makes it =
-depend
-> on 64bit kernel by mistake. This patch fix this longstanding error.
->=20
-> Fixes: c21004cd5b4cb7d479514d4 ("MIPS: Rewrite <asm/div64.h> to work =
-with gcc 4.4.0.")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Huacai Chen <chenhuacai@loongson.cn>
-> ---
-> arch/mips/include/asm/div64.h | 2 +-
-> 1 file changed, 1 insertion(+), 1 deletion(-)
->=20
-> diff --git a/arch/mips/include/asm/div64.h =
-b/arch/mips/include/asm/div64.h
-> index dc5ea5736440..d199fe36eb46 100644
-> --- a/arch/mips/include/asm/div64.h
-> +++ b/arch/mips/include/asm/div64.h
-> @@ -11,7 +11,7 @@
->=20
-> #include <asm-generic/div64.h>
->=20
-> -#if BITS_PER_LONG =3D=3D 64
-> +#if BITS_PER_LONG =3D=3D 32
->=20
-> #include <linux/types.h>
+Ah, thanks for spotting these.
 
-Hm.
+> 
+> >                 if (!vect->enum_id)
+> >                         continue;
+> >
+> > -               res = irq_create_identity_mapping(d->domain, irq);
+> 
+> 
+> > -               if (unlikely(res)) {
+> > -                       if (res == -EEXIST) {
+> > -                               res = irq_domain_associate(d->domain, irq, irq);
+> > -                               if (unlikely(res)) {
+> > -                                       pr_err("domain association failure\n");
+> > -                                       continue;
+> > -                               }
+> > -                       } else {
+> > -                               pr_err("can't identity map IRQ %d\n", irq);
+> > -                               continue;
+> > -                       }
+> > -               }
+> > +               if (!intc_map(d->domain, irq))
+> > +                       continue;
+> >
+> >                 intc_irq_xlate_set(irq, vect->enum_id, d);
+> >                 intc_register_irq(desc, d, vect->enum_id, irq);
+> 
+> Otherwise this seems to work fine on real hardware (landisk) and qemu
+> (rts7751r2d).  I did verify that the new function intc_map() is called.
+> 
+> Tested-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
-Ingenic jz4780/CI20 build attempt on top ov v5.12-rc6:
+Awesome, thanks Geert.
 
-In file included from ./include/linux/math64.h:7:0,
-                 from ./include/linux/time.h:6,
-                 from ./include/linux/compat.h:10,
-                 from arch/mips/kernel/asm-offsets.c:12:
-./include/linux/math64.h: In function 'div_u64_rem':
-./arch/mips/include/asm/div64.h:29:11: error: invalid type argument of =
-unary '*' (have 'long long unsigned int')
-  __high =3D *__n >> 32;      \
-           ^
-./include/asm-generic/div64.h:243:11: note: in expansion of macro =
-'__div64_32'
-   __rem =3D __div64_32(&(n), __base); \
-           ^
-./include/linux/math64.h:91:15: note: in expansion of macro 'do_div'
-  *remainder =3D do_div(dividend, divisor);
-               ^
+	M.
 
-Or does it just reveal an unknown bug in my compiler?
-
+-- 
+Without deviation from the norm, progress is not possible.

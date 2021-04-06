@@ -2,86 +2,91 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.2 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.2 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8489FC433B4
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 16017C43470
 	for <linux-mips@archiver.kernel.org>; Tue,  6 Apr 2021 13:18:45 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 5C8CF613C8
-	for <linux-mips@archiver.kernel.org>; Tue,  6 Apr 2021 13:18:45 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id CF79B613D3
+	for <linux-mips@archiver.kernel.org>; Tue,  6 Apr 2021 13:18:44 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243639AbhDFNSv (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        id S242515AbhDFNSv (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
         Tue, 6 Apr 2021 09:18:51 -0400
-Received: from elvis.franken.de ([193.175.24.41]:59095 "EHLO elvis.franken.de"
+Received: from elvis.franken.de ([193.175.24.41]:59087 "EHLO elvis.franken.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243571AbhDFNSr (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        id S242540AbhDFNSr (ORCPT <rfc822;linux-mips@vger.kernel.org>);
         Tue, 6 Apr 2021 09:18:47 -0400
 Received: from uucp (helo=alpha)
         by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1lTlbJ-0006qP-00; Tue, 06 Apr 2021 15:18:37 +0200
+        id 1lTlbK-0006qP-05; Tue, 06 Apr 2021 15:18:38 +0200
 Received: by alpha.franken.de (Postfix, from userid 1000)
-        id D82C5C24CD; Tue,  6 Apr 2021 14:59:45 +0200 (CEST)
-Date:   Tue, 6 Apr 2021 14:59:45 +0200
+        id 1A269C24D9; Tue,  6 Apr 2021 15:10:43 +0200 (CEST)
+Date:   Tue, 6 Apr 2021 15:10:43 +0200
 From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     hch@lst.de
-Subject: Re: [PATCH v3 0/4] MIPS: Remove get_fs/set_fs
-Message-ID: <20210406125945.GA9505@alpha.franken.de>
-References: <20210401125639.42963-1-tsbogend@alpha.franken.de>
+To:     Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
+Cc:     Mike Rapoport <rppt@kernel.org>,
+        Tiezhu Yang <yangtiezhu@loongson.cn>,
+        Jinyang He <hejinyang@loongson.cn>,
+        Youling Tang <tangyouling@loongson.cn>,
+        Tobias Wolf <dev-NTEO@vplace.de>,
+        Marcin Nowakowski <marcin.nowakowski@mips.com>,
+        linux-mips@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        stable@vger.kernel.org
+Subject: Re: [PATCH] MIPS: fix memory reservation for non-usermem setups
+Message-ID: <20210406131043.GG9505@alpha.franken.de>
+References: <20210307194030.8007-1-ilya.lipnitskiy@gmail.com>
+ <20210312151934.GA4209@alpha.franken.de>
+ <CALCv0x1AEZanNsVcNuUrbHuLyWYNegEVuye9Gso-Ou9xX8JEAg@mail.gmail.com>
+ <YFGip16ObFp/vOZS@kernel.org>
+ <CALCv0x3sGY8t_NCch7qa6KijoxwvFJJYQEZB5kOMuK35C=c3og@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210401125639.42963-1-tsbogend@alpha.franken.de>
+In-Reply-To: <CALCv0x3sGY8t_NCch7qa6KijoxwvFJJYQEZB5kOMuK35C=c3og@mail.gmail.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Thu, Apr 01, 2021 at 02:56:33PM +0200, Thomas Bogendoerfer wrote:
-> This series replaces get_fs/set_fs and removes it from MIPS arch code.
+On Sat, Apr 03, 2021 at 07:02:13PM -0700, Ilya Lipnitskiy wrote:
+> Hi Mike,
 > 
-> Changes in v3:
-> - use get_user/get_kernel_nofault for helper functions
-> 
-> Changes in v2:
-> - added copy_from_kernel_nofault_allowed() for !EVA to restrict
->   access of __get/__put_kernel_nofault
-> - replaced __get_data macro by helper functions
-> - removed leftover set_fs calls in ftrace.c
-> - further cleanup uaccess.h
-> 
-> Thomas Bogendoerfer (4):
->   MIPS: kernel: Remove not needed set_fs calls
->   MIPS: uaccess: Added __get/__put_kernel_nofault
->   MIPS: uaccess: Remove get_fs/set_fs call sites
->   MIPS: Remove get_fs/set_fs
-> 
->  arch/mips/Kconfig                   |   1 -
->  arch/mips/include/asm/processor.h   |   4 -
->  arch/mips/include/asm/thread_info.h |   6 -
->  arch/mips/include/asm/uaccess.h     | 436 +++++++++++-----------------
->  arch/mips/kernel/access-helper.h    |  18 ++
->  arch/mips/kernel/asm-offsets.c      |   1 -
->  arch/mips/kernel/ftrace.c           |   8 -
->  arch/mips/kernel/process.c          |   2 -
->  arch/mips/kernel/scall32-o32.S      |   4 +-
->  arch/mips/kernel/traps.c            | 105 +++----
->  arch/mips/kernel/unaligned.c        | 199 +++++--------
->  arch/mips/lib/memcpy.S              |  28 +-
->  arch/mips/lib/memset.S              |   3 -
->  arch/mips/lib/strncpy_user.S        |  48 +--
->  arch/mips/lib/strnlen_user.S        |  44 +--
->  arch/mips/mm/Makefile               |   4 +
->  arch/mips/mm/maccess.c              |  10 +
->  17 files changed, 357 insertions(+), 564 deletions(-)
->  create mode 100644 arch/mips/kernel/access-helper.h
->  create mode 100644 arch/mips/mm/maccess.c
+> On Tue, Mar 16, 2021 at 11:33 PM Mike Rapoport <rppt@kernel.org> wrote:
+> >
+> > Hi Ilya,
+> >
+> > On Tue, Mar 16, 2021 at 10:10:09PM -0700, Ilya Lipnitskiy wrote:
+> > > Hi Thomas,
+> > >
+> > > On Fri, Mar 12, 2021 at 7:19 AM Thomas Bogendoerfer
+> > > <tsbogend@alpha.franken.de> wrote:
+> > > >
+> > > > On Sun, Mar 07, 2021 at 11:40:30AM -0800, Ilya Lipnitskiy wrote:
+> > > > > From: Tobias Wolf <dev-NTEO@vplace.de>
+> > > > >
+> > > > > Commit 67a3ba25aa95 ("MIPS: Fix incorrect mem=X@Y handling") introduced a new
+> > > > > issue for rt288x where "PHYS_OFFSET" is 0x0 but the calculated "ramstart" is
+> > > > > not. As the prerequisite of custom memory map has been removed, this results
+> > > > > in the full memory range of 0x0 - 0x8000000 to be marked as reserved for this
+> > > > > platform.
+> > > >
+> > > > and where is the problem here ?
+> > > Turns out this was already attempted to be upstreamed - not clear why
+> > > it wasn't merged. Context:
+> > > https://lore.kernel.org/linux-mips/6504517.U6H5IhoIOn@loki/
+> > >
+> > > I hope the thread above helps you understand the problem.
+> >
+> > The memory initialization was a bit different then. Do you still see the
+> > same problem?
+> Thanks for asking. I obtained a RT2880 device and gave it a try. It
+> hangs at boot without this patch, however selecting
 
-series applied to mips-next.
+can you provide debug logs with memblock=debug for both good and bad
+kernels ? I'm curious what's the reason for failing allocation...
 
 Thomas.
 

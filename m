@@ -2,93 +2,139 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.2 required=3.0 tests=BAYES_00,
+X-Spam-Status: No, score=-15.3 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,USER_AGENT_SANE_1 autolearn=ham
-	autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,
+	USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B6D7FC43460
-	for <linux-mips@archiver.kernel.org>; Tue,  6 Apr 2021 13:18:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CAAA0C43461
+	for <linux-mips@archiver.kernel.org>; Tue,  6 Apr 2021 14:49:35 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 881F1613CD
-	for <linux-mips@archiver.kernel.org>; Tue,  6 Apr 2021 13:18:46 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id A9DB2613B8
+	for <linux-mips@archiver.kernel.org>; Tue,  6 Apr 2021 14:49:35 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243641AbhDFNSx (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 6 Apr 2021 09:18:53 -0400
-Received: from elvis.franken.de ([193.175.24.41]:59104 "EHLO elvis.franken.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243603AbhDFNSu (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Tue, 6 Apr 2021 09:18:50 -0400
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1lTlbK-0006qP-01; Tue, 06 Apr 2021 15:18:38 +0200
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id CDF68C24D9; Tue,  6 Apr 2021 15:02:04 +0200 (CEST)
-Date:   Tue, 6 Apr 2021 15:02:04 +0200
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Florian Fainelli <f.fainelli@gmail.com>
-Cc:     linux-mips@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
+        id S242032AbhDFOtm (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 6 Apr 2021 10:49:42 -0400
+Received: from out28-123.mail.aliyun.com ([115.124.28.123]:34194 "EHLO
+        out28-123.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239002AbhDFOtk (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Tue, 6 Apr 2021 10:49:40 -0400
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.07439038|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_alarm|0.0487646-0.00075957-0.950476;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047194;MF=zhouyu@wanyeetech.com;NM=1;PH=DS;RN=8;RT=8;SR=0;TI=SMTPD_---.JvtGAVq_1617720563;
+Received: from 192.168.88.133(mailfrom:zhouyu@wanyeetech.com fp:SMTPD_---.JvtGAVq_1617720563)
+          by smtp.aliyun-inc.com(10.147.43.95);
+          Tue, 06 Apr 2021 22:49:24 +0800
+Subject: Re: [PATCH] MIPS: Fix a longstanding error in div64.h
+To:     "H. Nikolaus Schaller" <hns@goldelico.com>,
+        Huacai Chen <chenhuacai@kernel.org>
+Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        linux-mips <linux-mips@vger.kernel.org>,
         Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jinyang He <hejinyang@loongson.cn>,
-        Kees Cook <keescook@chromium.org>,
-        Liangliang Huang <huanglllzu@gmail.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Michel Lespinasse <walken@google.com>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v4] MIPS: Add support for CONFIG_DEBUG_VIRTUAL
-Message-ID: <20210406130204.GC9505@alpha.franken.de>
-References: <20210331032228.21251-1-f.fainelli@gmail.com>
+        Huacai Chen <chenhuacai@loongson.cn>, stable@vger.kernel.org,
+        Discussions about the Letux Kernel 
+        <letux-kernel@openphoenux.org>
+References: <20210406112404.2671507-1-chenhuacai@loongson.cn>
+ <0338A250-3BF9-4B96-B9DE-61BE573CBB4C@goldelico.com>
+From:   Zhou Yanjie <zhouyu@wanyeetech.com>
+Message-ID: <3e27d0e0-4494-7a94-e0d7-046fb8898603@wanyeetech.com>
+Date:   Tue, 6 Apr 2021 22:49:23 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210331032228.21251-1-f.fainelli@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <0338A250-3BF9-4B96-B9DE-61BE573CBB4C@goldelico.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Tue, Mar 30, 2021 at 08:22:07PM -0700, Florian Fainelli wrote:
-> Provide hooks to intercept bad usages of virt_to_phys() and
-> __pa_symbol() throughout the kernel. To make this possible, we need to
-> rename the current implement of virt_to_phys() into
-> __virt_to_phys_nodebug() and wrap it around depending on
-> CONFIG_DEBUG_VIRTUAL.
-> 
-> A similar thing is needed for __pa_symbol() which is now aliased to
-> __phys_addr_symbol() whose implementation is either the direct return of
-> RELOC_HIDE or goes through the debug version.
-> 
-> Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
-> ---
-> Changes in v4:
-> 
-> - properly address sparse warning in arch/mips/kernel/vdso.c and
->   eliminate it entirely
-> 
-> Changes in v3:
-> 
-> - added missing SDPX license tag in physaddr.c
-> 
-> Changes in v2:
-> - fixed sparse warning in arch/mips/kernel/vdso.c
-> 
->  arch/mips/Kconfig            |  1 +
->  arch/mips/include/asm/io.h   | 14 ++++++++-
->  arch/mips/include/asm/page.h |  9 +++++-
->  arch/mips/kernel/vdso.c      |  5 ++--
->  arch/mips/mm/Makefile        |  2 ++
->  arch/mips/mm/physaddr.c      | 56 ++++++++++++++++++++++++++++++++++++
->  6 files changed, 83 insertions(+), 4 deletions(-)
->  create mode 100644 arch/mips/mm/physaddr.c
+Hi Nikolaus,
 
-applied to mips-next.
+On 2021/4/6 下午8:42, H. Nikolaus Schaller wrote:
+>> Am 06.04.2021 um 13:24 schrieb Huacai Chen <chenhuacai@kernel.org>:
+>>
+>> Only 32bit kernel need __div64_32(), but commit c21004cd5b4cb7d479514d4
+>> ("MIPS: Rewrite <asm/div64.h> to work with gcc 4.4.0.") makes it depend
+>> on 64bit kernel by mistake. This patch fix this longstanding error.
+>>
+>> Fixes: c21004cd5b4cb7d479514d4 ("MIPS: Rewrite <asm/div64.h> to work with gcc 4.4.0.")
+>> Cc: stable@vger.kernel.org
+>> Signed-off-by: Huacai Chen <chenhuacai@loongson.cn>
+>> ---
+>> arch/mips/include/asm/div64.h | 2 +-
+>> 1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/arch/mips/include/asm/div64.h b/arch/mips/include/asm/div64.h
+>> index dc5ea5736440..d199fe36eb46 100644
+>> --- a/arch/mips/include/asm/div64.h
+>> +++ b/arch/mips/include/asm/div64.h
+>> @@ -11,7 +11,7 @@
+>>
+>> #include <asm-generic/div64.h>
+>>
+>> -#if BITS_PER_LONG == 64
+>> +#if BITS_PER_LONG == 32
+>>
+>> #include <linux/types.h>
+> Hm.
+>
+> Ingenic jz4780/CI20 build attempt on top ov v5.12-rc6:
+>
+> In file included from ./include/linux/math64.h:7:0,
+>                   from ./include/linux/time.h:6,
+>                   from ./include/linux/compat.h:10,
+>                   from arch/mips/kernel/asm-offsets.c:12:
+> ./include/linux/math64.h: In function 'div_u64_rem':
+> ./arch/mips/include/asm/div64.h:29:11: error: invalid type argument of unary '*' (have 'long long unsigned int')
+>    __high = *__n >> 32;      \
+>             ^
+> ./include/asm-generic/div64.h:243:11: note: in expansion of macro '__div64_32'
+>     __rem = __div64_32(&(n), __base); \
+>             ^
+> ./include/linux/math64.h:91:15: note: in expansion of macro 'do_div'
+>    *remainder = do_div(dividend, divisor);
+>                 ^
+>
+> Or does it just reveal an unknown bug in my compiler?
 
-Thomas.
 
--- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+I also get these:
+
+
+In file included from ./include/linux/math64.h:7:0,
+                  from ./include/linux/time.h:6,
+                  from ./include/linux/compat.h:10,
+                  from arch/mips/kernel/asm-offsets.c:12:
+./include/linux/math64.h: In function 'div_u64_rem':
+./arch/mips/include/asm/div64.h:29:11: error: invalid type argument of 
+unary '*' (have 'long long unsigned int')
+   __high = *__n >> 32;      \
+            ^
+./include/asm-generic/div64.h:243:11: note: in expansion of macro 
+'__div64_32'
+    __rem = __div64_32(&(n), __base); \
+            ^
+./include/linux/math64.h:91:15: note: in expansion of macro 'do_div'
+   *remainder = do_div(dividend, divisor);
+                ^
+./include/linux/math64.h: In function 'mul_u64_u32_div':
+./arch/mips/include/asm/div64.h:29:11: error: invalid type argument of 
+unary '*' (have 'long long unsigned int')
+   __high = *__n >> 32;      \
+            ^
+./include/asm-generic/div64.h:243:11: note: in expansion of macro 
+'__div64_32'
+    __rem = __div64_32(&(n), __base); \
+            ^
+./include/linux/math64.h:256:14: note: in expansion of macro 'do_div'
+   rl.l.high = do_div(rh.ll, divisor);
+               ^
+./arch/mips/include/asm/div64.h:29:11: error: invalid type argument of 
+unary '*' (have 'long long unsigned int')
+   __high = *__n >> 32;      \
+
+...
+
+
+So it seems not a compiler problem.
+

@@ -2,91 +2,69 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6EE18C433ED
-	for <linux-mips@archiver.kernel.org>; Thu,  8 Apr 2021 20:59:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0CA28C433B4
+	for <linux-mips@archiver.kernel.org>; Thu,  8 Apr 2021 21:48:51 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 2E4EC61182
-	for <linux-mips@archiver.kernel.org>; Thu,  8 Apr 2021 20:59:58 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id C50BD610CF
+	for <linux-mips@archiver.kernel.org>; Thu,  8 Apr 2021 21:48:50 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232459AbhDHVAJ (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 8 Apr 2021 17:00:09 -0400
-Received: from conuserg-09.nifty.com ([210.131.2.76]:46605 "EHLO
-        conuserg-09.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232416AbhDHVAI (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Thu, 8 Apr 2021 17:00:08 -0400
-Received: from localhost.localdomain (133-32-232-101.west.xps.vectant.ne.jp [133.32.232.101]) (authenticated)
-        by conuserg-09.nifty.com with ESMTP id 138Kx46x002644;
-        Fri, 9 Apr 2021 05:59:04 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-09.nifty.com 138Kx46x002644
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1617915545;
-        bh=CMNsK6z9omY3K2WcWrv+g7O+FAyKXeHXo7JaGbnAshQ=;
-        h=From:To:Cc:Subject:Date:From;
-        b=mCAELu1K9iNcHwzxPpkt2QeYzsGvXO3xtV9FO7Le8ftDrt50ftucQPKlGRH7qugRy
-         Ya3grKSZw2YFqHeSRjzjleVybuCxC+F+LDqxW2ODDfZDizTzeFFEkS6xgklZ8DNySf
-         sgjxmlZOGgylBtk14MT/msL3h5+0RgNqd1KhWiFHvZojROpII/2xzBmIKYk5FrMILE
-         JH+ze/FBtu+Utc1Sh1V3UapkGiwD83/r25JpRXNpVeB6q8+2OIyrktRiLXSQ5RNZ6Y
-         WT1cfD2EQCAGNfK7s+unVooFzVx+HATnyUBAB+3r8X2pMEEL5HCT32AGFF6izs7hFa
-         M6AzFOhU0pc5Q==
-X-Nifty-SrcIP: [133.32.232.101]
-From:   Masahiro Yamada <masahiroy@kernel.org>
-To:     linux-kbuild@vger.kernel.org
-Cc:     linux-gpio@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-        Paul Cercueil <paul@crapouillou.net>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Len Brown <len.brown@intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Pavel Machek <pavel@ucw.cz>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-pm@vger.kernel.org
-Subject: [PATCH 0/2] linux/kconfig.h: move IF_ENABLED() out of <linux/kconfig.h>
-Date:   Fri,  9 Apr 2021 05:58:56 +0900
-Message-Id: <20210408205858.51751-1-masahiroy@kernel.org>
-X-Mailer: git-send-email 2.27.0
+        id S232236AbhDHVtB (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 8 Apr 2021 17:49:01 -0400
+Received: from mx2.suse.de ([195.135.220.15]:43580 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231862AbhDHVtB (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Thu, 8 Apr 2021 17:49:01 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 8A0FAAF2C;
+        Thu,  8 Apr 2021 21:48:48 +0000 (UTC)
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     kernel test robot <lkp@intel.com>
+Subject: [PATCH] MIPS: octeon: Add __raw_copy_[from|to|in]_user symbols
+Date:   Thu,  8 Apr 2021 23:48:46 +0200
+Message-Id: <20210408214846.50758-1-tsbogend@alpha.franken.de>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
+Cavium Octeon has it's own memcpy implementation and also need the change
+done in commit 04324f44cb69 ("MIPS: Remove get_fs/set_fs").
 
-I insist on <linux/kconfig.h> having only minimal set of macros
-that are needed to evaluate CONFIG options.
+Fixes: 04324f44cb69 ("MIPS: Remove get_fs/set_fs")
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+---
+ arch/mips/cavium-octeon/octeon-memcpy.S | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-Everytime somebody added an alien to <linux/kconfig.h>, I needed to
-kick it out.
-
-I did not notice 1b399bb04837183cecdc1b32ef1cfc7fcfa75d32 because
-I was not addressed by [1].
-
-[1]: https://lore.kernel.org/lkml/?q=kconfig.h%3A+Add+IF_ENABLED%28%29+macro
-
-I like Paul's idea, but if I had noticed the patch in time, I would
-have tried my best to persuade to implement it outside of <linux/kconfig.h>
-(Paul's initial patch was adding it to a new header instead of <linux/kconfig.h>)
-
-Before it is widely used, I want to fix it.
-
-In 2/2, I converted pm.h to allow driver cleanups.
-
-
-
-Masahiro Yamada (2):
-  linux/kconfig.h: replace IF_ENABLED() with PTR_IF() in
-    <linux/kernel.h>
-  pm: allow drivers to drop #ifdef and __maybe_unused from pm callbacks
-
- drivers/pinctrl/pinctrl-ingenic.c | 20 ++++-----
- include/linux/kconfig.h           |  6 ---
- include/linux/kernel.h            |  2 +
- include/linux/pm.h                | 67 +++++++++++--------------------
- 4 files changed, 36 insertions(+), 59 deletions(-)
-
+diff --git a/arch/mips/cavium-octeon/octeon-memcpy.S b/arch/mips/cavium-octeon/octeon-memcpy.S
+index 0a7c9834b81c..600d018cf354 100644
+--- a/arch/mips/cavium-octeon/octeon-memcpy.S
++++ b/arch/mips/cavium-octeon/octeon-memcpy.S
+@@ -150,8 +150,12 @@ LEAF(memcpy)					/* a0=dst a1=src a2=len */
+ EXPORT_SYMBOL(memcpy)
+ 	move	v0, dst				/* return value */
+ __memcpy:
+-FEXPORT(__copy_user)
+-EXPORT_SYMBOL(__copy_user)
++FEXPORT(__raw_copy_from_user)
++EXPORT_SYMBOL(__raw_copy_from_user)
++FEXPORT(__raw_copy_to_user)
++EXPORT_SYMBOL(__raw_copy_to_user)
++FEXPORT(__raw_copy_in_user)
++EXPORT_SYMBOL(__raw_copy_in_user)
+ 	/*
+ 	 * Note: dst & src may be unaligned, len may be 0
+ 	 * Temps
 -- 
-2.27.0
+2.29.2
 

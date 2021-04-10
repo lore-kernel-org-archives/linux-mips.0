@@ -2,172 +2,79 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-11.7 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,UNPARSEABLE_RELAY,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4D8D6C4363C
-	for <linux-mips@archiver.kernel.org>; Sat, 10 Apr 2021 05:51:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AF91CC433B4
+	for <linux-mips@archiver.kernel.org>; Sat, 10 Apr 2021 18:54:55 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 35A0C61205
-	for <linux-mips@archiver.kernel.org>; Sat, 10 Apr 2021 05:51:18 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 8250E600D4
+	for <linux-mips@archiver.kernel.org>; Sat, 10 Apr 2021 18:54:55 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234364AbhDJFv3 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Sat, 10 Apr 2021 01:51:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58598 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234327AbhDJFvW (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Sat, 10 Apr 2021 01:51:22 -0400
-Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83E1AC061764;
-        Fri,  9 Apr 2021 22:51:06 -0700 (PDT)
-Received: by mail-wm1-x330.google.com with SMTP id k128so3914495wmk.4;
-        Fri, 09 Apr 2021 22:51:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=p/+xyni/YCGnKs32N9UtSLDiZXGL8+kotlNAwV9L5+c=;
-        b=NfvK5567HYt28UkCipC06OgWMXPv7Xs9pNRCvykTRcAx00BjWzfFEEWJrOxksUatKW
-         2S6pPl424KJmgjkuSQKibYoX53aeHq480QN+onSdVaokc/YY/JgCIFP3Huzopt3gegXw
-         wvl59Pvp7FIH5pHL9hI3eKy2D4IdSzD0UAdivVAniXC79uFka4smA7mFrZUKSV5LzZok
-         v94MeQJhw5GeqR64FbhauTZv1c41UvLJkSsaqRFWnmtq5Xn11CvN+Amf3NRNo0w3efeT
-         PWIWzm+ufZw+StStCPPL+sLsGokA9V2dDUay0KgscK5/vtDrMzDuGvzRh9wTM1zcl7nD
-         8Rzw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=p/+xyni/YCGnKs32N9UtSLDiZXGL8+kotlNAwV9L5+c=;
-        b=c28EFo9gKXlqd+KckX03IZehfIxhCjWqsEM0eyGl8Satw2MrJN4ULq4lm9JJeE8fgp
-         Us/ZO7g4yPOwAgIZZfQWMdYKOh+NGR1CxbTDTyS6dHkWgIGI/yzZMLbae5tjIXxdb5EK
-         Sn8wRhBAvGtbjbA1QlV+qIf5kBTW/0L/fMi5au6vpWCo5s+3qsuUBfNFmtFFybwyqli5
-         p2+1yZuZFicvZZ8SBWzMvT4pgxMjK3CqkQbt8novLvRqxU7EsfcVUVsvK7NJpkYEPFkS
-         gujRhgka7EeSjLGjfrsW2Ik+mZDeybdkFntvl9RqsEEL31ChWamOdWKkwR6j4W0M2CZR
-         f9kA==
-X-Gm-Message-State: AOAM532PcoOWV+98WQznqMgNw5CzmO5r4J8V3tHLp5zPOA+RtshmRW7h
-        bNGvzAZyr2xYmKfJedwKlik=
-X-Google-Smtp-Source: ABdhPJz25GEZhbs/h2JpGSa5AGxf7gRmHLyLhu2qvbYdZpuKoymAD7tbn7xeXclHbozOjtpqTeTEgw==
-X-Received: by 2002:a05:600c:2ca:: with SMTP id 10mr16977918wmn.40.1618033865267;
-        Fri, 09 Apr 2021 22:51:05 -0700 (PDT)
-Received: from localhost.localdomain (225.red-83-57-119.dynamicip.rima-tde.net. [83.57.119.225])
-        by smtp.gmail.com with ESMTPSA id o2sm6376518wmc.23.2021.04.09.22.51.04
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 09 Apr 2021 22:51:04 -0700 (PDT)
-From:   Sergio Paracuellos <sergio.paracuellos@gmail.com>
-To:     sboyd@kernel.org
-Cc:     robh+dt@kernel.org, john@phrozen.org, tsbogend@alpha.franken.de,
-        gregkh@linuxfoundation.org, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-mips@vger.kernel.org,
-        devel@driverdev.osuosl.org, neil@brown.name,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v13 3/4] staging: mt7621-dts: use valid vendor 'mediatek' instead of invalid 'mtk'
-Date:   Sat, 10 Apr 2021 07:50:58 +0200
-Message-Id: <20210410055059.13518-4-sergio.paracuellos@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210410055059.13518-1-sergio.paracuellos@gmail.com>
-References: <20210410055059.13518-1-sergio.paracuellos@gmail.com>
+        id S234948AbhDJSzJ (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Sat, 10 Apr 2021 14:55:09 -0400
+Received: from out28-169.mail.aliyun.com ([115.124.28.169]:38671 "EHLO
+        out28-169.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234831AbhDJSzJ (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Sat, 10 Apr 2021 14:55:09 -0400
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.1156899|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.0206022-0.000130036-0.979268;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047190;MF=zhouyanjie@wanyeetech.com;NM=1;PH=DS;RN=14;RT=14;SR=0;TI=SMTPD_---.Jy13RN2_1618080886;
+Received: from zhouyanjie-virtual-machine.localdomain(mailfrom:zhouyanjie@wanyeetech.com fp:SMTPD_---.Jy13RN2_1618080886)
+          by smtp.aliyun-inc.com(10.147.42.241);
+          Sun, 11 Apr 2021 02:54:51 +0800
+From:   =?UTF-8?q?=E5=91=A8=E7=90=B0=E6=9D=B0=20=28Zhou=20Yanjie=29?= 
+        <zhouyanjie@wanyeetech.com>
+To:     linus.walleij@linaro.org, robh+dt@kernel.org, paul@crapouillou.net
+Cc:     linux-gpio@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        hns@goldelico.com, paul@boddie.org.uk, andy.shevchenko@gmail.com,
+        dongsheng.qiu@ingenic.com, aric.pzqi@ingenic.com,
+        rick.tyliu@ingenic.com, sernia.zhou@foxmail.com
+Subject: [PATCH v4 00/11] Fix bugs and add support for new Ingenic SoCs.
+Date:   Sun, 11 Apr 2021 02:54:35 +0800
+Message-Id: <1618080886-32061-1-git-send-email-zhouyanjie@wanyeetech.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Vendor listed for mediatek in kernel vendor file 'vendor-prefixes.yaml'
-contains 'mediatek' as a valid vendor string. Some nodes in the device
-tree are using an invalid vendor string vfor 'mtk' instead. Fix all of
-them in dts file. Update also ralink mt7621 related code to properly
-match new strings. Even there are used in the device tree there are
-some strings that are not referred anywhere but have been also updated
-with new vendor name. These are 'mtk,mt7621-wdt', 'mtk,mt7621-nand',
-'mtk,mt7621-mc', and 'mtk,mt7621-cpc'.
+v1->v2:
+1.Split [1/3] in v1 to [1/6] [2/6] [3/6] [4/6] in v2.
+2.Fix the uninitialized warning.
 
-Acked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Acked-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Signed-off-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
----
- arch/mips/ralink/mt7621.c              |  6 +++---
- drivers/staging/mt7621-dts/mt7621.dtsi | 12 ++++++------
- 2 files changed, 9 insertions(+), 9 deletions(-)
+v2->v3:
+Split [6/6] in v2 to [6/10] [7/10] [8/10] [9/10] [10/10] in v3.
 
-diff --git a/arch/mips/ralink/mt7621.c b/arch/mips/ralink/mt7621.c
-index 6b3db98894cb..f82ad2a621f6 100644
---- a/arch/mips/ralink/mt7621.c
-+++ b/arch/mips/ralink/mt7621.c
-@@ -136,8 +136,8 @@ static void __init mt7621_memory_detect(void)
- 
- void __init ralink_of_remap(void)
- {
--	rt_sysc_membase = plat_of_remap_node("mtk,mt7621-sysc");
--	rt_memc_membase = plat_of_remap_node("mtk,mt7621-memc");
-+	rt_sysc_membase = plat_of_remap_node("mediatek,mt7621-sysc");
-+	rt_memc_membase = plat_of_remap_node("mediatek,mt7621-memc");
- 
- 	if (!rt_sysc_membase || !rt_memc_membase)
- 		panic("Failed to remap core resources");
-@@ -205,7 +205,7 @@ void __init prom_soc_init(struct ralink_soc_info *soc_info)
- 
- 	if (n0 == MT7621_CHIP_NAME0 && n1 == MT7621_CHIP_NAME1) {
- 		name = "MT7621";
--		soc_info->compatible = "mtk,mt7621-soc";
-+		soc_info->compatible = "mediatek,mt7621-soc";
- 	} else {
- 		panic("mt7621: unknown SoC, n0:%08x n1:%08x\n", n0, n1);
- 	}
-diff --git a/drivers/staging/mt7621-dts/mt7621.dtsi b/drivers/staging/mt7621-dts/mt7621.dtsi
-index b68183e7e6ad..f0c9ae757bcd 100644
---- a/drivers/staging/mt7621-dts/mt7621.dtsi
-+++ b/drivers/staging/mt7621-dts/mt7621.dtsi
-@@ -56,7 +56,7 @@ palmbus: palmbus@1E000000 {
- 		#size-cells = <1>;
- 
- 		sysc: sysc@0 {
--			compatible = "mtk,mt7621-sysc", "syscon";
-+			compatible = "mediatek,mt7621-sysc", "syscon";
- 			reg = <0x0 0x100>;
- 			#clock-cells = <1>;
- 			ralink,memctl = <&memc>;
-@@ -66,7 +66,7 @@ sysc: sysc@0 {
- 		};
- 
- 		wdt: wdt@100 {
--			compatible = "mtk,mt7621-wdt";
-+			compatible = "mediatek,mt7621-wdt";
- 			reg = <0x100 0x100>;
- 		};
- 
-@@ -123,17 +123,17 @@ i2s: i2s@a00 {
- 		};
- 
- 		memc: memc@5000 {
--			compatible = "mtk,mt7621-memc", "syscon";
-+			compatible = "mediatek,mt7621-memc", "syscon";
- 			reg = <0x5000 0x1000>;
- 		};
- 
- 		cpc: cpc@1fbf0000 {
--			     compatible = "mtk,mt7621-cpc";
-+			     compatible = "mediatek,mt7621-cpc";
- 			     reg = <0x1fbf0000 0x8000>;
- 		};
- 
- 		mc: mc@1fbf8000 {
--			    compatible = "mtk,mt7621-mc";
-+			    compatible = "mediatek,mt7621-mc";
- 			    reg = <0x1fbf8000 0x8000>;
- 		};
- 
-@@ -361,7 +361,7 @@ timer {
- 	nand: nand@1e003000 {
- 		status = "disabled";
- 
--		compatible = "mtk,mt7621-nand";
-+		compatible = "mediatek,mt7621-nand";
- 		bank-width = <2>;
- 		reg = <0x1e003000 0x800
- 			0x1e003800 0x800>;
+v3->v4:
+1.Modify the format of comment.
+2.Split lcd pins into several groups.
+3.Drop "lcd-no-pins" which is pointless.
+4.Improve the structure of some functions.
+5.Adjust function names to avoid confusion.
+6.Use "lcd-special" and "lcd-generic" instead "lcd-xxbit-tft".
+7.Replace "lcd-rgb-xxx" with "lcd-tft-xxx" to avoid confusion.
+
+周琰杰 (Zhou Yanjie) (11):
+  pinctrl: Ingenic: Add missing pins to the JZ4770 MAC MII group.
+  pinctrl: Ingenic: Add support for read the pin configuration of X1830.
+  pinctrl: Ingenic: Adjust the sequence of X1830 SSI pin groups.
+  pinctrl: Ingenic: Improve LCD pins related code.
+  pinctrl: Ingenic: Reformat the code.
+  dt-bindings: pinctrl: Add bindings for new Ingenic SoCs.
+  pinctrl: Ingenic: Add pinctrl driver for JZ4730.
+  pinctrl: Ingenic: Add pinctrl driver for JZ4750.
+  pinctrl: Ingenic: Add pinctrl driver for JZ4755.
+  pinctrl: Ingenic: Add pinctrl driver for JZ4775.
+  pinctrl: Ingenic: Add pinctrl driver for X2000.
+
+ .../bindings/pinctrl/ingenic,pinctrl.yaml          |   23 +-
+ drivers/pinctrl/pinctrl-ingenic.c                  | 1538 ++++++++++++++++++--
+ 2 files changed, 1429 insertions(+), 132 deletions(-)
+
 -- 
-2.25.1
+2.7.4
 

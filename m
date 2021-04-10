@@ -3,43 +3,45 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
 X-Spam-Status: No, score=-5.2 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	UNPARSEABLE_RELAY,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,
+	SPF_PASS,UNPARSEABLE_RELAY,USER_AGENT_SANE_1 autolearn=no autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A72DBC433ED
-	for <linux-mips@archiver.kernel.org>; Sat, 10 Apr 2021 20:20:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 037C9C433ED
+	for <linux-mips@archiver.kernel.org>; Sat, 10 Apr 2021 20:31:08 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 6BF1C610D1
-	for <linux-mips@archiver.kernel.org>; Sat, 10 Apr 2021 20:20:25 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id C99C1610F9
+	for <linux-mips@archiver.kernel.org>; Sat, 10 Apr 2021 20:31:07 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234548AbhDJUUj (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Sat, 10 Apr 2021 16:20:39 -0400
-Received: from mxout03.lancloud.ru ([45.84.86.113]:39136 "EHLO
+        id S235033AbhDJUbW (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Sat, 10 Apr 2021 16:31:22 -0400
+Received: from mxout03.lancloud.ru ([45.84.86.113]:39374 "EHLO
         mxout03.lancloud.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234439AbhDJUUj (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Sat, 10 Apr 2021 16:20:39 -0400
+        with ESMTP id S234548AbhDJUbT (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Sat, 10 Apr 2021 16:31:19 -0400
 Received: from LanCloud
-DKIM-Filter: OpenDKIM Filter v2.11.0 mxout03.lancloud.ru DC87820751F9
+DKIM-Filter: OpenDKIM Filter v2.11.0 mxout03.lancloud.ru F0046207521C
 Received: from LanCloud
 Received: from LanCloud
 Received: from LanCloud
+Subject: Re: [PATCH v2 0/6] Stop calling devm_request_irq() with invalid IRQs
+ in the I2C bus drivers
 From:   Sergey Shtylyov <s.shtylyov@omprussia.ru>
-Subject: [PATCH v2 0/6] Stop calling devm_request_irq() with invalid IRQs in
- the I2C bus drivers
 To:     <linux-i2c@vger.kernel.org>,
         Wolfram Sang <wsa+renesas@sang-engineering.com>,
         Khalil Blaiech <kblaiech@nvidia.com>,
         Paul Cercueil <paul@crapouillou.net>,
         Michal Simek <michal.simek@xilinx.com>
-Organization: Open Mobile Platform, LLC
 CC:     <linux-mips@vger.kernel.org>,
         <linux-arm-kernel@lists.infradead.org>
-Message-ID: <7995bba1-61dd-baa3-51ea-0fb2fccc19a0@omprussia.ru>
-Date:   Sat, 10 Apr 2021 23:11:59 +0300
+References: <7995bba1-61dd-baa3-51ea-0fb2fccc19a0@omprussia.ru>
+Organization: Open Mobile Platform, LLC
+Message-ID: <b27b3e14-d928-f44d-8b67-2d7645009f3c@omprussia.ru>
+Date:   Sat, 10 Apr 2021 23:31:01 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.8.1
 MIME-Version: 1.0
+In-Reply-To: <7995bba1-61dd-baa3-51ea-0fb2fccc19a0@omprussia.ru>
 Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -50,14 +52,21 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Here are 6 patches against the 'master' branch of Martin Petersen's 'scsi.git' repo.
-The affected drivers call platform_get_irq() but largely ignore its result -- they
-blithely pass the negative error codes to devm_request_irq() which expects *unsinged*
-IRQ #s. Stop doing that by checking what exactly platform_get_irq() returns.
+On 4/10/21 11:11 PM, Sergey Shtylyov wrote:
 
-[1/6] i2c: cadence: add IRQ check
-[2/6] i2c: emev2: add IRQ check
-[3/6] i2c: jz4780: add IRQ check
-[4/6] i2c: mlxbf: add IRQ check
-[5/6] i2c: rcar: add IRQ check
-[6/6] i2c: sh7760: add IRQ check
+> Here are 6 patches against the 'master' branch of Martin Petersen's 'scsi.git' repo.
+> The affected drivers call platform_get_irq() but largely ignore its result -- they
+> blithely pass the negative error codes to devm_request_irq() which expects *unsinged*
+> IRQ #s. Stop doing that by checking what exactly platform_get_irq() returns.
+> 
+> [1/6] i2c: cadence: add IRQ check
+> [2/6] i2c: emev2: add IRQ check
+> [3/6] i2c: jz4780: add IRQ check
+> [4/6] i2c: mlxbf: add IRQ check
+> [5/6] i2c: rcar: add IRQ check
+
+   Forgot to mention that the whole v2 patch set grew from this R-Car patch.
+
+> [6/6] i2c: sh7760: add IRQ check
+
+MBR, Sergey

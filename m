@@ -2,86 +2,101 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,
+X-Spam-Status: No, score=-15.2 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
-	version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 57A19C433B4
-	for <linux-mips@archiver.kernel.org>; Mon, 12 Apr 2021 14:34:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3D066C433ED
+	for <linux-mips@archiver.kernel.org>; Mon, 12 Apr 2021 14:37:02 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 2CFDF6128E
-	for <linux-mips@archiver.kernel.org>; Mon, 12 Apr 2021 14:34:22 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 0D30761287
+	for <linux-mips@archiver.kernel.org>; Mon, 12 Apr 2021 14:37:02 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237806AbhDLOeh convert rfc822-to-8bit (ORCPT
-        <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 12 Apr 2021 10:34:37 -0400
-Received: from aposti.net ([89.234.176.197]:55318 "EHLO aposti.net"
+        id S238815AbhDLOhT (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 12 Apr 2021 10:37:19 -0400
+Received: from elvis.franken.de ([193.175.24.41]:45417 "EHLO elvis.franken.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237558AbhDLOeh (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Mon, 12 Apr 2021 10:34:37 -0400
-Date:   Mon, 12 Apr 2021 15:34:07 +0100
-From:   Paul Cercueil <paul@crapouillou.net>
-Subject: Re: [PATCH] drm/ingenic: Fix pixclock rate for 24-bit serial panels
-To:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>
-Cc:     Sam Ravnborg <sam@ravnborg.org>, od@zcrc.me,
-        linux-mips@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Message-Id: <VGGGRQ.1IX0AMZPBZBT3@crapouillou.net>
-In-Reply-To: <20210323144008.166248-1-paul@crapouillou.net>
-References: <20210323144008.166248-1-paul@crapouillou.net>
+        id S238789AbhDLOhT (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Mon, 12 Apr 2021 10:37:19 -0400
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1lVxgR-0006ax-00; Mon, 12 Apr 2021 16:36:59 +0200
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id 8E128C01E5; Mon, 12 Apr 2021 16:27:30 +0200 (CEST)
+Date:   Mon, 12 Apr 2021 16:27:30 +0200
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Tiezhu Yang <yangtiezhu@loongson.cn>
+Cc:     Jinyang He <hejinyang@loongson.cn>, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] MIPS: Fix strnlen_user access check
+Message-ID: <20210412142730.GA23146@alpha.franken.de>
+References: <1618139092-4018-1-git-send-email-hejinyang@loongson.cn>
+ <cbe5e79b-ee6c-5c59-0051-28e4d1152666@loongson.cn>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1; format=flowed
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cbe5e79b-ee6c-5c59-0051-28e4d1152666@loongson.cn>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Hi,
-
-Can I have an ACK for this patch?
-
-Then I can apply it to drm-misc-next-fixes.
-
-Cheers,
--Paul
-
-
-Le mar. 23 mars 2021 à 14:40, Paul Cercueil <paul@crapouillou.net> a 
-écrit :
-> When using a 24-bit panel on a 8-bit serial bus, the pixel clock
-> requested by the panel has to be multiplied by 3, since the subpixels
-> are shifted sequentially.
+On Mon, Apr 12, 2021 at 11:02:19AM +0800, Tiezhu Yang wrote:
+> On 04/11/2021 07:04 PM, Jinyang He wrote:
+> > Commit 04324f44cb69 ("MIPS: Remove get_fs/set_fs") brought a problem for
+> > strnlen_user(). Jump out when checking access_ok() with condition that
+> > (s + strlen(s)) < __UA_LIMIT <= (s + n). The old __strnlen_user_asm()
+> > just checked (ua_limit & s) without checking (ua_limit & (s + n)).
+> > Therefore, find strlen form s to __UA_LIMIT - 1 in that condition.
+> > 
+> > Signed-off-by: Jinyang He <hejinyang@loongson.cn>
+> > ---
+> >   arch/mips/include/asm/uaccess.h | 11 +++++++++--
+> >   1 file changed, 9 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/arch/mips/include/asm/uaccess.h b/arch/mips/include/asm/uaccess.h
+> > index 91bc7fb..85ba0c8 100644
+> > --- a/arch/mips/include/asm/uaccess.h
+> > +++ b/arch/mips/include/asm/uaccess.h
+> > @@ -630,8 +630,15 @@ static inline long strnlen_user(const char __user *s, long n)
+> >   {
+> >   	long res;
+> > -	if (!access_ok(s, n))
+> > -		return -0;
+> > +	if (unlikely(n <= 0))
+> > +		return 0;
+> > +
+> > +	if (!access_ok(s, n)) {
+> > +		if (!access_ok(s, 0))
+> > +			return 0;
+> > +
+> > +		n = __UA_LIMIT - (unsigned long)s - 1;
+> > +	}
+> >   	might_fault();
+> >   	__asm__ __volatile__(
 > 
-> The code (in ingenic_drm_encoder_atomic_check) already computed
-> crtc_state->adjusted_mode->crtc_clock accordingly, but clk_set_rate()
-> used crtc_state->adjusted_mode->clock instead.
+> The following simple changes are OK to fix this issue?
 > 
-> Fixes: 28ab7d35b6e0 ("drm/ingenic: Properly compute timings when 
-> using a 3x8-bit panel")
-> Cc: stable@vger.kernel.org # v5.10
-> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
-> ---
->  drivers/gpu/drm/ingenic/ingenic-drm-drv.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c 
-> b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
-> index d60e1eefc9d1..cba68bf52ec5 100644
-> --- a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
-> +++ b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
-> @@ -342,7 +342,7 @@ static void ingenic_drm_crtc_atomic_flush(struct 
-> drm_crtc *crtc,
->  	if (priv->update_clk_rate) {
->  		mutex_lock(&priv->clk_mutex);
->  		clk_set_rate(priv->pix_clk,
-> -			     crtc_state->adjusted_mode.clock * 1000);
-> +			     crtc_state->adjusted_mode.crtc_clock * 1000);
->  		priv->update_clk_rate = false;
->  		mutex_unlock(&priv->clk_mutex);
->  	}
-> --
-> 2.30.2
-> 
+> diff --git a/arch/mips/include/asm/uaccess.h b/arch/mips/include/asm/uaccess.h
+> index 91bc7fb..eafc99b 100644
+> --- a/arch/mips/include/asm/uaccess.h
+> +++ b/arch/mips/include/asm/uaccess.h
+> @@ -630,8 +630,8 @@ static inline long strnlen_user(const char __user *s, long n)
+>  {
+>         long res;
+> -       if (!access_ok(s, n))
+> -               return -0;
+> +       if (!access_ok(s, 1))
+> +               return 0;
+>         might_fault();
+>         __asm__ __volatile__(
 
+that's the fix I'd like to apply. Could someone send it as a formal
+patch ? Thanks.
 
+Thomas.
+
+-- 
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]

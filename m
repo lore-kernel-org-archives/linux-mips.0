@@ -2,101 +2,134 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.2 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham
+X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3D066C433ED
-	for <linux-mips@archiver.kernel.org>; Mon, 12 Apr 2021 14:37:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 826F6C433B4
+	for <linux-mips@archiver.kernel.org>; Mon, 12 Apr 2021 14:53:12 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 0D30761287
-	for <linux-mips@archiver.kernel.org>; Mon, 12 Apr 2021 14:37:02 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 539C96044F
+	for <linux-mips@archiver.kernel.org>; Mon, 12 Apr 2021 14:53:12 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238815AbhDLOhT (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 12 Apr 2021 10:37:19 -0400
-Received: from elvis.franken.de ([193.175.24.41]:45417 "EHLO elvis.franken.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238789AbhDLOhT (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Mon, 12 Apr 2021 10:37:19 -0400
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1lVxgR-0006ax-00; Mon, 12 Apr 2021 16:36:59 +0200
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 8E128C01E5; Mon, 12 Apr 2021 16:27:30 +0200 (CEST)
-Date:   Mon, 12 Apr 2021 16:27:30 +0200
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Tiezhu Yang <yangtiezhu@loongson.cn>
-Cc:     Jinyang He <hejinyang@loongson.cn>, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] MIPS: Fix strnlen_user access check
-Message-ID: <20210412142730.GA23146@alpha.franken.de>
-References: <1618139092-4018-1-git-send-email-hejinyang@loongson.cn>
- <cbe5e79b-ee6c-5c59-0051-28e4d1152666@loongson.cn>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cbe5e79b-ee6c-5c59-0051-28e4d1152666@loongson.cn>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S238789AbhDLOx3 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 12 Apr 2021 10:53:29 -0400
+Received: from mo4-p01-ob.smtp.rzone.de ([85.215.255.54]:30189 "EHLO
+        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237526AbhDLOx2 (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Mon, 12 Apr 2021 10:53:28 -0400
+ARC-Seal: i=1; a=rsa-sha256; t=1618239184; cv=none;
+    d=strato.com; s=strato-dkim-0002;
+    b=cNaINwXxnVghLsF8j67RQfipyarpRrXdjRLv08quawZ1JnEvpU3FVbB/Pj21Wtwwvx
+    JoYkADHZNz21L5PrkjmMvyS5ukFhnB8AFk7RaNraR+/IIfs31Pwc4GMALi5bq9eeABAp
+    SlLKvYtu/X+wCjX0nbqp+aODDll5cIlQmszQbp1YeE8XydI8DqugElJYgb46rr55zLzb
+    8YX+/f3uG7khdihEBgaTSevSzJUd4WR9ue54KOgNAWNcDzs28vIucZHkXY4bx2yQ0tJi
+    kuD7+ydRmgUmY+D4akNsA2xPuBguQBuThTIxgEwR0ETohCLj3pXAzTKTnWQKxRTxKffc
+    fcGQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1618239184;
+    s=strato-dkim-0002; d=strato.com;
+    h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:Cc:Date:
+    From:Subject:Sender;
+    bh=kBXF27gQ5ambp/CjjnXkp3yDX1JfgJeEl20/GXxeygk=;
+    b=X+qBlBZuU75ynEa3CLTA8pcB8WnxTKHbQOkxS5dCwiEkiPj2+TPUv2aqEfOnkGAvlW
+    JmE4z4cPf75iyXPfX+qPO+0JoBPzd6D2IaOW/OXnK7uB1c2ALx8HMUtbhXyNW884GGCS
+    JVoDyLAotA621XesGluRPGXFc9blhckjWx64QvbTcT0ZtdmIoPLAfQs3KTL5s/XfgyOb
+    Bpc15KV3fviXgV+TGx1YELessi+GQbzLBGbh1nh6IMQqVZU42tyoo6RE0VVFGsq+BODh
+    9emgcjvz0ytJiwy6j4Y++Bzk+xYdBpuKmb6VAIeDZLCgvyTNExLL0RK+DSjcKfZigB8/
+    N5AA==
+ARC-Authentication-Results: i=1; strato.com;
+    dkim=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1618239184;
+    s=strato-dkim-0002; d=goldelico.com;
+    h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:Cc:Date:
+    From:Subject:Sender;
+    bh=kBXF27gQ5ambp/CjjnXkp3yDX1JfgJeEl20/GXxeygk=;
+    b=Vlndu1i331aQIWrdU8T6zP7TdERoD9P7I5/w/r3k9BaAuQAj9DuBq9DUf+Nd9D11k+
+    jYBOW6YpIy+zQt7kwklGf73hsMccpNx8bSZS3uHzWF6wBpR+eD44h+y3xV/WzDxHGWg0
+    RSZ7/1ls5QBHTuhVRLkzFrcwBN2np1An3zjHsMXwAH0Wc2VQIqAzYeUTQw5N3Dfq60J+
+    bNlDp1FcRLK8It2k8C8TXK1Jenzp8m+D6y7LB8KR/tC87TVi1dqyQzLDSd7Fg7bnu2A9
+    jTQm9vAdWdSEJldzz/cH4qLUUxcNPc6kRTvJCW/GzkX5KBLOg3jDH29YoKc66QUhhp+L
+    Yp3Q==
+Authentication-Results: strato.com;
+    dkim=none
+X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMgPgp8VKxflSZ1P34KBj4Qpw9iZeHmMlw47o5n4="
+X-RZG-CLASS-ID: mo00
+Received: from imac.fritz.box
+    by smtp.strato.de (RZmta 47.24.0 DYNA|AUTH)
+    with ESMTPSA id Z028d1x3CEr3K3E
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (curve X9_62_prime256v1 with 256 ECDH bits, eq. 3072 bits RSA))
+        (Client did not present a certificate);
+    Mon, 12 Apr 2021 16:53:03 +0200 (CEST)
+Subject: Re: [PATCH] drm/ingenic: Fix pixclock rate for 24-bit serial panels
+Mime-Version: 1.0 (Mac OS X Mail 9.3 \(3124\))
+Content-Type: text/plain; charset=iso-8859-1
+From:   "H. Nikolaus Schaller" <hns@goldelico.com>
+In-Reply-To: <VGGGRQ.1IX0AMZPBZBT3@crapouillou.net>
+Date:   Mon, 12 Apr 2021 16:53:03 +0200
+Cc:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
+        Sam Ravnborg <sam@ravnborg.org>, od@zcrc.me,
+        linux-mips@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <228D0565-DCFF-4314-A4AA-C58EBAD77D22@goldelico.com>
+References: <20210323144008.166248-1-paul@crapouillou.net> <VGGGRQ.1IX0AMZPBZBT3@crapouillou.net>
+To:     Paul Cercueil <paul@crapouillou.net>
+X-Mailer: Apple Mail (2.3124)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Mon, Apr 12, 2021 at 11:02:19AM +0800, Tiezhu Yang wrote:
-> On 04/11/2021 07:04 PM, Jinyang He wrote:
-> > Commit 04324f44cb69 ("MIPS: Remove get_fs/set_fs") brought a problem for
-> > strnlen_user(). Jump out when checking access_ok() with condition that
-> > (s + strlen(s)) < __UA_LIMIT <= (s + n). The old __strnlen_user_asm()
-> > just checked (ua_limit & s) without checking (ua_limit & (s + n)).
-> > Therefore, find strlen form s to __UA_LIMIT - 1 in that condition.
-> > 
-> > Signed-off-by: Jinyang He <hejinyang@loongson.cn>
-> > ---
-> >   arch/mips/include/asm/uaccess.h | 11 +++++++++--
-> >   1 file changed, 9 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/arch/mips/include/asm/uaccess.h b/arch/mips/include/asm/uaccess.h
-> > index 91bc7fb..85ba0c8 100644
-> > --- a/arch/mips/include/asm/uaccess.h
-> > +++ b/arch/mips/include/asm/uaccess.h
-> > @@ -630,8 +630,15 @@ static inline long strnlen_user(const char __user *s, long n)
-> >   {
-> >   	long res;
-> > -	if (!access_ok(s, n))
-> > -		return -0;
-> > +	if (unlikely(n <= 0))
-> > +		return 0;
-> > +
-> > +	if (!access_ok(s, n)) {
-> > +		if (!access_ok(s, 0))
-> > +			return 0;
-> > +
-> > +		n = __UA_LIMIT - (unsigned long)s - 1;
-> > +	}
-> >   	might_fault();
-> >   	__asm__ __volatile__(
-> 
-> The following simple changes are OK to fix this issue?
-> 
-> diff --git a/arch/mips/include/asm/uaccess.h b/arch/mips/include/asm/uaccess.h
-> index 91bc7fb..eafc99b 100644
-> --- a/arch/mips/include/asm/uaccess.h
-> +++ b/arch/mips/include/asm/uaccess.h
-> @@ -630,8 +630,8 @@ static inline long strnlen_user(const char __user *s, long n)
->  {
->         long res;
-> -       if (!access_ok(s, n))
-> -               return -0;
-> +       if (!access_ok(s, 1))
-> +               return 0;
->         might_fault();
->         __asm__ __volatile__(
 
-that's the fix I'd like to apply. Could someone send it as a formal
-patch ? Thanks.
+> Am 12.04.2021 um 16:34 schrieb Paul Cercueil <paul@crapouillou.net>:
+>=20
+> Hi,
+>=20
+> Can I have an ACK for this patch?
+>=20
+> Then I can apply it to drm-misc-next-fixes.
+>=20
+> Cheers,
+> -Paul
+>=20
+>=20
+> Le mar. 23 mars 2021 =E0 14:40, Paul Cercueil <paul@crapouillou.net> a =
+=E9crit :
+>> When using a 24-bit panel on a 8-bit serial bus, the pixel clock
+>> requested by the panel has to be multiplied by 3, since the subpixels
+>> are shifted sequentially.
+>> The code (in ingenic_drm_encoder_atomic_check) already computed
+>> crtc_state->adjusted_mode->crtc_clock accordingly, but clk_set_rate()
+>> used crtc_state->adjusted_mode->clock instead.
+>> Fixes: 28ab7d35b6e0 ("drm/ingenic: Properly compute timings when =
+using a 3x8-bit panel")
+>> Cc: stable@vger.kernel.org # v5.10
 
-Thomas.
+Tested-by: H. Nikolaus Schaller <hns@goldelico.com>	# CI20/jz4780 =
+(HDMI) and Alpha400/jz4730 (LCD)
 
--- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+>> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+>> ---
+>> drivers/gpu/drm/ingenic/ingenic-drm-drv.c | 2 +-
+>> 1 file changed, 1 insertion(+), 1 deletion(-)
+>> diff --git a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c =
+b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
+>> index d60e1eefc9d1..cba68bf52ec5 100644
+>> --- a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
+>> +++ b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
+>> @@ -342,7 +342,7 @@ static void ingenic_drm_crtc_atomic_flush(struct =
+drm_crtc *crtc,
+>> 	if (priv->update_clk_rate) {
+>> 		mutex_lock(&priv->clk_mutex);
+>> 		clk_set_rate(priv->pix_clk,
+>> -			     crtc_state->adjusted_mode.clock * 1000);
+>> +			     crtc_state->adjusted_mode.crtc_clock * =
+1000);
+>> 		priv->update_clk_rate =3D false;
+>> 		mutex_unlock(&priv->clk_mutex);
+>> 	}
+>> --
+>> 2.30.2
+>=20
+>=20
+

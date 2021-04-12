@@ -2,51 +2,72 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.2 required=3.0 tests=BAYES_00,
+X-Spam-Status: No, score=-20.2 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham
-	autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 36066C433B4
-	for <linux-mips@archiver.kernel.org>; Mon, 12 Apr 2021 15:16:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 28A26C43461
+	for <linux-mips@archiver.kernel.org>; Mon, 12 Apr 2021 15:16:52 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 1276760C3E
+	by mail.kernel.org (Postfix) with ESMTP id EFBDC6134F
 	for <linux-mips@archiver.kernel.org>; Mon, 12 Apr 2021 15:16:51 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242686AbhDLPRI (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 12 Apr 2021 11:17:08 -0400
-Received: from elvis.franken.de ([193.175.24.41]:45479 "EHLO elvis.franken.de"
+        id S242742AbhDLPRJ (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 12 Apr 2021 11:17:09 -0400
+Received: from elvis.franken.de ([193.175.24.41]:45485 "EHLO elvis.franken.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238015AbhDLPRH (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Mon, 12 Apr 2021 11:17:07 -0400
+        id S239508AbhDLPRI (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Mon, 12 Apr 2021 11:17:08 -0400
 Received: from uucp (helo=alpha)
         by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1lVyIy-0006wH-02; Mon, 12 Apr 2021 17:16:48 +0200
+        id 1lVyIy-0006wH-00; Mon, 12 Apr 2021 17:16:48 +0200
 Received: by alpha.franken.de (Postfix, from userid 1000)
-        id A97A7C02C4; Mon, 12 Apr 2021 17:06:16 +0200 (CEST)
-Date:   Mon, 12 Apr 2021 17:06:16 +0200
+        id 80B45C029E; Mon, 12 Apr 2021 17:03:24 +0200 (CEST)
+Date:   Mon, 12 Apr 2021 17:03:24 +0200
 From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     hch@lst.de
-Subject: Re: [PATCH] MIPS: uaccess: Reduce number of nested macros
-Message-ID: <20210412150616.GC23632@alpha.franken.de>
-References: <20210408181437.19570-1-tsbogend@alpha.franken.de>
+To:     Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
+Cc:     macro@orcam.me.uk, linux-kernel@vger.kernel.org,
+        linux-mips@vger.kernel.org, liwei391@huawei.com, nbd@nbd.name,
+        yangtiezhu@loongson.cn
+Subject: Re: [PATCH v3] MIPS: add support for buggy MT7621S core detection
+Message-ID: <20210412150324.GA23632@alpha.franken.de>
+References: <alpine.DEB.2.21.2104071549560.65251@angie.orcam.me.uk>
+ <20210407200738.149207-1-ilya.lipnitskiy@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210408181437.19570-1-tsbogend@alpha.franken.de>
+In-Reply-To: <20210407200738.149207-1-ilya.lipnitskiy@gmail.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Thu, Apr 08, 2021 at 08:14:37PM +0200, Thomas Bogendoerfer wrote:
-> Clean up macros even further after removal get_fs/set_fs.
+On Wed, Apr 07, 2021 at 01:07:38PM -0700, Ilya Lipnitskiy wrote:
+> Most MT7621 SoCs have 2 cores, which is detected and supported properly
+> by CPS.
 > 
-> Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+> Unfortunately, MT7621 SoC has a less common S variant with only one core.
+> On MT7621S, GCR_CONFIG still reports 2 cores, which leads to hangs when
+> starting SMP. CPULAUNCH registers can be used in that case to detect the
+> absence of the second core and override the GCR_CONFIG PCORES field.
+> 
+> Rework a long-standing OpenWrt patch to override the value of
+> mips_cps_numcores on single-core MT7621 systems.
+> 
+> Tested on a dual-core MT7621 device (Ubiquiti ER-X) and a single-core
+> MT7621 device (Netgear R6220).
+> 
+> Original 4.14 OpenWrt patch:
+> Link: https://git.openwrt.org/?p=openwrt/openwrt.git;a=commitdiff;h=4cdbc90a376dd0555201c1434a2081e055e9ceb7
+> Current 5.10 OpenWrt patch:
+> Link: https://git.openwrt.org/?p=openwrt/openwrt.git;a=blob;f=target/linux/ramips/patches-5.10/320-mt7621-core-detect-hack.patch;h=c63f0f4c1ec742e24d8480e80553863744b58f6a;hb=10267e17299806f9885d086147878f6c492cb904
+> 
+> Suggested-by: Felix Fietkau <nbd@nbd.name>
+> Signed-off-by: Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
 > ---
->  arch/mips/include/asm/uaccess.h | 157 +++++++++++++++-----------------
->  1 file changed, 71 insertions(+), 86 deletions(-)
+>  arch/mips/include/asm/mips-cps.h | 23 ++++++++++++++++++++++-
+>  1 file changed, 22 insertions(+), 1 deletion(-)
 
 applied to mips-next.
 

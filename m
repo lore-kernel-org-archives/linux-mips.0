@@ -2,95 +2,179 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-15.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7896EC433B4
-	for <linux-mips@archiver.kernel.org>; Tue, 13 Apr 2021 06:22:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3F126C433ED
+	for <linux-mips@archiver.kernel.org>; Tue, 13 Apr 2021 06:22:10 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 47345611CE
-	for <linux-mips@archiver.kernel.org>; Tue, 13 Apr 2021 06:22:01 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 1C9E261370
+	for <linux-mips@archiver.kernel.org>; Tue, 13 Apr 2021 06:22:10 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244490AbhDMGWT (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 13 Apr 2021 02:22:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36620 "EHLO
+        id S244468AbhDMGW1 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 13 Apr 2021 02:22:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36652 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244468AbhDMGWS (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Tue, 13 Apr 2021 02:22:18 -0400
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAFA1C061574;
-        Mon, 12 Apr 2021 23:21:59 -0700 (PDT)
-Received: by mail-pj1-x1034.google.com with SMTP id u11so4272606pjr.0;
-        Mon, 12 Apr 2021 23:21:59 -0700 (PDT)
+        with ESMTP id S1344965AbhDMGW0 (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Tue, 13 Apr 2021 02:22:26 -0400
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 358BAC061756;
+        Mon, 12 Apr 2021 23:22:07 -0700 (PDT)
+Received: by mail-pj1-x1031.google.com with SMTP id i4so7928205pjk.1;
+        Mon, 12 Apr 2021 23:22:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=jp6UOGB4FzE1dJIm8rAul1GaY/+/4jd2+2/ZBgCaBec=;
-        b=LJMTj7+T5Vh4zQi5UgM/ctRbpudY9RlRv+MnBAy4OCJwl+ANpzns9iSvBkmBMQe0d4
-         u1zJHWF+aZNJfZIzhxMpJToT3kPqqwSEZqLVD9+iCQN6o9iuyhCCYr5k+vT/95OmJBpF
-         NtRZck9uZPUJ/JsPbZ+W4apyWseTdN3wy+oaDMBTK5+5wi+RxA/+Q/o1bWlbhCUl4mMi
-         M0Tm3zdVV4CYZKb6fz6dbhdItzD8q64SIRkejWe++F7SSIOm7wVK0FSPR+l88voxha0/
-         mBRsbr3Grob4ZZw4g40Cql8k0XtllZoYlKhGPdl90aoL96lVh7il3GtZPvBjgcGrpxlZ
-         c8QA==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=FtKBAsvc7cP/9k3yGtb2tbU5XcFAujb/4U8g9ZMjXlc=;
+        b=YZ3upqSWzBebTRthDEIPNBTcOnRSB9M7m5Ojkb4A3SuvRLMFSVJ+wfZG7i20LQmjcI
+         IYPrkiecnpC29BCtWvsim39EE6VcyQyyKOvY1/sETJ1ua/9Hci0diqRw2jKu6WDVpBof
+         0QE4++NYYlWSKBojOAUx7BDtls6bkyneAwpiYRJCWzraoxnzyD29saKVqosTKe4WKwSN
+         PWdwPNog+pqjiTKB0dO4Z0bno8L0IHQb3CktgqyxcXG6J0dK72uMF7RY64gjeWA5B6Uz
+         kxIB0USKLJnPB4o0fug6OWW4+8e4b2WB8ZXNfNGFK1tVxsgqw21e8G7anlZCD3N2780/
+         Zwgw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=jp6UOGB4FzE1dJIm8rAul1GaY/+/4jd2+2/ZBgCaBec=;
-        b=ts7WpRSpn3josEyAn8HpCIPLw4+VfgzZcSOx9WKdt+jWbgMoA1Lm+FM3owTh3vjmoD
-         PVsFftG11SrbNkYpGZosIH5o1VVCkxhs8MMzR4Lf+CESMpnpQxURfaOlVDs/nA9RImFT
-         rSm6W8r2TNwd0hzlykJmBj1vK/PzdXL3lzu5oURANQbqFrfBmX9Pn4Qiro8GcXxDkjY9
-         6wDZVn2UKZAh94XmKt3c4a5sHNcvBHa2immZxPfYmojgiBewFX6Gw9s/oDKlNc0XTgTX
-         2nekE1AkS7yGq5csw64/e+nlcmJQc2vmXXROYyo0+yXybZV3HsjGLQNrVP8RiBFvePUy
-         XS6g==
-X-Gm-Message-State: AOAM531O0WR/p9B/DZ6c08ztV1gt3VlO/YGi6n8Si2CUGpQL2eSepIXE
-        B72RO8BdUO6V/aeUlfCwVh5W37rafoQC1g==
-X-Google-Smtp-Source: ABdhPJxQ8I+dTzDm7X024wBmqemFWEIYUabsJgkCrAlsqJ7kHZe2DoaKiWmScp/WxSfoqTsngDm0Kw==
-X-Received: by 2002:a17:90a:fa0c:: with SMTP id cm12mr3219972pjb.54.1618294919462;
-        Mon, 12 Apr 2021 23:21:59 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=FtKBAsvc7cP/9k3yGtb2tbU5XcFAujb/4U8g9ZMjXlc=;
+        b=eobuS5KMk52ImhcNHfKQN/3ktsNVlBnUUIYmSWA4WRHRrA2epqXwYwPg3kzXQsW8j9
+         lx5XTyWySZ1RRBie2pAnaQQZrDn/NiPp+m5Kg3FrwEYzQYES6wrfKe1J4df6Ah2m0WRw
+         /hIIFIYkdOx3oXhxHzAW+kAOsUDS9A8loul92hL02drzIDhhTq1H1ilV9LD4ng/2w5Q9
+         tO/YljMy0CcAU19/0iMvmF/YUbqz+zaVqj2bfv7BOIwFh5RrfdpDM7IwGIYJ79ywZKdT
+         GBJo7CU42q8eFh94ZFAkbcl6Q5D69X7e3UrNp/KHkq8dMisuilwe/ZyK12IbXEXTMf1j
+         sCmg==
+X-Gm-Message-State: AOAM530V4+kysyuz0ug6ZheXz3LRGOShaYQ/4M1FzZezWZUDuPSl1ihx
+        OhV6GqKTBab1kkwdqnDJVGw=
+X-Google-Smtp-Source: ABdhPJyQnC+BBsdjOUgQP6rlKPhZD8T0oolxh6oGOm9hXMhj2DlSHkqm2lh6UzRW4ns4pU53X9FfHg==
+X-Received: by 2002:a17:90a:e28b:: with SMTP id d11mr3198895pjz.53.1618294926838;
+        Mon, 12 Apr 2021 23:22:06 -0700 (PDT)
 Received: from z640-arch.lan ([2602:61:7344:f100::678])
-        by smtp.gmail.com with ESMTPSA id e190sm11453326pfe.3.2021.04.12.23.21.58
+        by smtp.gmail.com with ESMTPSA id e190sm11453326pfe.3.2021.04.12.23.22.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Apr 2021 23:21:58 -0700 (PDT)
+        Mon, 12 Apr 2021 23:22:06 -0700 (PDT)
 From:   Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
 To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
         linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
-Subject: [PATCH 0/8] MIPS: Fixes for PCI legacy drivers (rt2880, rt3883)
-Date:   Mon, 12 Apr 2021 23:21:38 -0700
-Message-Id: <20210413062146.389690-1-ilya.lipnitskiy@gmail.com>
+Cc:     Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>,
+        Sergey Ryazanov <ryazanov.s.a@gmail.com>
+Subject: [PATCH 2/8] MIPS: pci-rt2880: remove unneeded locks
+Date:   Mon, 12 Apr 2021 23:21:40 -0700
+Message-Id: <20210413062146.389690-3-ilya.lipnitskiy@gmail.com>
 X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20210413062146.389690-1-ilya.lipnitskiy@gmail.com>
+References: <20210413062146.389690-1-ilya.lipnitskiy@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-One major fix for rt2880-pci in the first patch - fixes breakage that
-existed since v4.14.
+Mirror pci-rt3883 fix from commit e5067c718b3a ("MIPS: pci-rt3883:
+Remove odd locking in PCI config space access code"). pci-rt2880 shares
+the driver layout with pci-rt3883 and the same reasons apply.
 
-Other more minor fixes, cleanups, and improvements that either free up
-memory, make dmesg messages clearer, or remove redundant dmesg output.
+Caller (generic PCI code) already does proper locking, so no need to add
+another one here. Local PCI read/write functions are never called
+simultaneously, also they do not require synchronization with the PCI
+controller ops, since they are used before the controller registration.
 
-Ilya Lipnitskiy (8):
-  MIPS: pci-rt2880: fix slot 0 configuration
-  MIPS: pci-rt2880: remove unneeded locks
-  MIPS: pci-rt3883: trivial: remove unused variable
-  MIPS: pci-rt3883: more accurate DT error messages
-  MIPS: pci-legacy: stop using of_pci_range_to_resource
-  MIPS: pci-legacy: remove redundant info messages
-  MIPS: pci-legacy: remove busn_resource field
-  MIPS: pci-legacy: use generic pci_enable_resources
+Suggested-by: Sergey Ryazanov <ryazanov.s.a@gmail.com>
+Signed-off-by: Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
+---
+ arch/mips/pci/pci-rt2880.c | 13 -------------
+ 1 file changed, 13 deletions(-)
 
- arch/mips/include/asm/pci.h |  1 -
- arch/mips/pci/pci-legacy.c  | 57 ++++++---------------------------
- arch/mips/pci/pci-rt2880.c  | 63 +++++++++++++++++++------------------
- arch/mips/pci/pci-rt3883.c  | 10 ++----
- 4 files changed, 44 insertions(+), 87 deletions(-)
-
+diff --git a/arch/mips/pci/pci-rt2880.c b/arch/mips/pci/pci-rt2880.c
+index 19f7860fb28b..b4ee07cbcf2a 100644
+--- a/arch/mips/pci/pci-rt2880.c
++++ b/arch/mips/pci/pci-rt2880.c
+@@ -41,7 +41,6 @@
+ #define RT2880_PCI_REG_ARBCTL		0x80
+ 
+ static void __iomem *rt2880_pci_base;
+-static DEFINE_SPINLOCK(rt2880_pci_lock);
+ 
+ static u32 rt2880_pci_reg_read(u32 reg)
+ {
+@@ -63,7 +62,6 @@ static inline u32 rt2880_pci_get_cfgaddr(unsigned int bus, unsigned int slot,
+ static int rt2880_pci_config_read(struct pci_bus *bus, unsigned int devfn,
+ 				  int where, int size, u32 *val)
+ {
+-	unsigned long flags;
+ 	u32 address;
+ 	u32 data;
+ 	int busn = 0;
+@@ -74,10 +72,8 @@ static int rt2880_pci_config_read(struct pci_bus *bus, unsigned int devfn,
+ 	address = rt2880_pci_get_cfgaddr(busn, PCI_SLOT(devfn), PCI_FUNC(devfn),
+ 					 where);
+ 
+-	spin_lock_irqsave(&rt2880_pci_lock, flags);
+ 	rt2880_pci_reg_write(address, RT2880_PCI_REG_CONFIG_ADDR);
+ 	data = rt2880_pci_reg_read(RT2880_PCI_REG_CONFIG_DATA);
+-	spin_unlock_irqrestore(&rt2880_pci_lock, flags);
+ 
+ 	switch (size) {
+ 	case 1:
+@@ -97,7 +93,6 @@ static int rt2880_pci_config_read(struct pci_bus *bus, unsigned int devfn,
+ static int rt2880_pci_config_write(struct pci_bus *bus, unsigned int devfn,
+ 				   int where, int size, u32 val)
+ {
+-	unsigned long flags;
+ 	u32 address;
+ 	u32 data;
+ 	int busn = 0;
+@@ -108,7 +103,6 @@ static int rt2880_pci_config_write(struct pci_bus *bus, unsigned int devfn,
+ 	address = rt2880_pci_get_cfgaddr(busn, PCI_SLOT(devfn), PCI_FUNC(devfn),
+ 					 where);
+ 
+-	spin_lock_irqsave(&rt2880_pci_lock, flags);
+ 	rt2880_pci_reg_write(address, RT2880_PCI_REG_CONFIG_ADDR);
+ 	data = rt2880_pci_reg_read(RT2880_PCI_REG_CONFIG_DATA);
+ 
+@@ -127,7 +121,6 @@ static int rt2880_pci_config_write(struct pci_bus *bus, unsigned int devfn,
+ 	}
+ 
+ 	rt2880_pci_reg_write(data, RT2880_PCI_REG_CONFIG_DATA);
+-	spin_unlock_irqrestore(&rt2880_pci_lock, flags);
+ 
+ 	return PCIBIOS_SUCCESSFUL;
+ }
+@@ -159,31 +152,25 @@ static struct pci_controller rt2880_pci_controller = {
+ 
+ static inline u32 rt2880_pci_read_u32(unsigned long reg)
+ {
+-	unsigned long flags;
+ 	u32 address;
+ 	u32 ret;
+ 
+ 	address = rt2880_pci_get_cfgaddr(0, 0, 0, reg);
+ 
+-	spin_lock_irqsave(&rt2880_pci_lock, flags);
+ 	rt2880_pci_reg_write(address, RT2880_PCI_REG_CONFIG_ADDR);
+ 	ret = rt2880_pci_reg_read(RT2880_PCI_REG_CONFIG_DATA);
+-	spin_unlock_irqrestore(&rt2880_pci_lock, flags);
+ 
+ 	return ret;
+ }
+ 
+ static inline void rt2880_pci_write_u32(unsigned long reg, u32 val)
+ {
+-	unsigned long flags;
+ 	u32 address;
+ 
+ 	address = rt2880_pci_get_cfgaddr(0, 0, 0, reg);
+ 
+-	spin_lock_irqsave(&rt2880_pci_lock, flags);
+ 	rt2880_pci_reg_write(address, RT2880_PCI_REG_CONFIG_ADDR);
+ 	rt2880_pci_reg_write(val, RT2880_PCI_REG_CONFIG_DATA);
+-	spin_unlock_irqrestore(&rt2880_pci_lock, flags);
+ }
+ 
+ int pcibios_map_irq(const struct pci_dev *dev, u8 slot, u8 pin)
 -- 
 2.31.1
 

@@ -2,109 +2,101 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-10.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3E065C433B4
-	for <linux-mips@archiver.kernel.org>; Wed, 14 Apr 2021 03:13:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 31B9FC43460
+	for <linux-mips@archiver.kernel.org>; Wed, 14 Apr 2021 03:13:26 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 21DDB613B6
-	for <linux-mips@archiver.kernel.org>; Wed, 14 Apr 2021 03:13:25 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 113DF613BD
+	for <linux-mips@archiver.kernel.org>; Wed, 14 Apr 2021 03:13:26 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233075AbhDNDNo (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        id S233099AbhDNDNo (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
         Tue, 13 Apr 2021 23:13:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55466 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55458 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232943AbhDNDNh (ORCPT
+        with ESMTP id S232933AbhDNDNh (ORCPT
         <rfc822;linux-mips@vger.kernel.org>); Tue, 13 Apr 2021 23:13:37 -0400
-Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CBF3C06138D;
-        Tue, 13 Apr 2021 20:12:53 -0700 (PDT)
-Received: by mail-pg1-x536.google.com with SMTP id w10so13408073pgh.5;
-        Tue, 13 Apr 2021 20:12:53 -0700 (PDT)
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C1D2C061574;
+        Tue, 13 Apr 2021 20:12:50 -0700 (PDT)
+Received: by mail-pj1-x102a.google.com with SMTP id lr1-20020a17090b4b81b02900ea0a3f38c1so2320306pjb.0;
+        Tue, 13 Apr 2021 20:12:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=KyKCHbVUuM78DLJQ6iKYbE/8/YHUHid6Z5P0PEZg9RQ=;
-        b=NAvH4TmqSeGm98xrtWJRUm6UZo4ZvRLXQaMtG2RW+EykdYihgB+RCLHvu4sNiil1qr
-         lQlHUtBTBHzvnxu1ArOPxvXsKJnvdFFbnfqTKBpnvLTQfBxBMKIPRkF/fF0P1tdmq7O0
-         5nw603ZGRB+jmnorM0hEwLv4j9AqfcGWGt7i6UTja4IUyGNaT27N4dsnbAAcxGwkOj/P
-         mt2ds2DhK48KBRrkclktwmWRMQjwCqC9zj9M5hqDXXfK56FoOvADrDgKMMsIayLjKdJY
-         n/svZ4fTI/NHFbi1vepRMeM/d6G/GQwSz2CPGt0kDv+PMFi9lPf6Egf+BpQRRGol7cBh
-         VVeA==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=fhzJXag0MgkeERLQw7fwgTTLcexMxRw26VdF4LhuleQ=;
+        b=Hh3pRhf8wPcxqp/UcS84bf1IxfWOHUUlJpJtpf1ENaA/ba52PIrrUMXHwOvCz7l111
+         u+2jadQFZXkY7veHjQDaevPOEFwgNjmVdZ5JxwFN6Lc2hpOfRcRwNPd35+M+6YuHoBJC
+         s4zh/xf3fYvizCQJ6y5msTlqTziaFK+4sxHX2XJFbnM2aqv6m4eCaO1iDonsF8dE5vBL
+         lAdXD7r43tM8unpmaevt6VX+RY4g/tS2CH87yc/hdjFC8iZZKgFZW3Fht++753kFDrwN
+         BkNY3fQSGw/Yvu2OAES8iwP27R8j63XjzoN1yfz8hVlpU6ow3U9Pvf4pUu+dDQiyP51e
+         4LmQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=KyKCHbVUuM78DLJQ6iKYbE/8/YHUHid6Z5P0PEZg9RQ=;
-        b=TPrSLVGc8UJlb3b639JNlR04xsWNIO8qFKLPy74W/IlJzVreJJ2h/7yCtmWsQc6fno
-         LRkftzyjmjrMQq80ImeCeHdt+ZcixR2Sg5Z2griUie1v5LX3tbclFa0Be0g+FcbrSpHI
-         E8A1jXi5vXejWF9nAaizm1Pe6ASLDNPMKmRFkSeBF7lWRSpafeQ7k1+7U1NuRMvuHN2J
-         nb5oEk944ItMnz3p+njORizLETJyicjnh+11kG8BfGvN8kAXUQbV58EyrKbdxMNBN/zz
-         S52AfjiLVDemBHlCahGlaiYNiRO51i/cFM1ZBu9WFrdGnHqRLO1tMZwfBfMSXJWHKM07
-         Osig==
-X-Gm-Message-State: AOAM532hrdLMqxojGY25WclvTSXo4idsJwwG5u/iClkIhel1HsO4iBBy
-        2h/73VWsLkMF9uQRIBGluE0=
-X-Google-Smtp-Source: ABdhPJyXtbiA38TQC4u9VoGMx2W05l+/EbEFz1ZPyQWp7g7rALrdYnfcrN0chDS3KRZlVi6dmlc/jQ==
-X-Received: by 2002:a63:c66:: with SMTP id 38mr35659580pgm.69.1618369972830;
-        Tue, 13 Apr 2021 20:12:52 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=fhzJXag0MgkeERLQw7fwgTTLcexMxRw26VdF4LhuleQ=;
+        b=lojUJHqTqdd50mHvosmvRAxvAC2aq1vTSxOvoKryOY84g7HD9uO3x/cJy1SVRgUvcG
+         M9u/5ByK/yPW/6hLboSzj4QDDT11PdS06wsGL4Chi1Xboa91GSVCJKblKUthjJHMpk3R
+         IbZQfTAs83oWw7Wg8hONuAKCFeveaEAgkF5j2AatfBs0An0sdNt9mtdoUl/7s2c4X3oC
+         7yIhaPtTI3Oi8ERfi30iKMx0kxa6jpnDa2E6pVcSTBO/InO4JMKjjwfuioqZW96u18hd
+         u4MUZAfHpYFLkiI1XTEWlE7135LiMaqLMp5xii1c7SQneruznIb1mjlqf7N9GKLYP0ol
+         xPag==
+X-Gm-Message-State: AOAM5330k8Ud4cq3qMNtjCjZVdTxqhWnZT4hZaAFEsSj4I9KVIwnKH/o
+        fIVkZXoIwXWdfLYme/nuFk4=
+X-Google-Smtp-Source: ABdhPJw5UWpLIIrff4YKIQPJiJSLCmmSNF5m51zEs94yK4VWtXsneKsJk0RfQSvkxXbajXbjNjiUjA==
+X-Received: by 2002:a17:90a:9404:: with SMTP id r4mr1068735pjo.64.1618369969722;
+        Tue, 13 Apr 2021 20:12:49 -0700 (PDT)
 Received: from z640-arch.lan ([2602:61:7344:f100::678])
-        by smtp.gmail.com with ESMTPSA id d17sm13971605pfo.117.2021.04.13.20.12.52
+        by smtp.gmail.com with ESMTPSA id d17sm13971605pfo.117.2021.04.13.20.12.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Apr 2021 20:12:52 -0700 (PDT)
+        Tue, 13 Apr 2021 20:12:49 -0700 (PDT)
 From:   Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
 To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
         linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
         Sergey Ryazanov <ryazanov.s.a@gmail.com>
 Cc:     Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
-Subject: [PATCH v2 4/8] MIPS: pci-rt3883: more accurate DT error messages
-Date:   Tue, 13 Apr 2021 20:12:36 -0700
-Message-Id: <20210414031240.313852-5-ilya.lipnitskiy@gmail.com>
+Subject: [PATCH v2 0/8] MIPS: fixes for PCI legacy drivers (rt2880, rt3883)
+Date:   Tue, 13 Apr 2021 20:12:32 -0700
+Message-Id: <20210414031240.313852-1-ilya.lipnitskiy@gmail.com>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210414031240.313852-1-ilya.lipnitskiy@gmail.com>
-References: <20210414031240.313852-1-ilya.lipnitskiy@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Existing strings do not make sense: one is always NULL and the other
-refers to the wrong parent node.
+One major fix for rt2880-pci in the first patch - fixes breakage that
+existed since v4.14.
 
-Signed-off-by: Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
----
- arch/mips/pci/pci-rt3883.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+Other more minor fixes, cleanups, and improvements that either free up
+memory, make dmesg messages clearer, or remove redundant dmesg output.
 
-diff --git a/arch/mips/pci/pci-rt3883.c b/arch/mips/pci/pci-rt3883.c
-index e422f78db5bc..aebd4964ea34 100644
---- a/arch/mips/pci/pci-rt3883.c
-+++ b/arch/mips/pci/pci-rt3883.c
-@@ -431,8 +431,7 @@ static int rt3883_pci_probe(struct platform_device *pdev)
- 
- 	if (!rpc->intc_of_node) {
- 		dev_err(dev, "%pOF has no %s child node",
--			rpc->intc_of_node,
--			"interrupt controller");
-+			np, "interrupt controller");
- 		return -EINVAL;
- 	}
- 
-@@ -446,8 +445,7 @@ static int rt3883_pci_probe(struct platform_device *pdev)
- 
- 	if (!rpc->pci_controller.of_node) {
- 		dev_err(dev, "%pOF has no %s child node",
--			rpc->intc_of_node,
--			"PCI host bridge");
-+			np, "PCI host bridge");
- 		err = -EINVAL;
- 		goto err_put_intc_node;
- 	}
+v2:
+- Do not use internal pci-rt2880 config read and write functions after
+  the device has been registered with the PCI subsystem to avoid races.
+  Use safe pci_bus_{read,write}_config_{d}word wrappers instead.
+
+Ilya Lipnitskiy (8):
+  MIPS: pci-rt2880: fix slot 0 configuration
+  MIPS: pci-rt2880: remove unneeded locks
+  MIPS: pci-rt3883: trivial: remove unused variable
+  MIPS: pci-rt3883: more accurate DT error messages
+  MIPS: pci-legacy: stop using of_pci_range_to_resource
+  MIPS: pci-legacy: remove redundant info messages
+  MIPS: pci-legacy: remove busn_resource field
+  MIPS: pci-legacy: use generic pci_enable_resources
+
+ arch/mips/include/asm/pci.h |  1 -
+ arch/mips/pci/pci-legacy.c  | 57 ++++++-------------------------------
+ arch/mips/pci/pci-rt2880.c  | 50 ++++++++++++++++----------------
+ arch/mips/pci/pci-rt3883.c  | 10 ++-----
+ 4 files changed, 35 insertions(+), 83 deletions(-)
+
 -- 
 2.31.1
 

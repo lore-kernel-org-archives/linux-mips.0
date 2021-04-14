@@ -8,62 +8,63 @@ X-Spam-Status: No, score=-15.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4C03DC433ED
-	for <linux-mips@archiver.kernel.org>; Wed, 14 Apr 2021 03:13:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 45F4CC433B4
+	for <linux-mips@archiver.kernel.org>; Wed, 14 Apr 2021 03:13:30 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 266F7613B1
-	for <linux-mips@archiver.kernel.org>; Wed, 14 Apr 2021 03:13:28 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 23968613B6
+	for <linux-mips@archiver.kernel.org>; Wed, 14 Apr 2021 03:13:30 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232953AbhDNDNr (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 13 Apr 2021 23:13:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55464 "EHLO
+        id S233169AbhDNDNs (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 13 Apr 2021 23:13:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55480 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232956AbhDNDNh (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Tue, 13 Apr 2021 23:13:37 -0400
-Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CB06C06138C;
-        Tue, 13 Apr 2021 20:12:52 -0700 (PDT)
-Received: by mail-pf1-x436.google.com with SMTP id i190so12775619pfc.12;
-        Tue, 13 Apr 2021 20:12:52 -0700 (PDT)
+        with ESMTP id S232981AbhDNDNk (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Tue, 13 Apr 2021 23:13:40 -0400
+Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CCA4C06138E;
+        Tue, 13 Apr 2021 20:12:54 -0700 (PDT)
+Received: by mail-pf1-x42e.google.com with SMTP id w8so9314443pfn.9;
+        Tue, 13 Apr 2021 20:12:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=gB2Y5Ee6tQXNfuASCG1AntUHngSRzeeF+IbJPgKxOeg=;
-        b=c6DzTECGFr2NKizGLEiVq3XztDMAij+0ddzvSLicuH0cwo3bLFksnk7dJ9gHEY5qAG
-         dbGJb9bvvV7IyHHqkibbIZ7+DgG5K0H4ZKfAFbHYin65ZY5zsfI192gfMEwazIHGiHSm
-         AUaHdkYzFg+JX4KfvKn/mkxVjRcSPx/0s/dyJOyPcN4ipLFpkCY5Sf4n8yKDmItWURL+
-         NKbv0ARen7sCVelX5J2rl8cp0YWlMZQEL2WULxqOhU57fPqzCBYxnLcHVENrUmXlY0YV
-         9dD3iho3FwzJreVeujM+G8rIT5E4LiNoTShFHu0xzhefD5SrEronjKlS2nDSNtzlKQMK
-         5Xog==
+        bh=TwYVR02YUIROEysawud1U32OvU6J+qaFmj26Z/Sycfc=;
+        b=EIh5fxJtzBXfY56I/RXhnvQ2XGXaLd4A8j86jLEQ2fzZNm8uon7W57ZAtqOAUb7Xqk
+         KJMZnokPYpDhp4vOQCdTKsVvEJjuQ0W8dlfEIeBQLnqcp0ixjSod2Q805vERHHKwWQmz
+         4CJ9ys5O55IYaGMRXCBeOFZyYDw2yLkUsiM0PVa4Ak2NacSM1EnjuMEVcqrb+PCWLnMb
+         JHrPCz59xTBvbWW/trCakxNnWMj9P95OwNP5S6vdQnT9nKcxLYmO50XUVajyDg5Gqkd/
+         GF8hQ4L+56db/FbVXDI3WtFUXQvSrDdIiUNAPnTmzOIM8n3mEKfvWX8WcPcjLIsWHnXO
+         UUgA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=gB2Y5Ee6tQXNfuASCG1AntUHngSRzeeF+IbJPgKxOeg=;
-        b=RRklsg5VFYr7kXJ7QWh8QK746BTvEy0Z0Y6y4/e3QY9PrgWtN0x3GNSZQYMkx0oZop
-         guFdluLHyBhLeT+SzbtPhHpH0tl2RcaKhEbyr2fY5NIDlvbAN4c9PX5n7oXX8lGMgIle
-         w8J1XQBsqyKEEnRPdS5fW8/7lnjFS64nMbJisKn2nzBIIqojNn7czGvGmPzlaUDVrKKn
-         gpwWfSj/N7jVaE78k/4GxMzOtROBPadJhOaS1p5mxNW8qjM+PaRrl/VX5BM7QDnJr+j4
-         VKpc4fGC4jx0QrsNAZEPospZoyd/bDMS6mOkIME0LGchnM8MYRT49WZIMaf1FPHU2C5z
-         aIpA==
-X-Gm-Message-State: AOAM533X47VgzzP4xfL5DvP2aJHNacVn77Yu2Vq285BlTIbwaiu2Kmhq
-        Pl82C1xWqCl+maGN2kJum2A=
-X-Google-Smtp-Source: ABdhPJx6GWTyrDQfMDM638g0cQJcm6ON9JFBJQ9QZDEXA/05YCgDY/LrH8zX5dsFz6ULc+OjeB9wyg==
-X-Received: by 2002:aa7:8a47:0:b029:24e:22de:de6a with SMTP id n7-20020aa78a470000b029024e22dede6amr10821817pfa.20.1618369971998;
-        Tue, 13 Apr 2021 20:12:51 -0700 (PDT)
+        bh=TwYVR02YUIROEysawud1U32OvU6J+qaFmj26Z/Sycfc=;
+        b=mewN/q8XsANagTqJtOmXYtd5jzAZDJvuAYQ2TUjQGqJ09av6vhw4OEEb2wJuVHSf8d
+         7Z/185TxFMWzd7N2YtGkq1eH7KPJZX9noIGjruRIR+JFaL58IaZ3YrSj41aQ0HCAFKX/
+         1r29IDZcTGIa6B6EKtxn2aGggAGdPXRjD+FFxw+EJVG6BYOR/8CbRqrvIs6YV58TSnf9
+         GqwvRstljSSU6brP9BHhNswk2wX19fE7QqDP1jKx2OcubuVOAF3YGESdQO+8JnSUmPlC
+         0+o5H4GQu4EJPiR6Cd22yilZBHD0gL1zk7yj0CI1A53RGYids1gRzC4R5wMMBi092jGC
+         i3zw==
+X-Gm-Message-State: AOAM531sPStAUb3KFGY3Ea30/T7Y9yTGvlbFUq8rdavfU7d2dltoILGb
+        Hzyz/FGE3TMIFUVedhMhWGE=
+X-Google-Smtp-Source: ABdhPJxDh6XsNuKoi7zTxG8Bw/lpTppmcML+JLevDNNMYpXf/IRxOJRKhm1jtlANGFXck7o9Y4aTGQ==
+X-Received: by 2002:a63:1716:: with SMTP id x22mr35851862pgl.261.1618369973731;
+        Tue, 13 Apr 2021 20:12:53 -0700 (PDT)
 Received: from z640-arch.lan ([2602:61:7344:f100::678])
-        by smtp.gmail.com with ESMTPSA id d17sm13971605pfo.117.2021.04.13.20.12.51
+        by smtp.gmail.com with ESMTPSA id d17sm13971605pfo.117.2021.04.13.20.12.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Apr 2021 20:12:51 -0700 (PDT)
+        Tue, 13 Apr 2021 20:12:53 -0700 (PDT)
 From:   Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
 To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
         linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
         Sergey Ryazanov <ryazanov.s.a@gmail.com>
-Cc:     Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>, trivial@kernel.org
-Subject: [PATCH v2 3/8] MIPS: pci-rt3883: trivial: remove unused variable
-Date:   Tue, 13 Apr 2021 20:12:35 -0700
-Message-Id: <20210414031240.313852-4-ilya.lipnitskiy@gmail.com>
+Cc:     Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>,
+        Liviu Dudau <Liviu.Dudau@arm.com>
+Subject: [PATCH v2 5/8] MIPS: pci-legacy: stop using of_pci_range_to_resource
+Date:   Tue, 13 Apr 2021 20:12:37 -0700
+Message-Id: <20210414031240.313852-6-ilya.lipnitskiy@gmail.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210414031240.313852-1-ilya.lipnitskiy@gmail.com>
 References: <20210414031240.313852-1-ilya.lipnitskiy@gmail.com>
@@ -73,52 +74,53 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Fixes the following compiler warning:
-  warning: unused variable 'flags' [-Wunused-variable]
+Mirror commit aeba3731b150 ("powerpc/pci: Fix IO space breakage after
+of_pci_range_to_resource() change").
 
-Fixes: e5067c718b3a ("MIPS: pci-rt3883: Remove odd locking in PCI config space access code")
+Most MIPS platforms do not define PCI_IOBASE, nor implement
+pci_address_to_pio(). Moreover, IO_SPACE_LIMIT is 0xffff for most MIPS
+platforms. of_pci_range_to_resource passes the _start address_ of the IO
+range into pci_address_to_pio, which then checks it against
+IO_SPACE_LIMIT and fails, because for MIPS platforms that use
+pci-legacy (pci-lantiq, pci-rt3883, pci-mt7620), IO ranges start much
+higher than 0xffff.
+
+In fact, pci-mt7621 in staging already works around this problem, see
+commit 09dd629eeabb ("staging: mt7621-pci: fix io space and properly set
+resource limits")
+
+So just stop using of_pci_range_to_resource, which does not work for
+MIPS.
+
+Fixes PCI errors like:
+  pci_bus 0000:00: root bus resource [io  0xffffffff]
+
+Fixes: 0b0b0893d49b ("of/pci: Fix the conversion of IO ranges into IO resources")
 Signed-off-by: Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
-Acked-by: Sergey Ryazanov <ryazanov.s.a@gmail.com>
-Cc: trivial@kernel.org
+Cc: Liviu Dudau <Liviu.Dudau@arm.com>
 ---
- arch/mips/pci/pci-rt3883.c | 4 ----
- 1 file changed, 4 deletions(-)
+ arch/mips/pci/pci-legacy.c | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
 
-diff --git a/arch/mips/pci/pci-rt3883.c b/arch/mips/pci/pci-rt3883.c
-index 0ac6346026d0..e422f78db5bc 100644
---- a/arch/mips/pci/pci-rt3883.c
-+++ b/arch/mips/pci/pci-rt3883.c
-@@ -100,7 +100,6 @@ static u32 rt3883_pci_read_cfg32(struct rt3883_pci_controller *rpc,
- 			       unsigned bus, unsigned slot,
- 			       unsigned func, unsigned reg)
- {
--	unsigned long flags;
- 	u32 address;
- 	u32 ret;
- 
-@@ -116,7 +115,6 @@ static void rt3883_pci_write_cfg32(struct rt3883_pci_controller *rpc,
- 				 unsigned bus, unsigned slot,
- 				 unsigned func, unsigned reg, u32 val)
- {
--	unsigned long flags;
- 	u32 address;
- 
- 	address = rt3883_pci_get_cfgaddr(bus, slot, func, reg);
-@@ -229,7 +227,6 @@ static int rt3883_pci_config_read(struct pci_bus *bus, unsigned int devfn,
- 				  int where, int size, u32 *val)
- {
- 	struct rt3883_pci_controller *rpc;
--	unsigned long flags;
- 	u32 address;
- 	u32 data;
- 
-@@ -263,7 +260,6 @@ static int rt3883_pci_config_write(struct pci_bus *bus, unsigned int devfn,
- 				   int where, int size, u32 val)
- {
- 	struct rt3883_pci_controller *rpc;
--	unsigned long flags;
- 	u32 address;
- 	u32 data;
+diff --git a/arch/mips/pci/pci-legacy.c b/arch/mips/pci/pci-legacy.c
+index 39052de915f3..3a909194284a 100644
+--- a/arch/mips/pci/pci-legacy.c
++++ b/arch/mips/pci/pci-legacy.c
+@@ -166,8 +166,13 @@ void pci_load_of_ranges(struct pci_controller *hose, struct device_node *node)
+ 			res = hose->mem_resource;
+ 			break;
+ 		}
+-		if (res != NULL)
+-			of_pci_range_to_resource(&range, node, res);
++		if (res != NULL) {
++			res->name = node->full_name;
++			res->flags = range.flags;
++			res->start = range.cpu_addr;
++			res->end = range.cpu_addr + range.size - 1;
++			res->parent = res->child = res->sibling = NULL;
++		}
+ 	}
+ }
  
 -- 
 2.31.1

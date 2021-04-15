@@ -2,162 +2,263 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.3 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+	MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
+	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BEBE9C433ED
-	for <linux-mips@archiver.kernel.org>; Thu, 15 Apr 2021 09:35:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 76B83C433B4
+	for <linux-mips@archiver.kernel.org>; Thu, 15 Apr 2021 10:27:00 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 9006E613A9
-	for <linux-mips@archiver.kernel.org>; Thu, 15 Apr 2021 09:35:58 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 5384060FF1
+	for <linux-mips@archiver.kernel.org>; Thu, 15 Apr 2021 10:27:00 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232138AbhDOJgU (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 15 Apr 2021 05:36:20 -0400
-Received: from wnew4-smtp.messagingengine.com ([64.147.123.18]:60857 "EHLO
-        wnew4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232367AbhDOJgT (ORCPT
+        id S230474AbhDOK1W (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 15 Apr 2021 06:27:22 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:47710 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231766AbhDOK1V (ORCPT
         <rfc822;linux-mips@vger.kernel.org>);
-        Thu, 15 Apr 2021 05:36:19 -0400
-X-Greylist: delayed 556 seconds by postgrey-1.27 at vger.kernel.org; Thu, 15 Apr 2021 05:36:19 EDT
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailnew.west.internal (Postfix) with ESMTP id F103D10F3;
-        Thu, 15 Apr 2021 05:26:38 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute3.internal (MEProxy); Thu, 15 Apr 2021 05:26:39 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm2; bh=PtaPMljBD2boZ8zdNUtTMi1M1Dx
-        Oz641bQ2OhBoGMjo=; b=qZJm9bq/q8pqEMr1PDT01gAsiPjumU/BRbuKfpekYpj
-        L2DrcagM3UtPSpGEOJw5YaUcMFU9PZYvgLxKCtg1dFp7u5CYxVJDLjzgHBEnD68B
-        a+xbxwkyg5Pvou6eHzz+TTFRWf+Ikc4/skKbyGDeVUnUlsMzVftQM3Dju9oJepjZ
-        bWn1Sq3R34YmpKSn/0cu6PpfvP8AO5MJHozjLPD7NslF4nnrD+RyS+c5yiWKczAj
-        agJ0b2b+dvoLeE+cfqu1d5pL1E3SjKLyk68qXIKO4srq+rwmH2orMWqdEk+69yTB
-        YLZIy0koG/H1+tAnTYTlWKoV5ASAhfyI9L/Vk/ezp7w==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=PtaPMl
-        jBD2boZ8zdNUtTMi1M1DxOz641bQ2OhBoGMjo=; b=rdruuGFMfbwZsnv/OifYg6
-        eF1id0DgmV4ZuqeJ79qlIhTYgdyozjLarNrFq4lOc1Z+yTmv/ItRvPB4o/PZG/nj
-        VVTfAj4EAw1CTOtKMWkD/a0C/BcNG90N1hu1oegDHA0ECuETV8oRPzgYo8tiFMXe
-        /Bl9elVSYyZzl3osUDfmeWzZhKx5XCFvgJBvwg5aWYw0YqM3vjUPknRWfXC32H1J
-        T+C8gqEzp2WUvD4b+84KY/plhPLjbMapTKXeh0EQqQ0pqmfHw7YJ5ss5eT68U9ya
-        DZZD2LBtT5lb1leq6vHw3MQNoACTYO/LKmVkx9kiNgLNgqv4QAoDC3k6QeKbiCmw
-        ==
-X-ME-Sender: <xms:ywZ4YLVEyFbZdE7VindQd54P70eLLG1KZjhhVEbjn05WA6KRUsp4Gg>
-    <xme:ywZ4YH3UAM-_BraEqDdmPGpqsDRaos5L-ij__R0qkxs0wChUq2XKgOGnzVtmwbpEL
-    Xvwmq4BKwZyy_BfzIM>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrudelfedgudeiucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
-    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
-    htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
-    gedunecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenuc
-    frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:ywZ4YCa0Ke0eotrSX1S8ssua1fQKjj3JefXX5Slst5mcRUmPisSRXg>
-    <xmx:ywZ4YKrhooip1bTHf-TtoaOk3xp1RAbhgkfFmohB0NJfWKDv9ZDbcA>
-    <xmx:ywZ4YOpwZNHX7a20ucRaRhiw4JnOmwFsL3Zkt8HFZK4q6fuWlUGzyg>
-    <xmx:zgZ4YGwMvDYgXzWoQomG1WFrp3MfFBgBN_jPYXQdp28hAcMgWDwhw66AdRE>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 23E0424005B;
-        Thu, 15 Apr 2021 05:26:35 -0400 (EDT)
-Date:   Thu, 15 Apr 2021 11:26:33 +0200
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Paul Cercueil <paul@crapouillou.net>
-Cc:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Simon Ser <contact@emersion.fr>,
-        Sam Ravnborg <sam@ravnborg.org>, od@zcrc.me,
-        linux-mips@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Subject: Re: [PATCH 2/2] drm/ingenic: Don't request full modeset if property
- is not modified
-Message-ID: <20210415092633.4vkteqmqqxfgrjxz@gilmour>
-References: <20210329175046.214629-1-paul@crapouillou.net>
- <20210329175046.214629-3-paul@crapouillou.net>
+        Thu, 15 Apr 2021 06:27:21 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1618482418;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=8cpKb0ASp+K7zcTMzICSE9fwIk8Icc72x4Rwh+Gm6ZU=;
+        b=Uk9k7vgKRYy/wUVbHTHus80kG5QoiX0tCYucSSb3VUMHFKdnODyv8tn+FpnHTkl7SKTJuC
+        WPdExKHl7tvf6ismBOd91G1PMms0ibRLAHmzJNJn2CKmtAw2KVpPGDS9LZsLl0hNY7LKG1
+        T1dbp+GcP+vi3Qvq3FhQ9kWMFZpENjg=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-402-XcY5pYPOM-usy0BTJjd9Lw-1; Thu, 15 Apr 2021 06:26:56 -0400
+X-MC-Unique: XcY5pYPOM-usy0BTJjd9Lw-1
+Received: by mail-wr1-f69.google.com with SMTP id k1-20020adfd2210000b02901040d1dbcaeso2525277wrh.17
+        for <linux-mips@vger.kernel.org>; Thu, 15 Apr 2021 03:26:56 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:references:organization:subject
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=8cpKb0ASp+K7zcTMzICSE9fwIk8Icc72x4Rwh+Gm6ZU=;
+        b=aHVJmqug+Ced0RXMjlsyk9X6qAAUCEdGvugiBoS1hwsywD61mfeVUxxJCsb8J62tWU
+         m7eN1NZz/CjqwoKHAjYc94l/3QFll6HsaI5RkH1523EOTyw/eu+YT73rsHfFmOmEN60C
+         OXuw2ZGHNxpju02mD9t8HBFNGJ9uzq+M1Z5URJvi29Rtgwb+6JCuJtEOXRbwp5X1R9Ty
+         MwG2tBttXL+MYIBNpdMOOuux4HEY55T9mkPhgWVhu6I7PUoP0JwYh6PSnAHJVXzuW5qr
+         dF5C59fnT+0RSnhZBD7bernGyAeQaPR3MfBAvUqPqWwdUYW7SqyHipLnXKh7GFVrQiQP
+         vnnQ==
+X-Gm-Message-State: AOAM533SrUlPNXD1ur+zanMYoRMOrv2b6Tu3qM4PxcC1Kzk3HfcWdlD6
+        aB0NVZNbOfCk4DT83Rrf9ygqFP02WJrLbYIh0mOT0JsBl51T71KwsuIPx40sLBo8mKAIfyN0WSy
+        5eOT1ipatRWJk7sVWWZQLzA==
+X-Received: by 2002:adf:f186:: with SMTP id h6mr2569752wro.89.1618482415083;
+        Thu, 15 Apr 2021 03:26:55 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwv7Q012I0Vz8MHqIPLa4Xkx+hS8m+nH/TPxEyn3JS7V7NiE9yOuvehr7qVZbxLbS4BFGfVVQ==
+X-Received: by 2002:adf:f186:: with SMTP id h6mr2569712wro.89.1618482414741;
+        Thu, 15 Apr 2021 03:26:54 -0700 (PDT)
+Received: from [192.168.3.132] (p5b0c6392.dip0.t-ipconnect.de. [91.12.99.146])
+        by smtp.gmail.com with ESMTPSA id z17sm2386902wro.1.2021.04.15.03.26.53
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 15 Apr 2021 03:26:54 -0700 (PDT)
+From:   David Hildenbrand <david@redhat.com>
+To:     Jann Horn <jannh@google.com>
+Cc:     kernel list <linux-kernel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Arnd Bergmann <arnd@arndb.de>, Michal Hocko <mhocko@suse.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Matthew Wilcox <willy@infradead.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Hugh Dickins <hughd@google.com>,
+        Rik van Riel <riel@surriel.com>,
+        "Michael S . Tsirkin" <mst@redhat.com>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Richard Henderson <rth@twiddle.net>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+        Helge Deller <deller@gmx.de>, Chris Zankel <chris@zankel.net>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Peter Xu <peterx@redhat.com>,
+        Rolf Eike Beer <eike-kernel@sf-tec.de>,
+        linux-alpha@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-parisc@vger.kernel.org, linux-xtensa@linux-xtensa.org,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux API <linux-api@vger.kernel.org>
+References: <20210317110644.25343-1-david@redhat.com>
+ <20210317110644.25343-3-david@redhat.com>
+ <CAG48ez0BQ3Vd3nDLEvyiSU0XALgUQ=c-fAwcFVScUkgo_9qVuQ@mail.gmail.com>
+ <2bab28c7-08c0-7ff0-c70e-9bf94da05ce1@redhat.com>
+ <CAG48ez20rLRNPZj6hLHQ_PLT8H60kTac-uXRiLByD70Q7+qsdQ@mail.gmail.com>
+ <26227fc6-3e7b-4e69-f69d-4dc2a67ecfe8@redhat.com>
+ <54165ffe-dbf7-377a-a710-d15be4701f20@redhat.com>
+ <5f49b60c-957d-8cb4-de7a-7c855dc72942@redhat.com>
+Organization: Red Hat
+Subject: Re: [PATCH v1 2/5] mm/madvise: introduce MADV_POPULATE_(READ|WRITE)
+ to prefault/prealloc memory
+Message-ID: <273f9c4b-2a1a-23e7-53b9-0da5441895b3@redhat.com>
+Date:   Thu, 15 Apr 2021 12:26:52 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="rbolhufisrxhasd4"
-Content-Disposition: inline
-In-Reply-To: <20210329175046.214629-3-paul@crapouillou.net>
+In-Reply-To: <5f49b60c-957d-8cb4-de7a-7c855dc72942@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
+On 07.04.21 12:31, David Hildenbrand wrote:
+> On 30.03.21 18:31, David Hildenbrand wrote:
+>> On 30.03.21 18:30, David Hildenbrand wrote:
+>>> On 30.03.21 18:21, Jann Horn wrote:
+>>>> On Tue, Mar 30, 2021 at 5:01 PM David Hildenbrand <david@redhat.com> wrote:
+>>>>>>> +long faultin_vma_page_range(struct vm_area_struct *vma, unsigned long start,
+>>>>>>> +                           unsigned long end, bool write, int *locked)
+>>>>>>> +{
+>>>>>>> +       struct mm_struct *mm = vma->vm_mm;
+>>>>>>> +       unsigned long nr_pages = (end - start) / PAGE_SIZE;
+>>>>>>> +       int gup_flags;
+>>>>>>> +
+>>>>>>> +       VM_BUG_ON(!PAGE_ALIGNED(start));
+>>>>>>> +       VM_BUG_ON(!PAGE_ALIGNED(end));
+>>>>>>> +       VM_BUG_ON_VMA(start < vma->vm_start, vma);
+>>>>>>> +       VM_BUG_ON_VMA(end > vma->vm_end, vma);
+>>>>>>> +       mmap_assert_locked(mm);
+>>>>>>> +
+>>>>>>> +       /*
+>>>>>>> +        * FOLL_HWPOISON: Return -EHWPOISON instead of -EFAULT when we hit
+>>>>>>> +        *                a poisoned page.
+>>>>>>> +        * FOLL_POPULATE: Always populate memory with VM_LOCKONFAULT.
+>>>>>>> +        * !FOLL_FORCE: Require proper access permissions.
+>>>>>>> +        */
+>>>>>>> +       gup_flags = FOLL_TOUCH | FOLL_POPULATE | FOLL_MLOCK | FOLL_HWPOISON;
+>>>>>>> +       if (write)
+>>>>>>> +               gup_flags |= FOLL_WRITE;
+>>>>>>> +
+>>>>>>> +       /*
+>>>>>>> +        * See check_vma_flags(): Will return -EFAULT on incompatible mappings
+>>>>>>> +        * or with insufficient permissions.
+>>>>>>> +        */
+>>>>>>> +       return __get_user_pages(mm, start, nr_pages, gup_flags,
+>>>>>>> +                               NULL, NULL, locked);
+>>>>>>
+>>>>>> You mentioned in the commit message that you don't want to actually
+>>>>>> dirty all the file pages and force writeback; but doesn't
+>>>>>> POPULATE_WRITE still do exactly that? In follow_page_pte(), if
+>>>>>> FOLL_TOUCH and FOLL_WRITE are set, we mark the page as dirty:
+>>>>>
+>>>>> Well, I mention that POPULATE_READ explicitly doesn't do that. I
+>>>>> primarily set it because populate_vma_page_range() also sets it.
+>>>>>
+>>>>> Is it safe to *not* set it? IOW, fault something writable into a page
+>>>>> table (where the CPU could dirty it without additional page faults)
+>>>>> without marking it accessed? For me, this made logically sense. Thus I
+>>>>> also understood why populate_vma_page_range() set it.
+>>>>
+>>>> FOLL_TOUCH doesn't have anything to do with installing the PTE - it
+>>>> essentially means "the caller of get_user_pages wants to read/write
+>>>> the contents of the returned page, so please do the same things you
+>>>> would do if userspace was accessing the page". So in particular, if
+>>>> you look up a page via get_user_pages() with FOLL_WRITE|FOLL_TOUCH,
+>>>> that tells the MM subsystem "I will be writing into this page directly
+>>>> from the kernel, bypassing the userspace page tables, so please mark
+>>>> it as dirty now so that it will be properly written back later". Part
+>>>> of that is that it marks the page as recently used, which has an
+>>>> effect on LRU pageout behavior, I think - as far as I understand, that
+>>>> is why populate_vma_page_range() uses FOLL_TOUCH.
+>>>>
+>>>> If you look at __get_user_pages(), you can see that it is split up
+>>>> into two major parts: faultin_page() for creating PTEs, and
+>>>> follow_page_mask() for grabbing pages from PTEs. faultin_page()
+>>>> ignores FOLL_TOUCH completely; only follow_page_mask() uses it.
+>>>>
+>>>> In a way I guess maybe you do want the "mark as recently accessed"
+>>>> part that FOLL_TOUCH would give you without FOLL_WRITE? But I think
+>>>> you very much don't want the dirtying that FOLL_TOUCH|FOLL_WRITE leads
+>>>> to. Maybe the ideal approach would be to add a new FOLL flag to say "I
+>>>> only want to mark as recently used, I don't want to dirty". Or maybe
+>>>> it's enough to just leave out the FOLL_TOUCH entirely, I don't know.
+>>>
+>>> Any thoughts why populate_vma_page_range() does it?
+>>
+>> Sorry, I missed the explanation above - thanks!
+> 
+> Looking into the details, adjusting the FOLL_TOUCH logic won't make too
+> much of a difference for MADV_POPULATE_WRITE I guess. AFAIKs, the
+> biggest impact of FOLL_TOUCH is actually with FOLL_FORCE - which we are
+> not using, but populate_vma_page_range() is.
+> 
+> 
+> If a page was not faulted in yet,
+> faultin_page(FOLL_WRITE)->handle_mm_fault(FAULT_FLAG_WRITE) will already
+> mark the PTE/PMD/... dirty and accessed. One example is
+> handle_pte_fault(). We will mark the page accessed again via FOLL_TOUCH,
+> which doesn't seem to be strictly required.
+> 
+> 
+> If the page was already faulted in, we have three cases:
+> 
+> 1. Page faulted in writable. The page should already be dirty (otherwise
+> we would be in trouble I guess). We will mark it accessed.
+> 
+> 2. Page faulted in readable. handle_mm_fault() will fault it in writable
+> and set the page dirty.
+> 
+> 3. Page faulted in readable and we have FOLL_FORCE. We mark the page
+> dirty and accessed.
+> 
+> 
+> So doing a MADV_POPULATE_WRITE, whereby we prefault page tables
+> writable, doesn't seem to fly without marking the pages dirty. That's
+> one reason why I included MADV_POPULATE_READ.
+> 
+> We could
+> 
+> a) Drop FOLL_TOUCH. We are not marking the page accessed, which would
+> mean it gets evicted rather earlier than later.
+> 
+> b) Introduce FOLL_ACCESSED which won't do the dirtying. But then, the
+> pages are already dirty as explained above, so there isn't a real
+> observable change.
+> 
+> c) Keep it as is: Mark the page accessed and dirty. As it's already
+> dirty, that does not seem to be a real issue.
+> 
+> Am I missing something obvious? Thanks!
+> 
 
---rbolhufisrxhasd4
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I did some more digging. I think there are cases for shared mappings 
+where we can have pte_write() but not pte_dirty().
 
-Hi,
+One example seems to be mm/memory.c:copy_present_pte() , used during fork.
 
-On Mon, Mar 29, 2021 at 06:50:46PM +0100, Paul Cercueil wrote:
-> Avoid requesting a full modeset if the sharpness property is not
-> modified, because then we don't actually need it.
->=20
-> Fixes: fc1acf317b01 ("drm/ingenic: Add support for the IPU")
-> Cc: <stable@vger.kernel.org> # 5.8+
-> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
-> ---
->  drivers/gpu/drm/ingenic/ingenic-ipu.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
->=20
-> diff --git a/drivers/gpu/drm/ingenic/ingenic-ipu.c b/drivers/gpu/drm/inge=
-nic/ingenic-ipu.c
-> index 3b1091e7c0cd..95b665c4a7b0 100644
-> --- a/drivers/gpu/drm/ingenic/ingenic-ipu.c
-> +++ b/drivers/gpu/drm/ingenic/ingenic-ipu.c
-> @@ -640,10 +640,12 @@ ingenic_ipu_plane_atomic_set_property(struct drm_pl=
-ane *plane,
->  {
->  	struct ingenic_ipu *ipu =3D plane_to_ingenic_ipu(plane);
->  	struct drm_crtc_state *crtc_state;
-> +	bool mode_changed;
-> =20
->  	if (property !=3D ipu->sharpness_prop)
->  		return -EINVAL;
-> =20
-> +	mode_changed =3D val !=3D ipu->sharpness;
->  	ipu->sharpness =3D val;
-> =20
->  	if (state->crtc) {
-> @@ -651,7 +653,7 @@ ingenic_ipu_plane_atomic_set_property(struct drm_plan=
-e *plane,
->  		if (WARN_ON(!crtc_state))
->  			return -EINVAL;
-> =20
-> -		crtc_state->mode_changed =3D true;
-> +		crtc_state->mode_changed |=3D mode_changed;
->  	}
+IIUC, this means that the child process can write to these pages, but 
+won't mark the PTEs dirty -- as there won't be a write fault. I'd assume 
+we'd need pte_mkclean(pte_wrprotect(pte)), but I'm fairly new to that code.
 
-I'd just change the condition from
+(Similarly, we do an pte_mkold() without revoking any protection, 
+meaning we won't catch read accesses.)
 
-if (state->crtc)
 
-to
+Maybe the logic here is that if the PTE was writable in some parent, it 
+was also dirty in some parent (at least in the one originally mapping it 
+writable). When evicting/writeback'ing file pages, we'll have go over 
+the rmap and zap all entries of any page tables either way; it's 
+sufficient if one PTE entry is dirty. I can spot that even 
+zap_pte_range() will sync the dirty flag back to the page.
 
-if (state->crtc && val !=3D ipu->sharpness)
+Am I right or is there some other magic going on? :)
 
-It's going to be easier to extend if you ever need to. Also, drivers
-usually do this in atomic_check, is there a specific reason to do it in
-atomic_set_property?
+-- 
+Thanks,
 
-Maxime
+David / dhildenb
 
---rbolhufisrxhasd4
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYHgGyAAKCRDj7w1vZxhR
-xbrVAQD22j4BtDq6oO5iGWb7UdC+qPz36k0/YBh5BRbQ5qyf2gD+KYIoom5pUNBU
-kg6Yl77CjwRcM0x0V2Ylhu7QwgWEpwA=
-=U0dV
------END PGP SIGNATURE-----
-
---rbolhufisrxhasd4--

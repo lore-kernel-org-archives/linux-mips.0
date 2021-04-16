@@ -2,151 +2,160 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.2 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-10.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 90020C433B4
-	for <linux-mips@archiver.kernel.org>; Fri, 16 Apr 2021 13:40:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4B634C433B4
+	for <linux-mips@archiver.kernel.org>; Fri, 16 Apr 2021 15:29:28 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 5B78F611AB
-	for <linux-mips@archiver.kernel.org>; Fri, 16 Apr 2021 13:40:21 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 220E460FF1
+	for <linux-mips@archiver.kernel.org>; Fri, 16 Apr 2021 15:29:28 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235329AbhDPNko (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 16 Apr 2021 09:40:44 -0400
-Received: from elvis.franken.de ([193.175.24.41]:53884 "EHLO elvis.franken.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235192AbhDPNkn (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Fri, 16 Apr 2021 09:40:43 -0400
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1lXOhk-0002lT-00; Fri, 16 Apr 2021 15:40:16 +0200
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id A52AAC04CD; Fri, 16 Apr 2021 15:35:36 +0200 (CEST)
-Date:   Fri, 16 Apr 2021 15:35:36 +0200
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Sergei Shtylyov <sergei.shtylyov@gmail.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mips@vger.kernel.org
-Subject: Re: [PATCH v5 net-next 10/10] dt-bindings: net: korina: Add DT
- bindings for IDT 79RC3243x SoCs
-Message-ID: <20210416133536.GA10451@alpha.franken.de>
-References: <20210416085207.63181-1-tsbogend@alpha.franken.de>
- <20210416085207.63181-11-tsbogend@alpha.franken.de>
- <ca4d9975-c153-94c9-dec8-bf9416c76b45@gmail.com>
+        id S1343600AbhDPP3v (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 16 Apr 2021 11:29:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57316 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243009AbhDPP3s (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Fri, 16 Apr 2021 11:29:48 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCCF8C06175F;
+        Fri, 16 Apr 2021 08:29:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=1toLz+6Q9HQNcw3MQRhWkEtoAVrOWnWFJOtvRcLCOTo=; b=AfDcl5h/43wjmPGPvOHoHHxUtH
+        VUrHqD3LImr52YJgVp8v99CpXw49O+3ABZxg5dh2xjPUhMw9cBqhZ/eHIxjqVBmWAJ5j2VFJliPqP
+        BQOm1fzjrGaws2wsSyby1unfkL+/Wxc1aXKKpQCeRlWZhNlLgNueCFlXNMIQiSGoqCfvjgZ9Is6GB
+        hFY2A2C7bLXBzhULxoFqzdLwiH6FLDnAub0LrzdQzZam5myqe1duHZgtATotK/lfgrQQkIZGYhNry
+        QenDpI12d1AnF7t8sVRmpZ4hU7p/p1rPmDOPveX4AC6sl4F0D+bQ9ZY+9PGK+tPLJDf+e8Y0+WANo
+        iep2axvg==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lXQNv-00A7Ug-LK; Fri, 16 Apr 2021 15:28:22 +0000
+Date:   Fri, 16 Apr 2021 16:27:55 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Jesper Dangaard Brouer <brouer@redhat.com>
+Cc:     David Laight <David.Laight@aculab.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Matteo Croce <mcroce@linux.microsoft.com>,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        Arnd Bergmann <arnd@kernel.org>, Christoph Hellwig <hch@lst.de>
+Subject: Re: [PATCH 1/1] mm: Fix struct page layout on 32-bit systems
+Message-ID: <20210416152755.GL2531743@casper.infradead.org>
+References: <20210410205246.507048-2-willy@infradead.org>
+ <20210411114307.5087f958@carbon>
+ <20210411103318.GC2531743@casper.infradead.org>
+ <20210412011532.GG2531743@casper.infradead.org>
+ <20210414101044.19da09df@carbon>
+ <20210414115052.GS2531743@casper.infradead.org>
+ <20210414211322.3799afd4@carbon>
+ <20210414213556.GY2531743@casper.infradead.org>
+ <a50c3156fe8943ef964db4345344862f@AcuMS.aculab.com>
+ <20210415200832.32796445@carbon>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ca4d9975-c153-94c9-dec8-bf9416c76b45@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210415200832.32796445@carbon>
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Fri, Apr 16, 2021 at 12:29:46PM +0300, Sergei Shtylyov wrote:
-> On 16.04.2021 11:52, Thomas Bogendoerfer wrote:
-> 
-> > Add device tree bindings for ethernet controller integrated into
-> > IDT 79RC3243x SoCs.
-> > 
-> > Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-> > ---
-> >   .../bindings/net/idt,3243x-emac.yaml          | 74 +++++++++++++++++++
-> >   1 file changed, 74 insertions(+)
-> >   create mode 100644 Documentation/devicetree/bindings/net/idt,3243x-emac.yaml
-> > 
-> > diff --git a/Documentation/devicetree/bindings/net/idt,3243x-emac.yaml b/Documentation/devicetree/bindings/net/idt,3243x-emac.yaml
-> > new file mode 100644
-> > index 000000000000..3697af5cb66f
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/net/idt,3243x-emac.yaml
-> > @@ -0,0 +1,74 @@
-> > +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-> > +%YAML 1.2
-> > +---
-> > +$id: http://devicetree.org/schemas/net/idt,3243x-emac.yaml#
-> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > +
-> > +title: IDT 79rc3243x Ethernet controller
-> > +
-> > +description: Ethernet controller integrated into IDT 79RC3243x family SoCs
-> > +
-> > +maintainers:
-> > +  - Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-> > +
-> > +allOf:
-> > +  - $ref: ethernet-controller.yaml#
-> > +
-> > +properties:
-> > +  compatible:
-> > +    const: idt,3243x-emac
-> > +
-> > +  reg:
-> > +    maxItems: 3
-> > +
-> > +  reg-names:
-> > +    items:
-> > +      - const: korina_regs
-> > +      - const: korina_dma_rx
-> > +      - const: korina_dma_tx
-> > +
-> > +  interrupts:
-> > +    items:
-> > +      - description: RX interrupt
-> > +      - description: TX interrupt
-> > +
-> > +  interrupt-names:
-> > +    items:
-> > +      - const: korina_rx
-> > +      - const: korina_tx
-> > +
-> > +  clocks:
-> > +    maxItems: 1
-> > +
-> > +  clock-names:
-> > +    items:
-> > +      - const: mdioclk
-> > +
-> > +required:
-> > +  - compatible
-> > +  - reg
-> > +  - reg-names
-> > +  - interrupts
-> > +  - interrupt-names
-> > +
-> > +additionalProperties: false
-> > +
-> > +examples:
-> > +  - |
-> > +
-> > +    ethernet@60000 {
-> > +        compatible = "idt,3243x-emac";
-> > +
-> > +        reg = <0x60000 0x10000>,
-> > +              <0x40000 0x14>,
-> > +              <0x40014 0x14>;
-> > +        reg-names = "korina_regs",
-> > +                    "korina_dma_rx",
-> > +                    "korina_dma_tx";
-> > +
-> > +        interrupts-extended = <&rcpic3 0>, <&rcpic3 1>;
-> 
->    You use this prop, yet don't describe it?
+On Thu, Apr 15, 2021 at 08:08:32PM +0200, Jesper Dangaard Brouer wrote:
+> See below patch.  Where I swap32 the dma address to satisfy
+> page->compound having bit zero cleared. (It is the simplest fix I could
+> come up with).
 
-that's just interrupt-parent and interrupts in one statement. And since
-make dt_binding_check didn't complained I thought that's good this way.
-Rob, do I need to describe interrupts-extended as well ?
+I think this is slightly simpler, and as a bonus code that assumes the
+old layout won't compile.
 
-I could change that to interrupt-parent/interrupts as the driver no
-longer uses dma under/overrun interrupts, which have a different
-interrupt-parent.
-
-Thomas.
-
--- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+diff --git a/include/linux/mm_types.h b/include/linux/mm_types.h
+index 6613b26a8894..5aacc1c10a45 100644
+--- a/include/linux/mm_types.h
++++ b/include/linux/mm_types.h
+@@ -97,10 +97,10 @@ struct page {
+ 		};
+ 		struct {	/* page_pool used by netstack */
+ 			/**
+-			 * @dma_addr: might require a 64-bit value even on
++			 * @dma_addr: might require a 64-bit value on
+ 			 * 32-bit architectures.
+ 			 */
+-			dma_addr_t dma_addr;
++			unsigned long dma_addr[2];
+ 		};
+ 		struct {	/* slab, slob and slub */
+ 			union {
+diff --git a/include/net/page_pool.h b/include/net/page_pool.h
+index b5b195305346..db7c7020746a 100644
+--- a/include/net/page_pool.h
++++ b/include/net/page_pool.h
+@@ -198,7 +198,17 @@ static inline void page_pool_recycle_direct(struct page_pool *pool,
+ 
+ static inline dma_addr_t page_pool_get_dma_addr(struct page *page)
+ {
+-	return page->dma_addr;
++	dma_addr_t ret = page->dma_addr[0];
++	if (sizeof(dma_addr_t) > sizeof(unsigned long))
++		ret |= (dma_addr_t)page->dma_addr[1] << 32;
++	return ret;
++}
++
++static inline void page_pool_set_dma_addr(struct page *page, dma_addr_t addr)
++{
++	page->dma_addr[0] = addr;
++	if (sizeof(dma_addr_t) > sizeof(unsigned long))
++		page->dma_addr[1] = addr >> 32;
+ }
+ 
+ static inline bool is_page_pool_compiled_in(void)
+diff --git a/net/core/page_pool.c b/net/core/page_pool.c
+index ad8b0707af04..f014fd8c19a6 100644
+--- a/net/core/page_pool.c
++++ b/net/core/page_pool.c
+@@ -174,8 +174,10 @@ static void page_pool_dma_sync_for_device(struct page_pool *pool,
+ 					  struct page *page,
+ 					  unsigned int dma_sync_size)
+ {
++	dma_addr_t dma_addr = page_pool_get_dma_addr(page);
++
+ 	dma_sync_size = min(dma_sync_size, pool->p.max_len);
+-	dma_sync_single_range_for_device(pool->p.dev, page->dma_addr,
++	dma_sync_single_range_for_device(pool->p.dev, dma_addr,
+ 					 pool->p.offset, dma_sync_size,
+ 					 pool->p.dma_dir);
+ }
+@@ -226,7 +228,7 @@ static struct page *__page_pool_alloc_pages_slow(struct page_pool *pool,
+ 		put_page(page);
+ 		return NULL;
+ 	}
+-	page->dma_addr = dma;
++	page_pool_set_dma_addr(page, dma);
+ 
+ 	if (pool->p.flags & PP_FLAG_DMA_SYNC_DEV)
+ 		page_pool_dma_sync_for_device(pool, page, pool->p.max_len);
+@@ -294,13 +296,13 @@ void page_pool_release_page(struct page_pool *pool, struct page *page)
+ 		 */
+ 		goto skip_dma_unmap;
+ 
+-	dma = page->dma_addr;
++	dma = page_pool_get_dma_addr(page);
+ 
+-	/* When page is unmapped, it cannot be returned our pool */
++	/* When page is unmapped, it cannot be returned to our pool */
+ 	dma_unmap_page_attrs(pool->p.dev, dma,
+ 			     PAGE_SIZE << pool->p.order, pool->p.dma_dir,
+ 			     DMA_ATTR_SKIP_CPU_SYNC);
+-	page->dma_addr = 0;
++	page_pool_set_dma_addr(page, 0);
+ skip_dma_unmap:
+ 	/* This may be the last page returned, releasing the pool, so
+ 	 * it is not safe to reference pool afterwards.

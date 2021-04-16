@@ -8,62 +8,61 @@ X-Spam-Status: No, score=-26.3 required=3.0 tests=BAYES_00,DKIMWL_WL_MED,
 	USER_AGENT_GIT,USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no
 	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DEFF5C43470
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6BF49C43461
 	for <linux-mips@archiver.kernel.org>; Fri, 16 Apr 2021 04:09:50 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id C0A406121E
+	by mail.kernel.org (Postfix) with ESMTP id 550FB611BF
 	for <linux-mips@archiver.kernel.org>; Fri, 16 Apr 2021 04:09:50 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237861AbhDPEKN (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        id S238482AbhDPEKN (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
         Fri, 16 Apr 2021 00:10:13 -0400
-Received: from rcdn-iport-4.cisco.com ([173.37.86.75]:52345 "EHLO
-        rcdn-iport-4.cisco.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238474AbhDPEKI (ORCPT
+Received: from rcdn-iport-2.cisco.com ([173.37.86.73]:51651 "EHLO
+        rcdn-iport-2.cisco.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237255AbhDPEKI (ORCPT
         <rfc822;linux-mips@vger.kernel.org>); Fri, 16 Apr 2021 00:10:08 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=cisco.com; i=@cisco.com; l=3563; q=dns/txt; s=iport;
+  d=cisco.com; i=@cisco.com; l=6345; q=dns/txt; s=iport;
   t=1618546184; x=1619755784;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=GO4wmk8aV0OUxVhW9VMyBb9l4wFj18+YTePQSCcYNiM=;
-  b=hOKSlLbS8396cnJ2xOKjGJomhaHdUY6/LjXMxY28HylRoLPtLn8o05BS
-   eZ4JPhbZDXHW+Hvt9X9xdxyifhTB4ofI1CmN1fUVb/VfduAabrh03+oIs
-   hXpJsNYbhSHqhbSMUk/Ho56NKHMhgmOAz1i4NpdE6HDXUD/ifDFPdMuC6
+  bh=T0dqf2G5BwtvYRMNblg5cdJ5G97sKXyBbLO+A5ot9gQ=;
+  b=mZiUAbMQdPMs3Swk5M3k0eO++KbtBYv1PuiQrf6EOjIwuOwFn8yOn1aP
+   rdWE1ij83j4719opjXqbzPRQ2jGBQhMdaqv1g8X3IO0mS8vY8O8P0Vmyv
+   csfhdmsfrUlD4RZgnIeVqbsbvC1mVg0GX7XQByKdeZKwbd0J0HcLmOX5F
    A=;
-IronPort-HdrOrdr: =?us-ascii?q?A9a23=3AIILAOaPeW6nIHMBcT5z155DYdL4zR+YMi2?=
- =?us-ascii?q?QD/UoZc3BoW+afkN2jm+le6AT9jywfVGpltdeLPqSBRn20z+8Q3aA9NaqvNT?=
- =?us-ascii?q?OJhEKGN4dnhLGJ/xTBHGnE+vdZxeNcdcFFeb7NJHxbqeq/3wWiCdYnx7C8gc?=
- =?us-ascii?q?WVrMPT1W1kQw0vS6wI1WZEIz2WGEF3WwVKbKBRfPGhz/FKqDa6dXMcYt7TPA?=
- =?us-ascii?q?hmY8H4u9bJmJj6CCRoOzcb7mC14A+A2frTDwWfmiwTSSpIxq0vtVLYihXj6r?=
- =?us-ascii?q?+42svLrSP05iv255RSlMCJ8Lt+Lf3JrNQJITPxjQvtQ4JtV9S5zUkIidDqzk?=
- =?us-ascii?q?o2m9/RpBplBeBP0jf6e2G4pgaF4XiH7AoT?=
+IronPort-HdrOrdr: =?us-ascii?q?A9a23=3AHWICPaoLSHeSlS+2WqACRv0aV5t2L9V00z?=
+ =?us-ascii?q?AX/kB9WHVpW+aT/vrDoN0w0xjohDENHEw6kdebN6WaBV/a/5h54Y4eVI3SOD?=
+ =?us-ascii?q?XOlWO0IOhZg7fK7CbnH0TFnNJ19aAlSKRmDc21MF4St7eY3CCdM/INhOaK67?=
+ =?us-ascii?q?qpg+C29QYJcShPZ7t75wl0TiaXe3cWeCB8CZA0FIWR66N8zlLKRV0tYsu2HX?=
+ =?us-ascii?q?UDVeTYzue79q7OWwIMBBIs9WC14g+A1biSKXWl9yZbey9Tx/MY/XLdlQvi6u?=
+ =?us-ascii?q?GYr+ij0RPHzQbonvNrseqk7tNCAcCW4/J0FhzcziC1eY9mR7qO+Bcyre3H0i?=
+ =?us-ascii?q?dSrPD85zE9Is9093TdOluQnCKo8Qzh3DEygkWSr2OlvQ=3D=3D?=
 X-IronPort-Anti-Spam-Filtered: true
-X-IronPort-Anti-Spam-Result: =?us-ascii?q?A0BMAAAiDXlg/4sNJK1aHAEBAQEBAQc?=
- =?us-ascii?q?BARIBAQQEAQGBfgcBAQsBAYIpgU0BOTGMZ6Q7gXwLAQEBDzQEAQGEUAKBcwI?=
- =?us-ascii?q?lNAkOAgMBAQwBAQUBAQECAQYEcROFXUMWAYVrBjIBRhBRVwYBEoJxgwisCII?=
- =?us-ascii?q?rgQGIM4FEFIElAYhrdIN1JxyBSUKEc4o5BIJGAYEPggRskQQEjVOcLYMWgSa?=
- =?us-ascii?q?bUQ8jpHyVGJ5YhQqBVDqBWTMaCBsVgyRQGQ6OKxaNawFbIQMvOAIGCgEBAwm?=
- =?us-ascii?q?JToNAAQE?=
+X-IronPort-Anti-Spam-Result: =?us-ascii?q?A0AYAACIDXlg/4sNJK1aGwEBAQEBAQE?=
+ =?us-ascii?q?BBQEBARIBAQEDAwEBAYF+BgEBAQsBAYIpgU0BOTGMZ4lOmm6BfAsBAQEPNAQ?=
+ =?us-ascii?q?BAYRQAoFzAiU0CQ4CAwEBDAEBBQEBAQIBBgRxE4VdQxYBhWsGJwsBRhBRVwY?=
+ =?us-ascii?q?BEoJxgwisB4F4M4EBiDOBRBSBJQGHW4EQdAaDbyccgUlChHOKOQSCRz1SSwK?=
+ =?us-ascii?q?CUpA7FAaNV4EgmXmBFIMWgSaYZoJrDyOkfJUYnldghCuBVDqBWTMaCBsVgyR?=
+ =?us-ascii?q?QGQ6OKxaNawFbIQMvOAIGCgEBAwmJToNAAQE?=
 X-IronPort-AV: E=Sophos;i="5.82,226,1613433600"; 
-   d="scan'208";a="861122364"
+   d="scan'208";a="888361936"
 Received: from alln-core-6.cisco.com ([173.36.13.139])
-  by rcdn-iport-4.cisco.com with ESMTP/TLS/DHE-RSA-SEED-SHA; 16 Apr 2021 04:09:41 +0000
+  by rcdn-iport-2.cisco.com with ESMTP/TLS/DHE-RSA-SEED-SHA; 16 Apr 2021 04:09:37 +0000
 Received: from zorba.cisco.com ([10.24.7.67])
-        by alln-core-6.cisco.com (8.15.2/8.15.2) with ESMTP id 13G49OHn016753;
-        Fri, 16 Apr 2021 04:09:40 GMT
+        by alln-core-6.cisco.com (8.15.2/8.15.2) with ESMTP id 13G49OHk016753;
+        Fri, 16 Apr 2021 04:09:36 GMT
 From:   Daniel Walker <danielwa@cisco.com>
 To:     Will Deacon <will@kernel.org>,
         Christophe Leroy <christophe.leroy@csgroup.eu>,
         Rob Herring <robh@kernel.org>,
         Daniel Gimpelevich <daniel@gimpelevich.san-francisco.ca.us>,
         Andrew Morton <akpm@linux-foundation.org>, x86@kernel.org,
-        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        Catalin Marinas <catalin.marinas@arm.com>
-Cc:     xe-linux-external@cisco.com, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 8/8] CMDLINE: arm64: convert to generic builtin command line
-Date:   Thu, 15 Apr 2021 21:09:19 -0700
-Message-Id: <20210416040924.2882771-9-danielwa@cisco.com>
+        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Cc:     xe-linux-external@cisco.com, Ard Biesheuvel <ardb@kernel.org>,
+        linux-efi@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 5/8] drivers: firmware: efi: libstub: enable generic commandline
+Date:   Thu, 15 Apr 2021 21:09:16 -0700
+Message-Id: <20210416040924.2882771-6-danielwa@cisco.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210416040924.2882771-1-danielwa@cisco.com>
 References: <20210416040924.2882771-1-danielwa@cisco.com>
@@ -76,116 +75,188 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-This removes arm64 from the device tree handling of the
-command line arguments.
+This adds code to handle the generic command line changes.
+The efi code appears that it doesn't benefit as much from this design
+as it could.
 
-The boot_command_line variable is populated inside the earliest
-user of the command line, which is in idreg-override.c.
+For example, if you had a prepend command line with "nokaslr" then
+you might be helpful to re-enable it in the boot loader or dts,
+but there appears to be no way to re-enable kaslr or some of the
+other options.
 
-The device tree should not be needed to do any further handling
-of the boot command line options.
+The efi command line handling is incorrect. x86 and arm have an append
+system however the efi code prepends the command line.
+
+For example, you could have a non-upgradable bios which sends
+
+efi=disable_early_pci_dma
+
+This hypothetically could have been set because early pci dma caused
+issues on early versions of the product.
+
+Then later the early pci dma was made to work and the company desired
+to start using it. To override the bios you could set the CONFIG_CMDLINE
+to,
+
+efi=no_disable_early_pci_dma
+
+then parsing would normally start with the bios command line, then move
+to the CONFIG_CMDLINE and you would end up with early pci dma turned on.
+
+however, current efi code keeps early pci dma off because the bios
+arguments always override the built in.
+
+Per my reading this is different from the main body of x86, arm, and
+arm64.
+
+The generic command line provides both append and prepend, so it
+alleviates this issue if it's used. However not all architectures use
+it.
+
+It would be desirable to allow the efi stub to have it's builtin command
+line to be modified after compile, but I don't see a feasible way to do
+that currently.
 
 Cc: xe-linux-external@cisco.com
 Signed-off-by: Daniel Walker <danielwa@cisco.com>
 ---
- arch/arm64/Kconfig                 | 33 +-----------------------------
- arch/arm64/include/asm/setup.h     |  2 ++
- arch/arm64/kernel/idreg-override.c |  9 ++++----
- 3 files changed, 8 insertions(+), 36 deletions(-)
+ .../firmware/efi/libstub/efi-stub-helper.c    | 29 +++++++++++++++++++
+ drivers/firmware/efi/libstub/efi-stub.c       |  9 ++++++
+ drivers/firmware/efi/libstub/efistub.h        |  1 +
+ drivers/firmware/efi/libstub/x86-stub.c       | 13 +++++++--
+ 4 files changed, 50 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
-index e4e1b6550115..9781ba3758b1 100644
---- a/arch/arm64/Kconfig
-+++ b/arch/arm64/Kconfig
-@@ -105,6 +105,7 @@ config ARM64
- 	select GENERIC_ALLOCATOR
- 	select GENERIC_ARCH_TOPOLOGY
- 	select GENERIC_CLOCKEVENTS_BROADCAST
-+	select GENERIC_CMDLINE
- 	select GENERIC_CPU_AUTOPROBE
- 	select GENERIC_CPU_VULNERABILITIES
- 	select GENERIC_EARLY_IOREMAP
-@@ -1841,38 +1842,6 @@ config ARM64_ACPI_PARKING_PROTOCOL
- 	  protocol even if the corresponding data is present in the ACPI
- 	  MADT table.
- 
--config CMDLINE
--	string "Default kernel command string"
--	default ""
--	help
--	  Provide a set of default command-line options at build time by
--	  entering them here. As a minimum, you should specify the the
--	  root device (e.g. root=/dev/nfs).
--
--choice
--	prompt "Kernel command line type" if CMDLINE != ""
--	default CMDLINE_FROM_BOOTLOADER
--	help
--	  Choose how the kernel will handle the provided default kernel
--	  command line string.
--
--config CMDLINE_FROM_BOOTLOADER
--	bool "Use bootloader kernel arguments if available"
--	help
--	  Uses the command-line options passed by the boot loader. If
--	  the boot loader doesn't provide any, the default kernel command
--	  string provided in CMDLINE will be used.
--
--config CMDLINE_FORCE
--	bool "Always use the default kernel command string"
--	help
--	  Always use the default kernel command string, even if the boot
--	  loader passes other arguments to the kernel.
--	  This is useful if you cannot or don't want to change the
--	  command-line options your boot loader passes to the kernel.
--
--endchoice
--
- config EFI_STUB
- 	bool
- 
-diff --git a/arch/arm64/include/asm/setup.h b/arch/arm64/include/asm/setup.h
-index d3320618ed14..1f5b6d8f2433 100644
---- a/arch/arm64/include/asm/setup.h
-+++ b/arch/arm64/include/asm/setup.h
-@@ -5,7 +5,9 @@
- 
- #include <uapi/asm/setup.h>
- 
-+#ifndef __ASSEMBLY__
- void *get_early_fdt_ptr(void);
- void early_fdt_map(u64 dt_phys);
-+#endif /* __ASSEMBLY__ */
- 
- #endif
-diff --git a/arch/arm64/kernel/idreg-override.c b/arch/arm64/kernel/idreg-override.c
-index 83f1c4b92095..0a3fcae13043 100644
---- a/arch/arm64/kernel/idreg-override.c
-+++ b/arch/arm64/kernel/idreg-override.c
-@@ -9,6 +9,7 @@
- #include <linux/ctype.h>
+diff --git a/drivers/firmware/efi/libstub/efi-stub-helper.c b/drivers/firmware/efi/libstub/efi-stub-helper.c
+index aa8da0a49829..16318f55f187 100644
+--- a/drivers/firmware/efi/libstub/efi-stub-helper.c
++++ b/drivers/firmware/efi/libstub/efi-stub-helper.c
+@@ -13,6 +13,7 @@
+ #include <linux/efi.h>
  #include <linux/kernel.h>
- #include <linux/libfdt.h>
+ #include <linux/printk.h> /* For CONSOLE_LOGLEVEL_* */
 +#include <linux/cmdline.h>
+ #include <asm/efi.h>
+ #include <asm/setup.h>
  
- #include <asm/cacheflush.h>
- #include <asm/cpufeature.h>
-@@ -188,11 +189,11 @@ static __init void parse_cmdline(void)
- {
- 	const u8 *prop = get_bootargs_cmdline();
- 
--	if (IS_ENABLED(CONFIG_CMDLINE_FORCE) || !prop)
--		__parse_cmdline(CONFIG_CMDLINE, true);
-+	strscpy(boot_command_line, prop, COMMAND_LINE_SIZE);
-+	cmdline_add_builtin(boot_command_line);
-+
-+	__parse_cmdline(boot_command_line, true);
- 
--	if (!IS_ENABLED(CONFIG_CMDLINE_FORCE) && prop)
--		__parse_cmdline(prop, true);
+@@ -172,6 +173,34 @@ int efi_printk(const char *fmt, ...)
+ 	return printed;
  }
  
- /* Keep checkers quiet */
++/**
++ * efi_handle_cmdline() - handle adding in building parts of the command line
++ * @cmdline:	kernel command line
++ *
++ * Add in the generic parts of the commandline and start the parsing of the
++ * command line.
++ *
++ * Return:	status code
++ */
++efi_status_t efi_handle_cmdline(char const *cmdline)
++{
++	efi_status_t status = EFI_SUCCESS;
++
++	if (sizeof(CMDLINE_STATIC_PREPEND) > 1)
++		status |= efi_parse_options(CMDLINE_STATIC_PREPEND);
++
++	if (!IS_ENABLED(CONFIG_CMDLINE_OVERRIDE))
++		status |= efi_parse_options(cmdline);
++
++	if (sizeof(CMDLINE_STATIC_APPEND) > 1)
++		status |= efi_parse_options(CMDLINE_STATIC_APPEND);
++
++	if (status != EFI_SUCCESS)
++		efi_err("Failed to parse options\n");
++
++	return status;
++}
++
+ /**
+  * efi_parse_options() - Parse EFI command line options
+  * @cmdline:	kernel command line
+diff --git a/drivers/firmware/efi/libstub/efi-stub.c b/drivers/firmware/efi/libstub/efi-stub.c
+index 26e69788f27a..baa69b24cfdd 100644
+--- a/drivers/firmware/efi/libstub/efi-stub.c
++++ b/drivers/firmware/efi/libstub/efi-stub.c
+@@ -172,6 +172,14 @@ efi_status_t __efiapi efi_pe_entry(efi_handle_t handle,
+ 		goto fail;
+ 	}
+ 
++#ifdef CONFIG_GENERIC_CMDLINE
++	status = efi_handle_cmdline(cmdline_ptr);
++	if (status != EFI_SUCCESS) {
++		goto fail_free_cmdline;
++	}
++#endif
++
++#ifdef CONFIG_CMDLINE
+ 	if (IS_ENABLED(CONFIG_CMDLINE_EXTEND) ||
+ 	    IS_ENABLED(CONFIG_CMDLINE_FORCE) ||
+ 	    cmdline_size == 0) {
+@@ -189,6 +197,7 @@ efi_status_t __efiapi efi_pe_entry(efi_handle_t handle,
+ 			goto fail_free_cmdline;
+ 		}
+ 	}
++#endif
+ 
+ 	efi_info("Booting Linux Kernel...\n");
+ 
+diff --git a/drivers/firmware/efi/libstub/efistub.h b/drivers/firmware/efi/libstub/efistub.h
+index cde0a2ef507d..07c7f9fdfffc 100644
+--- a/drivers/firmware/efi/libstub/efistub.h
++++ b/drivers/firmware/efi/libstub/efistub.h
+@@ -800,6 +800,7 @@ efi_status_t efi_relocate_kernel(unsigned long *image_addr,
+ 				 unsigned long alignment,
+ 				 unsigned long min_addr);
+ 
++efi_status_t efi_handle_cmdline(char const *cmdline);
+ efi_status_t efi_parse_options(char const *cmdline);
+ 
+ void efi_parse_option_graphics(char *option);
+diff --git a/drivers/firmware/efi/libstub/x86-stub.c b/drivers/firmware/efi/libstub/x86-stub.c
+index f14c4ff5839f..30ad8fb7122d 100644
+--- a/drivers/firmware/efi/libstub/x86-stub.c
++++ b/drivers/firmware/efi/libstub/x86-stub.c
+@@ -673,6 +673,8 @@ unsigned long efi_main(efi_handle_t handle,
+ 	unsigned long bzimage_addr = (unsigned long)startup_32;
+ 	unsigned long buffer_start, buffer_end;
+ 	struct setup_header *hdr = &boot_params->hdr;
++	unsigned long cmdline_paddr = ((u64)hdr->cmd_line_ptr |
++				       ((u64)boot_params->ext_cmd_line_ptr << 32));
+ 	efi_status_t status;
+ 
+ 	efi_system_table = sys_table_arg;
+@@ -735,6 +737,14 @@ unsigned long efi_main(efi_handle_t handle,
+ 		image_offset = 0;
+ 	}
+ 
++#ifdef CONFIG_GENERIC_CMDLINE
++	status = efi_handle_cmdline((char *)cmdline_paddr);
++	if (status != EFI_SUCCESS) {
++		efi_err("Failed to parse options\n");
++		goto fail;
++	}
++#else /* CONFIG_GENERIC_CMDLINE */
++
+ #ifdef CONFIG_CMDLINE_BOOL
+ 	status = efi_parse_options(CONFIG_CMDLINE);
+ 	if (status != EFI_SUCCESS) {
+@@ -743,8 +753,6 @@ unsigned long efi_main(efi_handle_t handle,
+ 	}
+ #endif
+ 	if (!IS_ENABLED(CONFIG_CMDLINE_OVERRIDE)) {
+-		unsigned long cmdline_paddr = ((u64)hdr->cmd_line_ptr |
+-					       ((u64)boot_params->ext_cmd_line_ptr << 32));
+ 		status = efi_parse_options((char *)cmdline_paddr);
+ 		if (status != EFI_SUCCESS) {
+ 			efi_err("Failed to parse options\n");
+@@ -752,6 +760,7 @@ unsigned long efi_main(efi_handle_t handle,
+ 		}
+ 	}
+ 
++#endif
+ 	/*
+ 	 * At this point, an initrd may already have been loaded by the
+ 	 * bootloader and passed via bootparams. We permit an initrd loaded
 -- 
 2.25.1
 

@@ -7,31 +7,31 @@ X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E5400C433ED
-	for <linux-mips@archiver.kernel.org>; Fri, 16 Apr 2021 08:52:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E690BC43461
+	for <linux-mips@archiver.kernel.org>; Fri, 16 Apr 2021 08:52:37 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id C673E61153
-	for <linux-mips@archiver.kernel.org>; Fri, 16 Apr 2021 08:52:34 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id CD36D61166
+	for <linux-mips@archiver.kernel.org>; Fri, 16 Apr 2021 08:52:37 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241372AbhDPIwv (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 16 Apr 2021 04:52:51 -0400
-Received: from mx2.suse.de ([195.135.220.15]:54114 "EHLO mx2.suse.de"
+        id S241584AbhDPIxA (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 16 Apr 2021 04:53:00 -0400
+Received: from mx2.suse.de ([195.135.220.15]:54156 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240930AbhDPIwj (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Fri, 16 Apr 2021 04:52:39 -0400
+        id S241067AbhDPIwk (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Fri, 16 Apr 2021 04:52:40 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 16AE2AF3D;
-        Fri, 16 Apr 2021 08:52:13 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 889CEADB3;
+        Fri, 16 Apr 2021 08:52:14 +0000 (UTC)
 From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 To:     "David S. Miller" <davem@davemloft.net>,
         Jakub Kicinski <kuba@kernel.org>,
         Rob Herring <robh+dt@kernel.org>, netdev@vger.kernel.org,
         devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-mips@vger.kernel.org
-Subject: [PATCH v5 net-next 06/10] net: korina: Only pass mac address via platform data
-Date:   Fri, 16 Apr 2021 10:52:02 +0200
-Message-Id: <20210416085207.63181-7-tsbogend@alpha.franken.de>
+Subject: [PATCH v5 net-next 10/10] dt-bindings: net: korina: Add DT bindings for IDT 79RC3243x SoCs
+Date:   Fri, 16 Apr 2021 10:52:06 +0200
+Message-Id: <20210416085207.63181-11-tsbogend@alpha.franken.de>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20210416085207.63181-1-tsbogend@alpha.franken.de>
 References: <20210416085207.63181-1-tsbogend@alpha.franken.de>
@@ -41,83 +41,95 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Get rid of access to struct korina_device by just passing the mac
-address via platform data and use drvdata for passing netdev to remove
-function.
+Add device tree bindings for ethernet controller integrated into
+IDT 79RC3243x SoCs.
 
 Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 ---
- arch/mips/rb532/devices.c     |  5 +++--
- drivers/net/ethernet/korina.c | 11 ++++++-----
- 2 files changed, 9 insertions(+), 7 deletions(-)
+ .../bindings/net/idt,3243x-emac.yaml          | 74 +++++++++++++++++++
+ 1 file changed, 74 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/net/idt,3243x-emac.yaml
 
-diff --git a/arch/mips/rb532/devices.c b/arch/mips/rb532/devices.c
-index dd34f1b32b79..5fc3c8ee4f31 100644
---- a/arch/mips/rb532/devices.c
-+++ b/arch/mips/rb532/devices.c
-@@ -105,6 +105,9 @@ static struct platform_device korina_dev0 = {
- 	.name = "korina",
- 	.resource = korina_dev0_res,
- 	.num_resources = ARRAY_SIZE(korina_dev0_res),
-+	.dev = {
-+		.platform_data = &korina_dev0_data.mac,
-+	}
- };
- 
- static struct resource cf_slot0_res[] = {
-@@ -299,8 +302,6 @@ static int __init plat_setup_devices(void)
- 	/* set the uart clock to the current cpu frequency */
- 	rb532_uart_res[0].uartclk = idt_cpu_freq;
- 
--	dev_set_drvdata(&korina_dev0.dev, &korina_dev0_data);
--
- 	gpiod_add_lookup_table(&cf_slot0_gpio_table);
- 	return platform_add_devices(rb532_devs, ARRAY_SIZE(rb532_devs));
- }
-diff --git a/drivers/net/ethernet/korina.c b/drivers/net/ethernet/korina.c
-index 44fad9e924ca..d6dbbdd43d7c 100644
---- a/drivers/net/ethernet/korina.c
-+++ b/drivers/net/ethernet/korina.c
-@@ -1055,7 +1055,7 @@ static const struct net_device_ops korina_netdev_ops = {
- 
- static int korina_probe(struct platform_device *pdev)
- {
--	struct korina_device *bif = platform_get_drvdata(pdev);
-+	u8 *mac_addr = dev_get_platdata(&pdev->dev);
- 	struct korina_private *lp;
- 	struct net_device *dev;
- 	void __iomem *p;
-@@ -1068,8 +1068,7 @@ static int korina_probe(struct platform_device *pdev)
- 	SET_NETDEV_DEV(dev, &pdev->dev);
- 	lp = netdev_priv(dev);
- 
--	bif->dev = dev;
--	memcpy(dev->dev_addr, bif->mac, ETH_ALEN);
-+	memcpy(dev->dev_addr, mac_addr, ETH_ALEN);
- 
- 	lp->rx_irq = platform_get_irq_byname(pdev, "korina_rx");
- 	lp->tx_irq = platform_get_irq_byname(pdev, "korina_tx");
-@@ -1123,6 +1122,8 @@ static int korina_probe(struct platform_device *pdev)
- 	lp->mii_if.phy_id_mask = 0x1f;
- 	lp->mii_if.reg_num_mask = 0x1f;
- 
-+	platform_set_drvdata(pdev, dev);
+diff --git a/Documentation/devicetree/bindings/net/idt,3243x-emac.yaml b/Documentation/devicetree/bindings/net/idt,3243x-emac.yaml
+new file mode 100644
+index 000000000000..3697af5cb66f
+--- /dev/null
++++ b/Documentation/devicetree/bindings/net/idt,3243x-emac.yaml
+@@ -0,0 +1,74 @@
++# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/net/idt,3243x-emac.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
- 	rc = register_netdev(dev);
- 	if (rc < 0) {
- 		printk(KERN_ERR DRV_NAME
-@@ -1140,9 +1141,9 @@ static int korina_probe(struct platform_device *pdev)
- 
- static int korina_remove(struct platform_device *pdev)
- {
--	struct korina_device *bif = platform_get_drvdata(pdev);
-+	struct net_device *dev = platform_get_drvdata(pdev);
- 
--	unregister_netdev(bif->dev);
-+	unregister_netdev(dev);
- 
- 	return 0;
- }
++title: IDT 79rc3243x Ethernet controller
++
++description: Ethernet controller integrated into IDT 79RC3243x family SoCs
++
++maintainers:
++  - Thomas Bogendoerfer <tsbogend@alpha.franken.de>
++
++allOf:
++  - $ref: ethernet-controller.yaml#
++
++properties:
++  compatible:
++    const: idt,3243x-emac
++
++  reg:
++    maxItems: 3
++
++  reg-names:
++    items:
++      - const: korina_regs
++      - const: korina_dma_rx
++      - const: korina_dma_tx
++
++  interrupts:
++    items:
++      - description: RX interrupt
++      - description: TX interrupt
++
++  interrupt-names:
++    items:
++      - const: korina_rx
++      - const: korina_tx
++
++  clocks:
++    maxItems: 1
++
++  clock-names:
++    items:
++      - const: mdioclk
++
++required:
++  - compatible
++  - reg
++  - reg-names
++  - interrupts
++  - interrupt-names
++
++additionalProperties: false
++
++examples:
++  - |
++
++    ethernet@60000 {
++        compatible = "idt,3243x-emac";
++
++        reg = <0x60000 0x10000>,
++              <0x40000 0x14>,
++              <0x40014 0x14>;
++        reg-names = "korina_regs",
++                    "korina_dma_rx",
++                    "korina_dma_tx";
++
++        interrupts-extended = <&rcpic3 0>, <&rcpic3 1>;
++        interrupt-names = "korina_rx", "korina_tx";
++
++        clocks = <&iclk>;
++        clock-names = "mdioclk";
++    };
 -- 
 2.29.2
 

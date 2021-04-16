@@ -2,125 +2,92 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.7 required=3.0 tests=BAYES_00,
+X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
-	autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,URIBL_BLOCKED,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 27DE0C433B4
-	for <linux-mips@archiver.kernel.org>; Fri, 16 Apr 2021 16:00:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B88BEC433ED
+	for <linux-mips@archiver.kernel.org>; Fri, 16 Apr 2021 16:14:21 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 0D916613BB
-	for <linux-mips@archiver.kernel.org>; Fri, 16 Apr 2021 16:00:30 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 939BC6124B
+	for <linux-mips@archiver.kernel.org>; Fri, 16 Apr 2021 16:14:21 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238791AbhDPQAv (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 16 Apr 2021 12:00:51 -0400
-Received: from foss.arm.com ([217.140.110.172]:45096 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238227AbhDPQAf (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Fri, 16 Apr 2021 12:00:35 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 95E3C11B3;
-        Fri, 16 Apr 2021 09:00:10 -0700 (PDT)
-Received: from e110455-lin.cambridge.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 747443F99C;
-        Fri, 16 Apr 2021 09:00:10 -0700 (PDT)
-Received: by e110455-lin.cambridge.arm.com (Postfix, from userid 1000)
-        id 3E537683966; Fri, 16 Apr 2021 17:00:09 +0100 (BST)
-Date:   Fri, 16 Apr 2021 17:00:09 +0100
-From:   Liviu Dudau <Liviu.Dudau@arm.com>
-To:     Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
-Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Sergey Ryazanov <ryazanov.s.a@gmail.com>
-Subject: Re: [PATCH v2 5/8] MIPS: pci-legacy: stop using
- of_pci_range_to_resource
-Message-ID: <YHm0iXB/XubJcw5H@e110455-lin.cambridge.arm.com>
-References: <20210414031240.313852-1-ilya.lipnitskiy@gmail.com>
- <20210414031240.313852-6-ilya.lipnitskiy@gmail.com>
+        id S240255AbhDPQOo (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 16 Apr 2021 12:14:44 -0400
+Received: from out28-2.mail.aliyun.com ([115.124.28.2]:52541 "EHLO
+        out28-2.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236307AbhDPQOk (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Fri, 16 Apr 2021 12:14:40 -0400
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.07763677|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_enroll_verification|0.0028812-0.000248258-0.996871;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047213;MF=zhouyanjie@wanyeetech.com;NM=1;PH=DS;RN=16;RT=16;SR=0;TI=SMTPD_---.K.1zIuN_1618589646;
+Received: from zhouyanjie-virtual-machine.localdomain(mailfrom:zhouyanjie@wanyeetech.com fp:SMTPD_---.K.1zIuN_1618589646)
+          by smtp.aliyun-inc.com(10.147.42.197);
+          Sat, 17 Apr 2021 00:14:12 +0800
+From:   =?UTF-8?q?=E5=91=A8=E7=90=B0=E6=9D=B0=20=28Zhou=20Yanjie=29?= 
+        <zhouyanjie@wanyeetech.com>
+To:     linus.walleij@linaro.org, robh+dt@kernel.org, paul@crapouillou.net
+Cc:     linux-gpio@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        hns@goldelico.com, paul@boddie.org.uk, andy.shevchenko@gmail.com,
+        dongsheng.qiu@ingenic.com, aric.pzqi@ingenic.com,
+        rick.tyliu@ingenic.com, sernia.zhou@foxmail.com,
+        siyanteng@loongson.cn, stable@vger.kernel.org
+Subject: [PATCH v5 01/11] pinctrl: Ingenic: Add missing pins to the JZ4770 MAC MII group.
+Date:   Sat, 17 Apr 2021 00:13:55 +0800
+Message-Id: <1618589645-96504-2-git-send-email-zhouyanjie@wanyeetech.com>
+X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1618589645-96504-1-git-send-email-zhouyanjie@wanyeetech.com>
+References: <1618589645-96504-1-git-send-email-zhouyanjie@wanyeetech.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210414031240.313852-6-ilya.lipnitskiy@gmail.com>
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Hi Ilya,
+The MII group of JZ4770's MAC should have 7 pins, add missing
+pins to the MII group.
 
-On Tue, Apr 13, 2021 at 08:12:37PM -0700, Ilya Lipnitskiy wrote:
-> Mirror commit aeba3731b150 ("powerpc/pci: Fix IO space breakage after
-> of_pci_range_to_resource() change").
-> 
-> Most MIPS platforms do not define PCI_IOBASE, nor implement
-> pci_address_to_pio(). Moreover, IO_SPACE_LIMIT is 0xffff for most MIPS
-> platforms. of_pci_range_to_resource passes the _start address_ of the IO
-> range into pci_address_to_pio, which then checks it against
-> IO_SPACE_LIMIT and fails, because for MIPS platforms that use
-> pci-legacy (pci-lantiq, pci-rt3883, pci-mt7620), IO ranges start much
-> higher than 0xffff.
+Fixes: 5de1a73e78ed ("Pinctrl: Ingenic: Add missing parts for JZ4770 and JZ4780.")
+Cc: <stable@vger.kernel.org>
+Signed-off-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Reviewed-by: Paul Cercueil <paul@crapouillou.net>
+---
 
-I think defining PCI_IOBASE and implementing pci_address_to_pio() would be
-easier in the long run as you will then let the core PCI code do most of
-the work, but given that this is legacy code I can understand that testing
-it would not be simple.
+Notes:
+    v2:
+    New patch.
+    
+    v2->v3:
+    Add fixes tag.
+    
+    v3->v4:
+    1.Add Cc: <stable@vger.kernel.org>.
+    2.Add Andy Shevchenko's Reviewed-by.
+    3.Add Paul Cercueil's Reviewed-by.
+    
+    v4->v5:
+    No change.
 
-> 
-> In fact, pci-mt7621 in staging already works around this problem, see
-> commit 09dd629eeabb ("staging: mt7621-pci: fix io space and properly set
-> resource limits")
-> 
-> So just stop using of_pci_range_to_resource, which does not work for
-> MIPS.
-> 
-> Fixes PCI errors like:
->   pci_bus 0000:00: root bus resource [io  0xffffffff]
-> 
-> Fixes: 0b0b0893d49b ("of/pci: Fix the conversion of IO ranges into IO resources")
-> Signed-off-by: Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
-> Cc: Liviu Dudau <Liviu.Dudau@arm.com>
-> ---
->  arch/mips/pci/pci-legacy.c | 9 +++++++--
->  1 file changed, 7 insertions(+), 2 deletions(-)
-> 
-> diff --git a/arch/mips/pci/pci-legacy.c b/arch/mips/pci/pci-legacy.c
-> index 39052de915f3..3a909194284a 100644
-> --- a/arch/mips/pci/pci-legacy.c
-> +++ b/arch/mips/pci/pci-legacy.c
-> @@ -166,8 +166,13 @@ void pci_load_of_ranges(struct pci_controller *hose, struct device_node *node)
->  			res = hose->mem_resource;
->  			break;
->  		}
-> -		if (res != NULL)
-> -			of_pci_range_to_resource(&range, node, res);
-> +		if (res != NULL) {
-> +			res->name = node->full_name;
-> +			res->flags = range.flags;
-> +			res->start = range.cpu_addr;
-> +			res->end = range.cpu_addr + range.size - 1;
-> +			res->parent = res->child = res->sibling = NULL;
-> +		}
+ drivers/pinctrl/pinctrl-ingenic.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-Change looks reasonable to me.
-Reviewed-by: Liviu Dudau <liviu.dudau@arm.com>
-
-Best regards,
-Liviu
-
->  	}
->  }
->  
-> -- 
-> 2.31.1
-> 
-
+diff --git a/drivers/pinctrl/pinctrl-ingenic.c b/drivers/pinctrl/pinctrl-ingenic.c
+index f274612..05dfa0a 100644
+--- a/drivers/pinctrl/pinctrl-ingenic.c
++++ b/drivers/pinctrl/pinctrl-ingenic.c
+@@ -667,7 +667,9 @@ static int jz4770_pwm_pwm7_pins[] = { 0x6b, };
+ static int jz4770_mac_rmii_pins[] = {
+ 	0xa9, 0xab, 0xaa, 0xac, 0xa5, 0xa4, 0xad, 0xae, 0xa6, 0xa8,
+ };
+-static int jz4770_mac_mii_pins[] = { 0xa7, 0xaf, };
++static int jz4770_mac_mii_pins[] = {
++	0x7b, 0x7a, 0x7d, 0x7c, 0xa7, 0x24, 0xaf,
++};
+ 
+ static const struct group_desc jz4770_groups[] = {
+ 	INGENIC_PIN_GROUP("uart0-data", jz4770_uart0_data, 0),
 -- 
-====================
-| I would like to |
-| fix the world,  |
-| but they're not |
-| giving me the   |
- \ source code!  /
-  ---------------
-    ¯\_(ツ)_/¯
+2.7.4
+

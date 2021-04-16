@@ -7,21 +7,21 @@ X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C7578C43600
-	for <linux-mips@archiver.kernel.org>; Fri, 16 Apr 2021 08:52:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E5400C433ED
+	for <linux-mips@archiver.kernel.org>; Fri, 16 Apr 2021 08:52:34 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id A561B6121E
-	for <linux-mips@archiver.kernel.org>; Fri, 16 Apr 2021 08:52:28 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id C673E61153
+	for <linux-mips@archiver.kernel.org>; Fri, 16 Apr 2021 08:52:34 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241399AbhDPIwv (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        id S241372AbhDPIwv (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
         Fri, 16 Apr 2021 04:52:51 -0400
-Received: from mx2.suse.de ([195.135.220.15]:54124 "EHLO mx2.suse.de"
+Received: from mx2.suse.de ([195.135.220.15]:54114 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240974AbhDPIwj (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        id S240930AbhDPIwj (ORCPT <rfc822;linux-mips@vger.kernel.org>);
         Fri, 16 Apr 2021 04:52:39 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id B3CECAF42;
+        by mx2.suse.de (Postfix) with ESMTP id 16AE2AF3D;
         Fri, 16 Apr 2021 08:52:13 +0000 (UTC)
 From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 To:     "David S. Miller" <davem@davemloft.net>,
@@ -29,9 +29,9 @@ To:     "David S. Miller" <davem@davemloft.net>,
         Rob Herring <robh+dt@kernel.org>, netdev@vger.kernel.org,
         devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-mips@vger.kernel.org
-Subject: [PATCH v5 net-next 08/10] net: korina: Get mdio input clock via common clock framework
-Date:   Fri, 16 Apr 2021 10:52:04 +0200
-Message-Id: <20210416085207.63181-9-tsbogend@alpha.franken.de>
+Subject: [PATCH v5 net-next 06/10] net: korina: Only pass mac address via platform data
+Date:   Fri, 16 Apr 2021 10:52:02 +0200
+Message-Id: <20210416085207.63181-7-tsbogend@alpha.franken.de>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20210416085207.63181-1-tsbogend@alpha.franken.de>
 References: <20210416085207.63181-1-tsbogend@alpha.franken.de>
@@ -41,83 +41,83 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-With device tree clock is provided via CCF. For non device tree
-use a maximum clock value to not overclock the PHY. The non device
-tree usage will go away after platform is converted to DT.
+Get rid of access to struct korina_device by just passing the mac
+address via platform data and use drvdata for passing netdev to remove
+function.
 
 Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 ---
- drivers/net/ethernet/korina.c | 21 +++++++++++++++------
- 1 file changed, 15 insertions(+), 6 deletions(-)
+ arch/mips/rb532/devices.c     |  5 +++--
+ drivers/net/ethernet/korina.c | 11 ++++++-----
+ 2 files changed, 9 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/net/ethernet/korina.c b/drivers/net/ethernet/korina.c
-index cd078a5c679b..e95c8d87d893 100644
---- a/drivers/net/ethernet/korina.c
-+++ b/drivers/net/ethernet/korina.c
-@@ -57,14 +57,13 @@
- #include <linux/ethtool.h>
- #include <linux/crc32.h>
- #include <linux/pgtable.h>
-+#include <linux/clk.h>
- 
- #include <asm/bootinfo.h>
- #include <asm/bitops.h>
- #include <asm/io.h>
- #include <asm/dma.h>
- 
--#include <asm/mach-rc32434/rb.h>
--#include <asm/mach-rc32434/rc32434.h>
- #include <asm/mach-rc32434/eth.h>
- #include <asm/mach-rc32434/dma_v.h>
- 
-@@ -146,10 +145,9 @@ struct korina_private {
- 	struct work_struct restart_task;
- 	struct net_device *dev;
- 	struct device *dmadev;
-+	int mii_clock_freq;
+diff --git a/arch/mips/rb532/devices.c b/arch/mips/rb532/devices.c
+index dd34f1b32b79..5fc3c8ee4f31 100644
+--- a/arch/mips/rb532/devices.c
++++ b/arch/mips/rb532/devices.c
+@@ -105,6 +105,9 @@ static struct platform_device korina_dev0 = {
+ 	.name = "korina",
+ 	.resource = korina_dev0_res,
+ 	.num_resources = ARRAY_SIZE(korina_dev0_res),
++	.dev = {
++		.platform_data = &korina_dev0_data.mac,
++	}
  };
  
--extern unsigned int idt_cpu_freq;
+ static struct resource cf_slot0_res[] = {
+@@ -299,8 +302,6 @@ static int __init plat_setup_devices(void)
+ 	/* set the uart clock to the current cpu frequency */
+ 	rb532_uart_res[0].uartclk = idt_cpu_freq;
+ 
+-	dev_set_drvdata(&korina_dev0.dev, &korina_dev0_data);
 -
- static dma_addr_t korina_tx_dma(struct korina_private *lp, int idx)
+ 	gpiod_add_lookup_table(&cf_slot0_gpio_table);
+ 	return platform_add_devices(rb532_devs, ARRAY_SIZE(rb532_devs));
+ }
+diff --git a/drivers/net/ethernet/korina.c b/drivers/net/ethernet/korina.c
+index 44fad9e924ca..d6dbbdd43d7c 100644
+--- a/drivers/net/ethernet/korina.c
++++ b/drivers/net/ethernet/korina.c
+@@ -1055,7 +1055,7 @@ static const struct net_device_ops korina_netdev_ops = {
+ 
+ static int korina_probe(struct platform_device *pdev)
  {
- 	return lp->td_dma + (idx * sizeof(struct dma_desc));
-@@ -899,8 +897,8 @@ static int korina_init(struct net_device *dev)
- 
- 	/* Management Clock Prescaler Divisor
- 	 * Clock independent setting */
--	writel(((idt_cpu_freq) / MII_CLOCK + 1) & ~1,
--			&lp->eth_regs->ethmcp);
-+	writel(((lp->mii_clock_freq) / MII_CLOCK + 1) & ~1,
-+	       &lp->eth_regs->ethmcp);
- 	writel(0, &lp->eth_regs->miimcfg);
- 
- 	/* don't transmit until fifo contains 48b */
-@@ -1060,6 +1058,7 @@ static int korina_probe(struct platform_device *pdev)
- 	u8 *mac_addr = dev_get_platdata(&pdev->dev);
+-	struct korina_device *bif = platform_get_drvdata(pdev);
++	u8 *mac_addr = dev_get_platdata(&pdev->dev);
  	struct korina_private *lp;
  	struct net_device *dev;
-+	struct clk *clk;
  	void __iomem *p;
- 	int rc;
+@@ -1068,8 +1068,7 @@ static int korina_probe(struct platform_device *pdev)
+ 	SET_NETDEV_DEV(dev, &pdev->dev);
+ 	lp = netdev_priv(dev);
  
-@@ -1077,6 +1076,16 @@ static int korina_probe(struct platform_device *pdev)
- 			eth_hw_addr_random(dev);
- 	}
+-	bif->dev = dev;
+-	memcpy(dev->dev_addr, bif->mac, ETH_ALEN);
++	memcpy(dev->dev_addr, mac_addr, ETH_ALEN);
  
-+	clk = devm_clk_get_optional(&pdev->dev, "mdioclk");
-+	if (IS_ERR(clk))
-+		return PTR_ERR(clk);
-+	if (clk) {
-+		clk_prepare_enable(clk);
-+		lp->mii_clock_freq = clk_get_rate(clk);
-+	} else {
-+		lp->mii_clock_freq = 200000000; /* max possible input clk */
-+	}
-+
  	lp->rx_irq = platform_get_irq_byname(pdev, "korina_rx");
  	lp->tx_irq = platform_get_irq_byname(pdev, "korina_tx");
+@@ -1123,6 +1122,8 @@ static int korina_probe(struct platform_device *pdev)
+ 	lp->mii_if.phy_id_mask = 0x1f;
+ 	lp->mii_if.reg_num_mask = 0x1f;
  
++	platform_set_drvdata(pdev, dev);
++
+ 	rc = register_netdev(dev);
+ 	if (rc < 0) {
+ 		printk(KERN_ERR DRV_NAME
+@@ -1140,9 +1141,9 @@ static int korina_probe(struct platform_device *pdev)
+ 
+ static int korina_remove(struct platform_device *pdev)
+ {
+-	struct korina_device *bif = platform_get_drvdata(pdev);
++	struct net_device *dev = platform_get_drvdata(pdev);
+ 
+-	unregister_netdev(bif->dev);
++	unregister_netdev(dev);
+ 
+ 	return 0;
+ }
 -- 
 2.29.2
 

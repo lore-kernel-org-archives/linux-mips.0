@@ -7,31 +7,31 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 811FAC43619
-	for <linux-mips@archiver.kernel.org>; Sun, 18 Apr 2021 22:20:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 253B0C43461
+	for <linux-mips@archiver.kernel.org>; Sun, 18 Apr 2021 22:20:07 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 64E55610CB
-	for <linux-mips@archiver.kernel.org>; Sun, 18 Apr 2021 22:20:05 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 08096610EA
+	for <linux-mips@archiver.kernel.org>; Sun, 18 Apr 2021 22:20:07 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236598AbhDRWUa (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Sun, 18 Apr 2021 18:20:30 -0400
-Received: from mx2.suse.de ([195.135.220.15]:38328 "EHLO mx2.suse.de"
+        id S236839AbhDRWUc (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Sun, 18 Apr 2021 18:20:32 -0400
+Received: from mx2.suse.de ([195.135.220.15]:38360 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235680AbhDRWUX (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Sun, 18 Apr 2021 18:20:23 -0400
+        id S235740AbhDRWUY (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Sun, 18 Apr 2021 18:20:24 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id DD996B15F;
-        Sun, 18 Apr 2021 22:19:53 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id BEE89B187;
+        Sun, 18 Apr 2021 22:19:54 +0000 (UTC)
 From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 To:     "David S. Miller" <davem@davemloft.net>,
         Jakub Kicinski <kuba@kernel.org>,
         Rob Herring <robh+dt@kernel.org>, netdev@vger.kernel.org,
         devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-mips@vger.kernel.org
-Subject: [PATCH v6 net-next 08/10] net: korina: Get mdio input clock via common clock framework
-Date:   Mon, 19 Apr 2021 00:19:46 +0200
-Message-Id: <20210418221949.130779-9-tsbogend@alpha.franken.de>
+Subject: [PATCH v6 net-next 10/10] dt-bindings: net: korina: Add DT bindings for IDT 79RC3243x SoCs
+Date:   Mon, 19 Apr 2021 00:19:48 +0200
+Message-Id: <20210418221949.130779-11-tsbogend@alpha.franken.de>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20210418221949.130779-1-tsbogend@alpha.franken.de>
 References: <20210418221949.130779-1-tsbogend@alpha.franken.de>
@@ -41,83 +41,94 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-With device tree clock is provided via CCF. For non device tree
-use a maximum clock value to not overclock the PHY. The non device
-tree usage will go away after platform is converted to DT.
+Add device tree bindings for ethernet controller integrated into
+IDT 79RC3243x SoCs.
 
 Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 ---
- drivers/net/ethernet/korina.c | 21 +++++++++++++++------
- 1 file changed, 15 insertions(+), 6 deletions(-)
+ .../bindings/net/idt,3243x-emac.yaml          | 73 +++++++++++++++++++
+ 1 file changed, 73 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/net/idt,3243x-emac.yaml
 
-diff --git a/drivers/net/ethernet/korina.c b/drivers/net/ethernet/korina.c
-index a1f53d7753ae..19f226428f89 100644
---- a/drivers/net/ethernet/korina.c
-+++ b/drivers/net/ethernet/korina.c
-@@ -57,14 +57,13 @@
- #include <linux/ethtool.h>
- #include <linux/crc32.h>
- #include <linux/pgtable.h>
-+#include <linux/clk.h>
- 
- #include <asm/bootinfo.h>
- #include <asm/bitops.h>
- #include <asm/io.h>
- #include <asm/dma.h>
- 
--#include <asm/mach-rc32434/rb.h>
--#include <asm/mach-rc32434/rc32434.h>
- #include <asm/mach-rc32434/eth.h>
- #include <asm/mach-rc32434/dma_v.h>
- 
-@@ -146,10 +145,9 @@ struct korina_private {
- 	struct work_struct restart_task;
- 	struct net_device *dev;
- 	struct device *dmadev;
-+	int mii_clock_freq;
- };
- 
--extern unsigned int idt_cpu_freq;
--
- static dma_addr_t korina_tx_dma(struct korina_private *lp, int idx)
- {
- 	return lp->td_dma + (idx * sizeof(struct dma_desc));
-@@ -899,8 +897,8 @@ static int korina_init(struct net_device *dev)
- 
- 	/* Management Clock Prescaler Divisor
- 	 * Clock independent setting */
--	writel(((idt_cpu_freq) / MII_CLOCK + 1) & ~1,
--			&lp->eth_regs->ethmcp);
-+	writel(((lp->mii_clock_freq) / MII_CLOCK + 1) & ~1,
-+	       &lp->eth_regs->ethmcp);
- 	writel(0, &lp->eth_regs->miimcfg);
- 
- 	/* don't transmit until fifo contains 48b */
-@@ -1060,6 +1058,7 @@ static int korina_probe(struct platform_device *pdev)
- 	u8 *mac_addr = dev_get_platdata(&pdev->dev);
- 	struct korina_private *lp;
- 	struct net_device *dev;
-+	struct clk *clk;
- 	void __iomem *p;
- 	int rc;
- 
-@@ -1075,6 +1074,16 @@ static int korina_probe(struct platform_device *pdev)
- 	else if (of_get_mac_address(pdev->dev.of_node, dev->dev_addr) < 0)
- 		eth_hw_addr_random(dev);
- 
-+	clk = devm_clk_get_optional(&pdev->dev, "mdioclk");
-+	if (IS_ERR(clk))
-+		return PTR_ERR(clk);
-+	if (clk) {
-+		clk_prepare_enable(clk);
-+		lp->mii_clock_freq = clk_get_rate(clk);
-+	} else {
-+		lp->mii_clock_freq = 200000000; /* max possible input clk */
-+	}
+diff --git a/Documentation/devicetree/bindings/net/idt,3243x-emac.yaml b/Documentation/devicetree/bindings/net/idt,3243x-emac.yaml
+new file mode 100644
+index 000000000000..11ffc306dd54
+--- /dev/null
++++ b/Documentation/devicetree/bindings/net/idt,3243x-emac.yaml
+@@ -0,0 +1,73 @@
++# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/net/idt,3243x-emac.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
- 	lp->rx_irq = platform_get_irq_byname(pdev, "rx");
- 	lp->tx_irq = platform_get_irq_byname(pdev, "tx");
- 
++title: IDT 79rc3243x Ethernet controller
++
++description: Ethernet controller integrated into IDT 79RC3243x family SoCs
++
++maintainers:
++  - Thomas Bogendoerfer <tsbogend@alpha.franken.de>
++
++allOf:
++  - $ref: ethernet-controller.yaml#
++
++properties:
++  compatible:
++    const: idt,3243x-emac
++
++  reg:
++    maxItems: 3
++
++  reg-names:
++    items:
++      - const: emac
++      - const: dma_rx
++      - const: dma_tx
++
++  interrupts:
++    items:
++      - description: RX interrupt
++      - description: TX interrupt
++
++  interrupt-names:
++    items:
++      - const: rx
++      - const: tx
++
++  clocks:
++    maxItems: 1
++
++  clock-names:
++    items:
++      - const: mdioclk
++
++required:
++  - compatible
++  - reg
++  - reg-names
++  - interrupts
++  - interrupt-names
++
++additionalProperties: false
++
++examples:
++  - |
++
++    ethernet@60000 {
++        compatible = "idt,3243x-emac";
++
++        reg = <0x60000 0x10000>,
++              <0x40000 0x14>,
++              <0x40014 0x14>;
++        reg-names = "emac", "dma_rx", "dma_tx";
++
++        interrupt-parent = <&rcpic3>;
++        interrupts = <0>, <1>;
++        interrupt-names = "rx", "tx";
++
++        clocks = <&iclk>;
++        clock-names = "mdioclk";
++    };
 -- 
 2.29.2
 

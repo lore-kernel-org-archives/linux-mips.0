@@ -2,351 +2,216 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
+X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+	LOTS_OF_MONEY,MAILING_LIST_MULTI,MONEY_NOHTML,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B2C1AC43460
-	for <linux-mips@archiver.kernel.org>; Sun, 18 Apr 2021 22:20:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 896F4C433B4
+	for <linux-mips@archiver.kernel.org>; Mon, 19 Apr 2021 04:56:37 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 90478610A1
-	for <linux-mips@archiver.kernel.org>; Sun, 18 Apr 2021 22:20:06 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 5E5C260FE8
+	for <linux-mips@archiver.kernel.org>; Mon, 19 Apr 2021 04:56:37 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236765AbhDRWUb (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Sun, 18 Apr 2021 18:20:31 -0400
-Received: from mx2.suse.de ([195.135.220.15]:38348 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235718AbhDRWUY (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Sun, 18 Apr 2021 18:20:24 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 5A8E7B166;
-        Sun, 18 Apr 2021 22:19:54 +0000 (UTC)
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mips@vger.kernel.org
-Subject: [PATCH v6 net-next 09/10] net: korina: Make driver COMPILE_TESTable
-Date:   Mon, 19 Apr 2021 00:19:47 +0200
-Message-Id: <20210418221949.130779-10-tsbogend@alpha.franken.de>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210418221949.130779-1-tsbogend@alpha.franken.de>
-References: <20210418221949.130779-1-tsbogend@alpha.franken.de>
+        id S229980AbhDSE5F (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 19 Apr 2021 00:57:05 -0400
+Received: from mail.loongson.cn ([114.242.206.163]:42954 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229473AbhDSE5E (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Mon, 19 Apr 2021 00:57:04 -0400
+Received: from ambrosehua-HP-xw6600-Workstation (unknown [125.69.46.152])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9CxQ+BrDX1gGisKAA--.9026S2;
+        Mon, 19 Apr 2021 12:56:14 +0800 (CST)
+Date:   Mon, 19 Apr 2021 12:56:11 +0800
+From:   Huang Pei <huangpei@loongson.cn>
+To:     Zhou Yanjie <zhouyanjie@wanyeetech.com>
+Cc:     tsbogend@alpha.franken.de, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
+        paul.burton@mips.com, paul@crapouillou.net, siyanteng@loongson.cn,
+        ira.weiny@intel.com, yangtiezhu@loongson.cn, jun.jiang@ingenic.com,
+        dongsheng.qiu@ingenic.com, aric.pzqi@ingenic.com,
+        rick.tyliu@ingenic.com, sernia.zhou@foxmail.com
+Subject: Re: [PATCH] Revert "MIPS: make userspace mapping young by default".
+Message-ID: <20210419045610.frhzxskec47s5rmq@ambrosehua-HP-xw6600-Workstation>
+References: <1618562868-91115-1-git-send-email-zhouyanjie@wanyeetech.com>
+ <20210416092003.5754967.19768.9603@loongson.cn>
+ <ae06522f-eda8-96d1-6f58-072905afa65c@wanyeetech.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <ae06522f-eda8-96d1-6f58-072905afa65c@wanyeetech.com>
+User-Agent: NeoMutt/20171215
+X-CM-TRANSID: AQAAf9CxQ+BrDX1gGisKAA--.9026S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxKw1xZryDtFW5KFyxKrW7Jwb_yoWxuFWrp3
+        s7Ca4xCayIqr17Aa4xAr17A34rAa97Aa48ArnrCF1jvayxZryjqrnxW34DXryDAFZYy347
+        ZF9rXrn0ga48uw7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvl14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26r1I6r4UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4j
+        6F4UM28EF7xvwVC2z280aVAFwI0_Cr1j6rxdM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
+        Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
+        I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
+        4UM4x0Y48IcVAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628vn2kI
+        c2xKxwCY02Avz4vE14v_Gryl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr
+        1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE
+        14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7
+        IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvE
+        x4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvj
+        DU0xZFpf9x0JUfcTPUUUUU=
+X-CM-SenderInfo: xkxd0whshlqz5rrqw2lrqou0/
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Move structs/defines for ethernet/dma register into driver, since they
-are only used for this driver and remove any MIPS specific includes.
-This makes it possible to COMPILE_TEST the driver.
+On Sat, Apr 17, 2021 at 12:45:59AM +0800, Zhou Yanjie wrote:
+> 
+> On 2021/4/16 下午5:20, 黄沛 wrote:
+> > Is there any log about the panic?
+> 
+> 
+> Yes, below is the log:
+> 
+> 
+> [  195.436017] CPU 0 Unable to handle kernel paging request at virtual
+> address 77eb8000, epc == 80117868, ra == 80118208
+> [  195.446709] Oops[#1]:
+> [  195.448977] CPU: 0 PID: 1461 Comm: Xsession Not tainted
+> 5.12.0-rc6-00227-gc8fc6defbd2e-dirty #1
+> [  195.457661] $ 0   : 00000000 00000001 80117864 77eb9000
+> [  195.462888] $ 4   : 77eb8000 82419600 838ea000 82482ba0
+> [  195.468116] $ 8   : 826f8b18 8306f800 000072d5 8306f800
+> [  195.473343] $12   : 00000002 00000a03 00000001 00000402
+> [  195.478568] $16   : 77eb8000 809faf60 00000004 82482ba0
+> [  195.483794] $20   : 77eb8000 82419600 82482ba0 80860000
+> [  195.489021] $24   : 8086121c 80117864
+> [  195.494248] $28   : 838ea000 838ebd70 00000000 80118208
+> [  195.499475] Hi    : 00008c4e
+> [  195.502343] Lo    : 00004627
+> [  195.505212] epc   : 80117868 r4k_blast_dcache_page_dc32+0x4/0x9c
+> [  195.511217] ra    : 80118208 local_r4k_flush_cache_page+0x120/0x1b8
+> [  195.517476] Status: 10001403 KERNEL EXL IE
+> [  195.521657] Cause : 4080800c (ExcCode 03)
+> [  195.525654] BadVA : 77eb8000
+> [  195.528523] PrId  : 00d00100 (Ingenic XBurst)
+> [  195.532866] Modules linked in:
+> [  195.535911] Process Xsession (pid: 1461, threadinfo=00975a3e,
+> task=3724fd66, tls=77ebd690)
+> [  195.544162] Stack : 808a05ec f7edcbfd 8306f800 00000000 80860000 809faf60
+> 80990a3c 80117f90
+> [  195.552524]         809faf60 82419600 8306f800 801fd84c 00000000 801180b4
+> 838ebe80 80110b7c
+> [  195.560887]         80990a3c 82482ba0 82482ba0 77eb8000 00004627 f7edcbfd
+> 838ebe80 801cbc08
+> [  195.569249]         00000001 181b2000 00000000 801fa06c 00000000 83999ae0
+> 80860000 00000004
+> [  195.577610]         80990a3c f7edcbfd 80990a3c 838ebe80 00000004 80990a3c
+> 82482ba0 04627685
+> [  195.585973]         ...
+> [  195.588413] Call Trace:
+> [  195.590849] [<80117868>] r4k_blast_dcache_page_dc32+0x4/0x9c
+> [  195.596501] [<80118208>] local_r4k_flush_cache_page+0x120/0x1b8
+> [  195.602413] [<80117f90>] r4k_on_each_cpu.isra.8+0x24/0x58
+> [  195.607805] [<801180b4>] r4k_flush_cache_page+0x34/0x58
+> [  195.613023] [<801cbc08>] wp_page_copy+0x3a8/0x56c
+> [  195.617723] [<801ce944>] do_swap_page+0x4cc/0x558
+> [  195.622419] [<801cf3f8>] handle_mm_fault+0x790/0x93c
+> [  195.627374] [<8011025c>] do_page_fault+0x19c/0x540
+> [  195.632159] [<801142f0>] tlb_do_page_fault_1+0x10c/0x11c
+> [  195.637465]
+> [  195.638947] Code: 03e00008  00000000  24831000 <bc950000> bc950020 
+> bc950040  bc950060  bc950080  bc9500a0
+> [  195.648706]
+> [  195.650243] ---[ end trace 7cc7d7f611932c42 ]---
+> [  195.654857] Kernel panic - not syncing: Fatal exception
+> [  195.660072] Rebooting in 10 seconds..
+> 
+> 
+> this problem can be triggered stably (by use Microsoft Remote Desktop client
+> to login to debian9 running on CU1830-Neo).
+> 
+Could you print out the PTE value at 0x77eb8000 ?
 
-Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
----
- drivers/net/ethernet/Kconfig  |   2 +-
- drivers/net/ethernet/korina.c | 249 ++++++++++++++++++++++++++++++++--
- 2 files changed, 239 insertions(+), 12 deletions(-)
+I really have no idea of how the page_prot setting affecting the swap
+handling.
 
-diff --git a/drivers/net/ethernet/Kconfig b/drivers/net/ethernet/Kconfig
-index c059b4bd3f23..453d202a28c1 100644
---- a/drivers/net/ethernet/Kconfig
-+++ b/drivers/net/ethernet/Kconfig
-@@ -97,7 +97,7 @@ config JME
- 
- config KORINA
- 	tristate "Korina (IDT RC32434) Ethernet support"
--	depends on MIKROTIK_RB532
-+	depends on MIKROTIK_RB532 || COMPILE_TEST
- 	select MII
- 	help
- 	  If you have a Mikrotik RouterBoard 500 or IDT RC32434
-diff --git a/drivers/net/ethernet/korina.c b/drivers/net/ethernet/korina.c
-index 19f226428f89..4878e527e3c8 100644
---- a/drivers/net/ethernet/korina.c
-+++ b/drivers/net/ethernet/korina.c
-@@ -59,18 +59,244 @@
- #include <linux/pgtable.h>
- #include <linux/clk.h>
- 
--#include <asm/bootinfo.h>
--#include <asm/bitops.h>
--#include <asm/io.h>
--#include <asm/dma.h>
--
--#include <asm/mach-rc32434/eth.h>
--#include <asm/mach-rc32434/dma_v.h>
--
- #define DRV_NAME	"korina"
- #define DRV_VERSION	"0.20"
- #define DRV_RELDATE	"15Sep2017"
- 
-+struct eth_regs {
-+	u32 ethintfc;
-+	u32 ethfifott;
-+	u32 etharc;
-+	u32 ethhash0;
-+	u32 ethhash1;
-+	u32 ethu0[4];		/* Reserved. */
-+	u32 ethpfs;
-+	u32 ethmcp;
-+	u32 eth_u1[10];		/* Reserved. */
-+	u32 ethspare;
-+	u32 eth_u2[42];		/* Reserved. */
-+	u32 ethsal0;
-+	u32 ethsah0;
-+	u32 ethsal1;
-+	u32 ethsah1;
-+	u32 ethsal2;
-+	u32 ethsah2;
-+	u32 ethsal3;
-+	u32 ethsah3;
-+	u32 ethrbc;
-+	u32 ethrpc;
-+	u32 ethrupc;
-+	u32 ethrfc;
-+	u32 ethtbc;
-+	u32 ethgpf;
-+	u32 eth_u9[50];		/* Reserved. */
-+	u32 ethmac1;
-+	u32 ethmac2;
-+	u32 ethipgt;
-+	u32 ethipgr;
-+	u32 ethclrt;
-+	u32 ethmaxf;
-+	u32 eth_u10;		/* Reserved. */
-+	u32 ethmtest;
-+	u32 miimcfg;
-+	u32 miimcmd;
-+	u32 miimaddr;
-+	u32 miimwtd;
-+	u32 miimrdd;
-+	u32 miimind;
-+	u32 eth_u11;		/* Reserved. */
-+	u32 eth_u12;		/* Reserved. */
-+	u32 ethcfsa0;
-+	u32 ethcfsa1;
-+	u32 ethcfsa2;
-+};
-+
-+/* Ethernet interrupt registers */
-+#define ETH_INT_FC_EN		BIT(0)
-+#define ETH_INT_FC_ITS		BIT(1)
-+#define ETH_INT_FC_RIP		BIT(2)
-+#define ETH_INT_FC_JAM		BIT(3)
-+#define ETH_INT_FC_OVR		BIT(4)
-+#define ETH_INT_FC_UND		BIT(5)
-+#define ETH_INT_FC_IOC		0x000000c0
-+
-+/* Ethernet FIFO registers */
-+#define ETH_FIFI_TT_TTH_BIT	0
-+#define ETH_FIFO_TT_TTH		0x0000007f
-+
-+/* Ethernet ARC/multicast registers */
-+#define ETH_ARC_PRO		BIT(0)
-+#define ETH_ARC_AM		BIT(1)
-+#define ETH_ARC_AFM		BIT(2)
-+#define ETH_ARC_AB		BIT(3)
-+
-+/* Ethernet SAL registers */
-+#define ETH_SAL_BYTE_5		0x000000ff
-+#define ETH_SAL_BYTE_4		0x0000ff00
-+#define ETH_SAL_BYTE_3		0x00ff0000
-+#define ETH_SAL_BYTE_2		0xff000000
-+
-+/* Ethernet SAH registers */
-+#define ETH_SAH_BYTE1		0x000000ff
-+#define ETH_SAH_BYTE0		0x0000ff00
-+
-+/* Ethernet GPF register */
-+#define ETH_GPF_PTV		0x0000ffff
-+
-+/* Ethernet PFG register */
-+#define ETH_PFS_PFD		BIT(0)
-+
-+/* Ethernet CFSA[0-3] registers */
-+#define ETH_CFSA0_CFSA4		0x000000ff
-+#define ETH_CFSA0_CFSA5		0x0000ff00
-+#define ETH_CFSA1_CFSA2		0x000000ff
-+#define ETH_CFSA1_CFSA3		0x0000ff00
-+#define ETH_CFSA1_CFSA0		0x000000ff
-+#define ETH_CFSA1_CFSA1		0x0000ff00
-+
-+/* Ethernet MAC1 registers */
-+#define ETH_MAC1_RE		BIT(0)
-+#define ETH_MAC1_PAF		BIT(1)
-+#define ETH_MAC1_RFC		BIT(2)
-+#define ETH_MAC1_TFC		BIT(3)
-+#define ETH_MAC1_LB		BIT(4)
-+#define ETH_MAC1_MR		BIT(31)
-+
-+/* Ethernet MAC2 registers */
-+#define ETH_MAC2_FD		BIT(0)
-+#define ETH_MAC2_FLC		BIT(1)
-+#define ETH_MAC2_HFE		BIT(2)
-+#define ETH_MAC2_DC		BIT(3)
-+#define ETH_MAC2_CEN		BIT(4)
-+#define ETH_MAC2_PE		BIT(5)
-+#define ETH_MAC2_VPE		BIT(6)
-+#define ETH_MAC2_APE		BIT(7)
-+#define ETH_MAC2_PPE		BIT(8)
-+#define ETH_MAC2_LPE		BIT(9)
-+#define ETH_MAC2_NB		BIT(12)
-+#define ETH_MAC2_BP		BIT(13)
-+#define ETH_MAC2_ED		BIT(14)
-+
-+/* Ethernet IPGT register */
-+#define ETH_IPGT		0x0000007f
-+
-+/* Ethernet IPGR registers */
-+#define ETH_IPGR_IPGR2		0x0000007f
-+#define ETH_IPGR_IPGR1		0x00007f00
-+
-+/* Ethernet CLRT registers */
-+#define ETH_CLRT_MAX_RET	0x0000000f
-+#define ETH_CLRT_COL_WIN	0x00003f00
-+
-+/* Ethernet MAXF register */
-+#define ETH_MAXF		0x0000ffff
-+
-+/* Ethernet test registers */
-+#define ETH_TEST_REG		BIT(2)
-+#define ETH_MCP_DIV		0x000000ff
-+
-+/* MII registers */
-+#define ETH_MII_CFG_RSVD	0x0000000c
-+#define ETH_MII_CMD_RD		BIT(0)
-+#define ETH_MII_CMD_SCN		BIT(1)
-+#define ETH_MII_REG_ADDR	0x0000001f
-+#define ETH_MII_PHY_ADDR	0x00001f00
-+#define ETH_MII_WTD_DATA	0x0000ffff
-+#define ETH_MII_RDD_DATA	0x0000ffff
-+#define ETH_MII_IND_BSY		BIT(0)
-+#define ETH_MII_IND_SCN		BIT(1)
-+#define ETH_MII_IND_NV		BIT(2)
-+
-+/* Values for the DEVCS field of the Ethernet DMA Rx and Tx descriptors. */
-+#define ETH_RX_FD		BIT(0)
-+#define ETH_RX_LD		BIT(1)
-+#define ETH_RX_ROK		BIT(2)
-+#define ETH_RX_FM		BIT(3)
-+#define ETH_RX_MP		BIT(4)
-+#define ETH_RX_BP		BIT(5)
-+#define ETH_RX_VLT		BIT(6)
-+#define ETH_RX_CF		BIT(7)
-+#define ETH_RX_OVR		BIT(8)
-+#define ETH_RX_CRC		BIT(9)
-+#define ETH_RX_CV		BIT(10)
-+#define ETH_RX_DB		BIT(11)
-+#define ETH_RX_LE		BIT(12)
-+#define ETH_RX_LOR		BIT(13)
-+#define ETH_RX_CES		BIT(14)
-+#define ETH_RX_LEN_BIT		16
-+#define ETH_RX_LEN		0xffff0000
-+
-+#define ETH_TX_FD		BIT(0)
-+#define ETH_TX_LD		BIT(1)
-+#define ETH_TX_OEN		BIT(2)
-+#define ETH_TX_PEN		BIT(3)
-+#define ETH_TX_CEN		BIT(4)
-+#define ETH_TX_HEN		BIT(5)
-+#define ETH_TX_TOK		BIT(6)
-+#define ETH_TX_MP		BIT(7)
-+#define ETH_TX_BP		BIT(8)
-+#define ETH_TX_UND		BIT(9)
-+#define ETH_TX_OF		BIT(10)
-+#define ETH_TX_ED		BIT(11)
-+#define ETH_TX_EC		BIT(12)
-+#define ETH_TX_LC		BIT(13)
-+#define ETH_TX_TD		BIT(14)
-+#define ETH_TX_CRC		BIT(15)
-+#define ETH_TX_LE		BIT(16)
-+#define ETH_TX_CC		0x001E0000
-+
-+/* DMA descriptor (in physical memory). */
-+struct dma_desc {
-+	u32 control;			/* Control. use DMAD_* */
-+	u32 ca;				/* Current Address. */
-+	u32 devcs;			/* Device control and status. */
-+	u32 link;			/* Next descriptor in chain. */
-+};
-+
-+#define DMA_DESC_COUNT_BIT		0
-+#define DMA_DESC_COUNT_MSK		0x0003ffff
-+#define DMA_DESC_DS_BIT			20
-+#define DMA_DESC_DS_MSK			0x00300000
-+
-+#define DMA_DESC_DEV_CMD_BIT		22
-+#define DMA_DESC_DEV_CMD_MSK		0x01c00000
-+
-+/* DMA descriptors interrupts */
-+#define DMA_DESC_COF			BIT(25) /* Chain on finished */
-+#define DMA_DESC_COD			BIT(26) /* Chain on done */
-+#define DMA_DESC_IOF			BIT(27) /* Interrupt on finished */
-+#define DMA_DESC_IOD			BIT(28) /* Interrupt on done */
-+#define DMA_DESC_TERM			BIT(29) /* Terminated */
-+#define DMA_DESC_DONE			BIT(30) /* Done */
-+#define DMA_DESC_FINI			BIT(31) /* Finished */
-+
-+/* DMA register (within Internal Register Map).  */
-+struct dma_reg {
-+	u32 dmac;		/* Control. */
-+	u32 dmas;		/* Status. */
-+	u32 dmasm;		/* Mask. */
-+	u32 dmadptr;		/* Descriptor pointer. */
-+	u32 dmandptr;		/* Next descriptor pointer. */
-+};
-+
-+/* DMA channels specific registers */
-+#define DMA_CHAN_RUN_BIT		BIT(0)
-+#define DMA_CHAN_DONE_BIT		BIT(1)
-+#define DMA_CHAN_MODE_BIT		BIT(2)
-+#define DMA_CHAN_MODE_MSK		0x0000000c
-+#define	 DMA_CHAN_MODE_AUTO		0
-+#define	 DMA_CHAN_MODE_BURST		1
-+#define	 DMA_CHAN_MODE_XFRT		2
-+#define	 DMA_CHAN_MODE_RSVD		3
-+#define DMA_CHAN_ACT_BIT		BIT(4)
-+
-+/* DMA status registers */
-+#define DMA_STAT_FINI			BIT(0)
-+#define DMA_STAT_DONE			BIT(1)
-+#define DMA_STAT_CHAIN			BIT(2)
-+#define DMA_STAT_ERR			BIT(3)
-+#define DMA_STAT_HALT			BIT(4)
-+
- #define STATION_ADDRESS_HIGH(dev) (((dev)->dev_addr[0] << 8) | \
- 				   ((dev)->dev_addr[1]))
- #define STATION_ADDRESS_LOW(dev)  (((dev)->dev_addr[2] << 24) | \
-@@ -100,6 +326,7 @@ enum chain_status {
- 	desc_empty
- };
- 
-+#define DMA_COUNT(count)	((count) & DMA_DESC_COUNT_MSK)
- #define IS_DMA_FINISHED(X)	(((X) & (DMA_DESC_FINI)) != 0)
- #define IS_DMA_DONE(X)		(((X) & (DMA_DESC_DONE)) != 0)
- #define RCVPKT_LENGTH(X)	(((X) & ETH_RX_LEN) >> ETH_RX_LEN_BIT)
-@@ -453,14 +680,14 @@ static int korina_rx(struct net_device *dev, int limit)
- 
- 		lp->rx_next_done = (lp->rx_next_done + 1) & KORINA_RDS_MASK;
- 		rd = &lp->rd_ring[lp->rx_next_done];
--		writel(~DMA_STAT_DONE, &lp->rx_dma_regs->dmas);
-+		writel((u32)~DMA_STAT_DONE, &lp->rx_dma_regs->dmas);
- 	}
- 
- 	dmas = readl(&lp->rx_dma_regs->dmas);
- 
- 	if (dmas & DMA_STAT_HALT) {
--		writel(~(DMA_STAT_HALT | DMA_STAT_ERR),
--				&lp->rx_dma_regs->dmas);
-+		writel((u32)~(DMA_STAT_HALT | DMA_STAT_ERR),
-+		       &lp->rx_dma_regs->dmas);
- 
- 		lp->dma_halt_cnt++;
- 		rd->devcs = 0;
--- 
-2.29.2
+> 
+> Thanks and best regards!
+> 
+> 
+> > 
+> >    Original Message
+> > From: 周琰杰 (Zhou Yanjie)
+> > Sent: 2021年4月16日星期五 16:48
+> > To: tsbogend@alpha.franken.de
+> > Cc: linux-mips@vger.kernel.org; linux-kernel@vger.kernel.org; akpm@linux-foundation.org; paul.burton@mips.com; paul@crapouillou.net; siyanteng@loongson.cn; huangpei@loongson.cn; ira.weiny@intel.com; yangtiezhu@loongson.cn; zhouyanjie@wanyeetech.com; jun.jiang@ingenic.com; dongsheng.qiu@ingenic.com; aric.pzqi@ingenic.com; rick.tyliu@ingenic.com; sernia.zhou@foxmail.com
+> > Subject: [PATCH] Revert "MIPS: make userspace mapping young by default".
+> > 
+> > This reverts commit f685a533a7fab35c5d069dcd663f59c8e4171a75.
+> > 
+> > It cause kernel panic on Ingenic X1830, so let's revert it.
+> > 
+> > Signed-off-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
+> > ---
+> > arch/mips/mm/cache.c | 31 ++++++++++++++-----------------
+> > 1 file changed, 14 insertions(+), 17 deletions(-)
+> > 
+> > diff --git a/arch/mips/mm/cache.c b/arch/mips/mm/cache.c
+> > index 7719d63..9cfd432 100644
+> > --- a/arch/mips/mm/cache.c
+> > +++ b/arch/mips/mm/cache.c
+> > @@ -21,7 +21,6 @@
+> > #include <asm/cpu.h>
+> > #include <asm/cpu-features.h>
+> > #include <asm/setup.h>
+> > -#include <asm/pgtable.h>
+> > 
+> > /* Cache operations. */
+> > void (*flush_cache_all)(void);
+> > @@ -157,31 +156,29 @@ unsigned long _page_cachable_default;
+> > EXPORT_SYMBOL(_page_cachable_default);
+> > 
+> > #define PM(p)	__pgprot(_page_cachable_default | (p))
+> > -#define PVA(p)	PM(_PAGE_VALID | _PAGE_ACCESSED | (p))
+> > 
+> > static inline void setup_protection_map(void)
+> > {
+> > protection_map[0] = PM(_PAGE_PRESENT | _PAGE_NO_EXEC | _PAGE_NO_READ);
+> > -	protection_map[1] = PVA(_PAGE_PRESENT | _PAGE_NO_EXEC);
+> > -	protection_map[2] = PVA(_PAGE_PRESENT | _PAGE_NO_EXEC | _PAGE_NO_READ);
+> > -	protection_map[3] = PVA(_PAGE_PRESENT | _PAGE_NO_EXEC);
+> > -	protection_map[4] = PVA(_PAGE_PRESENT);
+> > -	protection_map[5] = PVA(_PAGE_PRESENT);
+> > -	protection_map[6] = PVA(_PAGE_PRESENT);
+> > -	protection_map[7] = PVA(_PAGE_PRESENT);
+> > +	protection_map[1] = PM(_PAGE_PRESENT | _PAGE_NO_EXEC);
+> > +	protection_map[2] = PM(_PAGE_PRESENT | _PAGE_NO_EXEC | _PAGE_NO_READ);
+> > +	protection_map[3] = PM(_PAGE_PRESENT | _PAGE_NO_EXEC);
+> > +	protection_map[4] = PM(_PAGE_PRESENT);
+> > +	protection_map[5] = PM(_PAGE_PRESENT);
+> > +	protection_map[6] = PM(_PAGE_PRESENT);
+> > +	protection_map[7] = PM(_PAGE_PRESENT);
+> > 
+> > protection_map[8] = PM(_PAGE_PRESENT | _PAGE_NO_EXEC | _PAGE_NO_READ);
+> > -	protection_map[9] = PVA(_PAGE_PRESENT | _PAGE_NO_EXEC);
+> > -	protection_map[10] = PVA(_PAGE_PRESENT | _PAGE_NO_EXEC | _PAGE_WRITE |
+> > +	protection_map[9] = PM(_PAGE_PRESENT | _PAGE_NO_EXEC);
+> > +	protection_map[10] = PM(_PAGE_PRESENT | _PAGE_NO_EXEC | _PAGE_WRITE |
+> > _PAGE_NO_READ);
+> > -	protection_map[11] = PVA(_PAGE_PRESENT | _PAGE_NO_EXEC | _PAGE_WRITE);
+> > -	protection_map[12] = PVA(_PAGE_PRESENT);
+> > -	protection_map[13] = PVA(_PAGE_PRESENT);
+> > -	protection_map[14] = PVA(_PAGE_PRESENT);
+> > -	protection_map[15] = PVA(_PAGE_PRESENT);
+> > +	protection_map[11] = PM(_PAGE_PRESENT | _PAGE_NO_EXEC | _PAGE_WRITE);
+> > +	protection_map[12] = PM(_PAGE_PRESENT);
+> > +	protection_map[13] = PM(_PAGE_PRESENT);
+> > +	protection_map[14] = PM(_PAGE_PRESENT | _PAGE_WRITE);
+> > +	protection_map[15] = PM(_PAGE_PRESENT | _PAGE_WRITE);
+> > }
+> > 
+> > -#undef _PVA
+> > #undef PM
+> > 
+> > void cpu_cache_init(void)
 

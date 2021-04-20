@@ -2,184 +2,116 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-6.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E70D3C433ED
-	for <linux-mips@archiver.kernel.org>; Tue, 20 Apr 2021 21:14:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3E60FC433ED
+	for <linux-mips@archiver.kernel.org>; Tue, 20 Apr 2021 21:20:39 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id AC653613F0
-	for <linux-mips@archiver.kernel.org>; Tue, 20 Apr 2021 21:14:37 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 05390613F4
+	for <linux-mips@archiver.kernel.org>; Tue, 20 Apr 2021 21:20:38 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233991AbhDTVPD (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 20 Apr 2021 17:15:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56812 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233682AbhDTVPB (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Tue, 20 Apr 2021 17:15:01 -0400
-Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A83EC06174A;
-        Tue, 20 Apr 2021 14:14:27 -0700 (PDT)
-Received: by mail-wr1-x431.google.com with SMTP id e5so10488754wrg.7;
-        Tue, 20 Apr 2021 14:14:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=SINGf1VJr4PNrGueUhLZgsExg6JWOkA8GlI6O69q3t4=;
-        b=vGZm5f2Ap4gpn9RbnMUT8dngwXlHZ1uwp+IKLgiGcqtfAE2mg70/uX9cPKtHCkUnaQ
-         qi+evVM8hUg65R053u6sym4g/zexb80tAYadeN8zwB+h/OgRLnUnjvBLIuZMtyzgnH5X
-         QEaLpIF5+1ME6vCqaRC9bWAeyQG/e1Ipt7Ehn6SVLOC6xOI4iJgwL4sF2qZS9ne5wgRp
-         gVVsl6wcTuHX4F2Bn0jLS00tgYk8fUE4/PNDkCKnONMg/2fi7qsWIQrwxGDrP3+tw9WH
-         HjZiW1xqEK2MIpCK2H5CHk56SwhRJuFlaORVcdfrzq1JaOWUneHOpNNTrtOQpWvONH9l
-         iixg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=SINGf1VJr4PNrGueUhLZgsExg6JWOkA8GlI6O69q3t4=;
-        b=pm3x8VwIYUx4KTUMvUs4aYLK9izx7ipK2weKKezyqRcMuwl9+HrGM7G2SJM7R91u9w
-         8kQehpyKjNcLL8Tje3Oi90DAphx5SDpt/FFXY6HoKtebmeJKdLHKwMJcCsHKLQvyCkM8
-         R/nE1TQWlwIwHtt7FcEwqlyelJuF0W9IpBrfIjlmVhKCH5vtBkSopiG+B8x43suV/ixn
-         +AbP8RlUNQShc0Z7p52fVueCOdRw6jXZhIGfF35wAd3jSPDGibWy3X0eNbR1nZVuPTqd
-         LyR64wjYOKYyPDW1H9tUy57E0ghFXpxaLwgRC73jG/aiPMNBVFXTpA7/Q+rEcaHbK89q
-         OtZw==
-X-Gm-Message-State: AOAM532aTjKwlKFEtvgYjyt/aN1PUPbOKVTY2Q6+Cfxo+udUeTRm1Y1k
-        wlRS8DPAEGh60CGSXhoZr3jlOPpWZG2cbA==
-X-Google-Smtp-Source: ABdhPJxyQ+lMPlzzKCAN+cLa8XeWnATkygaRTFknNeY1r9EvSRDJF8QYOodNDbnGOT98uq7J/LBOzg==
-X-Received: by 2002:a5d:534e:: with SMTP id t14mr22486791wrv.239.1618953265807;
-        Tue, 20 Apr 2021 14:14:25 -0700 (PDT)
-Received: from localhost.localdomain (host-84-13-30-150.opaltelecom.net. [84.13.30.150])
-        by smtp.gmail.com with ESMTPSA id b15sm250296wrt.57.2021.04.20.14.14.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Apr 2021 14:14:25 -0700 (PDT)
-From:   Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc:     linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
-        Romain Naour <romain.naour@gmail.com>,
-        Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Subject: [PATCH v4] mips: Do not include hi and lo in clobber list for R6
-Date:   Tue, 20 Apr 2021 22:12:10 +0100
-Message-Id: <20210420211210.702980-1-sudipm.mukherjee@gmail.com>
-X-Mailer: git-send-email 2.30.2
+        id S233882AbhDTVVK (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 20 Apr 2021 17:21:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36128 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233724AbhDTVVJ (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Tue, 20 Apr 2021 17:21:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5654D613FD;
+        Tue, 20 Apr 2021 21:20:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1618953637;
+        bh=D/HoBu+aWo6sy7+88V9ZJnpot0ZpiBRBCM4AzeXp6I8=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=pArvFq3Bg0eznwDb5FJ1AJDg4uGehP2ZXKHtXg7aSehY89wKEHnhCX/mVatOV6ryT
+         nDf/2gvwWh2BDXh18chg97cOw9UActFB0apxymDDRvGmAtrI+L2MxaIEWgzX7jpw9/
+         I6JLRl8kn9AQ6J9IvmQAviE14HNt8N/LqXSJX6Yc8z5xS4zHK7FHiFEETtVwkWVrGB
+         ni8KvuVndFviPLslG4RxcSW6KHg6Ja1EsEaatvDzQRx4T0hna0qzuUDlgNWehOQjdA
+         mm7h1tAH/Yrc26ZqgFuXReHd0eXJu3ggmg3bvbxA6/Qfv+QEPBu4PF73L18ZgMJocn
+         /MnvOs1utGgKw==
+Received: by mail-wm1-f43.google.com with SMTP id f195-20020a1c1fcc0000b029012eb88126d7so115272wmf.3;
+        Tue, 20 Apr 2021 14:20:37 -0700 (PDT)
+X-Gm-Message-State: AOAM5312J0QYU+bOC90W0DFl9gFz8T+LnEYF+cEW0ihhc70CIoOM4GHc
+        eqcfnT+1H3Xsbpk105GPXqYrmh8K2m6ju7cgPpI=
+X-Google-Smtp-Source: ABdhPJwrEit0y72qRaTuoH/3wg/uStL6F0tnFo57QDj1Zmqkrq7O3+IN+SwFnfTQrVplKgk1AFIl7KVtwhj1AIi6XmY=
+X-Received: by 2002:a05:600c:4149:: with SMTP id h9mr6135531wmm.43.1618953635407;
+ Tue, 20 Apr 2021 14:20:35 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20210416230724.2519198-1-willy@infradead.org> <20210416230724.2519198-2-willy@infradead.org>
+ <20210417024522.GP2531743@casper.infradead.org> <9f99b0a0-f1c1-f3b0-5f84-3a4bfc711725@synopsys.com>
+ <20210420031029.GI2531743@casper.infradead.org> <CAK8P3a0KUwf1Z0bHiUaHC2nHztevkxg5_FBSzHddNeSsBayWUA@mail.gmail.com>
+ <8d0fce1c-be7c-1c9b-bf5c-0c531db496ac@synopsys.com>
+In-Reply-To: <8d0fce1c-be7c-1c9b-bf5c-0c531db496ac@synopsys.com>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Tue, 20 Apr 2021 23:20:19 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a3rzz1gfNLoGC8aZJiAC-tgZYD6P8pQsoEfgCAmQK=FAw@mail.gmail.com>
+Message-ID: <CAK8P3a3rzz1gfNLoGC8aZJiAC-tgZYD6P8pQsoEfgCAmQK=FAw@mail.gmail.com>
+Subject: Re: [PATCH 1/2] mm: Fix struct page layout on 32-bit systems
+To:     Vineet Gupta <Vineet.Gupta1@synopsys.com>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        "grygorii.strashko@ti.com" <grygorii.strashko@ti.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "ilias.apalodimas@linaro.org" <ilias.apalodimas@linaro.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
+        "mhocko@kernel.org" <mhocko@kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "mgorman@suse.de" <mgorman@suse.de>,
+        "brouer@redhat.com" <brouer@redhat.com>,
+        "mcroce@linux.microsoft.com" <mcroce@linux.microsoft.com>,
+        "linux-snps-arc@lists.infradead.org" 
+        <linux-snps-arc@lists.infradead.org>,
+        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+        "hch@lst.de" <hch@lst.de>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-From: Romain Naour <romain.naour@gmail.com>
+On Tue, Apr 20, 2021 at 11:14 PM Vineet Gupta
+<Vineet.Gupta1@synopsys.com> wrote:
+> On 4/20/21 12:07 AM, Arnd Bergmann wrote:
 
-From [1]
-"GCC 10 (PR 91233) won't silently allow registers that are not
-architecturally available to be present in the clobber list anymore,
-resulting in build failure for mips*r6 targets in form of:
-...
-.../sysdep.h:146:2: error: the register ‘lo’ cannot be clobbered in ‘asm’ for the current target
-  146 |  __asm__ volatile (      \
-      |  ^~~~~~~
+> >
+> > which means that half the 32-bit architectures do this. This may
+> > cause more problems when arc and/or microblaze want to support
+> > 64-bit kernels and compat mode in the future on their latest hardware,
+> > as that means duplicating the x86 specific hacks we have for compat.
+> >
+> > What is alignof(u64) on 64-bit arc?
+>
+> $ echo 'int a = __alignof__(long long);' | arc64-linux-gnu-gcc -xc -
+> -Wall -S -o - | grep -A1 a: | tail -n 1 | cut -f 3
+> 8
 
-This is because base R6 ISA doesn't define hi and lo registers w/o DSP
-extension. This patch provides the alternative clobber list for r6 targets
-that won't include those registers."
+Ok, good.
 
-Since kernel 5.4 and mips support for generic vDSO [2], the kernel fail to
-build for mips r6 cpus with gcc 10 for the same reason as glibc.
+> Yeah ARCv2 alignment of 4 for 64-bit data was a bit of surprise finding
+> for me as well. When 64-bit load/stores were initially targeted by the
+> internal Metaware compiler (llvm based) they decided to keep alignment
+> to 4 still (granted hardware allowed this) and then gcc guys decided to
+> follow the same ABI. I only found this by accident :-)
+>
+> Can you point me to some specifics on the compat issue. For better of
+> worse, arc64 does''t have a compat 32-bit mode, so everything is
+> 64-on-64 or 32-on-32 (ARC32 flavor of ARCv3)
 
-[1] https://sourceware.org/git/?p=glibc.git;a=commit;h=020b2a97bb15f807c0482f0faee2184ed05bcad8
-[2] '24640f233b46 ("mips: Add support for generic vDSO")'
+In that case, there should be no problem for you.
 
-Signed-off-by: Romain Naour <romain.naour@gmail.com>
-Signed-off-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
----
+The main issue is with system calls and ioctls that contain a misaligned
+struct member like
 
-v4: [sudip] added macro VDSO_SYSCALL_CLOBBERS and fix checkpatch errors with commit message.
-v3 Avoid duplicate code (Maciej W. Rozycki)
-v2 use MIPS_ISA_REV instead of __mips_isa_rev (Alexander Lobakin)
+struct s {
+       u32 a;
+       u64 b;
+};
 
-I have reused the original patch by Romain and have retained his s-o-b
-and author name as he is the original author of this patch. I have just
-added the macro. Build tested with gcc-10.3.1 and gcc-9.3.0.
+Passing this structure by reference from a 32-bit user space application
+to a 64-bit kernel with different alignment constraints means that the
+kernel has to convert the structure layout. See
+compat_ioctl_preallocate() in fs/ioctl.c for one such example.
 
- arch/mips/include/asm/vdso/gettimeofday.h | 26 ++++++++++++++++++-----
- 1 file changed, 21 insertions(+), 5 deletions(-)
-
-diff --git a/arch/mips/include/asm/vdso/gettimeofday.h b/arch/mips/include/asm/vdso/gettimeofday.h
-index 2203e2d0ae2a..44a45f3fa4b0 100644
---- a/arch/mips/include/asm/vdso/gettimeofday.h
-+++ b/arch/mips/include/asm/vdso/gettimeofday.h
-@@ -20,6 +20,12 @@
- 
- #define VDSO_HAS_CLOCK_GETRES		1
- 
-+#if MIPS_ISA_REV < 6
-+#define VDSO_SYSCALL_CLOBBERS "hi", "lo",
-+#else
-+#define VDSO_SYSCALL_CLOBBERS
-+#endif
-+
- static __always_inline long gettimeofday_fallback(
- 				struct __kernel_old_timeval *_tv,
- 				struct timezone *_tz)
-@@ -35,7 +41,9 @@ static __always_inline long gettimeofday_fallback(
- 	: "=r" (ret), "=r" (error)
- 	: "r" (tv), "r" (tz), "r" (nr)
- 	: "$1", "$3", "$8", "$9", "$10", "$11", "$12", "$13",
--	  "$14", "$15", "$24", "$25", "hi", "lo", "memory");
-+	  "$14", "$15", "$24", "$25",
-+	  VDSO_SYSCALL_CLOBBERS
-+	  "memory");
- 
- 	return error ? -ret : ret;
- }
-@@ -59,7 +67,9 @@ static __always_inline long clock_gettime_fallback(
- 	: "=r" (ret), "=r" (error)
- 	: "r" (clkid), "r" (ts), "r" (nr)
- 	: "$1", "$3", "$8", "$9", "$10", "$11", "$12", "$13",
--	  "$14", "$15", "$24", "$25", "hi", "lo", "memory");
-+	  "$14", "$15", "$24", "$25",
-+	  VDSO_SYSCALL_CLOBBERS
-+	  "memory");
- 
- 	return error ? -ret : ret;
- }
-@@ -83,7 +93,9 @@ static __always_inline int clock_getres_fallback(
- 	: "=r" (ret), "=r" (error)
- 	: "r" (clkid), "r" (ts), "r" (nr)
- 	: "$1", "$3", "$8", "$9", "$10", "$11", "$12", "$13",
--	  "$14", "$15", "$24", "$25", "hi", "lo", "memory");
-+	  "$14", "$15", "$24", "$25",
-+	  VDSO_SYSCALL_CLOBBERS
-+	  "memory");
- 
- 	return error ? -ret : ret;
- }
-@@ -105,7 +117,9 @@ static __always_inline long clock_gettime32_fallback(
- 	: "=r" (ret), "=r" (error)
- 	: "r" (clkid), "r" (ts), "r" (nr)
- 	: "$1", "$3", "$8", "$9", "$10", "$11", "$12", "$13",
--	  "$14", "$15", "$24", "$25", "hi", "lo", "memory");
-+	  "$14", "$15", "$24", "$25",
-+	  VDSO_SYSCALL_CLOBBERS
-+	  "memory");
- 
- 	return error ? -ret : ret;
- }
-@@ -125,7 +139,9 @@ static __always_inline int clock_getres32_fallback(
- 	: "=r" (ret), "=r" (error)
- 	: "r" (clkid), "r" (ts), "r" (nr)
- 	: "$1", "$3", "$8", "$9", "$10", "$11", "$12", "$13",
--	  "$14", "$15", "$24", "$25", "hi", "lo", "memory");
-+	  "$14", "$15", "$24", "$25",
-+	  VDSO_SYSCALL_CLOBBERS
-+	  "memory");
- 
- 	return error ? -ret : ret;
- }
--- 
-2.30.2
-
+       Arnd

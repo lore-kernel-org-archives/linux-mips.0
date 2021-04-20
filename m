@@ -4,173 +4,124 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=unavailable
-	autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 60CA5C433B4
-	for <linux-mips@archiver.kernel.org>; Tue, 20 Apr 2021 07:40:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BB4DCC433ED
+	for <linux-mips@archiver.kernel.org>; Tue, 20 Apr 2021 08:39:57 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 2CEDE61155
-	for <linux-mips@archiver.kernel.org>; Tue, 20 Apr 2021 07:40:19 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 6E0E760FE3
+	for <linux-mips@archiver.kernel.org>; Tue, 20 Apr 2021 08:39:57 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229507AbhDTHks (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 20 Apr 2021 03:40:48 -0400
-Received: from mail-vk1-f178.google.com ([209.85.221.178]:36690 "EHLO
-        mail-vk1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229583AbhDTHkp (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Tue, 20 Apr 2021 03:40:45 -0400
-Received: by mail-vk1-f178.google.com with SMTP id u200so5549944vku.3;
-        Tue, 20 Apr 2021 00:40:06 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=H6eQzhTjkJ0rVc7HEe9OWdxxcp9k4JKL+wOyVTTn6UM=;
-        b=t4S8B/JxmNduSY2iZ5/BlHi8j5UNEm+OSIpwJoBG2WrrJK87wPGT5CtTEWWWISVvBf
-         Iy5GTXrO7cetqOmKe2FpVQj+KbHzWelmOMrZMb6ofzjXMkJFavhyVKEVUQoPtiDqT4W4
-         t5AseKxl+grP3aGWBHtvm1YrsyZIVuhSgWIA90o3sRCGxf4Ku6amNb2M4ZJBtBAWkegC
-         pPXPDAwryggoH11HgzLe4CGIlceGLi/fMkG3OovqTW9r3jIedWa02fe1YGFKIuFh98Hw
-         48fw/ClTeaRgZ+Lg1GqkMi5Ef0dBarY7LsPzFZW6gPTgin9m3GjtpfOC+J577WlUBZ+5
-         HS5Q==
-X-Gm-Message-State: AOAM531E299BqPbfbluuNrt7IYkwPMgFPZ8wwzRVwrTT2DOPazXqQ7XV
-        f5Bs469v5ip3I1RuUZOnMtokqVnek1UK68kh7lk=
-X-Google-Smtp-Source: ABdhPJyQrVlZDIuzz0IXIFr61zWg3jELX2WXl+k/TdsCheRdiMxsjqJCL3H7m7n2s4eAxB2N41JJBdYT1MQaqIXF0Cc=
-X-Received: by 2002:a1f:2504:: with SMTP id l4mr15813452vkl.5.1618904406471;
- Tue, 20 Apr 2021 00:40:06 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210416230724.2519198-1-willy@infradead.org> <20210416230724.2519198-2-willy@infradead.org>
- <20210417024522.GP2531743@casper.infradead.org>
-In-Reply-To: <20210417024522.GP2531743@casper.infradead.org>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 20 Apr 2021 09:39:54 +0200
-Message-ID: <CAMuHMdXm1Zg=Wm-=tn5jUJwqVGUvCi5yDaW0PXWC2DEDYGcy5A@mail.gmail.com>
-Subject: Re: [PATCH 1/2] mm: Fix struct page layout on 32-bit systems
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Jesper Dangaard Brouer <brouer@redhat.com>,
+        id S230429AbhDTIk1 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 20 Apr 2021 04:40:27 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:55615 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230512AbhDTIk0 (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>);
+        Tue, 20 Apr 2021 04:40:26 -0400
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-41-LdMxTme-MY-UX7jiXf2mLw-1; Tue, 20 Apr 2021 09:39:52 +0100
+X-MC-Unique: LdMxTme-MY-UX7jiXf2mLw-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
+ Server (TLS) id 15.0.1497.2; Tue, 20 Apr 2021 09:39:51 +0100
+Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
+ AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
+ 15.00.1497.015; Tue, 20 Apr 2021 09:39:51 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Geert Uytterhoeven' <geert@linux-m68k.org>,
+        Matthew Wilcox <willy@infradead.org>
+CC:     Jesper Dangaard Brouer <brouer@redhat.com>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
         Linux MM <linux-mm@kvack.org>, netdev <netdev@vger.kernel.org>,
         linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
         Linux ARM <linux-arm-kernel@lists.infradead.org>,
         "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
         Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        mcroce@linux.microsoft.com,
+        "mcroce@linux.microsoft.com" <mcroce@linux.microsoft.com>,
         Grygorii Strashko <grygorii.strashko@ti.com>,
         Arnd Bergmann <arnd@kernel.org>,
         Christoph Hellwig <hch@lst.de>,
         arcml <linux-snps-arc@lists.infradead.org>,
-        Michal Hocko <mhocko@kernel.org>, Mel Gorman <mgorman@suse.de>
-Content-Type: text/plain; charset="UTF-8"
+        Michal Hocko <mhocko@kernel.org>,
+        "Mel Gorman" <mgorman@suse.de>
+Subject: RE: [PATCH 1/2] mm: Fix struct page layout on 32-bit systems
+Thread-Topic: [PATCH 1/2] mm: Fix struct page layout on 32-bit systems
+Thread-Index: AQHXNbhaf1yRrc3ugkWz9MvyD1ZvgKq9FGTg
+Date:   Tue, 20 Apr 2021 08:39:51 +0000
+Message-ID: <bb8805a33371468892a7271dbe321e1f@AcuMS.aculab.com>
+References: <20210416230724.2519198-1-willy@infradead.org>
+ <20210416230724.2519198-2-willy@infradead.org>
+ <20210417024522.GP2531743@casper.infradead.org>
+ <CAMuHMdXm1Zg=Wm-=tn5jUJwqVGUvCi5yDaW0PXWC2DEDYGcy5A@mail.gmail.com>
+In-Reply-To: <CAMuHMdXm1Zg=Wm-=tn5jUJwqVGUvCi5yDaW0PXWC2DEDYGcy5A@mail.gmail.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
+MIME-Version: 1.0
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Hi Willy,
+RnJvbTogR2VlcnQgVXl0dGVyaG9ldmVuDQo+IFNlbnQ6IDIwIEFwcmlsIDIwMjEgMDg6NDANCj4g
+DQo+IEhpIFdpbGx5LA0KPiANCj4gT24gU2F0LCBBcHIgMTcsIDIwMjEgYXQgNDo0OSBBTSBNYXR0
+aGV3IFdpbGNveCA8d2lsbHlAaW5mcmFkZWFkLm9yZz4gd3JvdGU6DQo+ID4gUmVwbGFjZW1lbnQg
+cGF0Y2ggdG8gZml4IGNvbXBpbGVyIHdhcm5pbmcuDQo+ID4NCj4gPiAzMi1iaXQgYXJjaGl0ZWN0
+dXJlcyB3aGljaCBleHBlY3QgOC1ieXRlIGFsaWdubWVudCBmb3IgOC1ieXRlIGludGVnZXJzDQo+
+ID4gYW5kIG5lZWQgNjQtYml0IERNQSBhZGRyZXNzZXMgKGFyYywgYXJtLCBtaXBzLCBwcGMpIGhh
+ZCB0aGVpciBzdHJ1Y3QNCj4gPiBwYWdlIGluYWR2ZXJ0ZW50bHkgZXhwYW5kZWQgaW4gMjAxOS4g
+IFdoZW4gdGhlIGRtYV9hZGRyX3Qgd2FzIGFkZGVkLA0KPiA+IGl0IGZvcmNlZCB0aGUgYWxpZ25t
+ZW50IG9mIHRoZSB1bmlvbiB0byA4IGJ5dGVzLCB3aGljaCBpbnNlcnRlZCBhIDQgYnl0ZQ0KPiA+
+IGdhcCBiZXR3ZWVuICdmbGFncycgYW5kIHRoZSB1bmlvbi4NCj4gPg0KPiA+IEZpeCB0aGlzIGJ5
+IHN0b3JpbmcgdGhlIGRtYV9hZGRyX3QgaW4gb25lIG9yIHR3byBhZGphY2VudCB1bnNpZ25lZCBs
+b25ncy4NCj4gPiBUaGlzIHJlc3RvcmVzIHRoZSBhbGlnbm1lbnQgdG8gdGhhdCBvZiBhbiB1bnNp
+Z25lZCBsb25nLCBhbmQgYWxzbyBmaXhlcyBhDQo+ID4gcG90ZW50aWFsIHByb2JsZW0gd2hlcmUg
+KG9uIGEgYmlnIGVuZGlhbiBwbGF0Zm9ybSksIHRoZSBiaXQgdXNlZCB0byBkZW5vdGUNCj4gPiBQ
+YWdlVGFpbCBjb3VsZCBpbmFkdmVydGVudGx5IGdldCBzZXQsIGFuZCBhIHJhY2luZyBnZXRfdXNl
+cl9wYWdlc19mYXN0KCkNCj4gPiBjb3VsZCBkZXJlZmVyZW5jZSBhIGJvZ3VzIGNvbXBvdW5kX2hl
+YWQoKS4NCj4gPg0KPiA+IEZpeGVzOiBjMjVmZmY3MTcxYmUgKCJtbTogYWRkIGRtYV9hZGRyX3Qg
+dG8gc3RydWN0IHBhZ2UiKQ0KPiA+IFNpZ25lZC1vZmYtYnk6IE1hdHRoZXcgV2lsY294IChPcmFj
+bGUpIDx3aWxseUBpbmZyYWRlYWQub3JnPg0KPiANCj4gVGhhbmtzIGZvciB5b3VyIHBhdGNoIQ0K
+PiANCj4gPiAtLS0gYS9pbmNsdWRlL2xpbnV4L21tX3R5cGVzLmgNCj4gPiArKysgYi9pbmNsdWRl
+L2xpbnV4L21tX3R5cGVzLmgNCj4gPiBAQCAtOTcsMTAgKzk3LDEwIEBAIHN0cnVjdCBwYWdlIHsN
+Cj4gPiAgICAgICAgICAgICAgICAgfTsNCj4gPiAgICAgICAgICAgICAgICAgc3RydWN0IHsgICAg
+ICAgIC8qIHBhZ2VfcG9vbCB1c2VkIGJ5IG5ldHN0YWNrICovDQo+ID4gICAgICAgICAgICAgICAg
+ICAgICAgICAgLyoqDQo+ID4gLSAgICAgICAgICAgICAgICAgICAgICAgICogQGRtYV9hZGRyOiBt
+aWdodCByZXF1aXJlIGEgNjQtYml0IHZhbHVlIGV2ZW4gb24NCj4gPiArICAgICAgICAgICAgICAg
+ICAgICAgICAgKiBAZG1hX2FkZHI6IG1pZ2h0IHJlcXVpcmUgYSA2NC1iaXQgdmFsdWUgb24NCj4g
+PiAgICAgICAgICAgICAgICAgICAgICAgICAgKiAzMi1iaXQgYXJjaGl0ZWN0dXJlcy4NCj4gPiAg
+ICAgICAgICAgICAgICAgICAgICAgICAgKi8NCj4gPiAtICAgICAgICAgICAgICAgICAgICAgICBk
+bWFfYWRkcl90IGRtYV9hZGRyOw0KPiA+ICsgICAgICAgICAgICAgICAgICAgICAgIHVuc2lnbmVk
+IGxvbmcgZG1hX2FkZHJbMl07DQo+IA0KPiBTbyB3ZSBnZXQgdHdvIDY0LWJpdCB3b3JkcyBvbiA2
+NC1iaXQgcGxhdGZvcm1zLCB3aGlsZSBvbmx5IG9uZSBpcw0KPiBuZWVkZWQ/DQo+IA0KPiBXb3Vs
+ZA0KPiANCj4gICAgIHVuc2lnbmVkIGxvbmcgX2RtYV9hZGRyW3NpemVvZihkbWFfYWRkcl90KSAv
+IHNpemVvZih1bnNpZ25lZCBsb25nKV07DQo+IA0KPiB3b3JrPw0KPiANCj4gT3Igd2lsbCB0aGUg
+Y29tcGlsZXIgYmVjb21lIHRvbyBvdmVyemVhbG91cywgYW5kIHdhcm4gYWJvdXQgdGhlIHVzZQ0K
+PiBvZiAuLi5bMV0gYmVsb3csIGV2ZW4gd2hlbiB1bnJlYWNoYWJsZT8NCj4gSSB3b3VsZG4ndCBt
+aW5kIGFuICNpZmRlZiBpbnN0ZWFkIG9mIGFuIGlmICgpIGluIHRoZSBjb2RlIGJlbG93LCB0aG91
+Z2guDQoNCllvdSBjb3VsZCB1c2UgW0FSUkFZX1NJWkUoKS0xXSBpbnN0ZWFkIG9mIFsxXS4NCk9y
+LCBzaW5jZSBJSVJDIGl0IGlzIHRoZSBsYXN0IG1lbWJlciBvZiB0aGF0IHNwZWNpZmljIHN0cnVj
+dCwgZGVmaW5lIGFzOg0KCQl1bnNpZ25lZCBsb25nIGRtYV9hZGRyW107DQoNCi4uLg0KPiA+IC0g
+ICAgICAgcmV0dXJuIHBhZ2UtPmRtYV9hZGRyOw0KPiA+ICsgICAgICAgZG1hX2FkZHJfdCByZXQg
+PSBwYWdlLT5kbWFfYWRkclswXTsNCj4gPiArICAgICAgIGlmIChzaXplb2YoZG1hX2FkZHJfdCkg
+PiBzaXplb2YodW5zaWduZWQgbG9uZykpDQo+ID4gKyAgICAgICAgICAgICAgIHJldCB8PSAoZG1h
+X2FkZHJfdClwYWdlLT5kbWFfYWRkclsxXSA8PCAxNiA8PCAxNjsNCj4gDQo+IFdlIGRvbid0IHNl
+ZW0gdG8gaGF2ZSBhIGhhbmR5IG1hY3JvIGZvciBhIDMyLWJpdCBsZWZ0IHNoaWZ0IHlldC4uLg0K
+PiANCj4gQnV0IHlvdSBjYW4gYWxzbyBhdm9pZCB0aGUgd2FybmluZyB1c2luZw0KPiANCj4gICAg
+IHJldCB8PSAodTY0KXBhZ2UtPmRtYV9hZGRyWzFdIDw8IDMyOw0KDQpPcjoNCglyZXQgfD0gcGFn
+ZS0+ZG1hX2FkZHJbMV0gKyAwdWxsIDw8IDMyOw0KDQpXaGljaCByZWxpZXMgaW4gaW50ZWdlciBw
+cm9tb3Rpb24gcmF0aGVyIHRoYW4gYSBjYXN0Lg0KDQoJRGF2aWQNCg0KLQ0KUmVnaXN0ZXJlZCBB
+ZGRyZXNzIExha2VzaWRlLCBCcmFtbGV5IFJvYWQsIE1vdW50IEZhcm0sIE1pbHRvbiBLZXluZXMs
+IE1LMSAxUFQsIFVLDQpSZWdpc3RyYXRpb24gTm86IDEzOTczODYgKFdhbGVzKQ0K
 
-On Sat, Apr 17, 2021 at 4:49 AM Matthew Wilcox <willy@infradead.org> wrote:
-> Replacement patch to fix compiler warning.
->
-> From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
-> Date: Fri, 16 Apr 2021 16:34:55 -0400
-> Subject: [PATCH 1/2] mm: Fix struct page layout on 32-bit systems
-> To: brouer@redhat.com
-> Cc: linux-kernel@vger.kernel.org,
->     linux-mm@kvack.org,
->     netdev@vger.kernel.org,
->     linuxppc-dev@lists.ozlabs.org,
->     linux-arm-kernel@lists.infradead.org,
->     linux-mips@vger.kernel.org,
->     ilias.apalodimas@linaro.org,
->     mcroce@linux.microsoft.com,
->     grygorii.strashko@ti.com,
->     arnd@kernel.org,
->     hch@lst.de,
->     linux-snps-arc@lists.infradead.org,
->     mhocko@kernel.org,
->     mgorman@suse.de
->
-> 32-bit architectures which expect 8-byte alignment for 8-byte integers
-> and need 64-bit DMA addresses (arc, arm, mips, ppc) had their struct
-> page inadvertently expanded in 2019.  When the dma_addr_t was added,
-> it forced the alignment of the union to 8 bytes, which inserted a 4 byte
-> gap between 'flags' and the union.
->
-> Fix this by storing the dma_addr_t in one or two adjacent unsigned longs.
-> This restores the alignment to that of an unsigned long, and also fixes a
-> potential problem where (on a big endian platform), the bit used to denote
-> PageTail could inadvertently get set, and a racing get_user_pages_fast()
-> could dereference a bogus compound_head().
->
-> Fixes: c25fff7171be ("mm: add dma_addr_t to struct page")
-> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-
-Thanks for your patch!
-
-> --- a/include/linux/mm_types.h
-> +++ b/include/linux/mm_types.h
-> @@ -97,10 +97,10 @@ struct page {
->                 };
->                 struct {        /* page_pool used by netstack */
->                         /**
-> -                        * @dma_addr: might require a 64-bit value even on
-> +                        * @dma_addr: might require a 64-bit value on
->                          * 32-bit architectures.
->                          */
-> -                       dma_addr_t dma_addr;
-> +                       unsigned long dma_addr[2];
-
-So we get two 64-bit words on 64-bit platforms, while only one is
-needed?
-
-Would
-
-    unsigned long _dma_addr[sizeof(dma_addr_t) / sizeof(unsigned long)];
-
-work?
-
-Or will the compiler become too overzealous, and warn about the use
-of ...[1] below, even when unreachable?
-I wouldn't mind an #ifdef instead of an if () in the code below, though.
-
->                 };
->                 struct {        /* slab, slob and slub */
->                         union {
-> diff --git a/include/net/page_pool.h b/include/net/page_pool.h
-> index b5b195305346..ad6154dc206c 100644
-> --- a/include/net/page_pool.h
-> +++ b/include/net/page_pool.h
-> @@ -198,7 +198,17 @@ static inline void page_pool_recycle_direct(struct page_pool *pool,
->
->  static inline dma_addr_t page_pool_get_dma_addr(struct page *page)
->  {
-> -       return page->dma_addr;
-> +       dma_addr_t ret = page->dma_addr[0];
-> +       if (sizeof(dma_addr_t) > sizeof(unsigned long))
-> +               ret |= (dma_addr_t)page->dma_addr[1] << 16 << 16;
-
-We don't seem to have a handy macro for a 32-bit left shift yet...
-
-But you can also avoid the warning using
-
-    ret |= (u64)page->dma_addr[1] << 32;
-
-> +       return ret;
-> +}
-> +
-> +static inline void page_pool_set_dma_addr(struct page *page, dma_addr_t addr)
-> +{
-> +       page->dma_addr[0] = addr;
-> +       if (sizeof(dma_addr_t) > sizeof(unsigned long))
-> +               page->dma_addr[1] = addr >> 16 >> 16;
-
-... but we do have upper_32_bits() for a 32-bit right shift.
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds

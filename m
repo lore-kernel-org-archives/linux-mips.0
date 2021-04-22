@@ -2,74 +2,102 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.2 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8375AC433ED
-	for <linux-mips@archiver.kernel.org>; Wed, 21 Apr 2021 23:26:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7F9ADC433B4
+	for <linux-mips@archiver.kernel.org>; Thu, 22 Apr 2021 02:25:04 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 459B161422
-	for <linux-mips@archiver.kernel.org>; Wed, 21 Apr 2021 23:26:29 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 5BB9B61453
+	for <linux-mips@archiver.kernel.org>; Thu, 22 Apr 2021 02:25:04 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231666AbhDUX1C (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 21 Apr 2021 19:27:02 -0400
-Received: from angie.orcam.me.uk ([157.25.102.26]:39410 "EHLO
-        angie.orcam.me.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231296AbhDUX1C (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 21 Apr 2021 19:27:02 -0400
-Received: by angie.orcam.me.uk (Postfix, from userid 500)
-        id 86D5692009C; Thu, 22 Apr 2021 01:26:26 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by angie.orcam.me.uk (Postfix) with ESMTP id 7822B92009B;
-        Thu, 22 Apr 2021 01:26:26 +0200 (CEST)
-Date:   Thu, 22 Apr 2021 01:26:26 +0200 (CEST)
-From:   "Maciej W. Rozycki" <macro@orcam.me.uk>
-To:     "Huang, Ying" <ying.huang@intel.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        kernel test robot <lkp@intel.com>
-cc:     kbuild-all@lists.01.org, linux-mips@vger.kernel.org
-Subject: Re: [mips-linux:mips-next 98/101] arch/mips/include/asm/div64.h:74:3:
- error: inconsistent operand constraints in an 'asm'
-In-Reply-To: <202104220420.qh7kOCR1-lkp@intel.com>
-Message-ID: <alpine.DEB.2.21.2104220029430.44318@angie.orcam.me.uk>
-References: <202104220420.qh7kOCR1-lkp@intel.com>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+        id S232796AbhDVCZh (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 21 Apr 2021 22:25:37 -0400
+Received: from mail.loongson.cn ([114.242.206.163]:44226 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230319AbhDVCZh (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Wed, 21 Apr 2021 22:25:37 -0400
+Received: from bogon.localdomain (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9DxT+5n3oBgwxoMAA--.4114S3;
+        Thu, 22 Apr 2021 10:24:43 +0800 (CST)
+From:   Youling Tang <tangyouling@loongson.cn>
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc:     Jiaxun Yang <jiaxun.yang@flygoat.com>, Baoquan He <bhe@redhat.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Jinyang He <hejinyang@loongson.cn>, kexec@lists.infradead.org,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2 1/4] MIPS: Fix cmdline "mem=" parameter parsing
+Date:   Thu, 22 Apr 2021 10:24:31 +0800
+Message-Id: <1619058274-6996-2-git-send-email-tangyouling@loongson.cn>
+X-Mailer: git-send-email 2.1.0
+In-Reply-To: <1619058274-6996-1-git-send-email-tangyouling@loongson.cn>
+References: <1619058274-6996-1-git-send-email-tangyouling@loongson.cn>
+X-CM-TRANSID: AQAAf9DxT+5n3oBgwxoMAA--.4114S3
+X-Coremail-Antispam: 1UD129KBjvJXoW7uFWkur1UXF4UXrWUAr1xGrg_yoW8XFWDpa
+        1UC395trs8u3W7W3WrCrZY9w43Jas5JF47JFW7u3s5A3ZIqFyrJrsYqF1jgFy0qFWkt3Wj
+        qFyjvr45Ga1qyr7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUBm14x267AKxVW5JVWrJwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_Jr4l82xGYIkIc2
+        x26xkF7I0E14v26r1I6r4UM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2z4x0
+        Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j6F4UJw
+        A2z4x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjcxK6I8E87Iv6xkF7I0E14v26F4UJVW0
+        owAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7
+        IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4U
+        M4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCY02Avz4vE14v_Gr1l42
+        xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWU
+        GwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI4
+        8JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4U
+        MIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I
+        8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjfUOHUqUUUUU
+X-CM-SenderInfo: 5wdqw5prxox03j6o00pqjv00gofq/
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Thu, 22 Apr 2021, kernel test robot wrote:
+This problem may only occur on NUMA platforms. When machine start with the
+"mem=" parameter on Loongson64, it cannot boot. When parsing the "mem="
+parameter, first remove all RAM, and then add memory through memblock_add(),
+which causes the newly added memory to be located on MAX_NUMNODES.
 
->    fs/xfs/libxfs/xfs_alloc_btree.c: In function 'xfs_allocbt_free_block':
-> >> arch/mips/include/asm/div64.h:74:3: error: inconsistent operand constraints in an 'asm'
->       74 |   __asm__("divu $0, %z1, %z2"    \
->          |   ^~~~~~~
+The solution is to add the current "mem=" parameter range to the memory area
+of the corresponding node, instead of adding all of it to the MAX_NUMNODES
+node area. Get the node number corresponding to the "mem=" parameter range
+through pa_to_nid(), and then add it to the corresponding node through
+memblock_add_node().
 
- Umm, I forgot we do support MIPSr6, unlike microMIPSr6.
+Signed-off-by: Jinyang He <hejinyang@loongson.cn>
+Signed-off-by: Youling Tang <tangyouling@loongson.cn>
+---
+v2:
+ - Include the mmzone.h header file, to solve the "error: implicit
+   declaration of function'pa_to_nid'" compilation error.
 
- I think this asm can go and GCC will do equally well with plain C code.
-Or actually marginally better, as preliminary benchmarking shows, owing to 
-a slightly better instruction scheduling.  Code produced for test_div64 is 
-also slightly smaller for some reason.  That's at least for the ISAs up to 
-R5, which do have DIVU.  Well, I can't complain.
+ arch/mips/kernel/setup.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
- For R6 compiled code will work, but separate DIVU and MODU instructions 
-will be produced, which are also interlocked, so scalar implementations 
-will likely not perform as well as older ISAs with their asynchronous MD 
-unit.  Likely still faster then the generic algorithm though.
+diff --git a/arch/mips/kernel/setup.c b/arch/mips/kernel/setup.c
+index 279be01..9338520 100644
+--- a/arch/mips/kernel/setup.c
++++ b/arch/mips/kernel/setup.c
+@@ -37,6 +37,7 @@
+ #include <asm/cdmm.h>
+ #include <asm/cpu.h>
+ #include <asm/debug.h>
++#include <asm/mmzone.h>
+ #include <asm/sections.h>
+ #include <asm/setup.h>
+ #include <asm/smp-ops.h>
+@@ -359,7 +360,7 @@ static int __init early_parse_mem(char *p)
+ 	if (*p == '@')
+ 		start = memparse(p + 1, &p);
+ 
+-	memblock_add(start, size);
++	memblock_add_node(start, size, pa_to_nid(start));
+ 
+ 	return 0;
+ }
+-- 
+2.1.0
 
- Thomas: I'll collect new figures and respin the series.  Please do drop 
-the original series then; I think there's no point to fix it up and we'll 
-be better by starting afresh.
-
- Ying: I take it you'll know what to do to get the bot updated.  As it 
-happens it uses the old <linux-mips@linux-mips.org> MIPS/Linux mailing 
-list address, which has been long deprecated and then stopped working 
-altogether mid Jan this year.  I have updated the cc appropriately with 
-this reply, but would you please amend whatever the bot requires for 
-further notices to be sent to <linux-mips@vger.kernel.org> instead?
-
-  Maciej

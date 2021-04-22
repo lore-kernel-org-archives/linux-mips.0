@@ -2,105 +2,74 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A2E92C43461
-	for <linux-mips@archiver.kernel.org>; Thu, 22 Apr 2021 07:19:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 596F3C43460
+	for <linux-mips@archiver.kernel.org>; Thu, 22 Apr 2021 08:29:47 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 716256145A
-	for <linux-mips@archiver.kernel.org>; Thu, 22 Apr 2021 07:19:52 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 0737A613C0
+	for <linux-mips@archiver.kernel.org>; Thu, 22 Apr 2021 08:29:46 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234992AbhDVHU0 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 22 Apr 2021 03:20:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54132 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234965AbhDVHUZ (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Thu, 22 Apr 2021 03:20:25 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7D60C06174A
-        for <linux-mips@vger.kernel.org>; Thu, 22 Apr 2021 00:19:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
-        :Reply-To:Content-Type:Content-ID:Content-Description;
-        bh=IEVkrkm3MuKaNKcyW8a+DG4O3GXVaGagie2/ONcqlhY=; b=anmjfDz2al0zGRuceriPKIfAtn
-        2r5xN/fPvoh9RqCq8f2NgLc28anKl85DQp79zJxmlgMjrkAnWT9K6kWFfWdFfa+/oaUraoNrx3EK7
-        Cj1NfF+BsAFyNN5ph+FqgH3P21AXa37gyZz30XWgEDpt7OyTdni3oF/OXOL2GxIlSHK6QlH9F8lXj
-        oV/bsNdU9LdBrsaiEIvtR7snQd2qNegyfbIbJA40BDORsEqgSmk4odm8REfk7daCNYinPEfg7qB2T
-        I6PzWdLRK3qjS5KE+f7VAlXQTos9C/2Z9rykR9kzQr/7cas/V3Ex7wBiKH/DQZu8dTJdpPwX8l/Ki
-        812AaC/A==;
-Received: from [2001:4bb8:19b:f845:15fc:cef6:715a:fb03] (helo=localhost)
-        by bombadil.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lZTci-00DRlk-9r; Thu, 22 Apr 2021 07:19:40 +0000
-From:   Christoph Hellwig <hch@lst.de>
-To:     Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
-Cc:     Tom Lendacky <thomas.lendacky@amd.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        xen-devel@lists.xenproject.org, iommu@lists.linux-foundation.org
-Subject: [PATCH 6/7] swiotlb: replace default_nslabs with a byte value
-Date:   Thu, 22 Apr 2021 09:19:20 +0200
-Message-Id: <20210422071921.1428607-7-hch@lst.de>
-X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210422071921.1428607-1-hch@lst.de>
-References: <20210422071921.1428607-1-hch@lst.de>
+        id S230285AbhDVIaU (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 22 Apr 2021 04:30:20 -0400
+Received: from elvis.franken.de ([193.175.24.41]:36452 "EHLO elvis.franken.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230270AbhDVIaS (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Thu, 22 Apr 2021 04:30:18 -0400
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1lZUiU-0004Jz-00; Thu, 22 Apr 2021 10:29:42 +0200
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id B575AC0925; Thu, 22 Apr 2021 09:56:45 +0200 (CEST)
+Date:   Thu, 22 Apr 2021 09:56:45 +0200
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     "Maciej W. Rozycki" <macro@orcam.me.uk>
+Cc:     "H. Nikolaus Schaller" <hns@goldelico.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Huacai Chen <chenhuacai@loongson.cn>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        linux-arch@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 4/4] MIPS: Avoid DIVU in `__div64_32' is result would be
+ zero
+Message-ID: <20210422075645.GA5996@alpha.franken.de>
+References: <alpine.DEB.2.21.2104200044060.44318@angie.orcam.me.uk>
+ <alpine.DEB.2.21.2104200331110.44318@angie.orcam.me.uk>
+ <284CBC37-0F4F-4077-A172-7E47C90B8B43@goldelico.com>
+ <alpine.DEB.2.21.2104211810200.44318@angie.orcam.me.uk>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <alpine.DEB.2.21.2104211810200.44318@angie.orcam.me.uk>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Replace the default_nslabs variable with one that stores the size in
-bytes as that is what all the users actually expect.
+On Wed, Apr 21, 2021 at 06:16:18PM +0200, Maciej W. Rozycki wrote:
+> On Wed, 21 Apr 2021, H. Nikolaus Schaller wrote:
+> 
+> > > We already check the high part of the divident against zero to avoid the 
+> > 
+> > nit-picking: s/divident/dividend/
+> 
+>  Umm, I find this embarassing (and I hesitated reaching for a dictionary 
+> to double-check the spelling!).  Indeed why would this be different from 
+> subtrahend or minuend?
+> 
+>  Thomas, as this mistake has spread across three out of these patches,
+> both in change descriptions and actual code, would you mind dropping the 
+> series from mips-next altogether and I'll respin the series with all 
+> these issues corrected?
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
----
- kernel/dma/swiotlb.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+I'm sorry, but I don't rebase mips-next and the patches have been pushed
+out before I received this mail.
 
-diff --git a/kernel/dma/swiotlb.c b/kernel/dma/swiotlb.c
-index 93737d0932fbf2..87d06ddf4753f3 100644
---- a/kernel/dma/swiotlb.c
-+++ b/kernel/dma/swiotlb.c
-@@ -71,7 +71,7 @@ struct io_tlb_mem *io_tlb_default_mem;
-  */
- static unsigned int max_segment;
- 
--static unsigned long default_nslabs = IO_TLB_DEFAULT_SIZE >> IO_TLB_SHIFT;
-+static unsigned long swiotlb_default_size = IO_TLB_DEFAULT_SIZE;
- 
- static int __init
- setup_io_tlb_npages(char *str)
-@@ -106,7 +106,7 @@ void swiotlb_set_max_segment(unsigned int val)
- 
- unsigned long swiotlb_size_or_default(void)
- {
--	return default_nslabs << IO_TLB_SHIFT;
-+	return swiotlb_default_size;
- }
- 
- void __init swiotlb_adjust_size(unsigned long size)
-@@ -116,9 +116,9 @@ void __init swiotlb_adjust_size(unsigned long size)
- 	 * architectures such as those supporting memory encryption to
- 	 * adjust/expand SWIOTLB size for their use.
- 	 */
--	size = ALIGN(size, IO_TLB_SIZE);
--	default_nslabs = ALIGN(size >> IO_TLB_SHIFT, IO_TLB_SEGSIZE);
--	pr_info("SWIOTLB bounce buffer size adjusted to %luMB", size >> 20);
-+	swiotlb_default_size = ALIGN(size, IO_TLB_SEGSIZE << IO_TLB_SHIFT);
-+	pr_info("SWIOTLB bounce buffer size adjusted to %luMB",
-+		swiotlb_default_size >> 20);
- }
- 
- void swiotlb_print_info(void)
+Thomas.
+
 -- 
-2.30.1
-
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]

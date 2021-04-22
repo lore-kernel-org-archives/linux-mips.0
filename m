@@ -2,129 +2,90 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 33152C43461
-	for <linux-mips@archiver.kernel.org>; Thu, 22 Apr 2021 05:54:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7191DC433B4
+	for <linux-mips@archiver.kernel.org>; Thu, 22 Apr 2021 07:19:47 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 0B7B36144D
-	for <linux-mips@archiver.kernel.org>; Thu, 22 Apr 2021 05:54:07 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 431C46145C
+	for <linux-mips@archiver.kernel.org>; Thu, 22 Apr 2021 07:19:47 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231694AbhDVFyk (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 22 Apr 2021 01:54:40 -0400
-Received: from mo4-p01-ob.smtp.rzone.de ([81.169.146.164]:13793 "EHLO
-        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234804AbhDVFyh (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Thu, 22 Apr 2021 01:54:37 -0400
-ARC-Seal: i=1; a=rsa-sha256; t=1619070821; cv=none;
-    d=strato.com; s=strato-dkim-0002;
-    b=rPyMclrcyXjikgCizOTOKwmjWlDvJU8yNPd1WpjVxHE5FGC1ZZ9sRf8tREmuVOwOMQ
-    5bO4oB+YqGGzTarvrJUtcmnz+ji7vaieRjQT3gbWWRaFL8mGca1/X0WL1RJTNukF3/BK
-    5PzvHRYBCSsfLM80hTuJTWOM4wcrbgC9MU1UCcOiZnGvhcrH3RZN2ar4bH9B/+W+3gXC
-    SbiZ1hAqHSEy7KQrApsMTTViYMsDKtkcDn4PKyHMatKplF2fedO2XshXSz//r35wp2gy
-    HWESY1kGMKMukfxTby44T56ZwSTPgDjSGEgyQIfLIvQiwCUOcy4s5Yv2bs1Yyn3M+dJX
-    C8Pw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1619070821;
-    s=strato-dkim-0002; d=strato.com;
-    h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:Cc:Date:
-    From:Subject:Sender;
-    bh=FCcKJytuI9ww62Y/8WAyJgU7+PYDFqbFjjn+P8bSgEU=;
-    b=R9QmisRz8IYq728FnS6Iy7pWC+rrDeukNtlTvD3jTVIvPm9WeNywRoe+XOWq+MBezj
-    NYalcZ0ms3j/ntHwUFKPLOPFWE8+nZbhhqpGimxkt22MJ3p3Aw96KPt0oQIQpkPzc4Ht
-    xVzrP9m5GoFvbu7VxLa/8r1tShk2fBraT0BGWij0cvUHLTNT6PBf3gHa4wxOI9bvCpJD
-    3iiZst5hFqbaaCjmlTSnPlrm8HVBAYpDDsJctX88idurGwfxdRuGMcLlb2usXsBEgI72
-    VAWyBaYi5GcnQPPrs+DxgsY9tjOOR9NfTKOLZbkXNWsLZMzO3TfGNi7n1R7qj43yQ8M2
-    oWVA==
-ARC-Authentication-Results: i=1; strato.com;
-    dkim=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1619070821;
-    s=strato-dkim-0002; d=goldelico.com;
-    h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:Cc:Date:
-    From:Subject:Sender;
-    bh=FCcKJytuI9ww62Y/8WAyJgU7+PYDFqbFjjn+P8bSgEU=;
-    b=dY0oZNH9WAIYrJiNfv/n3aqOKW09h9Ne6kLERU5KWUrWRqMG+YbZpaOx+lwnh5U4TR
-    wa+SC8pInV5twOSKOU1GWA8N/LFE4WaDI5dDrfeY4lyo7vVregH6r+wQksTQUa5Vn669
-    VTM08GVT45AGXVOHQbuHS2vMHFYKwrgYCYqpYeZqK6JoB4mpj/HmvtmCslra/MF7zmm3
-    vdOYdyOBMHFKTBUXKdx/KBcWdqJLZhThSr9Dghzrak7erD6H+XnVxTucO95eVTFc0KlA
-    fVXoEXBEKLgo5WBziZ3iUytSCbJm0AOWcpLTKxYNA2LCXLPgkb1KfDCN9lQ9l9mFyEoM
-    R5gw==
-Authentication-Results: strato.com;
-    dkim=none
-X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMgPgp8VKxflSZ1P34KBj4Qpw9iZeHmMhw43rAaY="
-X-RZG-CLASS-ID: mo00
-Received: from imac.fritz.box
-    by smtp.strato.de (RZmta 47.24.3 DYNA|AUTH)
-    with ESMTPSA id Q01a92x3M5reUYg
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (curve X9_62_prime256v1 with 256 ECDH bits, eq. 3072 bits RSA))
-        (Client did not present a certificate);
-    Thu, 22 Apr 2021 07:53:40 +0200 (CEST)
-Subject: Re: [PATCH 0/4] Reinstate and improve MIPS `do_div' implementation
-Mime-Version: 1.0 (Mac OS X Mail 9.3 \(3124\))
-Content-Type: text/plain; charset=us-ascii
-From:   "H. Nikolaus Schaller" <hns@goldelico.com>
-In-Reply-To: <alpine.DEB.2.21.2104211904490.44318@angie.orcam.me.uk>
-Date:   Thu, 22 Apr 2021 07:53:39 +0200
-Cc:     Arnd Bergmann <arnd@arndb.de>,
+        id S234991AbhDVHUU (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 22 Apr 2021 03:20:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54096 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230316AbhDVHUT (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Thu, 22 Apr 2021 03:20:19 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D066C06138B
+        for <linux-mips@vger.kernel.org>; Thu, 22 Apr 2021 00:19:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
+        :Reply-To:Content-Type:Content-ID:Content-Description;
+        bh=mQKOkV7O/cQZUeeS2ywVjzBgZ2gsXE3uYRnoQOufOWY=; b=uebudFWLuE7bflMDQQdSHpip3B
+        XJBkAvt2kX2G6MchzpNWjh2R5I5XUFdiU9YEccqUF4kwnqBT3m4sBkXQnHY9jHNuENyd0DCmXMTZN
+        dBJOdK44cce23/YdS7uP/U8DAILaoZKRL9UpKZjV12NYQkp/tF5xNjHAfhtREAB42GK2cPt59erj+
+        tSye60ezBe7oalDxD5wTkF/SJvwbJs5HXXv+xq4rYo4ueA78wnZB3d83Oztierm4iFQ19mw/9DrkA
+        DjDnoSkiQsnQNtwCys4BZhCzdt0vHegfZjJoWaoeydlI294lUbZ2HKrrreZNLkVdBQGWu0/XnueMs
+        ek06CYVA==;
+Received: from [2001:4bb8:19b:f845:15fc:cef6:715a:fb03] (helo=localhost)
+        by bombadil.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lZTca-00DRkx-Hb; Thu, 22 Apr 2021 07:19:32 +0000
+From:   Christoph Hellwig <hch@lst.de>
+To:     Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
+Cc:     Tom Lendacky <thomas.lendacky@amd.com>,
         Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Huacai Chen <chenhuacai@loongson.cn>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        linux-arch@vger.kernel.org,
-        linux-mips <linux-mips@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <E6326E8A-50DA-4F81-9865-F29EE0E298A9@goldelico.com>
-References: <alpine.DEB.2.21.2104200044060.44318@angie.orcam.me.uk> <51BC7C74-68BF-4A8E-8CFB-DB4EBBC89706@goldelico.com> <alpine.DEB.2.21.2104211904490.44318@angie.orcam.me.uk>
-To:     "Maciej W. Rozycki" <macro@orcam.me.uk>
-X-Mailer: Apple Mail (2.3124)
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        xen-devel@lists.xenproject.org, iommu@lists.linux-foundation.org
+Subject: [PATCH 3/7] swiotlb: use swiotlb_adjust_size in setup_io_tlb_npages
+Date:   Thu, 22 Apr 2021 09:19:17 +0200
+Message-Id: <20210422071921.1428607-4-hch@lst.de>
+X-Mailer: git-send-email 2.30.1
+In-Reply-To: <20210422071921.1428607-1-hch@lst.de>
+References: <20210422071921.1428607-1-hch@lst.de>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Hi,
+Use the proper helper to do the proper alignment of the buffer size
+to the requirements of the swiotlb allocator instead of open coding
+the logic.
 
-> Am 21.04.2021 um 21:04 schrieb Maciej W. Rozycki <macro@orcam.me.uk>:
->=20
-> On Wed, 21 Apr 2021, H. Nikolaus Schaller wrote:
->=20
->>> In the end I have included four patches on this occasion: 1/4 is the =
-test=20
->>> module, 2/4 is an inline documentation fix/clarification for the =
-`do_div'=20
->>> wrapper, 3/4 enables the MIPS `__div64_32' backend and 4/4 adds a =
-small=20
->>> performance improvement to it.
->>=20
->> How can I apply them to the kernel? There is something wrong which =
-makes
->> git am fail.
->=20
-> I don't know.  The changes were made against vanilla 5.12-rc7, but =
-then=20
-> the pieces affected have not changed for ages.  FWIW I can `git am' =
-the=20
-> series as received back just fine.
+Signed-off-by: Christoph Hellwig <hch@lst.de>
+---
+ kernel/dma/swiotlb.c | 8 +++-----
+ 1 file changed, 3 insertions(+), 5 deletions(-)
 
-Please can you point me to some download/pull/gitweb? It seems as if the =
-series
-also did not appear at =
-https://patchwork.kernel.org/project/linux-mips/list/
+diff --git a/kernel/dma/swiotlb.c b/kernel/dma/swiotlb.c
+index 27461fd63e0330..93737d0932fbf2 100644
+--- a/kernel/dma/swiotlb.c
++++ b/kernel/dma/swiotlb.c
+@@ -76,11 +76,9 @@ static unsigned long default_nslabs = IO_TLB_DEFAULT_SIZE >> IO_TLB_SHIFT;
+ static int __init
+ setup_io_tlb_npages(char *str)
+ {
+-	if (isdigit(*str)) {
+-		/* avoid tail segment of size < IO_TLB_SEGSIZE */
+-		default_nslabs =
+-			ALIGN(simple_strtoul(str, &str, 0), IO_TLB_SEGSIZE);
+-	}
++	if (isdigit(*str))
++		swiotlb_adjust_size(
++			simple_strtoul(str, &str, 0) << IO_TLB_SHIFT);
+ 	if (*str == ',')
+ 		++str;
+ 	if (!strcmp(str, "force"))
+-- 
+2.30.1
 
->=20
->>> These changes have been verified with a DECstation system with an =
-R3400=20
->>> MIPS I processor @40MHz and a MTI Malta system with a 5Kc MIPS64 =
-processor=20
->>> @160MHz.
->>=20
->> I'd like to test on ~320 MHz JZ4730.
->=20
-> Sure, I'd love to hear how this code performs with other =
-implementations. =20
->=20
->  Maciej
-
-BR and thanks,
-Nikolaus Schaller=

@@ -2,63 +2,76 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.2 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-5.2 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5B02EC43611
-	for <linux-mips@archiver.kernel.org>; Fri, 23 Apr 2021 12:22:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CE8A3C433ED
+	for <linux-mips@archiver.kernel.org>; Fri, 23 Apr 2021 14:57:19 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 21CF261450
-	for <linux-mips@archiver.kernel.org>; Fri, 23 Apr 2021 12:22:38 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id A40616141C
+	for <linux-mips@archiver.kernel.org>; Fri, 23 Apr 2021 14:57:19 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242366AbhDWMXM (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 23 Apr 2021 08:23:12 -0400
-Received: from elvis.franken.de ([193.175.24.41]:38492 "EHLO elvis.franken.de"
+        id S229549AbhDWO5z (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 23 Apr 2021 10:57:55 -0400
+Received: from elvis.franken.de ([193.175.24.41]:38697 "EHLO elvis.franken.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231315AbhDWMXK (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Fri, 23 Apr 2021 08:23:10 -0400
+        id S229454AbhDWO5z (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Fri, 23 Apr 2021 10:57:55 -0400
 Received: from uucp (helo=alpha)
         by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1lZupM-00019R-00; Fri, 23 Apr 2021 14:22:32 +0200
+        id 1lZxF0-0003RE-00; Fri, 23 Apr 2021 16:57:10 +0200
 Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 93878C0AC8; Fri, 23 Apr 2021 13:47:28 +0200 (CEST)
-Date:   Fri, 23 Apr 2021 13:47:28 +0200
+        id 31E1CC0B3B; Fri, 23 Apr 2021 16:51:31 +0200 (CEST)
+Date:   Fri, 23 Apr 2021 16:51:31 +0200
 From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     xiaochuan mao <maoxiaochuan@loongson.cn>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Qing Zhang <zhangqing@loongson.cn>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        devicetree@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] MIPS:DTS:Fix label name and interrupt number of ohci for
- Loongson-2K
-Message-ID: <20210423114728.GA8582@alpha.franken.de>
-References: <20210423015234.23870-1-maoxiaochuan@loongson.cn>
+To:     Zhou Yanjie <zhouyanjie@wanyeetech.com>
+Cc:     Huang Pei <huangpei@loongson.cn>, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
+        paul.burton@mips.com, paul@crapouillou.net, siyanteng@loongson.cn,
+        ira.weiny@intel.com, yangtiezhu@loongson.cn, jun.jiang@ingenic.com,
+        dongsheng.qiu@ingenic.com, aric.pzqi@ingenic.com,
+        rick.tyliu@ingenic.com, sernia.zhou@foxmail.com,
+        sihui.liu@ingenic.com
+Subject: Re: [PATCH] Revert "MIPS: make userspace mapping young by default".
+Message-ID: <20210423145131.GA11112@alpha.franken.de>
+References: <1618562868-91115-1-git-send-email-zhouyanjie@wanyeetech.com>
+ <20210416092003.5754967.19768.9603@loongson.cn>
+ <ae06522f-eda8-96d1-6f58-072905afa65c@wanyeetech.com>
+ <20210419045610.frhzxskec47s5rmq@ambrosehua-HP-xw6600-Workstation>
+ <13e37741-c1b4-2aae-471e-0790adc8db59@wanyeetech.com>
+ <20210420024818.r6jf243oglb2ywbr@ambrosehua-HP-xw6600-Workstation>
+ <fd1e02ff-0165-7e7e-8bc6-55fb278fc50f@wanyeetech.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20210423015234.23870-1-maoxiaochuan@loongson.cn>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <fd1e02ff-0165-7e7e-8bc6-55fb278fc50f@wanyeetech.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Fri, Apr 23, 2021 at 09:52:34AM +0800, xiaochuan mao wrote:
-> from Loongson-2K1000 user manual know that under pci bus
-> the device num is 4, function number is 2 and register is 0x2200
-> is ohci. the ohci interrupt number is 51. because Loongson-2K1000 has
-> 64 interrupt sources, 0-31 correspond to the device tree liointc0 device
->  node, and the other correspond to liointc1 node. so it should be
-> number 19 correspon to liointc1.
+On Tue, Apr 20, 2021 at 10:03:01PM +0800, Zhou Yanjie wrote:
+> Sorry for my carelessness, the log in the previous email was wrong, please
+> check the log in this email.
 > 
-> Signed-off-by: xiaochuan mao <maoxiaochuan@loongson.cn>
-> ---
->  arch/mips/boot/dts/loongson/loongson64-2k1000.dtsi | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+> [   53.684067] --- pte 1 = 07698685
 
-applied to mips-next.
+any chance to print the virtual address to this pte ?
+
+> [   53.687376] --- pte 3 = 07698685
+> [   53.737175] --- pte 1 = 07699685
+> [   53.740412] --- pte 3 = 07699685
+> [   53.744064] --- pte 1 = 076c3685
+> [..]
+
+could you print PTE, which faults ? And what is mapped there ?
+
+
+so far I haven't seen any ill-effects of the (bisected ?) patch.
+The problem I have with reverting is that IMHO we re-introduce the bug,
+which this patch fixed.
 
 Thomas.
 

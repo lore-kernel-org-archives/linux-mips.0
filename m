@@ -2,59 +2,60 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7EBE4C433ED
-	for <linux-mips@archiver.kernel.org>; Sat, 24 Apr 2021 21:56:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 21D36C433B4
+	for <linux-mips@archiver.kernel.org>; Sat, 24 Apr 2021 21:56:25 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 4ACC061153
-	for <linux-mips@archiver.kernel.org>; Sat, 24 Apr 2021 21:56:22 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id F033561452
+	for <linux-mips@archiver.kernel.org>; Sat, 24 Apr 2021 21:56:24 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229734AbhDXV5A (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Sat, 24 Apr 2021 17:57:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54656 "EHLO
+        id S230430AbhDXV5B (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Sat, 24 Apr 2021 17:57:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54668 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229730AbhDXV47 (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Sat, 24 Apr 2021 17:56:59 -0400
-Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC385C061574;
-        Sat, 24 Apr 2021 14:56:20 -0700 (PDT)
-Received: by mail-pf1-x430.google.com with SMTP id y62so3796123pfg.4;
-        Sat, 24 Apr 2021 14:56:20 -0700 (PDT)
+        with ESMTP id S230210AbhDXV5A (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Sat, 24 Apr 2021 17:57:00 -0400
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4224DC06174A;
+        Sat, 24 Apr 2021 14:56:22 -0700 (PDT)
+Received: by mail-pj1-x102b.google.com with SMTP id nk8so11721005pjb.3;
+        Sat, 24 Apr 2021 14:56:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:subject:date:message-id:mime-version
+        h=from:to:subject:date:message-id:in-reply-to:references:mime-version
          :content-transfer-encoding;
-        bh=pYDyVnxYEAToQiB2ckQ4jrI22QtejDeh2ep2F7nGXR8=;
-        b=VHhhdYD7bdxBqCAo9+2i9irmu2wRHBjJxLx2LJZhwl6uYl+yP4+WwbMEuoazTFiqoJ
-         zuzDULcR3WBM4JiNJyrcmyOV4hhiCAkTLHZuT74mMO4STmvZ5Me3f1ayF7BPFljqDj0K
-         RUdfAyFDPuGipVGO9MG+rPwkfy1vSBxsESY0ARF/FkMmb/9pVDR6mMhEyslMvpQB45aR
-         Ja043J/UgX66+X2oTPf8zTQTaw2H9ThzcFr1uNy/yv4wYF5WVh1SRTitXcsjbgZV4oPm
-         mPfKbEcdHWHouzy954Oi5zOU+4DOpVoaakSg3HLhd1jsnUQSkOdI6HiPa2ceN1Zaz13X
-         bviQ==
+        bh=tZ6MnjBW//QPNmlqP0nmZIAzxWK0w5bhWYAOyoIZMEc=;
+        b=MUsxhYk6DwW6a6JPgFHWAxTWHPwsyaSX+eMnKWq3EdLipWICVImSdNGMuTcHpDqdsB
+         T2609PT7Agynn7KrS85YsNYJazUJgF/WjqST+xcQN1wi+t/ERD1au+lrpN3s0lZQe51o
+         JZBYMEVQbZLYqtBvZRBv4epg3cF/XjW2mUA+Vxzi7IEZIbED7DqP2uUFpz2RcC13tTW8
+         cRca9JDcJbh6wtfIjkTMI6oHGAEyVffqMV3VxePVFtG21TduX9E0FGK3P/mJVb8PftLC
+         FICpGYYhN3LLuygkUMM42vRexgfKVvqXDnCiBhE4gsPg1XgCxfQssXjitnezSBm0/Y9D
+         m6dA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=pYDyVnxYEAToQiB2ckQ4jrI22QtejDeh2ep2F7nGXR8=;
-        b=QytQoJOVsNB/60fxEitK1YvykxiN6HzSTjzhAHhqUmvMEg8ko4j7jrzBh0bWPRx70B
-         M470DHWg4Em8q0CuaesnB3aGMFZe3USVjmPPxq3zk6KatUNxeeCW2ktrCmKc9w/zJ6UM
-         2YYo7pZ0L2Nic0lvb5l7vO1gjVr7JlfOa66aPNmehWQ3x212i68q9gSg5p9lIeQfGsy7
-         hm2JWh21O1LAN7FqxubcsQNK4yos6j0yn5xCADcQH9U1hi6YEDLmLUQ0XE3I8HhTwCyR
-         ALKghS1tlLCtP1kIfRlyZy5D1I8/qiCpeyh4Yik0LLIhmJnWzW+E1vg1pW+nE8PcGHrz
-         aslA==
-X-Gm-Message-State: AOAM532JnXefyldbywj+Gg65KyCpSKJnQduT75BzcWvOJ1YR5K5dSss9
-        iqCBtqp4gWAH8Qp75H1nv38=
-X-Google-Smtp-Source: ABdhPJwX3PfSd06DKyHsilZtOjvTDmAKYfFx8gZeuPd0vaZhkCbJS+NdPb/P4dDkogFLxW6JkcTKug==
-X-Received: by 2002:a63:7802:: with SMTP id t2mr2568670pgc.269.1619301380268;
-        Sat, 24 Apr 2021 14:56:20 -0700 (PDT)
+        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=tZ6MnjBW//QPNmlqP0nmZIAzxWK0w5bhWYAOyoIZMEc=;
+        b=NwBglB2tpRpqNxcgWufkXAUnSZXgJosdIfgUqU8/mCBFjxk/IKuhH+EZufwf5EsgEt
+         8sGaQw1YBmOWYfpZV3/TU3plT/Ale6NhlTicM4Oy6DmU7cfMTP9hL87l07tvgsYVOBv+
+         BTCMwgModpsq2CMyswhzuYhxQB1sw7j+XxQxPHX+dzQlQPzV7yrFFqTQAIWjMfz2geeZ
+         JMmT9aJJjoKtunRMTx+k7c9BH4QNkGILoCAHBXeb/zDJTtMXAjiV+2h+kfCVp7dYdQ6d
+         BBaZ5oMbyTuyQn7xrr0Rq7yfcztcCHpikyV53T+81BjBHMMqS28IUsJ/vk5+n4SkivCm
+         Esgw==
+X-Gm-Message-State: AOAM533rAALEeS/HXmznk5AHRmUihAImCdttXYT3kYw6eW8sl9RVuGql
+        xD+IZgRhu45jwcdyLacGd4VnbfhJ1l2VoB/D
+X-Google-Smtp-Source: ABdhPJwc8XP++ge9XQYepHmyNIRplC3VAHtuaEl7hnbtVUjmQeSquBS5+ncrHCdaVksf0L/rypJTjw==
+X-Received: by 2002:a17:90a:6582:: with SMTP id k2mr13113858pjj.11.1619301381840;
+        Sat, 24 Apr 2021 14:56:21 -0700 (PDT)
 Received: from z640-arch.lan ([2602:61:7344:f100::678])
-        by smtp.gmail.com with ESMTPSA id y10sm10344112pjt.22.2021.04.24.14.56.19
+        by smtp.gmail.com with ESMTPSA id y10sm10344112pjt.22.2021.04.24.14.56.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 24 Apr 2021 14:56:19 -0700 (PDT)
+        Sat, 24 Apr 2021 14:56:21 -0700 (PDT)
 From:   Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
 To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
         Jiri Kosina <trivial@kernel.org>,
@@ -63,41 +64,154 @@ To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
         Serge Semin <Sergey.Semin@baikalelectronics.ru>,
         Hauke Mehrtens <hauke@hauke-m.de>, linux-mips@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v2 0/3] MIPS: kernel: proc: fix style and add CPU option reporting
-Date:   Sat, 24 Apr 2021 14:56:15 -0700
-Message-Id: <20210424215618.1017539-1-ilya.lipnitskiy@gmail.com>
+Subject: [PATCH v2 2/3] MIPS: kernel: proc: use seq_puts instead of seq_printf
+Date:   Sat, 24 Apr 2021 14:56:17 -0700
+Message-Id: <20210424215618.1017539-3-ilya.lipnitskiy@gmail.com>
 X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20210424215618.1017539-1-ilya.lipnitskiy@gmail.com>
+References: <20210424215618.1017539-1-ilya.lipnitskiy@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Fix checkpatch errors and use seq_puts instead of seq_printf where
-possible.
+Fix checkpatch WARNING: Prefer seq_puts to seq_printf
 
-Re-send an old patch that adds CPU option reporting.
-
-Tested against MT7621 on OpenWrt running v5.10 kernel.
-
-MT7621 output:
-  Options implemented   : tlb 4kex 4k_cache prefetch mcheck ejtag llsc
-  pindexed_dcache userlocal vint perf_cntr_intr_bit cdmm perf
-
+Signed-off-by: Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
 ---
-v2:
-- Add missing options that were added since the original patch
+ arch/mips/kernel/proc.c | 76 ++++++++++++++++++++---------------------
+ 1 file changed, 38 insertions(+), 38 deletions(-)
 
-Hauke Mehrtens (1):
-  MIPS: kernel: proc: add CPU option reporting
-
-Ilya Lipnitskiy (2):
-  MIPS: kernel: proc: fix trivial style errors
-  MIPS: kernel: proc: use seq_puts instead of seq_printf
-
- arch/mips/kernel/proc.c | 227 ++++++++++++++++++++++++++++++++--------
- 1 file changed, 184 insertions(+), 43 deletions(-)
-
+diff --git a/arch/mips/kernel/proc.c b/arch/mips/kernel/proc.c
+index 053847c0d4cd..7d8481d9acc3 100644
+--- a/arch/mips/kernel/proc.c
++++ b/arch/mips/kernel/proc.c
+@@ -80,78 +80,78 @@ static int show_cpuinfo(struct seq_file *m, void *v)
+ 		for (i = 0; i < cpu_data[n].watch_reg_count; i++)
+ 			seq_printf(m, "%s0x%04x", i ? ", " : "",
+ 				cpu_data[n].watch_reg_masks[i]);
+-		seq_printf(m, "]\n");
++		seq_puts(m, "]\n");
+ 	}
+ 
+-	seq_printf(m, "isa\t\t\t:");
++	seq_puts(m, "isa\t\t\t:");
+ 	if (cpu_has_mips_1)
+-		seq_printf(m, " mips1");
++		seq_puts(m, " mips1");
+ 	if (cpu_has_mips_2)
+-		seq_printf(m, "%s", " mips2");
++		seq_puts(m, " mips2");
+ 	if (cpu_has_mips_3)
+-		seq_printf(m, "%s", " mips3");
++		seq_puts(m, " mips3");
+ 	if (cpu_has_mips_4)
+-		seq_printf(m, "%s", " mips4");
++		seq_puts(m, " mips4");
+ 	if (cpu_has_mips_5)
+-		seq_printf(m, "%s", " mips5");
++		seq_puts(m, " mips5");
+ 	if (cpu_has_mips32r1)
+-		seq_printf(m, "%s", " mips32r1");
++		seq_puts(m, " mips32r1");
+ 	if (cpu_has_mips32r2)
+-		seq_printf(m, "%s", " mips32r2");
++		seq_puts(m, " mips32r2");
+ 	if (cpu_has_mips32r5)
+-		seq_printf(m, "%s", " mips32r5");
++		seq_puts(m, " mips32r5");
+ 	if (cpu_has_mips32r6)
+-		seq_printf(m, "%s", " mips32r6");
++		seq_puts(m, " mips32r6");
+ 	if (cpu_has_mips64r1)
+-		seq_printf(m, "%s", " mips64r1");
++		seq_puts(m, " mips64r1");
+ 	if (cpu_has_mips64r2)
+-		seq_printf(m, "%s", " mips64r2");
++		seq_puts(m, " mips64r2");
+ 	if (cpu_has_mips64r5)
+-		seq_printf(m, "%s", " mips64r5");
++		seq_puts(m, " mips64r5");
+ 	if (cpu_has_mips64r6)
+-		seq_printf(m, "%s", " mips64r6");
+-	seq_printf(m, "\n");
++		seq_puts(m, " mips64r6");
++	seq_puts(m, "\n");
+ 
+-	seq_printf(m, "ASEs implemented\t:");
++	seq_puts(m, "ASEs implemented\t:");
+ 	if (cpu_has_mips16)
+-		seq_printf(m, "%s", " mips16");
++		seq_puts(m, " mips16");
+ 	if (cpu_has_mips16e2)
+-		seq_printf(m, "%s", " mips16e2");
++		seq_puts(m, " mips16e2");
+ 	if (cpu_has_mdmx)
+-		seq_printf(m, "%s", " mdmx");
++		seq_puts(m, " mdmx");
+ 	if (cpu_has_mips3d)
+-		seq_printf(m, "%s", " mips3d");
++		seq_puts(m, " mips3d");
+ 	if (cpu_has_smartmips)
+-		seq_printf(m, "%s", " smartmips");
++		seq_puts(m, " smartmips");
+ 	if (cpu_has_dsp)
+-		seq_printf(m, "%s", " dsp");
++		seq_puts(m, " dsp");
+ 	if (cpu_has_dsp2)
+-		seq_printf(m, "%s", " dsp2");
++		seq_puts(m, " dsp2");
+ 	if (cpu_has_dsp3)
+-		seq_printf(m, "%s", " dsp3");
++		seq_puts(m, " dsp3");
+ 	if (cpu_has_mipsmt)
+-		seq_printf(m, "%s", " mt");
++		seq_puts(m, " mt");
+ 	if (cpu_has_mmips)
+-		seq_printf(m, "%s", " micromips");
++		seq_puts(m, " micromips");
+ 	if (cpu_has_vz)
+-		seq_printf(m, "%s", " vz");
++		seq_puts(m, " vz");
+ 	if (cpu_has_msa)
+-		seq_printf(m, "%s", " msa");
++		seq_puts(m, " msa");
+ 	if (cpu_has_eva)
+-		seq_printf(m, "%s", " eva");
++		seq_puts(m, " eva");
+ 	if (cpu_has_htw)
+-		seq_printf(m, "%s", " htw");
++		seq_puts(m, " htw");
+ 	if (cpu_has_xpa)
+-		seq_printf(m, "%s", " xpa");
++		seq_puts(m, " xpa");
+ 	if (cpu_has_loongson_mmi)
+-		seq_printf(m, "%s", " loongson-mmi");
++		seq_puts(m, " loongson-mmi");
+ 	if (cpu_has_loongson_cam)
+-		seq_printf(m, "%s", " loongson-cam");
++		seq_puts(m, " loongson-cam");
+ 	if (cpu_has_loongson_ext)
+-		seq_printf(m, "%s", " loongson-ext");
++		seq_puts(m, " loongson-ext");
+ 	if (cpu_has_loongson_ext2)
+-		seq_printf(m, "%s", " loongson-ext2");
+-	seq_printf(m, "\n");
++		seq_puts(m, " loongson-ext2");
++	seq_puts(m, "\n");
+ 
+ 	if (cpu_has_mmips) {
+ 		seq_printf(m, "micromips kernel\t: %s\n",
+@@ -182,7 +182,7 @@ static int show_cpuinfo(struct seq_file *m, void *v)
+ 	raw_notifier_call_chain(&proc_cpuinfo_chain, 0,
+ 				&proc_cpuinfo_notifier_args);
+ 
+-	seq_printf(m, "\n");
++	seq_puts(m, "\n");
+ 
+ 	return 0;
+ }
 -- 
 2.31.1
 

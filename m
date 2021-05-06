@@ -2,78 +2,97 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.6 required=3.0 tests=BAYES_00,DKIM_INVALID,
-	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3D443C4361A
-	for <linux-mips@archiver.kernel.org>; Thu,  6 May 2021 01:04:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 56A4FC433ED
+	for <linux-mips@archiver.kernel.org>; Thu,  6 May 2021 02:02:59 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id E7F8E613E3
-	for <linux-mips@archiver.kernel.org>; Thu,  6 May 2021 01:04:52 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 36A17613C5
+	for <linux-mips@archiver.kernel.org>; Thu,  6 May 2021 02:02:59 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229687AbhEFBFt (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 5 May 2021 21:05:49 -0400
-Received: from [115.28.160.31] ([115.28.160.31]:51074 "EHLO
-        mailbox.box.xen0n.name" rhost-flags-FAIL-FAIL-OK-OK)
-        by vger.kernel.org with ESMTP id S230116AbhEFBFs (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 5 May 2021 21:05:48 -0400
-Received: from ld50.lan (unknown [101.224.80.218])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mailbox.box.xen0n.name (Postfix) with ESMTPSA id 85F5D63572;
-        Thu,  6 May 2021 09:04:47 +0800 (CST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=xen0n.name; s=mail;
-        t=1620263087; bh=qNMkh41741Clhd1cGymIjFugtw5DUUNvwDVm0UsONMQ=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=d7SSxdYWQEr9W0vZ1dAlFDLdwWunynk26FTku4S4zRzk/rmxDmKNuWqXLubWjXIrM
-         bteSnBwSxl6pyp5QGTYB1PXBGHzGLxYJqNIY2LSfujU7hipefW55ejwSzOBoI9FWOt
-         xD8h3iiKejYRHb2PvqNzQkxoOr0HsOCDQcIirQus=
-From:   WANG Xuerui <git@xen0n.name>
-To:     linux-rtc@vger.kernel.org
-Cc:     WANG Xuerui <git@xen0n.name>, linux-mips@vger.kernel.org,
-        devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>
-Subject: [PATCH v3 5/6] MIPS: Loongson64: DTS: Add RTC support to Loongson-2K
-Date:   Thu,  6 May 2021 09:04:34 +0800
-Message-Id: <20210506010435.1333647-6-git@xen0n.name>
-X-Mailer: git-send-email 2.30.1
-In-Reply-To: <20210506010435.1333647-1-git@xen0n.name>
-References: <20210506010435.1333647-1-git@xen0n.name>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S231154AbhEFCDz (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 5 May 2021 22:03:55 -0400
+Received: from mail.loongson.cn ([114.242.206.163]:55036 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229872AbhEFCDz (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Wed, 5 May 2021 22:03:55 -0400
+Received: from bogon.localdomain (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9CxiclLTpNgm4sSAA--.29005S2;
+        Thu, 06 May 2021 10:02:51 +0800 (CST)
+From:   Youling Tang <tangyouling@loongson.cn>
+To:     Huacai Chen <chenhuacai@kernel.org>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] MIPS: Loongson64: Fix build error 'secondary_kexec_args' undeclared under !SMP
+Date:   Thu,  6 May 2021 10:02:50 +0800
+Message-Id: <1620266570-21585-1-git-send-email-tangyouling@loongson.cn>
+X-Mailer: git-send-email 2.1.0
+X-CM-TRANSID: AQAAf9CxiclLTpNgm4sSAA--.29005S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7ur1fKr1UZry3WrW7JFykuFg_yoW8WrWxpa
+        15C348tFZ5Wr42yr4rZryDZ34ru398JrW7JFWfC3s5K3srtw1qqFyvvFnrXFykuw43KFWf
+        XrsIgr48ZF13C37anT9S1TB71UUUUUDqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUk2b7Iv0xC_tr1lb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I2
+        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
+        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xII
+        jxv20xvEc7CjxVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwV
+        C2z280aVCY1x0267AKxVW8Jr0_Cr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVAC
+        Y4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r126r1DMcIj6I8E87Iv67AKxVWUJV
+        W8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lc2xSY4AK67AK6r4UMxAI
+        w28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr
+        4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxG
+        rwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8Jw
+        CI42IY6xAIw20EY4v20xvaj40_Gr0_Zr1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2
+        z280aVCY1x0267AKxVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvjxUc2-eUUUUU
+X-CM-SenderInfo: 5wdqw5prxox03j6o00pqjv00gofq/
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-The Loongson-2K RTC module is now supported, enable it.
+On the Loongson64 platform, if CONFIG_SMP is not set, the following build
+error will occur:
+arch/mips/loongson64/reset.c:133:2: error:'secondary_kexec_args' undeclared
 
-The MMIO address is unclear from the Loongson 2K1000 user manual, I took
-it from Loongson's out-of-tree fork of Linux 4.19.
+Because the definition and declaration of secondary_kexec_args are in the
+CONFIG_SMP, the secondary_kexec_args variable should be used in CONFIG_SMP.
 
-Signed-off-by: WANG Xuerui <git@xen0n.name>
-Cc: Rob Herring <robh+dt@kernel.org>
-Cc: devicetree@vger.kernel.org
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Youling Tang <tangyouling@loongson.cn>
 ---
- arch/mips/boot/dts/loongson/loongson64-2k1000.dtsi | 5 +++++
- 1 file changed, 5 insertions(+)
+ arch/mips/loongson64/reset.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/arch/mips/boot/dts/loongson/loongson64-2k1000.dtsi b/arch/mips/boot/dts/loongson/loongson64-2k1000.dtsi
-index 569e814def83..0f00080f77b9 100644
---- a/arch/mips/boot/dts/loongson/loongson64-2k1000.dtsi
-+++ b/arch/mips/boot/dts/loongson/loongson64-2k1000.dtsi
-@@ -52,6 +52,11 @@ package0: bus@10000000 {
- 			0 0x40000000 0 0x40000000 0 0x40000000
- 			0xfe 0x00000000 0xfe 0x00000000 0 0x40000000>;
- 
-+		rtc0: rtc@1fe07800 {
-+			compatible = "loongson,ls2x-rtc";
-+			reg = <0 0x1fe07800 0 0x78>;
-+		};
+diff --git a/arch/mips/loongson64/reset.c b/arch/mips/loongson64/reset.c
+index c97bfdc..758d5d2 100644
+--- a/arch/mips/loongson64/reset.c
++++ b/arch/mips/loongson64/reset.c
+@@ -126,11 +126,12 @@ static void loongson_kexec_shutdown(void)
+ 	for_each_possible_cpu(cpu)
+ 		if (!cpu_online(cpu))
+ 			cpu_device_up(get_cpu_device(cpu));
 +
- 		liointc0: interrupt-controller@1fe11400 {
- 			compatible = "loongson,liointc-2.0";
- 			reg = <0 0x1fe11400 0 0x40>,
++	secondary_kexec_args[0] = TO_UNCAC(0x3ff01000);
+ #endif
+ 	kexec_args[0] = kexec_argc;
+ 	kexec_args[1] = fw_arg1;
+ 	kexec_args[2] = fw_arg2;
+-	secondary_kexec_args[0] = TO_UNCAC(0x3ff01000);
+ 	memcpy((void *)fw_arg1, kexec_argv, KEXEC_ARGV_SIZE);
+ 	memcpy((void *)fw_arg2, kexec_envp, KEXEC_ENVP_SIZE);
+ }
+@@ -141,7 +142,9 @@ static void loongson_crash_shutdown(struct pt_regs *regs)
+ 	kexec_args[0] = kdump_argc;
+ 	kexec_args[1] = fw_arg1;
+ 	kexec_args[2] = fw_arg2;
++#ifdef CONFIG_SMP
+ 	secondary_kexec_args[0] = TO_UNCAC(0x3ff01000);
++#endif
+ 	memcpy((void *)fw_arg1, kdump_argv, KEXEC_ARGV_SIZE);
+ 	memcpy((void *)fw_arg2, kexec_envp, KEXEC_ENVP_SIZE);
+ }
 -- 
-2.30.1
+2.1.0
 

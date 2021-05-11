@@ -4,88 +4,58 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-15.3 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham
-	autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7AFC5C43462
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4F82FC43461
 	for <linux-mips@archiver.kernel.org>; Tue, 11 May 2021 20:48:17 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 3AA0F61919
-	for <linux-mips@archiver.kernel.org>; Tue, 11 May 2021 20:48:17 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 0D77760241
+	for <linux-mips@archiver.kernel.org>; Tue, 11 May 2021 20:48:16 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230012AbhEKUtX (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 11 May 2021 16:49:23 -0400
-Received: from elvis.franken.de ([193.175.24.41]:50409 "EHLO elvis.franken.de"
+        id S229934AbhEKUtW (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 11 May 2021 16:49:22 -0400
+Received: from elvis.franken.de ([193.175.24.41]:50416 "EHLO elvis.franken.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229809AbhEKUtV (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        id S229917AbhEKUtV (ORCPT <rfc822;linux-mips@vger.kernel.org>);
         Tue, 11 May 2021 16:49:21 -0400
 Received: from uucp (helo=alpha)
         by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1lgZIb-0003nj-00; Tue, 11 May 2021 22:48:13 +0200
+        id 1lgZIb-0003nj-02; Tue, 11 May 2021 22:48:13 +0200
 Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 20819C0E13; Tue, 11 May 2021 22:40:52 +0200 (CEST)
-Date:   Tue, 11 May 2021 22:40:52 +0200
+        id 6B500C0E42; Tue, 11 May 2021 22:42:41 +0200 (CEST)
+Date:   Tue, 11 May 2021 22:42:41 +0200
 From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Mike Rapoport <rppt@linux.ibm.com>
-Subject: Re: [RFT PATCH] MIPS: Octeon: drop dependency on CONFIG_HOLES_IN_ZONE
-Message-ID: <20210511204052.GA18185@alpha.franken.de>
-References: <20210418093512.668-1-rppt@kernel.org>
+To:     Youling Tang <tangyouling@loongson.cn>
+Cc:     Huacai Chen <chenhuacai@kernel.org>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] MIPS: Loongson64: Fix build error 'secondary_kexec_args'
+ undeclared under !SMP
+Message-ID: <20210511204241.GC18185@alpha.franken.de>
+References: <1620266570-21585-1-git-send-email-tangyouling@loongson.cn>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210418093512.668-1-rppt@kernel.org>
+In-Reply-To: <1620266570-21585-1-git-send-email-tangyouling@loongson.cn>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Sun, Apr 18, 2021 at 12:35:12PM +0300, Mike Rapoport wrote:
-> From: Mike Rapoport <rppt@linux.ibm.com>
+On Thu, May 06, 2021 at 10:02:50AM +0800, Youling Tang wrote:
+> On the Loongson64 platform, if CONFIG_SMP is not set, the following build
+> error will occur:
+> arch/mips/loongson64/reset.c:133:2: error:'secondary_kexec_args' undeclared
 > 
-> CAVIUM_OCTEON_SOC configuration selects HOLES_IN_ZONE option to cope with
-> memory crashes that were happening in 2011.
+> Because the definition and declaration of secondary_kexec_args are in the
+> CONFIG_SMP, the secondary_kexec_args variable should be used in CONFIG_SMP.
 > 
-> This option effectively aliases pfn_valid_within() to pfn_valid() when
-> enabled and hardwires it to 1 when disabled. The check for
-> pfn_valid_within() is only relevant in case the memory map may have holes
-> or undefined struct page instances inside MAX_ORDER chunks.
-> 
-> Since 2011 memory management initialization in general and memory map
-> initialization particularly became much more robust so the check for
-> pfn_valid_within() is not required on Octeon even despite its, hmm, unusual
-> memory setup.
-> 
-> Remove the selection of HOLES_IN_ZONE by CAVIUM_OCTEON_SOC and drop the
-> HOLES_IN_ZONE configuration option entirely as Octeon was the only MIPS
-> platform to use it.
-> 
-> Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: Youling Tang <tangyouling@loongson.cn>
 > ---
-> 
-> Hi,
-> 
-> I've tried to find why Octeon needed CONFIG_HOLES_IN_ZONE in the first
-> place, but there is nothing except the changelog in commit 465aaed0030b
-> ("MIPS: Octeon: Select CONFIG_HOLES_IN_ZONE"):
-> 
->   Current Octeon systems do in fact have holes in their memory zones.
->   We need to select HOLES_IN_ZONE. If we do not, some memory configurations
->   will result in crashes at boot time
-> 
-> Since then there were too many changes around memory management
-> initialization both in the generic mm and on the MIPS side to track what
-> exactly could case the crashes.
-> 
-> I'm pretty confident that HOLES_IN_ZONE is not required for Octeon systems
-> anymore and can be removed.
-> 
-> I'd really appreciate if somebody with access to an Octeon system could
-> test this patch.
-> 
->  arch/mips/Kconfig | 4 ----
->  1 file changed, 4 deletions(-)
+>  arch/mips/loongson64/reset.c | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
 
 applied to mips-next.
 

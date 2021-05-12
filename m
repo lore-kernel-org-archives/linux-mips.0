@@ -7,27 +7,27 @@ X-Spam-Status: No, score=-19.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
 	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7FB26C43460
-	for <linux-mips@archiver.kernel.org>; Wed, 12 May 2021 16:10:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 867E8C43462
+	for <linux-mips@archiver.kernel.org>; Wed, 12 May 2021 17:15:58 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 482CF61D1E
-	for <linux-mips@archiver.kernel.org>; Wed, 12 May 2021 16:10:06 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 4B6A8613E9
+	for <linux-mips@archiver.kernel.org>; Wed, 12 May 2021 17:15:58 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234564AbhELQLH (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 12 May 2021 12:11:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50798 "EHLO mail.kernel.org"
+        id S234501AbhELRRC (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 12 May 2021 13:17:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42394 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235624AbhELPtg (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Wed, 12 May 2021 11:49:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0BDCA619CB;
-        Wed, 12 May 2021 15:25:19 +0000 (UTC)
+        id S241253AbhELQ06 (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Wed, 12 May 2021 12:26:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6BA7C61DF1;
+        Wed, 12 May 2021 15:50:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620833120;
+        s=korg; t=1620834656;
         bh=s3BM/sj6oyrnLcGniBopzOVI6NUof9Zb1aULINA8GoI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dxQl+47o6iUERvSy0l+5ZdSjOcX59VlX/Y9INCEJOwJJwHjT6rjly6qdiEJDbFoP8
-         cS7ujNyRARUhixYfTenxzc2R1w/9Jw8EFwK39QecQ/fqC1ePl1iFZiLO8CWpp/O9ZJ
-         dpcH/F8ULc1PfVBc4wnFvbATWwBnUxBjWckYR1Rw=
+        b=iJg0wugv9JT/r0vWbE8x6Cr6ioP/TqgbzfwPHDoMsOsULyRXdK4Hyu+k72KPW0K6Q
+         +NT15Rmwz6KxD5AKn2V7mPwXqUAfBsoaKP7x+B3UfpZg/BfLP44L7TnfVNVHlZsDsF
+         lVv03vG9BQlMIL1Y6E4/KCY7xrwUordixD+exigY=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -36,12 +36,12 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         John Crispin <john@phrozen.org>, linux-mips@vger.kernel.org,
         linux-mediatek@lists.infradead.org,
         Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Subject: [PATCH 5.11 025/601] MIPS: pci-mt7620: fix PLL lock check
-Date:   Wed, 12 May 2021 16:41:42 +0200
-Message-Id: <20210512144828.649364893@linuxfoundation.org>
+Subject: [PATCH 5.12 030/677] MIPS: pci-mt7620: fix PLL lock check
+Date:   Wed, 12 May 2021 16:41:16 +0200
+Message-Id: <20210512144838.225243488@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210512144827.811958675@linuxfoundation.org>
-References: <20210512144827.811958675@linuxfoundation.org>
+In-Reply-To: <20210512144837.204217980@linuxfoundation.org>
+References: <20210512144837.204217980@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8

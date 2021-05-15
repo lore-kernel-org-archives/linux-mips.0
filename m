@@ -2,150 +2,243 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,
+X-Spam-Status: No, score=-15.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5532CC43462
-	for <linux-mips@archiver.kernel.org>; Sat, 15 May 2021 11:04:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 56062C433ED
+	for <linux-mips@archiver.kernel.org>; Sat, 15 May 2021 12:41:05 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 35090613D4
-	for <linux-mips@archiver.kernel.org>; Sat, 15 May 2021 11:04:56 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 35B9D613D2
+	for <linux-mips@archiver.kernel.org>; Sat, 15 May 2021 12:41:05 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232200AbhEOLGG (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Sat, 15 May 2021 07:06:06 -0400
-Received: from mail.loongson.cn ([114.242.206.163]:48308 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S233077AbhEOLD1 (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Sat, 15 May 2021 07:03:27 -0400
-Received: from linux.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Axrcgpqp9g598WAA--.13691S4;
-        Sat, 15 May 2021 19:02:08 +0800 (CST)
-From:   Tiezhu Yang <yangtiezhu@loongson.cn>
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Xuefeng Li <lixuefeng@loongson.cn>,
-        Steven Rostedt <rostedt@goodmis.org>
-Subject: [PATCH 2/2] MIPS: Fix kernel hang under FUNCTION_GRAPH_TRACER and PREEMPT_TRACER
-Date:   Sat, 15 May 2021 19:02:01 +0800
-Message-Id: <1621076521-22412-3-git-send-email-yangtiezhu@loongson.cn>
-X-Mailer: git-send-email 2.1.0
-In-Reply-To: <1621076521-22412-1-git-send-email-yangtiezhu@loongson.cn>
-References: <1621076521-22412-1-git-send-email-yangtiezhu@loongson.cn>
-X-CM-TRANSID: AQAAf9Axrcgpqp9g598WAA--.13691S4
-X-Coremail-Antispam: 1UD129KBjvJXoWxZFy5CF4kArW3uF4ftry3CFg_yoW5XF1Upr
-        4Ika4vy3y8XayYg3sFvr18Zr13Xan7t3s2yFyUCayfZws8AF4kXr1xtw18XF1jqr95XayS
-        qas7AF4j9a18Z3JanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUBa14x267AKxVW5JVWrJwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_Jryl82xGYIkIc2
-        x26xkF7I0E14v26r1I6r4UM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2z4x0
-        Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1l84
-        ACjcxK6I8E87Iv67AKxVWxJr0_GcWl84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s0DM2AI
-        xVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20x
-        vE14v26r1j6r18McIj6I8E87Iv67AKxVW8JVWxJwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xv
-        r2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7MxkIecxEwVAFwVW8KwCF04k20x
-        vY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I
-        3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41lIx
-        AIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAI
-        cVCF04k26cxKx2IYs7xG6r1I6r4UMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2js
-        IEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUOXowUUUUU=
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+        id S232170AbhEOMmP (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Sat, 15 May 2021 08:42:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34574 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230004AbhEOMmP (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Sat, 15 May 2021 08:42:15 -0400
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78B48C06174A;
+        Sat, 15 May 2021 05:41:00 -0700 (PDT)
+Received: by mail-wr1-x42e.google.com with SMTP id j14so25607wrq.5;
+        Sat, 15 May 2021 05:41:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=29hFlM7+Y+uwzh88wBHQABcMU9Oyv+iMTUv6Oz1e+Lw=;
+        b=Ac5+khIWLkEmDqtXwGl0zLNE8t3eV0qwHWKAsX3AUELcoxHWKiD6e0slrwZPZUxsm/
+         bATfNAltMBYtoEaggzCJs50QmDFDXs7M5OnUIXH7LhLwDJmhbLXGEH5BFieLSngBGgpp
+         20UYgdGxeeN/uE9juT2SykeGNCGK8+vDyEh1UVhAjA6ixzPb+lQrzMOCPzxQuOcIGa4Z
+         UMghJbSpk7ihxxJbgVkNk9TkAlgaeKnbarPnpL/NKpVe7+8xEiosRd4LrzKkUdtPcAEd
+         K8ijuMtCCchgB7AkHezvDBUoIrM0grf6i19XJ2M8b+6olj7w6jpg31qAwB6NEIma0m2O
+         pXpA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=29hFlM7+Y+uwzh88wBHQABcMU9Oyv+iMTUv6Oz1e+Lw=;
+        b=QYLHbByHUhkh81aoNGETibgX4wGm19rzlZJv4vKj3EQiyRMYN4N2PPir0L/wH5IZji
+         ifNBCtX/0xuyKgOZpu+Xbuf9/6t7EjT/HJn2DTA2dPE+vfpQLvIWOMHJ/pWS5us4BR0G
+         4B7d7HGXikCja+FpGBsNSKzM+DNFP4VRwAn5GMRQazFWNcnbM3yCGuyq7OOuFX/F4Adf
+         JU7c7ITluDFdFHKlVpEvqPPphxvpp7XACF1jzaia/g6io5iFs8GxuWk2LPi4HHOaB8SF
+         yyAP6vZ1Xw2KRtD27NQyCkDzLtncFIOIpYHHU6vWrBMrCeD2qDgu17lrTJaImZU9AwOw
+         rYBg==
+X-Gm-Message-State: AOAM530SGHnQB+mIqQ8z4kYahxw/juLJHYkQsRvkaWrFkpiR61GVQ/Wt
+        Fs3l65GHXkPgfYwPCXPJg+xNWPEqjO0UCMB6
+X-Google-Smtp-Source: ABdhPJw73ij0S25x2szSZPCsPa+9Q/ZqkLlIxEGzrghb6i9sMblc8N+o5DBjCk7+Qus5m5ryEoxgig==
+X-Received: by 2002:adf:f109:: with SMTP id r9mr6748436wro.251.1621082458973;
+        Sat, 15 May 2021 05:40:58 -0700 (PDT)
+Received: from localhost.localdomain (29.red-83-49-33.dynamicip.rima-tde.net. [83.49.33.29])
+        by smtp.gmail.com with ESMTPSA id w7sm9472749wru.51.2021.05.15.05.40.57
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sat, 15 May 2021 05:40:58 -0700 (PDT)
+From:   Sergio Paracuellos <sergio.paracuellos@gmail.com>
+To:     linux-mips@vger.kernel.org
+Cc:     tsbogend@alpha.franken.de, devicetree@vger.kernel.org,
+        matthias.bgg@gmail.com, john@phrozen.org, bhelgaas@google.com,
+        robh+dt@kernel.org, linux-staging@lists.linux.dev,
+        gregkh@linuxfoundation.org, neil@brown.name,
+        ilya.lipnitskiy@gmail.com, linux-kernel@vger.kernel.org,
+        linux-pci@vger.kernel.org
+Subject: [PATCH 1/4] dt-bindings: mt7621-pci: PCIe binding documentation for MT7621 SoCs
+Date:   Sat, 15 May 2021 14:40:52 +0200
+Message-Id: <20210515124055.22225-2-sergio.paracuellos@gmail.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210515124055.22225-1-sergio.paracuellos@gmail.com>
+References: <20210515124055.22225-1-sergio.paracuellos@gmail.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-When update the latest mainline kernel with the following three configs,
-the kernel hangs during startup:
+Add device tree binding documentation for PCIe in MT7621 SoCs.
 
-(1) CONFIG_FUNCTION_GRAPH_TRACER=y
-(2) CONFIG_PREEMPT_TRACER=y
-(3) CONFIG_FTRACE_STARTUP_TEST=y
-
-When update the latest mainline kernel with the above two configs (1)
-and (2), the kernel starts normally, but it still hangs when execute
-the following command:
-
-echo "function_graph" > /sys/kernel/debug/tracing/current_tracer
-
-Without CONFIG_PREEMPT_TRACER=y, the above two kinds of kernel hangs
-disappeared, so it seems that CONFIG_PREEMPT_TRACER has some influences
-with function_graph tracer at the first glance.
-
-I use ejtag to find out the epc address is related with preempt_enable()
-in the file arch/mips/lib/mips-atomic.c, because function tracing can
-trace the preempt_{enable,disable} calls that are traced, replace them
-with preempt_{enable,disable}_notrace to prevent function tracing from
-going into an infinite loop, and then it can fix the kernel hang issue.
-
-By the way, it seems that this commit is a complement and improvement of
-commit f93a1a00f2bd ("MIPS: Fix crash that occurs when function tracing
-is enabled").
-
-Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
-Cc: Steven Rostedt <rostedt@goodmis.org>
+Signed-off-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
 ---
- arch/mips/lib/mips-atomic.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ .../bindings/pci/mediatek,mt7621-pci.yaml     | 149 ++++++++++++++++++
+ 1 file changed, 149 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/pci/mediatek,mt7621-pci.yaml
 
-diff --git a/arch/mips/lib/mips-atomic.c b/arch/mips/lib/mips-atomic.c
-index de03838..a9b72ea 100644
---- a/arch/mips/lib/mips-atomic.c
-+++ b/arch/mips/lib/mips-atomic.c
-@@ -37,7 +37,7 @@
-  */
- notrace void arch_local_irq_disable(void)
- {
--	preempt_disable();
-+	preempt_disable_notrace();
- 
- 	__asm__ __volatile__(
- 	"	.set	push						\n"
-@@ -53,7 +53,7 @@ notrace void arch_local_irq_disable(void)
- 	: /* no inputs */
- 	: "memory");
- 
--	preempt_enable();
-+	preempt_enable_notrace();
- }
- EXPORT_SYMBOL(arch_local_irq_disable);
- 
-@@ -61,7 +61,7 @@ notrace unsigned long arch_local_irq_save(void)
- {
- 	unsigned long flags;
- 
--	preempt_disable();
-+	preempt_disable_notrace();
- 
- 	__asm__ __volatile__(
- 	"	.set	push						\n"
-@@ -78,7 +78,7 @@ notrace unsigned long arch_local_irq_save(void)
- 	: /* no inputs */
- 	: "memory");
- 
--	preempt_enable();
-+	preempt_enable_notrace();
- 
- 	return flags;
- }
-@@ -88,7 +88,7 @@ notrace void arch_local_irq_restore(unsigned long flags)
- {
- 	unsigned long __tmp1;
- 
--	preempt_disable();
-+	preempt_disable_notrace();
- 
- 	__asm__ __volatile__(
- 	"	.set	push						\n"
-@@ -106,7 +106,7 @@ notrace void arch_local_irq_restore(unsigned long flags)
- 	: "0" (flags)
- 	: "memory");
- 
--	preempt_enable();
-+	preempt_enable_notrace();
- }
- EXPORT_SYMBOL(arch_local_irq_restore);
- 
+diff --git a/Documentation/devicetree/bindings/pci/mediatek,mt7621-pci.yaml b/Documentation/devicetree/bindings/pci/mediatek,mt7621-pci.yaml
+new file mode 100644
+index 000000000000..7f5f9d583032
+--- /dev/null
++++ b/Documentation/devicetree/bindings/pci/mediatek,mt7621-pci.yaml
+@@ -0,0 +1,149 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/pci/mediatek,mt7621-pci.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: MediaTek MT7621 PCIe controller
++
++maintainers:
++  - Sergio Paracuellos <sergio.paracuellos@gmail.com>
++
++description: |+
++  MediaTek MT7621 PCIe subsys supports single Root complex (RC)
++  with 3 Root Ports. Each Root Ports supports a Gen1 1-lane Link
++
++allOf:
++  - $ref: /schemas/pci/pci-bus.yaml#
++
++properties:
++  compatible:
++    const: mediatek,mt7621-pci
++
++  reg:
++    items:
++      - description: host-pci bridge registers
++      - description: pcie port 0 RC control registers
++      - description: pcie port 1 RC control registers
++      - description: pcie port 2 RC control registers
++
++  ranges:
++    maxItems: 2
++
++  resets:
++    items:
++      - description: pcie port 0 reset.
++      - description: pcie port 1 reset.
++      - description: pcie port 2 reset.
++
++  reset-names:
++    items:
++      - const: pcie0
++      - const: pcie1
++      - const: pcie2
++
++  clocks:
++    items:
++      - description: pcie port 0 clock.
++      - description: pcie port 1 clock.
++      - description: pcie port 2 clock.
++
++  clock-names:
++    items:
++      - const: pcie0
++      - const: pcie1
++      - const: pcie2
++
++  phys:
++    items:
++      - description: Dual-ported phy for pcie port 0 and 1.
++      - description: Phy for pcie port 2.
++
++  phy-names:
++    items:
++      - const: pcie-phy0
++      - const: pcie-phy2
++
++required:
++  - compatible
++  - reg
++  - ranges
++  - "#interrupt-cells"
++  - interrupt-map-mask
++  - interrupt-map
++  - resets
++  - reset-names
++  - clocks
++  - clock-names
++  - phys
++  - phy-names
++  - reset-gpios
++
++unevaluatedProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/gpio/gpio.h>
++    #include <dt-bindings/interrupt-controller/mips-gic.h>
++
++    pcie: pcie@1e140000 {
++        compatible = "mediatek,mt7621-pci";
++        reg = <0x1e140000 0x100>,
++              <0x1e142000 0x100>,
++              <0x1e143000 0x100>,
++              <0x1e144000 0x100>;
++
++        #address-cells = <3>;
++        #size-cells = <2>;
++        pinctrl-names = "default";
++        pinctrl-0 = <&pcie_pins>;
++        device_type = "pci";
++        ranges = <0x02000000 0 0x00000000 0x60000000 0 0x10000000>,  /* pci memory */
++                 <0x01000000 0 0x00000000 0x1e160000 0 0x00010000>;  /* io space */
++        #interrupt-cells = <1>;
++        interrupt-map-mask = <0xF800 0 0 0>;
++        interrupt-map = <0x0000 0 0 0 &gic GIC_SHARED 4 IRQ_TYPE_LEVEL_HIGH>,
++                        <0x0800 0 0 0 &gic GIC_SHARED 24 IRQ_TYPE_LEVEL_HIGH>,
++                        <0x1000 0 0 0 &gic GIC_SHARED 25 IRQ_TYPE_LEVEL_HIGH>;
++        resets = <&rstctrl 24>, <&rstctrl 25>, <&rstctrl 26>;
++        reset-names = "pcie0", "pcie1", "pcie2";
++        clocks = <&clkctrl 24>, <&clkctrl 25>, <&clkctrl 26>;
++        clock-names = "pcie0", "pcie1", "pcie2";
++        phys = <&pcie0_phy 1>, <&pcie2_phy 0>;
++        phy-names = "pcie-phy0", "pcie-phy2";
++        reset-gpios = <&gpio 19 GPIO_ACTIVE_LOW>;
++
++        pcie@0,0 {
++            reg = <0x0000 0 0 0 0>;
++            #address-cells = <3>;
++            #size-cells = <2>;
++            device_type = "pci";
++            #interrupt-cells = <1>;
++            interrupt-map-mask = <0 0 0 0>;
++            interrupt-map = <0 0 0 0 &gic GIC_SHARED 4 IRQ_TYPE_LEVEL_HIGH>;
++            ranges;
++        };
++
++        pcie@1,0 {
++            reg = <0x0800 0 0 0 0>;
++            #address-cells = <3>;
++            #size-cells = <2>;
++            device_type = "pci";
++            #interrupt-cells = <1>;
++            interrupt-map-mask = <0 0 0 0>;
++            interrupt-map = <0 0 0 0 &gic GIC_SHARED 24 IRQ_TYPE_LEVEL_HIGH>;
++            ranges;
++        };
++
++        pcie@2,0 {
++            reg = <0x1000 0 0 0 0>;
++            #address-cells = <3>;
++            #size-cells = <2>;
++            device_type = "pci";
++            #interrupt-cells = <1>;
++            interrupt-map-mask = <0 0 0 0>;
++            interrupt-map = <0 0 0 0 &gic GIC_SHARED 25 IRQ_TYPE_LEVEL_HIGH>;
++            ranges;
++        };
++    };
++...
 -- 
-2.1.0
+2.25.1
 

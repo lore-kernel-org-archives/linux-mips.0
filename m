@@ -2,26 +2,25 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-11.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B1C22C433B4
-	for <linux-mips@archiver.kernel.org>; Fri, 21 May 2021 09:40:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9C22DC43470
+	for <linux-mips@archiver.kernel.org>; Fri, 21 May 2021 09:40:47 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 90DE560FEF
-	for <linux-mips@archiver.kernel.org>; Fri, 21 May 2021 09:40:46 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 82A63613BF
+	for <linux-mips@archiver.kernel.org>; Fri, 21 May 2021 09:40:47 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236805AbhEUJmH (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 21 May 2021 05:42:07 -0400
-Received: from lucky1.263xmail.com ([211.157.147.133]:55708 "EHLO
+        id S236820AbhEUJmJ (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 21 May 2021 05:42:09 -0400
+Received: from lucky1.263xmail.com ([211.157.147.131]:50470 "EHLO
         lucky1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236800AbhEUJmH (ORCPT
+        with ESMTP id S236802AbhEUJmH (ORCPT
         <rfc822;linux-mips@vger.kernel.org>); Fri, 21 May 2021 05:42:07 -0400
 Received: from localhost (unknown [192.168.167.32])
-        by lucky1.263xmail.com (Postfix) with ESMTP id 9878FCD182;
-        Fri, 21 May 2021 17:40:33 +0800 (CST)
+        by lucky1.263xmail.com (Postfix) with ESMTP id 63FC9BA13F;
+        Fri, 21 May 2021 17:40:31 +0800 (CST)
 X-MAIL-GRAY: 0
 X-MAIL-DELIVERY: 1
 X-ADDR-CHECKED: 0
@@ -29,9 +28,9 @@ X-ANTISPAM-LEVEL: 2
 X-ABS-CHECKED: 0
 Received: from localhost.localdomain (unknown [124.126.19.250])
         by smtp.263.net (postfix) whith ESMTP id P30810T139673781389056S1621590030498168_;
-        Fri, 21 May 2021 17:40:33 +0800 (CST)
+        Fri, 21 May 2021 17:40:30 +0800 (CST)
 X-IP-DOMAINF: 1
-X-UNIQUE-TAG: <092e5e2a979b7194f570cf322108cee6>
+X-UNIQUE-TAG: <e63f602441e10634e28226d0f633528c>
 X-RL-SENDER: zhaoxiao@uniontech.com
 X-SENDER: zhaoxiao@uniontech.com
 X-LOGIN-NAME: zhaoxiao@uniontech.com
@@ -46,49 +45,32 @@ Cc:     maoxiaochuan@loongson.cn, jiaxun.yang@flygoat.com,
         zhangqing@loongson.cn, devicetree@vger.kernel.org,
         linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
         zhaoxiao <zhaoxiao@uniontech.com>
-Subject: [PATCH 2/5] mips: dts: loongson: fix DTC unit name warnings
-Date:   Fri, 21 May 2021 17:40:25 +0800
-Message-Id: <a6343f728252e4134b01c2c5f63acba3b38bcdd5.1621586643.git.zhaoxiao@uniontech.com>
+Subject: [PATCH 0/5] mips: dts: loongson: fix DTC unit name warnings 
+Date:   Fri, 21 May 2021 17:40:23 +0800
+Message-Id: <cover.1621586643.git.zhaoxiao@uniontech.com>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <cover.1621586643.git.zhaoxiao@uniontech.com>
-References: <cover.1621586643.git.zhaoxiao@uniontech.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Fixes the following W=1 kernel build warning(s):
-arch/mips/boot/dts/loongson/loongson64g-package.dtsi:42.30-49.5: Warning (simple_bus_reg): /bus@1fe00000/serial@1fe001e0: simple-bus unit address format error, expected "1fe00100"
-arch/mips/boot/dts/loongson/loongson64g-package.dtsi:51.30-59.5: Warning (simple_bus_reg): /bus@1fe00000/serial@1fe001e8: simple-bus unit address format error, expected "1fe00110"
+*** BLURB HERE ***
 
-Signed-off-by: zhaoxiao <zhaoxiao@uniontech.com>
----
- arch/mips/boot/dts/loongson/loongson64g-package.dtsi | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+zhaoxiao (5):
+  mips: dts: loongson: fix DTC unit name warnings
+  mips: dts: loongson: fix DTC unit name warnings
+  mips: dts: loongson: fix DTC unit name warnings
+  mips: dts: loongson: fix DTC unit name warnings
+  mips: dts: loongson: fix DTC unit name warnings
 
-diff --git a/arch/mips/boot/dts/loongson/loongson64g-package.dtsi b/arch/mips/boot/dts/loongson/loongson64g-package.dtsi
-index 38abc570cd82..d4314f62ccc2 100644
---- a/arch/mips/boot/dts/loongson/loongson64g-package.dtsi
-+++ b/arch/mips/boot/dts/loongson/loongson64g-package.dtsi
-@@ -39,7 +39,7 @@
- 
- 		};
- 
--		cpu_uart0: serial@1fe001e0 {
-+		cpu_uart0: serial@1fe00100 {
- 			compatible = "ns16550a";
- 			reg = <0 0x1fe00100 0x10>;
- 			clock-frequency = <100000000>;
-@@ -48,7 +48,7 @@
- 			no-loopback-test;
- 		};
- 
--		cpu_uart1: serial@1fe001e8 {
-+		cpu_uart1: serial@1fe00110 {
- 			status = "disabled";
- 			compatible = "ns16550a";
- 			reg = <0 0x1fe00110 0x10>;
+ arch/mips/boot/dts/loongson/loongson64-2k1000.dtsi       | 2 +-
+ arch/mips/boot/dts/loongson/loongson64g-package.dtsi     | 4 ++--
+ arch/mips/boot/dts/loongson/loongson64v_4core_virtio.dts | 2 +-
+ arch/mips/boot/dts/loongson/ls7a-pch.dtsi                | 2 +-
+ arch/mips/boot/dts/loongson/rs780e-pch.dtsi              | 2 +-
+ 5 files changed, 6 insertions(+), 6 deletions(-)
+
 -- 
 2.20.1
 

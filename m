@@ -5,23 +5,23 @@ X-Spam-Level:
 X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 14558C43461
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E87AFC43600
 	for <linux-mips@archiver.kernel.org>; Fri, 21 May 2021 09:40:47 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id EEA48613BF
-	for <linux-mips@archiver.kernel.org>; Fri, 21 May 2021 09:40:46 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id D025F60FEF
+	for <linux-mips@archiver.kernel.org>; Fri, 21 May 2021 09:40:47 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236814AbhEUJmI (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 21 May 2021 05:42:08 -0400
-Received: from lucky1.263xmail.com ([211.157.147.132]:59002 "EHLO
+        id S236828AbhEUJmJ (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 21 May 2021 05:42:09 -0400
+Received: from lucky1.263xmail.com ([211.157.147.135]:44174 "EHLO
         lucky1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236786AbhEUJmH (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Fri, 21 May 2021 05:42:07 -0400
+        with ESMTP id S236804AbhEUJmI (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Fri, 21 May 2021 05:42:08 -0400
 Received: from localhost (unknown [192.168.167.32])
-        by lucky1.263xmail.com (Postfix) with ESMTP id 4F881F486B;
-        Fri, 21 May 2021 17:40:32 +0800 (CST)
+        by lucky1.263xmail.com (Postfix) with ESMTP id B6D4FACB15;
+        Fri, 21 May 2021 17:40:34 +0800 (CST)
 X-MAIL-GRAY: 0
 X-MAIL-DELIVERY: 1
 X-ADDR-CHECKED: 0
@@ -29,9 +29,9 @@ X-ANTISPAM-LEVEL: 2
 X-ABS-CHECKED: 0
 Received: from localhost.localdomain (unknown [124.126.19.250])
         by smtp.263.net (postfix) whith ESMTP id P30810T139673781389056S1621590030498168_;
-        Fri, 21 May 2021 17:40:32 +0800 (CST)
+        Fri, 21 May 2021 17:40:35 +0800 (CST)
 X-IP-DOMAINF: 1
-X-UNIQUE-TAG: <6e074e86b80e146ec3f03253cb8e986b>
+X-UNIQUE-TAG: <d404d14de4cdd58d56efdd6ff2dadb5b>
 X-RL-SENDER: zhaoxiao@uniontech.com
 X-SENDER: zhaoxiao@uniontech.com
 X-LOGIN-NAME: zhaoxiao@uniontech.com
@@ -46,9 +46,9 @@ Cc:     maoxiaochuan@loongson.cn, jiaxun.yang@flygoat.com,
         zhangqing@loongson.cn, devicetree@vger.kernel.org,
         linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
         zhaoxiao <zhaoxiao@uniontech.com>
-Subject: [PATCH 1/5] mips: dts: loongson: fix DTC unit name warnings
-Date:   Fri, 21 May 2021 17:40:24 +0800
-Message-Id: <3d6d4723443eb626af6e30a05f93255e3bafeaeb.1621586643.git.zhaoxiao@uniontech.com>
+Subject: [PATCH 4/5] mips: dts: loongson: fix DTC unit name warnings
+Date:   Fri, 21 May 2021 17:40:27 +0800
+Message-Id: <cbdf316ac85c9cdcb63929b2a8fa47f169077af2.1621586643.git.zhaoxiao@uniontech.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <cover.1621586643.git.zhaoxiao@uniontech.com>
 References: <cover.1621586643.git.zhaoxiao@uniontech.com>
@@ -59,26 +59,27 @@ List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
-arch/mips/boot/dts/loongson/loongson64-2k1000.dtsi:26.9-32.4: Warning (unit_address_vs_reg): /memory: node has a reg or ranges property, but no unit name
+arch/mips/boot/dts/loongson/ls7a-pch.dtsi:410.7-415.5: Warning (unit_address_vs_reg): /bus@10000000/isa: node has a reg or ranges property, but no unit name
+arch/mips/boot/dts/loongson/ls7a-pch.dtsi:410.7-415.5: Warning (simple_bus_reg): /bus@10000000/isa: simple-bus unit address format error, expected "18000000"
 
 Signed-off-by: zhaoxiao <zhaoxiao@uniontech.com>
 ---
- arch/mips/boot/dts/loongson/loongson64-2k1000.dtsi | 2 +-
+ arch/mips/boot/dts/loongson/ls7a-pch.dtsi | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/mips/boot/dts/loongson/loongson64-2k1000.dtsi b/arch/mips/boot/dts/loongson/loongson64-2k1000.dtsi
-index 569e814def83..06207254b2d1 100644
---- a/arch/mips/boot/dts/loongson/loongson64-2k1000.dtsi
-+++ b/arch/mips/boot/dts/loongson/loongson64-2k1000.dtsi
-@@ -23,7 +23,7 @@
+diff --git a/arch/mips/boot/dts/loongson/ls7a-pch.dtsi b/arch/mips/boot/dts/loongson/ls7a-pch.dtsi
+index f99a7a11fded..d66e1037fba5 100644
+--- a/arch/mips/boot/dts/loongson/ls7a-pch.dtsi
++++ b/arch/mips/boot/dts/loongson/ls7a-pch.dtsi
+@@ -407,7 +407,7 @@
+ 			};
  		};
- 	};
  
--	memory {
-+	memory@200000 {
- 		compatible = "memory";
- 		device_type = "memory";
- 		reg = <0x00000000 0x00200000 0x00000000 0x0ee00000>, /* 238 MB at 2 MB */
+-		isa {
++		isa@18000000 {
+ 			compatible = "isa";
+ 			#address-cells = <2>;
+ 			#size-cells = <1>;
 -- 
 2.20.1
 

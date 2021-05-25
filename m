@@ -7,69 +7,60 @@ X-Spam-Status: No, score=-15.2 required=3.0 tests=BAYES_00,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 702C6C47084
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 466DEC2B9F8
 	for <linux-mips@archiver.kernel.org>; Tue, 25 May 2021 13:46:46 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 542CD6128B
+	by mail.kernel.org (Postfix) with ESMTP id 2990661404
 	for <linux-mips@archiver.kernel.org>; Tue, 25 May 2021 13:46:46 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233376AbhEYNsP (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 25 May 2021 09:48:15 -0400
-Received: from elvis.franken.de ([193.175.24.41]:48749 "EHLO elvis.franken.de"
+        id S233351AbhEYNsO (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 25 May 2021 09:48:14 -0400
+Received: from elvis.franken.de ([193.175.24.41]:48740 "EHLO elvis.franken.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233345AbhEYNsO (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        id S233184AbhEYNsO (ORCPT <rfc822;linux-mips@vger.kernel.org>);
         Tue, 25 May 2021 09:48:14 -0400
 Received: from uucp (helo=alpha)
         by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1llXO3-00079x-03; Tue, 25 May 2021 15:46:23 +0200
+        id 1llXO3-00079x-01; Tue, 25 May 2021 15:46:23 +0200
 Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 59886C1109; Tue, 25 May 2021 15:40:39 +0200 (CEST)
-Date:   Tue, 25 May 2021 15:40:39 +0200
+        id 84971C1109; Tue, 25 May 2021 15:39:25 +0200 (CEST)
+Date:   Tue, 25 May 2021 15:39:25 +0200
 From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, kernel test robot <lkp@intel.com>,
-        linux-mips@vger.kernel.org,
-        Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
-Subject: Re: [PATCH] MIPS: launch.h: add include guard to prevent build errors
-Message-ID: <20210525134039.GD11166@alpha.franken.de>
-References: <20210521051343.20059-1-rdunlap@infradead.org>
+Cc:     linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
+        Manuel Lauss <manuel.lauss@googlemail.com>,
+        Ralf Baechle <ralf@linux-mips.org>
+Subject: Re: [PATCH] MIPS: alchemy: xxs1500: add gpio-au1000.h header file
+Message-ID: <20210525133925.GB11166@alpha.franken.de>
+References: <20210517000108.26015-1-rdunlap@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210521051343.20059-1-rdunlap@infradead.org>
+In-Reply-To: <20210517000108.26015-1-rdunlap@infradead.org>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Thu, May 20, 2021 at 10:13:43PM -0700, Randy Dunlap wrote:
-> arch/mips/include/asm/mips-boards/launch.h needs an include guard
-> to prevent it from being #included more than once.
-> Prevents these build errors:
+On Sun, May 16, 2021 at 05:01:08PM -0700, Randy Dunlap wrote:
+> board-xxs1500.c references 2 functions without declaring them, so add
+> the header file to placate the build.
 > 
-> In file included from ../arch/mips/mti-malta/malta-amon.c:16:
-> ../arch/mips/include/asm/mips-boards/launch.h:8:8: error: redefinition of 'struct cpulaunch'
->     8 | struct cpulaunch {
->       |        ^~~~~~~~~
-> In file included from ../arch/mips/include/asm/mips-cps.h:13,
->                  from ../arch/mips/include/asm/smp-ops.h:16,
->                  from ../arch/mips/include/asm/smp.h:21,
->                  from ../include/linux/smp.h:114,
->                  from ../arch/mips/mti-malta/malta-amon.c:12:
-> ../arch/mips/include/asm/mips-boards/launch.h:8:8: note: originally defined here
->     8 | struct cpulaunch {
->       |        ^~~~~~~~~
-> make[3]: [../scripts/Makefile.build:273: arch/mips/mti-malta/malta-amon.o] Error 1 (ignored)
+> ../arch/mips/alchemy/board-xxs1500.c: In function 'board_setup':
+> ../arch/mips/alchemy/board-xxs1500.c:56:2: error: implicit declaration of function 'alchemy_gpio1_input_enable' [-Werror=implicit-function-declaration]
+>    56 |  alchemy_gpio1_input_enable();
+> ../arch/mips/alchemy/board-xxs1500.c:57:2: error: implicit declaration of function 'alchemy_gpio2_enable'; did you mean 'alchemy_uart_enable'? [-Werror=implicit-function-declaration]
+>    57 |  alchemy_gpio2_enable();
 > 
-> Fixes: 6decd1aad15f ("MIPS: add support for buggy MT7621S core detection")
+> Fixes: 8e026910fcd4 ("MIPS: Alchemy: merge GPR/MTX-1/XXS1500 board code into single files")
 > Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> Reported-by: kernel test robot <lkp@intel.com>
 > Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 > Cc: linux-mips@vger.kernel.org
-> Cc: Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
+> Cc: Manuel Lauss <manuel.lauss@googlemail.com>
+> Cc: Ralf Baechle <ralf@linux-mips.org>
 > ---
->  arch/mips/include/asm/mips-boards/launch.h |    5 +++++
->  1 file changed, 5 insertions(+)
+>  arch/mips/alchemy/board-xxs1500.c |    1 +
+>  1 file changed, 1 insertion(+)
 
 applied to mips-fixes.
 

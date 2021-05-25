@@ -7,76 +7,69 @@ X-Spam-Status: No, score=-15.2 required=3.0 tests=BAYES_00,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1766AC2B9F8
-	for <linux-mips@archiver.kernel.org>; Tue, 25 May 2021 13:46:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 702C6C47084
+	for <linux-mips@archiver.kernel.org>; Tue, 25 May 2021 13:46:46 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id E89EC61420
-	for <linux-mips@archiver.kernel.org>; Tue, 25 May 2021 13:46:25 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 542CD6128B
+	for <linux-mips@archiver.kernel.org>; Tue, 25 May 2021 13:46:46 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233220AbhEYNrz (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 25 May 2021 09:47:55 -0400
-Received: from elvis.franken.de ([193.175.24.41]:48737 "EHLO elvis.franken.de"
+        id S233376AbhEYNsP (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 25 May 2021 09:48:15 -0400
+Received: from elvis.franken.de ([193.175.24.41]:48749 "EHLO elvis.franken.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233184AbhEYNry (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Tue, 25 May 2021 09:47:54 -0400
+        id S233345AbhEYNsO (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Tue, 25 May 2021 09:48:14 -0400
 Received: from uucp (helo=alpha)
         by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1llXO3-00079x-00; Tue, 25 May 2021 15:46:23 +0200
+        id 1llXO3-00079x-03; Tue, 25 May 2021 15:46:23 +0200
 Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 1B01DC10E2; Tue, 25 May 2021 15:38:58 +0200 (CEST)
-Date:   Tue, 25 May 2021 15:38:58 +0200
+        id 59886C1109; Tue, 25 May 2021 15:40:39 +0200 (CEST)
+Date:   Tue, 25 May 2021 15:40:39 +0200
 From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Tiezhu Yang <yangtiezhu@loongson.cn>
-Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Xuefeng Li <lixuefeng@loongson.cn>,
-        Steven Rostedt <rostedt@goodmis.org>
-Subject: Re: [PATCH 2/2] MIPS: Fix kernel hang under FUNCTION_GRAPH_TRACER
- and PREEMPT_TRACER
-Message-ID: <20210525133858.GA11166@alpha.franken.de>
-References: <1621076521-22412-1-git-send-email-yangtiezhu@loongson.cn>
- <1621076521-22412-3-git-send-email-yangtiezhu@loongson.cn>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     linux-kernel@vger.kernel.org, kernel test robot <lkp@intel.com>,
+        linux-mips@vger.kernel.org,
+        Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
+Subject: Re: [PATCH] MIPS: launch.h: add include guard to prevent build errors
+Message-ID: <20210525134039.GD11166@alpha.franken.de>
+References: <20210521051343.20059-1-rdunlap@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1621076521-22412-3-git-send-email-yangtiezhu@loongson.cn>
+In-Reply-To: <20210521051343.20059-1-rdunlap@infradead.org>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Sat, May 15, 2021 at 07:02:01PM +0800, Tiezhu Yang wrote:
-> When update the latest mainline kernel with the following three configs,
-> the kernel hangs during startup:
+On Thu, May 20, 2021 at 10:13:43PM -0700, Randy Dunlap wrote:
+> arch/mips/include/asm/mips-boards/launch.h needs an include guard
+> to prevent it from being #included more than once.
+> Prevents these build errors:
 > 
-> (1) CONFIG_FUNCTION_GRAPH_TRACER=y
-> (2) CONFIG_PREEMPT_TRACER=y
-> (3) CONFIG_FTRACE_STARTUP_TEST=y
+> In file included from ../arch/mips/mti-malta/malta-amon.c:16:
+> ../arch/mips/include/asm/mips-boards/launch.h:8:8: error: redefinition of 'struct cpulaunch'
+>     8 | struct cpulaunch {
+>       |        ^~~~~~~~~
+> In file included from ../arch/mips/include/asm/mips-cps.h:13,
+>                  from ../arch/mips/include/asm/smp-ops.h:16,
+>                  from ../arch/mips/include/asm/smp.h:21,
+>                  from ../include/linux/smp.h:114,
+>                  from ../arch/mips/mti-malta/malta-amon.c:12:
+> ../arch/mips/include/asm/mips-boards/launch.h:8:8: note: originally defined here
+>     8 | struct cpulaunch {
+>       |        ^~~~~~~~~
+> make[3]: [../scripts/Makefile.build:273: arch/mips/mti-malta/malta-amon.o] Error 1 (ignored)
 > 
-> When update the latest mainline kernel with the above two configs (1)
-> and (2), the kernel starts normally, but it still hangs when execute
-> the following command:
-> 
-> echo "function_graph" > /sys/kernel/debug/tracing/current_tracer
-> 
-> Without CONFIG_PREEMPT_TRACER=y, the above two kinds of kernel hangs
-> disappeared, so it seems that CONFIG_PREEMPT_TRACER has some influences
-> with function_graph tracer at the first glance.
-> 
-> I use ejtag to find out the epc address is related with preempt_enable()
-> in the file arch/mips/lib/mips-atomic.c, because function tracing can
-> trace the preempt_{enable,disable} calls that are traced, replace them
-> with preempt_{enable,disable}_notrace to prevent function tracing from
-> going into an infinite loop, and then it can fix the kernel hang issue.
-> 
-> By the way, it seems that this commit is a complement and improvement of
-> commit f93a1a00f2bd ("MIPS: Fix crash that occurs when function tracing
-> is enabled").
-> 
-> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
-> Cc: Steven Rostedt <rostedt@goodmis.org>
+> Fixes: 6decd1aad15f ("MIPS: add support for buggy MT7621S core detection")
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> Reported-by: kernel test robot <lkp@intel.com>
+> Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+> Cc: linux-mips@vger.kernel.org
+> Cc: Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>
 > ---
->  arch/mips/lib/mips-atomic.c | 12 ++++++------
->  1 file changed, 6 insertions(+), 6 deletions(-)
+>  arch/mips/include/asm/mips-boards/launch.h |    5 +++++
+>  1 file changed, 5 insertions(+)
 
 applied to mips-fixes.
 

@@ -2,67 +2,91 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.2 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DAEF1C4708B
-	for <linux-mips@archiver.kernel.org>; Thu, 27 May 2021 11:44:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4C79FC4707F
+	for <linux-mips@archiver.kernel.org>; Thu, 27 May 2021 11:53:08 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id B36216113B
-	for <linux-mips@archiver.kernel.org>; Thu, 27 May 2021 11:44:47 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 2F0DA613BE
+	for <linux-mips@archiver.kernel.org>; Thu, 27 May 2021 11:53:08 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234233AbhE0LqT (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 27 May 2021 07:46:19 -0400
-Received: from elvis.franken.de ([193.175.24.41]:51722 "EHLO elvis.franken.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234095AbhE0LqS (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Thu, 27 May 2021 07:46:18 -0400
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1lmERG-0007z5-01; Thu, 27 May 2021 13:44:34 +0200
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id A5FDFC1149; Thu, 27 May 2021 13:42:03 +0200 (CEST)
-Date:   Thu, 27 May 2021 13:42:03 +0200
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     zhaoxiao <zhaoxiao@uniontech.com>
-Cc:     robh+dt@kernel.org, maoxiaochuan@loongson.cn,
-        jiaxun.yang@flygoat.com, zhangqing@loongson.cn,
-        devicetree@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/5] mips: dts: loongson: fix DTC unit name warnings
-Message-ID: <20210527114203.GB9210@alpha.franken.de>
-References: <cover.1621586643.git.zhaoxiao@uniontech.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1621586643.git.zhaoxiao@uniontech.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S234427AbhE0Lyj (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 27 May 2021 07:54:39 -0400
+Received: from mail.loongson.cn ([114.242.206.163]:48804 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S234215AbhE0Lyi (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Thu, 27 May 2021 07:54:38 -0400
+Received: from linux.localdomain (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dxb0MViK9grkUFAA--.5908S2;
+        Thu, 27 May 2021 19:52:53 +0800 (CST)
+From:   Tiezhu Yang <yangtiezhu@loongson.cn>
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel test robot <lkp@intel.com>
+Subject: [PATCH] MIPS: Loongson64: Make some functions static in smp.c
+Date:   Thu, 27 May 2021 19:52:53 +0800
+Message-Id: <1622116373-24218-1-git-send-email-yangtiezhu@loongson.cn>
+X-Mailer: git-send-email 2.1.0
+X-CM-TRANSID: AQAAf9Dxb0MViK9grkUFAA--.5908S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7ArW7ArWfKr17Ar4kAryftFb_yoW8CF17pa
+        yrAw1jqr43G3WxArsxJFW7ZrW3CrZ8WFWIyF4rAay5Xa90gwnFyFykGa48Zr1qgrW0qas5
+        Zw15CrWUGF4xCr7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUkFb7Iv0xC_KF4lb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I2
+        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
+        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xII
+        jxv20xvEc7CjxVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4
+        A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IE
+        w4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r4j6F4UMc
+        vjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwCY02Avz4vE14v_Gw4l42xK82IY
+        c2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s
+        026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF
+        0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0x
+        vE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2
+        jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07jI0P-UUUUU=
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Fri, May 21, 2021 at 05:40:23PM +0800, zhaoxiao wrote:
-> *** BLURB HERE ***
-> 
-> zhaoxiao (5):
->   mips: dts: loongson: fix DTC unit name warnings
->   mips: dts: loongson: fix DTC unit name warnings
->   mips: dts: loongson: fix DTC unit name warnings
->   mips: dts: loongson: fix DTC unit name warnings
->   mips: dts: loongson: fix DTC unit name warnings
-> 
->  arch/mips/boot/dts/loongson/loongson64-2k1000.dtsi       | 2 +-
->  arch/mips/boot/dts/loongson/loongson64g-package.dtsi     | 4 ++--
->  arch/mips/boot/dts/loongson/loongson64v_4core_virtio.dts | 2 +-
->  arch/mips/boot/dts/loongson/ls7a-pch.dtsi                | 2 +-
->  arch/mips/boot/dts/loongson/rs780e-pch.dtsi              | 2 +-
->  5 files changed, 6 insertions(+), 6 deletions(-)
+Make some functions static to fix the following sparse warnings:
 
-series applied to mips-next.
+  arch/mips/loongson64/smp.c:54:5: sparse: sparse: symbol 'ipi_read_clear' was not declared. Should it be static?
+  arch/mips/loongson64/smp.c:55:6: sparse: sparse: symbol 'ipi_write_action' was not declared. Should it be static?
+  arch/mips/loongson64/smp.c:56:6: sparse: sparse: symbol 'ipi_write_enable' was not declared. Should it be static?
+  arch/mips/loongson64/smp.c:57:6: sparse: sparse: symbol 'ipi_clear_buf' was not declared. Should it be static?
+  arch/mips/loongson64/smp.c:58:6: sparse: sparse: symbol 'ipi_write_buf' was not declared. Should it be static?
 
-Thomas.
+Fixes: fed4955f304e ("MIPS: Loongson64: Add Mail_Send support for 3A4000+ CPU")
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+---
+ arch/mips/loongson64/smp.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
+diff --git a/arch/mips/loongson64/smp.c b/arch/mips/loongson64/smp.c
+index 6acde65..09ebe84 100644
+--- a/arch/mips/loongson64/smp.c
++++ b/arch/mips/loongson64/smp.c
+@@ -51,11 +51,11 @@ static uint32_t core0_c0count[NR_CPUS];
+ 		__wbflush();			\
+ 	} while (0)
+ 
+-u32 (*ipi_read_clear)(int cpu);
+-void (*ipi_write_action)(int cpu, u32 action);
+-void (*ipi_write_enable)(int cpu);
+-void (*ipi_clear_buf)(int cpu);
+-void (*ipi_write_buf)(int cpu, struct task_struct *idle);
++static u32 (*ipi_read_clear)(int cpu);
++static void (*ipi_write_action)(int cpu, u32 action);
++static void (*ipi_write_enable)(int cpu);
++static void (*ipi_clear_buf)(int cpu);
++static void (*ipi_write_buf)(int cpu, struct task_struct *idle);
+ 
+ /* send mail via Mail_Send register for 3A4000+ CPU */
+ static void csr_mail_send(uint64_t data, int cpu, int mailbox)
 -- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+2.1.0
+

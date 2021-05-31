@@ -7,27 +7,27 @@ X-Spam-Status: No, score=-19.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
 	URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 47438C47082
-	for <linux-mips@archiver.kernel.org>; Mon, 31 May 2021 13:46:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 83142C47083
+	for <linux-mips@archiver.kernel.org>; Mon, 31 May 2021 14:10:05 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 2C74C61A2D
-	for <linux-mips@archiver.kernel.org>; Mon, 31 May 2021 13:46:29 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 6A4A861370
+	for <linux-mips@archiver.kernel.org>; Mon, 31 May 2021 14:10:05 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231563AbhEaNsF (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 31 May 2021 09:48:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48556 "EHLO mail.kernel.org"
+        id S233362AbhEaOLi (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 31 May 2021 10:11:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40254 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231686AbhEaNqD (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Mon, 31 May 2021 09:46:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6E55B615FF;
-        Mon, 31 May 2021 13:30:05 +0000 (UTC)
+        id S233507AbhEaOJg (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Mon, 31 May 2021 10:09:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 669E461463;
+        Mon, 31 May 2021 13:40:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1622467806;
-        bh=VNoJb72BASLscbJ76MB5QsneL7jW1r5so6opZSHcc3Y=;
+        s=korg; t=1622468427;
+        bh=nk4yxqwhuy0fshY82HCpICQe/4osT6W/KMcAUXyxtyU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=SNC4JK2zmQYR3wZTsMd/d9YwToNOw9BtIy834RB9EJB4L9lw6yUo4fzYLJYYj1f1L
-         Jl0xBzK0nJqZxXqaIAEOEiiaHI8XqWaM53xH47QhMnk2MiGZ4AUVxmScw+klqik7o0
-         gU3if//l+/RihOtKPyUt1d62pNAeIbRhD+AbrSsw=
+        b=Z8EzPOTeCCEV2TtVMqon5yr80IrQ5Wedrud4iR+estoRFSNkAMmBaMK3IRUQVGrxs
+         HJSs79ULTafR2d7HMo18Fyr1Ld+knoZ1kNOjnXFxQgRI6uFeKZ9DkNQdUke+5pMUUi
+         4TQxFqKRQyReLILH4rotYKP5jrvYD+okXWLbDhDw=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -38,12 +38,12 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Ralf Baechle <ralf@linux-mips.org>,
         Manuel Lauss <manuel.lauss@gmail.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 75/79] MIPS: alchemy: xxs1500: add gpio-au1000.h header file
-Date:   Mon, 31 May 2021 15:15:00 +0200
-Message-Id: <20210531130638.392292508@linuxfoundation.org>
+Subject: [PATCH 5.10 239/252] MIPS: alchemy: xxs1500: add gpio-au1000.h header file
+Date:   Mon, 31 May 2021 15:15:04 +0200
+Message-Id: <20210531130706.125564066@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210531130636.002722319@linuxfoundation.org>
-References: <20210531130636.002722319@linuxfoundation.org>
+In-Reply-To: <20210531130657.971257589@linuxfoundation.org>
+References: <20210531130657.971257589@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -79,12 +79,12 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 1 insertion(+)
 
 diff --git a/arch/mips/alchemy/board-xxs1500.c b/arch/mips/alchemy/board-xxs1500.c
-index 0fc53e08a894..c05f7376148a 100644
+index b184baa4e56a..f175bce2987f 100644
 --- a/arch/mips/alchemy/board-xxs1500.c
 +++ b/arch/mips/alchemy/board-xxs1500.c
-@@ -30,6 +30,7 @@
- #include <asm/bootinfo.h>
+@@ -18,6 +18,7 @@
  #include <asm/reboot.h>
+ #include <asm/setup.h>
  #include <asm/mach-au1x00/au1000.h>
 +#include <asm/mach-au1x00/gpio-au1000.h>
  #include <prom.h>

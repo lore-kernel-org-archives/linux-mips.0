@@ -2,140 +2,96 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-19.1 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 90D4BC47082
-	for <linux-mips@archiver.kernel.org>; Mon, 31 May 2021 14:55:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 01BC9C47080
+	for <linux-mips@archiver.kernel.org>; Mon, 31 May 2021 14:58:41 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 742E561378
-	for <linux-mips@archiver.kernel.org>; Mon, 31 May 2021 14:55:40 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id E0DC66139A
+	for <linux-mips@archiver.kernel.org>; Mon, 31 May 2021 14:58:40 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232884AbhEaO5P (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 31 May 2021 10:57:15 -0400
-Received: from szxga03-in.huawei.com ([45.249.212.189]:3356 "EHLO
-        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234294AbhEaOyy (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Mon, 31 May 2021 10:54:54 -0400
-Received: from dggemv703-chm.china.huawei.com (unknown [172.30.72.54])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4FtyqX5ffTz66Ql;
-        Mon, 31 May 2021 22:49:28 +0800 (CST)
-Received: from dggpemm500006.china.huawei.com (7.185.36.236) by
- dggemv703-chm.china.huawei.com (10.3.19.46) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Mon, 31 May 2021 22:53:11 +0800
-Received: from thunder-town.china.huawei.com (10.174.177.72) by
- dggpemm500006.china.huawei.com (7.185.36.236) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Mon, 31 May 2021 22:53:10 +0800
-From:   Zhen Lei <thunder.leizhen@huawei.com>
-To:     Borislav Petkov <bp@alien8.de>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Tony Luck <tony.luck@intel.com>,
-        James Morse <james.morse@arm.com>,
-        Robert Richter <rric@kernel.org>,
-        Johannes Thumshirn <morbidrsa@gmail.com>,
+        id S232292AbhEaPAO (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 31 May 2021 11:00:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50622 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233295AbhEaO6H (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Mon, 31 May 2021 10:58:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 55EEE61CC9;
+        Mon, 31 May 2021 14:01:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1622469660;
+        bh=nk4yxqwhuy0fshY82HCpICQe/4osT6W/KMcAUXyxtyU=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=ZgPC7Z9MiaaIfcWQ1sFMLAp0OlQmMWRZvefIaPimYzir3AtcSQmfvBikcbltmyZLr
+         +0pSvNpwGRKYviq8mGtztqco/M6ioyLke9I/ScQBct9Se7iwFWO4g8MUiq6dONWEjH
+         32jfyRNeLQojbuBwyZ1d96V1pwcDPM6IyP21KYWs=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        linux-mips@vger.kernel.org,
+        Manuel Lauss <manuel.lauss@googlemail.com>,
         Ralf Baechle <ralf@linux-mips.org>,
-        Dinh Nguyen <dinguyen@kernel.org>,
-        Jan Luebbe <jlu@pengutronix.de>,
-        Andre Przywara <andre.przywara@arm.com>,
-        Channagoud Kadabi <ckadabi@codeaurora.org>,
-        "Venkata Narendra Kumar Gutta" <vnkgutta@codeaurora.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        "Khuong Dinh" <khuong@os.amperecomputing.com>,
-        York Sun <york.sun@nxp.com>,
-        linux-edac <linux-edac@vger.kernel.org>,
-        linux-mips <linux-mips@vger.kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-CC:     Zhen Lei <thunder.leizhen@huawei.com>
-Subject: [PATCH v2 1/3] edac: Fix error return code when edac_pci_add_device() fails
-Date:   Mon, 31 May 2021 22:53:00 +0800
-Message-ID: <20210531145302.9655-2-thunder.leizhen@huawei.com>
-X-Mailer: git-send-email 2.26.0.windows.1
-In-Reply-To: <20210531145302.9655-1-thunder.leizhen@huawei.com>
-References: <20210531145302.9655-1-thunder.leizhen@huawei.com>
+        Manuel Lauss <manuel.lauss@gmail.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.12 281/296] MIPS: alchemy: xxs1500: add gpio-au1000.h header file
+Date:   Mon, 31 May 2021 15:15:36 +0200
+Message-Id: <20210531130713.168139657@linuxfoundation.org>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20210531130703.762129381@linuxfoundation.org>
+References: <20210531130703.762129381@linuxfoundation.org>
+User-Agent: quilt/0.66
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.174.177.72]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggpemm500006.china.huawei.com (7.185.36.236)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-When edac_pci_add_device() fails, fix to return -ENODEV from the error
-handling case instead of 0.
+From: Randy Dunlap <rdunlap@infradead.org>
 
-The "goto err" in octeon_pci_probe() is removed to simplify code.
+[ Upstream commit ff4cff962a7eedc73e54b5096693da7f86c61346 ]
 
-Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+board-xxs1500.c references 2 functions without declaring them, so add
+the header file to placate the build.
+
+../arch/mips/alchemy/board-xxs1500.c: In function 'board_setup':
+../arch/mips/alchemy/board-xxs1500.c:56:2: error: implicit declaration of function 'alchemy_gpio1_input_enable' [-Werror=implicit-function-declaration]
+   56 |  alchemy_gpio1_input_enable();
+../arch/mips/alchemy/board-xxs1500.c:57:2: error: implicit declaration of function 'alchemy_gpio2_enable'; did you mean 'alchemy_uart_enable'? [-Werror=implicit-function-declaration]
+   57 |  alchemy_gpio2_enable();
+
+Fixes: 8e026910fcd4 ("MIPS: Alchemy: merge GPR/MTX-1/XXS1500 board code into single files")
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc: linux-mips@vger.kernel.org
+Cc: Manuel Lauss <manuel.lauss@googlemail.com>
+Cc: Ralf Baechle <ralf@linux-mips.org>
+Acked-by: Manuel Lauss <manuel.lauss@gmail.com>
+Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/edac/amd8111_edac.c    | 1 +
- drivers/edac/mpc85xx_edac.c    | 1 +
- drivers/edac/octeon_edac-pci.c | 9 ++-------
- 3 files changed, 4 insertions(+), 7 deletions(-)
+ arch/mips/alchemy/board-xxs1500.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/edac/amd8111_edac.c b/drivers/edac/amd8111_edac.c
-index 7508aa416ddbd7b..16b28da6489177a 100644
---- a/drivers/edac/amd8111_edac.c
-+++ b/drivers/edac/amd8111_edac.c
-@@ -480,6 +480,7 @@ static int amd8111_pci_probe(struct pci_dev *dev,
- 	if (edac_pci_add_device(pci_info->edac_dev, pci_info->edac_idx) > 0) {
- 		printk(KERN_ERR "failed to add edac_pci for %s\n",
- 			pci_info->ctl_name);
-+		ret = -ENODEV;
- 		goto err_edac_free_ctl;
- 	}
+diff --git a/arch/mips/alchemy/board-xxs1500.c b/arch/mips/alchemy/board-xxs1500.c
+index b184baa4e56a..f175bce2987f 100644
+--- a/arch/mips/alchemy/board-xxs1500.c
++++ b/arch/mips/alchemy/board-xxs1500.c
+@@ -18,6 +18,7 @@
+ #include <asm/reboot.h>
+ #include <asm/setup.h>
+ #include <asm/mach-au1x00/au1000.h>
++#include <asm/mach-au1x00/gpio-au1000.h>
+ #include <prom.h>
  
-diff --git a/drivers/edac/mpc85xx_edac.c b/drivers/edac/mpc85xx_edac.c
-index 67f7bc3fe5b3b62..312de75e66b851e 100644
---- a/drivers/edac/mpc85xx_edac.c
-+++ b/drivers/edac/mpc85xx_edac.c
-@@ -248,6 +248,7 @@ static int mpc85xx_pci_err_probe(struct platform_device *op)
- 
- 	if (edac_pci_add_device(pci, pdata->edac_idx) > 0) {
- 		edac_dbg(3, "failed edac_pci_add_device()\n");
-+		res = -ENODEV;
- 		goto err;
- 	}
- 
-diff --git a/drivers/edac/octeon_edac-pci.c b/drivers/edac/octeon_edac-pci.c
-index 28b238eecefcc9d..07995de4ea703ee 100644
---- a/drivers/edac/octeon_edac-pci.c
-+++ b/drivers/edac/octeon_edac-pci.c
-@@ -60,7 +60,6 @@ static void octeon_pci_poll(struct edac_pci_ctl_info *pci)
- static int octeon_pci_probe(struct platform_device *pdev)
- {
- 	struct edac_pci_ctl_info *pci;
--	int res = 0;
- 
- 	pci = edac_pci_alloc_ctl_info(0, "octeon_pci_err");
- 	if (!pci)
-@@ -76,15 +75,11 @@ static int octeon_pci_probe(struct platform_device *pdev)
- 
- 	if (edac_pci_add_device(pci, 0) > 0) {
- 		pr_err("%s: edac_pci_add_device() failed\n", __func__);
--		goto err;
-+		edac_pci_free_ctl_info(pci);
-+		return -ENODEV;
- 	}
- 
- 	return 0;
--
--err:
--	edac_pci_free_ctl_info(pci);
--
--	return res;
- }
- 
- static int octeon_pci_remove(struct platform_device *pdev)
+ const char *get_system_type(void)
 -- 
-2.26.0.106.g9fadedd
+2.30.2
+
 
 

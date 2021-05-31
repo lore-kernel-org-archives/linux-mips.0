@@ -2,356 +2,135 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-19.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-17.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 953FEC47083
-	for <linux-mips@archiver.kernel.org>; Mon, 31 May 2021 12:31:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5237BC47080
+	for <linux-mips@archiver.kernel.org>; Mon, 31 May 2021 13:14:38 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 76D21610C9
-	for <linux-mips@archiver.kernel.org>; Mon, 31 May 2021 12:31:46 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 2FD0F6135A
+	for <linux-mips@archiver.kernel.org>; Mon, 31 May 2021 13:14:38 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231637AbhEaMdV (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 31 May 2021 08:33:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38740 "EHLO mail.kernel.org"
+        id S231330AbhEaNQP (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 31 May 2021 09:16:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51868 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231580AbhEaMdM (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Mon, 31 May 2021 08:33:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 799556135C;
-        Mon, 31 May 2021 12:31:28 +0000 (UTC)
+        id S231327AbhEaNQP (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Mon, 31 May 2021 09:16:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1367A60FE8;
+        Mon, 31 May 2021 13:14:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1622464292;
-        bh=Y7haZXG6LCrkyiNf4al3/zg3oLPp7ZoFJvZMl/Ul6YQ=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Wq4e57ItDLEqmiEcvSEIAazH6yHLyfo64u0lSaJOoctDXfqqrPCsOjjERbZhZBIVx
-         ZK0WoswUqkIc0oodQhu7GQS9m8Cp5JxXTpYzjq2rIR156egj11Bx2hYUbQiwWKkY7B
-         mJKQSkpud+trIX7xSxyLexZAZqn62t9FWnfr2+o6LbNDLLnOsU82S94co+4gJQ3mO/
-         64R7Y9hhxOF2VJMni93fZlVUjWekIqV7nr8ng/0Aye3mzetPS/DaJ0u/ty6v2T+sgy
-         amdz73Z/NgZyyrLxs6sb6DzWfPEVjfKFvPEMbaL8jst2H7E5+We7Eq5jk09RocHzGu
-         NPL1iwhT2hj/w==
-From:   Mike Rapoport <rppt@kernel.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        David Hildenbrand <david@redhat.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Will Deacon <will@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
-        linux-mm@kvack.org, linux-s390@vger.kernel.org
-Subject: [RFC/RFT PATCH 5/5] arm64: switch to generic memblock_setup_resources()
-Date:   Mon, 31 May 2021 15:29:59 +0300
-Message-Id: <20210531122959.23499-6-rppt@kernel.org>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20210531122959.23499-1-rppt@kernel.org>
-References: <20210531122959.23499-1-rppt@kernel.org>
+        s=k20201202; t=1622466875;
+        bh=ijtUyUMIwjDtjTIX9JOuxobyfw9oYEhVyr+3OgdRpdo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=tUVJSxJeeNkOZ4lVAaSuUoCzwFPtldSxUUM2kwe2O1/IPfbQioE3WzDuQgN24EuR2
+         Am/KlWHZh6C0RK1SLOD6X56fT1xXDI7JfK4m5UK/loHshN7vDTReUr/65qGKhCcg/o
+         ss9Jbifvj3oC7w7vjPZsIZGA+HjlpY/hqF8E6sKWDExvRT3tfpNb6HMP3oUFQwiMwv
+         OTCI0ltai+uesmVSLl1mEIBbiQYTbqJIwcP9Y790u+wYlX547hbeik1xovL8vYi+Jd
+         8Kw8tkwoiC5KvukH0kWfyu8TiIKnklvi209rVEBdmha+y1BMn2z7kUbNstGrrZ8gOo
+         6tpx1D27Rrd3g==
+Received: by pali.im (Postfix)
+        id CC1D3B84; Mon, 31 May 2021 15:14:31 +0200 (CEST)
+Date:   Mon, 31 May 2021 15:14:31 +0200
+From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
+To:     Sergio Paracuellos <sergio.paracuellos@gmail.com>
+Cc:     linux-mips@vger.kernel.org, tsbogend@alpha.franken.de,
+        devicetree@vger.kernel.org, matthias.bgg@gmail.com,
+        john@phrozen.org, bhelgaas@google.com, robh+dt@kernel.org,
+        linux-staging@lists.linux.dev, gregkh@linuxfoundation.org,
+        neil@brown.name, ilya.lipnitskiy@gmail.com,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org
+Subject: Re: [PATCH 2/4] MIPS: pci: Add driver for MT7621 PCIe controller
+Message-ID: <20210531131431.bzsvmefqdyawmeo2@pali>
+References: <20210515124055.22225-1-sergio.paracuellos@gmail.com>
+ <20210515124055.22225-3-sergio.paracuellos@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210515124055.22225-3-sergio.paracuellos@gmail.com>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-From: Mike Rapoport <rppt@linux.ibm.com>
+On Saturday 15 May 2021 14:40:53 Sergio Paracuellos wrote:
+> This patch adds a driver for the PCIe controller of MT7621 SoC.
+> 
+> Signed-off-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
+> ---
+>  arch/mips/pci/Makefile     |   1 +
+>  arch/mips/pci/pci-mt7621.c | 624 +++++++++++++++++++++++++++++++++++++
+>  arch/mips/ralink/Kconfig   |   9 +-
+>  3 files changed, 633 insertions(+), 1 deletion(-)
+>  create mode 100644 arch/mips/pci/pci-mt7621.c
+> 
+> diff --git a/arch/mips/pci/Makefile b/arch/mips/pci/Makefile
+> index f3eecc065e5c..178c550739c4 100644
+> --- a/arch/mips/pci/Makefile
+> +++ b/arch/mips/pci/Makefile
+> @@ -24,6 +24,7 @@ obj-$(CONFIG_PCI_AR2315)	+= pci-ar2315.o
+>  obj-$(CONFIG_SOC_AR71XX)	+= pci-ar71xx.o
+>  obj-$(CONFIG_PCI_AR724X)	+= pci-ar724x.o
+>  obj-$(CONFIG_PCI_XTALK_BRIDGE)	+= pci-xtalk-bridge.o
+> +obj-$(CONFIG_PCI_MT7621)	+= pci-mt7621.o
+>  #
+>  # These are still pretty much in the old state, watch, go blind.
+>  #
+> diff --git a/arch/mips/pci/pci-mt7621.c b/arch/mips/pci/pci-mt7621.c
+> new file mode 100644
+> index 000000000000..fe1945819d25
+> --- /dev/null
+> +++ b/arch/mips/pci/pci-mt7621.c
+...
+> +static int mt7621_pcie_enable_ports(struct mt7621_pcie *pcie)
+> +{
+> +	struct device *dev = pcie->dev;
+> +	struct mt7621_pcie_port *port;
+> +	u8 num_slots_enabled = 0;
+> +	u32 slot;
+> +	u32 val;
+> +	int err;
+> +
+> +	/* Setup MEMWIN and IOWIN */
+> +	pcie_write(pcie, 0xffffffff, RALINK_PCI_MEMBASE);
+> +	pcie_write(pcie, pcie->io.start, RALINK_PCI_IOBASE);
+> +
+> +	list_for_each_entry(port, &pcie->ports, list) {
+> +		if (port->enabled) {
+> +			err = clk_prepare_enable(port->clk);
+> +			if (err) {
+> +				dev_err(dev, "enabling clk pcie%d\n", slot);
+> +				return err;
+> +			}
+> +
+> +			mt7621_pcie_enable_port(port);
+> +			dev_info(dev, "PCIE%d enabled\n", port->slot);
+> +			num_slots_enabled++;
+> +		}
+> +	}
+> +
+> +	for (slot = 0; slot < num_slots_enabled; slot++) {
+> +		val = read_config(pcie, slot, PCI_COMMAND);
+> +		val |= PCI_COMMAND_MASTER;
+> +		write_config(pcie, slot, PCI_COMMAND, val);
 
-The implementation of resource setup on arm64 takes into account NOMAP
-regions and registers them as "Reserved" rather than as "System RAM".
-In addition, there is an extra pass that adds regions that were reserved in
-memblock to the resource tree as well.
+Hello! Is this part of code correct? Because it looks strange if PCIe
+controller driver automatically enables PCI bus mastering, prior device
+driver initialize itself.
 
-Update the generic version of memblock_setup_resources() to take into the
-account NOMAP regions and move the registration of the reserved regions to
-memblock to have all the "System RAM" related resource data structures and
-code close to each other.
+Moreover kernel has already function pci_set_master() for this purpose
+which is used by device drivers.
 
-Only enable requests for the reserved resources if an architecture selects
-CONFIG_ARCH_WANT_RESERVE_MEMBLOCK_RESERVED_REGIONS.
+So I think this code can confuse some device drivers...
 
-Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
----
- arch/Kconfig              |   7 +++
- arch/arm64/Kconfig        |   1 +
- arch/arm64/kernel/setup.c | 101 +-------------------------------------
- mm/memblock.c             |  73 +++++++++++++++++++++------
- 4 files changed, 68 insertions(+), 114 deletions(-)
-
-diff --git a/arch/Kconfig b/arch/Kconfig
-index c45b770d3579..9c999dc8ab47 100644
---- a/arch/Kconfig
-+++ b/arch/Kconfig
-@@ -1275,6 +1275,13 @@ config ARCH_SPLIT_ARG64
- config ARCH_HAS_ELFCORE_COMPAT
- 	bool
- 
-+config ARCH_WANT_RESERVE_MEMBLOCK_RESERVED_REGIONS
-+	bool
-+	help
-+	  If an architecture requires that memory regions reserved in
-+	  memblock will appear as "Reserved" in the resource tree, select
-+	  this option.
-+
- source "kernel/gcov/Kconfig"
- 
- source "scripts/gcc-plugins/Kconfig"
-diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
-index 9f1d8566bbf9..0e1f41650a6a 100644
---- a/arch/arm64/Kconfig
-+++ b/arch/arm64/Kconfig
-@@ -93,6 +93,7 @@ config ARM64
- 	select ARCH_WANT_FRAME_POINTERS
- 	select ARCH_WANT_HUGE_PMD_SHARE if ARM64_4K_PAGES || (ARM64_16K_PAGES && !ARM64_VA_BITS_36)
- 	select ARCH_WANT_LD_ORPHAN_WARN
-+	select ARCH_WANT_RESERVE_MEMBLOCK_RESERVED_REGIONS
- 	select ARCH_HAS_UBSAN_SANITIZE_ALL
- 	select ARM_AMBA
- 	select ARM_ARCH_TIMER
-diff --git a/arch/arm64/kernel/setup.c b/arch/arm64/kernel/setup.c
-index 61845c0821d9..90e97cf70844 100644
---- a/arch/arm64/kernel/setup.c
-+++ b/arch/arm64/kernel/setup.c
-@@ -51,32 +51,8 @@
- #include <asm/xen/hypervisor.h>
- #include <asm/mmu_context.h>
- 
--static int num_standard_resources;
--static struct resource *standard_resources;
--
- phys_addr_t __fdt_pointer __initdata;
- 
--/*
-- * Standard memory resources
-- */
--static struct resource mem_res[] = {
--	{
--		.name = "Kernel code",
--		.start = 0,
--		.end = 0,
--		.flags = IORESOURCE_SYSTEM_RAM
--	},
--	{
--		.name = "Kernel data",
--		.start = 0,
--		.end = 0,
--		.flags = IORESOURCE_SYSTEM_RAM
--	}
--};
--
--#define kernel_code mem_res[0]
--#define kernel_data mem_res[1]
--
- /*
-  * The recorded values of x0 .. x3 upon kernel entry.
-  */
-@@ -214,81 +190,6 @@ static void __init setup_machine_fdt(phys_addr_t dt_phys)
- 	dump_stack_set_arch_desc("%s (DT)", name);
- }
- 
--static void __init request_standard_resources(void)
--{
--	struct memblock_region *region;
--	struct resource *res;
--	unsigned long i = 0;
--	size_t res_size;
--
--	kernel_code.start   = __pa_symbol(_stext);
--	kernel_code.end     = __pa_symbol(__init_begin - 1);
--	kernel_data.start   = __pa_symbol(_sdata);
--	kernel_data.end     = __pa_symbol(_end - 1);
--
--	num_standard_resources = memblock.memory.cnt;
--	res_size = num_standard_resources * sizeof(*standard_resources);
--	standard_resources = memblock_alloc(res_size, SMP_CACHE_BYTES);
--	if (!standard_resources)
--		panic("%s: Failed to allocate %zu bytes\n", __func__, res_size);
--
--	for_each_mem_region(region) {
--		res = &standard_resources[i++];
--		if (memblock_is_nomap(region)) {
--			res->name  = "reserved";
--			res->flags = IORESOURCE_MEM;
--		} else {
--			res->name  = "System RAM";
--			res->flags = IORESOURCE_SYSTEM_RAM | IORESOURCE_BUSY;
--		}
--		res->start = __pfn_to_phys(memblock_region_memory_base_pfn(region));
--		res->end = __pfn_to_phys(memblock_region_memory_end_pfn(region)) - 1;
--
--		request_resource(&iomem_resource, res);
--
--		if (kernel_code.start >= res->start &&
--		    kernel_code.end <= res->end)
--			request_resource(res, &kernel_code);
--		if (kernel_data.start >= res->start &&
--		    kernel_data.end <= res->end)
--			request_resource(res, &kernel_data);
--#ifdef CONFIG_KEXEC_CORE
--		/* Userspace will find "Crash kernel" region in /proc/iomem. */
--		if (crashk_res.end && crashk_res.start >= res->start &&
--		    crashk_res.end <= res->end)
--			request_resource(res, &crashk_res);
--#endif
--	}
--}
--
--static int __init reserve_memblock_reserved_regions(void)
--{
--	u64 i, j;
--
--	for (i = 0; i < num_standard_resources; ++i) {
--		struct resource *mem = &standard_resources[i];
--		phys_addr_t r_start, r_end, mem_size = resource_size(mem);
--
--		if (!memblock_is_region_reserved(mem->start, mem_size))
--			continue;
--
--		for_each_reserved_mem_range(j, &r_start, &r_end) {
--			resource_size_t start, end;
--
--			start = max(PFN_PHYS(PFN_DOWN(r_start)), mem->start);
--			end = min(PFN_PHYS(PFN_UP(r_end)) - 1, mem->end);
--
--			if (start > mem->end || end < mem->start)
--				continue;
--
--			reserve_region_with_split(mem, start, end, "reserved");
--		}
--	}
--
--	return 0;
--}
--arch_initcall(reserve_memblock_reserved_regions);
--
- u64 __cpu_logical_map[NR_CPUS] = { [0 ... NR_CPUS-1] = INVALID_HWID };
- 
- u64 cpu_logical_map(unsigned int cpu)
-@@ -359,7 +260,7 @@ void __init __no_sanitize_address setup_arch(char **cmdline_p)
- 
- 	kasan_init();
- 
--	request_standard_resources();
-+	memblock_setup_resources();
- 
- 	early_ioremap_reset();
- 
-diff --git a/mm/memblock.c b/mm/memblock.c
-index 504435753259..82d4b0f5bf5e 100644
---- a/mm/memblock.c
-+++ b/mm/memblock.c
-@@ -2094,12 +2094,15 @@ static struct resource __initdata *standard_resources[] = {
- #endif
- };
- 
-+static int num_resources;
-+static struct resource *resources;
-+
- void __init memblock_setup_resources(void)
- {
- 	struct resource *res, *kres, *sub_res;
--	phys_addr_t start, end;
--	int j;
--	u64 i;
-+	struct memblock_region *region;
-+	size_t res_size;
-+	int i;
- 
- 	code_resource.start = __pa_symbol(_text);
- 	code_resource.end = __pa_symbol(_etext)-1;
-@@ -2110,26 +2113,36 @@ void __init memblock_setup_resources(void)
- 	bss_resource.start = __pa_symbol(__bss_start);
- 	bss_resource.end = __pa_symbol(__bss_stop)-1;
- 
--	for_each_mem_range(i, &start, &end) {
--		res = memblock_alloc(sizeof(*res), 8);
--		if (!res)
--			panic("%s: Failed to allocate %zu bytes align=0x%x\n",
--			      __func__, sizeof(*res), 8);
--		res->flags = IORESOURCE_BUSY | IORESOURCE_SYSTEM_RAM;
-+	num_resources = memblock.memory.cnt;
-+	res_size = num_resources * sizeof(*resources);
-+	resources = memblock_alloc(res_size, SMP_CACHE_BYTES);
- 
--		res->name = "System RAM";
--		res->start = start;
-+	if (!resources)
-+		panic("%s: Failed to allocate %zu bytes align=0x%x\n",
-+		      __func__, res_size, 8);
-+
-+	res = resources;
-+	for_each_mem_region(region) {
-+		if (memblock_is_nomap(region)) {
-+			res->name  = "reserved";
-+			res->flags = IORESOURCE_MEM;
-+		} else {
-+			res->name  = "System RAM";
-+			res->flags = IORESOURCE_SYSTEM_RAM | IORESOURCE_BUSY;
-+		}
- 
-+		res->start = region->base;
- 		/*
- 		 * In memblock, end points to the first byte after the
- 		 * range while in resourses, end points to the last byte in
- 		 * the range.
- 		 */
--		res->end = end - 1;
-+		res->end = region->base + region->size - 1;
-+
- 		request_resource(&iomem_resource, res);
- 
--		for (j = 0; j < ARRAY_SIZE(standard_resources); j++) {
--			kres = standard_resources[j];
-+		for (i = 0; i < ARRAY_SIZE(standard_resources); i++) {
-+			kres = standard_resources[i];
- 			if (!kres->end || kres->start < res->start ||
- 			    kres->start > res->end)
- 				continue;
-@@ -2146,9 +2159,41 @@ void __init memblock_setup_resources(void)
- 				request_resource(res, kres);
- 			}
- 		}
-+
-+		res++;
- 	}
- }
- 
-+#ifdef CONFIG_ARCH_WANT_RESERVE_MEMBLOCK_RESERVED_REGIONS
-+static int __init reserve_memblock_reserved_regions(void)
-+{
-+	u64 i, j;
-+
-+	for (i = 0; i < num_resources; ++i) {
-+		struct resource *mem = &resources[i];
-+		phys_addr_t r_start, r_end, mem_size = resource_size(mem);
-+
-+		if (!memblock_is_region_reserved(mem->start, mem_size))
-+			continue;
-+
-+		for_each_reserved_mem_range(j, &r_start, &r_end) {
-+			resource_size_t start, end;
-+
-+			start = max(PFN_PHYS(PFN_DOWN(r_start)), mem->start);
-+			end = min(PFN_PHYS(PFN_UP(r_end)) - 1, mem->end);
-+
-+			if (start > mem->end || end < mem->start)
-+				continue;
-+
-+			reserve_region_with_split(mem, start, end, "reserved");
-+		}
-+	}
-+
-+	return 0;
-+}
-+arch_initcall(reserve_memblock_reserved_regions);
-+#endif
-+
- #if defined(CONFIG_DEBUG_FS) && defined(CONFIG_ARCH_KEEP_MEMBLOCK)
- 
- static int memblock_debug_show(struct seq_file *m, void *private)
--- 
-2.28.0
-
+> +		/* configure RC FTS number to 250 when it leaves L0s */
+> +		val = read_config(pcie, slot, PCIE_FTS_NUM);
+> +		val &= ~PCIE_FTS_NUM_MASK;
+> +		val |= PCIE_FTS_NUM_L0(0x50);
+> +		write_config(pcie, slot, PCIE_FTS_NUM, val);
+> +	}
+> +
+> +	return 0;
+> +}

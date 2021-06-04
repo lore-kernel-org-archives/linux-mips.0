@@ -2,141 +2,333 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-12.9 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E58FDC07E94
-	for <linux-mips@archiver.kernel.org>; Fri,  4 Jun 2021 11:53:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C96F9C47099
+	for <linux-mips@archiver.kernel.org>; Fri,  4 Jun 2021 11:53:20 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id C9ABA61402
-	for <linux-mips@archiver.kernel.org>; Fri,  4 Jun 2021 11:53:02 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id B27A261415
+	for <linux-mips@archiver.kernel.org>; Fri,  4 Jun 2021 11:53:20 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230185AbhFDLys (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 4 Jun 2021 07:54:48 -0400
-Received: from mail-wm1-f46.google.com ([209.85.128.46]:38483 "EHLO
+        id S230305AbhFDLzG (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 4 Jun 2021 07:55:06 -0400
+Received: from mail-wm1-f46.google.com ([209.85.128.46]:53154 "EHLO
         mail-wm1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230234AbhFDLys (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Fri, 4 Jun 2021 07:54:48 -0400
-Received: by mail-wm1-f46.google.com with SMTP id t4-20020a1c77040000b029019d22d84ebdso7732666wmi.3;
-        Fri, 04 Jun 2021 04:53:01 -0700 (PDT)
+        with ESMTP id S230300AbhFDLzG (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Fri, 4 Jun 2021 07:55:06 -0400
+Received: by mail-wm1-f46.google.com with SMTP id f17so5210503wmf.2;
+        Fri, 04 Jun 2021 04:53:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=+D9StzdN0vpopnheERzUXaZ4q93k/9Dx6vRNCqWeUrg=;
-        b=GH7N2wRtV/K+Wap9/nuBByV6soY17GWg07RYNaFVloCbx/tx+5jYLNdEdl32JQ6gtf
-         8GDtqGR3sYeUEgbdy7RPiD2Pg3URvxPjaZFwYX6S9Kce7/iZQqbT6vJN65qRR29UaERH
-         p1Cp3peuc+COiX75KBMzWmKKfZl2AeWEDYOFMlqDWv5KDzTMQ3ISCRwjjBqk7LWNwL03
-         raMjKMct52L7H1LDq6NN4gSh+gk49+OsmYNpRD6ALALiR2RaiCWHxlMHLpNHwcSqFks1
-         3wJeI05nGKC5XCM40MkXlUipd/443yPQe1Ijsl4lDwZtxO9wP7F+Q4Ug2pIjRl//f/Ku
-         o/ew==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=IFkFZkUEu8pyfmElOSW0LNkJkb9AwGYnZod3dF9RUZA=;
+        b=VFs6VVQEwxaV72eFc/7Yd+SN5Vx3VqIMOhPcU1YHG3PwUfWT1fikGPakgkTT6LZWpp
+         uZSWxVPKcNVOSGKitgF+njSLldoa1/STR8S1Y/ewxnXUE0Fu7SO6uAJ1dFxr6V5rkTLK
+         GQ8keo8x/kKOTRpvjBNGbbFj3K3xQzRb6M45HZV+SATuj22DefGSCgGYTw5bEpqIX3gW
+         oHPAFQua5W31PHBvE7rHgYxEcLLXNkn92jOqFQX+C8gOluflEITmo+yWLRAjgsEX0DTR
+         qkY8IYR+GbPmdRuL65AGLXcLe0dJXcb3w8e2FztDkjIgGLdfqfOlHyrbooSzLFYV9luz
+         o6yg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=+D9StzdN0vpopnheERzUXaZ4q93k/9Dx6vRNCqWeUrg=;
-        b=Z5BwQIJ5FIIpXWJpCjLr64eI654xpEe63Dl+m6bBssKmQatk1mjry5FwwOONFGylro
-         vd5/oiTs7zB9yW0pOxrlwjS+D2/GjmXwOA0uIGAG9LGWOlnuTabnCOQr2MXrIkKbqZw3
-         /hcdQ8B6+W7SgXJ6BuBWSvcPZol7X+pdMbIF1rkiF5togbWukYS55jjGRlvTnl12OQRT
-         o1+NET6gSZ0Ss8M1Azgm2S+Qi+HCTckYaRsJwEvJfoMF+R1x1o2e5Acpnw8xazeFng2m
-         Jg+1jsGA2z0TbIPhZLT9jZh6crgOXsCsHGPDh2Su6txS4VzxaOXDaPooSEgFV77FdYNx
-         dReg==
-X-Gm-Message-State: AOAM5327QgIOWLD0x48mJTJnKU3II18WVWHZeTtS2nMXyz2C4c0eXv17
-        65Occ0C3Y9VqMQMsIaaDoMY=
-X-Google-Smtp-Source: ABdhPJxrFLUv28ChAPK1F4+Ght3tufcz5mIblaM9Y4oGsPIrIk0pIMkKQrC9kYMnI5du4Z0xZ6vLkg==
-X-Received: by 2002:a7b:c346:: with SMTP id l6mr3238101wmj.109.1622807521197;
-        Fri, 04 Jun 2021 04:52:01 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=IFkFZkUEu8pyfmElOSW0LNkJkb9AwGYnZod3dF9RUZA=;
+        b=dLBJZZz8nhNii1mwGDPn7lWZy3mjDUSCCBK1UZLjmBAa25TZ08QrSl80yHliXWJn0j
+         t6mZk2ORM9ht8PM0dvZYKqOI0tipXhIEIHyqlqcg1kN1yRKWZ3pi2HkLW//xz7UNeolB
+         W6xeGm0L64zK0e9FU1mBIcgM9oS1XHlNnn3hsJfeFK2ebT1tcTm7TsnnE5BvF6QyT3D/
+         e8nt9jIM83kbZ8H/eZoUE6tJTGJCi3qp5AzCdx5qOWWDJvsMMhlyWsGB3pgP59FdR9j8
+         qZ2Cy2hjjr6GBlB9lyZCdxaEYk0GJKKLJ/cj0AZf/N6HD1VUvXRjXI1CZDR1mhEC/y6u
+         lfmQ==
+X-Gm-Message-State: AOAM530PNdb1nhz9b10PDhTTVdfVg1YnMxiYLkUq20BNFKBuOMxAsyZV
+        2VqjAOplnDpQXAM3LFg3/v1aWu5vtTdsSQ==
+X-Google-Smtp-Source: ABdhPJyWEukUTZm93KgnHtIegIsQ9XsuyDLECPOmv6AmlQCJYurXj4Bi2a94xpxpJ8wiZ5/gD07OMA==
+X-Received: by 2002:a05:600c:4285:: with SMTP id v5mr3300821wmc.184.1622807523930;
+        Fri, 04 Jun 2021 04:52:03 -0700 (PDT)
 Received: from localhost.localdomain (113.red-88-4-247.dynamicip.rima-tde.net. [88.4.247.113])
-        by smtp.gmail.com with ESMTPSA id v10sm6924530wre.33.2021.06.04.04.52.00
+        by smtp.gmail.com with ESMTPSA id v10sm6924530wre.33.2021.06.04.04.52.03
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 04 Jun 2021 04:52:00 -0700 (PDT)
+        Fri, 04 Jun 2021 04:52:03 -0700 (PDT)
 From:   Sergio Paracuellos <sergio.paracuellos@gmail.com>
 To:     john@phrozen.org
 Cc:     linus.walleij@linaro.org, tsbogend@alpha.franken.de,
         linux-gpio@vger.kernel.org, linux-mips@vger.kernel.org,
         ilya.lipnitskiy@gmail.com, neil@brown.name
-Subject: [PATCH 0/6] pinctrl: ralink: move all pinmux arch stuff into driver code
-Date:   Fri,  4 Jun 2021 13:51:53 +0200
-Message-Id: <20210604115159.8834-1-sergio.paracuellos@gmail.com>
+Subject: [PATCH 3/6] pinctrl: ralink: move RT3883 SoC pinmux config into a new 'pinctrl-rt3883.c' file
+Date:   Fri,  4 Jun 2021 13:51:56 +0200
+Message-Id: <20210604115159.8834-4-sergio.paracuellos@gmail.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210604115159.8834-1-sergio.paracuellos@gmail.com>
+References: <20210604115159.8834-1-sergio.paracuellos@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Ralink architecture have all pinmux config for different SoCs in architecture
-headers. This SoCs configs are:
- - CONFIG_SOC_RT288X
- - CONFIG_SOC_RT305X
- - CONFIG_SOC_RT3883
- - CONFIG_SOC_MT7620
- - CONFIG_SOC_MT7621
+Move all related code for SoC RT3883 into a new driver located
+in 'pinctrl-rt3883.c' source file
 
-We currently have 'drivers/pinctrl/ralink/' with common code to all of them
-in 'pinctrl-rt2880.c' file. Pinctrl data was being passed in SoC initilization
-to the driver. Instead of doing that just move all related code to the driver
-itself. We maintain for all of them compatible string to avoid to make more
-changes in dts's an so on. If a new compatible string is neccessary to be
-defined for each different SoC, we can change them after this series are
-applied.
-
-I have only tested MT7621 platform using GNUBee PC1 board. I don't have
-other boards to test other SoC changes.
-
-This series are rebased on the master branch of linux-pinctrl git tree so
-I expect this to be merged through pinctrl tree. Thomas, if 'linux-mips' 
-is preferred to merge this series just let me know and I can rebase them
-to make you things easier.
-
-Thanks in advance for your time.
-
-Best regards,
-    Sergio Paracuellos
-
-Sergio Paracuellos (6):
-  pinctrl: ralink: move ralink architecture pinmux header into the
-    driver
-  pinctrl: ralink: move MT7621 SoC pinmux config into a new
-    'pinctrl-mt7621.c' file
-  pinctrl: ralink: move RT3883 SoC pinmux config into a new
-    'pinctrl-rt3883.c' file
-  pinctrl: ralink: move RT305X SoC pinmux config into a new
-    'pinctrl-rt305x.c' file
-  pinctrl: ralink: move MT7620 SoC pinmux config into a new
-    'pinctrl-mt7620.c' file
-  pinctrl: ralink: move RT288X SoC pinmux config into a new
-    'pinctrl-rt288x.c' file
-
- arch/mips/include/asm/mach-ralink/mt7620.h    |  53 +-
- arch/mips/include/asm/mach-ralink/rt288x.h    |   9 -
- arch/mips/include/asm/mach-ralink/rt305x.h    |  24 -
- arch/mips/include/asm/mach-ralink/rt3883.h    |  34 --
- arch/mips/ralink/mt7620.c                     | 320 ------------
- arch/mips/ralink/mt7621.c                     |  88 ----
- arch/mips/ralink/prom.c                       |   1 -
- arch/mips/ralink/rt288x.c                     |  21 -
- arch/mips/ralink/rt305x.c                     |  77 ---
- arch/mips/ralink/rt3883.c                     |  45 --
- drivers/pinctrl/ralink/Kconfig                |  25 +
- drivers/pinctrl/ralink/Makefile               |   6 +
- .../pinctrl/ralink/pinctrl-mt7620.c           | 472 +++---------------
- drivers/pinctrl/ralink/pinctrl-mt7621.c       | 116 +++++
- drivers/pinctrl/ralink/pinctrl-rt2880.c       |  30 +-
- drivers/pinctrl/ralink/pinctrl-rt288x.c       |  60 +++
- drivers/pinctrl/ralink/pinctrl-rt305x.c       | 136 +++++
- drivers/pinctrl/ralink/pinctrl-rt3883.c       | 107 ++++
- .../pinctrl/ralink}/pinmux.h                  |   3 +-
- 19 files changed, 536 insertions(+), 1091 deletions(-)
- copy arch/mips/ralink/mt7620.c => drivers/pinctrl/ralink/pinctrl-mt7620.c (51%)
- create mode 100644 drivers/pinctrl/ralink/pinctrl-mt7621.c
- create mode 100644 drivers/pinctrl/ralink/pinctrl-rt288x.c
- create mode 100644 drivers/pinctrl/ralink/pinctrl-rt305x.c
+Signed-off-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
+---
+ arch/mips/include/asm/mach-ralink/rt3883.h |  34 -------
+ arch/mips/ralink/rt3883.c                  |  45 ---------
+ drivers/pinctrl/ralink/Kconfig             |   5 +
+ drivers/pinctrl/ralink/Makefile            |   1 +
+ drivers/pinctrl/ralink/pinctrl-rt3883.c    | 107 +++++++++++++++++++++
+ 5 files changed, 113 insertions(+), 79 deletions(-)
  create mode 100644 drivers/pinctrl/ralink/pinctrl-rt3883.c
- rename {arch/mips/include/asm/mach-ralink => drivers/pinctrl/ralink}/pinmux.h (91%)
 
+diff --git a/arch/mips/include/asm/mach-ralink/rt3883.h b/arch/mips/include/asm/mach-ralink/rt3883.h
+index 565f2548496a..f250de9c055b 100644
+--- a/arch/mips/include/asm/mach-ralink/rt3883.h
++++ b/arch/mips/include/asm/mach-ralink/rt3883.h
+@@ -109,40 +109,6 @@
+ #define RT3883_CLKCFG1_PCI_CLK_EN	BIT(19)
+ #define RT3883_CLKCFG1_UPHY0_CLK_EN	BIT(18)
+ 
+-#define RT3883_GPIO_MODE_UART0_SHIFT	2
+-#define RT3883_GPIO_MODE_UART0_MASK	0x7
+-#define RT3883_GPIO_MODE_UART0(x)	((x) << RT3883_GPIO_MODE_UART0_SHIFT)
+-#define RT3883_GPIO_MODE_UARTF		0x0
+-#define RT3883_GPIO_MODE_PCM_UARTF	0x1
+-#define RT3883_GPIO_MODE_PCM_I2S	0x2
+-#define RT3883_GPIO_MODE_I2S_UARTF	0x3
+-#define RT3883_GPIO_MODE_PCM_GPIO	0x4
+-#define RT3883_GPIO_MODE_GPIO_UARTF	0x5
+-#define RT3883_GPIO_MODE_GPIO_I2S	0x6
+-#define RT3883_GPIO_MODE_GPIO		0x7
+-
+-#define RT3883_GPIO_MODE_I2C		0
+-#define RT3883_GPIO_MODE_SPI		1
+-#define RT3883_GPIO_MODE_UART1		5
+-#define RT3883_GPIO_MODE_JTAG		6
+-#define RT3883_GPIO_MODE_MDIO		7
+-#define RT3883_GPIO_MODE_GE1		9
+-#define RT3883_GPIO_MODE_GE2		10
+-
+-#define RT3883_GPIO_MODE_PCI_SHIFT	11
+-#define RT3883_GPIO_MODE_PCI_MASK	0x7
+-#define RT3883_GPIO_MODE_PCI		(RT3883_GPIO_MODE_PCI_MASK << RT3883_GPIO_MODE_PCI_SHIFT)
+-#define RT3883_GPIO_MODE_LNA_A_SHIFT	16
+-#define RT3883_GPIO_MODE_LNA_A_MASK	0x3
+-#define _RT3883_GPIO_MODE_LNA_A(_x)	((_x) << RT3883_GPIO_MODE_LNA_A_SHIFT)
+-#define RT3883_GPIO_MODE_LNA_A_GPIO	0x3
+-#define RT3883_GPIO_MODE_LNA_A		_RT3883_GPIO_MODE_LNA_A(RT3883_GPIO_MODE_LNA_A_MASK)
+-#define RT3883_GPIO_MODE_LNA_G_SHIFT	18
+-#define RT3883_GPIO_MODE_LNA_G_MASK	0x3
+-#define _RT3883_GPIO_MODE_LNA_G(_x)	((_x) << RT3883_GPIO_MODE_LNA_G_SHIFT)
+-#define RT3883_GPIO_MODE_LNA_G_GPIO	0x3
+-#define RT3883_GPIO_MODE_LNA_G		_RT3883_GPIO_MODE_LNA_G(RT3883_GPIO_MODE_LNA_G_MASK)
+-
+ #define RT3883_GPIO_I2C_SD		1
+ #define RT3883_GPIO_I2C_SCLK		2
+ #define RT3883_GPIO_SPI_CS0		3
+diff --git a/arch/mips/ralink/rt3883.c b/arch/mips/ralink/rt3883.c
+index ff91f3531ad0..d9875f146d66 100644
+--- a/arch/mips/ralink/rt3883.c
++++ b/arch/mips/ralink/rt3883.c
+@@ -14,52 +14,9 @@
+ #include <asm/mipsregs.h>
+ #include <asm/mach-ralink/ralink_regs.h>
+ #include <asm/mach-ralink/rt3883.h>
+-#include <asm/mach-ralink/pinmux.h>
+ 
+ #include "common.h"
+ 
+-static struct rt2880_pmx_func i2c_func[] =  { FUNC("i2c", 0, 1, 2) };
+-static struct rt2880_pmx_func spi_func[] = { FUNC("spi", 0, 3, 4) };
+-static struct rt2880_pmx_func uartf_func[] = {
+-	FUNC("uartf", RT3883_GPIO_MODE_UARTF, 7, 8),
+-	FUNC("pcm uartf", RT3883_GPIO_MODE_PCM_UARTF, 7, 8),
+-	FUNC("pcm i2s", RT3883_GPIO_MODE_PCM_I2S, 7, 8),
+-	FUNC("i2s uartf", RT3883_GPIO_MODE_I2S_UARTF, 7, 8),
+-	FUNC("pcm gpio", RT3883_GPIO_MODE_PCM_GPIO, 11, 4),
+-	FUNC("gpio uartf", RT3883_GPIO_MODE_GPIO_UARTF, 7, 4),
+-	FUNC("gpio i2s", RT3883_GPIO_MODE_GPIO_I2S, 7, 4),
+-};
+-static struct rt2880_pmx_func uartlite_func[] = { FUNC("uartlite", 0, 15, 2) };
+-static struct rt2880_pmx_func jtag_func[] = { FUNC("jtag", 0, 17, 5) };
+-static struct rt2880_pmx_func mdio_func[] = { FUNC("mdio", 0, 22, 2) };
+-static struct rt2880_pmx_func lna_a_func[] = { FUNC("lna a", 0, 32, 3) };
+-static struct rt2880_pmx_func lna_g_func[] = { FUNC("lna g", 0, 35, 3) };
+-static struct rt2880_pmx_func pci_func[] = {
+-	FUNC("pci-dev", 0, 40, 32),
+-	FUNC("pci-host2", 1, 40, 32),
+-	FUNC("pci-host1", 2, 40, 32),
+-	FUNC("pci-fnc", 3, 40, 32)
+-};
+-static struct rt2880_pmx_func ge1_func[] = { FUNC("ge1", 0, 72, 12) };
+-static struct rt2880_pmx_func ge2_func[] = { FUNC("ge2", 0, 84, 12) };
+-
+-static struct rt2880_pmx_group rt3883_pinmux_data[] = {
+-	GRP("i2c", i2c_func, 1, RT3883_GPIO_MODE_I2C),
+-	GRP("spi", spi_func, 1, RT3883_GPIO_MODE_SPI),
+-	GRP("uartf", uartf_func, RT3883_GPIO_MODE_UART0_MASK,
+-		RT3883_GPIO_MODE_UART0_SHIFT),
+-	GRP("uartlite", uartlite_func, 1, RT3883_GPIO_MODE_UART1),
+-	GRP("jtag", jtag_func, 1, RT3883_GPIO_MODE_JTAG),
+-	GRP("mdio", mdio_func, 1, RT3883_GPIO_MODE_MDIO),
+-	GRP("lna a", lna_a_func, 1, RT3883_GPIO_MODE_LNA_A),
+-	GRP("lna g", lna_g_func, 1, RT3883_GPIO_MODE_LNA_G),
+-	GRP("pci", pci_func, RT3883_GPIO_MODE_PCI_MASK,
+-		RT3883_GPIO_MODE_PCI_SHIFT),
+-	GRP("ge1", ge1_func, 1, RT3883_GPIO_MODE_GE1),
+-	GRP("ge2", ge2_func, 1, RT3883_GPIO_MODE_GE2),
+-	{ 0 }
+-};
+-
+ void __init ralink_clk_init(void)
+ {
+ 	unsigned long cpu_rate, sys_rate;
+@@ -142,7 +99,5 @@ void __init prom_soc_init(struct ralink_soc_info *soc_info)
+ 	soc_info->mem_size_min = RT3883_MEM_SIZE_MIN;
+ 	soc_info->mem_size_max = RT3883_MEM_SIZE_MAX;
+ 
+-	rt2880_pinmux_data = rt3883_pinmux_data;
+-
+ 	ralink_soc = RT3883_SOC;
+ }
+diff --git a/drivers/pinctrl/ralink/Kconfig b/drivers/pinctrl/ralink/Kconfig
+index ef8990a4c1eb..6f5fb3dc0a41 100644
+--- a/drivers/pinctrl/ralink/Kconfig
++++ b/drivers/pinctrl/ralink/Kconfig
+@@ -16,4 +16,9 @@ config PINCTRL_MT7621
+         depends on RALINK && SOC_MT7621
+         select PINCTRL_RT2880
+ 
++config PINCTRL_RT3883
++        bool "RT3883 pinctrl driver for RALINK/Mediatek SOCs"
++        depends on RALINK && SOC_RT3883
++        select PINCTRL_RT2880
++
+ endmenu
+diff --git a/drivers/pinctrl/ralink/Makefile b/drivers/pinctrl/ralink/Makefile
+index 470855290ff6..86d6f8253afa 100644
+--- a/drivers/pinctrl/ralink/Makefile
++++ b/drivers/pinctrl/ralink/Makefile
+@@ -2,3 +2,4 @@
+ obj-$(CONFIG_PINCTRL_RT2880)   += pinctrl-rt2880.o
+ 
+ obj-$(CONFIG_PINCTRL_MT7621)   += pinctrl-mt7621.o
++obj-$(CONFIG_PINCTRL_RT3883)   += pinctrl-rt3883.o
+diff --git a/drivers/pinctrl/ralink/pinctrl-rt3883.c b/drivers/pinctrl/ralink/pinctrl-rt3883.c
+new file mode 100644
+index 000000000000..3e0e1b4caa64
+--- /dev/null
++++ b/drivers/pinctrl/ralink/pinctrl-rt3883.c
+@@ -0,0 +1,107 @@
++// SPDX-License-Identifier: GPL-2.0-only
++
++#include <linux/module.h>
++#include <linux/platform_device.h>
++#include <linux/of.h>
++#include "pinmux.h"
++
++#define RT3883_GPIO_MODE_UART0_SHIFT	2
++#define RT3883_GPIO_MODE_UART0_MASK	0x7
++#define RT3883_GPIO_MODE_UART0(x)	((x) << RT3883_GPIO_MODE_UART0_SHIFT)
++#define RT3883_GPIO_MODE_UARTF		0x0
++#define RT3883_GPIO_MODE_PCM_UARTF	0x1
++#define RT3883_GPIO_MODE_PCM_I2S	0x2
++#define RT3883_GPIO_MODE_I2S_UARTF	0x3
++#define RT3883_GPIO_MODE_PCM_GPIO	0x4
++#define RT3883_GPIO_MODE_GPIO_UARTF	0x5
++#define RT3883_GPIO_MODE_GPIO_I2S	0x6
++#define RT3883_GPIO_MODE_GPIO		0x7
++
++#define RT3883_GPIO_MODE_I2C		0
++#define RT3883_GPIO_MODE_SPI		1
++#define RT3883_GPIO_MODE_UART1		5
++#define RT3883_GPIO_MODE_JTAG		6
++#define RT3883_GPIO_MODE_MDIO		7
++#define RT3883_GPIO_MODE_GE1		9
++#define RT3883_GPIO_MODE_GE2		10
++
++#define RT3883_GPIO_MODE_PCI_SHIFT	11
++#define RT3883_GPIO_MODE_PCI_MASK	0x7
++#define RT3883_GPIO_MODE_PCI		(RT3883_GPIO_MODE_PCI_MASK << RT3883_GPIO_MODE_PCI_SHIFT)
++#define RT3883_GPIO_MODE_LNA_A_SHIFT	16
++#define RT3883_GPIO_MODE_LNA_A_MASK	0x3
++#define _RT3883_GPIO_MODE_LNA_A(_x)	((_x) << RT3883_GPIO_MODE_LNA_A_SHIFT)
++#define RT3883_GPIO_MODE_LNA_A_GPIO	0x3
++#define RT3883_GPIO_MODE_LNA_A		_RT3883_GPIO_MODE_LNA_A(RT3883_GPIO_MODE_LNA_A_MASK)
++#define RT3883_GPIO_MODE_LNA_G_SHIFT	18
++#define RT3883_GPIO_MODE_LNA_G_MASK	0x3
++#define _RT3883_GPIO_MODE_LNA_G(_x)	((_x) << RT3883_GPIO_MODE_LNA_G_SHIFT)
++#define RT3883_GPIO_MODE_LNA_G_GPIO	0x3
++#define RT3883_GPIO_MODE_LNA_G		_RT3883_GPIO_MODE_LNA_G(RT3883_GPIO_MODE_LNA_G_MASK)
++
++static struct rt2880_pmx_func i2c_func[] =  { FUNC("i2c", 0, 1, 2) };
++static struct rt2880_pmx_func spi_func[] = { FUNC("spi", 0, 3, 4) };
++static struct rt2880_pmx_func uartf_func[] = {
++	FUNC("uartf", RT3883_GPIO_MODE_UARTF, 7, 8),
++	FUNC("pcm uartf", RT3883_GPIO_MODE_PCM_UARTF, 7, 8),
++	FUNC("pcm i2s", RT3883_GPIO_MODE_PCM_I2S, 7, 8),
++	FUNC("i2s uartf", RT3883_GPIO_MODE_I2S_UARTF, 7, 8),
++	FUNC("pcm gpio", RT3883_GPIO_MODE_PCM_GPIO, 11, 4),
++	FUNC("gpio uartf", RT3883_GPIO_MODE_GPIO_UARTF, 7, 4),
++	FUNC("gpio i2s", RT3883_GPIO_MODE_GPIO_I2S, 7, 4),
++};
++static struct rt2880_pmx_func uartlite_func[] = { FUNC("uartlite", 0, 15, 2) };
++static struct rt2880_pmx_func jtag_func[] = { FUNC("jtag", 0, 17, 5) };
++static struct rt2880_pmx_func mdio_func[] = { FUNC("mdio", 0, 22, 2) };
++static struct rt2880_pmx_func lna_a_func[] = { FUNC("lna a", 0, 32, 3) };
++static struct rt2880_pmx_func lna_g_func[] = { FUNC("lna g", 0, 35, 3) };
++static struct rt2880_pmx_func pci_func[] = {
++	FUNC("pci-dev", 0, 40, 32),
++	FUNC("pci-host2", 1, 40, 32),
++	FUNC("pci-host1", 2, 40, 32),
++	FUNC("pci-fnc", 3, 40, 32)
++};
++static struct rt2880_pmx_func ge1_func[] = { FUNC("ge1", 0, 72, 12) };
++static struct rt2880_pmx_func ge2_func[] = { FUNC("ge2", 0, 84, 12) };
++
++static struct rt2880_pmx_group rt3883_pinmux_data[] = {
++	GRP("i2c", i2c_func, 1, RT3883_GPIO_MODE_I2C),
++	GRP("spi", spi_func, 1, RT3883_GPIO_MODE_SPI),
++	GRP("uartf", uartf_func, RT3883_GPIO_MODE_UART0_MASK,
++		RT3883_GPIO_MODE_UART0_SHIFT),
++	GRP("uartlite", uartlite_func, 1, RT3883_GPIO_MODE_UART1),
++	GRP("jtag", jtag_func, 1, RT3883_GPIO_MODE_JTAG),
++	GRP("mdio", mdio_func, 1, RT3883_GPIO_MODE_MDIO),
++	GRP("lna a", lna_a_func, 1, RT3883_GPIO_MODE_LNA_A),
++	GRP("lna g", lna_g_func, 1, RT3883_GPIO_MODE_LNA_G),
++	GRP("pci", pci_func, RT3883_GPIO_MODE_PCI_MASK,
++		RT3883_GPIO_MODE_PCI_SHIFT),
++	GRP("ge1", ge1_func, 1, RT3883_GPIO_MODE_GE1),
++	GRP("ge2", ge2_func, 1, RT3883_GPIO_MODE_GE2),
++	{ 0 }
++};
++
++static int rt3883_pinmux_probe(struct platform_device *pdev)
++{
++	return rt2880_pinmux_init(pdev, rt3883_pinmux_data);
++}
++
++static const struct of_device_id rt3883_pinmux_match[] = {
++	{ .compatible = "ralink,rt2880-pinmux" },
++	{}
++};
++MODULE_DEVICE_TABLE(of, rt3883_pinmux_match);
++
++static struct platform_driver rt3883_pinmux_driver = {
++	.probe = rt3883_pinmux_probe,
++	.driver = {
++		.name = "rt2880-pinmux",
++		.of_match_table = rt3883_pinmux_match,
++	},
++};
++
++static int __init rt3883_pinmux_init(void)
++{
++	return platform_driver_register(&rt3883_pinmux_driver);
++}
++core_initcall_sync(rt3883_pinmux_init);
 -- 
 2.25.1
 

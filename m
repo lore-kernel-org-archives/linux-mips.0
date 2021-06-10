@@ -5,31 +5,31 @@ X-Spam-Level:
 X-Spam-Status: No, score=-26.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT,
-	USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.0
+	USER_IN_DEF_DKIM_WL autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DF903C49EAF
-	for <linux-mips@archiver.kernel.org>; Thu, 10 Jun 2021 21:09:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8A6EEC49360
+	for <linux-mips@archiver.kernel.org>; Thu, 10 Jun 2021 21:09:57 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id CACC4613E7
-	for <linux-mips@archiver.kernel.org>; Thu, 10 Jun 2021 21:09:59 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 6FE0E61412
+	for <linux-mips@archiver.kernel.org>; Thu, 10 Jun 2021 21:09:57 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231213AbhFJVLy (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 10 Jun 2021 17:11:54 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:60598 "EHLO
+        id S231164AbhFJVLw (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 10 Jun 2021 17:11:52 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:60544 "EHLO
         linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231143AbhFJVLw (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Thu, 10 Jun 2021 17:11:52 -0400
+        with ESMTP id S231181AbhFJVLt (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Thu, 10 Jun 2021 17:11:49 -0400
 Received: from sequoia.work.tihix.com (162-237-133-238.lightspeed.rcsntx.sbcglobal.net [162.237.133.238])
-        by linux.microsoft.com (Postfix) with ESMTPSA id CCE8720B7188;
-        Thu, 10 Jun 2021 14:09:54 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com CCE8720B7188
+        by linux.microsoft.com (Postfix) with ESMTPSA id C9EC220B7178;
+        Thu, 10 Jun 2021 14:09:51 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com C9EC220B7178
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1623359395;
-        bh=3AkzjPDle5pDg2xwxx73EHJTuFLG/FBLbuCVbDMwXys=;
+        s=default; t=1623359392;
+        bh=4Jxdj0Zq13CZ4E4lDiPPY/DfcrbN7WU2k1uwV++9ObE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JNUuI/mdWDJ1NMEp1b6ythmOtQDckHJlMtuCE0pv0xNPxGMsXQMvw1GNIbuAtUX5A
-         JcqEZ0tg2K19EKEkTc/Gaqg/zvam7nPhrytPoORlMbDLIkYoNpBYVtGiDzQQPwc+jm
-         X6cxan64tV76eWmX646Fz2dV4Q/ofREsv/jXYtKE=
+        b=J7/+oUCk0b9gyw2nfSAh+jHP4B/+PV4qGqWJqoyrVvloc6PePZLypoD876sAPJzvr
+         R0rtWgpjUwhMl65bAontHl5jq5FSx501Ug6LwRE6ES9PaoCkNhoyh4ZMapyxIHbCSs
+         ffGTjznLJ/Xu7W0sZ5pj7/Ft7WmrIVX3uJRWSmqU=
 From:   Tyler Hicks <tyhicks@linux.microsoft.com>
 To:     Jens Wiklander <jens.wiklander@linaro.org>,
         Allen Pais <apais@linux.microsoft.com>,
@@ -44,9 +44,9 @@ Cc:     Thirupathaiah Annapureddy <thiruan@microsoft.com>,
         op-tee@lists.trustedfirmware.org, linux-integrity@vger.kernel.org,
         bcm-kernel-feedback-list@broadcom.com, linux-mips@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v4 8/8] firmware: tee_bnxt: Release TEE shm, session, and context during kexec
-Date:   Thu, 10 Jun 2021 16:09:13 -0500
-Message-Id: <20210610210913.536081-9-tyhicks@linux.microsoft.com>
+Subject: [PATCH v4 6/8] tee: Support kernel shm registration without dma-buf backing
+Date:   Thu, 10 Jun 2021 16:09:11 -0500
+Message-Id: <20210610210913.536081-7-tyhicks@linux.microsoft.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210610210913.536081-1-tyhicks@linux.microsoft.com>
 References: <20210610210913.536081-1-tyhicks@linux.microsoft.com>
@@ -56,74 +56,94 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-From: Allen Pais <apais@linux.microsoft.com>
+Uncouple the registration of kernel shared memory buffers from the
+TEE_SHM_DMA_BUF flag. Drivers may wish to allocate multi-page contiguous
+shared memory regions but do not need them to be backed by a dma-buf
+when the memory region is only used by the driver.
 
-Implement a .shutdown hook that will be called during a kexec operation
-so that the TEE shared memory, session, and context that were set up
-during .probe can be properly freed/closed.
+If the TEE implementation does not require shared memory to be
+registered, clear the flag prior to calling the corresponding pool alloc
+function. Update the OP-TEE driver to respect TEE_SHM_REGISTER, rather
+than TEE_SHM_DMA_BUF, when deciding whether to (un)register on
+alloc/free operations. The AMD-TEE driver continues to ignore the
+TEE_SHM_REGISTER flag.
 
-Additionally, don't use dma-buf backed shared memory for the
-fw_shm_pool. dma-buf backed shared memory cannot be reliably freed and
-unregistered during a kexec operation even when tee_shm_free() is called
-on the shm from a .shutdown hook. The problem occurs because
-dma_buf_put() calls fput() which then uses task_work_add(), with the
-TWA_RESUME parameter, to queue tee_shm_release() to be called before the
-current task returns to user mode. However, the current task never
-returns to user mode before the kexec completes so the memory is never
-freed nor unregistered.
+Allow callers of tee_shm_alloc_kernel_buf() to allocate and register a
+shared memory region without the backing of dma-buf.
 
-Use tee_shm_alloc_kernel_buf() to avoid dma-buf backed shared memory
-allocation so that tee_shm_free() can directly call tee_shm_release().
-This will ensure that the shm can be freed and unregistered during a
-kexec operation.
-
-Fixes: 246880958ac9 ("firmware: broadcom: add OP-TEE based BNXT f/w manager")
-Signed-off-by: Allen Pais <apais@linux.microsoft.com>
-Co-developed-by: Tyler Hicks <tyhicks@linux.microsoft.com>
 Signed-off-by: Tyler Hicks <tyhicks@linux.microsoft.com>
 ---
- drivers/firmware/broadcom/tee_bnxt_fw.c | 14 +++++++++++---
- 1 file changed, 11 insertions(+), 3 deletions(-)
+ drivers/tee/optee/shm_pool.c |  5 ++---
+ drivers/tee/tee_shm.c        | 13 +++++++++++--
+ 2 files changed, 13 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/firmware/broadcom/tee_bnxt_fw.c b/drivers/firmware/broadcom/tee_bnxt_fw.c
-index ed10da5313e8..a5bf4c3f6dc7 100644
---- a/drivers/firmware/broadcom/tee_bnxt_fw.c
-+++ b/drivers/firmware/broadcom/tee_bnxt_fw.c
-@@ -212,10 +212,9 @@ static int tee_bnxt_fw_probe(struct device *dev)
+diff --git a/drivers/tee/optee/shm_pool.c b/drivers/tee/optee/shm_pool.c
+index da06ce9b9313..6054343a29fb 100644
+--- a/drivers/tee/optee/shm_pool.c
++++ b/drivers/tee/optee/shm_pool.c
+@@ -27,7 +27,7 @@ static int pool_op_alloc(struct tee_shm_pool_mgr *poolm,
+ 	shm->paddr = page_to_phys(page);
+ 	shm->size = PAGE_SIZE << order;
  
- 	pvt_data.dev = dev;
+-	if (shm->flags & TEE_SHM_DMA_BUF) {
++	if (shm->flags & TEE_SHM_REGISTER) {
+ 		unsigned int nr_pages = 1 << order, i;
+ 		struct page **pages;
  
--	fw_shm_pool = tee_shm_alloc(pvt_data.ctx, MAX_SHM_MEM_SZ,
--				    TEE_SHM_MAPPED | TEE_SHM_DMA_BUF);
-+	fw_shm_pool = tee_shm_alloc_kernel_buf(pvt_data.ctx, MAX_SHM_MEM_SZ);
- 	if (IS_ERR(fw_shm_pool)) {
--		dev_err(pvt_data.dev, "tee_shm_alloc failed\n");
-+		dev_err(pvt_data.dev, "tee_shm_alloc_kernel_buf failed\n");
- 		err = PTR_ERR(fw_shm_pool);
- 		goto out_sess;
+@@ -42,7 +42,6 @@ static int pool_op_alloc(struct tee_shm_pool_mgr *poolm,
+ 			page++;
+ 		}
+ 
+-		shm->flags |= TEE_SHM_REGISTER;
+ 		rc = optee_shm_register(shm->ctx, shm, pages, nr_pages,
+ 					(unsigned long)shm->kaddr);
+ 		kfree(pages);
+@@ -60,7 +59,7 @@ static int pool_op_alloc(struct tee_shm_pool_mgr *poolm,
+ static void pool_op_free(struct tee_shm_pool_mgr *poolm,
+ 			 struct tee_shm *shm)
+ {
+-	if (shm->flags & TEE_SHM_DMA_BUF)
++	if (shm->flags & TEE_SHM_REGISTER)
+ 		optee_shm_unregister(shm->ctx, shm);
+ 
+ 	free_pages((unsigned long)shm->kaddr, get_order(shm->size));
+diff --git a/drivers/tee/tee_shm.c b/drivers/tee/tee_shm.c
+index c65e44707cd6..26a76f817c57 100644
+--- a/drivers/tee/tee_shm.c
++++ b/drivers/tee/tee_shm.c
+@@ -117,7 +117,7 @@ struct tee_shm *tee_shm_alloc(struct tee_context *ctx, size_t size, u32 flags)
+ 		return ERR_PTR(-EINVAL);
  	}
-@@ -242,6 +241,14 @@ static int tee_bnxt_fw_remove(struct device *dev)
- 	return 0;
- }
  
-+static void tee_bnxt_fw_shutdown(struct device *dev)
-+{
-+	tee_shm_free(pvt_data.fw_shm_pool);
-+	tee_client_close_session(pvt_data.ctx, pvt_data.session_id);
-+	tee_client_close_context(pvt_data.ctx);
-+	pvt_data.ctx = NULL;
-+}
+-	if ((flags & ~(TEE_SHM_MAPPED | TEE_SHM_DMA_BUF))) {
++	if ((flags & ~(TEE_SHM_MAPPED | TEE_SHM_DMA_BUF | TEE_SHM_REGISTER))) {
+ 		dev_err(teedev->dev.parent, "invalid shm flags 0x%x", flags);
+ 		return ERR_PTR(-EINVAL);
+ 	}
+@@ -137,6 +137,15 @@ struct tee_shm *tee_shm_alloc(struct tee_context *ctx, size_t size, u32 flags)
+ 		goto err_dev_put;
+ 	}
+ 
++	if (!teedev->desc->ops->shm_register ||
++	    !teedev->desc->ops->shm_unregister) {
++		/* registration is not required by the TEE implementation */
++		flags &= ~TEE_SHM_REGISTER;
++	} else if (flags & TEE_SHM_DMA_BUF) {
++		/* all dma-buf backed shm allocations are registered */
++		flags |= TEE_SHM_REGISTER;
++	}
 +
- static const struct tee_client_device_id tee_bnxt_fw_id_table[] = {
- 	{UUID_INIT(0x6272636D, 0x2019, 0x0716,
- 		    0x42, 0x43, 0x4D, 0x5F, 0x53, 0x43, 0x48, 0x49)},
-@@ -257,6 +264,7 @@ static struct tee_client_driver tee_bnxt_fw_driver = {
- 		.bus		= &tee_bus_type,
- 		.probe		= tee_bnxt_fw_probe,
- 		.remove		= tee_bnxt_fw_remove,
-+		.shutdown	= tee_bnxt_fw_shutdown,
- 	},
- };
+ 	shm->flags = flags | TEE_SHM_POOL;
+ 	shm->ctx = ctx;
+ 	if (flags & TEE_SHM_DMA_BUF)
+@@ -207,7 +216,7 @@ EXPORT_SYMBOL_GPL(tee_shm_alloc);
+  */
+ struct tee_shm *tee_shm_alloc_kernel_buf(struct tee_context *ctx, size_t size)
+ {
+-	return tee_shm_alloc(ctx, size, TEE_SHM_MAPPED | TEE_SHM_DMA_BUF);
++	return tee_shm_alloc(ctx, size, TEE_SHM_MAPPED | TEE_SHM_REGISTER);
+ }
+ EXPORT_SYMBOL_GPL(tee_shm_alloc_kernel_buf);
  
 -- 
 2.25.1

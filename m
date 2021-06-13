@@ -2,103 +2,113 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B1571C48BCF
-	for <linux-mips@archiver.kernel.org>; Sun, 13 Jun 2021 15:57:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 101F4C48BDF
+	for <linux-mips@archiver.kernel.org>; Sun, 13 Jun 2021 15:57:45 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 902C56109E
-	for <linux-mips@archiver.kernel.org>; Sun, 13 Jun 2021 15:57:37 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id D656761285
+	for <linux-mips@archiver.kernel.org>; Sun, 13 Jun 2021 15:57:44 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231898AbhFMP7i (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Sun, 13 Jun 2021 11:59:38 -0400
-Received: from mail-wm1-f44.google.com ([209.85.128.44]:54838 "EHLO
-        mail-wm1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231844AbhFMP7h (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Sun, 13 Jun 2021 11:59:37 -0400
-Received: by mail-wm1-f44.google.com with SMTP id m3so5437870wms.4
-        for <linux-mips@vger.kernel.org>; Sun, 13 Jun 2021 08:57:26 -0700 (PDT)
+        id S231913AbhFMP7p (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Sun, 13 Jun 2021 11:59:45 -0400
+Received: from mail-wm1-f49.google.com ([209.85.128.49]:50783 "EHLO
+        mail-wm1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231844AbhFMP7p (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Sun, 13 Jun 2021 11:59:45 -0400
+Received: by mail-wm1-f49.google.com with SMTP id d184so10700350wmd.0
+        for <linux-mips@vger.kernel.org>; Sun, 13 Jun 2021 08:57:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=89tgqMbPoVwSlozfld7sxkrojsS72Xn5GCD/OTQ18YY=;
-        b=QvvXOofsJGK+u0C+37Zy4FwvFDgwBhOiuY7AsPxAA2YS2a4+h/wAL2RazbY7+Gzg2n
-         OSTwV6OJi+XeVLcUryK38wMOTgoacATwYNWGbxMfOFeE1YYe3sNFqemBc7WIsOG0PS4o
-         zheu3AiY2OjB7XHL+O9KUck+DYWoe/rHTboyo97m9fGeXXXVTaZI6hDcOCQOsB+w7o/S
-         avNvyKoYLtslNUfR0FPOY/6OsGFfXVLmle5YtLJOy3fYE0wt2CMysulzz2+/t64EgerJ
-         Ot/U0gnX/LK5oZnr1pi5wD5b45tsZndSkf622tRCtkdWhL42tfiUvpKrlAW2jA99j+1R
-         Iclg==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=Eqtg1+fbJlMCohN2MghF9TKMofIxShR1miILFIvbuXo=;
+        b=aqnqVbgEFUWxR+Qy9iGlYx07qrJgGmTJBGXNYQ9iIgruAXAEAkZx1UHaDqBgicpgXb
+         vt2SQ968igKkZpV7Hc1E+A3dAYR80r4Suq9VXb6ujVG4Cr6l4KZooRNMMo6OUx9pz6m2
+         LyanJ9UOp3ca/ZUhbMPYuvCbbM6BF3FVYv+nzwXBcGCA87Wn+8ocxQKkaDsV1zLET22E
+         StCsuM224y/ul5f6sONBV1Sh2E7UN/jtAgcqgS1X2w0AqwntW0fo4hxz6PjiH5QGfNsC
+         onXpzXvwfhDUrASBT1mERg6PfGLUIJm/ycUMr6fGFppPB11EJ4ydjV3er+5UEl+N6xcV
+         xQjg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=89tgqMbPoVwSlozfld7sxkrojsS72Xn5GCD/OTQ18YY=;
-        b=IOuZW+nAOdLB5x4qsoeJeyH/6ZUojWC/rZIp3+PSmQaQAuuWWDf8a+Da1yA6m8lS54
-         e3csuXOJuhLFrtnOtOpRndghYqq5GctKNc8pQW/x9TEp40etuNz48tNH6WYS0j3gKjHH
-         YZKdy2CWelzoaSDVfI51ta0B9HvTpn8lZYS0jFaXJJQD2mQrypaECO6OpWgcnvmDyOmk
-         rl7aiKq1TaaWixHaT68fsnsIzrs+PZ6lU8m9HEOoYJwqQPVLBZjpS4/RMG2XNfo1lrHA
-         S2wHjm9llhuA6upJIS1lXGpdZS5Ec+y2j2lCwHrZC/XdQpaTowPgjo3dOYDcnAtd+HT1
-         lB+w==
-X-Gm-Message-State: AOAM530SlT8ZiM02OqQyknUgGsNAI7znhv5aLzYMurU/5E9N0tccuspa
-        JG7E0H7BNVCZPOZWjPrtW28=
-X-Google-Smtp-Source: ABdhPJzi2qn2kIEp0a3elG7/PbGuj9bZB/T55XnumrEDUh3P6ztvKkKgZGX0yll3t20rrEdtTXUhew==
-X-Received: by 2002:a05:600c:4106:: with SMTP id j6mr12346467wmi.76.1623599785568;
-        Sun, 13 Jun 2021 08:56:25 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=Eqtg1+fbJlMCohN2MghF9TKMofIxShR1miILFIvbuXo=;
+        b=R5w25qcTOz5CrCfMl9+angMjUUR79cv6MPmJ9yESGIAHMV4mCnLKU7ae0waiPx/rW4
+         g14Bi+1bgEybyCXX7KzCH3ibEwT/ykBftVMDvgXkkqjhhL6LbXKe/td7zMu6YilQXVmD
+         mpkdWvdCXQOp2xDsHpHAYlPKOyU8CI3tCV6vtg8gP4swJ+KwvVq1mgKXGcmlDqm9bH2M
+         W1Z3woC8eN3dmlvKMdRkZQfIUT5mwYhOGZrPYjLwXQ+OYeJ9YgpzvZXTALZROj+mXVQt
+         0YnSwPFt1d8TWlS2cJG19IjeljZrPu2WclPAp/L9/tYrHttzbjeQNcA1IJ3qF3ApqePX
+         qO4Q==
+X-Gm-Message-State: AOAM5304W6WDPMu/5ZG7Gb3QLkDG/4CxzjQTmStouYVv1hYOP17oy+st
+        aP7MN3zhf05v6PH6tD/pfqo=
+X-Google-Smtp-Source: ABdhPJzn6deyzLma154OGI+jhNI78UihPVmufIOcMJ+81krmmS3QJ7Vy6g6K15b1LShq71g8il7fVA==
+X-Received: by 2002:a1c:a484:: with SMTP id n126mr28984602wme.34.1623599788241;
+        Sun, 13 Jun 2021 08:56:28 -0700 (PDT)
 Received: from localhost.localdomain (98.red-81-38-58.dynamicip.rima-tde.net. [81.38.58.98])
-        by smtp.gmail.com with ESMTPSA id g17sm17539746wrh.72.2021.06.13.08.56.24
+        by smtp.gmail.com with ESMTPSA id g17sm17539746wrh.72.2021.06.13.08.56.27
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 13 Jun 2021 08:56:25 -0700 (PDT)
+        Sun, 13 Jun 2021 08:56:27 -0700 (PDT)
 From:   Sergio Paracuellos <sergio.paracuellos@gmail.com>
 To:     linux-staging@lists.linux.dev
 Cc:     gregkh@linuxfoundation.org, neil@brown.name,
         linux-mips@vger.kernel.org, tsbogend@alpha.franken.de,
         ilya.lipnitskiy@gmail.com, john@phrozen.org
-Subject: [PATCH 0/3] staging: mt7621-pci: define ralink PCI_IOBASE to avoid manually ranges parsing 
-Date:   Sun, 13 Jun 2021 17:56:20 +0200
-Message-Id: <20210613155623.17233-1-sergio.paracuellos@gmail.com>
+Subject: [PATCH 3/3] staging: mt7621-dts: fix pci address for PCI memory range
+Date:   Sun, 13 Jun 2021 17:56:23 +0200
+Message-Id: <20210613155623.17233-4-sergio.paracuellos@gmail.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210613155623.17233-1-sergio.paracuellos@gmail.com>
+References: <20210613155623.17233-1-sergio.paracuellos@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
- Ralink MIPS platforms do not define PCI_IOBASE. This ends up in
- pci generic apis not working with io resources when calls to function
- 'of_pci_range_to_resource' are performed because internall function
- 'pci_address_to_pio()' is call and it results in getting 'OF_BAD_ADDR'
- as result. If we define PCI_IOBASE pci generic apis properly works for
- ralink pci controllers. In this particular case, we can remove all
- manually ranges and resource from driver code decresing LOC and being
- more standard.
+Driver code call 'devm_of_pci_get_host_bridge_resources'
+to get resources and properly fill 'bridge->windows' and
+'bridge->dma_ranges'. After parsing the ranges and store
+as resources, at the end it makes a call to pci function
+'pci_add_resource_offset' to set the offset for the
+memory resource. To calculate offset, resource start address
+subtracts pci address of the range. MT7621 does not need
+any offset for the memory resource. Moreover, setting an
+offset got into 'WARN_ON' calls from pci devices driver code.
+Until now memory range pci_addr was being '0x00000000' and
+res->start is '0x60000000' but becase pci controller driver
+was manually setting resources and adding them using pci function
+'pci_add_resource' where a zero is passed as offset, things
+was properly working. Since PCI_IOBASE is defined now for
+ralink we don't set nothing manually anymore so we have to
+properly fix PCI address for this range to make things work
+and the new pci address must be set to '0x60000000'. Doing
+in this way the subtract result obtain zero as offset
+and pci device driver code properly works.
 
- In the future, this is also useful for mips pci drivers which are still
- using pci legacy apis. After having PCI_IOBASE defined, only defining 
- 'pci_address_to_pio' for PCI_LEGACY might be remaining to also make 
- work 'pci-rt3883', 'pci-mt7620' among others. Sadly I don't have devices
- to test that so I haven't write the code by myself.
+Fixes: d59578da2bb8 ("staging: mt7621-dts: add dts files")
+Signed-off-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
+---
+ drivers/staging/mt7621-dts/mt7621.dtsi | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
- Thanks in advance for your time.
-
- Best regards,
-     Sergio Paracuellos
-
-
-Sergio Paracuellos (3):
-  MIPS: ralink: Define PCI_IOBASE
-  staging: mt7621-pci: remove 'mt7621_pci_parse_request_of_pci_ranges'
-  staging: mt7621-dts: fix pci address for PCI memory range
-
- arch/mips/include/asm/mach-ralink/spaces.h |  10 +++
- drivers/staging/mt7621-dts/mt7621.dtsi     |   2 +-
- drivers/staging/mt7621-pci/pci-mt7621.c    | 100 ++++++---------------
- 3 files changed, 38 insertions(+), 74 deletions(-)
- create mode 100644 arch/mips/include/asm/mach-ralink/spaces.h
-
+diff --git a/drivers/staging/mt7621-dts/mt7621.dtsi b/drivers/staging/mt7621-dts/mt7621.dtsi
+index ecfe2f2cf75a..f15ea61851b2 100644
+--- a/drivers/staging/mt7621-dts/mt7621.dtsi
++++ b/drivers/staging/mt7621-dts/mt7621.dtsi
+@@ -489,7 +489,7 @@ pcie: pcie@1e140000 {
+ 
+ 		device_type = "pci";
+ 
+-		ranges = <0x02000000 0 0x00000000 0x60000000 0 0x10000000>, /* pci memory */
++		ranges = <0x02000000 0 0x60000000 0x60000000 0 0x10000000>, /* pci memory */
+ 			 <0x01000000 0 0x00000000 0x1e160000 0 0x00010000>; /* io space */
+ 
+ 		#interrupt-cells = <1>;
 -- 
 2.25.1
 

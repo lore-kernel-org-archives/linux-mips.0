@@ -2,65 +2,57 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-26.3 required=3.0 tests=BAYES_00,DKIMWL_WL_MED,
+X-Spam-Status: No, score=-21.3 required=3.0 tests=BAYES_00,DKIMWL_WL_MED,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT,USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no
-	version=3.4.0
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT,
+	USER_IN_DEF_DKIM_WL autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 03C74C48BDF
-	for <linux-mips@archiver.kernel.org>; Mon, 14 Jun 2021 02:54:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DAAB6C48BDF
+	for <linux-mips@archiver.kernel.org>; Mon, 14 Jun 2021 02:54:57 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id C4FC7613AD
-	for <linux-mips@archiver.kernel.org>; Mon, 14 Jun 2021 02:54:03 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id C32CB613AB
+	for <linux-mips@archiver.kernel.org>; Mon, 14 Jun 2021 02:54:57 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232307AbhFNC4E (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Sun, 13 Jun 2021 22:56:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45458 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232306AbhFNC4E (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Sun, 13 Jun 2021 22:56:04 -0400
-Received: from mail-qt1-x84a.google.com (mail-qt1-x84a.google.com [IPv6:2607:f8b0:4864:20::84a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D442EC0613A2
-        for <linux-mips@vger.kernel.org>; Sun, 13 Jun 2021 19:54:01 -0700 (PDT)
-Received: by mail-qt1-x84a.google.com with SMTP id 62-20020aed30440000b029024cabef375cso3478912qte.17
-        for <linux-mips@vger.kernel.org>; Sun, 13 Jun 2021 19:54:01 -0700 (PDT)
+        id S232341AbhFNC46 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Sun, 13 Jun 2021 22:56:58 -0400
+Received: from mail-pf1-f201.google.com ([209.85.210.201]:55214 "EHLO
+        mail-pf1-f201.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232331AbhFNC46 (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Sun, 13 Jun 2021 22:56:58 -0400
+Received: by mail-pf1-f201.google.com with SMTP id d17-20020aa781510000b02902e921bdea05so7445687pfn.21
+        for <linux-mips@vger.kernel.org>; Sun, 13 Jun 2021 19:54:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=EFssac9rz7i/Qr9EpSWwLvB4XY7qiCj+W7+6Jhxuqag=;
-        b=LYERAZ7y42UfbmbPlfdmiRT+5SUAlpPUpcnKAJ06pnxNMruCW5nQs9eoLdhY4QqimU
-         Bw60ALBxFeHcd/4Y9jIRzBOR9/jMvrFmonm5knRkEcDKOB3k8Nb4pdzKFF+bTNo8qSkm
-         LW4hKTBMV2DNjCzUzntynYfjW6IAKSv/c/Xb2y6CY8rqY5Rw4e+W4wgtv7ZA858F3JCH
-         Zl4LhituKwhgS7GcTCyVhu28y+SbW3QLn/N4f5Iatuc8SttyxjK8JXA4Tnh9QopWwUl4
-         oZCcRWH9m6pqfBku+n2hHpfC7LViqfP68y/Fz+T5Qfck+/1uBFBrVHOLCvaP8cjdEJAO
-         vTUQ==
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=KV1G/R1zSZnSBOo/d7pZSYrqkdhyWDQYDOJ/O2SNH4I=;
+        b=kDQEan3QS0HPXWg18LBV2T73SvgN3datzG2XhzaYhgiNgGasOyWf+QJstJsHVasjiW
+         IHzlsrAC3QKbwWnobFjsw5ahQCrYI/z+Eo/XT8EEnOSRC18yfBYktADbFbSlLHQ8S6Iw
+         FC1ltJ7DqfFoJxfTz4aD7EnlxksQ3aTdcI+rmyvgj4Idgh7lZb28q+rwNp514TO/722o
+         f1nR3FVWQj/6t9gKh5sJslnMeKt8oNOfdNRsCkZ7xtm1Vvrk1lrdi+9qJSxpgju6r2Gl
+         QRdTdil4be1AJmPnHhHxQ1VFA3c7XtQ0+pzairSTsOJ16N0IKcg1ppAD/RbQQIrPznYI
+         RjGg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=EFssac9rz7i/Qr9EpSWwLvB4XY7qiCj+W7+6Jhxuqag=;
-        b=mY2+7JKKh2Uh+U80VCoPZw+BAMYAKFxjorAPo4C6LzSIt92mjPlAhmAuF/sA+HH+CM
-         IPWR7IiRHNsozmliorkubfqRZ4NsNnd74zbCczcHvlLvpL1OyDapjhQulnIcFSLu2AWr
-         2j2Z3nEhsqslvlveHjmLffaUUI8yzSQ4fobSNskQzKlem6QvSO1dOdFPxh8j5X2KZLHa
-         xZzB3l21q+QrS5rHFiibpHP4rPmROJ47JUSdLLJDDgU647oF02csb0QDou4bqwsr9Rc2
-         KNBddAs4xIB/6Z8TfMpZKwWH12tEanrDvbDqNQsyxAglRCUNnGPpG9Hoq8iWX5IQlR3+
-         wI7g==
-X-Gm-Message-State: AOAM531fDZp3w3Ucw7zOWQmtyS48ERjYRSc38GKr9j567mCNzwBcuAIK
-        JNd8CQZacqLqaHL92Q3kIOrOEfGiiIanJYQOoQ==
-X-Google-Smtp-Source: ABdhPJx06RmEFcd18ZQJLMbPbZxx739B0LLW3SWUDB8V4bqvcXAZJX+M+bK78AWrb7OsWvWt/mmcsnPMfO++tuNCdA==
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=KV1G/R1zSZnSBOo/d7pZSYrqkdhyWDQYDOJ/O2SNH4I=;
+        b=rpeMHDrstSY3rjd06PG+ZOizVg6dkIHfRsQzMvDFUAKczDyg+66Mvjeu1FQss8TyAW
+         M9trxapMAe3BH2bx6EQ7ZM28b91qNLfBxsAkkRgwI5GuXdppJDHLUbwa05N/Noy0LezC
+         USVSamZ/e0qxY/CjqlZgik7O6svaxPcLpZzxEf1YzA3KGSjq5K6IEPudNHWIe6qvfzY+
+         GJSNASTdFH0sk6sPDaLlTCADz7yk10RV9SSLH4OVruXKxuv06FaWBwHtPVnOFZzP/8To
+         UgTzRLUzeYLvuNocpehqWg334t1hn/9YE+7zSniDmRDfNUlCxnGBZ0lScIQmnTPdGcBJ
+         Zr9g==
+X-Gm-Message-State: AOAM531Sy79v6BbPH9Ixx10fVOSOzwvygQ8d5hCCIJxeIvz6SqgPL7ZN
+        6nsUL24rpvIH0gET1jTcktkoYoL2Ql3wGt/GEg==
+X-Google-Smtp-Source: ABdhPJwRWAstHgo7BVtHEtkFzdNcfslZh+/1MjQ4teaqitIxKeI6I2u0l+pkFtjTmd38Dt65Uu2PIUcSDoZnRDqISg==
 X-Received: from jgzg.c.googlers.com ([fda3:e722:ac3:10:7f:e700:c0a8:1acf])
- (user=jingzhangos job=sendgmr) by 2002:a05:6214:20c4:: with SMTP id
- 4mr8552573qve.1.1623639240966; Sun, 13 Jun 2021 19:54:00 -0700 (PDT)
-Date:   Mon, 14 Jun 2021 02:53:50 +0000
-In-Reply-To: <20210614025351.365284-1-jingzhangos@google.com>
-Message-Id: <20210614025351.365284-4-jingzhangos@google.com>
+ (user=jingzhangos job=sendgmr) by 2002:a17:902:9008:b029:119:25dd:8646 with
+ SMTP id a8-20020a1709029008b029011925dd8646mr10986859plp.41.1623639235855;
+ Sun, 13 Jun 2021 19:53:55 -0700 (PDT)
+Date:   Mon, 14 Jun 2021 02:53:47 +0000
+Message-Id: <20210614025351.365284-1-jingzhangos@google.com>
 Mime-Version: 1.0
-References: <20210614025351.365284-1-jingzhangos@google.com>
 X-Mailer: git-send-email 2.32.0.272.g935e593368-goog
-Subject: [PATCH 3/4] KVM: stats: Update documentation supporting stats mode
- and offset
+Subject: [PATCH 0/4] Remove duplicated stats definitions for debugfs
 From:   Jing Zhang <jingzhangos@google.com>
 To:     KVM <kvm@vger.kernel.org>, KVMARM <kvmarm@lists.cs.columbia.edu>,
         LinuxMIPS <linux-mips@vger.kernel.org>,
@@ -74,82 +66,52 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Update documentation to reflect that stats descriptor supports new
-flags for read/write mode and an offset field is added in stats
-descriptor.
+This is a follow-up patchset to binary stats interface patchset as below:
+https://lore.kernel.org/kvm/20210611124624.1404010-1-jingzhangos@google.com
 
-Signed-off-by: Jing Zhang <jingzhangos@google.com>
+This patchset contains a commit to fix some missing stats and add static
+check to make sure we have the right number of stats descriptors and add an
+'offset' field in stats descriptor to make sure the or order of stats
+descriptors is not relevant to the order of stats in vm/vcpu stats
+structure. This will totally avoid the possibility of missing stats and
+mismatched stats definitions.
+
+The binary stats interface defines stats in another array of descriptors,
+while the original stats debugfs interface uses array of kvm_stats_debugfs
+item. To remove the duplicated stats definition, this patchset would
+utilize only the stats descriptors to provide stats information to debugfs
+interface. This patchset adds a 'mode' flag to support the read/write mode
+of stats, which can be used to indicate the file permission of debugfs
+stats files. It removes the usage of kvm_stats_debugfs_item and all the
+debugfs_entries defined in all archs.
+
+The patch also fixes an issue that read only stats could be cleared in
+global level, though not permitted in VM level in the original debugfs
+code.
+
 ---
- Documentation/virt/kvm/api.rst | 33 ++++++++++++++++++++++++++-------
- 1 file changed, 26 insertions(+), 7 deletions(-)
 
-diff --git a/Documentation/virt/kvm/api.rst b/Documentation/virt/kvm/api.rst
-index d1ad30212726..67979700a90e 100644
---- a/Documentation/virt/kvm/api.rst
-+++ b/Documentation/virt/kvm/api.rst
-@@ -5160,12 +5160,19 @@ below code block::
- 	#define KVM_STATS_BASE_POW2		(0x1 << KVM_STATS_BASE_SHIFT)
- 	#define KVM_STATS_BASE_MAX		KVM_STATS_BASE_POW2
- 
-+        #define KVM_STATS_MODE_SHIFT		12
-+        #define KVM_STATS_MODE_MASK		(0xF << KVM_STATS_MODE_SHIFT)
-+        #define KVM_STATS_MODE_RW		(0x0 << KVM_STATS_MODE_SHIFT)
-+        #define KVM_STATS_MODE_READ		(0x1 << KVM_STATS_MODE_SHIFT)
-+        #define KVM_STATS_MODE_WRITE		(0x2 << KVM_STATS_MODE_SHIFT)
-+        #define KVM_STATS_MODE_MAX		KVM_STATS_MODE_WRITE
-+
- 	struct kvm_stats_desc {
- 		__u32 flags;
- 		__s16 exponent;
- 		__u16 size;
--		__u32 unused1;
--		__u32 unused2;
-+		__u32 offset;
-+		__u32 unused;
- 		char name[0];
- 	};
- 
-@@ -5212,23 +5219,35 @@ Bits 4-7 of ``flags`` encode the unit:
-     value is 200, ``exponent`` is 4, we can get the number of CPU clock cycles
-     by ``value * pow(10, exponent) = 200 * pow(10, 4) = 2000000``.
- 
--Bits 7-11 of ``flags`` encode the base:
-+Bits 8-11 of ``flags`` encode the base:
-   * ``KVM_STATS_BASE_POW10``
-     The scale is based on power of 10. It is used for measurement of time and
-     CPU clock cycles.
-   * ``KVM_STATS_BASE_POW2``
-     The scale is based on power of 2. It is used for measurement of memory size.
- 
-+Bits 12-15 of ``flags`` encode the mode:
-+  * ``KVM_STATS_MODE_RW``
-+    The corresponding statistics supports both read and write (clear).
-+  * ``KVM_STATS_MODE_READ``
-+    The corresponding statistics supports read only.
-+  * ``KVM_STATS_MODE_WRITE``
-+    The corresponding statistics supports write only. (Not used for now, added
-+    for completeness)
-+
- The ``exponent`` field is the scale of corresponding statistics data. For
- example, if the unit is ``KVM_STATS_UNIT_BYTES``, the base is
- ``KVM_STATS_BASE_POW2``, the ``exponent`` is 10, then we know that the real
- unit of the statistics data is KBytes a.k.a pow(2, 10) = 1024 bytes.
- 
--The ``size`` field is the number of values of this statistics data. It is in the
--unit of ``unsigned long`` for VM or ``__u64`` for VCPU.
-+The ``size`` field is the number of values (u64) of this statistics data. Its
-+value is usually 1 for most of simple statistics.
-+
-+The ``offset`` field is the offset from the start of Data Block to the start of
-+the corresponding statistics data.
- 
--The ``unused1`` and ``unused2`` fields are reserved for future
--support for other types of statistics data, like log/linear histogram.
-+The ``unused`` fields are reserved for future support for other types of
-+statistics data, like log/linear histogram.
- 
- The ``name`` field points to the name string of the statistics data. The name
- string starts at the end of ``struct kvm_stats_desc``.
+Jing Zhang (4):
+  KVM: stats: Make sure no missing or mismatched binary stats definition
+  KVM: stats: Use binary stats descriptors for debugfs interface
+  KVM: stats: Update documentation supporting stats mode and offset
+  KVM: selftests: Update binary stats test for stats mode
+
+ Documentation/virt/kvm/api.rst                |  33 +-
+ arch/arm64/kvm/guest.c                        |  32 +-
+ arch/mips/kvm/mips.c                          |  99 ++----
+ arch/powerpc/kvm/book3s.c                     | 101 ++----
+ arch/powerpc/kvm/booke.c                      |  79 ++---
+ arch/s390/kvm/kvm-s390.c                      | 307 ++++++------------
+ arch/x86/kvm/x86.c                            | 120 +++----
+ include/linux/kvm_host.h                      | 186 ++++++-----
+ include/uapi/linux/kvm.h                      |  11 +-
+ .../selftests/kvm/kvm_binary_stats_test.c     |  13 +-
+ virt/kvm/kvm_main.c                           | 105 ++++--
+ 11 files changed, 477 insertions(+), 609 deletions(-)
+
+
+base-commit: 39be2e28180a2e87af5fbb8d83643812e1a3b371
 -- 
 2.32.0.272.g935e593368-goog
 

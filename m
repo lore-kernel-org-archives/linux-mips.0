@@ -2,68 +2,154 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-26.3 required=3.0 tests=BAYES_00,DKIMWL_WL_MED,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_GIT,USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C2CE8C48BE8
-	for <linux-mips@archiver.kernel.org>; Mon, 14 Jun 2021 02:03:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 03C74C48BDF
+	for <linux-mips@archiver.kernel.org>; Mon, 14 Jun 2021 02:54:04 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 9B569613AD
-	for <linux-mips@archiver.kernel.org>; Mon, 14 Jun 2021 02:03:34 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id C4FC7613AD
+	for <linux-mips@archiver.kernel.org>; Mon, 14 Jun 2021 02:54:03 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232279AbhFNCFf (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Sun, 13 Jun 2021 22:05:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34616 "EHLO
+        id S232307AbhFNC4E (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Sun, 13 Jun 2021 22:56:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45458 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232269AbhFNCFf (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Sun, 13 Jun 2021 22:05:35 -0400
-Received: from angie.orcam.me.uk (angie.orcam.me.uk [IPv6:2001:4190:8020::4])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id B7A6EC061574
-        for <linux-mips@vger.kernel.org>; Sun, 13 Jun 2021 19:03:32 -0700 (PDT)
-Received: by angie.orcam.me.uk (Postfix, from userid 500)
-        id 0A65892009C; Mon, 14 Jun 2021 04:03:28 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by angie.orcam.me.uk (Postfix) with ESMTP id F0AB592009B;
-        Mon, 14 Jun 2021 04:03:28 +0200 (CEST)
-Date:   Mon, 14 Jun 2021 04:03:28 +0200 (CEST)
-From:   "Maciej W. Rozycki" <macro@orcam.me.uk>
-To:     Huacai Chen <chenhuacai@loongson.cn>
-cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        linux-mips@vger.kernel.org, Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        kernel test robot <lkp@intel.com>
-Subject: Re: [PATCH] MIPS: Loongson64: Remove a "set but not used" variable
-In-Reply-To: <20210514103217.2051315-1-chenhuacai@loongson.cn>
-Message-ID: <alpine.DEB.2.21.2106140400510.61948@angie.orcam.me.uk>
-References: <20210514103217.2051315-1-chenhuacai@loongson.cn>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+        with ESMTP id S232306AbhFNC4E (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Sun, 13 Jun 2021 22:56:04 -0400
+Received: from mail-qt1-x84a.google.com (mail-qt1-x84a.google.com [IPv6:2607:f8b0:4864:20::84a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D442EC0613A2
+        for <linux-mips@vger.kernel.org>; Sun, 13 Jun 2021 19:54:01 -0700 (PDT)
+Received: by mail-qt1-x84a.google.com with SMTP id 62-20020aed30440000b029024cabef375cso3478912qte.17
+        for <linux-mips@vger.kernel.org>; Sun, 13 Jun 2021 19:54:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
+         :cc;
+        bh=EFssac9rz7i/Qr9EpSWwLvB4XY7qiCj+W7+6Jhxuqag=;
+        b=LYERAZ7y42UfbmbPlfdmiRT+5SUAlpPUpcnKAJ06pnxNMruCW5nQs9eoLdhY4QqimU
+         Bw60ALBxFeHcd/4Y9jIRzBOR9/jMvrFmonm5knRkEcDKOB3k8Nb4pdzKFF+bTNo8qSkm
+         LW4hKTBMV2DNjCzUzntynYfjW6IAKSv/c/Xb2y6CY8rqY5Rw4e+W4wgtv7ZA858F3JCH
+         Zl4LhituKwhgS7GcTCyVhu28y+SbW3QLn/N4f5Iatuc8SttyxjK8JXA4Tnh9QopWwUl4
+         oZCcRWH9m6pqfBku+n2hHpfC7LViqfP68y/Fz+T5Qfck+/1uBFBrVHOLCvaP8cjdEJAO
+         vTUQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=EFssac9rz7i/Qr9EpSWwLvB4XY7qiCj+W7+6Jhxuqag=;
+        b=mY2+7JKKh2Uh+U80VCoPZw+BAMYAKFxjorAPo4C6LzSIt92mjPlAhmAuF/sA+HH+CM
+         IPWR7IiRHNsozmliorkubfqRZ4NsNnd74zbCczcHvlLvpL1OyDapjhQulnIcFSLu2AWr
+         2j2Z3nEhsqslvlveHjmLffaUUI8yzSQ4fobSNskQzKlem6QvSO1dOdFPxh8j5X2KZLHa
+         xZzB3l21q+QrS5rHFiibpHP4rPmROJ47JUSdLLJDDgU647oF02csb0QDou4bqwsr9Rc2
+         KNBddAs4xIB/6Z8TfMpZKwWH12tEanrDvbDqNQsyxAglRCUNnGPpG9Hoq8iWX5IQlR3+
+         wI7g==
+X-Gm-Message-State: AOAM531fDZp3w3Ucw7zOWQmtyS48ERjYRSc38GKr9j567mCNzwBcuAIK
+        JNd8CQZacqLqaHL92Q3kIOrOEfGiiIanJYQOoQ==
+X-Google-Smtp-Source: ABdhPJx06RmEFcd18ZQJLMbPbZxx739B0LLW3SWUDB8V4bqvcXAZJX+M+bK78AWrb7OsWvWt/mmcsnPMfO++tuNCdA==
+X-Received: from jgzg.c.googlers.com ([fda3:e722:ac3:10:7f:e700:c0a8:1acf])
+ (user=jingzhangos job=sendgmr) by 2002:a05:6214:20c4:: with SMTP id
+ 4mr8552573qve.1.1623639240966; Sun, 13 Jun 2021 19:54:00 -0700 (PDT)
+Date:   Mon, 14 Jun 2021 02:53:50 +0000
+In-Reply-To: <20210614025351.365284-1-jingzhangos@google.com>
+Message-Id: <20210614025351.365284-4-jingzhangos@google.com>
+Mime-Version: 1.0
+References: <20210614025351.365284-1-jingzhangos@google.com>
+X-Mailer: git-send-email 2.32.0.272.g935e593368-goog
+Subject: [PATCH 3/4] KVM: stats: Update documentation supporting stats mode
+ and offset
+From:   Jing Zhang <jingzhangos@google.com>
+To:     KVM <kvm@vger.kernel.org>, KVMARM <kvmarm@lists.cs.columbia.edu>,
+        LinuxMIPS <linux-mips@vger.kernel.org>,
+        KVMPPC <kvm-ppc@vger.kernel.org>,
+        LinuxS390 <linux-s390@vger.kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Fuad Tabba <tabba@google.com>
+Cc:     Jing Zhang <jingzhangos@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Fri, 14 May 2021, Huacai Chen wrote:
+Update documentation to reflect that stats descriptor supports new
+flags for read/write mode and an offset field is added in stats
+descriptor.
 
-> This fix build warning:
-> 
->    arch/mips/loongson64/env.c: In function 'prom_init_env':
-> >> arch/mips/loongson64/env.c:50:14: warning: variable 'device' set but not used [-Wunused-but-set-variable]
->       50 |  u16 vendor, device;
->          |              ^~~~~~
->    {standard input}: Assembler messages:
->    {standard input}:788: Error: found '(', expected: ')'
->    {standard input}:788: Error: found '(', expected: ')'
->    {standard input}:788: Error: non-constant expression in ".if" statement
->    {standard input}:788: Error: junk at end of line, first unrecognized character is `('
->    {standard input}:801: Error: found '(', expected: ')'
->    {standard input}:801: Error: found '(', expected: ')'
->    {standard input}:801: Error: non-constant expression in ".if" statement
->    {standard input}:801: Error: junk at end of line, first unrecognized character is `('
+Signed-off-by: Jing Zhang <jingzhangos@google.com>
+---
+ Documentation/virt/kvm/api.rst | 33 ++++++++++++++++++++++++++-------
+ 1 file changed, 26 insertions(+), 7 deletions(-)
 
- What's this chain of assembler error messages doing here?  Surely it does 
-not come from the compiler warning and is not related to the patch posted, 
-and therefore it has no place in the commit description.  Have you checked 
-where it's actually coming from?
+diff --git a/Documentation/virt/kvm/api.rst b/Documentation/virt/kvm/api.rst
+index d1ad30212726..67979700a90e 100644
+--- a/Documentation/virt/kvm/api.rst
++++ b/Documentation/virt/kvm/api.rst
+@@ -5160,12 +5160,19 @@ below code block::
+ 	#define KVM_STATS_BASE_POW2		(0x1 << KVM_STATS_BASE_SHIFT)
+ 	#define KVM_STATS_BASE_MAX		KVM_STATS_BASE_POW2
+ 
++        #define KVM_STATS_MODE_SHIFT		12
++        #define KVM_STATS_MODE_MASK		(0xF << KVM_STATS_MODE_SHIFT)
++        #define KVM_STATS_MODE_RW		(0x0 << KVM_STATS_MODE_SHIFT)
++        #define KVM_STATS_MODE_READ		(0x1 << KVM_STATS_MODE_SHIFT)
++        #define KVM_STATS_MODE_WRITE		(0x2 << KVM_STATS_MODE_SHIFT)
++        #define KVM_STATS_MODE_MAX		KVM_STATS_MODE_WRITE
++
+ 	struct kvm_stats_desc {
+ 		__u32 flags;
+ 		__s16 exponent;
+ 		__u16 size;
+-		__u32 unused1;
+-		__u32 unused2;
++		__u32 offset;
++		__u32 unused;
+ 		char name[0];
+ 	};
+ 
+@@ -5212,23 +5219,35 @@ Bits 4-7 of ``flags`` encode the unit:
+     value is 200, ``exponent`` is 4, we can get the number of CPU clock cycles
+     by ``value * pow(10, exponent) = 200 * pow(10, 4) = 2000000``.
+ 
+-Bits 7-11 of ``flags`` encode the base:
++Bits 8-11 of ``flags`` encode the base:
+   * ``KVM_STATS_BASE_POW10``
+     The scale is based on power of 10. It is used for measurement of time and
+     CPU clock cycles.
+   * ``KVM_STATS_BASE_POW2``
+     The scale is based on power of 2. It is used for measurement of memory size.
+ 
++Bits 12-15 of ``flags`` encode the mode:
++  * ``KVM_STATS_MODE_RW``
++    The corresponding statistics supports both read and write (clear).
++  * ``KVM_STATS_MODE_READ``
++    The corresponding statistics supports read only.
++  * ``KVM_STATS_MODE_WRITE``
++    The corresponding statistics supports write only. (Not used for now, added
++    for completeness)
++
+ The ``exponent`` field is the scale of corresponding statistics data. For
+ example, if the unit is ``KVM_STATS_UNIT_BYTES``, the base is
+ ``KVM_STATS_BASE_POW2``, the ``exponent`` is 10, then we know that the real
+ unit of the statistics data is KBytes a.k.a pow(2, 10) = 1024 bytes.
+ 
+-The ``size`` field is the number of values of this statistics data. It is in the
+-unit of ``unsigned long`` for VM or ``__u64`` for VCPU.
++The ``size`` field is the number of values (u64) of this statistics data. Its
++value is usually 1 for most of simple statistics.
++
++The ``offset`` field is the offset from the start of Data Block to the start of
++the corresponding statistics data.
+ 
+-The ``unused1`` and ``unused2`` fields are reserved for future
+-support for other types of statistics data, like log/linear histogram.
++The ``unused`` fields are reserved for future support for other types of
++statistics data, like log/linear histogram.
+ 
+ The ``name`` field points to the name string of the statistics data. The name
+ string starts at the end of ``struct kvm_stats_desc``.
+-- 
+2.32.0.272.g935e593368-goog
 
-  Maciej

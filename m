@@ -2,184 +2,313 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-26.3 required=3.0 tests=BAYES_00,DKIMWL_WL_MED,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_GIT,USER_IN_DEF_DKIM_WL autolearn=unavailable autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 809B3C2B9F4
-	for <linux-mips@archiver.kernel.org>; Mon, 14 Jun 2021 19:16:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2196AC48BE8
+	for <linux-mips@archiver.kernel.org>; Mon, 14 Jun 2021 21:22:07 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 4F3366128A
-	for <linux-mips@archiver.kernel.org>; Mon, 14 Jun 2021 19:16:10 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 089C861241
+	for <linux-mips@archiver.kernel.org>; Mon, 14 Jun 2021 21:22:07 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233725AbhFNTSM (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 14 Jun 2021 15:18:12 -0400
-Received: from mail-lf1-f44.google.com ([209.85.167.44]:43704 "EHLO
-        mail-lf1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233965AbhFNTSM (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Mon, 14 Jun 2021 15:18:12 -0400
-Received: by mail-lf1-f44.google.com with SMTP id x24so17231585lfr.10
-        for <linux-mips@vger.kernel.org>; Mon, 14 Jun 2021 12:16:09 -0700 (PDT)
+        id S235399AbhFNVYJ (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 14 Jun 2021 17:24:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34302 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235337AbhFNVYH (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Mon, 14 Jun 2021 17:24:07 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA63AC0613A3
+        for <linux-mips@vger.kernel.org>; Mon, 14 Jun 2021 14:22:03 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id g9-20020a25ae490000b029052f9e5b7d3fso16747012ybe.4
+        for <linux-mips@vger.kernel.org>; Mon, 14 Jun 2021 14:22:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Wy8kQavMtXmWXRWEMXyBLTsbu5eZVxKlmyQPGuM6Q58=;
-        b=FWr0n7oPVWQ+3ixl2B6aJCUI1aaCUd3rD6xJGopgi+G3S51eI5WKQ6RLQjpPrczgUw
-         Uv0FHlvR2bzE518D6Y8Nnd/A9KiVMaCI2gSxXq8KXbC9nPq7xPZUmdAb20/xqNrBMm2Q
-         CGXZz1OHoOXQIUe+85wv+Fkcar+3OSXseqHfWbcgWwW0BU6jkdXwsT97JMQNw7Tf/2+X
-         p7oPoA/6/h+DD9SL5oa6HWhxT5QuVdVfooxkkHO+C3hr+rcIBRMMAX8k0bck9jBNCTh1
-         Jm3gyrqgrVOn9jD0nZlU0ZGZpJBRY8kw5pL418zBh/RpWSEEhpl0Xk+GqptBgSYtL73c
-         9Cyg==
+        d=google.com; s=20161025;
+        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
+         :cc;
+        bh=Al09n/FtcTLTHuDw253HY0i7yPF/7QIbOKBugNPQ+lw=;
+        b=Gqzl/OBJeJbb2M58csNy8fHQrmHuh1ugT4QRFhua3Xb0oVVN7bJZGIgxUvZyhka4Lt
+         yjJvV4czw23GOdQ4LWkYPT/A1L+/IexLvnfamzjH+BY8PLvxVu3rNpV42Wc9wwHFa7Nl
+         it7st2tSxd+L02YIpUmbhoH6bZPIYd+sjfKAf9/3rI32BaBV8p8RBwsOlmoW1zQbI0I7
+         qs452hEQij37j5y5j5SYN/dxZ/v41gANfzsH6sLz2EbPSf+IsizgJfXDaHqEvJ0FKN0u
+         nmpRWYzO8KkpaDc3dKhmGbHxcPlPrsoTAbQ16V7dfTgO2vxyyZ9F6gzzoG7sOD/FQqpm
+         FdnA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Wy8kQavMtXmWXRWEMXyBLTsbu5eZVxKlmyQPGuM6Q58=;
-        b=Cj6Nv3EmYA7lzhmN4iDQc03SdtEmOZYLASycyrgNH43YyLiZQTi+oi/PT7AV+4EqZ8
-         fPt/S5uLKm3ounW+AhXdbETltp/9MjlsZoDUxwOXj/xtK2JkuMVB+8RkHn3dXoy8EgDq
-         7dYY1MQxZddnWrH/rCoofIOFNcJi2ohQflqNmLnonyGfHA8P7uh4IQ/eR1JD5GIBFhSj
-         dQIFxOfgwxVPZntWHrs60IY5qWgKLkjhDfAwdmQG7NZ1ReEX5ymCdNtJJu7Sg5QwnY3k
-         wDXUeIs6OdXvJjTJCOGWOgixkHOcdAMvPD/FZQTqiYSjTyC8aabIWckkiWR0ZV+Cg9gt
-         12Vw==
-X-Gm-Message-State: AOAM532HfXbYd6y9QOI3sR9eT+AMqzjjVZQFft0CY0dPH2uU+I3fVQQe
-        hBaYv9yXrIKOPv2JofJPhCx6Lg==
-X-Google-Smtp-Source: ABdhPJzy3L13GiiOVq+u0errQIuLZDbWTXWtPICnFywU3zpYMn5wnv69XzZ5bLPGkSg6b7LUTT5JwA==
-X-Received: by 2002:a19:480a:: with SMTP id v10mr12826757lfa.565.1623698108333;
-        Mon, 14 Jun 2021 12:15:08 -0700 (PDT)
-Received: from jade (h-79-136-85-3.A175.priv.bahnhof.se. [79.136.85.3])
-        by smtp.gmail.com with ESMTPSA id i5sm1559817lfe.113.2021.06.14.12.15.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Jun 2021 12:15:07 -0700 (PDT)
-Date:   Mon, 14 Jun 2021 21:15:06 +0200
-From:   Jens Wiklander <jens.wiklander@linaro.org>
-To:     Tyler Hicks <tyhicks@linux.microsoft.com>
-Cc:     Allen Pais <apais@linux.microsoft.com>,
-        Sumit Garg <sumit.garg@linaro.org>,
-        Peter Huewe <peterhuewe@gmx.de>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Vikas Gupta <vikas.gupta@broadcom.com>,
-        Thirupathaiah Annapureddy <thiruan@microsoft.com>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>,
-        =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
-        op-tee@lists.trustedfirmware.org, linux-integrity@vger.kernel.org,
-        bcm-kernel-feedback-list@broadcom.com, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 4/8] optee: Clear stale cache entries during
- initialization
-Message-ID: <20210614191506.GA1373417@jade>
-References: <20210610210913.536081-1-tyhicks@linux.microsoft.com>
- <20210610210913.536081-5-tyhicks@linux.microsoft.com>
- <20210614082715.GC1033436@jade>
- <20210614190646.GW4910@sequoia>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210614190646.GW4910@sequoia>
+        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=Al09n/FtcTLTHuDw253HY0i7yPF/7QIbOKBugNPQ+lw=;
+        b=kh6ng3NYFrdnO2w2A7REtDGMngh1EiebrSk/b8w7e2eYpmPi+ovmClxQpmbr9IzW2H
+         YmY3mCyxRICVB47txRMnw8QZRajaUKkCFJ19yqzS3F3/nZyNx1frZIuP6JOGhqF3RLqb
+         L0sP1z+YhqN9CTAHhGBPB34JiG6s5LmpE/XFhBxK5lyigHbg/uT3WVSWc8BsqvnBbu8Z
+         LL8BK+c40zi01t10SedOwJt9zZMpFb8BsOlE3mwwuTZ/MY3P6/64lOOa0PCH1gb2LdgS
+         Q2A7bfAhUie/yjLRtwDEYnekkP0CrOcDy2K5zWPBic4UDMd2zwWIcJw3iBp2qiKoYJoy
+         dFSw==
+X-Gm-Message-State: AOAM533x82XyviiN238NrqsGWFbZQjQiV9wuDI6Zei9Pdvi0UgBrWvIF
+        Cekw81VeziZZCiIiUU7Uxey04z0tZGMOh8iDmA==
+X-Google-Smtp-Source: ABdhPJx+bN0WyZ8KnQbdOPrIzGrryE5Eejhj1GURpS9OkpR/2Rk458CF3LLj5sLmzZW6Y1lyX1vwR5qT7vwBmtIQUw==
+X-Received: from jgzg.c.googlers.com ([fda3:e722:ac3:10:7f:e700:c0a8:1acf])
+ (user=jingzhangos job=sendgmr) by 2002:a25:9a04:: with SMTP id
+ x4mr26661364ybn.440.1623705723052; Mon, 14 Jun 2021 14:22:03 -0700 (PDT)
+Date:   Mon, 14 Jun 2021 21:21:53 +0000
+In-Reply-To: <20210614212155.1670777-1-jingzhangos@google.com>
+Message-Id: <20210614212155.1670777-4-jingzhangos@google.com>
+Mime-Version: 1.0
+References: <20210614212155.1670777-1-jingzhangos@google.com>
+X-Mailer: git-send-email 2.32.0.272.g935e593368-goog
+Subject: [PATCH v9 3/5] KVM: stats: Add documentation for statistics data
+ binary interface
+From:   Jing Zhang <jingzhangos@google.com>
+To:     KVM <kvm@vger.kernel.org>, KVMARM <kvmarm@lists.cs.columbia.edu>,
+        LinuxMIPS <linux-mips@vger.kernel.org>,
+        KVMPPC <kvm-ppc@vger.kernel.org>,
+        LinuxS390 <linux-s390@vger.kernel.org>,
+        Linuxkselftest <linux-kselftest@vger.kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Paul Mackerras <paulus@ozlabs.org>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Janosch Frank <frankja@linux.ibm.com>,
+        David Hildenbrand <david@redhat.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Jim Mattson <jmattson@google.com>,
+        Peter Shier <pshier@google.com>,
+        Oliver Upton <oupton@google.com>,
+        David Rientjes <rientjes@google.com>,
+        Emanuele Giuseppe Esposito <eesposit@redhat.com>,
+        David Matlack <dmatlack@google.com>,
+        Ricardo Koller <ricarkol@google.com>,
+        Krish Sadhukhan <krish.sadhukhan@oracle.com>,
+        Fuad Tabba <tabba@google.com>
+Cc:     Jing Zhang <jingzhangos@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Mon, Jun 14, 2021 at 02:06:46PM -0500, Tyler Hicks wrote:
-> On 2021-06-14 10:27:15, Jens Wiklander wrote:
-> > On Thu, Jun 10, 2021 at 04:09:09PM -0500, Tyler Hicks wrote:
-> > > The shm cache could contain invalid addresses if
-> > > optee_disable_shm_cache() was not called from the .shutdown hook of the
-> > > previous kernel before a kexec. These addresses could be unmapped or
-> > > they could point to mapped but unintended locations in memory.
-> > > 
-> > > Clear the shared memory cache, while being careful to not translate the
-> > > addresses returned from OPTEE_SMC_DISABLE_SHM_CACHE, during driver
-> > > initialization. Once all pre-cache shm objects are removed, proceed with
-> > > enabling the cache so that we know that we can handle cached shm objects
-> > > with confidence later in the .shutdown hook.
-> > > 
-> > > Signed-off-by: Tyler Hicks <tyhicks@linux.microsoft.com>
-> > > ---
-> > >  drivers/tee/optee/call.c          | 11 ++++++++++-
-> > >  drivers/tee/optee/core.c          | 13 +++++++++++--
-> > >  drivers/tee/optee/optee_private.h |  2 +-
-> > >  3 files changed, 22 insertions(+), 4 deletions(-)
-> > > 
-> > > diff --git a/drivers/tee/optee/call.c b/drivers/tee/optee/call.c
-> > > index 6e6eb836e9b6..5dcba6105ed7 100644
-> > > --- a/drivers/tee/optee/call.c
-> > > +++ b/drivers/tee/optee/call.c
-> > > @@ -419,8 +419,10 @@ void optee_enable_shm_cache(struct optee *optee)
-> > >   * optee_disable_shm_cache() - Disables caching of some shared memory allocation
-> > >   *			      in OP-TEE
-> > >   * @optee:	main service struct
-> > > + * @is_mapped:	true if the cached shared memory addresses were mapped by this
-> > > + *		kernel, are safe to dereference, and should be freed
-> > >   */
-> > > -void optee_disable_shm_cache(struct optee *optee)
-> > > +void optee_disable_shm_cache(struct optee *optee, bool is_mapped)
-> > >  {
-> > >  	struct optee_call_waiter w;
-> > >  
-> > > @@ -439,6 +441,13 @@ void optee_disable_shm_cache(struct optee *optee)
-> > >  		if (res.result.status == OPTEE_SMC_RETURN_OK) {
-> > >  			struct tee_shm *shm;
-> > >  
-> > > +			/*
-> > > +			 * Shared memory references that were not mapped by
-> > > +			 * this kernel must be ignored to prevent a crash.
-> > > +			 */
-> > > +			if (!is_mapped)
-> > > +				continue;
-> > > +
-> > >  			shm = reg_pair_to_ptr(res.result.shm_upper32,
-> > >  					      res.result.shm_lower32);
-> > >  			tee_shm_free(shm);
-> > > diff --git a/drivers/tee/optee/core.c b/drivers/tee/optee/core.c
-> > > index 0987074d7ed0..6974e1104bd4 100644
-> > > --- a/drivers/tee/optee/core.c
-> > > +++ b/drivers/tee/optee/core.c
-> > > @@ -589,7 +589,7 @@ static int optee_remove(struct platform_device *pdev)
-> > >  	 * reference counters and also avoid wild pointers in secure world
-> > >  	 * into the old shared memory range.
-> > >  	 */
-> > > -	optee_disable_shm_cache(optee);
-> > > +	optee_disable_shm_cache(optee, true);
-> > 
-> > Naked "true" or "false" parameters are normally not very descriptive.
-> > Would it make sense to write this as:
-> > optee_disable_shm_cache(optee, true /*is_mapped*/);
-> > instead (same for the other call sites in this patch)? That way it would
-> > be easier to see what it is that is true or false.
-> 
-> Yeah, I understand the issue with the naked bools. What about turning
-> 'optee_disable_shm_cache(struct optee *optee, bool is_mapped)' into
-> '__optee_disable_shm_cache(struct optee *optee, bool is_mapped)' and
-> introducing these two wrappers:
-> 
-> /**
->  * optee_disable_shm_cache() - Disables caching of mapped shared memory
->  *                             allocations in OP-TEE
->  * @optee:     main service struct
->  */
-> void optee_disable_shm_cache(struct optee *optee)
-> {
->        return __optee_disable_shm_cache(optee, true);
-> }
-> 
-> /**
->  * optee_disable_unmapped_shm_cache() - Disables caching of shared memory
->  *                                      allocations in OP-TEE which are not
->  *                                      currently mapped
->  * @optee:     main service struct
->  */
-> void optee_disable_unmapped_shm_cache(struct optee *optee)
-> {
->        return __optee_disable_shm_cache(optee, false);
-> }
-> 
-> Existing callers of optee_disable_shm_cache() remain unchanged and we just add
-> one caller of optee_disable_unmapped_shm_cache() with this patch.
-> 
+Update KVM API documentation for binary statistics.
 
-Sounds good.
+Reviewed-by: David Matlack <dmatlack@google.com>
+Reviewed-by: Ricardo Koller <ricarkol@google.com>
+Reviewed-by: Krish Sadhukhan <krish.sadhukhan@oracle.com>
+Reviewed-by: Fuad Tabba <tabba@google.com>
+Signed-off-by: Jing Zhang <jingzhangos@google.com>
+---
+ Documentation/virt/kvm/api.rst | 177 ++++++++++++++++++++++++++++++++-
+ 1 file changed, 176 insertions(+), 1 deletion(-)
 
-Jens
+diff --git a/Documentation/virt/kvm/api.rst b/Documentation/virt/kvm/api.rst
+index e328caa35d6c..35ee52dbec89 100644
+--- a/Documentation/virt/kvm/api.rst
++++ b/Documentation/virt/kvm/api.rst
+@@ -5034,7 +5034,6 @@ see KVM_XEN_VCPU_SET_ATTR above.
+ The KVM_XEN_VCPU_ATTR_TYPE_RUNSTATE_ADJUST type may not be used
+ with the KVM_XEN_VCPU_GET_ATTR ioctl.
+ 
+-
+ 4.131 KVM_GET_SREGS2
+ ------------------
+ 
+@@ -5081,6 +5080,174 @@ Writes special registers into the vcpu.
+ See KVM_GET_SREGS2 for the data structures.
+ This ioctl (when supported) replaces the KVM_SET_SREGS.
+ 
++4.133 KVM_GET_STATS_FD
++----------------------
++
++:Capability: KVM_CAP_STATS_BINARY_FD
++:Architectures: all
++:Type: vm ioctl, vcpu ioctl
++:Parameters: none
++:Returns: statistics file descriptor on success, < 0 on error
++
++Errors:
++
++  ======     ======================================================
++  ENOMEM     if the fd could not be created due to lack of memory
++  EMFILE     if the number of opened files exceeds the limit
++  ======     ======================================================
++
++The file descriptor can be used to read VM/vCPU statistics data in binary
++format. The file data is organized into three blocks as below:
+++-------------+
++|   Header    |
+++-------------+
++| Descriptors |
+++-------------+
++| Stats Data  |
+++-------------+
++
++The Header block is always at the start of the file. It is only needed to be
++read one time for the lifetime of the file descriptor.
++It is in the form of ``struct kvm_stats_header`` as below::
++
++	#define KVM_STATS_ID_MAXLEN		64
++
++	struct kvm_stats_header {
++		__u32 name_size;
++		__u32 count;
++		__u32 desc_offset;
++		__u32 data_offset;
++		char id[0];
++	};
++
++The ``id`` field is identification for the corresponding KVM statistics. For
++VM statistics, it is in the form of "kvm-{kvm pid}", like "kvm-12345". For
++VCPU statistics, it is in the form of "kvm-{kvm pid}/vcpu-{vcpu id}", like
++"kvm-12345/vcpu-12".
++
++The ``name_size`` field is the size (byte) of the statistics name string
++(including trailing '\0') appended to the end of every statistics descriptor.
++
++The ``count`` field is the number of statistics.
++
++The ``desc_offset`` field is the offset of the Descriptors block from the start
++of the file indicated by the file descriptor.
++
++The ``data_offset`` field is the offset of the Stats Data block from the start
++of the file indicated by the file descriptor.
++
++The Descriptors block is only needed to be read once for the lifetime of the
++file descriptor. It is an array of ``struct kvm_stats_desc`` as shown in
++below code block::
++
++	#define KVM_STATS_TYPE_SHIFT		0
++	#define KVM_STATS_TYPE_MASK		(0xF << KVM_STATS_TYPE_SHIFT)
++	#define KVM_STATS_TYPE_CUMULATIVE	(0x0 << KVM_STATS_TYPE_SHIFT)
++	#define KVM_STATS_TYPE_INSTANT		(0x1 << KVM_STATS_TYPE_SHIFT)
++	#define KVM_STATS_TYPE_MAX		KVM_STATS_TYPE_INSTANT
++
++	#define KVM_STATS_UNIT_SHIFT		4
++	#define KVM_STATS_UNIT_MASK		(0xF << KVM_STATS_UNIT_SHIFT)
++	#define KVM_STATS_UNIT_NONE		(0x0 << KVM_STATS_UNIT_SHIFT)
++	#define KVM_STATS_UNIT_BYTES		(0x1 << KVM_STATS_UNIT_SHIFT)
++	#define KVM_STATS_UNIT_SECONDS		(0x2 << KVM_STATS_UNIT_SHIFT)
++	#define KVM_STATS_UNIT_CYCLES		(0x3 << KVM_STATS_UNIT_SHIFT)
++	#define KVM_STATS_UNIT_MAX		KVM_STATS_UNIT_CYCLES
++
++	#define KVM_STATS_BASE_SHIFT		8
++	#define KVM_STATS_BASE_MASK		(0xF << KVM_STATS_BASE_SHIFT)
++	#define KVM_STATS_BASE_POW10		(0x0 << KVM_STATS_BASE_SHIFT)
++	#define KVM_STATS_BASE_POW2		(0x1 << KVM_STATS_BASE_SHIFT)
++	#define KVM_STATS_BASE_MAX		KVM_STATS_BASE_POW2
++
++	struct kvm_stats_desc {
++		__u32 flags;
++		__s16 exponent;
++		__u16 size;
++		__u32 offset;
++		__u32 unused;
++		char name[0];
++	};
++
++The ``flags`` field contains the type and unit of the statistics data described
++by this descriptor. The following flags are supported:
++
++Bits 0-3 of ``flags`` encode the type:
++  * ``KVM_STATS_TYPE_CUMULATIVE``
++    The statistics data is cumulative. The value of data can only be increased.
++    Most of the counters used in KVM are of this type.
++    The corresponding ``count`` field for this type is always 1.
++  * ``KVM_STATS_TYPE_INSTANT``
++    The statistics data is instantaneous. Its value can be increased or
++    decreased. This type is usually used as a measurement of some resources,
++    like the number of dirty pages, the number of large pages, etc.
++    The corresponding ``count`` field for this type is always 1.
++
++Bits 4-7 of ``flags`` encode the unit:
++  * ``KVM_STATS_UNIT_NONE``
++    There is no unit for the value of statistics data. This usually means that
++    the value is a simple counter of an event.
++  * ``KVM_STATS_UNIT_BYTES``
++    It indicates that the statistics data is used to measure memory size, in the
++    unit of Byte, KiByte, MiByte, GiByte, etc. The unit of the data is
++    determined by the ``exponent`` field in the descriptor. The
++    ``KVM_STATS_BASE_POW2`` flag is valid in this case. The unit of the data is
++    determined by ``pow(2, exponent)``. For example, if value is 10,
++    ``exponent`` is 20, which means the unit of statistics data is MiByte, we
++    can get the statistics data in the unit of Byte by
++    ``value * pow(2, exponent) = 10 * pow(2, 20) = 10 MiByte`` which is
++    10 * 1024 * 1024 Bytes.
++  * ``KVM_STATS_UNIT_SECONDS``
++    It indicates that the statistics data is used to measure time/latency, in
++    the unit of nanosecond, microsecond, millisecond and second. The unit of the
++    data is determined by the ``exponent`` field in the descriptor. The
++    ``KVM_STATS_BASE_POW10`` flag is valid in this case. The unit of the data
++    is determined by ``pow(10, exponent)``. For example, if value is 2000000,
++    ``exponent`` is -6, which means the unit of statistics data is microsecond,
++    we can get the statistics data in the unit of second by
++    ``value * pow(10, exponent) = 2000000 * pow(10, -6) = 2 seconds``.
++  * ``KVM_STATS_UNIT_CYCLES``
++    It indicates that the statistics data is used to measure CPU clock cycles.
++    The ``KVM_STATS_BASE_POW10`` flag is valid in this case. For example, if
++    value is 200, ``exponent`` is 4, we can get the number of CPU clock cycles
++    by ``value * pow(10, exponent) = 200 * pow(10, 4) = 2000000``.
++
++Bits 8-11 of ``flags`` encode the base:
++  * ``KVM_STATS_BASE_POW10``
++    The scale is based on power of 10. It is used for measurement of time and
++    CPU clock cycles.
++  * ``KVM_STATS_BASE_POW2``
++    The scale is based on power of 2. It is used for measurement of memory size.
++
++The ``exponent`` field is the scale of corresponding statistics data. For
++example, if the unit is ``KVM_STATS_UNIT_BYTES``, the base is
++``KVM_STATS_BASE_POW2``, the ``exponent`` is 10, then we know that the real
++unit of the statistics data is KBytes a.k.a pow(2, 10) = 1024 bytes.
++
++The ``size`` field is the number of values (u64) of this statistics data. Its
++value is usually 1 for most of simple statistics.
++
++The ``offset`` field is the offset from the start of Data Block to the start of
++the corresponding statistics data.
++
++The ``unused`` fields are reserved for future support for other types of
++statistics data, like log/linear histogram.
++
++The ``name`` field points to the name string of the statistics data. The name
++string starts at the end of ``struct kvm_stats_desc``.
++The maximum length (including trailing '\0') is indicated by ``name_size``
++in ``struct kvm_stats_header``.
++
++The Stats Data block contains an array of data values of type ``struct
++kvm_vm_stats_data`` or ``struct kvm_vcpu_stats_data``. It would be read by
++userspace periodically to pull statistics data.
++The order of data value in Stats Data block is the same as the order of
++descriptors in Descriptors block.
++  * Statistics data for VM/VCPU::
++
++	struct kvm_stats_data {
++		__u64 value[0];
++	};
+ 
+ 5. The kvm_run structure
+ ========================
+@@ -6969,3 +7136,11 @@ The argument to KVM_ENABLE_CAP is also a bitmask, and must be a subset
+ of the result of KVM_CHECK_EXTENSION.  KVM will forward to userspace
+ the hypercalls whose corresponding bit is in the argument, and return
+ ENOSYS for the others.
++
++8.35 KVM_CAP_STATS_BINARY_FD
++----------------------------
++
++:Architectures: all
++
++This capability indicates the feature that userspace can create get a file
++descriptor for every VM and VCPU to read statistics data in binary format.
+-- 
+2.32.0.272.g935e593368-goog
+

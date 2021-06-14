@@ -2,35 +2,34 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-26.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-26.3 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT,USER_IN_DEF_DKIM_WL autolearn=unavailable autolearn_force=no
-	version=3.4.0
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT,
+	USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1DE46C49EA6
-	for <linux-mips@archiver.kernel.org>; Mon, 14 Jun 2021 22:33:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 09286C49EAB
+	for <linux-mips@archiver.kernel.org>; Mon, 14 Jun 2021 22:33:45 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 0B4EF61356
+	by mail.kernel.org (Postfix) with ESMTP id F1AAD613CC
 	for <linux-mips@archiver.kernel.org>; Mon, 14 Jun 2021 22:33:44 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231709AbhFNWfq (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 14 Jun 2021 18:35:46 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:56138 "EHLO
+        id S229760AbhFNWfr (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 14 Jun 2021 18:35:47 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:56188 "EHLO
         linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231556AbhFNWfn (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Mon, 14 Jun 2021 18:35:43 -0400
+        with ESMTP id S231707AbhFNWfq (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Mon, 14 Jun 2021 18:35:46 -0400
 Received: from sequoia.work.tihix.com (162-237-133-238.lightspeed.rcsntx.sbcglobal.net [162.237.133.238])
-        by linux.microsoft.com (Postfix) with ESMTPSA id DAE3120B83DC;
-        Mon, 14 Jun 2021 15:33:38 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com DAE3120B83DC
+        by linux.microsoft.com (Postfix) with ESMTPSA id EFEEF20B83C5;
+        Mon, 14 Jun 2021 15:33:41 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com EFEEF20B83C5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1623710019;
-        bh=whxJsdq8XkOwGGGAaS4MNf4W2jApHz0t3z79hHnMR+o=;
+        s=default; t=1623710022;
+        bh=Tl/p2tGxM6IrZJQb02DL6qvvXW35MjdSvBm9pBSwJbQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sjHXc5wzAlVflM9Bxv3gCkjbXdSiPyMWHpqCuaR7gnjM3UUr1qKHg+jMBQQeFCjrc
-         ZnSw/wDbzVjeJAn3JAIIA/e4NOg+J3RtNkon/TSdEByug0tAAVhcqW9w5gXNXpd6VT
-         kGJwORrIrT4L5xrefcvylpBvXWPl2iP3ie3LIcXQ=
+        b=GwK26bNSv07YR68gmqo7+Na9IYLTsD9xsUTsvPaPBysEcafwLw60LQTTer77lItY5
+         X7hyczaPH3k/H/rtjY+gI3o218d2AbjrLufDWbg0p0s6U+xzKbSnwJBoELO6Idknrd
+         TmlqQDmoBEmer4YHmE/q3X8vi2y4BHSLUTYBU6Tc=
 From:   Tyler Hicks <tyhicks@linux.microsoft.com>
 To:     Jens Wiklander <jens.wiklander@linaro.org>,
         Allen Pais <apais@linux.microsoft.com>,
@@ -45,9 +44,9 @@ Cc:     Thirupathaiah Annapureddy <thiruan@microsoft.com>,
         op-tee@lists.trustedfirmware.org, linux-integrity@vger.kernel.org,
         bcm-kernel-feedback-list@broadcom.com, linux-mips@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v5 5/8] tee: add tee_shm_alloc_kernel_buf()
-Date:   Mon, 14 Jun 2021 17:33:14 -0500
-Message-Id: <20210614223317.999867-6-tyhicks@linux.microsoft.com>
+Subject: [PATCH v5 7/8] tpm_ftpm_tee: Free and unregister TEE shared memory during kexec
+Date:   Mon, 14 Jun 2021 17:33:16 -0500
+Message-Id: <20210614223317.999867-8-tyhicks@linux.microsoft.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210614223317.999867-1-tyhicks@linux.microsoft.com>
 References: <20210614223317.999867-1-tyhicks@linux.microsoft.com>
@@ -57,61 +56,48 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-From: Jens Wiklander <jens.wiklander@linaro.org>
+dma-buf backed shared memory cannot be reliably freed and unregistered
+during a kexec operation even when tee_shm_free() is called on the shm
+from a .shutdown hook. The problem occurs because dma_buf_put() calls
+fput() which then uses task_work_add(), with the TWA_RESUME parameter,
+to queue tee_shm_release() to be called before the current task returns
+to user mode. However, the current task never returns to user mode
+before the kexec completes so the memory is never freed nor
+unregistered.
 
-Adds a new function tee_shm_alloc_kernel_buf() to allocate shared memory
-from a kernel driver. This function can later be made more lightweight
-by unnecessary dma-buf export.
+Use tee_shm_alloc_kernel_buf() to avoid dma-buf backed shared memory
+allocation so that tee_shm_free() can directly call tee_shm_release().
+This will ensure that the shm can be freed and unregistered during a
+kexec operation.
 
+Fixes: 09e574831b27 ("tpm/tpm_ftpm_tee: A driver for firmware TPM running inside TEE")
+Fixes: 1760eb689ed6 ("tpm/tpm_ftpm_tee: add shutdown call back")
 Cc: stable@vger.kernel.org
-Signed-off-by: Jens Wiklander <jens.wiklander@linaro.org>
-Reviewed-by: Tyler Hicks <tyhicks@linux.microsoft.com>
+Signed-off-by: Tyler Hicks <tyhicks@linux.microsoft.com>
 ---
- drivers/tee/tee_shm.c   | 18 ++++++++++++++++++
- include/linux/tee_drv.h |  1 +
- 2 files changed, 19 insertions(+)
+ drivers/char/tpm/tpm_ftpm_tee.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/tee/tee_shm.c b/drivers/tee/tee_shm.c
-index 00472f5ce22e..c65e44707cd6 100644
---- a/drivers/tee/tee_shm.c
-+++ b/drivers/tee/tee_shm.c
-@@ -193,6 +193,24 @@ struct tee_shm *tee_shm_alloc(struct tee_context *ctx, size_t size, u32 flags)
- }
- EXPORT_SYMBOL_GPL(tee_shm_alloc);
+diff --git a/drivers/char/tpm/tpm_ftpm_tee.c b/drivers/char/tpm/tpm_ftpm_tee.c
+index 2ccdf8ac6994..6e3235565a4d 100644
+--- a/drivers/char/tpm/tpm_ftpm_tee.c
++++ b/drivers/char/tpm/tpm_ftpm_tee.c
+@@ -254,11 +254,11 @@ static int ftpm_tee_probe(struct device *dev)
+ 	pvt_data->session = sess_arg.session;
  
-+/**
-+ * tee_shm_alloc_kernel_buf() - Allocate shared memory for kernel buffer
-+ * @ctx:	Context that allocates the shared memory
-+ * @size:	Requested size of shared memory
-+ *
-+ * The returned memory registered in secure world and is suitable to be
-+ * passed as a memory buffer in parameter argument to
-+ * tee_client_invoke_func(). The memory allocated is later freed with a
-+ * call to tee_shm_free().
-+ *
-+ * @returns a pointer to 'struct tee_shm'
-+ */
-+struct tee_shm *tee_shm_alloc_kernel_buf(struct tee_context *ctx, size_t size)
-+{
-+	return tee_shm_alloc(ctx, size, TEE_SHM_MAPPED | TEE_SHM_DMA_BUF);
-+}
-+EXPORT_SYMBOL_GPL(tee_shm_alloc_kernel_buf);
-+
- struct tee_shm *tee_shm_register(struct tee_context *ctx, unsigned long addr,
- 				 size_t length, u32 flags)
- {
-diff --git a/include/linux/tee_drv.h b/include/linux/tee_drv.h
-index 54269e47ac9a..8990f7628387 100644
---- a/include/linux/tee_drv.h
-+++ b/include/linux/tee_drv.h
-@@ -332,6 +332,7 @@ void *tee_get_drvdata(struct tee_device *teedev);
-  * @returns a pointer to 'struct tee_shm'
-  */
- struct tee_shm *tee_shm_alloc(struct tee_context *ctx, size_t size, u32 flags);
-+struct tee_shm *tee_shm_alloc_kernel_buf(struct tee_context *ctx, size_t size);
- 
- /**
-  * tee_shm_register() - Register shared memory buffer
+ 	/* Allocate dynamic shared memory with fTPM TA */
+-	pvt_data->shm = tee_shm_alloc(pvt_data->ctx,
+-				      MAX_COMMAND_SIZE + MAX_RESPONSE_SIZE,
+-				      TEE_SHM_MAPPED | TEE_SHM_DMA_BUF);
++	pvt_data->shm = tee_shm_alloc_kernel_buf(pvt_data->ctx,
++						 MAX_COMMAND_SIZE +
++						 MAX_RESPONSE_SIZE);
+ 	if (IS_ERR(pvt_data->shm)) {
+-		dev_err(dev, "%s: tee_shm_alloc failed\n", __func__);
++		dev_err(dev, "%s: tee_shm_alloc_kernel_buf failed\n", __func__);
+ 		rc = -ENOMEM;
+ 		goto out_shm_alloc;
+ 	}
 -- 
 2.25.1
 

@@ -2,94 +2,91 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.9 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-11.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 98D52C48BDF
-	for <linux-mips@archiver.kernel.org>; Tue, 15 Jun 2021 13:24:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3315EC48BDF
+	for <linux-mips@archiver.kernel.org>; Tue, 15 Jun 2021 13:26:05 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 761D961474
-	for <linux-mips@archiver.kernel.org>; Tue, 15 Jun 2021 13:24:47 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 053A861465
+	for <linux-mips@archiver.kernel.org>; Tue, 15 Jun 2021 13:26:05 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230162AbhFON0v (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 15 Jun 2021 09:26:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54262 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230146AbhFON0v (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Tue, 15 Jun 2021 09:26:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3676F61465;
-        Tue, 15 Jun 2021 13:24:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1623763486;
-        bh=V4tpiMC8eA/B5+op+TxQhJBdvP2Y7K62zVk556CGsz8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=mg0ecllN6Lnek19Zxt/aZ8T/HNJfQBlqWdtiorbaZ3+uIinhLkt9yPQp4RG6diIjX
-         ZwdNdqvaCcMHPrJ661+0GlYUk+zy/oaUxFI6AqGVZ3cNF3/JGA583lMsyONIEZCWWB
-         62ldCKKRy4oDy1mHZfVI79BkW6E2douBMlzRtc5M=
-Date:   Tue, 15 Jun 2021 15:24:44 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Sergio Paracuellos <sergio.paracuellos@gmail.com>
+        id S230259AbhFON2H (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 15 Jun 2021 09:28:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53538 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230211AbhFON2H (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Tue, 15 Jun 2021 09:28:07 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4D75C06175F;
+        Tue, 15 Jun 2021 06:26:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=LANErqvAt5Dho8b4cxyvD6Xv2I3E/TWFG2nVLqqeNt0=; b=palQ/f5WxTm8MUXTTCoy3VZFDC
+        n8V4XRmTumCgcm0WNBknFJw6HQJiqjd54owgb8f+cYy83XUlgvRsmb+DlLDYA5wxXFpqkTqJAjB50
+        efm1YQoc8XGJEamHRMsKYvrtPZ2S181JWCEuoNqOQ7Pt7tOW4cQ8XCVrne+pRUfgChrgEsiHNND/k
+        wLywRQ9TWOnneUJ0N+Ey5Du3YzlLQW09zJMR++vzJXygwVyvD8WwNUP0G+Ch40K3M/aDfbBdo7gn/
+        QcL6T1+U3ecGgL2it0yE/+EreZ7FQj2mvuiecuAao9Hla+hgUstciBYyETsk96ZeXFsk3YIINLX0j
+        IEL5j9+w==;
+Received: from [2001:4bb8:19b:fdce:9045:1e63:20f0:ca9] (helo=localhost)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1lt93p-006nu2-6X; Tue, 15 Jun 2021 13:25:00 +0000
+From:   Christoph Hellwig <hch@lst.de>
+To:     Jens Axboe <axboe@kernel.dk>, Thomas Gleixner <tglx@linutronix.de>
 Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        linux-staging@lists.linux.dev, NeilBrown <neil@brown.name>,
-        "open list:MIPS" <linux-mips@vger.kernel.org>,
-        Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>,
-        John Crispin <john@phrozen.org>
-Subject: Re: [PATCH v2 1/3] MIPS: ralink: Define PCI_IOBASE
-Message-ID: <YMiqHBVuoyd4EcIz@kroah.com>
-References: <20210614100617.28753-1-sergio.paracuellos@gmail.com>
- <20210614100617.28753-2-sergio.paracuellos@gmail.com>
- <20210615130830.GA7029@alpha.franken.de>
- <CAMhs-H8TM=m2ULVYwOFR8kEw4h1EDHOeGaVh9WpvxmY8oP8NTg@mail.gmail.com>
+        Geoff Levand <geoff@infradead.org>,
+        Ilya Dryomov <idryomov@gmail.com>,
+        Dongsheng Yang <dongsheng.yang@easystack.cn>,
+        Mike Snitzer <snitzer@redhat.com>,
+        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        Ira Weiny <ira.weiny@intel.com>, dm-devel@redhat.com,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-block@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        ceph-devel@vger.kernel.org, linux-arch@vger.kernel.org
+Subject: switch the block layer to use kmap_local_page v2
+Date:   Tue, 15 Jun 2021 15:24:38 +0200
+Message-Id: <20210615132456.753241-1-hch@lst.de>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMhs-H8TM=m2ULVYwOFR8kEw4h1EDHOeGaVh9WpvxmY8oP8NTg@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Tue, Jun 15, 2021 at 03:12:59PM +0200, Sergio Paracuellos wrote:
-> On Tue, Jun 15, 2021 at 3:09 PM Thomas Bogendoerfer
-> <tsbogend@alpha.franken.de> wrote:
-> >
-> > On Mon, Jun 14, 2021 at 12:06:15PM +0200, Sergio Paracuellos wrote:
-> > > PCI_IOBASE is used to create VM maps for PCI I/O ports, it is
-> > > required by generic PCI drivers to make memory mapped I/O range
-> > > work. Hence define it for ralink architectures to be able to
-> > > avoid parsing manually IO ranges in PCI generic driver code.
-> > > Function 'plat_mem_setup' for ralink is using 'set_io_port_base'
-> > > call using '0xa0000000' as address, so use the same address in
-> > > the definition to align things.
-> > >
-> > > Signed-off-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
-> > > ---
-> > >  arch/mips/include/asm/mach-ralink/spaces.h | 10 ++++++++++
-> > >  1 file changed, 10 insertions(+)
-> > >  create mode 100644 arch/mips/include/asm/mach-ralink/spaces.h
-> > >
-> > > diff --git a/arch/mips/include/asm/mach-ralink/spaces.h b/arch/mips/include/asm/mach-ralink/spaces.h
-> > > new file mode 100644
-> > > index 000000000000..87d085c9ad61
-> > > --- /dev/null
-> > > +++ b/arch/mips/include/asm/mach-ralink/spaces.h
-> > > @@ -0,0 +1,10 @@
-> > > +/* SPDX-License-Identifier: GPL-2.0 */
-> > > +#ifndef __ASM_MACH_RALINK_SPACES_H_
-> > > +#define __ASM_MACH_RALINK_SPACES_H_
-> > > +
-> > > +#define PCI_IOBASE   _AC(0xa0000000, UL)
-> > > +#define PCI_IOSIZE   SZ_16M
-> > > +#define IO_SPACE_LIMIT       (PCI_IOSIZE - 1)
-> > > +
-> > > +#include <asm/mach-generic/spaces.h>
-> > > +#endif
-> > > --
-> > > 2.25.1
-> >
-> > Acked-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-> 
-> Fastest response ever :) Thanks!
+Hi all,
 
-Thanks, all now queued up.
+this series switches the core block layer code and all users of the
+existing bvec kmap helpers to use kmap_local_page.  Drivers that
+currently use open coded kmap_atomic calls will converted in a follow
+on series.
+
+To do so a new kunmap variant is added that calls
+flush_kernel_dcache_page.  I'm not entirely sure where to call
+flush_dcache_page vs flush_kernel_dcache_page, so I've tried to follow
+the documentation here, but additional feedback would be welcome.
+
+Changes since v1:
+ - add more/better comments
+ - add a new kunmap_local_dirty helper to feal with
+   flush(_kernel)_dcache_page
+
+Diffstat:
+ arch/mips/include/asm/mach-rc32434/rb.h |    2 -
+ block/bio-integrity.c                   |   14 +++-----
+ block/bio.c                             |   37 ++++++----------------
+ block/blk-map.c                         |    2 -
+ block/bounce.c                          |   39 +++++-------------------
+ block/t10-pi.c                          |   16 +++------
+ drivers/block/ps3disk.c                 |   19 +----------
+ drivers/block/rbd.c                     |   15 +--------
+ drivers/md/dm-writecache.c              |    5 +--
+ include/linux/bio.h                     |   42 -------------------------
+ include/linux/bvec.h                    |   52 ++++++++++++++++++++++++++++++--
+ include/linux/highmem-internal.h        |    7 ++++
+ include/linux/highmem.h                 |   10 ++++--
+ 13 files changed, 102 insertions(+), 158 deletions(-)

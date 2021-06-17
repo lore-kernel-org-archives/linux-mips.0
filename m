@@ -7,61 +7,61 @@ X-Spam-Status: No, score=-7.7 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
 	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 512AEC49361
-	for <linux-mips@archiver.kernel.org>; Thu, 17 Jun 2021 11:23:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0D920C2B9F4
+	for <linux-mips@archiver.kernel.org>; Thu, 17 Jun 2021 11:34:08 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 36D6E613E2
-	for <linux-mips@archiver.kernel.org>; Thu, 17 Jun 2021 11:23:48 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id EC44B613F1
+	for <linux-mips@archiver.kernel.org>; Thu, 17 Jun 2021 11:34:07 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232554AbhFQLZy (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 17 Jun 2021 07:25:54 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:41618 "EHLO
+        id S231559AbhFQLgO (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 17 Jun 2021 07:36:14 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:39734 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232545AbhFQLZy (ORCPT
+        by vger.kernel.org with ESMTP id S231250AbhFQLgN (ORCPT
         <rfc822;linux-mips@vger.kernel.org>);
-        Thu, 17 Jun 2021 07:25:54 -0400
+        Thu, 17 Jun 2021 07:36:13 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1623929026;
+        s=mimecast20190719; t=1623929646;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=QeoOEjtdTbZHikE6qVHZkIHtsqJ8oL1MWdn59al3yJU=;
-        b=eu+rQMY7SDZ5k7TEYB+ZEXfNH1gWf0IdKrXFZsjVQgz8DDEWWBeTspIAcrQ6mF1gNtjEZ1
-        ZPx3ksYIZ8xjoyqQmzFM2nVMAj0PxaVi7bhbxWoAuu97h2aMkrQM7JZjulBLPg5wrThNAc
-        cAAcOsmSUtwv1ut14RD5eSFVxukqyVM=
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-604--wXxCOORMM2_6gFRxNOD0A-1; Thu, 17 Jun 2021 07:23:45 -0400
-X-MC-Unique: -wXxCOORMM2_6gFRxNOD0A-1
-Received: by mail-ej1-f71.google.com with SMTP id jy19-20020a1709077633b02903eb7acdb38cso2024808ejc.14
-        for <linux-mips@vger.kernel.org>; Thu, 17 Jun 2021 04:23:44 -0700 (PDT)
+        bh=eFNQaz+UBr3+VeZ6q7OSgOqHodPl71Dh+9dEuoGcM+Q=;
+        b=X5h/oeCAI8KRRy4Ex5oWRMnZDuesw1Sm6Gy2/17xW5kGa2gfOFGLqhpOIl2daBPrN8MQSM
+        SipPCYm0e0KmuciNbz36CZSZvD5gPbRvgcbWWh6T3kxwfCKHNApXWmMPz8D2369MV2LP1j
+        TRM8qsXIxBThVUH220dTPLxM7gA4IvM=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-121-myHHp7BzPzCJ6sEaAlyz_A-1; Thu, 17 Jun 2021 07:34:04 -0400
+X-MC-Unique: myHHp7BzPzCJ6sEaAlyz_A-1
+Received: by mail-ed1-f71.google.com with SMTP id v12-20020aa7dbcc0000b029038fc8e57037so1359203edt.0
+        for <linux-mips@vger.kernel.org>; Thu, 17 Jun 2021 04:34:04 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=QeoOEjtdTbZHikE6qVHZkIHtsqJ8oL1MWdn59al3yJU=;
-        b=iDuuAKIgQTt/yuyztUs612cQ9kyGj1OytJTZxNC7pmJdqHD8OvpBmsBW6rI8Npd68C
-         egi0N3e2NK67jNBHKU8GFB49qFp5L6gIZsMuORaUxTfvE+d2s1RgaW8WHSWnSeTsPJKS
-         ijUaOEGLP9YlrIAu2ZzR7JUuSoqB1pzHrqQGn9xiyJNB53hCVLVmsLH1L3Lm5k7Dtv62
-         SLqyYq7IBE5FsqHN1VyvLyE0U/PGUTy5Q6E4GkcRUCpi/A2g3CQl4awy1AQaiDpDjQZb
-         1Zwc9Amqq5V9mBtEvwMqbGKKYOOaft/RlfkSGmPqdRjOTzIdH69KawmTnSiPJG7RVrtG
-         xOgw==
-X-Gm-Message-State: AOAM531GGC1SC7IkCpVfwKob199rc94tq27oY1qZIVBvJVHzoMHO8q6V
-        pkrkH1k/Cf9DsNxFHyF/OLt4RsaQ/q1p6+TwD68s8FMLD9HaWhPC3i/j9JW8VQO8uYjCEPR0BKF
-        xAFHcRlsZE9Ki2FKZTYEZUA==
-X-Received: by 2002:a05:6402:268f:: with SMTP id w15mr5799044edd.228.1623928793192;
-        Thu, 17 Jun 2021 04:19:53 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzc8lc8kbfFsQbKsVnuEADgPqEmYVAvmC/1IvjtxjrXOO4gKYpFUgt0NPkDolV15GoZuo9rTg==
-X-Received: by 2002:a05:6402:268f:: with SMTP id w15mr5799027edd.228.1623928793011;
-        Thu, 17 Jun 2021 04:19:53 -0700 (PDT)
+        bh=eFNQaz+UBr3+VeZ6q7OSgOqHodPl71Dh+9dEuoGcM+Q=;
+        b=cBIRhtx0TQZxI8fjRT1UsngaXN6IiY+syIoU6rDGHS7RXyWhV0NakmfSdkM/4j6F2e
+         4JMhrpjXpBSDdlnlg18h2BAPd0YrnTPvlzFsL6MshWOGeK52Du/F1JMVTyozv3oJSUvB
+         0mDAoo+JbdFi8ObBDQ2yssJKAmgEI41j71IpTqkb3wvh8Oms17bpM7MdqvDEYxX0vgbf
+         1tQJbdyQipKUdac/bICariH9v+Rv93q9La9o8bqhzWMSuMYjXJ1ghHGiqobbyW2l/LN6
+         rOK6Nr2LiMfdJiOxK6tDmFAvd4XCosjJ8Qa/52Mc7nTZIarUwm3qeYkhP0aSk57nahFs
+         n0LA==
+X-Gm-Message-State: AOAM531Xj017XkgnUaFL3wm518IqY+knRwAlDyDJSmuPkjKQ7B2y0NX5
+        kWHXbl2MNu9CzvPvngb60aNYL+bEN18Pgp0vd+i2SD8Hrm5YmjM9KjkLXUrPEBjfq4Cen5RlxJJ
+        IqwmlRmm2C1ZmU7hwtRoGRA==
+X-Received: by 2002:a17:906:ca4a:: with SMTP id jx10mr4731043ejb.200.1623929246063;
+        Thu, 17 Jun 2021 04:27:26 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJw32CbI/7oXViDiR3/KwQ1e7FS2cEfJU4e5y3PkNkTiAFxV1nv9UNltBlc/li58ogeNN1nAkA==
+X-Received: by 2002:a17:906:ca4a:: with SMTP id jx10mr4730994ejb.200.1623929245836;
+        Thu, 17 Jun 2021 04:27:25 -0700 (PDT)
 Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id e18sm3537900ejh.64.2021.06.17.04.19.51
+        by smtp.gmail.com with ESMTPSA id s5sm4131010edi.93.2021.06.17.04.27.24
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 17 Jun 2021 04:19:52 -0700 (PDT)
-Subject: Re: [PATCH v10 3/5] KVM: stats: Add documentation for binary
- statistics interface
+        Thu, 17 Jun 2021 04:27:25 -0700 (PDT)
+Subject: Re: [PATCH v10 2/5] KVM: stats: Add fd-based API to read binary stats
+ data
 To:     Greg KH <gregkh@linuxfoundation.org>,
         Jing Zhang <jingzhangos@google.com>
 Cc:     KVM <kvm@vger.kernel.org>, KVMARM <kvmarm@lists.cs.columbia.edu>,
@@ -95,15 +95,15 @@ Cc:     KVM <kvm@vger.kernel.org>, KVMARM <kvmarm@lists.cs.columbia.edu>,
         Krish Sadhukhan <krish.sadhukhan@oracle.com>,
         Fuad Tabba <tabba@google.com>
 References: <20210617044146.2667540-1-jingzhangos@google.com>
- <20210617044146.2667540-4-jingzhangos@google.com>
- <YMrmqOxDWJ2/8sfD@kroah.com>
+ <20210617044146.2667540-3-jingzhangos@google.com>
+ <YMr4rArKvj3obDEM@kroah.com>
 From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <be506135-5bc3-31bd-1b20-063f01f41df1@redhat.com>
-Date:   Thu, 17 Jun 2021 13:19:50 +0200
+Message-ID: <b9cc4df4-a502-31ec-0f5d-32a53c372f06@redhat.com>
+Date:   Thu, 17 Jun 2021 13:27:23 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.10.1
 MIME-Version: 1.0
-In-Reply-To: <YMrmqOxDWJ2/8sfD@kroah.com>
+In-Reply-To: <YMr4rArKvj3obDEM@kroah.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -111,24 +111,21 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On 17/06/21 08:07, Greg KH wrote:
->> The statistics data itself could be read out by userspace telemetry
->> periodically without any extra parsing or setup effort.
-> Do you have a pointer to userspace code that can do such a thing that
-> others can use?  We do not like adding apis to the kernel without at
-> least seeing the user of those apis, especially for complex things like
-> this.
-> 
-> Ideally you would include some library code in the kernel tree itself
-> that everyone can use for this for their own programs.  You have
-> provided a test which is great, but how do we know it works for "real"
-> usages?
+On 17/06/21 09:24, Greg KH wrote:
+>> Provides a file descriptor per VM to read VM stats info/data.
+>> Provides a file descriptor per vCPU to read vCPU stats info/data.
+> Shouldn't this be two separate patches, one for each thing as these are
+> two different features being added?
 
-I am pretty sure that Google is using this internally, but we are also 
-going to work on QEMU and Libvirt support for this.
+They share a lot of code.  We could have three patches though:
 
-As for the rest, thanks for the review---I'll let Jing act on it and 
-only add my own remarks in a couple places.
+- add common code for binary statistics file descriptor
+
+- add VM ioctl to retrieve a statistics file descriptor [including the 
+definition of VM stats descriptors]
+
+- add VCPU ioctl to retrieve a statistics file descriptor [again 
+including the definitions of VCPU stats].
 
 Paolo
 

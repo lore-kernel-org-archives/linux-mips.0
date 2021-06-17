@@ -2,102 +2,227 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-21.3 required=3.0 tests=BAYES_00,DKIMWL_WL_MED,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT,
+	USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 52DA7C48BE8
-	for <linux-mips@archiver.kernel.org>; Thu, 17 Jun 2021 02:15:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B8AC1C48BE5
+	for <linux-mips@archiver.kernel.org>; Thu, 17 Jun 2021 04:41:53 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 3A197610EA
-	for <linux-mips@archiver.kernel.org>; Thu, 17 Jun 2021 02:15:54 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 93099601FC
+	for <linux-mips@archiver.kernel.org>; Thu, 17 Jun 2021 04:41:53 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231283AbhFQCSA (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 16 Jun 2021 22:18:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41280 "EHLO
+        id S229599AbhFQEn7 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 17 Jun 2021 00:43:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44892 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230187AbhFQCSA (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 16 Jun 2021 22:18:00 -0400
-Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 637D6C061574
-        for <linux-mips@vger.kernel.org>; Wed, 16 Jun 2021 19:15:52 -0700 (PDT)
-Received: by mail-io1-xd29.google.com with SMTP id l64so1382025ioa.7
-        for <linux-mips@vger.kernel.org>; Wed, 16 Jun 2021 19:15:52 -0700 (PDT)
+        with ESMTP id S229677AbhFQEn6 (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Thu, 17 Jun 2021 00:43:58 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0985C06175F
+        for <linux-mips@vger.kernel.org>; Wed, 16 Jun 2021 21:41:50 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id w14-20020a056902100eb029054d7f164a2fso6782845ybt.11
+        for <linux-mips@vger.kernel.org>; Wed, 16 Jun 2021 21:41:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to:cc
-         :content-transfer-encoding;
-        bh=0Q3ZKPgiakfSmhgk1RVtik80qD52peQ/rHR1wfh2NDc=;
-        b=jMYNSpbABIwhRQTMgbhJ3dUtx3a2fJDDs5I7CjmsD+Ashtk9+oz3yapHp5CRnqrSBm
-         FRAnx/uQdZVpgMNhn8+4yJTY60LTA2sbb7wOKkYP5FqEUBdeX8TG8q7E3klITbp8e2tn
-         PCjFOanhZLZa94ww4qvjziRpBzDD1xv/3WkJBcqZ0x9EBg+XYXwiT2OdrAzQ3mr5fdTq
-         +Xfy0rqt7L/bXgIuE7nIrb1Wz6cFR5UdILZB4jNkMAgwcaVQXPaLzw7SdWt7EdnKTBbo
-         EFQK4D/B4w0GfYtlKq+sChR4Zl2N1T89F4uLkzmHDr7y9yUhO5MTscEpCeVgHedyXCjC
-         WwKw==
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=3s1eozoLTG+O62g1UQDRz9lp8lZhA9dilcFNCLVNrmc=;
+        b=db0YxvYVAksAIvRn8DzguGB76wytBIFVDrzngep7lWWXtMo8kZQa5rchHf2uteEu+K
+         HxS1Dw/r8AqDIq6UtA5zCFjMeBoLgyDHUXbdcvAFijzMFX66eyfRqi72Z8wBXua8HAx+
+         6NO8WoBZ/BWJoOv+5U3aOXqkawAw2myIX9n4COBU6wnRCFBcavbfvqPW2uqMrbnsNQeb
+         AscXOEU2JShseLT0EAKG5/FLqPqqnwaf2Pi/QlqymJX/z0OrhAfhQbsGHktJVGLCeWAZ
+         9VG7lh6B3+dyfQiHQQSV+Fp63MWKIunrezw9OfpZdsVZl/EoLoWDtsA2zqj0uaY65esP
+         /QNA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc
-         :content-transfer-encoding;
-        bh=0Q3ZKPgiakfSmhgk1RVtik80qD52peQ/rHR1wfh2NDc=;
-        b=PmKzHlLz1/Y+25jseZRUgi/katglg9MtZdv+kJz1vAbmEOVMNw5RzbniBLCDYmkvgZ
-         bhecSjuGIUtTvUWZCKgrhEAeDu8BM2PruSxm2Fxk73MhyQjjmzPdLk7YUY57SUOmcgg+
-         +BKAgzI2mpyIvHiNxiPXryt1eUG7Y7ooRf1FPb/m2p31xyIVWAnJJYz9f/1LFa5FLdpp
-         V2hXA0eswerBCpjYwnwDBRx1+8ee2ST4snjBjCq/O6dbWsIXXTqxaHGpTUepRBD+MQnm
-         w//PJRxaXjCmOrbGFGsD+A+SHIgNyMy+7e7A8bxvu/ysXcKl1aNHubZ5C/sbhXb/oL9U
-         qdxg==
-X-Gm-Message-State: AOAM531K6z1CYlCkW+emWIfGps2vdvoHszA7kJKvXlZ0IyeLWhZqcnYl
-        Lz/vfKfOUAHpMlfM47CCscXqaI/3We9PMiiq7sbAE2T4kKzw2xlE
-X-Google-Smtp-Source: ABdhPJw1reADWKaNkrCFzy53yebKvQEquDSNgmVPHMZccSRQgu7vlu3bwT4XTW70bQIe4PNp0BSywHaMQy9qU7ZYAUs=
-X-Received: by 2002:a6b:d61a:: with SMTP id w26mr1835068ioa.204.1623896151894;
- Wed, 16 Jun 2021 19:15:51 -0700 (PDT)
-MIME-Version: 1.0
-From:   Tony Ambardar <tony.ambardar@gmail.com>
-Date:   Wed, 16 Jun 2021 19:15:41 -0700
-Message-ID: <CAPGftE-dQhsjJAWK47SD6m5C30RBk1Pc=q9sWFM1pAKHmaFyeg@mail.gmail.com>
-Subject: Help with SLT insn under MIPS R6
-To:     linux-mips@vger.kernel.org
-Cc:     Paul Burton <paulburton@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=3s1eozoLTG+O62g1UQDRz9lp8lZhA9dilcFNCLVNrmc=;
+        b=AP4oD5AMYaizH57Hf7+rBQW7rEzS22/wtFpuHatv2aYaocsvX22fgW0BZYDYzJZOMJ
+         zGmOlM598TXHBe9tX1/PK6PUxDBgyr4u4/nCLeXWtLvh720+YrmlxJhYeVlL8EsTF7zU
+         iLmCtJC3B0qhIhPnFWvFlcFrOeNksj8GPOYEO0HdFxcOAKOySLevtzqBF2jXZzUkPU1r
+         RxQuy2aCPSmXh7eWAPhK5SGlDBsH8QatkJ0gx0RoG68fanlkprY51VoDzwM5/1C+yPOc
+         Nbyn5o84FEpVGdwA7kZF9oAub9wxNOugzxTq4bacTfEzEtg4yH4vwHw0CCCBoMa1R3wC
+         ZZ/w==
+X-Gm-Message-State: AOAM531lQ870T/+gDix7qMxQ2bj11lszPAxxztq+py0SNn9A7IYF7d5B
+        /tzHXyZ9icVttQBGfYiwmcHP3fZ528nNHZw10Q==
+X-Google-Smtp-Source: ABdhPJwOgJClowYYNO7/RLiARDkMAJNcFXI3q8kTYlz9mBs1EHYvPdFwazYpeod5q8BGxxGHGgHEjkMc4EAD1OxX+w==
+X-Received: from jgzg.c.googlers.com ([fda3:e722:ac3:10:7f:e700:c0a8:1acf])
+ (user=jingzhangos job=sendgmr) by 2002:a25:bb46:: with SMTP id
+ b6mr3371267ybk.346.1623904909931; Wed, 16 Jun 2021 21:41:49 -0700 (PDT)
+Date:   Thu, 17 Jun 2021 04:41:41 +0000
+Message-Id: <20210617044146.2667540-1-jingzhangos@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.32.0.272.g935e593368-goog
+Subject: [PATCH v10 0/5] KVM statistics data fd-based binary interface
+From:   Jing Zhang <jingzhangos@google.com>
+To:     KVM <kvm@vger.kernel.org>, KVMARM <kvmarm@lists.cs.columbia.edu>,
+        LinuxMIPS <linux-mips@vger.kernel.org>,
+        KVMPPC <kvm-ppc@vger.kernel.org>,
+        LinuxS390 <linux-s390@vger.kernel.org>,
+        Linuxkselftest <linux-kselftest@vger.kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Paul Mackerras <paulus@ozlabs.org>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Janosch Frank <frankja@linux.ibm.com>,
+        David Hildenbrand <david@redhat.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Jim Mattson <jmattson@google.com>,
+        Peter Shier <pshier@google.com>,
+        Oliver Upton <oupton@google.com>,
+        David Rientjes <rientjes@google.com>,
+        Emanuele Giuseppe Esposito <eesposit@redhat.com>,
+        David Matlack <dmatlack@google.com>,
+        Ricardo Koller <ricarkol@google.com>,
+        Krish Sadhukhan <krish.sadhukhan@oracle.com>,
+        Fuad Tabba <tabba@google.com>
+Cc:     Jing Zhang <jingzhangos@google.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Hello,
+This patchset provides a file descriptor for every VM and VCPU to read
+KVM statistics data in binary format.
+It is meant to provide a lightweight, flexible, scalable and efficient
+lock-free solution for user space telemetry applications to pull the
+statistics data periodically for large scale systems. The pulling
+frequency could be as high as a few times per second.
+In this patchset, every statistics data are treated to have some
+attributes as below:
+  * architecture dependent or generic
+  * VM statistics data or VCPU statistics data
+  * type: cumulative, instantaneous, peak
+  * unit: none for simple counter, nanosecond, microsecond,
+    millisecond, second, Byte, KiByte, MiByte, GiByte, Clock Cycles
+Since no lock/synchronization is used, the consistency between all
+the statistics data is not guaranteed. That means not all statistics
+data are read out at the exact same time, since the statistics data
+are still being updated by KVM subsystems while they are read out.
 
-While working on a MIPS32 BPF JIT and testing under QEMU, I've
-encountered some problems related to the behaviour of the SLT[I][U]
-opcode under MIPS ISA R6, and would appreciate some help/insight
-clarifying various online and documented descriptions.
+---
 
-In "Introduction to the MIPS32 Architecture"
-(MD00082-2B-MIPS32INT-AFP-06.01), some wording states:
-"CPU truth values ... are replaced by Release 6 instructions that
-generate truth values of all zeroes or all ones (suitable for logical
-operations involving masks) and interpret all zeroes or any non-zero
-bit as true or false ..."
+* v9 -> v10
+  - Relocate vcpu stat in vcpu's slab's usercopy region
+  - Fix test issue for capability checking
+  - Update commit message to explain why/how we need to add this new
+    API for KVM statistics
 
-This change is also echoed elsewhere online:
-  - https://www.linuxsecrets.com/linux-mips-wiki/MIPS_Release_6.html#MIPS32=
-.2F64_Release_6
-  - https://en.wikipedia.org/wiki/MIPS_architecture#MIPS32/MIPS64
+* v8 -> v9
+  - Rebase to commit 8331a2bc0898
+    (KVM: X86: Introduce KVM_HC_MAP_GPA_RANGE hypercall)
+  - Reduce code duplication between binary and debugfs interface
+  - Add field "offset" in stats descriptor to let us define stats
+    descriptors in any order (not necessary in the order of stats
+    defined in vm/vcpu stats structures)
+  - Add static check to make sure the number of stats descriptors
+    is the same as the number of stats defined in vm/vcpu stats
+    structures
+  - Fix missing/mismatched stats descriptor definition caused by
+    rebase
 
-However, in "The MIPS32=C2=AE Instruction Set Manual"
-(MD00086-2B-MIPS32BIS-AFP-6.06), the SLTU insn *is not* specified to
-generate all-ones truth values.
+* v7 -> v8
+  - Rebase to kvm/queue, commit c1dc20e254b4 ("KVM: switch per-VM
+  stats to u64")
+  - Revise code to reflect the per-VM stats type from ulong to u64
+  - Addressed some other nits
 
-Generating all-ones truth values for SLTU impacts things like
-carry-addition code written for MIPS32R6, such as in my BPF JIT
-R6-support code. Curiously, while testing this under QEMU I saw many
-test-case failures, and debugging seemed to show QEMU not generating
-all-ones truth values when emulating the R6 ISA.
+* v6 -> v7
+  - Improve file descriptor allocation function by Krish suggestion
+  - Use "generic stats" instead of "common stats" as Krish suggested
+  - Addressed some other nits from Krish and David Matlack
 
-Thus, the key questions:
-1. What is the correct/expected output of SLT under the MIPS ISA R6?
-2. Does QEMU properly emulate SLT under ISA R6? If not, how do other
-developers reliably test for R6 compliance?
+* v5 -> v6
+  - Use designated initializers for STATS_DESC
+  - Change KVM_STATS_SCALE... to KVM_STATS_BASE...
+  - Use a common function for kvm_[vm|vcpu]_stats_read
+  - Fix some documentation errors/missings
+  - Use TEST_ASSERT in selftest
+  - Use a common function for [vm|vcpu]_stats_test in selftest
 
-Thanks in advance for any help,
-Tony
+* v4 -> v5
+  - Rebase to kvm/queue, commit a4345a7cecfb ("Merge tag
+    'kvmarm-fixes-5.13-1'")
+  - Change maximum stats name length to 48
+  - Replace VM_STATS_COMMON/VCPU_STATS_COMMON macros with stats
+    descriptor definition macros.
+  - Fixed some errors/warnings reported by checkpatch.pl
+
+* v3 -> v4
+  - Rebase to kvm/queue, commit 9f242010c3b4 ("KVM: avoid "deadlock"
+    between install_new_memslots and MMU notifier")
+  - Use C-stype comments in the whole patch
+  - Fix wrong count for x86 VCPU stats descriptors
+  - Fix KVM stats data size counting and validity check in selftest
+
+* v2 -> v3
+  - Rebase to kvm/queue, commit edf408f5257b ("KVM: avoid "deadlock"
+    between install_new_memslots and MMU notifier")
+  - Resolve some nitpicks about format
+
+* v1 -> v2
+  - Use ARRAY_SIZE to count the number of stats descriptors
+  - Fix missing `size` field initialization in macro STATS_DESC
+
+[1] https://lore.kernel.org/kvm/20210402224359.2297157-1-jingzhangos@google.com
+[2] https://lore.kernel.org/kvm/20210415151741.1607806-1-jingzhangos@google.com
+[3] https://lore.kernel.org/kvm/20210423181727.596466-1-jingzhangos@google.com
+[4] https://lore.kernel.org/kvm/20210429203740.1935629-1-jingzhangos@google.com
+[5] https://lore.kernel.org/kvm/20210517145314.157626-1-jingzhangos@google.com
+[6] https://lore.kernel.org/kvm/20210524151828.4113777-1-jingzhangos@google.com
+[7] https://lore.kernel.org/kvm/20210603211426.790093-1-jingzhangos@google.com
+[8] https://lore.kernel.org/kvm/20210611124624.1404010-1-jingzhangos@google.com
+[9] https://lore.kernel.org/kvm/20210614212155.1670777-1-jingzhangos@google.com
+
+---
+
+Jing Zhang (5):
+  KVM: stats: Separate generic stats from architecture specific ones
+  KVM: stats: Add fd-based API to read binary stats data
+  KVM: stats: Add documentation for binary statistics interface
+  KVM: selftests: Add selftest for KVM statistics data binary interface
+  KVM: stats: Remove code duplication for binary and debugfs stats
+
+ Documentation/virt/kvm/api.rst                | 177 +++++++++++-
+ arch/arm64/include/asm/kvm_host.h             |   9 +-
+ arch/arm64/kvm/guest.c                        |  50 +++-
+ arch/mips/include/asm/kvm_host.h              |   9 +-
+ arch/mips/kvm/mips.c                          |  92 +++---
+ arch/powerpc/include/asm/kvm_host.h           |   9 +-
+ arch/powerpc/kvm/book3s.c                     |  93 ++++--
+ arch/powerpc/kvm/book3s_hv.c                  |  12 +-
+ arch/powerpc/kvm/book3s_pr.c                  |   2 +-
+ arch/powerpc/kvm/book3s_pr_papr.c             |   2 +-
+ arch/powerpc/kvm/booke.c                      |  78 +++--
+ arch/s390/include/asm/kvm_host.h              |   9 +-
+ arch/s390/kvm/kvm-s390.c                      | 234 ++++++++-------
+ arch/x86/include/asm/kvm_host.h               |   9 +-
+ arch/x86/kvm/x86.c                            | 111 ++++---
+ include/linux/kvm_host.h                      | 180 +++++++++++-
+ include/linux/kvm_types.h                     |  12 +
+ include/uapi/linux/kvm.h                      |  48 ++++
+ tools/testing/selftests/kvm/.gitignore        |   1 +
+ tools/testing/selftests/kvm/Makefile          |   3 +
+ .../testing/selftests/kvm/include/kvm_util.h  |   3 +
+ .../selftests/kvm/kvm_binary_stats_test.c     | 225 +++++++++++++++
+ tools/testing/selftests/kvm/lib/kvm_util.c    |  12 +
+ virt/kvm/kvm_main.c                           | 270 +++++++++++++++---
+ 24 files changed, 1299 insertions(+), 351 deletions(-)
+ create mode 100644 tools/testing/selftests/kvm/kvm_binary_stats_test.c
+
+
+base-commit: 8331a2bc089881d7fd2fc9a6658f39780817e4e0
+-- 
+2.32.0.272.g935e593368-goog
+

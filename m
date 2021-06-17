@@ -7,63 +7,62 @@ X-Spam-Status: No, score=-7.7 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
 	autolearn=no autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C3826C2B9F4
-	for <linux-mips@archiver.kernel.org>; Thu, 17 Jun 2021 11:34:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2DDC7C2B9F4
+	for <linux-mips@archiver.kernel.org>; Thu, 17 Jun 2021 11:40:46 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id AE60B61405
-	for <linux-mips@archiver.kernel.org>; Thu, 17 Jun 2021 11:34:51 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 0D7B261403
+	for <linux-mips@archiver.kernel.org>; Thu, 17 Jun 2021 11:40:46 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231250AbhFQLg5 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 17 Jun 2021 07:36:57 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:50159 "EHLO
+        id S231650AbhFQLmx (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 17 Jun 2021 07:42:53 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:32012 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232419AbhFQLg4 (ORCPT
+        by vger.kernel.org with ESMTP id S229584AbhFQLmw (ORCPT
         <rfc822;linux-mips@vger.kernel.org>);
-        Thu, 17 Jun 2021 07:36:56 -0400
+        Thu, 17 Jun 2021 07:42:52 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1623929688;
+        s=mimecast20190719; t=1623930044;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=KwQqoYgcuee30cxqMSNTKwW1ocgA4MOYfQQA575EikA=;
-        b=FqWuJHzDhxawxgV0Abl/CglvekLvuiG+ztmiEszvD/4jU7NlnwT7qmmM+z9xusPBEoyu31
-        8cJA0gLtaaOD98Rdxf5NSmrsbMki+79RZcaysFxXpyEzxVPxo6ErjnzeWGher/W9kQBPBZ
-        8j8RTuJb6hCW9KSEqbNnTYpOXq7Z17Q=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-559-PYrN1S-rMxil2sSCv-mVQw-1; Thu, 17 Jun 2021 07:34:47 -0400
-X-MC-Unique: PYrN1S-rMxil2sSCv-mVQw-1
-Received: by mail-ed1-f69.google.com with SMTP id r15-20020aa7da0f0000b02903946a530334so1301672eds.22
-        for <linux-mips@vger.kernel.org>; Thu, 17 Jun 2021 04:34:47 -0700 (PDT)
+        bh=VmCLvCRTlrH58yubKa8HF1xENLoVvDewdsvG/LgtDCE=;
+        b=JmtnJ+vI46IrWC3Ad6CcbLJgND99T4RwISqRYbbucL945rC5pg9YHK84MWPgctvfMz9knk
+        Zy3hBm1swfIz0gtagSi665iT5ydm1OlKO0pu0fP1YJ7vw95fA9Z9cU+UgvUoJQZpu55TVO
+        hdiLnRxs8rYUZ+yWEur5MqWEyamytAM=
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
+ [209.85.218.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-584-QGGpWuuKNlmH6MnzokfRLQ-1; Thu, 17 Jun 2021 07:40:43 -0400
+X-MC-Unique: QGGpWuuKNlmH6MnzokfRLQ-1
+Received: by mail-ej1-f71.google.com with SMTP id nd10-20020a170907628ab02903a324b229bfso2068702ejc.7
+        for <linux-mips@vger.kernel.org>; Thu, 17 Jun 2021 04:40:43 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=KwQqoYgcuee30cxqMSNTKwW1ocgA4MOYfQQA575EikA=;
-        b=D67MUt8OpLQtITZpPAqVFpq7rZAPKBFzYPLX76H15oyKpSrG9Tkudfan84+EOKnjy3
-         bS1RUSN1WckO5W0DYDqd8/jYxB9Yov4PsNcGWwyPGNBhFOvEnjpNUgpneW0I/LI2zKVz
-         fhzaoQJARHtNNjhtZ3yinFF3hHSx7lH5m7nUy5KHdOrT0nYaM9zFBagwXcpymFkJQDkH
-         aNyvjIQyVoN7ecIzGueh0GiK6CV1jka6zi9SZSus0nSGlLA3dVe02GhXI9w2XWwVWhok
-         fspk8uMzy0CosbWrQ7oJW2u07usQ0fFnyD9k+n9TO2A0y22qmF6QR3YqEgAOZZpalUBG
-         JF7w==
-X-Gm-Message-State: AOAM530KEj4uvXbXtS/WATRSd4GlTWjdw4/o/6GfQWULI2M+OlSAKKl6
-        JcvfecxzcnBH342JPauIfHUB3o1hnw4RhO1PW2UUcA6WxTP6h0jYjTfpMcTfZc8h9Sh7SVxJtGL
-        htvN7jt/nDkdNCBPqsf6O6A==
-X-Received: by 2002:a17:906:b24a:: with SMTP id ce10mr4692502ejb.83.1623929364978;
-        Thu, 17 Jun 2021 04:29:24 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzQxoLzPkjG7qTF6pnm47FJcTyBPVefQu9Gb2o8Ewl83hG/K5uvahTR/5zWHNZRrxu3APLVbA==
-X-Received: by 2002:a17:906:b24a:: with SMTP id ce10mr4692477ejb.83.1623929364822;
-        Thu, 17 Jun 2021 04:29:24 -0700 (PDT)
+        bh=VmCLvCRTlrH58yubKa8HF1xENLoVvDewdsvG/LgtDCE=;
+        b=C0TVLjSnTindnKgYP7ccdkC6dBseZW1l5+eSSZXcZN5ddyaPF7KOX9vutWyztF4q2l
+         6pgfXy89RwBvhsfFnWcaWDystdCbiWVhY6OuRB1EL84V8QqKFwT3EBOkXTmkVVenvdFH
+         owi7FzD8i/IA3h72JW6UwfKy+hu3MCG29bZoqr34mZdmDFsp1pvndrLL41daaju650A/
+         hLnRZzVX6TGXsAh672/tz1eqTkYZil/e/p4ZBBj5pnwLx+KSfP8hBWsOr9u27Ta1DuRe
+         g6oS39pxStDyi3dPpZmWjVESK8+par/uE0GIWCAQPiOIN5vYv7xqoBoE7PtvDV+97959
+         7M4Q==
+X-Gm-Message-State: AOAM531VFjQxPxOug2LbqFV4N/H3itBZrv5O4r2iyCfe/Le69ITHloGm
+        aKjL/a/zMQkIp9pcIoe0D5uMSK0TVA+BgRpTxLfsYjuY/O6ESHU55+LC7ukS6BvK5QUL9ro2Cw9
+        SyrTN7pL8yKSFBf4bHZDiww==
+X-Received: by 2002:a17:906:b317:: with SMTP id n23mr4753222ejz.324.1623929020526;
+        Thu, 17 Jun 2021 04:23:40 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzhbQ8ssqFmZsWb8sMpnt1Xu4dlg8VyEm5RPjNu6NQPEN0NLgvmdDkk7J48/7gKKGpvO8cI2w==
+X-Received: by 2002:a17:906:b317:: with SMTP id n23mr4753201ejz.324.1623929020383;
+        Thu, 17 Jun 2021 04:23:40 -0700 (PDT)
 Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id du16sm3512028ejc.42.2021.06.17.04.29.23
+        by smtp.gmail.com with ESMTPSA id by23sm3167995ejc.85.2021.06.17.04.23.35
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 17 Jun 2021 04:29:24 -0700 (PDT)
-Subject: Re: [PATCH v10 3/5] KVM: stats: Add documentation for binary
- statistics interface
-To:     Greg KH <gregkh@linuxfoundation.org>,
-        Jing Zhang <jingzhangos@google.com>
+        Thu, 17 Jun 2021 04:23:39 -0700 (PDT)
+Subject: Re: [PATCH v10 2/5] KVM: stats: Add fd-based API to read binary stats
+ data
+To:     Greg KH <greg@kroah.com>, Jing Zhang <jingzhangos@google.com>
 Cc:     KVM <kvm@vger.kernel.org>, KVMARM <kvmarm@lists.cs.columbia.edu>,
         LinuxMIPS <linux-mips@vger.kernel.org>,
         KVMPPC <kvm-ppc@vger.kernel.org>,
@@ -95,15 +94,15 @@ Cc:     KVM <kvm@vger.kernel.org>, KVMARM <kvmarm@lists.cs.columbia.edu>,
         Krish Sadhukhan <krish.sadhukhan@oracle.com>,
         Fuad Tabba <tabba@google.com>
 References: <20210617044146.2667540-1-jingzhangos@google.com>
- <20210617044146.2667540-4-jingzhangos@google.com>
- <YMrkGZzPrt0jA1iP@kroah.com>
+ <20210617044146.2667540-3-jingzhangos@google.com>
+ <YMrzzYEkDQNCpnP7@kroah.com>
 From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <0d959828-da89-bceb-f7cc-35622a60c431@redhat.com>
-Date:   Thu, 17 Jun 2021 13:29:22 +0200
+Message-ID: <d8ca6601-e3b7-e6b1-5992-12ae106de951@redhat.com>
+Date:   Thu, 17 Jun 2021 13:23:35 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.10.1
 MIME-Version: 1.0
-In-Reply-To: <YMrkGZzPrt0jA1iP@kroah.com>
+In-Reply-To: <YMrzzYEkDQNCpnP7@kroah.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -111,41 +110,38 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On 17/06/21 07:56, Greg KH wrote:
-> On Thu, Jun 17, 2021 at 04:41:44AM +0000, Jing Zhang wrote:
->> +	struct kvm_stats_desc {
->> +		__u32 flags;
->> +		__s16 exponent;
->> +		__u16 size;
->> +		__u32 offset;
->> +		__u32 unused;
->> +		char name[0];
->> +	};
+On 17/06/21 09:03, Greg KH wrote:
+>> 3. Fd-based solution provides the possibility that a telemetry can
+>>     read KVM stats in a less privileged situation.
+> "possiblity"?  Does this work or not?  Have you tested it?
 > 
-> <snip>
-> 
->> +The ``unused`` fields are reserved for future support for other types of
->> +statistics data, like log/linear histogram.
-> 
-> you HAVE to set unused to 0 for now, otherwise userspace does not know
-> it is unused, right?
 
-Jing, I think you planned to use it with other flags that are unused for 
-now?  But please do check that it's zero in the testcase.
+I think this is essentially s/that/for/.  But more precisely:
 
-> It is not a pointer, it is the data itself.
-> 
->> +string starts at the end of ``struct kvm_stats_desc``.
->> +The maximum length (including trailing '\0') is indicated by ``name_size``
->> +in ``struct kvm_stats_header``.
-> 
-> I thought we were replacing [0] arrays with [], are you sure you should
-> be declaring this as [0]?  Same for all structures in this document (and
-> code).
+3. Compared for example to a ioctl, a separate file descriptor makes it 
+possible for an external program to read statistics, while maintaining 
+privilege separation between VMM and telemetry code.
 
-In C code [0] is a bit more flexible than [].  I think in this 
-particular case [] won't work due to how the structures are declared. 
-In the documentation [] is certainly clearer.
+>>
+>> +	snprintf(&kvm_vm_stats_header.id[0], sizeof(kvm_vm_stats_header.id),
+>> +			"kvm-%d", task_pid_nr(current));
+> 
+> Why do you write to this static variable for EVERY read?  Shouldn't you
+> just do it once at open?  How can it change?
+> 
+> Wait, it's a single shared variable, what happens when multiple tasks
+> open this thing and read from it?  You race between writing to this
+> variable here and then:
+> 
+>> +	return kvm_stats_read(&kvm_vm_stats_header, &kvm_vm_stats_desc[0],
+>> +		&kvm->stat, sizeof(kvm->stat), user_buffer, size, offset);
+> 
+> Accessing it here.
+> 
+> So how is this really working?
+
+It's not - Jing, kvm_vm_stats_header is small enough that you can store 
+a copy in struct kvm.
 
 Paolo
 

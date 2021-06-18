@@ -5,23 +5,23 @@ X-Spam-Level:
 X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 64DF0C2B9F4
-	for <linux-mips@archiver.kernel.org>; Fri, 18 Jun 2021 02:54:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4F12AC48BE5
+	for <linux-mips@archiver.kernel.org>; Fri, 18 Jun 2021 02:54:06 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 3B34860D07
-	for <linux-mips@archiver.kernel.org>; Fri, 18 Jun 2021 02:54:01 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 2DFF961241
+	for <linux-mips@archiver.kernel.org>; Fri, 18 Jun 2021 02:54:06 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231877AbhFRC4J (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 17 Jun 2021 22:56:09 -0400
-Received: from mail.loongson.cn ([114.242.206.163]:39824 "EHLO loongson.cn"
+        id S231987AbhFRC4K (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 17 Jun 2021 22:56:10 -0400
+Received: from mail.loongson.cn ([114.242.206.163]:39818 "EHLO loongson.cn"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231651AbhFRC4I (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Thu, 17 Jun 2021 22:56:08 -0400
+        id S231565AbhFRC4J (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Thu, 17 Jun 2021 22:56:09 -0400
 Received: from localhost.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dxv0CzCsxgVnITAA--.632S5;
-        Fri, 18 Jun 2021 10:53:47 +0800 (CST)
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dxv0CzCsxgVnITAA--.632S3;
+        Fri, 18 Jun 2021 10:53:43 +0800 (CST)
 From:   Qing Zhang <zhangqing@loongson.cn>
 To:     Giuseppe Cavallaro <peppe.cavallaro@st.com>,
         Alexandre Torgue <alexandre.torgue@foss.st.com>,
@@ -34,21 +34,21 @@ To:     Giuseppe Cavallaro <peppe.cavallaro@st.com>,
 Cc:     Huacai Chen <chenhc@lemote.com>, linux-mips@vger.kernel.org,
         linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
         netdev@vger.kernel.org
-Subject: [PATCH 4/4] dt-bindings: dwmac: Add bindings for new Loongson SoC and bridge chip
-Date:   Fri, 18 Jun 2021 10:53:37 +0800
-Message-Id: <20210618025337.5705-4-zhangqing@loongson.cn>
+Subject: [PATCH 2/4] MIPS: Loongson64: Add GMAC support for Loongson-2K1000
+Date:   Fri, 18 Jun 2021 10:53:35 +0800
+Message-Id: <20210618025337.5705-2-zhangqing@loongson.cn>
 X-Mailer: git-send-email 2.31.0
 In-Reply-To: <20210618025337.5705-1-zhangqing@loongson.cn>
 References: <20210618025337.5705-1-zhangqing@loongson.cn>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: AQAAf9Dxv0CzCsxgVnITAA--.632S5
-X-Coremail-Antispam: 1UD129KBjvJXoW7WrWktry3Ar1UZrWrJrW3trb_yoW8JF4xpr
-        sxCFn3Kr1FyF47Zwn5tF1rCrW7Xr95Jr4xJFs7t3WIqF1kJa1vgw4Fgws8JFW5ur4xZFW2
-        vryS9F4YgFy0kw7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUPvb7Iv0xC_Cr1lb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I2
+X-CM-TRANSID: AQAAf9Dxv0CzCsxgVnITAA--.632S3
+X-Coremail-Antispam: 1UD129KBjvJXoW7try7WF4DAry5GF1DAF18Zrb_yoW8AryfpF
+        17Aayqkr4rWryIkws8JFWDAF43Aa9YkFna93ZxGr4Ut34vq3Wjvr43tF1fKr13XrW8X34F
+        qrWvgry8KF17Jw7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUPqb7Iv0xC_Zr1lb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I2
         0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI
-        8067AKxVWUWwA2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF
+        8067AKxVWUGwA2048vs2IY020Ec7CjxVAFwI0_Gr0_Xr1l8cAvFVAK0II2c7xJM28CjxkF
         64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW7JVWDJwA2z4x0Y4vE2Ix0cI8IcV
         CY1x0267AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_Cr1j6rxdM28EF7xvwVC2z280
         aVCY1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzV
@@ -57,53 +57,78 @@ X-Coremail-Antispam: 1UD129KBjvJXoW7WrWktry3Ar1UZrWrJrW3trb_yoW8JF4xpr
         kIecxEwVAFwVW8JwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s02
         6c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw
         0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvE
-        c7CjxVAFwI0_Cr0_Gr1UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67
-        AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuY
-        vjxUcYiiDUUUU
+        c7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14
+        v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x
+        07j3ManUUUUU=
 X-CM-SenderInfo: x2kd0wptlqwqxorr0wxvrqhubq/
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Add the dwmac bindings for the Loongson-2K SoC and the LS7A
-bridge chip.
+The GMAC module is now supported, enable it.
 
 Signed-off-by: Qing Zhang <zhangqing@loongson.cn>
 ---
- Documentation/devicetree/bindings/net/snps,dwmac.yaml | 6 ++++++
- 1 file changed, 6 insertions(+)
+ .../boot/dts/loongson/loongson64-2k1000.dtsi  | 46 +++++++++++++++++++
+ 1 file changed, 46 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/net/snps,dwmac.yaml b/Documentation/devicetree/bindings/net/snps,dwmac.yaml
-index 2edd8bea993e..9631bbbb6f69 100644
---- a/Documentation/devicetree/bindings/net/snps,dwmac.yaml
-+++ b/Documentation/devicetree/bindings/net/snps,dwmac.yaml
-@@ -56,6 +56,8 @@ properties:
-         - amlogic,meson8m2-dwmac
-         - amlogic,meson-gxbb-dwmac
-         - amlogic,meson-axg-dwmac
-+        - loongson,ls2k-dwmac
-+        - loongson,ls7a-dwmac
-         - rockchip,px30-gmac
-         - rockchip,rk3128-gmac
-         - rockchip,rk3228-gmac
-@@ -310,6 +312,8 @@ allOf:
-               - allwinner,sun8i-r40-emac
-               - allwinner,sun8i-v3s-emac
-               - allwinner,sun50i-a64-emac
-+              - loongson,ls2k-dwmac
-+              - loongson,ls7a-dwmac
-               - snps,dwxgmac
-               - snps,dwxgmac-2.10
-               - st,spear600-gmac
-@@ -353,6 +357,8 @@ allOf:
-               - allwinner,sun8i-r40-emac
-               - allwinner,sun8i-v3s-emac
-               - allwinner,sun50i-a64-emac
-+              - loongson,ls2k-dwmac
-+              - loongson,ls7a-dwmac
-               - snps,dwmac-4.00
-               - snps,dwmac-4.10a
-               - snps,dwmac-4.20a
+diff --git a/arch/mips/boot/dts/loongson/loongson64-2k1000.dtsi b/arch/mips/boot/dts/loongson/loongson64-2k1000.dtsi
+index 569e814def83..5747f171de29 100644
+--- a/arch/mips/boot/dts/loongson/loongson64-2k1000.dtsi
++++ b/arch/mips/boot/dts/loongson/loongson64-2k1000.dtsi
+@@ -114,6 +114,52 @@ pci@1a000000 {
+ 			ranges = <0x01000000 0x0 0x00000000 0x0 0x18000000  0x0 0x00010000>,
+ 				 <0x02000000 0x0 0x40000000 0x0 0x40000000  0x0 0x40000000>;
+ 
++			gmac@3,0 {
++				compatible = "pci0014,7a03.0",
++						   "pci0014,7a03",
++						   "pciclass0c0320",
++						   "pciclass0c03",
++						   "loongson, pci-gmac";
++
++				reg = <0x1800 0x0 0x0 0x0 0x0>;
++				interrupts = <12 IRQ_TYPE_LEVEL_LOW>,
++					     <13 IRQ_TYPE_LEVEL_LOW>;
++				interrupt-names = "macirq", "eth_lpi";
++				interrupt-parent = <&liointc0>;
++				phy-mode = "rgmii";
++				mdio {
++					#address-cells = <1>;
++					#size-cells = <0>;
++					compatible = "snps,dwmac-mdio";
++					phy0: ethernet-phy@0 {
++						reg = <0>;
++					};
++				};
++			};
++
++			gmac@3,1 {
++				compatible = "pci0014,7a03.0",
++						   "pci0014,7a03",
++						   "pciclass0c0320",
++						   "pciclass0c03",
++						   "loongson, pci-gmac";
++
++				reg = <0x1900 0x0 0x0 0x0 0x0>;
++				interrupts = <14 IRQ_TYPE_LEVEL_LOW>,
++					     <15 IRQ_TYPE_LEVEL_LOW>;
++				interrupt-names = "macirq", "eth_lpi";
++				interrupt-parent = <&liointc0>;
++				phy-mode = "rgmii";
++				mdio {
++					#address-cells = <1>;
++					#size-cells = <0>;
++					compatible = "snps,dwmac-mdio";
++					phy1: ethernet-phy@1 {
++						reg = <0>;
++					};
++				};
++			};
++
+ 			ehci@4,1 {
+ 				compatible = "pci0014,7a14.0",
+ 						   "pci0014,7a14",
 -- 
 2.31.0
 

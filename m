@@ -2,332 +2,132 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
+X-Spam-Status: No, score=-15.3 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4FC2AC49361
-	for <linux-mips@archiver.kernel.org>; Fri, 18 Jun 2021 02:54:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8EC88C2B9F4
+	for <linux-mips@archiver.kernel.org>; Fri, 18 Jun 2021 03:02:00 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 3B48F613D6
-	for <linux-mips@archiver.kernel.org>; Fri, 18 Jun 2021 02:54:11 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 5F8276113E
+	for <linux-mips@archiver.kernel.org>; Fri, 18 Jun 2021 03:02:00 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231872AbhFRC4S (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 17 Jun 2021 22:56:18 -0400
-Received: from mail.loongson.cn ([114.242.206.163]:39854 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S232072AbhFRC4N (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Thu, 17 Jun 2021 22:56:13 -0400
-Received: from localhost.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dxv0CzCsxgVnITAA--.632S2;
-        Fri, 18 Jun 2021 10:53:41 +0800 (CST)
-From:   Qing Zhang <zhangqing@loongson.cn>
-To:     Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
+        id S231860AbhFRDEI (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 17 Jun 2021 23:04:08 -0400
+Received: from mga03.intel.com ([134.134.136.65]:25793 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231815AbhFRDEH (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Thu, 17 Jun 2021 23:04:07 -0400
+IronPort-SDR: wde48Q8onOCWWWLuTHKh4oHb8HudVZw8WRmTCP3Oz5kFXFaK3W/IYnv/8PCSiQLY9pioGwoFmf
+ c9IqvW1D4Y+A==
+X-IronPort-AV: E=McAfee;i="6200,9189,10018"; a="206524997"
+X-IronPort-AV: E=Sophos;i="5.83,281,1616482800"; 
+   d="scan'208";a="206524997"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jun 2021 20:01:58 -0700
+IronPort-SDR: kDCIXbw7lwEjZFI+nFNOMy4qgHpPd6rsmqYlpb0ps01Z+DdBhWSAQ5G+mGTpSRcepgH2/cP20z
+ fFfj3eWUWROQ==
+X-IronPort-AV: E=Sophos;i="5.83,281,1616482800"; 
+   d="scan'208";a="451243562"
+Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jun 2021 20:01:58 -0700
+Date:   Thu, 17 Jun 2021 20:01:57 -0700
+From:   Ira Weiny <ira.weiny@intel.com>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Jens Axboe <axboe@kernel.dk>, Thomas Gleixner <tglx@linutronix.de>,
         Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     Huacai Chen <chenhc@lemote.com>, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        netdev@vger.kernel.org, Jiaxun Yang <jiaxun.yang@flygoat.com>
-Subject: [PATCH 1/4] stmmac: pci: Add dwmac support for Loongson
-Date:   Fri, 18 Jun 2021 10:53:34 +0800
-Message-Id: <20210618025337.5705-1-zhangqing@loongson.cn>
-X-Mailer: git-send-email 2.31.0
+        Geoff Levand <geoff@infradead.org>,
+        Ilya Dryomov <idryomov@gmail.com>,
+        Dongsheng Yang <dongsheng.yang@easystack.cn>,
+        Mike Snitzer <snitzer@redhat.com>,
+        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        dm-devel@redhat.com, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, ceph-devel@vger.kernel.org,
+        linux-arch@vger.kernel.org,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: Re: [PATCH 01/18] mm: add a kunmap_local_dirty helper
+Message-ID: <20210618030157.GA1905674@iweiny-DESK2.sc.intel.com>
+References: <20210615132456.753241-1-hch@lst.de>
+ <20210615132456.753241-2-hch@lst.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: AQAAf9Dxv0CzCsxgVnITAA--.632S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxuFW3Cry3Ar18CF45XF1rXrb_yoW3XFWDpa
-        1fAas0gr97Xr4xGws5Ar4DJF98uayav3y0g3yIkwna9FZYyrWqqwn5KFWYyF97CrWkWw1a
-        qF4jkF48uF4DJa7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvGb7Iv0xC_tr1lb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I2
-        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
-        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xII
-        jxv20xvEc7CjxVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26F4UJVW0owA2z4x0Y4
-        vEx4A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xv
-        F2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_JF0_Jw1lYx0Ex4A2jsIE14v26r4j6F
-        4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwACI402YVCY1x02628vn2kI
-        c2xKxwCY02Avz4vE14v_Gr1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr
-        1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE
-        14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7
-        IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI42IY
-        6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa
-        73UjIFyTuYvjxUcD73DUUUU
-X-CM-SenderInfo: x2kd0wptlqwqxorr0wxvrqhubq/
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210615132456.753241-2-hch@lst.de>
+User-Agent: Mutt/1.11.1 (2018-12-01)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-This GMAC module is integrated into the Loongson-2K SoC and the LS7A
-bridge chip.
+On Tue, Jun 15, 2021 at 03:24:39PM +0200, Christoph Hellwig wrote:
+> Add a helper that calls flush_kernel_dcache_page before unmapping the
+> local mapping.  flush_kernel_dcache_page is required for all pages
+> potentially mapped into userspace that were written to using kmap*,
+> so having a helper that does the right thing can be very convenient.
+> 
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> ---
+>  include/linux/highmem-internal.h | 7 +++++++
+>  include/linux/highmem.h          | 4 ++++
+>  2 files changed, 11 insertions(+)
+> 
+> diff --git a/include/linux/highmem-internal.h b/include/linux/highmem-internal.h
+> index 7902c7d8b55f..bd37706db147 100644
+> --- a/include/linux/highmem-internal.h
+> +++ b/include/linux/highmem-internal.h
+> @@ -224,4 +224,11 @@ do {								\
+>  	__kunmap_local(__addr);					\
+>  } while (0)
+>  
+> +#define kunmap_local_dirty(__page, __addr)			\
 
-Signed-off-by: Qing Zhang <zhangqing@loongson.cn>
-Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
----
- drivers/net/ethernet/stmicro/stmmac/Kconfig   |   9 +
- drivers/net/ethernet/stmicro/stmmac/Makefile  |   1 +
- .../ethernet/stmicro/stmmac/dwmac-loongson.c  | 218 ++++++++++++++++++
- 3 files changed, 228 insertions(+)
- create mode 100644 drivers/net/ethernet/stmicro/stmmac/dwmac-loongson.c
+I think having to store the page and addr to return to kunmap_local_dirty() is
+going to be a pain in some code paths.  Not a show stopper but see below...
 
-diff --git a/drivers/net/ethernet/stmicro/stmmac/Kconfig b/drivers/net/ethernet/stmicro/stmmac/Kconfig
-index 7737e4d0bb9e..0fc4532a2caa 100644
---- a/drivers/net/ethernet/stmicro/stmmac/Kconfig
-+++ b/drivers/net/ethernet/stmicro/stmmac/Kconfig
-@@ -238,6 +238,15 @@ config DWMAC_INTEL
- 	  This selects the Intel platform specific bus support for the
- 	  stmmac driver. This driver is used for Intel Quark/EHL/TGL.
- 
-+config DWMAC_LOONGSON
-+	tristate "Loongson PCI DWMAC support"
-+	default MACH_LOONGSON64
-+	depends on STMMAC_ETH && PCI
-+	depends on COMMON_CLK
-+	help
-+	  This selects the LOONGSON PCI bus support for the stmmac driver,
-+	  Support for ethernet controller on Loongson-2K1000 SoC and LS7A1000 bridge.
-+
- config STMMAC_PCI
- 	tristate "STMMAC PCI bus support"
- 	depends on STMMAC_ETH && PCI
-diff --git a/drivers/net/ethernet/stmicro/stmmac/Makefile b/drivers/net/ethernet/stmicro/stmmac/Makefile
-index f2e478b884b0..56d0d536859c 100644
---- a/drivers/net/ethernet/stmicro/stmmac/Makefile
-+++ b/drivers/net/ethernet/stmicro/stmmac/Makefile
-@@ -36,4 +36,5 @@ dwmac-altr-socfpga-objs := altr_tse_pcs.o dwmac-socfpga.o
- 
- obj-$(CONFIG_STMMAC_PCI)	+= stmmac-pci.o
- obj-$(CONFIG_DWMAC_INTEL)	+= dwmac-intel.o
-+obj-$(CONFIG_DWMAC_LOONGSON)	+= dwmac-loongson.o
- stmmac-pci-objs:= stmmac_pci.o
-diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-loongson.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-loongson.c
-new file mode 100644
-index 000000000000..8cd4e2e8ec40
---- /dev/null
-+++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-loongson.c
-@@ -0,0 +1,218 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2020, Loongson Corporation
-+ */
-+
-+#include <linux/clk-provider.h>
-+#include <linux/pci.h>
-+#include <linux/dmi.h>
-+#include <linux/device.h>
-+#include <linux/of_irq.h>
-+#include "stmmac.h"
-+
-+static int loongson_default_data(struct plat_stmmacenet_data *plat)
-+{
-+	plat->clk_csr = 2;	/* clk_csr_i = 20-35MHz & MDC = clk_csr_i/16 */
-+	plat->has_gmac = 1;
-+	plat->force_sf_dma_mode = 1;
-+
-+	/* Set default value for multicast hash bins */
-+	plat->multicast_filter_bins = HASH_TABLE_SIZE;
-+
-+	/* Set default value for unicast filter entries */
-+	plat->unicast_filter_entries = 1;
-+
-+	/* Set the maxmtu to a default of JUMBO_LEN */
-+	plat->maxmtu = JUMBO_LEN;
-+
-+	/* Set default number of RX and TX queues to use */
-+	plat->tx_queues_to_use = 1;
-+	plat->rx_queues_to_use = 1;
-+
-+	/* Disable Priority config by default */
-+	plat->tx_queues_cfg[0].use_prio = false;
-+	plat->rx_queues_cfg[0].use_prio = false;
-+
-+	/* Disable RX queues routing by default */
-+	plat->rx_queues_cfg[0].pkt_route = 0x0;
-+
-+	/* Default to phy auto-detection */
-+	plat->phy_addr = -1;
-+
-+	plat->dma_cfg->pbl = 32;
-+	plat->dma_cfg->pblx8 = true;
-+
-+	plat->multicast_filter_bins = 256;
-+	return 0;
-+}
-+
-+static int loongson_dwmac_probe(struct pci_dev *pdev, const struct pci_device_id *id)
-+{
-+	struct plat_stmmacenet_data *plat;
-+	struct stmmac_resources res;
-+	int ret, i, mdio;
-+	struct device_node *np;
-+
-+	np = dev_of_node(&pdev->dev);
-+
-+	if (!np) {
-+		pr_info("dwmac_loongson_pci: No OF node\n");
-+		return -ENODEV;
-+	}
-+
-+	if (!of_device_is_compatible(np, "loongson, pci-gmac")) {
-+		pr_info("dwmac_loongson_pci: Incompatible OF node\n");
-+		return -ENODEV;
-+	}
-+
-+	plat = devm_kzalloc(&pdev->dev, sizeof(*plat), GFP_KERNEL);
-+	if (!plat)
-+		return -ENOMEM;
-+
-+	if (plat->mdio_node) {
-+		dev_err(&pdev->dev, "Found MDIO subnode\n");
-+		mdio = true;
-+	}
-+
-+	if (mdio) {
-+		plat->mdio_bus_data = devm_kzalloc(&pdev->dev,
-+						   sizeof(*plat->mdio_bus_data),
-+						   GFP_KERNEL);
-+		if (!plat->mdio_bus_data)
-+			return -ENOMEM;
-+		plat->mdio_bus_data->needs_reset = true;
-+	}
-+
-+	plat->dma_cfg = devm_kzalloc(&pdev->dev, sizeof(*plat->dma_cfg), GFP_KERNEL);
-+	if (!plat->dma_cfg)
-+		return -ENOMEM;
-+
-+	/* Enable pci device */
-+	ret = pci_enable_device(pdev);
-+	if (ret) {
-+		dev_err(&pdev->dev, "%s: ERROR: failed to enable device\n", __func__);
-+		return ret;
-+	}
-+
-+	/* Get the base address of device */
-+	for (i = 0; i < PCI_STD_NUM_BARS; i++) {
-+		if (pci_resource_len(pdev, i) == 0)
-+			continue;
-+		ret = pcim_iomap_regions(pdev, BIT(0), pci_name(pdev));
-+		if (ret)
-+			return ret;
-+		break;
-+	}
-+
-+	plat->bus_id = of_alias_get_id(np, "ethernet");
-+	if (plat->bus_id < 0)
-+		plat->bus_id = pci_dev_id(pdev);
-+
-+	plat->phy_interface = device_get_phy_mode(&pdev->dev);
-+	if (plat->phy_interface < 0)
-+		dev_err(&pdev->dev, "phy_mode not found\n");
-+
-+	plat->interface = PHY_INTERFACE_MODE_GMII;
-+
-+	pci_set_master(pdev);
-+
-+	loongson_default_data(plat);
-+	pci_enable_msi(pdev);
-+	memset(&res, 0, sizeof(res));
-+	res.addr = pcim_iomap_table(pdev)[0];
-+
-+	res.irq = of_irq_get_byname(np, "macirq");
-+	if (res.irq < 0) {
-+		dev_err(&pdev->dev, "IRQ macirq not found\n");
-+		ret = -ENODEV;
-+	}
-+
-+	res.wol_irq = of_irq_get_byname(np, "eth_wake_irq");
-+	if (res.wol_irq < 0) {
-+		dev_info(&pdev->dev, "IRQ eth_wake_irq not found, using macirq\n");
-+		res.wol_irq = res.irq;
-+	}
-+
-+	res.lpi_irq = of_irq_get_byname(np, "eth_lpi");
-+	if (res.lpi_irq < 0) {
-+		dev_err(&pdev->dev, "IRQ eth_lpi not found\n");
-+		ret = -ENODEV;
-+	}
-+
-+	return stmmac_dvr_probe(&pdev->dev, plat, &res);
-+}
-+
-+static void loongson_dwmac_remove(struct pci_dev *pdev)
-+{
-+	int i;
-+
-+	stmmac_dvr_remove(&pdev->dev);
-+
-+	for (i = 0; i < PCI_STD_NUM_BARS; i++) {
-+		if (pci_resource_len(pdev, i) == 0)
-+			continue;
-+		pcim_iounmap_regions(pdev, BIT(i));
-+		break;
-+	}
-+
-+	pci_disable_device(pdev);
-+}
-+
-+static int __maybe_unused loongson_dwmac_suspend(struct device *dev)
-+{
-+	struct pci_dev *pdev = to_pci_dev(dev);
-+	int ret;
-+
-+	ret = stmmac_suspend(dev);
-+	if (ret)
-+		return ret;
-+
-+	ret = pci_save_state(pdev);
-+	if (ret)
-+		return ret;
-+
-+	pci_disable_device(pdev);
-+	pci_wake_from_d3(pdev, true);
-+	return 0;
-+}
-+
-+static int __maybe_unused loongson_dwmac_resume(struct device *dev)
-+{
-+	struct pci_dev *pdev = to_pci_dev(dev);
-+	int ret;
-+
-+	pci_restore_state(pdev);
-+	pci_set_power_state(pdev, PCI_D0);
-+
-+	ret = pci_enable_device(pdev);
-+	if (ret)
-+		return ret;
-+
-+	pci_set_master(pdev);
-+
-+	return stmmac_resume(dev);
-+}
-+
-+static SIMPLE_DEV_PM_OPS(loongson_dwmac_pm_ops, loongson_dwmac_suspend,
-+			 loongson_dwmac_resume);
-+
-+static const struct pci_device_id loongson_dwmac_id_table[] = {
-+	{ PCI_VDEVICE(LOONGSON, 0x7a03) },
-+	{}
-+};
-+MODULE_DEVICE_TABLE(pci, loongson_dwmac_id_table);
-+
-+struct pci_driver loongson_dwmac_driver = {
-+	.name = "dwmac-loongson-pci",
-+	.id_table = loongson_dwmac_id_table,
-+	.probe = loongson_dwmac_probe,
-+	.remove = loongson_dwmac_remove,
-+	.driver = {
-+		.pm = &loongson_dwmac_pm_ops,
-+	},
-+};
-+
-+module_pci_driver(loongson_dwmac_driver);
-+
-+MODULE_DESCRIPTION("Loongson DWMAC PCI driver");
-+MODULE_AUTHOR("Qing Zhang <zhangqing@loongson.cn>");
-+MODULE_LICENSE("GPL v2");
--- 
-2.31.0
+> +do {								\
+> +	if (!PageSlab(__page))					\
 
+Was there some clarification why the page can't be a Slab page?  Or is this
+just an optimization?
+
+> +		flush_kernel_dcache_page(__page);		\
+
+Is this required on 32bit systems?  Why is kunmap_flush_on_unmap() not
+sufficient on 64bit systems?  The normal kunmap_local() path does that.
+
+I'm sorry but I did not see a conclusion to my query on V1. Herbert implied the
+he just copied from the crypto code.[1]  I'm concerned that this _dirty() call
+is just going to confuse the users of kmap even more.  So why can't we get to
+the bottom of why flush_kernel_dcache_page() needs so much logic around it
+before complicating the general kernel users.
+
+I would like to see it go away if possible.
+
+Ira
+
+[1] https://lore.kernel.org/lkml/20210615050258.GA5208@gondor.apana.org.au/
+
+> +	kunmap_local(__addr);					\
+> +} while (0)
+> +
+>  #endif
+> diff --git a/include/linux/highmem.h b/include/linux/highmem.h
+> index 832b49b50c7b..65f548db4f2d 100644
+> --- a/include/linux/highmem.h
+> +++ b/include/linux/highmem.h
+> @@ -93,6 +93,10 @@ static inline void kmap_flush_unused(void);
+>   * On HIGHMEM enabled systems mapping a highmem page has the side effect of
+>   * disabling migration in order to keep the virtual address stable across
+>   * preemption. No caller of kmap_local_page() can rely on this side effect.
+> + *
+> + * If data is written to the returned kernel mapping, the callers needs to
+> + * unmap the mapping using kunmap_local_dirty(), else kunmap_local() should
+> + * be used.
+>   */
+>  static inline void *kmap_local_page(struct page *page);
+>  
+> -- 
+> 2.30.2
+> 

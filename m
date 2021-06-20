@@ -2,170 +2,352 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-2.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
-	autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D597EC48BDF
-	for <linux-mips@archiver.kernel.org>; Sun, 20 Jun 2021 10:22:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 61B7BC49361
+	for <linux-mips@archiver.kernel.org>; Sun, 20 Jun 2021 22:15:56 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id B5470610A1
-	for <linux-mips@archiver.kernel.org>; Sun, 20 Jun 2021 10:22:34 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 49884610A3
+	for <linux-mips@archiver.kernel.org>; Sun, 20 Jun 2021 22:15:56 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229605AbhFTKYq (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Sun, 20 Jun 2021 06:24:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55000 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229516AbhFTKYp (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Sun, 20 Jun 2021 06:24:45 -0400
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED3ADC061574
-        for <linux-mips@vger.kernel.org>; Sun, 20 Jun 2021 03:22:31 -0700 (PDT)
-Received: by mail-lf1-x12f.google.com with SMTP id i13so24816409lfc.7
-        for <linux-mips@vger.kernel.org>; Sun, 20 Jun 2021 03:22:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=XFaJM/Ok4x210R6KSzwKDf++HXDpbgNb8eBibT0zJbw=;
-        b=TtzDZR201ErjP52bxanNhQxuIJaCll2fkvxBkyaAu8B05O0aHKBC6F+Iklu7FIacWc
-         U6zozd8p9uYguIVGiKzzov2fhzljHrG+XH8egP5l3iZqPDgy2ErYuVAlR184hXF9Mgzx
-         o6WTmZbfa92OvYRKo8lvW3I4wjWn5as4fybF26G623lttN0DmSQWztLFsWBD1W2gjGXW
-         aIHsWC5RvxazXIyT1zeqKojQh77JCvBZkIQdnX5SYFtihQcM7bYASbr5AOHEYvVDdlId
-         7BhlADb6evWhgJMiIMtmEpA/HOmju0MriKCzte2Kk32cGrjgud2ofHW0nyefrGPwp6ek
-         Q5zA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=XFaJM/Ok4x210R6KSzwKDf++HXDpbgNb8eBibT0zJbw=;
-        b=nn5NQI7cjMW1LHORRQMkRGNm51sqDmM8TLLKR0oNLEFObl1WmNtRrYYn1MxTA0ytZq
-         m4Ny/M/aOG8dfWRnUiimN3UrS7IJYT6429MfdUlQtFHzg+LNZT7G1CT+0k8qFmNm5ajg
-         6yeq5WfijS2gnlYg4AcQ//I5G5i6D46bGIc1a/J6w12eh+6eW4S10YlmEpyA/Jcm+XKh
-         ABijlyOWZnmylPQVZpnscnwnEb3/qdvIpTzMaybaHdUz7b5g2W4gRai1/9NdXYkOyG4H
-         BKIPY5qRV9fw81CUbcHXWqVi/h8JLLlIfqxLPMsLDGZ2OliaufhKLN3acw9HcyaUoavp
-         dlzA==
-X-Gm-Message-State: AOAM533+yGqN9lmrspvayDzgYuAbIvRUCmAePTYdbFahx1Zq2mbnzXMK
-        TrsPsDTqxB8MhrPx11DUEAQ=
-X-Google-Smtp-Source: ABdhPJyP5uyH+XmtBcqvzzZLupxhxsfgHkSAo1JbLaE8iBEAsoCYnXpSnaIeucZnnhsIZHDu7cJ4dA==
-X-Received: by 2002:ac2:5239:: with SMTP id i25mr9925502lfl.142.1624184548784;
-        Sun, 20 Jun 2021 03:22:28 -0700 (PDT)
-Received: from mobilestation ([95.79.127.110])
-        by smtp.gmail.com with ESMTPSA id p5sm1871105ljc.117.2021.06.20.03.22.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 20 Jun 2021 03:22:28 -0700 (PDT)
-Date:   Sun, 20 Jun 2021 13:22:26 +0300
-From:   Serge Semin <fancer.lancer@gmail.com>
-To:     Tony Ambardar <tony.ambardar@gmail.com>,
-        Paul Burton <paulburton@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc:     linux-mips@vger.kernel.org
-Subject: Re: Help with SLT insn under MIPS R6
-Message-ID: <20210620102226.4jtv3sjyfsh7zuyk@mobilestation>
-References: <CAPGftE-dQhsjJAWK47SD6m5C30RBk1Pc=q9sWFM1pAKHmaFyeg@mail.gmail.com>
+        id S229887AbhFTWSH (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Sun, 20 Jun 2021 18:18:07 -0400
+Received: from relay1-d.mail.gandi.net ([217.70.183.193]:30675 "EHLO
+        relay1-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229708AbhFTWSG (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Sun, 20 Jun 2021 18:18:06 -0400
+Received: (Authenticated sender: alexandre.belloni@bootlin.com)
+        by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id B7ADB240003;
+        Sun, 20 Jun 2021 22:15:51 +0000 (UTC)
+Date:   Mon, 21 Jun 2021 00:15:51 +0200
+From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
+To:     WANG Xuerui <git@xen0n.name>
+Cc:     linux-rtc@vger.kernel.org, linux-mips@vger.kernel.org,
+        devicetree@vger.kernel.org, Huacai Chen <chenhuacai@kernel.org>
+Subject: Re: [PATCH v3 1/6] rtc: ls2x: Add support for the Loongson-2K/LS7A
+ RTC
+Message-ID: <YM++F4j/omXvsWGQ@piout.net>
+References: <20210506010435.1333647-1-git@xen0n.name>
+ <20210506010435.1333647-2-git@xen0n.name>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAPGftE-dQhsjJAWK47SD6m5C30RBk1Pc=q9sWFM1pAKHmaFyeg@mail.gmail.com>
+In-Reply-To: <20210506010435.1333647-2-git@xen0n.name>
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Hi Tony,
+Hi,
 
-Are you working on adding the MIPS32 EBPF JIT support? If so that
-would have been super useful to have on MIPS arch!
-
-On Wed, Jun 16, 2021 at 07:15:41PM -0700, Tony Ambardar wrote:
-> Hello,
+On 06/05/2021 09:04:30+0800, WANG Xuerui wrote:
+> This RTC module is integrated into the Loongson-2K SoC and the LS7A
+> bridge chip. This version is almost entirely rewritten to make use of
+> current kernel API.
 > 
-> While working on a MIPS32 BPF JIT and testing under QEMU, I've
-> encountered some problems related to the behaviour of the SLT[I][U]
-> opcode under MIPS ISA R6, and would appreciate some help/insight
-> clarifying various online and documented descriptions.
-
-I can't say about the issue for sure but here are my thoughts regarding
-it.
-
+> Signed-off-by: Huacai Chen <chenhuacai@kernel.org>
+> Signed-off-by: WANG Xuerui <git@xen0n.name>
+> ---
+>  drivers/rtc/Kconfig    |  11 ++
+>  drivers/rtc/Makefile   |   1 +
+>  drivers/rtc/rtc-ls2x.c | 225 +++++++++++++++++++++++++++++++++++++++++
+>  3 files changed, 237 insertions(+)
+>  create mode 100644 drivers/rtc/rtc-ls2x.c
 > 
-> In "Introduction to the MIPS32 Architecture"
-> (MD00082-2B-MIPS32INT-AFP-06.01), some wording states:
-> "CPU truth values ... are replaced by Release 6 instructions that
-> generate truth values of all zeroes or all ones (suitable for logical
-> operations involving masks) and interpret all zeroes or any non-zero
-> bit as true or false ..."
+> diff --git a/drivers/rtc/Kconfig b/drivers/rtc/Kconfig
+> index d8c13fded164..55beede68829 100644
+> --- a/drivers/rtc/Kconfig
+> +++ b/drivers/rtc/Kconfig
+> @@ -1304,6 +1304,17 @@ config RTC_DRV_NTXEC
+>  	  embedded controller found in certain e-book readers designed by the
+>  	  original design manufacturer Netronix.
+>  
+> +config RTC_DRV_LS2X
+> +	tristate "Loongson LS2X RTC"
+> +	depends on MACH_LOONGSON64 || COMPILE_TEST
+> +	select REGMAP_MMIO
+> +	help
+> +	  If you say yes here you get support for the RTC on the Loongson-2K
+> +	  SoC and LS7A bridge, which first appeared on the Loongson-2H.
+> +
+> +	  This driver can also be built as a module. If so, the module
+> +	  will be called rtc-ls2x.
+> +
+>  comment "on-CPU RTC drivers"
+>  
+>  config RTC_DRV_ASM9260
+> diff --git a/drivers/rtc/Makefile b/drivers/rtc/Makefile
+> index 2dd0dd956b0e..6042ff1e73b7 100644
+> --- a/drivers/rtc/Makefile
+> +++ b/drivers/rtc/Makefile
+> @@ -81,6 +81,7 @@ obj-$(CONFIG_RTC_DRV_LOONGSON1)	+= rtc-ls1x.o
+>  obj-$(CONFIG_RTC_DRV_LP8788)	+= rtc-lp8788.o
+>  obj-$(CONFIG_RTC_DRV_LPC24XX)	+= rtc-lpc24xx.o
+>  obj-$(CONFIG_RTC_DRV_LPC32XX)	+= rtc-lpc32xx.o
+> +obj-$(CONFIG_RTC_DRV_LS2X)	+= rtc-ls2x.o
+>  obj-$(CONFIG_RTC_DRV_M41T80)	+= rtc-m41t80.o
+>  obj-$(CONFIG_RTC_DRV_M41T93)	+= rtc-m41t93.o
+>  obj-$(CONFIG_RTC_DRV_M41T94)	+= rtc-m41t94.o
+> diff --git a/drivers/rtc/rtc-ls2x.c b/drivers/rtc/rtc-ls2x.c
+> new file mode 100644
+> index 000000000000..6508a87bdb31
+> --- /dev/null
+> +++ b/drivers/rtc/rtc-ls2x.c
+> @@ -0,0 +1,225 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Loongson-2K/7A RTC driver
+> + *
+> + * Based on the out-of-tree Loongson-2H RTC driver for Linux 2.6.32, by
+> + * Shaozong Liu <liushaozong@loongson.cn>.
+> + *
+> + * Maintained out-of-tree by Huacai Chen <chenhuacai@kernel.org>.
+> + *
+> + * Rewritten for mainline by WANG Xuerui <git@xen0n.name>.
+> + */
+> +
+> +#include <linux/module.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/regmap.h>
+> +#include <linux/rtc.h>
+> +#include <linux/spinlock.h>
+> +
+> +#define TOY_TRIM_REG   0x20
+> +#define TOY_WRITE0_REG 0x24
+> +#define TOY_WRITE1_REG 0x28
+> +#define TOY_READ0_REG  0x2c
+> +#define TOY_READ1_REG  0x30
+> +#define TOY_MATCH0_REG 0x34
+> +#define TOY_MATCH1_REG 0x38
+> +#define TOY_MATCH2_REG 0x3c
+> +#define RTC_CTRL_REG   0x40
+> +#define RTC_TRIM_REG   0x60
+> +#define RTC_WRITE0_REG 0x64
+> +#define RTC_READ0_REG  0x68
+> +#define RTC_MATCH0_REG 0x6c
+> +#define RTC_MATCH1_REG 0x70
+> +#define RTC_MATCH2_REG 0x74
+> +
+> +#define TOY_MON        GENMASK(31, 26)
+> +#define TOY_MON_SHIFT  26
+> +#define TOY_DAY        GENMASK(25, 21)
+> +#define TOY_DAY_SHIFT  21
+> +#define TOY_HOUR       GENMASK(20, 16)
+> +#define TOY_HOUR_SHIFT 16
+> +#define TOY_MIN        GENMASK(15, 10)
+> +#define TOY_MIN_SHIFT  10
+> +#define TOY_SEC        GENMASK(9, 4)
+> +#define TOY_SEC_SHIFT  4
+> +#define TOY_MSEC       GENMASK(3, 0)
+> +#define TOY_MSEC_SHIFT 0
+> +
+> +struct ls2x_rtc_priv {
+> +	struct regmap *regmap;
+> +	spinlock_t lock;
+> +};
+> +
+> +static const struct regmap_config ls2x_rtc_regmap_config = {
+> +	.reg_bits = 32,
+> +	.val_bits = 32,
+> +	.reg_stride = 4,
+> +};
+> +
+> +struct ls2x_rtc_regs {
+> +	u32 reg0;
+> +	u32 reg1;
+> +};
+> +
+> +static inline void ls2x_rtc_regs_to_time(struct ls2x_rtc_regs *regs,
+> +					 struct rtc_time *tm)
+> +{
+> +	tm->tm_year = regs->reg1;
+> +	tm->tm_sec = (regs->reg0 & TOY_SEC) >> TOY_SEC_SHIFT;
+> +	tm->tm_min = (regs->reg0 & TOY_MIN) >> TOY_MIN_SHIFT;
+> +	tm->tm_hour = (regs->reg0 & TOY_HOUR) >> TOY_HOUR_SHIFT;
+> +	tm->tm_mday = (regs->reg0 & TOY_DAY) >> TOY_DAY_SHIFT;
+> +	tm->tm_mon = ((regs->reg0 & TOY_MON) >> TOY_MON_SHIFT) - 1;
+
+Please use FIELD_GET
+
+> +}
+> +
+> +static inline void ls2x_rtc_time_to_regs(struct rtc_time *tm,
+> +					 struct ls2x_rtc_regs *regs)
+> +{
+> +	regs->reg0 = (tm->tm_sec << TOY_SEC_SHIFT) & TOY_SEC;
+> +	regs->reg0 |= (tm->tm_min << TOY_MIN_SHIFT) & TOY_MIN;
+> +	regs->reg0 |= (tm->tm_hour << TOY_HOUR_SHIFT) & TOY_HOUR;
+> +	regs->reg0 |= (tm->tm_mday << TOY_DAY_SHIFT) & TOY_DAY;
+> +	regs->reg0 |= ((tm->tm_mon + 1) << TOY_MON_SHIFT) & TOY_MON;
+
+and FIELD_PREP, this should remove the need for *_SHIFT
+
+> +	regs->reg1 = tm->tm_year;
+> +}
+> +
+> +static int ls2x_rtc_read_time(struct device *dev, struct rtc_time *tm)
+> +{
+> +	struct ls2x_rtc_priv *priv = dev_get_drvdata(dev);
+> +	struct ls2x_rtc_regs regs;
+> +	int ret;
+> +
+> +	spin_lock_irq(&priv->lock);
+
+What are you locking against?
+
+> +
+> +	ret = regmap_read(priv->regmap, TOY_READ1_REG, &regs.reg1);
+> +	if (unlikely(ret)) {
+> +		dev_err(dev, "Failed to read time: %d\n", ret);
+
+Please avoid those error message, they are not that useful and bloat the
+kernel.
+
+> +		goto fail;
+> +	}
+> +
+> +	ret = regmap_read(priv->regmap, TOY_READ0_REG, &regs.reg0);
+> +	if (unlikely(ret)) {
+> +		dev_err(dev, "Failed to read time: %d\n", ret);
+> +		goto fail;
+> +	}
+> +
+> +	spin_unlock_irq(&priv->lock);
+> +
+> +	ls2x_rtc_regs_to_time(&regs, tm);
+> +
+> +	return 0;
+> +
+> +fail:
+> +	spin_unlock_irq(&priv->lock);
+> +	return ret;
+> +}
+> +
+> +static int ls2x_rtc_set_time(struct device *dev, struct rtc_time *tm)
+> +{
+> +	struct ls2x_rtc_priv *priv = dev_get_drvdata(dev);
+> +	struct ls2x_rtc_regs regs;
+> +	int ret;
+> +
+> +	ls2x_rtc_time_to_regs(tm, &regs);
+> +
+> +	spin_lock_irq(&priv->lock);
+> +
+> +	ret = regmap_write(priv->regmap, TOY_WRITE0_REG, regs.reg0);
+> +	if (unlikely(ret)) {
+> +		dev_err(dev, "Failed to set time: %d\n", ret);
+> +		goto fail;
+> +	}
+> +
+> +	ret = regmap_write(priv->regmap, TOY_WRITE1_REG, regs.reg1);
+> +	if (unlikely(ret)) {
+> +		dev_err(dev, "Failed to set time: %d\n", ret);
+> +		goto fail;
+> +	}
+> +
+> +	spin_unlock_irq(&priv->lock);
+> +
+> +	return 0;
+> +
+> +fail:
+> +	spin_unlock_irq(&priv->lock);
+> +	return ret;
+> +}
+> +
+> +static struct rtc_class_ops ls2x_rtc_ops = {
+> +	.read_time = ls2x_rtc_read_time,
+> +	.set_time = ls2x_rtc_set_time,
+> +};
+> +
+> +static int ls2x_rtc_probe(struct platform_device *pdev)
+> +{
+> +	struct device *dev = &pdev->dev;
+> +	struct rtc_device *rtc;
+> +	struct ls2x_rtc_priv *priv;
+> +	void __iomem *regs;
+> +	int ret;
+> +
+> +	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
+> +	if (unlikely(!priv))
+> +		return -ENOMEM;
+> +
+> +	spin_lock_init(&priv->lock);
+> +	platform_set_drvdata(pdev, priv);
+> +
+> +	regs = devm_platform_ioremap_resource(pdev, 0);
+> +	if (IS_ERR(regs)) {
+> +		ret = PTR_ERR(regs);
+> +		dev_err(dev, "Failed to map rtc registers: %d\n", ret);
+
+I'm pretty sure this error message is unnecessary
+
+> +		return ret;
+> +	}
+> +
+> +	priv->regmap = devm_regmap_init_mmio(dev, regs,
+> +					     &ls2x_rtc_regmap_config);
+> +	if (IS_ERR(priv->regmap)) {
+> +		ret = PTR_ERR(priv->regmap);
+> +		dev_err(dev, "Failed to init regmap: %d\n", ret);
+
+ditto
+
+> +		return ret;
+> +	}
+> +
+> +	rtc = devm_rtc_allocate_device(dev);
+> +	if (IS_ERR(rtc)) {
+> +		ret = PTR_ERR(rtc);
+> +		dev_err(dev, "Failed to allocate rtc device: %d\n", ret);
+
+This on has to be removed.
+
+> +		return ret;
+> +	}
+> +
+> +	rtc->ops = &ls2x_rtc_ops;
+> +
+> +	/* Due to hardware erratum, all years multiple of 4 are considered
+> +	 * leap year, so only years 2000 through 2099 are usable.
+> +	 *
+> +	 * Previous out-of-tree versions of this driver wrote tm_year directly
+> +	 * into the year register, so epoch 2000 must be used to preserve
+> +	 * semantics on shipped systems.
+> +	 */
+> +	rtc->range_min = RTC_TIMESTAMP_BEGIN_2000;
+> +	rtc->range_max = RTC_TIMESTAMP_END_2099;
+> +
+> +	return devm_rtc_register_device(rtc);
+> +}
+> +
+> +static const struct of_device_id ls2x_rtc_of_match[] = {
+> +	{ .compatible = "loongson,ls2x-rtc" },
+> +	{ /* sentinel */ },
+> +};
+> +MODULE_DEVICE_TABLE(of, ls2x_rtc_of_match);
+> +
+> +static struct platform_driver ls2x_rtc_driver = {
+> +	.probe		= ls2x_rtc_probe,
+> +	.driver		= {
+> +		.name	= "ls2x-rtc",
+> +		.of_match_table = of_match_ptr(ls2x_rtc_of_match),
+> +	},
+> +};
+> +
+> +module_platform_driver(ls2x_rtc_driver);
+> +
+> +MODULE_DESCRIPTION("LS2X RTC driver");
+> +MODULE_AUTHOR("WANG Xuerui");
+> +MODULE_AUTHOR("Huacai Chen");
+> +MODULE_LICENSE("GPL");
+> +MODULE_ALIAS("platform:ls2x-rtc");
+> -- 
+> 2.30.1
 > 
-> This change is also echoed elsewhere online:
->   - https://www.linuxsecrets.com/linux-mips-wiki/MIPS_Release_6.html#MIPS32.2F64_Release_6
->   - https://en.wikipedia.org/wiki/MIPS_architecture#MIPS32/MIPS64
 
-First of all what I would rely on is the official document rather than an
-on an a few words on wiki, which AFAICS were mentioned with no
-particular context. So what we need to analyze is what
-+ MD00082-2B-MIPS32INT-AFP-6.01 (MIPS® Architecture For Programmers
-Volume I-A: Introduction to the MIPS32® Architecture) and
-+ MD00086-2B-MIPS32BIS-AFP-6.06 (MIPS® Architecture for Programmers
-Volume II-A: The MIPS32® Instruction Set Manual) say.
-Here is what MD00082-2B-MIPS32INT-AFP-6.01 says:
-
-"CPU truth values changed from single-bit to multi-bit: pre-Release 6
-instructions that only looked at bit 0 of the register containing a
-truth value are replaced by Release 6 instructions that generate truth
-values of all zeroes or all ones (suitable for logical operations
-involving masks) and interpret all zeroes or any non-zero bit as true
-or false, which is compatible with programming languages such as C.
-There are also related changes to branches and conditional move
-instructions."
-
-I think the part regarding the CPU truth values only concerns the
-changes described in MD00082-2B-MIPS32INT-AFP-6.01: "5.5.3 Conditional
-Move Instructions" and some new conditional branch instuctions
-introduced in MIPSr6. So GPR-related MOVN/MOVZ (see
-MD00086-2B-MIPS32BIS-AFP-6.06 and "Programming Notes" of these
-instructions for details) have been replaced with GPR-related
-SELNEZ/SELEQZ. The later ones are now compatible with not only dual
-booleans logic (0 and 1 which MOVN/MOVZ produced), but with C-like
-booleans interpretation (any non-zero value is true). That doesn't
-imply the SLT{I,U,IU} semantic change, but merely that the
-SELNEZ/SELEQZ instructions can correctly work with any result
-generated by logical operations ({N}OR{I},AND{I},XOR{I}, etc) and data
-loaded from external memory. Most likely the similar semantics related
-to the C-compatible boolean perception has been implemented in R6
-instructions BEQZC/BNEZC.
-
-> 
-> However, in "The MIPS32® Instruction Set Manual"
-> (MD00086-2B-MIPS32BIS-AFP-6.06), the SLTU insn *is not* specified to
-> generate all-ones truth values.
-
-Right. AFAICS it doesn't need to. The way it generates the true value
-is perfectly compatible with SELNEZ/SELEQZ and BEQZC/BNEZC.
-
-> 
-> Generating all-ones truth values for SLTU impacts things like
-> carry-addition code written for MIPS32R6, such as in my BPF JIT
-> R6-support code. Curiously, while testing this under QEMU I saw many
-> test-case failures, and debugging seemed to show QEMU not generating
-> all-ones truth values when emulating the R6 ISA.
-> 
-> Thus, the key questions:
-
-> 1. What is the correct/expected output of SLT under the MIPS ISA R6?
-
-In accordance with MD00086-2B-MIPS32BIS-AFP-6.06 SLT{I,U,IU} should
-generate 1 as true value and 0 otherwise.
-
-> 2. Does QEMU properly emulate SLT under ISA R6? If not, how do other
-> developers reliably test for R6 compliance?
-
-Alas I can't say much regarding QEMU. So @Paul, @Thomas, could you
-join in the discussion and if possible Cc' someone MIPS-Qemu aware?
-
--Sergey
-
-> 
-> Thanks in advance for any help,
-> Tony
+-- 
+Alexandre Belloni, co-owner and COO, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com

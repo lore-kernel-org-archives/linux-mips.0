@@ -2,27 +2,27 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.7 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,UNPARSEABLE_RELAY,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,URIBL_BLOCKED,
+	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C26E1C49EA2
-	for <linux-mips@archiver.kernel.org>; Tue, 22 Jun 2021 15:56:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2817CC2B9F4
+	for <linux-mips@archiver.kernel.org>; Tue, 22 Jun 2021 15:56:04 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id B1FF461075
-	for <linux-mips@archiver.kernel.org>; Tue, 22 Jun 2021 15:56:01 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 1143761075
+	for <linux-mips@archiver.kernel.org>; Tue, 22 Jun 2021 15:56:04 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232288AbhFVP6Q (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 22 Jun 2021 11:58:16 -0400
-Received: from out28-149.mail.aliyun.com ([115.124.28.149]:44284 "EHLO
-        out28-149.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232021AbhFVP6P (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Tue, 22 Jun 2021 11:58:15 -0400
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.2170169|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.0649628-0.00117631-0.933861;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047202;MF=zhouyanjie@wanyeetech.com;NM=1;PH=DS;RN=12;RT=12;SR=0;TI=SMTPD_---.KWKjI6A_1624377348;
+        id S232339AbhFVP6T (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 22 Jun 2021 11:58:19 -0400
+Received: from out29-123.mail.aliyun.com ([115.124.29.123]:36614 "EHLO
+        out29-123.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232301AbhFVP6S (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Tue, 22 Jun 2021 11:58:18 -0400
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.07751058|-1;CH=blue;DM=|OVERLOAD|false|;DS=CONTINUE|ham_system_inform|0.133883-0.00167999-0.864438;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047194;MF=zhouyanjie@wanyeetech.com;NM=1;PH=DS;RN=12;RT=12;SR=0;TI=SMTPD_---.KWKjI6A_1624377348;
 Received: from localhost.localdomain(mailfrom:zhouyanjie@wanyeetech.com fp:SMTPD_---.KWKjI6A_1624377348)
           by smtp.aliyun-inc.com(10.147.41.178);
-          Tue, 22 Jun 2021 23:55:56 +0800
+          Tue, 22 Jun 2021 23:55:59 +0800
 From:   =?UTF-8?q?=E5=91=A8=E7=90=B0=E6=9D=B0=20=28Zhou=20Yanjie=29?= 
         <zhouyanjie@wanyeetech.com>
 To:     tsbogend@alpha.franken.de, paul@crapouillou.net, robh+dt@kernel.org
@@ -31,10 +31,12 @@ Cc:     linux-mips@vger.kernel.org, devicetree@vger.kernel.org,
         aric.pzqi@ingenic.com, rick.tyliu@ingenic.com,
         sihui.liu@ingenic.com, jun.jiang@ingenic.com,
         sernia.zhou@foxmail.com
-Subject: [PATCH v2 0/3] Misc Ingenic patches.
-Date:   Tue, 22 Jun 2021 23:55:35 +0800
-Message-Id: <1624377338-75384-1-git-send-email-zhouyanjie@wanyeetech.com>
+Subject: [PATCH v2 3/3] MIPS: CI20: Add second percpu timer for SMP.
+Date:   Tue, 22 Jun 2021 23:55:38 +0800
+Message-Id: <1624377338-75384-4-git-send-email-zhouyanjie@wanyeetech.com>
 X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1624377338-75384-1-git-send-email-zhouyanjie@wanyeetech.com>
+References: <1624377338-75384-1-git-send-email-zhouyanjie@wanyeetech.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -42,19 +44,58 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Some misc patches that don't really have any relation
-between themselves.
+1.Add a new TCU channel as the percpu timer of core1, this is to
+  prepare for the subsequent SMP support. The newly added channel
+  will not adversely affect the current single-core state.
+2.Adjust the position of TCU node to make it consistent with the
+  order in jz4780.dtsi file.
 
-周琰杰 (Zhou Yanjie) (3):
-  MIPS: X1830: Respect cell count of common properties.
-  MIPS: Ingenic: Add MAC syscon nodes for Ingenic SoCs.
-  MIPS: CI20: Add second percpu timer for SMP.
+Signed-off-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
+---
 
- arch/mips/boot/dts/ingenic/ci20.dts   | 21 +++++++++++----------
- arch/mips/boot/dts/ingenic/x1000.dtsi |  7 +++++++
- arch/mips/boot/dts/ingenic/x1830.dtsi | 16 +++++++++++-----
- 3 files changed, 29 insertions(+), 15 deletions(-)
+Notes:
+    v1->v2:
+    New patch.
 
+ arch/mips/boot/dts/ingenic/ci20.dts | 21 +++++++++++----------
+ 1 file changed, 11 insertions(+), 10 deletions(-)
+
+diff --git a/arch/mips/boot/dts/ingenic/ci20.dts b/arch/mips/boot/dts/ingenic/ci20.dts
+index 8877c62..70005cc 100644
+--- a/arch/mips/boot/dts/ingenic/ci20.dts
++++ b/arch/mips/boot/dts/ingenic/ci20.dts
+@@ -118,6 +118,17 @@
+ 	assigned-clock-rates = <48000000>;
+ };
+ 
++&tcu {
++	/*
++	 * 750 kHz for the system timers and 3 MHz for the clocksources,
++	 * use channel #0 and #1 for the per cpu system timers, and use
++	 * channel #2 for the clocksource.
++	 */
++	assigned-clocks = <&tcu TCU_CLK_TIMER0>, <&tcu TCU_CLK_TIMER1>,
++					  <&tcu TCU_CLK_TIMER2>, <&tcu TCU_CLK_OST>;
++	assigned-clock-rates = <750000>, <750000>, <3000000>, <3000000>;
++};
++
+ &mmc0 {
+ 	status = "okay";
+ 
+@@ -522,13 +533,3 @@
+ 		bias-disable;
+ 	};
+ };
+-
+-&tcu {
+-	/*
+-	 * 750 kHz for the system timer and 3 MHz for the clocksource,
+-	 * use channel #0 for the system timer, #1 for the clocksource.
+-	 */
+-	assigned-clocks = <&tcu TCU_CLK_TIMER0>, <&tcu TCU_CLK_TIMER1>,
+-					  <&tcu TCU_CLK_OST>;
+-	assigned-clock-rates = <750000>, <3000000>, <3000000>;
+-};
 -- 
 2.7.4
 

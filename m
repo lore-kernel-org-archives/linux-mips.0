@@ -2,36 +2,37 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E572FC49EA7
-	for <linux-mips@archiver.kernel.org>; Fri, 25 Jun 2021 12:59:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4B76BC49EB7
+	for <linux-mips@archiver.kernel.org>; Fri, 25 Jun 2021 12:59:20 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id D3EAF6194D
-	for <linux-mips@archiver.kernel.org>; Fri, 25 Jun 2021 12:59:19 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 35F8F6194F
+	for <linux-mips@archiver.kernel.org>; Fri, 25 Jun 2021 12:59:20 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231591AbhFYNBj (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        id S231608AbhFYNBj (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
         Fri, 25 Jun 2021 09:01:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37122 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37120 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231552AbhFYNBi (ORCPT
+        with ESMTP id S231532AbhFYNBi (ORCPT
         <rfc822;linux-mips@vger.kernel.org>); Fri, 25 Jun 2021 09:01:38 -0400
 Received: from baptiste.telenet-ops.be (baptiste.telenet-ops.be [IPv6:2a02:1800:120:4::f00:13])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47143C0617AD
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E9F1C0617A8
         for <linux-mips@vger.kernel.org>; Fri, 25 Jun 2021 05:59:16 -0700 (PDT)
 Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed20:1476:ce84:e216:add8])
         by baptiste.telenet-ops.be with bizsmtp
-        id MQzC250052B1U9901QzC7K; Fri, 25 Jun 2021 14:59:13 +0200
+        id MQzC2500B2B1U9901QzC7L; Fri, 25 Jun 2021 14:59:13 +0200
 Received: from rox.of.borg ([192.168.97.57])
         by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
         (Exim 4.93)
         (envelope-from <geert@linux-m68k.org>)
-        id 1lwlQN-003TM9-PD; Fri, 25 Jun 2021 14:59:11 +0200
+        id 1lwlQN-003TMB-UY; Fri, 25 Jun 2021 14:59:11 +0200
 Received: from geert by rox.of.borg with local (Exim 4.93)
         (envelope-from <geert@linux-m68k.org>)
-        id 1lwlQN-004sPw-Dn; Fri, 25 Jun 2021 14:59:11 +0200
+        id 1lwlQN-004sQ7-Fz; Fri, 25 Jun 2021 14:59:11 +0200
 From:   Geert Uytterhoeven <geert@linux-m68k.org>
 To:     Robin van der Gracht <robin@protonic.nl>,
         Rob Herring <robh+dt@kernel.org>,
@@ -42,108 +43,164 @@ To:     Robin van der Gracht <robin@protonic.nl>,
 Cc:     devicetree@vger.kernel.org, linux-leds@vger.kernel.org,
         linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
         Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH v2 00/18] auxdisplay: ht16k33: Add character display support
-Date:   Fri, 25 Jun 2021 14:58:44 +0200
-Message-Id: <20210625125902.1162428-1-geert@linux-m68k.org>
+Subject: [PATCH v2 02/18] dt-bindings: auxdisplay: ht16k33: Document Adafruit segment displays
+Date:   Fri, 25 Jun 2021 14:58:46 +0200
+Message-Id: <20210625125902.1162428-3-geert@linux-m68k.org>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210625125902.1162428-1-geert@linux-m68k.org>
+References: <20210625125902.1162428-1-geert@linux-m68k.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-	Hi all,
-
 The Holtek HT16K33 LED controller is not only used for driving
 dot-matrix displays, but also for driving segment displays.
-The current auxdisplay driver is limited to dot-matrix displays, which
-are exposed as a frame buffer device.
 
-This patch series extends the driver to 4-digit 7-segment and quad
-14-segment alphanumeric displays, allowing the user to display and
-scroll text messages.
+Document compatible values for the Adafruit 7-segment[1] and
+14-segment[2] FeatherWing expansion boards with red displays.  According
+to the schematics, all other Adafruit 7-segment and 14-segment display
+backpack and FeatherWing expansion boards (including bare boards and
+boards fitted with displays) are compatible with these two boards.
+Add a "color" property to support the different color variants.
 
-List of patches:
-  - Patch 1 provides font data for displaying ASCII characters on
-    14-segment displays,
-  - Patch 2 updates the HT16K33 DT bindings for segment displays,
-  - Patches 3-5 contain a bug fix and small improvements for the
-    Imagination Technologies ASCII LCD Display driver,
-  - Patch 6 extracts the character line display core support from the
-    Imagination Technologies ASCII LCD Display driver, for reuse,
-  - Patches 7-8 contain cleanups and improvements for the character line
-    display core driver,
-  - Patches 9-16 contain a bug fix, cleanups and improvements for the
-    HT16K33 driver, to prepare for segment display support,
-  - Patch 17 adds support for 7/14-segment displays to the HT16K33
-    driver,
-  - Patch 18 adds segment display LED support to the HT16K33 driver,
-    to make use of hardware blinking, and to expose display color.
+[1] https://www.adafruit.com/product/3108
+[2] https://www.adafruit.com/product/3130
 
-Changes compared to v1[1]:
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+---
+v2:
   - Fix type of color to uint32,
   - "refresh-rate-hz" is still required for dot-matrix displays.
-  - Move "select LINEDISP" for HT16K33 symbol to correct patch,
-  - Add backwards compatibility "message" symlink to img-ascii-lcd,
-  - Connect backlight to fbdev in ht16k33 dot-matrix mode,
-  - Set "err = -EINVAL" in switch() case that cannot happen,
-  - Use "auxdisplay" instead of DRIVER_NAME in LED name.
 
-This series has been tested using an Adafruit 0.54" Quad Alphanumeric
-Red FeatherWing Display, plugged into an OrangeCrab ECP5-based FPGA
-board running linux-on-litex-vexriscv.
-7-segment display support is based purely on schematics, and has not
-been tested on actual hardware.  The changes to img-ascii-lcd.c are also
-untested, due to lack of hardware.
+Alternatives I considered:
+  1. Document the attached display type in a child node.
+     I.e. specify segment type, number of characters, and wiring.
+     Especially the latter would become really complex, due to the sheer
+     amount of possible wiring combinations.
+     Using this method, you also loose the ability to just connect a
+     display to an i2c bus, and instantiate the device from sysfs,
+     without using DT:
 
-Thanks for your comments!
+	echo adafruit,3130 0x70 > /sys/class/i2c/i2c-adapter/.../new_device
 
-[1] "[PATCH 00/17] auxdisplay: ht16k33: Add character display support"
-    https://lore.kernel.org/r/20210322144848.1065067-1-geert@linux-m68k.org/
+  2. Do not use the "color" property, but document all Adafruit
+     7-segment and 14-segment display backpack and FeatherWing expansion
+     boards.
+     This would lead to a myriad of compatible values:
 
-Geert Uytterhoeven (18):
-  uapi: Add <linux/map_to_14segment.h>
-  dt-bindings: auxdisplay: ht16k33: Document Adafruit segment displays
-  auxdisplay: img-ascii-lcd: Fix lock-up when displaying empty string
-  auxdisplay: img-ascii-lcd: Add helper variable dev
-  auxdisplay: img-ascii-lcd: Convert device attribute to sysfs_emit()
-  auxdisplay: Extract character line display core support
-  auxdisplay: linedisp: Use kmemdup_nul() helper
-  auxdisplay: linedisp: Add support for changing scroll rate
-  auxdisplay: ht16k33: Connect backlight to fbdev
-  auxdisplay: ht16k33: Use HT16K33_FB_SIZE in ht16k33_initialize()
-  auxdisplay: ht16k33: Remove unneeded error check in keypad probe()
-  auxdisplay: ht16k33: Convert to simple i2c probe function
-  auxdisplay: ht16k33: Add helper variable dev
-  auxdisplay: ht16k33: Move delayed work
-  auxdisplay: ht16k33: Extract ht16k33_brightness_set()
-  auxdisplay: ht16k33: Extract frame buffer probing
-  auxdisplay: ht16k33: Add support for segment displays
-  auxdisplay: ht16k33: Add segment display LED support
+      - items:
+	  - enum:
+	      - adafruit,878      # 0.56" 4-Digit 7-Segment Display Backpack (Red)
+	      - adafruit,879      # 0.56" 4-Digit 7-Segment Display Backpack (Yellow)
+	      - adafruit,880      # 0.56" 4-Digit 7-Segment Display Backpack (Green)
+	      - adafruit,881      # 0.56" 4-Digit 7-Segment Display Backpack (Blue)
+	      - adafruit,1002     # 0.56" 4-Digit 7-Segment Display Backpack (White)
+	  - const: adafruit,877   # 0.56" 4-Digit 7-Segment Backpack
+	  - const: holtek,ht16k33
 
- .../bindings/auxdisplay/holtek,ht16k33.yaml   |  31 +-
- drivers/auxdisplay/Kconfig                    |   8 +
- drivers/auxdisplay/Makefile                   |   1 +
- drivers/auxdisplay/ht16k33.c                  | 458 ++++++++++++++----
- drivers/auxdisplay/img-ascii-lcd.c            | 206 ++------
- drivers/auxdisplay/line-display.c             | 261 ++++++++++
- drivers/auxdisplay/line-display.h             |  43 ++
- include/uapi/linux/map_to_14segment.h         | 239 +++++++++
- 8 files changed, 989 insertions(+), 258 deletions(-)
- create mode 100644 drivers/auxdisplay/line-display.c
- create mode 100644 drivers/auxdisplay/line-display.h
- create mode 100644 include/uapi/linux/map_to_14segment.h
+      - items:
+	  - enum:
+	      - adafruit,1268     # 1.2" 4-Digit 7-Segment Display Backpack (Green)
+	      - adafruit,1269     # 1.2" 4-Digit 7-Segment Display Backpack (Yellow)
+	      - adafruit,1270     # 1.2" 4-Digit 7-Segment Display Backpack (Red)
+	  - const: adafruit,1271  # 1.2" 4-Digit 7-Segment Backpack
+	  - const: holtek,ht16k33
 
+      - items:
+	  - enum:
+	      - adafruit,1911     # 0.54" Quad Alphanumeric Display Backpack (Red)
+	      - adafruit,1912     # 0.54" Quad Alphanumeric Display Backpack (Blue)
+	      - adafruit,2157     # 0.54" Quad Alphanumeric Display Backpack (White)
+	      - adafruit,2158     # 0.54" Quad Alphanumeric Display Backpack (Yellow)
+	      - adafruit,2159     # 0.54" Quad Alphanumeric Display Backpack (Yellow-Green)
+	      - adafruit,2160     # 0.54" Quad Alphanumeric Display Backpack (Green)
+	  - const: adafruit,1910  # 0.54" Quad 14-segment Alphanumeric Backpack
+	  - const: holtek,ht16k33
+
+      - items:
+	  - enum:
+	      - adafruit,3106     # 0.56" 4-Digit 7-Segment FeatherWing Display (Blue)
+	      - adafruit,3107     # 0.56" 4-Digit 7-Segment FeatherWing Display (Green)
+	      - adafruit,3108     # 0.56" 4-Digit 7-Segment FeatherWing Display (Red)
+	      - adafruit,3109     # 0.56" 4-Digit 7-Segment FeatherWing Display (White)
+	      - adafruit,3110     # 0.56" 4-Digit 7-Segment FeatherWing Display (Yellow)
+	  - const: adafruit,3088  # 0.56" 4-Digit 7-Segment FeatherWing
+	  - const: holtek,ht16k33
+
+      - items:
+	  - enum:
+	      - adafruit,3127     # 0.54" Quad Alphanumeric FeatherWing Display (White)
+	      - adafruit,3128     # 0.54" Quad Alphanumeric FeatherWing Display (Blue)
+	      - adafruit,3129     # 0.54" Quad Alphanumeric FeatherWing Display (Green)
+	      - adafruit,3130     # 0.54" Quad Alphanumeric FeatherWing Display (Red)
+	      - adafruit,3131     # 0.54" Quad Alphanumeric FeatherWing Display (Yellow)
+	      - adafruit,3132     # 0.54" Quad Alphanumeric FeatherWing Display (Yellow-Green)
+	  - const: adafruit,3089  # 0.54" Quad 14-segment Alphanumeric FeatherWing
+	  - const: holtek,ht16k33
+---
+ .../bindings/auxdisplay/holtek,ht16k33.yaml   | 31 +++++++++++++++++--
+ 1 file changed, 28 insertions(+), 3 deletions(-)
+
+diff --git a/Documentation/devicetree/bindings/auxdisplay/holtek,ht16k33.yaml b/Documentation/devicetree/bindings/auxdisplay/holtek,ht16k33.yaml
+index 64ffff460026040f..616aca817874bdc8 100644
+--- a/Documentation/devicetree/bindings/auxdisplay/holtek,ht16k33.yaml
++++ b/Documentation/devicetree/bindings/auxdisplay/holtek,ht16k33.yaml
+@@ -14,14 +14,23 @@ allOf:
+ 
+ properties:
+   compatible:
+-    const: holtek,ht16k33
++    oneOf:
++      - items:
++          - const: adafruit,3108  # 0.56" 4-Digit 7-Segment FeatherWing Display (Red)
++          - const: holtek,ht16k33
++
++      - items:
++          - const: adafruit,3130  # 0.54" Quad Alphanumeric FeatherWing Display (Red)
++          - const: holtek,ht16k33
++
++      - const: holtek,ht16k33     # Generic 16*8 LED controller with dot-matrix display
+ 
+   reg:
+     maxItems: 1
+ 
+   refresh-rate-hz:
+     maxItems: 1
+-    description: Display update interval in Hertz
++    description: Display update interval in Hertz for dot-matrix displays
+ 
+   interrupts:
+     maxItems: 1
+@@ -41,10 +50,26 @@ properties:
+     default: 16
+     description: Initial brightness level
+ 
++  color:
++    description:
++      Color of the display.  Use one of the LED_COLOR_ID_* prefixed definitions
++      from the header include/dt-bindings/leds/common.h.  The default is red.
++    $ref: /schemas/types.yaml#/definitions/uint32
++    minimum: 0
++    maximum: 9
++    default: 1
++
+ required:
+   - compatible
+   - reg
+-  - refresh-rate-hz
++
++if:
++  properties:
++    compatible:
++      const: holtek,ht16k33
++then:
++  required:
++    - refresh-rate-hz
+ 
+ additionalProperties: false
+ 
 -- 
 2.25.1
 
-Gr{oetje,eeting}s,
-
-						Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-							    -- Linus Torvalds

@@ -7,32 +7,36 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5FF65C49EA7
-	for <linux-mips@archiver.kernel.org>; Fri, 25 Jun 2021 13:06:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0596FC2B9F4
+	for <linux-mips@archiver.kernel.org>; Fri, 25 Jun 2021 13:06:40 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 3D6D061958
-	for <linux-mips@archiver.kernel.org>; Fri, 25 Jun 2021 13:06:38 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id D53A26196A
+	for <linux-mips@archiver.kernel.org>; Fri, 25 Jun 2021 13:06:39 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231304AbhFYNI6 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 25 Jun 2021 09:08:58 -0400
-Received: from leibniz.telenet-ops.be ([195.130.137.77]:55426 "EHLO
-        leibniz.telenet-ops.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231436AbhFYNI5 (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Fri, 25 Jun 2021 09:08:57 -0400
+        id S231516AbhFYNI7 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 25 Jun 2021 09:08:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38796 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231500AbhFYNI7 (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Fri, 25 Jun 2021 09:08:59 -0400
+X-Greylist: delayed 441 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 25 Jun 2021 06:06:38 PDT
+Received: from leibniz.telenet-ops.be (leibniz.telenet-ops.be [IPv6:2a02:1800:110:4::f00:d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 189B6C061766
+        for <linux-mips@vger.kernel.org>; Fri, 25 Jun 2021 06:06:38 -0700 (PDT)
 Received: from baptiste.telenet-ops.be (baptiste.telenet-ops.be [IPv6:2a02:1800:120:4::f00:13])
-        by leibniz.telenet-ops.be (Postfix) with ESMTPS id 4GBHBn6bfKzMqjbp
-        for <linux-mips@vger.kernel.org>; Fri, 25 Jun 2021 14:59:13 +0200 (CEST)
+        by leibniz.telenet-ops.be (Postfix) with ESMTPS id 4GBHBp20JzzMqmFP
+        for <linux-mips@vger.kernel.org>; Fri, 25 Jun 2021 14:59:14 +0200 (CEST)
 Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed20:1476:ce84:e216:add8])
         by baptiste.telenet-ops.be with bizsmtp
-        id MQzC2500H2B1U9901QzC7N; Fri, 25 Jun 2021 14:59:13 +0200
+        id MQzC2500j2B1U9901QzD7X; Fri, 25 Jun 2021 14:59:14 +0200
 Received: from rox.of.borg ([192.168.97.57])
         by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
         (Exim 4.93)
         (envelope-from <geert@linux-m68k.org>)
-        id 1lwlQO-003TMD-3z; Fri, 25 Jun 2021 14:59:12 +0200
+        id 1lwlQO-003TMO-G5; Fri, 25 Jun 2021 14:59:12 +0200
 Received: from geert by rox.of.borg with local (Exim 4.93)
         (envelope-from <geert@linux-m68k.org>)
-        id 1lwlQN-004sQL-HO; Fri, 25 Jun 2021 14:59:11 +0200
+        id 1lwlQN-004sRH-Nc; Fri, 25 Jun 2021 14:59:11 +0200
 From:   Geert Uytterhoeven <geert@linux-m68k.org>
 To:     Robin van der Gracht <robin@protonic.nl>,
         Rob Herring <robh+dt@kernel.org>,
@@ -43,9 +47,9 @@ To:     Robin van der Gracht <robin@protonic.nl>,
 Cc:     devicetree@vger.kernel.org, linux-leds@vger.kernel.org,
         linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
         Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH v2 04/18] auxdisplay: img-ascii-lcd: Add helper variable dev
-Date:   Fri, 25 Jun 2021 14:58:48 +0200
-Message-Id: <20210625125902.1162428-5-geert@linux-m68k.org>
+Subject: [PATCH v2 12/18] auxdisplay: ht16k33: Convert to simple i2c probe function
+Date:   Fri, 25 Jun 2021 14:58:56 +0200
+Message-Id: <20210625125902.1162428-13-geert@linux-m68k.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210625125902.1162428-1-geert@linux-m68k.org>
 References: <20210625125902.1162428-1-geert@linux-m68k.org>
@@ -55,62 +59,41 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-img_ascii_lcd_probe() has many users of "pdev->dev".  Add a shorthand to
-simplify the code.
+ht16k33_probe() does not use the passed i2c_device_id, so the driver can
+be converted trivially to the new-style of i2c probing.
 
 Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Acked-by: Robin van der Gracht <robin@protonic.nl>
 ---
 v2:
-  - No changes.
+  - Add Acked-by.
 ---
- drivers/auxdisplay/img-ascii-lcd.c | 13 ++++++-------
- 1 file changed, 6 insertions(+), 7 deletions(-)
+ drivers/auxdisplay/ht16k33.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/auxdisplay/img-ascii-lcd.c b/drivers/auxdisplay/img-ascii-lcd.c
-index e33ce0151cdfd150..2b6e41ec57544faa 100644
---- a/drivers/auxdisplay/img-ascii-lcd.c
-+++ b/drivers/auxdisplay/img-ascii-lcd.c
-@@ -365,26 +365,25 @@ static int img_ascii_lcd_probe(struct platform_device *pdev)
+diff --git a/drivers/auxdisplay/ht16k33.c b/drivers/auxdisplay/ht16k33.c
+index 8c9acc4800bc94e0..8c1689b77db95676 100644
+--- a/drivers/auxdisplay/ht16k33.c
++++ b/drivers/auxdisplay/ht16k33.c
+@@ -381,8 +381,7 @@ static int ht16k33_keypad_probe(struct i2c_client *client,
+ 	return input_register_device(keypad->dev);
+ }
+ 
+-static int ht16k33_probe(struct i2c_client *client,
+-				  const struct i2c_device_id *id)
++static int ht16k33_probe(struct i2c_client *client)
  {
- 	const struct of_device_id *match;
- 	const struct img_ascii_lcd_config *cfg;
-+	struct device *dev = &pdev->dev;
- 	struct img_ascii_lcd_ctx *ctx;
  	int err;
+ 	uint32_t dft_brightness;
+@@ -523,7 +522,7 @@ static const struct of_device_id ht16k33_of_match[] = {
+ MODULE_DEVICE_TABLE(of, ht16k33_of_match);
  
--	match = of_match_device(img_ascii_lcd_matches, &pdev->dev);
-+	match = of_match_device(img_ascii_lcd_matches, dev);
- 	if (!match)
- 		return -ENODEV;
- 
- 	cfg = match->data;
--	ctx = devm_kzalloc(&pdev->dev, sizeof(*ctx) + cfg->num_chars,
--			   GFP_KERNEL);
-+	ctx = devm_kzalloc(dev, sizeof(*ctx) + cfg->num_chars, GFP_KERNEL);
- 	if (!ctx)
- 		return -ENOMEM;
- 
- 	if (cfg->external_regmap) {
--		ctx->regmap = syscon_node_to_regmap(pdev->dev.parent->of_node);
-+		ctx->regmap = syscon_node_to_regmap(dev->parent->of_node);
- 		if (IS_ERR(ctx->regmap))
- 			return PTR_ERR(ctx->regmap);
- 
--		if (of_property_read_u32(pdev->dev.of_node, "offset",
--					 &ctx->offset))
-+		if (of_property_read_u32(dev->of_node, "offset", &ctx->offset))
- 			return -EINVAL;
- 	} else {
- 		ctx->base = devm_platform_ioremap_resource(pdev, 0);
-@@ -408,7 +407,7 @@ static int img_ascii_lcd_probe(struct platform_device *pdev)
- 	if (err)
- 		goto out_del_timer;
- 
--	err = device_create_file(&pdev->dev, &dev_attr_message);
-+	err = device_create_file(dev, &dev_attr_message);
- 	if (err)
- 		goto out_del_timer;
- 
+ static struct i2c_driver ht16k33_driver = {
+-	.probe		= ht16k33_probe,
++	.probe_new	= ht16k33_probe,
+ 	.remove		= ht16k33_remove,
+ 	.driver		= {
+ 		.name		= DRIVER_NAME,
 -- 
 2.25.1
 

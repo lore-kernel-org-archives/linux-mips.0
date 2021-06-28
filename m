@@ -2,87 +2,84 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-14.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-19.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,
+	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AB176C49EA6
-	for <linux-mips@archiver.kernel.org>; Mon, 28 Jun 2021 01:06:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7D7F0C49EAB
+	for <linux-mips@archiver.kernel.org>; Mon, 28 Jun 2021 01:12:32 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 86B10619B6
-	for <linux-mips@archiver.kernel.org>; Mon, 28 Jun 2021 01:06:36 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 69ECB61469
+	for <linux-mips@archiver.kernel.org>; Mon, 28 Jun 2021 01:12:32 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231876AbhF1BI5 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Sun, 27 Jun 2021 21:08:57 -0400
-Received: from wnew2-smtp.messagingengine.com ([64.147.123.27]:33027 "EHLO
-        wnew2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231706AbhF1BI4 (ORCPT
+        id S231706AbhF1BO4 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Sun, 27 Jun 2021 21:14:56 -0400
+Received: from wout4-smtp.messagingengine.com ([64.147.123.20]:54435 "EHLO
+        wout4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231882AbhF1BOy (ORCPT
         <rfc822;linux-mips@vger.kernel.org>);
-        Sun, 27 Jun 2021 21:08:56 -0400
+        Sun, 27 Jun 2021 21:14:54 -0400
 Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailnew.west.internal (Postfix) with ESMTP id DF2062B009B0;
-        Sun, 27 Jun 2021 21:06:30 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute3.internal (MEProxy); Sun, 27 Jun 2021 21:06:31 -0400
+        by mailout.west.internal (Postfix) with ESMTP id DF6EB32001AB;
+        Sun, 27 Jun 2021 21:12:28 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute3.internal (MEProxy); Sun, 27 Jun 2021 21:12:29 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=flygoat.com; h=
         subject:to:cc:references:from:message-id:date:mime-version
-        :in-reply-to:content-type:content-transfer-encoding; s=fm2; bh=P
-        RaswZ5qlI2jc+vhwIg6RbL8e19UYG11rnfWNNUN5Ww=; b=rtQqygzsVWIKTM2Wz
-        nbuW2cVd4BkWO+d+ygZx1wQmuHM40AM87yZ+im/mRkIP3Qqb3Qi7ZruE1VpFzflN
-        tOqNi3bkH4BaHixbYOprtxkwU3hPRxJX2S0rVlw0MiAVMKvfWWMVWEzk+xorXqln
-        w+JaXqSm4A2yOTu0LWZY+kjUrM1wGmxPtlNXREp9LoXRHW9qK2MfYAoeVYkccKyf
-        PoL81hG4QuWSjAk6xmx/j3MBOvMY9NRXa9dkjr4pw7hOnQ4riGsReDEMLv8NG9iX
-        D31qD545RTGEK2wFlGXXQlOGpExl88oh2jOJ/ro0WiUCF5n8r2TIpMmJ7P8q4juh
-        DQVsw==
+        :in-reply-to:content-type:content-transfer-encoding; s=fm2; bh=V
+        BFZ1y1JnPKv7iC+LVfspLTUDbJtJZyrRNLbQEMjIDI=; b=Y3Bwq+W5knwZYoV+n
+        3CYNpnLi2f5G+BUbFO3xC2P0FVRKDlyXbPe7G8/BzsKFA5iTr2uBRT2r492z5UEn
+        0UKNzGhCJIkdeGIsuAn8Cf6DLEClqbSZCbmyBLV4ka8Dmpbg74dBkugvgG/MaELu
+        VJw0BfVcYtVEMIWSBZUXCDqtrTPjWtjv5o0KOp4BilK39B+sTATCQfYBiljb0xwv
+        /nP24bhn3INWPNEdeK5rvp+yE/UjJC2WnvrqjXh30pazvIals88bj/pwLLxSl77V
+        9L0bBWD1J2NbFdsIGPl68fdWB54UDL9fYN0alHcx0rLd78zjLm+PECmaKJqe4OIG
+        ODrvA==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:content-transfer-encoding:content-type
         :date:from:in-reply-to:message-id:mime-version:references
         :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm3; bh=PRaswZ5qlI2jc+vhwIg6RbL8e19UYG11rnfWNNUN5
-        Ww=; b=YhAaq37YXqoddC48WCc2HRI74KjeXC9Aorc+wM7n7h+r1EARlSTPsHc9q
-        nRzg1HiB9ZYD7YRTwqP3Hb7j9vMGqpufBykHcZBym5vqS47w7GBYIf5EeCdNOdH9
-        LWzcHtoOm+usjGvfGGD523HUU912K15h2pM3AKqp6SUextoSrGe/jC0HPAPruBD9
-        YsKIfpeWTpZe9VSLbLvvHREF1lUa8rxdv398bjGDUGt9Hp06tgatYorngH3kqznQ
-        28GL5FNR8QGXr4qLA24oH3CSxkN0shRYUFwXQHFXzavv5J0c1r0zZdPpEAgRmuZ2
-        SZrqjSjq/jzvIDwRCrkWUfrU3Dj1Q==
-X-ME-Sender: <xms:lSDZYGvriqTvXG3CrplKdvcKu2uyywvAHxb-f3Uhk91xlUL6AK1vTw>
-    <xme:lSDZYLd6QvdmJW5F4Ldy5_n3_EBQTVqxSXFCyzDkuNFAEH2uH0efUahRuNbOA5eun
-    zO4Ueu19nDheelbiPQ>
-X-ME-Received: <xmr:lSDZYBwCo8uePpYDkaG2R4OzF_sDQwA6eHFYi5hPAq9qgQD-gabLvwBrA1PKoHoG0qwpQ8j2QoZ2C4h_g-da_A>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfeehfedggedtucetufdoteggodetrfdotf
+        :x-sasl-enc; s=fm3; bh=VBFZ1y1JnPKv7iC+LVfspLTUDbJtJZyrRNLbQEMjI
+        DI=; b=L2iTuaNs9lVeG2e1kqImbY592aPJpPI7GBwaGs/dVtFUBRAZlkFWq80CK
+        qEP7TSa9VwuJ/dM+V05Drji966OTD4z22a29sPBtLk8mQVi9NbTop5H7wn1i5h1g
+        jbdPdhLw0d/Wum2k0gsRrpj6ZwbdYBXlyLefoZQhDnIr51N2PuEpThyeJfLfq4um
+        5Ic77FUN3u293oWzLcj7kzuDkNH8W9tvkmZcxoxdOKPBb5NrFbBOA7vcOxudzjmt
+        az/pV9rayNJlHoGi+IwJT9X7NxAjRHLLV7vuDMAKBc175qq0XUh8GAej331EWca9
+        PDnFPdqEXeJdFdnNfEcs42Y67REDg==
+X-ME-Sender: <xms:-yHZYLD_h5LgXOgOFRnC0YtG9PDXuWRlGV9US02Hdf9-ZKn3ADgx3g>
+    <xme:-yHZYBga1jFI8-quJzSb3y9MmraeEEib_FT_XYoEUvwF2pxcQXwCDMwKKXbXUrGi3
+    WJT8gnAC7qIHqlBKbs>
+X-ME-Received: <xmr:-yHZYGkEG2mj9rGaZHsc2pKco2sijmTdM9FWNF23LQ4y9SX0k26RLyR7ZfdJDrBvYbSIWeDyMTgteySLbkI0-Q>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrfeehfedggeduucetufdoteggodetrfdotf
     fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
     uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepuffvfhfhkffffgggjggtgfesthekredttdefjeenucfhrhhomheplfhirgig
+    cujfgurhepuffvfhfhkffffgggjggtgfesthekredttdeftfenucfhrhhomheplfhirgig
     uhhnucgjrghnghcuoehjihgrgihunhdrhigrnhhgsehflhihghhorghtrdgtohhmqeenuc
-    ggtffrrghtthgvrhhnpeeihffghfeikedugeejvefgffevgeevgeehfffhudeiieffffev
-    ffeugeevfefgfeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfh
+    ggtffrrghtthgvrhhnpeefleduiedtvdekffeggfeukeejgeeffeetlefghfekffeuteei
+    jeeghefhueffvdenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfh
     hrohhmpehjihgrgihunhdrhigrnhhgsehflhihghhorghtrdgtohhm
-X-ME-Proxy: <xmx:lSDZYBN6AKcIptkpjKqi-N-KsPj7ml_X6Oq02BikkZH0AgSRo1OcTg>
-    <xmx:lSDZYG_QqMifRz3vMX8KD5A5ROHC4C3j_kypzwmU6cSX-W3JuvWy9w>
-    <xmx:lSDZYJUVXwTZBVtyASTpLZw5BseZlJyHUWbb8A8Y3WgtYhl0oRC8ow>
-    <xmx:liDZYH1cMOcmwy2L0U6wPT_c8VAsjp0DaKUTxZ9DaAlz5S7MBiZPZSpdaDg>
+X-ME-Proxy: <xmx:-yHZYNyiJmpkDwUsCUayNZW4FB3SfPsadaPNHGmLouNEoLlSbDijkg>
+    <xmx:-yHZYATE2A_0Kejafj8GdHnuz80omhSffCJNsCYLtdnGh-oVi4J5dQ>
+    <xmx:-yHZYAaq_SureWX-dCY-hZVf1FtWFCAU9JUj-7esbq6vXPhv7gs9nQ>
+    <xmx:_CHZYFJdb2-VUQYl8VD3TTnvG9gHDx-VfIRhL4hBsOglgz0-MW6IVw>
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sun,
- 27 Jun 2021 21:06:25 -0400 (EDT)
-Subject: Re: [PATCH 3/9] clk: pistachio: Make it selectable for generic MIPS
- kernel
-To:     Stephen Boyd <sboyd@kernel.org>, linux-mips@vger.kernel.org
-Cc:     tsbogend@alpha.franken.de, mturquette@baylibre.com,
-        daniel.lezcano@linaro.org, linus.walleij@linaro.org,
-        vkoul@kernel.org, linux-kernel@vger.kernel.org,
-        linux-clk@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-phy@lists.infradead.org, devicetree@vger.kernel.org
-References: <20210627045631.2882-1-jiaxun.yang@flygoat.com>
- <20210627045631.2882-4-jiaxun.yang@flygoat.com>
- <162483712923.3259633.15640278024587375157@swboyd.mtv.corp.google.com>
+ 27 Jun 2021 21:12:24 -0400 (EDT)
+Subject: Re: [PATCH v2] MIPS: Loongson64: Add Loongson-2K1000 reset support
+To:     Qing Zhang <zhangqing@loongson.cn>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Huacai Chen <chenhuacai@kernel.org>
+Cc:     devicetree@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210627073806.32564-1-zhangqing@loongson.cn>
 From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
-Message-ID: <45a330c0-7b4d-d569-51eb-3eac8f53512a@flygoat.com>
-Date:   Mon, 28 Jun 2021 09:06:23 +0800
+Message-ID: <08a4ce65-91e0-122e-6f17-b66e08270350@flygoat.com>
+Date:   Mon, 28 Jun 2021 09:12:20 +0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.11.0
 MIME-Version: 1.0
-In-Reply-To: <162483712923.3259633.15640278024587375157@swboyd.mtv.corp.google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20210627073806.32564-1-zhangqing@loongson.cn>
+Content-Type: text/plain; charset=gbk; format=flowed
 Content-Transfer-Encoding: 8bit
 Content-Language: en-US
 Precedence: bulk
@@ -90,37 +87,139 @@ List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
 
-åœ¨ 2021/6/28 ä¸Šåˆ7:38, Stephen Boyd å†™é“:
-> Quoting Jiaxun Yang (2021-06-26 21:56:25)
->> diff --git a/drivers/clk/pistachio/Kconfig b/drivers/clk/pistachio/Kconfig
->> new file mode 100644
->> index 000000000000..efb7a7f45259
->> --- /dev/null
->> +++ b/drivers/clk/pistachio/Kconfig
->> @@ -0,0 +1,8 @@
->> +# SPDX-License-Identifier: GPL-2.0
->> +
->> +config COMMON_CLK_PISTACHIO
->> +       bool "Support for IMG Pistachio SoC clock controllers"
->> +       depends on MIPS
-> Is anything MIPS specific? Or can this be
+ÔÚ 2021/6/27 ÏÂÎç3:38, Qing Zhang Ð´µÀ:
+> Add power management register operations to support reboot and poweroff.
 >
-> 	depends on MIPS || COMPILE_TEST
+> Signed-off-by: Qing Zhang <zhangqing@loongson.cn>
+> ---
+>
+> v1-v2:
+> - Add pm block node
+>
+> Signed-off-by: Qing Zhang <zhangqing@loongson.cn>
+>
+> diff --git a/arch/mips/boot/dts/loongson/loongson64-2k1000.dtsi b/arch/mips/boot/dts/loongson/loongson64-2k1000.dtsi
+> index 569e814def83..929e8ddf86eb 100644
+> --- a/arch/mips/boot/dts/loongson/loongson64-2k1000.dtsi
+> +++ b/arch/mips/boot/dts/loongson/loongson64-2k1000.dtsi
+> @@ -101,6 +101,14 @@ uart0: serial@1fe00000 {
+>   			no-loopback-test;
+>   		};
+>   
+> +		pm: power-controller {
+> +			device_type = "power management";
 
-No there are nothing MIPS specific.
+Hi Qing,
 
-Will fix in next revision.
+Not compatible?
+
+
+> +			reg = <0 0x1fe0700c 0 0x8>,
+> +				<0 0x1fe07014 0 0x8>,
+> +				<0 0x1fe07030 0 0x8>;
+> +			reg-names = "pm1_sts", "pm1_cnt", "rst_cnt";
+> +		};
+> +
+>   		pci@1a000000 {
+>   			compatible = "loongson,ls2k-pci";
+>   			device_type = "pci";
+> diff --git a/arch/mips/loongson64/reset.c b/arch/mips/loongson64/reset.c
+> index c97bfdc8c922..ea125e925d44 100644
+> --- a/arch/mips/loongson64/reset.c
+> +++ b/arch/mips/loongson64/reset.c
+> @@ -10,6 +10,7 @@
+>   #include <linux/delay.h>
+>   #include <linux/init.h>
+>   #include <linux/kexec.h>
+> +#include <linux/of_address.h>
+>   #include <linux/pm.h>
+>   #include <linux/slab.h>
+>   
+> @@ -20,12 +21,50 @@
+>   #include <loongson.h>
+>   #include <boot_param.h>
+>   
+> +static char *pm_reg_name[] = {"pm1_sts", "pm1_cnt", "rst_cnt"};
+> +
+> +static void __iomem *get_reg_byname(struct device_node *node, const char *name)
+> +{
+> +	int index = of_property_match_string(node, "reg-names", name);
+> +
+> +	if (index < 0)
+> +		return NULL;
+> +
+> +	return of_iomap(node, index);
+> +}
+
+We do have that helper in of_address.h.
+
+Btw, I'd prefer make it as a driver in driver/platform/mips.
+
+Also the approach using PRID to tell protocol type doesn't really make 
+sense to me.
+
+You can override _machine_restart callback in diver once FDT node is found.
 
 Thanks.
 
 - Jiaxun
 
->
->
->> +       help
->> +         Support for the IMG Pistachio SoC clock controller.
->> +         Say Y if you want to include clock support.
->> \ No newline at end of file
->> -- 
->> 2.32.0
->>
+> +
+> +static int  __init loongson_fdt_reset_init(void)
+> +{
+> +	struct device_node *np;
+> +	int i;
+> +
+> +	np = of_find_node_by_type(NULL, "power management");
+> +	if (!np) {
+> +		pr_info("Failed to get PM node\n");
+> +		return -ENODEV;
+> +	}
+> +
+> +	for (i = 0; i < sizeof(pm_reg_name)/sizeof(char *); i++) {
+> +		pm_reg_name[i] = get_reg_byname(np, pm_reg_name[i]);
+> +		if (!pm_reg_name[i])
+> +			iounmap(pm_reg_name[i]);
+> +	}
+> +
+> +	of_node_put(np);
+> +	return 0;
+> +}
+> +arch_initcall(loongson_fdt_reset_init);
+> +
+>   static void loongson_restart(char *command)
+>   {
+> +	if ((read_c0_prid() & PRID_IMP_MASK) == PRID_IMP_LOONGSON_64R) {
+> +		writel(0x1, (void *)pm_reg_name[2]);
+> +	} else {
+> +		void (*fw_restart)(void) = (void *)loongson_sysconf.restart_addr;
+>   
+> -	void (*fw_restart)(void) = (void *)loongson_sysconf.restart_addr;
+> +		fw_restart();
+> +	}
+>   
+> -	fw_restart();
+>   	while (1) {
+>   		if (cpu_wait)
+>   			cpu_wait();
+> @@ -34,9 +73,18 @@ static void loongson_restart(char *command)
+>   
+>   static void loongson_poweroff(void)
+>   {
+> -	void (*fw_poweroff)(void) = (void *)loongson_sysconf.poweroff_addr;
+> +	if ((read_c0_prid() & PRID_IMP_MASK) == PRID_IMP_LOONGSON_64R) {
+> +		/* Clear */
+> +		writel((readl((void *)pm_reg_name[0]) & 0xffffffff), (void *)pm_reg_name[0]);
+> +		/* Sleep Enable | Soft Off*/
+> +		writel(GENMASK(12, 10)|BIT(13), (void *)pm_reg_name[1]);
+> +	} else {
+> +
+> +		void (*fw_poweroff)(void) = (void *)loongson_sysconf.poweroff_addr;
+> +
+> +		fw_poweroff();
+> +	}
+>   
+> -	fw_poweroff();
+>   	while (1) {
+>   		if (cpu_wait)
+>   			cpu_wait();

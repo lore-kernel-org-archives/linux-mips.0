@@ -2,126 +2,72 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-14.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-16.6 required=3.0 tests=BAYES_00,DKIM_INVALID,
+	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5EE85C2B9F4
-	for <linux-mips@archiver.kernel.org>; Mon, 28 Jun 2021 16:03:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D0D80C49361
+	for <linux-mips@archiver.kernel.org>; Mon, 28 Jun 2021 16:52:02 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 40C6661C67
-	for <linux-mips@archiver.kernel.org>; Mon, 28 Jun 2021 16:03:40 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id B4A0E6198E
+	for <linux-mips@archiver.kernel.org>; Mon, 28 Jun 2021 16:52:02 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232740AbhF1QGE (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 28 Jun 2021 12:06:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57018 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232012AbhF1QGD (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Mon, 28 Jun 2021 12:06:03 -0400
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10A31C061760;
-        Mon, 28 Jun 2021 09:03:36 -0700 (PDT)
-Received: by mail-lf1-x12f.google.com with SMTP id q16so19328727lfr.4;
-        Mon, 28 Jun 2021 09:03:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=9+6mDKjcYk8hmZtLfRjkLtLnizKdu7+ND6kkw+plZIs=;
-        b=WehXqygcDRvt7H9HPjI5+m5XGpLgfQrl2S4E24ioukuled6AKRRPWT6tZJFIsjbv6x
-         feAJbp9u4Y0M1ZAIef8CTj+XcaiQaoygNxtKSD02zlkdSy1nQ7IsQAw+golDYdRnxw+V
-         g0Cn1LTPqgn6gaQKz80QNVDm5o+/yw7nGphsowuJmLcchup/B0mLLaj7HxQo0SIpC/Fq
-         LbsowaQ3lZkLTDwpSTOFFdZRrU5S0o8U+BpInNBQ6UHzHv3NlOarIqRDcNgogLsJpeAy
-         G827P/fyaUcOI8tawXeElqqpKCGgkb8IFA0eKXioxSmVbVqiXCTjwzISSnsZU1QUGs6i
-         u7/g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=9+6mDKjcYk8hmZtLfRjkLtLnizKdu7+ND6kkw+plZIs=;
-        b=bLuMY66XAeLsf4Iugp5i87fEkWEmF5OmyVxwgWZ/W0fIwxR18tQySoLp1IXTxmIBwK
-         //Lmm2uIt4/ffW+HCd2y/SG7THSJjZIg2eISqMbiE8xRmz6G8ZKJhZXidLGegNrE5ZOS
-         wbLtA2WyBLge4WvNa/eNvvK1wQsLn8lWOG1mnX/exmvgUioEgFoFlWsdx1U4qD0k3ltZ
-         OC96Nac8ZAEaYli92gAZi+pcGuHJa051Ala1D5s3t64pb2FqGA+ScyhO0CS5bBAZ7iE9
-         DNnK9LWE/Qtmv0hpRfTeRNrYy/kKVLzGhFIDHEgn/P2el4l/y9HgfT51vK1dk5ANyX3e
-         uKDQ==
-X-Gm-Message-State: AOAM532uP+ff+nKqcbU4D/KZP4vSca9f3vnwgZ2kOGnxLEwwGZ5xR5FX
-        biuyChB5yk6H78PMz+MdShrIxb8r0f8=
-X-Google-Smtp-Source: ABdhPJwWRp7/DULQ49/P2nsYmvnte9IYLgVFSaYn2unNvjpyxcxi5BzVuL73LsQA3ECbcHYRzHP79w==
-X-Received: by 2002:a19:ef0b:: with SMTP id n11mr19284891lfh.119.1624896214269;
-        Mon, 28 Jun 2021 09:03:34 -0700 (PDT)
-Received: from [192.168.1.102] ([31.173.82.94])
-        by smtp.gmail.com with ESMTPSA id f15sm1348944lfa.56.2021.06.28.09.03.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 28 Jun 2021 09:03:34 -0700 (PDT)
-Subject: Re: [PATCH v4 2/2] MIPS: Loongson64: Add pm block node for
- Loongson-2K1000
-To:     Qing Zhang <zhangqing@loongson.cn>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Huacai Chen <chenhuacai@kernel.org>
-Cc:     devicetree@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210628151330.11952-1-zhangqing@loongson.cn>
- <20210628151330.11952-2-zhangqing@loongson.cn>
-From:   Sergei Shtylyov <sergei.shtylyov@gmail.com>
-Message-ID: <697cd16e-7131-95d6-6e0b-1034d493b3ce@gmail.com>
-Date:   Mon, 28 Jun 2021 19:03:32 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        id S231969AbhF1Qy0 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 28 Jun 2021 12:54:26 -0400
+Received: from [115.28.160.31] ([115.28.160.31]:51244 "EHLO
+        mailbox.box.xen0n.name" rhost-flags-FAIL-FAIL-OK-OK)
+        by vger.kernel.org with ESMTP id S231918AbhF1QyZ (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>);
+        Mon, 28 Jun 2021 12:54:25 -0400
+X-Greylist: delayed 349 seconds by postgrey-1.27 at vger.kernel.org; Mon, 28 Jun 2021 12:54:25 EDT
+Received: from ld50.lan (unknown [101.224.80.218])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mailbox.box.xen0n.name (Postfix) with ESMTPSA id 933906010F;
+        Tue, 29 Jun 2021 00:46:22 +0800 (CST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=xen0n.name; s=mail;
+        t=1624898782; bh=DRjzne0ItLzPQT3F0soM35/vWix/rlub43mj4Mg5ZO0=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=wD2YDXSu0vMOwaZhE7EeYU6XBd/MouY0izvng/ribHsz72UPJMwv0kRSf3PfsGWIf
+         +8ow85c7V1hTqmMYdw6mQxfCy+nJWQmPs2tqs9k9rhiqBF/KFw/pJ+d3/sadT8eKw6
+         2fLZUXGfObi/u8tmdtnk8Er7w95VACoMdoYdjwcI=
+From:   WANG Xuerui <git@xen0n.name>
+To:     linux-rtc@vger.kernel.org
+Cc:     WANG Xuerui <git@xen0n.name>, linux-mips@vger.kernel.org
+Subject: [PATCH v4 4/6] MIPS: Loongson: Enable LS2X RTC in loongson3_defconfig
+Date:   Tue, 29 Jun 2021 00:45:50 +0800
+Message-Id: <20210628164552.1006079-5-git@xen0n.name>
+X-Mailer: git-send-email 2.30.1
+In-Reply-To: <20210628164552.1006079-1-git@xen0n.name>
+References: <20210628164552.1006079-1-git@xen0n.name>
 MIME-Version: 1.0
-In-Reply-To: <20210628151330.11952-2-zhangqing@loongson.cn>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Hello!
+This is now supported, enable for Loongson-3 systems.
+Other systems are unaffected.
 
-On 6/28/21 6:13 PM, Qing Zhang wrote:
+Signed-off-by: WANG Xuerui <git@xen0n.name>
+Cc: linux-mips@vger.kernel.org
+---
+ arch/mips/configs/loongson3_defconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-> The module is now supported, enable it.
-> 
-> Signed-off-by: Qing Zhang <zhangqing@loongson.cn>
-> ---
-> 
-> v3-v4:
-> No change
-> 
-> Signed-off-by: Qing Zhang <zhangqing@loongson.cn>
-> ---
->  arch/mips/boot/dts/loongson/loongson64-2k1000.dtsi | 9 +++++++++
->  1 file changed, 9 insertions(+)
-> 
-> diff --git a/arch/mips/boot/dts/loongson/loongson64-2k1000.dtsi b/arch/mips/boot/dts/loongson/loongson64-2k1000.dtsi
-> index 569e814def83..e31176ac0ac2 100644
-> --- a/arch/mips/boot/dts/loongson/loongson64-2k1000.dtsi
-> +++ b/arch/mips/boot/dts/loongson/loongson64-2k1000.dtsi
-> @@ -101,6 +101,15 @@ uart0: serial@1fe00000 {
->  			no-loopback-test;
->  		};
->  
-> +		pm: power-controller {
-> +			device_type = "power management";
-> +			compatible = "loongson, reset-controller";
+diff --git a/arch/mips/configs/loongson3_defconfig b/arch/mips/configs/loongson3_defconfig
+index f02101ff04b3..fccb6906d4b4 100644
+--- a/arch/mips/configs/loongson3_defconfig
++++ b/arch/mips/configs/loongson3_defconfig
+@@ -320,6 +320,7 @@ CONFIG_USB_SERIAL_OPTION=m
+ CONFIG_RTC_CLASS=y
+ CONFIG_RTC_DRV_CMOS=y
+ CONFIG_RTC_DRV_GOLDFISH=y
++CONFIG_RTC_DRV_LS2X=y
+ CONFIG_DMADEVICES=y
+ CONFIG_VIRTIO_PCI=y
+ CONFIG_VIRTIO_BALLOON=m
+-- 
+2.30.1
 
-   No spaces allowed here, AFAIK.
-
-> +			reg = <0 0x1fe0700c 0 0x8>,
-> +				<0 0x1fe07014 0 0x8>,
-> +				<0 0x1fe07030 0 0x8>;
-
-   Better keep those aligned...
-
-> +			reg-names = "pm1_sts", "pm1_cnt", "rst_cnt";
-> +		};
-> +
-[...]
-
-MBR, Sergei

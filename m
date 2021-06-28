@@ -5,23 +5,23 @@ X-Spam-Level:
 X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CC371C49EBB
-	for <linux-mips@archiver.kernel.org>; Mon, 28 Jun 2021 14:41:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C19DFC2B9F4
+	for <linux-mips@archiver.kernel.org>; Mon, 28 Jun 2021 15:15:42 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id B509761D7D
-	for <linux-mips@archiver.kernel.org>; Mon, 28 Jun 2021 14:41:04 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 9463161459
+	for <linux-mips@archiver.kernel.org>; Mon, 28 Jun 2021 15:15:42 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234487AbhF1On2 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 28 Jun 2021 10:43:28 -0400
-Received: from mail.loongson.cn ([114.242.206.163]:59590 "EHLO loongson.cn"
+        id S235362AbhF1PSG (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 28 Jun 2021 11:18:06 -0400
+Received: from mail.loongson.cn ([114.242.206.163]:36392 "EHLO loongson.cn"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S234490AbhF1Ol0 (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Mon, 28 Jun 2021 10:41:26 -0400
+        id S235682AbhF1PQD (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Mon, 28 Jun 2021 11:16:03 -0400
 Received: from localhost.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dxb0L93tlgmsoZAA--.8933S2;
-        Mon, 28 Jun 2021 22:38:53 +0800 (CST)
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dxz0Ia59lgs88ZAA--.8919S2;
+        Mon, 28 Jun 2021 23:13:30 +0800 (CST)
 From:   Qing Zhang <zhangqing@loongson.cn>
 To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
         Rob Herring <robh+dt@kernel.org>,
@@ -29,28 +29,29 @@ To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
         Huacai Chen <chenhuacai@kernel.org>
 Cc:     devicetree@vger.kernel.org, linux-mips@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v3 1/2] MIPS: Loongson-3: Add Loongson-2K1000 reset platform driver
-Date:   Mon, 28 Jun 2021 22:38:51 +0800
-Message-Id: <20210628143852.11504-1-zhangqing@loongson.cn>
+Subject: [PATCH v4 1/2] MIPS: Loongson64: Add Loongson-2K1000 reset platform driver
+Date:   Mon, 28 Jun 2021 23:13:29 +0800
+Message-Id: <20210628151330.11952-1-zhangqing@loongson.cn>
 X-Mailer: git-send-email 2.31.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: AQAAf9Dxb0L93tlgmsoZAA--.8933S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxCFy8WrWDXw4kCw17AF15twb_yoW5CryUpF
-        Z8Gw43CrWrG3W7Kw4rtFyUuFW5Z3Z3tFWjkFW2v345Z3sxWFZ8Jws8tFyFyrnrGrW7AFW3
-        ZFsYgFW8CF4ru3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUkFb7Iv0xC_Kw4lb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I2
+X-CM-TRANSID: AQAAf9Dxz0Ia59lgs88ZAA--.8919S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxCFy8WrWDXw4kCw17AF15twb_yoW5CF1rpF
+        Z8Gw43Cr4rG3W7Kw4rtF1UuFW5Z3Z3tFWjkFW2v34UZ3sxWFZ8Jwn8tFyrArnrGrW7AFW3
+        ZFsYgFW8CF4ru3DanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvab7Iv0xC_Kw4lb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I2
         0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
         A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xII
         jxv20xvEc7CjxVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4
         A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IE
         w4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r4j6F4UMc
-        vjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwCY02Avz4vE14v_Xryl42xK82IY
-        c2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s
-        026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF
-        0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0x
-        vE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2
-        jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07boD7-UUUUU=
+        vjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwCY1x0262kKe7AKxVWUAVWUtwCY
+        02Avz4vE14v_XrWl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
+        Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r12
+        6r1DMIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
+        kF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI42IY6I8E87Iv
+        67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyT
+        uYvjxUkwvKUUUUU
 X-CM-SenderInfo: x2kd0wptlqwqxorr0wxvrqhubq/
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
@@ -63,6 +64,9 @@ Signed-off-by: Qing Zhang <zhangqing@loongson.cn>
 
 v2-v3:
 -make reset support as a driver
+
+v3-v4:
+-Modify patch title
 
 Signed-off-by: Qing Zhang <zhangqing@loongson.cn>
 ---

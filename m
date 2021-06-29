@@ -2,59 +2,62 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.3 required=3.0 tests=BAYES_00,
+X-Spam-Status: No, score=-20.3 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham
-	autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,
+	USER_AGENT_SANE_1 autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CA326C11F66
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CF55BC11F67
 	for <linux-mips@archiver.kernel.org>; Tue, 29 Jun 2021 08:33:35 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id A9E7B61DE7
+	by mail.kernel.org (Postfix) with ESMTP id BCEF861DED
 	for <linux-mips@archiver.kernel.org>; Tue, 29 Jun 2021 08:33:35 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232426AbhF2IgB (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        id S232463AbhF2IgB (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
         Tue, 29 Jun 2021 04:36:01 -0400
-Received: from elvis.franken.de ([193.175.24.41]:57423 "EHLO elvis.franken.de"
+Received: from elvis.franken.de ([193.175.24.41]:57427 "EHLO elvis.franken.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232386AbhF2IgA (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        id S232405AbhF2IgA (ORCPT <rfc822;linux-mips@vger.kernel.org>);
         Tue, 29 Jun 2021 04:36:00 -0400
 Received: from uucp (helo=alpha)
         by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1ly9BU-0004qC-00; Tue, 29 Jun 2021 10:33:32 +0200
+        id 1ly9BU-0004qC-02; Tue, 29 Jun 2021 10:33:32 +0200
 Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 6822BC0720; Tue, 29 Jun 2021 10:31:10 +0200 (CEST)
-Date:   Tue, 29 Jun 2021 10:31:10 +0200
+        id F13CFC073D; Tue, 29 Jun 2021 10:33:19 +0200 (CEST)
+Date:   Tue, 29 Jun 2021 10:33:19 +0200
 From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Paul Cercueil <paul@crapouillou.net>
-Cc:     list@opendingux.net, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Subject: Re: [PATCH] MIPS: MT extensions are not available on MIPS32r1
-Message-ID: <20210629083110.GA4650@alpha.franken.de>
-References: <202106192349.LlB9JRTC-lkp@intel.com>
- <20210625104929.42689-1-paul@crapouillou.net>
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Dmitry Golovin <dima@golovin.in>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        WANG Xuerui <git@xen0n.name>,
+        "Maciej W. Rozycki" <macro@orcam.me.uk>,
+        Tiezhu Yang <yangtiezhu@loongson.cn>,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com
+Subject: Re: [PATCH] MIPS: set mips32r5 for virt extensions
+Message-ID: <20210629083319.GC4650@alpha.franken.de>
+References: <20210628215029.2722537-1-ndesaulniers@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210625104929.42689-1-paul@crapouillou.net>
+In-Reply-To: <20210628215029.2722537-1-ndesaulniers@google.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Fri, Jun 25, 2021 at 11:49:29AM +0100, Paul Cercueil wrote:
-> MIPS MT extensions were added with the MIPS 34K processor, which was
-> based on the MIPS32r2 ISA.
+On Mon, Jun 28, 2021 at 02:50:26PM -0700, Nick Desaulniers wrote:
+> Clang's integrated assembler only accepts these instructions when the
+> cpu is set to mips32r5. With this change, we can assemble
+> malta_defconfig with Clang via `make LLVM_IAS=1`.
 > 
-> This fixes a build error when building a generic kernel for a MIPS32r1
-> CPU.
-> 
-> Fixes: c434b9f80b09 ("MIPS: Kconfig: add MIPS_GENERIC_KERNEL symbol")
-> Cc: stable@vger.kernel.org # v5.9
-> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+> Link: https://github.com/ClangBuiltLinux/linux/issues/763
+> Reported-by: Dmitry Golovin <dima@golovin.in>
+> Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
 > ---
->  arch/mips/include/asm/cpu-features.h | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
+>  arch/mips/include/asm/mipsregs.h | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
 
 applied to mips-next.
 

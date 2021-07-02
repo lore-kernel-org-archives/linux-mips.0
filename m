@@ -2,455 +2,142 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
+X-Spam-Status: No, score=-15.3 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,
+	URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D7A95C11F68
-	for <linux-mips@archiver.kernel.org>; Fri,  2 Jul 2021 10:18:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9304AC11F68
+	for <linux-mips@archiver.kernel.org>; Fri,  2 Jul 2021 12:06:09 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id C207D61410
-	for <linux-mips@archiver.kernel.org>; Fri,  2 Jul 2021 10:18:28 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 7403661429
+	for <linux-mips@archiver.kernel.org>; Fri,  2 Jul 2021 12:06:09 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231800AbhGBKU5 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 2 Jul 2021 06:20:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42006 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231536AbhGBKUn (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Fri, 2 Jul 2021 06:20:43 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9238BC0613DC
-        for <linux-mips@vger.kernel.org>; Fri,  2 Jul 2021 03:18:11 -0700 (PDT)
-Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1lzGFH-0005BC-3t; Fri, 02 Jul 2021 12:18:03 +0200
-Received: from ore by dude.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1lzGFF-0003f7-Pk; Fri, 02 Jul 2021 12:18:01 +0200
-From:   Oleksij Rempel <o.rempel@pengutronix.de>
-To:     Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Russell King <linux@armlinux.org.uk>
-Cc:     Oleksij Rempel <o.rempel@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mips@vger.kernel.org
-Subject: [PATCH net-next v2 3/6] net: dsa: qca: ar9331: add forwarding database support
-Date:   Fri,  2 Jul 2021 12:17:48 +0200
-Message-Id: <20210702101751.13168-4-o.rempel@pengutronix.de>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210702101751.13168-1-o.rempel@pengutronix.de>
-References: <20210702101751.13168-1-o.rempel@pengutronix.de>
+        id S232029AbhGBMIb (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 2 Jul 2021 08:08:31 -0400
+Received: from out28-74.mail.aliyun.com ([115.124.28.74]:52946 "EHLO
+        out28-74.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231956AbhGBMHV (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Fri, 2 Jul 2021 08:07:21 -0400
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.07438208|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.257215-0.00260397-0.740181;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047207;MF=zhouyanjie@wanyeetech.com;NM=1;PH=DS;RN=15;RT=15;SR=0;TI=SMTPD_---.KbD.WuZ_1625227484;
+Received: from 192.168.88.128(mailfrom:zhouyanjie@wanyeetech.com fp:SMTPD_---.KbD.WuZ_1625227484)
+          by smtp.aliyun-inc.com(10.147.41.231);
+          Fri, 02 Jul 2021 20:04:45 +0800
+Subject: Re: [PATCH v4 5/5] MIPS: CI20: Add second percpu timer for SMP.
+To:     Paul Cercueil <paul@crapouillou.net>
+Cc:     tsbogend@alpha.franken.de, mturquette@baylibre.com,
+        sboyd@kernel.org, robh+dt@kernel.org, linux-mips@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dongsheng.qiu@ingenic.com,
+        aric.pzqi@ingenic.com, rick.tyliu@ingenic.com,
+        sihui.liu@ingenic.com, jun.jiang@ingenic.com,
+        sernia.zhou@foxmail.com
+References: <1624688321-69131-1-git-send-email-zhouyanjie@wanyeetech.com>
+ <1624688321-69131-6-git-send-email-zhouyanjie@wanyeetech.com>
+ <84LIVQ.EPXA43L4WLUK@crapouillou.net>
+From:   Zhou Yanjie <zhouyanjie@wanyeetech.com>
+Message-ID: <3b6ffdde-2dcc-4883-f66b-9ca46db636e2@wanyeetech.com>
+Date:   Fri, 2 Jul 2021 20:04:43 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
+In-Reply-To: <84LIVQ.EPXA43L4WLUK@crapouillou.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::7
-X-SA-Exim-Mail-From: ore@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-mips@vger.kernel.org
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-This switch provides simple address resolution table, without VLAN or
-multicast specific information.
-With this patch we are able now to read, modify unicast and mulicast
-addresses.
 
-Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
----
- drivers/net/dsa/qca/ar9331.c | 351 +++++++++++++++++++++++++++++++++++
- 1 file changed, 351 insertions(+)
+On 2021/6/30 下午8:24, Paul Cercueil wrote:
+> Hi Zhou,
+>
+> Le sam., juin 26 2021 at 14:18:41 +0800, 周琰杰 (Zhou Yanjie) 
+> <zhouyanjie@wanyeetech.com> a écrit :
+>> 1.Add a new TCU channel as the percpu timer of core1, this is to
+>>   prepare for the subsequent SMP support. The newly added channel
+>>   will not adversely affect the current single-core state.
+>> 2.Adjust the position of TCU node to make it consistent with the
+>>   order in jz4780.dtsi file.
+>>
+>> Tested-by: Nikolaus Schaller <hns@goldelico.com> # on CI20
+>> Signed-off-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
+>
+> Again, you should avoid moving nodes like that.
 
-diff --git a/drivers/net/dsa/qca/ar9331.c b/drivers/net/dsa/qca/ar9331.c
-index 2f5673ea3140..a8be099c5700 100644
---- a/drivers/net/dsa/qca/ar9331.c
-+++ b/drivers/net/dsa/qca/ar9331.c
-@@ -66,6 +66,47 @@
- #define AR9331_SW_REG_GLOBAL_CTRL		0x30
- #define AR9331_SW_GLOBAL_CTRL_MFS_M		GENMASK(13, 0)
- 
-+/* Size of the address resolution table (ARL) */
-+#define AR9331_SW_NUM_ARL_RECORDS		1024
-+
-+#define AR9331_SW_REG_ADDR_TABLE_FUNCTION0	0x50
-+#define AR9331_SW_AT_ADDR_BYTES4		GENMASK(31, 24)
-+#define AR9331_SW_AT_ADDR_BYTES5		GENMASK(23, 16)
-+#define AR9331_SW_AT_FULL_VIO			BIT(12)
-+#define AR9331_SW_AT_PORT_NUM			GENMASK(11, 8)
-+#define AR9331_SW_AT_FLUSH_STATIC_EN		BIT(4)
-+#define AR9331_SW_AT_BUSY			BIT(3)
-+#define AR9331_SW_AT_FUNC			GENMASK(2, 0)
-+#define AR9331_SW_AT_FUNC_NOP			0
-+#define AR9331_SW_AT_FUNC_FLUSH_ALL		1
-+#define AR9331_SW_AT_FUNC_LOAD_ENTRY		2
-+#define AR9331_SW_AT_FUNC_PURGE_ENTRY		3
-+#define AR9331_SW_AT_FUNC_FLUSH_ALL_UNLOCKED	4
-+#define AR9331_SW_AT_FUNC_FLUSH_PORT		5
-+#define AR9331_SW_AT_FUNC_GET_NEXT		6
-+#define AR9331_SW_AT_FUNC_FIND_MAC		7
-+
-+#define AR9331_SW_REG_ADDR_TABLE_FUNCTION1	0x54
-+#define AR9331_SW_AT_ADDR_BYTES0		GENMASK(31, 24)
-+#define AR9331_SW_AT_ADDR_BYTES1		GENMASK(23, 16)
-+#define AR9331_SW_AT_ADDR_BYTES2		GENMASK(15, 8)
-+#define AR9331_SW_AT_ADDR_BYTES3		GENMASK(7, 0)
-+
-+#define AR9331_SW_REG_ADDR_TABLE_FUNCTION2	0x58
-+#define AR9331_SW_AT_COPY_TO_CPU		BIT(26)
-+#define AR9331_SW_AT_REDIRECT_TOCPU		BIT(25)
-+#define AR9331_SW_AT_LEAKY_EN			BIT(24)
-+#define AR9331_SW_AT_STATUS			GENMASK(19, 16)
-+#define AR9331_SW_AT_STATUS_EMPTY		0
-+/* STATUS values from 7 to 1 are different aging levels */
-+#define AR9331_SW_AT_STATUS_STATIC		0xf
-+
-+#define AR9331_SW_AT_SA_DROP_EN			BIT(14)
-+#define AR9331_SW_AT_MIRROR_EN			BIT(13)
-+#define AR9331_SW_AT_PRIORITY_EN		BIT(12)
-+#define AR9331_SW_AT_PRIORITY			GENMASK(11, 10)
-+#define AR9331_SW_AT_DES_PORT			GENMASK(5, 0)
-+
- #define AR9331_SW_REG_ADDR_TABLE_CTRL		0x5c
- #define AR9331_SW_AT_ARP_EN			BIT(20)
- #define AR9331_SW_AT_LEARN_CHANGE_EN		BIT(18)
-@@ -267,6 +308,12 @@ struct ar9331_sw_port {
- 	struct spinlock stats_lock;
- };
- 
-+struct ar9331_sw_fdb {
-+	u8 port_mask;
-+	u8 aging;
-+	u8 mac[ETH_ALEN];
-+};
-+
- struct ar9331_sw_priv {
- 	struct device *dev;
- 	struct dsa_switch ds;
-@@ -731,6 +778,304 @@ static void ar9331_get_stats64(struct dsa_switch *ds, int port,
- 	spin_unlock(&p->stats_lock);
- }
- 
-+static int ar9331_sw_fdb_wait(struct ar9331_sw_priv *priv, u32 *f0)
-+{
-+	struct regmap *regmap = priv->regmap;
-+
-+	return regmap_read_poll_timeout(regmap,
-+					AR9331_SW_REG_ADDR_TABLE_FUNCTION0,
-+					*f0, !(*f0 & AR9331_SW_AT_BUSY),
-+					10, 2000);
-+}
-+
-+static int ar9331_sw_port_fdb_write(struct ar9331_sw_priv *priv,
-+				    u32 f0, u32 f1, u32 f2)
-+{
-+	struct regmap *regmap = priv->regmap;
-+	int ret;
-+
-+	ret = regmap_write(regmap, AR9331_SW_REG_ADDR_TABLE_FUNCTION2, f2);
-+	if (ret)
-+		return ret;
-+
-+	ret = regmap_write(regmap, AR9331_SW_REG_ADDR_TABLE_FUNCTION1, f1);
-+	if (ret)
-+		return ret;
-+
-+	return regmap_write(regmap, AR9331_SW_REG_ADDR_TABLE_FUNCTION0, f0);
-+}
-+
-+static int ar9331_sw_fdb_next(struct ar9331_sw_priv *priv,
-+			      struct ar9331_sw_fdb *fdb, int port)
-+{
-+	struct regmap *regmap = priv->regmap;
-+	unsigned int status, ports;
-+	u32 f0, f1, f2;
-+	int ret;
-+
-+	/* Keep AT_ADDR_BYTES4/5 to search next entry after current */
-+	ret = regmap_update_bits(regmap, AR9331_SW_REG_ADDR_TABLE_FUNCTION0,
-+				 AR9331_SW_AT_FUNC | AR9331_SW_AT_BUSY,
-+				 AR9331_SW_AT_BUSY |
-+				 FIELD_PREP(AR9331_SW_AT_FUNC,
-+					    AR9331_SW_AT_FUNC_GET_NEXT));
-+	if (ret)
-+		return ret;
-+
-+	ret = ar9331_sw_fdb_wait(priv, &f0);
-+	if (ret)
-+		return ret;
-+
-+	ret = regmap_read(regmap, AR9331_SW_REG_ADDR_TABLE_FUNCTION2, &f2);
-+	if (ret)
-+		return ret;
-+
-+	/* If the hardware returns an MAC != 0 and the AT_STATUS is zero, there
-+	 * is no next valid entry in the address table.
-+	 */
-+	status = FIELD_GET(AR9331_SW_AT_STATUS, f2);
-+	fdb->aging = status;
-+	if (!status)
-+		return 0;
-+
-+	ret = regmap_read(regmap, AR9331_SW_REG_ADDR_TABLE_FUNCTION1, &f1);
-+	if (ret)
-+		return ret;
-+
-+	fdb->mac[0] = FIELD_GET(AR9331_SW_AT_ADDR_BYTES0, f1);
-+	fdb->mac[1] = FIELD_GET(AR9331_SW_AT_ADDR_BYTES1, f1);
-+	fdb->mac[2] = FIELD_GET(AR9331_SW_AT_ADDR_BYTES2, f1);
-+	fdb->mac[3] = FIELD_GET(AR9331_SW_AT_ADDR_BYTES3, f1);
-+	fdb->mac[4] = FIELD_GET(AR9331_SW_AT_ADDR_BYTES4, f0);
-+	fdb->mac[5] = FIELD_GET(AR9331_SW_AT_ADDR_BYTES5, f0);
-+
-+	ports = FIELD_GET(AR9331_SW_AT_DES_PORT, f2);
-+	if (!(ports & BIT(port)))
-+		return -EAGAIN;
-+
-+	return 0;
-+}
-+
-+static void ar9331_sw_port_fdb_prepare(const unsigned char *mac, u32 *f0,
-+				       u32 *f1, unsigned int func)
-+{
-+	*f1 = FIELD_PREP(AR9331_SW_AT_ADDR_BYTES0, mac[0]) |
-+	      FIELD_PREP(AR9331_SW_AT_ADDR_BYTES1, mac[1]) |
-+	      FIELD_PREP(AR9331_SW_AT_ADDR_BYTES2, mac[2]) |
-+	      FIELD_PREP(AR9331_SW_AT_ADDR_BYTES3, mac[3]);
-+	*f0 = FIELD_PREP(AR9331_SW_AT_ADDR_BYTES4, mac[4]) |
-+	      FIELD_PREP(AR9331_SW_AT_ADDR_BYTES5, mac[5]) |
-+	      FIELD_PREP(AR9331_SW_AT_FUNC, func) | AR9331_SW_AT_BUSY;
-+}
-+
-+static int ar9331_sw_port_fdb_dump(struct dsa_switch *ds, int port,
-+				   dsa_fdb_dump_cb_t *cb, void *data)
-+{
-+	struct ar9331_sw_priv *priv = (struct ar9331_sw_priv *)ds->priv;
-+	int cnt = AR9331_SW_NUM_ARL_RECORDS;
-+	struct ar9331_sw_fdb _fdb = { 0 };
-+	bool is_static;
-+	int ret;
-+	u32 f0;
-+
-+	/* Make sure no pending operation is in progress. Since no timeout and
-+	 * interval values are documented, we use here "seems to be sane, works
-+	 * for me" values.
-+	 */
-+	ret = ar9331_sw_fdb_wait(priv, &f0);
-+	if (ret)
-+		return ret;
-+
-+	/* If the address and the AT_STATUS are both zero, the hardware will
-+	 * search the first valid entry from entry0.
-+	 * If the address is set to zero and the AT_STATUS is not zero, the
-+	 * hardware will discover the next valid entry which has an address
-+	 * of 0x0.
-+	 */
-+	ret = ar9331_sw_port_fdb_write(priv, 0, 0, 0);
-+	if (ret)
-+		return ret;
-+
-+	while (cnt--) {
-+		ret = ar9331_sw_fdb_next(priv, &_fdb, port);
-+		if (ret == -EAGAIN)
-+			continue;
-+		else if (ret)
-+			return ret;
-+
-+		if (!_fdb.aging)
-+			break;
-+
-+		is_static = (_fdb.aging == AR9331_SW_AT_STATUS_STATIC);
-+		ret = cb(_fdb.mac, 0, is_static, data);
-+		if (ret)
-+			break;
-+	}
-+
-+	return ret;
-+}
-+
-+static int ar9331_sw_port_fdb_rmw(struct ar9331_sw_priv *priv,
-+				  const unsigned char *mac,
-+				  u8 port_mask_set,
-+				  u8 port_mask_clr)
-+{
-+	struct regmap *regmap = priv->regmap;
-+	u32 f0, f1, f2 = 0;
-+	u8 port_mask, port_mask_new, status, func;
-+	int ret;
-+
-+	ret = ar9331_sw_fdb_wait(priv, &f0);
-+	if (ret)
-+		return ret;
-+
-+	ar9331_sw_port_fdb_prepare(mac, &f0, &f1, AR9331_SW_AT_FUNC_FIND_MAC);
-+
-+	ret = ar9331_sw_port_fdb_write(priv, f0, f1, f2);
-+	if (ret)
-+		return ret;
-+
-+	ret = ar9331_sw_fdb_wait(priv, &f0);
-+	if (ret)
-+		return ret;
-+
-+	ret = regmap_read(regmap, AR9331_SW_REG_ADDR_TABLE_FUNCTION2, &f2);
-+	if (ret)
-+		return ret;
-+
-+	port_mask = FIELD_GET(AR9331_SW_AT_DES_PORT, f2);
-+	status = FIELD_GET(AR9331_SW_AT_STATUS, f2);
-+	if (status > 0 && status < AR9331_SW_AT_STATUS_STATIC) {
-+		dev_dbg(priv->dev, "%s: found existing dynamic entry on %x\n",
-+			__func__, port_mask);
-+
-+		if (port_mask_set && port_mask_set != port_mask)
-+			dev_dbg(priv->dev, "%s: found existing dynamic entry on %x, replacing it with static on %x\n",
-+				__func__, port_mask, port_mask_set);
-+		port_mask = 0;
-+	} else if (!status && !port_mask_set) {
-+		return 0;
-+	}
-+
-+	port_mask_new = port_mask & ~port_mask_clr;
-+	port_mask_new |= port_mask_set;
-+
-+	if (port_mask_new == port_mask &&
-+	    status == AR9331_SW_AT_STATUS_STATIC) {
-+		dev_dbg(priv->dev, "%s: no need to overwrite existing valid entry on %x\n",
-+			__func__, port_mask_new);
-+		return 0;
-+	}
-+
-+	if (port_mask_new) {
-+		func = AR9331_SW_AT_FUNC_LOAD_ENTRY;
-+	} else {
-+		func = AR9331_SW_AT_FUNC_PURGE_ENTRY;
-+		port_mask_new = port_mask;
-+	}
-+
-+	f2 = FIELD_PREP(AR9331_SW_AT_DES_PORT, port_mask_new) |
-+		FIELD_PREP(AR9331_SW_AT_STATUS, AR9331_SW_AT_STATUS_STATIC);
-+
-+	ar9331_sw_port_fdb_prepare(mac, &f0, &f1, func);
-+
-+	ret = ar9331_sw_port_fdb_write(priv, f0, f1, f2);
-+	if (ret)
-+		return ret;
-+
-+	ret = ar9331_sw_fdb_wait(priv, &f0);
-+	if (ret)
-+		return ret;
-+
-+	if (f0 & AR9331_SW_AT_FULL_VIO) {
-+		/* cleanup error status */
-+		regmap_write(regmap, AR9331_SW_REG_ADDR_TABLE_FUNCTION0, 0);
-+		dev_err(priv->dev, "%s: can't add new entry, ATU is full\n", __func__);
-+		return -ENOMEM;
-+	}
-+
-+	return 0;
-+}
-+
-+static int ar9331_sw_port_fdb_add(struct dsa_switch *ds, int port,
-+				  const unsigned char *mac, u16 vid)
-+{
-+	struct ar9331_sw_priv *priv = (struct ar9331_sw_priv *)ds->priv;
-+	u16 port_mask = BIT(port);
-+
-+	dev_info(priv->dev, "%s(%pM, %x)\n", __func__, mac, port);
-+
-+	if (vid)
-+		return -EINVAL;
-+
-+	return ar9331_sw_port_fdb_rmw(priv, mac, port_mask, 0);
-+}
-+
-+static int ar9331_sw_port_fdb_del(struct dsa_switch *ds, int port,
-+				  const unsigned char *mac, u16 vid)
-+{
-+	struct ar9331_sw_priv *priv = (struct ar9331_sw_priv *)ds->priv;
-+	u16 port_mask = BIT(port);
-+
-+	if (vid)
-+		return -EINVAL;
-+
-+	return ar9331_sw_port_fdb_rmw(priv, mac, 0, port_mask);
-+}
-+
-+static int ar9331_sw_port_mdb_add(struct dsa_switch *ds, int port,
-+				  const struct switchdev_obj_port_mdb *mdb)
-+{
-+	struct ar9331_sw_priv *priv = (struct ar9331_sw_priv *)ds->priv;
-+	u16 port_mask = BIT(port);
-+
-+	if (mdb->vid)
-+		return -EOPNOTSUPP;
-+
-+	return ar9331_sw_port_fdb_rmw(priv, mdb->addr, port_mask, 0);
-+}
-+
-+static int ar9331_sw_port_mdb_del(struct dsa_switch *ds, int port,
-+				  const struct switchdev_obj_port_mdb *mdb)
-+{
-+	struct ar9331_sw_priv *priv = (struct ar9331_sw_priv *)ds->priv;
-+	u16 port_mask = BIT(port);
-+
-+	if (mdb->vid)
-+		return -EOPNOTSUPP;
-+
-+	return ar9331_sw_port_fdb_rmw(priv, mdb->addr, 0, port_mask);
-+}
-+
-+static void ar9331_sw_port_fast_age(struct dsa_switch *ds, int port)
-+{
-+	struct ar9331_sw_priv *priv = (struct ar9331_sw_priv *)ds->priv;
-+	struct regmap *regmap = priv->regmap;
-+	int ret;
-+	u32 f0;
-+
-+	ret = ar9331_sw_fdb_wait(priv, &f0);
-+	if (ret)
-+		goto error;
-+
-+	/* Flush all non static unicast address on a given port */
-+	f0 = FIELD_PREP(AR9331_SW_AT_PORT_NUM, port) |
-+		FIELD_PREP(AR9331_SW_AT_FUNC, AR9331_SW_AT_FUNC_FLUSH_PORT) |
-+		AR9331_SW_AT_BUSY;
-+
-+	ret = regmap_write(regmap, AR9331_SW_REG_ADDR_TABLE_FUNCTION0, f0);
-+	if (ret)
-+		goto error;
-+
-+	ret = ar9331_sw_fdb_wait(priv, &f0);
-+	if (ret)
-+		goto error;
-+
-+	return;
-+error:
-+	dev_err(priv->dev, "%s: error: %i\n", __func__, ret);
-+}
-+
- static const struct dsa_switch_ops ar9331_sw_ops = {
- 	.get_tag_protocol	= ar9331_sw_get_tag_protocol,
- 	.setup			= ar9331_sw_setup,
-@@ -740,6 +1085,12 @@ static const struct dsa_switch_ops ar9331_sw_ops = {
- 	.phylink_mac_link_down	= ar9331_sw_phylink_mac_link_down,
- 	.phylink_mac_link_up	= ar9331_sw_phylink_mac_link_up,
- 	.get_stats64		= ar9331_get_stats64,
-+	.port_fast_age          = ar9331_sw_port_fast_age,
-+	.port_fdb_del		= ar9331_sw_port_fdb_del,
-+	.port_fdb_add		= ar9331_sw_port_fdb_add,
-+	.port_fdb_dump		= ar9331_sw_port_fdb_dump,
-+	.port_mdb_add           = ar9331_sw_port_mdb_add,
-+	.port_mdb_del           = ar9331_sw_port_mdb_del,
- };
- 
- static irqreturn_t ar9331_sw_irq(int irq, void *data)
--- 
-2.30.2
 
+Oops, sorry, forgot to fix it, I will be more careful next time.
+
+
+>
+> Not sure it's worth asking for a v5, so:
+> Acked-by: Paul Cercueil <paul@crapouillou.net>
+>
+
+Thanks!
+
+
+> Cheers,
+> -Paul
+>
+>> ---
+>>
+>> Notes:
+>>     v2:
+>>     New patch.
+>>
+>>     v2->v3:
+>>     No change.
+>>
+>>     v3->v4:
+>>     Improve TCU related notes.
+>>
+>>  arch/mips/boot/dts/ingenic/ci20.dts | 24 ++++++++++++++----------
+>>  1 file changed, 14 insertions(+), 10 deletions(-)
+>>
+>> diff --git a/arch/mips/boot/dts/ingenic/ci20.dts 
+>> b/arch/mips/boot/dts/ingenic/ci20.dts
+>> index 3a4eaf1..61c153b 100644
+>> --- a/arch/mips/boot/dts/ingenic/ci20.dts
+>> +++ b/arch/mips/boot/dts/ingenic/ci20.dts
+>> @@ -118,6 +118,20 @@
+>>      assigned-clock-rates = <48000000>;
+>>  };
+>>
+>> +&tcu {
+>> +    /*
+>> +     * 750 kHz for the system timers and clocksource,
+>> +     * use channel #0 and #1 for the per cpu system timers,
+>> +     * and use channel #2 for the clocksource.
+>> +     *
+>> +     * 3000 kHz for the OST timer to provide a higher
+>> +     * precision clocksource.
+>> +     */
+>> +    assigned-clocks = <&tcu TCU_CLK_TIMER0>, <&tcu TCU_CLK_TIMER1>,
+>> +                      <&tcu TCU_CLK_TIMER2>, <&tcu TCU_CLK_OST>;
+>> +    assigned-clock-rates = <750000>, <750000>, <750000>, <3000000>;
+>> +};
+>> +
+>>  &mmc0 {
+>>      status = "okay";
+>>
+>> @@ -522,13 +536,3 @@
+>>          bias-disable;
+>>      };
+>>  };
+>> -
+>> -&tcu {
+>> -    /*
+>> -     * 750 kHz for the system timer and clocksource,
+>> -     * use channel #0 for the system timer, #1 for the clocksource.
+>> -     */
+>> -    assigned-clocks = <&tcu TCU_CLK_TIMER0>, <&tcu TCU_CLK_TIMER1>,
+>> -                      <&tcu TCU_CLK_OST>;
+>> -    assigned-clock-rates = <750000>, <750000>, <3000000>;
+>> -};
+>> -- 
+>> 2.7.4
+>>
+>

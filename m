@@ -2,34 +2,34 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-14.0 required=3.0 tests=BAYES_00,
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,UNWANTED_LANGUAGE_BODY,
-	URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C2F6BC11F68
-	for <linux-mips@archiver.kernel.org>; Fri,  2 Jul 2021 10:18:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6D3E5C11F6C
+	for <linux-mips@archiver.kernel.org>; Fri,  2 Jul 2021 10:18:21 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id B00F561413
-	for <linux-mips@archiver.kernel.org>; Fri,  2 Jul 2021 10:18:20 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 514956141D
+	for <linux-mips@archiver.kernel.org>; Fri,  2 Jul 2021 10:18:21 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231681AbhGBKUq (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 2 Jul 2021 06:20:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42036 "EHLO
+        id S231587AbhGBKUr (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 2 Jul 2021 06:20:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42024 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231594AbhGBKUp (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Fri, 2 Jul 2021 06:20:45 -0400
+        with ESMTP id S231573AbhGBKUo (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Fri, 2 Jul 2021 06:20:44 -0400
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6375EC0613DF
-        for <linux-mips@vger.kernel.org>; Fri,  2 Jul 2021 03:18:13 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFFF9C061762
+        for <linux-mips@vger.kernel.org>; Fri,  2 Jul 2021 03:18:12 -0700 (PDT)
 Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
         by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <ore@pengutronix.de>)
-        id 1lzGFH-0005BE-3u; Fri, 02 Jul 2021 12:18:03 +0200
+        id 1lzGFH-0005BB-3v; Fri, 02 Jul 2021 12:18:03 +0200
 Received: from ore by dude.hi.pengutronix.de with local (Exim 4.92)
         (envelope-from <ore@pengutronix.de>)
-        id 1lzGFG-0003fh-1z; Fri, 02 Jul 2021 12:18:02 +0200
+        id 1lzGFF-0003ex-Lh; Fri, 02 Jul 2021 12:18:01 +0200
 From:   Oleksij Rempel <o.rempel@pengutronix.de>
 To:     Andrew Lunn <andrew@lunn.ch>,
         Vivien Didelot <vivien.didelot@gmail.com>,
@@ -42,9 +42,9 @@ Cc:     Oleksij Rempel <o.rempel@pengutronix.de>,
         Pengutronix Kernel Team <kernel@pengutronix.de>,
         netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-mips@vger.kernel.org
-Subject: [PATCH net-next v2 5/6] net: dsa: qca: ar9331: add bridge support
-Date:   Fri,  2 Jul 2021 12:17:50 +0200
-Message-Id: <20210702101751.13168-6-o.rempel@pengutronix.de>
+Subject: [PATCH net-next v2 2/6] net: dsa: qca: ar9331: make proper initial port defaults
+Date:   Fri,  2 Jul 2021 12:17:47 +0200
+Message-Id: <20210702101751.13168-3-o.rempel@pengutronix.de>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210702101751.13168-1-o.rempel@pengutronix.de>
 References: <20210702101751.13168-1-o.rempel@pengutronix.de>
@@ -58,60 +58,132 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-This switch is providing forwarding matrix, with it we can configure
-individual bridges. Potentially we can configure more than one not VLAN
-based bridge on this HW.
+Make sure that all external port are actually isolated from each other,
+so no packets are leaked.
 
 Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
-Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
 ---
- drivers/net/dsa/qca/ar9331.c | 53 ++++++++++++++++++++++++++++++++++++
- 1 file changed, 53 insertions(+)
+ drivers/net/dsa/qca/ar9331.c | 109 ++++++++++++++++++++++++++++++++++-
+ 1 file changed, 108 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/net/dsa/qca/ar9331.c b/drivers/net/dsa/qca/ar9331.c
-index 2abec323ef14..66456752a436 100644
+index 6686192e1883..2f5673ea3140 100644
 --- a/drivers/net/dsa/qca/ar9331.c
 +++ b/drivers/net/dsa/qca/ar9331.c
-@@ -40,6 +40,7 @@
-  */
+@@ -60,10 +60,20 @@
  
- #include <linux/bitfield.h>
-+#include <linux/if_bridge.h>
- #include <linux/module.h>
- #include <linux/of_irq.h>
- #include <linux/of_mdio.h>
-@@ -1095,6 +1096,56 @@ static int ar9331_sw_set_ageing_time(struct dsa_switch *ds,
- 				  val);
+ #define AR9331_SW_REG_FLOOD_MASK		0x2c
+ #define AR9331_SW_FLOOD_MASK_BROAD_TO_CPU	BIT(26)
++#define AR9331_SW_FLOOD_MASK_MULTI_FLOOD_DP	GENMASK(20, 16)
++#define AR9331_SW_FLOOD_MASK_UNI_FLOOD_DP	GENMASK(4, 0)
+ 
+ #define AR9331_SW_REG_GLOBAL_CTRL		0x30
+ #define AR9331_SW_GLOBAL_CTRL_MFS_M		GENMASK(13, 0)
+ 
++#define AR9331_SW_REG_ADDR_TABLE_CTRL		0x5c
++#define AR9331_SW_AT_ARP_EN			BIT(20)
++#define AR9331_SW_AT_LEARN_CHANGE_EN		BIT(18)
++#define AR9331_SW_AT_AGE_EN			BIT(17)
++#define AR9331_SW_AT_AGE_TIME			GENMASK(15, 0)
++/* AGE_TIME_COEF is not documented. This is "works for me" value */
++#define AR9331_SW_AT_AGE_TIME_COEF		6900
++
+ #define AR9331_SW_REG_MDIO_CTRL			0x98
+ #define AR9331_SW_MDIO_CTRL_BUSY		BIT(31)
+ #define AR9331_SW_MDIO_CTRL_MASTER_EN		BIT(30)
+@@ -101,6 +111,46 @@
+ 	 AR9331_SW_PORT_STATUS_RX_FLOW_EN | AR9331_SW_PORT_STATUS_TX_FLOW_EN | \
+ 	 AR9331_SW_PORT_STATUS_SPEED_M)
+ 
++#define AR9331_SW_REG_PORT_CTRL(_port)			(0x104 + (_port) * 0x100)
++#define AR9331_SW_PORT_CTRL_ING_MIRROR_EN		BIT(17)
++#define AR9331_SW_PORT_CTRL_EG_MIRROR_EN		BIT(16)
++#define AR9331_SW_PORT_CTRL_DOUBLE_TAG_VLAN		BIT(15)
++#define AR9331_SW_PORT_CTRL_LEARN_EN			BIT(14)
++#define AR9331_SW_PORT_CTRL_SINGLE_VLAN_EN		BIT(13)
++#define AR9331_SW_PORT_CTRL_MAC_LOOP_BACK		BIT(12)
++#define AR9331_SW_PORT_CTRL_HEAD_EN			BIT(11)
++#define AR9331_SW_PORT_CTRL_IGMP_MLD_EN			BIT(10)
++#define AR9331_SW_PORT_CTRL_EG_VLAN_MODE		GENMASK(9, 8)
++#define AR9331_SW_PORT_CTRL_EG_VLAN_MODE_KEEP		0
++#define AR9331_SW_PORT_CTRL_EG_VLAN_MODE_STRIP		1
++#define AR9331_SW_PORT_CTRL_EG_VLAN_MODE_ADD		2
++#define AR9331_SW_PORT_CTRL_EG_VLAN_MODE_DOUBLE		3
++#define AR9331_SW_PORT_CTRL_LEARN_ONE_LOCK		BIT(7)
++#define AR9331_SW_PORT_CTRL_PORT_LOCK_EN		BIT(6)
++#define AR9331_SW_PORT_CTRL_LOCK_DROP_EN		BIT(5)
++#define AR9331_SW_PORT_CTRL_PORT_STATE			GENMASK(2, 0)
++#define AR9331_SW_PORT_CTRL_PORT_STATE_DISABLED		0
++#define AR9331_SW_PORT_CTRL_PORT_STATE_BLOCKING		1
++#define AR9331_SW_PORT_CTRL_PORT_STATE_LISTENING	2
++#define AR9331_SW_PORT_CTRL_PORT_STATE_LEARNING		3
++#define AR9331_SW_PORT_CTRL_PORT_STATE_FORWARD		4
++
++#define AR9331_SW_REG_PORT_VLAN(_port)			(0x108 + (_port) * 0x100)
++#define AR9331_SW_PORT_VLAN_8021Q_MODE			GENMASK(31, 30)
++#define AR9331_SW_8021Q_MODE_SECURE			3
++#define AR9331_SW_8021Q_MODE_CHECK			2
++#define AR9331_SW_8021Q_MODE_FALLBACK			1
++#define AR9331_SW_8021Q_MODE_NONE			0
++#define AR9331_SW_PORT_VLAN_ING_PORT_PRI		GENMASK(29, 27)
++#define AR9331_SW_PORT_VLAN_FORCE_PORT_VLAN_EN		BIT(26)
++#define AR9331_SW_PORT_VLAN_PORT_VID_MEMBER		GENMASK(25, 16)
++#define AR9331_SW_PORT_VLAN_ARP_LEAKY_EN		BIT(15)
++#define AR9331_SW_PORT_VLAN_UNI_LEAKY_EN		BIT(14)
++#define AR9331_SW_PORT_VLAN_MULTI_LEAKY_EN		BIT(13)
++#define AR9331_SW_PORT_VLAN_FORCE_DEFALUT_VID_EN	BIT(12)
++#define AR9331_SW_PORT_VLAN_PORT_VID			GENMASK(11, 0)
++#define AR9331_SW_PORT_VLAN_PORT_VID_DEF		1
++
+ /* MIB registers */
+ #define AR9331_MIB_COUNTER(x)			(0x20000 + ((x) * 0x100))
+ 
+@@ -371,12 +421,63 @@ static int ar9331_sw_mbus_init(struct ar9331_sw_priv *priv)
+ 	return 0;
  }
  
-+static int ar9331_sw_port_bridge_mod(struct dsa_switch *ds, int port,
-+				     struct net_device *br, bool join)
-+{
-+	struct ar9331_sw_priv *priv = (struct ar9331_sw_priv *)ds->priv;
-+	struct regmap *regmap = priv->regmap;
-+	int port_mask = BIT(dsa_to_port(ds, port)->cpu_dp->index);
-+	int i, ret;
-+	u32 val;
+-static int ar9331_sw_setup(struct dsa_switch *ds)
++static int ar9331_sw_setup_port(struct dsa_switch *ds, int port)
+ {
+ 	struct ar9331_sw_priv *priv = (struct ar9331_sw_priv *)ds->priv;
+ 	struct regmap *regmap = priv->regmap;
++	u32 port_mask, port_ctrl, val;
+ 	int ret;
+ 
++	/* Generate default port settings */
++	port_ctrl = FIELD_PREP(AR9331_SW_PORT_CTRL_PORT_STATE,
++			       AR9331_SW_PORT_CTRL_PORT_STATE_DISABLED);
 +
-+	for (i = 0; i < ds->num_ports; i++) {
-+		if (dsa_to_port(ds, i)->bridge_dev != br)
-+			continue;
-+
-+		if (!dsa_is_user_port(ds, port))
-+			continue;
-+
-+		val = FIELD_PREP(AR9331_SW_PORT_VLAN_PORT_VID_MEMBER, BIT(port));
-+		ret = regmap_set_bits(regmap, AR9331_SW_REG_PORT_VLAN(i), val);
-+		if (ret)
-+			goto error;
-+
-+		if (join && i != port)
-+			port_mask |= BIT(i);
++	if (dsa_is_cpu_port(ds, port)) {
++		/* CPU port should be allowed to communicate with all user
++		 * ports.
++		 */
++		port_mask = dsa_user_ports(ds);
++		/* Enable Atheros header on CPU port. This will allow us
++		 * communicate with each port separately
++		 */
++		port_ctrl |= AR9331_SW_PORT_CTRL_HEAD_EN;
++	} else if (dsa_is_user_port(ds, port)) {
++		/* User ports should communicate only with the CPU port.
++		 */
++		port_mask = BIT(dsa_to_port(ds, port)->cpu_dp->index);
++		port_ctrl |= AR9331_SW_PORT_CTRL_LEARN_EN;
++	} else {
++		/* Other ports do not need to communicate at all */
++		port_mask = 0;
 +	}
 +
-+	val = FIELD_PREP(AR9331_SW_PORT_VLAN_PORT_VID_MEMBER, port_mask);
-+	ret = regmap_update_bits(regmap, AR9331_SW_REG_PORT_VLAN(port),
-+				 AR9331_SW_PORT_VLAN_PORT_VID_MEMBER, val);
++	val = FIELD_PREP(AR9331_SW_PORT_VLAN_8021Q_MODE,
++			 AR9331_SW_8021Q_MODE_NONE) |
++		FIELD_PREP(AR9331_SW_PORT_VLAN_PORT_VID_MEMBER, port_mask) |
++		FIELD_PREP(AR9331_SW_PORT_VLAN_PORT_VID,
++			   AR9331_SW_PORT_VLAN_PORT_VID_DEF);
++
++	ret = regmap_write(regmap, AR9331_SW_REG_PORT_VLAN(port), val);
++	if (ret)
++		goto error;
++
++	ret = regmap_write(regmap, AR9331_SW_REG_PORT_CTRL(port), port_ctrl);
 +	if (ret)
 +		goto error;
 +
@@ -122,30 +194,28 @@ index 2abec323ef14..66456752a436 100644
 +	return ret;
 +}
 +
-+static int ar9331_sw_port_bridge_join(struct dsa_switch *ds, int port,
-+				      struct net_device *br)
++static int ar9331_sw_setup(struct dsa_switch *ds)
 +{
-+	return ar9331_sw_port_bridge_mod(ds, port, br, true);
-+}
++	struct ar9331_sw_priv *priv = (struct ar9331_sw_priv *)ds->priv;
++	struct regmap *regmap = priv->regmap;
++	int ret, i;
 +
-+static void ar9331_sw_port_bridge_leave(struct dsa_switch *ds, int port,
-+					struct net_device *br)
-+{
-+	ar9331_sw_port_bridge_mod(ds, port, br, false);
-+}
-+
- static const struct dsa_switch_ops ar9331_sw_ops = {
- 	.get_tag_protocol	= ar9331_sw_get_tag_protocol,
- 	.setup			= ar9331_sw_setup,
-@@ -1111,6 +1162,8 @@ static const struct dsa_switch_ops ar9331_sw_ops = {
- 	.port_mdb_add           = ar9331_sw_port_mdb_add,
- 	.port_mdb_del           = ar9331_sw_port_mdb_del,
- 	.set_ageing_time	= ar9331_sw_set_ageing_time,
-+	.port_bridge_join	= ar9331_sw_port_bridge_join,
-+	.port_bridge_leave	= ar9331_sw_port_bridge_leave,
- };
+ 	ret = ar9331_sw_reset(priv);
+ 	if (ret)
+ 		return ret;
+@@ -402,6 +503,12 @@ static int ar9331_sw_setup(struct dsa_switch *ds)
+ 	if (ret)
+ 		goto error;
  
- static irqreturn_t ar9331_sw_irq(int irq, void *data)
++	for (i = 0; i < ds->num_ports; i++) {
++		ret = ar9331_sw_setup_port(ds, i);
++		if (ret)
++			goto error;
++	}
++
+ 	ds->configure_vlan_while_not_filtering = false;
+ 
+ 	return 0;
 -- 
 2.30.2
 

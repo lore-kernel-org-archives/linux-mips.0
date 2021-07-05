@@ -2,88 +2,105 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.3 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham
+X-Spam-Status: No, score=-10.3 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,MAILING_LIST_MULTI,
+	NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 112C5C07E9E
-	for <linux-mips@archiver.kernel.org>; Mon,  5 Jul 2021 15:09:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DAB19C07E9B
+	for <linux-mips@archiver.kernel.org>; Mon,  5 Jul 2021 15:15:06 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id E3FDF61955
-	for <linux-mips@archiver.kernel.org>; Mon,  5 Jul 2021 15:09:34 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id B842861973
+	for <linux-mips@archiver.kernel.org>; Mon,  5 Jul 2021 15:15:06 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231693AbhGEPMK (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 5 Jul 2021 11:12:10 -0400
-Received: from elvis.franken.de ([193.175.24.41]:41765 "EHLO elvis.franken.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231640AbhGEPMK (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Mon, 5 Jul 2021 11:12:10 -0400
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1m0QDu-0001Ke-00; Mon, 05 Jul 2021 17:09:26 +0200
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id B871EC07D6; Mon,  5 Jul 2021 17:08:23 +0200 (CEST)
-Date:   Mon, 5 Jul 2021 17:08:23 +0200
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Paul Cercueil <paul@crapouillou.net>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Xingxing Su <suxingxing@loongson.cn>,
-        zhaoxiao <zhaoxiao@uniontech.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Ralf Baechle <ralf@linux-mips.org>,
-        Alban Bedel <albeu@free.fr>, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mips: always link byteswap helpers into decompressor
-Message-ID: <20210705150823.GA12584@alpha.franken.de>
-References: <20210702142919.392532-1-arnd@kernel.org>
+        id S231624AbhGEPRn (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 5 Jul 2021 11:17:43 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:59428 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231600AbhGEPRn (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Mon, 5 Jul 2021 11:17:43 -0400
+Received: from mail-ej1-f69.google.com ([209.85.218.69])
+        by youngberry.canonical.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <krzysztof.kozlowski@canonical.com>)
+        id 1m0QJN-0007Z8-2J
+        for linux-mips@vger.kernel.org; Mon, 05 Jul 2021 15:15:05 +0000
+Received: by mail-ej1-f69.google.com with SMTP id q8-20020a170906a088b02904be5f536463so5218040ejy.0
+        for <linux-mips@vger.kernel.org>; Mon, 05 Jul 2021 08:15:05 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=efe6yHR5z71JXmxhf6yurL8AKNbm6pbbpEHAWAEFh64=;
+        b=V/ucyJJx2SNme/IbeV7kFt/ULuRAM1NdBSLuzbE4K4I5zJxgrk26ls5TrYxbjM0BhF
+         g6y9YxiMErthm4k0e+2C9+2xnHFCuBtLCmFbc+FS/PQY/dGcQ8lw5hCgQKG+kniWyIRG
+         rGru7LMgB6qHjtxD0A8gHqznYWGi4EuFv0H5d01FxAW9ZSQ5KejRM9s/aIsGwsPp2wyH
+         1Ube4PsYWyqHG7Ql5ItlMN7PCHCw5FJ2aYs37b8HmkGyWHOmXCxEgjF3R8VdSdJ18ubT
+         o8OJoWEUq5cjiqpyF6iQzanHFN7nogzvuGveTlSQcrj1caEt78Jw/JHAtTsZZipNV0MG
+         oJDA==
+X-Gm-Message-State: AOAM531i5qYX7e6aRlsP8N6Cz2thayGB3XHpoUxIyZ3zkUXiZNXr6rsO
+        m/uK5I1lZJ8WTLf16wUyQCIcEHA4XnDNFfI6qrIiIOB9FZ5fV9U92+jfP1gixK86j08y8OJybx2
+        U/1VqSRi66LuGUsbxSfxdHx8qdHOdSxdFaElB/Y8=
+X-Received: by 2002:a05:6402:1103:: with SMTP id u3mr16952986edv.342.1625498104848;
+        Mon, 05 Jul 2021 08:15:04 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJx6xFYGMtAlemF7Mnm1a0Jlb57D0baYZYLw9jE4rXenURGSf2+vOHsHpxvAJ2rJJtvtmzjhuA==
+X-Received: by 2002:a05:6402:1103:: with SMTP id u3mr16952970edv.342.1625498104737;
+        Mon, 05 Jul 2021 08:15:04 -0700 (PDT)
+Received: from [192.168.3.211] (xdsl-188-155-177-222.adslplus.ch. [188.155.177.222])
+        by smtp.gmail.com with ESMTPSA id gy11sm2166811ejb.105.2021.07.05.08.15.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 05 Jul 2021 08:15:04 -0700 (PDT)
+Subject: Re: [PATCH] MIPS: ralink: of: fix build of rt2880_wdt watchdog module
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+To:     Guenter Roeck <linux@roeck-us.net>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        linux-watchdog@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mips@vger.kernel.org, John Crispin <john@phrozen.org>
+Cc:     Lee Jones <lee.jones@linaro.org>, kernel test robot <lkp@intel.com>
+References: <20210514131750.52867-1-krzysztof.kozlowski@canonical.com>
+ <2b427eca-fd6c-d099-337f-39cfbd85cb46@roeck-us.net>
+ <a15e7f62-12a0-1ec7-5104-f01f9e3eccc7@canonical.com>
+Message-ID: <9d98ec40-757d-28c7-1669-a683b2cd3881@canonical.com>
+Date:   Mon, 5 Jul 2021 17:15:03 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210702142919.392532-1-arnd@kernel.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <a15e7f62-12a0-1ec7-5104-f01f9e3eccc7@canonical.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Fri, Jul 02, 2021 at 04:28:37PM +0200, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
+On 14/05/2021 16:04, Krzysztof Kozlowski wrote:
+> On 14/05/2021 09:48, Guenter Roeck wrote:
+>> On 5/14/21 6:17 AM, Krzysztof Kozlowski wrote:
+>>> When rt2880_wdt watchdog driver is built as a module, the
+>>> rt_sysc_membase needs to be exported (it is being used via inlined
+>>> rt_sysc_r32):
+>>>
+>>>    ERROR: modpost: "rt_sysc_membase" [drivers/watchdog/rt2880_wdt.ko] undefined!
+>>>
+>>> Reported-by: kernel test robot <lkp@intel.com>
+>>> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+>>
+>> Acked-by: Guenter Roeck <linux@roeck-us.net>
+>>
+>> I don't see a recent change in the code. Has that problem been there
+>> all along ?
 > 
-> My series to clean up the unaligned access implementation
-> across architectures caused some mips randconfig builds to
-> fail with:
-> 
->    mips64-linux-ld: arch/mips/boot/compressed/decompress.o: in function `decompress_kernel':
->    decompress.c:(.text.decompress_kernel+0x54): undefined reference to `__bswapsi2'
-> 
-> It turns out that this problem has already been fixed for the XZ
-> decompressor but now it also shows up in (at least) LZO and LZ4.  From my
-> analysis I concluded that the compiler could always have emitted those
-> calls, but the different implementation allowed it to make otherwise
-> better decisions about not inlining the byteswap, which results in the
-> link error when the out-of-line code is missing.
-> 
-> While it could be addressed by adding it to the two decompressor
-> implementations that are known to be affected, but as this only adds
-> 112 bytes to the kernel, the safer choice is to always add them.
-> 
-> Fixes: c50ec6787536 ("MIPS: zboot: Fix the build with XZ compression on older GCC versions")
-> Fixes: 0652035a5794 ("asm-generic: unaligned: remove byteshift helpers")
-> Link: https://lore.kernel.org/linux-mm/202106301304.gz2wVY9w-lkp@intel.com/
-> Link: https://lore.kernel.org/linux-mm/202106260659.TyMe8mjr-lkp@intel.com/
-> Link: https://lore.kernel.org/linux-mm/202106172016.onWT6Tza-lkp@intel.com/
-> Link: https://lore.kernel.org/linux-mm/202105231743.JJcALnhS-lkp@intel.com/
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
->  arch/mips/boot/compressed/Makefile | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+> I think the problem was there always but 0-day builder did not hit it
+> until recently:
+> https://lore.kernel.org/lkml/202105082122.yrF7ploN-lkp@intel.com/
 
-applied to mips-next (for second pull request).
+Hi Guenter,
 
-Thomas.
+It seems that patch was not applied. Anything to fix here?
 
--- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+
+Best regards,
+Krzysztof

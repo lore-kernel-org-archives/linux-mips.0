@@ -2,82 +2,71 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-7.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-15.3 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AAC94C07E98
-	for <linux-mips@archiver.kernel.org>; Mon,  5 Jul 2021 03:49:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 16D55C07E99
+	for <linux-mips@archiver.kernel.org>; Mon,  5 Jul 2021 15:09:34 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 8D084613C1
-	for <linux-mips@archiver.kernel.org>; Mon,  5 Jul 2021 03:49:17 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id E9ACE610EA
+	for <linux-mips@archiver.kernel.org>; Mon,  5 Jul 2021 15:09:33 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229770AbhGEDvx (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Sun, 4 Jul 2021 23:51:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36384 "EHLO mail.kernel.org"
+        id S231643AbhGEPMK (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 5 Jul 2021 11:12:10 -0400
+Received: from elvis.franken.de ([193.175.24.41]:41760 "EHLO elvis.franken.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229722AbhGEDvx (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Sun, 4 Jul 2021 23:51:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DE11F6135E;
-        Mon,  5 Jul 2021 03:49:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625456956;
-        bh=pSWTYD7+rgxGLmQKw8kDoz3wh1zx9cykgZSMER+kE/c=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=AALlwd+apx3Rbawu+E16+x1jqReiMhNbLFREI5kP0/wjaa+evSt/QvZnHhh0dhHqz
-         SSLmqR0JX6qDQiquf7kDmneTIrPGpqRZLoLW3vNqym6ickz2uyu55onDZTHH1BSzcm
-         5LKgTgXiQzsg84ER/9j32cVBnwy7v9Bed62Bbblw0L6yHJg2Cg1uWcVxMmO99AabJ6
-         fM42ZbiMumO8Pp3k/nyg+XxrOCC5ruP0OMslxZ0HCUegnrHZkeni0RW0j6eBnKZ4ni
-         mi5SDyZUc8IqVTPe/9p40pUVffMUsW8M5u5bnzZV3YLzdnWze4oS0THiA+8C4KecRN
-         BA0HyYGpPCMew==
-Date:   Mon, 5 Jul 2021 09:19:12 +0530
-From:   Vinod Koul <vkoul@kernel.org>
-To:     Kelvin Cheung <keguang.zhang@gmail.com>
-Cc:     dmaengine@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V4 RESEND] dmaengine: Loongson1: Add Loongson1 dmaengine
- driver
-Message-ID: <YOKBOFpNH0+3GN6e@matsya>
-References: <20210520230225.11911-1-keguang.zhang@gmail.com>
- <YL392y4a6iRf1UyQ@vkoul-mobl>
- <CAJhJPsXv42e23tyQjA52_my1Au6nP_VdLX3c_yzk5MxadQ95iw@mail.gmail.com>
+        id S231586AbhGEPMJ (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Mon, 5 Jul 2021 11:12:09 -0400
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1m0QDu-0001Ke-01; Mon, 05 Jul 2021 17:09:26 +0200
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id 2908CC07DA; Mon,  5 Jul 2021 17:08:43 +0200 (CEST)
+Date:   Mon, 5 Jul 2021 17:08:43 +0200
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     linux-kernel@vger.kernel.org, kernel test robot <lkp@intel.com>,
+        linux-mips@vger.kernel.org, Kyungsik Lee <kyungsik.lee@lge.com>
+Subject: Re: [PATCH] mips: disable branch profiling in boot/decompress.o
+Message-ID: <20210705150843.GB12584@alpha.franken.de>
+References: <20210704230211.31257-1-rdunlap@infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAJhJPsXv42e23tyQjA52_my1Au6nP_VdLX3c_yzk5MxadQ95iw@mail.gmail.com>
+In-Reply-To: <20210704230211.31257-1-rdunlap@infradead.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On 04-07-21, 22:45, Kelvin Cheung wrote:
-> Vinod Koul <vkoul@kernel.org> 于2021年6月7日周一 下午7:07写道：
-> >
-> > On 21-05-21, 07:02, Keguang Zhang wrote:
-> >
-> > > +config LOONGSON1_DMA
-> > > +     tristate "Loongson1 DMA support"
-> > > +     depends on MACH_LOONGSON32
-> >
-> > Why does it have to do that? The dma driver is generic..
+On Sun, Jul 04, 2021 at 04:02:11PM -0700, Randy Dunlap wrote:
+> Use DISABLE_BRANCH_PROFILING for arch/mips/boot/compressed/decompress.o
+> to prevent linkage errors.
 > 
-> This driver is only available for LOONGSON32 CPUs.
-
-the underlaying firmware would ensure this driver is probed if you have
-such a device, so why have this restriction?
-
-> > > +static struct platform_driver ls1x_dma_driver = {
-> > > +     .probe  = ls1x_dma_probe,
-> > > +     .remove = ls1x_dma_remove,
-> > > +     .driver = {
-> > > +             .name   = "ls1x-dma",
-> > > +     },
-> >
-> > No device tree?
+> mips64-linux-ld: arch/mips/boot/compressed/decompress.o: in function `LZ4_decompress_fast_extDict':
+> decompress.c:(.text+0x8c): undefined reference to `ftrace_likely_update'
+> mips64-linux-ld: decompress.c:(.text+0xf4): undefined reference to `ftrace_likely_update'
+> mips64-linux-ld: decompress.c:(.text+0x200): undefined reference to `ftrace_likely_update'
+> mips64-linux-ld: decompress.c:(.text+0x230): undefined reference to `ftrace_likely_update'
+> mips64-linux-ld: decompress.c:(.text+0x320): undefined reference to `ftrace_likely_update'
+> mips64-linux-ld: arch/mips/boot/compressed/decompress.o:decompress.c:(.text+0x3f4): more undefined references to `ftrace_likely_update' follow
 > 
-> Because the LOONGSON32 platform doesn't support DT yet.
+> Fixes: e76e1fdfa8f8 ("lib: add support for LZ4-compressed kernel")
+> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+> Cc: linux-mips@vger.kernel.org
+> Cc: Kyungsik Lee <kyungsik.lee@lge.com>
+> ---
+>  arch/mips/boot/compressed/decompress.c |    2 ++
+>  1 file changed, 2 insertions(+)
 
-Okay so how is the platform device created?
+applied to mips-next (for second pull request).
+
+Thomas.
 
 -- 
-~Vinod
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]

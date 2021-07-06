@@ -7,41 +7,41 @@ X-Spam-Status: No, score=-20.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DA450C07E96
-	for <linux-mips@archiver.kernel.org>; Tue,  6 Jul 2021 11:45:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1AF93C11F66
+	for <linux-mips@archiver.kernel.org>; Tue,  6 Jul 2021 11:45:55 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id C525061EB8
-	for <linux-mips@archiver.kernel.org>; Tue,  6 Jul 2021 11:45:54 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 037E261EB8
+	for <linux-mips@archiver.kernel.org>; Tue,  6 Jul 2021 11:45:55 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238113AbhGFLsE (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 6 Jul 2021 07:48:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47560 "EHLO mail.kernel.org"
+        id S236558AbhGFLsL (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 6 Jul 2021 07:48:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47602 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237307AbhGFLgE (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Tue, 6 Jul 2021 07:36:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CE1DA61EF1;
-        Tue,  6 Jul 2021 11:26:47 +0000 (UTC)
+        id S237464AbhGFLgL (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Tue, 6 Jul 2021 07:36:11 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BC5D861DAD;
+        Tue,  6 Jul 2021 11:27:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625570808;
+        s=k20201202; t=1625570878;
         bh=Nj0Udr4R71nGxE+aMr8O49t+TEjcRM2tKiepHUjqTXA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HtCCJ/am76Dxzq34RE377iA1bDUrZ0OSpkQKhZDda1d/Yw4viKAyYiSqox5G4HAOm
-         GQfqnCDii5TBNGbWSXTNXbmJVVVaLI/EYTCGvcFDXSuJ3qbk6R2gbVX336PN/yhHx2
-         2pPtV7NA/t+wNuBZzoZGoONru3Zp4u5ez5KS1OwYtZTQVxTsZk1F6izGCDw9M1/Rco
-         QamGYSnJ43nzAjYyYdWNOzvP91MWMWPin51253xNIsDZ0L2YNkiCT7y6EikdGjgpZn
-         j4venE9Dg5LG3u0iQUSKrJxD/D62cN1xIyurrqEwnUNV0lYYr1I8M0fElQanCDAvlh
-         DfCG2wZGrY2lQ==
+        b=tfXCx+VLEnElNQ6FOpDRgV7JM9YkfiWs4GFYUfl5pCeEVtAJtLWX2tb1v0fo58sk+
+         Ig70HFRdEnyMcrsNS2rzY7khrw/syMp8sIgX/ogBdovdNz9RAbD86++HMxnAB5LbwL
+         oiMMge4QRVi2OamlOuJfLMxXjA24WqyYJWZRMI/kinjcf0o+ytJBqonsSuWKT/gdJV
+         0lDKPacYokx3atPW7E9DnTXixb1rf4Qo2gmKzqs8U1U2u/l2y5tVm/AdU/tQOkkvG0
+         zgRuDvhV73+Xks8/QjbFTVbocldSha7K6qRps8OKPrg8F58wCgE7Pcm47K6XzlMYoE
+         43nX7HGGm4fkg==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Bibo Mao <maobibo@loongson.cn>,
         Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
         Sasha Levin <sashal@kernel.org>, linux-mips@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 07/55] hugetlb: clear huge pte during flush function on mips platform
-Date:   Tue,  6 Jul 2021 07:25:50 -0400
-Message-Id: <20210706112638.2065023-7-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.14 06/45] hugetlb: clear huge pte during flush function on mips platform
+Date:   Tue,  6 Jul 2021 07:27:10 -0400
+Message-Id: <20210706112749.2065541-6-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210706112638.2065023-1-sashal@kernel.org>
-References: <20210706112638.2065023-1-sashal@kernel.org>
+In-Reply-To: <20210706112749.2065541-1-sashal@kernel.org>
+References: <20210706112749.2065541-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore

@@ -7,41 +7,41 @@ X-Spam-Status: No, score=-20.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DCDCFC11F75
-	for <linux-mips@archiver.kernel.org>; Tue,  6 Jul 2021 11:45:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F0ABDC07E9C
+	for <linux-mips@archiver.kernel.org>; Tue,  6 Jul 2021 11:45:54 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id CC1F361ECB
-	for <linux-mips@archiver.kernel.org>; Tue,  6 Jul 2021 11:45:48 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id D695D61F78
+	for <linux-mips@archiver.kernel.org>; Tue,  6 Jul 2021 11:45:54 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234104AbhGFLr7 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 6 Jul 2021 07:47:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47606 "EHLO mail.kernel.org"
+        id S238214AbhGFLsI (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 6 Jul 2021 07:48:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47594 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237287AbhGFLgE (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Tue, 6 Jul 2021 07:36:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 80FC961EEE;
-        Tue,  6 Jul 2021 11:26:35 +0000 (UTC)
+        id S237400AbhGFLgI (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Tue, 6 Jul 2021 07:36:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AF4FB61CD6;
+        Tue,  6 Jul 2021 11:27:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625570796;
-        bh=Mjf4HxiQbo/+SU70ssid65t4QSYTJdd0JJdJXbHjkRU=;
+        s=k20201202; t=1625570845;
+        bh=YLXnt5wG5jvESbfEUk+/masoINAD5jvQEUvbk327gPg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kaAVW2xVHUgxdC1qfSflW//xv18GEaEEfO0Gu4rI0+ZLWn8I++17Co1MHueR7Qsv/
-         Bvdv15foYxDDztilUt+xlq68t/1K6M6+fNcEw1gdb7/hfK6u/q9Zeux8Y7EJ2FnvLG
-         yqDh8l2rUCOPultDvcexE4nJOD2DhuMVynWEfauY05aMjqjIyxAEh9MpBv85C6BhhH
-         VYqu8jhKAFWJehwahZdUKuQQF5+17IwwPKMSCcQIYwHeMC1rvjmG7wnOJVmvNT8LJa
-         hItg31tcLuDOPqIQnpgiVaE+oq40+YvYgDXwLfZxI1gGL3ZhFanFj0bJk075pJ1KLt
-         Fv+o7mUAKhZ1g==
+        b=eZYXSP+DIFQRp6+pRyghziw7trqm1JdM6jTG1BBO5IVggUNNyk/AOiWDVD5m3euxS
+         ot19yc8izGeWN+fTGzFpdfmHlJw+LpeDXlsOcdwBJZo5fvM3DgT/PXj0XMnkjypWWm
+         SPaYeL4GHN8Lw62eI0zvTS6OxQXf2gM4sRrxB3GmGoU7OcgCFDwoHnz1H2SHGm3UM1
+         Ut48oEs9mGTmuqQogLrKYVluwGrJiCkHuNhLVKJrYRBU9gqAoFIl/yjQ7XlqDUhrsP
+         aiMNuPX5CIVM8DUqYfBGYr1vOkZ2YtH/nUvBFmfTmN+1a5CVSd7/icIJeJfDKofDED
+         4AE1+w2t9tlbw==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     zhanglianjie <zhanglianjie@uniontech.com>,
+Cc:     Huang Pei <huangpei@loongson.cn>,
         Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
         Sasha Levin <sashal@kernel.org>, linux-mips@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 73/74] MIPS: loongsoon64: Reserve memory below starting pfn to prevent Oops
-Date:   Tue,  6 Jul 2021 07:25:01 -0400
-Message-Id: <20210706112502.2064236-73-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.19 37/55] MIPS: add PMD table accounting into MIPS'pmd_alloc_one
+Date:   Tue,  6 Jul 2021 07:26:20 -0400
+Message-Id: <20210706112638.2065023-37-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210706112502.2064236-1-sashal@kernel.org>
-References: <20210706112502.2064236-1-sashal@kernel.org>
+In-Reply-To: <20210706112638.2065023-1-sashal@kernel.org>
+References: <20210706112638.2065023-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -50,44 +50,46 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-From: zhanglianjie <zhanglianjie@uniontech.com>
+From: Huang Pei <huangpei@loongson.cn>
 
-[ Upstream commit 6817c944430d00f71ccaa9c99ff5b0096aeb7873 ]
+[ Upstream commit ed914d48b6a1040d1039d371b56273d422c0081e ]
 
-The cause of the problem is as follows:
-1. when cat /sys/devices/system/memory/memory0/valid_zones,
-   test_pages_in_a_zone() will be called.
-2. test_pages_in_a_zone() finds the zone according to stat_pfn = 0.
-   The smallest pfn of the numa node in the mips architecture is 128,
-   and the page corresponding to the previous 0~127 pfn is not
-   initialized (page->flags is 0xFFFFFFFF)
-3. The nid and zonenum obtained using page_zone(pfn_to_page(0)) are out
-   of bounds in the corresponding array,
-   &NODE_DATA(page_to_nid(page))->node_zones[page_zonenum(page)],
-   access to the out-of-bounds zone member variables appear abnormal,
-   resulting in Oops.
-Therefore, it is necessary to keep the page between 0 and the minimum
-pfn to prevent Oops from appearing.
+This fixes Page Table accounting bug.
 
-Signed-off-by: zhanglianjie <zhanglianjie@uniontech.com>
+MIPS is the ONLY arch just defining __HAVE_ARCH_PMD_ALLOC_ONE alone.
+Since commit b2b29d6d011944 (mm: account PMD tables like PTE tables),
+"pmd_free" in asm-generic with PMD table accounting and "pmd_alloc_one"
+in MIPS without PMD table accounting causes PageTable accounting number
+negative, which read by global_zone_page_state(), always returns 0.
+
+Signed-off-by: Huang Pei <huangpei@loongson.cn>
 Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/mips/loongson64/loongson-3/numa.c | 3 +++
- 1 file changed, 3 insertions(+)
+ arch/mips/include/asm/pgalloc.h | 10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
 
-diff --git a/arch/mips/loongson64/loongson-3/numa.c b/arch/mips/loongson64/loongson-3/numa.c
-index 8f20d2cb3767..7e7376cc94b1 100644
---- a/arch/mips/loongson64/loongson-3/numa.c
-+++ b/arch/mips/loongson64/loongson-3/numa.c
-@@ -200,6 +200,9 @@ static void __init node_mem_init(unsigned int node)
- 		if (node_end_pfn(0) >= (0xffffffff >> PAGE_SHIFT))
- 			memblock_reserve((node_addrspace_offset | 0xfe000000),
- 					 32 << 20);
-+
-+		/* Reserve pfn range 0~node[0]->node_start_pfn */
-+		memblock_reserve(0, PAGE_SIZE * start_pfn);
- 	}
+diff --git a/arch/mips/include/asm/pgalloc.h b/arch/mips/include/asm/pgalloc.h
+index 39b9f311c4ef..f800872f867b 100644
+--- a/arch/mips/include/asm/pgalloc.h
++++ b/arch/mips/include/asm/pgalloc.h
+@@ -93,11 +93,15 @@ do {							\
+ 
+ static inline pmd_t *pmd_alloc_one(struct mm_struct *mm, unsigned long address)
+ {
+-	pmd_t *pmd;
++	pmd_t *pmd = NULL;
++	struct page *pg;
+ 
+-	pmd = (pmd_t *) __get_free_pages(GFP_KERNEL, PMD_ORDER);
+-	if (pmd)
++	pg = alloc_pages(GFP_KERNEL | __GFP_ACCOUNT, PMD_ORDER);
++	if (pg) {
++		pgtable_pmd_page_ctor(pg);
++		pmd = (pmd_t *)page_address(pg);
+ 		pmd_init((unsigned long)pmd, (unsigned long)invalid_pte_table);
++	}
+ 	return pmd;
  }
  
 -- 

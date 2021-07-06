@@ -4,41 +4,41 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-20.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED,USER_AGENT_GIT
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1CEDEC11F66
-	for <linux-mips@archiver.kernel.org>; Tue,  6 Jul 2021 11:25:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 45AF1C07E9E
+	for <linux-mips@archiver.kernel.org>; Tue,  6 Jul 2021 11:30:56 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 046EF61EB1
-	for <linux-mips@archiver.kernel.org>; Tue,  6 Jul 2021 11:25:43 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 2E73F61CD2
+	for <linux-mips@archiver.kernel.org>; Tue,  6 Jul 2021 11:30:56 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234667AbhGFL2T (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 6 Jul 2021 07:28:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35650 "EHLO mail.kernel.org"
+        id S234354AbhGFLd3 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 6 Jul 2021 07:33:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35602 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234664AbhGFLYv (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Tue, 6 Jul 2021 07:24:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9AEDC61D16;
-        Tue,  6 Jul 2021 11:18:47 +0000 (UTC)
+        id S232078AbhGFLZn (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Tue, 6 Jul 2021 07:25:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B722861D53;
+        Tue,  6 Jul 2021 11:19:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625570328;
-        bh=swNqVe0z99ZqvzGEdEapp55al/zXzvnmMw+OPrrGzhc=;
+        s=k20201202; t=1625570378;
+        bh=jkuEZkfL7lr8mk1AeV04Qf6U6eKhfHJ7PJkPe7AUo14=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ijoWMv82GZcsvMZ+PCbMxgEKAd++wgzDyd9sZXWtlcQ96Jt0/6pNigXnYseDKpHr8
-         yJcrSl1n0IvBCcEgK7KhxyW+8O/rny/1oRmQFrYfMqM5yl+MuWzY7zxLyc294verVp
-         qpoRYezEhHQFIYzGXE8B7idHNgcPh+GjJkv9BWKmtShSs03Cfz0sZu1bvUc422GGup
-         J5+QFAD3RnY1tvzse4D4aSMSfn33e8WNngSn05csgn4KNcyNR0SJM2Qp0go4N7jJJ3
-         hniqGspcQUN9OFv8E1ZIKoGcMJLEAHnEbvqGLFlpF3us41KX/Ae7dZsT79Tug14/Lk
-         Dtx1JnKi85NyA==
+        b=KDJ+E1KwIniKaRyQq3iXlLaVo3nAwJmMRTXfHDm8mvR9tmfrMqkDOYxptY2s/yLs9
+         u0GKjwVQjwph+80GDCiAEyGKSTGXuVNUio/AD5MViGejdXSo5vNv6dav2siy/2xaPb
+         0Xl1IJ/pqad08EyuhUY+wYYKO4vkN+sZRnrzoALHfOHhW8t86Dye4CV6qkqd6ao32N
+         rop6M/GtzhyPqUKZFnLua2DzRdiGgiavl3wKFJ3gEy8bcy257An+9ulH6cuW6lvOn7
+         cQ5T4cgtSx74fntEcQLwDjaC4dvN1sVHe9tb2VJBDjOeyIcUE0TWy8/Z7F8j7ajtN7
+         2R6EABo8kMLRA==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Bibo Mao <maobibo@loongson.cn>,
+Cc:     Paul Cercueil <paul@crapouillou.net>,
         Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
         Sasha Levin <sashal@kernel.org>, linux-mips@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.12 015/160] hugetlb: clear huge pte during flush function on mips platform
-Date:   Tue,  6 Jul 2021 07:16:01 -0400
-Message-Id: <20210706111827.2060499-15-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.12 053/160] MIPS: cpu-probe: Fix FPU detection on Ingenic JZ4760(B)
+Date:   Tue,  6 Jul 2021 07:16:39 -0400
+Message-Id: <20210706111827.2060499-53-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210706111827.2060499-1-sashal@kernel.org>
 References: <20210706111827.2060499-1-sashal@kernel.org>
@@ -50,47 +50,37 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-From: Bibo Mao <maobibo@loongson.cn>
+From: Paul Cercueil <paul@crapouillou.net>
 
-[ Upstream commit 33ae8f801ad8bec48e886d368739feb2816478f2 ]
+[ Upstream commit fc52f92a653215fbd6bc522ac5311857b335e589 ]
 
-If multiple threads are accessing the same huge page at the same
-time, hugetlb_cow will be called if one thread write the COW huge
-page. And function huge_ptep_clear_flush is called to notify other
-threads to clear the huge pte tlb entry. The other threads clear
-the huge pte tlb entry and reload it from page table, the reload
-huge pte entry may be old.
+Ingenic JZ4760 and JZ4760B do have a FPU, but the config registers don't
+report it. Force the FPU detection in case the processor ID match the
+JZ4760(B) one.
 
-This patch fixes this issue on mips platform, and it clears huge
-pte entry before notifying other threads to flush current huge
-page entry, it is similar with other architectures.
-
-Signed-off-by: Bibo Mao <maobibo@loongson.cn>
+Signed-off-by: Paul Cercueil <paul@crapouillou.net>
 Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/mips/include/asm/hugetlb.h | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+ arch/mips/kernel/cpu-probe.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/arch/mips/include/asm/hugetlb.h b/arch/mips/include/asm/hugetlb.h
-index 10e3be870df7..c2144409c0c4 100644
---- a/arch/mips/include/asm/hugetlb.h
-+++ b/arch/mips/include/asm/hugetlb.h
-@@ -46,7 +46,13 @@ static inline pte_t huge_ptep_get_and_clear(struct mm_struct *mm,
- static inline void huge_ptep_clear_flush(struct vm_area_struct *vma,
- 					 unsigned long addr, pte_t *ptep)
- {
--	flush_tlb_page(vma, addr & huge_page_mask(hstate_vma(vma)));
-+	/*
-+	 * clear the huge pte entry firstly, so that the other smp threads will
-+	 * not get old pte entry after finishing flush_tlb_page and before
-+	 * setting new huge pte entry
-+	 */
-+	huge_ptep_get_and_clear(vma->vm_mm, addr, ptep);
-+	flush_tlb_page(vma, addr);
- }
+diff --git a/arch/mips/kernel/cpu-probe.c b/arch/mips/kernel/cpu-probe.c
+index 0ef240adefb5..630fcb4cb30e 100644
+--- a/arch/mips/kernel/cpu-probe.c
++++ b/arch/mips/kernel/cpu-probe.c
+@@ -1840,6 +1840,11 @@ static inline void cpu_probe_ingenic(struct cpuinfo_mips *c, unsigned int cpu)
+ 		 */
+ 		case PRID_COMP_INGENIC_D0:
+ 			c->isa_level &= ~MIPS_CPU_ISA_M32R2;
++
++			/* FPU is not properly detected on JZ4760(B). */
++			if (c->processor_id == 0x2ed0024f)
++				c->options |= MIPS_CPU_FPU;
++
+ 			fallthrough;
  
- #define __HAVE_ARCH_HUGE_PTE_NONE
+ 		/*
 -- 
 2.30.2
 

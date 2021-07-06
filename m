@@ -2,48 +2,46 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-25.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-20.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0A481C07E9B
-	for <linux-mips@archiver.kernel.org>; Tue,  6 Jul 2021 11:45:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 88D73C07E9B
+	for <linux-mips@archiver.kernel.org>; Tue,  6 Jul 2021 11:45:59 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id EAC5961E92
-	for <linux-mips@archiver.kernel.org>; Tue,  6 Jul 2021 11:45:54 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 754FC61EB8
+	for <linux-mips@archiver.kernel.org>; Tue,  6 Jul 2021 11:45:59 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237020AbhGFLsL (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 6 Jul 2021 07:48:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47594 "EHLO mail.kernel.org"
+        id S236635AbhGFLsM (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 6 Jul 2021 07:48:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47578 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237453AbhGFLgK (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Tue, 6 Jul 2021 07:36:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7CE3E61D98;
-        Tue,  6 Jul 2021 11:27:47 +0000 (UTC)
+        id S237541AbhGFLgN (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Tue, 6 Jul 2021 07:36:13 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B841A61F2D;
+        Tue,  6 Jul 2021 11:28:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625570868;
-        bh=afVzWD8Ab8HPe3thKR/BGsH97KYhSX3SH4IIkde1rt0=;
+        s=k20201202; t=1625570908;
+        bh=YLXnt5wG5jvESbfEUk+/masoINAD5jvQEUvbk327gPg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bis4JJhFdQ3f0r3CKZVVLEoEihsMhZVCKlT8O99Q++4Xz6FXx/uja3atEELpDbBxv
-         MBlk8Mc8rC9jD4sXr9JU+ONTrH8t96f7zqLho03LYykRHZlysYKU/zq693i2J/J1R8
-         JeDhAzNdoJcQdSld/SMtAr1RNe6VXqf4c0FtshcxaWsfhQmNqQtC0TgMAogstOvLV4
-         pP7HuFchWqgoCxGeEAvjjdp32CMP+qc41biUjkedc6A5wuWIJWZFdWRjLQAWK13mCT
-         U20zmhpEmeYBKjbTgy6qX331DTCYRhPxkleNZaWfO/26nVAxs+I99bMJJzm4JTvpMe
-         ccaIxuz5WO4Tw==
+        b=n8N1ynfrX6bM+0kW9bc8cwsUsLU9Y+YQPodxr4FCJap0gP7WBUUzv7Z4N4v817/tr
+         qjR4lzOY0kLNAI01B+lgAGZY91z5VPL4FWXw6+JJQ9qJdwT2oYhl2gxxO7mxXrvzxG
+         PIoYqoc9HkL44/De3xFgRgduvSQmS5JCFZo7Km9unyuPMwizqgAzucKiWcIXyXPPoi
+         MKVID5rQUkB/lcfFEQG0ClN212IA3comQKma2bSNHC1Yg3oLh20RXAcCHskq2e4f9X
+         pKLhtuw02fTd+7aZCWaX2X08A+44lXQbGzCpESlOGasju2dVJK/5f+DNB97+faEtOf
+         8uMz9Yn2WkmQw==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        Dmitry Golovin <dima@golovin.in>,
+Cc:     Huang Pei <huangpei@loongson.cn>,
         Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Sasha Levin <sashal@kernel.org>, linux-mips@vger.kernel.org,
-        clang-built-linux@googlegroups.com
-Subject: [PATCH AUTOSEL 4.19 55/55] MIPS: set mips32r5 for virt extensions
-Date:   Tue,  6 Jul 2021 07:26:38 -0400
-Message-Id: <20210706112638.2065023-55-sashal@kernel.org>
+        Sasha Levin <sashal@kernel.org>, linux-mips@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.14 31/45] MIPS: add PMD table accounting into MIPS'pmd_alloc_one
+Date:   Tue,  6 Jul 2021 07:27:35 -0400
+Message-Id: <20210706112749.2065541-31-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210706112638.2065023-1-sashal@kernel.org>
-References: <20210706112638.2065023-1-sashal@kernel.org>
+In-Reply-To: <20210706112749.2065541-1-sashal@kernel.org>
+References: <20210706112749.2065541-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -52,63 +50,48 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-From: Nick Desaulniers <ndesaulniers@google.com>
+From: Huang Pei <huangpei@loongson.cn>
 
-[ Upstream commit c994a3ec7ecc8bd2a837b2061e8a76eb8efc082b ]
+[ Upstream commit ed914d48b6a1040d1039d371b56273d422c0081e ]
 
-Clang's integrated assembler only accepts these instructions when the
-cpu is set to mips32r5. With this change, we can assemble
-malta_defconfig with Clang via `make LLVM_IAS=1`.
+This fixes Page Table accounting bug.
 
-Link: https://github.com/ClangBuiltLinux/linux/issues/763
-Reported-by: Dmitry Golovin <dima@golovin.in>
-Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+MIPS is the ONLY arch just defining __HAVE_ARCH_PMD_ALLOC_ONE alone.
+Since commit b2b29d6d011944 (mm: account PMD tables like PTE tables),
+"pmd_free" in asm-generic with PMD table accounting and "pmd_alloc_one"
+in MIPS without PMD table accounting causes PageTable accounting number
+negative, which read by global_zone_page_state(), always returns 0.
+
+Signed-off-by: Huang Pei <huangpei@loongson.cn>
 Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/mips/include/asm/mipsregs.h | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ arch/mips/include/asm/pgalloc.h | 10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
 
-diff --git a/arch/mips/include/asm/mipsregs.h b/arch/mips/include/asm/mipsregs.h
-index f9a7c137be9f..c8333782a670 100644
---- a/arch/mips/include/asm/mipsregs.h
-+++ b/arch/mips/include/asm/mipsregs.h
-@@ -1986,7 +1986,7 @@ _ASM_MACRO_0(tlbginvf, _ASM_INSN_IF_MIPS(0x4200000c)
- ({ int __res;								\
- 	__asm__ __volatile__(						\
- 		".set\tpush\n\t"					\
--		".set\tmips32r2\n\t"					\
-+		".set\tmips32r5\n\t"					\
- 		_ASM_SET_VIRT						\
- 		"mfgc0\t%0, " #source ", %1\n\t"			\
- 		".set\tpop"						\
-@@ -1999,7 +1999,7 @@ _ASM_MACRO_0(tlbginvf, _ASM_INSN_IF_MIPS(0x4200000c)
- ({ unsigned long long __res;						\
- 	__asm__ __volatile__(						\
- 		".set\tpush\n\t"					\
--		".set\tmips64r2\n\t"					\
-+		".set\tmips64r5\n\t"					\
- 		_ASM_SET_VIRT						\
- 		"dmfgc0\t%0, " #source ", %1\n\t"			\
- 		".set\tpop"						\
-@@ -2012,7 +2012,7 @@ _ASM_MACRO_0(tlbginvf, _ASM_INSN_IF_MIPS(0x4200000c)
- do {									\
- 	__asm__ __volatile__(						\
- 		".set\tpush\n\t"					\
--		".set\tmips32r2\n\t"					\
-+		".set\tmips32r5\n\t"					\
- 		_ASM_SET_VIRT						\
- 		"mtgc0\t%z0, " #register ", %1\n\t"			\
- 		".set\tpop"						\
-@@ -2024,7 +2024,7 @@ do {									\
- do {									\
- 	__asm__ __volatile__(						\
- 		".set\tpush\n\t"					\
--		".set\tmips64r2\n\t"					\
-+		".set\tmips64r5\n\t"					\
- 		_ASM_SET_VIRT						\
- 		"dmtgc0\t%z0, " #register ", %1\n\t"			\
- 		".set\tpop"						\
+diff --git a/arch/mips/include/asm/pgalloc.h b/arch/mips/include/asm/pgalloc.h
+index 39b9f311c4ef..f800872f867b 100644
+--- a/arch/mips/include/asm/pgalloc.h
++++ b/arch/mips/include/asm/pgalloc.h
+@@ -93,11 +93,15 @@ do {							\
+ 
+ static inline pmd_t *pmd_alloc_one(struct mm_struct *mm, unsigned long address)
+ {
+-	pmd_t *pmd;
++	pmd_t *pmd = NULL;
++	struct page *pg;
+ 
+-	pmd = (pmd_t *) __get_free_pages(GFP_KERNEL, PMD_ORDER);
+-	if (pmd)
++	pg = alloc_pages(GFP_KERNEL | __GFP_ACCOUNT, PMD_ORDER);
++	if (pg) {
++		pgtable_pmd_page_ctor(pg);
++		pmd = (pmd_t *)page_address(pg);
+ 		pmd_init((unsigned long)pmd, (unsigned long)invalid_pte_table);
++	}
+ 	return pmd;
+ }
+ 
 -- 
 2.30.2
 

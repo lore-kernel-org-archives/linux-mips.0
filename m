@@ -2,45 +2,43 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-25.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-20.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
-	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B294BC11F69
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7E148C11F68
 	for <linux-mips@archiver.kernel.org>; Tue,  6 Jul 2021 12:29:03 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 97F836231F
+	by mail.kernel.org (Postfix) with ESMTP id 663D86230A
 	for <linux-mips@archiver.kernel.org>; Tue,  6 Jul 2021 12:29:03 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236989AbhGFMbk (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 6 Jul 2021 08:31:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47548 "EHLO mail.kernel.org"
+        id S237639AbhGFMbj (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 6 Jul 2021 08:31:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47546 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237005AbhGFLfu (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Tue, 6 Jul 2021 07:35:50 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DFF4761C91;
-        Tue,  6 Jul 2021 11:24:59 +0000 (UTC)
+        id S236989AbhGFLft (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Tue, 6 Jul 2021 07:35:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CBD2861C9C;
+        Tue,  6 Jul 2021 11:24:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625570700;
-        bh=9c2JIj6xueS2OZOZlldhpzxQfU+qd+QvnqSeXlRzGBc=;
+        s=k20201202; t=1625570699;
+        bh=GptNHRxt4NSFEH5/XvLFiuhi1vJsblNqdlsj4pppnKI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=F8Z2pvo3B/UP21z9qOQV0ILS5hEadXP+erxYpZ1ui/E45aziivwxE76Q6TKamv2ka
-         yKqLR9wZtJTtDDiI3sTYRbzgvSGrhKtJSWTx5hSCU9vBOpa3dg6LqcS5/xd/5lUQ3I
-         MUmFVI/k54M1xuxzpNiXj9oB8QSNqzAxS72Q+FmGZyt1dFKazh6ysG2pv23jTDNL/s
-         /kBamN7q5kH1ir74hEwg+nrgK3b94FvTkX4iKIf3MtSC1OW46SLHpd0DLhNRai364Y
-         juLPW+C1VgrsZY+cOe54x5vuzxGR3YU6iJt2ftf3ZKdUlNMkM82m/1feNZasIjH1gD
-         j8SYLRNwEuCNg==
+        b=L9sS8hLk7CqTBTt2LGR3WOvhHomOPwAatNVUTKNV/r1Rx7UrjawVTAQmvssn5PxuW
+         2SFH4FSUyfBHcC8eTwN+jvx9MzzLHE5exp0E5QSEDk1YPaf7TBdyqhG3jkHbgSEjYf
+         pbmx1Oq+jLJ4IqMdg5ZQbZM0wh5jWVvZtWFHJL7FBBSnY9dCUhFKfQgXpU8XcPUUxl
+         wJe5WHA3YVGU+L3SlzuAY/qjq4K4BNO+oO8dskBthhh5SEHOqrQO+LgCGXal6iMV7v
+         P7DA8uuClHGNJphXjEVHceKqe50p5v2kLOxRlcv9JIIJgiNNZn1IBUYs8RKnq4HV4X
+         i4DXo2PsyILPw==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        Dmitry Golovin <dima@golovin.in>,
+Cc:     zhanglianjie <zhanglianjie@uniontech.com>,
         Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Sasha Levin <sashal@kernel.org>, linux-mips@vger.kernel.org,
-        clang-built-linux@googlegroups.com
-Subject: [PATCH AUTOSEL 5.10 137/137] MIPS: set mips32r5 for virt extensions
-Date:   Tue,  6 Jul 2021 07:22:03 -0400
-Message-Id: <20210706112203.2062605-137-sashal@kernel.org>
+        Sasha Levin <sashal@kernel.org>, linux-mips@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.10 136/137] MIPS: loongsoon64: Reserve memory below starting pfn to prevent Oops
+Date:   Tue,  6 Jul 2021 07:22:02 -0400
+Message-Id: <20210706112203.2062605-136-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210706112203.2062605-1-sashal@kernel.org>
 References: <20210706112203.2062605-1-sashal@kernel.org>
@@ -52,63 +50,46 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-From: Nick Desaulniers <ndesaulniers@google.com>
+From: zhanglianjie <zhanglianjie@uniontech.com>
 
-[ Upstream commit c994a3ec7ecc8bd2a837b2061e8a76eb8efc082b ]
+[ Upstream commit 6817c944430d00f71ccaa9c99ff5b0096aeb7873 ]
 
-Clang's integrated assembler only accepts these instructions when the
-cpu is set to mips32r5. With this change, we can assemble
-malta_defconfig with Clang via `make LLVM_IAS=1`.
+The cause of the problem is as follows:
+1. when cat /sys/devices/system/memory/memory0/valid_zones,
+   test_pages_in_a_zone() will be called.
+2. test_pages_in_a_zone() finds the zone according to stat_pfn = 0.
+   The smallest pfn of the numa node in the mips architecture is 128,
+   and the page corresponding to the previous 0~127 pfn is not
+   initialized (page->flags is 0xFFFFFFFF)
+3. The nid and zonenum obtained using page_zone(pfn_to_page(0)) are out
+   of bounds in the corresponding array,
+   &NODE_DATA(page_to_nid(page))->node_zones[page_zonenum(page)],
+   access to the out-of-bounds zone member variables appear abnormal,
+   resulting in Oops.
+Therefore, it is necessary to keep the page between 0 and the minimum
+pfn to prevent Oops from appearing.
 
-Link: https://github.com/ClangBuiltLinux/linux/issues/763
-Reported-by: Dmitry Golovin <dima@golovin.in>
-Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+Signed-off-by: zhanglianjie <zhanglianjie@uniontech.com>
 Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/mips/include/asm/mipsregs.h | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ arch/mips/loongson64/numa.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/arch/mips/include/asm/mipsregs.h b/arch/mips/include/asm/mipsregs.h
-index a0e8ae5497b6..7a7467d3f7f0 100644
---- a/arch/mips/include/asm/mipsregs.h
-+++ b/arch/mips/include/asm/mipsregs.h
-@@ -2073,7 +2073,7 @@ _ASM_MACRO_0(tlbginvf, _ASM_INSN_IF_MIPS(0x4200000c)
- ({ int __res;								\
- 	__asm__ __volatile__(						\
- 		".set\tpush\n\t"					\
--		".set\tmips32r2\n\t"					\
-+		".set\tmips32r5\n\t"					\
- 		_ASM_SET_VIRT						\
- 		"mfgc0\t%0, " #source ", %1\n\t"			\
- 		".set\tpop"						\
-@@ -2086,7 +2086,7 @@ _ASM_MACRO_0(tlbginvf, _ASM_INSN_IF_MIPS(0x4200000c)
- ({ unsigned long long __res;						\
- 	__asm__ __volatile__(						\
- 		".set\tpush\n\t"					\
--		".set\tmips64r2\n\t"					\
-+		".set\tmips64r5\n\t"					\
- 		_ASM_SET_VIRT						\
- 		"dmfgc0\t%0, " #source ", %1\n\t"			\
- 		".set\tpop"						\
-@@ -2099,7 +2099,7 @@ _ASM_MACRO_0(tlbginvf, _ASM_INSN_IF_MIPS(0x4200000c)
- do {									\
- 	__asm__ __volatile__(						\
- 		".set\tpush\n\t"					\
--		".set\tmips32r2\n\t"					\
-+		".set\tmips32r5\n\t"					\
- 		_ASM_SET_VIRT						\
- 		"mtgc0\t%z0, " #register ", %1\n\t"			\
- 		".set\tpop"						\
-@@ -2111,7 +2111,7 @@ do {									\
- do {									\
- 	__asm__ __volatile__(						\
- 		".set\tpush\n\t"					\
--		".set\tmips64r2\n\t"					\
-+		".set\tmips64r5\n\t"					\
- 		_ASM_SET_VIRT						\
- 		"dmtgc0\t%z0, " #register ", %1\n\t"			\
- 		".set\tpop"						\
+diff --git a/arch/mips/loongson64/numa.c b/arch/mips/loongson64/numa.c
+index cf9459f79f9b..e4c461df3ee6 100644
+--- a/arch/mips/loongson64/numa.c
++++ b/arch/mips/loongson64/numa.c
+@@ -182,6 +182,9 @@ static void __init node_mem_init(unsigned int node)
+ 		if (node_end_pfn(0) >= (0xffffffff >> PAGE_SHIFT))
+ 			memblock_reserve((node_addrspace_offset | 0xfe000000),
+ 					 32 << 20);
++
++		/* Reserve pfn range 0~node[0]->node_start_pfn */
++		memblock_reserve(0, PAGE_SIZE * start_pfn);
+ 	}
+ }
+ 
 -- 
 2.30.2
 

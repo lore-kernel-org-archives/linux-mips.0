@@ -2,44 +2,44 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-14.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-19.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 343D5C07E96
-	for <linux-mips@archiver.kernel.org>; Thu,  8 Jul 2021 09:03:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 17E9AC07E96
+	for <linux-mips@archiver.kernel.org>; Thu,  8 Jul 2021 09:09:15 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 0097F61CDF
-	for <linux-mips@archiver.kernel.org>; Thu,  8 Jul 2021 09:03:14 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id ED2946142C
+	for <linux-mips@archiver.kernel.org>; Thu,  8 Jul 2021 09:09:14 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231235AbhGHJFz (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 8 Jul 2021 05:05:55 -0400
-Received: from mo4-p01-ob.smtp.rzone.de ([81.169.146.165]:15416 "EHLO
-        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231190AbhGHJFz (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Thu, 8 Jul 2021 05:05:55 -0400
-X-Greylist: delayed 354 seconds by postgrey-1.27 at vger.kernel.org; Thu, 08 Jul 2021 05:05:55 EDT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1625734632;
+        id S231262AbhGHJLz (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 8 Jul 2021 05:11:55 -0400
+Received: from mo4-p02-ob.smtp.rzone.de ([81.169.146.169]:8720 "EHLO
+        mo4-p02-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231241AbhGHJLx (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Thu, 8 Jul 2021 05:11:53 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1625734633;
     s=strato-dkim-0002; d=goldelico.com;
-    h=Message-Id:Date:Subject:Cc:To:From:Cc:Date:From:Subject:Sender;
-    bh=iMRZVT0Tu7tx9Ozu7snuafqAPBSc8LY5A9UI4FquInw=;
-    b=tvAf41S9MUBp7FDUpllh84nf/t2HA9lbS4VCw2BU/9wPj6veSxZKT6yw3AIZkGHZC1
-    +UFBHDdAibv9bNnefsZw6e732Bq4+D7t+sx8fxPzAre/Tl3OKig1rl1wwpsUtOOzq892
-    X4mew3WwCcZAgwaw+XbNdhTEhLnRnV1SrgjOSKk5/f2yfnRhhe2pAcWyVUkroRq+aSqE
-    VF6sBKkbQr7E86yt7ChzkCaWROIeju8FCEDq07ZxlCaOmWgXH0fGStfPZghVXCNmp4Pj
-    6IGoviAQoieSDZzwuyW04XhSWz4Sr3/NL8Z4cLqMMB9m2ZFV4n8XxBfMf4F+gjxGEn7S
-    LHAA==
+    h=References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Cc:Date:
+    From:Subject:Sender;
+    bh=T6ETvbXoVE/hpvkyrA1LsDKpPMonbOGVOXqyXUMKr1o=;
+    b=aC0LdQXdsPA9SOoqQn1OOSmMcewcyfnz9wfRA6gFvmxq9WoSJpHEN53VTo56F2yPsC
+    haQiRWoex4akVnwn/K665Bx1Bq7+jbJQAMT4Caj/PBMPtVEwkU7TlskKhW8xV6cpwxfH
+    u21230KZ/PIowFK4yLiuFz2VLlt0D5sHY4OFmz8krT85VvLD06lQ+lk4BpD7nJ51FdIs
+    qV9o920mhaOjGUpIglhyvLpWjnQd2rPec+9Yc1Bh2aqAE6Uovxd9F3XV2/eu67vosisl
+    9nAOYpoBFFCYxKgsJoojbjYRj+QaDDHcv5c+pqR73OWzAmW0b50JiXDj18pw+qxSlnPU
+    vbnA==
 Authentication-Results: strato.com;
     dkim=none
 X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMhflhwDubTJ9o1KHeBQyh+ITDDtsZQ=="
 X-RZG-CLASS-ID: mo00
 Received: from iMac.fritz.box
     by smtp.strato.de (RZmta 47.28.1 DYNA|AUTH)
-    with ESMTPSA id h06665x688vBcEB
+    with ESMTPSA id h06665x688vCcED
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
         (Client did not present a certificate);
-    Thu, 8 Jul 2021 10:57:11 +0200 (CEST)
+    Thu, 8 Jul 2021 10:57:12 +0200 (CEST)
 From:   "H. Nikolaus Schaller" <hns@goldelico.com>
 To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
         Thomas Gleixner <tglx@linutronix.de>,
@@ -52,102 +52,61 @@ Cc:     letux-kernel@openphoenux.org, "H. Peter Anvin" <hpa@zytor.com>,
         linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
         kernel@pyra-handheld.com,
         "H. Nikolaus Schaller" <hns@goldelico.com>
-Subject: [PATCH 0/2] Regex fixes for mips and x86 cross-compile
-Date:   Thu,  8 Jul 2021 10:57:08 +0200
-Message-Id: <cover.1625734629.git.hns@goldelico.com>
+Subject: [PATCH 2/2] arch: mips: Fix non-POSIX regexp
+Date:   Thu,  8 Jul 2021 10:57:10 +0200
+Message-Id: <f1be72eb0fd589df5a535792a3f21949bd46da50.1625734629.git.hns@goldelico.com>
 X-Mailer: git-send-email 2.31.1
+In-Reply-To: <cover.1625734629.git.hns@goldelico.com>
+References: <cover.1625734629.git.hns@goldelico.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Trying to run the x86 relocs tool on a BSD based HOSTCC (cross
-compilation environment) leads to errors like
-
-  VOFFSET arch/x86/boot/compressed/../voffset.h - due to: vmlinux
-  CC      arch/x86/boot/compressed/misc.o - due to: arch/x86/boot/compressed/../voffset.h
-  OBJCOPY arch/x86/boot/compressed/vmlinux.bin - due to: vmlinux
-  RELOCS  arch/x86/boot/compressed/vmlinux.relocs - due to: vmlinux
-empty (sub)expressionarch/x86/boot/compressed/Makefile:118: recipe for target 'arch/x86/boot/compressed/vmlinux.relocs' failed
-make[3]: *** [arch/x86/boot/compressed/vmlinux.relocs] Error 1
-
-and when cross compiling a MIPS kernel on a BSD based HOSTCC
-we get errors like
+When cross compiling a MIPS kernel on a BSD based HOSTCC leads
+to errors like
 
   SYNC    include/config/auto.conf.cmd - due to: .config
 egrep: empty (sub)expression
   UPD     include/config/kernel.release
   HOSTCC  scripts/dtc/dtc.o - due to target missing
 
-It turns out that relocs.c on x86 uses patterns like
+It turns out that egrep uses this egrep pattern:
 
-	"something(|_end)"
+		(|MINOR_|PATCHLEVEL_)
 
-while MIPS uses egrep with
-
-	(|MINOR_|PATCHLEVEL_)
-
-In both cases it is not valid syntax or gives undefined results
-according to POSIX 9.5.3 ERE Grammar
+This is not valid syntax or gives undefined results according
+to POSIX 9.5.3 ERE Grammar
 
 	https://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap09.html
 
-It seems to be silently accepted by the Linux regcmp() or egrep
-implementation while a BSD host complains.
+It seems to be silently accepted by the Linux egrep implementation
+while a BSD host complains.
 
 Such patterns can be replaced by a transformation like
 
 	"(|p1|p2)" -> "(p1|p2)?"
 
-Test Linux:
+Fixes: 48c35b2d245f ("[MIPS] There is no __GNUC_MAJOR__")
+Signed-off-by: H. Nikolaus Schaller <hns@goldelico.com>
+---
+ arch/mips/Makefile | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-root@letux:~# echo foo | egrep '^(|foo)$'
-foo
-root@letux:~# echo fool | egrep '^(foo)?$'
-root@letux:~# echo fun | egrep '^(|foo)$'
-root@letux:~# echo f | egrep '^(|foo)$'
-root@letux:~# echo | egrep '^(|foo)$'
-
-root@letux:~# echo foo | egrep '^(foo)?$'
-foo
-root@letux:~# echo fool | egrep '^(foo)?$'
-root@letux:~# echo fun | egrep '^(foo)?$'
-root@letux:~# echo f | egrep '^(foo)?$'
-root@letux:~# echo | egrep '^(foo)?$'
-
-root@letux:~# 
-
-Test BSD:
-
-iMac:master hns$ echo foo | egrep '^(|foo)$'
-egrep: empty (sub)expression
-iMac:master hns$ echo fool | egrep '^(foo)?$'
-egrep: empty (sub)expression
-iMac:master hns$ echo fun | egrep '^(|foo)$'
-egrep: empty (sub)expression
-iMac:master hns$ echo f | egrep '^(|foo)$'
-egrep: empty (sub)expression
-iMac:master hns$ echo | egrep '^(|foo)$'
-egrep: empty (sub)expression
-iMac:master hns$ echo foo | egrep '^(foo)?$'
-foo
-iMac:master hns$ echo fool | egrep '^(foo)?$'
-iMac:master hns$ echo fun | egrep '^(foo)?$'
-iMac:master hns$ echo f | egrep '^(foo)?$'
-iMac:master hns$ echo | egrep '^(foo)?$'
-
-iMac:master hns$ 
-
-
-H. Nikolaus Schaller (2):
-  x86/tools/relocs: Fix non-POSIX regexp
-  arch: mips: Fix non-POSIX regexp
-
- arch/mips/Makefile      | 2 +-
- arch/x86/tools/relocs.c | 8 ++++----
- 2 files changed, 5 insertions(+), 5 deletions(-)
-
+diff --git a/arch/mips/Makefile b/arch/mips/Makefile
+index 258234c35a096..674f68d16a73f 100644
+--- a/arch/mips/Makefile
++++ b/arch/mips/Makefile
+@@ -321,7 +321,7 @@ KBUILD_LDFLAGS		+= -m $(ld-emul)
+ 
+ ifdef CONFIG_MIPS
+ CHECKFLAGS += $(shell $(CC) $(KBUILD_CFLAGS) -dM -E -x c /dev/null | \
+-	egrep -vw '__GNUC_(|MINOR_|PATCHLEVEL_)_' | \
++	egrep -vw '__GNUC_(MINOR_|PATCHLEVEL_)?_' | \
+ 	sed -e "s/^\#define /-D'/" -e "s/ /'='/" -e "s/$$/'/" -e 's/\$$/&&/g')
+ endif
+ 
 -- 
 2.31.1
 

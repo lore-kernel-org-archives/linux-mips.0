@@ -7,30 +7,30 @@ X-Spam-Status: No, score=-19.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7EF02C07E9E
-	for <linux-mips@archiver.kernel.org>; Sat, 10 Jul 2021 23:49:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1A658C07E9B
+	for <linux-mips@archiver.kernel.org>; Sat, 10 Jul 2021 23:51:00 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 6B06461154
-	for <linux-mips@archiver.kernel.org>; Sat, 10 Jul 2021 23:49:36 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 084F7613E6
+	for <linux-mips@archiver.kernel.org>; Sat, 10 Jul 2021 23:51:00 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232462AbhGJXwV (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Sat, 10 Jul 2021 19:52:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39010 "EHLO mail.kernel.org"
+        id S233385AbhGJXxo (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Sat, 10 Jul 2021 19:53:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40150 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232137AbhGJXwL (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Sat, 10 Jul 2021 19:52:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3E47A61355;
-        Sat, 10 Jul 2021 23:49:24 +0000 (UTC)
+        id S233149AbhGJXxJ (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Sat, 10 Jul 2021 19:53:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2DF0D61361;
+        Sat, 10 Jul 2021 23:50:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1625960965;
+        s=k20201202; t=1625961023;
         bh=qjAee10GKoNtEd3QJvJ5ofikK7mIpHulu3nelTdmX4M=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gL9m5323Mwr1qKlu7X++woiy5Qo0vwny+GsDEHBS+1avkn9sLv0F32dcw3cJaywR9
-         Rga0NybJXrARDGRgAiDFr12jV5NClAUl07kooQ2/h8w9lGHeK8dck5mIR6kNA8g3RX
-         3tf3P5+kJQa7ut/v+upo5IsZuTLSh3MIQTbql9xCJdJvmt/Meq5dOT83uYdgr430mR
-         FshAHuiZ820Y8WPiVDU7LjerpE56ZP3/yk8Uyy16KYuf7J0df4KCTzL9PQzEA6Fdrz
-         MHUJn+MFMHZ1l2qheaunTdVVmNYOoWJ5b2ZJcfE2jKDRSTcwE3XKA+Qn3fgtIus9q1
-         xjv8GkyjZMMpw==
+        b=ar1L4cnDHzEyC6rccrXu5CMb5+lNwGfRjKMa4pQzi3ooKyVu8h6yhAwOHqdugvztH
+         hNW7WO3YljmmhD3w8CqY4KsRIfJRj3jwxCbyOhPk7/TPHeLSvZYKt2DxMKRLedtMqJ
+         Fi0xe/pwuw7MpHqhEv567maGV++zIaUaS1otUdfmbZLCfOqLYDoErN2LSIFawOG9Fn
+         l8nAH7Y/1gXD/ts/v9zG7YWb86nUS2/ehfJr6z//gEAshJv2l4RB2uevqfT4JSpD5J
+         jjIR8r39RSeIcq5mRo2wKy/2PhR55Su/nLMXBDO9Ca99gP1A0OYfDA0a990tziFI5N
+         cFHxAw8Xf/H1Q==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Randy Dunlap <rdunlap@infradead.org>,
@@ -42,12 +42,12 @@ Cc:     Randy Dunlap <rdunlap@infradead.org>,
         Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
         linux-mips@vger.kernel.org, Sasha Levin <sashal@kernel.org>,
         linux-pci@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.12 05/43] PCI: ftpci100: Rename macro name collision
-Date:   Sat, 10 Jul 2021 19:48:37 -0400
-Message-Id: <20210710234915.3220342-5-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.10 05/37] PCI: ftpci100: Rename macro name collision
+Date:   Sat, 10 Jul 2021 19:49:43 -0400
+Message-Id: <20210710235016.3221124-5-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210710234915.3220342-1-sashal@kernel.org>
-References: <20210710234915.3220342-1-sashal@kernel.org>
+In-Reply-To: <20210710235016.3221124-1-sashal@kernel.org>
+References: <20210710235016.3221124-1-sashal@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 X-stable: review

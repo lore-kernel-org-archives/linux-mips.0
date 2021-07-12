@@ -8,54 +8,54 @@ X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BB7A3C07E9E
-	for <linux-mips@archiver.kernel.org>; Mon, 12 Jul 2021 00:35:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6A9BAC07E96
+	for <linux-mips@archiver.kernel.org>; Mon, 12 Jul 2021 00:35:43 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 95C026105A
-	for <linux-mips@archiver.kernel.org>; Mon, 12 Jul 2021 00:35:44 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 562AB6100C
+	for <linux-mips@archiver.kernel.org>; Mon, 12 Jul 2021 00:35:43 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232575AbhGLAib (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Sun, 11 Jul 2021 20:38:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33324 "EHLO
+        id S232457AbhGLAi2 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Sun, 11 Jul 2021 20:38:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33314 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232193AbhGLAi0 (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Sun, 11 Jul 2021 20:38:26 -0400
-Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E86FFC0613EE;
-        Sun, 11 Jul 2021 17:35:37 -0700 (PDT)
-Received: by mail-pg1-x530.google.com with SMTP id w15so16459308pgk.13;
-        Sun, 11 Jul 2021 17:35:37 -0700 (PDT)
+        with ESMTP id S232135AbhGLAiY (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Sun, 11 Jul 2021 20:38:24 -0400
+Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D69ECC0613E8;
+        Sun, 11 Jul 2021 17:35:35 -0700 (PDT)
+Received: by mail-pg1-x531.google.com with SMTP id h4so16473264pgp.5;
+        Sun, 11 Jul 2021 17:35:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=xV2HdIRH4UfRrAHXN/H9DTR/2ZGLXLPOFFF8iUGihdI=;
-        b=iqGS6jwOogU85vAVz7EzI0ONnzoVCWpt1kgujjjWx61sWmyIA5vYT/NRuvRzjIPHE7
-         tLq66ltpEdsOMDVjdrL6OtHPfggRcmn8sdzW9n0ZxoLwq+3OxNBcVxAe0N+GUKYDcOYo
-         wIVG1yf4GlQXQlT0w+xPAcRgl/2LHvHAr5hCzwzzWbaGEvpaGD6xZLUMvOGxYQtr71IO
-         bJuilMU5bvtxsqCIFMOveMUdrtlbm9l53CJ7LWwqvqFvgRSVsLq8XJTEAsFf9zoAibHM
-         4KbDb4IV36q06RYdvRULfBIC9p34CeIOP8/+50LZAf4W8b5YZ8xW6D/u+CZZPMTi+ub4
-         TqSg==
+        bh=cekwLtOmtUa2BNFyGkn1Zn17oN6dKTP2bypSds/8+bw=;
+        b=u4/lYuyqXXO8+vXNvORgveCso7b6Rl7EAbhoMQiCKh7y8pSDz2WfJvM067p3MaMeoq
+         sWnDZfwkn/HzMzF9HoLcV+ZdLNK1xsgn5GNuCy5RhveJrs/cryCV5iDyp2xj/LVo2yur
+         vXrJZj6A7k0rhcZNK70+Hqaw5VNgmspDD5Xq6UETYC7uwSvQoy0yZvDBhwxfxz/mqStL
+         jwuRWHnaMa70T+oSnB62TZbyj83qX2YnhFNhzh9pIYDfdX27GJEv8FYzEcY+0c6wKauL
+         ornwOZVLrMdx5wzDZFTVZvNDXiyZeR9Q3qH+HwjH8l+z52DmQRqfqRc1bVNrauk91tIB
+         nS2A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=xV2HdIRH4UfRrAHXN/H9DTR/2ZGLXLPOFFF8iUGihdI=;
-        b=RBUF1TU8DVgEnVPiK0wFwdGknArfqBIhzZtueodKdrUfKgtzN2OI9GYTP+oV/jSyGO
-         MpX4zk/YOfoGPrFCyulttCG8hysa56Ek/0Pz6eudfRAuU9H5voLYm2Kj4OTfpBpDjEEu
-         E5aFULoSf2Glad7Z0LhpNcjhVZzsL6VBgKBuntzGZUjok9iq8MvdxpdGp+B+IRiaQvsE
-         47GWdq8KEOpsbOqiU3o8/lMEo04+rltEeC7J4aUAsHvwruMkLqm6qZcZ/A/+W2VZaEQY
-         Zwp8ta6Cy0LvwMMpDnlts5HHdz1kmaOSaKSjaPtbink1AiHRZSwH+jJIYjr2onggQ5OC
-         1oWQ==
-X-Gm-Message-State: AOAM530Mu5p92zJdZledb43bTl9AWELsqDuRnWm5IV+QIu4/64llU/FW
-        w6iFMIFVGYZfhmqmBPNLp6HWNshIkPo8ww==
-X-Google-Smtp-Source: ABdhPJzrIt6Zodpqq8ncxTnLEq+8L79neCI209zuG0wLSWubTeFeUK2CKj7bygFajsasyqIWvvUsSw==
-X-Received: by 2002:a62:e90b:0:b029:30e:4530:8dca with SMTP id j11-20020a62e90b0000b029030e45308dcamr50228994pfh.17.1626050137560;
-        Sun, 11 Jul 2021 17:35:37 -0700 (PDT)
+        bh=cekwLtOmtUa2BNFyGkn1Zn17oN6dKTP2bypSds/8+bw=;
+        b=HzwPpdRssgw978fu539y55xE/CN4aofH4+WDROTPeae3HLJAcY3ixAVsz84k4CzEXR
+         pbJiFqEwfyyuFdhJH25KcyXEM1+aNS5hBZP6uGTLnzl38Lcz3/xy7aorC7uvWf/RiPIo
+         BhCnRXKz7L54EYz6maqz7UwXfSQ9kmx5kTjZEbw0YfQ3ZjWiANonL6zZ9u68PrtMBwS2
+         TLFbqwAa5gy8NVC6wpEmjtbdQmwdZDhcEmumDCBwfLP6e6edARWFE3hCkIgp++Vkr7Gw
+         BR4ppVJIrrkEZLGgzp8/STHBKNZwFXP+571ZTHwi+MKvxb/kRrE32CaP2Zxdcjh22BKw
+         xmCw==
+X-Gm-Message-State: AOAM5329QpvW+dmtiYa9RLu9zXN8pzan1I8jhbIvL6akri96zSkpf2OX
+        nL/dBulToSnO/4WEkG9tYXw=
+X-Google-Smtp-Source: ABdhPJwQuaqbTrJMo0sb5ZCTNqRaO05aLENU6w354eWq7EFMYs5+vt5W1/9uxz0BRbATALUu54tVZA==
+X-Received: by 2002:aa7:8b07:0:b029:2f7:d38e:ff1 with SMTP id f7-20020aa78b070000b02902f7d38e0ff1mr50576505pfd.72.1626050135398;
+        Sun, 11 Jul 2021 17:35:35 -0700 (PDT)
 Received: from localhost.localdomain ([2001:470:e92d:10:4039:6c0e:1168:cc74])
-        by smtp.gmail.com with ESMTPSA id c24sm15588447pgj.11.2021.07.11.17.35.36
+        by smtp.gmail.com with ESMTPSA id c24sm15588447pgj.11.2021.07.11.17.35.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 11 Jul 2021 17:35:37 -0700 (PDT)
+        Sun, 11 Jul 2021 17:35:35 -0700 (PDT)
 From:   Tony Ambardar <tony.ambardar@gmail.com>
 X-Google-Original-From: Tony Ambardar <Tony.Ambardar@gmail.com>
 To:     Alexei Starovoitov <ast@kernel.org>,
@@ -74,9 +74,9 @@ Cc:     Tony Ambardar <Tony.Ambardar@gmail.com>, netdev@vger.kernel.org,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
         KP Singh <kpsingh@kernel.org>
-Subject: [RFC PATCH bpf-next v1 09/14] MIPS: eBPF: drop src_reg restriction in BPF_LD|BPF_DW|BPF_IMM
-Date:   Sun, 11 Jul 2021 17:34:55 -0700
-Message-Id: <e2c64e0121959db6216e1f6c23447c06ce2b14a3.1625970384.git.Tony.Ambardar@gmail.com>
+Subject: [RFC PATCH bpf-next v1 07/14] MIPS: eBPF: fix MOD64 insn on R6 ISA
+Date:   Sun, 11 Jul 2021 17:34:53 -0700
+Message-Id: <fdfdd33463f60cceb3f982aacd2229a1862a17d9.1625970384.git.Tony.Ambardar@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <cover.1625970383.git.Tony.Ambardar@gmail.com>
 References: <cover.1625970383.git.Tony.Ambardar@gmail.com>
@@ -86,32 +86,42 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Stop enforcing (insn->src_reg == 0) and allow special verifier insns such
-as "BPF_LD_MAP_FD(BPF_REG_2, 0)", used to refer to a process-local map fd
-and introduced in 0246e64d9a5f ("bpf: handle pseudo BPF_LD_IMM64 insn").
+The BPF_ALU64 | BPF_MOD implementation is broken on MIPS64R6 due to use of
+a 32-bit "modu" insn, as shown by the test_verifier failures:
 
-This is consistent with other JITs such as riscv32 and also used by
-test_verifier (e.g. "runtime/jit: tail_call within bounds, prog once").
+  455/p MOD64 overflow, check 1 FAIL retval 0 != 1 (run 1/1)
+  456/p MOD64 overflow, check 2 FAIL retval 0 != 1 (run 1/1)
 
-Fixes: b6bd53f9c4e8 ("MIPS: Add missing file for eBPF JIT.")
+Resolve by using the 64-bit "dmodu" instead.
+
+Fixes: 6c2c8a188868 ("MIPS: eBPF: Provide eBPF support for MIPS64R6")
 Signed-off-by: Tony Ambardar <Tony.Ambardar@gmail.com>
 ---
- arch/mips/net/ebpf_jit.c | 2 --
- 1 file changed, 2 deletions(-)
+ arch/mips/net/ebpf_jit.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/arch/mips/net/ebpf_jit.c b/arch/mips/net/ebpf_jit.c
-index f510c692975e..bba41f334d07 100644
+index 4f641dcb2031..e8c403c6cfa3 100644
 --- a/arch/mips/net/ebpf_jit.c
 +++ b/arch/mips/net/ebpf_jit.c
-@@ -1303,8 +1303,6 @@ static int build_one_insn(const struct bpf_insn *insn, struct jit_ctx *ctx,
- 		emit_instr(ctx, nop);
- 		break;
- 	case BPF_LD | BPF_DW | BPF_IMM:
--		if (insn->src_reg != 0)
--			return -EINVAL;
- 		dst = ebpf_to_mips_reg(ctx, insn, dst_reg);
- 		if (dst < 0)
- 			return dst;
+@@ -800,7 +800,7 @@ static int build_one_insn(const struct bpf_insn *insn, struct jit_ctx *ctx,
+ 			if (bpf_op == BPF_DIV)
+ 				emit_instr(ctx, ddivu_r6, dst, dst, MIPS_R_AT);
+ 			else
+-				emit_instr(ctx, modu, dst, dst, MIPS_R_AT);
++				emit_instr(ctx, dmodu, dst, dst, MIPS_R_AT);
+ 			break;
+ 		}
+ 		emit_instr(ctx, ddivu, dst, MIPS_R_AT);
+@@ -882,7 +882,7 @@ static int build_one_insn(const struct bpf_insn *insn, struct jit_ctx *ctx,
+ 					emit_instr(ctx, ddivu_r6,
+ 							dst, dst, src);
+ 				else
+-					emit_instr(ctx, modu, dst, dst, src);
++					emit_instr(ctx, dmodu, dst, dst, src);
+ 				break;
+ 			}
+ 			emit_instr(ctx, ddivu, dst, src);
 -- 
 2.25.1
 

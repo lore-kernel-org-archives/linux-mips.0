@@ -5,34 +5,34 @@ X-Spam-Level:
 X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 71295C11F87
-	for <linux-mips@archiver.kernel.org>; Wed, 14 Jul 2021 15:12:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 98696C11F66
+	for <linux-mips@archiver.kernel.org>; Wed, 14 Jul 2021 15:12:06 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 58EE4613CF
-	for <linux-mips@archiver.kernel.org>; Wed, 14 Jul 2021 15:12:08 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 734BC613CF
+	for <linux-mips@archiver.kernel.org>; Wed, 14 Jul 2021 15:12:06 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239803AbhGNPO6 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 14 Jul 2021 11:14:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42428 "EHLO
+        id S239878AbhGNPO4 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 14 Jul 2021 11:14:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42396 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239781AbhGNPOh (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 14 Jul 2021 11:14:37 -0400
-Received: from xavier.telenet-ops.be (xavier.telenet-ops.be [IPv6:2a02:1800:120:4::f00:14])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EC81C0613E9
-        for <linux-mips@vger.kernel.org>; Wed, 14 Jul 2021 08:11:42 -0700 (PDT)
+        with ESMTP id S239808AbhGNPOo (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 14 Jul 2021 11:14:44 -0400
+Received: from michel.telenet-ops.be (michel.telenet-ops.be [IPv6:2a02:1800:110:4::f00:18])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B44A0C061341
+        for <linux-mips@vger.kernel.org>; Wed, 14 Jul 2021 08:11:44 -0700 (PDT)
 Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed10:bcf3:b2b1:dff6:480b])
-        by xavier.telenet-ops.be with bizsmtp
-        id V3Be2500G4sai0K013Be4x; Wed, 14 Jul 2021 17:11:40 +0200
+        by michel.telenet-ops.be with bizsmtp
+        id V3Bf2500M4sai0K063BfXu; Wed, 14 Jul 2021 17:11:41 +0200
 Received: from rox.of.borg ([192.168.97.57])
         by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
         (Exim 4.93)
         (envelope-from <geert@linux-m68k.org>)
-        id 1m3gXy-001ARF-4j; Wed, 14 Jul 2021 17:11:38 +0200
+        id 1m3gXz-001ARN-0x; Wed, 14 Jul 2021 17:11:39 +0200
 Received: from geert by rox.of.borg with local (Exim 4.93)
         (envelope-from <geert@linux-m68k.org>)
-        id 1m3gXx-00AcfU-7P; Wed, 14 Jul 2021 17:11:37 +0200
+        id 1m3gXx-00Acfw-Dk; Wed, 14 Jul 2021 17:11:37 +0200
 From:   Geert Uytterhoeven <geert@linux-m68k.org>
 To:     Robin van der Gracht <robin@protonic.nl>,
         Rob Herring <robh+dt@kernel.org>,
@@ -43,9 +43,9 @@ To:     Robin van der Gracht <robin@protonic.nl>,
 Cc:     devicetree@vger.kernel.org, linux-leds@vger.kernel.org,
         linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
         Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH v3 04/19] auxdisplay: img-ascii-lcd: Add helper variable dev
-Date:   Wed, 14 Jul 2021 17:11:15 +0200
-Message-Id: <20210714151130.2531831-5-geert@linux-m68k.org>
+Subject: [PATCH v3 08/19] auxdisplay: linedisp: Add support for changing scroll rate
+Date:   Wed, 14 Jul 2021 17:11:19 +0200
+Message-Id: <20210714151130.2531831-9-geert@linux-m68k.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210714151130.2531831-1-geert@linux-m68k.org>
 References: <20210714151130.2531831-1-geert@linux-m68k.org>
@@ -55,8 +55,12 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-img_ascii_lcd_probe() has many users of "pdev->dev".  Add a shorthand to
-simplify the code.
+If the message to display is longer than the number of characters that
+the display can show, the message will be scrolled.  Currently the
+scroll rate is fixed, moving every 500 ms.
+
+Add support for changing the scroll rate through a "scroll_step_ms"
+device attribute in sysfs.
 
 Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 ---
@@ -66,54 +70,80 @@ v3:
 v2:
   - No changes.
 ---
- drivers/auxdisplay/img-ascii-lcd.c | 13 ++++++-------
- 1 file changed, 6 insertions(+), 7 deletions(-)
+ drivers/auxdisplay/line-display.c | 37 +++++++++++++++++++++++++++++--
+ 1 file changed, 35 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/auxdisplay/img-ascii-lcd.c b/drivers/auxdisplay/img-ascii-lcd.c
-index e33ce0151cdfd150..2b6e41ec57544faa 100644
---- a/drivers/auxdisplay/img-ascii-lcd.c
-+++ b/drivers/auxdisplay/img-ascii-lcd.c
-@@ -365,26 +365,25 @@ static int img_ascii_lcd_probe(struct platform_device *pdev)
- {
- 	const struct of_device_id *match;
- 	const struct img_ascii_lcd_config *cfg;
-+	struct device *dev = &pdev->dev;
- 	struct img_ascii_lcd_ctx *ctx;
- 	int err;
+diff --git a/drivers/auxdisplay/line-display.c b/drivers/auxdisplay/line-display.c
+index 3f35199bc39f511f..03e7f104aa1add32 100644
+--- a/drivers/auxdisplay/line-display.c
++++ b/drivers/auxdisplay/line-display.c
+@@ -19,6 +19,8 @@
  
--	match = of_match_device(img_ascii_lcd_matches, &pdev->dev);
-+	match = of_match_device(img_ascii_lcd_matches, dev);
- 	if (!match)
- 		return -ENODEV;
+ #include "line-display.h"
  
- 	cfg = match->data;
--	ctx = devm_kzalloc(&pdev->dev, sizeof(*ctx) + cfg->num_chars,
--			   GFP_KERNEL);
-+	ctx = devm_kzalloc(dev, sizeof(*ctx) + cfg->num_chars, GFP_KERNEL);
- 	if (!ctx)
- 		return -ENOMEM;
++#define DEFAULT_SCROLL_RATE	(HZ / 2)
++
+ /**
+  * linedisp_scroll() - scroll the display by a character
+  * @t: really a pointer to the private data structure
+@@ -50,7 +52,7 @@ static void linedisp_scroll(struct timer_list *t)
+ 	linedisp->scroll_pos %= linedisp->message_len;
  
- 	if (cfg->external_regmap) {
--		ctx->regmap = syscon_node_to_regmap(pdev->dev.parent->of_node);
-+		ctx->regmap = syscon_node_to_regmap(dev->parent->of_node);
- 		if (IS_ERR(ctx->regmap))
- 			return PTR_ERR(ctx->regmap);
+ 	/* rearm the timer */
+-	if (linedisp->message_len > num_chars)
++	if (linedisp->message_len > num_chars && linedisp->scroll_rate)
+ 		mod_timer(&linedisp->timer, jiffies + linedisp->scroll_rate);
+ }
  
--		if (of_property_read_u32(pdev->dev.of_node, "offset",
--					 &ctx->offset))
-+		if (of_property_read_u32(dev->of_node, "offset", &ctx->offset))
- 			return -EINVAL;
- 	} else {
- 		ctx->base = devm_platform_ioremap_resource(pdev, 0);
-@@ -408,7 +407,7 @@ static int img_ascii_lcd_probe(struct platform_device *pdev)
- 	if (err)
- 		goto out_del_timer;
+@@ -149,8 +151,39 @@ static ssize_t message_store(struct device *dev, struct device_attribute *attr,
  
--	err = device_create_file(&pdev->dev, &dev_attr_message);
-+	err = device_create_file(dev, &dev_attr_message);
- 	if (err)
- 		goto out_del_timer;
+ static DEVICE_ATTR_RW(message);
  
++static ssize_t scroll_step_ms_show(struct device *dev,
++				   struct device_attribute *attr, char *buf)
++{
++	struct linedisp *linedisp = container_of(dev, struct linedisp, dev);
++
++	return sysfs_emit(buf, "%u\n", jiffies_to_msecs(linedisp->scroll_rate));
++}
++
++static ssize_t scroll_step_ms_store(struct device *dev,
++				    struct device_attribute *attr,
++				    const char *buf, size_t count)
++{
++	struct linedisp *linedisp = container_of(dev, struct linedisp, dev);
++	unsigned int ms;
++
++	if (kstrtouint(buf, 10, &ms) != 0)
++		return -EINVAL;
++
++	linedisp->scroll_rate = msecs_to_jiffies(ms);
++	if (linedisp->message && linedisp->message_len > linedisp->num_chars) {
++		del_timer_sync(&linedisp->timer);
++		if (linedisp->scroll_rate)
++			linedisp_scroll(&linedisp->timer);
++	}
++
++	return count;
++}
++
++static DEVICE_ATTR_RW(scroll_step_ms);
++
+ static struct attribute *linedisp_attrs[] = {
+ 	&dev_attr_message.attr,
++	&dev_attr_scroll_step_ms.attr,
+ 	NULL,
+ };
+ ATTRIBUTE_GROUPS(linedisp);
+@@ -182,7 +215,7 @@ int linedisp_register(struct linedisp *linedisp, struct device *parent,
+ 	linedisp->update = update;
+ 	linedisp->buf = buf;
+ 	linedisp->num_chars = num_chars;
+-	linedisp->scroll_rate = HZ / 2;
++	linedisp->scroll_rate = DEFAULT_SCROLL_RATE;
+ 
+ 	device_initialize(&linedisp->dev);
+ 	dev_set_name(&linedisp->dev, "linedisp.%lu",
 -- 
 2.25.1
 

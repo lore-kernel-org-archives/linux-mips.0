@@ -7,32 +7,32 @@ X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_NONE,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CF7A1C11F68
-	for <linux-mips@archiver.kernel.org>; Wed, 14 Jul 2021 15:12:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AD1B2C11F6A
+	for <linux-mips@archiver.kernel.org>; Wed, 14 Jul 2021 15:12:23 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id B29A1613BF
-	for <linux-mips@archiver.kernel.org>; Wed, 14 Jul 2021 15:12:22 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 906E0613D6
+	for <linux-mips@archiver.kernel.org>; Wed, 14 Jul 2021 15:12:23 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239683AbhGNPPN (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        id S239908AbhGNPPN (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
         Wed, 14 Jul 2021 11:15:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42432 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42426 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239869AbhGNPOx (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 14 Jul 2021 11:14:53 -0400
-Received: from albert.telenet-ops.be (albert.telenet-ops.be [IPv6:2a02:1800:110:4::f00:1a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF246C0610D1
+        with ESMTP id S239849AbhGNPOv (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 14 Jul 2021 11:14:51 -0400
+Received: from laurent.telenet-ops.be (laurent.telenet-ops.be [IPv6:2a02:1800:110:4::f00:19])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3DECC0611A3
         for <linux-mips@vger.kernel.org>; Wed, 14 Jul 2021 08:11:44 -0700 (PDT)
 Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed10:bcf3:b2b1:dff6:480b])
-        by albert.telenet-ops.be with bizsmtp
-        id V3Bf2500R4sai0K063BfVZ; Wed, 14 Jul 2021 17:11:41 +0200
+        by laurent.telenet-ops.be with bizsmtp
+        id V3Bf2500U4sai0K013Bf5x; Wed, 14 Jul 2021 17:11:41 +0200
 Received: from rox.of.borg ([192.168.97.57])
         by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
         (Exim 4.93)
         (envelope-from <geert@linux-m68k.org>)
-        id 1m3gXz-001ARO-0K; Wed, 14 Jul 2021 17:11:39 +0200
+        id 1m3gXz-001ARS-8D; Wed, 14 Jul 2021 17:11:39 +0200
 Received: from geert by rox.of.borg with local (Exim 4.93)
         (envelope-from <geert@linux-m68k.org>)
-        id 1m3gXx-00Acg3-Fd; Wed, 14 Jul 2021 17:11:37 +0200
+        id 1m3gXx-00AcgV-KJ; Wed, 14 Jul 2021 17:11:37 +0200
 From:   Geert Uytterhoeven <geert@linux-m68k.org>
 To:     Robin van der Gracht <robin@protonic.nl>,
         Rob Herring <robh+dt@kernel.org>,
@@ -43,9 +43,9 @@ To:     Robin van der Gracht <robin@protonic.nl>,
 Cc:     devicetree@vger.kernel.org, linux-leds@vger.kernel.org,
         linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
         Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH v3 09/19] auxdisplay: ht16k33: Connect backlight to fbdev
-Date:   Wed, 14 Jul 2021 17:11:20 +0200
-Message-Id: <20210714151130.2531831-10-geert@linux-m68k.org>
+Subject: [PATCH v3 13/19] auxdisplay: ht16k33: Add helper variable dev
+Date:   Wed, 14 Jul 2021 17:11:24 +0200
+Message-Id: <20210714151130.2531831-14-geert@linux-m68k.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210714151130.2531831-1-geert@linux-m68k.org>
 References: <20210714151130.2531831-1-geert@linux-m68k.org>
@@ -55,104 +55,157 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Currently /sys/class/graphics/fb0/bl_curve is not accessible (-ENODEV),
-as the driver does not connect the backlight to the frame buffer device.
-Fix this moving backlight initialization up, and filling in
-fb_info.bl_dev.
+This driver has many users of "client->dev".  Add shorthands to simplify
+the code.
 
-Fixes: 8992da44c6805d53 ("auxdisplay: ht16k33: Driver for LED controller")
 Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Acked-by: Robin van der Gracht <robin@protonic.nl>
 ---
 v3:
   - No changes,
 
 v2:
-  - New.
+  - Add Acked-by,
+  - Rebased.
 ---
- drivers/auxdisplay/ht16k33.c | 56 ++++++++++++++++++------------------
- 1 file changed, 28 insertions(+), 28 deletions(-)
+ drivers/auxdisplay/ht16k33.c | 43 ++++++++++++++++++------------------
+ 1 file changed, 22 insertions(+), 21 deletions(-)
 
 diff --git a/drivers/auxdisplay/ht16k33.c b/drivers/auxdisplay/ht16k33.c
-index 1e69cc6d21a0dca2..2b630e194570f6e5 100644
+index 8c1689b77db95676..75d326a823543898 100644
 --- a/drivers/auxdisplay/ht16k33.c
 +++ b/drivers/auxdisplay/ht16k33.c
-@@ -413,6 +413,33 @@ static int ht16k33_probe(struct i2c_client *client,
- 	if (err)
- 		return err;
+@@ -316,7 +316,8 @@ static void ht16k33_keypad_stop(struct input_dev *dev)
+ static int ht16k33_keypad_probe(struct i2c_client *client,
+ 				struct ht16k33_keypad *keypad)
+ {
+-	struct device_node *node = client->dev.of_node;
++	struct device *dev = &client->dev;
++	struct device_node *node = dev->of_node;
+ 	u32 rows = HT16K33_MATRIX_KEYPAD_MAX_ROWS;
+ 	u32 cols = HT16K33_MATRIX_KEYPAD_MAX_COLS;
+ 	int err;
+@@ -324,7 +325,7 @@ static int ht16k33_keypad_probe(struct i2c_client *client,
+ 	keypad->client = client;
+ 	init_waitqueue_head(&keypad->wait);
  
-+	/* Backlight */
-+	memset(&bl_props, 0, sizeof(struct backlight_properties));
-+	bl_props.type = BACKLIGHT_RAW;
-+	bl_props.max_brightness = MAX_BRIGHTNESS;
-+
-+	bl = devm_backlight_device_register(&client->dev, DRIVER_NAME"-bl",
-+					    &client->dev, priv,
-+					    &ht16k33_bl_ops, &bl_props);
-+	if (IS_ERR(bl)) {
-+		dev_err(&client->dev, "failed to register backlight\n");
-+		return PTR_ERR(bl);
-+	}
-+
-+	err = of_property_read_u32(node, "default-brightness-level",
-+				   &dft_brightness);
-+	if (err) {
-+		dft_brightness = MAX_BRIGHTNESS;
-+	} else if (dft_brightness > MAX_BRIGHTNESS) {
-+		dev_warn(&client->dev,
-+			 "invalid default brightness level: %u, using %u\n",
-+			 dft_brightness, MAX_BRIGHTNESS);
-+		dft_brightness = MAX_BRIGHTNESS;
-+	}
-+
-+	bl->props.brightness = dft_brightness;
-+	ht16k33_bl_update_status(bl);
-+
- 	/* Framebuffer (2 bytes per column) */
- 	BUILD_BUG_ON(PAGE_SIZE < HT16K33_FB_SIZE);
- 	fbdev->buffer = (unsigned char *) get_zeroed_page(GFP_KERNEL);
-@@ -445,6 +472,7 @@ static int ht16k33_probe(struct i2c_client *client,
- 	fbdev->info->screen_size = HT16K33_FB_SIZE;
- 	fbdev->info->fix = ht16k33_fb_fix;
- 	fbdev->info->var = ht16k33_fb_var;
-+	fbdev->info->bl_dev = bl;
- 	fbdev->info->pseudo_palette = NULL;
- 	fbdev->info->flags = FBINFO_FLAG_DEFAULT;
- 	fbdev->info->par = priv;
-@@ -460,34 +488,6 @@ static int ht16k33_probe(struct i2c_client *client,
- 			goto err_fbdev_unregister;
+-	keypad->dev = devm_input_allocate_device(&client->dev);
++	keypad->dev = devm_input_allocate_device(dev);
+ 	if (!keypad->dev)
+ 		return -ENOMEM;
+ 
+@@ -341,17 +342,17 @@ static int ht16k33_keypad_probe(struct i2c_client *client,
+ 	err = of_property_read_u32(node, "debounce-delay-ms",
+ 				   &keypad->debounce_ms);
+ 	if (err) {
+-		dev_err(&client->dev, "key debounce delay not specified\n");
++		dev_err(dev, "key debounce delay not specified\n");
+ 		return err;
  	}
  
--	/* Backlight */
--	memset(&bl_props, 0, sizeof(struct backlight_properties));
--	bl_props.type = BACKLIGHT_RAW;
--	bl_props.max_brightness = MAX_BRIGHTNESS;
--
+-	err = matrix_keypad_parse_of_params(&client->dev, &rows, &cols);
++	err = matrix_keypad_parse_of_params(dev, &rows, &cols);
+ 	if (err)
+ 		return err;
+ 	if (rows > HT16K33_MATRIX_KEYPAD_MAX_ROWS ||
+ 	    cols > HT16K33_MATRIX_KEYPAD_MAX_COLS) {
+-		dev_err(&client->dev, "%u rows or %u cols out of range in DT\n",
+-			rows, cols);
++		dev_err(dev, "%u rows or %u cols out of range in DT\n", rows,
++			cols);
+ 		return -ERANGE;
+ 	}
+ 
+@@ -362,17 +363,17 @@ static int ht16k33_keypad_probe(struct i2c_client *client,
+ 	err = matrix_keypad_build_keymap(NULL, NULL, rows, cols, NULL,
+ 					 keypad->dev);
+ 	if (err) {
+-		dev_err(&client->dev, "failed to build keymap\n");
++		dev_err(dev, "failed to build keymap\n");
+ 		return err;
+ 	}
+ 
+-	err = devm_request_threaded_irq(&client->dev, client->irq,
+-					NULL, ht16k33_keypad_irq_thread,
++	err = devm_request_threaded_irq(dev, client->irq, NULL,
++					ht16k33_keypad_irq_thread,
+ 					IRQF_TRIGGER_HIGH | IRQF_ONESHOT,
+ 					DRIVER_NAME, keypad);
+ 	if (err) {
+-		dev_err(&client->dev, "irq request failed %d, error %d\n",
+-			client->irq, err);
++		dev_err(dev, "irq request failed %d, error %d\n", client->irq,
++			err);
+ 		return err;
+ 	}
+ 
+@@ -389,14 +390,15 @@ static int ht16k33_probe(struct i2c_client *client)
+ 	struct backlight_properties bl_props;
+ 	struct ht16k33_priv *priv;
+ 	struct ht16k33_fbdev *fbdev;
+-	struct device_node *node = client->dev.of_node;
++	struct device *dev = &client->dev;
++	struct device_node *node = dev->of_node;
+ 
+ 	if (!i2c_check_functionality(client->adapter, I2C_FUNC_I2C)) {
+-		dev_err(&client->dev, "i2c_check_functionality error\n");
++		dev_err(dev, "i2c_check_functionality error\n");
+ 		return -EIO;
+ 	}
+ 
+-	priv = devm_kzalloc(&client->dev, sizeof(*priv), GFP_KERNEL);
++	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
+ 	if (!priv)
+ 		return -ENOMEM;
+ 
+@@ -413,11 +415,10 @@ static int ht16k33_probe(struct i2c_client *client)
+ 	bl_props.type = BACKLIGHT_RAW;
+ 	bl_props.max_brightness = MAX_BRIGHTNESS;
+ 
 -	bl = devm_backlight_device_register(&client->dev, DRIVER_NAME"-bl",
 -					    &client->dev, priv,
--					    &ht16k33_bl_ops, &bl_props);
--	if (IS_ERR(bl)) {
++	bl = devm_backlight_device_register(dev, DRIVER_NAME"-bl", dev, priv,
+ 					    &ht16k33_bl_ops, &bl_props);
+ 	if (IS_ERR(bl)) {
 -		dev_err(&client->dev, "failed to register backlight\n");
--		err = PTR_ERR(bl);
--		goto err_fbdev_unregister;
--	}
--
--	err = of_property_read_u32(node, "default-brightness-level",
--				   &dft_brightness);
--	if (err) {
--		dft_brightness = MAX_BRIGHTNESS;
--	} else if (dft_brightness > MAX_BRIGHTNESS) {
--		dev_warn(&client->dev,
--			 "invalid default brightness level: %u, using %u\n",
--			 dft_brightness, MAX_BRIGHTNESS);
--		dft_brightness = MAX_BRIGHTNESS;
--	}
--
--	bl->props.brightness = dft_brightness;
--	ht16k33_bl_update_status(bl);
--
- 	ht16k33_fb_queue(priv);
- 	return 0;
++		dev_err(dev, "failed to register backlight\n");
+ 		return PTR_ERR(bl);
+ 	}
  
+@@ -426,7 +427,7 @@ static int ht16k33_probe(struct i2c_client *client)
+ 	if (err) {
+ 		dft_brightness = MAX_BRIGHTNESS;
+ 	} else if (dft_brightness > MAX_BRIGHTNESS) {
+-		dev_warn(&client->dev,
++		dev_warn(dev,
+ 			 "invalid default brightness level: %u, using %u\n",
+ 			 dft_brightness, MAX_BRIGHTNESS);
+ 		dft_brightness = MAX_BRIGHTNESS;
+@@ -441,13 +442,13 @@ static int ht16k33_probe(struct i2c_client *client)
+ 	if (!fbdev->buffer)
+ 		return -ENOMEM;
+ 
+-	fbdev->cache = devm_kmalloc(&client->dev, HT16K33_FB_SIZE, GFP_KERNEL);
++	fbdev->cache = devm_kmalloc(dev, HT16K33_FB_SIZE, GFP_KERNEL);
+ 	if (!fbdev->cache) {
+ 		err = -ENOMEM;
+ 		goto err_fbdev_buffer;
+ 	}
+ 
+-	fbdev->info = framebuffer_alloc(0, &client->dev);
++	fbdev->info = framebuffer_alloc(0, dev);
+ 	if (!fbdev->info) {
+ 		err = -ENOMEM;
+ 		goto err_fbdev_buffer;
+@@ -456,7 +457,7 @@ static int ht16k33_probe(struct i2c_client *client)
+ 	err = of_property_read_u32(node, "refresh-rate-hz",
+ 		&fbdev->refresh_rate);
+ 	if (err) {
+-		dev_err(&client->dev, "refresh rate not specified\n");
++		dev_err(dev, "refresh rate not specified\n");
+ 		goto err_fbdev_info;
+ 	}
+ 	fb_bl_default_curve(fbdev->info, 0, MIN_BRIGHTNESS, MAX_BRIGHTNESS);
 -- 
 2.25.1
 

@@ -2,92 +2,141 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.1 required=3.0 tests=BAYES_00,DKIM_INVALID,
-	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-18.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8C9F9C1B08C
-	for <linux-mips@archiver.kernel.org>; Thu, 15 Jul 2021 16:47:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B36C3C1B08C
+	for <linux-mips@archiver.kernel.org>; Thu, 15 Jul 2021 16:47:51 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 7620E613F8
-	for <linux-mips@archiver.kernel.org>; Thu, 15 Jul 2021 16:47:48 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 9DDEC613F9
+	for <linux-mips@archiver.kernel.org>; Thu, 15 Jul 2021 16:47:51 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229832AbhGOQul (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 15 Jul 2021 12:50:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56676 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229624AbhGOQuk (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Thu, 15 Jul 2021 12:50:40 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B48DC06175F;
-        Thu, 15 Jul 2021 09:47:47 -0700 (PDT)
+        id S235410AbhGOQuo (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 15 Jul 2021 12:50:44 -0400
+Received: from ale.deltatee.com ([204.191.154.188]:49980 "EHLO
+        ale.deltatee.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233775AbhGOQtE (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Thu, 15 Jul 2021 12:49:04 -0400
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=r4iZBSBArnzjTS6KLDRlSR7w7S6swyImdOsNDPS7Sis=; b=hXyaSz1urrT6N85UjIGFUt7af
-        PiwXb128VN8Nd6dy5SRYwLWwy0SU/ypNmQ5JkYOh1JS2knojDgYLwXthStegnsrmI09YsBKkM5MPT
-        OFWdJtkr7MnIGIFr7Eu7JUWtgArfiSNHXwRV9gQpKR7ScC2Ix9rrzYF2dvjCFdX/L00fOFO76Of4w
-        hfdI4vD/xWj3aJ5FF/avwPxEPbK5jVDDQhEdaOQcff3CqVbPu67/A/baLdEvLiryu7GoHqX4uA6Jq
-        sI/hDfVhZXyZM218k0a5xjDhDyNTv0Fs4cTLfiUQQBY6IBzO7IExkNkK9UfN7Fkbsk7TGJ83IM+Fn
-        E9B14gOZQ==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:46186)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        d=deltatee.com; s=20200525; h=Subject:MIME-Version:References:In-Reply-To:
+        Message-Id:Date:Cc:To:From:content-disposition;
+        bh=uu4aeN6jLZDDSmgkCHoBLJNdbMQcxeI5DFxw3zZTSL0=; b=gyTcP6BppoSR64QEvT/6KtgUd4
+        Cqacpd6zTCyD395IziWLZMvonIdoJpuFag5HZmfxDEthN0GdLzlhj32QyIroM8uAQZdE22g12YATi
+        H/jKwIc1CJgKU96vcbzADV+HUKkeUUeUFk+I0FiduEZUx5pgGdOEotFQCunQ0YeFwOqFZM2XWMQhU
+        0S8xCAMxaVx0Uzm+K7FrDJH4ongykXe/b91PI7moGdLy+Crm9NdgjqolQDFXGbGxivk1uQzDkzKdX
+        a8WiPtvsM8g1Ej+a/P2jxuyWh9XeVk+p/okqS8f0rUiHP3ocghhh/0BeqR8n09yHS2+/br3O+Kb2h
+        Jn8Vn66A==;
+Received: from cgy1-donard.priv.deltatee.com ([172.16.1.31])
+        by ale.deltatee.com with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1m44WV-000147-6i; Thu, 15 Jul 2021 17:47:43 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1m44WT-0002L1-Ek; Thu, 15 Jul 2021 17:47:41 +0100
-Date:   Thu, 15 Jul 2021 17:47:41 +0100
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Cc:     linux-arch@vger.kernel.org, linux-parisc@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/3] arm: Rename PMD_ORDER to PMD_TABLE_ORDER
-Message-ID: <20210715164740.GN22278@shell.armlinux.org.uk>
-References: <20210715134612.809280-1-willy@infradead.org>
- <20210715134612.809280-2-willy@infradead.org>
+        (envelope-from <gunthorp@deltatee.com>)
+        id 1m44Ur-0001yg-Fa; Thu, 15 Jul 2021 10:46:04 -0600
+Received: from gunthorp by cgy1-donard.priv.deltatee.com with local (Exim 4.92)
+        (envelope-from <gunthorp@deltatee.com>)
+        id 1m44Uo-0001nH-2S; Thu, 15 Jul 2021 10:45:58 -0600
+From:   Logan Gunthorpe <logang@deltatee.com>
+To:     linux-kernel@vger.kernel.org, linux-alpha@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-ia64@vger.kernel.org,
+        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-s390@vger.kernel.org, sparclinux@vger.kernel.org,
+        iommu@lists.linux-foundation.org, linux-parisc@vger.kernel.org,
+        xen-devel@lists.xenproject.org
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Stephen Bates <sbates@raithlin.com>,
+        Martin Oliveira <martin.oliveira@eideticom.com>,
+        Logan Gunthorpe <logang@deltatee.com>,
+        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>
+Date:   Thu, 15 Jul 2021 10:45:32 -0600
+Message-Id: <20210715164544.6827-5-logang@deltatee.com>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20210715164544.6827-1-logang@deltatee.com>
+References: <20210715164544.6827-1-logang@deltatee.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210715134612.809280-2-willy@infradead.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 172.16.1.31
+X-SA-Exim-Rcpt-To: linux-arm-kernel@lists.infradead.org, linuxppc-dev@lists.ozlabs.org, iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org, linux-alpha@vger.kernel.org, linux-ia64@vger.kernel.org, linux-mips@vger.kernel.org, linux-s390@vger.kernel.org, sparclinux@vger.kernel.org, linux-parisc@vger.kernel.org, xen-devel@lists.xenproject.org, hch@lst.de, m.szyprowski@samsung.com, robin.murphy@arm.com, sbates@raithlin.com, martin.oliveira@eideticom.com, logang@deltatee.com, joro@8bytes.org, will@kernel.org
+X-SA-Exim-Mail-From: gunthorp@deltatee.com
+Subject: [PATCH v1 04/16] dma-iommu: Return error code from iommu_dma_map_sg()
+X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
+X-SA-Exim-Scanned: Yes (on ale.deltatee.com)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Thu, Jul 15, 2021 at 02:46:10PM +0100, Matthew Wilcox (Oracle) wrote:
-> This is the order of the page table allocation, not the order of a PMD.
-> 
-> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-> ---
->  arch/arm/kernel/head.S | 34 +++++++++++++++++-----------------
->  1 file changed, 17 insertions(+), 17 deletions(-)
-> 
-> diff --git a/arch/arm/kernel/head.S b/arch/arm/kernel/head.S
-> index 9eb0b4dbcc12..6da39a1d70ba 100644
-> --- a/arch/arm/kernel/head.S
-> +++ b/arch/arm/kernel/head.S
-> @@ -38,10 +38,10 @@
->  #ifdef CONFIG_ARM_LPAE
->  	/* LPAE requires an additional page for the PGD */
->  #define PG_DIR_SIZE	0x5000
-> -#define PMD_ORDER	3
-> +#define PMD_TABLE_ORDER	3
->  #else
->  #define PG_DIR_SIZE	0x4000
-> -#define PMD_ORDER	2
-> +#define PMD_TABLE_ORDER	2
+Pass through appropriate error codes from iommu_dma_map_sg() now that
+the error code will be passed through dma_map_sgtable().
 
-I think PMD_ENTRY_ORDER would make more sense here - this is the
-power-of-2 of an individual PMD entry, not of the entire table.
+Signed-off-by: Logan Gunthorpe <logang@deltatee.com>
+Cc: Joerg Roedel <joro@8bytes.org>
+Cc: Will Deacon <will@kernel.org>
+---
+ drivers/iommu/dma-iommu.c | 20 +++++++++++++-------
+ 1 file changed, 13 insertions(+), 7 deletions(-)
 
+diff --git a/drivers/iommu/dma-iommu.c b/drivers/iommu/dma-iommu.c
+index 98ba927aee1a..9d35e9994306 100644
+--- a/drivers/iommu/dma-iommu.c
++++ b/drivers/iommu/dma-iommu.c
+@@ -972,7 +972,7 @@ static int iommu_dma_map_sg_swiotlb(struct device *dev, struct scatterlist *sg,
+ 
+ out_unmap:
+ 	iommu_dma_unmap_sg_swiotlb(dev, sg, i, dir, attrs | DMA_ATTR_SKIP_CPU_SYNC);
+-	return 0;
++	return -EINVAL;
+ }
+ 
+ /*
+@@ -993,11 +993,14 @@ static int iommu_dma_map_sg(struct device *dev, struct scatterlist *sg,
+ 	dma_addr_t iova;
+ 	size_t iova_len = 0;
+ 	unsigned long mask = dma_get_seg_boundary(dev);
++	ssize_t ret;
+ 	int i;
+ 
+-	if (static_branch_unlikely(&iommu_deferred_attach_enabled) &&
+-	    iommu_deferred_attach(dev, domain))
+-		return 0;
++	if (static_branch_unlikely(&iommu_deferred_attach_enabled)) {
++		ret = iommu_deferred_attach(dev, domain);
++		if (ret)
++			return ret;
++	}
+ 
+ 	if (!(attrs & DMA_ATTR_SKIP_CPU_SYNC))
+ 		iommu_dma_sync_sg_for_device(dev, sg, nents, dir);
+@@ -1045,14 +1048,17 @@ static int iommu_dma_map_sg(struct device *dev, struct scatterlist *sg,
+ 	}
+ 
+ 	iova = iommu_dma_alloc_iova(domain, iova_len, dma_get_mask(dev), dev);
+-	if (!iova)
++	if (!iova) {
++		ret = -ENOMEM;
+ 		goto out_restore_sg;
++	}
+ 
+ 	/*
+ 	 * We'll leave any physical concatenation to the IOMMU driver's
+ 	 * implementation - it knows better than we do.
+ 	 */
+-	if (iommu_map_sg_atomic(domain, iova, sg, nents, prot) < iova_len)
++	ret = iommu_map_sg_atomic(domain, iova, sg, nents, prot);
++	if (ret < iova_len)
+ 		goto out_free_iova;
+ 
+ 	return __finalise_sg(dev, sg, nents, iova);
+@@ -1061,7 +1067,7 @@ static int iommu_dma_map_sg(struct device *dev, struct scatterlist *sg,
+ 	iommu_dma_free_iova(cookie, iova, iova_len, NULL);
+ out_restore_sg:
+ 	__invalidate_sg(sg, nents);
+-	return 0;
++	return ret;
+ }
+ 
+ static void iommu_dma_unmap_sg(struct device *dev, struct scatterlist *sg,
 -- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+2.20.1
+

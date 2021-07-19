@@ -2,192 +2,813 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-12.2 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	MAILING_LIST_MULTI,MSGID_FROM_MTA_HEADER,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-18.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,MENTIONS_GIT_HOSTING,SPF_HELO_NONE,SPF_PASS autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EFA71C636CE
+	by smtp.lore.kernel.org (Postfix) with ESMTP id ED726C07E9D
 	for <linux-mips@archiver.kernel.org>; Mon, 19 Jul 2021 22:47:56 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id CF44F6108B
-	for <linux-mips@archiver.kernel.org>; Mon, 19 Jul 2021 22:47:55 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 0BC7661165
+	for <linux-mips@archiver.kernel.org>; Mon, 19 Jul 2021 22:47:56 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238007AbhGSVvw (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 19 Jul 2021 17:51:52 -0400
-Received: from mx0b-00069f02.pphosted.com ([205.220.177.32]:64046 "EHLO
-        mx0b-00069f02.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1386889AbhGSTm1 (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>);
-        Mon, 19 Jul 2021 15:42:27 -0400
-Received: from pps.filterd (m0246631.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 16JKBCDb013444;
-        Mon, 19 Jul 2021 20:22:15 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2021-07-09;
- bh=BNsCGg2QiqJt2o1wi4MUZO169T4Ki1eHlXiKgwijNKc=;
- b=J9p544sL474mofe+xTQoq8YsvbFrw64oRD5IzTopdPOc91RntHYiswdp+l0iBRxeKsc+
- LcbktqEYtgbIj618AUH+mwgxSMvNsZNUfmN5q0R4CqG4hanO3nDhSowI1eoszHWzWRwR
- 4CTXr5nPlUhfI3A53N/MhA8T1pcmM9h5IOwEtui66Ny8pqW9rOmitzNSRdTLMNLrjSCF
- b7BTflkgSt4xkLqJiSaD1JsInPlQnXw4sEV8jRW5VOcm2mhDN6hHGvGb3cFLOD4JnBRJ
- ZbtIt8y0gtUaXpe/YLXPcV3r2J1dr2XHNnTNty3cujYk7RporaQh8GCy1b0AKWgPm6j4 lQ== 
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2020-01-29;
- bh=BNsCGg2QiqJt2o1wi4MUZO169T4Ki1eHlXiKgwijNKc=;
- b=vAfFDN0FVWtFDBxChUpMGJe1jHbRAEf/DAYpK7h724vkUPKNPOp2KtwljQa40crfQb1D
- SP/dBs0HPDzbDyts5CUSy/0ajs62rF2NwRnogKxFF36HN5se6O1/GIF4bqM2QYFOpmyH
- 5p/EBPKSLDR5LUgwkXwM9NGmmpPHxhkbJQ3fTQL0AMbQ9tLNcLmI5CrZZDC80iypBKQ/
- zNLH1fM+VmcD0+S8i21ETVE/gQW76CFIj7IoywDqJWGxxIUlA9HdwxMLF5lM7AgAK1uZ
- Rn9HkvFK5T+Wvcpz8lUQvGMOLR2g3UoQSNwsLLHTMeQgrVXMAMLLLlIBUfd1ZbH9s5fz Fg== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by mx0b-00069f02.pphosted.com with ESMTP id 39w83cs5eu-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 19 Jul 2021 20:22:15 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 16JKF3i7160410;
-        Mon, 19 Jul 2021 20:22:14 GMT
-Received: from nam02-dm3-obe.outbound.protection.outlook.com (mail-dm3nam07lp2040.outbound.protection.outlook.com [104.47.56.40])
-        by aserp3020.oracle.com with ESMTP id 39uq15cccq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 19 Jul 2021 20:22:14 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=i3fmxg4rVjpzHE5ssuXZZ0AIWBw6zeVhp3RyGArLeO579plKxIvOwEJlZP4MamhGsmXTyqIu/sPLgUnt8QxSqnNapwF4qB266MqchoU1M35EWTh/FyEw4g0AJFp87X7iE2z63sEmCEy3Boe61XDwufM8HiFhXw5czYFOiF0Ygp4ZH7P+7wjymMq8UCm8yMNRVHJpEXsmvKu85OXpVux/PZFz6n1UCWRTd3RaT0fxPQSI8fJ7CJxvMq2OhcF0Rga4ZsHMNDTeeO3MkNPP2x8fns56fsVS0JXDQeqGe/YVSfQ3Dhu/lP916Qr3QIiPwy6cDtkyDWSjAb02aKdEalcSTg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=BNsCGg2QiqJt2o1wi4MUZO169T4Ki1eHlXiKgwijNKc=;
- b=gNIVZDyCz2CmtpUJOew51Q8jOtkNPWNqUcy+Fg+BZjIaYd3TyenpHF22dnFbN8f+cHTttks2SHYvuMoGD1bPsVsuMBSqZAh4l+qabFuMFD591ka9UwVgCYAB/v5XQRTJhTY65gKqH1XsbV0MrCnKsCEaqz3hN68Abr+92LfCvi8KbQoqzsc6Aj8a5DNSmhgsPtU4xCYxI79YEPqsFlO6yW/OGBGWz1vUKljPBKcpgVC1fT6HI9U61CSBpCV2YHq6LJvyXJU6HTAwM8AE36VJdO5qB8mXEZhQ9sHItms8+48DEpRjYqPY+err1zXarcYowtIpifucQG5V8jw2l+z88A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=BNsCGg2QiqJt2o1wi4MUZO169T4Ki1eHlXiKgwijNKc=;
- b=Z0bNny2Hn8+wx5EDqRhz5h639ftRumqbgaiVVQ4vUM2dMQ5J1J+75SbZT8ZCLv/vFqMEoFpgbe/5F/Rglo8hGwHz0n+L2lYm//xvCOn+IuFRlm6MuvY+Tib/9SWiWCVEd5BYNtXKHsCQ0GahVlCLStRq0vGBG6VgpsDsIlgyeBM=
-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=oracle.com;
-Received: from BLAPR10MB5009.namprd10.prod.outlook.com (2603:10b6:208:321::10)
- by BLAPR10MB5329.namprd10.prod.outlook.com (2603:10b6:208:307::24) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4331.22; Mon, 19 Jul
- 2021 20:22:11 +0000
-Received: from BLAPR10MB5009.namprd10.prod.outlook.com
- ([fe80::f10d:29d2:cb38:ed0]) by BLAPR10MB5009.namprd10.prod.outlook.com
- ([fe80::f10d:29d2:cb38:ed0%8]) with mapi id 15.20.4331.033; Mon, 19 Jul 2021
- 20:22:11 +0000
-Subject: Re: [PATCH v1 13/16] xen: swiotlb: return error code from
- xen_swiotlb_map_sg()
-To:     Logan Gunthorpe <logang@deltatee.com>,
-        linux-kernel@vger.kernel.org, linux-alpha@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-ia64@vger.kernel.org,
-        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-s390@vger.kernel.org, sparclinux@vger.kernel.org,
-        iommu@lists.linux-foundation.org, linux-parisc@vger.kernel.org,
-        xen-devel@lists.xenproject.org
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Stephen Bates <sbates@raithlin.com>,
-        Martin Oliveira <martin.oliveira@eideticom.com>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Stefano Stabellini <sstabellini@kernel.org>
-References: <20210715164544.6827-1-logang@deltatee.com>
- <20210715164544.6827-14-logang@deltatee.com>
-From:   Boris Ostrovsky <boris.ostrovsky@oracle.com>
-Message-ID: <8cccf120-0b4b-4d66-0b96-4114af27a3d1@oracle.com>
-Date:   Mon, 19 Jul 2021 16:22:04 -0400
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.11.0
-In-Reply-To: <20210715164544.6827-14-logang@deltatee.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-ClientProxiedBy: SA9PR13CA0017.namprd13.prod.outlook.com
- (2603:10b6:806:21::22) To BLAPR10MB5009.namprd10.prod.outlook.com
- (2603:10b6:208:321::10)
+        id S1390266AbhGSVyV convert rfc822-to-8bit (ORCPT
+        <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 19 Jul 2021 17:54:21 -0400
+Received: from aposti.net ([89.234.176.197]:50070 "EHLO aposti.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1358668AbhGSVbF (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Mon, 19 Jul 2021 17:31:05 -0400
+Date:   Mon, 19 Jul 2021 23:10:55 +0100
+From:   Paul Cercueil <paul@crapouillou.net>
+Subject: Re: [PATCH] MIPS: Avoid macro redefinitions
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        list@opendingux.net, Kees Cook <keescook@chromium.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+Message-Id: <7YIIWQ.1TU3IBLL4KNC2@crapouillou.net>
+In-Reply-To: <CAKwvOdkVEa-CxbVschn5Tnh7-Ynvzcz+zChhP3LL3Q745wE7_A@mail.gmail.com>
+References: <20210718130748.230758-1-paul@crapouillou.net>
+        <CAKwvOdkVEa-CxbVschn5Tnh7-Ynvzcz+zChhP3LL3Q745wE7_A@mail.gmail.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [10.74.102.166] (160.34.88.166) by SA9PR13CA0017.namprd13.prod.outlook.com (2603:10b6:806:21::22) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4352.9 via Frontend Transport; Mon, 19 Jul 2021 20:22:07 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: a216d6ca-9dee-431e-753d-08d94af2e391
-X-MS-TrafficTypeDiagnostic: BLAPR10MB5329:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BLAPR10MB53295EB44276FE6AEA15CAD38AE19@BLAPR10MB5329.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:4303;
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: AiyY7elKT7NtOhGt2GzFvXpn9LtSNnhX9ehTyI8sETfsQV+K4tgFyeXf5D2NpKP+r1F56ND/56FfKOLi/Ad5IPWKQsc0rbn1QslGBFT3wa/lRS+5jz6C91ofQdVVAfwC+1CbW0HmfP9qy8mpnlYbmhuBwgdDJMtXfPLxUBBFw4TQN0InvGLT0mRLCxCWeaDJVVv/wcVjG0m2r5ndwoIyvfMUkOGSXsSn0ZCiARkK5J2XSA/h2bu4sMIcdFYJGpKcIwQOCrORrARr8h7xXgkJ6Oa3tHLTHXSOKDSSsIgnc7kjRjemqx8+S95PW6X/IGH9gI8F1WreDtlIwFEy5TZdtkpzj9v5MHuZT2uFfzdmpp38RTruOgxK8ZRTs8HLyrNsCnx02eKywjm+qDps2t+hHn0FuDDP3I/9JdpCme5w5qtCu5reQeb6c7wMEQz519mTSlnhprMYpj/POulMN+9hJc3tVNaz4rKlFrdPiqMrZI9cy6lbRyI69O9WBPutx2dCP+fG+1T2ke2rWoK3PDIuT4XQpAWbXgZrp7N9Ee2XkQ7PQKJFjDsuCGFO+R7r6HqpXbwQx0pEVuCR0DIIsNwYHJilc4lDrBlgGsG3/zfKTyoyv1C2f7MdDnGaDLsqj0pkm4gcWHrJ0BoY6R5dSzc5mWqawOOk7z0EOELuN+//Q+a9NYDxn3wazpPjCmriKcLBt2ZDBcYAWno+UgeetbJ6CoTmHS1kfZl3T8gE8s8/fgJ/L+AMlja7YDDdlVUL9GZW
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BLAPR10MB5009.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(39860400002)(396003)(366004)(346002)(376002)(136003)(6666004)(31696002)(31686004)(66476007)(66946007)(83380400001)(921005)(8676002)(86362001)(4744005)(5660300002)(38100700002)(6486002)(186003)(478600001)(53546011)(2906002)(54906003)(16576012)(36756003)(44832011)(316002)(8936002)(26005)(7416002)(956004)(4326008)(66556008)(2616005)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?QmZRb1ZkVjk2N092d1FOWm1TTFhxbGh0RFoza2MzZ3lycm8xdVMxUGhZaEh0?=
- =?utf-8?B?QjBueXhvTHVSQXdpYUdUVmRSZDRYV1Z2bFRpbXptdXFVNzRGejhaRWRlRWd6?=
- =?utf-8?B?aVQ5cXNFMFlCdVB5MUtDNjhVbUVpd3pWREZRWVdzYWp0U3FPbjdQVGs3US9R?=
- =?utf-8?B?aDFJS0lQR1FqNDVKSTR2UU1xNEFSTXk3aDJleDdPR2NBL3J6Z1RPNnV2Nkwz?=
- =?utf-8?B?eW1EVDhVSU9ITisrRkVZMEl0TFUvUmlNMlgvL0Z6SzJwYjFwMU5ldzhQclpM?=
- =?utf-8?B?WG5LaFVZcU41VXpEVUJLUDF6bzhFbVBOZFNkWEcvTE0rb1VoZElUQkxKcVdY?=
- =?utf-8?B?SmhnUkg0WmlxcTJUcWRTZVlnNHExaW85d2hRTy9nRzlNUXdBS2lHTlZKYm9j?=
- =?utf-8?B?aXFuUjdsb01ldFQ2Y3d4YlBXVU1FVk1TSVl4ZjBNcUZCRU1hd3BYMFM5WldH?=
- =?utf-8?B?SW93T0xHYUdFMzBvVEVBaExNUTNMZ25pOG9ncTNPN0ZmOHl3WUp2aGpBL3Vs?=
- =?utf-8?B?RTZ4ckNFSjVGWTFONmpVRlQ2K05lWWdCZy9JVEdjT2dtWXpia043OFlmdDM2?=
- =?utf-8?B?R2FQQnBUVXpZZkVMdGpvc21SZDFnclBKN1lyWk0vN0tGeGZad09wZzA1cDQr?=
- =?utf-8?B?eUdxeXFsOGY2WTB5dVJ4NGxxb2MzMzVDNStsWm5Cb3Z0Y2h5aWNwZmdCRTJW?=
- =?utf-8?B?ME9nK01sVnJBaSt6ZVpjOTE4YnlreEl1bmp5M1Vsc1ZXZ2g2U0J1RmpEenho?=
- =?utf-8?B?SThNMWZ5MmlueStmakR5TTE1cnBvcmwxR0YzL1FNTUxIMTVMMkgxV2NqUzcx?=
- =?utf-8?B?ZFJOZFpWOHlycEUrQVBzUXNNN3ZhRXdkc3dYZGtSQjBsdWZEWm5WdU9ZVGJp?=
- =?utf-8?B?bjRUQ3JjdGNhdjJycXAyZXBBZmd6SjUzUE9zQjg1VkNEcDhsTnRLbkVXREpY?=
- =?utf-8?B?RUtWMWhzdnRYNWtrZDl4SEg1K1dPRlByZ2cwRm9lVm9QRC9BVFN3N1VyM000?=
- =?utf-8?B?TGwyeWNyVnA2V2k0c3Q1bmNueVRodDhBME83WTdIY085aG9QYUJneWFoemIz?=
- =?utf-8?B?VnpxSExMK0JEZ0c4THNzd1k1NFNWR2ZiVGpDWFR3QnFNcm1jc0RXWVZBY1d5?=
- =?utf-8?B?SjhEVTdDeVhHeHI2bGZ1SG53M0ErTTBzN1ZwSEFtb1dhbTBrdStWUHhIK3dC?=
- =?utf-8?B?R0RYMjFoZVNFUlNRMXV0ZzBzNXVJSExDWHVyMk5RV3lkMDJuZkR2Q0kzWW1I?=
- =?utf-8?B?clVVelZ1cXVOVDZycmg3aWdrMWVUN0tvN0xqNWE3WDdNSzdlbFhRb3lhT3VC?=
- =?utf-8?B?Y21FVW81clhZU1A4SUphczhxbkN5cnd1WDdWUXYveHdTTzJPSWoxdUhURERJ?=
- =?utf-8?B?WTluVGdTSjRlalFwMTY5dUgzWitmQUQ2NnIrSDViaEhHVmhCUzFFR2VobC9H?=
- =?utf-8?B?SzZINlpmQ2xsbHBSY2ZvRE9nZmx6dXgvbkRqS3RQYTRvWExINHBWdVc3N3c0?=
- =?utf-8?B?T1lhWkRSQVpSR0V2dFROQzZZZjNvM0U2WGFKRVNSNGxPYW1uZGZYRlNXUHF3?=
- =?utf-8?B?cnpxcWNXd1RXYlRNNGpZTmlxMWhuSVlGazJUakpzVWRId01odnZrSFNVOS9N?=
- =?utf-8?B?UTduWCswaEwxQytHdGpvcGVYenBmV1JIRHdoNlVpb25BU012Y042QXpoQkZn?=
- =?utf-8?B?cktsMXlZdHNSQUdWbWZHZlk2eXZwVXZ1TVJ3dmNCWndaZ2tGWkxhV2NDVVM0?=
- =?utf-8?Q?DBIJwv/jd/HznDJYxfZnFinYCAnKo9LlcvWSUWl?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a216d6ca-9dee-431e-753d-08d94af2e391
-X-MS-Exchange-CrossTenant-AuthSource: BLAPR10MB5009.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Jul 2021 20:22:11.2965
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: K97vCe0npmkTp49QrAX4OWSxMu8DMopmlOiZzs9AQfGU1HVg1GS2LPNO7DOigqdxTluTquQ3cHxA7t8V0LFM5v3x2McQALVFOkBMOo5GQpA=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BLAPR10MB5329
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=10050 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 malwarescore=0
- mlxlogscore=999 suspectscore=0 bulkscore=0 spamscore=0 phishscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2107190115
-X-Proofpoint-GUID: PucKbcTaJehG5tuAIXx5icmYiBHWHK4A
-X-Proofpoint-ORIG-GUID: PucKbcTaJehG5tuAIXx5icmYiBHWHK4A
+Content-Type: text/plain; charset=iso-8859-1; format=flowed
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
+Hi Nick,
 
-On 7/15/21 12:45 PM, Logan Gunthorpe wrote:
-> From: Martin Oliveira <martin.oliveira@eideticom.com>
->
-> The .map_sg() op now expects an error code instead of zero on failure.
->
-> xen_swiotlb_map_sg() may only fail if xen_swiotlb_map_page() fails, but
-> xen_swiotlb_map_page() only supports returning errors as
-> DMA_MAPPING_ERROR. So coalesce all errors into EINVAL.
+Le lun., juil. 19 2021 at 14:43:46 -0700, Nick Desaulniers 
+<ndesaulniers@google.com> a écrit :
+> On Sun, Jul 18, 2021 at 6:07 AM Paul Cercueil <paul@crapouillou.net> 
+> wrote:
+>> 
+>>  To be able to compile the kernel with LTO, the assembler macros 
+>> cannot
+>>  be declared in the global scope, or the compiler will complain about
+>>  redefined macros.
+> 
+> Thanks for the patch! Minor comments below, so untested yet by me.
+> Please cc clang-built-linux@googlegroups.com for any follow ups.
 
+Alright, noted.
 
-Reviewed-by: Boris Ostrovsky <boris.ostrovsky@oracle.com>
+> If this is towards supporting LTO, consider sending as part of a
+> series enabling LTO for MIPS. That would be cool to see.
 
+That would be nice to see, indeed. Unfortunately it's not quite there 
+yet. With that patch applied, the linker will still complain that it's 
+linking non-abicalls with abicalls, and hard-float with soft-float 
+(while everything is supposedly compiled with non-abicalls and 
+soft-float).
+
+Even if that worked, regular clang-built kernels cannot boot on my 
+system as the vmlinuz.bin extractor fails to run 
+(https://github.com/ClangBuiltLinux/linux/issues/1333).
+
+But this is one step closer to the goal.
+
+>> 
+>>  Update the code so that macros are defined then undefined when they 
+>> are
+>>  used.
+>> 
+>>  Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+>>  ---
+>>   arch/mips/include/asm/ginvt.h                 |  11 +-
+>>   .../asm/mach-loongson64/loongson_regs.h       |  12 ++
+>>   arch/mips/include/asm/mipsregs.h              | 192 
+>> +++++++++++-------
+>>   arch/mips/include/asm/msa.h                   |  34 +++-
+>>   4 files changed, 157 insertions(+), 92 deletions(-)
+>> 
+>>  diff --git a/arch/mips/include/asm/ginvt.h 
+>> b/arch/mips/include/asm/ginvt.h
+>>  index 6eb7c2b94dc7..87b2974ffc53 100644
+>>  --- a/arch/mips/include/asm/ginvt.h
+>>  +++ b/arch/mips/include/asm/ginvt.h
+>>  @@ -12,11 +12,13 @@ enum ginvt_type {
+>> 
+>>   #ifdef TOOLCHAIN_SUPPORTS_GINV
+>>   # define _ASM_SET_GINV ".set   ginv\n"
+>>  +# define _ASM_UNSET_GINV
+>>   #else
+>>  -_ASM_MACRO_1R1I(ginvt, rs, type,
+>>  -               _ASM_INSN_IF_MIPS(0x7c0000bd | (__rs << 21) | 
+>> (\\type << 8))
+>>  -               _ASM_INSN32_IF_MM(0x0000717c | (__rs << 16) | 
+>> (\\type << 9)));
+>>  -# define _ASM_SET_GINV
+>>  +# define _ASM_SET_GINV                                             
+>>     \
+>>  +       _ASM_MACRO_1R1I(ginvt, rs, type,                            
+>>     \
+>>  +                       _ASM_INSN_IF_MIPS(0x7c0000bd | (__rs << 21) 
+>> | (\\type << 8))    \
+>>  +                       _ASM_INSN32_IF_MM(0x0000717c | (__rs << 16) 
+>> | (\\type << 9)))
+>>  +# define _ASM_UNSET_GINV ".purgem ginvt\n"
+>>   #endif
+>> 
+>>   static __always_inline void ginvt(unsigned long addr, enum 
+>> ginvt_type type)
+>>  @@ -25,6 +27,7 @@ static __always_inline void ginvt(unsigned long 
+>> addr, enum ginvt_type type)
+>>                  ".set   push\n"
+>>                  _ASM_SET_GINV
+>>                  "       ginvt   %0, %1\n"
+>>  +               _ASM_UNSET_GINV
+>>                  ".set   pop"
+>>                  : /* no outputs */
+>>                  : "r"(addr), "i"(type)
+>>  diff --git a/arch/mips/include/asm/mach-loongson64/loongson_regs.h 
+>> b/arch/mips/include/asm/mach-loongson64/loongson_regs.h
+>>  index 165993514762..b5be7511f6cd 100644
+>>  --- a/arch/mips/include/asm/mach-loongson64/loongson_regs.h
+>>  +++ b/arch/mips/include/asm/mach-loongson64/loongson_regs.h
+>>  @@ -21,8 +21,10 @@ static inline u32 read_cpucfg(u32 reg)
+>>          u32 __res;
+>> 
+>>          __asm__ __volatile__(
+>>  +               _ASM_SET_PARSE_R
+>>                  "parse_r __res,%0\n\t"
+>>                  "parse_r reg,%1\n\t"
+>>  +               _ASM_UNSET_PARSE_R
+>>                  ".insn \n\t"
+>>                  ".word (0xc8080118 | (reg << 21) | (__res << 
+>> 11))\n\t"
+>>                  :"=r"(__res)
+>>  @@ -143,8 +145,10 @@ static inline u32 csr_readl(u32 reg)
+>> 
+>>          /* RDCSR reg, val */
+>>          __asm__ __volatile__(
+>>  +               _ASM_SET_PARSE_R
+>>                  "parse_r __res,%0\n\t"
+>>                  "parse_r reg,%1\n\t"
+>>  +               _ASM_UNSET_PARSE_R
+>>                  ".insn \n\t"
+>>                  ".word (0xc8000118 | (reg << 21) | (__res << 
+>> 11))\n\t"
+>>                  :"=r"(__res)
+>>  @@ -160,8 +164,10 @@ static inline u64 csr_readq(u32 reg)
+>> 
+>>          /* DRDCSR reg, val */
+>>          __asm__ __volatile__(
+>>  +               _ASM_SET_PARSE_R
+>>                  "parse_r __res,%0\n\t"
+>>                  "parse_r reg,%1\n\t"
+>>  +               _ASM_UNSET_PARSE_R
+>>                  ".insn \n\t"
+>>                  ".word (0xc8020118 | (reg << 21) | (__res << 
+>> 11))\n\t"
+>>                  :"=r"(__res)
+>>  @@ -175,8 +181,10 @@ static inline void csr_writel(u32 val, u32 reg)
+>>   {
+>>          /* WRCSR reg, val */
+>>          __asm__ __volatile__(
+>>  +               _ASM_SET_PARSE_R
+>>                  "parse_r reg,%0\n\t"
+>>                  "parse_r val,%1\n\t"
+>>  +               _ASM_UNSET_PARSE_R
+>>                  ".insn \n\t"
+>>                  ".word (0xc8010118 | (reg << 21) | (val << 11))\n\t"
+>>                  :
+>>  @@ -189,8 +197,10 @@ static inline void csr_writeq(u64 val, u32 reg)
+>>   {
+>>          /* DWRCSR reg, val */
+>>          __asm__ __volatile__(
+>>  +               _ASM_SET_PARSE_R
+>>                  "parse_r reg,%0\n\t"
+>>                  "parse_r val,%1\n\t"
+>>  +               _ASM_UNSET_PARSE_R
+>>                  ".insn \n\t"
+>>                  ".word (0xc8030118 | (reg << 21) | (val << 11))\n\t"
+>>                  :
+>>  @@ -243,8 +253,10 @@ static inline u64 drdtime(void)
+>>          u64 val = 0;
+>> 
+>>          __asm__ __volatile__(
+>>  +               _ASM_SET_PARSE_R
+>>                  "parse_r rID,%0\n\t"
+>>                  "parse_r val,%1\n\t"
+>>  +               _ASM_UNSET_PARSE_R
+>>                  ".insn \n\t"
+>>                  ".word (0xc8090118 | (rID << 21) | (val << 11))\n\t"
+>>                  :"=r"(rID),"=r"(val)
+>>  diff --git a/arch/mips/include/asm/mipsregs.h 
+>> b/arch/mips/include/asm/mipsregs.h
+>>  index acdf8c69220b..f44f041e24de 100644
+>>  --- a/arch/mips/include/asm/mipsregs.h
+>>  +++ b/arch/mips/include/asm/mipsregs.h
+>>  @@ -1297,22 +1297,24 @@ static inline int mm_insn_16bit(u16 insn)
+>>          "\\var  = " #n "\n\t"                   \
+>>          ".endif\n\t"
+>> 
+>>  -__asm__(".macro        parse_r var r\n\t"
+>>  -       "\\var  = -1\n\t"
+>>  -       _IFC_REG(0)  _IFC_REG(1)  _IFC_REG(2)  _IFC_REG(3)
+>>  -       _IFC_REG(4)  _IFC_REG(5)  _IFC_REG(6)  _IFC_REG(7)
+>>  -       _IFC_REG(8)  _IFC_REG(9)  _IFC_REG(10) _IFC_REG(11)
+>>  -       _IFC_REG(12) _IFC_REG(13) _IFC_REG(14) _IFC_REG(15)
+>>  -       _IFC_REG(16) _IFC_REG(17) _IFC_REG(18) _IFC_REG(19)
+>>  -       _IFC_REG(20) _IFC_REG(21) _IFC_REG(22) _IFC_REG(23)
+>>  -       _IFC_REG(24) _IFC_REG(25) _IFC_REG(26) _IFC_REG(27)
+>>  -       _IFC_REG(28) _IFC_REG(29) _IFC_REG(30) _IFC_REG(31)
+>>  -       ".iflt  \\var\n\t"
+>>  -       ".error \"Unable to parse register name \\r\"\n\t"
+>>  -       ".endif\n\t"
+>>  -       ".endm");
+>>  -
+>>  -#undef _IFC_REG
+>>  +#define _ASM_SET_PARSE_R                                           
+>>     \
+>>  +       ".macro parse_r var r\n\t"                                  
+>>     \
+>>  +       "\\var  = -1\n\t"                                           
+>>     \
+>>  +       _IFC_REG(0)  _IFC_REG(1)  _IFC_REG(2)  _IFC_REG(3)          
+>>     \
+>>  +       _IFC_REG(4)  _IFC_REG(5)  _IFC_REG(6)  _IFC_REG(7)          
+>>     \
+>>  +       _IFC_REG(8)  _IFC_REG(9)  _IFC_REG(10) _IFC_REG(11)         
+>>     \
+>>  +       _IFC_REG(12) _IFC_REG(13) _IFC_REG(14) _IFC_REG(15)         
+>>     \
+>>  +       _IFC_REG(16) _IFC_REG(17) _IFC_REG(18) _IFC_REG(19)         
+>>     \
+>>  +       _IFC_REG(20) _IFC_REG(21) _IFC_REG(22) _IFC_REG(23)         
+>>     \
+>>  +       _IFC_REG(24) _IFC_REG(25) _IFC_REG(26) _IFC_REG(27)         
+>>     \
+>>  +       _IFC_REG(28) _IFC_REG(29) _IFC_REG(30) _IFC_REG(31)         
+>>     \
+>>  +       ".iflt  \\var\n\t"                                          
+>>     \
+>>  +       ".error \"Unable to parse register name \\r\"\n\t"          
+>>     \
+>>  +       ".endif\n\t"                                                
+>>     \
+>>  +       ".endm\n\t"
+>>  +#define _ASM_UNSET_PARSE_R ".purgem parse_r\n\t"
+>>  +
+>>  +//#undef _IFC_REG
+> 
+> ^ did you mean to commit that commented-out #undef?
+
+IIRC it must be removed or commented, since the _IFC_REG() macro is 
+evaluated at a later moment. But I should just remove the #undef then.
+
+> 
+>> 
+>>   /*
+>>    * C macros for generating assembler macros for common instruction 
+>> formats.
+>>  @@ -1322,43 +1324,45 @@ __asm__(".macro parse_r var r\n\t"
+>>    * the ENC encodings.
+>>    */
+>> 
+>>  -/* Instructions with no operands */
+>>  -#define _ASM_MACRO_0(OP, ENC)                                      
+>>     \
+>>  -       __asm__(".macro " #OP "\n\t"                                
+>>     \
+>>  -               ENC                                                 
+>>     \
+>>  -               ".endm")
+>>  -
+>>   /* Instructions with 1 register operand & 1 immediate operand */
+>>   #define _ASM_MACRO_1R1I(OP, R1, I2, ENC)                           
+>>     \
+>>  -       __asm__(".macro " #OP " " #R1 ", " #I2 "\n\t"               
+>>     \
+>>  +               ".macro " #OP " " #R1 ", " #I2 "\n\t"               
+>>     \
+>>  +               _ASM_SET_PARSE_R                                    
+>>     \
+>>                  "parse_r __" #R1 ", \\" #R1 "\n\t"                  
+>>     \
+>>                  ENC                                                 
+>>     \
+>>  -               ".endm")
+>>  +               _ASM_UNSET_PARSE_R                                  
+>>     \
+>>  +               ".endm\n\t"
+>> 
+>>   /* Instructions with 2 register operands */
+>>   #define _ASM_MACRO_2R(OP, R1, R2, ENC)                             
+>>     \
+>>  -       __asm__(".macro " #OP " " #R1 ", " #R2 "\n\t"               
+>>     \
+>>  +               ".macro " #OP " " #R1 ", " #R2 "\n\t"               
+>>     \
+>>  +               _ASM_SET_PARSE_R                                    
+>>     \
+>>                  "parse_r __" #R1 ", \\" #R1 "\n\t"                  
+>>     \
+>>                  "parse_r __" #R2 ", \\" #R2 "\n\t"                  
+>>     \
+>>                  ENC                                                 
+>>     \
+>>  -               ".endm")
+>>  +               _ASM_UNSET_PARSE_R                                  
+>>     \
+>>  +               ".endm\n\t"
+>> 
+>>   /* Instructions with 3 register operands */
+>>   #define _ASM_MACRO_3R(OP, R1, R2, R3, ENC)                         
+>>     \
+>>  -       __asm__(".macro " #OP " " #R1 ", " #R2 ", " #R3 "\n\t"      
+>>     \
+>>  +               ".macro " #OP " " #R1 ", " #R2 ", " #R3 "\n\t"      
+>>     \
+>>  +               _ASM_SET_PARSE_R                                    
+>>     \
+>>                  "parse_r __" #R1 ", \\" #R1 "\n\t"                  
+>>     \
+>>                  "parse_r __" #R2 ", \\" #R2 "\n\t"                  
+>>     \
+>>                  "parse_r __" #R3 ", \\" #R3 "\n\t"                  
+>>     \
+>>                  ENC                                                 
+>>     \
+>>  -               ".endm")
+>>  +               _ASM_UNSET_PARSE_R                                  
+>>     \
+>>  +               ".endm\n\t"
+>> 
+>>   /* Instructions with 2 register operands and 1 optional select 
+>> operand */
+>>   #define _ASM_MACRO_2R_1S(OP, R1, R2, SEL3, ENC)                    
+>>             \
+>>  -       __asm__(".macro " #OP " " #R1 ", " #R2 ", " #SEL3 " = 
+>> 0\n\t"    \
+>>  +               ".macro " #OP " " #R1 ", " #R2 ", " #SEL3 " = 
+>> 0\n\t"    \
+>>  +               _ASM_SET_PARSE_R                                    
+>>     \
+>>                  "parse_r __" #R1 ", \\" #R1 "\n\t"                  
+>>     \
+>>                  "parse_r __" #R2 ", \\" #R2 "\n\t"                  
+>>     \
+>>                  ENC                                                 
+>>     \
+>>  -               ".endm")
+>>  +               _ASM_UNSET_PARSE_R                                  
+>>     \
+>>  +               ".endm\n\t"
+>> 
+>>   /*
+>>    * TLB Invalidate Flush
+>>  @@ -1618,15 +1622,21 @@ do {                                        
+>>                             \
+>>   } while (0)
+>> 
+>>   #ifndef TOOLCHAIN_SUPPORTS_XPA
+> 
+> When did GAS gain support for XPA? Do we still need to support
+> !TOOLCHAIN_SUPPORTS_XPA? (though that's orthogonal to this patch, such
+> a cleanup first might simplify this patch).
+> 
+>>  -_ASM_MACRO_2R_1S(mfhc0, rt, rs, sel,
+>>  -       _ASM_INSN_IF_MIPS(0x40400000 | __rt << 16 | __rs << 11 | 
+>> \\sel)
+>>  -       _ASM_INSN32_IF_MM(0x000000f4 | __rt << 21 | __rs << 16 | 
+>> \\sel << 11));
+>>  -_ASM_MACRO_2R_1S(mthc0, rt, rd, sel,
+>>  -       _ASM_INSN_IF_MIPS(0x40c00000 | __rt << 16 | __rd << 11 | 
+>> \\sel)
+>>  -       _ASM_INSN32_IF_MM(0x000002f4 | __rt << 21 | __rd << 16 | 
+>> \\sel << 11));
+>>  -#define _ASM_SET_XPA ""
+>>  +#define _ASM_SET_MFHC0                                             
+>>     \
+>>  +       _ASM_MACRO_2R_1S(mfhc0, rt, rs, sel,                        
+>>     \
+>>  +                        _ASM_INSN_IF_MIPS(0x40400000 | __rt << 16 
+>> | __rs << 11 | \\sel)        \
+>>  +                        _ASM_INSN32_IF_MM(0x000000f4 | __rt << 21 
+>> | __rs << 16 | \\sel << 11))
+>>  +#define _ASM_UNSET_MFHC0 ".purgem mfhc0\n\t"
+>>  +#define _ASM_SET_MTHC0                                             
+>>     \
+>>  +       _ASM_MACRO_2R_1S(mthc0, rt, rd, sel,                        
+>>     \
+>>  +                        _ASM_INSN_IF_MIPS(0x40c00000 | __rt << 16 
+>> | __rd << 11 | \\sel)        \
+>>  +                        _ASM_INSN32_IF_MM(0x000002f4 | __rt << 21 
+>> | __rd << 16 | \\sel << 11))
+>>  +#define _ASM_UNSET_MTHC0 ".purgem mthc0\n\t"
+>>   #else  /* !TOOLCHAIN_SUPPORTS_XPA */
+>>  -#define _ASM_SET_XPA ".set\txpa\n\t"
+>>  +#define _ASM_SET_MFHC0 ".set\txpa\n\t"
+>>  +#define _ASM_SET_MTHC0 ".set\txpa\n\t"
+>>  +#define _ASM_UNSET_MFHC0
+>>  +#define _ASM_UNSET_MTHC0
+>>   #endif
+>> 
+>>   #define __readx_32bit_c0_register(source, sel)                     
+>>     \
+>>  @@ -1636,8 +1646,9 @@ _ASM_MACRO_2R_1S(mthc0, rt, rd, sel,
+>>          __asm__ __volatile__(                                       
+>>     \
+>>          "       .set    push                                    \n" 
+>>     \
+>>          "       .set    mips32r2                                \n" 
+>>     \
+>>  -       _ASM_SET_XPA                                                
+>>     \
+>>  +       _ASM_SET_MFHC0                                              
+>>     \
+>>          "       mfhc0   %0, " #source ", %1                     \n" 
+>>     \
+>>  +       _ASM_UNSET_MFHC0                                            
+>>     \
+>>          "       .set    pop                                     \n" 
+>>     \
+>>          : "=r" (__res)                                              
+>>     \
+>>          : "i" (sel));                                               
+>>     \
+>>  @@ -1649,8 +1660,9 @@ do {                                          
+>>                             \
+>>          __asm__ __volatile__(                                       
+>>     \
+>>          "       .set    push                                    \n" 
+>>     \
+>>          "       .set    mips32r2                                \n" 
+>>     \
+>>  -       _ASM_SET_XPA                                                
+>>     \
+>>  +       _ASM_SET_MTHC0                                              
+>>     \
+>>          "       mthc0   %z0, " #register ", %1                  \n" 
+>>     \
+>>  +       _ASM_UNSET_MTHC0                                            
+>>     \
+>>          "       .set    pop                                     \n" 
+>>     \
+>>          :                                                           
+>>     \
+>>          : "Jr" (value), "i" (sel));                                 
+>>     \
+>>  @@ -2046,31 +2058,58 @@ do {                                        
+>>                             \
+>>    */
+>> 
+>>   #ifndef TOOLCHAIN_SUPPORTS_VIRT
+> 
+> Same question for GAS version support for virt?
+> Documentation/process/changes.rst
+> says GNU binutils 2.23+ is required for building the kernel.
+> If we still need to support, have you tested this change on such an
+> older version of GNU binutils?
+
+I have no idea about virt support - I hope Thomas can answer this.
+
+I did build with binutils 2.35; 2.23 sounds very old.
+
+Cheers,
+-Paul
+
+>>  -_ASM_MACRO_2R_1S(mfgc0, rt, rs, sel,
+>>  -       _ASM_INSN_IF_MIPS(0x40600000 | __rt << 16 | __rs << 11 | 
+>> \\sel)
+>>  -       _ASM_INSN32_IF_MM(0x000004fc | __rt << 21 | __rs << 16 | 
+>> \\sel << 11));
+>>  -_ASM_MACRO_2R_1S(dmfgc0, rt, rs, sel,
+>>  -       _ASM_INSN_IF_MIPS(0x40600100 | __rt << 16 | __rs << 11 | 
+>> \\sel)
+>>  -       _ASM_INSN32_IF_MM(0x580004fc | __rt << 21 | __rs << 16 | 
+>> \\sel << 11));
+>>  -_ASM_MACRO_2R_1S(mtgc0, rt, rd, sel,
+>>  -       _ASM_INSN_IF_MIPS(0x40600200 | __rt << 16 | __rd << 11 | 
+>> \\sel)
+>>  -       _ASM_INSN32_IF_MM(0x000006fc | __rt << 21 | __rd << 16 | 
+>> \\sel << 11));
+>>  -_ASM_MACRO_2R_1S(dmtgc0, rt, rd, sel,
+>>  -       _ASM_INSN_IF_MIPS(0x40600300 | __rt << 16 | __rd << 11 | 
+>> \\sel)
+>>  -       _ASM_INSN32_IF_MM(0x580006fc | __rt << 21 | __rd << 16 | 
+>> \\sel << 11));
+>>  -_ASM_MACRO_0(tlbgp,    _ASM_INSN_IF_MIPS(0x42000010)
+>>  -                      _ASM_INSN32_IF_MM(0x0000017c));
+>>  -_ASM_MACRO_0(tlbgr,    _ASM_INSN_IF_MIPS(0x42000009)
+>>  -                      _ASM_INSN32_IF_MM(0x0000117c));
+>>  -_ASM_MACRO_0(tlbgwi,   _ASM_INSN_IF_MIPS(0x4200000a)
+>>  -                      _ASM_INSN32_IF_MM(0x0000217c));
+>>  -_ASM_MACRO_0(tlbgwr,   _ASM_INSN_IF_MIPS(0x4200000e)
+>>  -                      _ASM_INSN32_IF_MM(0x0000317c));
+>>  -_ASM_MACRO_0(tlbginvf, _ASM_INSN_IF_MIPS(0x4200000c)
+>>  -                      _ASM_INSN32_IF_MM(0x0000517c));
+>>  -#define _ASM_SET_VIRT ""
+>>  +#define _ASM_SET_MFGC0                                             
+>>     \
+>>  +       _ASM_MACRO_2R_1S(mfgc0, rt, rs, sel,                        
+>>     \
+>>  +                        _ASM_INSN_IF_MIPS(0x40600000 | __rt << 16 
+>> | __rs << 11 | \\sel)        \
+>>  +                        _ASM_INSN32_IF_MM(0x000004fc | __rt << 21 
+>> | __rs << 16 | \\sel << 11))
+>>  +#define _ASM_UNSET_MFGC0 ".purgem mfgc0\n\t"
+>>  +#define _ASM_SET_DMFGC0                                            
+>>             \
+>>  +       _ASM_MACRO_2R_1S(dmfgc0, rt, rs, sel,                       
+>>     \
+>>  +                        _ASM_INSN_IF_MIPS(0x40600100 | __rt << 16 
+>> | __rs << 11 | \\sel)        \
+>>  +                        _ASM_INSN32_IF_MM(0x580004fc | __rt << 21 
+>> | __rs << 16 | \\sel << 11))
+>>  +#define _ASM_UNSET_DMFGC0 ".purgem dmfgc0\n\t"
+>>  +#define _ASM_SET_MTGC0                                             
+>>     \
+>>  +       _ASM_MACRO_2R_1S(mtgc0, rt, rd, sel,                        
+>>     \
+>>  +                        _ASM_INSN_IF_MIPS(0x40600200 | __rt << 16 
+>> | __rd << 11 | \\sel)        \
+>>  +                        _ASM_INSN32_IF_MM(0x000006fc | __rt << 21 
+>> | __rd << 16 | \\sel << 11))
+>>  +#define _ASM_UNSET_MTGC0 ".purgem mtgc0\n\t"
+>>  +#define _ASM_SET_DMTGC0                                            
+>>             \
+>>  +       _ASM_MACRO_2R_1S(dmtgc0, rt, rd, sel,                       
+>>     \
+>>  +                        _ASM_INSN_IF_MIPS(0x40600300 | __rt << 16 
+>> | __rd << 11 | \\sel)        \
+>>  +                        _ASM_INSN32_IF_MM(0x580006fc | __rt << 21 
+>> | __rd << 16 | \\sel << 11))
+>>  +#define _ASM_UNSET_DMTGC0 ".purgem dmtgc0\n\t"
+>>  +
+>>  +#define __tlbgp()                                                  
+>>     \
+>>  +               _ASM_INSN_IF_MIPS(0x42000010)                       
+>>     \
+>>  +               _ASM_INSN32_IF_MM(0x0000017c)
+>>  +#define __tlbgr()                                                  
+>>     \
+>>  +               _ASM_INSN_IF_MIPS(0x42000009)                       
+>>     \
+>>  +               _ASM_INSN32_IF_MM(0x0000117c)
+>>  +#define __tlbgwi()                                                 
+>>     \
+>>  +               _ASM_INSN_IF_MIPS(0x4200000a)                       
+>>     \
+>>  +               _ASM_INSN32_IF_MM(0x0000217c)
+>>  +#define __tlbgwr()                                                 
+>>     \
+>>  +               _ASM_INSN_IF_MIPS(0x4200000e)                       
+>>     \
+>>  +               _ASM_INSN32_IF_MM(0x0000317c)
+>>  +#define __tlbginvf()                                               
+>>     \
+>>  +               _ASM_INSN_IF_MIPS(0x4200000c)                       
+>>     \
+>>  +               _ASM_INSN32_IF_MM(0x0000517c)
+>>   #else  /* !TOOLCHAIN_SUPPORTS_VIRT */
+>>   #define _ASM_SET_VIRT ".set\tvirt\n\t"
+>>  +#define _ASM_SET_MFGC0 _ASM_SET_VIRT
+>>  +#define _ASM_SET_DMFGC0        _ASM_SET_VIRT
+>>  +#define _ASM_SET_MTGC0 _ASM_SET_VIRT
+>>  +#define _ASM_SET_DMTGC0        _ASM_SET_VIRT
+>>  +#define _ASM_UNSET_MFGC0
+>>  +#define _ASM_UNSET_DMFGC0
+>>  +#define _ASM_UNSET_MTGC0
+>>  +#define _ASM_UNSET_DMTGC0
+>>  +
+>>  +#define __tlbgp()      _ASM_SET_VIRT "tlbgp\n\t"
+>>  +#define __tlbgr()      _ASM_SET_VIRT "tlbgr\n\t"
+>>  +#define __tlbgwi()     _ASM_SET_VIRT "tlbgwi\n\t"
+>>  +#define __tlbgwr()     _ASM_SET_VIRT "tlbgwr\n\t"
+>>  +#define __tlbginvf()   _ASM_SET_VIRT "tlbginvf\n\t"
+>>   #endif
+>> 
+>>   #define __read_32bit_gc0_register(source, sel)                     
+>>     \
+>>  @@ -2078,8 +2117,9 @@ _ASM_MACRO_0(tlbginvf, 
+>> _ASM_INSN_IF_MIPS(0x4200000c)
+>>          __asm__ __volatile__(                                       
+>>     \
+>>                  ".set\tpush\n\t"                                    
+>>     \
+>>                  ".set\tmips32r5\n\t"                                
+>>     \
+>>  -               _ASM_SET_VIRT                                       
+>>     \
+>>  +               _ASM_SET_MFGC0                                      
+>>     \
+>>                  "mfgc0\t%0, " #source ", %1\n\t"                    
+>>     \
+>>  +               _ASM_UNSET_MFGC0                                    
+>>     \
+>>                  ".set\tpop"                                         
+>>     \
+>>                  : "=r" (__res)                                      
+>>     \
+>>                  : "i" (sel));                                       
+>>     \
+>>  @@ -2091,8 +2131,9 @@ _ASM_MACRO_0(tlbginvf, 
+>> _ASM_INSN_IF_MIPS(0x4200000c)
+>>          __asm__ __volatile__(                                       
+>>     \
+>>                  ".set\tpush\n\t"                                    
+>>     \
+>>                  ".set\tmips64r5\n\t"                                
+>>     \
+>>  -               _ASM_SET_VIRT                                       
+>>     \
+>>  +               _ASM_SET_DMFGC0                                     
+>>     \
+>>                  "dmfgc0\t%0, " #source ", %1\n\t"                   
+>>     \
+>>  +               _ASM_UNSET_DMFGC0                                   
+>>     \
+>>                  ".set\tpop"                                         
+>>     \
+>>                  : "=r" (__res)                                      
+>>     \
+>>                  : "i" (sel));                                       
+>>     \
+>>  @@ -2104,8 +2145,9 @@ do {                                          
+>>                             \
+>>          __asm__ __volatile__(                                       
+>>     \
+>>                  ".set\tpush\n\t"                                    
+>>     \
+>>                  ".set\tmips32r5\n\t"                                
+>>     \
+>>  -               _ASM_SET_VIRT                                       
+>>     \
+>>  +               _ASM_SET_MTGC0                                      
+>>     \
+>>                  "mtgc0\t%z0, " #register ", %1\n\t"                 
+>>     \
+>>  +               _ASM_UNSET_MTGC0                                    
+>>     \
+>>                  ".set\tpop"                                         
+>>     \
+>>                  : : "Jr" ((unsigned int)(value)),                   
+>>     \
+>>                      "i" (sel));                                     
+>>     \
+>>  @@ -2116,8 +2158,9 @@ do {                                          
+>>                             \
+>>          __asm__ __volatile__(                                       
+>>     \
+>>                  ".set\tpush\n\t"                                    
+>>     \
+>>                  ".set\tmips64r5\n\t"                                
+>>     \
+>>  -               _ASM_SET_VIRT                                       
+>>     \
+>>  +               _ASM_SET_DMTGC0                                     
+>>     \
+>>                  "dmtgc0\t%z0, " #register ", %1\n\t"                
+>>     \
+>>  +               _ASM_UNSET_DMTGC0                                   
+>>     \
+>>                  ".set\tpop"                                         
+>>     \
+>>                  : : "Jr" (value),                                   
+>>     \
+>>                      "i" (sel));                                     
+>>     \
+>>  @@ -2788,8 +2831,7 @@ static inline void guest_tlb_probe(void)
+>>          __asm__ __volatile__(
+>>                  ".set push\n\t"
+>>                  ".set noreorder\n\t"
+>>  -               _ASM_SET_VIRT
+>>  -               "tlbgp\n\t"
+>>  +               __tlbgp()
+>>                  ".set pop");
+>>   }
+>> 
+>>  @@ -2798,8 +2840,7 @@ static inline void guest_tlb_read(void)
+>>          __asm__ __volatile__(
+>>                  ".set push\n\t"
+>>                  ".set noreorder\n\t"
+>>  -               _ASM_SET_VIRT
+>>  -               "tlbgr\n\t"
+>>  +               __tlbgr()
+>>                  ".set pop");
+>>   }
+>> 
+>>  @@ -2808,8 +2849,7 @@ static inline void 
+>> guest_tlb_write_indexed(void)
+>>          __asm__ __volatile__(
+>>                  ".set push\n\t"
+>>                  ".set noreorder\n\t"
+>>  -               _ASM_SET_VIRT
+>>  -               "tlbgwi\n\t"
+>>  +               __tlbgwi()
+>>                  ".set pop");
+>>   }
+>> 
+>>  @@ -2818,8 +2858,7 @@ static inline void 
+>> guest_tlb_write_random(void)
+>>          __asm__ __volatile__(
+>>                  ".set push\n\t"
+>>                  ".set noreorder\n\t"
+>>  -               _ASM_SET_VIRT
+>>  -               "tlbgwr\n\t"
+>>  +               __tlbgwr()
+>>                  ".set pop");
+>>   }
+>> 
+>>  @@ -2831,8 +2870,7 @@ static inline void guest_tlbinvf(void)
+>>          __asm__ __volatile__(
+>>                  ".set push\n\t"
+>>                  ".set noreorder\n\t"
+>>  -               _ASM_SET_VIRT
+>>  -               "tlbginvf\n\t"
+>>  +               __tlbginvf()
+>>                  ".set pop");
+>>   }
+>> 
+>>  diff --git a/arch/mips/include/asm/msa.h 
+>> b/arch/mips/include/asm/msa.h
+>>  index e0a3dd52334d..236a49ee2e3e 100644
+>>  --- a/arch/mips/include/asm/msa.h
+>>  +++ b/arch/mips/include/asm/msa.h
+>>  @@ -162,16 +162,26 @@ static inline void init_msa_upper(void)
+>>    * to allow compilation with toolchains that do not support MSA. 
+>> Once all
+>>    * toolchains in use support MSA these can be removed.
+>>    */
+>>  -_ASM_MACRO_2R(cfcmsa, rd, cs,
+>>  -       _ASM_INSN_IF_MIPS(0x787e0019 | __cs << 11 | __rd << 6)
+>>  -       _ASM_INSN32_IF_MM(0x587e0016 | __cs << 11 | __rd << 6));
+>>  -_ASM_MACRO_2R(ctcmsa, cd, rs,
+>>  -       _ASM_INSN_IF_MIPS(0x783e0019 | __rs << 11 | __cd << 6)
+>>  -       _ASM_INSN32_IF_MM(0x583e0016 | __rs << 11 | __cd << 6));
+>>  -#define _ASM_SET_MSA ""
+>>  +
+>>  +#define _ASM_SET_CFCMSA                                            
+>>             \
+>>  +       _ASM_MACRO_2R(cfcmsa, rd, cs,                               
+>>     \
+>>  +                     _ASM_INSN_IF_MIPS(0x787e0019 | __cs << 11 | 
+>> __rd << 6)    \
+>>  +                     _ASM_INSN32_IF_MM(0x587e0016 | __cs << 11 | 
+>> __rd << 6))
+>>  +#define _ASM_UNSET_CFCMSA ".purgem cfcmsa\n\t"
+>>  +#define _ASM_SET_CTCMSA                                            
+>>             \
+>>  +       _ASM_MACRO_2R(ctcmsa, cd, rs,                               
+>>     \
+>>  +                     _ASM_INSN_IF_MIPS(0x783e0019 | __rs << 11 | 
+>> __cd << 6)    \
+>>  +                     _ASM_INSN32_IF_MM(0x583e0016 | __rs << 11 | 
+>> __cd << 6))
+>>  +#define _ASM_UNSET_CTCMSA ".purgem ctcmsa\n\t"
+>>   #else /* TOOLCHAIN_SUPPORTS_MSA */
+>>  -#define _ASM_SET_MSA ".set\tfp=64\n\t"                         \
+>>  -                    ".set\tmsa\n\t"
+>>  +#define _ASM_SET_CFCMSA                                            
+>>     \
+>>  +               ".set\tfp=64\n\t"                               \
+>>  +               ".set\tmsa\n\t"
+>>  +#define _ASM_UNSET_CFCMSA
+>>  +#define _ASM_SET_CTCMSA                                            
+>>     \
+>>  +               ".set\tfp=64\n\t"                               \
+>>  +               ".set\tmsa\n\t"
+>>  +#define _ASM_UNSET_CTCMSA
+>>   #endif
+>> 
+>>   #define __BUILD_MSA_CTL_REG(name, cs)                          \
+>>  @@ -180,8 +190,9 @@ static inline unsigned int 
+>> read_msa_##name(void)            \
+>>          unsigned int reg;                                       \
+>>          __asm__ __volatile__(                                   \
+>>          "       .set    push\n"                                 \
+>>  -       _ASM_SET_MSA                                            \
+>>  +       _ASM_SET_CFCMSA                                         \
+>>          "       cfcmsa  %0, $" #cs "\n"                         \
+>>  +       _ASM_UNSET_CFCMSA                                       \
+>>          "       .set    pop\n"                                  \
+>>          : "=r"(reg));                                           \
+>>          return reg;                                             \
+>>  @@ -191,8 +202,9 @@ static inline void write_msa_##name(unsigned 
+>> int val)               \
+>>   {                                                              \
+>>          __asm__ __volatile__(                                   \
+>>          "       .set    push\n"                                 \
+>>  -       _ASM_SET_MSA                                            \
+>>  +       _ASM_SET_CTCMSA                                         \
+>>          "       ctcmsa  $" #cs ", %0\n"                         \
+>>  +       _ASM_UNSET_CTCMSA                                       \
+>>          "       .set    pop\n"                                  \
+>>          : : "r"(val));                                          \
+>>   }
+>>  --
+>>  2.30.2
+>> 
+> 
+> 
+> --
+> Thanks,
+> ~Nick Desaulniers
 
 

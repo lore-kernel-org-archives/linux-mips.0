@@ -7,27 +7,27 @@ X-Spam-Status: No, score=-20.2 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
 	USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A0350C6377A
-	for <linux-mips@archiver.kernel.org>; Mon, 19 Jul 2021 15:06:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B6FA3C12002
+	for <linux-mips@archiver.kernel.org>; Mon, 19 Jul 2021 15:16:03 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 8666B6128A
-	for <linux-mips@archiver.kernel.org>; Mon, 19 Jul 2021 15:06:09 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id A33FB61220
+	for <linux-mips@archiver.kernel.org>; Mon, 19 Jul 2021 15:16:03 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242936AbhGSOZ2 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 19 Jul 2021 10:25:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58348 "EHLO mail.kernel.org"
+        id S243850AbhGSOfV (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 19 Jul 2021 10:35:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46606 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S243561AbhGSOYJ (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Mon, 19 Jul 2021 10:24:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E6BBE6124B;
-        Mon, 19 Jul 2021 15:03:53 +0000 (UTC)
+        id S245397AbhGSOef (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Mon, 19 Jul 2021 10:34:35 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A9D3B61263;
+        Mon, 19 Jul 2021 15:14:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1626707034;
-        bh=VDn8Lf76RE6bwRYg4ASwwlWSFYqZM+D7FfaQchqCbJY=;
+        s=korg; t=1626707642;
+        bh=ghKo1xjvWvhn4IaZZczjFnezfWRlmMquzd5E4DMGxMo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=M/XP/qKxZu0bm3uSKN+tW+sUKRrM4Ji3IOFo3CWr+U+sxFNk7wMACXrEyIRctw54+
-         DakiqGE6ZhRuWdZh16vW0rS1FY0P/9ODL8mCGVi7myqximN7YQ1ycvHHJ7EvDLvf0c
-         EzWQlkHo79nlLdHQivzHdyVp22yMvRjMkZwnvKIM=
+        b=IliRm6N/Hfw5y4XqEd74StfABCwrJlW9D/0M0OoJhpL1UWk30vVUYjwQ6VnEdk0ym
+         jx0u6SxzhID3iAKZzMgUjb+e6Y3yW7ouhQtKLOGUPWzb3ciN8a+Oblib0VW0DYcBk4
+         rkJEO35SRwQ68AlFcHp/Z/PF1oa7jDLLGRkzzHC8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -36,12 +36,12 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
         linux-mips@vger.kernel.org, Kyungsik Lee <kyungsik.lee@lge.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 187/188] mips: disable branch profiling in boot/decompress.o
-Date:   Mon, 19 Jul 2021 16:52:51 +0200
-Message-Id: <20210719144942.609613328@linuxfoundation.org>
+Subject: [PATCH 4.9 244/245] mips: disable branch profiling in boot/decompress.o
+Date:   Mon, 19 Jul 2021 16:53:06 +0200
+Message-Id: <20210719144948.248554918@linuxfoundation.org>
 X-Mailer: git-send-email 2.32.0
-In-Reply-To: <20210719144913.076563739@linuxfoundation.org>
-References: <20210719144913.076563739@linuxfoundation.org>
+In-Reply-To: <20210719144940.288257948@linuxfoundation.org>
+References: <20210719144940.288257948@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -78,7 +78,7 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 2 insertions(+)
 
 diff --git a/arch/mips/boot/compressed/decompress.c b/arch/mips/boot/compressed/decompress.c
-index 080cd53bac36..a1a54a3af03b 100644
+index 3a015e41b762..66096c766a60 100644
 --- a/arch/mips/boot/compressed/decompress.c
 +++ b/arch/mips/boot/compressed/decompress.c
 @@ -11,6 +11,8 @@

@@ -2,66 +2,57 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.2 required=3.0 tests=BAYES_00,
+X-Spam-Status: No, score=-15.3 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
-	autolearn=ham autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1A52AC63797
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1A4E6C63793
 	for <linux-mips@archiver.kernel.org>; Thu, 22 Jul 2021 10:10:36 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id AF7E061249
+	by mail.kernel.org (Postfix) with ESMTP id BC0126127C
 	for <linux-mips@archiver.kernel.org>; Thu, 22 Jul 2021 10:10:33 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231496AbhGVJ3x (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        id S231512AbhGVJ3x (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
         Thu, 22 Jul 2021 05:29:53 -0400
-Received: from elvis.franken.de ([193.175.24.41]:45359 "EHLO elvis.franken.de"
+Received: from elvis.franken.de ([193.175.24.41]:45353 "EHLO elvis.franken.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231491AbhGVJ3x (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        id S231487AbhGVJ3x (ORCPT <rfc822;linux-mips@vger.kernel.org>);
         Thu, 22 Jul 2021 05:29:53 -0400
 Received: from uucp (helo=alpha)
         by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1m6Ves-0007ey-01; Thu, 22 Jul 2021 12:10:26 +0200
+        id 1m6Ves-0007ey-03; Thu, 22 Jul 2021 12:10:26 +0200
 Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 0C9C1C11EE; Thu, 22 Jul 2021 12:07:44 +0200 (CEST)
-Date:   Thu, 22 Jul 2021 12:07:44 +0200
+        id A834BC11EE; Thu, 22 Jul 2021 12:09:46 +0200 (CEST)
+Date:   Thu, 22 Jul 2021 12:09:46 +0200
 From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, kernel test robot <lkp@intel.com>,
-        Ganesan Ramalingam <ganesanr@broadcom.com>,
-        John Crispin <blogic@openwrt.org>,
-        Aditya Srivastava <yashsri421@gmail.com>,
-        linux-mips@vger.kernel.org
-Subject: Re: [PATCH] mips: netlogic: fix kernel-doc complaints in fmn-config.c
-Message-ID: <20210722100743.GB7340@alpha.franken.de>
-References: <20210720043432.1684-1-rdunlap@infradead.org>
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     linux-mips@linux-mips.org,
+        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
+        Huacai Chen <chenhuacai@kernel.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org
+Subject: Re: [PATCH 2/2] mips: clean up kvm Makefile
+Message-ID: <20210722100946.GB7427@alpha.franken.de>
+References: <20210331150658.38919-1-masahiroy@kernel.org>
+ <20210331150658.38919-2-masahiroy@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210720043432.1684-1-rdunlap@infradead.org>
+In-Reply-To: <20210331150658.38919-2-masahiroy@kernel.org>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Mon, Jul 19, 2021 at 09:34:32PM -0700, Randy Dunlap wrote:
-> Clean up kernel-doc warnings in netlogic/xlr/fmn-config.c by using
-> correct kernel-doc format. Fixes these warnings:
+On Thu, Apr 01, 2021 at 12:06:57AM +0900, Masahiro Yamada wrote:
+> You can use kvm-y instead of kvm-objs to create the composite module.
+> kvm-$(CONFIG_...) looks cleaner.
 > 
-> arch/mips/netlogic/xlr/fmn-config.c:106: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
->     * Configure bucket size and credits for a device. 'size' is the size of
-> arch/mips/netlogic/xlr/fmn-config.c:181: warning: expecting prototype for Setup the FMN details for each devices according to the device available(). Prototype was for xlr_board_info_setup() instead
-> 
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> Reported-by: kernel test robot <lkp@intel.com>
-> Cc: Ganesan Ramalingam <ganesanr@broadcom.com>
-> Cc: John Crispin <blogic@openwrt.org>
-> Cc: Aditya Srivastava <yashsri421@gmail.com>
-> Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-> Cc: linux-mips@vger.kernel.org
+> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 > ---
->  arch/mips/netlogic/xlr/fmn-config.c |   15 +++++++++------
->  1 file changed, 9 insertions(+), 6 deletions(-)
+> 
+>  arch/mips/kvm/Makefile | 21 +++++++++------------
+>  1 file changed, 9 insertions(+), 12 deletions(-)
 
 applied to mips-next.
 

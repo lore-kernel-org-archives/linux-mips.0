@@ -7,35 +7,35 @@ X-Spam-Status: No, score=-18.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
 	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3BBF2C04FE3
-	for <linux-mips@archiver.kernel.org>; Fri, 23 Jul 2021 17:50:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 30AC3C3F6A3
+	for <linux-mips@archiver.kernel.org>; Fri, 23 Jul 2021 17:51:04 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 1D45060F02
-	for <linux-mips@archiver.kernel.org>; Fri, 23 Jul 2021 17:50:57 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 17C8760C51
+	for <linux-mips@archiver.kernel.org>; Fri, 23 Jul 2021 17:51:04 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233409AbhGWRKV (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 23 Jul 2021 13:10:21 -0400
-Received: from ale.deltatee.com ([204.191.154.188]:50798 "EHLO
+        id S233445AbhGWRK2 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 23 Jul 2021 13:10:28 -0400
+Received: from ale.deltatee.com ([204.191.154.188]:50882 "EHLO
         ale.deltatee.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232659AbhGWRJ7 (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Fri, 23 Jul 2021 13:09:59 -0400
+        with ESMTP id S232882AbhGWRKF (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Fri, 23 Jul 2021 13:10:05 -0400
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=deltatee.com; s=20200525; h=Subject:MIME-Version:References:In-Reply-To:
         Message-Id:Date:Cc:To:From:content-disposition;
-        bh=/XA9bvLAJiET8xClVyx9hB75GctlP2ewYMlZJlt3uAE=; b=HVJMNHeBGjTuQRAX0PgDaC3zF2
-        h4cFnFeAvCNXzd9WB8YAG3qqGAv0WBWLbO2yY4NNajXtkYGAXSYNnPhoG7Lsjp3jXRGUtxG+C5tQn
-        AO0Nyq1daI9kQFtb2tSUAzZkClLvu/2QNdTDESutu8/SuROXeaEliD8I20+iQ0Q2iu0v3EYLv9M04
-        tvI2zgmfI0S1vEJQafhJJMTcn12/OuRwVgbR0rnxIWvsOK7Ab18O80JLZOjNRvrRT/6OZ8cEUdjVI
-        0CnvcX+WKT1/RPsKegdoIVUqcHKgcZAEo1DdIxORDEfwRA67XH368HFyGiw2MOs512nK27QI9tO6q
-        7PJ3h2zw==;
+        bh=n2R1GNZpiJpIvqPgMoFv818LmwSs1yl8HL/LWwKcvVk=; b=Rv/rTZtj3T1nEGLn1WGczPTaen
+        2yIufVhmqXEZZQcWeZrPYXkIZtElB2JS3S+Q2Jjuo2MBlfeXs7yylXfYoMcUAcGExpeIfOU75HSjV
+        pf7krDbOQH/tSfJN+fElu+VVJqlRFYdQPNJiF4+WCLcG0tiI0p4KERH+zeiKfztGqnCd+UNf++PoZ
+        S8Exa3ad1UXddK3LqWr51Nf2fnLQV9b9+P4kG2ztV24ryTmwUQZ6I3WFEb6dIVLrutgq/2XpovvLE
+        NXxAW1CxwmNOHEATVHgyt4MfJmMX9ybHuGwzx/Byb9TN3fvIxw5nslKmWzVyMwIsgD+iRJFYM5syd
+        AWnM6Zjg==;
 Received: from cgy1-donard.priv.deltatee.com ([172.16.1.31])
         by ale.deltatee.com with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <gunthorp@deltatee.com>)
-        id 1m6zJO-0005Ll-A4; Fri, 23 Jul 2021 11:50:30 -0600
+        id 1m6zJh-0005Lh-OW; Fri, 23 Jul 2021 11:50:35 -0600
 Received: from gunthorp by cgy1-donard.priv.deltatee.com with local (Exim 4.92)
         (envelope-from <gunthorp@deltatee.com>)
-        id 1m6zJL-0005qh-1o; Fri, 23 Jul 2021 11:50:11 -0600
+        id 1m6zJL-0005qn-8Z; Fri, 23 Jul 2021 11:50:11 -0600
 From:   Logan Gunthorpe <logang@deltatee.com>
 To:     linux-kernel@vger.kernel.org, linux-alpha@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org, linux-ia64@vger.kernel.org,
@@ -49,101 +49,118 @@ Cc:     Christoph Hellwig <hch@lst.de>,
         Stephen Bates <sbates@raithlin.com>,
         Martin Oliveira <martin.oliveira@eideticom.com>,
         Logan Gunthorpe <logang@deltatee.com>,
-        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>
-Date:   Fri, 23 Jul 2021 11:49:51 -0600
-Message-Id: <20210723175008.22410-5-logang@deltatee.com>
+        Russell King <linux@armlinux.org.uk>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Date:   Fri, 23 Jul 2021 11:49:53 -0600
+Message-Id: <20210723175008.22410-7-logang@deltatee.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20210723175008.22410-1-logang@deltatee.com>
 References: <20210723175008.22410-1-logang@deltatee.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-SA-Exim-Connect-IP: 172.16.1.31
-X-SA-Exim-Rcpt-To: linux-arm-kernel@lists.infradead.org, linuxppc-dev@lists.ozlabs.org, iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org, linux-alpha@vger.kernel.org, linux-ia64@vger.kernel.org, linux-mips@vger.kernel.org, linux-s390@vger.kernel.org, sparclinux@vger.kernel.org, linux-parisc@vger.kernel.org, xen-devel@lists.xenproject.org, hch@lst.de, m.szyprowski@samsung.com, robin.murphy@arm.com, sbates@raithlin.com, martin.oliveira@eideticom.com, logang@deltatee.com, joro@8bytes.org, will@kernel.org
+X-SA-Exim-Rcpt-To: linux-arm-kernel@lists.infradead.org, linuxppc-dev@lists.ozlabs.org, iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org, linux-alpha@vger.kernel.org, linux-ia64@vger.kernel.org, linux-mips@vger.kernel.org, linux-s390@vger.kernel.org, sparclinux@vger.kernel.org, linux-parisc@vger.kernel.org, xen-devel@lists.xenproject.org, hch@lst.de, m.szyprowski@samsung.com, robin.murphy@arm.com, sbates@raithlin.com, martin.oliveira@eideticom.com, logang@deltatee.com, linux@armlinux.org.uk, tsbogend@alpha.franken.de
 X-SA-Exim-Mail-From: gunthorp@deltatee.com
-Subject: [PATCH v2 04/21] dma-iommu: Return error code from iommu_dma_map_sg()
+Subject: [PATCH v2 06/21] ARM/dma-mapping: return error code from .map_sg() ops
 X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
 X-SA-Exim-Scanned: Yes (on ale.deltatee.com)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Return appropriate error codes EINVAL or ENOMEM from
-iommup_dma_map_sg(). If lower level code returns ENOMEM, then we
-return it, other errors are coalesced into EINVAL.
+From: Martin Oliveira <martin.oliveira@eideticom.com>
 
-iommu_dma_map_sg_swiotlb() returns -EIO as its an unknown error
-from a call that returns DMA_MAPPING_ERROR.
+The .map_sg() op now expects an error code instead of zero on failure.
+In the case of a DMA_MAPPING_ERROR, -EIO is returned. Otherwise,
+-ENOMEM or -EINVAL is returned depending on the error from
+__map_sg_chunk().
 
+Signed-off-by: Martin Oliveira <martin.oliveira@eideticom.com>
 Signed-off-by: Logan Gunthorpe <logang@deltatee.com>
-Cc: Joerg Roedel <joro@8bytes.org>
-Cc: Will Deacon <will@kernel.org>
+Cc: Russell King <linux@armlinux.org.uk>
+Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 ---
- drivers/iommu/dma-iommu.c | 23 ++++++++++++++++-------
- 1 file changed, 16 insertions(+), 7 deletions(-)
+ arch/arm/mm/dma-mapping.c | 25 ++++++++++++++++---------
+ 1 file changed, 16 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/iommu/dma-iommu.c b/drivers/iommu/dma-iommu.c
-index 98ba927aee1a..d9aaed080e68 100644
---- a/drivers/iommu/dma-iommu.c
-+++ b/drivers/iommu/dma-iommu.c
-@@ -972,7 +972,7 @@ static int iommu_dma_map_sg_swiotlb(struct device *dev, struct scatterlist *sg,
+diff --git a/arch/arm/mm/dma-mapping.c b/arch/arm/mm/dma-mapping.c
+index c4b8df2ad328..113b9cb3701b 100644
+--- a/arch/arm/mm/dma-mapping.c
++++ b/arch/arm/mm/dma-mapping.c
+@@ -980,7 +980,7 @@ int arm_dma_map_sg(struct device *dev, struct scatterlist *sg, int nents,
+ {
+ 	const struct dma_map_ops *ops = get_dma_ops(dev);
+ 	struct scatterlist *s;
+-	int i, j;
++	int i, j, ret;
  
- out_unmap:
- 	iommu_dma_unmap_sg_swiotlb(dev, sg, i, dir, attrs | DMA_ATTR_SKIP_CPU_SYNC);
+ 	for_each_sg(sg, s, nents, i) {
+ #ifdef CONFIG_NEED_SG_DMA_LENGTH
+@@ -988,15 +988,17 @@ int arm_dma_map_sg(struct device *dev, struct scatterlist *sg, int nents,
+ #endif
+ 		s->dma_address = ops->map_page(dev, sg_page(s), s->offset,
+ 						s->length, dir, attrs);
+-		if (dma_mapping_error(dev, s->dma_address))
++		if (dma_mapping_error(dev, s->dma_address)) {
++			ret = -EIO;
+ 			goto bad_mapping;
++		}
+ 	}
+ 	return nents;
+ 
+  bad_mapping:
+ 	for_each_sg(sg, s, i, j)
+ 		ops->unmap_page(dev, sg_dma_address(s), sg_dma_len(s), dir, attrs);
 -	return 0;
-+	return -EIO;
++	return ret;
  }
  
- /*
-@@ -993,11 +993,13 @@ static int iommu_dma_map_sg(struct device *dev, struct scatterlist *sg,
- 	dma_addr_t iova;
- 	size_t iova_len = 0;
- 	unsigned long mask = dma_get_seg_boundary(dev);
-+	ssize_t ret;
- 	int i;
+ /**
+@@ -1622,7 +1624,7 @@ static int __iommu_map_sg(struct device *dev, struct scatterlist *sg, int nents,
+ 		     bool is_coherent)
+ {
+ 	struct scatterlist *s = sg, *dma = sg, *start = sg;
+-	int i, count = 0;
++	int i, count = 0, ret;
+ 	unsigned int offset = s->offset;
+ 	unsigned int size = s->offset + s->length;
+ 	unsigned int max = dma_get_max_seg_size(dev);
+@@ -1634,8 +1636,10 @@ static int __iommu_map_sg(struct device *dev, struct scatterlist *sg, int nents,
+ 		s->dma_length = 0;
  
--	if (static_branch_unlikely(&iommu_deferred_attach_enabled) &&
--	    iommu_deferred_attach(dev, domain))
--		return 0;
-+	if (static_branch_unlikely(&iommu_deferred_attach_enabled)) {
-+		ret = iommu_deferred_attach(dev, domain);
-+		goto out;
-+	}
+ 		if (s->offset || (size & ~PAGE_MASK) || size + s->length > max) {
+-			if (__map_sg_chunk(dev, start, size, &dma->dma_address,
+-			    dir, attrs, is_coherent) < 0)
++			ret = __map_sg_chunk(dev, start, size,
++					     &dma->dma_address, dir, attrs,
++					     is_coherent);
++			if (ret < 0)
+ 				goto bad_mapping;
  
- 	if (!(attrs & DMA_ATTR_SKIP_CPU_SYNC))
- 		iommu_dma_sync_sg_for_device(dev, sg, nents, dir);
-@@ -1045,14 +1047,17 @@ static int iommu_dma_map_sg(struct device *dev, struct scatterlist *sg,
+ 			dma->dma_address += offset;
+@@ -1648,8 +1652,9 @@ static int __iommu_map_sg(struct device *dev, struct scatterlist *sg, int nents,
+ 		}
+ 		size += s->length;
  	}
+-	if (__map_sg_chunk(dev, start, size, &dma->dma_address, dir, attrs,
+-		is_coherent) < 0)
++	ret = __map_sg_chunk(dev, start, size, &dma->dma_address, dir, attrs,
++			     is_coherent);
++	if (ret < 0)
+ 		goto bad_mapping;
  
- 	iova = iommu_dma_alloc_iova(domain, iova_len, dma_get_mask(dev), dev);
--	if (!iova)
-+	if (!iova) {
-+		ret = -ENOMEM;
- 		goto out_restore_sg;
-+	}
- 
- 	/*
- 	 * We'll leave any physical concatenation to the IOMMU driver's
- 	 * implementation - it knows better than we do.
- 	 */
--	if (iommu_map_sg_atomic(domain, iova, sg, nents, prot) < iova_len)
-+	ret = iommu_map_sg_atomic(domain, iova, sg, nents, prot);
-+	if (ret < iova_len)
- 		goto out_free_iova;
- 
- 	return __finalise_sg(dev, sg, nents, iova);
-@@ -1061,7 +1066,11 @@ static int iommu_dma_map_sg(struct device *dev, struct scatterlist *sg,
- 	iommu_dma_free_iova(cookie, iova, iova_len, NULL);
- out_restore_sg:
- 	__invalidate_sg(sg, nents);
+ 	dma->dma_address += offset;
+@@ -1660,7 +1665,9 @@ static int __iommu_map_sg(struct device *dev, struct scatterlist *sg, int nents,
+ bad_mapping:
+ 	for_each_sg(sg, s, count, i)
+ 		__iommu_remove_mapping(dev, sg_dma_address(s), sg_dma_len(s));
 -	return 0;
-+out:
 +	if (ret == -ENOMEM)
 +		return ret;
-+	else
-+		return -EINVAL;
++	return -EINVAL;
  }
  
- static void iommu_dma_unmap_sg(struct device *dev, struct scatterlist *sg,
+ /**
 -- 
 2.20.1
 

@@ -2,147 +2,140 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-17.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-13.6 required=3.0 tests=BAYES_00,
+	DKIM_ADSP_CUSTOM_MED,DKIM_INVALID,DKIM_SIGNED,FREEMAIL_FORGED_FROMDOMAIN,
+	FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B7191C4338F
-	for <linux-mips@archiver.kernel.org>; Sat, 24 Jul 2021 18:48:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6ABB4C4338F
+	for <linux-mips@archiver.kernel.org>; Sat, 24 Jul 2021 19:05:31 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 8862860E96
-	for <linux-mips@archiver.kernel.org>; Sat, 24 Jul 2021 18:48:00 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 3D30660EB0
+	for <linux-mips@archiver.kernel.org>; Sat, 24 Jul 2021 19:05:31 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230078AbhGXSH1 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Sat, 24 Jul 2021 14:07:27 -0400
-Received: from condef-02.nifty.com ([202.248.20.67]:28801 "EHLO
-        condef-02.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229530AbhGXSH1 (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Sat, 24 Jul 2021 14:07:27 -0400
-X-Greylist: delayed 367 seconds by postgrey-1.27 at vger.kernel.org; Sat, 24 Jul 2021 14:07:27 EDT
-Received: from conuserg-09.nifty.com ([10.126.8.72])by condef-02.nifty.com with ESMTP id 16OIcI4t004960
-        for <linux-mips@vger.kernel.org>; Sun, 25 Jul 2021 03:38:33 +0900
-Received: from localhost.localdomain (133-32-232-101.west.xps.vectant.ne.jp [133.32.232.101]) (authenticated)
-        by conuserg-09.nifty.com with ESMTP id 16OIa5fW011807;
-        Sun, 25 Jul 2021 03:36:06 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-09.nifty.com 16OIa5fW011807
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1627151766;
-        bh=adPHQfj4dkdvDSuI2P8Sk/NYpUO6MJy1Eba1ZmTwIqQ=;
-        h=From:To:Cc:Subject:Date:From;
-        b=mwy+A+WoxA23v7DCIpvZqa01h//pg2w0vRfZRtk8hESAyrN042xstnK84DPzcoea0
-         Beda2yGgKgQ8ezrhrsTt1sXbPOJVN3u+19AnZEZNSpg+BoT1oOKRYZ24GdaREpBSCn
-         fD9NIOGpMZKN8TG7PKW0m/idNM80eGkYUAGzJa+tKDxXaQWP4Zzm9qib1DY3lLHfHW
-         GHHMdqyJ78F6lyNZaPnF16HDyOdcyDxrft1d5WodjnFot7HDAPGwEAIWBQ2c4IBBcU
-         OwFO3HimmyMXY2tYJBWOsoT2f9X+/B9V6bemsoVMOgCLlVzfQnqiuT3+B1bA7FQbAi
-         +/wU2T2agkHoA==
-X-Nifty-SrcIP: [133.32.232.101]
-From:   Masahiro Yamada <masahiroy@kernel.org>
-To:     linux-kbuild@vger.kernel.org
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
-        linux-um@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-mips@vger.kernel.org, Michal Marek <michal.lkml@markovi.net>,
-        Richard Weinberger <richard@nod.at>,
-        Ingo Molnar <mingo@redhat.com>, Jeff Dike <jdike@addtoit.com>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>
-Subject: [PATCH] kbuild: do not require sub-make for separate output tree builds
-Date:   Sun, 25 Jul 2021 03:35:56 +0900
-Message-Id: <20210724183556.76680-1-masahiroy@kernel.org>
-X-Mailer: git-send-email 2.27.0
+        id S229606AbhGXSY6 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Sat, 24 Jul 2021 14:24:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47864 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229530AbhGXSY6 (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Sat, 24 Jul 2021 14:24:58 -0400
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6BB5C061757;
+        Sat, 24 Jul 2021 12:05:28 -0700 (PDT)
+Received: by mail-wr1-x433.google.com with SMTP id z7so5927123wrn.11;
+        Sat, 24 Jul 2021 12:05:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=TFqPeTJizFnfUZM7Q40k9J0nA9MRhn5b8J6dQsSbkSU=;
+        b=g5nY822zTiAYbbkQ4YvFuTxrqBbrNXQb0J6QLorJ6+V4lidZ71xypTmFB5e/wdlDmv
+         Z+S+OLK1FmyQGep01xTB9/9vn1uhuGI15sgbW8RtkRAmwMqqd/9Nr6kTLFB/sVD89NBN
+         GHmttZTJEYENNoHHQu//YH1hsPWfQwXbsz3xoVJY/20eomOzxcPzl0AaNFTgiKwY552B
+         Ea6wuEb/61dxpYp1AbFlCR8kKoW7UyP/W++yhJL/uNRP6DJknEGKGRZ3sjI8qthxEr7z
+         Ecw1XE4wmkW2iui+tO7c2Ngx6ArEqnijunxPClK1wF44rkXMuOdPnLF3JX3jG2D5SjrE
+         IxbQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=TFqPeTJizFnfUZM7Q40k9J0nA9MRhn5b8J6dQsSbkSU=;
+        b=R+1PviGawqTnxE/gmNIJ4cQ5PLSYy+zPRkHlHTJrv5vnnfBm/q6P1uiUU6gZzR7I5C
+         geoupOK+U7rgoAZ/0eDWD4lzKjsiLNdxWhuTLKeO6iEdWYYjpbAT46TzfpZPWYRTEEYJ
+         mvW5Sq9LXebzF4HeXTsDtYOYgQBsevNJB4Ub3zYgJ42TYaVjTDD7setmmt/4zp8xydxi
+         o43PV6HQtxz+78aL0z4bBF9JqBFArJ093H4ABtCXDUYQ+JnixQTGYrLbjNWISXjT5gJH
+         WRl6+oBLapXx4qi27JuBhUvUJGYsqo/4AsfowFr/UbWSU6COrzDGoPPqhEZoDX9DwKiB
+         0NNQ==
+X-Gm-Message-State: AOAM530q+9UHp3WaLC8frgU6DYJYAO6U5Oy3fxDXyMKYdt20aw2wOpol
+        xOBxtbAWFY4qbbLbqc7NpaQ=
+X-Google-Smtp-Source: ABdhPJyER3AGOSAzaJBWOSY3FIvCmfsIuvtui436ER79FTl14zfHObSDGR1r7fovxH8clCA5FgzmBg==
+X-Received: by 2002:a5d:4a4c:: with SMTP id v12mr10875840wrs.256.1627153527415;
+        Sat, 24 Jul 2021 12:05:27 -0700 (PDT)
+Received: from monk.home (astrasbourg-157-1-7-84.w90-40.abo.wanadoo.fr. [90.40.218.84])
+        by smtp.gmail.com with ESMTPSA id j15sm1117798wms.20.2021.07.24.12.05.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 24 Jul 2021 12:05:27 -0700 (PDT)
+From:   Christophe Branchereau <cbranchereau@gmail.com>
+Cc:     jic23@kernel.org, lars@metafoo.de, linux-mips@vger.kernel.org,
+        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        robh+dt@kernel.org, devicetree@vger.kernel.org, linux@roeck-us.net,
+        contact@artur-rojek.eu, paul@crapouillou.net,
+        Christophe Branchereau <cbranchereau@gmail.com>
+Subject: [PATCH v3 1/5] iio/adc: ingenic: rename has_aux2 to has_aux_md
+Date:   Sat, 24 Jul 2021 21:04:45 +0200
+Message-Id: <20210724190449.221894-2-cbranchereau@gmail.com>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20210724190449.221894-1-cbranchereau@gmail.com>
+References: <20210724190449.221894-1-cbranchereau@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-As explained in commit 3204a7fb98a3 ("kbuild: prefix $(srctree)/ to some
-included Makefiles"), I want to stop using --include-dir some day.
+The jz4760(b) socs have 3 aux channels.
 
-I already fixed up the top Makefile, but some arch Makefiles (mips, um,
-x86) still include check-in Makefiles without $(srctree)/.
+The purpose of has_aux2 is to set the MD bits used to select
+the AUX channel to be sampled, not to describe the hardware.
 
-Fix them up so 'need-sub-make := 1' can go away for this case.
+Rename it to a more appropriate name.
 
-Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+Signed-off-by: Christophe Branchereau <cbranchereau@gmail.com>
 ---
+ drivers/iio/adc/ingenic-adc.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
- Makefile           | 5 ++---
- arch/mips/Makefile | 2 +-
- arch/um/Makefile   | 6 +++---
- arch/x86/Makefile  | 2 +-
- 4 files changed, 7 insertions(+), 8 deletions(-)
-
-diff --git a/Makefile b/Makefile
-index e4f5895badb5..bb10a93edf5c 100644
---- a/Makefile
-+++ b/Makefile
-@@ -191,10 +191,9 @@ endif
- ifneq ($(abs_srctree),$(abs_objtree))
- # Look for make include files relative to root of kernel src
- #
--# This does not become effective immediately because MAKEFLAGS is re-parsed
--# once after the Makefile is read. We need to invoke sub-make.
-+# --included-dir is added for backward compatibility, but you should not rely on
-+# it. Please add $(srctree)/ prefix to include Makefiles in the source tree.
- MAKEFLAGS += --include-dir=$(abs_srctree)
--need-sub-make := 1
- endif
+diff --git a/drivers/iio/adc/ingenic-adc.c b/drivers/iio/adc/ingenic-adc.c
+index 34c03a264f74..40f2d8c2cf72 100644
+--- a/drivers/iio/adc/ingenic-adc.c
++++ b/drivers/iio/adc/ingenic-adc.c
+@@ -92,7 +92,7 @@ struct ingenic_adc_soc_data {
+ 	const int *battery_scale_avail;
+ 	size_t battery_scale_avail_size;
+ 	unsigned int battery_vref_mode: 1;
+-	unsigned int has_aux2: 1;
++	unsigned int has_aux_md: 1;
+ 	const struct iio_chan_spec *channels;
+ 	unsigned int num_channels;
+ 	int (*init_clk_div)(struct device *dev, struct ingenic_adc *adc);
+@@ -506,7 +506,7 @@ static const struct ingenic_adc_soc_data jz4725b_adc_soc_data = {
+ 	.battery_scale_avail = jz4725b_adc_battery_scale_avail,
+ 	.battery_scale_avail_size = ARRAY_SIZE(jz4725b_adc_battery_scale_avail),
+ 	.battery_vref_mode = true,
+-	.has_aux2 = false,
++	.has_aux_md = false,
+ 	.channels = jz4740_channels,
+ 	.num_channels = ARRAY_SIZE(jz4740_channels),
+ 	.init_clk_div = jz4725b_adc_init_clk_div,
+@@ -520,7 +520,7 @@ static const struct ingenic_adc_soc_data jz4740_adc_soc_data = {
+ 	.battery_scale_avail = jz4740_adc_battery_scale_avail,
+ 	.battery_scale_avail_size = ARRAY_SIZE(jz4740_adc_battery_scale_avail),
+ 	.battery_vref_mode = true,
+-	.has_aux2 = false,
++	.has_aux_md = false,
+ 	.channels = jz4740_channels,
+ 	.num_channels = ARRAY_SIZE(jz4740_channels),
+ 	.init_clk_div = NULL, /* no ADCLK register on JZ4740 */
+@@ -534,7 +534,7 @@ static const struct ingenic_adc_soc_data jz4770_adc_soc_data = {
+ 	.battery_scale_avail = jz4770_adc_battery_scale_avail,
+ 	.battery_scale_avail_size = ARRAY_SIZE(jz4770_adc_battery_scale_avail),
+ 	.battery_vref_mode = false,
+-	.has_aux2 = true,
++	.has_aux_md = true,
+ 	.channels = jz4770_channels,
+ 	.num_channels = ARRAY_SIZE(jz4770_channels),
+ 	.init_clk_div = jz4770_adc_init_clk_div,
+@@ -581,7 +581,7 @@ static int ingenic_adc_read_chan_info_raw(struct iio_dev *iio_dev,
  
- ifneq ($(filter 3.%,$(MAKE_VERSION)),)
-diff --git a/arch/mips/Makefile b/arch/mips/Makefile
-index 4e942b7ef022..bc2e1857d8ce 100644
---- a/arch/mips/Makefile
-+++ b/arch/mips/Makefile
-@@ -254,7 +254,7 @@ endif
- #
- # Board-dependent options and extra files
- #
--include arch/mips/Kbuild.platforms
-+include $(srctree)/arch/mips/Kbuild.platforms
- 
- ifdef CONFIG_PHYSICAL_START
- load-y					= $(CONFIG_PHYSICAL_START)
-diff --git a/arch/um/Makefile b/arch/um/Makefile
-index 12a7acef0357..f2fe63bfd819 100644
---- a/arch/um/Makefile
-+++ b/arch/um/Makefile
-@@ -41,8 +41,8 @@ endif
- 
- HOST_DIR := arch/$(HEADER_ARCH)
- 
--include $(ARCH_DIR)/Makefile-skas
--include $(HOST_DIR)/Makefile.um
-+include $(srctree)/$(ARCH_DIR)/Makefile-skas
-+include $(srctree)/$(HOST_DIR)/Makefile.um
- 
- core-y += $(HOST_DIR)/um/
- 
-@@ -76,7 +76,7 @@ USER_CFLAGS = $(patsubst $(KERNEL_DEFINES),,$(patsubst -I%,,$(KBUILD_CFLAGS))) \
- 		-idirafter $(objtree)/include -D__KERNEL__ -D__UM_HOST__
- 
- #This will adjust *FLAGS accordingly to the platform.
--include $(ARCH_DIR)/Makefile-os-$(OS)
-+include $(srctree)/$(ARCH_DIR)/Makefile-os-$(OS)
- 
- KBUILD_CPPFLAGS += -I$(srctree)/$(HOST_DIR)/include \
- 		   -I$(srctree)/$(HOST_DIR)/include/uapi \
-diff --git a/arch/x86/Makefile b/arch/x86/Makefile
-index 307fd0000a83..0fa7dc73b5d8 100644
---- a/arch/x86/Makefile
-+++ b/arch/x86/Makefile
-@@ -75,7 +75,7 @@ ifeq ($(CONFIG_X86_32),y)
-         KBUILD_CFLAGS += $(call cc-option,$(cc_stack_align4))
- 
-         # CPU-specific tuning. Anything which can be shared with UML should go here.
--        include arch/x86/Makefile_32.cpu
-+        include $(srctree)/arch/x86/Makefile_32.cpu
-         KBUILD_CFLAGS += $(cflags-y)
- 
-         # temporary until string.h is fixed
+ 	/* We cannot sample AUX/AUX2 in parallel. */
+ 	mutex_lock(&adc->aux_lock);
+-	if (adc->soc_data->has_aux2 && engine == 0) {
++	if (adc->soc_data->has_aux_md && engine == 0) {
+ 		bit = BIT(chan->channel == INGENIC_ADC_AUX2);
+ 		ingenic_adc_set_config(adc, JZ_ADC_REG_CFG_AUX_MD, bit);
+ 	}
 -- 
-2.27.0
+2.30.2
 

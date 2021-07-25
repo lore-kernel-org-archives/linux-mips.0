@@ -2,82 +2,311 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.5 required=3.0 tests=BAYES_00,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_2
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-18.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 402B6C4338F
-	for <linux-mips@archiver.kernel.org>; Sun, 25 Jul 2021 15:19:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 504E0C4338F
+	for <linux-mips@archiver.kernel.org>; Sun, 25 Jul 2021 16:03:05 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 0DC1F60F3A
-	for <linux-mips@archiver.kernel.org>; Sun, 25 Jul 2021 15:19:32 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 3A1D96069E
+	for <linux-mips@archiver.kernel.org>; Sun, 25 Jul 2021 16:03:05 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231264AbhGYOjB (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Sun, 25 Jul 2021 10:39:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53264 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231208AbhGYOjA (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Sun, 25 Jul 2021 10:39:00 -0400
-Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2109460F38;
-        Sun, 25 Jul 2021 15:19:28 +0000 (UTC)
-Date:   Sun, 25 Jul 2021 16:22:01 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Christophe Branchereau <cbranchereau@gmail.com>
-Cc:     lars@metafoo.de, linux-mips@vger.kernel.org,
-        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        robh+dt@kernel.org, devicetree@vger.kernel.org, linux@roeck-us.net,
-        contact@artur-rojek.eu, paul@crapouillou.net
-Subject: Re: [PATCH v3 0/4] iio/adc: ingenic: add support for the JZ4760(B)
- Socs to the ingenic sadc driver
-Message-ID: <20210725162119.242ae17e@jic23-huawei>
-In-Reply-To: <20210724190449.221894-1-cbranchereau@gmail.com>
-References: <20210724190449.221894-1-cbranchereau@gmail.com>
-X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S231347AbhGYPWe (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Sun, 25 Jul 2021 11:22:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39276 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231318AbhGYPWd (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Sun, 25 Jul 2021 11:22:33 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E19ABC061760;
+        Sun, 25 Jul 2021 09:03:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
+        :Reply-To:Content-Type:Content-ID:Content-Description;
+        bh=jUS3uVX7qCY8Zqt4eCdPC4NShmGg5y/gOwJV6l7jljc=; b=nDk7Si10PIJPTgvosvXTHCtSVS
+        Kn49cGMsSS0HINLRjrNuWWrY2xD+N1/5NCDOiOr9VECNbb55blwQsfodMgIGmUjkQzEgayYPoBtK3
+        mYCLnO/SBA1bd4fXkcLHfutsPMrlriGPuffbQjn3aK1tOqnMWqbchmbc+pDq8YpNS23j1FsE9bOfx
+        fyvdp9LaAbzkpN0hALkPBii63NZOp9uYY7RfrfC/nDq4SVLZJmG9E+QtNwQQauIwbkJCFpP51+pZr
+        5XquhKLYA4kK1UQyon0vBSMTrJb8b/XG/O96Q0ToXw7GlgwqaJgFz7scC21Q683VI8hGmSHMtlADs
+        N9uUAqtg==;
+Received: from [2601:1c0:6280:3f0::aefb] (helo=bombadil.infradead.org)
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1m7gaj-008oIU-Hd; Sun, 25 Jul 2021 16:03:01 +0000
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Aditya Srivastava <yashsri421@gmail.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        linux-mips@vger.kernel.org, kernel test robot <lkp@intel.com>
+Subject: [PATCH 2/3] mips: clean up kernel-doc in cavium-octeon/*.c
+Date:   Sun, 25 Jul 2021 09:02:57 -0700
+Message-Id: <20210725160258.28950-3-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20210725160258.28950-1-rdunlap@infradead.org>
+References: <20210725160258.28950-1-rdunlap@infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Sat, 24 Jul 2021 21:04:44 +0200
-Christophe Branchereau <cbranchereau@gmail.com> wrote:
+Convert function comments to kernel-doc notation to remove
+kernel-doc warnings in arch/mips/cavium-octeon/*.c.
+Also clean up the comments in a few places.
 
-> This is a set of patches to add support to the JZ4760(B) socs found in numerous gaming handhelds and some
-> mp3 players to the ingenic-sadc driver.
-> 
-> Changelog for this v3:
-> - Minor formatting change in ingenic-adc.c to remain within 80 lines
-> - Correctly set the ingenic,use-internal-divider property in the Documentation so it cannot be used on other
-> socs than the jz4760b, and modify the description as requested.
-> 
-> Thanks to Paul and Jonathan for their help
+   arch/mips/cavium-octeon/flash_setup.c:66: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
+    * Module/ driver initialization.
+--
+   arch/mips/cavium-octeon/setup.c:308: warning: expecting prototype for Return non zero if we are currently running in the Octeon simulator(). Prototype was for octeon_is_simulation() instead
+   arch/mips/cavium-octeon/setup.c:314: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
+    * Return true if Octeon is in PCI Host mode. This means
+   arch/mips/cavium-octeon/setup.c:334: warning: expecting prototype for Get the clock rate of Octeon(). Prototype was for octeon_get_clock_rate() instead
+   arch/mips/cavium-octeon/setup.c:351: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
+    * Write to the LCD display connected to the bootbus. This display
+   arch/mips/cavium-octeon/setup.c:380: warning: expecting prototype for Return the console uart passed by the bootloader(). Prototype was for octeon_get_boot_uart() instead
+   arch/mips/cavium-octeon/setup.c:386: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
+    * Get the coremask Linux was booted on.
+   arch/mips/cavium-octeon/setup.c:399: warning: expecting prototype for Check the hardware BIST results for a CPU(). Prototype was for octeon_check_cpu_bist() instead
+   arch/mips/cavium-octeon/setup.c:432: warning: expecting prototype for Reboot Octeon(). Prototype was for octeon_restart() instead
+   arch/mips/cavium-octeon/setup.c:452: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
+    * Permanently stop a core.
+   arch/mips/cavium-octeon/setup.c:475: warning: expecting prototype for Halt the system(). Prototype was for octeon_halt() instead
+   arch/mips/cavium-octeon/setup.c:520: warning: expecting prototype for Return a string representing the system type(). Prototype was for octeon_board_type_string() instead
+   arch/mips/cavium-octeon/setup.c:661: warning: expecting prototype for Early entry point for arch setup(). Prototype was for prom_init() instead
+--
+   arch/mips/cavium-octeon/smp.c:100: warning: Function parameter or member 'cpu' not described in 'octeon_send_ipi_single'
+   arch/mips/cavium-octeon/smp.c:100: warning: Function parameter or member 'action' not described in 'octeon_send_ipi_single'
+   arch/mips/cavium-octeon/smp.c:100: warning: expecting prototype for Cause the function described by call_data to be executed on the passed(). Prototype was for octeon_send_ipi_single() instead
+   arch/mips/cavium-octeon/smp.c:119: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
+    * Detect available CPUs, populate cpu_possible_mask
+   arch/mips/cavium-octeon/smp.c:210: warning: Function parameter or member 'cpu' not described in 'octeon_boot_secondary'
+   arch/mips/cavium-octeon/smp.c:210: warning: Function parameter or member 'idle' not described in 'octeon_boot_secondary'
+   arch/mips/cavium-octeon/smp.c:210: warning: expecting prototype for Firmware CPU startup hook(). Prototype was for octeon_boot_secondary() instead
+   arch/mips/cavium-octeon/smp.c:236: warning: This comment starts with '/**', but isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
+    * After we've done initial boot, this function is called to allow the
+   arch/mips/cavium-octeon/smp.c:258: warning: Function parameter or member 'max_cpus' not described in 'octeon_prepare_cpus'
+   arch/mips/cavium-octeon/smp.c:258: warning: expecting prototype for Callout to firmware before smp_init(). Prototype was for octeon_prepare_cpus() instead
+   arch/mips/cavium-octeon/smp.c:276: warning: expecting prototype for Last chance for the board code to finish SMP initialization before(). Prototype was for octeon_smp_finish() instead
 
-You are welcome.
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Reported-by: kernel test robot <lkp@intel.com>
+Cc: Aditya Srivastava <yashsri421@gmail.com>
+Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc: linux-mips@vger.kernel.org
+---
+ arch/mips/cavium-octeon/flash_setup.c |    2 -
+ arch/mips/cavium-octeon/setup.c       |   43 ++++++++++++------------
+ arch/mips/cavium-octeon/smp.c         |   14 +++----
+ 3 files changed, 29 insertions(+), 30 deletions(-)
 
-Other than Paul's question on the missing entry in patch 4, these look good to me.
-We should leave a bit of time for others to review but otherwise once that's
-resolved I'll pick them up.
-
-Thanks,
-
-Jonathan
-
-> 
-> Christophe Branchereau (5):
->   iio/adc: ingenic: rename has_aux2 to has_aux_md
->   dt-bindings: iio/adc: add an INGENIC_ADC_AUX0 entry
->   iio/adc: ingenic: add JZ4760 support to the sadc driver
->   iio/adc: ingenic: add JZ4760B support to the sadc driver
->   dt-bindings: iio/adc: ingenic: add the JZ4760(B) socs to the sadc
->     Documentation
-> 
->  .../bindings/iio/adc/ingenic,adc.yaml         |  19 ++++
->  drivers/iio/adc/ingenic-adc.c                 | 101 ++++++++++++++++--
->  include/dt-bindings/iio/adc/ingenic,adc.h     |   1 +
->  3 files changed, 112 insertions(+), 9 deletions(-)
-> 
-
+--- linux-next-20210723.orig/arch/mips/cavium-octeon/flash_setup.c
++++ linux-next-20210723/arch/mips/cavium-octeon/flash_setup.c
+@@ -62,7 +62,7 @@ static void octeon_flash_map_copy_to(str
+ 	up(&octeon_bootbus_sem);
+ }
+ 
+-/**
++/*
+  * Module/ driver initialization.
+  *
+  * Returns Zero on success
+--- linux-next-20210723.orig/arch/mips/cavium-octeon/setup.c
++++ linux-next-20210723/arch/mips/cavium-octeon/setup.c
+@@ -295,9 +295,10 @@ static int octeon_uart;
+ extern asmlinkage void handle_int(void);
+ 
+ /**
+- * Return non zero if we are currently running in the Octeon simulator
++ * octeon_is_simulation - Return non-zero if we are currently running
++ * in the Octeon simulator
+  *
+- * Returns
++ * Return: non-0 if running in the Octeon simulator, 0 otherwise
+  */
+ int octeon_is_simulation(void)
+ {
+@@ -306,10 +307,10 @@ int octeon_is_simulation(void)
+ EXPORT_SYMBOL(octeon_is_simulation);
+ 
+ /**
+- * Return true if Octeon is in PCI Host mode. This means
++ * octeon_is_pci_host - Return true if Octeon is in PCI Host mode. This means
+  * Linux can control the PCI bus.
+  *
+- * Returns Non zero if Octeon in host mode.
++ * Return: Non-zero if Octeon is in host mode.
+  */
+ int octeon_is_pci_host(void)
+ {
+@@ -321,9 +322,9 @@ int octeon_is_pci_host(void)
+ }
+ 
+ /**
+- * Get the clock rate of Octeon
++ * octeon_get_clock_rate - Get the clock rate of Octeon
+  *
+- * Returns Clock rate in HZ
++ * Return: Clock rate in HZ
+  */
+ uint64_t octeon_get_clock_rate(void)
+ {
+@@ -343,11 +344,11 @@ EXPORT_SYMBOL(octeon_get_io_clock_rate);
+ 
+ 
+ /**
+- * Write to the LCD display connected to the bootbus. This display
+- * exists on most Cavium evaluation boards. If it doesn't exist, then
+- * this function doesn't do anything.
+- *
++ * octeon_write_lcd - Write to the LCD display connected to the bootbus.
+  * @s:	    String to write
++ *
++ * This display exists on most Cavium evaluation boards. If it doesn't exist,
++ * then this function doesn't do anything.
+  */
+ static void octeon_write_lcd(const char *s)
+ {
+@@ -367,9 +368,9 @@ static void octeon_write_lcd(const char
+ }
+ 
+ /**
+- * Return the console uart passed by the bootloader
++ * octeon_get_boot_uart - Return the console uart passed by the bootloader
+  *
+- * Returns uart	  (0 or 1)
++ * Return: uart number (0 or 1)
+  */
+ static int octeon_get_boot_uart(void)
+ {
+@@ -378,9 +379,9 @@ static int octeon_get_boot_uart(void)
+ }
+ 
+ /**
+- * Get the coremask Linux was booted on.
++ * octeon_get_boot_coremask - Get the coremask Linux was booted on.
+  *
+- * Returns Core mask
++ * Return: Core mask
+  */
+ int octeon_get_boot_coremask(void)
+ {
+@@ -388,7 +389,7 @@ int octeon_get_boot_coremask(void)
+ }
+ 
+ /**
+- * Check the hardware BIST results for a CPU
++ * octeon_check_cpu_bist - Check the hardware BIST results for a CPU
+  */
+ void octeon_check_cpu_bist(void)
+ {
+@@ -419,7 +420,7 @@ void octeon_check_cpu_bist(void)
+ }
+ 
+ /**
+- * Reboot Octeon
++ * octeon_restart - Reboot Octeon
+  *
+  * @command: Command to pass to the bootloader. Currently ignored.
+  */
+@@ -444,7 +445,7 @@ static void octeon_restart(char *command
+ 
+ 
+ /**
+- * Permanently stop a core.
++ * octeon_kill_core - Permanently stop a core.
+  *
+  * @arg: Ignored.
+  */
+@@ -464,7 +465,7 @@ static void octeon_kill_core(void *arg)
+ 
+ 
+ /**
+- * Halt the system
++ * octeon_halt - Halt the system
+  */
+ static void octeon_halt(void)
+ {
+@@ -507,9 +508,9 @@ static void __init init_octeon_system_ty
+ }
+ 
+ /**
+- * Return a string representing the system type
++ * octeon_board_type_string - Return a string representing the system type
+  *
+- * Returns
++ * Return: system type string
+  */
+ const char *octeon_board_type_string(void)
+ {
+@@ -650,7 +651,7 @@ void octeon_user_io_init(void)
+ }
+ 
+ /**
+- * Early entry point for arch setup
++ * prom_init - Early entry point for arch setup
+  */
+ void __init prom_init(void)
+ {
+--- linux-next-20210723.orig/arch/mips/cavium-octeon/smp.c
++++ linux-next-20210723/arch/mips/cavium-octeon/smp.c
+@@ -91,7 +91,7 @@ static irqreturn_t mailbox_interrupt(int
+ 	return IRQ_HANDLED;
+ }
+ 
+-/**
++/*
+  * Cause the function described by call_data to be executed on the passed
+  * cpu.	 When the function has finished, increment the finished field of
+  * call_data.
+@@ -115,7 +115,7 @@ static inline void octeon_send_ipi_mask(
+ 		octeon_send_ipi_single(i, action);
+ }
+ 
+-/**
++/*
+  * Detect available CPUs, populate cpu_possible_mask
+  */
+ static void octeon_smp_hotplug_setup(void)
+@@ -202,9 +202,8 @@ int plat_post_relocation(long offset)
+ }
+ #endif /* CONFIG_RELOCATABLE */
+ 
+-/**
++/*
+  * Firmware CPU startup hook
+- *
+  */
+ static int octeon_boot_secondary(int cpu, struct task_struct *idle)
+ {
+@@ -232,7 +231,7 @@ static int octeon_boot_secondary(int cpu
+ 	return 0;
+ }
+ 
+-/**
++/*
+  * After we've done initial boot, this function is called to allow the
+  * board code to clean up state, if needed
+  */
+@@ -250,9 +249,8 @@ static void octeon_init_secondary(void)
+ 	octeon_irq_setup_secondary();
+ }
+ 
+-/**
++/*
+  * Callout to firmware before smp_init
+- *
+  */
+ static void __init octeon_prepare_cpus(unsigned int max_cpus)
+ {
+@@ -268,7 +266,7 @@ static void __init octeon_prepare_cpus(u
+ 	}
+ }
+ 
+-/**
++/*
+  * Last chance for the board code to finish SMP initialization before
+  * the CPU is "online".
+  */

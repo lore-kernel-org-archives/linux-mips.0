@@ -2,37 +2,37 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
+X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C651DC432BE
-	for <linux-mips@archiver.kernel.org>; Tue, 27 Jul 2021 14:06:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EF067C4338F
+	for <linux-mips@archiver.kernel.org>; Tue, 27 Jul 2021 14:06:37 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id B2E5061A84
-	for <linux-mips@archiver.kernel.org>; Tue, 27 Jul 2021 14:06:09 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id D02AA61A87
+	for <linux-mips@archiver.kernel.org>; Tue, 27 Jul 2021 14:06:37 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236989AbhG0OF7 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 27 Jul 2021 10:05:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42686 "EHLO
+        id S232282AbhG0OGG (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 27 Jul 2021 10:06:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42694 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236878AbhG0OFP (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Tue, 27 Jul 2021 10:05:15 -0400
-Received: from xavier.telenet-ops.be (xavier.telenet-ops.be [IPv6:2a02:1800:120:4::f00:14])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2BAEC06119A
+        with ESMTP id S236762AbhG0OFQ (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Tue, 27 Jul 2021 10:05:16 -0400
+Received: from albert.telenet-ops.be (albert.telenet-ops.be [IPv6:2a02:1800:110:4::f00:1a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E843FC061764
         for <linux-mips@vger.kernel.org>; Tue, 27 Jul 2021 07:05:12 -0700 (PDT)
 Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed20:b0a9:7e88:5ca4:551a])
-        by xavier.telenet-ops.be with bizsmtp
-        id aE572500Z1fSPfK01E58WF; Tue, 27 Jul 2021 16:05:10 +0200
+        by albert.telenet-ops.be with bizsmtp
+        id aE57250041fSPfK06E57wd; Tue, 27 Jul 2021 16:05:10 +0200
 Received: from rox.of.borg ([192.168.97.57])
         by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
         (Exim 4.93)
         (envelope-from <geert@linux-m68k.org>)
-        id 1m8Nhj-001PuZ-7Z; Tue, 27 Jul 2021 16:05:07 +0200
+        id 1m8Nhi-001Puk-Nl; Tue, 27 Jul 2021 16:05:06 +0200
 Received: from geert by rox.of.borg with local (Exim 4.93)
         (envelope-from <geert@linux-m68k.org>)
-        id 1m8Nhh-00FoDR-P9; Tue, 27 Jul 2021 16:05:05 +0200
+        id 1m8Nhh-00FoE5-Vw; Tue, 27 Jul 2021 16:05:06 +0200
 From:   Geert Uytterhoeven <geert@linux-m68k.org>
 To:     Robin van der Gracht <robin@protonic.nl>,
         Rob Herring <robh+dt@kernel.org>,
@@ -42,10 +42,11 @@ To:     Robin van der Gracht <robin@protonic.nl>,
         Pavel Machek <pavel@ucw.cz>, Marek Behun <marek.behun@nic.cz>
 Cc:     devicetree@vger.kernel.org, linux-leds@vger.kernel.org,
         linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH v4 14/19] auxdisplay: ht16k33: Move delayed work
-Date:   Tue, 27 Jul 2021 16:04:54 +0200
-Message-Id: <20210727140459.3767788-15-geert@linux-m68k.org>
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Rob Herring <robh@kernel.org>
+Subject: [PATCH v4 18/19] dt-bindings: auxdisplay: ht16k33: Document LED subnode
+Date:   Tue, 27 Jul 2021 16:04:58 +0200
+Message-Id: <20210727140459.3767788-19-geert@linux-m68k.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210727140459.3767788-1-geert@linux-m68k.org>
 References: <20210727140459.3767788-1-geert@linux-m68k.org>
@@ -55,81 +56,60 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Move delayed_work from ht16k33_fbdev to ht16k33_priv, as it is not
-specific to dot-matrix displays, but common to all display types.
+Extend the Holtek HT16K33 LED controller Device Tree bindings with an
+LED subnode, conforming to the standard LED bindings.
+
+This allows the user to exert more control, like specifying LED color,
+function, and/or trigger, to extend LED functionality beyond a simple
+display backlight.
 
 Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Reviewed-by: Rob Herring <robh@kernel.org>
 ---
 v4:
-  - No changes,
+  - Add Reviewed-by,
 
 v3:
-  - No changes,
-
-v2:
-  - No changes.
+  - New.
 ---
- drivers/auxdisplay/ht16k33.c | 15 +++++++--------
- 1 file changed, 7 insertions(+), 8 deletions(-)
+ .../bindings/auxdisplay/holtek,ht16k33.yaml           | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
-diff --git a/drivers/auxdisplay/ht16k33.c b/drivers/auxdisplay/ht16k33.c
-index 75d326a823543898..c7a3a0e1fbb5d03e 100644
---- a/drivers/auxdisplay/ht16k33.c
-+++ b/drivers/auxdisplay/ht16k33.c
-@@ -65,11 +65,11 @@ struct ht16k33_fbdev {
- 	uint32_t refresh_rate;
- 	uint8_t *buffer;
- 	uint8_t *cache;
--	struct delayed_work work;
- };
+diff --git a/Documentation/devicetree/bindings/auxdisplay/holtek,ht16k33.yaml b/Documentation/devicetree/bindings/auxdisplay/holtek,ht16k33.yaml
+index 6baf1200c9d8488e..0f1414185fefc1a9 100644
+--- a/Documentation/devicetree/bindings/auxdisplay/holtek,ht16k33.yaml
++++ b/Documentation/devicetree/bindings/auxdisplay/holtek,ht16k33.yaml
+@@ -48,6 +48,11 @@ properties:
+     default: 16
+     description: Initial brightness level
  
- struct ht16k33_priv {
- 	struct i2c_client *client;
-+	struct delayed_work work;
- 	struct ht16k33_keypad keypad;
- 	struct ht16k33_fbdev fbdev;
- };
-@@ -117,7 +117,7 @@ static void ht16k33_fb_queue(struct ht16k33_priv *priv)
- {
- 	struct ht16k33_fbdev *fbdev = &priv->fbdev;
- 
--	schedule_delayed_work(&fbdev->work, HZ / fbdev->refresh_rate);
-+	schedule_delayed_work(&priv->work, HZ / fbdev->refresh_rate);
- }
- 
- /*
-@@ -125,10 +125,9 @@ static void ht16k33_fb_queue(struct ht16k33_priv *priv)
-  */
- static void ht16k33_fb_update(struct work_struct *work)
- {
--	struct ht16k33_fbdev *fbdev =
--		container_of(work, struct ht16k33_fbdev, work.work);
--	struct ht16k33_priv *priv =
--		container_of(fbdev, struct ht16k33_priv, fbdev);
-+	struct ht16k33_priv *priv = container_of(work, struct ht16k33_priv,
-+						 work.work);
-+	struct ht16k33_fbdev *fbdev = &priv->fbdev;
- 
- 	uint8_t *p1, *p2;
- 	int len, pos = 0, first = -1;
-@@ -462,7 +461,7 @@ static int ht16k33_probe(struct i2c_client *client)
- 	}
- 	fb_bl_default_curve(fbdev->info, 0, MIN_BRIGHTNESS, MAX_BRIGHTNESS);
- 
--	INIT_DELAYED_WORK(&fbdev->work, ht16k33_fb_update);
-+	INIT_DELAYED_WORK(&priv->work, ht16k33_fb_update);
- 	fbdev->info->fbops = &ht16k33_fb_ops;
- 	fbdev->info->screen_base = (char __iomem *) fbdev->buffer;
- 	fbdev->info->screen_size = HT16K33_FB_SIZE;
-@@ -502,7 +501,7 @@ static int ht16k33_remove(struct i2c_client *client)
- 	struct ht16k33_priv *priv = i2c_get_clientdata(client);
- 	struct ht16k33_fbdev *fbdev = &priv->fbdev;
- 
--	cancel_delayed_work_sync(&fbdev->work);
-+	cancel_delayed_work_sync(&priv->work);
- 	unregister_framebuffer(fbdev->info);
- 	framebuffer_release(fbdev->info);
- 	free_page((unsigned long) fbdev->buffer);
++  led:
++    type: object
++    $ref: /schemas/leds/common.yaml#
++    unevaluatedProperties: false
++
+ required:
+   - compatible
+   - reg
+@@ -66,6 +71,7 @@ examples:
+   - |
+     #include <dt-bindings/interrupt-controller/irq.h>
+     #include <dt-bindings/input/input.h>
++    #include <dt-bindings/leds/common.h>
+     i2c1 {
+             #address-cells = <1>;
+             #size-cells = <0>;
+@@ -87,5 +93,10 @@ examples:
+                                    <MATRIX_KEY(4, 1, KEY_F9)>,
+                                    <MATRIX_KEY(5, 1, KEY_F3)>,
+                                    <MATRIX_KEY(6, 1, KEY_F1)>;
++
++                    led {
++                            color = <LED_COLOR_ID_RED>;
++                            function = LED_FUNCTION_BACKLIGHT;
++                    };
+             };
+       };
 -- 
 2.25.1
 

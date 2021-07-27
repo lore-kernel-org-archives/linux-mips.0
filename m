@@ -2,100 +2,93 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-	autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E1A6EC4338F
-	for <linux-mips@archiver.kernel.org>; Tue, 27 Jul 2021 12:03:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DAF91C4320E
+	for <linux-mips@archiver.kernel.org>; Tue, 27 Jul 2021 14:05:15 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id C5CD46124D
-	for <linux-mips@archiver.kernel.org>; Tue, 27 Jul 2021 12:03:45 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id BA791619E7
+	for <linux-mips@archiver.kernel.org>; Tue, 27 Jul 2021 14:05:15 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231869AbhG0MDp (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 27 Jul 2021 08:03:45 -0400
-Received: from smtp-out1.suse.de ([195.135.220.28]:51596 "EHLO
-        smtp-out1.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231863AbhG0MDo (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Tue, 27 Jul 2021 08:03:44 -0400
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 0F2942216C;
-        Tue, 27 Jul 2021 12:03:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1627387424;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=pZ/se20ZFFLCh/53BkKxRvZ5VxT5gHzNLD8jlsk8tBE=;
-        b=FD5Hbxj7vPBg5jwc/kNydB0HPGIQWOAsOy5+uKVaTAsUhHfWGF+/cHgltvGHBXh4hZXftZ
-        A2iXRbGtz5yMNuHJgSn+cZ5meTHFAPD9KtVyatz6A3Lf8QKqtbbv08Je3ZMWjPPeHHTZ9N
-        IK3B1cjLe/Je4IadrmGKhinszIwH7TI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1627387424;
-        h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=pZ/se20ZFFLCh/53BkKxRvZ5VxT5gHzNLD8jlsk8tBE=;
-        b=gh0jWmdnW/Dycuh81bP0Eie4zJ5AaobytWjgOro1VGMLOVrP/X7/tcC1Krwboy9zOHUk0N
-        w/NAPyh3+ul3Q8CQ==
-Received: from imap1.suse-dmz.suse.de (imap1.suse-dmz.suse.de [192.168.254.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap1.suse-dmz.suse.de (Postfix) with ESMTPS id B26D3133DE;
-        Tue, 27 Jul 2021 12:03:43 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap1.suse-dmz.suse.de with ESMTPSA
-        id FSeSKB/2/2CjXgAAGKfGzw
-        (envelope-from <pvorel@suse.cz>); Tue, 27 Jul 2021 12:03:43 +0000
-Date:   Tue, 27 Jul 2021 14:03:42 +0200
-From:   Petr Vorel <pvorel@suse.cz>
-To:     zhanglianjie <zhanglianjie@uniontech.com>
-Cc:     linux-mips@vger.kernel.org,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        ltp@lists.linux.it
-Subject: Re: [LTP] [PATCH] regen.sh: Limit mips o32 system calls
-Message-ID: <YP/2HhUaQVQc1oAV@pevik>
-Reply-To: Petr Vorel <pvorel@suse.cz>
-References: <20210722125219.31895-1-zhanglianjie@uniontech.com>
+        id S236846AbhG0OFO (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 27 Jul 2021 10:05:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42674 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232533AbhG0OFM (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Tue, 27 Jul 2021 10:05:12 -0400
+Received: from albert.telenet-ops.be (albert.telenet-ops.be [IPv6:2a02:1800:110:4::f00:1a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 760FFC0613D3
+        for <linux-mips@vger.kernel.org>; Tue, 27 Jul 2021 07:05:11 -0700 (PDT)
+Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed20:b0a9:7e88:5ca4:551a])
+        by albert.telenet-ops.be with bizsmtp
+        id aE57250021fSPfK06E57wc; Tue, 27 Jul 2021 16:05:09 +0200
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1m8Nhi-001PuS-Ke; Tue, 27 Jul 2021 16:05:06 +0200
+Received: from geert by rox.of.borg with local (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1m8Nhh-00FoCx-JY; Tue, 27 Jul 2021 16:05:05 +0200
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+To:     Robin van der Gracht <robin@protonic.nl>,
+        Rob Herring <robh+dt@kernel.org>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Paul Burton <paulburton@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Pavel Machek <pavel@ucw.cz>, Marek Behun <marek.behun@nic.cz>
+Cc:     devicetree@vger.kernel.org, linux-leds@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH v4 10/19] auxdisplay: ht16k33: Use HT16K33_FB_SIZE in ht16k33_initialize()
+Date:   Tue, 27 Jul 2021 16:04:50 +0200
+Message-Id: <20210727140459.3767788-11-geert@linux-m68k.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210727140459.3767788-1-geert@linux-m68k.org>
+References: <20210727140459.3767788-1-geert@linux-m68k.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210722125219.31895-1-zhanglianjie@uniontech.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Hi zhanglianjie,
+Use the existing HT16K33_FB_SIZE definition instead of open-coding the
+same calculation using an hardcoded value.
+While at it, restore reverse Christmas tree variable declaration order.
 
-> With mips architecture, 64-bit programs cannot call o32 system calls.
-> For example, __NR_stime, __NR_socketcall, __NR_time, etc.
-@Thomas or somebody from MIPS folks, could you please confirm this?
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Acked-by: Robin van der Gracht <robin@protonic.nl>
+---
+v4:
+  - No changes,
 
-> Better solve the problem described in commit: 22c2c9e2f
+v3:
+  - No changes,
 
-LGTM.
-Reviewed-by: Petr Vorel <pvorel@suse.cz>
+v2:
+  - Add Acked-by.
+---
+ drivers/auxdisplay/ht16k33.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Kind regards,
-Petr
+diff --git a/drivers/auxdisplay/ht16k33.c b/drivers/auxdisplay/ht16k33.c
+index 2b630e194570f6e5..99daf1974980b435 100644
+--- a/drivers/auxdisplay/ht16k33.c
++++ b/drivers/auxdisplay/ht16k33.c
+@@ -168,9 +168,9 @@ static void ht16k33_fb_update(struct work_struct *work)
+ 
+ static int ht16k33_initialize(struct ht16k33_priv *priv)
+ {
++	uint8_t data[HT16K33_FB_SIZE];
+ 	uint8_t byte;
+ 	int err;
+-	uint8_t data[HT16K33_MATRIX_LED_MAX_COLS * 2];
+ 
+ 	/* Clear RAM (8 * 16 bits) */
+ 	memset(data, 0, sizeof(data));
+-- 
+2.25.1
 
-> Signed-off-by: zhanglianjie <zhanglianjie@uniontech.com>
-
-> diff --git a/include/lapi/syscalls/regen.sh b/include/lapi/syscalls/regen.sh
-> index 7a4f0cf44..8ac80440c 100755
-> --- a/include/lapi/syscalls/regen.sh
-> +++ b/include/lapi/syscalls/regen.sh
-> @@ -80,7 +80,7 @@ for arch in $(cat "${srcdir}/order") ; do
->  		s390) echo "#if defined(__s390__) && !defined(__s390x__)" ;;
->  		mips_n32) echo "#if defined(__mips__) && defined(_ABIN32)" ;;
->  		mips_n64) echo "#if defined(__mips__) && defined(_ABI64)" ;;
-> -		mips_o32) echo "#if defined(__mips__) && defined(_ABIO32)" ;;
-> +		mips_o32) echo "#if defined(__mips__) && defined(_ABIO32) && _MIPS_SZLONG == 32" ;;
->  		*) echo "#ifdef __${arch}__" ;;
->  	esac
->  	while read line ; do

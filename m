@@ -2,110 +2,120 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-16.5 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+	INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2BA04C4338F
-	for <linux-mips@archiver.kernel.org>; Tue, 27 Jul 2021 14:07:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E93E5C432BE
+	for <linux-mips@archiver.kernel.org>; Tue, 27 Jul 2021 14:27:06 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 1813E61ABB
-	for <linux-mips@archiver.kernel.org>; Tue, 27 Jul 2021 14:07:23 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id B98F26138B
+	for <linux-mips@archiver.kernel.org>; Tue, 27 Jul 2021 14:27:06 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236694AbhG0OFM (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 27 Jul 2021 10:05:12 -0400
-Received: from newton.telenet-ops.be ([195.130.132.45]:51734 "EHLO
-        newton.telenet-ops.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232344AbhG0OFM (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Tue, 27 Jul 2021 10:05:12 -0400
-Received: from baptiste.telenet-ops.be (baptiste.telenet-ops.be [IPv6:2a02:1800:120:4::f00:13])
-        by newton.telenet-ops.be (Postfix) with ESMTPS id 4GYz866K6pzMqr3P
-        for <linux-mips@vger.kernel.org>; Tue, 27 Jul 2021 16:05:10 +0200 (CEST)
-Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed20:b0a9:7e88:5ca4:551a])
-        by baptiste.telenet-ops.be with bizsmtp
-        id aE582500U1fSPfK01E585z; Tue, 27 Jul 2021 16:05:10 +0200
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1m8Nhj-001PuL-Qd; Tue, 27 Jul 2021 16:05:07 +0200
-Received: from geert by rox.of.borg with local (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1m8Nhh-00FoCA-Dz; Tue, 27 Jul 2021 16:05:05 +0200
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-To:     Robin van der Gracht <robin@protonic.nl>,
-        Rob Herring <robh+dt@kernel.org>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Paul Burton <paulburton@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Pavel Machek <pavel@ucw.cz>, Marek Behun <marek.behun@nic.cz>
-Cc:     devicetree@vger.kernel.org, linux-leds@vger.kernel.org,
+        id S232449AbhG0O1F (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 27 Jul 2021 10:27:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59212 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232136AbhG0O1F (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Tue, 27 Jul 2021 10:27:05 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F352761A80;
+        Tue, 27 Jul 2021 14:27:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1627396025;
+        bh=v/tEQ3PQ1eef41dTT73R8Pz7a9kFv4BM4FDDufD4pWw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=tjQz6Ms92du6kRrp3+vpMiIH8pBOZuRvlRsTvkDuQaOMFWnJmLB9eVNh0Tzzvqk1G
+         0HXXtlpKRgw8S3QISeSbIkKBc2fbzFj8F7hzOwEIEjNXI5680ZAhdlycEETd3k9kxm
+         MVWmKn3N6PYws2NssShV0TU4NNT8Slc1TGC63tZs=
+Date:   Tue, 27 Jul 2021 16:27:03 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     =?utf-8?B?5ZGo55Cw5p2wIChaaG91IFlhbmppZSk=?= 
+        <zhouyanjie@wanyeetech.com>
+Cc:     robh+dt@kernel.org, hminas@synopsys.com, paul@crapouillou.net,
+        devicetree@vger.kernel.org, linux-usb@vger.kernel.org,
         linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH v4 03/19] auxdisplay: img-ascii-lcd: Fix lock-up when displaying empty string
-Date:   Tue, 27 Jul 2021 16:04:43 +0200
-Message-Id: <20210727140459.3767788-4-geert@linux-m68k.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210727140459.3767788-1-geert@linux-m68k.org>
-References: <20210727140459.3767788-1-geert@linux-m68k.org>
+        dongsheng.qiu@ingenic.com, aric.pzqi@ingenic.com,
+        rick.tyliu@ingenic.com, sihui.liu@ingenic.com,
+        jun.jiang@ingenic.com, sernia.zhou@foxmail.com,
+        Dragan =?utf-8?B?xIxlxI1hdmFj?= <dragancecavac@yahoo.com>
+Subject: Re: [PATCH 2/2] USB: dwc2: Add OTG support for Ingenic SoCs.
+Message-ID: <YQAXt1pCFZqRm2ud@kroah.com>
+References: <1627116521-124612-1-git-send-email-zhouyanjie@wanyeetech.com>
+ <1627116521-124612-3-git-send-email-zhouyanjie@wanyeetech.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <1627116521-124612-3-git-send-email-zhouyanjie@wanyeetech.com>
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-While writing an empty string to a device attribute is a no-op, and thus
-does not need explicit safeguards, the user can still write a single
-newline to an attribute file:
+On Sat, Jul 24, 2021 at 04:48:41PM +0800, 周琰杰 (Zhou Yanjie) wrote:
+> Add OTG support for the JZ4775 SoC, the JZ4780 SoC, the X1000
+> SoC, the X1600 SoC, the X1830 SoC, and the X2000 SoC. Introduce
+> support for disable Ingenic overcurrent detection, once selected
+> it enables GOTGCTL register bits VbvalidOvEn and VbvalidOvVal to
+> disable the VBUS overcurrent detection.
+> 
+> This patch is derived from Dragan Čečavac (in the kernel 3.18.3
+> tree of CI20). It is very useful for the MIPS Creator CI20 (r1).
+> Without this patch, OTG port of CI20 has a great probability to
+> face overcurrent warning, which breaks the OTG functionality.
+> 
+> Signed-off-by: Dragan Čečavac <dragancecavac@yahoo.com>
+> Signed-off-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
+> ---
+>  drivers/usb/dwc2/core.c   |  9 +++++++++
+>  drivers/usb/dwc2/core.h   |  5 +++++
+>  drivers/usb/dwc2/params.c | 49 ++++++++++++++++++++++++++++++++++++++++++++++-
+>  3 files changed, 62 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/usb/dwc2/core.c b/drivers/usb/dwc2/core.c
+> index 272ae57..c35b2e2 100644
+> --- a/drivers/usb/dwc2/core.c
+> +++ b/drivers/usb/dwc2/core.c
+> @@ -1153,6 +1153,7 @@ static void dwc2_set_turnaround_time(struct dwc2_hsotg *hsotg)
+>  int dwc2_phy_init(struct dwc2_hsotg *hsotg, bool select_phy)
+>  {
+>  	u32 usbcfg;
+> +	u32 otgctl;
+>  	int retval = 0;
+>  
+>  	if ((hsotg->params.speed == DWC2_SPEED_PARAM_FULL ||
+> @@ -1187,6 +1188,14 @@ int dwc2_phy_init(struct dwc2_hsotg *hsotg, bool select_phy)
+>  		dwc2_writel(hsotg, usbcfg, GUSBCFG);
+>  	}
+>  
+> +	if (hsotg->params.deactivate_ingenic_overcurrent_detection) {
+> +		if (dwc2_is_host_mode(hsotg)) {
+> +			otgctl = readl(hsotg->regs + GOTGCTL);
+> +			otgctl |= GOTGCTL_VBVALOEN | GOTGCTL_VBVALOVAL;
+> +			writel(otgctl, hsotg->regs + GOTGCTL);
+> +		}
+> +	}
+> +
+>  	return retval;
+>  }
+>  
+> diff --git a/drivers/usb/dwc2/core.h b/drivers/usb/dwc2/core.h
+> index ab6b815..e026d13 100644
+> --- a/drivers/usb/dwc2/core.h
+> +++ b/drivers/usb/dwc2/core.h
+> @@ -418,6 +418,10 @@ enum dwc2_ep0_state {
+>   *			detection using GGPIO register.
+>   *			0 - Deactivate the external level detection (default)
+>   *			1 - Activate the external level detection
+> + * @deactivate_ingenic_overcurrent_detection: Deactivate Ingenic overcurrent
+> + *			detection.
+> + *			0 - Activate the overcurrent detection (default)
 
-    echo > .../message
+Having 0 as "active" is rough to handle over time.
 
-If that happens, img_ascii_lcd_display() trims the newline, yielding an
-empty string, and causing an infinite loop in img_ascii_lcd_scroll().
+All of the other options are "activate", so please, keep them the same
+if at all possible.
 
-Fix this by adding a check for empty strings.  Clear the display in case
-one is encountered.
+thanks,
 
-Fixes: 0cad855fbd083ee5 ("auxdisplay: img-ascii-lcd: driver for simple ASCII LCD displays")
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
----
-Untested with img-ascii-lcd, but triggered with my initial version of
-linedisp.
-
-v4:
-  - No changes,
-
-v3:
-  - No changes,
-
-v2:
-  - No changes.
----
- drivers/auxdisplay/img-ascii-lcd.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
-
-diff --git a/drivers/auxdisplay/img-ascii-lcd.c b/drivers/auxdisplay/img-ascii-lcd.c
-index 1cce409ce5cacbc8..e33ce0151cdfd150 100644
---- a/drivers/auxdisplay/img-ascii-lcd.c
-+++ b/drivers/auxdisplay/img-ascii-lcd.c
-@@ -280,6 +280,16 @@ static int img_ascii_lcd_display(struct img_ascii_lcd_ctx *ctx,
- 	if (msg[count - 1] == '\n')
- 		count--;
- 
-+	if (!count) {
-+		/* clear the LCD */
-+		devm_kfree(&ctx->pdev->dev, ctx->message);
-+		ctx->message = NULL;
-+		ctx->message_len = 0;
-+		memset(ctx->curr, ' ', ctx->cfg->num_chars);
-+		ctx->cfg->update(ctx);
-+		return 0;
-+	}
-+
- 	new_msg = devm_kmalloc(&ctx->pdev->dev, count + 1, GFP_KERNEL);
- 	if (!new_msg)
- 		return -ENOMEM;
--- 
-2.25.1
-
+greg k-h

@@ -2,37 +2,37 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=ham autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 04CCEC4320E
-	for <linux-mips@archiver.kernel.org>; Tue, 27 Jul 2021 14:05:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1803CC19F3D
+	for <linux-mips@archiver.kernel.org>; Tue, 27 Jul 2021 14:05:20 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id DD1A9619E7
-	for <linux-mips@archiver.kernel.org>; Tue, 27 Jul 2021 14:05:18 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id F401061AE4
+	for <linux-mips@archiver.kernel.org>; Tue, 27 Jul 2021 14:05:19 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236927AbhG0OFR (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 27 Jul 2021 10:05:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42676 "EHLO
+        id S236942AbhG0OFS (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 27 Jul 2021 10:05:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42680 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231223AbhG0OFO (ORCPT
+        with ESMTP id S236798AbhG0OFO (ORCPT
         <rfc822;linux-mips@vger.kernel.org>); Tue, 27 Jul 2021 10:05:14 -0400
 Received: from laurent.telenet-ops.be (laurent.telenet-ops.be [IPv6:2a02:1800:110:4::f00:19])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3E09C0617B9
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B305C061382
         for <linux-mips@vger.kernel.org>; Tue, 27 Jul 2021 07:05:11 -0700 (PDT)
 Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed20:b0a9:7e88:5ca4:551a])
         by laurent.telenet-ops.be with bizsmtp
-        id aE572500M1fSPfK01E578J; Tue, 27 Jul 2021 16:05:09 +0200
+        id aE572500T1fSPfK01E578K; Tue, 27 Jul 2021 16:05:09 +0200
 Received: from rox.of.borg ([192.168.97.57])
         by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
         (Exim 4.93)
         (envelope-from <geert@linux-m68k.org>)
-        id 1m8Nhj-001PuT-02; Tue, 27 Jul 2021 16:05:07 +0200
+        id 1m8Nhj-001PuP-2E; Tue, 27 Jul 2021 16:05:07 +0200
 Received: from geert by rox.of.borg with local (Exim 4.93)
         (envelope-from <geert@linux-m68k.org>)
-        id 1m8Nhh-00FoD5-KC; Tue, 27 Jul 2021 16:05:05 +0200
+        id 1m8Nhh-00FoCc-HJ; Tue, 27 Jul 2021 16:05:05 +0200
 From:   Geert Uytterhoeven <geert@linux-m68k.org>
 To:     Robin van der Gracht <robin@protonic.nl>,
         Rob Herring <robh+dt@kernel.org>,
@@ -43,9 +43,9 @@ To:     Robin van der Gracht <robin@protonic.nl>,
 Cc:     devicetree@vger.kernel.org, linux-leds@vger.kernel.org,
         linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
         Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH v4 11/19] auxdisplay: ht16k33: Remove unneeded error check in keypad probe()
-Date:   Tue, 27 Jul 2021 16:04:51 +0200
-Message-Id: <20210727140459.3767788-12-geert@linux-m68k.org>
+Subject: [PATCH v4 07/19] auxdisplay: linedisp: Use kmemdup_nul() helper
+Date:   Tue, 27 Jul 2021 16:04:47 +0200
+Message-Id: <20210727140459.3767788-8-geert@linux-m68k.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210727140459.3767788-1-geert@linux-m68k.org>
 References: <20210727140459.3767788-1-geert@linux-m68k.org>
@@ -55,11 +55,10 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-There is no need to check the return code of input_register_device(),
-just propagate it to the caller.
+Use the existing kmemdup_nul() helper instead of open-coding the same
+operation.
 
 Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Acked-by: Robin van der Gracht <robin@protonic.nl>
 ---
 v4:
   - No changes,
@@ -68,28 +67,30 @@ v3:
   - No changes,
 
 v2:
-  - Add Acked-by.
+  - No changes.
 ---
- drivers/auxdisplay/ht16k33.c | 6 +-----
- 1 file changed, 1 insertion(+), 5 deletions(-)
+ drivers/auxdisplay/line-display.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
-diff --git a/drivers/auxdisplay/ht16k33.c b/drivers/auxdisplay/ht16k33.c
-index 99daf1974980b435..8c9acc4800bc94e0 100644
---- a/drivers/auxdisplay/ht16k33.c
-+++ b/drivers/auxdisplay/ht16k33.c
-@@ -378,11 +378,7 @@ static int ht16k33_keypad_probe(struct i2c_client *client,
+diff --git a/drivers/auxdisplay/line-display.c b/drivers/auxdisplay/line-display.c
+index 4b97c20ac0b381ee..3f35199bc39f511f 100644
+--- a/drivers/auxdisplay/line-display.c
++++ b/drivers/auxdisplay/line-display.c
+@@ -91,13 +91,10 @@ static int linedisp_display(struct linedisp *linedisp, const char *msg,
+ 		return 0;
+ 	}
  
- 	ht16k33_keypad_stop(keypad->dev);
+-	new_msg = kmalloc(count + 1, GFP_KERNEL);
++	new_msg = kmemdup_nul(msg, count, GFP_KERNEL);
+ 	if (!new_msg)
+ 		return -ENOMEM;
  
--	err = input_register_device(keypad->dev);
--	if (err)
--		return err;
+-	memcpy(new_msg, msg, count);
+-	new_msg[count] = 0;
 -
--	return 0;
-+	return input_register_device(keypad->dev);
- }
+ 	kfree(linedisp->message);
  
- static int ht16k33_probe(struct i2c_client *client,
+ 	linedisp->message = new_msg;
 -- 
 2.25.1
 

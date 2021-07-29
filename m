@@ -2,73 +2,148 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-14.0 required=3.0 tests=BAYES_00,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-18.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,
+	USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4ED0DC4338F
-	for <linux-mips@archiver.kernel.org>; Thu, 29 Jul 2021 18:41:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BF1BEC4320A
+	for <linux-mips@archiver.kernel.org>; Thu, 29 Jul 2021 20:15:54 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 3412B60F6F
-	for <linux-mips@archiver.kernel.org>; Thu, 29 Jul 2021 18:41:59 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id A5EB660F23
+	for <linux-mips@archiver.kernel.org>; Thu, 29 Jul 2021 20:15:54 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229731AbhG2SmB (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 29 Jul 2021 14:42:01 -0400
-Received: from mail-il1-f172.google.com ([209.85.166.172]:40449 "EHLO
-        mail-il1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229614AbhG2SmB (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Thu, 29 Jul 2021 14:42:01 -0400
-Received: by mail-il1-f172.google.com with SMTP id d10so6899173ils.7;
-        Thu, 29 Jul 2021 11:41:56 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=NtViR9x5Y9jf6CYnl+g3ab+BJ+XJIy7vEdyqlPaGRJ4=;
-        b=AttvCpgKjh29OISJGOhKSMG0+/RyiamijrsNKmLGcsgJJEtowYupN316kzpmoMWK3D
-         ghDByB87uu4TmW9AWjpT3Q9DbbFRGalQzqZANeNtd8lEMQqD1DKitn28Qv9SFxpXbpcL
-         tL5YnReeZCTiZbFaE+g3pohcVCpicHf404j0ehi1yc2UCC3ilroiTyYeYMd8OGifyYd/
-         iA8E+T8bLpatGNDbsIiOgaceH8BbvLKvz0sBl+v3cjxRotPJeD5EDqe7hbOS2rh3f04o
-         STIMmmHuRhK8QPDpMOei1DCSrDswvdNrAVJRBaUkvEcBhGnUb2UubnrnU4HpxjBLmN9y
-         sInA==
-X-Gm-Message-State: AOAM531eDHluxp59r6G0fNDePBeCSZAbd2ggt/+fGWfzNSkXUIwkgOvR
-        PiuKC+A1l0zYUictqRuDeA==
-X-Google-Smtp-Source: ABdhPJw+h6P8CSjbZZFVEEteSHNMK/DPfJGo9hPOtNCOG8Tf2WHkDB/1x6jJcx/UFtv879arbob2ow==
-X-Received: by 2002:a92:ced0:: with SMTP id z16mr3431286ilq.0.1627584116404;
-        Thu, 29 Jul 2021 11:41:56 -0700 (PDT)
-Received: from robh.at.kernel.org ([64.188.179.248])
-        by smtp.gmail.com with ESMTPSA id u15sm2734766ion.34.2021.07.29.11.41.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Jul 2021 11:41:55 -0700 (PDT)
-Received: (nullmailer pid 662786 invoked by uid 1000);
-        Thu, 29 Jul 2021 18:41:54 -0000
-Date:   Thu, 29 Jul 2021 12:41:54 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Paul Cercueil <paul@crapouillou.net>
-Cc:     list@opendingux.net, Rob Herring <robh+dt@kernel.org>,
-        linux-mips@vger.kernel.org, Vinod Koul <vkoul@kernel.org>,
-        linux-kernel@vger.kernel.org, dmaengine@vger.kernel.org,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH 1/3] dt-bindings: dma: ingenic: Add compatible strings
- for MDMA
-Message-ID: <YQL2cjo78ADXBIlf@robh.at.kernel.org>
-References: <20210718122024.204907-1-paul@crapouillou.net>
+        id S229896AbhG2UP4 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 29 Jul 2021 16:15:56 -0400
+Received: from ale.deltatee.com ([204.191.154.188]:59070 "EHLO
+        ale.deltatee.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229703AbhG2UP4 (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Thu, 29 Jul 2021 16:15:56 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=deltatee.com; s=20200525; h=Subject:MIME-Version:References:In-Reply-To:
+        Message-Id:Date:Cc:To:From:content-disposition;
+        bh=/XA9bvLAJiET8xClVyx9hB75GctlP2ewYMlZJlt3uAE=; b=FSTBqqnHJ7VntRb/GUL2Z5yKTq
+        JfAogRaPb+WVjHlf1NRCExtt0URwGzF1+pWVjp3v9jELMe1sVylEhpCokcScL/Pik/gQ8D9aVMzvZ
+        uoC9GV1+hK1crdrqvUeKMesCcmmz0glkvNT9qYfOPK6DdOiPOO102aJ534nrKtjvNc2ibTJtuP/TR
+        t6WErOWjGuYieypzGV2PhsY++SnraaQQ4FNRqKtOnq2TNO2E3YBXoBVkHkqc7fK1HwylkFoWZZTI2
+        wNrwlxU476Xj9XD9pqFKs+ZOh16XIR+O62g1eQS8XUIK9YHNwj+UhqtQn/TXl9FaMhBTj2klVY6f4
+        WFu1sJPg==;
+Received: from cgy1-donard.priv.deltatee.com ([172.16.1.31])
+        by ale.deltatee.com with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <gunthorp@deltatee.com>)
+        id 1m9CRX-0008VO-5W; Thu, 29 Jul 2021 14:15:48 -0600
+Received: from gunthorp by cgy1-donard.priv.deltatee.com with local (Exim 4.92)
+        (envelope-from <gunthorp@deltatee.com>)
+        id 1m9CRU-0001Tb-0B; Thu, 29 Jul 2021 14:15:44 -0600
+From:   Logan Gunthorpe <logang@deltatee.com>
+To:     linux-kernel@vger.kernel.org, linux-alpha@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-ia64@vger.kernel.org,
+        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-s390@vger.kernel.org, sparclinux@vger.kernel.org,
+        iommu@lists.linux-foundation.org, linux-parisc@vger.kernel.org,
+        xen-devel@lists.xenproject.org
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Stephen Bates <sbates@raithlin.com>,
+        Martin Oliveira <martin.oliveira@eideticom.com>,
+        Logan Gunthorpe <logang@deltatee.com>,
+        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>
+Date:   Thu, 29 Jul 2021 14:15:22 -0600
+Message-Id: <20210729201539.5602-5-logang@deltatee.com>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20210729201539.5602-1-logang@deltatee.com>
+References: <20210729201539.5602-1-logang@deltatee.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210718122024.204907-1-paul@crapouillou.net>
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 172.16.1.31
+X-SA-Exim-Rcpt-To: linux-arm-kernel@lists.infradead.org, linuxppc-dev@lists.ozlabs.org, iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org, linux-alpha@vger.kernel.org, linux-ia64@vger.kernel.org, linux-mips@vger.kernel.org, linux-s390@vger.kernel.org, sparclinux@vger.kernel.org, linux-parisc@vger.kernel.org, xen-devel@lists.xenproject.org, hch@lst.de, m.szyprowski@samsung.com, robin.murphy@arm.com, sbates@raithlin.com, martin.oliveira@eideticom.com, logang@deltatee.com, joro@8bytes.org, will@kernel.org
+X-SA-Exim-Mail-From: gunthorp@deltatee.com
+Subject: [PATCH v3 04/21] dma-iommu: Return error code from iommu_dma_map_sg()
+X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
+X-SA-Exim-Scanned: Yes (on ale.deltatee.com)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Sun, 18 Jul 2021 13:20:22 +0100, Paul Cercueil wrote:
-> The JZ4760 and JZ4760B SoCs have an additional DMA controller, dubbed
-> MDMA, that only supports memcpy operations.
-> 
-> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
-> ---
->  Documentation/devicetree/bindings/dma/ingenic,dma.yaml | 2 ++
->  1 file changed, 2 insertions(+)
-> 
+Return appropriate error codes EINVAL or ENOMEM from
+iommup_dma_map_sg(). If lower level code returns ENOMEM, then we
+return it, other errors are coalesced into EINVAL.
 
-Acked-by: Rob Herring <robh@kernel.org>
+iommu_dma_map_sg_swiotlb() returns -EIO as its an unknown error
+from a call that returns DMA_MAPPING_ERROR.
+
+Signed-off-by: Logan Gunthorpe <logang@deltatee.com>
+Cc: Joerg Roedel <joro@8bytes.org>
+Cc: Will Deacon <will@kernel.org>
+---
+ drivers/iommu/dma-iommu.c | 23 ++++++++++++++++-------
+ 1 file changed, 16 insertions(+), 7 deletions(-)
+
+diff --git a/drivers/iommu/dma-iommu.c b/drivers/iommu/dma-iommu.c
+index 98ba927aee1a..d9aaed080e68 100644
+--- a/drivers/iommu/dma-iommu.c
++++ b/drivers/iommu/dma-iommu.c
+@@ -972,7 +972,7 @@ static int iommu_dma_map_sg_swiotlb(struct device *dev, struct scatterlist *sg,
+ 
+ out_unmap:
+ 	iommu_dma_unmap_sg_swiotlb(dev, sg, i, dir, attrs | DMA_ATTR_SKIP_CPU_SYNC);
+-	return 0;
++	return -EIO;
+ }
+ 
+ /*
+@@ -993,11 +993,13 @@ static int iommu_dma_map_sg(struct device *dev, struct scatterlist *sg,
+ 	dma_addr_t iova;
+ 	size_t iova_len = 0;
+ 	unsigned long mask = dma_get_seg_boundary(dev);
++	ssize_t ret;
+ 	int i;
+ 
+-	if (static_branch_unlikely(&iommu_deferred_attach_enabled) &&
+-	    iommu_deferred_attach(dev, domain))
+-		return 0;
++	if (static_branch_unlikely(&iommu_deferred_attach_enabled)) {
++		ret = iommu_deferred_attach(dev, domain);
++		goto out;
++	}
+ 
+ 	if (!(attrs & DMA_ATTR_SKIP_CPU_SYNC))
+ 		iommu_dma_sync_sg_for_device(dev, sg, nents, dir);
+@@ -1045,14 +1047,17 @@ static int iommu_dma_map_sg(struct device *dev, struct scatterlist *sg,
+ 	}
+ 
+ 	iova = iommu_dma_alloc_iova(domain, iova_len, dma_get_mask(dev), dev);
+-	if (!iova)
++	if (!iova) {
++		ret = -ENOMEM;
+ 		goto out_restore_sg;
++	}
+ 
+ 	/*
+ 	 * We'll leave any physical concatenation to the IOMMU driver's
+ 	 * implementation - it knows better than we do.
+ 	 */
+-	if (iommu_map_sg_atomic(domain, iova, sg, nents, prot) < iova_len)
++	ret = iommu_map_sg_atomic(domain, iova, sg, nents, prot);
++	if (ret < iova_len)
+ 		goto out_free_iova;
+ 
+ 	return __finalise_sg(dev, sg, nents, iova);
+@@ -1061,7 +1066,11 @@ static int iommu_dma_map_sg(struct device *dev, struct scatterlist *sg,
+ 	iommu_dma_free_iova(cookie, iova, iova_len, NULL);
+ out_restore_sg:
+ 	__invalidate_sg(sg, nents);
+-	return 0;
++out:
++	if (ret == -ENOMEM)
++		return ret;
++	else
++		return -EINVAL;
+ }
+ 
+ static void iommu_dma_unmap_sg(struct device *dev, struct scatterlist *sg,
+-- 
+2.20.1
+

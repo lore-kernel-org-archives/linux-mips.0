@@ -2,119 +2,99 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.7 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5E97CC4320E
-	for <linux-mips@archiver.kernel.org>; Mon,  2 Aug 2021 13:11:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B85CDC4338F
+	for <linux-mips@archiver.kernel.org>; Mon,  2 Aug 2021 14:18:00 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 47E6B60EC0
-	for <linux-mips@archiver.kernel.org>; Mon,  2 Aug 2021 13:11:14 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 9D57860F41
+	for <linux-mips@archiver.kernel.org>; Mon,  2 Aug 2021 14:18:00 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234060AbhHBNLU (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 2 Aug 2021 09:11:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57286 "EHLO
+        id S236283AbhHBOSJ (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 2 Aug 2021 10:18:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44248 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233930AbhHBNLB (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Mon, 2 Aug 2021 09:11:01 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07975C061796
-        for <linux-mips@vger.kernel.org>; Mon,  2 Aug 2021 06:10:51 -0700 (PDT)
-Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1mAXiK-0003Mc-Ok; Mon, 02 Aug 2021 15:10:40 +0200
-Received: from ore by dude.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1mAXiJ-00008Q-JA; Mon, 02 Aug 2021 15:10:39 +0200
-From:   Oleksij Rempel <o.rempel@pengutronix.de>
-To:     Andrew Lunn <andrew@lunn.ch>,
+        with ESMTP id S237714AbhHBORM (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Mon, 2 Aug 2021 10:17:12 -0400
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30FE6C04984F;
+        Mon,  2 Aug 2021 07:00:50 -0700 (PDT)
+Received: by mail-ej1-x636.google.com with SMTP id x11so30137135ejj.8;
+        Mon, 02 Aug 2021 07:00:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=1Za1Yj9NjOylf2JMkcBxcOLagUVAwLPeusWL40lZlvQ=;
+        b=MSGxR1uk7XakGmBg8RmnXvyK+9XAw3uOmK5Gsan1JlNVQR7Jhno7DDrsx/b/jLMTLs
+         lm0Q6Pr2wKLfbgm2wpBnqrmetXUDpzTlEH/WSfxUwqHfD9Tc8e4HNgSotM+ptcT8jkFU
+         uBXRHi9S1qZxzDCUT73n3knQAfcA/vuYS+/RWBbU7lWUcUHXyd1pzBgXBY8kexmtFtc5
+         opfsXTOD+5fwJXVwQrayavSWnhwbcg3Ii6ZAVxLSYo7JqAuHgH93VusKI/ReNK3yoOxh
+         aTCH1pqsWXZRQdoyQTCyhF+4QqnVAg61RKAOibqnkofWQ/E2WGhcAcXRReoV9faA2TyX
+         2nFg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=1Za1Yj9NjOylf2JMkcBxcOLagUVAwLPeusWL40lZlvQ=;
+        b=VybDHjJT/hYIOu9FFKme9q6lHYyngymABE0lruyKgrRy1xoN7Um1Oog86hMLMgaB+H
+         UnhblHAlHpt8agCz6q5+zI1jSau4SEqpTGZl/DqeJEomVu8459mCqcpoJFQhP0jeZrU4
+         DnG97iN6+Qcue9RCd1U5uUK8OSDWginKmgYSCZRzQwzDEw01ozENLdkY8+M21Mfg6FTe
+         FV5NSjDQ2jAU0kSUaGtp0NX/5a1nKUL0eZGsY3TP83N0lTqpE08R8Uufzj1N7PZk2bl7
+         5Y6aBRrw3S1EO3sffNx3ru9V/UertZszmJ19k15qUbhZ1atzIdpUGddhiiFg1wx2fgLR
+         8S3Q==
+X-Gm-Message-State: AOAM531q7PN2xaBVA38kbbvUzJshJIZfjuhd+ai/fRH6mS1xctqQ2XTJ
+        08PMjnS0r7K9DXga2JQsX14=
+X-Google-Smtp-Source: ABdhPJwmc3U0XGaiP4J/l7ORgTTqgzAjE7GqluO8BvZQx+46vEUHJ1XXO4CAuCJ9aLlCbQQgtaQ0iQ==
+X-Received: by 2002:a17:906:40d5:: with SMTP id a21mr15739258ejk.325.1627912848843;
+        Mon, 02 Aug 2021 07:00:48 -0700 (PDT)
+Received: from skbuf ([188.25.144.60])
+        by smtp.gmail.com with ESMTPSA id oz31sm4567170ejb.54.2021.08.02.07.00.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 02 Aug 2021 07:00:48 -0700 (PDT)
+Date:   Mon, 2 Aug 2021 17:00:46 +0300
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Oleksij Rempel <o.rempel@pengutronix.de>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
         Vivien Didelot <vivien.didelot@gmail.com>,
         Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
         "David S. Miller" <davem@davemloft.net>,
         Jakub Kicinski <kuba@kernel.org>,
-        Russell King <linux@armlinux.org.uk>
-Cc:     Oleksij Rempel <o.rempel@pengutronix.de>,
+        Russell King <linux@armlinux.org.uk>,
         Pengutronix Kernel Team <kernel@pengutronix.de>,
         netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-mips@vger.kernel.org
-Subject: [PATCH net-next v3 4/6] net: dsa: qca: ar9331: add ageing time support
-Date:   Mon,  2 Aug 2021 15:10:35 +0200
-Message-Id: <20210802131037.32326-5-o.rempel@pengutronix.de>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210802131037.32326-1-o.rempel@pengutronix.de>
+Subject: Re: [PATCH net-next v3 1/6] net: dsa: qca: ar9331: reorder MDIO
+ write sequence
+Message-ID: <20210802140046.locxzehdjdw3cjua@skbuf>
 References: <20210802131037.32326-1-o.rempel@pengutronix.de>
+ <20210802131037.32326-2-o.rempel@pengutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::7
-X-SA-Exim-Mail-From: ore@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-mips@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210802131037.32326-2-o.rempel@pengutronix.de>
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-This switch provides global ageing time configuration, so let DSA use
-it.
+On Mon, Aug 02, 2021 at 03:10:32PM +0200, Oleksij Rempel wrote:
+> In case of this switch we work with 32bit registers on top of 16bit
+> bus. Some registers (for example access to forwarding database) have
+> trigger bit on the first 16bit half of request and the result +
+> configuration of request in the second half. Without this patch, we would
+> trigger database operation and overwrite result in one run.
+> 
+> To make it work properly, we should do the second part of transfer
+> before the first one is done.
+> 
+> So far, this rule seems to work for all registers on this switch.
+> 
+> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+> Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+> ---
 
-Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
-Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
----
- drivers/net/dsa/qca/ar9331.c | 22 ++++++++++++++++++++++
- 1 file changed, 22 insertions(+)
-
-diff --git a/drivers/net/dsa/qca/ar9331.c b/drivers/net/dsa/qca/ar9331.c
-index d94c7ea163c4..d726d2f223ea 100644
---- a/drivers/net/dsa/qca/ar9331.c
-+++ b/drivers/net/dsa/qca/ar9331.c
-@@ -1074,6 +1074,25 @@ static void ar9331_sw_port_fast_age(struct dsa_switch *ds, int port)
- 	dev_err(priv->dev, "%s: error: %i\n", __func__, ret);
- }
- 
-+static int ar9331_sw_set_ageing_time(struct dsa_switch *ds,
-+				     unsigned int ageing_time)
-+{
-+	struct ar9331_sw_priv *priv = (struct ar9331_sw_priv *)ds->priv;
-+	struct regmap *regmap = priv->regmap;
-+	u32 time, val;
-+
-+	time = DIV_ROUND_UP(ageing_time, AR9331_SW_AT_AGE_TIME_COEF);
-+	if (!time)
-+		time = 1;
-+	else if (time > U16_MAX)
-+		time = U16_MAX;
-+
-+	val = FIELD_PREP(AR9331_SW_AT_AGE_TIME, time) | AR9331_SW_AT_AGE_EN;
-+	return regmap_update_bits(regmap, AR9331_SW_REG_ADDR_TABLE_CTRL,
-+				  AR9331_SW_AT_AGE_EN | AR9331_SW_AT_AGE_TIME,
-+				  val);
-+}
-+
- static const struct dsa_switch_ops ar9331_sw_ops = {
- 	.get_tag_protocol	= ar9331_sw_get_tag_protocol,
- 	.setup			= ar9331_sw_setup,
-@@ -1089,6 +1108,7 @@ static const struct dsa_switch_ops ar9331_sw_ops = {
- 	.port_fdb_dump		= ar9331_sw_port_fdb_dump,
- 	.port_mdb_add           = ar9331_sw_port_mdb_add,
- 	.port_mdb_del           = ar9331_sw_port_mdb_del,
-+	.set_ageing_time	= ar9331_sw_set_ageing_time,
- };
- 
- static irqreturn_t ar9331_sw_irq(int irq, void *data)
-@@ -1442,6 +1462,8 @@ static int ar9331_sw_probe(struct mdio_device *mdiodev)
- 	priv->ops = ar9331_sw_ops;
- 	ds->ops = &priv->ops;
- 	dev_set_drvdata(&mdiodev->dev, priv);
-+	ds->ageing_time_min = AR9331_SW_AT_AGE_TIME_COEF;
-+	ds->ageing_time_max = AR9331_SW_AT_AGE_TIME_COEF * U16_MAX;
- 
- 	for (i = 0; i < ARRAY_SIZE(priv->port); i++) {
- 		struct ar9331_sw_port *port = &priv->port[i];
--- 
-2.30.2
-
+Reviewed-by: Vladimir Oltean <olteanv@gmail.com>

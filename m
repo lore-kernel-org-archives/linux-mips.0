@@ -7,53 +7,73 @@ X-Spam-Status: No, score=-15.2 required=3.0 tests=BAYES_00,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
 	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D6883C4338F
-	for <linux-mips@archiver.kernel.org>; Thu,  5 Aug 2021 09:17:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BC87DC4320E
+	for <linux-mips@archiver.kernel.org>; Thu,  5 Aug 2021 09:17:25 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id B61F56104F
-	for <linux-mips@archiver.kernel.org>; Thu,  5 Aug 2021 09:17:23 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 9E0E2610CC
+	for <linux-mips@archiver.kernel.org>; Thu,  5 Aug 2021 09:17:25 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237185AbhHEJRg (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 5 Aug 2021 05:17:36 -0400
-Received: from elvis.franken.de ([193.175.24.41]:46897 "EHLO elvis.franken.de"
+        id S238691AbhHEJRi (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 5 Aug 2021 05:17:38 -0400
+Received: from elvis.franken.de ([193.175.24.41]:46893 "EHLO elvis.franken.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232009AbhHEJRg (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Thu, 5 Aug 2021 05:17:36 -0400
+        id S232666AbhHEJRh (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Thu, 5 Aug 2021 05:17:37 -0400
 Received: from uucp (helo=alpha)
         by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1mBZV8-0005ti-06; Thu, 05 Aug 2021 11:17:18 +0200
+        id 1mBZV8-0005ti-01; Thu, 05 Aug 2021 11:17:18 +0200
 Received: by alpha.franken.de (Postfix, from userid 1000)
-        id F1B6CC052F; Thu,  5 Aug 2021 11:16:57 +0200 (CEST)
-Date:   Thu, 5 Aug 2021 11:16:57 +0200
+        id 503C5C052F; Thu,  5 Aug 2021 11:02:56 +0200 (CEST)
+Date:   Thu, 5 Aug 2021 11:02:56 +0200
 From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Rui Wang <wangrui@loongson.cn>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Will Deacon <will@kernel.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
-        Rui Wang <r@hev.cc>
-Subject: Re: [RFC PATCH v2] locking/atomic: arch/mips: Fix
- atomic{_64,}_sub_if_positive
-Message-ID: <20210805091657.GF5979@alpha.franken.de>
-References: <20210729093152.146256-1-wangrui@loongson.cn>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     linux-kernel@vger.kernel.org, kernel test robot <lkp@intel.com>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        linux-mips@vger.kernel.org
+Subject: Re: [PATCH] MIPS: loongson2ef: don't build serial.o unconditionally
+Message-ID: <20210805090256.GB5979@alpha.franken.de>
+References: <20210805000216.31833-1-rdunlap@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210729093152.146256-1-wangrui@loongson.cn>
+In-Reply-To: <20210805000216.31833-1-rdunlap@infradead.org>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Thu, Jul 29, 2021 at 05:31:52PM +0800, Rui Wang wrote:
-> This looks like a typo and that caused atomic64 test failed.
+On Wed, Aug 04, 2021 at 05:02:16PM -0700, Randy Dunlap wrote:
+> LOONGSON_UART_BASE depends on EARLY_PRINTK || SERIAL_8250, but when
+> neither of these Kconfig symbols is set, the kernel build has errors:
 > 
-> Signed-off-by: Rui Wang <wangrui@loongson.cn>
+> ../arch/mips/loongson2ef/common/serial.c: In function 'serial_init':
+> ../arch/mips/loongson2ef/common/serial.c:66:25: error: 'loongson_uart_base' undeclared (first use in this function)
+>    66 |                         loongson_uart_base;
+> ../arch/mips/loongson2ef/common/serial.c:66:25: note: each undeclared identifier is reported only once for each function it appears in
+> ../arch/mips/loongson2ef/common/serial.c:68:41: error: '_loongson_uart_base' undeclared (first use in this function)
+>    68 |                         (void __iomem *)_loongson_uart_base;
+> 
+> Fix this by building serial.o only when one (or both) of these
+> Kconfig symbols is enabled.
+> 
+> Tested with:
+> 	(a) EARLY_PRINTK=y, SERIAL_8250 not set;
+> 	(b) EARLY_PRINTK=y, SERIAL_8250=y;
+> 	(c) EARLY_PRINTK=y, SERIAL_8250=m.
+> 	(d) EARLY_PRINTK not set, SERIAL_8250=y;
+> 	(e) EARLY_PRINTK not set, SERIAL_8250=m;
+> 	(f) EARLY_PRINTK not set, SERIAL_8250 not set.
+> 
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> Reported-by: kernel test robot <lkp@intel.com>
+> Cc: Jiaxun Yang <jiaxun.yang@flygoat.com>
+> Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+> Cc: linux-mips@vger.kernel.org
 > ---
->  arch/mips/include/asm/atomic.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  arch/mips/loongson2ef/common/Makefile |    4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
 
-applied to mips-next with slightly edited subject.
+applied to mips-next.
 
 Thomas.
 

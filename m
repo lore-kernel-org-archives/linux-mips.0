@@ -2,66 +2,79 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.2 required=3.0 tests=BAYES_00,
+X-Spam-Status: No, score=-15.3 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
-	autolearn=ham autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4DDCFC4338F
-	for <linux-mips@archiver.kernel.org>; Thu,  5 Aug 2021 09:17:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5177FC4320A
+	for <linux-mips@archiver.kernel.org>; Thu,  5 Aug 2021 09:17:32 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 2808D610CC
-	for <linux-mips@archiver.kernel.org>; Thu,  5 Aug 2021 09:17:26 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 32CCF61029
+	for <linux-mips@archiver.kernel.org>; Thu,  5 Aug 2021 09:17:32 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232009AbhHEJRj (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 5 Aug 2021 05:17:39 -0400
-Received: from elvis.franken.de ([193.175.24.41]:46905 "EHLO elvis.franken.de"
+        id S239604AbhHEJRp (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 5 Aug 2021 05:17:45 -0400
+Received: from elvis.franken.de ([193.175.24.41]:46920 "EHLO elvis.franken.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237817AbhHEJRh (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Thu, 5 Aug 2021 05:17:37 -0400
+        id S239523AbhHEJRm (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Thu, 5 Aug 2021 05:17:42 -0400
 Received: from uucp (helo=alpha)
         by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1mBZV8-0005ti-00; Thu, 05 Aug 2021 11:17:18 +0200
+        id 1mBZV8-0005ti-03; Thu, 05 Aug 2021 11:17:18 +0200
 Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 77889C0503; Thu,  5 Aug 2021 11:02:18 +0200 (CEST)
-Date:   Thu, 5 Aug 2021 11:02:18 +0200
+        id D48DCC052F; Thu,  5 Aug 2021 11:12:18 +0200 (CEST)
+Date:   Thu, 5 Aug 2021 11:12:18 +0200
 From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc:     linux-kernel@vger.kernel.org, tglx@linutronix.de,
-        Peter Zijlstra <peterz@infradead.org>,
-        linux-mips@vger.kernel.org
-Subject: Re: [PATCH 02/38] MIPS: Replace deprecated CPU-hotplug functions.
-Message-ID: <20210805090218.GA5979@alpha.franken.de>
-References: <20210803141621.780504-1-bigeasy@linutronix.de>
- <20210803141621.780504-3-bigeasy@linutronix.de>
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Andy Lutomirski <luto@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        linux-kernel@vger.kernel.org, Will Deacon <will@kernel.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Guo Ren <guoren@kernel.org>, linux-mips@vger.kernel.org,
+        Paul Mackerras <paulus@samba.org>, linux-csky@vger.kernel.org,
+        linux-riscv@lists.infradead.org, Albert Ou <aou@eecs.berkeley.edu>,
+        linuxppc-dev@lists.ozlabs.org,
+        Russell King <linux@armlinux.org.uk>,
+        linux-arm-kernel@lists.infradead.org,
+        Paul Walmsley <paul.walmsley@sifive.com>
+Subject: Re: [PATCH v2] arch: vdso: remove if-conditionals of
+ $(c-gettimeofday-y)
+Message-ID: <20210805091218.GD5979@alpha.franken.de>
+References: <20210731060020.12913-1-masahiroy@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210803141621.780504-3-bigeasy@linutronix.de>
+In-Reply-To: <20210731060020.12913-1-masahiroy@kernel.org>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Tue, Aug 03, 2021 at 04:15:45PM +0200, Sebastian Andrzej Siewior wrote:
-> The functions get_online_cpus() and put_online_cpus() have been
-> deprecated during the CPU hotplug rework. They map directly to
-> cpus_read_lock() and cpus_read_unlock().
+On Sat, Jul 31, 2021 at 03:00:20PM +0900, Masahiro Yamada wrote:
+> arm, arm64, csky, mips, powerpc always select GENERIC_GETTIMEOFDAY,
+> hence $(gettimeofday-y) never becomes empty.
 > 
-> Replace deprecated CPU-hotplug functions with the official version.
-> The behavior remains unchanged.
+> riscv conditionally selects GENERIC_GETTIMEOFDAY when MMU=y && 64BIT=y,
+> but arch/riscv/kernel/vdso/vgettimeofday.o is built only under that
+> condition. So, you can always define CFLAGS_vgettimeofday.o
 > 
-> Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-> Cc: linux-mips@vger.kernel.org
-> Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+> Remove all the meaningless conditionals.
+> 
+> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 > ---
->  arch/mips/kernel/mips-mt-fpaff.c | 10 +++++-----
->  arch/mips/kernel/process.c       |  4 ++--
->  2 files changed, 7 insertions(+), 7 deletions(-)
+> 
+> Changes in v2:
+>   - Fix csky as well
+> 
+>  [..]
+>  arch/mips/vdso/Makefile             |  2 --
 
-applied to mips-next.
-
-Thomas.
+Acked-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 
 -- 
 Crap can work. Given enough thrust pigs will fly, but it's not necessarily a

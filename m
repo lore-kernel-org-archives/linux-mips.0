@@ -2,31 +2,32 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CB672C4338F
-	for <linux-mips@archiver.kernel.org>; Thu,  5 Aug 2021 00:53:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4C53EC432BE
+	for <linux-mips@archiver.kernel.org>; Thu,  5 Aug 2021 00:53:34 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 9A15C6104F
-	for <linux-mips@archiver.kernel.org>; Thu,  5 Aug 2021 00:53:23 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 3488A61037
+	for <linux-mips@archiver.kernel.org>; Thu,  5 Aug 2021 00:53:34 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234536AbhHEAxf (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 4 Aug 2021 20:53:35 -0400
-Received: from mga02.intel.com ([134.134.136.20]:12119 "EHLO mga02.intel.com"
+        id S235930AbhHEAxl (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 4 Aug 2021 20:53:41 -0400
+Received: from mga02.intel.com ([134.134.136.20]:12125 "EHLO mga02.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231355AbhHEAxf (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Wed, 4 Aug 2021 20:53:35 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10066"; a="201215413"
+        id S234968AbhHEAxi (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Wed, 4 Aug 2021 20:53:38 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10066"; a="201215423"
 X-IronPort-AV: E=Sophos;i="5.84,296,1620716400"; 
-   d="scan'208";a="201215413"
+   d="scan'208";a="201215423"
 Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Aug 2021 17:53:20 -0700
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Aug 2021 17:53:25 -0700
 X-IronPort-AV: E=Sophos;i="5.84,296,1620716400"; 
-   d="scan'208";a="437617163"
+   d="scan'208";a="437617186"
 Received: from mjkendri-mobl.amr.corp.intel.com (HELO skuppusw-desk1.amr.corp.intel.com) ([10.254.17.117])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Aug 2021 17:53:17 -0700
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Aug 2021 17:53:22 -0700
 From:   Kuppuswamy Sathyanarayanan 
         <sathyanarayanan.kuppuswamy@linux.intel.com>
 To:     Thomas Gleixner <tglx@linutronix.de>,
@@ -55,141 +56,118 @@ Cc:     Peter H Anvin <hpa@zytor.com>, Dave Hansen <dave.hansen@intel.com>,
         sparclinux@vger.kernel.org, linux-arch@vger.kernel.org,
         linux-doc@vger.kernel.org,
         virtualization@lists.linux-foundation.org
-Subject: [PATCH v4 00/15] Add TDX Guest Support (shared-mm support)
-Date:   Wed,  4 Aug 2021 17:52:03 -0700
-Message-Id: <20210805005218.2912076-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+Subject: [PATCH v4 02/15] x86/tdx: Exclude Shared bit from physical_mask
+Date:   Wed,  4 Aug 2021 17:52:05 -0700
+Message-Id: <20210805005218.2912076-3-sathyanarayanan.kuppuswamy@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210805005218.2912076-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+References: <20210805005218.2912076-1-sathyanarayanan.kuppuswamy@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Hi All,
+From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
 
-Intel's Trust Domain Extensions (TDX) protect guest VMs from malicious
-hosts and some physical attacks. Since VMM is untrusted entity, it does
-not allow VMM to access guest private memory. Any memory that is required
-for communication with VMM must be shared explicitly. This series adds
-support to securely share guest memory with VMM when it is required by
-guest.
+Just like MKTME, TDX reassigns bits of the physical address for
+metadata.  MKTME used several bits for an encryption KeyID. TDX
+uses a single bit in guests to communicate whether a physical page
+should be protected by TDX as private memory (bit set to 0) or
+unprotected and shared with the VMM (bit set to 1).
 
-Originally TDX did automatic sharing of every ioremap. But it was found that
-this ends up with a lot of memory shared that is supposed to be private, for
-example ACPI tables. Also in general since only a few drivers are expected
-to be used it's safer to mark them explicitly (for virtio it actually only
-needs two places). This gives the advantage of automatically preventing
-other drivers from doing MMIO, which can happen in some cases even with
-the device filter. There is still a command line option to override this option,
-which allows to use all drivers.
+Add a helper, tdg_shared_mask() to generate the mask.  The processor
+enumerates its physical address width to include the shared bit, which
+means it gets included in __PHYSICAL_MASK by default.
 
-This series is the continuation of the patch series titled "Add TDX Guest
-Support (Initial support)", "Add TDX Guest Support (#VE handler support)"
-and "Add TDX Guest Support (boot fixes)" which added initial support,
- #VE handler support and boot fixes for TDX guests. You  can find the
-related patchsets in the following links.
+Remove the shared mask from 'physical_mask' since any bits in
+tdg_shared_mask() are not used for physical addresses in page table
+entries.
 
-[set 1, v5] - https://lore.kernel.org/patchwork/project/lkml/list/?series=510805
-[set 2, v4] - https://lore.kernel.org/patchwork/project/lkml/list/?series=510814
-[set 3, v4] - https://lore.kernel.org/patchwork/project/lkml/list/?series=510816
+Also, note that shared mapping configuration cannot be clubbed between
+AMD SME and Intel TDX Guest platforms in common function. SME has
+to do it very early in __startup_64() as it sets the bit on all
+memory, except what is used for communication. TDX can postpone it,
+as it don't need any shared mapping in very early boot.
 
-Also please note that this series alone is not necessarily fully
-functional. You need to apply all the above 3 patch series to get
-a fully functional TDX guest.
-
-You can find TDX related documents in the following link.
-
-https://software.intel.com/content/www/br/pt/develop/articles/intel-trust-domain-extensions.html
-
-Also, ioremap related changes in mips, parisc, alpha, sparch archs' are
-only compile tested, and hence need help from the community users of these
-archs' to make sure that it does not break any functionality.
-
-In this patch series, following patches are in PCI domain and are
-meant for the PCI domain reviewers.
-
-  pci: Consolidate pci_iomap* and pci_iomap*wc
-  pci: Add pci_iomap_shared{,_range}
-  pci: Mark MSI data shared
-
-Patch titled "asm/io.h: Add ioremap_shared fallback" adds generic
-and arch specific ioremap_shared headers and are meant to be reviewed
-by linux-arch@vger.kernel.org, linux-alpha@vger.kernel.org,
-linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
-sparclinux@vger.kernel.org.
-
-Similarly patch titled "virtio: Use shared mappings for virtio
-PCI devices" adds ioremap_shared() support for virtio drivers
-and are meant to be reviewed by virtio driver maintainers.
-
-I have CCed this patch series to all the related domain maintainers
-and open lists. If you prefer to get only patches specific to your
-domain, please let me know. I will fix this in next submission.
+Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+Reviewed-by: Andi Kleen <ak@linux.intel.com>
+Reviewed-by: Tony Luck <tony.luck@intel.com>
+Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+---
 
 Changes since v3:
- * Rebased on top of Tom Lendacky's protected guest
-   changes (https://lore.kernel.org/patchwork/cover/1468760/)
- * Added new API to share io-reamapped memory selectively
-   (using ioremap_shared())
- * Added new wrapper (pci_iomap_shared_range()) for PCI IO
-   remap shared mappings use case.
+ * None
 
-Changes since v2:
- * Rebased on top of v5.14-rc1.
- * No functional changes.
+Changes since v1:
+ * Fixed format issues in commit log.
 
-Andi Kleen (6):
-  pci: Consolidate pci_iomap* and pci_iomap*wc
-  asm/io.h: Add ioremap_shared fallback
-  pci: Add pci_iomap_shared{,_range}
-  pci: Mark MSI data shared
-  virtio: Use shared mappings for virtio PCI devices
-  x86/tdx: Implement ioremap_shared for x86
+ arch/x86/Kconfig           | 1 +
+ arch/x86/include/asm/tdx.h | 4 ++++
+ arch/x86/kernel/tdx.c      | 9 +++++++++
+ 3 files changed, 14 insertions(+)
 
-Isaku Yamahata (1):
-  x86/tdx: ioapic: Add shared bit for IOAPIC base address
-
-Kirill A. Shutemov (6):
-  x86/mm: Move force_dma_unencrypted() to common code
-  x86/tdx: Exclude Shared bit from physical_mask
-  x86/tdx: Make pages shared in ioremap()
-  x86/tdx: Add helper to do MapGPA hypercall
-  x86/tdx: Make DMA pages shared
-  x86/kvm: Use bounce buffers for TD guest
-
-Kuppuswamy Sathyanarayanan (2):
-  x86/tdx: Enable shared memory protected guest flags for TDX guest
-  x86/tdx: Add cmdline option to force use of ioremap_shared
-
- .../admin-guide/kernel-parameters.rst         |   1 +
- .../admin-guide/kernel-parameters.txt         |  12 ++
- arch/alpha/include/asm/io.h                   |   1 +
- arch/mips/include/asm/io.h                    |   1 +
- arch/parisc/include/asm/io.h                  |   1 +
- arch/sparc/include/asm/io_64.h                |   1 +
- arch/x86/Kconfig                              |   9 +-
- arch/x86/include/asm/io.h                     |   5 +
- arch/x86/include/asm/mem_encrypt_common.h     |  20 +++
- arch/x86/include/asm/pgtable.h                |   5 +
- arch/x86/include/asm/tdx.h                    |  22 +++
- arch/x86/kernel/apic/io_apic.c                |  18 ++-
- arch/x86/kernel/tdx.c                         |  64 +++++++++
- arch/x86/mm/Makefile                          |   2 +
- arch/x86/mm/ioremap.c                         |  64 +++++++--
- arch/x86/mm/mem_encrypt.c                     |   8 +-
- arch/x86/mm/mem_encrypt_common.c              |  38 ++++++
- arch/x86/mm/pat/set_memory.c                  |  45 ++++++-
- drivers/pci/msi.c                             |   2 +-
- drivers/virtio/virtio_pci_modern_dev.c        |   2 +-
- include/asm-generic/io.h                      |   4 +
- include/asm-generic/pci_iomap.h               |   6 +
- include/linux/protected_guest.h               |   1 +
- lib/pci_iomap.c                               | 125 +++++++++++++-----
- 24 files changed, 393 insertions(+), 64 deletions(-)
- create mode 100644 arch/x86/include/asm/mem_encrypt_common.h
- create mode 100644 arch/x86/mm/mem_encrypt_common.c
-
+diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+index d66a8a2f3c97..8eada36694b6 100644
+--- a/arch/x86/Kconfig
++++ b/arch/x86/Kconfig
+@@ -872,6 +872,7 @@ config INTEL_TDX_GUEST
+ 	select X86_X2APIC
+ 	select SECURITY_LOCKDOWN_LSM
+ 	select ARCH_HAS_PROTECTED_GUEST
++	select X86_MEM_ENCRYPT_COMMON
+ 	help
+ 	  Provide support for running in a trusted domain on Intel processors
+ 	  equipped with Trusted Domain eXtensions. TDX is a new Intel
+diff --git a/arch/x86/include/asm/tdx.h b/arch/x86/include/asm/tdx.h
+index 72154d3f63c2..1e2a1c6a1898 100644
+--- a/arch/x86/include/asm/tdx.h
++++ b/arch/x86/include/asm/tdx.h
+@@ -77,6 +77,8 @@ int tdg_handle_virtualization_exception(struct pt_regs *regs,
+ 
+ bool tdg_early_handle_ve(struct pt_regs *regs);
+ 
++extern phys_addr_t tdg_shared_mask(void);
++
+ /*
+  * To support I/O port access in decompressor or early kernel init
+  * code, since #VE exception handler cannot be used, use paravirt
+@@ -145,6 +147,8 @@ static inline bool tdx_prot_guest_has(unsigned long flag) { return false; }
+ 
+ static inline bool tdg_early_handle_ve(struct pt_regs *regs) { return false; }
+ 
++static inline phys_addr_t tdg_shared_mask(void) { return 0; }
++
+ #endif /* CONFIG_INTEL_TDX_GUEST */
+ 
+ #ifdef CONFIG_INTEL_TDX_GUEST_KVM
+diff --git a/arch/x86/kernel/tdx.c b/arch/x86/kernel/tdx.c
+index 0c24439774b4..d316fe33f52f 100644
+--- a/arch/x86/kernel/tdx.c
++++ b/arch/x86/kernel/tdx.c
+@@ -75,6 +75,12 @@ bool tdx_prot_guest_has(unsigned long flag)
+ }
+ EXPORT_SYMBOL_GPL(tdx_prot_guest_has);
+ 
++/* The highest bit of a guest physical address is the "sharing" bit */
++phys_addr_t tdg_shared_mask(void)
++{
++	return 1ULL << (td_info.gpa_width - 1);
++}
++
+ static void tdg_get_info(void)
+ {
+ 	u64 ret;
+@@ -86,6 +92,9 @@ static void tdg_get_info(void)
+ 
+ 	td_info.gpa_width = out.rcx & GENMASK(5, 0);
+ 	td_info.attributes = out.rdx;
++
++	/* Exclude Shared bit from the __PHYSICAL_MASK */
++	physical_mask &= ~tdg_shared_mask();
+ }
+ 
+ static __cpuidle void tdg_halt(void)
 -- 
 2.25.1
 

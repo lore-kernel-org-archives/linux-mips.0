@@ -2,162 +2,71 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.2 required=3.0 tests=BAYES_00,
+X-Spam-Status: No, score=-15.3 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8E829C19F34
-	for <linux-mips@archiver.kernel.org>; Thu,  5 Aug 2021 09:17:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id ABF76C4338F
+	for <linux-mips@archiver.kernel.org>; Thu,  5 Aug 2021 09:52:20 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 7252960E53
-	for <linux-mips@archiver.kernel.org>; Thu,  5 Aug 2021 09:17:46 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 84931610CC
+	for <linux-mips@archiver.kernel.org>; Thu,  5 Aug 2021 09:52:20 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239921AbhHEJR6 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 5 Aug 2021 05:17:58 -0400
-Received: from elvis.franken.de ([193.175.24.41]:46948 "EHLO elvis.franken.de"
+        id S234746AbhHEJwd (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 5 Aug 2021 05:52:33 -0400
+Received: from elvis.franken.de ([193.175.24.41]:47052 "EHLO elvis.franken.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238328AbhHEJRy (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Thu, 5 Aug 2021 05:17:54 -0400
+        id S233324AbhHEJwd (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Thu, 5 Aug 2021 05:52:33 -0400
 Received: from uucp (helo=alpha)
         by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1mBZV8-0005ti-04; Thu, 05 Aug 2021 11:17:18 +0200
+        id 1mBa2s-0006CN-00; Thu, 05 Aug 2021 11:52:10 +0200
 Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 92188C052F; Thu,  5 Aug 2021 11:16:03 +0200 (CEST)
-Date:   Thu, 5 Aug 2021 11:16:03 +0200
+        id DC062C052F; Thu,  5 Aug 2021 11:46:46 +0200 (CEST)
+Date:   Thu, 5 Aug 2021 11:46:46 +0200
 From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Vineet Gupta <vgupta@synopsys.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Brian Cain <bcain@codeaurora.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Michal Simek <monstr@monstr.eu>,
-        John Crispin <john@phrozen.org>,
-        Ley Foon Tan <ley.foon.tan@intel.com>,
-        Jonas Bonn <jonas@southpole.se>,
-        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
-        Stafford Horne <shorne@gmail.com>,
-        "James E . J . Bottomley" <James.Bottomley@HansenPartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Rich Felker <dalias@libc.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jeff Dike <jdike@addtoit.com>,
-        Richard Weinberger <richard@nod.at>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Chris Zankel <chris@zankel.net>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Sebastian Reichel <sre@kernel.org>,
-        linux-snps-arc@lists.infradead.org, linux-csky@vger.kernel.org,
-        uclinux-h8-devel@lists.sourceforge.jp,
-        linux-hexagon@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-        linux-mips@vger.kernel.org, openrisc@lists.librecores.org,
-        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
-        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
-        linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org
-Subject: Re: [PATCH 1/3] arch: Export machine_restart() instances so they can
- be called from modules
-Message-ID: <20210805091603.GE5979@alpha.franken.de>
-References: <20210805075032.723037-1-lee.jones@linaro.org>
- <20210805075032.723037-2-lee.jones@linaro.org>
+To:     Huang Pei <huangpei@loongson.cn>
+Cc:     ambrosehua@gmail.com, Bibo Mao <maobibo@loongson.cn>,
+        linux-mips@vger.kernel.org, Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Paul Burton <paulburton@kernel.org>,
+        Li Xuefeng <lixuefeng@loongson.cn>,
+        Yang Tiezhu <yangtiezhu@loongson.cn>,
+        Gao Juxin <gaojuxin@loongson.cn>,
+        Huacai Chen <chenhuacai@loongson.cn>,
+        Jinyang He <hejinyang@loongson.cn>,
+        Joshua Kinard <kumba@gentoo.org>
+Subject: Re: [PATCH] MIPS: check return value of pgtable_pmd_page_ctor
+Message-ID: <20210805094646.GA6665@alpha.franken.de>
+References: <20210721093045.2474837-1-huangpei@loongson.cn>
+ <20210721093045.2474837-2-huangpei@loongson.cn>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210805075032.723037-2-lee.jones@linaro.org>
+In-Reply-To: <20210721093045.2474837-2-huangpei@loongson.cn>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Thu, Aug 05, 2021 at 08:50:30AM +0100, Lee Jones wrote:
-> A recent attempt to convert the Power Reset Restart driver to tristate
-> failed because of the following compile error (reported once merged by
-> Stephen Rothwell via Linux Next):
+On Wed, Jul 21, 2021 at 05:30:45PM +0800, Huang Pei wrote:
+> +. According to Documentation/vm/split_page_table_lock, handle failure
+> of pgtable_pmd_page_ctor
 > 
->   ERROR: "machine_restart" [drivers/power/reset/restart-poweroff.ko] undefined!
+> +. Use GFP_KERNEL_ACCOUNT instead of GFP_KERNEL|__GFP_ACCOUNT
 > 
-> This error occurs since some of the machine_restart() instances are
-> not currently exported for use in modules.  This patch aims to rectify
-> that.
+> +. Adjust coding style
 > 
-> Cc: Vineet Gupta <vgupta@synopsys.com>
-> Cc: Catalin Marinas <catalin.marinas@arm.com>
-> Cc: Will Deacon <will@kernel.org>
-> Cc: Guo Ren <guoren@kernel.org>
-> Cc: Yoshinori Sato <ysato@users.sourceforge.jp>
-> Cc: Brian Cain <bcain@codeaurora.org>
-> Cc: Geert Uytterhoeven <geert@linux-m68k.org>
-> Cc: Michal Simek <monstr@monstr.eu>
-> Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-> Cc: John Crispin <john@phrozen.org>
-> Cc: Ley Foon Tan <ley.foon.tan@intel.com>
-> Cc: Jonas Bonn <jonas@southpole.se>
-> Cc: Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>
-> Cc: Stafford Horne <shorne@gmail.com>
-> Cc: James E.J. Bottomley <James.Bottomley@HansenPartnership.com>
-> Cc: Helge Deller <deller@gmx.de>
-> Cc: Michael Ellerman <mpe@ellerman.id.au>
-> Cc: Paul Walmsley <paul.walmsley@sifive.com>
-> Cc: Palmer Dabbelt <palmer@dabbelt.com>
-> Cc: Albert Ou <aou@eecs.berkeley.edu>
-> Cc: Heiko Carstens <hca@linux.ibm.com>
-> Cc: Vasily Gorbik <gor@linux.ibm.com>
-> Cc: Christian Borntraeger <borntraeger@de.ibm.com>
-> Cc: Rich Felker <dalias@libc.org>
-> Cc: David S. Miller <davem@davemloft.net>
-> Cc: Jeff Dike <jdike@addtoit.com>
-> Cc: Richard Weinberger <richard@nod.at>
-> Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Ingo Molnar <mingo@redhat.com>
-> Cc: Borislav Petkov <bp@alien8.de>
-> Cc: Chris Zankel <chris@zankel.net>
-> Cc: Max Filippov <jcmvbkbc@gmail.com>
-> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Cc: Sebastian Reichel <sre@kernel.org>
-> Cc: linux-snps-arc@lists.infradead.org
-> Cc: linux-kernel@vger.kernel.org
-> Cc: linux-arm-kernel@lists.infradead.org
-> Cc: linux-csky@vger.kernel.org
-> Cc: uclinux-h8-devel@lists.sourceforge.jp
-> Cc: linux-hexagon@vger.kernel.org
-> Cc: linux-m68k@lists.linux-m68k.org
-> Cc: linux-mips@vger.kernel.org
-> Cc: openrisc@lists.librecores.org
-> Cc: linux-parisc@vger.kernel.org
-> Cc: linuxppc-dev@lists.ozlabs.org
-> Cc: linux-riscv@lists.infradead.org
-> Cc: linux-s390@vger.kernel.org
-> Cc: linux-sh@vger.kernel.org
-> Cc: sparclinux@vger.kernel.org
-> Cc: linux-um@lists.infradead.org
-> Cc: linux-xtensa@linux-xtensa.org
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> Fixes: ed914d48b6a1 ("MIPS: add PMD table accounting into MIPS')
+> Reported-by: Joshua Kinard <kumba@gentoo.org>
+> Signed-off-by: Huang Pei <huangpei@loongson.cn>
 > ---
-> 
-> The 2 patches this change supports have the required Acks already.
-> 
-> NB: If it's safe to omit some of these, let me know and I'll revise the patch.
-> 
->  [...]
->  arch/mips/kernel/reset.c           | 1 +
->  arch/mips/lantiq/falcon/reset.c    | 1 +
->  arch/mips/sgi-ip27/ip27-reset.c    | 1 +
+>  arch/mips/include/asm/pgalloc.h | 17 +++++++++++------
+>  1 file changed, 11 insertions(+), 6 deletions(-)
 
-Acked-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+applied to mips-fixes.
+
+Thomas.
 
 -- 
 Crap can work. Given enough thrust pigs will fly, but it's not necessarily a

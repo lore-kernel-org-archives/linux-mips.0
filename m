@@ -2,45 +2,44 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-16.0 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+X-Spam-Status: No, score=-18.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	UNWANTED_LANGUAGE_BODY,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3864DC4320A
-	for <linux-mips@archiver.kernel.org>; Thu,  5 Aug 2021 14:08:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 74095C43214
+	for <linux-mips@archiver.kernel.org>; Thu,  5 Aug 2021 14:08:26 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 1C5BA6113B
-	for <linux-mips@archiver.kernel.org>; Thu,  5 Aug 2021 14:08:25 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 5DD036113B
+	for <linux-mips@archiver.kernel.org>; Thu,  5 Aug 2021 14:08:26 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241865AbhHEOIh (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 5 Aug 2021 10:08:37 -0400
-Received: from mo4-p04-ob.smtp.rzone.de ([85.215.255.123]:8841 "EHLO
+        id S241893AbhHEOIi (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 5 Aug 2021 10:08:38 -0400
+Received: from mo4-p04-ob.smtp.rzone.de ([85.215.255.122]:13249 "EHLO
         mo4-p04-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241871AbhHEOIf (ORCPT
+        with ESMTP id S241873AbhHEOIf (ORCPT
         <rfc822;linux-mips@vger.kernel.org>); Thu, 5 Aug 2021 10:08:35 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1628172486;
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1628172484;
     s=strato-dkim-0002; d=goldelico.com;
     h=References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Cc:Date:
     From:Subject:Sender;
-    bh=CliIVqvNzA/bGBlLAYmf7rIejrGR22i5z/kGrFUsuDU=;
-    b=aQQJPEJ0jCM1iMaL2MFUfRGIIzKEaRcDNf2tGiFM8NcjZCfz4p8vQhjt1lrN7k83ZO
-    BzAU7bAQB9qHCReArzr1c6eZ37KgHwnTGuom6o8amMiIRiaD6CzR3lexc1yketsDJ/Jg
-    pIF7LOcdEkFt83UmjT+B1Z+Aoas3a6BwuStYAzUjWVtM1AIDYeiEiC30DeuJaIjTkK12
-    dEduqK0sP6iJghpdd/R5/cmb1H9RTxOFL47/C8jmtBLJKxB7OIZeELY0TjU2sBEBHQJb
-    MM/BWyMduC99sODYMs4Lx+Lwpd9KaVCIb4CMIanxDUVLhkiSzvEboTPjsPUg6/AjtFml
-    TKJg==
+    bh=c/7kMwv6t15ZsEIxHiem9O0XiNG0vvEI86p1Tw6MO/o=;
+    b=PDsEcp8Ei/qnpdYefIkQzooJ2dIoV+5pDl+RjXwn6mZu8kz/66UPqbp5vSF/AWLkSq
+    LYzansy1qKGYgVrZuMp4Jy5Ki7VZxjU9TcjNmmOuX45PQ8Xxhvpygc+C1ogBn5qxApcd
+    AvJ2N62O9zGJpisfg+Ico3b0C8xnKJDN0bcZdWhuqCY2Q2dKA/rsCynLxj3z7UCugpWJ
+    UFNfP018AvCYguHPxxHD180r+bj1UXPar9rDsYX7anYdCIv9iLvynP3A7d5qscD7Bh17
+    Lvj5wvCY7qwxPQSY9Cf8zhit+6+Yxfy3wtPbr+qN4hSp8bXHi05RVqLoYSucnCnMJiKR
+    PhLQ==
 Authentication-Results: strato.com;
     dkim=none
 X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMhflhwDubTJ9o12DNOsPj0lByOdbLzk="
 X-RZG-CLASS-ID: mo00
 Received: from iMac.fritz.box
     by smtp.strato.de (RZmta 47.31.0 DYNA|AUTH)
-    with ESMTPSA id Q02727x75E85789
+    with ESMTPSA id Q02727x75E84786
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
         (Client did not present a certificate);
-    Thu, 5 Aug 2021 16:08:05 +0200 (CEST)
+    Thu, 5 Aug 2021 16:08:04 +0200 (CEST)
 From:   "H. Nikolaus Schaller" <hns@goldelico.com>
 To:     Paul Cercueil <paul@crapouillou.net>,
         Rob Herring <robh+dt@kernel.org>,
@@ -68,9 +67,9 @@ Cc:     devicetree@vger.kernel.org, linux-mips@vger.kernel.org,
         Paul Boddie <paul@boddie.org.uk>,
         Jonas Karlman <jonas@kwiboo.se>,
         dri-devel@lists.freedesktop.org
-Subject: [PATCH v2 8/8] [RFC] drm/ingenic: convert to component framework for jz4780 hdmi
-Date:   Thu,  5 Aug 2021 16:07:57 +0200
-Message-Id: <77554dd2612f418f6ab74a8be06c82b71410e0e6.1628172477.git.hns@goldelico.com>
+Subject: [PATCH v2 6/8] MIPS: DTS: CI20: add HDMI setup
+Date:   Thu,  5 Aug 2021 16:07:55 +0200
+Message-Id: <c2d95169b961a60a85fa3188e1bdead2c0f3223b.1628172477.git.hns@goldelico.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <cover.1628172477.git.hns@goldelico.com>
 References: <cover.1628172477.git.hns@goldelico.com>
@@ -80,115 +79,106 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-This patch attempts to convert the ingenic-dw-hdmi driver
-into a version that uses the component framework.
+From: Paul Boddie <paul@boddie.org.uk>
 
-Unfortunately the new version does not work.
-
-Debugging shows that ingenic_dw_hdmi_bind() is never called.
-
-Suggestions for reasons and fixes are welcome.
+We need to hook up
+* HDMI power regulator
+* HDMI connector
+* DDC pinmux
+* HDMI and LCD endpoint connections
 
 Signed-off-by: Paul Boddie <paul@boddie.org.uk>
-Co-authored-by: Paul Boddie <paul@boddie.org.uk>
 Signed-off-by: H. Nikolaus Schaller <hns@goldelico.com>
 ---
- drivers/gpu/drm/ingenic/ingenic-dw-hdmi.c | 57 ++++++++++++++++++-----
- 1 file changed, 46 insertions(+), 11 deletions(-)
+ arch/mips/boot/dts/ingenic/ci20.dts | 64 +++++++++++++++++++++++++++++
+ 1 file changed, 64 insertions(+)
 
-diff --git a/drivers/gpu/drm/ingenic/ingenic-dw-hdmi.c b/drivers/gpu/drm/ingenic/ingenic-dw-hdmi.c
-index 61e7a57d7cec1..a5ba0b69baa8c 100644
---- a/drivers/gpu/drm/ingenic/ingenic-dw-hdmi.c
-+++ b/drivers/gpu/drm/ingenic/ingenic-dw-hdmi.c
-@@ -1,17 +1,24 @@
- // SPDX-License-Identifier: GPL-2.0
- /* Copyright (C) 2011-2013 Freescale Semiconductor, Inc.
-- * Copyright (C) 2019, 2020 Paul Boddie <paul@boddie.org.uk>
-+ * Copyright (C) 2019, 2020, 2021 Paul Boddie <paul@boddie.org.uk>
-  *
-  * Derived from dw_hdmi-imx.c with i.MX portions removed.
-- * Probe and remove operations derived from rcar_dw_hdmi.c.
-  */
+diff --git a/arch/mips/boot/dts/ingenic/ci20.dts b/arch/mips/boot/dts/ingenic/ci20.dts
+index a688809beebca..9e87b1169dbdc 100644
+--- a/arch/mips/boot/dts/ingenic/ci20.dts
++++ b/arch/mips/boot/dts/ingenic/ci20.dts
+@@ -78,6 +78,28 @@ eth0_power: fixedregulator@0 {
+ 		enable-active-high;
+ 	};
  
-+#include <linux/component.h>
- #include <linux/module.h>
- #include <linux/platform_device.h>
- #include <linux/regmap.h>
- 
- #include <drm/bridge/dw_hdmi.h>
- #include <drm/drm_of.h>
-+#include <drm/drm_modeset_helper_vtables.h>
-+#include <drm/drm_simple_kms_helper.h>
++	hdmi_power: fixedregulator@2 {
++		compatible = "regulator-fixed";
++		regulator-name = "hdmi_power";
++		regulator-min-microvolt = <5000000>;
++		regulator-max-microvolt = <5000000>;
++		gpio = <&gpa 25 GPIO_ACTIVE_LOW>;
++		enable-active-high;
++		regulator-always-on;
++	};
 +
-+struct ingenic_dw_hdmi_encoder {
-+	struct drm_encoder encoder;
-+	struct dw_hdmi *hdmi;
-+};
++	hdmi_out: connector {
++		compatible = "hdmi-connector";
++		label = "HDMI OUT";
++		type = "a";
++
++		port {
++			hdmi_con: endpoint {
++				remote-endpoint = <&dw_hdmi_out>;
++			};
++		};
++	};
++
+ 	ir: ir {
+ 		compatible = "gpio-ir-receiver";
+ 		gpios = <&gpe 3 GPIO_ACTIVE_LOW>;
+@@ -506,6 +528,12 @@ pins_i2c4: i2c4 {
+ 		bias-disable;
+ 	};
  
- static const struct dw_hdmi_mpll_config ingenic_mpll_cfg[] = {
- 	{ 45250000,  { { 0x01e0, 0x0000 }, { 0x21e1, 0x0000 }, { 0x41e2, 0x0000 } } },
-@@ -87,24 +94,52 @@ static const struct of_device_id ingenic_dw_hdmi_dt_ids[] = {
++	pins_hdmi_ddc: hdmi_ddc {
++		function = "hdmi-ddc";
++		groups = "hdmi-ddc";
++		bias-disable;
++	};
++
+ 	pins_nemc: nemc {
+ 		function = "nemc";
+ 		groups = "nemc-data", "nemc-cle-ale", "nemc-rd-we", "nemc-frd-fwe";
+@@ -536,3 +564,39 @@ pins_mmc1: mmc1 {
+ 		bias-disable;
+ 	};
  };
- MODULE_DEVICE_TABLE(of, ingenic_dw_hdmi_dt_ids);
- 
--static int ingenic_dw_hdmi_probe(struct platform_device *pdev)
-+static int ingenic_dw_hdmi_bind(struct device *dev, struct device *master,
-+				void *data)
- {
--	struct dw_hdmi *hdmi;
-+	struct platform_device *pdev = to_platform_device(dev);
-+	struct drm_device *drm = data;
-+	struct drm_encoder *enc;
-+	struct ingenic_dw_hdmi_encoder *hdmi_encoder;
- 
--	hdmi = dw_hdmi_probe(pdev, &ingenic_dw_hdmi_plat_data);
--	if (IS_ERR(hdmi))
--		return PTR_ERR(hdmi);
-+	hdmi_encoder = drmm_simple_encoder_alloc(drm, struct ingenic_dw_hdmi_encoder,
-+						 encoder, DRM_MODE_ENCODER_TMDS);
-+	if (IS_ERR(hdmi_encoder))
-+		return PTR_ERR(hdmi_encoder);
- 
--	platform_set_drvdata(pdev, hdmi);
-+	enc = &hdmi_encoder->encoder;
-+	drm_encoder_helper_add(enc, NULL);
-+	hdmi_encoder->hdmi = dw_hdmi_bind(pdev, enc, &ingenic_dw_hdmi_plat_data);
 +
-+	if (IS_ERR(hdmi_encoder->hdmi))
-+		return PTR_ERR(hdmi_encoder->hdmi);
++&hdmi {
++	status = "okay";
 +
-+	dev_set_drvdata(dev, hdmi_encoder->hdmi);
- 
- 	return 0;
- }
- 
--static int ingenic_dw_hdmi_remove(struct platform_device *pdev)
-+static void ingenic_dw_hdmi_unbind(struct device *dev, struct device *master,
-+				   void *data)
-+{
-+	struct dw_hdmi *hdmi = dev_get_drvdata(dev);
++	pinctrl-names = "default";
++	pinctrl-0 = <&pins_hdmi_ddc>;
 +
-+	dw_hdmi_unbind(hdmi);
-+}
++	ports {
++		#address-cells = <1>;
++		#size-cells = <0>;
 +
-+static const struct component_ops ingenic_dw_hdmi_ops = {
-+	.bind	= ingenic_dw_hdmi_bind,
-+	.unbind	= ingenic_dw_hdmi_unbind,
++		port@0 {
++			reg = <0>;
++			dw_hdmi_in: endpoint {
++				remote-endpoint = <&lcd_out>;
++			};
++		};
++
++		port@1 {
++			reg = <1>;
++			dw_hdmi_out: endpoint {
++				remote-endpoint = <&hdmi_con>;
++			};
++		};
++	};
 +};
 +
-+static int ingenic_dw_hdmi_probe(struct platform_device *pdev)
- {
--	struct dw_hdmi *hdmi = platform_get_drvdata(pdev);
-+	return component_add(&pdev->dev, &ingenic_dw_hdmi_ops);
-+}
- 
--	dw_hdmi_remove(hdmi);
-+static int ingenic_dw_hdmi_remove(struct platform_device *pdev)
-+{
-+	component_del(&pdev->dev, &ingenic_dw_hdmi_ops);
- 
- 	return 0;
- }
++&lcdc0 {
++	status = "okay";
++
++	port {
++		lcd_out: endpoint {
++			remote-endpoint = <&dw_hdmi_in>;
++		};
++	};
++};
 -- 
 2.31.1
 

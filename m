@@ -2,111 +2,129 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,USER_AGENT_GIT autolearn=ham autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CAA48C43216
-	for <linux-mips@archiver.kernel.org>; Sat,  7 Aug 2021 07:24:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 15A80C4338F
+	for <linux-mips@archiver.kernel.org>; Sat,  7 Aug 2021 08:04:40 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id B059361002
-	for <linux-mips@archiver.kernel.org>; Sat,  7 Aug 2021 07:24:25 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id DEBFE61159
+	for <linux-mips@archiver.kernel.org>; Sat,  7 Aug 2021 08:04:39 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231440AbhHGHYk (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Sat, 7 Aug 2021 03:24:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56752 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231442AbhHGHYg (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Sat, 7 Aug 2021 03:24:36 -0400
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F3BCC0613CF;
-        Sat,  7 Aug 2021 00:24:13 -0700 (PDT)
-Received: by mail-wr1-x432.google.com with SMTP id l18so14013135wrv.5;
-        Sat, 07 Aug 2021 00:24:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=CQVJ6KEPO6Kfj45v+UGoU1H5V0Gd/eW+GBrXqKNDa18=;
-        b=LYXtASnhY5Svew1rm6hnVMOdhvXIjK6Btf5g9t36t5ycGc3KyqXQ0OBOAeE0BeroEW
-         1iE7ZkrqAjSV5YOsFm6/451P1VkK/rOlBXnIPhR8sEP1IP6CF3byCZkLpOrPycMlmJHi
-         /WTH8jyZeev2yZptxDVh2Rnm9Ydv0gztIDJluzLudiYUU9SaW/IffKE+U67WbdV0w1Qf
-         BA3iOQucjyPaQKdWY4PLHrzV1ZdDtgjTvBLaNXDtWP8WOanvi1hvu/5cCMjS3uexCY4K
-         BfuqLoR7C01mgCYD0xmep3Uff+ZWd8jivhZ7LUdpaMF/eoD7aOIj8vn2jYvIsvaW8BEk
-         Nz0w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=CQVJ6KEPO6Kfj45v+UGoU1H5V0Gd/eW+GBrXqKNDa18=;
-        b=QUQ10z+bwNrrz10dAJI2Fky6GvLVlCFTArj/k7MTkTjKQ92PxfkN+XXeAcU6WaUEnj
-         GwhuN/SvJTcnohlc1cbOf5m9WDfQzvsQIw/94MA0f4PMt5LBL10LVhUC4o4O2s2ALqE8
-         4HoCdvLqnER+4q9mRx7PoZ9hTfGjNnFSv/NRKN570WEsPOCtPib53evI2uyYRjGtk7GO
-         d6+npMtABOOTEJzRDPMcpa2HQCn6fdkek0hMeNaLzNbRGbLYspSMk26svbGi282tFzhe
-         62C5+Ur9wh0ZMeMQbWLxfIXr8thhJE0kyv3n8dk9hAcySHevGzTljfnv2tlnDf2U61xQ
-         aypw==
-X-Gm-Message-State: AOAM530bksMOlzcihO0AEHLkx4Um+iuGoma4evqCCOkHqNnBly29qfYW
-        EOw13QvHvbl+fyMnl9EZN5gz1AZlSIkg8A==
-X-Google-Smtp-Source: ABdhPJxHBi4V+FnzSBoHfZHtjZpZvj30+5Q8R+YX5ZFipXeCCrS3SP5u20r2buzgvuKbwfhsfAzWjQ==
-X-Received: by 2002:a5d:6c63:: with SMTP id r3mr14499705wrz.405.1628321051861;
-        Sat, 07 Aug 2021 00:24:11 -0700 (PDT)
-Received: from localhost.localdomain (10.red-83-57-27.dynamicip.rima-tde.net. [83.57.27.10])
-        by smtp.gmail.com with ESMTPSA id g5sm13915017wmh.31.2021.08.07.00.24.10
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sat, 07 Aug 2021 00:24:11 -0700 (PDT)
-From:   Sergio Paracuellos <sergio.paracuellos@gmail.com>
-To:     tsbogend@alpha.franken.de
-Cc:     bhelgaas@google.com, matthias.bgg@gmail.com,
-        gregkh@linuxfoundation.org, linux-mips@vger.kernel.org,
-        linux-pci@vger.kernel.org, linux-staging@lists.linux.dev,
-        neil@brown.name, linux-kernel@vger.kernel.org
-Subject: [PATCH 0/3] MIPS: ralink: properly handle pci IO resources
-Date:   Sat,  7 Aug 2021 09:24:06 +0200
-Message-Id: <20210807072409.9018-1-sergio.paracuellos@gmail.com>
+        id S231577AbhHGIEz (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Sat, 7 Aug 2021 04:04:55 -0400
+Received: from mail.loongson.cn ([114.242.206.163]:33616 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231543AbhHGIEz (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Sat, 7 Aug 2021 04:04:55 -0400
+Received: from ambrosehua-HP-xw6600-Workstation.lan (unknown [125.69.44.6])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9DxH0KNPg5h_bEsAA--.26836S2;
+        Sat, 07 Aug 2021 16:04:34 +0800 (CST)
+From:   Huang Pei <huangpei@loongson.cn>
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        ambrosehua@gmail.com
+Cc:     Bibo Mao <maobibo@loongson.cn>, linux-mips@vger.kernel.org,
+        linux-rt-users@vger.kernel.org,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Li Xuefeng <lixuefeng@loongson.cn>,
+        Yang Tiezhu <yangtiezhu@loongson.cn>,
+        Gao Juxin <gaojuxin@loongson.cn>,
+        Huacai Chen <chenhuacai@loongson.cn>,
+        Jinyang He <hejinyang@loongson.cn>
+Subject: [PATCH] MIPS: simplify copy_user_high_page for MIPS64 w/o cache alias
+Date:   Sat,  7 Aug 2021 16:04:29 +0800
+Message-Id: <20210807080429.3323711-1-huangpei@loongson.cn>
 X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: AQAAf9DxH0KNPg5h_bEsAA--.26836S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7WF17AF1UKFWUKr1UGr1Dtrb_yoW8ur13pF
+        43Gw45KrWFgrW7C3Z3Xwsrury3Jas2yay8XF47Ka4Y9wnxWFy3XF1fXFW0qF1YqrWkGa15
+        W3yqgay5GF1Du3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUU9014x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26r4j6ryUM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4j
+        6F4UM28EF7xvwVC2z280aVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Cr
+        1j6rxdM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj
+        6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr
+        0_Gr1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7M4IIrI8v6xkF7I0E
+        8cxan2IY04v7MxkIecxEwVAFwVW8ZwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbV
+        WUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF
+        67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42
+        IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rWUJVWrZr1U
+        MIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIda
+        VFxhVjvjDU0xZFpf9x0JUhdbbUUUUU=
+X-CM-SenderInfo: xkxd0whshlqz5rrqw2lrqou0/
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Hi all,
+Borrow from ARM64
 
-Defining PCI_IOBASE for MIPS ralink platform results in resource handling working
-but the addresses generated for IO access being wrong, because the iomap tries to
-ioremap it to a fixed virtual address (PCI_IOBASE), which can't work for KSEG1 
-addresses. To get it working this way, we would need to put PCI_IOBASE somewhere
-into KSEG2, which will create TLB entries for IO addresses, which most of the
-time isn't needed on MIPS because of access via KSEG1. Instead of doing that and
-taking into account that we need to get a valid IO address from 'pci_address_to_pio'
-and ralink platforms have IO addresses higher than 0xffff, the following approach
-will be preferred to get expected working behaviour from PCI core APIs and pci 
-drivers working together:
+MIPS64 CPU has enough direct mapped memory space to access all
+physical memory. In case of no cache alias, bypass both k*map_atomic
+and k*map_coherent for better real-time performance.
+
+Signed-off-by: Huang Pei <huangpei@loongson.cn>
+---
+ arch/mips/mm/init.c | 39 ++++++++++++++++++++++++++-------------
+ 1 file changed, 26 insertions(+), 13 deletions(-)
+
+diff --git a/arch/mips/mm/init.c b/arch/mips/mm/init.c
+index 19347dc6bbf8..1f5bdd18ae7c 100644
+--- a/arch/mips/mm/init.c
++++ b/arch/mips/mm/init.c
+@@ -171,22 +171,35 @@ void copy_user_highpage(struct page *to, struct page *from,
+ {
+ 	void *vfrom, *vto;
  
-1) Avoid to define PCI_IOBASE.
-2) Set IO_SPACE_LIMIT to 0x1fffffff which is a valid range for this SoCs.
-3) Avoid to ioremap IO resource if PCI_IOBASE is not defined. 
-3) Set ioport_resource end limit to this new IO_SPACE_LIMIT.
-
-Doing in this way we end up with a properly working PCI IO in ralink SoCs.
-These changes metioned above are in the three patches included in this series.
-
-Thanks in advance for your time and comments.
-
-Best regards,
-    Sergio Paracuellos
-
-Sergio Paracuellos (3):
-  MIPS: ralink: don't define PC_IOBASE but increase IO_SPACE_LIMIT
-  PCI: of: avoid 'devm_pci_remap_iospace' if PCI_IOBASE is not defined
-  staging: mt7621-pci: set end limit for 'ioport_resource'
-
- arch/mips/include/asm/mach-ralink/spaces.h | 4 +---
- drivers/pci/of.c                           | 2 ++
- drivers/staging/mt7621-pci/pci-mt7621.c    | 2 ++
- 3 files changed, 5 insertions(+), 3 deletions(-)
-
+-	vto = kmap_atomic(to);
+-	if (cpu_has_dc_aliases &&
+-	    page_mapcount(from) && !Page_dcache_dirty(from)) {
+-		vfrom = kmap_coherent(from, vaddr);
++	if (IS_ENABLED(CONFIG_64BIT) && !cpu_has_dc_aliases) {
++		vfrom = page_address(from);
++		vto   = page_address(to);
+ 		copy_page(vto, vfrom);
+-		kunmap_coherent();
++		/*
++		 * even without cache alias, still need to maintain
++		 * coherence between icache and dcache
++		 */
++		if (!cpu_has_ic_fills_f_dc)
++			flush_data_cache_page((unsigned long)vto);
++
+ 	} else {
+-		vfrom = kmap_atomic(from);
+-		copy_page(vto, vfrom);
+-		kunmap_atomic(vfrom);
++		vto = kmap_atomic(to);
++		if (cpu_has_dc_aliases &&
++				page_mapcount(from) && !Page_dcache_dirty(from)) {
++			vfrom = kmap_coherent(from, vaddr);
++			copy_page(vto, vfrom);
++			kunmap_coherent();
++		} else {
++			vfrom = kmap_atomic(from);
++			copy_page(vto, vfrom);
++			kunmap_atomic(vfrom);
++		}
++		if ((!cpu_has_ic_fills_f_dc) ||
++				pages_do_alias((unsigned long)vto, vaddr & PAGE_MASK))
++			flush_data_cache_page((unsigned long)vto);
++		kunmap_atomic(vto);
++		/* Make sure this page is cleared on other CPU's too before using it */
+ 	}
+-	if ((!cpu_has_ic_fills_f_dc) ||
+-	    pages_do_alias((unsigned long)vto, vaddr & PAGE_MASK))
+-		flush_data_cache_page((unsigned long)vto);
+-	kunmap_atomic(vto);
+-	/* Make sure this page is cleared on other CPU's too before using it */
+ 	smp_wmb();
+ }
+ 
 -- 
 2.25.1
 

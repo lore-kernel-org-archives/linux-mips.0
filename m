@@ -2,68 +2,99 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.3 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_SANE_1 autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-7.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=no autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6F21BC4320A
-	for <linux-mips@archiver.kernel.org>; Sat,  7 Aug 2021 09:43:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A8FB8C4338F
+	for <linux-mips@archiver.kernel.org>; Sat,  7 Aug 2021 23:08:36 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 3CF3E61185
-	for <linux-mips@archiver.kernel.org>; Sat,  7 Aug 2021 09:43:57 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 819AF60F38
+	for <linux-mips@archiver.kernel.org>; Sat,  7 Aug 2021 23:08:36 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231836AbhHGJoM (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Sat, 7 Aug 2021 05:44:12 -0400
-Received: from elvis.franken.de ([193.175.24.41]:50725 "EHLO elvis.franken.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231687AbhHGJoM (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Sat, 7 Aug 2021 05:44:12 -0400
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1mCIru-0007FW-00; Sat, 07 Aug 2021 11:43:50 +0200
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id A6D05C0661; Sat,  7 Aug 2021 11:28:19 +0200 (CEST)
-Date:   Sat, 7 Aug 2021 11:28:19 +0200
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Jiaxun Yang <jiaxun.yang@flygoat.com>
-Cc:     linux-mips@vger.kernel.org, mturquette@baylibre.com,
-        daniel.lezcano@linaro.org, linus.walleij@linaro.org,
-        vkoul@kernel.org, linux-kernel@vger.kernel.org,
-        linux-clk@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-phy@lists.infradead.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH v4 0/9] MIPS: Migrate pistachio to generic kernel
-Message-ID: <20210807092819.GA4506@alpha.franken.de>
-References: <20210723022543.4095-1-jiaxun.yang@flygoat.com>
- <1bb80cdf-f7d5-f99f-a4f3-635552df916b@flygoat.com>
+        id S229578AbhHGXIw (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Sat, 7 Aug 2021 19:08:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35320 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229537AbhHGXIv (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Sat, 7 Aug 2021 19:08:51 -0400
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 824C9C061760;
+        Sat,  7 Aug 2021 16:08:32 -0700 (PDT)
+Received: by mail-ej1-x636.google.com with SMTP id oz16so5864525ejc.7;
+        Sat, 07 Aug 2021 16:08:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=blzJOizjsPK/xLHnGPayAC6ZePiXUNZMaLQXscMfUtI=;
+        b=YUUvoZracUWO6JaLAKHvZzf+ENOGTLjRKI+Ac2+XSDun+ReWYIqKE7sr7QuHrgUpns
+         jhoCvOf82vGK8kB1IiuSoFrkF0c5BFQFRNzH9nzd2Fx6U/idyt1LOX0ouGmwy44XKu8t
+         c8u1luBO61/7Wwezg2mdvB60kO1u+9CWBfw1gc79TbbzRE/g8ZxinPz3AmTmtI9/Xd8g
+         SOK4rjez+GshOZJmorE8jeBovYHrRTwIlOYvZpy99E7K0U5yY3mGRO/0IGJKxOPhnkzb
+         qKmk7j67TFLL/Bnik3mbEaVUf9l1tFdu880hOCtu0XnumBGYZcOFxUo5PtXHBRTJHFYn
+         wfGw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=blzJOizjsPK/xLHnGPayAC6ZePiXUNZMaLQXscMfUtI=;
+        b=QFCRgF8Us41a+BbLDj5FqGaTaReBl0f+FFocqKapNyFeBeQY4yBj65jbyVC/EqjqLr
+         Wl+4RVArniZaiot1QsVJroXJyYXzCezzEejqOzmKFXvWZ+7Uqayhjsx9OqKjZ5TGHpcE
+         GAFcKn38Z+eTqHYz6PkqslG93Fpc83DKTLfyEbbZVSBhxTtYPbM3qe134Ly8E57zLJwD
+         PakBD2rVZ6Vd9CX3kPz4o/07r+P5EF0QFvdFCMi4ZMdX8RUAQXciG5UXGl/+H0ZAld0K
+         6pCo+bThcgAPH7BoaQdBEgS914gL2DHCgtLxbCBfTGrFyhbiL6DfsuHdC7MpyRoSkwRL
+         1fWg==
+X-Gm-Message-State: AOAM532VJoncig3h4GD2+p5t5/mfnzhfm9a8esS0dWduq/CseMPT1O5n
+        bxDlfyxw1TkMgGO1l+6TMYs=
+X-Google-Smtp-Source: ABdhPJz9tOJeddhC9/Iv/oIDZ5V/HZpoEgCQKHCsFS8O6WSA8A9/e9hFCnPpkXEX6e2he6zoR/v0fw==
+X-Received: by 2002:a17:907:3e1b:: with SMTP id hp27mr16254693ejc.116.1628377710897;
+        Sat, 07 Aug 2021 16:08:30 -0700 (PDT)
+Received: from skbuf ([188.25.144.60])
+        by smtp.gmail.com with ESMTPSA id v20sm4212798ejq.17.2021.08.07.16.08.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 07 Aug 2021 16:08:30 -0700 (PDT)
+Date:   Sun, 8 Aug 2021 02:08:29 +0300
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Oleksij Rempel <o.rempel@pengutronix.de>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mips@vger.kernel.org
+Subject: Re: [PATCH net-next v3 5/6] net: dsa: qca: ar9331: add bridge support
+Message-ID: <20210807230829.m3eymcwucjtyrgew@skbuf>
+References: <20210802131037.32326-1-o.rempel@pengutronix.de>
+ <20210802131037.32326-6-o.rempel@pengutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1bb80cdf-f7d5-f99f-a4f3-635552df916b@flygoat.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210802131037.32326-6-o.rempel@pengutronix.de>
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Sat, Aug 07, 2021 at 11:06:12AM +0800, Jiaxun Yang wrote:
-> 
-> 
-> 在 2021/7/23 上午10:25, Jiaxun Yang 写道:
-> > I'm lucky enough to get a Creator CI40 board from dusts.
-> > This patchset move it to gerneic kernel to reduce maintenance burden.
-> > It have been tested with SD Card boot.
-> 
-> Hi Thomas,
-> 
-> For the series, the pinctrl one have been applied by subsystem maintainer
-> and
-> rests have been acked by subsystem maintainers, could you please apply them
-> to MIPS tree?
+Hi Oleksij,
 
-sure that's my plan.
+On Mon, Aug 02, 2021 at 03:10:36PM +0200, Oleksij Rempel wrote:
+> This switch is providing forwarding matrix, with it we can configure
+> individual bridges. Potentially we can configure more than one not VLAN
+> based bridge on this HW.
+> 
+> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+> Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
+> ---
 
-Thomas.
-
--- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+I don't see anywhere in this patch or in this series that the
+tag_ar9331.c file is being patched to set skb->offload_fwd_mark to true
+for packets sent (flooded) to the CPU that have already been forwarded
+by the hardware switch. If the software bridge sees a broadcast packet
+coming from your driver and it has offload_fwd_mark = false, it will
+forward it a second time and the other nodes in your network will see
+duplicates.

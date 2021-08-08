@@ -2,43 +2,44 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
+X-Spam-Status: No, score=-18.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C5C37C4320A
-	for <linux-mips@archiver.kernel.org>; Sun,  8 Aug 2021 05:11:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9A670C4338F
+	for <linux-mips@archiver.kernel.org>; Sun,  8 Aug 2021 05:11:08 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id AC16D60F38
-	for <linux-mips@archiver.kernel.org>; Sun,  8 Aug 2021 05:11:06 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 7CE1461019
+	for <linux-mips@archiver.kernel.org>; Sun,  8 Aug 2021 05:11:08 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229726AbhHHFLX (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Sun, 8 Aug 2021 01:11:23 -0400
-Received: from mo4-p03-ob.smtp.rzone.de ([81.169.146.175]:22146 "EHLO
+        id S229924AbhHHFLZ (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Sun, 8 Aug 2021 01:11:25 -0400
+Received: from mo4-p03-ob.smtp.rzone.de ([81.169.146.175]:27237 "EHLO
         mo4-p03-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229473AbhHHFLW (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Sun, 8 Aug 2021 01:11:22 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1628399444;
+        with ESMTP id S229516AbhHHFLY (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Sun, 8 Aug 2021 01:11:24 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1628399446;
     s=strato-dkim-0002; d=goldelico.com;
-    h=Message-Id:Date:Subject:Cc:To:From:Cc:Date:From:Subject:Sender;
-    bh=CIECkD0GrXNC/kX5exe0hD1JNJlextiGGi7cS4Osk+o=;
-    b=WGMGd3sIBjidEfF06ORFpouaOFCWhElBT3mSki82PNau+bHHhjG+fr6biK3ITdgRMo
-    THb5TYBvtA43UTAqWbH4pDaiCDPWA7IMBjFVXvhV9xGJB9BBzD+LipYcG4rpqi/uwm+9
-    IYObL4LtkYJWaEulejgXqeWQxTXMrD7LgWglnwE+Nufp8tFbdtR8bAdD0YC/JAbPze3w
-    s2ffbaCj6/eTwjKHoJBmYrcdldwFQj4QfKDP5h0dnxzhf7e2Z83qzFGSjDjoBrbZvOuc
-    yer7iQC2mSiVgwR/LVO4sGy2R9tfdqu5WvErJ+RTTDeVWCIhZ00CVMSRkz5DT0LLKikS
-    TsHQ==
+    h=References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Cc:Date:
+    From:Subject:Sender;
+    bh=PNoL+uPVa/EtHg8cMcNNaXbR5Yr+tlsCZB8IjNiOBAo=;
+    b=EMwa6Zi+2gKe46WDGWYJfc+FooZ3M2xEL7EEicEIC+rDD89LQOtLZMXfV0OYdSD//o
+    /8SphPjWpRVaXr+EPdYgfNumTvrjNcKzL84c6xByh52dBOSmtf/jNWpkbKJbcNLaBsp3
+    Q+gOAZEasFKGySFkBjuNctUWm7tJYt5E+7NNgqn27V3fF3UEVwrbEAwrjJGrZ7jNH7xk
+    laSgIWh53+OYRK8yoY+fgsKG3CVnNvMhnpj5svE7B93yBTNoCxtnF9AU58VQ2AVqzkfk
+    B5Z0AEbkMfvEQOpmsBiHjh4f/Rlxs45R1l0SmMKszbe5tSTNMH3wWodNZcxfM+K8YaPK
+    G6ww==
 Authentication-Results: strato.com;
     dkim=none
 X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMhflhwDubTJ9o12DNOsPj0lByOdcKVX0"
 X-RZG-CLASS-ID: mo00
 Received: from iMac.fritz.box
     by smtp.strato.de (RZmta 47.31.0 DYNA|AUTH)
-    with ESMTPSA id Q02727x785AhEyb
+    with ESMTPSA id Q02727x785AjEye
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
         (Client did not present a certificate);
-    Sun, 8 Aug 2021 07:10:43 +0200 (CEST)
+    Sun, 8 Aug 2021 07:10:45 +0200 (CEST)
 From:   "H. Nikolaus Schaller" <hns@goldelico.com>
 To:     Paul Cercueil <paul@crapouillou.net>,
         Rob Herring <robh+dt@kernel.org>,
@@ -66,69 +67,188 @@ Cc:     devicetree@vger.kernel.org, linux-mips@vger.kernel.org,
         Paul Boddie <paul@boddie.org.uk>,
         Jonas Karlman <jonas@kwiboo.se>,
         dri-devel@lists.freedesktop.org
-Subject: [PATCH v3 0/9] MIPS: JZ4780 and CI20 HDMI
-Date:   Sun,  8 Aug 2021 07:10:34 +0200
-Message-Id: <cover.1628399442.git.hns@goldelico.com>
+Subject: [PATCH v3 3/9] drm/ingenic: Add jz4780 Synopsys HDMI driver
+Date:   Sun,  8 Aug 2021 07:10:37 +0200
+Message-Id: <7a87980d496f8ee937ac732278a2a2256f25023b.1628399442.git.hns@goldelico.com>
 X-Mailer: git-send-email 2.31.1
+In-Reply-To: <cover.1628399442.git.hns@goldelico.com>
+References: <cover.1628399442.git.hns@goldelico.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-This series adds HDMI support for JZ4780 and CI20 board (and fixes one IPU related issue in registration error path)
-- [patch 1/8] switched from mode_fixup to atomic_check (suggested by robert.foss@linaro.org)
-  - the call to the dw-hdmi specialization is still called mode_fixup
-- [patch 3/8] diverse fixes for ingenic-drm-drv (suggested by paul@crapouillou.net)
-  - factor out some non-HDMI features of the jz4780 into a separate patch
-  - multiple fixes around max height
-  - do not change regmap config but a copy on stack
-  - define some constants
-  - factor out fixing of drm_init error path for IPU into separate patch
-  - use FIELD_PREP()
-- [patch 8/8] conversion to component framework dropped (suggested by Laurent.pinchart@ideasonboard.com and paul@crapouillou.net)
+From: Paul Boddie <paul@boddie.org.uk>
 
-PATCH V2 2021-08-05 16:08:05:
-This series adds HDMI support for JZ4780 and CI20 board
+A specialisation of the generic Synopsys HDMI driver is employed for JZ4780
+HDMI support. This requires a new driver, plus device tree and configuration
+modifications.
 
-V2:
-- code and commit messages revisited for checkpatch warnings
-- rebased on v5.14-rc4
-- include (failed, hence RFC 8/8) attempt to convert to component framework
-  (was suggested by Paul Cercueil <paul@crapouillou.net> a while ago)
-
-
-H. Nikolaus Schaller (1):
-  MIPS: CI20: defconfig: configure for DRM_DW_HDMI_JZ4780
-
-Paul Boddie (7):
-  drm/ingenic: fix drm_init error path if IPU was registered
-  drm/bridge: synopsis: Add mode_fixup and bridge timings support
-  drm/ingenic: Add jz4780 Synopsys HDMI driver
-  drm/ingenic: Add support for JZ4780 and HDMI output
-  MIPS: DTS: jz4780: account for Synopsys HDMI driver and LCD
-    controllers
-  MIPS: DTS: CI20: add HDMI setup
-  drm/ingenic: add some jz4780 specific features
-
-Sam Ravnborg (1):
-  dt-bindings: display: Add ingenic-jz4780-hdmi DT Schema
-
- .../bindings/display/ingenic-jz4780-hdmi.yaml |  82 +++++++++
- arch/mips/boot/dts/ingenic/ci20.dts           |  64 +++++++
- arch/mips/boot/dts/ingenic/jz4780.dtsi        |  45 +++++
- arch/mips/configs/ci20_defconfig              |   7 +
- drivers/gpu/drm/bridge/synopsys/dw-hdmi.c     |   7 +
- drivers/gpu/drm/ingenic/Kconfig               |   9 +
- drivers/gpu/drm/ingenic/Makefile              |   1 +
- drivers/gpu/drm/ingenic/ingenic-drm-drv.c     | 169 ++++++++++++++++--
- drivers/gpu/drm/ingenic/ingenic-drm.h         |  42 +++++
- drivers/gpu/drm/ingenic/ingenic-dw-hdmi.c     | 121 +++++++++++++
- include/drm/bridge/dw_hdmi.h                  |   5 +
- 11 files changed, 538 insertions(+), 14 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/display/ingenic-jz4780-hdmi.yaml
+Signed-off-by: Paul Boddie <paul@boddie.org.uk>
+Signed-off-by: Ezequiel Garcia <ezequiel@collabora.com>
+Signed-off-by: H. Nikolaus Schaller <hns@goldelico.com>
+---
+ drivers/gpu/drm/ingenic/Kconfig           |   9 ++
+ drivers/gpu/drm/ingenic/Makefile          |   1 +
+ drivers/gpu/drm/ingenic/ingenic-dw-hdmi.c | 121 ++++++++++++++++++++++
+ 3 files changed, 131 insertions(+)
  create mode 100644 drivers/gpu/drm/ingenic/ingenic-dw-hdmi.c
 
+diff --git a/drivers/gpu/drm/ingenic/Kconfig b/drivers/gpu/drm/ingenic/Kconfig
+index 3b57f8be007c4..4c7d311fbefff 100644
+--- a/drivers/gpu/drm/ingenic/Kconfig
++++ b/drivers/gpu/drm/ingenic/Kconfig
+@@ -25,4 +25,13 @@ config DRM_INGENIC_IPU
+ 
+ 	  The Image Processing Unit (IPU) will appear as a second primary plane.
+ 
++config DRM_INGENIC_DW_HDMI
++	bool "Ingenic specific support for Synopsys DW HDMI"
++	depends on MACH_JZ4780
++	select DRM_DW_HDMI
++	help
++	  Choose this option to enable Synopsys DesignWare HDMI based driver.
++	  If you want to enable HDMI on Ingenic JZ4780 based SoC, you should
++	  select this option..
++
+ endif
+diff --git a/drivers/gpu/drm/ingenic/Makefile b/drivers/gpu/drm/ingenic/Makefile
+index d313326bdddbb..3db9888a6c046 100644
+--- a/drivers/gpu/drm/ingenic/Makefile
++++ b/drivers/gpu/drm/ingenic/Makefile
+@@ -1,3 +1,4 @@
+ obj-$(CONFIG_DRM_INGENIC) += ingenic-drm.o
+ ingenic-drm-y = ingenic-drm-drv.o
+ ingenic-drm-$(CONFIG_DRM_INGENIC_IPU) += ingenic-ipu.o
++ingenic-drm-$(CONFIG_DRM_INGENIC_DW_HDMI) += ingenic-dw-hdmi.o
+diff --git a/drivers/gpu/drm/ingenic/ingenic-dw-hdmi.c b/drivers/gpu/drm/ingenic/ingenic-dw-hdmi.c
+new file mode 100644
+index 0000000000000..61e7a57d7cec1
+--- /dev/null
++++ b/drivers/gpu/drm/ingenic/ingenic-dw-hdmi.c
+@@ -0,0 +1,121 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright (C) 2011-2013 Freescale Semiconductor, Inc.
++ * Copyright (C) 2019, 2020 Paul Boddie <paul@boddie.org.uk>
++ *
++ * Derived from dw_hdmi-imx.c with i.MX portions removed.
++ * Probe and remove operations derived from rcar_dw_hdmi.c.
++ */
++
++#include <linux/module.h>
++#include <linux/platform_device.h>
++#include <linux/regmap.h>
++
++#include <drm/bridge/dw_hdmi.h>
++#include <drm/drm_of.h>
++
++static const struct dw_hdmi_mpll_config ingenic_mpll_cfg[] = {
++	{ 45250000,  { { 0x01e0, 0x0000 }, { 0x21e1, 0x0000 }, { 0x41e2, 0x0000 } } },
++	{ 92500000,  { { 0x0140, 0x0005 }, { 0x2141, 0x0005 }, { 0x4142, 0x0005 } } },
++	{ 148500000, { { 0x00a0, 0x000a }, { 0x20a1, 0x000a }, { 0x40a2, 0x000a } } },
++	{ 216000000, { { 0x00a0, 0x000a }, { 0x2001, 0x000f }, { 0x4002, 0x000f } } },
++	{ ~0UL,      { { 0x0000, 0x0000 }, { 0x0000, 0x0000 }, { 0x0000, 0x0000 } } }
++};
++
++static const struct dw_hdmi_curr_ctrl ingenic_cur_ctr[] = {
++	/*pixelclk     bpp8    bpp10   bpp12 */
++	{ 54000000,  { 0x091c, 0x091c, 0x06dc } },
++	{ 58400000,  { 0x091c, 0x06dc, 0x06dc } },
++	{ 72000000,  { 0x06dc, 0x06dc, 0x091c } },
++	{ 74250000,  { 0x06dc, 0x0b5c, 0x091c } },
++	{ 118800000, { 0x091c, 0x091c, 0x06dc } },
++	{ 216000000, { 0x06dc, 0x0b5c, 0x091c } },
++	{ ~0UL,      { 0x0000, 0x0000, 0x0000 } },
++};
++
++/*
++ * Resistance term 133Ohm Cfg
++ * PREEMP config 0.00
++ * TX/CK level 10
++ */
++static const struct dw_hdmi_phy_config ingenic_phy_config[] = {
++	/*pixelclk   symbol   term   vlev */
++	{ 216000000, 0x800d, 0x0005, 0x01ad},
++	{ ~0UL,      0x0000, 0x0000, 0x0000}
++};
++
++static enum drm_mode_status
++ingenic_dw_hdmi_mode_valid(struct dw_hdmi *hdmi, void *data,
++			   const struct drm_display_info *info,
++			   const struct drm_display_mode *mode)
++{
++	if (mode->clock < 13500)
++		return MODE_CLOCK_LOW;
++	/* FIXME: Hardware is capable of 270MHz, but setup data is missing. */
++	if (mode->clock > 216000)
++		return MODE_CLOCK_HIGH;
++
++	return MODE_OK;
++}
++
++static bool
++ingenic_dw_hdmi_mode_fixup(struct drm_bridge *bridge,
++			   const struct drm_display_mode *mode,
++			   struct drm_display_mode *adjusted_mode)
++{
++	adjusted_mode->flags |= (DRM_MODE_FLAG_PHSYNC | DRM_MODE_FLAG_PVSYNC);
++	adjusted_mode->flags &= ~(DRM_MODE_FLAG_NHSYNC | DRM_MODE_FLAG_NVSYNC);
++
++	return true;
++}
++
++static const struct drm_bridge_timings ingenic_dw_hdmi_timings = {
++	.input_bus_flags = DRM_BUS_FLAG_PIXDATA_SAMPLE_NEGEDGE,
++};
++
++static struct dw_hdmi_plat_data ingenic_dw_hdmi_plat_data = {
++	.mpll_cfg   = ingenic_mpll_cfg,
++	.cur_ctr    = ingenic_cur_ctr,
++	.phy_config = ingenic_phy_config,
++	.mode_valid = ingenic_dw_hdmi_mode_valid,
++	.mode_fixup = ingenic_dw_hdmi_mode_fixup,
++	.timings    = &ingenic_dw_hdmi_timings,
++};
++
++static const struct of_device_id ingenic_dw_hdmi_dt_ids[] = {
++	{ .compatible = "ingenic,jz4780-dw-hdmi" },
++	{ /* Sentinel */ },
++};
++MODULE_DEVICE_TABLE(of, ingenic_dw_hdmi_dt_ids);
++
++static int ingenic_dw_hdmi_probe(struct platform_device *pdev)
++{
++	struct dw_hdmi *hdmi;
++
++	hdmi = dw_hdmi_probe(pdev, &ingenic_dw_hdmi_plat_data);
++	if (IS_ERR(hdmi))
++		return PTR_ERR(hdmi);
++
++	platform_set_drvdata(pdev, hdmi);
++
++	return 0;
++}
++
++static int ingenic_dw_hdmi_remove(struct platform_device *pdev)
++{
++	struct dw_hdmi *hdmi = platform_get_drvdata(pdev);
++
++	dw_hdmi_remove(hdmi);
++
++	return 0;
++}
++
++static struct platform_driver ingenic_dw_hdmi_driver = {
++	.probe  = ingenic_dw_hdmi_probe,
++	.remove = ingenic_dw_hdmi_remove,
++	.driver = {
++		.name = "dw-hdmi-ingenic",
++		.of_match_table = ingenic_dw_hdmi_dt_ids,
++	},
++};
++
++struct platform_driver *ingenic_dw_hdmi_driver_ptr = &ingenic_dw_hdmi_driver;
 -- 
 2.31.1
 

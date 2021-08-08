@@ -2,114 +2,131 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,
+X-Spam-Status: No, score=-15.3 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
-	version=3.4.0
+	MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 84D8BC4338F
-	for <linux-mips@archiver.kernel.org>; Sun,  8 Aug 2021 20:09:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B647FC4338F
+	for <linux-mips@archiver.kernel.org>; Sun,  8 Aug 2021 20:15:30 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 6AFB460F38
-	for <linux-mips@archiver.kernel.org>; Sun,  8 Aug 2021 20:09:24 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 83E2660F42
+	for <linux-mips@archiver.kernel.org>; Sun,  8 Aug 2021 20:15:30 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230337AbhHHUJn convert rfc822-to-8bit (ORCPT
-        <rfc822;linux-mips@archiver.kernel.org>);
-        Sun, 8 Aug 2021 16:09:43 -0400
-Received: from aposti.net ([89.234.176.197]:50362 "EHLO aposti.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229977AbhHHUJm (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Sun, 8 Aug 2021 16:09:42 -0400
-Date:   Sun, 08 Aug 2021 22:09:14 +0200
-From:   Paul Cercueil <paul@crapouillou.net>
+        id S231559AbhHHUPt (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Sun, 8 Aug 2021 16:15:49 -0400
+Received: from smtp05.smtpout.orange.fr ([80.12.242.127]:51503 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230201AbhHHUPs (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Sun, 8 Aug 2021 16:15:48 -0400
+Received: from [192.168.1.18] ([90.126.253.178])
+        by mwinf5d25 with ME
+        id f8FT2500A3riaq2038FTyY; Sun, 08 Aug 2021 22:15:28 +0200
+X-ME-Helo: [192.168.1.18]
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Sun, 08 Aug 2021 22:15:28 +0200
+X-ME-IP: 90.126.253.178
 Subject: Re: [PATCH 3/8] drm/ingenic: Use standard
  drm_atomic_helper_commit_tail
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To:     Paul Cercueil <paul@crapouillou.net>
 Cc:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
         "H . Nikolaus Schaller" <hns@goldelico.com>,
         Paul Boddie <paul@boddie.org.uk>, list@opendingux.net,
         Sam Ravnborg <sam@ravnborg.org>, linux-mips@vger.kernel.org,
         dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Message-Id: <ENEJXQ.6TCYILUOPORD@crapouillou.net>
-In-Reply-To: <f3b761ed-4e71-e8b8-f2b5-f4f7f1547fed@wanadoo.fr>
 References: <20210808134526.119198-1-paul@crapouillou.net>
-        <20210808134526.119198-4-paul@crapouillou.net>
-        <f3b761ed-4e71-e8b8-f2b5-f4f7f1547fed@wanadoo.fr>
+ <20210808134526.119198-4-paul@crapouillou.net>
+ <f3b761ed-4e71-e8b8-f2b5-f4f7f1547fed@wanadoo.fr>
+ <ENEJXQ.6TCYILUOPORD@crapouillou.net>
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Message-ID: <0571e7f1-86b2-e673-6347-abf2d79da4c8@wanadoo.fr>
+Date:   Sun, 8 Aug 2021 22:15:27 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1; format=flowed
-Content-Transfer-Encoding: 8BIT
+In-Reply-To: <ENEJXQ.6TCYILUOPORD@crapouillou.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Hi Christophe,
-
-Le dim., ao�t 8 2021 at 21:50:04 +0200, Christophe JAILLET 
-<christophe.jaillet@wanadoo.fr> a �crit :
-> Le 08/08/2021 � 15:45, Paul Cercueil a �crit :
->> By making the CRTC's .vblank_enable() function return an error when 
->> it
->> is known that the hardware won't deliver a VBLANK, we can drop the
->> ingenic_drm_atomic_helper_commit_tail() function and use the standard
->> drm_atomic_helper_commit_tail() function instead.
->> 
->> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
->> ---
->>   drivers/gpu/drm/ingenic/ingenic-drm-drv.c | 28 
->> ++++-------------------
->>   1 file changed, 4 insertions(+), 24 deletions(-)
->> 
->> diff --git a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c 
->> b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
->> index bc71ba44ccf4..3ed7c27a8dde 100644
->> --- a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
->> +++ b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
->> @@ -706,29 +706,6 @@ static int 
->> ingenic_drm_encoder_atomic_check(struct drm_encoder *encoder,
->>   	}
->>   }
->>   -static void ingenic_drm_atomic_helper_commit_tail(struct 
->> drm_atomic_state *old_state)
->> -{
->> -	/*
->> -	 * Just your regular drm_atomic_helper_commit_tail(), but only 
->> calls
->> -	 * drm_atomic_helper_wait_for_vblanks() if priv->no_vblank.
->> -	 */
->> -	struct drm_device *dev = old_state->dev;
->> -	struct ingenic_drm *priv = drm_device_get_priv(dev);
->> -
->> -	drm_atomic_helper_commit_modeset_disables(dev, old_state);
->> -
->> -	drm_atomic_helper_commit_planes(dev, old_state, 0);
->> -
->> -	drm_atomic_helper_commit_modeset_enables(dev, old_state);
->> -
->> -	drm_atomic_helper_commit_hw_done(old_state);
->> -
->> -	if (!priv->no_vblank)
->> -		drm_atomic_helper_wait_for_vblanks(dev, old_state);
->> -
->> -	drm_atomic_helper_cleanup_planes(dev, old_state);
->> -}
->> 
+Le 08/08/2021 à 22:09, Paul Cercueil a écrit :
+> Hi Christophe,
 > 
-> Hi,
-> if this function is removed, shouldn't:
->   static struct drm_mode_config_helper_funcs 
-> ingenic_drm_mode_config_helpers = {
->   	.atomic_commit_tail = ingenic_drm_atomic_helper_commit_tail,
->   };
-> be updated as well?
+> Le dim., août 8 2021 at 21:50:04 +0200, Christophe JAILLET 
+> <christophe.jaillet@wanadoo.fr> a écrit :
+>> Le 08/08/2021 à 15:45, Paul Cercueil a écrit :
+>>> By making the CRTC's .vblank_enable() function return an error when it
+>>> is known that the hardware won't deliver a VBLANK, we can drop the
+>>> ingenic_drm_atomic_helper_commit_tail() function and use the standard
+>>> drm_atomic_helper_commit_tail() function instead.
+>>>
+>>> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+>>> ---
+>>>   drivers/gpu/drm/ingenic/ingenic-drm-drv.c | 28 ++++-------------------
+>>>   1 file changed, 4 insertions(+), 24 deletions(-)
+>>>
+>>> diff --git a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c 
+>>> b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
+>>> index bc71ba44ccf4..3ed7c27a8dde 100644
+>>> --- a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
+>>> +++ b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
+>>> @@ -706,29 +706,6 @@ static int 
+>>> ingenic_drm_encoder_atomic_check(struct drm_encoder *encoder,
+>>>       }
+>>>   }
+>>>   -static void ingenic_drm_atomic_helper_commit_tail(struct 
+>>> drm_atomic_state *old_state)
+>>> -{
+>>> -    /*
+>>> -     * Just your regular drm_atomic_helper_commit_tail(), but only 
+>>> calls
+>>> -     * drm_atomic_helper_wait_for_vblanks() if priv->no_vblank.
+>>> -     */
+>>> -    struct drm_device *dev = old_state->dev;
+>>> -    struct ingenic_drm *priv = drm_device_get_priv(dev);
+>>> -
+>>> -    drm_atomic_helper_commit_modeset_disables(dev, old_state);
+>>> -
+>>> -    drm_atomic_helper_commit_planes(dev, old_state, 0);
+>>> -
+>>> -    drm_atomic_helper_commit_modeset_enables(dev, old_state);
+>>> -
+>>> -    drm_atomic_helper_commit_hw_done(old_state);
+>>> -
+>>> -    if (!priv->no_vblank)
+>>> -        drm_atomic_helper_wait_for_vblanks(dev, old_state);
+>>> -
+>>> -    drm_atomic_helper_cleanup_planes(dev, old_state);
+>>> -}
+>>>
+>>
+>> Hi,
+>> if this function is removed, shouldn't:
+>>   static struct drm_mode_config_helper_funcs 
+>> ingenic_drm_mode_config_helpers = {
+>>       .atomic_commit_tail = ingenic_drm_atomic_helper_commit_tail,
+>>   };
+>> be updated as well?
+>>
+>> I've not seen it in the serie.
 > 
-> I've not seen it in the serie.
+> It is there though :) At the bottom of this very patch.
+> 
 
-It is there though :) At the bottom of this very patch.
+My email client played me some tricks, apparently!
+Sorry for the noise.
 
-> Just my 2v.
-> CJ
+CJ
 
-Cheers,
--Paul
-
+>> Just my 2v.
+>> CJ
+> 
+> Cheers,
+> -Paul
+> 
+> 
+> 
 

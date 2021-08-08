@@ -7,39 +7,39 @@ X-Spam-Status: No, score=-18.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DE317C19F38
-	for <linux-mips@archiver.kernel.org>; Sun,  8 Aug 2021 05:11:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4B6CAC432BE
+	for <linux-mips@archiver.kernel.org>; Sun,  8 Aug 2021 05:11:10 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id C9B9B60FD8
-	for <linux-mips@archiver.kernel.org>; Sun,  8 Aug 2021 05:11:08 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 171C860249
+	for <linux-mips@archiver.kernel.org>; Sun,  8 Aug 2021 05:11:10 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230176AbhHHFL0 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Sun, 8 Aug 2021 01:11:26 -0400
-Received: from mo4-p03-ob.smtp.rzone.de ([85.215.255.104]:31144 "EHLO
-        mo4-p03-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229597AbhHHFLY (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Sun, 8 Aug 2021 01:11:24 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1628399445;
+        id S230273AbhHHFL1 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Sun, 8 Aug 2021 01:11:27 -0400
+Received: from mo4-p04-ob.smtp.rzone.de ([85.215.255.122]:18907 "EHLO
+        mo4-p04-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229889AbhHHFL0 (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Sun, 8 Aug 2021 01:11:26 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1628399447;
     s=strato-dkim-0002; d=goldelico.com;
     h=References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Cc:Date:
     From:Subject:Sender;
-    bh=V51zDB/SEkNZuZ7ecnZ90otRco0Fi/AE0VB1B0UCNvQ=;
-    b=FpZ8wN4rWt04qJ7xuU9LZ1ljHPkCSqkgGizgunzRRIWR3viQU5Lk12pmK0huKbB4uP
-    Ml2kMSUZYtldXPM1Zsh6l6I+222kj1hcaWPr7dQhy/DwcYZxYvuyH2yQpOMPmItaleBt
-    czgecl7SFS7w7h1ROvooGaeHA/Ejm8ELCePjzPCQ0iynUszBAjScNZw4i+Vv03kHwwOH
-    aS8HY5rFy3ev3xdib0UKmGb+zmpsaXu4KPfuRw42w58cPhn8FRotwKuSDtPwutipX4lx
-    om0yahRD8fQDBw5g5XefWyiJ2tr6YPW29YFk96x0qFDiB6msHX39ouTGzAVI4jqE+kZq
-    6Kfg==
+    bh=7GSF524XRGutxpaRL6DFfJqyF0DFQEzvjjQ9jeOGxB0=;
+    b=p9tV1jZMMvJlTflidzv8v1C4vZp+fgZXmcKix0nFtPXFiZYEEEd5bW9gz0xJZ9sP9o
+    BUsweg/3Bt3tS7aksimC2qDMS48SPk7TGX/RPB4MUrpuEkIQflceqGzmzxpRzVTJ29Ay
+    XasDjWhu0OhUBPaOkOjB9XcLBpfxwvZDmjLVjfomgtU7FVmdoTzfFC2SglL0U6QMejvX
+    AzZzzk/tXb/wuam+ZFNYk8EpMRVoRezV5jw1oS2jhOaxKu6ZraZmEQ8L9Tz9buMYl0z/
+    NuQyM2faYkncwKfwHOGA63W4FJAaFCbMXMt9YTqmSmYsHUCAt4TTQbHkRfpxQbjY6ohM
+    ixdQ==
 Authentication-Results: strato.com;
     dkim=none
 X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMhflhwDubTJ9o12DNOsPj0lByOdcKVX0"
 X-RZG-CLASS-ID: mo00
 Received: from iMac.fritz.box
     by smtp.strato.de (RZmta 47.31.0 DYNA|AUTH)
-    with ESMTPSA id Q02727x785AiEyc
+    with ESMTPSA id Q02727x785AlEyg
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
         (Client did not present a certificate);
-    Sun, 8 Aug 2021 07:10:44 +0200 (CEST)
+    Sun, 8 Aug 2021 07:10:47 +0200 (CEST)
 From:   "H. Nikolaus Schaller" <hns@goldelico.com>
 To:     Paul Cercueil <paul@crapouillou.net>,
         Rob Herring <robh+dt@kernel.org>,
@@ -66,10 +66,10 @@ Cc:     devicetree@vger.kernel.org, linux-mips@vger.kernel.org,
         linux-kernel@vger.kernel.org, letux-kernel@openphoenux.org,
         Paul Boddie <paul@boddie.org.uk>,
         Jonas Karlman <jonas@kwiboo.se>,
-        dri-devel@lists.freedesktop.org
-Subject: [PATCH v3 1/9] drm/ingenic: fix drm_init error path if IPU was registered
-Date:   Sun,  8 Aug 2021 07:10:35 +0200
-Message-Id: <8e873f17fcc9aeb326d99b7c2c8cd25b61dca6f5.1628399442.git.hns@goldelico.com>
+        dri-devel@lists.freedesktop.org, Rob Herring <robh@kernel.org>
+Subject: [PATCH v3 5/9] dt-bindings: display: Add ingenic-jz4780-hdmi DT Schema
+Date:   Sun,  8 Aug 2021 07:10:39 +0200
+Message-Id: <606e22c2ef4d32d63937976860fb24f4cb39b720.1628399442.git.hns@goldelico.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <cover.1628399442.git.hns@goldelico.com>
 References: <cover.1628399442.git.hns@goldelico.com>
@@ -79,39 +79,108 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-From: Paul Boddie <paul@boddie.org.uk>
+From: Sam Ravnborg <sam@ravnborg.org>
 
-Code structure is in preparation to add hdmi unregistration in error case
-following the same pattern.
+Add DT bindings for the hdmi driver for the Ingenic JZ4780 SoC.
+Based on .txt binding from Zubair Lutfullah Kakakhel
 
-Signed-off-by: Paul Boddie <paul@boddie.org.uk>
+Signed-off-by: Sam Ravnborg <sam@ravnborg.org>
 Signed-off-by: H. Nikolaus Schaller <hns@goldelico.com>
+Cc: Rob Herring <robh@kernel.org>
+Cc: devicetree@vger.kernel.org
 ---
- drivers/gpu/drm/ingenic/ingenic-drm-drv.c | 11 ++++++++++-
- 1 file changed, 10 insertions(+), 1 deletion(-)
+ .../bindings/display/ingenic-jz4780-hdmi.yaml | 82 +++++++++++++++++++
+ 1 file changed, 82 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/display/ingenic-jz4780-hdmi.yaml
 
-diff --git a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
-index 5244f47634777..d9a793c314c1e 100644
---- a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
-+++ b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
-@@ -1355,7 +1355,16 @@ static int ingenic_drm_init(void)
- 			return err;
- 	}
- 
--	return platform_driver_register(&ingenic_drm_driver);
-+	err = platform_driver_register(&ingenic_drm_driver);
-+	if (err)
-+		goto err_ipu_unreg;
+diff --git a/Documentation/devicetree/bindings/display/ingenic-jz4780-hdmi.yaml b/Documentation/devicetree/bindings/display/ingenic-jz4780-hdmi.yaml
+new file mode 100644
+index 0000000000000..a545ff8704ebd
+--- /dev/null
++++ b/Documentation/devicetree/bindings/display/ingenic-jz4780-hdmi.yaml
+@@ -0,0 +1,82 @@
++# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/display/ingenic-jz4780-hdmi.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
-+	return 0;
++title: Bindings for Ingenic JZ4780 HDMI Transmitter
 +
-+err_ipu_unreg:
-+	if (IS_ENABLED(CONFIG_DRM_INGENIC_IPU))
-+		platform_driver_unregister(ingenic_ipu_driver_ptr);
-+	return err;
- }
- module_init(ingenic_drm_init);
- 
++maintainers:
++  - H. Nikolaus Schaller <hns@goldelico.com>
++
++description: |
++  The HDMI Transmitter in the Ingenic JZ4780 is a Synopsys DesignWare HDMI 1.4
++  TX controller IP with accompanying PHY IP.
++
++allOf:
++  - $ref: panel/panel-common.yaml#
++
++properties:
++  compatible:
++    items:
++      - const: ingenic,jz4780-hdmi
++
++  reg:
++    maxItems: 1
++    description: the address & size of the LCD controller registers
++
++  reg-io-width:
++    const: 4
++
++  interrupts:
++    maxItems: 1
++    description: Specifies the interrupt provided by parent
++
++  clocks:
++    maxItems: 2
++    description: Clock specifiers for isrf and iahb clocks
++
++  clock-names:
++    items:
++      - const: isfr
++      - const: iahb
++
++  ddc-i2c-bus: true
++  ports: true
++
++required:
++    - compatible
++    - clocks
++    - clock-names
++    - ports
++    - reg-io-width
++
++additionalProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/clock/jz4780-cgu.h>
++
++    hdmi: hdmi@10180000 {
++        compatible = "ingenic,jz4780-hdmi";
++        reg = <0x10180000 0x8000>;
++        reg-io-width = <4>;
++        ddc-i2c-bus = <&i2c4>;
++        interrupt-parent = <&intc>;
++        interrupts = <3>;
++        clocks = <&cgu JZ4780_CLK_HDMI>, <&cgu JZ4780_CLK_AHB0>;
++        clock-names = "isfr", "iahb";
++
++        ports {
++            hdmi_in: port {
++                #address-cells = <1>;
++                #size-cells = <0>;
++                hdmi_in_lcd: endpoint@0 {
++                    reg = <0>;
++                    remote-endpoint = <&jz4780_out_hdmi>;
++                };
++            };
++        };
++    };
++
++...
 -- 
 2.31.1
 

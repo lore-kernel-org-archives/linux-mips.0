@@ -7,39 +7,39 @@ X-Spam-Status: No, score=-18.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7CAAAC41537
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8B946C19F3F
 	for <linux-mips@archiver.kernel.org>; Sun,  8 Aug 2021 05:11:15 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 5BB096103B
+	by mail.kernel.org (Postfix) with ESMTP id 6CD886101E
 	for <linux-mips@archiver.kernel.org>; Sun,  8 Aug 2021 05:11:15 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230380AbhHHFL3 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Sun, 8 Aug 2021 01:11:29 -0400
-Received: from mo4-p04-ob.smtp.rzone.de ([81.169.146.179]:30815 "EHLO
+        id S230397AbhHHFLa (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Sun, 8 Aug 2021 01:11:30 -0400
+Received: from mo4-p04-ob.smtp.rzone.de ([81.169.146.176]:8324 "EHLO
         mo4-p04-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229902AbhHHFL0 (ORCPT
+        with ESMTP id S229516AbhHHFL0 (ORCPT
         <rfc822;linux-mips@vger.kernel.org>); Sun, 8 Aug 2021 01:11:26 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1628399449;
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1628399448;
     s=strato-dkim-0002; d=goldelico.com;
     h=References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Cc:Date:
     From:Subject:Sender;
-    bh=haIqt6GlUDch6wOoawc5NT0KlRKMAzO5+gFOCg+ophI=;
-    b=VNFeJTO2bP3/qZb8XW9BsnitD0VrRo7VIht7iR5BuZNA0YgxVBSd7Ly1uEDNwEGu01
-    jywMmaM4m34hg2gubdh6gfkLZD+h98PV9DZZ7Jw2b9qHWoDRWBd6Yrw8/TBAvlftqMdM
-    09exSYOkN9eFAmgmMJB+qUoSDMOYm6I8idrHJihtR5Ool8ZVTzizv4Ph4eYM5pttTSf1
-    qLI9BSc3ioAtR738UXJ6JVUBaqkBFxJfayExzihozJ6TB3zAtit3vO4Wj+07QHmC4Ruh
-    R5/2cUeDF61WEmg+urMEfOlco2P61sadeG/EJQqe+Evj/NkX1ztNerXoifIcOxYq9G7C
-    PUQg==
+    bh=K0sFdrnmJtU+HNf5UqSpAGXxaDpXX2cDTnFEZZMJfDU=;
+    b=Mca2gerA9tw5onCxIaCy85MMcyBNEmpH9YWE62L9Q0LIzlewr4WcmgF2wER71gnybM
+    Lq2Q30ztT74st+r2Ldw/7UcUTlRbFYIGCoL0/0d64gCdP0IRWu9Y18CfS1jZ5tQ7EEh2
+    NAvo7/P7mzIH+LZZN7c//EkoOMG+X4k1Iw03vBQfCdjk3CcNZKZ98JbdFDFymM8Sudoq
+    7/fBPtwCgpao/NSHrzqw9pgG4D44kl2ZxEJIxV9qAN9GCtbgi69RTpSyQjIOxOlS3of2
+    yeL4saj/28m3MjjlYLbUeqLGCIRcMCA5bCVuajUSPlSs/AlLFshrg2Lh6TrrEpjRxPWl
+    jT8g==
 Authentication-Results: strato.com;
     dkim=none
 X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMhflhwDubTJ9o12DNOsPj0lByOdcKVX0"
 X-RZG-CLASS-ID: mo00
 Received: from iMac.fritz.box
     by smtp.strato.de (RZmta 47.31.0 DYNA|AUTH)
-    with ESMTPSA id Q02727x785AnEyj
+    with ESMTPSA id Q02727x785AlEyh
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
         (Client did not present a certificate);
-    Sun, 8 Aug 2021 07:10:49 +0200 (CEST)
+    Sun, 8 Aug 2021 07:10:47 +0200 (CEST)
 From:   "H. Nikolaus Schaller" <hns@goldelico.com>
 To:     Paul Cercueil <paul@crapouillou.net>,
         Rob Herring <robh+dt@kernel.org>,
@@ -67,9 +67,9 @@ Cc:     devicetree@vger.kernel.org, linux-mips@vger.kernel.org,
         Paul Boddie <paul@boddie.org.uk>,
         Jonas Karlman <jonas@kwiboo.se>,
         dri-devel@lists.freedesktop.org
-Subject: [PATCH v3 8/9] MIPS: CI20: defconfig: configure for DRM_DW_HDMI_JZ4780
-Date:   Sun,  8 Aug 2021 07:10:42 +0200
-Message-Id: <4e11c98032e9a44fdd5b3bf517b5e509cb863750.1628399442.git.hns@goldelico.com>
+Subject: [PATCH v3 6/9] MIPS: DTS: jz4780: account for Synopsys HDMI driver and LCD controllers
+Date:   Sun,  8 Aug 2021 07:10:40 +0200
+Message-Id: <c55314a3c812786e518f3f6e079a2fe294372dbb.1628399442.git.hns@goldelico.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <cover.1628399442.git.hns@goldelico.com>
 References: <cover.1628399442.git.hns@goldelico.com>
@@ -79,33 +79,74 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Enable CONFIG options as modules.
+From: Paul Boddie <paul@boddie.org.uk>
 
-Signed-off-by: Ezequiel Garcia <ezequiel@collabora.com>
+A specialisation of the generic Synopsys HDMI driver is employed for JZ4780
+HDMI support. This requires a new driver, plus device tree and configuration
+modifications.
+
+Signed-off-by: Paul Boddie <paul@boddie.org.uk>
 Signed-off-by: H. Nikolaus Schaller <hns@goldelico.com>
 ---
- arch/mips/configs/ci20_defconfig | 7 +++++++
- 1 file changed, 7 insertions(+)
+ arch/mips/boot/dts/ingenic/jz4780.dtsi | 45 ++++++++++++++++++++++++++
+ 1 file changed, 45 insertions(+)
 
-diff --git a/arch/mips/configs/ci20_defconfig b/arch/mips/configs/ci20_defconfig
-index ab7ebb0668340..9d47163011ab6 100644
---- a/arch/mips/configs/ci20_defconfig
-+++ b/arch/mips/configs/ci20_defconfig
-@@ -98,7 +98,14 @@ CONFIG_RC_DEVICES=y
- CONFIG_IR_GPIO_CIR=m
- CONFIG_IR_GPIO_TX=m
- CONFIG_MEDIA_SUPPORT=m
-+CONFIG_DRM=m
-+CONFIG_DRM_INGENIC=m
-+CONFIG_DRM_INGENIC_DW_HDMI=y
- # CONFIG_VGA_CONSOLE is not set
-+CONFIG_FRAMEBUFFER_CONSOLE=y
-+CONFIG_LOGO=y
-+# CONFIG_LOGO_LINUX_MONO is not set
-+# CONFIG_LOGO_LINUX_VGA16 is not set
- # CONFIG_HID is not set
- CONFIG_USB=y
- CONFIG_USB_STORAGE=y
+diff --git a/arch/mips/boot/dts/ingenic/jz4780.dtsi b/arch/mips/boot/dts/ingenic/jz4780.dtsi
+index 9e34f433b9b58..4cbc6a4db6cda 100644
+--- a/arch/mips/boot/dts/ingenic/jz4780.dtsi
++++ b/arch/mips/boot/dts/ingenic/jz4780.dtsi
+@@ -424,6 +424,51 @@ i2c4: i2c@10054000 {
+ 		status = "disabled";
+ 	};
+ 
++	hdmi: hdmi@10180000 {
++		compatible = "ingenic,jz4780-dw-hdmi";
++		reg = <0x10180000 0x8000>;
++		reg-io-width = <4>;
++
++		clocks = <&cgu JZ4780_CLK_HDMI>, <&cgu JZ4780_CLK_AHB0>;
++		clock-names = "isfr" , "iahb";
++
++		assigned-clocks = <&cgu JZ4780_CLK_HDMI>;
++		assigned-clock-rates = <27000000>;
++
++		interrupt-parent = <&intc>;
++		interrupts = <3>;
++
++		/* ddc-i2c-bus = <&i2c4>; */
++
++		status = "disabled";
++	};
++
++	lcdc0: lcdc0@13050000 {
++		compatible = "ingenic,jz4780-lcd";
++		reg = <0x13050000 0x1800>;
++
++		clocks = <&cgu JZ4780_CLK_TVE>, <&cgu JZ4780_CLK_LCD0PIXCLK>;
++		clock-names = "lcd", "lcd_pclk";
++
++		interrupt-parent = <&intc>;
++		interrupts = <31>;
++
++		status = "disabled";
++	};
++
++	lcdc1: lcdc1@130a0000 {
++		compatible = "ingenic,jz4780-lcd";
++		reg = <0x130a0000 0x1800>;
++
++		clocks = <&cgu JZ4780_CLK_TVE>, <&cgu JZ4780_CLK_LCD1PIXCLK>;
++		clock-names = "lcd", "lcd_pclk";
++
++		interrupt-parent = <&intc>;
++		interrupts = <31>;
++
++		status = "disabled";
++	};
++
+ 	nemc: nemc@13410000 {
+ 		compatible = "ingenic,jz4780-nemc", "simple-mfd";
+ 		reg = <0x13410000 0x10000>;
 -- 
 2.31.1
 

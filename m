@@ -7,39 +7,39 @@ X-Spam-Status: No, score=-18.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8B946C19F3F
-	for <linux-mips@archiver.kernel.org>; Sun,  8 Aug 2021 05:11:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6E65FC432BE
+	for <linux-mips@archiver.kernel.org>; Sun,  8 Aug 2021 05:11:21 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 6CD886101E
-	for <linux-mips@archiver.kernel.org>; Sun,  8 Aug 2021 05:11:15 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 5479A60F38
+	for <linux-mips@archiver.kernel.org>; Sun,  8 Aug 2021 05:11:21 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230397AbhHHFLa (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Sun, 8 Aug 2021 01:11:30 -0400
-Received: from mo4-p04-ob.smtp.rzone.de ([81.169.146.176]:8324 "EHLO
+        id S230259AbhHHFLg (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Sun, 8 Aug 2021 01:11:36 -0400
+Received: from mo4-p04-ob.smtp.rzone.de ([81.169.146.177]:13929 "EHLO
         mo4-p04-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229516AbhHHFL0 (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Sun, 8 Aug 2021 01:11:26 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1628399448;
+        with ESMTP id S230170AbhHHFL1 (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Sun, 8 Aug 2021 01:11:27 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1628399450;
     s=strato-dkim-0002; d=goldelico.com;
     h=References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Cc:Date:
     From:Subject:Sender;
-    bh=K0sFdrnmJtU+HNf5UqSpAGXxaDpXX2cDTnFEZZMJfDU=;
-    b=Mca2gerA9tw5onCxIaCy85MMcyBNEmpH9YWE62L9Q0LIzlewr4WcmgF2wER71gnybM
-    Lq2Q30ztT74st+r2Ldw/7UcUTlRbFYIGCoL0/0d64gCdP0IRWu9Y18CfS1jZ5tQ7EEh2
-    NAvo7/P7mzIH+LZZN7c//EkoOMG+X4k1Iw03vBQfCdjk3CcNZKZ98JbdFDFymM8Sudoq
-    7/fBPtwCgpao/NSHrzqw9pgG4D44kl2ZxEJIxV9qAN9GCtbgi69RTpSyQjIOxOlS3of2
-    yeL4saj/28m3MjjlYLbUeqLGCIRcMCA5bCVuajUSPlSs/AlLFshrg2Lh6TrrEpjRxPWl
-    jT8g==
+    bh=AgNhKnnrM28zue4mAUQn3VQlXQfVMSZE6+Kj8AD2hck=;
+    b=paUoKBoTD+FnyOT6CdORWc51RHSRQjKeW3qR+eKbCchtmlj8HFs74GpMvt+j5qYTMi
+    05kutkVU+SuDO6tSEbW15Tcb9KroPve7+Qv2piDev6l7wXUBPnTvFQAcLMTWdY8nvqNh
+    PJUiXEsMui/FlWS95bjZkWfkY0cS595qqao+u4OAegUQdqNUvfy50hTs7Ax7nSt9wIQf
+    NzifeEGG7XbM29Xhi66QjK5ttNnf95U/A45VH2/1orplGBZGK15hUP43T7VXY6Tse8FQ
+    WCRB0XQiou+mduAPe+qnmRWko8uWeWo9Y0a7JSCvKpzHDjiOjlg7jAo8hQizkLtBDgcn
+    zqiQ==
 Authentication-Results: strato.com;
     dkim=none
 X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMhflhwDubTJ9o12DNOsPj0lByOdcKVX0"
 X-RZG-CLASS-ID: mo00
 Received: from iMac.fritz.box
     by smtp.strato.de (RZmta 47.31.0 DYNA|AUTH)
-    with ESMTPSA id Q02727x785AlEyh
+    with ESMTPSA id Q02727x785AnEyk
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
         (Client did not present a certificate);
-    Sun, 8 Aug 2021 07:10:47 +0200 (CEST)
+    Sun, 8 Aug 2021 07:10:49 +0200 (CEST)
 From:   "H. Nikolaus Schaller" <hns@goldelico.com>
 To:     Paul Cercueil <paul@crapouillou.net>,
         Rob Herring <robh+dt@kernel.org>,
@@ -67,9 +67,9 @@ Cc:     devicetree@vger.kernel.org, linux-mips@vger.kernel.org,
         Paul Boddie <paul@boddie.org.uk>,
         Jonas Karlman <jonas@kwiboo.se>,
         dri-devel@lists.freedesktop.org
-Subject: [PATCH v3 6/9] MIPS: DTS: jz4780: account for Synopsys HDMI driver and LCD controllers
-Date:   Sun,  8 Aug 2021 07:10:40 +0200
-Message-Id: <c55314a3c812786e518f3f6e079a2fe294372dbb.1628399442.git.hns@goldelico.com>
+Subject: [PATCH v3 9/9] drm/ingenic: add some jz4780 specific features
+Date:   Sun,  8 Aug 2021 07:10:43 +0200
+Message-Id: <aebcc6c5340f755268af268725939b1e59a83472.1628399442.git.hns@goldelico.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <cover.1628399442.git.hns@goldelico.com>
 References: <cover.1628399442.git.hns@goldelico.com>
@@ -81,72 +81,107 @@ X-Mailing-List: linux-mips@vger.kernel.org
 
 From: Paul Boddie <paul@boddie.org.uk>
 
-A specialisation of the generic Synopsys HDMI driver is employed for JZ4780
-HDMI support. This requires a new driver, plus device tree and configuration
-modifications.
+The jz4780 has some features which need initialization
+according to the vendor kernel.
 
 Signed-off-by: Paul Boddie <paul@boddie.org.uk>
 Signed-off-by: H. Nikolaus Schaller <hns@goldelico.com>
 ---
- arch/mips/boot/dts/ingenic/jz4780.dtsi | 45 ++++++++++++++++++++++++++
- 1 file changed, 45 insertions(+)
+ drivers/gpu/drm/ingenic/ingenic-drm-drv.c | 39 +++++++++++++++++++++++
+ 1 file changed, 39 insertions(+)
 
-diff --git a/arch/mips/boot/dts/ingenic/jz4780.dtsi b/arch/mips/boot/dts/ingenic/jz4780.dtsi
-index 9e34f433b9b58..4cbc6a4db6cda 100644
---- a/arch/mips/boot/dts/ingenic/jz4780.dtsi
-+++ b/arch/mips/boot/dts/ingenic/jz4780.dtsi
-@@ -424,6 +424,51 @@ i2c4: i2c@10054000 {
- 		status = "disabled";
- 	};
+diff --git a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
+index 33ce3794aa126..f3b1b10bc079b 100644
+--- a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
++++ b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
+@@ -69,6 +69,10 @@ struct jz_soc_info {
+ 	bool needs_dev_clk;
+ 	bool has_osd;
+ 	bool map_noncoherent;
++	bool has_alpha;
++	bool has_pcfg;
++	bool has_recover;
++	bool has_rgbc;
+ 	bool use_extended_hwdesc;
+ 	unsigned int hwdesc_size;
+ 	unsigned int max_width, max_height;
+@@ -671,6 +675,9 @@ static void ingenic_drm_encoder_atomic_mode_set(struct drm_encoder *encoder,
+ 		    | JZ_LCD_CFG_SPL_DISABLE | JZ_LCD_CFG_REV_DISABLE;
+ 	}
  
-+	hdmi: hdmi@10180000 {
-+		compatible = "ingenic,jz4780-dw-hdmi";
-+		reg = <0x10180000 0x8000>;
-+		reg-io-width = <4>;
++	if (priv->soc_info->has_recover)
++		cfg |= JZ_LCD_CFG_RECOVER_FIFO_UNDERRUN;
 +
-+		clocks = <&cgu JZ4780_CLK_HDMI>, <&cgu JZ4780_CLK_AHB0>;
-+		clock-names = "isfr" , "iahb";
+ 	/* set use of the 8-word descriptor and OSD foreground usage. */
+ 	if (priv->soc_info->use_extended_hwdesc)
+ 		cfg |= JZ_LCD_CFG_DESCRIPTOR_8;
+@@ -1208,6 +1215,25 @@ static int ingenic_drm_bind(struct device *dev, bool has_components)
+ 	if (soc_info->has_osd)
+ 		regmap_set_bits(priv->map, JZ_REG_LCD_OSDC, JZ_LCD_OSDC_OSDEN);
+ 
++	if (soc_info->has_alpha)
++		regmap_set_bits(priv->map, JZ_REG_LCD_OSDC, JZ_LCD_OSDC_ALPHAEN);
 +
-+		assigned-clocks = <&cgu JZ4780_CLK_HDMI>;
-+		assigned-clock-rates = <27000000>;
++	/* Magic values from the vendor kernel for the priority thresholds. */
++	if (soc_info->has_pcfg)
++		regmap_write(priv->map, JZ_REG_LCD_PCFG,
++			     JZ_LCD_PCFG_PRI_MODE |
++			     JZ_LCD_PCFG_HP_BST_16 |
++			     (511 << JZ_LCD_PCFG_THRESHOLD2_OFFSET) |
++			     (400 << JZ_LCD_PCFG_THRESHOLD1_OFFSET) |
++			     (256 << JZ_LCD_PCFG_THRESHOLD0_OFFSET));
 +
-+		interrupt-parent = <&intc>;
-+		interrupts = <3>;
++	/* RGB output control may be superfluous. */
++	if (soc_info->has_rgbc)
++		regmap_write(priv->map, JZ_REG_LCD_RGBC,
++			     JZ_LCD_RGBC_RGB_FORMAT_ENABLE |
++			     JZ_LCD_RGBC_ODD_RGB |
++			     JZ_LCD_RGBC_EVEN_RGB);
 +
-+		/* ddc-i2c-bus = <&i2c4>; */
-+
-+		status = "disabled";
-+	};
-+
-+	lcdc0: lcdc0@13050000 {
-+		compatible = "ingenic,jz4780-lcd";
-+		reg = <0x13050000 0x1800>;
-+
-+		clocks = <&cgu JZ4780_CLK_TVE>, <&cgu JZ4780_CLK_LCD0PIXCLK>;
-+		clock-names = "lcd", "lcd_pclk";
-+
-+		interrupt-parent = <&intc>;
-+		interrupts = <31>;
-+
-+		status = "disabled";
-+	};
-+
-+	lcdc1: lcdc1@130a0000 {
-+		compatible = "ingenic,jz4780-lcd";
-+		reg = <0x130a0000 0x1800>;
-+
-+		clocks = <&cgu JZ4780_CLK_TVE>, <&cgu JZ4780_CLK_LCD1PIXCLK>;
-+		clock-names = "lcd", "lcd_pclk";
-+
-+		interrupt-parent = <&intc>;
-+		interrupts = <31>;
-+
-+		status = "disabled";
-+	};
-+
- 	nemc: nemc@13410000 {
- 		compatible = "ingenic,jz4780-nemc", "simple-mfd";
- 		reg = <0x13410000 0x10000>;
+ 	mutex_init(&priv->clk_mutex);
+ 	priv->clock_nb.notifier_call = ingenic_drm_update_pixclk;
+ 
+@@ -1355,6 +1381,9 @@ static const struct jz_soc_info jz4740_soc_info = {
+ 	.needs_dev_clk = true,
+ 	.has_osd = false,
+ 	.map_noncoherent = false,
++	.has_pcfg = false,
++	.has_recover = false,
++	.has_rgbc = false,
+ 	.hwdesc_size = sizeof(struct ingenic_dma_hwdesc),
+ 	.max_width = 800,
+ 	.max_height = 600,
+@@ -1368,6 +1397,9 @@ static const struct jz_soc_info jz4725b_soc_info = {
+ 	.needs_dev_clk = false,
+ 	.has_osd = true,
+ 	.map_noncoherent = false,
++	.has_pcfg = false,
++	.has_recover = false,
++	.has_rgbc = false,
+ 	.hwdesc_size = sizeof(struct ingenic_dma_hwdesc),
+ 	.max_width = 800,
+ 	.max_height = 600,
+@@ -1382,6 +1414,9 @@ static const struct jz_soc_info jz4770_soc_info = {
+ 	.needs_dev_clk = false,
+ 	.has_osd = true,
+ 	.map_noncoherent = true,
++	.has_pcfg = false,
++	.has_recover = false,
++	.has_rgbc = false,
+ 	.hwdesc_size = sizeof(struct ingenic_dma_hwdesc),
+ 	.max_width = 1280,
+ 	.max_height = 720,
+@@ -1395,6 +1430,10 @@ static const struct jz_soc_info jz4770_soc_info = {
+ static const struct jz_soc_info jz4780_soc_info = {
+ 	.needs_dev_clk = true,
+ 	.has_osd = true,
++	.has_alpha = true,
++	.has_pcfg = true,
++	.has_recover = true,
++	.has_rgbc = true,
+ 	.use_extended_hwdesc = true,
+ 	.hwdesc_size = sizeof(struct ingenic_dma_hwdesc_ext),
+ 	.max_width = 4096,
 -- 
 2.31.1
 

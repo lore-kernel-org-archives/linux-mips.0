@@ -2,386 +2,211 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-13.6 required=3.0 tests=BAYES_00,DKIM_INVALID,
-	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-15.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
+	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
+	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 15F9BC4338F
-	for <linux-mips@archiver.kernel.org>; Sat,  7 Aug 2021 23:40:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 21B07C4338F
+	for <linux-mips@archiver.kernel.org>; Sun,  8 Aug 2021 01:41:54 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id E65F860F01
-	for <linux-mips@archiver.kernel.org>; Sat,  7 Aug 2021 23:40:17 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id E257B60F55
+	for <linux-mips@archiver.kernel.org>; Sun,  8 Aug 2021 01:41:53 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229578AbhHGXkf (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Sat, 7 Aug 2021 19:40:35 -0400
-Received: from mailgate.ics.forth.gr ([139.91.1.2]:61387 "EHLO
-        mailgate.ics.forth.gr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229919AbhHGXke (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Sat, 7 Aug 2021 19:40:34 -0400
-X-Greylist: delayed 2070 seconds by postgrey-1.27 at vger.kernel.org; Sat, 07 Aug 2021 19:40:34 EDT
-Received: from av3.ics.forth.gr (av3in.ics.forth.gr [139.91.1.77])
-        by mailgate.ics.forth.gr (8.15.2/ICS-FORTH/V10-1.8-GATE) with ESMTP id 177N5ggS095296
-        for <linux-mips@vger.kernel.org>; Sun, 8 Aug 2021 02:05:42 +0300 (EEST)
-DKIM-Signature: v=1; a=rsa-sha256; d=ics.forth.gr; s=av; c=relaxed/simple;
-        q=dns/txt; i=@ics.forth.gr; t=1628377537; x=1630969537;
-        h=From:Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:Content-Type:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=ehVNo9Zi6sdRJRX9bB3/TWxcekSmcVgfmBxE6YPsI3w=;
-        b=Vn8KLoierPuHI8MW2ysbxFsNs0R1/d7q+WCPqL0FP1hL8/Wqy1DjHIOGF1iDgnEp
-        ip068onKSeeJlurh58tuPFvFS6/SIMVfsQlkL4Bji7odXo3patdPYge8BN14Zna/
-        86JUWEuMBm7gNd1Cjex5BiqQdjZb+oBkuVtlt4W3SzAszGa3subTJozdpBOkcDZP
-        MIHpEk2dDINwVznQgyddcp8awdY24WmL07t3hiZI+CfyDczQWfX1COnljU/g/eH1
-        gxZcOO9ulb2C1V7eqTmtM4YSTSlF1g5f6LVE0Drv0KKMz+ptdpYNS/ke4hG9dvxx
-        2GtZ2CqaGS26bodX1D0t2w==;
-X-AuditID: 8b5b014d-b84f570000005d46-b6-610f11c161ba
-Received: from enigma.ics.forth.gr (webmail.ics.forth.gr [139.91.151.35])
-        by av3.ics.forth.gr (Symantec Messaging Gateway) with SMTP id A6.94.23878.1C11F016; Sun,  8 Aug 2021 02:05:37 +0300 (EEST)
-X-ICS-AUTH-INFO: Authenticated user:  at ics.forth.gr
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 8bit
-Date:   Sun, 08 Aug 2021 02:05:34 +0300
-From:   Nick Kossifidis <mick@ics.forth.gr>
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Andy Lutomirski <luto@kernel.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Len Brown <lenb@kernel.org>, Marc Zyngier <maz@kernel.org>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Rob Herring <robh+dt@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Will Deacon <will@kernel.org>, devicetree@vger.kernel.org,
-        kvmarm@lists.cs.columbia.edu, linux-acpi@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-mm@kvack.org,
-        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
-        x86@kernel.org
-Subject: Re: [PATCH v2] memblock: make memblock_find_in_range method private
-Organization: FORTH
-In-Reply-To: <20210802063737.22733-1-rppt@kernel.org>
-References: <20210802063737.22733-1-rppt@kernel.org>
-Message-ID: <d0965f23c7ffb6b46a5b033fe242fc25@mailhost.ics.forth.gr>
-X-Sender: mick@mailhost.ics.forth.gr
-User-Agent: Roundcube Webmail/1.3.16
-X-Brightmail-Tracker: H4sIAAAAAAAAA02Sf1CTdRzH++559jwPy8GzseQJU7qZ5+nZzAruc1ZaavJoCnbnZWdXuMsn
-        RiFyY3LU6TkaoPxspoQ848doBR4329puDbgGbOxCiFBHt7NyHYqFCxTbEHZhEBvXHf+97v15
-        3+fz+uNDYVKDMJnKydNw6jxlrpwQ4ZXv1K191i1JUD4XHFgPDRYzAY45noS6S04cwtZ5AqZa
-        qxDctZ5B0OwdFkL95AIB1/gZIehMFgImmtoRfPFtEpjPtWDw92A/CZ237hHQ1v0ZAtuYXwgj
-        XQ0ElNscCH43Lwjhu3AJAfoWHQaeWheCq12XhdDZMCAEX69RAMGRKgzK+ATor+4VwNCPPiGU
-        urwkeC1OAdy4oCXAbqvFoO9TNwYlN1MhYh0TvrqOnS2twdlSXxvOmpvMiB3xX8fYyWAQZ923
-        PQTbd3aaZDv5AMnaL21kbe3lBGsLfU6y94eHSfbKxTmc1X/Zi9imgTfZnkYzeYA5LHr5KJeb
-        U8ipN287IlLVG8j8XzKLrn1jwLTIsa0CURRDv8j45gsrkIiS0j8gZtZvxCpQ3GKeyhhc5SjK
-        YlrCDNTfwaOM0cDU/tyDljiF0TkMsT5Or2OK9WOxnKA3MM0+d6wvo9cys6ZubKlfvILhJ5+K
-        ciK9jwkOm8goJ9CJTChwXRjluMW7v45eie2RLrpdqKzGlhx2MaG6B4Ilt2eYB3OjZNT/iUW2
-        N8r1SMIvM+WXmfLLTI0Ia0e0svAFRc77BYoPjqs1KkW22oZi/4P2d6Df7PcUHiSgkAcxFCaX
-        iS0X45VS8VHlx59w6uNZ6hO5XIEHraJweZJYrNBnSelspYb7iOPyOfX/UwEVl6wV1PNPG8mX
-        DFpTsPGQzP39TsmmO6tP2ncv6M4VzVc57696bHTs8qm+vYcOjpdmqsxZ0LohObjj6hrvdq1f
-        I/mnLPHRG5E9zh0tt1wZoeffSlOlNuklJfFTp/l/WwfzxR++W5OW8soNa2Bkxhx5eHJ3w3RN
-        +t1NCfuO+eP3q/plzZX6mYk/u3em3JwOPVp/Xl8k+Utr+urE3qSuY18nD7auxL0R0dsZ40+u
-        TpcoTX7f0EQ483RwaOjIH6fSqJQ9Z19bk/X6rnLXe2EnFbKczwxtXoFryrYatyQGHk5VR/J0
-        /Nbtgx0yWx3nuC05iGUECouyO6zpjx/+abojfGCcaps707OyWI4XqJRbNmLqAuV/e64RJK4D
-        AAA=
+        id S229974AbhHHBmK (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Sat, 7 Aug 2021 21:42:10 -0400
+Received: from out3-smtp.messagingengine.com ([66.111.4.27]:51571 "EHLO
+        out3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229882AbhHHBmJ (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Sat, 7 Aug 2021 21:42:09 -0400
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
+        by mailout.nyi.internal (Postfix) with ESMTP id 000835C00B0;
+        Sat,  7 Aug 2021 21:41:50 -0400 (EDT)
+Received: from imap44 ([10.202.2.94])
+  by compute2.internal (MEProxy); Sat, 07 Aug 2021 21:41:51 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=flygoat.com; h=
+        mime-version:message-id:in-reply-to:references:date:from:to:cc
+        :subject:content-type:content-transfer-encoding; s=fm2; bh=F96tM
+        Wj2xtLgP3+Yu+6pP+OueHUggM2jfq+yApxhj4Y=; b=lMsAQgW/EBndX0U76cjn2
+        jKXOX+9qt/nipvdhyhsx/11gM0zOGRDK4mrnCfelaua3p5n0gMnn4DuVxrcjpVIj
+        hxfxCxgmQ1UbSmoMYzSotcCkruynSwgqevN0ztMVQ7ZwHR4pAx4I4Jm3gjh12x9J
+        SbPr0EOQSmvH2J2yrdgmVEFmJN/e8ORsdlx55EhuY7r9feR1F6pm/hM0YoTooYxC
+        TRenqW3Imlzc+u9n2V5Q9QEEWeiQ+4++Zg5TNO4jwpt7WOUV/NcCXjwSNNHxgp4/
+        sUicB/f37gf3deIfQEq0WXxbH3Mj4B0uod5tQE2QcT1eHLx1FnFr7bNbdRaa5I/i
+        A==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:content-type
+        :date:from:in-reply-to:message-id:mime-version:references
+        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm3; bh=F96tMWj2xtLgP3+Yu+6pP+OueHUggM2jfq+yApxhj
+        4Y=; b=RSOFPHeXJajQkY1o4JJDlT6sOMqXtuh4pDiOSVqRfo4oUnPFwo8DNU7/2
+        SKPkDfQuMH3s+YQK92Q6+Y0ya1fS9c1P8tbbQ34PGnX9NE0/L61nKDDuAvLy6W0W
+        GHoWez8Ys5fHlg4stjD6MIk/BwrzhN6N4KKkJO3JT+lHD2zRePEyZTSUz4ufy5+h
+        G1vZtijthobDPsgorcvsQqUm3kG42tiTGhDJBJibDY1VU9ziAE4Mg5LutSF+fHWc
+        6XwsIunU6IYDVrC0jhdH62jAcQuGSbp4HEBy2UoTAhwKAdsCR3Cpg6Hh8vo8Ja25
+        r2Cd9Ve38fU5RsoceOcmlcqVoGIjA==
+X-ME-Sender: <xms:XjYPYQPxL7hO5t8OCJEpj-9J17oC8sqh8uVgUD5EOujT3fE4FpKYlQ>
+    <xme:XjYPYW9srI9PCMkaCmtGGRayQLDwnHF-V-6nHid1NTpSMsdYN2BL01N-zAqeNj1YN
+    yGKeIFXXNcM8rX_5Fs>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrjeeggdefkecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefofgggkfgjfhffhffvufgtgfesthhqredtreerjeenucfhrhhomhepfdflihgr
+    gihunhcujggrnhhgfdcuoehjihgrgihunhdrhigrnhhgsehflhihghhorghtrdgtohhmqe
+    enucggtffrrghtthgvrhhnpeefteegkeevfeethffgudehgedvueduvdeifedvvdelhfef
+    heekteefueektdefjeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrih
+    hlfhhrohhmpehjihgrgihunhdrhigrnhhgsehflhihghhorghtrdgtohhm
+X-ME-Proxy: <xmx:XjYPYXQ9ikWIkhz_5kAw1Hrz9dBGCxjXaUZHa5xFWFmyOOhxStN_nQ>
+    <xmx:XjYPYYvO5VKDaxPWMR0fm46n4EKM4vGVwV4xjAZmTVGVmfXtAOAK7g>
+    <xmx:XjYPYYeX0fENrMgBepPZK_mexFzZR65vgUEbB4ORC6zoTYhT8MsYSw>
+    <xmx:XjYPYWvwVYhBrYK2tOMjNidl85gAnDCilaMj1wFH4WJTDs8srDpJuw>
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 211E7FA0AA5; Sat,  7 Aug 2021 21:41:50 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.5.0-alpha0-552-g2afffd2709-fm-20210805.001-g2afffd27
+Mime-Version: 1.0
+Message-Id: <7f0d48a6-d4ae-4e8d-aaa8-4b0bb4ad8e35@www.fastmail.com>
+In-Reply-To: <20210807072409.9018-3-sergio.paracuellos@gmail.com>
+References: <20210807072409.9018-1-sergio.paracuellos@gmail.com>
+ <20210807072409.9018-3-sergio.paracuellos@gmail.com>
+Date:   Sun, 08 Aug 2021 09:41:29 +0800
+From:   "Jiaxun Yang" <jiaxun.yang@flygoat.com>
+To:     "Sergio Paracuellos" <sergio.paracuellos@gmail.com>,
+        "Thomas Bogendoerfer" <tsbogend@alpha.franken.de>
+Cc:     "Bjorn Helgaas" <bhelgaas@google.com>, matthias.bgg@gmail.com,
+        gregkh@linuxfoundation.org,
+        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
+        linux-pci <linux-pci@vger.kernel.org>,
+        linux-staging@lists.linux.dev, neil@brown.name,
+        linux-kernel@vger.kernel.org
+Subject: =?UTF-8?Q?Re:_[PATCH_2/3]_PCI:_of:_avoid_'devm=5Fpci=5Fremap=5Fiospace'_?=
+ =?UTF-8?Q?if_PCI=5FIOBASE_is_not_defined?=
+Content-Type: text/plain;charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Στις 2021-08-02 09:37, Mike Rapoport έγραψε:
-> From: Mike Rapoport <rppt@linux.ibm.com>
-> 
-> There are a lot of uses of memblock_find_in_range() along with
-> memblock_reserve() from the times memblock allocation APIs did not 
-> exist.
-> 
-> memblock_find_in_range() is the very core of memblock allocations, so 
-> any
-> future changes to its internal behaviour would mandate updates of all 
-> the
-> users outside memblock.
-> 
-> Replace the calls to memblock_find_in_range() with an equivalent calls 
-> to
-> memblock_phys_alloc() and memblock_phys_alloc_range() and make
-> memblock_find_in_range() private method of memblock.
-> 
-> This simplifies the callers, ensures that (unlikely) errors in
-> memblock_reserve() are handled and improves maintainability of
-> memblock_find_in_range().
-> 
-> Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
+
+
+=E5=9C=A82021=E5=B9=B48=E6=9C=887=E6=97=A5=E5=85=AB=E6=9C=88 =E4=B8=8B=E5=
+=8D=883:24=EF=BC=8CSergio Paracuellos=E5=86=99=E9=81=93=EF=BC=9A
+> Defining PCI_IOBASE for MIPS ralink in expected addresses results in=20=
+
+> PCI IO
+> resources being assigned but the addresses generated for IO accesses=20=
+
+> are wrong
+> since the ioremap in the PCI core function=20
+> 'pci_parse_request_of_pci_ranges'
+> tries to remap to a fixed virtual address (PC_IOBASE) which can't work=
+=20
+> for KSEG1
+> addresses. To get it working this way, we would need to put PCI_IOBASE=
+=20
+> somewhere
+> into KSEG2 which will result in creating TLB entries for IO addresses,=
+=20
+> which most
+> of the time isn't needed on MIPS because of access via KSEG1. To allow=
+=20
+
+It was designed to allow multiple PCI bridge with sparse IO space patter=
+n.
+So for ralink it's not going to happen?
+
+Thanks.
+- Jiaxun
+
+
+> MIPS PCI
+> drivers to properly use the PCI generic core we need to increase=20
+> IO_SPACE_LIMIT
+> since IO addresses are in addresses higher that 0xffff. We also need t=
+o=20
+> avoid
+> the call 'devm_pci_remap_iospace' when=20
+> 'pci_parse_request_of_pci_ranges' is
+> called to avoid the following problem:
+>=20
+> ------------[ cut here ]------------
+> WARNING: CPU: 2 PID: 1 at ../drivers/pci/pci.c:4066 pci_remap_iospace+=
+0x3c/0x54
+> This architecture does not support memory mapped I/O
+> Modules linked in:
+> CPU: 2 PID: 1 Comm: swapper/0 Not tainted 5.10.1+ #1228
+> Stack : 00000000 00000000 807fa974 00000000 827ffa80 80066b48 80710000=
+ 0000000b
+>         00000000 00000000 81c59aac 7d06ddec 80850000 00000001 81c59a40=
+ 7d06ddec
+>         00000000 00000000 807c909c 81c598f0 00000001 81c59904 00000000=
+ 0000000a
+>         203a6d6d 80708880 0000000f 70617773 80850000 00000000 00000000=
+ 807d0000
+>         807ffecc 1e160000 00000001 00000200 00000000 8054e920 00000008=
+ 815e0008
+>         ...
+> Call Trace:
+> [<80008efc>] show_stack+0x8c/0x130
+> [<806e1674>] dump_stack+0x9c/0xc8
+> [<80024a3c>] __warn+0xc0/0xe8
+> [<80024ad0>] warn_slowpath_fmt+0x6c/0xbc
+> [<80410ca8>] pci_remap_iospace+0x3c/0x54
+> [<80410d20>] devm_pci_remap_iospace+0x58/0xa4
+> [<8042019c>] devm_of_pci_bridge_init+0x4dc/0x55c
+> [<80408de8>] devm_pci_alloc_host_bridge+0x78/0x88
+> [<80424e44>] mt7621_pci_probe+0x68/0x9a4
+> [<80464804>] platform_drv_probe+0x40/0x7c
+> [<804628bc>] really_probe+0x2fc/0x4e4
+> [<80463214>] device_driver_attach+0x4c/0x74
+> [<80463384>] __driver_attach+0x148/0x150
+> [<8046047c>] bus_for_each_dev+0x6c/0xb0
+> [<804614dc>] bus_add_driver+0x1b4/0x1fc
+> [<80463aa0>] driver_register+0xd0/0x110
+> [<80001714>] do_one_initcall+0x84/0x1c0
+> [<808e7fd0>] kernel_init_freeable+0x214/0x24c
+> [<806e4164>] kernel_init+0x14/0x118
+> [<80003358>] ret_from_kernel_thread+0x14/0x1c
+>=20
+> ---[ end trace 1c9d4412bd51b53c ]---
+> mt7621-pci 1e140000.pcie: error -19: failed to map resource [io =20
+> 0x1e160000-0x1e16ffff]
+>=20
+> Hence don't call 'devm_pci_remap_iospace' if PCI_IOBASE is not defined=
+ to get
+> a working PCI core APIs for MIPS ralink platforms.
+>=20
+> Signed-off-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
 > ---
-> v2: don't change error message in arm::reserve_crashkernel(), per 
-> Russell
-> v1: https://lore.kernel.org/lkml/20210730104039.7047-1-rppt@kernel.org
-> 
->  arch/arm/kernel/setup.c           | 18 +++++--------
->  arch/arm64/kvm/hyp/reserved_mem.c |  9 +++----
->  arch/arm64/mm/init.c              | 36 ++++++++-----------------
->  arch/mips/kernel/setup.c          | 14 +++++-----
->  arch/riscv/mm/init.c              | 44 ++++++++++---------------------
->  arch/s390/kernel/setup.c          | 10 ++++---
->  arch/x86/kernel/aperture_64.c     |  5 ++--
->  arch/x86/mm/init.c                | 21 +++++++++------
->  arch/x86/mm/numa.c                |  5 ++--
->  arch/x86/mm/numa_emulation.c      |  5 ++--
->  arch/x86/realmode/init.c          |  2 +-
->  drivers/acpi/tables.c             |  5 ++--
->  drivers/base/arch_numa.c          |  5 +---
->  drivers/of/of_reserved_mem.c      | 12 ++++++---
->  include/linux/memblock.h          |  2 --
->  mm/memblock.c                     |  2 +-
->  16 files changed, 78 insertions(+), 117 deletions(-)
-> 
-> diff --git a/arch/arm/kernel/setup.c b/arch/arm/kernel/setup.c
-> index f97eb2371672..67f5421b2af7 100644
-> --- a/arch/arm/kernel/setup.c
-> +++ b/arch/arm/kernel/setup.c
-> @@ -1012,31 +1012,25 @@ static void __init reserve_crashkernel(void)
->  		unsigned long long lowmem_max = __pa(high_memory - 1) + 1;
->  		if (crash_max > lowmem_max)
->  			crash_max = lowmem_max;
-> -		crash_base = memblock_find_in_range(CRASH_ALIGN, crash_max,
-> -						    crash_size, CRASH_ALIGN);
-> +
-> +		crash_base = memblock_phys_alloc_range(crash_size, CRASH_ALIGN,
-> +						       CRASH_ALIGN, crash_max);
->  		if (!crash_base) {
->  			pr_err("crashkernel reservation failed - No suitable area 
-> found.\n");
->  			return;
->  		}
->  	} else {
-> +		unsigned long long crash_max = crash_base + crash_size;
->  		unsigned long long start;
-> 
-> -		start = memblock_find_in_range(crash_base,
-> -					       crash_base + crash_size,
-> -					       crash_size, SECTION_SIZE);
-> +		start = memblock_phys_alloc_range(crash_size, SECTION_SIZE,
-> +						  crash_base, crash_max);
->  		if (start != crash_base) {
->  			pr_err("crashkernel reservation failed - memory is in use.\n");
->  			return;
->  		}
->  	}
-> 
-> -	ret = memblock_reserve(crash_base, crash_size);
-> -	if (ret < 0) {
-> -		pr_warn("crashkernel reservation failed - memory is in use 
-> (0x%lx)\n",
-> -			(unsigned long)crash_base);
-> -		return;
-> -	}
-> -
->  	pr_info("Reserving %ldMB of memory at %ldMB for crashkernel (System
-> RAM: %ldMB)\n",
->  		(unsigned long)(crash_size >> 20),
->  		(unsigned long)(crash_base >> 20),
-> diff --git a/arch/arm64/kvm/hyp/reserved_mem.c
-> b/arch/arm64/kvm/hyp/reserved_mem.c
-> index d654921dd09b..578670e3f608 100644
-> --- a/arch/arm64/kvm/hyp/reserved_mem.c
-> +++ b/arch/arm64/kvm/hyp/reserved_mem.c
-> @@ -92,12 +92,10 @@ void __init kvm_hyp_reserve(void)
->  	 * this is unmapped from the host stage-2, and fallback to PAGE_SIZE.
->  	 */
->  	hyp_mem_size = hyp_mem_pages << PAGE_SHIFT;
-> -	hyp_mem_base = memblock_find_in_range(0, memblock_end_of_DRAM(),
-> -					      ALIGN(hyp_mem_size, PMD_SIZE),
-> -					      PMD_SIZE);
-> +	hyp_mem_base = memblock_phys_alloc(ALIGN(hyp_mem_size, PMD_SIZE),
-> +					   PMD_SIZE);
->  	if (!hyp_mem_base)
-> -		hyp_mem_base = memblock_find_in_range(0, memblock_end_of_DRAM(),
-> -						      hyp_mem_size, PAGE_SIZE);
-> +		hyp_mem_base = memblock_phys_alloc(hyp_mem_size, PAGE_SIZE);
->  	else
->  		hyp_mem_size = ALIGN(hyp_mem_size, PMD_SIZE);
-> 
-> @@ -105,7 +103,6 @@ void __init kvm_hyp_reserve(void)
->  		kvm_err("Failed to reserve hyp memory\n");
->  		return;
->  	}
-> -	memblock_reserve(hyp_mem_base, hyp_mem_size);
-> 
->  	kvm_info("Reserved %lld MiB at 0x%llx\n", hyp_mem_size >> 20,
->  		 hyp_mem_base);
-> diff --git a/arch/arm64/mm/init.c b/arch/arm64/mm/init.c
-> index 8490ed2917ff..d566478a06dd 100644
-> --- a/arch/arm64/mm/init.c
-> +++ b/arch/arm64/mm/init.c
-> @@ -74,6 +74,7 @@ phys_addr_t arm64_dma_phys_limit __ro_after_init;
->  static void __init reserve_crashkernel(void)
->  {
->  	unsigned long long crash_base, crash_size;
-> +	unsigned long crash_max = arm64_dma_phys_limit;
->  	int ret;
-> 
->  	ret = parse_crashkernel(boot_command_line, memblock_phys_mem_size(),
-> @@ -84,33 +85,18 @@ static void __init reserve_crashkernel(void)
-> 
->  	crash_size = PAGE_ALIGN(crash_size);
-> 
-> -	if (crash_base == 0) {
-> -		/* Current arm64 boot protocol requires 2MB alignment */
-> -		crash_base = memblock_find_in_range(0, arm64_dma_phys_limit,
-> -				crash_size, SZ_2M);
-> -		if (crash_base == 0) {
-> -			pr_warn("cannot allocate crashkernel (size:0x%llx)\n",
-> -				crash_size);
-> -			return;
-> -		}
-> -	} else {
-> -		/* User specifies base address explicitly. */
-> -		if (!memblock_is_region_memory(crash_base, crash_size)) {
-> -			pr_warn("cannot reserve crashkernel: region is not memory\n");
-> -			return;
-> -		}
-> +	/* User specifies base address explicitly. */
-> +	if (crash_base)
-> +		crash_max = crash_base + crash_size;
-> 
-> -		if (memblock_is_region_reserved(crash_base, crash_size)) {
-> -			pr_warn("cannot reserve crashkernel: region overlaps reserved 
-> memory\n");
-> -			return;
-> -		}
-> -
-> -		if (!IS_ALIGNED(crash_base, SZ_2M)) {
-> -			pr_warn("cannot reserve crashkernel: base address is not 2MB 
-> aligned\n");
-> -			return;
-> -		}
-> +	/* Current arm64 boot protocol requires 2MB alignment */
-> +	crash_base = memblock_phys_alloc_range(crash_size, SZ_2M,
-> +					       crash_base, crash_max);
-> +	if (!crash_base) {
-> +		pr_warn("cannot allocate crashkernel (size:0x%llx)\n",
-> +			crash_size);
-> +		return;
->  	}
-> -	memblock_reserve(crash_base, crash_size);
-> 
->  	pr_info("crashkernel reserved: 0x%016llx - 0x%016llx (%lld MB)\n",
->  		crash_base, crash_base + crash_size, crash_size >> 20);
-> diff --git a/arch/mips/kernel/setup.c b/arch/mips/kernel/setup.c
-> index 23a140327a0b..f979adfd4fc2 100644
-> --- a/arch/mips/kernel/setup.c
-> +++ b/arch/mips/kernel/setup.c
-> @@ -452,8 +452,9 @@ static void __init mips_parse_crashkernel(void)
->  		return;
-> 
->  	if (crash_base <= 0) {
-> -		crash_base = memblock_find_in_range(CRASH_ALIGN, CRASH_ADDR_MAX,
-> -							crash_size, CRASH_ALIGN);
-> +		crash_base = memblock_phys_alloc_range(crash_size, CRASH_ALIGN,
-> +						       CRASH_ALIGN,
-> +						       CRASH_ADDR_MAX);
->  		if (!crash_base) {
->  			pr_warn("crashkernel reservation failed - No suitable area 
-> found.\n");
->  			return;
-> @@ -461,8 +462,9 @@ static void __init mips_parse_crashkernel(void)
->  	} else {
->  		unsigned long long start;
-> 
-> -		start = memblock_find_in_range(crash_base, crash_base + crash_size,
-> -						crash_size, 1);
-> +		start = memblock_phys_alloc_range(crash_size, 1,
-> +						  crash_base,
-> +						  crash_base + crash_size);
->  		if (start != crash_base) {
->  			pr_warn("Invalid memory region reserved for crash kernel\n");
->  			return;
-> @@ -656,10 +658,6 @@ static void __init arch_mem_init(char **cmdline_p)
->  	mips_reserve_vmcore();
-> 
->  	mips_parse_crashkernel();
-> -#ifdef CONFIG_KEXEC
-> -	if (crashk_res.start != crashk_res.end)
-> -		memblock_reserve(crashk_res.start, resource_size(&crashk_res));
-> -#endif
->  	device_tree_init();
-> 
->  	/*
-> diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
-> index a14bf3910eec..88649337c568 100644
-> --- a/arch/riscv/mm/init.c
-> +++ b/arch/riscv/mm/init.c
-> @@ -812,38 +812,22 @@ static void __init reserve_crashkernel(void)
-> 
->  	crash_size = PAGE_ALIGN(crash_size);
-> 
-> -	if (crash_base == 0) {
-> -		/*
-> -		 * Current riscv boot protocol requires 2MB alignment for
-> -		 * RV64 and 4MB alignment for RV32 (hugepage size)
-> -		 */
-> -		crash_base = memblock_find_in_range(search_start, search_end,
-> -						    crash_size, PMD_SIZE);
-> -
-> -		if (crash_base == 0) {
-> -			pr_warn("crashkernel: couldn't allocate %lldKB\n",
-> -				crash_size >> 10);
-> -			return;
-> -		}
-> -	} else {
-> -		/* User specifies base address explicitly. */
-> -		if (!memblock_is_region_memory(crash_base, crash_size)) {
-> -			pr_warn("crashkernel: requested region is not memory\n");
-> -			return;
-> -		}
-> -
-> -		if (memblock_is_region_reserved(crash_base, crash_size)) {
-> -			pr_warn("crashkernel: requested region is reserved\n");
-> -			return;
-> -		}
-> -
-> +	if (crash_base) {
-> +		search_start = crash_base;
-> +		search_end = crash_base + crash_size;
-> +	}
-> 
-> -		if (!IS_ALIGNED(crash_base, PMD_SIZE)) {
-> -			pr_warn("crashkernel: requested region is misaligned\n");
-> -			return;
-> -		}
-> +	/*
-> +	 * Current riscv boot protocol requires 2MB alignment for
-> +	 * RV64 and 4MB alignment for RV32 (hugepage size)
-> +	 */
-> +	crash_base = memblock_phys_alloc_range(crash_size, PMD_SIZE,
-> +					       search_start, search_end);
-> +	if (crash_base == 0) {
-> +		pr_warn("crashkernel: couldn't allocate %lldKB\n",
-> +			crash_size >> 10);
-> +		return;
->  	}
-> -	memblock_reserve(crash_base, crash_size);
-> 
->  	pr_info("crashkernel: reserved 0x%016llx - 0x%016llx (%lld MB)\n",
->  		crash_base, crash_base + crash_size, crash_size >> 20);
+>  drivers/pci/of.c | 2 ++
+>  1 file changed, 2 insertions(+)
+>=20
+> diff --git a/drivers/pci/of.c b/drivers/pci/of.c
+> index a143b02b2dcd..657aef39bf63 100644
+> --- a/drivers/pci/of.c
+> +++ b/drivers/pci/of.c
+> @@ -564,12 +564,14 @@ static int pci_parse_request_of_pci_ranges(struc=
+t=20
+> device *dev,
+> =20
+>  		switch (resource_type(res)) {
+>  		case IORESOURCE_IO:
+> +#ifdef PCI_IOBASE
+>  			err =3D devm_pci_remap_iospace(dev, res, iobase);
+>  			if (err) {
+>  				dev_warn(dev, "error %d: failed to map resource %pR\n",
+>  					 err, res);
+>  				resource_list_destroy_entry(win);
+>  			}
+> +#endif
+>  			break;
+>  		case IORESOURCE_MEM:
+>  			res_valid |=3D !(res->flags & IORESOURCE_PREFETCH);
+> --=20
+> 2.25.1
+>=20
+>=20
 
-For the riscv part:
 
-Acked-by: Nick Kossifidis <mick@ics.forth.gr>
+--=20
+- Jiaxun

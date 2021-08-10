@@ -7,36 +7,36 @@ X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham
 	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C9926C4338F
-	for <linux-mips@archiver.kernel.org>; Tue, 10 Aug 2021 10:33:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 16371C4338F
+	for <linux-mips@archiver.kernel.org>; Tue, 10 Aug 2021 10:40:49 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id AA45460EB7
-	for <linux-mips@archiver.kernel.org>; Tue, 10 Aug 2021 10:33:15 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id E520E60EBC
+	for <linux-mips@archiver.kernel.org>; Tue, 10 Aug 2021 10:40:48 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239045AbhHJKdf convert rfc822-to-8bit (ORCPT
+        id S239849AbhHJKlK convert rfc822-to-8bit (ORCPT
         <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 10 Aug 2021 06:33:35 -0400
-Received: from aposti.net ([89.234.176.197]:47300 "EHLO aposti.net"
+        Tue, 10 Aug 2021 06:41:10 -0400
+Received: from aposti.net ([89.234.176.197]:47398 "EHLO aposti.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238459AbhHJKdf (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Tue, 10 Aug 2021 06:33:35 -0400
-Date:   Tue, 10 Aug 2021 12:33:04 +0200
+        id S238566AbhHJKlJ (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Tue, 10 Aug 2021 06:41:09 -0400
+Date:   Tue, 10 Aug 2021 12:40:39 +0200
 From:   Paul Cercueil <paul@crapouillou.net>
 Subject: Re: [PATCH 2/2] gpu/drm: ingenic: Add workaround for disabled drivers
-To:     Daniel Vetter <daniel@ffwll.ch>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh@kernel.org>,
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Rob Herring <robh@kernel.org>,
         "Rafael J . Wysocki" <rafael@kernel.org>,
         David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
         Sam Ravnborg <sam@ravnborg.org>, list@opendingux.net,
         linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
         dri-devel@lists.freedesktop.org
-Message-Id: <4BDMXQ.S6A97ME8XJUV@crapouillou.net>
-In-Reply-To: <YRJIb8ofHe8r5g1z@phenom.ffwll.local>
+Message-Id: <RNDMXQ.0B7HA1RXU7TB@crapouillou.net>
+In-Reply-To: <YRJLNHXR0PhykBwL@kroah.com>
 References: <20210805192110.90302-1-paul@crapouillou.net>
         <20210805192110.90302-3-paul@crapouillou.net> <YQw9hjZll4QmYVLX@kroah.com>
         <3HUDXQ.7RBGD4FUHR2F@crapouillou.net> <YQ0MU/GcLkPLiy5C@kroah.com>
-        <LYZEXQ.9UWPIAZCVXIK@crapouillou.net> <YRJIb8ofHe8r5g1z@phenom.ffwll.local>
+        <LYZEXQ.9UWPIAZCVXIK@crapouillou.net> <YRJLNHXR0PhykBwL@kroah.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1; format=flowed
 Content-Transfer-Encoding: 8BIT
@@ -44,10 +44,10 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Hi Daniel,
+Hi Greg,
 
-Le mar., août 10 2021 at 11:35:43 +0200, Daniel Vetter 
-<daniel@ffwll.ch> a écrit :
+Le mar., août 10 2021 at 11:47:32 +0200, Greg Kroah-Hartman 
+<gregkh@linuxfoundation.org> a écrit :
 > On Fri, Aug 06, 2021 at 01:01:33PM +0200, Paul Cercueil wrote:
 >>  Hi Greg,
 >> 
@@ -156,7 +156,12 @@ Le mar., août 10 2021 at 11:35:43 +0200, Daniel Vetter
 >>  the main DRM driver. So I need to know that a remote device 
 >> (connected via
 >>  DT graph) will never probe.
->> 
+> 
+> But you never really know that.  That is what the recent driver core
+> changes were all about, to handle this very issue.  Only when the 
+> child
+> device shows up will you need to care about it.
+> 
 >>  Give me a of_graph_remote_device_driver_will_never_probe() and I'll 
 >> use
 >>  that.
@@ -173,43 +178,18 @@ Le mar., août 10 2021 at 11:35:43 +0200, Daniel Vetter
 >> if the
 >>  provider is not going to probe.
 > 
-> Is this actually a legit use-case?
+> But again, you never know that, probing is async, and could happen in 
+> a
+> few milliseconds, or a few hours, your driver should never care about
+> this at all.
 > 
-> Like you have hw with a bunch of sub-devices linked, and you decided 
-> to
-> disable some of them, which makes the driver not load.
+> Just knowing if the kernel configuration is something is not the
+> solution here, please fix this properly like all other driver
+> interactions are in the kernel tree.
 
-Yes. I'm facing that issue with a board that has a LCD panel and a HDMI 
-controller (IT66121). I have a "flasher" program for all the Ingenic 
-boards, that's basically just a Linux kernel + initramfs booted over 
-USB (device). I can't realistically enable every single driver for all 
-the hardware that's on these boards while still having a tiny 
-footprint. And I shouldn't have to care about it either.
+A proper fix means reworking the DRM core so that it supports 
+hot-plugging bridges. Until then there is nothing else I can do.
 
-> Why should we care? Is that hdmi driver really that big that we have 
-> to
-> support this use-case?
-
-DRM maintainers work with what embedded devs would call "infinite 
-resources". It annoys me that CONFIG_DRM pulls the I2C code even though 
-I may just have a LCD panel, and it annoys me that I have to enable 
-support for hardware that I'm not even planning to use, just so that 
-the DRM driver works for the hardware I do want to use.
-
-> I know it's possible to do this, that doesn't mean it's a good idea.
-> There's inifinitely more randconfigs that don't boot on my machine 
-> here
-> for various reasons than the ones that do boot. We don't have "fixes" 
-> for
-> all of these to make things still work, despite user misconfiguring 
-> their
-> kernel.
-
-I understand, you can't really expect random configs to work every 
-time. But it should still be possible to disable drivers for *optional* 
-hardware in the config and end up with a working system.
-
-Cheers,
 -Paul
 
 

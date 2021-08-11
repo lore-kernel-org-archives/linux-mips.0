@@ -2,82 +2,110 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F2F02C4338F
-	for <linux-mips@archiver.kernel.org>; Wed, 11 Aug 2021 08:25:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 342B4C4338F
+	for <linux-mips@archiver.kernel.org>; Wed, 11 Aug 2021 08:51:38 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id D3FA8601FE
-	for <linux-mips@archiver.kernel.org>; Wed, 11 Aug 2021 08:25:55 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 1D5BE604AC
+	for <linux-mips@archiver.kernel.org>; Wed, 11 Aug 2021 08:51:38 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236088AbhHKI0S (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 11 Aug 2021 04:26:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55648 "EHLO
+        id S233605AbhHKIwA (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 11 Aug 2021 04:52:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33608 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236059AbhHKI0R (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 11 Aug 2021 04:26:17 -0400
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65AA0C0613D3
-        for <linux-mips@vger.kernel.org>; Wed, 11 Aug 2021 01:25:54 -0700 (PDT)
-Received: by mail-lf1-x136.google.com with SMTP id g13so3928729lfj.12
-        for <linux-mips@vger.kernel.org>; Wed, 11 Aug 2021 01:25:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=h1pnCAwRASpn4fyPBkIzTBQEKpQcrtuBfGwIpH44ZSA=;
-        b=qWzCe9dga955Cga5w7LhEv4Xk82pmQbdmUlVBdLOMkPX86nA8hsEPUdckpMeEV585/
-         G/dHsMELydm5OjT26oiUny5UqrBwTXLpHaypWViqZiRfzgW9GyBz6wImoplFJnmPdjdk
-         bNNETnaSu6mJlpsEDV1TY+nseYTNWxkdpkSG8R6Xj/sPBsX4+IWWcrcQ0eYfRbo034Hb
-         9kqUs856OcyFHg57Tl4OIsE83+fin9YBLHRyuRn2mm/TCGPUX6bo4QZK8/PWJPQ1wiQK
-         fZkbqvgtXKvYBnKcpuQKKBchXTBLHkVa8pIjfNXo4BQNKYHORgrE3Z5K2z7VX3kmUd/W
-         TkAA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=h1pnCAwRASpn4fyPBkIzTBQEKpQcrtuBfGwIpH44ZSA=;
-        b=kr1CBHRpZ2kDLyB4a3qlzBciOCqZL/gSUjxmDGMWiSRUtIN1Us8lPKOAVbqaBO6W1J
-         YZhX4BOi7d+ys4Ddy1nlp3UWH9LoaFFaFrqL1qFZ49kOpV2aw7nNx8lDDlCT79JoVYQl
-         lllzSr8+RsGQ1pnXrwdV+Jd2PR+JHhbXnNw3jyWbuYzrlHHL8mH/9QtHciCZpMrNC/4M
-         ws6umz2wNc7sCGgXM0NRdktlOGMEGnPoZiihilNevwBKP+pdbnU5CoOE1VifDm7p6gXQ
-         MVdpi8D5kpYj4vNYtFeCO9IObWkEr24EEcSYcj3egTx9xNL5KEEIKPRh9Y+UN7E2BisJ
-         DEPQ==
-X-Gm-Message-State: AOAM533g7ozat7iyUxSobgv0a0UsPAvVY2BZXGT6ClsbjhFX12XDLQZR
-        8GlD7asda5tELhdnix6OCEVBMUVIVeajH3bhY/fu6w==
-X-Google-Smtp-Source: ABdhPJwzK1TTNyIYN73hVN5UaP15UGCZnTRveq/TFlaH8lMiEvIy1pw/7ZC1PP0URr0ybbS+xbh4JHIR63GJoVn1YpQ=
-X-Received: by 2002:a19:c7cd:: with SMTP id x196mr24358039lff.465.1628670352818;
- Wed, 11 Aug 2021 01:25:52 -0700 (PDT)
+        with ESMTP id S236374AbhHKIv6 (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 11 Aug 2021 04:51:58 -0400
+Received: from andre.telenet-ops.be (andre.telenet-ops.be [IPv6:2a02:1800:120:4::f00:15])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77EB0C0613D3
+        for <linux-mips@vger.kernel.org>; Wed, 11 Aug 2021 01:51:35 -0700 (PDT)
+Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed20:438:1ff1:1071:f524])
+        by andre.telenet-ops.be with bizsmtp
+        id g8rG2500S1gJxCh018rGYb; Wed, 11 Aug 2021 10:51:32 +0200
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1mDjxE-001ya9-4k; Wed, 11 Aug 2021 10:51:16 +0200
+Received: from geert by rox.of.borg with local (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1mDjxD-0058wr-AC; Wed, 11 Aug 2021 10:51:15 +0200
+From:   Geert Uytterhoeven <geert+renesas@glider.be>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Nicolas Pitre <nico@fluxnic.net>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Nick Kossifidis <mick@ics.forth.gr>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Dave Young <dyoung@redhat.com>
+Cc:     Baoquan He <bhe@redhat.com>, Vivek Goyal <vgoyal@redhat.com>,
+        Mike Rapoport <rppt@kernel.org>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
+        linux-riscv@lists.infradead.org, kexec@lists.infradead.org,
+        linux-renesas-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert+renesas@glider.be>
+Subject: [PATCH v5 2/9] crash_dump: Make elfcorehdr address/size symbols always visible
+Date:   Wed, 11 Aug 2021 10:51:00 +0200
+Message-Id: <ba965ca613c0cc82c1ec2fe353ee34fb13b36474.1628670468.git.geert+renesas@glider.be>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <cover.1628670468.git.geert+renesas@glider.be>
+References: <cover.1628670468.git.geert+renesas@glider.be>
 MIME-Version: 1.0
-References: <20210717174836.14776-1-paul@crapouillou.net> <20210717174836.14776-3-paul@crapouillou.net>
-In-Reply-To: <20210717174836.14776-3-paul@crapouillou.net>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Wed, 11 Aug 2021 10:25:42 +0200
-Message-ID: <CACRpkdbMH5=r5wcxUrqL1DYPvERD6X+19699NwOrRT68tTU2oA@mail.gmail.com>
-Subject: Re: [PATCH 3/3] pinctrl: ingenic: Add .max_register in regmap_config
-To:     Paul Cercueil <paul@crapouillou.net>
-Cc:     =?UTF-8?B?5ZGo55Cw5p2w?= <zhouyanjie@wanyeetech.com>,
-        linux-mips@vger.kernel.org,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Sat, Jul 17, 2021 at 7:48 PM Paul Cercueil <paul@crapouillou.net> wrote:
+Make the forward declarations of elfcorehdr_addr and elfcorehdr_size,
+and the definitions of ELFCORE_ADDR_MAX and ELFCORE_ADDR_ERR always
+available, like is done for phys_initrd_start and phys_initrd_size.
+Code referring to these symbols can then just check for
+IS_ENABLED(CONFIG_CRASH_DUMP), instead of requiring conditional
+compilation using an #ifdef, thus preparing to increase compile
+coverage.
 
-> Compute the max register from the GPIO chip offset and number of GPIO
-> chips.
->
-> This permits to read all registers from debugfs.
->
-> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+Suggested-by: Rob Herring <robh+dt@kernel.org>
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+---
+v5:
+  - Make ELFCORE_ADDR_{MAX,ERR} visible, too,
 
-Patch applied!
+v4:
+  - New.
+---
+ include/linux/crash_dump.h | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-Yours,
-Linus Walleij
+diff --git a/include/linux/crash_dump.h b/include/linux/crash_dump.h
+index a5192b718dbe4f9a..2618577a4d6da77e 100644
+--- a/include/linux/crash_dump.h
++++ b/include/linux/crash_dump.h
+@@ -10,13 +10,14 @@
+ 
+ #include <linux/pgtable.h> /* for pgprot_t */
+ 
+-#ifdef CONFIG_CRASH_DUMP
++/* For IS_ENABLED(CONFIG_CRASH_DUMP) */
+ #define ELFCORE_ADDR_MAX	(-1ULL)
+ #define ELFCORE_ADDR_ERR	(-2ULL)
+ 
+ extern unsigned long long elfcorehdr_addr;
+ extern unsigned long long elfcorehdr_size;
+ 
++#ifdef CONFIG_CRASH_DUMP
+ extern int elfcorehdr_alloc(unsigned long long *addr, unsigned long long *size);
+ extern void elfcorehdr_free(unsigned long long addr);
+ extern ssize_t elfcorehdr_read(char *buf, size_t count, u64 *ppos);
+-- 
+2.25.1
+

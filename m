@@ -7,32 +7,32 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0660AC4320E
-	for <linux-mips@archiver.kernel.org>; Wed, 11 Aug 2021 09:58:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7DBCDC432BE
+	for <linux-mips@archiver.kernel.org>; Wed, 11 Aug 2021 09:58:59 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id DC2F260FC4
-	for <linux-mips@archiver.kernel.org>; Wed, 11 Aug 2021 09:58:50 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 66BE96056C
+	for <linux-mips@archiver.kernel.org>; Wed, 11 Aug 2021 09:58:59 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236869AbhHKJ7J (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 11 Aug 2021 05:59:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49132 "EHLO
+        id S236824AbhHKJ7M (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 11 Aug 2021 05:59:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49098 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236824AbhHKJ6d (ORCPT
+        with ESMTP id S236825AbhHKJ6d (ORCPT
         <rfc822;linux-mips@vger.kernel.org>); Wed, 11 Aug 2021 05:58:33 -0400
-Received: from michel.telenet-ops.be (michel.telenet-ops.be [IPv6:2a02:1800:110:4::f00:18])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36450C061381
+Received: from laurent.telenet-ops.be (laurent.telenet-ops.be [IPv6:2a02:1800:110:4::f00:19])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61446C061385
         for <linux-mips@vger.kernel.org>; Wed, 11 Aug 2021 02:58:09 -0700 (PDT)
 Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed20:438:1ff1:1071:f524])
-        by michel.telenet-ops.be with bizsmtp
-        id g9y42500e1gJxCh069y4zf; Wed, 11 Aug 2021 11:58:07 +0200
+        by laurent.telenet-ops.be with bizsmtp
+        id g9y5250031gJxCh019y58a; Wed, 11 Aug 2021 11:58:07 +0200
 Received: from rox.of.borg ([192.168.97.57])
         by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
         (Exim 4.93)
         (envelope-from <geert@linux-m68k.org>)
-        id 1mDkzs-001zgL-FD; Wed, 11 Aug 2021 11:58:04 +0200
+        id 1mDkzs-001zgQ-QS; Wed, 11 Aug 2021 11:58:04 +0200
 Received: from geert by rox.of.borg with local (Exim 4.93)
         (envelope-from <geert@linux-m68k.org>)
-        id 1mDkzr-005NOf-Dp; Wed, 11 Aug 2021 11:58:03 +0200
+        id 1mDkzr-005NPE-JH; Wed, 11 Aug 2021 11:58:03 +0200
 From:   Geert Uytterhoeven <geert@linux-m68k.org>
 To:     Robin van der Gracht <robin@protonic.nl>,
         Miguel Ojeda <ojeda@kernel.org>,
@@ -43,9 +43,9 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         devicetree@vger.kernel.org, linux-leds@vger.kernel.org,
         linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
         Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH v5 05/19] auxdisplay: img-ascii-lcd: Convert device attribute to sysfs_emit()
-Date:   Wed, 11 Aug 2021 11:57:45 +0200
-Message-Id: <20210811095759.1281480-6-geert@linux-m68k.org>
+Subject: [PATCH v5 10/19] auxdisplay: ht16k33: Use HT16K33_FB_SIZE in ht16k33_initialize()
+Date:   Wed, 11 Aug 2021 11:57:50 +0200
+Message-Id: <20210811095759.1281480-11-geert@linux-m68k.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210811095759.1281480-1-geert@linux-m68k.org>
 References: <20210811095759.1281480-1-geert@linux-m68k.org>
@@ -55,10 +55,12 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Convert the "message" device attribute from sprintf() to sysfs_emit(),
-as the latter is aware of the PAGE_SIZE buffer.
+Use the existing HT16K33_FB_SIZE definition instead of open-coding the
+same calculation using an hardcoded value.
+While at it, restore reverse Christmas tree variable declaration order.
 
 Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Acked-by: Robin van der Gracht <robin@protonic.nl>
 ---
 v5:
   - No changes,
@@ -70,24 +72,26 @@ v3:
   - No changes,
 
 v2:
-  - No changes.
+  - Add Acked-by.
 ---
- drivers/auxdisplay/img-ascii-lcd.c | 2 +-
+ drivers/auxdisplay/ht16k33.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/auxdisplay/img-ascii-lcd.c b/drivers/auxdisplay/img-ascii-lcd.c
-index 2b6e41ec57544faa..2b5640b638900a90 100644
---- a/drivers/auxdisplay/img-ascii-lcd.c
-+++ b/drivers/auxdisplay/img-ascii-lcd.c
-@@ -326,7 +326,7 @@ static ssize_t message_show(struct device *dev, struct device_attribute *attr,
+diff --git a/drivers/auxdisplay/ht16k33.c b/drivers/auxdisplay/ht16k33.c
+index 2b630e194570f6e5..99daf1974980b435 100644
+--- a/drivers/auxdisplay/ht16k33.c
++++ b/drivers/auxdisplay/ht16k33.c
+@@ -168,9 +168,9 @@ static void ht16k33_fb_update(struct work_struct *work)
+ 
+ static int ht16k33_initialize(struct ht16k33_priv *priv)
  {
- 	struct img_ascii_lcd_ctx *ctx = dev_get_drvdata(dev);
++	uint8_t data[HT16K33_FB_SIZE];
+ 	uint8_t byte;
+ 	int err;
+-	uint8_t data[HT16K33_MATRIX_LED_MAX_COLS * 2];
  
--	return sprintf(buf, "%s\n", ctx->message);
-+	return sysfs_emit(buf, "%s\n", ctx->message);
- }
- 
- /**
+ 	/* Clear RAM (8 * 16 bits) */
+ 	memset(data, 0, sizeof(data));
 -- 
 2.25.1
 

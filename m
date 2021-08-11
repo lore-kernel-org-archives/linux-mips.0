@@ -7,32 +7,32 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1C743C432BE
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E6E4DC43214
 	for <linux-mips@archiver.kernel.org>; Wed, 11 Aug 2021 08:51:55 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 02574604AC
-	for <linux-mips@archiver.kernel.org>; Wed, 11 Aug 2021 08:51:54 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id CC3D160F55
+	for <linux-mips@archiver.kernel.org>; Wed, 11 Aug 2021 08:51:55 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236577AbhHKIwR (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        id S236356AbhHKIwR (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
         Wed, 11 Aug 2021 04:52:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33658 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33648 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236555AbhHKIwC (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 11 Aug 2021 04:52:02 -0400
-Received: from michel.telenet-ops.be (michel.telenet-ops.be [IPv6:2a02:1800:110:4::f00:18])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11B0CC061385
+        with ESMTP id S233053AbhHKIwB (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 11 Aug 2021 04:52:01 -0400
+Received: from baptiste.telenet-ops.be (baptiste.telenet-ops.be [IPv6:2a02:1800:120:4::f00:13])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E875AC061381
         for <linux-mips@vger.kernel.org>; Wed, 11 Aug 2021 01:51:35 -0700 (PDT)
 Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed20:438:1ff1:1071:f524])
-        by michel.telenet-ops.be with bizsmtp
-        id g8rG2500K1gJxCh068rGhQ; Wed, 11 Aug 2021 10:51:33 +0200
+        by baptiste.telenet-ops.be with bizsmtp
+        id g8rG2500C1gJxCh018rG4A; Wed, 11 Aug 2021 10:51:33 +0200
 Received: from rox.of.borg ([192.168.97.57])
         by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
         (Exim 4.93)
         (envelope-from <geert@linux-m68k.org>)
-        id 1mDjxE-001yaC-Cn; Wed, 11 Aug 2021 10:51:16 +0200
+        id 1mDjxE-001yaD-6N; Wed, 11 Aug 2021 10:51:16 +0200
 Received: from geert by rox.of.borg with local (Exim 4.93)
         (envelope-from <geert@linux-m68k.org>)
-        id 1mDjxD-0058wl-9O; Wed, 11 Aug 2021 10:51:15 +0200
+        id 1mDjxD-0058x9-D1; Wed, 11 Aug 2021 10:51:15 +0200
 From:   Geert Uytterhoeven <geert+renesas@glider.be>
 To:     Rob Herring <robh+dt@kernel.org>,
         Russell King <linux@armlinux.org.uk>,
@@ -54,9 +54,9 @@ Cc:     Baoquan He <bhe@redhat.com>, Vivek Goyal <vgoyal@redhat.com>,
         linux-riscv@lists.infradead.org, kexec@lists.infradead.org,
         linux-renesas-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
         Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH v5 1/9] MIPS: Avoid future duplicate elf core header reservation
-Date:   Wed, 11 Aug 2021 10:50:59 +0200
-Message-Id: <92b6718f5618d5469f67b48fbea189cca0c12f4b.1628670468.git.geert+renesas@glider.be>
+Subject: [PATCH v5 5/9] of: fdt: Use IS_ENABLED(CONFIG_BLK_DEV_INITRD) instead of #ifdef
+Date:   Wed, 11 Aug 2021 10:51:03 +0200
+Message-Id: <604c13747f09d800da6a7c12f661e1ec146f1dfd.1628670468.git.geert+renesas@glider.be>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <cover.1628670468.git.geert+renesas@glider.be>
 References: <cover.1628670468.git.geert+renesas@glider.be>
@@ -66,37 +66,55 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Prepare for early_init_fdt_scan_reserved_mem() reserving the memory
-occupied by an elf core header described in the device tree.
-As arch_mem_init() calls early_init_fdt_scan_reserved_mem() before
-mips_reserve_vmcore(), the latter needs to check if the memory has
-already been reserved before.
-
-Note that mips_reserve_vmcore() cannot just be removed, as not all MIPS
-systems use DT.
+Replace the conditional compilation using "#ifdef CONFIG_BLK_DEV_INITRD"
+by a check for "IS_ENABLED(CONFIG_BLK_DEV_INITRD)", to increase compile
+coverage and to simplify the code.
 
 Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
 ---
 v5:
+  - No changes,
+
+v4:
   - New.
 ---
- arch/mips/kernel/setup.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/of/fdt.c | 9 +++------
+ 1 file changed, 3 insertions(+), 6 deletions(-)
 
-diff --git a/arch/mips/kernel/setup.c b/arch/mips/kernel/setup.c
-index 23a140327a0bac1b..4693add05743d78b 100644
---- a/arch/mips/kernel/setup.c
-+++ b/arch/mips/kernel/setup.c
-@@ -429,7 +429,8 @@ static void __init mips_reserve_vmcore(void)
- 	pr_info("Reserving %ldKB of memory at %ldKB for kdump\n",
- 		(unsigned long)elfcorehdr_size >> 10, (unsigned long)elfcorehdr_addr >> 10);
- 
--	memblock_reserve(elfcorehdr_addr, elfcorehdr_size);
-+	if (!memblock_is_region_reserved(elfcorehdr_addr, elfcorehdr_size)
-+		memblock_reserve(elfcorehdr_addr, elfcorehdr_size);
- #endif
+diff --git a/drivers/of/fdt.c b/drivers/of/fdt.c
+index bc041d8141e86e62..0142b9334559baec 100644
+--- a/drivers/of/fdt.c
++++ b/drivers/of/fdt.c
+@@ -880,7 +880,6 @@ const void * __init of_flat_dt_match_machine(const void *default_match,
+ 	return best_data;
  }
  
+-#ifdef CONFIG_BLK_DEV_INITRD
+ static void __early_init_dt_declare_initrd(unsigned long start,
+ 					   unsigned long end)
+ {
+@@ -906,6 +905,9 @@ static void __init early_init_dt_check_for_initrd(unsigned long node)
+ 	int len;
+ 	const __be32 *prop;
+ 
++	if (!IS_ENABLED(CONFIG_BLK_DEV_INITRD))
++		return;
++
+ 	pr_debug("Looking for initrd properties... ");
+ 
+ 	prop = of_get_flat_dt_prop(node, "linux,initrd-start", &len);
+@@ -924,11 +926,6 @@ static void __init early_init_dt_check_for_initrd(unsigned long node)
+ 
+ 	pr_debug("initrd_start=0x%llx  initrd_end=0x%llx\n", start, end);
+ }
+-#else
+-static inline void early_init_dt_check_for_initrd(unsigned long node)
+-{
+-}
+-#endif /* CONFIG_BLK_DEV_INITRD */
+ 
+ /**
+  * early_init_dt_check_for_elfcorehdr - Decode elfcorehdr location from flat
 -- 
 2.25.1
 

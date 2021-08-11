@@ -2,37 +2,37 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2FE9BC432BE
-	for <linux-mips@archiver.kernel.org>; Wed, 11 Aug 2021 08:51:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6231DC43216
+	for <linux-mips@archiver.kernel.org>; Wed, 11 Aug 2021 08:51:40 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 0341A60F55
-	for <linux-mips@archiver.kernel.org>; Wed, 11 Aug 2021 08:51:38 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 4909160F55
+	for <linux-mips@archiver.kernel.org>; Wed, 11 Aug 2021 08:51:40 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236402AbhHKIwB (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 11 Aug 2021 04:52:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33610 "EHLO
+        id S236571AbhHKIwC (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 11 Aug 2021 04:52:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33632 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236364AbhHKIv6 (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 11 Aug 2021 04:51:58 -0400
-Received: from andre.telenet-ops.be (andre.telenet-ops.be [IPv6:2a02:1800:120:4::f00:15])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EA3CC061798
+        with ESMTP id S236462AbhHKIwA (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 11 Aug 2021 04:52:00 -0400
+Received: from xavier.telenet-ops.be (xavier.telenet-ops.be [IPv6:2a02:1800:120:4::f00:14])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF545C0617A3
         for <linux-mips@vger.kernel.org>; Wed, 11 Aug 2021 01:51:35 -0700 (PDT)
 Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed20:438:1ff1:1071:f524])
-        by andre.telenet-ops.be with bizsmtp
-        id g8rG2500H1gJxCh018rGYY; Wed, 11 Aug 2021 10:51:32 +0200
+        by xavier.telenet-ops.be with bizsmtp
+        id g8rG2500m1gJxCh018rGUb; Wed, 11 Aug 2021 10:51:32 +0200
 Received: from rox.of.borg ([192.168.97.57])
         by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
         (Exim 4.93)
         (envelope-from <geert@linux-m68k.org>)
-        id 1mDjxD-001yaB-TH; Wed, 11 Aug 2021 10:51:15 +0200
+        id 1mDjxE-001yaA-I3; Wed, 11 Aug 2021 10:51:16 +0200
 Received: from geert by rox.of.borg with local (Exim 4.93)
         (envelope-from <geert@linux-m68k.org>)
-        id 1mDjxD-0058wf-87; Wed, 11 Aug 2021 10:51:15 +0200
+        id 1mDjxD-0058x3-C2; Wed, 11 Aug 2021 10:51:15 +0200
 From:   Geert Uytterhoeven <geert+renesas@glider.be>
 To:     Rob Herring <robh+dt@kernel.org>,
         Russell King <linux@armlinux.org.uk>,
@@ -54,108 +54,109 @@ Cc:     Baoquan He <bhe@redhat.com>, Vivek Goyal <vgoyal@redhat.com>,
         linux-riscv@lists.infradead.org, kexec@lists.infradead.org,
         linux-renesas-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
         Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH v5 0/9] Add generic support for kdump DT properties
-Date:   Wed, 11 Aug 2021 10:50:58 +0200
-Message-Id: <cover.1628670468.git.geert+renesas@glider.be>
+Subject: [PATCH v5 4/9] of: fdt: Add generic support for handling usable memory range property
+Date:   Wed, 11 Aug 2021 10:51:02 +0200
+Message-Id: <3bd69bada93ee59b7d23c38b3527fc1654e19343.1628670468.git.geert+renesas@glider.be>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <cover.1628670468.git.geert+renesas@glider.be>
+References: <cover.1628670468.git.geert+renesas@glider.be>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-	Hi all,
+Add support for handling the "linux,usable-memory-range" property in the
+"/chosen" node to the FDT core code.  This can co-exist safely with the
+architecture-specific handling, until the latter has been removed.
 
-This patch series adds generic support for parsing DT properties related
-to crash dump kernels ("linux,elfcorehdr" and "linux,elfcorehdr" under
-the "/chosen" node), makes use of it on arm32, and performs a few
-cleanups.  It is an evolution of the combination of [1] and [2].
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+---
+About the change to chosen.txt: I have a similar change for
+schemas/chosen.yaml in dt-schema.
 
-The series consists of 6 parts:
-  1. Patch 1 prepares architecture-specific code (needed for MIPS only)
-     to avoid duplicating elf core header reservation later.
-  2. Patch 2 prepares the visibility of variables used to hold
-     information retrieved from the DT properties.
-  3. Patches 3-5 add support to the FDT core for handling the
-     properties.
-     This can co-exist safely with architecture-specific handling, until
-     the latter has been removed.
-  4. Patch 6 removes the non-standard handling of "linux,elfcorehdr" on
-     riscv.
-  5. Patches 7-8 convert arm64 to use the generic handling instead of
-     its own implementation.
-  6. Patch 9 adds support for kdump properties to arm32.
-     The corresponding patch for kexec-tools is "[PATCH] arm: kdump: Add
-     DT properties to crash dump kernel's DTB"[3], which is still valid.
+v5:
+  - Handle the actual capping in generic code, too,
 
-Changes compared to v4[4]:
-  - New patch "[PATCH v5 1/9] MIPS: Avoid future duplicate elf core
-    header reservation",
-  - Drop "memblock: Add variables for usable memory limitation", as this
-    is now handled in FDT core code,
-  - Make ELFCORE_ADDR_{MAX,ERR} visible, too,
-  - Handle the actual elf core header reservation and memory capping in
-    FDT core code,
-  - Add Reviewed-by, Acked-by,
-  - Remove all architecture-specific handling on arm64,
-  - Drop "arm64: kdump: Use IS_ENABLED(CONFIG_CRASH_DUMP) instead of
-    #ifdef", as the affected code is gone,
-  - Remove the addition of "linux,elfcorehdr" and
-    "linux,usable-memory-range" handling to arch/arm/mm/init.c.
+v4:
+  - New.
+---
+ Documentation/devicetree/bindings/chosen.txt |  6 ++--
+ drivers/of/fdt.c                             | 30 ++++++++++++++++++++
+ 2 files changed, 33 insertions(+), 3 deletions(-)
 
-Changes compared to older versions:
-  - Make elfcorehdr_{addr,size} always visible,
-  - Add variables for usable memory limitation,
-  - Use IS_ENABLED() instead of #ifdef (incl. initrd and arm64),
-  - Clarify what architecture-specific code is still responsible for,
-  - Add generic support for parsing linux,usable-memory-range,
-  - Remove custom linux,usable-memory-range parsing on arm64,
-  - Use generic handling on ARM.
-  
-This has been tested with kexec/kdump on arm32 and arm64, and
-boot-tested on riscv64 and DT-less MIPS.
-
-Thanks!
-
-[1] "[PATCH v3] ARM: Parse kdump DT properties"
-    https://lore.kernel.org/r/20210317113130.2554368-1-geert+renesas@glider.be/
-[2] "[PATCH 0/3] Add generic-support for linux,elfcorehdr and fix riscv"
-    https://lore.kernel.org/r/cover.1623780059.git.geert+renesas@glider.be/
-[3] "[PATCH] arm: kdump: Add DT properties to crash dump kernel's DTB"
-    https://lore.kernel.org/r/20200902154129.6358-1-geert+renesas@glider.be/
-[4] "[PATCH v4 00/10] Add generic support for kdump DT properties"
-    https://lore.kernel.org/r/cover.1626266516.git.geert+renesas@glider.be
-
-Geert Uytterhoeven (9):
-  MIPS: Avoid future duplicate elf core header reservation
-  crash_dump: Make elfcorehdr address/size symbols always visible
-  of: fdt: Add generic support for handling elf core headers property
-  of: fdt: Add generic support for handling usable memory range property
-  of: fdt: Use IS_ENABLED(CONFIG_BLK_DEV_INITRD) instead of #ifdef
-  riscv: Remove non-standard linux,elfcorehdr handling
-  arm64: kdump: Remove custom linux,elfcorehdr handling
-  arm64: kdump: Remove custom linux,usable-memory-range handling
-  ARM: uncompress: Parse "linux,usable-memory-range" DT property
-
- Documentation/devicetree/bindings/chosen.txt  | 12 +--
- .../arm/boot/compressed/fdt_check_mem_start.c | 48 ++++++++--
- arch/arm64/mm/init.c                          | 88 -----------------
- arch/mips/kernel/setup.c                      |  3 +-
- arch/riscv/mm/init.c                          | 20 ----
- drivers/of/fdt.c                              | 94 +++++++++++++++++--
- include/linux/crash_dump.h                    |  3 +-
- 7 files changed, 139 insertions(+), 129 deletions(-)
-
+diff --git a/Documentation/devicetree/bindings/chosen.txt b/Documentation/devicetree/bindings/chosen.txt
+index 5b0b94eb2d04e79d..1cc3aa10dcb10588 100644
+--- a/Documentation/devicetree/bindings/chosen.txt
++++ b/Documentation/devicetree/bindings/chosen.txt
+@@ -79,9 +79,9 @@ a different secondary CPU release mechanism)
+ linux,usable-memory-range
+ -------------------------
+ 
+-This property (arm64 only) holds a base address and size, describing a
+-limited region in which memory may be considered available for use by
+-the kernel. Memory outside of this range is not available for use.
++This property holds a base address and size, describing a limited region in
++which memory may be considered available for use by the kernel. Memory outside
++of this range is not available for use.
+ 
+ This property describes a limitation: memory within this range is only
+ valid when also described through another mechanism that the kernel
+diff --git a/drivers/of/fdt.c b/drivers/of/fdt.c
+index 99be3e03af29089f..bc041d8141e86e62 100644
+--- a/drivers/of/fdt.c
++++ b/drivers/of/fdt.c
+@@ -956,6 +956,32 @@ static void __init early_init_dt_check_for_elfcorehdr(unsigned long node)
+ 		 elfcorehdr_addr, elfcorehdr_size);
+ }
+ 
++static phys_addr_t cap_mem_addr;
++static phys_addr_t cap_mem_size;
++
++/**
++ * early_init_dt_check_for_usable_mem_range - Decode usable memory range
++ * location from flat tree
++ * @node: reference to node containing usable memory range location ('chosen')
++ */
++static void __init early_init_dt_check_for_usable_mem_range(unsigned long node)
++{
++	const __be32 *prop;
++	int len;
++
++	pr_debug("Looking for usable-memory-range property... ");
++
++	prop = of_get_flat_dt_prop(node, "linux,usable-memory-range", &len);
++	if (!prop || (len < (dt_root_addr_cells + dt_root_size_cells)))
++		return;
++
++	cap_mem_addr = dt_mem_next_cell(dt_root_addr_cells, &prop);
++	cap_mem_size = dt_mem_next_cell(dt_root_size_cells, &prop);
++
++	pr_debug("cap_mem_start=%pa cap_mem_size=%pa\n", &cap_mem_addr,
++		 &cap_mem_size);
++}
++
+ #ifdef CONFIG_SERIAL_EARLYCON
+ 
+ int __init early_init_dt_scan_chosen_stdout(void)
+@@ -1104,6 +1130,7 @@ int __init early_init_dt_scan_chosen(unsigned long node, const char *uname,
+ 
+ 	early_init_dt_check_for_initrd(node);
+ 	early_init_dt_check_for_elfcorehdr(node);
++	early_init_dt_check_for_usable_mem_range(node);
+ 
+ 	/* Retrieve command line */
+ 	p = of_get_flat_dt_prop(node, "bootargs", &l);
+@@ -1258,6 +1285,9 @@ void __init early_init_dt_scan_nodes(void)
+ 
+ 	/* Setup memory, calling early_init_dt_add_memory_arch */
+ 	of_scan_flat_dt(early_init_dt_scan_memory, NULL);
++
++	/* Handle linux,usable-memory-range property */
++	memblock_cap_memory_range(cap_mem_addr, cap_mem_size);
+ }
+ 
+ bool __init early_init_dt_scan(void *params)
 -- 
 2.25.1
 
-Gr{oetje,eeting}s,
-
-						Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-							    -- Linus Torvalds

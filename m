@@ -7,32 +7,32 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E554EC41537
-	for <linux-mips@archiver.kernel.org>; Wed, 11 Aug 2021 09:58:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 626F6C19F36
+	for <linux-mips@archiver.kernel.org>; Wed, 11 Aug 2021 09:59:00 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id D8207610A7
-	for <linux-mips@archiver.kernel.org>; Wed, 11 Aug 2021 09:58:59 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 42E5860F11
+	for <linux-mips@archiver.kernel.org>; Wed, 11 Aug 2021 09:59:00 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236563AbhHKJ7O (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 11 Aug 2021 05:59:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49124 "EHLO
+        id S236816AbhHKJ7W (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 11 Aug 2021 05:59:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49096 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236816AbhHKJ6d (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 11 Aug 2021 05:58:33 -0400
-Received: from laurent.telenet-ops.be (laurent.telenet-ops.be [IPv6:2a02:1800:110:4::f00:19])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3674AC061383
-        for <linux-mips@vger.kernel.org>; Wed, 11 Aug 2021 02:58:09 -0700 (PDT)
+        with ESMTP id S236807AbhHKJ6c (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 11 Aug 2021 05:58:32 -0400
+Received: from albert.telenet-ops.be (albert.telenet-ops.be [IPv6:2a02:1800:110:4::f00:1a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 132BAC0613D5
+        for <linux-mips@vger.kernel.org>; Wed, 11 Aug 2021 02:58:08 -0700 (PDT)
 Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed20:438:1ff1:1071:f524])
-        by laurent.telenet-ops.be with bizsmtp
-        id g9y42500Y1gJxCh019y58X; Wed, 11 Aug 2021 11:58:07 +0200
+        by albert.telenet-ops.be with bizsmtp
+        id g9y42500j1gJxCh069y49C; Wed, 11 Aug 2021 11:58:07 +0200
 Received: from rox.of.borg ([192.168.97.57])
         by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
         (Exim 4.93)
         (envelope-from <geert@linux-m68k.org>)
-        id 1mDkzs-001zgU-MH; Wed, 11 Aug 2021 11:58:04 +0200
+        id 1mDkzs-001zgO-H9; Wed, 11 Aug 2021 11:58:04 +0200
 Received: from geert by rox.of.borg with local (Exim 4.93)
         (envelope-from <geert@linux-m68k.org>)
-        id 1mDkzr-005NPZ-MF; Wed, 11 Aug 2021 11:58:03 +0200
+        id 1mDkzr-005NP0-He; Wed, 11 Aug 2021 11:58:03 +0200
 From:   Geert Uytterhoeven <geert@linux-m68k.org>
 To:     Robin van der Gracht <robin@protonic.nl>,
         Miguel Ojeda <ojeda@kernel.org>,
@@ -43,9 +43,9 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         devicetree@vger.kernel.org, linux-leds@vger.kernel.org,
         linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
         Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH v5 13/19] auxdisplay: ht16k33: Add helper variable dev
-Date:   Wed, 11 Aug 2021 11:57:53 +0200
-Message-Id: <20210811095759.1281480-14-geert@linux-m68k.org>
+Subject: [PATCH v5 08/19] auxdisplay: linedisp: Add support for changing scroll rate
+Date:   Wed, 11 Aug 2021 11:57:48 +0200
+Message-Id: <20210811095759.1281480-9-geert@linux-m68k.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210811095759.1281480-1-geert@linux-m68k.org>
 References: <20210811095759.1281480-1-geert@linux-m68k.org>
@@ -55,11 +55,14 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-This driver has many users of "client->dev".  Add shorthands to simplify
-the code.
+If the message to display is longer than the number of characters that
+the display can show, the message will be scrolled.  Currently the
+scroll rate is fixed, moving every 500 ms.
+
+Add support for changing the scroll rate through a "scroll_step_ms"
+device attribute in sysfs.
 
 Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Acked-by: Robin van der Gracht <robin@protonic.nl>
 ---
 v5:
   - No changes,
@@ -71,147 +74,82 @@ v3:
   - No changes,
 
 v2:
-  - Add Acked-by,
-  - Rebased.
+  - No changes.
 ---
- drivers/auxdisplay/ht16k33.c | 43 ++++++++++++++++++------------------
- 1 file changed, 22 insertions(+), 21 deletions(-)
+ drivers/auxdisplay/line-display.c | 37 +++++++++++++++++++++++++++++--
+ 1 file changed, 35 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/auxdisplay/ht16k33.c b/drivers/auxdisplay/ht16k33.c
-index 8c1689b77db95676..75d326a823543898 100644
---- a/drivers/auxdisplay/ht16k33.c
-+++ b/drivers/auxdisplay/ht16k33.c
-@@ -316,7 +316,8 @@ static void ht16k33_keypad_stop(struct input_dev *dev)
- static int ht16k33_keypad_probe(struct i2c_client *client,
- 				struct ht16k33_keypad *keypad)
- {
--	struct device_node *node = client->dev.of_node;
-+	struct device *dev = &client->dev;
-+	struct device_node *node = dev->of_node;
- 	u32 rows = HT16K33_MATRIX_KEYPAD_MAX_ROWS;
- 	u32 cols = HT16K33_MATRIX_KEYPAD_MAX_COLS;
- 	int err;
-@@ -324,7 +325,7 @@ static int ht16k33_keypad_probe(struct i2c_client *client,
- 	keypad->client = client;
- 	init_waitqueue_head(&keypad->wait);
+diff --git a/drivers/auxdisplay/line-display.c b/drivers/auxdisplay/line-display.c
+index 3f35199bc39f511f..03e7f104aa1add32 100644
+--- a/drivers/auxdisplay/line-display.c
++++ b/drivers/auxdisplay/line-display.c
+@@ -19,6 +19,8 @@
  
--	keypad->dev = devm_input_allocate_device(&client->dev);
-+	keypad->dev = devm_input_allocate_device(dev);
- 	if (!keypad->dev)
- 		return -ENOMEM;
+ #include "line-display.h"
  
-@@ -341,17 +342,17 @@ static int ht16k33_keypad_probe(struct i2c_client *client,
- 	err = of_property_read_u32(node, "debounce-delay-ms",
- 				   &keypad->debounce_ms);
- 	if (err) {
--		dev_err(&client->dev, "key debounce delay not specified\n");
-+		dev_err(dev, "key debounce delay not specified\n");
- 		return err;
- 	}
++#define DEFAULT_SCROLL_RATE	(HZ / 2)
++
+ /**
+  * linedisp_scroll() - scroll the display by a character
+  * @t: really a pointer to the private data structure
+@@ -50,7 +52,7 @@ static void linedisp_scroll(struct timer_list *t)
+ 	linedisp->scroll_pos %= linedisp->message_len;
  
--	err = matrix_keypad_parse_of_params(&client->dev, &rows, &cols);
-+	err = matrix_keypad_parse_of_params(dev, &rows, &cols);
- 	if (err)
- 		return err;
- 	if (rows > HT16K33_MATRIX_KEYPAD_MAX_ROWS ||
- 	    cols > HT16K33_MATRIX_KEYPAD_MAX_COLS) {
--		dev_err(&client->dev, "%u rows or %u cols out of range in DT\n",
--			rows, cols);
-+		dev_err(dev, "%u rows or %u cols out of range in DT\n", rows,
-+			cols);
- 		return -ERANGE;
- 	}
+ 	/* rearm the timer */
+-	if (linedisp->message_len > num_chars)
++	if (linedisp->message_len > num_chars && linedisp->scroll_rate)
+ 		mod_timer(&linedisp->timer, jiffies + linedisp->scroll_rate);
+ }
  
-@@ -362,17 +363,17 @@ static int ht16k33_keypad_probe(struct i2c_client *client,
- 	err = matrix_keypad_build_keymap(NULL, NULL, rows, cols, NULL,
- 					 keypad->dev);
- 	if (err) {
--		dev_err(&client->dev, "failed to build keymap\n");
-+		dev_err(dev, "failed to build keymap\n");
- 		return err;
- 	}
+@@ -149,8 +151,39 @@ static ssize_t message_store(struct device *dev, struct device_attribute *attr,
  
--	err = devm_request_threaded_irq(&client->dev, client->irq,
--					NULL, ht16k33_keypad_irq_thread,
-+	err = devm_request_threaded_irq(dev, client->irq, NULL,
-+					ht16k33_keypad_irq_thread,
- 					IRQF_TRIGGER_HIGH | IRQF_ONESHOT,
- 					DRIVER_NAME, keypad);
- 	if (err) {
--		dev_err(&client->dev, "irq request failed %d, error %d\n",
--			client->irq, err);
-+		dev_err(dev, "irq request failed %d, error %d\n", client->irq,
-+			err);
- 		return err;
- 	}
+ static DEVICE_ATTR_RW(message);
  
-@@ -389,14 +390,15 @@ static int ht16k33_probe(struct i2c_client *client)
- 	struct backlight_properties bl_props;
- 	struct ht16k33_priv *priv;
- 	struct ht16k33_fbdev *fbdev;
--	struct device_node *node = client->dev.of_node;
-+	struct device *dev = &client->dev;
-+	struct device_node *node = dev->of_node;
++static ssize_t scroll_step_ms_show(struct device *dev,
++				   struct device_attribute *attr, char *buf)
++{
++	struct linedisp *linedisp = container_of(dev, struct linedisp, dev);
++
++	return sysfs_emit(buf, "%u\n", jiffies_to_msecs(linedisp->scroll_rate));
++}
++
++static ssize_t scroll_step_ms_store(struct device *dev,
++				    struct device_attribute *attr,
++				    const char *buf, size_t count)
++{
++	struct linedisp *linedisp = container_of(dev, struct linedisp, dev);
++	unsigned int ms;
++
++	if (kstrtouint(buf, 10, &ms) != 0)
++		return -EINVAL;
++
++	linedisp->scroll_rate = msecs_to_jiffies(ms);
++	if (linedisp->message && linedisp->message_len > linedisp->num_chars) {
++		del_timer_sync(&linedisp->timer);
++		if (linedisp->scroll_rate)
++			linedisp_scroll(&linedisp->timer);
++	}
++
++	return count;
++}
++
++static DEVICE_ATTR_RW(scroll_step_ms);
++
+ static struct attribute *linedisp_attrs[] = {
+ 	&dev_attr_message.attr,
++	&dev_attr_scroll_step_ms.attr,
+ 	NULL,
+ };
+ ATTRIBUTE_GROUPS(linedisp);
+@@ -182,7 +215,7 @@ int linedisp_register(struct linedisp *linedisp, struct device *parent,
+ 	linedisp->update = update;
+ 	linedisp->buf = buf;
+ 	linedisp->num_chars = num_chars;
+-	linedisp->scroll_rate = HZ / 2;
++	linedisp->scroll_rate = DEFAULT_SCROLL_RATE;
  
- 	if (!i2c_check_functionality(client->adapter, I2C_FUNC_I2C)) {
--		dev_err(&client->dev, "i2c_check_functionality error\n");
-+		dev_err(dev, "i2c_check_functionality error\n");
- 		return -EIO;
- 	}
- 
--	priv = devm_kzalloc(&client->dev, sizeof(*priv), GFP_KERNEL);
-+	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
- 	if (!priv)
- 		return -ENOMEM;
- 
-@@ -413,11 +415,10 @@ static int ht16k33_probe(struct i2c_client *client)
- 	bl_props.type = BACKLIGHT_RAW;
- 	bl_props.max_brightness = MAX_BRIGHTNESS;
- 
--	bl = devm_backlight_device_register(&client->dev, DRIVER_NAME"-bl",
--					    &client->dev, priv,
-+	bl = devm_backlight_device_register(dev, DRIVER_NAME"-bl", dev, priv,
- 					    &ht16k33_bl_ops, &bl_props);
- 	if (IS_ERR(bl)) {
--		dev_err(&client->dev, "failed to register backlight\n");
-+		dev_err(dev, "failed to register backlight\n");
- 		return PTR_ERR(bl);
- 	}
- 
-@@ -426,7 +427,7 @@ static int ht16k33_probe(struct i2c_client *client)
- 	if (err) {
- 		dft_brightness = MAX_BRIGHTNESS;
- 	} else if (dft_brightness > MAX_BRIGHTNESS) {
--		dev_warn(&client->dev,
-+		dev_warn(dev,
- 			 "invalid default brightness level: %u, using %u\n",
- 			 dft_brightness, MAX_BRIGHTNESS);
- 		dft_brightness = MAX_BRIGHTNESS;
-@@ -441,13 +442,13 @@ static int ht16k33_probe(struct i2c_client *client)
- 	if (!fbdev->buffer)
- 		return -ENOMEM;
- 
--	fbdev->cache = devm_kmalloc(&client->dev, HT16K33_FB_SIZE, GFP_KERNEL);
-+	fbdev->cache = devm_kmalloc(dev, HT16K33_FB_SIZE, GFP_KERNEL);
- 	if (!fbdev->cache) {
- 		err = -ENOMEM;
- 		goto err_fbdev_buffer;
- 	}
- 
--	fbdev->info = framebuffer_alloc(0, &client->dev);
-+	fbdev->info = framebuffer_alloc(0, dev);
- 	if (!fbdev->info) {
- 		err = -ENOMEM;
- 		goto err_fbdev_buffer;
-@@ -456,7 +457,7 @@ static int ht16k33_probe(struct i2c_client *client)
- 	err = of_property_read_u32(node, "refresh-rate-hz",
- 		&fbdev->refresh_rate);
- 	if (err) {
--		dev_err(&client->dev, "refresh rate not specified\n");
-+		dev_err(dev, "refresh rate not specified\n");
- 		goto err_fbdev_info;
- 	}
- 	fb_bl_default_curve(fbdev->info, 0, MIN_BRIGHTNESS, MAX_BRIGHTNESS);
+ 	device_initialize(&linedisp->dev);
+ 	dev_set_name(&linedisp->dev, "linedisp.%lu",
 -- 
 2.25.1
 

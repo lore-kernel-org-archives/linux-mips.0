@@ -7,32 +7,32 @@ X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D0883C4320A
-	for <linux-mips@archiver.kernel.org>; Wed, 11 Aug 2021 09:58:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8C095C43216
+	for <linux-mips@archiver.kernel.org>; Wed, 11 Aug 2021 09:58:10 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id B560761102
-	for <linux-mips@archiver.kernel.org>; Wed, 11 Aug 2021 09:58:09 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 63E8260E9B
+	for <linux-mips@archiver.kernel.org>; Wed, 11 Aug 2021 09:58:10 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236744AbhHKJ6c (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        id S236792AbhHKJ6c (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
         Wed, 11 Aug 2021 05:58:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49088 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49094 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236573AbhHKJ6b (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 11 Aug 2021 05:58:31 -0400
-Received: from laurent.telenet-ops.be (laurent.telenet-ops.be [IPv6:2a02:1800:110:4::f00:19])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3986CC0613D5
+        with ESMTP id S236647AbhHKJ6c (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 11 Aug 2021 05:58:32 -0400
+Received: from albert.telenet-ops.be (albert.telenet-ops.be [IPv6:2a02:1800:110:4::f00:1a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B043FC06179F
         for <linux-mips@vger.kernel.org>; Wed, 11 Aug 2021 02:58:08 -0700 (PDT)
 Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed20:438:1ff1:1071:f524])
-        by laurent.telenet-ops.be with bizsmtp
-        id g9y4250071gJxCh019y48L; Wed, 11 Aug 2021 11:58:06 +0200
+        by albert.telenet-ops.be with bizsmtp
+        id g9y42500S1gJxCh069y498; Wed, 11 Aug 2021 11:58:06 +0200
 Received: from rox.of.borg ([192.168.97.57])
         by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
         (Exim 4.93)
         (envelope-from <geert@linux-m68k.org>)
-        id 1mDkzr-001zgJ-TO; Wed, 11 Aug 2021 11:58:03 +0200
+        id 1mDkzs-001zgP-9B; Wed, 11 Aug 2021 11:58:04 +0200
 Received: from geert by rox.of.borg with local (Exim 4.93)
         (envelope-from <geert@linux-m68k.org>)
-        id 1mDkzr-005NOP-At; Wed, 11 Aug 2021 11:58:03 +0200
+        id 1mDkzr-005NP7-IS; Wed, 11 Aug 2021 11:58:03 +0200
 From:   Geert Uytterhoeven <geert@linux-m68k.org>
 To:     Robin van der Gracht <robin@protonic.nl>,
         Miguel Ojeda <ojeda@kernel.org>,
@@ -43,9 +43,9 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         devicetree@vger.kernel.org, linux-leds@vger.kernel.org,
         linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
         Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH v5 03/19] auxdisplay: img-ascii-lcd: Fix lock-up when displaying empty string
-Date:   Wed, 11 Aug 2021 11:57:43 +0200
-Message-Id: <20210811095759.1281480-4-geert@linux-m68k.org>
+Subject: [PATCH v5 09/19] auxdisplay: ht16k33: Connect backlight to fbdev
+Date:   Wed, 11 Aug 2021 11:57:49 +0200
+Message-Id: <20210811095759.1281480-10-geert@linux-m68k.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210811095759.1281480-1-geert@linux-m68k.org>
 References: <20210811095759.1281480-1-geert@linux-m68k.org>
@@ -55,24 +55,14 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-While writing an empty string to a device attribute is a no-op, and thus
-does not need explicit safeguards, the user can still write a single
-newline to an attribute file:
+Currently /sys/class/graphics/fb0/bl_curve is not accessible (-ENODEV),
+as the driver does not connect the backlight to the frame buffer device.
+Fix this moving backlight initialization up, and filling in
+fb_info.bl_dev.
 
-    echo > .../message
-
-If that happens, img_ascii_lcd_display() trims the newline, yielding an
-empty string, and causing an infinite loop in img_ascii_lcd_scroll().
-
-Fix this by adding a check for empty strings.  Clear the display in case
-one is encountered.
-
-Fixes: 0cad855fbd083ee5 ("auxdisplay: img-ascii-lcd: driver for simple ASCII LCD displays")
+Fixes: 8992da44c6805d53 ("auxdisplay: ht16k33: Driver for LED controller")
 Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 ---
-Untested with img-ascii-lcd, but triggered with my initial version of
-linedisp.
-
 v5:
   - No changes,
 
@@ -83,32 +73,92 @@ v3:
   - No changes,
 
 v2:
-  - No changes.
+  - New.
 ---
- drivers/auxdisplay/img-ascii-lcd.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+ drivers/auxdisplay/ht16k33.c | 56 ++++++++++++++++++------------------
+ 1 file changed, 28 insertions(+), 28 deletions(-)
 
-diff --git a/drivers/auxdisplay/img-ascii-lcd.c b/drivers/auxdisplay/img-ascii-lcd.c
-index 1cce409ce5cacbc8..e33ce0151cdfd150 100644
---- a/drivers/auxdisplay/img-ascii-lcd.c
-+++ b/drivers/auxdisplay/img-ascii-lcd.c
-@@ -280,6 +280,16 @@ static int img_ascii_lcd_display(struct img_ascii_lcd_ctx *ctx,
- 	if (msg[count - 1] == '\n')
- 		count--;
+diff --git a/drivers/auxdisplay/ht16k33.c b/drivers/auxdisplay/ht16k33.c
+index 1e69cc6d21a0dca2..2b630e194570f6e5 100644
+--- a/drivers/auxdisplay/ht16k33.c
++++ b/drivers/auxdisplay/ht16k33.c
+@@ -413,6 +413,33 @@ static int ht16k33_probe(struct i2c_client *client,
+ 	if (err)
+ 		return err;
  
-+	if (!count) {
-+		/* clear the LCD */
-+		devm_kfree(&ctx->pdev->dev, ctx->message);
-+		ctx->message = NULL;
-+		ctx->message_len = 0;
-+		memset(ctx->curr, ' ', ctx->cfg->num_chars);
-+		ctx->cfg->update(ctx);
-+		return 0;
++	/* Backlight */
++	memset(&bl_props, 0, sizeof(struct backlight_properties));
++	bl_props.type = BACKLIGHT_RAW;
++	bl_props.max_brightness = MAX_BRIGHTNESS;
++
++	bl = devm_backlight_device_register(&client->dev, DRIVER_NAME"-bl",
++					    &client->dev, priv,
++					    &ht16k33_bl_ops, &bl_props);
++	if (IS_ERR(bl)) {
++		dev_err(&client->dev, "failed to register backlight\n");
++		return PTR_ERR(bl);
 +	}
 +
- 	new_msg = devm_kmalloc(&ctx->pdev->dev, count + 1, GFP_KERNEL);
- 	if (!new_msg)
- 		return -ENOMEM;
++	err = of_property_read_u32(node, "default-brightness-level",
++				   &dft_brightness);
++	if (err) {
++		dft_brightness = MAX_BRIGHTNESS;
++	} else if (dft_brightness > MAX_BRIGHTNESS) {
++		dev_warn(&client->dev,
++			 "invalid default brightness level: %u, using %u\n",
++			 dft_brightness, MAX_BRIGHTNESS);
++		dft_brightness = MAX_BRIGHTNESS;
++	}
++
++	bl->props.brightness = dft_brightness;
++	ht16k33_bl_update_status(bl);
++
+ 	/* Framebuffer (2 bytes per column) */
+ 	BUILD_BUG_ON(PAGE_SIZE < HT16K33_FB_SIZE);
+ 	fbdev->buffer = (unsigned char *) get_zeroed_page(GFP_KERNEL);
+@@ -445,6 +472,7 @@ static int ht16k33_probe(struct i2c_client *client,
+ 	fbdev->info->screen_size = HT16K33_FB_SIZE;
+ 	fbdev->info->fix = ht16k33_fb_fix;
+ 	fbdev->info->var = ht16k33_fb_var;
++	fbdev->info->bl_dev = bl;
+ 	fbdev->info->pseudo_palette = NULL;
+ 	fbdev->info->flags = FBINFO_FLAG_DEFAULT;
+ 	fbdev->info->par = priv;
+@@ -460,34 +488,6 @@ static int ht16k33_probe(struct i2c_client *client,
+ 			goto err_fbdev_unregister;
+ 	}
+ 
+-	/* Backlight */
+-	memset(&bl_props, 0, sizeof(struct backlight_properties));
+-	bl_props.type = BACKLIGHT_RAW;
+-	bl_props.max_brightness = MAX_BRIGHTNESS;
+-
+-	bl = devm_backlight_device_register(&client->dev, DRIVER_NAME"-bl",
+-					    &client->dev, priv,
+-					    &ht16k33_bl_ops, &bl_props);
+-	if (IS_ERR(bl)) {
+-		dev_err(&client->dev, "failed to register backlight\n");
+-		err = PTR_ERR(bl);
+-		goto err_fbdev_unregister;
+-	}
+-
+-	err = of_property_read_u32(node, "default-brightness-level",
+-				   &dft_brightness);
+-	if (err) {
+-		dft_brightness = MAX_BRIGHTNESS;
+-	} else if (dft_brightness > MAX_BRIGHTNESS) {
+-		dev_warn(&client->dev,
+-			 "invalid default brightness level: %u, using %u\n",
+-			 dft_brightness, MAX_BRIGHTNESS);
+-		dft_brightness = MAX_BRIGHTNESS;
+-	}
+-
+-	bl->props.brightness = dft_brightness;
+-	ht16k33_bl_update_status(bl);
+-
+ 	ht16k33_fb_queue(priv);
+ 	return 0;
+ 
 -- 
 2.25.1
 

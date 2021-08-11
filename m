@@ -2,100 +2,114 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-8.8 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 10866C432BE
-	for <linux-mips@archiver.kernel.org>; Wed, 11 Aug 2021 11:29:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D183AC4320A
+	for <linux-mips@archiver.kernel.org>; Wed, 11 Aug 2021 15:35:40 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id E902D60FC3
-	for <linux-mips@archiver.kernel.org>; Wed, 11 Aug 2021 11:29:24 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id AF13460F46
+	for <linux-mips@archiver.kernel.org>; Wed, 11 Aug 2021 15:35:40 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237332AbhHKL3q convert rfc822-to-8bit (ORCPT
-        <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 11 Aug 2021 07:29:46 -0400
-Received: from mail-vs1-f45.google.com ([209.85.217.45]:43569 "EHLO
-        mail-vs1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237210AbhHKL3m (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 11 Aug 2021 07:29:42 -0400
-Received: by mail-vs1-f45.google.com with SMTP id s196so1240625vsc.10;
-        Wed, 11 Aug 2021 04:29:18 -0700 (PDT)
+        id S233058AbhHKPgC (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 11 Aug 2021 11:36:02 -0400
+Received: from mail-vs1-f42.google.com ([209.85.217.42]:42700 "EHLO
+        mail-vs1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233010AbhHKPgC (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 11 Aug 2021 11:36:02 -0400
+Received: by mail-vs1-f42.google.com with SMTP id k24so1764345vsg.9;
+        Wed, 11 Aug 2021 08:35:37 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=40wisL4/SKjdMqbDzvwZrkyDfanri5aoKVnQRyWUuY0=;
-        b=SyG6+XczyIGKkdTh4UR41xo5YbZc+ITtlXgZsw+I7R9zWx0YDIqWadUMBjDz1F9WBx
-         6B++eWQDkkBRTwSNCRJUuVjSdXO6XOv1eixJFAiivX8K7gGA7Q8xzctv9xnHX9UvaiLD
-         o1GNzDsw+mjumXC99nphkWAQpzPWgQZXfJEKlxuIuRpspJTWMfD4HzH+PvPvOv8SwmoD
-         oXGfcXRAYQrdLtGsfUQhemsBfC3a8WAx49scXrEseDo5thDJiyClflda/zuUoqbGU1pL
-         q9BAWKt1GZC3wVxVmwQPItLMCrBZkaMqscsuSaq+/NBOUV7dy2lKLYccCDKxGPr/Puv6
-         Ge/Q==
-X-Gm-Message-State: AOAM533G4k4AwlQALJnnZow/MxtR0erk3C6vPZrTVm8XDMdulay5fT05
-        ZU1zppPlQ8mK5ettEk0Dgeohe88pVSzKTVJ5amg=
-X-Google-Smtp-Source: ABdhPJy4XrbkHkqk1N7n531OJu2JQkcYcvarSrfV7a1TjAP6AU3ROsnF7Eatvrj+CJP4HBfqYOWJdNPELnM5eP6VJV4=
-X-Received: by 2002:a67:e2c7:: with SMTP id i7mr25004885vsm.3.1628681358404;
- Wed, 11 Aug 2021 04:29:18 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=qe0iSj8XpU18YU856j4Cl+K1mgU1eag6gHjOJIBodYU=;
+        b=NxbMnEOENBHaXg4NMprVdhDf6hm/iv8kojr90GBi/mZJvHW2UBFe3kuT37cSCMFpOJ
+         WSKTIZrLDfHkr3TCElHHczCSfqT94Kl8POn7qJ0H8q4XD+QeFIVI7O5D/ASitH+1RsVz
+         ImwdIRcCp1UJetSE/xdF/uDTnW6WoN0evVQbWoBYLEcLzF4rJUGNwJa/uP9naCWVfW+B
+         5C7uFG3wWW+2dYv59oZRPPhbDzgWUUYfWyNbf5SDQtHLCFUPjH8pekxT2uziRhGOcxTy
+         PkPqp8ozJMKO2RWf6QFF4q7HbJu1awxrLDiqUidDKLSAugYQYAd9RxKGw4jsRdErdNsf
+         NdNQ==
+X-Gm-Message-State: AOAM532FKs2F8dhaSJE9z8LbThpgml7plQ1eXadzYFJKB/UZW59xx9Vq
+        MxkfEDSVkqERhRomXeWlr5HDusICQEN7n/4Yzos=
+X-Google-Smtp-Source: ABdhPJyCg7XeMMJOVeEoBRA0hgH3tr2A9kDf4d5be/Soj53sLrczZ+iXFRzYK6VNuP5kM7qaaKYjO/TzUNz0MI9TmgQ=
+X-Received: by 2002:a67:8009:: with SMTP id b9mr27769636vsd.18.1628696137555;
+ Wed, 11 Aug 2021 08:35:37 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210811095759.1281480-1-geert@linux-m68k.org>
- <20210811095759.1281480-20-geert@linux-m68k.org> <20210811124755.37b0a0a9@thinkpad>
-In-Reply-To: <20210811124755.37b0a0a9@thinkpad>
+References: <cover.1628670468.git.geert+renesas@glider.be> <92b6718f5618d5469f67b48fbea189cca0c12f4b.1628670468.git.geert+renesas@glider.be>
+In-Reply-To: <92b6718f5618d5469f67b48fbea189cca0c12f4b.1628670468.git.geert+renesas@glider.be>
 From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Wed, 11 Aug 2021 13:29:07 +0200
-Message-ID: <CAMuHMdUFPvJBuFByiN6pb539REYtcsNJMKML+M2NQw=GJxTYJg@mail.gmail.com>
-Subject: Re: [PATCH v5 19/19] auxdisplay: ht16k33: Add LED support
-To:     =?UTF-8?B?TWFyZWsgQmVow7pu?= <kabel@kernel.org>
-Cc:     Robin van der Gracht <robin@protonic.nl>,
-        Miguel Ojeda <ojeda@kernel.org>,
+Date:   Wed, 11 Aug 2021 17:35:26 +0200
+Message-ID: <CAMuHMdVFJ_qGs0V7f+XhfD6v3WnkMJ98fO31sCRSNaeS89XXUQ@mail.gmail.com>
+Subject: Re: [PATCH v5 1/9] MIPS: Avoid future duplicate elf core header reservation
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc:     Russell King <linux@armlinux.org.uk>,
         Rob Herring <robh+dt@kernel.org>,
-        Paul Burton <paulburton@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Pavel Machek <pavel@ucw.cz>,
+        Nicolas Pitre <nico@fluxnic.net>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Nick Kossifidis <mick@ics.forth.gr>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Dave Young <dyoung@redhat.com>, Baoquan He <bhe@redhat.com>,
+        Vivek Goyal <vgoyal@redhat.com>,
+        Mike Rapoport <rppt@kernel.org>,
         "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
         <devicetree@vger.kernel.org>,
-        linux-leds <linux-leds@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
         "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        kexec@lists.infradead.org,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Hi Marek,
-
-On Wed, Aug 11, 2021 at 12:48 PM Marek Behún <kabel@kernel.org> wrote:
-> On Wed, 11 Aug 2021 11:57:59 +0200
-> Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+On Wed, Aug 11, 2021 at 10:51 AM Geert Uytterhoeven
+<geert+renesas@glider.be> wrote:
+> Prepare for early_init_fdt_scan_reserved_mem() reserving the memory
+> occupied by an elf core header described in the device tree.
+> As arch_mem_init() calls early_init_fdt_scan_reserved_mem() before
+> mips_reserve_vmcore(), the latter needs to check if the memory has
+> already been reserved before.
 >
-> > Instantiate a single LED based on the "led" subnode in DT.
-> > This allows the user to control display brightness and blinking (backed
-> > by hardware support) through the LED class API and triggers, and exposes
-> > the display color.  The LED will be named
-> > "auxdisplay:<color>:<function>".
-> >
-> > When running in dot-matrix mode and if no "led" subnode is found, the
-> > driver falls back to the traditional backlight mode, to preserve
-> > backwards compatibility.
-> >
-> > Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> Note that mips_reserve_vmcore() cannot just be removed, as not all MIPS
+> systems use DT.
 >
-> Reviewed-by: Marek Behún <kabel@kernel.org>
-
-Thanks!
-
-> BTW, this driver does not need to depend on OF, methinks.
-> The few instances of properties reading can be
-> easily rewritten to device_* functions (from include/linux/property.h).
-> The of_get_child_by_name() can become device_get_named_child_node().
+> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> ---
+> v5:
+>   - New.
+> ---
+>  arch/mips/kernel/setup.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
 >
-> Geert, what do you think?
+> diff --git a/arch/mips/kernel/setup.c b/arch/mips/kernel/setup.c
+> index 23a140327a0bac1b..4693add05743d78b 100644
+> --- a/arch/mips/kernel/setup.c
+> +++ b/arch/mips/kernel/setup.c
+> @@ -429,7 +429,8 @@ static void __init mips_reserve_vmcore(void)
+>         pr_info("Reserving %ldKB of memory at %ldKB for kdump\n",
+>                 (unsigned long)elfcorehdr_size >> 10, (unsigned long)elfcorehdr_addr >> 10);
+>
+> -       memblock_reserve(elfcorehdr_addr, elfcorehdr_size);
+> +       if (!memblock_is_region_reserved(elfcorehdr_addr, elfcorehdr_size)
 
-Sure, that can be done later, when an ACPI user appears?
-The dependency on OF was pre-existing, and this series is already
-at v5.
+As pointed out by lkp, there's a closing parenthesis missing.
+
+/me hides back under his rock.
+
+> +               memblock_reserve(elfcorehdr_addr, elfcorehdr_size);
+>  #endif
 
 Gr{oetje,eeting}s,
 

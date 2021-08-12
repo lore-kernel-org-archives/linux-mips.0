@@ -2,277 +2,108 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-18.0 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,NICE_REPLY_A,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-10.2 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=unavailable
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2497FC4320A
-	for <linux-mips@archiver.kernel.org>; Thu, 12 Aug 2021 09:05:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 211C0C4338F
+	for <linux-mips@archiver.kernel.org>; Thu, 12 Aug 2021 14:25:50 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 01A7C6103A
-	for <linux-mips@archiver.kernel.org>; Thu, 12 Aug 2021 09:05:07 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 0008760EFE
+	for <linux-mips@archiver.kernel.org>; Thu, 12 Aug 2021 14:25:49 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235642AbhHLJFa (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 12 Aug 2021 05:05:30 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:46367 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235576AbhHLJF3 (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>);
-        Thu, 12 Aug 2021 05:05:29 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1628759103;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=JgMWN7/eNl2nw6MdbRkVkIrc4drjFaFJaW8jw61Jzlk=;
-        b=L9IhEPWzugPGj5W+AveFkpeQh/XKcDSx8l3CgP0m2uJgNBOYN6xuzuQOXdEdhlntdZOey5
-        TAQlVEiAWZC8w00tGyhatKej+Bxh2VEfSfRVZBeh4w0r8AVinvWgWRVuB9FsN1GyQJ7k/7
-        Y1owOm45Z7m3ZT43QChjKZ/RtOaqbhk=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-308-7zgB55jgOdmspVAZINTyUA-1; Thu, 12 Aug 2021 05:05:02 -0400
-X-MC-Unique: 7zgB55jgOdmspVAZINTyUA-1
-Received: by mail-wr1-f72.google.com with SMTP id o10-20020a5d684a0000b0290154758805bcso1600195wrw.3
-        for <linux-mips@vger.kernel.org>; Thu, 12 Aug 2021 02:05:01 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=JgMWN7/eNl2nw6MdbRkVkIrc4drjFaFJaW8jw61Jzlk=;
-        b=Xc5XAQJznaG86nI5Y42vcrrRkQvvGCLuaVi7pxGN/DdVRabFgOcQyGjdflZGXey+pE
-         zwr0cWYh0Sfe+DEHEflXk7Wt3uuNUJ46AEb+Pr6BUBXfJKmGPn4sY3bbRz/FZQP6L/zF
-         cKSN4/mGmr+V3ZRF03PfOsJxtRfhTNTeeKRTX9Rpt+FiWa58LSEmqV3oO3++TCmBiBwF
-         x+21qouF3yutXuJucRbN805vbl0aB77P/4zQW/Au4fFYHPLj/Z3tGdN+DMsE1Np51GpS
-         z2mNxAjrqdjd/0gpwOS9Pu2VYxqGZ7oMAd6krkKLNOKmKXeNNUQI3/RPpZk5J6eKtJsB
-         JJsw==
-X-Gm-Message-State: AOAM532PPC+o8OBO5XINWhsStlYaW4L86c+ustVk8YPfJ+LBPOkCSlfJ
-        7TgxeQGOqVH5Wtudzu9TDxiWENSCsUus+xDA6GOLEkvhJyl2YvsXWePwaNaKHE2Apgc3Lzh4sdt
-        mqDtZcdRmXOhL5Rk4f67LMg==
-X-Received: by 2002:a5d:6d03:: with SMTP id e3mr2798719wrq.153.1628759100835;
-        Thu, 12 Aug 2021 02:05:00 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJw14l6W1wkrgjVxsT5cj4nrtOlS6mn0en/HDpnzJRRlmx+RwnP3XwnlZp0HL14993xrDLfaIA==
-X-Received: by 2002:a5d:6d03:: with SMTP id e3mr2798682wrq.153.1628759100598;
-        Thu, 12 Aug 2021 02:05:00 -0700 (PDT)
-Received: from [192.168.3.132] (p4ff23d8b.dip0.t-ipconnect.de. [79.242.61.139])
-        by smtp.gmail.com with ESMTPSA id i21sm2300276wrb.62.2021.08.12.02.04.58
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 12 Aug 2021 02:05:00 -0700 (PDT)
-Subject: Re: [PATCH v2 1/2] KVM: Refactor kvm_arch_vcpu_fault() to return a
- struct page pointer
-To:     Hou Wenlong <houwenlong93@linux.alibaba.com>, kvm@vger.kernel.org
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Marc Zyngier <maz@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Paul Mackerras <paulus@ozlabs.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Janosch Frank <frankja@linux.ibm.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
-        kvm-ppc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-s390@vger.kernel.org
-References: <YRQcZqCWwVH8bCGc@google.com>
- <1c510b24fc1d7cbae8aa4b69c0799ebd32e65b82.1628739116.git.houwenlong93@linux.alibaba.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Message-ID: <98adbd3c-ec6f-5689-1686-2a8a7909951a@redhat.com>
-Date:   Thu, 12 Aug 2021 11:04:58 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.11.0
+        id S234110AbhHLO0O (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 12 Aug 2021 10:26:14 -0400
+Received: from elvis.franken.de ([193.175.24.41]:57499 "EHLO elvis.franken.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233282AbhHLO0O (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Thu, 12 Aug 2021 10:26:14 -0400
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1mEBeQ-0002iE-00; Thu, 12 Aug 2021 16:25:42 +0200
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id DCCD2C07DD; Thu, 12 Aug 2021 16:09:34 +0200 (CEST)
+Date:   Thu, 12 Aug 2021 16:09:34 +0200
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Jiaxun Yang <jiaxun.yang@flygoat.com>
+Cc:     linux-mips@vger.kernel.org, mturquette@baylibre.com,
+        daniel.lezcano@linaro.org, linus.walleij@linaro.org,
+        vkoul@kernel.org, linux-kernel@vger.kernel.org,
+        linux-clk@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-phy@lists.infradead.org, devicetree@vger.kernel.org
+Subject: Re: [PATCH v4 0/9] MIPS: Migrate pistachio to generic kernel
+Message-ID: <20210812140934.GA9924@alpha.franken.de>
+References: <20210723022543.4095-1-jiaxun.yang@flygoat.com>
 MIME-Version: 1.0
-In-Reply-To: <1c510b24fc1d7cbae8aa4b69c0799ebd32e65b82.1628739116.git.houwenlong93@linux.alibaba.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210723022543.4095-1-jiaxun.yang@flygoat.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On 12.08.21 06:02, Hou Wenlong wrote:
-> From: Sean Christopherson <seanjc@google.com>
+On Fri, Jul 23, 2021 at 10:25:34AM +0800, Jiaxun Yang wrote:
+> I'm lucky enough to get a Creator CI40 board from dusts.
+> This patchset move it to gerneic kernel to reduce maintenance burden.
+> It have been tested with SD Card boot.
 > 
-> Refactor kvm_arch_vcpu_fault() to return 'struct page *' instead of
-> 'vm_fault_t' to simplify architecture specific implementations that do
-> more than return SIGBUS.  Currently this only applies to s390, but a
-> future patch will move x86's pio_data handling into x86 where it belongs.
+> --
+> v2: Minor fixes
+> v3: Typo fixes and 0day testbot warning fix (Thanks to Sergei!)
+> v4: 01.org warning fix
 > 
-> No functional changed intended.
+> Jiaxun Yang (9):
+>   MIPS: generic: Allow generating FIT image for Marduk board
+>   MIPS: DTS: Pistachio add missing cpc and cdmm
+>   clk: pistachio: Make it selectable for generic MIPS kernel
+>   clocksource/drivers/pistachio: Make it selectable for MIPS
+>   phy: pistachio-usb: Depend on MIPS || COMPILE_TEST
+>   pinctrl: pistachio: Make it as an option
+>   MIPS: config: generic: Add config for Marduk board
+>   MIPS: Retire MACH_PISTACHIO
+>   MIPS: Make a alias for pistachio_defconfig
 > 
-> Cc: Hou Wenlong <houwenlong93@linux.alibaba.com>
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
-> Signed-off-by: Hou Wenlong <houwenlong93@linux.alibaba.com>
-> ---
->   arch/arm64/kvm/arm.c       |  4 ++--
->   arch/mips/kvm/mips.c       |  4 ++--
->   arch/powerpc/kvm/powerpc.c |  4 ++--
->   arch/s390/kvm/kvm-s390.c   | 12 ++++--------
->   arch/x86/kvm/x86.c         |  4 ++--
->   include/linux/kvm_host.h   |  2 +-
->   virt/kvm/kvm_main.c        |  5 ++++-
->   7 files changed, 17 insertions(+), 18 deletions(-)
-> 
-> diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
-> index e9a2b8f27792..83f4ffe3e4f2 100644
-> --- a/arch/arm64/kvm/arm.c
-> +++ b/arch/arm64/kvm/arm.c
-> @@ -161,9 +161,9 @@ int kvm_arch_init_vm(struct kvm *kvm, unsigned long type)
->   	return ret;
->   }
->   
-> -vm_fault_t kvm_arch_vcpu_fault(struct kvm_vcpu *vcpu, struct vm_fault *vmf)
-> +struct page *kvm_arch_vcpu_fault(struct kvm_vcpu *vcpu, struct vm_fault *vmf)
->   {
-> -	return VM_FAULT_SIGBUS;
-> +	return NULL;
->   }
->   
->   
-> diff --git a/arch/mips/kvm/mips.c b/arch/mips/kvm/mips.c
-> index af9dd029a4e1..ae79874e6fd2 100644
-> --- a/arch/mips/kvm/mips.c
-> +++ b/arch/mips/kvm/mips.c
-> @@ -1053,9 +1053,9 @@ int kvm_arch_vcpu_ioctl_set_fpu(struct kvm_vcpu *vcpu, struct kvm_fpu *fpu)
->   	return -ENOIOCTLCMD;
->   }
->   
-> -vm_fault_t kvm_arch_vcpu_fault(struct kvm_vcpu *vcpu, struct vm_fault *vmf)
-> +struct page *kvm_arch_vcpu_fault(struct kvm_vcpu *vcpu, struct vm_fault *vmf)
->   {
-> -	return VM_FAULT_SIGBUS;
-> +	return NULL;
->   }
->   
->   int kvm_vm_ioctl_check_extension(struct kvm *kvm, long ext)
-> diff --git a/arch/powerpc/kvm/powerpc.c b/arch/powerpc/kvm/powerpc.c
-> index be33b5321a76..b9c21f9ab784 100644
-> --- a/arch/powerpc/kvm/powerpc.c
-> +++ b/arch/powerpc/kvm/powerpc.c
-> @@ -2090,9 +2090,9 @@ long kvm_arch_vcpu_ioctl(struct file *filp,
->   	return r;
->   }
->   
-> -vm_fault_t kvm_arch_vcpu_fault(struct kvm_vcpu *vcpu, struct vm_fault *vmf)
-> +struct page *kvm_arch_vcpu_fault(struct kvm_vcpu *vcpu, struct vm_fault *vmf)
->   {
-> -	return VM_FAULT_SIGBUS;
-> +	return NULL;
->   }
->   
->   static int kvm_vm_ioctl_get_pvinfo(struct kvm_ppc_pvinfo *pvinfo)
-> diff --git a/arch/s390/kvm/kvm-s390.c b/arch/s390/kvm/kvm-s390.c
-> index 02574d7b3612..e1b69833e228 100644
-> --- a/arch/s390/kvm/kvm-s390.c
-> +++ b/arch/s390/kvm/kvm-s390.c
-> @@ -4979,17 +4979,13 @@ long kvm_arch_vcpu_ioctl(struct file *filp,
->   	return r;
->   }
->   
-> -vm_fault_t kvm_arch_vcpu_fault(struct kvm_vcpu *vcpu, struct vm_fault *vmf)
-> +struct page *kvm_arch_vcpu_fault(struct kvm_vcpu *vcpu, struct vm_fault *vmf)
->   {
->   #ifdef CONFIG_KVM_S390_UCONTROL
-> -	if ((vmf->pgoff == KVM_S390_SIE_PAGE_OFFSET)
-> -		 && (kvm_is_ucontrol(vcpu->kvm))) {
-> -		vmf->page = virt_to_page(vcpu->arch.sie_block);
-> -		get_page(vmf->page);
-> -		return 0;
-> -	}
-> +	if (vmf->pgoff == KVM_S390_SIE_PAGE_OFFSET && kvm_is_ucontrol(vcpu->kvm))
-> +		return virt_to_page(vcpu->arch.sie_block);
->   #endif
-> -	return VM_FAULT_SIGBUS;
-> +	return NULL;
->   }
->   
->   /* Section: memory related */
-> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> index 3cedc7cc132a..1e3bbe5cd33a 100644
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -5347,9 +5347,9 @@ long kvm_arch_vcpu_ioctl(struct file *filp,
->   	return r;
->   }
->   
-> -vm_fault_t kvm_arch_vcpu_fault(struct kvm_vcpu *vcpu, struct vm_fault *vmf)
-> +struct page *kvm_arch_vcpu_fault(struct kvm_vcpu *vcpu, struct vm_fault *vmf)
->   {
-> -	return VM_FAULT_SIGBUS;
-> +	return NULL;
->   }
->   
->   static int kvm_vm_ioctl_set_tss_addr(struct kvm *kvm, unsigned long addr)
-> diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
-> index 492d183dd7d0..a949de534722 100644
-> --- a/include/linux/kvm_host.h
-> +++ b/include/linux/kvm_host.h
-> @@ -995,7 +995,7 @@ long kvm_arch_dev_ioctl(struct file *filp,
->   			unsigned int ioctl, unsigned long arg);
->   long kvm_arch_vcpu_ioctl(struct file *filp,
->   			 unsigned int ioctl, unsigned long arg);
-> -vm_fault_t kvm_arch_vcpu_fault(struct kvm_vcpu *vcpu, struct vm_fault *vmf);
-> +struct page *kvm_arch_vcpu_fault(struct kvm_vcpu *vcpu, struct vm_fault *vmf);
->   
->   int kvm_vm_ioctl_check_extension(struct kvm *kvm, long ext);
->   
-> diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
-> index 30d322519253..f7d21418971b 100644
-> --- a/virt/kvm/kvm_main.c
-> +++ b/virt/kvm/kvm_main.c
-> @@ -3448,7 +3448,10 @@ static vm_fault_t kvm_vcpu_fault(struct vm_fault *vmf)
->   		    &vcpu->dirty_ring,
->   		    vmf->pgoff - KVM_DIRTY_LOG_PAGE_OFFSET);
->   	else
-> -		return kvm_arch_vcpu_fault(vcpu, vmf);
-> +		page = kvm_arch_vcpu_fault(vcpu, vmf);
-> +	if (!page)
-> +		return VM_FAULT_SIGBUS;
-> +
->   	get_page(page);
->   	vmf->page = page;
->   	return 0;
-> 
+>  arch/mips/Kbuild.platforms                    |   1 -
+>  arch/mips/Kconfig                             |  30 --
+>  arch/mips/Makefile                            |   3 +
+>  arch/mips/boot/dts/Makefile                   |   2 +-
+>  arch/mips/boot/dts/img/Makefile               |   3 +-
+>  arch/mips/boot/dts/img/pistachio.dtsi         |  10 +
+>  arch/mips/configs/generic/board-marduk.config |  53 +++
+>  arch/mips/configs/pistachio_defconfig         | 316 ------------------
+>  arch/mips/generic/Kconfig                     |   6 +
+>  arch/mips/generic/Platform                    |   1 +
+>  arch/mips/generic/board-marduk.its.S          |  22 ++
+>  arch/mips/pistachio/Kconfig                   |  14 -
+>  arch/mips/pistachio/Makefile                  |   2 -
+>  arch/mips/pistachio/Platform                  |   6 -
+>  arch/mips/pistachio/init.c                    | 125 -------
+>  arch/mips/pistachio/irq.c                     |  24 --
+>  arch/mips/pistachio/time.c                    |  55 ---
+>  drivers/clk/Kconfig                           |   1 +
+>  drivers/clk/Makefile                          |   2 +-
+>  drivers/clk/pistachio/Kconfig                 |   8 +
+>  drivers/clocksource/Kconfig                   |   3 +-
+>  drivers/phy/Kconfig                           |   2 +-
+>  drivers/pinctrl/Kconfig                       |   5 +-
+>  23 files changed, 114 insertions(+), 580 deletions(-)
+>  create mode 100644 arch/mips/configs/generic/board-marduk.config
+>  delete mode 100644 arch/mips/configs/pistachio_defconfig
+>  create mode 100644 arch/mips/generic/board-marduk.its.S
+>  delete mode 100644 arch/mips/pistachio/Kconfig
+>  delete mode 100644 arch/mips/pistachio/Makefile
+>  delete mode 100644 arch/mips/pistachio/Platform
+>  delete mode 100644 arch/mips/pistachio/init.c
+>  delete mode 100644 arch/mips/pistachio/irq.c
+>  delete mode 100644 arch/mips/pistachio/time.c
+>  create mode 100644 drivers/clk/pistachio/Kconfig
 
-Reviewed-by: David Hildenbrand <david@redhat.com>
+series applied to mips-next.
 
-But at the same time I wonder if we should just get rid of 
-CONFIG_KVM_S390_UCONTROL and consequently kvm_arch_vcpu_fault().
-
-
-In practice CONFIG_KVM_S390_UCONTROL, is never enabled in any reasonable 
-kernel build and consequently it's never tested; further, exposing the 
-sie_block to user space allows user space to generate random SIE 
-validity intercepts.
-
-CONFIG_KVM_S390_UCONTROL feels like something that should just be 
-maintained out of tree by someone who really needs to hack deep into hw 
-virtualization for testing purposes etc.
+Thomas.
 
 -- 
-Thanks,
-
-David / dhildenb
-
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]

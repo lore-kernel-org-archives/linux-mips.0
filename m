@@ -2,88 +2,126 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-5.8 required=3.0 tests=BAYES_00,DKIM_SIGNED,
-	DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-8.7 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,MAILING_LIST_MULTI,
+	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 97426C4338F
-	for <linux-mips@archiver.kernel.org>; Fri, 13 Aug 2021 08:11:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9B1DCC4338F
+	for <linux-mips@archiver.kernel.org>; Fri, 13 Aug 2021 12:53:05 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 700EF60234
-	for <linux-mips@archiver.kernel.org>; Fri, 13 Aug 2021 08:11:56 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 78E4D6103A
+	for <linux-mips@archiver.kernel.org>; Fri, 13 Aug 2021 12:53:05 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239754AbhHMIMW (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 13 Aug 2021 04:12:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35062 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239668AbhHMIMV (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Fri, 13 Aug 2021 04:12:21 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C161C061756;
-        Fri, 13 Aug 2021 01:11:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=J5iMSjwPMvkOFpq0TMlTZtl3sxje2OPtaEgmn6rI3kw=; b=tLoy64zP56BA6COvXf26VAiBG9
-        oKjbIjnNL8arRxo50od3oQ9WiLXRnnIQhwWpPCi11t8FmIOTy5frodVYORATqo1cnyknkdAttACMh
-        IuMWI23bPAIcxV2I4FQ55yZj75VZCoja9nk9jCbJl2kLpcbtCS6bW+/E3OtXurRenuXwnHahWGhHg
-        VmR8RasuVRLggxW1RHCjYBVYq+of6asU83tj5SwmMaoQZlZNE/hmhjV94fEjEqMYdxvBoRzvKKJgC
-        EoAexDTExue7OUZO7UKAGrfL514yBqR5kWkuh5KUCOhD+Khwegyzwh0IZDHIBx/Bt0akrVQgr2x1g
-        9A5BlXNA==;
-Received: from hch by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mESEG-00FTaW-Kf; Fri, 13 Aug 2021 08:07:59 +0000
-Date:   Fri, 13 Aug 2021 09:07:48 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Richard Henderson <rth@twiddle.net>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        James E J Bottomley <James.Bottomley@hansenpartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        "David S . Miller" <davem@davemloft.net>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "Michael S . Tsirkin" <mst@redhat.com>,
-        Peter H Anvin <hpa@zytor.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        x86@kernel.org, linux-kernel@vger.kernel.org,
-        linux-pci@vger.kernel.org, linux-alpha@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
-        sparclinux@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-doc@vger.kernel.org,
-        virtualization@lists.linux-foundation.org
-Subject: Re: [PATCH v4 12/15] pci: Mark MSI data shared
-Message-ID: <YRYoVBIXZ/910eaq@infradead.org>
-References: <20210805005218.2912076-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <20210805005218.2912076-13-sathyanarayanan.kuppuswamy@linux.intel.com>
+        id S240279AbhHMMxb convert rfc822-to-8bit (ORCPT
+        <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 13 Aug 2021 08:53:31 -0400
+Received: from mail-vs1-f50.google.com ([209.85.217.50]:34646 "EHLO
+        mail-vs1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233416AbhHMMxb (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Fri, 13 Aug 2021 08:53:31 -0400
+Received: by mail-vs1-f50.google.com with SMTP id l22so5928953vsi.1;
+        Fri, 13 Aug 2021 05:53:04 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=GUkLMwD2j+LMs+Mhg8retAXqFr+2fCyVciaZId7XXMA=;
+        b=A+DzMKh4SaI8IKueMe35NE6ASnRVifB/NBYZX/KGnlJTV2kWkfMtpUDCQzWd3qjVJO
+         Wy1VM4v21eEHWU1DfNhtEeV7Fy6cqj2zE6FVwmMBX4WtnbaechVx9fBRbSi2KkBHtUDM
+         ja7sx7g8zMX0g4zN5vAaOLt0JchtWm4Tznc7buTYRItM/C+WTGrmJ7Rv4zD+w6Kbzm95
+         IFOUpwTj1MhzlQF6RWNFRVHnsktUvnoxDOw0IC6BJOHcxUXWf3d2K9QbxK9fz7NWoATu
+         7wOZEe15THA+ykF6m2QwCsZqtJJjHJkamhPFTVVu/U4vcKqVcXY2nfD94t9iLynowXRj
+         LFyw==
+X-Gm-Message-State: AOAM533CYkLOQ078pKB3UPE6RzN1mGLSSWnt8FkimyOtbv2I/a6HFngl
+        uRAcMx2mYV8id8UPumpqQLfqhJXRHEMbImvt+To=
+X-Google-Smtp-Source: ABdhPJzjK6cDtV6QbCobPoCPv+kseDVbo2qNoxZBSAFh+8+1qixu6jaaer/OLjhFttaw7VgR0TV8HigL8Np+ZSkG7+k=
+X-Received: by 2002:a05:6102:e59:: with SMTP id p25mr1482758vst.26.1628859183649;
+ Fri, 13 Aug 2021 05:53:03 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210805005218.2912076-13-sathyanarayanan.kuppuswamy@linux.intel.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+References: <20210811095759.1281480-1-geert@linux-m68k.org>
+ <20210811095759.1281480-20-geert@linux-m68k.org> <20210811124755.37b0a0a9@thinkpad>
+ <CAMuHMdUFPvJBuFByiN6pb539REYtcsNJMKML+M2NQw=GJxTYJg@mail.gmail.com> <CAHp75VeNyHUmcU7GPnP8woRcDErDNQ5M3FHQGpLnhUoL5qTnLQ@mail.gmail.com>
+In-Reply-To: <CAHp75VeNyHUmcU7GPnP8woRcDErDNQ5M3FHQGpLnhUoL5qTnLQ@mail.gmail.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Fri, 13 Aug 2021 14:52:52 +0200
+Message-ID: <CAMuHMdVFOu6EXKqkiLgBp3n8Oujm+uSpFn-ximtp+37TOZSp9A@mail.gmail.com>
+Subject: Re: [PATCH v5 19/19] auxdisplay: ht16k33: Add LED support
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     =?UTF-8?B?TWFyZWsgQmVow7pu?= <kabel@kernel.org>,
+        Robin van der Gracht <robin@protonic.nl>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Paul Burton <paulburton@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Pavel Machek <pavel@ucw.cz>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        linux-leds <linux-leds@vger.kernel.org>,
+        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Wed, Aug 04, 2021 at 05:52:15PM -0700, Kuppuswamy Sathyanarayanan wrote:
->  
-> -	return ioremap(phys_addr, nr_entries * PCI_MSIX_ENTRY_SIZE);
-> +	return ioremap_shared(phys_addr, nr_entries * PCI_MSIX_ENTRY_SIZE);
+Hi Andy,
 
-Please add a comment here.  I also find the amount of ioremap_* variants
-rather frustrating.  Maybe it it is time for a ioremap_flags which
-replaces the too-lowlevel pgprot_t of the ioremap_prot provided by some
-architectures with a more highlevel flags arguments that could also
-provide an accessible to the hypervisor flag.
+On Thu, Aug 12, 2021 at 2:33 PM Andy Shevchenko
+<andy.shevchenko@gmail.com> wrote:
+> On Wednesday, August 11, 2021, Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+>> On Wed, Aug 11, 2021 at 12:48 PM Marek Behún <kabel@kernel.org> wrote:
+>> > On Wed, 11 Aug 2021 11:57:59 +0200
+>> > Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+>> > > Instantiate a single LED based on the "led" subnode in DT.
+>> > > This allows the user to control display brightness and blinking (backed
+>> > > by hardware support) through the LED class API and triggers, and exposes
+>> > > the display color.  The LED will be named
+>> > > "auxdisplay:<color>:<function>".
+>> > >
+>> > > When running in dot-matrix mode and if no "led" subnode is found, the
+>> > > driver falls back to the traditional backlight mode, to preserve
+>> > > backwards compatibility.
+>> > >
+>> > > Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+>> >
+>> > Reviewed-by: Marek Behún <kabel@kernel.org>
+>>
+>> Thanks!
+>>
+>> > BTW, this driver does not need to depend on OF, methinks.
+>> > The few instances of properties reading can be
+>> > easily rewritten to device_* functions (from include/linux/property.h).
+>> > The of_get_child_by_name() can become device_get_named_child_node().
+>> >
+>> > Geert, what do you think?
+>>
+>> Sure, that can be done later, when an ACPI user appears?
+>
+> Actually with PRP0001 approach any of compatible driver may be used onACPI platform. So, what you are saying can be interpreted the way “we don’t care about users on ACPI based platforms”. If it is the case, then it should be told explicitly.
+
+I think you're interpreting too much ;-)
+My point is simply:
+
+>> The dependency on OF was pre-existing, and this series is already
+>> at v5.
+
+If any OF compatible driver can now be used on ACPI platforms, perhaps
+this should be handled at the API level? I.e. the distinction between
+OF and device properties should be dropped completely, and all drivers
+be converted mechanically in one shot, instead of a gradual ad-hoc
+conversion being sneaked in through other series like this one?
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds

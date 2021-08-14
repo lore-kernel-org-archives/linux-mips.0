@@ -2,209 +2,128 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-14.0 required=3.0 tests=BAYES_00,INCLUDES_CR_TRAILER,
-	INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED
-	autolearn=unavailable autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-15.2 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1
+	autolearn=ham autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E32E7C4338F
-	for <linux-mips@archiver.kernel.org>; Fri, 13 Aug 2021 20:47:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B0D3BC4338F
+	for <linux-mips@archiver.kernel.org>; Sat, 14 Aug 2021 10:30:21 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id B956160F91
-	for <linux-mips@archiver.kernel.org>; Fri, 13 Aug 2021 20:47:00 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 8BB2660F21
+	for <linux-mips@archiver.kernel.org>; Sat, 14 Aug 2021 10:30:21 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234323AbhHMUr1 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 13 Aug 2021 16:47:27 -0400
-Received: from mail-oo1-f43.google.com ([209.85.161.43]:41814 "EHLO
-        mail-oo1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233915AbhHMUr0 (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Fri, 13 Aug 2021 16:47:26 -0400
-Received: by mail-oo1-f43.google.com with SMTP id f33-20020a4a89240000b029027c19426fbeso3161500ooi.8;
-        Fri, 13 Aug 2021 13:46:59 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=B9ZjlpepAqxi24gGPGuLYAWFUHictoqyOAnCw/D5l9g=;
-        b=QpwNu4e6D2cNs+3mLGCKXznmv8+FbxZAyfBH0c4SzpwvsJFyzFoHy4gPqlo2xD458h
-         6Py7ltFnOq3VkGjeRwPsTWod3DRmBtkT3W4fuch9nA8L1Hqow/OPz0DO3aqo87ih3AfT
-         t6sB+TPGD4WI3syb8XGAu4yLJpqcWouQpgGxwrMCUMDSgajvdRk1CLW/MEKGvblgClRT
-         BknyZV93FvVRF/5kQOGTMLPquDFOp7u1Q16f8keevRa4dk0ZGiqreVbop2XVEW3eZdkN
-         i3OPmmo/obYcLnL0s3Lb1aVhJr5EJEQ4F0+MOrjLNYyhPUA3u6u6Wh2EkdmrVo3NGaof
-         veMg==
-X-Gm-Message-State: AOAM533zQ2my4C8oOOUMCg8eSHX19l0crYzXb3CEMUmT0FqQy3TJSIJw
-        ZdLUGd1nllzfh+HHIZHAVA==
-X-Google-Smtp-Source: ABdhPJy1Argzkclr6/MKlttJ/MCqekQRM+vtI1gkxyy0UK2CnCCMm06YDilB7oYoIPeq39W29GuJ8w==
-X-Received: by 2002:a4a:e291:: with SMTP id k17mr3184266oot.91.1628887614278;
-        Fri, 13 Aug 2021 13:46:54 -0700 (PDT)
-Received: from robh.at.kernel.org (2603-8080-2a06-ed00-7254-0b80-dd3c-00c6.res6.spectrum.com. [2603:8080:2a06:ed00:7254:b80:dd3c:c6])
-        by smtp.gmail.com with ESMTPSA id x13sm357809otk.42.2021.08.13.13.46.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Aug 2021 13:46:53 -0700 (PDT)
-Received: (nullmailer pid 4001992 invoked by uid 1000);
-        Fri, 13 Aug 2021 20:46:51 -0000
-Date:   Fri, 13 Aug 2021 15:46:51 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     "H. Nikolaus Schaller" <hns@goldelico.com>
-Cc:     Paul Cercueil <paul@crapouillou.net>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Kees Cook <keescook@chromium.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Robert Foss <robert.foss@linaro.org>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Ezequiel Garcia <ezequiel@collabora.com>,
-        Harry Wentland <harry.wentland@amd.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Maxime Ripard <maxime@cerno.tech>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        devicetree@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org, letux-kernel@openphoenux.org,
-        Paul Boddie <paul@boddie.org.uk>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        dri-devel@lists.freedesktop.org
-Subject: Re: [PATCH v3 5/9] dt-bindings: display: Add ingenic-jz4780-hdmi DT
- Schema
-Message-ID: <YRbaO++oZiKaFDoN@robh.at.kernel.org>
-References: <cover.1628399442.git.hns@goldelico.com>
- <606e22c2ef4d32d63937976860fb24f4cb39b720.1628399442.git.hns@goldelico.com>
+        id S237816AbhHNKar (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Sat, 14 Aug 2021 06:30:47 -0400
+Received: from elvis.franken.de ([193.175.24.41]:60421 "EHLO elvis.franken.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237454AbhHNKar (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Sat, 14 Aug 2021 06:30:47 -0400
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1mEqvf-0000g0-00; Sat, 14 Aug 2021 12:30:15 +0200
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id D6FA9C07E5; Sat, 14 Aug 2021 12:30:01 +0200 (CEST)
+Date:   Sat, 14 Aug 2021 12:30:01 +0200
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Huang Pei <huangpei@loongson.cn>
+Cc:     ambrosehua@gmail.com, Bibo Mao <maobibo@loongson.cn>,
+        linux-mips@vger.kernel.org, linux-rt-users@vger.kernel.org,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Li Xuefeng <lixuefeng@loongson.cn>,
+        Yang Tiezhu <yangtiezhu@loongson.cn>,
+        Gao Juxin <gaojuxin@loongson.cn>,
+        Huacai Chen <chenhuacai@loongson.cn>,
+        Jinyang He <hejinyang@loongson.cn>
+Subject: Re: [PATCH] MIPS: simplify copy_user_high_page for MIPS64 w/o cache
+ alias
+Message-ID: <20210814103001.GA5735@alpha.franken.de>
+References: <20210807080429.3323711-1-huangpei@loongson.cn>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <606e22c2ef4d32d63937976860fb24f4cb39b720.1628399442.git.hns@goldelico.com>
+In-Reply-To: <20210807080429.3323711-1-huangpei@loongson.cn>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Sun, Aug 08, 2021 at 07:10:39AM +0200, H. Nikolaus Schaller wrote:
-> From: Sam Ravnborg <sam@ravnborg.org>
+On Sat, Aug 07, 2021 at 04:04:29PM +0800, Huang Pei wrote:
+> Borrow from ARM64
 > 
-> Add DT bindings for the hdmi driver for the Ingenic JZ4780 SoC.
-> Based on .txt binding from Zubair Lutfullah Kakakhel
+> MIPS64 CPU has enough direct mapped memory space to access all
+> physical memory. In case of no cache alias, bypass both k*map_atomic
+> and k*map_coherent for better real-time performance.
 > 
-> Signed-off-by: Sam Ravnborg <sam@ravnborg.org>
-> Signed-off-by: H. Nikolaus Schaller <hns@goldelico.com>
-> Cc: Rob Herring <robh@kernel.org>
-> Cc: devicetree@vger.kernel.org
+> Signed-off-by: Huang Pei <huangpei@loongson.cn>
 > ---
->  .../bindings/display/ingenic-jz4780-hdmi.yaml | 82 +++++++++++++++++++
->  1 file changed, 82 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/display/ingenic-jz4780-hdmi.yaml
+>  arch/mips/mm/init.c | 39 ++++++++++++++++++++++++++-------------
+>  1 file changed, 26 insertions(+), 13 deletions(-)
 > 
-> diff --git a/Documentation/devicetree/bindings/display/ingenic-jz4780-hdmi.yaml b/Documentation/devicetree/bindings/display/ingenic-jz4780-hdmi.yaml
-> new file mode 100644
-> index 0000000000000..a545ff8704ebd
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/display/ingenic-jz4780-hdmi.yaml
-> @@ -0,0 +1,82 @@
-> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/display/ingenic-jz4780-hdmi.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> diff --git a/arch/mips/mm/init.c b/arch/mips/mm/init.c
+> index 19347dc6bbf8..1f5bdd18ae7c 100644
+> --- a/arch/mips/mm/init.c
+> +++ b/arch/mips/mm/init.c
+> @@ -171,22 +171,35 @@ void copy_user_highpage(struct page *to, struct page *from,
+>  {
+>  	void *vfrom, *vto;
+>  
+> -	vto = kmap_atomic(to);
+> -	if (cpu_has_dc_aliases &&
+> -	    page_mapcount(from) && !Page_dcache_dirty(from)) {
+> -		vfrom = kmap_coherent(from, vaddr);
+> +	if (IS_ENABLED(CONFIG_64BIT) && !cpu_has_dc_aliases) {
+> +		vfrom = page_address(from);
+> +		vto   = page_address(to);
+>  		copy_page(vto, vfrom);
+> -		kunmap_coherent();
+> +		/*
+> +		 * even without cache alias, still need to maintain
+> +		 * coherence between icache and dcache
+> +		 */
+> +		if (!cpu_has_ic_fills_f_dc)
+> +			flush_data_cache_page((unsigned long)vto);
 > +
-> +title: Bindings for Ingenic JZ4780 HDMI Transmitter
-> +
-> +maintainers:
-> +  - H. Nikolaus Schaller <hns@goldelico.com>
-> +
-> +description: |
-> +  The HDMI Transmitter in the Ingenic JZ4780 is a Synopsys DesignWare HDMI 1.4
-> +  TX controller IP with accompanying PHY IP.
-> +
-> +allOf:
-> +  - $ref: panel/panel-common.yaml#
+>  	} else {
+> -		vfrom = kmap_atomic(from);
+> -		copy_page(vto, vfrom);
+> -		kunmap_atomic(vfrom);
+> +		vto = kmap_atomic(to);
+> +		if (cpu_has_dc_aliases &&
+> +				page_mapcount(from) && !Page_dcache_dirty(from)) {
 
-This isn't a panel...
+please fix indentation and place page_mapping() to same column as
+cpu_has_dc_aliases()
 
-> +
-> +properties:
-> +  compatible:
-> +    items:
-> +      - const: ingenic,jz4780-hdmi
-> +
-> +  reg:
-> +    maxItems: 1
-> +    description: the address & size of the LCD controller registers
+> +			vfrom = kmap_coherent(from, vaddr);
+> +			copy_page(vto, vfrom);
+> +			kunmap_coherent();
+> +		} else {
+> +			vfrom = kmap_atomic(from);
+> +			copy_page(vto, vfrom);
+> +			kunmap_atomic(vfrom);
+> +		}
+> +		if ((!cpu_has_ic_fills_f_dc) ||
+> +				pages_do_alias((unsigned long)vto, vaddr & PAGE_MASK))
 
-Drop. Don't need generic descriptions. Plus, this isn't an LCD 
-controller.
+same here
 
-> +
-> +  reg-io-width:
-> +    const: 4
-> +
-> +  interrupts:
-> +    maxItems: 1
-> +    description: Specifies the interrupt provided by parent
+> +			flush_data_cache_page((unsigned long)vto);
+> +		kunmap_atomic(vto);
+> +		/* Make sure this page is cleared on other CPU's too before using it */
 
-Drop. Don't need generic descriptions.
+this comment should stay in front of the smp_wmb()
 
-> +
-> +  clocks:
-> +    maxItems: 2
-> +    description: Clock specifiers for isrf and iahb clocks
-> +
-> +  clock-names:
-> +    items:
-> +      - const: isfr
-> +      - const: iahb
-> +
-> +  ddc-i2c-bus: true
+>  	}
+> -	if ((!cpu_has_ic_fills_f_dc) ||
+> -	    pages_do_alias((unsigned long)vto, vaddr & PAGE_MASK))
+> -		flush_data_cache_page((unsigned long)vto);
+> -	kunmap_atomic(vto);
+> -	/* Make sure this page is cleared on other CPU's too before using it */
+>  	smp_wmb();
 
-This belongs in a connector or panel node.
+Thomas.
 
-> +  ports: true
-
-You have to define what each 'port' node is and reference the graph 
-schema. Given you are using 'ports', I assume there is more than 1. The 
-example says not, but you need to add an output port for a connector 
-node.
-
-> +
-> +required:
-> +    - compatible
-> +    - clocks
-> +    - clock-names
-> +    - ports
-> +    - reg-io-width
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/clock/jz4780-cgu.h>
-> +
-> +    hdmi: hdmi@10180000 {
-> +        compatible = "ingenic,jz4780-hdmi";
-> +        reg = <0x10180000 0x8000>;
-> +        reg-io-width = <4>;
-> +        ddc-i2c-bus = <&i2c4>;
-> +        interrupt-parent = <&intc>;
-> +        interrupts = <3>;
-> +        clocks = <&cgu JZ4780_CLK_HDMI>, <&cgu JZ4780_CLK_AHB0>;
-> +        clock-names = "isfr", "iahb";
-> +
-> +        ports {
-> +            hdmi_in: port {
-> +                #address-cells = <1>;
-> +                #size-cells = <0>;
-> +                hdmi_in_lcd: endpoint@0 {
-> +                    reg = <0>;
-> +                    remote-endpoint = <&jz4780_out_hdmi>;
-> +                };
-> +            };
-> +        };
-> +    };
-> +
-> +...
-> -- 
-> 2.31.1
-> 
-> 
+-- 
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]

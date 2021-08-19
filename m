@@ -2,56 +2,106 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-10.2 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,URIBL_BLOCKED,USER_AGENT_SANE_1 autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-12.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,NICE_REPLY_A,
+	SPF_HELO_NONE,SPF_PASS,UNPARSEABLE_RELAY,USER_AGENT_SANE_1
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CF675C4338F
-	for <linux-mips@archiver.kernel.org>; Wed, 18 Aug 2021 14:04:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 16FE5C4320A
+	for <linux-mips@archiver.kernel.org>; Thu, 19 Aug 2021 06:44:36 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id B2DBC61076
-	for <linux-mips@archiver.kernel.org>; Wed, 18 Aug 2021 14:04:25 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id F264261131
+	for <linux-mips@archiver.kernel.org>; Thu, 19 Aug 2021 06:44:35 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238252AbhHROE7 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 18 Aug 2021 10:04:59 -0400
-Received: from netrider.rowland.org ([192.131.102.5]:53041 "HELO
-        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with SMTP id S235822AbhHROE7 (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 18 Aug 2021 10:04:59 -0400
-Received: (qmail 194239 invoked by uid 1000); 18 Aug 2021 10:04:23 -0400
-Date:   Wed, 18 Aug 2021 10:04:23 -0400
-From:   Alan Stern <stern@rowland.harvard.edu>
-To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        linux-mips@vger.kernel.org,
-        Christophe Leroy <christophe.leroy@c-s.fr>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/3] usb: host: remove dead EHCI support for on-chip PMC
- MSP71xx USB controller
-Message-ID: <20210818140423.GA193695@rowland.harvard.edu>
-References: <20210818071137.22711-1-lukas.bulwahn@gmail.com>
- <20210818071137.22711-2-lukas.bulwahn@gmail.com>
+        id S231518AbhHSGpL (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 19 Aug 2021 02:45:11 -0400
+Received: from out28-193.mail.aliyun.com ([115.124.28.193]:48218 "EHLO
+        out28-193.mail.aliyun.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230483AbhHSGpK (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Thu, 19 Aug 2021 02:45:10 -0400
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.09123356|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_regular_dialog|0.0210625-0.000612203-0.978325;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047208;MF=zhouyanjie@wanyeetech.com;NM=1;PH=DS;RN=14;RT=14;SR=0;TI=SMTPD_---.L2mzdyl_1629355470;
+Received: from 192.168.88.131(mailfrom:zhouyanjie@wanyeetech.com fp:SMTPD_---.L2mzdyl_1629355470)
+          by smtp.aliyun-inc.com(10.147.41.121);
+          Thu, 19 Aug 2021 14:44:31 +0800
+Subject: Re: [PATCH v7 00/11] Add new clocks and fix bugs for Ingenic SoCs.
+From:   Zhou Yanjie <zhouyanjie@wanyeetech.com>
+To:     sboyd@kernel.org, mturquette@baylibre.com, robh+dt@kernel.org,
+        paul@crapouillou.net
+Cc:     linux-clk@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        dongsheng.qiu@ingenic.com, aric.pzqi@ingenic.com,
+        rick.tyliu@ingenic.com, sihui.liu@ingenic.com,
+        jun.jiang@ingenic.com, sernia.zhou@foxmail.com
+References: <1627119286-125821-1-git-send-email-zhouyanjie@wanyeetech.com>
+Message-ID: <892b4671-462d-d0da-a2d0-2c140b519b26@wanyeetech.com>
+Date:   Thu, 19 Aug 2021 14:44:30 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210818071137.22711-2-lukas.bulwahn@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <1627119286-125821-1-git-send-email-zhouyanjie@wanyeetech.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Wed, Aug 18, 2021 at 09:11:35AM +0200, Lukas Bulwahn wrote:
-> Commit 1b00767fd8e1 ("MIPS: Remove PMC MSP71xx platform") deletes
-> ./arch/mips/pmcs-msp71xx/Kconfig, including its config  MSP_HAS_USB.
-> 
-> Hence, since then, the corresponding EHCI support for on-chip PMC MSP71xx
-> USB controller is dead code. Remove this dead driver.
-> 
-> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
-> ---
+Hi,
 
-Acked-by: Alan Stern <stern@rowland.harvard.edu>
+
+A gentle ping :)
+
+
+On 2021/7/24 下午5:34, 周琰杰 (Zhou Yanjie) wrote:
+> v4->v5:
+> 1.modify the CGU PLL correlation code to make it compatible with I2S PLL.
+> 2.Change X1000's I2S clock to CGU_CLK_PLL as Paul Cercueil's suggestion.
+> 3.Add documentation for JZ4775 and X2000 bindings.
+> 4.Add JZ4775 and X2000 clock bindings.
+> 5.Add CGU driver for JZ4775 and X2000.
+>
+> v5->v6:
+> Change the type of stable_bit from u8 to s8, because a negative value will
+> appear when the stable_bit bit does not exist.
+>
+> v6->v7:
+> 1.Add Rob Herring's Acked-by.
+> 2.Change to dual license.
+>
+> 周琰杰 (Zhou Yanjie) (11):
+>    clk: JZ4780: Add function for disable the second core.
+>    clk: Ingenic: Adjust cgu code to make it compatible with I2S PLL.
+>    dt-bindings: clock: Add missing clocks for Ingenic SoCs.
+>    clk: Ingenic: Fix problem of MAC clock in Ingenic X1000 and X1830.
+>    clk: Ingenic: Add missing clocks for Ingenic SoCs.
+>    clk: Ingenic: Clean up and reformat the code.
+>    dt-bindings: clock: Add documentation for JZ4775 and X2000 bindings.
+>    dt-bindings: clock: Add JZ4775 clock bindings.
+>    dt-bindings: clock: Add X2000 clock bindings.
+>    clk: Ingenic: Add CGU driver for JZ4775.
+>    clk: Ingenic: Add CGU driver for X2000.
+>
+>   .../devicetree/bindings/clock/ingenic,cgu.yaml     |   4 +
+>   drivers/clk/ingenic/Kconfig                        |  20 +
+>   drivers/clk/ingenic/Makefile                       |   2 +
+>   drivers/clk/ingenic/cgu.c                          | 118 ++-
+>   drivers/clk/ingenic/cgu.h                          |  10 +-
+>   drivers/clk/ingenic/jz4725b-cgu.c                  |  49 +-
+>   drivers/clk/ingenic/jz4740-cgu.c                   |  49 +-
+>   drivers/clk/ingenic/jz4760-cgu.c                   | 106 ++-
+>   drivers/clk/ingenic/jz4770-cgu.c                   |  83 +--
+>   drivers/clk/ingenic/jz4775-cgu.c                   | 572 +++++++++++++++
+>   drivers/clk/ingenic/jz4780-cgu.c                   | 149 ++--
+>   drivers/clk/ingenic/x1000-cgu.c                    | 210 ++++--
+>   drivers/clk/ingenic/x1830-cgu.c                    | 210 ++++--
+>   drivers/clk/ingenic/x2000-cgu.c                    | 790 +++++++++++++++++++++
+>   include/dt-bindings/clock/jz4775-cgu.h             |  59 ++
+>   include/dt-bindings/clock/x1000-cgu.h              |   5 +
+>   include/dt-bindings/clock/x1830-cgu.h              |   5 +
+>   include/dt-bindings/clock/x2000-cgu.h              |  89 +++
+>   18 files changed, 2210 insertions(+), 320 deletions(-)
+>   create mode 100644 drivers/clk/ingenic/jz4775-cgu.c
+>   create mode 100644 drivers/clk/ingenic/x2000-cgu.c
+>   create mode 100644 include/dt-bindings/clock/jz4775-cgu.h
+>   create mode 100644 include/dt-bindings/clock/x2000-cgu.h
+>

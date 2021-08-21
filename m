@@ -2,125 +2,81 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-26.3 required=3.0 tests=BAYES_00,DKIMWL_WL_MED,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-	INCLUDES_CR_TRAILER,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,
-	USER_AGENT_GIT,USER_IN_DEF_DKIM_WL autolearn=unavailable autolearn_force=no
-	version=3.4.0
+X-Spam-Status: No, score=-15.3 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2C0FDC4320A
-	for <linux-mips@archiver.kernel.org>; Fri, 20 Aug 2021 22:50:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E13D0C4338F
+	for <linux-mips@archiver.kernel.org>; Sat, 21 Aug 2021 09:25:21 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 12DAC601FE
-	for <linux-mips@archiver.kernel.org>; Fri, 20 Aug 2021 22:50:45 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id AF03561186
+	for <linux-mips@archiver.kernel.org>; Sat, 21 Aug 2021 09:25:21 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240769AbhHTWvU (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 20 Aug 2021 18:51:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37862 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240884AbhHTWvQ (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Fri, 20 Aug 2021 18:51:16 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56FAEC06179A
-        for <linux-mips@vger.kernel.org>; Fri, 20 Aug 2021 15:50:36 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id i32-20020a25b2200000b02904ed415d9d84so11081882ybj.0
-        for <linux-mips@vger.kernel.org>; Fri, 20 Aug 2021 15:50:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=reply-to:date:in-reply-to:message-id:mime-version:references
-         :subject:from:to:cc;
-        bh=Ut0lClAqKM9RGqTS5MESEM+F5WoPZRTQUckNTBRjTyg=;
-        b=TA/KEkzCm9eGIgSQhw9KNiaLFa6mERWpjzl8Sm2LP0D8MHshBELhR9PNTUHRE29ifz
-         mo90lRoRaNLAOUKwpDqprlo0/pMwtc5l0/AtaGDQuwQPp72yFVvsNL3ynlMO5kSBRj5m
-         LzAltW2EylkOxsEkvhRVhVSBOVOdYc11dmbjDqZ/XhKiygxbSFOOyUayIR4kGClbFLgR
-         /kFKufJdXalO6BD5koMO2tBk/9JBu0VO4U4stsueIYQrrElmsEUFhO7RIz6hEZLybaDq
-         KKumExIW2OSfE2RbrTkormhrvk3570q+R6kLizKIzC3ltGy9bDIK5NfDidM6k/fKRiu/
-         zAPw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:reply-to:date:in-reply-to:message-id
-         :mime-version:references:subject:from:to:cc;
-        bh=Ut0lClAqKM9RGqTS5MESEM+F5WoPZRTQUckNTBRjTyg=;
-        b=AkktsvvxEX6F0XPjI3eizUDFTvEcsDcwEVqZuXKOM+ZDNwVumyUIGoFxYT4fdr1U4d
-         /G1Q7TWMdGlBemyptxxI1Tm5OhkvMMGf5OJfB+n9d5gDTp0I0tdfmJuxTbdbvGN5rjiK
-         RDegCHRPivczNpJs4EercVnxAZ4eIqdZa5AXwlgLNdhhUZyzqDzsascBnjidk3f//8Dl
-         UvbwBdCJhGpdGdL6Kl9nphl8HyXRsZloFr0dao5xlArPrGWmJtpkXqYJISVls3y5626A
-         JyS6ZZ6VbwdXQXRJwKfHyNHtnJ2Ae3YvYiYFAV1GXLG/78RzfOFhG8B8IlfUnZvyt93X
-         eX5g==
-X-Gm-Message-State: AOAM5328lagefIOVTLS7UYTL0J01XVwNeIR8smOBBgptU4W9Nhebx50Z
-        ib7otXRxDy6A9h8VQhSldkTZNgOPyJc=
-X-Google-Smtp-Source: ABdhPJx3Gy465odAHrKuwh+xxU3EOcrY9EoPkXADk8KHQbivIS4NsZANbgwhJ1nQlBB3M+0Hs3NCAAyvqg4=
-X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:90:200:f11d:a281:af9b:5de6])
- (user=seanjc job=sendgmr) by 2002:a25:acc4:: with SMTP id x4mr8790476ybd.376.1629499835531;
- Fri, 20 Aug 2021 15:50:35 -0700 (PDT)
-Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Fri, 20 Aug 2021 15:50:02 -0700
-In-Reply-To: <20210820225002.310652-1-seanjc@google.com>
-Message-Id: <20210820225002.310652-6-seanjc@google.com>
-Mime-Version: 1.0
-References: <20210820225002.310652-1-seanjc@google.com>
-X-Mailer: git-send-email 2.33.0.rc2.250.ged5fa647cd-goog
-Subject: [PATCH v2 5/5] KVM: selftests: Remove __NR_userfaultfd syscall fallback
-From:   Sean Christopherson <seanjc@google.com>
-To:     Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Shuah Khan <shuah@kernel.org>
-Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-csky@vger.kernel.org, linux-mips@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org,
-        kvm@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        Peter Foley <pefoley@google.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Ben Gardon <bgardon@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S233371AbhHUJZ7 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Sat, 21 Aug 2021 05:25:59 -0400
+Received: from elvis.franken.de ([193.175.24.41]:41928 "EHLO elvis.franken.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233296AbhHUJZ7 (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Sat, 21 Aug 2021 05:25:59 -0400
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1mHNFe-0005Uw-01; Sat, 21 Aug 2021 11:25:18 +0200
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id 369D5C086C; Sat, 21 Aug 2021 10:41:24 +0200 (CEST)
+Date:   Sat, 21 Aug 2021 10:41:24 +0200
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Cc:     Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Rahul Bedarkar <rahulbedarkar89@gmail.com>,
+        linux-mips@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] MAINTAINERS: adjust PISTACHIO SOC SUPPORT after its
+ retirement
+Message-ID: <20210821084124.GB3555@alpha.franken.de>
+References: <20210816105326.8050-1-lukas.bulwahn@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210816105326.8050-1-lukas.bulwahn@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Revert the __NR_userfaultfd syscall fallback added for KVM selftests now
-that x86's unistd_{32,63}.h overrides are under uapi/ and thus not in
-KVM sefltests' search path, i.e. now that KVM gets x86 syscall numbers
-from the installed kernel headers.
+On Mon, Aug 16, 2021 at 12:53:26PM +0200, Lukas Bulwahn wrote:
+> Commit 104f942b2832 ("MIPS: Retire MACH_PISTACHIO") removes
+> ./arch/mips/pistachio/ and ./arch/mips/configs/pistachio_defconfig, but
+> misses to adjust the corresponding section PISTACHIO SOC SUPPORT
+> in MAINTAINERS.
+> 
+> Hence, ./scripts/get_maintainer.pl --self-test=patterns complains:
+> 
+>   warning: no file matches    F:    arch/mips/configs/pistachio*_defconfig
+>   warning: no file matches    F:    arch/mips/pistachio/
+> 
+> As James Hartley is not reachable with the provided email address, the
+> remaining dtsi file, arch/mips/boot/dts/img/pistachio.dtsi, must be
+> maintained by its only user pistachio_marduk.dts, which is part of MARDUK
+> (CREATOR CI40) DEVICE TREE SUPPORT.
+> 
+> Add maintenance of pistachio.dtsi to that section and drop the PISTACHIO
+> SOC SUPPORT after its retirement.
+> 
+> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+> ---
+> applies cleanly on next-20210816
+> 
+> Jiaxun, Rahul, please ack. 
+> Thomas, please pick this minor non-urgent clean-up patch on mips-next.
+> 
+>  MAINTAINERS | 10 +---------
+>  1 file changed, 1 insertion(+), 9 deletions(-)
 
-No functional change intended.
+applied to mips-next.
 
-Cc: Ben Gardon <bgardon@google.com>
-Signed-off-by: Sean Christopherson <seanjc@google.com>
----
- tools/arch/x86/include/uapi/asm/unistd_64.h | 3 ---
- 1 file changed, 3 deletions(-)
+Thomas.
 
-diff --git a/tools/arch/x86/include/uapi/asm/unistd_64.h b/tools/arch/x86/include/uapi/asm/unistd_64.h
-index 4205ed4158bf..cb52a3a8b8fc 100644
---- a/tools/arch/x86/include/uapi/asm/unistd_64.h
-+++ b/tools/arch/x86/include/uapi/asm/unistd_64.h
-@@ -1,7 +1,4 @@
- /* SPDX-License-Identifier: GPL-2.0 */
--#ifndef __NR_userfaultfd
--#define __NR_userfaultfd 282
--#endif
- #ifndef __NR_perf_event_open
- # define __NR_perf_event_open 298
- #endif
 -- 
-2.33.0.rc2.250.ged5fa647cd-goog
-
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]

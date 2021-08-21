@@ -4,62 +4,58 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-15.3 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
-	autolearn=unavailable autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7251CC4320E
-	for <linux-mips@archiver.kernel.org>; Sat, 21 Aug 2021 09:25:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 451E9C19F33
+	for <linux-mips@archiver.kernel.org>; Sat, 21 Aug 2021 09:25:23 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 5340961207
-	for <linux-mips@archiver.kernel.org>; Sat, 21 Aug 2021 09:25:22 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 27C2A61186
+	for <linux-mips@archiver.kernel.org>; Sat, 21 Aug 2021 09:25:23 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233556AbhHUJ0A (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        id S233296AbhHUJ0A (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
         Sat, 21 Aug 2021 05:26:00 -0400
-Received: from elvis.franken.de ([193.175.24.41]:41935 "EHLO elvis.franken.de"
+Received: from elvis.franken.de ([193.175.24.41]:41941 "EHLO elvis.franken.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233306AbhHUJZ7 (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Sat, 21 Aug 2021 05:25:59 -0400
+        id S233311AbhHUJ0A (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Sat, 21 Aug 2021 05:26:00 -0400
 Received: from uucp (helo=alpha)
         by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1mHNFe-0005Uw-03; Sat, 21 Aug 2021 11:25:18 +0200
+        id 1mHNFe-0005Uw-00; Sat, 21 Aug 2021 11:25:18 +0200
 Received: by alpha.franken.de (Postfix, from userid 1000)
-        id D26F9C086C; Sat, 21 Aug 2021 10:42:05 +0200 (CEST)
-Date:   Sat, 21 Aug 2021 10:42:05 +0200
+        id 504C1C081C; Sat, 21 Aug 2021 10:40:52 +0200 (CEST)
+Date:   Sat, 21 Aug 2021 10:40:52 +0200
 From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Vladimir Oltean <vladimir.oltean@nxp.com>
-Cc:     Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        devicetree@vger.kernel.org, UNGLinuxDriver@microchip.com,
-        Horatiu Vultur <horatiu.vultur@microchip.com>,
-        Rob Herring <robh+dt@kernel.org>, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH devicetree 2/2] MIPS: mscc: ocelot: mark the phy-mode for
- internal PHY ports
-Message-ID: <20210821084205.GD3555@alpha.franken.de>
-References: <20210819170416.2252210-1-vladimir.oltean@nxp.com>
- <20210819170416.2252210-2-vladimir.oltean@nxp.com>
+To:     Huilong Deng <denghuilong@cdjrlc.com>
+Cc:     chenhuacai@kernel.org, aleksandar.qemu.devel@gmail.com,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] MIPS: Return true/false (not 1/0) from bool functions
+Message-ID: <20210821084052.GA3555@alpha.franken.de>
+References: <20210817025338.3552-1-denghuilong@cdjrlc.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210819170416.2252210-2-vladimir.oltean@nxp.com>
+In-Reply-To: <20210817025338.3552-1-denghuilong@cdjrlc.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Thu, Aug 19, 2021 at 08:04:16PM +0300, Vladimir Oltean wrote:
-> The ocelot driver was converted to phylink, and that expects a valid
-> phy_interface_t. Without a phy-mode, of_get_phy_mode returns
-> PHY_INTERFACE_MODE_NA, which is not ideal because phylink rejects that.
+On Tue, Aug 17, 2021 at 10:53:38AM +0800, Huilong Deng wrote:
+> ./arch/mips/kernel/uprobes.c:261:8-9: WARNING: return of 0/1 in function
+> 'arch_uprobe_skip_sstep' with return type bool
+> ./arch/mips/kernel/uprobes.c:78:10-11: WARNING: return of 0/1 in
+> function 'is_trap_insn' with return type bool
+> ./arch/mips/kvm/mmu.c:489:9-10: WARNING: return of 0/1 in function
+> 'kvm_test_age_gfn' with return type bool
+> ./arch/mips/kvm/mmu.c:445:8-9: WARNING: return of 0/1 in function
+> 'kvm_unmap_gfn_range' with return type bool
 > 
-> The ocelot driver was patched to treat PHY_INTERFACE_MODE_NA as
-> PHY_INTERFACE_MODE_INTERNAL to work with the broken DT blobs, but we
-> should fix the device trees and specify the phy-mode too.
-> 
-> Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
+> Signed-off-by: Huilong Deng <denghuilong@cdjrlc.com>
 > ---
->  arch/mips/boot/dts/mscc/ocelot_pcb120.dts | 4 ++++
->  arch/mips/boot/dts/mscc/ocelot_pcb123.dts | 4 ++++
->  2 files changed, 8 insertions(+)
+>  arch/mips/kernel/uprobes.c | 10 +++++-----
+>  arch/mips/kvm/mmu.c        |  4 ++--
+>  2 files changed, 7 insertions(+), 7 deletions(-)
 
 applied to mips-next.
 

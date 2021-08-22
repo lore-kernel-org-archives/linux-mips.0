@@ -2,65 +2,69 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-15.3 required=3.0 tests=BAYES_00,
-	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1 autolearn=ham
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-11.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,SPF_HELO_NONE,
+	SPF_PASS,USER_AGENT_GIT autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 451E9C19F33
-	for <linux-mips@archiver.kernel.org>; Sat, 21 Aug 2021 09:25:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 37DB6C4338F
+	for <linux-mips@archiver.kernel.org>; Sun, 22 Aug 2021 03:36:55 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 27C2A61186
-	for <linux-mips@archiver.kernel.org>; Sat, 21 Aug 2021 09:25:23 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 1085B61220
+	for <linux-mips@archiver.kernel.org>; Sun, 22 Aug 2021 03:36:55 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233296AbhHUJ0A (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Sat, 21 Aug 2021 05:26:00 -0400
-Received: from elvis.franken.de ([193.175.24.41]:41941 "EHLO elvis.franken.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233311AbhHUJ0A (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Sat, 21 Aug 2021 05:26:00 -0400
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1mHNFe-0005Uw-00; Sat, 21 Aug 2021 11:25:18 +0200
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 504C1C081C; Sat, 21 Aug 2021 10:40:52 +0200 (CEST)
-Date:   Sat, 21 Aug 2021 10:40:52 +0200
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Huilong Deng <denghuilong@cdjrlc.com>
-Cc:     chenhuacai@kernel.org, aleksandar.qemu.devel@gmail.com,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] MIPS: Return true/false (not 1/0) from bool functions
-Message-ID: <20210821084052.GA3555@alpha.franken.de>
-References: <20210817025338.3552-1-denghuilong@cdjrlc.com>
+        id S232207AbhHVDhe (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Sat, 21 Aug 2021 23:37:34 -0400
+Received: from cmccmta1.chinamobile.com ([221.176.66.79]:7364 "EHLO
+        cmccmta1.chinamobile.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232192AbhHVDhe (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Sat, 21 Aug 2021 23:37:34 -0400
+X-Greylist: delayed 548 seconds by postgrey-1.27 at vger.kernel.org; Sat, 21 Aug 2021 23:37:32 EDT
+Received: from spf.mail.chinamobile.com (unknown[172.16.121.5]) by rmmx-syy-dmz-app02-12002 (RichMail) with SMTP id 2ee26121c42b7db-f2047; Sun, 22 Aug 2021 11:27:41 +0800 (CST)
+X-RM-TRANSID: 2ee26121c42b7db-f2047
+X-RM-TagInfo: emlType=0                                       
+X-RM-SPAM-FLAG: 00000000
+Received: from localhost.localdomain (unknown[112.22.250.151])
+        by rmsmtp-syy-appsvr03-12003 (RichMail) with SMTP id 2ee36121c429ec8-65203;
+        Sun, 22 Aug 2021 11:27:41 +0800 (CST)
+X-RM-TRANSID: 2ee36121c429ec8-65203
+From:   Tang Bin <tangbin@cmss.chinamobile.com>
+To:     gregkh@linuxfoundation.org, paul@crapouillou.net,
+        jirislaby@kernel.org, ldewangan@nvidia.com,
+        thierry.reding@gmail.com, jonathanh@nvidia.com,
+        linux@prisktech.co.nz
+Cc:     linux-mips@vger.kernel.org, linux-serial@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        Tang Bin <tangbin@cmss.chinamobile.com>
+Subject: [PATCH 0/3] serial: Use of_device_get_match_data
+Date:   Sun, 22 Aug 2021 11:28:03 +0800
+Message-Id: <20210822032806.3256-1-tangbin@cmss.chinamobile.com>
+X-Mailer: git-send-email 2.20.1.windows.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210817025338.3552-1-denghuilong@cdjrlc.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Tue, Aug 17, 2021 at 10:53:38AM +0800, Huilong Deng wrote:
-> ./arch/mips/kernel/uprobes.c:261:8-9: WARNING: return of 0/1 in function
-> 'arch_uprobe_skip_sstep' with return type bool
-> ./arch/mips/kernel/uprobes.c:78:10-11: WARNING: return of 0/1 in
-> function 'is_trap_insn' with return type bool
-> ./arch/mips/kvm/mmu.c:489:9-10: WARNING: return of 0/1 in function
-> 'kvm_test_age_gfn' with return type bool
-> ./arch/mips/kvm/mmu.c:445:8-9: WARNING: return of 0/1 in function
-> 'kvm_unmap_gfn_range' with return type bool
-> 
-> Signed-off-by: Huilong Deng <denghuilong@cdjrlc.com>
-> ---
->  arch/mips/kernel/uprobes.c | 10 +++++-----
->  arch/mips/kvm/mmu.c        |  4 ++--
->  2 files changed, 7 insertions(+), 7 deletions(-)
+Hi all:
 
-applied to mips-next.
+This patch series replace 'of_match_device' with
+'of_device_get_match_data', to make code cleaner and better.
 
-Thomas.
+Thanks
+
+Tang Bin (3):
+  serial: 8250_ingenic: Use of_device_get_match_data
+  serial: tegra: Use of_device_get_match_data
+  serial: vt8500: Use of_device_get_match_data
+
+ drivers/tty/serial/8250/8250_ingenic.c | 6 ++----
+ drivers/tty/serial/serial-tegra.c      | 6 ++----
+ drivers/tty/serial/vt8500_serial.c     | 7 ++-----
+ 3 files changed, 6 insertions(+), 13 deletions(-)
 
 -- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+2.20.1.windows.1
+
+
+

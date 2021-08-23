@@ -2,129 +2,89 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-6.7 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,MAILING_LIST_MULTI,SPF_HELO_NONE,
-	SPF_PASS autolearn=no autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-16.6 required=3.0 tests=BAYES_00,DKIM_INVALID,
+	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 83982C4320A
-	for <linux-mips@archiver.kernel.org>; Mon, 23 Aug 2021 15:20:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6DCFBC432BE
+	for <linux-mips@archiver.kernel.org>; Mon, 23 Aug 2021 16:39:06 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 6A20260F92
-	for <linux-mips@archiver.kernel.org>; Mon, 23 Aug 2021 15:20:33 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 4F14760F21
+	for <linux-mips@archiver.kernel.org>; Mon, 23 Aug 2021 16:39:06 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231387AbhHWPVP (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 23 Aug 2021 11:21:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50718 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231324AbhHWPVO (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Mon, 23 Aug 2021 11:21:14 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B9C6061406;
-        Mon, 23 Aug 2021 15:20:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1629732031;
-        bh=qreQnG9EH+SLqs9cxYafKtRpnrXgjkJipzrUHxRm8AI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=RGjW/286CluzlorhZhA12uBlEH3uhRoRK1S/j3K064/Shsa1wyggzEKZ+qBLhJnq4
-         gRNV2wTAu/HjHiWh2f8lDroX68ilJ+YROIaiewKam0s1N8A50OJJWefyUImpM5E2eF
-         23BcN2czeN9GNVN/lCJogN+4552M5+pHKvniKKEJEUx8otTEcVGWHyeI3OR3rj1qMi
-         Hi+i0DsYD+9xTYJ7MrtjEFxhLsW1VCy64kf+eN2MBlr4L1PcNpyAXM2UcO+pR7vBQY
-         FLye4cqCOX/Qx8AxadC/oQ1G2/s7ZAxLxG8DqtLBtsk0QFfiMvLtb9egfLJszfwr1w
-         PQAw/Rb0cjfWQ==
-Date:   Mon, 23 Aug 2021 18:20:20 +0300
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Rob Herring <robh+dt@kernel.org>
-Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Nicolas Pitre <nico@fluxnic.net>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
+        id S230154AbhHWQjr (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 23 Aug 2021 12:39:47 -0400
+Received: from [115.28.160.31] ([115.28.160.31]:50508 "EHLO
+        mailbox.box.xen0n.name" rhost-flags-FAIL-FAIL-OK-OK)
+        by vger.kernel.org with ESMTP id S229962AbhHWQjq (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>);
+        Mon, 23 Aug 2021 12:39:46 -0400
+X-Greylist: delayed 434 seconds by postgrey-1.27 at vger.kernel.org; Mon, 23 Aug 2021 12:39:45 EDT
+Received: from ld50.lan (unknown [101.88.30.186])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mailbox.box.xen0n.name (Postfix) with ESMTPSA id ED36160124;
+        Tue, 24 Aug 2021 00:31:50 +0800 (CST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=xen0n.name; s=mail;
+        t=1629736311; bh=n/bXyaMwH2pU8NoCSXDTclq26ik/VpjG92P83AgT0Xs=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=Id9CuyR6GjcFppv5eONuPeslFYpuNXrAkZYVqnxM0ly+5MjlBl6LLIPqM4OtdrBld
+         rlvG/meXtv0J9piIAt6XZyxurvSPIaaIB+t6o94CEZXu9P25dQmXSY2GDAUZcttaE5
+         /NaoHZrMt7CmYDOsUeLvskACuUFkDZ5xrSPxP4Sc=
+From:   WANG Xuerui <git@xen0n.name>
+To:     linux-rtc@vger.kernel.org
+Cc:     WANG Xuerui <git@xen0n.name>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Rob Herring <robh+dt@kernel.org>,
         Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Nick Kossifidis <mick@ics.forth.gr>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Dave Young <dyoung@redhat.com>, Baoquan He <bhe@redhat.com>,
-        Vivek Goyal <vgoyal@redhat.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        kexec@lists.infradead.org,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v5 1/9] MIPS: Avoid future duplicate elf core header
- reservation
-Message-ID: <YSO8tJxbuADEeL7I@kernel.org>
-References: <cover.1628670468.git.geert+renesas@glider.be>
- <92b6718f5618d5469f67b48fbea189cca0c12f4b.1628670468.git.geert+renesas@glider.be>
- <YRn9DHlB/pdNPJyP@kernel.org>
- <CAMuHMdVdqR7gw+2O2v=qv_BB=+X2wEXN9jXV=np=jRayadwj7g@mail.gmail.com>
- <YSOeGzowhV/R9QS/@kernel.org>
- <CAL_JsqLMv4fKebJEOv=7UXvy_qqut0N42psS-PSgRMU-qhiFLQ@mail.gmail.com>
+        Qing Zhang <zhangqing@loongson.cn>,
+        Tiezhu Yang <yangtiezhu@loongson.cn>,
+        zhaoxiao <zhaoxiao@uniontech.com>, devicetree@vger.kernel.org,
+        linux-mips@vger.kernel.org
+Subject: [PATCH RESEND v5 3/6] MIPS: Loongson64: DTS: Add RTC support to LS7A
+Date:   Tue, 24 Aug 2021 00:31:39 +0800
+Message-Id: <20210823163142.586529-4-git@xen0n.name>
+X-Mailer: git-send-email 2.33.0
+In-Reply-To: <20210823163142.586529-1-git@xen0n.name>
+References: <20210823163142.586529-1-git@xen0n.name>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAL_JsqLMv4fKebJEOv=7UXvy_qqut0N42psS-PSgRMU-qhiFLQ@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Mon, Aug 23, 2021 at 09:44:55AM -0500, Rob Herring wrote:
-> On Mon, Aug 23, 2021 at 8:10 AM Mike Rapoport <rppt@kernel.org> wrote:
-> >
-> > On Mon, Aug 23, 2021 at 12:17:50PM +0200, Geert Uytterhoeven wrote:
-> > > Hi Mike,
-> > >
-> > > On Mon, Aug 16, 2021 at 7:52 AM Mike Rapoport <rppt@kernel.org> wrote:
-> > > > On Wed, Aug 11, 2021 at 10:50:59AM +0200, Geert Uytterhoeven wrote:
-> > > > > Prepare for early_init_fdt_scan_reserved_mem() reserving the memory
-> > > > > occupied by an elf core header described in the device tree.
-> > > > > As arch_mem_init() calls early_init_fdt_scan_reserved_mem() before
-> > > > > mips_reserve_vmcore(), the latter needs to check if the memory has
-> > > > > already been reserved before.
-> > > >
-> > > > Doing memblock_reserve() for the same region is usually fine, did you
-> > > > encounter any issues without this patch?
-> > >
-> > > Does it also work if the same region is part of an earlier larger
-> > > reservation?  I am no memblock expert, so I don't know.
-> > > I didn't run into any issues, as my MIPS platform is non-DT, but I
-> > > assume arch/arm64/mm/init.c:reserve_elfcorehdr() had the check for
-> > > a reason.
-> >
-> > The memory will be reserved regardless of the earlier reservation, the
-> > issue may appear when the reservations are made for different purpose. E.g.
-> > if there was crash kernel allocation before the reservation of elfcorehdr.
-> >
-> > The check in such case will prevent the second reservation, but, at least
-> > in arch/arm64/mm/init.c:reserve_elfcorehdr() it does not seem to prevent
-> > different users of the overlapping regions to step on each others toes.
-> 
-> If the kernel has been passed in overlapping regions, is there
-> anything you can do other than hope to get a message out?
+The LS7A RTC module is now supported, enable it.
 
-Nothing really. I've been thinking about adding flags to memblock.reserved
-to at least distinguish firmware regions from the kernel allocations, but I
-never got to that.
+Signed-off-by: WANG Xuerui <git@xen0n.name>
+Acked-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+Cc: Rob Herring <robh+dt@kernel.org>
+Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc: Qing Zhang <zhangqing@loongson.cn>
+Cc: Tiezhu Yang <yangtiezhu@loongson.cn>
+Cc: zhaoxiao <zhaoxiao@uniontech.com>
+Cc: devicetree@vger.kernel.org
+Cc: linux-mips@vger.kernel.org
+---
+ arch/mips/boot/dts/loongson/ls7a-pch.dtsi | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/arch/mips/boot/dts/loongson/ls7a-pch.dtsi b/arch/mips/boot/dts/loongson/ls7a-pch.dtsi
+index 2f45fce2cdc4..82035de4774f 100644
+--- a/arch/mips/boot/dts/loongson/ls7a-pch.dtsi
++++ b/arch/mips/boot/dts/loongson/ls7a-pch.dtsi
+@@ -19,6 +19,11 @@ pic: interrupt-controller@10000000 {
+ 			#interrupt-cells = <2>;
+ 		};
  
-> > Moreover, arm64::reserve_elfcorehdr() seems buggy to me, because of there
-> > is only a partial overlap of the elfcorehdr with the previous reservation,
-> > the non-overlapping part of elfcorehdr won't get reserved at all.
-> 
-> What do you suggest as the arm64 version is not the common version?
-
-I'm not really familiar with crash dump internals, so I don't know if
-resetting elfcorehdr_addr to ELFCORE_ADDR_ERR is a good idea. I think at
-least arm64::reserve_elfcorehdr() should reserve the entire elfcorehdr area
-regardless of the overlap. Otherwise it might get overwritten by a random
-memblock_alloc().
-
-> Rob
-
++		rtc0: rtc@100d0100 {
++			compatible = "loongson,ls2x-rtc";
++			reg = <0 0x100d0100 0 0x78>;
++		};
++
+ 		ls7a_uart0: serial@10080000 {
+ 			compatible = "ns16550a";
+ 			reg = <0 0x10080000 0 0x100>;
 -- 
-Sincerely yours,
-Mike.
+2.33.0
+

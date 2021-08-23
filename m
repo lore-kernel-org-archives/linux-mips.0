@@ -2,120 +2,99 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-11.6 required=3.0 tests=BAYES_00,DKIM_INVALID,
-	DKIM_SIGNED,HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_PATCH,MAILING_LIST_MULTI,
-	SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=unavailable
-	autolearn_force=no version=3.4.0
+X-Spam-Status: No, score=-13.8 required=3.0 tests=BAYES_00,
+	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS autolearn=ham autolearn_force=no
+	version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 90136C19F3A
-	for <linux-mips@archiver.kernel.org>; Mon, 23 Aug 2021 16:39:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6DE28C4338F
+	for <linux-mips@archiver.kernel.org>; Mon, 23 Aug 2021 17:34:20 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 86E0C61406
-	for <linux-mips@archiver.kernel.org>; Mon, 23 Aug 2021 16:39:11 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 57D526126A
+	for <linux-mips@archiver.kernel.org>; Mon, 23 Aug 2021 17:34:20 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230174AbhHWQjx (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 23 Aug 2021 12:39:53 -0400
-Received: from [115.28.160.31] ([115.28.160.31]:50534 "EHLO
-        mailbox.box.xen0n.name" rhost-flags-FAIL-FAIL-OK-OK)
-        by vger.kernel.org with ESMTP id S230226AbhHWQju (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>);
-        Mon, 23 Aug 2021 12:39:50 -0400
-Received: from ld50.lan (unknown [101.88.30.186])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mailbox.box.xen0n.name (Postfix) with ESMTPSA id D897A60091;
-        Tue, 24 Aug 2021 00:31:46 +0800 (CST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=xen0n.name; s=mail;
-        t=1629736307; bh=V6RSRR90Ws4Iuhqs3uHJEng/UiOCuLvgTuY18AE6/2U=;
-        h=From:To:Cc:Subject:Date:From;
-        b=aJpnNDCZiSmdCnYl4YO84XMFJJKaEDihBxaiw+jneGZMwPyoGvvnz38lrB0JjH2/s
-         K086/cVTJh5dVDI/FzbaCi+1Y23b0+DhuKtB60PNwxQEjyg1TZfIoeyVT8SUKgZbEQ
-         COPLpT+T14V2w5zDs54oTlEQ5Y8HRoiCyNwQJQPI=
-From:   WANG Xuerui <git@xen0n.name>
-To:     linux-rtc@vger.kernel.org
-Cc:     WANG Xuerui <git@xen0n.name>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        linux-mips@vger.kernel.org, devicetree@vger.kernel.org
-Subject: [PATCH RESEND v5 0/6] rtc: ls2x: Add support for the Loongson-2K/LS7A RTC
-Date:   Tue, 24 Aug 2021 00:31:36 +0800
-Message-Id: <20210823163142.586529-1-git@xen0n.name>
-X-Mailer: git-send-email 2.33.0
+        id S229660AbhHWRfC (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 23 Aug 2021 13:35:02 -0400
+Received: from aposti.net ([89.234.176.197]:54898 "EHLO aposti.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229946AbhHWRfB (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Mon, 23 Aug 2021 13:35:01 -0400
+From:   Paul Cercueil <paul@crapouillou.net>
+To:     Paul Burton <paulburton@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc:     linux-mips@vger.kernel.org, list@opendingux.net,
+        linux-kernel@vger.kernel.org, Paul Cercueil <paul@crapouillou.net>
+Subject: [PATCH] MIPS: ingenic: Unconditionally enable clock of CPU #0
+Date:   Mon, 23 Aug 2021 18:34:05 +0100
+Message-Id: <20210823173405.153323-1-paul@crapouillou.net>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-I'm resending the series after waiting for seven rc's without any response;
-did I overlook any submission procedure? Rebased against current rtc-next
-and tweaked Cc's for this submission, though.
+Make sure that the PLL that feeds the CPU won't be stopped while the
+kernel is running.
 
-This is all compiled and tested on a 3A4000 box, as usual. 3A3000+7A and
-2K systems are tested previously, and these should not be affected. (To
-Loongson employees reading this: please test on your rigs and give
-feedback, for getting this done before the next merge window!)
+This fixes a problem on JZ4760 (and probably others) where under very
+specific conditions, the main PLL would be turned OFF when the kernel
+was shutting down, causing the shutdown process to fail.
 
-While we're at it, I'd like to know which tree should this series go in via;
-is it rtc-next or mips-next? I'd prefer mips-next, since the last 4 patches
-all deal with MIPS things.
+Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+---
+ arch/mips/generic/board-ingenic.c | 28 ++++++++++++++++++++++++++++
+ 1 file changed, 28 insertions(+)
 
-
-Original cover letter:
-
-This patch series adds support for the RTC module found on various
-Loongson systems with the Loongson-2K SoC or the LS7A bridge chip.
-The driver is rewritten from an out-of-tree version to meet mainline
-standards. I write kernel code as a hobby, though, so there might still
-be overlooked issues. Any suggestions are welcome.
-
-v5:
-- Minor changes per Nobuhiro-san's review
-  - Simplified one register-write-and-return
-  - Explicitly depend on OF, remove of_match_ptr usage for now
-- Tested on Loongson-3A4000; 2K should work too because there's no
-  functional change either
-
-v4:
-- Rebased on top of next-20210628
-- Added Jiaxun's Tested-by tag for Loongson-2K; no functional changes
-- Addressed all review comments from v3
-  - Rewritten field operations with FIELD_GET/FIELD_PREP
-  - Removed all error logs
-  - Removed unnecessary spinlocking (RTC core already protects against
-    concurrent device file operations)
-
-v3:
-- Fixed compile error not discovered after rebase (blame sleep
-  deprivation)
-- Tested on Loongson-3A4000 and Loongson-2K
-
-v2:
-- Rebased on top of latest linux-next
-- Updated Huacai's e-mail address to the kernel.org one
-- Added collected tags
-- Added adaptation for newly upstreamed Loongson-2K platforms
-
-WANG Xuerui (6):
-  rtc: ls2x: Add support for the Loongson-2K/LS7A RTC
-  dt-bindings: rtc: Add bindings for LS2X RTC
-  MIPS: Loongson64: DTS: Add RTC support to LS7A
-  MIPS: Loongson: Enable LS2X RTC in loongson3_defconfig
-  MIPS: Loongson64: DTS: Add RTC support to Loongson-2K
-  MIPS: Loongson: Enable LS2X RTC in loongson2k_defconfig
-
- .../devicetree/bindings/rtc/trivial-rtc.yaml  |   2 +
- .../boot/dts/loongson/loongson64-2k1000.dtsi  |   5 +
- arch/mips/boot/dts/loongson/ls7a-pch.dtsi     |   5 +
- arch/mips/configs/loongson2k_defconfig        |   1 +
- arch/mips/configs/loongson3_defconfig         |   1 +
- drivers/rtc/Kconfig                           |  11 ++
- drivers/rtc/Makefile                          |   1 +
- drivers/rtc/rtc-ls2x.c                        | 180 ++++++++++++++++++
- 8 files changed, 206 insertions(+)
- create mode 100644 drivers/rtc/rtc-ls2x.c
-
-
-base-commit: 8158da6a33f2656c2a98c30eb9185a44e215a6b6
+diff --git a/arch/mips/generic/board-ingenic.c b/arch/mips/generic/board-ingenic.c
+index 00161ed4884a..5064cf770d64 100644
+--- a/arch/mips/generic/board-ingenic.c
++++ b/arch/mips/generic/board-ingenic.c
+@@ -7,6 +7,8 @@
+  * Copyright (C) 2020 Paul Cercueil <paul@crapouillou.net>
+  */
+ 
++#include <linux/clk.h>
++#include <linux/of.h>
+ #include <linux/of_address.h>
+ #include <linux/of_fdt.h>
+ #include <linux/pm.h>
+@@ -114,10 +116,36 @@ static const struct platform_suspend_ops ingenic_pm_ops __maybe_unused = {
+ 
+ static int __init ingenic_pm_init(void)
+ {
++	struct device_node *cpu_node;
++	struct clk *cpu0_clk;
++	int ret;
++
+ 	if (boot_cpu_type() == CPU_XBURST) {
+ 		if (IS_ENABLED(CONFIG_PM_SLEEP))
+ 			suspend_set_ops(&ingenic_pm_ops);
+ 		_machine_halt = ingenic_halt;
++
++		/*
++		 * Unconditionally enable the clock for the first CPU.
++		 * This makes sure that the PLL that feeds the CPU won't be
++		 * stopped while the kernel is running.
++		 */
++		cpu_node = of_get_cpu_node(0, NULL);
++		if (!cpu_node) {
++			pr_err("Unable to get CPU node\n");
++		} else {
++			cpu0_clk = of_clk_get(cpu_node, 0);
++			if (IS_ERR(cpu0_clk)) {
++				pr_err("Unable to get CPU0 clock\n");
++				return PTR_ERR(cpu0_clk);
++			}
++
++			ret = clk_prepare_enable(cpu0_clk);
++			if (ret) {
++				pr_err("Unable to enable CPU0 clock\n");
++				return ret;
++			}
++		}
+ 	}
+ 
+ 	return 0;
 -- 
-2.33.0
+2.32.0
 

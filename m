@@ -4,45 +4,44 @@ X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 X-Spam-Level: 
 X-Spam-Status: No, score=-19.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CAC81C4167B
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EA321C4167D
 	for <linux-mips@archiver.kernel.org>; Fri, 10 Sep 2021 00:44:14 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id B538E61108
+	by mail.kernel.org (Postfix) with ESMTP id D860461206
 	for <linux-mips@archiver.kernel.org>; Fri, 10 Sep 2021 00:44:14 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231416AbhIJApR (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 9 Sep 2021 20:45:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48032 "EHLO mail.kernel.org"
+        id S233696AbhIJAo6 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 9 Sep 2021 20:44:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43506 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234012AbhIJAWV (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Thu, 9 Sep 2021 20:22:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 04D316023D;
-        Fri, 10 Sep 2021 00:21:10 +0000 (UTC)
+        id S231460AbhIJASG (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Thu, 9 Sep 2021 20:18:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 428E66115A;
+        Fri, 10 Sep 2021 00:16:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631233271;
-        bh=VLjAvUgxy44qM8GoKgrF9Lm6uZ0W/hWCW00zYMDFXNQ=;
+        s=k20201202; t=1631233008;
+        bh=+efzFw3+KZqGnrAyjhJhrMQqPbG/mKtLzbLkzhWQAug=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gnFdmZrtiPBHj+w8S6C0/bem/3eFt6gN/m+J7WxqXUPGCD8Tb3uCrSSR9S9o3+9ne
-         hsPCuG+j02btrR9prdJ9H0KDe1t4w6vEFVjOGhT1jDM47xWgTDGSokNbxupQBNBnNx
-         /RqVIVlPwqnxJUsEmClZQKHieiESptmVIGM0uT6gQ2duXR9zei9Lq3Atm3GlbbecPF
-         vtBSUWD2CCA9Hfk5QrbwIBhWRYQaG2+wMTs8bqpyUwfvEl1ZdL1a9fD5dd8HeWS6o7
-         SAxVntnqWl3rrU80kQlv+nuXxiuoFL0RVhHoPA4FjGpQE0nOYoGiUrKBW/t+xd5zXf
-         JueoIGDYoxB+g==
+        b=Pp7mrYQ92cEIv+gmxZJQgMDiJhI2Y79L+EJMf2IG58cX1cSlrM0TtR6+VNWIO8NHJ
+         lpgFJh91D0vSeB0YLok5fBN1JWy7Ljh4yJVEg1LqxlqJ+265Rwvc5rDUB3bpZPqx8j
+         2Lcn+psKXLKm1VGbofd9fmLmiobdTE4QN3PWZ34m8G/MfxkxRhgSNKzdnIitMuQpXt
+         GXyKgJlqaYBtGMWSeC6pUSxkcUZG2dsLKeD5EcwSjNXt2LMzEZNExn4vz61R4RFjMk
+         2Dn1das43pJK9EF3kfAjV4aZpuWeZq9k5MCxvt/CifRYFKlGMnPANIhXdMtBecUZdN
+         lsqsvDenPCgUw==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Vladimir Oltean <vladimir.oltean@nxp.com>,
+Cc:     Rui Wang <wangrui@loongson.cn>,
         Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Sasha Levin <sashal@kernel.org>, linux-mips@vger.kernel.org,
-        devicetree@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.10 31/53] MIPS: mscc: ocelot: mark the phy-mode for internal PHY ports
-Date:   Thu,  9 Sep 2021 20:20:06 -0400
-Message-Id: <20210910002028.175174-31-sashal@kernel.org>
+        Sasha Levin <sashal@kernel.org>, linux-mips@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.14 35/99] MIPS: locking/atomic: Fix atomic{_64,}_sub_if_positive
+Date:   Thu,  9 Sep 2021 20:14:54 -0400
+Message-Id: <20210910001558.173296-35-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210910002028.175174-1-sashal@kernel.org>
-References: <20210910002028.175174-1-sashal@kernel.org>
+In-Reply-To: <20210910001558.173296-1-sashal@kernel.org>
+References: <20210910001558.173296-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -51,84 +50,32 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-From: Vladimir Oltean <vladimir.oltean@nxp.com>
+From: Rui Wang <wangrui@loongson.cn>
 
-[ Upstream commit eba54cbb92d28b4f6dc1ed5f73f5187b09d82c08 ]
+[ Upstream commit cb95ea79b3fc772c5873a7a4532ab4c14a455da2 ]
 
-The ocelot driver was converted to phylink, and that expects a valid
-phy_interface_t. Without a phy-mode, of_get_phy_mode returns
-PHY_INTERFACE_MODE_NA, which is not ideal because phylink rejects that.
+This looks like a typo and that caused atomic64 test failed.
 
-The ocelot driver was patched to treat PHY_INTERFACE_MODE_NA as
-PHY_INTERFACE_MODE_INTERNAL to work with the broken DT blobs, but we
-should fix the device trees and specify the phy-mode too.
-
-Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
+Signed-off-by: Rui Wang <wangrui@loongson.cn>
 Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/mips/boot/dts/mscc/ocelot_pcb120.dts | 4 ++++
- arch/mips/boot/dts/mscc/ocelot_pcb123.dts | 4 ++++
- 2 files changed, 8 insertions(+)
+ arch/mips/include/asm/atomic.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/mips/boot/dts/mscc/ocelot_pcb120.dts b/arch/mips/boot/dts/mscc/ocelot_pcb120.dts
-index d2dc6b3d923c..bd240690cb37 100644
---- a/arch/mips/boot/dts/mscc/ocelot_pcb120.dts
-+++ b/arch/mips/boot/dts/mscc/ocelot_pcb120.dts
-@@ -71,21 +71,25 @@ phy4: ethernet-phy@3 {
- &port0 {
- 	status = "okay";
- 	phy-handle = <&phy0>;
-+	phy-mode = "internal";
- };
- 
- &port1 {
- 	status = "okay";
- 	phy-handle = <&phy1>;
-+	phy-mode = "internal";
- };
- 
- &port2 {
- 	status = "okay";
- 	phy-handle = <&phy2>;
-+	phy-mode = "internal";
- };
- 
- &port3 {
- 	status = "okay";
- 	phy-handle = <&phy3>;
-+	phy-mode = "internal";
- };
- 
- &port4 {
-diff --git a/arch/mips/boot/dts/mscc/ocelot_pcb123.dts b/arch/mips/boot/dts/mscc/ocelot_pcb123.dts
-index 7d7e638791dd..0185045c7630 100644
---- a/arch/mips/boot/dts/mscc/ocelot_pcb123.dts
-+++ b/arch/mips/boot/dts/mscc/ocelot_pcb123.dts
-@@ -49,19 +49,23 @@ &mdio0 {
- &port0 {
- 	status = "okay";
- 	phy-handle = <&phy0>;
-+	phy-mode = "internal";
- };
- 
- &port1 {
- 	status = "okay";
- 	phy-handle = <&phy1>;
-+	phy-mode = "internal";
- };
- 
- &port2 {
- 	status = "okay";
- 	phy-handle = <&phy2>;
-+	phy-mode = "internal";
- };
- 
- &port3 {
- 	status = "okay";
- 	phy-handle = <&phy3>;
-+	phy-mode = "internal";
- };
+diff --git a/arch/mips/include/asm/atomic.h b/arch/mips/include/asm/atomic.h
+index 95e1f7f3597f..a0b9e7c1e4fc 100644
+--- a/arch/mips/include/asm/atomic.h
++++ b/arch/mips/include/asm/atomic.h
+@@ -206,7 +206,7 @@ ATOMIC_OPS(atomic64, xor, s64, ^=, xor, lld, scd)
+  * The function returns the old value of @v minus @i.
+  */
+ #define ATOMIC_SIP_OP(pfx, type, op, ll, sc)				\
+-static __inline__ int arch_##pfx##_sub_if_positive(type i, pfx##_t * v)	\
++static __inline__ type arch_##pfx##_sub_if_positive(type i, pfx##_t * v)	\
+ {									\
+ 	type temp, result;						\
+ 									\
 -- 
 2.30.2
 

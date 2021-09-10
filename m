@@ -7,39 +7,38 @@ X-Spam-Status: No, score=-19.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B5978C433FE
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EE244C43217
 	for <linux-mips@archiver.kernel.org>; Fri, 10 Sep 2021 00:43:50 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id A288361186
+	by mail.kernel.org (Postfix) with ESMTP id E7D476115A
 	for <linux-mips@archiver.kernel.org>; Fri, 10 Sep 2021 00:43:50 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233161AbhIJAo7 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        id S229640AbhIJAo7 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
         Thu, 9 Sep 2021 20:44:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43538 "EHLO mail.kernel.org"
+Received: from mail.kernel.org ([198.145.29.99]:44942 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232302AbhIJASt (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Thu, 9 Sep 2021 20:18:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0FB5661167;
-        Fri, 10 Sep 2021 00:17:16 +0000 (UTC)
+        id S232674AbhIJATD (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Thu, 9 Sep 2021 20:19:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C4C13611C2;
+        Fri, 10 Sep 2021 00:17:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631233037;
-        bh=sqtme8uJweBGaICmFp7X+R6DJQICCl96FVYAcxPhTv4=;
+        s=k20201202; t=1631233071;
+        bh=qGLb3QTiSCz8SrUkiu5OPBBspFGjPc7B2rXYIOOeTyw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vPOXXZb/RKYa8CdlFgHEqvhcRExxqiBgYEHop/WUB9clq/KabCtBp+Es6Pdd++nGA
-         xWjGXOnQvTX2nmaqAoheUeI/e87+Tdmg5PhqdEkM6PH+xiRtEp21+hKo6FanGxjXz6
-         DwOagCC7G3nitb8XtgLwjy8O7NaCBIN682Xtap+ZDILKmKH0YB5ZtH5cN9sw3s2a0o
-         MVtlx8ILeCe8fiadZvtVtjMMHO/2BXSN2Fw0Jh3G+I8kEorahpPPiISJfwIIAz1Efp
-         lc9dOu+SQbu8PhpCv4gm29MhIMOcCG9FyzjiSwUizbT1MUPq3eS0I1bcIQ3dSfQvZL
-         SWc+4Kv0iu9EA==
+        b=T/4jT1CS6aMmWE3CtqQvOvwm5aRAynJU8CcFEo6snYrWEeV/CzBjn/ZPTqt3rYV1u
+         VIcyJgA08QR56ktbrxLmJD8j6dFKoDoTU0x8+Juj3vNIrBmjROJiWwXv1eiD1uTg+U
+         w9QoYJDz+GQ45g88bxfSgbjFM+zs0g2oKxul8dGi/PGSuc5mKt29qBv7n9hHoOuYey
+         KOjUEpXqeAV0S1F/+6uCczoFToo4azKB0BG8Fd1iIiYxAQbTEaj6d8sKr0294q7Trf
+         Ee3nyCvz/8NuCKMU7f7kGFjLKlFBUTDiwKou2TzkRLAPVFt0yOxvqaglsvqG2QZQgE
+         OjSHFuYuNiQ7w==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Vladimir Oltean <vladimir.oltean@nxp.com>,
+Cc:     Paul Cercueil <paul@crapouillou.net>,
         Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Sasha Levin <sashal@kernel.org>, linux-mips@vger.kernel.org,
-        devicetree@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.14 57/99] MIPS: mscc: ocelot: disable all switch ports by default
-Date:   Thu,  9 Sep 2021 20:15:16 -0400
-Message-Id: <20210910001558.173296-57-sashal@kernel.org>
+        Sasha Levin <sashal@kernel.org>, linux-mips@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.14 81/99] MIPS: ingenic: Unconditionally enable clock of CPU #0
+Date:   Thu,  9 Sep 2021 20:15:40 -0400
+Message-Id: <20210910001558.173296-81-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210910001558.173296-1-sashal@kernel.org>
 References: <20210910001558.173296-1-sashal@kernel.org>
@@ -51,164 +50,74 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-From: Vladimir Oltean <vladimir.oltean@nxp.com>
+From: Paul Cercueil <paul@crapouillou.net>
 
-[ Upstream commit 0181f6f19c6c35b24f1516d8db22f3bbce762633 ]
+[ Upstream commit 71f8817c28e2e1e5549138e2aef68c2fd784e162 ]
 
-The ocelot switch driver used to ignore ports which do not have a
-phy-handle property and not probe those, but this is not quite ok since
-it is valid to not have a phy-handle property if there is a fixed-link.
+Make sure that the PLL that feeds the CPU won't be stopped while the
+kernel is running.
 
-It seems that checking for a phy-handle was a proxy for the proper check
-which is for the status, but that doesn't make a lot of sense, since the
-ocelot driver already iterates using for_each_available_child_of_node
-which skips the disabled ports, so I have no idea.
+This fixes a problem on JZ4760 (and probably others) where under very
+specific conditions, the main PLL would be turned OFF when the kernel
+was shutting down, causing the shutdown process to fail.
 
-Anyway, a widespread pattern in device trees is for a SoC dtsi to
-disable by default all hardware, and let board dts files enable what is
-used. So let's do that and enable only the ports with a phy-handle in
-the pcb120 and pcb123 device tree files.
-
-Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
+Signed-off-by: Paul Cercueil <paul@crapouillou.net>
 Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/mips/boot/dts/mscc/ocelot.dtsi       | 11 +++++++++++
- arch/mips/boot/dts/mscc/ocelot_pcb120.dts |  8 ++++++++
- arch/mips/boot/dts/mscc/ocelot_pcb123.dts |  4 ++++
- 3 files changed, 23 insertions(+)
+ arch/mips/generic/board-ingenic.c | 28 ++++++++++++++++++++++++++++
+ 1 file changed, 28 insertions(+)
 
-diff --git a/arch/mips/boot/dts/mscc/ocelot.dtsi b/arch/mips/boot/dts/mscc/ocelot.dtsi
-index 535a98284dcb..e51db651af13 100644
---- a/arch/mips/boot/dts/mscc/ocelot.dtsi
-+++ b/arch/mips/boot/dts/mscc/ocelot.dtsi
-@@ -150,36 +150,47 @@ ethernet-ports {
+diff --git a/arch/mips/generic/board-ingenic.c b/arch/mips/generic/board-ingenic.c
+index 0cec0bea13d6..11387a93867b 100644
+--- a/arch/mips/generic/board-ingenic.c
++++ b/arch/mips/generic/board-ingenic.c
+@@ -7,6 +7,8 @@
+  * Copyright (C) 2020 Paul Cercueil <paul@crapouillou.net>
+  */
  
- 				port0: port@0 {
- 					reg = <0>;
-+					status = "disabled";
- 				};
- 				port1: port@1 {
- 					reg = <1>;
-+					status = "disabled";
- 				};
- 				port2: port@2 {
- 					reg = <2>;
-+					status = "disabled";
- 				};
- 				port3: port@3 {
- 					reg = <3>;
-+					status = "disabled";
- 				};
- 				port4: port@4 {
- 					reg = <4>;
-+					status = "disabled";
- 				};
- 				port5: port@5 {
- 					reg = <5>;
-+					status = "disabled";
- 				};
- 				port6: port@6 {
- 					reg = <6>;
-+					status = "disabled";
- 				};
- 				port7: port@7 {
- 					reg = <7>;
-+					status = "disabled";
- 				};
- 				port8: port@8 {
- 					reg = <8>;
-+					status = "disabled";
- 				};
- 				port9: port@9 {
- 					reg = <9>;
-+					status = "disabled";
- 				};
- 				port10: port@10 {
- 					reg = <10>;
-+					status = "disabled";
- 				};
- 			};
- 		};
-diff --git a/arch/mips/boot/dts/mscc/ocelot_pcb120.dts b/arch/mips/boot/dts/mscc/ocelot_pcb120.dts
-index 897de5025d7f..d2dc6b3d923c 100644
---- a/arch/mips/boot/dts/mscc/ocelot_pcb120.dts
-+++ b/arch/mips/boot/dts/mscc/ocelot_pcb120.dts
-@@ -69,40 +69,48 @@ phy4: ethernet-phy@3 {
- };
++#include <linux/clk.h>
++#include <linux/of.h>
+ #include <linux/of_address.h>
+ #include <linux/of_fdt.h>
+ #include <linux/pm.h>
+@@ -108,10 +110,36 @@ static const struct platform_suspend_ops ingenic_pm_ops __maybe_unused = {
  
- &port0 {
-+	status = "okay";
- 	phy-handle = <&phy0>;
- };
+ static int __init ingenic_pm_init(void)
+ {
++	struct device_node *cpu_node;
++	struct clk *cpu0_clk;
++	int ret;
++
+ 	if (boot_cpu_type() == CPU_XBURST) {
+ 		if (IS_ENABLED(CONFIG_PM_SLEEP))
+ 			suspend_set_ops(&ingenic_pm_ops);
+ 		_machine_halt = ingenic_halt;
++
++		/*
++		 * Unconditionally enable the clock for the first CPU.
++		 * This makes sure that the PLL that feeds the CPU won't be
++		 * stopped while the kernel is running.
++		 */
++		cpu_node = of_get_cpu_node(0, NULL);
++		if (!cpu_node) {
++			pr_err("Unable to get CPU node\n");
++		} else {
++			cpu0_clk = of_clk_get(cpu_node, 0);
++			if (IS_ERR(cpu0_clk)) {
++				pr_err("Unable to get CPU0 clock\n");
++				return PTR_ERR(cpu0_clk);
++			}
++
++			ret = clk_prepare_enable(cpu0_clk);
++			if (ret) {
++				pr_err("Unable to enable CPU0 clock\n");
++				return ret;
++			}
++		}
+ 	}
  
- &port1 {
-+	status = "okay";
- 	phy-handle = <&phy1>;
- };
- 
- &port2 {
-+	status = "okay";
- 	phy-handle = <&phy2>;
- };
- 
- &port3 {
-+	status = "okay";
- 	phy-handle = <&phy3>;
- };
- 
- &port4 {
-+	status = "okay";
- 	phy-handle = <&phy7>;
- 	phy-mode = "sgmii";
- 	phys = <&serdes 4 SERDES1G(2)>;
- };
- 
- &port5 {
-+	status = "okay";
- 	phy-handle = <&phy4>;
- 	phy-mode = "sgmii";
- 	phys = <&serdes 5 SERDES1G(5)>;
- };
- 
- &port6 {
-+	status = "okay";
- 	phy-handle = <&phy6>;
- 	phy-mode = "sgmii";
- 	phys = <&serdes 6 SERDES1G(3)>;
- };
- 
- &port9 {
-+	status = "okay";
- 	phy-handle = <&phy5>;
- 	phy-mode = "sgmii";
- 	phys = <&serdes 9 SERDES1G(4)>;
-diff --git a/arch/mips/boot/dts/mscc/ocelot_pcb123.dts b/arch/mips/boot/dts/mscc/ocelot_pcb123.dts
-index ef852f382da8..7d7e638791dd 100644
---- a/arch/mips/boot/dts/mscc/ocelot_pcb123.dts
-+++ b/arch/mips/boot/dts/mscc/ocelot_pcb123.dts
-@@ -47,17 +47,21 @@ &mdio0 {
- };
- 
- &port0 {
-+	status = "okay";
- 	phy-handle = <&phy0>;
- };
- 
- &port1 {
-+	status = "okay";
- 	phy-handle = <&phy1>;
- };
- 
- &port2 {
-+	status = "okay";
- 	phy-handle = <&phy2>;
- };
- 
- &port3 {
-+	status = "okay";
- 	phy-handle = <&phy3>;
- };
+ 	return 0;
 -- 
 2.30.2
 

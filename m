@@ -7,40 +7,39 @@ X-Spam-Status: No, score=-19.4 required=3.0 tests=BAYES_00,DKIMWL_WL_HIGH,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9A07CC4167D
-	for <linux-mips@archiver.kernel.org>; Fri, 10 Sep 2021 00:43:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 28259C4332F
+	for <linux-mips@archiver.kernel.org>; Fri, 10 Sep 2021 00:43:50 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 83BEA60C40
-	for <linux-mips@archiver.kernel.org>; Fri, 10 Sep 2021 00:43:48 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 169AC6115A
+	for <linux-mips@archiver.kernel.org>; Fri, 10 Sep 2021 00:43:50 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233694AbhIJAo5 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 9 Sep 2021 20:44:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44534 "EHLO mail.kernel.org"
+        id S231460AbhIJAo6 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 9 Sep 2021 20:44:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44872 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229981AbhIJASF (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Thu, 9 Sep 2021 20:18:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CF07C611EF;
-        Fri, 10 Sep 2021 00:16:45 +0000 (UTC)
+        id S232303AbhIJASt (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Thu, 9 Sep 2021 20:18:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5ECA361101;
+        Fri, 10 Sep 2021 00:17:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1631233006;
-        bh=CJrES0oAwJTPIo0BiAy8EvkGblO9RDeUA9LmpITn31A=;
+        s=k20201202; t=1631233039;
+        bh=VLjAvUgxy44qM8GoKgrF9Lm6uZ0W/hWCW00zYMDFXNQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XEPCOOPQkQn6q1PSkBIVX3lm+tjO70FJFLrukpSGFtuyQNsha9KqissVqL5xIwnUn
-         uDOA8zY/PkAbJhRtwdP45JlfWmo26OVX2XZr/mAz0XnfYLxtkQR/Lcd2jdIjwmN64d
-         iU9wcOUlPyXmCCLasHRD+Uw87yywE26/NCg8mnCNQ+DRRWme8sFWFPyxMxHVthNsll
-         j7mfppX9XKYeLhxI3npfZPfgwRgKLr+3wVBfOx9e77VRgqNx8MOefYywh3xNhvrSr6
-         LRzsH56DgVL5N7kHu3hTqyHObWH3fMZ7HOnpXOd62SEp2a6jIG5Gl57/kbSEggTidP
-         PyOQh/7vuz8eQ==
+        b=mFLJ3p0XUF0T2TeUGtMNOB7kZgHloEB6WTtxfeMvmiwP6DIe9U8fHPWxgs6LuYvac
+         kHK0KgJKN0Jng4Do2CKclQby6cswliwZiZUIzrhs3UNhWfaVi8Jat45cZKzthUKnDq
+         IRARACSfQ8jP6p4bymB0OX9xpaHRiPlMiT+51Mnh445zAWRCZV35ElvDp33YUCwYKR
+         TU+8d8+j0nIUIFJhFY5uzonQvZG4mpKU91hwS65C5zZw8PNazsMa8rTDxeLY5rLPNB
+         n8sxdUwDG9n9qn5L5CRCGycglMqGdGsiIP7GPaivrZOFFilRGeupC2qDnfoyoLVXiQ
+         HDvB43lpJoOEw==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        kernel test robot <lkp@intel.com>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+Cc:     Vladimir Oltean <vladimir.oltean@nxp.com>,
         Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        linux-mips@vger.kernel.org, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 5.14 34/99] MIPS: loongson2ef: don't build serial.o unconditionally
-Date:   Thu,  9 Sep 2021 20:14:53 -0400
-Message-Id: <20210910001558.173296-34-sashal@kernel.org>
+        Sasha Levin <sashal@kernel.org>, linux-mips@vger.kernel.org,
+        devicetree@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.14 58/99] MIPS: mscc: ocelot: mark the phy-mode for internal PHY ports
+Date:   Thu,  9 Sep 2021 20:15:17 -0400
+Message-Id: <20210910001558.173296-58-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210910001558.173296-1-sashal@kernel.org>
 References: <20210910001558.173296-1-sashal@kernel.org>
@@ -52,62 +51,84 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-From: Randy Dunlap <rdunlap@infradead.org>
+From: Vladimir Oltean <vladimir.oltean@nxp.com>
 
-[ Upstream commit ad548993a66c498267695edd8b19a682be0e3a8b ]
+[ Upstream commit eba54cbb92d28b4f6dc1ed5f73f5187b09d82c08 ]
 
-LOONGSON_UART_BASE depends on EARLY_PRINTK || SERIAL_8250, but when
-neither of these Kconfig symbols is set, the kernel build has errors:
+The ocelot driver was converted to phylink, and that expects a valid
+phy_interface_t. Without a phy-mode, of_get_phy_mode returns
+PHY_INTERFACE_MODE_NA, which is not ideal because phylink rejects that.
 
-../arch/mips/loongson2ef/common/serial.c: In function 'serial_init':
-../arch/mips/loongson2ef/common/serial.c:66:25: error: 'loongson_uart_base' undeclared (first use in this function)
-   66 |                         loongson_uart_base;
-../arch/mips/loongson2ef/common/serial.c:66:25: note: each undeclared identifier is reported only once for each function it appears in
-../arch/mips/loongson2ef/common/serial.c:68:41: error: '_loongson_uart_base' undeclared (first use in this function)
-   68 |                         (void __iomem *)_loongson_uart_base;
+The ocelot driver was patched to treat PHY_INTERFACE_MODE_NA as
+PHY_INTERFACE_MODE_INTERNAL to work with the broken DT blobs, but we
+should fix the device trees and specify the phy-mode too.
 
-Fix this by building serial.o only when one (or both) of these
-Kconfig symbols is enabled.
-
-Tested with:
-	(a) EARLY_PRINTK=y, SERIAL_8250 not set;
-	(b) EARLY_PRINTK=y, SERIAL_8250=y;
-	(c) EARLY_PRINTK=y, SERIAL_8250=m.
-	(d) EARLY_PRINTK not set, SERIAL_8250=y;
-	(e) EARLY_PRINTK not set, SERIAL_8250=m;
-	(f) EARLY_PRINTK not set, SERIAL_8250 not set.
-
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Reported-by: kernel test robot <lkp@intel.com>
-Cc: Jiaxun Yang <jiaxun.yang@flygoat.com>
-Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc: linux-mips@vger.kernel.org
+Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
 Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/mips/loongson2ef/common/Makefile | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ arch/mips/boot/dts/mscc/ocelot_pcb120.dts | 4 ++++
+ arch/mips/boot/dts/mscc/ocelot_pcb123.dts | 4 ++++
+ 2 files changed, 8 insertions(+)
 
-diff --git a/arch/mips/loongson2ef/common/Makefile b/arch/mips/loongson2ef/common/Makefile
-index d5ab3e543ea3..30ea8b5ca685 100644
---- a/arch/mips/loongson2ef/common/Makefile
-+++ b/arch/mips/loongson2ef/common/Makefile
-@@ -4,12 +4,14 @@
- #
+diff --git a/arch/mips/boot/dts/mscc/ocelot_pcb120.dts b/arch/mips/boot/dts/mscc/ocelot_pcb120.dts
+index d2dc6b3d923c..bd240690cb37 100644
+--- a/arch/mips/boot/dts/mscc/ocelot_pcb120.dts
++++ b/arch/mips/boot/dts/mscc/ocelot_pcb120.dts
+@@ -71,21 +71,25 @@ phy4: ethernet-phy@3 {
+ &port0 {
+ 	status = "okay";
+ 	phy-handle = <&phy0>;
++	phy-mode = "internal";
+ };
  
- obj-y += setup.o init.o env.o time.o reset.o irq.o \
--    bonito-irq.o mem.o machtype.o platform.o serial.o
-+    bonito-irq.o mem.o machtype.o platform.o
- obj-$(CONFIG_PCI) += pci.o
+ &port1 {
+ 	status = "okay";
+ 	phy-handle = <&phy1>;
++	phy-mode = "internal";
+ };
  
- #
- # Serial port support
- #
-+obj-$(CONFIG_LOONGSON_UART_BASE) += serial.o
-+obj-$(CONFIG_EARLY_PRINTK) += serial.o
- obj-$(CONFIG_LOONGSON_UART_BASE) += uart_base.o
- obj-$(CONFIG_LOONGSON_MC146818) += rtc.o
+ &port2 {
+ 	status = "okay";
+ 	phy-handle = <&phy2>;
++	phy-mode = "internal";
+ };
  
+ &port3 {
+ 	status = "okay";
+ 	phy-handle = <&phy3>;
++	phy-mode = "internal";
+ };
+ 
+ &port4 {
+diff --git a/arch/mips/boot/dts/mscc/ocelot_pcb123.dts b/arch/mips/boot/dts/mscc/ocelot_pcb123.dts
+index 7d7e638791dd..0185045c7630 100644
+--- a/arch/mips/boot/dts/mscc/ocelot_pcb123.dts
++++ b/arch/mips/boot/dts/mscc/ocelot_pcb123.dts
+@@ -49,19 +49,23 @@ &mdio0 {
+ &port0 {
+ 	status = "okay";
+ 	phy-handle = <&phy0>;
++	phy-mode = "internal";
+ };
+ 
+ &port1 {
+ 	status = "okay";
+ 	phy-handle = <&phy1>;
++	phy-mode = "internal";
+ };
+ 
+ &port2 {
+ 	status = "okay";
+ 	phy-handle = <&phy2>;
++	phy-mode = "internal";
+ };
+ 
+ &port3 {
+ 	status = "okay";
+ 	phy-handle = <&phy3>;
++	phy-mode = "internal";
+ };
 -- 
 2.30.2
 

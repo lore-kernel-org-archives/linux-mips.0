@@ -2,180 +2,127 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=-17.2 required=3.0 tests=BAYES_00,
+X-Spam-Status: No, score=-16.8 required=3.0 tests=BAYES_00,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,NICE_REPLY_A,SPF_HELO_NONE,SPF_PASS,USER_AGENT_SANE_1
-	autolearn=ham autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
+	autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AA916C433EF
-	for <linux-mips@archiver.kernel.org>; Tue, 14 Sep 2021 12:37:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 90A14C4332F
+	for <linux-mips@archiver.kernel.org>; Tue, 14 Sep 2021 14:38:46 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 9228A60F92
-	for <linux-mips@archiver.kernel.org>; Tue, 14 Sep 2021 12:37:14 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 7A7C860698
+	for <linux-mips@archiver.kernel.org>; Tue, 14 Sep 2021 14:38:46 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232617AbhINMia (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 14 Sep 2021 08:38:30 -0400
-Received: from mail.loongson.cn ([114.242.206.163]:42754 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S232524AbhINMia (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Tue, 14 Sep 2021 08:38:30 -0400
-Received: from [10.130.0.135] (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dxn2tEl0BhhZgGAA--.14513S3;
-        Tue, 14 Sep 2021 20:36:22 +0800 (CST)
-From:   Tiezhu Yang <yangtiezhu@loongson.cn>
-Subject: Re: [PATCH bpf-next v2] bpf: Change value of MAX_TAIL_CALL_CNT from
- 32 to 33
-To:     Daniel Borkmann <daniel@iogearbox.net>,
-        Shubham Bansal <illusionist.neo@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Zi Shen Lim <zlim.lnx@gmail.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Paul Burton <paulburton@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        naveen.n.rao@linux.ibm.com, Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Luke Nelson <luke.r.nels@gmail.com>,
-        Xi Wang <xi.wang@gmail.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>, bjorn@kernel.org,
-        davem@davemloft.net,
-        Johan Almbladh <johan.almbladh@anyfinetworks.com>,
-        Paul Chaignon <paul@cilium.io>
-References: <1631325361-9851-1-git-send-email-yangtiezhu@loongson.cn>
- <0fb8d16f-67e7-7197-fce2-a4c17f1e5987@iogearbox.net>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-riscv@lists.infradead.org, sparclinux@vger.kernel.org
-Message-ID: <9ad382ca-a254-f897-9ec6-c9b1920a6174@loongson.cn>
-Date:   Tue, 14 Sep 2021 20:36:20 +0800
-User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
- Thunderbird/45.4.0
+        id S233896AbhINOkC (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 14 Sep 2021 10:40:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40434 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233828AbhINOkB (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Tue, 14 Sep 2021 10:40:01 -0400
+Received: from andre.telenet-ops.be (andre.telenet-ops.be [IPv6:2a02:1800:120:4::f00:15])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8A06C061574
+        for <linux-mips@vger.kernel.org>; Tue, 14 Sep 2021 07:38:43 -0700 (PDT)
+Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed20:d46f:7eb5:4a37:9d14])
+        by andre.telenet-ops.be with bizsmtp
+        id tqef2500P2aSKa101qef69; Tue, 14 Sep 2021 16:38:41 +0200
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1mQ9a2-004VGg-TQ; Tue, 14 Sep 2021 16:38:38 +0200
+Received: from geert by rox.of.borg with local (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1mQ9a2-0028yG-HL; Tue, 14 Sep 2021 16:38:38 +0200
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+To:     Robin van der Gracht <robin@protonic.nl>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Paul Burton <paulburton@kernel.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Pavel Machek <pavel@ucw.cz>, Marek Behun <marek.behun@nic.cz>,
+        devicetree@vger.kernel.org, linux-leds@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH v6 04/19] auxdisplay: img-ascii-lcd: Add helper variable dev
+Date:   Tue, 14 Sep 2021 16:38:20 +0200
+Message-Id: <20210914143835.511051-5-geert@linux-m68k.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210914143835.511051-1-geert@linux-m68k.org>
+References: <20210914143835.511051-1-geert@linux-m68k.org>
 MIME-Version: 1.0
-In-Reply-To: <0fb8d16f-67e7-7197-fce2-a4c17f1e5987@iogearbox.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: AQAAf9Dxn2tEl0BhhZgGAA--.14513S3
-X-Coremail-Antispam: 1UD129KBjvJXoWxurW7Gw1DJw1UGw4xGFW3KFg_yoW5Ar43pr
-        WUJanakr4kXFyrC3ZrKa1xZay0vFZ8tryUGrWrK342yFn8Zrn5WF4xK3yFgF1UAryrta4F
-        9ayFkr95C3WkZFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUU9Gb7Iv0xC_Kw4lb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I2
-        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
-        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xII
-        jxv20xvEc7CjxVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I
-        8E87Iv6xkF7I0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI
-        64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r106r15McIj6I8E87Iv67AKxVW8JVWxJw
-        Am72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l
-        c7I2V7IY0VAS07AlzVAYIcxG8wCY02Avz4vE14v_Xr1l42xK82IYc2Ij64vIr41l4I8I3I
-        0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWU
-        GVWUWwC2zVAF1VAY17CE14v26rWY6r4UJwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14
-        v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xva
-        j40_Wr1j6rW3Jr1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxV
-        W8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU5lsj5UUUUU==
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On 09/14/2021 03:30 PM, Daniel Borkmann wrote:
-> On 9/11/21 3:56 AM, Tiezhu Yang wrote:
->>
-[...]
->> With this patch, it does not change the current limit 33, 
->> MAX_TAIL_CALL_CNT
->> can reflect the actual max tail call count, the tailcall selftests 
->> can work
->> well, and also the above failed testcase in test_bpf can be fixed for 
->> the
->> interpreter (all archs) and the JIT (all archs except for x86).
->>
->>   # uname -m
->>   x86_64
->>   # echo 1 > /proc/sys/net/core/bpf_jit_enable
->>   # modprobe test_bpf
->>   # dmesg | grep -w FAIL
->>   Tail call error path, max count reached jited:1 ret 33 != 34 FAIL
->
-> Could you also state in here which archs you have tested with this 
-> change? I
-> presume /every/ arch which has a JIT?
+img_ascii_lcd_probe() has many users of "pdev->dev".  Add a shorthand to
+simplify the code.
 
-OK, will do it in v3.
-I have tested on x86 and mips.
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+---
+v6:
+  - No changes,
 
->
->> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
->> ---
->>
->> v2:
->>    -- fix the typos in the commit message and update the commit message.
->>    -- fix the failed tailcall selftests for x86 jit.
->>       I am not quite sure the change on x86 is proper, with this change,
->>       tailcall selftests passed, but tailcall limit test in test_bpf.ko
->>       failed, I do not know the reason now, I think this is another 
->> issue,
->>       maybe someone more versed in x86 jit could take a look.
->
-> There should be a series from Johan coming today with regards to 
-> test_bpf.ko
-> that will fix the "tail call error path, max count reached" test which 
-> had an
-> assumption in that R0 would always be valid for the fall-through and 
-> could be
-> passed to the bpf_exit insn whereas it is not guaranteed and verifier, 
-> for
-> example, forbids a subsequent access to R0 w/o reinit. For your 
-> testing, I
-> would suggested to recheck once this series is out.
+v5:
+  - No changes,
 
-I will test the following patch on x86 and mips:
+v4:
+  - No changes,
 
-[PATCH bpf v4 13/14] bpf/tests: Fix error in tail call limit tests
+v3:
+  - No changes,
 
-[...]
+v2:
+  - No changes.
+---
+ drivers/auxdisplay/img-ascii-lcd.c | 13 ++++++-------
+ 1 file changed, 6 insertions(+), 7 deletions(-)
 
->> diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
->> index 0fe6aac..74a9e61 100644
->> --- a/arch/x86/net/bpf_jit_comp.c
->> +++ b/arch/x86/net/bpf_jit_comp.c
->> @@ -402,7 +402,7 @@ static int get_pop_bytes(bool *callee_regs_used)
->>    * ... bpf_tail_call(void *ctx, struct bpf_array *array, u64 index) 
->> ...
->>    *   if (index >= array->map.max_entries)
->>    *     goto out;
->> - *   if (++tail_call_cnt > MAX_TAIL_CALL_CNT)
->> + *   if (tail_call_cnt++ == MAX_TAIL_CALL_CNT)
->
-> Why such inconsistency to e.g. above with arm64 case but also compared to
-> x86 32 bit which uses JAE? If so, we should cleanly follow the reference
-> implementation (== interpreter) _everywhere_ and _not_ introduce 
-> additional
-> variants/implementations across JITs.
-
-In order tokeep consistencyand make as few changes as possible,
-<javascript:void(0);>I will modify the check condition as follows:
-
-#define MAX_TAIL_CALL_CNT 33
-(1) for x86, arm64, ... (0 ~ 32)
-tcc = 0;
-if (tcc == MAX_TAIL_CALL_CNT)
-     goto out;
-tcc++;
-
-(2) for mips, riscv (33 ~ 1)
-tcc = MAX_TAIL_CALL_CNT;
-if (tcc == 0)
-     goto out;
-tcc--;
-
-[...]
+diff --git a/drivers/auxdisplay/img-ascii-lcd.c b/drivers/auxdisplay/img-ascii-lcd.c
+index e33ce0151cdfd150..2b6e41ec57544faa 100644
+--- a/drivers/auxdisplay/img-ascii-lcd.c
++++ b/drivers/auxdisplay/img-ascii-lcd.c
+@@ -365,26 +365,25 @@ static int img_ascii_lcd_probe(struct platform_device *pdev)
+ {
+ 	const struct of_device_id *match;
+ 	const struct img_ascii_lcd_config *cfg;
++	struct device *dev = &pdev->dev;
+ 	struct img_ascii_lcd_ctx *ctx;
+ 	int err;
+ 
+-	match = of_match_device(img_ascii_lcd_matches, &pdev->dev);
++	match = of_match_device(img_ascii_lcd_matches, dev);
+ 	if (!match)
+ 		return -ENODEV;
+ 
+ 	cfg = match->data;
+-	ctx = devm_kzalloc(&pdev->dev, sizeof(*ctx) + cfg->num_chars,
+-			   GFP_KERNEL);
++	ctx = devm_kzalloc(dev, sizeof(*ctx) + cfg->num_chars, GFP_KERNEL);
+ 	if (!ctx)
+ 		return -ENOMEM;
+ 
+ 	if (cfg->external_regmap) {
+-		ctx->regmap = syscon_node_to_regmap(pdev->dev.parent->of_node);
++		ctx->regmap = syscon_node_to_regmap(dev->parent->of_node);
+ 		if (IS_ERR(ctx->regmap))
+ 			return PTR_ERR(ctx->regmap);
+ 
+-		if (of_property_read_u32(pdev->dev.of_node, "offset",
+-					 &ctx->offset))
++		if (of_property_read_u32(dev->of_node, "offset", &ctx->offset))
+ 			return -EINVAL;
+ 	} else {
+ 		ctx->base = devm_platform_ioremap_resource(pdev, 0);
+@@ -408,7 +407,7 @@ static int img_ascii_lcd_probe(struct platform_device *pdev)
+ 	if (err)
+ 		goto out_del_timer;
+ 
+-	err = device_create_file(&pdev->dev, &dev_attr_message);
++	err = device_create_file(dev, &dev_attr_message);
+ 	if (err)
+ 		goto out_del_timer;
+ 
+-- 
+2.25.1
 

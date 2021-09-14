@@ -5,32 +5,32 @@ X-Spam-Level:
 X-Spam-Status: No, score=-15.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	DKIM_VALID,DKIM_VALID_AU,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
 	HEADER_FROM_DIFFERENT_DOMAINS,INCLUDES_CR_TRAILER,INCLUDES_PATCH,
-	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT autolearn=ham
-	autolearn_force=no version=3.4.0
+	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
+	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2588EC433FE
-	for <linux-mips@archiver.kernel.org>; Tue, 14 Sep 2021 21:21:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F3ACBC433FE
+	for <linux-mips@archiver.kernel.org>; Tue, 14 Sep 2021 21:21:43 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 11D8B60F58
-	for <linux-mips@archiver.kernel.org>; Tue, 14 Sep 2021 21:21:37 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id DC09A610D1
+	for <linux-mips@archiver.kernel.org>; Tue, 14 Sep 2021 21:21:43 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235111AbhINVWx (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 14 Sep 2021 17:22:53 -0400
-Received: from mx4.wp.pl ([212.77.101.11]:53968 "EHLO mx4.wp.pl"
+        id S234522AbhINVWf (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 14 Sep 2021 17:22:35 -0400
+Received: from mx4.wp.pl ([212.77.101.11]:33511 "EHLO mx4.wp.pl"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235044AbhINVWq (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Tue, 14 Sep 2021 17:22:46 -0400
-Received: (wp-smtpd smtp.wp.pl 15615 invoked from network); 14 Sep 2021 23:21:24 +0200
+        id S234298AbhINVWd (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Tue, 14 Sep 2021 17:22:33 -0400
+Received: (wp-smtpd smtp.wp.pl 7702 invoked from network); 14 Sep 2021 23:21:11 +0200
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wp.pl; s=1024a;
-          t=1631654484; bh=NI1s3fyUzKFnJoED0B09JtxVWEJcupkI0XVp/SgGAfw=;
+          t=1631654471; bh=cOehKLdr21JWg0458JhnAiOM+tCkh7a5QPtIpRgyjos=;
           h=From:To:Subject;
-          b=cCrJANci5DZlDbkrA82osLhdrQPRxOHO8phkpAMptkt23yfUK3Oh3zYMFw5mUD2fF
-           k3FJgLXCJ9/oDxckIVkzuMLpfIXRp9LnUEL3cE814flVUFyiNSlS21GCqw1ZxBREog
-           dQSIg6x8/vafCqTmRZXILt5JUUqeRW7pqOsV25Vs=
+          b=rUiAoVVESuKS8ujsMQWFrDCX24U7oLsDJyGjwnKWrY9G/vfPUi7933fsYApm2Au/Y
+           JxdtZhdZHGjnxLRzNRiPUIqYkyZeDAsr98g8vNJvTTaUTaiC7gTMcxSC0C+QpGFGTV
+           pqesPPE19RtKcs7xrQ1mj2QMdlJVKYCTeXIDJJvw=
 Received: from 46.204.52.243.nat.umts.dynamic.t-mobile.pl (HELO LAPTOP-OLEK.Free) (olek2@wp.pl@[46.204.52.243])
           (envelope-sender <olek2@wp.pl>)
           by smtp.wp.pl (WP-SMTPD) with ECDHE-RSA-AES256-GCM-SHA384 encrypted SMTP
-          for <john@phrozen.org>; 14 Sep 2021 23:21:24 +0200
+          for <john@phrozen.org>; 14 Sep 2021 23:21:11 +0200
 From:   Aleksander Jan Bajkowski <olek2@wp.pl>
 To:     john@phrozen.org, tsbogend@alpha.franken.de, olek2@wp.pl,
         maz@kernel.org, ralf@linux-mips.org, ralph.hempel@lantiq.com,
@@ -38,108 +38,86 @@ To:     john@phrozen.org, tsbogend@alpha.franken.de, olek2@wp.pl,
         hauke@hauke-m.de, dev@kresin.me, arnd@arndb.de, jgg@ziepe.ca,
         netdev@vger.kernel.org, devicetree@vger.kernel.org,
         linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH net-next 8/8] dt-bindings: net: lantiq: Add the burst length properties
-Date:   Tue, 14 Sep 2021 23:21:05 +0200
-Message-Id: <20210914212105.76186-8-olek2@wp.pl>
+Subject: [PATCH net-next 2/8] MIPS: lantiq: dma: reset correct number of channel
+Date:   Tue, 14 Sep 2021 23:20:59 +0200
+Message-Id: <20210914212105.76186-2-olek2@wp.pl>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210914212105.76186-1-olek2@wp.pl>
 References: <20210914212105.76186-1-olek2@wp.pl>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-WP-MailID: 3f16cb31ff38d9575689798d722fbd40
+X-WP-MailID: da6b6b20d853f9e8e7420051a3627358
 X-WP-AV: skaner antywirusowy Poczty Wirtualnej Polski
-X-WP-SPAM: NO 0000000 [4ZN0]                               
+X-WP-SPAM: NO 0000000 [8UOk]                               
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-The new added properties are used for configuring burst length.
+Different SoCs have a different number of channels, e.g .:
+* amazon-se has 10 channels,
+* danube+ar9 have 20 channels,
+* vr9 has 28 channels,
+* ar10 has 24 channels.
+
+We can read the ID register and, depending on the reported
+number of channels, reset the appropriate number of channels.
 
 Signed-off-by: Aleksander Jan Bajkowski <olek2@wp.pl>
 ---
- .../bindings/net/lantiq,etop-xway.yaml           | 16 ++++++++++++++++
- .../bindings/net/lantiq,xrx200-net.yaml          | 16 ++++++++++++++++
- 2 files changed, 32 insertions(+)
+ arch/mips/lantiq/xway/dma.c | 11 ++++++-----
+ 1 file changed, 6 insertions(+), 5 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/net/lantiq,etop-xway.yaml b/Documentation/devicetree/bindings/net/lantiq,etop-xway.yaml
-index 4412abfb4987..437502c5ca96 100644
---- a/Documentation/devicetree/bindings/net/lantiq,etop-xway.yaml
-+++ b/Documentation/devicetree/bindings/net/lantiq,etop-xway.yaml
-@@ -29,6 +29,18 @@ properties:
-       - const: tx
-       - const: rx
+diff --git a/arch/mips/lantiq/xway/dma.c b/arch/mips/lantiq/xway/dma.c
+index 2784715933d1..364ab39eb8a4 100644
+--- a/arch/mips/lantiq/xway/dma.c
++++ b/arch/mips/lantiq/xway/dma.c
+@@ -31,6 +31,7 @@
+ #define LTQ_DMA_PCTRL		0x44
+ #define LTQ_DMA_IRNEN		0xf4
  
-+  lantiq,tx-burst-length:
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    description: |
-+      TX programmable burst length.
-+    enum: [2, 4, 8]
-+
-+  lantiq,rx-burst-length:
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    description: |
-+      RX programmable burst length.
-+    enum: [2, 4, 8]
-+
-   phy-mode: true
++#define DMA_ID_CHNR		GENMASK(26, 20)	/* channel number */
+ #define DMA_DESCPT		BIT(3)		/* descriptor complete irq */
+ #define DMA_TX			BIT(8)		/* TX channel direction */
+ #define DMA_CHAN_ON		BIT(0)		/* channel on / off bit */
+@@ -41,7 +42,6 @@
+ #define DMA_POLL		BIT(31)		/* turn on channel polling */
+ #define DMA_CLK_DIV4		BIT(6)		/* polling clock divider */
+ #define DMA_2W_BURST		BIT(1)		/* 2 word burst length */
+-#define DMA_MAX_CHANNEL		20		/* the soc has 20 channels */
+ #define DMA_ETOP_ENDIANNESS	(0xf << 8) /* endianness swap etop channels */
+ #define DMA_WEIGHT	(BIT(17) | BIT(16))	/* default channel wheight */
  
- required:
-@@ -37,6 +49,8 @@ required:
-   - interrupt-parent
-   - interrupts
-   - interrupt-names
-+  - lantiq,tx-burst-length
-+  - lantiq,rx-burst-length
-   - phy-mode
+@@ -207,7 +207,7 @@ ltq_dma_init(struct platform_device *pdev)
+ {
+ 	struct clk *clk;
+ 	struct resource *res;
+-	unsigned id;
++	unsigned int id, nchannels;
+ 	int i;
  
- additionalProperties: false
-@@ -49,5 +63,7 @@ examples:
-         interrupt-parent = <&icu0>;
-         interrupts = <73>, <78>;
-         interrupt-names = "tx", "rx";
-+        lantiq,tx-burst-length = <8>;
-+        lantiq,rx-burst-length = <8>;
-         phy-mode = "rmii";
-     };
-diff --git a/Documentation/devicetree/bindings/net/lantiq,xrx200-net.yaml b/Documentation/devicetree/bindings/net/lantiq,xrx200-net.yaml
-index 7bc074a42369..16d831f22063 100644
---- a/Documentation/devicetree/bindings/net/lantiq,xrx200-net.yaml
-+++ b/Documentation/devicetree/bindings/net/lantiq,xrx200-net.yaml
-@@ -29,6 +29,18 @@ properties:
-       - const: tx
-       - const: rx
+ 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+@@ -229,17 +229,18 @@ ltq_dma_init(struct platform_device *pdev)
+ 	ltq_dma_w32(0, LTQ_DMA_IRNEN);
  
-+  lantiq,tx-burst-length:
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    description: |
-+      TX programmable burst length.
-+    enum: [2, 4, 8]
-+
-+  lantiq,rx-burst-length:
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    description: |
-+      RX programmable burst length.
-+    enum: [2, 4, 8]
-+
-   '#address-cells':
-     const: 1
+ 	/* reset/configure each channel */
+-	for (i = 0; i < DMA_MAX_CHANNEL; i++) {
++	id = ltq_dma_r32(LTQ_DMA_ID);
++	nchannels = ((id & DMA_ID_CHNR) >> 20);
++	for (i = 0; i < nchannels; i++) {
+ 		ltq_dma_w32(i, LTQ_DMA_CS);
+ 		ltq_dma_w32(DMA_CHAN_RST, LTQ_DMA_CCTRL);
+ 		ltq_dma_w32(DMA_POLL | DMA_CLK_DIV4, LTQ_DMA_CPOLL);
+ 		ltq_dma_w32_mask(DMA_CHAN_ON, 0, LTQ_DMA_CCTRL);
+ 	}
  
-@@ -41,6 +53,8 @@ required:
-   - interrupt-parent
-   - interrupts
-   - interrupt-names
-+  - lantiq,tx-burst-length
-+  - lantiq,rx-burst-length
-   - "#address-cells"
-   - "#size-cells"
+-	id = ltq_dma_r32(LTQ_DMA_ID);
+ 	dev_info(&pdev->dev,
+ 		"Init done - hw rev: %X, ports: %d, channels: %d\n",
+-		id & 0x1f, (id >> 16) & 0xf, id >> 20);
++		id & 0x1f, (id >> 16) & 0xf, nchannels);
  
-@@ -56,4 +70,6 @@ examples:
-         interrupt-parent = <&icu0>;
-         interrupts = <73>, <72>;
-         interrupt-names = "tx", "rx";
-+        lantiq,tx-burst-length = <8>;
-+        lantiq,rx-burst-length = <8>;
-     };
+ 	return 0;
+ }
 -- 
 2.30.2
 

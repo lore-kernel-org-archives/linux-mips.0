@@ -8,29 +8,30 @@ X-Spam-Status: No, score=-15.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 009E5C433F5
-	for <linux-mips@archiver.kernel.org>; Tue, 14 Sep 2021 21:27:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C5B34C433EF
+	for <linux-mips@archiver.kernel.org>; Tue, 14 Sep 2021 21:28:00 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id CA33261216
-	for <linux-mips@archiver.kernel.org>; Tue, 14 Sep 2021 21:27:52 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id A3953604D1
+	for <linux-mips@archiver.kernel.org>; Tue, 14 Sep 2021 21:28:00 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234251AbhINV3J (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 14 Sep 2021 17:29:09 -0400
-Received: from mx4.wp.pl ([212.77.101.11]:38148 "EHLO mx4.wp.pl"
+        id S234969AbhINV3R (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 14 Sep 2021 17:29:17 -0400
+Received: from mx3.wp.pl ([212.77.101.9]:17355 "EHLO mx3.wp.pl"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231273AbhINV3J (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Tue, 14 Sep 2021 17:29:09 -0400
-Received: (wp-smtpd smtp.wp.pl 5375 invoked from network); 14 Sep 2021 23:21:07 +0200
+        id S234781AbhINV3O (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Tue, 14 Sep 2021 17:29:14 -0400
+X-Greylist: delayed 404 seconds by postgrey-1.27 at vger.kernel.org; Tue, 14 Sep 2021 17:29:14 EDT
+Received: (wp-smtpd smtp.wp.pl 9876 invoked from network); 14 Sep 2021 23:21:15 +0200
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wp.pl; s=1024a;
-          t=1631654468; bh=tAPSHYLfJCfHanCPetkA371bKGzel09qbwJJnHLD89E=;
+          t=1631654475; bh=W/NPuoEczw/1+slCOS8Gu5B0QOgyM1rf9FWm8bZsl6Q=;
           h=From:To:Subject;
-          b=kNSmpwIKQBuL5uP3J961AIFtCQZmZMcaemQD9pjMSkQ4ffQg8b05AUfEA2mJ13shm
-           0Xrxn/F28GhH22gMt8ThfN2j6Gki/R5voEro/DqU2FAj/tiCnu/zhekH1ytxekdCM7
-           KQWBs+6ud5Td4zFYJirOP6j5xyvHmzHtfeZsYqIQ=
+          b=r5vvkhpL++H3Pe/B8r48RDJ0oMI31s8xK2Ikj9ljq7arIoLwF4jYpQEf57mNKQEc2
+           q8Qeo7wx3CVdOTiKijJduDxW7dgbnSQIpKG3bdp/qzuMPMaboshw+aGWKmyI3EHCNQ
+           fAgXpAB8QhSyVWncvvInxKtPQ0mkhwGKMRWiXtKU=
 Received: from 46.204.52.243.nat.umts.dynamic.t-mobile.pl (HELO LAPTOP-OLEK.Free) (olek2@wp.pl@[46.204.52.243])
           (envelope-sender <olek2@wp.pl>)
           by smtp.wp.pl (WP-SMTPD) with ECDHE-RSA-AES256-GCM-SHA384 encrypted SMTP
-          for <john@phrozen.org>; 14 Sep 2021 23:21:07 +0200
+          for <john@phrozen.org>; 14 Sep 2021 23:21:15 +0200
 From:   Aleksander Jan Bajkowski <olek2@wp.pl>
 To:     john@phrozen.org, tsbogend@alpha.franken.de, olek2@wp.pl,
         maz@kernel.org, ralf@linux-mips.org, ralph.hempel@lantiq.com,
@@ -38,47 +39,58 @@ To:     john@phrozen.org, tsbogend@alpha.franken.de, olek2@wp.pl,
         hauke@hauke-m.de, dev@kresin.me, arnd@arndb.de, jgg@ziepe.ca,
         netdev@vger.kernel.org, devicetree@vger.kernel.org,
         linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH net-next 1/8] MIPS: lantiq: dma: add small delay after reset
-Date:   Tue, 14 Sep 2021 23:20:58 +0200
-Message-Id: <20210914212105.76186-1-olek2@wp.pl>
+Subject: [PATCH net-next 3/8] MIPS: lantiq: dma: fix burst length for DEU
+Date:   Tue, 14 Sep 2021 23:21:00 +0200
+Message-Id: <20210914212105.76186-3-olek2@wp.pl>
 X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20210914212105.76186-1-olek2@wp.pl>
+References: <20210914212105.76186-1-olek2@wp.pl>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-WP-MailID: 9c083a352a31c4ae3946ffbe1e95c549
+X-WP-MailID: 6de83637f0ab21c13dc811727efd7217
 X-WP-AV: skaner antywirusowy Poczty Wirtualnej Polski
-X-WP-SPAM: NO 0000000 [cXMk]                               
+X-WP-SPAM: NO 0000000 [cYNU]                               
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Reading the DMA registers immediately after the reset causes
-Data Bus Error. Adding a small delay fixes this issue.
+The current definition of 2W burst length is invalid.
+This patch fixes it. Current downstream DEU driver doesn't
+use DMA. An incorrect burst length value doesn't cause any
+errors. This patch also adds other burst length values.
 
+Fixes: dfec1a827d2b ("MIPS: Lantiq: Add DMA support")
 Signed-off-by: Aleksander Jan Bajkowski <olek2@wp.pl>
 ---
- arch/mips/lantiq/xway/dma.c | 3 +++
- 1 file changed, 3 insertions(+)
+ arch/mips/lantiq/xway/dma.c | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
 
 diff --git a/arch/mips/lantiq/xway/dma.c b/arch/mips/lantiq/xway/dma.c
-index 63dccb2ed08b..2784715933d1 100644
+index 364ab39eb8a4..53fcc672a294 100644
 --- a/arch/mips/lantiq/xway/dma.c
 +++ b/arch/mips/lantiq/xway/dma.c
-@@ -11,6 +11,7 @@
- #include <linux/export.h>
- #include <linux/spinlock.h>
- #include <linux/clk.h>
-+#include <linux/delay.h>
- #include <linux/err.h>
- #include <linux/of.h>
+@@ -41,7 +41,11 @@
+ #define DMA_IRQ_ACK		0x7e		/* IRQ status register */
+ #define DMA_POLL		BIT(31)		/* turn on channel polling */
+ #define DMA_CLK_DIV4		BIT(6)		/* polling clock divider */
+-#define DMA_2W_BURST		BIT(1)		/* 2 word burst length */
++#define DMA_PCTRL_2W_BURST	0x1		/* 2 word burst length */
++#define DMA_PCTRL_4W_BURST	0x2		/* 4 word burst length */
++#define DMA_PCTRL_8W_BURST	0x3		/* 8 word burst length */
++#define DMA_TX_BURST_SHIFT	4		/* tx burst shift */
++#define DMA_RX_BURST_SHIFT	2		/* rx burst shift */
+ #define DMA_ETOP_ENDIANNESS	(0xf << 8) /* endianness swap etop channels */
+ #define DMA_WEIGHT	(BIT(17) | BIT(16))	/* default channel wheight */
  
-@@ -222,6 +223,8 @@ ltq_dma_init(struct platform_device *pdev)
- 	clk_enable(clk);
- 	ltq_dma_w32_mask(0, DMA_RESET, LTQ_DMA_CTRL);
+@@ -192,7 +196,8 @@ ltq_dma_init_port(int p)
+ 		break;
  
-+	usleep_range(1, 10);
-+
- 	/* disable all interrupts */
- 	ltq_dma_w32(0, LTQ_DMA_IRNEN);
+ 	case DMA_PORT_DEU:
+-		ltq_dma_w32((DMA_2W_BURST << 4) | (DMA_2W_BURST << 2),
++		ltq_dma_w32((DMA_PCTRL_2W_BURST << DMA_TX_BURST_SHIFT) |
++			(DMA_PCTRL_2W_BURST << DMA_RX_BURST_SHIFT),
+ 			LTQ_DMA_PCTRL);
+ 		break;
  
 -- 
 2.30.2

@@ -8,30 +8,29 @@ X-Spam-Status: No, score=-15.7 required=3.0 tests=BAYES_00,DKIM_SIGNED,
 	MAILING_LIST_MULTI,SPF_HELO_NONE,SPF_PASS,USER_AGENT_GIT
 	autolearn=unavailable autolearn_force=no version=3.4.0
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C5B34C433EF
-	for <linux-mips@archiver.kernel.org>; Tue, 14 Sep 2021 21:28:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 06EFFC433EF
+	for <linux-mips@archiver.kernel.org>; Tue, 14 Sep 2021 21:28:03 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id A3953604D1
-	for <linux-mips@archiver.kernel.org>; Tue, 14 Sep 2021 21:28:00 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id DDAA76121D
+	for <linux-mips@archiver.kernel.org>; Tue, 14 Sep 2021 21:28:02 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234969AbhINV3R (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 14 Sep 2021 17:29:17 -0400
-Received: from mx3.wp.pl ([212.77.101.9]:17355 "EHLO mx3.wp.pl"
+        id S234376AbhINV3T (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 14 Sep 2021 17:29:19 -0400
+Received: from mx4.wp.pl ([212.77.101.11]:38482 "EHLO mx4.wp.pl"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234781AbhINV3O (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Tue, 14 Sep 2021 17:29:14 -0400
-X-Greylist: delayed 404 seconds by postgrey-1.27 at vger.kernel.org; Tue, 14 Sep 2021 17:29:14 EDT
-Received: (wp-smtpd smtp.wp.pl 9876 invoked from network); 14 Sep 2021 23:21:15 +0200
+        id S234268AbhINV3T (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Tue, 14 Sep 2021 17:29:19 -0400
+Received: (wp-smtpd smtp.wp.pl 13353 invoked from network); 14 Sep 2021 23:21:20 +0200
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wp.pl; s=1024a;
-          t=1631654475; bh=W/NPuoEczw/1+slCOS8Gu5B0QOgyM1rf9FWm8bZsl6Q=;
+          t=1631654480; bh=6jrua0eS5ienxyZS61iro3wSOi/DKo1d2lOYonLE/w0=;
           h=From:To:Subject;
-          b=r5vvkhpL++H3Pe/B8r48RDJ0oMI31s8xK2Ikj9ljq7arIoLwF4jYpQEf57mNKQEc2
-           q8Qeo7wx3CVdOTiKijJduDxW7dgbnSQIpKG3bdp/qzuMPMaboshw+aGWKmyI3EHCNQ
-           fAgXpAB8QhSyVWncvvInxKtPQ0mkhwGKMRWiXtKU=
+          b=S845hWxbInVvbtB9lmSMs0xLHkP+w4fj6k/L83w2LQ8CYrjA7iJPA6rWjkHl/Nd7m
+           gJbl17UWpoEut9lhHiuqc0twImc/MCeIXKGxt5+9m71wJA3P12aBtM9jDRUgEfQafN
+           Jy3CgJOXRRxufOl8iGM1y6qMLonWhVv1fVIOPUHc=
 Received: from 46.204.52.243.nat.umts.dynamic.t-mobile.pl (HELO LAPTOP-OLEK.Free) (olek2@wp.pl@[46.204.52.243])
           (envelope-sender <olek2@wp.pl>)
           by smtp.wp.pl (WP-SMTPD) with ECDHE-RSA-AES256-GCM-SHA384 encrypted SMTP
-          for <john@phrozen.org>; 14 Sep 2021 23:21:15 +0200
+          for <john@phrozen.org>; 14 Sep 2021 23:21:20 +0200
 From:   Aleksander Jan Bajkowski <olek2@wp.pl>
 To:     john@phrozen.org, tsbogend@alpha.franken.de, olek2@wp.pl,
         maz@kernel.org, ralf@linux-mips.org, ralph.hempel@lantiq.com,
@@ -39,59 +38,123 @@ To:     john@phrozen.org, tsbogend@alpha.franken.de, olek2@wp.pl,
         hauke@hauke-m.de, dev@kresin.me, arnd@arndb.de, jgg@ziepe.ca,
         netdev@vger.kernel.org, devicetree@vger.kernel.org,
         linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH net-next 3/8] MIPS: lantiq: dma: fix burst length for DEU
-Date:   Tue, 14 Sep 2021 23:21:00 +0200
-Message-Id: <20210914212105.76186-3-olek2@wp.pl>
+Subject: [PATCH net-next 6/8] dt-bindings: net: lantiq-xrx200-net: convert to the json-schema
+Date:   Tue, 14 Sep 2021 23:21:03 +0200
+Message-Id: <20210914212105.76186-6-olek2@wp.pl>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210914212105.76186-1-olek2@wp.pl>
 References: <20210914212105.76186-1-olek2@wp.pl>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-WP-MailID: 6de83637f0ab21c13dc811727efd7217
+X-WP-MailID: f8db21619301958f4b0c02e7b1612c2c
 X-WP-AV: skaner antywirusowy Poczty Wirtualnej Polski
-X-WP-SPAM: NO 0000000 [cYNU]                               
+X-WP-SPAM: NO 0000000 [wcMh]                               
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-The current definition of 2W burst length is invalid.
-This patch fixes it. Current downstream DEU driver doesn't
-use DMA. An incorrect burst length value doesn't cause any
-errors. This patch also adds other burst length values.
+Convert the Lantiq PMAC Device Tree binding documentation to json-schema.
 
-Fixes: dfec1a827d2b ("MIPS: Lantiq: Add DMA support")
 Signed-off-by: Aleksander Jan Bajkowski <olek2@wp.pl>
 ---
- arch/mips/lantiq/xway/dma.c | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+ .../bindings/net/lantiq,xrx200-net.txt        | 21 -------
+ .../bindings/net/lantiq,xrx200-net.yaml       | 59 +++++++++++++++++++
+ 2 files changed, 59 insertions(+), 21 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/net/lantiq,xrx200-net.txt
+ create mode 100644 Documentation/devicetree/bindings/net/lantiq,xrx200-net.yaml
 
-diff --git a/arch/mips/lantiq/xway/dma.c b/arch/mips/lantiq/xway/dma.c
-index 364ab39eb8a4..53fcc672a294 100644
---- a/arch/mips/lantiq/xway/dma.c
-+++ b/arch/mips/lantiq/xway/dma.c
-@@ -41,7 +41,11 @@
- #define DMA_IRQ_ACK		0x7e		/* IRQ status register */
- #define DMA_POLL		BIT(31)		/* turn on channel polling */
- #define DMA_CLK_DIV4		BIT(6)		/* polling clock divider */
--#define DMA_2W_BURST		BIT(1)		/* 2 word burst length */
-+#define DMA_PCTRL_2W_BURST	0x1		/* 2 word burst length */
-+#define DMA_PCTRL_4W_BURST	0x2		/* 4 word burst length */
-+#define DMA_PCTRL_8W_BURST	0x3		/* 8 word burst length */
-+#define DMA_TX_BURST_SHIFT	4		/* tx burst shift */
-+#define DMA_RX_BURST_SHIFT	2		/* rx burst shift */
- #define DMA_ETOP_ENDIANNESS	(0xf << 8) /* endianness swap etop channels */
- #define DMA_WEIGHT	(BIT(17) | BIT(16))	/* default channel wheight */
- 
-@@ -192,7 +196,8 @@ ltq_dma_init_port(int p)
- 		break;
- 
- 	case DMA_PORT_DEU:
--		ltq_dma_w32((DMA_2W_BURST << 4) | (DMA_2W_BURST << 2),
-+		ltq_dma_w32((DMA_PCTRL_2W_BURST << DMA_TX_BURST_SHIFT) |
-+			(DMA_PCTRL_2W_BURST << DMA_RX_BURST_SHIFT),
- 			LTQ_DMA_PCTRL);
- 		break;
- 
+diff --git a/Documentation/devicetree/bindings/net/lantiq,xrx200-net.txt b/Documentation/devicetree/bindings/net/lantiq,xrx200-net.txt
+deleted file mode 100644
+index 5ff5e68bbbb6..000000000000
+--- a/Documentation/devicetree/bindings/net/lantiq,xrx200-net.txt
++++ /dev/null
+@@ -1,21 +0,0 @@
+-Lantiq xRX200 GSWIP PMAC Ethernet driver
+-==================================
+-
+-Required properties:
+-
+-- compatible	: "lantiq,xrx200-net" for the PMAC of the embedded
+-		: GSWIP in the xXR200
+-- reg		: memory range of the PMAC core inside of the GSWIP core
+-- interrupts	: TX and RX DMA interrupts. Use interrupt-names "tx" for
+-		: the TX interrupt and "rx" for the RX interrupt.
+-
+-Example:
+-
+-ethernet@e10b308 {
+-	#address-cells = <1>;
+-	#size-cells = <0>;
+-	compatible = "lantiq,xrx200-net";
+-	reg = <0xe10b308 0xcf8>;
+-	interrupts = <73>, <72>;
+-	interrupt-names = "tx", "rx";
+-};
+diff --git a/Documentation/devicetree/bindings/net/lantiq,xrx200-net.yaml b/Documentation/devicetree/bindings/net/lantiq,xrx200-net.yaml
+new file mode 100644
+index 000000000000..7bc074a42369
+--- /dev/null
++++ b/Documentation/devicetree/bindings/net/lantiq,xrx200-net.yaml
+@@ -0,0 +1,59 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/net/lantiq,xrx200-net.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Lantiq xRX200 GSWIP PMAC Ethernet driver
++
++maintainers:
++  - Hauke Mehrtens <hauke@hauke-m.de>
++
++properties:
++  $nodename:
++    pattern: "^ethernet@[0-9a-f]+$"
++
++  compatible:
++    const: lantiq,xrx200-net
++
++  reg:
++    maxItems: 1
++
++  interrupts:
++    items:
++      - description: TX interrupt
++      - description: RX interrupt
++
++  interrupt-names:
++    items:
++      - const: tx
++      - const: rx
++
++  '#address-cells':
++    const: 1
++
++  '#size-cells':
++    const: 0
++
++required:
++  - compatible
++  - reg
++  - interrupt-parent
++  - interrupts
++  - interrupt-names
++  - "#address-cells"
++  - "#size-cells"
++
++additionalProperties: false
++
++examples:
++  - |
++    ethernet@e10b308 {
++        #address-cells = <1>;
++        #size-cells = <0>;
++        compatible = "lantiq,xrx200-net";
++        reg = <0xe10b308 0xcf8>;
++        interrupt-parent = <&icu0>;
++        interrupts = <73>, <72>;
++        interrupt-names = "tx", "rx";
++    };
 -- 
 2.30.2
 

@@ -2,99 +2,96 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id ACEFCC433EF
-	for <linux-mips@archiver.kernel.org>; Sat, 25 Sep 2021 02:42:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7EA65C433F5
+	for <linux-mips@archiver.kernel.org>; Sat, 25 Sep 2021 08:46:50 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 8B2DB6124B
-	for <linux-mips@archiver.kernel.org>; Sat, 25 Sep 2021 02:42:07 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 5E4E061039
+	for <linux-mips@archiver.kernel.org>; Sat, 25 Sep 2021 08:46:50 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347643AbhIYCnj (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 24 Sep 2021 22:43:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36624 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1347630AbhIYCnj (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Fri, 24 Sep 2021 22:43:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5254B60F6D;
-        Sat, 25 Sep 2021 02:42:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1632537725;
-        bh=3qKrafgB+R9aRyaGwO41XzuxrHwCkhqpSPu2zki+01Q=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=nq/E5Tl8hN26pAjLMZx9l6bt3QGZdvGLZSB3OPXISzKglBhK0/b/vcUcseNhI6L/U
-         t+hdZfH4Pps8t0EA+Litu66sWufsr5aR4u/Oa13MZAbEtf8U/nfukgezUI3MBtnkjm
-         g1JjOvrQkX3SyVrRFsrTej4spU+wYVdRJl5BRoQXx2hKMNWEuT3POFGkB/vbVvMuwM
-         fj4NS20JrdggcqqKe1tF8wrGG3JdDTBqOehwDtevHa/wtUU7Kl3k4Jh/FsNbTnBAvt
-         CiumBeTCgRCF/J40Ur04jLsAvPxIsbFicf7ORh5qVwxBr2H/LimkLTwP6SMTV0gkTL
-         fdqA4wLTjksDQ==
-Date:   Fri, 24 Sep 2021 21:42:04 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Sergio Paracuellos <sergio.paracuellos@gmail.com>
-Cc:     tsbogend@alpha.franken.de, robh@kernel.org, arnd@arndb.de,
-        catalin.marinas@arm.com, Liviu.Dudau@arm.com, bhelgaas@google.com,
-        matthias.bgg@gmail.com, gregkh@linuxfoundation.org,
-        linux-mips@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-staging@lists.linux.dev, neil@brown.name,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 4/6] PCI: allow architecture specific implementation of
- pci_remap_iospace()
-Message-ID: <20210925024204.GA459123@bhelgaas>
+        id S233850AbhIYIsX (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Sat, 25 Sep 2021 04:48:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56050 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232535AbhIYIsX (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Sat, 25 Sep 2021 04:48:23 -0400
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7931BC061714;
+        Sat, 25 Sep 2021 01:46:47 -0700 (PDT)
+Received: by mail-wr1-x434.google.com with SMTP id c21so4886127wrb.13;
+        Sat, 25 Sep 2021 01:46:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=OyR/G6OXJUzzgXbsVp3sTRgTYQYfQEC/z3g1X2aYcVs=;
+        b=Ve5h4llJBbg+a9UGjsfI2LkC6Tty/m1yswQbTIaTUjASf3eUBFomFWIv3s1iqUj1zD
+         ks+oXPxs6vEk3iRog76+HBY29NElVilHQzVnA2+ecBRG/ODxFiDcT/LCUySr5YInBpfc
+         07MIIIXjHMPcuVM95jcPa9tVXJncbQe/mrU0uCLsyNMElvf0VIm37LmLNxAaFl3KqKs8
+         JYbl9IzgvhHzJho1rYgCh7CMm452s2dUwju59OMASmmCi/owxBnlUdmjnZff5kJcmCoL
+         i09EvltS53cK58I8lXQDfcNiiJwP/QqiB8iHqgUZWUtGUWJVw33ikXCudmh6YEZNG5tx
+         CsvQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=OyR/G6OXJUzzgXbsVp3sTRgTYQYfQEC/z3g1X2aYcVs=;
+        b=MCnsXYmKoTGoomfTYOLGyuxmjGpvtACXVXPNsuKaUFFXq1uGDQkETFUTI95AjbQ0aY
+         Mr0dGLhsAF6vuL5SfBeSKcfRIz6HYAaIXQGCv75+zXmy6H5VuuWIRzPGIOcLQZs/iG26
+         XaO6RX7ftOIqnQgNsgc+dO9ighggPHs0d0nuKLmflcA7Q7Zf8Vj9FavGYA2JxFCfqyqA
+         ANlLfDC7p9JRBIW8JIlqsFjiNVw4Xyktv5nJMJYH/c9MY/vcJJ8DEy5aob2ra4pE3sq5
+         xEya/5KU5DTxRGHdKcZX4P8tEJKfJeIq/Ju+QAwJ7zjq+m8FwLkeoXr9RfgSbEcW3ZoJ
+         GWxw==
+X-Gm-Message-State: AOAM530FnhTFMes4Q0D0qa9xaEv3xXMCIdKavfhNxxC5KZkyG6FDN18s
+        4O+HeH7XnF8jJ4JY5Clum7Y=
+X-Google-Smtp-Source: ABdhPJxrdMP9CEP1wL+ipHaMl9NqnnbgtNcHgIxgUCsjqPj7hjtBA5Xxk78r6uj30mhTf8XuyDbchg==
+X-Received: by 2002:a5d:64a7:: with SMTP id m7mr16103528wrp.171.1632559606127;
+        Sat, 25 Sep 2021 01:46:46 -0700 (PDT)
+Received: from localhost.localdomain (252.red-83-54-181.dynamicip.rima-tde.net. [83.54.181.252])
+        by smtp.gmail.com with ESMTPSA id y9sm17222997wmj.36.2021.09.25.01.46.45
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sat, 25 Sep 2021 01:46:45 -0700 (PDT)
+From:   Sergio Paracuellos <sergio.paracuellos@gmail.com>
+To:     tsbogend@alpha.franken.de
+Cc:     robh@kernel.org, arnd@arndb.de, catalin.marinas@arm.com,
+        Liviu.Dudau@arm.com, bhelgaas@google.com, matthias.bgg@gmail.com,
+        gregkh@linuxfoundation.org, linux-mips@vger.kernel.org,
+        linux-pci@vger.kernel.org, linux-staging@lists.linux.dev,
+        neil@brown.name, linux-kernel@vger.kernel.org
+Subject: [PATCH v2 2/6] Revert "staging: mt7621-pci: set end limit for 'ioport_resource'"
+Date:   Sat, 25 Sep 2021 10:46:37 +0200
+Message-Id: <20210925084642.5642-3-sergio.paracuellos@gmail.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210925084642.5642-1-sergio.paracuellos@gmail.com>
+References: <20210925084642.5642-1-sergio.paracuellos@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210924211139.3477-5-sergio.paracuellos@gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-s/PCI: allow architecture specific implementation of/
-  PCI: Allow architecture-specific pci_remap_iospace()/
+This reverts commit 50fb34eca2944fd67493717c9fbda125336f1655.
 
-(in subject)
+Since IO_SPACE_LIMIT is not really being changed there is no
+real need to adjust the ioport_resource end limit.
 
-On Fri, Sep 24, 2021 at 11:11:37PM +0200, Sergio Paracuellos wrote:
-> pci_remap_iospace() was originally meant as an architecture specific helper,
-> but it moved into generic code after all architectures had the same requirements.
-> MIPS has different requirements so it should not be shared. The way for doing
-> this will be using a macro 'pci_remap_iospace' defined for those architectures
-> that need a special treatement. Hence, put core api function inside preprocesor
-> conditional code for 'pci_remap_iospace' definition.
+Signed-off-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
+---
+ drivers/staging/mt7621-pci/pci-mt7621.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-Rewrap above to fit in 75 columns so "git log" output doesn't wrap.
-Add blank line between paragraphs.
+diff --git a/drivers/staging/mt7621-pci/pci-mt7621.c b/drivers/staging/mt7621-pci/pci-mt7621.c
+index 86d9c3d122e2..6acfc94a16e7 100644
+--- a/drivers/staging/mt7621-pci/pci-mt7621.c
++++ b/drivers/staging/mt7621-pci/pci-mt7621.c
+@@ -526,8 +526,6 @@ static int mt7621_pci_probe(struct platform_device *pdev)
+ 	if (!dev->of_node)
+ 		return -ENODEV;
+ 
+-	ioport_resource.end = IO_SPACE_LIMIT;
+-
+ 	bridge = devm_pci_alloc_host_bridge(dev, sizeof(*pcie));
+ 	if (!bridge)
+ 		return -ENOMEM;
+-- 
+2.25.1
 
-s/treatement/treatment/
-s/api/API/
-
-> Signed-off-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
-
-With above fixed,
-
-Acked-by: Bjorn Helgaas <bhelgaas@google.com>
-
-> ---
->  drivers/pci/pci.c | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
-> index ce2ab62b64cf..0ec57bb01a88 100644
-> --- a/drivers/pci/pci.c
-> +++ b/drivers/pci/pci.c
-> @@ -4123,6 +4123,7 @@ unsigned long __weak pci_address_to_pio(phys_addr_t address)
->   * architectures that have memory mapped IO functions defined (and the
->   * PCI_IOBASE value defined) should call this function.
->   */
-> +#ifndef pci_remap_iospace
->  int pci_remap_iospace(const struct resource *res, phys_addr_t phys_addr)
->  {
->  #if defined(PCI_IOBASE) && defined(CONFIG_MMU)
-> @@ -4146,6 +4147,7 @@ int pci_remap_iospace(const struct resource *res, phys_addr_t phys_addr)
->  #endif
->  }
->  EXPORT_SYMBOL(pci_remap_iospace);
-> +#endif
->  
->  /**
->   * pci_unmap_iospace - Unmap the memory mapped I/O space
-> -- 
-> 2.25.1
-> 

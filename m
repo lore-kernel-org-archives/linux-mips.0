@@ -2,113 +2,113 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9B2DDC433F5
-	for <linux-mips@archiver.kernel.org>; Sat, 25 Sep 2021 08:47:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BC3A1C433EF
+	for <linux-mips@archiver.kernel.org>; Sat, 25 Sep 2021 09:50:37 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 86077610C7
-	for <linux-mips@archiver.kernel.org>; Sat, 25 Sep 2021 08:47:12 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 9EBA260F70
+	for <linux-mips@archiver.kernel.org>; Sat, 25 Sep 2021 09:50:37 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237161AbhIYIsk (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Sat, 25 Sep 2021 04:48:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56104 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237010AbhIYIsg (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Sat, 25 Sep 2021 04:48:36 -0400
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADF10C061570;
-        Sat, 25 Sep 2021 01:46:50 -0700 (PDT)
-Received: by mail-wr1-x42c.google.com with SMTP id t28so21172815wra.7;
-        Sat, 25 Sep 2021 01:46:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=rUTZvUNb/aRTjaMs08BG0O3uRLaU29RyM+PhYifid0Y=;
-        b=hoVQ6nm7yhZuUAmxNlI1q/YX8dH0BGqO1HRvmeFsLAnpscnORT96SbHyxvVMPXhxTn
-         PDIEfftEwmYgZ6w5oxkLINNBZlWmkfy83T5LZwODQa7yDJFvNa4Mf1NGJFtxe+RXLJ7v
-         28gqRJt9fo5EVXP70a9TPoW3PJ86eNIE8hc/Y8mPhRu3O3rDwu2ESBMPeqoaaQ+psYuN
-         1PAUyYm6EDDSfG2999aZy3zRYyZaKmU+hGmue7KQqA3Aw7el7Psi6PmSqSGGBRPeHAkX
-         98QEZjhngfD29uHbEPTr9Eo6QZzgBW42R7Ree/cXzh0DK9y1tFZwzunTSCB3ZUZ6dWM8
-         7Zbw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=rUTZvUNb/aRTjaMs08BG0O3uRLaU29RyM+PhYifid0Y=;
-        b=b4mnqCusjU51katd0zBi3TFiIkMgzeYDxMCWl9wiAAgaNGpGJjo9PSLzot9CyqnJzm
-         Ub7fJKZQaeXqUbQFmTxKA4pMliwcPjanwa9Gw117VET40+VfaMfclelx3xJroZiHnMwV
-         /sfrqzs31nsFbvKQACBmv6cAfsDa4rj4+peb819D4dYCbmY1Y9/hQXciXYAes2IBtoHD
-         tiMsQAsPb0FinPLixxZjsQUVWz0oBKrTGkhOZbGK4xWfrIAJZkbnP9thEA+ZrIOD2O9G
-         /oTP2w5fuYrYPKalFrHb7UKPm+z/XxuK0DOGi0ELizLva+GU0S+rmmGBXYw7DP0B+Z1V
-         IFqw==
-X-Gm-Message-State: AOAM531p1rSA2fhP+eaeJ/jDsFLaFVeIq8FpsPzrJbjJ0UDb+dwgjrng
-        TjdfAZimgrbMcYnVLmt/IrM=
-X-Google-Smtp-Source: ABdhPJy/2JiHVCtpZqyGPxj+FixQ15sAVbATyh0UqzskjKHeIwWnt2HxbRbTu3kiitLIgVHeBoRS3w==
-X-Received: by 2002:a1c:ed13:: with SMTP id l19mr6086272wmh.48.1632559609342;
-        Sat, 25 Sep 2021 01:46:49 -0700 (PDT)
-Received: from localhost.localdomain (252.red-83-54-181.dynamicip.rima-tde.net. [83.54.181.252])
-        by smtp.gmail.com with ESMTPSA id y9sm17222997wmj.36.2021.09.25.01.46.48
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sat, 25 Sep 2021 01:46:49 -0700 (PDT)
-From:   Sergio Paracuellos <sergio.paracuellos@gmail.com>
-To:     tsbogend@alpha.franken.de
-Cc:     robh@kernel.org, arnd@arndb.de, catalin.marinas@arm.com,
-        Liviu.Dudau@arm.com, bhelgaas@google.com, matthias.bgg@gmail.com,
-        gregkh@linuxfoundation.org, linux-mips@vger.kernel.org,
-        linux-pci@vger.kernel.org, linux-staging@lists.linux.dev,
-        neil@brown.name, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 5/6] MIPS: implement architecture-specific 'pci_remap_iospace()'
-Date:   Sat, 25 Sep 2021 10:46:40 +0200
-Message-Id: <20210925084642.5642-6-sergio.paracuellos@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210925084642.5642-1-sergio.paracuellos@gmail.com>
-References: <20210925084642.5642-1-sergio.paracuellos@gmail.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S240807AbhIYJwG (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Sat, 25 Sep 2021 05:52:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58102 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S240182AbhIYJv5 (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Sat, 25 Sep 2021 05:51:57 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 441BD61279;
+        Sat, 25 Sep 2021 09:50:08 +0000 (UTC)
+Received: from sofa.misterjones.org ([185.219.108.64] helo=wait-a-minute.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1mU4Jq-00Cuoe-EB; Sat, 25 Sep 2021 10:50:06 +0100
+Date:   Sat, 25 Sep 2021 10:50:05 +0100
+Message-ID: <878rzlass2.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Huacai Chen <chenhuacai@kernel.org>,
+        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
+        Paul Mackerras <paulus@ozlabs.org>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Janosch Frank <frankja@linux.ibm.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        James Morse <james.morse@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        David Hildenbrand <david@redhat.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-mips@vger.kernel.org, kvm@vger.kernel.org,
+        kvm-ppc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        David Matlack <dmatlack@google.com>,
+        Jing Zhang <jingzhangos@google.com>
+Subject: Re: [PATCH 07/14] KVM: Don't block+unblock when halt-polling is successful
+In-Reply-To: <20210925005528.1145584-8-seanjc@google.com>
+References: <20210925005528.1145584-1-seanjc@google.com>
+        <20210925005528.1145584-8-seanjc@google.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: seanjc@google.com, chenhuacai@kernel.org, aleksandar.qemu.devel@gmail.com, paulus@ozlabs.org, borntraeger@de.ibm.com, frankja@linux.ibm.com, pbonzini@redhat.com, james.morse@arm.com, alexandru.elisei@arm.com, suzuki.poulose@arm.com, david@redhat.com, cohuck@redhat.com, imbrenda@linux.ibm.com, vkuznets@redhat.com, wanpengli@tencent.com, jmattson@google.com, joro@8bytes.org, linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu, linux-mips@vger.kernel.org, kvm@vger.kernel.org, kvm-ppc@vger.kernel.org, linux-kernel@vger.kernel.org, dmatlack@google.com, jingzhangos@google.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-To make PCI IO work we need to properly virtually map IO cpu physical address
-and set this virtual address as the address of the first PCI IO port which
-is set using function 'set_io_port_base()'.
+On Sat, 25 Sep 2021 01:55:21 +0100,
+Sean Christopherson <seanjc@google.com> wrote:
+> 
+> Invoke the arch hooks for block+unblock if and only if KVM actually
+> attempts to block the vCPU.  The only non-nop implementation is on arm64,
+> and if halt-polling is successful, there is no need for arm64 to put/load
+> the vGIC as KVM hasn't relinquished control of the vCPU in any way.
 
-Signed-off-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
----
- arch/mips/include/asm/pci.h | 2 ++
- arch/mips/pci/pci-generic.c | 9 +++++++++
- 2 files changed, 11 insertions(+)
+This doesn't mean that there is no requirement for any state
+change. The put/load on GICv4 is crucial for performance, and the VMCR
+resync is a correctness requirement.
 
-diff --git a/arch/mips/include/asm/pci.h b/arch/mips/include/asm/pci.h
-index 9ffc8192adae..35270984a5f0 100644
---- a/arch/mips/include/asm/pci.h
-+++ b/arch/mips/include/asm/pci.h
-@@ -20,6 +20,8 @@
- #include <linux/list.h>
- #include <linux/of.h>
- 
-+#define pci_remap_iospace pci_remap_iospace
-+
- #ifdef CONFIG_PCI_DRIVERS_LEGACY
- 
- /*
-diff --git a/arch/mips/pci/pci-generic.c b/arch/mips/pci/pci-generic.c
-index 95b00017886c..877ec9d6a614 100644
---- a/arch/mips/pci/pci-generic.c
-+++ b/arch/mips/pci/pci-generic.c
-@@ -46,3 +46,12 @@ void pcibios_fixup_bus(struct pci_bus *bus)
- {
- 	pci_read_bridge_bases(bus);
- }
-+
-+int pci_remap_iospace(const struct resource *res, phys_addr_t phys_addr)
-+{
-+	size_t size = (res->end - res->start) + 1;
-+	unsigned long vaddr = (unsigned long)ioremap(phys_addr, size);
-+
-+	set_io_port_base(vaddr);
-+	return 0;
-+}
+> 
+> The primary motivation is to allow future cleanup to split out "block"
+> from "halt", but this is also likely a small performance boost on arm64
+> when halt-polling is successful.
+> 
+> Adjust the post-block path to update "cur" after unblocking, i.e. include
+> vGIC load time in halt_wait_ns and halt_wait_hist, so that the behavior
+> is consistent.  Moving just the pre-block arch hook would result in only
+> the vGIC put latency being included in the halt_wait stats.  There is no
+> obvious evidence that one way or the other is correct, so just ensure KVM
+> is consistent.
+
+This effectively reverts 07ab0f8d9a12 ("KVM: Call
+kvm_arch_vcpu_blocking early into the blocking sequence"), which was a
+huge gain on arm64, not to mention a correctness fix.
+
+Without this, a GICv4 machine will always pay for the full poll
+penalty, going into schedule(), and only then get a doorbell interrupt
+signalling telling the kernel that there was an interrupt.
+
+On a non-GICv4 machine, it means that interrupts injected by another
+thread during the pooling will be evaluated with an outdated priority
+mask, which can result in either a spurious wake-up or a missed
+wake-up.
+
+If it means introducing a new set of {pre,post}-poll arch-specific
+hooks, so be it. But I don't think this change is acceptable as is.
+
+Thanks,
+
+	M.
+
 -- 
-2.25.1
-
+Without deviation from the norm, progress is not possible.

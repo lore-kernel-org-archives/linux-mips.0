@@ -2,59 +2,59 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7F7E9C433F5
-	for <linux-mips@archiver.kernel.org>; Sat, 25 Sep 2021 00:56:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 394CCC433F5
+	for <linux-mips@archiver.kernel.org>; Sat, 25 Sep 2021 00:56:49 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 679256125F
-	for <linux-mips@archiver.kernel.org>; Sat, 25 Sep 2021 00:56:30 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 19BC961251
+	for <linux-mips@archiver.kernel.org>; Sat, 25 Sep 2021 00:56:49 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346179AbhIYA56 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 24 Sep 2021 20:57:58 -0400
+        id S1346957AbhIYA6V (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 24 Sep 2021 20:58:21 -0400
 Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40322 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346928AbhIYA52 (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Fri, 24 Sep 2021 20:57:28 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BE84C0613E6
-        for <linux-mips@vger.kernel.org>; Fri, 24 Sep 2021 17:55:49 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id l11-20020a056902072b00b005a776eefb28so5838985ybt.5
-        for <linux-mips@vger.kernel.org>; Fri, 24 Sep 2021 17:55:49 -0700 (PDT)
+        with ESMTP id S1347545AbhIYA5i (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Fri, 24 Sep 2021 20:57:38 -0400
+Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A053DC0617A8
+        for <linux-mips@vger.kernel.org>; Fri, 24 Sep 2021 17:55:53 -0700 (PDT)
+Received: by mail-qk1-x749.google.com with SMTP id w2-20020a3794020000b02903b54f40b442so45541025qkd.0
+        for <linux-mips@vger.kernel.org>; Fri, 24 Sep 2021 17:55:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=reply-to:date:in-reply-to:message-id:mime-version:references
          :subject:from:to:cc;
-        bh=ah8BjXPWllLk7CuVOQDBnnkjluI1bAcWQEy7hqnXFdI=;
-        b=LH0fEQWiB4eDpGtf5hQ32ngY9GD9n7/7byCfmfVAytc4CKzgNHw+3wzIXFXa/o5bjL
-         2I8Eux8FnK1n3Iopqot3X1OQnjmh9TXn5kbxaAIGqSl+9CT/5AZsgzAsrWdmxrS6mlrW
-         dx+aaDSPBdScsR191c0lwGAUmjnCNBA+1XrB67IkhS4U9E2OhMxPrheuqrJo04xzwB0N
-         XAS0I23+EYToVad3pLc9+Altu8hz2KVdmKC0N6gwn8kCYuyHcyl1sb/GxSbWhO/S13/S
-         czeNRHxyY1pa57ENB4tByagarGXZrQ657lOxch4brq39vjJlp224VHM9XKZnUh7GAMXk
-         zEKw==
+        bh=FPrvUwRoNgNi9U/w5sUiMk8txns9C/J9zkg6zAxmMUk=;
+        b=Co6Y4RU2OAq+N8cxFZefD6arFCQ0JC5iLzm/wNQUkyHUQaJHgQOwXIreoskXNdo+n3
+         AzYCM2VGwVbtuc4RHRZMftKrMPewa2HdqIvv4DhOT1T4TVXUiFm+z0hCrC7zvpiF3bFI
+         YrZJATtvuBhXvAfmLk0XrUN/qH+BPPx66OadWSbCOd95621rbYCdmUW1NH06aGo1hYK+
+         Xx216lgusMcmvOSwzMUUQUqsZv7pF4ciyTpPrxYAL4ksg4saB36TX8plZlhMO2dauaVz
+         bfnWV2i9Gz80QoiefY5JGrMtQWt7jFR1u1lseg1viADOOm6p1dLSrT0hljxiuzqCT12T
+         VcrA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:reply-to:date:in-reply-to:message-id
          :mime-version:references:subject:from:to:cc;
-        bh=ah8BjXPWllLk7CuVOQDBnnkjluI1bAcWQEy7hqnXFdI=;
-        b=BveMgCkUOHQ1bhfGXUwxlmGPQhSKCS5CkqXZMUtQdDpMkmhgs5+Xh8fCZPM/tBlfHO
-         g3JCFQAUByiWk/X33N5WV/2bESL1+mlU9tSSyXdx9PJRo5jrDXICdJNtC2kmGuYwaX8k
-         QxDOT4uRpwU4vT+/RKMeE7UuvSxhz80b8CgTw1+U+XqW5P1zhtGHu2vEFm7Ap4Sxp/VD
-         Sz0Bwk3sWde6U7333Dt7qMHKsbwE43dPbqEOhNdQz9GG4lhzpdBJkfKkCFCglGT4BV9Y
-         PLBJ/KQdKVtbBDijEXYGdmqPCUWLjbFXYPGIaqkMWOtL/8WRwXlFDemGl6H4SJKpTfm8
-         LCow==
-X-Gm-Message-State: AOAM53165DhgGoWrJENnI5z4Q5icW5FeliQpJWuKm73SpSz/33RI98oI
-        yw8vyDqUexzFV+X2jyeXV70VFlkcIbI=
-X-Google-Smtp-Source: ABdhPJxp5JGS1M0N56DHKiumu5prHduzDpf9Ztz1q5ePOF80kOqklxBqHGGBpfEM+YrqrhVUO4t7wkRniPM=
+        bh=FPrvUwRoNgNi9U/w5sUiMk8txns9C/J9zkg6zAxmMUk=;
+        b=DHlsOzodPDYbANzaRzy1nbVKHFNTOy2SlzdwctA6lOOwR7eGx51QDfSxjeGoybqh1K
+         5n6N/7vGmNMnBvL1fTxHiOArHLf8vpIIbv1Z7rpmeU1sb4x9P4zui2v6dw8KoisdHav7
+         yHW8Ihx5XMa5h5WeXqflPJcQRnPfbGhCD5QWim2Z3nTLK0VQdlwdOQhVPmAs8Ez4wBHO
+         4MdszD+jNuYpXEpE4xVq8Ivi7ZEtL9RJb5SH8hXiag8R4F77G/fbbVjAxONWB1jBfOep
+         YPJw1gC5boKxByUWwCNbWdUzLMO4eU4DJPZyQTCYkQcM7JwMNsfpBjJaxz4S2wHiJyNh
+         ysTQ==
+X-Gm-Message-State: AOAM531BjBYurOMkQXPBMmDxak6hlsMUJgw35sqqLtPE63UWL96vl9jj
+        l4ywVd3pfu69ozV6vTMMHRAEKp+DNI8=
+X-Google-Smtp-Source: ABdhPJwj4rHidVuSerO73p+MgC4zPGIOlGhlmT9p6UEZnOURmS83LLMcFaC8wfCWoMIXuuPy00r2yP97Z9w=
 X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:90:200:4c72:89be:dba3:2bcb])
- (user=seanjc job=sendgmr) by 2002:a25:1d09:: with SMTP id d9mr16059645ybd.140.1632531348364;
- Fri, 24 Sep 2021 17:55:48 -0700 (PDT)
+ (user=seanjc job=sendgmr) by 2002:a05:6214:1321:: with SMTP id
+ c1mr5005905qvv.43.1632531352819; Fri, 24 Sep 2021 17:55:52 -0700 (PDT)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Fri, 24 Sep 2021 17:55:22 -0700
+Date:   Fri, 24 Sep 2021 17:55:24 -0700
 In-Reply-To: <20210925005528.1145584-1-seanjc@google.com>
-Message-Id: <20210925005528.1145584-9-seanjc@google.com>
+Message-Id: <20210925005528.1145584-11-seanjc@google.com>
 Mime-Version: 1.0
 References: <20210925005528.1145584-1-seanjc@google.com>
 X-Mailer: git-send-email 2.33.0.685.g46640cef36-goog
-Subject: [PATCH 08/14] KVM: x86: Tweak halt emulation helper names to free up kvm_vcpu_halt()
+Subject: [PATCH 10/14] KVM: Split out a kvm_vcpu_block() helper from kvm_vcpu_halt()
 From:   Sean Christopherson <seanjc@google.com>
 To:     Marc Zyngier <maz@kernel.org>, Huacai Chen <chenhuacai@kernel.org>,
         Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
@@ -83,115 +83,105 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Rename a variety of HLT-related helpers to free up the function name
-"kvm_vcpu_halt" for future use in generic KVM code, e.g. to differentiate
-between "block" and "halt".
+Factor out the "block" part of kvm_vcpu_halt() so that x86 can emulate
+non-halt wait/sleep/block conditions that should not be subjected to
+halt-polling.
 
 No functional change intended.
 
 Signed-off-by: Sean Christopherson <seanjc@google.com>
 ---
- arch/x86/include/asm/kvm_host.h |  2 +-
- arch/x86/kvm/vmx/nested.c       |  2 +-
- arch/x86/kvm/vmx/vmx.c          |  4 ++--
- arch/x86/kvm/x86.c              | 13 +++++++------
- 4 files changed, 11 insertions(+), 10 deletions(-)
+ include/linux/kvm_host.h |  1 +
+ virt/kvm/kvm_main.c      | 50 ++++++++++++++++++++++++++++------------
+ 2 files changed, 36 insertions(+), 15 deletions(-)
 
-diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-index 4e8c21083bdb..cfebef10b89c 100644
---- a/arch/x86/include/asm/kvm_host.h
-+++ b/arch/x86/include/asm/kvm_host.h
-@@ -1679,7 +1679,7 @@ int kvm_emulate_monitor(struct kvm_vcpu *vcpu);
- int kvm_fast_pio(struct kvm_vcpu *vcpu, int size, unsigned short port, int in);
- int kvm_emulate_cpuid(struct kvm_vcpu *vcpu);
- int kvm_emulate_halt(struct kvm_vcpu *vcpu);
--int kvm_vcpu_halt(struct kvm_vcpu *vcpu);
-+int kvm_emulate_halt_noskip(struct kvm_vcpu *vcpu);
- int kvm_emulate_ap_reset_hold(struct kvm_vcpu *vcpu);
- int kvm_emulate_wbinvd(struct kvm_vcpu *vcpu);
+diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
+index d2a8be3fb9ba..655c2b24db2d 100644
+--- a/include/linux/kvm_host.h
++++ b/include/linux/kvm_host.h
+@@ -966,6 +966,7 @@ void kvm_sigset_activate(struct kvm_vcpu *vcpu);
+ void kvm_sigset_deactivate(struct kvm_vcpu *vcpu);
  
-diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
-index eedcebf58004..f689e463b678 100644
---- a/arch/x86/kvm/vmx/nested.c
-+++ b/arch/x86/kvm/vmx/nested.c
-@@ -3618,7 +3618,7 @@ static int nested_vmx_run(struct kvm_vcpu *vcpu, bool launch)
- 		    !(nested_cpu_has(vmcs12, CPU_BASED_INTR_WINDOW_EXITING) &&
- 		      (vmcs12->guest_rflags & X86_EFLAGS_IF))) {
- 			vmx->nested.nested_run_pending = 0;
--			return kvm_vcpu_halt(vcpu);
-+			return kvm_emulate_halt_noskip(vcpu);
- 		}
- 		break;
- 	case GUEST_ACTIVITY_WAIT_SIPI:
-diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-index d118daed0530..858f5f1f1273 100644
---- a/arch/x86/kvm/vmx/vmx.c
-+++ b/arch/x86/kvm/vmx/vmx.c
-@@ -4740,7 +4740,7 @@ static int handle_rmode_exception(struct kvm_vcpu *vcpu,
- 		if (kvm_emulate_instruction(vcpu, 0)) {
- 			if (vcpu->arch.halt_request) {
- 				vcpu->arch.halt_request = 0;
--				return kvm_vcpu_halt(vcpu);
-+				return kvm_emulate_halt_noskip(vcpu);
- 			}
- 			return 1;
- 		}
-@@ -5414,7 +5414,7 @@ static int handle_invalid_guest_state(struct kvm_vcpu *vcpu)
- 
- 		if (vcpu->arch.halt_request) {
- 			vcpu->arch.halt_request = 0;
--			return kvm_vcpu_halt(vcpu);
-+			return kvm_emulate_halt_noskip(vcpu);
- 		}
- 
- 		/*
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index b0c21d42f453..eade8a2bdccf 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -8643,7 +8643,7 @@ void kvm_arch_exit(void)
- #endif
+ void kvm_vcpu_halt(struct kvm_vcpu *vcpu);
++bool kvm_vcpu_block(struct kvm_vcpu *vcpu);
+ void kvm_arch_vcpu_blocking(struct kvm_vcpu *vcpu);
+ void kvm_arch_vcpu_unblocking(struct kvm_vcpu *vcpu);
+ bool kvm_vcpu_wake_up(struct kvm_vcpu *vcpu);
+diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+index 280cf1dca7db..fe34457530c2 100644
+--- a/virt/kvm/kvm_main.c
++++ b/virt/kvm/kvm_main.c
+@@ -3199,6 +3199,34 @@ static int kvm_vcpu_check_block(struct kvm_vcpu *vcpu)
+ 	return ret;
  }
  
--static int __kvm_vcpu_halt(struct kvm_vcpu *vcpu, int state, int reason)
-+static int __kvm_emulate_halt(struct kvm_vcpu *vcpu, int state, int reason)
++/*
++ * Block the vCPU until the vCPU is runnable, an event arrives, or a signal is
++ * pending.  This is mostly used when halting a vCPU, but may also be used
++ * directly for other vCPU non-runnable states, e.g. x86's Wait-For-SIPI.
++ */
++bool kvm_vcpu_block(struct kvm_vcpu *vcpu)
++{
++	bool waited = false;
++
++	kvm_arch_vcpu_blocking(vcpu);
++
++	prepare_to_rcuwait(&vcpu->wait);
++	for (;;) {
++		set_current_state(TASK_INTERRUPTIBLE);
++
++		if (kvm_vcpu_check_block(vcpu) < 0)
++			break;
++
++		waited = true;
++		schedule();
++	}
++	finish_rcuwait(&vcpu->wait);
++
++	kvm_arch_vcpu_unblocking(vcpu);
++
++	return waited;
++}
++
+ static inline void update_halt_poll_stats(struct kvm_vcpu *vcpu, ktime_t start,
+ 					  ktime_t end, bool success)
  {
- 	++vcpu->stat.halt_exits;
- 	if (lapic_in_kernel(vcpu)) {
-@@ -8655,11 +8655,11 @@ static int __kvm_vcpu_halt(struct kvm_vcpu *vcpu, int state, int reason)
+@@ -3221,6 +3249,12 @@ static inline void update_halt_poll_stats(struct kvm_vcpu *vcpu, ktime_t start,
  	}
  }
  
--int kvm_vcpu_halt(struct kvm_vcpu *vcpu)
-+int kvm_emulate_halt_noskip(struct kvm_vcpu *vcpu)
++/*
++ * Emulate a vCPU halt condition, e.g. HLT on x86, WFI on arm, etc...  If halt
++ * polling is enabled, busy wait for a short time before blocking to avoid the
++ * expensive block+unblock sequence if a wake event arrives soon after the vCPU
++ * is halted.
++ */
+ void kvm_vcpu_halt(struct kvm_vcpu *vcpu)
  {
--	return __kvm_vcpu_halt(vcpu, KVM_MP_STATE_HALTED, KVM_EXIT_HLT);
-+	return __kvm_emulate_halt(vcpu, KVM_MP_STATE_HALTED, KVM_EXIT_HLT);
- }
--EXPORT_SYMBOL_GPL(kvm_vcpu_halt);
-+EXPORT_SYMBOL_GPL(kvm_emulate_halt_noskip);
+ 	bool halt_poll_allowed = !kvm_arch_no_poll(vcpu);
+@@ -3245,21 +3279,7 @@ void kvm_vcpu_halt(struct kvm_vcpu *vcpu)
+ 		} while (kvm_vcpu_can_poll(cur, stop));
+ 	}
  
- int kvm_emulate_halt(struct kvm_vcpu *vcpu)
- {
-@@ -8668,7 +8668,7 @@ int kvm_emulate_halt(struct kvm_vcpu *vcpu)
- 	 * TODO: we might be squashing a GUESTDBG_SINGLESTEP-triggered
- 	 * KVM_EXIT_DEBUG here.
- 	 */
--	return kvm_vcpu_halt(vcpu) && ret;
-+	return kvm_emulate_halt_noskip(vcpu) && ret;
- }
- EXPORT_SYMBOL_GPL(kvm_emulate_halt);
+-	kvm_arch_vcpu_blocking(vcpu);
+-
+-	prepare_to_rcuwait(&vcpu->wait);
+-	for (;;) {
+-		set_current_state(TASK_INTERRUPTIBLE);
+-
+-		if (kvm_vcpu_check_block(vcpu) < 0)
+-			break;
+-
+-		waited = true;
+-		schedule();
+-	}
+-	finish_rcuwait(&vcpu->wait);
+-
+-	kvm_arch_vcpu_unblocking(vcpu);
++	waited = kvm_vcpu_block(vcpu);
  
-@@ -8676,7 +8676,8 @@ int kvm_emulate_ap_reset_hold(struct kvm_vcpu *vcpu)
- {
- 	int ret = kvm_skip_emulated_instruction(vcpu);
- 
--	return __kvm_vcpu_halt(vcpu, KVM_MP_STATE_AP_RESET_HOLD, KVM_EXIT_AP_RESET_HOLD) && ret;
-+	return __kvm_emulate_halt(vcpu, KVM_MP_STATE_AP_RESET_HOLD,
-+					KVM_EXIT_AP_RESET_HOLD) && ret;
- }
- EXPORT_SYMBOL_GPL(kvm_emulate_ap_reset_hold);
- 
+ 	cur = ktime_get();
+ 	if (waited) {
 -- 
 2.33.0.685.g46640cef36-goog
 

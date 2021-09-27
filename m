@@ -2,114 +2,116 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 45B91C433EF
-	for <linux-mips@archiver.kernel.org>; Mon, 27 Sep 2021 16:18:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 27AF0C433EF
+	for <linux-mips@archiver.kernel.org>; Mon, 27 Sep 2021 16:44:50 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 2AA9161041
-	for <linux-mips@archiver.kernel.org>; Mon, 27 Sep 2021 16:18:42 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 0C91860FED
+	for <linux-mips@archiver.kernel.org>; Mon, 27 Sep 2021 16:44:50 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235261AbhI0QUT (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 27 Sep 2021 12:20:19 -0400
-Received: from mo4-p01-ob.smtp.rzone.de ([85.215.255.52]:30080 "EHLO
-        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235424AbhI0QUT (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Mon, 27 Sep 2021 12:20:19 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1632759506;
+        id S235615AbhI0Qq1 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 27 Sep 2021 12:46:27 -0400
+Received: from mo4-p02-ob.smtp.rzone.de ([81.169.146.168]:20521 "EHLO
+        mo4-p02-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235467AbhI0Qq0 (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Mon, 27 Sep 2021 12:46:26 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1632761071;
     s=strato-dkim-0002; d=goldelico.com;
-    h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:Cc:Date:
+    h=References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Cc:Date:
     From:Subject:Sender;
-    bh=g2indfiR/jZDlYxjjZkEZkE7oAQ92vUodc4qSJ3YJjc=;
-    b=Yln5ZK7ecw/dpFPlXymVcHMiFw1FlovIo14amHEIdHeoDq9fy+5YJhD6PCdN3uyZxo
-    M08iDkxNZE/Sg7kBE/yygTD5XEB6p6IPzOhylmIn+IcWD9APBtpIGjD8YOXFdOyZa06/
-    +pPuA1v0pidTm+Ic4qAOd7IuE2woqAPQha5aibSmeFktDzebjH4hiCVT7nvKBO0e5N3o
-    m9IwxXLMPjeBrnBPRrkXHlmSxAAq40LRrOuvEbwm8j0KJ3lVb8HdYV2TNEwqA50G+xS/
-    xs1DxL1BZFIwL9YcGsP5dDXt0sb4EC40X56rb7F38i70APDmwZcRCauQeMzuMKnIepl1
-    TOLQ==
+    bh=LU4lfColDeP7+GT2wUXoyBAWybalNrAF4K5LeFlXp4c=;
+    b=kBi+WQR8VqF+GI9q2dvWTjLG0WgtiFJCz1RHry6FXqqjzlgPCJErG2x4VnBGd9vaYT
+    bekXg3H6G41LV2h0dFdab/salHMv4HtdGGRztlLvTFATk/5Bg9P0MwghweiBqKy4+R+j
+    yXSlQwUVgbyZsMfrsMwmKc+Iemuwq6tdUK5njvZ7zOWv7pKdwA/BMCyfap4v75qAK/AS
+    /semqM+5DIZgBFYarbzwbyy5SkOnaIVSJ+/tQR7cTuaMj/akm8AAAnPAFXsc6DcD1haj
+    eP2zG8ludyYVHp+tGAnLEJHadiIiKZ0fvdXcH9pqkH+HzX5Kv+4o5GR55AZTA9F7+we7
+    zkwg==
 Authentication-Results: strato.com;
     dkim=none
-X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMgPgp8VKxflSZ1P34KBj7gpw91N5y2S3i8QW3w=="
+X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMhflhwDubTJ9o1KHeBQyh+ITDDFrDb4="
 X-RZG-CLASS-ID: mo00
-Received: from imac.fritz.box
+Received: from iMac.fritz.box
     by smtp.strato.de (RZmta 47.33.8 DYNA|AUTH)
-    with ESMTPSA id I01f74x8RGIQarb
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (curve X9_62_prime256v1 with 256 ECDH bits, eq. 3072 bits RSA))
+    with ESMTPSA id I01f74x8RGiUav9
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
         (Client did not present a certificate);
-    Mon, 27 Sep 2021 18:18:26 +0200 (CEST)
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.21\))
-Subject: Re: [PATCH v3 6/6] drm/ingenic: Attach bridge chain to encoders
+    Mon, 27 Sep 2021 18:44:30 +0200 (CEST)
 From:   "H. Nikolaus Schaller" <hns@goldelico.com>
-In-Reply-To: <L9900R.05DOH2MOR3V93@crapouillou.net>
-Date:   Mon, 27 Sep 2021 18:18:25 +0200
-Cc:     Paul Boddie <paul@boddie.org.uk>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+To:     Paul Cercueil <paul@crapouillou.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        "H. Nikolaus Schaller" <hns@goldelico.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Kees Cook <keescook@chromium.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
         David Airlie <airlied@linux.ie>,
         Daniel Vetter <daniel@ffwll.ch>,
-        linux-mips <linux-mips@vger.kernel.org>, list@opendingux.net,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <044C92DA-EF88-4738-BF60-885906588408@goldelico.com>
-References: <20210922205555.496871-1-paul@crapouillou.net>
- <4366739.KZ8Jxz7LyS@jason> <EKJXZQ.6VJ0UDHV3T3W@crapouillou.net>
- <2094991.ScV2v2meXk@jason> <HU700R.NAHL5IU3NRE81@crapouillou.net>
- <96585ED9-B707-4AF1-8417-E03DE6414965@goldelico.com>
- <L9900R.05DOH2MOR3V93@crapouillou.net>
-To:     Paul Cercueil <paul@crapouillou.net>
-X-Mailer: Apple Mail (2.3445.104.21)
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Robert Foss <robert.foss@linaro.org>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Ezequiel Garcia <ezequiel@collabora.com>,
+        Harry Wentland <harry.wentland@amd.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Maxime Ripard <maxime@cerno.tech>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Paul Boddie <paul@boddie.org.uk>
+Cc:     devicetree@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org, letux-kernel@openphoenux.org,
+        Jonas Karlman <jonas@kwiboo.se>,
+        dri-devel@lists.freedesktop.org
+Subject: [PATCH v4 01/10] drm/ingenic: Fix drm_init error path if IPU was registered
+Date:   Mon, 27 Sep 2021 18:44:19 +0200
+Message-Id: <7b6132aa8319a28e83068d0fbe0bfe3d8b69cf2a.1632761067.git.hns@goldelico.com>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <cover.1632761067.git.hns@goldelico.com>
+References: <cover.1632761067.git.hns@goldelico.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Hi Paul,
+From: Paul Boddie <paul@boddie.org.uk>
 
-> Am 25.09.2021 um 21:39 schrieb Paul Cercueil <paul@crapouillou.net>:
->=20
->=20
->=20
-> Le sam., sept. 25 2021 at 21:26:42 +0200, H. Nikolaus Schaller =
-<hns@goldelico.com> a =C3=A9crit :
->> Hi Paul,
->>> Am 25.09.2021 um 21:08 schrieb Paul Cercueil <paul@crapouillou.net>:
->>> Hi Paul & Nikolaus,
->>> If you spent some time debugging the issue
->> we did ...
->=20
-> By saying that you didn't debug,
+If ingenic drm driver can not be registered, the IPU driver won't be
+deregistered.
 
-We did - but sometimes you don't see the wood for the trees.
+Code structure is chosen in preparation to add hdmi unregistration
+in error case following the same pattern by a later patch.
 
-> (null) means you're printing a NULL pointer. So I could see that =
-hdmi->next_bridge was NULL.
+Signed-off-by: Paul Boddie <paul@boddie.org.uk>
+Signed-off-by: H. Nikolaus Schaller <hns@goldelico.com>
+---
+ drivers/gpu/drm/ingenic/ingenic-drm-drv.c | 11 ++++++++++-
+ 1 file changed, 10 insertions(+), 1 deletion(-)
 
-I remember we did find this, but did not understand that it should be =
-initialized by dw-hdmi.
-And because we though that dw-hdmi has it its own connector, it is ok =
-that way.
-
-> The place that sets it is dw_hdmi_parse_dt, which will return early =
-with code 0, before next_bridge is set, if plat_data->output_port =3D=3D =
-0, which was your case.
-
-Well, we were still at 5.14 when we did these initial attempts to use =
-hdmi-connector with synopsys.
-Back then, there was no dw_hdmi_parse_dt and no output_port.
-
-IAW: we did not even have a chance to make it work on top of 5.14 the =
-hdmi-connector way. And were sucessful.
-
-I just noticed this when trying to backport the last puzzle piece...
-
-Well, it is always difficult to hit a moving target.
-
-> Since your hdmi-connector is wired at port #1, then .output_port =
-should be 1 as well.
-
-Anyways it works now for 5.14.8 (our internal test) and 5.15-rc3.
-
-And v4 of the jz4780 hdmi stuff will follow.
-
-BR and thanks,
-Nikolaus
+diff --git a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
+index 35b61657d9f6..f73522bdacaa 100644
+--- a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
++++ b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
+@@ -1498,7 +1498,16 @@ static int ingenic_drm_init(void)
+ 			return err;
+ 	}
+ 
+-	return platform_driver_register(&ingenic_drm_driver);
++	err = platform_driver_register(&ingenic_drm_driver);
++	if (err)
++		goto err_ipu_unreg;
++
++	return 0;
++
++err_ipu_unreg:
++	if (IS_ENABLED(CONFIG_DRM_INGENIC_IPU))
++		platform_driver_unregister(ingenic_ipu_driver_ptr);
++	return err;
+ }
+ module_init(ingenic_drm_init);
+ 
+-- 
+2.31.1
 

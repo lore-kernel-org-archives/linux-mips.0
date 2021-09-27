@@ -2,38 +2,39 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AEDBEC433FE
-	for <linux-mips@archiver.kernel.org>; Mon, 27 Sep 2021 16:44:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BE4C5C4332F
+	for <linux-mips@archiver.kernel.org>; Mon, 27 Sep 2021 16:44:50 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 905BA60FED
-	for <linux-mips@archiver.kernel.org>; Mon, 27 Sep 2021 16:44:49 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id A9BB5610FC
+	for <linux-mips@archiver.kernel.org>; Mon, 27 Sep 2021 16:44:50 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235528AbhI0Qq0 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 27 Sep 2021 12:46:26 -0400
-Received: from mo4-p02-ob.smtp.rzone.de ([85.215.255.80]:25731 "EHLO
-        mo4-p02-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235285AbhI0Qq0 (ORCPT
+        id S235631AbhI0Qq2 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 27 Sep 2021 12:46:28 -0400
+Received: from mo4-p03-ob.smtp.rzone.de ([85.215.255.102]:19969 "EHLO
+        mo4-p03-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235500AbhI0Qq0 (ORCPT
         <rfc822;linux-mips@vger.kernel.org>); Mon, 27 Sep 2021 12:46:26 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1632761070;
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1632761073;
     s=strato-dkim-0002; d=goldelico.com;
-    h=Message-Id:Date:Subject:Cc:To:From:Cc:Date:From:Subject:Sender;
-    bh=jRPgRBm1X+FuZv7hOzaWpG6lEhu0WS+NKYO9s9BLpfc=;
-    b=AG1GEOc6tKVfQEL1PmD3dkQnT6JWvNaRPm+CFRQvE1hmb86TRDfFstrkkRbgxkKfoE
-    2a3Y1vRvqkm4DmVOeSxVK69IrrQ0siyq+PAhrks0oNqq79F7wBT9rMEPrHEKGJHGjMvt
-    asgTJZ+P6pDyXwhIg4CvqsfIzu2Gjumdj+QcH+gVhw5yJtNaoPBvZ950F9Tua7oSUIh9
-    2cKO/+JB84mIslyRBv/WFMd9UHzcUUy9GuZIw4Yirh/iPkabFwwtRIGMNn1fY1zvudAz
-    op3OwSyRJaMijbIRvzqqPDOhpDUy6kknO5WCAKeLMsyaoGkAl+MMgyiAqlvfMtSvEk3V
-    lA/Q==
+    h=References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Cc:Date:
+    From:Subject:Sender;
+    bh=BCIaFfyAqCtZh0wUyZSMO+rmEFnD5zeAfuhAAioFjEA=;
+    b=QYxYvONUUyMF3zywlECKzqm0lgWlkZSromxFEHFC3JXgu7YGI2yXekuY1/BnDM0L78
+    5q9fmo16fG0qhS23Ja1k26oofHYbFtigjzbpGSlpXckTStmN0X/tZCLvx5DHTBAf1YTv
+    sKLUHvDqfd8PZDaR60egrO5zVaylQAlhfryvlNB5O9qk0+Yv3rTnvVYjME4E97z7hdwX
+    TZqtTAOed/3MtfM8bXdJTjNtox1EmxnoqupjFEAzvvc+zZElV+XfXrvfe7h/VSmN/9Gh
+    WyCnIIDuyC7A2EwQaaWjIvEt6YUfwEa0G38xU5fVRcRz/LbNb2U8WKunnU6dkCM4wC/f
+    rtQw==
 Authentication-Results: strato.com;
     dkim=none
 X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMhflhwDubTJ9o1KHeBQyh+ITDDFrDb4="
 X-RZG-CLASS-ID: mo00
 Received: from iMac.fritz.box
     by smtp.strato.de (RZmta 47.33.8 DYNA|AUTH)
-    with ESMTPSA id I01f74x8RGiTav8
+    with ESMTPSA id I01f74x8RGiXavC
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
         (Client did not present a certificate);
-    Mon, 27 Sep 2021 18:44:29 +0200 (CEST)
+    Mon, 27 Sep 2021 18:44:33 +0200 (CEST)
 From:   "H. Nikolaus Schaller" <hns@goldelico.com>
 To:     Paul Cercueil <paul@crapouillou.net>,
         Rob Herring <robh+dt@kernel.org>,
@@ -63,79 +64,80 @@ Cc:     devicetree@vger.kernel.org, linux-mips@vger.kernel.org,
         linux-kernel@vger.kernel.org, letux-kernel@openphoenux.org,
         Jonas Karlman <jonas@kwiboo.se>,
         dri-devel@lists.freedesktop.org
-Subject: [PATCH v4 00/10] MIPS: JZ4780 and CI20 HDMI
-Date:   Mon, 27 Sep 2021 18:44:18 +0200
-Message-Id: <cover.1632761067.git.hns@goldelico.com>
+Subject: [PATCH v4 04/10] drm/bridge: synopsis: Add mode_fixup and bridge timings support
+Date:   Mon, 27 Sep 2021 18:44:22 +0200
+Message-Id: <f9709b4483d68ebfa12077b6500970763ba32570.1632761067.git.hns@goldelico.com>
 X-Mailer: git-send-email 2.31.1
+In-Reply-To: <cover.1632761067.git.hns@goldelico.com>
+References: <cover.1632761067.git.hns@goldelico.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-- fix setting output_port = 1 (issue found by paul@crapouillou.net)
-- ci20.dts: convert to use hdmi-connector (by hns@goldelico.com)
-- add a hdmi-regulator to control +5V power (by hns@goldelico.com)
-- added a fix to dw-hdmi to call drm_kms_helper_hotplug_event on plugin event detection (by hns@goldelico.com)
-- always allocate extended descriptor but initialize only for jz4780 (by hns@goldelico.com)
-- updated to work on top of "[PATCH v3 0/6] drm/ingenic: Various improvements v3" (by paul@crapouillou.net)
-- rebased to v5.13-rc3
+From: Paul Boddie <paul@boddie.org.uk>
 
-PATCH V3 2021-08-08 07:10:50:
-This series adds HDMI support for JZ4780 and CI20 board (and fixes one IPU related issue in registration error path)
-- [patch 1/8] switched from mode_fixup to atomic_check (suggested by robert.foss@linaro.org)
-  - the call to the dw-hdmi specialization is still called mode_fixup
-- [patch 3/8] diverse fixes for ingenic-drm-drv (suggested by paul@crapouillou.net)
-  - factor out some non-HDMI features of the jz4780 into a separate patch
-  - multiple fixes around max height
-  - do not change regmap config but a copy on stack
-  - define some constants
-  - factor out fixing of drm_init error path for IPU into separate patch
-  - use FIELD_PREP()
-- [patch 8/8] conversion to component framework dropped (suggested by Laurent.pinchart@ideasonboard.com and paul@crapouillou.net)
+The platform-specific configuration structure is augmented with
+mode_fixup and timings members so that specialisations of the
+Synopsys driver can introduce mode flags and bus flags.
 
-PATCH V2 2021-08-05 16:08:05:
-This series adds HDMI support for JZ4780 and CI20 board
+Signed-off-by: Paul Boddie <paul@boddie.org.uk>
+Signed-off-by: Ezequiel Garcia <ezequiel@collabora.com>
+Signed-off-by: H. Nikolaus Schaller <hns@goldelico.com>
+---
+ drivers/gpu/drm/bridge/synopsys/dw-hdmi.c | 7 +++++++
+ include/drm/bridge/dw_hdmi.h              | 5 +++++
+ 2 files changed, 12 insertions(+)
 
-V2:
-- code and commit messages revisited for checkpatch warnings
-- rebased on v5.14-rc4
-- include (failed, hence RFC 8/8) attempt to convert to component framework
-  (was suggested by Paul Cercueil <paul@crapouillou.net> a while ago)
-
-
-H. Nikolaus Schaller (2):
-  drm/bridge: synopsis: Fix to properly handle HPD
-  MIPS: defconfig: CI20: configure for DRM_DW_HDMI_JZ4780
-
-Paul Boddie (7):
-  drm/ingenic: Fix drm_init error path if IPU was registered
-  drm/ingenic: Add support for JZ4780 and HDMI output
-  drm/bridge: synopsis: Add mode_fixup and bridge timings support
-  drm/ingenic: Add dw-hdmi driver for jz4780
-  MIPS: DTS: jz4780: Account for Synopsys HDMI driver and LCD
-    controllers
-  MIPS: DTS: CI20: Add DT nodes for HDMI setup
-  drm/ingenic: add some jz4780 specific features
-
-Sam Ravnborg (1):
-  dt-bindings: display: Add ingenic,jz4780-dw-hdmi DT Schema
-
- .../bindings/display/ingenic-jz4780-hdmi.yaml |  85 +++++++++++
- arch/mips/boot/dts/ingenic/ci20.dts           |  67 +++++++++
- arch/mips/boot/dts/ingenic/jz4780.dtsi        |  45 ++++++
- arch/mips/configs/ci20_defconfig              |   6 +
- drivers/gpu/drm/bridge/synopsys/dw-hdmi.c     |   9 ++
- drivers/gpu/drm/ingenic/Kconfig               |   9 ++
- drivers/gpu/drm/ingenic/Makefile              |   1 +
- drivers/gpu/drm/ingenic/ingenic-drm-drv.c     | 135 ++++++++++++++++-
- drivers/gpu/drm/ingenic/ingenic-drm.h         |  42 ++++++
- drivers/gpu/drm/ingenic/ingenic-dw-hdmi.c     | 142 ++++++++++++++++++
- include/drm/bridge/dw_hdmi.h                  |   5 +
- 11 files changed, 540 insertions(+), 6 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/display/ingenic-jz4780-hdmi.yaml
- create mode 100644 drivers/gpu/drm/ingenic/ingenic-dw-hdmi.c
-
+diff --git a/drivers/gpu/drm/bridge/synopsys/dw-hdmi.c b/drivers/gpu/drm/bridge/synopsys/dw-hdmi.c
+index f08d0fded61f..f082e14320e1 100644
+--- a/drivers/gpu/drm/bridge/synopsys/dw-hdmi.c
++++ b/drivers/gpu/drm/bridge/synopsys/dw-hdmi.c
+@@ -2767,6 +2767,11 @@ static int dw_hdmi_bridge_atomic_check(struct drm_bridge *bridge,
+ 		bridge_state->input_bus_cfg.format,
+ 		bridge_state->output_bus_cfg.format);
+ 
++	if (hdmi->plat_data->mode_fixup)
++		if (!hdmi->plat_data->mode_fixup(bridge, &crtc_state->mode,
++						 &crtc_state->adjusted_mode))
++			return -EINVAL;
++
+ 	return 0;
+ }
+ 
+@@ -3416,6 +3421,8 @@ struct dw_hdmi *dw_hdmi_probe(struct platform_device *pdev,
+ #ifdef CONFIG_OF
+ 	hdmi->bridge.of_node = pdev->dev.of_node;
+ #endif
++	if (plat_data->timings)
++		hdmi->bridge.timings = plat_data->timings;
+ 
+ 	memset(&pdevinfo, 0, sizeof(pdevinfo));
+ 	pdevinfo.parent = dev;
+diff --git a/include/drm/bridge/dw_hdmi.h b/include/drm/bridge/dw_hdmi.h
+index 2a1f85f9a8a3..743038200044 100644
+--- a/include/drm/bridge/dw_hdmi.h
++++ b/include/drm/bridge/dw_hdmi.h
+@@ -8,6 +8,7 @@
+ 
+ #include <sound/hdmi-codec.h>
+ 
++struct drm_bridge;
+ struct drm_display_info;
+ struct drm_display_mode;
+ struct drm_encoder;
+@@ -142,6 +143,10 @@ struct dw_hdmi_plat_data {
+ 	enum drm_mode_status (*mode_valid)(struct dw_hdmi *hdmi, void *data,
+ 					   const struct drm_display_info *info,
+ 					   const struct drm_display_mode *mode);
++	bool (*mode_fixup)(struct drm_bridge *bridge,
++			   const struct drm_display_mode *mode,
++			   struct drm_display_mode *adjusted_mode);
++	const struct drm_bridge_timings *timings;
+ 
+ 	/* Vendor PHY support */
+ 	const struct dw_hdmi_phy_ops *phy_ops;
 -- 
 2.31.1
 

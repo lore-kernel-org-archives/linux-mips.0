@@ -2,233 +2,234 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5B08EC433F5
-	for <linux-mips@archiver.kernel.org>; Tue, 28 Sep 2021 09:18:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8B20AC433EF
+	for <linux-mips@archiver.kernel.org>; Tue, 28 Sep 2021 09:24:39 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 39165610E5
-	for <linux-mips@archiver.kernel.org>; Tue, 28 Sep 2021 09:18:13 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 739A760F70
+	for <linux-mips@archiver.kernel.org>; Tue, 28 Sep 2021 09:24:39 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239765AbhI1JTv (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 28 Sep 2021 05:19:51 -0400
-Received: from new1-smtp.messagingengine.com ([66.111.4.221]:34513 "EHLO
-        new1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S239043AbhI1JTv (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>);
-        Tue, 28 Sep 2021 05:19:51 -0400
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 952F65805DD;
-        Tue, 28 Sep 2021 05:18:11 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute3.internal (MEProxy); Tue, 28 Sep 2021 05:18:11 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:content-transfer-encoding:in-reply-to; s=fm1; bh=a
-        z58RAATejJOnuwYVDi925Y5L5Fz8v8ETOF1VVXfBFo=; b=mkFIkhnTkD262P8Bg
-        f1tIlQZrFdVw1cP7H9BBmWxTQF6b5mjae2413trvlP/CZ2NBr5+ZwX0UJ9OFzvBd
-        nLRBxRbHVwuH6MBwubzC7aMfSxToIM9Kc2hzDNrlKY83hA7OZ0FR3QOr7pD8HEOD
-        lbQbUfHn5qilrvRgkLn7zaEyAEBLeI+1goh90CzhK6ZzwT5OFQgDVoive+sovI0R
-        9jmNRcML0RqkfnQLc+igmQwPNQS8T6x6JD/jp0dndMvxtTL4F1NC1Ff5gKpIw+UV
-        fOsVHZrlSrCvqW7OKlnXCrtpJH+tLqqqSfK9hRdTrSKJbBSpMbNGtZ418RujdLA2
-        OLYNQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:content-type
-        :date:from:in-reply-to:message-id:mime-version:references
-        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm3; bh=az58RAATejJOnuwYVDi925Y5L5Fz8v8ETOF1VVXfB
-        Fo=; b=rfG7exEEIVLxzpRwK3TohfxlxFmByaAfXcABxwKjk67aN6Jwi188Ev45+
-        SNpsmsXpMlJaw4vOsIFn13seohtIiYdkYzCfjg3DHlGiNXMZpqWmKw33BfZeB6nX
-        o+JroOJd6jAdNjFFsUs6MgpnaVuyWrjAtz5If9JNu/3hDXCKsOWE/B+Qa2F2qh4x
-        kgcF/DDodk8eYLm7B6ChCa4NmpTBBVB0wPZIh6yLD/0/tHKHOr3xaZ+KV8tjv0fL
-        m6aXxOj5IRW78jf2a9JTNwGTy/PNhW2Fx2++OTjVfjJ3QyxDvpv5LJ8Wc1oYKJEu
-        vlGNno8kgehwScDbf/DZZQoBnAEdg==
-X-ME-Sender: <xms:0d1SYTSkOVGLaTDvKb7bSx3g2PLhUE1q4F-drfTVnz68Ey0e1rSUMQ>
-    <xme:0d1SYUy-9x6xkL7am5hURVJM8Mb2Tq1geK4s5kIB1bZ4BClHGkX50jyVmO1UQi5TE
-    bVX7I-XA2tZnMxappY>
-X-ME-Received: <xmr:0d1SYY2m5BFFrPgJgcPjBFltzmbxi-dP_QlaN0CxTZ7S1EG5jl3_8cQoHPpmDm4Eaw0V8SJkKDZZRB4H5YtGoOPPII4tqXsJ8-01krXH>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvtddrudektddguddtucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtugfgjgesthhqredttddtvdenucfhrhhomhepofgrgihi
-    mhgvucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrg
-    htthgvrhhnpefgjeettdejgffgffdvteeutdehtdehgeehueetkeefgefhtdetjeekledu
-    gedvudenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
-    hmrgigihhmvgestggvrhhnohdrthgvtghh
-X-ME-Proxy: <xmx:0d1SYTAE3SAKplh0RD2GGlSKpV4rHmkxG7LZOYEClF6x0cxVUiXskw>
-    <xmx:0d1SYcisYUhRDUfxM9rvcjDqyCOI-MI_a2cF2_r136Jj9W8LmzMqyg>
-    <xmx:0d1SYXrdGMy-gaanmz3jc5nIhCC94IKt1aohdY-ZTBuDc2d4eloerw>
-    <xmx:091SYaN_G8DqT03oJb9VyCR2LGkFmLftcoQI0a0fZ2n9Cj8Ag5vmpg>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 28 Sep 2021 05:18:08 -0400 (EDT)
-Date:   Tue, 28 Sep 2021 11:18:07 +0200
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     "H. Nikolaus Schaller" <hns@goldelico.com>
-Cc:     Sam Ravnborg <sam@ravnborg.org>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Paul Cercueil <paul@crapouillou.net>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Kees Cook <keescook@chromium.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Robert Foss <robert.foss@linaro.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Ezequiel Garcia <ezequiel@collabora.com>,
-        Harry Wentland <harry.wentland@amd.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Paul Boddie <paul@boddie.org.uk>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        linux-mips <linux-mips@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Discussions about the Letux Kernel 
-        <letux-kernel@openphoenux.org>, Jonas Karlman <jonas@kwiboo.se>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Rob Herring <robh@kernel.org>
-Subject: Re: [PATCH v4 03/10] dt-bindings: display: Add
- ingenic,jz4780-dw-hdmi DT Schema
-Message-ID: <20210928091807.xgqxemjizlobpcxy@gilmour>
-References: <cover.1632761067.git.hns@goldelico.com>
- <6c8b72a03703de54fa02b29c1a53c84ca0889e50.1632761067.git.hns@goldelico.com>
- <20210927170702.on243lp24fcfdhbj@gilmour>
- <C529DB99-709A-4C24-B647-3A2004CBFE18@goldelico.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <C529DB99-709A-4C24-B647-3A2004CBFE18@goldelico.com>
+        id S239843AbhI1J0R (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 28 Sep 2021 05:26:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55652 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239831AbhI1J0R (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Tue, 28 Sep 2021 05:26:17 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id D894961130;
+        Tue, 28 Sep 2021 09:24:37 +0000 (UTC)
+Received: from sofa.misterjones.org ([185.219.108.64] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1mV9Ln-00DSn8-QY; Tue, 28 Sep 2021 10:24:35 +0100
+Date:   Tue, 28 Sep 2021 10:24:34 +0100
+Message-ID: <87o88dt5m5.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
+        Paul Mackerras <paulus@ozlabs.org>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Janosch Frank <frankja@linux.ibm.com>,
+        James Morse <james.morse@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        David Hildenbrand <david@redhat.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-mips@vger.kernel.org, kvm@vger.kernel.org,
+        kvm-ppc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        David Matlack <dmatlack@google.com>,
+        Jing Zhang <jingzhangos@google.com>
+Subject: Re: [PATCH 07/14] KVM: Don't block+unblock when halt-polling is successful
+In-Reply-To: <YVH/LjCqk/9PfDHn@google.com>
+References: <20210925005528.1145584-1-seanjc@google.com>
+        <20210925005528.1145584-8-seanjc@google.com>
+        <878rzlass2.wl-maz@kernel.org>
+        <80d90ee6-0d43-3735-5c26-be8c3d72d493@redhat.com>
+        <877df3btgb.wl-maz@kernel.org>
+        <YVH/LjCqk/9PfDHn@google.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: seanjc@google.com, pbonzini@redhat.com, chenhuacai@kernel.org, aleksandar.qemu.devel@gmail.com, paulus@ozlabs.org, borntraeger@de.ibm.com, frankja@linux.ibm.com, james.morse@arm.com, alexandru.elisei@arm.com, suzuki.poulose@arm.com, david@redhat.com, cohuck@redhat.com, imbrenda@linux.ibm.com, vkuznets@redhat.com, wanpengli@tencent.com, jmattson@google.com, joro@8bytes.org, linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu, linux-mips@vger.kernel.org, kvm@vger.kernel.org, kvm-ppc@vger.kernel.org, linux-kernel@vger.kernel.org, dmatlack@google.com, jingzhangos@google.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Tue, Sep 28, 2021 at 10:59:45AM +0200, H. Nikolaus Schaller wrote:
-> >> +properties:
-> >> +  compatible:
-> >> +    items:
-> >> +      - const: ingenic,jz4780-dw-hdmi
-> >=20
-> > This can just be a const, there's no need for the items
->=20
-> Maybe starting with an enum is better if more compatible strings are to b=
-e added.
+On Mon, 27 Sep 2021 18:28:14 +0100,
+Sean Christopherson <seanjc@google.com> wrote:
+> 
+> On Sun, Sep 26, 2021, Marc Zyngier wrote:
+> > On Sun, 26 Sep 2021 07:27:28 +0100,
+> > Paolo Bonzini <pbonzini@redhat.com> wrote:
+> > > 
+> > > On 25/09/21 11:50, Marc Zyngier wrote:
+> > > >> there is no need for arm64 to put/load
+> > > >> the vGIC as KVM hasn't relinquished control of the vCPU in any way.
+> > > > 
+> > > > This doesn't mean that there is no requirement for any state
+> > > > change. The put/load on GICv4 is crucial for performance, and the VMCR
+> > > > resync is a correctness requirement.
+> 
+> Ah crud, I didn't blame that code beforehand, I simply assumed
+> kvm_arch_vcpu_blocking() was purely for the blocking/schedule()
+> sequence.  The comment in arm64's kvm_arch_vcpu_blocking() about
+> kvm_arch_vcpu_runnable() makes more sense now too.
+> 
+> > > I wouldn't even say it's crucial for performance: halt polling cannot
+> > > work and is a waste of time without (the current implementation of)
+> > > put/load.
+> > 
+> > Not quite. A non-V{LPI,SGI} could still be used as the a wake-up from
+> > WFI (which is the only reason we end-up on this path). Only LPIs (and
+> > SGIs on GICv4.1) can be directly injected, meaning that SPIs and PPIs
+> > still follow the standard SW injection model.
+> > 
+> > However, there is still the ICH_VMCR_EL2 requirement (to get the
+> > up-to-date priority mask and group enable bits) for SW-injected
+> > interrupt wake-up to work correctly, and I really don't want to save
+> > that one eagerly on each shallow exit.
+> 
+> IIUC, VMCR is resident in hardware while the guest is running, and
+> KVM needs to retrieve the VMCR when processing interrupts to
+> determine if a interrupt is above the priority threshold.  If that's
+> the case, then IMO handling the VMCR via an arch hook is
+> unnecessarily fragile, e.g. any generic call that leads to
+> kvm_arch_vcpu_runnable() needs to know that arm64 lazily retrieves a
+> guest register.
 
-it's still fairly easy to change if needed, there's no need to confuse
-anyone.
+Not quite. We only need to retrieve the VMCR if we are in a situation
+where we need to trigger a wake-up from WFI at the point where we have
+not done a vcpu_put() yet. All the other cases where the interrupt is
+injected are managed by the HW. And the only case where
+kvm_arch_vcpu_runnable() gets called is when blocking.
 
-> >=20
-> >> +  reg-io-width:
-> >> +    const: 4
-> >=20
-> > If it's fixed, why do you need it in the first place?
->=20
-> There is a fixed default of 1 if not specified.
+I also don't get why a hook would be fragile, as long as it has well
+defined semantics.
 
-My point was more about why do you need to have that property at all?
-Can't you just drop it and assume that the register width is 32 bits if
-it's all you will ever run on?
+> A better approach for VMCR would be to retrieve the value from
+> hardware on-demand, e.g. via a hook in vgic_get_vmcr(), so that it's all but
+> impossible to have bugs where KVM is working with a stale VMCR, e.g.
+> 
+> diff --git a/arch/arm64/kvm/vgic/vgic-mmio.c b/arch/arm64/kvm/vgic/vgic-mmio.c
+> index 48c6067fc5ec..0784de0c4080 100644
+> --- a/arch/arm64/kvm/vgic/vgic-mmio.c
+> +++ b/arch/arm64/kvm/vgic/vgic-mmio.c
+> @@ -828,6 +828,13 @@ void vgic_set_vmcr(struct kvm_vcpu *vcpu, struct vgic_vmcr *vmcr)
+>  
+>  void vgic_get_vmcr(struct kvm_vcpu *vcpu, struct vgic_vmcr *vmcr)
+>  {
+> +       if (!vcpu->...->vmcr_available) {
+> +               preempt_disable();
+> +               kvm_vgic_vmcr_sync(vcpu);
+> +               preempt_enable();
+> +               vcpu->...->vmcr_available = true;
+> +       }
+> +
 
-> >> +  clocks:
-> >> +    maxItems: 2
-> >> +    description: Clock specifiers for isrf and iahb clocks
-> >=20
-> > This can be defined as
-> >=20
-> > clocks:
-> >  items:
-> >    - description: isrf
-> >    - description: iahb
-> >=20
-> > A better description about what these clocks are would be nice as well
->=20
-> Generally I see that this all is nowadays not independent of
->=20
-> Documentation/devicetree/bindings/display/bridge/synopsys,dw-hdmi.yaml
->=20
-> where there is already a description.
+But most of the uses of vgic_get_vmcr() are in contexts where the vcpu
+isn't running at all (such as save/restore). It really only operates
+on the shadow state, and what you have above will only lead to state
+corruption.
 
-Ok, good then
+>         if (kvm_vgic_global_state.type == VGIC_V2)
+>                 vgic_v2_get_vmcr(vcpu, vmcr);
+>         else
+> 
+> 
+> Regarding vGIC v4, does KVM require it to be resident in hardware
+> while the vCPU is loaded?
 
-> On the other hand every SoC specialization runs its own copy. e.g.
->=20
-> Documentation/devicetree/bindings/display/imx/fsl,imx6-hdmi.yaml
-> Documentation/devicetree/bindings/display/rockchip/rockchip,dw-hdmi.yam
->=20
-> >=20
-> >> +  clock-names:
-> >> +    items:
-> >> +      - const: isfr
-> >=20
-> > Is it isfr or isrf?
->=20
-> isfr. Seems to be a typo in the description. See
-> bridge/synopsys,dw-hdmi.yaml#
->=20
-> One question to the yaml specialists:
->=20
-> since ../bridge/synopsys,dw-hdmi.yaml# already defines this, do we
-> have to repeat? Or can we reduce to just the changes?
+It is a requirement. Otherwise, we end-up with an inconsistent state
+between the delivery of doorbells and the state of the vgic. Also,
+reloading the GICv4 state can be pretty expensive (multiple MMIO
+accesses), which is why we really don't want to do that on the hot
+path (kvm_arch_vcpu_ioctl_run() *is* a hot path).
 
-If you add the ref you mentionned above, you don't have to repeat
-yourself indeed. You can just put clock-names: true
+> If not, then we could do something like
+> this, which would eliminate the arch hooks entirely if the VMCR is
+> handled as above.
+> 
+> diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
+> index fe102cd2e518..efc862c4d802 100644
+> --- a/arch/arm64/kvm/arm.c
+> +++ b/arch/arm64/kvm/arm.c
+> @@ -365,31 +365,6 @@ int kvm_cpu_has_pending_timer(struct kvm_vcpu *vcpu)
+>         return kvm_timer_is_pending(vcpu);
+>  }
+> 
+> -void kvm_arch_vcpu_blocking(struct kvm_vcpu *vcpu)
+> -{
+> -       /*
+> -        * If we're about to block (most likely because we've just hit a
+> -        * WFI), we need to sync back the state of the GIC CPU interface
+> -        * so that we have the latest PMR and group enables. This ensures
+> -        * that kvm_arch_vcpu_runnable has up-to-date data to decide
+> -        * whether we have pending interrupts.
+> -        *
+> -        * For the same reason, we want to tell GICv4 that we need
+> -        * doorbells to be signalled, should an interrupt become pending.
+> -        */
+> -       preempt_disable();
+> -       kvm_vgic_vmcr_sync(vcpu);
+> -       vgic_v4_put(vcpu, true);
+> -       preempt_enable();
+> -}
+> -
+> -void kvm_arch_vcpu_unblocking(struct kvm_vcpu *vcpu)
+> -{
+> -       preempt_disable();
+> -       vgic_v4_load(vcpu);
+> -       preempt_enable();
+> -}
+> -
+>  void kvm_arch_vcpu_load(struct kvm_vcpu *vcpu, int cpu)
+>  {
+>         struct kvm_s2_mmu *mmu;
+> @@ -697,7 +672,6 @@ static void check_vcpu_requests(struct kvm_vcpu *vcpu)
+>                         /* The distributor enable bits were changed */
+>                         preempt_disable();
+>                         vgic_v4_put(vcpu, false);
+> -                       vgic_v4_load(vcpu);
+>                         preempt_enable();
+>                 }
+> 
+> @@ -813,6 +787,13 @@ int kvm_arch_vcpu_ioctl_run(struct kvm_vcpu *vcpu)
+>                  */
+>                 preempt_disable();
+> 
+> +               /*
+> +                * Reload vGIC v4 if necessary, as it may be put on-demand so
+> +                * that KVM can detect directly injected interrupts, e.g. when
+> +                * determining if the vCPU is runnable due to a pending event.
+> +                */
+> +               vgic_v4_load(vcpu);
 
-> [I am still not familiar enough with the yaml stuff to understand if
-> it has sort of inheritance like device tree include files, so that you
-> just have to change relevant properties]
+You'd need to detect that a previous put has been done. But overall,
+it puts the complexity at the wrong place. WFI (aka kvm_vcpu_block) is
+the place where we want to handle this synchronisation, and not the
+run loop.
 
-Kind of, but not entirely. schemas are all applied separately, unlike DT
-includes that will just expand to one big DT. In practice, it means that
-your device must validate against all the schemas, not just the sum of
-them.
+Instead of having a well defined interface with the blocking code
+where we implement the required synchronisation, you spray the vgic
+crap all over, and it becomes much harder to reason about it. Guess
+what, I'm not keen on it.
 
-For example, if you have a generic schema that has:
+	M.
 
-properties:
-  compatible:
-    const: vendor,my-generic-compatible
-
-
-and your schema that extends the generic binding, with a ref to the
-generic one that has:
-
-properties:
-  compatible:
-    items:
-      - const: other-vendor,my-device-compatible
-      - const: vendor,my-generic-compatible
-
-
-It will still fail since the generic schema expects only a single
-compatible, whereas your device would have two.
-
-> >=20
-> >> +      - const: iahb
->=20
-> would it make sense to add additionalItems: false here?
->=20
-> In the jz4780 case there are just two clocks while other specializations
-> use more and synopsys,dw-hdmi.yaml# defines additionalItems: true.
-
-If you want to refine the generic one, and it's all the clocks you ever
-expect then there's no need for additionalItems
-
-> >=20
-> >> +    description: An I2C interface if the internal DDC I2C driver is n=
-ot to be used
-> >> +  ports: true
-> >=20
-> > If there's a single port, you don't need ports
->=20
-> There can be two ports - one for input from LCDC and one
-> for output (HDMI connector). But explicitly defining an output
-> port is optional to some extent (depending on driver structure).
-
-This needs to be defined then (and port@0 made mandatory)
-
-Maxime
+-- 
+Without deviation from the norm, progress is not possible.

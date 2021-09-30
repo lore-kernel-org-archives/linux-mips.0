@@ -2,383 +2,336 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 277A3C433F5
-	for <linux-mips@archiver.kernel.org>; Thu, 30 Sep 2021 07:37:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2FA57C433EF
+	for <linux-mips@archiver.kernel.org>; Thu, 30 Sep 2021 09:36:25 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id EE423613A0
-	for <linux-mips@archiver.kernel.org>; Thu, 30 Sep 2021 07:37:30 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 105D461882
+	for <linux-mips@archiver.kernel.org>; Thu, 30 Sep 2021 09:36:25 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348661AbhI3HjM (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 30 Sep 2021 03:39:12 -0400
-Received: from protonic.xs4all.nl ([83.163.252.89]:42202 "EHLO
-        protonic.xs4all.nl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348737AbhI3HjL (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Thu, 30 Sep 2021 03:39:11 -0400
-Received: from fiber.protonic.nl (edge2.prtnl [192.168.1.170])
-        by sparta.prtnl (Postfix) with ESMTP id 17F5F44A024E;
-        Thu, 30 Sep 2021 09:37:22 +0200 (CEST)
-MIME-Version: 1.0
-Date:   Thu, 30 Sep 2021 09:37:22 +0200
-From:   Robin van der Gracht <robin@protonic.nl>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Miguel Ojeda <ojeda@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Paul Burton <paulburton@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Pavel Machek <pavel@ucw.cz>, Marek Behun <marek.behun@nic.cz>,
-        devicetree@vger.kernel.org, linux-leds@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6 17/19] auxdisplay: ht16k33: Add support for segment
- displays
-Reply-To: robin@protonic.nl
-In-Reply-To: <20210914143835.511051-18-geert@linux-m68k.org>
-References: <20210914143835.511051-1-geert@linux-m68k.org>
- <20210914143835.511051-18-geert@linux-m68k.org>
-User-Agent: Roundcube Webmail/1.4.11
-Message-ID: <f902011b7be495219da31e4c1d561cfe@protonic.nl>
-X-Sender: robin@protonic.nl
-Organization: Protonic Holland
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
+        id S1349443AbhI3JiG (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 30 Sep 2021 05:38:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37340 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1349446AbhI3JiG (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Thu, 30 Sep 2021 05:38:06 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9958961278;
+        Thu, 30 Sep 2021 09:36:22 +0000 (UTC)
+Received: from sofa.misterjones.org ([185.219.108.64] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1mVsUG-00DweD-J2; Thu, 30 Sep 2021 10:36:20 +0100
+Date:   Thu, 30 Sep 2021 10:36:19 +0100
+Message-ID: <87czoqtnfw.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
+        Paul Mackerras <paulus@ozlabs.org>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Janosch Frank <frankja@linux.ibm.com>,
+        James Morse <james.morse@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        David Hildenbrand <david@redhat.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
+        linux-mips@vger.kernel.org, kvm@vger.kernel.org,
+        kvm-ppc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        David Matlack <dmatlack@google.com>,
+        Jing Zhang <jingzhangos@google.com>
+Subject: Re: [PATCH 07/14] KVM: Don't block+unblock when halt-polling is successful
+In-Reply-To: <YVNA+KTbLrxGQ6ML@google.com>
+References: <20210925005528.1145584-1-seanjc@google.com>
+        <20210925005528.1145584-8-seanjc@google.com>
+        <878rzlass2.wl-maz@kernel.org>
+        <80d90ee6-0d43-3735-5c26-be8c3d72d493@redhat.com>
+        <877df3btgb.wl-maz@kernel.org>
+        <YVH/LjCqk/9PfDHn@google.com>
+        <87o88dt5m5.wl-maz@kernel.org>
+        <YVNA+KTbLrxGQ6ML@google.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: seanjc@google.com, pbonzini@redhat.com, chenhuacai@kernel.org, aleksandar.qemu.devel@gmail.com, paulus@ozlabs.org, borntraeger@de.ibm.com, frankja@linux.ibm.com, james.morse@arm.com, alexandru.elisei@arm.com, suzuki.poulose@arm.com, david@redhat.com, cohuck@redhat.com, imbrenda@linux.ibm.com, vkuznets@redhat.com, wanpengli@tencent.com, jmattson@google.com, joro@8bytes.org, linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu, linux-mips@vger.kernel.org, kvm@vger.kernel.org, kvm-ppc@vger.kernel.org, linux-kernel@vger.kernel.org, dmatlack@google.com, jingzhangos@google.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Acked-by: Robin van der Gracht <robin@protonic.nl>
+On Tue, 28 Sep 2021 17:21:12 +0100,
+Sean Christopherson <seanjc@google.com> wrote:
+> 
+> On Tue, Sep 28, 2021, Marc Zyngier wrote:
+> > On Mon, 27 Sep 2021 18:28:14 +0100,
+> > Sean Christopherson <seanjc@google.com> wrote:
+> > > 
+> > > On Sun, Sep 26, 2021, Marc Zyngier wrote:
+> > > > On Sun, 26 Sep 2021 07:27:28 +0100,
+> > > > Paolo Bonzini <pbonzini@redhat.com> wrote:
+> > > > > 
+> > > > > On 25/09/21 11:50, Marc Zyngier wrote:
+> > > > > >> there is no need for arm64 to put/load
+> > > > > >> the vGIC as KVM hasn't relinquished control of the vCPU in any way.
+> > > > > > 
+> > > > > > This doesn't mean that there is no requirement for any state
+> > > > > > change. The put/load on GICv4 is crucial for performance, and the VMCR
+> > > > > > resync is a correctness requirement.
+> > > 
+> > > Ah crud, I didn't blame that code beforehand, I simply assumed
+> > > kvm_arch_vcpu_blocking() was purely for the blocking/schedule()
+> > > sequence.  The comment in arm64's kvm_arch_vcpu_blocking() about
+> > > kvm_arch_vcpu_runnable() makes more sense now too.
+> > > 
+> > > > > I wouldn't even say it's crucial for performance: halt polling cannot
+> > > > > work and is a waste of time without (the current implementation of)
+> > > > > put/load.
+> > > > 
+> > > > Not quite. A non-V{LPI,SGI} could still be used as the a wake-up from
+> > > > WFI (which is the only reason we end-up on this path). Only LPIs (and
+> > > > SGIs on GICv4.1) can be directly injected, meaning that SPIs and PPIs
+> > > > still follow the standard SW injection model.
+> > > > 
+> > > > However, there is still the ICH_VMCR_EL2 requirement (to get the
+> > > > up-to-date priority mask and group enable bits) for SW-injected
+> > > > interrupt wake-up to work correctly, and I really don't want to save
+> > > > that one eagerly on each shallow exit.
+> > > 
+> > > IIUC, VMCR is resident in hardware while the guest is running, and
+> > > KVM needs to retrieve the VMCR when processing interrupts to
+> > > determine if a interrupt is above the priority threshold.  If that's
+> > > the case, then IMO handling the VMCR via an arch hook is
+> > > unnecessarily fragile, e.g. any generic call that leads to
+> > > kvm_arch_vcpu_runnable() needs to know that arm64 lazily retrieves a
+> > > guest register.
+> > 
+> > Not quite. We only need to retrieve the VMCR if we are in a situation
+> > where we need to trigger a wake-up from WFI at the point where we have
+> > not done a vcpu_put() yet. All the other cases where the interrupt is
+> > injected are managed by the HW. And the only case where
+> > kvm_arch_vcpu_runnable() gets called is when blocking.
+> > 
+> > I also don't get why a hook would be fragile, as long as it has well
+> > defined semantics.
+> 
+> Generic KVM should not have to know that a seemingly benign arch hook,
+> kvm_arch_vcpu_runnable(), cannot be safely called without first calling another
+> arch hook.  E.g. I suspect there's a (benign?) race in kvm_vcpu_on_spin().  If
+> the loop is delayed between checking rcuwait_active() and vcpu_dy_runnable(),
+> and the target vCPU is awakened during that period, KVM can call
+> kvm_arch_vcpu_runnable() while the vCPU is running.
 
-On 2021-09-14 16:38, Geert Uytterhoeven wrote:
-> The Holtek HT16K33 LED controller is not only used for driving
-> dot-matrix displays, but also for driving segment displays.
+Humph. Indeed, there is a potential gold-plated turd there.
+
+> It's kind of a counter-example to my below suggestion as putting the vGIC would
+> indeed lead to state corruption if the vCPU is running, but I would argue that
+> arm64 should override kvm_arch_dy_runnable() so that its correctness is guaranteed,
+> e.g. by not calling kvm_arch_vcpu_runnable() if the vCPU is already running.
+
+I'll work something out for that case.
+
+> > > A better approach for VMCR would be to retrieve the value from
+> > > hardware on-demand, e.g. via a hook in vgic_get_vmcr(), so that it's all but
+> > > impossible to have bugs where KVM is working with a stale VMCR, e.g.
+> > > 
+> > > diff --git a/arch/arm64/kvm/vgic/vgic-mmio.c b/arch/arm64/kvm/vgic/vgic-mmio.c
+> > > index 48c6067fc5ec..0784de0c4080 100644
+> > > --- a/arch/arm64/kvm/vgic/vgic-mmio.c
+> > > +++ b/arch/arm64/kvm/vgic/vgic-mmio.c
+> > > @@ -828,6 +828,13 @@ void vgic_set_vmcr(struct kvm_vcpu *vcpu, struct vgic_vmcr *vmcr)
+> > >  
+> > >  void vgic_get_vmcr(struct kvm_vcpu *vcpu, struct vgic_vmcr *vmcr)
+> > >  {
+> > > +       if (!vcpu->...->vmcr_available) {
+> > > +               preempt_disable();
+> > > +               kvm_vgic_vmcr_sync(vcpu);
+> > > +               preempt_enable();
+> > > +               vcpu->...->vmcr_available = true;
+> > > +       }
+> > > +
+> > 
+> > But most of the uses of vgic_get_vmcr() are in contexts where the vcpu
+> > isn't running at all (such as save/restore). It really only operates
+> > on the shadow state, and what you have above will only lead to state
+> > corruption.
 > 
-> Add support for 4-digit 7-segment and quad 14-segment alphanumeric
-> displays, like the Adafruit 7-segment and 14-segment display backpack
-> and FeatherWing expansion boards.  Use the character line display core
-> support to display a message, which will be scrolled if it doesn't fit.
+> Ignoring the kvm_arch_dy_runnable() case for the moment, how would
+> it lead to corruption?  The idea is that the 'vmcr_available' flag
+> would be cleared when the vCPU is run, i.e. it tracks whether or not
+> the shadow state may be stale.
+
+I guess that 'vmcr_available' would have to be initialised to 'true'
+at vcpu reset time so that the userspace side cannot trigger a read
+from the HW.
+
+> > >         if (kvm_vgic_global_state.type == VGIC_V2)
+> > >                 vgic_v2_get_vmcr(vcpu, vmcr);
+> > >         else
+> > > 
+> > > 
+> > > Regarding vGIC v4, does KVM require it to be resident in hardware
+> > > while the vCPU is loaded?
+> > 
+> > It is a requirement. Otherwise, we end-up with an inconsistent state
+> > between the delivery of doorbells and the state of the vgic.
 > 
-> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
-> ---
-> The 7-segment support is based on schematics, and untested on actual
-> hardware.
+> For my own understanding, does KVM require it to be resident in
+> hardware while the vCPU is loaded but _not_ running?  What I don't
+> fully understand is how KVM can safely load/put the vCPU if that
+> true, i.e. wouldn't there always be a window for badness?
+
+No, that part is fine. It is when you start running the vcpu without
+the GICv4 context loaded that ugly stuff happens (get a doorbell that
+tells you to schedule the currently running vcpu, for example).
+
 > 
-> v6:
->   - No changes,
+> > Also, reloading the GICv4 state can be pretty expensive (multiple MMIO
+> > accesses), which is why we really don't want to do that on the hot path
+> > (kvm_arch_vcpu_ioctl_run() *is* a hot path).
 > 
-> v5:
->   - No changes,
+> I wasn't suggesting to reload GICv4 on every entry, it would only be reloaded
+> if it was put between vcpu_load() and entry to the guest.
 > 
-> v4:
->   - No changes,
+> > > If not, then we could do something like
+> > > this, which would eliminate the arch hooks entirely if the VMCR is
+> > > handled as above.
 > 
-> v3:
->   - Pass "dev" instead of "client" to ht16k33_seg_probe(),
->   - Remove unneeded inclusion of <linux/leds.h> and <linux/of_device.h>,
+> ...
 > 
-> v2:
->   - Move "select LINEDISP" to this patch,
->   - Set "err = -EINVAL" in switch() case that cannot happen.
-> ---
->  drivers/auxdisplay/Kconfig   |   1 +
->  drivers/auxdisplay/ht16k33.c | 196 +++++++++++++++++++++++++++++++++--
->  2 files changed, 190 insertions(+), 7 deletions(-)
+> > > @@ -813,6 +787,13 @@ int kvm_arch_vcpu_ioctl_run(struct kvm_vcpu *vcpu)
+> > >                  */
+> > >                 preempt_disable();
+> > > 
+> > > +               /*
+> > > +                * Reload vGIC v4 if necessary, as it may be put on-demand so
+> > > +                * that KVM can detect directly injected interrupts, e.g. when
+> > > +                * determining if the vCPU is runnable due to a pending event.
+> > > +                */
+> > > +               vgic_v4_load(vcpu);
+> > 
+> > You'd need to detect that a previous put has been done.
 > 
-> diff --git a/drivers/auxdisplay/Kconfig b/drivers/auxdisplay/Kconfig
-> index b41fdc5f7bf72a1b..42fc7b155de09dbc 100644
-> --- a/drivers/auxdisplay/Kconfig
-> +++ b/drivers/auxdisplay/Kconfig
-> @@ -176,6 +176,7 @@ config HT16K33
->  	select FB_SYS_IMAGEBLIT
->  	select INPUT_MATRIXKMAP
->  	select FB_BACKLIGHT
-> +	select LINEDISP
->  	help
->  	  Say yes here to add support for Holtek HT16K33, RAM mapping 16*8
->  	  LED controller driver with keyscan.
-> diff --git a/drivers/auxdisplay/ht16k33.c b/drivers/auxdisplay/ht16k33.c
-> index 27ac167dae74bd82..3b555e119e326cec 100644
-> --- a/drivers/auxdisplay/ht16k33.c
-> +++ b/drivers/auxdisplay/ht16k33.c
-> @@ -5,6 +5,7 @@
->   * Author: Robin van der Gracht <robin@protonic.nl>
->   *
->   * Copyright: (C) 2016 Protonic Holland.
-> + * Copyright (C) 2021 Glider bv
->   */
+> Not that it will likely matter, but doesn't the its_vpe.resident
+> check automatically handle this?
+
+Sort of. I eventually want to get rid of this as it papers over all
+sort of sins. I introduced it exactly because of the nesting that
+vcpu_block triggers, but this is a bit of a layering violation between
+KVM and the underlying GICv4 driver.
+
 > 
->  #include <linux/kernel.h>
-> @@ -20,6 +21,13 @@
->  #include <linux/workqueue.h>
->  #include <linux/mm.h>
+> > But overall, it puts the complexity at the wrong place. WFI (aka
+> > kvm_vcpu_block) is the place where we want to handle this synchronisation,
+> > and not the run loop.
+> > 
+> > Instead of having a well defined interface with the blocking code
+> > where we implement the required synchronisation, you spray the vgic
+> > crap all over, and it becomes much harder to reason about it. Guess
+> > what, I'm not keen on it.
 > 
-> +#include <linux/map_to_7segment.h>
-> +#include <linux/map_to_14segment.h>
-> +
-> +#include <asm/unaligned.h>
-> +
-> +#include "line-display.h"
-> +
->  /* Registers */
->  #define REG_SYSTEM_SETUP		0x20
->  #define REG_SYSTEM_SETUP_OSC_ON		BIT(0)
-> @@ -47,6 +55,12 @@
->  #define BYTES_PER_ROW		(HT16K33_MATRIX_LED_MAX_ROWS / 8)
->  #define HT16K33_FB_SIZE		(HT16K33_MATRIX_LED_MAX_COLS * BYTES_PER_ROW)
+> My objection to the arch hooks is that, from generic KVM's
+> perspective, the direct dependency is not on blocking, it's on
+> calling kvm_arch_vcpu_runnable().  That's why I suggested handling
+> this by tracking whether or not the VMCR is up-to-date/stale, as it
+> allows generic KVM to safely call kvm_arch_vcpu_runnable() whenever
+> the vCPU is loaded.
 > 
-> +enum display_type {
-> +	DISP_MATRIX = 0,
-> +	DISP_QUAD_7SEG,
-> +	DISP_QUAD_14SEG,
-> +};
-> +
->  struct ht16k33_keypad {
->  	struct i2c_client *client;
->  	struct input_dev *dev;
-> @@ -67,11 +81,25 @@ struct ht16k33_fbdev {
->  	uint8_t *cache;
->  };
+> I don't have a strong opinion on arm64 preferring the sync to be
+> specific to WFI, but if that's the case then IMO this should be
+> handled fully in arm64, e.g.  a patch like so (or with a wrapper
+> around the call to kvm_vcpu_block() if we want to guard against
+> future calls into generic KVM)
 > 
-> +struct ht16k33_seg {
-> +	struct linedisp linedisp;
-> +	union {
-> +		struct seg7_conversion_map seg7;
-> +		struct seg14_conversion_map seg14;
-> +	} map;
-> +	unsigned int map_size;
-> +	char curr[4];
-> +};
-> +
->  struct ht16k33_priv {
->  	struct i2c_client *client;
->  	struct delayed_work work;
->  	struct ht16k33_keypad keypad;
-> -	struct ht16k33_fbdev fbdev;
-> +	union {
-> +		struct ht16k33_fbdev fbdev;
-> +		struct ht16k33_seg seg;
-> +	};
-> +	enum display_type type;
->  };
+> diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
+> index fe102cd2e518..312f3acd3ca3 100644
+> --- a/arch/arm64/kvm/arm.c
+> +++ b/arch/arm64/kvm/arm.c
+> @@ -367,27 +367,12 @@ int kvm_cpu_has_pending_timer(struct kvm_vcpu *vcpu)
 > 
->  static const struct fb_fix_screeninfo ht16k33_fb_fix = {
-> @@ -101,6 +129,33 @@ static const struct fb_var_screeninfo ht16k33_fb_var = 
-> {
->  	.vmode = FB_VMODE_NONINTERLACED,
->  };
-> 
-> +static const SEG7_DEFAULT_MAP(initial_map_seg7);
-> +static const SEG14_DEFAULT_MAP(initial_map_seg14);
-> +
-> +static ssize_t map_seg_show(struct device *dev, struct device_attribute 
-> *attr,
-> +			    char *buf)
-> +{
-> +	struct ht16k33_priv *priv = dev_get_drvdata(dev);
-> +
-> +	memcpy(buf, &priv->seg.map, priv->seg.map_size);
-> +	return priv->seg.map_size;
-> +}
-> +
-> +static ssize_t map_seg_store(struct device *dev, struct device_attribute 
-> *attr,
-> +			     const char *buf, size_t cnt)
-> +{
-> +	struct ht16k33_priv *priv = dev_get_drvdata(dev);
-> +
-> +	if (cnt != priv->seg.map_size)
-> +		return -EINVAL;
-> +
-> +	memcpy(&priv->seg.map, buf, cnt);
-> +	return cnt;
-> +}
-> +
-> +static DEVICE_ATTR(map_seg7, 0644, map_seg_show, map_seg_store);
-> +static DEVICE_ATTR(map_seg14, 0644, map_seg_show, map_seg_store);
-> +
->  static int ht16k33_display_on(struct ht16k33_priv *priv)
+>  void kvm_arch_vcpu_blocking(struct kvm_vcpu *vcpu)
 >  {
->  	uint8_t data = REG_DISPLAY_SETUP | REG_DISPLAY_SETUP_ON;
-> @@ -325,6 +380,51 @@ static void ht16k33_keypad_stop(struct input_dev *dev)
->  	disable_irq(keypad->client->irq);
+> -       /*
+> -        * If we're about to block (most likely because we've just hit a
+> -        * WFI), we need to sync back the state of the GIC CPU interface
+> -        * so that we have the latest PMR and group enables. This ensures
+> -        * that kvm_arch_vcpu_runnable has up-to-date data to decide
+> -        * whether we have pending interrupts.
+> -        *
+> -        * For the same reason, we want to tell GICv4 that we need
+> -        * doorbells to be signalled, should an interrupt become pending.
+> -        */
+> -       preempt_disable();
+> -       kvm_vgic_vmcr_sync(vcpu);
+> -       vgic_v4_put(vcpu, true);
+> -       preempt_enable();
+> +
 >  }
 > 
-> +static void ht16k33_linedisp_update(struct linedisp *linedisp)
-> +{
-> +	struct ht16k33_priv *priv = container_of(linedisp, struct ht16k33_priv,
-> +						 seg.linedisp);
-> +
-> +	schedule_delayed_work(&priv->work, 0);
-> +}
-> +
-> +static void ht16k33_seg7_update(struct work_struct *work)
-> +{
-> +	struct ht16k33_priv *priv = container_of(work, struct ht16k33_priv,
-> +						 work.work);
-> +	struct ht16k33_seg *seg = &priv->seg;
-> +	char *s = seg->curr;
-> +	uint8_t buf[9];
-> +
-> +	buf[0] = map_to_seg7(&seg->map.seg7, *s++);
-> +	buf[1] = 0;
-> +	buf[2] = map_to_seg7(&seg->map.seg7, *s++);
-> +	buf[3] = 0;
-> +	buf[4] = 0;
-> +	buf[5] = 0;
-> +	buf[6] = map_to_seg7(&seg->map.seg7, *s++);
-> +	buf[7] = 0;
-> +	buf[8] = map_to_seg7(&seg->map.seg7, *s++);
-> +
-> +	i2c_smbus_write_i2c_block_data(priv->client, 0, ARRAY_SIZE(buf), buf);
-> +}
-> +
-> +static void ht16k33_seg14_update(struct work_struct *work)
-> +{
-> +	struct ht16k33_priv *priv = container_of(work, struct ht16k33_priv,
-> +						 work.work);
-> +	struct ht16k33_seg *seg = &priv->seg;
-> +	char *s = seg->curr;
-> +	uint8_t buf[8];
-> +
-> +	put_unaligned_le16(map_to_seg14(&seg->map.seg14, *s++), buf);
-> +	put_unaligned_le16(map_to_seg14(&seg->map.seg14, *s++), buf + 2);
-> +	put_unaligned_le16(map_to_seg14(&seg->map.seg14, *s++), buf + 4);
-> +	put_unaligned_le16(map_to_seg14(&seg->map.seg14, *s++), buf + 6);
-> +
-> +	i2c_smbus_write_i2c_block_data(priv->client, 0, ARRAY_SIZE(buf), buf);
-> +}
-> +
->  static int ht16k33_keypad_probe(struct i2c_client *client,
->  				struct ht16k33_keypad *keypad)
+>  void kvm_arch_vcpu_unblocking(struct kvm_vcpu *vcpu)
 >  {
-> @@ -469,9 +569,56 @@ static int ht16k33_fbdev_probe(struct device *dev,
-> struct ht16k33_priv *priv,
->  	return err;
+> -       preempt_disable();
+> -       vgic_v4_load(vcpu);
+> -       preempt_enable();
+> +
 >  }
 > 
-> +static int ht16k33_seg_probe(struct device *dev, struct ht16k33_priv *priv,
-> +			     uint32_t brightness)
-> +{
-> +	struct ht16k33_seg *seg = &priv->seg;
-> +	int err;
+>  void kvm_arch_vcpu_load(struct kvm_vcpu *vcpu, int cpu)
+> diff --git a/arch/arm64/kvm/handle_exit.c b/arch/arm64/kvm/handle_exit.c
+> index 275a27368a04..9870e824a27e 100644
+> --- a/arch/arm64/kvm/handle_exit.c
+> +++ b/arch/arm64/kvm/handle_exit.c
+> @@ -95,8 +95,28 @@ static int kvm_handle_wfx(struct kvm_vcpu *vcpu)
+>         } else {
+>                 trace_kvm_wfx_arm64(*vcpu_pc(vcpu), false);
+>                 vcpu->stat.wfi_exit_stat++;
 > +
-> +	err = ht16k33_brightness_set(priv, MAX_BRIGHTNESS);
-> +	if (err)
-> +		return err;
+> +               /*
+> +                * Sync back the state of the GIC CPU interface so that we have
+> +                * the latest PMR and group enables. This ensures that
+> +                * kvm_arch_vcpu_runnable has up-to-date data to decide whether
+> +                * we have pending interrupts, e.g. when determining if the
+> +                * vCPU should block.
+> +                *
+> +                * For the same reason, we want to tell GICv4 that we need
+> +                * doorbells to be signalled, should an interrupt become pending.
+> +                */
+> +               preempt_disable();
+> +               kvm_vgic_vmcr_sync(vcpu);
+> +               vgic_v4_put(vcpu, true);
+> +               preempt_enable();
 > +
-> +	switch (priv->type) {
-> +	case DISP_MATRIX:
-> +		/* not handled here */
-> +		err = -EINVAL;
-> +		break;
+>                 kvm_vcpu_block(vcpu);
+>                 kvm_clear_request(KVM_REQ_UNHALT, vcpu);
 > +
-> +	case DISP_QUAD_7SEG:
-> +		INIT_DELAYED_WORK(&priv->work, ht16k33_seg7_update);
-> +		seg->map.seg7 = initial_map_seg7;
-> +		seg->map_size = sizeof(seg->map.seg7);
-> +		err = device_create_file(dev, &dev_attr_map_seg7);
-> +		break;
-> +
-> +	case DISP_QUAD_14SEG:
-> +		INIT_DELAYED_WORK(&priv->work, ht16k33_seg14_update);
-> +		seg->map.seg14 = initial_map_seg14;
-> +		seg->map_size = sizeof(seg->map.seg14);
-> +		err = device_create_file(dev, &dev_attr_map_seg14);
-> +		break;
-> +	}
-> +	if (err)
-> +		return err;
-> +
-> +	err = linedisp_register(&seg->linedisp, dev, 4, seg->curr,
-> +				ht16k33_linedisp_update);
-> +	if (err)
-> +		goto err_remove_map_file;
-> +
-> +	return 0;
-> +
-> +err_remove_map_file:
-> +	device_remove_file(dev, &dev_attr_map_seg7);
-> +	device_remove_file(dev, &dev_attr_map_seg14);
-> +	return err;
-> +}
-> +
->  static int ht16k33_probe(struct i2c_client *client)
->  {
->  	struct device *dev = &client->dev;
-> +	const struct of_device_id *id;
->  	struct ht16k33_priv *priv;
->  	uint32_t dft_brightness;
->  	int err;
-> @@ -486,6 +633,9 @@ static int ht16k33_probe(struct i2c_client *client)
->  		return -ENOMEM;
+> +               preempt_disable();
+> +               vgic_v4_load(vcpu);
+> +               preempt_enable();
+>         }
 > 
->  	priv->client = client;
-> +	id = i2c_of_match_device(dev->driver->of_match_table, client);
-> +	if (id)
-> +		priv->type = (uintptr_t)id->data;
->  	i2c_set_clientdata(client, priv);
-> 
->  	err = ht16k33_initialize(priv);
-> @@ -510,8 +660,19 @@ static int ht16k33_probe(struct i2c_client *client)
->  			return err;
->  	}
-> 
-> -	/* Frame Buffer Display */
-> -	return ht16k33_fbdev_probe(dev, priv, dft_brightness);
-> +	switch (priv->type) {
-> +	case DISP_MATRIX:
-> +		/* Frame Buffer Display */
-> +		err = ht16k33_fbdev_probe(dev, priv, dft_brightness);
-> +		break;
-> +
-> +	case DISP_QUAD_7SEG:
-> +	case DISP_QUAD_14SEG:
-> +		/* Segment Display */
-> +		err = ht16k33_seg_probe(dev, priv, dft_brightness);
-> +		break;
-> +	}
-> +	return err;
->  }
-> 
->  static int ht16k33_remove(struct i2c_client *client)
-> @@ -520,9 +681,21 @@ static int ht16k33_remove(struct i2c_client *client)
->  	struct ht16k33_fbdev *fbdev = &priv->fbdev;
-> 
->  	cancel_delayed_work_sync(&priv->work);
-> -	unregister_framebuffer(fbdev->info);
-> -	framebuffer_release(fbdev->info);
-> -	free_page((unsigned long) fbdev->buffer);
-> +
-> +	switch (priv->type) {
-> +	case DISP_MATRIX:
-> +		unregister_framebuffer(fbdev->info);
-> +		framebuffer_release(fbdev->info);
-> +		free_page((unsigned long)fbdev->buffer);
-> +		break;
-> +
-> +	case DISP_QUAD_7SEG:
-> +	case DISP_QUAD_14SEG:
-> +		linedisp_unregister(&priv->seg.linedisp);
-> +		device_remove_file(&client->dev, &dev_attr_map_seg7);
-> +		device_remove_file(&client->dev, &dev_attr_map_seg14);
-> +		break;
-> +	}
-> 
->  	return 0;
->  }
-> @@ -534,7 +707,16 @@ static const struct i2c_device_id ht16k33_i2c_match[] = 
-> {
->  MODULE_DEVICE_TABLE(i2c, ht16k33_i2c_match);
-> 
->  static const struct of_device_id ht16k33_of_match[] = {
-> -	{ .compatible = "holtek,ht16k33", },
-> +	{
-> +		/* 0.56" 4-Digit 7-Segment FeatherWing Display (Red) */
-> +		.compatible = "adafruit,3108", .data = (void *)DISP_QUAD_7SEG,
-> +	}, {
-> +		/* 0.54" Quad Alphanumeric FeatherWing Display (Red) */
-> +		.compatible = "adafruit,3130", .data = (void *)DISP_QUAD_14SEG,
-> +	}, {
-> +		/* Generic, assumed Dot-Matrix Display */
-> +		.compatible = "holtek,ht16k33", .data = (void *)DISP_MATRIX,
-> +	},
->  	{ }
->  };
->  MODULE_DEVICE_TABLE(of, ht16k33_of_match);
+>         kvm_incr_pc(vcpu);
+
+I actually largely prefer this approach, which is massively more
+readable than the current setup. Feel free to wrap that in your
+series.
+
+I'll also have a look at the vcpu_dy_runnable() asap.
+
+Thanks,
+
+	M.
+
+-- 
+Without deviation from the norm, progress is not possible.

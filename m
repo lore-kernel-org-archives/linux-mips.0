@@ -2,38 +2,39 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AB448C4332F
-	for <linux-mips@archiver.kernel.org>; Tue,  5 Oct 2021 12:29:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E2190C433F5
+	for <linux-mips@archiver.kernel.org>; Tue,  5 Oct 2021 12:29:48 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 9665861038
-	for <linux-mips@archiver.kernel.org>; Tue,  5 Oct 2021 12:29:44 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id CB2F7615A6
+	for <linux-mips@archiver.kernel.org>; Tue,  5 Oct 2021 12:29:48 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234700AbhJEMba (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 5 Oct 2021 08:31:30 -0400
-Received: from mo4-p02-ob.smtp.rzone.de ([85.215.255.83]:29445 "EHLO
-        mo4-p02-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234354AbhJEMb2 (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Tue, 5 Oct 2021 08:31:28 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1633436962;
+        id S234732AbhJEMbi (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 5 Oct 2021 08:31:38 -0400
+Received: from mo4-p04-ob.smtp.rzone.de ([85.215.255.124]:10873 "EHLO
+        mo4-p04-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234601AbhJEMbf (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Tue, 5 Oct 2021 08:31:35 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1633436967;
     s=strato-dkim-0002; d=goldelico.com;
-    h=Message-Id:Date:Subject:Cc:To:From:Cc:Date:From:Subject:Sender;
-    bh=ibQtZi26+9hNiOXyMaYmaTWmMOHUhba7MnqHV0neXR8=;
-    b=Go/bkihAWMxVBFqQxPnRKnjVtaNKZvvrn0z762dmE3BjU+zb1AuG6aac/6X4XY2UQY
-    ju/vsTKyN9SuiZJbJ4EqiXXtts/P+GXCh3Q952pa/DILtFz8WPMcK14obXepP6k1vJ/+
-    tbzos7whY2mGb6leRIcUGCrbvAJPA48b0qtiTwgQO8Xj3gZom5yfnlrKRNJd3XLV9Ij6
-    ob+WpCfxZTE/EIxycBz3t/B15B0ax6K6+sz5UJOPdrKMAZB6rZ5I4YQgy4fkqovFjrvU
-    iiuXoHJnc9M+vzkkHUqEhKwvF+BpTQ8uXY/4TSygAe/Ad069xBQXPZQ9mr4BA9jkxJt3
-    6baA==
+    h=References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Cc:Date:
+    From:Subject:Sender;
+    bh=ocl+XJoUOJtXVniSzL7b8uu6IhspiZmAHAv7O6D76A4=;
+    b=rlGEHqusTvXpgoPArUnpQSXlbAE3w7xlD7215dZs+dEi1xUQG6V2hUktjC4deN+Vus
+    HCayzqh1CP+lekROIt6OHK+8/rLo//u/m4xh3U8djVt5ryjBrSg5RJyzd7nUZw/hz2QB
+    oC5xbileBoHMv6q7Xov1elvaQTAcjr2Zus7aEr6Qin9+2FKwd2Qx+VnF8tDrdHtWNh4r
+    AOT1vjRnha2G9QecDMPUPlgxnmZ5Zve7f6NIWTe8WJ6rl5F41qBg2UCd5iMkQ+1B8XuC
+    pKrcaArhlp+DBa+kgUumxwOZ6Nf9rTILfG9XMGfOd2oDl3w7yU7xtg+p21HnfI30rs3A
+    db0Q==
 Authentication-Results: strato.com;
     dkim=none
 X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMhflhwDubTJ9o12DNOsPj0lByOdcKlH0"
 X-RZG-CLASS-ID: mo00
 Received: from iMac.fritz.box
     by smtp.strato.de (RZmta 47.33.8 DYNA|AUTH)
-    with ESMTPSA id I01f74x95CTK50Z
+    with ESMTPSA id I01f74x95CTQ50h
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
         (Client did not present a certificate);
-    Tue, 5 Oct 2021 14:29:20 +0200 (CEST)
+    Tue, 5 Oct 2021 14:29:26 +0200 (CEST)
 From:   "H. Nikolaus Schaller" <hns@goldelico.com>
 To:     Paul Cercueil <paul@crapouillou.net>,
         Rob Herring <robh+dt@kernel.org>,
@@ -63,85 +64,128 @@ Cc:     devicetree@vger.kernel.org, linux-mips@vger.kernel.org,
         linux-kernel@vger.kernel.org, letux-kernel@openphoenux.org,
         Jonas Karlman <jonas@kwiboo.se>,
         dri-devel@lists.freedesktop.org
-Subject: [PATCH v5 0/7] MIPS: JZ4780 and CI20 HDMI
-Date:   Tue,  5 Oct 2021 14:29:12 +0200
-Message-Id: <cover.1633436959.git.hns@goldelico.com>
+Subject: [PATCH v5 6/7] MIPS: DTS: CI20: Add DT nodes for HDMI setup
+Date:   Tue,  5 Oct 2021 14:29:18 +0200
+Message-Id: <d7bc14cc873759713a1b2247dd64a7fe59dc8c13.1633436959.git.hns@goldelico.com>
 X-Mailer: git-send-email 2.33.0
+In-Reply-To: <cover.1633436959.git.hns@goldelico.com>
+References: <cover.1633436959.git.hns@goldelico.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-PATCH V5  2021-10-05 14:28:44:
-- dropped mode_fixup and timings support in dw-hdmi as it is no longer needed in this V5 (by hns@goldelico.com)
-- dropped "drm/ingenic: add some jz4780 specific features" (stimulated by paul@crapouillou.net)
-- fixed typo in commit subject: "synopsis" -> "synopsys" (by hns@goldelico.com)
-- swapped clocks in jz4780.dtsi to match synopsys,dw-hdmi.yaml (by hns@goldelico.com)
-- improved, simplified, fixed, dtbschecked ingenic-jz4780-hdmi.yaml and made dependent of bridge/synopsys,dw-hdmi.yaml (based on suggestions by maxime@cerno.tech)
-- fixed binding vs. driver&DTS use of hdmi-5v regulator (suggested by maxime@cerno.tech)
-- dropped "drm/bridge: synopsis: Fix to properly handle HPD" - was a no longer needed workaround for a previous version
-  (suggested by maxime@cerno.tech)
+From: Paul Boddie <paul@boddie.org.uk>
 
-PATCH V4 2021-09-27 18:44:38:
-- fix setting output_port = 1 (issue found by paul@crapouillou.net)
-- ci20.dts: convert to use hdmi-connector (by hns@goldelico.com)
-- add a hdmi-regulator to control +5V power (by hns@goldelico.com)
-- added a fix to dw-hdmi to call drm_kms_helper_hotplug_event on plugin event detection (by hns@goldelico.com)
-- always allocate extended descriptor but initialize only for jz4780 (by hns@goldelico.com)
-- updated to work on top of "[PATCH v3 0/6] drm/ingenic: Various improvements v3" (by paul@crapouillou.net)
-- rebased to v5.13-rc3
+We need to hook up
+* HDMI connector
+* HDMI power regulator
+* DDC pinmux
+* HDMI and LCDC endpoint connections
 
-PATCH V3 2021-08-08 07:10:50:
-This series adds HDMI support for JZ4780 and CI20 board (and fixes one IPU related issue in registration error path)
-- [patch 1/8] switched from mode_fixup to atomic_check (suggested by robert.foss@linaro.org)
-  - the call to the dw-hdmi specialization is still called mode_fixup
-- [patch 3/8] diverse fixes for ingenic-drm-drv (suggested by paul@crapouillou.net)
-  - factor out some non-HDMI features of the jz4780 into a separate patch
-  - multiple fixes around max height
-  - do not change regmap config but a copy on stack
-  - define some constants
-  - factor out fixing of drm_init error path for IPU into separate patch
-  - use FIELD_PREP()
-- [patch 8/8] conversion to component framework dropped (suggested by Laurent.pinchart@ideasonboard.com and paul@crapouillou.net)
+Signed-off-by: Paul Boddie <paul@boddie.org.uk>
+Signed-off-by: H. Nikolaus Schaller <hns@goldelico.com>
+---
+ arch/mips/boot/dts/ingenic/ci20.dts | 67 +++++++++++++++++++++++++++++
+ 1 file changed, 67 insertions(+)
 
-PATCH V2 2021-08-05 16:08:05:
-This series adds HDMI support for JZ4780 and CI20 board
-
-V2:
-- code and commit messages revisited for checkpatch warnings
-- rebased on v5.14-rc4
-- include (failed, hence RFC 8/8) attempt to convert to component framework
-  (was suggested by Paul Cercueil <paul@crapouillou.net> a while ago)
-
-
-H. Nikolaus Schaller (1):
-  MIPS: defconfig: CI20: configure for DRM_DW_HDMI_JZ4780
-
-Paul Boddie (5):
-  drm/ingenic: Fix drm_init error path if IPU was registered
-  drm/ingenic: Add support for JZ4780 and HDMI output
-  drm/ingenic: Add dw-hdmi driver for jz4780
-  MIPS: DTS: jz4780: Account for Synopsys HDMI driver and LCD
-    controllers
-  MIPS: DTS: CI20: Add DT nodes for HDMI setup
-
-Sam Ravnborg (1):
-  dt-bindings: display: Add ingenic,jz4780-dw-hdmi DT Schema
-
- .../bindings/display/ingenic-jz4780-hdmi.yaml |  79 +++++++++++
- arch/mips/boot/dts/ingenic/ci20.dts           |  67 ++++++++++
- arch/mips/boot/dts/ingenic/jz4780.dtsi        |  45 +++++++
- arch/mips/configs/ci20_defconfig              |   6 +
- drivers/gpu/drm/ingenic/Kconfig               |   9 ++
- drivers/gpu/drm/ingenic/Makefile              |   1 +
- drivers/gpu/drm/ingenic/ingenic-drm-drv.c     |  96 +++++++++++++-
- drivers/gpu/drm/ingenic/ingenic-drm.h         |  42 ++++++
- drivers/gpu/drm/ingenic/ingenic-dw-hdmi.c     | 125 ++++++++++++++++++
- 9 files changed, 464 insertions(+), 6 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/display/ingenic-jz4780-hdmi.yaml
- create mode 100644 drivers/gpu/drm/ingenic/ingenic-dw-hdmi.c
-
+diff --git a/arch/mips/boot/dts/ingenic/ci20.dts b/arch/mips/boot/dts/ingenic/ci20.dts
+index a688809beebc..4776be35b14d 100644
+--- a/arch/mips/boot/dts/ingenic/ci20.dts
++++ b/arch/mips/boot/dts/ingenic/ci20.dts
+@@ -78,6 +78,18 @@ eth0_power: fixedregulator@0 {
+ 		enable-active-high;
+ 	};
+ 
++	hdmi_out: connector {
++		compatible = "hdmi-connector";
++		label = "HDMI OUT";
++		type = "a";
++
++		port {
++			hdmi_con: endpoint {
++				remote-endpoint = <&dw_hdmi_out>;
++			};
++		};
++	};
++
+ 	ir: ir {
+ 		compatible = "gpio-ir-receiver";
+ 		gpios = <&gpe 3 GPIO_ACTIVE_LOW>;
+@@ -102,6 +114,17 @@ otg_power: fixedregulator@2 {
+ 		gpio = <&gpf 14 GPIO_ACTIVE_LOW>;
+ 		enable-active-high;
+ 	};
++
++	hdmi_power: fixedregulator@3 {
++		compatible = "regulator-fixed";
++
++		regulator-name = "hdmi_power";
++		regulator-min-microvolt = <5000000>;
++		regulator-max-microvolt = <5000000>;
++
++		gpio = <&gpa 25 GPIO_ACTIVE_LOW>;
++		enable-active-high;
++	};
+ };
+ 
+ &ext {
+@@ -506,6 +529,12 @@ pins_i2c4: i2c4 {
+ 		bias-disable;
+ 	};
+ 
++	pins_hdmi_ddc: hdmi_ddc {
++		function = "hdmi-ddc";
++		groups = "hdmi-ddc";
++		bias-disable;
++	};
++
+ 	pins_nemc: nemc {
+ 		function = "nemc";
+ 		groups = "nemc-data", "nemc-cle-ale", "nemc-rd-we", "nemc-frd-fwe";
+@@ -536,3 +565,41 @@ pins_mmc1: mmc1 {
+ 		bias-disable;
+ 	};
+ };
++
++&hdmi {
++	status = "okay";
++
++	pinctrl-names = "default";
++	pinctrl-0 = <&pins_hdmi_ddc>;
++
++	hdmi-5v-supply = <&hdmi_power>;
++
++	ports {
++		#address-cells = <1>;
++		#size-cells = <0>;
++
++		port@0 {
++			reg = <0>;
++			dw_hdmi_in: endpoint {
++				remote-endpoint = <&lcd_out>;
++			};
++		};
++
++		port@1 {
++			reg = <1>;
++			dw_hdmi_out: endpoint {
++				remote-endpoint = <&hdmi_con>;
++			};
++		};
++	};
++};
++
++&lcdc0 {
++	status = "okay";
++
++	port {
++		lcd_out: endpoint {
++			remote-endpoint = <&dw_hdmi_in>;
++		};
++	};
++};
 -- 
 2.33.0
 

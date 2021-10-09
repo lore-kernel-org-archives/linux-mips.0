@@ -2,27 +2,27 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CF73FC4167D
-	for <linux-mips@archiver.kernel.org>; Sat,  9 Oct 2021 00:37:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CEFA9C433FE
+	for <linux-mips@archiver.kernel.org>; Sat,  9 Oct 2021 00:37:45 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id C0A3060F90
-	for <linux-mips@archiver.kernel.org>; Sat,  9 Oct 2021 00:37:43 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id B89F660FD8
+	for <linux-mips@archiver.kernel.org>; Sat,  9 Oct 2021 00:37:45 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244108AbhJIAji (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 8 Oct 2021 20:39:38 -0400
-Received: from mga02.intel.com ([134.134.136.20]:5251 "EHLO mga02.intel.com"
+        id S244134AbhJIAjk (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 8 Oct 2021 20:39:40 -0400
+Received: from mga02.intel.com ([134.134.136.20]:5254 "EHLO mga02.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244049AbhJIAjc (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Fri, 8 Oct 2021 20:39:32 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10131"; a="213756492"
+        id S244070AbhJIAje (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Fri, 8 Oct 2021 20:39:34 -0400
+X-IronPort-AV: E=McAfee;i="6200,9189,10131"; a="213756502"
 X-IronPort-AV: E=Sophos;i="5.85,358,1624345200"; 
-   d="scan'208";a="213756492"
+   d="scan'208";a="213756502"
 Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Oct 2021 17:37:35 -0700
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Oct 2021 17:37:37 -0700
 X-IronPort-AV: E=Sophos;i="5.85,358,1624345200"; 
-   d="scan'208";a="624905347"
+   d="scan'208";a="624905354"
 Received: from dmsojoza-mobl3.amr.corp.intel.com (HELO skuppusw-desk1.amr.corp.intel.com) ([10.251.135.62])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Oct 2021 17:37:34 -0700
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Oct 2021 17:37:36 -0700
 From:   Kuppuswamy Sathyanarayanan 
         <sathyanarayanan.kuppuswamy@linux.intel.com>
 To:     Thomas Gleixner <tglx@linutronix.de>,
@@ -56,9 +56,9 @@ Cc:     Peter H Anvin <hpa@zytor.com>, Dave Hansen <dave.hansen@intel.com>,
         linux-parisc@vger.kernel.org, sparclinux@vger.kernel.org,
         linux-arch@vger.kernel.org, linux-doc@vger.kernel.org,
         virtualization@lists.linux-foundation.org
-Subject: [PATCH v5 03/16] x86/tdx: Exclude Shared bit from physical_mask
-Date:   Fri,  8 Oct 2021 17:36:58 -0700
-Message-Id: <20211009003711.1390019-4-sathyanarayanan.kuppuswamy@linux.intel.com>
+Subject: [PATCH v5 05/16] x86/tdx: Add helper to do MapGPA hypercall
+Date:   Fri,  8 Oct 2021 17:37:00 -0700
+Message-Id: <20211009003711.1390019-6-sathyanarayanan.kuppuswamy@linux.intel.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20211009003711.1390019-1-sathyanarayanan.kuppuswamy@linux.intel.com>
 References: <20211009003711.1390019-1-sathyanarayanan.kuppuswamy@linux.intel.com>
@@ -70,25 +70,10 @@ X-Mailing-List: linux-mips@vger.kernel.org
 
 From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
 
-Just like MKTME, TDX reassigns bits of the physical address for
-metadata.  MKTME used several bits for an encryption KeyID. TDX
-uses a single bit in guests to communicate whether a physical page
-should be protected by TDX as private memory (bit set to 0) or
-unprotected and shared with the VMM (bit set to 1).
+MapGPA hypercall is used by TDX guests to request VMM convert the
+existing mapping of given GPA address range between private/shared.
 
-Add a helper, tdx_shared_mask() to generate the mask.  The processor
-enumerates its physical address width to include the shared bit, which
-means it gets included in __PHYSICAL_MASK by default.
-
-Remove the shared mask from 'physical_mask' since any bits in
-tdx_shared_mask() are not used for physical addresses in page table
-entries.
-
-Also, note that shared mapping configuration cannot be clubbed between
-AMD SME and Intel TDX Guest platforms in common function. SME has
-to do it very early in __startup_64() as it sets the bit on all
-memory, except what is used for communication. TDX can postpone it,
-as it don't need any shared mapping in very early boot.
+tdx_hcall_gpa_intent() is the wrapper used for making MapGPA hypercall.
 
 Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
 Reviewed-by: Andi Kleen <ak@linux.intel.com>
@@ -97,80 +82,110 @@ Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.inte
 ---
 
 Changes since v4:
- * Renamed tdg_shared_mask() to tdx_shared_mask().
+ * Added required comments in tdx_hcall_gpa_intent().
 
 Changes since v3:
  * None
 
 Changes since v1:
- * Fixed format issues in commit log.
+ * Modified tdx_hcall_gpa_intent() to use _tdx_hypercall() instead of
+   tdx_hypercall().
 
- arch/x86/Kconfig           | 1 +
- arch/x86/include/asm/tdx.h | 4 ++++
- arch/x86/kernel/tdx.c      | 9 +++++++++
- 3 files changed, 14 insertions(+)
+ arch/x86/include/asm/tdx.h | 18 ++++++++++++++++++
+ arch/x86/kernel/tdx.c      | 30 ++++++++++++++++++++++++++++++
+ 2 files changed, 48 insertions(+)
 
-diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index 37b27412f52e..e99c669e633a 100644
---- a/arch/x86/Kconfig
-+++ b/arch/x86/Kconfig
-@@ -871,6 +871,7 @@ config INTEL_TDX_GUEST
- 	depends on SECURITY
- 	depends on X86_X2APIC
- 	select ARCH_HAS_CC_PLATFORM
-+	select X86_MEM_ENCRYPT_COMMON
- 	help
- 	  Provide support for running in a trusted domain on Intel processors
- 	  equipped with Trusted Domain Extensions. TDX is a Intel technology
 diff --git a/arch/x86/include/asm/tdx.h b/arch/x86/include/asm/tdx.h
-index eb5e9dbe1861..b8f758dbbea9 100644
+index b8f758dbbea9..a931c317e37d 100644
 --- a/arch/x86/include/asm/tdx.h
 +++ b/arch/x86/include/asm/tdx.h
-@@ -76,6 +76,8 @@ bool tdx_handle_virtualization_exception(struct pt_regs *regs,
+@@ -56,6 +56,15 @@ struct ve_info {
+ 	u32 instr_info;
+ };
  
- bool tdx_early_handle_ve(struct pt_regs *regs);
++/*
++ * Page mapping type enum. This is software construct not
++ * part of any hardware or VMM ABI.
++ */
++enum tdx_map_type {
++	TDX_MAP_PRIVATE,
++	TDX_MAP_SHARED,
++};
++
+ #ifdef CONFIG_INTEL_TDX_GUEST
  
-+extern phys_addr_t tdx_shared_mask(void);
+ bool is_tdx_guest(void);
+@@ -78,6 +87,9 @@ bool tdx_early_handle_ve(struct pt_regs *regs);
+ 
+ extern phys_addr_t tdx_shared_mask(void);
+ 
++extern int tdx_hcall_gpa_intent(phys_addr_t gpa, int numpages,
++				enum tdx_map_type map_type);
 +
  /*
   * To support I/O port access in decompressor or early kernel init
   * code, since #VE exception handler cannot be used, use paravirt
-@@ -141,6 +143,8 @@ static inline void tdx_early_init(void) { };
+@@ -145,6 +157,12 @@ static inline bool tdx_early_handle_ve(struct pt_regs *regs) { return false; }
  
- static inline bool tdx_early_handle_ve(struct pt_regs *regs) { return false; }
+ static inline phys_addr_t tdx_shared_mask(void) { return 0; }
  
-+static inline phys_addr_t tdx_shared_mask(void) { return 0; }
++static inline int tdx_hcall_gpa_intent(phys_addr_t gpa, int numpages,
++				       enum tdx_map_type map_type)
++{
++	return -ENODEV;
++}
 +
  #endif /* CONFIG_INTEL_TDX_GUEST */
  
  #if defined(CONFIG_KVM_GUEST) && defined(CONFIG_INTEL_TDX_GUEST)
 diff --git a/arch/x86/kernel/tdx.c b/arch/x86/kernel/tdx.c
-index bb237cf291e6..8a37ab0c6cbf 100644
+index 8a37ab0c6cbf..c3e4cc5d631b 100644
 --- a/arch/x86/kernel/tdx.c
 +++ b/arch/x86/kernel/tdx.c
-@@ -71,6 +71,12 @@ static inline u64 _tdx_hypercall(u64 fn, u64 r12, u64 r13, u64 r14,
- 	return out->r10;
+@@ -17,6 +17,9 @@
+ #define TDX_GET_INFO			1
+ #define TDX_GET_VEINFO			3
+ 
++/* TDX hypercall Leaf IDs */
++#define TDVMCALL_MAP_GPA		0x10001
++
+ #define VE_IS_IO_OUT(exit_qual)		(((exit_qual) & 8) ? 0 : 1)
+ #define VE_GET_IO_SIZE(exit_qual)	(((exit_qual) & 7) + 1)
+ #define VE_GET_PORT_NUM(exit_qual)	((exit_qual) >> 16)
+@@ -105,6 +108,33 @@ static void tdx_get_info(void)
+ 	physical_mask &= ~tdx_shared_mask();
  }
  
-+/* The highest bit of a guest physical address is the "sharing" bit */
-+phys_addr_t tdx_shared_mask(void)
++/*
++ * Inform the VMM of the guest's intent for this physical page:
++ * shared with the VMM or private to the guest.  The VMM is
++ * expected to change its mapping of the page in response.
++ *
++ * Note: shared->private conversions require further guest
++ * action to accept the page.
++ */
++int tdx_hcall_gpa_intent(phys_addr_t gpa, int numpages,
++			 enum tdx_map_type map_type)
 +{
-+	return 1ULL << (td_info.gpa_width - 1);
++	u64 ret;
++
++	if (map_type == TDX_MAP_SHARED)
++		gpa |= tdx_shared_mask();
++
++	/*
++	 * Notify VMM about page mapping conversion. More info
++	 * about ABI can be found in TDX Guest-Host-Communication
++	 * Interface (GHCI), sec 3.2.
++	 */
++	ret = _tdx_hypercall(TDVMCALL_MAP_GPA, gpa, PAGE_SIZE * numpages, 0, 0,
++			     NULL);
++
++	return ret ? -EIO : 0;
 +}
 +
- static void tdx_get_info(void)
- {
- 	struct tdx_module_output out;
-@@ -94,6 +100,9 @@ static void tdx_get_info(void)
- 
- 	td_info.gpa_width = out.rcx & GENMASK(5, 0);
- 	td_info.attributes = out.rdx;
-+
-+	/* Exclude Shared bit from the __PHYSICAL_MASK */
-+	physical_mask &= ~tdx_shared_mask();
- }
- 
  static __cpuidle void _tdx_halt(const bool irq_disabled, const bool do_sti)
+ {
+ 	u64 ret;
 -- 
 2.25.1
 

@@ -2,111 +2,125 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D10F2C4332F
-	for <linux-mips@archiver.kernel.org>; Sat,  9 Oct 2021 10:58:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E6906C433FE
+	for <linux-mips@archiver.kernel.org>; Sat,  9 Oct 2021 11:04:28 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id A879260F6E
-	for <linux-mips@archiver.kernel.org>; Sat,  9 Oct 2021 10:58:22 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id C00EF60FE3
+	for <linux-mips@archiver.kernel.org>; Sat,  9 Oct 2021 11:04:28 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244663AbhJILAK (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Sat, 9 Oct 2021 07:00:10 -0400
-Received: from mail.loongson.cn ([114.242.206.163]:36344 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S232161AbhJILAI (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Sat, 9 Oct 2021 07:00:08 -0400
-Received: from linux.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dxv2q0dWFhcgkXAA--.21276S3;
-        Sat, 09 Oct 2021 18:58:00 +0800 (CST)
-From:   Tiezhu Yang <yangtiezhu@loongson.cn>
-To:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
+        id S232799AbhJILGX (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Sat, 9 Oct 2021 07:06:23 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:26073 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231932AbhJILGV (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Sat, 9 Oct 2021 07:06:21 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1633777464;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=lJ/2iCuZIJi8M6YSq3TSpepZV4prmg5N+D8TG37hfos=;
+        b=ArtvM8Nk242373TmJz/scmMFbPFmQ1GUmi52+U9dfWIjd41wnl5rCL4O1Qrwp9cCXpne8V
+        GKPNZ/EXKtEydEYAwiXGyI6QbOLKvBDM99zJJuOmWex3DHE6mVyd1yOm5fxk1Rm9snMxC/
+        EW47tNxx3hQnIO/dMEbJw2w9NEawTOc=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-129-naZzbqKyO-qIrbbTfu6IfA-1; Sat, 09 Oct 2021 07:04:23 -0400
+X-MC-Unique: naZzbqKyO-qIrbbTfu6IfA-1
+Received: by mail-ed1-f69.google.com with SMTP id l10-20020a056402230a00b003db6977b694so3145102eda.23
+        for <linux-mips@vger.kernel.org>; Sat, 09 Oct 2021 04:04:22 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=lJ/2iCuZIJi8M6YSq3TSpepZV4prmg5N+D8TG37hfos=;
+        b=VoALwALDfl/iiEDlWUiB0sg/il+Hvdy2B1OJKC22NrYCVrEHJCcWRFG8RZqinMrJA2
+         Hli5a81ybEt11RgpV2ujwAzC76ivUxH8VjSmSSkTITmpfXBjfQ63TLaA0uKHMYJ+xZdU
+         dDkX8CMsaGN5jOVPseJq5GNn8wtDbGTjrD5QuxNQdyNr2JmBzAxJfLCHgagBDv7ewwti
+         +Sm2UMEmKX1qHx9Lt0wzQyK53qV0T/AcZ7G8XTCkUO1+wtrvIa/I2PfNWkXs+Csyv0FP
+         GLKnlvrZqPAvU+z7bdfAI4legjofrJq8Lu3t8ROd9X/FhQh9dx6eQBAd/X2yWM0B6D9V
+         sPVA==
+X-Gm-Message-State: AOAM531W//lojt4ASanBmPjigBJgn41bPSktYXtW0Dg9fn7S/lb4qLyR
+        QIsakGDWx8o7ajbTSlpE1EVkicmInxW2wgt9G7XmFrIAyl4h5ux1zkOJGf6J92al+RDQ9IzjQyQ
+        euOjYjp/Wx7BNnbkIVq688Q==
+X-Received: by 2002:a17:906:585a:: with SMTP id h26mr10966047ejs.31.1633777461692;
+        Sat, 09 Oct 2021 04:04:21 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwobA8ZxtLfM+i96qTUZJc2D6zqI9p4pA768qS/bvwYQXY5otl6Kxnqg/w4gwu0W8PjfTgg/g==
+X-Received: by 2002:a17:906:585a:: with SMTP id h26mr10965985ejs.31.1633777461334;
+        Sat, 09 Oct 2021 04:04:21 -0700 (PDT)
+Received: from redhat.com ([2.55.132.170])
+        by smtp.gmail.com with ESMTPSA id n22sm831106eja.120.2021.10.09.04.04.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 09 Oct 2021 04:04:20 -0700 (PDT)
+Date:   Sat, 9 Oct 2021 07:04:10 -0400
+From:   "Michael S. Tsirkin" <mst@redhat.com>
+To:     Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Richard Henderson <rth@twiddle.net>,
         Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Johan Almbladh <johan.almbladh@anyfinetworks.com>,
-        Paul Burton <paulburton@kernel.org>
-Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Xuefeng Li <lixuefeng@loongson.cn>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>
-Subject: [PATCH bpf-next 1/2] bpf, mips: Clean up config options about JIT
-Date:   Sat,  9 Oct 2021 18:57:55 +0800
-Message-Id: <1633777076-17256-2-git-send-email-yangtiezhu@loongson.cn>
-X-Mailer: git-send-email 2.1.0
-In-Reply-To: <1633777076-17256-1-git-send-email-yangtiezhu@loongson.cn>
-References: <1633777076-17256-1-git-send-email-yangtiezhu@loongson.cn>
-X-CM-TRANSID: AQAAf9Dxv2q0dWFhcgkXAA--.21276S3
-X-Coremail-Antispam: 1UD129KBjvJXoW7KF45XF1xCry7Ar1fGw4rZrb_yoW8Xw4kpw
-        4Syan7GrykWFyrGrW8AFW7WFWYqr1vq3y2vFWq9ryUXasavF47Arnavw1jyFW7WrZrJ3W0
-        gFWrWFnrA3sYkwUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUPG14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_Jr4l82xGYIkIc2
-        x26xkF7I0E14v26r4j6ryUM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2z4x0
-        Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Cr0_Gr1UM2
-        8EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s0DM2AI
-        xVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20x
-        vE14v26r1Y6r17McIj6I8E87Iv67AKxVWxJVW8Jr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0
-        Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628vn2kIc2
-        xKxwCY02Avz4vE14v_Gw1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1l
-        x2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14
-        v26r4a6rW5MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IY
-        x2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87
-        Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIF
-        yTuYvjfU5eOJUUUUU
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+        James E J Bottomley <James.Bottomley@hansenpartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        "David S . Miller" <davem@davemloft.net>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        David Hildenbrand <david@redhat.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Peter H Anvin <hpa@zytor.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        x86@kernel.org, linux-kernel@vger.kernel.org,
+        linux-pci@vger.kernel.org, linux-alpha@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
+        sparclinux@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-doc@vger.kernel.org,
+        virtualization@lists.linux-foundation.org
+Subject: Re: [PATCH v5 16/16] x86/tdx: Add cmdline option to force use of
+ ioremap_host_shared
+Message-ID: <20211009070132-mutt-send-email-mst@kernel.org>
+References: <20211009003711.1390019-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <20211009003711.1390019-17-sathyanarayanan.kuppuswamy@linux.intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211009003711.1390019-17-sathyanarayanan.kuppuswamy@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-The config options MIPS_CBPF_JIT and MIPS_EBPF_JIT are useless, remove
-them in arch/mips/Kconfig, and then modify arch/mips/net/Makefile.
+On Fri, Oct 08, 2021 at 05:37:11PM -0700, Kuppuswamy Sathyanarayanan wrote:
+> +	ioremap_force_shared= [X86_64, CCG]
+> +			Force the kernel to use shared memory mappings which do
+> +			not use ioremap_host_shared/pcimap_host_shared to opt-in
+> +			to shared mappings with the host. This feature is mainly
+> +			used by a confidential guest when enabling new drivers
+> +			without proper shared memory related changes. Please note
+> +			that this option might also allow other non explicitly
+> +			enabled drivers to interact with the host in confidential
+> +			guest, which could cause other security risks. This option
+> +			will also cause BIOS data structures to be shared with the
+> +			host, which might open security holes.
+> +
+>  	io7=		[HW] IO7 for Marvel-based Alpha systems
+>  			See comment before marvel_specify_io7 in
+>  			arch/alpha/kernel/core_marvel.c.
 
-Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
----
- arch/mips/Kconfig      | 9 ---------
- arch/mips/net/Makefile | 6 +++---
- 2 files changed, 3 insertions(+), 12 deletions(-)
+The connection is quite unfortunate IMHO.
+Can't there be an option
+that unbreaks drivers *without* opening up security holes by
+making BIOS shared?
 
-diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-index 38468f4..9b03c78 100644
---- a/arch/mips/Kconfig
-+++ b/arch/mips/Kconfig
-@@ -1214,15 +1214,6 @@ config SYS_SUPPORTS_RELOCATABLE
- 	  The platform must provide plat_get_fdt() if it selects CONFIG_USE_OF
- 	  to allow access to command line and entropy sources.
- 
--config MIPS_CBPF_JIT
--	def_bool y
--	depends on BPF_JIT && HAVE_CBPF_JIT
--
--config MIPS_EBPF_JIT
--	def_bool y
--	depends on BPF_JIT && HAVE_EBPF_JIT
--
--
- #
- # Endianness selection.  Sufficiently obscure so many users don't know what to
- # answer,so we try hard to limit the available choices.  Also the use of a
-diff --git a/arch/mips/net/Makefile b/arch/mips/net/Makefile
-index 95e8267..e3e6ae6 100644
---- a/arch/mips/net/Makefile
-+++ b/arch/mips/net/Makefile
-@@ -1,10 +1,10 @@
- # SPDX-License-Identifier: GPL-2.0-only
- # MIPS networking code
- 
--obj-$(CONFIG_MIPS_EBPF_JIT) += bpf_jit_comp.o
-+obj-$(CONFIG_BPF_JIT) += bpf_jit_comp.o
- 
- ifeq ($(CONFIG_32BIT),y)
--        obj-$(CONFIG_MIPS_EBPF_JIT) += bpf_jit_comp32.o
-+        obj-$(CONFIG_BPF_JIT) += bpf_jit_comp32.o
- else
--        obj-$(CONFIG_MIPS_EBPF_JIT) += bpf_jit_comp64.o
-+        obj-$(CONFIG_BPF_JIT) += bpf_jit_comp64.o
- endif
 -- 
-2.1.0
+MST
 

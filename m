@@ -2,54 +2,54 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9C4FAC433F5
-	for <linux-mips@archiver.kernel.org>; Sat,  9 Oct 2021 02:20:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2ADB2C43217
+	for <linux-mips@archiver.kernel.org>; Sat,  9 Oct 2021 02:20:46 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 8846161038
-	for <linux-mips@archiver.kernel.org>; Sat,  9 Oct 2021 02:20:45 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 16E61610E7
+	for <linux-mips@archiver.kernel.org>; Sat,  9 Oct 2021 02:20:46 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244435AbhJICWk (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 8 Oct 2021 22:22:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40038 "EHLO
+        id S244418AbhJICWl (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 8 Oct 2021 22:22:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40014 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244245AbhJICWf (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Fri, 8 Oct 2021 22:22:35 -0400
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2033C061570;
-        Fri,  8 Oct 2021 19:20:35 -0700 (PDT)
-Received: by mail-pl1-x636.google.com with SMTP id v20so189574plo.7;
-        Fri, 08 Oct 2021 19:20:35 -0700 (PDT)
+        with ESMTP id S244455AbhJICWg (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Fri, 8 Oct 2021 22:22:36 -0400
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5754EC061774;
+        Fri,  8 Oct 2021 19:20:39 -0700 (PDT)
+Received: by mail-pj1-x1035.google.com with SMTP id pi19-20020a17090b1e5300b0019fdd3557d3so9090698pjb.5;
+        Fri, 08 Oct 2021 19:20:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=G1RiT4GRKPcXSkOjyrks/jOWZL3DTQpMJtRhCsgVjY8=;
-        b=bJ9KuSL5TgeWyqKaNO+GyL79xvaPjqlHFkgNvb4kUgxAmLsjpp8VRQ+Gx7VrYcypLZ
-         abv3tPhR4NhdT1ba5/pktaJs0V2aQ0bulDU+3q7PxtU0kLZbKHktoBROaTbyBPqU56Ob
-         2KDuqvy30PtmXSomEAvNea3kdOxaoNSBnz3/JgNyxLRqBLvP45gpHGDPaL3+suQaP92s
-         d1MlnJUTc5eAEd4YjTFmAu8icn5KR72wyfbVCe7FqXlqsz1h5uNZ1ltr06TL5JqShMqu
-         AerdQraWSF2a+EwBXrgumcUlnzD9Mr4vtYumZkHIu79I4Ja4vwvjCyK27QonQzMqUe0N
-         gyGQ==
+        bh=IqTvFkxEB42F4FY7x5fTTUp3BY0gcheCImqFREsoxYU=;
+        b=k0+o3REhJGZc03nzXzkRd9Oio+6a3BR7RuZnftlFNI6R3hc4lz/gKSB3aByCVzQ80n
+         TKD8iHe7A8CRJHpTYEQtbXKKHFfSY/Jj7d6EhKesZAoiFgGQE+oMekunYBq0PaSRfKmZ
+         NBt7Q1k+5ZbrIaJPhCARgjiLPcy+i2jIAH49h6z/zml6Afq7fQtEoFT+xzcxD4YrqdjG
+         9+pROqJT03lnLivwp6BfFiS3fnZI11xAwVJ8Z2LkUGnC3Q/OPSUYIoY5E68EXLgPlVl0
+         NpDvmj/XBJKUBTXAKusu+ZbXMP71NeHvf5Z3sZ8YpHcwuLxpvn1KKSVwT7TanuScHgWq
+         gxHg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=G1RiT4GRKPcXSkOjyrks/jOWZL3DTQpMJtRhCsgVjY8=;
-        b=Wr4ApFEAmvIokvAWdVRHoQ+HEF8068BP4FRlyAZbuf4u/Vut7nvbhKbcpi1zi1Nqkv
-         X5PWVDCjT26LJ4bKzgtyfZ7uE9kSUygRZVaqNmrvWDTCapKgM0EPFyw+8Vzo4XyeM+KP
-         /jg0ueF8MsinMFMxLQNzzv8a9bfNA5ggVgy17aFeWtMk+D1mO6K95uVuYAw6CC/mSh48
-         jJVAxeiJHf5g+jLqOhrGbmGcZZsV/2JiTWWFnEuqSXo7UXgcfnvUtZR8+1GBK9sHjw+E
-         TIAqH82FQNRoShP6s64mQDMNEIJ2mnLqc8pg+WC+AE7/BghIintsjbkAynoBtb+5MxDT
-         pKsQ==
-X-Gm-Message-State: AOAM5326gXOUFrqC9bXu8BLY0wjNxltZFVHCHmpbpNEfYMIHsMYWjeSP
-        9TVX92So/hfbEDYbzppB23xGuHdtans=
-X-Google-Smtp-Source: ABdhPJzt3cUT0qN+Y44kkLg1/73jsgwdfZQ+cXkdb/8YqpQ6audqUIfOzS1omAW67biNzXtaW92lFA==
-X-Received: by 2002:a17:90b:390d:: with SMTP id ob13mr15368899pjb.49.1633746035050;
-        Fri, 08 Oct 2021 19:20:35 -0700 (PDT)
+        bh=IqTvFkxEB42F4FY7x5fTTUp3BY0gcheCImqFREsoxYU=;
+        b=S2CqGJti+pWuO4vBQe61KP1+bXJ0NIMYLL5lFFlwCl8A66e1Uo15U7lTotPVRle8pO
+         TDdi2S6Wv+aKASUgTb+7ZEqLEOzLOiB382WuTx719v48Ko8zraDZGpk97TCjkyC+lDAY
+         E3GW7cufYzYck//D8JHbJRhNULLOaSx/AxyGm/wyPP8hD3nHujBM66/l2I3WaUT8OpRk
+         I8AetgcV+dE2r31EQn4Lm5MpseRtASj2+MwZkcG8vI8BEaOFFSfI1ZqEAGZ9A3sLwaHM
+         KrQdoM2iU/3vcBAIUW9PaDOi/Uf+leyDcd6oqH/ZJVIVqmFRdnlQR5O0tB3LrR+4FULH
+         5vUQ==
+X-Gm-Message-State: AOAM5300+sh97YQtxL6q0HHcedRwtX6JKEYvAQYRfwi4kQcCzsdw/pKm
+        ZEH/1V8Q+KWRECUYqDpyNsceUAJ8iHo=
+X-Google-Smtp-Source: ABdhPJzf9Q1oZfg5pPn97RR5PTRl6yYlUHYfjjRwh0BfIT2/Gwm/ScNxwnrnOSDAYZ337GekmMQA4w==
+X-Received: by 2002:a17:902:6b0b:b0:13a:18bf:1ece with SMTP id o11-20020a1709026b0b00b0013a18bf1ecemr12351269plk.49.1633746038565;
+        Fri, 08 Oct 2021 19:20:38 -0700 (PDT)
 Received: from fainelli-desktop.igp.broadcom.net ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id pi9sm444692pjb.31.2021.10.08.19.20.33
+        by smtp.gmail.com with ESMTPSA id pi9sm444692pjb.31.2021.10.08.19.20.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Oct 2021 19:20:34 -0700 (PDT)
+        Fri, 08 Oct 2021 19:20:38 -0700 (PDT)
 From:   Florian Fainelli <f.fainelli@gmail.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     Florian Fainelli <f.fainelli@gmail.com>,
@@ -69,9 +69,9 @@ Cc:     Florian Fainelli <f.fainelli@gmail.com>,
         SUB-ARCHITECTURES), linux-mips@vger.kernel.org (open list:MIPS),
         devicetree@vger.kernel.org (open list:OPEN FIRMWARE AND FLATTENED
         DEVICE TREE)
-Subject: [PATCH v4 04/14] irqchip/irq-bcm7038-l1: Gate use of CPU logical map to MIPS
-Date:   Fri,  8 Oct 2021 19:20:13 -0700
-Message-Id: <20211009022023.3796472-5-f.fainelli@gmail.com>
+Subject: [PATCH v4 06/14] irqchip/irq-bcm7038-l1: Switch to IRQCHIP_PLATFORM_DRIVER
+Date:   Fri,  8 Oct 2021 19:20:15 -0700
+Message-Id: <20211009022023.3796472-7-f.fainelli@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20211009022023.3796472-1-f.fainelli@gmail.com>
 References: <20211009022023.3796472-1-f.fainelli@gmail.com>
@@ -81,67 +81,46 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-The use of the cpu_logical_map[] array is only relevant for MIPS based
-platform where this driver is used as a first level interrupt controller
-and contains multiple register groups to map with an associated CPU.
-
-On ARM/ARM64 based systems this interrupt controller is present and used
-as a second level interrupt controller hanging off the ARM GIC. That
-copy of the interrupt controller contains a single group, resulting in
-the intc->cpus[] array to be of size 1.
-
-Things happened to work in that case because we install that interrupt
-controller as a chained handler which does not allow it to be affine to
-any CPU but the boot CPU which happens to be 0, therefore we never
-de-reference past intc->cpus[] but with the current code in place, we do
-leave a chance of de-referencing the array past its bounds.
+Allow the user selection and building of this interrupt controller
+driver as a module since it is used on ARM/ARM64 based systems as a
+second level interrupt controller hanging off the ARM GIC and is
+therefore loadable during boot.
 
 Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
 ---
- drivers/irqchip/irq-bcm7038-l1.c | 9 +++------
- 1 file changed, 3 insertions(+), 6 deletions(-)
+ drivers/irqchip/Kconfig          | 4 +++-
+ drivers/irqchip/irq-bcm7038-l1.c | 6 +++++-
+ 2 files changed, 8 insertions(+), 2 deletions(-)
 
+diff --git a/drivers/irqchip/Kconfig b/drivers/irqchip/Kconfig
+index 4d5924e9f766..3022f6137096 100644
+--- a/drivers/irqchip/Kconfig
++++ b/drivers/irqchip/Kconfig
+@@ -115,7 +115,9 @@ config BCM6345_L1_IRQ
+ 	select GENERIC_IRQ_EFFECTIVE_AFF_MASK
+ 
+ config BCM7038_L1_IRQ
+-	bool
++	tristate "Broadcom STB 7038-style L1/L2 interrupt controller driver"
++	depends on ARCH_BRCMSTB || BMIPS_GENERIC
++	default ARCH_BRCMSTB || BMIPS_GENERIC
+ 	select GENERIC_IRQ_CHIP
+ 	select IRQ_DOMAIN
+ 	select GENERIC_IRQ_EFFECTIVE_AFF_MASK
 diff --git a/drivers/irqchip/irq-bcm7038-l1.c b/drivers/irqchip/irq-bcm7038-l1.c
-index 14caf32dc23e..3c4e348c661e 100644
+index 357570dd8780..a62b96237b82 100644
 --- a/drivers/irqchip/irq-bcm7038-l1.c
 +++ b/drivers/irqchip/irq-bcm7038-l1.c
-@@ -28,9 +28,6 @@
- #include <linux/irqchip.h>
- #include <linux/irqchip/chained_irq.h>
- #include <linux/syscore_ops.h>
--#ifdef CONFIG_ARM
--#include <asm/smp_plat.h>
--#endif
+@@ -455,4 +455,8 @@ static int __init bcm7038_l1_of_init(struct device_node *dn,
+ 	return ret;
+ }
  
- #define IRQS_PER_WORD		32
- #define REG_BYTES_PER_IRQ_WORD	(sizeof(u32) * 4)
-@@ -127,7 +124,7 @@ static void bcm7038_l1_irq_handle(struct irq_desc *desc)
- 	struct irq_chip *chip = irq_desc_get_chip(desc);
- 	unsigned int idx;
- 
--#ifdef CONFIG_SMP
-+#if defined(CONFIG_SMP) && defined(CONFIG_MIPS)
- 	cpu = intc->cpus[cpu_logical_map(smp_processor_id())];
- #else
- 	cpu = intc->cpus[0];
-@@ -301,7 +298,7 @@ static int bcm7038_l1_suspend(void)
- 	u32 val;
- 
- 	/* Wakeup interrupt should only come from the boot cpu */
--#ifdef CONFIG_SMP
-+#if defined(CONFIG_SMP) && defined(CONFIG_MIPS)
- 	boot_cpu = cpu_logical_map(0);
- #else
- 	boot_cpu = 0;
-@@ -325,7 +322,7 @@ static void bcm7038_l1_resume(void)
- 	struct bcm7038_l1_chip *intc;
- 	int boot_cpu, word;
- 
--#ifdef CONFIG_SMP
-+#if defined(CONFIG_SMP) && defined(CONFIG_MIPS)
- 	boot_cpu = cpu_logical_map(0);
- #else
- 	boot_cpu = 0;
+-IRQCHIP_DECLARE(bcm7038_l1, "brcm,bcm7038-l1-intc", bcm7038_l1_of_init);
++IRQCHIP_PLATFORM_DRIVER_BEGIN(bcm7038_l1)
++IRQCHIP_MATCH("brcm,bcm7038-l1-intc", bcm7038_l1_of_init)
++IRQCHIP_PLATFORM_DRIVER_END(bcm7038_l1)
++MODULE_DESCRIPTION("Broadcom STB 7038-style L1/L2 interrupt controller");
++MODULE_LICENSE("GPL v2");
 -- 
 2.25.1
 

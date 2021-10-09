@@ -2,21 +2,21 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B2C08C433F5
-	for <linux-mips@archiver.kernel.org>; Sat,  9 Oct 2021 10:58:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4A3CFC433EF
+	for <linux-mips@archiver.kernel.org>; Sat,  9 Oct 2021 10:58:15 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 8C9D460F6C
-	for <linux-mips@archiver.kernel.org>; Sat,  9 Oct 2021 10:58:13 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 2A1D460EBB
+	for <linux-mips@archiver.kernel.org>; Sat,  9 Oct 2021 10:58:15 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232364AbhJILAJ (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        id S244632AbhJILAJ (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
         Sat, 9 Oct 2021 07:00:09 -0400
-Received: from mail.loongson.cn ([114.242.206.163]:36350 "EHLO loongson.cn"
+Received: from mail.loongson.cn ([114.242.206.163]:36348 "EHLO loongson.cn"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231932AbhJILAI (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        id S231718AbhJILAI (ORCPT <rfc822;linux-mips@vger.kernel.org>);
         Sat, 9 Oct 2021 07:00:08 -0400
 Received: from linux.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dxv2q0dWFhcgkXAA--.21276S2;
-        Sat, 09 Oct 2021 18:57:57 +0800 (CST)
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dxv2q0dWFhcgkXAA--.21276S4;
+        Sat, 09 Oct 2021 18:58:01 +0800 (CST)
 From:   Tiezhu Yang <yangtiezhu@loongson.cn>
 To:     Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
@@ -31,42 +31,63 @@ Cc:     netdev@vger.kernel.org, bpf@vger.kernel.org,
         Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
         John Fastabend <john.fastabend@gmail.com>,
         KP Singh <kpsingh@kernel.org>
-Subject: [PATCH bpf-next 0/2] bpf, mips: Do some small changes
-Date:   Sat,  9 Oct 2021 18:57:54 +0800
-Message-Id: <1633777076-17256-1-git-send-email-yangtiezhu@loongson.cn>
+Subject: [PATCH bpf-next 2/2] bpf, mips: Modify check condition about tail call count
+Date:   Sat,  9 Oct 2021 18:57:56 +0800
+Message-Id: <1633777076-17256-3-git-send-email-yangtiezhu@loongson.cn>
 X-Mailer: git-send-email 2.1.0
-X-CM-TRANSID: AQAAf9Dxv2q0dWFhcgkXAA--.21276S2
-X-Coremail-Antispam: 1UD129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
-        VFW2AGmfu7bjvjm3AaLaJ3UjIYCTnIWjp_UUUY67AC8VAFwI0_Gr0_Xr1l1xkIjI8I6I8E
-        6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28Cjx
-        kF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW8JVW5JwA2z4x0Y4vE2Ix0cI8I
-        cVCY1x0267AKxVWxJVW8Jr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2js
-        IEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE
-        5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jrv_JF1lYx0Ex4A2jsIE14v26F4j6r4UJwAm72
-        CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7
-        M4IIrI8v6xkF7I0E8cxan2IY04v7MxkIecxEwVAFwVW8twCF04k20xvY0x0EwIxGrwCFx2
-        IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v2
-        6r106r1rMI8E67AF67kF1VAFwI0_GFv_WrylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67
-        AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IY
-        s7xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxV
-        W8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7VU19Xo7UUUUU==
+In-Reply-To: <1633777076-17256-1-git-send-email-yangtiezhu@loongson.cn>
+References: <1633777076-17256-1-git-send-email-yangtiezhu@loongson.cn>
+X-CM-TRANSID: AQAAf9Dxv2q0dWFhcgkXAA--.21276S4
+X-Coremail-Antispam: 1UD129KBjvJXoW7XrW5CFWkCF4fZF4UGF1ftFb_yoW8JrWfpa
+        45G3ZrKr1qg34UXF4rAFW8Xr1IgFs8XF47CF92kayxA3Z0v3ZIqF15K345GF90vrW8tayf
+        XryUKrs8ua93A3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUPG14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_Jryl82xGYIkIc2
+        x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2z4x0
+        Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Cr0_Gr1UM2
+        8EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s0DM2AI
+        xVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20x
+        vE14v26r1Y6r17McIj6I8E87Iv67AKxVWxJVW8Jr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0
+        Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628vn2kIc2
+        xKxwCY02Avz4vE14v_Gw1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1l
+        x2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14
+        v26r4a6rW5MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IY
+        x2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87
+        Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIF
+        yTuYvjfUwjjgUUUUU
 X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-This patchset is based on bpf-next tree:
-https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git
+In emit_tail_call() of bpf_jit_comp32.c, "blez t2" (t2 <= 0) is not
+consistent with the comment "t2 < 0", modify the check condition to
+keep consistency.
 
-Tiezhu Yang (2):
-  bpf, mips: Clean up config options about JIT
-  bpf, mips: Modify check condition about tail call count
-
- arch/mips/Kconfig              | 9 ---------
- arch/mips/net/Makefile         | 6 +++---
+Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+---
  arch/mips/net/bpf_jit_comp32.c | 4 ++--
- 3 files changed, 5 insertions(+), 14 deletions(-)
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
+diff --git a/arch/mips/net/bpf_jit_comp32.c b/arch/mips/net/bpf_jit_comp32.c
+index 9d7041a..b887c01 100644
+--- a/arch/mips/net/bpf_jit_comp32.c
++++ b/arch/mips/net/bpf_jit_comp32.c
+@@ -1312,12 +1312,12 @@ static int emit_tail_call(struct jit_context *ctx)
+ 	emit(ctx, sltu, t1, ind, t1);            /* t1 = ind < t1            */
+ 	emit(ctx, beqz, t1, get_offset(ctx, 1)); /* PC += off(1) if t1 == 0  */
+ 						 /* (next insn delay slot)   */
+-	/* if (TCC-- <= 0) goto out */
++	/* if (--TCC < 0) goto out */
+ 	emit(ctx, lw, t2, ctx->stack_size, MIPS_R_SP);  /* t2 = *(SP + size) */
+ 	emit_load_delay(ctx);                     /* Load delay slot         */
+-	emit(ctx, blez, t2, get_offset(ctx, 1));  /* PC += off(1) if t2 < 0  */
+ 	emit(ctx, addiu, t2, t2, -1);             /* t2-- (delay slot)       */
+ 	emit(ctx, sw, t2, ctx->stack_size, MIPS_R_SP);  /* *(SP + size) = t2 */
++	emit(ctx, bltz, t2, get_offset(ctx, 1));  /* PC += off(1) if t2 < 0  */
+ 
+ 	/* prog = ary->ptrs[ind] */
+ 	off = offsetof(struct bpf_array, ptrs);
 -- 
 2.1.0
 

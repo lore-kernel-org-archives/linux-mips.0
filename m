@@ -2,35 +2,35 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 68256C433EF
-	for <linux-mips@archiver.kernel.org>; Tue, 12 Oct 2021 18:48:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 42E7DC433FE
+	for <linux-mips@archiver.kernel.org>; Tue, 12 Oct 2021 18:48:45 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 5378B604DB
-	for <linux-mips@archiver.kernel.org>; Tue, 12 Oct 2021 18:48:36 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 2E24361050
+	for <linux-mips@archiver.kernel.org>; Tue, 12 Oct 2021 18:48:45 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234481AbhJLSug (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 12 Oct 2021 14:50:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35068 "EHLO
+        id S234483AbhJLSuq (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 12 Oct 2021 14:50:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35084 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235496AbhJLSue (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Tue, 12 Oct 2021 14:50:34 -0400
+        with ESMTP id S234506AbhJLSui (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Tue, 12 Oct 2021 14:50:38 -0400
 Received: from newton.telenet-ops.be (newton.telenet-ops.be [IPv6:2a02:1800:120:4::f00:d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5753C061745
-        for <linux-mips@vger.kernel.org>; Tue, 12 Oct 2021 11:48:31 -0700 (PDT)
-Received: from baptiste.telenet-ops.be (baptiste.telenet-ops.be [IPv6:2a02:1800:120:4::f00:13])
-        by newton.telenet-ops.be (Postfix) with ESMTPS id 4HTPTP01J9zMqxmh
-        for <linux-mips@vger.kernel.org>; Tue, 12 Oct 2021 20:34:33 +0200 (CEST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A8D3C06174E
+        for <linux-mips@vger.kernel.org>; Tue, 12 Oct 2021 11:48:35 -0700 (PDT)
+Received: from xavier.telenet-ops.be (xavier.telenet-ops.be [IPv6:2a02:1800:120:4::f00:14])
+        by newton.telenet-ops.be (Postfix) with ESMTPS id 4HTPTQ07BTzMqxxP
+        for <linux-mips@vger.kernel.org>; Tue, 12 Oct 2021 20:34:34 +0200 (CEST)
 Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed20:9c93:91ff:d58:ecfb])
-        by baptiste.telenet-ops.be with bizsmtp
-        id 56ZW2600A0KW32a016ZWZ2; Tue, 12 Oct 2021 20:33:32 +0200
+        by xavier.telenet-ops.be with bizsmtp
+        id 56ZX2600C0KW32a016ZX0c; Tue, 12 Oct 2021 20:33:33 +0200
 Received: from rox.of.borg ([192.168.97.57])
         by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
         (Exim 4.93)
         (envelope-from <geert@linux-m68k.org>)
-        id 1maMag-004RTl-5G; Tue, 12 Oct 2021 20:33:30 +0200
+        id 1maMah-004RUA-DL; Tue, 12 Oct 2021 20:33:31 +0200
 Received: from geert by rox.of.borg with local (Exim 4.93)
         (envelope-from <geert@linux-m68k.org>)
-        id 1maMaf-002j5A-Ky; Tue, 12 Oct 2021 20:33:29 +0200
+        id 1maMag-002j7L-8g; Tue, 12 Oct 2021 20:33:30 +0200
 From:   Geert Uytterhoeven <geert@linux-m68k.org>
 To:     Miguel Ojeda <ojeda@kernel.org>
 Cc:     Robin van der Gracht <robin@protonic.nl>,
@@ -41,9 +41,9 @@ Cc:     Robin van der Gracht <robin@protonic.nl>,
         devicetree@vger.kernel.org, linux-leds@vger.kernel.org,
         linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
         Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH v7 01/21] uapi: Add <linux/map_to_14segment.h>
-Date:   Tue, 12 Oct 2021 20:33:07 +0200
-Message-Id: <20211012183327.649865-2-geert@linux-m68k.org>
+Subject: [PATCH v7 16/21] auxdisplay: ht16k33: Extract ht16k33_brightness_set()
+Date:   Tue, 12 Oct 2021 20:33:22 +0200
+Message-Id: <20211012183327.649865-17-geert@linux-m68k.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20211012183327.649865-1-geert@linux-m68k.org>
 References: <20211012183327.649865-1-geert@linux-m68k.org>
@@ -53,16 +53,14 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Add a header file providing translation primitives and tables for the
-conversion of (ASCII) characters to a 14-segments notation, as used by
-14-segment alphanumeric displays.
-
-This follows the spirit of include/uapi/linux/map_to_7segment.h.
+Extract brightness handling into a helper function, so it can be called
+from multiple places.
 
 Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Reviewed-by: Robin van der Gracht <robin@protonic.nl>
 ---
 v7:
-  - No changes,
+  - Add Reviewed-by,
 
 v6:
   - No changes,
@@ -74,266 +72,59 @@ v4:
   - No changes,
 
 v3:
-  - No changes,
+  - Use "err" instead of "error" to be consistent with existing driver
+    naming style,
 
 v2:
   - No changes.
-
-You can find an image of the full character set at
-https://drive.google.com/file/d/1h3EYFBWHIjh8B_cwPA5ocAD-lFYipRie/view
-
-Note that all non-empty characters are unique, except for "[" and "C",
-and "|" and ":".
 ---
- include/uapi/linux/map_to_14segment.h | 239 ++++++++++++++++++++++++++
- 1 file changed, 239 insertions(+)
- create mode 100644 include/uapi/linux/map_to_14segment.h
+ drivers/auxdisplay/ht16k33.c | 25 +++++++++++++++++++------
+ 1 file changed, 19 insertions(+), 6 deletions(-)
 
-diff --git a/include/uapi/linux/map_to_14segment.h b/include/uapi/linux/map_to_14segment.h
-new file mode 100644
-index 0000000000000000..957c3c43181043c5
---- /dev/null
-+++ b/include/uapi/linux/map_to_14segment.h
-@@ -0,0 +1,239 @@
-+/* SPDX-License-Identifier: GPL-2.0+ WITH Linux-syscall-note */
-+/*
-+ * Copyright (C) 2021 Glider bv
-+ *
-+ * Based on include/uapi/linux/map_to_7segment.h:
-+
-+ * Copyright (c) 2005 Henk Vergonet <Henk.Vergonet@gmail.com>
-+ */
-+
-+#ifndef MAP_TO_14SEGMENT_H
-+#define MAP_TO_14SEGMENT_H
-+
-+/* This file provides translation primitives and tables for the conversion
-+ * of (ASCII) characters to a 14-segments notation.
-+ *
-+ * The 14 segment's wikipedia notation below is used as standard.
-+ * See: https://en.wikipedia.org/wiki/Fourteen-segment_display
-+ *
-+ * Notation:	+---a---+
-+ *		|\  |  /|
-+ *		f h i j b
-+ *		|  \|/  |
-+ *		+-g1+-g2+
-+ *		|  /|\  |
-+ *		e k l m c
-+ *		|/  |  \|
-+ *		+---d---+
-+ *
-+ * Usage:
-+ *
-+ *   Register a map variable, and fill it with a character set:
-+ *	static SEG14_DEFAULT_MAP(map_seg14);
-+ *
-+ *
-+ *   Then use for conversion:
-+ *	seg14 = map_to_seg14(&map_seg14, some_char);
-+ *	...
-+ *
-+ * In device drivers it is recommended, if required, to make the char map
-+ * accessible via the sysfs interface using the following scheme:
-+ *
-+ * static ssize_t map_seg14_show(struct device *dev,
-+ *				 struct device_attribute *attr, char *buf)
-+ * {
-+ *	memcpy(buf, &map_seg14, sizeof(map_seg14));
-+ *	return sizeof(map_seg14);
-+ * }
-+ * static ssize_t map_seg14_store(struct device *dev,
-+ *				  struct device_attribute *attr,
-+ *				  const char *buf, size_t cnt)
-+ * {
-+ *	if (cnt != sizeof(map_seg14))
-+ *		return -EINVAL;
-+ *	memcpy(&map_seg14, buf, cnt);
-+ *	return cnt;
-+ * }
-+ * static DEVICE_ATTR_RW(map_seg14);
-+ */
-+#include <linux/errno.h>
-+#include <linux/types.h>
-+
-+#include <asm/byteorder.h>
-+
-+#define BIT_SEG14_A		0
-+#define BIT_SEG14_B		1
-+#define BIT_SEG14_C		2
-+#define BIT_SEG14_D		3
-+#define BIT_SEG14_E		4
-+#define BIT_SEG14_F		5
-+#define BIT_SEG14_G1		6
-+#define BIT_SEG14_G2		7
-+#define BIT_SEG14_H		8
-+#define BIT_SEG14_I		9
-+#define BIT_SEG14_J		10
-+#define BIT_SEG14_K		11
-+#define BIT_SEG14_L		12
-+#define BIT_SEG14_M		13
-+#define BIT_SEG14_RESERVED1	14
-+#define BIT_SEG14_RESERVED2	15
-+
-+struct seg14_conversion_map {
-+	__be16 table[128];
-+};
-+
-+static __inline__ int map_to_seg14(struct seg14_conversion_map *map, int c)
+diff --git a/drivers/auxdisplay/ht16k33.c b/drivers/auxdisplay/ht16k33.c
+index b50cbf7e57ba26d7..60e616c0e932cd84 100644
+--- a/drivers/auxdisplay/ht16k33.c
++++ b/drivers/auxdisplay/ht16k33.c
+@@ -113,6 +113,22 @@ static int ht16k33_display_off(struct ht16k33_priv *priv)
+ 	return i2c_smbus_write_byte(priv->client, REG_DISPLAY_SETUP);
+ }
+ 
++static int ht16k33_brightness_set(struct ht16k33_priv *priv,
++				  unsigned int brightness)
 +{
-+	return c >= 0 && c < sizeof(map->table) ? __be16_to_cpu(map->table[c])
-+						: -EINVAL;
++	int err;
++
++	if (brightness == 0)
++		return ht16k33_display_off(priv);
++
++	err = ht16k33_display_on(priv);
++	if (err)
++		return err;
++
++	return i2c_smbus_write_byte(priv->client,
++				    REG_BRIGHTNESS | (brightness - 1));
 +}
 +
-+#define SEG14_CONVERSION_MAP(_name, _map)	\
-+	struct seg14_conversion_map _name = { .table = { _map } }
-+
-+/*
-+ * It is recommended to use a facility that allows user space to redefine
-+ * custom character sets for LCD devices. Please use a sysfs interface
-+ * as described above.
-+ */
-+#define MAP_TO_SEG14_SYSFS_FILE	"map_seg14"
-+
-+/*******************************************************************************
-+ * ASCII conversion table
-+ ******************************************************************************/
-+
-+#define _SEG14(sym, a, b, c, d, e, f, g1, g2, h, j, k, l, m, n)	\
-+	__cpu_to_be16( a << BIT_SEG14_A  |  b << BIT_SEG14_B  |	\
-+		       c << BIT_SEG14_C  |  d << BIT_SEG14_D  |	\
-+		       e << BIT_SEG14_E  |  f << BIT_SEG14_F  |	\
-+		      g1 << BIT_SEG14_G1 | g2 << BIT_SEG14_G2 |	\
-+		       h << BIT_SEG14_H  |  j << BIT_SEG14_I  |	\
-+		       k << BIT_SEG14_J  |  l << BIT_SEG14_K  |	\
-+		       m << BIT_SEG14_L  |  n << BIT_SEG14_M )
-+
-+#define _MAP_0_32_ASCII_SEG14_NON_PRINTABLE				\
-+	0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-+
-+#define _MAP_33_47_ASCII_SEG14_SYMBOL				\
-+	_SEG14('!', 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),	\
-+	_SEG14('"', 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0),	\
-+	_SEG14('#', 0, 1, 1, 1, 0, 0, 1, 1, 0, 1, 0, 0, 1, 0),	\
-+	_SEG14('$', 1, 0, 1, 1, 0, 1, 1, 1, 0, 1, 0, 0, 1, 0),	\
-+	_SEG14('%', 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 1, 1, 0, 0),	\
-+	_SEG14('&', 1, 0, 0, 1, 1, 0, 1, 0, 1, 0, 1, 0, 0, 1),	\
-+	_SEG14('\'',0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0),	\
-+	_SEG14('(', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1),	\
-+	_SEG14(')', 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0),	\
-+	_SEG14('*', 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1),	\
-+	_SEG14('+', 0, 0, 0, 0, 0, 0, 1, 1, 0, 1, 0, 0, 1, 0),	\
-+	_SEG14(',', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0),	\
-+	_SEG14('-', 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0),	\
-+	_SEG14('.', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1),	\
-+	_SEG14('/', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0),
-+
-+#define _MAP_48_57_ASCII_SEG14_NUMERIC				\
-+	_SEG14('0', 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0),	\
-+	_SEG14('1', 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0),	\
-+	_SEG14('2', 1, 1, 0, 1, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0),	\
-+	_SEG14('3', 1, 1, 1, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0),	\
-+	_SEG14('4', 0, 1, 1, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0),	\
-+	_SEG14('5', 1, 0, 0, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1),	\
-+	_SEG14('6', 1, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0),	\
-+	_SEG14('7', 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0),	\
-+	_SEG14('8', 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0),	\
-+	_SEG14('9', 1, 1, 1, 1, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0),
-+
-+#define _MAP_58_64_ASCII_SEG14_SYMBOL				\
-+	_SEG14(':', 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0),	\
-+	_SEG14(';', 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0),	\
-+	_SEG14('<', 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1),	\
-+	_SEG14('=', 0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0),	\
-+	_SEG14('>', 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 0, 0),	\
-+	_SEG14('?', 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 1, 0),	\
-+	_SEG14('@', 1, 1, 0, 1, 1, 1, 0, 1, 0, 1, 0, 0, 0, 0),
-+
-+#define _MAP_65_90_ASCII_SEG14_ALPHA_UPPER			\
-+	_SEG14('A', 1, 1, 1, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0),	\
-+	_SEG14('B', 1, 1, 1, 1, 0, 0, 0, 1, 0, 1, 0, 0, 1, 0),	\
-+	_SEG14('C', 1, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0),	\
-+	_SEG14('D', 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0),	\
-+	_SEG14('E', 1, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0),	\
-+	_SEG14('F', 1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0),	\
-+	_SEG14('G', 1, 0, 1, 1, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0),	\
-+	_SEG14('H', 0, 1, 1, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0),	\
-+	_SEG14('I', 1, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0),	\
-+	_SEG14('J', 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),	\
-+	_SEG14('K', 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 0, 0, 1),	\
-+	_SEG14('L', 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0),	\
-+	_SEG14('M', 0, 1, 1, 0, 1, 1, 0, 0, 1, 0, 1, 0, 0, 0),	\
-+	_SEG14('N', 0, 1, 1, 0, 1, 1, 0, 0, 1, 0, 0, 0, 0, 1),	\
-+	_SEG14('O', 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0),	\
-+	_SEG14('P', 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0),	\
-+	_SEG14('Q', 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1),	\
-+	_SEG14('R', 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1),	\
-+	_SEG14('S', 1, 0, 1, 1, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0),	\
-+	_SEG14('T', 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0),	\
-+	_SEG14('U', 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0),	\
-+	_SEG14('V', 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0),	\
-+	_SEG14('W', 0, 1, 1, 0, 1, 1, 0, 0, 0, 0, 0, 1, 0, 1),	\
-+	_SEG14('X', 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 0, 1),	\
-+	_SEG14('Y', 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0),	\
-+	_SEG14('Z', 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0),
-+
-+#define _MAP_91_96_ASCII_SEG14_SYMBOL				\
-+	_SEG14('[', 1, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0),	\
-+	_SEG14('\\',0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1),	\
-+	_SEG14(']', 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),	\
-+	_SEG14('^', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1),	\
-+	_SEG14('_', 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),	\
-+	_SEG14('`', 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0),
-+
-+#define _MAP_97_122_ASCII_SEG14_ALPHA_LOWER			\
-+	_SEG14('a', 0, 0, 0, 1, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0),	\
-+	_SEG14('b', 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 1),	\
-+	_SEG14('c', 0, 0, 0, 1, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0),	\
-+	_SEG14('d', 0, 1, 1, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0),	\
-+	_SEG14('e', 0, 0, 0, 1, 1, 0, 1, 0, 0, 0, 0, 1, 0, 0),	\
-+	_SEG14('f', 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 0, 1, 0),	\
-+	_SEG14('g', 0, 1, 1, 1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0),	\
-+	_SEG14('h', 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 1, 0),	\
-+	_SEG14('i', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0),	\
-+	_SEG14('j', 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 1, 0, 0),	\
-+	_SEG14('k', 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 1, 1),	\
-+	_SEG14('l', 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0),	\
-+	_SEG14('m', 0, 0, 1, 0, 1, 0, 1, 1, 0, 0, 0, 0, 1, 0),	\
-+	_SEG14('n', 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0),	\
-+	_SEG14('o', 0, 0, 1, 1, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0),	\
-+	_SEG14('p', 0, 0, 0, 0, 1, 1, 1, 0, 1, 0, 0, 0, 0, 0),	\
-+	_SEG14('q', 0, 1, 1, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0),	\
-+	_SEG14('r', 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0),	\
-+	_SEG14('s', 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1),	\
-+	_SEG14('t', 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0),	\
-+	_SEG14('u', 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0),	\
-+	_SEG14('v', 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0),	\
-+	_SEG14('w', 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 1),	\
-+	_SEG14('x', 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 1, 0, 1),	\
-+	_SEG14('y', 0, 1, 1, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0),	\
-+	_SEG14('z', 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0),
-+
-+#define _MAP_123_126_ASCII_SEG14_SYMBOL				\
-+	_SEG14('{', 1, 0, 0, 1, 0, 0, 1, 0, 1, 0, 0, 1, 0, 0),	\
-+	_SEG14('|', 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0),	\
-+	_SEG14('}', 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 1),	\
-+	_SEG14('~', 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0),
-+
-+/* Maps */
-+#define MAP_ASCII14SEG_ALPHANUM			\
-+	_MAP_0_32_ASCII_SEG14_NON_PRINTABLE	\
-+	_MAP_33_47_ASCII_SEG14_SYMBOL		\
-+	_MAP_48_57_ASCII_SEG14_NUMERIC		\
-+	_MAP_58_64_ASCII_SEG14_SYMBOL		\
-+	_MAP_65_90_ASCII_SEG14_ALPHA_UPPER	\
-+	_MAP_91_96_ASCII_SEG14_SYMBOL		\
-+	_MAP_97_122_ASCII_SEG14_ALPHA_LOWER	\
-+	_MAP_123_126_ASCII_SEG14_SYMBOL
-+
-+#define SEG14_DEFAULT_MAP(_name)		\
-+	SEG14_CONVERSION_MAP(_name, MAP_ASCII14SEG_ALPHANUM)
-+
-+#endif	/* MAP_TO_14SEGMENT_H */
+ static void ht16k33_fb_queue(struct ht16k33_priv *priv)
+ {
+ 	struct ht16k33_fbdev *fbdev = &priv->fbdev;
+@@ -197,13 +213,10 @@ static int ht16k33_bl_update_status(struct backlight_device *bl)
+ 
+ 	if (bl->props.power != FB_BLANK_UNBLANK ||
+ 	    bl->props.fb_blank != FB_BLANK_UNBLANK ||
+-	    bl->props.state & BL_CORE_FBBLANK || brightness == 0) {
+-		return ht16k33_display_off(priv);
+-	}
++	    bl->props.state & BL_CORE_FBBLANK)
++		brightness = 0;
+ 
+-	ht16k33_display_on(priv);
+-	return i2c_smbus_write_byte(priv->client,
+-				    REG_BRIGHTNESS | (brightness - 1));
++	return ht16k33_brightness_set(priv, brightness);
+ }
+ 
+ static int ht16k33_bl_check_fb(struct backlight_device *bl, struct fb_info *fi)
 -- 
 2.25.1
 

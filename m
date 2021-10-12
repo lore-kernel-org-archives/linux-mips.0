@@ -2,99 +2,116 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B9610C433EF
-	for <linux-mips@archiver.kernel.org>; Tue, 12 Oct 2021 19:01:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E4AFBC433F5
+	for <linux-mips@archiver.kernel.org>; Tue, 12 Oct 2021 19:13:26 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 9624B610CE
-	for <linux-mips@archiver.kernel.org>; Tue, 12 Oct 2021 19:01:06 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id CA281610A2
+	for <linux-mips@archiver.kernel.org>; Tue, 12 Oct 2021 19:13:26 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233581AbhJLTDH (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 12 Oct 2021 15:03:07 -0400
-Received: from leibniz.telenet-ops.be ([195.130.137.77]:37660 "EHLO
-        leibniz.telenet-ops.be" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235356AbhJLTDH (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Tue, 12 Oct 2021 15:03:07 -0400
-Received: from baptiste.telenet-ops.be (baptiste.telenet-ops.be [IPv6:2a02:1800:120:4::f00:13])
-        by leibniz.telenet-ops.be (Postfix) with ESMTPS id 4HTPSF3mN3zMqg55
-        for <linux-mips@vger.kernel.org>; Tue, 12 Oct 2021 20:33:33 +0200 (CEST)
-Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed20:9c93:91ff:d58:ecfb])
-        by baptiste.telenet-ops.be with bizsmtp
-        id 56ZX2600A0KW32a016ZXZC; Tue, 12 Oct 2021 20:33:33 +0200
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1maMag-004RTr-Sa; Tue, 12 Oct 2021 20:33:30 +0200
-Received: from geert by rox.of.borg with local (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1maMaf-002j5w-Qn; Tue, 12 Oct 2021 20:33:29 +0200
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-To:     Miguel Ojeda <ojeda@kernel.org>
-Cc:     Robin van der Gracht <robin@protonic.nl>,
-        Rob Herring <robh+dt@kernel.org>,
-        Paul Burton <paulburton@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Pavel Machek <pavel@ucw.cz>, Marek Behun <marek.behun@nic.cz>,
-        devicetree@vger.kernel.org, linux-leds@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH v7 07/21] auxdisplay: linedisp: Use kmemdup_nul() helper
-Date:   Tue, 12 Oct 2021 20:33:13 +0200
-Message-Id: <20211012183327.649865-8-geert@linux-m68k.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20211012183327.649865-1-geert@linux-m68k.org>
-References: <20211012183327.649865-1-geert@linux-m68k.org>
+        id S232462AbhJLTP2 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 12 Oct 2021 15:15:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41128 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232148AbhJLTP1 (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Tue, 12 Oct 2021 15:15:27 -0400
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3063C061745
+        for <linux-mips@vger.kernel.org>; Tue, 12 Oct 2021 12:13:25 -0700 (PDT)
+Received: by mail-pj1-x1033.google.com with SMTP id ls14-20020a17090b350e00b001a00e2251c8so406419pjb.4
+        for <linux-mips@vger.kernel.org>; Tue, 12 Oct 2021 12:13:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=intel-com.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=x0Pu5SkQy434ZkX51MnktY5ssWOIrsLEYRF7ntLLX9U=;
+        b=0jctKiGZ96Dsvad5OoCsdnFQ90uhqg1CiK1Bu0TfnxVnL6DCcOHWSNEaxF2Q506KkR
+         4HtMZYOUQL39cLxqSpXNajGrgxx+RmvKyhX9L62DSpa2FFz1DwK1pXjqe0gPg6jzDMKu
+         WkA7Fi0xfKpYSR5vgaxJseL9c8Tv3DOZBBhmW2kjevu4TlUZ1AYGMy6keZGF9sAknJ9l
+         hDA7MVJBkGzifUBk8/e/fmnFd3BwShLwj4oAUm8kr8DgAxB3H+Xy66k+IPlhE69rsxE+
+         etyGZvxl/HxhIrzvur1lJ5f+acFnxyUDpgERXDK7KG94rmnmm7OmQdlxHrmjvC6jSJ+W
+         hxlw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=x0Pu5SkQy434ZkX51MnktY5ssWOIrsLEYRF7ntLLX9U=;
+        b=gJu1oc7OoC4JYXJkZPcRi97BZ1mHnQALMe1r0sqoSJk3oOEucHkFRrIOKMcAzClcxZ
+         q/4rQBU55K7puafHkMYpnNgAXkKlPtzfPXIIk4NAJVLJIHiH1UK1aA2HbMZaQw7j7Gkq
+         TQX7Z+21OcDDttvt6LYRsHR343LC47z+tXBvZvCcpkCSYmdt1V/K2yIcOTFkRq+8+ou1
+         RqQD8hTLoDns3x0xluKEh07JILedLbqA/sN7t5aj63VOHwd/1Z3dr1IkKriA7mujli2o
+         KdKTwK4kDVep8qJmOE1rzI2yZ3uAbH15tX4W9xa4V0T/Qxrhx/UO13wEYp328v/5IzMt
+         ptdg==
+X-Gm-Message-State: AOAM531qEa1B1J26gU7oRwx9XSai6pRATjagaDnoD5TnfYj+pf+5vKI1
+        R/D9W9ZM2jlwPBAHAO/GoTG2t+K6Skyee/9mEJYgbA==
+X-Google-Smtp-Source: ABdhPJyNOix5cZDMBclXmOSXO+RM6EpABwDw+QW/CroDmQMvsjA4/EVROp8ApuvNtORV3RBVktyntd/Xd2M0AJ958a8=
+X-Received: by 2002:a17:90b:350f:: with SMTP id ls15mr8210876pjb.220.1634066005117;
+ Tue, 12 Oct 2021 12:13:25 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20211009003711.1390019-1-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <20211009003711.1390019-13-sathyanarayanan.kuppuswamy@linux.intel.com>
+ <20211009053103-mutt-send-email-mst@kernel.org> <CAPcyv4hDhjRXYCX_aiOboLF0eaTo6VySbZDa5NQu2ed9Ty2Ekw@mail.gmail.com>
+ <0e6664ac-cbb2-96ff-0106-9301735c0836@linux.intel.com> <DM8PR11MB57501C8F8F5C8B315726882EE7B69@DM8PR11MB5750.namprd11.prod.outlook.com>
+ <f850d2d6-d427-8aeb-bd38-f9b5eb088191@linux.intel.com> <DM8PR11MB57505C520763DF706309E177E7B69@DM8PR11MB5750.namprd11.prod.outlook.com>
+In-Reply-To: <DM8PR11MB57505C520763DF706309E177E7B69@DM8PR11MB5750.namprd11.prod.outlook.com>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Tue, 12 Oct 2021 12:13:13 -0700
+Message-ID: <CAPcyv4g8VjbMaVnXXyWVh8tXNakO9FmDXfANJmPmgvDfZX-OBA@mail.gmail.com>
+Subject: Re: [PATCH v5 12/16] PCI: Add pci_iomap_host_shared(), pci_iomap_host_shared_range()
+To:     "Reshetova, Elena" <elena.reshetova@intel.com>
+Cc:     Andi Kleen <ak@linux.intel.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Lutomirski, Andy" <luto@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Richard Henderson <rth@twiddle.net>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        James E J Bottomley <James.Bottomley@hansenpartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        "David S . Miller" <davem@davemloft.net>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        David Hildenbrand <david@redhat.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Peter H Anvin <hpa@zytor.com>,
+        "Hansen, Dave" <dave.hansen@intel.com>,
+        "Luck, Tony" <tony.luck@intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        X86 ML <x86@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        "linux-alpha@vger.kernel.org" <linux-alpha@vger.kernel.org>,
+        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
+        "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
+        "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        "virtualization@lists.linux-foundation.org" 
+        <virtualization@lists.linux-foundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Use the existing kmemdup_nul() helper instead of open-coding the same
-operation.
+On Tue, Oct 12, 2021 at 11:57 AM Reshetova, Elena
+<elena.reshetova@intel.com> wrote:
+>
+>
+> > I suspect the true number is even higher because that doesn't include IO
+> > inside calls to other modules and indirect pointers, correct?
+>
+> Actually everything should be included. Smatch has cross-function db and
+> I am using it for getting the call chains and it follows function pointers.
+> Also since I am starting from a list of individual read IOs, every single
+> base read IO in drivers/* should be covered as far as I can see. But if it uses
+> some weird IO wrappers then the actual list might be higher.
 
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
----
-v7:
-  - No changes,
-
-v6:
-  - No changes,
-
-v5:
-  - No changes,
-
-v4:
-  - No changes,
-
-v3:
-  - No changes,
-
-v2:
-  - No changes.
----
- drivers/auxdisplay/line-display.c | 5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
-
-diff --git a/drivers/auxdisplay/line-display.c b/drivers/auxdisplay/line-display.c
-index 4b97c20ac0b381ee..3f35199bc39f511f 100644
---- a/drivers/auxdisplay/line-display.c
-+++ b/drivers/auxdisplay/line-display.c
-@@ -91,13 +91,10 @@ static int linedisp_display(struct linedisp *linedisp, const char *msg,
- 		return 0;
- 	}
- 
--	new_msg = kmalloc(count + 1, GFP_KERNEL);
-+	new_msg = kmemdup_nul(msg, count, GFP_KERNEL);
- 	if (!new_msg)
- 		return -ENOMEM;
- 
--	memcpy(new_msg, msg, count);
--	new_msg[count] = 0;
--
- 	kfree(linedisp->message);
- 
- 	linedisp->message = new_msg;
--- 
-2.25.1
-
+Why analyze individual IO calls? I thought the goal here was to
+disable entire classes of ioremap() users?

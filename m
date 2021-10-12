@@ -2,203 +2,338 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6F398C433F5
-	for <linux-mips@archiver.kernel.org>; Tue, 12 Oct 2021 18:42:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 68256C433EF
+	for <linux-mips@archiver.kernel.org>; Tue, 12 Oct 2021 18:48:36 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 5297460F38
-	for <linux-mips@archiver.kernel.org>; Tue, 12 Oct 2021 18:42:58 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 5378B604DB
+	for <linux-mips@archiver.kernel.org>; Tue, 12 Oct 2021 18:48:36 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235064AbhJLSoj (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 12 Oct 2021 14:44:39 -0400
-Received: from mga12.intel.com ([192.55.52.136]:25600 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235100AbhJLSoi (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Tue, 12 Oct 2021 14:44:38 -0400
-X-IronPort-AV: E=McAfee;i="6200,9189,10135"; a="207352546"
-X-IronPort-AV: E=Sophos;i="5.85,368,1624345200"; 
-   d="scan'208";a="207352546"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2021 11:35:07 -0700
-X-IronPort-AV: E=Sophos;i="5.85,368,1624345200"; 
-   d="scan'208";a="562780166"
-Received: from akleen-mobl1.amr.corp.intel.com (HELO [10.209.115.208]) ([10.209.115.208])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Oct 2021 11:35:05 -0700
-Message-ID: <9302f1c2-b3f8-2c9e-52c5-d5a4a2987409@linux.intel.com>
-Date:   Tue, 12 Oct 2021 11:35:04 -0700
+        id S234481AbhJLSug (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 12 Oct 2021 14:50:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35068 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235496AbhJLSue (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Tue, 12 Oct 2021 14:50:34 -0400
+Received: from newton.telenet-ops.be (newton.telenet-ops.be [IPv6:2a02:1800:120:4::f00:d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5753C061745
+        for <linux-mips@vger.kernel.org>; Tue, 12 Oct 2021 11:48:31 -0700 (PDT)
+Received: from baptiste.telenet-ops.be (baptiste.telenet-ops.be [IPv6:2a02:1800:120:4::f00:13])
+        by newton.telenet-ops.be (Postfix) with ESMTPS id 4HTPTP01J9zMqxmh
+        for <linux-mips@vger.kernel.org>; Tue, 12 Oct 2021 20:34:33 +0200 (CEST)
+Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed20:9c93:91ff:d58:ecfb])
+        by baptiste.telenet-ops.be with bizsmtp
+        id 56ZW2600A0KW32a016ZWZ2; Tue, 12 Oct 2021 20:33:32 +0200
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1maMag-004RTl-5G; Tue, 12 Oct 2021 20:33:30 +0200
+Received: from geert by rox.of.borg with local (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1maMaf-002j5A-Ky; Tue, 12 Oct 2021 20:33:29 +0200
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+To:     Miguel Ojeda <ojeda@kernel.org>
+Cc:     Robin van der Gracht <robin@protonic.nl>,
+        Rob Herring <robh+dt@kernel.org>,
+        Paul Burton <paulburton@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Pavel Machek <pavel@ucw.cz>, Marek Behun <marek.behun@nic.cz>,
+        devicetree@vger.kernel.org, linux-leds@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH v7 01/21] uapi: Add <linux/map_to_14segment.h>
+Date:   Tue, 12 Oct 2021 20:33:07 +0200
+Message-Id: <20211012183327.649865-2-geert@linux-m68k.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20211012183327.649865-1-geert@linux-m68k.org>
+References: <20211012183327.649865-1-geert@linux-m68k.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH v5 12/16] PCI: Add pci_iomap_host_shared(),
- pci_iomap_host_shared_range()
-Content-Language: en-US
-To:     Dan Williams <dan.j.williams@intel.com>
-Cc:     "Michael S. Tsirkin" <mst@redhat.com>,
-        Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Richard Henderson <rth@twiddle.net>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        James E J Bottomley <James.Bottomley@hansenpartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        "David S . Miller" <davem@davemloft.net>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        David Hildenbrand <david@redhat.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Peter H Anvin <hpa@zytor.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        X86 ML <x86@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux PCI <linux-pci@vger.kernel.org>,
-        linux-alpha@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-parisc@vger.kernel.org, sparclinux@vger.kernel.org,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        virtualization@lists.linux-foundation.org,
-        "Reshetova, Elena" <elena.reshetova@intel.com>
-References: <20211009003711.1390019-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <20211009003711.1390019-13-sathyanarayanan.kuppuswamy@linux.intel.com>
- <20211009053103-mutt-send-email-mst@kernel.org>
- <CAPcyv4hDhjRXYCX_aiOboLF0eaTo6VySbZDa5NQu2ed9Ty2Ekw@mail.gmail.com>
- <0e6664ac-cbb2-96ff-0106-9301735c0836@linux.intel.com>
- <CAPcyv4g0v0YHZ-okxf4wwVCYxHotxdKwsJpZGkoT+fhvvAJEFg@mail.gmail.com>
-From:   Andi Kleen <ak@linux.intel.com>
-In-Reply-To: <CAPcyv4g0v0YHZ-okxf4wwVCYxHotxdKwsJpZGkoT+fhvvAJEFg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
+Add a header file providing translation primitives and tables for the
+conversion of (ASCII) characters to a 14-segments notation, as used by
+14-segment alphanumeric displays.
 
-> The "better safe-than-sorry" argument is hard to build consensus
-> around. The spectre mitigations ran into similar problems where the
-> community rightly wanted to see the details and instrument the
-> problematic paths rather than blanket sprinkle lfence "just to be
-> safe".
+This follows the spirit of include/uapi/linux/map_to_7segment.h.
 
-But that was due to performance problems in hot paths. Nothing of this 
-applies here.
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+---
+v7:
+  - No changes,
 
-> In this case the rules about when a driver is suitably
-> "hardened" are vague and the overlapping policy engines are confusing.
+v6:
+  - No changes,
 
-What is confusing exactly?
+v5:
+  - No changes,
 
-For me it both seems very straight forward and simple (but then I'm biased)
+v4:
+  - No changes,
 
-The policy is:
+v3:
+  - No changes,
 
-- Have an allow list at driver registration.
+v2:
+  - No changes.
 
-- Have an additional opt-in for MMIO mappings (and potentially config 
-space, but that's not currently there) to cover init calls completely.
+You can find an image of the full character set at
+https://drive.google.com/file/d/1h3EYFBWHIjh8B_cwPA5ocAD-lFYipRie/view
 
->
-> I'd rather see more concerted efforts focused/limited core changes
-> rather than leaf driver changes until there is a clearer definition of
-> hardened.
+Note that all non-empty characters are unique, except for "[" and "C",
+and "|" and ":".
+---
+ include/uapi/linux/map_to_14segment.h | 239 ++++++++++++++++++++++++++
+ 1 file changed, 239 insertions(+)
+ create mode 100644 include/uapi/linux/map_to_14segment.h
 
-A hardened driver is a driver that
-
-- Had similar security (not API) oriented review of its IO operations 
-(mainly MMIO access, but also PCI config space) as a non privileged user 
-interface (like a ioctl). That review should be focused on memory safety.
-
-- Had some fuzzing on these IO interfaces using to be released tools.
-
-Right now it's only three virtio drivers (console, net, block)
-
-Really it's no different than what we do for every new unprivileged user 
-interface.
-
-
-> I.e. instead of jumping to the assertion that fixing up
-> these init-path vulnerabilities are too big to fix, dig to the next
-> level to provide more evidence that per-driver opt-in is the only
-> viable option.
->
-> For example, how many of these problematic paths are built-in to the
-> average kernel config?
-
-I don't think arguments from "the average kernel config" (if such a 
-thing even exists) are useful. That's would be just hand waving.
-
-
-> A strawman might be to add a sprinkling error
-> exits in the module_init() of the problematic drivers, and only fail
-> if the module is built-in, and let modprobe policy handle the rest.
-
-
-That would be already hundreds of changes. I have no idea how such a 
-thing could be maintained or sustained either.
-
-Really I don't even see how these alternatives can be considered. Tree 
-sweeps should always be last resort. They're a pain for everyone. But 
-here they're casually thrown around as alternatives to straight forward 
-one or two line changes.
-
-
-
-
->
->> Default policy in user space just seems to be a bad idea here. Who
->> should know if a driver is hardened other than the kernel? Maintaining
->> the list somewhere else just doesn't make sense to me.
-> I do not understand the maintenance burden correlation of where the
-> policy is driven vs where the list is maintained?
-
-All the hardening and auditing happens in the kernel tree. So it seems 
-the natural place to store the result is in the kernel tree.
-
-But there's no single package for initrd, so you would need custom 
-configurations for all the supported distros.
-
-Also we're really arguing about a list that currently has three entries.
-
-
->   Even if I agreed
-> with the contention that out-of-tree userspace would have a hard time
-> tracking the "hardened" driver list there is still an in-tree
-> userspace path to explore. E.g. perf maintains lists of things tightly
-> coupled to the kernel, this authorized device list seems to be in the
-> same category of data.
-
-You mean the event list? perf is in the kernel tree, so it's maintained 
-together with the kernel.
-
-But we don't have a kernel initrd.
-
-
-
->
->> Also there is the more practical problem that some devices are needed
->> for booting. For example in TDX we can't print something to the console
->> with this mechanism, so you would never get any output before the
->> initrd. Just seems like a nightmare for debugging anything. There really
->> needs to be an authorization mechanism that works reasonably early.
->>
->> I can see a point of having user space overrides though, but we need to
->> have a sane kernel default that works early.
-> Right, as I suggested [1], just enough early authorization to
-> bootstrap/debug initramfs and then that can authorize the remainder.
-
-But how do you debug the kernel then? Making early undebuggable seems 
-just bad policy to me.
-
-And if you fix if for the console why not add the two more entries for 
-virtio net and block too?
-
-
--Andi
+diff --git a/include/uapi/linux/map_to_14segment.h b/include/uapi/linux/map_to_14segment.h
+new file mode 100644
+index 0000000000000000..957c3c43181043c5
+--- /dev/null
++++ b/include/uapi/linux/map_to_14segment.h
+@@ -0,0 +1,239 @@
++/* SPDX-License-Identifier: GPL-2.0+ WITH Linux-syscall-note */
++/*
++ * Copyright (C) 2021 Glider bv
++ *
++ * Based on include/uapi/linux/map_to_7segment.h:
++
++ * Copyright (c) 2005 Henk Vergonet <Henk.Vergonet@gmail.com>
++ */
++
++#ifndef MAP_TO_14SEGMENT_H
++#define MAP_TO_14SEGMENT_H
++
++/* This file provides translation primitives and tables for the conversion
++ * of (ASCII) characters to a 14-segments notation.
++ *
++ * The 14 segment's wikipedia notation below is used as standard.
++ * See: https://en.wikipedia.org/wiki/Fourteen-segment_display
++ *
++ * Notation:	+---a---+
++ *		|\  |  /|
++ *		f h i j b
++ *		|  \|/  |
++ *		+-g1+-g2+
++ *		|  /|\  |
++ *		e k l m c
++ *		|/  |  \|
++ *		+---d---+
++ *
++ * Usage:
++ *
++ *   Register a map variable, and fill it with a character set:
++ *	static SEG14_DEFAULT_MAP(map_seg14);
++ *
++ *
++ *   Then use for conversion:
++ *	seg14 = map_to_seg14(&map_seg14, some_char);
++ *	...
++ *
++ * In device drivers it is recommended, if required, to make the char map
++ * accessible via the sysfs interface using the following scheme:
++ *
++ * static ssize_t map_seg14_show(struct device *dev,
++ *				 struct device_attribute *attr, char *buf)
++ * {
++ *	memcpy(buf, &map_seg14, sizeof(map_seg14));
++ *	return sizeof(map_seg14);
++ * }
++ * static ssize_t map_seg14_store(struct device *dev,
++ *				  struct device_attribute *attr,
++ *				  const char *buf, size_t cnt)
++ * {
++ *	if (cnt != sizeof(map_seg14))
++ *		return -EINVAL;
++ *	memcpy(&map_seg14, buf, cnt);
++ *	return cnt;
++ * }
++ * static DEVICE_ATTR_RW(map_seg14);
++ */
++#include <linux/errno.h>
++#include <linux/types.h>
++
++#include <asm/byteorder.h>
++
++#define BIT_SEG14_A		0
++#define BIT_SEG14_B		1
++#define BIT_SEG14_C		2
++#define BIT_SEG14_D		3
++#define BIT_SEG14_E		4
++#define BIT_SEG14_F		5
++#define BIT_SEG14_G1		6
++#define BIT_SEG14_G2		7
++#define BIT_SEG14_H		8
++#define BIT_SEG14_I		9
++#define BIT_SEG14_J		10
++#define BIT_SEG14_K		11
++#define BIT_SEG14_L		12
++#define BIT_SEG14_M		13
++#define BIT_SEG14_RESERVED1	14
++#define BIT_SEG14_RESERVED2	15
++
++struct seg14_conversion_map {
++	__be16 table[128];
++};
++
++static __inline__ int map_to_seg14(struct seg14_conversion_map *map, int c)
++{
++	return c >= 0 && c < sizeof(map->table) ? __be16_to_cpu(map->table[c])
++						: -EINVAL;
++}
++
++#define SEG14_CONVERSION_MAP(_name, _map)	\
++	struct seg14_conversion_map _name = { .table = { _map } }
++
++/*
++ * It is recommended to use a facility that allows user space to redefine
++ * custom character sets for LCD devices. Please use a sysfs interface
++ * as described above.
++ */
++#define MAP_TO_SEG14_SYSFS_FILE	"map_seg14"
++
++/*******************************************************************************
++ * ASCII conversion table
++ ******************************************************************************/
++
++#define _SEG14(sym, a, b, c, d, e, f, g1, g2, h, j, k, l, m, n)	\
++	__cpu_to_be16( a << BIT_SEG14_A  |  b << BIT_SEG14_B  |	\
++		       c << BIT_SEG14_C  |  d << BIT_SEG14_D  |	\
++		       e << BIT_SEG14_E  |  f << BIT_SEG14_F  |	\
++		      g1 << BIT_SEG14_G1 | g2 << BIT_SEG14_G2 |	\
++		       h << BIT_SEG14_H  |  j << BIT_SEG14_I  |	\
++		       k << BIT_SEG14_J  |  l << BIT_SEG14_K  |	\
++		       m << BIT_SEG14_L  |  n << BIT_SEG14_M )
++
++#define _MAP_0_32_ASCII_SEG14_NON_PRINTABLE				\
++	0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
++
++#define _MAP_33_47_ASCII_SEG14_SYMBOL				\
++	_SEG14('!', 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),	\
++	_SEG14('"', 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0),	\
++	_SEG14('#', 0, 1, 1, 1, 0, 0, 1, 1, 0, 1, 0, 0, 1, 0),	\
++	_SEG14('$', 1, 0, 1, 1, 0, 1, 1, 1, 0, 1, 0, 0, 1, 0),	\
++	_SEG14('%', 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 1, 1, 0, 0),	\
++	_SEG14('&', 1, 0, 0, 1, 1, 0, 1, 0, 1, 0, 1, 0, 0, 1),	\
++	_SEG14('\'',0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0),	\
++	_SEG14('(', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1),	\
++	_SEG14(')', 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0),	\
++	_SEG14('*', 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1),	\
++	_SEG14('+', 0, 0, 0, 0, 0, 0, 1, 1, 0, 1, 0, 0, 1, 0),	\
++	_SEG14(',', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0),	\
++	_SEG14('-', 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0),	\
++	_SEG14('.', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1),	\
++	_SEG14('/', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0),
++
++#define _MAP_48_57_ASCII_SEG14_NUMERIC				\
++	_SEG14('0', 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0),	\
++	_SEG14('1', 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0),	\
++	_SEG14('2', 1, 1, 0, 1, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0),	\
++	_SEG14('3', 1, 1, 1, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0),	\
++	_SEG14('4', 0, 1, 1, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0),	\
++	_SEG14('5', 1, 0, 0, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1),	\
++	_SEG14('6', 1, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0),	\
++	_SEG14('7', 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0),	\
++	_SEG14('8', 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0),	\
++	_SEG14('9', 1, 1, 1, 1, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0),
++
++#define _MAP_58_64_ASCII_SEG14_SYMBOL				\
++	_SEG14(':', 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0),	\
++	_SEG14(';', 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0),	\
++	_SEG14('<', 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1),	\
++	_SEG14('=', 0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0),	\
++	_SEG14('>', 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 0, 0),	\
++	_SEG14('?', 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 1, 0),	\
++	_SEG14('@', 1, 1, 0, 1, 1, 1, 0, 1, 0, 1, 0, 0, 0, 0),
++
++#define _MAP_65_90_ASCII_SEG14_ALPHA_UPPER			\
++	_SEG14('A', 1, 1, 1, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0),	\
++	_SEG14('B', 1, 1, 1, 1, 0, 0, 0, 1, 0, 1, 0, 0, 1, 0),	\
++	_SEG14('C', 1, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0),	\
++	_SEG14('D', 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0),	\
++	_SEG14('E', 1, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0),	\
++	_SEG14('F', 1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0),	\
++	_SEG14('G', 1, 0, 1, 1, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0),	\
++	_SEG14('H', 0, 1, 1, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0),	\
++	_SEG14('I', 1, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0),	\
++	_SEG14('J', 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),	\
++	_SEG14('K', 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 0, 0, 1),	\
++	_SEG14('L', 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0),	\
++	_SEG14('M', 0, 1, 1, 0, 1, 1, 0, 0, 1, 0, 1, 0, 0, 0),	\
++	_SEG14('N', 0, 1, 1, 0, 1, 1, 0, 0, 1, 0, 0, 0, 0, 1),	\
++	_SEG14('O', 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0),	\
++	_SEG14('P', 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0),	\
++	_SEG14('Q', 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1),	\
++	_SEG14('R', 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1),	\
++	_SEG14('S', 1, 0, 1, 1, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0),	\
++	_SEG14('T', 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0),	\
++	_SEG14('U', 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0),	\
++	_SEG14('V', 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0),	\
++	_SEG14('W', 0, 1, 1, 0, 1, 1, 0, 0, 0, 0, 0, 1, 0, 1),	\
++	_SEG14('X', 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 0, 1),	\
++	_SEG14('Y', 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0),	\
++	_SEG14('Z', 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0),
++
++#define _MAP_91_96_ASCII_SEG14_SYMBOL				\
++	_SEG14('[', 1, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0),	\
++	_SEG14('\\',0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1),	\
++	_SEG14(']', 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),	\
++	_SEG14('^', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1),	\
++	_SEG14('_', 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),	\
++	_SEG14('`', 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0),
++
++#define _MAP_97_122_ASCII_SEG14_ALPHA_LOWER			\
++	_SEG14('a', 0, 0, 0, 1, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0),	\
++	_SEG14('b', 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 1),	\
++	_SEG14('c', 0, 0, 0, 1, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0),	\
++	_SEG14('d', 0, 1, 1, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0),	\
++	_SEG14('e', 0, 0, 0, 1, 1, 0, 1, 0, 0, 0, 0, 1, 0, 0),	\
++	_SEG14('f', 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 0, 1, 0),	\
++	_SEG14('g', 0, 1, 1, 1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0),	\
++	_SEG14('h', 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 1, 0),	\
++	_SEG14('i', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0),	\
++	_SEG14('j', 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 1, 0, 0),	\
++	_SEG14('k', 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 1, 1),	\
++	_SEG14('l', 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0),	\
++	_SEG14('m', 0, 0, 1, 0, 1, 0, 1, 1, 0, 0, 0, 0, 1, 0),	\
++	_SEG14('n', 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0),	\
++	_SEG14('o', 0, 0, 1, 1, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0),	\
++	_SEG14('p', 0, 0, 0, 0, 1, 1, 1, 0, 1, 0, 0, 0, 0, 0),	\
++	_SEG14('q', 0, 1, 1, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0),	\
++	_SEG14('r', 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0),	\
++	_SEG14('s', 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1),	\
++	_SEG14('t', 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0),	\
++	_SEG14('u', 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0),	\
++	_SEG14('v', 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0),	\
++	_SEG14('w', 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 1),	\
++	_SEG14('x', 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 1, 0, 1),	\
++	_SEG14('y', 0, 1, 1, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0),	\
++	_SEG14('z', 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0),
++
++#define _MAP_123_126_ASCII_SEG14_SYMBOL				\
++	_SEG14('{', 1, 0, 0, 1, 0, 0, 1, 0, 1, 0, 0, 1, 0, 0),	\
++	_SEG14('|', 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0),	\
++	_SEG14('}', 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 1),	\
++	_SEG14('~', 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0),
++
++/* Maps */
++#define MAP_ASCII14SEG_ALPHANUM			\
++	_MAP_0_32_ASCII_SEG14_NON_PRINTABLE	\
++	_MAP_33_47_ASCII_SEG14_SYMBOL		\
++	_MAP_48_57_ASCII_SEG14_NUMERIC		\
++	_MAP_58_64_ASCII_SEG14_SYMBOL		\
++	_MAP_65_90_ASCII_SEG14_ALPHA_UPPER	\
++	_MAP_91_96_ASCII_SEG14_SYMBOL		\
++	_MAP_97_122_ASCII_SEG14_ALPHA_LOWER	\
++	_MAP_123_126_ASCII_SEG14_SYMBOL
++
++#define SEG14_DEFAULT_MAP(_name)		\
++	SEG14_CONVERSION_MAP(_name, MAP_ASCII14SEG_ALPHANUM)
++
++#endif	/* MAP_TO_14SEGMENT_H */
+-- 
+2.25.1
 

@@ -2,54 +2,54 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 324E4C43219
-	for <linux-mips@archiver.kernel.org>; Tue, 19 Oct 2021 21:59:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E8A67C433EF
+	for <linux-mips@archiver.kernel.org>; Tue, 19 Oct 2021 21:59:48 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 1F43560FDA
-	for <linux-mips@archiver.kernel.org>; Tue, 19 Oct 2021 21:59:46 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id D215D60FDA
+	for <linux-mips@archiver.kernel.org>; Tue, 19 Oct 2021 21:59:48 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230282AbhJSWB6 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 19 Oct 2021 18:01:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55020 "EHLO
+        id S230298AbhJSWCA (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 19 Oct 2021 18:02:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54992 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230145AbhJSWBi (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Tue, 19 Oct 2021 18:01:38 -0400
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 601B3C061768;
-        Tue, 19 Oct 2021 14:59:21 -0700 (PDT)
-Received: by mail-pj1-x102e.google.com with SMTP id gn3so1031946pjb.0;
-        Tue, 19 Oct 2021 14:59:21 -0700 (PDT)
+        with ESMTP id S230190AbhJSWBm (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Tue, 19 Oct 2021 18:01:42 -0400
+Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E69AC0613E3;
+        Tue, 19 Oct 2021 14:59:24 -0700 (PDT)
+Received: by mail-pg1-x531.google.com with SMTP id g184so20631668pgc.6;
+        Tue, 19 Oct 2021 14:59:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=5ALk99V/yV50Q7B1PyIb1+nfNEsL1ZZBgIrsEIIgD/g=;
-        b=N46xaqCV1Ya66lu9pnPn3P2UGULweE5FkPxi51wwEsY3ca5TIRpTzowGIL9KK0CPBd
-         xTcD4xP4sWSF3N+YSRfzKX/zOJ0ASy5mWLUroMF6p+/7zzT/pCQZ5C4RyCEOQ3kWl0Fn
-         4QTFPTlqbPzsd1i+mpwFG3UJnuE+PKVvNMBurUUk4LXu/moYXJlxQ5IWkxS5SIwu3mV7
-         Fjmo6dmQRu1yWQpzxvONABKB6yssqySAklq9VFsXYW6R2anUHbMhpbttbKBqVvqlnXge
-         WTxNHYIqKjoGntVnE+LVUSQg0v1JKP5ZM0X2PG25/79y/iiz+Fi9bFDA0KhwfsLtnsGT
-         9s0Q==
+        bh=2G1kdri23kWnlj1enPufIZN1leyxpMasJ2EyRU0acfw=;
+        b=Y5clh4hJuQyM8eC5A+hgiBCp367+x4gkBxd+43EC3gI8EhkdW9oupc9VprJN88A+SS
+         MXTHIQCNafVT3DbL2pCZSy3fiLeF0SEKKp0m6MVaa6nk70CD2U8zGmq/1cEi5NM/7I3X
+         DVM4WarHYUHHtzY263A4Kz2rszp3lsNoKs0v2rvv6hfDsyAFR7ILK2Ov1P81G/OXu7+n
+         UuW4Sa46ne3mVkOBB09KzfcE/ffd4WXtx3d1ugUwrqtf/VI+0bfPdTMw128tcJ4+X95R
+         a1/YA5eKCmN+kkII9t5ISBDNRfN5T4/yLr6NPGd1/mT3rgLbS5u860+VgdrpyHIxNta2
+         A1sA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=5ALk99V/yV50Q7B1PyIb1+nfNEsL1ZZBgIrsEIIgD/g=;
-        b=BOpuWivj3DBoqftjIZDC7fAyfLs9/iCwYHKg6S3xs75BM4jstzCN4NoEnLaHETN/ch
-         VHmO9r1L2D1o7WmoDjIKR1CQclmF9FgKNlXpf8odOKBB1XxtPrpOTZP2Cf8oGicDLTMg
-         BrZ6NNRSROQHIIokA6v/7QErGq7i7hlOCeytUix5azYtJ+riCPiY0DwqYZ0X/ka0NLYI
-         BBqUuWgdY9anGfIjxY2SXFmWlMj5Zxhoz+hWcP2kyIe2TI3sfOCQL0N4S6XwIE6cJOCA
-         htbSqg0lVuIkSla4z7IZ/QKjKw4LC2G5DIzuOBieVKqcPS7fAAr/27CNVDZhAFTGcYRx
-         hTPQ==
-X-Gm-Message-State: AOAM531tYheukhHJBURbh5cH7FAsobpMJNsrjgBsod+MwjCCoXzWG2aZ
-        +OdZGRN9oRONCBRIGAfykDQuPAsgl0I=
-X-Google-Smtp-Source: ABdhPJzWpyM1C2qGr1nMlYAwXWIVZOv+GkHF0hDeN/rI0sLoSSxh4Qx7D4dUFc53gJhlcJ4NP6RBCQ==
-X-Received: by 2002:a17:90b:1a87:: with SMTP id ng7mr2823769pjb.69.1634680760605;
-        Tue, 19 Oct 2021 14:59:20 -0700 (PDT)
+        bh=2G1kdri23kWnlj1enPufIZN1leyxpMasJ2EyRU0acfw=;
+        b=NXnCuJBOwvWguOJFx7y33gqrKsjkoonVytNu0mvAtTpbyVnxr/RJNBCe0FCseZ5toY
+         hSDlW4ntQatClg4+Ubguq2/DCNm0ZBXRK30e9Y/cruOKWMCYOK7GowOkUnNKfxl45qjg
+         rQBlSTBablsSuYAIynsRCvAq9KpgOPfXlMvTeOH6tj2D58xokiXQNeUkwo+X5gZ+R1tE
+         4V1MpWKUdyrkAMcttKrrNEPa6g55D0TrMPDvdAqtJOVRv60KwqLu4nLFe5wzBMOygtlo
+         ojxgnn5inxu5lUVtM5KHX1FS3Xeyq9dssgkEs83o3LH12TvgXtG/MuX7KSwP9/vJpOvR
+         iWlA==
+X-Gm-Message-State: AOAM531C2bzl/ZKkjDSWsq4PzxBbFwx3TbHYjdIqA+2kU86ylTPlVm8D
+        RkeuECv4ZTcz8wkkFdRhzjLkUYNkhWI=
+X-Google-Smtp-Source: ABdhPJxR3R8hw1YDkPeaq+1XWGII38BdkuxodKSXvnmpG9QGveZCyXnqmGNQGOxR6w5CknBLqcfbnA==
+X-Received: by 2002:a63:7514:: with SMTP id q20mr5138672pgc.232.1634680763731;
+        Tue, 19 Oct 2021 14:59:23 -0700 (PDT)
 Received: from fainelli-desktop.igp.broadcom.net ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id bf7sm139325pjb.14.2021.10.19.14.59.19
+        by smtp.gmail.com with ESMTPSA id bf7sm139325pjb.14.2021.10.19.14.59.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Oct 2021 14:59:20 -0700 (PDT)
+        Tue, 19 Oct 2021 14:59:23 -0700 (PDT)
 From:   Florian Fainelli <f.fainelli@gmail.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     Florian Fainelli <f.fainelli@gmail.com>,
@@ -69,9 +69,9 @@ Cc:     Florian Fainelli <f.fainelli@gmail.com>,
         SUB-ARCHITECTURES), linux-mips@vger.kernel.org (open list:MIPS),
         devicetree@vger.kernel.org (open list:OPEN FIRMWARE AND FLATTENED
         DEVICE TREE)
-Subject: [PATCH v5 12/14] arm64: broadcom: Removed forced select of interrupt controllers
-Date:   Tue, 19 Oct 2021 14:58:53 -0700
-Message-Id: <20211019215855.1920099-13-f.fainelli@gmail.com>
+Subject: [PATCH v5 14/14] irqchip: Fix kernel-doc parameter typo for IRQCHIP_DECLARE
+Date:   Tue, 19 Oct 2021 14:58:55 -0700
+Message-Id: <20211019215855.1920099-15-f.fainelli@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20211019215855.1920099-1-f.fainelli@gmail.com>
 References: <20211019215855.1920099-1-f.fainelli@gmail.com>
@@ -81,37 +81,27 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Now that the various second level interrupt controllers have been moved
-to IRQCHIP_PLATFORM_DRIVER and they do default to ARCH_BRCMSTB and
-ARCH_BCM2835 where relevant, remove their forced selection from the
-machine entry to allow an user to build them as modules.
+The documentation refers to "compstr" when we have the parameter named
+"compat", fix the typo.
 
 Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
 ---
- arch/arm64/Kconfig.platforms | 3 ---
- 1 file changed, 3 deletions(-)
+ include/linux/irqchip.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm64/Kconfig.platforms b/arch/arm64/Kconfig.platforms
-index b0ce18d4cc98..2e9440f2da22 100644
---- a/arch/arm64/Kconfig.platforms
-+++ b/arch/arm64/Kconfig.platforms
-@@ -44,7 +44,6 @@ config ARCH_BCM2835
- 	select ARM_AMBA
- 	select ARM_GIC
- 	select ARM_TIMER_SP804
--	select BRCMSTB_L2_IRQ
- 	help
- 	  This enables support for the Broadcom BCM2837 and BCM2711 SoC.
- 	  These SoCs are used in the Raspberry Pi 3 and 4 devices.
-@@ -82,8 +81,6 @@ config ARCH_BITMAIN
- config ARCH_BRCMSTB
- 	bool "Broadcom Set-Top-Box SoCs"
- 	select ARCH_HAS_RESET_CONTROLLER
--	select BCM7038_L1_IRQ
--	select BRCMSTB_L2_IRQ
- 	select GENERIC_IRQ_CHIP
- 	select PINCTRL
- 	help
+diff --git a/include/linux/irqchip.h b/include/linux/irqchip.h
+index 67351aac65ef..ccf32758ea85 100644
+--- a/include/linux/irqchip.h
++++ b/include/linux/irqchip.h
+@@ -23,7 +23,7 @@
+  *
+  * @name: name that must be unique across all IRQCHIP_DECLARE of the
+  * same file.
+- * @compstr: compatible string of the irqchip driver
++ * @compat: compatible string of the irqchip driver
+  * @fn: initialization function
+  */
+ #define IRQCHIP_DECLARE(name, compat, fn) OF_DECLARE_2(irqchip, name, compat, fn)
 -- 
 2.25.1
 

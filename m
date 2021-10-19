@@ -2,54 +2,54 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AB50AC43219
-	for <linux-mips@archiver.kernel.org>; Tue, 19 Oct 2021 21:59:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 96F43C4167D
+	for <linux-mips@archiver.kernel.org>; Tue, 19 Oct 2021 21:59:10 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 955CB6128B
-	for <linux-mips@archiver.kernel.org>; Tue, 19 Oct 2021 21:59:09 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 7ED6B6138F
+	for <linux-mips@archiver.kernel.org>; Tue, 19 Oct 2021 21:59:10 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229770AbhJSWBW (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        id S229791AbhJSWBW (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
         Tue, 19 Oct 2021 18:01:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54894 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54870 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229570AbhJSWBU (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Tue, 19 Oct 2021 18:01:20 -0400
-Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 789BCC061768;
-        Tue, 19 Oct 2021 14:59:06 -0700 (PDT)
-Received: by mail-pf1-x42a.google.com with SMTP id v8so1145698pfu.11;
-        Tue, 19 Oct 2021 14:59:06 -0700 (PDT)
+        with ESMTP id S229723AbhJSWBO (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Tue, 19 Oct 2021 18:01:14 -0400
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1D78C061749;
+        Tue, 19 Oct 2021 14:59:01 -0700 (PDT)
+Received: by mail-pj1-x1030.google.com with SMTP id q10-20020a17090a1b0a00b001a076a59640so2678340pjq.0;
+        Tue, 19 Oct 2021 14:59:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=knXL02VOmkFLU9YLWF/5g5SfaxjLRPWcMFGGkfQ2MJo=;
-        b=J+bh9w6aQV5iXo7J6TIa1ul0MoxIg7yVn5hvtsa5Q5IAo7h29Xhz+WFwGg0o2ja4JD
-         iUTXrKfNk2rmhsKYmfF1VB2gv3CohHuYRZkWpG1wFi2j3QRZ17vsb9z/lzC4rWZvPyAU
-         EID8cEcjJ/2HcKQ0SPyqe5S05W6eEnIQz4zU5GuKiCJ/BhQ8tEI9f19gdvqdBuRKKtLe
-         iDqHyEeN33YKQ2CU2DbV8/1N5flnMz3vmojbomEDvHXEbBQW2/gkCrlPOfqRv9MbaoIw
-         Y1Cq1Lw7Xu9A0ah5d43Ia/Hnw4OA1nhVmACgd1RaEmWQGMahfP30Udp2egS0xyXyseod
-         u25Q==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=GdOGRI80K+wNQEjH3mPOPndE64P/y5ts/hX6lqyqGHE=;
+        b=FJbpe1ThVKgK6MS4bNq8xHuuagQlHijb/figYTP/jVqNMoEnokVQdeC0QWMDdB/dcE
+         3YNGiBzjQBM6Su6L10jQmpKPpNsDiaR0GdBKUZT4wjtPtpCJvqqSSq3lkyZn8oZxWg9i
+         JTrQ0k98O2grey5ucoE9e8cK5C97bNNWVzOWPFCDRznTERj+JJ9ia9AmKeNyk0eLIhEx
+         o3rVF8s1jiZ821ZQ02AdgpB7W8IfPeSgPHIo+GNudaAWiSAmV6c51LDhA0yt9vDYFCmO
+         cRt5z47xg+x3walWNaNG4BEUzHR2SR85ecpREzXvETG+t7Fm0q36R32knWNu+k8HVpi3
+         KD1A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=knXL02VOmkFLU9YLWF/5g5SfaxjLRPWcMFGGkfQ2MJo=;
-        b=ZX2R95tdCYK/EFznJU8WWnrLkhtHWWiSiHMmtrNUZIFvQ5ZbBJI1oglFV1kWtbtT5m
-         otI4i34a/4OoZZrOtI4wCXBjcXtNfkpcGdWE6YgZ1jk5VohUaNulYUjTzuxXA3oHuEOr
-         uCzADcX+FhHddAMtkWvWfw0EpN7wEidtp9Wsryacn0028ON7UDU36YysnjBrjbbNZtmj
-         RYiQ1Qi0O0xCT/VjIc3B4ZeRsHZDCM42fos29hfglOnzWv9IQNeaCnsVHSGpqY2Xs63V
-         FsYqvuC7XckEisw0v1I3YiZO6gEVrnI6V0QDhQ+9NyD51xtvDtr7CjYAxkKBU3rfgETu
-         /W5w==
-X-Gm-Message-State: AOAM532DoaihWuWSUcl7wxr+EEc+d3+E0O+oxZ+dK8ChasYUcER36qTR
-        1yu8Swwl+IK5pRZKEvhpUF8RXiNsG7I=
-X-Google-Smtp-Source: ABdhPJy+NOsLn0raHM4ZDL83rHjFaSBpPTZAUubBRpBpGrD32O0ki56vb2RyQVDqxdAtAoZpE0tJTA==
-X-Received: by 2002:a62:7a8b:0:b0:44d:47e2:99bf with SMTP id v133-20020a627a8b000000b0044d47e299bfmr2305391pfc.64.1634680745695;
-        Tue, 19 Oct 2021 14:59:05 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=GdOGRI80K+wNQEjH3mPOPndE64P/y5ts/hX6lqyqGHE=;
+        b=z4BcMAIAsLOK8+XAcLtSZMVzvhblDbE1ojWp9OVMKfqqnYoEjj0ONN0GONyXFY+XND
+         +T6yXmQoYsrWUnrNpESAO1D2dpeAlFfNVlRPZN5hyWDxP6o1RNbcKOkMEL28mwTbCBo2
+         k9gsPU2QnVBbIHUV1uDhhyMqDfuxZ7aJ0H9PYsJ87d9tH84oxPeHW6Dh8QBwE6qNk9BM
+         Ln62sufnqwB3wPeOTDHSXuWHzWmIVvbt/DA+BMwgGvgYpKb13YeakA/V7tAbTgHgKYAL
+         w/n+7YQa0rABCB4qiVt7nqJuiA+3I8vrLhsoq4yMumG+LutMTXQ0l0GqgLALvVm++80w
+         tO2w==
+X-Gm-Message-State: AOAM532ASeOnJDxHXGwtq1oWUIMm9QlX1VFBh3Zx26oYPNyigp/M3TEs
+        oC79oz7mwEBsl9287lQS/7QWoMV48UA=
+X-Google-Smtp-Source: ABdhPJxk/TBEHPy4xHiREvckqvcnxHedFfzlc96UOB0+wIsECd+5WtpAEMkEndnF/MHz8xW5EVQbjw==
+X-Received: by 2002:a17:90a:307:: with SMTP id 7mr2755164pje.176.1634680740810;
+        Tue, 19 Oct 2021 14:59:00 -0700 (PDT)
 Received: from fainelli-desktop.igp.broadcom.net ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id bf7sm139325pjb.14.2021.10.19.14.59.04
+        by smtp.gmail.com with ESMTPSA id bf7sm139325pjb.14.2021.10.19.14.58.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Oct 2021 14:59:05 -0700 (PDT)
+        Tue, 19 Oct 2021 14:59:00 -0700 (PDT)
 From:   Florian Fainelli <f.fainelli@gmail.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     Florian Fainelli <f.fainelli@gmail.com>,
@@ -69,76 +69,94 @@ Cc:     Florian Fainelli <f.fainelli@gmail.com>,
         SUB-ARCHITECTURES), linux-mips@vger.kernel.org (open list:MIPS),
         devicetree@vger.kernel.org (open list:OPEN FIRMWARE AND FLATTENED
         DEVICE TREE)
-Subject: [PATCH v5 03/14] irqchip/irq-bcm7038-l1: Remove .irq_cpu_offline()
-Date:   Tue, 19 Oct 2021 14:58:44 -0700
-Message-Id: <20211019215855.1920099-4-f.fainelli@gmail.com>
+Subject: [PATCH v5 00/14] Modular Broadcom irqchip drivers
+Date:   Tue, 19 Oct 2021 14:58:41 -0700
+Message-Id: <20211019215855.1920099-1-f.fainelli@gmail.com>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20211019215855.1920099-1-f.fainelli@gmail.com>
-References: <20211019215855.1920099-1-f.fainelli@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-With arch/mips/kernel/smp-bmips.c having been migrated away from
-irq_cpu_offline() and use irq_migrate_all_off_this_cpu() instead, we no
-longer need to implement an .irq_cpu_offline() callback. This is a
-necessary change to facilitate the building of this driver as a module.
+Hi Thomas, Marc,
 
-Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
----
- drivers/irqchip/irq-bcm7038-l1.c | 30 ------------------------------
- 1 file changed, 30 deletions(-)
+This patch series aims at allowing the 3 interrupt controller drivers
+used on Broadcom STB platforms to be built as modules in order for those
+to be shipped in a GKI enabled system (Android).
 
-diff --git a/drivers/irqchip/irq-bcm7038-l1.c b/drivers/irqchip/irq-bcm7038-l1.c
-index a035c385ca7a..750156217c82 100644
---- a/drivers/irqchip/irq-bcm7038-l1.c
-+++ b/drivers/irqchip/irq-bcm7038-l1.c
-@@ -221,33 +221,6 @@ static int bcm7038_l1_set_affinity(struct irq_data *d,
- 	return 0;
- }
- 
--#ifdef CONFIG_SMP
--static void bcm7038_l1_cpu_offline(struct irq_data *d)
--{
--	struct cpumask *mask = irq_data_get_affinity_mask(d);
--	int cpu = smp_processor_id();
--	cpumask_t new_affinity;
--
--	/* This CPU was not on the affinity mask */
--	if (!cpumask_test_cpu(cpu, mask))
--		return;
--
--	if (cpumask_weight(mask) > 1) {
--		/*
--		 * Multiple CPU affinity, remove this CPU from the affinity
--		 * mask
--		 */
--		cpumask_copy(&new_affinity, mask);
--		cpumask_clear_cpu(cpu, &new_affinity);
--	} else {
--		/* Only CPU, put on the lowest online CPU */
--		cpumask_clear(&new_affinity);
--		cpumask_set_cpu(cpumask_first(cpu_online_mask), &new_affinity);
--	}
--	irq_set_affinity_locked(d, &new_affinity, false);
--}
--#endif
--
- static int __init bcm7038_l1_init_one(struct device_node *dn,
- 				      unsigned int idx,
- 				      struct bcm7038_l1_chip *intc)
-@@ -396,9 +369,6 @@ static struct irq_chip bcm7038_l1_irq_chip = {
- 	.irq_mask		= bcm7038_l1_mask,
- 	.irq_unmask		= bcm7038_l1_unmask,
- 	.irq_set_affinity	= bcm7038_l1_set_affinity,
--#ifdef CONFIG_SMP
--	.irq_cpu_offline	= bcm7038_l1_cpu_offline,
--#endif
- #ifdef CONFIG_PM_SLEEP
- 	.irq_set_wake		= bcm7038_l1_set_wake,
- #endif
+The irq-bcm7038-l1 requires us to export a number of symbols, which is
+not great, but there are not obvious solutions other than adding
+accessor functions to get the same information.
+
+Assuming you are happy with the changes though, please do take the last
+two changes as well through your tree.
+
+Thanks!
+
+Changes in v5:
+
+- put patch #9 as the first one
+- add missing platform_device argument to the irq-bcm7038-l1 and
+  irq-brcmstb-l2 drivers (Marc)
+
+Changes in v4:
+
+- added Thomas' Acked-by for patch #1
+- added Rob's Reviewed-by for patch 9 and updated qcom-pdc.c as
+  suggested
+- s/argument/parameter/ in patch #14 as suggested by Sergey
+
+Changes in v3:
+
+- avoid the use of the cpu_logical_map array for platforms other than
+  MIPS
+- removed the bogus irq_set_affinity callback for platforms other than
+  MIPS
+- bring-back the export of irq_gc_noop() lost in the v2
+
+Changes in v2:
+
+- avoid using irq_to_desc() and use irq_get_irq_data() instead
+- re-order patches to avoid linking failure for irq-brcmstb-l2
+- removed the use of .irq_cpu_offline() and converted BMIPS to use
+  irq_migrate_all_off_this_cpu()
+- avoid exporting of_irq_count() and use a platform device passed
+  down from the irqchip platform driver registration code instead
+- added kernel-doc fix
+
+Florian Fainelli (14):
+  irqchip: Provide platform_device to of_irq_init_cb_t
+  MIPS: BMIPS: Remove use of irq_cpu_offline
+  irqchip/irq-bcm7038-l1: Remove .irq_cpu_offline()
+  irqchip/irq-bcm7038-l1: Use irq_get_irq_data()
+  irqchip/irq-bcm7038-l1: Gate use of CPU logical map to MIPS
+  irqchip/irq-bcm7038-l1: Restrict affinity setting to MIPS
+  irqchip/irq-bcm7038-l1: Switch to IRQCHIP_PLATFORM_DRIVER
+  genirq: Export irq_gc_{unmask_enable,mask_disable}_reg
+  irqchip/irq-brcmstb-l2: Switch to IRQCHIP_PLATFORM_DRIVER
+  genirq: Export irq_gc_noop()
+  irqchip/irq-bcm7120-l2: Switch to IRQCHIP_PLATFORM_DRIVER
+  arm64: broadcom: Removed forced select of interrupt controllers
+  ARM: bcm: Removed forced select of interrupt controllers
+  irqchip: Fix kernel-doc parameter typo for IRQCHIP_DECLARE
+
+ arch/arm/mach-bcm/Kconfig        |  4 ---
+ arch/arm64/Kconfig.platforms     |  3 --
+ arch/mips/Kconfig                |  1 +
+ arch/mips/kernel/smp-bmips.c     |  3 +-
+ drivers/irqchip/Kconfig          | 12 ++++++--
+ drivers/irqchip/irq-bcm7038-l1.c | 50 +++++++++-----------------------
+ drivers/irqchip/irq-bcm7120-l2.c | 28 ++++++++++--------
+ drivers/irqchip/irq-brcmstb-l2.c | 22 ++++++++------
+ drivers/irqchip/irqchip.c        |  2 +-
+ drivers/irqchip/qcom-pdc.c       |  3 +-
+ drivers/of/irq.c                 |  2 +-
+ include/linux/irqchip.h          |  2 +-
+ include/linux/of_irq.h           |  5 +++-
+ kernel/irq/generic-chip.c        |  3 ++
+ 14 files changed, 66 insertions(+), 74 deletions(-)
+
 -- 
 2.25.1
 

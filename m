@@ -2,105 +2,88 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9ACFCC433EF
-	for <linux-mips@archiver.kernel.org>; Tue, 19 Oct 2021 14:47:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 62B40C433F5
+	for <linux-mips@archiver.kernel.org>; Tue, 19 Oct 2021 16:44:58 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 7FC8D6115A
-	for <linux-mips@archiver.kernel.org>; Tue, 19 Oct 2021 14:47:01 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 3C58D61154
+	for <linux-mips@archiver.kernel.org>; Tue, 19 Oct 2021 16:44:58 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232633AbhJSOtN (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 19 Oct 2021 10:49:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40066 "EHLO
+        id S233142AbhJSQrK (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 19 Oct 2021 12:47:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40370 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232713AbhJSOsA (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Tue, 19 Oct 2021 10:48:00 -0400
-Received: from baptiste.telenet-ops.be (baptiste.telenet-ops.be [IPv6:2a02:1800:120:4::f00:13])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECEBAC0617AF
-        for <linux-mips@vger.kernel.org>; Tue, 19 Oct 2021 07:45:32 -0700 (PDT)
-Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed20:b4c3:ba80:54db:46f])
-        by baptiste.telenet-ops.be with bizsmtp
-        id 7qlT2600G12AN0U01qlTMy; Tue, 19 Oct 2021 16:45:30 +0200
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1mcqMp-006B4a-D3; Tue, 19 Oct 2021 16:45:27 +0200
-Received: from geert by rox.of.borg with local (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1mcqMn-00FABL-P2; Tue, 19 Oct 2021 16:45:25 +0200
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-To:     Miguel Ojeda <ojeda@kernel.org>
-Cc:     Robin van der Gracht <robin@protonic.nl>,
+        with ESMTP id S229991AbhJSQrJ (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Tue, 19 Oct 2021 12:47:09 -0400
+Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC2DFC06161C;
+        Tue, 19 Oct 2021 09:44:56 -0700 (PDT)
+Received: by mail-io1-xd2e.google.com with SMTP id b188so16221203iof.8;
+        Tue, 19 Oct 2021 09:44:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=m9fn5L6c5k5bZQVkLpvPb3DcbU31aZHyPs/0zFNYnKw=;
+        b=Qmc8AKuvYSGTXy1UfB1lkKw1L+FWpdGg2Hfm0XmOQHqKbWb+Uw/ybPukwBAYFg59In
+         drTwnh7LC3GXfBPHcoBfUjXF7MYNqy00J/EgwNMMtWvVQoo8RKI3SNpGBaRivhtFz3FE
+         X9xd/aly8rPbbPk7C4czUV7nZCQMFkVmn47+fO/kFtQ7L416n4FVdqK/Z4Yb53JkcOt9
+         gA2DxHPB5v9h+Vx/59Cc5Bm5aTiyAJZ2uuSbxbGVekbbT1LDOH5WzXkrnVhHvRIr9rC7
+         mGXm8AaihAP2VlfpgpH7nYiTRMCFXjnZQ3QeelO/cmZ+y6cgK1VTndw01/pPSCO14sDo
+         qymA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=m9fn5L6c5k5bZQVkLpvPb3DcbU31aZHyPs/0zFNYnKw=;
+        b=jGD90NOisi306wwNsZbtOBh7EwKm4saXRW9ONY9rc4vspEJWsmPQ5jaNXcp/idNODy
+         p0l4TSWnUaAm/41dxfx/koVFStTtRsRCzXZiUCZZd9288F4tEwQZl3GMRKcBgBUNQufQ
+         zOqQ1jgO5fmujoTtmLW8D7Bg7v1T5hY8d7XDj/ZBDWEJ/sFjKnLE93ozOthNALIaaLOy
+         VXeIhUoF05QkzzTZ6ixd2nz4rNeyag39bAwD1lYYv65JK6nwfLanTtKHwALkq3pnM+Ou
+         xdGoXMN6+v4BQIvLiQfNBHi7CEKWryz+yjY9lJ/grdaymkDgJsFiKoi6OWvUHjB4AXYL
+         ONCQ==
+X-Gm-Message-State: AOAM533bJMKrePhDbxYZcGBCdUoyH0o/RSoEUwKFezYwCdUn0smDy0RS
+        PhE6uaUV5Cktrp81F3BBNmaewdvpH6bLKMtl0AM=
+X-Google-Smtp-Source: ABdhPJwZgjBGY3VH8kD4PIFTbQ7BW6MwBzb9/uTGndsGv78ts4EkogRu9XIq17it5wCIg9iUyhd6DkWedo6YwdQ/8ws=
+X-Received: by 2002:a05:6602:2d4e:: with SMTP id d14mr20346152iow.172.1634661896156;
+ Tue, 19 Oct 2021 09:44:56 -0700 (PDT)
+MIME-Version: 1.0
+References: <20211019144520.3613926-1-geert@linux-m68k.org>
+In-Reply-To: <20211019144520.3613926-1-geert@linux-m68k.org>
+From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date:   Tue, 19 Oct 2021 18:44:45 +0200
+Message-ID: <CANiq72=wnrwGbWygt2R_rsyKf3hq6vJUad4NDJwR4FeNFHZ55Q@mail.gmail.com>
+Subject: Re: [PATCH v8 00/21] auxdisplay: ht16k33: Add character display support
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Miguel Ojeda <ojeda@kernel.org>,
+        Robin van der Gracht <robin@protonic.nl>,
         Rob Herring <robh+dt@kernel.org>,
         Paul Burton <paulburton@kernel.org>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Pavel Machek <pavel@ucw.cz>, Marek Behun <marek.behun@nic.cz>,
-        devicetree@vger.kernel.org, linux-leds@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH v8 10/21] auxdisplay: ht16k33: Fix frame buffer device blanking
-Date:   Tue, 19 Oct 2021 16:45:09 +0200
-Message-Id: <20211019144520.3613926-11-geert@linux-m68k.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20211019144520.3613926-1-geert@linux-m68k.org>
-References: <20211019144520.3613926-1-geert@linux-m68k.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, linux-leds@vger.kernel.org,
+        linux-mips@vger.kernel.org,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-As the ht16k33 frame buffer sub-driver does not register an
-fb_ops.fb_blank() handler, blanking does not work:
+Hi Geert,
 
-    $ echo 1 > /sys/class/graphics/fb0/blank
-    sh: write error: Invalid argument
+On Tue, Oct 19, 2021 at 4:45 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
+>
+> The Holtek HT16K33 LED controller is not only used for driving
+> dot-matrix displays, but also for driving segment displays.
+> The current auxdisplay driver is limited to dot-matrix displays, which
+> are exposed as a frame buffer device.
+>
+> This patch series extends the driver to 4-digit 7-segment and quad
+> 14-segment alphanumeric displays, allowing the user to display and
+> scroll text messages.
 
-Fix this by providing a handler that always returns zero, to make sure
-blank events will be sent to the actual device handling the backlight.
+Thanks for all your work on this. Unless somebody is against this, I
+will pick it up.
 
-Reported-by: Robin van der Gracht <robin@protonic.nl>
-Suggested-by: Robin van der Gracht <robin@protonic.nl>
-Fixes: 8992da44c6805d53 ("auxdisplay: ht16k33: Driver for LED controller")
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
----
-v8:
-  - No changes,
-
-v7:
-  - New.
----
- drivers/auxdisplay/ht16k33.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
-
-diff --git a/drivers/auxdisplay/ht16k33.c b/drivers/auxdisplay/ht16k33.c
-index 2b630e194570f6e5..ed5808349990782c 100644
---- a/drivers/auxdisplay/ht16k33.c
-+++ b/drivers/auxdisplay/ht16k33.c
-@@ -219,6 +219,15 @@ static const struct backlight_ops ht16k33_bl_ops = {
- 	.check_fb	= ht16k33_bl_check_fb,
- };
- 
-+/*
-+ * Blank events will be passed to the actual device handling the backlight when
-+ * we return zero here.
-+ */
-+static int ht16k33_blank(int blank, struct fb_info *info)
-+{
-+	return 0;
-+}
-+
- static int ht16k33_mmap(struct fb_info *info, struct vm_area_struct *vma)
- {
- 	struct ht16k33_priv *priv = info->par;
-@@ -231,6 +240,7 @@ static const struct fb_ops ht16k33_fb_ops = {
- 	.owner = THIS_MODULE,
- 	.fb_read = fb_sys_read,
- 	.fb_write = fb_sys_write,
-+	.fb_blank = ht16k33_blank,
- 	.fb_fillrect = sys_fillrect,
- 	.fb_copyarea = sys_copyarea,
- 	.fb_imageblit = sys_imageblit,
--- 
-2.25.1
-
+Cheers,
+Miguel

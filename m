@@ -2,91 +2,208 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 140CBC433F5
-	for <linux-mips@archiver.kernel.org>; Tue, 19 Oct 2021 08:33:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A7E72C433F5
+	for <linux-mips@archiver.kernel.org>; Tue, 19 Oct 2021 14:45:35 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id EFD6160EE5
-	for <linux-mips@archiver.kernel.org>; Tue, 19 Oct 2021 08:33:26 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 8854A61212
+	for <linux-mips@archiver.kernel.org>; Tue, 19 Oct 2021 14:45:35 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230072AbhJSIfi (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 19 Oct 2021 04:35:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38870 "EHLO
+        id S232040AbhJSOrr (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 19 Oct 2021 10:47:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40060 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229930AbhJSIfi (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Tue, 19 Oct 2021 04:35:38 -0400
-X-Greylist: delayed 46841 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 19 Oct 2021 01:33:25 PDT
-Received: from angie.orcam.me.uk (angie.orcam.me.uk [IPv6:2001:4190:8020::34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id D5EEEC06161C;
-        Tue, 19 Oct 2021 01:33:25 -0700 (PDT)
-Received: by angie.orcam.me.uk (Postfix, from userid 500)
-        id 42E8F92009C; Tue, 19 Oct 2021 10:33:24 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by angie.orcam.me.uk (Postfix) with ESMTP id 3BA1F92009B;
-        Tue, 19 Oct 2021 10:33:24 +0200 (CEST)
-Date:   Tue, 19 Oct 2021 10:33:24 +0200 (CEST)
-From:   "Maciej W. Rozycki" <macro@orcam.me.uk>
-To:     Feiyang Chen <chris.chenfeiyang@gmail.com>
-cc:     Zhou Yanjie <zhouyanjie@wanyeetech.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>, tglx@linutronix.de,
-        peterz@infradead.org, luto@kernel.org, arnd@arndb.de,
-        Feiyang Chen <chenfeiyang@loongson.cn>,
-        linux-mips@vger.kernel.org, linux-arch@vger.kernel.org,
-        chenhuacai@kernel.org, "H. Nikolaus Schaller" <hns@goldelico.com>
-Subject: Re: [PATCH v2 0/2] MIPS: convert to generic entry
-In-Reply-To: <CACWXhK=Au5qc96NBQObHnLAL+4wNMqo6apvK5-572Hohs8OrYQ@mail.gmail.com>
-Message-ID: <alpine.DEB.2.21.2110191004440.31442@angie.orcam.me.uk>
-References: <cover.1631583258.git.chenfeiyang@loongson.cn> <3907ec0f-42a0-ff4c-d4ea-63ad2a1516c2@flygoat.com> <CACWXhK=YW6Kn9FO1JrU1mP_xxMnEF_ajkD6hou=4rpgR2hOM5w@mail.gmail.com> <20210921155708.GA12237@alpha.franken.de> <ef429f0f-7cc9-2625-3700-47dc459ee681@wanyeetech.com>
- <8a6f5c78-62c0-5d58-1386-dabfcacc112a@wanyeetech.com> <alpine.DEB.2.21.2110182128090.31442@angie.orcam.me.uk> <CACWXhK=Au5qc96NBQObHnLAL+4wNMqo6apvK5-572Hohs8OrYQ@mail.gmail.com>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+        with ESMTP id S231847AbhJSOrp (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Tue, 19 Oct 2021 10:47:45 -0400
+Received: from albert.telenet-ops.be (albert.telenet-ops.be [IPv6:2a02:1800:110:4::f00:1a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A36F4C061765
+        for <linux-mips@vger.kernel.org>; Tue, 19 Oct 2021 07:45:30 -0700 (PDT)
+Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed20:b4c3:ba80:54db:46f])
+        by albert.telenet-ops.be with bizsmtp
+        id 7qlS2600p12AN0U06qlTi7; Tue, 19 Oct 2021 16:45:29 +0200
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1mcqMo-006B4N-Lx; Tue, 19 Oct 2021 16:45:26 +0200
+Received: from geert by rox.of.borg with local (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1mcqMn-00FAAE-H4; Tue, 19 Oct 2021 16:45:25 +0200
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+To:     Miguel Ojeda <ojeda@kernel.org>
+Cc:     Robin van der Gracht <robin@protonic.nl>,
+        Rob Herring <robh+dt@kernel.org>,
+        Paul Burton <paulburton@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Pavel Machek <pavel@ucw.cz>, Marek Behun <marek.behun@nic.cz>,
+        devicetree@vger.kernel.org, linux-leds@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH v8 00/21] auxdisplay: ht16k33: Add character display support
+Date:   Tue, 19 Oct 2021 16:44:59 +0200
+Message-Id: <20211019144520.3613926-1-geert@linux-m68k.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Tue, 19 Oct 2021, Feiyang Chen wrote:
+	Hi Miguel et al,
 
-> > > Score Without Patches  Score With Patches  Performance Change SoC Model
-> > >        105.9                102.1              -3.6%  JZ4775
-> > >        132.4                124.1              -6.3%  JZ4780(SMP off)
-> > >        170.2                155.7             -8.5%  JZ4780(SMP on)
-> > >        101.3                 91.5              -9.7%  X1000E
-> > >        187.1                179.4              -4.1%  X1830
-> > >        324.9                314.3              -3.3%  X2000(SMT off)
-> > >        394.6                373.9              -5.2%  X2000(SMT off)
-> > >
-> > >
-> > > Compared with the V1 version, there are some improvements, but the performance
-> > > loss is still a bit obvious
-> >
-> >  The MIPS port of Linux has always had the pride of having a particularly
-> > low syscall overhead and I'd rather we didn't lose this quality.
-> 
-> Hi, Maciej,
-> 
-> 1. The current trend is to use generic code, so I think this work is
-> worth it, even if there is some performance loss.
+The Holtek HT16K33 LED controller is not only used for driving
+dot-matrix displays, but also for driving segment displays.
+The current auxdisplay driver is limited to dot-matrix displays, which
+are exposed as a frame buffer device.
 
- Well, a trend is not a proper justification on its own for existing code, 
-and mature one for that matter, that works.  Surely it might be for an 
-entirely new port, but the MIPS port is not exactly one.
+This patch series extends the driver to 4-digit 7-segment and quad
+14-segment alphanumeric displays, allowing the user to display and
+scroll text messages.
 
-> 2. We tested the performance on 5.15-rc1~rc5 and the performance
-> loss on JZ4780 (SMP off) is not so obvious (about -3%).
+List of patches:
+  - Patch 1 provides font data for displaying ASCII characters on
+    14-segment displays,
+  - Patch 2 updates the HT16K33 DT bindings for segment displays,
+  - Patches 3-5 contain a bug fix and small improvements for the
+    Imagination Technologies ASCII LCD Display driver,
+  - Patch 6 extracts the character line display core support from the
+    Imagination Technologies ASCII LCD Display driver, for reuse,
+  - Patches 7-8 contain cleanups and improvements for the character line
+    display core driver,
+  - Patches 9-17 contain a bug fixes, cleanups and improvements for the
+    HT16K33 driver, to prepare for segment display support,
+  - Patch 18 adds support for 7/14-segment displays to the HT16K33
+    driver,
+  - Patch 19 updates the HT16K33 DT bindings to document an LED subnode,
+  - Patch 20 adds segment display LED support to the HT16K33 driver,
+    to make use of hardware blinking, and to expose display color,
+  - Patch 21 converts the HT16K33 driver to use device properties.
 
- I've seen teams work hard to improve performance by less than 3%, so 
-depending on how you look at it the loss is not necessarily small, even if 
-not abysmal.  And I find the figure of almost 10% cited for another system 
-even more worrisome.  Also you've written the figures are from UnixBench, 
-which I suppose measures some kind of an average across various workloads.  
-Can you elaborate on the methodology used by that benchmark?
+Changes compared to v7[1]:
+  - Fix array upper bound check in map_to_seg14(),
+  - Add Reviewed-by, Acked-by.
 
- Can you tell me what the performance loss is for a cheap syscall such as 
-`getuid'?  That would indicate how much is actually lost in the invocation 
-overhead.
+Changes compared to v6[2]:
+  - Add Acked-by, Reviewed-by,
+  - New patch "auxdisplay: ht16k33: Fix frame buffer device blanking",
+  - Add linux,default-trigger to example,
+  - Add missing call to ht16k33_brightness_set() in
+    ht16k33_fbdev_probe(), to make sure brightness and blinking are set
+    to a sane state,
+  - Integrate "auxdisplay: ht16k33: Make use of device properties" into
+    this series.
 
- With that amount known, would you be able to indicate where exactly the 
-performance is getting lost in generic code?  Can it be improved?
+Changes compared to v5[3]:
+  - Add Reviewed-by,
+  - Reorder operations in ht16k33_led_probe() to ease future conversion
+    to device properties.
 
-  Maciej
+Changes compared to v4[4]:
+  - Add Reviewed-by,
+  - Add missing select NEW_LEDS.
+
+Changes compared to v3[5]:
+  - Combine compatible values for 7/14 segment displays into an enum,
+  - Add Reviewed-by,
+  - Add missing select LEDS_CLASS.
+
+Changes compared to v2[6]:
+  - Drop color property from display node,
+  - Use compat_only_sysfs_link_entry_to_kobj() instead of cooking our
+    own helper on top of kernfs_create_link(),
+  - Use "err" instead of "error" to be consistent with existing driver
+    naming style,
+  - Pass "dev" instead of "client" to ht16k33_fbdev_probe() and
+    ht16k33_seg_probe(),
+  - Drop local variable "node",
+  - Remove unneeded inclusion of <linux/leds.h> and <linux/of_device.h>,
+  - Document LED subnode,
+  - Remove unneeded C++ comment,
+  - Make the creation of the LED device dependent on the presence of the
+    "led" subnode in DT, so it can be used in dot-matrix mode too.
+  - Use led_init_data() and devm_led_classdev_register_ext() to retrieve
+    all LED properties from DT, instead of manual LED name construction
+    based on just the "color" property.
+
+Changes compared to v1[7]:
+  - Fix type of color to uint32,
+  - "refresh-rate-hz" is still required for dot-matrix displays.
+  - Move "select LINEDISP" for HT16K33 symbol to correct patch,
+  - Add backwards compatibility "message" symlink to img-ascii-lcd,
+  - Connect backlight to fbdev in ht16k33 dot-matrix mode,
+  - Set "err = -EINVAL" in switch() case that cannot happen,
+  - Use "auxdisplay" instead of DRIVER_NAME in LED name.
+
+This series has been tested using an Adafruit 0.54" Quad Alphanumeric
+Red FeatherWing Display, connected to an OrangeCrab ECP5 FPGA board
+running a 64 MHz VexRiscv RISC-V softcore.
+7-segment display support is based purely on schematics, and has not
+been tested on actual hardware.  The changes to img-ascii-lcd.c are also
+untested, due to lack of hardware.
+
+Thanks for applying!
+
+[1] "[PATCH v7 00/21] auxdisplay: ht16k33: Add character display support"
+    https://lore.kernel.org/r/20211012183327.649865-1-geert@linux-m68k.org/
+[2] "[PATCH v6 00/19] auxdisplay: ht16k33: Add character display support"
+    https://lore.kernel.org/r/20210914143835.511051-1-geert@linux-m68k.org/
+[3] "[PATCH v5 00/19] auxdisplay: ht16k33: Add character display support"
+    https://lore.kernel.org/r/20210811095759.1281480-1-geert@linux-m68k.org/
+[3] "[PATCH v4 00/19] auxdisplay: ht16k33: Add character display support"
+    https://lore.kernel.org/r/20210727140459.3767788-1-geert@linux-m68k.org/
+[4] "[PATCH v3 00/19] auxdisplay: ht16k33: Add character display support"
+    https://lore.kernel.org/r/20210714151130.2531831-1-geert@linux-m68k.org/
+[5] "[PATCH v2 00/18] auxdisplay: ht16k33: Add character display support"
+    https://lore.kernel.org/r/20210625125902.1162428-1-geert@linux-m68k.org/
+[6] "[PATCH 00/17] auxdisplay: ht16k33: Add character display support"
+    https://lore.kernel.org/r/20210322144848.1065067-1-geert@linux-m68k.org/
+
+Geert Uytterhoeven (21):
+  uapi: Add <linux/map_to_14segment.h>
+  dt-bindings: auxdisplay: ht16k33: Document Adafruit segment displays
+  auxdisplay: img-ascii-lcd: Fix lock-up when displaying empty string
+  auxdisplay: img-ascii-lcd: Add helper variable dev
+  auxdisplay: img-ascii-lcd: Convert device attribute to sysfs_emit()
+  auxdisplay: Extract character line display core support
+  auxdisplay: linedisp: Use kmemdup_nul() helper
+  auxdisplay: linedisp: Add support for changing scroll rate
+  auxdisplay: ht16k33: Connect backlight to fbdev
+  auxdisplay: ht16k33: Fix frame buffer device blanking
+  auxdisplay: ht16k33: Use HT16K33_FB_SIZE in ht16k33_initialize()
+  auxdisplay: ht16k33: Remove unneeded error check in keypad probe()
+  auxdisplay: ht16k33: Convert to simple i2c probe function
+  auxdisplay: ht16k33: Add helper variable dev
+  auxdisplay: ht16k33: Move delayed work
+  auxdisplay: ht16k33: Extract ht16k33_brightness_set()
+  auxdisplay: ht16k33: Extract frame buffer probing
+  auxdisplay: ht16k33: Add support for segment displays
+  dt-bindings: auxdisplay: ht16k33: Document LED subnode
+  auxdisplay: ht16k33: Add LED support
+  auxdisplay: ht16k33: Make use of device properties
+
+ .../bindings/auxdisplay/holtek,ht16k33.yaml   |  32 +-
+ drivers/auxdisplay/Kconfig                    |  12 +-
+ drivers/auxdisplay/Makefile                   |   1 +
+ drivers/auxdisplay/ht16k33.c                  | 500 ++++++++++++++----
+ drivers/auxdisplay/img-ascii-lcd.c            | 205 ++-----
+ drivers/auxdisplay/line-display.c             | 261 +++++++++
+ drivers/auxdisplay/line-display.h             |  43 ++
+ include/uapi/linux/map_to_14segment.h         | 241 +++++++++
+ 8 files changed, 1019 insertions(+), 276 deletions(-)
+ create mode 100644 drivers/auxdisplay/line-display.c
+ create mode 100644 drivers/auxdisplay/line-display.h
+ create mode 100644 include/uapi/linux/map_to_14segment.h
+
+-- 
+2.25.1
+
+Gr{oetje,eeting}s,
+
+						Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+							    -- Linus Torvalds

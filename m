@@ -2,93 +2,88 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 91B6BC433F5
-	for <linux-mips@archiver.kernel.org>; Sat, 23 Oct 2021 01:46:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5E6B9C433FE
+	for <linux-mips@archiver.kernel.org>; Sat, 23 Oct 2021 18:32:33 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 69B0B61052
-	for <linux-mips@archiver.kernel.org>; Sat, 23 Oct 2021 01:46:45 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 3698860F25
+	for <linux-mips@archiver.kernel.org>; Sat, 23 Oct 2021 18:32:33 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229935AbhJWBtD (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 22 Oct 2021 21:49:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36094 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229925AbhJWBtC (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Fri, 22 Oct 2021 21:49:02 -0400
-Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C751C061764
-        for <linux-mips@vger.kernel.org>; Fri, 22 Oct 2021 18:46:44 -0700 (PDT)
-Received: by mail-io1-xd29.google.com with SMTP id q6so3535346iod.7
-        for <linux-mips@vger.kernel.org>; Fri, 22 Oct 2021 18:46:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=4trz9OXm39y9KgQDBqf5aPCATrUHsPHib60Qy9yey4Q=;
-        b=FgR2N7rU9X6o8frU+S7MeSZdqRkWVFXm39z6hK29t4N70YRasPn35E28zlSF6G+uyw
-         Rgm4MPxKH0MwdhQOfuu/k3k484ngabemJ/F2R6x/n95XCFjGqsEzWTKosypXPjZ8FGMn
-         h9VC5mA3bZ17PHB1drFqM2eDuosyFpDqI41aA0iyvEGmL6CQxy9bp7NDIBvJH+c7mL04
-         zL4Lhy+UlZN3ukZQ7noO0vBPfGvJolM/p4ZeOxgglJApMHFtAYZe9YOEFth4AY3q8lHq
-         I2YbrP6bZb8PedFuEHJREH9tALGGTsvz7cLH5t/jj4hfa1p6yKC6MsusSrG+d+n7QWNf
-         E76A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=4trz9OXm39y9KgQDBqf5aPCATrUHsPHib60Qy9yey4Q=;
-        b=ia7G9/R0RVdF5+6e+nO3aeucUt9YnN9PYkAMfdo8Mb36CHax+hzPO4WC+N16VUJBoC
-         Ky7brAePSMSY8pQUlf0c78v1kidWyQsyA3DsjhDMceoeSD7P46zmHDABRIWV1SwV0lRq
-         apkzr0tyWLgBZqaIxgoCD6COkaxvGTJ1fLQjQnW5lQgs2AqbXkP550M5PYyiwwujxKaR
-         qL/E3SOAH8mm9O0Rp8FZxcglDRT/ZSbsuMpqeCtertGRhj+fuMqbcfeJnotaI7R2Edf0
-         RYEowHcAP+DXIDNtTQXUmJcguU2MNOXT176Muzh5R6xnLr/zXdy7vWoAfIaUi+Ci+44U
-         TW2A==
-X-Gm-Message-State: AOAM530jLjV5JtydVb8Glkaim6r1nStDU6osO10D1XiTE9LW3pj6rVQ3
-        dIp7ae34GN/UICVwFKklhBp1nhqpo++K0Rs+x6A=
-X-Google-Smtp-Source: ABdhPJyhOEPH/Ngx1s2tWI/WxCj0DHFBFu/zKL/1c4zYy+IHdHAx8nh2WMWocTcmxVwCj9Ud0jIOaNz0AbwX1NkdIaw=
-X-Received: by 2002:a02:c65a:: with SMTP id k26mr2076899jan.29.1634953603774;
- Fri, 22 Oct 2021 18:46:43 -0700 (PDT)
+        id S230266AbhJWSeu (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Sat, 23 Oct 2021 14:34:50 -0400
+Received: from angie.orcam.me.uk ([78.133.224.34]:34350 "EHLO
+        angie.orcam.me.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230051AbhJWSeu (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Sat, 23 Oct 2021 14:34:50 -0400
+Received: by angie.orcam.me.uk (Postfix, from userid 500)
+        id 94E5592009C; Sat, 23 Oct 2021 20:32:29 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by angie.orcam.me.uk (Postfix) with ESMTP id 85BB192009B;
+        Sat, 23 Oct 2021 20:32:29 +0200 (CEST)
+Date:   Sat, 23 Oct 2021 20:32:29 +0200 (CEST)
+From:   "Maciej W. Rozycki" <macro@orcam.me.uk>
+To:     Jinyang He <hejinyang@loongson.cn>
+cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Paul Burton <paulburton@kernel.org>,
+        Jun-Ru Chang <jrjang@realtek.com>
+Subject: Re: [PATCH 4/4] MIPS: Add is_jr_ra_ins() to end the loop early
+In-Reply-To: <1610454557-25867-5-git-send-email-hejinyang@loongson.cn>
+Message-ID: <alpine.DEB.2.21.2110232023171.38243@angie.orcam.me.uk>
+References: <1610454557-25867-1-git-send-email-hejinyang@loongson.cn> <1610454557-25867-5-git-send-email-hejinyang@loongson.cn>
+User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
 MIME-Version: 1.0
-References: <20211022112708.962338-1-wanghaojun@loongson.cn> <20211022154544.GA11114@alpha.franken.de>
-In-Reply-To: <20211022154544.GA11114@alpha.franken.de>
-From:   =?UTF-8?B?5rGf5rWB5YS/?= <jiangliuer01@gmail.com>
-Date:   Sat, 23 Oct 2021 09:46:32 +0800
-Message-ID: <CAPhSAwtrkz9K_PvRm3viJ4HzZscwM1ZLWTLgY9MPtWYJhyNNKw@mail.gmail.com>
-Subject: Re: [PATCH] MIPS: Fix build error for brcmstb_gisb
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc:     Huacai Chen <chenhuacai@kernel.org>,
-        Wang Haojun <wanghaojun@loongson.cn>,
-        Li Xuefeng <lixuefeng@loongson.cn>, linux-mips@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-This was true before, But after 707a4cdf86e5d ("bus: brcmstb_gisb:
-Allow building as module") BRCMSTB_GISB_ARB can be a module  in
-linux-next.
+On Tue, 12 Jan 2021, Jinyang He wrote:
 
-Thomas Bogendoerfer <tsbogend@alpha.franken.de> =E4=BA=8E2021=E5=B9=B410=E6=
-=9C=8822=E6=97=A5=E5=91=A8=E4=BA=94 =E4=B8=8B=E5=8D=8811:46=E5=86=99=E9=81=
-=93=EF=BC=9A
->
-> On Fri, Oct 22, 2021 at 07:27:08PM +0800, Wang Haojun wrote:
-> > The GISB bus error handler need board_be_handler, but this
-> > code cannot used it when BRCMSTB_GISB_ARB is a module.
-> >
-> > ERROR: modpost: "board_be_handler" [drivers/bus/brcmstb_gisb.ko] undefi=
-ned!
->
-> maybe I'm missing a patch but in mips-next tree
->
-> config BRCMSTB_GISB_ARB
->         bool "Broadcom STB GISB bus arbiter"
->
-> this can't be a module...
->
-> Thomas.
->
-> --
-> Crap can work. Given enough thrust pigs will fly, but it's not necessaril=
-y a
-> good idea.                                                [ RFC1925, 2.3 =
-]
+> For those leaf functions, they are likely to have no stack operations.
+> Add is_jr_ra_ins() to determine whether jr ra has been touched before
+> the frame_size is found. Without this patch, the get frame_size operation
+> may be out of range and get the frame_size from the next nested function.
+> 
+> Signed-off-by: Jinyang He <hejinyang@loongson.cn>
+> ---
+>  arch/mips/kernel/process.c | 34 +++++++++++++++++++++++++++++++++-
+>  1 file changed, 33 insertions(+), 1 deletion(-)
+> 
+> diff --git a/arch/mips/kernel/process.c b/arch/mips/kernel/process.c
+> index bef8f8d..9e6f194 100644
+> --- a/arch/mips/kernel/process.c
+> +++ b/arch/mips/kernel/process.c
+> @@ -205,6 +205,36 @@ struct mips_frame_info {
+>  #define J_TARGET(pc,target)	\
+>  		(((unsigned long)(pc) & 0xf0000000) | ((target) << 2))
+>  
+> +static inline int is_jr_ra_ins(union mips_instruction *ip)
+> +{
+> +#ifdef CONFIG_CPU_MICROMIPS
+> +	/*
+> +	 * jr16 ra
+> +	 * jr ra
+> +	 */
+> +	if (mm_insn_16bit(ip->word >> 16)) {
+> +		if (ip->mm16_r5_format.opcode == mm_pool16c_op &&
+> +		    ip->mm16_r5_format.rt == mm_jr16_op &&
+> +		    ip->mm16_r5_format.imm == 31)
+> +			return 1;
+> +		return 0;
+> +	}
+> +
+> +	if (ip->r_format.opcode == mm_pool32a_op &&
+> +	    ip->r_format.func == mm_pool32axf_op &&
+> +	    ((ip->u_format.uimmediate >> 6) & GENMASK(9,0)) == mm_jalr_op &&
+> +            ip->r_format.rs == 31)
+> +		return 1;
+> +	return 0;
+> +#else
+
+ Without looking into it much, this is likely missing the point, because 
+while technically inteed JR and JR16 can be used with $ra in microMIPS 
+machine code (there's JRS too), in reality either JRC or JRADDIUSP will.
+
+ [Wading through e-mail recovered from mid-Jan linux-mips.org crash.]
+
+  Maciej

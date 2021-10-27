@@ -2,54 +2,54 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 911E5C43219
-	for <linux-mips@archiver.kernel.org>; Wed, 27 Oct 2021 21:18:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 13B34C433F5
+	for <linux-mips@archiver.kernel.org>; Wed, 27 Oct 2021 21:18:47 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 7D47760E73
+	by mail.kernel.org (Postfix) with ESMTP id 0017061151
 	for <linux-mips@archiver.kernel.org>; Wed, 27 Oct 2021 21:18:46 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244357AbhJ0VVK (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 27 Oct 2021 17:21:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53802 "EHLO
+        id S244307AbhJ0VVL (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 27 Oct 2021 17:21:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53836 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244384AbhJ0VUj (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 27 Oct 2021 17:20:39 -0400
-Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08B66C061745;
-        Wed, 27 Oct 2021 14:18:13 -0700 (PDT)
-Received: by mail-lj1-x229.google.com with SMTP id u5so6964540ljo.8;
-        Wed, 27 Oct 2021 14:18:12 -0700 (PDT)
+        with ESMTP id S244285AbhJ0VUn (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 27 Oct 2021 17:20:43 -0400
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C82C7C061767;
+        Wed, 27 Oct 2021 14:18:16 -0700 (PDT)
+Received: by mail-lf1-x132.google.com with SMTP id bi35so8957098lfb.9;
+        Wed, 27 Oct 2021 14:18:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=SC0z1BXiHBYdSnCagR43oAXvnFYzAsSZgTyQ9BiR6xA=;
-        b=OqqZ454WmFhFtJRhrw1iVetFaZ5cTmy1bK8cAKF7x4FJ4EjwPLEB4smQoL+kFj8hga
-         BjmXNHow4qrZGAK5gLKqSouT5oIb6yppthDueiLerRGv55Pbl/JgRUYLNcFzmXzu9NWO
-         EfhhNkXWXYZNWJhLg94zD8UyrvrtUOP73QnC8NTzMu/ENt6HanrdBXR7OCg2dyRE+fYN
-         1aO4sBj2Cdgy8VygaDgIGG5bFgsrX38xxJAfHh6M83eOLzNNbly5jBUwBwT1c3/ScSfl
-         6ZeIfaA93j63rbj1hC4fiWUjcO1LV9zENBfV1gxkADNuk/sNHvjjMOa2SIgObFEQihCd
-         GDlw==
+        bh=Vv5v7NJqa2pgRBcibgPiURAuuSzsOgTRkcWT+pa422M=;
+        b=VGbgvR+u/npCM8vNPn38NuZ+MIrzGhV81ZfjU+MvKS7AiNy8hSxCjA7ujiUYCw1avb
+         GAS28yQKe3RY82NkG0EyIE3kAScJ6kyKTE9XbDbIDpQ4/fNIy31zksAcsMcf8bk9+oZI
+         1wHpYlYvsjYNqCu/GmNzEr8yZmApiaFT6QsgmW5CvvcXj9w3x5S6f7cRGSestmqNVLhh
+         o9VGqc+8lw97d2ugsZVtaD4DU57/XiuAmduAg/0PPfMVALR+BIUtVf/vGT/0dSW22xNm
+         0l5U0Yw6vCM5eFCBC2LE4tjs/ctA+ukPU11+6ITwiBuENW3D9cS5YJDtN5S1cIiSXp7j
+         wB1A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=SC0z1BXiHBYdSnCagR43oAXvnFYzAsSZgTyQ9BiR6xA=;
-        b=wbUnRIcpHJ+gltwZsDMAo9hbnsDSxQzFryjtbcNlAdjBkTbcfYsSwlMmFYAh4kqOyB
-         lXSa2yix5iAY8OZYDiJKnfMJ2nsGdK1BXQ+h6u1ShwgDmS2b/MthgDuXCupr/kBq+fMW
-         KFM48bHgtbN0082eS75T0yIp2eUEQtBzlIcZRNj95Irh/kmNaIGDQ8NhHhWpNqxP2aT4
-         7Q/QkD2x8TnHxkDUxNfcH57ILWp9dodVb+QHBO8GRM7aP2Xfg0mKnSCgxZtfGQY6F7Z4
-         IjZyc3gSQjK35ABtTJ28VWYXxC3s30+8OBAu8R1V/n93whPdH8PyLPUgh/96r/BLlEdD
-         rO6g==
-X-Gm-Message-State: AOAM532dkPUImRYwpCA0ccjvNJ/4Av5pYCc1rS+yIvNdJ3hvSEUuTcd4
-        iypo3zGLL3wLoUEzAH4CSwg=
-X-Google-Smtp-Source: ABdhPJyn+zaTZhCmg6enYSN9xCI0Iv7Hmc/0KiXYEr7/tCUpX3ufLRXDN1zs5d0zePAVBcBxKNrxsQ==
-X-Received: by 2002:a05:651c:291:: with SMTP id b17mr380232ljo.90.1635369491425;
-        Wed, 27 Oct 2021 14:18:11 -0700 (PDT)
+        bh=Vv5v7NJqa2pgRBcibgPiURAuuSzsOgTRkcWT+pa422M=;
+        b=Hz2VMSoUFXqsYUhbpsexdFmEqO2SPaxLm2OBGSeTwjyL+yPF3IopSku7KMFUSF1WXm
+         L7PMUNhb+IRjkQPm824pbU1Jum26eYfWTFkMOZIveJEhsvCt6uj8F7HeeLhWXKLMIq4M
+         1Nvws8kBwkehx8WMK7grmc4K3YR2H/RHhm63nGEgSh2LvuXxrHYv2aG1dR5Omyzlk/Qi
+         S0gMjuMLwm/HOwiyWDbFTwmxA8WLSlzap6OpyGPVNKG9/0fDv87S1de94XyFw6RVMGKH
+         uuaEXLTjmBivB/aE4xSsEvZ/U/NmjIkgeEgZpAbhEw3Yqp2cC8ulD8SkormgU3vkAoX0
+         xRvQ==
+X-Gm-Message-State: AOAM532fizatyFQnJ/y3DQWcdEVsSWBmvolIw7LJabG+Hy9j6I0GHTCp
+        zbpBsDnveD7BM8cvp8JUU/w=
+X-Google-Smtp-Source: ABdhPJycpSIBttPaIIeVkgKRen/cPXePW42pRZoMffRx62Sit7qS0BR3pB37ZmB7g4nrP0IYjPFMsA==
+X-Received: by 2002:ac2:5c43:: with SMTP id s3mr133719lfp.248.1635369495190;
+        Wed, 27 Oct 2021 14:18:15 -0700 (PDT)
 Received: from localhost.localdomain (46-138-41-28.dynamic.spd-mgts.ru. [46.138.41.28])
-        by smtp.gmail.com with ESMTPSA id d7sm104336ljl.18.2021.10.27.14.18.09
+        by smtp.gmail.com with ESMTPSA id d7sm104336ljl.18.2021.10.27.14.18.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 27 Oct 2021 14:18:11 -0700 (PDT)
+        Wed, 27 Oct 2021 14:18:14 -0700 (PDT)
 From:   Dmitry Osipenko <digetx@gmail.com>
 To:     Thierry Reding <thierry.reding@gmail.com>,
         Jonathan Hunter <jonathanh@nvidia.com>,
@@ -113,9 +113,9 @@ Cc:     Catalin Marinas <catalin.marinas@arm.com>,
         xen-devel@lists.xenproject.org, linux-acpi@vger.kernel.org,
         linux-omap@vger.kernel.org, openbmc@lists.ozlabs.org,
         linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org
-Subject: [PATCH v2 10/45] ARM: Use do_kernel_power_off()
-Date:   Thu, 28 Oct 2021 00:16:40 +0300
-Message-Id: <20211027211715.12671-11-digetx@gmail.com>
+Subject: [PATCH v2 12/45] csky: Use do_kernel_power_off()
+Date:   Thu, 28 Oct 2021 00:16:42 +0300
+Message-Id: <20211027211715.12671-13-digetx@gmail.com>
 X-Mailer: git-send-email 2.33.1
 In-Reply-To: <20211027211715.12671-1-digetx@gmail.com>
 References: <20211027211715.12671-1-digetx@gmail.com>
@@ -132,24 +132,32 @@ be converted to the new power-off API.
 
 Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
 ---
- arch/arm/kernel/reboot.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ arch/csky/kernel/power.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/arch/arm/kernel/reboot.c b/arch/arm/kernel/reboot.c
-index 3044fcb8d073..2cb943422554 100644
---- a/arch/arm/kernel/reboot.c
-+++ b/arch/arm/kernel/reboot.c
-@@ -116,9 +116,7 @@ void machine_power_off(void)
+diff --git a/arch/csky/kernel/power.c b/arch/csky/kernel/power.c
+index 923ee4e381b8..86ee202906f8 100644
+--- a/arch/csky/kernel/power.c
++++ b/arch/csky/kernel/power.c
+@@ -9,16 +9,14 @@ EXPORT_SYMBOL(pm_power_off);
+ void machine_power_off(void)
  {
  	local_irq_disable();
- 	smp_send_stop();
--
 -	if (pm_power_off)
 -		pm_power_off();
 +	do_kernel_power_off();
+ 	asm volatile ("bkpt");
  }
  
- /*
+ void machine_halt(void)
+ {
+ 	local_irq_disable();
+-	if (pm_power_off)
+-		pm_power_off();
++	do_kernel_power_off();
+ 	asm volatile ("bkpt");
+ }
+ 
 -- 
 2.33.1
 

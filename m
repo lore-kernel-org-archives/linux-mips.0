@@ -2,94 +2,141 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 061ADC433F5
-	for <linux-mips@archiver.kernel.org>; Fri, 29 Oct 2021 13:15:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 33BFDC433EF
+	for <linux-mips@archiver.kernel.org>; Fri, 29 Oct 2021 14:15:35 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id DC3CA61175
-	for <linux-mips@archiver.kernel.org>; Fri, 29 Oct 2021 13:15:49 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 17B7C611C4
+	for <linux-mips@archiver.kernel.org>; Fri, 29 Oct 2021 14:15:35 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231749AbhJ2NSQ (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 29 Oct 2021 09:18:16 -0400
-Received: from 15.mo550.mail-out.ovh.net ([188.165.38.232]:49521 "EHLO
-        15.mo550.mail-out.ovh.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231714AbhJ2NSO (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Fri, 29 Oct 2021 09:18:14 -0400
-X-Greylist: delayed 2261 seconds by postgrey-1.27 at vger.kernel.org; Fri, 29 Oct 2021 09:18:14 EDT
-Received: from player770.ha.ovh.net (unknown [10.109.156.105])
-        by mo550.mail-out.ovh.net (Postfix) with ESMTP id 0375A239A6
-        for <linux-mips@vger.kernel.org>; Fri, 29 Oct 2021 12:38:02 +0000 (UTC)
-Received: from RCM-web10.webmail.mail.ovh.net (ip-194-187-74-233.konfederacka.maverick.com.pl [194.187.74.233])
-        (Authenticated sender: rafal@milecki.pl)
-        by player770.ha.ovh.net (Postfix) with ESMTPSA id 5DEA823DC6CDD;
-        Fri, 29 Oct 2021 12:37:51 +0000 (UTC)
-MIME-Version: 1.0
-Date:   Fri, 29 Oct 2021 14:37:51 +0200
-From:   =?UTF-8?Q?Rafa=C5=82_Mi=C5=82ecki?= <rafal@milecki.pl>
-To:     Florian Fainelli <f.fainelli@gmail.com>
-Cc:     linux-kernel@vger.kernel.org,
+        id S230495AbhJ2OSC (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 29 Oct 2021 10:18:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42376 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229603AbhJ2OSC (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Fri, 29 Oct 2021 10:18:02 -0400
+Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6D3FC061570;
+        Fri, 29 Oct 2021 07:15:33 -0700 (PDT)
+Received: by mail-ot1-x329.google.com with SMTP id o10-20020a9d718a000000b00554a0fe7ba0so7904596otj.11;
+        Fri, 29 Oct 2021 07:15:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=sender:subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=FjeCrfz/SMAAKTGgFnHdWUsg4jTPPYQ7mbdQ7GGvHvM=;
+        b=aDJK42Tr7SOfamQgbJYbFeVTFe1tQ7jhZsu/bJuH5OH99LuDU1KKvjtp3BKBhCOsb4
+         teIrlzB+AINF3n8xvk0RqbYFGDtDotVpVS0jq59JHWf5LoSqDN7ZumbXHQkqklD38seK
+         gMTqmIhFBJXoiKISuqtAYAztu4OSrVaTDnc8cKTyU7ZCdsniysIXuiRjW/tm4Vr5OfG0
+         NZ/ykVa45QceSKSAHXvvSbVxFIhUytH3qma7NNO/L37FmlFkAxEo98UBOAwB31dNZogj
+         KyEHlbv3MlA9ZoNxi0OiFiEaeDn7uAeDH1VQBrI+PPnUm3/Q4JzPIucq9zBxyB7PcfLF
+         QBvQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:sender:subject:to:cc:references:from:message-id
+         :date:user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=FjeCrfz/SMAAKTGgFnHdWUsg4jTPPYQ7mbdQ7GGvHvM=;
+        b=XudEVIkMr9x3XtSDXUuH89qFhXivTbQoCMVafrWYUu6UwjRhZWpHcn0gQ7DpipQgej
+         KJszFnuztMywffxCDR+7xa6BbMwN6Opfo5xp6mBhESVwMLltSK0xQhbrRiFFXm0rcBXo
+         MEdm74z9YTeDcnBFjjv+0jmx3oro25xawvFJy0r1NsVP7HZ7sAzT7OvUpxcqTLqa0ico
+         +G0Drs06F0OddppVSmrcgftWRfVhI9qD+sKNVeIAPSWmc08e2pQX+4ZK4Pf2Dy0+h4pi
+         f0M77Nt7dnTWN7QJlbVdD24t1QT+IyGB7r3lj3ftGJQUzVH1KNQ4IwwrWgtttXLYOebp
+         rIPA==
+X-Gm-Message-State: AOAM533ehIiQrCgMVE5qd3TB/1MO3BHMXl79+yj6gSC/cjIRDHBSJT/9
+        iKa4nh3+JejCl67QUTIA5fI=
+X-Google-Smtp-Source: ABdhPJxlU05xYxtD/CSwsg02wBXYZLunfmb3e5xa2B76SsDlD8R04iaKh7vf073LjxlNQGmqwfLoSg==
+X-Received: by 2002:a9d:748b:: with SMTP id t11mr8881816otk.151.1635516933250;
+        Fri, 29 Oct 2021 07:15:33 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id j8sm2038496otu.59.2021.10.29.07.15.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 29 Oct 2021 07:15:32 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Subject: Re: [PATCH 3/3] watchdog: bcm7038_wdt: support BCM4908 SoC
+To:     =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
         Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Rob Herring <robh+dt@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        bcm-kernel-feedback-list@broadcom.com,
-        Justin Chen <justinpopo6@gmail.com>,
-        linux-watchdog@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 5/7] watchdog: bcm7038_wdt: Add platform device id for
- bcm63xx-wdt
-In-Reply-To: <20211028172322.4021440-6-f.fainelli@gmail.com>
-References: <20211028172322.4021440-1-f.fainelli@gmail.com>
- <20211028172322.4021440-6-f.fainelli@gmail.com>
-User-Agent: Roundcube Webmail/1.4.11
-Message-ID: <02cb3c1a160854c92895d024e59a831b@milecki.pl>
-X-Sender: rafal@milecki.pl
-X-Originating-IP: 194.187.74.233
-X-Webmail-UserID: rafal@milecki.pl
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-X-Ovh-Tracer-Id: 16945356551679290136
-X-VR-SPAMSTATE: OK
-X-VR-SPAMSCORE: -100
-X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvtddrvdeghedgheduucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuqfggjfdpvefjgfevmfevgfenuceurghilhhouhhtmecuhedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhepggffhffvufgjfhgfkfigihgtgfesthejjhdttdervdenucfhrhhomheptfgrfhgrlhgpofhilhgvtghkihcuoehrrghfrghlsehmihhlvggtkhhirdhplheqnecuggftrfgrthhtvghrnhepveefvdetjeffueefkeeuuedvgefhgeegjefgvedvgeeiteduueeivdeltedthfetnecukfhppedtrddtrddtrddtpdduleegrddukeejrdejgedrvdeffeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhhouggvpehsmhhtphhouhhtpdhhvghlohepphhlrgihvghrjeejtddrhhgrrdhovhhhrdhnvghtpdhinhgvtheptddrtddrtddrtddpmhgrihhlfhhrohhmpehrrghfrghlsehmihhlvggtkhhirdhplhdprhgtphhtthhopehlihhnuhigqdhmihhpshesvhhgvghrrdhkvghrnhgvlhdrohhrgh
+        Rob Herring <robh+dt@kernel.org>
+Cc:     bcm-kernel-feedback-list@broadcom.com,
+        linux-watchdog@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-mips@vger.kernel.org,
+        =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>
+References: <20211028093059.32535-1-zajec5@gmail.com>
+ <20211028093059.32535-3-zajec5@gmail.com>
+ <f78d1573-4909-039d-8647-d4fc13205f47@gmail.com>
+ <ce6ccb22-a81c-336e-4b2e-44f9ad6de246@roeck-us.net>
+ <578ae650-e5c0-cb86-8f34-18736e5d9239@gmail.com>
+From:   Guenter Roeck <linux@roeck-us.net>
+Message-ID: <fb697712-9ced-04b2-f364-98027da09744@roeck-us.net>
+Date:   Fri, 29 Oct 2021 07:15:30 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
+MIME-Version: 1.0
+In-Reply-To: <578ae650-e5c0-cb86-8f34-18736e5d9239@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On 2021-10-28 19:23, Florian Fainelli wrote:
-> In order to phase out bcm63xx_wdt and use bcm7038_wdt instead, 
-> introduce
-> a platform_device_id table that allows both names to be matched.
+On 10/29/21 5:15 AM, Rafał Miłecki wrote:
+> On 28.10.2021 18:57, Guenter Roeck wrote:
+>> On 10/28/21 9:29 AM, Florian Fainelli wrote:
+>>> On 10/28/21 2:30 AM, Rafał Miłecki wrote:
+>>>> From: Rafał Miłecki <rafal@milecki.pl>
+>>>>
+>>>> Hardware supported by this driver goes back to the old bcm63xx days. It
+>>>> was then reused in BCM7038 and later also in BCM4908.
+>>>>
+>>>> Depending on SoC model registers layout differs a bit. This commit
+>>>> introduces support for per-chipset registers offsets & adds BCM4908
+>>>> layout.
+>>>>
+>>>> Later on BCM63xx SoCs support should be added too (probably as platform
+>>>> devices due to missing DT). Eventually this driver should replace
+>>>> bcm63xx_wdt.c.
+>>>>
+>> Seems unrelated / irrelevant in this commit log, except maybe after '---'.
+>>
+>>>> Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
+>>>> ---
+>>>
+>>> [snip]
+>>>
+>>>> +
+>>>> +static const u16 bcm7038_wdt_regs_bcm4908[] = {
+>>>> +    [BCM63XX_WDT_REG_DEFVAL]    = 0x28,
+>>
+>> REG_DEFVAL is an odd name for this register. I can see that the
+>> bcm63xx driver uses it, but in reality it seems to be the timeout
+>> value, not some default value, only the bcm63xx driver doesn't
+>> seem to use it properly. I think REG_TIMEOUT or similar would
+>> be a much better name.
 > 
-> Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
-> ---
->  drivers/watchdog/bcm7038_wdt.c | 7 +++++++
->  1 file changed, 7 insertions(+)
+> I used name used in Broadcom's SDK (and as I guess also in their
+> documentation too).
 > 
-> diff --git a/drivers/watchdog/bcm7038_wdt.c 
-> b/drivers/watchdog/bcm7038_wdt.c
-> index 506cd7ef9c77..2535f450e8a1 100644
-> --- a/drivers/watchdog/bcm7038_wdt.c
-> +++ b/drivers/watchdog/bcm7038_wdt.c
-> @@ -223,6 +223,13 @@ static const struct of_device_id 
-> bcm7038_wdt_match[] = {
->  };
->  MODULE_DEVICE_TABLE(of, bcm7038_wdt_match);
+> Take a look at this BCM60333 example:
 > 
-> +static const struct platform_device_id bcm7038_wdt_devtype[] = {
-> +	{ .name = "bcm7038-wdt" },
-> +	{ .name = "bcm63xx-wdt" },
-> +	{ /* sentinel */ },
-> +};
-> +MODULE_DEVICE_TABLE(platform, bcm7038_wdt_devtype);
+> typedef struct Timer {
+>      uint32    TimerInts;        /* 0x00 */
+>      uint32    TimerCtl0;        /* 0x04 */
+>      uint32    TimerCtl1;        /* 0x08 */
+>      uint32    TimerCtl2;        /* 0x0c */
+>      uint32    TimerCnt0;        /* 0x10 */
+>      uint32    TimerCnt1;        /* 0x14 */
+>      uint32    TimerCnt2;        /* 0x18 */
+>      uint32    WatchDogDefCount;    /* 0x1c */
+>      uint32    WatchDogCtl;        /* 0x20 */
+>      uint32    WDResetCount;        /* 0x24 */
+> } Timer;
+> 
+> I got impression that Linux driver registers names usually follow what
+> is used in hardware documentation.
 
-Do we really want "bcm7038-wdt" here? I don't think it will ever be used
-as apparently BCM7038 uses DT.
+Still, the key part of the register name is "Count", not "Def",
+and there is no "val" in there.
 
-I'd also prefer to have Rob's comment on mapping blocks vs. mapping
-registers.
-
-If we were to map whole hardware blocks, we should have per-SoC
-bindings and handling registers layouts in a driver. Right now
-bcm63xx arch code maps selected part of hardware block that is
-meant to match driver's logic (offsets 0x00 and 0x04).
+Guenter

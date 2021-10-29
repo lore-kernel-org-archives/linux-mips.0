@@ -2,59 +2,59 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D76A6C4321E
-	for <linux-mips@archiver.kernel.org>; Fri, 29 Oct 2021 18:34:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 57CE7C433FE
+	for <linux-mips@archiver.kernel.org>; Fri, 29 Oct 2021 18:34:59 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id BC90461040
-	for <linux-mips@archiver.kernel.org>; Fri, 29 Oct 2021 18:34:47 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 413D461177
+	for <linux-mips@archiver.kernel.org>; Fri, 29 Oct 2021 18:34:59 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230467AbhJ2ShN (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 29 Oct 2021 14:37:13 -0400
+        id S231364AbhJ2ShP (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 29 Oct 2021 14:37:15 -0400
 Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44808 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231157AbhJ2ShI (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Fri, 29 Oct 2021 14:37:08 -0400
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A75DC061766;
-        Fri, 29 Oct 2021 11:34:40 -0700 (PDT)
-Received: by mail-pj1-x102e.google.com with SMTP id y14-20020a17090a2b4e00b001a5824f4918so4452920pjc.4;
-        Fri, 29 Oct 2021 11:34:40 -0700 (PDT)
+        with ESMTP id S231252AbhJ2ShL (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Fri, 29 Oct 2021 14:37:11 -0400
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CACBC061766;
+        Fri, 29 Oct 2021 11:34:43 -0700 (PDT)
+Received: by mail-pj1-x1030.google.com with SMTP id nn3-20020a17090b38c300b001a03bb6c4ebso7973763pjb.1;
+        Fri, 29 Oct 2021 11:34:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=AYKs8DG5aY7Ez32ozoVHTajRv/Q2Rt0Xxh3ZKd1RZW4=;
-        b=jOTKtbWjKy0S4Qh+8mtMjxBhT5aoLSrORa87133JyvVJ01Pfk18PFdmZ2dq9OTg0Pm
-         mVCHTuQ4gU4nsXlmuDVSlkXgqDReZXg5TuX3bo0ULZwDS9sbCSL3Ol70CSzFhvwOyhYk
-         /jzOLbl9iBLOjfoKe6UcQF2Tmi7JG9G6QphLSaVXOQoXGArdF7uaxN8GDMHzizslKRyF
-         whJvASn9z+/lALDSuZHQlL02mTMfZUBEJJyGCRdSlThi6IharESaqnoYD8Ou91f5idhJ
-         clbIs5Ct+gf6qqVaXfgoqrEaxx8VV0Gv1PAx6r0ahVzAO+1UXnCtOtPScF38OCMK8WHF
-         8n7g==
+        bh=bxPuQkzCjr4bMQ3izqSZWCgKaBxIVRYi/TUmbbXS7uE=;
+        b=ULqODS4st2cEkpjbN+VcS9QFpsj8FVYc302T/VbSyig8qndFTSLDg3B1NIjOLlw7bk
+         BLs6jx2+0GTQoRY9qO6UFzxjCuFfHsb0lxv1CYb0Ytx7Hu4c2HD/Sp1Ml1NGwZCIw5BZ
+         Nsja389kYKaMZ55pr+wacdKmoEFMsKBEKbqhOf8ehuv4Evgg3pDBH8Z7lkRc+jFF3xf0
+         NT7kQH71vBNnuhrKYtVmUfpA+3gj5Eh2T9GFUCc9GORYnjXyMO2u47fd3mbAgyY4KsUd
+         MynObiB/WIR4yNjsJQiNj7zEW5BLOGDVPhR7f2prQ3jPAOvRFz7ewpVPPb79Fy02KIRV
+         5Wzw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=AYKs8DG5aY7Ez32ozoVHTajRv/Q2Rt0Xxh3ZKd1RZW4=;
-        b=6Wbx0ibf32NEwyHmXE+Ydwn/td3X0+hn5HPU1AoGQeTi6tIHy7V/8UdZwBtb5rjwxY
-         Ig04WdYYY8LpgNf/wPVZbfOSPzn57Fr1e8gZ0jGfx8J0MXGsCgV65iX78mtgf73u44k2
-         eF3FKGXmcAzfZD3IbF15NTyBqRCjQyBolt4VIp/wUERttx/kM3s5YILslBZ0SCSeoXPS
-         Z40nw6SvBZvDvAX+Ui89dBFxnYK5FTuR94k0DkNAkn+x5VreeN1mJkoMQZStQZHov5Jw
-         bAiemntR5fSFZ6bUWhGGqJhq9Eno/Geo4JI4VXICtQ4Hiub6KctttpxmmQ1eN1qEiTuP
-         ORFg==
-X-Gm-Message-State: AOAM531Bapg2nH1IUdfU/ALgSv6wp4z2cKzSOsVPbqCZuf76wpZAkd3u
-        w035ueR65T+hmZfZryLORyUCwQcgyM4=
-X-Google-Smtp-Source: ABdhPJyjPjKys0TeB7U5Sl0deBind/c0gthESyEQbeTkDRuAR21InRPXLbTYSFLaM+77/A70pXMDTQ==
-X-Received: by 2002:a17:903:246:b0:13f:2ff9:8b93 with SMTP id j6-20020a170903024600b0013f2ff98b93mr11445830plh.54.1635532479360;
-        Fri, 29 Oct 2021 11:34:39 -0700 (PDT)
+        bh=bxPuQkzCjr4bMQ3izqSZWCgKaBxIVRYi/TUmbbXS7uE=;
+        b=jbOEvuw3ByLQr5ujZydE+1UUrTeGLdxJ2EZJtkmO3YiLVPWfqXFLT/VixDJzGuyYcI
+         sBwesAM6MuDF9613SPVVFqgkHhjF1AYbecJOGMYm2Fp2+l9KMaIgh01YP0Gm1UWQ/paT
+         6G6cKRarFsYh18w6XR2griBq4GjN4/wXEyOiv9wEy6IEYgP97gAcx405yghRbKHYJ5+O
+         YPXACKLynvAeqs+LZ+NDnbLMi0fHow80lecRFEvkrYu7B24wTBn9pyWndD3oXI9l9XOW
+         z6mrB1mSiYjd6TeyESbnamMayussAc3+vETjtfUEVVPgFucEbRu8eUsaD3zEdB3MWKVj
+         20Tg==
+X-Gm-Message-State: AOAM532JE2lY1MvfZVKz0tcKrTTblFr9H/Zkpk6mn27QPucdzrf/oyv9
+        mneBTKb18RG8ZkHkE98vSZDubWsjnvQ=
+X-Google-Smtp-Source: ABdhPJyhQph7vUTcpErM+npJza8ndayuNekge5Uz2UBOw056O1Ux9P8dVfpW4exJJisGD1X1ZcVP1Q==
+X-Received: by 2002:a17:903:124a:b0:13f:cb85:1a3a with SMTP id u10-20020a170903124a00b0013fcb851a3amr11140944plh.32.1635532482188;
+        Fri, 29 Oct 2021 11:34:42 -0700 (PDT)
 Received: from fainelli-desktop.igp.broadcom.net ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id j15sm7730868pfh.35.2021.10.29.11.34.38
+        by smtp.gmail.com with ESMTPSA id j15sm7730868pfh.35.2021.10.29.11.34.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 29 Oct 2021 11:34:38 -0700 (PDT)
+        Fri, 29 Oct 2021 11:34:41 -0700 (PDT)
 From:   Florian Fainelli <f.fainelli@gmail.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     rafal@milecki.pl, Florian Fainelli <f.fainelli@gmail.com>,
-        Guenter Roeck <linux@roeck-us.net>,
         Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Guenter Roeck <linux@roeck-us.net>,
         Rob Herring <robh+dt@kernel.org>,
         Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
         bcm-kernel-feedback-list@broadcom.com (maintainer:BROADCOM BCM63XX ARM
@@ -65,9 +65,9 @@ Cc:     rafal@milecki.pl, Florian Fainelli <f.fainelli@gmail.com>,
         linux-mips@vger.kernel.org (open list:MIPS),
         linux-arm-kernel@lists.infradead.org (moderated list:BROADCOM BCM63XX
         ARM ARCHITECTURE)
-Subject: [PATCH v2 4/7] watchdog: Allow building BCM7038_WDT for BCM63XX
-Date:   Fri, 29 Oct 2021 11:34:27 -0700
-Message-Id: <20211029183430.4086765-5-f.fainelli@gmail.com>
+Subject: [PATCH v2 6/7] MIPS: BCM63XX: Provide platform data to watchdog device
+Date:   Fri, 29 Oct 2021 11:34:29 -0700
+Message-Id: <20211029183430.4086765-7-f.fainelli@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20211029183430.4086765-1-f.fainelli@gmail.com>
 References: <20211029183430.4086765-1-f.fainelli@gmail.com>
@@ -77,36 +77,46 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-CONFIG_BCM63XX denotes the legacy MIPS-based DSL SoCs which utilize the
-same piece of hardware as a watchdog, make it possible to select that
-driver for those platforms.
+In order to utilize the bcm7038_wdt.c driver which needs to know the
+clock name to obtain, pass it via platform data using the
+bcm7038_wdt_platform_data structure.
 
-Reviewed-by: Guenter Roeck <linux@roeck-us.net>
 Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
 ---
- drivers/watchdog/Kconfig | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ arch/mips/bcm63xx/dev-wdt.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/drivers/watchdog/Kconfig b/drivers/watchdog/Kconfig
-index bf59faeb3de1..24a775dd2bf1 100644
---- a/drivers/watchdog/Kconfig
-+++ b/drivers/watchdog/Kconfig
-@@ -1756,12 +1756,13 @@ config BCM7038_WDT
- 	tristate "BCM7038 Watchdog"
- 	select WATCHDOG_CORE
- 	depends on HAS_IOMEM
--	depends on ARCH_BRCMSTB || BMIPS_GENERIC || COMPILE_TEST
-+	depends on ARCH_BRCMSTB || BMIPS_GENERIC || BCM63XX || COMPILE_TEST
- 	help
- 	 Watchdog driver for the built-in hardware in Broadcom 7038 and
- 	 later SoCs used in set-top boxes.  BCM7038 was made public
- 	 during the 2004 CES, and since then, many Broadcom chips use this
--	 watchdog block, including some cable modem chips.
-+	 watchdog block, including some cable modem chips and DSL (63xx)
-+	 chips.
+diff --git a/arch/mips/bcm63xx/dev-wdt.c b/arch/mips/bcm63xx/dev-wdt.c
+index 2a2346a99bcb..42130914a3c2 100644
+--- a/arch/mips/bcm63xx/dev-wdt.c
++++ b/arch/mips/bcm63xx/dev-wdt.c
+@@ -9,6 +9,7 @@
+ #include <linux/init.h>
+ #include <linux/kernel.h>
+ #include <linux/platform_device.h>
++#include <linux/platform_data/bcm7038_wdt.h>
+ #include <bcm63xx_cpu.h>
  
- config IMGPDC_WDT
- 	tristate "Imagination Technologies PDC Watchdog Timer"
+ static struct resource wdt_resources[] = {
+@@ -19,11 +20,18 @@ static struct resource wdt_resources[] = {
+ 	},
+ };
+ 
++static struct bcm7038_wdt_platform_data bcm63xx_wdt_pdata = {
++	.clk_name	= "periph",
++};
++
+ static struct platform_device bcm63xx_wdt_device = {
+ 	.name		= "bcm63xx-wdt",
+ 	.id		= -1,
+ 	.num_resources	= ARRAY_SIZE(wdt_resources),
+ 	.resource	= wdt_resources,
++	.dev		= {
++		.platform_data = &bcm63xx_wdt_pdata,
++	},
+ };
+ 
+ int __init bcm63xx_wdt_register(void)
 -- 
 2.25.1
 

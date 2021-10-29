@@ -2,145 +2,160 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6CB6CC43217
-	for <linux-mips@archiver.kernel.org>; Thu, 28 Oct 2021 23:28:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 67815C433EF
+	for <linux-mips@archiver.kernel.org>; Fri, 29 Oct 2021 02:15:56 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 44C0F61107
-	for <linux-mips@archiver.kernel.org>; Thu, 28 Oct 2021 23:28:21 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 4DE0760FC0
+	for <linux-mips@archiver.kernel.org>; Fri, 29 Oct 2021 02:15:56 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231454AbhJ1Xaq (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 28 Oct 2021 19:30:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41956 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229804AbhJ1Xap (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Thu, 28 Oct 2021 19:30:45 -0400
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 850AFC061745;
-        Thu, 28 Oct 2021 16:28:17 -0700 (PDT)
-Received: by mail-lf1-x133.google.com with SMTP id c28so16877445lfv.13;
-        Thu, 28 Oct 2021 16:28:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:from:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=g1ASowQL1SYh3xyvjjnrsnFWzhxhuZ1FkP7TdHa31mE=;
-        b=or9I8eXmdc6hOUu3ilMz+ymgHlGQQmwFfcjANI787MFy3461r29Qlx4Drko3A82jiZ
-         /Dxbh+rXJkVd+vSmZQz7ByF21FNMWE7Msuh2tmQH7FzEaAaJykw/79BGIIrJtKwboRDm
-         04V8OvO+c+XCXlI7f4QRPE7cqx6GZulezk5I+0MnmugoyzWrW9wGp3T/sQ+0YL50opsM
-         PEj+17btedXyPtu3l7DUltlj+rCIDD63O2gZoZwfDEKUeboD39P9kLuxM5uqsYcKe9n/
-         MuNWRD7sUlbhLEou6B/xsQNLsenMP/929SI9uvSZZXHuqFx/YvhRAZPMrz7X4+YxCerI
-         /TgQ==
+        id S231520AbhJ2CSX (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 28 Oct 2021 22:18:23 -0400
+Received: from mail-ot1-f45.google.com ([209.85.210.45]:40583 "EHLO
+        mail-ot1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231356AbhJ2CSW (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Thu, 28 Oct 2021 22:18:22 -0400
+Received: by mail-ot1-f45.google.com with SMTP id 71-20020a9d034d000000b00553e24ce2b8so6805333otv.7;
+        Thu, 28 Oct 2021 19:15:54 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=g1ASowQL1SYh3xyvjjnrsnFWzhxhuZ1FkP7TdHa31mE=;
-        b=cOkqdGeNEuZcAHnpdUXk1+5EmFZRDGpC5tRffGYu/vF24A+jKJL7M9mnRkN7nhE4Y/
-         LlIOgzW7RGRIJLf6h/kSoUNlwyZ7r+bA3TrLtwBqHtuMzlXD/f4ggUxwqYZRPJpIHsIb
-         HuGEwaz/RCE2Gy2MXOoZ2zktFpQ5HhPFbSh1cbImIdWP/A+HLdqoy5buIrsEyfkUkJKZ
-         2tHzxnOJ/HcMzTARcchnIxOCgLkWturaRU9Za11tsOnWz0gkufF/9iFPnwYjiT0RUJa0
-         aZJ8hVZGX/ODzwg7U52cNmRwEUG18a+RScItWUvS/hh1vxdhHaTsYpYo/cRUMnMWPcmr
-         YeFg==
-X-Gm-Message-State: AOAM533VU1mbUz4A00epD7HQENnplQUD31uOpugw3cw/JurTbdWCBjVV
-        F8WtTJ0H/i4piMeiXBS1RTNW4VX7J48=
-X-Google-Smtp-Source: ABdhPJwV2hV4le461ll7P/MiVtzPzva4GF7PaVejAVvhmYPc9uewsxLl7FIVcxk+rSnnrtvlDg/jfg==
-X-Received: by 2002:a19:760a:: with SMTP id c10mr6627861lff.302.1635463695803;
-        Thu, 28 Oct 2021 16:28:15 -0700 (PDT)
-Received: from [192.168.2.145] (46-138-44-18.dynamic.spd-mgts.ru. [46.138.44.18])
-        by smtp.googlemail.com with ESMTPSA id bn3sm414682ljb.7.2021.10.28.16.28.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 28 Oct 2021 16:28:15 -0700 (PDT)
-Subject: Re: [PATCH v2 03/45] notifier: Add
- atomic/blocking_notifier_has_unique_priority()
-From:   Dmitry Osipenko <digetx@gmail.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
+        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
+         :message-id;
+        bh=MhaSmrBQtbkr94LNt4h9AKG7WEafonEBYR5HwoAlJj4=;
+        b=lZwor3BntJGQKEndhkySeNCanzidsLCCGyk+ylbNlnNmstKOq7KgTk1ca1HBsQQGfP
+         FBNDx0zkkarsW7kohHnEB030sNkTj8mwyOBzx9W+TncH9F9ragpsQFMfunOTFReDaYik
+         73hpW3qAvsdGprKBc/HrLHmdHQ8IdGGIkdbiVXr78HV+C5Ag4QYujSmleNymFqX1wiAh
+         Nu+NWa8sLjEcmcpgr72ZZ2Th1PFqus6LVw5TTV7QM8i2U5K1Y2EBiwLs/Zk5JBCcyAs3
+         fflhA5l2p4CGMYfvVsP0iB70CymeEuLY+q0lNivJ49pswSRg6/NwP61tJ9M+vsSeZySl
+         eA4w==
+X-Gm-Message-State: AOAM531zThi8RueCtwq7902Oxhj7JlLVKFm1q7TnABgrj9qkfG74UU3v
+        gcVC1227BbaagBRkCWzn9Q==
+X-Google-Smtp-Source: ABdhPJyG+qFnBhbco3mrdQyViSYz7rqmTLqsNjPQ1D0awRhHYjyg4z/RIbOckcnBQFDQHEifKWuygw==
+X-Received: by 2002:a05:6830:268f:: with SMTP id l15mr6470222otu.59.1635473754477;
+        Thu, 28 Oct 2021 19:15:54 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-148-213.dyn.grandenetworks.net. [66.90.148.213])
+        by smtp.gmail.com with ESMTPSA id o2sm1503321otl.34.2021.10.28.19.15.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 Oct 2021 19:15:53 -0700 (PDT)
+Received: (nullmailer pid 1025965 invoked by uid 1000);
+        Fri, 29 Oct 2021 02:15:52 -0000
+From:   Rob Herring <robh@kernel.org>
+To:     Florian Fainelli <f.fainelli@gmail.com>
+Cc:     linux-mips@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
         Guenter Roeck <linux@roeck-us.net>,
-        Russell King <linux@armlinux.org.uk>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        Joshua Thompson <funaho@jurai.org>,
+        bcm-kernel-feedback-list@broadcom.com,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Nick Hu <nickhu@andestech.com>,
-        Greentime Hu <green.hu@gmail.com>,
-        Vincent Chen <deanbo422@gmail.com>,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Len Brown <lenb@kernel.org>,
-        Santosh Shilimkar <ssantosh@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        =?UTF-8?Q?Jonathan_Neusch=c3=a4fer?= <j.neuschaefer@gmx.net>,
-        Tony Lindgren <tony@atomide.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Vladimir Zapolskiy <vz@mleia.com>,
-        Avi Fishman <avifishman70@gmail.com>,
-        Tomer Maimon <tmaimon77@gmail.com>,
-        Tali Perry <tali.perry1@gmail.com>,
-        Patrick Venture <venture@google.com>,
-        Nancy Yuen <yuenn@google.com>,
-        Benjamin Fair <benjaminfair@google.com>,
-        Pavel Machek <pavel@ucw.cz>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-csky@vger.kernel.org, linux-ia64@vger.kernel.org,
-        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
-        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-riscv@lists.infradead.org, linux-sh@vger.kernel.org,
-        xen-devel@lists.xenproject.org, linux-acpi@vger.kernel.org,
-        linux-omap@vger.kernel.org, openbmc@lists.ozlabs.org,
-        linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org
-References: <20211027211715.12671-1-digetx@gmail.com>
- <20211027211715.12671-4-digetx@gmail.com>
- <YXqCz/utp2DFJJ45@smile.fi.intel.com>
- <c5fb7590-03a7-0eea-4040-07472a5c9710@gmail.com>
-Message-ID: <8a9c4a9a-ea0d-4bc9-cf57-9bd99b211d47@gmail.com>
-Date:   Fri, 29 Oct 2021 02:28:13 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
-MIME-Version: 1.0
-In-Reply-To: <c5fb7590-03a7-0eea-4040-07472a5c9710@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        devicetree@vger.kernel.org, rafal@milecki.pl,
+        Justin Chen <justinpopo6@gmail.com>,
+        linux-watchdog@vger.kernel.org
+In-Reply-To: <20211028172322.4021440-3-f.fainelli@gmail.com>
+References: <20211028172322.4021440-1-f.fainelli@gmail.com> <20211028172322.4021440-3-f.fainelli@gmail.com>
+Subject: Re: [PATCH 2/7] dt-bindings: watchdog: Add BCM6345 compatible to BCM7038 binding
+Date:   Thu, 28 Oct 2021 21:15:52 -0500
+Message-Id: <1635473752.980618.1025964.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-29.10.2021 00:32, Dmitry Osipenko пишет:
->>> +	/*
->>> +	 * This code gets used during boot-up, when task switching is
->>> +	 * not yet working and interrupts must remain disabled.  At
->> One space is enough.
-> This comment is replicated multiple times over this source file. You can
-> find it before each down_write(). I borrowed the text as-is, for
-> consistency.
+On Thu, 28 Oct 2021 10:23:17 -0700, Florian Fainelli wrote:
+> The BCM7038 watchdog binding is updated to include a "brcm,bcm6345-wdt"
+> compatible string which is the first instance of a DSL (BCM63xx) SoC
+> seeing the integration of such a watchdog timer block.
+> 
+> Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+> ---
+>  .../devicetree/bindings/watchdog/brcm,bcm7038-wdt.yaml         | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
 
-Actually, it should be down_read() here since there are no writes. I'll
-correct it in v3.
+My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+on your patch (DT_CHECKER_FLAGS is new in v5.13):
+
+yamllint warnings/errors:
+./Documentation/devicetree/bindings/watchdog/brcm,bcm7038-wdt.yaml:19:5: [error] duplication of key "const" in mapping (key-duplicates)
+
+dtschema/dtc warnings/errors:
+make[1]: *** Deleting file 'Documentation/devicetree/bindings/watchdog/brcm,bcm7038-wdt.example.dts'
+Traceback (most recent call last):
+  File "/usr/local/bin/dt-extract-example", line 45, in <module>
+    binding = yaml.load(open(args.yamlfile, encoding='utf-8').read())
+  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/main.py", line 434, in load
+    return constructor.get_single_data()
+  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/constructor.py", line 122, in get_single_data
+    return self.construct_document(node)
+  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/constructor.py", line 132, in construct_document
+    for _dummy in generator:
+  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/constructor.py", line 722, in construct_yaml_map
+    value = self.construct_mapping(node)
+  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/constructor.py", line 446, in construct_mapping
+    return BaseConstructor.construct_mapping(self, node, deep=deep)
+  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/constructor.py", line 264, in construct_mapping
+    if self.check_mapping_key(node, key_node, mapping, key, value):
+  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/constructor.py", line 295, in check_mapping_key
+    raise DuplicateKeyError(*args)
+ruamel.yaml.constructor.DuplicateKeyError: while constructing a mapping
+  in "<unicode string>", line 18, column 5
+found duplicate key "const" with value "brcm,bcm7038-wdt" (original value: "brcm,bcm6345-wdt")
+  in "<unicode string>", line 19, column 5
+
+To suppress this check see:
+    http://yaml.readthedocs.io/en/latest/api.html#duplicate-keys
+
+make[1]: *** [Documentation/devicetree/bindings/Makefile:20: Documentation/devicetree/bindings/watchdog/brcm,bcm7038-wdt.example.dts] Error 1
+make[1]: *** Waiting for unfinished jobs....
+Traceback (most recent call last):
+  File "/usr/local/bin/dt-doc-validate", line 25, in check_doc
+    testtree = dtschema.load(filename, line_number=line_number)
+  File "/usr/local/lib/python3.8/dist-packages/dtschema/lib.py", line 612, in load
+    return yaml.load(f.read())
+  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/main.py", line 434, in load
+    return constructor.get_single_data()
+  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/constructor.py", line 122, in get_single_data
+    return self.construct_document(node)
+  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/constructor.py", line 132, in construct_document
+    for _dummy in generator:
+  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/constructor.py", line 722, in construct_yaml_map
+    value = self.construct_mapping(node)
+  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/constructor.py", line 446, in construct_mapping
+    return BaseConstructor.construct_mapping(self, node, deep=deep)
+  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/constructor.py", line 264, in construct_mapping
+    if self.check_mapping_key(node, key_node, mapping, key, value):
+  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/constructor.py", line 295, in check_mapping_key
+    raise DuplicateKeyError(*args)
+ruamel.yaml.constructor.DuplicateKeyError: while constructing a mapping
+  in "<unicode string>", line 18, column 5
+found duplicate key "const" with value "brcm,bcm7038-wdt" (original value: "brcm,bcm6345-wdt")
+  in "<unicode string>", line 19, column 5
+
+To suppress this check see:
+    http://yaml.readthedocs.io/en/latest/api.html#duplicate-keys
+
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/local/bin/dt-doc-validate", line 67, in <module>
+    ret = check_doc(f)
+  File "/usr/local/bin/dt-doc-validate", line 30, in check_doc
+    print(filename + ":", exc.path[-1], exc.message, file=sys.stderr)
+AttributeError: 'DuplicateKeyError' object has no attribute 'path'
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/watchdog/brcm,bcm7038-wdt.yaml: ignoring, error parsing file
+warning: no schema found in file: ./Documentation/devicetree/bindings/watchdog/brcm,bcm7038-wdt.yaml
+make: *** [Makefile:1441: dt_binding_check] Error 2
+
+doc reference errors (make refcheckdocs):
+
+See https://patchwork.ozlabs.org/patch/1547626
+
+This check can fail if there are any dependencies. The base for a patch
+series is generally the most recent rc1.
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
+
+pip3 install dtschema --upgrade
+
+Please check and re-submit.
+

@@ -2,91 +2,145 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 46669C433F5
-	for <linux-mips@archiver.kernel.org>; Tue,  2 Nov 2021 12:48:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7E6C3C433EF
+	for <linux-mips@archiver.kernel.org>; Tue,  2 Nov 2021 12:58:50 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 2BB2860F36
-	for <linux-mips@archiver.kernel.org>; Tue,  2 Nov 2021 12:48:40 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 597296108F
+	for <linux-mips@archiver.kernel.org>; Tue,  2 Nov 2021 12:58:50 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231234AbhKBMvN (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 2 Nov 2021 08:51:13 -0400
-Received: from m1554.mail.126.com ([220.181.15.54]:16005 "EHLO
-        m1554.mail.126.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230518AbhKBMvM (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Tue, 2 Nov 2021 08:51:12 -0400
-X-Greylist: delayed 1815 seconds by postgrey-1.27 at vger.kernel.org; Tue, 02 Nov 2021 08:51:06 EDT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=126.com;
-        s=s110527; h=Date:From:Subject:MIME-Version:Message-ID; bh=pMj+y
-        BaKZirGjoOyUnfDVs9NHpYkoEkGcqYmMujT7j4=; b=mTD3ky4//7iACed20JTVN
-        l0AY56UEQVbwQ1J5xyD5jrNNOV6fvAEkV8CUgw18Vo2M8hAOKcFj4730qsm1jw9+
-        Fh52gZwOJD9T0X0+XMDxsGKXDA8ta8mdN5ynufOhL3yTQupM+ARPv+KZOeHhcdOL
-        PFg0Y5DPxi06BmQNNwQgbY=
-Received: from zhangzl2013$126.com ( [223.72.63.29] ) by
- ajax-webmail-wmsvr54 (Coremail) ; Tue, 2 Nov 2021 20:17:52 +0800 (CST)
-X-Originating-IP: [223.72.63.29]
-Date:   Tue, 2 Nov 2021 20:17:52 +0800 (CST)
-From:   "Zhaolong Zhang" <zhangzl2013@126.com>
-To:     "Thomas Bogendoerfer" <tsbogend@alpha.franken.de>
-Cc:     "Alexander Lobakin" <alobakin@pm.me>,
-        "Yanteng Si" <siyanteng@loongson.cn>, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mips: fix HUGETLB function without THP enabled
-X-Priority: 3
-X-Mailer: Coremail Webmail Server Version XT5.0.13 build 20210622(1d4788a8)
- Copyright (c) 2002-2021 www.mailtech.cn 126com
-In-Reply-To: <20211102102051.GA7512@alpha.franken.de>
-References: <20211102082437.3319235-1-zhangzl2013@126.com>
- <20211102102051.GA7512@alpha.franken.de>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset=GBK
+        id S230170AbhKBNBX (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 2 Nov 2021 09:01:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57002 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230326AbhKBNBX (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Tue, 2 Nov 2021 09:01:23 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2E81060FC2;
+        Tue,  2 Nov 2021 12:58:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1635857926;
+        bh=OUCokjO7+C7SROhm1TS/JkjlURAcNxesDjm7SJuNHyQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=JvByu1jlpOaZfJZ9/lhMkD7r/i1V6DqIaZNSrH+aRbco+j0uLWR+8XFYyvDCpms+M
+         a09BgfnYuYE7teS1Y9AFmR/Jm2flrxFYGzGGYqhpho5gmjWRCqH/55GT87PVHnB6pb
+         ofGIWP4QC0YZUgHaM4uaZpfIFsL87BKaeFDmUF6uAHXv7u33unkYsqV6mgUo/Ha8RJ
+         Ct+pMiUTwYeX1K85xx9esizrk9IotGCiOKnn7jxTY43OcA//EAGWpbnfLeU3UvwqAU
+         5eeGRZpYZQZX8syoIgHxPxZKGQYOBGhJZb4MQ/nEnOS6R2Ke3MdHg7Gr36mZK3Mh00
+         rXf6PsqsHuvRw==
+Received: by pali.im (Postfix)
+        id B99C3A41; Tue,  2 Nov 2021 13:58:43 +0100 (CET)
+Date:   Tue, 2 Nov 2021 13:58:43 +0100
+From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
+To:     "Maciej W. Rozycki" <macro@orcam.me.uk>
+Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Russell King <linux@armlinux.org.uk>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] PCI: Marvell: Update PCIe fixup
+Message-ID: <20211102125843.sqsusis4krnmhorq@pali>
+References: <20211101150405.14618-1-pali@kernel.org>
+ <20211102084241.GA6134@alpha.franken.de>
+ <20211102090246.unmbruykfdjabfga@pali>
+ <20211102094700.GA7376@alpha.franken.de>
+ <20211102100034.rhcb3k2jvr6alm6y@pali>
+ <alpine.DEB.2.21.2111021210180.57165@angie.orcam.me.uk>
 MIME-Version: 1.0
-Message-ID: <181761.42aa.17ce0959595.Coremail.zhangzl2013@126.com>
-X-Coremail-Locale: zh_CN
-X-CM-TRANSID: NsqowAAXZUlxLIFhFFpOAQ--.20702W
-X-CM-SenderInfo: x2kd0wt2osiiat6rjloofrz/1tbitBE-z1pEE26trQAAs2
-X-Coremail-Antispam: 1U5529EdanIXcx71UUUUU7vcSsGvfC2KfnxnUU==
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <alpine.DEB.2.21.2111021210180.57165@angie.orcam.me.uk>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-CkF0IDIwMjEtMTEtMDIgMTg6MjA6NTEsICJUaG9tYXMgQm9nZW5kb2VyZmVyIiA8dHNib2dlbmRA
-YWxwaGEuZnJhbmtlbi5kZT4gd3JvdGU6Cj5PbiBUdWUsIE5vdiAwMiwgMjAyMSBhdCAwNDoyNDoz
-N1BNICswODAwLCBaaGFvbG9uZyBaaGFuZyB3cm90ZToKPj4gbHRwIHRlc3QgZnV0ZXhfd2FrZTA0
-IHdpdGhvdXQgVEhQIGVuYWJsZWQgbGVhZHMgdG8gYmVsb3cgYnQ6Cj4+ICAgWzxmZmZmZmZmZjgw
-YTAzNzI4Pl0gQlVHKzB4MC8weDgKPj4gICBbPGZmZmZmZmZmODBhMDYyNGM+XSBpbnRlcm5hbF9n
-ZXRfdXNlcl9wYWdlc19mYXN0KzB4ODFjLzB4ODIwCj4+ICAgWzxmZmZmZmZmZjgwOTNhYzE4Pl0g
-Z2V0X2Z1dGV4X2tleSsweGEwLzB4NDgwCj4+ICAgWzxmZmZmZmZmZjgwOTNiMDc0Pl0gZnV0ZXhf
-d2FpdF9zZXR1cCsweDdjLzB4MWE4Cj4+ICAgWzxmZmZmZmZmZjgwOTNiMmMwPl0gZnV0ZXhfd2Fp
-dCsweDEyMC8weDIyOAo+PiAgIFs8ZmZmZmZmZmY4MDkzZGJlOD5dIGRvX2Z1dGV4KzB4MTQwLzB4
-YmQ4Cj4+ICAgWzxmZmZmZmZmZjgwOTNlNzhjPl0gc3lzX2Z1dGV4KzB4MTBjLzB4MWMwCj4+ICAg
-WzxmZmZmZmZmZjgwODcwM2QwPl0gc3lzY2FsbF9jb21tb24rMHgzNC8weDU4Cj4+IAo+PiBNb3Zl
-IHBtZF93cml0ZSgpIGFuZCBwbWRfcGFnZSgpIGZyb20gVFJBTlNQQVJFTlRfSFVHRVBBR0Ugc2Nv
-cGUgdG8KPj4gTUlQU19IVUdFX1RMQl9TVVBQT1JUIHNjb3BlLCBiZWNhdXNlIGJvdGggVEhQIGFu
-ZCBIVUdFVExCIHdpbGwgbmVlZAo+PiB0aGVtLgo+PiAKPj4gU2lnbmVkLW9mZi1ieTogWmhhb2xv
-bmcgWmhhbmcgPHpoYW5nemwyMDEzQDEyNi5jb20+Cj4+IC0tLQo+PiAgYXJjaC9taXBzL2luY2x1
-ZGUvYXNtL3BndGFibGUuaCB8IDQwICsrKysrKysrKysrKysrKysrLS0tLS0tLS0tLS0tLS0tLQo+
-PiAgMSBmaWxlIGNoYW5nZWQsIDIxIGluc2VydGlvbnMoKyksIDE5IGRlbGV0aW9ucygtKQo+Cj5h
-cHBsaWVkIHRvIG1pcHMtbmV4dC4KPgo+PiAKPj4gZGlmZiAtLWdpdCBhL2FyY2gvbWlwcy9pbmNs
-dWRlL2FzbS9wZ3RhYmxlLmggYi9hcmNoL21pcHMvaW5jbHVkZS9hc20vcGd0YWJsZS5oCj4+IGlu
-ZGV4IDgwNDg4OWI3MDk2NS4uMWZjZjRiZTVjZDIwIDEwMDY0NAo+PiAtLS0gYS9hcmNoL21pcHMv
-aW5jbHVkZS9hc20vcGd0YWJsZS5oCj4+ICsrKyBiL2FyY2gvbWlwcy9pbmNsdWRlL2FzbS9wZ3Rh
-YmxlLmgKPj4gQEAgLTg2LDEwICs4NiwxMiBAQCBleHRlcm4gdm9pZCBwYWdpbmdfaW5pdCh2b2lk
-KTsKPj4gICAqLwo+PiAgI2RlZmluZSBwbWRfcGh5cyhwbWQpCQl2aXJ0X3RvX3BoeXMoKHZvaWQg
-KilwbWRfdmFsKHBtZCkpCj4+ICAKPj4gKyNpZm5kZWYgQ09ORklHX01JUFNfSFVHRV9UTEJfU1VQ
-UE9SVAo+PiAgI2RlZmluZSBfX3BtZF9wYWdlKHBtZCkJCShwZm5fdG9fcGFnZShwbWRfcGh5cyhw
-bWQpID4+IFBBR0VfU0hJRlQpKQo+PiAgI2lmbmRlZiBDT05GSUdfVFJBTlNQQVJFTlRfSFVHRVBB
-R0UKPj4gICNkZWZpbmUgcG1kX3BhZ2UocG1kKQkJX19wbWRfcGFnZShwbWQpCj4+ICAjZW5kaWYg
-LyogQ09ORklHX1RSQU5TUEFSRU5UX0hVR0VQQUdFICAqLwo+PiArI2VuZGlmIC8qIENPTkZJR19N
-SVBTX0hVR0VfVExCX1NVUFBPUlQgKi8KPgo+V2hpbGUgYXBwbHlpbmcgSSd2ZSBzaW1wbGlmaWVk
-IHRoYXQgaHVuayB0bwo+Cj4tI2RlZmluZSBfX3BtZF9wYWdlKHBtZCkgICAgICAgICAgICAgICAg
-KHBmbl90b19wYWdlKHBtZF9waHlzKHBtZCkgPj4gUEFHRV9TSElGVCkpCj4tI2lmbmRlZiBDT05G
-SUdfVFJBTlNQQVJFTlRfSFVHRVBBR0UKPi0jZGVmaW5lIHBtZF9wYWdlKHBtZCkgICAgICAgICAg
-X19wbWRfcGFnZShwbWQpCj4tI2VuZGlmIC8qIENPTkZJR19UUkFOU1BBUkVOVF9IVUdFUEFHRSAg
-Ki8KPisjaWZuZGVmIENPTkZJR19NSVBTX0hVR0VfVExCX1NVUFBPUlQKPisjZGVmaW5lIHBtZF9w
-YWdlKHBtZCkgICAgICAgICAgKHBmbl90b19wYWdlKHBtZF9waHlzKHBtZCkgPj4gUEFHRV9TSElG
-VCkpCj4rI2VuZGlmIC8qIENPTkZJR19NSVBTX0hVR0VfVExCX1NVUFBPUlQgKi8KPgoKSXQgaXMg
-bXVjaCBiZXR0ZXIuClRoYW5rcyBmb3IgeW91ciBraW5kIHJlcGx5LgoKUmVnYXJkcywKWmhhb2xv
-bmcKCj5UaG9tYXMuCj4KPi0tIAo+Q3JhcCBjYW4gd29yay4gR2l2ZW4gZW5vdWdoIHRocnVzdCBw
-aWdzIHdpbGwgZmx5LCBidXQgaXQncyBub3QgbmVjZXNzYXJpbHkgYQo+Z29vZCBpZGVhLiAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIFsgUkZDMTkyNSwgMi4z
-IF0K
+On Tuesday 02 November 2021 12:35:41 Maciej W. Rozycki wrote:
+> On Tue, 2 Nov 2021, Pali Rohár wrote:
+> 
+> > > > >From all what I saw, I'm sure that this device with this specific
+> > > > characteristics is really (non-compliant) Marvell PCIe controller.
+> > > 
+> > > just nitpicking, it's a Galileo PCI bridge and not PCIe.
+> > 
+> > Marvell acquired Galileo Technology in the past, so it is possible that
+> > this bad design is originated in Galileo. And maybe same for PCIe from
+> > PCI. At least PCI vendor id for all (new) PCIe controllers is this one.
+> 
+>  Umm, PCIe is so different hardware-wise from PCI
+
+Yes hardware is different. But software is same and fully backward
+compatible. And base part of config space is same for both PCI an PCIe.
+So it is possible to copy+paste HDL code which fills initial values into
+config space from old PCI IPs to new PCIe IPs.
+
+> I doubt there's any 
+> chance for errata to be carried across.  Plus the MIPS SysAD bus is so 
+> different from other CPU buses.  And we're talking 20+ years old Galileo 
+> devices here.
+> 
+>  None of the Galileo system controllers I came across had the class code 
+> set incorrectly.
+
+In kernel there is quirk only for one device with id:
+PCI_VENDOR_ID_MARVELL (0x11ab) PCI_DEVICE_ID_MARVELL_GT64111 (0x4146)
+
+So for some reasons quirk is needed... Anyway, patch for this quirk just
+adds comment as there is no explanation for it. It does not modify quirk
+code.
+
+So it is possible that Marvell (or rather Galileo at that time) included
+some config space fixup in some products and 0x4146 did not have it.
+Just guessing... We can really only guess what could happen at that time
+20 years ago...
+
+Running git blame told me that this class code quirk was introduce in:
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=c4ed38a0c6e2e5c4906296758f816ee71373792f
+
+But there is also no information...
+
+> > > > But I do not have this hardware to verify it.
+> > > 
+> > > I still have a few Cobalt systems here.
+> > 
+> > Perfect! It would help if you could provide 'lspci -nn -vv' output from
+> > that system. In case you have very old version of lspci on that system
+> > you could try to run it with '-xxxx' (or '-xxx') which prints hexdump
+> > and I can parse it with local lspci.
+> 
+>  For the record here's one from a core card used with a Malta (as with 
+> arch/mips/pci/fixup-malta.c); it has a newer 64120A chip (marked as an 
+> engineering sample BTW):
+> 
+> 00:00.0 Host bridge: Marvell Technology Group Ltd. GT-64120/64120A/64121A System Controller (rev 11)
+> 00: ab 11 20 46 47 01 80 22 11 00 00 06 00 20 00 00
+> 10: 00 00 00 00 00 00 00 08 00 00 00 00 00 00 00 00
+> 20: 00 00 e0 1b 00 00 00 00 00 00 00 00 00 00 00 00
+> 30: 00 00 00 00 00 00 00 00 00 00 00 00 ff 01 00 00
+> 40: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> 50: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> 60: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> 70: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> 80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> 90: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> a0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> b0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> c0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> d0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> e0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> f0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+> 
+> The lack of a quirk with a platform does not mean it cannot have a certain 
+> PCI/e device.
+
+This is 11ab:4620 device an there is no PCIe capability in its config
+space (you can inspect it via 'lspci -F dump.txt -nn -vv' but there is
+nothing interesting).
+
+>  As I recall various Atlas/Malta core cards had any of the three device 
+> variants covered by this vendor:device ID and later batches were actually 
+> indeed marked Marvell rather than Galileo.
+> 
+>   Maciej

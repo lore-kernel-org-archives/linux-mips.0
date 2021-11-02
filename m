@@ -2,99 +2,101 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EAD42C43217
-	for <linux-mips@archiver.kernel.org>; Tue,  2 Nov 2021 10:23:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 15B64C433EF
+	for <linux-mips@archiver.kernel.org>; Tue,  2 Nov 2021 12:35:44 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id C556C60F56
-	for <linux-mips@archiver.kernel.org>; Tue,  2 Nov 2021 10:23:48 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id E510360F24
+	for <linux-mips@archiver.kernel.org>; Tue,  2 Nov 2021 12:35:43 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230333AbhKBK0U (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 2 Nov 2021 06:26:20 -0400
-Received: from elvis.franken.de ([193.175.24.41]:55791 "EHLO elvis.franken.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229770AbhKBK0R (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Tue, 2 Nov 2021 06:26:17 -0400
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1mhqx9-0003gx-00; Tue, 02 Nov 2021 11:23:39 +0100
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id C3EB6C2836; Tue,  2 Nov 2021 11:19:38 +0100 (CET)
-Date:   Tue, 2 Nov 2021 11:19:38 +0100
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Florian Fainelli <f.fainelli@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, rafal@milecki.pl,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Rob Herring <robh+dt@kernel.org>,
-        "maintainer:BROADCOM BCM63XX ARM ARCHITECTURE" 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Justin Chen <justinpopo6@gmail.com>,
-        "open list:WATCHDOG DEVICE DRIVERS" <linux-watchdog@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "open list:MIPS" <linux-mips@vger.kernel.org>,
-        "moderated list:BROADCOM BCM63XX ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH 6/7] MIPS: BCM63XX: Provide platform data to watchdog
- device
-Message-ID: <20211102101938.GA7475@alpha.franken.de>
-References: <20211028172322.4021440-1-f.fainelli@gmail.com>
- <20211028172322.4021440-7-f.fainelli@gmail.com>
+        id S229778AbhKBMiR (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 2 Nov 2021 08:38:17 -0400
+Received: from angie.orcam.me.uk ([78.133.224.34]:36538 "EHLO
+        angie.orcam.me.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229530AbhKBMiR (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Tue, 2 Nov 2021 08:38:17 -0400
+Received: by angie.orcam.me.uk (Postfix, from userid 500)
+        id 3024692009D; Tue,  2 Nov 2021 13:35:41 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by angie.orcam.me.uk (Postfix) with ESMTP id 29DCA92009B;
+        Tue,  2 Nov 2021 12:35:41 +0000 (GMT)
+Date:   Tue, 2 Nov 2021 12:35:41 +0000 (GMT)
+From:   "Maciej W. Rozycki" <macro@orcam.me.uk>
+To:     =?UTF-8?Q?Pali_Roh=C3=A1r?= <pali@kernel.org>
+cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Russell King <linux@armlinux.org.uk>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] PCI: Marvell: Update PCIe fixup
+In-Reply-To: <20211102100034.rhcb3k2jvr6alm6y@pali>
+Message-ID: <alpine.DEB.2.21.2111021210180.57165@angie.orcam.me.uk>
+References: <20211101150405.14618-1-pali@kernel.org> <20211102084241.GA6134@alpha.franken.de> <20211102090246.unmbruykfdjabfga@pali> <20211102094700.GA7376@alpha.franken.de> <20211102100034.rhcb3k2jvr6alm6y@pali>
+User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211028172322.4021440-7-f.fainelli@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Thu, Oct 28, 2021 at 10:23:21AM -0700, Florian Fainelli wrote:
-> In order to utilize the bcm7038_wdt.c driver which needs to know the
-> clock name to obtain, pass it via platform data using the
-> bcm7038_wdt_platform_data structure.
-> 
-> Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
-> ---
->  arch/mips/bcm63xx/dev-wdt.c | 8 ++++++++
->  1 file changed, 8 insertions(+)
-> 
-> diff --git a/arch/mips/bcm63xx/dev-wdt.c b/arch/mips/bcm63xx/dev-wdt.c
-> index 2a2346a99bcb..42130914a3c2 100644
-> --- a/arch/mips/bcm63xx/dev-wdt.c
-> +++ b/arch/mips/bcm63xx/dev-wdt.c
-> @@ -9,6 +9,7 @@
->  #include <linux/init.h>
->  #include <linux/kernel.h>
->  #include <linux/platform_device.h>
-> +#include <linux/platform_data/bcm7038_wdt.h>
->  #include <bcm63xx_cpu.h>
->  
->  static struct resource wdt_resources[] = {
-> @@ -19,11 +20,18 @@ static struct resource wdt_resources[] = {
->  	},
->  };
->  
-> +static struct bcm7038_wdt_platform_data bcm63xx_wdt_pdata = {
-> +	.clk_name	= "periph",
-> +};
-> +
->  static struct platform_device bcm63xx_wdt_device = {
->  	.name		= "bcm63xx-wdt",
->  	.id		= -1,
->  	.num_resources	= ARRAY_SIZE(wdt_resources),
->  	.resource	= wdt_resources,
-> +	.dev		= {
-> +		.platform_data = &bcm63xx_wdt_pdata,
-> +	},
->  };
->  
->  int __init bcm63xx_wdt_register(void)
-> -- 
-> 2.25.1
+On Tue, 2 Nov 2021, Pali Rohár wrote:
 
-Acked-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+> > > >From all what I saw, I'm sure that this device with this specific
+> > > characteristics is really (non-compliant) Marvell PCIe controller.
+> > 
+> > just nitpicking, it's a Galileo PCI bridge and not PCIe.
+> 
+> Marvell acquired Galileo Technology in the past, so it is possible that
+> this bad design is originated in Galileo. And maybe same for PCIe from
+> PCI. At least PCI vendor id for all (new) PCIe controllers is this one.
 
--- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+ Umm, PCIe is so different hardware-wise from PCI I doubt there's any 
+chance for errata to be carried across.  Plus the MIPS SysAD bus is so 
+different from other CPU buses.  And we're talking 20+ years old Galileo 
+devices here.
+
+ None of the Galileo system controllers I came across had the class code 
+set incorrectly.
+
+> > > But I do not have this hardware to verify it.
+> > 
+> > I still have a few Cobalt systems here.
+> 
+> Perfect! It would help if you could provide 'lspci -nn -vv' output from
+> that system. In case you have very old version of lspci on that system
+> you could try to run it with '-xxxx' (or '-xxx') which prints hexdump
+> and I can parse it with local lspci.
+
+ For the record here's one from a core card used with a Malta (as with 
+arch/mips/pci/fixup-malta.c); it has a newer 64120A chip (marked as an 
+engineering sample BTW):
+
+00:00.0 Host bridge: Marvell Technology Group Ltd. GT-64120/64120A/64121A System Controller (rev 11)
+00: ab 11 20 46 47 01 80 22 11 00 00 06 00 20 00 00
+10: 00 00 00 00 00 00 00 08 00 00 00 00 00 00 00 00
+20: 00 00 e0 1b 00 00 00 00 00 00 00 00 00 00 00 00
+30: 00 00 00 00 00 00 00 00 00 00 00 00 ff 01 00 00
+40: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+50: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+60: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+70: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+90: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+a0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+b0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+c0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+d0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+e0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+f0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+
+The lack of a quirk with a platform does not mean it cannot have a certain 
+PCI/e device.
+
+ As I recall various Atlas/Malta core cards had any of the three device 
+variants covered by this vendor:device ID and later batches were actually 
+indeed marked Marvell rather than Galileo.
+
+  Maciej

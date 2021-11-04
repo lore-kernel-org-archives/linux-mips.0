@@ -2,60 +2,60 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 45D89C433F5
-	for <linux-mips@archiver.kernel.org>; Thu,  4 Nov 2021 00:27:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 07477C433F5
+	for <linux-mips@archiver.kernel.org>; Thu,  4 Nov 2021 00:27:45 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 2A9DF60FC2
-	for <linux-mips@archiver.kernel.org>; Thu,  4 Nov 2021 00:27:41 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id E270360F9D
+	for <linux-mips@archiver.kernel.org>; Thu,  4 Nov 2021 00:27:44 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233202AbhKDAaQ (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 3 Nov 2021 20:30:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52830 "EHLO
+        id S233215AbhKDAaT (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 3 Nov 2021 20:30:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52856 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233459AbhKDA3T (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 3 Nov 2021 20:29:19 -0400
-Received: from mail-pf1-x449.google.com (mail-pf1-x449.google.com [IPv6:2607:f8b0:4864:20::449])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A6BFC061205
-        for <linux-mips@vger.kernel.org>; Wed,  3 Nov 2021 17:26:42 -0700 (PDT)
-Received: by mail-pf1-x449.google.com with SMTP id x25-20020aa79199000000b0044caf0d1ba8so2366836pfa.1
-        for <linux-mips@vger.kernel.org>; Wed, 03 Nov 2021 17:26:42 -0700 (PDT)
+        with ESMTP id S233492AbhKDA3X (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 3 Nov 2021 20:29:23 -0400
+Received: from mail-pf1-x44a.google.com (mail-pf1-x44a.google.com [IPv6:2607:f8b0:4864:20::44a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3BE2C061203
+        for <linux-mips@vger.kernel.org>; Wed,  3 Nov 2021 17:26:45 -0700 (PDT)
+Received: by mail-pf1-x44a.google.com with SMTP id c207-20020a621cd8000000b0048060050cfeso2356014pfc.3
+        for <linux-mips@vger.kernel.org>; Wed, 03 Nov 2021 17:26:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=reply-to:date:in-reply-to:message-id:mime-version:references
          :subject:from:to:cc;
-        bh=g2JE1NchR5OuOuOibWq+8/K2CyWjv7Vlzl0jcmmyHKg=;
-        b=UK0IuaxMRM8VI2p4RKcIncQCt3/rVVcLXbP5evDmYD/5MRFF0cnYdOJohdcwHEX0UL
-         s1jIdejQk2RCs3P65ng7Qi/Nch6xWlLb3AJpNe9St0b08O8bclGAcjcwNlhuwKwlVdU1
-         UAsDfdzka5c/8R6jSfqZAOtxqrF3sWb5+CRYIfY9EL/+phX4RhDTxJKT1BO5pHPTYR1k
-         fxXTYBb9kgrmzPKpgw9GKqSRQ5hvlxWlweftTu0Q9G5eaVLj6I+ooPTk+H0MMEpbFXMo
-         f+ER1N4nuFT1F4WSwfp35dekPy4XgcZqB/FM/tQgwuYCGxh5wKA5FoaSXrqIYkgUbgeI
-         PAHw==
+        bh=WFKHlikOkpZJpdiLsH4aJihxblDmBHivJrGM8NlUt9c=;
+        b=CRXCwBEqUdB8xBBWvbn9rvEyj5xPoJz0Yiq4O9bYP8Cnw9QN2e+/rU9Z5zno6u5DVK
+         hNycH7Nu/XPtuVsGfPUbSSTGueoe3SJ6D/+uQvX8yXVdBR6JZwONNcY2XuE+tNblfPrg
+         DzYe3VWSE9iz+kLrReWCKtPXc8mvDFxOyEZwsrJmqEqT2dddKgFB7DSFo4206QBqUe3l
+         k94nG8IGw8Qk397gTW+mXweZuq2D9/OlhQu3qaAukGk74Ifow4G0x6SSEWRb7kyDOXHM
+         mtFt8FUjKSwLn45cNEc6CmGXWE+Jks8EonoUKThzOIBSyaz6+hVlcyMpoJKcO82sckqF
+         5Fzw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:reply-to:date:in-reply-to:message-id
          :mime-version:references:subject:from:to:cc;
-        bh=g2JE1NchR5OuOuOibWq+8/K2CyWjv7Vlzl0jcmmyHKg=;
-        b=yqEcwcEknfDc/zCFRB0eOqXH7nyNO4VIf3Q3GPw5v5ZiKjI5PEURhLLrjBl6V4hovq
-         bGyU2Pr+WqErdILSS6ppzNy/uNqH6795OJGY8250Ptjr/kKEEG1l0qx8tlJ0KQfMOQDa
-         TXbMDKqpTtEfYsuk20Jeu/x4EBQMz7yu7ZPkADBurgQr2UxB/cEB3fCzJGMu30Z+lD3q
-         JuaU4QhZg0GdN714+GLm3qBbmlgv4h18zqk/rpl+jKPAb2HaxNv7L4LPp8VpStXhwt/+
-         /K7gxCmSaCQTNu9DNQvpBd1OD9AOHvQYUW3MSEPPQwQ/UvRpwlKNPY4d0zaOh0tCsoJx
-         ZMgQ==
-X-Gm-Message-State: AOAM532hDZ3Y7uHEStZuLa+xI3lHAaw7Ij6IC9rVzcNbuGhHr+4Jlgrl
-        lXlYgV7THN/yMpFqR/CPewoOw7gDCWM=
-X-Google-Smtp-Source: ABdhPJxEVZZh8c79kJBVhyomHBKtGxgWv7d32Tr+YGvJXzn/bVGhXaf6aJM8D0LQz8M/cEOUCA1R/OXLlBc=
+        bh=WFKHlikOkpZJpdiLsH4aJihxblDmBHivJrGM8NlUt9c=;
+        b=zaCjZ+v43LpcMJJ3A3qn6BBsInlTPpefOI/6dY6WlUE835/c2/vMnCj4eKhi4kdABo
+         UP7KKtlxWmOiLzJR5WOMJW8Zb2jzewP5xtKNznWYXnFB5XIzaPvLvnuv0esvYrSiqHs0
+         GGkdcfr63MGgJ3ogHOo1YkzetAwIf+FfY1P6IhJW7EoMi5VILMCJgZH7xES9Tm3wAofN
+         y7qCyWUZKD2/X/Vb+4ZtdXSr3SU4uizKUy2n0R308+2J5pZ30XHi4Vp+wnShfoX4BJZQ
+         BMM7v5Bk+lTglfqs5J3Er71tKq9f6Ok1rfEdC/PX5sM6GcH4QAPhxLZWpafC/bkVRvsH
+         EiOQ==
+X-Gm-Message-State: AOAM532OE8iKho+/YNYLKvfVC/g4Pt64JbKwjTnhBbbn8dD9kq1Exyat
+        X8QrsKkLuj3Do4ciqpDMaX/HbT6iTJg=
+X-Google-Smtp-Source: ABdhPJxoDZvqdkusy2MitxT+1dAwOu5YXFxH0crl6GBFlwKLx55yi8xQIaLV4Wu5oujGScgLca++ESEBh4I=
 X-Received: from seanjc.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:3e5])
- (user=seanjc job=sendgmr) by 2002:a17:902:d2c7:b0:142:f06:e5fa with SMTP id
- n7-20020a170902d2c700b001420f06e5famr12493355plc.87.1635985601544; Wed, 03
- Nov 2021 17:26:41 -0700 (PDT)
+ (user=seanjc job=sendgmr) by 2002:a05:6a00:1994:b0:47e:64e5:a1b3 with SMTP id
+ d20-20020a056a00199400b0047e64e5a1b3mr42939171pfl.64.1635985605387; Wed, 03
+ Nov 2021 17:26:45 -0700 (PDT)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Thu,  4 Nov 2021 00:25:26 +0000
+Date:   Thu,  4 Nov 2021 00:25:28 +0000
 In-Reply-To: <20211104002531.1176691-1-seanjc@google.com>
-Message-Id: <20211104002531.1176691-26-seanjc@google.com>
+Message-Id: <20211104002531.1176691-28-seanjc@google.com>
 Mime-Version: 1.0
 References: <20211104002531.1176691-1-seanjc@google.com>
 X-Mailer: git-send-email 2.33.1.1089.g2158813163f-goog
-Subject: [PATCH v5.5 25/30] KVM: s390: Introduce kvm_s390_get_gfn_end()
+Subject: [PATCH v5.5 27/30] KVM: Optimize gfn lookup in kvm_zap_gfn_range()
 From:   Sean Christopherson <seanjc@google.com>
 To:     Marc Zyngier <maz@kernel.org>, Huacai Chen <chenhuacai@kernel.org>,
         Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
@@ -92,78 +92,135 @@ X-Mailing-List: linux-mips@vger.kernel.org
 
 From: Maciej S. Szmigiero <maciej.szmigiero@oracle.com>
 
-And use it where s390 code would just access the memslot with the highest
-gfn directly.
-
-No functional change intended.
+Introduce a memslots gfn upper bound operation and use it to optimize
+kvm_zap_gfn_range().
+This way this handler can do a quick lookup for intersecting gfns and won't
+have to do a linear scan of the whole memslot set.
 
 Signed-off-by: Maciej S. Szmigiero <maciej.szmigiero@oracle.com>
-Reviewed-by: Claudio Imbrenda <imbrenda@linux.ibm.com>
-Signed-off-by: Sean Christopherson <seanjc@google.com>
+Not-signed-off-by: Sean Christopherson <seanjc@google.com>
 ---
- arch/s390/kvm/kvm-s390.c |  2 +-
- arch/s390/kvm/kvm-s390.h | 12 ++++++++++++
- arch/s390/kvm/pv.c       |  4 +---
- 3 files changed, 14 insertions(+), 4 deletions(-)
+ arch/x86/kvm/mmu/mmu.c   | 11 +++++--
+ include/linux/kvm_host.h | 69 ++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 78 insertions(+), 2 deletions(-)
 
-diff --git a/arch/s390/kvm/kvm-s390.c b/arch/s390/kvm/kvm-s390.c
-index 4e032e176216..f7cc0853866b 100644
---- a/arch/s390/kvm/kvm-s390.c
-+++ b/arch/s390/kvm/kvm-s390.c
-@@ -2012,7 +2012,7 @@ static int kvm_s390_get_cmma(struct kvm *kvm, struct kvm_s390_cmma_log *args,
- 	if (!ms)
- 		return 0;
- 	next_gfn = kvm_s390_next_dirty_cmma(slots, cur_gfn + 1);
--	mem_end = slots->memslots[0].base_gfn + slots->memslots[0].npages;
-+	mem_end = kvm_s390_get_gfn_end(slots);
+diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+index 09ff0ccaa203..14e41278c069 100644
+--- a/arch/x86/kvm/mmu/mmu.c
++++ b/arch/x86/kvm/mmu/mmu.c
+@@ -5714,16 +5714,20 @@ static bool __kvm_zap_rmaps(struct kvm *kvm, gfn_t gfn_start, gfn_t gfn_end)
+ {
+ 	const struct kvm_memory_slot *memslot;
+ 	struct kvm_memslots *slots;
++	struct rb_node *node;
+ 	bool flush = false;
+ 	gfn_t start, end;
+-	int i, bkt;
++	int i, idx;
  
- 	while (args->count < bufsize) {
- 		hva = gfn_to_hva(kvm, cur_gfn);
-diff --git a/arch/s390/kvm/kvm-s390.h b/arch/s390/kvm/kvm-s390.h
-index 52bc8fbaa60a..207d299d7fea 100644
---- a/arch/s390/kvm/kvm-s390.h
-+++ b/arch/s390/kvm/kvm-s390.h
-@@ -208,6 +208,18 @@ static inline int kvm_s390_user_cpu_state_ctrl(struct kvm *kvm)
- 	return kvm->arch.user_cpu_state_ctrl != 0;
+ 	if (!kvm_memslots_have_rmaps(kvm))
+ 		return flush;
+ 
+ 	for (i = 0; i < KVM_ADDRESS_SPACE_NUM; i++) {
+ 		slots = __kvm_memslots(kvm, i);
+-		kvm_for_each_memslot(memslot, bkt, slots) {
++		idx = slots->node_idx;
++
++		kvm_for_each_memslot_in_gfn_range(node, slots, gfn_start, gfn_end) {
++			memslot = container_of(node, struct kvm_memory_slot, gfn_node[idx]);
+ 			start = max(gfn_start, memslot->base_gfn);
+ 			end = min(gfn_end, memslot->base_gfn + memslot->npages);
+ 			if (start >= end)
+@@ -5747,6 +5751,9 @@ void kvm_zap_gfn_range(struct kvm *kvm, gfn_t gfn_start, gfn_t gfn_end)
+ 	bool flush;
+ 	int i;
+ 
++	if (WARN_ON_ONCE(gfn_end <= gfn_start))
++		return;
++
+ 	write_lock(&kvm->mmu_lock);
+ 
+ 	kvm_inc_notifier_count(kvm, gfn_start, gfn_end);
+diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
+index 6888f3c2e04b..810a5b958697 100644
+--- a/include/linux/kvm_host.h
++++ b/include/linux/kvm_host.h
+@@ -832,6 +832,75 @@ struct kvm_memory_slot *id_to_memslot(struct kvm_memslots *slots, int id)
+ 	return NULL;
  }
  
-+/* get the end gfn of the last (highest gfn) memslot */
-+static inline unsigned long kvm_s390_get_gfn_end(struct kvm_memslots *slots)
++static inline
++struct rb_node *kvm_memslots_gfn_upper_bound(struct kvm_memslots *slots, gfn_t gfn)
 +{
-+	struct kvm_memory_slot *ms;
++	int idx = slots->node_idx;
++	struct rb_node *node, *result = NULL;
 +
-+	if (WARN_ON(!slots->used_slots))
-+		return 0;
++	for (node = slots->gfn_tree.rb_node; node; ) {
++		struct kvm_memory_slot *slot;
 +
-+	ms = slots->memslots;
-+	return ms->base_gfn + ms->npages;
++		slot = container_of(node, struct kvm_memory_slot, gfn_node[idx]);
++		if (gfn < slot->base_gfn) {
++			result = node;
++			node = node->rb_left;
++		} else
++			node = node->rb_right;
++	}
++
++	return result;
 +}
 +
- /* implemented in pv.c */
- int kvm_s390_pv_destroy_cpu(struct kvm_vcpu *vcpu, u16 *rc, u16 *rrc);
- int kvm_s390_pv_create_cpu(struct kvm_vcpu *vcpu, u16 *rc, u16 *rrc);
-diff --git a/arch/s390/kvm/pv.c b/arch/s390/kvm/pv.c
-index c8841f476e91..e51cccfded25 100644
---- a/arch/s390/kvm/pv.c
-+++ b/arch/s390/kvm/pv.c
-@@ -117,7 +117,6 @@ static int kvm_s390_pv_alloc_vm(struct kvm *kvm)
- 	unsigned long base = uv_info.guest_base_stor_len;
- 	unsigned long virt = uv_info.guest_virt_var_stor_len;
- 	unsigned long npages = 0, vlen = 0;
--	struct kvm_memory_slot *memslot;
- 
- 	kvm->arch.pv.stor_var = NULL;
- 	kvm->arch.pv.stor_base = __get_free_pages(GFP_KERNEL_ACCOUNT, get_order(base));
-@@ -131,8 +130,7 @@ static int kvm_s390_pv_alloc_vm(struct kvm *kvm)
- 	 * Slots are sorted by GFN
- 	 */
- 	mutex_lock(&kvm->slots_lock);
--	memslot = kvm_memslots(kvm)->memslots;
--	npages = memslot->base_gfn + memslot->npages;
-+	npages = kvm_s390_get_gfn_end(kvm_memslots(kvm));
- 	mutex_unlock(&kvm->slots_lock);
- 
- 	kvm->arch.pv.guest_len = npages * PAGE_SIZE;
++static inline
++struct rb_node *kvm_for_each_in_gfn_first(struct kvm_memslots *slots, gfn_t start)
++{
++	struct rb_node *node;
++
++	/*
++	 * Find the slot with the lowest gfn that can possibly intersect with
++	 * the range, so we'll ideally have slot start <= range start
++	 */
++	node = kvm_memslots_gfn_upper_bound(slots, start);
++	if (node) {
++		struct rb_node *pnode;
++
++		/*
++		 * A NULL previous node means that the very first slot
++		 * already has a higher start gfn.
++		 * In this case slot start > range start.
++		 */
++		pnode = rb_prev(node);
++		if (pnode)
++			node = pnode;
++	} else {
++		/* a NULL node below means no slots */
++		node = rb_last(&slots->gfn_tree);
++	}
++
++	return node;
++}
++
++static inline
++bool kvm_for_each_in_gfn_no_more(struct kvm_memslots *slots, struct rb_node *node, gfn_t end)
++{
++	struct kvm_memory_slot *memslot;
++
++	memslot = container_of(node, struct kvm_memory_slot, gfn_node[slots->node_idx]);
++
++	/*
++	 * If this slot starts beyond or at the end of the range so does
++	 * every next one
++	 */
++	return memslot->base_gfn >= end;
++}
++
++/* Iterate over each memslot *possibly* intersecting [start, end) range */
++#define kvm_for_each_memslot_in_gfn_range(node, slots, start, end)	\
++	for (node = kvm_for_each_in_gfn_first(slots, start);		\
++	     node && !kvm_for_each_in_gfn_no_more(slots, node, end);	\
++	     node = rb_next(node))					\
++
+ /*
+  * KVM_SET_USER_MEMORY_REGION ioctl allows the following operations:
+  * - create a new memory slot
 -- 
 2.33.1.1089.g2158813163f-goog
 

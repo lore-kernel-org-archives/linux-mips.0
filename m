@@ -2,56 +2,61 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A96F1C433FE
-	for <linux-mips@archiver.kernel.org>; Thu,  4 Nov 2021 00:27:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 21679C433EF
+	for <linux-mips@archiver.kernel.org>; Thu,  4 Nov 2021 00:27:15 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 9648560230
-	for <linux-mips@archiver.kernel.org>; Thu,  4 Nov 2021 00:27:14 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 0A21760FC2
+	for <linux-mips@archiver.kernel.org>; Thu,  4 Nov 2021 00:27:15 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233679AbhKDA3u (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 3 Nov 2021 20:29:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52472 "EHLO
+        id S229652AbhKDA3v (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 3 Nov 2021 20:29:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52498 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233105AbhKDA2g (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 3 Nov 2021 20:28:36 -0400
-Received: from mail-pf1-x449.google.com (mail-pf1-x449.google.com [IPv6:2607:f8b0:4864:20::449])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B86DC061714
-        for <linux-mips@vger.kernel.org>; Wed,  3 Nov 2021 17:25:59 -0700 (PDT)
-Received: by mail-pf1-x449.google.com with SMTP id y124-20020a623282000000b0047a09271e49so2330556pfy.16
-        for <linux-mips@vger.kernel.org>; Wed, 03 Nov 2021 17:25:59 -0700 (PDT)
+        with ESMTP id S233128AbhKDA2j (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 3 Nov 2021 20:28:39 -0400
+Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 192C1C061714
+        for <linux-mips@vger.kernel.org>; Wed,  3 Nov 2021 17:26:02 -0700 (PDT)
+Received: by mail-pl1-x649.google.com with SMTP id u22-20020a170902a61600b00141ab5dd25dso1949827plq.5
+        for <linux-mips@vger.kernel.org>; Wed, 03 Nov 2021 17:26:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
-        h=reply-to:date:message-id:mime-version:subject:from:to:cc;
-        bh=ANJRuFa6/N/mrCRTja+awZQkxH6czfCyQf64cMZwz24=;
-        b=WcXudEzcD22tH+HPG355uae4O/TbLzq7rMXZkNlJ48SpnvVzn/SR3sHk8XQtIKtfFy
-         48xyMqlSGgw1oTNAo0R/J1vgWG1e93UerRyqKUD5Qa2c4/ULYf5WGk93DChSYqJ9agNH
-         Fa9nJgKDtBpUeiYCj9euvUxsBrArkkfyhnSH1PJXr2Gl/88Cl0a4CGn9Y4iADsm2poc/
-         3MOL6YBHtOByIy6pf9yCo8zV4vME+dV5MfimvChSWTjN9iYTgoDtkS3nqw29fVsbEqKV
-         PJA6Jv6ck5l08RPLmQ8vK5IF61aQorHOz4MISeHyAQxK20Y0bx5AN/DrWmyFqvqM0FL4
-         ZOMA==
+        h=reply-to:date:in-reply-to:message-id:mime-version:references
+         :subject:from:to:cc;
+        bh=YU3JQHoEXhNYeqTaFGElIxIrX+lTdkV7tmvn1pNhx20=;
+        b=nzIiCi8a3FdUTPNh7ytN/z1OZHuDUfxPkVLwkX7a0tH3K3c1YU/GUrVbVsUKogWulg
+         8TV0o+lCCtBLbDlyn4CdD1ZyDyGmDuKpEashuorjvvAytB9Fha6Xh4GdoRmbK2lCIj46
+         yaw8bm9yIsgJfAeOZzVP5kZxJzf5HvyCshSjBFStaw+bzKBcK6bPZX6ZcbGAXqRyq2X0
+         r24cJ2J/KvfMuDyi9skDCmfAMeR4jILYlAAhpoLRq8XhdUkbVLo1pJ78Onj43zLqECqm
+         BUFjMpHQOpmAXdYIVQtZSEVPXFkfrUmNQanymXLbwXrV/MiRmrChRqGkV2fOUirqVkRC
+         KbPg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:reply-to:date:message-id:mime-version:subject
-         :from:to:cc;
-        bh=ANJRuFa6/N/mrCRTja+awZQkxH6czfCyQf64cMZwz24=;
-        b=IDQmUV0s9yHewg+gyhDZz4izn4+krK/If/kAIVOI8ZD4lbKkfcLsufi6S+4fJSfTQN
-         HYWJ2+SyqqU4Q0xNcxl+MHpT9IhtWpqAfha2ZpkKXwCsHM3iTOKIoUSMA2iQ7QZE/tL9
-         FyMo3xn1wLQ5boR/c9GEHKeVeMm76f6uXv7bPO0TpI427rKXB6I2F/dwDnrV7WTdhn7k
-         8WoBaHstbPHTvEGElSIFAWi3KIbuDfGeEd4So0EzljRNbFpjsJuV+IXYr73bWCfnHRFg
-         2LG5pE81nIg6r6AfYUNpteNBKKgQ8uVIQwkV6ep/4EMbvidtF6mVOUNBcRHrVLi36ReB
-         nFLA==
-X-Gm-Message-State: AOAM532Bm1x+6Y4OkEkzrnLzyRmm4Tcvx3LT6xGW5xocHzDsxSi/kTue
-        gmMejG0LPtN8RydMAu7DzOP/mC6qaFc=
-X-Google-Smtp-Source: ABdhPJzlsKffFyG0Dw31UftnkkBVRPshFrq8ZrwsZvAX9gzLEmIDzXxmuc9EMVEJieZwGIMkD2hcP4GKkP4=
+        h=x-gm-message-state:reply-to:date:in-reply-to:message-id
+         :mime-version:references:subject:from:to:cc;
+        bh=YU3JQHoEXhNYeqTaFGElIxIrX+lTdkV7tmvn1pNhx20=;
+        b=CFtUphQCW4cZ4kP/aimKrPdGZHA5Mt5wR60MWTIn0OOdZR/W5RKZu63ZfTmmbDDbYD
+         kHV4D88S5yoYV4WKsypfM4k2BEUBRw8B8dgcM6g5ZMXhJ1WM1hCfbhnlj2jzw5tTwU6l
+         znzVA+QYbOW0ewviqpfFAVgKMMD51ZKODJmBBSDbZawCjV008s7x/OVQcxLzA5fAZEYP
+         68aCdcgKlvZs5252wvRyvyww1999eihuVBHS5Ebo6q3nQS5JD2KqwxtxwkWkFtvXOzYw
+         bWLv1QtBohIdO7/ZbJQFwM+MfEJl0f4Duz3qPNiwHK2PYWjJgtqFuMREyaptj1fpmo+Z
+         VJkg==
+X-Gm-Message-State: AOAM531qBgHHDYl24mDidRYOT0OGELk/ZAnQ9oJBp+nZFYVzQVPEz6NK
+        73HMve4giPa5ds4vCLa9ZEmslHtdI/4=
+X-Google-Smtp-Source: ABdhPJweDq2zn2AkOEc4n/Ejh97liBXXjVYy6U4pABPdgYlHkkJl2at3TcV1J/XikSLWHiPxtEuWDooqyFQ=
 X-Received: from seanjc.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:3e5])
- (user=seanjc job=sendgmr) by 2002:a17:90a:5285:: with SMTP id
- w5mr261213pjh.1.1635985558096; Wed, 03 Nov 2021 17:25:58 -0700 (PDT)
+ (user=seanjc job=sendgmr) by 2002:a05:6a00:16c6:b029:32d:e190:9dd0 with SMTP
+ id l6-20020a056a0016c6b029032de1909dd0mr48630576pfc.70.1635985561569; Wed, 03
+ Nov 2021 17:26:01 -0700 (PDT)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Thu,  4 Nov 2021 00:25:01 +0000
-Message-Id: <20211104002531.1176691-1-seanjc@google.com>
+Date:   Thu,  4 Nov 2021 00:25:03 +0000
+In-Reply-To: <20211104002531.1176691-1-seanjc@google.com>
+Message-Id: <20211104002531.1176691-3-seanjc@google.com>
 Mime-Version: 1.0
+References: <20211104002531.1176691-1-seanjc@google.com>
 X-Mailer: git-send-email 2.33.1.1089.g2158813163f-goog
-Subject: [PATCH v5.5 00/30] KVM: Scalable memslots implementation
+Subject: [PATCH v5.5 02/30] KVM: Disallow user memslot with size that exceeds
+ "unsigned long"
 From:   Sean Christopherson <seanjc@google.com>
 To:     Marc Zyngier <maz@kernel.org>, Huacai Chen <chenhuacai@kernel.org>,
         Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
@@ -86,139 +91,38 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-This series is an iteration of Maciej's scalable memslots work.  It
-addresses most, but not all, of my feedback from v5, hence the "5.5"
-moniker.  Specifically, I did not touch the iteration over gfn and hva
-ranges as I would likely do more harm than good, especially in the gfn
-iterator.
+Reject userspace memslots whose size exceeds the storage capacity of an
+"unsigned long".  KVM's uAPI takes the size as u64 to support large slots
+on 64-bit hosts, but does not account for the size being truncated on
+32-bit hosts in various flows.  The access_ok() check on the userspace
+virtual address in particular casts the size to "unsigned long" and will
+check the wrong number of bytes.
 
-The core functionality of the series is unchanged from v5 (or at least,
-it should be).  Patches "Resolve memslot ID via a hash table" and "Keep
-memslots in tree-based structures" are heavily reworked (the latter in
-particular) to provide better continuity between patches and to avoid
-the swap() logic when working with the "inactive" set of memslots.  But
-again, the changes are intended to be purely cosmetic.
+KVM doesn't actually support slots whose size doesn't fit in an "unsigned
+long", e.g. KVM's internal kvm_memory_slot.npages is an "unsigned long",
+not a "u64", and misc arch specific code follows that behavior.
 
-Paolo, ideally I'd like get to patch 03 (and therefore patch 02) into 5.16.
-The patch technically breaks backwards compatibility with 32-bit KVM, but
-I'm quite confident none of the existing 32-bit architectures can possibly
-work.  RISC-V is the one exception where it's not obvious that creating
-more guest memslot pages than can fit in an unsigned long won't fall on its
-face.  Since RISC-V is new in 5.16, I'd like to get that change in before
-RISC-V can gain any users doing bizarre things.
+Fixes: fa3d315a4ce2 ("KVM: Validate userspace_addr of memslot when registered")
+Cc: stable@vger.kernel.org
+Signed-off-by: Sean Christopherson <seanjc@google.com>
+---
+ virt/kvm/kvm_main.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-s390 folks, please look closely at patch 11, "KVM: s390: Use "new" memslot
-instead of userspace memory region".  There's a subtle/weird functional
-change in there that I can't imagine would negatively affect userspace,
-but the end result is odd nonetheless.
-
-Claudio, I dropped your R-b from "KVM: Integrate gfn_to_memslot_approx()
-into search_memslots()" because I changed the code enough to break the s390
-build at least once :-)
-
-Patches 01 and 02 are bug fixes.
-
-Patch 03 is fix of sorts to require that the total number of pages across
-all memslots fit in an unsigned long.  The existing 32-bit KVM
-architectures don't correctly handle this case, and fixing those issues
-would quite gross and a waste of time.
-
-Patches 04-18 are cleanups throughout common KVM and all architectures
-to fix some warts in the memslot APIs that allow for a cleaner (IMO)
-of the tree-based memslots code.  They also prep for more improvements
-that are realized in the final patch.
-
-Patches 19-28 are the core of Maciej's scalable memslots work.
-
-Patches 29-30 take advantage of the tree-based memslots to avoid creating
-a dummy "new" memslot on the stack, which simplifies the MOVE case and
-aligns it with the other three memslot update cases.
-
-v5.5
-  * Add all the pre- and post-work cleanups.
-  * Rebase to kvm/queue, commit 0d7d84498fb4 ("KVM: x86: SGX must...")
-  * Name innermost helper ____gfn_to_memslot() instead of ...approx. [Sean]
-  * Rework hash list patch and all subsequent tree modifications to use
-    common kvm_memslot_replace() helper. [Sean]
-  * Rework tree-based approach to avoid swap() by always pulling the
-    invalid memslot tree on-demand, and by relying on precise variables
-    names and comments (for the invidual memslot pointers).
-
-v5:
-  * https://lkml.kernel.org/r/cover.1632171478.git.maciej.szmigiero@oracle.com
-  * Rebase onto v5.15-rc2 (torvalds/master),
-  * Fix 64-bit division of n_memslots_pages for 32-bit KVM,
-  * Collect Claudio's Reviewed-by tags for some of the patches.
-
-Early history can be found in the above lore link.
+diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+index 99e69375c4c9..83287730389f 100644
+--- a/virt/kvm/kvm_main.c
++++ b/virt/kvm/kvm_main.c
+@@ -1689,7 +1689,8 @@ int __kvm_set_memory_region(struct kvm *kvm,
+ 	id = (u16)mem->slot;
  
-Maciej S. Szmigiero (10):
-  KVM: Resync only arch fields when slots_arch_lock gets reacquired
-  KVM: x86: Use nr_memslot_pages to avoid traversing the memslots array
-  KVM: Integrate gfn_to_memslot_approx() into search_memslots()
-  KVM: Move WARN on invalid memslot index to update_memslots()
-  KVM: Resolve memslot ID via a hash table instead of via a static array
-  KVM: Use interval tree to do fast hva lookup in memslots
-  KVM: s390: Introduce kvm_s390_get_gfn_end()
-  KVM: Keep memslots in tree-based structures instead of array-based
-    ones
-  KVM: Optimize gfn lookup in kvm_zap_gfn_range()
-  KVM: Optimize overlapping memslots check
-
-Sean Christopherson (20):
-  KVM: Ensure local memslot copies operate on up-to-date arch-specific
-    data
-  KVM: Disallow user memslot with size that exceeds "unsigned long"
-  KVM: Require total number of memslot pages to fit in an unsigned long
-  KVM: Open code kvm_delete_memslot() into its only caller
-  KVM: Use "new" memslot's address space ID instead of dedicated param
-  KVM: Let/force architectures to deal with arch specific memslot data
-  KVM: arm64: Use "new" memslot instead of userspace memory region
-  KVM: MIPS: Drop pr_debug from memslot commit to avoid using "mem"
-  KVM: PPC: Avoid referencing userspace memory region in memslot updates
-  KVM: s390: Use "new" memslot instead of userspace memory region
-  KVM: x86: Use "new" memslot instead of userspace memory region
-  KVM: RISC-V: Use "new" memslot instead of userspace memory region
-  KVM: Stop passing kvm_userspace_memory_region to arch memslot hooks
-  KVM: Use prepare/commit hooks to handle generic memslot metadata
-    updates
-  KVM: x86: Don't assume old/new memslots are non-NULL at memslot commit
-  KVM: s390: Skip gfn/size sanity checks on memslot DELETE or FLAGS_ONLY
-  KVM: Don't make a full copy of the old memslot in
-    __kvm_set_memory_region()
-  KVM: x86: Don't call kvm_mmu_change_mmu_pages() if the count hasn't
-    changed
-  KVM: Wait 'til the bitter end to initialize the "new" memslot
-  KVM: Dynamically allocate "new" memslots from the get-go
-
- arch/arm64/kvm/Kconfig              |   1 +
- arch/arm64/kvm/mmu.c                |  27 +-
- arch/mips/kvm/Kconfig               |   1 +
- arch/mips/kvm/mips.c                |   9 +-
- arch/powerpc/include/asm/kvm_ppc.h  |  18 +-
- arch/powerpc/kvm/Kconfig            |   1 +
- arch/powerpc/kvm/book3s.c           |  14 +-
- arch/powerpc/kvm/book3s_64_mmu_hv.c |   4 +-
- arch/powerpc/kvm/book3s_hv.c        |  28 +-
- arch/powerpc/kvm/book3s_hv_nested.c |   4 +-
- arch/powerpc/kvm/book3s_hv_uvmem.c  |  14 +-
- arch/powerpc/kvm/book3s_pr.c        |  17 +-
- arch/powerpc/kvm/booke.c            |   7 +-
- arch/powerpc/kvm/powerpc.c          |   9 +-
- arch/riscv/kvm/mmu.c                |  34 +-
- arch/s390/kvm/Kconfig               |   1 +
- arch/s390/kvm/kvm-s390.c            |  98 ++--
- arch/s390/kvm/kvm-s390.h            |  14 +
- arch/s390/kvm/pv.c                  |   4 +-
- arch/x86/include/asm/kvm_host.h     |   1 -
- arch/x86/kvm/Kconfig                |   1 +
- arch/x86/kvm/debugfs.c              |   6 +-
- arch/x86/kvm/mmu/mmu.c              |  39 +-
- arch/x86/kvm/x86.c                  |  42 +-
- include/linux/kvm_host.h            | 240 +++++---
- virt/kvm/kvm_main.c                 | 868 ++++++++++++++++------------
- 26 files changed, 855 insertions(+), 647 deletions(-)
-
+ 	/* General sanity checks */
+-	if (mem->memory_size & (PAGE_SIZE - 1))
++	if ((mem->memory_size & (PAGE_SIZE - 1)) ||
++	    (mem->memory_size != (unsigned long)mem->memory_size))
+ 		return -EINVAL;
+ 	if (mem->guest_phys_addr & (PAGE_SIZE - 1))
+ 		return -EINVAL;
 -- 
 2.33.1.1089.g2158813163f-goog
 

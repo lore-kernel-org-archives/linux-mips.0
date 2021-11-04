@@ -2,61 +2,60 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DA307C433F5
-	for <linux-mips@archiver.kernel.org>; Thu,  4 Nov 2021 00:27:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 481CEC433EF
+	for <linux-mips@archiver.kernel.org>; Thu,  4 Nov 2021 00:28:41 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id C637D60F9D
-	for <linux-mips@archiver.kernel.org>; Thu,  4 Nov 2021 00:27:50 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 2CDA96121E
+	for <linux-mips@archiver.kernel.org>; Thu,  4 Nov 2021 00:28:41 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232746AbhKDAaX (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 3 Nov 2021 20:30:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52882 "EHLO
+        id S233128AbhKDA35 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 3 Nov 2021 20:29:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52608 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233524AbhKDA30 (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 3 Nov 2021 20:29:26 -0400
-Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B4DCC061714
-        for <linux-mips@vger.kernel.org>; Wed,  3 Nov 2021 17:26:49 -0700 (PDT)
-Received: by mail-pg1-x549.google.com with SMTP id r25-20020a63a019000000b002a20656994dso2409173pge.3
-        for <linux-mips@vger.kernel.org>; Wed, 03 Nov 2021 17:26:49 -0700 (PDT)
+        with ESMTP id S233253AbhKDA2w (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 3 Nov 2021 20:28:52 -0400
+Received: from mail-pg1-x54a.google.com (mail-pg1-x54a.google.com [IPv6:2607:f8b0:4864:20::54a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D490BC06127A
+        for <linux-mips@vger.kernel.org>; Wed,  3 Nov 2021 17:26:15 -0700 (PDT)
+Received: by mail-pg1-x54a.google.com with SMTP id c2-20020a63d5020000b029023ae853b72cso2357905pgg.18
+        for <linux-mips@vger.kernel.org>; Wed, 03 Nov 2021 17:26:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=reply-to:date:in-reply-to:message-id:mime-version:references
          :subject:from:to:cc;
-        bh=cwptNtKIDGBxPZN/2DV/RXa3ZTx9EN7Ut32v7IxrbNY=;
-        b=kp5W0d4ZKAqTQCeZRqX3O+a/DAfCjKvi3mu4Tg7fQ3jvfDHMY9wuQ5slcGHjKHrpuA
-         O41kLcfJOvm1lVdKYW85uy2oNREGu2MSv7jrDheS1753o05M2Y57yo4STeIs65Q2EHGK
-         B5up0zB0VZ6L8ytxDvtb0VGTD9hy1sbsnk0DAyC3cwRi4JiDc+TXwSManxsjb2qDyn2O
-         OiXBUS1i7vJaF7j3il7TVpDWNEF8CLeaquv4Bhyqc0YSiiB0sbOWzXDrq3GuqvjBYdoT
-         il3fanhD0s/lcfunhrA5jBW1o7Wn+UmL0jWWhjPVM5Fv3i3nvUx16q/ebHR7bCXwY+na
-         ZUjw==
+        bh=PjovHHKwir4eMxna9ALNlFgtKtfStcoQnuN5jUx4d74=;
+        b=MzRIGZ00uU1v6jXFg7sOa49q0QiiJzIeJF0fsnZltmvZzCFhconYRc7Mql7/SxLGGe
+         PQR/3RHhBtRSAtrokWdTMRIYSNfCjrzeqp/2pYl4nuIUdLA+tNXzlJj4UmkkkIK9LPqV
+         7p7wAQ5d9Kyg2fkqIEMVil6Qgqe36g5ifelvyOMR/AYAS8U+ERKkQK+cGyQQZ8x89Oqo
+         pR44zTX8U0CmR165/PWPO3esK4NT4i+1siE3vZY8sMARYj2xTKpTBhSVsLlYNqaeTVf1
+         xDjmvGuKQEAXKpLgA0+7lW1H38uqGwX51Von2AgvBjNF1O3E3ZNcRPe20jLwzon1Y1yB
+         H4FQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:reply-to:date:in-reply-to:message-id
          :mime-version:references:subject:from:to:cc;
-        bh=cwptNtKIDGBxPZN/2DV/RXa3ZTx9EN7Ut32v7IxrbNY=;
-        b=rZeIUdlXzsKxRhuxnVo8BPw9ovfX9BWJv7icB6jfUVGYoxlPZ+yfBmgZ+qEMUBFBc8
-         YpKSPA4ZGuhfFS6/SawOLvqoxvDy8ixKW4tCHoUe8L1U1J30nVq4DYwJArSYnv8ryKBk
-         mrMrZdy1e9TpOLAE8DWw2pkDzHvpAQmkXrJAjMlkQevIDXV95Ko2bmG7EztwNy03pdZ9
-         fhhvQUT7emdfLpI1aovp3Q6aspVmGy87JKYrjJeP4FyPvhWdCwwcrryVJ2hAlaRte/mB
-         0rfUA9toroFD+YS/uqPo27IslHzzVplNXdW4xN/pb48y4mJm05CFzCcxiY39yBNZ9q7t
-         497A==
-X-Gm-Message-State: AOAM530JoKgcgwnRmICOgfD3SFVgl0xy4B7KyE/t5k3E2ZEunTOHgW7t
-        wP6xd1FycVyDIgb/0u4/W3x8iN7eVEs=
-X-Google-Smtp-Source: ABdhPJwR0Cgz5rdM3APhtKmfNq/3RdcWCCfmBz9ZLpAOZgawdF+Lq6eMD3AhC92nfdAaylW7AAzDiY84qhk=
+        bh=PjovHHKwir4eMxna9ALNlFgtKtfStcoQnuN5jUx4d74=;
+        b=HdPeNAURQbBBzhkmv/IIj+L9Ta1xCKCzD8OmNY4KCOGBzLoib3ULnfBQwnD4g0HIAm
+         zzMC1RS2jO4qaf69vAUG00dkEgAjTa4u639rNhcgKMIfRB6DJ9roMfMvLfoQqdZun/gU
+         LsO4mhwnwEhaM3hFXZmTQnThQyrFBkN7wyNle6+igVFQxPhXaoooVyk2BQXiCYsLB8Kd
+         tdRdzjn46lmuWwUA90fDokZT9w55WD6NhK5dG8Y6OMA5f2E4qDVQHW94sgd9W4rZ4UmN
+         9q8/9rDOJv0y9n/YiAU2Ai7zdgnwHVfUfoKen7W8D3CjA1m2WYt7xCj0uu5CEEp0i9qh
+         schA==
+X-Gm-Message-State: AOAM533z+DFCGMP9Q4Mm9y/Nnc4R5Os+p++aMh9nlnbdiwYGvKH1+5nL
+        MUj9HUTvD0TaOJCj5RNuY61DI0IgD4M=
+X-Google-Smtp-Source: ABdhPJzQ7YmaVSHBOjM7K350dhFQvaiNwSHal69feIXmb76g43+5TJfukiKupDeHK6Cfhk2S1QB6BJZI8TM=
 X-Received: from seanjc.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:3e5])
- (user=seanjc job=sendgmr) by 2002:a05:6a00:1709:b0:481:203:d3bd with SMTP id
- h9-20020a056a00170900b004810203d3bdmr28140075pfc.58.1635985608753; Wed, 03
- Nov 2021 17:26:48 -0700 (PDT)
+ (user=seanjc job=sendgmr) by 2002:a17:90b:1643:: with SMTP id
+ il3mr11048014pjb.182.1635985575294; Wed, 03 Nov 2021 17:26:15 -0700 (PDT)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Thu,  4 Nov 2021 00:25:30 +0000
+Date:   Thu,  4 Nov 2021 00:25:11 +0000
 In-Reply-To: <20211104002531.1176691-1-seanjc@google.com>
-Message-Id: <20211104002531.1176691-30-seanjc@google.com>
+Message-Id: <20211104002531.1176691-11-seanjc@google.com>
 Mime-Version: 1.0
 References: <20211104002531.1176691-1-seanjc@google.com>
 X-Mailer: git-send-email 2.33.1.1089.g2158813163f-goog
-Subject: [PATCH v5.5 29/30] KVM: Wait 'til the bitter end to initialize the
- "new" memslot
+Subject: [PATCH v5.5 10/30] KVM: PPC: Avoid referencing userspace memory
+ region in memslot updates
 From:   Sean Christopherson <seanjc@google.com>
 To:     Marc Zyngier <maz@kernel.org>, Huacai Chen <chenhuacai@kernel.org>,
         Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
@@ -91,101 +90,188 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Initialize the "new" memslot in the !DELETE path only after the various
-sanity checks have passed.  This will allow a future commit to allocate
-@new dynamically without having to copy a memslot, and without having to
-deal with freeing @new in error paths and in the "nothing to change" path
-that's hiding in the sanity checks.
+For PPC HV, get the number of pages directly from the new memslot instead
+of computing the same from the userspace memory region, and explicitly
+check for !DELETE instead of inferring the same when toggling mmio_update.
+The motivation for these changes is to avoid referencing the @mem param
+so that it can be dropped in a future commit.
 
 No functional change intended.
 
 Signed-off-by: Sean Christopherson <seanjc@google.com>
 ---
- virt/kvm/kvm_main.c | 37 ++++++++++++++++++++-----------------
- 1 file changed, 20 insertions(+), 17 deletions(-)
+ arch/powerpc/include/asm/kvm_ppc.h |  4 ----
+ arch/powerpc/kvm/book3s.c          |  6 ++----
+ arch/powerpc/kvm/book3s_hv.c       | 12 +++---------
+ arch/powerpc/kvm/book3s_pr.c       |  2 --
+ arch/powerpc/kvm/booke.c           |  2 --
+ arch/powerpc/kvm/powerpc.c         |  4 ++--
+ 6 files changed, 7 insertions(+), 23 deletions(-)
 
-diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
-index d22e40225703..5cc0b50faa8c 100644
---- a/virt/kvm/kvm_main.c
-+++ b/virt/kvm/kvm_main.c
-@@ -1838,6 +1838,8 @@ int __kvm_set_memory_region(struct kvm *kvm,
- 	struct kvm_memory_slot new;
- 	struct kvm_memslots *slots;
- 	enum kvm_mr_change change;
-+	unsigned long npages;
-+	gfn_t base_gfn;
- 	int as_id, id;
- 	int r;
- 
-@@ -1864,6 +1866,8 @@ int __kvm_set_memory_region(struct kvm *kvm,
- 		return -EINVAL;
- 	if (mem->guest_phys_addr + mem->memory_size < mem->guest_phys_addr)
- 		return -EINVAL;
-+	if ((mem->memory_size >> PAGE_SHIFT) > KVM_MEM_MAX_NR_PAGES)
-+		return -EINVAL;
- 
- 	slots = __kvm_memslots(kvm, as_id);
- 
-@@ -1887,15 +1891,8 @@ int __kvm_set_memory_region(struct kvm *kvm,
- 		return kvm_set_memslot(kvm, old, &new, KVM_MR_DELETE);
- 	}
- 
--	new.as_id = as_id;
--	new.id = id;
--	new.base_gfn = mem->guest_phys_addr >> PAGE_SHIFT;
--	new.npages = mem->memory_size >> PAGE_SHIFT;
--	new.flags = mem->flags;
--	new.userspace_addr = mem->userspace_addr;
--
--	if (new.npages > KVM_MEM_MAX_NR_PAGES)
--		return -EINVAL;
-+	base_gfn = (mem->guest_phys_addr >> PAGE_SHIFT);
-+	npages = (mem->memory_size >> PAGE_SHIFT);
- 
- 	if (!old || !old->npages) {
- 		change = KVM_MR_CREATE;
-@@ -1904,27 +1901,33 @@ int __kvm_set_memory_region(struct kvm *kvm,
- 		 * To simplify KVM internals, the total number of pages across
- 		 * all memslots must fit in an unsigned long.
- 		 */
--		if ((kvm->nr_memslot_pages + new.npages) < kvm->nr_memslot_pages)
-+		if ((kvm->nr_memslot_pages + npages) < kvm->nr_memslot_pages)
- 			return -EINVAL;
- 	} else { /* Modify an existing slot. */
--		if ((new.userspace_addr != old->userspace_addr) ||
--		    (new.npages != old->npages) ||
--		    ((new.flags ^ old->flags) & KVM_MEM_READONLY))
-+		if ((mem->userspace_addr != old->userspace_addr) ||
-+		    (npages != old->npages) ||
-+		    ((mem->flags ^ old->flags) & KVM_MEM_READONLY))
- 			return -EINVAL;
- 
--		if (new.base_gfn != old->base_gfn)
-+		if (base_gfn != old->base_gfn)
- 			change = KVM_MR_MOVE;
--		else if (new.flags != old->flags)
-+		else if (mem->flags != old->flags)
- 			change = KVM_MR_FLAGS_ONLY;
- 		else /* Nothing to change. */
- 			return 0;
- 	}
- 
- 	if ((change == KVM_MR_CREATE || change == KVM_MR_MOVE) &&
--	    kvm_check_memslot_overlap(slots, id, new.base_gfn,
--				      new.base_gfn + new.npages))
-+	    kvm_check_memslot_overlap(slots, id, base_gfn, base_gfn + npages))
- 		return -EEXIST;
- 
-+	new.as_id = as_id;
-+	new.id = id;
-+	new.base_gfn = base_gfn;
-+	new.npages = npages;
-+	new.flags = mem->flags;
-+	new.userspace_addr = mem->userspace_addr;
-+
- 	return kvm_set_memslot(kvm, old, &new, change);
+diff --git a/arch/powerpc/include/asm/kvm_ppc.h b/arch/powerpc/include/asm/kvm_ppc.h
+index b01760dd1374..935c58dc38c4 100644
+--- a/arch/powerpc/include/asm/kvm_ppc.h
++++ b/arch/powerpc/include/asm/kvm_ppc.h
+@@ -200,12 +200,10 @@ extern void kvmppc_core_destroy_vm(struct kvm *kvm);
+ extern void kvmppc_core_free_memslot(struct kvm *kvm,
+ 				     struct kvm_memory_slot *slot);
+ extern int kvmppc_core_prepare_memory_region(struct kvm *kvm,
+-				const struct kvm_userspace_memory_region *mem,
+ 				const struct kvm_memory_slot *old,
+ 				struct kvm_memory_slot *new,
+ 				enum kvm_mr_change change);
+ extern void kvmppc_core_commit_memory_region(struct kvm *kvm,
+-				const struct kvm_userspace_memory_region *mem,
+ 				struct kvm_memory_slot *old,
+ 				const struct kvm_memory_slot *new,
+ 				enum kvm_mr_change change);
+@@ -275,12 +273,10 @@ struct kvmppc_ops {
+ 	int (*get_dirty_log)(struct kvm *kvm, struct kvm_dirty_log *log);
+ 	void (*flush_memslot)(struct kvm *kvm, struct kvm_memory_slot *memslot);
+ 	int (*prepare_memory_region)(struct kvm *kvm,
+-				     const struct kvm_userspace_memory_region *mem,
+ 				     const struct kvm_memory_slot *old,
+ 				     struct kvm_memory_slot *new,
+ 				     enum kvm_mr_change change);
+ 	void (*commit_memory_region)(struct kvm *kvm,
+-				     const struct kvm_userspace_memory_region *mem,
+ 				     struct kvm_memory_slot *old,
+ 				     const struct kvm_memory_slot *new,
+ 				     enum kvm_mr_change change);
+diff --git a/arch/powerpc/kvm/book3s.c b/arch/powerpc/kvm/book3s.c
+index 8250e8308674..6d525285dbe8 100644
+--- a/arch/powerpc/kvm/book3s.c
++++ b/arch/powerpc/kvm/book3s.c
+@@ -847,21 +847,19 @@ void kvmppc_core_flush_memslot(struct kvm *kvm, struct kvm_memory_slot *memslot)
  }
- EXPORT_SYMBOL_GPL(__kvm_set_memory_region);
+ 
+ int kvmppc_core_prepare_memory_region(struct kvm *kvm,
+-				      const struct kvm_userspace_memory_region *mem,
+ 				      const struct kvm_memory_slot *old,
+ 				      struct kvm_memory_slot *new,
+ 				      enum kvm_mr_change change)
+ {
+-	return kvm->arch.kvm_ops->prepare_memory_region(kvm, mem, old, new, change);
++	return kvm->arch.kvm_ops->prepare_memory_region(kvm, old, new, change);
+ }
+ 
+ void kvmppc_core_commit_memory_region(struct kvm *kvm,
+-				const struct kvm_userspace_memory_region *mem,
+ 				struct kvm_memory_slot *old,
+ 				const struct kvm_memory_slot *new,
+ 				enum kvm_mr_change change)
+ {
+-	kvm->arch.kvm_ops->commit_memory_region(kvm, mem, old, new, change);
++	kvm->arch.kvm_ops->commit_memory_region(kvm, old, new, change);
+ }
+ 
+ bool kvm_unmap_gfn_range(struct kvm *kvm, struct kvm_gfn_range *range)
+diff --git a/arch/powerpc/kvm/book3s_hv.c b/arch/powerpc/kvm/book3s_hv.c
+index 5bf763a74c22..4d40c1867be5 100644
+--- a/arch/powerpc/kvm/book3s_hv.c
++++ b/arch/powerpc/kvm/book3s_hv.c
+@@ -4828,15 +4828,12 @@ static void kvmppc_core_free_memslot_hv(struct kvm_memory_slot *slot)
+ }
+ 
+ static int kvmppc_core_prepare_memory_region_hv(struct kvm *kvm,
+-				const struct kvm_userspace_memory_region *mem,
+ 				const struct kvm_memory_slot *old,
+ 				struct kvm_memory_slot *new,
+ 				enum kvm_mr_change change)
+ {
+-	unsigned long npages = mem->memory_size >> PAGE_SHIFT;
+-
+ 	if (change == KVM_MR_CREATE) {
+-		new->arch.rmap = vzalloc(array_size(npages,
++		new->arch.rmap = vzalloc(array_size(new->npages,
+ 					  sizeof(*new->arch.rmap)));
+ 		if (!new->arch.rmap)
+ 			return -ENOMEM;
+@@ -4848,20 +4845,17 @@ static int kvmppc_core_prepare_memory_region_hv(struct kvm *kvm,
+ }
+ 
+ static void kvmppc_core_commit_memory_region_hv(struct kvm *kvm,
+-				const struct kvm_userspace_memory_region *mem,
+ 				struct kvm_memory_slot *old,
+ 				const struct kvm_memory_slot *new,
+ 				enum kvm_mr_change change)
+ {
+-	unsigned long npages = mem->memory_size >> PAGE_SHIFT;
+-
+ 	/*
+-	 * If we are making a new memslot, it might make
++	 * If we are creating or modifying a memslot, it might make
+ 	 * some address that was previously cached as emulated
+ 	 * MMIO be no longer emulated MMIO, so invalidate
+ 	 * all the caches of emulated MMIO translations.
+ 	 */
+-	if (npages)
++	if (change != KVM_MR_DELETE)
+ 		atomic64_inc(&kvm->arch.mmio_update);
+ 
+ 	/*
+diff --git a/arch/powerpc/kvm/book3s_pr.c b/arch/powerpc/kvm/book3s_pr.c
+index 58d3ae4605c0..ca3bfba94fe4 100644
+--- a/arch/powerpc/kvm/book3s_pr.c
++++ b/arch/powerpc/kvm/book3s_pr.c
+@@ -1899,7 +1899,6 @@ static void kvmppc_core_flush_memslot_pr(struct kvm *kvm,
+ }
+ 
+ static int kvmppc_core_prepare_memory_region_pr(struct kvm *kvm,
+-				const struct kvm_userspace_memory_region *mem,
+ 				const struct kvm_memory_slot *old,
+ 				struct kvm_memory_slot *new,
+ 				enum kvm_mr_change change)
+@@ -1908,7 +1907,6 @@ static int kvmppc_core_prepare_memory_region_pr(struct kvm *kvm,
+ }
+ 
+ static void kvmppc_core_commit_memory_region_pr(struct kvm *kvm,
+-				const struct kvm_userspace_memory_region *mem,
+ 				struct kvm_memory_slot *old,
+ 				const struct kvm_memory_slot *new,
+ 				enum kvm_mr_change change)
+diff --git a/arch/powerpc/kvm/booke.c b/arch/powerpc/kvm/booke.c
+index fcf9c1dbd442..25dcf079c713 100644
+--- a/arch/powerpc/kvm/booke.c
++++ b/arch/powerpc/kvm/booke.c
+@@ -1807,7 +1807,6 @@ void kvmppc_core_free_memslot(struct kvm *kvm, struct kvm_memory_slot *slot)
+ }
+ 
+ int kvmppc_core_prepare_memory_region(struct kvm *kvm,
+-				      const struct kvm_userspace_memory_region *mem,
+ 				      const struct kvm_memory_slot *old,
+ 				      struct kvm_memory_slot *new,
+ 				      enum kvm_mr_change change)
+@@ -1816,7 +1815,6 @@ int kvmppc_core_prepare_memory_region(struct kvm *kvm,
+ }
+ 
+ void kvmppc_core_commit_memory_region(struct kvm *kvm,
+-				const struct kvm_userspace_memory_region *mem,
+ 				struct kvm_memory_slot *old,
+ 				const struct kvm_memory_slot *new,
+ 				enum kvm_mr_change change)
+diff --git a/arch/powerpc/kvm/powerpc.c b/arch/powerpc/kvm/powerpc.c
+index ca28e7acaae8..59342237e046 100644
+--- a/arch/powerpc/kvm/powerpc.c
++++ b/arch/powerpc/kvm/powerpc.c
+@@ -711,7 +711,7 @@ int kvm_arch_prepare_memory_region(struct kvm *kvm,
+ 				   struct kvm_memory_slot *new,
+ 				   enum kvm_mr_change change)
+ {
+-	return kvmppc_core_prepare_memory_region(kvm, mem, old, new, change);
++	return kvmppc_core_prepare_memory_region(kvm, old, new, change);
+ }
+ 
+ void kvm_arch_commit_memory_region(struct kvm *kvm,
+@@ -720,7 +720,7 @@ void kvm_arch_commit_memory_region(struct kvm *kvm,
+ 				   const struct kvm_memory_slot *new,
+ 				   enum kvm_mr_change change)
+ {
+-	kvmppc_core_commit_memory_region(kvm, mem, old, new, change);
++	kvmppc_core_commit_memory_region(kvm, old, new, change);
+ }
+ 
+ void kvm_arch_flush_shadow_memslot(struct kvm *kvm,
 -- 
 2.33.1.1089.g2158813163f-goog
 

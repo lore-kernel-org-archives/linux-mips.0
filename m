@@ -2,61 +2,61 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 32234C43217
-	for <linux-mips@archiver.kernel.org>; Thu,  4 Nov 2021 00:27:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 99E31C433EF
+	for <linux-mips@archiver.kernel.org>; Thu,  4 Nov 2021 00:27:20 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 14AE360F9D
-	for <linux-mips@archiver.kernel.org>; Thu,  4 Nov 2021 00:27:19 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 8735060F9D
+	for <linux-mips@archiver.kernel.org>; Thu,  4 Nov 2021 00:27:20 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232913AbhKDA3y (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 3 Nov 2021 20:29:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52560 "EHLO
+        id S232935AbhKDA34 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 3 Nov 2021 20:29:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52584 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233191AbhKDA2q (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 3 Nov 2021 20:28:46 -0400
+        with ESMTP id S233220AbhKDA2t (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 3 Nov 2021 20:28:49 -0400
 Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C1B3C061203
-        for <linux-mips@vger.kernel.org>; Wed,  3 Nov 2021 17:26:09 -0700 (PDT)
-Received: by mail-pg1-x549.google.com with SMTP id u5-20020a63d3450000b029023a5f6e6f9bso2348086pgi.21
-        for <linux-mips@vger.kernel.org>; Wed, 03 Nov 2021 17:26:09 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DBE9C061203
+        for <linux-mips@vger.kernel.org>; Wed,  3 Nov 2021 17:26:12 -0700 (PDT)
+Received: by mail-pg1-x549.google.com with SMTP id g26-20020a63521a000000b0029524f04f5aso2404019pgb.5
+        for <linux-mips@vger.kernel.org>; Wed, 03 Nov 2021 17:26:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=reply-to:date:in-reply-to:message-id:mime-version:references
          :subject:from:to:cc;
-        bh=LkuPu2MAmPCt3jWV5gNi6FOTigPIaUyFE38xvFpYcwQ=;
-        b=fQ2bhoWoTNjz/8iYeFRgk8xE8v2Objy7+s+fRs3Xbjqo7xemtwELytlJkHcmrH+I8M
-         nF5+PPWzNIVtCFCIG/25evZjDbhEXHDEYI4QPrbiUqkMtJe/NqQSXDqAkRrWHvTsM3jA
-         SrPBKggz5NoPesjkkd2VEpQQcxnugvWHDTSR8XA4/eYqple6lXn1XqFKMNVmaihp1/C5
-         Wp0hIBRrvn/u5O+ODQm5fCPzEDbT4Tydnp6dW0bf7m2CqdK9fPiOK1MYaFjy9+H/z58g
-         ImoAfZaL85IvUdUGLtGquAHeWwmvPs8y2pam7sWV2Bi4gxyPO2lJ2+0Gm/fMDsQ6WkmD
-         xZEg==
+        bh=tLQvwVMFuRU1rudmVd+Ot8DGDwWCKV2XWE4z9OvxcSI=;
+        b=aidjRg109rDQhcbEOaDvYUP/J6xeFiJXWQHPB/9inpIU47CGJj4EB+RwhcIG070Mie
+         lVHTfvEeNG2Brzpgw8EZNdAVeUVZ4nNqCUo0Ix5XLJ0H18oJo/2rFOKMzl6fWLSJY191
+         J6xXKGp+3siToXIqVebLKzjgDI+yAMnV78lg50hWKNPX/pVq2TrOflawSIczG+Lqobke
+         Z0ZzafsHPcdo8PEDuhw/rn2m58dsopFaT3sRkFsFmilo83Ii5s7nnixu4BD3y0cdffxJ
+         kzs8TJbXMv5IItYIkJSv/EhZBtHn1F5Yu5VOIhoRSGmVNkoq+MSSDwRM5budJwMaPSM5
+         i1ew==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:reply-to:date:in-reply-to:message-id
          :mime-version:references:subject:from:to:cc;
-        bh=LkuPu2MAmPCt3jWV5gNi6FOTigPIaUyFE38xvFpYcwQ=;
-        b=ijwtKGUWjNdEIB7dytmKRjQOg1WNKTmHg1FvM0PJeFMTWaVBmZw9D3oK12mlDIGv+6
-         /6DE2l6cK3/tVlM6Vgj5QjSPXvicC9ZwGUpWtrpGsrqajWXiCqCdG2erfiTxDagHeH5q
-         9uJgZMsc5/kB6PVEvd8lZ3s4oQ+ZCvmUdIqlBphBt0PyeZTH/kAvUV2z9EbtK+ZqeQdn
-         o95gH3XxFX+mm2y9v+itjNB4dURjuv0ctsXBIcuQxlvZLt5ZtVimAeWGtn38NLCkrAAv
-         jCgtn6CPv7BXFFopcTeX0e604CyeDuPEKgqphwhdS24Hi4ctrD6TipfM6xvkAmMxB7ua
-         xxBA==
-X-Gm-Message-State: AOAM531id2631QEFdlvsgGmAoN7xZeBGP70hHrpSXR8X4W1ybLbw9X9M
-        ZUFCLpwaOETpNHV5xjXorNRw+1iqy6E=
-X-Google-Smtp-Source: ABdhPJzeKw7Ie9jZTvrBx1qRvJ+/3gb9DtrWa/OZ/zOTtW8+RR4Bzhv/NHzsa4hGJ6ZmrRjYSntDBRUHEEc=
+        bh=tLQvwVMFuRU1rudmVd+Ot8DGDwWCKV2XWE4z9OvxcSI=;
+        b=Z5D+xQAZmEHqHxRMA0fPqZ3WqEhJE7/r9TdNRJP5r44AQicNds0/DD83oDbqNmy6Sm
+         NADJNlHIsR89PPI/iZWHhBIBSpzSUGAtvFsLSbdyty3bzOguV4mP1/T9WogXmPQnfeIA
+         pbCabgjah/6/BWEub9QCVMuVRYHCAPxxnlIK8542LPvWS/oMXsP/rM0GimKTezX75nT9
+         SCKQSES5Jr12A+0nbCUGDCA36Eh5853eEaI28DyJ6icGRRrFIjoKTMUQZ4WcOeAQf5yN
+         uUfMOqJ2HXpoDZqBxowGC4dFz6aR14vcLcGTsOoZmaC/4NdenbiIS2m/P0fXys82nNCt
+         RBCA==
+X-Gm-Message-State: AOAM5330TY2yvWumLmRqD2lo+N7qlOsUE2lSBTLRMEZUV1hVl1TgbrYT
+        c02kUCctZHvZAMjTVHrmkIrm94EucEw=
+X-Google-Smtp-Source: ABdhPJwCsMzZuRxv6iw0pTuYU4/wjVIfD1uNyeuH4Gna3eUrPsMPSwpB1c5wUSrPuzkGj84qqgXi63hO2s0=
 X-Received: from seanjc.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:3e5])
- (user=seanjc job=sendgmr) by 2002:a17:902:ecca:b0:141:e920:3b71 with SMTP id
- a10-20020a170902ecca00b00141e9203b71mr22220776plh.10.1635985568621; Wed, 03
- Nov 2021 17:26:08 -0700 (PDT)
+ (user=seanjc job=sendgmr) by 2002:a05:6a00:1484:b0:48c:2e58:8d39 with SMTP id
+ v4-20020a056a00148400b0048c2e588d39mr11085289pfu.13.1635985571770; Wed, 03
+ Nov 2021 17:26:11 -0700 (PDT)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Thu,  4 Nov 2021 00:25:07 +0000
+Date:   Thu,  4 Nov 2021 00:25:09 +0000
 In-Reply-To: <20211104002531.1176691-1-seanjc@google.com>
-Message-Id: <20211104002531.1176691-7-seanjc@google.com>
+Message-Id: <20211104002531.1176691-9-seanjc@google.com>
 Mime-Version: 1.0
 References: <20211104002531.1176691-1-seanjc@google.com>
 X-Mailer: git-send-email 2.33.1.1089.g2158813163f-goog
-Subject: [PATCH v5.5 06/30] KVM: Use "new" memslot's address space ID instead
- of dedicated param
+Subject: [PATCH v5.5 08/30] KVM: arm64: Use "new" memslot instead of userspace
+ memory region
 From:   Sean Christopherson <seanjc@google.com>
 To:     Marc Zyngier <maz@kernel.org>, Huacai Chen <chenhuacai@kernel.org>,
         Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
@@ -91,113 +91,61 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Now that the address space ID is stored in every slot, including fake
-slots used for deletion, use the slot's as_id instead of passing in the
-redundant information as a param to kvm_set_memslot().  This will greatly
-simplify future memslot work by avoiding passing a large number of
-variables around purely to honor @as_id.
+Get the slot ID, hva, etc... from the "new" memslot instead of the
+userspace memory region when preparing/committing a memory region.  This
+will allow a future commit to drop @mem from the prepare/commit hooks
+once all architectures convert to using "new".
 
-Drop a comment in the DELETE path about new->as_id being provided purely
-for debug, as that's now a lie.
-
-No functional change intended.
+Opportunistically wait to get the hva begin+end until after filtering out
+the DELETE case in anticipation of a future commit passing NULL for @new
+when deleting a memslot.
 
 Signed-off-by: Sean Christopherson <seanjc@google.com>
 ---
- virt/kvm/kvm_main.c | 22 +++++++++-------------
- 1 file changed, 9 insertions(+), 13 deletions(-)
+ arch/arm64/kvm/mmu.c | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
-diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
-index e5c2d10f6111..39a64e02a43a 100644
---- a/virt/kvm/kvm_main.c
-+++ b/virt/kvm/kvm_main.c
-@@ -1536,7 +1536,7 @@ static void kvm_copy_memslots_arch(struct kvm_memslots *to,
- 
- static int kvm_set_memslot(struct kvm *kvm,
- 			   const struct kvm_userspace_memory_region *mem,
--			   struct kvm_memory_slot *new, int as_id,
-+			   struct kvm_memory_slot *new,
- 			   enum kvm_mr_change change)
- {
- 	struct kvm_memory_slot *slot, old;
-@@ -1559,7 +1559,7 @@ static int kvm_set_memslot(struct kvm *kvm,
+diff --git a/arch/arm64/kvm/mmu.c b/arch/arm64/kvm/mmu.c
+index cc41eadfbbf4..21213cba7c47 100644
+--- a/arch/arm64/kvm/mmu.c
++++ b/arch/arm64/kvm/mmu.c
+@@ -1473,14 +1473,14 @@ void kvm_arch_commit_memory_region(struct kvm *kvm,
+ 	 * allocated dirty_bitmap[], dirty pages will be tracked while the
+ 	 * memory slot is write protected.
  	 */
- 	mutex_lock(&kvm->slots_arch_lock);
- 
--	slots = kvm_dup_memslots(__kvm_memslots(kvm, as_id), change);
-+	slots = kvm_dup_memslots(__kvm_memslots(kvm, new->as_id), change);
- 	if (!slots) {
- 		mutex_unlock(&kvm->slots_arch_lock);
- 		return -ENOMEM;
-@@ -1579,7 +1579,7 @@ static int kvm_set_memslot(struct kvm *kvm,
- 		 * dropped by update_memslots anyway.  We'll also revert to the
- 		 * old memslots if preparing the new memory region fails.
+-	if (change != KVM_MR_DELETE && mem->flags & KVM_MEM_LOG_DIRTY_PAGES) {
++	if (change != KVM_MR_DELETE && new->flags & KVM_MEM_LOG_DIRTY_PAGES) {
+ 		/*
+ 		 * If we're with initial-all-set, we don't need to write
+ 		 * protect any pages because they're all reported as dirty.
+ 		 * Huge pages and normal pages will be write protect gradually.
  		 */
--		slots = install_new_memslots(kvm, as_id, slots);
-+		slots = install_new_memslots(kvm, new->as_id, slots);
- 
- 		/* From this point no new shadow pages pointing to a deleted,
- 		 * or moved, memslot will be created.
-@@ -1601,7 +1601,7 @@ static int kvm_set_memslot(struct kvm *kvm,
- 		 * to retrieve memslots *after* acquiring slots_arch_lock, thus
- 		 * the active memslots are guaranteed to be fresh.
- 		 */
--		kvm_copy_memslots_arch(slots, __kvm_memslots(kvm, as_id));
-+		kvm_copy_memslots_arch(slots, __kvm_memslots(kvm, new->as_id));
+ 		if (!kvm_dirty_log_manual_protect_and_init_set(kvm)) {
+-			kvm_mmu_wp_memory_region(kvm, mem->slot);
++			kvm_mmu_wp_memory_region(kvm, new->id);
+ 		}
  	}
+ }
+@@ -1491,8 +1491,7 @@ int kvm_arch_prepare_memory_region(struct kvm *kvm,
+ 				   struct kvm_memory_slot *new,
+ 				   enum kvm_mr_change change)
+ {
+-	hva_t hva = mem->userspace_addr;
+-	hva_t reg_end = hva + mem->memory_size;
++	hva_t hva, reg_end;
+ 	int ret = 0;
  
+ 	if (change != KVM_MR_CREATE && change != KVM_MR_MOVE &&
+@@ -1506,6 +1505,9 @@ int kvm_arch_prepare_memory_region(struct kvm *kvm,
+ 	if ((new->base_gfn + new->npages) > (kvm_phys_size(kvm) >> PAGE_SHIFT))
+ 		return -EFAULT;
+ 
++	hva = new->userspace_addr;
++	reg_end = hva + (new->npages << PAGE_SHIFT);
++
+ 	mmap_read_lock(current->mm);
  	/*
-@@ -1618,7 +1618,7 @@ static int kvm_set_memslot(struct kvm *kvm,
- 		WARN_ON_ONCE(change != KVM_MR_CREATE);
- 		memset(&old, 0, sizeof(old));
- 		old.id = new->id;
--		old.as_id = as_id;
-+		old.as_id = new->as_id;
- 	}
- 
- 	/* Copy the arch-specific data, again after (re)acquiring slots_arch_lock. */
-@@ -1629,7 +1629,7 @@ static int kvm_set_memslot(struct kvm *kvm,
- 		goto out_slots;
- 
- 	update_memslots(slots, new, change);
--	slots = install_new_memslots(kvm, as_id, slots);
-+	slots = install_new_memslots(kvm, new->as_id, slots);
- 
- 	/*
- 	 * Update the total number of memslot pages before calling the arch
-@@ -1651,7 +1651,7 @@ static int kvm_set_memslot(struct kvm *kvm,
- 
- out_slots:
- 	if (change == KVM_MR_DELETE || change == KVM_MR_MOVE)
--		slots = install_new_memslots(kvm, as_id, slots);
-+		slots = install_new_memslots(kvm, new->as_id, slots);
- 	else
- 		mutex_unlock(&kvm->slots_arch_lock);
- 	kvfree(slots);
-@@ -1723,13 +1723,9 @@ int __kvm_set_memory_region(struct kvm *kvm,
- 
- 		memset(&new, 0, sizeof(new));
- 		new.id = id;
--		/*
--		 * This is only for debugging purpose; it should never be
--		 * referenced for a removed memslot.
--		 */
- 		new.as_id = as_id;
- 
--		return kvm_set_memslot(kvm, mem, &new, as_id, KVM_MR_DELETE);
-+		return kvm_set_memslot(kvm, mem, &new, KVM_MR_DELETE);
- 	}
- 
- 	new.as_id = as_id;
-@@ -1792,7 +1788,7 @@ int __kvm_set_memory_region(struct kvm *kvm,
- 			bitmap_set(new.dirty_bitmap, 0, new.npages);
- 	}
- 
--	r = kvm_set_memslot(kvm, mem, &new, as_id, change);
-+	r = kvm_set_memslot(kvm, mem, &new, change);
- 	if (r)
- 		goto out_bitmap;
- 
+ 	 * A memory region could potentially cover multiple VMAs, and any holes
 -- 
 2.33.1.1089.g2158813163f-goog
 

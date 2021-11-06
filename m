@@ -2,120 +2,109 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5D364C433F5
-	for <linux-mips@archiver.kernel.org>; Sat,  6 Nov 2021 04:45:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E6C71C433F5
+	for <linux-mips@archiver.kernel.org>; Sat,  6 Nov 2021 11:17:55 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 38C7361056
-	for <linux-mips@archiver.kernel.org>; Sat,  6 Nov 2021 04:45:01 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id BF4AC611C4
+	for <linux-mips@archiver.kernel.org>; Sat,  6 Nov 2021 11:17:55 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233489AbhKFErl (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Sat, 6 Nov 2021 00:47:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47828 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229485AbhKFErk (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Sat, 6 Nov 2021 00:47:40 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47190C061570;
-        Fri,  5 Nov 2021 21:45:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
-        Subject:Sender:Reply-To:Content-ID:Content-Description;
-        bh=tkrN1PChHWiWX89Z211Oaby0ydZaWkoJO6ww8tMjwhs=; b=3uwFuizcDLaDwBsFXjYw8DAjRE
-        2+sodVbBG4/g08qN9Tfgd33FSvuTR6w7v58KLUu+vksojWrQ3D7fPh34IeAKu0ycBpWBuAVafRLVw
-        TnDN47Yn3APqx31YzQL+9ro4Z0Y63aBsOYe42NfGw5RpgP9w0fukPKMyXWw5CeeIQPqWUiAqoSfNR
-        olurc1NEOHvsnGTkUYb8ZJriXQDtKjeSdc/a1bfjlVPPJe1EI1UoFlkTgnDlBLeC/rNih2CYohH8K
-        eVoMnu5w20rMQjtbNL7AJ811c+Zx8iTnsS1m5OPz75gwmPVmiOxdMHYau4r2GqoGIzV+79Frb+RMu
-        hjt9BGuA==;
-Received: from [2601:1c0:6280:3f0::aa0b]
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1mjDZX-00CfDi-J8; Sat, 06 Nov 2021 04:44:55 +0000
-Subject: Re: [RFC PATCH] mips: BCM63XX: select CPU_SUPPORTS_32BIT_KERNEL
-To:     Florian Fainelli <f.fainelli@gmail.com>,
-        linux-kernel@vger.kernel.org
-Cc:     kernel test robot <lkp@intel.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        bcm-kernel-feedback-list@broadcom.com, linux-mips@vger.kernel.org,
-        Paul Burton <paulburton@kernel.org>,
-        Maxime Bizon <mbizon@freebox.fr>,
-        Ralf Baechle <ralf@linux-mips.org>
-References: <20211106025823.32437-1-rdunlap@infradead.org>
- <249707d6-660f-99ce-b7d3-c48dc7209bbe@gmail.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <38ac1242-7e6f-12db-861b-8923cb6fef07@infradead.org>
-Date:   Fri, 5 Nov 2021 21:44:54 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.13.0
-MIME-Version: 1.0
-In-Reply-To: <249707d6-660f-99ce-b7d3-c48dc7209bbe@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        id S233272AbhKFLUf (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Sat, 6 Nov 2021 07:20:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34242 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229500AbhKFLUc (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Sat, 6 Nov 2021 07:20:32 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id BD2F160ED5;
+        Sat,  6 Nov 2021 11:17:50 +0000 (UTC)
+Received: from sofa.misterjones.org ([185.219.108.64] helo=wait-a-minute.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1mjJhk-003oLQ-Fj; Sat, 06 Nov 2021 11:17:48 +0000
+Date:   Sat, 06 Nov 2021 11:17:41 +0000
+Message-ID: <87o86xednu.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     kvm@vger.kernel.org, linux-mips@vger.kernel.org,
+        kvmarm@lists.cs.columbia.edu, linuxppc-dev@lists.ozlabs.org,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
+        Anup Patel <anup.patel@wdc.com>,
+        Atish Patra <atish.patra@wdc.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Janosch Frank <frankja@linux.ibm.com>,
+        David Hildenbrand <david@redhat.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Juergen Gross <jgross@suse.com>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        kernel-team@android.com
+Subject: Re: [PATCH 1/5] KVM: Move wiping of the kvm->vcpus array to common code
+In-Reply-To: <YYWQHBwD4nBLo9qi@google.com>
+References: <20211105192101.3862492-1-maz@kernel.org>
+        <20211105192101.3862492-2-maz@kernel.org>
+        <YYWQHBwD4nBLo9qi@google.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: seanjc@google.com, kvm@vger.kernel.org, linux-mips@vger.kernel.org, kvmarm@lists.cs.columbia.edu, linuxppc-dev@lists.ozlabs.org, chenhuacai@kernel.org, aleksandar.qemu.devel@gmail.com, anup.patel@wdc.com, atish.patra@wdc.com, borntraeger@de.ibm.com, frankja@linux.ibm.com, david@redhat.com, imbrenda@linux.ibm.com, pbonzini@redhat.com, jgross@suse.com, npiggin@gmail.com, paulus@samba.org, mpe@ellerman.id.au, james.morse@arm.com, suzuki.poulose@arm.com, alexandru.elisei@arm.com, kernel-team@android.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On 11/5/21 8:31 PM, Florian Fainelli wrote:
+On Fri, 05 Nov 2021 20:12:12 +0000,
+Sean Christopherson <seanjc@google.com> wrote:
 > 
+> On Fri, Nov 05, 2021, Marc Zyngier wrote:
+> > All architectures have similar loops iterating over the vcpus,
+> > freeing one vcpu at a time, and eventually wiping the reference
+> > off the vcpus array. They are also inconsistently taking
+> > the kvm->lock mutex when wiping the references from the array.
 > 
-> On 11/5/2021 7:58 PM, Randy Dunlap wrote:
->>
->> Several header files need info on CONFIG_32BIT or CONFIG_64BIT,
->> but kconfig symbol BCM63XX does not provide that info. This leads
->> to many build errors, e.g.:
->>
->>     arch/mips/include/asm/page.h:196:13: error: use of undeclared identifier 'CAC_BASE'
->>             return x - PAGE_OFFSET + PHYS_OFFSET;
->>     arch/mips/include/asm/mach-generic/spaces.h:91:23: note: expanded from macro 'PAGE_OFFSET'
->>     #define PAGE_OFFSET             (CAC_BASE + PHYS_OFFSET)
->>     arch/mips/include/asm/io.h:134:28: error: use of undeclared identifier 'CAC_BASE'
->>             return (void *)(address + PAGE_OFFSET - PHYS_OFFSET);
->>     arch/mips/include/asm/mach-generic/spaces.h:91:23: note: expanded from macro 'PAGE_OFFSET'
->>     #define PAGE_OFFSET             (CAC_BASE + PHYS_OFFSET)
->>
->> arch/mips/include/asm/uaccess.h:82:10: error: use of undeclared identifier '__UA_LIMIT'
->>             return (__UA_LIMIT & (addr | (addr + size) | __ua_size(size))) == 0;
->>
->>
->> Fixes: e7300d04bd08 ("MIPS: BCM63xx: Add support for the Broadcom BCM63xx family of SOCs.")
->> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
->> Reported-by: kernel test robot <lkp@intel.com>
->> Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
->> Cc: Florian Fainelli <f.fainelli@gmail.com>
->> Cc: bcm-kernel-feedback-list@broadcom.com
->> Cc: linux-mips@vger.kernel.org
->> Cc: Paul Burton <paulburton@kernel.org>
->> Cc: Maxime Bizon <mbizon@freebox.fr>
->> Cc: Ralf Baechle <ralf@linux-mips.org>
->> ---
->> Note: I did see a bunch of build errors like this one:
->> ../arch/mips/kernel/r4k_fpu.S:217: Error: opcode not supported on this processor: mips1 (mips1) `ldc1 $f24,192($4)'
->> but I'm hoping/guessing that this is due to not having a proper compiler
->> for the BCM63xx target.
->>
->>   arch/mips/Kconfig |    1 +
->>   1 file changed, 1 insertion(+)
->>
->> --- linux-next-20211105.orig/arch/mips/Kconfig
->> +++ linux-next-20211105/arch/mips/Kconfig
->> @@ -329,6 +329,7 @@ config BCM63XX
->>       select SYNC_R4K
->>       select DMA_NONCOHERENT
->>       select IRQ_MIPS_CPU
->> +    select CPU_SUPPORTS_32BIT_KERNEL
+> ...
 > 
-> That's one option, the other could be to add:
+> > +void kvm_destroy_vcpus(struct kvm *kvm)
+> > +{
+> > +	unsigned int i;
+> > +	struct kvm_vcpu *vcpu;
+> > +
+> > +	kvm_for_each_vcpu(i, vcpu, kvm)
+> > +		kvm_vcpu_destroy(vcpu);
+> > +
+> > +	mutex_lock(&kvm->lock);
 > 
->          select SYS_HAS_CPU_BMIPS32_3300
->          select SYS_HAS_CPU_BMIPS4350
->          select SYS_HAS_CPU_BMIPS4380
-> 
-> Which would ensure that CPU_SUPPORTS_32BIT_KERNEL is selected AFAICT. Can you try that? What config file did you use to produce that build error BTW?
+> But why is kvm->lock taken here?  Unless I'm overlooking an arch,
+> everyone calls this from kvm_arch_destroy_vm(), in which case this
+> is the only remaining reference to @kvm.  And if there's some magic
+> path for which that's not true, I don't see how it can possibly be
+> safe to call kvm_vcpu_destroy() without holding kvm->lock, or how
+> this would guarantee that all vCPUs have actually been destroyed
+> before nullifying the array.
 
-The .config file that is attached to this report from the kernel test robot:
-https://lore.kernel.org/all/202111051920.dcCUQ0QN-lkp@intel.com/
+I asked myself the same question two years ago, and couldn't really
+understand the requirement. However, x86 does just that, so I
+preserved the behaviour.
 
-Yes, I'll give your suggestion a try on Saturday.
+If you too believe that this is just wrong, I'm happy to drop the
+locking altogether. If that breaks someone's flow, they'll shout soon
+enough.
 
-thanks.--
-~Randy
+Thanks,
+
+	M.
+
+-- 
+Without deviation from the norm, progress is not possible.

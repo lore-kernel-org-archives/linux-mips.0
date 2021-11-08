@@ -2,227 +2,509 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5DE2FC433FE
-	for <linux-mips@archiver.kernel.org>; Mon,  8 Nov 2021 14:45:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 18EA1C433F5
+	for <linux-mips@archiver.kernel.org>; Mon,  8 Nov 2021 15:29:34 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 46F6C61207
-	for <linux-mips@archiver.kernel.org>; Mon,  8 Nov 2021 14:45:13 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id E90896125F
+	for <linux-mips@archiver.kernel.org>; Mon,  8 Nov 2021 15:29:33 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240594AbhKHOry (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 8 Nov 2021 09:47:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44820 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240579AbhKHOrv (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Mon, 8 Nov 2021 09:47:51 -0500
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C2FDC061767
-        for <linux-mips@vger.kernel.org>; Mon,  8 Nov 2021 06:45:07 -0800 (PST)
-Received: by mail-lf1-x129.google.com with SMTP id u11so36794406lfs.1
-        for <linux-mips@vger.kernel.org>; Mon, 08 Nov 2021 06:45:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=shutemov-name.20210112.gappssmtp.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=o8ACBTFUs1u+Tu+HSqZ/Bgtc3Mxdv1DOZfd1HtE9MhI=;
-        b=SSMxAUf89rUnNVbNGy3A336IliPjR+Nql1b6FMZQ3CAZAPpyiWnTasF0SnwZXgmc1y
-         BqbNPEbtGA99ppTCaKfBe89qdo0lA/IduTOv4VSHUD8jdmS5ur5ig5kmaE0Nx/uaMvqp
-         kNWhbwFpv4ozrVRf/1IWb7YdNwcBO1HQE2ii7ChI+tlnP86Yj7MxEN0Fe5tkdJJn++qm
-         KdixhE51YAtCPJF1p9jcDxFgtq8vSQ/vRTWOBeN0v8lEd0O0BxHPje9OJMxpE+5B5fOo
-         huY0AOns10N09ELwQXu4jbcwD1g0DXpMv87v/nUS1HrouSwNHFQNDOybGK9W8+qNEivA
-         avsA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=o8ACBTFUs1u+Tu+HSqZ/Bgtc3Mxdv1DOZfd1HtE9MhI=;
-        b=7dwFz1y7CJU5xxCq/79kUGLpDgFNrjIxMFRymOYKu9Y0qP0v4TAqlQPQX9RVDx467h
-         tJ1oddmH1oDFgXn0UqLcem/rk2BmvLr3bFzWgXwfW49mEJs5Q96rxEfd7NkmFf8ojdFr
-         EPWJM/oufqp0dQp8uDBHSLT3YN56oxNjQ3E4CPCCLC1vPadIRX8ONg/3QdmZyyoO9PVc
-         ImUY3hXNJnIN9v4t3v/nnSuhmF0QLFXxPCg9vrLQryhkyxCiiH2XWOjMYlMk27lq0B1O
-         67VKW08NpUpHJem/fqbOkO8M3+R25W59kpi81yY8qsSyp5y2PJjZ+dhVXByc3do2lzT3
-         krvg==
-X-Gm-Message-State: AOAM533M1+MmLZa8XmsjFWsZXLJzhQBboH9Xa5N8IIhvaM28TqMVwPW4
-        pNdz/5bwcVSG9fNqV1Yy4Dgh+Q==
-X-Google-Smtp-Source: ABdhPJzyLniPUCEsE0z/ygrYUi5HbWdGlisrZNzen5mCC1grWOhH8f4dxQ7pTSdWId8QL2qzkXju6w==
-X-Received: by 2002:a19:c706:: with SMTP id x6mr18874044lff.113.1636382705340;
-        Mon, 08 Nov 2021 06:45:05 -0800 (PST)
-Received: from box.localdomain ([86.57.175.117])
-        by smtp.gmail.com with ESMTPSA id o23sm1572844ljg.70.2021.11.08.06.45.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Nov 2021 06:45:04 -0800 (PST)
-Received: by box.localdomain (Postfix, from userid 1000)
-        id E8C4C1034BA; Mon,  8 Nov 2021 17:45:05 +0300 (+03)
-Date:   Mon, 8 Nov 2021 17:45:05 +0300
-From:   "Kirill A. Shutemov" <kirill@shutemov.name>
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Richard Henderson <rth@twiddle.net>,
+        id S240837AbhKHPcR (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 8 Nov 2021 10:32:17 -0500
+Received: from mo4-p02-ob.smtp.rzone.de ([85.215.255.81]:27679 "EHLO
+        mo4-p02-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238053AbhKHPcQ (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Mon, 8 Nov 2021 10:32:16 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1636385353;
+    s=strato-dkim-0002; d=goldelico.com;
+    h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:Cc:Date:
+    From:Subject:Sender;
+    bh=LxX27PUvW8zYXPaE43DBQpHp1EyxZfxkjrNYY5sVZfE=;
+    b=ciw1jur2+PZqhEuv2ZrXrl9l9WVd8SkblHR9M/ZcLpiSzLvYknT6F8JMBt2QuudAPS
+    Q2WQRpwSYJSIATA7g8o90lLhUFN65mlHodR1ltqJMCpD3+AzDvCAXWXe610AShf1Kq8h
+    R0XrjVIEBIcpZbShGE13MYAWIOnCb90Cl+Cd6qYKga7KvbVngmyIJfm9Td9aby4hZZE3
+    RrWcUZextRZlL2V5pgSMGzvuOt6BUqDYFijr38Z+zgfmEcSS0n0MiYW0K0pQbD+umHJH
+    axikKq0iCwY4YuadvQvbAVlQgbkq+oaUE110atvfo7Wk69/AylXs6NagnXl3L065Teuq
+    KFxg==
+Authentication-Results: strato.com;
+    dkim=none
+X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMgPgp8VKxflSZ1P34KBj7gpw91N5y2S3gMZ+"
+X-RZG-CLASS-ID: mo00
+Received: from imac.fritz.box
+    by smtp.strato.de (RZmta 47.34.1 DYNA|AUTH)
+    with ESMTPSA id 902c63xA8FTCLHS
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (curve X9_62_prime256v1 with 256 ECDH bits, eq. 3072 bits RSA))
+        (Client did not present a certificate);
+    Mon, 8 Nov 2021 16:29:12 +0100 (CET)
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.21\))
+Subject: Re: [PATCH v5 2/7] drm/ingenic: Add support for JZ4780 and HDMI
+ output
+From:   "H. Nikolaus Schaller" <hns@goldelico.com>
+In-Reply-To: <ZA692R.GHQL6RBCLFB12@crapouillou.net>
+Date:   Mon, 8 Nov 2021 16:29:11 +0100
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
         Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        James E J Bottomley <James.Bottomley@hansenpartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        "David S . Miller" <davem@davemloft.net>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "Michael S . Tsirkin" <mst@redhat.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        David Hildenbrand <david@redhat.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Peter H Anvin <hpa@zytor.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
-        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
-        x86@kernel.org, linux-kernel@vger.kernel.org,
-        linux-pci@vger.kernel.org, linux-alpha@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
-        sparclinux@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-doc@vger.kernel.org,
-        virtualization@lists.linux-foundation.org
-Subject: Re: [PATCH v5 03/16] x86/tdx: Exclude Shared bit from physical_mask
-Message-ID: <20211108144505.fz3p4fw4q2efj32r@box.shutemov.name>
-References: <20211009003711.1390019-1-sathyanarayanan.kuppuswamy@linux.intel.com>
- <20211009003711.1390019-4-sathyanarayanan.kuppuswamy@linux.intel.com>
- <YYWsJFP31vpCAVFg@google.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <YYWsJFP31vpCAVFg@google.com>
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Kees Cook <keescook@chromium.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Robert Foss <robert.foss@linaro.org>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Harry Wentland <harry.wentland@amd.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Maxime Ripard <maxime@cerno.tech>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Paul Boddie <paul@boddie.org.uk>,
+        OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS 
+        <devicetree@vger.kernel.org>,
+        linux-mips <linux-mips@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Discussions about the Letux Kernel 
+        <letux-kernel@openphoenux.org>, Jonas Karlman <jonas@kwiboo.se>,
+        dri-devel <dri-devel@lists.freedesktop.org>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <D0809E59-DCB5-46CE-BE5E-D2A5D2ECA6F0@goldelico.com>
+References: <cover.1633436959.git.hns@goldelico.com>
+ <2c7d0aa7d3ef480ebb996d37c27cbaa6f722728b.1633436959.git.hns@goldelico.com>
+ <FXTI0R.3FZIJZ7UYSNQ@crapouillou.net>
+ <7CEBB741-2218-40A7-9800-B3A154895274@goldelico.com>
+ <Q6U72R.9HY4TXLC6RWV2@crapouillou.net>
+ <229EBE4C-6555-41DE-962F-D82798AEC650@goldelico.com>
+ <HQY82R.69JHJIC64HDO1@crapouillou.net>
+ <2E32F572-72D0-44E7-A700-AF8A2D37BFDA@goldelico.com>
+ <ZA692R.GHQL6RBCLFB12@crapouillou.net>
+To:     Paul Cercueil <paul@crapouillou.net>
+X-Mailer: Apple Mail (2.3445.104.21)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Fri, Nov 05, 2021 at 10:11:48PM +0000, Sean Christopherson wrote:
-> On Fri, Oct 08, 2021, Kuppuswamy Sathyanarayanan wrote:
-> > From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-> > 
-> > Just like MKTME, TDX reassigns bits of the physical address for
-> > metadata.  MKTME used several bits for an encryption KeyID. TDX
-> > uses a single bit in guests to communicate whether a physical page
-> > should be protected by TDX as private memory (bit set to 0) or
-> > unprotected and shared with the VMM (bit set to 1).
-> > 
-> > Add a helper, tdx_shared_mask() to generate the mask.  The processor
-> > enumerates its physical address width to include the shared bit, which
-> > means it gets included in __PHYSICAL_MASK by default.
-> 
-> This is incorrect.  The shared bit _may_ be a legal PA bit, but AIUI it's not a
-> hard requirement.
+Bnjour Paul,
 
-Good point, will fix.
 
-> > Remove the shared mask from 'physical_mask' since any bits in
-> > tdx_shared_mask() are not used for physical addresses in page table
-> > entries.
-> 
-> ...
-> 
-> > @@ -94,6 +100,9 @@ static void tdx_get_info(void)
-> >  
-> >  	td_info.gpa_width = out.rcx & GENMASK(5, 0);
-> >  	td_info.attributes = out.rdx;
-> > +
-> > +	/* Exclude Shared bit from the __PHYSICAL_MASK */
-> > +	physical_mask &= ~tdx_shared_mask();
-> 
-> This is insufficient, though it's not really the fault of this patch, the specs
-> themselves botch this whole thing.
-> 
-> The TDX Module spec explicitly states that GPAs above GPAW are considered reserved.
-> 
->     10.11.1. GPAW-Relate EPT Violations
->     GPA bits higher than the SHARED bit are considered reserved and must be 0.
->     Address translation with any of the reserved bits set to 1 cause a #PF with
->     PFEC (Page Fault Error Code) RSVD bit set.
-> 
-> But this is contradicted by the architectural extensions spec, which states that
-> a GPA that satisfies MAXPA >= GPA > GPAW "can" cause an EPT violation, not #PF.
-> Note, this section also appears to have a bug, as it states that GPA bit 47 is
-> both the SHARED bit and reserved.  I assume that blurb is intended to clarify
-> that bit 47 _would_ be reserved if it weren't the SHARED bit, but because it's
-> the shared bit it's ok to access.
-> 
->     1.4.2
->     Guest Physical Address Translation
->     If the CPU's maximum physical-address width (MAXPA) is 52 and the guest physical
->     address width is configured to be 48, accesses with GPA bits 51:48 not all being
->     0 can cause an EPT-violation, where such EPT-violations are not mutated to #VE,
->     even if the “EPT-violations #VE” execution control is 1.
-> 
->     If the CPU's physical-address width (MAXPA) is less than 48 and the SHARED bit
->     is configured to be in bit position 47, GPA bit 47 would be reserved, and GPA
->        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^                    
->     bits 46:MAXPA would be reserved. On such CPUs, setting bits 51:48 or bits
->     46:MAXPA in any paging structure can cause a reserved bit page fault on access.
-> 
-> The Module spec also calls out that the effective GPA is not to be confused with
-> MAXPA, which combined with the above blurb about MAXPA < GPAW, suggests that MAXPA
-> is enumerated separately by design so that the guest doesn't incorrectly think
-> 46:MAXPA are usable.  But that is problematic for the case where MAXPA > GPAW.
-> 
->     The effective GPA width (in bits) for this TD (do not confuse with MAXPA).
->     SHARED bit is at GPA bit GPAW-1.
-> 
-> I can't find the exact reference, but the TDX module always passes through host's
-> MAXPHYADDR.  As it pertains to this patch, just doing
-> 
-> 	physical_mask &= ~tdx_shared_mask()
-> 
-> means that a guest running with GPAW=0 and MAXPHYADDR>48 will have a discontiguous
-> physical_mask, and could access "reserved" memory.  If the VMM defines legal memory
-> with bits [MAXPHYADDR:48]!=0, explosions may ensue.  That's arguably a VMM bug, but
-> given that the VMM is untrusted I think the guest should be paranoid when handling
-> the SHARED bit.  I also don't know that the kernel will play nice with a discontiguous
-> mask.
+> Am 08.11.2021 um 13:20 schrieb Paul Cercueil <paul@crapouillou.net>:
+>=20
+> Hi,
+>=20
+> Le lun., nov. 8 2021 at 11:52:20 +0100, H. Nikolaus Schaller =
+<hns@goldelico.com> a =C3=A9crit :
+>> Hi Paul,
+>>>> Am 08.11.2021 um 10:37 schrieb Paul Cercueil =
+<paul@crapouillou.net>:
+>>>> Well, it was atomic: "add jz4780+hdmi functionality" or not. Now we =
+separate into "preparation for adding jz4780" and "really adding". Yes, =
+you can split atoms into quarks...
+>>> And that's how it should be done. Lots of small atomic patches are =
+much easier to review than a few big patches.
+>> I doubt that in this case especially as it has nothing to do with =
+jz4780...
+>=20
+> It has nothing to do with JZ4780 and that's exactly why it should be a =
+separate patch.
 
-I expect it to be buggy.
+Question is why *I* should then make this patch and not someone else...
 
-> Specs aside, unless Intel makes a hardware change to treat GPAW as guest.MAXPHYADDR,
-> or the TDX Module emulates on EPT violations to inject #PF(RSVD) when appropriate,
-> this mess isn't going to be truly fixed from the guest perspective.
-> 
-> So, IMO all bits >= GPAW should be cleared, and the kernel should warn and/or
-> refuse to boot if the host has defined legal memory in that range.
+I am not necessarily a volunteer to contribute to non-jz4780 code just =
+because I want to upstream jz4780 code.
 
-Right. But only >= GPAW-1 as shared bit is the MSB within GPAW:
+>=20
+>> But I have a proposal for a better solution at the end of this mail.
+>>>>> Note that you can do even better, set the .max_register field =
+according to the memory resource you get from DTS. Have a look at the =
+pinctrl driver which does exactly this.
+>>>> That is an interesting idea. Although I don't see where
+>>>> =
+https://elixir.bootlin.com/linux/latest/source/drivers/pinctrl/pinctrl-ing=
+enic.c#L4171
+>>>> does make use of the memory resource from DTS. It just reads two =
+values from the ingenic_chip_info instead of one I do read from =
+soc_info.
+>>> It overrides the .max_register from a static regmap_config instance.
+>> To be precise: it overrides .max_register of a copy of a static =
+regmap_config instance (which has .max_register =3D 0).
+>>> You can do the same,
+>> We already do the same...
+>>> calculating the .max_register from the memory resource you get from =
+DT.
+>> I can't see any code in pinctrl-ingenic.c getting the memory resource =
+that from DT. It calculates it from the ingenic_chip_info tables inside =
+the driver code but not DT.
+>>> I'm sure you guys can figure it out.
+>> Ah, we have to figure out. You are not sure yourself how to do it? =
+And it is *not* exactly like the pinctrl driver (already) does? Please =
+give precise directions in reviews and not vague research homework. Our =
+time is also valuable. Sorry if I review your reviews...
+>> Anyways I think you roughly intend (untested):
+>> 	struct resource *r;
+>> 	r =3D platform_get_resource(pdev, IORESOURCE_MEM, 0);
+>> 	regmap_config.max_register =3D r.end - r.start;
+>=20
+> Replace the "devm_platform_ioremap_resource" with =
+"devm_platform_get_and_ioremap_resource" to get a pointer to the =
+resource.
+>=20
+> Then the .max_register should be (r.end - r.start - 4) I think.
+>=20
+> And lose the aggressivity. It's not going to get you anywhere, =
+especially since I'm the one who decides whether or not I should merge =
+your patches. You want your code upstream, that's great, but it's your =
+responsability to get it to shape so that it's eventually accepted.
 
-	physical_mask &= GENMASK_ULL(td_info.gpa_width - 2, 0);
+Well on the other side of the fence it is maintainers responsibility to =
+give clear and understandable rules and guidance about what will be =
+accepted and to enable us to bring it into the shape he/she has in mind.
 
-'2' here smells bad, but well...
+But a fundamental problem is: "good shape" is very subjective. What =
+would you recommend me to do, if I feel that my proposed code is in =
+better shape than what the maintainer thinks or recommends?
 
-Given that physical_mask is now contiguous we can truncate anything from
-e820 that cannot be addressed with adjusted __PHYSICAL_MASK:
+>=20
+>> But I wonder how that could work at all (despite adding code =
+execution time) with:
+>=20
+> Code execution time? ...
 
-iff --git a/arch/x86/kernel/e820.c b/arch/x86/kernel/e820.c
-index bc0657f0deed..16d57a8769e8 100644
---- a/arch/x86/kernel/e820.c
-+++ b/arch/x86/kernel/e820.c
-@@ -833,6 +833,9 @@ static unsigned long __init e820_end_pfn(unsigned long limit_pfn, enum e820_type
- 	unsigned long last_pfn = 0;
- 	unsigned long max_arch_pfn = MAX_ARCH_PFN;
+I reasoned about doing an additional platform_get_resource() call and =
+doing a subtraction. This is additional execution time. Maybe not worth =
+thinking about because it is in the probe function. And using =
+devm_platform_get_and_ioremap_resource() is of course potentially =
+better.
 
-+	if (max_arch_pfn > PHYS_PFN(__PHYSICAL_MASK + 1))
-+		max_arch_pfn = PHYS_PFN(__PHYSICAL_MASK + 1);
+>=20
+>> e.g. jz4770.dtsi:
+>> 	lcd: lcd-controller@13050000 {
+>> 		compatible =3D "ingenic,jz4770-lcd";
+>> 		reg =3D <0x13050000 0x300>;
+>> or jz4725b.dtsi:
+>> 	lcd: lcd-controller@13050000 {
+>> 		compatible =3D "ingenic,jz4725b-lcd";
+>> 		reg =3D <0x13050000 0x1000>;
+>> So max_register becomes 0x300 or 0x1000 but not
+>> #define JZ_REG_LCD_SIZE1	0x12c
+>> 	.max_reg =3D JZ_REG_LCD_SIZE1,
+>> And therefore wastes a lot of regmap memory.
+>=20
+> "regmap memory"? ...
+
+regmap allocates memory for its cache. Usually the total amount =
+specified in the reg property.
+
+>=20
+>> Do you want this? DTS should not be reduced (DTS should be kept as =
+stable as possible), since the reg property describes address mapping - =
+not how many bytes are really used by registers or how big a cache =
+should be allocated (cache allocation size requirements are not hardware =
+description).
+>=20
+> The DTS should list the address and size of the register area. If your =
+last register is at address 0x12c and there's nothing above, then the =
+size in DTS should be 0x130.
+
+If I look into some .dtsi it is sometimes that way but sometimes not. =
+There seems to be no consistent rule.
+
+So does this mean you allow me to modify jz4740.dtsi, jz4770.dtsi and =
+jz4725b.dtsi as well (as mentioned above: this is beyond the scope of my =
+project)?
+
+>=20
+>> But here are good news:
+>> I have a simpler and less invasive proposal. We keep the =
+devm_regmap_init_mmio code as is and just increase its .max_register =
+from JZ_REG_LCD_SIZE1 to JZ_REG_LCD_PCFG when introducing the jz4780. =
+This wastes a handful bytes for all non-jz4780 chips but less than using =
+the DTS memory region size. And is less code (no entry in soc_info =
+tables, no modifyable copy) and faster code execution than all other =
+proposals.
+>> This is then just a single-line change when introducing the jz4780. =
+And no "preparation for adding jz4780" patch is needed at all. No patch =
+to split out for separate review.
+>> Let's go this way to get it eventually finalized. Ok?
+>=20
+> No.
+
+Look friend, if you explain your "no" and what is wrong with my =
+arguments, it helps to understand your decisions and learn something =
+from them. A plain "no" does not help anyone.
+
+So to summarize: if you prefer something which I consider worse, it is =
+ok for me... In the end you are right - you are the maintainer, not me. =
+So you have to live with your proposals.
+
+Therefore, I have prepared new variants so you can choose which one is =
+easier to maintain for you.
+
+Note that they are both preparing for full jz4780-lcdc/hdmi support but =
+in very different ways:
+
+Variant 1 already adds some jz4780 stuff while Variant 2 just prepares =
+for it.
+
+Variant 2 is not tested (except to compile). So it needs some Tested-by: =
+from someone with access to hardware. IMHO it is more invasive.
+
+And don't forget: DTB could be in ROM or be provided by a separate =
+bootloader... So we should not change it too often (I had such =
+discussions some years ago with maintainers when I thought it is easier =
+to change DTS instead of code).
+
+Variant 3 would be to not separate this. As proposed in [PATCH v5 2/7].
+(Finally, a Variant 3b would be to combine the simple change from =
+Variant 1 with Variant 3).
+
+So what is your choice?
+
+BR and thanks,
+Nikolaus
+
+
+#### VARIANT 0001 ####
+
+=46rom c7afa925f6b53bb6cafa080b7dd582788c8eb2eb Mon Sep 17 00:00:00 2001
+From: "H. Nikolaus Schaller" <hns@goldelico.com>
+Date: Mon, 8 Nov 2021 15:38:21 +0100
+Subject: [PATCH] RFC: drm/ingenic: Add register definitions for JZ4780 =
+lcdc
+
+JZ4780 has additional registers compared to the other
+SoC of the JZ47xx series. So we add the constants for
+registers and bits we make use of (there are even more
+which can be added later).
+
+And we increase the regmap max_register accordingly.
+
+Signed-off-by: H. Nikolaus Schaller <hns@goldelico.com>
+---
+ drivers/gpu/drm/ingenic/ingenic-drm-drv.c |  2 +-
+ drivers/gpu/drm/ingenic/ingenic-drm.h     | 39 +++++++++++++++++++++++
+ 2 files changed, 40 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c =
+b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
+index a5df1c8d34cde..1903e897d2299 100644
+--- a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
++++ b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
+@@ -122,7 +122,7 @@ static const struct regmap_config =
+ingenic_drm_regmap_config =3D {
+ 	.val_bits =3D 32,
+ 	.reg_stride =3D 4,
+=20
+-	.max_register =3D JZ_REG_LCD_SIZE1,
++	.max_register =3D JZ_REG_LCD_PCFG,
+ 	.writeable_reg =3D ingenic_drm_writeable_reg,
+ };
+=20
+diff --git a/drivers/gpu/drm/ingenic/ingenic-drm.h =
+b/drivers/gpu/drm/ingenic/ingenic-drm.h
+index 22654ac1dde1c..e7430c4af41f6 100644
+--- a/drivers/gpu/drm/ingenic/ingenic-drm.h
++++ b/drivers/gpu/drm/ingenic/ingenic-drm.h
+@@ -44,8 +44,11 @@
+ #define JZ_REG_LCD_XYP1				0x124
+ #define JZ_REG_LCD_SIZE0			0x128
+ #define JZ_REG_LCD_SIZE1			0x12c
++#define JZ_REG_LCD_PCFG				0x2c0
+=20
+ #define JZ_LCD_CFG_SLCD				BIT(31)
++#define JZ_LCD_CFG_DESCRIPTOR_8			BIT(28)
++#define JZ_LCD_CFG_RECOVER_FIFO_UNDERRUN	BIT(25)
+ #define JZ_LCD_CFG_PS_DISABLE			BIT(23)
+ #define JZ_LCD_CFG_CLS_DISABLE			BIT(22)
+ #define JZ_LCD_CFG_SPL_DISABLE			BIT(21)
+@@ -63,6 +66,7 @@
+ #define JZ_LCD_CFG_DE_ACTIVE_LOW		BIT(9)
+ #define JZ_LCD_CFG_VSYNC_ACTIVE_LOW		BIT(8)
+ #define JZ_LCD_CFG_18_BIT			BIT(7)
++#define JZ_LCD_CFG_24_BIT			BIT(6)
+ #define JZ_LCD_CFG_PDW				(BIT(5) | BIT(4))
+=20
+ #define JZ_LCD_CFG_MODE_GENERIC_16BIT		0
+@@ -132,6 +136,7 @@
+ #define JZ_LCD_CMD_SOF_IRQ			BIT(31)
+ #define JZ_LCD_CMD_EOF_IRQ			BIT(30)
+ #define JZ_LCD_CMD_ENABLE_PAL			BIT(28)
++#define JZ_LCD_CMD_FRM_ENABLE			BIT(26)
+=20
+ #define JZ_LCD_SYNC_MASK			0x3ff
+=20
+@@ -153,6 +158,7 @@
+ #define JZ_LCD_RGBC_EVEN_BGR			(0x5 << 0)
+=20
+ #define JZ_LCD_OSDC_OSDEN			BIT(0)
++#define JZ_LCD_OSDC_ALPHAEN			BIT(2)
+ #define JZ_LCD_OSDC_F0EN			BIT(3)
+ #define JZ_LCD_OSDC_F1EN			BIT(4)
+=20
+@@ -176,6 +182,39 @@
+ #define JZ_LCD_SIZE01_WIDTH_LSB			0
+ #define JZ_LCD_SIZE01_HEIGHT_LSB		16
+=20
++#define JZ_LCD_DESSIZE_ALPHA_OFFSET		24
++#define JZ_LCD_DESSIZE_HEIGHT_MASK		GENMASK(23, 12)
++#define JZ_LCD_DESSIZE_WIDTH_MASK		GENMASK(11, 0)
 +
- 	for (i = 0; i < e820_table->nr_entries; i++) {
- 		struct e820_entry *entry = &e820_table->entries[i];
- 		unsigned long start_pfn;
++/* TODO: 4,5 and 7 match the above BPP */
++#define JZ_LCD_CPOS_BPP_15_16			(4 << 27)
++#define JZ_LCD_CPOS_BPP_18_24			(5 << 27)
++#define JZ_LCD_CPOS_BPP_30			(7 << 27)
++#define JZ_LCD_CPOS_RGB555			BIT(30)
++#define JZ_LCD_CPOS_PREMULTIPLY_LCD		BIT(26)
++#define JZ_LCD_CPOS_COEFFICIENT_OFFSET		24
++#define JZ_LCD_CPOS_COEFFICIENT_0		0
++#define JZ_LCD_CPOS_COEFFICIENT_1		1
++#define JZ_LCD_CPOS_COEFFICIENT_ALPHA1		2
++#define JZ_LCD_CPOS_COEFFICIENT_1_ALPHA1	3
++
++#define JZ_LCD_RGBC_RGB_PADDING			BIT(15)
++#define JZ_LCD_RGBC_RGB_PADDING_FIRST		BIT(14)
++#define JZ_LCD_RGBC_422				BIT(8)
++#define JZ_LCD_RGBC_RGB_FORMAT_ENABLE		BIT(7)
++
++#define JZ_LCD_PCFG_PRI_MODE			BIT(31)
++#define JZ_LCD_PCFG_HP_BST_4			(0 << 28)
++#define JZ_LCD_PCFG_HP_BST_8			(1 << 28)
++#define JZ_LCD_PCFG_HP_BST_16			(2 << 28)
++#define JZ_LCD_PCFG_HP_BST_32			(3 << 28)
++#define JZ_LCD_PCFG_HP_BST_64			(4 << 28)
++#define JZ_LCD_PCFG_HP_BST_16_CONT		(5 << 28)
++#define JZ_LCD_PCFG_HP_BST_DISABLE		(7 << 28)
++#define JZ_LCD_PCFG_THRESHOLD2_OFFSET		18
++#define JZ_LCD_PCFG_THRESHOLD1_OFFSET		9
++#define JZ_LCD_PCFG_THRESHOLD0_OFFSET		0
++
+ struct device;
+ struct drm_plane;
+ struct drm_plane_state;
+--=20
+2.33.0
 
-Does it look reasonable?
 
-> FWIW, from a VMM perspective, I'm pretty sure the only sane approach is to force
-> GPAW=1, a.k.a. SHARED bit == 51, if host.MAXPHYADDR>=49.  But on the guest side,
-> I think we should be paranoid.
+#### VARIANT 0002 ####
 
--- 
- Kirill A. Shutemov
+=46rom c4b5cfa2789493f02da91e385719bc97aefb6c6c Mon Sep 17 00:00:00 2001
+From: "H. Nikolaus Schaller" <hns@goldelico.com>
+Date: Mon, 8 Nov 2021 14:40:58 +0100
+Subject: [PATCH] RFC: drm/ingenic: prepare ingenic drm for later =
+addition of
+ JZ4780
+
+This changes the way the regmap is allocated to prepare for the
+later addition of the JZ4780 which has more registers and bits
+than the others.
+
+To make this work we have to change the device tree records of
+all devices so that the reg property is limited to the physically
+available registers.
+
+The magic value 0x130 in the device tree is JZ_REG_LCD_SIZE1 + 4.
+
+Note that it is not tested since I have no access to the hardware.
+
+Suggested-by: Paul Cercueil <paul@crapouillou.net>
+Signed-off-by: H. Nikolaus Schaller <hns@goldelico.com>
+---
+ arch/mips/boot/dts/ingenic/jz4725b.dtsi   | 2 +-
+ arch/mips/boot/dts/ingenic/jz4740.dtsi    | 2 +-
+ arch/mips/boot/dts/ingenic/jz4770.dtsi    | 2 +-
+ drivers/gpu/drm/ingenic/ingenic-drm-drv.c | 9 ++++++---
+ 4 files changed, 9 insertions(+), 6 deletions(-)
+
+diff --git a/arch/mips/boot/dts/ingenic/jz4725b.dtsi =
+b/arch/mips/boot/dts/ingenic/jz4725b.dtsi
+index a1f0b71c92237..c017b087c0e52 100644
+--- a/arch/mips/boot/dts/ingenic/jz4725b.dtsi
++++ b/arch/mips/boot/dts/ingenic/jz4725b.dtsi
+@@ -321,7 +321,7 @@ udc: usb@13040000 {
+=20
+ 	lcd: lcd-controller@13050000 {
+ 		compatible =3D "ingenic,jz4725b-lcd";
+-		reg =3D <0x13050000 0x1000>;
++		reg =3D <0x13050000 0x130>;
+=20
+ 		interrupt-parent =3D <&intc>;
+ 		interrupts =3D <31>;
+diff --git a/arch/mips/boot/dts/ingenic/jz4740.dtsi =
+b/arch/mips/boot/dts/ingenic/jz4740.dtsi
+index c1afdfdaa8a38..ce3689e5015b5 100644
+--- a/arch/mips/boot/dts/ingenic/jz4740.dtsi
++++ b/arch/mips/boot/dts/ingenic/jz4740.dtsi
+@@ -323,7 +323,7 @@ udc: usb@13040000 {
+=20
+ 	lcd: lcd-controller@13050000 {
+ 		compatible =3D "ingenic,jz4740-lcd";
+-		reg =3D <0x13050000 0x1000>;
++		reg =3D <0x13050000 0x130>;
+=20
+ 		interrupt-parent =3D <&intc>;
+ 		interrupts =3D <30>;
+diff --git a/arch/mips/boot/dts/ingenic/jz4770.dtsi =
+b/arch/mips/boot/dts/ingenic/jz4770.dtsi
+index 05c00b93088e9..0d1ee58d6c40b 100644
+--- a/arch/mips/boot/dts/ingenic/jz4770.dtsi
++++ b/arch/mips/boot/dts/ingenic/jz4770.dtsi
+@@ -399,7 +399,7 @@ gpu: gpu@13040000 {
+=20
+ 	lcd: lcd-controller@13050000 {
+ 		compatible =3D "ingenic,jz4770-lcd";
+-		reg =3D <0x13050000 0x300>;
++		reg =3D <0x13050000 0x130>;
+=20
+ 		interrupt-parent =3D <&intc>;
+ 		interrupts =3D <31>;
+diff --git a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c =
+b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
+index a5df1c8d34cde..3c8e3c5a447bb 100644
+--- a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
++++ b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
+@@ -122,7 +122,6 @@ static const struct regmap_config =
+ingenic_drm_regmap_config =3D {
+ 	.val_bits =3D 32,
+ 	.reg_stride =3D 4,
+=20
+-	.max_register =3D JZ_REG_LCD_SIZE1,
+ 	.writeable_reg =3D ingenic_drm_writeable_reg,
+ };
+=20
+@@ -858,6 +857,8 @@ static int ingenic_drm_bind(struct device *dev, bool =
+has_components)
+ 	struct drm_encoder *encoder;
+ 	struct drm_device *drm;
+ 	void __iomem *base;
++	struct resource *res;
++	struct regmap_config regmap_config;
+ 	long parent_rate;
+ 	unsigned int i, clone_mask =3D 0;
+ 	dma_addr_t dma_hwdesc_phys_f0, dma_hwdesc_phys_f1;
+@@ -904,14 +905,16 @@ static int ingenic_drm_bind(struct device *dev, =
+bool has_components)
+ 	drm->mode_config.funcs =3D &ingenic_drm_mode_config_funcs;
+ 	drm->mode_config.helper_private =3D =
+&ingenic_drm_mode_config_helpers;
+=20
+-	base =3D devm_platform_ioremap_resource(pdev, 0);
++	base =3D devm_platform_get_and_ioremap_resource(pdev, 0, &res);
+ 	if (IS_ERR(base)) {
+ 		dev_err(dev, "Failed to get memory resource\n");
+ 		return PTR_ERR(base);
+ 	}
+=20
++	regmap_config =3D ingenic_drm_regmap_config;
++	regmap_config.max_register =3D res->end - res->start - 4;
+ 	priv->map =3D devm_regmap_init_mmio(dev, base,
+-					  &ingenic_drm_regmap_config);
++					  &regmap_config);
+ 	if (IS_ERR(priv->map)) {
+ 		dev_err(dev, "Failed to create regmap\n");
+ 		return PTR_ERR(priv->map);
+--=20
+2.33.0
+
+

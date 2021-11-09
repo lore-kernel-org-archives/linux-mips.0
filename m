@@ -2,42 +2,42 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C872DC4332F
-	for <linux-mips@archiver.kernel.org>; Tue,  9 Nov 2021 22:21:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 59595C433EF
+	for <linux-mips@archiver.kernel.org>; Tue,  9 Nov 2021 22:28:08 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id B5D3961A8A
-	for <linux-mips@archiver.kernel.org>; Tue,  9 Nov 2021 22:21:19 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 4707061057
+	for <linux-mips@archiver.kernel.org>; Tue,  9 Nov 2021 22:28:08 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343509AbhKIWYE (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 9 Nov 2021 17:24:04 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41188 "EHLO mail.kernel.org"
+        id S1344854AbhKIWax (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 9 Nov 2021 17:30:53 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48904 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1343535AbhKIWWV (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Tue, 9 Nov 2021 17:22:21 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 84ABF6137F;
-        Tue,  9 Nov 2021 22:18:29 +0000 (UTC)
+        id S1344904AbhKIW2t (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Tue, 9 Nov 2021 17:28:49 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C5FF861884;
+        Tue,  9 Nov 2021 22:20:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1636496310;
+        s=k20201202; t=1636496436;
         bh=mhSzMwWW4rI8F89tcktNvyzwyOgUJFo1iiLUthPJbbQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=i7OrudC1G1qQEBZACs/FQXmIbUDm9G3O047AcG+UJznDnfOFBOXuG6DAqHAacRU8Q
-         9jDYvcVCn8z9rmNxrbrs/g1Lj5zeoIhhivl05SEkpK1BGK3YaO6igb+pUaNSH5j+Wa
-         kvxLxY7Ae6cFdh6QrLIt5/kXCuWti+fPsR4fgBgWG6BZWXJXUGMEuwmmT6WsV1AkvV
-         r6oMFMniKWa5SeAILNxOXS5XZDKkfXQv/E4lGdzthqHTIdcuZAwebzGfB6PUyKyUcO
-         6IyS8b6w0VPddQoAbEP09kjZHQ6gHcyxEzfUbDWrfz88VnndDlHRRRgOpzOsN672Sr
-         iWJA6Z/q48p0A==
+        b=kOnK3uCH37E5oP8wWk1MRyiOP7hF/If6PCA9pDpkp6J3a+rz4aiH/baGJe8iqWNAI
+         XH5wg5DH+KesrGrSUQoPAHR/ZsuKdy87htgeHRBhZaY1vA6ryScjvpEGs8pwDGPhbY
+         uT+kkX1yYkTbeNlISUD2IszXODYvlxCZRXd89QZzsB+2yJFF7W3pukJwFuQvX2sk1r
+         vR958+tGLsvqr8cP84h0UtH7ckn9sb3nsWFPIijqVnGJdZ8HFd5zE7ojmwMTMAPnFk
+         kwNL0j/QrkKV1Og3ehxq9MJiwfRPS5y6d3UcpQzcNnnsNNJYtgnnWvLBPUSTjJsQIh
+         Do1FnN2AxVg9A==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Bart Van Assche <bvanassche@acm.org>, linux-mips@vger.kernel.org,
         Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
         Sasha Levin <sashal@kernel.org>, Ralf@vger.kernel.org,
         linux-mips@linux-mips.org
-Subject: [PATCH AUTOSEL 5.15 61/82] MIPS: sni: Fix the build
-Date:   Tue,  9 Nov 2021 17:16:19 -0500
-Message-Id: <20211109221641.1233217-61-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.14 57/75] MIPS: sni: Fix the build
+Date:   Tue,  9 Nov 2021 17:18:47 -0500
+Message-Id: <20211109221905.1234094-57-sashal@kernel.org>
 X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20211109221641.1233217-1-sashal@kernel.org>
-References: <20211109221641.1233217-1-sashal@kernel.org>
+In-Reply-To: <20211109221905.1234094-1-sashal@kernel.org>
+References: <20211109221905.1234094-1-sashal@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 X-stable: review

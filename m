@@ -2,119 +2,132 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0BE36C433FE
-	for <linux-mips@archiver.kernel.org>; Wed, 10 Nov 2021 19:07:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4E18CC433F5
+	for <linux-mips@archiver.kernel.org>; Wed, 10 Nov 2021 19:43:47 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id E762261077
-	for <linux-mips@archiver.kernel.org>; Wed, 10 Nov 2021 19:07:48 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 2FD1461106
+	for <linux-mips@archiver.kernel.org>; Wed, 10 Nov 2021 19:43:47 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232674AbhKJTKf (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 10 Nov 2021 14:10:35 -0500
-Received: from mail-ua1-f54.google.com ([209.85.222.54]:45760 "EHLO
-        mail-ua1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232658AbhKJTKf (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 10 Nov 2021 14:10:35 -0500
-Received: by mail-ua1-f54.google.com with SMTP id ay21so6909483uab.12;
-        Wed, 10 Nov 2021 11:07:47 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=JVkOVIMojOtjUqioksXn7GnT56ja9tgOLgQ+4277MEE=;
-        b=fjYd9yz6VcyU8bHkb7NCESnndM5ERwt/R6eMIB60oXmL6xMJGL4iOfVRaRj3ar0Jqb
-         3ZEaNO3lrz49KdnI5FHckHwpOxhYjMlrxPX5Ht1GYJxlYUKn8PzRzHPzExqrPed2RG1C
-         51EoQzXxOzZSyoy0OslIqvMdwKCKUzpJvz7Eq5T7nrMz/r/ATYp8sLlwVAIAJ+yHHY/f
-         OVj0zYE5B0d1A2r9SKsvNNoP4gxzcqRnwrclwf1FFd/0RbJNlSsQK0r7NuCpxqNzqf83
-         hYRxCeD1LFoto6cfVGkvcv3sKF+9UbmxlHRuHZK+0icxbNnFaGja5x3VBHoNj84zGlVK
-         IHKw==
-X-Gm-Message-State: AOAM533g65lhvf+wLaq1fqggmL6HldV4WSXOoQaNgbfc6eK3+4/3BDfJ
-        0MG0Fpv7Tg2XgJwFuMV/zsC8KMHzrP9Gvg==
-X-Google-Smtp-Source: ABdhPJz+5wSNqDwACFvZCj9Bqo/s6w8WqkMTykc6tiPrOZqv3IDJZ4PLRbigmePd99pI/3CXAQqrOQ==
-X-Received: by 2002:a05:6102:d94:: with SMTP id d20mr2044416vst.12.1636571265982;
-        Wed, 10 Nov 2021 11:07:45 -0800 (PST)
-Received: from mail-ua1-f43.google.com (mail-ua1-f43.google.com. [209.85.222.43])
-        by smtp.gmail.com with ESMTPSA id u14sm592142vsi.2.2021.11.10.11.07.45
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 10 Nov 2021 11:07:45 -0800 (PST)
-Received: by mail-ua1-f43.google.com with SMTP id i6so6943206uae.6;
-        Wed, 10 Nov 2021 11:07:45 -0800 (PST)
-X-Received: by 2002:a05:6102:2910:: with SMTP id cz16mr2351290vsb.9.1636571265036;
- Wed, 10 Nov 2021 11:07:45 -0800 (PST)
+        id S232296AbhKJTqe (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 10 Nov 2021 14:46:34 -0500
+Received: from mo4-p02-ob.smtp.rzone.de ([85.215.255.81]:16885 "EHLO
+        mo4-p02-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232129AbhKJTqd (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 10 Nov 2021 14:46:33 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1636573417;
+    s=strato-dkim-0002; d=goldelico.com;
+    h=References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Cc:Date:
+    From:Subject:Sender;
+    bh=dORYilwkNq+32fvwG6vuGlFVFQ25hqklQ65ng4oOIS8=;
+    b=RcoVTKWcUxTTYksmhZ8oUWhOpXQLG1HjoZckp2avrNzLFCoJ+pwc7i7jVGyrGkZk13
+    J2eWQwWfVI67RWpvGXEpVFlBxPZbPRc1HTjRYP6B72xuXYqREf0lHp0kFnJY0afuJvcv
+    nrMXFQtjkpikYduJoTz+Np+TbU+pTEbalOIHo1n/DgjSiJejc5TQ4INf7JNVnDM0B3Va
+    akBbQ853kHMvYajCYgSFzr6A4tlnbO5ZunKPdI826bSsNGnW0Qdys7y0eMi5t86Hhda0
+    1H7CUvUtWIRqugkvrY2BMbCHwZnD1wnbqAqfiHUc2uGXVKOptj7T08f5YpOkNRezJi7X
+    ZyTw==
+Authentication-Results: strato.com;
+    dkim=none
+X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMhflhwDubTJ9o12DNOsPj0lByOdfLlf0"
+X-RZG-CLASS-ID: mo00
+Received: from iMac.fritz.box
+    by smtp.strato.de (RZmta 47.34.5 DYNA|AUTH)
+    with ESMTPSA id Y02aa4xAAJha5Lp
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+    Wed, 10 Nov 2021 20:43:36 +0100 (CET)
+From:   "H. Nikolaus Schaller" <hns@goldelico.com>
+To:     Paul Cercueil <paul@crapouillou.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        "H. Nikolaus Schaller" <hns@goldelico.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Kees Cook <keescook@chromium.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Robert Foss <robert.foss@linaro.org>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Ezequiel Garcia <ezequiel@collabora.com>,
+        Harry Wentland <harry.wentland@amd.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Maxime Ripard <maxime@cerno.tech>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Paul Boddie <paul@boddie.org.uk>
+Cc:     devicetree@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org, letux-kernel@openphoenux.org,
+        Jonas Karlman <jonas@kwiboo.se>,
+        dri-devel@lists.freedesktop.org
+Subject: [PATCH v6 1/8] drm/ingenic: prepare ingenic drm for later addition of JZ4780
+Date:   Wed, 10 Nov 2021 20:43:26 +0100
+Message-Id: <122791473d61add6992310cec267ffde2607a2df.1636573413.git.hns@goldelico.com>
+X-Mailer: git-send-email 2.33.0
+In-Reply-To: <cover.1636573413.git.hns@goldelico.com>
+References: <cover.1636573413.git.hns@goldelico.com>
 MIME-Version: 1.0
-References: <ef59d6fd3b2201b912d5eaa7f7a037d8f9adb744.1636561068.git.geert+renesas@glider.be>
- <ddcfa4b9-f7f4-04f5-89f2-b04c284e1945@prevas.dk>
-In-Reply-To: <ddcfa4b9-f7f4-04f5-89f2-b04c284e1945@prevas.dk>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Wed, 10 Nov 2021 20:07:33 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdX_h9Tz8C-2SYyrS_G5BBbBNctqRA1mgKbhmYJxWzF-hg@mail.gmail.com>
-Message-ID: <CAMuHMdX_h9Tz8C-2SYyrS_G5BBbBNctqRA1mgKbhmYJxWzF-hg@mail.gmail.com>
-Subject: Re: [PATCH/RFC] of: Shrink struct of_device_id
-To:     Rasmus Villemoes <rasmus.villemoes@prevas.dk>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Hi Rasmus,
+This changes the way the regmap is allocated to prepare for the
+later addition of the JZ4780 which has more registers and bits
+than the others.
 
-On Wed, Nov 10, 2021 at 5:51 PM Rasmus Villemoes
-<rasmus.villemoes@prevas.dk> wrote:
-> On 10/11/2021 17.23, Geert Uytterhoeven wrote:
-> > Currently struct of_device_id is 196 (32-bit) or 200 (64-bit) bytes
-> > large.  It contains fixed-size strings for a name, a type, and a
-> > compatible value, but the first two are barely used.
-> > OF device ID tables contain multiple entries, plus an empty sentinel
-> > entry.
-> >
-> > Statistics for my current kernel source tree:
-> >   - 4487 tables with 16836 entries (3367200 bytes)
-> >   - 176 names (average 6.7 max 23 chars)
-> >   - 66 types (average 5.1 max 21 chars)
-> >   - 12192 compatible values (average 18.0 max 45 chars)
-> > Taking into account the minimum needed size to store the strings, only
-> > 6.9% of the allocated space is used...
-> >
-> > Reduce kernel size by reducing the sizes of the fixed strings by one
-> > half.
->
-> Tried something like this 2.5 years ago:
-> https://lore.kernel.org/lkml/20190425203101.9403-1-linux@rasmusvillemoes.dk/
+Therefore we make the regmap as big as the reg property in
+the device tree tells.
 
-I wasn't aware of that.  I reworked some code which used multiple
-of_find_compatible_node() calls before, and noticed the end result
-had grown a lot due to the sheer size of of_device_id
-("[PATCH] soc: renesas: Consolidate product register handling",
- https://lore.kernel.org/all/057721f46c7499de4133135488f0f3da7fb39265.1636570669.git.geert+renesas@glider.be).
+Suggested-by: Paul Cercueil <paul@crapouillou.net>
+Signed-off-by: H. Nikolaus Schaller <hns@goldelico.com>
+---
+ drivers/gpu/drm/ingenic/ingenic-drm-drv.c | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
-> I think that there might be some not-in-tree code that relies on the
-> existing layout. I considered adding a CONFIG_ knob, either for these
-> sizes in particular, or more generally a def_bool y "CONFIG_LEGACY"
-> which embedded folks that build the entire distro from source and don't
-> have any legacy things can turn off, and then get more sensible defaults
-> all around.
+diff --git a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
+index 462bc0f35f1bf..4abfe5b094174 100644
+--- a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
++++ b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
+@@ -173,7 +173,6 @@ static const struct regmap_config ingenic_drm_regmap_config = {
+ 	.val_bits = 32,
+ 	.reg_stride = 4,
+ 
+-	.max_register = JZ_REG_LCD_SIZE1,
+ 	.writeable_reg = ingenic_drm_writeable_reg,
+ };
+ 
+@@ -1011,6 +1010,8 @@ static int ingenic_drm_bind(struct device *dev, bool has_components)
+ 	struct ingenic_drm_bridge *ib;
+ 	struct drm_device *drm;
+ 	void __iomem *base;
++	struct resource *res;
++	struct regmap_config regmap_config;
+ 	long parent_rate;
+ 	unsigned int i, clone_mask = 0;
+ 	int ret, irq;
+@@ -1056,14 +1057,16 @@ static int ingenic_drm_bind(struct device *dev, bool has_components)
+ 	drm->mode_config.funcs = &ingenic_drm_mode_config_funcs;
+ 	drm->mode_config.helper_private = &ingenic_drm_mode_config_helpers;
+ 
+-	base = devm_platform_ioremap_resource(pdev, 0);
++	base = devm_platform_get_and_ioremap_resource(pdev, 0, &res);
+ 	if (IS_ERR(base)) {
+ 		dev_err(dev, "Failed to get memory resource\n");
+ 		return PTR_ERR(base);
+ 	}
+ 
++	regmap_config = ingenic_drm_regmap_config;
++	regmap_config.max_register = res->end - res->start - 4;
+ 	priv->map = devm_regmap_init_mmio(dev, base,
+-					  &ingenic_drm_regmap_config);
++					  &regmap_config);
+ 	if (IS_ERR(priv->map)) {
+ 		dev_err(dev, "Failed to create regmap\n");
+ 		return PTR_ERR(priv->map);
+-- 
+2.33.0
 
-Most of that should have been gone since the #ifdef KERNEL was removed
-from include/linux/mod_devicetable.h in commit 6543becf26fff612
-("mod/file2alias: make modalias generation safe for cross compiling").
-Of course you can never know for sure...
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds

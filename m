@@ -2,140 +2,72 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9969FC433FE
-	for <linux-mips@archiver.kernel.org>; Wed, 10 Nov 2021 08:56:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 74F40C433EF
+	for <linux-mips@archiver.kernel.org>; Wed, 10 Nov 2021 08:56:19 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 81875610CF
-	for <linux-mips@archiver.kernel.org>; Wed, 10 Nov 2021 08:56:15 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 5CB93610CF
+	for <linux-mips@archiver.kernel.org>; Wed, 10 Nov 2021 08:56:19 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230212AbhKJI7B (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 10 Nov 2021 03:59:01 -0500
-Received: from elvis.franken.de ([193.175.24.41]:40489 "EHLO elvis.franken.de"
+        id S230392AbhKJI7F (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 10 Nov 2021 03:59:05 -0500
+Received: from elvis.franken.de ([193.175.24.41]:40496 "EHLO elvis.franken.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229931AbhKJI7B (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Wed, 10 Nov 2021 03:59:01 -0500
+        id S229781AbhKJI7F (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Wed, 10 Nov 2021 03:59:05 -0500
 Received: from uucp (helo=alpha)
         by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1mkjOt-0001M7-00; Wed, 10 Nov 2021 09:56:11 +0100
+        id 1mkjOu-0001M7-00; Wed, 10 Nov 2021 09:56:12 +0100
 Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 5C63BC2C3B; Wed, 10 Nov 2021 09:49:27 +0100 (CET)
-Date:   Wed, 10 Nov 2021 09:49:27 +0100
+        id 0C332C2C40; Wed, 10 Nov 2021 09:55:44 +0100 (CET)
+Date:   Wed, 10 Nov 2021 09:55:43 +0100
 From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     linux-mips@vger.kernel.org, Alexander Lobakin <alobakin@pm.me>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Paul Cercueil <paul@crapouillou.net>,
-        Xingxing Su <suxingxing@loongson.cn>,
-        linux-kernel@vger.kernel.org, zhaoxiao <zhaoxiao@uniontech.com>
-Subject: Re: [PATCH] mips: decompressor: do not copy source files while
- building
-Message-ID: <20211110084927.GA5976@alpha.franken.de>
-References: <20211105023815.85784-1-masahiroy@kernel.org>
+To:     Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>
+Cc:     Russell King <linux@armlinux.org.uk>, Andrew Lunn <andrew@lunn.ch>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] PCI: Marvell: Update PCIe fixup
+Message-ID: <20211110085543.GC5976@alpha.franken.de>
+References: <20211101150405.14618-1-pali@kernel.org>
+ <20211102084241.GA6134@alpha.franken.de>
+ <20211102090246.unmbruykfdjabfga@pali>
+ <20211102094700.GA7376@alpha.franken.de>
+ <20211102100034.rhcb3k2jvr6alm6y@pali>
+ <20211102150201.GA11675@alpha.franken.de>
+ <20211102151334.2pispbz6zfewworr@pali>
+ <20211109234253.gppjkiew7e2ufz3a@pali>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20211105023815.85784-1-masahiroy@kernel.org>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20211109234253.gppjkiew7e2ufz3a@pali>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Fri, Nov 05, 2021 at 11:38:14AM +0900, Masahiro Yamada wrote:
-> As commit 7ae4a78daacf ("ARM: 8969/1: decompressor: simplify libfdt
-> builds") stated, copying source files during the build time may not
-> end up with as clean code as expected.
+On Wed, Nov 10, 2021 at 12:42:53AM +0100, Pali Rohár wrote:
+> On Tuesday 02 November 2021 16:13:34 Pali Rohár wrote:
+> > On Tuesday 02 November 2021 16:02:01 Thomas Bogendoerfer wrote:
+> > > On Tue, Nov 02, 2021 at 11:00:34AM +0100, Pali Rohár wrote:
+> > > > > > But I do not have this hardware to verify it.
+> > > > > 
+> > > > > I still have a few Cobalt systems here.
+> > > > 
+> > > > Perfect! It would help if you could provide 'lspci -nn -vv' output from
+> > > > that system. In case you have very old version of lspci on that system
+> > > > you could try to run it with '-xxxx' (or '-xxx') which prints hexdump
+> > > > and I can parse it with local lspci.
 > 
-> Do similar for mips to clean up the Makefile and .gitignore.
-> 
-> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-> ---
-> 
->  arch/mips/boot/compressed/.gitignore   |  3 ---
->  arch/mips/boot/compressed/Makefile     | 12 ------------
->  arch/mips/boot/compressed/ashldi3.c    |  2 ++
->  arch/mips/boot/compressed/bswapsi.c    |  2 ++
->  arch/mips/boot/compressed/uart-ath79.c |  2 ++
->  scripts/remove-stale-files             |  5 +++++
->  6 files changed, 11 insertions(+), 15 deletions(-)
->  delete mode 100644 arch/mips/boot/compressed/.gitignore
->  create mode 100644 arch/mips/boot/compressed/ashldi3.c
->  create mode 100644 arch/mips/boot/compressed/bswapsi.c
->  create mode 100644 arch/mips/boot/compressed/uart-ath79.c
-> 
-> diff --git a/arch/mips/boot/compressed/.gitignore b/arch/mips/boot/compressed/.gitignore
-> deleted file mode 100644
-> index d358395614c9..000000000000
-> --- a/arch/mips/boot/compressed/.gitignore
-> +++ /dev/null
-> @@ -1,3 +0,0 @@
-> -# SPDX-License-Identifier: GPL-2.0-only
-> -ashldi3.c
-> -bswapsi.c
-> diff --git a/arch/mips/boot/compressed/Makefile b/arch/mips/boot/compressed/Makefile
-> index 3548b3b45269..e6584dab2360 100644
-> --- a/arch/mips/boot/compressed/Makefile
-> +++ b/arch/mips/boot/compressed/Makefile
-> @@ -50,20 +50,8 @@ vmlinuzobjs-$(CONFIG_MIPS_ALCHEMY)		   += $(obj)/uart-alchemy.o
->  vmlinuzobjs-$(CONFIG_ATH79)			   += $(obj)/uart-ath79.o
->  endif
->  
-> -extra-y += uart-ath79.c
-> -$(obj)/uart-ath79.c: $(srctree)/arch/mips/ath79/early_printk.c
-> -	$(call cmd,shipped)
-> -
->  vmlinuzobjs-$(CONFIG_KERNEL_XZ) += $(obj)/ashldi3.o
->  
-> -extra-y += ashldi3.c
-> -$(obj)/ashldi3.c: $(obj)/%.c: $(srctree)/lib/%.c FORCE
-> -	$(call if_changed,shipped)
-> -
-> -extra-y += bswapsi.c
-> -$(obj)/bswapsi.c: $(obj)/%.c: $(srctree)/arch/mips/lib/%.c FORCE
-> -	$(call if_changed,shipped)
-> -
->  targets := $(notdir $(vmlinuzobjs-y))
->  
->  targets += vmlinux.bin
-> diff --git a/arch/mips/boot/compressed/ashldi3.c b/arch/mips/boot/compressed/ashldi3.c
-> new file mode 100644
-> index 000000000000..f7bf6a7aae31
-> --- /dev/null
-> +++ b/arch/mips/boot/compressed/ashldi3.c
-> @@ -0,0 +1,2 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +#include "../../../../lib/ashldi3.c"
-> diff --git a/arch/mips/boot/compressed/bswapsi.c b/arch/mips/boot/compressed/bswapsi.c
-> new file mode 100644
-> index 000000000000..fdb9c6476904
-> --- /dev/null
-> +++ b/arch/mips/boot/compressed/bswapsi.c
-> @@ -0,0 +1,2 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +#include "../../lib/bswapsi.c"
-> diff --git a/arch/mips/boot/compressed/uart-ath79.c b/arch/mips/boot/compressed/uart-ath79.c
-> new file mode 100644
-> index 000000000000..d686820921be
-> --- /dev/null
-> +++ b/arch/mips/boot/compressed/uart-ath79.c
-> @@ -0,0 +1,2 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +#include "../../ath79/early_printk.c"
-> diff --git a/scripts/remove-stale-files b/scripts/remove-stale-files
-> index eb630ee287c3..c534fe1eac16 100755
-> --- a/scripts/remove-stale-files
-> +++ b/scripts/remove-stale-files
-> @@ -28,4 +28,9 @@ if [ -n "${building_out_of_srctree}" ]; then
->  	do
->  		rm -f arch/arm/boot/compressed/${f}
->  	done
-> +
-> +	for f in uart-ath79.c ashldi3.c bswapsi.c
-> +	do
-> +		rm -f arch/mips/boot/compressed/${f}
-> +	done
+> Thomas, one more question, do you have also GT-64115 system which has
+> PCI device id 0x4611? Based on Maciej quote, GT-64115 probably also
+> reports itself as "Memory controller" instead of "Host Bridge". So lspci
+> output from GT-64115 could be also interesting.
 
-hmm, isn't this the wrong action now that these files have been added
-to git ?
+The only systems with GT64-xxx chips I have are Cobalt systems, but none of
+them has a GT-64115 chip (Raq1 comes with GT-64011 and Raq2 with GT-64111).
 
 Thomas.
 

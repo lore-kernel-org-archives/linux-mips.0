@@ -2,123 +2,152 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4DF18C433EF
-	for <linux-mips@archiver.kernel.org>; Fri, 12 Nov 2021 22:46:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3063BC4332F
+	for <linux-mips@archiver.kernel.org>; Sat, 13 Nov 2021 00:39:11 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 38BD261073
-	for <linux-mips@archiver.kernel.org>; Fri, 12 Nov 2021 22:46:55 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 082AF610A8
+	for <linux-mips@archiver.kernel.org>; Sat, 13 Nov 2021 00:39:11 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235908AbhKLWtp (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 12 Nov 2021 17:49:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41572 "EHLO
+        id S233609AbhKMAl7 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 12 Nov 2021 19:41:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38116 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236052AbhKLWti (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Fri, 12 Nov 2021 17:49:38 -0500
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC1C5C0613F5;
-        Fri, 12 Nov 2021 14:46:47 -0800 (PST)
-Received: by mail-pj1-x1035.google.com with SMTP id t5-20020a17090a4e4500b001a0a284fcc2so8324127pjl.2;
-        Fri, 12 Nov 2021 14:46:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=S94ZmIDNbR8JM2YMz6OlEqOmqcwIJH7y0fh6ZVlIVsQ=;
-        b=OM6XOf5hWr2D5bJKa9xIdGPgfJ/wfHAhF5GW3mWj6qfDVF4FeHyye5D4k88rGzgc4H
-         39dPf0eKew71/uhYteVkUNIlNo36k4m608WAZjerNT3ViYvp8Ao9t11j1LylXc3M87KG
-         nY975Z7PMwidrZ6Pp/X+GQm8Nx/c/XbySKgEkuHFQgw9ty/t09saO/i8+UoCdW+HIY2e
-         oH6EX3m3a2O6ZX4P3qqV2dQVM76HmBQhkZJA4o+Zw53xXdo1HOy6Ey4ZXhcSRhw0/ZRj
-         1BTV+Jt4Z0iuJvthAORUP1Wf+8yjLaWhYUVKBDHBXizASEOXMQtnbbHWjYKmbUkmrina
-         K8Ew==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=S94ZmIDNbR8JM2YMz6OlEqOmqcwIJH7y0fh6ZVlIVsQ=;
-        b=VNegyDsQSorFtbm0FsFcEPkuGcT7ogZXoAPP4qRRfUQ6uVen4yiQt3ZAlB3QJTNFoi
-         owpCPUjkRgicfl58JOD3x8kqh2Mk3hb2ZxvzaH99i9IiMzIXPNt4wXzOjdSnttq5xt4a
-         5iaoTSNSDVbkWSM+HhLVp32zUllYcM+c7ubw+HkWzNm7gjJIIgFqUZkjSVZsnGf7ZDLE
-         3JmH/yc9zXjtQVI+NwJerJqrsit2Us4FLF1z10F+gqVhrEqoWGVketd/IwWrs1a6wODQ
-         dzbh4SSamEshcKz1jHk3VpOfMaU6CmttdMTlcK/EiU5Cr6eakg59aAo2LcLKuhzrJkrr
-         xMGA==
-X-Gm-Message-State: AOAM533pyd1uabZ8LZHguMv3v4EBIBxuAhckIM/vGUDdkq6yaxahe7Ve
-        dy3xJOR84tw4EK7KduBvfxZ7+gLGc9o=
-X-Google-Smtp-Source: ABdhPJxjNRFyodytAdEAoxVQBOTuJ3dbe2y3zrt9uQEtSkMS1mXEcyi+CPAQFv95Bh0GVaKPrRVcqg==
-X-Received: by 2002:a17:903:2352:b0:142:76bc:de3b with SMTP id c18-20020a170903235200b0014276bcde3bmr12012450plh.36.1636757206809;
-        Fri, 12 Nov 2021 14:46:46 -0800 (PST)
-Received: from fainelli-desktop.igp.broadcom.net ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id k14sm5647004pga.65.2021.11.12.14.46.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Nov 2021 14:46:46 -0800 (PST)
-From:   Florian Fainelli <f.fainelli@gmail.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Florian Fainelli <f.fainelli@gmail.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        bcm-kernel-feedback-list@broadcom.com (maintainer:BROADCOM BCM63XX ARM
-        ARCHITECTURE), Justin Chen <justinpopo6@gmail.com>,
-        linux-watchdog@vger.kernel.org (open list:WATCHDOG DEVICE DRIVERS),
-        devicetree@vger.kernel.org (open list:OPEN FIRMWARE AND FLATTENED
-        DEVICE TREE BINDINGS),
-        linux-mips@vger.kernel.org (open list:MIPS),
-        linux-arm-kernel@lists.infradead.org (moderated list:BROADCOM BCM63XX
-        ARM ARCHITECTURE)
-Subject: [PATCH v5 6/7] MIPS: BCM63XX: Provide platform data to watchdog device
-Date:   Fri, 12 Nov 2021 14:46:35 -0800
-Message-Id: <20211112224636.395101-7-f.fainelli@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20211112224636.395101-1-f.fainelli@gmail.com>
-References: <20211112224636.395101-1-f.fainelli@gmail.com>
+        with ESMTP id S231261AbhKMAl6 (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Fri, 12 Nov 2021 19:41:58 -0500
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DB8FC061766;
+        Fri, 12 Nov 2021 16:39:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
+        Subject:Sender:Reply-To:Content-ID:Content-Description;
+        bh=9F6EZOrW/lhMYi7EcqBru1PQUWPDNkoeRqS5mGSyWZw=; b=hoDesaA+I2w1OIc6ShXlvgMBji
+        iMDCyK6rTCzWPudpEEGC7jnloufAlcKCoOHS2kJRckQHyTKcUDBWir89D7Set/Ms7XgtOE47AsU90
+        Ja9b3Yet+Hg1F8ZCDADidObRWwCxxCx7iTgnbNSj45HiARhAhf2YO0EjLt90h3wFHsB1IuzZC4wzK
+        1JNoVPYJSPtDZjPZjeUAw/yooIDPxHxok/sXc2QuzETVukBS/fJUoVYi5O18G9bv70e+FEEJLn8xO
+        DfOXGCQ2npHHvjn8Oouap4H5YGTJY3mF0pgtMj5KJrCh7nl1R9wcLzto0vS5llVM/1dA7KQ09q4h2
+        EoAcL7JA==;
+Received: from [2601:1c0:6280:3f0::aa0b]
+        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1mlh4T-00BwhH-Je; Sat, 13 Nov 2021 00:39:05 +0000
+Subject: Re: [PATCH v2] iio/adc: ingenic: fix (MIPS) ingenic-adc build errors
+To:     Jonathan Cameron <jic23@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, kernel test robot <lkp@intel.com>,
+        Artur Rojek <contact@artur-rojek.eu>,
+        Paul Cercueil <paul@crapouillou.net>,
+        linux-mips@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>,
+        linux-iio@vger.kernel.org, Florian Fainelli <f.fainelli@gmail.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Russell King <linux@armlinux.org.uk>, linux-clk@vger.kernel.org
+References: <20211110023755.27176-1-rdunlap@infradead.org>
+ <20211112172942.04553027@jic23-huawei>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <dfc38220-c79a-f990-d025-c7f5344e0b9a@infradead.org>
+Date:   Fri, 12 Nov 2021 16:39:04 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.13.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20211112172942.04553027@jic23-huawei>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-In order to utilize the bcm7038_wdt.c driver which needs to know the
-clock name to obtain, pass it via platform data using the
-bcm7038_wdt_platform_data structure.
+On 11/12/21 9:29 AM, Jonathan Cameron wrote:
+> On Tue,  9 Nov 2021 18:37:55 -0800
+> Randy Dunlap <rdunlap@infradead.org> wrote:
+> 
+>> MIPS does not always provide clk*() interfaces and there are no
+>> always-present stubs for them, so depending on "MIPS || COMPILE_TEST"
+>> is not strong enough to prevent build errors.
+>>
+>> Likewise MACH_INGENIC_SOC || COMPILE_TEST is not strong enough
+>> since if only COMPILE_TEST=y (with some other MIPS MACH_ or CPU or
+>> BOARD setting), there are still the same build errors.
+>>
+>> It looks like depending on MACH_INGENIC is the only thing that is
+>> sufficient here in order to prevent build errors.
+>>
+>> mips-linux-ld: drivers/iio/adc/ingenic-adc.o: in function `jz4770_adc_init_clk_div':
+>> ingenic-adc.c:(.text+0xe4): undefined reference to `clk_get_parent'
+>> mips-linux-ld: drivers/iio/adc/ingenic-adc.o: in function `jz4725b_adc_init_clk_div':
+>> ingenic-adc.c:(.text+0x1b8): undefined reference to `clk_get_parent'
+>>
+>> Fixes: 1a78daea107d ("IIO: add Ingenic JZ47xx ADC driver.")
+>> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+>> Reported-by: kernel test robot <lkp@intel.com>
+>> Cc: Artur Rojek <contact@artur-rojek.eu>
+>> Cc: Paul Cercueil <paul@crapouillou.net>
+>> Cc: linux-mips@vger.kernel.org
+>> Cc: Jonathan Cameron <jic23@kernel.org>
+>> Cc: Lars-Peter Clausen <lars@metafoo.de>
+>> Cc: linux-iio@vger.kernel.org
+>> Cc: Florian Fainelli <f.fainelli@gmail.com>
+>> Cc: Andy Shevchenko <andy.shevchenko@gmail.com>
+> 
+> I'm a bit confused.  There are stubs in include/linux/clk.h for these.
+> Why do those not apply here? Are these platforms built with CONFIG_CLK but
+> don't provide all the functions?
+> 
+> That sounds highly error prone and rather defeats the object of the
+> stubs.  Could we either provide the missing stubs, or solve this some other
+> way.  I'm not keen to massively cut the build coverage this driver is getting
+> by dropping COMPILE_TEST if there is any route to avoid doing so.
 
-Reviewed-by: Guenter Roeck <linux@roeck-us.net>
-Acked-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
----
- arch/mips/bcm63xx/dev-wdt.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+I'm all for that (above), but it's a mess.
 
-diff --git a/arch/mips/bcm63xx/dev-wdt.c b/arch/mips/bcm63xx/dev-wdt.c
-index 2a2346a99bcb..42130914a3c2 100644
---- a/arch/mips/bcm63xx/dev-wdt.c
-+++ b/arch/mips/bcm63xx/dev-wdt.c
-@@ -9,6 +9,7 @@
- #include <linux/init.h>
- #include <linux/kernel.h>
- #include <linux/platform_device.h>
-+#include <linux/platform_data/bcm7038_wdt.h>
- #include <bcm63xx_cpu.h>
- 
- static struct resource wdt_resources[] = {
-@@ -19,11 +20,18 @@ static struct resource wdt_resources[] = {
- 	},
- };
- 
-+static struct bcm7038_wdt_platform_data bcm63xx_wdt_pdata = {
-+	.clk_name	= "periph",
-+};
-+
- static struct platform_device bcm63xx_wdt_device = {
- 	.name		= "bcm63xx-wdt",
- 	.id		= -1,
- 	.num_resources	= ARRAY_SIZE(wdt_resources),
- 	.resource	= wdt_resources,
-+	.dev		= {
-+		.platform_data = &bcm63xx_wdt_pdata,
-+	},
- };
- 
- int __init bcm63xx_wdt_register(void)
+> Based on the guess than any platform with clks must be able to turn them on
+> I grepped for int clk_enable() and there seem to be only two possiblities
+> bcm63xx and lantiq as sources of the build breakage.
+
+CONFIG_BCM63XX=y
+# CONFIG_MACH_INGENIC_SOC is not set
+CONFIG_INGENIC_ADC=y
+CONFIG_HAVE_CLK=y
+
+
+According to the build error messages (above), clk_get_parent()
+is missing. Looking at <linux/clk.h>, for CONFIG_HAVE_CLK=y,
+there is a prototype for clk_get_parent(), and if CONFIG_HAVE_CLK
+is not set, there is a stub for it.
+
+Now look at drivers/clk/clk.c and drivers/clk/Makefile:
+
+clk_get_parent() is defined in clk.c, which is built when
+CONFIG_COMMON_CLK=y, but that is not set in this .config file.
+
+CONFIG_HAVE_CLK=y, but that doesn't get clk_get_parent()
+compiled.
+
+So to me it is a disparity or incongruity between HAVE_CLK and COMMON_CLK.
+
+Russell- do you have any suggestions for how to straighten
+this out?
+
+
+> Jonathan
+> 
+>> ---
+>> v2: use MACH_INGENIC instead of MACH_INGENIC_SOC (thanks, Paul)
+>>
+>>   drivers/iio/adc/Kconfig |    2 +-
+>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> --- linux-next-20211105.orig/drivers/iio/adc/Kconfig
+>> +++ linux-next-20211105/drivers/iio/adc/Kconfig
+>> @@ -501,7 +501,7 @@ config INA2XX_ADC
+>>   
+>>   config INGENIC_ADC
+>>   	tristate "Ingenic JZ47xx SoCs ADC driver"
+>> -	depends on MIPS || COMPILE_TEST
+>> +	depends on MACH_INGENIC
+>>   	select IIO_BUFFER
+>>   	help
+>>   	  Say yes here to build support for the Ingenic JZ47xx SoCs ADC unit.
+> 
+
+
 -- 
-2.25.1
-
+~Randy

@@ -2,110 +2,208 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 399D5C4332F
-	for <linux-mips@archiver.kernel.org>; Mon, 15 Nov 2021 18:28:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1D2E4C433EF
+	for <linux-mips@archiver.kernel.org>; Mon, 15 Nov 2021 20:34:46 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 2300E61545
-	for <linux-mips@archiver.kernel.org>; Mon, 15 Nov 2021 18:28:53 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 0348160FBF
+	for <linux-mips@archiver.kernel.org>; Mon, 15 Nov 2021 20:34:45 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241974AbhKOSbr (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 15 Nov 2021 13:31:47 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36922 "EHLO mail.kernel.org"
+        id S232398AbhKOUhb convert rfc822-to-8bit (ORCPT
+        <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 15 Nov 2021 15:37:31 -0500
+Received: from aposti.net ([89.234.176.197]:56316 "EHLO aposti.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240903AbhKOS3p (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Mon, 15 Nov 2021 13:29:45 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7D3B4632CD;
-        Mon, 15 Nov 2021 17:58:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1636999107;
-        bh=eajIuobfbs5aY/C3Q8dSjCf3Ko6DnXwHvuvfvoHM2uc=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ASRDF39NbzY837ZH1cVAk0fsAjb3pDY4JDu6DxGHFirFNgq+CR2Ip5tRS7sjfR2HB
-         7qqRiyet5WchPBIYVeSKoRF5bBTiGlIFsyTAjDkwsYH3C9aNbz4vpVIWqVtIV2fB62
-         hvIMPHQKub1pPws/lsPiOWwFOejhGkJWF3Zquwuw=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Maciej Rozycki <macro@orcam.me.uk>, linux-mips@vger.kernel.org,
-        "Eric W. Biederman" <ebiederm@xmission.com>
-Subject: [PATCH 5.14 145/849] signal/mips: Update (_save|_restore)_fp_context to fail with -EFAULT
-Date:   Mon, 15 Nov 2021 17:53:48 +0100
-Message-Id: <20211115165425.046019795@linuxfoundation.org>
-X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165419.961798833@linuxfoundation.org>
-References: <20211115165419.961798833@linuxfoundation.org>
-User-Agent: quilt/0.66
+        id S245298AbhKOTUC (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:20:02 -0500
+Date:   Mon, 15 Nov 2021 19:16:51 +0000
+From:   Paul Cercueil <paul@crapouillou.net>
+Subject: Re: [PATCH v6 6/8] MIPS: DTS: CI20: Add DT nodes for HDMI setup
+To:     "H. Nikolaus Schaller" <hns@goldelico.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Kees Cook <keescook@chromium.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Robert Foss <robert.foss@linaro.org>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Ezequiel Garcia <ezequiel@collabora.com>,
+        Harry Wentland <harry.wentland@amd.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Maxime Ripard <maxime@cerno.tech>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Paul Boddie <paul@boddie.org.uk>, devicetree@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        letux-kernel@openphoenux.org, Jonas Karlman <jonas@kwiboo.se>,
+        dri-devel@lists.freedesktop.org
+Message-Id: <38OM2R.QJECEBEZVSXU@crapouillou.net>
+In-Reply-To: <141a4ea23dc19629fea983093348d9dfaedb1cae.1636573413.git.hns@goldelico.com>
+References: <cover.1636573413.git.hns@goldelico.com>
+        <141a4ea23dc19629fea983093348d9dfaedb1cae.1636573413.git.hns@goldelico.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=iso-8859-1; format=flowed
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-From: Eric W. Biederman <ebiederm@xmission.com>
+Hi Nikolaus, Thomas,
 
-commit 95bf9d646c3c3f95cb0be7e703b371db8da5be68 upstream.
+Le mer., nov. 10 2021 at 20:43:31 +0100, H. Nikolaus Schaller 
+<hns@goldelico.com> a écrit :
+> From: Paul Boddie <paul@boddie.org.uk>
+> 
+> We need to hook up
+> * HDMI connector
+> * HDMI power regulator
+> * JZ4780_CLK_HDMI @ 27 MHz
+> * DDC pinmux
+> * HDMI and LCDC endpoint connections
+> 
+> Signed-off-by: Paul Boddie <paul@boddie.org.uk>
+> Signed-off-by: H. Nikolaus Schaller <hns@goldelico.com>
+> ---
+>  arch/mips/boot/dts/ingenic/ci20.dts | 73 
+> +++++++++++++++++++++++++++--
+>  1 file changed, 70 insertions(+), 3 deletions(-)
+> 
+> diff --git a/arch/mips/boot/dts/ingenic/ci20.dts 
+> b/arch/mips/boot/dts/ingenic/ci20.dts
+> index a688809beebca..a62557bede565 100644
+> --- a/arch/mips/boot/dts/ingenic/ci20.dts
+> +++ b/arch/mips/boot/dts/ingenic/ci20.dts
+> @@ -78,6 +78,18 @@ eth0_power: fixedregulator@0 {
+>  		enable-active-high;
+>  	};
+> 
+> +	hdmi_out: connector {
+> +		compatible = "hdmi-connector";
+> +		label = "HDMI OUT";
+> +		type = "a";
+> +
+> +		port {
+> +			hdmi_con: endpoint {
+> +				remote-endpoint = <&dw_hdmi_out>;
+> +			};
+> +		};
+> +	};
+> +
+>  	ir: ir {
+>  		compatible = "gpio-ir-receiver";
+>  		gpios = <&gpe 3 GPIO_ACTIVE_LOW>;
+> @@ -102,6 +114,17 @@ otg_power: fixedregulator@2 {
+>  		gpio = <&gpf 14 GPIO_ACTIVE_LOW>;
+>  		enable-active-high;
+>  	};
+> +
+> +	hdmi_power: fixedregulator@3 {
+> +		compatible = "regulator-fixed";
+> +
+> +		regulator-name = "hdmi_power";
+> +		regulator-min-microvolt = <5000000>;
+> +		regulator-max-microvolt = <5000000>;
+> +
+> +		gpio = <&gpa 25 GPIO_ACTIVE_LOW>;
 
-When an instruction to save or restore a register from the stack fails
-in _save_fp_context or _restore_fp_context return with -EFAULT.  This
-change was made to r2300_fpu.S[1] but it looks like it got lost with
-the introduction of EX2[2].  This is also what the other implementation
-of _save_fp_context and _restore_fp_context in r4k_fpu.S does, and
-what is needed for the callers to be able to handle the error.
+Just use 0 instead of GPIO_ACTIVE_LOW, since the flag is simply ignored 
+(I know the other regulators do use it, but I'll clean that up soon).
 
-Furthermore calling do_exit(SIGSEGV) from bad_stack is wrong because
-it does not terminate the entire process it just terminates a single
-thread.
+> +		enable-active-high;
+> +	};
+>  };
+> 
+>  &ext {
+> @@ -113,9 +136,9 @@ &cgu {
+>  	 * Use the 32.768 kHz oscillator as the parent of the RTC for a 
+> higher
+>  	 * precision.
+>  	 */
+> -	assigned-clocks = <&cgu JZ4780_CLK_OTGPHY>, <&cgu JZ4780_CLK_RTC>;
+> -	assigned-clock-parents = <0>, <&cgu JZ4780_CLK_RTCLK>;
+> -	assigned-clock-rates = <48000000>;
+> +	assigned-clocks = <&cgu JZ4780_CLK_OTGPHY>, <&cgu JZ4780_CLK_RTC>, 
+> <&cgu JZ4780_CLK_HDMI>;
+> +	assigned-clock-parents = <0>, <&cgu JZ4780_CLK_RTCLK>, <0>;
+> +	assigned-clock-rates = <48000000>, <0>, <27000000>;
 
-As the changed code was the only caller of arch/mips/kernel/syscall.c:bad_stack
-remove the problematic and now unused helper function.
+So drm-misc-next is based on a slightly older version (not v5.16-rc1 
+yet), and these lines changed in linux master.
 
-Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc: Maciej Rozycki <macro@orcam.me.uk>
-Cc: linux-mips@vger.kernel.org
-[1] 35938a00ba86 ("MIPS: Fix ISA I FP sigcontext access violation handling")
-[2] f92722dc4545 ("MIPS: Correct MIPS I FP sigcontext layout")
-Cc: stable@vger.kernel.org
-Fixes: f92722dc4545 ("MIPS: Correct MIPS I FP sigcontext layout")
-Acked-by: Maciej W. Rozycki <macro@orcam.me.uk>
-Acked-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Link: https://lkml.kernel.org/r/20211020174406.17889-5-ebiederm@xmission.com
-Signed-off-by: Eric W. Biederman <ebiederm@xmission.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- arch/mips/kernel/r2300_fpu.S |    4 ++--
- arch/mips/kernel/syscall.c   |    9 ---------
- 2 files changed, 2 insertions(+), 11 deletions(-)
+I think it would make sense to merge the DT changes (+ doc) into the 
+MIPS tree, and the driver changes into drm-misc-next.
 
---- a/arch/mips/kernel/r2300_fpu.S
-+++ b/arch/mips/kernel/r2300_fpu.S
-@@ -29,8 +29,8 @@
- #define EX2(a,b)						\
- 9:	a,##b;							\
- 	.section __ex_table,"a";				\
--	PTR	9b,bad_stack;					\
--	PTR	9b+4,bad_stack;					\
-+	PTR	9b,fault;					\
-+	PTR	9b+4,fault;					\
- 	.previous
- 
- 	.set	mips1
---- a/arch/mips/kernel/syscall.c
-+++ b/arch/mips/kernel/syscall.c
-@@ -240,12 +240,3 @@ SYSCALL_DEFINE3(cachectl, char *, addr,
- {
- 	return -ENOSYS;
- }
--
--/*
-- * If we ever come here the user sp is bad.  Zap the process right away.
-- * Due to the bad stack signaling wouldn't work.
-- */
--asmlinkage void bad_stack(void)
--{
--	do_exit(SIGSEGV);
--}
+@Thomas: Is that OK for you?
+
+Cheers,
+-Paul
+
+>  };
+> 
+>  &tcu {
+> @@ -506,6 +529,12 @@ pins_i2c4: i2c4 {
+>  		bias-disable;
+>  	};
+> 
+> +	pins_hdmi_ddc: hdmi_ddc {
+> +		function = "hdmi-ddc";
+> +		groups = "hdmi-ddc";
+> +		bias-disable;
+> +	};
+> +
+>  	pins_nemc: nemc {
+>  		function = "nemc";
+>  		groups = "nemc-data", "nemc-cle-ale", "nemc-rd-we", "nemc-frd-fwe";
+> @@ -536,3 +565,41 @@ pins_mmc1: mmc1 {
+>  		bias-disable;
+>  	};
+>  };
+> +
+> +&hdmi {
+> +	status = "okay";
+> +
+> +	pinctrl-names = "default";
+> +	pinctrl-0 = <&pins_hdmi_ddc>;
+> +
+> +	hdmi-5v-supply = <&hdmi_power>;
+> +
+> +	ports {
+> +		#address-cells = <1>;
+> +		#size-cells = <0>;
+> +
+> +		port@0 {
+> +			reg = <0>;
+> +			dw_hdmi_in: endpoint {
+> +				remote-endpoint = <&lcd_out>;
+> +			};
+> +		};
+> +
+> +		port@1 {
+> +			reg = <1>;
+> +			dw_hdmi_out: endpoint {
+> +				remote-endpoint = <&hdmi_con>;
+> +			};
+> +		};
+> +	};
+> +};
+> +
+> +&lcdc0 {
+> +	status = "okay";
+> +
+> +	port {
+> +		lcd_out: endpoint {
+> +			remote-endpoint = <&dw_hdmi_in>;
+> +		};
+> +	};
+> +};
+> --
+> 2.33.0
+> 
 
 

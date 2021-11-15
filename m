@@ -2,110 +2,133 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DC979C433FE
-	for <linux-mips@archiver.kernel.org>; Tue, 16 Nov 2021 01:03:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5BA44C43219
+	for <linux-mips@archiver.kernel.org>; Tue, 16 Nov 2021 01:13:01 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id CBAF861401
-	for <linux-mips@archiver.kernel.org>; Tue, 16 Nov 2021 01:03:54 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 438F360F6E
+	for <linux-mips@archiver.kernel.org>; Tue, 16 Nov 2021 01:13:01 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349202AbhKPBGs (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 15 Nov 2021 20:06:48 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44604 "EHLO mail.kernel.org"
+        id S1353121AbhKPBPw convert rfc822-to-8bit (ORCPT
+        <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 15 Nov 2021 20:15:52 -0500
+Received: from aposti.net ([89.234.176.197]:54220 "EHLO aposti.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S245396AbhKOTU2 (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:20:28 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AC2C7611AF;
-        Mon, 15 Nov 2021 18:33:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637001229;
-        bh=eajIuobfbs5aY/C3Q8dSjCf3Ko6DnXwHvuvfvoHM2uc=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zJwDbcXCW7/90TZJuEdGf90Rg2Ye7LasEuLwf4MhAB2L2aqGg4pzl4UyrbULBtJfr
-         /YDz2bvuEsvRXe9dWACNyeoHEfpilet1EtXL0MjlmSghXk02oxAvkuTL2TbTk4cxeD
-         bPG8tsKmG1HMgNWIjON4V1wv8l//oWxku6cW4qbg=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
+        id S244269AbhKOTMW (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Mon, 15 Nov 2021 14:12:22 -0500
+Date:   Mon, 15 Nov 2021 19:09:07 +0000
+From:   Paul Cercueil <paul@crapouillou.net>
+Subject: Re: [PATCH v6 1/8] drm/ingenic: prepare ingenic drm for later
+ addition of JZ4780
+To:     "H. Nikolaus Schaller" <hns@goldelico.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
         Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Maciej Rozycki <macro@orcam.me.uk>, linux-mips@vger.kernel.org,
-        "Eric W. Biederman" <ebiederm@xmission.com>
-Subject: [PATCH 5.15 110/917] signal/mips: Update (_save|_restore)_fp_context to fail with -EFAULT
-Date:   Mon, 15 Nov 2021 17:53:25 +0100
-Message-Id: <20211115165432.484048342@linuxfoundation.org>
-X-Mailer: git-send-email 2.33.1
-In-Reply-To: <20211115165428.722074685@linuxfoundation.org>
-References: <20211115165428.722074685@linuxfoundation.org>
-User-Agent: quilt/0.66
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Kees Cook <keescook@chromium.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Robert Foss <robert.foss@linaro.org>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Ezequiel Garcia <ezequiel@collabora.com>,
+        Harry Wentland <harry.wentland@amd.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Maxime Ripard <maxime@cerno.tech>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Paul Boddie <paul@boddie.org.uk>, devicetree@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        letux-kernel@openphoenux.org, Jonas Karlman <jonas@kwiboo.se>,
+        dri-devel@lists.freedesktop.org
+Message-Id: <7VNM2R.1CHJIFHQDLSS@crapouillou.net>
+In-Reply-To: <122791473d61add6992310cec267ffde2607a2df.1636573413.git.hns@goldelico.com>
+References: <cover.1636573413.git.hns@goldelico.com>
+        <122791473d61add6992310cec267ffde2607a2df.1636573413.git.hns@goldelico.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=iso-8859-1; format=flowed
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-From: Eric W. Biederman <ebiederm@xmission.com>
+Hi Nikolaus,
 
-commit 95bf9d646c3c3f95cb0be7e703b371db8da5be68 upstream.
+I will look at the patches in depth in the coming days.
 
-When an instruction to save or restore a register from the stack fails
-in _save_fp_context or _restore_fp_context return with -EFAULT.  This
-change was made to r2300_fpu.S[1] but it looks like it got lost with
-the introduction of EX2[2].  This is also what the other implementation
-of _save_fp_context and _restore_fp_context in r4k_fpu.S does, and
-what is needed for the callers to be able to handle the error.
 
-Furthermore calling do_exit(SIGSEGV) from bad_stack is wrong because
-it does not terminate the entire process it just terminates a single
-thread.
+Le mer., nov. 10 2021 at 20:43:26 +0100, H. Nikolaus Schaller 
+<hns@goldelico.com> a écrit :
+> This changes the way the regmap is allocated to prepare for the
+> later addition of the JZ4780 which has more registers and bits
+> than the others.
+> 
+> Therefore we make the regmap as big as the reg property in
+> the device tree tells.
+> 
+> Suggested-by: Paul Cercueil <paul@crapouillou.net>
+> Signed-off-by: H. Nikolaus Schaller <hns@goldelico.com>
+> ---
+>  drivers/gpu/drm/ingenic/ingenic-drm-drv.c | 9 ++++++---
+>  1 file changed, 6 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c 
+> b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
+> index 462bc0f35f1bf..4abfe5b094174 100644
+> --- a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
+> +++ b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
+> @@ -173,7 +173,6 @@ static const struct regmap_config 
+> ingenic_drm_regmap_config = {
+>  	.val_bits = 32,
+>  	.reg_stride = 4,
+> 
+> -	.max_register = JZ_REG_LCD_SIZE1,
+>  	.writeable_reg = ingenic_drm_writeable_reg,
+>  };
+> 
+> @@ -1011,6 +1010,8 @@ static int ingenic_drm_bind(struct device *dev, 
+> bool has_components)
+>  	struct ingenic_drm_bridge *ib;
+>  	struct drm_device *drm;
+>  	void __iomem *base;
+> +	struct resource *res;
+> +	struct regmap_config regmap_config;
+>  	long parent_rate;
+>  	unsigned int i, clone_mask = 0;
+>  	int ret, irq;
+> @@ -1056,14 +1057,16 @@ static int ingenic_drm_bind(struct device 
+> *dev, bool has_components)
+>  	drm->mode_config.funcs = &ingenic_drm_mode_config_funcs;
+>  	drm->mode_config.helper_private = &ingenic_drm_mode_config_helpers;
+> 
+> -	base = devm_platform_ioremap_resource(pdev, 0);
+> +	base = devm_platform_get_and_ioremap_resource(pdev, 0, &res);
+>  	if (IS_ERR(base)) {
+>  		dev_err(dev, "Failed to get memory resource\n");
+>  		return PTR_ERR(base);
+>  	}
+> 
+> +	regmap_config = ingenic_drm_regmap_config;
+> +	regmap_config.max_register = res->end - res->start - 4;
 
-As the changed code was the only caller of arch/mips/kernel/syscall.c:bad_stack
-remove the problematic and now unused helper function.
+Just a quick feedback here: I just tested and it's actually just 
+(res->end - res->start), otherwise the last register of the memory area 
+set in DT is inaccessible.
 
-Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc: Maciej Rozycki <macro@orcam.me.uk>
-Cc: linux-mips@vger.kernel.org
-[1] 35938a00ba86 ("MIPS: Fix ISA I FP sigcontext access violation handling")
-[2] f92722dc4545 ("MIPS: Correct MIPS I FP sigcontext layout")
-Cc: stable@vger.kernel.org
-Fixes: f92722dc4545 ("MIPS: Correct MIPS I FP sigcontext layout")
-Acked-by: Maciej W. Rozycki <macro@orcam.me.uk>
-Acked-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Link: https://lkml.kernel.org/r/20211020174406.17889-5-ebiederm@xmission.com
-Signed-off-by: Eric W. Biederman <ebiederm@xmission.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- arch/mips/kernel/r2300_fpu.S |    4 ++--
- arch/mips/kernel/syscall.c   |    9 ---------
- 2 files changed, 2 insertions(+), 11 deletions(-)
+Cheers,
+-Paul
 
---- a/arch/mips/kernel/r2300_fpu.S
-+++ b/arch/mips/kernel/r2300_fpu.S
-@@ -29,8 +29,8 @@
- #define EX2(a,b)						\
- 9:	a,##b;							\
- 	.section __ex_table,"a";				\
--	PTR	9b,bad_stack;					\
--	PTR	9b+4,bad_stack;					\
-+	PTR	9b,fault;					\
-+	PTR	9b+4,fault;					\
- 	.previous
- 
- 	.set	mips1
---- a/arch/mips/kernel/syscall.c
-+++ b/arch/mips/kernel/syscall.c
-@@ -240,12 +240,3 @@ SYSCALL_DEFINE3(cachectl, char *, addr,
- {
- 	return -ENOSYS;
- }
--
--/*
-- * If we ever come here the user sp is bad.  Zap the process right away.
-- * Due to the bad stack signaling wouldn't work.
-- */
--asmlinkage void bad_stack(void)
--{
--	do_exit(SIGSEGV);
--}
+>  	priv->map = devm_regmap_init_mmio(dev, base,
+> -					  &ingenic_drm_regmap_config);
+> +					  &regmap_config);
+>  	if (IS_ERR(priv->map)) {
+>  		dev_err(dev, "Failed to create regmap\n");
+>  		return PTR_ERR(priv->map);
+> --
+> 2.33.0
+> 
 
 

@@ -2,141 +2,90 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 13D1FC433EF
-	for <linux-mips@archiver.kernel.org>; Tue, 16 Nov 2021 01:13:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6491FC433F5
+	for <linux-mips@archiver.kernel.org>; Tue, 16 Nov 2021 01:24:10 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 028D860F5A
-	for <linux-mips@archiver.kernel.org>; Tue, 16 Nov 2021 01:13:02 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 4E5EF6137E
+	for <linux-mips@archiver.kernel.org>; Tue, 16 Nov 2021 01:24:10 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345676AbhKPBP5 convert rfc822-to-8bit (ORCPT
-        <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 15 Nov 2021 20:15:57 -0500
-Received: from aposti.net ([89.234.176.197]:54654 "EHLO aposti.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S244006AbhKOTOt (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Mon, 15 Nov 2021 14:14:49 -0500
-Date:   Mon, 15 Nov 2021 19:11:39 +0000
-From:   Paul Cercueil <paul@crapouillou.net>
-Subject: Re: [PATCH v6 5/8] MIPS: DTS: jz4780: Account for Synopsys HDMI
- driver and LCD controllers
-To:     "H. Nikolaus Schaller" <hns@goldelico.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Kees Cook <keescook@chromium.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Robert Foss <robert.foss@linaro.org>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Ezequiel Garcia <ezequiel@collabora.com>,
-        Harry Wentland <harry.wentland@amd.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Maxime Ripard <maxime@cerno.tech>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Paul Boddie <paul@boddie.org.uk>, devicetree@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        letux-kernel@openphoenux.org, Jonas Karlman <jonas@kwiboo.se>,
-        dri-devel@lists.freedesktop.org
-Message-Id: <FZNM2R.PEN9N8R45O3F2@crapouillou.net>
-In-Reply-To: <c9f9fc1d5b796b7a78e7e27849abb435c6bcbc43.1636573413.git.hns@goldelico.com>
-References: <cover.1636573413.git.hns@goldelico.com>
-        <c9f9fc1d5b796b7a78e7e27849abb435c6bcbc43.1636573413.git.hns@goldelico.com>
+        id S1352752AbhKPB05 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 15 Nov 2021 20:26:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33706 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S243864AbhKOTIK (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Mon, 15 Nov 2021 14:08:10 -0500
+Received: from nbd.name (nbd.name [IPv6:2a01:4f8:221:3d45::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD438C06EDE1;
+        Mon, 15 Nov 2021 09:58:21 -0800 (PST)
+Received: from [2a04:4540:1401:b700:606b:3eee:8c1b:a587]
+        by ds12 with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.89)
+        (envelope-from <john@phrozen.org>)
+        id 1mmgF6-0005a6-Ay; Mon, 15 Nov 2021 18:58:08 +0100
+Message-ID: <4342c4de-b516-8992-a3f3-4eea7ff4de40@phrozen.org>
+Date:   Mon, 15 Nov 2021 18:58:07 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1; format=flowed
-Content-Transfer-Encoding: 8BIT
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.2.1
+Subject: Re: [PATCH] mips: lantiq: add support for clk_get_parent()
+Content-Language: en-GB
+To:     Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org
+Cc:     Russell King <rmk+kernel@armlinux.org.uk>,
+        linux-mips@vger.kernel.org,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Jonathan Cameron <jic23@kernel.org>, linux-iio@vger.kernel.org,
+        Russell King <linux@armlinux.org.uk>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>
+References: <20211115012051.16302-1-rdunlap@infradead.org>
+From:   John Crispin <john@phrozen.org>
+In-Reply-To: <20211115012051.16302-1-rdunlap@infradead.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Hi Nikolaus,
 
-Le mer., nov. 10 2021 at 20:43:30 +0100, H. Nikolaus Schaller 
-<hns@goldelico.com> a écrit :
-> From: Paul Boddie <paul@boddie.org.uk>
+
+On 15.11.21 02:20, Randy Dunlap wrote:
+> Provide a simple implementation of clk_get_parent() in the
+> lantiq subarch so that callers of it will build without errors.
 > 
-> A specialisation of the generic Synopsys HDMI driver is employed for 
-> JZ4780
-> HDMI support. This requires a new driver, plus device tree and 
-> configuration
-> modifications.
+> Fixes this build error:
+> ERROR: modpost: "clk_get_parent" [drivers/iio/adc/ingenic-adc.ko] undefined!
 > 
-> Signed-off-by: Paul Boddie <paul@boddie.org.uk>
-> Signed-off-by: H. Nikolaus Schaller <hns@goldelico.com>
+> Fixes: 171bb2f19ed6 ("MIPS: Lantiq: Add initial support for Lantiq SoCs")
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> Suggested-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
+> Cc: linux-mips@vger.kernel.org
+> Cc: John Crispin <john@phrozen.org>
+> Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+> Cc: Jonathan Cameron <jic23@kernel.org>
+> Cc: linux-iio@vger.kernel.org
+> Cc: Russell King <linux@armlinux.org.uk>
+> Cc: Andy Shevchenko <andy.shevchenko@gmail.com>
+
+Acked-by: John Crispin <john@phrozen.org>
+
+// we added the same fix for mips/ralink a while back
+
 > ---
->  arch/mips/boot/dts/ingenic/jz4780.dtsi | 40 
-> ++++++++++++++++++++++++++
->  1 file changed, 40 insertions(+)
+>   arch/mips/lantiq/clk.c |    6 ++++++
+>   1 file changed, 6 insertions(+)
 > 
-> diff --git a/arch/mips/boot/dts/ingenic/jz4780.dtsi 
-> b/arch/mips/boot/dts/ingenic/jz4780.dtsi
-> index 9e34f433b9b58..98cc3360bbbb9 100644
-> --- a/arch/mips/boot/dts/ingenic/jz4780.dtsi
-> +++ b/arch/mips/boot/dts/ingenic/jz4780.dtsi
-> @@ -424,6 +424,46 @@ i2c4: i2c@10054000 {
->  		status = "disabled";
->  	};
+> --- linux-next-20211112.orig/arch/mips/lantiq/clk.c
+> +++ linux-next-20211112/arch/mips/lantiq/clk.c
+> @@ -158,6 +158,12 @@ void clk_deactivate(struct clk *clk)
+>   }
+>   EXPORT_SYMBOL(clk_deactivate);
+>   
+> +struct clk *clk_get_parent(struct clk *clk)
+> +{
+> +	return NULL;
+> +}
+> +EXPORT_SYMBOL(clk_get_parent);
+> +
+>   static inline u32 get_counter_resolution(void)
+>   {
+>   	u32 res;
 > 
-> +	hdmi: hdmi@10180000 {
-> +		compatible = "ingenic,jz4780-dw-hdmi";
-> +		reg = <0x10180000 0x8000>;
-> +		reg-io-width = <4>;
-> +
-> +		clocks = <&cgu JZ4780_CLK_AHB0>, <&cgu JZ4780_CLK_HDMI>;
-> +		clock-names = "iahb", "isfr";
-> +
-> +		interrupt-parent = <&intc>;
-> +		interrupts = <3>;
-> +
-> +		status = "disabled";
-> +	};
-> +
-> +	lcdc0: lcdc0@13050000 {
-> +		compatible = "ingenic,jz4780-lcd";
-> +		reg = <0x13050000 0x1800>;
-> +
-> +		clocks = <&cgu JZ4780_CLK_TVE>, <&cgu JZ4780_CLK_LCD0PIXCLK>;
-> +		clock-names = "lcd", "lcd_pclk";
-> +
-> +		interrupt-parent = <&intc>;
-> +		interrupts = <31>;
-> +
-> +		status = "disabled";
-> +	};
-> +
-> +	lcdc1: lcdc1@130a0000 {
-> +		compatible = "ingenic,jz4780-lcd";
-> +		reg = <0x130a0000 0x1800>;
-> +
-> +		clocks = <&cgu JZ4780_CLK_TVE>, <&cgu JZ4780_CLK_LCD1PIXCLK>;
-> +		clock-names = "lcd", "lcd_pclk";
-> +
-> +		interrupt-parent = <&intc>;
-> +		interrupts = <31>;
-
-You have the two LCD controllers wired to the same interrupt, that 
-can't be right.
-
- From what I can read in the PM the LCD1 IRQ is number 23.
-
-Cheers,
--Paul
-
-> +
-> +		status = "disabled";
-> +	};
-> +
->  	nemc: nemc@13410000 {
->  		compatible = "ingenic,jz4780-nemc", "simple-mfd";
->  		reg = <0x13410000 0x10000>;
-> --
-> 2.33.0
-> 
-
-

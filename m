@@ -2,122 +2,90 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 007FCC433EF
-	for <linux-mips@archiver.kernel.org>; Tue, 16 Nov 2021 13:23:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C2E1BC433FE
+	for <linux-mips@archiver.kernel.org>; Tue, 16 Nov 2021 13:49:42 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id D817461B29
-	for <linux-mips@archiver.kernel.org>; Tue, 16 Nov 2021 13:23:41 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id AA25561ABD
+	for <linux-mips@archiver.kernel.org>; Tue, 16 Nov 2021 13:49:42 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236719AbhKPN0h (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 16 Nov 2021 08:26:37 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:51306 "EHLO
+        id S236865AbhKPNwh (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 16 Nov 2021 08:52:37 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:48070 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236712AbhKPN01 (ORCPT
+        by vger.kernel.org with ESMTP id S236892AbhKPNwa (ORCPT
         <rfc822;linux-mips@vger.kernel.org>);
-        Tue, 16 Nov 2021 08:26:27 -0500
+        Tue, 16 Nov 2021 08:52:30 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637069010;
+        s=mimecast20190719; t=1637070573;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=7QB9Djd7unSuWFppJ6ryGSoufF2SRnNHGOPyI0tESn4=;
-        b=ZIstAnW0E0rBi5YPmzUSbyRKpnq0DuO6PR50Jh4JD3q9SQe/gbMGDETnNGnz20QqQ7PKKd
-        6kLe4ilGFg11hvIySMDKfQ88SS7dHDVNQTQcFU6i/jqtJpfB9fYTj10LmjIGH7yr0JoyvK
-        vf7oU3SyUiZQX2B1YsEZQD29hSCh41c=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-123-dgqYZVXINryS8GPOsA_UjQ-1; Tue, 16 Nov 2021 08:23:29 -0500
-X-MC-Unique: dgqYZVXINryS8GPOsA_UjQ-1
-Received: by mail-wm1-f69.google.com with SMTP id v62-20020a1cac41000000b0033719a1a714so1404764wme.6
-        for <linux-mips@vger.kernel.org>; Tue, 16 Nov 2021 05:23:28 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=7QB9Djd7unSuWFppJ6ryGSoufF2SRnNHGOPyI0tESn4=;
-        b=WqSg80JWbR/CwiZznKPWPRNtL/cmFuEO78jslhuAyVsZ3FWcCFa+wZE0mGCMRpQI2Z
-         RT8wsvTapE9PN8Rh6CcHrX5rYLLuoUzJ+HExb8F/0Zr/qfFJzttufz1Mk4BuJwBkYPVg
-         qsfKfF8TRG7AKbT1mLQRMsr8No6y8A3OrU+rV5QSPTxj1BtFVISPhdolIdCIsR+qiE1r
-         P+Kd8KVeXsRUVl9/Iko5jk72ehjXMFtCeNIjsi9mJzRi+bg5l/SwFGd6OOPG0FeW69+j
-         YytqIUWuHWEb/KKBzqnQBKAty2T6+9fLDY3PtAPQjjwkY9zdR87ySD4+ybqCW91WvBPs
-         7BWg==
-X-Gm-Message-State: AOAM532PyDX//Jh7YalBtgnB5NAk0beTGBxiV9eQP8VecUhl6HEOpIYU
-        UU/sE8KsEQe3kIMTXr7gcShWgNyCpr6IoK3cLZMaOjlhPFDftd0pWsbCdDgs9QYbN9kdkTVZiId
-        KQHCZDmL+yv8AAgVFYkP1Mw==
-X-Received: by 2002:adf:fd90:: with SMTP id d16mr9035257wrr.385.1637069007874;
-        Tue, 16 Nov 2021 05:23:27 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJypb9wLmwBU+C8U60E20ALWxdPmsGCyP6NgX66fxkM73bNsY5mStZduwVGh4q0guawc8+jIEQ==
-X-Received: by 2002:adf:fd90:: with SMTP id d16mr9035209wrr.385.1637069007612;
-        Tue, 16 Nov 2021 05:23:27 -0800 (PST)
-Received: from fedora (g-server-2.ign.cz. [91.219.240.2])
-        by smtp.gmail.com with ESMTPSA id n7sm17311363wro.68.2021.11.16.05.23.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Nov 2021 05:23:27 -0800 (PST)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>
-Cc:     kvm@vger.kernel.org, Sean Christopherson <seanjc@google.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Eduardo Habkost <ehabkost@redhat.com>,
-        Andrew Jones <drjones@redhat.com>,
+        bh=w00cP//oO+88K/Y2lFYbKr4Ng9e/d98pV+/20CZ3Uq4=;
+        b=WdqAsPI13Z0C6CbcYh0xJxD5pb0xZt8GAUnj2trZQ87AsBBvckSHbjVYE9aFjwrl/5Qxl3
+        JnPq+78udFR8NXrhsjWjXxAtSGij96xxB5dkblAIx6+cPIFTozcMQ1ANoUDcFkJigsRu3m
+        A2F727oWVBQZcD/R+EskGCQlg2uU2yY=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-542-CYdHIWN-MYyQSKOSjn05jw-1; Tue, 16 Nov 2021 08:49:29 -0500
+X-MC-Unique: CYdHIWN-MYyQSKOSjn05jw-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 36C7B1922038;
+        Tue, 16 Nov 2021 13:49:27 +0000 (UTC)
+Received: from [10.39.192.245] (unknown [10.39.192.245])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 711601970E;
+        Tue, 16 Nov 2021 13:49:09 +0000 (UTC)
+Message-ID: <02c44f36-5467-4dce-b0f9-af96d6286e20@redhat.com>
+Date:   Tue, 16 Nov 2021 14:49:08 +0100
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH 1/5] KVM: Move wiping of the kvm->vcpus array to common
+ code
+Content-Language: en-US
+To:     Marc Zyngier <maz@kernel.org>,
+        Sean Christopherson <seanjc@google.com>
+Cc:     kvm@vger.kernel.org, linux-mips@vger.kernel.org,
+        kvmarm@lists.cs.columbia.edu, linuxppc-dev@lists.ozlabs.org,
         Huacai Chen <chenhuacai@kernel.org>,
         Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
         Anup Patel <anup.patel@wdc.com>,
-        Paul Mackerras <paulus@ozlabs.org>,
-        Michael Ellerman <mpe@ellerman.id.au>, kvm-ppc@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
-        kvm-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/5] KVM: arm64: Cap KVM_CAP_NR_VCPUS by KVM_CAP_MAX_VCPUS
-In-Reply-To: <ad3534bc-fe3a-55f5-b022-4dbec5f29798@redhat.com>
-References: <20211111162746.100598-1-vkuznets@redhat.com>
- <20211111162746.100598-2-vkuznets@redhat.com>
- <a5cdff6878b7157587e92ebe4d5af362@kernel.org> <875ysxg0s1.fsf@redhat.com>
- <87k0hd8obo.wl-maz@kernel.org>
- <ad3534bc-fe3a-55f5-b022-4dbec5f29798@redhat.com>
-Date:   Tue, 16 Nov 2021 14:23:25 +0100
-Message-ID: <87y25onsj6.fsf@redhat.com>
-MIME-Version: 1.0
-Content-Type: text/plain
+        Atish Patra <atish.patra@wdc.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Janosch Frank <frankja@linux.ibm.com>,
+        David Hildenbrand <david@redhat.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        Juergen Gross <jgross@suse.com>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        kernel-team@android.com
+References: <20211105192101.3862492-1-maz@kernel.org>
+ <20211105192101.3862492-2-maz@kernel.org> <YYWQHBwD4nBLo9qi@google.com>
+ <87o86xednu.wl-maz@kernel.org>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+In-Reply-To: <87o86xednu.wl-maz@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Paolo Bonzini <pbonzini@redhat.com> writes:
+On 11/6/21 12:17, Marc Zyngier wrote:
+> 
+> If you too believe that this is just wrong, I'm happy to drop the
+> locking altogether. If that breaks someone's flow, they'll shout soon
+> enough.
 
-> On 11/12/21 15:02, Marc Zyngier wrote:
->>> I'd like KVM to be consistent across architectures and have the same
->>> (similar) meaning for KVM_CAP_NR_VCPUS.
->> Sure, but this is a pretty useless piece of information anyway. As
->> Andrew pointed out, the information is available somewhere else, and
->> all we need to do is to cap it to the number of supported vcpus, which
->> is effectively a KVM limitation.
->> 
->> Also, we are talking about representing the architecture to userspace.
->> No amount of massaging is going to make an arm64 box look like an x86.
->
-> Not sure what you mean?  The API is about providing a piece of 
-> information independent of the architecture, while catering for a ppc 
-> weirdness.  Yes it's mostly useless if you don't care about ppc, but 
-> it's not about making arm64 look like x86 or ppc; it's about not having 
-> to special case ppc in userspace.
->
-> If anything, if KVM_CAP_NR_VCPUS returns the same for kvm and !kvm, then 
-> *that* is making an arm64 box look like an x86.  On ARM the max vCPUs 
-> depends on VM's GIC configuration, so KVM_CAP_NR_VCPUS should take that 
-> into account.
+Yes, it's not necessary.  It was added in 2009 (commit 988a2cae6a3c, 
+"KVM: Use macro to iterate over vcpus.") and it was unnecessary back 
+then too.
 
-(I'm about to send v2 as we have s390 sorted out.)
-
-So what do we decide about ARM? 
-- Current approach (kvm->arch.max_vcpus/kvm_arm_default_max_vcpus()
- depending on 'if (kvm)') - that would be my preference.
-- Always kvm_arm_default_max_vcpus to make the output independent on 'if
- (kvm)'.
-- keep the status quo (drop the patch).
-
-Please advise)
-
--- 
-Vitaly
+Paolo
 

@@ -2,41 +2,41 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 16A8EC433EF
-	for <linux-mips@archiver.kernel.org>; Tue, 16 Nov 2021 16:36:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BE6B9C433EF
+	for <linux-mips@archiver.kernel.org>; Tue, 16 Nov 2021 16:36:11 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id ECD0B6108D
-	for <linux-mips@archiver.kernel.org>; Tue, 16 Nov 2021 16:36:03 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id A83AB6108D
+	for <linux-mips@archiver.kernel.org>; Tue, 16 Nov 2021 16:36:11 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234835AbhKPQjA (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 16 Nov 2021 11:39:00 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:25799 "EHLO
+        id S235148AbhKPQjG (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 16 Nov 2021 11:39:06 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:32969 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234749AbhKPQi7 (ORCPT
+        by vger.kernel.org with ESMTP id S234128AbhKPQiH (ORCPT
         <rfc822;linux-mips@vger.kernel.org>);
-        Tue, 16 Nov 2021 11:38:59 -0500
+        Tue, 16 Nov 2021 11:38:07 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637080562;
+        s=mimecast20190719; t=1637080509;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=tKE+cntXrkzP99c9RfIwCSUBp3uLto7NMCtdS5oLqy0=;
-        b=VxtbgHl79mPeqGQB3qNCa9C2stjzOwVQJwUGgyKgVWv/Bt7mztqxG2cWdfPPsS3EvahEDL
-        ssAi6QmC1/KsuWBdABLIT/ztoDBK+5gs95l1iM4BdI2Nns3G8IG+WzkIMflCKvUshEEGVv
-        vf3jT9hR88GaTCRMsZY72WJoWbtF0Qw=
+        bh=xVDknFf2nCeVQlDtcEI9s9kI+cRfWuofuSSpiZvEcD4=;
+        b=R7T/G9XBny/F46t389UCxwKE/8Vu/puuqB91GgDZuFUsmwOpc0L0tfEZo1y9LRWV8BTUVk
+        VNekTvxEtpq8kF69Sxi1GUFAJhgR++cy1i+fWXH3vcluymeOb4RhEh6NDKxGP7LfvYi5H6
+        On4LqYYnH7aWXq2DrVbh8hEKOKmaBgQ=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-512-_nOTq_pZMjC_gzlxlhMDlg-1; Tue, 16 Nov 2021 11:35:58 -0500
-X-MC-Unique: _nOTq_pZMjC_gzlxlhMDlg-1
+ us-mta-255-hkd7BFgZMVaKSNGfz14umw-1; Tue, 16 Nov 2021 11:35:04 -0500
+X-MC-Unique: hkd7BFgZMVaKSNGfz14umw-1
 Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4C96E1572D;
-        Tue, 16 Nov 2021 16:35:56 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D27BA87D543;
+        Tue, 16 Nov 2021 16:35:01 +0000 (UTC)
 Received: from fedora.redhat.com (unknown [10.40.192.236])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id D893060C0F;
-        Tue, 16 Nov 2021 16:35:50 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 204FD60C0F;
+        Tue, 16 Nov 2021 16:34:52 +0000 (UTC)
 From:   Vitaly Kuznetsov <vkuznets@redhat.com>
 To:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>
 Cc:     Sean Christopherson <seanjc@google.com>,
@@ -55,9 +55,9 @@ Cc:     Sean Christopherson <seanjc@google.com>,
         linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
         kvm-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v2 5/6] KVM: s390: Cap KVM_CAP_NR_VCPUS by num_online_cpus()
-Date:   Tue, 16 Nov 2021 17:34:42 +0100
-Message-Id: <20211116163443.88707-6-vkuznets@redhat.com>
+Subject: [PATCH v2 1/6] KVM: arm64: Cap KVM_CAP_NR_VCPUS by kvm_arm_default_max_vcpus()
+Date:   Tue, 16 Nov 2021 17:34:38 +0100
+Message-Id: <20211116163443.88707-2-vkuznets@redhat.com>
 In-Reply-To: <20211116163443.88707-1-vkuznets@redhat.com>
 References: <20211116163443.88707-1-vkuznets@redhat.com>
 MIME-Version: 1.0
@@ -67,31 +67,40 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-KVM_CAP_NR_VCPUS is a legacy advisory value which on other architectures
-return num_online_cpus() caped by KVM_CAP_NR_VCPUS or something else
-(ppc and arm64 are special cases). On s390, KVM_CAP_NR_VCPUS returns
-the same as KVM_CAP_MAX_VCPUS and this may turn out to be a bad
-'advice'. Switch s390 to returning caped num_online_cpus() too.
+Generally, it doesn't make sense to return the recommended maximum number
+of vCPUs which exceeds the maximum possible number of vCPUs.
 
-Acked-by: Christian Borntraeger <borntraeger@de.ibm.com>
+Note: ARM64 is special as the value returned by KVM_CAP_MAX_VCPUS differs
+depending on whether it is a system-wide ioctl or a per-VM one. Previously,
+KVM_CAP_NR_VCPUS didn't have this difference and it seems preferable to
+keep the status quo. Cap KVM_CAP_NR_VCPUS by kvm_arm_default_max_vcpus()
+which is what gets returned by system-wide KVM_CAP_MAX_VCPUS.
+
 Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
 ---
- arch/s390/kvm/kvm-s390.c | 2 ++
- 1 file changed, 2 insertions(+)
+ arch/arm64/kvm/arm.c | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
-diff --git a/arch/s390/kvm/kvm-s390.c b/arch/s390/kvm/kvm-s390.c
-index 6a6dd5e1daf6..1cfe36f6432e 100644
---- a/arch/s390/kvm/kvm-s390.c
-+++ b/arch/s390/kvm/kvm-s390.c
-@@ -585,6 +585,8 @@ int kvm_vm_ioctl_check_extension(struct kvm *kvm, long ext)
- 			r = KVM_MAX_VCPUS;
- 		else if (sclp.has_esca && sclp.has_64bscao)
- 			r = KVM_S390_ESCA_CPU_SLOTS;
-+		if (ext == KVM_CAP_NR_VCPUS)
-+			r = min_t(unsigned int, num_online_cpus(), r);
+diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
+index 7838e9fb693e..0690c76def5d 100644
+--- a/arch/arm64/kvm/arm.c
++++ b/arch/arm64/kvm/arm.c
+@@ -223,7 +223,14 @@ int kvm_vm_ioctl_check_extension(struct kvm *kvm, long ext)
+ 		r = 1;
  		break;
- 	case KVM_CAP_S390_COW:
- 		r = MACHINE_HAS_ESOP;
+ 	case KVM_CAP_NR_VCPUS:
+-		r = num_online_cpus();
++		/*
++		 * ARM64 treats KVM_CAP_NR_CPUS differently from all other
++		 * architectures, as it does not always bound it to
++		 * num_online_cpus(). It should not matter much because this
++		 * is just an advisory value.
++		 */
++		r = min_t(unsigned int, num_online_cpus(),
++			  kvm_arm_default_max_vcpus());
+ 		break;
+ 	case KVM_CAP_MAX_VCPUS:
+ 	case KVM_CAP_MAX_VCPU_ID:
 -- 
 2.33.1
 

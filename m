@@ -2,28 +2,28 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7A498C43219
-	for <linux-mips@archiver.kernel.org>; Tue, 16 Nov 2021 16:04:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5D471C433EF
+	for <linux-mips@archiver.kernel.org>; Tue, 16 Nov 2021 16:04:51 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 6365A613DB
-	for <linux-mips@archiver.kernel.org>; Tue, 16 Nov 2021 16:04:52 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 46DEC61504
+	for <linux-mips@archiver.kernel.org>; Tue, 16 Nov 2021 16:04:51 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238838AbhKPQHs (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 16 Nov 2021 11:07:48 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34418 "EHLO mail.kernel.org"
+        id S238833AbhKPQHq (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 16 Nov 2021 11:07:46 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34056 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238815AbhKPQHk (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Tue, 16 Nov 2021 11:07:40 -0500
+        id S238760AbhKPQHL (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Tue, 16 Nov 2021 11:07:11 -0500
 Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E17BA630EF;
-        Tue, 16 Nov 2021 16:04:15 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4F46C61A0C;
+        Tue, 16 Nov 2021 16:04:14 +0000 (UTC)
 Received: from sofa.misterjones.org ([185.219.108.64] helo=why.lan)
         by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
         (Exim 4.94.2)
         (envelope-from <maz@kernel.org>)
-        id 1mn0wQ-005sTB-2o; Tue, 16 Nov 2021 16:04:14 +0000
+        id 1mn0wO-005sTB-Fm; Tue, 16 Nov 2021 16:04:12 +0000
 From:   Marc Zyngier <maz@kernel.org>
 To:     kvm@vger.kernel.org, linux-mips@vger.kernel.org,
         kvmarm@lists.cs.columbia.edu, linuxppc-dev@lists.ozlabs.org,
@@ -45,9 +45,9 @@ Cc:     Huacai Chen <chenhuacai@kernel.org>,
         Suzuki K Poulose <suzuki.poulose@arm.com>,
         Alexandru Elisei <alexandru.elisei@arm.com>,
         kernel-team@android.com
-Subject: [PATCH v2 7/7] KVM: Convert kvm_for_each_vcpu() to using xa_for_each_range()
-Date:   Tue, 16 Nov 2021 16:04:03 +0000
-Message-Id: <20211116160403.4074052-8-maz@kernel.org>
+Subject: [PATCH v2 4/7] KVM: x86: Use kvm_get_vcpu() instead of open-coded access
+Date:   Tue, 16 Nov 2021 16:04:00 +0000
+Message-Id: <20211116160403.4074052-5-maz@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20211116160403.4074052-1-maz@kernel.org>
 References: <20211116160403.4074052-1-maz@kernel.org>
@@ -61,34 +61,27 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Now that the vcpu array is backed by an xarray, use the optimised
-iterator that matches the underlying data structure.
+As we are about to change the way vcpus are allocated, mandate
+the use of kvm_get_vcpu() instead of open-coding the access.
 
-Suggested-by: Sean Christopherson <seanjc@google.com>
 Signed-off-by: Marc Zyngier <maz@kernel.org>
 ---
- include/linux/kvm_host.h | 8 +++-----
- 1 file changed, 3 insertions(+), 5 deletions(-)
+ arch/x86/kvm/vmx/posted_intr.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
-index dc635fbfd901..d20e33378c63 100644
---- a/include/linux/kvm_host.h
-+++ b/include/linux/kvm_host.h
-@@ -705,11 +705,9 @@ static inline struct kvm_vcpu *kvm_get_vcpu(struct kvm *kvm, int i)
- 	return xa_load(&kvm->vcpu_array, i);
- }
+diff --git a/arch/x86/kvm/vmx/posted_intr.c b/arch/x86/kvm/vmx/posted_intr.c
+index 5f81ef092bd4..82a49720727d 100644
+--- a/arch/x86/kvm/vmx/posted_intr.c
++++ b/arch/x86/kvm/vmx/posted_intr.c
+@@ -272,7 +272,7 @@ int pi_update_irte(struct kvm *kvm, unsigned int host_irq, uint32_t guest_irq,
  
--#define kvm_for_each_vcpu(idx, vcpup, kvm) \
--	for (idx = 0; \
--	     idx < atomic_read(&kvm->online_vcpus) && \
--	     (vcpup = kvm_get_vcpu(kvm, idx)) != NULL; \
--	     idx++)
-+#define kvm_for_each_vcpu(idx, vcpup, kvm)		   \
-+	xa_for_each_range(&kvm->vcpu_array, idx, vcpup, 0, \
-+			  (atomic_read(&kvm->online_vcpus) - 1))
+ 	if (!kvm_arch_has_assigned_device(kvm) ||
+ 	    !irq_remapping_cap(IRQ_POSTING_CAP) ||
+-	    !kvm_vcpu_apicv_active(kvm->vcpus[0]))
++	    !kvm_vcpu_apicv_active(kvm_get_vcpu(kvm, 0)))
+ 		return 0;
  
- static inline struct kvm_vcpu *kvm_get_vcpu_by_id(struct kvm *kvm, int id)
- {
+ 	idx = srcu_read_lock(&kvm->irq_srcu);
 -- 
 2.30.2
 

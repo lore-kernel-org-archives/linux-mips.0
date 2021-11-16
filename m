@@ -2,94 +2,304 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C3D78C433F5
-	for <linux-mips@archiver.kernel.org>; Tue, 16 Nov 2021 15:59:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4DD4DC433EF
+	for <linux-mips@archiver.kernel.org>; Tue, 16 Nov 2021 16:04:44 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id A6A9661A56
-	for <linux-mips@archiver.kernel.org>; Tue, 16 Nov 2021 15:59:32 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 3587561504
+	for <linux-mips@archiver.kernel.org>; Tue, 16 Nov 2021 16:04:44 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238683AbhKPQC1 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 16 Nov 2021 11:02:27 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:50388 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232792AbhKPQBw (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>);
-        Tue, 16 Nov 2021 11:01:52 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1637078334;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=FUd95vU2iSWhtX+C2mcdhQw7Dtmpee6Qjpm6zn3irQ4=;
-        b=TLgCQDgIl5hCCb6fq9rSLPmVuMmhQpOB/6MjGNc6a4nroTg+YPDc7FfVZSjwNoZ7Nou5jv
-        Yp/kV3qqtfJjhNyV6s+K8zkfKUY16B40ZX5t66iNy9Zz+0Mph2tJlWQuTfLedgwTExFumy
-        65Y5SKwvZHJJqzBlVKrKR4lH5fh6Rr0=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-175-DnLZkEu7Obyh6mlLOa--nA-1; Tue, 16 Nov 2021 10:58:48 -0500
-X-MC-Unique: DnLZkEu7Obyh6mlLOa--nA-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S238818AbhKPQHk (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 16 Nov 2021 11:07:40 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33912 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238813AbhKPQHJ (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Tue, 16 Nov 2021 11:07:09 -0500
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8857E824F8B;
-        Tue, 16 Nov 2021 15:58:45 +0000 (UTC)
-Received: from [10.39.192.245] (unknown [10.39.192.245])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id D581314104;
-        Tue, 16 Nov 2021 15:58:37 +0000 (UTC)
-Message-ID: <ca25cf55-dcc8-9df4-a286-3c65a26803cd@redhat.com>
-Date:   Tue, 16 Nov 2021 16:58:36 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH 1/5] KVM: arm64: Cap KVM_CAP_NR_VCPUS by KVM_CAP_MAX_VCPUS
-Content-Language: en-US
-To:     Marc Zyngier <maz@kernel.org>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>
-Cc:     kvm@vger.kernel.org, Sean Christopherson <seanjc@google.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Eduardo Habkost <ehabkost@redhat.com>,
-        Andrew Jones <drjones@redhat.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
+        by mail.kernel.org (Postfix) with ESMTPSA id 7842A613DB;
+        Tue, 16 Nov 2021 16:04:12 +0000 (UTC)
+Received: from sofa.misterjones.org ([185.219.108.64] helo=why.lan)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1mn0wM-005sTB-D9; Tue, 16 Nov 2021 16:04:10 +0000
+From:   Marc Zyngier <maz@kernel.org>
+To:     kvm@vger.kernel.org, linux-mips@vger.kernel.org,
+        kvmarm@lists.cs.columbia.edu, linuxppc-dev@lists.ozlabs.org,
+        Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Huacai Chen <chenhuacai@kernel.org>,
         Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
         Anup Patel <anup.patel@wdc.com>,
-        Paul Mackerras <paulus@ozlabs.org>,
-        Michael Ellerman <mpe@ellerman.id.au>, kvm-ppc@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
-        kvm-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20211111162746.100598-1-vkuznets@redhat.com>
- <20211111162746.100598-2-vkuznets@redhat.com>
- <a5cdff6878b7157587e92ebe4d5af362@kernel.org> <875ysxg0s1.fsf@redhat.com>
- <87k0hd8obo.wl-maz@kernel.org>
- <ad3534bc-fe3a-55f5-b022-4dbec5f29798@redhat.com> <87y25onsj6.fsf@redhat.com>
- <875yss859c.wl-maz@kernel.org>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-In-Reply-To: <875yss859c.wl-maz@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Janosch Frank <frankja@linux.ibm.com>,
+        David Hildenbrand <david@redhat.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        Juergen Gross <jgross@suse.com>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        =?UTF-8?q?Philippe=20Mathieu-Daud=C3=A9?= <f4bug@amsat.org>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        kernel-team@android.com
+Subject: [PATCH v2 1/7] KVM: Move wiping of the kvm->vcpus array to common code
+Date:   Tue, 16 Nov 2021 16:03:57 +0000
+Message-Id: <20211116160403.4074052-2-maz@kernel.org>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20211116160403.4074052-1-maz@kernel.org>
+References: <20211116160403.4074052-1-maz@kernel.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: kvm@vger.kernel.org, linux-mips@vger.kernel.org, kvmarm@lists.cs.columbia.edu, linuxppc-dev@lists.ozlabs.org, pbonzini@redhat.com, chenhuacai@kernel.org, aleksandar.qemu.devel@gmail.com, anup.patel@wdc.com, borntraeger@de.ibm.com, frankja@linux.ibm.com, david@redhat.com, imbrenda@linux.ibm.com, jgross@suse.com, npiggin@gmail.com, seanjc@google.com, paulus@samba.org, mpe@ellerman.id.au, f4bug@amsat.org, james.morse@arm.com, suzuki.poulose@arm.com, alexandru.elisei@arm.com, kernel-team@android.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On 11/16/21 16:55, Marc Zyngier wrote:
->> - Always kvm_arm_default_max_vcpus to make the output independent on 'if
->>   (kvm)'.
-> This. Between two useless numbers, I prefer the one that doesn't
-> introduce any userspace visible changes.
+All architectures have similar loops iterating over the vcpus,
+freeing one vcpu at a time, and eventually wiping the reference
+off the vcpus array. They are also inconsistently taking
+the kvm->lock mutex when wiping the references from the array.
 
-Fair enough, I'm not going to override you---but please add a comment 
-that says
+Make this code common, which will simplify further changes.
+The locking is dropped altogether, as this should only be called
+when there is no further references on the kvm structure.
 
-	/*
-	 * arm64 treats KVM_CAP_NR_CPUS different from all other
-	 * architectures, as it does not bound it to num_online_cpus().
-	 * It should not matter much because this is just an advisory
-	 * value.
-	 */
+Reviewed-by: Claudio Imbrenda <imbrenda@linux.ibm.com>
+Signed-off-by: Marc Zyngier <maz@kernel.org>
+---
+ arch/arm64/kvm/arm.c       | 10 +---------
+ arch/mips/kvm/mips.c       | 21 +--------------------
+ arch/powerpc/kvm/powerpc.c | 10 +---------
+ arch/riscv/kvm/vm.c        | 10 +---------
+ arch/s390/kvm/kvm-s390.c   | 18 +-----------------
+ arch/x86/kvm/x86.c         |  9 +--------
+ include/linux/kvm_host.h   |  2 +-
+ virt/kvm/kvm_main.c        | 17 +++++++++++++++--
+ 8 files changed, 22 insertions(+), 75 deletions(-)
 
-or something like that.
-
-Paolo
+diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
+index 2f03cbfefe67..29942d8c357c 100644
+--- a/arch/arm64/kvm/arm.c
++++ b/arch/arm64/kvm/arm.c
+@@ -175,19 +175,11 @@ vm_fault_t kvm_arch_vcpu_fault(struct kvm_vcpu *vcpu, struct vm_fault *vmf)
+  */
+ void kvm_arch_destroy_vm(struct kvm *kvm)
+ {
+-	int i;
+-
+ 	bitmap_free(kvm->arch.pmu_filter);
+ 
+ 	kvm_vgic_destroy(kvm);
+ 
+-	for (i = 0; i < KVM_MAX_VCPUS; ++i) {
+-		if (kvm->vcpus[i]) {
+-			kvm_vcpu_destroy(kvm->vcpus[i]);
+-			kvm->vcpus[i] = NULL;
+-		}
+-	}
+-	atomic_set(&kvm->online_vcpus, 0);
++	kvm_destroy_vcpus(kvm);
+ }
+ 
+ int kvm_vm_ioctl_check_extension(struct kvm *kvm, long ext)
+diff --git a/arch/mips/kvm/mips.c b/arch/mips/kvm/mips.c
+index 562aa878b266..ceacca74f808 100644
+--- a/arch/mips/kvm/mips.c
++++ b/arch/mips/kvm/mips.c
+@@ -171,25 +171,6 @@ int kvm_arch_init_vm(struct kvm *kvm, unsigned long type)
+ 	return 0;
+ }
+ 
+-void kvm_mips_free_vcpus(struct kvm *kvm)
+-{
+-	unsigned int i;
+-	struct kvm_vcpu *vcpu;
+-
+-	kvm_for_each_vcpu(i, vcpu, kvm) {
+-		kvm_vcpu_destroy(vcpu);
+-	}
+-
+-	mutex_lock(&kvm->lock);
+-
+-	for (i = 0; i < atomic_read(&kvm->online_vcpus); i++)
+-		kvm->vcpus[i] = NULL;
+-
+-	atomic_set(&kvm->online_vcpus, 0);
+-
+-	mutex_unlock(&kvm->lock);
+-}
+-
+ static void kvm_mips_free_gpa_pt(struct kvm *kvm)
+ {
+ 	/* It should always be safe to remove after flushing the whole range */
+@@ -199,7 +180,7 @@ static void kvm_mips_free_gpa_pt(struct kvm *kvm)
+ 
+ void kvm_arch_destroy_vm(struct kvm *kvm)
+ {
+-	kvm_mips_free_vcpus(kvm);
++	kvm_destroy_vcpus(kvm);
+ 	kvm_mips_free_gpa_pt(kvm);
+ }
+ 
+diff --git a/arch/powerpc/kvm/powerpc.c b/arch/powerpc/kvm/powerpc.c
+index 35e9cccdeef9..492e4a4121cb 100644
+--- a/arch/powerpc/kvm/powerpc.c
++++ b/arch/powerpc/kvm/powerpc.c
+@@ -463,9 +463,6 @@ int kvm_arch_init_vm(struct kvm *kvm, unsigned long type)
+ 
+ void kvm_arch_destroy_vm(struct kvm *kvm)
+ {
+-	unsigned int i;
+-	struct kvm_vcpu *vcpu;
+-
+ #ifdef CONFIG_KVM_XICS
+ 	/*
+ 	 * We call kick_all_cpus_sync() to ensure that all
+@@ -476,14 +473,9 @@ void kvm_arch_destroy_vm(struct kvm *kvm)
+ 		kick_all_cpus_sync();
+ #endif
+ 
+-	kvm_for_each_vcpu(i, vcpu, kvm)
+-		kvm_vcpu_destroy(vcpu);
++	kvm_destroy_vcpus(kvm);
+ 
+ 	mutex_lock(&kvm->lock);
+-	for (i = 0; i < atomic_read(&kvm->online_vcpus); i++)
+-		kvm->vcpus[i] = NULL;
+-
+-	atomic_set(&kvm->online_vcpus, 0);
+ 
+ 	kvmppc_core_destroy_vm(kvm);
+ 
+diff --git a/arch/riscv/kvm/vm.c b/arch/riscv/kvm/vm.c
+index 26399df15b63..6af6cde295eb 100644
+--- a/arch/riscv/kvm/vm.c
++++ b/arch/riscv/kvm/vm.c
+@@ -46,15 +46,7 @@ int kvm_arch_init_vm(struct kvm *kvm, unsigned long type)
+ 
+ void kvm_arch_destroy_vm(struct kvm *kvm)
+ {
+-	int i;
+-
+-	for (i = 0; i < KVM_MAX_VCPUS; ++i) {
+-		if (kvm->vcpus[i]) {
+-			kvm_vcpu_destroy(kvm->vcpus[i]);
+-			kvm->vcpus[i] = NULL;
+-		}
+-	}
+-	atomic_set(&kvm->online_vcpus, 0);
++	kvm_destroy_vcpus(kvm);
+ }
+ 
+ int kvm_vm_ioctl_check_extension(struct kvm *kvm, long ext)
+diff --git a/arch/s390/kvm/kvm-s390.c b/arch/s390/kvm/kvm-s390.c
+index c6257f625929..7af53b8788fa 100644
+--- a/arch/s390/kvm/kvm-s390.c
++++ b/arch/s390/kvm/kvm-s390.c
+@@ -2819,27 +2819,11 @@ void kvm_arch_vcpu_destroy(struct kvm_vcpu *vcpu)
+ 	free_page((unsigned long)(vcpu->arch.sie_block));
+ }
+ 
+-static void kvm_free_vcpus(struct kvm *kvm)
+-{
+-	unsigned int i;
+-	struct kvm_vcpu *vcpu;
+-
+-	kvm_for_each_vcpu(i, vcpu, kvm)
+-		kvm_vcpu_destroy(vcpu);
+-
+-	mutex_lock(&kvm->lock);
+-	for (i = 0; i < atomic_read(&kvm->online_vcpus); i++)
+-		kvm->vcpus[i] = NULL;
+-
+-	atomic_set(&kvm->online_vcpus, 0);
+-	mutex_unlock(&kvm->lock);
+-}
+-
+ void kvm_arch_destroy_vm(struct kvm *kvm)
+ {
+ 	u16 rc, rrc;
+ 
+-	kvm_free_vcpus(kvm);
++	kvm_destroy_vcpus(kvm);
+ 	sca_dispose(kvm);
+ 	kvm_s390_gisa_destroy(kvm);
+ 	/*
+diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+index dc7eb5fddfd3..259f719014c9 100644
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -11378,15 +11378,8 @@ static void kvm_free_vcpus(struct kvm *kvm)
+ 		kvm_clear_async_pf_completion_queue(vcpu);
+ 		kvm_unload_vcpu_mmu(vcpu);
+ 	}
+-	kvm_for_each_vcpu(i, vcpu, kvm)
+-		kvm_vcpu_destroy(vcpu);
+-
+-	mutex_lock(&kvm->lock);
+-	for (i = 0; i < atomic_read(&kvm->online_vcpus); i++)
+-		kvm->vcpus[i] = NULL;
+ 
+-	atomic_set(&kvm->online_vcpus, 0);
+-	mutex_unlock(&kvm->lock);
++	kvm_destroy_vcpus(kvm);
+ }
+ 
+ void kvm_arch_sync_events(struct kvm *kvm)
+diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
+index 9e0667e3723e..9a8c997ff9bc 100644
+--- a/include/linux/kvm_host.h
++++ b/include/linux/kvm_host.h
+@@ -733,7 +733,7 @@ static inline struct kvm_vcpu *kvm_get_vcpu_by_id(struct kvm *kvm, int id)
+ 		if (WARN_ON_ONCE(!memslot->npages)) {			\
+ 		} else
+ 
+-void kvm_vcpu_destroy(struct kvm_vcpu *vcpu);
++void kvm_destroy_vcpus(struct kvm *kvm);
+ 
+ void vcpu_load(struct kvm_vcpu *vcpu);
+ void vcpu_put(struct kvm_vcpu *vcpu);
+diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+index d31724500501..73811c3829a2 100644
+--- a/virt/kvm/kvm_main.c
++++ b/virt/kvm/kvm_main.c
+@@ -435,7 +435,7 @@ static void kvm_vcpu_init(struct kvm_vcpu *vcpu, struct kvm *kvm, unsigned id)
+ 	vcpu->last_used_slot = 0;
+ }
+ 
+-void kvm_vcpu_destroy(struct kvm_vcpu *vcpu)
++static void kvm_vcpu_destroy(struct kvm_vcpu *vcpu)
+ {
+ 	kvm_dirty_ring_free(&vcpu->dirty_ring);
+ 	kvm_arch_vcpu_destroy(vcpu);
+@@ -450,7 +450,20 @@ void kvm_vcpu_destroy(struct kvm_vcpu *vcpu)
+ 	free_page((unsigned long)vcpu->run);
+ 	kmem_cache_free(kvm_vcpu_cache, vcpu);
+ }
+-EXPORT_SYMBOL_GPL(kvm_vcpu_destroy);
++
++void kvm_destroy_vcpus(struct kvm *kvm)
++{
++	unsigned int i;
++	struct kvm_vcpu *vcpu;
++
++	kvm_for_each_vcpu(i, vcpu, kvm) {
++		kvm_vcpu_destroy(vcpu);
++		kvm->vcpus[i] = NULL;
++	}
++
++	atomic_set(&kvm->online_vcpus, 0);
++}
++EXPORT_SYMBOL_GPL(kvm_destroy_vcpus);
+ 
+ #if defined(CONFIG_MMU_NOTIFIER) && defined(KVM_ARCH_WANT_MMU_NOTIFIER)
+ static inline struct kvm *mmu_notifier_to_kvm(struct mmu_notifier *mn)
+-- 
+2.30.2
 

@@ -2,90 +2,118 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6491FC433F5
-	for <linux-mips@archiver.kernel.org>; Tue, 16 Nov 2021 01:24:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E040AC4332F
+	for <linux-mips@archiver.kernel.org>; Tue, 16 Nov 2021 03:51:49 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 4E5EF6137E
-	for <linux-mips@archiver.kernel.org>; Tue, 16 Nov 2021 01:24:10 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id BFC8E63215
+	for <linux-mips@archiver.kernel.org>; Tue, 16 Nov 2021 03:51:49 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352752AbhKPB05 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 15 Nov 2021 20:26:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33706 "EHLO
+        id S235497AbhKPDyp (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 15 Nov 2021 22:54:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35968 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243864AbhKOTIK (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Mon, 15 Nov 2021 14:08:10 -0500
-Received: from nbd.name (nbd.name [IPv6:2a01:4f8:221:3d45::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD438C06EDE1;
-        Mon, 15 Nov 2021 09:58:21 -0800 (PST)
-Received: from [2a04:4540:1401:b700:606b:3eee:8c1b:a587]
-        by ds12 with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.89)
-        (envelope-from <john@phrozen.org>)
-        id 1mmgF6-0005a6-Ay; Mon, 15 Nov 2021 18:58:08 +0100
-Message-ID: <4342c4de-b516-8992-a3f3-4eea7ff4de40@phrozen.org>
-Date:   Mon, 15 Nov 2021 18:58:07 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.2.1
-Subject: Re: [PATCH] mips: lantiq: add support for clk_get_parent()
-Content-Language: en-GB
-To:     Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org
-Cc:     Russell King <rmk+kernel@armlinux.org.uk>,
-        linux-mips@vger.kernel.org,
+        with ESMTP id S235502AbhKPDyn (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Mon, 15 Nov 2021 22:54:43 -0500
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0F12C1A2991
+        for <linux-mips@vger.kernel.org>; Mon, 15 Nov 2021 16:31:10 -0800 (PST)
+Received: by mail-pf1-x436.google.com with SMTP id b68so16461593pfg.11
+        for <linux-mips@vger.kernel.org>; Mon, 15 Nov 2021 16:31:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=zUAbk3pYDxq1bSuJItD74NAh/MbYUz0fiMi2jjsqIPc=;
+        b=jkN0+anUkVZEafZbns3mnQH3BOzdPE6stTt8SrDHZFGkz5SQGDyxTuScjmOkAtjtG9
+         AT2XFauNYqbJ3Hv+WUTHMAUTNsTes+od+8KqsU/GEVyVgjrYYw/xt4G0TAF8HM1LcPVm
+         2WJe85H3kQUjZSV8Rb5yVnjCooZk+xWNu9wek=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=zUAbk3pYDxq1bSuJItD74NAh/MbYUz0fiMi2jjsqIPc=;
+        b=3FvYhH3Ow6VPptAJUE1u+phvLtXd9jufPvthj9NL6tuegRJ3qVNGtKFkOHX52KjGBW
+         Dwlmz7ug5y/OchitYX/M+/3y9bKBZjIvFo8V/ZDLnSSuLWvVbfwXaYT/62yLEAePUKzE
+         VdGenomyQUwUHWVKO3iqtlEoLh9wix7VlnanU5S8Ty3pZeCDjrxCpMxKF31MyZqIGnMS
+         3YCcgaCMwZXm2o+HoNVg0okRgX13CQMcG/ZscCuX7dcCDLJN4dvPPCIkuV3YNPFHV+J3
+         B8x3eLWQoi+oGZg7s3OYdb8ma8gVb8ZJhhN0c2HV1oK+HVHS3Uv1mYyewSwWKpRI8hfb
+         6wYA==
+X-Gm-Message-State: AOAM5337f7dYccw/PY4HoBK4XyG9qqmDQkvASqP1y5REwE60j+b60BBh
+        wGaolOicEGNuyDgoOk8CcS0oAg==
+X-Google-Smtp-Source: ABdhPJxDrEb7NedduOiss/lXzBJfLpYZT+5k0kObH71YXHTZztaI+VVMmjTV988TJQv8GS02GfUMPA==
+X-Received: by 2002:a05:6a00:1945:b0:44c:a955:35ea with SMTP id s5-20020a056a00194500b0044ca95535eamr36094903pfk.85.1637022670112;
+        Mon, 15 Nov 2021 16:31:10 -0800 (PST)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id h21sm12755848pgk.74.2021.11.15.16.31.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Nov 2021 16:31:09 -0800 (PST)
+Date:   Mon, 15 Nov 2021 16:31:09 -0800
+From:   Kees Cook <keescook@chromium.org>
+To:     Marco Elver <elver@google.com>
+Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Nick Terrell <terrelln@fb.com>,
+        Rob Clark <robdclark@gmail.com>,
+        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        Anton Altaparmakov <anton@tuxera.com>,
         Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Jonathan Cameron <jic23@kernel.org>, linux-iio@vger.kernel.org,
-        Russell King <linux@armlinux.org.uk>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>
-References: <20211115012051.16302-1-rdunlap@infradead.org>
-From:   John Crispin <john@phrozen.org>
-In-Reply-To: <20211115012051.16302-1-rdunlap@infradead.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+        Sergio Paracuellos <sergio.paracuellos@gmail.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Joey Gouly <joey.gouly@arm.com>,
+        Stan Skowronek <stan@corellium.com>,
+        Hector Martin <marcan@marcan.st>,
+        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        =?iso-8859-1?Q?Andr=E9?= Almeida <andrealmeid@collabora.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Parisc List <linux-parisc@vger.kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        linux-ntfs-dev@lists.sourceforge.net,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
+        linux-pci <linux-pci@vger.kernel.org>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        kasan-dev <kasan-dev@googlegroups.com>
+Subject: Re: Build regressions/improvements in v5.16-rc1
+Message-ID: <202111151624.91EDCFF7@keescook>
+References: <20211115155105.3797527-1-geert@linux-m68k.org>
+ <CAMuHMdUCsyUxaEf1Lz7+jMnur4ECwK+JoXQqmOCkRKqXdb1hTQ@mail.gmail.com>
+ <YZKOce4XhAU49+Yn@elver.google.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YZKOce4XhAU49+Yn@elver.google.com>
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-
-
-On 15.11.21 02:20, Randy Dunlap wrote:
-> Provide a simple implementation of clk_get_parent() in the
-> lantiq subarch so that callers of it will build without errors.
+On Mon, Nov 15, 2021 at 05:44:33PM +0100, Marco Elver wrote:
+> On Mon, Nov 15, 2021 at 05:12PM +0100, Geert Uytterhoeven wrote:
+> [...]
+> > >   + /kisskb/src/include/linux/fortify-string.h: error: call to '__read_overflow' declared with attribute error: detected read beyond size of object (1st parameter):  => 263:25, 277:17
+> > 
+> >     in lib/test_kasan.c
+> > 
+> > s390-all{mod,yes}config
+> > arm64-allmodconfig (gcc11)
 > 
-> Fixes this build error:
-> ERROR: modpost: "clk_get_parent" [drivers/iio/adc/ingenic-adc.ko] undefined!
-> 
-> Fixes: 171bb2f19ed6 ("MIPS: Lantiq: Add initial support for Lantiq SoCs")
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> Suggested-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
-> Cc: linux-mips@vger.kernel.org
-> Cc: John Crispin <john@phrozen.org>
-> Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-> Cc: Jonathan Cameron <jic23@kernel.org>
-> Cc: linux-iio@vger.kernel.org
-> Cc: Russell King <linux@armlinux.org.uk>
-> Cc: Andy Shevchenko <andy.shevchenko@gmail.com>
+> Kees, wasn't that what [1] was meant to fix?
+> [1] https://lkml.kernel.org/r/20211006181544.1670992-1-keescook@chromium.org
 
-Acked-by: John Crispin <john@phrozen.org>
+[1] fixed the ones I found when scanning for __write_overflow(). [2]
+fixed some others, so it's possible there are yet more to fix?
 
-// we added the same fix for mips/ralink a while back
+Taking a look at Linus's tree, though, the "263" and "277" lines don't
+line up correctly. I'll go see if I can reproduce this. Is this with
+W=1?
 
-> ---
->   arch/mips/lantiq/clk.c |    6 ++++++
->   1 file changed, 6 insertions(+)
-> 
-> --- linux-next-20211112.orig/arch/mips/lantiq/clk.c
-> +++ linux-next-20211112/arch/mips/lantiq/clk.c
-> @@ -158,6 +158,12 @@ void clk_deactivate(struct clk *clk)
->   }
->   EXPORT_SYMBOL(clk_deactivate);
->   
-> +struct clk *clk_get_parent(struct clk *clk)
-> +{
-> +	return NULL;
-> +}
-> +EXPORT_SYMBOL(clk_get_parent);
-> +
->   static inline u32 get_counter_resolution(void)
->   {
->   	u32 res;
-> 
+-Kees
+
+[2] https://www.ozlabs.org/~akpm/mmotm/broken-out/kasan-test-consolidate-workarounds-for-unwanted-__alloc_size-protection.patch
+
+
+-- 
+Kees Cook

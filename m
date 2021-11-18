@@ -2,59 +2,102 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AE76EC433F5
-	for <linux-mips@archiver.kernel.org>; Wed, 17 Nov 2021 23:58:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F4182C4332F
+	for <linux-mips@archiver.kernel.org>; Thu, 18 Nov 2021 09:30:48 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 8A51561BE5
-	for <linux-mips@archiver.kernel.org>; Wed, 17 Nov 2021 23:58:21 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id D3E4761B93
+	for <linux-mips@archiver.kernel.org>; Thu, 18 Nov 2021 09:30:48 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241721AbhKRABS (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 17 Nov 2021 19:01:18 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59226 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S241731AbhKRABH (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Wed, 17 Nov 2021 19:01:07 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id 6429961ABF;
-        Wed, 17 Nov 2021 23:58:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1637193488;
-        bh=lmfdFZ9wsWSSzqTt51z/Mge8gvN0Q0StiIMq2hqs1uo=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=PJxgqrTJRKDRuuI1icgLpIb3hd3kFtsDxd5gzMRl/wt9p/RPLYYIk6R+k0LrZSkHb
-         GTLXOl8pDzQMBXceIcaYlrb53SaNeKAQUW9U2n8dF41tiwRfe2ZGcXQUVk/g1/OtWo
-         sZcw6bACognY2kB+iTAFNy8QzUScOiOAeCmeIggLNxBIxmiiLOo7EaM2+oot381uXu
-         fNA76NnRvyoxlMiBb/sjvetr0Oh5h5ECVY4Moku3X5py75b17KB1Eulrq1w9G8CnVX
-         dwyU5XgXhga5zFxY1CW1jvMU04xZuPqf+1uh7VwsQQhyU1jScVymeMaPIDLbsdGKo4
-         cYylMthK60Uqw==
-Subject: Re: [GIT PULL] MIPS fixes for v5.16
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20211117221136.GA16740@alpha.franken.de>
-References: <20211117221136.GA16740@alpha.franken.de>
-X-PR-Tracked-List-Id: <linux-mips.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20211117221136.GA16740@alpha.franken.de>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/mips/linux.git/ tags/mips-fixes_5.16_1
-X-PR-Tracked-Commit-Id: fc1aabb088860d6cf9dd03612b7a6f0de91ccac2
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 3fa595481b3b33105d7e0480710591edb2bd8dcb
-Message-Id: <163719348828.8069.16173664396744279220.pr-tracker-bot@kernel.org>
-Date:   Wed, 17 Nov 2021 23:58:08 +0000
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc:     torvalds@linux-foundation.org, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+        id S245154AbhKRJdq (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 18 Nov 2021 04:33:46 -0500
+Received: from mail.loongson.cn ([114.242.206.163]:48744 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S243503AbhKRJdk (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Thu, 18 Nov 2021 04:33:40 -0500
+Received: from localhost.localdomain (unknown [111.9.175.10])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9AxbuQeHZZhYxcAAA--.269S3;
+        Thu, 18 Nov 2021 17:30:16 +0800 (CST)
+From:   Huang Pei <huangpei@loongson.cn>
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        ambrosehua@gmail.com
+Cc:     Bibo Mao <maobibo@loongson.cn>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-mips@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-mm@kvack.org, Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Paul Burton <paulburton@kernel.org>,
+        Li Xuefeng <lixuefeng@loongson.cn>,
+        Yang Tiezhu <yangtiezhu@loongson.cn>,
+        Gao Juxin <gaojuxin@loongson.cn>,
+        Fuxin Zhang <zhangfx@lemote.com>,
+        Huacai Chen <chenhuacai@loongson.cn>
+Subject: [PATCH 2/4] MIPS: fix tx39_flush_cache_page
+Date:   Thu, 18 Nov 2021 17:30:03 +0800
+Message-Id: <20211118093005.3121-2-huangpei@loongson.cn>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20211118093005.3121-1-huangpei@loongson.cn>
+References: <20211118093005.3121-1-huangpei@loongson.cn>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: AQAAf9AxbuQeHZZhYxcAAA--.269S3
+X-Coremail-Antispam: 1UD129KBjvJXoW7Kr4kXF4kXr13WFyrGFW3KFg_yoW8Gr4xpa
+        12ka1DJ3y0ga4FkFy7A34qyr1Sq3sxKFW0yay7K34Y934YqF1UKrn3Krn0gF15ArWSyay7
+        urW2yry5Zw4qq3DanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUmE14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_Jr4l82xGYIkIc2
+        x26xkF7I0E14v26r4j6ryUM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2z4x0
+        Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j6F4UJw
+        A2z4x0Y4vEx4A2jsIE14v26F4UJVW0owA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s1l
+        e2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI
+        8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwAC
+        jcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2Y2ka0x
+        kIwI1lc7CjxVAaw2AFwI0_JF0_Jw1lc2xSY4AK67AK6r4fMxAIw28IcxkI7VAKI48JMxC2
+        0s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI
+        0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE
+        14v26r1I6r4UMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20x
+        vaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8
+        JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7VUUPxhtUUUUU==
+X-CM-SenderInfo: xkxd0whshlqz5rrqw2lrqou0/
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-The pull request you sent on Wed, 17 Nov 2021 23:11:36 +0100:
+Indexed cache operation need KSEG0 address for safety and assume
+that no dcache alias nor high memory
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/mips/linux.git/ tags/mips-fixes_5.16_1
+Signed-off-by: Huang Pei <huangpei@loongson.cn>
+---
+ arch/mips/mm/c-tx39.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/3fa595481b3b33105d7e0480710591edb2bd8dcb
-
-Thank you!
-
+diff --git a/arch/mips/mm/c-tx39.c b/arch/mips/mm/c-tx39.c
+index 03dfbb40ec73..49e4a16186ce 100644
+--- a/arch/mips/mm/c-tx39.c
++++ b/arch/mips/mm/c-tx39.c
+@@ -170,6 +170,7 @@ static void tx39_flush_cache_page(struct vm_area_struct *vma, unsigned long page
+ 	struct mm_struct *mm = vma->vm_mm;
+ 	pmd_t *pmdp;
+ 	pte_t *ptep;
++	unsigned long vaddr = phys_to_virt(pfn_to_phys(pfn));
+ 
+ 	/*
+ 	 * If ownes no valid ASID yet, cannot possibly have gotten
+@@ -207,11 +208,14 @@ static void tx39_flush_cache_page(struct vm_area_struct *vma, unsigned long page
+ 	/*
+ 	 * Do indexed flush, too much work to get the (possible) TLB refills
+ 	 * to work correctly.
++	 *
++	 * Assuming that tx39 family do not support high memory, nor has
++	 * dcache alias, vaddr can index dcache directly and correctly
+ 	 */
+ 	if (cpu_has_dc_aliases || exec)
+-		tx39_blast_dcache_page_indexed(page);
++		tx39_blast_dcache_page_indexed(vaddr);
+ 	if (exec)
+-		tx39_blast_icache_page_indexed(page);
++		tx39_blast_icache_page_indexed(vaddr);
+ }
+ 
+ static void local_tx39_flush_data_cache_page(void * addr)
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+2.20.1
+

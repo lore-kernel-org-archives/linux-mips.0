@@ -2,21 +2,24 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9038AC433EF
-	for <linux-mips@archiver.kernel.org>; Fri, 19 Nov 2021 18:44:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9C331C433EF
+	for <linux-mips@archiver.kernel.org>; Fri, 19 Nov 2021 18:53:02 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id 78BA961175
-	for <linux-mips@archiver.kernel.org>; Fri, 19 Nov 2021 18:44:14 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 77D9A61AA2
+	for <linux-mips@archiver.kernel.org>; Fri, 19 Nov 2021 18:53:02 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234383AbhKSSrP (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 19 Nov 2021 13:47:15 -0500
-Received: from relay5-d.mail.gandi.net ([217.70.183.197]:57111 "EHLO
-        relay5-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235707AbhKSSrP (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Fri, 19 Nov 2021 13:47:15 -0500
+        id S235222AbhKSS4E (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 19 Nov 2021 13:56:04 -0500
+Received: from mslow1.mail.gandi.net ([217.70.178.240]:36709 "EHLO
+        mslow1.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234998AbhKSS4D (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Fri, 19 Nov 2021 13:56:03 -0500
+Received: from relay9-d.mail.gandi.net (unknown [217.70.183.199])
+        by mslow1.mail.gandi.net (Postfix) with ESMTP id A8D92C526D;
+        Fri, 19 Nov 2021 18:44:14 +0000 (UTC)
 Received: (Authenticated sender: miquel.raynal@bootlin.com)
-        by relay5-d.mail.gandi.net (Postfix) with ESMTPSA id 7BD491C0002;
-        Fri, 19 Nov 2021 18:44:10 +0000 (UTC)
+        by relay9-d.mail.gandi.net (Postfix) with ESMTPSA id E4E21FF805;
+        Fri, 19 Nov 2021 18:43:51 +0000 (UTC)
 From:   Miquel Raynal <miquel.raynal@bootlin.com>
 To:     Paul Cercueil <paul@crapouillou.net>,
         Miquel Raynal <miquel.raynal@bootlin.com>
@@ -25,24 +28,32 @@ Cc:     Richard Weinberger <richard@nod.at>,
         Harvey Hunt <harveyhuntnexus@gmail.com>, list@opendingux.net,
         linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
         linux-mips@vger.kernel.org, stable@vger.kernel.org
-Subject: Re: [PATCH v2 1/5] mtd: rawnand/davinci: Don't calculate ECC when reading page
-Date:   Fri, 19 Nov 2021 19:44:09 +0100
-Message-Id: <20211119184410.1404619-1-miquel.raynal@bootlin.com>
+Subject: Re: [PATCH v2 5/5] mtd: rawnand/ingenic: JZ4740 needs 'oob_first' read page function
+Date:   Fri, 19 Nov 2021 19:43:51 +0100
+Message-Id: <20211119184351.1404360-1-miquel.raynal@bootlin.com>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20211016132228.40254-1-paul@crapouillou.net>
+In-Reply-To: <20211016132228.40254-5-paul@crapouillou.net>
 References: 
 MIME-Version: 1.0
 X-linux-mtd-patch-notification: thanks
-X-linux-mtd-patch-commit: b'71e89591502d737c10db2bd4d8fcfaa352552afb'
+X-linux-mtd-patch-commit: b'0171480007d64f663aae9226303f1b1e4621229e'
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Sat, 2021-10-16 at 13:22:24 UTC, Paul Cercueil wrote:
-> The function nand_davinci_read_page_hwecc_oob_first() does read the ECC
-> data from the OOB area. Therefore it does not need to calculate the ECC
-> as it is already available.
+On Sat, 2021-10-16 at 13:22:28 UTC, Paul Cercueil wrote:
+> The ECC engine on the JZ4740 SoC requires the ECC data to be read before
+> the page; using the default page reading function does not work. Indeed,
+> the old JZ4740 NAND driver (removed in 5.4) did use the 'OOB first' flag
+> that existed back then.
+> 
+> Use the newly created nand_read_page_hwecc_oob_first() to address this
+> issue.
+> 
+> This issue was not found when the new ingenic-nand driver was developed,
+> most likely because the Device Tree used had the nand-ecc-mode set to
+> "hw_oob_first", which seems to not be supported anymore.
 > 
 > Cc: <stable@vger.kernel.org> # v5.2
 > Fixes: a0ac778eb82c ("mtd: rawnand: ingenic: Add support for the JZ4740")

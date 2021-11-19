@@ -2,65 +2,59 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D25AEC433F5
-	for <linux-mips@archiver.kernel.org>; Fri, 19 Nov 2021 17:51:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A78FEC433F5
+	for <linux-mips@archiver.kernel.org>; Fri, 19 Nov 2021 18:44:08 +0000 (UTC)
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.kernel.org (Postfix) with ESMTP id B45E86117A
-	for <linux-mips@archiver.kernel.org>; Fri, 19 Nov 2021 17:51:04 +0000 (UTC)
+	by mail.kernel.org (Postfix) with ESMTP id 8D29561056
+	for <linux-mips@archiver.kernel.org>; Fri, 19 Nov 2021 18:44:08 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234135AbhKSRyF (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 19 Nov 2021 12:54:05 -0500
-Received: from aposti.net ([89.234.176.197]:51714 "EHLO aposti.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231840AbhKSRyF (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Fri, 19 Nov 2021 12:54:05 -0500
-From:   Paul Cercueil <paul@crapouillou.net>
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        list@opendingux.net, Paul Cercueil <paul@crapouillou.net>
-Subject: [PATCH] MIPS: boot/compressed/: add __ashldi3 to target for ZSTD compression
-Date:   Fri, 19 Nov 2021 17:50:52 +0000
-Message-Id: <20211119175052.401771-1-paul@crapouillou.net>
+        id S235161AbhKSSrK (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 19 Nov 2021 13:47:10 -0500
+Received: from relay5-d.mail.gandi.net ([217.70.183.197]:43913 "EHLO
+        relay5-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235707AbhKSSrJ (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Fri, 19 Nov 2021 13:47:09 -0500
+Received: (Authenticated sender: miquel.raynal@bootlin.com)
+        by relay5-d.mail.gandi.net (Postfix) with ESMTPSA id B37111C0004;
+        Fri, 19 Nov 2021 18:44:05 +0000 (UTC)
+From:   Miquel Raynal <miquel.raynal@bootlin.com>
+To:     Paul Cercueil <paul@crapouillou.net>,
+        Miquel Raynal <miquel.raynal@bootlin.com>
+Cc:     Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Harvey Hunt <harveyhuntnexus@gmail.com>, list@opendingux.net,
+        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mips@vger.kernel.org, stable@vger.kernel.org
+Subject: Re: [PATCH v2 2/5] mtd: rawnand/davinci: Avoid duplicated page read
+Date:   Fri, 19 Nov 2021 19:44:05 +0100
+Message-Id: <20211119184405.1404555-1-miquel.raynal@bootlin.com>
+X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20211016132228.40254-2-paul@crapouillou.net>
+References: 
 MIME-Version: 1.0
+X-linux-mtd-patch-notification: thanks
+X-linux-mtd-patch-commit: b'9c9d709965385de5a99f84b14bd5860e1541729e'
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Just like before with __bswapdi2(), for MIPS pre-boot when
-CONFIG_KERNEL_ZSTD=y the decompressor function will use __ashldi3(), so
-the object file should be added to the target object file.
+On Sat, 2021-10-16 at 13:22:25 UTC, Paul Cercueil wrote:
+> The function nand_davinci_read_page_hwecc_oob_first() first reads the
+> OOB data, extracts the ECC information, programs the ECC hardware before
+> reading the actual data in a loop.
+> 
+> Right after the OOB data was read, it called nand_read_page_op() to
+> reset the read cursor to the beginning of the page. This caused the
+> first page to be read twice: in that call, and later in the loop.
+> 
+> Address that issue by changing the call to nand_read_page_op() to
+> nand_change_read_column_op(), which will only reset the read cursor.
+> 
+> Cc: <stable@vger.kernel.org> # v5.2
+> Fixes: a0ac778eb82c ("mtd: rawnand: ingenic: Add support for the JZ4740")
+> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
 
-Fixes these build errors:
+Applied to https://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git nand/next, thanks.
 
-mipsel-linux-ld: arch/mips/boot/compressed/decompress.o: in function `FSE_buildDTable_internal':
-decompress.c:(.text.FSE_buildDTable_internal+0x48): undefined reference to `__ashldi3'
-mipsel-linux-ld: arch/mips/boot/compressed/decompress.o: in function `FSE_decompress_wksp_body_default':
-decompress.c:(.text.FSE_decompress_wksp_body_default+0xa8): undefined reference to `__ashldi3'
-mipsel-linux-ld: arch/mips/boot/compressed/decompress.o: in function `ZSTD_getFrameHeader_advanced':
-decompress.c:(.text.ZSTD_getFrameHeader_advanced+0x134): undefined reference to `__ashldi3'
-
-Signed-off-by: Paul Cercueil <paul@crapouillou.net>
----
- arch/mips/boot/compressed/Makefile | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/arch/mips/boot/compressed/Makefile b/arch/mips/boot/compressed/Makefile
-index 2861a05c2e0c..f27cf31b4140 100644
---- a/arch/mips/boot/compressed/Makefile
-+++ b/arch/mips/boot/compressed/Makefile
-@@ -52,7 +52,7 @@ endif
- 
- vmlinuzobjs-$(CONFIG_KERNEL_XZ) += $(obj)/ashldi3.o
- 
--vmlinuzobjs-$(CONFIG_KERNEL_ZSTD) += $(obj)/bswapdi.o
-+vmlinuzobjs-$(CONFIG_KERNEL_ZSTD) += $(obj)/bswapdi.o $(obj)/ashldi3.o
- 
- targets := $(notdir $(vmlinuzobjs-y))
- 
--- 
-2.33.0
-
+Miquel

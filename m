@@ -2,82 +2,102 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 25DA1C433EF
-	for <linux-mips@archiver.kernel.org>; Sat, 20 Nov 2021 08:00:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9895FC433EF
+	for <linux-mips@archiver.kernel.org>; Sat, 20 Nov 2021 10:28:40 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237116AbhKTIDJ (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Sat, 20 Nov 2021 03:03:09 -0500
-Received: from ptr.189.cn ([183.61.185.103]:11441 "EHLO 189.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S236933AbhKTIDG (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Sat, 20 Nov 2021 03:03:06 -0500
-HMM_SOURCE_IP: 10.64.8.43:38516.358279549
-HMM_ATTACHE_NUM: 0000
-HMM_SOURCE_TYPE: SMTP
-Received: from clientip-114.242.206.180 (unknown [10.64.8.43])
-        by 189.cn (HERMES) with SMTP id 45F32100236;
-        Sat, 20 Nov 2021 15:59:55 +0800 (CST)
-Received: from  ([14.17.101.177])
-        by gateway-151646-dep-b7fbf7d79-vjdjk with ESMTP id 28a34372b2fb4701b66133de36518d6a for l.stach@pengutronix.de;
-        Sat, 20 Nov 2021 15:59:57 CST
-X-Transaction-ID: 28a34372b2fb4701b66133de36518d6a
-X-Real-From: 15330273260@189.cn
-X-Receive-IP: 14.17.101.177
-X-MEDUSA-Status: 0
-Sender: 15330273260@189.cn
-From:   Sui Jingfeng <15330273260@189.cn>
-To:     Lucas Stach <l.stach@pengutronix.de>,
-        Russell King <linux+etnaviv@armlinux.org.uk>,
-        Christian Gmeiner <christian.gmeiner@gmail.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Rob Herring <robh+dt@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Andrey Zhizhikin <andrey.zhizhikin@leica-geosystems.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Tiezhu Yang <yangtiezhu@loongson.cn>,
-        Qing Zhang <zhangqing@loongson.cn>,
-        Jinyang He <hejinyang@loongson.cn>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Xiaochuan Mao <maoxiaochuan@loongson.cn>,
-        zhaoxiao <zhaoxiao@uniontech.com>,
-        suijingfeng <suijingfeng@loongson.cn>
-Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        etnaviv@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        devicetree@vger.kernel.org
-Subject: [PATCH 4/4] loongson2_defconfig: enable etnaviv drm driver on default
-Date:   Sat, 20 Nov 2021 15:59:26 +0800
-Message-Id: <20211120075926.2671-5-15330273260@189.cn>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20211120075926.2671-1-15330273260@189.cn>
-References: <20211120075926.2671-1-15330273260@189.cn>
+        id S230393AbhKTKbm (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Sat, 20 Nov 2021 05:31:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43118 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229999AbhKTKbg (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Sat, 20 Nov 2021 05:31:36 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAD02C06173E;
+        Sat, 20 Nov 2021 02:28:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Sender:Content-Transfer-Encoding:
+        MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
+        Reply-To:Content-Type:Content-ID:Content-Description;
+        bh=q7VGHKinevDsRFWG1p27WCAPowIobtShfo12HVfpNfo=; b=sqxBRluQyEEXp3lHG84c+NxuRo
+        UTZQ0dMhN+xHhtsnT+ru9Vepp1E5NbXj7qACaD8Tu4fHc4w3zmvs5S+p19bNaJsWRhv8G8Lf1d7K1
+        /tBvm99HD4EXX8fE6dQQn7nDYB7OspoTwaXGKT8GhJfANz6agfaSTOfa13r8XHJG8kiYn08VhgzFn
+        tZP5aj7exsZC9fqA839QZgNIgsBXFQNz04IG+GcTdV/3lWLc79mulog7lKwqaTrZcsTgJxkrvuCp9
+        g0l1rQYhaNn0xh6t80BbHe3T2EXZgDLokB3pis8mOZgNr5jx4BkzjI28EcxraARnCsb9s0nHWGfJN
+        elsUsV9w==;
+Received: from i7.infradead.org ([2001:8b0:10b:1:21e:67ff:fecb:7a92])
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1moNbR-00AUNL-0Q; Sat, 20 Nov 2021 10:28:13 +0000
+Received: from dwoodhou by i7.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1moNbQ-0002KN-Ml; Sat, 20 Nov 2021 10:28:12 +0000
+From:   David Woodhouse <dwmw2@infradead.org>
+To:     Paolo Bonzini <pbonzini@redhat.com>, kvm <kvm@vger.kernel.org>
+Cc:     Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Joao Martins <joao.m.martins@oracle.com>,
+        "jmattson @ google . com" <jmattson@google.com>,
+        "wanpengli @ tencent . com" <wanpengli@tencent.com>,
+        "seanjc @ google . com" <seanjc@google.com>,
+        "vkuznets @ redhat . com" <vkuznets@redhat.com>,
+        "mtosatti @ redhat . com" <mtosatti@redhat.com>,
+        "joro @ 8bytes . org" <joro@8bytes.org>, karahmed@amazon.com,
+        Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Anup Patel <anup.patel@wdc.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        kvmarm@lists.cs.columbia.edu,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        kvm-riscv@lists.infradead.org, linux-s390@vger.kernel.org
+Subject: [PATCH v4 07/11] KVM: arm64: Use Makefile.kvm for common files
+Date:   Sat, 20 Nov 2021 10:28:06 +0000
+Message-Id: <20211120102810.8858-8-dwmw2@infradead.org>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20211120102810.8858-1-dwmw2@infradead.org>
+References: <20211120102810.8858-1-dwmw2@infradead.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Sender: David Woodhouse <dwmw2@infradead.org>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-From: suijingfeng <suijingfeng@loongson.cn>
+From: David Woodhouse <dwmw@amazon.co.uk>
 
-Signed-off-by: suijingfeng <suijingfeng@loongson.cn>
-Signed-off-by: Sui Jingfeng <15330273260@189.cn>
+Signed-off-by: David Woodhouse <dwmw@amazon.co.uk>
+Acked-by: Marc Zyngier <maz@kernel.org>
 ---
- arch/mips/configs/loongson2k_defconfig | 1 +
- 1 file changed, 1 insertion(+)
+ arch/arm64/kvm/Makefile | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/arch/mips/configs/loongson2k_defconfig b/arch/mips/configs/loongson2k_defconfig
-index e948ca487e2d..194f39d07332 100644
---- a/arch/mips/configs/loongson2k_defconfig
-+++ b/arch/mips/configs/loongson2k_defconfig
-@@ -243,6 +243,7 @@ CONFIG_MEDIA_USB_SUPPORT=y
- CONFIG_USB_VIDEO_CLASS=m
- CONFIG_DRM=y
- CONFIG_DRM_RADEON=y
-+CONFIG_DRM_ETNAVIV=m
- CONFIG_FB_RADEON=y
- CONFIG_LCD_CLASS_DEVICE=y
- CONFIG_LCD_PLATFORM=m
+diff --git a/arch/arm64/kvm/Makefile b/arch/arm64/kvm/Makefile
+index 989bb5dad2c8..04a53f71a6b6 100644
+--- a/arch/arm64/kvm/Makefile
++++ b/arch/arm64/kvm/Makefile
+@@ -5,14 +5,12 @@
+ 
+ ccflags-y += -I $(srctree)/$(src)
+ 
+-KVM=../../../virt/kvm
++include $(srctree)/virt/kvm/Makefile.kvm
+ 
+ obj-$(CONFIG_KVM) += kvm.o
+ obj-$(CONFIG_KVM) += hyp/
+ 
+-kvm-y := $(KVM)/kvm_main.o $(KVM)/coalesced_mmio.o $(KVM)/eventfd.o \
+-	 $(KVM)/vfio.o $(KVM)/irqchip.o $(KVM)/binary_stats.o \
+-	 arm.o mmu.o mmio.o psci.o perf.o hypercalls.o pvtime.o \
++kvm-y += arm.o mmu.o mmio.o psci.o perf.o hypercalls.o pvtime.o \
+ 	 inject_fault.o va_layout.o handle_exit.o \
+ 	 guest.o debug.o reset.o sys_regs.o \
+ 	 vgic-sys-reg-v3.o fpsimd.o pmu.o \
 -- 
-2.20.1
+2.31.1
 

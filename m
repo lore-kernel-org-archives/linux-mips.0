@@ -2,33 +2,33 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E7F5EC4332F
-	for <linux-mips@archiver.kernel.org>; Sun, 21 Nov 2021 12:55:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E86AEC4707E
+	for <linux-mips@archiver.kernel.org>; Sun, 21 Nov 2021 12:55:19 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238171AbhKUM6W (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Sun, 21 Nov 2021 07:58:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46518 "EHLO
+        id S238272AbhKUM6Y (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Sun, 21 Nov 2021 07:58:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46546 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238201AbhKUM6S (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Sun, 21 Nov 2021 07:58:18 -0500
+        with ESMTP id S238255AbhKUM6W (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Sun, 21 Nov 2021 07:58:22 -0500
 Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E37FC06173E;
-        Sun, 21 Nov 2021 04:55:13 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6592DC061714;
+        Sun, 21 Nov 2021 04:55:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=desiato.20200630; h=Sender:Content-Transfer-Encoding:
         MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
         Reply-To:Content-Type:Content-ID:Content-Description;
-        bh=qgYU5vzDBKxIUC/iB5UVJS4/0uLVrDIq5zuDRSYxPkA=; b=fRCnuTLe0cq87iNUBx5gtjOTYC
-        5qh48tZzUp1B5r9r23yWLMzczE5oOIdRUtMiMyrjt1pOrpHeeUKpvWqch3071FDnX5mKox5fRN3kA
-        sO9aiMiPOvLHIlsR1GBwO++A8qnH54U5bBxCtx51m4cyNlwiM9NyyXt6LUi6DyQREiewTZcolB5O/
-        /FYzNcFm8dusGqRQZN3fcRd5rLd5kXOG46fULB6pOpZq72ku+pkDFzjnXrbmd7o9nnK836Jmekdha
-        yAWD8NQDq3IRgN5K+jO1GHbd0miPs8zoHs0O6LwbhIKWFOV5REmqehTF3lErL46HtpsTqy8aC9twf
-        9TUuF2Ow==;
+        bh=q7VGHKinevDsRFWG1p27WCAPowIobtShfo12HVfpNfo=; b=bZMSpfLoLpQoq+/alSiCy+yR3J
+        Gsu/EUIb49vWBpnPdxKrQL8/NxDTrAKyeyS3q+FeHbOwLBav8eJGOppa7BAoFnLz6EETVocQ4wLVK
+        egVL6N4dMe9Di01FOUcd3odS9krAjJ+UrEqmTiedc0Ef8uEXX0bsO4kTzse1o+lFztSovHHDC4QPA
+        5Da3oYV1GXN3478yD3/ZUCBz9LXP8KeYFT0/7WgTYSHGLtlm6cTi82twZLcMxBh0UZwQDcAmWR4DH
+        wX/do7w3YoUm6i0laOxpKIcHoaGLsWrECQ82hfLh3jK+0BLO6JtZAJtKi2Yl70XmDGYba3NwQyCP9
+        jkrDVWvg==;
 Received: from i7.infradead.org ([2001:8b0:10b:1:21e:67ff:fecb:7a92])
         by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1momMw-00HIg9-A2; Sun, 21 Nov 2021 12:54:54 +0000
+        id 1momMw-00HIgF-Ri; Sun, 21 Nov 2021 12:54:55 +0000
 Received: from dwoodhou by i7.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1momMv-0002Vy-Ub; Sun, 21 Nov 2021 12:54:53 +0000
+        id 1momMw-0002WM-G5; Sun, 21 Nov 2021 12:54:54 +0000
 From:   David Woodhouse <dwmw2@infradead.org>
 To:     Paolo Bonzini <pbonzini@redhat.com>, kvm <kvm@vger.kernel.org>
 Cc:     Boris Ostrovsky <boris.ostrovsky@oracle.com>,
@@ -56,9 +56,9 @@ Cc:     Boris Ostrovsky <boris.ostrovsky@oracle.com>,
         linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
         kvm-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
         butt3rflyh4ck <butterflyhuangxx@gmail.com>
-Subject: [PATCH v5 01/12] KVM: Introduce CONFIG_HAVE_KVM_DIRTY_RING
-Date:   Sun, 21 Nov 2021 12:54:40 +0000
-Message-Id: <20211121125451.9489-2-dwmw2@infradead.org>
+Subject: [PATCH v5 07/12] KVM: arm64: Use Makefile.kvm for common files
+Date:   Sun, 21 Nov 2021 12:54:46 +0000
+Message-Id: <20211121125451.9489-8-dwmw2@infradead.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20211121125451.9489-1-dwmw2@infradead.org>
 References: <20211121125451.9489-1-dwmw2@infradead.org>
@@ -72,100 +72,33 @@ X-Mailing-List: linux-mips@vger.kernel.org
 
 From: David Woodhouse <dwmw@amazon.co.uk>
 
-I'd like to make the build include dirty_ring.c based on whether the
-arch wants it or not. That's a whole lot simpler if there's a config
-symbol instead of doing it implicitly on KVM_DIRTY_LOG_PAGE_OFFSET
-being set to something non-zero.
-
 Signed-off-by: David Woodhouse <dwmw@amazon.co.uk>
+Acked-by: Marc Zyngier <maz@kernel.org>
 ---
- arch/x86/kvm/Kconfig           | 1 +
- include/linux/kvm_dirty_ring.h | 8 ++++----
- virt/kvm/Kconfig               | 3 +++
- virt/kvm/kvm_main.c            | 4 ++--
- 4 files changed, 10 insertions(+), 6 deletions(-)
+ arch/arm64/kvm/Makefile | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/arch/x86/kvm/Kconfig b/arch/x86/kvm/Kconfig
-index 619186138176..d7fa0a42ac25 100644
---- a/arch/x86/kvm/Kconfig
-+++ b/arch/x86/kvm/Kconfig
-@@ -27,6 +27,7 @@ config KVM
- 	select MMU_NOTIFIER
- 	select HAVE_KVM_IRQCHIP
- 	select HAVE_KVM_IRQFD
-+	select HAVE_KVM_DIRTY_RING
- 	select IRQ_BYPASS_MANAGER
- 	select HAVE_KVM_IRQ_BYPASS
- 	select HAVE_KVM_IRQ_ROUTING
-diff --git a/include/linux/kvm_dirty_ring.h b/include/linux/kvm_dirty_ring.h
-index fb0fa18878e2..906f899813dc 100644
---- a/include/linux/kvm_dirty_ring.h
-+++ b/include/linux/kvm_dirty_ring.h
-@@ -27,9 +27,9 @@ struct kvm_dirty_ring {
- 	int index;
- };
+diff --git a/arch/arm64/kvm/Makefile b/arch/arm64/kvm/Makefile
+index 989bb5dad2c8..04a53f71a6b6 100644
+--- a/arch/arm64/kvm/Makefile
++++ b/arch/arm64/kvm/Makefile
+@@ -5,14 +5,12 @@
  
--#if (KVM_DIRTY_LOG_PAGE_OFFSET == 0)
-+#ifndef CONFIG_HAVE_KVM_DIRTY_RING
- /*
-- * If KVM_DIRTY_LOG_PAGE_OFFSET not defined, kvm_dirty_ring.o should
-+ * If CONFIG_HAVE_HVM_DIRTY_RING not defined, kvm_dirty_ring.o should
-  * not be included as well, so define these nop functions for the arch.
-  */
- static inline u32 kvm_dirty_ring_get_rsvd_entries(void)
-@@ -69,7 +69,7 @@ static inline bool kvm_dirty_ring_soft_full(struct kvm_dirty_ring *ring)
- 	return true;
- }
+ ccflags-y += -I $(srctree)/$(src)
  
--#else /* KVM_DIRTY_LOG_PAGE_OFFSET == 0 */
-+#else /* CONFIG_HAVE_KVM_DIRTY_RING */
+-KVM=../../../virt/kvm
++include $(srctree)/virt/kvm/Makefile.kvm
  
- u32 kvm_dirty_ring_get_rsvd_entries(void);
- int kvm_dirty_ring_alloc(struct kvm_dirty_ring *ring, int index, u32 size);
-@@ -92,6 +92,6 @@ struct page *kvm_dirty_ring_get_page(struct kvm_dirty_ring *ring, u32 offset);
- void kvm_dirty_ring_free(struct kvm_dirty_ring *ring);
- bool kvm_dirty_ring_soft_full(struct kvm_dirty_ring *ring);
+ obj-$(CONFIG_KVM) += kvm.o
+ obj-$(CONFIG_KVM) += hyp/
  
--#endif /* KVM_DIRTY_LOG_PAGE_OFFSET == 0 */
-+#endif /* CONFIG_HAVE_KVM_DIRTY_RING */
- 
- #endif	/* KVM_DIRTY_RING_H */
-diff --git a/virt/kvm/Kconfig b/virt/kvm/Kconfig
-index 62b39149b8c8..97cf5413ac25 100644
---- a/virt/kvm/Kconfig
-+++ b/virt/kvm/Kconfig
-@@ -13,6 +13,9 @@ config HAVE_KVM_IRQFD
- config HAVE_KVM_IRQ_ROUTING
-        bool
- 
-+config HAVE_KVM_DIRTY_RING
-+       bool
-+
- config HAVE_KVM_EVENTFD
-        bool
-        select EVENTFD
-diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
-index 72c6453bcef4..8eb8c962838d 100644
---- a/virt/kvm/kvm_main.c
-+++ b/virt/kvm/kvm_main.c
-@@ -3432,7 +3432,7 @@ EXPORT_SYMBOL_GPL(kvm_vcpu_on_spin);
- 
- static bool kvm_page_in_dirty_ring(struct kvm *kvm, unsigned long pgoff)
- {
--#if KVM_DIRTY_LOG_PAGE_OFFSET > 0
-+#ifdef CONFIG_HAVE_KVM_DIRTY_RING
- 	return (pgoff >= KVM_DIRTY_LOG_PAGE_OFFSET) &&
- 	    (pgoff < KVM_DIRTY_LOG_PAGE_OFFSET +
- 	     kvm->dirty_ring_size / PAGE_SIZE);
-@@ -4135,7 +4135,7 @@ static long kvm_vm_ioctl_check_extension_generic(struct kvm *kvm, long arg)
- 	case KVM_CAP_NR_MEMSLOTS:
- 		return KVM_USER_MEM_SLOTS;
- 	case KVM_CAP_DIRTY_LOG_RING:
--#if KVM_DIRTY_LOG_PAGE_OFFSET > 0
-+#ifdef CONFIG_HAVE_KVM_DIRTY_RING
- 		return KVM_DIRTY_RING_MAX_ENTRIES * sizeof(struct kvm_dirty_gfn);
- #else
- 		return 0;
+-kvm-y := $(KVM)/kvm_main.o $(KVM)/coalesced_mmio.o $(KVM)/eventfd.o \
+-	 $(KVM)/vfio.o $(KVM)/irqchip.o $(KVM)/binary_stats.o \
+-	 arm.o mmu.o mmio.o psci.o perf.o hypercalls.o pvtime.o \
++kvm-y += arm.o mmu.o mmio.o psci.o perf.o hypercalls.o pvtime.o \
+ 	 inject_fault.o va_layout.o handle_exit.o \
+ 	 guest.o debug.o reset.o sys_regs.o \
+ 	 vgic-sys-reg-v3.o fpsimd.o pmu.o \
 -- 
 2.31.1
 

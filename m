@@ -2,106 +2,79 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7B550C433EF
-	for <linux-mips@archiver.kernel.org>; Mon, 22 Nov 2021 10:17:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2DB50C433F5
+	for <linux-mips@archiver.kernel.org>; Mon, 22 Nov 2021 15:54:03 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238838AbhKVKUx (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 22 Nov 2021 05:20:53 -0500
-Received: from mail.loongson.cn ([114.242.206.163]:33114 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S236312AbhKVKUw (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Mon, 22 Nov 2021 05:20:52 -0500
-Received: from linux.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9AxZ+hCbpthlxkAAA--.616S2;
-        Mon, 22 Nov 2021 18:17:38 +0800 (CST)
-From:   Tiezhu Yang <yangtiezhu@loongson.cn>
+        id S240022AbhKVP5J (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 22 Nov 2021 10:57:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37054 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240048AbhKVP5I (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Mon, 22 Nov 2021 10:57:08 -0500
+Received: from andre.telenet-ops.be (andre.telenet-ops.be [IPv6:2a02:1800:120:4::f00:15])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79C08C061714
+        for <linux-mips@vger.kernel.org>; Mon, 22 Nov 2021 07:54:01 -0800 (PST)
+Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed20:e4da:38c:79e9:48bf])
+        by andre.telenet-ops.be with bizsmtp
+        id MTty2600n4yPVd601TtyLD; Mon, 22 Nov 2021 16:53:59 +0100
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1mpBdm-00EL1l-Fv; Mon, 22 Nov 2021 16:53:58 +0100
+Received: from geert by rox.of.borg with local (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1mpBdm-00HGkw-2p; Mon, 22 Nov 2021 16:53:58 +0100
+From:   Geert Uytterhoeven <geert+renesas@glider.be>
 To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc:     Xuefeng Li <lixuefeng@loongson.cn>, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] MIPS: Fix using smp_processor_id() in preemptible in show_cpuinfo()
-Date:   Mon, 22 Nov 2021 18:17:37 +0800
-Message-Id: <1637576257-11590-1-git-send-email-yangtiezhu@loongson.cn>
-X-Mailer: git-send-email 2.1.0
-X-CM-TRANSID: AQAAf9AxZ+hCbpthlxkAAA--.616S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7WF47JF1Dur17Zr47ZryftFb_yoW8CFy3pa
-        y7ArW8tr4UWw4DJa4rJrZagryrXFs8Za4IkayxJ3y3Za15WF1DXrnaqF4xuFyqgr4rta1I
-        gF9FqF4Yga48ZaUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvK14x267AKxVWUJVW8JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26r4j6ryUM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4j
-        6F4UM28EF7xvwVC2z280aVAFwI0_Cr1j6rxdM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
-        Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VAC
-        jcxG62k0Y48FwI0_Jr0_Gr1lYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r
-        1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAq
-        YI8I648v4I1lc2xSY4AK67AK6r4DMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r
-        1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CE
-        b7AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0x
-        vE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI
-        42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxh
-        VjvjDU0xZFpf9x0JU38n5UUUUU=
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert+renesas@glider.be>
+Subject: [PATCH] MIPS: CPC: Use bitfield helpers
+Date:   Mon, 22 Nov 2021 16:53:46 +0100
+Message-Id: <35f0f17e3d987afaa9cd09cdcb8131d42a53c3e1.1637593297.git.geert+renesas@glider.be>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <a1445d3abb45cfc95cb1b03180fd53caf122035b.1637593297.git.geert+renesas@glider.be>
+References: <a1445d3abb45cfc95cb1b03180fd53caf122035b.1637593297.git.geert+renesas@glider.be>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-There exists the following issue under DEBUG_PREEMPT:
+Use the FIELD_PREP() helper, instead of open-coding the same operation.
 
- BUG: using smp_processor_id() in preemptible [00000000] code: systemd/1
- caller is show_cpuinfo+0x460/0xea0
- ...
- Call Trace:
- [<ffffffff8020f0dc>] show_stack+0x94/0x128
- [<ffffffff80e6cab4>] dump_stack_lvl+0x94/0xd8
- [<ffffffff80e74c5c>] check_preemption_disabled+0x104/0x110
- [<ffffffff802209c8>] show_cpuinfo+0x460/0xea0
- [<ffffffff80539d54>] seq_read_iter+0xfc/0x4f8
- [<ffffffff804fcc10>] new_sync_read+0x110/0x1b8
- [<ffffffff804ff57c>] vfs_read+0x1b4/0x1d0
- [<ffffffff804ffb18>] ksys_read+0xd0/0x110
- [<ffffffff8021c090>] syscall_common+0x34/0x58
-
-We can see the following call trace:
- show_cpuinfo()
-   cpu_has_fpu
-     current_cpu_data
-       smp_processor_id()
-
- $ addr2line -f -e vmlinux 0xffffffff802209c8
- show_cpuinfo
- arch/mips/kernel/proc.c:188
-
- $ head -188 arch/mips/kernel/proc.c | tail -1
-	 if (cpu_has_fpu)
-
- arch/mips/include/asm/cpu-features.h
- #  define cpu_has_fpu		(current_cpu_data.options & MIPS_CPU_FPU)
-
- arch/mips/include/asm/cpu-info.h
- #define current_cpu_data cpu_data[smp_processor_id()]
-
-Based on the above analysis, fix the issue by disabling preemption
-around cpu_has_fpu in show_cpuinfo().
-
-Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
 ---
- arch/mips/kernel/proc.c | 2 ++
- 1 file changed, 2 insertions(+)
+Compile-tested only.
 
-diff --git a/arch/mips/kernel/proc.c b/arch/mips/kernel/proc.c
-index 376a6e2..c6c2661 100644
---- a/arch/mips/kernel/proc.c
-+++ b/arch/mips/kernel/proc.c
-@@ -185,8 +185,10 @@ static int show_cpuinfo(struct seq_file *m, void *v)
- 		seq_puts(m, " tx39_cache");
- 	if (cpu_has_octeon_cache)
- 		seq_puts(m, " octeon_cache");
-+	preempt_disable();
- 	if (cpu_has_fpu)
- 		seq_puts(m, " fpu");
-+	preempt_enable();
- 	if (cpu_has_32fpr)
- 		seq_puts(m, " 32fpr");
- 	if (cpu_has_cache_cdex_p)
+See "[PATCH 00/17] Non-const bitfield helper conversions"
+(https://lore.kernel.org/r/cover.1637592133.git.geert+renesas@glider.be)
+for background and more conversions.
+---
+ arch/mips/kernel/mips-cpc.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/arch/mips/kernel/mips-cpc.c b/arch/mips/kernel/mips-cpc.c
+index 8d2535123f11c8f3..17aff13cd7ce6ea7 100644
+--- a/arch/mips/kernel/mips-cpc.c
++++ b/arch/mips/kernel/mips-cpc.c
+@@ -4,6 +4,7 @@
+  * Author: Paul Burton <paul.burton@mips.com>
+  */
+ 
++#include <linux/bitfield.h>
+ #include <linux/errno.h>
+ #include <linux/percpu.h>
+ #include <linux/of.h>
+@@ -97,7 +98,7 @@ void mips_cpc_lock_other(unsigned int core)
+ 	curr_core = cpu_core(&current_cpu_data);
+ 	spin_lock_irqsave(&per_cpu(cpc_core_lock, curr_core),
+ 			  per_cpu(cpc_core_lock_flags, curr_core));
+-	write_cpc_cl_other(core << __ffs(CPC_Cx_OTHER_CORENUM));
++	write_cpc_cl_other(FIELD_PREP(CPC_Cx_OTHER_CORENUM, core));
+ 
+ 	/*
+ 	 * Ensure the core-other region reflects the appropriate core &
 -- 
-2.1.0
+2.25.1
 

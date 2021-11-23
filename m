@@ -2,36 +2,36 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BCC1CC4332F
-	for <linux-mips@archiver.kernel.org>; Tue, 23 Nov 2021 17:46:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 19535C43217
+	for <linux-mips@archiver.kernel.org>; Tue, 23 Nov 2021 17:47:00 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239539AbhKWRuC (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 23 Nov 2021 12:50:02 -0500
-Received: from mo4-p04-ob.smtp.rzone.de ([85.215.255.123]:12016 "EHLO
-        mo4-p04-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239389AbhKWRt6 (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Tue, 23 Nov 2021 12:49:58 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1637689590;
+        id S239498AbhKWRt7 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 23 Nov 2021 12:49:59 -0500
+Received: from mo4-p03-ob.smtp.rzone.de ([85.215.255.101]:34132 "EHLO
+        mo4-p03-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239155AbhKWRtv (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Tue, 23 Nov 2021 12:49:51 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1637689588;
     s=strato-dkim-0002; d=goldelico.com;
     h=References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Cc:Date:
     From:Subject:Sender;
-    bh=01x0k1o61wfJzMyaExuIPHQBp9qWDslUZ9lTMl4gXbQ=;
-    b=MG+O4aSswZBts1CrC6VpCztlg25BSEbZHX+xsNHd7oMzbDgfu8nXie4Em2TTfy97oe
-    2pqKV9bR/69/xEFtVqRiA8+t/qFVHfhx5uJwfDjdEPAzgA3P5Z/FYlhOwO7ko9x6Yt91
-    iZsax/gvqgO6RSnhUaDEdWAb/h9I7jrouieL0ipbVeGuRUVkz4yvVPGByOJ/7zfFd/CU
-    9SJvQVBDHFaHEIBFhpVgaagMFolYktTLpxKKUOpD2yR+660WWxygzgtyYV6A1h4aH8pG
-    hMwbDFDaagshbXyK8+8l3tHyj9iPUzvM8DByyZ3OnClOK+IdaL0c2Jfky524TdMZSXFb
-    hl1Q==
+    bh=Q3ovXE46CMHAv4DP0A184nGXTqyiNm+RsxkVkHssYI8=;
+    b=Szl2jymmeCVaW4y21xCFxr5lK968U2zBBx96A+ORQCGYdiUf7FH5hY0PRKRx9NQ6ug
+    8OVpkUDBn4L85bMN3uVZXW47N1JILMjU/j6a+iByzJiZtUsyK1ZEpG8A/3Q74VIjfClT
+    +wM11Q7cYogzmqpAdp8wXPOtxpqzw5KADiM70TydJjoMPobRrngcSaaABzyUmZOl6Zva
+    P/poIKXcgV1wio1QhU/OB2mBRZa+iJto/15XJ2HhlgUI0910qf11ZaY1gpg3pKOcvzlw
+    Ei2960RcQVy9rVNqb/swkJDiy9ADdGvr0b6C8onIs0AuXbKa2BYelUnaqaemC69bGQkj
+    BOjA==
 Authentication-Results: strato.com;
     dkim=none
 X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMhflhwDubTJ9o12DNOsPj0lByOdcKVX0"
 X-RZG-CLASS-ID: mo00
 Received: from iMac.fritz.box
     by smtp.strato.de (RZmta 47.34.6 DYNA|AUTH)
-    with ESMTPSA id g09b5fxANHkT7fs
+    with ESMTPSA id g09b5fxANHkR7fp
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
         (Client did not present a certificate);
-    Tue, 23 Nov 2021 18:46:29 +0100 (CET)
+    Tue, 23 Nov 2021 18:46:27 +0100 (CET)
 From:   "H. Nikolaus Schaller" <hns@goldelico.com>
 To:     Paul Cercueil <paul@crapouillou.net>,
         Rob Herring <robh+dt@kernel.org>,
@@ -59,10 +59,10 @@ To:     Paul Cercueil <paul@crapouillou.net>,
 Cc:     devicetree@vger.kernel.org, linux-mips@vger.kernel.org,
         linux-kernel@vger.kernel.org, letux-kernel@openphoenux.org,
         Jonas Karlman <jonas@kwiboo.se>,
-        dri-devel@lists.freedesktop.org
-Subject: [PATCH v7 6/8] MIPS: DTS: CI20: Add DT nodes for HDMI setup
-Date:   Tue, 23 Nov 2021 18:46:21 +0100
-Message-Id: <999ab653ff52622fa003dfde85ad2776551fba76.1637689583.git.hns@goldelico.com>
+        dri-devel@lists.freedesktop.org, Rob Herring <robh@kernel.org>
+Subject: [PATCH v7 3/8] dt-bindings: display: Add ingenic,jz4780-dw-hdmi DT Schema
+Date:   Tue, 23 Nov 2021 18:46:18 +0100
+Message-Id: <7f97457be3b4090ee6ffd2662ee6732772f03be2.1637689583.git.hns@goldelico.com>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <cover.1637689583.git.hns@goldelico.com>
 References: <cover.1637689583.git.hns@goldelico.com>
@@ -72,142 +72,119 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-From: Paul Boddie <paul@boddie.org.uk>
+From: Sam Ravnborg <sam@ravnborg.org>
 
-We need to hook up
-* HDMI connector
-* HDMI power regulator
-* JZ4780_CLK_HDMI @ 27 MHz
-* DDC pinmux
-* HDMI and LCDC endpoint connections
+Add DT bindings for the hdmi driver for the Ingenic JZ4780 SoC.
+Based on .txt binding from Zubair Lutfullah Kakakhel
 
-Signed-off-by: Paul Boddie <paul@boddie.org.uk>
+We also add generic ddc-i2c-bus to synopsys,dw-hdmi.yaml
+
+Signed-off-by: Sam Ravnborg <sam@ravnborg.org>
 Signed-off-by: H. Nikolaus Schaller <hns@goldelico.com>
+Cc: Rob Herring <robh@kernel.org>
+Cc: devicetree@vger.kernel.org
 ---
- arch/mips/boot/dts/ingenic/ci20.dts | 83 +++++++++++++++++++++++++++--
- 1 file changed, 80 insertions(+), 3 deletions(-)
+ .../display/bridge/ingenic,jz4780-hdmi.yaml   | 76 +++++++++++++++++++
+ .../display/bridge/synopsys,dw-hdmi.yaml      |  3 +
+ 2 files changed, 79 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/display/bridge/ingenic,jz4780-hdmi.yaml
 
-diff --git a/arch/mips/boot/dts/ingenic/ci20.dts b/arch/mips/boot/dts/ingenic/ci20.dts
-index b249a4f0f6b62..15cf03670693f 100644
---- a/arch/mips/boot/dts/ingenic/ci20.dts
-+++ b/arch/mips/boot/dts/ingenic/ci20.dts
-@@ -78,6 +78,18 @@ eth0_power: fixedregulator@0 {
- 		enable-active-high;
- 	};
+diff --git a/Documentation/devicetree/bindings/display/bridge/ingenic,jz4780-hdmi.yaml b/Documentation/devicetree/bindings/display/bridge/ingenic,jz4780-hdmi.yaml
+new file mode 100644
+index 0000000000000..190ca4521b1d0
+--- /dev/null
++++ b/Documentation/devicetree/bindings/display/bridge/ingenic,jz4780-hdmi.yaml
+@@ -0,0 +1,76 @@
++# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/bridge/ingenic,jz4780-hdmi.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Bindings for Ingenic JZ4780 HDMI Transmitter
++
++maintainers:
++  - H. Nikolaus Schaller <hns@goldelico.com>
++
++description: |
++  The HDMI Transmitter in the Ingenic JZ4780 is a Synopsys DesignWare HDMI 1.4
++  TX controller IP with accompanying PHY IP.
++
++allOf:
++  - $ref: bridge/synopsys,dw-hdmi.yaml#
++
++properties:
++  compatible:
++    const: ingenic,jz4780-dw-hdmi
++
++  reg-io-width:
++    const: 4
++
++  clocks:
++    maxItems: 2
++
++  hdmi-5v-supply:
++    description: Optional regulator to provide +5V at the connector
++
++  ports:
++    $ref: /schemas/graph.yaml#/properties/ports
++
++required:
++    - compatible
++    - clocks
++    - clock-names
++    - ports
++    - reg-io-width
++
++unevaluatedPropertes: false
++
++examples:
++  - |
++    #include <dt-bindings/clock/jz4780-cgu.h>
++
++    hdmi: hdmi@10180000 {
++        compatible = "ingenic,jz4780-dw-hdmi";
++        reg = <0x10180000 0x8000>;
++        reg-io-width = <4>;
++        ddc-i2c-bus = <&i2c4>;
++        interrupt-parent = <&intc>;
++        interrupts = <3>;
++        clocks = <&cgu JZ4780_CLK_AHB0>, <&cgu JZ4780_CLK_HDMI>;
++        clock-names = "iahb", "isfr";
++
++        ports {
++            #address-cells = <1>;
++            #size-cells = <0>;
++            hdmi_in: port@0 {
++                reg = <0>;
++                dw_hdmi_in: endpoint {
++                    remote-endpoint = <&jz4780_lcd_out>;
++                };
++            };
++            hdmi_out: port@1 {
++                reg = <1>;
++                dw_hdmi_out: endpoint {
++                    remote-endpoint = <&hdmi_con>;
++                };
++            };
++        };
++    };
++
++...
+diff --git a/Documentation/devicetree/bindings/display/bridge/synopsys,dw-hdmi.yaml b/Documentation/devicetree/bindings/display/bridge/synopsys,dw-hdmi.yaml
+index 9be44a682e67a..9cbeabaee0968 100644
+--- a/Documentation/devicetree/bindings/display/bridge/synopsys,dw-hdmi.yaml
++++ b/Documentation/devicetree/bindings/display/bridge/synopsys,dw-hdmi.yaml
+@@ -50,6 +50,9 @@ properties:
+   interrupts:
+     maxItems: 1
  
-+	hdmi_out: connector {
-+		compatible = "hdmi-connector";
-+		label = "HDMI OUT";
-+		type = "a";
++  ddc-i2c-bus:
++    description: An I2C interface if the internal DDC I2C driver is not to be used
 +
-+		port {
-+			hdmi_con: endpoint {
-+				remote-endpoint = <&dw_hdmi_out>;
-+			};
-+		};
-+	};
-+
- 	ir: ir {
- 		compatible = "gpio-ir-receiver";
- 		gpios = <&gpe 3 GPIO_ACTIVE_LOW>;
-@@ -102,6 +114,17 @@ otg_power: fixedregulator@2 {
- 		gpio = <&gpf 14 GPIO_ACTIVE_LOW>;
- 		enable-active-high;
- 	};
-+
-+	hdmi_power: fixedregulator@3 {
-+		compatible = "regulator-fixed";
-+
-+		regulator-name = "hdmi_power";
-+		regulator-min-microvolt = <5000000>;
-+		regulator-max-microvolt = <5000000>;
-+
-+		gpio = <&gpa 25 0>;
-+		enable-active-high;
-+	};
- };
+ additionalProperties: true
  
- &ext {
-@@ -114,11 +137,13 @@ &cgu {
- 	 * precision.
- 	 */
- 	assigned-clocks = <&cgu JZ4780_CLK_OTGPHY>, <&cgu JZ4780_CLK_RTC>,
--			  <&cgu JZ4780_CLK_SSIPLL>, <&cgu JZ4780_CLK_SSI>;
-+			  <&cgu JZ4780_CLK_SSIPLL>, <&cgu JZ4780_CLK_SSI>,
-+			  <&cgu JZ4780_CLK_HDMI>;
- 	assigned-clock-parents = <0>, <&cgu JZ4780_CLK_RTCLK>,
- 				 <&cgu JZ4780_CLK_MPLL>,
--				 <&cgu JZ4780_CLK_SSIPLL>;
--	assigned-clock-rates = <48000000>, <0>, <54000000>;
-+				 <&cgu JZ4780_CLK_SSIPLL>,
-+				 <0>;
-+	assigned-clock-rates = <48000000>, <0>, <54000000>, <0>, <27000000>;
- };
- 
- &tcu {
-@@ -509,6 +534,19 @@ pins_i2c4: i2c4 {
- 		bias-disable;
- 	};
- 
-+	pins_hdmi_ddc: hdmi_ddc {
-+		function = "hdmi-ddc";
-+		groups = "hdmi-ddc";
-+		bias-disable;
-+	};
-+
-+	/* switch to PF25 as gpio driving DDC_SDA low */
-+	pins_hdmi_ddc_unwedge: hdmi_ddc {
-+		function = "hdmi-ddc";
-+		groups = "hdmi-ddc";
-+		bias-disable;
-+	};
-+
- 	pins_nemc: nemc {
- 		function = "nemc";
- 		groups = "nemc-data", "nemc-cle-ale", "nemc-rd-we", "nemc-frd-fwe";
-@@ -539,3 +577,42 @@ pins_mmc1: mmc1 {
- 		bias-disable;
- 	};
- };
-+
-+&hdmi {
-+	status = "okay";
-+
-+	pinctrl-names = "default", "unwedge";
-+	pinctrl-0 = <&pins_hdmi_ddc>;
-+	pinctrl-1 = <&pins_hdmi_ddc_unwedge>;
-+
-+	hdmi-5v-supply = <&hdmi_power>;
-+
-+	ports {
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+
-+		port@0 {
-+			reg = <0>;
-+			dw_hdmi_in: endpoint {
-+				remote-endpoint = <&lcd_out>;
-+			};
-+		};
-+
-+		port@1 {
-+			reg = <1>;
-+			dw_hdmi_out: endpoint {
-+				remote-endpoint = <&hdmi_con>;
-+			};
-+		};
-+	};
-+};
-+
-+&lcdc0 {
-+	status = "okay";
-+
-+	port {
-+		lcd_out: endpoint {
-+			remote-endpoint = <&dw_hdmi_in>;
-+		};
-+	};
-+};
+ ...
 -- 
 2.33.0
 

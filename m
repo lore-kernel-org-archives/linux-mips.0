@@ -2,107 +2,63 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E4BC1C433FE
-	for <linux-mips@archiver.kernel.org>; Wed, 24 Nov 2021 12:28:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3797DC433FE
+	for <linux-mips@archiver.kernel.org>; Wed, 24 Nov 2021 12:37:30 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244234AbhKXMcA (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 24 Nov 2021 07:32:00 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44540 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1344084AbhKXMa2 (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Wed, 24 Nov 2021 07:30:28 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B37E560240;
-        Wed, 24 Nov 2021 12:18:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637756332;
-        bh=KBBIBhEHEYoNBE6xqmrxaNTxUXviafPn9GuKMSAPz/8=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mYIJimGdYP6VRWu2oUUFOpZqbM5Xll5CfjsqTsEWCQZgHMoYaslvzTR9UnRwK3rH6
-         Tl+v0bg/FMZ+wTnH4ldJplEAMzSqfSwrkHEB2R1+d73z4+BNC7fyMg1KBua0sNQwMa
-         nHH400HLQTWsSKdCO3bxWRSQHxUHunm2MtlhQjRs=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Maciej Rozycki <macro@orcam.me.uk>, linux-mips@vger.kernel.org,
-        "Eric W. Biederman" <ebiederm@xmission.com>
-Subject: [PATCH 4.14 050/251] signal/mips: Update (_save|_restore)_fp_context to fail with -EFAULT
-Date:   Wed, 24 Nov 2021 12:54:52 +0100
-Message-Id: <20211124115711.983161552@linuxfoundation.org>
-X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115710.214900256@linuxfoundation.org>
-References: <20211124115710.214900256@linuxfoundation.org>
-User-Agent: quilt/0.66
+        id S1345097AbhKXMki (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 24 Nov 2021 07:40:38 -0500
+Received: from mxout03.lancloud.ru ([45.84.86.113]:38328 "EHLO
+        mxout03.lancloud.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1344677AbhKXMig (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 24 Nov 2021 07:38:36 -0500
+Received: from LanCloud
+DKIM-Filter: OpenDKIM Filter v2.11.0 mxout03.lancloud.ru C40D120EE924
+Received: from LanCloud
+Received: from LanCloud
+Received: from LanCloud
+Message-ID: <157fe249-d404-5f16-18ab-130103483ccf@omp.ru>
+Date:   Wed, 24 Nov 2021 15:35:15 +0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.3.2
+Subject: Re: [PATCH 4/4] MIPS: loongson64: fix FTLB configuration
+Content-Language: en-US
+To:     Huang Pei <huangpei@loongson.cn>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        <ambrosehua@gmail.com>
+CC:     Bibo Mao <maobibo@loongson.cn>, <linux-mips@vger.kernel.org>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Paul Burton <paulburton@kernel.org>,
+        Li Xuefeng <lixuefeng@loongson.cn>,
+        Yang Tiezhu <yangtiezhu@loongson.cn>,
+        Gao Juxin <gaojuxin@loongson.cn>,
+        Huacai Chen <chenhuacai@loongson.cn>
+References: <20211124101241.10196-1-huangpei@loongson.cn>
+ <20211124101241.10196-5-huangpei@loongson.cn>
+From:   Sergey Shtylyov <s.shtylyov@omp.ru>
+Organization: Open Mobile Platform
+In-Reply-To: <20211124101241.10196-5-huangpei@loongson.cn>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [192.168.11.198]
+X-ClientProxiedBy: LFEXT02.lancloud.ru (fd00:f066::142) To
+ LFEX1907.lancloud.ru (fd00:f066::207)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-From: Eric W. Biederman <ebiederm@xmission.com>
+On 24.11.2021 13:12, Huang Pei wrote:
 
-commit 95bf9d646c3c3f95cb0be7e703b371db8da5be68 upstream.
+> Commit "da1bd29742b1" ("MIPS: Loongson64: Probe CPU features via
 
-When an instruction to save or restore a register from the stack fails
-in _save_fp_context or _restore_fp_context return with -EFAULT.  This
-change was made to r2300_fpu.S[1] but it looks like it got lost with
-the introduction of EX2[2].  This is also what the other implementation
-of _save_fp_context and _restore_fp_context in r4k_fpu.S does, and
-what is needed for the callers to be able to handle the error.
+    Sorry for more nitpicking... "" not needed around the SHA1 ID. Hadn't I 
+told you it should look the same as in the Fixes: tag?
 
-Furthermore calling do_exit(SIGSEGV) from bad_stack is wrong because
-it does not terminate the entire process it just terminates a single
-thread.
+> CPUCFG") makes 'set_ftlb_enable' called under c->cputype unset,
+> which leaves FTLB disabled on BOTH 3A2000 and 3A3000
+> 
+> Fixes: da1bd29742b1 ("MIPS: Loongson64: Probe CPU features via CPUCFG")
+> Signed-off-by: Huang Pei <huangpei@loongson.cn>
+[...]
 
-As the changed code was the only caller of arch/mips/kernel/syscall.c:bad_stack
-remove the problematic and now unused helper function.
-
-Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc: Maciej Rozycki <macro@orcam.me.uk>
-Cc: linux-mips@vger.kernel.org
-[1] 35938a00ba86 ("MIPS: Fix ISA I FP sigcontext access violation handling")
-[2] f92722dc4545 ("MIPS: Correct MIPS I FP sigcontext layout")
-Cc: stable@vger.kernel.org
-Fixes: f92722dc4545 ("MIPS: Correct MIPS I FP sigcontext layout")
-Acked-by: Maciej W. Rozycki <macro@orcam.me.uk>
-Acked-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Link: https://lkml.kernel.org/r/20211020174406.17889-5-ebiederm@xmission.com
-Signed-off-by: Eric W. Biederman <ebiederm@xmission.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- arch/mips/kernel/r2300_fpu.S |    4 ++--
- arch/mips/kernel/syscall.c   |    9 ---------
- 2 files changed, 2 insertions(+), 11 deletions(-)
-
---- a/arch/mips/kernel/r2300_fpu.S
-+++ b/arch/mips/kernel/r2300_fpu.S
-@@ -29,8 +29,8 @@
- #define EX2(a,b)						\
- 9:	a,##b;							\
- 	.section __ex_table,"a";				\
--	PTR	9b,bad_stack;					\
--	PTR	9b+4,bad_stack;					\
-+	PTR	9b,fault;					\
-+	PTR	9b+4,fault;					\
- 	.previous
- 
- 	.set	mips1
---- a/arch/mips/kernel/syscall.c
-+++ b/arch/mips/kernel/syscall.c
-@@ -233,12 +233,3 @@ SYSCALL_DEFINE3(cachectl, char *, addr,
- {
- 	return -ENOSYS;
- }
--
--/*
-- * If we ever come here the user sp is bad.  Zap the process right away.
-- * Due to the bad stack signaling wouldn't work.
-- */
--asmlinkage void bad_stack(void)
--{
--	do_exit(SIGSEGV);
--}
-
-
+MBR, Sergey

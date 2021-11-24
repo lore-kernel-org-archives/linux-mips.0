@@ -2,39 +2,45 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8EB0BC433EF
-	for <linux-mips@archiver.kernel.org>; Wed, 24 Nov 2021 13:31:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5FEBFC433FE
+	for <linux-mips@archiver.kernel.org>; Wed, 24 Nov 2021 13:34:55 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349906AbhKXNfB (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 24 Nov 2021 08:35:01 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40458 "EHLO mail.kernel.org"
+        id S1348292AbhKXNiE (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 24 Nov 2021 08:38:04 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51370 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1349407AbhKXNdA (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Wed, 24 Nov 2021 08:33:00 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 217FA61BE1;
-        Wed, 24 Nov 2021 12:53:29 +0000 (UTC)
+        id S1352461AbhKXNgB (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Wed, 24 Nov 2021 08:36:01 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EBA8061C12;
+        Wed, 24 Nov 2021 12:54:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637758409;
-        bh=3QpMc6es3Ml9aFT6cKA/RtDBBLQlRs5E4SgwNKiZvzA=;
+        s=korg; t=1637758493;
+        bh=cbAkr7roA/XUOtkCmC8I3swOMtrHElogX+dp0d5mgIg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZUEJ3Ng3UK94/1HUFqURB4CbhH7LWJMbl5a2eVfswtf/WT0pNrRVYSn8WqgtjGVhm
-         CnrDgqfae3undxh0+c+Os/VZi/4X1Q6A5PPyolMK/PyONVgt8oYvIC1oPbFiDsYCU0
-         3O5d/3viU/sp8okoUDLDaEu8IKLDekTQPaXXGgno=
+        b=tdZtB97b4bU5TiusQi0rF4NTllf/ePkwm09iX5sSKSoIW9o+EjT/Mqe18YI9xrsv/
+         mzWTf5yum180nMpIPrjDWkSlksXaLBKBKqg4pouiTp0uJwFD2UKJLWR10ShXH+PgcL
+         xOwLMAr1jQHaZFJ/u6QhMkOPFuPbEgzpVw0cK3fg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
         kernel test robot <lkp@intel.com>,
+        "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>,
+        Artur Rojek <contact@artur-rojek.eu>,
+        Paul Cercueil <paul@crapouillou.net>,
+        linux-mips@vger.kernel.org, Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        linux-iio@vger.kernel.org, Florian Fainelli <f.fainelli@gmail.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        bcm-kernel-feedback-list@broadcom.com,
+        Jonas Gorski <jonas.gorski@gmail.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
         Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        bcm-kernel-feedback-list@broadcom.com, linux-mips@vger.kernel.org,
-        Paul Burton <paulburton@kernel.org>,
-        Maxime Bizon <mbizon@freebox.fr>,
-        Ralf Baechle <ralf@linux-mips.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 060/154] mips: BCM63XX: ensure that CPU_SUPPORTS_32BIT_KERNEL is set
-Date:   Wed, 24 Nov 2021 12:57:36 +0100
-Message-Id: <20211124115704.266995152@linuxfoundation.org>
+Subject: [PATCH 5.10 089/154] mips: bcm63xx: add support for clk_get_parent()
+Date:   Wed, 24 Nov 2021 12:58:05 +0100
+Message-Id: <20211124115705.188942030@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
 In-Reply-To: <20211124115702.361983534@linuxfoundation.org>
 References: <20211124115702.361983534@linuxfoundation.org>
@@ -48,60 +54,61 @@ X-Mailing-List: linux-mips@vger.kernel.org
 
 From: Randy Dunlap <rdunlap@infradead.org>
 
-[ Upstream commit 5eeaafc8d69373c095e461bdb39e5c9b62228ac5 ]
+[ Upstream commit e8f67482e5a4bc8d0b65d606d08cb60ee123b468 ]
 
-Several header files need info on CONFIG_32BIT or CONFIG_64BIT,
-but kconfig symbol BCM63XX does not provide that info. This leads
-to many build errors, e.g.:
+BCM63XX selects HAVE_LEGACY_CLK but does not provide/support
+clk_get_parent(), so add a simple implementation of that
+function so that callers of it will build without errors.
 
-   arch/mips/include/asm/page.h:196:13: error: use of undeclared identifier 'CAC_BASE'
-           return x - PAGE_OFFSET + PHYS_OFFSET;
-   arch/mips/include/asm/mach-generic/spaces.h:91:23: note: expanded from macro 'PAGE_OFFSET'
-   #define PAGE_OFFSET             (CAC_BASE + PHYS_OFFSET)
-   arch/mips/include/asm/io.h:134:28: error: use of undeclared identifier 'CAC_BASE'
-           return (void *)(address + PAGE_OFFSET - PHYS_OFFSET);
-   arch/mips/include/asm/mach-generic/spaces.h:91:23: note: expanded from macro 'PAGE_OFFSET'
-   #define PAGE_OFFSET             (CAC_BASE + PHYS_OFFSET)
+Fixes these build errors:
 
-arch/mips/include/asm/uaccess.h:82:10: error: use of undeclared identifier '__UA_LIMIT'
-           return (__UA_LIMIT & (addr | (addr + size) | __ua_size(size))) == 0;
+mips-linux-ld: drivers/iio/adc/ingenic-adc.o: in function `jz4770_adc_init_clk_div':
+ingenic-adc.c:(.text+0xe4): undefined reference to `clk_get_parent'
+mips-linux-ld: drivers/iio/adc/ingenic-adc.o: in function `jz4725b_adc_init_clk_div':
+ingenic-adc.c:(.text+0x1b8): undefined reference to `clk_get_parent'
 
-Selecting the SYS_HAS_CPU_BMIPS* symbols causes SYS_HAS_CPU_BMIPS to be
-set, which then selects CPU_SUPPORT_32BIT_KERNEL, which causes
-CONFIG_32BIT to be set. (a bit more indirect than v1 [RFC].)
-
-Fixes: e7300d04bd08 ("MIPS: BCM63xx: Add support for the Broadcom BCM63xx family of SOCs.")
+Fixes: e7300d04bd08 ("MIPS: BCM63xx: Add support for the Broadcom BCM63xx family of SOCs." )
 Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
 Reported-by: kernel test robot <lkp@intel.com>
-Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc: Florian Fainelli <f.fainelli@gmail.com>
-Cc: bcm-kernel-feedback-list@broadcom.com
+Suggested-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
+Cc: Artur Rojek <contact@artur-rojek.eu>
+Cc: Paul Cercueil <paul@crapouillou.net>
 Cc: linux-mips@vger.kernel.org
-Cc: Paul Burton <paulburton@kernel.org>
-Cc: Maxime Bizon <mbizon@freebox.fr>
-Cc: Ralf Baechle <ralf@linux-mips.org>
-Suggested-by: Florian Fainelli <f.fainelli@gmail.com>
+Cc: Jonathan Cameron <jic23@kernel.org>
+Cc: Lars-Peter Clausen <lars@metafoo.de>
+Cc: linux-iio@vger.kernel.org
+Cc: Florian Fainelli <f.fainelli@gmail.com>
+Cc: Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc: Russell King <linux@armlinux.org.uk>
+Cc: bcm-kernel-feedback-list@broadcom.com
+Cc: Jonas Gorski <jonas.gorski@gmail.com>
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Acked-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Acked-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
 Acked-by: Florian Fainelli <f.fainelli@gmail.com>
 Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/mips/Kconfig | 3 +++
- 1 file changed, 3 insertions(+)
+ arch/mips/bcm63xx/clk.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-index 5c6e9ed9b2a75..94a748e95231b 100644
---- a/arch/mips/Kconfig
-+++ b/arch/mips/Kconfig
-@@ -320,6 +320,9 @@ config BCM63XX
- 	select SYS_SUPPORTS_32BIT_KERNEL
- 	select SYS_SUPPORTS_BIG_ENDIAN
- 	select SYS_HAS_EARLY_PRINTK
-+	select SYS_HAS_CPU_BMIPS32_3300
-+	select SYS_HAS_CPU_BMIPS4350
-+	select SYS_HAS_CPU_BMIPS4380
- 	select SWAP_IO_SPACE
- 	select GPIOLIB
- 	select MIPS_L1_CACHE_SHIFT_4
+diff --git a/arch/mips/bcm63xx/clk.c b/arch/mips/bcm63xx/clk.c
+index 164115944a7fd..aba6e2d6a736c 100644
+--- a/arch/mips/bcm63xx/clk.c
++++ b/arch/mips/bcm63xx/clk.c
+@@ -381,6 +381,12 @@ void clk_disable(struct clk *clk)
+ 
+ EXPORT_SYMBOL(clk_disable);
+ 
++struct clk *clk_get_parent(struct clk *clk)
++{
++	return NULL;
++}
++EXPORT_SYMBOL(clk_get_parent);
++
+ unsigned long clk_get_rate(struct clk *clk)
+ {
+ 	if (!clk)
 -- 
 2.33.0
 

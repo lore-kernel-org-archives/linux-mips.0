@@ -2,42 +2,37 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 12753C433EF
-	for <linux-mips@archiver.kernel.org>; Wed, 24 Nov 2021 13:23:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 16676C4332F
+	for <linux-mips@archiver.kernel.org>; Wed, 24 Nov 2021 13:31:03 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346484AbhKXN0h (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 24 Nov 2021 08:26:37 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48368 "EHLO mail.kernel.org"
+        id S1349520AbhKXNeL (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 24 Nov 2021 08:34:11 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43334 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1348715AbhKXNYk (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Wed, 24 Nov 2021 08:24:40 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E4C1460F5B;
-        Wed, 24 Nov 2021 12:48:51 +0000 (UTC)
+        id S1351446AbhKXNbn (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Wed, 24 Nov 2021 08:31:43 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0661C61555;
+        Wed, 24 Nov 2021 12:52:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1637758132;
-        bh=LnsjCsiDjV+3Z6nJ8J0l4++nkVSPwyLidA/IJqTgKxY=;
+        s=korg; t=1637758362;
+        bh=mhSzMwWW4rI8F89tcktNvyzwyOgUJFo1iiLUthPJbbQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GAxqCew/tBAOTD7HctKlmi15egJMbEtymiZrIiHFcR+H4NVLlFwvfS4AcUNsO9jiP
-         YMF8a2/nC5UhkqG275grki5YlCbx2KvFzQi3Yk15aWyMsgxN/P9E34HG5oB0vwGCEH
-         Jn5OhOkRhFNDaQIcCBxCUgREE77VRhq/Nt72368M=
+        b=N6j1E1uz8eV26S5FQtipFV/sjGUm+z2IJ7tq3+tbT9UkfI8fNE8V03O0oufQv/lre
+         T6NoUW+fSazXmKINu7YzPkSVHxmbyPFiUZ9izd0i7vxbRvLJQoePZACKyAeJYlR4dj
+         3Cjzs9b6+ToHbjNvxytcbe3gaG8Fc53ObEEUVYzo=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
-        kernel test robot <lkp@intel.com>,
+        stable@vger.kernel.org, linux-mips@vger.kernel.org,
+        Bart Van Assche <bvanassche@acm.org>,
         Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        bcm-kernel-feedback-list@broadcom.com, linux-mips@vger.kernel.org,
-        Paul Burton <paulburton@kernel.org>,
-        Maxime Bizon <mbizon@freebox.fr>,
-        Ralf Baechle <ralf@linux-mips.org>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 039/100] mips: BCM63XX: ensure that CPU_SUPPORTS_32BIT_KERNEL is set
-Date:   Wed, 24 Nov 2021 12:57:55 +0100
-Message-Id: <20211124115656.149393330@linuxfoundation.org>
+Subject: [PATCH 5.10 037/154] MIPS: sni: Fix the build
+Date:   Wed, 24 Nov 2021 12:57:13 +0100
+Message-Id: <20211124115703.558072430@linuxfoundation.org>
 X-Mailer: git-send-email 2.34.0
-In-Reply-To: <20211124115654.849735859@linuxfoundation.org>
-References: <20211124115654.849735859@linuxfoundation.org>
+In-Reply-To: <20211124115702.361983534@linuxfoundation.org>
+References: <20211124115702.361983534@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,62 +41,49 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-From: Randy Dunlap <rdunlap@infradead.org>
+From: Bart Van Assche <bvanassche@acm.org>
 
-[ Upstream commit 5eeaafc8d69373c095e461bdb39e5c9b62228ac5 ]
+[ Upstream commit c91cf42f61dc77b289784ea7b15a8531defa41c0 ]
 
-Several header files need info on CONFIG_32BIT or CONFIG_64BIT,
-but kconfig symbol BCM63XX does not provide that info. This leads
-to many build errors, e.g.:
+This patch fixes the following gcc 10 build error:
 
-   arch/mips/include/asm/page.h:196:13: error: use of undeclared identifier 'CAC_BASE'
-           return x - PAGE_OFFSET + PHYS_OFFSET;
-   arch/mips/include/asm/mach-generic/spaces.h:91:23: note: expanded from macro 'PAGE_OFFSET'
-   #define PAGE_OFFSET             (CAC_BASE + PHYS_OFFSET)
-   arch/mips/include/asm/io.h:134:28: error: use of undeclared identifier 'CAC_BASE'
-           return (void *)(address + PAGE_OFFSET - PHYS_OFFSET);
-   arch/mips/include/asm/mach-generic/spaces.h:91:23: note: expanded from macro 'PAGE_OFFSET'
-   #define PAGE_OFFSET             (CAC_BASE + PHYS_OFFSET)
+arch/mips/sni/time.c: In function ‘a20r_set_periodic’:
+arch/mips/sni/time.c:15:26: error: unsigned conversion from ‘int’ to ‘u8’ {aka ‘volatile unsigned char’} changes value from ‘576’ to ‘64’ [-Werror=overflow]
+   15 | #define SNI_COUNTER0_DIV ((SNI_CLOCK_TICK_RATE / SNI_COUNTER2_DIV) / HZ)
+      |                          ^
+arch/mips/sni/time.c:21:45: note: in expansion of macro ‘SNI_COUNTER0_DIV’
+   21 |  *(volatile u8 *)(A20R_PT_CLOCK_BASE + 0) = SNI_COUNTER0_DIV;
+      |                                             ^~~~~~~~~~~~~~~~
 
-arch/mips/include/asm/uaccess.h:82:10: error: use of undeclared identifier '__UA_LIMIT'
-           return (__UA_LIMIT & (addr | (addr + size) | __ua_size(size))) == 0;
-
-Selecting the SYS_HAS_CPU_BMIPS* symbols causes SYS_HAS_CPU_BMIPS to be
-set, which then selects CPU_SUPPORT_32BIT_KERNEL, which causes
-CONFIG_32BIT to be set. (a bit more indirect than v1 [RFC].)
-
-Fixes: e7300d04bd08 ("MIPS: BCM63xx: Add support for the Broadcom BCM63xx family of SOCs.")
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Reported-by: kernel test robot <lkp@intel.com>
-Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc: Florian Fainelli <f.fainelli@gmail.com>
-Cc: bcm-kernel-feedback-list@broadcom.com
 Cc: linux-mips@vger.kernel.org
-Cc: Paul Burton <paulburton@kernel.org>
-Cc: Maxime Bizon <mbizon@freebox.fr>
-Cc: Ralf Baechle <ralf@linux-mips.org>
-Suggested-by: Florian Fainelli <f.fainelli@gmail.com>
-Acked-by: Florian Fainelli <f.fainelli@gmail.com>
+Signed-off-by: Bart Van Assche <bvanassche@acm.org>
 Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/mips/Kconfig | 3 +++
- 1 file changed, 3 insertions(+)
+ arch/mips/sni/time.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-index 041d34975ea2c..9749818eed6d6 100644
---- a/arch/mips/Kconfig
-+++ b/arch/mips/Kconfig
-@@ -294,6 +294,9 @@ config BCM63XX
- 	select SYS_SUPPORTS_32BIT_KERNEL
- 	select SYS_SUPPORTS_BIG_ENDIAN
- 	select SYS_HAS_EARLY_PRINTK
-+	select SYS_HAS_CPU_BMIPS32_3300
-+	select SYS_HAS_CPU_BMIPS4350
-+	select SYS_HAS_CPU_BMIPS4380
- 	select SWAP_IO_SPACE
- 	select GPIOLIB
- 	select HAVE_CLK
+diff --git a/arch/mips/sni/time.c b/arch/mips/sni/time.c
+index 240bb68ec2478..ff3ba7e778901 100644
+--- a/arch/mips/sni/time.c
++++ b/arch/mips/sni/time.c
+@@ -18,14 +18,14 @@ static int a20r_set_periodic(struct clock_event_device *evt)
+ {
+ 	*(volatile u8 *)(A20R_PT_CLOCK_BASE + 12) = 0x34;
+ 	wmb();
+-	*(volatile u8 *)(A20R_PT_CLOCK_BASE + 0) = SNI_COUNTER0_DIV;
++	*(volatile u8 *)(A20R_PT_CLOCK_BASE + 0) = SNI_COUNTER0_DIV & 0xff;
+ 	wmb();
+ 	*(volatile u8 *)(A20R_PT_CLOCK_BASE + 0) = SNI_COUNTER0_DIV >> 8;
+ 	wmb();
+ 
+ 	*(volatile u8 *)(A20R_PT_CLOCK_BASE + 12) = 0xb4;
+ 	wmb();
+-	*(volatile u8 *)(A20R_PT_CLOCK_BASE + 8) = SNI_COUNTER2_DIV;
++	*(volatile u8 *)(A20R_PT_CLOCK_BASE + 8) = SNI_COUNTER2_DIV & 0xff;
+ 	wmb();
+ 	*(volatile u8 *)(A20R_PT_CLOCK_BASE + 8) = SNI_COUNTER2_DIV >> 8;
+ 	wmb();
 -- 
 2.33.0
 

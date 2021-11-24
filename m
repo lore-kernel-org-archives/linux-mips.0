@@ -2,18 +2,18 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F3724C433F5
-	for <linux-mips@archiver.kernel.org>; Wed, 24 Nov 2021 10:13:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C964DC433FE
+	for <linux-mips@archiver.kernel.org>; Wed, 24 Nov 2021 10:13:05 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234768AbhKXKQM (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 24 Nov 2021 05:16:12 -0500
-Received: from mail.loongson.cn ([114.242.206.163]:55578 "EHLO loongson.cn"
+        id S232329AbhKXKQO (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 24 Nov 2021 05:16:14 -0500
+Received: from mail.loongson.cn ([114.242.206.163]:55598 "EHLO loongson.cn"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S234674AbhKXKQL (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Wed, 24 Nov 2021 05:16:11 -0500
+        id S234674AbhKXKQN (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Wed, 24 Nov 2021 05:16:13 -0500
 Received: from localhost.localdomain (unknown [111.9.175.10])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9AxV+gbEJ5hjfYAAA--.1945S3;
-        Wed, 24 Nov 2021 18:12:56 +0800 (CST)
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9AxV+gbEJ5hjfYAAA--.1945S6;
+        Wed, 24 Nov 2021 18:12:59 +0800 (CST)
 From:   Huang Pei <huangpei@loongson.cn>
 To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
         ambrosehua@gmail.com
@@ -24,197 +24,69 @@ Cc:     Bibo Mao <maobibo@loongson.cn>, linux-mips@vger.kernel.org,
         Yang Tiezhu <yangtiezhu@loongson.cn>,
         Gao Juxin <gaojuxin@loongson.cn>,
         Huacai Chen <chenhuacai@loongson.cn>
-Subject: [PATCH 1/4] MIPS: rework local_t operation on MIPS64
-Date:   Wed, 24 Nov 2021 18:12:38 +0800
-Message-Id: <20211124101241.10196-2-huangpei@loongson.cn>
+Subject: [PATCH 4/4] MIPS: loongson64: fix FTLB configuration
+Date:   Wed, 24 Nov 2021 18:12:41 +0800
+Message-Id: <20211124101241.10196-5-huangpei@loongson.cn>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20211124101241.10196-1-huangpei@loongson.cn>
 References: <20211124101241.10196-1-huangpei@loongson.cn>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: AQAAf9AxV+gbEJ5hjfYAAA--.1945S3
-X-Coremail-Antispam: 1UD129KBjvJXoWxZr1ktrW5Ww4UArWrCFW7Arb_yoWrurWrpF
-        srCan7KrWqvF4fA3Z7ZF4Svr13Wr4fGrWYkF1qvrWvy3W8t3W8ZrZ3KanYyrykZFZ8X3W8
-        XFW7ur15X3ZrA3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUPC14x267AKxVW5JVWrJwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_Jr4l82xGYIkIc2
-        x26xkF7I0E14v26r1I6r4UM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2z4x0
-        Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j6F4UJw
-        A2z4x0Y4vEx4A2jsIE14v26F4UJVW0owA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s1l
-        e2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI
-        8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwAC
-        jcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2Y2ka0x
-        kIwI1lc2xSY4AK67AK6r4DMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4U
-        MI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67
-        AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0
-        cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z2
-        80aVAFwI0_Gr0_Cr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI
-        43ZEXa7VUbloGJUUUUU==
+X-CM-TRANSID: AQAAf9AxV+gbEJ5hjfYAAA--.1945S6
+X-Coremail-Antispam: 1UD129KBjvJXoW7Gry8WFyDJF1UCrW8Kw4Durg_yoW8Jr17pr
+        1qya17Kr4UAFy2yayDJFZ5Wry3ZFyDWFZxWFW29rWYv3ZxZr1UXF97Xa13JrsrZryI93Wr
+        Wa9agFW5KFs7Cr7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUm014x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_JF0E3s1l82xGYI
+        kIc2x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2
+        z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j6F
+        4UJwA2z4x0Y4vEx4A2jsIE14v26F4UJVW0owA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE
+        3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2I
+        x0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8
+        JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2Y2
+        ka0xkIwI1lc2xSY4AK67AK6r4DMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j
+        6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7
+        AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE
+        2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcV
+        C2z280aVAFwI0_Gr0_Cr1lIxAIcVC2z280aVCY1x0267AKxVW8Jr0_Cr1UYxBIdaVFxhVj
+        vjDU0xZFpf9x0JUWMKtUUUUU=
 X-CM-SenderInfo: xkxd0whshlqz5rrqw2lrqou0/
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-+. use "daddu/dsubu" for long int on MIPS64 instead of "addu/subu"
+Commit "da1bd29742b1" ("MIPS: Loongson64: Probe CPU features via
+CPUCFG") makes 'set_ftlb_enable' called under c->cputype unset,
+which leaves FTLB disabled on BOTH 3A2000 and 3A3000
 
-+. remove "asm/war.h" since R10000_LLSC_WAR became a config option
-
-+. clean up
-
-Suggested-by:  "Maciej W. Rozycki" <macro@orcam.me.uk>
+Fixes: da1bd29742b1 ("MIPS: Loongson64: Probe CPU features via CPUCFG")
 Signed-off-by: Huang Pei <huangpei@loongson.cn>
 ---
- arch/mips/include/asm/asm.h   | 18 ++++++++++
- arch/mips/include/asm/local.h | 62 +++++++++--------------------------
- 2 files changed, 33 insertions(+), 47 deletions(-)
+ arch/mips/kernel/cpu-probe.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/mips/include/asm/asm.h b/arch/mips/include/asm/asm.h
-index 2f8ce94ebaaf..f3302b13d3e0 100644
---- a/arch/mips/include/asm/asm.h
-+++ b/arch/mips/include/asm/asm.h
-@@ -19,6 +19,7 @@
+diff --git a/arch/mips/kernel/cpu-probe.c b/arch/mips/kernel/cpu-probe.c
+index ac0e2cfc6d57..24a529c6c4be 100644
+--- a/arch/mips/kernel/cpu-probe.c
++++ b/arch/mips/kernel/cpu-probe.c
+@@ -1734,8 +1734,6 @@ static inline void decode_cpucfg(struct cpuinfo_mips *c)
  
- #include <asm/sgidefs.h>
- #include <asm/asm-eva.h>
-+#include <asm/isa-rev.h>
+ static inline void cpu_probe_loongson(struct cpuinfo_mips *c, unsigned int cpu)
+ {
+-	decode_configs(c);
+-
+ 	/* All Loongson processors covered here define ExcCode 16 as GSExc. */
+ 	c->options |= MIPS_CPU_GSEXCEX;
  
- #ifndef __VDSO__
- /*
-@@ -211,6 +212,8 @@ symbol		=	value
- #define LONG_SUB	sub
- #define LONG_SUBU	subu
- #define LONG_L		lw
-+#define LONG_LL		ll
-+#define LONG_SC		sc
- #define LONG_S		sw
- #define LONG_SP		swp
- #define LONG_SLL	sll
-@@ -236,6 +239,8 @@ symbol		=	value
- #define LONG_SUB	dsub
- #define LONG_SUBU	dsubu
- #define LONG_L		ld
-+#define LONG_LL		lld
-+#define LONG_SC		scd
- #define LONG_S		sd
- #define LONG_SP		sdp
- #define LONG_SLL	dsll
-@@ -320,6 +325,19 @@ symbol		=	value
- 
- #define SSNOP		sll zero, zero, 1
- 
-+/*
-+ * Using a branch-likely instruction to check the result of an sc instruction
-+ * works around a bug present in R10000 CPUs prior to revision 3.0 that could
-+ * cause ll-sc sequences to execute non-atomically.
-+ */
-+#ifdef CONFIG_WAR_R10000_LLSC
-+# define SC_BEQZ	beqzl
-+#elif MIPS_ISA_REV >= 6
-+# define SC_BEQZ	beqzc
-+#else
-+# define SC_BEQZ	beqz
-+#endif
+@@ -1796,6 +1794,8 @@ static inline void cpu_probe_loongson(struct cpuinfo_mips *c, unsigned int cpu)
+ 		panic("Unknown Loongson Processor ID!");
+ 		break;
+ 	}
 +
- #ifdef CONFIG_SGI_IP28
- /* Inhibit speculative stores to volatile (e.g.DMA) or invalid addresses. */
- #include <asm/cacheops.h>
-diff --git a/arch/mips/include/asm/local.h b/arch/mips/include/asm/local.h
-index ecda7295ddcd..c1e109357110 100644
---- a/arch/mips/include/asm/local.h
-+++ b/arch/mips/include/asm/local.h
-@@ -7,7 +7,7 @@
- #include <linux/atomic.h>
- #include <asm/cmpxchg.h>
- #include <asm/compiler.h>
--#include <asm/war.h>
-+#include <asm/asm.h>
- 
- typedef struct
- {
-@@ -31,34 +31,18 @@ static __inline__ long local_add_return(long i, local_t * l)
- {
- 	unsigned long result;
- 
--	if (kernel_uses_llsc && IS_ENABLED(CONFIG_WAR_R10000_LLSC)) {
--		unsigned long temp;
--
--		__asm__ __volatile__(
--		"	.set	push					\n"
--		"	.set	arch=r4000				\n"
--			__SYNC(full, loongson3_war) "			\n"
--		"1:"	__LL	"%1, %2		# local_add_return	\n"
--		"	addu	%0, %1, %3				\n"
--			__SC	"%0, %2					\n"
--		"	beqzl	%0, 1b					\n"
--		"	addu	%0, %1, %3				\n"
--		"	.set	pop					\n"
--		: "=&r" (result), "=&r" (temp), "=m" (l->a.counter)
--		: "Ir" (i), "m" (l->a.counter)
--		: "memory");
--	} else if (kernel_uses_llsc) {
-+	if (kernel_uses_llsc) {
- 		unsigned long temp;
- 
- 		__asm__ __volatile__(
- 		"	.set	push					\n"
- 		"	.set	"MIPS_ISA_ARCH_LEVEL"			\n"
--			__SYNC(full, loongson3_war) "			\n"
--		"1:"	__LL	"%1, %2		# local_add_return	\n"
--		"	addu	%0, %1, %3				\n"
--			__SC	"%0, %2					\n"
--		"	beqz	%0, 1b					\n"
--		"	addu	%0, %1, %3				\n"
-+			__SYNC(full, loongson3_war) "                   \n"
-+		"1:"	__stringify(LONG_LL)	"	%1, %2		\n"
-+		"	"__stringify(LONG_ADDU)	"	%0, %1, %3	\n"
-+		"	"__stringify(LONG_SC)	"	%0, %2		\n"
-+		"	"__stringify(SC_BEQZ)	"	%0, 1b		\n"
-+		"	"__stringify(LONG_ADDU)	"	%0, %1, %3	\n"
- 		"	.set	pop					\n"
- 		: "=&r" (result), "=&r" (temp), "=m" (l->a.counter)
- 		: "Ir" (i), "m" (l->a.counter)
-@@ -80,34 +64,18 @@ static __inline__ long local_sub_return(long i, local_t * l)
- {
- 	unsigned long result;
- 
--	if (kernel_uses_llsc && IS_ENABLED(CONFIG_WAR_R10000_LLSC)) {
--		unsigned long temp;
--
--		__asm__ __volatile__(
--		"	.set	push					\n"
--		"	.set	arch=r4000				\n"
--			__SYNC(full, loongson3_war) "			\n"
--		"1:"	__LL	"%1, %2		# local_sub_return	\n"
--		"	subu	%0, %1, %3				\n"
--			__SC	"%0, %2					\n"
--		"	beqzl	%0, 1b					\n"
--		"	subu	%0, %1, %3				\n"
--		"	.set	pop					\n"
--		: "=&r" (result), "=&r" (temp), "=m" (l->a.counter)
--		: "Ir" (i), "m" (l->a.counter)
--		: "memory");
--	} else if (kernel_uses_llsc) {
-+	if (kernel_uses_llsc) {
- 		unsigned long temp;
- 
- 		__asm__ __volatile__(
- 		"	.set	push					\n"
- 		"	.set	"MIPS_ISA_ARCH_LEVEL"			\n"
--			__SYNC(full, loongson3_war) "			\n"
--		"1:"	__LL	"%1, %2		# local_sub_return	\n"
--		"	subu	%0, %1, %3				\n"
--			__SC	"%0, %2					\n"
--		"	beqz	%0, 1b					\n"
--		"	subu	%0, %1, %3				\n"
-+			__SYNC(full, loongson3_war) "                   \n"
-+		"1:"	__stringify(LONG_LL)	"	%1, %2		\n"
-+		"	"__stringify(LONG_SUBU)	"	%0, %1, %3	\n"
-+		"	"__stringify(LONG_SC)	"	%0, %2		\n"
-+		"	"__stringify(SC_BEQZ)	"	%0, 1b		\n"
-+		"	"__stringify(LONG_SUBU)	"	%0, %1, %3	\n"
- 		"	.set	pop					\n"
- 		: "=&r" (result), "=&r" (temp), "=m" (l->a.counter)
- 		: "Ir" (i), "m" (l->a.counter)
++	decode_configs(c);
+ }
+ #else
+ static inline void cpu_probe_loongson(struct cpuinfo_mips *c, unsigned int cpu) { }
 -- 
 2.20.1
 

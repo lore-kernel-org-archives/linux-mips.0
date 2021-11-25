@@ -2,77 +2,121 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 55543C433F5
-	for <linux-mips@archiver.kernel.org>; Thu, 25 Nov 2021 16:12:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D1D7AC433EF
+	for <linux-mips@archiver.kernel.org>; Thu, 25 Nov 2021 21:28:19 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245385AbhKYQPq (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 25 Nov 2021 11:15:46 -0500
-Received: from elvis.franken.de ([193.175.24.41]:41070 "EHLO elvis.franken.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1356572AbhKYQNq (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Thu, 25 Nov 2021 11:13:46 -0500
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1mqHKR-0005zr-01; Thu, 25 Nov 2021 17:10:31 +0100
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id DD3DCC2F82; Thu, 25 Nov 2021 16:55:13 +0100 (CET)
-Date:   Thu, 25 Nov 2021 16:55:13 +0100
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Huang Pei <huangpei@loongson.cn>
-Cc:     ambrosehua@gmail.com, Bibo Mao <maobibo@loongson.cn>,
-        linux-mips@vger.kernel.org, Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Paul Burton <paulburton@kernel.org>,
-        Li Xuefeng <lixuefeng@loongson.cn>,
-        Yang Tiezhu <yangtiezhu@loongson.cn>,
-        Gao Juxin <gaojuxin@loongson.cn>,
-        Huacai Chen <chenhuacai@loongson.cn>
-Subject: Re: [PATCH 3/4] MIPS: use 3-level pgtable for 64KB page size on
- MIPS_VA_BITS_48
-Message-ID: <20211125155513.GB11524@alpha.franken.de>
-References: <20211125105949.27147-1-huangpei@loongson.cn>
- <20211125105949.27147-4-huangpei@loongson.cn>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211125105949.27147-4-huangpei@loongson.cn>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S245216AbhKYVba (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 25 Nov 2021 16:31:30 -0500
+Received: from mail-oi1-f174.google.com ([209.85.167.174]:33636 "EHLO
+        mail-oi1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S239140AbhKYV33 (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Thu, 25 Nov 2021 16:29:29 -0500
+Received: by mail-oi1-f174.google.com with SMTP id q25so15040301oiw.0;
+        Thu, 25 Nov 2021 13:26:17 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
+         :message-id;
+        bh=ATQGc9kY+JyWouwzNMT+5eMUiqUTPfsc2py8BE07UUU=;
+        b=VmA0E8Q6aYSEoMl42Szarzh8brIt4SGgMMcFZHUE93NyO9fUcJc96+i3PiAytaJidB
+         85QsXrkTuc+J6r1ONAkAbgRfr+YPAMENnagI0Oz1/ILdy00ez6PBmT2w0nD2dnVwWZDF
+         mvSBQtYWAhErlF5OmyObR7+nd209JsfaiF05Y6zwLjA1HZe9zNhyKiG0XEgwofN5vslR
+         Zm44PHq9NCtExA25pmWNDge4FZ7if7OOdTmEpssPrQiDls1Xz7C6m8o/y7pWTdG+4vfs
+         +2yiGKN74e8oIKY3LEKGynGPIYX7JzTYzhdh7t+YqbjO/FAVcJnSEfAIRru2AFudtqJ1
+         iKrQ==
+X-Gm-Message-State: AOAM5304DY9im8G/sQeuY2dW3CpRq/RjuCowH7lw7RKO/IvChcP8BadM
+        xFtPS7LtMGJGeJx62nHx7A==
+X-Google-Smtp-Source: ABdhPJzoE1mjv1m+nj0OMQrJ0pG7JCaWF1N2WspnzxdZpkiI3QMzNDqnQA1Na6SgHhWlX8psmy9F2w==
+X-Received: by 2002:a05:6808:f8e:: with SMTP id o14mr18906207oiw.33.1637875576978;
+        Thu, 25 Nov 2021 13:26:16 -0800 (PST)
+Received: from robh.at.kernel.org ([64.188.179.248])
+        by smtp.gmail.com with ESMTPSA id s26sm931393oiw.19.2021.11.25.13.26.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Nov 2021 13:26:15 -0800 (PST)
+Received: (nullmailer pid 2858309 invoked by uid 1000);
+        Thu, 25 Nov 2021 21:26:02 -0000
+From:   Rob Herring <robh@kernel.org>
+To:     "H. Nikolaus Schaller" <hns@goldelico.com>
+Cc:     Daniel Vetter <daniel@ffwll.ch>,
+        Ezequiel Garcia <ezequiel@collabora.com>,
+        linux-kernel@vger.kernel.org,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Kees Cook <keescook@chromium.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Paul Boddie <paul@boddie.org.uk>,
+        David Airlie <airlied@linux.ie>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Robert Foss <robert.foss@linaro.org>,
+        Paul Cercueil <paul@crapouillou.net>,
+        linux-mips@vger.kernel.org, letux-kernel@openphoenux.org,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        dri-devel@lists.freedesktop.org,
+        Mark Rutland <mark.rutland@arm.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Maxime Ripard <maxime@cerno.tech>,
+        Mark Brown <broonie@kernel.org>,
+        Harry Wentland <harry.wentland@amd.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Jonas Karlman <jonas@kwiboo.se>
+In-Reply-To: <d678e785d95487202ac0660eb66796e9fb5beb50.1637789354.git.hns@goldelico.com>
+References: <cover.1637789354.git.hns@goldelico.com> <d678e785d95487202ac0660eb66796e9fb5beb50.1637789354.git.hns@goldelico.com>
+Subject: Re: [PATCH v9 3/8] dt-bindings: display: Add ingenic,jz4780-dw-hdmi DT Schema
+Date:   Thu, 25 Nov 2021 14:26:02 -0700
+Message-Id: <1637875562.255498.2858308.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Thu, Nov 25, 2021 at 06:59:48PM +0800, Huang Pei wrote:
-> It hangup when booting Loongson 3A1000 with BOTH
-> CONFIG_PAGE_SIZE_64KB and CONFIG_MIPS_VA_BITS_48, that it turn
-> out to use 2-level pgtable instead of 3-level. 64KB page size
-> with 2-level pgtable only cover 42 bits VA, use 3-level pgtable
-> to cover all 48 bits VA(55 bits)
+On Wed, 24 Nov 2021 22:29:09 +0100, H. Nikolaus Schaller wrote:
+> From: Sam Ravnborg <sam@ravnborg.org>
 > 
-> Fixes: 1e321fa917fb ("MIPS64: Support of at least 48 bits of SEGBITS)
-> Signed-off-by: Huang Pei <huangpei@loongson.cn>
+> Add DT bindings for the hdmi driver for the Ingenic JZ4780 SoC.
+> Based on .txt binding from Zubair Lutfullah Kakakhel
+> 
+> We also add generic ddc-i2c-bus to synopsys,dw-hdmi.yaml
+> 
+> Signed-off-by: Sam Ravnborg <sam@ravnborg.org>
+> Signed-off-by: H. Nikolaus Schaller <hns@goldelico.com>
+> Cc: Rob Herring <robh@kernel.org>
+> Cc: devicetree@vger.kernel.org
 > ---
->  arch/mips/Kconfig | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  .../display/bridge/ingenic,jz4780-hdmi.yaml   | 76 +++++++++++++++++++
+>  .../display/bridge/synopsys,dw-hdmi.yaml      |  3 +
+>  2 files changed, 79 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/display/bridge/ingenic,jz4780-hdmi.yaml
 > 
-> diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-> index de60ad190057..0215dc1529e9 100644
-> --- a/arch/mips/Kconfig
-> +++ b/arch/mips/Kconfig
-> @@ -3097,7 +3097,7 @@ config STACKTRACE_SUPPORT
->  config PGTABLE_LEVELS
->  	int
->  	default 4 if PAGE_SIZE_4KB && MIPS_VA_BITS_48
-> -	default 3 if 64BIT && !PAGE_SIZE_64KB
-> +	default 3 if 64BIT && (!PAGE_SIZE_64KB || MIPS_VA_BITS_48)
->  	default 2
->  
->  config MIPS_AUTO_PFN_OFFSET
-> -- 
-> 2.20.1
 
-applied to mips-fixes.
+My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+on your patch (DT_CHECKER_FLAGS is new in v5.13):
 
-Thomas.
+yamllint warnings/errors:
 
--- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+dtschema/dtc warnings/errors:
+Unknown file referenced: [Errno 2] No such file or directory: '/usr/local/lib/python3.8/dist-packages/dtschema/schemas/bridge/bridge/synopsys,dw-hdmi.yaml'
+xargs: dt-doc-validate: exited with status 255; aborting
+make[1]: *** Deleting file 'Documentation/devicetree/bindings/display/bridge/ingenic,jz4780-hdmi.example.dt.yaml'
+Unknown file referenced: [Errno 2] No such file or directory: '/usr/local/lib/python3.8/dist-packages/dtschema/schemas/bridge/bridge/synopsys,dw-hdmi.yaml'
+make[1]: *** [scripts/Makefile.lib:373: Documentation/devicetree/bindings/display/bridge/ingenic,jz4780-hdmi.example.dt.yaml] Error 255
+make[1]: *** Waiting for unfinished jobs....
+make: *** [Makefile:1413: dt_binding_check] Error 2
+
+doc reference errors (make refcheckdocs):
+
+See https://patchwork.ozlabs.org/patch/1559375
+
+This check can fail if there are any dependencies. The base for a patch
+series is generally the most recent rc1.
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
+
+pip3 install dtschema --upgrade
+
+Please check and re-submit.
+

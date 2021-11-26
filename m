@@ -2,146 +2,178 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C87B2C433FE
-	for <linux-mips@archiver.kernel.org>; Fri, 26 Nov 2021 01:54:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 87239C433EF
+	for <linux-mips@archiver.kernel.org>; Fri, 26 Nov 2021 03:15:33 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357508AbhKZB5q (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 25 Nov 2021 20:57:46 -0500
-Received: from mail.loongson.cn ([114.242.206.163]:35568 "EHLO loongson.cn"
+        id S235461AbhKZDSo (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 25 Nov 2021 22:18:44 -0500
+Received: from mail.loongson.cn ([114.242.206.163]:56978 "EHLO loongson.cn"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1349802AbhKZBzn (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Thu, 25 Nov 2021 20:55:43 -0500
-Received: from localhost.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dx_9PSPaBh1ooBAA--.6419S2;
-        Fri, 26 Nov 2021 09:52:18 +0800 (CST)
-From:   Qing Zhang <zhangqing@loongson.cn>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc:     Jiaxun Yang <jiaxun.yang@flygoat.com>, devicetree@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v9 1/3] MIPS: Loongson64: Add Loongson-2K1000 reset platform driver
-Date:   Fri, 26 Nov 2021 09:52:14 +0800
-Message-Id: <20211126015216.26605-1-zhangqing@loongson.cn>
-X-Mailer: git-send-email 2.31.0
+        id S237669AbhKZDQo (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Thu, 25 Nov 2021 22:16:44 -0500
+Received: from loongson-pc (unknown [111.9.175.10])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9AxmsnPUKBhTQQAAA--.2S2;
+        Fri, 26 Nov 2021 11:13:25 +0800 (CST)
+Date:   Fri, 26 Nov 2021 11:13:19 +0800
+From:   Huang Pei <huangpei@loongson.cn>
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc:     ambrosehua@gmail.com, Bibo Mao <maobibo@loongson.cn>,
+        linux-mips@vger.kernel.org, Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Paul Burton <paulburton@kernel.org>,
+        Li Xuefeng <lixuefeng@loongson.cn>,
+        Yang Tiezhu <yangtiezhu@loongson.cn>,
+        Gao Juxin <gaojuxin@loongson.cn>,
+        Huacai Chen <chenhuacai@loongson.cn>
+Subject: Re: [PATCH 4/4] MIPS: loongson64: fix FTLB configuration
+Message-ID: <20211126031319.kfhemh73dyq4rkra@loongson-pc>
+References: <20211125105949.27147-1-huangpei@loongson.cn>
+ <20211125105949.27147-5-huangpei@loongson.cn>
+ <20211125155527.GC11524@alpha.franken.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: AQAAf9Dx_9PSPaBh1ooBAA--.6419S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxAFW3tw4fAFyfGFy5Kr4Uurg_yoW5Wr1fpF
-        Z8Cw43Ar4rXa17Ka1fJFyUuFW5ZwnayFWj9Fy2v34UZas8WFZ5J3Zrta4FvF9rWr1xJFWa
-        qFsYqFW5CF4ruw7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUkab7Iv0xC_Kw4lb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I2
-        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
-        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xII
-        jxv20xvEc7CjxVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjc
-        xK6I8E87Iv6xkF7I0E14v26F4UJVW0owAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40E
-        FcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Gr
-        0_Cr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JMxkIecxEwVAFwVWkMxAI
-        w28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr
-        4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxG
-        rwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8Jw
-        CI42IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY
-        6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x07bOWl9UUUUU=
-X-CM-SenderInfo: x2kd0wptlqwqxorr0wxvrqhubq/
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211125155527.GC11524@alpha.franken.de>
+User-Agent: NeoMutt/20180716
+X-CM-TRANSID: AQAAf9AxmsnPUKBhTQQAAA--.2S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxJF47WF4ftFy5XFyxZryDGFg_yoW5tr43pr
+        ySkwsFyr4jyrWUAas7Jr48Jry2qr1UJrn5Cr4qgry8A345Ar1UXr18Kw4fWry7ZryxX3W8
+        tF929FyY9rnrXrJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvj14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26ryj6F1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+        JVWxJr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AKxV
+        W0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv
+        7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r
+        1j6r4UM4x0Y48IcVAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628v
+        n2kIc2xKxwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F4
+        0E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFyl
+        IxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxV
+        AFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_
+        Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvjfUoO
+        J5UUUUU
+X-CM-SenderInfo: xkxd0whshlqz5rrqw2lrqou0/
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Add power management register operations to support reboot and poweroff.
+On Thu, Nov 25, 2021 at 04:55:28PM +0100, Thomas Bogendoerfer wrote:
+> On Thu, Nov 25, 2021 at 06:59:49PM +0800, Huang Pei wrote:
+> > It turns out that 'decode_configs' -> 'set_ftlb_enable' is called under
+> > c->cputype unset, which leaves FTLB disabled on BOTH 3A2000 and 3A3000
+> > 
+> > Fix it by calling "decode_configs" after c->cputype is initialized
+> > 
+> > Fixes: da1bd29742b1 ("MIPS: Loongson64: Probe CPU features via CPUCFG")
+> > Signed-off-by: Huang Pei <huangpei@loongson.cn>
+> > ---
+> >  arch/mips/kernel/cpu-probe.c | 4 ++--
+> >  1 file changed, 2 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/arch/mips/kernel/cpu-probe.c b/arch/mips/kernel/cpu-probe.c
+> > index ac0e2cfc6d57..24a529c6c4be 100644
+> > --- a/arch/mips/kernel/cpu-probe.c
+> > +++ b/arch/mips/kernel/cpu-probe.c
+> > @@ -1734,8 +1734,6 @@ static inline void decode_cpucfg(struct cpuinfo_mips *c)
+> >  
+> >  static inline void cpu_probe_loongson(struct cpuinfo_mips *c, unsigned int cpu)
+> >  {
+> > -	decode_configs(c);
+> > -
+> >  	/* All Loongson processors covered here define ExcCode 16 as GSExc. */
+> >  	c->options |= MIPS_CPU_GSEXCEX;
+> >  
+> > @@ -1796,6 +1794,8 @@ static inline void cpu_probe_loongson(struct cpuinfo_mips *c, unsigned int cpu)
+> >  		panic("Unknown Loongson Processor ID!");
+> >  		break;
+> >  	}
+> > +
+> > +	decode_configs(c);
+> >  }
+> >  #else
+> >  static inline void cpu_probe_loongson(struct cpuinfo_mips *c, unsigned int cpu) { }
+> > -- 
+> > 2.20.1
+> 
+> applied to mips-fixes.
+> 
+> Thomas.
+> 
+> -- 
+> Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+> good idea.                                                [ RFC1925, 2.3 ]
+Hi, Thomas,
 
-Signed-off-by: Qing Zhang <zhangqing@loongson.cn>
----
-v8-v9:
-No change
----
- drivers/platform/mips/Kconfig      |  6 ++++
- drivers/platform/mips/Makefile     |  1 +
- drivers/platform/mips/ls2k-reset.c | 53 ++++++++++++++++++++++++++++++
- 3 files changed, 60 insertions(+)
- create mode 100644 drivers/platform/mips/ls2k-reset.c
+What about PATCH 1/4, without it, kernel/trace/ring_buffer.i using
+local_add_return, like this 
+--------------------------------------------------------------------------------
+    __asm__ __volatile__(
+	"     .set    push                                    \n"
+	"     .set    ""arch=r4000""                  \n"
+	".if (( 0x00 ) != -1) && ( (1 << 31) ); .set push; .set mips64r2;.rept 1; sync 
+	0x00; .endr; .set pop; .else; ; .endif" "\n"
+	"1:" "lld     " "%1, %2               # local_add_return\n"
+	"     addu    %0, %1, %3				\n"
+	"scd " "%0, %2						\n"
+	"     beqz    %0, 1b					\n"
+	"     addu    %0, %1, %3				\n"
+	"     .set    pop
+	\n"
+	: "=&r" (result), "=&r" (temp), "=m" (l->a.counter)
+	: "Ir" (i), "m" (l->a.counter)
+	: "memory");
+} else if (1) {
+  unsigned long temp;
 
-diff --git a/drivers/platform/mips/Kconfig b/drivers/platform/mips/Kconfig
-index 8ac149173c64b..d421e14823957 100644
---- a/drivers/platform/mips/Kconfig
-+++ b/drivers/platform/mips/Kconfig
-@@ -30,4 +30,10 @@ config RS780E_ACPI
- 	help
- 	  Loongson RS780E PCH ACPI Controller driver.
+    __asm__ __volatile__(
+	    "     .set    push                                    \n"
+	    "     .set    ""arch=r4000""                  \n"
+	    ".if (( 0x00 ) != -1) && ( (1 << 31) ); .set push; .set
+	    mips64r2; .rept 1; sync 0x00; .endr; .set pop; .else; ;
+	    .endif" "                    \n"
+	    "1:" "lld     " "%1, %2               # local_add_return
+	    \n"
+	    "     addu    %0, %1, %3                              \n"
+	    "scd " "%0, %2
+	    \n"
+	    "     beqz    %0, 1b
+	    \n"
+	    "     addu    %0, %1, %3
+	    \n"
+	    "     .set    pop
+	    \n"
+	    : "=&r" (result), "=&r" (temp), "=m"
+	    (l->a.counter)
+	    : "Ir" (i), "m" (l->a.counter)
+	    : "memory");
+
+--------------------------------------------------------------------------------
+it is wrong here, "lld" + "addu"
+
+with it, like this 
+--------------------------------------------------------------------------------
+ if (1) {
+  unsigned long temp;
+
+  __asm__ __volatile__(
+	  "     .set    push                                    \n"
+	  "     .set    ""arch=r4000""                  \n"
+	   ".if (( 0x00 ) != -1) && ( (1 << 31) ); .set push; .set mips64r2;
+	.rept 1; sync 0x00; .endr; .set pop; .else; ; .endif" "
+	\n"
+	  "1:" "lld" "  %1, %2          \n"
+	  "     ""daddu" "      %0, %1, %3      \n"
+	  "     ""scd" "        %0, %2          \n"
+	  "     ""beqz" "       %0, 1b          \n"
+	  "     ""daddu" "      %0, %1, %3      \n"
+	  "     .set    pop                                     \n"
+	  : "=&r" (result), "=&r" (temp), "=m" (l->a.counter)
+	  : "Ir" (i), "m" (l->a.counter)
+	  : "memory");
+ } else {
+
+MIPS64 needs "lld + daddu"
+
+and PATCH 2, any comment?
+
  
-+config LS2K_RESET
-+	bool "Loongson-2K1000 Reset Controller"
-+	depends on MACH_LOONGSON64 || COMPILE_TEST
-+	help
-+	  Loongson-2K1000 Reset Controller driver.
-+
- endif # MIPS_PLATFORM_DEVICES
-diff --git a/drivers/platform/mips/Makefile b/drivers/platform/mips/Makefile
-index 1781490987773..4c71444e453a6 100644
---- a/drivers/platform/mips/Makefile
-+++ b/drivers/platform/mips/Makefile
-@@ -1,3 +1,4 @@
- # SPDX-License-Identifier: GPL-2.0-only
- obj-$(CONFIG_CPU_HWMON) += cpu_hwmon.o
- obj-$(CONFIG_RS780E_ACPI) += rs780e-acpi.o
-+obj-$(CONFIG_LS2K_RESET) += ls2k-reset.o
-diff --git a/drivers/platform/mips/ls2k-reset.c b/drivers/platform/mips/ls2k-reset.c
-new file mode 100644
-index 0000000000000..b70e7b8a092c2
---- /dev/null
-+++ b/drivers/platform/mips/ls2k-reset.c
-@@ -0,0 +1,53 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ *  Copyright (C) 2021, Qing Zhang <zhangqing@loongson.cn>
-+ *  Loongson-2K1000 reset support
-+ */
-+
-+#include <linux/of_address.h>
-+#include <linux/pm.h>
-+#include <asm/reboot.h>
-+
-+#define	PM1_STS		0x0c /* Power Management 1 Status Register */
-+#define	PM1_CNT		0x14 /* Power Management 1 Control Register */
-+#define	RST_CNT		0x30 /* Reset Control Register */
-+
-+static void __iomem *base;
-+
-+static void ls2k_restart(char *command)
-+{
-+	writel(0x1, base + RST_CNT);
-+}
-+
-+static void ls2k_poweroff(void)
-+{
-+	/* Clear */
-+	writel((readl(base + PM1_STS) & 0xffffffff), base + PM1_STS);
-+	/* Sleep Enable | Soft Off*/
-+	writel(GENMASK(12, 10) | BIT(13), base + PM1_CNT);
-+}
-+
-+static int ls2k_reset_init(void)
-+{
-+	struct device_node *np;
-+
-+	np = of_find_compatible_node(NULL, NULL, "loongson,ls2k-pm");
-+	if (!np) {
-+		pr_info("Failed to get PM node\n");
-+		return -ENODEV;
-+	}
-+
-+	base = of_iomap(np, 0);
-+	if (!base) {
-+		pr_info("Failed to map PM register base address\n");
-+		return -ENOMEM;
-+	}
-+
-+	_machine_restart = ls2k_restart;
-+	pm_power_off = ls2k_poweroff;
-+
-+	of_node_put(np);
-+	return 0;
-+}
-+
-+arch_initcall(ls2k_reset_init);
--- 
-2.31.0
 

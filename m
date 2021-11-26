@@ -2,66 +2,108 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 62AABC433F5
-	for <linux-mips@archiver.kernel.org>; Thu, 25 Nov 2021 23:27:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6EDBEC433EF
+	for <linux-mips@archiver.kernel.org>; Fri, 26 Nov 2021 01:54:35 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231829AbhKYXbC (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 25 Nov 2021 18:31:02 -0500
-Received: from aposti.net ([89.234.176.197]:38382 "EHLO aposti.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230448AbhKYX3C (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Thu, 25 Nov 2021 18:29:02 -0500
-From:   Paul Cercueil <paul@crapouillou.net>
-To:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Cc:     linux-mips@vger.kernel.org, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org, list@opendingux.net,
-        Paul Cercueil <paul@crapouillou.net>
-Subject: [PATCH] ASoC: codecs/jz4770: Add missing gain control after DAC/ADC mixer
-Date:   Thu, 25 Nov 2021 23:25:43 +0000
-Message-Id: <20211125232543.117074-1-paul@crapouillou.net>
+        id S1357603AbhKZB5p (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 25 Nov 2021 20:57:45 -0500
+Received: from mail.loongson.cn ([114.242.206.163]:35570 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1357502AbhKZBzn (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Thu, 25 Nov 2021 20:55:43 -0500
+Received: from localhost.localdomain (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dx_9PSPaBh1ooBAA--.6419S4;
+        Fri, 26 Nov 2021 09:52:19 +0800 (CST)
+From:   Qing Zhang <zhangqing@loongson.cn>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc:     Jiaxun Yang <jiaxun.yang@flygoat.com>, devicetree@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v9 3/3] dt-bindings: mips: Add Loongson-2K1000 reset support
+Date:   Fri, 26 Nov 2021 09:52:16 +0800
+Message-Id: <20211126015216.26605-3-zhangqing@loongson.cn>
+X-Mailer: git-send-email 2.31.0
+In-Reply-To: <20211126015216.26605-1-zhangqing@loongson.cn>
+References: <20211126015216.26605-1-zhangqing@loongson.cn>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: AQAAf9Dx_9PSPaBh1ooBAA--.6419S4
+X-Coremail-Antispam: 1UD129KBjvJXoWxJF15Xw13Zr1rtF1kCr1xXwb_yoW8XF4rpF
+        nxC3W7Kr4F9F13uws3KFy8Aw1rZr9aya4xXF47tr1Dtwn8Ga1Yvw1ak3Z8ZF17GF18XFWU
+        XFZ7urWUKa42kw7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUB2b7Iv0xC_Zr1lb4IE77IF4wAFF20E14v26ryj6rWUM7CY07I2
+        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI
+        8067AKxVWUXwA2048vs2IY020Ec7CjxVAFwI0_Gr0_Xr1l8cAvFVAK0II2c7xJM28CjxkF
+        64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW5JVW7JwA2z4x0Y4vE2Ix0cI8IcV
+        CY1x0267AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2
+        jsIEc7CjxVAFwI0_Cr1j6rxdM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64
+        kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r106r15McIj6I8E87Iv67AKxVW8JVWxJwAm
+        72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lc2xSY4AK67AK6w4l42xK82IYc2
+        Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s02
+        6x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0x
+        vE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE
+        42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6x
+        kF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUIg18DUUUU
+X-CM-SenderInfo: x2kd0wptlqwqxorr0wxvrqhubq/
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-The capture and playback paths both have a configurable gain after their
-respective mixer, which can be set from -31 dB to 0 dB in 32 steps.
+Switch the DT binding to a YAML schema to enable the DT validation.
 
-Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+Signed-off-by: Qing Zhang <zhangqing@loongson.cn>
 ---
- sound/soc/codecs/jz4770.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+v8-v9:
+only modify 'make DT_CHECKER_FLAGS=-m dt_binding_check' warnings/errors
+---
+ .../bindings/mips/loongson/ls2k-reset.yaml    | 38 +++++++++++++++++++
+ 1 file changed, 38 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/mips/loongson/ls2k-reset.yaml
 
-diff --git a/sound/soc/codecs/jz4770.c b/sound/soc/codecs/jz4770.c
-index 6b60120f59a6..1d0c467ab57b 100644
---- a/sound/soc/codecs/jz4770.c
-+++ b/sound/soc/codecs/jz4770.c
-@@ -307,6 +307,7 @@ static const DECLARE_TLV_DB_MINMAX_MUTE(dac_tlv, -3100, 0);
- static const DECLARE_TLV_DB_SCALE(adc_tlv, 0, 100, 0);
- static const DECLARE_TLV_DB_MINMAX(out_tlv, -2500, 600);
- static const DECLARE_TLV_DB_SCALE(linein_tlv, -2500, 100, 0);
-+static const DECLARE_TLV_DB_MINMAX(mixer_tlv, -3100, 0);
- 
- /* Unconditional controls. */
- static const struct snd_kcontrol_new jz4770_codec_snd_controls[] = {
-@@ -319,6 +320,14 @@ static const struct snd_kcontrol_new jz4770_codec_snd_controls[] = {
- 	SOC_DOUBLE_R_TLV("Line In Bypass Playback Volume",
- 			 JZ4770_CODEC_REG_GCR_LIBYL, JZ4770_CODEC_REG_GCR_LIBYR,
- 			 REG_GCR_GAIN_OFFSET, REG_GCR_GAIN_MAX, 1, linein_tlv),
+diff --git a/Documentation/devicetree/bindings/mips/loongson/ls2k-reset.yaml b/Documentation/devicetree/bindings/mips/loongson/ls2k-reset.yaml
+new file mode 100644
+index 0000000000000..20b5836efd90a
+--- /dev/null
++++ b/Documentation/devicetree/bindings/mips/loongson/ls2k-reset.yaml
+@@ -0,0 +1,38 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: "http://devicetree.org/schemas/mips/loongson/ls2k-reset.yaml#"
++$schema: "http://devicetree.org/meta-schemas/core.yaml#"
 +
-+	SOC_SINGLE_TLV("Mixer Capture Volume",
-+		       JZ4770_CODEC_REG_GCR_MIXADC,
-+		       REG_GCR_GAIN_OFFSET, REG_GCR_GAIN_MAX, 1, mixer_tlv),
++title: Loongson 2K1000 PM Controller
 +
-+	SOC_SINGLE_TLV("Mixer Playback Volume",
-+		       JZ4770_CODEC_REG_GCR_MIXDAC,
-+		       REG_GCR_GAIN_OFFSET, REG_GCR_GAIN_MAX, 1, mixer_tlv),
- };
- 
- static const struct snd_kcontrol_new jz4770_codec_pcm_playback_controls[] = {
++maintainers:
++  - Qing Zhang <zhangqing@loongson.cn>
++
++description: |
++  This controller can be found in Loongson-2K1000 Soc systems.
++
++properties:
++  compatible:
++    const: loongson,ls2k-pm
++
++  reg:
++    maxItems: 1
++
++required:
++  - compatible
++  - reg
++
++additionalProperties: false
++
++examples:
++  - |
++    bus {
++        #address-cells = <2>;
++        #size-cells = <2>;
++        pm: reset-controller@1fe07000 {
++            compatible = "loongson,ls2k-pm";
++            reg = <0 0x1fe07000 0 0x422>;
++        };
++    };
++...
 -- 
-2.33.0
+2.31.0
 

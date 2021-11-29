@@ -2,112 +2,394 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 77208C433F5
-	for <linux-mips@archiver.kernel.org>; Mon, 29 Nov 2021 22:32:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A4D19C433EF
+	for <linux-mips@archiver.kernel.org>; Mon, 29 Nov 2021 22:37:03 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232893AbhK2WfT (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 29 Nov 2021 17:35:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60766 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233429AbhK2We5 (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Mon, 29 Nov 2021 17:34:57 -0500
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A23AC0D8C9F;
-        Mon, 29 Nov 2021 09:55:23 -0800 (PST)
-Received: by mail-ed1-x529.google.com with SMTP id y12so75379205eda.12;
-        Mon, 29 Nov 2021 09:55:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=Jo8G3WIFnCXJv/Wl58UbY8LXKhGKq56nydp8ornyGvw=;
-        b=AjLExKPDvZxJIAf93isJIQG5owoNwi20rpmLOoVH2+s0ZWunJFmYMjECqAXAa31ExM
-         qP4APhy58+cgNzSgs7CZp9bi9ZLfh1Um4f0T4CPKtFMqEQtoIPcbCG5ECCW+4/RpN3qP
-         1k3CIsFPt6dBLkWzV5yOedKG0phAVvwwuaHgAci5hCbOZz8Yy6GMFp/NPR+R+K6sin3x
-         5VGYrAKTVs66DntrIpjFBpn/bDtGwX2tdoIaZvud6hNaP1K0MD3EhI9p5XlWWUFTNrfc
-         xT0cVpHPnGNOA0p342OPsO0F8T5HlLM3fktULYfIDujE1Zx4qHlH1POPSzpbzwUrncLW
-         GVzQ==
+        id S234694AbhK2WkU (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 29 Nov 2021 17:40:20 -0500
+Received: from mail-qk1-f174.google.com ([209.85.222.174]:43904 "EHLO
+        mail-qk1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233951AbhK2Wjg (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Mon, 29 Nov 2021 17:39:36 -0500
+Received: by mail-qk1-f174.google.com with SMTP id 193so24663495qkh.10;
+        Mon, 29 Nov 2021 14:36:18 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:message-id:date:mime-version:user-agent
-         :subject:content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=Jo8G3WIFnCXJv/Wl58UbY8LXKhGKq56nydp8ornyGvw=;
-        b=Y3UxfDcyF0qmMRjjjgfWddyCmOiRu+ZT1p2bTtgeMAAJkOoiobR8rD9fohvAfJnxS1
-         Bqec1RGf7kRxXc5TRZ7EJ760OaL8ihF4rOCauHkujCJoJOFICbA0RpeCnkZiMNe2oYaQ
-         DJh1pbsxu+nIpeK4cJqokrJBpDuI4C7yCsEmhWonbfIKXFXI224eCUFnN+K2Acolclgl
-         pbTDiuuGRui6c8p/zvDRJFTYLw9NPIgS2DMTO431tQIeEiYArjJGg1/EkTqmOMHabTtJ
-         amdk25LoWunXBdQFGw+O9iyvhmYHWI22+t227+3KpP/EMbs5OO7s6qprELVMRcv4kwfu
-         IZUg==
-X-Gm-Message-State: AOAM530fct9t3JvZKws23sziAm7FyIez+WJYIOzco3ea/dOw5/XjniCr
-        W4G0dlTNAWDx4c0PD2RFYS0=
-X-Google-Smtp-Source: ABdhPJzV0Hp7Xr2kSqyy1FejCYUnhDh4xLCC02qQtKZ+cbHbGKkW71ueP1pw91X6C27D1KEW8+5Gvw==
-X-Received: by 2002:a17:907:68e:: with SMTP id wn14mr62415481ejb.258.1638208522107;
-        Mon, 29 Nov 2021 09:55:22 -0800 (PST)
-Received: from ?IPV6:2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e? ([2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e])
-        by smtp.googlemail.com with ESMTPSA id og38sm7559529ejc.5.2021.11.29.09.55.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 29 Nov 2021 09:55:21 -0800 (PST)
-Sender: Paolo Bonzini <paolo.bonzini@gmail.com>
-Message-ID: <ba8341d6-7ee7-1af1-1385-0a9226bbf952@redhat.com>
-Date:   Mon, 29 Nov 2021 18:55:19 +0100
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=oYq4GIQm8QrcJcBYcEtsoL1OUQLtI2uaYWFL3tBum1w=;
+        b=LbgBUqhNIy40wg1QUS1O3Fphc27umuphTHuXF3Vh3p1aXDpxMB8u1x0uBkoReEpCim
+         Qws+MlUTR+44z5ZnZVEakENKrcwpLTdrfU6pwuCdhEuE6836/zJvFiv0hy41mtw4lmZY
+         1YLN8tM5kVsTYc3cIzQP+cRTcOaYPlO8T+3OWsTzHWZrV97lVx4noL+mCOFlQM5/kb/e
+         xtbk1IkPKi2J95tRlaAM1vZee91lCGFIz1G0UNuyid/iSgKkmcIGicP2EandWWCAfE0l
+         7uRKUoXjM5Kdq43vLMRdIArpNpF15lLBKDwojgjufzkihBUzlfrXdJGQbOAFXSSB8sJh
+         HP+w==
+X-Gm-Message-State: AOAM5331ZxbkcQSMXFEsbKKOYHbqHyekgfiKxHLIJOBJGBNeYh9fEOy4
+        V58Wg1UvjDtYEfnBxmUGGkPHwgK+q5yYNA==
+X-Google-Smtp-Source: ABdhPJzJz5BEY0tJAESTBlt73gwvqVTS7JmG7hyL3hoGsSGW1neE0oIGr731XokwLH4ohx1EX356dw==
+X-Received: by 2002:a05:620a:4092:: with SMTP id f18mr31107993qko.629.1638225377694;
+        Mon, 29 Nov 2021 14:36:17 -0800 (PST)
+Received: from fedora (pool-173-68-57-129.nycmny.fios.verizon.net. [173.68.57.129])
+        by smtp.gmail.com with ESMTPSA id 9sm8636358qkm.5.2021.11.29.14.36.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 Nov 2021 14:36:17 -0800 (PST)
+Date:   Mon, 29 Nov 2021 17:36:15 -0500
+From:   Dennis Zhou <dennis@kernel.org>
+To:     Kefeng Wang <wangkefeng.wang@huawei.com>
+Cc:     dennis@kernel.org, akpm@linux-foundation.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org, tj@kernel.org,
+        gregkh@linuxfoundation.org, cl@linux.com, catalin.marinas@arm.com,
+        will@kernel.org, tsbogend@alpha.franken.de, mpe@ellerman.id.au,
+        benh@kernel.crashing.org, paulus@samba.org,
+        paul.walmsley@sifive.com, palmer@dabbelt.com,
+        aou@eecs.berkeley.edu, davem@davemloft.net, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com,
+        hpa@zytor.com, linux-arm-kernel@lists.infradead.org,
+        linux-ia64@vger.kernel.org, linux-mips@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
+        sparclinux@vger.kernel.org, x86@kernel.org
+Subject: Re: [PATCH RFC 1/4] mm: percpu: Generalize percpu related config
+Message-ID: <YaVV38QSn6LEBKH/@fedora>
+References: <20211121093557.139034-1-wangkefeng.wang@huawei.com>
+ <20211121093557.139034-2-wangkefeng.wang@huawei.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.2.0
-Subject: Re: [PATCH v2 11/43] KVM: Don't block+unblock when halt-polling is
- successful
-Content-Language: en-US
-To:     Sean Christopherson <seanjc@google.com>,
-        Maxim Levitsky <mlevitsk@redhat.com>
-Cc:     Marc Zyngier <maz@kernel.org>, Huacai Chen <chenhuacai@kernel.org>,
-        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
-        Paul Mackerras <paulus@ozlabs.org>,
-        Anup Patel <anup.patel@wdc.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Janosch Frank <frankja@linux.ibm.com>,
-        James Morse <james.morse@arm.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Atish Patra <atish.patra@wdc.com>,
-        David Hildenbrand <david@redhat.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-mips@vger.kernel.org, kvm@vger.kernel.org,
-        kvm-ppc@vger.kernel.org, kvm-riscv@lists.infradead.org,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        David Matlack <dmatlack@google.com>,
-        Oliver Upton <oupton@google.com>,
-        Jing Zhang <jingzhangos@google.com>
-References: <20211009021236.4122790-1-seanjc@google.com>
- <20211009021236.4122790-12-seanjc@google.com>
- <cceb33be9e2a6ac504bb95a7b2b8cf5fe0b1ff26.camel@redhat.com>
- <4e883728e3e5201a94eb46b56315afca5e95ad9c.camel@redhat.com>
- <YaUNBfJh35WXMV0M@google.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-In-Reply-To: <YaUNBfJh35WXMV0M@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20211121093557.139034-2-wangkefeng.wang@huawei.com>
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On 11/29/21 18:25, Sean Christopherson wrote:
->> If I apply though only the patch series up to this patch, my fedora VM seems
->> to work fine, but my windows VM still locks up hard when I run 'LatencyTop'
->> in it, which doesn't happen without this patch.
+Hello,
+
+On Sun, Nov 21, 2021 at 05:35:54PM +0800, Kefeng Wang wrote:
+> The HAVE_SETUP_PER_CPU_AREA/NEED_PER_CPU_EMBED_FIRST_CHUNK/
+> NEED_PER_CPU_PAGE_FIRST_CHUNK/USE_PERCPU_NUMA_NODE_ID configs,
+> which has duplicate definitions on platforms that subscribe it.
 > 
-> Buy "run 'LatencyTop' in it", do you mean running something in the Windows guest?
-> The only search results I can find for LatencyTop are Linux specific.
+> Move them into mm, drop these redundant definitions and instead
+> just select it on applicable platforms.
+> 
+> Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
+> ---
+>  arch/arm64/Kconfig   | 20 ++++----------------
+>  arch/ia64/Kconfig    |  9 ++-------
+>  arch/mips/Kconfig    | 10 ++--------
+>  arch/powerpc/Kconfig | 17 ++++-------------
+>  arch/riscv/Kconfig   | 10 ++--------
+>  arch/sparc/Kconfig   | 12 +++---------
+>  arch/x86/Kconfig     | 17 ++++-------------
+>  mm/Kconfig           | 12 ++++++++++++
+>  8 files changed, 33 insertions(+), 74 deletions(-)
+> 
+> diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
+> index c4207cf9bb17..4ff73299f8a9 100644
+> --- a/arch/arm64/Kconfig
+> +++ b/arch/arm64/Kconfig
+> @@ -1135,6 +1135,10 @@ config NUMA
+>  	select GENERIC_ARCH_NUMA
+>  	select ACPI_NUMA if ACPI
+>  	select OF_NUMA
+> +	select HAVE_SETUP_PER_CPU_AREA
+> +	select NEED_PER_CPU_EMBED_FIRST_CHUNK
+> +	select NEED_PER_CPU_PAGE_FIRST_CHUNK
+> +	select USE_PERCPU_NUMA_NODE_ID
+>  	help
+>  	  Enable NUMA (Non-Uniform Memory Access) support.
+>  
+> @@ -1151,22 +1155,6 @@ config NODES_SHIFT
+>  	  Specify the maximum number of NUMA Nodes available on the target
+>  	  system.  Increases memory reserved to accommodate various tables.
+>  
+> -config USE_PERCPU_NUMA_NODE_ID
+> -	def_bool y
+> -	depends on NUMA
+> -
+> -config HAVE_SETUP_PER_CPU_AREA
+> -	def_bool y
+> -	depends on NUMA
+> -
+> -config NEED_PER_CPU_EMBED_FIRST_CHUNK
+> -	def_bool y
+> -	depends on NUMA
+> -
+> -config NEED_PER_CPU_PAGE_FIRST_CHUNK
+> -	def_bool y
+> -	depends on NUMA
+> -
+>  source "kernel/Kconfig.hz"
+>  
+>  config ARCH_SPARSEMEM_ENABLE
+> diff --git a/arch/ia64/Kconfig b/arch/ia64/Kconfig
+> index 1e33666fa679..703952819e10 100644
+> --- a/arch/ia64/Kconfig
+> +++ b/arch/ia64/Kconfig
+> @@ -32,6 +32,7 @@ config IA64
+>  	select HAVE_FTRACE_MCOUNT_RECORD
+>  	select HAVE_DYNAMIC_FTRACE if (!ITANIUM)
+>  	select HAVE_FUNCTION_TRACER
+> +	select HAVE_SETUP_PER_CPU_AREA
+>  	select TTY
+>  	select HAVE_ARCH_TRACEHOOK
+>  	select HAVE_VIRT_CPU_ACCOUNTING
+> @@ -88,9 +89,6 @@ config GENERIC_CALIBRATE_DELAY
+>  	bool
+>  	default y
+>  
+> -config HAVE_SETUP_PER_CPU_AREA
+> -	def_bool y
+> -
+>  config DMI
+>  	bool
+>  	default y
+> @@ -292,6 +290,7 @@ config NUMA
+>  	bool "NUMA support"
+>  	depends on !FLATMEM
+>  	select SMP
+> +	select USE_PERCPU_NUMA_NODE_ID
+>  	help
+>  	  Say Y to compile the kernel to support NUMA (Non-Uniform Memory
+>  	  Access).  This option is for configuring high-end multiprocessor
+> @@ -311,10 +310,6 @@ config HAVE_ARCH_NODEDATA_EXTENSION
+>  	def_bool y
+>  	depends on NUMA
+>  
+> -config USE_PERCPU_NUMA_NODE_ID
+> -	def_bool y
+> -	depends on NUMA
+> -
+>  config HAVE_MEMORYLESS_NODES
+>  	def_bool NUMA
+>  
+> diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
+> index de60ad190057..c106a2080877 100644
+> --- a/arch/mips/Kconfig
+> +++ b/arch/mips/Kconfig
+> @@ -2666,6 +2666,8 @@ config NUMA
+>  	bool "NUMA Support"
+>  	depends on SYS_SUPPORTS_NUMA
+>  	select SMP
+> +	select HAVE_SETUP_PER_CPU_AREA
+> +	select NEED_PER_CPU_EMBED_FIRST_CHUNK
+>  	help
+>  	  Say Y to compile the kernel to support NUMA (Non-Uniform Memory
+>  	  Access).  This option improves performance on systems with more
+> @@ -2676,14 +2678,6 @@ config NUMA
+>  config SYS_SUPPORTS_NUMA
+>  	bool
+>  
+> -config HAVE_SETUP_PER_CPU_AREA
+> -	def_bool y
+> -	depends on NUMA
+> -
+> -config NEED_PER_CPU_EMBED_FIRST_CHUNK
+> -	def_bool y
+> -	depends on NUMA
+> -
+>  config RELOCATABLE
+>  	bool "Relocatable kernel"
+>  	depends on SYS_SUPPORTS_RELOCATABLE
+> diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
+> index dea74d7717c0..8badd39854a0 100644
+> --- a/arch/powerpc/Kconfig
+> +++ b/arch/powerpc/Kconfig
+> @@ -55,15 +55,6 @@ config ARCH_MMAP_RND_COMPAT_BITS_MIN
+>  	default 9 if PPC_16K_PAGES	#  9 = 23 (8MB) - 14 (16K)
+>  	default 11			# 11 = 23 (8MB) - 12 (4K)
+>  
+> -config HAVE_SETUP_PER_CPU_AREA
+> -	def_bool PPC64
+> -
+> -config NEED_PER_CPU_EMBED_FIRST_CHUNK
+> -	def_bool y if PPC64
+> -
+> -config NEED_PER_CPU_PAGE_FIRST_CHUNK
+> -	def_bool y if PPC64
+> -
+>  config NR_IRQS
+>  	int "Number of virtual interrupt numbers"
+>  	range 32 1048576
+> @@ -240,6 +231,7 @@ config PPC
+>  	select HAVE_REGS_AND_STACK_ACCESS_API
+>  	select HAVE_RELIABLE_STACKTRACE
+>  	select HAVE_RSEQ
+> +	select HAVE_SETUP_PER_CPU_AREA		if PPC64
+>  	select HAVE_SOFTIRQ_ON_OWN_STACK
+>  	select HAVE_STACKPROTECTOR		if PPC32 && $(cc-option,-mstack-protector-guard=tls -mstack-protector-guard-reg=r2)
+>  	select HAVE_STACKPROTECTOR		if PPC64 && $(cc-option,-mstack-protector-guard=tls -mstack-protector-guard-reg=r13)
+> @@ -254,6 +246,8 @@ config PPC
+>  	select MMU_GATHER_RCU_TABLE_FREE
+>  	select MODULES_USE_ELF_RELA
+>  	select NEED_DMA_MAP_STATE		if PPC64 || NOT_COHERENT_CACHE
+> +	select NEED_PER_CPU_EMBED_FIRST_CHUNK	if PPC64
+> +	select NEED_PER_CPU_PAGE_FIRST_CHUNK	if PPC64
+>  	select NEED_SG_DMA_LENGTH
+>  	select OF
+>  	select OF_DMA_DEFAULT_COHERENT		if !NOT_COHERENT_CACHE
+> @@ -659,6 +653,7 @@ config NUMA
+>  	bool "NUMA Memory Allocation and Scheduler Support"
+>  	depends on PPC64 && SMP
+>  	default y if PPC_PSERIES || PPC_POWERNV
+> +	select USE_PERCPU_NUMA_NODE_ID
+>  	help
+>  	  Enable NUMA (Non-Uniform Memory Access) support.
+>  
+> @@ -672,10 +667,6 @@ config NODES_SHIFT
+>  	default "4"
+>  	depends on NUMA
+>  
+> -config USE_PERCPU_NUMA_NODE_ID
+> -	def_bool y
+> -	depends on NUMA
+> -
+>  config HAVE_MEMORYLESS_NODES
+>  	def_bool y
+>  	depends on NUMA
+> diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
+> index 821252b65f89..bf66bcbc5a39 100644
+> --- a/arch/riscv/Kconfig
+> +++ b/arch/riscv/Kconfig
+> @@ -334,6 +334,8 @@ config NUMA
+>  	select GENERIC_ARCH_NUMA
+>  	select OF_NUMA
+>  	select ARCH_SUPPORTS_NUMA_BALANCING
+> +	select USE_PERCPU_NUMA_NODE_ID
+> +	select NEED_PER_CPU_EMBED_FIRST_CHUNK
+>  	help
+>  	  Enable NUMA (Non-Uniform Memory Access) support.
+>  
+> @@ -349,14 +351,6 @@ config NODES_SHIFT
+>  	  Specify the maximum number of NUMA Nodes available on the target
+>  	  system.  Increases memory reserved to accommodate various tables.
+>  
+> -config USE_PERCPU_NUMA_NODE_ID
+> -	def_bool y
+> -	depends on NUMA
+> -
+> -config NEED_PER_CPU_EMBED_FIRST_CHUNK
+> -	def_bool y
+> -	depends on NUMA
+> -
+>  config RISCV_ISA_C
+>  	bool "Emit compressed instructions when building Linux"
+>  	default y
+> diff --git a/arch/sparc/Kconfig b/arch/sparc/Kconfig
+> index 66fc08646be5..a6765e0fe6a8 100644
+> --- a/arch/sparc/Kconfig
+> +++ b/arch/sparc/Kconfig
+> @@ -97,6 +97,9 @@ config SPARC64
+>  	select PCI_DOMAINS if PCI
+>  	select ARCH_HAS_GIGANTIC_PAGE
+>  	select HAVE_SOFTIRQ_ON_OWN_STACK
+> +	select HAVE_SETUP_PER_CPU_AREA
+> +	select NEED_PER_CPU_EMBED_FIRST_CHUNK
+> +	select NEED_PER_CPU_PAGE_FIRST_CHUUNK
+>  
+>  config ARCH_PROC_KCORE_TEXT
+>  	def_bool y
+> @@ -123,15 +126,6 @@ config AUDIT_ARCH
+>  	bool
+>  	default y
+>  
+> -config HAVE_SETUP_PER_CPU_AREA
+> -	def_bool y if SPARC64
+> -
+> -config NEED_PER_CPU_EMBED_FIRST_CHUNK
+> -	def_bool y if SPARC64
+> -
+> -config NEED_PER_CPU_PAGE_FIRST_CHUNK
+> -	def_bool y if SPARC64
+> -
+>  config MMU
+>  	bool
+>  	default y
+> diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+> index 7399327d1eff..ca120a1f5857 100644
+> --- a/arch/x86/Kconfig
+> +++ b/arch/x86/Kconfig
+> @@ -239,6 +239,7 @@ config X86
+>  	select HAVE_REGS_AND_STACK_ACCESS_API
+>  	select HAVE_RELIABLE_STACKTRACE		if X86_64 && (UNWINDER_FRAME_POINTER || UNWINDER_ORC) && STACK_VALIDATION
+>  	select HAVE_FUNCTION_ARG_ACCESS_API
+> +	select HAVE_SETUP_PER_CPU_AREA
+>  	select HAVE_SOFTIRQ_ON_OWN_STACK
+>  	select HAVE_STACKPROTECTOR		if CC_HAS_SANE_STACKPROTECTOR
+>  	select HAVE_STACK_VALIDATION		if X86_64
+> @@ -252,6 +253,8 @@ config X86
+>  	select HAVE_GENERIC_VDSO
+>  	select HOTPLUG_SMT			if SMP
+>  	select IRQ_FORCED_THREADING
+> +	select NEED_PER_CPU_EMBED_FIRST_CHUNK
+> +	select NEED_PER_CPU_PAGE_FIRST_CHUNK
+>  	select NEED_SG_DMA_LENGTH
+>  	select PCI_DOMAINS			if PCI
+>  	select PCI_LOCKLESS_CONFIG		if PCI
+> @@ -331,15 +334,6 @@ config ARCH_HAS_CPU_RELAX
+>  config ARCH_HAS_FILTER_PGPROT
+>  	def_bool y
+>  
+> -config HAVE_SETUP_PER_CPU_AREA
+> -	def_bool y
+> -
+> -config NEED_PER_CPU_EMBED_FIRST_CHUNK
+> -	def_bool y
+> -
+> -config NEED_PER_CPU_PAGE_FIRST_CHUNK
+> -	def_bool y
+> -
+>  config ARCH_HIBERNATION_POSSIBLE
+>  	def_bool y
+>  
+> @@ -1557,6 +1551,7 @@ config NUMA
+>  	depends on SMP
+>  	depends on X86_64 || (X86_32 && HIGHMEM64G && X86_BIGSMP)
+>  	default y if X86_BIGSMP
+> +	select USE_PERCPU_NUMA_NODE_ID
+>  	help
+>  	  Enable NUMA (Non-Uniform Memory Access) support.
+>  
+> @@ -2430,10 +2425,6 @@ config ARCH_HAS_ADD_PAGES
+>  config ARCH_MHP_MEMMAP_ON_MEMORY_ENABLE
+>  	def_bool y
+>  
+> -config USE_PERCPU_NUMA_NODE_ID
+> -	def_bool y
+> -	depends on NUMA
+> -
+>  menu "Power management and ACPI options"
+>  
+>  config ARCH_HIBERNATION_HEADER
+> diff --git a/mm/Kconfig b/mm/Kconfig
+> index 28edafc820ad..6bc5d780c51b 100644
+> --- a/mm/Kconfig
+> +++ b/mm/Kconfig
+> @@ -432,6 +432,18 @@ config NEED_PER_CPU_KM
+>  	bool
+>  	default y
+>  
+> +config NEED_PER_CPU_EMBED_FIRST_CHUNK
+> +	bool
+> +
+> +config NEED_PER_CPU_PAGE_FIRST_CHUNK
+> +	bool
+> +
+> +config USE_PERCPU_NUMA_NODE_ID
+> +	bool
+> +
+> +config HAVE_SETUP_PER_CPU_AREA
+> +	bool
+> +
+>  config CLEANCACHE
+>  	bool "Enable cleancache driver to cache clean pages if tmem is present"
+>  	help
+> -- 
+> 2.26.2
+> 
 
-I think it's LatencyMon, https://www.resplendence.com/latencymon.
+This makes sense and looks good. A series like this is a little tricky.
+The latter patches change the contracts so it'd be easiest to run it
+through my tree. We'd need to get explicit acks from each arch
+maintainer to make sure they're fine with this.
 
-Paolo
+Thanks,
+Dennis

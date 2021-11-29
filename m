@@ -2,45 +2,64 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 14884C433EF
-	for <linux-mips@archiver.kernel.org>; Mon, 29 Nov 2021 22:56:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 615DCC4321E
+	for <linux-mips@archiver.kernel.org>; Mon, 29 Nov 2021 22:56:43 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235476AbhK2W71 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 29 Nov 2021 17:59:27 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.129.124]:20318 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235716AbhK2W66 (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>);
-        Mon, 29 Nov 2021 17:58:58 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1638226539;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=91gZzrlhgmWTQlrjqIVKNYdue6kA0WgX9BjgXgHlzEM=;
-        b=Ky/9AmthoXvdn79NQKi2zC+UMgPFhBTpMobUzPpGPu67JdN69v5wfYHWbkYf1pa51Y4iuG
-        n0Qq1LgEK357ZNdaU1Z3M6rzkdQVt8nL+O35MOVQu69QC/LcKk+HiyqNAdReUP9CqCxIn4
-        +egf4JldBYy8HMeTHC9a6XwO6sCoxok=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-577-axjhAptPNz-_8ATyvN31yg-1; Mon, 29 Nov 2021 17:55:36 -0500
-X-MC-Unique: axjhAptPNz-_8ATyvN31yg-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1EB4C190B2A1;
-        Mon, 29 Nov 2021 22:55:32 +0000 (UTC)
-Received: from starship (unknown [10.40.192.24])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 0EDF745D60;
-        Mon, 29 Nov 2021 22:55:18 +0000 (UTC)
-Message-ID: <c04c9854be8fc9493739f17c2cbd26dd240a8465.camel@redhat.com>
+        id S235884AbhK2XAA (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 29 Nov 2021 18:00:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38888 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235933AbhK2W7s (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Mon, 29 Nov 2021 17:59:48 -0500
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABED9C08ED82;
+        Mon, 29 Nov 2021 09:53:55 -0800 (PST)
+Received: by mail-ed1-x52d.google.com with SMTP id y12so75362755eda.12;
+        Mon, 29 Nov 2021 09:53:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=sender:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=1y5DEAA90y8cYxRCLd33wqhLVpAEzLmdNKss0/RInBo=;
+        b=E58dL1Cy0ML/Fq7U+4vMD/XpyhySESNFxGtsJEr0iGA5QuLlhcOX/A4/jdDRZEzDIQ
+         fPsLvJxXz3PX63V9su/FgauAMqwxco+y+olI1dCd3mpfxLlYlBPlhWOjrxeLq9guNxSM
+         eEfi9IneXptokJh8diXl/ugbj5GCH/6ELhKn4aofNdddGLZ+OqUWg1z9TxLUnKXffmNg
+         lUaqpY0k7AwGkJ3OL2ZtKNoHyBmTZ4KtwmtpxoPlTCt2JnQOPjXQ7vH4M7rfgBjlRgND
+         uViwUXN3LorpSW+ON86lkQL5g7/VvacQD/GzeWK08eJHfKwJKQfnwt7i4lLeeVe5Mvw/
+         ad3w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:sender:message-id:date:mime-version:user-agent
+         :subject:content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=1y5DEAA90y8cYxRCLd33wqhLVpAEzLmdNKss0/RInBo=;
+        b=x4bbK/cjcMnOoyxtkDp7Z3F+2SdUFuT80avz2Tmcu44Jfj+dh6AzycwELMXJuXzPcQ
+         vLpc+he5hqyOnGi+y5qiJxfLNrR0Px3Wt6aLL7yl7fj2aXHZWueJE0MrCS7ZI/+PoFEe
+         k0n9zKbA2jvYjlGXKpeG363N68FxqZgmcISOMaGOG5G6GZgM4MtFvmn9AkkK1aW2nKuU
+         l4c6HdItYcDeosAS9qSTXFEEArBMqXqsNE2ot/WSimKSPVspAoO/UCVplylraCTuaOa6
+         hU62QT7UchN8fQtuLGLaSaDqOt1SCvEpurFiyvxFzwTo8KT6cAkFt2omJTbgx3wsZLyC
+         Votg==
+X-Gm-Message-State: AOAM5310EUJg1Dqp0pxtKg0+W7O6Mn/q6iTwmgRsFiYZdWD+0d+TjoQ9
+        x4b/oOfmOg2XQw+uGhep+5g=
+X-Google-Smtp-Source: ABdhPJyEFZTCnn35jIBM5GkhncH3CSPbL5gmVmWsUh9Tr+ztH5c8bc9QO9Acd3UAKwaA5P3qYhybfg==
+X-Received: by 2002:a05:6402:2744:: with SMTP id z4mr77472004edd.310.1638208434290;
+        Mon, 29 Nov 2021 09:53:54 -0800 (PST)
+Received: from ?IPV6:2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e? ([2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e])
+        by smtp.googlemail.com with ESMTPSA id gt18sm7974997ejc.46.2021.11.29.09.53.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 29 Nov 2021 09:53:53 -0800 (PST)
+Sender: Paolo Bonzini <paolo.bonzini@gmail.com>
+Message-ID: <496c2fc6-26b0-9b5d-32f4-2f9e9dd6a064@redhat.com>
+Date:   Mon, 29 Nov 2021 18:53:48 +0100
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
 Subject: Re: [PATCH v2 11/43] KVM: Don't block+unblock when halt-polling is
  successful
-From:   Maxim Levitsky <mlevitsk@redhat.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>
+Content-Language: en-US
+To:     Sean Christopherson <seanjc@google.com>,
+        Maxim Levitsky <mlevitsk@redhat.com>
 Cc:     Marc Zyngier <maz@kernel.org>, Huacai Chen <chenhuacai@kernel.org>,
         Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
         Paul Mackerras <paulus@ozlabs.org>,
@@ -68,38 +87,64 @@ Cc:     Marc Zyngier <maz@kernel.org>, Huacai Chen <chenhuacai@kernel.org>,
         David Matlack <dmatlack@google.com>,
         Oliver Upton <oupton@google.com>,
         Jing Zhang <jingzhangos@google.com>
-Date:   Tue, 30 Nov 2021 00:55:17 +0200
-In-Reply-To: <ba8341d6-7ee7-1af1-1385-0a9226bbf952@redhat.com>
 References: <20211009021236.4122790-1-seanjc@google.com>
-         <20211009021236.4122790-12-seanjc@google.com>
-         <cceb33be9e2a6ac504bb95a7b2b8cf5fe0b1ff26.camel@redhat.com>
-         <4e883728e3e5201a94eb46b56315afca5e95ad9c.camel@redhat.com>
-         <YaUNBfJh35WXMV0M@google.com>
-         <ba8341d6-7ee7-1af1-1385-0a9226bbf952@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
-MIME-Version: 1.0
+ <20211009021236.4122790-12-seanjc@google.com>
+ <cceb33be9e2a6ac504bb95a7b2b8cf5fe0b1ff26.camel@redhat.com>
+ <4e883728e3e5201a94eb46b56315afca5e95ad9c.camel@redhat.com>
+ <YaUNBfJh35WXMV0M@google.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+In-Reply-To: <YaUNBfJh35WXMV0M@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Mon, 2021-11-29 at 18:55 +0100, Paolo Bonzini wrote:
-> On 11/29/21 18:25, Sean Christopherson wrote:
-> > > If I apply though only the patch series up to this patch, my fedora VM seems
-> > > to work fine, but my windows VM still locks up hard when I run 'LatencyTop'
-> > > in it, which doesn't happen without this patch.
-> > 
-> > Buy "run 'LatencyTop' in it", do you mean running something in the Windows guest?
-> > The only search results I can find for LatencyTop are Linux specific.
+On 11/29/21 18:25, Sean Christopherson wrote:
+> If a posted interrupt arrives after KVM has done its final search through the vIRR,
+> but before avic_update_iommu_vcpu_affinity() is called, the posted interrupt will
+> be set in the vIRR without triggering a host IRQ to wake the vCPU via the GA log.
 > 
-> I think it's LatencyMon, https://www.resplendence.com/latencymon.
-> 
-> Paolo
-> 
-Yes.
+> I.e. KVM is missing an equivalent to VMX's posted interrupt check for an outstanding
+> notification after switching to the wakeup vector.
 
-Best regards,
-	Maxim Levitsky
+BTW Maxim reported that it can break even without assigned devices.
 
+> For now, the least awful approach is sadly to keep the vcpu_(un)blocking() hooks.
+
+I agree that the hooks cannot be dropped but the bug is reproducible 
+with this patch, where the hooks are still there.
+
+With the hooks in place, you have:
+
+	kvm_vcpu_blocking(vcpu)
+	  avic_set_running(vcpu, false)
+	    avic_vcpu_put(vcpu)
+	      avic_update_iommu_vcpu_affinity()
+	      WRITE_ONCE(...) // clear IS_RUNNING bit
+
+	set_current_state()
+	  smp_mb()
+
+	kvm_vcpu_check_block()
+	  return kvm_arch_vcpu_runnable() || ...
+	    return kvm_vcpu_has_events() || ...
+	      return kvm_cpu_has_interrupt() || ...
+		return kvm_apic_has_interrupt() || ...
+		  return apic_has_interrupt_for_ppr()
+		    apic_find_highest_irr()
+		      scan vIRR
+
+This covers the barrier between the write of is_running and the read of 
+vIRR, and the other side should be correct as well.  in particular, 
+reads of is_running always come after an atomic write to vIRR, and hence 
+after an implicit full memory barrier.  svm_deliver_avic_intr() has an 
+smp_mb__after_atomic() after writing IRR; avic_kick_target_vcpus() even 
+has an explicit barrier in srcu_read_lock(), between the microcode's 
+write to vIRR and its own call to avic_vcpu_is_running().
+
+Still it does seem to be a race that happens when IS_RUNNING=true but 
+vcpu->mode == OUTSIDE_GUEST_MODE.  This patch makes the race easier to 
+trigger because it moves IS_RUNNING=false later.
+
+Paolo

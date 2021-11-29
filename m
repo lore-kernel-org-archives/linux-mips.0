@@ -2,50 +2,61 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EC1AAC433EF
-	for <linux-mips@archiver.kernel.org>; Mon, 29 Nov 2021 12:35:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1832DC433FE
+	for <linux-mips@archiver.kernel.org>; Mon, 29 Nov 2021 12:35:20 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244446AbhK2Mig (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        id S1343926AbhK2Mig (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
         Mon, 29 Nov 2021 07:38:36 -0500
-Received: from elvis.franken.de ([193.175.24.41]:48750 "EHLO elvis.franken.de"
+Received: from elvis.franken.de ([193.175.24.41]:48752 "EHLO elvis.franken.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1346275AbhK2MgL (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Mon, 29 Nov 2021 07:36:11 -0500
+        id S241775AbhK2MgO (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Mon, 29 Nov 2021 07:36:14 -0500
 Received: from uucp (helo=alpha)
         by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1mrfq1-0005Wg-02; Mon, 29 Nov 2021 13:32:53 +0100
+        id 1mrfq1-0005Wg-00; Mon, 29 Nov 2021 13:32:53 +0100
 Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 800BCC2FEA; Mon, 29 Nov 2021 13:32:42 +0100 (CET)
-Date:   Mon, 29 Nov 2021 13:32:42 +0100
+        id 9AE69C2FD1; Mon, 29 Nov 2021 13:31:50 +0100 (CET)
+Date:   Mon, 29 Nov 2021 13:31:50 +0100
 From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Geert Uytterhoeven <geert+renesas@glider.be>
-Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] MIPS: CPS: Use bitfield helpers
-Message-ID: <20211129123242.GC8232@alpha.franken.de>
-References: <a1445d3abb45cfc95cb1b03180fd53caf122035b.1637593297.git.geert+renesas@glider.be>
- <8bd8b1b9a3787e594285addcf2057754540d0a5f.1637593297.git.geert+renesas@glider.be>
+To:     Jason Wang <wangborong@cdjrlc.com>
+Cc:     rdunlap@infradead.org, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] MIPS: Remove a repeated word in a comment
+Message-ID: <20211129123150.GA8232@alpha.franken.de>
+References: <20211113032552.53817-1-wangborong@cdjrlc.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <8bd8b1b9a3787e594285addcf2057754540d0a5f.1637593297.git.geert+renesas@glider.be>
+In-Reply-To: <20211113032552.53817-1-wangborong@cdjrlc.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Mon, Nov 22, 2021 at 04:53:58PM +0100, Geert Uytterhoeven wrote:
-> Use the FIELD_GET() helper, instead of open-coding the same operation.
+On Sat, Nov 13, 2021 at 11:25:52AM +0800, Jason Wang wrote:
+> The repeated word `the' in a comment is redundant, thus one
+> of them was removed from the comment.
 > 
-> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> Signed-off-by: Jason Wang <wangborong@cdjrlc.com>
 > ---
-> Compile-tested only.
+>  arch/mips/mm/c-octeon.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> See "[PATCH 00/17] Non-const bitfield helper conversions"
-> (https://lore.kernel.org/r/cover.1637592133.git.geert+renesas@glider.be)
-> for background and more conversions.
-> ---
->  arch/mips/include/asm/mips-cps.h | 19 +++++++------------
->  1 file changed, 7 insertions(+), 12 deletions(-)
+> diff --git a/arch/mips/mm/c-octeon.c b/arch/mips/mm/c-octeon.c
+> index ec2ae501539a..490322b01f91 100644
+> --- a/arch/mips/mm/c-octeon.c
+> +++ b/arch/mips/mm/c-octeon.c
+> @@ -332,7 +332,7 @@ static void co_cache_error_call_notifiers(unsigned long val)
+>  }
+>  
+>  /*
+> - * Called when the the exception is recoverable
+> + * Called when the exception is recoverable
+>   */
+>  
+>  asmlinkage void cache_parity_error_octeon_recoverable(void)
+> -- 
+> 2.33.0
 
 applied to mips-next.
 

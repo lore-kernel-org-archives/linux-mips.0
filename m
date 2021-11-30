@@ -2,36 +2,36 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 28816C433F5
-	for <linux-mips@archiver.kernel.org>; Tue, 30 Nov 2021 21:27:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A8496C43219
+	for <linux-mips@archiver.kernel.org>; Tue, 30 Nov 2021 21:27:29 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344043AbhK3Vak (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 30 Nov 2021 16:30:40 -0500
-Received: from mo4-p02-ob.smtp.rzone.de ([81.169.146.171]:13224 "EHLO
-        mo4-p02-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240677AbhK3Vae (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Tue, 30 Nov 2021 16:30:34 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1638307605;
+        id S1344138AbhK3Vap (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 30 Nov 2021 16:30:45 -0500
+Received: from mo4-p04-ob.smtp.rzone.de ([81.169.146.177]:13226 "EHLO
+        mo4-p04-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240728AbhK3Vaf (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Tue, 30 Nov 2021 16:30:35 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1638307609;
     s=strato-dkim-0002; d=goldelico.com;
     h=References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Cc:Date:
     From:Subject:Sender;
-    bh=CDnhZE/bCmY+sU+9kBR2+/QdGVAtCkJSkm9JjrgStzg=;
-    b=NCSEkWN9HaOVsXPobfai+fw/8SmRUjwDkDlbvBOw+OtztMufldSrWCPdPfmdf5ZbTJ
-    +mR21t2s9jafy8SeQY3ujJIwV6uYQIrA1mBg3rmLdvBgo+HaVx96jOIGX80JYEPY3yyX
-    Ypautgj4maiVSTLbjV3t3CimqXjPFK14TWL+5z/DnrsHrc2dIOBxnl6QJcbnP5u0vVuX
-    VRfWtp7QIzIzw+BAu6k9XcFR4NQGW7RlnLqknfyURXkGP+Sgw1rzdToVn9+OguA7V0nP
-    U9QASlWILm3T9kKsKZPjNYtzRoMDOZfW0ZjY66wnWOwaIT7u01daYHcgRw1MAGE2sIs3
-    nRRQ==
+    bh=mgm9FcGOkzWufyh28STSVM1vIR8mFSf+dMssEkkvORM=;
+    b=FAnLeIr4XZBKAJoOcTlBe0JuXSlL1E+PyQkx6k6P+MeIE/96uToDtxaDCUvMuRwOCH
+    xeOSe9uCQQDR2KZQKChoumFm41BtA8VaolT+OlmigcjR2GXvG8Ih5bVQ7Y6im4UsHfe6
+    b3dbUG89Ks4Sg5r8v57REvY7w3vUwOcTPgAV2vbPf4BMo1JxH8DIsLKKKRfSooT1U5sm
+    PsUKg+bs69lfbQOcxt18hmoE7tOUVvwcWEWleidQoayR5WiJLB3Hf8Q8tC53hzTcVR/P
+    fcxvzEJZ/POS3yTWY8lYbxJdCeFdoC2R/Ddn6NAb2+JhArGgt17CKrnFWCqrgyxCKAcq
+    6v9g==
 Authentication-Results: strato.com;
     dkim=none
 X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMhflhwDubTJ9o1KHeBQyh+ITDDJuCr4="
 X-RZG-CLASS-ID: mo00
 Received: from iMac.fritz.box
     by smtp.strato.de (RZmta 47.34.10 DYNA|AUTH)
-    with ESMTPSA id e05ed8xAULQiTo6
+    with ESMTPSA id e05ed8xAULQmToC
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
         (Client did not present a certificate);
-    Tue, 30 Nov 2021 22:26:44 +0100 (CET)
+    Tue, 30 Nov 2021 22:26:48 +0100 (CET)
 From:   "H. Nikolaus Schaller" <hns@goldelico.com>
 To:     Paul Cercueil <paul@crapouillou.net>,
         Rob Herring <robh+dt@kernel.org>,
@@ -58,10 +58,11 @@ To:     Paul Cercueil <paul@crapouillou.net>,
 Cc:     devicetree@vger.kernel.org, linux-mips@vger.kernel.org,
         linux-kernel@vger.kernel.org, letux-kernel@openphoenux.org,
         Jonas Karlman <jonas@kwiboo.se>,
-        dri-devel@lists.freedesktop.org
-Subject: [PATCH v10 1/8] drm/ingenic: prepare ingenic drm for later addition of JZ4780
-Date:   Tue, 30 Nov 2021 22:26:34 +0100
-Message-Id: <ee65e70e91268b3963f8a6581c8aa6c3b643c53e.1638307601.git.hns@goldelico.com>
+        dri-devel@lists.freedesktop.org,
+        Ezequiel Garcia <ezequiel@collabora.com>
+Subject: [PATCH v10 7/8] MIPS: defconfig: CI20: configure for DRM_DW_HDMI_JZ4780
+Date:   Tue, 30 Nov 2021 22:26:40 +0100
+Message-Id: <f673256fbb8fc2e4f7b0c8933e32b20028f32d7d.1638307601.git.hns@goldelico.com>
 X-Mailer: git-send-email 2.33.0
 In-Reply-To: <cover.1638307601.git.hns@goldelico.com>
 References: <cover.1638307601.git.hns@goldelico.com>
@@ -71,59 +72,32 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-This changes the way the regmap is allocated to prepare for the
-later addition of the JZ4780 which has more registers and bits
-than the others.
+Enable CONFIG options as modules.
 
-Therefore we make the regmap as big as the reg property in
-the device tree tells.
-
-Suggested-by: Paul Cercueil <paul@crapouillou.net>
+Signed-off-by: Ezequiel Garcia <ezequiel@collabora.com>
 Signed-off-by: H. Nikolaus Schaller <hns@goldelico.com>
 ---
- drivers/gpu/drm/ingenic/ingenic-drm-drv.c | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+ arch/mips/configs/ci20_defconfig | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
-index 462bc0f35f1bf..0bb590c3910d9 100644
---- a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
-+++ b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
-@@ -173,7 +173,6 @@ static const struct regmap_config ingenic_drm_regmap_config = {
- 	.val_bits = 32,
- 	.reg_stride = 4,
- 
--	.max_register = JZ_REG_LCD_SIZE1,
- 	.writeable_reg = ingenic_drm_writeable_reg,
- };
- 
-@@ -1011,6 +1010,8 @@ static int ingenic_drm_bind(struct device *dev, bool has_components)
- 	struct ingenic_drm_bridge *ib;
- 	struct drm_device *drm;
- 	void __iomem *base;
-+	struct resource *res;
-+	struct regmap_config regmap_config;
- 	long parent_rate;
- 	unsigned int i, clone_mask = 0;
- 	int ret, irq;
-@@ -1056,14 +1057,16 @@ static int ingenic_drm_bind(struct device *dev, bool has_components)
- 	drm->mode_config.funcs = &ingenic_drm_mode_config_funcs;
- 	drm->mode_config.helper_private = &ingenic_drm_mode_config_helpers;
- 
--	base = devm_platform_ioremap_resource(pdev, 0);
-+	base = devm_platform_get_and_ioremap_resource(pdev, 0, &res);
- 	if (IS_ERR(base)) {
- 		dev_err(dev, "Failed to get memory resource\n");
- 		return PTR_ERR(base);
- 	}
- 
-+	regmap_config = ingenic_drm_regmap_config;
-+	regmap_config.max_register = res->end - res->start;
- 	priv->map = devm_regmap_init_mmio(dev, base,
--					  &ingenic_drm_regmap_config);
-+					  &regmap_config);
- 	if (IS_ERR(priv->map)) {
- 		dev_err(dev, "Failed to create regmap\n");
- 		return PTR_ERR(priv->map);
+diff --git a/arch/mips/configs/ci20_defconfig b/arch/mips/configs/ci20_defconfig
+index ab7ebb0668340..cc69b215854ea 100644
+--- a/arch/mips/configs/ci20_defconfig
++++ b/arch/mips/configs/ci20_defconfig
+@@ -98,7 +98,13 @@ CONFIG_RC_DEVICES=y
+ CONFIG_IR_GPIO_CIR=m
+ CONFIG_IR_GPIO_TX=m
+ CONFIG_MEDIA_SUPPORT=m
++CONFIG_DRM=m
++CONFIG_DRM_INGENIC=m
++CONFIG_DRM_INGENIC_DW_HDMI=m
++CONFIG_DRM_DISPLAY_CONNECTOR=m
+ # CONFIG_VGA_CONSOLE is not set
++CONFIG_FB=y
++CONFIG_FRAMEBUFFER_CONSOLE=y
+ # CONFIG_HID is not set
+ CONFIG_USB=y
+ CONFIG_USB_STORAGE=y
 -- 
 2.33.0
 

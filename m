@@ -2,25 +2,25 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 40664C433FE
-	for <linux-mips@archiver.kernel.org>; Wed,  1 Dec 2021 11:32:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D609CC4332F
+	for <linux-mips@archiver.kernel.org>; Wed,  1 Dec 2021 11:35:25 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348951AbhLALgQ (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 1 Dec 2021 06:36:16 -0500
-Received: from ptr.189.cn ([183.61.185.103]:11452 "EHLO 189.cn"
+        id S231958AbhLALip (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 1 Dec 2021 06:38:45 -0500
+Received: from ptr.189.cn ([183.61.185.103]:11453 "EHLO 189.cn"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1348972AbhLALf6 (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Wed, 1 Dec 2021 06:35:58 -0500
-HMM_SOURCE_IP: 10.64.8.43:55430.125480071
+        id S237771AbhLALin (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Wed, 1 Dec 2021 06:38:43 -0500
+HMM_SOURCE_IP: 10.64.8.41:58200.40093229
 HMM_ATTACHE_NUM: 0000
 HMM_SOURCE_TYPE: SMTP
-Received: from clientip-114.242.206.180 (unknown [10.64.8.43])
-        by 189.cn (HERMES) with SMTP id D3A031001C8;
-        Wed,  1 Dec 2021 19:32:17 +0800 (CST)
+Received: from clientip-114.242.206.180 (unknown [10.64.8.41])
+        by 189.cn (HERMES) with SMTP id 9DC6D100203;
+        Wed,  1 Dec 2021 19:35:19 +0800 (CST)
 Received: from  ([14.17.101.176])
-        by gateway-151646-dep-b7fbf7d79-vjdjk with ESMTP id 2f60f39930b8491c945ffa4904a28edc for l.stach@pengutronix.de;
-        Wed, 01 Dec 2021 19:32:19 CST
-X-Transaction-ID: 2f60f39930b8491c945ffa4904a28edc
+        by gateway-151646-dep-b7fbf7d79-9vctg with ESMTP id 55c58fdc2ed14dde9497c04f6c6389e1 for l.stach@pengutronix.de;
+        Wed, 01 Dec 2021 19:35:21 CST
+X-Transaction-ID: 55c58fdc2ed14dde9497c04f6c6389e1
 X-Real-From: 15330273260@189.cn
 X-Receive-IP: 14.17.101.176
 X-MEDUSA-Status: 0
@@ -47,8 +47,8 @@ Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
         etnaviv@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
         devicetree@vger.kernel.org
 Subject: [PATCH v2 1/3] dt-bindings: ls2k1000: add gpu device node
-Date:   Wed,  1 Dec 2021 19:32:13 +0800
-Message-Id: <20211201113215.3062-1-15330273260@189.cn>
+Date:   Wed,  1 Dec 2021 19:35:00 +0800
+Message-Id: <20211201113502.3168-1-15330273260@189.cn>
 X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit

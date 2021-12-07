@@ -2,115 +2,111 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0C022C433F5
-	for <linux-mips@archiver.kernel.org>; Tue,  7 Dec 2021 11:36:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 08B4DC433F5
+	for <linux-mips@archiver.kernel.org>; Tue,  7 Dec 2021 15:29:15 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235733AbhLGLjh (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 7 Dec 2021 06:39:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60262 "EHLO
+        id S233578AbhLGPco (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 7 Dec 2021 10:32:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59450 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229733AbhLGLjg (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Tue, 7 Dec 2021 06:39:36 -0500
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [IPv6:2404:9400:2:0:216:3eff:fee2:21ea])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41C4EC061574;
-        Tue,  7 Dec 2021 03:36:06 -0800 (PST)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4J7dXf3dSsz4xYy;
-        Tue,  7 Dec 2021 22:36:02 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
-        s=201909; t=1638876964;
-        bh=lTsXMkBa68SdK2mCmwfpSshAWpT0dRMMMq4RDsTmMUc=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=BMwzDWkPEIYhXynBVAirAw4gLvuuvW+w979j7Yqtpl/UPXPORphUfbt+jK+l0pabP
-         GTehyWDzuL/CjvtZ3vJKYoj5rsJPb1bnDWny7P2YlVPjCcML69cHmHBNG0AIDWe7Gz
-         7IRiJMIJ4Kb9b5hGDoNDnHaxCTClNUWIJdKvD1WISOHxae57UeEHW0ELnQ3BY1ByPF
-         1oPzO4gyeKDsiFe+zukx8HTbH7jtndcbjgt+u2Img9ev7FSfwZJM9PLRYWX7kshjFe
-         JBwE+rXxecauzokxEZQ57uU9ynC6VsB3Nd14q1sEiH2ivRH0Hx8EhFL3DwxqA8pymw
-         p3ZiZsIoOoIIQ==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     =?utf-8?Q?C=C3=A9dric?= Le Goater <clg@kaod.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>
-Cc:     Bjorn Helgaas <helgaas@kernel.org>, Marc Zygnier <maz@kernel.org>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Kevin Tian <kevin.tian@intel.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Megha Dey <megha.dey@intel.com>,
-        Ashok Raj <ashok.raj@intel.com>, linux-pci@vger.kernel.org,
-        Paul Mackerras <paulus@samba.org>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        linuxppc-dev@lists.ozlabs.org, Juergen Gross <jgross@suse.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        linux-mips@vger.kernel.org, Kalle Valo <kvalo@codeaurora.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        sparclinux@vger.kernel.org, x86@kernel.org,
-        xen-devel@lists.xenproject.org, ath11k@lists.infradead.org,
-        Wei Liu <wei.liu@kernel.org>, linux-hyperv@vger.kernel.org,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>
-Subject: Re: [patch V2 01/23] powerpc/4xx: Remove MSI support which never
- worked
-In-Reply-To: <8d1e9d2b-fbe9-2e15-6df6-03028902791a@kaod.org>
-References: <20211206210147.872865823@linutronix.de>
- <20211206210223.872249537@linutronix.de>
- <8d1e9d2b-fbe9-2e15-6df6-03028902791a@kaod.org>
-Date:   Tue, 07 Dec 2021 22:36:02 +1100
-Message-ID: <87ilw0odel.fsf@mpe.ellerman.id.au>
+        with ESMTP id S233423AbhLGPco (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Tue, 7 Dec 2021 10:32:44 -0500
+Received: from mail-oi1-x233.google.com (mail-oi1-x233.google.com [IPv6:2607:f8b0:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF9CEC061574;
+        Tue,  7 Dec 2021 07:29:13 -0800 (PST)
+Received: by mail-oi1-x233.google.com with SMTP id be32so28269846oib.11;
+        Tue, 07 Dec 2021 07:29:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=sender:to:cc:references:from:subject:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=z9RUOEZo4xree+0izzh+j6TqNLpi9ndJ337BRAB5cjo=;
+        b=V5jAqa69DXXVJn1NPFefZbN39FxlV+q8NtDBmuHQaVxWna0NRwk+XVcV/QcvpXxk9I
+         8Am8PoJ0+U/pOwKIwDICYVYdrFDCQq8GJFRO5yIKMIdvQvVDMW4s7ZRj4RdDFgHzu0DO
+         1bDhEsCt2VHh/sSBZtmFWoY4I2HQMrQCW10LmygGAYuzTAF2E2Yw18M20aEcmKiDovd2
+         8UKO6bucKhTDRcXq8qVSjrcnsjA3CF0zHK9hyZUlXTQldChF5Y63iKYT4ANNaOLVbdxu
+         nS4vIqcx/8BCtGRMyIh67aPLntGCZwhmGc7XF9x9EN+XTeLrqrsv+j7juS20wXAbSWNF
+         3XBw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:sender:to:cc:references:from:subject:message-id
+         :date:user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=z9RUOEZo4xree+0izzh+j6TqNLpi9ndJ337BRAB5cjo=;
+        b=yYNr2Flt+wuvrumA4qB3jJCVtu4zmm3ygHXM4fm70W6VkEHdnTt39JRNHtb7oPeCkt
+         p3RkPgnuDHMA/eIpI3puJ1rTeJ+BUXoNr5Y3vZJztN0YOHODCudwwSX8no/LsawBXwvB
+         fNXFbBybEYzmOdnBKzKQgN18N9wz9ohu1UjsTaqxwXpHyF84NPpvdeuWudY2Nfhi0m3M
+         JshYUTZsO7hRC1sbT2iWVfSRQ14gIsg6/8OdLewL3aPmaFSBZh5s9dFb5fKHvBkhxmcT
+         xYyFyu6/TO4l5W+KycU0EP8iwnMc68VkqHH85anI47LlepQhXjh4inGgXGeU5G1GUvjz
+         Vw6Q==
+X-Gm-Message-State: AOAM533Aydm8u+LDiO6udk2YPESQaj/wGyffo6nf/7CMaPHgu8tL0EXh
+        abh0M4DWclioIEvSwOAtpka9f4hb2OA=
+X-Google-Smtp-Source: ABdhPJy4dsAuklFeKUGXZcITAIs4kzrxEkRN0AXTM7reS8PLGa4kqJDl0yEKR/93R3qzODqZ2+Z5Dw==
+X-Received: by 2002:a05:6808:228a:: with SMTP id bo10mr5880704oib.72.1638890953384;
+        Tue, 07 Dec 2021 07:29:13 -0800 (PST)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id bd6sm3527674oib.53.2021.12.07.07.29.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 07 Dec 2021 07:29:12 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     Florian Fainelli <f.fainelli@gmail.com>,
+        =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Justin Chen <justinpopo6@gmail.com>,
+        bcm-kernel-feedback-list@broadcom.com,
+        linux-watchdog@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-mips@vger.kernel.org,
+        =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>,
+        Rob Herring <robh@kernel.org>
+References: <Ya3NaVKf1NRc8rrx@google.com>
+ <89b9512d-2e5e-c23a-d1f2-62172c8f68f7@gmail.com>
+ <Ya3SU6U6YT6mlFu8@google.com>
+ <f5745952-9e3c-ed7a-cced-ce42d3da2276@gmail.com>
+ <Ya5ctkIU+jNzDfBc@google.com>
+ <f4af4971-7047-80c9-69ae-e6587979ecd5@roeck-us.net>
+ <e1fa1683-a0a6-8ee0-9da5-8e97dd9c820a@gmail.com>
+ <432664af-5660-aaad-bf75-81e4d61cb078@roeck-us.net>
+ <46a88b40-6d92-727c-7adc-5723921d08e3@gmail.com>
+ <20211206195115.GC3759192@roeck-us.net> <Ya8xhUR5GbTxVE8w@google.com>
+From:   Guenter Roeck <linux@roeck-us.net>
+Subject: Re: [PATCH V4 RESEND 1/2] dt-bindings: watchdog: convert Broadcom's
+ WDT to the json-schema
+Message-ID: <a86d5998-8d84-7afe-e34e-a632aa890683@roeck-us.net>
+Date:   Tue, 7 Dec 2021 07:29:09 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <Ya8xhUR5GbTxVE8w@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-C=C3=A9dric Le Goater <clg@kaod.org> writes:
-> Hello Thomas,
->
-> On 12/6/21 23:27, Thomas Gleixner wrote:
->> This code is broken since day one. ppc4xx_setup_msi_irqs() has the
->> following gems:
->>=20
->>   1) The handling of the result of msi_bitmap_alloc_hwirqs() is complete=
-ly
->>      broken:
->>=20=20=20=20=20=20
->>      When the result is greater than or equal 0 (bitmap allocation
->>      successful) then the loop terminates and the function returns 0
->>      (success) despite not having installed an interrupt.
->>=20
->>      When the result is less than 0 (bitmap allocation fails), it prints=
- an
->>      error message and continues to "work" with that error code which wo=
-uld
->>      eventually end up in the MSI message data.
->>=20
->>   2) On every invocation the file global pp4xx_msi::msi_virqs bitmap is
->>      allocated thereby leaking the previous one.
->>=20
->> IOW, this has never worked and for more than 10 years nobody cared. Remo=
-ve
->> the gunk.
->>=20
->> Fixes: 3fb7933850fa ("powerpc/4xx: Adding PCIe MSI support")
->
-> Shouldn't we remove all of it ? including the updates in the device trees
-> and the Kconfig changes under :
->
-> arch/powerpc/platforms/44x/Kconfig:	select PPC4xx_MSI
-> arch/powerpc/platforms/44x/Kconfig:	select PPC4xx_MSI
-> arch/powerpc/platforms/44x/Kconfig:	select PPC4xx_MSI
-> arch/powerpc/platforms/44x/Kconfig:	select PPC4xx_MSI
-> arch/powerpc/platforms/40x/Kconfig:	select PPC4xx_MSI
+On 12/7/21 2:03 AM, Lee Jones wrote:
+[ ... ]
+>> It sounded to me like Lee wanted an immutable branch for that
+> 
+> Not exactly, I said:
+> 
+>    "> Suppose we should take patch #2 via [Watchdog] as well.
+> 
+>     If that happens, I would like a PR to an immutable branch."
+> 
+> The alternative is that I take the patch and provide an immutable
+> branch to you, which I am in a position to do.
+> 
 
-This patch should drop those selects I guess. Can you send an
-incremental diff for Thomas to squash in?
+I understand, only I am not in a position to take it since my tree
+isn't the official watchdog-next tree, and it doesn't show up in -next.
+If Wim takes it into the official watchdog-next tree or not would be
+completely up to him.
 
-Removing all the tendrils in various device tree files will probably
-require some archaeology, and it should be perfectly safe to leave those
-in the tree with the driver gone. So I think we can do that as a
-subsequent patch, rather than in this series.
+I personally don't care if the bindings check is clean in my inofficial
+tree, so maybe this is a non-issue.
 
-cheers
+Guenter

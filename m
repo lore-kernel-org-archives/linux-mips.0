@@ -2,117 +2,79 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B5FC9C433F5
-	for <linux-mips@archiver.kernel.org>; Wed,  8 Dec 2021 01:57:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 219DEC433EF
+	for <linux-mips@archiver.kernel.org>; Wed,  8 Dec 2021 08:56:14 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239244AbhLHCAq (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 7 Dec 2021 21:00:46 -0500
-Received: from ams.source.kernel.org ([145.40.68.75]:49358 "EHLO
-        ams.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238927AbhLHCAf (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Tue, 7 Dec 2021 21:00:35 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 8DE45B81F47
-        for <linux-mips@vger.kernel.org>; Wed,  8 Dec 2021 01:57:03 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 57685C341C5
-        for <linux-mips@vger.kernel.org>; Wed,  8 Dec 2021 01:57:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1638928622;
-        bh=YnLy/Vz/xwjDLuZrb+DFmO89LHJSGqgBZ1Hi0b4wjfg=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=RtYEbJbvaF8aNv6vjqc4WjIovr33qQ3kIN/mFPQ2zYp7DeDA04UMUErjwcyg/GEuf
-         zQb+ytI+l7LPNIdPTxjsnb77eqKlEOxjDSMqi0P/nzkP7n31R9igFHDDk2Dt4X3PUN
-         BmFIbX3s7aEeNrJD/P65FDME2oq8IQKgAmAjkE0bwho3d186t5t9h/dIF1B0TcA8jA
-         ipgH8qjbFYYIo8UJw0SdAtfEYdLcEfSjvBpYgy7JbH3bNk2DfQw/NNXGzfDTB8HXnl
-         O/nQVGD0u/mEjHBeLLS+12B0Z0d3/eM0TNk/fb0HewQflyJMVB/SXOU8q195vb6lOV
-         fekwfSoFeZhig==
-Received: by mail-ua1-f50.google.com with SMTP id y5so2048019ual.7
-        for <linux-mips@vger.kernel.org>; Tue, 07 Dec 2021 17:57:02 -0800 (PST)
-X-Gm-Message-State: AOAM530tmTy9I9pfrDBB78jauhhFuWDvD01b2fog/ATXUsOslKamyHWB
-        9XSlxQZjDT2BriPkgGcU1E1oKwnpD+0cZC9KimQ=
-X-Google-Smtp-Source: ABdhPJyqx4+dqTkLk21r5izPzK21cxN3RetWRsIJOfIXqmE3KyxQ7PXgsotO/4CSuanIusQOjLIKTEO2OH9jh0txPmc=
-X-Received: by 2002:a67:2e51:: with SMTP id u78mr48775082vsu.62.1638928621390;
- Tue, 07 Dec 2021 17:57:01 -0800 (PST)
+        id S229953AbhLHI7o (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 8 Dec 2021 03:59:44 -0500
+Received: from mxout03.lancloud.ru ([45.84.86.113]:33126 "EHLO
+        mxout03.lancloud.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229505AbhLHI7n (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 8 Dec 2021 03:59:43 -0500
+Received: from LanCloud
+DKIM-Filter: OpenDKIM Filter v2.11.0 mxout03.lancloud.ru A692C20E8F18
+Received: from LanCloud
+Received: from LanCloud
+Received: from LanCloud
+Message-ID: <faadff42-e769-cc8b-5ae2-793b2c006b91@omp.ru>
+Date:   Wed, 8 Dec 2021 11:55:59 +0300
 MIME-Version: 1.0
-References: <20211207162618.GA19327@alpha.franken.de>
-In-Reply-To: <20211207162618.GA19327@alpha.franken.de>
-From:   Huacai Chen <chenhuacai@kernel.org>
-Date:   Wed, 8 Dec 2021 09:56:50 +0800
-X-Gmail-Original-Message-ID: <CAAhV-H6tWyiZCtZXf_57-va9J8C+Roy5bgKJVc0=ATRrHV9Mtw@mail.gmail.com>
-Message-ID: <CAAhV-H6tWyiZCtZXf_57-va9J8C+Roy5bgKJVc0=ATRrHV9Mtw@mail.gmail.com>
-Subject: Re: Loongson64 and huge pages
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc:     "open list:MIPS" <linux-mips@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.3.2
+Subject: Re: [PATCH] MIPS: Loongson64: Use three arguments for slti
+Content-Language: en-US
+To:     Nathan Chancellor <nathan@kernel.org>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        "Thomas Bogendoerfer" <tsbogend@alpha.franken.de>
+CC:     Nick Desaulniers <ndesaulniers@google.com>,
+        <linux-mips@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <llvm@lists.linux.dev>,
+        Ryutaroh Matsumoto <ryutaroh@ict.e.titech.ac.jp>
+References: <20211207170129.578089-1-nathan@kernel.org>
+From:   Sergey Shtylyov <s.shtylyov@omp.ru>
+Organization: Open Mobile Platform
+In-Reply-To: <20211207170129.578089-1-nathan@kernel.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [192.168.11.198]
+X-ClientProxiedBy: LFEXT01.lancloud.ru (fd00:f066::141) To
+ LFEX1907.lancloud.ru (fd00:f066::207)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Hi, Thomas,
+Hello!
 
-On Wed, Dec 8, 2021 at 8:59 AM Thomas Bogendoerfer
-<tsbogend@alpha.franken.de> wrote:
->
-> Hi,
->
-> [   11.647401] CPU 3 Unable to handle kernel paging request at virtual address 0000000558005801, epc == ffffffff80232838, ra == ffffffff802327ac
-> [   11.660049] Oops[#1]:
-> [   11.662303] CPU: 3 PID: 348 Comm: libvirtd Not tainted 5.16.0-rc3+ #140
-> [   11.668877] Hardware name: Lemote LEMOTE-LS3A4000-7A1000-1w-V0.1-pc/LEMOTE-LS3A4000-7A1000-1w-V01-pc, BIOS Kunlun-A1901-V4.1.4 04/20/2020
-> [   11.681153] $ 0   : 0000000000000000 000000007400cce0 000000000000033f 0000000558001811
-> [   11.689119] $ 4   : 0000000000800000 0000000558005801 0000000000000000 980000013507c000
-> [   11.697081] $ 8   : 0000000000000078 0000000000800000 ffffffffffffffff 9800000004714210
-> [   11.705043] $12   : 9800000134fe7cb8 ffffffffffffff7f 9800000004714200 0000000000000040
-> [   11.713005] $16   : 980000014ebbcfc0 000000007400cce1 000000ffabffc000 ffffffff81258700
-> [   11.720966] $20   : 980000012137f464 980000012137f400 980000013507fea8 980000047cc60000
-> [   11.728928] $24   : 0000000000000003 000000ffa3c08fa0
-> [   11.736890] $28   : 9800000134fe4000 9800000134fe7c90 980000012137f468 ffffffff802327ac
-> [   11.744853] Hi    : 00000000000001c8
-> [   11.748399] Lo    : ffffffffc6da0e44
-> [   11.751947] epc   : ffffffff80232838 __update_tlb+0xf0/0x258
-> [   11.757578] ra    : ffffffff802327ac __update_tlb+0x64/0x258
-> [   11.763202] Status: 7400cce2 KX SX UX KERNEL EXL
-> [   11.767883] Cause : 10000008 (ExcCode 02)
-> [   11.771862] BadVA : 0000000558005801
-> [   11.775408] PrId  : 0014c001 (ICT Loongson-3)
-> [   11.779733] Modules linked in:
-> [   11.782764] Process libvirtd (pid: 348, threadinfo=00000000a73c3d49, task=00000000728cbb42, tls=000000fff0ced7d0)
-> [   11.792968] Stack : 980000047cbed700 980000014ebbcfc0 000000ffaa000000 9800000134fe7d40
-> [   11.800933]         0000000558001811 ffffffff804a26f8 0000000000000000 584fe00ab628d7e1
-> [   11.808894]         0000000000000207 980000013507fea8 ffffffff814f4000 980000014ebbcfc0
-> [   11.816856]         ffffffff81260000 0000000000000254 000000007400cce1 0000000000000001
-> [   11.824818]         ffffffff813f6860 ffffffff8044e260 000000aaadae8000 980000012137f400
-> [   11.832779]         000000000000000b 0000000000100077 980000014ebbcfc0 0000000000000cc0
-> [   11.840742]         0000000003feafff 000000ffabffc000 0000000000000254 980000013507fea8
-> [   11.848704]         98000001350f0078 0000000000000000 0000000000000000 0000000000000000
-> [   11.856667]         0000000000000000 980000012137f464 0000000000000000 584fe00ab628d7e1
-> [   11.864629]         9800000134fe7e08 980000014ebbcfc0 0000000000000254 000000ffabffc030
-> [   11.872590]         ...
-> [   11.875017] Call Trace:
-> [   11.877440] [<ffffffff80232838>] __update_tlb+0xf0/0x258
-> [   11.882722] [<ffffffff804a26f8>] do_huge_pmd_anonymous_page+0x3c8/0x808
-> [   11.889300] [<ffffffff8044e260>] __handle_mm_fault+0xbc0/0xf38
-> [   11.895099] [<ffffffff8044e7ec>] handle_mm_fault+0x214/0x2c8
-> [   11.900722] [<ffffffff80f24638>] do_page_fault+0x218/0x6a0
-> [   11.906176] [<ffffffff8022ae64>] tlb_do_page_fault_0+0x114/0x11c
-> [   11.912149]
-> [   11.913622] Code: 0067182d  dc630000  00a3282d <dca30000> 10800006  00033a3a  2408ffff  00031e3c  000847bc
-> [   11.923325]
-> [   11.924837] ---[ end trace bc99cfb1af49f825 ]---
-> [   11.929428] note: libvirtd[348] exited with preempt_count 1
->
-> is this a known issue ? If I disabled TRANSPARENT_HUGE_PAGE system
-> works.
-Have you tried some older kernels, such as 5.10/5.15? I have seen that
-some MM-related patches be merged in MIPS tree in recent releases, and
-maybe this bug is caused by them.
+On 07.12.2021 20:01, Nathan Chancellor wrote:
 
-Huacai
->
-> Thomas.
->
-> --
-> Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-> good idea.                                                [ RFC1925, 2.3 ]
+> LLVM's integrated assembler does not support 'stli <reg>, <imm>':
+
+    Perhaps slti (as below)?
+
+> <instantiation>:16:12: error: invalid operand for instruction
+>   slti $12, (0x6300 | 0x0008)
+>             ^
+> arch/mips/kernel/head.S:86:2: note: while in macro instantiation
+>   kernel_entry_setup # cpu specific setup
+>   ^
+> <instantiation>:16:12: error: invalid operand for instruction
+>   slti $12, (0x6300 | 0x0008)
+>             ^
+> arch/mips/kernel/head.S:150:2: note: while in macro instantiation
+>   smp_slave_setup
+>   ^
+> 
+> To increase compatibility with LLVM's integrated assembler, use the full
+> form of 'stli <reg>, <reg>, <imm>', which matches the rest of
+
+    Again, slti?
+
+> arch/mips/. This does not result in any change for GNU as.
+> 
+> Link: https://github.com/ClangBuiltLinux/linux/issues/1526
+> Reported-by: Ryutaroh Matsumoto <ryutaroh@ict.e.titech.ac.jp>
+> Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+[...]
+
+MBR, Sergey

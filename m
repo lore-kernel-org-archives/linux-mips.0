@@ -2,289 +2,92 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3040EC433EF
-	for <linux-mips@archiver.kernel.org>; Thu,  9 Dec 2021 20:47:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AB49AC433EF
+	for <linux-mips@archiver.kernel.org>; Thu,  9 Dec 2021 21:30:05 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232342AbhLIUvT (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 9 Dec 2021 15:51:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40616 "EHLO
+        id S231620AbhLIVdi (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 9 Dec 2021 16:33:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50470 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232328AbhLIUvS (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Thu, 9 Dec 2021 15:51:18 -0500
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BA87C0617A2;
-        Thu,  9 Dec 2021 12:47:44 -0800 (PST)
-Received: by mail-pj1-x102b.google.com with SMTP id nh10-20020a17090b364a00b001a69adad5ebso5840447pjb.2;
-        Thu, 09 Dec 2021 12:47:44 -0800 (PST)
+        with ESMTP id S229505AbhLIVdi (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Thu, 9 Dec 2021 16:33:38 -0500
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A300FC061746;
+        Thu,  9 Dec 2021 13:30:04 -0800 (PST)
+Received: by mail-pl1-x633.google.com with SMTP id o14so4872091plg.5;
+        Thu, 09 Dec 2021 13:30:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=P7CI0O4LKASyygrit9TZpBhgpylHroNbFUMb6QAS3I8=;
-        b=krYXYVyzpkXUZrVhcOnlFBHk5CBiWI//2NQK/pT90PtsZ4THWwSsycO0PeoKMdjk8D
-         bIhYSk5kcr06MlzL+4LC6UN+eVbu7bHt3WJ6EcKH04c6Ea3v8sbZx/lBz1VZK1cyRH89
-         UOYvEfcxL4kY+6kUKeYgB2OmAEY6bPrqpjwatwq8DgrqMTZ/f1A1ouo/tCmz9GWXm5GL
-         F3ZG6D1Xjlf64d6EsQURczWYoIL3tFw0VcEAA5nekNUxsFgj99yOfEkrq18lcBWaPrPy
-         H43X0ZRXYGNfyX0KHh68LvCHVih9U3DPPoSAzLzmdmf76dIXnpbK66VVtT9EnsaxvqR0
-         PjIg==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=RiC7G24eWy//YmTynebfX9hiLgZoILqeHM51jdKCP6k=;
+        b=CzspmICW/W3o3Kyp6lRJiRRrGWA0P+056LHBQD4WI/6ZdYk/bhUTsP1JWlH2EwYPkP
+         aWekYL/8GxJ8mzwkG0jYhXpGj0j4IAchwVL5dyA+go+L+vxdvraYszk9plcztXGsVdAM
+         2HZqaZ79OHj2Gl76dZ7GnKq9ph4Ne/xgvTwHl04Rad+KeLo8NXxJFxbcdey9ahGkp1as
+         A/xgWKiPqXWGQlwNJD1cmo9YzmKV2CnxzDzt9iPNocIgzqx1l7FX0z1Wt85MV6MJuMZS
+         E48gg7+9m101NVSClMU+hz90pn3aGMcSVcG6rp+PngquaZCNm2U/V4sTvJ8N0HOR1Iea
+         QX9A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=P7CI0O4LKASyygrit9TZpBhgpylHroNbFUMb6QAS3I8=;
-        b=c4cVoAvROtU6RFriAZmPoBY+A0rNRU2WH5szhehGjjjy0PLDiTPYWqgyS+aAHuHmd9
-         I6ZN84xAX5A/4slcAOeo0csefxsO5V5g+Lp8wnw1fEntQJlc2b6OLxi+KuBkSrezR5A2
-         4vnYJBq1BleDWv6RJHRoX+CcmFuWud3z8NepPXnVeqMwr5emXaQLUls3KFhPzHLRwR0a
-         VPbLHcnXVd6f2MDRpIPxTiVM0W+wlAJIifcQK6ZcfYiggvxzolUx98FjFoNPsS1fesBK
-         2sVYELBvj98bKPB5XjQA95bChBdjnoUb5U+iNhri/JxoZeetrjEUTvSIixXFO0n/pR7T
-         MFHA==
-X-Gm-Message-State: AOAM533mHf3BAS90lzoLl/6LD8G+YduvOotFNEkhdYRLnnMLpHwx8kb+
-        lF0NBRgvqzzrBFQsvVU4Dkf6hcKTRmw=
-X-Google-Smtp-Source: ABdhPJwYPJnlyTvi5MhfAObzMxXqiHUoRovDyNSrsYs+OhGJPp6v+G+E/l4UY6YSLMIlYrCDY5LCXw==
-X-Received: by 2002:a17:90a:1919:: with SMTP id 25mr18941559pjg.154.1639082863527;
-        Thu, 09 Dec 2021 12:47:43 -0800 (PST)
-Received: from stbsrv-and-01.and.broadcom.net ([192.19.11.250])
-        by smtp.gmail.com with ESMTPSA id f185sm568370pfg.39.2021.12.09.12.47.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 09 Dec 2021 12:47:42 -0800 (PST)
-From:   Jim Quinlan <jim2101024@gmail.com>
-To:     linux-pci@vger.kernel.org, linux-mips@vger.kernel.org,
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=RiC7G24eWy//YmTynebfX9hiLgZoILqeHM51jdKCP6k=;
+        b=Yde8iy5/CdaKPf5TfhMb7jytYG+z1ETnYsfFzda2K864KEaEOrTSJJ63Za/G81pmL+
+         ifFTJw6Z1llwHQrW3QPkI06SqNHvKjM6LpN3nz3nw8wRBdadn+lXGwDmD3+1s0yIShm6
+         6jyd7kk9ZkCtan5PD0xEkwGAK0NXD/UrcstZuuBWKCEKiMZ6gILawJL4CE1Ei1VYqsNA
+         nm7LknIjMabhJLz240Fa5kBMtQUnpKytNndef4yz5kbKrXSU6dPNoT9umQGqIE9PL+Ne
+         ABQnNLxQ61KOJBO9Yy4jOBbrLKez2oug//VxJXYyD+NSG2rcMyJ3mWJMchbENuzFBm70
+         wEcQ==
+X-Gm-Message-State: AOAM533+GbYTgsYQHtjH+Y2VyX0/46W7r1TvJnpTy445grZ192KeSqWP
+        S1vR2J3i3pTCOR2xUcWWyMPySrIaIl8=
+X-Google-Smtp-Source: ABdhPJw6q1SUp3qx/RZ//ts6kYrqMBWTCt8KCFxfZwjPLvBhCMyt8OQM4nLMJ7dW04ZGkA1xPr6ZYw==
+X-Received: by 2002:a17:90a:300c:: with SMTP id g12mr18602577pjb.94.1639085403765;
+        Thu, 09 Dec 2021 13:30:03 -0800 (PST)
+Received: from [10.67.48.245] ([192.19.223.252])
+        by smtp.googlemail.com with ESMTPSA id 59sm541244pjz.34.2021.12.09.13.30.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 09 Dec 2021 13:30:02 -0800 (PST)
+Subject: Re: [PATCH v1 1/4] dt-bindings: PCI: Add compatible string for
+ Brcmstb 74[23]5 MIPs SOCs
+To:     Jim Quinlan <jim2101024@gmail.com>, linux-pci@vger.kernel.org,
+        linux-mips@vger.kernel.org,
         Nicolas Saenz Julienne <nsaenz@kernel.org>,
         Bjorn Helgaas <bhelgaas@google.com>,
         Kevin Cernekee <cernekee@gmail.com>,
-        bcm-kernel-feedback-list@broadcom.com, jim2101024@gmail.com,
-        james.quinlan@broadcom.com
-Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        linux-kernel@vger.kernel.org (open list),
-        linux-rpi-kernel@lists.infradead.org (moderated list:BROADCOM
-        BCM2711/BCM2835 ARM ARCHITECTURE),
-        linux-arm-kernel@lists.infradead.org (moderated list:BROADCOM
-        BCM2711/BCM2835 ARM ARCHITECTURE)
-Subject: [PATCH v1 4/4] PCI: brcmstb: Augment driver for MIPs SOCs
-Date:   Thu,  9 Dec 2021 15:47:25 -0500
-Message-Id: <20211209204726.6676-5-jim2101024@gmail.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20211209204726.6676-1-jim2101024@gmail.com>
+        bcm-kernel-feedback-list@broadcom.com, james.quinlan@broadcom.com
+Cc:     Florian Fainelli <f.fainelli@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Saenz Julienne <nsaenzjulienne@suse.de>,
+        "moderated list:BROADCOM BCM7XXX ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
+        <linux-rpi-kernel@lists.infradead.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
 References: <20211209204726.6676-1-jim2101024@gmail.com>
+ <20211209204726.6676-2-jim2101024@gmail.com>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <592b3630-864f-7616-eb0a-ae6faf6dc9d7@gmail.com>
+Date:   Thu, 9 Dec 2021 13:29:59 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
+MIME-Version: 1.0
+In-Reply-To: <20211209204726.6676-2-jim2101024@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-The current brcmstb driver works for Arm and Arm64.  A few things are
-modified here for us to support MIPs as well.
+On 12/9/21 12:47 PM, Jim Quinlan wrote:
+> The Broadcom STB Arm and MIPs SOCs use the same PCIe controller
+> HW, although the MIPs version is older.
+> 
+> Signed-off-by: Jim Quinlan <jim2101024@gmail.com>
 
-  o There are four outbound range register groups and each directs a window
-    of up to 128MB.  Even though there are four 128MB DT "ranges" in the
-    bmips PCIe DT node, these ranges are contiguous and are collapsed into
-    a single range by the OF range parser.  Now the driver assumes a single
-    range -- for MIPs only -- and splits it back into 128MB sizes.
-
-  o For bcm7425, the config space accesses must be 32-bit reads or
-    writes.  In addition, the 4k config space register array is missing
-    and not used.
-
-  o The registers for the upper 32-bits of the outbound window address do
-    not exist.
-
-  o Burst size must be set to 256 (this refers to an internal bus).
-
-Signed-off-by: Jim Quinlan <jim2101024@gmail.com>
----
- drivers/pci/controller/Kconfig        |  2 +-
- drivers/pci/controller/pcie-brcmstb.c | 82 +++++++++++++++++++++++++--
- 2 files changed, 79 insertions(+), 5 deletions(-)
-
-diff --git a/drivers/pci/controller/Kconfig b/drivers/pci/controller/Kconfig
-index 93b141110537..4ac474d4a956 100644
---- a/drivers/pci/controller/Kconfig
-+++ b/drivers/pci/controller/Kconfig
-@@ -274,7 +274,7 @@ config PCIE_BRCMSTB
- 		   BMIPS_GENERIC || COMPILE_TEST
- 	depends on OF
- 	depends on PCI_MSI_IRQ_DOMAIN
--	default ARCH_BRCMSTB
-+	default ARCH_BRCMSTB || BMIPS_GENERIC
- 	help
- 	  Say Y here to enable PCIe host controller support for
- 	  Broadcom STB based SoCs, like the Raspberry Pi 4.
-diff --git a/drivers/pci/controller/pcie-brcmstb.c b/drivers/pci/controller/pcie-brcmstb.c
-index 1fc7bd49a7ad..a267cd5b3233 100644
---- a/drivers/pci/controller/pcie-brcmstb.c
-+++ b/drivers/pci/controller/pcie-brcmstb.c
-@@ -118,6 +118,7 @@
- #define PCIE_MISC_HARD_PCIE_HARD_DEBUG					0x4204
- #define  PCIE_MISC_HARD_PCIE_HARD_DEBUG_CLKREQ_DEBUG_ENABLE_MASK	0x2
- #define  PCIE_MISC_HARD_PCIE_HARD_DEBUG_SERDES_IDDQ_MASK		0x08000000
-+#define  PCIE_BMIPS_MISC_HARD_PCIE_HARD_DEBUG_SERDES_IDDQ_MASK		0x00800000
- 
- 
- #define PCIE_INTR2_CPU_BASE		0x4300
-@@ -205,6 +206,8 @@ enum {
- 
- enum pcie_type {
- 	GENERIC,
-+	BCM7425,
-+	BCM7435,
- 	BCM4908,
- 	BCM7278,
- 	BCM2711,
-@@ -223,6 +226,12 @@ static const int pcie_offsets[] = {
- 	[EXT_CFG_DATA]   = 0x9004,
- };
- 
-+static const int pcie_offsets_bmips_7425[] = {
-+	[RGR1_SW_INIT_1] = 0x8010,
-+	[EXT_CFG_INDEX]  = 0x8300,
-+	[EXT_CFG_DATA]   = 0x8304,
-+};
-+
- static const struct pcie_cfg_data generic_cfg = {
- 	.offsets	= pcie_offsets,
- 	.type		= GENERIC,
-@@ -230,6 +239,20 @@ static const struct pcie_cfg_data generic_cfg = {
- 	.bridge_sw_init_set = brcm_pcie_bridge_sw_init_set_generic,
- };
- 
-+static const struct pcie_cfg_data bcm7425_cfg = {
-+	.offsets	= pcie_offsets_bmips_7425,
-+	.type		= BCM7425,
-+	.perst_set	= brcm_pcie_perst_set_generic,
-+	.bridge_sw_init_set = brcm_pcie_bridge_sw_init_set_generic,
-+};
-+
-+static const struct pcie_cfg_data bcm7435_cfg = {
-+	.offsets	= pcie_offsets,
-+	.type		= BCM7435,
-+	.perst_set	= brcm_pcie_perst_set_generic,
-+	.bridge_sw_init_set = brcm_pcie_bridge_sw_init_set_generic,
-+};
-+
- static const struct pcie_cfg_data bcm4908_cfg = {
- 	.offsets	= pcie_offsets,
- 	.type		= BCM4908,
-@@ -297,6 +320,11 @@ struct brcm_pcie {
- 	void			(*bridge_sw_init_set)(struct brcm_pcie *pcie, u32 val);
- };
- 
-+static inline bool is_bmips(const struct brcm_pcie *pcie)
-+{
-+	return pcie->type == BCM7435 || pcie->type == BCM7425;
-+}
-+
- /*
-  * This is to convert the size of the inbound "BAR" region to the
-  * non-linear values of PCIE_X_MISC_RC_BAR[123]_CONFIG_LO.SIZE
-@@ -443,6 +471,9 @@ static void brcm_pcie_set_outbound_win(struct brcm_pcie *pcie,
- 			  PCIE_MISC_CPU_2_PCIE_MEM_WIN0_BASE_LIMIT_LIMIT_MASK);
- 	writel(tmp, pcie->base + PCIE_MEM_WIN0_BASE_LIMIT(win));
- 
-+	if (is_bmips(pcie))
-+		return;
-+
- 	/* Write the cpu & limit addr upper bits */
- 	high_addr_shift =
- 		HWEIGHT32(PCIE_MISC_CPU_2_PCIE_MEM_WIN0_BASE_LIMIT_BASE_MASK);
-@@ -718,12 +749,35 @@ static void __iomem *brcm_pcie_map_conf(struct pci_bus *bus, unsigned int devfn,
- 	return base + PCIE_EXT_CFG_DATA + where;
- }
- 
-+static void __iomem *brcm_pcie_map_conf32(struct pci_bus *bus, unsigned int devfn,
-+					 int where)
-+{
-+	struct brcm_pcie *pcie = bus->sysdata;
-+	void __iomem *base = pcie->base;
-+	int idx;
-+
-+	/* Accesses to the RC go right to the RC registers if slot==0 */
-+	if (pci_is_root_bus(bus))
-+		return PCI_SLOT(devfn) ? NULL : base + (where & ~0x3);
-+
-+	/* For devices, write to the config space index register */
-+	idx = PCIE_ECAM_OFFSET(bus->number, devfn, (where & ~3));
-+	writel(idx, base + IDX_ADDR(pcie));
-+	return base + DATA_ADDR(pcie);
-+}
-+
- static struct pci_ops brcm_pcie_ops = {
- 	.map_bus = brcm_pcie_map_conf,
- 	.read = pci_generic_config_read,
- 	.write = pci_generic_config_write,
- };
- 
-+static struct pci_ops brcm_pcie_ops32 = {
-+	.map_bus = brcm_pcie_map_conf32,
-+	.read = pci_generic_config_read32,
-+	.write = pci_generic_config_write32,
-+};
-+
- static inline void brcm_pcie_bridge_sw_init_set_generic(struct brcm_pcie *pcie, u32 val)
- {
- 	u32 tmp, mask =  RGR1_SW_INIT_1_INIT_GENERIC_MASK;
-@@ -883,7 +937,10 @@ static int brcm_pcie_setup(struct brcm_pcie *pcie)
- 	pcie->bridge_sw_init_set(pcie, 0);
- 
- 	tmp = readl(base + PCIE_MISC_HARD_PCIE_HARD_DEBUG);
--	tmp &= ~PCIE_MISC_HARD_PCIE_HARD_DEBUG_SERDES_IDDQ_MASK;
-+	if (is_bmips(pcie))
-+		tmp &= ~PCIE_BMIPS_MISC_HARD_PCIE_HARD_DEBUG_SERDES_IDDQ_MASK;
-+	else
-+		tmp &= ~PCIE_MISC_HARD_PCIE_HARD_DEBUG_SERDES_IDDQ_MASK;
- 	writel(tmp, base + PCIE_MISC_HARD_PCIE_HARD_DEBUG);
- 	/* Wait for SerDes to be stable */
- 	usleep_range(100, 200);
-@@ -893,8 +950,10 @@ static int brcm_pcie_setup(struct brcm_pcie *pcie)
- 	 * is encoded as 0=128, 1=256, 2=512, 3=Rsvd, for BCM7278 it
- 	 * is encoded as 0=Rsvd, 1=128, 2=256, 3=512.
- 	 */
--	if (pcie->type == BCM2711)
--		burst = 0x0; /* 128B */
-+	if (is_bmips(pcie))
-+		burst = 0x1; /* 256 bytes */
-+	else if (pcie->type == BCM2711)
-+		burst = 0x0; /* 128 bytes */
- 	else if (pcie->type == BCM7278)
- 		burst = 0x3; /* 512 bytes */
- 	else
-@@ -988,6 +1047,19 @@ static int brcm_pcie_setup(struct brcm_pcie *pcie)
- 			return -EINVAL;
- 		}
- 
-+		if (is_bmips(pcie)) {
-+			u64 start = res->start;
-+			unsigned int j, nwins = resource_size(res) / SZ_128M;
-+
-+			/* bmips PCIe outbound windows have a 128MB max size */
-+			if (nwins > BRCM_NUM_PCIE_OUT_WINS)
-+				nwins = BRCM_NUM_PCIE_OUT_WINS;
-+			for (j = 0; j < nwins; j++, start += SZ_128M)
-+				brcm_pcie_set_outbound_win(pcie, j, start,
-+							   start - entry->offset,
-+							   SZ_128M);
-+			break;
-+		}
- 		brcm_pcie_set_outbound_win(pcie, num_out_wins, res->start,
- 					   res->start - entry->offset,
- 					   resource_size(res));
-@@ -1226,6 +1298,8 @@ static const struct of_device_id brcm_pcie_match[] = {
- 	{ .compatible = "brcm,bcm7278-pcie", .data = &bcm7278_cfg },
- 	{ .compatible = "brcm,bcm7216-pcie", .data = &bcm7278_cfg },
- 	{ .compatible = "brcm,bcm7445-pcie", .data = &generic_cfg },
-+	{ .compatible = "brcm,bcm7435-pcie", .data = &bcm7435_cfg },
-+	{ .compatible = "brcm,bcm7425-pcie", .data = &bcm7425_cfg },
- 	{},
- };
- 
-@@ -1315,7 +1389,7 @@ static int brcm_pcie_probe(struct platform_device *pdev)
- 		}
- 	}
- 
--	bridge->ops = &brcm_pcie_ops;
-+	bridge->ops = pcie->type == BCM7425 ? &brcm_pcie_ops32 : &brcm_pcie_ops;
- 	bridge->sysdata = pcie;
- 
- 	platform_set_drvdata(pdev, pcie);
+Acked-by: Florian Fainelli <f.fainelli@gmail.com>
 -- 
-2.17.1
-
+Florian

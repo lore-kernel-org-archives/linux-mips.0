@@ -2,100 +2,119 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6AA93C433EF
-	for <linux-mips@archiver.kernel.org>; Thu,  9 Dec 2021 21:36:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2013DC433EF
+	for <linux-mips@archiver.kernel.org>; Thu,  9 Dec 2021 22:34:48 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232838AbhLIVkH (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 9 Dec 2021 16:40:07 -0500
-Received: from elvis.franken.de ([193.175.24.41]:38896 "EHLO elvis.franken.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229505AbhLIVkF (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Thu, 9 Dec 2021 16:40:05 -0500
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1mvR5U-0006qc-00; Thu, 09 Dec 2021 22:36:24 +0100
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id C2D81C02CD; Thu,  9 Dec 2021 18:11:09 +0100 (CET)
-Date:   Thu, 9 Dec 2021 18:11:09 +0100
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     "H. Nikolaus Schaller" <hns@goldelico.com>
-Cc:     Paul Cercueil <paul@crapouillou.net>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Kees Cook <keescook@chromium.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Robert Foss <robert.foss@linaro.org>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Harry Wentland <harry.wentland@amd.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Maxime Ripard <maxime@cerno.tech>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Paul Boddie <paul@boddie.org.uk>, devicetree@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        letux-kernel@openphoenux.org, Jonas Karlman <jonas@kwiboo.se>,
-        dri-devel@lists.freedesktop.org
-Subject: Re: [PATCH v11 0/8] MIPS: JZ4780 and CI20 HDMI
-Message-ID: <20211209171109.GA18973@alpha.franken.de>
-References: <cover.1638470392.git.hns@goldelico.com>
+        id S230216AbhLIWiV (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 9 Dec 2021 17:38:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37406 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229657AbhLIWiU (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Thu, 9 Dec 2021 17:38:20 -0500
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94877C061746;
+        Thu,  9 Dec 2021 14:34:46 -0800 (PST)
+Received: by mail-ed1-x52b.google.com with SMTP id y13so23939251edd.13;
+        Thu, 09 Dec 2021 14:34:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=sender:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=e0xWu4FRBdpcPopR+tYuIVQgtChl7uURnH22cFlaA5A=;
+        b=fXFqrXO6Mqxbn1VMEeZUPYqwDn0Axi1WQoRKyIm0Wko3qi8To1yhBnzyQBnuuJpvU9
+         tR9dyu+xSqUrDMvvahFuENMdiHPMXRJ4o4DKWl7ljy3Mz+Nrt/S+gISbeuWgkR+cEOle
+         5HfXVZsTYOn1456X/asYJBDh/+KY3upkcOeEjnBkupzBDml+tuhSKMfrF3aI5eR2H+9m
+         AxeYoRDcvdBsZd0n9yd/Xbwhp7Eyc1p3mbosWQ4yNA3IyW8kf/9iawYPt5tkAmOak1+/
+         fGSMnJ7WfE0c7M44ExGyn8D0Cv6BJ1MqLcK9O6mLpBWThWXCeEb72RJR4HaLNOYG3YT4
+         QWww==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:sender:message-id:date:mime-version:user-agent
+         :subject:content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=e0xWu4FRBdpcPopR+tYuIVQgtChl7uURnH22cFlaA5A=;
+        b=1MLD59EP+JVcEc5VBRs6frf/dkL0DSAfDgGS/VBbjle1HZpusBFL1uac5P9uCpCHG8
+         kVMGeClQISueD2mEaaYaFNyfMcKPXF9N3UYdZW2ykJL9uCQc1St0tcGAb8gqWh5Zxo1f
+         izK6npS5zGKg6KVMROtc+swwo+hx+BPmoTY46CJyyPVbYhSFHRv/ikGsoTWX/l20kY3J
+         uAzxvYeYOOie6tQG9b0BIGgD7tQwaRlmBaLbRu3mn7176j5x+3K4YbF4s1QXzZ1v230u
+         vB7cUPcOK0d7nL0Yjmh06ITenAF2zwzKq6NCXWsaxo7ODDkOH2IPXrMwElW9USse6ieE
+         f03Q==
+X-Gm-Message-State: AOAM533/zkNQl0m+RBM4espAI5CJ86WOk2IkoQLiR/EIvB8LKGZJSYZn
+        xGpy5SGnHvLzv0wODrWWo7k=
+X-Google-Smtp-Source: ABdhPJyxMeAJrbZymRVBb0iPORoJGZau5fLIvkWo7GHCG5UbZ3oj1yMvqn13BjVbdYGJRifVkBRRAw==
+X-Received: by 2002:a17:906:b2c7:: with SMTP id cf7mr19483296ejb.303.1639089285134;
+        Thu, 09 Dec 2021 14:34:45 -0800 (PST)
+Received: from ?IPV6:2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e? ([2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e])
+        by smtp.googlemail.com with ESMTPSA id go10sm459347ejc.115.2021.12.09.14.34.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 09 Dec 2021 14:34:44 -0800 (PST)
+Sender: Paolo Bonzini <paolo.bonzini@gmail.com>
+Message-ID: <6cb2cd57-16f3-d0ec-adf6-cb8fdcbae035@redhat.com>
+Date:   Thu, 9 Dec 2021 23:34:37 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1638470392.git.hns@goldelico.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.2.0
+Subject: Re: [PATCH v5 08/12] KVM: Reinstate gfn_to_pfn_cache with
+ invalidation support
+Content-Language: en-US
+To:     David Woodhouse <dwmw2@infradead.org>, kvm <kvm@vger.kernel.org>
+Cc:     Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Joao Martins <joao.m.martins@oracle.com>,
+        "jmattson @ google . com" <jmattson@google.com>,
+        "wanpengli @ tencent . com" <wanpengli@tencent.com>,
+        "seanjc @ google . com" <seanjc@google.com>,
+        "vkuznets @ redhat . com" <vkuznets@redhat.com>,
+        "mtosatti @ redhat . com" <mtosatti@redhat.com>,
+        "joro @ 8bytes . org" <joro@8bytes.org>, karahmed@amazon.com,
+        Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Anup Patel <anup.patel@wdc.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        kvmarm@lists.cs.columbia.edu,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        kvm-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
+        butt3rflyh4ck <butterflyhuangxx@gmail.com>
+References: <20211121125451.9489-1-dwmw2@infradead.org>
+ <20211121125451.9489-9-dwmw2@infradead.org>
+ <b1bacc6f-be56-4108-6e52-4315a021184b@redhat.com>
+ <b614d9ae0fe7910cfa72eee0b4077776f8012e5f.camel@infradead.org>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+In-Reply-To: <b614d9ae0fe7910cfa72eee0b4077776f8012e5f.camel@infradead.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Thu, Dec 02, 2021 at 07:39:45PM +0100, H. Nikolaus Schaller wrote:
-> [..] 
-> This series adds HDMI support for JZ4780 and CI20 board
+On 12/9/21 21:40, David Woodhouse wrote:
 > 
-> 
-> 
-> H. Nikolaus Schaller (3):
->   drm/ingenic: prepare ingenic drm for later addition of JZ4780
->   MIPS: defconfig: CI20: configure for DRM_DW_HDMI_JZ4780
->   [RFC] MIPS: DTS: Ingenic: adjust register size to available registers
-> 
-> Paul Boddie (4):
->   drm/ingenic: Add support for JZ4780 and HDMI output
->   drm/ingenic: Add dw-hdmi driver for jz4780
->   MIPS: DTS: jz4780: Account for Synopsys HDMI driver and LCD
->     controllers
->   MIPS: DTS: CI20: Add DT nodes for HDMI setup
-> 
-> Sam Ravnborg (1):
->   dt-bindings: display: Add ingenic,jz4780-dw-hdmi DT Schema
-> 
->  .../display/bridge/ingenic,jz4780-hdmi.yaml   |  78 ++++++++++
->  .../display/bridge/synopsys,dw-hdmi.yaml      |   3 +
->  arch/mips/boot/dts/ingenic/ci20.dts           |  72 +++++++++-
->  arch/mips/boot/dts/ingenic/jz4725b.dtsi       |   2 +-
->  arch/mips/boot/dts/ingenic/jz4740.dtsi        |   2 +-
->  arch/mips/boot/dts/ingenic/jz4770.dtsi        |   2 +-
->  arch/mips/boot/dts/ingenic/jz4780.dtsi        |  40 ++++++
->  arch/mips/configs/ci20_defconfig              |   6 +
->  drivers/gpu/drm/ingenic/Kconfig               |   9 ++
->  drivers/gpu/drm/ingenic/Makefile              |   1 +
->  drivers/gpu/drm/ingenic/ingenic-drm-drv.c     |  62 +++++++-
->  drivers/gpu/drm/ingenic/ingenic-drm.h         |  38 +++++
->  drivers/gpu/drm/ingenic/ingenic-dw-hdmi.c     | 136 ++++++++++++++++++
->  13 files changed, 443 insertions(+), 8 deletions(-)
->  create mode 100644 Documentation/devicetree/bindings/display/bridge/ingenic,jz4780-hdmi.yaml
->  create mode 100644 drivers/gpu/drm/ingenic/ingenic-dw-hdmi.c
+> NP, very useful fixes. Thanks. Incremental patch looks like this. It
+> passes the xen_shinfo_test self-test; will test it with real Xen guests
+> tomorrow and repost based on your kvm/next tree once it shows up.
 
-applied patches 5-8 to mips-next.
+Compared to the review it's missing this hunk:
 
-Thomas.
 
--- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+@@ -265,7 +265,7 @@ void kvm_gfn_to_pfn_cache_unmap(struct kvm *kvm, struct gfn_to_pfn_cache *gpc)
+   
+   	gpc->valid = false;
+   
+-	old_khva = gpc->khva;
++	old_khva = (void *)((unsigned long)gpc->khva & ~PAGE_MASK);
+   	old_dirty = gpc->dirty;
+   	old_gpa = gpc->gpa;
+   	old_pfn = gpc->pfn;
+
+Otherwise looks good, thanks!
+
+Paolo

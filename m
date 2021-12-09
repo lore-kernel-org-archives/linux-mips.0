@@ -2,69 +2,140 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 303B6C433EF
-	for <linux-mips@archiver.kernel.org>; Wed,  8 Dec 2021 22:08:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 250D6C433FE
+	for <linux-mips@archiver.kernel.org>; Thu,  9 Dec 2021 08:11:00 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235075AbhLHWMD (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 8 Dec 2021 17:12:03 -0500
-Received: from elvis.franken.de ([193.175.24.41]:37076 "EHLO elvis.franken.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229604AbhLHWMD (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Wed, 8 Dec 2021 17:12:03 -0500
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1mv56s-0006Wu-00; Wed, 08 Dec 2021 23:08:22 +0100
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id C6F57C4E05; Wed,  8 Dec 2021 23:07:59 +0100 (CET)
-Date:   Wed, 8 Dec 2021 23:07:59 +0100
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v1 1/1] MIPS: TXx9: Convert SPI platform data to software
- nodes
-Message-ID: <20211208220759.GA6406@alpha.franken.de>
-References: <20211126102339.28908-1-andriy.shevchenko@linux.intel.com>
- <CAK8P3a3GuGgdp7Gq5N9XKTGhKbBUym9BiEb94RWyL1CDxS0ffw@mail.gmail.com>
- <CAMuHMdV4HVn+GcCBNQ+1-Kva2XiHQ03L5y9JLXH7qONtBvkV+w@mail.gmail.com>
- <20211129122052.GA7921@alpha.franken.de>
- <CAMuHMdWbvpzZCs4HOXErbVYQTiQAB0syuiR6Wd7=sTA2vFpXzw@mail.gmail.com>
- <YbDtiC5CJJGSL/9C@smile.fi.intel.com>
+        id S234403AbhLIIOc (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 9 Dec 2021 03:14:32 -0500
+Received: from smtp-out2.suse.de ([195.135.220.29]:57592 "EHLO
+        smtp-out2.suse.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232443AbhLIIOc (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Thu, 9 Dec 2021 03:14:32 -0500
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 3DC661FD2A;
+        Thu,  9 Dec 2021 08:10:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1639037458; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=hhA80F4SBwYxc5rPeZmiTk9517hUMWB4FuXx1eDegWw=;
+        b=p+unAu5+76b+IbLDtBDNTBIsnywdGOK6cktRZx6BCqcFKgTng+9j8n2uX0WmdxBM8IBFZa
+        MQTW1uaR748NVhSV2kT6DaN14NmVegJU67V0tpq8DjMzML1uXf0D+F7oka/RNeVCkgqyLY
+        YAuk7XI4v/IRJdmBKqBeo+FZiruecmg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1639037458;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=hhA80F4SBwYxc5rPeZmiTk9517hUMWB4FuXx1eDegWw=;
+        b=8bA96r0YWBgWINzKgIHhGxoefwd1cydpIN28k6l6KjGIFENlAaC3nCUS9cdakBxIkY2cnc
+        eICrpIp2rVp/ZSDA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0818713CA9;
+        Thu,  9 Dec 2021 08:10:58 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id T7TgABK6sWF5QgAAMHmgww
+        (envelope-from <tzimmermann@suse.de>); Thu, 09 Dec 2021 08:10:58 +0000
+Message-ID: <339e74fb-0270-20f4-37af-31c25c03586d@suse.de>
+Date:   Thu, 9 Dec 2021 09:10:57 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YbDtiC5CJJGSL/9C@smile.fi.intel.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.3.2
+Subject: Re: [PATCH] drm/ingenic: fix error code in
+ ingenic_drm_gem_create_object()
+Content-Language: en-US
+To:     Dan Carpenter <dan.carpenter@oracle.com>,
+        Paul Cercueil <paul@crapouillou.net>
+Cc:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
+        linux-mips@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        kernel-janitors@vger.kernel.org
+References: <20211118111522.GD1147@kili>
+From:   Thomas Zimmermann <tzimmermann@suse.de>
+In-Reply-To: <20211118111522.GD1147@kili>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="------------GWt8OvBYWoCzUnv8z5rePWn9"
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Wed, Dec 08, 2021 at 07:38:16PM +0200, Andy Shevchenko wrote:
-> On Mon, Nov 29, 2021 at 01:30:17PM +0100, Geert Uytterhoeven wrote:
-> > On Mon, Nov 29, 2021 at 1:21 PM Thomas Bogendoerfer
-> > <tsbogend@alpha.franken.de> wrote:
-> > > On Fri, Nov 26, 2021 at 01:16:22PM +0100, Geert Uytterhoeven wrote:
-> 
-> ...
-> 
-> > > are you ok with completly removing rbtx4938 support ? Can I rbtx4939
-> > > board support, too ?
-> > 
-> > Fine for me, I only have rbtx4927.
-> 
-> Is there any news? I still see my patch well applied against latest Linux Next.
-> If the removal is going to be postponed, consider applying this patch then. So
-> we may move forward.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--------------GWt8OvBYWoCzUnv8z5rePWn9
+Content-Type: multipart/mixed; boundary="------------1ZdJCGDDgzX2xxi5I0Ot5pSb";
+ protected-headers="v1"
+From: Thomas Zimmermann <tzimmermann@suse.de>
+To: Dan Carpenter <dan.carpenter@oracle.com>,
+ Paul Cercueil <paul@crapouillou.net>
+Cc: David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
+ linux-mips@vger.kernel.org, dri-devel@lists.freedesktop.org,
+ kernel-janitors@vger.kernel.org
+Message-ID: <339e74fb-0270-20f4-37af-31c25c03586d@suse.de>
+Subject: Re: [PATCH] drm/ingenic: fix error code in
+ ingenic_drm_gem_create_object()
+References: <20211118111522.GD1147@kili>
+In-Reply-To: <20211118111522.GD1147@kili>
 
-https://lore.kernel.org/all/20211130164558.85584-1-tsbogend@alpha.franken.de/
+--------------1ZdJCGDDgzX2xxi5I0Ot5pSb
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: base64
 
-The second patch in that series touches drivers/mtd so I'm waiting for
-a Acked-by. But I could apply the first patch...
+RllJIHRoaXMgaXNzdWUgd2FzIGZpeGVkIGJ5IFsxXS4gUGxlYXNlIGRvbid0IG1lcmdlLg0K
+DQpbMV0gDQpodHRwczovL2xvcmUua2VybmVsLm9yZy9kcmktZGV2ZWwvMjAyMTExMzAwOTUy
+NTUuMjY3MTAtMS10emltbWVybWFubkBzdXNlLmRlLw0KDQpBbSAxOC4xMS4yMSB1bSAxMjox
+NSBzY2hyaWViIERhbiBDYXJwZW50ZXI6DQo+IFRoZSAtPmdlbV9jcmVhdGVfb2JqZWN0KCkg
+ZnVuY3Rpb24gcG9pbnRlcnMgYXJlIHN1cHBvc2VkIHRvIHJldHVybiBOVUxMDQo+IG9uIGVy
+cm9yLiAgVGhpcyBmdW5jdGlvbiByZXR1cm5zIGFuIGVycm9yIHBvaW50ZXIgYnV0IG5vbmUg
+b2YgdGhlDQo+IGNhbGxlcnMgZXhwZWN0IHRoYXQgc28gaXQgd2lsbCBsZWFkIHRvIGFuIE9v
+cHMuICBTZWUgZHJtX2dlbV92cmFtX2NyZWF0ZSgpDQo+IGZvciBleGFtcGxlIG9mIGl0IGNo
+ZWNrcyBmb3IgTlVMTCBidXQgYW4gZXJyb3IgcG9pbnRlciB3b3VsZCBsZWFkIHRvIGENCj4g
+Y3Jhc2guDQo+IA0KPiBGaXhlczogNGE3OTFjYjZkMzRmICgiZHJtL2luZ2VuaWM6IEFkZCBv
+cHRpb24gdG8gYWxsb2MgY2FjaGVkIEdFTSBidWZmZXJzIikNCj4gU2lnbmVkLW9mZi1ieTog
+RGFuIENhcnBlbnRlciA8ZGFuLmNhcnBlbnRlckBvcmFjbGUuY29tPg0KPiAtLS0NCj4gICBk
+cml2ZXJzL2dwdS9kcm0vaW5nZW5pYy9pbmdlbmljLWRybS1kcnYuYyB8IDIgKy0NCj4gICAx
+IGZpbGUgY2hhbmdlZCwgMSBpbnNlcnRpb24oKyksIDEgZGVsZXRpb24oLSkNCj4gDQo+IGRp
+ZmYgLS1naXQgYS9kcml2ZXJzL2dwdS9kcm0vaW5nZW5pYy9pbmdlbmljLWRybS1kcnYuYyBi
+L2RyaXZlcnMvZ3B1L2RybS9pbmdlbmljL2luZ2VuaWMtZHJtLWRydi5jDQo+IGluZGV4IGE1
+ZGYxYzhkMzRjZC4uZWI3MjY2YTBiMDM3IDEwMDY0NA0KPiAtLS0gYS9kcml2ZXJzL2dwdS9k
+cm0vaW5nZW5pYy9pbmdlbmljLWRybS1kcnYuYw0KPiArKysgYi9kcml2ZXJzL2dwdS9kcm0v
+aW5nZW5pYy9pbmdlbmljLWRybS1kcnYuYw0KPiBAQCAtNzU3LDcgKzc1Nyw3IEBAIGluZ2Vu
+aWNfZHJtX2dlbV9jcmVhdGVfb2JqZWN0KHN0cnVjdCBkcm1fZGV2aWNlICpkcm0sIHNpemVf
+dCBzaXplKQ0KPiAgIA0KPiAgIAlvYmogPSBremFsbG9jKHNpemVvZigqb2JqKSwgR0ZQX0tF
+Uk5FTCk7DQo+ICAgCWlmICghb2JqKQ0KPiAtCQlyZXR1cm4gRVJSX1BUUigtRU5PTUVNKTsN
+Cj4gKwkJcmV0dXJuIE5VTEw7DQo+ICAgDQo+ICAgCW9iai0+bWFwX25vbmNvaGVyZW50ID0g
+cHJpdi0+c29jX2luZm8tPm1hcF9ub25jb2hlcmVudDsNCj4gICANCj4gDQoNCi0tIA0KVGhv
+bWFzIFppbW1lcm1hbm4NCkdyYXBoaWNzIERyaXZlciBEZXZlbG9wZXINClNVU0UgU29mdHdh
+cmUgU29sdXRpb25zIEdlcm1hbnkgR21iSA0KTWF4ZmVsZHN0ci4gNSwgOTA0MDkgTsO8cm5i
+ZXJnLCBHZXJtYW55DQooSFJCIDM2ODA5LCBBRyBOw7xybmJlcmcpDQpHZXNjaMOkZnRzZsO8
+aHJlcjogSXZvIFRvdGV2DQo=
 
-Thomas.
+--------------1ZdJCGDDgzX2xxi5I0Ot5pSb--
 
--- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+--------------GWt8OvBYWoCzUnv8z5rePWn9
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmGxuhEFAwAAAAAACgkQlh/E3EQov+DF
+XA/9GjPqYNaLL9g9pcvU1z9VfPodGlzbYHaZ6T9GTjO9ELA9XfXKomblRUqxjvm6LU6J1cgDb0tC
+ZrPooUCsqIywLgKpKyXkNa/PqnDppENUbTXo6+KSmCzNJ0c5cc5ymz0zueof0vA6yTTngqqz4jGp
+esfIXn1vgG+s/3ylKqH45sSxTQr2+sn59SFq+xnQH70T3IUTVc2zDYll4uvNWTF0HETwewEUSueS
+Q46yXMTJ6diAb3gBi2rWivWEApopFlmqglx+6wGeiQaccchuSkX6fLDh+hOBlZ0rVRp2PABT9bK0
+ofT0BTmCCUSS/frJGXdsDPdbP0yP0Ji3sGa+ATsgnTXvcTyvdqgp7wOF/h/JoFnTNJfKWY+/ajqh
+YiIBoUAasCE7P9nlX4oqARmEZa1JkIZu6c8anSMCe5R6N2K7oYxfjpLpN9SExTXVAxIs3Jlfswvm
+lQrFeYm29IhYdFkouUyDPaNgEPs8sTT8DmYJhpseTjTUg+O6dQowrKrzEEIZtds3UaBkTxsc6H1H
+1Ske4jsHqg80Q1Gk2nDGMJbExmOKs77MZ5u/R1FabXyh5CcLUXh/90hsotUIb6pJQ8goLecCXJRc
+/2VkzhJ7Kil/o4RMCdW8+eb9oCLCRE7Nh0tL0xeX9+nIcDYlRQ0ItSj7359wWQVq45PnhDkW+ONf
+skM=
+=vNOz
+-----END PGP SIGNATURE-----
+
+--------------GWt8OvBYWoCzUnv8z5rePWn9--

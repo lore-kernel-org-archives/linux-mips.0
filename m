@@ -2,105 +2,100 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6FF60C433EF
-	for <linux-mips@archiver.kernel.org>; Thu,  9 Dec 2021 21:32:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6AA93C433EF
+	for <linux-mips@archiver.kernel.org>; Thu,  9 Dec 2021 21:36:34 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232503AbhLIVgV (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 9 Dec 2021 16:36:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51108 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229505AbhLIVgV (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Thu, 9 Dec 2021 16:36:21 -0500
-Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E102C061746;
-        Thu,  9 Dec 2021 13:32:47 -0800 (PST)
-Received: by mail-pg1-x529.google.com with SMTP id g16so6278426pgi.1;
-        Thu, 09 Dec 2021 13:32:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=rbpdrCsVzrOnQ9WfDUTZn6znkydDP2yee0FBUvZrun0=;
-        b=imTw0PVD3rYveZKu8Vcjo0vRtTDmbYzjWNIkg6lJ2bB45GVfYfa8Vd0namYlaA8urn
-         Fr9358Q8B414sJMbpzHzwpF/cpqKcy7IN+vT5Ncd6yPt5shMYh3Zk/G9iS1LXUspxOkw
-         74Aon8OIiEXn/XCJWQp8VWFPG08XtQNIF3Y4mzUimjp1EKXiJlhvIStC0OmPHNhwpHYl
-         s9VkFJziIitblVOwnh79WataULk8E9llil1wJ9kZk9zo9Ve7athfoK6ftvELijpbeqZe
-         wPMbeTgcyC/bqdFQSY2es8uyUDVnqWBlFUkmMfUM7eVw4lhII6aQ95VGD8gpmiO9Z089
-         03kQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=rbpdrCsVzrOnQ9WfDUTZn6znkydDP2yee0FBUvZrun0=;
-        b=Krk0hZID82QheN/3/IeKJbX7+htPqd2hUwwwtUn52qQwW26PLquNp5hkmPy2gJSp3Y
-         kaDygIU2ok5j5wxIRy6ghMAaDh2GThCQOSyt+jUD1sqsnlSTs7/Vkx8C7Wrpt14wJXxr
-         sqP0cjfHrPsxNmEa3chP0/aEgPAeLUGijYkiDh34MWqEPtrwYjIwuZZ8ZQxKW2bO5EcC
-         EPazPwb75Cp8vo4dbYqUUtYTs4hH//ywfPmn7ejvaL/R37HI38Y1e1+FUdcu9YKaG2Ky
-         oWZ4QGzrr11HV/Ln4fsER311mLmhJOMTk6ZF27QvNsVzc2socwYkJU2z3vXzkE74Gs2Q
-         SHFg==
-X-Gm-Message-State: AOAM531UJ6ZYKc7cuNidHwc+qKUhWKRmu3YpnG8EDXtmnWY8jZnbXBNY
-        zA1GLV6RchX1eoCI5semX6E=
-X-Google-Smtp-Source: ABdhPJxp7Qu9leVPV+reXjsCbv+VjiFOxHfbVjrKBwABILKj4EkDytPAynX3oXxag+Ii0Dr0U4uUsg==
-X-Received: by 2002:a05:6a00:188e:b0:4a4:f2fd:d7b9 with SMTP id x14-20020a056a00188e00b004a4f2fdd7b9mr13921910pfh.20.1639085566936;
-        Thu, 09 Dec 2021 13:32:46 -0800 (PST)
-Received: from [10.67.48.245] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id i2sm645076pfg.90.2021.12.09.13.32.44
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 09 Dec 2021 13:32:46 -0800 (PST)
-Subject: Re: [PATCH v1 4/4] PCI: brcmstb: Augment driver for MIPs SOCs
-To:     Jim Quinlan <jim2101024@gmail.com>, linux-pci@vger.kernel.org,
-        linux-mips@vger.kernel.org,
-        Nicolas Saenz Julienne <nsaenz@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Kevin Cernekee <cernekee@gmail.com>,
-        bcm-kernel-feedback-list@broadcom.com, james.quinlan@broadcom.com
-Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        =?UTF-8?Q?Krzysztof_Wilczy=c5=84ski?= <kw@linux.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
-        <linux-rpi-kernel@lists.infradead.org>,
-        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>
-References: <20211209204726.6676-1-jim2101024@gmail.com>
- <20211209204726.6676-5-jim2101024@gmail.com>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <7f59e65a-085a-2aa1-e736-020ffe82743e@gmail.com>
-Date:   Thu, 9 Dec 2021 13:32:43 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        id S232838AbhLIVkH (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 9 Dec 2021 16:40:07 -0500
+Received: from elvis.franken.de ([193.175.24.41]:38896 "EHLO elvis.franken.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229505AbhLIVkF (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Thu, 9 Dec 2021 16:40:05 -0500
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1mvR5U-0006qc-00; Thu, 09 Dec 2021 22:36:24 +0100
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id C2D81C02CD; Thu,  9 Dec 2021 18:11:09 +0100 (CET)
+Date:   Thu, 9 Dec 2021 18:11:09 +0100
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     "H. Nikolaus Schaller" <hns@goldelico.com>
+Cc:     Paul Cercueil <paul@crapouillou.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Kees Cook <keescook@chromium.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Robert Foss <robert.foss@linaro.org>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Harry Wentland <harry.wentland@amd.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Maxime Ripard <maxime@cerno.tech>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Paul Boddie <paul@boddie.org.uk>, devicetree@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        letux-kernel@openphoenux.org, Jonas Karlman <jonas@kwiboo.se>,
+        dri-devel@lists.freedesktop.org
+Subject: Re: [PATCH v11 0/8] MIPS: JZ4780 and CI20 HDMI
+Message-ID: <20211209171109.GA18973@alpha.franken.de>
+References: <cover.1638470392.git.hns@goldelico.com>
 MIME-Version: 1.0
-In-Reply-To: <20211209204726.6676-5-jim2101024@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1638470392.git.hns@goldelico.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On 12/9/21 12:47 PM, Jim Quinlan wrote:
-> The current brcmstb driver works for Arm and Arm64.  A few things are
-> modified here for us to support MIPs as well.
+On Thu, Dec 02, 2021 at 07:39:45PM +0100, H. Nikolaus Schaller wrote:
+> [..] 
+> This series adds HDMI support for JZ4780 and CI20 board
 > 
->   o There are four outbound range register groups and each directs a window
->     of up to 128MB.  Even though there are four 128MB DT "ranges" in the
->     bmips PCIe DT node, these ranges are contiguous and are collapsed into
->     a single range by the OF range parser.  Now the driver assumes a single
->     range -- for MIPs only -- and splits it back into 128MB sizes.
 > 
->   o For bcm7425, the config space accesses must be 32-bit reads or
->     writes.  In addition, the 4k config space register array is missing
->     and not used.
 > 
->   o The registers for the upper 32-bits of the outbound window address do
->     not exist.
+> H. Nikolaus Schaller (3):
+>   drm/ingenic: prepare ingenic drm for later addition of JZ4780
+>   MIPS: defconfig: CI20: configure for DRM_DW_HDMI_JZ4780
+>   [RFC] MIPS: DTS: Ingenic: adjust register size to available registers
 > 
->   o Burst size must be set to 256 (this refers to an internal bus).
+> Paul Boddie (4):
+>   drm/ingenic: Add support for JZ4780 and HDMI output
+>   drm/ingenic: Add dw-hdmi driver for jz4780
+>   MIPS: DTS: jz4780: Account for Synopsys HDMI driver and LCD
+>     controllers
+>   MIPS: DTS: CI20: Add DT nodes for HDMI setup
 > 
-> Signed-off-by: Jim Quinlan <jim2101024@gmail.com>
+> Sam Ravnborg (1):
+>   dt-bindings: display: Add ingenic,jz4780-dw-hdmi DT Schema
+> 
+>  .../display/bridge/ingenic,jz4780-hdmi.yaml   |  78 ++++++++++
+>  .../display/bridge/synopsys,dw-hdmi.yaml      |   3 +
+>  arch/mips/boot/dts/ingenic/ci20.dts           |  72 +++++++++-
+>  arch/mips/boot/dts/ingenic/jz4725b.dtsi       |   2 +-
+>  arch/mips/boot/dts/ingenic/jz4740.dtsi        |   2 +-
+>  arch/mips/boot/dts/ingenic/jz4770.dtsi        |   2 +-
+>  arch/mips/boot/dts/ingenic/jz4780.dtsi        |  40 ++++++
+>  arch/mips/configs/ci20_defconfig              |   6 +
+>  drivers/gpu/drm/ingenic/Kconfig               |   9 ++
+>  drivers/gpu/drm/ingenic/Makefile              |   1 +
+>  drivers/gpu/drm/ingenic/ingenic-drm-drv.c     |  62 +++++++-
+>  drivers/gpu/drm/ingenic/ingenic-drm.h         |  38 +++++
+>  drivers/gpu/drm/ingenic/ingenic-dw-hdmi.c     | 136 ++++++++++++++++++
+>  13 files changed, 443 insertions(+), 8 deletions(-)
+>  create mode 100644 Documentation/devicetree/bindings/display/bridge/ingenic,jz4780-hdmi.yaml
+>  create mode 100644 drivers/gpu/drm/ingenic/ingenic-dw-hdmi.c
 
-Acked-by: Florian Fainelli <f.fainelli@gmail.com>
+applied patches 5-8 to mips-next.
+
+Thomas.
+
 -- 
-Florian
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]

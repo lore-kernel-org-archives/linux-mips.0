@@ -2,304 +2,410 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id ABDA7C433F5
-	for <linux-mips@archiver.kernel.org>; Sat, 11 Dec 2021 00:18:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9EC77C4332F
+	for <linux-mips@archiver.kernel.org>; Sat, 11 Dec 2021 03:33:30 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244039AbhLKAVw (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 10 Dec 2021 19:21:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53656 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240722AbhLKAVw (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Fri, 10 Dec 2021 19:21:52 -0500
-Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B289FC061714;
-        Fri, 10 Dec 2021 16:18:16 -0800 (PST)
-Received: by mail-qk1-x734.google.com with SMTP id l25so35789qkl.5;
-        Fri, 10 Dec 2021 16:18:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=mlm9Yo2fGn0AqBp45ADNXrOv88mqmu6A63sda0f6E1s=;
-        b=RX39SFlfdOxHAqS+INm2sm3L+V8aE2vHzGYwZc7Z6O8++ZSR9f+GawyCmby1CIaoRM
-         Lrtv18xnlVzFLxb5ABJpFsn+6pu7ThfEywVaGT07bUf41t43v9wRV3iGsGA6tIuOnSQ5
-         FQePXDCDE33uy5IANxSQijAjz3kEBbV1luVBEHaNxPL2iQGsW6iCWkZJWFkKNZfaSxAK
-         ruWngnsXHgl0SNBVKuxH3TFjZOPZFdY9KKwkoYVQk/bpp1On+qHe5NAgrktLIQqsmKzM
-         MlcwtDgylrUTCvGtPNnzCcDrTevKpqLxGhLKZTJN1um8/t2obNJ+0WB+7rL1wLgtVTFK
-         m/pA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=mlm9Yo2fGn0AqBp45ADNXrOv88mqmu6A63sda0f6E1s=;
-        b=DEanyIE8egOqci1hIiDVrBeA6DqGY6/h3YtfsPptrBBPT9GQ3S5d7wLsES/KWebahm
-         rz+bIiJLxXDt6SsoQWl/Btmjv41sSnZ/ax9GEFzgajlbewgpRkrx0nSKxDYhq5cTyQV0
-         rhJJDa35xVguG8otgQyybCz9SIY7Wrmu+Xx9DiuV1yDRI2PfkqU8PvVXb4Y72gcWxZ65
-         UUPEcUDP6mlb4PUcTUJd0jZtgAvrXT4JNNrP0WWfHAD+uh0Ri5o7wEh6sxF5cNXmW6gs
-         5e/QRKD/lA3u2bLuocdsa/SCCZC6hy2gfZC8cv/i3WaMp52KepdsBDgcD/r2WeS3s4Rq
-         Ra2w==
-X-Gm-Message-State: AOAM533kpM+ClwALJDG9Y1YvrBQTSOipFJo/btlPOs5GJjRn9udGscUh
-        zkDoMr/sjCVGwQxOjP3zygQ=
-X-Google-Smtp-Source: ABdhPJygr3XKYzIP3B9EL1WjBpFumN0p1QaCY9Vp93wLbAk1tRXvlXlKzpYUi9FDqGDZ2YA4LzVVqQ==
-X-Received: by 2002:a05:620a:892:: with SMTP id b18mr22963163qka.360.1639181895771;
-        Fri, 10 Dec 2021 16:18:15 -0800 (PST)
-Received: from [192.168.1.49] (c-67-187-90-124.hsd1.tn.comcast.net. [67.187.90.124])
-        by smtp.gmail.com with ESMTPSA id d187sm2079168qkc.122.2021.12.10.16.18.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 10 Dec 2021 16:18:15 -0800 (PST)
-Subject: Re: [PATCH v2] of/fdt: Rework early_init_dt_scan_memory() to call
- directly
-To:     Rob Herring <robh@kernel.org>, John Crispin <john@phrozen.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>
-Cc:     linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-References: <20211208155839.4084795-1-robh@kernel.org>
-From:   Frank Rowand <frowand.list@gmail.com>
-Message-ID: <ee19c270-40bd-526a-da40-231325a116ea@gmail.com>
-Date:   Fri, 10 Dec 2021 18:18:14 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
-MIME-Version: 1.0
-In-Reply-To: <20211208155839.4084795-1-robh@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S1345784AbhLKDhE (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 10 Dec 2021 22:37:04 -0500
+Received: from mail.loongson.cn ([114.242.206.163]:37182 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S244514AbhLKDg6 (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Fri, 10 Dec 2021 22:36:58 -0500
+Received: from linux.localdomain (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Ax+sj1G7RhlA0GAA--.13327S4;
+        Sat, 11 Dec 2021 11:33:10 +0800 (CST)
+From:   Tiezhu Yang <yangtiezhu@loongson.cn>
+To:     Dave Young <dyoung@redhat.com>, Baoquan He <bhe@redhat.com>,
+        Vivek Goyal <vgoyal@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-ia64@vger.kernel.org,
+        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-riscv@lists.infradead.org, linux-sh@vger.kernel.org,
+        x86@kernel.org, linux-fsdevel@vger.kernel.org,
+        kexec@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Xuefeng Li <lixuefeng@loongson.cn>
+Subject: [PATCH v2 2/2] kdump: crashdump: use copy_to_user_or_kernel() to simplify code
+Date:   Sat, 11 Dec 2021 11:33:08 +0800
+Message-Id: <1639193588-7027-3-git-send-email-yangtiezhu@loongson.cn>
+X-Mailer: git-send-email 2.1.0
+In-Reply-To: <1639193588-7027-1-git-send-email-yangtiezhu@loongson.cn>
+References: <1639193588-7027-1-git-send-email-yangtiezhu@loongson.cn>
+X-CM-TRANSID: AQAAf9Ax+sj1G7RhlA0GAA--.13327S4
+X-Coremail-Antispam: 1UD129KBjvJXoW3uryUCF4DKFWkJr43tF1kKrg_yoWDKw1kpr
+        1kK39IyF4Sgas8GwnrtwnrWa48Ww1kG3W7t39Ika4rZ3Z2qFnFv3yDAasFg3yUtr90kFyS
+        yas5Krn0y3yUZw7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUPC14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_Jryl82xGYIkIc2
+        x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2z4x0
+        Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1l84
+        ACjcxK6I8E87Iv67AKxVWxJVW8Jr1l84ACjcxK6I8E87Iv6xkF7I0E14v26r4UJVWxJr1l
+        e2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI
+        8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwAC
+        jcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2Y2ka0x
+        kIwI1lc2xSY4AK67AK6r48MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4U
+        MI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67
+        AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0
+        cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z2
+        80aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI
+        43ZEXa7VUjknY5UUUUU==
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On 12/8/21 10:58 AM, Rob Herring wrote:
-> Use of the of_scan_flat_dt() function predates libfdt and is discouraged
-> as libfdt provides a nicer set of APIs. Rework
-> early_init_dt_scan_memory() to be called directly and use libfdt.
-> 
-> Cc: John Crispin <john@phrozen.org>
-> Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-> Cc: Michael Ellerman <mpe@ellerman.id.au>
-> Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>
-> Cc: Paul Mackerras <paulus@samba.org>
-> Cc: Frank Rowand <frowand.list@gmail.com>
-> Cc: linux-mips@vger.kernel.org
-> Cc: linuxppc-dev@lists.ozlabs.org
-> Signed-off-by: Rob Herring <robh@kernel.org>
-> ---
-> v2:
->  - ralink: Use 'if' instead of 'else if'
->  - early_init_dt_scan_memory: continue instead of return on no reg
->  - Fix indentation
-> ---
->  arch/mips/ralink/of.c      | 19 +++--------
->  arch/powerpc/kernel/prom.c | 16 ++++-----
->  drivers/of/fdt.c           | 68 ++++++++++++++++++++------------------
->  include/linux/of_fdt.h     |  3 +-
->  4 files changed, 49 insertions(+), 57 deletions(-)
+Use copy_to_user_or_kernel() to simplify the related code about
+copy_oldmem_page() in arch/*/kernel/crash_dump*.c files.
 
-Reviewed-by: Frank Rowand <frank.rowand@sony.com>
+Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+---
+ arch/arm/kernel/crash_dump.c     | 12 +++---------
+ arch/arm64/kernel/crash_dump.c   | 12 +++---------
+ arch/ia64/kernel/crash_dump.c    | 12 +++++-------
+ arch/mips/kernel/crash_dump.c    | 11 +++--------
+ arch/powerpc/kernel/crash_dump.c | 11 ++++-------
+ arch/riscv/kernel/crash_dump.c   | 11 +++--------
+ arch/sh/kernel/crash_dump.c      | 11 +++--------
+ arch/x86/kernel/crash_dump_32.c  | 11 +++--------
+ arch/x86/kernel/crash_dump_64.c  | 15 +++++----------
+ fs/proc/vmcore.c                 |  4 ++--
+ include/linux/crash_dump.h       |  8 ++++----
+ 11 files changed, 38 insertions(+), 80 deletions(-)
 
--Frank
-
-> 
-> diff --git a/arch/mips/ralink/of.c b/arch/mips/ralink/of.c
-> index 0135376c5de5..35a87a2da10b 100644
-> --- a/arch/mips/ralink/of.c
-> +++ b/arch/mips/ralink/of.c
-> @@ -53,17 +53,6 @@ void __init device_tree_init(void)
->  	unflatten_and_copy_device_tree();
->  }
->  
-> -static int memory_dtb;
-> -
-> -static int __init early_init_dt_find_memory(unsigned long node,
-> -				const char *uname, int depth, void *data)
-> -{
-> -	if (depth == 1 && !strcmp(uname, "memory@0"))
-> -		memory_dtb = 1;
-> -
-> -	return 0;
-> -}
-> -
->  void __init plat_mem_setup(void)
->  {
->  	void *dtb;
-> @@ -77,10 +66,10 @@ void __init plat_mem_setup(void)
->  	dtb = get_fdt();
->  	__dt_setup_arch(dtb);
->  
-> -	of_scan_flat_dt(early_init_dt_find_memory, NULL);
-> -	if (memory_dtb)
-> -		of_scan_flat_dt(early_init_dt_scan_memory, NULL);
-> -	else if (soc_info.mem_detect)
-> +	if (!early_init_dt_scan_memory())
-> +		return;
-> +
-> +	if (soc_info.mem_detect)
->  		soc_info.mem_detect();
->  	else if (soc_info.mem_size)
->  		memblock_add(soc_info.mem_base, soc_info.mem_size * SZ_1M);
-> diff --git a/arch/powerpc/kernel/prom.c b/arch/powerpc/kernel/prom.c
-> index 6e1a106f02eb..63762a3b75e8 100644
-> --- a/arch/powerpc/kernel/prom.c
-> +++ b/arch/powerpc/kernel/prom.c
-> @@ -532,19 +532,19 @@ static int  __init early_init_drmem_lmb(struct drmem_lmb *lmb,
->  }
->  #endif /* CONFIG_PPC_PSERIES */
->  
-> -static int __init early_init_dt_scan_memory_ppc(unsigned long node,
-> -						const char *uname,
-> -						int depth, void *data)
-> +static int __init early_init_dt_scan_memory_ppc(void)
->  {
->  #ifdef CONFIG_PPC_PSERIES
-> -	if (depth == 1 &&
-> -	    strcmp(uname, "ibm,dynamic-reconfiguration-memory") == 0) {
-> +	const void *fdt = initial_boot_params;
-> +	int node = fdt_path_offset(fdt, "/ibm,dynamic-reconfiguration-memory");
-> +
-> +	if (node > 0) {
->  		walk_drmem_lmbs_early(node, NULL, early_init_drmem_lmb);
->  		return 0;
->  	}
->  #endif
->  	
-> -	return early_init_dt_scan_memory(node, uname, depth, data);
-> +	return early_init_dt_scan_memory();
->  }
->  
->  /*
-> @@ -749,7 +749,7 @@ void __init early_init_devtree(void *params)
->  
->  	/* Scan memory nodes and rebuild MEMBLOCKs */
->  	early_init_dt_scan_root();
-> -	of_scan_flat_dt(early_init_dt_scan_memory_ppc, NULL);
-> +	early_init_dt_scan_memory_ppc();
->  
->  	parse_early_param();
->  
-> @@ -858,7 +858,7 @@ void __init early_get_first_memblock_info(void *params, phys_addr_t *size)
->  	 */
->  	add_mem_to_memblock = 0;
->  	early_init_dt_scan_root();
-> -	of_scan_flat_dt(early_init_dt_scan_memory_ppc, NULL);
-> +	early_init_dt_scan_memory_ppc();
->  	add_mem_to_memblock = 1;
->  
->  	if (size)
-> diff --git a/drivers/of/fdt.c b/drivers/of/fdt.c
-> index 5e216555fe4f..a835c458f50a 100644
-> --- a/drivers/of/fdt.c
-> +++ b/drivers/of/fdt.c
-> @@ -1078,49 +1078,53 @@ u64 __init dt_mem_next_cell(int s, const __be32 **cellp)
->  /*
->   * early_init_dt_scan_memory - Look for and parse memory nodes
->   */
-> -int __init early_init_dt_scan_memory(unsigned long node, const char *uname,
-> -				     int depth, void *data)
-> +int __init early_init_dt_scan_memory(void)
->  {
-> -	const char *type = of_get_flat_dt_prop(node, "device_type", NULL);
-> -	const __be32 *reg, *endp;
-> -	int l;
-> -	bool hotpluggable;
-> +	int node;
-> +	const void *fdt = initial_boot_params;
->  
-> -	/* We are scanning "memory" nodes only */
-> -	if (type == NULL || strcmp(type, "memory") != 0)
-> -		return 0;
-> +	fdt_for_each_subnode(node, fdt, 0) {
-> +		const char *type = of_get_flat_dt_prop(node, "device_type", NULL);
-> +		const __be32 *reg, *endp;
-> +		int l;
-> +		bool hotpluggable;
->  
-> -	reg = of_get_flat_dt_prop(node, "linux,usable-memory", &l);
-> -	if (reg == NULL)
-> -		reg = of_get_flat_dt_prop(node, "reg", &l);
-> -	if (reg == NULL)
-> -		return 0;
-> +		/* We are scanning "memory" nodes only */
-> +		if (type == NULL || strcmp(type, "memory") != 0)
-> +			continue;
->  
-> -	endp = reg + (l / sizeof(__be32));
-> -	hotpluggable = of_get_flat_dt_prop(node, "hotpluggable", NULL);
-> +		reg = of_get_flat_dt_prop(node, "linux,usable-memory", &l);
-> +		if (reg == NULL)
-> +			reg = of_get_flat_dt_prop(node, "reg", &l);
-> +		if (reg == NULL)
-> +			continue;
->  
-> -	pr_debug("memory scan node %s, reg size %d,\n", uname, l);
-> +		endp = reg + (l / sizeof(__be32));
-> +		hotpluggable = of_get_flat_dt_prop(node, "hotpluggable", NULL);
->  
-> -	while ((endp - reg) >= (dt_root_addr_cells + dt_root_size_cells)) {
-> -		u64 base, size;
-> +		pr_debug("memory scan node %s, reg size %d,\n",
-> +			 fdt_get_name(fdt, node, NULL), l);
->  
-> -		base = dt_mem_next_cell(dt_root_addr_cells, &reg);
-> -		size = dt_mem_next_cell(dt_root_size_cells, &reg);
-> +		while ((endp - reg) >= (dt_root_addr_cells + dt_root_size_cells)) {
-> +			u64 base, size;
->  
-> -		if (size == 0)
-> -			continue;
-> -		pr_debug(" - %llx, %llx\n", base, size);
-> +			base = dt_mem_next_cell(dt_root_addr_cells, &reg);
-> +			size = dt_mem_next_cell(dt_root_size_cells, &reg);
->  
-> -		early_init_dt_add_memory_arch(base, size);
-> +			if (size == 0)
-> +				continue;
-> +			pr_debug(" - %llx, %llx\n", base, size);
->  
-> -		if (!hotpluggable)
-> -			continue;
-> +			early_init_dt_add_memory_arch(base, size);
->  
-> -		if (memblock_mark_hotplug(base, size))
-> -			pr_warn("failed to mark hotplug range 0x%llx - 0x%llx\n",
-> -				base, base + size);
-> -	}
-> +			if (!hotpluggable)
-> +				continue;
->  
-> +			if (memblock_mark_hotplug(base, size))
-> +				pr_warn("failed to mark hotplug range 0x%llx - 0x%llx\n",
-> +					base, base + size);
-> +		}
-> +	}
->  	return 0;
->  }
->  
-> @@ -1271,7 +1275,7 @@ void __init early_init_dt_scan_nodes(void)
->  		pr_warn("No chosen node found, continuing without\n");
->  
->  	/* Setup memory, calling early_init_dt_add_memory_arch */
-> -	of_scan_flat_dt(early_init_dt_scan_memory, NULL);
-> +	early_init_dt_scan_memory();
->  
->  	/* Handle linux,usable-memory-range property */
->  	memblock_cap_memory_range(cap_mem_addr, cap_mem_size);
-> diff --git a/include/linux/of_fdt.h b/include/linux/of_fdt.h
-> index df3d31926c3c..914739f3c192 100644
-> --- a/include/linux/of_fdt.h
-> +++ b/include/linux/of_fdt.h
-> @@ -59,8 +59,7 @@ extern unsigned long of_get_flat_dt_root(void);
->  extern uint32_t of_get_flat_dt_phandle(unsigned long node);
->  
->  extern int early_init_dt_scan_chosen(char *cmdline);
-> -extern int early_init_dt_scan_memory(unsigned long node, const char *uname,
-> -				     int depth, void *data);
-> +extern int early_init_dt_scan_memory(void);
->  extern int early_init_dt_scan_chosen_stdout(void);
->  extern void early_init_fdt_scan_reserved_mem(void);
->  extern void early_init_fdt_reserve_self(void);
-> 
-
+diff --git a/arch/arm/kernel/crash_dump.c b/arch/arm/kernel/crash_dump.c
+index 53cb924..a27c5df 100644
+--- a/arch/arm/kernel/crash_dump.c
++++ b/arch/arm/kernel/crash_dump.c
+@@ -29,7 +29,7 @@
+  */
+ ssize_t copy_oldmem_page(unsigned long pfn, char *buf,
+ 			 size_t csize, unsigned long offset,
+-			 int userbuf)
++			 bool userbuf)
+ {
+ 	void *vaddr;
+ 
+@@ -40,14 +40,8 @@ ssize_t copy_oldmem_page(unsigned long pfn, char *buf,
+ 	if (!vaddr)
+ 		return -ENOMEM;
+ 
+-	if (userbuf) {
+-		if (copy_to_user(buf, vaddr + offset, csize)) {
+-			iounmap(vaddr);
+-			return -EFAULT;
+-		}
+-	} else {
+-		memcpy(buf, vaddr + offset, csize);
+-	}
++	if (copy_to_user_or_kernel(buf, vaddr + offset, csize, userbuf))
++		csize = -EFAULT;
+ 
+ 	iounmap(vaddr);
+ 	return csize;
+diff --git a/arch/arm64/kernel/crash_dump.c b/arch/arm64/kernel/crash_dump.c
+index 58303a9..d22988f 100644
+--- a/arch/arm64/kernel/crash_dump.c
++++ b/arch/arm64/kernel/crash_dump.c
+@@ -27,7 +27,7 @@
+  */
+ ssize_t copy_oldmem_page(unsigned long pfn, char *buf,
+ 			 size_t csize, unsigned long offset,
+-			 int userbuf)
++			 bool userbuf)
+ {
+ 	void *vaddr;
+ 
+@@ -38,14 +38,8 @@ ssize_t copy_oldmem_page(unsigned long pfn, char *buf,
+ 	if (!vaddr)
+ 		return -ENOMEM;
+ 
+-	if (userbuf) {
+-		if (copy_to_user((char __user *)buf, vaddr + offset, csize)) {
+-			memunmap(vaddr);
+-			return -EFAULT;
+-		}
+-	} else {
+-		memcpy(buf, vaddr + offset, csize);
+-	}
++	if (copy_to_user_or_kernel(buf, vaddr + offset, csize, userbuf))
++		csize = -EFAULT;
+ 
+ 	memunmap(vaddr);
+ 
+diff --git a/arch/ia64/kernel/crash_dump.c b/arch/ia64/kernel/crash_dump.c
+index 0ed3c3d..12128f8 100644
+--- a/arch/ia64/kernel/crash_dump.c
++++ b/arch/ia64/kernel/crash_dump.c
+@@ -33,19 +33,17 @@
+  */
+ ssize_t
+ copy_oldmem_page(unsigned long pfn, char *buf,
+-		size_t csize, unsigned long offset, int userbuf)
++		size_t csize, unsigned long offset, bool userbuf)
+ {
+ 	void  *vaddr;
+ 
+ 	if (!csize)
+ 		return 0;
++
+ 	vaddr = __va(pfn<<PAGE_SHIFT);
+-	if (userbuf) {
+-		if (copy_to_user(buf, (vaddr + offset), csize)) {
+-			return -EFAULT;
+-		}
+-	} else
+-		memcpy(buf, (vaddr + offset), csize);
++	if (copy_to_user_or_kernel(buf, vaddr + offset, csize, userbuf))
++		return -EFAULT;
++
+ 	return csize;
+ }
+ 
+diff --git a/arch/mips/kernel/crash_dump.c b/arch/mips/kernel/crash_dump.c
+index 2e50f551..7670915 100644
+--- a/arch/mips/kernel/crash_dump.c
++++ b/arch/mips/kernel/crash_dump.c
+@@ -16,7 +16,7 @@
+  * in the current kernel.
+  */
+ ssize_t copy_oldmem_page(unsigned long pfn, char *buf,
+-			 size_t csize, unsigned long offset, int userbuf)
++			 size_t csize, unsigned long offset, bool userbuf)
+ {
+ 	void  *vaddr;
+ 
+@@ -24,13 +24,8 @@ ssize_t copy_oldmem_page(unsigned long pfn, char *buf,
+ 		return 0;
+ 
+ 	vaddr = kmap_local_pfn(pfn);
+-
+-	if (!userbuf) {
+-		memcpy(buf, vaddr + offset, csize);
+-	} else {
+-		if (copy_to_user(buf, vaddr + offset, csize))
+-			csize = -EFAULT;
+-	}
++	if (copy_to_user_or_kernel(buf, vaddr + offset, csize, userbuf))
++		csize = -EFAULT;
+ 
+ 	kunmap_local(vaddr);
+ 
+diff --git a/arch/powerpc/kernel/crash_dump.c b/arch/powerpc/kernel/crash_dump.c
+index 5693e1c67..e2e9612 100644
+--- a/arch/powerpc/kernel/crash_dump.c
++++ b/arch/powerpc/kernel/crash_dump.c
+@@ -69,13 +69,10 @@ void __init setup_kdump_trampoline(void)
+ #endif /* CONFIG_NONSTATIC_KERNEL */
+ 
+ static size_t copy_oldmem_vaddr(void *vaddr, char *buf, size_t csize,
+-                               unsigned long offset, int userbuf)
++				unsigned long offset, bool userbuf)
+ {
+-	if (userbuf) {
+-		if (copy_to_user((char __user *)buf, (vaddr + offset), csize))
+-			return -EFAULT;
+-	} else
+-		memcpy(buf, (vaddr + offset), csize);
++	if (copy_to_user_or_kernel(buf, vaddr + offset, csize, userbuf))
++		return -EFAULT;
+ 
+ 	return csize;
+ }
+@@ -94,7 +91,7 @@ static size_t copy_oldmem_vaddr(void *vaddr, char *buf, size_t csize,
+  * in the current kernel. We stitch up a pte, similar to kmap_atomic.
+  */
+ ssize_t copy_oldmem_page(unsigned long pfn, char *buf,
+-			size_t csize, unsigned long offset, int userbuf)
++			size_t csize, unsigned long offset, bool userbuf)
+ {
+ 	void  *vaddr;
+ 	phys_addr_t paddr;
+diff --git a/arch/riscv/kernel/crash_dump.c b/arch/riscv/kernel/crash_dump.c
+index 86cc0ad..4167437 100644
+--- a/arch/riscv/kernel/crash_dump.c
++++ b/arch/riscv/kernel/crash_dump.c
+@@ -22,7 +22,7 @@
+  */
+ ssize_t copy_oldmem_page(unsigned long pfn, char *buf,
+ 			 size_t csize, unsigned long offset,
+-			 int userbuf)
++			 bool userbuf)
+ {
+ 	void *vaddr;
+ 
+@@ -33,13 +33,8 @@ ssize_t copy_oldmem_page(unsigned long pfn, char *buf,
+ 	if (!vaddr)
+ 		return -ENOMEM;
+ 
+-	if (userbuf) {
+-		if (copy_to_user((char __user *)buf, vaddr + offset, csize)) {
+-			memunmap(vaddr);
+-			return -EFAULT;
+-		}
+-	} else
+-		memcpy(buf, vaddr + offset, csize);
++	if (copy_to_user_or_kernel(buf, vaddr + offset, csize, userbuf))
++		csize = -EFAULT;
+ 
+ 	memunmap(vaddr);
+ 	return csize;
+diff --git a/arch/sh/kernel/crash_dump.c b/arch/sh/kernel/crash_dump.c
+index 5b41b59..4bc071a 100644
+--- a/arch/sh/kernel/crash_dump.c
++++ b/arch/sh/kernel/crash_dump.c
+@@ -24,7 +24,7 @@
+  * in the current kernel. We stitch up a pte, similar to kmap_atomic.
+  */
+ ssize_t copy_oldmem_page(unsigned long pfn, char *buf,
+-                               size_t csize, unsigned long offset, int userbuf)
++			 size_t csize, unsigned long offset, bool userbuf)
+ {
+ 	void  __iomem *vaddr;
+ 
+@@ -33,13 +33,8 @@ ssize_t copy_oldmem_page(unsigned long pfn, char *buf,
+ 
+ 	vaddr = ioremap(pfn << PAGE_SHIFT, PAGE_SIZE);
+ 
+-	if (userbuf) {
+-		if (copy_to_user((void __user *)buf, (vaddr + offset), csize)) {
+-			iounmap(vaddr);
+-			return -EFAULT;
+-		}
+-	} else
+-	memcpy(buf, (vaddr + offset), csize);
++	if (copy_to_user_or_kernel(buf, vaddr + offset, csize, userbuf))
++		csize = -EFAULT;
+ 
+ 	iounmap(vaddr);
+ 	return csize;
+diff --git a/arch/x86/kernel/crash_dump_32.c b/arch/x86/kernel/crash_dump_32.c
+index 5fcac46..3eff124 100644
+--- a/arch/x86/kernel/crash_dump_32.c
++++ b/arch/x86/kernel/crash_dump_32.c
+@@ -43,7 +43,7 @@ static inline bool is_crashed_pfn_valid(unsigned long pfn)
+  * in the current kernel.
+  */
+ ssize_t copy_oldmem_page(unsigned long pfn, char *buf, size_t csize,
+-			 unsigned long offset, int userbuf)
++			 unsigned long offset, bool userbuf)
+ {
+ 	void  *vaddr;
+ 
+@@ -54,13 +54,8 @@ ssize_t copy_oldmem_page(unsigned long pfn, char *buf, size_t csize,
+ 		return -EFAULT;
+ 
+ 	vaddr = kmap_local_pfn(pfn);
+-
+-	if (!userbuf) {
+-		memcpy(buf, vaddr + offset, csize);
+-	} else {
+-		if (copy_to_user(buf, vaddr + offset, csize))
+-			csize = -EFAULT;
+-	}
++	if (copy_to_user_or_kernel(buf, vaddr + offset, csize, userbuf))
++		csize = -EFAULT;
+ 
+ 	kunmap_local(vaddr);
+ 
+diff --git a/arch/x86/kernel/crash_dump_64.c b/arch/x86/kernel/crash_dump_64.c
+index a7f617a..e8fffdf 100644
+--- a/arch/x86/kernel/crash_dump_64.c
++++ b/arch/x86/kernel/crash_dump_64.c
+@@ -13,7 +13,7 @@
+ #include <linux/cc_platform.h>
+ 
+ static ssize_t __copy_oldmem_page(unsigned long pfn, char *buf, size_t csize,
+-				  unsigned long offset, int userbuf,
++				  unsigned long offset, bool userbuf,
+ 				  bool encrypted)
+ {
+ 	void  *vaddr;
+@@ -29,13 +29,8 @@ static ssize_t __copy_oldmem_page(unsigned long pfn, char *buf, size_t csize,
+ 	if (!vaddr)
+ 		return -ENOMEM;
+ 
+-	if (userbuf) {
+-		if (copy_to_user((void __user *)buf, vaddr + offset, csize)) {
+-			iounmap((void __iomem *)vaddr);
+-			return -EFAULT;
+-		}
+-	} else
+-		memcpy(buf, vaddr + offset, csize);
++	if (copy_to_user_or_kernel(buf, vaddr + offset, csize, userbuf))
++		csize = -EFAULT;
+ 
+ 	set_iounmap_nonlazy();
+ 	iounmap((void __iomem *)vaddr);
+@@ -56,7 +51,7 @@ static ssize_t __copy_oldmem_page(unsigned long pfn, char *buf, size_t csize,
+  * mapped in the current kernel. We stitch up a pte, similar to kmap_atomic.
+  */
+ ssize_t copy_oldmem_page(unsigned long pfn, char *buf, size_t csize,
+-			 unsigned long offset, int userbuf)
++			 unsigned long offset, bool userbuf)
+ {
+ 	return __copy_oldmem_page(pfn, buf, csize, offset, userbuf, false);
+ }
+@@ -67,7 +62,7 @@ ssize_t copy_oldmem_page(unsigned long pfn, char *buf, size_t csize,
+  * machines.
+  */
+ ssize_t copy_oldmem_page_encrypted(unsigned long pfn, char *buf, size_t csize,
+-				   unsigned long offset, int userbuf)
++				   unsigned long offset, bool userbuf)
+ {
+ 	return __copy_oldmem_page(pfn, buf, csize, offset, userbuf, true);
+ }
+diff --git a/fs/proc/vmcore.c b/fs/proc/vmcore.c
+index f67fd77..bba52aa 100644
+--- a/fs/proc/vmcore.c
++++ b/fs/proc/vmcore.c
+@@ -133,7 +133,7 @@ static int open_vmcore(struct inode *inode, struct file *file)
+ 
+ /* Reads a page from the oldmem device from given offset. */
+ ssize_t read_from_oldmem(char *buf, size_t count,
+-			 u64 *ppos, int userbuf,
++			 u64 *ppos, bool userbuf,
+ 			 bool encrypted)
+ {
+ 	unsigned long pfn, offset;
+@@ -233,7 +233,7 @@ int __weak remap_oldmem_pfn_range(struct vm_area_struct *vma,
+  */
+ ssize_t __weak
+ copy_oldmem_page_encrypted(unsigned long pfn, char *buf, size_t csize,
+-			   unsigned long offset, int userbuf)
++			   unsigned long offset, bool userbuf)
+ {
+ 	return copy_oldmem_page(pfn, buf, csize, offset, userbuf);
+ }
+diff --git a/include/linux/crash_dump.h b/include/linux/crash_dump.h
+index 6208215..033448b 100644
+--- a/include/linux/crash_dump.h
++++ b/include/linux/crash_dump.h
+@@ -25,10 +25,10 @@ extern int remap_oldmem_pfn_range(struct vm_area_struct *vma,
+ 				  unsigned long size, pgprot_t prot);
+ 
+ extern ssize_t copy_oldmem_page(unsigned long, char *, size_t,
+-						unsigned long, int);
++						unsigned long, bool);
+ extern ssize_t copy_oldmem_page_encrypted(unsigned long pfn, char *buf,
+ 					  size_t csize, unsigned long offset,
+-					  int userbuf);
++					  bool userbuf);
+ 
+ void vmcore_cleanup(void);
+ 
+@@ -136,11 +136,11 @@ static inline int vmcore_add_device_dump(struct vmcoredd_data *data)
+ 
+ #ifdef CONFIG_PROC_VMCORE
+ ssize_t read_from_oldmem(char *buf, size_t count,
+-			 u64 *ppos, int userbuf,
++			 u64 *ppos, bool userbuf,
+ 			 bool encrypted);
+ #else
+ static inline ssize_t read_from_oldmem(char *buf, size_t count,
+-				       u64 *ppos, int userbuf,
++				       u64 *ppos, bool userbuf,
+ 				       bool encrypted)
+ {
+ 	return -EOPNOTSUPP;
+-- 
+2.1.0
 

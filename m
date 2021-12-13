@@ -2,51 +2,51 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 50196C433F5
-	for <linux-mips@archiver.kernel.org>; Mon, 13 Dec 2021 11:17:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 92730C433FE
+	for <linux-mips@archiver.kernel.org>; Mon, 13 Dec 2021 11:17:18 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235022AbhLMLRK (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 13 Dec 2021 06:17:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50748 "EHLO
+        id S235107AbhLMLRN (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 13 Dec 2021 06:17:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50772 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234940AbhLMLRH (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Mon, 13 Dec 2021 06:17:07 -0500
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 165B1C061574;
-        Mon, 13 Dec 2021 03:17:07 -0800 (PST)
-Received: by mail-wr1-x430.google.com with SMTP id t18so26352266wrg.11;
-        Mon, 13 Dec 2021 03:17:07 -0800 (PST)
+        with ESMTP id S234954AbhLMLRK (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Mon, 13 Dec 2021 06:17:10 -0500
+Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FDC5C061751;
+        Mon, 13 Dec 2021 03:17:10 -0800 (PST)
+Received: by mail-wr1-x436.google.com with SMTP id a9so26381017wrr.8;
+        Mon, 13 Dec 2021 03:17:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=Gh9g/hVG0rI1N3VHk0OoCcX2tUyzmtEm7HZfLqJJLcw=;
-        b=cKg6PG4deGYG1ySeSu+L6jhx+0yzcAhyzrNyzJqrEcpm34L/1CkGJTo6JPNvXGPzri
-         Cjsrwma9kdXHUMjPLj7XXLsz5n0i0pQ1uUOLqVq5Uk+jx3+2J2l9402eLFpzXhF+qWxJ
-         bJJwOnnj6yef5NHX5IwGyk65ff0PGzPPi05/ro+nnnT+QIcnxClHFNQ8zAbAwxxn5WmD
-         Pg6owOaGATZTKLfenpBEsBcza6GMON2/hrfTEyIhfNp/LQB/8uz1HcP+olUOgAh5KyeZ
-         9r4H7VIHRlZTB46w5LVRbOVk5DZr9nl91Wcz8gUujbdGFumh3ab52z+3gqGYtRbh0wzP
-         W0Kw==
+        bh=/wqsag2uxVnTuI/QAGHRmj3exQQebAtaq7D6d3UaUwo=;
+        b=YOWf+5In5JEHLkyH0tZKIUsbRMR8F07CsQg25aGFCI8BJKg7vOUqNabuTQHS7uyAJt
+         YbeT/VcxSaBXA5MEeu4EWH/XYjUEfn+b2Cd5nEFgBB9V0qrd50cyI0efdw4zJnXGNTsu
+         bGCgKApNJo+fnpRSuMeE6yZmGWy4yv9I7Uj409+5tGkZGY12/sxq3Vw7mAGZCjd9mHOJ
+         hjnUrpmgqB24o77uBlGrbHlScJcrPKcfzWWIKLGq/egHI4keICKJO3wqH9xBhJg+2gWG
+         0VicSdIIAk4dg+BsCw9wCaDetG1jgapS9RRPMHbHscIyKuwhrIN+juui/RnklaV/PU/Y
+         Fqrg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=Gh9g/hVG0rI1N3VHk0OoCcX2tUyzmtEm7HZfLqJJLcw=;
-        b=MoHS+IkUyUzLOKLHLZM36CJEusVaEbFJioQJu4hfgPN/6LSAsdTjrqZJl6Ymhb15wr
-         4qW06xBYw8HFFRWPGXZ6E63U1S3WYdRT/aVK3mJcPuhma0NeyO95lxuGmSSn7rFft+vX
-         mDg+zz11t9E9QSWC8aJQg504d+vuz+dLojZ5vDCqGVmYSPkZDYETUuAyA+qT6VL8/cIB
-         LWrN0aLM6i06hwOh6Xac3O9GhqgJlf8nK1YgfWfUhqRUrayQ2MEhsb8qSATZzLkm/YFx
-         AGE9Z84zYAPO3U6pi2ZXpXAA+EqBcndJyzuHrwrWJrTrNsvFtMMGD5hxeAjXW5TCYc5N
-         GjjQ==
-X-Gm-Message-State: AOAM530AuhKWQPjZTYQ+0R9Na2sFmDmPKd52dsX6oMCpddlbYxI/g8nm
-        ws3xBn2aXQ+j+t3s5x1TtUE=
-X-Google-Smtp-Source: ABdhPJzm1nLrJ12FEr0D8rL1q1mdBsYPVDdt6zlyZvkfjv+fpgOZVmeD9v4TrqkzatT8SDIrKx++ew==
-X-Received: by 2002:a5d:4c51:: with SMTP id n17mr15572370wrt.359.1639394225704;
-        Mon, 13 Dec 2021 03:17:05 -0800 (PST)
+        bh=/wqsag2uxVnTuI/QAGHRmj3exQQebAtaq7D6d3UaUwo=;
+        b=sjF0oznHsXw/q/dMSPKIaUe2sFKtUGQawo5Xbv8ekjO68iQoeUXG/5yNFFpDbt8SVg
+         yYo832H+dePxhBzuHE60tN0bQGxeAwhcMBgW6XQJ5RClWDPp2iV4SQ4HDLGwSRX0jSuP
+         kqfgiU5axYi1K/rgc7aHZ8lbbMPeGo5rkBGwBEP9Ye56MZ6ZNPEJllUTXxfWflLlpgb9
+         e80vD4cZmseUZ63jClVoTIHFfCRo0YlMHknL3pRUMI0f8ZBOzBnt/BbcvLTldavtgKiH
+         jahGqsIVzHRqSKW9JVJ6DbJe+UfQkDPrGVlyKu98xMbwzo57viP0XFvda3rhglOqtTni
+         Y5iA==
+X-Gm-Message-State: AOAM531G2bV6hqHIRlZEVv9Y9l7n4OCwwYboWDecNsQSWn1UUnwwhyiq
+        NxdjXR0CqJbDV4DcdeB2LWk=
+X-Google-Smtp-Source: ABdhPJzM0MwxJtfv5lacI04lRH8UZylULPttANur9UjAL92TmaH2qyu5nQ70YKy541M+4nGfrgOK0w==
+X-Received: by 2002:adf:8bd2:: with SMTP id w18mr29826451wra.557.1639394228763;
+        Mon, 13 Dec 2021 03:17:08 -0800 (PST)
 Received: from DEL01603w.ebgroup.elektrobit.com (eth1-fw1-nbg6.eb.noris.de. [213.95.148.172])
-        by smtp.gmail.com with ESMTPSA id t17sm7255255wmq.15.2021.12.13.03.17.04
+        by smtp.gmail.com with ESMTPSA id t17sm7255255wmq.15.2021.12.13.03.17.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Dec 2021 03:17:05 -0800 (PST)
+        Mon, 13 Dec 2021 03:17:08 -0800 (PST)
 From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
 To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
         linux-mips@vger.kernel.org
@@ -60,9 +60,9 @@ Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
         Daniel Silsby <dansilsby@gmail.com>,
         Paul Cercueil <paul@crapouillou.net>,
         Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Subject: [PATCH 6/9] mips: remove obsolete selection of CPU_HAS_LOAD_STORE_LR
-Date:   Mon, 13 Dec 2021 12:16:39 +0100
-Message-Id: <20211213111642.11317-7-lukas.bulwahn@gmail.com>
+Subject: [PATCH 9/9] mips: fix Kconfig reference to PHYS_ADDR_T_64BIT
+Date:   Mon, 13 Dec 2021 12:16:42 +0100
+Message-Id: <20211213111642.11317-10-lukas.bulwahn@gmail.com>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20211213111642.11317-1-lukas.bulwahn@gmail.com>
 References: <20211213111642.11317-1-lukas.bulwahn@gmail.com>
@@ -72,40 +72,44 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Commit 18d84e2e55b6 ("MIPS: make CPU_HAS_LOAD_STORE_LR opt-out") replaced
-the config CPU_HAS_LOAD_STORE_LR by the config with an inverted semantics,
-making the "LOAD_STORE_LR" cpu configuration the default.
-The ./arch/mips/Kconfig was adjusted accordingly.
+Commit d4a451d5fc84 ("arch: remove the ARCH_PHYS_ADDR_T_64BIT config
+symbol") removes config ARCH_PHYS_ADDR_T_64BIT with all instances of that
+config refactored appropriately. Since then, it is recommended to use the
+config PHYS_ADDR_T_64BIT instead.
 
-Later, commit 65ce6197ed40 ("Revert "MIPS: Remove unused R4300 CPU
-support"") reintroduces a select CPU_HAS_LOAD_STORE_LR through its revert
-commit, restoring the config CPU_R4300 in ./arch/mips/Kconfig before the
-refactoring above.
+Commit 171543e75272 ("MIPS: Disallow CPU_SUPPORTS_HUGEPAGES for XPA,EVA")
+introduces the expression "!(32BIT && (ARCH_PHYS_ADDR_T_64BIT || EVA))"
+for config CPU_SUPPORTS_HUGEPAGES, which unintentionally refers to the
+non-existing symbol ARCH_PHYS_ADDR_T_64BIT instead of the intended
+PHYS_ADDR_T_64BIT.
 
-This select however now refers to a non-existing config and is further
-unneeded, as LOAD_STORE_LR is the default now.
+Fix this Kconfig reference to the intended PHYS_ADDR_T_64BIT.
 
-Remove the obsolete select for the reintroduced mips R4300 architecture.
+This issue was identified with the script ./scripts/checkkconfigsymbols.py.
+I then reported it on the mailing list and Paul confirmed the mistake in
+the linked email thread.
 
-This issue is identified with ./scripts/checkkconfigsymbols.py.
-
+Link: https://lore.kernel.org/lkml/H8IU3R.H5QVNRA077PT@crapouillou.net/
+Suggested-by: Paul Cercueil <paul@crapouillou.net>
+Fixes: 171543e75272 ("MIPS: Disallow CPU_SUPPORTS_HUGEPAGES for XPA,EVA")
 Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
 ---
- arch/mips/Kconfig | 1 -
- 1 file changed, 1 deletion(-)
+ arch/mips/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-index e329214ac06c..dafc1d62c224 100644
+index dafc1d62c224..affa31d055d0 100644
 --- a/arch/mips/Kconfig
 +++ b/arch/mips/Kconfig
-@@ -1608,7 +1608,6 @@ config CPU_R4300
- 	depends on SYS_HAS_CPU_R4300
- 	select CPU_SUPPORTS_32BIT_KERNEL
- 	select CPU_SUPPORTS_64BIT_KERNEL
--	select CPU_HAS_LOAD_STORE_LR
- 	help
- 	  MIPS Technologies R4300-series processors.
- 
+@@ -2065,7 +2065,7 @@ config CPU_SUPPORTS_ADDRWINCFG
+ 	bool
+ config CPU_SUPPORTS_HUGEPAGES
+ 	bool
+-	depends on !(32BIT && (ARCH_PHYS_ADDR_T_64BIT || EVA))
++	depends on !(32BIT && (PHYS_ADDR_T_64BIT || EVA))
+ config MIPS_PGD_C0_CONTEXT
+ 	bool
+ 	depends on 64BIT
 -- 
 2.26.2
 

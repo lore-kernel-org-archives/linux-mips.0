@@ -2,63 +2,59 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A2062C43217
-	for <linux-mips@archiver.kernel.org>; Tue, 14 Dec 2021 09:34:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 420D8C433EF
+	for <linux-mips@archiver.kernel.org>; Tue, 14 Dec 2021 09:34:34 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230394AbhLNJe3 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 14 Dec 2021 04:34:29 -0500
-Received: from elvis.franken.de ([193.175.24.41]:46447 "EHLO elvis.franken.de"
+        id S230179AbhLNJea (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 14 Dec 2021 04:34:30 -0500
+Received: from elvis.franken.de ([193.175.24.41]:46452 "EHLO elvis.franken.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230310AbhLNJe1 (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        id S230319AbhLNJe1 (ORCPT <rfc822;linux-mips@vger.kernel.org>);
         Tue, 14 Dec 2021 04:34:27 -0500
 Received: from uucp (helo=alpha)
         by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1mx4CW-0005hz-00; Tue, 14 Dec 2021 10:34:24 +0100
+        id 1mx4CW-0005hz-03; Tue, 14 Dec 2021 10:34:24 +0100
 Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 4BB50C068C; Tue, 14 Dec 2021 10:31:11 +0100 (CET)
-Date:   Tue, 14 Dec 2021 10:31:11 +0100
+        id 22A5FC0752; Tue, 14 Dec 2021 10:32:07 +0100 (CET)
+Date:   Tue, 14 Dec 2021 10:32:07 +0100
 From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Jason Wang <wangborong@cdjrlc.com>
-Cc:     rdunlap@infradead.org, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] MIPS: Fix typo in a comment
-Message-ID: <20211214093111.GA7220@alpha.franken.de>
-References: <20211211085132.224082-1-wangborong@cdjrlc.com>
+To:     Tiezhu Yang <yangtiezhu@loongson.cn>
+Cc:     Jason Self <jason@bluehome.net>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Ryutaroh Matsumoto <ryutaroh@ict.e.titech.ac.jp>,
+        Nathan Chancellor <nathan@kernel.org>,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 0/2] MIPS: Remove some code
+Message-ID: <20211214093207.GD7220@alpha.franken.de>
+References: <1639451342-7029-1-git-send-email-yangtiezhu@loongson.cn>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211211085132.224082-1-wangborong@cdjrlc.com>
+In-Reply-To: <1639451342-7029-1-git-send-email-yangtiezhu@loongson.cn>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Sat, Dec 11, 2021 at 04:51:32PM +0800, Jason Wang wrote:
-> The double `the' in the comment in line 344 is repeated. Remove one
-> of them from the comment.
+On Tue, Dec 14, 2021 at 11:09:00AM +0800, Tiezhu Yang wrote:
+> Thanks Nathan, Masahiro and Ryutaroh.
 > 
-> Signed-off-by: Jason Wang <wangborong@cdjrlc.com>
-> ---
->  arch/mips/mm/c-octeon.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> v4:
+>   -- update the commit message of patch #1
+>   -- add Reviewed-by tags
 > 
-> diff --git a/arch/mips/mm/c-octeon.c b/arch/mips/mm/c-octeon.c
-> index 490322b01f91..737870d8fd94 100644
-> --- a/arch/mips/mm/c-octeon.c
-> +++ b/arch/mips/mm/c-octeon.c
-> @@ -341,7 +341,7 @@ asmlinkage void cache_parity_error_octeon_recoverable(void)
->  }
->  
->  /*
-> - * Called when the the exception is not recoverable
-> + * Called when the exception is not recoverable
->   */
->  
->  asmlinkage void cache_parity_error_octeon_non_recoverable(void)
+> Tiezhu Yang (2):
+>   MIPS: SGI-IP22: Remove unnecessary check of GCC option
+>   MIPS: Makefile: Remove "ifdef need-compiler" for Kbuild.platforms
+> 
+>  arch/mips/Makefile          | 2 --
+>  arch/mips/sgi-ip22/Platform | 5 -----
+>  2 files changed, 7 deletions(-)
+> 
 > -- 
-> 2.34.1
+> 2.1.0
 
-applied to mips-next.
+series applied to mips-next.
 
 Thomas.
 

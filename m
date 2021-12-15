@@ -2,167 +2,127 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 31EBBC4321E
-	for <linux-mips@archiver.kernel.org>; Wed, 15 Dec 2021 08:41:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 30B46C433F5
+	for <linux-mips@archiver.kernel.org>; Wed, 15 Dec 2021 08:45:23 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240881AbhLOIlH (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 15 Dec 2021 03:41:07 -0500
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.85.151]:41434 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S240864AbhLOIlC (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>);
-        Wed, 15 Dec 2021 03:41:02 -0500
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- uk-mta-23-f8sISgTNNZG0D9h8G8bq7w-1; Wed, 15 Dec 2021 08:40:15 +0000
-X-MC-Unique: f8sISgTNNZG0D9h8G8bq7w-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
- Server (TLS) id 15.0.1497.26; Wed, 15 Dec 2021 08:40:11 +0000
-Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
- AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
- 15.00.1497.026; Wed, 15 Dec 2021 08:40:11 +0000
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Yury Norov' <yury.norov@gmail.com>,
-        =?utf-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Alexey Klimov <aklimov@redhat.com>,
-        Amitkumar Karwar <amitkarwar@gmail.com>,
-        Andi Kleen <ak@linux.intel.com>, Andrew Lunn <andrew@lunn.ch>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andy Gross <agross@kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        "Andy Shevchenko" <andy@infradead.org>,
-        Anup Patel <anup.patel@wdc.com>,
-        "Ard Biesheuvel" <ardb@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
-        "Catalin Marinas" <catalin.marinas@arm.com>,
-        Christoph Hellwig <hch@lst.de>,
-        "Christoph Lameter" <cl@linux.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Dennis Zhou <dennis@kernel.org>,
-        Dinh Nguyen <dinguyen@kernel.org>,
-        Geetha sowjanya <gakula@marvell.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
-        Guo Ren <guoren@kernel.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Ian Rogers <irogers@google.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        "Jakub Kicinski" <kuba@kernel.org>,
-        Jason Wessel <jason.wessel@windriver.com>,
-        "Jens Axboe" <axboe@fb.com>, Jiri Olsa <jolsa@redhat.com>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        Kees Cook <keescook@chromium.org>,
-        "Krzysztof Kozlowski" <krzysztof.kozlowski@canonical.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Marc Zyngier <maz@kernel.org>, Marcin Wojtas <mw@semihalf.com>,
-        Mark Gross <markgross@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Matti Vaittinen <mazziesaccount@gmail.com>,
-        "Mauro Carvalho Chehab" <mchehab@kernel.org>,
-        Mel Gorman <mgorman@suse.de>,
-        "Michael Ellerman" <mpe@ellerman.id.au>,
-        Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Rasmus Villemoes" <linux@rasmusvillemoes.dk>,
-        Roy Pledge <Roy.Pledge@nxp.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Sagi Grimberg <sagi@grimberg.me>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Solomon Peachy <pizza@shaftnet.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Subbaraya Sundeep <sbhatta@marvell.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Sunil Goutham <sgoutham@marvell.com>,
-        Tariq Toukan <tariqt@nvidia.com>, Tejun Heo <tj@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Ulf Hansson" <ulf.hansson@linaro.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Vineet Gupta <vgupta@kernel.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Will Deacon <will@kernel.org>,
-        "bcm-kernel-feedback-list@broadcom.com" 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "linux-alpha@vger.kernel.org" <linux-alpha@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
-        "linux-csky@vger.kernel.org" <linux-csky@vger.kernel.org>,
-        "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>,
-        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-perf-users@vger.kernel.org" <linux-perf-users@vger.kernel.org>,
-        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
-        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
-        "linux-snps-arc@lists.infradead.org" 
-        <linux-snps-arc@lists.infradead.org>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
-Subject: RE: [PATCH 2/9] lib/bitmap: implement bitmap_{empty,full} with
- bitmap_weight_eq()
-Thread-Topic: [PATCH 2/9] lib/bitmap: implement bitmap_{empty,full} with
- bitmap_weight_eq()
-Thread-Index: AQHX8SLbxx6fx2pSKEyBSY04FwbBf6wzO5+g
-Date:   Wed, 15 Dec 2021 08:40:10 +0000
-Message-ID: <0ccb827de1164b2989d652bfb6f1bbab@AcuMS.aculab.com>
-References: <20211128035704.270739-1-yury.norov@gmail.com>
- <20211128035704.270739-3-yury.norov@gmail.com>
- <YaPGDOvBzhiRFcOP@qmqm.qmqm.pl>
- <CAAH8bW9-dbENFUrwPUQ-uJVVX_s=PWb2zpAJ8BqkV3vJE696mA@mail.gmail.com>
-In-Reply-To: <CAAH8bW9-dbENFUrwPUQ-uJVVX_s=PWb2zpAJ8BqkV3vJE696mA@mail.gmail.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        id S240898AbhLOIpW (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 15 Dec 2021 03:45:22 -0500
+Received: from mail.loongson.cn ([114.242.206.163]:38792 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231561AbhLOIpU (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Wed, 15 Dec 2021 03:45:20 -0500
+Received: from localhost.localdomain (unknown [111.9.175.10])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9DxrNwUq7lh0P4AAA--.1916S3;
+        Wed, 15 Dec 2021 16:45:13 +0800 (CST)
+From:   Huang Pei <huangpei@loongson.cn>
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        ambrosehua@gmail.com
+Cc:     Bibo Mao <maobibo@loongson.cn>, linux-mips@vger.kernel.org,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Paul Burton <paulburton@kernel.org>,
+        Li Xuefeng <lixuefeng@loongson.cn>,
+        Yang Tiezhu <yangtiezhu@loongson.cn>,
+        Gao Juxin <gaojuxin@loongson.cn>,
+        Huacai Chen <chenhuacai@loongson.cn>
+Subject: [PATCH 1/4] MIPS: fix local_{add,sub}_return on MIPS64
+Date:   Wed, 15 Dec 2021 16:44:57 +0800
+Message-Id: <20211215084500.24444-2-huangpei@loongson.cn>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20211215084500.24444-1-huangpei@loongson.cn>
+References: <20211215084500.24444-1-huangpei@loongson.cn>
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: AQAAf9DxrNwUq7lh0P4AAA--.1916S3
+X-Coremail-Antispam: 1UD129KBjvJXoW7ArW3WFy7WF1kZF43Kr1Dtrb_yoW8tr4kpF
+        WDCas7KFWqgFyxGasIkFWSkr43u3y5GrZa9Fy09r9FyF9aqwnrtrZ7K34vqF1kJa18t3W8
+        GFWa9ry5WF1IyrJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUPG14x267AKxVW5JVWrJwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_Jr4l82xGYIkIc2
+        x26xkF7I0E14v26r1I6r4UM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2z4x0
+        Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j6F4UJw
+        A2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oVCq3wAS
+        0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2
+        IY67AKxVWUXVWUAwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0
+        Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628vn2kIc2
+        xKxwCY02Avz4vE14v_GFyl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1l
+        x2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14
+        v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IY
+        x2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87
+        Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIF
+        yTuYvjfU0Q6pDUUUU
+X-CM-SenderInfo: xkxd0whshlqz5rrqw2lrqou0/
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-RnJvbTogWXVyeSBOb3Jvdg0KPiBTZW50OiAxNCBEZWNlbWJlciAyMDIxIDE5OjQzDQouLi4NCj4g
-DQo+IEkgdGhpbmsgdGhhdCBmb3IgbG9uZyBiaXRtYXBzIHRoZSBtb3N0IHRpbWUgY29uc3VtaW5n
-IG9wZXJhdGlvbiBpcyBtb3ZpbmcNCj4gZGF0YSB0byBMMSwgYW5kIGZvciBzaG9ydCBiaXRtYXBz
-IHRoZSBkaWZmZXJlbmNlIGJldHdlZW4gYXBwcm9hY2hlcyBpcw0KPiBiYXJlbHkgbWVhc3VyYWJs
-ZS4NCj4gDQo+IEJ1dCBod2VnaHRfbG9uZyBvbiBlYWNoIGl0ZXJhdGlvbiBjYW4ndCBiZSBtb3Jl
-IGVmZmVjdGl2ZSB0aGFuIHRoZSBjdXJyZW50DQo+IHZlcnNpb24uIFNvLCBJJ2xsIGRyb3AgdGhp
-cyBwYXRjaCBmb3IgdjIgYW5kIGtlZXAgdGhpbmdzIHVuY2hhbmdlZC4NCg0KQWN0dWFsbHkgZG8g
-Yml0bWFwX2Z1bGwvZW1wdHkoKSBjYWxscyBtYWtlIGFueSBzZW5zZSBhdCBhbGw/DQpUaGUgcmVz
-dWx0IGlzIHN0YWxlIHNpbmNlIGJpdG1hcHMgYXJlIGRlc2lnbmVkIHRvIGRvIGxvY2tlZCBvcGVy
-YXRpb25zLg0KSWYgeW91IGhhdmUgYSBsb2NrIGNvdmVyaW5nIHRoZSBiaXRtYXAgdGhlbiB5b3Ug
-c2hvdWxkIGJlIHVzaW5nDQpzb21ldGhpbmcgdGhhdCB1c2VzIG5vbi1sb2NrZWQgYWNjZXNzZXMu
-DQpSaWdodGx5IG9yIHdyb25nbHkgdGhhdCBpc24ndCB0aGUgYml0bWFwIGFwaS4NCg0KCURhdmlk
-DQoNCi0NClJlZ2lzdGVyZWQgQWRkcmVzcyBMYWtlc2lkZSwgQnJhbWxleSBSb2FkLCBNb3VudCBG
-YXJtLCBNaWx0b24gS2V5bmVzLCBNSzEgMVBULCBVSw0KUmVnaXN0cmF0aW9uIE5vOiAxMzk3Mzg2
-IChXYWxlcykNCg==
+Use "daddu/dsubu" for long int on MIPS64 instead of "addu/subu"
+
+Fixes: 7232311ef14c ("local_t: mips extension")
+Signed-off-by: Huang Pei <huangpei@loongson.cn>
+---
+ arch/mips/include/asm/llsc.h  | 4 ++++
+ arch/mips/include/asm/local.h | 8 ++++----
+ 2 files changed, 8 insertions(+), 4 deletions(-)
+
+diff --git a/arch/mips/include/asm/llsc.h b/arch/mips/include/asm/llsc.h
+index ec09fe5d6d6c..8cc28177c37f 100644
+--- a/arch/mips/include/asm/llsc.h
++++ b/arch/mips/include/asm/llsc.h
+@@ -14,10 +14,14 @@
+ #if _MIPS_SZLONG == 32
+ #define __LL		"ll	"
+ #define __SC		"sc	"
++#define __ADDU		"addu	"
++#define __SUBU		"subu	"
+ #define __INS		"ins	"
+ #define __EXT		"ext	"
+ #elif _MIPS_SZLONG == 64
+ #define __LL		"lld	"
++#define __ADDU		"daddu	"
++#define __SUBU		"dsubu	"
+ #define __SC		"scd	"
+ #define __INS		"dins	"
+ #define __EXT		"dext	"
+diff --git a/arch/mips/include/asm/local.h b/arch/mips/include/asm/local.h
+index ecda7295ddcd..608651d9affe 100644
+--- a/arch/mips/include/asm/local.h
++++ b/arch/mips/include/asm/local.h
+@@ -39,7 +39,7 @@ static __inline__ long local_add_return(long i, local_t * l)
+ 		"	.set	arch=r4000				\n"
+ 			__SYNC(full, loongson3_war) "			\n"
+ 		"1:"	__LL	"%1, %2		# local_add_return	\n"
+-		"	addu	%0, %1, %3				\n"
++			__ADDU	"%0, %1, %3				\n"
+ 			__SC	"%0, %2					\n"
+ 		"	beqzl	%0, 1b					\n"
+ 		"	addu	%0, %1, %3				\n"
+@@ -55,7 +55,7 @@ static __inline__ long local_add_return(long i, local_t * l)
+ 		"	.set	"MIPS_ISA_ARCH_LEVEL"			\n"
+ 			__SYNC(full, loongson3_war) "			\n"
+ 		"1:"	__LL	"%1, %2		# local_add_return	\n"
+-		"	addu	%0, %1, %3				\n"
++			__ADDU	"%0, %1, %3				\n"
+ 			__SC	"%0, %2					\n"
+ 		"	beqz	%0, 1b					\n"
+ 		"	addu	%0, %1, %3				\n"
+@@ -88,7 +88,7 @@ static __inline__ long local_sub_return(long i, local_t * l)
+ 		"	.set	arch=r4000				\n"
+ 			__SYNC(full, loongson3_war) "			\n"
+ 		"1:"	__LL	"%1, %2		# local_sub_return	\n"
+-		"	subu	%0, %1, %3				\n"
++			__SUBU	"%0, %1, %3				\n"
+ 			__SC	"%0, %2					\n"
+ 		"	beqzl	%0, 1b					\n"
+ 		"	subu	%0, %1, %3				\n"
+@@ -104,7 +104,7 @@ static __inline__ long local_sub_return(long i, local_t * l)
+ 		"	.set	"MIPS_ISA_ARCH_LEVEL"			\n"
+ 			__SYNC(full, loongson3_war) "			\n"
+ 		"1:"	__LL	"%1, %2		# local_sub_return	\n"
+-		"	subu	%0, %1, %3				\n"
++			__SUBU	"%0, %1, %3				\n"
+ 			__SC	"%0, %2					\n"
+ 		"	beqz	%0, 1b					\n"
+ 		"	subu	%0, %1, %3				\n"
+-- 
+2.20.1
 

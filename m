@@ -2,75 +2,97 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5DF08C433F5
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BCEE7C433FE
 	for <linux-mips@archiver.kernel.org>; Thu, 16 Dec 2021 15:07:55 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238289AbhLPPHy (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 16 Dec 2021 10:07:54 -0500
-Received: from elvis.franken.de ([193.175.24.41]:50675 "EHLO elvis.franken.de"
+        id S238299AbhLPPHz (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 16 Dec 2021 10:07:55 -0500
+Received: from elvis.franken.de ([193.175.24.41]:50680 "EHLO elvis.franken.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235074AbhLPPHy (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Thu, 16 Dec 2021 10:07:54 -0500
+        id S238287AbhLPPHz (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Thu, 16 Dec 2021 10:07:55 -0500
 Received: from uucp (helo=alpha)
         by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1mxsMK-0001iD-00; Thu, 16 Dec 2021 16:07:52 +0100
+        id 1mxsMK-0001iD-03; Thu, 16 Dec 2021 16:07:52 +0100
 Received: by alpha.franken.de (Postfix, from userid 1000)
-        id E2724C0995; Thu, 16 Dec 2021 16:03:13 +0100 (CET)
-Date:   Thu, 16 Dec 2021 16:03:13 +0100
+        id 83873C09A0; Thu, 16 Dec 2021 16:06:35 +0100 (CET)
+Date:   Thu, 16 Dec 2021 16:06:35 +0100
 From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Sander Vanheule <sander@svanheule.net>
-Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        Bert Vermeulen <bert@biot.com>
-Subject: Re: [PATCH] MIPS: drop selected EARLY_PRINTK configs for
- MACH_REALTEK_RTL
-Message-ID: <20211216150313.GA15172@alpha.franken.de>
-References: <20211215200602.6546-1-sander@svanheule.net>
+To:     cgel.zte@gmail.com
+Cc:     ye.guojin@zte.com.cn, yangyingliang@huawei.com,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Zeal Robot <zealci@zte.com.cn>
+Subject: Re: [PATCH] MIPS: OCTEON: add put_device() after
+ of_find_device_by_node()
+Message-ID: <20211216150635.GD15172@alpha.franken.de>
+References: <20211116081051.155750-1-ye.guojin@zte.com.cn>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211215200602.6546-1-sander@svanheule.net>
+In-Reply-To: <20211116081051.155750-1-ye.guojin@zte.com.cn>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Wed, Dec 15, 2021 at 09:06:02PM +0100, Sander Vanheule wrote:
-> MACH_REALTEK_RTL declares that the system supports early printk , but
-> this is not actually implemented as intended. The system is left with a
-> non-functional early0 console because the setup_8250_early_printk_port()
-> call provided for MIPS_GENERIC is never used to set this up. Generic
-> ns16550a earlycon works, so devices should use that for early output.
-> This means that SYS_HAS_EARLY_PRINTK and USE_GENERIC_EARLY_PRINTK_8250
-> do not need to be selected.
+On Tue, Nov 16, 2021 at 08:10:51AM +0000, cgel.zte@gmail.com wrote:
+> From: Ye Guojin <ye.guojin@zte.com.cn>
 > 
-> Additionally, as reported by Lukas Bulwahn, the selected symbol
-> SYS_HAS_EARLY_PRINTK_8250 does not actually exist, so should also be
-> dropped.
+> This was found by coccicheck:
+> ./arch/mips/cavium-octeon/octeon-platform.c, 332, 1-7, ERROR missing
+> put_device; call of_find_device_by_node on line 324, but without a
+> corresponding object release within this function.
+> ./arch/mips/cavium-octeon/octeon-platform.c, 395, 1-7, ERROR missing
+> put_device; call of_find_device_by_node on line 387, but without a
+> corresponding object release within this function.
+> ./arch/mips/cavium-octeon/octeon-usb.c, 512, 3-9, ERROR missing
+> put_device; call of_find_device_by_node on line 515, but without a
+> corresponding object release within this function.
+> ./arch/mips/cavium-octeon/octeon-usb.c, 543, 1-7, ERROR missing
+> put_device; call of_find_device_by_node on line 515, but without a
+> corresponding object release within this function.
 > 
-> Cc: Lukas Bulwahn <lukas.bulwahn@gmail.com>
-> Cc: Bert Vermeulen <bert@biot.com>
-> Signed-off-by: Sander Vanheule <sander@svanheule.net>
+> Reported-by: Zeal Robot <zealci@zte.com.cn>
+> Signed-off-by: Ye Guojin <ye.guojin@zte.com.cn>
 > ---
->  arch/mips/Kconfig | 3 ---
->  1 file changed, 3 deletions(-)
+>  arch/mips/cavium-octeon/octeon-platform.c | 2 ++
+>  arch/mips/cavium-octeon/octeon-usb.c      | 1 +
+>  2 files changed, 3 insertions(+)
 > 
-> diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-> index 63eb66a22691..9a3a2330fc69 100644
-> --- a/arch/mips/Kconfig
-> +++ b/arch/mips/Kconfig
-> @@ -642,9 +642,6 @@ config MACH_REALTEK_RTL
->  	select SYS_SUPPORTS_MIPS16
->  	select SYS_SUPPORTS_MULTITHREADING
->  	select SYS_SUPPORTS_VPE_LOADER
-> -	select SYS_HAS_EARLY_PRINTK
-> -	select SYS_HAS_EARLY_PRINTK_8250
-> -	select USE_GENERIC_EARLY_PRINTK_8250
->  	select BOOT_RAW
->  	select PINCTRL
->  	select USE_OF
+> diff --git a/arch/mips/cavium-octeon/octeon-platform.c b/arch/mips/cavium-octeon/octeon-platform.c
+> index d56e9b9d2e43..a994022e32c9 100644
+> --- a/arch/mips/cavium-octeon/octeon-platform.c
+> +++ b/arch/mips/cavium-octeon/octeon-platform.c
+> @@ -328,6 +328,7 @@ static int __init octeon_ehci_device_init(void)
+>  
+>  	pd->dev.platform_data = &octeon_ehci_pdata;
+>  	octeon_ehci_hw_start(&pd->dev);
+> +	put_device(&pd->dev);
+>  
+>  	return ret;
+>  }
+> @@ -391,6 +392,7 @@ static int __init octeon_ohci_device_init(void)
+>  
+>  	pd->dev.platform_data = &octeon_ohci_pdata;
+>  	octeon_ohci_hw_start(&pd->dev);
+> +	put_device(&pd->dev);
+>  
+>  	return ret;
+>  }
+> diff --git a/arch/mips/cavium-octeon/octeon-usb.c b/arch/mips/cavium-octeon/octeon-usb.c
+> index 6e4d3619137a..4df919d26b08 100644
+> --- a/arch/mips/cavium-octeon/octeon-usb.c
+> +++ b/arch/mips/cavium-octeon/octeon-usb.c
+> @@ -537,6 +537,7 @@ static int __init dwc3_octeon_device_init(void)
+>  			devm_iounmap(&pdev->dev, base);
+>  			devm_release_mem_region(&pdev->dev, res->start,
+>  						resource_size(res));
+> +			put_device(&pdev->dev);
+>  		}
+>  	} while (node != NULL);
+>  
 > -- 
-> 2.33.1
+> 2.25.1
 
 applied to mips-next.
 

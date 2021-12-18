@@ -2,220 +2,108 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 349E9C433EF
-	for <linux-mips@archiver.kernel.org>; Sat, 18 Dec 2021 03:23:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CEAE4C433FE
+	for <linux-mips@archiver.kernel.org>; Sat, 18 Dec 2021 03:30:36 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231789AbhLRDXk (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 17 Dec 2021 22:23:40 -0500
-Received: from mail.loongson.cn ([114.242.206.163]:50096 "EHLO loongson.cn"
+        id S232001AbhLRDag (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 17 Dec 2021 22:30:36 -0500
+Received: from mail.loongson.cn ([114.242.206.163]:51094 "EHLO loongson.cn"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231843AbhLRDXk (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Fri, 17 Dec 2021 22:23:40 -0500
-Received: from linux.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9BxnN0eVL1hYvUBAA--.8171S3;
-        Sat, 18 Dec 2021 11:23:11 +0800 (CST)
-From:   Tiezhu Yang <yangtiezhu@loongson.cn>
+        id S231964AbhLRDaa (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Fri, 17 Dec 2021 22:30:30 -0500
+Received: from loongson-pc (unknown [111.9.175.10])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dx3NzOVb1h0vUBAA--.4510S2;
+        Sat, 18 Dec 2021 11:30:24 +0800 (CST)
+Date:   Sat, 18 Dec 2021 11:30:22 +0800
+From:   Huang Pei <huangpei@loongson.cn>
 To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc:     Xuefeng Li <lixuefeng@loongson.cn>, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 1/3] MIPS: signal: Protect against sigaltstack wraparound
-Date:   Sat, 18 Dec 2021 11:23:07 +0800
-Message-Id: <1639797789-3001-2-git-send-email-yangtiezhu@loongson.cn>
-X-Mailer: git-send-email 2.1.0
-In-Reply-To: <1639797789-3001-1-git-send-email-yangtiezhu@loongson.cn>
-References: <1639797789-3001-1-git-send-email-yangtiezhu@loongson.cn>
-X-CM-TRANSID: AQAAf9BxnN0eVL1hYvUBAA--.8171S3
-X-Coremail-Antispam: 1UD129KBjvJXoWxXw4kWFy7CF4fXw4fCr1ftFb_yoW5Cw45pr
-        4q9F4fGr47Xw129FnrCw18WrZ5t397Aw17GF1ak3y09ay7Xr4rtrykt3W5CF1fAFZ5Ga4Y
-        gFWDWFn7Jr4UA37anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUBa14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_Jr4l82xGYIkIc2
-        x26xkF7I0E14v26r1Y6r1xM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2z4x0
-        Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1l84
-        ACjcxK6I8E87Iv67AKxVWxJr0_GcWl84ACjcxK6I8E87Iv6xkF7I0E14v26F4UJVW0owAS
-        0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2
-        IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0
-        Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCY02Avz4vE14v_Gr4l42xK82
-        IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC2
-        0s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMI
-        IF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF
-        0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87
-        Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x0JUaQ6LUUUUU=
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+Cc:     ambrosehua@gmail.com, Bibo Mao <maobibo@loongson.cn>,
+        linux-mips@vger.kernel.org, Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Paul Burton <paulburton@kernel.org>,
+        Li Xuefeng <lixuefeng@loongson.cn>,
+        Yang Tiezhu <yangtiezhu@loongson.cn>,
+        Gao Juxin <gaojuxin@loongson.cn>,
+        Huacai Chen <chenhuacai@loongson.cn>
+Subject: Re: [PATCH 2/4] MIPS: tx39: adjust tx39_flush_cache_page
+Message-ID: <20211218033022.bjbzmvg5e5bgfup6@loongson-pc>
+References: <20211215084500.24444-1-huangpei@loongson.cn>
+ <20211215084500.24444-3-huangpei@loongson.cn>
+ <20211216125204.GB12930@alpha.franken.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20211216125204.GB12930@alpha.franken.de>
+User-Agent: NeoMutt/20180716
+X-CM-TRANSID: AQAAf9Dx3NzOVb1h0vUBAA--.4510S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7KF1DGw13JF1fKw45Xw4kCrg_yoW8Aw4rp3
+        y7tFWrKw4kWw4UuFW7AwsFyr1xZ3sxJF4Ig3W5tryYvay5WFnrKw1UCa1F93ZxArs2yw47
+        Zr4UX3ZrZry5Zw7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvC14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26r4j6ryUM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4j
+        6F4UM28EF7xvwVC2z280aVAFwI0_Cr1j6rxdM28EF7xvwVC2z280aVCY1x0267AKxVWxJr
+        0_GcWle2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+        2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
+        W8JwACjcxG0xvEwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2Y2ka
+        0xkIwI1lc2xSY4AK67AK6r48MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r
+        4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF
+        67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2I
+        x0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Wr1j6rW3Jr1lIxAI
+        cVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2Kf
+        nxnUUI43ZEXa7VUb2g4DUUUUU==
+X-CM-SenderInfo: xkxd0whshlqz5rrqw2lrqou0/
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-If a process uses alternative signal stack by using sigaltstack(),
-then that stack overflows and stack wraparound occurs.
+On Thu, Dec 16, 2021 at 01:52:04PM +0100, Thomas Bogendoerfer wrote:
+> On Wed, Dec 15, 2021 at 04:44:58PM +0800, Huang Pei wrote:
+> > Indexed cache operation actually uses KSEG0/CKSEG0 (AKA physical
+> > address, see INDEX_BASE in arch/mips/include/asm/r4kcache.h) to
+> > index cache line, so it CAN NOT handle cache alias(cache alias
+> > is first introduced into MIPS by R4000, indexing cache line with
+> > virtual address).
+> > 
+> > It is said, on "32-Bit TX System TX39 Family TMPR3911/3912", P86,
+> > 
+> > •Translation Look-aside Buffer (TLB) (4 Kbyte Page size, 32 Entries)
+> > •4Kbyte instruction cache (I-cache)
+> > 	•16 bytes (4 words) per line (256 lines total)
+> > 	•physical address tag per cache line
+> > 	•single valid bit per cache line
+> > 	•direct-mapped
+> > •1 Kbyte data cache (D-cache)
+> > 	•4bytes (1 word) per line (128 lines total)
+> > 	•physical address tag per cache line
+> > 	•write-through
+> > 	•two-way set associate
+> > 
+> > We can assume there is NO cache alias on TX39's R3900 core
+> 
+> in the same sense the whole cache flushing magic isn't needed and
+> we could to the same as for pure R3k CPUs. But this code is there
+> and none of the user manuals I found describe excat cache behaviour.
+> 
+the original code is odd, I think this may be better, if we do not need
+to consider cache alias
 
-Simple Explanation:
-The accurate sp order is A,B,C,D,...
-But now the sp points to A,B,C and A,B,C again.
+-       if (cpu_has_dc_aliases || exec)
+-               tx39_blast_dcache_page_indexed(page);
++       tx39_blast_dcache_page_indexed(page);
+        if (exec)
+	        tx39_blast_icache_page_indexed(page);
 
-This problem can reproduce by the following code:
+> I've planned to retire the whole tx39 soon, so please no more patches
+> for it. 
+> 
 
-  $ cat test_sigaltstack.c
-  #include <stdio.h>
-  #include <signal.h>
-  #include <stdlib.h>
-  #include <string.h>
+Ok, I can wait. I need more test of my patch on reviving
+f685a533a7f ("MIPS: make userspace mapping young by default")
+> Thomas.
 
-  volatile int counter = 0;
-
-  void print_sp()
-  {
-      unsigned long sp;
-
-      __asm__ __volatile__("move %0, $sp" : "=r" (sp));
-      printf("sp = 0x%08lx\n", sp);
-  }
-
-  void segv_handler()
-  {
-      int *c = NULL;
-
-      print_sp();
-      counter++;
-      printf("%d\n", counter);
-
-      if (counter == 23)
-          abort();
-
-      *c = 1;	// SEGV
-  }
-
-  int main()
-  {
-      int *c = NULL;
-      char *s = malloc(SIGSTKSZ);
-      stack_t stack;
-      struct sigaction action;
-
-      memset(s, 0, SIGSTKSZ);
-      stack.ss_sp = s;
-      stack.ss_flags = 0;
-      stack.ss_size = SIGSTKSZ;
-      if (sigaltstack(&stack, NULL)) {
-          printf("Failed to use sigaltstack!\n");
-          return -1;
-      }
-
-      memset(&action, 0, sizeof(action));
-      action.sa_handler = segv_handler;
-      action.sa_flags = SA_ONSTACK | SA_NODEFER;
-      sigemptyset(&action.sa_mask);
-      sigaction(SIGSEGV, &action, NULL);
-
-      *c = 0;	//SEGV
-
-      if (!s)
-          free(s);
-
-      return 0;
-  }
-  $ gcc test_sigaltstack.c -o test_sigaltstack
-  $ ./test_sigaltstack
-  sp = 0x120015c80
-  1
-  sp = 0x120015900
-  2
-  sp = 0x120015580
-  3
-  sp = 0x120015200
-  4
-  sp = 0x120014e80
-  5
-  sp = 0x120014b00
-  6
-  sp = 0x120014780
-  7
-  sp = 0x120014400
-  8
-  sp = 0x120014080
-  9
-  sp = 0x120013d00
-  10
-  sp = 0x120015c80
-  11               # wraparound occurs! the 11nd output is same as 1st.
-  sp = 0x120015900
-  12
-  sp = 0x120015580
-  13
-  sp = 0x120015200
-  14
-  sp = 0x120014e80
-  15
-  sp = 0x120014b00
-  16
-  sp = 0x120014780
-  17
-  sp = 0x120014400
-  18
-  sp = 0x120014080
-  19
-  sp = 0x120013d00
-  20
-  sp = 0x120015c80
-  21                # wraparound occurs! the 21nd output is same as 1st.
-  sp = 0x120015900
-  22
-  sp = 0x120015580
-  23
-  Aborted
-
-With this patch:
-
-  $ ./test_sigaltstack
-  sp = 0x120015c80
-  1
-  sp = 0x120015900
-  2
-  sp = 0x120015580
-  3
-  sp = 0x120015200
-  4
-  sp = 0x120014e80
-  5
-  sp = 0x120014b00
-  6
-  sp = 0x120014780
-  7
-  sp = 0x120014400
-  8
-  sp = 0x120014080
-  9
-  Segmentation fault
-
-If we are on the alternate signal stack and would overflow it, don't.
-Return an always-bogus address instead so we will die with SIGSEGV.
-
-This patch is similar with commit 83bd01024b1f ("x86: protect against
-sigaltstack wraparound").
-
-Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
----
- arch/mips/kernel/signal.c | 7 +++++++
- 1 file changed, 7 insertions(+)
-
-diff --git a/arch/mips/kernel/signal.c b/arch/mips/kernel/signal.c
-index c9b2a75..c1632e8 100644
---- a/arch/mips/kernel/signal.c
-+++ b/arch/mips/kernel/signal.c
-@@ -563,6 +563,13 @@ void __user *get_sigframe(struct ksignal *ksig, struct pt_regs *regs,
- 	sp = regs->regs[29];
- 
- 	/*
-+	 * If we are on the alternate signal stack and would overflow it, don't.
-+	 * Return an always-bogus address instead so we will die with SIGSEGV.
-+	 */
-+	if (on_sig_stack(sp) && !likely(on_sig_stack(sp - frame_size)))
-+		return (void __user __force *)(-1UL);
-+
-+	/*
- 	 * FPU emulator may have it's own trampoline active just
- 	 * above the user stack, 16-bytes before the next lowest
- 	 * 16 byte boundary.  Try to avoid trashing it.
--- 
-2.1.0
+> 
+> -- 
+> Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+> good idea.                                                [ RFC1925, 2.3 ]
 

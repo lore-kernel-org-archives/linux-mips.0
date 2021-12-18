@@ -2,76 +2,148 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 44053C433F5
-	for <linux-mips@archiver.kernel.org>; Fri, 17 Dec 2021 23:59:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 59B07C433FE
+	for <linux-mips@archiver.kernel.org>; Sat, 18 Dec 2021 03:23:20 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231418AbhLQX7H convert rfc822-to-8bit (ORCPT
-        <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 17 Dec 2021 18:59:07 -0500
-Received: from mail-yb1-f176.google.com ([209.85.219.176]:39759 "EHLO
-        mail-yb1-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229665AbhLQX7H (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Fri, 17 Dec 2021 18:59:07 -0500
-Received: by mail-yb1-f176.google.com with SMTP id v203so10835219ybe.6;
-        Fri, 17 Dec 2021 15:59:07 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=4F0gHTidMS+I/Mh8I+yQ11CWW3YbgxApHH85yQIIp/o=;
-        b=eLCR+YHqVJcHrBj0baXHo2a/wAtMnXC99VJzA+NeeOvU4Vbw/jW+YEmu82C/8uYvzA
-         kVmJtiWqPX6oySbKBK6HR0O9vjScvB7Q2Cmrc47vKTmzfV3q5VeETFcAZGBuWEtD5GgT
-         ou1fg/z7eMlnxtXxPEZlhYpn9rs3X29N0c2Fh9LfkyS28f3s8GqtwyXyva0ltQt19q1z
-         J8AWT6uG34bOWE62e/Dq/4qwp+ZhK4JMy4XrQhuRtLEGCZxDjKMqRRCIEBFVKX4PK0KC
-         HNDtbT52ZYN3so+n1iFfuD5CpFAV7Lqqv91xNTODKOEtTr69aSZqa1wX4/4kN193Z8qY
-         CgCQ==
-X-Gm-Message-State: AOAM530Qo/lzsvAlZXr+hyJQwAWTG3hcleEmGk2W/4nxrrAvCV0XDyJX
-        WfbNQvOsSkaXln82bfGolByXVHvhArVwQ0PshCkWTRZ/6nI=
-X-Google-Smtp-Source: ABdhPJwMtgJn9avrIgj5yxzhDON6+NfjkmC1bO6Wq9jC1fgXNPnyGvbiq9KKoqpSqD1lI64vDQ9LQMXw6ENvXywigAY=
-X-Received: by 2002:a25:54e:: with SMTP id 75mr7025346ybf.393.1639785546754;
- Fri, 17 Dec 2021 15:59:06 -0800 (PST)
-MIME-Version: 1.0
-References: <20211216095014.11918-1-tianjia.zhang@linux.alibaba.com>
-In-Reply-To: <20211216095014.11918-1-tianjia.zhang@linux.alibaba.com>
-From:   =?UTF-8?Q?Philippe_Mathieu=2DDaud=C3=A9?= <f4bug@amsat.org>
-Date:   Sat, 18 Dec 2021 00:58:55 +0100
-Message-ID: <CAAdtpL5DbW4mdv2xtXCx3rpx+TKTdSLRZDOMj8o-ofsaQZnEwg@mail.gmail.com>
-Subject: Re: [PATCH] MIPS: Octeon: Fix build errors using clang
-To:     Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Adrian Schmutzler <freifunk@adrianschmutzler.de>,
-        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
+        id S231806AbhLRDXS (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 17 Dec 2021 22:23:18 -0500
+Received: from mail.loongson.cn ([114.242.206.163]:50020 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229580AbhLRDXS (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Fri, 17 Dec 2021 22:23:18 -0500
+Received: from linux.localdomain (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9BxnN0eVL1hYvUBAA--.8171S5;
+        Sat, 18 Dec 2021 11:23:12 +0800 (CST)
+From:   Tiezhu Yang <yangtiezhu@loongson.cn>
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc:     Xuefeng Li <lixuefeng@loongson.cn>, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 3/3] MIPS: signal: Remove unnecessary DEBUG_SIG related code
+Date:   Sat, 18 Dec 2021 11:23:09 +0800
+Message-Id: <1639797789-3001-4-git-send-email-yangtiezhu@loongson.cn>
+X-Mailer: git-send-email 2.1.0
+In-Reply-To: <1639797789-3001-1-git-send-email-yangtiezhu@loongson.cn>
+References: <1639797789-3001-1-git-send-email-yangtiezhu@loongson.cn>
+X-CM-TRANSID: AQAAf9BxnN0eVL1hYvUBAA--.8171S5
+X-Coremail-Antispam: 1UD129KBjvJXoWxAFy8Gw1rXFyrZr4DArW7CFg_yoW5tw4kpF
+        4jka4kGrZFqw1DuFyDX3sYgryfAr98Cw129F4qka4rZa4SqF1rJF9aq3Wqvr1YvrykWF1f
+        KFWYva12yws5AaUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUBS14x267AKxVW5JVWrJwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_JrWl82xGYIkIc2
+        x26xkF7I0E14v26r4j6ryUM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2z4x0
+        Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1l84
+        ACjcxK6I8E87Iv67AKxVWxJr0_GcWl84ACjcxK6I8E87Iv6xkF7I0E14v26F4UJVW0owAS
+        0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2
+        IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0
+        Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCY02Avz4vE14v_Gr4l42xK82
+        IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC2
+        0s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMI
+        IF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF
+        0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87
+        Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjfUUUDGDUUUU
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Thu, Dec 16, 2021 at 5:11 PM Tianjia Zhang
-<tianjia.zhang@linux.alibaba.com> wrote:
->
-> A large number of the following errors is reported when compiling
-> with clang:
->
->   cvmx-bootinfo.h:326:3: error: adding 'int' to a string does not append to the string [-Werror,-Wstring-plus-int]
->                   ENUM_BRD_TYPE_CASE(CVMX_BOARD_TYPE_NULL)
->                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->   cvmx-bootinfo.h:321:20: note: expanded from macro 'ENUM_BRD_TYPE_CASE'
->           case x: return(#x + 16);        /* Skip CVMX_BOARD_TYPE_ */
->                          ~~~^~~~
->   cvmx-bootinfo.h:326:3: note: use array indexing to silence this warning
->   cvmx-bootinfo.h:321:20: note: expanded from macro 'ENUM_BRD_TYPE_CASE'
->           case x: return(#x + 16);        /* Skip CVMX_BOARD_TYPE_ */
->                           ^
->
-> Follow the prompts to use the address operator '&' to fix this error.
->
-> Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
-> ---
->  arch/mips/include/asm/octeon/cvmx-bootinfo.h | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+Since DEBUG_SIG is not defined on MIPS, so DEBUGP() is an empty function.
+Additionally, it is unacceptable to printk message in the normal path of
+signal handling, the system can not work well if DEBUG_SIG is defined, so
+just remove the related code.
 
-Reviewed-by: Philippe Mathieu-Daudé <f4bug@amsat.org>
+Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+---
+ arch/mips/kernel/signal-common.h | 8 --------
+ arch/mips/kernel/signal.c        | 7 -------
+ arch/mips/kernel/signal_n32.c    | 4 ----
+ arch/mips/kernel/signal_o32.c    | 8 --------
+ 4 files changed, 27 deletions(-)
+
+diff --git a/arch/mips/kernel/signal-common.h b/arch/mips/kernel/signal-common.h
+index f50d484..f70135f 100644
+--- a/arch/mips/kernel/signal-common.h
++++ b/arch/mips/kernel/signal-common.h
+@@ -11,14 +11,6 @@
+ #ifndef __SIGNAL_COMMON_H
+ #define __SIGNAL_COMMON_H
+ 
+-/* #define DEBUG_SIG */
+-
+-#ifdef DEBUG_SIG
+-#  define DEBUGP(fmt, args...) printk("%s: " fmt, __func__, ##args)
+-#else
+-#  define DEBUGP(fmt, args...)
+-#endif
+-
+ /*
+  * Determine which stack to use..
+  */
+diff --git a/arch/mips/kernel/signal.c b/arch/mips/kernel/signal.c
+index 4cd3969..feb0cba 100644
+--- a/arch/mips/kernel/signal.c
++++ b/arch/mips/kernel/signal.c
+@@ -743,9 +743,6 @@ static int setup_frame(void *sig_return, struct ksignal *ksig,
+ 	regs->regs[31] = (unsigned long) sig_return;
+ 	regs->cp0_epc = regs->regs[25] = (unsigned long) ksig->ka.sa.sa_handler;
+ 
+-	DEBUGP("SIG deliver (%s:%d): sp=0x%p pc=0x%lx ra=0x%lx\n",
+-	       current->comm, current->pid,
+-	       frame, regs->cp0_epc, regs->regs[31]);
+ 	return 0;
+ }
+ #endif
+@@ -803,10 +800,6 @@ static int setup_rt_frame(void *sig_return, struct ksignal *ksig,
+ 	regs->regs[31] = (unsigned long) sig_return;
+ 	regs->cp0_epc = regs->regs[25] = (unsigned long) ksig->ka.sa.sa_handler;
+ 
+-	DEBUGP("SIG deliver (%s:%d): sp=0x%p pc=0x%lx ra=0x%lx\n",
+-	       current->comm, current->pid,
+-	       frame, regs->cp0_epc, regs->regs[31]);
+-
+ 	return 0;
+ }
+ 
+diff --git a/arch/mips/kernel/signal_n32.c b/arch/mips/kernel/signal_n32.c
+index 7bd00fa..d0e3f74 100644
+--- a/arch/mips/kernel/signal_n32.c
++++ b/arch/mips/kernel/signal_n32.c
+@@ -130,10 +130,6 @@ static int setup_rt_frame_n32(void *sig_return, struct ksignal *ksig,
+ 	regs->regs[31] = (unsigned long) sig_return;
+ 	regs->cp0_epc = regs->regs[25] = (unsigned long) ksig->ka.sa.sa_handler;
+ 
+-	DEBUGP("SIG deliver (%s:%d): sp=0x%p pc=0x%lx ra=0x%lx\n",
+-	       current->comm, current->pid,
+-	       frame, regs->cp0_epc, regs->regs[31]);
+-
+ 	return 0;
+ }
+ 
+diff --git a/arch/mips/kernel/signal_o32.c b/arch/mips/kernel/signal_o32.c
+index 299a7a2..3691f74 100644
+--- a/arch/mips/kernel/signal_o32.c
++++ b/arch/mips/kernel/signal_o32.c
+@@ -144,10 +144,6 @@ static int setup_frame_32(void *sig_return, struct ksignal *ksig,
+ 	regs->regs[31] = (unsigned long) sig_return;
+ 	regs->cp0_epc = regs->regs[25] = (unsigned long) ksig->ka.sa.sa_handler;
+ 
+-	DEBUGP("SIG deliver (%s:%d): sp=0x%p pc=0x%lx ra=0x%lx\n",
+-	       current->comm, current->pid,
+-	       frame, regs->cp0_epc, regs->regs[31]);
+-
+ 	return 0;
+ }
+ 
+@@ -230,10 +226,6 @@ static int setup_rt_frame_32(void *sig_return, struct ksignal *ksig,
+ 	regs->regs[31] = (unsigned long) sig_return;
+ 	regs->cp0_epc = regs->regs[25] = (unsigned long) ksig->ka.sa.sa_handler;
+ 
+-	DEBUGP("SIG deliver (%s:%d): sp=0x%p pc=0x%lx ra=0x%lx\n",
+-	       current->comm, current->pid,
+-	       frame, regs->cp0_epc, regs->regs[31]);
+-
+ 	return 0;
+ }
+ 
+-- 
+2.1.0
+

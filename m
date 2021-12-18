@@ -2,148 +2,57 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 59B07C433FE
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 895C8C4332F
 	for <linux-mips@archiver.kernel.org>; Sat, 18 Dec 2021 03:23:20 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231806AbhLRDXS (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 17 Dec 2021 22:23:18 -0500
-Received: from mail.loongson.cn ([114.242.206.163]:50020 "EHLO loongson.cn"
+        id S231823AbhLRDXT (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 17 Dec 2021 22:23:19 -0500
+Received: from mail.loongson.cn ([114.242.206.163]:50022 "EHLO loongson.cn"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229580AbhLRDXS (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        id S231789AbhLRDXS (ORCPT <rfc822;linux-mips@vger.kernel.org>);
         Fri, 17 Dec 2021 22:23:18 -0500
 Received: from linux.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9BxnN0eVL1hYvUBAA--.8171S5;
-        Sat, 18 Dec 2021 11:23:12 +0800 (CST)
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9BxnN0eVL1hYvUBAA--.8171S2;
+        Sat, 18 Dec 2021 11:23:11 +0800 (CST)
 From:   Tiezhu Yang <yangtiezhu@loongson.cn>
 To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 Cc:     Xuefeng Li <lixuefeng@loongson.cn>, linux-mips@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 3/3] MIPS: signal: Remove unnecessary DEBUG_SIG related code
-Date:   Sat, 18 Dec 2021 11:23:09 +0800
-Message-Id: <1639797789-3001-4-git-send-email-yangtiezhu@loongson.cn>
+Subject: [PATCH 0/3] MIPS: signal: Modify some code
+Date:   Sat, 18 Dec 2021 11:23:06 +0800
+Message-Id: <1639797789-3001-1-git-send-email-yangtiezhu@loongson.cn>
 X-Mailer: git-send-email 2.1.0
-In-Reply-To: <1639797789-3001-1-git-send-email-yangtiezhu@loongson.cn>
-References: <1639797789-3001-1-git-send-email-yangtiezhu@loongson.cn>
-X-CM-TRANSID: AQAAf9BxnN0eVL1hYvUBAA--.8171S5
-X-Coremail-Antispam: 1UD129KBjvJXoWxAFy8Gw1rXFyrZr4DArW7CFg_yoW5tw4kpF
-        4jka4kGrZFqw1DuFyDX3sYgryfAr98Cw129F4qka4rZa4SqF1rJF9aq3Wqvr1YvrykWF1f
-        KFWYva12yws5AaUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUBS14x267AKxVW5JVWrJwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_JrWl82xGYIkIc2
-        x26xkF7I0E14v26r4j6ryUM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2z4x0
-        Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1l84
-        ACjcxK6I8E87Iv67AKxVWxJr0_GcWl84ACjcxK6I8E87Iv6xkF7I0E14v26F4UJVW0owAS
-        0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2
-        IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0
-        Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCY02Avz4vE14v_Gr4l42xK82
-        IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC2
-        0s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMI
-        IF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF
-        0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87
-        Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjfUUUDGDUUUU
+X-CM-TRANSID: AQAAf9BxnN0eVL1hYvUBAA--.8171S2
+X-Coremail-Antispam: 1UD129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
+        VFW2AGmfu7bjvjm3AaLaJ3UjIYCTnIWjp_UUUYY7AC8VAFwI0_Jr0_Gr1l1xkIjI8I6I8E
+        6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28Cjx
+        kF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW8JVW5JwA2z4x0Y4vE2Ix0cI8I
+        cVCY1x0267AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIE14v26F4UJVW0owA2z4x0Y4vEx4A2js
+        IEc7CjxVAFwI0_Cr1j6rxdM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE
+        6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72
+        CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7
+        MxkIecxEwVAFwVW8GwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s
+        026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_
+        JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20x
+        vEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280
+        aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVWUJVW8JbIYCTnIWIevJa73UjIFyT
+        uYvjfU84SoDUUUU
 X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Since DEBUG_SIG is not defined on MIPS, so DEBUGP() is an empty function.
-Additionally, it is unacceptable to printk message in the normal path of
-signal handling, the system can not work well if DEBUG_SIG is defined, so
-just remove the related code.
+Tiezhu Yang (3):
+  MIPS: signal: Protect against sigaltstack wraparound
+  MIPS: signal: Return immediately if call fails
+  MIPS: signal: Remove unnecessary DEBUG_SIG related code
 
-Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
----
- arch/mips/kernel/signal-common.h | 8 --------
- arch/mips/kernel/signal.c        | 7 -------
- arch/mips/kernel/signal_n32.c    | 4 ----
- arch/mips/kernel/signal_o32.c    | 8 --------
- 4 files changed, 27 deletions(-)
+ arch/mips/kernel/signal-common.h |  8 --------
+ arch/mips/kernel/signal.c        | 39 ++++++++++++++++++++++++++-------------
+ arch/mips/kernel/signal_n32.c    |  4 ----
+ arch/mips/kernel/signal_o32.c    |  8 --------
+ 4 files changed, 26 insertions(+), 33 deletions(-)
 
-diff --git a/arch/mips/kernel/signal-common.h b/arch/mips/kernel/signal-common.h
-index f50d484..f70135f 100644
---- a/arch/mips/kernel/signal-common.h
-+++ b/arch/mips/kernel/signal-common.h
-@@ -11,14 +11,6 @@
- #ifndef __SIGNAL_COMMON_H
- #define __SIGNAL_COMMON_H
- 
--/* #define DEBUG_SIG */
--
--#ifdef DEBUG_SIG
--#  define DEBUGP(fmt, args...) printk("%s: " fmt, __func__, ##args)
--#else
--#  define DEBUGP(fmt, args...)
--#endif
--
- /*
-  * Determine which stack to use..
-  */
-diff --git a/arch/mips/kernel/signal.c b/arch/mips/kernel/signal.c
-index 4cd3969..feb0cba 100644
---- a/arch/mips/kernel/signal.c
-+++ b/arch/mips/kernel/signal.c
-@@ -743,9 +743,6 @@ static int setup_frame(void *sig_return, struct ksignal *ksig,
- 	regs->regs[31] = (unsigned long) sig_return;
- 	regs->cp0_epc = regs->regs[25] = (unsigned long) ksig->ka.sa.sa_handler;
- 
--	DEBUGP("SIG deliver (%s:%d): sp=0x%p pc=0x%lx ra=0x%lx\n",
--	       current->comm, current->pid,
--	       frame, regs->cp0_epc, regs->regs[31]);
- 	return 0;
- }
- #endif
-@@ -803,10 +800,6 @@ static int setup_rt_frame(void *sig_return, struct ksignal *ksig,
- 	regs->regs[31] = (unsigned long) sig_return;
- 	regs->cp0_epc = regs->regs[25] = (unsigned long) ksig->ka.sa.sa_handler;
- 
--	DEBUGP("SIG deliver (%s:%d): sp=0x%p pc=0x%lx ra=0x%lx\n",
--	       current->comm, current->pid,
--	       frame, regs->cp0_epc, regs->regs[31]);
--
- 	return 0;
- }
- 
-diff --git a/arch/mips/kernel/signal_n32.c b/arch/mips/kernel/signal_n32.c
-index 7bd00fa..d0e3f74 100644
---- a/arch/mips/kernel/signal_n32.c
-+++ b/arch/mips/kernel/signal_n32.c
-@@ -130,10 +130,6 @@ static int setup_rt_frame_n32(void *sig_return, struct ksignal *ksig,
- 	regs->regs[31] = (unsigned long) sig_return;
- 	regs->cp0_epc = regs->regs[25] = (unsigned long) ksig->ka.sa.sa_handler;
- 
--	DEBUGP("SIG deliver (%s:%d): sp=0x%p pc=0x%lx ra=0x%lx\n",
--	       current->comm, current->pid,
--	       frame, regs->cp0_epc, regs->regs[31]);
--
- 	return 0;
- }
- 
-diff --git a/arch/mips/kernel/signal_o32.c b/arch/mips/kernel/signal_o32.c
-index 299a7a2..3691f74 100644
---- a/arch/mips/kernel/signal_o32.c
-+++ b/arch/mips/kernel/signal_o32.c
-@@ -144,10 +144,6 @@ static int setup_frame_32(void *sig_return, struct ksignal *ksig,
- 	regs->regs[31] = (unsigned long) sig_return;
- 	regs->cp0_epc = regs->regs[25] = (unsigned long) ksig->ka.sa.sa_handler;
- 
--	DEBUGP("SIG deliver (%s:%d): sp=0x%p pc=0x%lx ra=0x%lx\n",
--	       current->comm, current->pid,
--	       frame, regs->cp0_epc, regs->regs[31]);
--
- 	return 0;
- }
- 
-@@ -230,10 +226,6 @@ static int setup_rt_frame_32(void *sig_return, struct ksignal *ksig,
- 	regs->regs[31] = (unsigned long) sig_return;
- 	regs->cp0_epc = regs->regs[25] = (unsigned long) ksig->ka.sa.sa_handler;
- 
--	DEBUGP("SIG deliver (%s:%d): sp=0x%p pc=0x%lx ra=0x%lx\n",
--	       current->comm, current->pid,
--	       frame, regs->cp0_epc, regs->regs[31]);
--
- 	return 0;
- }
- 
 -- 
 2.1.0
 

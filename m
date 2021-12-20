@@ -2,83 +2,99 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E3879C433F5
-	for <linux-mips@archiver.kernel.org>; Mon, 20 Dec 2021 02:26:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4A584C433FE
+	for <linux-mips@archiver.kernel.org>; Mon, 20 Dec 2021 04:27:48 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233952AbhLTC0I (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Sun, 19 Dec 2021 21:26:08 -0500
-Received: from mail.loongson.cn ([114.242.206.163]:52856 "EHLO loongson.cn"
+        id S237414AbhLTE1q (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Sun, 19 Dec 2021 23:27:46 -0500
+Received: from mail.loongson.cn ([114.242.206.163]:51822 "EHLO loongson.cn"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230024AbhLTC0I (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Sun, 19 Dec 2021 21:26:08 -0500
-Received: from [10.130.0.135] (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9BxXN2u6b9hZVUCAA--.9443S3;
-        Mon, 20 Dec 2021 10:25:51 +0800 (CST)
-Subject: Re: [PATCH 2/3] MIPS: signal: Return immediately if call fails
-To:     Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-References: <1639797789-3001-1-git-send-email-yangtiezhu@loongson.cn>
- <1639797789-3001-3-git-send-email-yangtiezhu@loongson.cn>
- <a04357b6-c762-ebbe-e983-ee2890b97be9@flygoat.com>
+        id S237410AbhLTE1p (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Sun, 19 Dec 2021 23:27:45 -0500
+Received: from linux.localdomain (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9DxvNw9BsBhq10CAA--.8927S4;
+        Mon, 20 Dec 2021 12:27:43 +0800 (CST)
+From:   Tiezhu Yang <yangtiezhu@loongson.cn>
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 Cc:     Xuefeng Li <lixuefeng@loongson.cn>, linux-mips@vger.kernel.org,
         linux-kernel@vger.kernel.org
-From:   Tiezhu Yang <yangtiezhu@loongson.cn>
-Message-ID: <2fefb70a-8dd7-e237-a34b-fa3ab960c750@loongson.cn>
-Date:   Mon, 20 Dec 2021 10:25:50 +0800
-User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
- Thunderbird/45.4.0
-MIME-Version: 1.0
-In-Reply-To: <a04357b6-c762-ebbe-e983-ee2890b97be9@flygoat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: AQAAf9BxXN2u6b9hZVUCAA--.9443S3
-X-Coremail-Antispam: 1UD129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
-        VFW2AGmfu7bjvjm3AaLaJ3UjIYCTnIWjp_UUUYT7AC8VAFwI0_Jr0_Gr1l1xkIjI8I6I8E
-        6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28Cjx
-        kF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8I
-        cVCY1x0267AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_Cr1j6rxdM28EF7xvwVC2z2
-        80aVCY1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAK
-        zVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx
-        8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCY
-        jI0SjxkI62AI1cAE67vIY487MxkIecxEwVAFwVW8JwCF04k20xvY0x0EwIxGrwCFx2IqxV
-        CFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r10
-        6r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxV
-        WUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG
-        6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVWUJV
-        W8JbIYCTnIWIevJa73UjIFyTuYvjfU5vtCUUUUU
+Subject: [PATCH v2 2/3] MIPS: signal: Return immediately if call fails
+Date:   Mon, 20 Dec 2021 12:27:39 +0800
+Message-Id: <1639974460-3278-3-git-send-email-yangtiezhu@loongson.cn>
+X-Mailer: git-send-email 2.1.0
+In-Reply-To: <1639974460-3278-1-git-send-email-yangtiezhu@loongson.cn>
+References: <1639974460-3278-1-git-send-email-yangtiezhu@loongson.cn>
+X-CM-TRANSID: AQAAf9DxvNw9BsBhq10CAA--.8927S4
+X-Coremail-Antispam: 1UD129KBjvJXoW7Zr1DZry5Cw4UZrW7Cry3urg_yoW8Cr18pa
+        1xKa97KrWUGrnF9FyqyF1rZFyfZ3s3Ar4YkrW0g3WrJ3WrWr45KasayrWFqan5tryUJF18
+        KF1qqF4YqFsYkFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUBI14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_Jryl82xGYIkIc2
+        x26xkF7I0E14v26r1I6r4UM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2z4x0
+        Y4vE2Ix0cI8IcVAFwI0_JFI_Gr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1l84
+        ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s1le2I2
+        62IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcV
+        AFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG
+        0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc2xSY4AK67AK6r45MxAIw28Icx
+        kI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2Iq
+        xVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI42
+        IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY
+        6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aV
+        CY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7VUjOVy7UUUUU==
 X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On 12/18/2021 10:08 PM, Jiaxun Yang wrote:
->
->
-> 在 2021/12/18 3:23, Tiezhu Yang 写道:
->> When debug sigaltstack(), copy_siginfo_to_user() fails first in
->> setup_rt_frame() if the alternate signal stack is too small, so
->> it should return immediately if call fails, no need to call the
->> following functions.
->
-> Hi Tiezhu,
->
-> Thanks for your patch.
-> If we are doing so I see no reason for keeping the err variable.
-> Just
->
-> if (copy_siginfo_to_user(&frame->rs_info, &ksig->info))
->     return -EFAULT;
->
-> seems much more clear.
+When debug sigaltstack(), copy_siginfo_to_user() fails first in
+setup_rt_frame() if the alternate signal stack is too small, so
+it should return immediately if call fails, no need to call the
+following functions.
 
-OK, thank you, I will send v2 later.
+Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+---
+ arch/mips/kernel/signal.c | 20 +++++++++++---------
+ 1 file changed, 11 insertions(+), 9 deletions(-)
 
-Thanks,
-Tiezhu
-
->
-> Thanks.
->
-> - Jiaxun
->
+diff --git a/arch/mips/kernel/signal.c b/arch/mips/kernel/signal.c
+index c1632e8..5bce782 100644
+--- a/arch/mips/kernel/signal.c
++++ b/arch/mips/kernel/signal.c
+@@ -754,23 +754,25 @@ static int setup_rt_frame(void *sig_return, struct ksignal *ksig,
+ 			  struct pt_regs *regs, sigset_t *set)
+ {
+ 	struct rt_sigframe __user *frame;
+-	int err = 0;
+ 
+ 	frame = get_sigframe(ksig, regs, sizeof(*frame));
+ 	if (!access_ok(frame, sizeof (*frame)))
+ 		return -EFAULT;
+ 
+ 	/* Create siginfo.  */
+-	err |= copy_siginfo_to_user(&frame->rs_info, &ksig->info);
++	if (copy_siginfo_to_user(&frame->rs_info, &ksig->info))
++		return -EFAULT;
+ 
+ 	/* Create the ucontext.	 */
+-	err |= __put_user(0, &frame->rs_uc.uc_flags);
+-	err |= __put_user(NULL, &frame->rs_uc.uc_link);
+-	err |= __save_altstack(&frame->rs_uc.uc_stack, regs->regs[29]);
+-	err |= setup_sigcontext(regs, &frame->rs_uc.uc_mcontext);
+-	err |= __copy_to_user(&frame->rs_uc.uc_sigmask, set, sizeof(*set));
+-
+-	if (err)
++	if (__put_user(0, &frame->rs_uc.uc_flags))
++		return -EFAULT;
++	if (__put_user(NULL, &frame->rs_uc.uc_link))
++		return -EFAULT;
++	if (__save_altstack(&frame->rs_uc.uc_stack, regs->regs[29]))
++		return -EFAULT;
++	if (setup_sigcontext(regs, &frame->rs_uc.uc_mcontext))
++		return -EFAULT;
++	if (__copy_to_user(&frame->rs_uc.uc_sigmask, set, sizeof(*set)))
+ 		return -EFAULT;
+ 
+ 	/*
+-- 
+2.1.0
 

@@ -2,60 +2,71 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4F652C433EF
-	for <linux-mips@archiver.kernel.org>; Mon, 20 Dec 2021 04:28:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A3B92C433FE
+	for <linux-mips@archiver.kernel.org>; Mon, 20 Dec 2021 09:23:30 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237444AbhLTE2J (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Sun, 19 Dec 2021 23:28:09 -0500
-Received: from mail.loongson.cn ([114.242.206.163]:51920 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S237421AbhLTE2J (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Sun, 19 Dec 2021 23:28:09 -0500
-Received: from linux.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9DxvNw9BsBhq10CAA--.8927S2;
-        Mon, 20 Dec 2021 12:27:41 +0800 (CST)
-From:   Tiezhu Yang <yangtiezhu@loongson.cn>
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc:     Xuefeng Li <lixuefeng@loongson.cn>, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2 0/3] MIPS: signal: Modify some code
-Date:   Mon, 20 Dec 2021 12:27:37 +0800
-Message-Id: <1639974460-3278-1-git-send-email-yangtiezhu@loongson.cn>
-X-Mailer: git-send-email 2.1.0
-X-CM-TRANSID: AQAAf9DxvNw9BsBhq10CAA--.8927S2
-X-Coremail-Antispam: 1UD129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
-        VFW2AGmfu7bjvjm3AaLaJ3UjIYCTnIWjp_UUUYe7AC8VAFwI0_Jr0_Gr1l1xkIjI8I6I8E
-        6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28Cjx
-        kF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWUCVW8JwA2z4x0Y4vE2Ix0cI8I
-        cVCY1x0267AKxVWUJVW8JwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aV
-        CY1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAq
-        x4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6x
-        CaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCY
-        02Avz4vE14v_Gryl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
-        Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r12
-        6r1DMIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
-        kF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE
-        14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa
-        7VUjoa0DUUUUU==
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+        id S232568AbhLTJX3 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 20 Dec 2021 04:23:29 -0500
+Received: from out30-45.freemail.mail.aliyun.com ([115.124.30.45]:55691 "EHLO
+        out30-45.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231598AbhLTJXY (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>);
+        Mon, 20 Dec 2021 04:23:24 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R191e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=tianjia.zhang@linux.alibaba.com;NM=1;PH=DS;RN=17;SR=0;TI=SMTPD_---0V.B9zbM_1639992199;
+Received: from localhost(mailfrom:tianjia.zhang@linux.alibaba.com fp:SMTPD_---0V.B9zbM_1639992199)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Mon, 20 Dec 2021 17:23:20 +0800
+From:   Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+To:     Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        linux-crypto@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-s390@vger.kernel.org, sparclinux@vger.kernel.org
+Cc:     Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+Subject: [PATCH 0/5] Remove duplicate context init function for sha algorithm
+Date:   Mon, 20 Dec 2021 17:23:13 +0800
+Message-Id: <20211220092318.5793-1-tianjia.zhang@linux.alibaba.com>
+X-Mailer: git-send-email 2.32.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-v2: remove the "err" variable of patch #2 suggested by Jiaxun Yang,
-    thank you.
+This series of patches is mainly for repetitive code cleaning. The sha
+algorithm has provided generic context initialization implementation.
+The context initialization code in the optimized implementation of each
+platform is a repetitive code and can be deleted. The sha*_base_init()
+series of functions are used uniformly.
 
-Tiezhu Yang (3):
-  MIPS: signal: Protect against sigaltstack wraparound
-  MIPS: signal: Return immediately if call fails
-  MIPS: signal: Remove unnecessary DEBUG_SIG related code
+Tianjia Zhang (5):
+  crypto: sha256 - remove duplicate generic hash init function
+  crypto: mips/sha - remove duplicate hash init function
+  crypto: powerpc/sha - remove duplicate hash init function
+  crypto: sparc/sha - remove duplicate hash init function
+  crypto: s390/sha512 - Use macros instead of direct IV numbers
 
- arch/mips/kernel/signal-common.h |  8 --------
- arch/mips/kernel/signal.c        | 34 ++++++++++++++++++----------------
- arch/mips/kernel/signal_n32.c    |  4 ----
- arch/mips/kernel/signal_o32.c    |  8 --------
- 4 files changed, 18 insertions(+), 36 deletions(-)
+ arch/mips/cavium-octeon/crypto/octeon-sha1.c  | 17 +-------
+ .../mips/cavium-octeon/crypto/octeon-sha256.c | 39 ++-----------------
+ .../mips/cavium-octeon/crypto/octeon-sha512.c | 39 ++-----------------
+ arch/powerpc/crypto/sha1-spe-glue.c           | 17 +-------
+ arch/powerpc/crypto/sha1.c                    | 14 +------
+ arch/powerpc/crypto/sha256-spe-glue.c         | 39 ++-----------------
+ arch/s390/crypto/sha512_s390.c                | 32 +++++++--------
+ arch/sparc/crypto/sha1_glue.c                 | 14 +------
+ arch/sparc/crypto/sha256_glue.c               | 37 ++----------------
+ arch/sparc/crypto/sha512_glue.c               | 37 ++----------------
+ crypto/sha256_generic.c                       | 16 +-------
+ 11 files changed, 41 insertions(+), 260 deletions(-)
 
 -- 
-2.1.0
+2.32.0
 

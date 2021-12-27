@@ -2,239 +2,382 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CAC6AC4321E
-	for <linux-mips@archiver.kernel.org>; Mon, 27 Dec 2021 08:17:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5E625C4332F
+	for <linux-mips@archiver.kernel.org>; Mon, 27 Dec 2021 16:47:11 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235603AbhL0IRj (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 27 Dec 2021 03:17:39 -0500
-Received: from mga12.intel.com ([192.55.52.136]:31632 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235599AbhL0IRi (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Mon, 27 Dec 2021 03:17:38 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1640593058; x=1672129058;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=WH0GwBORKgKcWk1etFfvqiimI30RAnrK7W2Gs9Zs1Ik=;
-  b=GklNvfLGOLR4Bu4ooSQKIy747fGZs/+OlZNHiaZBADYWfvb24impz/hf
-   xrFGmb/FPF1CkMZIwz8qEnf1Rm6Z/cqYAMKYAv0tYkcGxNJPEOCCBcFIP
-   /W2ATFzYQL4pEv0ZHbwQ/fw/n6t19s4gcA//E57U8bbRRoat14Bn8qVvt
-   CDSMk3+GGPfZXeUDIEVfLSzMWnUbCq5fE9luujV4XBEg042iEVV98gqYQ
-   Bzu5RVGloG6IRRF/VRJdN6hsTa4xxkxAnAXByPIk3gLUa3LNO2nKScg94
-   mVc2ZOjZTb6kJcv3lWDSzhI2MYmzOAb3cB58fGSOpoM5QZT+QnKhvEmDT
-   Q==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10209"; a="221182085"
-X-IronPort-AV: E=Sophos;i="5.88,239,1635231600"; 
-   d="scan'208";a="221182085"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Dec 2021 00:17:38 -0800
-X-IronPort-AV: E=Sophos;i="5.88,239,1635231600"; 
-   d="scan'208";a="523208109"
-Received: from unknown (HELO hyperv-sh4.sh.intel.com) ([10.239.48.22])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Dec 2021 00:17:24 -0800
-From:   Chao Gao <chao.gao@intel.com>
-To:     kvm@vger.kernel.org, pbonzini@redhat.com, kevin.tian@intel.com,
-        tglx@linutronix.de
-Cc:     Chao Gao <chao.gao@intel.com>, Marc Zyngier <maz@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        id S231925AbhL0QrK (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 27 Dec 2021 11:47:10 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:65524 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S231855AbhL0QpH (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>);
+        Mon, 27 Dec 2021 11:45:07 -0500
+Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1BRDkivX013769;
+        Mon, 27 Dec 2021 16:43:34 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : in-reply-to : references : content-transfer-encoding
+ : mime-version; s=pp1; bh=a6CvO1zF2yDDW90HYpgGNz8wQOHAyGwgOTEPaoj9kIY=;
+ b=J9+6XZPfuPEdoC5Kd4MtHYN8YTYXYGLYgFOC2yJaQP/J8HN0gvx1piwhgFuJlAPtseGT
+ YW8dSJ3SVowg3NQbFeLysbuNlWe3VsUus4vCDYa4pbBYGrtl/0PVQT0XYtNg9SXb3UGX
+ uuMAZVrWNOs/tfgrn/UH2P6PmdjakqYr8r/OiPnPXHKjaocFJ45oUhKF+1xPa2UlBV8i
+ baKLhqliUa28FEjsHHTX1mur+lbi2NheNexTWF0gC2mFLtvXFn5SdukNGekdddFI5ow0
+ JNKdCWXV/fCOGJNTV+GKxp91v2w8EVrZ9j/UluYMbn9+dq0gO56PgectL27hGGKyr8/m +w== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3d7dqem140-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 27 Dec 2021 16:43:34 +0000
+Received: from m0098416.ppops.net (m0098416.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 1BRGcP7B013329;
+        Mon, 27 Dec 2021 16:43:33 GMT
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 3d7dqem135-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 27 Dec 2021 16:43:32 +0000
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+        by ppma04ams.nl.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 1BRGbvhJ008362;
+        Mon, 27 Dec 2021 16:43:30 GMT
+Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
+        by ppma04ams.nl.ibm.com with ESMTP id 3d5txakf86-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 27 Dec 2021 16:43:30 +0000
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
+        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1BRGhRSc43057618
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 27 Dec 2021 16:43:27 GMT
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 8C058A4062;
+        Mon, 27 Dec 2021 16:43:27 +0000 (GMT)
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 0FBADA405B;
+        Mon, 27 Dec 2021 16:43:26 +0000 (GMT)
+Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.152.85.9])
+        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Mon, 27 Dec 2021 16:43:25 +0000 (GMT)
+From:   Niklas Schnelle <schnelle@linux.ibm.com>
+To:     Arnd Bergmann <arnd@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        John Garry <john.garry@huawei.com>,
+        Nick Hu <nickhu@andestech.com>,
+        Greentime Hu <green.hu@gmail.com>,
+        Vincent Chen <deanbo422@gmail.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>, Guo Ren <guoren@kernel.org>,
+        Dinh Nguyen <dinguyen@kernel.org>,
+        Chris Zankel <chris@zankel.net>,
+        Karol Gugala <kgugala@antmicro.com>,
+        Jeff Dike <jdike@addtoit.com>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Brian Cain <bcain@codeaurora.org>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Richard Henderson <rth@twiddle.net>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>,
+        Vineet Gupta <vgupta@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
         Catalin Marinas <catalin.marinas@arm.com>,
         Will Deacon <will@kernel.org>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Michal Simek <monstr@monstr.eu>,
         Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        Helge Deller <deller@gmx.de>,
         Michael Ellerman <mpe@ellerman.id.au>,
         Benjamin Herrenschmidt <benh@kernel.crashing.org>,
         Paul Mackerras <paulus@samba.org>,
-        Anup Patel <anup.patel@wdc.com>,
-        Atish Patra <atish.patra@wdc.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Janosch Frank <frankja@linux.ibm.com>,
-        David Hildenbrand <david@redhat.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, Ingo Molnar <mingo@redhat.com>,
-        Borislav Petkov <bp@alien8.de>,
+        Rich Felker <dalias@libc.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
         Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        "Maciej S. Szmigiero" <maciej.szmigiero@oracle.com>,
-        Fabiano Rosas <farosas@linux.ibm.com>,
-        Ravi Bangoria <ravi.bangoria@linux.ibm.com>,
-        =?UTF-8?q?C=C3=A9dric=20Le=20Goater?= <clg@kaod.org>,
-        Bharata B Rao <bharata@linux.ibm.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, kvm-riscv@lists.infradead.org,
-        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org
-Subject: [PATCH 3/6] KVM: Remove opaque from kvm_arch_check_processor_compat
-Date:   Mon, 27 Dec 2021 16:15:09 +0800
-Message-Id: <20211227081515.2088920-4-chao.gao@intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20211227081515.2088920-1-chao.gao@intel.com>
-References: <20211227081515.2088920-1-chao.gao@intel.com>
-MIME-Version: 1.0
+        "H. Peter Anvin" <hpa@zytor.com>
+Cc:     linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-pci@vger.kernel.org, linux-riscv@lists.infradead.org,
+        linux-csky@vger.kernel.org, linux-xtensa@linux-xtensa.org,
+        openrisc@lists.librecores.org, linux-s390@vger.kernel.org,
+        linux-alpha@vger.kernel.org, linux-snps-arc@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-ia64@vger.kernel.org,
+        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
+        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org
+Subject: [RFC 02/32] Kconfig: introduce HAS_IOPORT option and select it as necessary
+Date:   Mon, 27 Dec 2021 17:42:47 +0100
+Message-Id: <20211227164317.4146918-3-schnelle@linux.ibm.com>
+X-Mailer: git-send-email 2.32.0
+In-Reply-To: <20211227164317.4146918-1-schnelle@linux.ibm.com>
+References: <20211227164317.4146918-1-schnelle@linux.ibm.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: isunVRZjJ6JiKqeiQVOJvEmV8qSRZgu6
+X-Proofpoint-ORIG-GUID: NOj8zVp-UdJWaGmLhuKmlC5md2AkCEZR
 Content-Transfer-Encoding: 8bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+MIME-Version: 1.0
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.11.62.513
+ definitions=2021-12-27_08,2021-12-24_01,2021-12-02_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ phishscore=0 spamscore=0 mlxscore=0 impostorscore=0 mlxlogscore=872
+ priorityscore=1501 bulkscore=0 clxscore=1011 malwarescore=0 suspectscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2110150000 definitions=main-2112270080
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-No arch implementation uses this opaque now.
+We introduce a new HAS_IOPORT Kconfig option to gate support for
+I/O port access. In a future patch HAS_IOPORT=n will disable compilation
+of the I/O accessor functions inb()/outb() and friends on architectures
+which can not meaningfully support legacy I/O spaces. On these platforms
+inb()/outb() etc are currently just stubs in asm-generic/io.h which when
+called will cause a NULL pointer access which some compilers actually
+detect and warn about.
 
-Signed-off-by: Chao Gao <chao.gao@intel.com>
+The dependencies on HAS_IOPORT in drivers as well as ifdefs for
+HAS_IOPORT specific sections will be added in subsequent patches on
+a per subsystem basis. Then a final patch will ifdef the I/O access
+functions on HAS_IOPORT thus turning any use not gated by HAS_IOPORT
+into a compile-time warning.
+
+Link: https://lore.kernel.org/lkml/CAHk-=wg80je=K7madF4e7WrRNp37e3qh6y10Svhdc7O8SZ_-8g@mail.gmail.com/
+Co-developed-by: Arnd Bergmann <arnd@kernel.org>
+Signed-off-by: Arnd Bergmann <arnd@kernel.org>
+Signed-off-by: Niklas Schnelle <schnelle@linux.ibm.com>
 ---
- arch/arm64/kvm/arm.c       |  2 +-
- arch/mips/kvm/mips.c       |  2 +-
- arch/powerpc/kvm/powerpc.c |  2 +-
- arch/riscv/kvm/main.c      |  2 +-
- arch/s390/kvm/kvm-s390.c   |  2 +-
- arch/x86/kvm/x86.c         |  2 +-
- include/linux/kvm_host.h   |  2 +-
- virt/kvm/kvm_main.c        | 14 ++------------
- 8 files changed, 9 insertions(+), 19 deletions(-)
+ arch/alpha/Kconfig      | 1 +
+ arch/arc/Kconfig        | 1 +
+ arch/arm/Kconfig        | 1 +
+ arch/arm64/Kconfig      | 1 +
+ arch/ia64/Kconfig       | 1 +
+ arch/m68k/Kconfig       | 1 +
+ arch/microblaze/Kconfig | 1 +
+ arch/mips/Kconfig       | 1 +
+ arch/parisc/Kconfig     | 1 +
+ arch/powerpc/Kconfig    | 1 +
+ arch/riscv/Kconfig      | 1 +
+ arch/sh/Kconfig         | 1 +
+ arch/sparc/Kconfig      | 1 +
+ arch/x86/Kconfig        | 1 +
+ drivers/bus/Kconfig     | 2 +-
+ lib/Kconfig             | 4 ++++
+ lib/Kconfig.kgdb        | 1 +
+ 17 files changed, 20 insertions(+), 1 deletion(-)
 
-diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
-index 14106a7c75b5..c196f005a2d3 100644
---- a/arch/arm64/kvm/arm.c
-+++ b/arch/arm64/kvm/arm.c
-@@ -73,7 +73,7 @@ int kvm_arch_hardware_setup(void *opaque)
- 	return 0;
- }
+diff --git a/arch/alpha/Kconfig b/arch/alpha/Kconfig
+index 4e87783c90ad..472a0c5e4c2f 100644
+--- a/arch/alpha/Kconfig
++++ b/arch/alpha/Kconfig
+@@ -28,6 +28,7 @@ config ALPHA
+ 	select AUDIT_ARCH
+ 	select GENERIC_CPU_VULNERABILITIES
+ 	select GENERIC_SMP_IDLE_THREAD
++	select HAS_IOPORT
+ 	select HAVE_ARCH_AUDITSYSCALL
+ 	select HAVE_MOD_ARCH_SPECIFIC
+ 	select MODULES_USE_ELF_RELA
+diff --git a/arch/arc/Kconfig b/arch/arc/Kconfig
+index b4ae6058902a..b3911ebbd237 100644
+--- a/arch/arc/Kconfig
++++ b/arch/arc/Kconfig
+@@ -27,6 +27,7 @@ config ARC
+ 	select GENERIC_PENDING_IRQ if SMP
+ 	select GENERIC_SCHED_CLOCK
+ 	select GENERIC_SMP_IDLE_THREAD
++	select HAS_IOPORT
+ 	select HAVE_ARCH_KGDB
+ 	select HAVE_ARCH_TRACEHOOK
+ 	select HAVE_ARCH_TRANSPARENT_HUGEPAGE if ARC_MMU_V4
+diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig
+index c2724d986fa0..605709b6eecb 100644
+--- a/arch/arm/Kconfig
++++ b/arch/arm/Kconfig
+@@ -66,6 +66,7 @@ config ARM
+ 	select GENERIC_SCHED_CLOCK
+ 	select GENERIC_SMP_IDLE_THREAD
+ 	select HARDIRQS_SW_RESEND
++	select HAS_IOPORT
+ 	select HAVE_ARCH_AUDITSYSCALL if AEABI && !OABI_COMPAT
+ 	select HAVE_ARCH_BITREVERSE if (CPU_32v7M || CPU_32v7) && !CPU_32v6
+ 	select HAVE_ARCH_JUMP_LABEL if !XIP_KERNEL && !CPU_ENDIAN_BE32 && MMU
+diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
+index c4207cf9bb17..a8b199a40c8f 100644
+--- a/arch/arm64/Kconfig
++++ b/arch/arm64/Kconfig
+@@ -135,6 +135,7 @@ config ARM64
+ 	select GENERIC_GETTIMEOFDAY
+ 	select GENERIC_VDSO_TIME_NS
+ 	select HARDIRQS_SW_RESEND
++	select HAS_IOPORT
+ 	select HAVE_MOVE_PMD
+ 	select HAVE_MOVE_PUD
+ 	select HAVE_PCI
+diff --git a/arch/ia64/Kconfig b/arch/ia64/Kconfig
+index 1e33666fa679..672aa2a88b19 100644
+--- a/arch/ia64/Kconfig
++++ b/arch/ia64/Kconfig
+@@ -24,6 +24,7 @@ config IA64
+ 	select PCI_DOMAINS if PCI
+ 	select PCI_MSI
+ 	select PCI_SYSCALL if PCI
++	select HAS_IOPORT
+ 	select HAVE_ASM_MODVERSIONS
+ 	select HAVE_UNSTABLE_SCHED_CLOCK
+ 	select HAVE_EXIT_THREAD
+diff --git a/arch/m68k/Kconfig b/arch/m68k/Kconfig
+index 0b50da08a9c5..926d97c33828 100644
+--- a/arch/m68k/Kconfig
++++ b/arch/m68k/Kconfig
+@@ -16,6 +16,7 @@ config M68K
+ 	select GENERIC_CPU_DEVICES
+ 	select GENERIC_IOMAP
+ 	select GENERIC_IRQ_SHOW
++	select HAS_IOPORT
+ 	select HAVE_AOUT if MMU
+ 	select HAVE_ASM_MODVERSIONS
+ 	select HAVE_DEBUG_BUGVERBOSE
+diff --git a/arch/microblaze/Kconfig b/arch/microblaze/Kconfig
+index 59798e43cdb0..213ef2940079 100644
+--- a/arch/microblaze/Kconfig
++++ b/arch/microblaze/Kconfig
+@@ -21,6 +21,7 @@ config MICROBLAZE
+ 	select GENERIC_IRQ_SHOW
+ 	select GENERIC_PCI_IOMAP
+ 	select GENERIC_SCHED_CLOCK
++	select HAS_IOPORT if PCI
+ 	select HAVE_ARCH_HASH
+ 	select HAVE_ARCH_KGDB
+ 	select HAVE_ARCH_SECCOMP
+diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
+index 0215dc1529e9..87e6e7c29493 100644
+--- a/arch/mips/Kconfig
++++ b/arch/mips/Kconfig
+@@ -47,6 +47,7 @@ config MIPS
+ 	select GENERIC_SMP_IDLE_THREAD
+ 	select GENERIC_TIME_VSYSCALL
+ 	select GUP_GET_PTE_LOW_HIGH if CPU_MIPS32 && PHYS_ADDR_T_64BIT
++	select HAS_IOPORT
+ 	select HAVE_ARCH_COMPILER_H
+ 	select HAVE_ARCH_JUMP_LABEL
+ 	select HAVE_ARCH_KGDB if MIPS_FP_SUPPORT
+diff --git a/arch/parisc/Kconfig b/arch/parisc/Kconfig
+index 011dc32fdb4d..b352c6dbbead 100644
+--- a/arch/parisc/Kconfig
++++ b/arch/parisc/Kconfig
+@@ -43,6 +43,7 @@ config PARISC
+ 	select MODULES_USE_ELF_RELA
+ 	select CLONE_BACKWARDS
+ 	select TTY # Needed for pdc_cons.c
++	select HAS_IOPORT if PCI || EISA
+ 	select HAVE_DEBUG_STACKOVERFLOW
+ 	select HAVE_ARCH_AUDITSYSCALL
+ 	select HAVE_ARCH_HASH
+diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
+index dea74d7717c0..d39ba34d839a 100644
+--- a/arch/powerpc/Kconfig
++++ b/arch/powerpc/Kconfig
+@@ -185,6 +185,7 @@ config PPC
+ 	select GENERIC_SMP_IDLE_THREAD
+ 	select GENERIC_TIME_VSYSCALL
+ 	select GENERIC_VDSO_TIME_NS
++	select HAS_IOPORT			if PCI
+ 	select HAVE_ARCH_AUDITSYSCALL
+ 	select HAVE_ARCH_HUGE_VMALLOC		if HAVE_ARCH_HUGE_VMAP
+ 	select HAVE_ARCH_HUGE_VMAP		if PPC_RADIX_MMU || PPC_8xx
+diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
+index 821252b65f89..b69cc86522fb 100644
+--- a/arch/riscv/Kconfig
++++ b/arch/riscv/Kconfig
+@@ -63,6 +63,7 @@ config RISCV
+ 	select GENERIC_SMP_IDLE_THREAD
+ 	select GENERIC_TIME_VSYSCALL if MMU && 64BIT
+ 	select GENERIC_VDSO_TIME_NS if HAVE_GENERIC_VDSO
++	select HAS_IOPORT if MMU
+ 	select HAVE_ARCH_AUDITSYSCALL
+ 	select HAVE_ARCH_JUMP_LABEL if !XIP_KERNEL
+ 	select HAVE_ARCH_JUMP_LABEL_RELATIVE if !XIP_KERNEL
+diff --git a/arch/sh/Kconfig b/arch/sh/Kconfig
+index 70afb30e0b32..334a52535379 100644
+--- a/arch/sh/Kconfig
++++ b/arch/sh/Kconfig
+@@ -24,6 +24,7 @@ config SUPERH
+ 	select GENERIC_SCHED_CLOCK
+ 	select GENERIC_SMP_IDLE_THREAD
+ 	select GUP_GET_PTE_LOW_HIGH if X2TLB
++	select HAS_IOPORT if HAS_IOPORT_MAP
+ 	select HAVE_ARCH_AUDITSYSCALL
+ 	select HAVE_ARCH_KGDB
+ 	select HAVE_ARCH_SECCOMP_FILTER
+diff --git a/arch/sparc/Kconfig b/arch/sparc/Kconfig
+index 66fc08646be5..728598673724 100644
+--- a/arch/sparc/Kconfig
++++ b/arch/sparc/Kconfig
+@@ -32,6 +32,7 @@ config SPARC
+ 	select GENERIC_IRQ_SHOW
+ 	select ARCH_WANT_IPC_PARSE_VERSION
+ 	select GENERIC_PCI_IOMAP
++	select HAS_IOPORT
+ 	select HAVE_NMI_WATCHDOG if SPARC64
+ 	select HAVE_CBPF_JIT if SPARC32
+ 	select HAVE_EBPF_JIT if SPARC64
+diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+index 5c2ccb85f2ef..8d3cfd693559 100644
+--- a/arch/x86/Kconfig
++++ b/arch/x86/Kconfig
+@@ -153,6 +153,7 @@ config X86
+ 	select GUP_GET_PTE_LOW_HIGH		if X86_PAE
+ 	select HARDIRQS_SW_RESEND
+ 	select HARDLOCKUP_CHECK_TIMESTAMP	if X86_64
++	select HAS_IOPORT
+ 	select HAVE_ACPI_APEI			if ACPI
+ 	select HAVE_ACPI_APEI_NMI		if ACPI
+ 	select HAVE_ALIGNED_STRUCT_PAGE		if SLUB
+diff --git a/drivers/bus/Kconfig b/drivers/bus/Kconfig
+index 3c68e174a113..a61285100224 100644
+--- a/drivers/bus/Kconfig
++++ b/drivers/bus/Kconfig
+@@ -81,7 +81,7 @@ config MOXTET
+ config HISILICON_LPC
+ 	bool "Support for ISA I/O space on HiSilicon Hip06/7"
+ 	depends on (ARM64 && ARCH_HISI) || (COMPILE_TEST && !ALPHA && !HEXAGON && !PARISC)
+-	depends on HAS_IOMEM
++	depends on HAS_IOPORT
+ 	select INDIRECT_PIO if ARM64
+ 	help
+ 	  Driver to enable I/O access to devices attached to the Low Pin
+diff --git a/lib/Kconfig b/lib/Kconfig
+index 5e7165e6a346..e55746625762 100644
+--- a/lib/Kconfig
++++ b/lib/Kconfig
+@@ -95,6 +95,7 @@ config ARCH_USE_SYM_ANNOTATIONS
+ config INDIRECT_PIO
+ 	bool "Access I/O in non-MMIO mode"
+ 	depends on ARM64
++	depends on HAS_IOPORT
+ 	help
+ 	  On some platforms where no separate I/O space exists, there are I/O
+ 	  hosts which can not be accessed in MMIO mode. Using the logical PIO
+@@ -486,6 +487,9 @@ config HAS_IOMEM
+ 	depends on !NO_IOMEM
+ 	default y
  
--int kvm_arch_check_processor_compat(void *opaque)
-+int kvm_arch_check_processor_compat(void)
- {
- 	return 0;
- }
-diff --git a/arch/mips/kvm/mips.c b/arch/mips/kvm/mips.c
-index e59cb6246f76..c5dc4fe53bfc 100644
---- a/arch/mips/kvm/mips.c
-+++ b/arch/mips/kvm/mips.c
-@@ -140,7 +140,7 @@ int kvm_arch_hardware_setup(void *opaque)
- 	return 0;
- }
++config HAS_IOPORT
++	def_bool ISA || LEGACY_PCI
++
+ config HAS_IOPORT_MAP
+ 	bool
+ 	depends on HAS_IOMEM && !NO_IOPORT_MAP
+diff --git a/lib/Kconfig.kgdb b/lib/Kconfig.kgdb
+index 05dae05b6cc9..c68e4d9dcecb 100644
+--- a/lib/Kconfig.kgdb
++++ b/lib/Kconfig.kgdb
+@@ -121,6 +121,7 @@ config KDB_DEFAULT_ENABLE
  
--int kvm_arch_check_processor_compat(void *opaque)
-+int kvm_arch_check_processor_compat(void)
- {
- 	return 0;
- }
-diff --git a/arch/powerpc/kvm/powerpc.c b/arch/powerpc/kvm/powerpc.c
-index 2ad0ccd202d5..30c817f3fa0c 100644
---- a/arch/powerpc/kvm/powerpc.c
-+++ b/arch/powerpc/kvm/powerpc.c
-@@ -423,7 +423,7 @@ int kvm_arch_hardware_setup(void *opaque)
- 	return 0;
- }
- 
--int kvm_arch_check_processor_compat(void *opaque)
-+int kvm_arch_check_processor_compat(void)
- {
- 	return kvmppc_core_check_processor_compat();
- }
-diff --git a/arch/riscv/kvm/main.c b/arch/riscv/kvm/main.c
-index 421ecf4e6360..3b0b104e443f 100644
---- a/arch/riscv/kvm/main.c
-+++ b/arch/riscv/kvm/main.c
-@@ -20,7 +20,7 @@ long kvm_arch_dev_ioctl(struct file *filp,
- 	return -EINVAL;
- }
- 
--int kvm_arch_check_processor_compat(void *opaque)
-+int kvm_arch_check_processor_compat(void)
- {
- 	return 0;
- }
-diff --git a/arch/s390/kvm/kvm-s390.c b/arch/s390/kvm/kvm-s390.c
-index 9c6d45d0d345..99c70d881cb6 100644
---- a/arch/s390/kvm/kvm-s390.c
-+++ b/arch/s390/kvm/kvm-s390.c
-@@ -252,7 +252,7 @@ int kvm_arch_hardware_enable(void)
- 	return 0;
- }
- 
--int kvm_arch_check_processor_compat(void *opaque)
-+int kvm_arch_check_processor_compat(void)
- {
- 	return 0;
- }
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index 770b68e72391..aa09c8792134 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -11380,7 +11380,7 @@ void kvm_arch_hardware_unsetup(void)
- 	static_call(kvm_x86_hardware_unsetup)();
- }
- 
--int kvm_arch_check_processor_compat(void *opaque)
-+int kvm_arch_check_processor_compat(void)
- {
- 	struct cpuinfo_x86 *c = &cpu_data(smp_processor_id());
- 
-diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
-index 05862176df6a..630ffd2289c6 100644
---- a/include/linux/kvm_host.h
-+++ b/include/linux/kvm_host.h
-@@ -1307,7 +1307,7 @@ int kvm_arch_hardware_enable(void);
- void kvm_arch_hardware_disable(void);
- int kvm_arch_hardware_setup(void *opaque);
- void kvm_arch_hardware_unsetup(void);
--int kvm_arch_check_processor_compat(void *opaque);
-+int kvm_arch_check_processor_compat(void);
- int kvm_arch_vcpu_runnable(struct kvm_vcpu *vcpu);
- bool kvm_arch_vcpu_in_kernel(struct kvm_vcpu *vcpu);
- int kvm_arch_vcpu_should_kick(struct kvm_vcpu *vcpu);
-diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
-index 168d0ab93c88..4e1e7770e984 100644
---- a/virt/kvm/kvm_main.c
-+++ b/virt/kvm/kvm_main.c
-@@ -5600,22 +5600,14 @@ struct kvm_vcpu * __percpu *kvm_get_running_vcpus(void)
-         return &kvm_running_vcpu;
- }
- 
--struct kvm_cpu_compat_check {
--	void *opaque;
--	int *ret;
--};
--
- static void check_processor_compat(void *data)
- {
--	struct kvm_cpu_compat_check *c = data;
--
--	*c->ret = kvm_arch_check_processor_compat(c->opaque);
-+	*(int *)data = kvm_arch_check_processor_compat();
- }
- 
- int kvm_init(void *opaque, unsigned vcpu_size, unsigned vcpu_align,
- 		  struct module *module)
- {
--	struct kvm_cpu_compat_check c;
- 	int r;
- 	int cpu;
- 
-@@ -5643,10 +5635,8 @@ int kvm_init(void *opaque, unsigned vcpu_size, unsigned vcpu_align,
- 	if (r < 0)
- 		goto out_free_1;
- 
--	c.ret = &r;
--	c.opaque = opaque;
- 	for_each_online_cpu(cpu) {
--		smp_call_function_single(cpu, check_processor_compat, &c, 1);
-+		smp_call_function_single(cpu, check_processor_compat, &r, 1);
- 		if (r < 0)
- 			goto out_free_2;
- 	}
+ config KDB_KEYBOARD
+ 	bool "KGDB_KDB: keyboard as input device"
++	depends on HAS_IOPORT
+ 	depends on VT && KGDB_KDB
+ 	default n
+ 	help
 -- 
-2.25.1
+2.32.0
 

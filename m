@@ -2,65 +2,46 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1985AC433FE
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5026EC4332F
 	for <linux-mips@archiver.kernel.org>; Sun,  2 Jan 2022 13:32:58 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231965AbiABNcz (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Sun, 2 Jan 2022 08:32:55 -0500
-Received: from elvis.franken.de ([193.175.24.41]:52731 "EHLO elvis.franken.de"
+        id S232119AbiABNc4 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Sun, 2 Jan 2022 08:32:56 -0500
+Received: from elvis.franken.de ([193.175.24.41]:52740 "EHLO elvis.franken.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229753AbiABNcy (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        id S231324AbiABNcy (ORCPT <rfc822;linux-mips@vger.kernel.org>);
         Sun, 2 Jan 2022 08:32:54 -0500
 Received: from uucp (helo=alpha)
         by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1n40yi-0002m7-00; Sun, 02 Jan 2022 14:32:52 +0100
+        id 1n40yi-0002m7-07; Sun, 02 Jan 2022 14:32:52 +0100
 Received: by alpha.franken.de (Postfix, from userid 1000)
-        id C78FEC0A1D; Sun,  2 Jan 2022 14:26:02 +0100 (CET)
-Date:   Sun, 2 Jan 2022 14:26:02 +0100
+        id A8F3AC0A4B; Sun,  2 Jan 2022 14:32:31 +0100 (CET)
+Date:   Sun, 2 Jan 2022 14:32:31 +0100
 From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     YunQiang Su <yunqiang.su@cipunited.com>
-Cc:     linux-mips@vger.kernel.org, paul@crapouillou.net,
-        zhouyanjie@wanyeetech.com, jiaxun.yang@flygoat.com, syq@debian.org,
-        aaro.koskinen@iki.fi
-Subject: Re: [PATCH 1/2] MIPS: enable both vmlinux.gz.itb and vmlinuz for
- generic
-Message-ID: <20220102132602.GA3468@alpha.franken.de>
-References: <20211222134346.1366067-1-yunqiang.su@cipunited.com>
+To:     Tiezhu Yang <yangtiezhu@loongson.cn>
+Cc:     Xuefeng Li <lixuefeng@loongson.cn>, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 3/3] MIPS: signal: Remove unnecessary DEBUG_SIG
+ related code
+Message-ID: <20220102133231.GH3468@alpha.franken.de>
+References: <1639974460-3278-1-git-send-email-yangtiezhu@loongson.cn>
+ <1639974460-3278-4-git-send-email-yangtiezhu@loongson.cn>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20211222134346.1366067-1-yunqiang.su@cipunited.com>
+In-Reply-To: <1639974460-3278-4-git-send-email-yangtiezhu@loongson.cn>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Wed, Dec 22, 2021 at 01:43:45PM +0000, YunQiang Su wrote:
-> vmlinux.gz.itb should be appended to all-$(CONFIG_MIPS_GENERIC)
-> instead of replacing. Otherwise, no vmlinuz will be built.
-> 
-> Signed-off-by: YunQiang Su <yunqiang.su@cipunited.com>
-> ---
->  arch/mips/generic/Platform | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/arch/mips/generic/Platform b/arch/mips/generic/Platform
-> index e1abc113b409..d7c8cff6de2c 100644
-> --- a/arch/mips/generic/Platform
-> +++ b/arch/mips/generic/Platform
-> @@ -14,7 +14,7 @@ cflags-$(CONFIG_MIPS_GENERIC)	+= -I$(srctree)/arch/mips/include/asm/mach-generic
->  
->  load-$(CONFIG_MIPS_GENERIC)	+= 0xffffffff80100000
->  zload-$(CONFIG_MIPS_GENERIC)	+= 0xffffffff81000000
-> -all-$(CONFIG_MIPS_GENERIC)	:= vmlinux.gz.itb
-> +all-$(CONFIG_MIPS_GENERIC)	+= vmlinux.gz.itb
->  
->  its-y					:= vmlinux.its.S
->  its-$(CONFIG_FIT_IMAGE_FDT_BOSTON)	+= board-boston.its.S
-> -- 
-> 2.30.2
+On Mon, Dec 20, 2021 at 12:27:40PM +0800, Tiezhu Yang wrote:
+> DEBUG_SIG is not defined on MIPS, so DEBUGP() is an empty function.
+> Additionally, it is unacceptable to printk messages in the normal
+> path of signal handling, the system can not work well if DEBUG_SIG
+> is defined, so just remove the related code.
 
-applied to mips-next.
+I like to keep this debug aid for now.
 
 Thomas.
 

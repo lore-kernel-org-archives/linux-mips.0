@@ -2,68 +2,83 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2B9A9C433FE
-	for <linux-mips@archiver.kernel.org>; Sun,  2 Jan 2022 13:33:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 14B51C433F5
+	for <linux-mips@archiver.kernel.org>; Mon,  3 Jan 2022 11:32:14 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233139AbiABNdB (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Sun, 2 Jan 2022 08:33:01 -0500
-Received: from elvis.franken.de ([193.175.24.41]:52758 "EHLO elvis.franken.de"
+        id S233024AbiACLcN convert rfc822-to-8bit (ORCPT
+        <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 3 Jan 2022 06:32:13 -0500
+Received: from aposti.net ([89.234.176.197]:56640 "EHLO aposti.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232370AbiABNc6 (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Sun, 2 Jan 2022 08:32:58 -0500
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1n40yi-0002m7-03; Sun, 02 Jan 2022 14:32:52 +0100
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 785B8C0A4B; Sun,  2 Jan 2022 14:27:57 +0100 (CET)
-Date:   Sun, 2 Jan 2022 14:27:57 +0100
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Matt Mackall <mpm@selenic.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
+        id S231569AbiACLcM (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Mon, 3 Jan 2022 06:32:12 -0500
+Date:   Mon, 03 Jan 2022 11:32:02 +0000
+From:   Paul Cercueil <paul@crapouillou.net>
+Subject: Re: [PATCH] mtd: rawnand: ingenic: Fix missing put_device in
+ ingenic_ecc_get
+To:     Miaoqian Lin <linmq006@gmail.com>
+Cc:     Harvey Hunt <harveyhuntnexus@gmail.com>,
         Miquel Raynal <miquel.raynal@bootlin.com>,
         Richard Weinberger <richard@nod.at>,
         Vignesh Raghavendra <vigneshr@ti.com>,
-        linux-crypto@vger.kernel.org, linux-mtd@lists.infradead.org
-Cc:     geert@linux-m68k.org
-Subject: Re: [PATCH 3/3] MIPS: TXX9: Remove TX4939 SoC support
-Message-ID: <20220102132757.GD3468@alpha.franken.de>
-References: <20211130164558.85584-1-tsbogend@alpha.franken.de>
- <20211130164558.85584-3-tsbogend@alpha.franken.de>
+        linux-mips@vger.kernel.org, linux-mtd@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Message-Id: <EDT45R.P10AQNFPT9FP1@crapouillou.net>
+In-Reply-To: <20211230072751.21622-1-linmq006@gmail.com>
+References: <20211230072751.21622-1-linmq006@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20211130164558.85584-3-tsbogend@alpha.franken.de>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=iso-8859-1; format=flowed
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Tue, Nov 30, 2021 at 05:45:56PM +0100, Thomas Bogendoerfer wrote:
-> After removal of RBTX4939 board support remove code for the TX4939 SoC.
+Hi,
+
+Le jeu., déc. 30 2021 at 07:27:51 +0000, Miaoqian Lin 
+<linmq006@gmail.com> a écrit :
+> If of_find_device_by_node() succeeds, ingenic_ecc_get() doesn't have
+> a corresponding put_device(). Thus add put_device() to fix the 
+> exception
+> handling.
 > 
-> Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+> Fixes: 15de8c6 ("mtd: rawnand: ingenic: Separate top-level and SoC 
+> specific code")
+> Signed-off-by: Miaoqian Lin <linmq006@gmail.com>
+
+Reviewed-by: Paul Cercueil <paul@crapouillou.net>
+
+Cheers,
+-Paul
+
 > ---
->  arch/mips/pci/Makefile                |   1 -
->  arch/mips/pci/pci-tx4939.c            | 107 -----
->  arch/mips/txx9/Kconfig                |   8 -
->  arch/mips/txx9/generic/Makefile       |   1 -
->  arch/mips/txx9/generic/irq_tx4939.c   | 216 ----------
->  arch/mips/txx9/generic/setup_tx4939.c | 568 --------------------------
->  drivers/char/hw_random/Kconfig        |  13 -
->  drivers/char/hw_random/Makefile       |   1 -
->  drivers/char/hw_random/tx4939-rng.c   | 157 -------
->  drivers/mtd/nand/raw/Kconfig          |   2 +-
->  10 files changed, 1 insertion(+), 1073 deletions(-)
->  delete mode 100644 arch/mips/pci/pci-tx4939.c
->  delete mode 100644 arch/mips/txx9/generic/irq_tx4939.c
->  delete mode 100644 arch/mips/txx9/generic/setup_tx4939.c
->  delete mode 100644 drivers/char/hw_random/tx4939-rng.c
+>  drivers/mtd/nand/raw/ingenic/ingenic_ecc.c | 7 ++++++-
+>  1 file changed, 6 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/mtd/nand/raw/ingenic/ingenic_ecc.c 
+> b/drivers/mtd/nand/raw/ingenic/ingenic_ecc.c
+> index efe0ffe4f1ab..9054559e52dd 100644
+> --- a/drivers/mtd/nand/raw/ingenic/ingenic_ecc.c
+> +++ b/drivers/mtd/nand/raw/ingenic/ingenic_ecc.c
+> @@ -68,9 +68,14 @@ static struct ingenic_ecc *ingenic_ecc_get(struct 
+> device_node *np)
+>  	struct ingenic_ecc *ecc;
+> 
+>  	pdev = of_find_device_by_node(np);
+> -	if (!pdev || !platform_get_drvdata(pdev))
+> +	if (!pdev)
+>  		return ERR_PTR(-EPROBE_DEFER);
+> 
+> +	if (!platform_get_drvdata(pdev)) {
+> +		put_device(&pdev->dev);
+> +		return ERR_PTR(-EPROBE_DEFER);
+> +	}
+> +
+>  	ecc = platform_get_drvdata(pdev);
+>  	clk_prepare_enable(ecc->clk);
+> 
+> --
+> 2.17.1
+> 
 
-applied to mips-next.
 
-Thomas.
-
--- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]

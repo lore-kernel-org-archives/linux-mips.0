@@ -2,77 +2,73 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6964DC433EF
-	for <linux-mips@archiver.kernel.org>; Tue,  4 Jan 2022 13:43:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B6833C433FE
+	for <linux-mips@archiver.kernel.org>; Tue,  4 Jan 2022 15:11:58 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233657AbiADNnK (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 4 Jan 2022 08:43:10 -0500
-Received: from mga04.intel.com ([192.55.52.120]:3770 "EHLO mga04.intel.com"
+        id S234749AbiADPL6 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 4 Jan 2022 10:11:58 -0500
+Received: from mx4.wp.pl ([212.77.101.11]:43664 "EHLO mx4.wp.pl"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229821AbiADNnK (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Tue, 4 Jan 2022 08:43:10 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1641303790; x=1672839790;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=C1LSGlnSyj/Ydi2jbe8mn+CezILCARLbZkzxLCt5ecA=;
-  b=GK+VOYLU63ryr7/joK/8KKPY8G77WCL+JjLvilujYl5cUnF0rWoQU+lh
-   /tAF6IpmRhKedHcmdh6vQ4qNhZLBfQZtRcDxgDTKROKOv23EwP7aXMJyr
-   9hJAHzQ17vaY3A1mV4+bRI946XEFcbBb7u8Ux6YX2Q5hacofCYLGIoumi
-   v8IjLhqIgrNw44+rMDQ79cikXevJ/dlJVJFb6KRzFJgb4jfC4MMz3RYqa
-   E0t9WTrm8tOMyAlIdDMiVzypjgqmMfLy0J+91AxFi8uuAjPl3X8Ct3s+z
-   BFJyqYIuRexi6kOHmIQvyWcgODMxsUBOrqSURmJrxIczYP+3dPR7tX/5K
-   Q==;
-X-IronPort-AV: E=McAfee;i="6200,9189,10216"; a="241042457"
-X-IronPort-AV: E=Sophos;i="5.88,261,1635231600"; 
-   d="scan'208";a="241042457"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jan 2022 05:43:10 -0800
-X-IronPort-AV: E=Sophos;i="5.88,261,1635231600"; 
-   d="scan'208";a="574024431"
-Received: from smile.fi.intel.com ([10.237.72.61])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Jan 2022 05:43:08 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.95)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1n4k4V-006DdZ-5N;
-        Tue, 04 Jan 2022 15:41:51 +0200
-Date:   Tue, 4 Jan 2022 15:41:50 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
-        linux-mips@vger.kernel.org, Vikas Gupta <vikas.gupta@broadcom.com>,
-        Jens Wiklander <jens.wiklander@linaro.org>,
-        tee-dev@lists.linaro.org
-Subject: Re: [RESEND PATCH v1] firmware: tee_bnxt: Use UUID API for exporting
- the UUID
-Message-ID: <YdROnjYXefJfo8jp@smile.fi.intel.com>
-References: <20210121183741.45333-1-andriy.shevchenko@linux.intel.com>
- <Ybeu5wWyw8E4vIVb@smile.fi.intel.com>
- <YbevI+Jg/aoKH8uW@smile.fi.intel.com>
- <20220104092406.GA18693@lst.de>
+        id S234727AbiADPL5 (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Tue, 4 Jan 2022 10:11:57 -0500
+Received: (wp-smtpd smtp.wp.pl 5522 invoked from network); 4 Jan 2022 16:11:54 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wp.pl; s=1024a;
+          t=1641309114; bh=nnYFD7nbyje+ojMOhPIiq9CuQd7NImL8QTldm/3xnIc=;
+          h=From:To:Subject;
+          b=yoI7K9skXQtHph3o9YCtQG0ZimE0yB6gGKgu0tw+2Cqja4aqa9E+CkYvbapfSkLXP
+           AsO4MpMcdOPNP4S25Zqx2jjbHn31+RZMt67icoS70Sr5VdmMnmtRH7ssOozFEfzf0e
+           qSlchQgAVXnpVBcV/F2n8tffan99aMU4/Ch4P5tQ=
+Received: from riviera.nat.ds.pw.edu.pl (HELO LAPTOP-OLEK.lan) (olek2@wp.pl@[194.29.137.1])
+          (envelope-sender <olek2@wp.pl>)
+          by smtp.wp.pl (WP-SMTPD) with ECDHE-RSA-AES256-GCM-SHA384 encrypted SMTP
+          for <tsbogend@alpha.franken.de>; 4 Jan 2022 16:11:54 +0100
+From:   Aleksander Jan Bajkowski <olek2@wp.pl>
+To:     tsbogend@alpha.franken.de, olek2@wp.pl, hauke@hauke-m.de,
+        davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH net-next 2/3] net: lantiq_xrx200: increase napi poll weigth
+Date:   Tue,  4 Jan 2022 16:11:43 +0100
+Message-Id: <20220104151144.181736-3-olek2@wp.pl>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20220104151144.181736-1-olek2@wp.pl>
+References: <20220104151144.181736-1-olek2@wp.pl>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220104092406.GA18693@lst.de>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Transfer-Encoding: 8bit
+X-WP-MailID: c5490d1b28fed5f98233b222534fc22f
+X-WP-AV: skaner antywirusowy Poczty Wirtualnej Polski
+X-WP-SPAM: NO 0000000 [sRP0]                               
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Tue, Jan 04, 2022 at 10:24:06AM +0100, Christoph Hellwig wrote:
-> On Mon, Dec 13, 2021 at 10:37:55PM +0200, Andy Shevchenko wrote:
-> > + Cc: Christoph. Maybe you can apply this one, please?
-> 
-> I've not even seen the original patch.
+NAT Performance results on BT Home Hub 5A (kernel 5.10.89, mtu 1500):
 
-It's easy to retrieve with b4 tool:
-`b4 am -s 20210121183741.45333-1-andriy.shevchenko@linux.intel.com`
+	Down		Up
+Before	545 Mbps	625 Mbps
+After	577 Mbps	648 Mbps
 
-But for your convenience I may resend once more with you being Cc'ed.
+Signed-off-by: Aleksander Jan Bajkowski <olek2@wp.pl>
+---
+ drivers/net/ethernet/lantiq_xrx200.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
+diff --git a/drivers/net/ethernet/lantiq_xrx200.c b/drivers/net/ethernet/lantiq_xrx200.c
+index 503fb99c5b90..7cebf4a601bc 100644
+--- a/drivers/net/ethernet/lantiq_xrx200.c
++++ b/drivers/net/ethernet/lantiq_xrx200.c
+@@ -597,8 +597,10 @@ static int xrx200_probe(struct platform_device *pdev)
+ 			 PMAC_HD_CTL);
+ 
+ 	/* setup NAPI */
+-	netif_napi_add(net_dev, &priv->chan_rx.napi, xrx200_poll_rx, 32);
+-	netif_tx_napi_add(net_dev, &priv->chan_tx.napi, xrx200_tx_housekeeping, 32);
++	netif_napi_add(net_dev, &priv->chan_rx.napi, xrx200_poll_rx,
++		       NAPI_POLL_WEIGHT);
++	netif_tx_napi_add(net_dev, &priv->chan_tx.napi, xrx200_tx_housekeeping,
++			  NAPI_POLL_WEIGHT);
+ 
+ 	platform_set_drvdata(pdev, priv);
+ 
 -- 
-With Best Regards,
-Andy Shevchenko
-
+2.30.2
 

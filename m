@@ -2,73 +2,60 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B6833C433FE
-	for <linux-mips@archiver.kernel.org>; Tue,  4 Jan 2022 15:11:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A1B95C433F5
+	for <linux-mips@archiver.kernel.org>; Tue,  4 Jan 2022 15:18:28 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234749AbiADPL6 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 4 Jan 2022 10:11:58 -0500
-Received: from mx4.wp.pl ([212.77.101.11]:43664 "EHLO mx4.wp.pl"
+        id S231734AbiADPS2 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 4 Jan 2022 10:18:28 -0500
+Received: from mx3.wp.pl ([212.77.101.10]:35766 "EHLO mx3.wp.pl"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234727AbiADPL5 (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Tue, 4 Jan 2022 10:11:57 -0500
-Received: (wp-smtpd smtp.wp.pl 5522 invoked from network); 4 Jan 2022 16:11:54 +0100
+        id S229658AbiADPS2 (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Tue, 4 Jan 2022 10:18:28 -0500
+Received: (wp-smtpd smtp.wp.pl 17746 invoked from network); 4 Jan 2022 16:11:46 +0100
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wp.pl; s=1024a;
-          t=1641309114; bh=nnYFD7nbyje+ojMOhPIiq9CuQd7NImL8QTldm/3xnIc=;
+          t=1641309107; bh=6559S1Oozzg/Tq1L9l+CRBqLHF2kUBPocLFtQDFiJok=;
           h=From:To:Subject;
-          b=yoI7K9skXQtHph3o9YCtQG0ZimE0yB6gGKgu0tw+2Cqja4aqa9E+CkYvbapfSkLXP
-           AsO4MpMcdOPNP4S25Zqx2jjbHn31+RZMt67icoS70Sr5VdmMnmtRH7ssOozFEfzf0e
-           qSlchQgAVXnpVBcV/F2n8tffan99aMU4/Ch4P5tQ=
+          b=komFoGi9vghEvKdz2h2kvZEzltKbdkzHIr8VuO8sT10p+5x2+KegoO2Jxy7zWYgqU
+           hy0GpdeKgCNUjZsSw6g4iwtgDtvwDgG4+1PSaF+8lB/FcBa7tniQu5YArdyieznaNM
+           tvYDFn4WAi6aTVcfInCCx5Y0804NZU5+TLTR+Lmc=
 Received: from riviera.nat.ds.pw.edu.pl (HELO LAPTOP-OLEK.lan) (olek2@wp.pl@[194.29.137.1])
           (envelope-sender <olek2@wp.pl>)
           by smtp.wp.pl (WP-SMTPD) with ECDHE-RSA-AES256-GCM-SHA384 encrypted SMTP
-          for <tsbogend@alpha.franken.de>; 4 Jan 2022 16:11:54 +0100
+          for <tsbogend@alpha.franken.de>; 4 Jan 2022 16:11:46 +0100
 From:   Aleksander Jan Bajkowski <olek2@wp.pl>
 To:     tsbogend@alpha.franken.de, olek2@wp.pl, hauke@hauke-m.de,
         davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
         linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH net-next 2/3] net: lantiq_xrx200: increase napi poll weigth
-Date:   Tue,  4 Jan 2022 16:11:43 +0100
-Message-Id: <20220104151144.181736-3-olek2@wp.pl>
+Subject: [PATCH net-next 0/3] net: lantiq_xrx200: improve ethernet performance
+Date:   Tue,  4 Jan 2022 16:11:41 +0100
+Message-Id: <20220104151144.181736-1-olek2@wp.pl>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20220104151144.181736-1-olek2@wp.pl>
-References: <20220104151144.181736-1-olek2@wp.pl>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-WP-MailID: c5490d1b28fed5f98233b222534fc22f
+X-WP-MailID: 1f5ef74a7ab2fe835c7dbb3e013c64db
 X-WP-AV: skaner antywirusowy Poczty Wirtualnej Polski
-X-WP-SPAM: NO 0000000 [sRP0]                               
+X-WP-SPAM: NO 0000000 [kfNU]                               
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
+This patchset improves Ethernet performance by 15%.
+
 NAT Performance results on BT Home Hub 5A (kernel 5.10.89, mtu 1500):
 
 	Down		Up
-Before	545 Mbps	625 Mbps
-After	577 Mbps	648 Mbps
+Before	539 Mbps	599 Mbps
+After	624 Mbps	695 Mbps
 
-Signed-off-by: Aleksander Jan Bajkowski <olek2@wp.pl>
----
- drivers/net/ethernet/lantiq_xrx200.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+Aleksander Jan Bajkowski (3):
+  MIPS: lantiq: dma: increase descritor count
+  net: lantiq_xrx200: increase napi poll weigth
+  net: lantiq_xrx200: convert to build_skb
 
-diff --git a/drivers/net/ethernet/lantiq_xrx200.c b/drivers/net/ethernet/lantiq_xrx200.c
-index 503fb99c5b90..7cebf4a601bc 100644
---- a/drivers/net/ethernet/lantiq_xrx200.c
-+++ b/drivers/net/ethernet/lantiq_xrx200.c
-@@ -597,8 +597,10 @@ static int xrx200_probe(struct platform_device *pdev)
- 			 PMAC_HD_CTL);
- 
- 	/* setup NAPI */
--	netif_napi_add(net_dev, &priv->chan_rx.napi, xrx200_poll_rx, 32);
--	netif_tx_napi_add(net_dev, &priv->chan_tx.napi, xrx200_tx_housekeeping, 32);
-+	netif_napi_add(net_dev, &priv->chan_rx.napi, xrx200_poll_rx,
-+		       NAPI_POLL_WEIGHT);
-+	netif_tx_napi_add(net_dev, &priv->chan_tx.napi, xrx200_tx_housekeeping,
-+			  NAPI_POLL_WEIGHT);
- 
- 	platform_set_drvdata(pdev, priv);
- 
+ .../include/asm/mach-lantiq/xway/xway_dma.h   |  2 +-
+ drivers/net/ethernet/lantiq_xrx200.c          | 62 ++++++++++++-------
+ 2 files changed, 41 insertions(+), 23 deletions(-)
+
 -- 
 2.30.2
 

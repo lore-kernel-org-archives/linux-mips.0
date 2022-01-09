@@ -2,191 +2,66 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E94DAC433EF
-	for <linux-mips@archiver.kernel.org>; Sat,  8 Jan 2022 23:35:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A85E7C433FE
+	for <linux-mips@archiver.kernel.org>; Sun,  9 Jan 2022 21:45:34 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234956AbiAHXff (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Sat, 8 Jan 2022 18:35:35 -0500
-Received: from rere.qmqm.pl ([91.227.64.183]:6635 "EHLO rere.qmqm.pl"
+        id S237142AbiAIVpe (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Sun, 9 Jan 2022 16:45:34 -0500
+Received: from elvis.franken.de ([193.175.24.41]:38467 "EHLO elvis.franken.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230502AbiAHXfe (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Sat, 8 Jan 2022 18:35:34 -0500
-Received: from remote.user (localhost [127.0.0.1])
-        by rere.qmqm.pl (Postfix) with ESMTPSA id 4JWbzn6Bf4z9c;
-        Sun,  9 Jan 2022 00:35:17 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rere.qmqm.pl; s=1;
-        t=1641684931; bh=PlUOfTOJmz/Ue3/EDBlVUxJ2DxqecfDU18/1xQbQtoA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=FscL30pAUhiOa20r1Aci5nnOyAPPM7+JoY4I/TdvClRTh0U4D6S+wg1hl5DP6lTxY
-         uXsR1x49ZX58OBDSXL5QGeKh44OE5Qx3HX+fhAHnzzl6d2Bb3RMolFLW/CZs7ANyT9
-         2B2bqDVSaDvrnFLV9W4laov2KVjSpYZyXNNSx0uhvIf6/Ty/Jc6im2Ya6WtOK+mKnU
-         8tBa912YBdNEWU6kN5XGlGndW+KwbfYMSoJHIv4OJWOXoW7NdW+vFlXd5iG2C0Sl5t
-         yLjrrdYJpGeB9xfuugFJFXVZkd4+VRh97hWFY+LEwPEsT5kUEeN00fOMl2F0IbFH2g
-         x9nJQfgC6GmfA==
-X-Virus-Status: Clean
-X-Virus-Scanned: clamav-milter 0.103.4 at mail
-Date:   Sun, 9 Jan 2022 00:35:15 +0100
-From:   =?iso-8859-2?Q?Micha=B3_Miros=B3aw?= <mirq-linux@rere.qmqm.pl>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        Joshua Thompson <funaho@jurai.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Sebastian Reichel <sre@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Greentime Hu <green.hu@gmail.com>,
-        Vincent Chen <deanbo422@gmail.com>,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Len Brown <lenb@kernel.org>,
-        Santosh Shilimkar <ssantosh@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>, Pavel Machek <pavel@ucw.cz>,
-        Lee Jones <lee.jones@linaro.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>, alankao@andestech.com,
-        "K . C . Kuen-Chern Lin" <kclin@andestech.com>,
-        linux-kernel@vger.kernel.org, linux-csky@vger.kernel.org,
-        linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
-        linux-sh@vger.kernel.org, xen-devel@lists.xenproject.org,
-        linux-acpi@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-tegra@vger.kernel.org
-Subject: Re: [PATCH v5 04/21] kernel: Add combined power-off+restart handler
- call chain API
-Message-ID: <Ydofs2CIfA+r5KAz@qmqm.qmqm.pl>
-References: <20211212210309.9851-1-digetx@gmail.com>
- <20211212210309.9851-5-digetx@gmail.com>
+        id S229868AbiAIVpd (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Sun, 9 Jan 2022 16:45:33 -0500
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1n6g0I-0006cw-01; Sun, 09 Jan 2022 22:45:30 +0100
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id 98F80C0E3B; Sun,  9 Jan 2022 22:43:23 +0100 (CET)
+Date:   Sun, 9 Jan 2022 22:43:23 +0100
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Yang Li <yang.lee@linux.alibaba.com>
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Abaci Robot <abaci@linux.alibaba.com>
+Subject: Re: [PATCH -next] MIPS: Remove duplicated include in local.h
+Message-ID: <20220109214323.GB2174@alpha.franken.de>
+References: <20220107003128.81300-1-yang.lee@linux.alibaba.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-2
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20211212210309.9851-5-digetx@gmail.com>
+In-Reply-To: <20220107003128.81300-1-yang.lee@linux.alibaba.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Mon, Dec 13, 2021 at 12:02:52AM +0300, Dmitry Osipenko wrote:
-[...]
-> +/**
-> + * struct power_off_data - Power-off callback argument
-> + *
-> + * @cb_data: Callback data.
-> + */
-> +struct power_off_data {
-> +	void *cb_data;
-> +};
-> +
-> +/**
-> + * struct power_off_prep_data - Power-off preparation callback argument
-> + *
-> + * @cb_data: Callback data.
-> + */
-> +struct power_off_prep_data {
-> +	void *cb_data;
-> +};
+On Fri, Jan 07, 2022 at 08:31:28AM +0800, Yang Li wrote:
+> Fix following includecheck warning:
+> ./arch/mips/include/asm/local.h: asm/asm.h is included more than once.
+> 
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+> ---
+>  arch/mips/include/asm/local.h | 1 -
+>  1 file changed, 1 deletion(-)
+> 
+> diff --git a/arch/mips/include/asm/local.h b/arch/mips/include/asm/local.h
+> index d4d47c846bb2..08366b1fd273 100644
+> --- a/arch/mips/include/asm/local.h
+> +++ b/arch/mips/include/asm/local.h
+> @@ -8,7 +8,6 @@
+>  #include <asm/asm.h>
+>  #include <asm/cmpxchg.h>
+>  #include <asm/compiler.h>
+> -#include <asm/asm.h>
+>  
+>  typedef struct
+>  {
+> -- 
+> 2.20.1.7.g153144c
 
-Why two exactly same structures? Why only a single pointer instead? If
-it just to enable type-checking callbacks, then thouse could be opaque
-or zero-sized structs that would be embedded or casted away in
-respective callbacks.
+applied to mips-next.
 
-> +
-> +/**
-> + * struct restart_data - Restart callback argument
-> + *
-> + * @cb_data: Callback data.
-> + * @cmd: Restart command string.
-> + * @stop_chain: Further lower priority callbacks won't be executed if set to
-> + *		true. Can be changed within callback. Default is false.
-> + * @mode: Reboot mode ID.
-> + */
-> +struct restart_data {
-> +	void *cb_data;
-> +	const char *cmd;
-> +	bool stop_chain;
-> +	enum reboot_mode mode;
-> +};
-> +
-> +/**
-> + * struct reboot_prep_data - Reboot and shutdown preparation callback argument
-> + *
-> + * @cb_data: Callback data.
-> + * @cmd: Restart command string.
-> + * @stop_chain: Further lower priority callbacks won't be executed if set to
-> + *		true. Can be changed within callback. Default is false.
+Thomas.
 
-Why would we want to stop power-off or erboot chain? If the callback
-succeded, then further calls won't be made. If it doesn't succeed, but
-possibly breaks the system somehow, it shouldn't return. Then the only
-case left would be to just try the next method of shutting down.
-
-> + * @mode: Preparation mode ID.
-> + */
-> +struct reboot_prep_data {
-> +	void *cb_data;
-> +	const char *cmd;
-> +	bool stop_chain;
-> +	enum reboot_prepare_mode mode;
-> +};
-> +
-> +struct sys_off_handler_private_data {
-> +	struct notifier_block power_off_nb;
-> +	struct notifier_block restart_nb;
-> +	struct notifier_block reboot_nb;
-
-What's the difference between restart and reboot?
-
-> +	void (*platform_power_off_cb)(void);
-> +	void (*simple_power_off_cb)(void *data);
-> +	void *simple_power_off_cb_data;
-> +	bool registered;
-> +};
-
-BTW, I couldn't find a right description of my idea of unifying the
-chains before, so let me sketch it now.
-
-The idea is to have a single system-off chain in which the callback
-gets a mode ({QUERY_*, PREP_*, DO_*} for each of {*_REBOOT, *_POWEROFF, ...?).
-The QUERY_* calls would be made in can_kernel_reboot/poweroff(): all
-would be called, and if at least one returned true, then the shutdown
-mode would continue. All of PREP_* would be called then. After that
-all DO_* would be tried until one doesn't return (succeeded or broke
-the system hard). Classic for(;;); could be a final fallback for the
-case where arch/machine (lowest priority) call would return instead
-of halting the system in machine-dependent way. The QUERY and PREP
-stages could be combined, but I haven't thought about it enough to
-see what conditions would need to be imposed on the callbacks in
-that case (maybe it's not worth the trouble, since it isn't a fast
-path anyway?). The goal here is to have less (duplicated) code in
-kernel, but otherwise it seems equivalent to your API proposal.
-
-Best Regards
-Micha³ Miros³aw
+-- 
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]

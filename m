@@ -2,152 +2,124 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8E3C9C433EF
-	for <linux-mips@archiver.kernel.org>; Mon, 10 Jan 2022 12:21:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 941AFC433FE
+	for <linux-mips@archiver.kernel.org>; Mon, 10 Jan 2022 13:35:39 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245440AbiAJMVX (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 10 Jan 2022 07:21:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60698 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245438AbiAJMU3 (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Mon, 10 Jan 2022 07:20:29 -0500
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 447AFC06175A
-        for <linux-mips@vger.kernel.org>; Mon, 10 Jan 2022 04:20:28 -0800 (PST)
-Received: by mail-lf1-x134.google.com with SMTP id o12so43701382lfk.1
-        for <linux-mips@vger.kernel.org>; Mon, 10 Jan 2022 04:20:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=e+gczxkrQRD/dQ/jBxW7gRFcfdkPGHbr2WDGhZJZLJk=;
-        b=DQ6s1LJZPoFp6X8JefkipbzDh1yGPvq/kl1jdeBlsANQVeciRIMsENC9zSQpWhq78S
-         DkLgBNC+TfpIiuLamGmaYI/Vw+fFUzv/+tb+8WxqADvgFfapxzYO4Y8o9htnFCBX5XVo
-         OkoRHRNuvnooWK+eUM4gZoQbnEN8JAsKaL10RXyO2vt8XnLdQYPDpo7tZCO6GM3DYVOm
-         tjfM6SUY+MOaFz4ShgbZ/qWOxrpITTHFtNmjLiv35EOj/NFFeExH71NRmpgJ5F8Tu46A
-         vdgmSyZmLYeu7KK0Gm99B96rrE4Ktc0hKeRwx7PDGEbuDL1cXCMk8lJnFm6c9CCgcdez
-         CFJw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=e+gczxkrQRD/dQ/jBxW7gRFcfdkPGHbr2WDGhZJZLJk=;
-        b=8KNAgEK2SSSFmKc6qXY4/4vofADt+NkoKUZpeGTbUC1iDWyIr9Mgw8nU7MlEjJQizE
-         tGN+GPM0i4c4vPRuQcT/jU3jJ5HDz3BB2tqpRmq1Vb8V/tHWDSd6fGN6JGuYRJsnDdr9
-         IEohdIHDnJ9tgo8tPtldscEfPHIO0gr1lSJpOk2qVOkp6rGV0IgBlpwDmawhjWvq7mhk
-         +3FRiEjZ2hIu0ZbaqT7HHw4nLL0knjIl8sksXB4c2KOpwB1d7OsvOe5SE/ptxsyP9X1Y
-         36OF3FX3c0L47DoAXs6zyfLoFdE30SRTJSqH9XGIq8TPExX2f04q92M/hQCr2s+rsIIp
-         4elw==
-X-Gm-Message-State: AOAM530m5vrDv63VBMq3phfxqPrPpSX+U11ejVjmo4ShTGMO/JxR/JTg
-        HBAabKnOzACfDk2HL+RqObTAXOuz9tH2vKguqBmRAQ==
-X-Google-Smtp-Source: ABdhPJwHuXQxrdr9hK3bUVDPLAm90cjss/wNF/ISoPLrywRMtIzRfPeLJ7C3G8WRGhNdQHZCB3M+ZVJPLMsNh8wGOzg=
-X-Received: by 2002:a2e:9659:: with SMTP id z25mr59418630ljh.16.1641817226570;
- Mon, 10 Jan 2022 04:20:26 -0800 (PST)
+        id S232583AbiAJNfi (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 10 Jan 2022 08:35:38 -0500
+Received: from mout.kundenserver.de ([212.227.126.187]:53211 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232362AbiAJNfi (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Mon, 10 Jan 2022 08:35:38 -0500
+Received: from mail-wm1-f50.google.com ([209.85.128.50]) by
+ mrelayeu.kundenserver.de (mreue012 [213.165.67.97]) with ESMTPSA (Nemesis) id
+ 1M76jv-1n01kV0AKV-008Wk7; Mon, 10 Jan 2022 14:35:36 +0100
+Received: by mail-wm1-f50.google.com with SMTP id w26so2889549wmi.0;
+        Mon, 10 Jan 2022 05:35:35 -0800 (PST)
+X-Gm-Message-State: AOAM532MFWpxvbCxx+X/oeE0JToA4T3wqp321Pt2i1Hd2GSgB3W5pgGf
+        vHWkW/9LX14vQosawU7weRqiMFvL7P/LABu5sGc=
+X-Google-Smtp-Source: ABdhPJxi0Z/ZiBz/NSOKjhoGPprS74nLPOzeNY5wtnvdjs0k7wca4Io+stHgBpdw9GGPmWr9NuMWVabYObO8sOckUL0=
+X-Received: by 2002:a1c:4c19:: with SMTP id z25mr8601383wmf.173.1641821735504;
+ Mon, 10 Jan 2022 05:35:35 -0800 (PST)
 MIME-Version: 1.0
-References: <20220107181723.54392-1-paul@crapouillou.net> <20220107181723.54392-7-paul@crapouillou.net>
-In-Reply-To: <20220107181723.54392-7-paul@crapouillou.net>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Mon, 10 Jan 2022 13:19:50 +0100
-Message-ID: <CAPDyKFoA6Jj_xdRtvgahue7cSWrW1HOX=1=-9COwiZqRrRd7bw@mail.gmail.com>
-Subject: Re: [PATCH v3 6/6] iio: pressure: bmp280: Use new PM macros
-To:     Paul Cercueil <paul@crapouillou.net>
-Cc:     "Rafael J . Wysocki" <rafael@kernel.org>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>, Len Brown <len.brown@intel.com>,
-        Pavel Machek <pavel@ucw.cz>, list@opendingux.net,
-        linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-mmc@vger.kernel.org,
-        linux-pm@vger.kernel.org,
-        Jonathan Cameron <jonathan.cameron@huawei.com>
+References: <20211228143958.3409187-1-guoren@kernel.org> <20211228143958.3409187-4-guoren@kernel.org>
+In-Reply-To: <20211228143958.3409187-4-guoren@kernel.org>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Mon, 10 Jan 2022 14:35:19 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a2zn9M6X09WsjJ9HYiS9WnO_YPCvJLSBk+HaH+yZHQqfA@mail.gmail.com>
+Message-ID: <CAK8P3a2zn9M6X09WsjJ9HYiS9WnO_YPCvJLSBk+HaH+yZHQqfA@mail.gmail.com>
+Subject: Re: [PATCH V2 03/17] asm-generic: fcntl: compat: Remove duplicate definitions
+To:     Guo Ren <guoren@kernel.org>
+Cc:     Palmer Dabbelt <palmer@dabbelt.com>, Arnd Bergmann <arnd@arndb.de>,
+        Anup Patel <anup.patel@wdc.com>,
+        gregkh <gregkh@linuxfoundation.org>,
+        liush <liush@allwinnertech.com>, Wei Fu <wefu@redhat.com>,
+        Drew Fustini <drew@beagleboard.org>,
+        Wang Junqiang <wangjunqiang@iscas.ac.cn>,
+        Christoph Hellwig <hch@infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        linux-csky@vger.kernel.org,
+        linux-s390 <linux-s390@vger.kernel.org>,
+        sparclinux <sparclinux@vger.kernel.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        inux-parisc@vger.kernel.org,
+        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        Guo Ren <guoren@linux.alibaba.com>,
+        Jeff Layton <jlayton@kernel.org>,
+        "J. Bruce Fields" <bfields@fieldses.org>,
+        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:VpEEgoOWThxhQixjfpbEos42H1TvCPgcGI8o8I9o2XPlaGQHEJg
+ +ochkhXHJkoDcYX7WdO0YF6qmZsqV9i+JNq7tnyAps349sZDyX+w6yafKFBWb/9eV5r5yZv
+ 3SvHGUwopX7Vi5CkXf25eeiZufSGTVCL1JZhUnsEfo3F5ypep9VY577JGYB86kaQosT03n6
+ 2OHSwKnra3Mhb7C++W0gg==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:5ZNMXf9sxdg=:zWE9RxiaoQrl4scWs6UtFD
+ eDXCgOBPCpSzNlBDRlGb2LYPadMU6qGp+0YF/4Gp1Zg6IvG0ojkeTuOiebeV+a68nD7aSlzQ9
+ AlcrSV6OhoJhLlE10D3xZgRlw/GJxqrRQkiL7jJ156HTHrtgXZPr6g4yEExrWa2K/70q1+cW6
+ 3vEg12xrzfXFFCId8X98XivvVMBYIoJ6yy2FcjngfKYVqzgl42veBb2f/69h1L0dK1eiOdaky
+ jIWrEaje9akGfrXQgcomjz4Fz/ZTnDg8vj5OKDNBEioRXMqrTC72rez4Ae83/CoU2iix/FXtX
+ 3jBd5jLBRbjYky4PtX7sFV3L1w1fKQGUHf0uyh4GVIZW3jWX481OBmTNnB2LsocgdSf+NGxYq
+ OF4BPGNITowFmmCRC+mkihFQADoVE/HL4fl5j6np1Cr/0b7WXwYrfOPYCisdu/3b5PPGNk1y4
+ fOvtT4fBxuxUzYXPFnl+3sQfk4SwtnndGUQ6/qORYNOjkQb5TiFvMjxst5wHC4TOI+2d02vqC
+ gwHcDouioSLNbJY85SN9M2+8jD7Kc9fpXtXFTRs9a4sPwG9XnUxUFYlBFdDX4ZAcB3duJhfjU
+ Avu5p1SpyzH37+vigu464kdBKdaNS6t1z3WXiPlr4uT03jYchIBgzJ2ZQML8ASDE2m+52d1Yy
+ 745v4fHQ+H37Ozvbmh/7E6o7e8/72Ix1g1uTRZ7kODf+jCZKTAZDmm5NuK31zQEtEtpJC1W3W
+ Txq1AcgLAwcJonk3l8+07QOU7OiP1CAnzzp6KUtg/OmJU75PV9g7O4ckLUqePNXS+l+rKKQdH
+ pg/iqLbREtRyJVusbhvpE263c8IrdJ6tlU3dvSDQ+JZp6BxBsE=
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Fri, 7 Jan 2022 at 19:18, Paul Cercueil <paul@crapouillou.net> wrote:
+On Tue, Dec 28, 2021 at 3:39 PM <guoren@kernel.org> wrote:
 >
-> Use the new EXPORT_RUNTIME_DEV_PM_OPS() macro. It allows the underlying
-> dev_pm_ops struct as well as the suspend/resume callbacks to be detected
-> as dead code in the case where CONFIG_PM is disabled, without having to
-> wrap everything inside #ifdef CONFIG_PM guards.
+> From: Guo Ren <guoren@linux.alibaba.com>
 >
-> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
-> Acked-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+> Remove duplicate F_GETLK64,F_SETLK64,F_SETLKW64 definitions in
+> arch/*/include/asm/compat.h.
+>
+> Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
+> Signed-off-by: Guo Ren <guoren@kernel.org>
+> Cc: Arnd Bergmann <arnd@arndb.de>
 
-Reviewed-by: Ulf Hansson <ulf.hansson@linaro.org>
+Unfortunately, this one does not look correct to me:
 
-Kind regards
-Uffe
+> @@ -116,7 +116,7 @@
+>  #define F_GETSIG       11      /* for sockets. */
+>  #endif
+>
+> -#ifndef CONFIG_64BIT
+> +#if !defined(CONFIG_64BIT) || defined(CONFIG_COMPAT)
+>  #ifndef F_GETLK64
+>  #define F_GETLK64      12      /*  using 'struct flock64' */
+>  #define F_SETLK64      13
 
-> ---
->
-> Notes:
->     v2: New patch
->     v3: No change
->
->  drivers/iio/pressure/bmp280-core.c | 11 ++---------
->  drivers/iio/pressure/bmp280-i2c.c  |  2 +-
->  drivers/iio/pressure/bmp280-spi.c  |  2 +-
->  3 files changed, 4 insertions(+), 11 deletions(-)
->
-> diff --git a/drivers/iio/pressure/bmp280-core.c b/drivers/iio/pressure/bmp280-core.c
-> index 6b7da40f99c8..bf8167f43c56 100644
-> --- a/drivers/iio/pressure/bmp280-core.c
-> +++ b/drivers/iio/pressure/bmp280-core.c
-> @@ -1138,7 +1138,6 @@ int bmp280_common_probe(struct device *dev,
->  }
->  EXPORT_SYMBOL(bmp280_common_probe);
->
-> -#ifdef CONFIG_PM
->  static int bmp280_runtime_suspend(struct device *dev)
->  {
->         struct iio_dev *indio_dev = dev_get_drvdata(dev);
-> @@ -1159,15 +1158,9 @@ static int bmp280_runtime_resume(struct device *dev)
->         usleep_range(data->start_up_time, data->start_up_time + 100);
->         return data->chip_info->chip_config(data);
->  }
-> -#endif /* CONFIG_PM */
->
-> -const struct dev_pm_ops bmp280_dev_pm_ops = {
-> -       SET_SYSTEM_SLEEP_PM_OPS(pm_runtime_force_suspend,
-> -                               pm_runtime_force_resume)
-> -       SET_RUNTIME_PM_OPS(bmp280_runtime_suspend,
-> -                          bmp280_runtime_resume, NULL)
-> -};
-> -EXPORT_SYMBOL(bmp280_dev_pm_ops);
-> +EXPORT_RUNTIME_DEV_PM_OPS(bmp280_dev_pm_ops, bmp280_runtime_suspend,
-> +                         bmp280_runtime_resume, NULL);
->
->  MODULE_AUTHOR("Vlad Dogaru <vlad.dogaru@intel.com>");
->  MODULE_DESCRIPTION("Driver for Bosch Sensortec BMP180/BMP280 pressure and temperature sensor");
-> diff --git a/drivers/iio/pressure/bmp280-i2c.c b/drivers/iio/pressure/bmp280-i2c.c
-> index 8b03ea15c0d0..35045bd92846 100644
-> --- a/drivers/iio/pressure/bmp280-i2c.c
-> +++ b/drivers/iio/pressure/bmp280-i2c.c
-> @@ -58,7 +58,7 @@ static struct i2c_driver bmp280_i2c_driver = {
->         .driver = {
->                 .name   = "bmp280",
->                 .of_match_table = bmp280_of_i2c_match,
-> -               .pm = &bmp280_dev_pm_ops,
-> +               .pm = pm_ptr(&bmp280_dev_pm_ops),
->         },
->         .probe          = bmp280_i2c_probe,
->         .id_table       = bmp280_i2c_id,
-> diff --git a/drivers/iio/pressure/bmp280-spi.c b/drivers/iio/pressure/bmp280-spi.c
-> index 625b86878ad8..41f6cc56d229 100644
-> --- a/drivers/iio/pressure/bmp280-spi.c
-> +++ b/drivers/iio/pressure/bmp280-spi.c
-> @@ -109,7 +109,7 @@ static struct spi_driver bmp280_spi_driver = {
->         .driver = {
->                 .name = "bmp280",
->                 .of_match_table = bmp280_of_spi_match,
-> -               .pm = &bmp280_dev_pm_ops,
-> +               .pm = pm_ptr(&bmp280_dev_pm_ops),
->         },
->         .id_table = bmp280_spi_id,
->         .probe = bmp280_spi_probe,
-> --
-> 2.34.1
->
+The problem here is that include/uapi/ headers cannot contain checks for
+CONFIG_* symbols because those may have different meanings in user space
+compared to kernel.
+
+This is a preexisting problem in the header, but I think the change
+makes it worse.
+
+With the current behavior, user space will always see the definitions,
+unless it happens to have its own definition for CONFIG_64BIT already.
+On 64-bit parisc, this has the effect of defining the macros to the
+same values as F_SETOWN/F_SETSIG/F_GETSIG, which is potentially
+harmful. On MIPS, it uses values that are different from the 32-bit numbers
+but are otherwise unused. Everywhere else, we get the definition from
+the 32-bit architecture in user space, which will do nothing in the kernel.
+
+The correct check for a uapi header would be to test for
+__BITS_PER_LONG==32. We should probably do that here, but
+this won't help you move the definitions, and it is a user-visible change
+as the incorrect definition will no longer be visible. [Adding Jeff and Bruce
+(the flock mainainers) to Cc for additional feedback on this]
+
+For your series, I would suggest just moving the macro definitions to
+include/linux/compat.h along with the 'struct compat_flock64'
+definition, and leaving the duplicate one in the uapi header unchanged
+until we have decided on a solution.
+
+        Arnd

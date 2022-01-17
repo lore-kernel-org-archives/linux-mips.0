@@ -2,44 +2,47 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7B8CDC433F5
-	for <linux-mips@archiver.kernel.org>; Mon, 17 Jan 2022 17:06:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 892FEC433F5
+	for <linux-mips@archiver.kernel.org>; Mon, 17 Jan 2022 17:06:37 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242807AbiAQRG1 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 17 Jan 2022 12:06:27 -0500
-Received: from ams.source.kernel.org ([145.40.68.75]:52196 "EHLO
-        ams.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242455AbiAQREb (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Mon, 17 Jan 2022 12:04:31 -0500
+        id S242000AbiAQRGg (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 17 Jan 2022 12:06:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44846 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S241951AbiAQRDK (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Mon, 17 Jan 2022 12:03:10 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5505EC061574;
+        Mon, 17 Jan 2022 09:02:40 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id AA73CB81142;
-        Mon, 17 Jan 2022 17:04:29 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A10EDC36AE7;
-        Mon, 17 Jan 2022 17:04:27 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 208EEB8115B;
+        Mon, 17 Jan 2022 17:02:39 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 18CD2C36AE3;
+        Mon, 17 Jan 2022 17:02:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1642439068;
-        bh=1W7QnzWemca3+VHrxEBDJsad3MM3/pf0E4IB4zUs6LA=;
+        s=k20201202; t=1642438957;
+        bh=JiOVbM2qS81Tf9TfdFeLSOmQd6su6h5Fdx5wlgaihSw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JYeVB/v4S56Iisdaed/TUkuX/vcFK6x+C8i5953wjCZbK2rQrtDp1qBsGFWv1mH+n
-         UqoI+NP4cccLOXzOyNAA6c1ilrH3ibmB7MuJ4iItb5/zMLvmUB1AXybyAmWieE5SW7
-         E7/uXW1Wp3uCmltx8rueKsrtLFmpkya/bwWJ47pE+Okd1ZQQ64ILOQcKWy6/vT7tFC
-         jbyQPD+PuqtYrItoW4SMeppbFwkHiDsp2POW7tpVVd7++qoOQqQ9pcRcVvT62w77Zg
-         /Lf/wa2N/6r3JCsDyUe6cPfX/rUdpSOMEP8QctHbd481ncFiLShBjzdukGuRms+q/a
-         NoMtbT6keGpFA==
+        b=mWBCgogEk9OVqXA8neC2iqt8j3Pm5T6Ge3Gu50HiiGHmXDH8jilcP7uFPHw7udUop
+         pWVLU/S+lPSNHwskiRKzDXU92/Vj5ejIlOFDVNEgogIqanB/52EAx6QvUGIwChi3Ii
+         RwlCHpzxDEufGKCnyJHkDPkBTNZIsJ5sHHHqzg+E/P4c18tcYRDVjb32scMESDcBRt
+         1AGXLnwLUqz4wZyR76MQXzn+Zq9MA866AHZA4xQaFx/O9J8W56aupCCQMCMwMUynvf
+         waRGePRQG/XexVeQqJN4//2cqkoNGVSJNnH7w0HbGeW6e+7XpO/6dL20XL1UmFsAZQ
+         oFVmH0PgRaPYw==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Ye Guojin <ye.guojin@zte.com.cn>, Zeal Robot <zealci@zte.com.cn>,
         Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
         Sasha Levin <sashal@kernel.org>, yangyingliang@huawei.com,
         linux-mips@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.10 26/34] MIPS: OCTEON: add put_device() after of_find_device_by_node()
-Date:   Mon, 17 Jan 2022 12:03:16 -0500
-Message-Id: <20220117170326.1471712-26-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.15 29/44] MIPS: OCTEON: add put_device() after of_find_device_by_node()
+Date:   Mon, 17 Jan 2022 12:01:12 -0500
+Message-Id: <20220117170127.1471115-29-sashal@kernel.org>
 X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20220117170326.1471712-1-sashal@kernel.org>
-References: <20220117170326.1471712-1-sashal@kernel.org>
+In-Reply-To: <20220117170127.1471115-1-sashal@kernel.org>
+References: <20220117170127.1471115-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -96,10 +99,10 @@ index d56e9b9d2e434..a994022e32c9f 100644
  	return ret;
  }
 diff --git a/arch/mips/cavium-octeon/octeon-usb.c b/arch/mips/cavium-octeon/octeon-usb.c
-index 950e6c6e86297..fa87e5aa1811d 100644
+index 6e4d3619137af..4df919d26b082 100644
 --- a/arch/mips/cavium-octeon/octeon-usb.c
 +++ b/arch/mips/cavium-octeon/octeon-usb.c
-@@ -544,6 +544,7 @@ static int __init dwc3_octeon_device_init(void)
+@@ -537,6 +537,7 @@ static int __init dwc3_octeon_device_init(void)
  			devm_iounmap(&pdev->dev, base);
  			devm_release_mem_region(&pdev->dev, res->start,
  						resource_size(res));

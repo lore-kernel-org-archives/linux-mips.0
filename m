@@ -2,35 +2,30 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C3EEFC433F5
-	for <linux-mips@archiver.kernel.org>; Thu, 20 Jan 2022 11:41:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AFDAEC43217
+	for <linux-mips@archiver.kernel.org>; Thu, 20 Jan 2022 12:54:18 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231794AbiATLlC (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 20 Jan 2022 06:41:02 -0500
-Received: from mout.kundenserver.de ([212.227.126.135]:58997 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231750AbiATLlB (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Thu, 20 Jan 2022 06:41:01 -0500
-Received: from mail-lf1-f41.google.com ([209.85.167.41]) by
- mrelayeu.kundenserver.de (mreue010 [213.165.67.97]) with ESMTPSA (Nemesis) id
- 1MIdS1-1n6ziY22gH-00Ehg1; Thu, 20 Jan 2022 12:40:59 +0100
-Received: by mail-lf1-f41.google.com with SMTP id x22so20451050lfd.10;
-        Thu, 20 Jan 2022 03:40:59 -0800 (PST)
-X-Gm-Message-State: AOAM533qix8zh0S8JYOIk4A0J7JjhnSvFp9JUezj9sRosgXQqc+8ycFd
-        C6mr0H48tOs4Q4U8wGH3ZW0R+WnsSoZOph9K4AA=
-X-Google-Smtp-Source: ABdhPJyF4dvXk+FcL9rU+G/uYHJOqasQkkfireul5EseychvyhuLX81WEAdVmBsalytJouvYJnpcpue784HKoQtJs8Q=
-X-Received: by 2002:adf:d21b:: with SMTP id j27mr1322485wrh.192.1642671701080;
- Thu, 20 Jan 2022 01:41:41 -0800 (PST)
-MIME-Version: 1.0
-References: <20220120073911.99857-17-guoren@kernel.org>
-In-Reply-To: <20220120073911.99857-17-guoren@kernel.org>
-From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Thu, 20 Jan 2022 10:41:25 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a1nUcYjhEE5eyFAE_QqfjhRsZZ81ni8jyR8cPaP5QKJDg@mail.gmail.com>
-Message-ID: <CAK8P3a1nUcYjhEE5eyFAE_QqfjhRsZZ81ni8jyR8cPaP5QKJDg@mail.gmail.com>
-Subject: Re: [PATCH V3 16/17] riscv: compat: Add COMPAT Kbuild skeletal support
-To:     Guo Ren <guoren@kernel.org>
-Cc:     Palmer Dabbelt <palmer@dabbelt.com>, Arnd Bergmann <arnd@arndb.de>,
+        id S243013AbiATMyR (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 20 Jan 2022 07:54:17 -0500
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:27766 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S244118AbiATMxR (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>);
+        Thu, 20 Jan 2022 07:53:17 -0500
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ uk-mta-321-XSo6eQ28MlKlbqVx3cst0g-1; Thu, 20 Jan 2022 12:53:13 +0000
+X-MC-Unique: XSo6eQ28MlKlbqVx3cst0g-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
+ Server (TLS) id 15.0.1497.28; Thu, 20 Jan 2022 12:53:11 +0000
+Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
+ AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
+ 15.00.1497.028; Thu, 20 Jan 2022 12:53:11 +0000
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Arnd Bergmann' <arnd@arndb.de>, Guo Ren <guoren@kernel.org>
+CC:     Palmer Dabbelt <palmer@dabbelt.com>,
         Anup Patel <anup@brainfault.org>,
         gregkh <gregkh@linuxfoundation.org>,
         liush <liush@allwinnertech.com>, Wei Fu <wefu@redhat.com>,
@@ -40,48 +35,51 @@ Cc:     Palmer Dabbelt <palmer@dabbelt.com>, Arnd Bergmann <arnd@arndb.de>,
         Christoph Hellwig <hch@infradead.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
         linux-riscv <linux-riscv@lists.infradead.org>,
-        linux-csky@vger.kernel.org,
+        "linux-csky@vger.kernel.org" <linux-csky@vger.kernel.org>,
         linux-s390 <linux-s390@vger.kernel.org>,
         sparclinux <sparclinux@vger.kernel.org>,
         linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        inux-parisc@vger.kernel.org,
+        "inux-parisc@vger.kernel.org" <inux-parisc@vger.kernel.org>,
         "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
         Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
+        the arch/x86 maintainers <x86@kernel.org>,
         Guo Ren <guoren@linux.alibaba.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:QRPg0m11FXIX35ZpDKJO45FQQrsA48Tp9zAq+fcv4cwVZduUDO6
- igDfvInpvFkyMnF9+AWuLRjicRiTTZ9YG8OCkkpV9vvwpMvikaS5AnEB5sV3CHh0OqfsMyl
- jSohEPYoV4gbekjj9cwbRE0RH8YrTVUGF/qMcGF/1FpdwXBF8PloJtTTjga0r7W8tyDUmwz
- eNM6T6rwCAM6mFfYtX1FA==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:OOGCh8eo6RI=:Opa7Vr2sotNfgTsSlPC6N+
- KQXjpo4MqWmXDTiHa6fk/X4UivpSmMOryzjq30DmpXZzaYhqjndLmWyUFgReFH79nsPqf4n0f
- pIrGygPXkZaxMqctIZnQ4aUiT/yWXDuWlfNxgexzX0bF5ArQJxXe296rRwbWZg1Kw1ctqg4JY
- 0b1lD41arqwEyJW+WvbIkdYXmelaY7F6GmMWB/jmZuvbfHkHZQXVvw6t0nGMwfn+Cq5A2hRxT
- gClQ92BSzMRM5YJbCM3UdXrmCxS4jOfQk5D+Ot2Zg1n2NN5Vk2tQfmr4Ao0vH6zRy565k+Jfe
- LZKigaC8nf/yx0EAxRrJJRIh7gTGEsK2XJ5dAxKElxIRSZa7hmLkXIup+V8HPsjlynRARxS51
- FDqBFJ8GQAnMqhJV1FO7f+gtTyyX6sBuqI/6xhV5OR5EPy1Z2kgPq8cpUOGXN9eDrqS96s0Ib
- Q/5iLRdXRWqy4Ma3IC2sapHIi6LP3U5WcTwky9PBH+6TRWM0nL79xhxy1lUSyPf59I58YJb3u
- 8kFVTcLWF9ePDh9IxHslr+vY6SyBrbA1UgeTNzvEG2wdmFWhkdVeD5eoOJk1vX7XC/RzwEZqh
- HWXUKrkrpNcHAz7sHMm1djyE0ucOm7dsHAXZ6BBpEEFiZBWSYR+j97ZKGGmvkaxiP9mx5M5YV
- RMSx7M+1MwkcADO1MsEQFPnMlGZAE4BFhWvY9bCsZej7KB7qbwNPwAIgwrUDx6WomwwddcIkK
- xuBnMiwrAjd4M5Kv60EtjYmiUmvb5yjVjPFpeKwMFO1Bya2m6yS0zqIrQBn83hYBpFJxyivsh
- m2GrvKf/TY8Kmpzlqmqps+XrucJ4u37TzMNUkgpx76cBSjX1DtDCaiFjmCkuQQUtL2cOXK7
+Subject: RE: [PATCH V3 07/17] riscv: compat: Re-implement TASK_SIZE for
+ COMPAT_32BIT
+Thread-Topic: [PATCH V3 07/17] riscv: compat: Re-implement TASK_SIZE for
+ COMPAT_32BIT
+Thread-Index: AQHYDePReMzknTU7UkCjQWPLhaJn7Kxr3G8g
+Date:   Thu, 20 Jan 2022 12:53:11 +0000
+Message-ID: <f16cf10425a14c2e8183d5c90667ce72@AcuMS.aculab.com>
+References: <20220120073911.99857-8-guoren@kernel.org>
+ <CAK8P3a1UvqsS-D7cVXBkp4KCRWDfquQ6QTkvrQ=FqLxhsAi7Rw@mail.gmail.com>
+In-Reply-To: <CAK8P3a1UvqsS-D7cVXBkp4KCRWDfquQ6QTkvrQ=FqLxhsAi7Rw@mail.gmail.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
+MIME-Version: 1.0
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Thu, Jan 20, 2022 at 8:39 AM <guoren@kernel.org> wrote:
->
-> From: Guo Ren <guoren@linux.alibaba.com>
->
-> Adds initial skeletal COMPAT Kbuild (Runing 32bit U-mode on 64bit
-> S-mode) support.
->  - Setup kconfig & dummy functions for compiling.
->  - Implement compat_start_thread by the way.
->
-> Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
-> Signed-off-by: Guo Ren <guoren@kernel.org>
-> Cc: Arnd Bergmann <arnd@arndb.de>
+PiA+IExpbWl0IDMyLWJpdCBjb21wYXRpYmxlIHByb2Nlc3MgaW4gMC0yR0IgdmlydHVhbCBhZGRy
+ZXNzIHJhbmdlDQo+ID4gKHdoaWNoIGlzIGVub3VnaCBmb3IgcmVhbCBzY2VuYXJpb3MpLCBiZWNh
+dXNlIGl0IGNvdWxkIGF2b2lkDQo+ID4gYWRkcmVzcyBzaWduIGV4dGVuZCBwcm9ibGVtIHdoZW4g
+MzItYml0IGVudGVyIDY0LWJpdCBhbmQgZWFzZQ0KPiA+IHNvZnR3YXJlIGRlc2lnbi4NCg0KRWg/
+DQpJIHRob3VnaHQgbmVhcmx5IGFsbCB0aGUgb3RoZXIgMzJiaXQgdW5peCBwb3J0cyAob2YgYW55
+IGZsYXZvdXIpDQpwdXQgdGhlIHVzZXIta2VybmVsIGJvdW5kYXJ5IGF0IDNHQi4NCihBcGFydCBm
+cm9tIHNvbWUgdmVyeSBvbGQgc3BhcmMgb25lcyB0aGF0IHVzZSAzLjVHQi4pDQoNCjJHQiBpcyB1
+c2VkIGJ5IFdpbmRvd3MuDQoNCkkgdGhpbmsgdGhlIHg4Ni02NCAzMmJpdCBjb21wYXQgY29kZSBl
+dmVuIHB1dHMgdGhlIGJvdW5kYXJ5IGF0IDRHQi4NCg0KCURhdmlkDQoNCi0NClJlZ2lzdGVyZWQg
+QWRkcmVzcyBMYWtlc2lkZSwgQnJhbWxleSBSb2FkLCBNb3VudCBGYXJtLCBNaWx0b24gS2V5bmVz
+LCBNSzEgMVBULCBVSw0KUmVnaXN0cmF0aW9uIE5vOiAxMzk3Mzg2IChXYWxlcykNCg==
 
-Reviewed-by: Arnd Bergmann <arnd@arndb.de>

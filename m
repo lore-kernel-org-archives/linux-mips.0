@@ -2,34 +2,33 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 92C84C433F5
-	for <linux-mips@archiver.kernel.org>; Thu, 20 Jan 2022 11:05:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4618BC433EF
+	for <linux-mips@archiver.kernel.org>; Thu, 20 Jan 2022 11:31:31 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230260AbiATLFT (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 20 Jan 2022 06:05:19 -0500
-Received: from mout.kundenserver.de ([212.227.126.131]:59917 "EHLO
+        id S231396AbiATLba (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 20 Jan 2022 06:31:30 -0500
+Received: from mout.kundenserver.de ([212.227.126.187]:41607 "EHLO
         mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229908AbiATLEX (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Thu, 20 Jan 2022 06:04:23 -0500
-Received: from mail-oo1-f45.google.com ([209.85.161.45]) by
- mrelayeu.kundenserver.de (mreue010 [213.165.67.97]) with ESMTPSA (Nemesis) id
- 1MJmbB-1mqMtJ1Bo9-00K55w; Thu, 20 Jan 2022 12:04:20 +0100
-Received: by mail-oo1-f45.google.com with SMTP id b20-20020a4a3414000000b002dda566aba7so1888654ooa.13;
-        Thu, 20 Jan 2022 03:04:19 -0800 (PST)
-X-Gm-Message-State: AOAM532CO6xxk8E9jLiCM+zO6LCOrYZPptZaB69JP9XI1jtA299h6MJk
-        ngAhhKcUcYmqJuVnlkYx61M0uPsv8i8HF772Gr8=
-X-Google-Smtp-Source: ABdhPJxdLg6SDZjsvGmAsYmn2qy9+2h/ODrSB5K/8pY/EXdxIA8KLQS4DyhVSmna3jImvkgL6VaV1O46bPcTyjt0SVc=
-X-Received: by 2002:a05:6808:1490:: with SMTP id e16mr6881848oiw.84.1642673470519;
- Thu, 20 Jan 2022 02:11:10 -0800 (PST)
+        with ESMTP id S231612AbiATLba (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Thu, 20 Jan 2022 06:31:30 -0500
+Received: from mail-wm1-f54.google.com ([209.85.128.54]) by
+ mrelayeu.kundenserver.de (mreue009 [213.165.67.97]) with ESMTPSA (Nemesis) id
+ 1MEmAV-1n4EPL2s5z-00GIik; Thu, 20 Jan 2022 12:31:28 +0100
+Received: by mail-wm1-f54.google.com with SMTP id v123so11435280wme.2;
+        Thu, 20 Jan 2022 03:31:28 -0800 (PST)
+X-Gm-Message-State: AOAM532Q+V/htI0HjZQUIoqM/QY9mz678j9dSvszABA/eXb0dAZXH03t
+        ME52xWkDv7w5k/6J3K84vlK6hBgG1n+g56MyMhI=
+X-Google-Smtp-Source: ABdhPJxEAFXYVk6DktXv3061JPbB7MqrKutmOAXqbVu5eyk6Pz36dhnH8dbuNkOxd7GlFiEfJn/5TzSKv0rhSZwiTMY=
+X-Received: by 2002:a7b:ce96:: with SMTP id q22mr8113766wmj.82.1642671479094;
+ Thu, 20 Jan 2022 01:37:59 -0800 (PST)
 MIME-Version: 1.0
-References: <20220120073911.99857-18-guoren@kernel.org>
-In-Reply-To: <20220120073911.99857-18-guoren@kernel.org>
+References: <20220120073911.99857-14-guoren@kernel.org>
+In-Reply-To: <20220120073911.99857-14-guoren@kernel.org>
 From:   Arnd Bergmann <arnd@arndb.de>
-Date:   Thu, 20 Jan 2022 11:10:53 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a1_qwRpfHRyF75WEqfxGxgVnfB15vNS-egQctx7R5-DvA@mail.gmail.com>
-Message-ID: <CAK8P3a1_qwRpfHRyF75WEqfxGxgVnfB15vNS-egQctx7R5-DvA@mail.gmail.com>
-Subject: Re: [PATCH V3 17/17] KVM: compat: riscv: Prevent KVM_COMPAT from
- being selected
+Date:   Thu, 20 Jan 2022 10:37:43 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a03-3QTC-vxmnbouK7wBd8iunPGZpX0-Jf6ntS1DY0E=w@mail.gmail.com>
+Message-ID: <CAK8P3a03-3QTC-vxmnbouK7wBd8iunPGZpX0-Jf6ntS1DY0E=w@mail.gmail.com>
+Subject: Re: [PATCH V3 13/17] riscv: compat: signal: Add rt_frame implementation
 To:     Guo Ren <guoren@kernel.org>
 Cc:     Palmer Dabbelt <palmer@dabbelt.com>, Arnd Bergmann <arnd@arndb.de>,
         Anup Patel <anup@brainfault.org>,
@@ -51,23 +50,23 @@ Cc:     Palmer Dabbelt <palmer@dabbelt.com>, Arnd Bergmann <arnd@arndb.de>,
         "the arch/x86 maintainers" <x86@kernel.org>,
         Guo Ren <guoren@linux.alibaba.com>
 Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:j2ac7wj3LsCM9f+9e4oJASCScxFtNHRtjDDmqr4iy577NRpRpAF
- bMlnZKMV2DYLGVHn0K8JkZd3T2GqO0MNYXz6fcH0qw593jQUksbXGnoN9YSzPzIKe/+5lR6
- vkhBO4+bgoTilrYFReGT0M6jgFRRpZLN5x34QH1WXbatlFvqzaiqNUUsFz12Ol1tTe4FtAC
- rXedzAAJ/vw3lOUWSKspw==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:lXSZfcmtm/Q=:SRkDkTuRkxkElxz6iLbS59
- GIp6kV1MlGEO3mJBtnAbsuOWkQw4kQj/9qsIc+2rcwTpPcav4RPYAGNqu9DqJTWdxcTXNf9dC
- /xmtASxwkvFd4AzugE3Q4gpYN25r9TIZSzjGzEARt0BEGr1ApLRzz7WVuXzGIAYyPiS9XTJoe
- eAgovehaJOZ330IGzXZ7LSk/JNIA3CK+JRDrC0CNIW5kOdMvm9iW41PchyrvZfZe2C594XuH3
- xak/xHfeJFO/2JymqAgswcgw1XUNz8vvfP35bBQ8p3RasPTraw35wKH4EOAn3q26ZFY9w1B9W
- m5gfQHyMh/VPHG2tsWMSoTlax9ph7UhUiN5gh/k58YOsLKyT6ISze7pnBHwhNmXssr8ki0MfD
- pl8/zYlSJ/JiUuODbPcdOT+CTxz252Vsawl+h/vKIPNIY/YzuehZpomjExbGFDZE3fF3h/Rhq
- A/nOx3JB6I9b2My0LG25SOp4uLRaZFobO431tfN+WFR2ibA9IcLJKUCbE6sG3WE3Y1qmuQzNt
- Z1EUZgbjxhoGlLmVxYCxz/lCYk6oWSiHqdZYH6ndPu+P5/ntPFz3hoYDtRbNtVBis/VJaZ+95
- +dOEJFKQMU6hl7wrhwwz2QOoHREd+vGyt67I2d+LwdeR0hwFt6kVEuDRdWRA0r/ZTXIRAzqha
- kDu+CMpRtAKykZ7yJeMkbmM6HFCFbOOWfSJ7PcOd5hGhEobjmAW8MWA+WR2EtUy6CERoxoNMa
- LFarC1NWQZdjgZZ4YJaiE+StPfkuerPENJADsFQ3xCcuHphZVRRO6oFl3BBsfigYILDnoloM8
- 3fCM88jEaxZcsKibADiiJb3hBMbiH9Ib9PhlY1WMb5esQikAcg=
+X-Provags-ID: V03:K1:MBzIprHDOa3SzB0+T5ChBSzej2u80ojeEpq+xqkuQ/Prskszuvt
+ WumxaLuEb2Iw69vjaRrK0/eWb637CDSakwighP8kzBauYNjUK9QeQYk4GNE4AmdqGoApl94
+ t7zfqtrO8ovpxYARSK6Mj6mDIp/UVF2jgh/wIA45A7ZVNMOV3Za+W64D6iq0lANeblVzewO
+ rYS9CfUWvLDx+GNZMBxCQ==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:4ERhXve4t1s=:IxauRkgBG6ugw1kR1AGhn+
+ yxsT1aRhPpbjmDMj153stbnHDb33GhpiQR4zkDstTGiSKu1bA+QJrPodiMjUAwCi73ibDitTO
+ z7HDuqFdh+m6meGe/h3SUGuzUWJi5eJxWYoUEJEcIx8Do54vM5gppPAvru8GV4pyiJK5AfPZa
+ Rkvi4D3vgTgq1jKOv6gb/POxnbIHGati+qg/ilIwCrWWv0TbNV6PJxd61NABcRhfZAFQzaWJZ
+ 3GJm6TpUT6XQQW+HwiMEB14Q28dmtuKtEt28Fd7yD7jaEkzIeKSlXv6Vg0RK/olNeW2E2DKLP
+ J7PemXNSl7tuMp5ryDj4fTU58wkGrQ3zhRJGgsn2pqLTjUKEonb+/IWr7NYGUcotc3pRsAJJD
+ r/OhBnIE1SYQoAoLj3Q/3ovX5j8iLMhNP7XTsndoWBXjD9s3oXPAwwZjSDhFAP6KAnazBydQ9
+ CSuHBWJ3TWBkjgo/lIprMiAMUzENCfFXKuBFkngvR5Q0i6x96gXTvIyFCqSUnOJbLeVPlt8fz
+ LGUowoX+h52XYTJEc/J3Tnf/ighrjnXkwfvFlZuWLt4TLW9oIFa10hGwErAck0S5/ipLJ2UCe
+ 2j9ehotKy/DlMGj4nUudWbl1bl+5GS6UHHMV8ctN/hVLBCyiljUZC9pYh5joEU9dBYLbOkSpZ
+ MPtUtU4RA3G9JZsNQvyjmu2sh1x0v1OqDQyrn/Mn7KVDFJNneXz8ZeI3OLMSQYAN9vdjw4Uny
+ V8dAbGtfPrtFr/Fqdenty1vpfkIs2t+cUGfumkdT+kQZsZYWWQWzvCyhuSxQTmgJx9f9p1aW2
+ A401KvBkCk2SBYZpgBZv9ZuUdndRvyEvlkXInIOobnDyvaHRcU=
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
@@ -76,29 +75,15 @@ On Thu, Jan 20, 2022 at 8:39 AM <guoren@kernel.org> wrote:
 >
 > From: Guo Ren <guoren@linux.alibaba.com>
 >
-> Current riscv doesn't support the 32bit KVM/arm API. Let's make it
-> clear by not selecting KVM_COMPAT.
+> Implement compat_setup_rt_frame for sigcontext save & restore. The
+> main process is the same with signal, but the rv32 pt_regs' size
+> is different from rv64's, so we needs convert them.
 >
 > Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
-> ---
->  virt/kvm/Kconfig | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/virt/kvm/Kconfig b/virt/kvm/Kconfig
-> index f4834c20e4a6..a8c5c9f06b3c 100644
-> --- a/virt/kvm/Kconfig
-> +++ b/virt/kvm/Kconfig
-> @@ -53,7 +53,7 @@ config KVM_GENERIC_DIRTYLOG_READ_PROTECT
->
->  config KVM_COMPAT
->         def_bool y
-> -       depends on KVM && COMPAT && !(S390 || ARM64)
-> +       depends on KVM && COMPAT && !(S390 || ARM64 || RISCV)
+> Signed-off-by: Guo Ren <guoren@kernel.org>
+> Cc: Arnd Bergmann <arnd@arndb.de>
 
-Maybe this should be flipped around into a positive list now?
-The remaining architectures would be mips, powerpc and x86, but it's unclear
-if this actually meant to work on all of them, or any potential ones
-added in the
-future.
+I hope someone else can properly review this part, it's not my area
+but it looks complex enough that it could bring subtle bugs.
 
        Arnd

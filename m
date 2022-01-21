@@ -2,134 +2,119 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AD92FC43217
-	for <linux-mips@archiver.kernel.org>; Fri, 21 Jan 2022 09:17:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8BEC2C433FE
+	for <linux-mips@archiver.kernel.org>; Fri, 21 Jan 2022 09:22:38 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244436AbiAUJRY (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 21 Jan 2022 04:17:24 -0500
-Received: from esa2.hgst.iphmx.com ([68.232.143.124]:9289 "EHLO
-        esa2.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1379698AbiAUJRW (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Fri, 21 Jan 2022 04:17:22 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1642756642; x=1674292642;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=DDt33//J7HC81vPepGQWceRVhDsuFSNWZ9d7bVsT2sk=;
-  b=cYTr5QDlqnvFLR65W0wYsf6+AbHn/zxLKn0C8USNs2di9MjatVpHLJAB
-   bOshWTNpYqaprNLuaGzuFYC1nVV9Yy8YKDnnZ+gOiSR+UfE0si6bwDr+I
-   VfO7v/JKjoqt/BVg8+xlfgNvlIFmA2eaMutILIdDRTUrv+2oDu1hA+FMh
-   LxerqwHEn/HUPbGxy3QdlEz+VFHCCJHY4WHNd/KH2/CIhOvrE8Tg+p3g0
-   Ito5yOw4rQDtZyWPqAY32LgAkDwgkizvcNuxqBO9Rm9Sa21o3cRSZQOqb
-   zTwUcWhvIsxT9e5hc1w/h0bSzL/t7rki9hzIh1Odvsa7jk6mhswy//7v6
-   w==;
-X-IronPort-AV: E=Sophos;i="5.88,304,1635177600"; 
-   d="scan'208";a="295096772"
-Received: from uls-op-cesaip02.wdc.com (HELO uls-op-cesaep02.wdc.com) ([199.255.45.15])
-  by ob1.hgst.iphmx.com with ESMTP; 21 Jan 2022 17:17:17 +0800
-IronPort-SDR: p8KcA42SA+tTtI5KbEPa3yH5RdpXDsQoLxNVfc1lKLed27uFNDEdZlcy+RON8lZ08kv2hFZFKU
- J1k4ViwM7K32Qq26MhVOi1lCZCo3ffI66K+mGi6uYh+YF88sr2VYYCO+P40OnBhQI3uOiHXBfu
- d1dtlQGpeBLV5boMJTdQRQr1SDy0WdQ4r9mpua//lgi1fmCnDdCFXsd1qzJtbqZe1LHktnTui8
- mQnqEwM96zaevQl0ofeoQlHHZAA8Ks5T6dcz6gogp/sNwRnOcO8g7JSfV8YtJVDlhenxcHbXII
- ferBjll4NPhpxHMTCHhiGDUB
-Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
-  by uls-op-cesaep02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jan 2022 00:49:28 -0800
-IronPort-SDR: ecuh9msgzq3y/HYUbAUFFQBF4AcDjEeOjxMnEh/d7Xj9Z4y14NLwCa6gVUiXdZVdW7SOX7tQ6G
- VptrncPrcnbzuUdXin1+JYfRGUJh0tXno3hk0qiHFLZQIkmRyJ2lSkxK4e2+WdVfA/uL3ySYFB
- V8R6QJqoDi89tmNxHYz8xDDU7TTfSMQvh6GRzR9APo3wHO6y+BKhUWugnxWZ0BnVKUhmgJmWQi
- ah/i16+ZEMQEeZZheeSPix/N+35uDmINyJ7ScYpvyZJdnK7Bu3Jf8kRjtOrCnT29PbUP/FFpJb
- XcY=
-WDCIronportException: Internal
-Received: from usg-ed-osssrv.wdc.com ([10.3.10.180])
-  by uls-op-cesaip02.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jan 2022 01:17:17 -0800
-Received: from usg-ed-osssrv.wdc.com (usg-ed-osssrv.wdc.com [127.0.0.1])
-        by usg-ed-osssrv.wdc.com (Postfix) with ESMTP id 4JgDKm3vjZz1SVny
-        for <linux-mips@vger.kernel.org>; Fri, 21 Jan 2022 01:17:16 -0800 (PST)
-Authentication-Results: usg-ed-osssrv.wdc.com (amavisd-new); dkim=pass
-        reason="pass (just generated, assumed good)"
-        header.d=opensource.wdc.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=
-        opensource.wdc.com; h=content-transfer-encoding:content-type
-        :in-reply-to:organization:from:references:to:content-language
-        :subject:user-agent:mime-version:date:message-id; s=dkim; t=
-        1642756635; x=1645348636; bh=DDt33//J7HC81vPepGQWceRVhDsuFSNWZ9d
-        7bVsT2sk=; b=JJ1bWH54T0ozCRDNFOawIcDYYrXmiS6mLF3bufMWI8NIa+2kaQT
-        gCBgwenjhfSIESElInLy4f7hnR7B/c8AlmdP0YJlB/yBcj4ZSDRucj/ARZ8iebTx
-        fX4cav++QB5+nrjZ/xNlR7WsOefucQ/VKRddYsk1OsSGfjMxLK9ouF+vHs+ICHA7
-        QaQ2sHdGGswVwNNN4/NAuldiTPB3O2e4rjI+PHGvCgubY6wPSEdLOP7NfwwXL43W
-        0XkAgLTCQC9ZIavzM31zb7IlI4uGbI4OgvYnMIVfBXIQVP013Dxgw+JTtTEtRqj5
-        CB028YmS/z+ll5kfBZyeWV7wOCiloVbazWA==
-X-Virus-Scanned: amavisd-new at usg-ed-osssrv.wdc.com
-Received: from usg-ed-osssrv.wdc.com ([127.0.0.1])
-        by usg-ed-osssrv.wdc.com (usg-ed-osssrv.wdc.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id q-OYoiNV1TeX for <linux-mips@vger.kernel.org>;
-        Fri, 21 Jan 2022 01:17:15 -0800 (PST)
-Received: from [10.225.54.48] (unknown [10.225.54.48])
-        by usg-ed-osssrv.wdc.com (Postfix) with ESMTPSA id 4JgDKk0DRvz1RvlN;
-        Fri, 21 Jan 2022 01:17:13 -0800 (PST)
-Message-ID: <350720e8-9b78-bd24-5c60-602076610bf4@opensource.wdc.com>
-Date:   Fri, 21 Jan 2022 18:17:12 +0900
+        id S1349310AbiAUJWi (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 21 Jan 2022 04:22:38 -0500
+Received: from ams.source.kernel.org ([145.40.68.75]:41276 "EHLO
+        ams.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238087AbiAUJWh (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Fri, 21 Jan 2022 04:22:37 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 5FF73B81F86;
+        Fri, 21 Jan 2022 09:22:35 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0F944C340E7;
+        Fri, 21 Jan 2022 09:22:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1642756954;
+        bh=DoEBSYVdhxCk2hRPozcTctknq4n34sTJPxtSYV1nfhs=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=Rect2n4o+iX3RzSuMqm7blYH7Jp/hn6KvYVHNZi4gBL8iFIvMsCmxh1McTEwDN7si
+         Jp36PSgZTxLoEYXNkuZPZHbuOSaCX325CmGEKFE7qdL/bJYrG4zQFtGn5SCOJLFLuv
+         L3sc4NOwY7+X2UWdBb2ueG0AClbmiy7IwW458aaaf3XIv3BTv/IAj4XAqFCgdH7ih5
+         t6ToBIUrsVsbMOObBDp9gxf4Mq/Pzd4XB1xuRpofrh2pf52fyeSpwwMuzAAf2V+eki
+         7yzqCn4T+d70ueboR1lGAMbTJ8dL8zQnETPkZDzy+/H5QLqca4OHltjQ5kVikRSe2h
+         DVpmSiH6xAKgg==
+Received: by mail-ua1-f46.google.com with SMTP id 2so15760319uax.10;
+        Fri, 21 Jan 2022 01:22:34 -0800 (PST)
+X-Gm-Message-State: AOAM53196M1cZscAyKE2qAvkrAM3e+mKaqv9NIpY7NsFl6bZ8pNSBJ5p
+        JUbWbLwtnhhEob97KdWyPRCy46GVGgmGMTI5Qh8=
+X-Google-Smtp-Source: ABdhPJy/0MHzL1Lj83ABpPKlmasRjxPdpSw7edTfCXcU+fXON/ztRB09l8EfH009hsjqC4mDy1GaKsQom5NTP4rqtk4=
+X-Received: by 2002:a05:6102:34ec:: with SMTP id bi12mr1057047vsb.51.1642756953041;
+ Fri, 21 Jan 2022 01:22:33 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
- Gecko/20100101 Thunderbird/91.5.0
-Subject: Re: [next] mips: cavium_octeon_defconfig: pata_octeon_cf.c:598:23:
- error: passing argument 1 of 'trace_ata_bmdma_stop' from incompatible pointer
- type
-Content-Language: en-US
-To:     Naresh Kamboju <naresh.kamboju@linaro.org>
-Cc:     "open list:LIBATA SUBSYSTEM (Serial and Parallel ATA drivers)" 
-        <linux-ide@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        linux-mips@vger.kernel.org,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        regressions@lists.linux.dev, lkft-triage@lists.linaro.org,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Zeal Robot <zealci@zte.com.cn>,
-        Minghao Chi <chi.minghao@zte.com.cn>,
-        CGEL ZTE <cgel.zte@gmail.com>
-References: <CA+G9fYtq0wzSeG8YG-a+=KrbdWqHJMXk1hvq0FKeAvj9sZAK2g@mail.gmail.com>
- <6249735f-e6b7-1331-eb2b-361bb17d6115@opensource.wdc.com>
- <CA+G9fYu__OOvk-ESXoOqbd-Lk+CmO8CSQ8chEFf3MyeTjKtp9g@mail.gmail.com>
-From:   Damien Le Moal <damien.lemoal@opensource.wdc.com>
-Organization: Western Digital
-In-Reply-To: <CA+G9fYu__OOvk-ESXoOqbd-Lk+CmO8CSQ8chEFf3MyeTjKtp9g@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20220120073911.99857-9-guoren@kernel.org> <CAK8P3a0LxB3we9wHOa4OPmNow6wz5NP49zeYhh7QXNv-MiR8UA@mail.gmail.com>
+ <CAJF2gTQVUF4LSO0a6_MV8x-UAiJw32pAFyS1oPNLXhcEaemzqg@mail.gmail.com> <CAK8P3a1sOejkdOyoRUfw4ESS7ewX_8Wj9tQNrZ40OiuDqJnrmw@mail.gmail.com>
+In-Reply-To: <CAK8P3a1sOejkdOyoRUfw4ESS7ewX_8Wj9tQNrZ40OiuDqJnrmw@mail.gmail.com>
+From:   Guo Ren <guoren@kernel.org>
+Date:   Fri, 21 Jan 2022 17:22:22 +0800
+X-Gmail-Original-Message-ID: <CAJF2gTSzMym_PS36JgpWLQUdAO3nq+z7mdDWRT=EzQq+waPSpA@mail.gmail.com>
+Message-ID: <CAJF2gTSzMym_PS36JgpWLQUdAO3nq+z7mdDWRT=EzQq+waPSpA@mail.gmail.com>
+Subject: Re: [PATCH V3 08/17] riscv: compat: syscall: Add compat_sys_call_table
+ implementation
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Palmer Dabbelt <palmer@dabbelt.com>,
+        Anup Patel <anup@brainfault.org>,
+        gregkh <gregkh@linuxfoundation.org>,
+        liush <liush@allwinnertech.com>, Wei Fu <wefu@redhat.com>,
+        Drew Fustini <drew@beagleboard.org>,
+        Wang Junqiang <wangjunqiang@iscas.ac.cn>,
+        Christoph Hellwig <hch@lst.de>,
+        Christoph Hellwig <hch@infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        linux-csky@vger.kernel.org,
+        linux-s390 <linux-s390@vger.kernel.org>,
+        sparclinux <sparclinux@vger.kernel.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        inux-parisc@vger.kernel.org,
+        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        Guo Ren <guoren@linux.alibaba.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On 2022/01/21 17:58, Naresh Kamboju wrote:
->> I just posted a fix. As I do not have the environment to compile test
->> mips, could someone test please ? I will send the fix to Linus asap
->> after confirmation that it is OK.
-> 
-> Please share your patch / patch link. I will test it with tuxmake.
+On Fri, Jan 21, 2022 at 4:57 PM Arnd Bergmann <arnd@arndb.de> wrote:
+>
+> On Fri, Jan 21, 2022 at 7:25 AM Guo Ren <guoren@kernel.org> wrote:
+> > On Thu, Jan 20, 2022 at 10:43 PM Arnd Bergmann <arnd@arndb.de> wrote:
+> > > On Thu, Jan 20, 2022 at 8:39 AM <guoren@kernel.org> wrote:
+>
+> > > Are you sure these are the right calling conventions? According to [1],
+> > > I think the 64-bit argument should be in an aligned pair of registers,
+> > > which means you need an extra pad argument as in the arm64 version
+> > > of these functions. Same for ftruncate64, pread64, pwrite64, and
+> > > readahead.
+> >
+> > [1] has abandoned.
+> >
+> > See:
+> > https://github.com/riscv-non-isa/riscv-elf-psabi-doc/blob/master/riscv-cc.adoc
+>
+> Ok, thanks for the reference, I picked the first one that came up in
+> a google search and didn't expect this to ever have changed.
+>
+> > > I still feel like these should be the common implementations next to the
+> > > native handlers inside of an #ifdef CONFIG_COMPAT.
+> > >
+> > > The names clash with the custom versions defined for powerpc and sparc,
+> > > but the duplicates look compatible if you can account for the padded
+> > > argument and the lo/hi order of the pairs, so could just be removed here
+> > > (all other architectures use custom function names instead).
+> > I would try it later.
+>
+> This becomes easier then, as powerpc and sparc already have the non-padded
+> calling conventions, so you could just generalize those without looking at
+> the other architectures or adding the padding. The powerpc version already
+> has the dual-endian version, so using that will work on big-endian sparc and
+> on little-endian riscv as well, though we may need to come up with a better name
+> for the arg_u32/arg_u64/merge_64 macros in order to put that into a global
+> header without namespace collisions.
+Sounds good, thanks!
 
-I posted on linux-ide and CC-ed linux-mips:
+>
+>          Arnd
 
-https://marc.info/?l=linux-ide&m=164275458614058&w=2
-
-> 
-> you may also give a try with these easy steps.
-> 
-> # To install tuxmake on your system globally:
-> # sudo pip3 install -U tuxmake
-> #
-> # See https://docs.tuxmake.org/ for complete documentation.
-> # Original tuxmake command with fragments listed below.
-> 
->  tuxmake --runtime podman --target-arch mips --toolchain gcc-10
-> --kconfig cavium_octeon_defconfig
-
-I saw this in the compilation error report. Will try this.
-
-> 
-> - Naresh
 
 
 -- 
-Damien Le Moal
-Western Digital Research
+Best Regards
+ Guo Ren
+
+ML: https://lore.kernel.org/linux-csky/

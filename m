@@ -2,187 +2,124 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6FD15C433EF
-	for <linux-mips@archiver.kernel.org>; Mon, 24 Jan 2022 19:27:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 77445C433F5
+	for <linux-mips@archiver.kernel.org>; Mon, 24 Jan 2022 22:08:19 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348128AbiAXT1y (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 24 Jan 2022 14:27:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50466 "EHLO
+        id S1580013AbiAXWIH (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 24 Jan 2022 17:08:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55398 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350847AbiAXTZZ (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Mon, 24 Jan 2022 14:25:25 -0500
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 722DDC02B86E;
-        Mon, 24 Jan 2022 11:12:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:Content-Type
-        :In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:
-        Sender:Reply-To:Content-ID:Content-Description;
-        bh=630GZf2pl7dUC09jByd2lRVEJ71rHFIBrI9U48V8bzA=; b=l0WJXVDaYcmJ3/V3RWFezwDDer
-        C44GbJGe7OjLN0KX4PaF1IWCv0kAoNTjNLYvwuH+jZell6Ad2JgbYr55poxlvv5DL8vopnnR/7kMY
-        vn/kveSmXCK7I5QKtfyV0XYyRC15LtirFVJpZLpus0tksAvWxi6l/uO/J6VOZyNLBn7KViVZO+pmi
-        tCMavBPk+ocRsC6yujO5bPnGRcZhKLBisgW7TtJG3/FxTW3BAp4mXk9rBm2YHM6MqRSSbpG11QU3K
-        iU0eefreID+Mspii6FT8TND1o3Wgkgcez5ouyqVdYFPOacbzF1GFPC3zVTqT0YP/NTts2M908BtFX
-        6ETemMoQ==;
-Received: from [2601:1c0:6280:3f0::aa0b]
-        by desiato.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1nC4l3-003F5b-C0; Mon, 24 Jan 2022 19:12:05 +0000
-Message-ID: <aca104cf-5f5f-b696-754a-35e62dbe64c3@infradead.org>
-Date:   Mon, 24 Jan 2022 11:11:56 -0800
+        with ESMTP id S1572946AbiAXVmw (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Mon, 24 Jan 2022 16:42:52 -0500
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16B4EC0419ED
+        for <linux-mips@vger.kernel.org>; Mon, 24 Jan 2022 12:31:45 -0800 (PST)
+Received: by mail-lf1-x132.google.com with SMTP id x11so52439386lfa.2
+        for <linux-mips@vger.kernel.org>; Mon, 24 Jan 2022 12:31:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=+d4eE8vTSmnTfcsF06A9ijaErxq3MGUA0JFQlf6Ufdo=;
+        b=iGTTMnQUe6uCwdHf5Y3Mp1+38vh4KuCC/+c8hZNfhXimk0D0Ayh2BU70jO35jFEpcK
+         cOCeEvEQ/Iraq9AGogYQpDBg9mbz93t+A86PMxJjW/CWDucXsgesD2+Tv37M9X6yB42r
+         oPQ/Wbltm6WTxGzZ4T8pnqtIReASplBaKYxk/kaH4hF4UeEYZN0/G79oE7sRD7//rrfd
+         ixrXNgbKQmnOKvkmf+amiE4RxQeQY1LgUmnSGznOHsOKgzquLg03V1MyNBpe0Z1F4JSV
+         m1ayHjlKDHflrMB6jVZ4FApQ7CpB0So9LjO8/+TwRhvQMe0SPR61YdGgKWXFBpXOWlrD
+         hkJg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=+d4eE8vTSmnTfcsF06A9ijaErxq3MGUA0JFQlf6Ufdo=;
+        b=5strwqaiCal3bDZIA0Bycb9kpAAAP/KVsY6n9ObVtlcY4LIVBUKjkdjccctY2rJfV2
+         m54Id6OCZmDN01YW2fo6E9aCj99NtiVY0C8T19oaou4uL4pAPYBTTBfXhozzSho6tLqY
+         XgA9JaUNDPpBF483hp2GM+h0tubUQ+UBAzRKHjzQnqP215PQxf+BfNJ4HPPyqDijPp+v
+         bK+LoMrnLFNLVNt+/ebGeGE0wdvzqTnVHM1eij6Dziu2eVictPxvWa/DEmFuBJw7mbBL
+         6id622TJFadjgORhLPatobhxWZ/vqQewTBhtBPiWVSVAcAH9fvLfxTiAH5nrBI+8Us6j
+         T8/g==
+X-Gm-Message-State: AOAM530ckwBUWBsbSvYle9aI+vXGy+qDIFV0TICV5JLlCpa5c2vt9b1t
+        Ogr0xFV6+7p9D18tlSJDa2zRCrqhqBhPQebKYmusp2HIkGa7jg==
+X-Google-Smtp-Source: ABdhPJwKfa6Ns5aNibD/NX7BlH7zp+cXMKbhPhjC0LcBq64TG0tqzj8/gnpWVJ+3dgyOXXYYuTSKDsNwY9wFloSu3bk=
+X-Received: by 2002:a05:6512:308d:: with SMTP id z13mr13958467lfd.523.1643056303222;
+ Mon, 24 Jan 2022 12:31:43 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.5.0
-Subject: Re: Build regressions/improvements in v5.17-rc1
-Content-Language: en-US
-To:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        Alex Deucher <alexdeucher@gmail.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        ALSA Development Mailing List <alsa-devel@alsa-project.org>,
-        KVM list <kvm@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        linux-um <linux-um@lists.infradead.org>,
-        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        Lakshmi Sowjanya D <lakshmi.sowjanya.d@intel.com>,
-        sparclinux <sparclinux@vger.kernel.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        "Tobin C. Harding" <me@tobin.cc>
-References: <20220123125737.2658758-1-geert@linux-m68k.org>
- <alpine.DEB.2.22.394.2201240851560.2674757@ramsan.of.borg>
- <CADnq5_MUq0fX7wMLJyUUxxa+2xoRinonL-TzD8tUhXALRfY8-A@mail.gmail.com>
- <CAMuHMdWUWqHYbbavtMT-XAD_sarDPC5xnc3c0pX1ZAh3Wuzuzg@mail.gmail.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <CAMuHMdWUWqHYbbavtMT-XAD_sarDPC5xnc3c0pX1ZAh3Wuzuzg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20220120214001.1879469-1-nathan@kernel.org>
+In-Reply-To: <20220120214001.1879469-1-nathan@kernel.org>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Mon, 24 Jan 2022 12:31:31 -0800
+Message-ID: <CAKwvOd=4QBW5uFLM7zbHfG+5499tT_zqBTaZQgzqegmuq_5+MQ@mail.gmail.com>
+Subject: Re: [PATCH 1/2] MIPS: Loongson64: Clean up use of cc-ifversion
+To:     Nathan Chancellor <nathan@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc:     Huacai Chen <chenhuacai@kernel.org>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        llvm@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
+On Thu, Jan 20, 2022 at 1:40 PM Nathan Chancellor <nathan@kernel.org> wrote:
+>
+> This Makefile checks that GCC is 4.9 or newer, which is redundant after
+> commit 76ae847497bc ("Documentation: raise minimum supported version of
+> GCC to 5.1"), so cc-option can be removed.
+>
+> Clang does not support -march=loongson3a so it needs to continue to use
+> -march=mips64r2, along with binutils less than 2.25, so check that both
+> GCC and binutils 2.25 or newer are being used before using
+> -march=loongson3a. These flags do not need to be checked with cc-option
+> anymore because all GCC versions support -march=loongson3a and
+> -march=mips64r2 and all clang versions support -march=mips64r2.
+>
+> Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+
+Thanks for the patch. I wonder why `_MIPS_ISA` only seems to be set at
+all for `-march=loongson3a` AFAICT, though that question is orthogonal
+to this patch. Perhaps the Loongson or MIPS maintainers know more?
+Otherwise seems like most uses of _MIPS_ISA can either be deleted or
+simplified now.
+
+Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+
+> ---
+>  arch/mips/loongson64/Platform | 13 +++----------
+>  1 file changed, 3 insertions(+), 10 deletions(-)
+>
+> diff --git a/arch/mips/loongson64/Platform b/arch/mips/loongson64/Platform
+> index 3e660d6d3c2b..981d3abc150e 100644
+> --- a/arch/mips/loongson64/Platform
+> +++ b/arch/mips/loongson64/Platform
+> @@ -12,17 +12,10 @@ cflags-$(CONFIG_CPU_LOONGSON64)     += -Wa,--trap
+>  # by GAS.  The cc-option can't probe for this behaviour so -march=loongson3a
+>  # can't easily be used safely within the kbuild framework.
+>  #
+> -ifeq ($(call cc-ifversion, -ge, 0409, y), y)
+> -  ifeq ($(call ld-ifversion, -ge, 22500, y), y)
+> -    cflags-$(CONFIG_CPU_LOONGSON64)  += \
+> -      $(call cc-option,-march=loongson3a -U_MIPS_ISA -D_MIPS_ISA=_MIPS_ISA_MIPS64)
+> -  else
+> -    cflags-$(CONFIG_CPU_LOONGSON64)  += \
+> -      $(call cc-option,-march=mips64r2,-mips64r2 -U_MIPS_ISA -D_MIPS_ISA=_MIPS_ISA_MIPS64)
+> -  endif
+> +ifeq ($(CONFIG_CC_IS_GCC)$(call ld-ifversion, -ge, 22500, y), yy)
+> +  cflags-$(CONFIG_CPU_LOONGSON64) += -march=loongson3a -U_MIPS_ISA -D_MIPS_ISA=_MIPS_ISA_MIPS64
+>  else
+> -    cflags-$(CONFIG_CPU_LOONGSON64)  += \
+> -      $(call cc-option,-march=mips64r2,-mips64r2 -U_MIPS_ISA -D_MIPS_ISA=_MIPS_ISA_MIPS64)
+> +  cflags-$(CONFIG_CPU_LOONGSON64) += -march=mips64r2
+>  endif
+>
+>  # Some -march= flags enable MMI instructions, and GCC complains about that
+>
+> base-commit: 2c271fe77d52a0555161926c232cd5bc07178b39
+> --
+> 2.34.1
+>
 
 
-On 1/24/22 10:55, Geert Uytterhoeven wrote:
-> Hi Alex,
-> 
-> On Mon, Jan 24, 2022 at 7:52 PM Alex Deucher <alexdeucher@gmail.com> wrote:
->> On Mon, Jan 24, 2022 at 5:25 AM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
->>> On Sun, 23 Jan 2022, Geert Uytterhoeven wrote:
->>>>  + /kisskb/src/drivers/gpu/drm/amd/amdgpu/../amdkfd/kfd_topology.c: error: control reaches end of non-void function [-Werror=return-type]:  => 1560:1
->>
->> I don't really see what's going on here:
->>
->> #ifdef CONFIG_X86_64
->> return cpu_data(first_cpu_of_numa_node).apicid;
->> #else
->> return first_cpu_of_numa_node;
->> #endif
-> 
-> Ah, the actual failure causing this was not included:
-> 
-> In file included from /kisskb/src/arch/x86/um/asm/processor.h:41:0,
->                  from /kisskb/src/include/linux/mutex.h:19,
->                  from /kisskb/src/include/linux/kernfs.h:11,
->                  from /kisskb/src/include/linux/sysfs.h:16,
->                  from /kisskb/src/include/linux/kobject.h:20,
->                  from /kisskb/src/include/linux/pci.h:35,
->                  from
-> /kisskb/src/drivers/gpu/drm/amd/amdgpu/../amdkfd/kfd_topology.c:25:
-> /kisskb/src/drivers/gpu/drm/amd/amdgpu/../amdkfd/kfd_topology.c: In
-> function 'kfd_cpumask_to_apic_id':
-> /kisskb/src/arch/um/include/asm/processor-generic.h:103:18: error:
-> called object is not a function or function pointer
->  #define cpu_data (&boot_cpu_data)
->                   ^
-> /kisskb/src/drivers/gpu/drm/amd/amdgpu/../amdkfd/kfd_topology.c:1556:9:
-> note: in expansion of macro 'cpu_data'
->   return cpu_data(first_cpu_of_numa_node).apicid;
->          ^
-> /kisskb/src/drivers/gpu/drm/amd/amdgpu/../amdkfd/kfd_topology.c:1560:1:
-> error: control reaches end of non-void function [-Werror=return-type]
->  }
->  ^
-
-ah yes, UML.
-I have a bunch of UML fixes that I have been hesitant to post.
-
-This is one of them.
-What do people think about this?
-
-thanks.
-
----
-From: Randy Dunlap <rdunlap@infradead.org>
-
-
-../drivers/gpu/drm/amd/amdgpu/../amdkfd/kfd_topology.c:1556:9: note: in expansion of macro ‘cpu_data’
-  return cpu_data(first_cpu_of_numa_node).apicid;
-         ^~~~~~~~
-../drivers/gpu/drm/amd/amdgpu/../amdkfd/kfd_topology.c:1560:1: error: control reaches end of non-void function [-Werror=return-type]
-
-../drivers/gpu/drm/amd/amdgpu/../amdkfd/kfd_crat.c: In function ‘kfd_fill_iolink_info_for_cpu’:
-../arch/um/include/asm/processor-generic.h:103:19: error: called object is not a function or function pointer
- #define cpu_data (&boot_cpu_data)
-                  ~^~~~~~~~~~~~~~~
-../drivers/gpu/drm/amd/amdgpu/../amdkfd/kfd_crat.c:1688:27: note: in expansion of macro ‘cpu_data’
-  struct cpuinfo_x86 *c = &cpu_data(0);
-                           ^~~~~~~~
-../drivers/gpu/drm/amd/amdgpu/../amdkfd/kfd_crat.c:1691:7: error: dereferencing pointer to incomplete type ‘struct cpuinfo_x86’
-  if (c->x86_vendor == X86_VENDOR_AMD)
-       ^~
-../drivers/gpu/drm/amd/amdgpu/../amdkfd/kfd_crat.c:1691:23: error: ‘X86_VENDOR_AMD’ undeclared (first use in this function); did you mean ‘X86_VENDOR_ANY’?
-  if (c->x86_vendor == X86_VENDOR_AMD)
-                       ^~~~~~~~~~~~~~
-                       X86_VENDOR_ANY
-
-../drivers/gpu/drm/amd/amdgpu/../amdkfd/kfd_crat.c: In function ‘kfd_create_vcrat_image_cpu’:
-../drivers/gpu/drm/amd/amdgpu/../amdkfd/kfd_crat.c:1742:11: warning: unused variable ‘entries’ [-Wunused-variable]
-  uint32_t entries = 0;
-
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
----
- drivers/gpu/drm/amd/amdkfd/kfd_crat.c     |    6 +++---
- drivers/gpu/drm/amd/amdkfd/kfd_topology.c |    2 +-
- 2 files changed, 4 insertions(+), 4 deletions(-)
-
---- linux-next-20220107.orig/drivers/gpu/drm/amd/amdkfd/kfd_topology.c
-+++ linux-next-20220107/drivers/gpu/drm/amd/amdkfd/kfd_topology.c
-@@ -1552,7 +1552,7 @@ static int kfd_cpumask_to_apic_id(const
- 	first_cpu_of_numa_node = cpumask_first(cpumask);
- 	if (first_cpu_of_numa_node >= nr_cpu_ids)
- 		return -1;
--#ifdef CONFIG_X86_64
-+#if defined(CONFIG_X86_64) && !defined(CONFIG_UML)
- 	return cpu_data(first_cpu_of_numa_node).apicid;
- #else
- 	return first_cpu_of_numa_node;
---- linux-next-20220107.orig/drivers/gpu/drm/amd/amdkfd/kfd_crat.c
-+++ linux-next-20220107/drivers/gpu/drm/amd/amdkfd/kfd_crat.c
-@@ -1679,7 +1679,7 @@ static int kfd_fill_mem_info_for_cpu(int
- 	return 0;
- }
- 
--#ifdef CONFIG_X86_64
-+#if defined(CONFIG_X86_64) && !defined(CONFIG_UML)
- static int kfd_fill_iolink_info_for_cpu(int numa_node_id, int *avail_size,
- 				uint32_t *num_entries,
- 				struct crat_subtype_iolink *sub_type_hdr)
-@@ -1738,7 +1738,7 @@ static int kfd_create_vcrat_image_cpu(vo
- 	struct crat_subtype_generic *sub_type_hdr;
- 	int avail_size = *size;
- 	int numa_node_id;
--#ifdef CONFIG_X86_64
-+#if defined(CONFIG_X86_64) && !defined(CONFIG_UML)
- 	uint32_t entries = 0;
- #endif
- 	int ret = 0;
-@@ -1803,7 +1803,7 @@ static int kfd_create_vcrat_image_cpu(vo
- 			sub_type_hdr->length);
- 
- 		/* Fill in Subtype: IO Link */
--#ifdef CONFIG_X86_64
-+#if defined(CONFIG_X86_64) && !defined(CONFIG_UML)
- 		ret = kfd_fill_iolink_info_for_cpu(numa_node_id, &avail_size,
- 				&entries,
- 				(struct crat_subtype_iolink *)sub_type_hdr);
-
-
+-- 
+Thanks,
+~Nick Desaulniers

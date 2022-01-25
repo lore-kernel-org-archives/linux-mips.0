@@ -2,122 +2,103 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E913BC43219
-	for <linux-mips@archiver.kernel.org>; Tue, 25 Jan 2022 22:20:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EF6D6C433EF
+	for <linux-mips@archiver.kernel.org>; Tue, 25 Jan 2022 22:51:00 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233690AbiAYWTw (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 25 Jan 2022 17:19:52 -0500
-Received: from ams.source.kernel.org ([145.40.68.75]:47346 "EHLO
-        ams.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233735AbiAYWTw (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Tue, 25 Jan 2022 17:19:52 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id C86ACB81B76;
-        Tue, 25 Jan 2022 22:19:50 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CD26FC340E7;
-        Tue, 25 Jan 2022 22:19:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1643149189;
-        bh=3ZivQ+FV86iNurkooJ7KOtL0OLNq/84ROVUSZKlyUQk=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=R1bwuR0A6QqrCq/SDFCiXZKLqitK5ygFouhvtwcGnCqmRrB+sA4+WwQX8sTzzvQUN
-         i302fTiAqLA6FD6R8XIGsfnzRLUkfhtF5tWAFnW/PnJLX5JLWRCRaImDxJMOcnEd1f
-         ncOdBckbw2V4fsZ4DTDsciUNrEGo3frRNuwM6skqlVfqLBG3LIWRnXw+nSil75TWl8
-         Aqy95geVO1I9rDUz18e3ql8vQ44KSCSWChZmkAoFKicY3++slU4WnY8NXCkA1Ew542
-         0dmeQb2TbPY5TJIAuS20mMBShWABctXvFngYF2KNe5i4Y+Jz2fU+8ViuXDRapHz8ck
-         4dhQzjVt1Yhfw==
-From:   Nathan Chancellor <nathan@kernel.org>
-To:     Huacai Chen <chenhuacai@kernel.org>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        llvm@lists.linux.dev, Nathan Chancellor <nathan@kernel.org>
-Subject: [PATCH v2 2/2] MIPS: Loongson{2ef,64}: Wrap -mno-branch-likely with cc-option
-Date:   Tue, 25 Jan 2022 15:19:25 -0700
-Message-Id: <20220125221925.3547683-2-nathan@kernel.org>
-X-Mailer: git-send-email 2.35.0
-In-Reply-To: <20220125221925.3547683-1-nathan@kernel.org>
-References: <20220125221925.3547683-1-nathan@kernel.org>
+        id S234398AbiAYWu5 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 25 Jan 2022 17:50:57 -0500
+Received: from elvis.franken.de ([193.175.24.41]:40123 "EHLO elvis.franken.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234546AbiAYWuZ (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Tue, 25 Jan 2022 17:50:25 -0500
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1nCUdn-00055K-00; Tue, 25 Jan 2022 23:50:19 +0100
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id C55C2C10E8; Tue, 25 Jan 2022 20:05:31 +0100 (CET)
+Date:   Tue, 25 Jan 2022 20:05:31 +0100
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Yury Norov <yury.norov@gmail.com>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        =?utf-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        David Laight <David.Laight@aculab.com>,
+        Joe Perches <joe@perches.com>, Dennis Zhou <dennis@kernel.org>,
+        Emil Renner Berthing <kernel@esmil.dk>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
+        Alexey Klimov <aklimov@redhat.com>,
+        linux-kernel@vger.kernel.org, Mark Rutland <mark.rutland@arm.com>,
+        Marc Zyngier <maz@kernel.org>, linux-mips@vger.kernel.org
+Subject: Re: [PATCH 38/54] arch/mips: replace cpumask_weight with
+ cpumask_weight_{eq, ...} where appropriate
+Message-ID: <20220125190531.GA31998@alpha.franken.de>
+References: <20220123183925.1052919-1-yury.norov@gmail.com>
+ <20220123183925.1052919-39-yury.norov@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220123183925.1052919-39-yury.norov@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-This flag is not supported by clang, which results in a warning:
+On Sun, Jan 23, 2022 at 10:39:09AM -0800, Yury Norov wrote:
+> Mips code uses calls cpumask_weight() to compare the weight of
+> cpumask with a given number. We can do it more efficiently with
+> cpumask_weight_{eq, ...} because conditional cpumask_weight may stop
+> traversing the cpumask earlier, as soon as condition is met.
+> 
+> Signed-off-by: Yury Norov <yury.norov@gmail.com>
+> ---
+>  arch/mips/cavium-octeon/octeon-irq.c | 4 ++--
+>  arch/mips/kernel/crash.c             | 2 +-
+>  2 files changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/arch/mips/cavium-octeon/octeon-irq.c b/arch/mips/cavium-octeon/octeon-irq.c
+> index 844f882096e6..914871f15fb7 100644
+> --- a/arch/mips/cavium-octeon/octeon-irq.c
+> +++ b/arch/mips/cavium-octeon/octeon-irq.c
+> @@ -763,7 +763,7 @@ static void octeon_irq_cpu_offline_ciu(struct irq_data *data)
+>  	if (!cpumask_test_cpu(cpu, mask))
+>  		return;
+>  
+> -	if (cpumask_weight(mask) > 1) {
+> +	if (cpumask_weight_gt(mask, 1)) {
+>  		/*
+>  		 * It has multi CPU affinity, just remove this CPU
+>  		 * from the affinity set.
+> @@ -795,7 +795,7 @@ static int octeon_irq_ciu_set_affinity(struct irq_data *data,
+>  	 * This removes the need to do locking in the .ack/.eoi
+>  	 * functions.
+>  	 */
+> -	if (cpumask_weight(dest) != 1)
+> +	if (!cpumask_weight_eq(dest, 1))
+>  		return -EINVAL;
+>  
+>  	if (!enable_one)
+> diff --git a/arch/mips/kernel/crash.c b/arch/mips/kernel/crash.c
+> index 81845ba04835..5b690d52491f 100644
+> --- a/arch/mips/kernel/crash.c
+> +++ b/arch/mips/kernel/crash.c
+> @@ -72,7 +72,7 @@ static void crash_kexec_prepare_cpus(void)
+>  	 */
+>  	pr_emerg("Sending IPI to other cpus...\n");
+>  	msecs = 10000;
+> -	while ((cpumask_weight(&cpus_in_crash) < ncpus) && (--msecs > 0)) {
+> +	while (cpumask_weight_lt(&cpus_in_crash, ncpus) && (--msecs > 0)) {
+>  		cpu_relax();
+>  		mdelay(1);
+>  	}
+> -- 
+> 2.30.2
 
-  clang-14: warning: argument unused during compilation: '-mno-branch-likely' [-Wunused-command-line-argument]
+Acked-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 
-This breaks cc-option, which adds -Werror to make this warning fatal and
-catch flags that are not supported.
-
-Wrap this flag in cc-option so that it does not cause cc-option to fail,
-which can cause randconfigs to be really noisy, due to warnings not
-getting disabled that should be.
-
-Additionally, move the cc-option check to Kconfig so that the check is
-done at configuration time, rather than build time, as builds with no
-configuration change will be quicker because the cc-option call will not
-need to happen in those instances.
-
-Suggested-by: Nick Desaulniers <ndesaulniers@google.com>
-Signed-off-by: Nathan Chancellor <nathan@kernel.org>
----
-
-v1 -> v2: https://lore.kernel.org/r/20220120214001.1879469-2-nathan@kernel.org/
-
-* Move cc-option call to Kconfig (Nick).
-* Also apply to loongson2ef, even though this will not currently build
-  with clang.
-
- arch/mips/Kconfig              | 4 ++++
- arch/mips/loongson2ef/Platform | 3 ++-
- arch/mips/loongson64/Platform  | 3 ++-
- 3 files changed, 8 insertions(+), 2 deletions(-)
-
-diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-index 058446f01487..da6b3e0501a7 100644
---- a/arch/mips/Kconfig
-+++ b/arch/mips/Kconfig
-@@ -3202,6 +3202,10 @@ config MIPS32_N32
- 
- 	  If unsure, say N.
- 
-+config CC_HAS_MNO_BRANCH_LIKELY
-+	def_bool y
-+	depends on $(cc-option,-mno-branch-likely)
-+
- menu "Power management options"
- 
- config ARCH_HIBERNATION_POSSIBLE
-diff --git a/arch/mips/loongson2ef/Platform b/arch/mips/loongson2ef/Platform
-index 50e659aca543..eebabf9df6ac 100644
---- a/arch/mips/loongson2ef/Platform
-+++ b/arch/mips/loongson2ef/Platform
-@@ -41,6 +41,7 @@ cflags-y += $(call cc-option,-mno-loongson-mmi)
- # Loongson Machines' Support
- #
- 
--cflags-$(CONFIG_MACH_LOONGSON2EF) += -I$(srctree)/arch/mips/include/asm/mach-loongson2ef -mno-branch-likely
-+cflags-$(CONFIG_MACH_LOONGSON2EF) += -I$(srctree)/arch/mips/include/asm/mach-loongson2ef
-+cflags-$(CONFIG_CC_HAS_MNO_BRANCH_LIKELY) += -mno-branch-likely
- load-$(CONFIG_LEMOTE_FULOONG2E) += 0xffffffff80100000
- load-$(CONFIG_LEMOTE_MACH2F) += 0xffffffff80200000
-diff --git a/arch/mips/loongson64/Platform b/arch/mips/loongson64/Platform
-index f2a08a185ee2..473404cae1c4 100644
---- a/arch/mips/loongson64/Platform
-+++ b/arch/mips/loongson64/Platform
-@@ -18,5 +18,6 @@ cflags-y += $(call cc-option,-mno-loongson-mmi)
- # Loongson Machines' Support
- #
- 
--cflags-$(CONFIG_MACH_LOONGSON64) += -I$(srctree)/arch/mips/include/asm/mach-loongson64 -mno-branch-likely
-+cflags-$(CONFIG_MACH_LOONGSON64) += -I$(srctree)/arch/mips/include/asm/mach-loongson64
-+cflags-$(CONFIG_CC_HAS_MNO_BRANCH_LIKELY) += -mno-branch-likely
- load-$(CONFIG_CPU_LOONGSON64) += 0xffffffff80200000
 -- 
-2.35.0
-
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]

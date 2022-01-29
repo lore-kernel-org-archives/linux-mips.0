@@ -2,149 +2,132 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B8B04C43217
-	for <linux-mips@archiver.kernel.org>; Sat, 29 Jan 2022 15:23:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 89313C433EF
+	for <linux-mips@archiver.kernel.org>; Sat, 29 Jan 2022 20:34:30 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348103AbiA2PXn (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Sat, 29 Jan 2022 10:23:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36504 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351152AbiA2PXl (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Sat, 29 Jan 2022 10:23:41 -0500
-Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 147FFC061751
-        for <linux-mips@vger.kernel.org>; Sat, 29 Jan 2022 07:23:40 -0800 (PST)
-Received: by mail-lj1-x22f.google.com with SMTP id j14so13248137lja.3
-        for <linux-mips@vger.kernel.org>; Sat, 29 Jan 2022 07:23:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=drummond.us; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=0mCWH6Tux8tcx0O8BuZbvK36ydxh3XeFUHA8Flrblcc=;
-        b=cmvGYiFpo2ar6tVj5q2BCQVYb9k8BBD0XwhyxqAVItAmy2DCdgiftAuj8oc7BBE49Q
-         LjK1fzbe0hOX97nInIogSNxADc9w4GpCfyauU6NFtNktDIG03u61lrQy9hqdUvd6EUft
-         C6I/tHY4kzyBauIRoXYOzo9LGSe929OK0jEzQ59wjAL3By0a+QjA0M9X3G7I1kcoxcb7
-         Q0AdPG8TS8c6yTTOUze5l0qFpdoVitgV/p2s3UNbwqPC0EG+SKAZieLlLnSPMO8rnFD5
-         +FIv54+PLtXCBluE0vkOLnAVfI1OEciJIeE6mtAgIHH1+Z3qSeTB6dFp5Kah63auycAx
-         k05w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=0mCWH6Tux8tcx0O8BuZbvK36ydxh3XeFUHA8Flrblcc=;
-        b=5WP4v2Dl9/pCCHw6leqqaHcGtCfiyYJ7Q5p7v9t+StkY3YSc30F1Hs/TX/E5TPkNhf
-         +gWVIRbA50QYt3F86k6piXCNWr1aXVWGHlX5+5aO890A+HW8oxr7inLmWF44enGnF4c6
-         7r641iyhPTVf1apXZ3Gp6L4H5qD5b3Fu8GN+oJAIjNcWfszWw6I1oH60nyZV0fefdHWy
-         IO2yRtY+ebNuxHKjnip1gaiCLa+lYfbxzAZDBEsKLMre36xLCEnUI6zaS5mO3YMbursi
-         ZYRm7eUWK40+tE3KCx4deyUPWbWCdk5lf2uguo0KnCoAXK/TnHSdE9dtOFd34BsaiTls
-         CzkQ==
-X-Gm-Message-State: AOAM533O5TuB9Us4loiD7y6+tP1HuvRY+l5mfnFB9/UTLOEZhNgM0hFx
-        5IRNGCvDu+jjuGEBmRRP3ZmMyL34iNd39Yr1hAfJ8w==
-X-Google-Smtp-Source: ABdhPJzK4pFoabd9NoIBHHNS2OQ2X0frUhiKWXvHsU/uBjqxnLeu+8dmN2me2gLqvfH4JEfcPiamxCIYMad5ipU8E2c=
-X-Received: by 2002:a2e:994a:: with SMTP id r10mr8482884ljj.254.1643469817879;
- Sat, 29 Jan 2022 07:23:37 -0800 (PST)
+        id S1353121AbiA2Ue3 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Sat, 29 Jan 2022 15:34:29 -0500
+Received: from mail.loongson.cn ([114.242.206.163]:41502 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1353104AbiA2Ue3 (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Sat, 29 Jan 2022 15:34:29 -0500
+Received: from openarena.loongson.cn (unknown [10.20.42.36])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9AxWuC2pPVhqYwFAA--.16809S2;
+        Sun, 30 Jan 2022 04:33:58 +0800 (CST)
+From:   suijingfeng <suijingfeng@loongson.cn>
+To:     Lucas Stach <l.stach@pengutronix.de>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Roland Scheidegger <sroland@vmware.com>,
+        Zack Rusin <zackr@vmware.com>,
+        Christian Gmeiner <christian.gmeiner@gmail.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Rob Herring <robh+dt@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Andrey Zhizhikin <andrey.zhizhikin@leica-geosystems.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        suijingfeng <suijingfeng@loongson.cn>
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org
+Subject: [PATCH 0/1] drm/lsdc: add drm driver support for loongson display controller
+Date:   Sun, 30 Jan 2022 04:33:56 +0800
+Message-Id: <20220129203357.1613654-1-suijingfeng@loongson.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20220118044259.764945-1-walt@drummond.us> <YfFQeC1cUVFmISMK@kroah.com>
-In-Reply-To: <YfFQeC1cUVFmISMK@kroah.com>
-From:   Walt Drummond <walt@drummond.us>
-Date:   Sat, 29 Jan 2022 07:23:26 -0800
-Message-ID: <CADCN6nyyChM=jb9nmc2jDg2UdHUoXp3E05=ifxRpcs=8k8t09Q@mail.gmail.com>
-Subject: Re: [PATCH 0/3] status: TTY status message request
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     agordeev@linux.ibm.com, arnd@arndb.de, benh@kernel.crashing.org,
-        borntraeger@linux.ibm.com, chris@zankel.net, davem@davemloft.net,
-        hca@linux.ibm.com, deller@gmx.de, ink@jurassic.park.msu.ru,
-        James.Bottomley@hansenpartnership.com, jirislaby@kernel.org,
-        mattst88@gmail.com, jcmvbkbc@gmail.com, mpe@ellerman.id.au,
-        paulus@samba.org, rth@twiddle.net, dalias@libc.org,
-        tsbogend@alpha.franken.de, gor@linux.ibm.com, ysato@users.osdn.me,
-        linux-kernel@vger.kernel.org, ar@cs.msu.ru,
-        linux-alpha@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-ia64@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
-        linux-xtensa@linux-xtensa.org, sparclinux@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: AQAAf9AxWuC2pPVhqYwFAA--.16809S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxCrW7GFyxtw4fAF4rWw4kJFb_yoW5tw18pF
+        47AFyFyr18JF47tryfA3WrGry3A3WfXFWSkF12qwnxW3y8Aa4UAF98AFW3Jr9rWFy2y342
+        qrn3Ka4UGF1IyF7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvl14x267AKxVW5JVWrJwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26r1j6r1xM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4j
+        6F4UM28EF7xvwVC2z280aVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv6xkF7I0E14v26r4j6r
+        4UJwAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
+        I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
+        4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628v
+        n2kIc2xKxwCY02Avz4vE-syl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr
+        1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE
+        14v26r4a6rW5MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7
+        IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvE
+        x4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvj
+        DU0xZFpf9x0JUQvtAUUUUU=
+X-CM-SenderInfo: xvxlyxpqjiv03j6o00pqjv00gofq/
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-ACK, will do.
+There is a display controller in loongson's LS2K1000 SoC and LS7A1000
+bridge, and the DC in those chip is a pci device. This display controller
+have two display pipes(CRTC) but with only one hardware cursor.
 
-On Wed, Jan 26, 2022 at 5:45 AM Greg KH <gregkh@linuxfoundation.org> wrote:
->
-> On Mon, Jan 17, 2022 at 08:42:57PM -0800, Walt Drummond wrote:
-> > This patchset adds TTY status message request feature to the n_tty
-> > line dicipline.  This feature prints a brief message containing basic
-> > system and process group information to a user's TTY in response to a
-> > new control character in the line dicipline (default Ctrl-T) or the
-> > TIOCSTAT ioctl.  The message contains the current system load, the
-> > name and PID of an interesting process in the forground process group,
-> > it's run time, percent CPU usage and RSS.  An example of this message
-> > is:
-> >
-> >   load: 0.31  cmd: sleep 3616843 [sleeping] 0.36r 0.00u 0.00s 0% 696k
-> >
-> > User API visible changes are limited to:
-> >  - The addition of VSTATUS in termios.c_cc[]
-> >  - The addition of NOKERNINFO bit in termios.l_cflags
-> >  - The addition of the TIOCSTAT ioctl number
-> >
-> > None of these changes break the existing kernel api as the termios
-> > structure on all architectures has enough space in the control
-> > character array (.c_cc) for the new character, and the other changes
-> > are space agnostic.
-> >
-> > This feature is in many other Unix-like systems, both current and
-> > historical.  In other implementations, this feature would also send
-> > SIGINFO to the process group; this implementation does not.
-> >
-> > Walt Drummond (3):
-> >   vstatus: Allow the n_tty line dicipline to write to a user tty
-> >   vstatus: Add user space API definitions for VSTATUS, NOKERNINFO and
-> >     TIOCSTAT
-> >   status: Display an informational message when the VSTATUS character is
-> >     pressed or TIOCSTAT ioctl is called.
-> >
-> >  arch/alpha/include/asm/termios.h         |   4 +-
-> >  arch/alpha/include/uapi/asm/ioctls.h     |   1 +
-> >  arch/alpha/include/uapi/asm/termbits.h   |  34 ++---
-> >  arch/ia64/include/asm/termios.h          |   4 +-
-> >  arch/ia64/include/uapi/asm/termbits.h    |  34 ++---
-> >  arch/mips/include/asm/termios.h          |   4 +-
-> >  arch/mips/include/uapi/asm/ioctls.h      |   1 +
-> >  arch/mips/include/uapi/asm/termbits.h    |  36 ++---
-> >  arch/parisc/include/asm/termios.h        |   4 +-
-> >  arch/parisc/include/uapi/asm/ioctls.h    |   1 +
-> >  arch/parisc/include/uapi/asm/termbits.h  |  34 ++---
-> >  arch/powerpc/include/asm/termios.h       |   4 +-
-> >  arch/powerpc/include/uapi/asm/ioctls.h   |   2 +
-> >  arch/powerpc/include/uapi/asm/termbits.h |  34 ++---
-> >  arch/s390/include/asm/termios.h          |   4 +-
-> >  arch/sh/include/uapi/asm/ioctls.h        |   1 +
-> >  arch/sparc/include/uapi/asm/ioctls.h     |   1 +
-> >  arch/sparc/include/uapi/asm/termbits.h   |  38 +++---
-> >  arch/xtensa/include/uapi/asm/ioctls.h    |   1 +
-> >  drivers/tty/Makefile                     |   2 +-
-> >  drivers/tty/n_tty.c                      | 113 +++++++++++-----
-> >  drivers/tty/n_tty_status.c               | 162 +++++++++++++++++++++++
-> >  drivers/tty/tty_io.c                     |   2 +-
-> >  include/asm-generic/termios.h            |   4 +-
-> >  include/linux/tty.h                      | 123 ++++++++---------
-> >  include/uapi/asm-generic/ioctls.h        |   1 +
-> >  include/uapi/asm-generic/termbits.h      |  34 ++---
-> >  27 files changed, 461 insertions(+), 222 deletions(-)
-> >  create mode 100644 drivers/tty/n_tty_status.c
-> >
-> > --
-> > 2.30.2
-> >
->
-> You forgot to cc: me on patch 2/3, which would be needed if I was to
-> take them all.
->
-> Please fix up patch 2 and resend the whole series.
->
-> thanks,
->
-> greg k-h
+This display controller is uncommon outside of china, it don't have rich
+document either. This patch try to provided a minial support for this
+display controller which is for graphic environment bring up. Hope the
+code could speak for itself.
+
+For ls7a1000, there are 4 gpios who register is located at dc register
+space which is used to emulation i2c. LS2K1000 and LS2K0500 SoC don't
+have those hardware, they use general purpose gpio or hardware i2c to
+serve this purpose.
+
+LS2K1000 is a double core 1.0Ghz mips64r2 compatible SoC[1]. LS7A1000 is
+a bridge chip made by Loongson corporation which act as north and/or south
+bridge of loongson's desktop and server level processor. It is equivalent
+to RS780E or something like that. More details can be read from its user
+manual[2].
+
+This bridge chip is typically use with LS3A3000, LS3A4000 and LS3A5000 cpu.
+LS3A3000 is 4 core 1.45gHz mips64r2 compatible cpu.
+LS3A4000 is 4 core 1.8gHz mips64r5 compatible cpu.
+LS3A5000 is 4 core 2.5gHz loongarch cpu[3].
+
+[1] https://wiki.debian.org/InstallingDebianOn/Lemote/Loongson2K1000
+[2] https://loongson.github.io/LoongArch-Documentation/Loongson-7A1000-usermanual-EN.html
+[3] https://loongson.github.io/LoongArch-Documentation/Loongson-3A5000-usermanual-EN.html
+
+
+suijingfeng (1):
+  drm/lsdc: add drm driver for loongson display controller
+
+ drivers/gpu/drm/Kconfig               |   2 +
+ drivers/gpu/drm/Makefile              |   1 +
+ drivers/gpu/drm/lsdc/Kconfig          |  32 +
+ drivers/gpu/drm/lsdc/Makefile         |  15 +
+ drivers/gpu/drm/lsdc/lsdc_connector.c | 440 ++++++++++++++
+ drivers/gpu/drm/lsdc/lsdc_connector.h |  60 ++
+ drivers/gpu/drm/lsdc/lsdc_crtc.c      | 438 ++++++++++++++
+ drivers/gpu/drm/lsdc/lsdc_drv.c       | 824 ++++++++++++++++++++++++++
+ drivers/gpu/drm/lsdc/lsdc_drv.h       | 212 +++++++
+ drivers/gpu/drm/lsdc/lsdc_encoder.c   |  79 +++
+ drivers/gpu/drm/lsdc/lsdc_i2c.c       | 220 +++++++
+ drivers/gpu/drm/lsdc/lsdc_i2c.h       |  61 ++
+ drivers/gpu/drm/lsdc/lsdc_irq.c       |  77 +++
+ drivers/gpu/drm/lsdc/lsdc_irq.h       |  37 ++
+ drivers/gpu/drm/lsdc/lsdc_plane.c     | 713 ++++++++++++++++++++++
+ drivers/gpu/drm/lsdc/lsdc_pll.c       | 596 +++++++++++++++++++
+ drivers/gpu/drm/lsdc/lsdc_pll.h       | 109 ++++
+ drivers/gpu/drm/lsdc/lsdc_regs.h      | 242 ++++++++
+ 18 files changed, 4158 insertions(+)
+ create mode 100644 drivers/gpu/drm/lsdc/Kconfig
+ create mode 100644 drivers/gpu/drm/lsdc/Makefile
+ create mode 100644 drivers/gpu/drm/lsdc/lsdc_connector.c
+ create mode 100644 drivers/gpu/drm/lsdc/lsdc_connector.h
+ create mode 100644 drivers/gpu/drm/lsdc/lsdc_crtc.c
+ create mode 100644 drivers/gpu/drm/lsdc/lsdc_drv.c
+ create mode 100644 drivers/gpu/drm/lsdc/lsdc_drv.h
+ create mode 100644 drivers/gpu/drm/lsdc/lsdc_encoder.c
+ create mode 100644 drivers/gpu/drm/lsdc/lsdc_i2c.c
+ create mode 100644 drivers/gpu/drm/lsdc/lsdc_i2c.h
+ create mode 100644 drivers/gpu/drm/lsdc/lsdc_irq.c
+ create mode 100644 drivers/gpu/drm/lsdc/lsdc_irq.h
+ create mode 100644 drivers/gpu/drm/lsdc/lsdc_plane.c
+ create mode 100644 drivers/gpu/drm/lsdc/lsdc_pll.c
+ create mode 100644 drivers/gpu/drm/lsdc/lsdc_pll.h
+ create mode 100644 drivers/gpu/drm/lsdc/lsdc_regs.h
+
+-- 
+2.25.1
+

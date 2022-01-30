@@ -2,51 +2,51 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 00B6BC3527B
-	for <linux-mips@archiver.kernel.org>; Sun, 30 Jan 2022 23:38:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EC031C3527D
+	for <linux-mips@archiver.kernel.org>; Sun, 30 Jan 2022 23:38:05 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357353AbiA3XiB (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Sun, 30 Jan 2022 18:38:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34312 "EHLO
+        id S1357386AbiA3XiE (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Sun, 30 Jan 2022 18:38:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34326 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1357046AbiA3Xhr (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Sun, 30 Jan 2022 18:37:47 -0500
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E696C06174A;
-        Sun, 30 Jan 2022 15:37:45 -0800 (PST)
-Received: by mail-lf1-x129.google.com with SMTP id b9so23275087lfq.6;
-        Sun, 30 Jan 2022 15:37:45 -0800 (PST)
+        with ESMTP id S1357247AbiA3Xhw (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Sun, 30 Jan 2022 18:37:52 -0500
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DDE5C06173B;
+        Sun, 30 Jan 2022 15:37:52 -0800 (PST)
+Received: by mail-lf1-x130.google.com with SMTP id u6so23257473lfm.10;
+        Sun, 30 Jan 2022 15:37:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=66lCIOUKcPJ2J+m4Cr3ZW94G0lABJXZaED/s9f5QGmA=;
-        b=IaLlORDZoeaYRpO44854hgYk2/vgTJOclvwIF3Vv/dy/WRswOVfYMTb/lgYFF6u20R
-         kgD4kuaMUZhPrzrsrp+1aHUtVBmfCdIQHjkOsK+D3JxP5SLPXm0dCS3YEeqxtX5eYSIx
-         8EdSobISpvnT22JqnHeoUtNW+EX+/cnH1SeCCQB6STOy1ozdbhelGYqvV1xMpt5YBA99
-         B/96htM+mne2xjdlCrcPFCtKPM7GzoR7BZlH1OzPT5hR1hE9cLpw2j5lrnPZ7ZPlmwwI
-         nMOCD5Tt0vJ4ks8CXxb7pk/YLn1ILllHgnHrKEVAgGpxNOjR5JCV7EBSVseqXYt1IKk7
-         FSXw==
+        bh=qHFCRJN9BVY8RauX1oKR/zvQzYk8hOXc8BKode7q7dE=;
+        b=YRe+4ENn+xLHydu0qjVK8NSLNEa98MBt5tDc08FixS3wAMtLqAIaFtklni0+X5AStQ
+         NWa/KRzoUn8+IVpsHAm/xOs3k+cj+LL2OhKl5gVUEFkp5ndqFg9Q7IDP7ikRXZxwNK+4
+         SbLkN6wlP8yDXzq0kfXqbvVsy1Hp18D+sINvf4RsWjU2CJLvpbxk+Pf4y4Di+ROI2ccO
+         YZHUhr0Z8uHoIysiX6fudWOQ4mPt5OAElluDMzBTS4VC1jyp+W5tjIzGJQ2uBLL5DStr
+         tO2S0szt+wkyquwgkXuRB6clwJUeXCGMkJhIWs2QZ///pnQ6oMEGbscGlCpylcxuYJ5J
+         9wBg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=66lCIOUKcPJ2J+m4Cr3ZW94G0lABJXZaED/s9f5QGmA=;
-        b=QpEcDSDiayNvkQ76D3dsmgmr0Iwh68el8GXWnbyfIJUUuOTzqwuXr2Q7Vaqh+wZJpo
-         4w5e9tP+i50A6X2rA/gKcqb9avQgg28kVyAQIA1P8mJ6SSF4pykpqFOywgy1nN+1cK9u
-         jEneYOw+gpieySlEm8QFgnoY3uWvaRHGIzGEzMs4M2r3Khpue7rywXq8a/GvpodC6sRn
-         BJ/YOTF4SlwEO73940ncHpO+GiHjNzh4BVLnG9pe5UsVnT3nCfnE93ViQrhHQLLe4gg4
-         fLPGD43bXELTeumgsuPSbUXh2hTSisKao7H5PV2aEABNhLW6fdXwiUQdH35djJGU9qlO
-         wWFg==
-X-Gm-Message-State: AOAM533RdK9TY97pM15JtF+xkOiNnD/6Wp8vKZlMaYYqBDVY423KTEo3
-        qNNYeZKYDeM/eb6XU3pOh04=
-X-Google-Smtp-Source: ABdhPJw0xUt9j/jtl0uaDt91Bsr3KfV7lR3RRZqMVEqi4OIibegSJcLOPzN3p/u9YZbK6f72FdmH0g==
-X-Received: by 2002:a05:6512:3091:: with SMTP id z17mr13662510lfd.216.1643585863533;
-        Sun, 30 Jan 2022 15:37:43 -0800 (PST)
+        bh=qHFCRJN9BVY8RauX1oKR/zvQzYk8hOXc8BKode7q7dE=;
+        b=pTerlkKDEcgElBn3Z5MDo7ylqGVeNzRgavrsAFq9y1TcPRbffNcCc/Uql128YH1m2e
+         +aOuTFJ1yKaHxxLsuFmdTq4G+2+j2qwtkt7Nl7OWqpel0r7uyv/dmSaCmqGvFbQlTav3
+         sDuLtDMOE+kLOYohU0rKQZIf+hfQTtn2V+kjvmxpbvKx65xUrIMdnexC1EZb8kHKez8d
+         ChDp3PYFFvZanpKPyp8y4bg6PlNauA1nXlR8fyPap/qIpWNYCbvKCELEFOdpIGDwdcYk
+         m1QNVUCz3asAEUnLFvljG4yeAQttGNztXH3m5a9m8hsHoLkdoB0mdp9wrpBOfYVcAV4+
+         O/5A==
+X-Gm-Message-State: AOAM530PjOaK5tpaazRN4UTH4mCvcnJFpFnHZRM/+2cUZfKOg/336fbL
+        I4qLrj5Y0ehcTc0esmdcRy4=
+X-Google-Smtp-Source: ABdhPJykkAmU8QPmCYCQWolQuhTlQmgl/dllVJKfSuOOVtywU8GyeEW3uMb4RjUXLkfRs/7Y/PbgFw==
+X-Received: by 2002:a19:6a12:: with SMTP id u18mr13556400lfu.348.1643585870718;
+        Sun, 30 Jan 2022 15:37:50 -0800 (PST)
 Received: from localhost.localdomain (109-252-138-126.dynamic.spd-mgts.ru. [109.252.138.126])
-        by smtp.gmail.com with ESMTPSA id a24sm1262950ljp.112.2022.01.30.15.37.41
+        by smtp.gmail.com with ESMTPSA id a24sm1262950ljp.112.2022.01.30.15.37.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 30 Jan 2022 15:37:43 -0800 (PST)
+        Sun, 30 Jan 2022 15:37:50 -0800 (PST)
 From:   Dmitry Osipenko <digetx@gmail.com>
 To:     Thierry Reding <thierry.reding@gmail.com>,
         Jonathan Hunter <jonathanh@nvidia.com>,
@@ -99,9 +99,9 @@ Cc:     linux-kernel@vger.kernel.org, linux-csky@vger.kernel.org,
         linux-riscv@lists.infradead.org, linux-sh@vger.kernel.org,
         xen-devel@lists.xenproject.org, linux-acpi@vger.kernel.org,
         linux-pm@vger.kernel.org, linux-tegra@vger.kernel.org
-Subject: [PATCH v6 10/21] xen/x86: Use do_kernel_power_off()
-Date:   Mon, 31 Jan 2022 02:37:07 +0300
-Message-Id: <20220130233718.21544-11-digetx@gmail.com>
+Subject: [PATCH v6 14/21] x86: Use do_kernel_power_off()
+Date:   Mon, 31 Jan 2022 02:37:11 +0300
+Message-Id: <20220130233718.21544-15-digetx@gmail.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20220130233718.21544-1-digetx@gmail.com>
 References: <20220130233718.21544-1-digetx@gmail.com>
@@ -116,34 +116,28 @@ that invokes chained power-off handlers. It also invokes legacy
 pm_power_off() for now, which will be removed once all drivers will
 be converted to the new power-off API.
 
-Acked-by: Juergen Gross <jgross@suse.com>
 Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
 ---
- arch/x86/xen/enlighten_pv.c | 4 ++--
+ arch/x86/kernel/reboot.c | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/x86/xen/enlighten_pv.c b/arch/x86/xen/enlighten_pv.c
-index 5004feb16783..527fa545eb1f 100644
---- a/arch/x86/xen/enlighten_pv.c
-+++ b/arch/x86/xen/enlighten_pv.c
-@@ -31,6 +31,7 @@
- #include <linux/gfp.h>
- #include <linux/edd.h>
- #include <linux/objtool.h>
-+#include <linux/reboot.h>
+diff --git a/arch/x86/kernel/reboot.c b/arch/x86/kernel/reboot.c
+index fa700b46588e..c3636ea4aa71 100644
+--- a/arch/x86/kernel/reboot.c
++++ b/arch/x86/kernel/reboot.c
+@@ -739,10 +739,10 @@ static void native_machine_halt(void)
  
- #include <xen/xen.h>
- #include <xen/events.h>
-@@ -1068,8 +1069,7 @@ static void xen_machine_halt(void)
- 
- static void xen_machine_power_off(void)
+ static void native_machine_power_off(void)
  {
--	if (pm_power_off)
+-	if (pm_power_off) {
++	if (kernel_can_power_off()) {
+ 		if (!reboot_force)
+ 			machine_shutdown();
 -		pm_power_off();
-+	do_kernel_power_off();
- 	xen_reboot(SHUTDOWN_poweroff);
- }
- 
++		do_kernel_power_off();
+ 	}
+ 	/* A fallback in case there is no PM info available */
+ 	tboot_shutdown(TB_SHUTDOWN_HALT);
 -- 
 2.34.1
 

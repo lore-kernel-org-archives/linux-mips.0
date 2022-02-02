@@ -2,42 +2,34 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 86A04C433EF
-	for <linux-mips@archiver.kernel.org>; Wed,  2 Feb 2022 16:32:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7883BC433F5
+	for <linux-mips@archiver.kernel.org>; Wed,  2 Feb 2022 17:04:33 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345914AbiBBQb7 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 2 Feb 2022 11:31:59 -0500
-Received: from mo4-p04-ob.smtp.rzone.de ([85.215.255.123]:44593 "EHLO
-        mo4-p04-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237418AbiBBQbt (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 2 Feb 2022 11:31:49 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1643819489;
-    s=strato-dkim-0002; d=goldelico.com;
-    h=References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Cc:Date:
-    From:Subject:Sender;
-    bh=Qc45+SOWiHQsSwqJWHKd4NUWcMBcTy0RmkvrlEWuGrE=;
-    b=pBetLco65hVt+08W2NqB0xRi4WakKaeXaOm5ixtZjgDSVmoLBiSnErJ2PYjjFyi0wQ
-    /eZzJUGfv6bcPrX1GxS3+4KOWKJTj6aMuOojVenbtx07coGLWZPDBJFMshmFAOF44fVg
-    pyLsRoQEZJDnhv2dkjPkdOej1iZLzqpUIywtr7/rqVs0oo8TB1W0K70T8geJC/QHRt4M
-    AoQGXeSmjuAW6FT+NAYQQSCNrTxAyQaVu883NTmM+ZNfzQ/2H0WUGbfFdZRg3AX6vuhm
-    h/C2X7xLtlclxkAWj+9th0/79cVLH/wC/IsGGlW2rOo1MLk7CS/qQupIS6St0hEniVKR
-    QAIQ==
-Authentication-Results: strato.com;
-    dkim=none
-X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMhflhwDubTJ9o1OAA2UMf2MwPVbjc9Y="
-X-RZG-CLASS-ID: mo00
-Received: from iMac.fritz.box
-    by smtp.strato.de (RZmta 47.39.0 DYNA|AUTH)
-    with ESMTPSA id L29417y12GVTBmr
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-    Wed, 2 Feb 2022 17:31:29 +0100 (CET)
-From:   "H. Nikolaus Schaller" <hns@goldelico.com>
-To:     Paul Cercueil <paul@crapouillou.net>,
+        id S1345855AbiBBREc (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 2 Feb 2022 12:04:32 -0500
+Received: from smtp1.de.opalstack.com ([46.165.236.26]:59668 "EHLO
+        smtp1.de.opalstack.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230295AbiBBRE2 (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 2 Feb 2022 12:04:28 -0500
+Received: from jason.localnet (host-37-191-188-128.lynet.no [37.191.188.128])
+        by smtp1.de.opalstack.com (Postfix) with ESMTPSA id 5995A5C2DD;
+        Wed,  2 Feb 2022 17:04:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=boddie.org.uk;
+        s=dkim; t=1643821466;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=QnJUfpdhCrHTOx13kz3/o6wTUJabC+pt0tnb31dRByk=;
+        b=dLZQQQKJNTmOf1/SXik0MBFTfwUKyAk72K5FMVtvlJgfM3HUBVonJ9c7lmcRud9T7e6Xw/
+        B4/HqrlAGiGkSuB64WJhMCF4/e8ZyKd8O2sxLCsVNr5j+BYEWdJ9btC3FxhDBxZ9UTfkpB
+        12F8QV9bTbZxGMSsqJiEcwUHQl24gjo=
+From:   Paul Boddie <paul@boddie.org.uk>
+To:     Paul Cercueil <paul@crapouillou.net>
+Cc:     "H. Nikolaus Schaller" <hns@goldelico.com>,
         Rob Herring <robh+dt@kernel.org>,
         Mark Rutland <mark.rutland@arm.com>,
         Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        "H. Nikolaus Schaller" <hns@goldelico.com>,
         Geert Uytterhoeven <geert+renesas@glider.be>,
         Kees Cook <keescook@chromium.org>,
         "Eric W. Biederman" <ebiederm@xmission.com>,
@@ -54,67 +46,98 @@ To:     Paul Cercueil <paul@crapouillou.net>,
         Hans Verkuil <hverkuil-cisco@xs4all.nl>,
         Liam Girdwood <lgirdwood@gmail.com>,
         Mark Brown <broonie@kernel.org>,
-        Paul Boddie <paul@boddie.org.uk>,
         Andrzej Hajda <andrzej.hajda@intel.com>,
-        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
-Cc:     devicetree@vger.kernel.org, linux-mips@vger.kernel.org,
+        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
+        devicetree@vger.kernel.org, linux-mips@vger.kernel.org,
         linux-kernel@vger.kernel.org, letux-kernel@openphoenux.org,
         Jonas Karlman <jonas@kwiboo.se>,
-        dri-devel@lists.freedesktop.org
-Subject: [PATCH v13 6/9] dw-hdmi/ingenic-dw-hdmi: repair interworking with hdmi-connector
-Date:   Wed,  2 Feb 2022 17:31:20 +0100
-Message-Id: <866f84621974992f4831bd471ae5a53414de9255.1643819482.git.hns@goldelico.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <cover.1643819482.git.hns@goldelico.com>
-References: <cover.1643819482.git.hns@goldelico.com>
+        dri-devel@lists.freedesktop.org,
+        Ezequiel Garcia <ezequiel@collabora.com>
+Subject: Re: [PATCH v12 2/9] drm/ingenic: Add support for JZ4780 and HDMI output
+Date:   Wed, 02 Feb 2022 18:04:20 +0100
+Message-ID: <4456843.HuvP5PFhKd@jason>
+In-Reply-To: <XKGO6R.LTTYDEGZ8RJH3@crapouillou.net>
+References: <cover.1643632014.git.hns@goldelico.com> <78F51BD7-112A-458D-8FCE-6A67572A182B@goldelico.com> <XKGO6R.LTTYDEGZ8RJH3@crapouillou.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Commit 7cd70656d1285b ("drm/bridge: display-connector: implement bus fmts callbacks")
+On Wednesday, 2 February 2022 13:41:21 CET Paul Cercueil wrote:
+> Le mer., f=E9vr. 2 2022 at 13:33:15 +0100, H. Nikolaus Schaller>=20
+<hns@goldelico.com> a =E9crit :
+> >>  Am 02.02.2022 um 13:28 schrieb Paul Cercueil <paul@crapouillou.net>:
+> >> =20
+> >>  Note that there are other things not working with your current
+> >>=20
+> >> implementation, for instance you cannot set the X/Y start position
+> >> of the f1 plane, which means it's only really usable for fullscreen
+> >> desktop/windows.
+> >=20
+> > Is setting x/y possible for the other SoC?
+>=20
+> Yes. They support different x/y positions, sizes, and pixel format for
+> both f0, f1 and IPU planes.
 
-introduced a new mechanism to negotiate bus formats between hdmi connector
-and the synopsys hdmi driver inside the jz4780.
+One thing worth noting about the JZ4780 is that a lot of the registers that=
+=20
+might otherwise be used for the above purposes appear to be read-only, at=20
+least for the different fields concerned.
 
-By this, the dw-hdmi is no longer the only bridge and sets up a list
-of formats in dw_hdmi_bridge_atomic_get_output_bus_fmts().
+=46or example, those affecting ingenic_drm_plane_config:
 
-This includes MEDIA_BUS_FMT_UYVY8_1X16 which is chosen for the jz4780 but only
-produces a black screen.
+Control Register (LCDCTRL) - specifically the BPP0 field
+OSD Control Register (LCDOSDCTRL)
+=46oreground 0 XY Position Register (LCDXYP0)
+=46oreground 1 XY Position Register (LCDXYP1)
+=46oreground 0 Size Register (LCDSIZE0)
+=46oreground 1 Size Register (LCDSIZE1)
 
-This fix is based on the observation that max_bpc = 0 when running this
-function while info->bpc = 8. Since the formats checks before this always test
-for max_bpc >= info->pbc indirectly my assumption is that we must check it
-here as well.
+These require changes to the extended descriptor members instead, and I am=
+=20
+fairly sure I mentioned the implications for pixel depth configuration=20
+previously. So, as far as I can tell, we would need to update the descripto=
+rs,=20
+not the registers, to support the operations mentioned above.
 
-Adding the proposed patch makes the CI20/jz4780 panel work again in
-MEDIA_BUS_FMT_RGB888_1X24 mode.
+As for the f0 plane "not working", I am not aware of any limitation around=
+=20
+using only f0 (assuming it corresponds to what the manual calls fg0) or onl=
+y=20
+f1 (again, assuming fg1 in the manual) or both. My assumption was that for=
+=20
+this particular driver, f0 was reserved for some kind of overlay and that f=
+1=20
+was to be used for the normal non-overlay display for products where the OS=
+D=20
+peripheral is provided.
 
-Fixes: 7cd70656d1285b ("drm/bridge: display-connector: implement bus fmts callbacks")
-Signed-off-by: H. Nikolaus Schaller <hns@goldelico.com>
----
- drivers/gpu/drm/bridge/synopsys/dw-hdmi.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+=46rom the definition of struct ingenic_drm:
 
-diff --git a/drivers/gpu/drm/bridge/synopsys/dw-hdmi.c b/drivers/gpu/drm/bridge/synopsys/dw-hdmi.c
-index 52e7cd2e020d3..34703a15ee4ff 100644
---- a/drivers/gpu/drm/bridge/synopsys/dw-hdmi.c
-+++ b/drivers/gpu/drm/bridge/synopsys/dw-hdmi.c
-@@ -2620,10 +2620,10 @@ static u32 *dw_hdmi_bridge_atomic_get_output_bus_fmts(struct drm_bridge *bridge,
- 		output_fmts[i++] = MEDIA_BUS_FMT_RGB101010_1X30;
- 	}
- 
--	if (info->color_formats & DRM_COLOR_FORMAT_YCRCB422)
-+	if (max_bpc >= info->bpc && info->color_formats & DRM_COLOR_FORMAT_YCRCB422)
- 		output_fmts[i++] = MEDIA_BUS_FMT_UYVY8_1X16;
- 
--	if (info->color_formats & DRM_COLOR_FORMAT_YCRCB444)
-+	if (max_bpc >= info->bpc && info->color_formats & DRM_COLOR_FORMAT_YCRCB444)
- 		output_fmts[i++] = MEDIA_BUS_FMT_YUV8_1X24;
- 
- 	/* Default 8bit RGB fallback */
--- 
-2.33.0
+        /*
+         * f1 (aka. foreground1) is our primary plane, on top of which
+         * f0 (aka. foreground0) can be overlayed. Z-order is fixed in
+         * hardware and cannot be changed.
+         */
+
+So, as I understood it, the driver would configure f1 in the case of the=20
+JZ4780 for basic display support. Configuring f0 as an overlay should be=20
+entirely possible, but I imagine that it needs to change the descriptors, n=
+ot=20
+the registers, to have a chance of actually working.
+
+I hope this is somewhat useful information. I honestly don't know if, say, =
+the=20
+JZ4770 has a similar arrangement with regard to configuration via descripto=
+rs,=20
+as opposed to registers, but I think it is an important distinction between=
+=20
+devices in this particular family that needs to be accommodated in the driv=
+er,=20
+and we obviously want to determine how this might best be achieved.
+
+Paul
+
 

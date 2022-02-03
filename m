@@ -2,103 +2,67 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E0BEBC433F5
-	for <linux-mips@archiver.kernel.org>; Thu,  3 Feb 2022 14:22:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8B572C433EF
+	for <linux-mips@archiver.kernel.org>; Thu,  3 Feb 2022 14:57:23 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1351163AbiBCOW1 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 3 Feb 2022 09:22:27 -0500
-Received: from mout.gmx.net ([212.227.15.18]:56005 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1351158AbiBCOWZ (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Thu, 3 Feb 2022 09:22:25 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1643898128;
-        bh=5x3pHxlLl71DgoSFcmjLP8kuMLdBgGXQRD4L2C0Fmqg=;
-        h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=f5/8YdQ+ifAou0fOsIDW3+pcUfjOaWGnuNgq2rrX/wxIDTvJMADSDxjfOwzqNoxy1
-         YZ/r/nOo5ZMr7QS/NKe4EYoL0M0mT8xp94Qb+RLtZhNyXA6o/RX3VqmxA66byhDKvE
-         tuTlirnr/pKIS+S1zmgdR1J09nozU1zy/QdlTdp0=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from longitude ([185.66.193.41]) by mail.gmx.net (mrgmx005
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1Mj8mV-1mcjLB0OLV-00fAMz; Thu, 03
- Feb 2022 15:22:08 +0100
-From:   =?UTF-8?q?Jonathan=20Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>
-To:     linux-clk@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mips@vger.kernel.org,
-        =?UTF-8?q?Jonathan=20Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Dongjiu Geng <gengdongjiu@huawei.com>
-Subject: [PATCH v2 3/4] clk: hisilicon: Terminate clk_div_table with sentinel element
-Date:   Thu,  3 Feb 2022 15:21:52 +0100
-Message-Id: <20220203142153.260720-4-j.neuschaefer@gmx.net>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20220203142153.260720-1-j.neuschaefer@gmx.net>
-References: <20220203142153.260720-1-j.neuschaefer@gmx.net>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:sR+ZINOmGT6bpT/qa+XgvVT6K3G0USPH84cYE6Zln9QEMBD4w5I
- WiJH9nPZQ8s0k9V1IJynvsBn1KQggumwBo9Ks0RpiEN/EXjzMc7pJep3pATQUvXLyjwYCwz
- 6hZXRKPNbxrixNCMEzhn6YpA1a/0UI3bIf+tNX4oblGaBHB3UJSi8wpZ4liikfxEfONZtNC
- zcLM85edG2eDjKzQyzSzg==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:A9oeZwvV0xw=:W/5CkOXPNEYWRecl4/NwRc
- +JYRzVCEI72+bd5FXOxWewXOe0TPNBl8BuKN7Ll9VrdLYrTUE8I8rbZUER9AcnbA/dQzq9fFe
- akXeA4uRvhfo6988AUzhLwSVohyfy6fcmiDdLZGVQck3FEztyrt+C/Vvzqc0RFriTiecsVH+f
- Y/06oXTleOpo1iTdu90hW0Ttcs8Fyq/OEbFkyOqckeFJPoGV33jV9s/ujeTlbC2O8DcwFdPS4
- c2m43KZZV3MmjJrcpb1iJnoUzKvACdSrf1IyxuO9J4cPUdY2i1TvYefhkAOdouv787m2DjoHo
- Z4SMDKE2gXNsSZESxSR/3CEeAIO3BrXDcyGYR2GCKP+X3hH/I44sWy1kzgoWCaCo+DR/mwAm1
- st0ohQj1TFL51tlMGXjhRwwE9VwGZnxMzKI07BoOO0QYiPT/lCNnXzQcVjWPHr2yXUyku7UQg
- rKglxSJCbLYcyjqRIPfz4T4R5vGRG6stIH1RH7rmMd8oOQF1A+Stie7q1oGTh/HrYacEznsxR
- ymvW3s5gAjQcTxnH7duHGNT48x5ZS2YbmGdYlIRRefKnh9ABuWY9R671/77Ghlsn7vmxi/687
- lTsEMuYZJcnDM8O5DpCpBmSkNCLRKmlg10h3hnButbIBdJ7daD7uqZurXBz+6JFzQ7agZ+gQO
- ESAniDQNT1bU4b4Fbnjxa/0y+g7of2XpjfDhtDYJMw7M8CNxVcgeDnEDoVmxCH0LImasCksnl
- J9tknL/LJqJrQnJgRyGJ1ihbPdZ5MM3w6SxVgtqMX16pSGFkGDwKlxssh6LbrnAgj5sOTjq33
- /nQArrO6gAgEIazvKMSxTD2xOoreknloX0sDAcizFwI+CvUbl2AHt4tm+cUBPETwCCg1+oC0K
- /4lk1o0/tgVqmI3ZQ+naEZYxaelGASMJ4N2mEg6xe2Kddp2IRZTeJCGYhfOWBw1SyfPhEiR9o
- yefaAizcrhXEgF3mW/spAIFmz9SSedreqOC2/JmNp3vs6JC4spGPlM1VsbyZJwaGYHC4EGXwq
- JxA5yNal6yW2+MB3rJL5HJilKa00MgaPJQGdHZozYCnRUIA1lN/HRf6Irs8VPjVkD+xuh58uF
- hzYQ72C02We6WM=
+        id S242104AbiBCO5W (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 3 Feb 2022 09:57:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35872 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236285AbiBCO5W (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Thu, 3 Feb 2022 09:57:22 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFFE3C061714;
+        Thu,  3 Feb 2022 06:57:21 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 9040561A53;
+        Thu,  3 Feb 2022 14:57:21 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 037F9C340E4;
+        Thu,  3 Feb 2022 14:57:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1643900241;
+        bh=rZqRbsG2l7ER8PFv8mXrGg1IyiTqFVzh6i0XCds10/c=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=CyeAvlunIjmxlw7af6EGCKOXyafIBzE5ZlthWSpob7BKB1n47luYuI4G/AMgd1Asp
+         7GWSq+uKeuzatCBhcqT/WoaiQ69CSkzCCiVEifeYv1sA6J+RMqyo2nAZcSxfj1TMpa
+         dcXvIORgX3jtXu0MZs18jjzRuwuFJB8LJmMsA7dfjmGh9voOtIEAYfmIK6j/xf2h2m
+         W+sUc7As/pNH/GEgCKXp19ck4tpLg1JKBfNmgelGWIJjYx0ku15ylrVd6WpxzndZpB
+         Df1u6B+4cPRPKjfT5BS+gPbqfo+dS8F6f07iqaa7sz0DMJ46i61xtiEW8lC5iEiiyb
+         ugiTbhlFKgwSA==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id E83A0E5D08C;
+        Thu,  3 Feb 2022 14:57:20 +0000 (UTC)
+Subject: Re: [GIT PULL] MIPS fixes for v5.17
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <20220203085602.GA5364@alpha.franken.de>
+References: <20220203085602.GA5364@alpha.franken.de>
+X-PR-Tracked-List-Id: <linux-mips.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20220203085602.GA5364@alpha.franken.de>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/mips/linux.git/ tags/mips-fixes-5.17_2
+X-PR-Tracked-Commit-Id: 2161ba070999a709f975910b6b9ad6b51cd6f120
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: d394bb77dd0bd20b125459da25fdac00a853be28
+Message-Id: <164390024094.8873.8664251448338199732.pr-tracker-bot@kernel.org>
+Date:   Thu, 03 Feb 2022 14:57:20 +0000
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc:     torvalds@linux-foundation.org, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-In order that the end of a clk_div_table can be detected, it must be
-terminated with a sentinel element (.div =3D 0).
+The pull request you sent on Thu, 3 Feb 2022 09:56:02 +0100:
 
-Fixes: 6c81966107dc0 ("clk: hisilicon: Add clock driver for hi3559A SoC")
-Signed-off-by: Jonathan Neusch=C3=A4fer <j.neuschaefer@gmx.net>
-=2D--
+> git://git.kernel.org/pub/scm/linux/kernel/git/mips/linux.git/ tags/mips-fixes-5.17_2
 
-v2:
-- Add Fixes tag
-=2D--
- drivers/clk/hisilicon/clk-hi3559a.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/d394bb77dd0bd20b125459da25fdac00a853be28
 
-diff --git a/drivers/clk/hisilicon/clk-hi3559a.c b/drivers/clk/hisilicon/c=
-lk-hi3559a.c
-index 56012a3d02192..28c2a0630474d 100644
-=2D-- a/drivers/clk/hisilicon/clk-hi3559a.c
-+++ b/drivers/clk/hisilicon/clk-hi3559a.c
-@@ -611,8 +611,8 @@ static struct hisi_mux_clock hi3559av100_shub_mux_clks=
-[] =3D {
+Thank you!
 
-
- /* shub div clk */
--static struct clk_div_table shub_spi_clk_table[] =3D {{0, 8}, {1, 4}, {2,=
- 2}};
--static struct clk_div_table shub_uart_div_clk_table[] =3D {{1, 8}, {2, 4}=
-};
-+static struct clk_div_table shub_spi_clk_table[] =3D {{0, 8}, {1, 4}, {2,=
- 2}, {}};
-+static struct clk_div_table shub_uart_div_clk_table[] =3D {{1, 8}, {2, 4}=
-, {}};
-
- static struct hisi_divider_clock hi3559av100_shub_div_clks[] =3D {
- 	{ HI3559AV100_SHUB_SPI_SOURCE_CLK, "clk_spi_clk", "shub_clk", 0, 0x20, 2=
-4, 2,
-=2D-
-2.34.1
-
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html

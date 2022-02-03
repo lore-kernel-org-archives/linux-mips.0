@@ -2,124 +2,92 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 58490C433F5
-	for <linux-mips@archiver.kernel.org>; Thu,  3 Feb 2022 02:44:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1B40DC43217
+	for <linux-mips@archiver.kernel.org>; Thu,  3 Feb 2022 08:26:00 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229676AbiBCCoP (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 2 Feb 2022 21:44:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41482 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229630AbiBCCoP (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 2 Feb 2022 21:44:15 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8D64C061714;
-        Wed,  2 Feb 2022 18:44:14 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 7C649B8330A;
-        Thu,  3 Feb 2022 02:44:13 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 33C42C340F6;
-        Thu,  3 Feb 2022 02:44:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1643856252;
-        bh=V51eVJiRBfBtAiPpggOpCZR3uh94Yz/dWJnManIUqRA=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=IfifaL/YvkQeOydK0cgYgy7MaOnD1ofDN9TZ9U0AAgJgX5vkoOM/UCN+eqFDFX8e0
-         SIROG24sqmSXhudRlXA3k1jWkp77oSEpy958cVODa3+sWBKJFg5/KfQgGGdSVjxxIs
-         tBS1ttU+VD/lfGZc6laeZXX3nMQbkvJraFwXMBoSDxQnFXqyuk7KNTCbNzoNPaUxXu
-         obu4PEKMkaRLF0VBJAceVG1kvUSawTvpCDv+XjctdvSnwyZA7NM+d+opMx9qUChsMA
-         QIiebpV47EWTVL21TA8YNmrdIhNU6Tt7q6oAVfTnyRCqH7wGOKGMQC/DtV00pJqZ7Z
-         uKgAZRx6fuHVA==
-Received: by mail-ua1-f50.google.com with SMTP id c36so2662895uae.13;
-        Wed, 02 Feb 2022 18:44:12 -0800 (PST)
-X-Gm-Message-State: AOAM530dWv5SezYpodmaWPAG61rIo/wPi4mSgGXb9lJmfM4pQkN5nm73
-        CuR79aC0qdVj+NkLKFBif1wZQiqTkPcUAvLObO4=
-X-Google-Smtp-Source: ABdhPJwcymlbtGZh6tQbwNbq4eIqK1FMhWR2Ntg5Vpt7lVSBlW8sS85pNzZxGeDyQITxXLpJvbICejijlor03wlRbBs=
-X-Received: by 2002:ab0:2092:: with SMTP id r18mr12760634uak.66.1643856251122;
- Wed, 02 Feb 2022 18:44:11 -0800 (PST)
+        id S1349484AbiBCIZ7 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 3 Feb 2022 03:25:59 -0500
+Received: from ptr.189.cn ([183.61.185.102]:13123 "EHLO 189.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1347156AbiBCIZ6 (ORCPT <rfc822;linux-mips@vger.kernel.org>);
+        Thu, 3 Feb 2022 03:25:58 -0500
+HMM_SOURCE_IP: 10.64.8.41:55068.1434336740
+HMM_ATTACHE_NUM: 0000
+HMM_SOURCE_TYPE: SMTP
+Received: from clientip-114.242.206.180 (unknown [10.64.8.41])
+        by 189.cn (HERMES) with SMTP id C67D610029E;
+        Thu,  3 Feb 2022 16:25:52 +0800 (CST)
+Received: from  ([172.27.8.53])
+        by gateway-151646-dep-b7fbf7d79-9vctg with ESMTP id 98696ac0713f438abfe9c87081ff5fbb for dan.carpenter@oracle.com;
+        Thu, 03 Feb 2022 16:25:53 CST
+X-Transaction-ID: 98696ac0713f438abfe9c87081ff5fbb
+X-Real-From: 15330273260@189.cn
+X-Receive-IP: 172.27.8.53
+X-MEDUSA-Status: 0
+Sender: 15330273260@189.cn
+From:   Sui Jingfeng <15330273260@189.cn>
+To:     Dan Carpenter <dan.carpenter@oracle.com>,
+        Lucas Stach <l.stach@pengutronix.de>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Roland Scheidegger <sroland@vmware.com>,
+        Zack Rusin <zackr@vmware.com>,
+        Christian Gmeiner <christian.gmeiner@gmail.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Rob Herring <robh+dt@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Andrey Zhizhikin <andrey.zhizhikin@leica-geosystems.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        suijingfeng <suijingfeng@loongson.cn>
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org
+Subject: [PATCH v6 2/3] dt-bindings: ls2k1000: add the display controller device node
+Date:   Thu,  3 Feb 2022 16:25:45 +0800
+Message-Id: <20220203082546.3099-3-15330273260@189.cn>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20220203082546.3099-1-15330273260@189.cn>
+References: <20220203082546.3099-1-15330273260@189.cn>
 MIME-Version: 1.0
-References: <20220201150545.1512822-1-guoren@kernel.org> <20220201150545.1512822-16-guoren@kernel.org>
- <20220202075159.GB18398@lst.de>
-In-Reply-To: <20220202075159.GB18398@lst.de>
-From:   Guo Ren <guoren@kernel.org>
-Date:   Thu, 3 Feb 2022 10:44:00 +0800
-X-Gmail-Original-Message-ID: <CAJF2gTTxzFo1kdkCDH=2RKkQ1gEzOnUCjxotcsjrqivG4qg-Dw@mail.gmail.com>
-Message-ID: <CAJF2gTTxzFo1kdkCDH=2RKkQ1gEzOnUCjxotcsjrqivG4qg-Dw@mail.gmail.com>
-Subject: Re: [PATCH V5 15/21] riscv: compat: Add hw capability check for elf
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Palmer Dabbelt <palmer@dabbelt.com>, Arnd Bergmann <arnd@arndb.de>,
-        Anup Patel <anup@brainfault.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        liush <liush@allwinnertech.com>, Wei Fu <wefu@redhat.com>,
-        Drew Fustini <drew@beagleboard.org>,
-        Wang Junqiang <wangjunqiang@iscas.ac.cn>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        linux-csky@vger.kernel.org,
-        linux-s390 <linux-s390@vger.kernel.org>,
-        sparclinux <sparclinux@vger.kernel.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        Parisc List <linux-parisc@vger.kernel.org>,
-        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        Guo Ren <guoren@linux.alibaba.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Wed, Feb 2, 2022 at 3:52 PM Christoph Hellwig <hch@lst.de> wrote:
->
-> On Tue, Feb 01, 2022 at 11:05:39PM +0800, guoren@kernel.org wrote:
-> > +bool compat_elf_check_arch(Elf32_Ehdr *hdr)
-> > +{
-> > +     if (compat_mode_support && (hdr->e_machine == EM_RISCV))
-> > +             return true;
-> > +     else
-> > +             return false;
-> > +}
->
-> This can be simplified to:
->
->         return compat_mode_support && hdr->e_machine == EM_RISCV;
-Good point.
+From: suijingfeng <suijingfeng@loongson.cn>
 
->
-> I'd also rename compat_mode_support to compat_mode_supported
-Okay
+The display controller is a pci device, its vendor id is 0x0014
+its device id is 0x7a06.
 
->
-> > +
-> > +static int compat_mode_detect(void)
-> > +{
-> > +     unsigned long tmp = csr_read(CSR_STATUS);
-> > +
-> > +     csr_write(CSR_STATUS, (tmp & ~SR_UXL) | SR_UXL_32);
-> > +
-> > +     if ((csr_read(CSR_STATUS) & SR_UXL) != SR_UXL_32) {
-> > +             pr_info("riscv: 32bit compat mode detect failed\n");
-> > +             compat_mode_support = false;
-> > +     } else {
-> > +             compat_mode_support = true;
-> > +             pr_info("riscv: 32bit compat mode detected\n");
-> > +     }
->
-> I don't think we need these printks here.
-Okay
+Signed-off-by: suijingfeng <suijingfeng@loongson.cn>
+Signed-off-by: Sui Jingfeng <15330273260@189.cn>
+---
+ arch/mips/boot/dts/loongson/loongson64-2k1000.dtsi | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
->
-> Also this could be simplified to:
->
->         compat_mode_supported = (csr_read(CSR_STATUS) & SR_UXL) == SR_UXL_32;
-Okay
-
-
-
+diff --git a/arch/mips/boot/dts/loongson/loongson64-2k1000.dtsi b/arch/mips/boot/dts/loongson/loongson64-2k1000.dtsi
+index 8143a61111e3..6510b0e6928a 100644
+--- a/arch/mips/boot/dts/loongson/loongson64-2k1000.dtsi
++++ b/arch/mips/boot/dts/loongson/loongson64-2k1000.dtsi
+@@ -198,6 +198,17 @@
+ 				interrupt-parent = <&liointc0>;
+ 			};
+ 
++			lsdc: dc@6,0 {
++				compatible = "pci0014,7a06.0",
++						   "pci0014,7a06",
++						   "pciclass030000",
++						   "pciclass0300";
++
++				reg = <0x3000 0x0 0x0 0x0 0x0>;
++				interrupts = <28 IRQ_TYPE_LEVEL_LOW>;
++				interrupt-parent = <&liointc0>;
++			};
++
+ 			pci_bridge@9,0 {
+ 				compatible = "pci0014,7a19.0",
+ 						   "pci0014,7a19",
 -- 
-Best Regards
- Guo Ren
+2.20.1
 
-ML: https://lore.kernel.org/linux-csky/

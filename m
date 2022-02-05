@@ -2,106 +2,87 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 53E83C433F5
-	for <linux-mips@archiver.kernel.org>; Sat,  5 Feb 2022 00:53:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 36233C433EF
+	for <linux-mips@archiver.kernel.org>; Sat,  5 Feb 2022 09:46:19 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378821AbiBEAxG (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 4 Feb 2022 19:53:06 -0500
-Received: from mout.gmx.net ([212.227.15.18]:47755 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1378839AbiBEAxB (ORCPT <rfc822;linux-mips@vger.kernel.org>);
-        Fri, 4 Feb 2022 19:53:01 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1644022364;
-        bh=ZInuevHBm/8PJjzn5I6mzT63DgQSEcCynm0dez446Vg=;
-        h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=AFz3bz4QsMm6Q8r7kpvkF8bX4FRk/27eEhF8rfJRqe1Aw0hVzblMbWhFgIbGBqvq7
-         Zg75sYU6LwWfwyVkKdD+OqzZblIdr/H5c8xQnLLg7PyXORU1oTW8Hd8PkHTw3TPTS1
-         rbggH0RnhAubbq4mTHkrheWClibrAg3wXZ0njvyU=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from longitude ([5.146.194.160]) by mail.gmx.net (mrgmx004
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1MRCK6-1mt0G008Pc-00NEYx; Sat, 05
- Feb 2022 01:52:44 +0100
-From:   =?UTF-8?q?Jonathan=20Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>
-To:     linux-clk@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mips@vger.kernel.org,
-        =?UTF-8?q?Jonathan=20Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Dongjiu Geng <gengdongjiu@huawei.com>
-Subject: [PATCH v3 3/4] clk: hisilicon: Terminate clk_div_table with sentinel element
-Date:   Sat,  5 Feb 2022 01:52:30 +0100
-Message-Id: <20220205005232.772726-4-j.neuschaefer@gmx.net>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20220205005232.772726-1-j.neuschaefer@gmx.net>
-References: <20220205005232.772726-1-j.neuschaefer@gmx.net>
+        id S1358400AbiBEJqS (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Sat, 5 Feb 2022 04:46:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59284 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232747AbiBEJqR (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Sat, 5 Feb 2022 04:46:17 -0500
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63C8CC061346;
+        Sat,  5 Feb 2022 01:46:15 -0800 (PST)
+Received: by mail-wm1-x332.google.com with SMTP id k6-20020a05600c1c8600b003524656034cso5219622wms.2;
+        Sat, 05 Feb 2022 01:46:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=qU07P8b4s3aU3J8L25YSPpPeM9OCHx/a+SiTu8+fsuI=;
+        b=aEZ75wmyYlr2tUWJgSM0dFUNoQXiyqTDbiM5XAhiKDc74EUfqyUwA0H8fYxWemHphG
+         ZBIfKnkBlnd4mDNDsbnUvFM0+K0UungO3GGXw9nvFGJdjECj9sXsktWmzpUY8THuC7Ud
+         lD6U5xDdmhn1paOX0vjMoqYxCzyXoZSwt2zfNaXipv2XV1ip2qNPkbO8SjA5DDl2vpwk
+         0gri7d7wZWORI/ScsabGRZJX5B4SiyGirmbOiqiXfCiplwMy3YppaBpH84xTh0GH3N59
+         S1pERXJ5EzGwCLpG3AAy+tC5Jspx0NObf/5hAuFNKYoRPm5snzQOzhM23H46ClupZOeF
+         hxIw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=qU07P8b4s3aU3J8L25YSPpPeM9OCHx/a+SiTu8+fsuI=;
+        b=i3TYjGSkFfV+EPU0SpMVv5pwo878Qwjv/C9I6aJhkfUF0thDJwSdNiv1i92MwKRkjJ
+         40BX6HZHG/1hIuvq02xIYbUvSXpmojO0A27rTVd25I5rkF92sCvot0mXtMWTH2f259Ro
+         HcVGUQd7nUtq3F92JkFhBfFmyehNTz8s+BGziPDi8+Md2AdJKJerAHtuXzHxRXTAJgIy
+         fYANfppyday3YNlo3p2lq3oI2q7N+mwmA0gAT+PlSHz9fdgsm8ywmONSN8HfWKQj3g3g
+         OAEClp57EJjY+jzJWS8msQUFGXvR9ojN5rlAqC7GWwIFoRnEItFOV1dyccwH4AsbWzf9
+         HmCQ==
+X-Gm-Message-State: AOAM533wu7MXdcsqZpdL/XePB4QdGLnOz2WRan6RC0wODlpS6LI4H+2/
+        B737/wN1Don6EuQVXVr5AR0=
+X-Google-Smtp-Source: ABdhPJxJaaH6KUScVhffLZs1OWOKJ2bmEM8BAACp+OFqd5p4nwHLDa8NHgE4WvjNAQDcS8x36Z9UAw==
+X-Received: by 2002:a05:600c:1d85:: with SMTP id p5mr2388303wms.36.1644054373571;
+        Sat, 05 Feb 2022 01:46:13 -0800 (PST)
+Received: from hp-power-15.localdomain (mm-89-21-212-37.vitebsk.dynamic.pppoe.byfly.by. [37.212.21.89])
+        by smtp.gmail.com with ESMTPSA id n2sm4679828wrx.108.2022.02.05.01.46.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 05 Feb 2022 01:46:13 -0800 (PST)
+From:   Siarhei Volkau <lis8215@gmail.com>
+To:     Paul Cercueil <paul@crapouillou.net>
+Cc:     Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>, linux-mips@vger.kernel.org,
+        linux-clk@vger.kernel.org, stable@vger.kernel.org,
+        Siarhei Volkau <lis8215@gmail.com>
+Subject: [PATCH v3 0/1] clk: jz4725b: fix mmc0 clock gating
+Date:   Sat,  5 Feb 2022 12:45:30 +0300
+Message-Id: <20220205094531.676371-1-lis8215@gmail.com>
+X-Mailer: git-send-email 2.35.1
+In-Reply-To: <4FSS6R.0A48V2ZMZD7X1@crapouillou.net>
+References: <4FSS6R.0A48V2ZMZD7X1@crapouillou.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:rbb1pSAhHyuR9YMzqKSJwi5YfC4B+oFbWbLzs/81XvNGTiL1Vc/
- qfxvUqUqbPYSYk5cwhkIH9R4ek6xxjxKvybtFfrQwgIqod3C2BN+lGGTMykeCOuCYK0peiR
- UbmrBs8eury762fSp/gjZgBb3+Ojuvjxv1epvl2kwPbW1nT5hTNGG3wOc/RwjVSc/H/3s/W
- Ag3osKQrhvh28/z/kjnAg==
-X-UI-Out-Filterresults: notjunk:1;V03:K0:qqoEMsfYPY4=:7LfRaRTn0/26RCs4FHsHbH
- PWn6fBf23npbfUbMJYDbr2viP1SEddfUCLW4qKgG4ZiOwXGD+siuSvEayjDdW/Yz9jRnARqXC
- XjMzVC3DALcabtOu03SO3F0jg4uK/XTq6/XloFr1TONIQgTPOT2jLcnFlbOOQVHsxbj15E9bu
- fxK102qIycpREeeaDSYGbDXGp6BiiLHyA/LmiVs9TiJM+oRTTgFOXWMJ9zaUHdJGFlsDmxbEG
- b93TiPssh/uTl0CNad6ne+nB6xvcezFYDMHC57MV/WuIY1UXPY97OlMhcT2/E3lGd86ZeXKM+
- aI6CbMISYH0fw1wnlhMOOvpPc07GzoBH9t2i9rbSv1J1uiWgEOQIOz9N/pRQdw3EBj9LUa949
- cZZNbb+B7aVcC3zLSgkGfnfQRl4AqO9TmxuewC9u59yEYJjuDeJyQjwcBiaTFPnFzq6n2/FNw
- FHGSCdvJ/W1HzejFpLXcaoDU+5SWISLDD3xI6gYqz4tNjiYZFWp7j29fijrPNUv0tx7Ra5pT/
- miTqTjAn6LbTsErKZPcWfCvlfOh2Liw4YzlDeJtLIVouEjj90D9fXcmBY4fkB1CZL3j+OaD5o
- KzGscaGDCFjnE+CX1iTbaNfWcb9OK3URZHHiKRRzy8qWdIv0NYtbYtoQ4PM2GFHlGa8nfhs+t
- eYmg3GNsjY4tpaGq+EQXdN/YS/L7yBsqNz9riwTMHt23ZYxg5+Mnxl53vQtvNnz6INFEs06rg
- HEzaEBD+8MN7lRBnY55FSDi2sdC6u/T0U7vV2nyTR6ZPLrYMpTBvGeZ3qR+XmPI87h/t3gmQs
- QE6ZHXSnqhHtAd6Ebi448RZNHxn/jG+n9tTVVxpf32mQSLoU9u27BQjivHj+cbmooAsohUP/8
- Pn6pFaC0SKNjWJtcAvs5fQKW/lLgksRKuv1q+fCozuJUuFQ8sRKgWT6r+lM6DVkiv2+Z/4o9F
- pKisDSTsDa+tAw76DBXjF0P3S0mixK+V/eMNtwQtEUTkKmJLI/casqFSsoW7e9u1E9kPvQxtI
- dcfN9+OeP6CTYjPY6FGrB8AA68qBokrZmLsiDcu0r2eRZ6nR+lNa99lubDRUt/zukVyFOn2RT
- JfynFZRhPllCRI=
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-In order that the end of a clk_div_table can be detected, it must be
-terminated with a sentinel element (.div =3D 0).
+The mmc0 clock gate bit was mistakenly assigned to "i2s" clock.
+You can find that the same bit is assigned to "mmc0" too.
+It leads to mmc0 hang for a long time after any sound activity
+also it  prevented PM_SLEEP to work properly.
+I guess it was introduced by copy-paste from jz4740 driver
+where it is really controls I2S clock gate.
 
-Fixes: 6c81966107dc0 ("clk: hisilicon: Add clock driver for hi3559A SoC")
-Signed-off-by: Jonathan Neusch=C3=A4fer <j.neuschaefer@gmx.net>
-=2D--
+Changelog v2 .. v3:
+ - Added tags Fixes and Reviewed-by.
+Changelog v1 .. v2:
+ - Added useful info above to the commit itself.
 
-v3:
-- no changes
+Siarhei Volkau (1):
+  clk: jz4725b: fix mmc0 clock gating
 
-v2:
-- Add Fixes tag
-=2D--
- drivers/clk/hisilicon/clk-hi3559a.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/clk/ingenic/jz4725b-cgu.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/drivers/clk/hisilicon/clk-hi3559a.c b/drivers/clk/hisilicon/c=
-lk-hi3559a.c
-index 56012a3d02192..28c2a0630474d 100644
-=2D-- a/drivers/clk/hisilicon/clk-hi3559a.c
-+++ b/drivers/clk/hisilicon/clk-hi3559a.c
-@@ -611,8 +611,8 @@ static struct hisi_mux_clock hi3559av100_shub_mux_clks=
-[] =3D {
-
-
- /* shub div clk */
--static struct clk_div_table shub_spi_clk_table[] =3D {{0, 8}, {1, 4}, {2,=
- 2}};
--static struct clk_div_table shub_uart_div_clk_table[] =3D {{1, 8}, {2, 4}=
-};
-+static struct clk_div_table shub_spi_clk_table[] =3D {{0, 8}, {1, 4}, {2,=
- 2}, {}};
-+static struct clk_div_table shub_uart_div_clk_table[] =3D {{1, 8}, {2, 4}=
-, {}};
-
- static struct hisi_divider_clock hi3559av100_shub_div_clks[] =3D {
- 	{ HI3559AV100_SHUB_SPI_SOURCE_CLK, "clk_spi_clk", "shub_clk", 0, 0x20, 2=
-4, 2,
-=2D-
-2.34.1
+-- 
+2.35.1
 

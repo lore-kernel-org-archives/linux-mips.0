@@ -2,74 +2,80 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E48DFC433F5
-	for <linux-mips@archiver.kernel.org>; Mon,  7 Feb 2022 17:50:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EBCE2C433F5
+	for <linux-mips@archiver.kernel.org>; Mon,  7 Feb 2022 21:18:26 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236699AbiBGRts (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 7 Feb 2022 12:49:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57634 "EHLO
+        id S235483AbiBGVS0 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 7 Feb 2022 16:18:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44034 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1383727AbiBGRke (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Mon, 7 Feb 2022 12:40:34 -0500
-Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 7C5A1C0401D9;
-        Mon,  7 Feb 2022 09:40:34 -0800 (PST)
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1nH7yl-0006Gx-01; Mon, 07 Feb 2022 18:39:07 +0100
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 66847C2116; Mon,  7 Feb 2022 18:35:50 +0100 (CET)
-Date:   Mon, 7 Feb 2022 18:35:50 +0100
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Nathan Chancellor <nathan@kernel.org>
-Cc:     Huacai Chen <chenhuacai@kernel.org>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
+        with ESMTP id S235300AbiBGVS0 (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Mon, 7 Feb 2022 16:18:26 -0500
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E9C8C061355;
+        Mon,  7 Feb 2022 13:18:25 -0800 (PST)
+Received: by mail-lf1-x12d.google.com with SMTP id o2so4003027lfd.1;
+        Mon, 07 Feb 2022 13:18:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=2hxorUUp0t634DZQae5n7+kTN25Fy6VHoakv6Qb7QV8=;
+        b=Y9hFiqVC7Xqysad+0JRz0TFEV0QKkjLoRqvHbKlaISjT4dgRf6bnOllP3kklMYV+qG
+         DZ9Yg2D3+GFh2EJ7ckbhkipMSO6TaiGDgpv1IOsAAoySROe3ZyJWh9DGI/C4OS50hKy8
+         bKRmww2ebPyHi+mOuf3gOyLLdX3R+KSv919RFJ7zrwu3eR26yT4ChGhma//3lDZ0XetS
+         UhNdgAW2S1d/FNoqjs5FT4OwTyBnISDOh0GWHK84W8yGq31VdeKd4AFu6yjTHm8Ut3/9
+         dBAk6sR+xem8yroCf6PKowhV39K8wi71dJMH2hSS7mj/H2pohifOSNAxK3J+efYfOEp5
+         TRFw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=2hxorUUp0t634DZQae5n7+kTN25Fy6VHoakv6Qb7QV8=;
+        b=PLqxmPx5k4cvA+EyaXLfScoSTDWnT2Pz017zG5us3AqiNPAHZmkt7Q8ItrRnRZ+99D
+         rRqUQaEmGKxcZaVfX0fSVYnX7h4Vr9Gx8jp56IuEzFMLkaFeXvNENso8JOZEuYbHHu1r
+         b0syzU4oRAW1HvhmPTymdWjRzdm08FOSA7p65WI1MWhUCMJ76zeNS0ndbY0eV7PdsGT8
+         N3Cni15vgO1kdDIw8MVkT9RpY3yi6k5JdhIzqJhs0VFZZZ/q9Bc4wxmN2dUEkzIcRR3Y
+         XkBKRZCPss5QKyoBBJ22E8+xeM3l//4uYoAhRKQWrTv/rExtAl45xs8s3C8J3/idclGc
+         ealw==
+X-Gm-Message-State: AOAM531PQ2QVR7UH+Lbp2+x7nNMagigcqV19yfbtaATcUdsj9DAy+6sL
+        h6TP7jpD+l+qafoFpjuQH2HefkqUek8=
+X-Google-Smtp-Source: ABdhPJwUrD4o9kmczzCrVMBvlkl9TiH+NKP+zkcqGdi1m+YE3IvCWKbxVPfjDImO0vOiUiVKQZsf1Q==
+X-Received: by 2002:a05:6512:2386:: with SMTP id c6mr928046lfv.299.1644268703712;
+        Mon, 07 Feb 2022 13:18:23 -0800 (PST)
+Received: from localhost.localdomain (h-155-4-221-129.NA.cust.bahnhof.se. [155.4.221.129])
+        by smtp.gmail.com with ESMTPSA id s30sm1637978lfp.93.2022.02.07.13.18.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 07 Feb 2022 13:18:23 -0800 (PST)
+From:   Rikard Falkeborn <rikard.falkeborn@gmail.com>
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc:     Marc Zyngier <maz@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
         linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        llvm@lists.linux.dev
-Subject: Re: [PATCH v2 1/2] MIPS: Loongson64: Clean up use of cc-ifversion
-Message-ID: <20220207173550.GB16822@alpha.franken.de>
-References: <20220125221925.3547683-1-nathan@kernel.org>
+        Rikard Falkeborn <rikard.falkeborn@gmail.com>
+Subject: [PATCH 0/3] MIPS: Constify static irq_domain_ops structs
+Date:   Mon,  7 Feb 2022 22:18:13 +0100
+Message-Id: <20220207211816.57860-1-rikard.falkeborn@gmail.com>
+X-Mailer: git-send-email 2.35.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220125221925.3547683-1-nathan@kernel.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Tue, Jan 25, 2022 at 03:19:24PM -0700, Nathan Chancellor wrote:
-> This Makefile checks that GCC is 4.9 or newer, which is redundant after
-> commit 76ae847497bc ("Documentation: raise minimum supported version of
-> GCC to 5.1"), so cc-option can be removed.
-> 
-> Clang does not support -march=loongson3a so it needs to continue to use
-> -march=mips64r2, which no longer needs cc-option because all supported
-> clang versions recognize this flag.
-> 
-> -march=loonson3a can be used unconditionally with GCC because the
-> minimum supported GCC version has been bumped past 4.9.0, which won't
-> have the bug mentioned in the comment. The _MIPS_ISA macro redefinition
-> can be removed at the same time for the same reason.
-> 
-> Suggested-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
-> Suggested-by: Nick Desaulniers <ndesaulniers@google.com>
-> Signed-off-by: Nathan Chancellor <nathan@kernel.org>
-> ---
-> 
-> v1 -> v2: https://lore.kernel.org/r/20220120214001.1879469-1-nathan@kernel.org/
-> 
-> * Eliminate ld-option call (Jiaxun).
-> * Eliminate _MIPS_ISA macro redefinitions (Nick).
-> 
->  arch/mips/loongson64/Platform | 21 +++------------------
->  1 file changed, 3 insertions(+), 18 deletions(-)
+Constify a number of static irq_domain_ops structs that were never
+modified. This allows the compiler to put them in read-only memory.
 
-applied to mips-next.
+Rikard Falkeborn (3):
+  MIPS: OCTEON: Constify static irq_domain_ops
+  MIPS: ath25: Constify static irq_domain_ops
+  MIPS: pci-ar2315: Constify static irq_domain_ops
 
-Thomas.
+ arch/mips/ath25/ar2315.c             |  2 +-
+ arch/mips/ath25/ar5312.c             |  2 +-
+ arch/mips/cavium-octeon/octeon-irq.c | 10 +++++-----
+ arch/mips/pci/pci-ar2315.c           |  2 +-
+ 4 files changed, 8 insertions(+), 8 deletions(-)
 
 -- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+2.35.1
+

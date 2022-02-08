@@ -2,235 +2,560 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 45494C47081
-	for <linux-mips@archiver.kernel.org>; Tue,  8 Feb 2022 01:07:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3434BC433FE
+	for <linux-mips@archiver.kernel.org>; Tue,  8 Feb 2022 07:43:36 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233449AbiBHBGt (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 7 Feb 2022 20:06:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34418 "EHLO
+        id S244657AbiBHHnf (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 8 Feb 2022 02:43:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36982 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344294AbiBHBAo (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Mon, 7 Feb 2022 20:00:44 -0500
-Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B916C061355;
-        Mon,  7 Feb 2022 17:00:43 -0800 (PST)
-Received: by mail-ej1-x62c.google.com with SMTP id m4so47375367ejb.9;
-        Mon, 07 Feb 2022 17:00:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=4AnqRCRHjum3Lv75PRk6QZY+wEi1sAnkZbU7KAtSshc=;
-        b=auyI6aPbNuUFdfUjxJxiRmUGahJ4TwWMZw3ksVpVMn9npSrgLIyDrJJwWZ14iZifK2
-         ch5nLC62ZL++VH40QcNEGFUYdWmnWLxBNo6hoSjfZK5KoN+4gMTciMQkJB/jgvwX/mlw
-         LojDYK00XTV7JY4I7ePApg/rziod7t1VZz5xPzpQRPAtylQ/LO4FY1cyuFUOz0vRG3fB
-         TmKaqYEFk4ZUyybFxDqq8lInJsN+C2fuid9Be8+ZN+LRaoccx70rrV5riPWBocCWNqYh
-         UCnfwRBEBIKPekmYn4x5BA4vgs6IbHBiVTmmlHIYttGFe3e6OrPR7Mm20rwe1YLzs2r8
-         JaQg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=4AnqRCRHjum3Lv75PRk6QZY+wEi1sAnkZbU7KAtSshc=;
-        b=eFDOuMFQRmxD1uBu36SoSi3J48x2Adh+SVZdPHM66Krmxg0Amb+pl+244lXETRo+nl
-         qKwC/pd+VuVJ/xGMBJHPH9hPKa8sL+mKiCI4RVY2aruDSCxooAwMn/Zu8O3LoVVjuM2D
-         ExYak1/Ib/YR/UQ5n84qhM8lUjConPtTwgf5lQEttgTrwd0pImZZDByN13UBN+Om8XCB
-         9bvvH7AfFGzCwctOLR/v1BOFFDCDgmOpUM2RGBFgF7qbyyBpmbdqSsVW1V8IoXwuUOqm
-         0yUj2OiFkGEZUPzP7eUkFo5aoO7vUEqfPDuEWMdFc61ldkXtX5L3F9C7x2/q1wBPFjXQ
-         coBQ==
-X-Gm-Message-State: AOAM532wHizztS+kNON2K+zcFvMPTf39O3qfMmaWxmMCyMOuh2M9vkxj
-        qOtytaZr1S17uXahj+nix/RbGl5qJ4OUyXO6uBg=
-X-Google-Smtp-Source: ABdhPJwNFE50vrDF3pdDDcyR9PGwiJlGOk1zd+59R/0BBV5d0q7msHi0nA7wLrhOTCG/pSfZPUyDKg==
-X-Received: by 2002:a17:906:e20d:: with SMTP id gf13mr1702834ejb.414.1644282041605;
-        Mon, 07 Feb 2022 17:00:41 -0800 (PST)
-Received: from localhost (92.40.202.227.threembb.co.uk. [92.40.202.227])
-        by smtp.gmail.com with ESMTPSA id p19sm4197644ejc.42.2022.02.07.17.00.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Feb 2022 17:00:41 -0800 (PST)
-From:   Aidan MacDonald <aidanmacdonald.0x0@gmail.com>
-To:     paul@crapouillou.net, mturquette@baylibre.com, sboyd@kernel.org
-Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 2/3] clk: ingenic: Mark critical clocks in Ingenic SoCs
-Date:   Tue,  8 Feb 2022 01:00:47 +0000
-Message-Id: <20220208010048.211691-3-aidanmacdonald.0x0@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20220208010048.211691-1-aidanmacdonald.0x0@gmail.com>
-References: <20220208010048.211691-1-aidanmacdonald.0x0@gmail.com>
+        with ESMTP id S234614AbiBHHne (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Tue, 8 Feb 2022 02:43:34 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8790AC0401EF;
+        Mon,  7 Feb 2022 23:43:32 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 129626162C;
+        Tue,  8 Feb 2022 07:43:32 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6545DC340FB;
+        Tue,  8 Feb 2022 07:43:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1644306211;
+        bh=MjRkOst2M/5dlM7lJW4o7rPDSbrc2iUmMOBamo+9U4I=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=oC1B8OCFuOgPswqtgbK6Rr0FSkkA5EZIqmGZImyPse+hBhWIbnL5g9h/8gxjPEp1f
+         rmKY1EajcAsboCWiZ+9zYUWZJcIIykTQBB8S5jQnPxoIKJUZIVPsNxRiaSiKbRIAPp
+         XH/hJ9PmerWkFbj+0OVa/pyL/qmllGDYVFTIJ6eg8YBfRbkgVG3KssTUYepDeSYfRH
+         Wk/Gln6FpmDyekcBrK5moBEgTmZCkcMz/yDyCaYAw5O8y8sUu8atl/irgOb/upiTpt
+         vRu+3qeoHdCJ0UjtPB4+hkwJgueedC6+NxhiokpfeVwL4cbNajhxPpELTNpryuIaC5
+         o1IkOvMKln5ng==
+Received: by mail-vs1-f47.google.com with SMTP id t184so2434372vst.13;
+        Mon, 07 Feb 2022 23:43:31 -0800 (PST)
+X-Gm-Message-State: AOAM533Lbw1nSuu6oEx8PpeyUjdZToDqJOM3p2FHD27JygiP+cG6bKwJ
+        ha6kLlvxR9xAiW5U1F5lekgPlnmB2PHDIWBqzH0=
+X-Google-Smtp-Source: ABdhPJyjgRzh+vCwEQSs5nLOGm9AlPUQVn0Q6YrB4DpF47oWbt94T42b4htAscCjalbJxjRdrgCKGKP+RS5l5fuTXk4=
+X-Received: by 2002:a67:f94e:: with SMTP id u14mr1172837vsq.2.1644306209874;
+ Mon, 07 Feb 2022 23:43:29 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20220201150545.1512822-1-guoren@kernel.org>
+In-Reply-To: <20220201150545.1512822-1-guoren@kernel.org>
+From:   Guo Ren <guoren@kernel.org>
+Date:   Tue, 8 Feb 2022 15:43:18 +0800
+X-Gmail-Original-Message-ID: <CAJF2gTRAkXHWyvZiRrsGs2PRxahctLSBo7sQ-bcfSjOegO1jDA@mail.gmail.com>
+Message-ID: <CAJF2gTRAkXHWyvZiRrsGs2PRxahctLSBo7sQ-bcfSjOegO1jDA@mail.gmail.com>
+Subject: Re: [PATCH V5 00/21] riscv: compat: Add COMPAT mode support for rv64
+To:     Guo Ren <guoren@kernel.org>, Palmer Dabbelt <palmer@dabbelt.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Anup Patel <anup@brainfault.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        liush <liush@allwinnertech.com>, Wei Fu <wefu@redhat.com>,
+        Drew Fustini <drew@beagleboard.org>,
+        Wang Junqiang <wangjunqiang@iscas.ac.cn>,
+        Christoph Hellwig <hch@lst.de>
+Cc:     linux-arch <linux-arch@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        linux-csky@vger.kernel.org,
+        linux-s390 <linux-s390@vger.kernel.org>,
+        sparclinux <sparclinux@vger.kernel.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        Parisc List <linux-parisc@vger.kernel.org>,
+        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        Guo Ren <guoren@linux.alibaba.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Consider the CPU, L2 cache, and memory as critical to ensure they
-are not disabled.
+On Tue, Feb 1, 2022 at 11:06 PM <guoren@kernel.org> wrote:
+>
+> From: Guo Ren <guoren@linux.alibaba.com>
+>
+> Currently, most 64-bit architectures (x86, parisc, powerpc, arm64,
+> s390, mips, sparc) have supported COMPAT mode. But they all have
+> history issues and can't use standard linux unistd.h. RISC-V would
+> be first standard __SYSCALL_COMPAT user of include/uapi/asm-generic
+> /unistd.h.
+>
+> The patchset are based on v5.17-rc2, you can compare rv64-compat32
+> v.s. rv32-whole in qemu with following step:
+>
+>  - Prepare rv32 rootfs & fw_jump.bin by buildroot.org
+>    $ git clone git://git.busybox.net/buildroot
+>    $ cd buildroot
+>    $ make qemu_riscv32_virt_defconfig O=3Dqemu_riscv32_virt_defconfig
+>    $ make -C qemu_riscv32_virt_defconfig
+>    $ make qemu_riscv64_virt_defconfig O=3Dqemu_riscv64_virt_defconfig
+>    $ make -C qemu_riscv64_virt_defconfig
+>    (Got fw_jump.bin & rootfs.ext2 in qemu_riscvXX_virt_defconfig/images)
+>
+>  - Prepare Linux rv32 & rv64 Image
+>    $ git clone git@github.com:c-sky/csky-linux.git -b riscv_compat_v5 lin=
+ux
+>    $ cd linux
+>    $ echo "CONFIG_STRICT_KERNEL_RWX=3Dn" >> arch/riscv/configs/defconfig
+>    $ echo "CONFIG_STRICT_MODULE_RWX=3Dn" >> arch/riscv/configs/defconfig
+>    $ make ARCH=3Driscv CROSS_COMPILE=3Driscv32-buildroot-linux-gnu- O=3D.=
+./build-rv32/ rv32_defconfig
+>    $ make ARCH=3Driscv CROSS_COMPILE=3Driscv32-buildroot-linux-gnu- O=3D.=
+./build-rv32/ Image
+>    $ make ARCH=3Driscv CROSS_COMPILE=3Driscv64-buildroot-linux-gnu- O=3D.=
+./build-rv64/ defconfig
+>    $ make ARCH=3Driscv CROSS_COMPILE=3Driscv64-buildroot-linux-gnu- O=3D.=
+./build-rv64/ Image
+>
+>  - Prepare Qemu: (made by LIU Zhiwei <zhiwei_liu@c-sky.com>)
+>    $ git clone git@github.com:alistair23/qemu.git -b riscv-to-apply.for-u=
+pstream linux
+>    $ cd qemu
+>    $ ./configure --target-list=3D"riscv64-softmmu riscv32-softmmu"
+>    $ make
+>
+> Now let's compare rv32-compat with rv32-native memory footprint. Kernel w=
+ith rv32 =3D rv64
+> defconfig, rootfs, opensbi, Qemu are the same.
+>
+>  - Run rv64 with rv32 rootfs in compat mode:
+>    $ ./build/qemu-system-riscv64 -cpu rv64,x-h=3Dtrue -M virt -m 64m -nog=
+raphic -bios qemu_riscv64_virt_defconfig/images/fw_jump.bin -kernel build-r=
+v64/Image -drive file qemu_riscv32_virt_defconfig/images/rootfs.ext2,format=
+=3Draw,id=3Dhd0 -device virtio-blk-device,drive=3Dhd0 -append "rootwait roo=
+t=3D/dev/vda ro console=3DttyS0 earlycon=3Dsbi" -netdev user,id=3Dnet0 -dev=
+ice virtio-net-device,netdev=3Dnet0
 
-Signed-off-by: Aidan MacDonald <aidanmacdonald.0x0@gmail.com>
----
- drivers/clk/ingenic/jz4725b-cgu.c | 2 ++
- drivers/clk/ingenic/jz4740-cgu.c  | 2 ++
- drivers/clk/ingenic/jz4760-cgu.c  | 2 ++
- drivers/clk/ingenic/jz4770-cgu.c  | 1 +
- drivers/clk/ingenic/jz4780-cgu.c  | 3 +++
- drivers/clk/ingenic/x1000-cgu.c   | 3 +++
- drivers/clk/ingenic/x1830-cgu.c   | 3 +++
- 7 files changed, 16 insertions(+)
+Fixup qemu cmdline (Remove x-h=3Dtrue):
+$ ./build/qemu-system-riscv64 -cpu rv64 -M virt -m 64m -nographic
+-bios qemu_riscv64_virt_defconfig/images/fw_jump.bin -kernel
+build-rv64/Image -drive file
+qemu_riscv32_virt_defconfig/images/rootfs.ext2,format=3Draw,id=3Dhd0
+-device virtio-blk-device,drive=3Dhd0 -append "rootwait root=3D/dev/vda ro
+console=3DttyS0 earlycon=3Dsbi" -netdev user,id=3Dnet0 -device
+virtio-net-device,netdev=3Dnet0
 
-diff --git a/drivers/clk/ingenic/jz4725b-cgu.c b/drivers/clk/ingenic/jz4725b-cgu.c
-index 744d136b721b..639fa4e29b05 100644
---- a/drivers/clk/ingenic/jz4725b-cgu.c
-+++ b/drivers/clk/ingenic/jz4725b-cgu.c
-@@ -87,6 +87,7 @@ static const struct ingenic_cgu_clk_info jz4725b_cgu_clocks[] = {
- 
- 	[JZ4725B_CLK_CCLK] = {
- 		"cclk", CGU_CLK_DIV,
-+		.flags = CLK_IS_CRITICAL,
- 		.parents = { JZ4725B_CLK_PLL, -1, -1, -1 },
- 		.div = {
- 			CGU_REG_CPCCR, 0, 1, 4, 22, -1, -1, 0,
-@@ -114,6 +115,7 @@ static const struct ingenic_cgu_clk_info jz4725b_cgu_clocks[] = {
- 
- 	[JZ4725B_CLK_MCLK] = {
- 		"mclk", CGU_CLK_DIV,
-+		.flags = CLK_IS_CRITICAL,
- 		.parents = { JZ4725B_CLK_PLL, -1, -1, -1 },
- 		.div = {
- 			CGU_REG_CPCCR, 12, 1, 4, 22, -1, -1, 0,
-diff --git a/drivers/clk/ingenic/jz4740-cgu.c b/drivers/clk/ingenic/jz4740-cgu.c
-index 43ffb62c42bb..2b6f7a9fcea8 100644
---- a/drivers/clk/ingenic/jz4740-cgu.c
-+++ b/drivers/clk/ingenic/jz4740-cgu.c
-@@ -102,6 +102,7 @@ static const struct ingenic_cgu_clk_info jz4740_cgu_clocks[] = {
- 
- 	[JZ4740_CLK_CCLK] = {
- 		"cclk", CGU_CLK_DIV,
-+		.flags = CLK_IS_CRITICAL,
- 		.parents = { JZ4740_CLK_PLL, -1, -1, -1 },
- 		.div = {
- 			CGU_REG_CPCCR, 0, 1, 4, 22, -1, -1, 0,
-@@ -129,6 +130,7 @@ static const struct ingenic_cgu_clk_info jz4740_cgu_clocks[] = {
- 
- 	[JZ4740_CLK_MCLK] = {
- 		"mclk", CGU_CLK_DIV,
-+		.flags = CLK_IS_CRITICAL,
- 		.parents = { JZ4740_CLK_PLL, -1, -1, -1 },
- 		.div = {
- 			CGU_REG_CPCCR, 12, 1, 4, 22, -1, -1, 0,
-diff --git a/drivers/clk/ingenic/jz4760-cgu.c b/drivers/clk/ingenic/jz4760-cgu.c
-index 8fdd383560fb..7920df2cee1a 100644
---- a/drivers/clk/ingenic/jz4760-cgu.c
-+++ b/drivers/clk/ingenic/jz4760-cgu.c
-@@ -143,6 +143,7 @@ static const struct ingenic_cgu_clk_info jz4760_cgu_clocks[] = {
- 
- 	[JZ4760_CLK_CCLK] = {
- 		"cclk", CGU_CLK_DIV,
-+		.flags = CLK_IS_CRITICAL,
- 		.parents = { JZ4760_CLK_PLL0, },
- 		.div = {
- 			CGU_REG_CPCCR, 0, 1, 4, 22, -1, -1, 0,
-@@ -175,6 +176,7 @@ static const struct ingenic_cgu_clk_info jz4760_cgu_clocks[] = {
- 	},
- 	[JZ4760_CLK_MCLK] = {
- 		"mclk", CGU_CLK_DIV,
-+		.flags = CLK_IS_CRITICAL,
- 		.parents = { JZ4760_CLK_PLL0, },
- 		.div = {
- 			CGU_REG_CPCCR, 12, 1, 4, 22, -1, -1, 0,
-diff --git a/drivers/clk/ingenic/jz4770-cgu.c b/drivers/clk/ingenic/jz4770-cgu.c
-index 7ef91257630e..02b266c2a537 100644
---- a/drivers/clk/ingenic/jz4770-cgu.c
-+++ b/drivers/clk/ingenic/jz4770-cgu.c
-@@ -149,6 +149,7 @@ static const struct ingenic_cgu_clk_info jz4770_cgu_clocks[] = {
- 
- 	[JZ4770_CLK_CCLK] = {
- 		"cclk", CGU_CLK_DIV,
-+		.flags = CLK_IS_CRITICAL,
- 		.parents = { JZ4770_CLK_PLL0, },
- 		.div = {
- 			CGU_REG_CPCCR, 0, 1, 4, 22, -1, -1, 0,
-diff --git a/drivers/clk/ingenic/jz4780-cgu.c b/drivers/clk/ingenic/jz4780-cgu.c
-index e357c228e0f1..014674486038 100644
---- a/drivers/clk/ingenic/jz4780-cgu.c
-+++ b/drivers/clk/ingenic/jz4780-cgu.c
-@@ -341,12 +341,14 @@ static const struct ingenic_cgu_clk_info jz4780_cgu_clocks[] = {
- 
- 	[JZ4780_CLK_CPU] = {
- 		"cpu", CGU_CLK_DIV,
-+		.flags = CLK_IS_CRITICAL,
- 		.parents = { JZ4780_CLK_CPUMUX, -1, -1, -1 },
- 		.div = { CGU_REG_CLOCKCONTROL, 0, 1, 4, 22, -1, -1 },
- 	},
- 
- 	[JZ4780_CLK_L2CACHE] = {
- 		"l2cache", CGU_CLK_DIV,
-+		.flags = CLK_IS_CRITICAL,
- 		.parents = { JZ4780_CLK_CPUMUX, -1, -1, -1 },
- 		.div = { CGU_REG_CLOCKCONTROL, 4, 1, 4, -1, -1, -1 },
- 	},
-@@ -380,6 +382,7 @@ static const struct ingenic_cgu_clk_info jz4780_cgu_clocks[] = {
- 
- 	[JZ4780_CLK_DDR] = {
- 		"ddr", CGU_CLK_MUX | CGU_CLK_DIV,
-+		.flags = CLK_IS_CRITICAL,
- 		.parents = { -1, JZ4780_CLK_SCLKA, JZ4780_CLK_MPLL, -1 },
- 		.mux = { CGU_REG_DDRCDR, 30, 2 },
- 		.div = { CGU_REG_DDRCDR, 0, 1, 4, 29, 28, 27 },
-diff --git a/drivers/clk/ingenic/x1000-cgu.c b/drivers/clk/ingenic/x1000-cgu.c
-index 3c4d5a77ccbd..1bd421cc2ab3 100644
---- a/drivers/clk/ingenic/x1000-cgu.c
-+++ b/drivers/clk/ingenic/x1000-cgu.c
-@@ -251,6 +251,7 @@ static const struct ingenic_cgu_clk_info x1000_cgu_clocks[] = {
- 
- 	[X1000_CLK_CPU] = {
- 		"cpu", CGU_CLK_DIV | CGU_CLK_GATE,
-+		.flags = CLK_IS_CRITICAL,
- 		.parents = { X1000_CLK_CPUMUX, -1, -1, -1 },
- 		.div = { CGU_REG_CPCCR, 0, 1, 4, 22, -1, -1 },
- 		.gate = { CGU_REG_CLKGR, 30 },
-@@ -258,6 +259,7 @@ static const struct ingenic_cgu_clk_info x1000_cgu_clocks[] = {
- 
- 	[X1000_CLK_L2CACHE] = {
- 		"l2cache", CGU_CLK_DIV,
-+		.flags = CLK_IS_CRITICAL,
- 		.parents = { X1000_CLK_CPUMUX, -1, -1, -1 },
- 		.div = { CGU_REG_CPCCR, 4, 1, 4, 22, -1, -1 },
- 	},
-@@ -290,6 +292,7 @@ static const struct ingenic_cgu_clk_info x1000_cgu_clocks[] = {
- 
- 	[X1000_CLK_DDR] = {
- 		"ddr", CGU_CLK_MUX | CGU_CLK_DIV | CGU_CLK_GATE,
-+		.flags = CLK_IS_CRITICAL,
- 		.parents = { -1, X1000_CLK_SCLKA, X1000_CLK_MPLL, -1 },
- 		.mux = { CGU_REG_DDRCDR, 30, 2 },
- 		.div = { CGU_REG_DDRCDR, 0, 1, 4, 29, 28, 27 },
-diff --git a/drivers/clk/ingenic/x1830-cgu.c b/drivers/clk/ingenic/x1830-cgu.c
-index e01ec2dc7a1a..b08e318aa095 100644
---- a/drivers/clk/ingenic/x1830-cgu.c
-+++ b/drivers/clk/ingenic/x1830-cgu.c
-@@ -225,6 +225,7 @@ static const struct ingenic_cgu_clk_info x1830_cgu_clocks[] = {
- 
- 	[X1830_CLK_CPU] = {
- 		"cpu", CGU_CLK_DIV | CGU_CLK_GATE,
-+		.flags = CLK_IS_CRITICAL,
- 		.parents = { X1830_CLK_CPUMUX, -1, -1, -1 },
- 		.div = { CGU_REG_CPCCR, 0, 1, 4, 22, -1, -1 },
- 		.gate = { CGU_REG_CLKGR1, 15 },
-@@ -232,6 +233,7 @@ static const struct ingenic_cgu_clk_info x1830_cgu_clocks[] = {
- 
- 	[X1830_CLK_L2CACHE] = {
- 		"l2cache", CGU_CLK_DIV,
-+		.flags = CLK_IS_CRITICAL,
- 		.parents = { X1830_CLK_CPUMUX, -1, -1, -1 },
- 		.div = { CGU_REG_CPCCR, 4, 1, 4, 22, -1, -1 },
- 	},
-@@ -264,6 +266,7 @@ static const struct ingenic_cgu_clk_info x1830_cgu_clocks[] = {
- 
- 	[X1830_CLK_DDR] = {
- 		"ddr", CGU_CLK_MUX | CGU_CLK_DIV | CGU_CLK_GATE,
-+		.flags = CLK_IS_CRITICAL,
- 		.parents = { -1, X1830_CLK_SCLKA, X1830_CLK_MPLL, -1 },
- 		.mux = { CGU_REG_DDRCDR, 30, 2 },
- 		.div = { CGU_REG_DDRCDR, 0, 1, 4, 29, 28, 27 },
--- 
-2.34.1
+>
+> QEMU emulator version 6.2.50 (v6.2.0-29-g196d7182c8)
+> OpenSBI v0.9
+> [    0.000000] Linux version 5.16.0-rc6-00017-g750f87086bdd-dirty (guoren=
+@guoren-Z87-HD3) (riscv64-unknown-linux-gnu-gcc (GCC) 10.2.0, GNU ld (GNU B=
+inutils) 2.37) #96 SMP Tue Dec 28 21:01:55 CST 2021
+> [    0.000000] OF: fdt: Ignoring memory range 0x80000000 - 0x80200000
+> [    0.000000] Machine model: riscv-virtio,qemu
+> [    0.000000] earlycon: sbi0 at I/O port 0x0 (options '')
+> [    0.000000] printk: bootconsole [sbi0] enabled
+> [    0.000000] efi: UEFI not found.
+> [    0.000000] Zone ranges:
+> [    0.000000]   DMA32    [mem 0x0000000080200000-0x0000000083ffffff]
+> [    0.000000]   Normal   empty
+> [    0.000000] Movable zone start for each node
+> [    0.000000] Early memory node ranges
+> [    0.000000]   node   0: [mem 0x0000000080200000-0x0000000083ffffff]
+> [    0.000000] Initmem setup node 0 [mem 0x0000000080200000-0x0000000083f=
+fffff]
+> [    0.000000] SBI specification v0.2 detected
+> [    0.000000] SBI implementation ID=3D0x1 Version=3D0x9
+> [    0.000000] SBI TIME extension detected
+> [    0.000000] SBI IPI extension detected
+> [    0.000000] SBI RFENCE extension detected
+> [    0.000000] SBI v0.2 HSM extension detected
+> [    0.000000] riscv: ISA extensions acdfhimsu
+> [    0.000000] riscv: ELF capabilities acdfim
+> [    0.000000] percpu: Embedded 17 pages/cpu s30696 r8192 d30744 u69632
+> [    0.000000] Built 1 zonelists, mobility grouping on.  Total pages: 156=
+55
+> [    0.000000] Kernel command line: rootwait root=3D/dev/vda ro console=
+=3DttyS0 earlycon=3Dsbi
+> [    0.000000] Dentry cache hash table entries: 8192 (order: 4, 65536 byt=
+es, linear)
+> [    0.000000] Inode-cache hash table entries: 4096 (order: 3, 32768 byte=
+s, linear)
+> [    0.000000] mem auto-init: stack:off, heap alloc:off, heap free:off
+> [    0.000000] Virtual kernel memory layout:
+> [    0.000000]       fixmap : 0xffffffcefee00000 - 0xffffffceff000000   (=
+2048 kB)
+> [    0.000000]       pci io : 0xffffffceff000000 - 0xffffffcf00000000   (=
+  16 MB)
+> [    0.000000]      vmemmap : 0xffffffcf00000000 - 0xffffffcfffffffff   (=
+4095 MB)
+> [    0.000000]      vmalloc : 0xffffffd000000000 - 0xffffffdfffffffff   (=
+65535 MB)
+> [    0.000000]       lowmem : 0xffffffe000000000 - 0xffffffe003e00000   (=
+  62 MB)
+> [    0.000000]       kernel : 0xffffffff80000000 - 0xffffffffffffffff   (=
+2047 MB)
+> [    0.000000] Memory: 52788K/63488K available (6184K kernel code, 888K r=
+wdata, 1917K rodata, 294K init, 297K bss, 10700K reserved, 0K cma-reserved)
+> [    0.000000] SLUB: HWalign=3D64, Order=3D0-3, MinObjects=3D0, CPUs=3D1,=
+ Nodes=3D1
+> [    0.000000] rcu: Hierarchical RCU implementation.
+> [    0.000000] rcu:     RCU restricting CPUs from NR_CPUS=3D8 to nr_cpu_i=
+ds=3D1.
+> [    0.000000] rcu:     RCU debug extended QS entry/exit.
+> [    0.000000]  Tracing variant of Tasks RCU enabled.
+> [    0.000000] rcu: RCU calculated value of scheduler-enlistment delay is=
+ 25 jiffies.
+> [    0.000000] rcu: Adjusting geometry for rcu_fanout_leaf=3D16, nr_cpu_i=
+ds=3D1
+> [    0.000000] NR_IRQS: 64, nr_irqs: 64, preallocated irqs: 0
+> [    0.000000] riscv-intc: 64 local interrupts mapped
+> [    0.000000] plic: plic@c000000: mapped 53 interrupts with 1 handlers f=
+or 2 contexts.
+> ...
+> Welcome to Buildroot
+> buildroot login: root
+> # cat /proc/cpuinfo
+> processor       : 0
+> hart            : 0
+> isa             : rv64imafdcsuh
+> mmu             : sv48
+>
+> # file /bin/busybox
+> /bin/busybox: setuid ELF 32-bit LSB shared object, UCB RISC-V, version 1 =
+(SYSV), dynamically linked, interpreter /lib/ld-linux-riscv32-ilp32d.so.1, =
+for GNU/Linux 5.15.0, stripped
+> # ca[   78.386630] random: fast init done
+> # cat /proc/meminfo
+> MemTotal:          53076 kB
+> MemFree:           40264 kB
+> MemAvailable:      40244 kB
+> Buffers:             236 kB
+> Cached:             1560 kB
+> SwapCached:            0 kB
+> Active:             1700 kB
+> Inactive:            516 kB
+> Active(anon):         40 kB
+> Inactive(anon):      424 kB
+> Active(file):       1660 kB
+> Inactive(file):       92 kB
+> Unevictable:           0 kB
+> Mlocked:               0 kB
+> SwapTotal:             0 kB
+> SwapFree:              0 kB
+> Dirty:                 0 kB
+> Writeback:             0 kB
+> AnonPages:           444 kB
+> Mapped:             1188 kB
+> Shmem:                44 kB
+> KReclaimable:        952 kB
+> Slab:               5744 kB
+> SReclaimable:        952 kB
+> SUnreclaim:         4792 kB
+> KernelStack:         624 kB
+> PageTables:          156 kB
+> NFS_Unstable:          0 kB
+> Bounce:                0 kB
+> WritebackTmp:          0 kB
+> CommitLimit:       26536 kB
+> Committed_AS:       1748 kB
+> VmallocTotal:   67108863 kB
+> VmallocUsed:         652 kB
+> VmallocChunk:          0 kB
+> Percpu:               80 kB
+> #
+>
+>  - Run rv32 with rv32 rootfs:
+>    $ ./build/qemu-system-riscv32 -cpu rv32,x-h=3Dtrue -M virt -m 64m -nog=
+raphic -bios qemu_riscv32_virt_defconfig/images/fw_jump.bin -kernel build-r=
+v32/Image -drive file qemu_riscv32_virt_defconfig/images/rootfs.ext2,format=
+=3Draw,id=3Dhd0 -device virtio-blk-device,drive=3Dhd0 -append "rootwait roo=
+t=3D/dev/vda ro console=3DttyS0 earlycon=3Dsbi" -netdev user,id=3Dnet0 -dev=
+ice virtio-net-device,netdev=3Dnet0
 
+Fixup qemu cmdline (Remove x-h=3Dtrue):
+$ ./build/qemu-system-riscv32 -cpu rv32 -M virt -m 64m -nographic
+-bios qemu_riscv32_virt_defconfig/images/fw_jump.bin -kernel
+build-rv32/Image -drive file
+qemu_riscv32_virt_defconfig/images/rootfs.ext2,format=3Draw,id=3Dhd0
+-device virtio-blk-device,drive=3Dhd0 -append "rootwait root=3D/dev/vda ro
+console=3DttyS0 earlycon=3Dsbi" -netdev user,id=3Dnet0 -device
+virtio-net-device,netdev=3Dnet0
+
+>
+> QEMU emulator version 6.2.50 (v6.2.0-29-g196d7182c8)
+> OpenSBI v0.9
+> [    0.000000] Linux version 5.16.0-rc6-00017-g750f87086bdd-dirty (guoren=
+@guoren-Z87-HD3) (riscv32-buildroot-linux-gnu-gcc.br_real (Buildroot 2021.1=
+1-201-g7600ca7960-dirty) 10.3.0, GNU ld (GNU Binutils) 2.36.1) #7 SMP Tue D=
+ec 28 21:02:21 CST 2021
+> [    0.000000] OF: fdt: Ignoring memory range 0x80000000 - 0x80400000
+> [    0.000000] Machine model: riscv-virtio,qemu
+> [    0.000000] earlycon: sbi0 at I/O port 0x0 (options '')
+> [    0.000000] printk: bootconsole [sbi0] enabled
+> [    0.000000] efi: UEFI not found.
+> [    0.000000] Zone ranges:
+> [    0.000000]   Normal   [mem 0x0000000080400000-0x0000000083ffffff]
+> [    0.000000] Movable zone start for each node
+> [    0.000000] Early memory node ranges
+> [    0.000000]   node   0: [mem 0x0000000080400000-0x0000000083ffffff]
+> [    0.000000] Initmem setup node 0 [mem 0x0000000080400000-0x0000000083f=
+fffff]
+> [    0.000000] SBI specification v0.2 detected
+> [    0.000000] SBI implementation ID=3D0x1 Version=3D0x9
+> [    0.000000] SBI TIME extension detected
+> [    0.000000] SBI IPI extension detected
+> [    0.000000] SBI RFENCE extension detected
+> [    0.000000] SBI v0.2 HSM extension detected
+> [    0.000000] riscv: ISA extensions acdfhimsu
+> [    0.000000] riscv: ELF capabilities acdfim
+> [    0.000000] percpu: Embedded 12 pages/cpu s16600 r8192 d24360 u49152
+> [    0.000000] Built 1 zonelists, mobility grouping on.  Total pages: 152=
+40
+> [    0.000000] Kernel command line: rootwait root=3D/dev/vda ro console=
+=3DttyS0 earlycon=3Dsbi
+> [    0.000000] Dentry cache hash table entries: 8192 (order: 3, 32768 byt=
+es, linear)
+> [    0.000000] Inode-cache hash table entries: 4096 (order: 2, 16384 byte=
+s, linear)
+> [    0.000000] mem auto-init: stack:off, heap alloc:off, heap free:off
+> [    0.000000] Virtual kernel memory layout:
+> [    0.000000]       fixmap : 0x9dc00000 - 0x9e000000   (4096 kB)
+> [    0.000000]       pci io : 0x9e000000 - 0x9f000000   (  16 MB)
+> [    0.000000]      vmemmap : 0x9f000000 - 0x9fffffff   (  15 MB)
+> [    0.000000]      vmalloc : 0xa0000000 - 0xbfffffff   ( 511 MB)
+> [    0.000000]       lowmem : 0xc0000000 - 0xc3c00000   (  60 MB)
+> [    0.000000] Memory: 51924K/61440K available (6117K kernel code, 695K r=
+wdata, 1594K rodata, 255K init, 241K bss, 9516K reserved, 0K cma-reserved)
+> [    0.000000] SLUB: HWalign=3D64, Order=3D0-3, MinObjects=3D0, CPUs=3D1,=
+ Nodes=3D1
+> [    0.000000] rcu: Hierarchical RCU implementation.
+> [    0.000000] rcu:     RCU restricting CPUs from NR_CPUS=3D8 to nr_cpu_i=
+ds=3D1.
+> [    0.000000] rcu:     RCU debug extended QS entry/exit.
+> [    0.000000]  Tracing variant of Tasks RCU enabled.
+> [    0.000000] rcu: RCU calculated value of scheduler-enlistment delay is=
+ 25 jiffies.
+> [    0.000000] rcu: Adjusting geometry for rcu_fanout_leaf=3D16, nr_cpu_i=
+ds=3D1
+> [    0.000000] NR_IRQS: 64, nr_irqs: 64, preallocated irqs: 0
+> [    0.000000] riscv-intc: 32 local interrupts mapped
+> [    0.000000] plic: plic@c000000: mapped 53 interrupts with 1 handlers f=
+or 2 contexts.
+> ...
+> Welcome to Buildroot
+> buildroot login: root
+> # cat /proc/cpuinfo
+> processor       : 0
+> hart            : 0
+> isa             : rv32imafdcsuh
+> mmu             : sv32
+>
+> # file /bin/busybox
+> /bin/busybox: setuid ELF 32-bit LSB shared object, UCB RISC-V, version 1 =
+(SYSV), dynamically linked, interpreter /lib/ld-linux-riscv32-ilp32d.so.1, =
+for GNU/Linux 5.15.0, stripped
+> [   79.320589] random: fast init done
+> # cat /proc/meminfo
+> MemTotal:          52176 kB
+> MemFree:           41012 kB
+> MemAvailable:      42176 kB
+> Buffers:             644 kB
+> Cached:             2724 kB
+> SwapCached:            0 kB
+> Active:             3128 kB
+> Inactive:            752 kB
+> Active(anon):         40 kB
+> Inactive(anon):      516 kB
+> Active(file):       3088 kB
+> Inactive(file):      236 kB
+> Unevictable:           0 kB
+> Mlocked:               0 kB
+> SwapTotal:             0 kB
+> SwapFree:              0 kB
+> Dirty:                 4 kB
+> Writeback:             0 kB
+> AnonPages:           556 kB
+> Mapped:             2172 kB
+> Shmem:                44 kB
+> KReclaimable:        656 kB
+> Slab:               3684 kB
+> SReclaimable:        656 kB
+> SUnreclaim:         3028 kB
+> KernelStack:         312 kB
+> PageTables:           88 kB
+> NFS_Unstable:          0 kB
+> Bounce:                0 kB
+> WritebackTmp:          0 kB
+> CommitLimit:       26088 kB
+> Committed_AS:       2088 kB
+> VmallocTotal:     524287 kB
+> VmallocUsed:          12 kB
+> VmallocChunk:          0 kB
+> Percpu:               60 kB
+> #
+>
+>  Some conclusions:
+>  - kernel statics:
+>    64: Memory: 52788K/63488K available (6184K kernel code, 888K rwdata, 1=
+917K rodata, 294K init, 297K bss, 10700K reserved)
+>    32: Memory: 51924K/61440K available (6117K kernel code, 695K rwdata, 1=
+594K rodata, 255K init, 241K bss,  9516K reserved)
+>    rv32 better than rv64:                  1%               22%          =
+ 17%          13%        19%         11%
+>    The code size is very similar, but data size rv32 would be better.
+>
+>  - rv32 kernel runtime KernelStack, Slab... are smaller,
+>    rv64: MemTotal: 53076 kB,        MemFree: 40264 kB
+>    rv32: MemTotal: 52176 + 2048 kB, MemFree: 41012  + 2048 kB
+>    rv32 better than rv64:       2%                         6%
+>
+>    (Because opensbi problem, we could add another 2MB for rv32.)
+>    Overall in 64MB memory situation, rv64-compat is 6% worse than rv32-fu=
+ll
+>    at memory footprint. If the user space memory usage increases, I think
+>    the gap will be further reduced.
+>
+> Changes in v5:
+>  - Rebase on linux-5.17-rc2
+>  - Include consolidate the fcntl patches by Christoph Hellwig
+>  - Remove F_GETLK64/F_SETLK64/F_SETLKW64 from asm/compat.h
+>  - Change COMPAT_RLIM_INFINITY from 0x7fffffff to 0xffffffff
+>  - Bring back "Add hw-cap detect in setup_arch patch" in v1
+>
+> Changes in v4:
+>  - Rebase on linux-5.17-rc1
+>  - Optimize compat_sys_call_table implementation with Arnd's advice
+>  - Add reviewed-by for Arnd. Thx :)
+>  - Remove FIXME comment in elf.h
+>  - Optimize Cleanup duplicate definitions in compat.h with Arnd's advice
+>
+> Changes in v3:
+>  - Rebase on newest master (pre linux-5.17-rc1)
+>  - Using newest qemu version v7 for test
+>  - Remove fcntl common modification
+>  - Fixup SET_PERSONALITY in elf.h by Arnd
+>  - Fixup KVM Kconfig
+>  - Update Acked-by & Reviewed-by
+>
+> Changes in v2:
+>  - Add __ARCH_WANT_COMPAT_STAT suggested
+>  - Cleanup fcntl compatduplicate definitions
+>  - Cleanup compat.h
+>  - Move rv32_defconfig into Makefile
+>  - Fixup rv64 rootfs boot failed, remove hw_compat_mode_detect
+>  - Move SYSVIPC_COMPAT into init/Kconfig
+>  - Simplify compat_elf_check
+>
+>
+> Christoph Hellwig (3):
+>   uapi: simplify __ARCH_FLOCK{,64}_PAD a little
+>   uapi: always define F_GETLK64/F_SETLK64/F_SETLKW64 in fcntl.h
+>   compat: consolidate the compat_flock{,64} definition
+>
+> Guo Ren (18):
+>   kconfig: Add SYSVIPC_COMPAT for all architectures
+>   fs: stat: compat: Add __ARCH_WANT_COMPAT_STAT
+>   asm-generic: compat: Cleanup duplicate definitions
+>   syscalls: compat: Fix the missing part for __SYSCALL_COMPAT
+>   riscv: Fixup difference with defconfig
+>   riscv: compat: Add basic compat data type implementation
+>   riscv: compat: Re-implement TASK_SIZE for COMPAT_32BIT
+>   riscv: compat: syscall: Add compat_sys_call_table implementation
+>   riscv: compat: syscall: Add entry.S implementation
+>   riscv: compat: process: Add UXL_32 support in start_thread
+>   riscv: compat: Add elf.h implementation
+>   riscv: compat: Add hw capability check for elf
+>   riscv: compat: vdso: Add rv32 VDSO base code implementation
+>   riscv: compat: vdso: Add setup additional pages implementation
+>   riscv: compat: signal: Add rt_frame implementation
+>   riscv: compat: ptrace: Add compat_arch_ptrace implement
+>   riscv: compat: Add COMPAT Kbuild skeletal support
+>   KVM: compat: riscv: Prevent KVM_COMPAT from being selected
+>
+>  arch/arm64/Kconfig                            |   4 -
+>  arch/arm64/include/asm/compat.h               |  91 +------
+>  arch/arm64/include/asm/unistd.h               |   1 +
+>  arch/mips/Kconfig                             |   5 -
+>  arch/mips/include/asm/compat.h                |  41 +--
+>  arch/mips/include/asm/unistd.h                |   2 +
+>  arch/mips/include/uapi/asm/fcntl.h            |  30 +--
+>  arch/parisc/Kconfig                           |   4 -
+>  arch/parisc/include/asm/compat.h              |  45 +---
+>  arch/parisc/include/asm/unistd.h              |   1 +
+>  arch/powerpc/Kconfig                          |   5 -
+>  arch/powerpc/include/asm/compat.h             |  50 +---
+>  arch/powerpc/include/asm/unistd.h             |   1 +
+>  arch/riscv/Kconfig                            |  19 ++
+>  arch/riscv/Makefile                           |   9 +
+>  arch/riscv/configs/rv32_defconfig             | 135 ----------
+>  arch/riscv/include/asm/compat.h               | 129 ++++++++++
+>  arch/riscv/include/asm/csr.h                  |   7 +
+>  arch/riscv/include/asm/elf.h                  |  52 +++-
+>  arch/riscv/include/asm/mmu.h                  |   1 +
+>  arch/riscv/include/asm/pgtable.h              |  13 +-
+>  arch/riscv/include/asm/syscall.h              |   1 +
+>  arch/riscv/include/asm/thread_info.h          |   1 +
+>  arch/riscv/include/asm/unistd.h               |  11 +
+>  arch/riscv/include/asm/vdso.h                 |   9 +
+>  arch/riscv/include/uapi/asm/unistd.h          |   2 +-
+>  arch/riscv/kernel/Makefile                    |   3 +
+>  arch/riscv/kernel/compat_signal.c             | 243 ++++++++++++++++++
+>  arch/riscv/kernel/compat_syscall_table.c      |  19 ++
+>  arch/riscv/kernel/compat_vdso/.gitignore      |   2 +
+>  arch/riscv/kernel/compat_vdso/Makefile        |  68 +++++
+>  arch/riscv/kernel/compat_vdso/compat_vdso.S   |   8 +
+>  .../kernel/compat_vdso/compat_vdso.lds.S      |   3 +
+>  arch/riscv/kernel/compat_vdso/flush_icache.S  |   3 +
+>  .../compat_vdso/gen_compat_vdso_offsets.sh    |   5 +
+>  arch/riscv/kernel/compat_vdso/getcpu.S        |   3 +
+>  arch/riscv/kernel/compat_vdso/note.S          |   3 +
+>  arch/riscv/kernel/compat_vdso/rt_sigreturn.S  |   3 +
+>  arch/riscv/kernel/entry.S                     |  18 +-
+>  arch/riscv/kernel/process.c                   |  36 +++
+>  arch/riscv/kernel/ptrace.c                    |  87 ++++++-
+>  arch/riscv/kernel/signal.c                    |  13 +-
+>  arch/riscv/kernel/sys_riscv.c                 |   6 +-
+>  arch/riscv/kernel/vdso.c                      | 104 +++++---
+>  arch/riscv/kernel/vdso/vdso.S                 |   6 +-
+>  arch/s390/Kconfig                             |   3 -
+>  arch/s390/include/asm/compat.h                |  99 +------
+>  arch/s390/include/asm/unistd.h                |   1 +
+>  arch/sparc/Kconfig                            |   5 -
+>  arch/sparc/include/asm/compat.h               |  61 ++---
+>  arch/sparc/include/asm/unistd.h               |   1 +
+>  arch/x86/Kconfig                              |   4 -
+>  arch/x86/include/asm/compat.h                 | 104 ++------
+>  arch/x86/include/asm/unistd.h                 |   1 +
+>  fs/open.c                                     |  24 ++
+>  fs/read_write.c                               |  16 ++
+>  fs/stat.c                                     |   2 +-
+>  fs/sync.c                                     |   9 +
+>  include/asm-generic/compat.h                  | 113 ++++++++
+>  include/linux/compat.h                        |  68 +++++
+>  include/uapi/asm-generic/fcntl.h              |  23 +-
+>  include/uapi/asm-generic/unistd.h             |   4 +-
+>  init/Kconfig                                  |   4 +
+>  mm/fadvise.c                                  |  11 +
+>  mm/readahead.c                                |   7 +
+>  tools/include/uapi/asm-generic/fcntl.h        |  21 +-
+>  tools/include/uapi/asm-generic/unistd.h       |   4 +-
+>  virt/kvm/Kconfig                              |   2 +-
+>  68 files changed, 1198 insertions(+), 691 deletions(-)
+>  delete mode 100644 arch/riscv/configs/rv32_defconfig
+>  create mode 100644 arch/riscv/include/asm/compat.h
+>  create mode 100644 arch/riscv/kernel/compat_signal.c
+>  create mode 100644 arch/riscv/kernel/compat_syscall_table.c
+>  create mode 100644 arch/riscv/kernel/compat_vdso/.gitignore
+>  create mode 100644 arch/riscv/kernel/compat_vdso/Makefile
+>  create mode 100644 arch/riscv/kernel/compat_vdso/compat_vdso.S
+>  create mode 100644 arch/riscv/kernel/compat_vdso/compat_vdso.lds.S
+>  create mode 100644 arch/riscv/kernel/compat_vdso/flush_icache.S
+>  create mode 100755 arch/riscv/kernel/compat_vdso/gen_compat_vdso_offsets=
+.sh
+>  create mode 100644 arch/riscv/kernel/compat_vdso/getcpu.S
+>  create mode 100644 arch/riscv/kernel/compat_vdso/note.S
+>  create mode 100644 arch/riscv/kernel/compat_vdso/rt_sigreturn.S
+>
+> --
+> 2.25.1
+>
+
+
+--=20
+Best Regards
+ Guo Ren
+
+ML: https://lore.kernel.org/linux-csky/

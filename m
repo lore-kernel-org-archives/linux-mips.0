@@ -2,29 +2,50 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id ECB4BC433F5
-	for <linux-mips@archiver.kernel.org>; Wed,  9 Feb 2022 13:35:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 58BC0C433F5
+	for <linux-mips@archiver.kernel.org>; Wed,  9 Feb 2022 13:54:17 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234073AbiBINfE (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 9 Feb 2022 08:35:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51772 "EHLO
+        id S231215AbiBINyM (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 9 Feb 2022 08:54:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50086 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234066AbiBINe7 (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 9 Feb 2022 08:34:59 -0500
-Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 6EE1AC0613C9;
-        Wed,  9 Feb 2022 05:35:02 -0800 (PST)
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1nHn7Y-0005Ye-00; Wed, 09 Feb 2022 14:34:56 +0100
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 4CC9AC24BD; Wed,  9 Feb 2022 14:34:15 +0100 (CET)
-Date:   Wed, 9 Feb 2022 14:34:15 +0100
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     "H. Nikolaus Schaller" <hns@goldelico.com>
-Cc:     Paul Cercueil <paul@crapouillou.net>,
-        Rob Herring <robh+dt@kernel.org>,
+        with ESMTP id S229626AbiBINyM (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 9 Feb 2022 08:54:12 -0500
+X-Greylist: delayed 154 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 09 Feb 2022 05:54:14 PST
+Received: from mo4-p02-ob.smtp.rzone.de (mo4-p02-ob.smtp.rzone.de [81.169.146.168])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94840C05CB88;
+        Wed,  9 Feb 2022 05:54:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1644414674;
+    s=strato-dkim-0002; d=goldelico.com;
+    h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:Cc:Date:
+    From:Subject:Sender;
+    bh=jA//raiEAQNJt49nn2RrsPVb29dWMlgBK10K+Ak3DxA=;
+    b=d6KPdwgPmdMsAhpKpVRJBy9e3u6cVVqGChNYv8v37GPaAuHoW0wuePBR6cxqAFQtss
+    Hpfeh+ldKDl3hY0b/kv8GvRNxH1/qtc43nMm5wPj3UjMlOhsy0C5B6fKM6acZ/trBjp3
+    dSapsDtabozCAsXYnzxXoiQ5ZNNA2xBamzAYiqQ1KS4ApYZ4SGikXKYhpaS5Wj+F/vDX
+    owxbDn2SbWxIECVdvKaYCYkbXKxz9cOf++A8DMOK7i5v2PA0m1pnyjtEV0LphhjOmJYZ
+    iVZGOTa/v19A6oYrJygxt2qlOIeAkrkzmV59thD6IgmgNOJIQYHnfida6KmKn3o7LOgm
+    jKvQ==
+Authentication-Results: strato.com;
+    dkim=none
+X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMgPgp8VKxflSZ1P34KBj7gpw91N5y2S3iMYawg=="
+X-RZG-CLASS-ID: mo00
+Received: from imac.fritz.box
+    by smtp.strato.de (RZmta 47.39.0 DYNA|AUTH)
+    with ESMTPSA id L29417y19DpCguK
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (curve X9_62_prime256v1 with 256 ECDH bits, eq. 3072 bits RSA))
+        (Client did not present a certificate);
+    Wed, 9 Feb 2022 14:51:12 +0100 (CET)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.21\))
+Subject: Re: [PATCH v13 0/9] MIPS: JZ4780 and CI20 HDMI
+From:   "H. Nikolaus Schaller" <hns@goldelico.com>
+In-Reply-To: <9ZC17R.T1L0TBAW7MJA3@crapouillou.net>
+Date:   Wed, 9 Feb 2022 14:51:12 +0100
+Cc:     Rob Herring <robh+dt@kernel.org>,
         Mark Rutland <mark.rutland@arm.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
         Geert Uytterhoeven <geert+renesas@glider.be>,
         Kees Cook <keescook@chromium.org>,
         "Eric W. Biederman" <ebiederm@xmission.com>,
@@ -48,38 +69,38 @@ Cc:     Paul Cercueil <paul@crapouillou.net>,
         linux-kernel@vger.kernel.org, letux-kernel@openphoenux.org,
         Jonas Karlman <jonas@kwiboo.se>,
         dri-devel@lists.freedesktop.org
-Subject: Re: [PATCH v13 8/9] MIPS: DTS: CI20: fix how ddc power is enabled
-Message-ID: <20220209133415.GA11741@alpha.franken.de>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <4294A500-52EB-4319-9B89-F9DAC48EBF03@goldelico.com>
 References: <cover.1643819482.git.hns@goldelico.com>
- <0e5dc9a7c67b1cdfdb4427f631a8caa43777270e.1643819482.git.hns@goldelico.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0e5dc9a7c67b1cdfdb4427f631a8caa43777270e.1643819482.git.hns@goldelico.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+ <9ZC17R.T1L0TBAW7MJA3@crapouillou.net>
+To:     Paul Cercueil <paul@crapouillou.net>
+X-Mailer: Apple Mail (2.3445.104.21)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Wed, Feb 02, 2022 at 05:31:22PM +0100, H. Nikolaus Schaller wrote:
-> Originally we proposed a new hdmi-5v-supply regulator reference
-> for CI20 device tree but that was superseded by a better idea to use
-> the already defined "ddc-en-gpios" property of the "hdmi-connector".
-> 
-> Since "MIPS: DTS: CI20: Add DT nodes for HDMI setup" has already
-> been applied to v5.17-rc1, we add this on top.
-> 
-> Fixes: ae1b8d2c2de9 ("MIPS: DTS: CI20: Add DT nodes for HDMI setup")
-> Signed-off-by: H. Nikolaus Schaller <hns@goldelico.com>
-> Reviewed-by: Paul Cercueil <paul@crapouillou.net>
-> ---
->  arch/mips/boot/dts/ingenic/ci20.dts | 15 ++-------------
->  1 file changed, 2 insertions(+), 13 deletions(-)
+Paul,
 
-applied to mips-fixes.
+> Am 09.02.2022 um 12:52 schrieb Paul Cercueil <paul@crapouillou.net>:
+>=20
+> Hi Nikolaus,
+>=20
+> I tried applying patches 1-2, but they don't apply cleanly on top of =
+drm-misc/drm-misc-next.
 
-Thomas.
+Ok I had rebased to linux-next some days ago and it appears that patch =
+1/9 has now arrived in drm-misc/drm-misc-next.
+So we can drop 1/9.
 
--- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+>=20
+> Could you rebase on top of that tree?
+
+Sure.
+
+Unfortunatley my v14 breaks the display again. It is not much fun to =
+develop on top of such a moving target...
+So I have to find out first what was broken this time before I can send =
+out a new version.
+
+BR,
+Nikolaus=

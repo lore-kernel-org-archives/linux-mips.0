@@ -2,270 +2,299 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3D6CBC433F5
-	for <linux-mips@archiver.kernel.org>; Wed,  9 Feb 2022 12:15:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 417DDC433FE
+	for <linux-mips@archiver.kernel.org>; Wed,  9 Feb 2022 12:15:19 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232477AbiBIMPH convert rfc822-to-8bit (ORCPT
-        <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 9 Feb 2022 07:15:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60522 "EHLO
+        id S230008AbiBIMPN (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 9 Feb 2022 07:15:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34182 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229636AbiBIMPA (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 9 Feb 2022 07:15:00 -0500
-X-Greylist: delayed 475 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 09 Feb 2022 04:00:31 PST
-Received: from aposti.net (aposti.net [89.234.176.197])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C5FFE02E3FA;
-        Wed,  9 Feb 2022 04:00:31 -0800 (PST)
-Date:   Wed, 09 Feb 2022 11:52:21 +0000
-From:   Paul Cercueil <paul@crapouillou.net>
-Subject: Re: [PATCH v13 0/9] MIPS: JZ4780 and CI20 HDMI
-To:     "H. Nikolaus Schaller" <hns@goldelico.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Kees Cook <keescook@chromium.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
+        with ESMTP id S232837AbiBIMPE (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 9 Feb 2022 07:15:04 -0500
+X-Greylist: delayed 240 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 09 Feb 2022 04:00:55 PST
+Received: from new2-smtp.messagingengine.com (new2-smtp.messagingengine.com [66.111.4.224])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA234E00F7FB;
+        Wed,  9 Feb 2022 04:00:55 -0800 (PST)
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 813EA580194;
+        Wed,  9 Feb 2022 07:00:54 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute2.internal (MEProxy); Wed, 09 Feb 2022 07:00:54 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=flygoat.com; h=
+        cc:cc:content-transfer-encoding:content-type:date:date:from:from
+        :in-reply-to:in-reply-to:message-id:mime-version:references
+        :reply-to:sender:subject:subject:to:to; s=fm1; bh=k/14lupStqZ3f+
+        qyVcVh73Hc4Y8P8+3tsS/s0bTopnA=; b=tMF6Ms7pA4NERuAW03cQdv9rTiWtwZ
+        VrkX8GlNLI1yfrscquXOTvEDHIOfVBGvxlgGr47Tkj8wOmRsCpEF/yFfWWqAfVVB
+        QZTFisRec5R957W7xRrkjjJRd6R5WV7017CDRd5toiUZGvumM9Tre6m8fwVB/ZdF
+        cbRtNeoDCHRgl0gJ4+vu9xa2OIYUCGxrQHcsWnfquL6Cw+xXWpTv8BPT2isWzbkg
+        WkUQmdWp0WxddEo2+Y76t2D90Y0EtSsUrxNawho+cBe1qIkvofaNGS5jO6KPLkyD
+        qyzVwCUapi2XbpL91GW3rJijAUf70Rcmkx8TRjxcPlFuBU79V+bPdOLA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-transfer-encoding
+        :content-type:date:date:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm2; bh=k/14lupStqZ3f+qyVcVh73Hc4Y8P8+3tsS/s0bTop
+        nA=; b=fZNmxAWMJIJSDWxtWT9oIWmcBK2IT9sUrQdVkNUfUe5cnQsLHjLbCsw31
+        oP1WP+06tEnGJkcPTR7VpPPdvxvDUh0dr0Djt+0G1mFnoXCyu6R857FMm5l2DsUr
+        4uPf2dy7P97HTQG7WVuIwQ5lCVnBnFwyxoY8P84NdEVATOa7uvfzBgqVH2lyW6v3
+        TW1/44RBULdIQrGKcgPurBC2bSbwq8mYM/Q+Zvd2CFnVH+czIIKRDOuRbYAE34JP
+        VLGrtUOm/tOi+XbUnKSlnbOvOnDClX77MDzp0JZAaFyZvsgxXK1n9JdG5dGhL11A
+        ZkXs8TkdL3HmPdHpWXDmT614mvKfw==
+X-ME-Sender: <xms:9KwDYp08JqwKs58hfWVfV9eOnIfs0IN0SAWIMNfB4oxpDXhIcA08pw>
+    <xme:9KwDYgH5bvUXx1Eh_dyfTf6_DAyYwyKI4dW1k1Lu3pKUglLmiMJWn2cjUHYrNo27Y
+    My8TW-FpLv1ebjafac>
+X-ME-Received: <xmr:9KwDYp5DQ5aGQ0jfh3Y86J2XbmHjIW3wif28O6zrv8R7Rgde056XXgln0JCGxJ8>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvvddrheelgdeffecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenog
+    fuuhhsphgvtghtffhomhgrihhnucdlgeelmdenucfjughrpefkffggfgfuvfhfhfgjtgfg
+    sehtkeertddtfeejnecuhfhrohhmpeflihgrgihunhcujggrnhhguceojhhirgiguhhnrd
+    ihrghnghesfhhlhihgohgrthdrtghomheqnecuggftrfgrthhtvghrnhepleffgeeiiedt
+    gfevieeuudetgedtkefhudefudeihedtiedthfffheeufeeljedvnecuffhomhgrihhnpe
+    guvggsihgrnhdrohhrghdpghhithhhuhgsrdhiohenucevlhhushhtvghrufhiiigvpedt
+    necurfgrrhgrmhepmhgrihhlfhhrohhmpehjihgrgihunhdrhigrnhhgsehflhihghhorg
+    htrdgtohhm
+X-ME-Proxy: <xmx:9awDYm0q7wcKzutDRKp4YzrpOb8_PcTBEekPUP9dk3nh4EfRAQMQow>
+    <xmx:9awDYsHCsh80ok8fGMmYmOZbu7P7TWB3pNYpyf4or3vn6sn2DDvqsw>
+    <xmx:9awDYn_u6ILecuNazwXVi5xeiCkN3p9JcCsgv9-asy8zyOvf89Pb5A>
+    <xmx:9qwDYq9zbks952R0HB6S4OFI4mb4ecc8fI-nhIsOT2wooYFepTQ4_A>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 9 Feb 2022 07:00:50 -0500 (EST)
+Message-ID: <d2e26781-4cef-696d-f7c8-88bb4b71fd87@flygoat.com>
+Date:   Wed, 9 Feb 2022 12:00:49 +0000
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.5.1
+Subject: Re: [PATCH v6 0/3] drm/lsdc: add drm driver for loongson display
+ controller
+To:     Sui Jingfeng <15330273260@189.cn>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Lucas Stach <l.stach@pengutronix.de>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Roland Scheidegger <sroland@vmware.com>,
+        Zack Rusin <zackr@vmware.com>,
+        Christian Gmeiner <christian.gmeiner@gmail.com>,
         David Airlie <airlied@linux.ie>,
         Daniel Vetter <daniel@ffwll.ch>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Robert Foss <robert.foss@linaro.org>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Harry Wentland <harry.wentland@amd.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Andrey Zhizhikin <andrey.zhizhikin@leica-geosystems.com>,
         Sam Ravnborg <sam@ravnborg.org>,
-        Maxime Ripard <maxime@cerno.tech>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Paul Boddie <paul@boddie.org.uk>,
-        Andrzej Hajda <andrzej.hajda@intel.com>,
-        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
-        devicetree@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org, letux-kernel@openphoenux.org,
-        Jonas Karlman <jonas@kwiboo.se>,
-        dri-devel@lists.freedesktop.org
-Message-Id: <9ZC17R.T1L0TBAW7MJA3@crapouillou.net>
-In-Reply-To: <cover.1643819482.git.hns@goldelico.com>
-References: <cover.1643819482.git.hns@goldelico.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1; format=flowed
-Content-Transfer-Encoding: 8BIT
+        suijingfeng <suijingfeng@loongson.cn>
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org,
+        Randy Dunlap <rdunlap@infradead.org>
+References: <20220203082546.3099-1-15330273260@189.cn>
+From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
+In-Reply-To: <20220203082546.3099-1-15330273260@189.cn>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Hi Nikolaus,
+Hi Jingfeng,
 
-I tried applying patches 1-2, but they don't apply cleanly on top of 
-drm-misc/drm-misc-next.
+Could you please keep me CCed for the for the whole thread when you respin
+the patch? Cuz I'm maintain MIPS/LOONGSON64 stuff and I believe this series
+is partially based on my work at Lemote.
 
-Could you rebase on top of that tree?
+I will help with reviewing and explain some Loongson64 specified issue 
+if possible.
 
-Cheers,
--Paul
+Thanks.
+- Jiaxun
 
-
-Le mer., févr. 2 2022 at 17:31:14 +0100, H. Nikolaus Schaller 
-<hns@goldelico.com> a écrit :
-> PATCH V13 2022-02-02 17:31:22:
-> * 7/9: remove call to gpiod_set_value() because of GPIOD_OUT_HIGH (by 
-> paul@crapouillou.net)
-> * 4/9: replace ".." by "." (by paul@crapouillou.net)
-> * 3/9: remove old hdmi-5v-power in the example (by 
-> paul@crapouillou.net)
-> * 2/9: disable handling of plane f0 only for jz4780 (by 
-> paul@crapouillou.net)
-> 
-> PATCH V12 2022-01-31 13:26:54:
-> This version reworks how hdmi ddc power is controlled by connector 
-> and not
-> by ddc/hdmi bridge driver.
-> 
-> Also some patches of the previous version of this series have been 
-> removed
-> since they are already applied to mips-next/linux/next/v5.17-rc1.
-> 
-> Fixes and changes:
-> 
-> - repair interworking of dw-hdmi with connector-hdmi (by 
-> hns@goldelico.com)
-> - fix JZ_REG_LCD_OSDC setup for jz4780 (by hns@goldelico.com and 
-> paul@crapouillou.net)
-> - adjustments for ci20.dts to use connector gpio for +5v (suggested 
-> by several)
-> - to add control of "ddc-en-gpios" to hdmi-connector driver (by 
-> hns@goldelico.com)
-> - regulator code removed because we now use the "ddc-en-gpios" of the 
-> connector
->   driver (suggested by paul@crapouillou.net)
-> - bindings: addition of "ddc-i2c-bus" and "hdmi-5v-supply" removed 
-> (suggested by robh+dt@kernel.org)
-> - rebase on v5.17-rc2
-> 
-> PATCH V11 2021-12-02 19:39:52:
-> - patch 4/8: change devm_regulator_get_optional to devm_regulator_get 
-> and
->              remove NULL check (requested by broonie@kernel.org)
-> - patch 3/8: make hdmi-5v-supply required (requested by 
-> broonie@kernel.org)
-> 
-> PATCH V10 2021-11-30 22:26:41:
-> - patch 3/8: fix $id and $ref paths (found by robh@kernel.org)
-> 
-> PATCH V9 2021-11-24 22:29:14:
-> - patch 6/8: remove optional <0> for assigned-clocks and 
-> unintentionally included "unwedge" setup (found by 
-> paul@crapouillou.net)
-> - patch 4/8: some cosmetics
->              make regulator enable/disable only if not NULL (found by 
-> paul@crapouillou.net)
->              simplify/fix error handling and driver cleanup on remove 
-> (proposed by paul@crapouillou.net)
-> - patch 3/8: fix #include path in example (found by 
-> paul@crapouillou.net)
->              fix missing "i" in unevaluatedProperties (found by 
-> robh@kernel.org)
->              fix 4 spaces indentation for required: property (found 
-> by robh@kernel.org)
-> 
-> PATCH V8 2021-11-23 19:14:00:
-> - fix a bad editing result from patch 2/8 (found by 
-> paul@crapouillou.net)
-> 
-> PATCH V7 2021-11-23 18:46:23:
-> - changed gpio polarity of hdmi_power to 0 (suggested by 
-> paul@crapouillou.net)
-> - fixed LCD1 irq number (bug found by paul@crapouillou.net)
-> - removed "- 4" for calculating max_register (suggested by 
-> paul@crapouillou.net)
-> - use unevaluatedPropertes instead of additionalProperties (suggested 
-> by robh@kernel.org)
-> - moved and renamed ingenic,jz4780-hdmi.yaml (suggested by 
-> robh@kernel.org)
-> - adjusted assigned-clocks changes to upstream which added some for 
-> SSI (by hns@goldelico.com)
-> - rebased and tested with v5.16-rc2 + patch set drm/ingenic by 
-> paul@crapouillou.net (by hns@goldelico.com)
-> 
-> PATCH V6 2021-11-10 20:43:33:
-> - changed CONFIG_DRM_INGENIC_DW_HDMI to "m" (by hns@goldelico.com)
-> - made ingenic-dw-hdmi an independent platform driver which can be 
-> compiled as module
->   and removed error patch fixes for IPU (suggested by 
-> paul@crapouillou.net)
-> - moved assigned-clocks from jz4780.dtsi to ci20.dts (suggested by 
-> paul@crapouillou.net)
-> - fixed reg property in jz4780.dtsi to cover all registers incl. 
-> gamma and vee (by hns@goldelico.com)
-> - added a base patch to calculate regmap size from DTS reg property 
-> (requested by paul@crapouillou.net)
-> - restored resetting all bits except one in LCDOSDC (requested by 
-> paul@crapouillou.net)
-> - clarified setting of cpos (suggested by paul@crapouillou.net)
-> - moved bindings definition for ddc-i2c-bus (suggested by 
-> paul@crapouillou.net)
-> - simplified mask definitions for JZ_LCD_DESSIZE (requested by 
-> paul@crapouillou.net)
-> - removed setting alpha premultiplication (suggested by 
-> paul@crapouillou.net)
-> - removed some comments (suggested by paul@crapouillou.net)
-> 
-> PATCH V5 2021-10-05 14:28:44:
-> - dropped mode_fixup and timings support in dw-hdmi as it is no 
-> longer needed in this V5 (by hns@goldelico.com)
-> - dropped "drm/ingenic: add some jz4780 specific features" 
-> (stimulated by paul@crapouillou.net)
-> - fixed typo in commit subject: "synopsis" -> "synopsys" (by 
-> hns@goldelico.com)
-> - swapped clocks in jz4780.dtsi to match synopsys,dw-hdmi.yaml (by 
-> hns@goldelico.com)
-> - improved, simplified, fixed, dtbschecked ingenic-jz4780-hdmi.yaml 
-> and made dependent of bridge/synopsys,dw-hdmi.yaml (based on 
-> suggestions by maxime@cerno.tech)
-> - fixed binding vs. driver&DTS use of hdmi-5v regulator (suggested by 
-> maxime@cerno.tech)
-> - dropped "drm/bridge: synopsis: Fix to properly handle HPD" - was a 
-> no longer needed workaround for a previous version
->   (suggested by maxime@cerno.tech)
-> 
-> PATCH V4 2021-09-27 18:44:38:
-> - fix setting output_port = 1 (issue found by paul@crapouillou.net)
-> - ci20.dts: convert to use hdmi-connector (by hns@goldelico.com)
-> - add a hdmi-regulator to control +5V power (by hns@goldelico.com)
-> - added a fix to dw-hdmi to call drm_kms_helper_hotplug_event on 
-> plugin event detection (by hns@goldelico.com)
-> - always allocate extended descriptor but initialize only for jz4780 
-> (by hns@goldelico.com)
-> - updated to work on top of "[PATCH v3 0/6] drm/ingenic: Various 
-> improvements v3" (by paul@crapouillou.net)
-> - rebased to v5.13-rc3
-> 
-> PATCH V3 2021-08-08 07:10:50:
-> This series adds HDMI support for JZ4780 and CI20 board (and fixes 
-> one IPU related issue in registration error path)
-> - [patch 1/8] switched from mode_fixup to atomic_check (suggested by 
-> robert.foss@linaro.org)
->   - the call to the dw-hdmi specialization is still called mode_fixup
-> - [patch 3/8] diverse fixes for ingenic-drm-drv (suggested by 
-> paul@crapouillou.net)
->   - factor out some non-HDMI features of the jz4780 into a separate 
-> patch
->   - multiple fixes around max height
->   - do not change regmap config but a copy on stack
->   - define some constants
->   - factor out fixing of drm_init error path for IPU into separate 
-> patch
->   - use FIELD_PREP()
-> - [patch 8/8] conversion to component framework dropped (suggested by 
-> Laurent.pinchart@ideasonboard.com and paul@crapouillou.net)
-> 
-> PATCH V2 2021-08-05 16:08:05:
-> - code and commit messages revisited for checkpatch warnings
-> - rebased on v5.14-rc4
-> - include (failed, hence RFC 8/8) attempt to convert to component 
-> framework
->   (was suggested by Paul Cercueil <paul@crapouillou.net> a while ago)
-> 
-> This series adds HDMI support for JZ4780 and CI20 board
-> 
-> 
-> 
-> H. Nikolaus Schaller (5):
->   drm/ingenic: prepare ingenic drm for later addition of JZ4780
->   drm/synopsys+ingenic: repair hot plug detection
->   dw-hdmi/ingenic-dw-hdmi: repair interworking with hdmi-connector
->   drm/bridge: display-connector: add ddc-en gpio support
->   MIPS: DTS: CI20: fix how ddc power is enabled
-> 
-> Paul Boddie (3):
->   drm/ingenic: Add support for JZ4780 and HDMI output
->   drm/ingenic: Add dw-hdmi driver specialization for jz4780
->   [RFC] drm/ingenic: add some more features specific to jz4780
-> 
-> Sam Ravnborg (1):
->   dt-bindings: display: Add ingenic,jz4780-dw-hdmi DT Schema
-> 
->  .../display/bridge/ingenic,jz4780-hdmi.yaml   |  82 ++++++++++++++
->  arch/mips/boot/dts/ingenic/ci20.dts           |  15 +--
->  drivers/gpu/drm/bridge/display-connector.c    |  15 +++
->  drivers/gpu/drm/bridge/synopsys/dw-hdmi.c     |  13 ++-
->  drivers/gpu/drm/ingenic/Kconfig               |   9 ++
->  drivers/gpu/drm/ingenic/Makefile              |   1 +
->  drivers/gpu/drm/ingenic/ingenic-drm-drv.c     | 106 
-> +++++++++++++++++-
->  drivers/gpu/drm/ingenic/ingenic-drm.h         |  38 +++++++
->  drivers/gpu/drm/ingenic/ingenic-dw-hdmi.c     | 106 
-> ++++++++++++++++++
->  include/drm/bridge/dw_hdmi.h                  |   1 +
->  10 files changed, 367 insertions(+), 19 deletions(-)
->  create mode 100644 
-> Documentation/devicetree/bindings/display/bridge/ingenic,jz4780-hdmi.yaml
->  create mode 100644 drivers/gpu/drm/ingenic/ingenic-dw-hdmi.c
-> 
-> --
-> 2.33.0
-> 
-
+åœ¨ 2022/2/3 8:25, Sui Jingfeng å†™é“:
+> There is a display controller in loongson's LS2K1000 SoC and LS7A1000
+> bridge, and the DC in those chip is a PCI device. This patch provide
+> a minimal support for this display controller which is mainly for
+> graphic environment bring up.
+>
+> This display controller has two display pipes but with only one hardware
+> cursor. Each way has a DVO output interface and the CRTC is able to scanout
+> from 1920x1080 resolution at 60Hz. The maxmium resolution is 2048x2048@60hz.
+>
+> LS2K1000 is a SoC, only system memory is available. Therefore scanout from
+> system memory is the only choice. We prefer the CMA helper base solution
+> because the gc1000 gpu can use etnaviv driver, in this case etnaviv and
+> lsdc could made a compatible pair. Even through it is possible to use VRAM
+> helper base solution on ls2k1000 by carving out part of system memory as
+> VRAM.
+>
+> For LS7A1000, there are 4 gpios whos control register is located at the dc
+> register space which is not the geneal purpose GPIO. The 4 gpios can emulate
+> two way i2c. One for DVO0, another for DVO1. This is the reason the why we
+> are not using the drm bridge framework.
+>
+> LS2K1000 and LS2K0500 SoC don't have such hardware, they use general purpose
+> GPIO emulated i2c or hardware i2c adapter from other module to serve this
+> purpose. Drm bridge and drm panel is suitable for those SoC, we have already
+> implement it on our own downstream kernel. But due to the upstream kernel
+> don't have gpio, pwm and i2c driver support for LS2K1000. We just can not
+> upstream our support for the drm bridge subsystem.
+>
+> The DC in LS7A1000 can scanout from both the system memory and the dedicate
+> VRAM attached to the ddr3 memory controller. Sadly, only scanout from the
+> VRAM is proved to be a reliable solution for massive product. Scanout from
+> the system memory suffer from some hardware deficiency which cause the
+> screen flickering under RAM pressure. This is the reason why we integrate
+> two distict helpers into one piece of device driver. But CMA base helper is
+> still usable on ls7a1000 for normal usage, expecially on ls7a1000+ bridge
+> chip. We have also implemented demage update on top of CMA helper which
+> copy the demaged shadow framebuffer region from system RAM to the real
+> framebuffer in VRAM manually. Using "lsdc.dirty_update=1" in the commmand
+> line will enable this driver mode.
+>
+> LS7A1000 have a 32x32 harware cursor, we just let the two CRTC share it
+> simply with the help of universe plane. LS7A2000 have two 64x64 harware
+> cursor. Surport for LS7A2000 is on the way.
+>
+> In short, we have built-in gpio emulated i2c support, we also have hardware
+> cursor support. The kind of tiny drivers in drm/tiny is not suitable for us,
+> we are not "tiny".
+>
+>      +------+  HyperTransport 3.0
+>      | DDR4 |       |
+>      +------+       |     +------------------------------------+
+>         || MC0      |     |   LS7A1000            +------------|
+>    +----------+     |     |                       |    DDR3    |   +------+
+>    | LS3A4000 |<--------->| +--------+  +-------+ |   memory   |<->| VRAM |
+>    |   CPU    |<--------->| | GC1000 |  |  LSDC | | controller |   +------+
+>    +----------+           | +--------+  +-+---+-+ +------------|
+>         || MC1            +---------------|---|----------------+
+>      +------+                             |   |
+>      | DDR4 |          +-------+    DVO0  |   |  DVO1  +------+
+>      +------+   VGA <--|ADV7125|<---------+   +------->|TFP410|--> DVI/HDMI
+>                        +-------+                       +------+
+>
+> The above picture give a simple usage of LS7A1000, note that the encoder
+> is not necessary adv7125 or tfp410, it is a choice of the downstream board
+> manufacturer. Other candicate encoder can be ch7034b, sil9022 and ite66121
+> etc. Therefore, we need device tree to provide board specific information.
+> Besides, the dc in both ls2k1000 and ls7k1000 have the vendor:device id of
+> 0x0014:0x7a06, the reverison id is also same. We can't tell it apart simply
+> (this is the firmware engineer's mistake). But firmware already flushed to
+> the board and borad already sold out, we choose to resolve those issues by
+> introduing device tree with board specific device support.
+>
+> For lsdc, there is only a 1:1 mapping of encoders and connectors.
+>
+>       +-------------------+                                      _________
+>       |                   |                                     |         |
+>       |  CRTC0 --> DVO0 ---------> Encoder0 --> Connector0 ---> | Monitor |
+>       |                   |           ^            ^            |_________|
+>       |                   |           |            |
+>       |                <----- i2c0 ----------------+
+>       |   LSDC IP CORE    |
+>       |                <----- i2c1 ----------------+
+>       |                   |           |            |             _________
+>       |                   |           |            |            |         |
+>       |  CRTC1 --> DVO1 ---------> Encoder1 --> Connector1 ---> |  Panel  |
+>       |                   |                                     |_________|
+>       +-------------------+
+>
+> Below is a brief introduction of loongson's CPU, bridge chip and SoC.
+> LS2K1000 is a double core 1.0Ghz mips64r2 compatible SoC[1]. LS7A1000 is
+> a bridge chip made by Loongson corporation which act as north and/or south
+> bridge of loongson's desktop and server level processor. It is equivalent
+> to AMD RS780E+SB710 or something like that. More details can be read from
+> its user manual[2].
+>
+> This bridge chip is typically use with LS3A3000, LS3A4000 and LS3A5000 cpu.
+> LS3A3000 is 4 core 1.45gHz mips64r2 compatible cpu.
+> LS3A4000 is 4 core 1.8gHz mips64r5 compatible cpu.
+> LS3A5000 is 4 core 2.5gHz loongarch cpu[3].
+>
+> Nearly all mordern loongson CPU's cache coherency is maintained by hardware,
+> except for early version of ls2k1000. So we using cached coherent memory by
+> default, not writecombine.
+>
+> v2: fixup warnings reported by kernel test robot
+>
+> v3: fix more grammar mistakes in Kconfig reported by Randy Dunlap and give
+>      more details about lsdc.
+>
+> v4:
+>     1) Add dts required and explain why device tree is required.
+>     2) Give more description about lsdc and vram helper base driver.
+>     3) Fix warnings reported by kernel test robot.
+>     4) Introduce stride_alignment member into struct lsdc_chip_desc, the
+>        stride alignment is 256 bytes for ls7a1000, ls2k1000 and ls2k0500 SoC.
+>        But ls7a2000 improve it to 32 bytes, We are prepare for extend the
+>        support for the on coming device.
+>
+> v5:
+>     1) using writel and readl replace writeq and readq, to fix kernel test
+>        robot report build error on other archtecture
+>     2) set default fb format to XRGB8888 at crtc reset time.
+>     3) fix typos.
+>
+> v6:
+>     1) Explain why we are not switch to drm dridge subsystem.
+>     2) Explain why tiny drm driver is not suitable for us.
+>     3) Give a short description of the trival dirty uppdate implement based
+>        on CMA helper.
+>     4) code clean up.
+>
+> [1] https://wiki.debian.org/InstallingDebianOn/Lemote/Loongson2K1000
+> [2] https://loongson.github.io/LoongArch-Documentation/Loongson-7A1000-usermanual-EN.html
+> [3] https://loongson.github.io/LoongArch-Documentation/Loongson-3A5000-usermanual-EN.html
+>
+> Reported-by: Randy Dunlap <rdunlap@infradead.org>
+> Reported-by: kernel test robot
+> Signed-off-by: suijingfeng <suijingfeng@loongson.cn>
+> Signed-off-by: Sui Jingfeng <15330273260@189.cn>
+>
+> suijingfeng (3):
+>    drm/lsdc: add drm driver for loongson display controller
+>    dt-bindings: ls2k1000: add the display controller device node
+>    dt-bindings: mips: loongson: introduce board specific dts
+>
+>   arch/mips/boot/dts/loongson/lemote_a1901.dts  |  64 ++
+>   .../boot/dts/loongson/loongson64-2k1000.dtsi  |  11 +
+>   .../boot/dts/loongson/ls3a4000_7a1000_evb.dts |  68 ++
+>   arch/mips/boot/dts/loongson/ls7a-pch.dtsi     |   2 +-
+>   drivers/gpu/drm/Kconfig                       |   2 +
+>   drivers/gpu/drm/Makefile                      |   1 +
+>   drivers/gpu/drm/lsdc/Kconfig                  |  38 +
+>   drivers/gpu/drm/lsdc/Makefile                 |  15 +
+>   drivers/gpu/drm/lsdc/lsdc_connector.c         | 443 +++++++++
+>   drivers/gpu/drm/lsdc/lsdc_connector.h         |  60 ++
+>   drivers/gpu/drm/lsdc/lsdc_crtc.c              | 440 +++++++++
+>   drivers/gpu/drm/lsdc/lsdc_drv.c               | 846 ++++++++++++++++++
+>   drivers/gpu/drm/lsdc/lsdc_drv.h               | 216 +++++
+>   drivers/gpu/drm/lsdc/lsdc_encoder.c           |  79 ++
+>   drivers/gpu/drm/lsdc/lsdc_i2c.c               | 220 +++++
+>   drivers/gpu/drm/lsdc/lsdc_i2c.h               |  61 ++
+>   drivers/gpu/drm/lsdc/lsdc_irq.c               |  77 ++
+>   drivers/gpu/drm/lsdc/lsdc_irq.h               |  37 +
+>   drivers/gpu/drm/lsdc/lsdc_plane.c             | 681 ++++++++++++++
+>   drivers/gpu/drm/lsdc/lsdc_pll.c               | 657 ++++++++++++++
+>   drivers/gpu/drm/lsdc/lsdc_pll.h               | 109 +++
+>   drivers/gpu/drm/lsdc/lsdc_regs.h              | 246 +++++
+>   22 files changed, 4372 insertions(+), 1 deletion(-)
+>   create mode 100644 arch/mips/boot/dts/loongson/lemote_a1901.dts
+>   create mode 100644 arch/mips/boot/dts/loongson/ls3a4000_7a1000_evb.dts
+>   create mode 100644 drivers/gpu/drm/lsdc/Kconfig
+>   create mode 100644 drivers/gpu/drm/lsdc/Makefile
+>   create mode 100644 drivers/gpu/drm/lsdc/lsdc_connector.c
+>   create mode 100644 drivers/gpu/drm/lsdc/lsdc_connector.h
+>   create mode 100644 drivers/gpu/drm/lsdc/lsdc_crtc.c
+>   create mode 100644 drivers/gpu/drm/lsdc/lsdc_drv.c
+>   create mode 100644 drivers/gpu/drm/lsdc/lsdc_drv.h
+>   create mode 100644 drivers/gpu/drm/lsdc/lsdc_encoder.c
+>   create mode 100644 drivers/gpu/drm/lsdc/lsdc_i2c.c
+>   create mode 100644 drivers/gpu/drm/lsdc/lsdc_i2c.h
+>   create mode 100644 drivers/gpu/drm/lsdc/lsdc_irq.c
+>   create mode 100644 drivers/gpu/drm/lsdc/lsdc_irq.h
+>   create mode 100644 drivers/gpu/drm/lsdc/lsdc_plane.c
+>   create mode 100644 drivers/gpu/drm/lsdc/lsdc_pll.c
+>   create mode 100644 drivers/gpu/drm/lsdc/lsdc_pll.h
+>   create mode 100644 drivers/gpu/drm/lsdc/lsdc_regs.h
+>
 

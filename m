@@ -2,63 +2,63 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 35B18C433FE
-	for <linux-mips@archiver.kernel.org>; Wed,  9 Feb 2022 09:42:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C5A68C433EF
+	for <linux-mips@archiver.kernel.org>; Wed,  9 Feb 2022 09:58:39 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232753AbiBIJmN (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 9 Feb 2022 04:42:13 -0500
-Received: from gmail-smtp-in.l.google.com ([23.128.96.19]:53038 "EHLO
+        id S230228AbiBIJ6e (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 9 Feb 2022 04:58:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55336 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235484AbiBIJmJ (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 9 Feb 2022 04:42:09 -0500
+        with ESMTP id S234017AbiBIJ6V (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 9 Feb 2022 04:58:21 -0500
 Received: from new3-smtp.messagingengine.com (new3-smtp.messagingengine.com [66.111.4.229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB129C03C1B5;
-        Wed,  9 Feb 2022 01:42:01 -0800 (PST)
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 801BF580143;
-        Wed,  9 Feb 2022 03:36:37 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute2.internal (MEProxy); Wed, 09 Feb 2022 03:36:37 -0500
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B41EE022ADA;
+        Wed,  9 Feb 2022 01:58:15 -0800 (PST)
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 7EA74580152;
+        Wed,  9 Feb 2022 03:52:19 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute4.internal (MEProxy); Wed, 09 Feb 2022 03:52:19 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=cc
         :cc:content-type:date:date:from:from:in-reply-to:in-reply-to
         :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to; s=fm2; bh=MbTZeUMy+/3/3bs2adM+ZVlFkQtC01OoGyTtWh
-        YFSeU=; b=S49DnfIpi/7YTPKlQTockOxwAtMUVs8XaPAiJ/NSqOVR6Rh6IGRO1n
-        LAG3hJwbtOyPDF+4iwmmQELd8g79xb/533eMFRRhANW7kCEgkumr2MCgiR3Kek1J
-        5pXruIVIhuyAIGPg78OC5j948i59TzyaGc90LHBqXgon1QgeQ46H4KCJkiTSd/fB
-        ZL/Argyab9EWa5Li/lR5xFQm6mKeP3iJOCWhgjIevI5jN4oeyXqLOynHPBPvZCvx
-        dWcBR3GPy4jNeAfNSFLFCwFzcn8XUHidL73XIFmoqOjXTOnnX86kuoRe6g/F/Lyp
-        WBMPJQJ6kCnPZLoxA5cqb+i9jIX/j2tg==
+        :subject:to:to; s=fm2; bh=5AsuKlg9T3wRs6EodVp0NmABKRFh6ykn6emryp
+        MFqcE=; b=tJSbjzcafZKt16I56xV6jV5vxF1WGT5F2+4G9QjLLNk423jTTeO2Rc
+        zHnaWdr4mAAI6soRoHBZs56pjt7JAyvUzDI6GRCzQyj1a1gmZ7g+T2wmruVOYhGj
+        U/i8/jIg/iMTj3m7IC0/YXArfNPbCRIVDNcaXxkb7ake0Bexf2mKo3K2mth34ue9
+        WLD/Ki/AzraJGy50OZolC5AQjIFIQIrBZDPoNZ06+D6S+73CfEI/dq20rVCx1pd1
+        cC9msnw+U26YI4SnONvNadAzIHz1jx1T6tAsQ4IVX3uKRycsWBDPf5gB3N4FcDig
+        1icVgoCuAhNoi87sqBua/4Aubd977JjA==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:cc:content-type:date:date:from:from
         :in-reply-to:in-reply-to:message-id:mime-version:references
         :reply-to:sender:subject:subject:to:to:x-me-proxy:x-me-proxy
-        :x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=MbTZeUMy+/3/3bs2a
-        dM+ZVlFkQtC01OoGyTtWhYFSeU=; b=PHVf772ii7K+5t4pXf37WYaSK48OU8J4r
-        F+DKwkyz9d+QYI9SQX3wLUFxmF2UTznVXNBdkCR50Oa21bJCxj5q2j997o/wLzl5
-        Z4D9FwOjCAW+rDedAs3Fewk+J9Gh17uklYOAy6bUewetfe8lFG+E/EQIIncst+00
-        FaqM9VVipi+w54ltzEemoWr46YPMgukeGZv0OQTzaC8OwFPdyBPinl8xnEzBEqfF
-        e3ZSjuyMFM+1iLX4IjzX89C9WWqTC5peFWQptliq44yCbyC9dE9E4TYihleT7412
-        Zm2bA2zOkZ0y7Agf/y0mKDjexYRyR8IBDmhdMsTjLd+Zuq9hQeUOg==
-X-ME-Sender: <xms:FH0DYuD7vrCmr4tMEF_NxPW3A9DweTL3IOjrV8ES1WX63MXEzpz9sQ>
-    <xme:FH0DYoiaEpKLrLMV6OXitHt3egZGd8A4KuE7t8UayDGq2zzW9EHpFlg8Muqx-nJLt
-    ywNDtsq6UFiJzy9gqQ>
-X-ME-Received: <xmr:FH0DYhlUgkWNzGTBoJocTIQzbxTZNraYErghFy_trYjxjBMT9ZOate6gFGMrSUcYlPkohkC3FsPRxbOKWAm5ZNIfqgwJvdQvcrjnLao>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvvddrheekgdduudekucetufdoteggodetrfdotf
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=5AsuKlg9T3wRs6Eod
+        Vp0NmABKRFh6ykn6emrypMFqcE=; b=VbtCkvnpzlBFH8WTmpIt6LRDreCQoQJub
+        Fzshu4pCLO2vq7pubT2yKFTwOh33ovalCRzkgYSFDs630Mn0JznhTazTWLuminSU
+        TGtgVwpIdKX9mF95t51To8n6ZHd2o22kRHvqvXqKgBWHMNGJUOywiLKq1/nrTHzA
+        U+AoPm1h6GAcJhtILdf7WEt3n+5sUIfpqQ7oIWwoKb4ZqArlIMDXa/dbBCufPPHJ
+        guqKP+1Dln9I5NvE17l0JStDxAOyQH3xDRTjmz/wyw2lfz5w47HGc+HJo6QGJJjv
+        o7gpY1rPw7VatRLSZWGQwb8KttgfDtgCmtoUqcT3wc/KqRDUb84Ig==
+X-ME-Sender: <xms:woADYq-0eSssQcGmiFliY3197FJPDabzDoC5c-S9rmwOLV775OJ_1Q>
+    <xme:woADYqtEcXYvnyvCziOKFwlhuM7_YdaFtgdOJ9NbhwXNdDn_Zt9COsgBJll-AVbkD
+    SvRVm4Tt4AhVHFectY>
+X-ME-Received: <xmr:woADYgA38MA3W3u_26f06nr8SC5tbUkS9nWe-Fu400YyD4TsPT9NfVPv1JlUkACVYB5DVpbsR_OoORf2kChjlYi5mTc_XN8zhy4PTyE>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvvddrheekgdduvdduucetufdoteggodetrfdotf
     fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
     uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddunecuhfhrohhmpeforgigihhm
+    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
     vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
-    htvghrnhepuddvudfhkeekhefgffetffelgffftdehffduffegveetffehueeivddvjedv
-    gfevnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepmh
+    htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
+    gedunecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepmh
     grgihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:FH0DYsyw-yk1XHoupQcO4q2J5SZheBUyppnBctvdriEY8YhqYEa7QA>
-    <xmx:FH0DYjRTVSFqpKx3UWXxA2BpCfeY_tu-pD3u59J4UU8S9etKQFNBvg>
-    <xmx:FH0DYnbB6yYXd8s63NJzV7zEYe0bUm66K0rd6YgYO0BmIfOg9HoFRA>
-    <xmx:FX0DYhFbnHQxulT0ewqsMPradtaihtmkguPJli-9w7d2PSDJWujO_g>
+X-ME-Proxy: <xmx:woADYifXlPCUf4Pfw4h2SaQnZtk1p0MS281dIBhl632sONAVXFFHfQ>
+    <xmx:woADYvNp5I5KNjAOyPv_QIUqQYGc9vVFIxWKktj5IhiM1bXk7_mYZw>
+    <xmx:woADYskKXPWxqIOgq3sOBSXwGBjJfH41bx-0ka5XOLVCipe0HYtfNA>
+    <xmx:w4ADYoz22sbKeC_hoJ5t4JY_gwAnhHwWZLPgo9_GLLuWGA3EgMUojg>
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 9 Feb 2022 03:36:35 -0500 (EST)
-Date:   Wed, 9 Feb 2022 09:36:33 +0100
+ 9 Feb 2022 03:52:17 -0500 (EST)
+Date:   Wed, 9 Feb 2022 09:52:15 +0100
 From:   Maxime Ripard <maxime@cerno.tech>
 To:     Sui Jingfeng <15330273260@189.cn>
 Cc:     Dan Carpenter <dan.carpenter@oracle.com>,
@@ -80,119 +80,128 @@ Cc:     Dan Carpenter <dan.carpenter@oracle.com>,
         Randy Dunlap <rdunlap@infradead.org>
 Subject: Re: [PATCH v6 1/3] drm/lsdc: add drm driver for loongson display
  controller
-Message-ID: <20220209083633.mlfbiydi7cbpgexa@houat>
+Message-ID: <20220209085215.65qbdsgwtnvujdng@houat>
 References: <20220203082546.3099-1-15330273260@189.cn>
  <20220203082546.3099-2-15330273260@189.cn>
  <20220203085851.yqstkfgt4dz7rcnw@houat>
- <4dd6d32a-9818-1adf-cb3f-20c183ae2020@189.cn>
+ <57805e19-285a-76d3-16e3-09a3eb7a9540@189.cn>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="kqetfhrtfefgtoun"
+        protocol="application/pgp-signature"; boundary="ya7qckwy2foywkx2"
 Content-Disposition: inline
-In-Reply-To: <4dd6d32a-9818-1adf-cb3f-20c183ae2020@189.cn>
+In-Reply-To: <57805e19-285a-76d3-16e3-09a3eb7a9540@189.cn>
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
 
---kqetfhrtfefgtoun
-Content-Type: text/plain; charset=iso-8859-1
+--ya7qckwy2foywkx2
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Feb 04, 2022 at 12:41:37AM +0800, Sui Jingfeng wrote:
-> > > +static int lsdc_primary_plane_atomic_check(struct drm_plane *plane,
-> > > +					   struct drm_atomic_state *state)
-> > > +{
-> > > +	struct drm_device *ddev =3D plane->dev;
-> > > +	struct lsdc_device *ldev =3D to_lsdc(ddev);
-> > > +	struct drm_plane_state *old_plane_state =3D drm_atomic_get_old_plan=
-e_state(state, plane);
-> > > +	struct drm_plane_state *new_plane_state =3D drm_atomic_get_new_plan=
-e_state(state, plane);
-> > > +	struct drm_framebuffer *new_fb =3D new_plane_state->fb;
-> > > +	struct drm_framebuffer *old_fb =3D old_plane_state->fb;
-> > > +	struct drm_crtc *crtc =3D new_plane_state->crtc;
-> > > +	u32 new_format =3D new_fb->format->format;
-> > > +	struct drm_crtc_state *new_crtc_state;
-> > > +	struct lsdc_crtc_state *priv_crtc_state;
-> > > +	int ret;
+On Thu, Feb 03, 2022 at 11:47:16PM +0800, Sui Jingfeng wrote:
+> On 2022/2/3 16:58, Maxime Ripard wrote:
+> > > diff --git a/drivers/gpu/drm/lsdc/Kconfig b/drivers/gpu/drm/lsdc/Kcon=
+fig
+> > > new file mode 100644
+> > > index 000000000000..7ed1b0fdbe1b
+> > > --- /dev/null
+> > > +++ b/drivers/gpu/drm/lsdc/Kconfig
+> > > @@ -0,0 +1,38 @@
+> > > +config DRM_LSDC
+> > > +	tristate "DRM Support for loongson's display controller"
+> > > +	depends on DRM && PCI
+> > > +	depends on MACH_LOONGSON64 || LOONGARCH || MIPS || COMPILE_TEST
+> > > +	select OF
+> > > +	select CMA if HAVE_DMA_CONTIGUOUS
+> > > +	select DMA_CMA if HAVE_DMA_CONTIGUOUS
+> > > +	select DRM_KMS_HELPER
+> > > +	select DRM_KMS_FB_HELPER
+> > > +	select DRM_GEM_CMA_HELPER
+> > > +	select VIDEOMODE_HELPERS
+> > > +	select BACKLIGHT_PWM if CPU_LOONGSON2K
+> > > +	select I2C_GPIO if CPU_LOONGSON2K
+> > > +	select I2C_LS2X if CPU_LOONGSON2K
+> > > +	default m
+> > > +	help
+> > > +	  This is a KMS driver for the display controller in the LS7A1000
+> > > +	  bridge chip and LS2K1000 SoC. The display controller has two
+> > > +	  display pipes and it is a PCI device.
+> > > +	  When using this driver on LS2K1000/LS2K0500 SoC, its framebuffer
+> > > +	  is located at system memory.
+> > > +	  If "M" is selected, the module will be called lsdc.
 > > > +
-> > > +	if (!crtc)
-> > > +		return 0;
+> > > +	  If in doubt, say "Y".
 > > > +
-> > > +	new_crtc_state =3D drm_atomic_get_new_crtc_state(state, crtc);
-> > > +	if (WARN_ON(!new_crtc_state))
-> > > +		return -EINVAL;
+> > > +config DRM_LSDC_VRAM_DRIVER
+> > > +	bool "vram helper based device driver support"
+> > > +	depends on DRM_LSDC
+> > > +	select DRM_VRAM_HELPER
+> > > +	default y
+> > > +	help
+> > > +	  When using this driver on LS7A1000 + LS3A3000/LS3A4000/LS3A5000
+> > > +	  platform, the LS7A1000 bridge chip has dedicated video RAM. Using
+> > > +	  "lsdc.use_vram_helper=3D1" in the kernel command line will enable
+> > > +	  this driver mode and then the framebuffer will be located at the
+> > > +	  VRAM at the price of losing PRIME support.
 > > > +
-> > > +	priv_crtc_state =3D to_lsdc_crtc_state(new_crtc_state);
-> > > +
-> > > +	ret =3D drm_atomic_helper_check_plane_state(new_plane_state,
-> > > +						  new_crtc_state,
-> > > +						  DRM_PLANE_HELPER_NO_SCALING,
-> > > +						  DRM_PLANE_HELPER_NO_SCALING,
-> > > +						  false,
-> > > +						  true);
-> > > +	if (ret)
-> > > +		return ret;
-> > > +
-> > > +	/*
-> > > +	 * Require full modeset if enabling or disabling a plane,
-> > > +	 * or changing its position, size, depth or format.
-> > > +	 */
-> > > +	if ((!new_fb || !old_fb ||
-> > > +	     old_plane_state->crtc_x !=3D new_plane_state->crtc_x ||
-> > > +	     old_plane_state->crtc_y !=3D new_plane_state->crtc_y ||
-> > > +	     old_plane_state->crtc_w !=3D new_plane_state->crtc_w ||
-> > > +	     old_plane_state->crtc_h !=3D new_plane_state->crtc_h ||
-> > > +	     old_fb->format->format !=3D new_format))
-> > > +		new_crtc_state->mode_changed =3D true;
-> > > +
-> > > +
-> > > +	priv_crtc_state->pix_fmt =3D lsdc_primary_get_default_format(crtc);
-> > Storing the pixel format in the CRTC state is weird? What would happen
-> > if you have a primary plane and a cursor in different formats?
-> >=20
-> > Also, reading the default format from a register doesn't look right.
-> > atomic_check can occur at any time, including before a previous commit,
-> > or while the hardware is disabled. You should rely on either a constant
-> > or the previous state here.
-> >=20
-> Currently, private CRTC state(priv_crtc_state) is not get used by the cur=
-sor's
-> atomic_check() and atomic_update(). I means this is only for the primary =
-plane.
-> And both and the primary and the cursor using=A0 XRGB8888 format, what I =
-really
-> want=A0here is let the atomic_update to update the framebuffer's format, =
-because
-> the firmware (pmon) of some board set the framebuffer's format as RGB565.
+> > > +	  If in doubt, say "Y".
+> > This doesn't sound right. The driver should make the proper decision
+> > depending on the platform, not the user or the distribution.
+>=20
+> The LS7A1000 north bridge chip has dedicated video RAM, but the DC in LS7=
+A1000
+> can also scanout from the system memory directly like a display controlle=
+r in a
+> SoC does. In fact, this display controller is envolved from early product=
+ of
+> Loongson 2H SoC. This driver still works even if the downstream PC board
+> manufacturer doesn't solder a video RAM on the mother board.
+>=20
+> The lsdc_should_vram_helper_based() function in lsdc_drv.c will examine
+> if the DC device node contain a use_vram_helper property at driver loadin=
+g time.
+> If there is no use_vram_helper property, CMA helper based DRM driver will=
+ be used.
+> Doing this way allow the user using "lsdc.use_vram_helper=3D0" override t=
+he default
+> behavior even through there is a "use_vram_helper;" property in the DTS.
+>=20
+> In short, It is intend to let the command line passed from kernel has hig=
+her
+> priority than the device tree. Otherwise the end user can not switch diff=
+erent
+> driver mode through the kernel command line once the DC device node conta=
+in
+> "use_vram_helper;" property.
+>=20
+> This driver's author already made the decision by the time when the patch=
+ is
+> sent out, even through this**may not proper.
+>=20
+> The CMA helper based driver will be used by default, if the DC device nod=
+e contain
+> "use_vram_helper;" then VRAM based driver will be used. This is my initia=
+l intention.
 
-atomic_update will be called each time the plane state is changed, so it
-won't be an issue: when the first state will be committed, your
-atomic_update function will be called and thus you'll overwrite what was
-left of the firmware setup.
-
-> If the hardware's format is same with the plane state, then there is no n=
-eed to
-> update the FB's format register, save a function call, right?
-
-My point was more about the fact that you're using the wrong abstraction
-there. The format is a property of the plane, not from the CRTC. In KMS
-(and in most drivers), you can have multiple planes with different
-formats all attached to the same CRTC just fine.
+DT isn't really a solution either. Let's take the distribution
+perspective there. Suppose you're a Fedora or Debian developer, and want
+to make a single kernel image, and ship a DT to the user for their board
+without any modification. How is either the Kconfig solution or DT flags
+solution any good there? It doesn't help them at all.
 
 Maxime
 
---kqetfhrtfefgtoun
+--ya7qckwy2foywkx2
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYgN9EQAKCRDj7w1vZxhR
-xZ6BAP9j8kJHoG5YQyu1To5wFlm7TFa/y9uSGX81KcAkqlYkZwD/W3iUA4ZG9tdL
-VNf2zBWWGP2cOgzaLtyzWTOxYsxcvAs=
-=ByIy
+iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYgOAvwAKCRDj7w1vZxhR
+xfmlAP9jrc/0alF0HbOEKem/PYILuIQZksQjvUqUpnADGQgZ2AD/YY/Mdq2iiu3Z
+W6nZNr9i/aZ4agM5MHGTU59+JVzfAwA=
+=9aeP
 -----END PGP SIGNATURE-----
 
---kqetfhrtfefgtoun--
+--ya7qckwy2foywkx2--

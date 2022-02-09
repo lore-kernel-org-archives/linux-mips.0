@@ -2,63 +2,64 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C5A68C433EF
-	for <linux-mips@archiver.kernel.org>; Wed,  9 Feb 2022 09:58:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5ECBCC433F5
+	for <linux-mips@archiver.kernel.org>; Wed,  9 Feb 2022 11:13:09 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230228AbiBIJ6e (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 9 Feb 2022 04:58:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55336 "EHLO
+        id S230397AbiBILND (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 9 Feb 2022 06:13:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39340 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234017AbiBIJ6V (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 9 Feb 2022 04:58:21 -0500
+        with ESMTP id S229851AbiBILNC (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 9 Feb 2022 06:13:02 -0500
 Received: from new3-smtp.messagingengine.com (new3-smtp.messagingengine.com [66.111.4.229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B41EE022ADA;
-        Wed,  9 Feb 2022 01:58:15 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E00AE0481EE;
+        Wed,  9 Feb 2022 02:08:25 -0800 (PST)
 Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 7EA74580152;
-        Wed,  9 Feb 2022 03:52:19 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute4.internal (MEProxy); Wed, 09 Feb 2022 03:52:19 -0500
+        by mailnew.nyi.internal (Postfix) with ESMTP id 86C8E5801B0;
+        Wed,  9 Feb 2022 03:43:34 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Wed, 09 Feb 2022 03:43:34 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=cc
         :cc:content-type:date:date:from:from:in-reply-to:in-reply-to
         :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to; s=fm2; bh=5AsuKlg9T3wRs6EodVp0NmABKRFh6ykn6emryp
-        MFqcE=; b=tJSbjzcafZKt16I56xV6jV5vxF1WGT5F2+4G9QjLLNk423jTTeO2Rc
-        zHnaWdr4mAAI6soRoHBZs56pjt7JAyvUzDI6GRCzQyj1a1gmZ7g+T2wmruVOYhGj
-        U/i8/jIg/iMTj3m7IC0/YXArfNPbCRIVDNcaXxkb7ake0Bexf2mKo3K2mth34ue9
-        WLD/Ki/AzraJGy50OZolC5AQjIFIQIrBZDPoNZ06+D6S+73CfEI/dq20rVCx1pd1
-        cC9msnw+U26YI4SnONvNadAzIHz1jx1T6tAsQ4IVX3uKRycsWBDPf5gB3N4FcDig
-        1icVgoCuAhNoi87sqBua/4Aubd977JjA==
+        :subject:to:to; s=fm2; bh=e4SNWw1WtTCp7PF56Ssx0zWDy7EUAXFNe2S8oS
+        +po3s=; b=hFyiVZGDMWtv3gen1AiZtgpuyh1rZdV7h4HBZzWAQ7J0tOz6geOiWu
+        YqTrbHnACfOxK9NiK6//272qHuqd3DcWd0c6Nao5tl5qEiXtlysRgAKijU0+/QcC
+        e1c4iFJ6vw9EjMfES0LDCOxQNEo/S3uWUU8S2Ew18wjQEkq9rXmkYMy+74jr7qZ/
+        XFu7FlNehZ8iTPmEsehOvpzr/WubgmvpW8xiKz/+H2ocHYhS/XI/++lJ/+YYofuw
+        BODwsN7Y4sucSi231AJ+R40y5i9+Fj56zBLP1BVIZn7YOjONfyd0hyfK/QXL7+gh
+        crIZ2JoKnyf4eykrIOoYoQaGatVThLFw==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:cc:content-type:date:date:from:from
         :in-reply-to:in-reply-to:message-id:mime-version:references
         :reply-to:sender:subject:subject:to:to:x-me-proxy:x-me-proxy
-        :x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=5AsuKlg9T3wRs6Eod
-        Vp0NmABKRFh6ykn6emrypMFqcE=; b=VbtCkvnpzlBFH8WTmpIt6LRDreCQoQJub
-        Fzshu4pCLO2vq7pubT2yKFTwOh33ovalCRzkgYSFDs630Mn0JznhTazTWLuminSU
-        TGtgVwpIdKX9mF95t51To8n6ZHd2o22kRHvqvXqKgBWHMNGJUOywiLKq1/nrTHzA
-        U+AoPm1h6GAcJhtILdf7WEt3n+5sUIfpqQ7oIWwoKb4ZqArlIMDXa/dbBCufPPHJ
-        guqKP+1Dln9I5NvE17l0JStDxAOyQH3xDRTjmz/wyw2lfz5w47HGc+HJo6QGJJjv
-        o7gpY1rPw7VatRLSZWGQwb8KttgfDtgCmtoUqcT3wc/KqRDUb84Ig==
-X-ME-Sender: <xms:woADYq-0eSssQcGmiFliY3197FJPDabzDoC5c-S9rmwOLV775OJ_1Q>
-    <xme:woADYqtEcXYvnyvCziOKFwlhuM7_YdaFtgdOJ9NbhwXNdDn_Zt9COsgBJll-AVbkD
-    SvRVm4Tt4AhVHFectY>
-X-ME-Received: <xmr:woADYgA38MA3W3u_26f06nr8SC5tbUkS9nWe-Fu400YyD4TsPT9NfVPv1JlUkACVYB5DVpbsR_OoORf2kChjlYi5mTc_XN8zhy4PTyE>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvvddrheekgdduvdduucetufdoteggodetrfdotf
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=e4SNWw1WtTCp7PF56
+        Ssx0zWDy7EUAXFNe2S8oS+po3s=; b=MdXDUF3S3B/nbiCsFioEnKoZrWHh+q8XB
+        EqcQXIBjCIgP3uJ6HmKC0X9B+p/v/+q4yC50A+jPgOuS+LBDcPqip4SkxuV+zYFt
+        OeU0/b3z17a1RmKSy5kMUyM/vOfPcC4bYUE0t6AUjkxuL0rvNG/Wfj+7WjEl1XX/
+        MPNLQYfFMqx+DUzb+wZdGZYg6xyS3XgU8/EP+/z1yaEAKr2rdJYPKaJ5MAOfe/tp
+        OVFEJ7q7d7dd20H2SUzsZq5ZkDJmH0akonUKzs5OwGaBu7+Yfa7RCVk9Asnz7PdJ
+        2nLeHwYK5stabM6p+uHzGoY0Z5HnpDQMJNwCxSaGWPTVrlcWY0yNA==
+X-ME-Sender: <xms:tH4DYkPtl1-LucRywoZanVl6Lrnloi8WBO6Tp6eWHDygsH0o9DbuFw>
+    <xme:tH4DYq9TlE5BQbRzzS9AqVgN16KBdCs1jcqt2gJffqNWNQaLub3fpS4Xz_WrUKwgP
+    cKyiQupWr5nnvk4hhI>
+X-ME-Received: <xmr:tH4DYrQzC5fMP3U_DgY-6FQOjXPpHH6JzISZCNYBExzSQM-VXyvSRXh8NTWMXE0CB7H5hHTyV_VQ9UPYj0gAlfAsFAGJSVdZwu_aWYE>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvvddrheekgdduudelucetufdoteggodetrfdotf
     fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
     uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
     cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
     vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
-    htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
-    gedunecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepmh
-    grgihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:woADYifXlPCUf4Pfw4h2SaQnZtk1p0MS281dIBhl632sONAVXFFHfQ>
-    <xmx:woADYvNp5I5KNjAOyPv_QIUqQYGc9vVFIxWKktj5IhiM1bXk7_mYZw>
-    <xmx:woADYskKXPWxqIOgq3sOBSXwGBjJfH41bx-0ka5XOLVCipe0HYtfNA>
-    <xmx:w4ADYoz22sbKeC_hoJ5t4JY_gwAnhHwWZLPgo9_GLLuWGA3EgMUojg>
+    htvghrnhepgedtffduveeukeejtdefkeeljeehheeluefhkedtkeegteetledtffelfedu
+    udeinecuffhomhgrihhnpehkvghrnhgvlhdrohhrghdplhhkmhhlrdhorhhgnecuvehluh
+    hsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegt
+    vghrnhhordhtvggthh
+X-ME-Proxy: <xmx:tH4DYssnDGdEgWSn_mOMmwMOCfpLpFHDk-smMxjdR8zpY3TRlSKifw>
+    <xmx:tH4DYscXVcHJJ6B3l_EwIwo3FrSUiRYkEefYg_nWBxdVmSoO8cUjow>
+    <xmx:tH4DYg2G8sLZdtHEfFQbJTJTN3NvNdDlHdqnOrvKgnwA6AxkLqP1WQ>
+    <xmx:tn4DYrDIqBBOk_zHZjLl9Yy6WRcPWLN7LWtQE7KQ_3PdPABIy__fBw>
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 9 Feb 2022 03:52:17 -0500 (EST)
-Date:   Wed, 9 Feb 2022 09:52:15 +0100
+ 9 Feb 2022 03:43:32 -0500 (EST)
+Date:   Wed, 9 Feb 2022 09:43:31 +0100
 From:   Maxime Ripard <maxime@cerno.tech>
 To:     Sui Jingfeng <15330273260@189.cn>
 Cc:     Dan Carpenter <dan.carpenter@oracle.com>,
@@ -80,128 +81,146 @@ Cc:     Dan Carpenter <dan.carpenter@oracle.com>,
         Randy Dunlap <rdunlap@infradead.org>
 Subject: Re: [PATCH v6 1/3] drm/lsdc: add drm driver for loongson display
  controller
-Message-ID: <20220209085215.65qbdsgwtnvujdng@houat>
+Message-ID: <20220209084331.fpq5ng3yuqxmby4q@houat>
 References: <20220203082546.3099-1-15330273260@189.cn>
  <20220203082546.3099-2-15330273260@189.cn>
  <20220203085851.yqstkfgt4dz7rcnw@houat>
- <57805e19-285a-76d3-16e3-09a3eb7a9540@189.cn>
+ <f5381561-25da-61e3-5025-fa6dd61dd730@189.cn>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="ya7qckwy2foywkx2"
+        protocol="application/pgp-signature"; boundary="gllwwgxlqy73i5no"
 Content-Disposition: inline
-In-Reply-To: <57805e19-285a-76d3-16e3-09a3eb7a9540@189.cn>
+In-Reply-To: <f5381561-25da-61e3-5025-fa6dd61dd730@189.cn>
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
 
---ya7qckwy2foywkx2
+--gllwwgxlqy73i5no
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Feb 03, 2022 at 11:47:16PM +0800, Sui Jingfeng wrote:
-> On 2022/2/3 16:58, Maxime Ripard wrote:
-> > > diff --git a/drivers/gpu/drm/lsdc/Kconfig b/drivers/gpu/drm/lsdc/Kcon=
-fig
-> > > new file mode 100644
-> > > index 000000000000..7ed1b0fdbe1b
-> > > --- /dev/null
-> > > +++ b/drivers/gpu/drm/lsdc/Kconfig
-> > > @@ -0,0 +1,38 @@
-> > > +config DRM_LSDC
-> > > +	tristate "DRM Support for loongson's display controller"
-> > > +	depends on DRM && PCI
-> > > +	depends on MACH_LOONGSON64 || LOONGARCH || MIPS || COMPILE_TEST
-> > > +	select OF
-> > > +	select CMA if HAVE_DMA_CONTIGUOUS
-> > > +	select DMA_CMA if HAVE_DMA_CONTIGUOUS
-> > > +	select DRM_KMS_HELPER
-> > > +	select DRM_KMS_FB_HELPER
-> > > +	select DRM_GEM_CMA_HELPER
-> > > +	select VIDEOMODE_HELPERS
-> > > +	select BACKLIGHT_PWM if CPU_LOONGSON2K
-> > > +	select I2C_GPIO if CPU_LOONGSON2K
-> > > +	select I2C_LS2X if CPU_LOONGSON2K
-> > > +	default m
-> > > +	help
-> > > +	  This is a KMS driver for the display controller in the LS7A1000
-> > > +	  bridge chip and LS2K1000 SoC. The display controller has two
-> > > +	  display pipes and it is a PCI device.
-> > > +	  When using this driver on LS2K1000/LS2K0500 SoC, its framebuffer
-> > > +	  is located at system memory.
-> > > +	  If "M" is selected, the module will be called lsdc.
+On Fri, Feb 04, 2022 at 12:29:39AM +0800, Sui Jingfeng wrote:
+> > > +static int lsdc_modeset =3D 1;
+> > > +MODULE_PARM_DESC(modeset, "Enable/disable CMA-based KMS(1 =3D enable=
+d(default), 0 =3D disabled)");
+> > > +module_param_named(modeset, lsdc_modeset, int, 0644);
 > > > +
-> > > +	  If in doubt, say "Y".
+> > > +static int lsdc_cached_coherent =3D 1;
+> > > +MODULE_PARM_DESC(cached_coherent, "uss cached coherent mapping(1 =3D=
+ enabled(default), 0 =3D disabled)");
+> > > +module_param_named(cached_coherent, lsdc_cached_coherent, int, 0644);
 > > > +
-> > > +config DRM_LSDC_VRAM_DRIVER
-> > > +	bool "vram helper based device driver support"
-> > > +	depends on DRM_LSDC
-> > > +	select DRM_VRAM_HELPER
-> > > +	default y
-> > > +	help
-> > > +	  When using this driver on LS7A1000 + LS3A3000/LS3A4000/LS3A5000
-> > > +	  platform, the LS7A1000 bridge chip has dedicated video RAM. Using
-> > > +	  "lsdc.use_vram_helper=3D1" in the kernel command line will enable
-> > > +	  this driver mode and then the framebuffer will be located at the
-> > > +	  VRAM at the price of losing PRIME support.
+> > > +static int lsdc_dirty_update =3D -1;
+> > > +MODULE_PARM_DESC(dirty_update, "enable dirty update(1 =3D enabled, 0=
+ =3D disabled(default))");
+> > > +module_param_named(dirty_update, lsdc_dirty_update, int, 0644);
 > > > +
-> > > +	  If in doubt, say "Y".
-> > This doesn't sound right. The driver should make the proper decision
-> > depending on the platform, not the user or the distribution.
+> > > +static int lsdc_use_vram_helper =3D -1;
+> > > +MODULE_PARM_DESC(use_vram_helper, "use vram helper based solution(1 =
+=3D enabled, 0 =3D disabled(default))");
+> > > +module_param_named(use_vram_helper, lsdc_use_vram_helper, int, 0644);
+> > > +
+> > > +static int lsdc_verbose =3D -1;
+> > > +MODULE_PARM_DESC(verbose, "Enable/disable print some key information=
+");
+> > > +module_param_named(verbose, lsdc_verbose, int, 0644);
+> >
+> > It's not really clear to me why you need any of those parameters. Why
+> > would a user want to use a non coherent mapping for example?
+> >=20
+> Because we are Mips architecture. Paul Cercueil already explained it
+> in his mmap GEM buffers cachedpatch  <https://lkml.kernel.org/lkml/202008=
+22164233.71583-1-paul@crapouillou.net/T/>. I drag part of it to here for
+> convenient to reading:
 >=20
-> The LS7A1000 north bridge chip has dedicated video RAM, but the DC in LS7=
-A1000
-> can also scanout from the system memory directly like a display controlle=
-r in a
-> SoC does. In fact, this display controller is envolved from early product=
- of
-> Loongson 2H SoC. This driver still works even if the downstream PC board
-> manufacturer doesn't solder a video RAM on the mother board.
+> /Traditionally, GEM buffers are mapped write-combine. Writes to the buffer
+> are accelerated, and reads are slow. Application doing lots////of
+> alpha-blending paint inside shadow buffers, which is then memcpy'd////into
+> the final GEM buffer.///
+> "non coherent mapping" is actually cached and it is for CMA helpers
+> base driver, not for VRAM helper based driver. For Loongson CPU/SoCs.
+> The cache coherency is maintained by hardware, therefore there no
+> need to worry about coherency problems. This is true at least for
+> ls3a3000, ls3a4000 and ls3a5000.
 >=20
-> The lsdc_should_vram_helper_based() function in lsdc_drv.c will examine
-> if the DC device node contain a use_vram_helper property at driver loadin=
-g time.
-> If there is no use_vram_helper property, CMA helper based DRM driver will=
- be used.
-> Doing this way allow the user using "lsdc.use_vram_helper=3D0" override t=
-he default
-> behavior even through there is a "use_vram_helper;" property in the DTS.
+> "non coherent" or "coherent" is not important here, the key point is
+> that the backing memory of the framebuffer is cached with non coherent
+> mapping, you don't need a shadow buffer layer when using X server's
+> modesetting driver.
 >=20
-> In short, It is intend to let the command line passed from kernel has hig=
-her
-> priority than the device tree. Otherwise the end user can not switch diff=
-erent
-> driver mode through the kernel command line once the DC device node conta=
-in
-> "use_vram_helper;" property.
+> Read and write to the framebuffer in system memory is much faster than
+> read and write to the framebuffer in the VRAM.
 >=20
-> This driver's author already made the decision by the time when the patch=
- is
-> sent out, even through this**may not proper.
+> Why CMA helper based solution is faster than the VRAM based solution on M=
+ips platform?
 >=20
-> The CMA helper based driver will be used by default, if the DC device nod=
-e contain
-> "use_vram_helper;" then VRAM based driver will be used. This is my initia=
-l intention.
+> Partly because of the CPU have L1, L2 and L3 cache, especially L3 cache
+> is as large as 8MB, read and write from the cache is fast.
+>=20
+> Another reason is as Paul Cercueil said, read from VRAM with write-combine
+> cache mode is slow. it is just uncache read.
+> Please note that we don't have a GPU here, we are just a display controll=
+er.
+>=20
+> For the VRAM helper based driver case, the backing memory of the framebuf=
+fer
+> is located at VRAM, When using X server's modesetting driver, we have to =
+enable
+> the ShadowFB option, Uncache acceleration support(at the kernel size) sho=
+uld
+> also be enabled. Otherwise the performance of graphic application is just=
+ slow.
+>=20
+> Beside write-combine cache mode have bugs on our platform, a kernel side
+> developer have disabled it. Write-combine cache mode just boil down to un=
+cached
+> now. See [1] and [2]
+>=20
+> [1]https://lkml.org/lkml/2020/8/10/255
+> [2]https://lkml.kernel.org/lkml/1617701112-14007-1-git-send-email-yangtie=
+zhu@loongson.cn/T/
+>
+> This is the reason why we prefer CMA helper base solution with non cohere=
+nt mapping,
+> simply because it is fast.
+>=20
+> As far as I know, Loongson's CPU does not has the concept of write-combin=
+e,
+> it only support three caching mode:  uncached, cached and uncache acceler=
+ation.
+> write-combine is implemented with uncache acceleration on Mips.
 
-DT isn't really a solution either. Let's take the distribution
-perspective there. Suppose you're a Fedora or Debian developer, and want
-to make a single kernel image, and ship a DT to the user for their board
-without any modification. How is either the Kconfig solution or DT flags
-solution any good there? It doesn't help them at all.
+My point wasn't just about the VRAM vs CMA stuff, it was about why do
+you need all those switches in the first place?
+
+Take the verbose parameter for example: it's entirely redundant with the
+already existing, documented, DRM logging infrastructure.
+
+Then, you have "modeset", and I'm not sure why it's supposed to be
+there, at all. This is a modesetting driver, why would I want to disable
+modesetting entirely?
+
+More fundamentally (and this extends to the CMA, caching and VRAM stuff
+you explained above), why can't the driver pick the right decision all
+the time and why would that be under the user control?
+
+You were mentioning that you need to work-around MIPS memory management.
+Then fine, just do that on MIPS, and don't it on the other architectures
+that don't need it. There's no need for a knob.
 
 Maxime
 
---ya7qckwy2foywkx2
+--gllwwgxlqy73i5no
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYgOAvwAKCRDj7w1vZxhR
-xfmlAP9jrc/0alF0HbOEKem/PYILuIQZksQjvUqUpnADGQgZ2AD/YY/Mdq2iiu3Z
-W6nZNr9i/aZ4agM5MHGTU59+JVzfAwA=
-=9aeP
+iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYgN+swAKCRDj7w1vZxhR
+xWWcAP48yidh+QiEzNhw7kqNLofKta0Ed9GODCtO98/Fa8LRuwEA5xKXu2ByzsHD
+iv6Q2TXa6lvKdV8aLFv2WYKGKNnC0w0=
+=Du2J
 -----END PGP SIGNATURE-----
 
---ya7qckwy2foywkx2--
+--gllwwgxlqy73i5no--

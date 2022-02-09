@@ -2,132 +2,68 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 80892C4332F
-	for <linux-mips@archiver.kernel.org>; Wed,  9 Feb 2022 12:23:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3D608C433F5
+	for <linux-mips@archiver.kernel.org>; Wed,  9 Feb 2022 13:35:01 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232704AbiBIMX3 convert rfc822-to-8bit (ORCPT
-        <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 9 Feb 2022 07:23:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40646 "EHLO
+        id S234050AbiBINe4 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 9 Feb 2022 08:34:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51688 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233101AbiBIMVt (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 9 Feb 2022 07:21:49 -0500
-Received: from aposti.net (aposti.net [89.234.176.197])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A1C6C02B5FB;
-        Wed,  9 Feb 2022 04:18:29 -0800 (PST)
-Date:   Wed, 09 Feb 2022 12:18:14 +0000
-From:   Paul Cercueil <paul@crapouillou.net>
-Subject: Re: [PATCH v13 6/9] dw-hdmi/ingenic-dw-hdmi: repair interworking with
- hdmi-connector
-To:     "H. Nikolaus Schaller" <hns@goldelico.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Kees Cook <keescook@chromium.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Robert Foss <robert.foss@linaro.org>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Harry Wentland <harry.wentland@amd.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Maxime Ripard <maxime@cerno.tech>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Paul Boddie <paul@boddie.org.uk>,
-        Andrzej Hajda <andrzej.hajda@intel.com>,
-        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
-        devicetree@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org, letux-kernel@openphoenux.org,
-        Jonas Karlman <jonas@kwiboo.se>,
-        dri-devel@lists.freedesktop.org
-Message-Id: <E6E17R.ND5XW1IG4SYA@crapouillou.net>
-In-Reply-To: <866f84621974992f4831bd471ae5a53414de9255.1643819482.git.hns@goldelico.com>
-References: <cover.1643819482.git.hns@goldelico.com>
-        <866f84621974992f4831bd471ae5a53414de9255.1643819482.git.hns@goldelico.com>
+        with ESMTP id S234038AbiBINez (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 9 Feb 2022 08:34:55 -0500
+Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 9C6DFC0613CA;
+        Wed,  9 Feb 2022 05:34:58 -0800 (PST)
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1nHn7Y-0005Ye-01; Wed, 09 Feb 2022 14:34:56 +0100
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id 27B35C24BE; Wed,  9 Feb 2022 14:34:47 +0100 (CET)
+Date:   Wed, 9 Feb 2022 14:34:47 +0100
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Nathan Chancellor <nathan@kernel.org>
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Kees Cook <keescook@chromium.org>
+Subject: Re: [PATCH] MIPS: Malta: Enable BLK_DEV_INITRD
+Message-ID: <20220209133447.GB11741@alpha.franken.de>
+References: <20220208191726.1304731-1-nathan@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1; format=flowed
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220208191726.1304731-1-nathan@kernel.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Hi Nikolaus,
-
-Le mer., févr. 2 2022 at 17:31:20 +0100, H. Nikolaus Schaller 
-<hns@goldelico.com> a écrit :
-> Commit 7cd70656d1285b ("drm/bridge: display-connector: implement bus 
-> fmts callbacks")
+On Tue, Feb 08, 2022 at 12:17:26PM -0700, Nathan Chancellor wrote:
+> This configuration is useful for boot testing malta_defconfig in QEMU
+> with just a simple cpio initrd, instead of a full ext4 rootfs.
 > 
-> introduced a new mechanism to negotiate bus formats between hdmi 
-> connector
-> and the synopsys hdmi driver inside the jz4780.
+> This results in an increase of ~164KB of vmlinux (with GCC 11.2.0):
 > 
-> By this, the dw-hdmi is no longer the only bridge and sets up a list
-> of formats in dw_hdmi_bridge_atomic_get_output_bus_fmts().
+> $ diskus vmlinux.before
+> 11.19 MB (11,194,368 bytes)
 > 
-> This includes MEDIA_BUS_FMT_UYVY8_1X16 which is chosen for the jz4780 
-> but only
-> produces a black screen.
+> $ diskus vmlinux.after
+> 11.36 MB (11,358,208 bytes)
 > 
-> This fix is based on the observation that max_bpc = 0 when running 
-> this
-> function while info->bpc = 8. Since the formats checks before this 
-> always test
-> for max_bpc >= info->pbc indirectly my assumption is that we must 
-> check it
-> here as well.
-
-This fix looks really strange to me, so I'll let the DRM experts 
-comment.
-
-It would still be better to move the patch before the introduction of 
-dw-ingenic-hdmi.c, so that once this one is introduced, everything 
-works. This also enables bisectability.
-
-Cheers,
--Paul
-
-
+> This size increase comes from the fact that usr/Kconfig is sourced when
+> CONFIG_BLK_DEV_INITRD is enabled, which defaults to supporting several
+> decompression algorithms for compressed initrds. This seems like a
+> reasonable tradeoff but these configurations could be disabled in the
+> future if there are complaints about the size increase.
 > 
-> Adding the proposed patch makes the CI20/jz4780 panel work again in
-> MEDIA_BUS_FMT_RGB888_1X24 mode.
-> 
-> Fixes: 7cd70656d1285b ("drm/bridge: display-connector: implement bus 
-> fmts callbacks")
-> Signed-off-by: H. Nikolaus Schaller <hns@goldelico.com>
+> Signed-off-by: Nathan Chancellor <nathan@kernel.org>
 > ---
->  drivers/gpu/drm/bridge/synopsys/dw-hdmi.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/bridge/synopsys/dw-hdmi.c 
-> b/drivers/gpu/drm/bridge/synopsys/dw-hdmi.c
-> index 52e7cd2e020d3..34703a15ee4ff 100644
-> --- a/drivers/gpu/drm/bridge/synopsys/dw-hdmi.c
-> +++ b/drivers/gpu/drm/bridge/synopsys/dw-hdmi.c
-> @@ -2620,10 +2620,10 @@ static u32 
-> *dw_hdmi_bridge_atomic_get_output_bus_fmts(struct drm_bridge *bridge,
->  		output_fmts[i++] = MEDIA_BUS_FMT_RGB101010_1X30;
->  	}
-> 
-> -	if (info->color_formats & DRM_COLOR_FORMAT_YCRCB422)
-> +	if (max_bpc >= info->bpc && info->color_formats & 
-> DRM_COLOR_FORMAT_YCRCB422)
->  		output_fmts[i++] = MEDIA_BUS_FMT_UYVY8_1X16;
-> 
-> -	if (info->color_formats & DRM_COLOR_FORMAT_YCRCB444)
-> +	if (max_bpc >= info->bpc && info->color_formats & 
-> DRM_COLOR_FORMAT_YCRCB444)
->  		output_fmts[i++] = MEDIA_BUS_FMT_YUV8_1X24;
-> 
->  	/* Default 8bit RGB fallback */
-> --
-> 2.33.0
-> 
+>  arch/mips/configs/malta_defconfig | 1 +
+>  1 file changed, 1 insertion(+)
 
+applied to mips-next.
 
+Thomas.
+
+-- 
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]

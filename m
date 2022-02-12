@@ -2,45 +2,27 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 62F33C4167D
-	for <linux-mips@archiver.kernel.org>; Sat, 12 Feb 2022 14:19:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3D208C433F5
+	for <linux-mips@archiver.kernel.org>; Sat, 12 Feb 2022 14:45:18 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236020AbiBLOTy (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Sat, 12 Feb 2022 09:19:54 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:33380 "EHLO
+        id S236188AbiBLOpT convert rfc822-to-8bit (ORCPT
+        <rfc822;linux-mips@archiver.kernel.org>);
+        Sat, 12 Feb 2022 09:45:19 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:54064 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235939AbiBLOTw (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Sat, 12 Feb 2022 09:19:52 -0500
-Received: from mo4-p04-ob.smtp.rzone.de (mo4-p04-ob.smtp.rzone.de [81.169.146.223])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03205245AF;
-        Sat, 12 Feb 2022 06:19:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1644675573;
-    s=strato-dkim-0002; d=goldelico.com;
-    h=References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Cc:Date:
-    From:Subject:Sender;
-    bh=OnmHjCLh5RkKuftzeE4ShHYwcqkWiFyT0Gj+xcgUmbQ=;
-    b=ZneUeoUJLCidnPlGjTclbmIt2OHWSplmBp1Vzg4yov1z3FEpZu7bKJ07c++cvu05KS
-    x6IaHU3UOB6gV26fM//7vwBd5uRUgbp1sXJVs3r88Q8OM01xKySmlOiyAywlxu9qy4j6
-    j1Px+ZaNKU0IKyNBvKoQaba7cwHkQCYRCOVRYWpsPWfbA1t0fjkLe12uuSOMkzB59sfG
-    BEGFu+ikupkyl6VuRo/5fxZGYAv9eDCQI3CyvOWh31F+R7O5F+ddYfWC7ah4o+RQgc09
-    bbvIc+FSuTg2MmCuiFl3Zapzjff3BvLC9NBhp3ObeB/zCSWgKwfIi98IP1SPg+3gXqWT
-    Dmag==
-Authentication-Results: strato.com;
-    dkim=none
-X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMhflhwDubTJ9o1OAA2UMf2MwPVblcdY="
-X-RZG-CLASS-ID: mo00
-Received: from iMac.fritz.box
-    by smtp.strato.de (RZmta 47.39.0 DYNA|AUTH)
-    with ESMTPSA id L29417y1CEJXsqY
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-    Sat, 12 Feb 2022 15:19:33 +0100 (CET)
-From:   "H. Nikolaus Schaller" <hns@goldelico.com>
-To:     Paul Cercueil <paul@crapouillou.net>,
-        Rob Herring <robh+dt@kernel.org>,
+        with ESMTP id S229551AbiBLOpT (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Sat, 12 Feb 2022 09:45:19 -0500
+Received: from aposti.net (aposti.net [89.234.176.197])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D63E9214;
+        Sat, 12 Feb 2022 06:45:13 -0800 (PST)
+Date:   Sat, 12 Feb 2022 14:44:56 +0000
+From:   Paul Cercueil <paul@crapouillou.net>
+Subject: Re: [PATCH v14 1/9] drm/ingenic: Add support for JZ4780 and HDMI
+ output
+To:     "H. Nikolaus Schaller" <hns@goldelico.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
         Mark Rutland <mark.rutland@arm.com>,
         Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        "H. Nikolaus Schaller" <hns@goldelico.com>,
         Geert Uytterhoeven <geert+renesas@glider.be>,
         Kees Cook <keescook@chromium.org>,
         "Eric W. Biederman" <ebiederm@xmission.com>,
@@ -59,49 +41,117 @@ To:     Paul Cercueil <paul@crapouillou.net>,
         Mark Brown <broonie@kernel.org>,
         Paul Boddie <paul@boddie.org.uk>,
         Andrzej Hajda <andrzej.hajda@intel.com>,
-        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
-Cc:     devicetree@vger.kernel.org, linux-mips@vger.kernel.org,
+        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
+        devicetree@vger.kernel.org, linux-mips@vger.kernel.org,
         linux-kernel@vger.kernel.org, letux-kernel@openphoenux.org,
         Jonas Karlman <jonas@kwiboo.se>,
-        dri-devel@lists.freedesktop.org
-Subject: [PATCH v14 7/9] drm/ingenic: dw-hdmi: make hot plug detection work for CI20
-Date:   Sat, 12 Feb 2022 15:19:25 +0100
-Message-Id: <e5d3a51e394ffbff2675b5389095d7015097bdab.1644675567.git.hns@goldelico.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <cover.1644675566.git.hns@goldelico.com>
+        dri-devel@lists.freedesktop.org,
+        Ezequiel Garcia <ezequiel@collabora.com>
+Message-Id: <WY477R.1XWC44S25QIN3@crapouillou.net>
+In-Reply-To: <31eff2819f94fefcb01aa5cb23c79ccf302d9238.1644675566.git.hns@goldelico.com>
 References: <cover.1644675566.git.hns@goldelico.com>
+        <31eff2819f94fefcb01aa5cb23c79ccf302d9238.1644675566.git.hns@goldelico.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=iso-8859-1; format=flowed
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-There is no hpd-gpio installed on the CI20 board HDMI connector.
-Hence there is no hpd detection by the connector driver and we
-have to enable polling by the dw-hdmi driver.
+Hi Nikolaus,
 
-We need to set .poll_enabled but that struct component
-can only be accessed in the core code. Hence we use the public
-setter function drm_kms_helper_hotplug_event().
+Le sam., févr. 12 2022 at 15:19:19 +0100, H. Nikolaus Schaller 
+<hns@goldelico.com> a écrit :
+> From: Paul Boddie <paul@boddie.org.uk>
+> 
+> Add support for the LCD controller present on JZ4780 SoCs.
+> This SoC uses 8-byte descriptors which extend the current
+> 4-byte descriptors used for other Ingenic SoCs.
+> 
+> Note that plane f0 is not working and disabled to be
+> seen from user-space.
+> 
+> Tested on MIPS Creator CI20 board.
 
-Signed-off-by: H. Nikolaus Schaller <hns@goldelico.com>
----
- drivers/gpu/drm/ingenic/ingenic-dw-hdmi.c | 2 ++
- 1 file changed, 2 insertions(+)
+That's not really what the patch does though. It's a fix for a commit 
+that has the exact same title and description, and is already merged: 
+b807fd2c43fe ("drm/ingenic: Add support for JZ4780 and HDMI output").
 
-diff --git a/drivers/gpu/drm/ingenic/ingenic-dw-hdmi.c b/drivers/gpu/drm/ingenic/ingenic-dw-hdmi.c
-index 34e986dd606cf..90547a28dc5c7 100644
---- a/drivers/gpu/drm/ingenic/ingenic-dw-hdmi.c
-+++ b/drivers/gpu/drm/ingenic/ingenic-dw-hdmi.c
-@@ -55,6 +55,8 @@ ingenic_dw_hdmi_mode_valid(struct dw_hdmi *hdmi, void *data,
- 	if (mode->clock > 216000)
- 		return MODE_CLOCK_HIGH;
- 
-+	dw_hdmi_enable_poll(hdmi, true);
-+
- 	return MODE_OK;
- }
- 
--- 
-2.33.0
+Please rewrite the patch's title and description to actually describe 
+its purpose.
+
+Cheers,
+-Paul
+
+> 
+> Signed-off-by: Paul Boddie <paul@boddie.org.uk>
+> Signed-off-by: Ezequiel Garcia <ezequiel@collabora.com>
+> Signed-off-by: H. Nikolaus Schaller <hns@goldelico.com>
+> ---
+>  drivers/gpu/drm/ingenic/ingenic-drm-drv.c | 12 ++++++++++--
+>  1 file changed, 10 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c 
+> b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
+> index 7f10d6eed549d..dcf44cb00821f 100644
+> --- a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
+> +++ b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
+> @@ -65,8 +65,10 @@ struct ingenic_dma_hwdescs {
+>  struct jz_soc_info {
+>  	bool needs_dev_clk;
+>  	bool has_osd;
+> +	bool has_alpha;
+>  	bool map_noncoherent;
+>  	bool use_extended_hwdesc;
+> +	bool plane_f0_not_working;
+>  	unsigned int max_width, max_height;
+>  	const u32 *formats_f0, *formats_f1;
+>  	unsigned int num_formats_f0, num_formats_f1;
+> @@ -453,7 +455,7 @@ static int ingenic_drm_plane_atomic_check(struct 
+> drm_plane *plane,
+>  	if (!crtc)
+>  		return 0;
+> 
+> -	if (plane == &priv->f0)
+> +	if (priv->soc_info->plane_f0_not_working && plane == &priv->f0)
+>  		return -EINVAL;
+> 
+>  	crtc_state = drm_atomic_get_existing_crtc_state(state,
+> @@ -1055,6 +1057,7 @@ static int ingenic_drm_bind(struct device *dev, 
+> bool has_components)
+>  	long parent_rate;
+>  	unsigned int i, clone_mask = 0;
+>  	int ret, irq;
+> +	u32 osdc = 0;
+> 
+>  	soc_info = of_device_get_match_data(dev);
+>  	if (!soc_info) {
+> @@ -1312,7 +1315,10 @@ static int ingenic_drm_bind(struct device 
+> *dev, bool has_components)
+> 
+>  	/* Enable OSD if available */
+>  	if (soc_info->has_osd)
+> -		regmap_write(priv->map, JZ_REG_LCD_OSDC, JZ_LCD_OSDC_OSDEN);
+> +		osdc |= JZ_LCD_OSDC_OSDEN;
+> +	if (soc_info->has_alpha)
+> +		osdc |= JZ_LCD_OSDC_ALPHAEN;
+> +	regmap_write(priv->map, JZ_REG_LCD_OSDC, osdc);
+> 
+>  	mutex_init(&priv->clk_mutex);
+>  	priv->clock_nb.notifier_call = ingenic_drm_update_pixclk;
+> @@ -1511,7 +1517,9 @@ static const struct jz_soc_info jz4770_soc_info 
+> = {
+>  static const struct jz_soc_info jz4780_soc_info = {
+>  	.needs_dev_clk = true,
+>  	.has_osd = true,
+> +	.has_alpha = true,
+>  	.use_extended_hwdesc = true,
+> +	.plane_f0_not_working = true,	/* REVISIT */
+>  	.max_width = 4096,
+>  	.max_height = 2048,
+>  	.formats_f1 = jz4770_formats_f1,
+> --
+> 2.33.0
+> 
+
 

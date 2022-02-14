@@ -2,29 +2,44 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CAD1EC43217
-	for <linux-mips@archiver.kernel.org>; Mon, 14 Feb 2022 12:10:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 43F3EC433F5
+	for <linux-mips@archiver.kernel.org>; Mon, 14 Feb 2022 12:29:33 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352513AbiBNMKd convert rfc822-to-8bit (ORCPT
+        id S1353102AbiBNM3j convert rfc822-to-8bit (ORCPT
         <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 14 Feb 2022 07:10:33 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:45004 "EHLO
+        Mon, 14 Feb 2022 07:29:39 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:56770 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352607AbiBNMKa (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Mon, 14 Feb 2022 07:10:30 -0500
+        with ESMTP id S233868AbiBNM3j (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Mon, 14 Feb 2022 07:29:39 -0500
 Received: from aposti.net (aposti.net [89.234.176.197])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5393A488B3;
-        Mon, 14 Feb 2022 04:10:23 -0800 (PST)
-Date:   Mon, 14 Feb 2022 12:00:48 +0000
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5D7E49FA1;
+        Mon, 14 Feb 2022 04:29:31 -0800 (PST)
+Date:   Mon, 14 Feb 2022 12:29:18 +0000
 From:   Paul Cercueil <paul@crapouillou.net>
-Subject: Re: [PATCH 1/2] dt-bindings: timer: Add PWM compatible for X1000 SoC
-To:     Aidan MacDonald <aidanmacdonald.0x0@gmail.com>
-Cc:     robh+dt@kernel.org, linux-mips@vger.kernel.org,
-        linux-pwm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Message-Id: <CPMA7R.UFQ0L5LKXMVF3@crapouillou.net>
-In-Reply-To: <20220209231141.20184-1-aidanmacdonald.0x0@gmail.com>
-References: <20220209231141.20184-1-aidanmacdonald.0x0@gmail.com>
+Subject: Re: [PATCH v15 1/7] drm/ingenic: Fix support for JZ4780 HDMI output
+To:     "H. Nikolaus Schaller" <hns@goldelico.com>
+Cc:     Andrzej Hajda <andrzej.hajda@intel.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Robert Foss <robert.foss@linaro.org>,
+        Paul Boddie <paul@boddie.org.uk>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Maxime Ripard <maxime@cerno.tech>,
+        Harry Wentland <harry.wentland@amd.com>,
+        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linux-mips@vger.kernel.org,
+        letux-kernel@openphoenux.org,
+        Ezequiel Garcia <ezequiel@collabora.com>
+Message-Id: <U0OA7R.MYFTV5LL3N4A2@crapouillou.net>
+In-Reply-To: <CD0193A3-4E97-4B26-9D1F-1CFAD5B18506@goldelico.com>
+References: <cover.1644681054.git.hns@goldelico.com>
+        <9d3a2000d2bb014f1afb0613537bdc523202135d.1644681054.git.hns@goldelico.com>
+        <PQHA7R.CIX6XS4CFLMM3@crapouillou.net>
+        <CD0193A3-4E97-4B26-9D1F-1CFAD5B18506@goldelico.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1; format=flowed
 Content-Transfer-Encoding: 8BIT
@@ -34,37 +49,34 @@ X-Mailing-List: linux-mips@vger.kernel.org
 
 Hi,
 
-Le mer., févr. 9 2022 at 23:11:41 +0000, Aidan MacDonald 
-<aidanmacdonald.0x0@gmail.com> a écrit :
-> The PWM hardware on the X1000 SoC is almost identical to other
-> Ingenic SoCs, so it can be used with only minor driver changes.
+Le lun., févr. 14 2022 at 11:19:40 +0100, H. Nikolaus Schaller 
+<hns@goldelico.com> a écrit :
+> Hi Paul,
 > 
-> Signed-off-by: Aidan MacDonald <aidanmacdonald.0x0@gmail.com>
+> 
+>>  Am 14.02.2022 um 11:13 schrieb Paul Cercueil <paul@crapouillou.net>:
+>> 
+>>  Hi,
+>> 
+>>  Le sam., févr. 12 2022 at 16:50:49 +0100, H. Nikolaus Schaller 
+>> <hns@goldelico.com> a écrit :
+>>>  From: Paul Boddie <paul@boddie.org.uk>
+>>>  We have to make sure that
+>>>  - JZ_LCD_OSDC_ALPHAEN is set
+>>>  - plane f0 is disabled and not seen from user-space
+>> 
+>>  Actually it will still be seen from user-space, but it won't be 
+>> possible to use it. So before applying I'll change this to:
+>>  "plane f0 is disabled as it's not working yet"
+>> 
+>>  If that's OK with you.
+> 
+> Yes. You understand much better than me the implications...
 
-Acked-by: Paul Cercueil <paul@crapouillou.net>
+I reworded it to "plane f0 is disabled as it's not working yet", added 
+a Fixes: tag, and pushed this patch to drm-misc-next.
 
 Cheers,
 -Paul
-
-> ---
->  Documentation/devicetree/bindings/timer/ingenic,tcu.yaml | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/timer/ingenic,tcu.yaml 
-> b/Documentation/devicetree/bindings/timer/ingenic,tcu.yaml
-> index 7fb37eae9da7..d541cf2067bc 100644
-> --- a/Documentation/devicetree/bindings/timer/ingenic,tcu.yaml
-> +++ b/Documentation/devicetree/bindings/timer/ingenic,tcu.yaml
-> @@ -152,6 +152,7 @@ patternProperties:
->            - enum:
->                - ingenic,jz4740-pwm
->                - ingenic,jz4725b-pwm
-> +              - ingenic,x1000-pwm
->            - items:
->                - enum:
->                    - ingenic,jz4760-pwm
-> --
-> 2.34.1
-> 
 
 

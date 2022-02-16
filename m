@@ -2,267 +2,96 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C33E6C43219
-	for <linux-mips@archiver.kernel.org>; Wed, 16 Feb 2022 18:17:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 21A06C4321E
+	for <linux-mips@archiver.kernel.org>; Wed, 16 Feb 2022 18:36:18 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231492AbiBPSRg (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 16 Feb 2022 13:17:36 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:35770 "EHLO
+        id S237515AbiBPSg3 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 16 Feb 2022 13:36:29 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:36156 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237512AbiBPSRg (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 16 Feb 2022 13:17:36 -0500
-Received: from 189.cn (ptr.189.cn [183.61.185.101])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 396D91BE059;
-        Wed, 16 Feb 2022 10:17:22 -0800 (PST)
-HMM_SOURCE_IP: 10.64.8.41:34238.983927469
-HMM_ATTACHE_NUM: 0000
-HMM_SOURCE_TYPE: SMTP
-Received: from clientip-114.242.206.180 (unknown [10.64.8.41])
-        by 189.cn (HERMES) with SMTP id 72B63100238;
-        Thu, 17 Feb 2022 02:17:20 +0800 (CST)
-Received: from  ([114.242.206.180])
-        by gateway-151646-dep-b7fbf7d79-9vctg with ESMTP id 33b944c8734e48b5907f9ba382168b44 for mripard@kernel.org;
-        Thu, 17 Feb 2022 02:17:21 CST
-X-Transaction-ID: 33b944c8734e48b5907f9ba382168b44
-X-Real-From: 15330273260@189.cn
-X-Receive-IP: 114.242.206.180
-X-MEDUSA-Status: 0
-Sender: 15330273260@189.cn
-From:   Sui Jingfeng <15330273260@189.cn>
-To:     Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Roland Scheidegger <sroland@vmware.com>,
-        Zack Rusin <zackr@vmware.com>,
-        Christian Gmeiner <christian.gmeiner@gmail.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Rob Herring <robh+dt@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Andrey Zhizhikin <andrey.zhizhikin@leica-geosystems.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Lucas Stach <l.stach@pengutronix.de>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Ilia Mirkin <imirkin@alum.mit.edu>,
-        Qing Zhang <zhangqing@loongson.cn>, Li Yi <liyi@loongson.cn>,
-        suijingfeng <suijingfeng@loongson.cn>
-Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, dri-devel@lists.freedesktop.org
-Subject: [PATCH v8 2/3] MIPS: Loongson64: dts: update the display controller device node
-Date:   Thu, 17 Feb 2022 02:17:11 +0800
-Message-Id: <20220216181712.1493400-3-15330273260@189.cn>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20220216181712.1493400-1-15330273260@189.cn>
-References: <20220216181712.1493400-1-15330273260@189.cn>
+        with ESMTP id S237689AbiBPSg2 (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 16 Feb 2022 13:36:28 -0500
+X-Greylist: delayed 62 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 16 Feb 2022 10:36:15 PST
+Received: from mx2.smtp.larsendata.com (mx2.smtp.larsendata.com [91.221.196.228])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE4092ABD06
+        for <linux-mips@vger.kernel.org>; Wed, 16 Feb 2022 10:36:15 -0800 (PST)
+Received: from mail01.mxhotel.dk (mail01.mxhotel.dk [91.221.196.236])
+        by mx2.smtp.larsendata.com (Halon) with ESMTPS
+        id 36dbd7e5-8f57-11ec-b2df-0050568cd888;
+        Wed, 16 Feb 2022 18:35:28 +0000 (UTC)
+Received: from ravnborg.org (80-162-45-141-cable.dk.customer.tdc.net [80.162.45.141])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: sam@ravnborg.org)
+        by mail01.mxhotel.dk (Postfix) with ESMTPSA id 10F5F194B3E;
+        Wed, 16 Feb 2022 19:35:03 +0100 (CET)
+Date:   Wed, 16 Feb 2022 19:34:59 +0100
+X-Report-Abuse-To: abuse@mxhotel.dk
+From:   Sam Ravnborg <sam@ravnborg.org>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Christoph Hellwig <hch@lst.de>, linux-arch@vger.kernel.org,
+        linux-mm@kvack.org, linux-api@vger.kernel.org, arnd@arndb.de,
+        linux-kernel@vger.kernel.org, viro@zeniv.linux.org.uk,
+        linux@armlinux.org.uk, will@kernel.org, guoren@kernel.org,
+        bcain@codeaurora.org, geert@linux-m68k.org, monstr@monstr.eu,
+        tsbogend@alpha.franken.de, nickhu@andestech.com,
+        green.hu@gmail.com, dinguyen@kernel.org, shorne@gmail.com,
+        deller@gmx.de, mpe@ellerman.id.au, peterz@infradead.org,
+        mingo@redhat.com, mark.rutland@arm.com, hca@linux.ibm.com,
+        dalias@libc.org, davem@davemloft.net, richard@nod.at,
+        x86@kernel.org, jcmvbkbc@gmail.com, ebiederm@xmission.com,
+        akpm@linux-foundation.org, ardb@kernel.org,
+        linux-alpha@vger.kernel.org, linux-snps-arc@lists.infradead.org,
+        linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
+        linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+        linux-mips@vger.kernel.org, openrisc@lists.librecores.org,
+        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
+        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
+        linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org
+Subject: Re: [PATCH v2 15/18] sparc64: remove CONFIG_SET_FS support
+Message-ID: <Yg1D08+olCSGmnYU@ravnborg.org>
+References: <20220216131332.1489939-1-arnd@kernel.org>
+ <20220216131332.1489939-16-arnd@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220216131332.1489939-16-arnd@kernel.org>
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-From: suijingfeng <suijingfeng@loongson.cn>
+Hi Arnd.
 
-The display controller is a pci device, its PCI vendor id is 0x0014
-its PCI device id is 0x7a06.
+On Wed, Feb 16, 2022 at 02:13:29PM +0100, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> sparc64 uses address space identifiers to differentiate between kernel
+> and user space, using ASI_P for kernel threads but ASI_AIUS for normal
+> user space, with the option of changing between them.
+> 
+> As nothing really changes the ASI any more, just hardcode ASI_AIUS
+> everywhere. Kernel threads are not allowed to access __user pointers
+> anyway.
+> 
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+>  arch/sparc/include/asm/processor_64.h   |  4 ----
+>  arch/sparc/include/asm/switch_to_64.h   |  4 +---
+>  arch/sparc/include/asm/thread_info_64.h |  4 +---
+>  arch/sparc/include/asm/uaccess_64.h     | 20 +-------------------
+>  arch/sparc/kernel/process_64.c          | 12 ------------
+>  arch/sparc/kernel/traps_64.c            |  2 --
+>  arch/sparc/lib/NGmemcpy.S               |  3 +--
+>  arch/sparc/mm/init_64.c                 |  7 ++++---
+>  8 files changed, 8 insertions(+), 48 deletions(-)
 
-1) In order to let the lsdc kms driver to know which chip the DC is
-   contained in, we add different compatible for different chip.
+I think you somehow missed the Kconfig change, and also the related
+sparc32 change which continue to have set_fs() after this patch.
 
-2) Add display controller device node for ls2k1000 SoC
 
-Signed-off-by: suijingfeng <suijingfeng@loongson.cn>
-Signed-off-by: Sui Jingfeng <15330273260@189.cn>
----
- .../loongson/loongson,display-controller.yaml | 114 ++++++++++++++++++
- .../display/loongson/loongson-drm.txt         |  16 +++
- .../boot/dts/loongson/loongson64-2k1000.dtsi  |   8 ++
- arch/mips/boot/dts/loongson/ls7a-pch.dtsi     |   7 +-
- 4 files changed, 140 insertions(+), 5 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/display/loongson/loongson,display-controller.yaml
- create mode 100644 Documentation/devicetree/bindings/display/loongson/loongson-drm.txt
+I did not manage to review the patch - as I am too unfamiliar with the
+code paths and the set_fs() removal changes.
 
-diff --git a/Documentation/devicetree/bindings/display/loongson/loongson,display-controller.yaml b/Documentation/devicetree/bindings/display/loongson/loongson,display-controller.yaml
-new file mode 100644
-index 000000000000..64d8364b50ab
---- /dev/null
-+++ b/Documentation/devicetree/bindings/display/loongson/loongson,display-controller.yaml
-@@ -0,0 +1,114 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/display/pci0014,7a06.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Loongson LS7A2000/LS7A1000/LS2K1000/LS2K0500 Display Controller Device Tree Bindings
-+
-+maintainers:
-+  - Sui Jingfeng <suijingfeng@loongson.cn>
-+
-+description: |+
-+
-+  Loongson display controllers are simple which require scanout buffers
-+  to be physically contiguous. LS2K1000/LS2K0500 is a SOC, only system
-+  memory is available. LS7A1000/LS7A2000 is bridge chip which is equipped
-+  with a dedicated video ram which is 64MB or more.
-+
-+  For LS7A1000, there are 4 dedicated GPIOs whose control register is
-+  located at the DC register space. They are used to emulate two way i2c,
-+  One for DVO0, another for DVO1.
-+
-+  LS2K1000 and LS2K0500 SoC grab i2c adapter from other module, either
-+  general purpose GPIO emulated i2c or hardware i2c in the SoC.
-+
-+  LSDC has two display pipes, each way has a DVO interface which provide
-+  RGB888 signals, vertical & horizontal synchronisations, data enable and
-+  the pixel clock. LSDC has two CRTC, each CRTC is able to scanout from
-+  1920x1080 resolution at 60Hz. Each CRTC has two FB address registers.
-+
-+  LSDC's display pipeline have several components as below description,
-+
-+  The display controller in LS7A1000:
-+    ___________________                                     _________
-+    |            -------|                                   |         |
-+    |  CRTC0 --> | DVO0 ----> Encoder0 ---> Connector0 ---> | Monotor |
-+    |  _   _     -------|        ^             ^            |_________|
-+    | | | | |    -------|        |             |
-+    | |_| |_|    | i2c0 <--------+-------------+
-+    |            -------|
-+    |   DC IN LS7A1000  |
-+    |  _   _     -------|
-+    | | | | |    | i2c1 <--------+-------------+
-+    | |_| |_|    -------|        |             |             _________
-+    |            -------|        |             |            |         |
-+    |  CRTC1 --> | DVO1 ----> Encoder1 ---> Connector1 ---> |  Panel  |
-+    |            -------|                                   |_________|
-+    |___________________|
-+
-+  Simple usage of LS7A1000 with LS3A4000 CPU:
-+
-+    +------+            +-----------------------------------+
-+    | DDR4 |            |  +-------------------+            |
-+    +------+            |  | PCIe Root complex |   LS7A1000 |
-+       || MC0           |  +--++---------++----+            |
-+  +----------+  HT 3.0  |     ||         ||                 |
-+  | LS3A4000 |<-------->| +---++---+  +--++--+    +---------+   +------+
-+  |   CPU    |<-------->| | GC1000 |  | LSDC |<-->| DDR3 MC |<->| VRAM |
-+  +----------+          | +--------+  +-+--+-+    +---------+   +------+
-+       || MC1           +---------------|--|----------------+
-+    +------+                            |  |
-+    | DDR4 |          +-------+   DVO0  |  |  DVO1   +------+
-+    +------+   VGA <--|ADV7125|<--------+  +-------->|TFP410|--> DVI/HDMI
-+                      +-------+                      +------+
-+
-+  The display controller in LS2K1000/LS2K0500:
-+     ___________________                                     _________
-+    |            -------|                                   |         |
-+    |  CRTC0 --> | DVO0 ----> Encoder0 ---> Connector0 ---> | Monotor |
-+    |  _   _     -------|        ^              ^           |_________|
-+    | | | | |           |        |              |
-+    | |_| |_|           |     +------+          |
-+    |                   <---->| i2c0 |<---------+
-+    |   DC IN LS2K1000  |     +------+
-+    |  _   _            |     +------+
-+    | | | | |           <---->| i2c1 |----------+
-+    | |_| |_|           |     +------+          |            _________
-+    |            -------|        |              |           |         |
-+    |  CRTC1 --> | DVO1 ----> Encoder1 ---> Connector1 ---> |  Panel  |
-+    |            -------|                                   |_________|
-+    |___________________|
-+
-+properties:
-+  compatible:
-+    enum:
-+      - loongson,ls7a2000-dc
-+      - loongson,ls7a1000-dc
-+      - loongson,ls2k1000-dc
-+      - loongson,ls2k0500-dc
-+
-+  reg:
-+    maxItems: 1
-+
-+  interrupts:
-+    minItems: 1
-+
-+required:
-+  - compatible
-+  - reg
-+  - interrupts
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    lsdc: dc@6,1 {
-+        compatible = "loongson,ls7a1000-dc";
-+        reg = <0x3100 0x0 0x0 0x0 0x0>;
-+        interrupts = <28 IRQ_TYPE_LEVEL_HIGH>;
-+        interrupt-parent = <&pic>;
-+    };
-+
-+...
-+
-diff --git a/Documentation/devicetree/bindings/display/loongson/loongson-drm.txt b/Documentation/devicetree/bindings/display/loongson/loongson-drm.txt
-new file mode 100644
-index 000000000000..46417e0e34ba
---- /dev/null
-+++ b/Documentation/devicetree/bindings/display/loongson/loongson-drm.txt
-@@ -0,0 +1,16 @@
-+Loongson display controller
-+===========================
-+
-+Required properties:
-+- compatible: Should be "loongson,display-subsystem" or "loongson,ls-fb"
-+- reg: should be register base and length
-+- interrupts: Should contain the cores interrupt line
-+
-+example:
-+
-+lsdc: dc@0x400c0000 {
-+	compatible = "loongson,display-subsystem", "loongson,ls-fb";
-+	reg = <0x400c0000 0x00010000>;
-+	interrupt-parent = <&icu>;
-+	interrupts = <36>;
-+};
-diff --git a/arch/mips/boot/dts/loongson/loongson64-2k1000.dtsi b/arch/mips/boot/dts/loongson/loongson64-2k1000.dtsi
-index 768cf2abcea3..47f6ff4c3e8a 100644
---- a/arch/mips/boot/dts/loongson/loongson64-2k1000.dtsi
-+++ b/arch/mips/boot/dts/loongson/loongson64-2k1000.dtsi
-@@ -209,6 +209,14 @@ gpu@5,0 {
- 				interrupt-parent = <&liointc0>;
- 			};
- 
-+			lsdc: dc@6,0 {
-+				compatible = "loongson,ls2k1000-dc";
-+
-+				reg = <0x3000 0x0 0x0 0x0 0x0>;
-+				interrupts = <28 IRQ_TYPE_LEVEL_LOW>;
-+				interrupt-parent = <&liointc0>;
-+			};
-+
- 			pci_bridge@9,0 {
- 				compatible = "pci0014,7a19.0",
- 						   "pci0014,7a19",
-diff --git a/arch/mips/boot/dts/loongson/ls7a-pch.dtsi b/arch/mips/boot/dts/loongson/ls7a-pch.dtsi
-index 2f45fce2cdc4..b34426142453 100644
---- a/arch/mips/boot/dts/loongson/ls7a-pch.dtsi
-+++ b/arch/mips/boot/dts/loongson/ls7a-pch.dtsi
-@@ -160,11 +160,8 @@ gpu@6,0 {
- 				interrupt-parent = <&pic>;
- 			};
- 
--			dc@6,1 {
--				compatible = "pci0014,7a06.0",
--						   "pci0014,7a06",
--						   "pciclass030000",
--						   "pciclass0300";
-+			lsdc: dc@6,1 {
-+				compatible = "loongson,ls7a1000-dc";
- 
- 				reg = <0x3100 0x0 0x0 0x0 0x0>;
- 				interrupts = <28 IRQ_TYPE_LEVEL_HIGH>;
--- 
-2.25.1
-
+	Sam

@@ -2,272 +2,149 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0E491C433F5
-	for <linux-mips@archiver.kernel.org>; Wed, 16 Feb 2022 03:26:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2F43BC433FE
+	for <linux-mips@archiver.kernel.org>; Wed, 16 Feb 2022 12:25:56 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240799AbiBPD0X (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 15 Feb 2022 22:26:23 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:34230 "EHLO
+        id S233143AbiBPM0H convert rfc822-to-8bit (ORCPT
+        <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 16 Feb 2022 07:26:07 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:48638 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229526AbiBPD0X (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Tue, 15 Feb 2022 22:26:23 -0500
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8CB9FEB0C
-        for <linux-mips@vger.kernel.org>; Tue, 15 Feb 2022 19:26:10 -0800 (PST)
-Received: by mail-wm1-x32b.google.com with SMTP id o34so415924wms.1
-        for <linux-mips@vger.kernel.org>; Tue, 15 Feb 2022 19:26:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=brainfault-org.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=jwhFIm2pjxqH4S1QMmhp69WD0Yx/q3G7DzS41sze+Fs=;
-        b=riYhJ/NFDeUTP+27duj6KaHVTshaiOQWoiNe0wD5HsocnEG4P2zjeu1WJJDyF+7tg8
-         HCeN+YgLtAuAqFdXC5u5r4J1kreE47Ve+t4e9Tzc3e/bR6dW6cfCEx+AULlAjs0UFA7b
-         5iYtqizK/2DbwQ3MdQzFC5ShahlfHXfxfbRTyv3sjEKEHhbO96isAQ/oJlBBafJ4RfO6
-         Ik2sa+YCrQVXyZRleWwPOmZS9xfiQMBjan/DE793V7AulbEAwpf909pO0yRuMLybh51Z
-         HNPSzg49iXmvLcs5NFrZBcGz1w3jwq6ATwFOagq0fPdiZtS5k3qPuXa39lc6+Ewfq3Uz
-         nhCA==
+        with ESMTP id S229643AbiBPM0F (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 16 Feb 2022 07:26:05 -0500
+Received: from mail-yb1-f173.google.com (mail-yb1-f173.google.com [209.85.219.173])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC0B027AA10;
+        Wed, 16 Feb 2022 04:25:53 -0800 (PST)
+Received: by mail-yb1-f173.google.com with SMTP id bt13so5538742ybb.2;
+        Wed, 16 Feb 2022 04:25:53 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=jwhFIm2pjxqH4S1QMmhp69WD0Yx/q3G7DzS41sze+Fs=;
-        b=YrtGjLncHIsyWFtZDyUtPybudXntIJNoPD+3KvP5K/VTcd/aJYui2EmZ0ek8dbn6XM
-         JT5NPbQsZEeCRzuaMmzMxy6qqc41+xmFyfibvtxVZTYxTWdnO5UBJV7svSUf2b+IXnSs
-         GvDdplHKGQAdA114H7gIYU8JslKpQjMc2bsyCOmbqh8nUEFlH7pXfsXStGTAfiQqSPpA
-         xAtU5D7ZAOTCFUE63qczQj/8R5Ut8GOlS9NxTHutCp7DPw/wluyQCtCk3WtOcULTEpec
-         dKeMP6KUe6lpbG6kb80s7S+24Kfr5NdNrofw/TtAR8ZPx9jpCOepVSOmPZ5Ky552lNMz
-         YeJg==
-X-Gm-Message-State: AOAM5319y6v6CgPoh7yt4P0FTch5n1cS4C70Uq0e+4dUMasfIYU6UPIW
-        9zfJJtQSrBD4i4PIHHh1sGxJVISTf4s4Nr9EUqAaQw==
-X-Google-Smtp-Source: ABdhPJyRrOhHG9NugLem/Yuo2TIr9R5jqud/r7I7SljQVLpVr4bWltjwldVI0/2cSoJTehq0BS93uj6Y8dpcZ9dYSY0=
-X-Received: by 2002:a7b:cf16:0:b0:37b:c4c9:96c6 with SMTP id
- l22-20020a7bcf16000000b0037bc4c996c6mr683144wmg.59.1644981969162; Tue, 15 Feb
- 2022 19:26:09 -0800 (PST)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=ZzgKkF+Qi9uD0PohBja9X66WgBtIRyDp12JGMxNBcpY=;
+        b=SmFG6cMNn2WzcalJa27s9eH1YqlUBva1gEkgs99/RkIpoUz6kxJSHUIqIP7IRJx6zM
+         2cEsy4f2xS3oirL8EQeh/CI1NAiwXnbQvdfzVfu02n721tJsL2/AuNc1vM7QZ9KWhAMM
+         WVoauxya1DfWyx/5DmjnV0NDxwqzmH2YKw2Yf+t6ZUXasSFFCXZg/7BG+1ZKrGzN0umZ
+         uZiKTrlruhxGMLpVdVQZOkREYLBpFIp/tUz71rL7dD2XPupu+bXIk//dgX5JMg6Q5/VF
+         nRn8ocKmLjm8+2xI1oA4PniZi16eW6h9mhgr9cdwwmrT84vYCT32ceA88etkK8vxNX1n
+         zXpw==
+X-Gm-Message-State: AOAM531dUfwXvaobtSMX/InoOCL/yhv4RMB/74kpsaF6OhowM7VW9glf
+        GHM3ooZHTWYtAdEvXiLHWpd23aAcTie6I4M2hkA=
+X-Google-Smtp-Source: ABdhPJzgB2WXDlMNWyEW279no9A0knLc+PLldmsjtAqBW5sJWGuZ+ouM0fPGPUzKV7R9c8p8BV9gaIDPnZPFqeD/pjM=
+X-Received: by 2002:a81:f008:0:b0:2d0:cd72:74e5 with SMTP id
+ p8-20020a81f008000000b002d0cd7274e5mr2135032ywm.301.1645014353165; Wed, 16
+ Feb 2022 04:25:53 -0800 (PST)
 MIME-Version: 1.0
-References: <20220216031528.92558-1-chao.gao@intel.com> <20220216031528.92558-3-chao.gao@intel.com>
-In-Reply-To: <20220216031528.92558-3-chao.gao@intel.com>
-From:   Anup Patel <anup@brainfault.org>
-Date:   Wed, 16 Feb 2022 08:55:55 +0530
-Message-ID: <CAAhSdy0PfCegu9vQY76pD-cLfP_S1xnyWARdinG4jbuJ_eVQkg@mail.gmail.com>
-Subject: Re: [PATCH v4 2/6] Partially revert "KVM: Pass kvm_init()'s opaque
- param to additional arch funcs"
-To:     Chao Gao <chao.gao@intel.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Marc Zyngier <maz@kernel.org>,
-        KVM General <kvm@vger.kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>, kevin.tian@intel.com,
-        Thomas Gleixner <tglx@linutronix.de>,
-        James Morse <james.morse@arm.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
+References: <20220130233718.21544-1-digetx@gmail.com> <635e8121-fca4-580c-6af5-d9317a2eee1b@gmail.com>
+In-Reply-To: <635e8121-fca4-580c-6af5-d9317a2eee1b@gmail.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Wed, 16 Feb 2022 13:25:39 +0100
+Message-ID: <CAJZ5v0g0MrBm2+GwctkB7kUyBEt6HTAexRCFFRmTF1UKDrVQ-g@mail.gmail.com>
+Subject: Re: [PATCH v6 00/21] Introduce power-off+restart call chain API
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-csky@vger.kernel.org, linux-ia64@vger.kernel.org,
+        linux-m68k@lists.linux-m68k.org,
+        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
+        linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org,
+        Linux-sh list <linux-sh@vger.kernel.org>,
+        xen-devel@lists.xenproject.org,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        linux-tegra <linux-tegra@vger.kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Russell King <linux@armlinux.org.uk>,
         Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
+        Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Greg Ungerer <gerg@linux-m68k.org>,
+        Joshua Thompson <funaho@jurai.org>,
         Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Sebastian Reichel <sre@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Greentime Hu <green.hu@gmail.com>,
+        Vincent Chen <deanbo422@gmail.com>,
+        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+        Helge Deller <deller@gmx.de>,
         Michael Ellerman <mpe@ellerman.id.au>,
         Benjamin Herrenschmidt <benh@kernel.crashing.org>,
         Paul Mackerras <paulus@samba.org>,
-        Atish Patra <atishp@atishpatra.org>,
         Paul Walmsley <paul.walmsley@sifive.com>,
         Palmer Dabbelt <palmer@dabbelt.com>,
         Albert Ou <aou@eecs.berkeley.edu>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Janosch Frank <frankja@linux.ibm.com>,
-        David Hildenbrand <david@redhat.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, Ingo Molnar <mingo@redhat.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
         "H. Peter Anvin" <hpa@zytor.com>,
-        "Maciej S. Szmigiero" <maciej.szmigiero@oracle.com>,
-        Bharata B Rao <bharata@linux.ibm.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        kvmarm@lists.cs.columbia.edu,
-        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
-        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        kvm-riscv@lists.infradead.org,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        linux-s390@vger.kernel.org
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Len Brown <lenb@kernel.org>,
+        Santosh Shilimkar <ssantosh@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>, Pavel Machek <pavel@ucw.cz>,
+        Lee Jones <lee.jones@linaro.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>, alankao@andestech.com,
+        "K . C . Kuen-Chern Lin" <kclin@andestech.com>,
+        =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Wed, Feb 16, 2022 at 8:46 AM Chao Gao <chao.gao@intel.com> wrote:
+On Tue, Feb 15, 2022 at 11:00 PM Dmitry Osipenko <digetx@gmail.com> wrote:
 >
-> This partially reverts commit b99040853738 ("KVM: Pass kvm_init()'s opaque
-> param to additional arch funcs") remove opaque from
-> kvm_arch_check_processor_compat because no one uses this opaque now.
-> Address conflicts for ARM (due to file movement) and manually handle RISC-V
-> which comes after the commit.
+> 31.01.2022 02:36, Dmitry Osipenko пишет:
+> > Problem
+> > -------
+> >
+> > SoC devices require power-off call chaining functionality from kernel.
+> > We have a widely used restart chaining provided by restart notifier API,
+> > but nothing for power-off.
+> >
+> > Solution
+> > --------
+> >
+> > Introduce new API that provides both restart and power-off call chains.
+> >
+> > Why combine restart with power-off? Because drivers often do both.
+> > More practical to have API that provides both under the same roof.
+> >
+> > The new API is designed with simplicity and extensibility in mind.
+> > It's built upon the existing restart and reboot APIs. The simplicity
+> > is in new helper functions that are convenient for drivers. The
+> > extensibility is in the design that doesn't hardcode callback
+> > arguments, making easy to add new parameters and remove old.
+> >
+> > This is a third attempt to introduce the new API. First was made by
+> > Guenter Roeck back in 2014, second was made by Thierry Reding in 2017.
+> > In fact the work didn't stop and recently arm_pm_restart() was removed
+> > from v5.14 kernel, which was a part of preparatory work started by
+> > Guenter Roeck. I took into account experience and ideas from the
+> > previous attempts, extended and polished them.
 >
-> And changes about kvm_arch_hardware_setup() in original commit are still
-> needed so they are not reverted.
 >
-> Signed-off-by: Chao Gao <chao.gao@intel.com>
-> Reviewed-by: Sean Christopherson <seanjc@google.com>
+> Rafael and all, do you see anything critical that needs to be improved
+> in this v6?
+>
+> Will be great if you could take this patchset via the power tree if it
+> looks okay, or give an ack.
 
-For KVM RISC-V:
-Acked-by: Anup Patel <anup@brainfault.org>
+I need some more time for this, sorry.
 
-Regards,
-Anup
+I'm a bit concerned about seeing no response to this set from anyone.
 
-
-> ---
->  arch/arm64/kvm/arm.c       |  2 +-
->  arch/mips/kvm/mips.c       |  2 +-
->  arch/powerpc/kvm/powerpc.c |  2 +-
->  arch/riscv/kvm/main.c      |  2 +-
->  arch/s390/kvm/kvm-s390.c   |  2 +-
->  arch/x86/kvm/x86.c         |  2 +-
->  include/linux/kvm_host.h   |  2 +-
->  virt/kvm/kvm_main.c        | 16 +++-------------
->  8 files changed, 10 insertions(+), 20 deletions(-)
->
-> diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
-> index ecc5958e27fe..0165cf3aac3a 100644
-> --- a/arch/arm64/kvm/arm.c
-> +++ b/arch/arm64/kvm/arm.c
-> @@ -73,7 +73,7 @@ int kvm_arch_hardware_setup(void *opaque)
->         return 0;
->  }
->
-> -int kvm_arch_check_processor_compat(void *opaque)
-> +int kvm_arch_check_processor_compat(void)
->  {
->         return 0;
->  }
-> diff --git a/arch/mips/kvm/mips.c b/arch/mips/kvm/mips.c
-> index a25e0b73ee70..092d09fb6a7e 100644
-> --- a/arch/mips/kvm/mips.c
-> +++ b/arch/mips/kvm/mips.c
-> @@ -140,7 +140,7 @@ int kvm_arch_hardware_setup(void *opaque)
->         return 0;
->  }
->
-> -int kvm_arch_check_processor_compat(void *opaque)
-> +int kvm_arch_check_processor_compat(void)
->  {
->         return 0;
->  }
-> diff --git a/arch/powerpc/kvm/powerpc.c b/arch/powerpc/kvm/powerpc.c
-> index 2ad0ccd202d5..30c817f3fa0c 100644
-> --- a/arch/powerpc/kvm/powerpc.c
-> +++ b/arch/powerpc/kvm/powerpc.c
-> @@ -423,7 +423,7 @@ int kvm_arch_hardware_setup(void *opaque)
->         return 0;
->  }
->
-> -int kvm_arch_check_processor_compat(void *opaque)
-> +int kvm_arch_check_processor_compat(void)
->  {
->         return kvmppc_core_check_processor_compat();
->  }
-> diff --git a/arch/riscv/kvm/main.c b/arch/riscv/kvm/main.c
-> index 2e5ca43c8c49..992877e78393 100644
-> --- a/arch/riscv/kvm/main.c
-> +++ b/arch/riscv/kvm/main.c
-> @@ -20,7 +20,7 @@ long kvm_arch_dev_ioctl(struct file *filp,
->         return -EINVAL;
->  }
->
-> -int kvm_arch_check_processor_compat(void *opaque)
-> +int kvm_arch_check_processor_compat(void)
->  {
->         return 0;
->  }
-> diff --git a/arch/s390/kvm/kvm-s390.c b/arch/s390/kvm/kvm-s390.c
-> index 577f1ead6a51..0053b81c6b02 100644
-> --- a/arch/s390/kvm/kvm-s390.c
-> +++ b/arch/s390/kvm/kvm-s390.c
-> @@ -252,7 +252,7 @@ int kvm_arch_hardware_enable(void)
->         return 0;
->  }
->
-> -int kvm_arch_check_processor_compat(void *opaque)
-> +int kvm_arch_check_processor_compat(void)
->  {
->         return 0;
->  }
-> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> index 9b484ed61f37..ffb88f0b7265 100644
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -11509,7 +11509,7 @@ void kvm_arch_hardware_unsetup(void)
->         static_call(kvm_x86_hardware_unsetup)();
->  }
->
-> -int kvm_arch_check_processor_compat(void *opaque)
-> +int kvm_arch_check_processor_compat(void)
->  {
->         struct cpuinfo_x86 *c = &cpu_data(smp_processor_id());
->
-> diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
-> index f11039944c08..2ad78e729bf7 100644
-> --- a/include/linux/kvm_host.h
-> +++ b/include/linux/kvm_host.h
-> @@ -1413,7 +1413,7 @@ int kvm_arch_hardware_enable(void);
->  void kvm_arch_hardware_disable(void);
->  int kvm_arch_hardware_setup(void *opaque);
->  void kvm_arch_hardware_unsetup(void);
-> -int kvm_arch_check_processor_compat(void *opaque);
-> +int kvm_arch_check_processor_compat(void);
->  int kvm_arch_vcpu_runnable(struct kvm_vcpu *vcpu);
->  bool kvm_arch_vcpu_in_kernel(struct kvm_vcpu *vcpu);
->  int kvm_arch_vcpu_should_kick(struct kvm_vcpu *vcpu);
-> diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
-> index 83c57bcc6eb6..ee47d33d69e1 100644
-> --- a/virt/kvm/kvm_main.c
-> +++ b/virt/kvm/kvm_main.c
-> @@ -5643,22 +5643,14 @@ void kvm_unregister_perf_callbacks(void)
->  }
->  #endif
->
-> -struct kvm_cpu_compat_check {
-> -       void *opaque;
-> -       int *ret;
-> -};
-> -
-> -static void check_processor_compat(void *data)
-> +static void check_processor_compat(void *rtn)
->  {
-> -       struct kvm_cpu_compat_check *c = data;
-> -
-> -       *c->ret = kvm_arch_check_processor_compat(c->opaque);
-> +       *(int *)rtn = kvm_arch_check_processor_compat();
->  }
->
->  int kvm_init(void *opaque, unsigned vcpu_size, unsigned vcpu_align,
->                   struct module *module)
->  {
-> -       struct kvm_cpu_compat_check c;
->         int r;
->         int cpu;
->
-> @@ -5686,10 +5678,8 @@ int kvm_init(void *opaque, unsigned vcpu_size, unsigned vcpu_align,
->         if (r < 0)
->                 goto out_free_1;
->
-> -       c.ret = &r;
-> -       c.opaque = opaque;
->         for_each_online_cpu(cpu) {
-> -               smp_call_function_single(cpu, check_processor_compat, &c, 1);
-> +               smp_call_function_single(cpu, check_processor_compat, &r, 1);
->                 if (r < 0)
->                         goto out_free_2;
->         }
-> --
-> 2.25.1
->
+It looks like multiple platforms may be affected by it in principle,
+so doesn't anyone care?

@@ -2,28 +2,28 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 07119C35271
-	for <linux-mips@archiver.kernel.org>; Thu, 17 Feb 2022 10:55:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6EBB1C433EF
+	for <linux-mips@archiver.kernel.org>; Thu, 17 Feb 2022 10:55:43 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239415AbiBQKz4 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 17 Feb 2022 05:55:56 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:53462 "EHLO
+        id S239410AbiBQKzz (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 17 Feb 2022 05:55:55 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:53430 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239400AbiBQKzy (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Thu, 17 Feb 2022 05:55:54 -0500
+        with ESMTP id S239436AbiBQKzu (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Thu, 17 Feb 2022 05:55:50 -0500
 Received: from 189.cn (ptr.189.cn [183.61.185.101])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 59A9829413B;
-        Thu, 17 Feb 2022 02:55:40 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id B58D02944C1;
+        Thu, 17 Feb 2022 02:55:36 -0800 (PST)
 HMM_SOURCE_IP: 10.64.8.41:52562.1081528680
 HMM_ATTACHE_NUM: 0000
 HMM_SOURCE_TYPE: SMTP
 Received: from clientip-114.242.206.180 (unknown [10.64.8.41])
-        by 189.cn (HERMES) with SMTP id 729C41002A9;
-        Thu, 17 Feb 2022 18:55:37 +0800 (CST)
+        by 189.cn (HERMES) with SMTP id 1449C100289;
+        Thu, 17 Feb 2022 18:55:34 +0800 (CST)
 Received: from  ([172.27.8.53])
-        by gateway-151646-dep-b7fbf7d79-9vctg with ESMTP id a4f84a6d94a54af4a489644581b888fb for mripard@kernel.org;
-        Thu, 17 Feb 2022 18:55:39 CST
-X-Transaction-ID: a4f84a6d94a54af4a489644581b888fb
+        by gateway-151646-dep-b7fbf7d79-9vctg with ESMTP id 8a8205e1d4004262afb58ac25c14a5f1 for mripard@kernel.org;
+        Thu, 17 Feb 2022 18:55:36 CST
+X-Transaction-ID: 8a8205e1d4004262afb58ac25c14a5f1
 X-Real-From: 15330273260@189.cn
 X-Receive-IP: 172.27.8.53
 X-MEDUSA-Status: 0
@@ -51,9 +51,9 @@ To:     Maxime Ripard <mripard@kernel.org>,
         suijingfeng <suijingfeng@loongson.cn>
 Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
         devicetree@vger.kernel.org, dri-devel@lists.freedesktop.org
-Subject: [PATCH v9 4/4] MAINTAINERS: add maintainers for DRM LSDC driver
-Date:   Thu, 17 Feb 2022 18:55:23 +0800
-Message-Id: <20220217105523.1525122-5-15330273260@189.cn>
+Subject: [PATCH v9 2/4] MIPS: Loongson64: dts: update the display controller device node
+Date:   Thu, 17 Feb 2022 18:55:21 +0800
+Message-Id: <20220217105523.1525122-3-15330273260@189.cn>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20220217105523.1525122-1-15330273260@189.cn>
 References: <20220217105523.1525122-1-15330273260@189.cn>
@@ -65,34 +65,58 @@ X-Mailing-List: linux-mips@vger.kernel.org
 
 From: suijingfeng <suijingfeng@loongson.cn>
 
-v2: Fix warnnings reported by checkpatch script
+The display controller is a pci device, its PCI vendor id is 0x0014
+its PCI device id is 0x7a06.
+
+1) In order to let the driver to know chip which the DC is contained in,
+   the compatible string is updated according to the chip's name.
+
+2) Add display controller device node for ls2k1000 SoC
 
 Signed-off-by: suijingfeng <suijingfeng@loongson.cn>
 Signed-off-by: Sui Jingfeng <15330273260@189.cn>
 ---
- MAINTAINERS | 9 +++++++++
- 1 file changed, 9 insertions(+)
+ arch/mips/boot/dts/loongson/loongson64-2k1000.dtsi | 8 ++++++++
+ arch/mips/boot/dts/loongson/ls7a-pch.dtsi          | 7 ++-----
+ 2 files changed, 10 insertions(+), 5 deletions(-)
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index ea3e6c914384..abf7a2d6c94d 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -6453,6 +6453,15 @@ T:	git git://anongit.freedesktop.org/drm/drm-misc
- F:	drivers/gpu/drm/lima/
- F:	include/uapi/drm/lima_drm.h
+diff --git a/arch/mips/boot/dts/loongson/loongson64-2k1000.dtsi b/arch/mips/boot/dts/loongson/loongson64-2k1000.dtsi
+index 768cf2abcea3..af9cda540f9e 100644
+--- a/arch/mips/boot/dts/loongson/loongson64-2k1000.dtsi
++++ b/arch/mips/boot/dts/loongson/loongson64-2k1000.dtsi
+@@ -209,6 +209,14 @@ gpu@5,0 {
+ 				interrupt-parent = <&liointc0>;
+ 			};
  
-+DRM DRIVERS FOR LOONGSON
-+M:	Sui Jingfeng <suijingfeng@loongson.cn>
-+L:	dri-devel@lists.freedesktop.org
-+S:	Maintained
-+W:	https://www.loongson.cn/
-+T:	git git://anongit.freedesktop.org/drm/drm-misc
-+F:	Documentation/devicetree/bindings/display/loongson/
-+F:	drivers/gpu/drm/lsdc/
++			lsdc: display-controller@6,0 {
++				compatible = "loongson,ls2k1000-dc";
 +
- DRM DRIVERS FOR MEDIATEK
- M:	Chun-Kuang Hu <chunkuang.hu@kernel.org>
- M:	Philipp Zabel <p.zabel@pengutronix.de>
++				reg = <0x3000 0x0 0x0 0x0 0x0>;
++				interrupts = <28 IRQ_TYPE_LEVEL_LOW>;
++				interrupt-parent = <&liointc0>;
++			};
++
+ 			pci_bridge@9,0 {
+ 				compatible = "pci0014,7a19.0",
+ 						   "pci0014,7a19",
+diff --git a/arch/mips/boot/dts/loongson/ls7a-pch.dtsi b/arch/mips/boot/dts/loongson/ls7a-pch.dtsi
+index 2f45fce2cdc4..ec35ea9b2fe8 100644
+--- a/arch/mips/boot/dts/loongson/ls7a-pch.dtsi
++++ b/arch/mips/boot/dts/loongson/ls7a-pch.dtsi
+@@ -160,11 +160,8 @@ gpu@6,0 {
+ 				interrupt-parent = <&pic>;
+ 			};
+ 
+-			dc@6,1 {
+-				compatible = "pci0014,7a06.0",
+-						   "pci0014,7a06",
+-						   "pciclass030000",
+-						   "pciclass0300";
++			lsdc: display-controller@6,1 {
++				compatible = "loongson,ls7a1000-dc";
+ 
+ 				reg = <0x3100 0x0 0x0 0x0 0x0>;
+ 				interrupts = <28 IRQ_TYPE_LEVEL_HIGH>;
 -- 
 2.25.1
 

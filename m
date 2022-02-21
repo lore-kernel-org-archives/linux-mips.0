@@ -2,120 +2,119 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6D95BC433F5
-	for <linux-mips@archiver.kernel.org>; Mon, 21 Feb 2022 14:55:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9E98DC433EF
+	for <linux-mips@archiver.kernel.org>; Mon, 21 Feb 2022 15:08:01 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378569AbiBUO4S (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 21 Feb 2022 09:56:18 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:47274 "EHLO
+        id S1378851AbiBUPIX (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 21 Feb 2022 10:08:23 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:49460 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378564AbiBUO4R (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Mon, 21 Feb 2022 09:56:17 -0500
-Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com [66.111.4.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25A8517AAD;
-        Mon, 21 Feb 2022 06:55:54 -0800 (PST)
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
-        by mailout.nyi.internal (Postfix) with ESMTP id 6CA415C01D2;
-        Mon, 21 Feb 2022 09:55:53 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute2.internal (MEProxy); Mon, 21 Feb 2022 09:55:53 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=flygoat.com; h=
-        cc:cc:content-transfer-encoding:date:date:from:from:in-reply-to
-        :in-reply-to:message-id:mime-version:references:reply-to:sender
-        :subject:subject:to:to; s=fm1; bh=W33SNp0pR4K0oD6ddMKKEdiqs40zlf
-        kBnS8Whij6EHQ=; b=STDBM/4rJQczYtG1aRaRKTVE1Y71ArnL/zaUAKliicNNPz
-        Uaat6kUFekckbBN+po74oIfigvIBiqH2rNBNkg7qq2i4ogbUaII0Q56hrVYp5Soa
-        Cx8e3fAIpGzlo8UKmYgoX3qVdgxHkaYguLS76d2mnInD9Vv/hwVrbFR+1IXFjWdz
-        HZ7lGP5xBbThgXMXMQc4dZvX32D/UZcpeO3YPmN4hWSBjrPFwtnY1GxxDVdPSFEF
-        C6MDVWeAhcK41jZ2NG6OohmaR39lqfB60cilicD+4GI1zlvFaMu2Ef73SNW4jqip
-        jYJ9jamzw3B/crI3+W2beF3ndbJ6Qd2RizXQazCg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-transfer-encoding:date:date
-        :from:from:in-reply-to:in-reply-to:message-id:mime-version
-        :references:reply-to:sender:subject:subject:to:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=W33SNp
-        0pR4K0oD6ddMKKEdiqs40zlfkBnS8Whij6EHQ=; b=Nh573dM6Tpq4drfLuT0j7Y
-        1f1Pp1wR2vDj829htrMOSI0m3RB4WZF8ptKiKpDKY+Gt+vSkLDNOfsaAEdeSMjQI
-        KGUuDoaBcqzUdP/N1rlajXlg+jrOGB+h86+NY8SpdhvNqMeJBhiw+iCbj/YKEv7b
-        e9qzjAKCB+XKSZT2pppjFs+uvoLjKJSUWoZN4CbCTNuOLcnR/F0gA/O7DwpKR2MP
-        FhlVRclO7iZoKfZFnn2Vun2J2Qa85X6zPnDwTpXutoRMIkKWxQP/v7OpBmWHwhBu
-        NewrrPaQZ7wTnmFZu3QjFMpb6PSa3Ef9psCs5y+k8dadGxLzbfVTQihdtnmksuzA
-        ==
-X-ME-Sender: <xms:-acTYq2Tfh73qXXZE6HroOelZqT5Wgsa3eoYkuRETBJ6aQglhyP_oA>
-    <xme:-acTYtFqBCaa5xcUOD8PEgm9FB-rQ_Lc1dbkMt_DDY-a64UTKBdaUWyEP9kfEd6FW
-    UOEdHjdiJQiM-PDbco>
-X-ME-Received: <xmr:-acTYi6Z5dUhDT7yRWWQvBpA0wbPJejYPcZbKRxlBXUg1msNHH_6CSk>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvvddrkeeigdeilecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecunecujfgurhephffvufffkffojghfggfgsedtkeertd
-    ertddtnecuhfhrohhmpeflihgrgihunhcujggrnhhguceojhhirgiguhhnrdihrghnghes
-    fhhlhihgohgrthdrtghomheqnecuggftrfgrthhtvghrnhepjeeihffgteelkeelffduke
-    dtheevudejvdegkeekjeefhffhhfetudetgfdtffeunecuvehluhhsthgvrhfuihiivgep
-    tdenucfrrghrrghmpehmrghilhhfrhhomhepjhhirgiguhhnrdihrghnghesfhhlhihgoh
-    grthdrtghomh
-X-ME-Proxy: <xmx:-acTYr34rLlbQ375NnhAzh1OA9-sjhdH86DH96S4B8kX5VZHVdYAeQ>
-    <xmx:-acTYtF6n-ZX3VEGH47RQO4TTD8W6uJKIKLY6iPyGOq4UGwQgWdTUQ>
-    <xmx:-acTYk-t0XHDiC9eBIM-YZ--xw0luCENs33KanXhHpu3YKnmMaZXow>
-    <xmx:-acTYhgheucNTnp8ofz4TwzlzGiKp1X7JFa97lB6vO7mp4NT34v0nw>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 21 Feb 2022 09:55:52 -0500 (EST)
-From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
-To:     linux-mips@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, chenhuacai@kernel.org,
-        tsbogend@alpha.franken.de, macro@orcam.me.uk,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>
-Subject: [RFC PATCH 3/3] MIPS: io.h: Remove barriers before MMIO accessors for CPU without WB
-Date:   Mon, 21 Feb 2022 14:55:31 +0000
-Message-Id: <20220221145531.10479-4-jiaxun.yang@flygoat.com>
-X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20220221145531.10479-1-jiaxun.yang@flygoat.com>
-References: <20220221145531.10479-1-jiaxun.yang@flygoat.com>
+        with ESMTP id S1378841AbiBUPIU (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Mon, 21 Feb 2022 10:08:20 -0500
+Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 3813E1A390;
+        Mon, 21 Feb 2022 07:07:52 -0800 (PST)
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1nMAI2-0001zd-01; Mon, 21 Feb 2022 16:07:50 +0100
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id F02CFC25EA; Mon, 21 Feb 2022 15:42:02 +0100 (CET)
+Date:   Mon, 21 Feb 2022 15:42:02 +0100
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Greg Ungerer <gerg@linux-m68k.org>,
+        Joshua Thompson <funaho@jurai.org>,
+        Sebastian Reichel <sre@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Greentime Hu <green.hu@gmail.com>,
+        Vincent Chen <deanbo422@gmail.com>,
+        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Len Brown <lenb@kernel.org>,
+        Santosh Shilimkar <ssantosh@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>, Pavel Machek <pavel@ucw.cz>,
+        Lee Jones <lee.jones@linaro.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>, alankao@andestech.com,
+        "K . C . Kuen-Chern Lin" <kclin@andestech.com>,
+        =?utf-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
+        linux-kernel@vger.kernel.org, linux-csky@vger.kernel.org,
+        linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linux-riscv@lists.infradead.org, linux-sh@vger.kernel.org,
+        xen-devel@lists.xenproject.org, linux-acpi@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-tegra@vger.kernel.org
+Subject: Re: [PATCH v6 16/21] mips: Use do_kernel_power_off()
+Message-ID: <20220221144202.GA17239@alpha.franken.de>
+References: <20220130233718.21544-1-digetx@gmail.com>
+ <20220130233718.21544-17-digetx@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220130233718.21544-17-digetx@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Commit 3d474da ("MIPS: Enforce strong ordering for MMIO accessors")
-intruduced this barrier to ensure the correctness of IO access ordering
-with following reasons:
-1. DECstation systems with hardware write barrier can reorder IO writes.
-2. Cavium and Loongson have errata which reorders MMIO.
-3. MIPS Spec didn't enforce ordering of MMIO access.
+On Mon, Jan 31, 2022 at 02:37:13AM +0300, Dmitry Osipenko wrote:
+> Kernel now supports chained power-off handlers. Use do_kernel_power_off()
+> that invokes chained power-off handlers. It also invokes legacy
+> pm_power_off() for now, which will be removed once all drivers will
+> be converted to the new power-off API.
+> 
+> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> ---
+>  arch/mips/kernel/reset.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+> 
+> diff --git a/arch/mips/kernel/reset.c b/arch/mips/kernel/reset.c
+> index 6288780b779e..e7ce07b3e79b 100644
+> --- a/arch/mips/kernel/reset.c
+> +++ b/arch/mips/kernel/reset.c
+> @@ -114,8 +114,7 @@ void machine_halt(void)
+>  
+>  void machine_power_off(void)
+>  {
+> -	if (pm_power_off)
+> -		pm_power_off();
+> +	do_kernel_power_off();
+>  
+>  #ifdef CONFIG_SMP
+>  	preempt_disable();
+> -- 
+> 2.34.1
 
-For reason 1, the concern is still valid, so the barrier is kept when
-CONFIG_CPU_HAS_WB. For reason 2, we had confirmed that Loongson doesn't
-have such errata, Cavium's issue is workarounded by war_io_reorder_wmb.
-For reason 3, I had got confirmation from CIP United that all cores
-by MTI (MIPS Techonologies) won't do this. Given that other platform had
-live without these barriers for a long peroid, removing this barrier
-is unlikely to bring any problem.
+Ackey-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 
-SYNC based barrier is very heavy on Loongson and MTI cores as it will
-issue a SYNC command on their bus and invalidate all present instrutions
-in pipeline. We should generally avoid that.
-
-Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
----
- arch/mips/include/asm/io.h | 4 ++++
- 1 file changed, 4 insertions(+)
-
-diff --git a/arch/mips/include/asm/io.h b/arch/mips/include/asm/io.h
-index 8a148277d9e6..faa38049412f 100644
---- a/arch/mips/include/asm/io.h
-+++ b/arch/mips/include/asm/io.h
-@@ -225,7 +225,11 @@ void iounmap(const volatile void __iomem *addr);
- #define war_io_reorder_wmb()		barrier()
- #endif
- 
-+#if defined(CONFIG_CPU_HAS_WB)
- #define __io_br()      mb()
-+#else
-+#define __io_br()      barrier()
-+#endif
- 
- /* prevent prefetching of coherent DMA data ahead of a dma-complete */
- #define __io_ar(v)     rmb()
 -- 
-2.35.1
-
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]

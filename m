@@ -2,60 +2,111 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9743CC433EF
-	for <linux-mips@archiver.kernel.org>; Mon, 21 Feb 2022 11:16:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AEF2CC433EF
+	for <linux-mips@archiver.kernel.org>; Mon, 21 Feb 2022 13:25:48 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355447AbiBULRB (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 21 Feb 2022 06:17:01 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:41356 "EHLO
+        id S1359053AbiBUN0K (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 21 Feb 2022 08:26:10 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:34252 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1355419AbiBULPX (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Mon, 21 Feb 2022 06:15:23 -0500
-X-Greylist: delayed 3173 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 21 Feb 2022 02:54:12 PST
+        with ESMTP id S1359028AbiBUN0J (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Mon, 21 Feb 2022 08:26:09 -0500
 Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 96805F38;
-        Mon, 21 Feb 2022 02:54:12 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 0CE4F21E21;
+        Mon, 21 Feb 2022 05:25:44 -0800 (PST)
 Received: from uucp (helo=alpha)
         by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1nM5V6-0006mq-00; Mon, 21 Feb 2022 11:01:00 +0100
+        id 1nM8h9-0001Eo-00; Mon, 21 Feb 2022 14:25:39 +0100
 Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 2EAEEC254E; Mon, 21 Feb 2022 10:55:16 +0100 (CET)
-Date:   Mon, 21 Feb 2022 10:55:16 +0100
+        id E4525C25DD; Mon, 21 Feb 2022 14:24:56 +0100 (CET)
+Date:   Mon, 21 Feb 2022 14:24:56 +0100
 From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Anshuman Khandual <anshuman.khandual@arm.com>
-Cc:     linux-mm@kvack.org, akpm@linux-foundation.org,
-        linux-kernel@vger.kernel.org,
-        Christoph Hellwig <hch@infradead.org>,
-        linux-arch@vger.kernel.org, linux-mips@vger.kernel.org
-Subject: Re: [PATCH V2 07/30] mips/mm: Enable ARCH_HAS_VM_GET_PAGE_PROT
-Message-ID: <20220221095516.GA6314@alpha.franken.de>
-References: <1645425519-9034-1-git-send-email-anshuman.khandual@arm.com>
- <1645425519-9034-8-git-send-email-anshuman.khandual@arm.com>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Christoph Hellwig <hch@lst.de>, linux-arch@vger.kernel.org,
+        linux-mm@kvack.org, linux-api@vger.kernel.org, arnd@arndb.de,
+        linux-kernel@vger.kernel.org, viro@zeniv.linux.org.uk,
+        linux@armlinux.org.uk, will@kernel.org, guoren@kernel.org,
+        bcain@codeaurora.org, geert@linux-m68k.org, monstr@monstr.eu,
+        nickhu@andestech.com, green.hu@gmail.com, dinguyen@kernel.org,
+        shorne@gmail.com, deller@gmx.de, mpe@ellerman.id.au,
+        peterz@infradead.org, mingo@redhat.com, mark.rutland@arm.com,
+        hca@linux.ibm.com, dalias@libc.org, davem@davemloft.net,
+        richard@nod.at, x86@kernel.org, jcmvbkbc@gmail.com,
+        ebiederm@xmission.com, akpm@linux-foundation.org, ardb@kernel.org,
+        linux-alpha@vger.kernel.org, linux-snps-arc@lists.infradead.org,
+        linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
+        linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+        linux-mips@vger.kernel.org, openrisc@lists.librecores.org,
+        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
+        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
+        linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org
+Subject: Re: [PATCH v2 09/18] mips: use simpler access_ok()
+Message-ID: <20220221132456.GA7139@alpha.franken.de>
+References: <20220216131332.1489939-1-arnd@kernel.org>
+ <20220216131332.1489939-10-arnd@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1645425519-9034-8-git-send-email-anshuman.khandual@arm.com>
+In-Reply-To: <20220216131332.1489939-10-arnd@kernel.org>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Mon, Feb 21, 2022 at 12:08:16PM +0530, Anshuman Khandual wrote:
-> This defines and exports a platform specific custom vm_get_page_prot() via
-> subscribing ARCH_HAS_VM_GET_PAGE_PROT. Subsequently all __SXXX and __PXXX
-> macros can be dropped which are no longer needed.
+On Wed, Feb 16, 2022 at 02:13:23PM +0100, Arnd Bergmann wrote:
 > 
-> Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-> Cc: linux-mips@vger.kernel.org
-> Cc: linux-kernel@vger.kernel.org
-> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
-> ---
->  arch/mips/Kconfig               |  1 +
->  arch/mips/include/asm/pgtable.h | 22 ------------
->  arch/mips/mm/cache.c            | 60 +++++++++++++++++++--------------
->  3 files changed, 36 insertions(+), 47 deletions(-)
+> diff --git a/arch/mips/include/asm/uaccess.h b/arch/mips/include/asm/uaccess.h
+> index db9a8e002b62..d7c89dc3426c 100644
+> --- a/arch/mips/include/asm/uaccess.h
+> +++ b/arch/mips/include/asm/uaccess.h
+> @@ -19,6 +19,7 @@
+>  #ifdef CONFIG_32BIT
+>  
+>  #define __UA_LIMIT 0x80000000UL
+> +#define TASK_SIZE_MAX	__UA_LIMIT
+>  
+>  #define __UA_ADDR	".word"
+>  #define __UA_LA		"la"
+> @@ -33,6 +34,7 @@
+>  extern u64 __ua_limit;
+>  
+>  #define __UA_LIMIT	__ua_limit
+> +#define TASK_SIZE_MAX	XKSSEG
 
-Acked-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+this doesn't work. For every access above maximum implemented virtual address
+space of the CPU an address error will be issued, but not a TLB miss.
+And address error isn't able to handle this situation.
+
+With this patch
+
+diff --git a/arch/mips/kernel/unaligned.c b/arch/mips/kernel/unaligned.c
+index df4b708c04a9..3911f1481f3d 100644
+--- a/arch/mips/kernel/unaligned.c
++++ b/arch/mips/kernel/unaligned.c
+@@ -1480,6 +1480,13 @@ asmlinkage void do_ade(struct pt_regs *regs)
+ 	prev_state = exception_enter();
+ 	perf_sw_event(PERF_COUNT_SW_ALIGNMENT_FAULTS,
+ 			1, regs, regs->cp0_badvaddr);
++
++	/* Are we prepared to handle this kernel fault?	 */
++	if (fixup_exception(regs)) {
++		current->thread.cp0_baduaddr = regs->cp0_badvaddr;
++		return;
++	}
++
+ 	/*
+ 	 * Did we catch a fault trying to load an instruction?
+ 	 */
+
+I at least get my simple test cases fixed, but I'm not sure this is
+correct.
+
+Is there a reason to not also #define TASK_SIZE_MAX   __UA_LIMIT like
+for the 32bit case ?
+
+Thomas.
 
 -- 
 Crap can work. Given enough thrust pigs will fly, but it's not necessarily a

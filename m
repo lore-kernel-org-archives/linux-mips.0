@@ -2,164 +2,120 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 121BAC43217
-	for <linux-mips@archiver.kernel.org>; Mon, 21 Feb 2022 14:32:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B0411C433EF
+	for <linux-mips@archiver.kernel.org>; Mon, 21 Feb 2022 14:55:54 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377936AbiBUOc0 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 21 Feb 2022 09:32:26 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:40932 "EHLO
+        id S1378500AbiBUO4P (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 21 Feb 2022 09:56:15 -0500
+Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:47254 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377965AbiBUOcJ (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Mon, 21 Feb 2022 09:32:09 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57FED1FA56;
-        Mon, 21 Feb 2022 06:31:42 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 08BA86101C;
-        Mon, 21 Feb 2022 14:31:42 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6C5AAC340FA;
-        Mon, 21 Feb 2022 14:31:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1645453901;
-        bh=12Bbx9GqAhHL6qqDyToeCYzPAWe2m8+m6+gTGV+hFTw=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=dWMiI8z7xtZHkIlGi7baHffVMjwIn0mdLtr8w3vUAA5dDZqhK8ZI+KhxrCTrxvery
-         mRfleZO0SSscQ7KVHRUh2QGlGW5v/gw6LGH9t2vGIJ9GkNRHieJ694s+DQVSh8xG3o
-         1QAKmXJLcJTGwkGYaV1wYGfF51PnInRtSU+fVsx8t4J76oPDgdmMoUbmKLWffZoAAd
-         kmIbWlsuSubrQtmT6agHzwSbb3tqK56Q4BV05Zptd15vS9GZroHUtkz4s+wh3Rty9l
-         7L/rHU3TLbzMVdK84DCafmUJBj3eUYCSTyyb3m9KPwB8ieX+FNQVnZHH0l+/WrTztv
-         U44sZb72pp5dg==
-Received: by mail-wr1-f46.google.com with SMTP id j22so1339154wrb.13;
-        Mon, 21 Feb 2022 06:31:41 -0800 (PST)
-X-Gm-Message-State: AOAM533a2H7ocTlopcm5BzOdjzFDcxstj3/3xk8HgvFTcDOeJ5DLWrNF
-        iLhhNNxBfaVJ3UGE/9RELQXDvR1fj7bALeC5esQ=
-X-Google-Smtp-Source: ABdhPJwkamQNFHYmlXBqgC6u1r1MKNMeB6x6hm57ILAz8yVFLOW/Qf4lv8t2aLUhrb2kSK2FAx/PKmoUpYjfFDbRcw0=
-X-Received: by 2002:adf:90c1:0:b0:1e4:ad27:22b9 with SMTP id
- i59-20020adf90c1000000b001e4ad2722b9mr16170850wri.219.1645453899581; Mon, 21
- Feb 2022 06:31:39 -0800 (PST)
+        with ESMTP id S1378499AbiBUO4P (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Mon, 21 Feb 2022 09:56:15 -0500
+Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com [66.111.4.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E15217AAD;
+        Mon, 21 Feb 2022 06:55:51 -0800 (PST)
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailout.nyi.internal (Postfix) with ESMTP id 92E875C0211;
+        Mon, 21 Feb 2022 09:55:50 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute3.internal (MEProxy); Mon, 21 Feb 2022 09:55:50 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=flygoat.com; h=
+        cc:cc:content-transfer-encoding:date:date:from:from:in-reply-to
+        :in-reply-to:message-id:mime-version:references:reply-to:sender
+        :subject:subject:to:to; s=fm1; bh=CGhvsw+LhTgD6aZuUFtqqU1Kc3kIvE
+        iqCXe0yRe6810=; b=e4gBrijTOZhpcNy+jnhFPC0M3cR5xv/xVK+BSjrnefBwqq
+        SFusBz1p7/d22M8zErvkzVUZuhZL/Kn4aVsObOPAckG9arsvxG9OH9fxJkDGJ/mh
+        Aae4VRiKLfJgF7GgqDbFtk6CiHUCUnLx3wwquqWWUgl77vxYj1b8TncUXHXPLXEe
+        twShpKTlddijxWNBNPlRiBo3sU76wKQIrUh3WombyMvL1YnrmtQ7bgAldd5dH/Mt
+        GuIjzBIDrHX9GFjvGXwnt9VIU7vn9aBBh1rXvXUxs5dLEmTeHqwN76fiDiq7KQ+c
+        fALbazbPEhzJ229TsG19hQ14L9ekm2CX/ThSwwCg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-transfer-encoding:date:date
+        :from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:sender:subject:subject:to:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=CGhvsw
+        +LhTgD6aZuUFtqqU1Kc3kIvEiqCXe0yRe6810=; b=C1toCK7qAAJFyiRrFibt9+
+        57z9FhqcL4Xvbg/sQ7+RAz/Ed895TTNAh3ZAEhu0bylS4xyNpTB0hf+1VLi4XNzk
+        Wn2cq2QB1sNAY+VbegcQ2F3VfusZ7f9O00Dbtng61dNk/9xAu9X9KIU1twshDgWT
+        u61YULPepO6EGCl9jHJkt+T1w35l14Gys4Jvel4sQRa1mBXK1ssQaB4tDDmrv+MQ
+        w1Uhb5qygqANjNTX0N635wNgK/8lIwRpZRqNX6vLcBIJsCDPvwGXORwQ48jnnEnF
+        Q6Wk8gMmzTItyY5+BYEwrc6jYM9LOOHUaB10RDe2kRPz6i6n9RZSVaDDp2LeD4pA
+        ==
+X-ME-Sender: <xms:9qcTYs1ofl8S525l3PpMOd4s2dfF_I90I8as3nCupLQi39-jd871JQ>
+    <xme:9qcTYnHp7OW-UGWq0A1uGcO0EtdtF1uPU_8IMGoz_Yf3Jl9kMw8XoGreGRF7twwLz
+    m2CDBhhH9vwZri-eyc>
+X-ME-Received: <xmr:9qcTYk5DJ-m6QT4CVf9jY1uT7j6JQtG5zLbn7f-mq33NRa5SZHZvV4o>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvvddrkeeigdeikecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecunecujfgurhephffvufffkffojghfggfgsedtkeertd
+    ertddtnecuhfhrohhmpeflihgrgihunhcujggrnhhguceojhhirgiguhhnrdihrghnghes
+    fhhlhihgohgrthdrtghomheqnecuggftrfgrthhtvghrnhepjeeihffgteelkeelffduke
+    dtheevudejvdegkeekjeefhffhhfetudetgfdtffeunecuvehluhhsthgvrhfuihiivgep
+    tdenucfrrghrrghmpehmrghilhhfrhhomhepjhhirgiguhhnrdihrghnghesfhhlhihgoh
+    grthdrtghomh
+X-ME-Proxy: <xmx:9qcTYl0o-4D-kxV25yTc00-7JdMMvua5925zookTqjXreBNIZhQnkg>
+    <xmx:9qcTYvGBM6mO8NUbhLUPbod5oQBC2vpN59UX5wtoptPrEL5WZtP3AQ>
+    <xmx:9qcTYu91v5oDr4KFG3eo1oIyTyeLQFqX__fRrXCpiReatdjaf_8oxw>
+    <xmx:9qcTYjixRSj-jgvxYM2XthMnytd9_zArbnC3RDxckkSFBly0Ni55pg>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 21 Feb 2022 09:55:49 -0500 (EST)
+From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
+To:     linux-mips@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, chenhuacai@kernel.org,
+        tsbogend@alpha.franken.de, macro@orcam.me.uk,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>
+Subject: [RFC PATCH 1/3] MIPS: Loongson64: Clearify IO barriers
+Date:   Mon, 21 Feb 2022 14:55:29 +0000
+Message-Id: <20220221145531.10479-2-jiaxun.yang@flygoat.com>
+X-Mailer: git-send-email 2.35.1
+In-Reply-To: <20220221145531.10479-1-jiaxun.yang@flygoat.com>
+References: <20220221145531.10479-1-jiaxun.yang@flygoat.com>
 MIME-Version: 1.0
-References: <20220216131332.1489939-1-arnd@kernel.org> <20220216131332.1489939-10-arnd@kernel.org>
- <20220221132456.GA7139@alpha.franken.de>
-In-Reply-To: <20220221132456.GA7139@alpha.franken.de>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Mon, 21 Feb 2022 15:31:23 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a2usZWPDDDUcscwS0aVKsY6aLXFGFPqYNkm4hcDERim9w@mail.gmail.com>
-Message-ID: <CAK8P3a2usZWPDDDUcscwS0aVKsY6aLXFGFPqYNkm4hcDERim9w@mail.gmail.com>
-Subject: Re: [PATCH v2 09/18] mips: use simpler access_ok()
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Christoph Hellwig <hch@lst.de>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Russell King - ARM Linux <linux@armlinux.org.uk>,
-        Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>,
-        Brian Cain <bcain@codeaurora.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Michal Simek <monstr@monstr.eu>,
-        Nick Hu <nickhu@andestech.com>,
-        Greentime Hu <green.hu@gmail.com>,
-        Dinh Nguyen <dinguyen@kernel.org>,
-        Stafford Horne <shorne@gmail.com>,
-        Helge Deller <deller@gmx.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Rich Felker <dalias@libc.org>,
-        David Miller <davem@davemloft.net>,
-        Richard Weinberger <richard@nod.at>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        "Eric W . Biederman" <ebiederm@xmission.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        alpha <linux-alpha@vger.kernel.org>,
-        "open list:SYNOPSYS ARC ARCHITECTURE" 
-        <linux-snps-arc@lists.infradead.org>, linux-csky@vger.kernel.org,
-        "open list:QUALCOMM HEXAGON..." <linux-hexagon@vger.kernel.org>,
-        linux-ia64@vger.kernel.org,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
-        Openrisc <openrisc@lists.librecores.org>,
-        Parisc List <linux-parisc@vger.kernel.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        linux-s390 <linux-s390@vger.kernel.org>,
-        Linux-sh list <linux-sh@vger.kernel.org>,
-        sparclinux <sparclinux@vger.kernel.org>,
-        linux-um <linux-um@lists.infradead.org>,
-        "open list:TENSILICA XTENSA PORT (xtensa)" 
-        <linux-xtensa@linux-xtensa.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Mon, Feb 21, 2022 at 2:24 PM Thomas Bogendoerfer
-<tsbogend@alpha.franken.de> wrote:
-> On Wed, Feb 16, 2022 at 02:13:23PM +0100, Arnd Bergmann wrote:
-> >
-> > diff --git a/arch/mips/include/asm/uaccess.h b/arch/mips/include/asm/uaccess.h
-> > index db9a8e002b62..d7c89dc3426c 100644
->
-> this doesn't work. For every access above maximum implemented virtual address
-> space of the CPU an address error will be issued, but not a TLB miss.
-> And address error isn't able to handle this situation.
+Remove CPU_HAS_WB from Kconfig as all Loongson64 processors
+don't have R3000 style write buffer. This is likely to be
+a legacy of Loongson 2E's Bonito64.
 
-Ah, so the __ex_table entry only catches TLB misses?
+Remove Loongson64 from war_io_reorder_wmb. Loongson64
+never reorders uncached memory access as per user manual
+of GS464, LS3A2000 and LS3A3000. It was intruduced due
+to a misunderstanding of Store Fill Buffer.
 
-Does this mean it also traps for kernel memory accesses, or do those
-work again? If the addresses on mips64 are separate like on
-sparc64 or s390, the entire access_ok() step could be replaced
-by a fixup code in the exception handler. I suppose this depends on
-CONFIG_EVA and you still need a limit check at least when EVA is
-disabled.
+Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+---
+ arch/mips/Kconfig          | 1 -
+ arch/mips/include/asm/io.h | 2 +-
+ 2 files changed, 1 insertion(+), 2 deletions(-)
 
-> With this patch
->
-> diff --git a/arch/mips/kernel/unaligned.c b/arch/mips/kernel/unaligned.c
-> index df4b708c04a9..3911f1481f3d 100644
-> --- a/arch/mips/kernel/unaligned.c
-> +++ b/arch/mips/kernel/unaligned.c
-> @@ -1480,6 +1480,13 @@ asmlinkage void do_ade(struct pt_regs *regs)
->         prev_state = exception_enter();
->         perf_sw_event(PERF_COUNT_SW_ALIGNMENT_FAULTS,
->                         1, regs, regs->cp0_badvaddr);
-> +
-> +       /* Are we prepared to handle this kernel fault?  */
-> +       if (fixup_exception(regs)) {
-> +               current->thread.cp0_baduaddr = regs->cp0_badvaddr;
-> +               return;
-> +       }
-> +
->         /*
->          * Did we catch a fault trying to load an instruction?
->          */
->
-> I at least get my simple test cases fixed, but I'm not sure this is
-> correct.
->
-> Is there a reason to not also #define TASK_SIZE_MAX   __UA_LIMIT like
-> for the 32bit case ?
->
+diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
+index 058446f01487..6d2e97342723 100644
+--- a/arch/mips/Kconfig
++++ b/arch/mips/Kconfig
+@@ -487,7 +487,6 @@ config MACH_LOONGSON64
+ 	select BOARD_SCACHE
+ 	select CSRC_R4K
+ 	select CEVT_R4K
+-	select CPU_HAS_WB
+ 	select FORCE_PCI
+ 	select ISA
+ 	select I8259
+diff --git a/arch/mips/include/asm/io.h b/arch/mips/include/asm/io.h
+index 6f5c86d2bab4..065e1ab6401a 100644
+--- a/arch/mips/include/asm/io.h
++++ b/arch/mips/include/asm/io.h
+@@ -219,7 +219,7 @@ void iounmap(const volatile void __iomem *addr);
+ #define ioremap_wc(offset, size)					\
+ 	ioremap_prot((offset), (size), boot_cpu_data.writecombine)
+ 
+-#if defined(CONFIG_CPU_CAVIUM_OCTEON) || defined(CONFIG_CPU_LOONGSON64)
++#if defined(CONFIG_CPU_CAVIUM_OCTEON)
+ #define war_io_reorder_wmb()		wmb()
+ #else
+ #define war_io_reorder_wmb()		barrier()
+-- 
+2.35.1
 
-For 32-bit, the __UA_LIMIT is a compile-time constant, so the check
-ends up being trivial. On all other architectures, the same thing can
-be done after the set_fs removal, so I was hoping it would work here
-as well.
-
-I suspect doing the generic (size <= limit) && (addr <= (limit - size))
-check on mips64 with the runtime limit ends up slightly slower
-than the current code that checks a bit mask instead. If you like,
-I'll update it this way, otherwise I'd need help in form of a patch
-that changes the exception handling so __get_user/__put_user
-also return -EFAULT for an address error.
-
-       Arnd

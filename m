@@ -2,67 +2,42 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 65410C433EF
-	for <linux-mips@archiver.kernel.org>; Mon, 21 Feb 2022 17:57:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2E8CAC433F5
+	for <linux-mips@archiver.kernel.org>; Tue, 22 Feb 2022 08:04:31 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231211AbiBUR56 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 21 Feb 2022 12:57:58 -0500
-Received: from mxb-00190b01.gslb.pphosted.com ([23.128.96.19]:59396 "EHLO
+        id S229899AbiBVIEy (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 22 Feb 2022 03:04:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43232 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231300AbiBURzw (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Mon, 21 Feb 2022 12:55:52 -0500
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5738E01C;
-        Mon, 21 Feb 2022 09:50:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
-        Content-ID:Content-Description:In-Reply-To:References;
-        bh=/FM4BeA5AMOBfdTgSAmRLVTFsUL98NQyEY77WysQYVo=; b=zLsc4AXd99f4dJ1kp7KQgopJd4
-        Lba1XebLJS2VyOkWL82dRsrs8Px+vwdg+p6JzhnnNMwin/vH14PNSv6da8sCn6SEw5KqZXcj4W1NE
-        rpGjemu/JmvZbQ4FnsSFQjOHsF7P5RJk+a6UC3ZNNkzE16sD7wyOZNzbAVzEcJPh/BeD6q2m3BY80
-        V/LVHJyFAWDuhDS50atd4v3YaUVAdWQ/gBn3UlWUV6dae3h566RR+AtnD9YA4EFWPzkq9VNRDLQb0
-        lfpfP9n7ayTAGlte20sIKjX0L12P+2ZcqjGVC4T0fdHdS0YoK4ddNLU/mpiJ9zcCq3q0rSzo6diK2
-        V5+JnLzg==;
-Received: from [2601:1c0:6280:3f0::aa0b] (helo=bombadil.infradead.org)
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1nMCpS-006r5a-GS; Mon, 21 Feb 2022 17:50:30 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Christoph Hellwig <hch@lst.de>,
+        with ESMTP id S229471AbiBVIEx (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Tue, 22 Feb 2022 03:04:53 -0500
+Received: from verein.lst.de (verein.lst.de [213.95.11.211])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B195109A51;
+        Tue, 22 Feb 2022 00:04:29 -0800 (PST)
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id 51E4D68AA6; Tue, 22 Feb 2022 09:04:26 +0100 (CET)
+Date:   Tue, 22 Feb 2022 09:04:26 +0100
+From:   Christoph Hellwig <hch@lst.de>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     linux-kernel@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
         Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
         linux-mips@vger.kernel.org
-Subject: [PATCH] mips: setup: fix setnocoherentio() boolean setting
-Date:   Mon, 21 Feb 2022 09:50:29 -0800
-Message-Id: <20220221175029.6046-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.34.1
+Subject: Re: [PATCH] mips: setup: fix setnocoherentio() boolean setting
+Message-ID: <20220222080426.GA5400@lst.de>
+References: <20220221175029.6046-1-rdunlap@infradead.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220221175029.6046-1-rdunlap@infradead.org>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Correct a typo/pasto: setnocoherentio() should set
-dma_default_coherent to false, not true.
+On Mon, Feb 21, 2022 at 09:50:29AM -0800, Randy Dunlap wrote:
+> Correct a typo/pasto: setnocoherentio() should set
+> dma_default_coherent to false, not true.
 
-Fixes: 14ac09a65e19 ("MIPS: refactor the runtime coherent vs noncoherent DMA indicators")
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Christoph Hellwig <hch@lst.de>
-Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc: linux-mips@vger.kernel.org
----
- arch/mips/kernel/setup.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Looks good,
 
---- linux-next-20220217.orig/arch/mips/kernel/setup.c
-+++ linux-next-20220217/arch/mips/kernel/setup.c
-@@ -803,7 +803,7 @@ early_param("coherentio", setcoherentio)
- 
- static int __init setnocoherentio(char *str)
- {
--	dma_default_coherent = true;
-+	dma_default_coherent = false;
- 	pr_info("Software DMA cache coherency (command line)\n");
- 	return 0;
- }
+Reviewed-by: Christoph Hellwig <hch@lst.de>

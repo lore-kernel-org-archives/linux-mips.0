@@ -2,93 +2,181 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4E33DC4332F
-	for <linux-mips@archiver.kernel.org>; Tue, 22 Feb 2022 10:24:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CD3D5C433EF
+	for <linux-mips@archiver.kernel.org>; Tue, 22 Feb 2022 13:53:57 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231148AbiBVKZN (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 22 Feb 2022 05:25:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51030 "EHLO
+        id S230102AbiBVNyV (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 22 Feb 2022 08:54:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52406 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231147AbiBVKZJ (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Tue, 22 Feb 2022 05:25:09 -0500
-Received: from mail-qv1-xf31.google.com (mail-qv1-xf31.google.com [IPv6:2607:f8b0:4864:20::f31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB88A159E80;
-        Tue, 22 Feb 2022 02:24:44 -0800 (PST)
-Received: by mail-qv1-xf31.google.com with SMTP id 8so4277855qvf.2;
-        Tue, 22 Feb 2022 02:24:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:message-id:date:mime-version:user-agent:subject
-         :content-language:to:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=ZwVsXW12gm3VwwhPmVGdM4QmytARwditCmcefz+2r74=;
-        b=Z1mQiaGgxCb9cd9lkH/PWqaC7V+yMwbi8iDmq2TQ4kPMn+Dhm9OXlqeFFF+rMvgQZE
-         8/b7D5EtYdkfjwwtrUAf7pUFKB2+NgTSsiVs2WbKyMoYVQ69FLQdzDOFEa2MghOF06jO
-         M/JBE0U0abxWVXw8mRF0MX4CV6fcS3JfA+R6qMUqmkOKLT+v+N2kt2nlDEYeaIJuu+jR
-         xJ02RjQCyzFBjewl4i3R6pRfjFHD09KEOHWd+wDAjMiBe/kvBX4tRYIMhNuHZdRCXRIm
-         703qF9SZZX+aDIspAJafIAXDPQca+8eflHkw3Uve9aGUzOgMh6foCNCgOAn9M5JKmznP
-         Y1hg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:message-id:date:mime-version:user-agent
-         :subject:content-language:to:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=ZwVsXW12gm3VwwhPmVGdM4QmytARwditCmcefz+2r74=;
-        b=b4DExrUS1MUbJiuB4G+axJ022v8Iw2xk4dbgJalgN7tI8EUNAL9PcoUHWk3w2Gdw5c
-         ziIxCOfFZKsvh3+cju+w7DOh7hm6n8hFGFaGFj41HcsEqkZHFqi0b6NTrmI7iOIoOxZT
-         9atS/DzJooPTHAZnJ4BRCTMgk3GkeYRFC3rJVsC3wiMBv09GwAPluopTwCcIqZnSkq5U
-         VQtrj1zC7kHjOW4ksvnAg3pPL3A+eDx+E9sV+CR8pwmajPBoM8q2lsGyX6xxbudDNVFo
-         yhrNc8cfdFpJAP72CTVx7oRcSNT3FG1tDULzf2XPEn1vrln5SMWq6zIwJgDfDyQ/ZFml
-         XCSg==
-X-Gm-Message-State: AOAM532u/rlF+L4lF92a+QBONRyk94bPwQT+GxqvmjbvUwiD+CFHROBq
-        tovKTdX+/fkML4MDumIKhiI=
-X-Google-Smtp-Source: ABdhPJwY72MpP1R5Ah7WW2R4pXSYtRWIGk0/fr7S/30d7VWzLmNB/IjZkS1+K5fOokHdqM4wX5Slow==
-X-Received: by 2002:a05:6214:4a1:b0:432:3676:f227 with SMTP id w1-20020a05621404a100b004323676f227mr2877021qvz.25.1645525483968;
-        Tue, 22 Feb 2022 02:24:43 -0800 (PST)
-Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id y18sm32215141qtj.33.2022.02.22.02.24.41
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 22 Feb 2022 02:24:43 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Message-ID: <6534b889-41c5-dd7a-578b-27dc6668064a@roeck-us.net>
-Date:   Tue, 22 Feb 2022 02:24:40 -0800
+        with ESMTP id S229470AbiBVNyV (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Tue, 22 Feb 2022 08:54:21 -0500
+Received: from 189.cn (ptr.189.cn [183.61.185.102])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 315E89F6FE;
+        Tue, 22 Feb 2022 05:53:54 -0800 (PST)
+HMM_SOURCE_IP: 10.64.8.41:39724.521596506
+HMM_ATTACHE_NUM: 0000
+HMM_SOURCE_TYPE: SMTP
+Received: from clientip-114.242.206.180 (unknown [10.64.8.41])
+        by 189.cn (HERMES) with SMTP id 0E3FF1001AE;
+        Tue, 22 Feb 2022 21:53:48 +0800 (CST)
+Received: from  ([114.242.206.180])
+        by gateway-151646-dep-b7fbf7d79-9vctg with ESMTP id 437f38b646a245689e764bf8741df661 for maxime@cerno.tech;
+        Tue, 22 Feb 2022 21:53:53 CST
+X-Transaction-ID: 437f38b646a245689e764bf8741df661
+X-Real-From: 15330273260@189.cn
+X-Receive-IP: 114.242.206.180
+X-MEDUSA-Status: 0
+Sender: 15330273260@189.cn
+Message-ID: <400476ec-4b81-6a3d-651a-dbfa8eb5717e@189.cn>
+Date:   Tue, 22 Feb 2022 21:53:45 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Thunderbird/91.5.0
-Subject: Re: [PATCH] MIPS: Remove TX39XX support
+Subject: Re: [PATCH v10 3/4] drm/lsdc: add drm driver for loongson display
+ controller
 Content-Language: en-US
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Hauke Mehrtens <hauke@hauke-m.de>,
-        =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
-        "Maciej W. Rozycki" <macro@orcam.me.uk>,
-        Paul Cercueil <paul@crapouillou.net>,
+To:     Maxime Ripard <maxime@cerno.tech>
+Cc:     Thomas Zimmermann <tzimmermann@suse.de>,
+        Roland Scheidegger <sroland@vmware.com>,
+        Zack Rusin <zackr@vmware.com>,
+        Christian Gmeiner <christian.gmeiner@gmail.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Rob Herring <robh+dt@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Andrey Zhizhikin <andrey.zhizhikin@leica-geosystems.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        "David S . Miller" <davem@davemloft.net>,
         Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Lucas Stach <l.stach@pengutronix.de>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Ilia Mirkin <imirkin@alum.mit.edu>,
+        Qing Zhang <zhangqing@loongson.cn>,
+        suijingfeng <suijingfeng@loongson.cn>,
         linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, dmaengine@vger.kernel.org,
-        linux-watchdog@vger.kernel.org
-References: <20220222090435.62571-1-tsbogend@alpha.franken.de>
-From:   Guenter Roeck <linux@roeck-us.net>
-In-Reply-To: <20220222090435.62571-1-tsbogend@alpha.franken.de>
+        devicetree@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        Randy Dunlap <rdunlap@infradead.org>,
+        kernel test robot <lkp@intel.com>
+References: <20220220145554.117854-1-15330273260@189.cn>
+ <20220220145554.117854-4-15330273260@189.cn>
+ <20220222082747.66otrkc4zwvhem7w@houat>
+From:   Sui Jingfeng <15330273260@189.cn>
+In-Reply-To: <20220222082747.66otrkc4zwvhem7w@houat>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On 2/22/22 01:04, Thomas Bogendoerfer wrote:
-> No (active) developer owns this hardware, so let's remove Linux support.
-> 
-> Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-> ---
-[ ... ]
 
->   drivers/watchdog/Kconfig                      |   2 +-
-
-For watchdog:
-
-Acked-by: Guenter Roeck <linux@roeck-us.net>
+On 2022/2/22 16:27, Maxime Ripard wrote:
+> Hi,
+>
+> On Sun, Feb 20, 2022 at 10:55:53PM +0800, Sui Jingfeng wrote:
+>> +/* lsdc_get_display_timings_from_dtb - Get display timings from the device tree
+>> + *
+>> + * @np: point to the device node contain the display timings
+>> + * @pptim: point to where the pointer of struct display_timings is store to
+>> + */
+>> +static void lsdc_get_display_timings_from_dtb(struct device_node *np,
+>> +					      struct display_timings **pptim)
+>> +{
+>> +	struct display_timings *timings;
+>> +
+>> +	if (!np)
+>> +		return;
+>> +
+>> +	timings = of_get_display_timings(np);
+>> +	if (timings)
+>> +		*pptim = timings;
+>> +}
+> This is not documented in your binding.
+>
+>> +static int lsdc_get_connector_type(struct drm_device *ddev,
+>> +				   struct device_node *output,
+>> +				   unsigned int index)
+>> +{
+>> +	const char *name;
+>> +	int ret;
+>> +
+>> +	ret = of_property_read_string(output, "connector", &name);
+>> +	if (ret < 0)
+>> +		return DRM_MODE_CONNECTOR_Unknown;
+>> +
+>> +	if (strncmp(name, "vga-connector", 13) == 0) {
+>> +		ret = DRM_MODE_CONNECTOR_VGA;
+>> +		drm_info(ddev, "connector%d is VGA\n", index);
+>> +	} else if (strncmp(name, "dvi-connector", 13) == 0) {
+>> +		bool analog, digital;
+>> +
+>> +		analog = of_property_read_bool(output, "analog");
+>> +		digital = of_property_read_bool(output, "digital");
+>> +
+>> +		if (analog && !digital)
+>> +			ret = DRM_MODE_CONNECTOR_DVIA;
+>> +		else if (analog && digital)
+>> +			ret = DRM_MODE_CONNECTOR_DVII;
+>> +		else
+>> +			ret = DRM_MODE_CONNECTOR_DVID;
+>> +
+>> +		drm_info(ddev, "connector%d is DVI\n", index);
+>> +	} else if (strncmp(name, "virtual-connector", 17) == 0) {
+>> +		ret = DRM_MODE_CONNECTOR_VIRTUAL;
+>> +		drm_info(ddev, "connector%d is virtual\n", index);
+>> +	} else if (strncmp(name, "dpi-connector", 13) == 0) {
+>> +		ret = DRM_MODE_CONNECTOR_DPI;
+>> +		drm_info(ddev, "connector%d is DPI\n", index);
+>> +	} else if (strncmp(name, "hdmi-connector", 14) == 0) {
+>> +		int res;
+>> +		const char *hdmi_type;
+>> +
+>> +		ret = DRM_MODE_CONNECTOR_HDMIA;
+>> +
+>> +		res = of_property_read_string(output, "type", &hdmi_type);
+>> +		if (res == 0 && !strcmp(hdmi_type, "b"))
+>> +			ret = DRM_MODE_CONNECTOR_HDMIB;
+>> +
+>> +		drm_info(ddev, "connector%d is HDMI, type is %s\n", index, hdmi_type);
+>> +	} else {
+>> +		ret = DRM_MODE_CONNECTOR_Unknown;
+>> +		drm_info(ddev, "The type of connector%d is unknown\n", index);
+>> +	}
+>> +
+>> +	return ret;
+>> +}
+> Your ports and that you're using the connectors bindings either.
+>
+>> +struct lsdc_connector *lsdc_connector_init(struct lsdc_device *ldev, unsigned int index)
+>> +{
+>> +	struct drm_device *ddev = &ldev->drm;
+>> +	struct device_node *np = ddev->dev->of_node;
+>> +	struct device_node *output = NULL;
+>> +	unsigned int connector_type = DRM_MODE_CONNECTOR_Unknown;
+>> +	struct device_node *disp_tims_np;
+>> +	struct lsdc_connector *lconn;
+>> +	struct drm_connector *connector;
+>> +	int ret;
+>> +
+>> +	lconn = devm_kzalloc(ddev->dev, sizeof(*lconn), GFP_KERNEL);
+>> +	if (!lconn)
+>> +		return ERR_PTR(-ENOMEM);
+>> +
+>> +	lconn->index = index;
+>> +	lconn->has_disp_tim = false;
+>> +	lconn->ddc = NULL;
+>> +
+>> +	output = of_parse_phandle(np, "output-ports", index);
+>> +	if (!output) {
+>> +		drm_warn(ddev, "no output-ports property, please update dtb\n");
+>> +		/*
+>> +		 * Providing a blindly support even though no output-ports
+>> +		 * property is provided in the dtb.
+>> +		 */
+>> +		goto DT_SKIPED;
+>> +	}
+> output-ports is not documented either.
+Thanks for you take time review my patch, i will try to document it at 
+next version.

@@ -2,147 +2,149 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9AAD2C433F5
-	for <linux-mips@archiver.kernel.org>; Wed, 23 Feb 2022 15:57:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2D264C433EF
+	for <linux-mips@archiver.kernel.org>; Wed, 23 Feb 2022 20:13:48 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240508AbiBWP6U (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 23 Feb 2022 10:58:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49860 "EHLO
+        id S234144AbiBWUOP (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 23 Feb 2022 15:14:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43984 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229842AbiBWP6T (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 23 Feb 2022 10:58:19 -0500
-Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id EF208AB463;
-        Wed, 23 Feb 2022 07:57:50 -0800 (PST)
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1nMu1U-00073R-00; Wed, 23 Feb 2022 16:57:48 +0100
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 03722C2761; Wed, 23 Feb 2022 16:03:50 +0100 (CET)
-Date:   Wed, 23 Feb 2022 16:03:50 +0100
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Tiezhu Yang <yangtiezhu@loongson.cn>,
-        Xuefeng Li <lixuefeng@loongson.cn>,
-        Juxin Gao <gaojuxin@loongson.cn>, linux-mips@vger.kernel.org,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
-        linux-hardening@vger.kernel.org
-Subject: Re: [PATCH] MIPS: Modernize READ_IMPLIES_EXEC
-Message-ID: <20220223150350.GA15128@alpha.franken.de>
-References: <20210901194208.2420671-1-keescook@chromium.org>
+        with ESMTP id S239928AbiBWUOO (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 23 Feb 2022 15:14:14 -0500
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BF9D4CD58
+        for <linux-mips@vger.kernel.org>; Wed, 23 Feb 2022 12:13:46 -0800 (PST)
+Received: by mail-lf1-x136.google.com with SMTP id b11so176225lfb.12
+        for <linux-mips@vger.kernel.org>; Wed, 23 Feb 2022 12:13:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=+S6BFzj6o5ckty5iXSThNrfkPsdFE94/fVb8NP4+aFs=;
+        b=F/2f/aEUKxSuzDdCknAbug+t8clrlE0v7gj9NkhphhHftuFg6XGIjvpJXVx+ZHKhn9
+         jOIdz4l7lK+/F1JhXkxR/PARyehOhzu1/S93ijWQKe7fGKOKTiRs9R81aIq3OYNVOgnf
+         G4UcKLBEtMgH8cssPIzV42vV3R64/Z0YRVhdY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=+S6BFzj6o5ckty5iXSThNrfkPsdFE94/fVb8NP4+aFs=;
+        b=24qY2vDQyFKVY/lExj65ZO0ce9wHXVYV3t7w9uTeB+Cy5HXSUAHOW99oqS7U8ExV/h
+         W6cvXPkwKMjeEoW9ij/emgky68Cx7bzYq1BLMv6eIqzFZ9+EwTiYsfgQ291cO9cj+jFc
+         tG/zt9aWqgBKoYOaoPi2Ao7RvSa/xkMKaJNOeHKj8Izg1smvUGGzEvPSGsW0JiYB8DYO
+         Y53wpOTFYQdwDm+LNGTzmAKLusIKZ5dAUPNEiqbKJDEgWnOE6ttcoc5HRtLQf+LrRBtp
+         Yg+fssUJ8Wa6GtliSSo7C9y2LUk5ElseQwye/0T8SBiBY4++i9JZ3rL6kuMWp4vMMZDK
+         pOqw==
+X-Gm-Message-State: AOAM530bNA6CMrWX/45pJxM2Nt5jcvmvtpJFE2pfQ3wRfwZ7DDgMmry6
+        DJ7UHcJE/S5JJSvrIVEvIyCvlr9Renub27BBRQc=
+X-Google-Smtp-Source: ABdhPJxtY9KSRpE6oS6CEKz76op0+ZfTKU4/CG8T0Ir8M5k+DThKGl+N/4H+3TSHHyP/PxJOtmumKg==
+X-Received: by 2002:a19:e049:0:b0:42f:b0e2:10c4 with SMTP id g9-20020a19e049000000b0042fb0e210c4mr834772lfj.170.1645647224187;
+        Wed, 23 Feb 2022 12:13:44 -0800 (PST)
+Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com. [209.85.167.42])
+        by smtp.gmail.com with ESMTPSA id c8sm42172lfr.119.2022.02.23.12.13.43
+        for <linux-mips@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 23 Feb 2022 12:13:43 -0800 (PST)
+Received: by mail-lf1-f42.google.com with SMTP id d23so168693lfv.13
+        for <linux-mips@vger.kernel.org>; Wed, 23 Feb 2022 12:13:43 -0800 (PST)
+X-Received: by 2002:a05:6512:130b:b0:443:c2eb:399d with SMTP id
+ x11-20020a056512130b00b00443c2eb399dmr822016lfu.27.1645646720244; Wed, 23 Feb
+ 2022 12:05:20 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210901194208.2420671-1-keescook@chromium.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20220216131332.1489939-1-arnd@kernel.org> <20220216131332.1489939-10-arnd@kernel.org>
+ <20220221132456.GA7139@alpha.franken.de>
+In-Reply-To: <20220221132456.GA7139@alpha.franken.de>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Wed, 23 Feb 2022 12:05:04 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wjdHz6OU3M9T5zE9Fc9SNdDs52iOE+eVn-wuUT6UDpBLg@mail.gmail.com>
+Message-ID: <CAHk-=wjdHz6OU3M9T5zE9Fc9SNdDs52iOE+eVn-wuUT6UDpBLg@mail.gmail.com>
+Subject: Re: [PATCH v2 09/18] mips: use simpler access_ok()
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc:     Arnd Bergmann <arnd@kernel.org>, Christoph Hellwig <hch@lst.de>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Russell King - ARM Linux <linux@armlinux.org.uk>,
+        Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>,
+        Brian Cain <bcain@codeaurora.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Michal Simek <monstr@monstr.eu>,
+        Nick Hu <nickhu@andestech.com>,
+        Greentime Hu <green.hu@gmail.com>,
+        Dinh Nguyen <dinguyen@kernel.org>,
+        Stafford Horne <shorne@gmail.com>,
+        Helge Deller <deller@gmx.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Rich Felker <dalias@libc.org>,
+        David Miller <davem@davemloft.net>,
+        Richard Weinberger <richard@nod.at>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        alpha <linux-alpha@vger.kernel.org>,
+        "open list:SYNOPSYS ARC ARCHITECTURE" 
+        <linux-snps-arc@lists.infradead.org>, linux-csky@vger.kernel.org,
+        linux-hexagon <linux-hexagon@vger.kernel.org>,
+        linux-ia64@vger.kernel.org,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
+        Openrisc <openrisc@lists.librecores.org>,
+        linux-parisc <linux-parisc@vger.kernel.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        linux-s390 <linux-s390@vger.kernel.org>,
+        Linux-sh list <linux-sh@vger.kernel.org>,
+        linux-sparc <sparclinux@vger.kernel.org>,
+        linux-um <linux-um@lists.infradead.org>,
+        "open list:TENSILICA XTENSA PORT (xtensa)" 
+        <linux-xtensa@linux-xtensa.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Wed, Sep 01, 2021 at 12:42:08PM -0700, Kees Cook wrote:
-> I'm doing some thread necromancy of
-> https://lore.kernel.org/lkml/202007081624.82FA0CC1EA@keescook/
-> 
-> x86, arm64, and arm32 adjusted their READ_IMPLIES_EXEC logic to better
-> align with the safer defaults and the interactions with other mappings,
-> which I illustrated with this comment on x86:
-> 
-> /*
->  * An executable for which elf_read_implies_exec() returns TRUE will
->  * have the READ_IMPLIES_EXEC personality flag set automatically.
->  *
->  * The decision process for determining the results are:
->  *
->  *                 CPU: | lacks NX*  | has NX, ia32     | has NX, x86_64 |
->  * ELF:                 |            |                  |                |
->  * ---------------------|------------|------------------|----------------|
->  * missing PT_GNU_STACK | exec-all   | exec-all         | exec-none      |
->  * PT_GNU_STACK == RWX  | exec-stack | exec-stack       | exec-stack     |
->  * PT_GNU_STACK == RW   | exec-none  | exec-none        | exec-none      |
->  *
->  *  exec-all  : all PROT_READ user mappings are executable, except when
->  *              backed by files on a noexec-filesystem.
->  *  exec-none : only PROT_EXEC user mappings are executable.
->  *  exec-stack: only the stack and PROT_EXEC user mappings are
->  *  executable.
->  *
->  *  *this column has no architectural effect: NX markings are ignored by
->  *   hardware, but may have behavioral effects when "wants X" collides with
->  *   "cannot be X" constraints in memory permission flags, as in
->  *   https://lkml.kernel.org/r/20190418055759.GA3155@mellanox.com
->  *
->  */
-> 
-> For MIPS, the "lacks NX" above is the "!cpu_has_rixi" check. On x86,
-> we decided that the READ_IMPLIES_EXEC flag needed to reflect the
-> expectations, not the architectural behavior due to bad interactions
-> as noted above, as always returning "1" on non-NX hardware breaks
-> some mappings.
-> 
-> The other part of the issue is "what does the MIPS toolchain do for
-> PT_GNU_STACK?" The answer seems to be "by default, include PT_GNU_STACK,
-> but mark it executable" (likely due to concerns over non-NX hardware):
-> 
-> $ mipsel-linux-gnu-gcc -o hello_world hello_world.c
-> $ llvm-readelf -lW hellow_world | grep GNU_STACK
->   GNU_STACK      0x000000 0x00000000 0x00000000 0x00000 0x00000 RWE 0x10
-> 
-> Given that older hardware doesn't support non-executable memory, it
-> seems safe to make the "PT_GNU_STACK is absent" logic mean "assume
-> non-executable", but this might break very old software running on
-> modern MIPS. This situation matches the ia32-on-x86_64 logic x86
-> uses (which assumes needing READ_IMPLIES_EXEC in that situation). But
-> modern toolchains on modern MIPS hardware should follow a safer default
-> (assume NX stack).
-> 
-> A follow-up to this change would be to switch the MIPS toolchain to emit
-> a non-executable PT_GNU_STACK, as this seems to be unneeded.
-> 
-> Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-> Cc: Tiezhu Yang <yangtiezhu@loongson.cn>
-> Cc: Xuefeng Li <lixuefeng@loongson.cn>
-> Cc: Juxin Gao <gaojuxin@loongson.cn>
-> Cc: linux-mips@vger.kernel.org
-> Signed-off-by: Kees Cook <keescook@chromium.org>
-> ---
->  arch/mips/kernel/elf.c | 16 +++++-----------
->  1 file changed, 5 insertions(+), 11 deletions(-)
-> 
-> diff --git a/arch/mips/kernel/elf.c b/arch/mips/kernel/elf.c
-> index 7b045d2a0b51..5582a4ca1e9e 100644
-> --- a/arch/mips/kernel/elf.c
-> +++ b/arch/mips/kernel/elf.c
-> @@ -328,16 +328,10 @@ void mips_set_personality_nan(struct arch_elf_state *state)
->  
->  int mips_elf_read_implies_exec(void *elf_ex, int exstack)
->  {
-> -	if (exstack != EXSTACK_DISABLE_X) {
-> -		/* The binary doesn't request a non-executable stack */
-> -		return 1;
-> -	}
-> -
-> -	if (!cpu_has_rixi) {
-> -		/* The CPU doesn't support non-executable memory */
-> -		return 1;
-> -	}
-> -
-> -	return 0;
-> +	/*
-> +	 * Set READ_IMPLIES_EXEC only on non-NX systems that
-> +	 * do not request a specific state via PT_GNU_STACK.
-> +	 */
-> +	return (!cpu_has_rixi && exstack == EXSTACK_DEFAULT);
->  }
->  EXPORT_SYMBOL(mips_elf_read_implies_exec);
-> -- 
-> 2.30.2
+On Mon, Feb 21, 2022 at 5:25 AM Thomas Bogendoerfer
+<tsbogend@alpha.franken.de> wrote:
+>
+> With this patch
+[ .. snip snip ..]
+> I at least get my simple test cases fixed, but I'm not sure this is
+> correct.
 
-applied to mips-next.
+I think you really want to do that anyway, just to get things like
+wild kernel pointers right (ie think get_kernel_nofault() and friends
+for ftrace etc).
 
-Thomas.
+They shouldn't happen in any normal situation, but those kinds of
+unverified pointers is why we _have_ get_kernel_nofault() in the first
+place.
 
--- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+On x86-64, the roughly equivalent situation is that addresses that
+aren't in canonical format do not take a #PF (page fault), they take a
+#GP (general protection) fault.
+
+So I think you want to do that fixup_exception() for any possible addresses.
+
+> Is there a reason to not also #define TASK_SIZE_MAX   __UA_LIMIT like
+> for the 32bit case ?
+
+I would suggest against using a non-constant TASK_SIZE_MAX. Being
+constant is literally one reason why it exists, when TASK_SIZE itself
+has often been about other things (ie "32-bit process").
+
+Having to load variables for things like get_user() is annoying, if
+you could do it with a simple constant instead (where that "simple"
+part is to avoid having to load big values from a constant pool -
+often constants like "high bit set" can be loaded and compared against
+more efficiently).
+
+               Linus

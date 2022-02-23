@@ -2,65 +2,41 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 315FCC433EF
-	for <linux-mips@archiver.kernel.org>; Wed, 23 Feb 2022 14:39:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D0571C433F5
+	for <linux-mips@archiver.kernel.org>; Wed, 23 Feb 2022 15:14:27 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241679AbiBWOjs (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 23 Feb 2022 09:39:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58808 "EHLO
+        id S236378AbiBWPOx (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 23 Feb 2022 10:14:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50688 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241680AbiBWOjr (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 23 Feb 2022 09:39:47 -0500
-Received: from new3-smtp.messagingengine.com (new3-smtp.messagingengine.com [66.111.4.229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 815B2B54E7;
-        Wed, 23 Feb 2022 06:39:17 -0800 (PST)
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 0E9AC58048A;
-        Wed, 23 Feb 2022 09:39:15 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute3.internal (MEProxy); Wed, 23 Feb 2022 09:39:15 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=cc
-        :cc:content-type:date:date:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to; s=fm2; bh=FgQTgqziNKWKER2EIGatrqwMgScYbE1jaY41Ku
-        Ra9OM=; b=Yli2PPJDon/Sd3hWdozX4L17oVl7xLrv21xPwvKecUIpyd8aPy1+eQ
-        PN29mJy2I0NrgpCdcxuxsni2F/BGR7WOXN4tTRXOGeJuamGKEymBaHfDqsyIyNcD
-        xahS06C6zwAStN1A1Mk3pcsGwl2akNdlXJzlcSc5O/xr8+TLvdSsv6T6m3DNzLQ1
-        MKSDLi+nKhqoxXUKqgiLBBqk6yRi+kqHZL5mgm9ePBJsQ5zZwJaBD8vImC2vzLvi
-        4g8YL8kts6FypEX0dFFRj9xTE1XAOu3pVu7TQJbhgOSQvcUqB6S+3ifg6xd074Qk
-        VeemYsCbaTufoebFyK4dUPM1BCrfHc2A==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:date:date:from:from
-        :in-reply-to:in-reply-to:message-id:mime-version:references
-        :reply-to:sender:subject:subject:to:to:x-me-proxy:x-me-proxy
-        :x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=FgQTgqziNKWKER2EI
-        GatrqwMgScYbE1jaY41KuRa9OM=; b=fJcIHRF17UWKd0l8UNOFyNrRjbu8kDSvB
-        j9nKZS5xD6s5+mep1mSmlY4AT3MPwU3ZkQ3EfiB0hM4iZGkuU1FQlGyNmLtm5tDe
-        7jHteapsg/MRIyxLXkG1U4cBvHoAKog7OdOJYs5tgxB6IwoYfURQcoZjy5HiYzyL
-        rQL0b2cN5R7Mo/QtQZ+LUOAQT0RvJJX+czf6rheaXsjAYhCmt1idGp0yEwKBmsGJ
-        AXsycRUS0N+ttmx+PHDahoITWdsPjNgi3ieoKCSt4KHSSWykydxBnMXVhYCKhan4
-        eldILqu8Ye/Mqa7HGDT5qe45rO4TSTUtbUmSQ/spOWDmILLaVYs+w==
-X-ME-Sender: <xms:EkcWYuYja8czwuHjew1dyGXmSuW1IKamNvDwikHODq06sRG2mjSCTQ>
-    <xme:EkcWYhYJ3f73iiAKCifKa2kr9MB21Hc3xt8JBOuYfNf0VFS7WYZqI-tIJv1yPD1Fb
-    A9gVvgioma9HhTCcz4>
-X-ME-Received: <xmr:EkcWYo_67oWoiTUGgonTnQtUWz7tZt1Ddxj9aFt-pxhubGm7botnBe6T68pxVybDmQNNR2FSluRZBn4QRMYcM7YhPCqrWsMBUOrTrn4>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvvddrledtgdeiiecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvuffkfhggtggujgesghdtreertddtudenucfhrhhomhepofgrgihimhgv
-    ucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrghtth
-    gvrhhnpeduvdduhfekkeehgffftefflefgffdtheffudffgeevteffheeuiedvvdejvdfg
-    veenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehmrg
-    igihhmvgestggvrhhnohdrthgvtghh
-X-ME-Proxy: <xmx:EkcWYgqVlP6Ct4NexodwRqXpnhoYgMrH9eEnml_fgpbDTez2YDNf9Q>
-    <xmx:EkcWYpo1pjBxKyzP3kkl2grSbOaeCDSqqu2ZSVrVymR29meM7o5DeA>
-    <xmx:EkcWYuTKy4G5BQHnSLw7ioA2cgW6wHA4QmmGS1yUOlB_Vk34BCFu4w>
-    <xmx:E0cWYjZQST1x64XLUkl8j2Ez7BYtR7WdgwqkR66KWHn4p-JgHD4IYA>
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 23 Feb 2022 09:39:13 -0500 (EST)
-Date:   Wed, 23 Feb 2022 15:39:12 +0100
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Sui Jingfeng <15330273260@189.cn>
+        with ESMTP id S232062AbiBWPOx (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 23 Feb 2022 10:14:53 -0500
+Received: from 189.cn (ptr.189.cn [183.61.185.102])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 50AE8B82DE;
+        Wed, 23 Feb 2022 07:14:23 -0800 (PST)
+HMM_SOURCE_IP: 10.64.8.31:44458.435332613
+HMM_ATTACHE_NUM: 0000
+HMM_SOURCE_TYPE: SMTP
+Received: from clientip-114.242.206.180 (unknown [10.64.8.31])
+        by 189.cn (HERMES) with SMTP id 30AE11001F7;
+        Wed, 23 Feb 2022 23:14:17 +0800 (CST)
+Received: from  ([114.242.206.180])
+        by gateway-151646-dep-b7fbf7d79-bwdqx with ESMTP id 90e95b07aa22426594cd3a88c70e7830 for maxime@cerno.tech;
+        Wed, 23 Feb 2022 23:14:21 CST
+X-Transaction-ID: 90e95b07aa22426594cd3a88c70e7830
+X-Real-From: 15330273260@189.cn
+X-Receive-IP: 114.242.206.180
+X-MEDUSA-Status: 0
+Sender: 15330273260@189.cn
+Message-ID: <0d4a75c4-78bb-4aed-0fa8-88e9cc165896@189.cn>
+Date:   Wed, 23 Feb 2022 23:14:12 +0800
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.5.0
+Subject: Re: [PATCH v10 3/4] drm/lsdc: add drm driver for loongson display
+ controller
+Content-Language: en-US
+To:     Maxime Ripard <maxime@cerno.tech>
 Cc:     Thomas Zimmermann <tzimmermann@suse.de>,
         Roland Scheidegger <sroland@vmware.com>,
         Zack Rusin <zackr@vmware.com>,
@@ -84,82 +60,87 @@ Cc:     Thomas Zimmermann <tzimmermann@suse.de>,
         devicetree@vger.kernel.org, dri-devel@lists.freedesktop.org,
         Randy Dunlap <rdunlap@infradead.org>,
         kernel test robot <lkp@intel.com>
-Subject: Re: [PATCH v10 3/4] drm/lsdc: add drm driver for loongson display
- controller
-Message-ID: <20220223143912.m727fie3vtdkvklo@houat>
 References: <20220220145554.117854-1-15330273260@189.cn>
  <20220220145554.117854-4-15330273260@189.cn>
  <20220222082747.66otrkc4zwvhem7w@houat>
  <54ea69d7-2fac-74dc-2ef6-843a666cff85@189.cn>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="wam4wqm3zed2h2ms"
-Content-Disposition: inline
-In-Reply-To: <54ea69d7-2fac-74dc-2ef6-843a666cff85@189.cn>
+ <20220223143912.m727fie3vtdkvklo@houat>
+From:   Sui Jingfeng <15330273260@189.cn>
+In-Reply-To: <20220223143912.m727fie3vtdkvklo@houat>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
 
---wam4wqm3zed2h2ms
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On 2022/2/23 22:39, Maxime Ripard wrote:
+> On Tue, Feb 22, 2022 at 10:46:35PM +0800, Sui Jingfeng wrote:
+>> On 2022/2/22 16:27, Maxime Ripard wrote:
+>>>> +	if (!of_device_is_available(output)) {
+>>>> +		of_node_put(output);
+>>>> +		drm_info(ddev, "connector%d is not available\n", index);
+>>>> +		return NULL;
+>>>> +	}
+>>>> +
+>>>> +	disp_tims_np = of_get_child_by_name(output, "display-timings");
+>>>> +	if (disp_tims_np) {
+>>>> +		lsdc_get_display_timings_from_dtb(output, &lconn->disp_tim);
+>>>> +		lconn->has_disp_tim = true;
+>>>> +		of_node_put(disp_tims_np);
+>>>> +		drm_info(ddev, "Found display timings provided by connector%d\n", index);
+>>>> +	}
+>>>> +
+>>>> +	connector_type = lsdc_get_connector_type(ddev, output, index);
+>>>> +
+>>>> +	if (output) {
+>>>> +		of_node_put(output);
+>>>> +		output = NULL;
+>>>> +	}
+>>>> +
+>>>> +DT_SKIPED:
+>>>> +
+>>>> +	/* Only create the i2c channel if display timing is not provided */
+>>>> +	if (!lconn->has_disp_tim) {
+>>>> +		const struct lsdc_chip_desc * const desc = ldev->desc;
+>>>> +
+>>>> +		if (desc->have_builtin_i2c)
+>>>> +			lconn->ddc = lsdc_create_i2c_chan(ddev, index);
+>>>> +		else
+>>>> +			lconn->ddc = lsdc_get_i2c_adapter(ddev, index);
+>>> This looks weird: the connector bindings have a property to store the
+>>> i2c controller connected to the DDC lines, so you should use that
+>>> instead.
+>>>
+>> This is not  weird,  ast, mgag200, hibmc do the same thing.
+> And none of them have DT support.
+>
+> Maxime
 
-On Tue, Feb 22, 2022 at 10:46:35PM +0800, Sui Jingfeng wrote:
->=20
-> On 2022/2/22 16:27, Maxime Ripard wrote:
-> > > +	if (!of_device_is_available(output)) {
-> > > +		of_node_put(output);
-> > > +		drm_info(ddev, "connector%d is not available\n", index);
-> > > +		return NULL;
-> > > +	}
-> > > +
-> > > +	disp_tims_np =3D of_get_child_by_name(output, "display-timings");
-> > > +	if (disp_tims_np) {
-> > > +		lsdc_get_display_timings_from_dtb(output, &lconn->disp_tim);
-> > > +		lconn->has_disp_tim =3D true;
-> > > +		of_node_put(disp_tims_np);
-> > > +		drm_info(ddev, "Found display timings provided by connector%d\n", =
-index);
-> > > +	}
-> > > +
-> > > +	connector_type =3D lsdc_get_connector_type(ddev, output, index);
-> > > +
-> > > +	if (output) {
-> > > +		of_node_put(output);
-> > > +		output =3D NULL;
-> > > +	}
-> > > +
-> > > +DT_SKIPED:
-> > > +
-> > > +	/* Only create the i2c channel if display timing is not provided */
-> > > +	if (!lconn->has_disp_tim) {
-> > > +		const struct lsdc_chip_desc * const desc =3D ldev->desc;
-> > > +
-> > > +		if (desc->have_builtin_i2c)
-> > > +			lconn->ddc =3D lsdc_create_i2c_chan(ddev, index);
-> > > +		else
-> > > +			lconn->ddc =3D lsdc_get_i2c_adapter(ddev, index);
-> > This looks weird: the connector bindings have a property to store the
-> > i2c controller connected to the DDC lines, so you should use that
-> > instead.
-> >=20
-> This is not=A0 weird,=A0 ast, mgag200, hibmc do the same thing.
+You are wrong, ast driver have dt support. See ast_detect_config_mode() 
+in drm/ast/ast_main.c
 
-And none of them have DT support.
+static void ast_detect_config_mode(struct drm_device *dev, u32 *scu_rev)
+{
+     struct device_node *np = dev->dev->of_node;
+     struct ast_private *ast = to_ast_private(dev);
+     struct pci_dev *pdev = to_pci_dev(dev->dev);
+     uint32_t data, jregd0, jregd1;
 
-Maxime
+     /* Defaults */
+     ast->config_mode = ast_use_defaults;
+     *scu_rev = 0xffffffff;
 
---wam4wqm3zed2h2ms
-Content-Type: application/pgp-signature; name="signature.asc"
+     /* Check if we have device-tree properties */
+     if (np && !of_property_read_u32(np, "aspeed,scu-revision-id",
+                     scu_rev)) {
+         /* We do, disable P2A access */
+         ast->config_mode = ast_use_dt;
+         drm_info(dev, "Using device-tree for configuration\n");
+         return;
+     }
 
------BEGIN PGP SIGNATURE-----
+  ....
 
-iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYhZHEAAKCRDj7w1vZxhR
-xXitAP9v7HOYqHz8i7UAxoCMoqbrhwBW9XOoHnf/jK5QqIkJuwEAuPDXzMoMz/sH
-GrxQHl28jgBtPlbX7QJnoi4BgNwVNQA=
-=4ezX
------END PGP SIGNATURE-----
+}
 
---wam4wqm3zed2h2ms--

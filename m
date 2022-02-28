@@ -2,170 +2,145 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9F118C4167B
-	for <linux-mips@archiver.kernel.org>; Mon, 28 Feb 2022 06:31:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B0EA5C4332F
+	for <linux-mips@archiver.kernel.org>; Mon, 28 Feb 2022 06:40:16 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233209AbiB1GcB (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 28 Feb 2022 01:32:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43632 "EHLO
+        id S233349AbiB1Gkx convert rfc822-to-8bit (ORCPT
+        <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 28 Feb 2022 01:40:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44000 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232529AbiB1Gb7 (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Mon, 28 Feb 2022 01:31:59 -0500
-Received: from loongson.cn (mail.loongson.cn [114.242.206.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 1001966AE7;
-        Sun, 27 Feb 2022 22:31:17 -0800 (PST)
-Received: from linux.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9DxGMkrbBxiQxMIAA--.10334S5;
-        Mon, 28 Feb 2022 14:31:08 +0800 (CST)
-From:   Tiezhu Yang <yangtiezhu@loongson.cn>
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Mike Rapoport <rppt@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Xuefeng Li <lixuefeng@loongson.cn>, linux-mips@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 3/4] MIPS: Refactor early_parse_memmap() to fix memmap= parameter
-Date:   Mon, 28 Feb 2022 14:31:05 +0800
-Message-Id: <1646029866-6692-4-git-send-email-yangtiezhu@loongson.cn>
-X-Mailer: git-send-email 2.1.0
-In-Reply-To: <1646029866-6692-1-git-send-email-yangtiezhu@loongson.cn>
-References: <1646029866-6692-1-git-send-email-yangtiezhu@loongson.cn>
-X-CM-TRANSID: AQAAf9DxGMkrbBxiQxMIAA--.10334S5
-X-Coremail-Antispam: 1UD129KBjvJXoWxCF17tw4rKFW8Ar18GrWkXrb_yoWrJrW7pw
-        1SvrWakr48JF9rJry8tr1kW345Jw1vkFWUGay2krn5Awn8Cr1UJ3yrWFWIkry2qryUJ3W2
-        qFs5tFW5Kw4Ikw7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUBv14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_JrWl82xGYIkIc2
-        x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2z4x0
-        Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j6F4UJw
-        A2z4x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s0D
-        M2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjx
-        v20xvE14v26r106r15McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1l
-        F7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7MxkIecxEwVAFwVW8AwCF04
-        k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18
-        MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr4
-        1lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1l
-        IxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4
-        A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUyuWLUUUUU=
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+        with ESMTP id S233317AbiB1Gks (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Mon, 28 Feb 2022 01:40:48 -0500
+Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 149F83D1CF
+        for <linux-mips@vger.kernel.org>; Sun, 27 Feb 2022 22:40:09 -0800 (PST)
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ uk-mta-127-ln2z8qc2NY6O0etIBpyffg-1; Mon, 28 Feb 2022 06:40:07 +0000
+X-MC-Unique: ln2z8qc2NY6O0etIBpyffg-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
+ Server (TLS) id 15.0.1497.28; Mon, 28 Feb 2022 06:40:04 +0000
+Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
+ AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
+ 15.00.1497.028; Mon, 28 Feb 2022 06:40:04 +0000
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     "'guoren@kernel.org'" <guoren@kernel.org>,
+        "palmer@dabbelt.com" <palmer@dabbelt.com>,
+        "arnd@arndb.de" <arnd@arndb.de>,
+        "anup@brainfault.org" <anup@brainfault.org>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "liush@allwinnertech.com" <liush@allwinnertech.com>,
+        "wefu@redhat.com" <wefu@redhat.com>,
+        "drew@beagleboard.org" <drew@beagleboard.org>,
+        "wangjunqiang@iscas.ac.cn" <wangjunqiang@iscas.ac.cn>,
+        "hch@lst.de" <hch@lst.de>
+CC:     "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
+        "linux-csky@vger.kernel.org" <linux-csky@vger.kernel.org>,
+        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
+        "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>,
+        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+        "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
+        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "x86@kernel.org" <x86@kernel.org>
+Subject: RE: [PATCH V7 03/20] compat: consolidate the compat_flock{,64}
+ definition
+Thread-Topic: [PATCH V7 03/20] compat: consolidate the compat_flock{,64}
+ definition
+Thread-Index: AQHYK/ctkLOBFN5NzkqkonsQCyvC26yogbZg
+Date:   Mon, 28 Feb 2022 06:40:04 +0000
+Message-ID: <b8e765910e274c0fb574ff23f88b881c@AcuMS.aculab.com>
+References: <20220227162831.674483-1-guoren@kernel.org>
+ <20220227162831.674483-4-guoren@kernel.org>
+In-Reply-To: <20220227162831.674483-4-guoren@kernel.org>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
+MIME-Version: 1.0
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-According to Documentation/admin-guide/kernel-parameters.txt,
-the kernel command-line parameter memmap= means "Force usage
-of a specific region of memory", but when add "memmap=3G@64M"
-to the command-line, kernel boot hangs in sparse_init().
+From: guoren@kernel.org
+> Sent: 27 February 2022 16:28
+> 
+> From: Christoph Hellwig <hch@lst.de>
+> 
+> Provide a single common definition for the compat_flock and
+> compat_flock64 structures using the same tricks as for the native
+> variants.  Another extra define is added for the packing required on
+> x86.
+...
+> diff --git a/arch/x86/include/asm/compat.h b/arch/x86/include/asm/compat.h
+...
+>  /*
+> - * IA32 uses 4 byte alignment for 64 bit quantities,
+> - * so we need to pack this structure.
+> + * IA32 uses 4 byte alignment for 64 bit quantities, so we need to pack the
+> + * compat flock64 structure.
+>   */
+...
+> +#define __ARCH_NEED_COMPAT_FLOCK64_PACKED
+> 
+>  struct compat_statfs {
+>  	int		f_type;
+> diff --git a/include/linux/compat.h b/include/linux/compat.h
+> index 1c758b0e0359..a0481fe6c5d5 100644
+> --- a/include/linux/compat.h
+> +++ b/include/linux/compat.h
+> @@ -258,6 +258,37 @@ struct compat_rlimit {
+>  	compat_ulong_t	rlim_max;
+>  };
+> 
+> +#ifdef __ARCH_NEED_COMPAT_FLOCK64_PACKED
+> +#define __ARCH_COMPAT_FLOCK64_PACK	__attribute__((packed))
+> +#else
+> +#define __ARCH_COMPAT_FLOCK64_PACK
+> +#endif
+...
+> +struct compat_flock64 {
+> +	short		l_type;
+> +	short		l_whence;
+> +	compat_loff_t	l_start;
+> +	compat_loff_t	l_len;
+> +	compat_pid_t	l_pid;
+> +#ifdef __ARCH_COMPAT_FLOCK64_PAD
+> +	__ARCH_COMPAT_FLOCK64_PAD
+> +#endif
+> +} __ARCH_COMPAT_FLOCK64_PACK;
+> +
 
-In order to support memmap=limit@base, refactor the function
-early_parse_memmap() and then use memblock_mem_range_remove_map()
-to limit the memory region.
+Provided compat_loff_t are correctly defined with __aligned__(4)
+marking the structure packed isn't needed.
+I believe compat_u64 and compat_s64 both have aligned(4).
+It is also wrong, consider:
 
-With this patch, when add "memmap=3G@64M" to the command-line,
-the kernel boots successfully, we can see the following messages:
+struct foo {
+	char x;
+	struct compat_flock64 fl64;
+};
 
-  [    0.000000] Memory limited to 64MB-3136MB
-  ...
-  [    0.000000] Early memory node ranges
-  [    0.000000]   node   0: [mem 0x0000000004000000-0x000000000effffff]
-  [    0.000000]   node   0: [mem 0x0000000090200000-0x00000000ffffffff]
-  [    0.000000]   node   0: [mem 0x0000000120000000-0x00000001653fffff]
-  ...
-  [    0.000000] Memory: 3070816K/3147776K available (...)
+There should be 3 bytes of padding after 'x'.
+But you've removed it.
 
-When add "memmap=128M@64M nr_cpus=1 init 3" to the command-line,
-the kernel also boots successfully, we can see the following messages:
+	David
 
-  [    0.000000] Memory limited to 64MB-192MB
-  ...
-  [    0.000000] Early memory node ranges
-  [    0.000000]   node   0: [mem 0x0000000004000000-0x000000000c1fffff]
-  ...
-  [    0.000000] Memory: 95312K/133120K available (...)
-
-After login, the output of free command is consistent with the
-above log.
-
-By the way, this commit only supports memmap=limit@base format,
-the other formats such as memmap=limit#base, memmap=limit$base
-and memmap=limit!base can be added if they are necessary in the
-future.
-
-Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
----
- arch/mips/kernel/setup.c | 42 +++++++++---------------------------------
- 1 file changed, 9 insertions(+), 33 deletions(-)
-
-diff --git a/arch/mips/kernel/setup.c b/arch/mips/kernel/setup.c
-index 6b6d718..e3b1f2e 100644
---- a/arch/mips/kernel/setup.c
-+++ b/arch/mips/kernel/setup.c
-@@ -340,6 +340,7 @@ static void __init bootmem_init(void)
- 
- static int usermem __initdata;
- static phys_addr_t memory_limit;
-+static phys_addr_t memory_base;
- 
- static int __init early_parse_mem(char *p)
- {
-@@ -355,42 +356,17 @@ early_param("mem", early_parse_mem);
- 
- static int __init early_parse_memmap(char *p)
- {
--	char *oldp;
--	u64 start_at, mem_size;
 -
- 	if (!p)
--		return -EINVAL;
-+		return 1;
- 
--	if (!strncmp(p, "exactmap", 8)) {
--		pr_err("\"memmap=exactmap\" invalid on MIPS\n");
--		return 0;
--	}
-+	memory_limit = memparse(p, &p) & PAGE_MASK;
-+	if (*p == '@')
-+		memory_base = memparse(p + 1, &p) & PAGE_MASK;
- 
--	oldp = p;
--	mem_size = memparse(p, &p);
--	if (p == oldp)
--		return -EINVAL;
--
--	if (*p == '@') {
--		start_at = memparse(p+1, &p);
--		memblock_add(start_at, mem_size);
--	} else if (*p == '#') {
--		pr_err("\"memmap=nn#ss\" (force ACPI data) invalid on MIPS\n");
--		return -EINVAL;
--	} else if (*p == '$') {
--		start_at = memparse(p+1, &p);
--		memblock_add(start_at, mem_size);
--		memblock_reserve(start_at, mem_size);
--	} else {
--		pr_err("\"memmap\" invalid format!\n");
--		return -EINVAL;
--	}
-+	pr_notice("Memory limited to %lldMB-%lldMB\n",
-+		  memory_base >> 20, (memory_base + memory_limit) >> 20);
- 
--	if (*p == '\0') {
--		usermem = 1;
--		return 0;
--	} else
--		return -EINVAL;
-+	return 0;
- }
- early_param("memmap", early_parse_memmap);
- 
-@@ -667,7 +643,7 @@ static void __init arch_mem_init(char **cmdline_p)
- 		__pa_symbol(&__nosave_end) - __pa_symbol(&__nosave_begin));
- 
- 	/* Limit the memory. */
--	memblock_enforce_memory_limit(memory_limit);
-+	memblock_mem_range_remove_map(memory_base, memory_limit);
- 	memblock_allow_resize();
- 
- 	early_memtest(PFN_PHYS(ARCH_PFN_OFFSET), PFN_PHYS(max_low_pfn));
--- 
-2.1.0
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
 

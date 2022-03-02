@@ -2,627 +2,248 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E3E4FC433F5
-	for <linux-mips@archiver.kernel.org>; Wed,  2 Mar 2022 10:38:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D78EDC43219
+	for <linux-mips@archiver.kernel.org>; Wed,  2 Mar 2022 11:07:12 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235052AbiCBKjZ convert rfc822-to-8bit (ORCPT
-        <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 2 Mar 2022 05:39:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55800 "EHLO
+        id S241241AbiCBLHr (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 2 Mar 2022 06:07:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34000 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229546AbiCBKjZ (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 2 Mar 2022 05:39:25 -0500
-Received: from aposti.net (aposti.net [89.234.176.197])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66D90B16;
-        Wed,  2 Mar 2022 02:38:40 -0800 (PST)
-Date:   Wed, 02 Mar 2022 10:38:26 +0000
-From:   Paul Cercueil <paul@crapouillou.net>
-Subject: Re: [PATCH v1 2/3] drm/panel: Add panel driver for NewVision NV3052C
- based LCDs
-To:     Christophe Branchereau <cbranchereau@gmail.com>
-Cc:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Sam Ravnborg <sam@ravnborg.org>, linux-kernel@vger.kernel.org,
-        linux-mips@vger.kernel.org, dri-devel@lists.freedesktop.org
-Message-Id: <2K548R.OKM2OPSDBF3L3@crapouillou.net>
-In-Reply-To: <20220301153122.20660-3-cbranchereau@gmail.com>
-References: <20220301153122.20660-1-cbranchereau@gmail.com>
-        <20220301153122.20660-3-cbranchereau@gmail.com>
+        with ESMTP id S236360AbiCBLHq (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 2 Mar 2022 06:07:46 -0500
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 1E91946674;
+        Wed,  2 Mar 2022 03:07:03 -0800 (PST)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id AAE8C106F;
+        Wed,  2 Mar 2022 03:07:02 -0800 (PST)
+Received: from [10.163.49.202] (unknown [10.163.49.202])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 417BC3F70D;
+        Wed,  2 Mar 2022 03:06:55 -0800 (PST)
+Subject: Re: [PATCH V3 09/30] arm/mm: Enable ARCH_HAS_VM_GET_PAGE_PROT
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        "Russell King (Oracle)" <linux@armlinux.org.uk>,
+        "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>,
+        "linux-sh@vger.kernel.org" <linux-sh@vger.kernel.org>,
+        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>,
+        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
+        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
+        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
+        "linux-hexagon@vger.kernel.org" <linux-hexagon@vger.kernel.org>,
+        "linux-csky@vger.kernel.org" <linux-csky@vger.kernel.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        "linux-snps-arc@lists.infradead.org" 
+        <linux-snps-arc@lists.infradead.org>,
+        "linux-xtensa@linux-xtensa.org" <linux-xtensa@linux-xtensa.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        "linux-um@lists.infradead.org" <linux-um@lists.infradead.org>,
+        "linux-m68k@lists.linux-m68k.org" <linux-m68k@lists.linux-m68k.org>,
+        "openrisc@lists.librecores.org" <openrisc@lists.librecores.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-alpha@vger.kernel.org" <linux-alpha@vger.kernel.org>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
+References: <1646045273-9343-1-git-send-email-anshuman.khandual@arm.com>
+ <1646045273-9343-10-git-send-email-anshuman.khandual@arm.com>
+ <Yhyqjo/4bozJB6j5@shell.armlinux.org.uk>
+ <542fa048-131e-240b-cc3a-fd4fff7ce4ba@arm.com>
+ <Yh1pYAOiskEQes3p@shell.armlinux.org.uk>
+ <dc3c95a4-de06-9889-ce1e-f660fc9fbb95@csgroup.eu>
+ <c3b60de0-38cd-160a-aa15-831349e07e23@arm.com>
+ <52866c88-59f9-2d1c-6f5a-5afcaf23f2bb@csgroup.eu>
+ <9caa90f5-c10d-75dd-b403-1388b7a3d296@arm.com>
+ <CAMuHMdU11kaOzanhHZRH+mLTJzaz-i=PnKdK7NF9V-qx6kp8wg@mail.gmail.com>
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+Message-ID: <b1eca2cd-36e6-3a9a-9fe7-70fc0caed7a9@arm.com>
+Date:   Wed, 2 Mar 2022 16:36:52 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1; format=flowed
-Content-Transfer-Encoding: 8BIT
+In-Reply-To: <CAMuHMdU11kaOzanhHZRH+mLTJzaz-i=PnKdK7NF9V-qx6kp8wg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Hi Christophe,
 
-Le mar., mars 1 2022 at 16:31:21 +0100, Christophe Branchereau 
-<cbranchereau@gmail.com> a �crit :
-> This driver supports the NewVision NV3052C based LCDs. Right now, it
-> only supports the LeadTek LTK035C5444T 2.4" 640x480 TFT LCD panel, 
-> which
-> can be found in the Anbernic RG-350M handheld console.
 
-You'd need to add a binding documentation for the NV3052C (in a 
-separate patch).
-
+On 3/2/22 3:35 PM, Geert Uytterhoeven wrote:
+> Hi Anshuman,
 > 
-> Signed-off-by: Christophe Branchereau <cbranchereau@gmail.com>
-> ---
->  drivers/gpu/drm/panel/Kconfig                 |   9 +
->  drivers/gpu/drm/panel/Makefile                |   1 +
->  .../gpu/drm/panel/panel-newvision-nv3052c.c   | 504 
-> ++++++++++++++++++
->  3 files changed, 514 insertions(+)
->  create mode 100644 drivers/gpu/drm/panel/panel-newvision-nv3052c.c
+> On Wed, Mar 2, 2022 at 10:51 AM Anshuman Khandual
+> <anshuman.khandual@arm.com> wrote:
+>> On 3/2/22 12:35 PM, Christophe Leroy wrote:
+>>> Le 02/03/2022 à 04:22, Anshuman Khandual a écrit :
+>>>> On 3/1/22 1:46 PM, Christophe Leroy wrote:
+>>>>> Le 01/03/2022 à 01:31, Russell King (Oracle) a écrit :
+>>>>>> On Tue, Mar 01, 2022 at 05:30:41AM +0530, Anshuman Khandual wrote:
+>>>>>>> On 2/28/22 4:27 PM, Russell King (Oracle) wrote:
+>>>>>>>> On Mon, Feb 28, 2022 at 04:17:32PM +0530, Anshuman Khandual wrote:
+>>>>>>>>> This defines and exports a platform specific custom vm_get_page_prot() via
+>>>>>>>>> subscribing ARCH_HAS_VM_GET_PAGE_PROT. Subsequently all __SXXX and __PXXX
+>>>>>>>>> macros can be dropped which are no longer needed.
+>>>>>>>>
+>>>>>>>> What I would really like to know is why having to run _code_ to work out
+>>>>>>>> what the page protections need to be is better than looking it up in a
+>>>>>>>> table.
+>>>>>>>>
+>>>>>>>> Not only is this more expensive in terms of CPU cycles, it also brings
+>>>>>>>> additional code size with it.
+>>>>>>>>
+>>>>>>>> I'm struggling to see what the benefit is.
+>>>>>>>
+>>>>>>> Currently vm_get_page_prot() is also being _run_ to fetch required page
+>>>>>>> protection values. Although that is being run in the core MM and from a
+>>>>>>> platform perspective __SXXX, __PXXX are just being exported for a table.
+>>>>>>> Looking it up in a table (and applying more constructs there after) is
+>>>>>>> not much different than a clean switch case statement in terms of CPU
+>>>>>>> usage. So this is not more expensive in terms of CPU cycles.
+>>>>>>
+>>>>>> I disagree.
+>>>>>
+>>>>> So do I.
+>>>>>
+>>>>>>
+>>>>>> However, let's base this disagreement on some evidence. Here is the
+>>>>>> present 32-bit ARM implementation:
+>>>>>>
+>>>>>> 00000048 <vm_get_page_prot>:
+>>>>>>         48:       e200000f        and     r0, r0, #15
+>>>>>>         4c:       e3003000        movw    r3, #0
+>>>>>>                           4c: R_ARM_MOVW_ABS_NC   .LANCHOR1
+>>>>>>         50:       e3403000        movt    r3, #0
+>>>>>>                           50: R_ARM_MOVT_ABS      .LANCHOR1
+>>>>>>         54:       e7930100        ldr     r0, [r3, r0, lsl #2]
+>>>>>>         58:       e12fff1e        bx      lr
+>>>>>>
+>>>>>> That is five instructions long.
+>>>>>
+>>>>> On ppc32 I get:
+>>>>>
+>>>>> 00000094 <vm_get_page_prot>:
+>>>>>         94: 3d 20 00 00     lis     r9,0
+>>>>>                     96: R_PPC_ADDR16_HA     .data..ro_after_init
+>>>>>         98: 54 84 16 ba     rlwinm  r4,r4,2,26,29
+>>>>>         9c: 39 29 00 00     addi    r9,r9,0
+>>>>>                     9e: R_PPC_ADDR16_LO     .data..ro_after_init
+>>>>>         a0: 7d 29 20 2e     lwzx    r9,r9,r4
+>>>>>         a4: 91 23 00 00     stw     r9,0(r3)
+>>>>>         a8: 4e 80 00 20     blr
+>>>>>
+>>>>>
+>>>>>>
+>>>>>> Please show that your new implementation is not more expensive on
+>>>>>> 32-bit ARM. Please do so by building a 32-bit kernel, and providing
+>>>>>> the disassembly.
+>>>>>
+>>>>> With your series I get:
+>>>>>
+>>>>> 00000000 <vm_get_page_prot>:
+>>>>>      0:     3d 20 00 00     lis     r9,0
+>>>>>                     2: R_PPC_ADDR16_HA      .rodata
+>>>>>      4:     39 29 00 00     addi    r9,r9,0
+>>>>>                     6: R_PPC_ADDR16_LO      .rodata
+>>>>>      8:     54 84 16 ba     rlwinm  r4,r4,2,26,29
+>>>>>      c:     7d 49 20 2e     lwzx    r10,r9,r4
+>>>>>     10:     7d 4a 4a 14     add     r10,r10,r9
+>>>>>     14:     7d 49 03 a6     mtctr   r10
+>>>>>     18:     4e 80 04 20     bctr
+>>>>>     1c:     39 20 03 15     li      r9,789
+>>>>>     20:     91 23 00 00     stw     r9,0(r3)
+>>>>>     24:     4e 80 00 20     blr
+>>>>>     28:     39 20 01 15     li      r9,277
+>>>>>     2c:     91 23 00 00     stw     r9,0(r3)
+>>>>>     30:     4e 80 00 20     blr
+>>>>>     34:     39 20 07 15     li      r9,1813
+>>>>>     38:     91 23 00 00     stw     r9,0(r3)
+>>>>>     3c:     4e 80 00 20     blr
+>>>>>     40:     39 20 05 15     li      r9,1301
+>>>>>     44:     91 23 00 00     stw     r9,0(r3)
+>>>>>     48:     4e 80 00 20     blr
+>>>>>     4c:     39 20 01 11     li      r9,273
+>>>>>     50:     4b ff ff d0     b       20 <vm_get_page_prot+0x20>
+>>>>>
+>>>>>
+>>>>> That is definitely more expensive, it implements a table of branches.
+>>>>
+>>>> Okay, will split out the PPC32 implementation that retains existing
+>>>> table look up method. Also planning to keep that inside same file
+>>>> (arch/powerpc/mm/mmap.c), unless you have a difference preference.
+>>>
+>>> My point was not to get something specific for PPC32, but to amplify on
+>>> Russell's objection.
+>>>
+>>> As this is bad for ARM and bad for PPC32, do we have any evidence that
+>>> your change is good for any other architecture ?
+>>>
+>>> I checked PPC64 and there is exactly the same drawback. With the current
+>>> implementation it is a small function performing table read then a few
+>>> adjustment. After your change it is a bigger function implementing a
+>>> table of branches.
+>>
+>> I am wondering if this would not be the case for any other switch case
+>> statement on the platform ? Is there something specific/different just
+>> on vm_get_page_prot() implementation ? Are you suggesting that switch
+>> case statements should just be avoided instead ?
+>>
+>>>
+>>> So, as requested by Russell, could you look at the disassembly for other
+>>> architectures and show us that ARM and POWERPC are the only ones for
+>>> which your change is not optimal ?
+>>
+>> But the primary purpose of this series is not to guarantee optimized
+>> code on platform by platform basis, while migrating from a table based
+>> look up method into a switch case statement.
+>>
+>> But instead, the purposes is to remove current levels of unnecessary
+>> abstraction while converting a vm_flags access combination into page
+>> protection. The switch case statement for platform implementation of
+>> vm_get_page_prot() just seemed logical enough. Christoph's original
+>> suggestion patch for x86 had the same implementation as well.
+>>
+>> But if the table look up is still better/preferred method on certain
+>> platforms like arm or ppc32, will be happy to preserve that.
 > 
-> diff --git a/drivers/gpu/drm/panel/Kconfig 
-> b/drivers/gpu/drm/panel/Kconfig
-> index bb2e47229c68..40084f709789 100644
-> --- a/drivers/gpu/drm/panel/Kconfig
-> +++ b/drivers/gpu/drm/panel/Kconfig
-> @@ -283,6 +283,15 @@ config DRM_PANEL_NEC_NL8048HL11
->  	  panel (found on the Zoom2/3/3630 SDP boards). To compile this 
-> driver
->  	  as a module, choose M here.
+> I doubt the switch() variant would give better code on any platform.
 > 
-> +config DRM_PANEL_NEWVISION_NV3052C
-> +	tristate "NewVision NV3052C RGB/SPI panel"
-> +	depends on OF && SPI
-> +	depends on BACKLIGHT_CLASS_DEVICE
-> +	select DRM_MIPI_DBI
-> +	help
-> +	  Say Y here if you want to enable support for the panels built
-> +	  around the NewVision NV3052C display controller.
-> +
->  config DRM_PANEL_NOVATEK_NT35510
->  	tristate "Novatek NT35510 RGB panel driver"
->  	depends on OF
-> diff --git a/drivers/gpu/drm/panel/Makefile 
-> b/drivers/gpu/drm/panel/Makefile
-> index 5740911f637c..42a7ab54234b 100644
-> --- a/drivers/gpu/drm/panel/Makefile
-> +++ b/drivers/gpu/drm/panel/Makefile
-> @@ -26,6 +26,7 @@ obj-$(CONFIG_DRM_PANEL_LEADTEK_LTK500HD1829) += 
-> panel-leadtek-ltk500hd1829.o
->  obj-$(CONFIG_DRM_PANEL_LG_LB035Q02) += panel-lg-lb035q02.o
->  obj-$(CONFIG_DRM_PANEL_LG_LG4573) += panel-lg-lg4573.o
->  obj-$(CONFIG_DRM_PANEL_NEC_NL8048HL11) += panel-nec-nl8048hl11.o
-> +obj-$(CONFIG_DRM_PANEL_NEWVISION_NV3052C) += 
-> panel-newvision-nv3052c.o
->  obj-$(CONFIG_DRM_PANEL_NOVATEK_NT35510) += panel-novatek-nt35510.o
->  obj-$(CONFIG_DRM_PANEL_NOVATEK_NT35560) += panel-novatek-nt35560.o
->  obj-$(CONFIG_DRM_PANEL_NOVATEK_NT35950) += panel-novatek-nt35950.o
-> diff --git a/drivers/gpu/drm/panel/panel-newvision-nv3052c.c 
-> b/drivers/gpu/drm/panel/panel-newvision-nv3052c.c
-> new file mode 100644
-> index 000000000000..08a3b33bcce0
-> --- /dev/null
-> +++ b/drivers/gpu/drm/panel/panel-newvision-nv3052c.c
-> @@ -0,0 +1,504 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * NevVision NV3052C IPS LCD panel driver
-> + *
-> + * Copyright (C) 2020, Paul Cercueil <paul@crapouillou.net>
-> + * Copyright (C) 2022, Christophe Branchereau 
-> <cbranchereau@gmail.com>
-> + */
-> +
-> +#include <linux/delay.h>
-> +#include <linux/device.h>
-> +#include <linux/gpio/consumer.h>
-> +#include <linux/media-bus-format.h>
-> +#include <linux/module.h>
-> +#include <linux/of_device.h>
-> +#include <linux/regulator/consumer.h>
-> +#include <linux/spi/spi.h>
-> +
-> +#include <video/mipi_display.h>
-> +
-> +#include <drm/drm_mipi_dbi.h>
-> +#include <drm/drm_modes.h>
-> +#include <drm/drm_panel.h>
-> +
-> +struct nv3052c_panel_info {
-> +	const struct drm_display_mode *display_modes;
-> +	unsigned int num_modes;
-> +	u16 width_mm, height_mm;
-> +	u32 bus_format, bus_flags;
-> +};
-> +
-> +struct nv3052c {
-> +	struct device *dev;
-> +	struct drm_panel panel;
-> +	struct mipi_dbi dbi;
-> +
-> +	const struct nv3052c_panel_info *panel_info;
-> +
-> +	struct regulator *supply;
-> +	struct gpio_desc *reset_gpio;
-> +};
-> +
-> +struct nv3052c_reg {
-> +	u8 cmd;
-> +	u8 val;
-> +};
-> +
-> +static const struct nv3052c_reg nv3052c_panel_regs[] = {
-> +	{ 0xff, 0x30 },
-> +	{ 0xff, 0x52 },
-> +	{ 0xff, 0x01 },
-> +	{ 0xe3, 0x00 },
-> +	{ 0x40, 0x00 },
-> +	{ 0x03, 0x40 },
-> +	{ 0x04, 0x00 },
-> +	{ 0x05, 0x03 },
-> +	{ 0x08, 0x00 },
-> +	{ 0x09, 0x07 },
-> +	{ 0x0a, 0x01 },
-> +	{ 0x0b, 0x32 },
-> +	{ 0x0c, 0x32 },
-> +	{ 0x0d, 0x0b },
-> +	{ 0x0e, 0x00 },
-> +	{ 0x23, 0xa0 },
-> +
-> +	{ 0x24, 0x0c },
-> +	{ 0x25, 0x06 },
-> +	{ 0x26, 0x14 },
-> +	{ 0x27, 0x14 },
-> +
-> +	{ 0x38, 0xcc },
-> +	{ 0x39, 0xd7 },
-> +	{ 0x3a, 0x4a },
-> +
-> +	{ 0x28, 0x40 },
-> +	{ 0x29, 0x01 },
-> +	{ 0x2a, 0xdf },
-> +	{ 0x49, 0x3c },
-> +	{ 0x91, 0x77 },
-> +	{ 0x92, 0x77 },
-> +	{ 0xa0, 0x55 },
-> +	{ 0xa1, 0x50 },
-> +	{ 0xa4, 0x9c },
-> +	{ 0xa7, 0x02 },
-> +	{ 0xa8, 0x01 },
-> +	{ 0xa9, 0x01 },
-> +	{ 0xaa, 0xfc },
-> +	{ 0xab, 0x28 },
-> +	{ 0xac, 0x06 },
-> +	{ 0xad, 0x06 },
-> +	{ 0xae, 0x06 },
-> +	{ 0xaf, 0x03 },
-> +	{ 0xb0, 0x08 },
-> +	{ 0xb1, 0x26 },
-> +	{ 0xb2, 0x28 },
-> +	{ 0xb3, 0x28 },
-> +	{ 0xb4, 0x33 },
-> +	{ 0xb5, 0x08 },
-> +	{ 0xb6, 0x26 },
-> +	{ 0xb7, 0x08 },
-> +	{ 0xb8, 0x26 },
-> +	{ 0xf0, 0x00 },
-> +	{ 0xf6, 0xc0 },
-> +
-> +	{ 0xff, 0x30 },
-> +	{ 0xff, 0x52 },
-> +	{ 0xff, 0x02 },
-> +	{ 0xb0, 0x0b },
-> +	{ 0xb1, 0x16 },
-> +	{ 0xb2, 0x17 },
-> +	{ 0xb3, 0x2c },
-> +	{ 0xb4, 0x32 },
-> +	{ 0xb5, 0x3b },
-> +	{ 0xb6, 0x29 },
-> +	{ 0xb7, 0x40 },
-> +	{ 0xb8, 0x0d },
-> +	{ 0xb9, 0x05 },
-> +	{ 0xba, 0x12 },
-> +	{ 0xbb, 0x10 },
-> +	{ 0xbc, 0x12 },
-> +	{ 0xbd, 0x15 },
-> +	{ 0xbe, 0x19 },
-> +	{ 0xbf, 0x0e },
-> +	{ 0xc0, 0x16 },
-> +	{ 0xc1, 0x0a },
-> +	{ 0xd0, 0x0c },
-> +	{ 0xd1, 0x17 },
-> +	{ 0xd2, 0x14 },
-> +	{ 0xd3, 0x2e },
-> +	{ 0xd4, 0x32 },
-> +	{ 0xd5, 0x3c },
-> +	{ 0xd6, 0x22 },
-> +	{ 0xd7, 0x3d },
-> +	{ 0xd8, 0x0d },
-> +	{ 0xd9, 0x07 },
-> +	{ 0xda, 0x13 },
-> +	{ 0xdb, 0x13 },
-> +	{ 0xdc, 0x11 },
-> +	{ 0xdd, 0x15 },
-> +	{ 0xde, 0x19 },
-> +	{ 0xdf, 0x10 },
-> +	{ 0xe0, 0x17 },
-> +	{ 0xe1, 0x0a },
-> +
-> +	{ 0xff, 0x30 },
-> +	{ 0xff, 0x52 },
-> +	{ 0xff, 0x03 },
-> +	{ 0x00, 0x2a },
-> +	{ 0x01, 0x2a },
-> +	{ 0x02, 0x2a },
-> +	{ 0x03, 0x2a },
-> +	{ 0x04, 0x61 },
-> +	{ 0x05, 0x80 },
-> +	{ 0x06, 0xc7 },
-> +	{ 0x07, 0x01 },
-> +	{ 0x08, 0x03 },
-> +	{ 0x09, 0x04 },
-> +	{ 0x70, 0x22 },
-> +	{ 0x71, 0x80 },
-> +	{ 0x30, 0x2a },
-> +	{ 0x31, 0x2a },
-> +	{ 0x32, 0x2a },
-> +	{ 0x33, 0x2a },
-> +	{ 0x34, 0x61 },
-> +	{ 0x35, 0xc5 },
-> +	{ 0x36, 0x80 },
-> +	{ 0x37, 0x23 },
-> +	{ 0x40, 0x03 },
-> +	{ 0x41, 0x04 },
-> +	{ 0x42, 0x05 },
-> +	{ 0x43, 0x06 },
-> +	{ 0x44, 0x11 },
-> +	{ 0x45, 0xe8 },
-> +	{ 0x46, 0xe9 },
-> +	{ 0x47, 0x11 },
-> +	{ 0x48, 0xea },
-> +	{ 0x49, 0xeb },
-> +	{ 0x50, 0x07 },
-> +	{ 0x51, 0x08 },
-> +	{ 0x52, 0x09 },
-> +	{ 0x53, 0x0a },
-> +	{ 0x54, 0x11 },
-> +	{ 0x55, 0xec },
-> +	{ 0x56, 0xed },
-> +	{ 0x57, 0x11 },
-> +	{ 0x58, 0xef },
-> +	{ 0x59, 0xf0 },
-> +	{ 0xb1, 0x01 },
-> +	{ 0xb4, 0x15 },
-> +	{ 0xb5, 0x16 },
-> +	{ 0xb6, 0x09 },
-> +	{ 0xb7, 0x0f },
-> +	{ 0xb8, 0x0d },
-> +	{ 0xb9, 0x0b },
-> +	{ 0xba, 0x00 },
-> +	{ 0xc7, 0x02 },
-> +	{ 0xca, 0x17 },
-> +	{ 0xcb, 0x18 },
-> +	{ 0xcc, 0x0a },
-> +	{ 0xcd, 0x10 },
-> +	{ 0xce, 0x0e },
-> +	{ 0xcf, 0x0c },
-> +	{ 0xd0, 0x00 },
-> +	{ 0x81, 0x00 },
-> +	{ 0x84, 0x15 },
-> +	{ 0x85, 0x16 },
-> +	{ 0x86, 0x10 },
-> +	{ 0x87, 0x0a },
-> +	{ 0x88, 0x0c },
-> +	{ 0x89, 0x0e },
-> +	{ 0x8a, 0x02 },
-> +	{ 0x97, 0x00 },
-> +	{ 0x9a, 0x17 },
-> +	{ 0x9b, 0x18 },
-> +	{ 0x9c, 0x0f },
-> +	{ 0x9d, 0x09 },
-> +	{ 0x9e, 0x0b },
-> +	{ 0x9f, 0x0d },
-> +	{ 0xa0, 0x01 },
-> +
-> +	{ 0xff, 0x30 },
-> +	{ 0xff, 0x52 },
-> +	{ 0xff, 0x02 },
-> +	{ 0x01, 0x01 },
-> +	{ 0x02, 0xda },
-> +	{ 0x03, 0xba },
-> +	{ 0x04, 0xa8 },
-> +	{ 0x05, 0x9a },
-> +	{ 0x06, 0x70 },
-> +	{ 0x07, 0xff },
-> +	{ 0x08, 0x91 },
-> +	{ 0x09, 0x90 },
-> +	{ 0x0a, 0xff },
-> +	{ 0x0b, 0x8f },
-> +	{ 0x0c, 0x60 },
-> +	{ 0x0d, 0x58 },
-> +	{ 0x0e, 0x48 },
-> +	{ 0x0f, 0x38 },
-> +	{ 0x10, 0x2b },
-> +
-> +	{ 0xff, 0x30 },
-> +	{ 0xff, 0x52 },
-> +	{ 0xff, 0x00 },
-> +	{ 0x36, 0x0a },
-> +};
-> +
-> +static inline struct nv3052c *to_nv3052c(struct drm_panel *panel)
-> +{
-> +	return container_of(panel, struct nv3052c, panel);
-> +}
-> +
-> +static int nv3052c_prepare(struct drm_panel *panel)
-> +{
-> +	struct nv3052c *priv = to_nv3052c(panel);
-> +	struct mipi_dbi *dbi = &priv->dbi;
-> +	unsigned int i;
-> +	int err;
-> +
-> +	err = regulator_enable(priv->supply);
-> +	if (err) {
-> +		dev_err(priv->dev, "Failed to enable power supply: %d\n", err);
-> +		return err;
-> +	}
-> +
-> +	/* Reset the chip */
-> +	gpiod_set_value_cansleep(priv->reset_gpio, 1);
-> +	usleep_range(10, 1000);
-> +	gpiod_set_value_cansleep(priv->reset_gpio, 0);
-> +	msleep(5);
-> +
-> +	for (i = 0; i < ARRAY_SIZE(nv3052c_panel_regs); i++) {
-> +		err = mipi_dbi_command(dbi, nv3052c_panel_regs[i].cmd,
-> +				       nv3052c_panel_regs[i].val);
-> +
-> +		if (err) {
-> +			dev_err(priv->dev, "Unable to set register: %d\n", err);
-> +			goto err_disable_regulator;
-> +		}
-> +	}
-> +
-> +	err = mipi_dbi_command(dbi, MIPI_DCS_EXIT_SLEEP_MODE);
-> +	if (err) {
-> +		dev_err(priv->dev, "Unable to exit sleep mode: %d\n", err);
-> +		goto err_disable_regulator;
-> +	}
-> +
-> +	return 0;
-> +
-> +err_disable_regulator:
-> +	regulator_disable(priv->supply);
-> +	return err;
-> +}
-> +
-> +static int nv3052c_unprepare(struct drm_panel *panel)
-> +{
-> +	struct nv3052c *priv = to_nv3052c(panel);
-> +	struct mipi_dbi *dbi = &priv->dbi;
-> +	int err;
-> +
-> +	err = mipi_dbi_command(dbi, MIPI_DCS_ENTER_SLEEP_MODE);
-> +	if (err) {
-> +		dev_err(priv->dev, "Unable to enter sleep mode: %d\n", err);
-> +		return err;
-> +	}
-> +
-> +	gpiod_set_value_cansleep(priv->reset_gpio, 1);
-> +	regulator_disable(priv->supply);
-> +
-> +	return 0;
-> +}
-> +
-> +static int nv3052c_enable(struct drm_panel *panel)
-> +{
-> +	struct nv3052c *priv = to_nv3052c(panel);
-> +	struct mipi_dbi *dbi = &priv->dbi;
-> +	int err;
-> +
-> +	err = mipi_dbi_command(dbi, MIPI_DCS_SET_DISPLAY_ON);
-> +	if (err) {
-> +		dev_err(priv->dev, "Unable to enable display: %d\n", err);
-> +		return err;
-> +	}
-> +
-> +	if (panel->backlight) {
-> +		/* Wait for the picture to be ready before enabling backlight */
-> +		msleep(120);
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static int nv3052c_disable(struct drm_panel *panel)
-> +{
-> +	struct nv3052c *priv = to_nv3052c(panel);
-> +	struct mipi_dbi *dbi = &priv->dbi;
-> +	int err;
-> +
-> +	err = mipi_dbi_command(dbi, MIPI_DCS_SET_DISPLAY_OFF);
-> +	if (err) {
-> +		dev_err(priv->dev, "Unable to disable display: %d\n", err);
-> +		return err;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static int nv3052c_get_modes(struct drm_panel *panel,
-> +			     struct drm_connector *connector)
-> +{
-> +	struct nv3052c *priv = to_nv3052c(panel);
-> +	const struct nv3052c_panel_info *panel_info = priv->panel_info;
-> +	struct drm_display_mode *mode;
-> +	unsigned int i;
-> +
-> +	for (i = 0; i < panel_info->num_modes; i++) {
-> +		mode = drm_mode_duplicate(connector->dev,
-> +					  &panel_info->display_modes[i]);
-> +		if (!mode)
-> +			return -ENOMEM;
-> +
-> +		drm_mode_set_name(mode);
-> +
-> +		mode->type = DRM_MODE_TYPE_DRIVER;
-> +		if (panel_info->num_modes == 1)
-> +			mode->type |= DRM_MODE_TYPE_PREFERRED;
-> +
-> +		drm_mode_probed_add(connector, mode);
-> +	}
-> +
-> +	connector->display_info.bpc = 8;
-> +	connector->display_info.width_mm = panel_info->width_mm;
-> +	connector->display_info.height_mm = panel_info->height_mm;
-> +
-> +	drm_display_info_set_bus_formats(&connector->display_info,
-> +					 &panel_info->bus_format, 1);
-> +	connector->display_info.bus_flags = panel_info->bus_flags;
-> +
-> +	return panel_info->num_modes;
-> +}
-> +
-> +static const struct drm_panel_funcs nv3052c_funcs = {
-> +	.prepare	= nv3052c_prepare,
-> +	.unprepare	= nv3052c_unprepare,
-> +	.enable		= nv3052c_enable,
-> +	.disable	= nv3052c_disable,
-> +	.get_modes	= nv3052c_get_modes,
-> +};
-> +
-> +static int nv3052c_probe(struct spi_device *spi)
-> +{
-> +	struct device *dev = &spi->dev;
-> +	struct nv3052c *priv;
-> +	int err;
-> +
-> +	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
-> +	if (!priv)
-> +		return -ENOMEM;
-> +
-> +	priv->dev = dev;
-> +
-> +	priv->panel_info = of_device_get_match_data(dev);
-> +	if (!priv->panel_info)
-> +		return -EINVAL;
-> +
-> +	priv->supply = devm_regulator_get(dev, "power");
-> +	if (IS_ERR(priv->supply)) {
-> +		dev_err(dev, "Failed to get power supply\n");
-> +		return PTR_ERR(priv->supply);
+> What about using tables everywhere, using designated initializers
+> to improve readability?
 
-You can use dev_err_probe() here,
+Designated initializers ? Could you please be more specific. A table look
+up on arm platform would be something like this and arm_protection_map[]
+needs to be updated with user_pgprot like before. Just wondering how a
+designated initializer will help here.
 
-> +	}
-> +
-> +	priv->reset_gpio = devm_gpiod_get(dev, "reset", GPIOD_OUT_HIGH);
-> +	if (IS_ERR(priv->reset_gpio)) {
-> +		dev_err(dev, "Failed to get reset GPIO\n");
-> +		return PTR_ERR(priv->reset_gpio);
+static pgprot_t arm_protection_map[16] __ro_after_init = {
+       [VM_NONE]                                       = __PAGE_NONE,
+       [VM_READ]                                       = __PAGE_READONLY,
+       [VM_WRITE]                                      = __PAGE_COPY,
+       [VM_WRITE | VM_READ]                            = __PAGE_COPY,
+       [VM_EXEC]                                       = __PAGE_READONLY_EXEC,
+       [VM_EXEC | VM_READ]                             = __PAGE_READONLY_EXEC,
+       [VM_EXEC | VM_WRITE]                            = __PAGE_COPY_EXEC,
+       [VM_EXEC | VM_WRITE | VM_READ]                  = __PAGE_COPY_EXEC,
+       [VM_SHARED]                                     = __PAGE_NONE,
+       [VM_SHARED | VM_READ]                           = __PAGE_READONLY,
+       [VM_SHARED | VM_WRITE]                          = __PAGE_SHARED,
+       [VM_SHARED | VM_WRITE | VM_READ]                = __PAGE_SHARED,
+       [VM_SHARED | VM_EXEC]                           = __PAGE_READONLY_EXEC,
+       [VM_SHARED | VM_EXEC | VM_READ]                 = __PAGE_READONLY_EXEC,
+       [VM_SHARED | VM_EXEC | VM_WRITE]                = __PAGE_SHARED_EXEC,
+       [VM_SHARED | VM_EXEC | VM_WRITE | VM_READ]      = __PAGE_SHARED_EXEC
+};
 
-and here as well, since devm_{regulator,gpiod}_get() may return 
--EPROBE_DEFER.
-
-The rest of the driver looks fine to me.
-
-Cheers,
--Paul
-
-> +	}
-> +
-> +	err = mipi_dbi_spi_init(spi, &priv->dbi, NULL);
-> +	if (err)
-> +		return dev_err_probe(dev, err, "MIPI DBI init failed\n");
-> +
-> +	priv->dbi.read_commands = NULL;
-> +
-> +	spi_set_drvdata(spi, priv);
-> +
-> +	drm_panel_init(&priv->panel, dev, &nv3052c_funcs,
-> +		       DRM_MODE_CONNECTOR_DPI);
-> +
-> +	err = drm_panel_of_backlight(&priv->panel);
-> +	if (err < 0) {
-> +		if (err != -EPROBE_DEFER)
-> +			dev_err(dev, "Failed to attach backlight\n");
-> +		return err;
-> +	}
-> +
-> +	drm_panel_add(&priv->panel);
-> +
-> +	return 0;
-> +}
-> +
-> +static int nv3052c_remove(struct spi_device *spi)
-> +{
-> +	struct nv3052c *priv = spi_get_drvdata(spi);
-> +
-> +	drm_panel_remove(&priv->panel);
-> +	drm_panel_disable(&priv->panel);
-> +	drm_panel_unprepare(&priv->panel);
-> +
-> +	return 0;
-> +}
-> +
-> +static const struct drm_display_mode ltk035c5444t_modes[] = {
-> +	{ /* 60 Hz */
-> +		.clock = 24000,
-> +		.hdisplay = 640,
-> +		.hsync_start = 640 + 96,
-> +		.hsync_end = 640 + 96 + 16,
-> +		.htotal = 640 + 96 + 16 + 48,
-> +		.vdisplay = 480,
-> +		.vsync_start = 480 + 5,
-> +		.vsync_end = 480 + 5 + 2,
-> +		.vtotal = 480 + 5 + 2 + 13,
-> +		.flags = DRM_MODE_FLAG_NHSYNC | DRM_MODE_FLAG_NVSYNC,
-> +	},
-> +	{ /* 50 Hz */
-> +		.clock = 18000,
-> +		.hdisplay = 640,
-> +		.hsync_start = 640 + 39,
-> +		.hsync_end = 640 + 39 + 2,
-> +		.htotal = 640 + 39 + 2 + 39,
-> +		.vdisplay = 480,
-> +		.vsync_start = 480 + 5,
-> +		.vsync_end = 480 + 5 + 2,
-> +		.vtotal = 480 + 5 + 2 + 13,
-> +		.flags = DRM_MODE_FLAG_NHSYNC | DRM_MODE_FLAG_NVSYNC,
-> +	},
-> +};
-> +
-> +static const struct nv3052c_panel_info ltk035c5444t_spi_panel_info = 
-> {
-> +	.display_modes = ltk035c5444t_modes,
-> +	.num_modes = ARRAY_SIZE(ltk035c5444t_modes),
-> +	.width_mm = 77,
-> +	.height_mm = 64,
-> +	.bus_format = MEDIA_BUS_FMT_RGB888_1X24,
-> +	.bus_flags = DRM_BUS_FLAG_DE_HIGH | 
-> DRM_BUS_FLAG_PIXDATA_DRIVE_NEGEDGE,
-> +};
-> +
-> +static const struct of_device_id nv3052c_of_match[] = {
-> +	{ .compatible = "leadtek,ltk035c5444t-spi", .data = 
-> &ltk035c5444t_spi_panel_info },
-> +	{ /* sentinel */ }
-> +};
-> +MODULE_DEVICE_TABLE(of, nv3052c_of_match);
-> +
-> +static struct spi_driver nv3052c_driver = {
-> +	.driver = {
-> +		.name = "nv3052c",
-> +		.of_match_table = nv3052c_of_match,
-> +	},
-> +	.probe = nv3052c_probe,
-> +	.remove = nv3052c_remove,
-> +};
-> +module_spi_driver(nv3052c_driver);
-> +
-> +MODULE_AUTHOR("Paul Cercueil <paul@crapouillou.net>");
-> +MODULE_AUTHOR("Christophe Branchereau <cbranchereau@gmail.com>");
-> +MODULE_LICENSE("GPL v2");
-> --
-> 2.34.1
-> 
-
-
+pgprot_t vm_get_page_prot(unsigned long vm_flags)
+{
+       return __pgprot(pgprot_val(arm_protection_map[vm_flags &
+                      (VM_READ|VM_WRITE|VM_EXEC|VM_SHARED)]));
+}
+EXPORT_SYMBOL(vm_get_page_prot);

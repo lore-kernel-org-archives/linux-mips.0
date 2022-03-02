@@ -2,252 +2,213 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 67325C433EF
-	for <linux-mips@archiver.kernel.org>; Wed,  2 Mar 2022 09:28:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CAA6FC4321E
+	for <linux-mips@archiver.kernel.org>; Wed,  2 Mar 2022 09:51:39 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231932AbiCBJ3V (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 2 Mar 2022 04:29:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35812 "EHLO
+        id S239830AbiCBJwS (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 2 Mar 2022 04:52:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33644 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229667AbiCBJ3U (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 2 Mar 2022 04:29:20 -0500
-Received: from loongson.cn (mail.loongson.cn [114.242.206.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 2D7FA2B253;
-        Wed,  2 Mar 2022 01:28:35 -0800 (PST)
-Received: from [10.130.0.135] (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9BxsM67OB9iLz8BAA--.6653S3;
-        Wed, 02 Mar 2022 17:28:27 +0800 (CST)
-Subject: Re: [PATCH v4 0/4] MIPS: Modify mem= and memmap= parameter
-To:     Mike Rapoport <rppt@kernel.org>
-References: <1646108941-27919-1-git-send-email-yangtiezhu@loongson.cn>
- <Yh3tgr+g/6IElq0P@kernel.org>
- <cfd74b5b-39c3-733a-5226-515991f91f39@loongson.cn>
- <Yh4uUoYT+YS5Jxsv@kernel.org>
- <8956c625-c18d-846e-3e65-7920776b27f3@loongson.cn>
- <Yh8kzK7TM7EhaKEQ@kernel.org>
-Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Xuefeng Li <lixuefeng@loongson.cn>, linux-mips@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-From:   Tiezhu Yang <yangtiezhu@loongson.cn>
-Message-ID: <ab104917-d370-cbf3-6017-6e8e40221860@loongson.cn>
-Date:   Wed, 2 Mar 2022 17:28:27 +0800
-User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
- Thunderbird/45.4.0
+        with ESMTP id S233574AbiCBJwQ (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 2 Mar 2022 04:52:16 -0500
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 7094EBA75C;
+        Wed,  2 Mar 2022 01:51:32 -0800 (PST)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 146371042;
+        Wed,  2 Mar 2022 01:51:32 -0800 (PST)
+Received: from [10.163.49.202] (unknown [10.163.49.202])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id AE96F3F66F;
+        Wed,  2 Mar 2022 01:51:24 -0800 (PST)
+Subject: Re: [PATCH V3 09/30] arm/mm: Enable ARCH_HAS_VM_GET_PAGE_PROT
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        "Russell King (Oracle)" <linux@armlinux.org.uk>
+Cc:     "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>,
+        "linux-sh@vger.kernel.org" <linux-sh@vger.kernel.org>,
+        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>,
+        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
+        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
+        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
+        "linux-hexagon@vger.kernel.org" <linux-hexagon@vger.kernel.org>,
+        "linux-csky@vger.kernel.org" <linux-csky@vger.kernel.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        "geert@linux-m68k.org" <geert@linux-m68k.org>,
+        "linux-snps-arc@lists.infradead.org" 
+        <linux-snps-arc@lists.infradead.org>,
+        "linux-xtensa@linux-xtensa.org" <linux-xtensa@linux-xtensa.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        "linux-um@lists.infradead.org" <linux-um@lists.infradead.org>,
+        "linux-m68k@lists.linux-m68k.org" <linux-m68k@lists.linux-m68k.org>,
+        "openrisc@lists.librecores.org" <openrisc@lists.librecores.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-alpha@vger.kernel.org" <linux-alpha@vger.kernel.org>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
+References: <1646045273-9343-1-git-send-email-anshuman.khandual@arm.com>
+ <1646045273-9343-10-git-send-email-anshuman.khandual@arm.com>
+ <Yhyqjo/4bozJB6j5@shell.armlinux.org.uk>
+ <542fa048-131e-240b-cc3a-fd4fff7ce4ba@arm.com>
+ <Yh1pYAOiskEQes3p@shell.armlinux.org.uk>
+ <dc3c95a4-de06-9889-ce1e-f660fc9fbb95@csgroup.eu>
+ <c3b60de0-38cd-160a-aa15-831349e07e23@arm.com>
+ <52866c88-59f9-2d1c-6f5a-5afcaf23f2bb@csgroup.eu>
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+Message-ID: <9caa90f5-c10d-75dd-b403-1388b7a3d296@arm.com>
+Date:   Wed, 2 Mar 2022 15:21:22 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <Yh8kzK7TM7EhaKEQ@kernel.org>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: AQAAf9BxsM67OB9iLz8BAA--.6653S3
-X-Coremail-Antispam: 1UD129KBjvJXoW3Gw1xKFy3Kry3tw17Jr18Xwb_yoW3CrWfpF
-        WxX3Wjgr4kJryUAr1xtw17Jr9Iy34FkF1DXr13trn7Z3Z8trnrJw1UJr1Uua47Ary5JF1q
-        vF48tF9F9w4UAw7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvl14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26ryj6F1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
-        6r4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
-        Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
-        I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r
-        4UM4x0Y48IcVAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCYjI0SjxkI62AI1cAE67vI
-        Y487MxkIecxEwVAFwVW8uwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8Jw
-        C20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAF
-        wI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjx
-        v20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rWUJVWrZr1UMIIF0xvE
-        x4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvj
-        DU0xZFpf9x0JU4BT5UUUUU=
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+In-Reply-To: <52866c88-59f9-2d1c-6f5a-5afcaf23f2bb@csgroup.eu>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
 
 
-On 03/02/2022 04:03 PM, Mike Rapoport wrote:
-> On Wed, Mar 02, 2022 at 09:50:49AM +0800, Tiezhu Yang wrote:
+On 3/2/22 12:35 PM, Christophe Leroy wrote:
+> 
+> 
+> Le 02/03/2022 à 04:22, Anshuman Khandual a écrit :
 >>
 >>
->> On 03/01/2022 10:31 PM, Mike Rapoport wrote:
->>> On Tue, Mar 01, 2022 at 07:51:23PM +0800, Tiezhu Yang wrote:
->>>>
->>>>
->>>> On 03/01/2022 05:55 PM, Mike Rapoport wrote:
->>>>> Hi,
+>> On 3/1/22 1:46 PM, Christophe Leroy wrote:
+>>>
+>>>
+>>> Le 01/03/2022 à 01:31, Russell King (Oracle) a écrit :
+>>>> On Tue, Mar 01, 2022 at 05:30:41AM +0530, Anshuman Khandual wrote:
+>>>>> On 2/28/22 4:27 PM, Russell King (Oracle) wrote:
+>>>>>> On Mon, Feb 28, 2022 at 04:17:32PM +0530, Anshuman Khandual wrote:
+>>>>>>> This defines and exports a platform specific custom vm_get_page_prot() via
+>>>>>>> subscribing ARCH_HAS_VM_GET_PAGE_PROT. Subsequently all __SXXX and __PXXX
+>>>>>>> macros can be dropped which are no longer needed.
+>>>>>>
+>>>>>> What I would really like to know is why having to run _code_ to work out
+>>>>>> what the page protections need to be is better than looking it up in a
+>>>>>> table.
+>>>>>>
+>>>>>> Not only is this more expensive in terms of CPU cycles, it also brings
+>>>>>> additional code size with it.
+>>>>>>
+>>>>>> I'm struggling to see what the benefit is.
 >>>>>
->>>>> On Tue, Mar 01, 2022 at 12:28:57PM +0800, Tiezhu Yang wrote:
->>>>>> In the current code, the kernel command-line parameter mem= and memmap=
->>>>>> can not work well on MIPS, this patchset refactors the related code to
->>>>>> fix them.
->>>>>>
->>>>>> For kdump on MIPS, if the users want to limit the memory region for the
->>>>>> capture kernel to avoid corrupting the memory image of the panic kernel,
->>>>>> use the parameter memmap=limit@base is the proper way, I will submit a
->>>>>> patch to use memmap=limit@base for kexec-tools after this patchset is
->>>>>> applied.
->>>>>
->>>>> Sorry, apparently I misread the prevoius version.
->>>>> What's wrong with the current implementation of mem=limit@base for the
->>>>> kdump case?
+>>>>> Currently vm_get_page_prot() is also being _run_ to fetch required page
+>>>>> protection values. Although that is being run in the core MM and from a
+>>>>> platform perspective __SXXX, __PXXX are just being exported for a table.
+>>>>> Looking it up in a table (and applying more constructs there after) is
+>>>>> not much different than a clean switch case statement in terms of CPU
+>>>>> usage. So this is not more expensive in terms of CPU cycles.
 >>>>
->>>> In the current code, without this patchset, kernel boot hangs when add
->>>> mem=3G, mem=3G@64M or memmap=3G@64M to the command-line, it means that
->>>> the parameter mem= and memmap= have bug on mips.
+>>>> I disagree.
 >>>
->>> I can see how mem=3G may be wrong when the memory does not start at 0, but
->>> it seems to do the right thing of mem=3G@64M.
+>>> So do I.
 >>>
->>> Do you see system hangs with mem=3G@64M?
->>
->> Yes.
->>
->>>
->>> Do you have the logs before the hang?
->>
->> Here are the logs:
->>
->> [    0.000000] Linux version 5.17.0-rc3+ (loongson@linux) (gcc (GCC) 7.3.1
->> 20180303 (Red Hat 7.3.1-6), GNU ld version 2.28-13.fc21.loongson.6) #1 SMP
->> PREEMPT Wed Mar 2 09:07:39 CST 2022
->> [    0.000000] CpuClock = 1800000000
->> [    0.000000] The bridge chip is LS7A
->> [    0.000000] CP0_Config3: CP0 16.3 (0xdc8030a0)
->> [    0.000000] CP0_PageGrain: CP0 5.1 (0x28000000)
->> [    0.000000] NUMA: Discovered 4 cpus on 1 nodes
->> [    0.000000] Node0: mem_type:1, mem_start:0x200000, mem_size:0xee MB
->> [    0.000000]        start_pfn:0x80, end_pfn:0x3c00, num_physpages:0x3b80
->> [    0.000000] Node0: mem_type:2, mem_start:0x90200000, mem_size:0x6fe MB
->> [    0.000000]        start_pfn:0x24080, end_pfn:0x40000,
->> num_physpages:0x1fb00
->> [    0.000000] Node0: mem_type:2, mem_start:0x120000000, mem_size:0x1600 MB
->> [    0.000000]        start_pfn:0x48000, end_pfn:0xa0000,
->> num_physpages:0x77b00
->> [    0.000000] Node0's addrspace_offset is 0x0
->> [    0.000000] Node0: start_pfn=0x80, end_pfn=0xa0000
->> [    0.000000] NUMA: set cpumask cpu 0 on node 0
->> [    0.000000] NUMA: set cpumask cpu 1 on node 0
->> [    0.000000] NUMA: set cpumask cpu 2 on node 0
->> [    0.000000] NUMA: set cpumask cpu 3 on node 0
->> [    0.000000] printk: bootconsole [early0] enabled
->> [    0.000000] CPU0 revision is: 0014c001 (ICT Loongson-3)
->> [    0.000000] FPU revision is: 00f70501
->> [    0.000000] MSA revision is: 00060140
->> [    0.000000] OF: fdt: No chosen node found, continuing without
->> [    0.000000] MIPS: machine is loongson,loongson64g-4core-ls7a
->> [    0.000000] User-defined physical RAM map overwrite
->> [    0.000000] Kernel sections are not in the memory maps
->> [    0.000000] Initrd not found or empty - disabling initrd
->
-> Can you please also send the log with "memblock=debug" added to the kernel
-> command line?
-
-[    0.000000] Linux version 5.17.0-rc3+ (loongson@linux) (gcc (GCC) 
-7.3.1 20180303 (Red Hat 7.3.1-6), GNU ld version 
-2.28-13.fc21.loongson.6) #1 SMP PREEMPT Wed Mar 2 09:07:39 CST 2022
-[    0.000000] CpuClock = 1800000000
-[    0.000000] The bridge chip is LS7A
-[    0.000000] CP0_Config3: CP0 16.3 (0xdc8030a0)
-[    0.000000] CP0_PageGrain: CP0 5.1 (0x28000000)
-[    0.000000] NUMA: Discovered 4 cpus on 1 nodes
-[    0.000000] Node0: mem_type:1, mem_start:0x200000, mem_size:0xee MB
-[    0.000000]        start_pfn:0x80, end_pfn:0x3c00, num_physpages:0x3b80
-[    0.000000] Node0: mem_type:2, mem_start:0x90200000, mem_size:0x6fe MB
-[    0.000000]        start_pfn:0x24080, end_pfn:0x40000, 
-num_physpages:0x1fb00
-[    0.000000] Node0: mem_type:2, mem_start:0x120000000, mem_size:0x1600 MB
-[    0.000000]        start_pfn:0x48000, end_pfn:0xa0000, 
-num_physpages:0x77b00
-[    0.000000] Node0's addrspace_offset is 0x0
-[    0.000000] Node0: start_pfn=0x80, end_pfn=0xa0000
-[    0.000000] NUMA: set cpumask cpu 0 on node 0
-[    0.000000] NUMA: set cpumask cpu 1 on node 0
-[    0.000000] NUMA: set cpumask cpu 2 on node 0
-[    0.000000] NUMA: set cpumask cpu 3 on node 0
-[    0.000000] printk: bootconsole [early0] enabled
-[    0.000000] CPU0 revision is: 0014c001 (ICT Loongson-3)
-[    0.000000] FPU revision is: 00f70501
-[    0.000000] MSA revision is: 00060140
-[    0.000000] OF: fdt: No chosen node found, continuing without
-[    0.000000] MIPS: machine is loongson,loongson64g-4core-ls7a
-[    0.000000] User-defined physical RAM map overwrite
-[    0.000000] Kernel sections are not in the memory maps
-[    0.000000] memblock_add: [0x0000000000200000-0x000000000231185f] 
-setup_arch+0x140/0x794
-[    0.000000] memblock_reserve: [0x0000000001260520-0x0000000001262560] 
-setup_arch+0x148/0x794
-[    0.000000] Initrd not found or empty - disabling initrd
-[    0.000000] memblock_alloc_try_nid: 8257 bytes align=0x40 nid=-1 
-from=0x0000000000000000 max_addr=0x0000000000000000 
-early_init_dt_alloc_memory_arch+0x30/0x60
-[    0.000000] memblock_reserve: [0x0000000004000000-0x0000000004002040] 
-memblock_alloc_range_nid+0xf0/0x178
-[    0.000000] memblock_alloc_try_nid: 37972 bytes align=0x8 nid=-1 
-from=0x0000000000000000 max_addr=0x0000000000000000 
-early_init_dt_alloc_memory_arch+0x30/0x60
-[    0.000000] memblock_reserve: [0x0000000004002048-0x000000000400b49b] 
-memblock_alloc_range_nid+0xf0/0x178
-
->
->>> As for memmap= option, it does not specify the memory map but rather alters
->>> the memory map passed by the firmware. Particularity in MIPS implementation
->>> it allows to add a single range of available or reserved memory.
->>>
->>> AFAIU, for the kdump use-case mem=X@Y should suffice.
->>
->> We can modify some code to make mem=X@Y work well,
->> but according to Documentation/admin-guide/kernel-parameters.txt,
->> the common way is mem=X and memmap=X@Y, so mem=X@Y for mips seems
->> odd, the intention of this patchset is to make mem= and memmap=
->> work well and consistent with the other archs.
->
-> These options are anyway not consistent on different architectures.
-> arm, mips and x86 implement mem= one way and arm64, powerpc and riscv in
-> another so there is no common way to use mem=.
->
-> Your changes will break the existing systems that use mem= and memmap=
-> options because they change the semantics of their MIPS implementation.
-
-Thank you, I know your opinion.
-Let's wait for Thomas's review to get some more feedbacks.
-
-Thanks,
-Tiezhu
-
->
-> For kexec/kdump use-cases modern architectures usually do not pass mem= but
-> rather prepare the memory map for the kexeced kernel to use. I believe this
-> would be the right solution.
->
->> Thanks,
->> Tiezhu
->>
->>>
->>>> Thanks,
->>>> Tiezhu
 >>>>
->>>>>
->>>>>> v4: Fix some build warnings reported by kernel test robot
->>>>>>
->>>>>> v3: Modify patch #3 to maintain compatibility for memmap=limit{$,#,!}base,
->>>>>>     commented by Mike Rapoport, thank you
->>>>>>
->>>>>> v2: Add some new patches to support memmap=limit@base
->>>>>>
->>>>>> Tiezhu Yang (4):
->>>>>>   MIPS: Refactor early_parse_mem() to fix mem= parameter
->>>>>>   memblock: Introduce memblock_mem_range_remove_map()
->>>>>>   MIPS: Refactor early_parse_memmap() to fix memmap= parameter
->>>>>>   MIPS: Remove not used variable usermem
->>>>>>
->>>>>>  arch/mips/kernel/setup.c | 69 ++++++++++++++++++++++--------------------------
->>>>>>  include/linux/memblock.h |  1 +
->>>>>>  mm/memblock.c            |  9 +++++--
->>>>>>  3 files changed, 40 insertions(+), 39 deletions(-)
->>>>>>
->>>>>> --
->>>>>> 2.1.0
->>>>>>
->>>>>
+>>>> However, let's base this disagreement on some evidence. Here is the
+>>>> present 32-bit ARM implementation:
 >>>>
+>>>> 00000048 <vm_get_page_prot>:
+>>>>         48:       e200000f        and     r0, r0, #15
+>>>>         4c:       e3003000        movw    r3, #0
+>>>>                           4c: R_ARM_MOVW_ABS_NC   .LANCHOR1
+>>>>         50:       e3403000        movt    r3, #0
+>>>>                           50: R_ARM_MOVT_ABS      .LANCHOR1
+>>>>         54:       e7930100        ldr     r0, [r3, r0, lsl #2]
+>>>>         58:       e12fff1e        bx      lr
+>>>>
+>>>> That is five instructions long.
 >>>
+>>> On ppc32 I get:
+>>>
+>>> 00000094 <vm_get_page_prot>:
+>>>         94:	3d 20 00 00 	lis     r9,0
+>>> 			96: R_PPC_ADDR16_HA	.data..ro_after_init
+>>>         98:	54 84 16 ba 	rlwinm  r4,r4,2,26,29
+>>>         9c:	39 29 00 00 	addi    r9,r9,0
+>>> 			9e: R_PPC_ADDR16_LO	.data..ro_after_init
+>>>         a0:	7d 29 20 2e 	lwzx    r9,r9,r4
+>>>         a4:	91 23 00 00 	stw     r9,0(r3)
+>>>         a8:	4e 80 00 20 	blr
+>>>
+>>>
+>>>>
+>>>> Please show that your new implementation is not more expensive on
+>>>> 32-bit ARM. Please do so by building a 32-bit kernel, and providing
+>>>> the disassembly.
+>>>
+>>> With your series I get:
+>>>
+>>> 00000000 <vm_get_page_prot>:
+>>>      0:	3d 20 00 00 	lis     r9,0
+>>> 			2: R_PPC_ADDR16_HA	.rodata
+>>>      4:	39 29 00 00 	addi    r9,r9,0
+>>> 			6: R_PPC_ADDR16_LO	.rodata
+>>>      8:	54 84 16 ba 	rlwinm  r4,r4,2,26,29
+>>>      c:	7d 49 20 2e 	lwzx    r10,r9,r4
+>>>     10:	7d 4a 4a 14 	add     r10,r10,r9
+>>>     14:	7d 49 03 a6 	mtctr   r10
+>>>     18:	4e 80 04 20 	bctr
+>>>     1c:	39 20 03 15 	li      r9,789
+>>>     20:	91 23 00 00 	stw     r9,0(r3)
+>>>     24:	4e 80 00 20 	blr
+>>>     28:	39 20 01 15 	li      r9,277
+>>>     2c:	91 23 00 00 	stw     r9,0(r3)
+>>>     30:	4e 80 00 20 	blr
+>>>     34:	39 20 07 15 	li      r9,1813
+>>>     38:	91 23 00 00 	stw     r9,0(r3)
+>>>     3c:	4e 80 00 20 	blr
+>>>     40:	39 20 05 15 	li      r9,1301
+>>>     44:	91 23 00 00 	stw     r9,0(r3)
+>>>     48:	4e 80 00 20 	blr
+>>>     4c:	39 20 01 11 	li      r9,273
+>>>     50:	4b ff ff d0 	b       20 <vm_get_page_prot+0x20>
+>>>
+>>>
+>>> That is definitely more expensive, it implements a table of branches.
 >>
->
+>> Okay, will split out the PPC32 implementation that retains existing
+>> table look up method. Also planning to keep that inside same file
+>> (arch/powerpc/mm/mmap.c), unless you have a difference preference.
+> 
+> My point was not to get something specific for PPC32, but to amplify on 
+> Russell's objection.
+> 
+> As this is bad for ARM and bad for PPC32, do we have any evidence that 
+> your change is good for any other architecture ?
+> 
+> I checked PPC64 and there is exactly the same drawback. With the current 
+> implementation it is a small function performing table read then a few 
+> adjustment. After your change it is a bigger function implementing a 
+> table of branches.
 
+I am wondering if this would not be the case for any other switch case
+statement on the platform ? Is there something specific/different just
+on vm_get_page_prot() implementation ? Are you suggesting that switch
+case statements should just be avoided instead ?
+
+> 
+> So, as requested by Russell, could you look at the disassembly for other 
+> architectures and show us that ARM and POWERPC are the only ones for 
+> which your change is not optimal ?
+
+But the primary purpose of this series is not to guarantee optimized
+code on platform by platform basis, while migrating from a table based
+look up method into a switch case statement.
+
+But instead, the purposes is to remove current levels of unnecessary
+abstraction while converting a vm_flags access combination into page
+protection. The switch case statement for platform implementation of
+vm_get_page_prot() just seemed logical enough. Christoph's original
+suggestion patch for x86 had the same implementation as well.
+
+But if the table look up is still better/preferred method on certain
+platforms like arm or ppc32, will be happy to preserve that.
+
+- Anshuman

@@ -2,72 +2,77 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 06CDCC433FE
-	for <linux-mips@archiver.kernel.org>; Sun,  6 Mar 2022 11:33:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A4C99C433F5
+	for <linux-mips@archiver.kernel.org>; Sun,  6 Mar 2022 15:17:00 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233352AbiCFLeN (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Sun, 6 Mar 2022 06:34:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52460 "EHLO
+        id S233693AbiCFPRv (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Sun, 6 Mar 2022 10:17:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49482 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233336AbiCFLeM (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Sun, 6 Mar 2022 06:34:12 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 129DB642F;
-        Sun,  6 Mar 2022 03:33:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=nK6fc9sC8NZv7QaEVaxxTpIxTZq/SzNUDta5FD5I7jI=; b=h03YOdnltrDeha98gsHK8dkXur
-        5WoXXbWj9PkQijgsFCid6H+5zSNuEWh5HeK1YhrMBrHf+71kA/oDixn2BUGWhQsYkcLEKl1EEFFAb
-        yT27l+88Uc53FamnyVQeFQ/bdxrd4LcHjhphvkOuaSq+T2tznDtehp/m5HjPS2RFVECxEnIcR0mSb
-        Jo/KP09BOhKIMryYd6TEejD8yn3IQ1txvcT7jyWhJqioiy2SYyfZRKLtxU4yFQvD36B10yUCdvd1L
-        9+3zCnbLTPK2vsrUZhhqP2vVnO/FL6CZa9CI3XROhMMLD5U1DxF3iXCMbbV4oPLok2eUuDa75j9Ip
-        CbR6J1Iw==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1nQp8I-00EIzX-Hf; Sun, 06 Mar 2022 11:33:02 +0000
-Date:   Sun, 6 Mar 2022 11:33:02 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Jarkko Sakkinen <jarkko@kernel.org>
-Cc:     linux-mm@kvack.org, Dave Hansen <dave.hansen@linux.intel.com>,
-        Nathaniel McCallum <nathaniel@profian.com>,
-        Reinette Chatre <reinette.chatre@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-sgx@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Matthew Auld <matthew.auld@intel.com>,
-        Thomas =?iso-8859-1?Q?Hellstr=F6m?= 
-        <thomas.hellstrom@linux.intel.com>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Jason Ekstrand <jason@jlekstrand.net>,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Tvrtko Ursulin <tvrtko.ursulin@intel.com>,
-        Vasily Averin <vvs@virtuozzo.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Michal Hocko <mhocko@suse.com>,
-        zhangyiru <zhangyiru3@huawei.com>,
-        Alexey Gladkov <legion@kernel.org>,
-        Alexander Mikhalitsyn <alexander.mikhalitsyn@virtuozzo.com>,
-        linux-mips@vger.kernel.org, intel-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, codalist@coda.cs.cmu.edu,
-        linux-unionfs@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH RFC 0/3] MAP_POPULATE for device memory
-Message-ID: <YiSb7tsUEBRGS+HA@casper.infradead.org>
-References: <20220306053211.135762-1-jarkko@kernel.org>
+        with ESMTP id S233687AbiCFPRv (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Sun, 6 Mar 2022 10:17:51 -0500
+Received: from aposti.net (aposti.net [89.234.176.197])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 499473FBEC;
+        Sun,  6 Mar 2022 07:16:57 -0800 (PST)
+From:   Paul Cercueil <paul@crapouillou.net>
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc:     YunQiang Su <yunqiang.su@cipunited.com>,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        od@opendingux.net, Paul Cercueil <paul@crapouillou.net>,
+        stable@vger.kernel.org
+Subject: [PATCH] mips: Always permit to build u-boot images
+Date:   Sun,  6 Mar 2022 15:16:48 +0000
+Message-Id: <20220306151648.39599-1-paul@crapouillou.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220306053211.135762-1-jarkko@kernel.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Sun, Mar 06, 2022 at 07:32:04AM +0200, Jarkko Sakkinen wrote:
-> For device memory (aka VM_IO | VM_PFNMAP) MAP_POPULATE does nothing. Allow
-> to use that for initializing the device memory by providing a new callback
-> f_ops->populate() for the purpose.
+The platforms where the kernel should be loaded above 0x8000.0000 do not
+support loading u-boot images, that doesn't mean that we shouldn't be
+able to generate them.
 
-As I said, NAK.
+Additionally, since commit 79876cc1d7b8 ("MIPS: new Kconfig option
+ZBOOT_LOAD_ADDRESS"), the $(zload-y) variable was no longer hardcoded,
+which made it impossible to use the uzImage.bin target.
+
+Fixes: 79876cc1d7b8 ("MIPS: new Kconfig option ZBOOT_LOAD_ADDRESS")
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+---
+ arch/mips/Makefile | 4 ----
+ 1 file changed, 4 deletions(-)
+
+diff --git a/arch/mips/Makefile b/arch/mips/Makefile
+index e036fc025ccc..4478c5661d61 100644
+--- a/arch/mips/Makefile
++++ b/arch/mips/Makefile
+@@ -340,14 +340,12 @@ drivers-$(CONFIG_PM)	+= arch/mips/power/
+ boot-y			:= vmlinux.bin
+ boot-y			+= vmlinux.ecoff
+ boot-y			+= vmlinux.srec
+-ifeq ($(shell expr $(load-y) \< 0xffffffff80000000 2> /dev/null), 0)
+ boot-y			+= uImage
+ boot-y			+= uImage.bin
+ boot-y			+= uImage.bz2
+ boot-y			+= uImage.gz
+ boot-y			+= uImage.lzma
+ boot-y			+= uImage.lzo
+-endif
+ boot-y			+= vmlinux.itb
+ boot-y			+= vmlinux.gz.itb
+ boot-y			+= vmlinux.bz2.itb
+@@ -359,9 +357,7 @@ bootz-y			:= vmlinuz
+ bootz-y			+= vmlinuz.bin
+ bootz-y			+= vmlinuz.ecoff
+ bootz-y			+= vmlinuz.srec
+-ifeq ($(shell expr $(zload-y) \< 0xffffffff80000000 2> /dev/null), 0)
+ bootz-y			+= uzImage.bin
+-endif
+ bootz-y			+= vmlinuz.itb
+ 
+ #
+-- 
+2.34.1
+

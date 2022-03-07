@@ -2,60 +2,67 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6B83AC43219
-	for <linux-mips@archiver.kernel.org>; Mon,  7 Mar 2022 12:25:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 64769C433EF
+	for <linux-mips@archiver.kernel.org>; Mon,  7 Mar 2022 12:25:27 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242043AbiCGM0S (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 7 Mar 2022 07:26:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33578 "EHLO
+        id S242164AbiCGM0T (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 7 Mar 2022 07:26:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33788 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236937AbiCGM0R (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Mon, 7 Mar 2022 07:26:17 -0500
+        with ESMTP id S242136AbiCGM0T (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Mon, 7 Mar 2022 07:26:19 -0500
 Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 177D98023C;
-        Mon,  7 Mar 2022 04:25:22 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 159AF80925;
+        Mon,  7 Mar 2022 04:25:25 -0800 (PST)
 Received: from uucp (helo=alpha)
         by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1nRCQS-00072o-05; Mon, 07 Mar 2022 13:25:20 +0100
+        id 1nRCQS-00072o-01; Mon, 07 Mar 2022 13:25:20 +0100
 Received: by alpha.franken.de (Postfix, from userid 1000)
-        id ABB2BC1280; Mon,  7 Mar 2022 13:24:40 +0100 (CET)
-Date:   Mon, 7 Mar 2022 13:24:40 +0100
+        id 131ABC1280; Mon,  7 Mar 2022 13:20:40 +0100 (CET)
+Date:   Mon, 7 Mar 2022 13:20:40 +0100
 From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Xi Ruoyao <xry111@mengyan1223.wang>
-Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Huacai Chen <chenhuacai@kernel.org>
-Subject: Re: [PATCH] mips: remove reference to "newer Loongson-3"
-Message-ID: <20220307122440.GF14422@alpha.franken.de>
-References: <0b7c9431efb12c2d957fcc53ec8f0743725d61b3.camel@mengyan1223.wang>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     linux-kernel@vger.kernel.org, patches@lists.linux.dev,
+        kernel test robot <lkp@intel.com>,
+        Paul Burton <paulburton@kernel.org>,
+        "Maciej W . Rozycki" <macro@orcam.me.uk>,
+        linux-mips@vger.kernel.org
+Subject: Re: [PATCH v3] mips: DEC: honor CONFIG_MIPS_FP_SUPPORT=n
+Message-ID: <20220307122039.GB14422@alpha.franken.de>
+References: <20220304162427.27276-1-rdunlap@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <0b7c9431efb12c2d957fcc53ec8f0743725d61b3.camel@mengyan1223.wang>
+In-Reply-To: <20220304162427.27276-1-rdunlap@infradead.org>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Sun, Aug 29, 2021 at 08:49:09PM +0800, Xi Ruoyao wrote:
-> Newest Loongson-3 processors have moved to use LoongArch architecture.
-> Sadly, the LL/SC issue is still existing on both latest Loongson-3
-> processors using MIPS64 (Loongson-3A4000) and LoongArch
-> (Loongson-3A5000).
+On Fri, Mar 04, 2022 at 08:24:27AM -0800, Randy Dunlap wrote:
+> Include the DECstation interrupt handler in opting out of
+> FPU support.
 > 
-> As it's very unlikely there will be new Loongson-3 processors using
-> MIPS64, let's stop people from false hoping.
+> Fixes a linker error:
 > 
-> Signed-off-by: Xi Ruoyao <xry111@mengyan1223.wang>
-> Cc: Huacai Chen <chenhuacai@kernel.org>
+> mips-linux-ld: arch/mips/dec/int-handler.o: in function `fpu':
+> (.text+0x148): undefined reference to `handle_fpe_int'
+> 
+> Fixes: 183b40f992c8 ("MIPS: Allow FP support to be disabled")
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> Reported-by: kernel test robot <lkp@intel.com>
+> Cc: Paul Burton <paulburton@kernel.org>
+> Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+> Cc: Maciej W. Rozycki <macro@orcam.me.uk>
+> Cc: linux-mips@vger.kernel.org
 > ---
+> v2: add another ifdef block in int-handler.S; (Maciej)
+>     add an ifdef block in dec/setup.c; (Maciej)
+> v3: use IS_ENABLED() instead of an ifdef block in dec/setup.c; (Maciej)
 > 
-> Huacai: how's the status of LL/SC issue on Loongson-2K?  If
-> the issue exists on it as well, we can just force
-> CPU_LOONGSON3_WORKAROUNDS when CONFIG_CPU_LOONGSON64 and
-> CONFIG_SMP are both selected.
-> 
->  arch/mips/Kconfig | 9 ++-------
->  1 file changed, 2 insertions(+), 7 deletions(-)
+>  arch/mips/dec/int-handler.S |    6 +++---
+>  arch/mips/dec/setup.c       |    3 ++-
+>  2 files changed, 5 insertions(+), 4 deletions(-)
 
 applied to mips-next.
 

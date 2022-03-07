@@ -2,85 +2,107 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 96CEDC433EF
-	for <linux-mips@archiver.kernel.org>; Mon,  7 Mar 2022 12:25:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 58ECAC433FE
+	for <linux-mips@archiver.kernel.org>; Mon,  7 Mar 2022 13:01:09 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237924AbiCGM0X (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 7 Mar 2022 07:26:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33910 "EHLO
+        id S236104AbiCGNCC (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 7 Mar 2022 08:02:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44804 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242181AbiCGM0U (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Mon, 7 Mar 2022 07:26:20 -0500
-Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 3FE988092E;
-        Mon,  7 Mar 2022 04:25:26 -0800 (PST)
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1nRCQS-00072o-00; Mon, 07 Mar 2022 13:25:20 +0100
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 3DF34C122A; Mon,  7 Mar 2022 13:20:04 +0100 (CET)
-Date:   Mon, 7 Mar 2022 13:20:04 +0100
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Alexander Lobakin <alobakin@pm.me>
-Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        Davidlohr Bueso <dbueso@suse.de>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Liam Howlett <liam.howlett@oracle.com>,
-        Ralf Baechle <ralf@linux-mips.org>,
-        Atsushi Nemoto <anemo@mba.ocn.ne.jp>,
-        linux-mips@vger.kernel.org, stable@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH mips-fixes] MIPS: fix fortify panic when copying asm
- exception handlers
-Message-ID: <20220307122004.GA14422@alpha.franken.de>
-References: <20220223012338.262041-1-alobakin@pm.me>
+        with ESMTP id S235527AbiCGNCB (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Mon, 7 Mar 2022 08:02:01 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 989BF8A6D6;
+        Mon,  7 Mar 2022 05:01:07 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 0E79761195;
+        Mon,  7 Mar 2022 13:01:07 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 21564C340E9;
+        Mon,  7 Mar 2022 13:01:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1646658066;
+        bh=vNwLmHMPAuTNQ58SyXP5JOCzc1E/QIa9EAucHhxuwk4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=uvdN7XqNAxzEAmE9bN4/uMtzHnmxTF8Bf1x603RX/KNlDIprB9VVaWZhQeHHnpzbB
+         L4kxbqOzloAbu6i7BoQuYqHyMOyLIeQm5T/Xe9xRq6c/W5XBudU0rcZiYQpMIqW8K8
+         1un6it52tzYgjHiFXgaZvOMiGyPNX8+j799swQCbH5hFeVmQIpZ6iuDIBfN618OhEW
+         E3SyRB41KCkHqiZUuZ0YCU6MdmAWosgy6SdJC1dEwmvD9h3AKYZQWeH4JTR8WfP89z
+         OZU/YwJS8GT7u3ZHIoY0Pijc0jpcUbZjNcaA6ewtS9TXcLeg8b87/dA7oNopSl/pXR
+         0BIy9frXh9DtQ==
+Date:   Mon, 7 Mar 2022 15:00:25 +0200
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Dave Hansen <dave.hansen@linux.intel.com>,
+        Nathaniel McCallum <nathaniel@profian.com>,
+        Reinette Chatre <reinette.chatre@intel.com>,
+        linux-sgx@vger.kernel.org, jaharkes@cs.cmu.edu,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        codalist@telemann.coda.cs.cmu.edu, linux-unionfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [PATCH RFC v2] mm: Add f_ops->populate()
+Message-ID: <YiYB6WWz8cbvaAqX@iki.fi>
+References: <20220306032655.97863-1-jarkko@kernel.org>
+ <20220306152456.2649b1c56da2a4ce4f487be4@linux-foundation.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220223012338.262041-1-alobakin@pm.me>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20220306152456.2649b1c56da2a4ce4f487be4@linux-foundation.org>
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Wed, Feb 23, 2022 at 01:30:23AM +0000, Alexander Lobakin wrote:
-> With KCFLAGS="-O3", I was able to trigger a fortify-source
-> memcpy() overflow panic on set_vi_srs_handler().
-> Although O3 level is not supported in the mainline, under some
-> conditions that may've happened with any optimization settings,
-> it's just a matter of inlining luck. The panic itself is correct,
-> more precisely, 50/50 false-positive and not at the same time.
-> >From the one side, no real overflow happens. Exception handler
-> defined in asm just gets copied to some reserved places in the
-> memory.
-> But the reason behind is that C code refers to that exception
-> handler declares it as `char`, i.e. something of 1 byte length.
-> It's obvious that the asm function itself is way more than 1 byte,
-> so fortify logics thought we are going to past the symbol declared.
-> The standard way to refer to asm symbols from C code which is not
-> supposed to be called from C is to declare them as
-> `extern const u8[]`. This is fully correct from any point of view,
-> as any code itself is just a bunch of bytes (including 0 as it is
-> for syms like _stext/_etext/etc.), and the exact size is not known
-> at the moment of compilation.
-> Adjust the type of the except_vec_vi_*() and related variables.
-> Make set_handler() take `const` as a second argument to avoid
-> cast-away warnings and give a little more room for optimization.
+On Sun, Mar 06, 2022 at 03:24:56PM -0800, Andrew Morton wrote:
+> On Sun,  6 Mar 2022 05:26:55 +0200 Jarkko Sakkinen <jarkko@kernel.org> wrote:
 > 
-> Fixes: e01402b115cc ("More AP / SP bits for the 34K, the Malta bits and things. Still wants")
-> Fixes: c65a5480ff29 ("[MIPS] Fix potential latency problem due to non-atomic cpu_wait.")
-> Cc: stable@vger.kernel.org # 3.10+
-> Signed-off-by: Alexander Lobakin <alobakin@pm.me>
-> ---
->  arch/mips/include/asm/setup.h |  2 +-
->  arch/mips/kernel/traps.c      | 22 +++++++++++-----------
->  2 files changed, 12 insertions(+), 12 deletions(-)
+> > Sometimes you might want to use MAP_POPULATE to ask a device driver to
+> > initialize the device memory in some specific manner. SGX driver can use
+> > this to request more memory by issuing ENCLS[EAUG] x86 opcode for each
+> > page in the address range.
+> 
+> Why is this useful?  Please fully describe the benefit to kernel users.
+> Convince us that the benefit justifies the code churn, maintenance
+> cost and larger kernel footprint.
+> 
+> Do we know of any other drivers which might use this?
 
-applied to mips-next.
+Brutal honesty: I don't know if any other drivers would use this but
+neither I would not be surprised if they did. The need for this might
+very well be "masked" by ioctl API's.  I was first proposing a ioctl
+for this but Dave suggested to at least try out this route.
 
-Thomas.
+> > Add f_ops->populate() with the same parameters as f_ops->mmap() and make
+> > it conditionally called inside call_mmap(). Update call sites
+> > accodingly.
+> 
+> spello
 
--- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+Thanks, I noticed that but did not want to spam with a new version just
+because of that :-)
+
+> 
+> > -static inline int call_mmap(struct file *file, struct vm_area_struct *vma)
+> > +static inline int call_mmap(struct file *file, struct vm_area_struct *vma, bool do_populate)
+> >  {
+> > -	return file->f_op->mmap(file, vma);
+> > +	int ret = file->f_op->mmap(file, vma);
+> > +
+> > +	if (!ret && do_populate && file->f_op->populate)
+> > +		ret = file->f_op->populate(file, vma);
+> > +
+> > +	return ret;
+> >  }
+> 
+> Should this still be inlined?
+
+I think it might make sense at least to have call_mmap_populate() so and
+mmap_region_populate() instead of putting that boolean parameter to every
+flow (based on Greg's feedback). But only if this implementation approach
+is used in the first place.
+
+As said, I chose to use RFC to pinpoint a bottleneck for us, not claiming
+that this would be the best possible way to work around it.
+
+BR, Jarkko

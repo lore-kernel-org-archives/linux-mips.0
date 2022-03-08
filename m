@@ -2,120 +2,110 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 827F4C433FE
-	for <linux-mips@archiver.kernel.org>; Tue,  8 Mar 2022 10:11:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CC521C433F5
+	for <linux-mips@archiver.kernel.org>; Tue,  8 Mar 2022 13:06:56 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238709AbiCHKMj (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 8 Mar 2022 05:12:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44038 "EHLO
+        id S232490AbiCHNHv (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 8 Mar 2022 08:07:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46308 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238695AbiCHKMh (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Tue, 8 Mar 2022 05:12:37 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48ABB42EEE;
-        Tue,  8 Mar 2022 02:11:27 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id C517161512;
-        Tue,  8 Mar 2022 10:11:26 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7F770C340EB;
-        Tue,  8 Mar 2022 10:11:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1646734286;
-        bh=fYSUhe3wecNdmSDhFtYlrEjcl8plDtdT7/KRcR78mg8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=u4nsxISBKCbp0kWFZQFzaUS+y+q3Vc8eNVHhG0Dmv4Nb/JhF26ncQ7Echex+2TBWw
-         HzESBnHl4TLrNzabSQGNB7ZbF8RfKTG8YIJq2SApT5oCxEWRfJr2l9JoJPXihK3vfQ
-         duy0ns8W9IpIrx2oeLNdvolKx2mHVixqS4CJNaiMHhOoWN2qQZmcekG4CxoSZIyJX4
-         EJo+hN5kIQOs94WI2C6ml3xu/HoLZzZhctA1CyAepjY5M6e1IrYFTj5uS071+txQfv
-         E2z0+8a/Amxg9QK2hYAnt6jFaeTl8IVajwPvjbBMhdwUfexozvzQDosql+YtSoO6QB
-         ViNC/V8kidVXQ==
-Date:   Tue, 8 Mar 2022 12:10:45 +0200
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     David Laight <David.Laight@aculab.com>
-Cc:     'Christoph Hellwig' <hch@infradead.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Nathaniel McCallum <nathaniel@profian.com>,
-        Reinette Chatre <reinette.chatre@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "linux-sgx@vger.kernel.org" <linux-sgx@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Matthew Auld <matthew.auld@intel.com>,
-        Thomas =?iso-8859-1?Q?Hellstr=F6m?= 
-        <thomas.hellstrom@linux.intel.com>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Jason Ekstrand <jason@jlekstrand.net>,
-        Chris Wilson <chris@chris-wilson.co.uk>, "G@iki.fi" <G@iki.fi>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Tvrtko Ursulin <tvrtko.ursulin@intel.com>,
-        Vasily Averin <vvs@virtuozzo.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Michal Hocko <mhocko@suse.com>,
-        zhangyiru <zhangyiru3@huawei.com>,
-        Alexey Gladkov <legion@kernel.org>,
-        Alexander Mikhalitsyn <alexander.mikhalitsyn@virtuozzo.com>,
-        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
-        "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "codalist@coda.cs.cmu.edu" <codalist@coda.cs.cmu.edu>,
-        "linux-unionfs@vger.kernel.org" <linux-unionfs@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>
-Subject: Re: [PATCH RFC 0/3] MAP_POPULATE for device memory
-Message-ID: <YicrpX9K1dSdCK7u@iki.fi>
-References: <20220306053211.135762-1-jarkko@kernel.org>
- <YiSb7tsUEBRGS+HA@casper.infradead.org>
- <YiW4yurDXSifTYUt@infradead.org>
- <YiYIv9guOgClLKT8@iki.fi>
- <YiYrRWMp1akXY8Vb@infradead.org>
- <5729d03d6a174da6b66d1534ebdb1127@AcuMS.aculab.com>
+        with ESMTP id S229655AbiCHNHv (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Tue, 8 Mar 2022 08:07:51 -0500
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E39E248316;
+        Tue,  8 Mar 2022 05:06:54 -0800 (PST)
+Received: by mail-wr1-x42d.google.com with SMTP id j26so18086040wrb.1;
+        Tue, 08 Mar 2022 05:06:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=QVUkiMBPzb0V6Lwr/lYCzPY0l/r9IyoIGkL0psVfcQI=;
+        b=qzXZpTAo/WJaeuIoQBRD5jTnhWiPQOyDSdWnCQNbzQThVGfJFRmQDwh9PK25ZJkk7W
+         dAPsQXTWgokt3vcoJV8Ag+/tPVYRe62tIzAwPd89fyCg9GhgKmpmkyKl/E/NiP2PnGf7
+         3aWMEuqfAAecFDBaeFqphSe028pjKKm0S8rRPCTjqlhVu69JhfijMUdsfkTHnqwyDSRb
+         PeVozssOnR+3OEmnVziuR+OyNTBqLjoBNyrO/X/898eW6r7wRwL/F7U8uoWuvWiz3Sp0
+         AIrJjFX6FgTBL2t2hpFvzTFyaWdVv2/ZclGogNMZBd4WFhGZ8Xj3N+fg07LhYwqItCz3
+         B+Aw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=QVUkiMBPzb0V6Lwr/lYCzPY0l/r9IyoIGkL0psVfcQI=;
+        b=068LgPt1nbdeYj6zFjyFy+hUa2MJd8BmDKGbg3vNNBSUrdYlRUqEZGdnFf0qsyfh7n
+         aAUCAM4Kq7zIKJHOSl706Q9h8t9hZjRQjQv/S5f63Edjo4MJdJ1MuNVMugKJ7P7K+h5K
+         YvN/AAzKt/sMAg5TxNLcM7AjReIYWHAbfwHiyZ923rLCaGeXikzzpWEq8ZeRO6/l9qAk
+         7SbB5oaaHWe9oZm2O/84OXMJd45p3hhbdneVUm3VYWan3Z9fwNdMJQK1HwmK5gIZV08+
+         4EKzA2QuOtrBmBIPFyjWWTjGwJ7U7zENgRNbmwLrYxVlj9807UeqTO1HfagoVdqtki/c
+         sErw==
+X-Gm-Message-State: AOAM531PJgLSR1gGP5IR96xgJd9qrG5K2s4Rj0lrzTqmFqoiSK2bmeK+
+        zKEZWnATXVaqNq5enLHHnVE=
+X-Google-Smtp-Source: ABdhPJwEXW2eoxeiOUY7hBK48npDtQn6u2AmK1ULMUO0dMBQUJaUo2G2MAIrO/TZM9EuRy0f2RfUWQ==
+X-Received: by 2002:a5d:6985:0:b0:1f0:4916:4d00 with SMTP id g5-20020a5d6985000000b001f049164d00mr12099481wru.461.1646744813267;
+        Tue, 08 Mar 2022 05:06:53 -0800 (PST)
+Received: from monk.home ([2a01:cb10:430:ec00:4737:d56e:186b:af1])
+        by smtp.gmail.com with ESMTPSA id p15-20020a05600c1d8f00b003899d50f01csm2129159wms.6.2022.03.08.05.06.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Mar 2022 05:06:52 -0800 (PST)
+From:   Christophe Branchereau <cbranchereau@gmail.com>
+To:     Paul Cercueil <paul@crapouillou.net>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org
+Subject: [PATCH v2 0/4] Ingenic DRM bridge_atomic_enable proposal
+Date:   Tue,  8 Mar 2022 14:06:39 +0100
+Message-Id: <20220308130643.260683-1-cbranchereau@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5729d03d6a174da6b66d1534ebdb1127@AcuMS.aculab.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Mon, Mar 07, 2022 at 10:11:19PM +0000, David Laight wrote:
-> From: Christoph Hellwig
-> > Sent: 07 March 2022 15:57
-> > 
-> > On Mon, Mar 07, 2022 at 03:29:35PM +0200, Jarkko Sakkinen wrote:
-> > > So what would you suggest to sort out the issue? I'm happy to go with
-> > > ioctl if nothing else is acceptable.
-> > 
-> > PLenty of drivers treat all mmaps as if MAP_POPULATE was specified,
-> > typically by using (io_)remap_pfn_range.  If there any reason to only
-> > optionally have the pre-fault semantics for sgx?  If not this should
-> > be really simple.  And if we have a real need for it to be optional
-> > we'll just need to find a sane way to pass that information to ->mmap.
-> 
-> Is there any space in vma->vm_flags ?
-> 
-> That would be better than an extra argument or function.
+Hello, this is the v2 for my set of patches :
 
-It's very dense but I'll give a shot for callback route based on Dave's
-comments in this thread. I.e. use it as filter inside __mm_populate() and
-populate_vma_page_range().
+- use dev_err_probe() instead of dev_err() in the newvision panel
+driver probe function
 
-For Enarx, which we are implementing being able to use MAP_POPULATE and get
-the full range EAUG'd would be best way to optimize the performance of wasm
-JIT (Enarx is a wasm run-time capable of running inside an SGX enclave, AMD
-SEV-SNP VM etc.). More so than any predictor (ra_state, madvice etc.) inside
-#PF handler, which have been suggested in this thread.
+- add bindings documentation for the Leadtek ltk035c5444t
 
-After some research on how we implement user space, I'd rather keep the #PF
-handler working on a single page (EAUG a single page) and have either ioctl
-or MAP_POPULATE to do the batch fill.
+Cheers - Christophe
 
-We can still "not trust the user space" i.e. the populate does not have to
-guarantee to do the full length since the #PF handler will then fill the
-holes. This was one concern in this thread but it is not hard to address.
+------------------------
 
-BR, Jarkko
+Hello, this is a set of patches to allow the upstreaming of the
+NV3052C panel found in the Anbernic RG350M mips gaming handheld.
+
+It was never upstreamed so far due to a longstanding graphical
+bug, which I propose to solve by introducing ingenic_drm_bridge_atomic_enable
+in the drm driver so the CRTC can be enabled after the panel itself slept
+out, and not before as it used to.
+
+After the drm change, 2 of the existing panels have to be modified accordingly
+to introduce missing .enable and .disable in their code.
+
+Christophe Branchereau (4):
+  drm/ingenic : add ingenic_drm_bridge_atomic_enable
+  drm/panel: Add panel driver for NewVision NV3052C based LCDs
+  drm/panel : innolux-ej030na and abt-y030xx067a : add .enable and
+    .disable
+  dt-bindings: display/panel: Add Leadtek ltk035c5444t
+
+ .../panel/leadtek,ltk035c5444t-spi.yaml       |  59 +++
+ drivers/gpu/drm/ingenic/ingenic-drm-drv.c     |  19 +-
+ drivers/gpu/drm/panel/Kconfig                 |   9 +
+ drivers/gpu/drm/panel/Makefile                |   1 +
+ drivers/gpu/drm/panel/panel-abt-y030xx067a.c  |  23 +-
+ drivers/gpu/drm/panel/panel-innolux-ej030na.c |  31 +-
+ .../gpu/drm/panel/panel-newvision-nv3052c.c   | 497 ++++++++++++++++++
+ 7 files changed, 627 insertions(+), 12 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/display/panel/leadtek,ltk035c5444t-spi.yaml
+ create mode 100644 drivers/gpu/drm/panel/panel-newvision-nv3052c.c
+
+-- 
+2.34.1
+

@@ -2,58 +2,53 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 18E5FC433FE
-	for <linux-mips@archiver.kernel.org>; Wed,  9 Mar 2022 16:09:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 57937C4332F
+	for <linux-mips@archiver.kernel.org>; Wed,  9 Mar 2022 16:24:50 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234543AbiCIQKN (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 9 Mar 2022 11:10:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47562 "EHLO
+        id S235228AbiCIQZo (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 9 Mar 2022 11:25:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38472 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235260AbiCIQIf (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 9 Mar 2022 11:08:35 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D75AB18CC77;
-        Wed,  9 Mar 2022 08:05:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=qzB5SkChcUpXXTILPYEoiZsWblCS3kRjEhEA4tvWFBA=; b=JjBfU4RcbAJyJTf1dScNeR/9Ho
-        AlZkTmpj9SsK1oDq6UTB/AcWUopsbiSLBGR6rZ2kBCw7j4vNo2VJRBUq8/KFhsm1GawDk4dDcSTB0
-        CAcF6dfoPaEs0Gfz8X8csw4+TvxgiPIlR30lPYJvaOwQCM8VvYdi8Wsr4XICpNu/Qaygh0PysniQO
-        SyyGMm6lUhw5iTcltD/IOCdeqX++6/j+K96Pdx2bmwdewbe3c6YDhA7DoYvB3PWynCjiFTZ95BR6a
-        cfwFLvgkagvPcfT8tRBkxAXjKWBSrNNRFeT2Lc3lff5pJIccLtnRTXiKaaapODICmEkZ+Gvc9/379
-        brxt0HAQ==;
-Received: from [2601:1c0:6280:3f0::aa0b]
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1nRyoJ-00HGIW-9U; Wed, 09 Mar 2022 16:05:11 +0000
-Message-ID: <faadb494-2ed9-f894-257d-9a70398a02b6@infradead.org>
-Date:   Wed, 9 Mar 2022 08:05:05 -0800
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.6.2
+        with ESMTP id S238290AbiCIQVs (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 9 Mar 2022 11:21:48 -0500
+Received: from mxout04.lancloud.ru (mxout04.lancloud.ru [45.84.86.114])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D60DC3A5;
+        Wed,  9 Mar 2022 08:20:46 -0800 (PST)
+Received: from LanCloud
+DKIM-Filter: OpenDKIM Filter v2.11.0 mxout04.lancloud.ru B5CC8209A0EF
+Received: from LanCloud
+Received: from LanCloud
+Received: from LanCloud
 Subject: Re: [PATCH] docs/kernel-parameters: update description of mem=
-Content-Language: en-US
 To:     Mike Rapoport <rppt@kernel.org>, Jonathan Corbet <corbet@lwn.net>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
+CC:     Andrew Morton <akpm@linux-foundation.org>,
         "Maciej W. Rozycki" <macro@orcam.me.uk>,
         Mike Rapoport <rppt@linux.ibm.com>,
         Tiezhu Yang <yangtiezhu@loongson.cn>,
         Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        linux-doc@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+        <linux-doc@vger.kernel.org>, <linux-mips@vger.kernel.org>,
+        <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>
 References: <20220309122446.1118738-1-rppt@kernel.org>
-From:   Randy Dunlap <rdunlap@infradead.org>
+From:   Sergey Shtylyov <s.shtylyov@omp.ru>
+Organization: Open Mobile Platform
+Message-ID: <d3679148-598e-4b58-96be-e3ab255ab8d9@omp.ru>
+Date:   Wed, 9 Mar 2022 19:20:42 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
+MIME-Version: 1.0
 In-Reply-To: <20220309122446.1118738-1-rppt@kernel.org>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [192.168.11.198]
+X-ClientProxiedBy: LFEXT02.lancloud.ru (fd00:f066::142) To
+ LFEX1907.lancloud.ru (fd00:f066::207)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Hi Mike,
+On 3/9/22 3:24 PM, Mike Rapoport wrote:
 
-On 3/9/22 04:24, Mike Rapoport wrote:
 > From: Mike Rapoport <rppt@linux.ibm.com>
 > 
 > The existing description of mem= does not cover all the cases and
@@ -87,33 +82,14 @@ On 3/9/22 04:24, Mike Rapoport wrote:
 > +			[ARM64] - only limits memory covered by the linear
 > +			mapping. The NOMAP regions are not affected.
 > +
-> +			[HEXAGON] - must be use to set the memory size, there is
+> +			[HEXAGON] - must be use
 
-Above line seems to be missing something?
+   Used?
 
-Otherwise looks good AFAIK.
+> to set the memory size, there is
 
->  
->  			[X86] Work as limiting max address. Use together
->  			with memmap= to avoid physical address space collisions.
-> @@ -2844,6 +2853,17 @@
->  			in above case 3, memory may need be hot added after boot
->  			if system memory of hypervisor is not sufficient.
->  
-> +	mem=nn[KMG]@ss[KMG]
-> +			[ARM,MIPS] - override the memory layout reported by
-> +			firmware.
-> +			Define a memory region of size nn[KMG] starting at
-> +			ss[KMG].
-> +			Multiple different regions can be specified with
-> +			multiple mem= parameters on the command line.
-> +
-> +	mem=nn[KMG]	[HEXAGON] Set the memory size.
-> +			Must be specified, otherwise memory size will be 0.
-> +
->  	mem=nopentium	[BUGS=X86-32] Disable usage of 4MB pages for kernel
->  			memory.
->  
+   What? :-)
 
--- 
-~Randy
+[...]
+
+MBR, Sergey

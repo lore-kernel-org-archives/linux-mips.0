@@ -2,117 +2,151 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E7BAEC43219
-	for <linux-mips@archiver.kernel.org>; Wed,  9 Mar 2022 19:05:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CDBBDC433FE
+	for <linux-mips@archiver.kernel.org>; Wed,  9 Mar 2022 20:45:48 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237257AbiCITGY (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 9 Mar 2022 14:06:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48398 "EHLO
+        id S237591AbiCIUqq (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 9 Mar 2022 15:46:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44034 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237222AbiCITGX (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 9 Mar 2022 14:06:23 -0500
-Received: from bmailout3.hostsharing.net (bmailout3.hostsharing.net [IPv6:2a01:4f8:150:2161:1:b009:f23e:0])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78AC16F482;
-        Wed,  9 Mar 2022 11:05:23 -0800 (PST)
-Received: from h08.hostsharing.net (h08.hostsharing.net [IPv6:2a01:37:1000::53df:5f1c:0])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client CN "*.hostsharing.net", Issuer "RapidSSL TLS DV RSA Mixed SHA256 2020 CA-1" (verified OK))
-        by bmailout3.hostsharing.net (Postfix) with ESMTPS id 4A151100BA624;
-        Wed,  9 Mar 2022 20:05:21 +0100 (CET)
-Received: by h08.hostsharing.net (Postfix, from userid 100393)
-        id 278F54C5886; Wed,  9 Mar 2022 20:05:21 +0100 (CET)
-Date:   Wed, 9 Mar 2022 20:05:21 +0100
-From:   Lukas Wunner <lukas@wunner.de>
-To:     Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Cc:     linux-serial <linux-serial@vger.kernel.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Johan Hovold <johan@kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        linux-api@vger.kernel.org, Richard Henderson <rth@twiddle.net>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>, linux-alpha@vger.kernel.org,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        linux-mips@vger.kernel.org,
-        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
-        Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        linuxppc-dev@lists.ozlabs.org,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>, linux-sh@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>,
-        sparclinux@vger.kernel.org, Chris Zankel <chris@zankel.net>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        linux-xtensa@linux-xtensa.org, Arnd Bergmann <arnd@arndb.de>,
-        linux-arch@vger.kernel.org, linux-doc@vger.kernel.org
-Subject: Re: [RFC PATCH 6/7] serial: General support for multipoint addresses
-Message-ID: <20220309190521.GA9832@wunner.de>
-References: <20220302095606.14818-1-ilpo.jarvinen@linux.intel.com>
- <20220302095606.14818-7-ilpo.jarvinen@linux.intel.com>
- <20220306194001.GD19394@wunner.de>
- <ab43569c-6488-12a6-823-3ef09f2849d@linux.intel.com>
+        with ESMTP id S238191AbiCIUqk (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 9 Mar 2022 15:46:40 -0500
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBAB86353B
+        for <linux-mips@vger.kernel.org>; Wed,  9 Mar 2022 12:45:40 -0800 (PST)
+Received: by mail-pl1-x62c.google.com with SMTP id z3so3008215plg.8
+        for <linux-mips@vger.kernel.org>; Wed, 09 Mar 2022 12:45:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ERN4EHsAehnzKKHh1D2+nTh+Py8x5Rp5HMGDjFluxr8=;
+        b=cpibhiHH+V6FoD7AGaa89Pnpr1MqQbNAw3c0vVDSFoQFk3yUy7H4dCYYXfTWAmXrOs
+         l8GpE3EWh8KFbr1MAh3LU6KqfHECUwSRcaIveHTwEvCwWTWJkfTWeEBuHrdJRNvVcsLT
+         qHHY3jztnSlnXprm7bX5SKwQ2E493nxBs4RT4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ERN4EHsAehnzKKHh1D2+nTh+Py8x5Rp5HMGDjFluxr8=;
+        b=B2ZfdVltYb/o0tDhddQ1j65LcWyi+bTq1HqgHeCy1y3hKKOetjmCyUDlMyraHs+L4s
+         8Ex6kFFmj3wiCcUmES/ZfpcOm35dFOBRW2flojjPZ48MXpRXsAdH6xTiLE861ebNMhTv
+         mGw/zJhb1muAS3H5Fxc9Dbv+8IdBK0nqSS17m59vl6xLUS7D5B9wULswlL7Z1ExeTOvc
+         E7oKDkiWIlqaM6NgMnYEdagBf7dyILpRoDYk3wdDlTHELYn+r/E8lVgW8QhxGpTG/+Gn
+         /iJQnZwzc1acqg1tye+XhBxrfb/UXMnI9TjFsNabPHiOxAriQfXtODnSs7l6oPbAh9Yp
+         3iDA==
+X-Gm-Message-State: AOAM533UmStP0T4M/wRlDTqmVE6aGcjB4oPsO4gpnP61al2ve+Esjf9B
+        kxgkNJQcaDRRsFUr0LXo2NGmsw==
+X-Google-Smtp-Source: ABdhPJzUHtWrv+KW+UL90YnTzk6+LrU87Z4C7tNuo2i9t4ZS9YtNksuPK+owbWcQ8enR1zl7uRCZYQ==
+X-Received: by 2002:a17:90a:7bc5:b0:1be:eef4:b961 with SMTP id d5-20020a17090a7bc500b001beeef4b961mr12201271pjl.29.1646858740334;
+        Wed, 09 Mar 2022 12:45:40 -0800 (PST)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id 16-20020a056a00073000b004dfe2217090sm4111014pfm.200.2022.03.09.12.45.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 09 Mar 2022 12:45:40 -0800 (PST)
+From:   Kees Cook <keescook@chromium.org>
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Yanteng Si <siyanteng01@gmail.com>, linux-mips@vger.kernel.org,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
+        linux-hardening@vger.kernel.org
+Subject: [PATCH] MIPS: Only use current_stack_pointer on GCC
+Date:   Wed,  9 Mar 2022 12:45:37 -0800
+Message-Id: <20220309204537.390428-1-keescook@chromium.org>
+X-Mailer: git-send-email 2.32.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2946; h=from:subject; bh=mJJlcMAOHOUY1LaTM6CaPuzsaMVsrZSzurV5C9KyV08=; b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBiKRHwT/gRY3du4lkTuPbFhzgpqXfYeWapwif0U9xk 4yZK6xKJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCYikR8AAKCRCJcvTf3G3AJjnMEA CzTpygscG3HkIXS1hEPEscabCr9RpEuJhqQZXV8xRtoQXwrE2xeA0Uzv/rB4oF/Cd58H1w7442Hjs5 +ElxOHaJB/oGPmAJfKoArhK1r7b8Eb9AseY8z6brFbjRwsIpASiwzatqfrqBelCySWBMyKM30+bnvl Y3cxwrGBKrgJfkSo8hgbg2ysttwY/eOCpuZvoLrFL6DDZ1ku1YLomALhq+ujqRrLFWQsz/6aXI4Eks g1hVpufdlwo10713WyE6x/q8tHLF8DaaFK3ILTSL7qRVqinr2WiIgpbiRAD32ouad9jfNP3pPLDxPI 9a+HfL3fK8/exJ9C9kSNuHxFADYNml/bacRhohBGoDmX/tHJ2RZvwaY2mc+LKs+V8U6eXvCpiMjsxJ KRvGsHdcVONj+RRntX0Mzhj/UgYZ0/QfUo6+qCgqmRSlfvqeeeEJIAzYs96lWz1/L6yTMYdxhUvqTs bqViRba8Mx/muLUPqoazxhUxdlODBf2MmQj5dAe5JA+SNOC6hdlsGTWFqyK+sdJTKKbRzWH2tVjXj0 LZLBjJvNi41ZiLfT0Oae3pEqxHIvtcnztyO8kt0UzAKMaNmsHHmC8RwJBU0jr7ImjONFAZVEjv5yl2 NtUvzJAtB5MsSouKr9u4+MPJEVASs4gCzxhDzJfUdHyp5WbkYQEs2XsawC7Q==
+X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <ab43569c-6488-12a6-823-3ef09f2849d@linux.intel.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Mon, Mar 07, 2022 at 11:48:01AM +0200, Ilpo Järvinen wrote:
-> On Sun, 6 Mar 2022, Lukas Wunner wrote:
-> > On Wed, Mar 02, 2022 at 11:56:05AM +0200, Ilpo Järvinen wrote:
-> > > This change is necessary for supporting devices with RS485
-> > > multipoint addressing [*].
-> > 
-> > If this is only used with RS485, why can't we just store the
-> > addresses in struct serial_rs485 and use the existing TIOCSRS485
-> > and TIOCGRS485 ioctls?  There's 20 bytes of padding left in
-> > struct serial_rs485 which you could use.  No need to add more
-> > user-space ABI.
-> 
-> It could if it is agreed that serial multipoint addressing is just
-> a thing in RS-485 and nowhere else? In that case, there is no point
-> in adding more generic support for it.
+Unfortunately, Clang did not have support for "sp" as a global register
+definition, and was crashing after the addition of current_stack_pointer.
+This has been fixed in Clang 15, but earlier Clang versions need to
+avoid this code, so add a versioned test and revert back to the
+open-coded asm instances. Fixes Clang build error:
 
-It's just that the above-quoted sentence in the commit message
-specifically mentions RS485.  If you intend to use it with RS232
-as well, that should be made explicit, otherwise one wonders why
-it wasn't integrated into struct serial_rs485.
+fatal error: error in backend: Invalid register name global variable
 
-I have no idea how common 9th bit addressing mode is with RS232.
-Goggle turns up links saying it's mainly used with RS485, "but also
-RS232".  Since RS232 isn't a bus but a point-to-point link,
-9th bit addressing doesn't seem to make as much sense.
+Fixes: 200ed341b864 ("mips: Implement "current_stack_pointer"")
+Reported-by: Nathan Chancellor <nathan@kernel.org>
+Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc: Marc Zyngier <maz@kernel.org>
+Cc: Guenter Roeck <linux@roeck-us.net>
+Cc: Yanteng Si <siyanteng01@gmail.com>
+Cc: linux-mips@vger.kernel.org
+Signed-off-by: Kees Cook <keescook@chromium.org>
+---
+ arch/mips/Kconfig                   | 2 +-
+ arch/mips/include/asm/thread_info.h | 2 ++
+ arch/mips/kernel/irq.c              | 3 ++-
+ arch/mips/lib/uncached.c            | 4 +++-
+ 4 files changed, 8 insertions(+), 3 deletions(-)
 
+diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
+index 3f58b45fc953..15769013f46e 100644
+--- a/arch/mips/Kconfig
++++ b/arch/mips/Kconfig
+@@ -4,7 +4,7 @@ config MIPS
+ 	default y
+ 	select ARCH_32BIT_OFF_T if !64BIT
+ 	select ARCH_BINFMT_ELF_STATE if MIPS_FP_SUPPORT
+-	select ARCH_HAS_CURRENT_STACK_POINTER
++	select ARCH_HAS_CURRENT_STACK_POINTER if !CC_IS_CLANG || CLANG_VERSION >= 150000
+ 	select ARCH_HAS_DEBUG_VIRTUAL if !64BIT
+ 	select ARCH_HAS_FORTIFY_SOURCE
+ 	select ARCH_HAS_KCOV
+diff --git a/arch/mips/include/asm/thread_info.h b/arch/mips/include/asm/thread_info.h
+index 4463348d2372..ecae7470faa4 100644
+--- a/arch/mips/include/asm/thread_info.h
++++ b/arch/mips/include/asm/thread_info.h
+@@ -69,7 +69,9 @@ static inline struct thread_info *current_thread_info(void)
+ 	return __current_thread_info;
+ }
+ 
++#ifdef CONFIG_ARCH_HAS_CURRENT_STACK_POINTER
+ register unsigned long current_stack_pointer __asm__("sp");
++#endif
+ 
+ #endif /* !__ASSEMBLY__ */
+ 
+diff --git a/arch/mips/kernel/irq.c b/arch/mips/kernel/irq.c
+index fc313c49a417..5e11582fe308 100644
+--- a/arch/mips/kernel/irq.c
++++ b/arch/mips/kernel/irq.c
+@@ -75,8 +75,9 @@ void __init init_IRQ(void)
+ #ifdef CONFIG_DEBUG_STACKOVERFLOW
+ static inline void check_stack_overflow(void)
+ {
+-	unsigned long sp = current_stack_pointer;
++	unsigned long sp;
+ 
++	__asm__ __volatile__("move %0, $sp" : "=r" (sp));
+ 	sp &= THREAD_MASK;
+ 
+ 	/*
+diff --git a/arch/mips/lib/uncached.c b/arch/mips/lib/uncached.c
+index f8d4ca046c3e..f80a67c092b6 100644
+--- a/arch/mips/lib/uncached.c
++++ b/arch/mips/lib/uncached.c
+@@ -40,7 +40,9 @@ unsigned long run_uncached(void *func)
+ 	register long ret __asm__("$2");
+ 	long lfunc = (long)func, ufunc;
+ 	long usp;
+-	long sp = current_stack_pointer;
++	long sp;
++
++	__asm__("move %0, $sp" : "=r" (sp));
+ 
+ 	if (sp >= (long)CKSEG0 && sp < (long)CKSEG2)
+ 		usp = CKSEG1ADDR(sp);
+-- 
+2.32.0
 
-> > > [*] Technically, RS485 is just an electronic spec and does not
-> > > itself specify the 9th bit addressing mode but 9th bit seems
-> > > at least "semi-standard" way to do addressing with RS485.
-> > 
-> > Is 9th bit addressing actually used by an Intel customer or was
-> > it implemented just for feature completeness? I think this mode
-> > isn't used often (I've never seen a use case myself), primarily
-> > because it requires disabling parity.
-> 
-> On what basis? ...The datasheet I'm looking at has a timing diagram 
-> with both D8 (9th bit) and parity so I think your information must be
-> incorrect.
-
-E.g. the discussion here says that 9th bit addressing requires that
-parity is disabled or the character size is reduced to 7-bit:
-
-https://www.microchip.com/forums/m299904.aspx
-
-I guess that applies only to some UARTs, the Synopsys databook doesn't
-mention any such constraints.
-
-Thanks,
-
-Lukas

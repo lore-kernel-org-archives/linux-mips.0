@@ -2,48 +2,48 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5A014C43217
-	for <linux-mips@archiver.kernel.org>; Wed,  9 Mar 2022 16:33:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7B4B9C433F5
+	for <linux-mips@archiver.kernel.org>; Wed,  9 Mar 2022 16:33:49 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231182AbiCIQen (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 9 Mar 2022 11:34:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44722 "EHLO
+        id S235360AbiCIQeo (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 9 Mar 2022 11:34:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44314 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239460AbiCIQch (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 9 Mar 2022 11:32:37 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43F1A5AA41;
-        Wed,  9 Mar 2022 08:27:51 -0800 (PST)
+        with ESMTP id S237345AbiCIQan (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 9 Mar 2022 11:30:43 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 878921637FD;
+        Wed,  9 Mar 2022 08:24:27 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 1538E61983;
-        Wed,  9 Mar 2022 16:27:34 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 11930C340E8;
-        Wed,  9 Mar 2022 16:27:29 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 9BC1BB82221;
+        Wed,  9 Mar 2022 16:24:20 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2C5A0C340E8;
+        Wed,  9 Mar 2022 16:24:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1646843253;
-        bh=h8MGq341q8/Z+xKsS+lRE3qSygmPpW7BPADoRRa1EJY=;
+        s=k20201202; t=1646843059;
+        bh=aEYPqwArAW+uwcXlKMY5N85b/gaIqcBdlnG6nxEOdnY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=jmzEpKO2iKAiSpQjVbpltzMyV/hskJL+zG0kNaoElqYYqBG1ynep0KWZIK6ynv0uP
-         SSW33TqMjygvD9paznJyU1mz5A3XTW6QC1716bsMwYrG81ZWLjnUXxlBPK8sFCCorH
-         kh20bE8FrXWimUFNUaC5E/Jn9Yem51HMKPQG6xII2zKjYqlbvRJHrQEyPnburaT/rh
-         6x7OnXOba7pch0MXn7ZsPPuCY1xxDNt2j0LRIMqBmq1FcDXyI0PgBDH/kRUgIAS+Dj
-         0Eq79x/nLPeY5S4/Rku9h3poiGoBKeLPKeqk1CAuNlHdMAq4iB+Hd81F9gVGAT1OYt
-         QYZnZlSjZ6bEA==
+        b=ixHz07HkEfvLMTxx6wMNYKr6W8dsIW5kQ/gVX3ZiPiwAxHFuHAyHNqQNx6TLC7zir
+         0AVLzCiHEpBVYhbiSTHwxXrd21Fo/vSGpOpwlcrK4SJZB4ga7NxojQtFuozm8X5lah
+         qkGfhTujqji4sJTFDl+vJW6+BOFD3JQbQRaqLgU6Hso9ZSoSfbF4x2sk7B7FqEqaFG
+         OCURH14h8PqpTA5SnB6A9B1D5M+7Nzvy7cY4BE5kVaaeMX9IylzPR9usEBsElTF1Id
+         1tm1BHScoLzkPnoSoqXK7o1ye0Ng/uA/EUZata84GlWqykl0nRgqVicHVK459vrq7G
+         Ux9BfaSCLDrZg==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Alexander Lobakin <alobakin@pm.me>,
         =?UTF-8?q?Philippe=20Mathieu-Daud=C3=A9?= <f4bug@amsat.org>,
         Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Sasha Levin <sashal@kernel.org>, valentin.schneider@arm.com,
-        peterz@infradead.org, mingo@kernel.org, linux-mips@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.9 03/11] MIPS: smp: fill in sibling and core maps earlier
-Date:   Wed,  9 Mar 2022 11:27:08 -0500
-Message-Id: <20220309162716.137399-3-sashal@kernel.org>
+        Sasha Levin <sashal@kernel.org>, peterz@infradead.org,
+        valentin.schneider@arm.com, linux-mips@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.4 09/19] MIPS: smp: fill in sibling and core maps earlier
+Date:   Wed,  9 Mar 2022 11:23:26 -0500
+Message-Id: <20220309162337.136773-9-sashal@kernel.org>
 X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20220309162716.137399-1-sashal@kernel.org>
-References: <20220309162716.137399-1-sashal@kernel.org>
+In-Reply-To: <20220309162337.136773-1-sashal@kernel.org>
+References: <20220309162337.136773-1-sashal@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 X-stable: review
@@ -126,10 +126,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/arch/mips/kernel/smp.c b/arch/mips/kernel/smp.c
-index 95ba4271af6a..01aa8d6da4b9 100644
+index f510c00bda88..c563b03bdccc 100644
 --- a/arch/mips/kernel/smp.c
 +++ b/arch/mips/kernel/smp.c
-@@ -369,6 +369,9 @@ asmlinkage void start_secondary(void)
+@@ -361,6 +361,9 @@ asmlinkage void start_secondary(void)
  	cpu = smp_processor_id();
  	cpu_data[cpu].udelay_val = loops_per_jiffy;
  
@@ -139,7 +139,7 @@ index 95ba4271af6a..01aa8d6da4b9 100644
  	cpumask_set_cpu(cpu, &cpu_coherent_mask);
  	notify_cpu_starting(cpu);
  
-@@ -380,9 +383,6 @@ asmlinkage void start_secondary(void)
+@@ -372,9 +375,6 @@ asmlinkage void start_secondary(void)
  	/* The CPU is running and counters synchronised, now mark it online */
  	set_cpu_online(cpu, true);
  

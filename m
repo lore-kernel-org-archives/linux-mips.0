@@ -2,191 +2,100 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6D430C433EF
-	for <linux-mips@archiver.kernel.org>; Thu, 10 Mar 2022 06:50:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4C1C8C433EF
+	for <linux-mips@archiver.kernel.org>; Thu, 10 Mar 2022 07:22:58 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239918AbiCJGvX (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 10 Mar 2022 01:51:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40490 "EHLO
+        id S235335AbiCJHX5 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 10 Mar 2022 02:23:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50656 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239917AbiCJGvW (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Thu, 10 Mar 2022 01:51:22 -0500
-Received: from loongson.cn (mail.loongson.cn [114.242.206.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 46B9711AA26;
-        Wed,  9 Mar 2022 22:50:21 -0800 (PST)
-Received: from linux.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9BxsM6lnyliK0MGAA--.27068S4;
-        Thu, 10 Mar 2022 14:50:14 +0800 (CST)
-From:   Tiezhu Yang <yangtiezhu@loongson.cn>
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc:     Xuefeng Li <lixuefeng@loongson.cn>, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 2/3] MIPS: Remove redundant definitions of device_tree_init()
-Date:   Thu, 10 Mar 2022 14:50:11 +0800
-Message-Id: <1646895012-3143-3-git-send-email-yangtiezhu@loongson.cn>
-X-Mailer: git-send-email 2.1.0
-In-Reply-To: <1646895012-3143-1-git-send-email-yangtiezhu@loongson.cn>
-References: <1646895012-3143-1-git-send-email-yangtiezhu@loongson.cn>
-X-CM-TRANSID: AQAAf9BxsM6lnyliK0MGAA--.27068S4
-X-Coremail-Antispam: 1UD129KBjvJXoWxZw4xAFy8ZF47GF43Cw4fuFg_yoWrAF1fp3
-        y2yas7GrW5Wr1UGFWfArykZr1YqFnY934avayjk3y8uasIvryrWr4fCry5AryDJrWUX3Wr
-        WFySqrWxXF48Aw7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUBS14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_Jryl82xGYIkIc2
-        x26xkF7I0E14v26r1I6r4UM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2z4x0
-        Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Cr0_Gr1UM2
-        8EF7xvwVC2z280aVAFwI0_Cr1j6rxdM28EF7xvwVC2z280aVCY1x0267AKxVW0oVCq3wAS
-        0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2
-        IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0
-        Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCY02Avz4vE14v_GF1l42xK82
-        IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC2
-        0s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMI
-        IF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF
-        0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87
-        Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjfUndgADUUUU
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+        with ESMTP id S230314AbiCJHX4 (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Thu, 10 Mar 2022 02:23:56 -0500
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA1AB4F9D0;
+        Wed,  9 Mar 2022 23:22:55 -0800 (PST)
+Received: by mail-lf1-x135.google.com with SMTP id l20so7814932lfg.12;
+        Wed, 09 Mar 2022 23:22:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=uRNunbfVJZj3V0khFzxC/exb9GUQby76Xdm8mxOwtM0=;
+        b=DPAc3c3nnRtlOHHtjP2fyr/s7e94DFESjfTzk9QZ6Q7yiwbI/nqyNz4TB+C2UKsDiq
+         /73o4A3M9ECUpbR1iBVfXIGYxdgiZF/ZYjHMnhi/YTiMElZ9canqG5ZkxZSsUYQb1MqF
+         rQjEHFnhdrHbfyuee3+Bmx67MhVMUAMJTwEWGyzKRr4tjzqrJBIG3G/0+V9CCEkZQOrJ
+         qmfAVhgBb43mGrPsiigZsBDUc7xxaWbKR3lrVWMst3LNeUHtwaHUMAyN1rrNA7ajwBwq
+         dBCWmQgupSWWsnaPOyrlmIXiO6w1GFtNUR+OBwmObY5jOgPf7MDTaO9UIfaR5sIO8guJ
+         I0pQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=uRNunbfVJZj3V0khFzxC/exb9GUQby76Xdm8mxOwtM0=;
+        b=nuLzegrWJjU6c1aR1xaFBasDHbZBPd96qfj9nFejuXafOq80fEEGhxsGHt1DnlaKlG
+         Hv2T0uF61lsFhW3MG4mVNo0NbHYgyn74w68JZG93PnYgEhY8Vgk3guqO/9z6QNi0utGP
+         5qoC0++JFEfBUGF6QQtqyuTgJq5RijpRi92nBFRQDyGN/U84rCWzLvb9g7HZya73kTUk
+         StiN1+GOxLQAV7fZRIhlpehtt3Uh+AUU/zfgML2+XXBvOv+l8JgWms2KpZ5g5EE+iya7
+         1dP82TGsJE5r+tiAcXbonfbFTtI7ybVIMhelE6bkTatkNXI/oBCoWPYEtC9IbQkbHpa1
+         xeRQ==
+X-Gm-Message-State: AOAM5321MsoHCSDpLnHD8tslMRx9j3KbnzUnt49SEAistcQ5fnrCHSEz
+        2fOSHxVZn4g9rRkT2OvN1ec=
+X-Google-Smtp-Source: ABdhPJx1HRJ6odDkpoCnKTs3Zu46b1u9QFUfxqdZZRDSKc8J875snzWrgbaWzfBjTjwbZjrEq+KrkA==
+X-Received: by 2002:a05:6512:10c8:b0:448:3fdc:6407 with SMTP id k8-20020a05651210c800b004483fdc6407mr2112352lfg.360.1646896974120;
+        Wed, 09 Mar 2022 23:22:54 -0800 (PST)
+Received: from localhost.lan (ip-194-187-74-233.konfederacka.maverick.com.pl. [194.187.74.233])
+        by smtp.gmail.com with ESMTPSA id y23-20020a2e95d7000000b00247e4e386aasm894075ljh.121.2022.03.09.23.22.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 09 Mar 2022 23:22:53 -0800 (PST)
+From:   =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Jiri Slaby <jirislaby@kernel.org>, linux-serial@vger.kernel.org,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
+        bcm-kernel-feedback-list@broadcom.com,
+        linux-kernel@vger.kernel.org,
+        =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH] tty: serial: bcm63xx: use more precise Kconfig symbol
+Date:   Thu, 10 Mar 2022 08:22:39 +0100
+Message-Id: <20220310072239.4489-1-zajec5@gmail.com>
+X-Mailer: git-send-email 2.34.1
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-There exists many same definitions of device_tree_init() for various
-platforms, add a weak function in arch/mips/kernel/prom.c to clean
-up the related code.
+From: Rafał Miłecki <rafal@milecki.pl>
 
-Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+Patches lowering SERIAL_BCM63XX dependencies led to a discussion and
+documentation change regarding "depends" usage. Adjust Kconfig entry to
+match current guidelines. Make this symbol available for relevant
+architectures only.
+
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+Ref: f35a07f92616 ("tty: serial: bcm63xx: lower driver dependencies")
+Ref: 18084e435ff6 ("Documentation/kbuild: Document platform dependency practises")
+Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
 ---
- arch/mips/ath79/setup.c          |  5 -----
- arch/mips/kernel/prom.c          |  5 +++++
- arch/mips/lantiq/prom.c          |  5 -----
- arch/mips/loongson64/setup.c     |  5 -----
- arch/mips/mti-malta/Makefile     |  1 -
- arch/mips/mti-malta/malta-dt.c   | 15 ---------------
- arch/mips/pic32/pic32mzda/init.c |  5 -----
- arch/mips/ralink/of.c            |  5 -----
- 8 files changed, 5 insertions(+), 41 deletions(-)
- delete mode 100644 arch/mips/mti-malta/malta-dt.c
+ drivers/tty/serial/Kconfig | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/arch/mips/ath79/setup.c b/arch/mips/ath79/setup.c
-index 45d4d71..4e18cdc 100644
---- a/arch/mips/ath79/setup.c
-+++ b/arch/mips/ath79/setup.c
-@@ -269,8 +269,3 @@ void __init arch_init_irq(void)
- {
- 	irqchip_init();
- }
--
--void __init device_tree_init(void)
--{
--	unflatten_and_copy_device_tree();
--}
-diff --git a/arch/mips/kernel/prom.c b/arch/mips/kernel/prom.c
-index 6abebd5..7db6ff9 100644
---- a/arch/mips/kernel/prom.c
-+++ b/arch/mips/kernel/prom.c
-@@ -64,4 +64,9 @@ int __init __dt_register_buses(const char *bus0, const char *bus1)
- 	return 0;
- }
- 
-+void __weak __init device_tree_init(void)
-+{
-+	unflatten_and_copy_device_tree();
-+}
-+
- #endif
-diff --git a/arch/mips/lantiq/prom.c b/arch/mips/lantiq/prom.c
-index bc9f58f..c731082a 100644
---- a/arch/mips/lantiq/prom.c
-+++ b/arch/mips/lantiq/prom.c
-@@ -84,11 +84,6 @@ void __init plat_mem_setup(void)
- 	__dt_setup_arch(dtb);
- }
- 
--void __init device_tree_init(void)
--{
--	unflatten_and_copy_device_tree();
--}
--
- void __init prom_init(void)
- {
- 	/* call the soc specific detetcion code and get it to fill soc_info */
-diff --git a/arch/mips/loongson64/setup.c b/arch/mips/loongson64/setup.c
-index 1973eb0..3cd11c2 100644
---- a/arch/mips/loongson64/setup.c
-+++ b/arch/mips/loongson64/setup.c
-@@ -36,8 +36,3 @@ void __init plat_mem_setup(void)
- 	if (loongson_fdt_blob)
- 		__dt_setup_arch(loongson_fdt_blob);
- }
--
--void __init device_tree_init(void)
--{
--	unflatten_and_copy_device_tree();
--}
-diff --git a/arch/mips/mti-malta/Makefile b/arch/mips/mti-malta/Makefile
-index 94c11f5..13bbd12 100644
---- a/arch/mips/mti-malta/Makefile
-+++ b/arch/mips/mti-malta/Makefile
-@@ -6,7 +6,6 @@
- # Copyright (C) 2008 Wind River Systems, Inc.
- #   written by Ralf Baechle <ralf@linux-mips.org>
- #
--obj-y				+= malta-dt.o
- obj-y				+= malta-dtshim.o
- obj-y				+= malta-init.o
- obj-y				+= malta-int.o
-diff --git a/arch/mips/mti-malta/malta-dt.c b/arch/mips/mti-malta/malta-dt.c
-deleted file mode 100644
-index d045c91..0000000
---- a/arch/mips/mti-malta/malta-dt.c
-+++ /dev/null
-@@ -1,15 +0,0 @@
--// SPDX-License-Identifier: GPL-2.0-or-later
--/*
-- * Copyright (C) 2015 Imagination Technologies
-- * Author: Paul Burton <paul.burton@mips.com>
-- */
--
--#include <linux/clk-provider.h>
--#include <linux/init.h>
--#include <linux/of_fdt.h>
--#include <linux/of_platform.h>
--
--void __init device_tree_init(void)
--{
--	unflatten_and_copy_device_tree();
--}
-diff --git a/arch/mips/pic32/pic32mzda/init.c b/arch/mips/pic32/pic32mzda/init.c
-index a1860f2..1299156 100644
---- a/arch/mips/pic32/pic32mzda/init.c
-+++ b/arch/mips/pic32/pic32mzda/init.c
-@@ -78,11 +78,6 @@ void __init prom_init(void)
- 	pic32_init_cmdline((int)fw_arg0, (char **)fw_arg1);
- }
- 
--void __init device_tree_init(void)
--{
--	unflatten_and_copy_device_tree();
--}
--
- static struct pic32_sdhci_platform_data sdhci_data = {
- 	.setup_dma = pic32_set_sdhci_adma_fifo_threshold,
- };
-diff --git a/arch/mips/ralink/of.c b/arch/mips/ralink/of.c
-index 35a87a2..587c7b9 100644
---- a/arch/mips/ralink/of.c
-+++ b/arch/mips/ralink/of.c
-@@ -48,11 +48,6 @@ __iomem void *plat_of_remap_node(const char *node)
- 	return ioremap(res.start, resource_size(&res));
- }
- 
--void __init device_tree_init(void)
--{
--	unflatten_and_copy_device_tree();
--}
--
- void __init plat_mem_setup(void)
- {
- 	void *dtb;
+diff --git a/drivers/tty/serial/Kconfig b/drivers/tty/serial/Kconfig
+index e952ec5c7a7c..99313e16c2be 100644
+--- a/drivers/tty/serial/Kconfig
++++ b/drivers/tty/serial/Kconfig
+@@ -1100,7 +1100,8 @@ config SERIAL_TIMBERDALE
+ config SERIAL_BCM63XX
+ 	tristate "Broadcom BCM63xx/BCM33xx UART support"
+ 	select SERIAL_CORE
+-	depends on COMMON_CLK
++	depends on MIPS || ARM || ARM64 || COMPILE_TEST
++	default ARCH_BCM4908 || BCM63XX || BMIPS_GENERIC
+ 	help
+ 	  This enables the driver for the onchip UART core found on
+ 	  the following chipsets:
 -- 
-2.1.0
+2.34.1
 

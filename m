@@ -2,106 +2,110 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7BAAAC43217
-	for <linux-mips@archiver.kernel.org>; Mon, 14 Mar 2022 07:33:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 41C5FC433FE
+	for <linux-mips@archiver.kernel.org>; Mon, 14 Mar 2022 14:17:20 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236754AbiCNHeI (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 14 Mar 2022 03:34:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47816 "EHLO
+        id S242242AbiCNOS2 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 14 Mar 2022 10:18:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54360 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236676AbiCNHdn (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Mon, 14 Mar 2022 03:33:43 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCE7140A38;
-        Mon, 14 Mar 2022 00:32:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
-        :Reply-To:Content-Type:Content-ID:Content-Description;
-        bh=zCMW1Q+QCPXYuvBuEGOZUQKFwE9OwdLFtYhltvQ29K4=; b=vIJ2oE33+/DMOwDU/JixqH774f
-        4HcyxfW75FjmmRylwNxtYUZ/EQtjckE6WUtJCk9FMmZ9UiNrJUQNReUkRYB9gehR9d8FPU1StVV25
-        mDZAU61IRRH6aevchvran8PrU1UUMctkO1s07C1dw7LyB44+FDPejkmKQZWLyMHg5oTrChOy5x3wo
-        MfT4/jWOnm16vvedpWLshlHmUjvCe5TTKasktRFAsL18gH/ZI5fWAS0KZoTBRUiVEpg29wVYcYU1M
-        9OpeHj+MXwuceM9FZp/nCmHAVa7rGsk1e3aB6Qq0bvLlVR46azzHlVR3oWpheK6+ceqEjGSc2s8WB
-        kPKhfqNA==;
-Received: from [46.140.54.162] (helo=localhost)
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1nTfBi-0044wm-QZ; Mon, 14 Mar 2022 07:32:19 +0000
-From:   Christoph Hellwig <hch@lst.de>
-To:     iommu@lists.linux-foundation.org
-Cc:     x86@kernel.org, Anshuman Khandual <anshuman.khandual@arm.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        linux-arm-kernel@lists.infradead.org,
-        xen-devel@lists.xenproject.org, linux-ia64@vger.kernel.org,
-        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
-        linux-hyperv@vger.kernel.org, tboot-devel@lists.sourceforge.net,
-        linux-pci@vger.kernel.org
-Subject: [PATCH 15/15] x86: remove cruft from <asm/dma-mapping.h>
-Date:   Mon, 14 Mar 2022 08:31:29 +0100
-Message-Id: <20220314073129.1862284-16-hch@lst.de>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20220314073129.1862284-1-hch@lst.de>
-References: <20220314073129.1862284-1-hch@lst.de>
+        with ESMTP id S242228AbiCNOS2 (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Mon, 14 Mar 2022 10:18:28 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2191D19C31
+        for <linux-mips@vger.kernel.org>; Mon, 14 Mar 2022 07:17:17 -0700 (PDT)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1nTlVM-0004zh-01; Mon, 14 Mar 2022 15:17:00 +0100
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+        by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.94.2)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1nTlVM-000f3A-Ca; Mon, 14 Mar 2022 15:16:59 +0100
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1nTlVK-0097b5-7o; Mon, 14 Mar 2022 15:16:58 +0100
+From:   =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>
+To:     Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Paul Cercueil <paul@crapouillou.net>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>
+Cc:     linux-clk@vger.kernel.org, kernel@pengutronix.de,
+        linux-mips@vger.kernel.org, linux-rtc@vger.kernel.org
+Subject: [PATCH v8 09/16] rtc: ingenic: Simplify using devm_clk_get_enabled()
+Date:   Mon, 14 Mar 2022 15:16:36 +0100
+Message-Id: <20220314141643.22184-10-u.kleine-koenig@pengutronix.de>
+X-Mailer: git-send-email 2.35.1
+In-Reply-To: <20220314141643.22184-1-u.kleine-koenig@pengutronix.de>
+References: <20220314141643.22184-1-u.kleine-koenig@pengutronix.de>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1594; i=uwe@kleine-koenig.org; h=from:subject; bh=FeAj6Ohg9mkpr+zt239XYH6V0/QlOhGXtSKI9NFJOhU=; b=owEBbQGS/pANAwAKAcH8FHityuwJAcsmYgBiL04I04iODxa+kI91syZiUDXI2CeBN8AaiC2n/y4O g+rD3nuJATMEAAEKAB0WIQR+cioWkBis/z50pAvB/BR4rcrsCQUCYi9OCAAKCRDB/BR4rcrsCYJeB/ 9+fceY++w2qiCyAKn43cDe3s1P3VvLC68fdLkbHJm4jywsslju+hq7fSs2r4AD4nBXG7pywqfs0ZSU FJUWrBWnSjXTUctP7slKWVag5kR4jAUmt4ChfPvw5jTdcC1QS5jwPR1Hzkr2zHucE31nimhProcDHy xN5fLrSD29P8qhA+Tj6XsoNAtyMHiOYri1z2bwK/uOylK9bor99hXnBgCerbbNIJOmF9UPG7IQmYNt md3btgA77WDUhDXdw+/vvFdPYQIKhfnAw3c+KlSV2yad2C/5lTvxxjMMtEjsG/VCYDw2zfC4zBSEQw uvy7n+Ob+p2scOYh5nHNCwvUqlXYu5
+X-Developer-Key: i=uwe@kleine-koenig.org; a=openpgp; fpr=0D2511F322BFAB1C1580266BE2DCDD9132669BD6
 Content-Transfer-Encoding: 8bit
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-mips@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-<asm/dma-mapping.h> gets pulled in by all drivers using the DMA API.
-Remove x86 internal variables and unnecessary includes from it.
+With devm_clk_get_enabled() caring to disable (and unprepare) the clock,
+the probe function can be simplified accordingly.
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
+Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
 ---
- arch/x86/include/asm/dma-mapping.h | 11 -----------
- arch/x86/include/asm/iommu.h       |  2 ++
- 2 files changed, 2 insertions(+), 11 deletions(-)
+ drivers/rtc/rtc-jz4740.c | 21 ++-------------------
+ 1 file changed, 2 insertions(+), 19 deletions(-)
 
-diff --git a/arch/x86/include/asm/dma-mapping.h b/arch/x86/include/asm/dma-mapping.h
-index 256fd8115223d..1c66708e30623 100644
---- a/arch/x86/include/asm/dma-mapping.h
-+++ b/arch/x86/include/asm/dma-mapping.h
-@@ -2,17 +2,6 @@
- #ifndef _ASM_X86_DMA_MAPPING_H
- #define _ASM_X86_DMA_MAPPING_H
+diff --git a/drivers/rtc/rtc-jz4740.c b/drivers/rtc/rtc-jz4740.c
+index 6e51df72fd65..9b7bb6ce93ee 100644
+--- a/drivers/rtc/rtc-jz4740.c
++++ b/drivers/rtc/rtc-jz4740.c
+@@ -257,11 +257,6 @@ static void jz4740_rtc_power_off(void)
+ 	kernel_halt();
+ }
  
--/*
-- * IOMMU interface. See Documentation/core-api/dma-api-howto.rst and
-- * Documentation/core-api/dma-api.rst for documentation.
-- */
+-static void jz4740_rtc_clk_disable(void *data)
+-{
+-	clk_disable_unprepare(data);
+-}
 -
--#include <linux/scatterlist.h>
--#include <asm/io.h>
+ static const struct of_device_id jz4740_rtc_of_match[] = {
+ 	{ .compatible = "ingenic,jz4740-rtc", .data = (void *)ID_JZ4740 },
+ 	{ .compatible = "ingenic,jz4760-rtc", .data = (void *)ID_JZ4760 },
+@@ -329,24 +324,12 @@ static int jz4740_rtc_probe(struct platform_device *pdev)
+ 	if (IS_ERR(rtc->base))
+ 		return PTR_ERR(rtc->base);
+ 
+-	clk = devm_clk_get(dev, "rtc");
++	clk = devm_clk_get_enabled(dev, "rtc");
+ 	if (IS_ERR(clk)) {
+-		dev_err(dev, "Failed to get RTC clock\n");
++		dev_err(dev, "Failed to get enabled RTC clock\n");
+ 		return PTR_ERR(clk);
+ 	}
+ 
+-	ret = clk_prepare_enable(clk);
+-	if (ret) {
+-		dev_err(dev, "Failed to enable clock\n");
+-		return ret;
+-	}
 -
--extern int iommu_merge;
--extern int panic_on_overflow;
+-	ret = devm_add_action_or_reset(dev, jz4740_rtc_clk_disable, clk);
+-	if (ret) {
+-		dev_err(dev, "Failed to register devm action\n");
+-		return ret;
+-	}
 -
- extern const struct dma_map_ops *dma_ops;
+ 	spin_lock_init(&rtc->lock);
  
- static inline const struct dma_map_ops *get_arch_dma_ops(struct bus_type *bus)
-diff --git a/arch/x86/include/asm/iommu.h b/arch/x86/include/asm/iommu.h
-index dba89ed40d38d..0bef44d30a278 100644
---- a/arch/x86/include/asm/iommu.h
-+++ b/arch/x86/include/asm/iommu.h
-@@ -8,6 +8,8 @@
- 
- extern int force_iommu, no_iommu;
- extern int iommu_detected;
-+extern int iommu_merge;
-+extern int panic_on_overflow;
- 
- #ifdef CONFIG_SWIOTLB
- extern bool x86_swiotlb_enable;
+ 	platform_set_drvdata(pdev, rtc);
 -- 
-2.30.2
+2.35.1
 

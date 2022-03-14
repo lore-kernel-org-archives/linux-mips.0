@@ -2,76 +2,65 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7260FC43219
-	for <linux-mips@archiver.kernel.org>; Mon, 14 Mar 2022 14:53:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3581DC4167D
+	for <linux-mips@archiver.kernel.org>; Mon, 14 Mar 2022 14:53:21 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233581AbiCNOy1 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 14 Mar 2022 10:54:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45898 "EHLO
+        id S237518AbiCNOy2 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 14 Mar 2022 10:54:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45974 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233577AbiCNOyZ (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Mon, 14 Mar 2022 10:54:25 -0400
+        with ESMTP id S233615AbiCNOy0 (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Mon, 14 Mar 2022 10:54:26 -0400
 Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 982E2255BA;
-        Mon, 14 Mar 2022 07:53:14 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 3C1FD2610D;
+        Mon, 14 Mar 2022 07:53:16 -0700 (PDT)
 Received: from uucp (helo=alpha)
         by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1nTm4O-0006nG-01; Mon, 14 Mar 2022 15:53:12 +0100
+        id 1nTm4N-0006nG-01; Mon, 14 Mar 2022 15:53:11 +0100
 Received: by alpha.franken.de (Postfix, from userid 1000)
-        id C5EC0C2E31; Mon, 14 Mar 2022 15:52:15 +0100 (CET)
-Date:   Mon, 14 Mar 2022 15:52:15 +0100
+        id B3FF9C2E31; Mon, 14 Mar 2022 15:51:08 +0100 (CET)
+Date:   Mon, 14 Mar 2022 15:51:08 +0100
 From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Nathan Chancellor <nathan@kernel.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Yanteng Si <siyanteng01@gmail.com>, linux-mips@vger.kernel.org,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
-        linux-hardening@vger.kernel.org
-Subject: Re: [PATCH v2] MIPS: Only use current_stack_pointer on GCC
-Message-ID: <20220314145215.GD13438@alpha.franken.de>
-References: <20220309220939.392227-1-keescook@chromium.org>
+To:     yaliang.wang@windriver.com
+Cc:     rppt@kernel.org, huangpei@loongson.cn, akpm@linux-foundation.org,
+        kumba@gentoo.org, geert@linux-m68k.org, anshuman.khandual@arm.com,
+        penberg@kernel.org, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] MIPS: pgalloc: fix memory leak caused by pgd_free()
+Message-ID: <20220314145108.GB13438@alpha.franken.de>
+References: <20220310113116.2068859-1-yaliang.wang@windriver.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220309220939.392227-1-keescook@chromium.org>
+In-Reply-To: <20220310113116.2068859-1-yaliang.wang@windriver.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Wed, Mar 09, 2022 at 02:09:39PM -0800, Kees Cook wrote:
-> Unfortunately, Clang did not have support for "sp" as a global register
-> definition, and was crashing after the addition of current_stack_pointer.
-> This has been fixed in Clang 15, but earlier Clang versions need to
-> avoid this code, so add a versioned test and revert back to the
-> open-coded asm instances. Fixes Clang build error:
+On Thu, Mar 10, 2022 at 07:31:16PM +0800, yaliang.wang@windriver.com wrote:
+> From: Yaliang Wang <Yaliang.Wang@windriver.com>
 > 
-> fatal error: error in backend: Invalid register name global variable
+> pgd page is freed by generic implementation pgd_free() since commit
+> f9cb654cb550 ("asm-generic: pgalloc: provide generic pgd_free()"),
+> however, there are scenarios that the system uses more than one page as
+> the pgd table, in such cases the generic implementation pgd_free() won't
+> be applicable anymore. For example, when PAGE_SIZE_4KB is enabled and
+> MIPS_VA_BITS_48 is not enabled in a 64bit system, the macro "PGD_ORDER"
+> will be set as "1", which will cause allocating two pages as the pgd
+> table. Well, at the same time, the generic implementation pgd_free()
+> just free one pgd page, which will result in the memory leak.
 > 
-> Fixes: 200ed341b864 ("mips: Implement "current_stack_pointer"")
-> Reported-by: Nathan Chancellor <nathan@kernel.org>
-> Reviewed-by: Nathan Chancellor <nathan@kernel.org>
-> Link: https://lore.kernel.org/lkml/YikTQRql+il3HbrK@dev-arch.thelio-3990X
-> Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-> Cc: Marc Zyngier <maz@kernel.org>
-> Cc: Guenter Roeck <linux@roeck-us.net>
-> Cc: Yanteng Si <siyanteng01@gmail.com>
-> Cc: linux-mips@vger.kernel.org
-> Signed-off-by: Kees Cook <keescook@chromium.org>
+> The memory leak can be easily detected by executing shell command:
+> "while true; do ls > /dev/null; grep MemFree /proc/meminfo; done"
+> 
+> Fixes: f9cb654cb550 ("asm-generic: pgalloc: provide generic pgd_free()")
+> Signed-off-by: Yaliang Wang <Yaliang.Wang@windriver.com>
 > ---
-> v1: https://lore.kernel.org/lkml/20220309204537.390428-1-keescook@chromium.org
-> v2: - adjust Clang version (Nathan)
-> ---
->  arch/mips/Kconfig                   | 2 +-
->  arch/mips/include/asm/thread_info.h | 2 ++
->  arch/mips/kernel/irq.c              | 3 ++-
->  arch/mips/lib/uncached.c            | 4 +++-
->  4 files changed, 8 insertions(+), 3 deletions(-)
+>  arch/mips/include/asm/pgalloc.h | 6 ++++++
+>  1 file changed, 6 insertions(+)
 
-applied to mips-next with the Clang version in the decscription fixed.
+applied to mips-next.
 
 Thomas.
 

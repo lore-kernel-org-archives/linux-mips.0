@@ -2,34 +2,34 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8D703C4167D
-	for <linux-mips@archiver.kernel.org>; Sat, 19 Mar 2022 20:47:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 251AFC4321E
+	for <linux-mips@archiver.kernel.org>; Sat, 19 Mar 2022 20:47:09 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244192AbiCSUsV (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Sat, 19 Mar 2022 16:48:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49650 "EHLO
+        id S244199AbiCSUs1 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Sat, 19 Mar 2022 16:48:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49730 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244187AbiCSUsU (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Sat, 19 Mar 2022 16:48:20 -0400
-Received: from ssl.serverraum.org (ssl.serverraum.org [176.9.125.105])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2A5E25F659;
-        Sat, 19 Mar 2022 13:46:58 -0700 (PDT)
+        with ESMTP id S244200AbiCSUsY (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Sat, 19 Mar 2022 16:48:24 -0400
+Received: from ssl.serverraum.org (ssl.serverraum.org [IPv6:2a01:4f8:151:8464::1:2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2563C26483A;
+        Sat, 19 Mar 2022 13:47:01 -0700 (PDT)
 Received: from mwalle01.kontron.local. (unknown [213.135.10.150])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange ECDHE (P-384) server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by ssl.serverraum.org (Postfix) with ESMTPSA id 3A2B1223F0;
-        Sat, 19 Mar 2022 21:46:56 +0100 (CET)
+        by ssl.serverraum.org (Postfix) with ESMTPSA id EA0802244E;
+        Sat, 19 Mar 2022 21:46:58 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
-        t=1647722816;
+        t=1647722819;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=AKolvVJkdV9GMASWo5gbLFGE9fn7Q2dVVjR7W2uh8EY=;
-        b=dsMgvpPMMTA9HA2/BjxLUzONeG+rQU3Feyrv2J8zPtFH0m0hzPQHfMXax7pkEQW9nfJZJi
-        eOcNGbRHR+6r0fPXc5Va0jWkJQtti3YXIczHuWg86Uk7ErakpWyyBK6r4s9GNLd1EP+AA5
-        17LJLqOYz77kFUZAjzZbZ5N4ASZBAPA=
+        bh=gJKCVpoR4FBJ8+A4tQuZpuVlftctKas2Drjo6g8NXic=;
+        b=EeRNtYEP5oBVmi0AEe9jRj1m/RJBWASF2cGcUEwzr7Q1nhZxAEnbuZ4OIKCqA3gc+EEeEg
+        p0V3PdzkOEJu/VL940jftcupnZu28nDMyWZev7XcyzNeDDbdVxIS+4a2q1+qRSYyEVFKJm
+        /DrxgSrhMYbPB4NmnGv1IcIohfiqEhc=
 From:   Michael Walle <michael@walle.cc>
 To:     Linus Walleij <linus.walleij@linaro.org>,
         Rob Herring <robh+dt@kernel.org>,
@@ -48,9 +48,9 @@ Cc:     "David S . Miller" <davem@davemloft.net>,
         devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
         Michael Walle <michael@walle.cc>
-Subject: [PATCH v3 2/6] MIPS: mscc: ocelot: rename pinctrl nodes
-Date:   Sat, 19 Mar 2022 21:46:24 +0100
-Message-Id: <20220319204628.1759635-3-michael@walle.cc>
+Subject: [PATCH v3 5/6] ARM: dts: lan966x: rename pinctrl nodes
+Date:   Sat, 19 Mar 2022 21:46:27 +0100
+Message-Id: <20220319204628.1759635-6-michael@walle.cc>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20220319204628.1759635-1-michael@walle.cc>
 References: <20220319204628.1759635-1-michael@walle.cc>
@@ -65,60 +65,22 @@ the pin nodes so they end with "-pins" to match the schema.
 
 Signed-off-by: Michael Walle <michael@walle.cc>
 ---
- arch/mips/boot/dts/mscc/ocelot.dtsi       | 4 ++--
- arch/mips/boot/dts/mscc/ocelot_pcb120.dts | 6 +++---
- 2 files changed, 5 insertions(+), 5 deletions(-)
+ arch/arm/boot/dts/lan966x-pcb8291.dts | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/mips/boot/dts/mscc/ocelot.dtsi b/arch/mips/boot/dts/mscc/ocelot.dtsi
-index e51db651af13..cfc219a72bdd 100644
---- a/arch/mips/boot/dts/mscc/ocelot.dtsi
-+++ b/arch/mips/boot/dts/mscc/ocelot.dtsi
-@@ -225,7 +225,7 @@ uart2_pins: uart2-pins {
- 				function = "uart2";
- 			};
- 
--			miim1: miim1 {
-+			miim1_pins: miim1-pins {
- 				pins = "GPIO_14", "GPIO_15";
- 				function = "miim";
- 			};
-@@ -261,7 +261,7 @@ mdio1: mdio@10700c0 {
- 			reg = <0x10700c0 0x24>;
- 			interrupts = <15>;
- 			pinctrl-names = "default";
--			pinctrl-0 = <&miim1>;
-+			pinctrl-0 = <&miim1_pins>;
- 			status = "disabled";
- 		};
- 
-diff --git a/arch/mips/boot/dts/mscc/ocelot_pcb120.dts b/arch/mips/boot/dts/mscc/ocelot_pcb120.dts
-index bd240690cb37..d348742c233d 100644
---- a/arch/mips/boot/dts/mscc/ocelot_pcb120.dts
-+++ b/arch/mips/boot/dts/mscc/ocelot_pcb120.dts
-@@ -22,12 +22,12 @@ memory@0 {
- };
- 
- &gpio {
--	phy_int_pins: phy_int_pins {
-+	phy_int_pins: phy-int-pins {
- 		pins = "GPIO_4";
- 		function = "gpio";
+diff --git a/arch/arm/boot/dts/lan966x-pcb8291.dts b/arch/arm/boot/dts/lan966x-pcb8291.dts
+index 3281af90ac6d..3c7e3a7d6f14 100644
+--- a/arch/arm/boot/dts/lan966x-pcb8291.dts
++++ b/arch/arm/boot/dts/lan966x-pcb8291.dts
+@@ -35,7 +35,7 @@ fc3_b_pins: fcb3-spi-pins {
+ 		function = "fc3_b";
  	};
  
--	phy_load_save_pins: phy_load_save_pins {
-+	phy_load_save_pins: phy-load-save-pins {
- 		pins = "GPIO_10";
- 		function = "ptp2";
- 	};
-@@ -40,7 +40,7 @@ &mdio0 {
- &mdio1 {
- 	status = "okay";
- 	pinctrl-names = "default";
--	pinctrl-0 = <&miim1>, <&phy_int_pins>, <&phy_load_save_pins>;
-+	pinctrl-0 = <&miim1_pins>, <&phy_int_pins>, <&phy_load_save_pins>;
- 
- 	phy7: ethernet-phy@0 {
- 		reg = <0>;
+-	can0_b_pins:  can0_b_pins {
++	can0_b_pins:  can0-b-pins {
+ 		/* RX, TX */
+ 		pins = "GPIO_35", "GPIO_36";
+ 		function = "can0_b";
 -- 
 2.30.2
 

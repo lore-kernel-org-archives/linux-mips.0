@@ -2,255 +2,144 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 41CE4C433EF
-	for <linux-mips@archiver.kernel.org>; Tue, 22 Mar 2022 14:44:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E13A6C433F5
+	for <linux-mips@archiver.kernel.org>; Tue, 22 Mar 2022 16:07:14 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237384AbiCVOp4 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 22 Mar 2022 10:45:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46402 "EHLO
+        id S238805AbiCVQIl (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 22 Mar 2022 12:08:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47046 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238184AbiCVOns (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Tue, 22 Mar 2022 10:43:48 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 838D57E5A7;
-        Tue, 22 Mar 2022 07:42:15 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id E8884615BE;
-        Tue, 22 Mar 2022 14:42:14 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AE965C340EC;
-        Tue, 22 Mar 2022 14:42:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1647960134;
-        bh=5ucjX4VG+LqJh2oWQ1pBBRlKhrNudWlPTr2cJhdCZBs=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MowU19AHyduiMG1L1odLS15KJ5h+EnNOOgKEW+Xtw8c3diP0JgQllhhl69inwe543
-         Inw5X8EXGMHMkC3YxDGlQR/+Hl85HDVXO/LB2cU8HxnmYAl+Zs2fVjCa9ZBZ0d/JKs
-         WNKDypNzC6AJRo0KwgtJOr7tJ6DTB6zO0a2VwdXPEzTuHSSssGo3hSR0HAtQKE0uN6
-         nyBYjtzpAPwhV4BQSfo7oTHFZ/NkJZw2AB8PTT5V1eilA0wFiez27Bnl2WEguKt5Vk
-         6LIRIg3478nPv6h8iyFMVFB+3SCTNYlooX3Aymo4y84mg/7JmLzuT8Idu2UIAlLVgg
-         RIYu8Q9ZuYf/g==
-From:   guoren@kernel.org
-To:     guoren@kernel.org, palmer@dabbelt.com, arnd@arndb.de,
-        gregkh@linuxfoundation.org, hch@lst.de
-Cc:     linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-riscv@lists.infradead.org, linux-csky@vger.kernel.org,
-        linux-s390@vger.kernel.org, sparclinux@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-parisc@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        x86@kernel.org, heiko@sntech.de,
-        Guo Ren <guoren@linux.alibaba.com>,
-        Palmer Dabbelt <palmer@rivosinc.com>
-Subject: [PATCH V9 19/20] riscv: compat: ptrace: Add compat_arch_ptrace implement
-Date:   Tue, 22 Mar 2022 22:40:02 +0800
-Message-Id: <20220322144003.2357128-20-guoren@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20220322144003.2357128-1-guoren@kernel.org>
-References: <20220322144003.2357128-1-guoren@kernel.org>
+        with ESMTP id S238925AbiCVQIC (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Tue, 22 Mar 2022 12:08:02 -0400
+Received: from wout5-smtp.messagingengine.com (wout5-smtp.messagingengine.com [64.147.123.21])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6440589CE8;
+        Tue, 22 Mar 2022 09:06:34 -0700 (PDT)
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailout.west.internal (Postfix) with ESMTP id C5C443200A16;
+        Tue, 22 Mar 2022 12:06:29 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute4.internal (MEProxy); Tue, 22 Mar 2022 12:06:32 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=flygoat.com; h=
+        cc:cc:content-transfer-encoding:content-type:date:date:from:from
+        :in-reply-to:in-reply-to:message-id:mime-version:references
+        :reply-to:sender:subject:subject:to:to; s=fm2; bh=njLfScwfSIsbRp
+        wMMXOHvEwf47Gc3N9QuE3MOOyufO8=; b=mrSOWK9B2wHgPPy1DjT/rNR51S7XHT
+        CkZ4vt2wVT5PXr3stz55S5GIETYKh6XAsh0YFBjz/R7Ytx9lrl31W84ccKHdPGbS
+        OTzenxHaxJTbQ21k3XR9ibecctCZqlzw/G6Lkd+LZ3JO/+3Y4w9YY8BLLAI0Dv2y
+        nOdhNkLl94o5RTUwRbQWAjxcSkewGZhPiDKZCnl0PNTrZQlGQXoN3oRyej41v6Sm
+        4IxUFMLyY1YhVoT2/8BL1scF9z3sAVipc9m9wmiX3bI55VtFfxqzZ3hjF0idyFUQ
+        KL8UzWfPvbV1BB+D40sDiOqJSCD+nTNarnJUG0yt2FjOaaJOmID01l/Q==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-transfer-encoding
+        :content-type:date:date:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm3; bh=njLfScwfSIsbRpwMMXOHvEwf47Gc3N9QuE3MOOyuf
+        O8=; b=T2z74KWnSjzmYsvP1FFaLsySkMOYkhg4dK5Hwn0Z7ZUogqIhBTfd+osc8
+        u1lVrYcuSlGmWkdGao4yAmUYmh2GpPLAY+jCrEuRZbtLKWgOciulSywchyyYy1dr
+        brKPp98QXd/3NNhAMfqNGFfcbF7SouTI8eGSd9MLYhK1jBeh7q087BQy1T7Jdlsd
+        0V1SRFvKHEmSVGkrFHxP4/7sVzyQYT+eDPb4s7kT0R2y28WRaZatrLe01eOBsR30
+        pG1QCeCurPaTj5TgE865iEzDMWXghyz3DrAGvFlKeqFXshwY1wTcB5B+dMdG0NNY
+        ldOiOr6/UnmsBafFsjsOqDggP5tcQ==
+X-ME-Sender: <xms:AfQ5YnSCAHTJqsAkcgC_Gk8HphAS02P0mHFSXDjvdqMeojxt46vAGQ>
+    <xme:AfQ5YozfUfyZanc4v7379uYngHqaa96AR0bDm68oyx8r3i7kXE8ius3sA4lCqTdF6
+    p7CoEASUdfPy4GSNlw>
+X-ME-Received: <xmr:AfQ5Ys1OJHJYuq63v9YGmQmD4hoqy-3YYlQ7t76IHS_H_3HRT5JbAZ2f6_mc9YY>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvvddrudeghedgkeduucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepkfffgggfuffvfhfhjggtgfesthekredttdefjeenucfhrhhomheplfhirgig
+    uhhnucgjrghnghcuoehjihgrgihunhdrhigrnhhgsehflhihghhorghtrdgtohhmqeenuc
+    ggtffrrghtthgvrhhnpeehieduvdevhfekjeeftddtkeeitefhudekvdeiueeulefgleei
+    jeeghedvkeduleenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfh
+    hrohhmpehjihgrgihunhdrhigrnhhgsehflhihghhorghtrdgtohhm
+X-ME-Proxy: <xmx:AvQ5YnAnIeinxahWnfN-0m_a3Zif53vigXpLmye0-GlYbAndSNCURg>
+    <xmx:AvQ5YggvEFfvOnO72nGuBKigfQl2fTqJE4VfdT4z-RlZyR-slW5Ggg>
+    <xmx:AvQ5YrrSa2iP10W6NrEzz42nyPie965Z11_ec1NeMvkAs0_-HWxDRQ>
+    <xmx:BfQ5YrTmy1c9Rg6aGLAQ6QcT2ssLU_tT9xeyFByrQ6xHA6u4lKjP-Q>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
+ 22 Mar 2022 12:06:23 -0400 (EDT)
+Message-ID: <005099b5-33ed-4cb7-f8e4-10e1de780311@flygoat.com>
+Date:   Tue, 22 Mar 2022 16:06:21 +0000
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.7.0
+Subject: Re: [PATCH v11 2/7] MIPS: Loongson64: dts: introduce ls3A4000
+ evaluation board
+Content-Language: en-GB
+To:     Sui Jingfeng <15330273260@189.cn>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Roland Scheidegger <sroland@vmware.com>,
+        Zack Rusin <zackr@vmware.com>,
+        Christian Gmeiner <christian.gmeiner@gmail.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Rob Herring <robh+dt@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Andrey Zhizhikin <andrey.zhizhikin@leica-geosystems.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Lucas Stach <l.stach@pengutronix.de>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Ilia Mirkin <imirkin@alum.mit.edu>,
+        Qing Zhang <zhangqing@loongson.cn>,
+        suijingfeng <suijingfeng@loongson.cn>
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, dri-devel@lists.freedesktop.org
+References: <20220321162916.1116541-1-15330273260@189.cn>
+ <20220321162916.1116541-3-15330273260@189.cn>
+ <2644866a-8db2-923e-4227-2aa6d8e375fe@flygoat.com>
+ <2c671752-6684-f87b-7b2d-90568d36adde@189.cn>
+From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
+In-Reply-To: <2c671752-6684-f87b-7b2d-90568d36adde@189.cn>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-From: Guo Ren <guoren@linux.alibaba.com>
 
-Now, you can use native gdb on riscv64 for rv32 app debugging.
 
-$ uname -a
-Linux buildroot 5.16.0-rc4-00036-gbef6b82fdf23-dirty #53 SMP Mon Dec 20 23:06:53 CST 2021 riscv64 GNU/Linux
-$ cat /proc/cpuinfo
-processor       : 0
-hart            : 0
-isa             : rv64imafdcsuh
-mmu             : sv48
+在 2022/3/22 13:38, Sui Jingfeng 写道:
+>
+> On 2022/3/22 21:05, Jiaxun Yang wrote:
+>>
+>>
+>> 在 2022/3/21 16:29, Sui Jingfeng 写道:
+>>> From: suijingfeng <suijingfeng@loongson.cn>
+>>>
+>>> The board name is LS3A4000_7A1000_EVB_BOARD_V1.4, it consist of 1.8Ghz
+>>> mips64r5 4-core CPU and LS7A1000 bridge chip. It has PCIe GEN2 x8 slot,
+>>> therefore can play with discrete graphics card.
+>>
+>> Hi Jingfeng,
+>>
+>> As we've discussed before if you are going to introduce new dts then 
+>> you *MUST*
+>> include it in makefile and wire it up in code.
+>>
+>> A dts file doing nothing lying in the tree is just suspicious.
+>>
+>> Thanks.
+>> - Jiaxun
+>>
+> Hi, Jiaxun,
+>
+> I know what you means, but it is the kernel side developer's job.
+> I am just a naive graphic driver developer,I can not care so much.
+> Below is my private patch which can be used to built specific dts
+> into the linux kernel, therefore make the verification easier.
+Hi Jingfeng,
 
-$ file /bin/busybox
-/bin/busybox: setuid ELF 32-bit LSB shared object, UCB RISC-V, version 1 (SYSV), dynamically linked, interpreter /lib/ld-linux-riscv32-ilp32d.so.1, for GNU/Linux 5.15.0, stripped
-$ file /usr/bin/gdb
-/usr/bin/gdb: ELF 32-bit LSB shared object, UCB RISC-V, version 1 (GNU/Linux), dynamically linked, interpreter /lib/ld-linux-riscv32-ilp32d.so.1, for GNU/Linux 5.15.0, stripped
-$ /usr/bin/gdb /bin/busybox
-GNU gdb (GDB) 10.2
-Copyright (C) 2021 Free Software Foundation, Inc.
-License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
-...
-Reading symbols from /bin/busybox...
-(No debugging symbols found in /bin/busybox)
-(gdb) b main
-Breakpoint 1 at 0x8ddc
-(gdb) r
-Starting program: /bin/busybox
-Failed to read a valid object file image from memory.
+In kernel world we take care all the stuff we touched ourself :-)
 
-Breakpoint 1, 0x555a8ddc in main ()
-(gdb) i r
-ra             0x77df0b74       0x77df0b74
-sp             0x7fdd3d10       0x7fdd3d10
-gp             0x5567e800       0x5567e800 <bb_common_bufsiz1+160>
-tp             0x77f64280       0x77f64280
-t0             0x0      0
-t1             0x555a6fac       1431990188
-t2             0x77dd8db4       2011008436
-fp             0x7fdd3e34       0x7fdd3e34
-s1             0x7fdd3e34       2145205812
-a0             0xffffffff       -1
-a1             0x2000   8192
-a2             0x7fdd3e3c       2145205820
-a3             0x0      0
-a4             0x7fdd3d30       2145205552
-a5             0x555a8dc0       1431997888
-a6             0x77f2c170       2012397936
-a7             0x6a7c7a2f       1786542639
-s2             0x0      0
-s3             0x0      0
-s4             0x555a8dc0       1431997888
-s5             0x77f8a3a8       2012783528
-s6             0x7fdd3e3c       2145205820
-s7             0x5567cecc       1432866508
---Type <RET> for more, q to quit, c to continue without paging--
-s8             0x1      1
-s9             0x0      0
-s10            0x55634448       1432568904
-s11            0x0      0
-t3             0x77df0bb8       2011106232
-t4             0x42fc   17148
-t5             0x0      0
-t6             0x40     64
-pc             0x555a8ddc       0x555a8ddc <main+28>
-(gdb) si
-0x555a78f0 in mallopt@plt ()
-(gdb) c
-Continuing.
-BusyBox v1.34.1 (2021-12-19 22:39:48 CST) multi-call binary.
-BusyBox is copyrighted by many authors between 1998-2015.
-Licensed under GPLv2. See source distribution for detailed
-copyright notices.
+If you are not confident with them please drop those DTS from the patchset
+besides the generic one. I can do the rest for you after getting this 
+set merged.
 
-Usage: busybox [function [arguments]...]
-   or: busybox --list[-full]
-...
-[Inferior 1 (process 107) exited normally]
-(gdb) q
-
-Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
-Signed-off-by: Guo Ren <guoren@kernel.org>
-Reviewed-by: Palmer Dabbelt <palmer@rivosinc.com>
-Reviewed-by: Arnd Bergmann <arnd@arndb.de>
-Tested-by: Heiko Stuebner <heiko@sntech.de>
----
- arch/riscv/kernel/ptrace.c | 87 +++++++++++++++++++++++++++++++++++---
- 1 file changed, 82 insertions(+), 5 deletions(-)
-
-diff --git a/arch/riscv/kernel/ptrace.c b/arch/riscv/kernel/ptrace.c
-index a89243730153..bb387593a121 100644
---- a/arch/riscv/kernel/ptrace.c
-+++ b/arch/riscv/kernel/ptrace.c
-@@ -12,6 +12,7 @@
- #include <asm/thread_info.h>
- #include <asm/switch_to.h>
- #include <linux/audit.h>
-+#include <linux/compat.h>
- #include <linux/ptrace.h>
- #include <linux/elf.h>
- #include <linux/regset.h>
-@@ -111,11 +112,6 @@ static const struct user_regset_view riscv_user_native_view = {
- 	.n = ARRAY_SIZE(riscv_user_regset),
- };
- 
--const struct user_regset_view *task_user_regset_view(struct task_struct *task)
--{
--	return &riscv_user_native_view;
--}
--
- struct pt_regs_offset {
- 	const char *name;
- 	int offset;
-@@ -273,3 +269,84 @@ __visible void do_syscall_trace_exit(struct pt_regs *regs)
- 		trace_sys_exit(regs, regs_return_value(regs));
- #endif
- }
-+
-+#ifdef CONFIG_COMPAT
-+static int compat_riscv_gpr_get(struct task_struct *target,
-+				const struct user_regset *regset,
-+				struct membuf to)
-+{
-+	struct compat_user_regs_struct cregs;
-+
-+	regs_to_cregs(&cregs, task_pt_regs(target));
-+
-+	return membuf_write(&to, &cregs,
-+			    sizeof(struct compat_user_regs_struct));
-+}
-+
-+static int compat_riscv_gpr_set(struct task_struct *target,
-+				const struct user_regset *regset,
-+				unsigned int pos, unsigned int count,
-+				const void *kbuf, const void __user *ubuf)
-+{
-+	int ret;
-+	struct compat_user_regs_struct cregs;
-+
-+	ret = user_regset_copyin(&pos, &count, &kbuf, &ubuf, &cregs, 0, -1);
-+
-+	cregs_to_regs(&cregs, task_pt_regs(target));
-+
-+	return ret;
-+}
-+
-+static const struct user_regset compat_riscv_user_regset[] = {
-+	[REGSET_X] = {
-+		.core_note_type = NT_PRSTATUS,
-+		.n = ELF_NGREG,
-+		.size = sizeof(compat_elf_greg_t),
-+		.align = sizeof(compat_elf_greg_t),
-+		.regset_get = compat_riscv_gpr_get,
-+		.set = compat_riscv_gpr_set,
-+	},
-+#ifdef CONFIG_FPU
-+	[REGSET_F] = {
-+		.core_note_type = NT_PRFPREG,
-+		.n = ELF_NFPREG,
-+		.size = sizeof(elf_fpreg_t),
-+		.align = sizeof(elf_fpreg_t),
-+		.regset_get = riscv_fpr_get,
-+		.set = riscv_fpr_set,
-+	},
-+#endif
-+};
-+
-+static const struct user_regset_view compat_riscv_user_native_view = {
-+	.name = "riscv",
-+	.e_machine = EM_RISCV,
-+	.regsets = compat_riscv_user_regset,
-+	.n = ARRAY_SIZE(compat_riscv_user_regset),
-+};
-+
-+long compat_arch_ptrace(struct task_struct *child, compat_long_t request,
-+			compat_ulong_t caddr, compat_ulong_t cdata)
-+{
-+	long ret = -EIO;
-+
-+	switch (request) {
-+	default:
-+		ret = compat_ptrace_request(child, request, caddr, cdata);
-+		break;
-+	}
-+
-+	return ret;
-+}
-+#endif /* CONFIG_COMPAT */
-+
-+const struct user_regset_view *task_user_regset_view(struct task_struct *task)
-+{
-+#ifdef CONFIG_COMPAT
-+	if (test_tsk_thread_flag(task, TIF_32BIT))
-+		return &compat_riscv_user_native_view;
-+	else
-+#endif
-+		return &riscv_user_native_view;
-+}
--- 
-2.25.1
+Thanks.
+- Jiaxun
 

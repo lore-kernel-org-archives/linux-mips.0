@@ -2,70 +2,76 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id ADE56C433F5
-	for <linux-mips@archiver.kernel.org>; Thu, 24 Mar 2022 08:51:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7CA27C433EF
+	for <linux-mips@archiver.kernel.org>; Thu, 24 Mar 2022 09:05:03 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343963AbiCXIxH (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 24 Mar 2022 04:53:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43198 "EHLO
+        id S1349106AbiCXJGd (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 24 Mar 2022 05:06:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50968 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344839AbiCXIxG (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Thu, 24 Mar 2022 04:53:06 -0400
-X-Greylist: delayed 929 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 24 Mar 2022 01:51:34 PDT
-Received: from m12-12.163.com (m12-12.163.com [220.181.12.12])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id F2F809D04A
-        for <linux-mips@vger.kernel.org>; Thu, 24 Mar 2022 01:51:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id; bh=N9N4rpZMnZh4Wu4qa2
-        A3A82svr8AanjCcqyvb5y6Oww=; b=GXumAnIfEdDziwGZ7sPFxfS7BYeViCbCg6
-        JgcWscvNIKTbi/VLo1Z8LLvb09jpDZdypIJWuHoLoTs/FA4TK+VCMqI/mjgWf1Jo
-        +ptkI0seXRUoxjKF018OgMOBNah3uielarRP559ndpJfqDWp77PwkikcRZQdKO8/
-        mBT52GepE=
-Received: from localhost (unknown [159.226.95.33])
-        by smtp8 (Coremail) with SMTP id DMCowADnVYRdLTxiHW_9Bg--.28421S2;
-        Thu, 24 Mar 2022 16:35:41 +0800 (CST)
-From:   QintaoShen <unSimple1993@163.com>
-To:     f.fainelli@gmail.com
-Cc:     bcm-kernel-feedback-list@broadcom.com, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org, QintaoShen <unSimple1993@163.com>
-Subject: [PATCH v1] soc: bcm: Check for NULL return of devm_kzalloc()
-Date:   Thu, 24 Mar 2022 16:35:40 +0800
-Message-Id: <1648110940-4684-1-git-send-email-unSimple1993@163.com>
-X-Mailer: git-send-email 2.7.4
-X-CM-TRANSID: DMCowADnVYRdLTxiHW_9Bg--.28421S2
-X-Coremail-Antispam: 1Uf129KBjvdXoWrtF15ZF4ftF43Gw4xZF4DXFb_yoWfGFX_CF
-        WkXrZrW39Ygry7tF1ayw4xZ34jgFs8Zr97Za1YqayakryDArZ5Xa48ZrsxJFZrWw4xCFZr
-        ZF1qqF4Svr17GjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7VUUdWrPUUUUU==
-X-Originating-IP: [159.226.95.33]
-X-CM-SenderInfo: 5xqvxz5sohimizt6il2tof0z/1tbiXxjNH1153xZR7wABsH
+        with ESMTP id S238929AbiCXJGc (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Thu, 24 Mar 2022 05:06:32 -0400
+Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A9FE19D0E2;
+        Thu, 24 Mar 2022 02:05:00 -0700 (PDT)
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1nXJOs-0002LV-01; Thu, 24 Mar 2022 10:04:58 +0100
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id 40811C2ECE; Thu, 24 Mar 2022 10:04:43 +0100 (CET)
+Date:   Thu, 24 Mar 2022 10:04:43 +0100
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     kernel test robot <lkp@intel.com>, kbuild-all@lists.01.org,
+        linux-kernel@vger.kernel.org, Oscar Salvador <osalvador@suse.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        linux-mips@vger.kernel.org
+Subject: Re: undefined reference to `node_data'
+Message-ID: <20220324090443.GA5375@alpha.franken.de>
+References: <202203232042.AS9SV1zv-lkp@intel.com>
+ <Yjs0ausRy6/mLUFD@dhcp22.suse.cz>
+ <YjtPAwl/lhh+n3c2@dhcp22.suse.cz>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YjtPAwl/lhh+n3c2@dhcp22.suse.cz>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-As the potential failuer of allocation, devm_kzalloc() may return NULL.
-Then the 'pd->pmb' and the follow lines of code may bring null pointer dereference.
+On Wed, Mar 23, 2022 at 05:46:59PM +0100, Michal Hocko wrote:
+> > > If you fix the issue, kindly add following tag as appropriate
+> > > Reported-by: kernel test robot <lkp@intel.com>
+> > > 
+> > > All errors (new ones prefixed by >>):
+> > > 
+> > >    mips64-linux-ld: mm/page_alloc.o: in function `free_area_init':
+> > > >> (.init.text+0x1680): undefined reference to `node_data'
+> > >    mips64-linux-ld: (.init.text+0x1690): undefined reference to `node_data'
+> > 
+> > OK, I can see what is going here. The page allocator normally
+> > uses NODE_DATA but arch_refresh_nodedata refers to node_data directly.
+> > This is a problem with
+> > arch/mips/include/asm/mach-loongson64/mmzone.h:
+> > extern struct pglist_data *__node_data[];
+> > 
+> > #define NODE_DATA(n)            (__node_data[n])
+> > 
+> > Unfortunately we cannot use NODE_DATA there because of header inclusion
+> > ordering. I will think about a solution.
+> 
+> Is there any reason why (some?) MIPS arches use __node_data rather than
+> node_data as most other architectures? Would it be acceptable to do the
+> renaming? It would help to cover the above compilation problem because
+> arch_refresh_nodedata could keep using node_data directly.
 
-Therefore, it is better to check the return value of devm_kzalloc() to avoid this confusion.
+I've just checked history and I don't see a reason for __node_data.
+So I'm fine with changing it to node_data.
 
-Signed-off-by: QintaoShen <unSimple1993@163.com>
----
- drivers/soc/bcm/bcm63xx/bcm-pmb.c | 2 ++
- 1 file changed, 2 insertions(+)
+Thomas.
 
-diff --git a/drivers/soc/bcm/bcm63xx/bcm-pmb.c b/drivers/soc/bcm/bcm63xx/bcm-pmb.c
-index 7bbe46e..55bf389 100644
---- a/drivers/soc/bcm/bcm63xx/bcm-pmb.c
-+++ b/drivers/soc/bcm/bcm63xx/bcm-pmb.c
-@@ -311,6 +311,8 @@ static int bcm_pmb_probe(struct platform_device *pdev)
- 
- 	for (e = table; e->name; e++) {
- 		struct bcm_pmb_pm_domain *pd = devm_kzalloc(dev, sizeof(*pd), GFP_KERNEL);
-+		if (!pd)
-+			return -ENOMEM;
- 
- 		pd->pmb = pmb;
- 		pd->data = e;
 -- 
-2.7.4
-
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]

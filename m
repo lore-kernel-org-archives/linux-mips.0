@@ -2,68 +2,108 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9CA7BC433FE
-	for <linux-mips@archiver.kernel.org>; Thu, 24 Mar 2022 09:05:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3A5FFC433EF
+	for <linux-mips@archiver.kernel.org>; Thu, 24 Mar 2022 12:03:57 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349109AbiCXJGd (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 24 Mar 2022 05:06:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50970 "EHLO
+        id S1349924AbiCXMF1 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 24 Mar 2022 08:05:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45156 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345706AbiCXJGc (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Thu, 24 Mar 2022 05:06:32 -0400
-Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A9F499D0DF
-        for <linux-mips@vger.kernel.org>; Thu, 24 Mar 2022 02:05:00 -0700 (PDT)
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1nXJOs-0002LV-00; Thu, 24 Mar 2022 10:04:58 +0100
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id D606BC2EC4; Thu, 24 Mar 2022 09:51:21 +0100 (CET)
-Date:   Thu, 24 Mar 2022 09:51:21 +0100
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Feiyang Chen <chris.chenfeiyang@gmail.com>
-Cc:     Feiyang Chen <chenfeiyang@loongson.cn>, chenhuacai@kernel.org,
-        jiaxun.yang@flygoat.com, tangyouling@loongson.cn,
-        linux-mips@vger.kernel.org
-Subject: Re: [PATCH v2] MIPS: Fix build error for loongson64 and sgi-ip27
-Message-ID: <20220324085121.GA5250@alpha.franken.de>
-References: <78559205988aa1c0b42ee6ac20bb0fec3200f978.1647682458.git.chenfeiyang@loongson.cn>
+        with ESMTP id S241040AbiCXMF0 (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Thu, 24 Mar 2022 08:05:26 -0400
+Received: from mail-qv1-xf36.google.com (mail-qv1-xf36.google.com [IPv6:2607:f8b0:4864:20::f36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 678159F386
+        for <linux-mips@vger.kernel.org>; Thu, 24 Mar 2022 05:03:53 -0700 (PDT)
+Received: by mail-qv1-xf36.google.com with SMTP id hu11so3510957qvb.7
+        for <linux-mips@vger.kernel.org>; Thu, 24 Mar 2022 05:03:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sudomaker-com.20210112.gappssmtp.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:content-language:to:from
+         :subject:cc:content-transfer-encoding;
+        bh=Kz4iA6KqJV9uzV+BYANL/gXvpw1uEKQkCs0gn42rH14=;
+        b=y7ZwZVBZHuA4z4ti4u+ZOBr/58NfwmM1J/nd1+movFumZ8sbUJnSXf7zqWHTYzDk+M
+         V2WNhMzccWHE41jy9TUraA7cIBCCPzNieQcZOmuGLUCZFkT8+EtjoG2Nc1t33jkrUkMx
+         ZZqZ8t0oDuTj+LSR4f8997BZjx9/I7JFQQ+xBUROKWhETM0qgU2RRbYjXPMHNmq05qkw
+         IXwTIgAVB5ZYTA2xYYL98uUXR9TH1jqs2iUJnZ5sfWaG1KqvdDl2BKJUMcrk+OgdtRjs
+         C+82yQ5ttNA1f95DmBN/H8AmLaEafP4fo8LTNoD2EjtXhXebJnLqZD9uxZbbB/Hgkx7V
+         Glrg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent
+         :content-language:to:from:subject:cc:content-transfer-encoding;
+        bh=Kz4iA6KqJV9uzV+BYANL/gXvpw1uEKQkCs0gn42rH14=;
+        b=iTdYx+gXAC3TZREdvPAvK3mx/9pB142Z4rRmuhrveiWO889nH54DwH1OBwacxjk+VM
+         hgdhOREdBimy2f0xJQQhjtiaGpbYmAB0CVT2kVl728PSeJem9Vihm0g4NeSEoJB17/4m
+         wlLxuoyYiAXlIXJx7hW++5n9uOeR4/gvr60Rm+vNJVuqKH4cAWm3HiklEWRPb6Zq6KbI
+         /EgY9oy35EQs8LB98HXg2dPxZlzXr9K+Rv6U2ixv00eGqXurFmAsfsnwKWllLIrTgwzP
+         OblSm3wcnBK2ue/i06k7kE7vBJCfEhBNIxyE33gDFeryepLU6mk3fwrswXoefwfCA1TY
+         9eLg==
+X-Gm-Message-State: AOAM533HGzF4fVGxjp4TIbAm7e9ChFDJE8oeAHo8PNj5qw9ctyTp3Mn+
+        6nhmAy/j7pwVD86/HA5mNtsnW6NoNgJ1mi5wx6s=
+X-Google-Smtp-Source: ABdhPJwsjr1NlcuiJRHLf1ye/k1lyNAx4jJu2Os1jFdqbUIturc2qoNSbpyBwQhWuktI6x+OaMzftg==
+X-Received: by 2002:ad4:5945:0:b0:441:72ae:b6c0 with SMTP id eo5-20020ad45945000000b0044172aeb6c0mr1198641qvb.11.1648123432002;
+        Thu, 24 Mar 2022 05:03:52 -0700 (PDT)
+Received: from [172.16.24.11] ([91.219.212.226])
+        by smtp.gmail.com with ESMTPSA id v5-20020a05622a144500b002e1c7d027b1sm2115461qtx.66.2022.03.24.05.03.48
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 24 Mar 2022 05:03:51 -0700 (PDT)
+Message-ID: <ea710c27-00e9-065c-77a3-78e3c5f73ed3@sudomaker.com>
+Date:   Thu, 24 Mar 2022 20:04:41 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <78559205988aa1c0b42ee6ac20bb0fec3200f978.1647682458.git.chenfeiyang@loongson.cn>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.7.0
+Content-Language: en-US
+To:     linux-mips@vger.kernel.org
+From:   Yunian Yang <reimu@sudomaker.com>
+Subject: [PATCH] pinctrl: Ingenic: Add missing UART2 group C for X1000/E
+Cc:     Paul Cercueil <paul@crapouillou.net>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Sat, Mar 19, 2022 at 05:40:02PM +0800, Feiyang Chen wrote:
-> Select HAVE_ARCH_NODEDATA_EXTENSION for loongson64 to fix build error
-> when CONFIG_NUMA=y:
-> 
-> mips64el-unknown-linux-gnu-ld: mm/page_alloc.o: in function `free_area_init':
-> (.init.text+0x1714): undefined reference to `node_data'
-> mips64el-unknown-linux-gnu-ld: (.init.text+0x1730): undefined reference to `node_data'
-> 
-> Also, select HAVE_ARCH_NODEDATA_EXTENSION for sgi-ip27 to fix build error:
-> 
-> mips64el-unknown-linux-gnu-ld: mm/page_alloc.o: in function `free_area_init':
-> page_alloc.c:(.init.text+0x1ba8): undefined reference to `node_data'
-> mips64el-unknown-linux-gnu-ld: page_alloc.c:(.init.text+0x1bcc): undefined reference to `node_data'
-> mips64el-unknown-linux-gnu-ld: page_alloc.c:(.init.text+0x1be4): undefined reference to `node_data'
-> mips64el-unknown-linux-gnu-ld: page_alloc.c:(.init.text+0x1bf4): undefined reference to `node_data'
-> 
-> Signed-off-by: Feiyang Chen <chenfeiyang@loongson.cn>
-> ---
->  arch/mips/Kconfig                |  5 +++++
->  arch/mips/loongson64/numa.c      | 10 ++++++++++
->  arch/mips/sgi-ip27/ip27-memory.c | 10 ++++++++++
->  3 files changed, 25 insertions(+)
+X1000/E has a third UART2 pin group selection, which uses the TDI(G2) as RX
+and TDO(G1) as TX. This configuration is becoming increasingly popular in
+newer core boards, such as the Halley2 v4.1. This is done by enabling
+function 1 of a "virtual pin" PC31. See section 19.3.3 of the X1000
+Programming Manual for details.
 
-applied to mips-next.
+Signed-off-by: Yunian Yang <reimu@sudomaker.com>
+---
+ drivers/pinctrl/pinctrl-ingenic.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-Thomas.
-
+diff --git a/drivers/pinctrl/pinctrl-ingenic.c b/drivers/pinctrl/pinctrl-ingenic.c
+index 2712f51eb238..29709059d62b 100644
+--- a/drivers/pinctrl/pinctrl-ingenic.c
++++ b/drivers/pinctrl/pinctrl-ingenic.c
+@@ -1982,6 +1982,7 @@ static int x1000_uart1_data_a_pins[] = { 0x04, 0x05, };
+ static int x1000_uart1_data_d_pins[] = { 0x62, 0x63, };
+ static int x1000_uart1_hwflow_pins[] = { 0x64, 0x65, };
+ static int x1000_uart2_data_a_pins[] = { 0x02, 0x03, };
++static int x1000_uart2_data_c_pins[] = { 0x5f, 0x5f, };
+ static int x1000_uart2_data_d_pins[] = { 0x65, 0x64, };
+ static int x1000_sfc_data_pins[] = { 0x1d, 0x1c, 0x1e, 0x1f, };
+ static int x1000_sfc_clk_pins[] = { 0x1a, };
+@@ -2058,6 +2059,7 @@ static const struct group_desc x1000_groups[] = {
+        INGENIC_PIN_GROUP("uart1-data-d", x1000_uart1_data_d, 1),
+        INGENIC_PIN_GROUP("uart1-hwflow", x1000_uart1_hwflow, 1),
+        INGENIC_PIN_GROUP("uart2-data-a", x1000_uart2_data_a, 2),
++       INGENIC_PIN_GROUP("uart2-data-c", x1000_uart2_data_c, 1),
+        INGENIC_PIN_GROUP("uart2-data-d", x1000_uart2_data_d, 0),
+        INGENIC_PIN_GROUP("sfc-data", x1000_sfc_data, 1),
+        INGENIC_PIN_GROUP("sfc-clk", x1000_sfc_clk, 1),
+@@ -2115,7 +2117,7 @@ static const char *x1000_uart0_groups[] = { "uart0-data", "uart0-hwflow", };
+ static const char *x1000_uart1_groups[] = {
+        "uart1-data-a", "uart1-data-d", "uart1-hwflow",
+ };
+-static const char *x1000_uart2_groups[] = { "uart2-data-a", "uart2-data-d", };
++static const char *x1000_uart2_groups[] = { "uart2-data-a", "uart2-data-c", "uart2-data-d", };
+ static const char *x1000_sfc_groups[] = { "sfc-data", "sfc-clk", "sfc-ce", };
+ static const char *x1000_ssi_groups[] = {
+        "ssi-dt-a-22", "ssi-dt-a-29", "ssi-dt-d",
 -- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+2.30.2

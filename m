@@ -2,80 +2,80 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 86F1FC433EF
-	for <linux-mips@archiver.kernel.org>; Fri, 25 Mar 2022 09:12:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 02961C433EF
+	for <linux-mips@archiver.kernel.org>; Fri, 25 Mar 2022 11:00:51 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245149AbiCYJOX (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 25 Mar 2022 05:14:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54070 "EHLO
+        id S237557AbiCYLCY (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 25 Mar 2022 07:02:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56196 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242463AbiCYJOX (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Fri, 25 Mar 2022 05:14:23 -0400
-X-Greylist: delayed 610 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 25 Mar 2022 02:12:46 PDT
-Received: from mxout03.lancloud.ru (mxout03.lancloud.ru [45.84.86.113])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0F7BCF489
-        for <linux-mips@vger.kernel.org>; Fri, 25 Mar 2022 02:12:46 -0700 (PDT)
-Received: from LanCloud
-DKIM-Filter: OpenDKIM Filter v2.11.0 mxout03.lancloud.ru D590C20A83DE
-Received: from LanCloud
-Received: from LanCloud
-Received: from LanCloud
-Subject: Re: [PATCH v1] soc: bcm: Check for NULL return of devm_kzalloc()
-To:     QintaoShen <unSimple1993@163.com>, <f.fainelli@gmail.com>
-CC:     <bcm-kernel-feedback-list@broadcom.com>,
-        <linux-mips@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <1648110940-4684-1-git-send-email-unSimple1993@163.com>
-From:   Sergey Shtylyov <s.shtylyov@omp.ru>
-Organization: Open Mobile Platform
-Message-ID: <0f5e77e9-3c2c-396d-636b-1b7153007fe5@omp.ru>
-Date:   Fri, 25 Mar 2022 12:02:28 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        with ESMTP id S237353AbiCYLCX (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Fri, 25 Mar 2022 07:02:23 -0400
+X-Greylist: delayed 191 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 25 Mar 2022 04:00:49 PDT
+Received: from out203-205-221-231.mail.qq.com (out203-205-221-231.mail.qq.com [203.205.221.231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78BCCC4E0E
+        for <linux-mips@vger.kernel.org>; Fri, 25 Mar 2022 04:00:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
+        s=s201512; t=1648206047;
+        bh=6OcTYymcpn1ETfdJpMGEKngpR17gFGKQz5gHn9I1PVs=;
+        h=From:To:Cc:Subject:Date;
+        b=By06l6ACVEcWvfxd+9va8TefbbVWRuLn+CaKf2xKrOPE2zldMtsefjC0DNlx2QO2w
+         KlmZVmI5Sy4onP5lgNX8/RIL4yg5LDUALO3hbQBQWIrejA92tKY/gQ+jFnoH9S4iPm
+         YgGY0HMhZZYljfYyi6+89yYw491zkSU15AFfKWiY=
+Received: from localhost.localdomain ([43.227.136.188])
+        by newxmesmtplogicsvrsza8.qq.com (NewEsmtp) with SMTP
+        id E602687E; Fri, 25 Mar 2022 18:57:32 +0800
+X-QQ-mid: xmsmtpt1648205852tconbqa3l
+Message-ID: <tencent_33384AA3FF65207ECC63B9531C1F1417E108@qq.com>
+X-QQ-XMAILINFO: MR/iVh5QLeieFm7kI9XblVO1Ypif6OeHBEb2nEHDiQJ3sU6oQQmw5b1GkMOP7O
+         Mnb1pv9Urdl+jVwu9BK08Pcl/Qfm274NkG8mQOHFlLL4wJCK/8PRt/Y8ZyqPNW1cPnYLQ5dUVMYI
+         LJNrNT/ETTzZ55PY+baBFGSygMRKPmeqMqwchlkvBsHcOgPvP9aEFB87yzq+hbZGYW7OiwaLibPh
+         rlkxwETKD+Cs8/BdqeGLNzdqNUX4I7lTnqY2dbv129sC8bLaLOFCpsllcBzO4XimrAVS2MWGMPK+
+         K/aU6U3HErZv+mDnucPhxcus6DecqSMaKZSSGvwfFeZ2OYNiWt/ZD45UiyQHS7SqjuyuJiDzsXuo
+         7hrtX5IvVcT4wtZgFdB7Hvsl8Fqlgi+jbxQUiItzOMY+tYaeLtVB4IfNUfbdeInrsywTnpN9/Xlu
+         c5hCYDFF2IQNpoHMgq6dhS8n+3tRU33rSIxuEUdTWWOw9C4UBVaBmWkn2MVrehPp6071QN1DpPvW
+         OMXZJCscAPzIl5fUZIuBy/RcMxb63Qn7BSf1OvPI7VkFp4VJGX9GabBMQLkHRBcBbCFrP8tywaay
+         3qV5yZmg2+sTxXdhJUVGpkrs9CB5UG3gW35WHT3+EmQsuJWhXVO+NbhWXCHvVVnKr5mDZZVqYreH
+         9qIGtwKjlUThCBHmtMKDTJTab+JY0y1JZOVAsT5oYG1MLedLLdIfQneIHMVFfMyu5UjDwX4Mt/TN
+         c9XjlGHy2eZrJ/jR6rfOs6VaO5M8DFgggsXA7cTVZh5oRwxsvhzP9vWKIr69qMhZ5anmHozWty+3
+         LJek2SVyH8XvZq1r9MV8aVvIH9o/G7c9DkWJgwTN2A65l/2dsDmPGUtgFJ60MYKGeS37NNuqawyc
+         H3nzDBDKkp346Tvyk4DfVC5erHHN6UDN3jYyNTLGr6w53DHzAd3LDG7If4qbNF9NSzLuahzFjFcB
+         b1rvKqIcE=
+From:   xkernel.wang@foxmail.com
+To:     tsbogend@alpha.franken.de
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Xiaoke Wang <xkernel.wang@foxmail.com>
+Subject: [PATCH] mips: sgi-ip22: add a check for the return of kzalloc()
+Date:   Fri, 25 Mar 2022 18:57:18 +0800
+X-OQ-MSGID: <20220325105719.4348-1-xkernel.wang@foxmail.com>
 MIME-Version: 1.0
-In-Reply-To: <1648110940-4684-1-git-send-email-unSimple1993@163.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [192.168.11.198]
-X-ClientProxiedBy: LFEXT02.lancloud.ru (fd00:f066::142) To
- LFEX1907.lancloud.ru (fd00:f066::207)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Hello!
+From: Xiaoke Wang <xkernel.wang@foxmail.com>
 
-   s/return/result/ in the subject.
+kzalloc() is a memory allocation function which can return NULL when
+some internal memory errors happen. So it is better to check it to
+prevent potential wrong memory access.
 
-On 3/24/22 11:35 AM, QintaoShen wrote:
+Signed-off-by: Xiaoke Wang <xkernel.wang@foxmail.com>
+---
+ arch/mips/sgi-ip22/ip22-gio.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-> As the potential failuer of allocation, devm_kzalloc() may return NULL.
-> Then the 'pd->pmb' and the follow lines of code may bring null pointer dereference.
-
-   Following.
-
-> Therefore, it is better to check the return value of devm_kzalloc() to avoid this confusion.
-> 
-> Signed-off-by: QintaoShen <unSimple1993@163.com>
-> ---
->  drivers/soc/bcm/bcm63xx/bcm-pmb.c | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/drivers/soc/bcm/bcm63xx/bcm-pmb.c b/drivers/soc/bcm/bcm63xx/bcm-pmb.c
-> index 7bbe46e..55bf389 100644
-> --- a/drivers/soc/bcm/bcm63xx/bcm-pmb.c
-> +++ b/drivers/soc/bcm/bcm63xx/bcm-pmb.c
-> @@ -311,6 +311,8 @@ static int bcm_pmb_probe(struct platform_device *pdev)
->  
->  	for (e = table; e->name; e++) {
->  		struct bcm_pmb_pm_domain *pd = devm_kzalloc(dev, sizeof(*pd), GFP_KERNEL);
-
-   Please keep an empty line after declaration.
-
-> +		if (!pd)
-> +			return -ENOMEM;
->  
->  		pd->pmb = pmb;
->  		pd->data = e;
-
-MBR, Sergey
+diff --git a/arch/mips/sgi-ip22/ip22-gio.c b/arch/mips/sgi-ip22/ip22-gio.c
+index dfc52f6..38d12f4 100644
+--- a/arch/mips/sgi-ip22/ip22-gio.c
++++ b/arch/mips/sgi-ip22/ip22-gio.c
+@@ -363,6 +363,8 @@ static void ip22_check_gio(int slotno, unsigned long addr, int irq)
+ 		printk(KERN_INFO "GIO: slot %d : %s (id %x)\n",
+ 		       slotno, name, id);
+ 		gio_dev = kzalloc(sizeof *gio_dev, GFP_KERNEL);
++		if (!gio_dev)
++			return;
+ 		gio_dev->name = name;
+ 		gio_dev->slotno = slotno;
+ 		gio_dev->id.id = id;
+-- 

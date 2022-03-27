@@ -2,97 +2,63 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8EA47C433F5
-	for <linux-mips@archiver.kernel.org>; Sun, 27 Mar 2022 14:40:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5012CC433F5
+	for <linux-mips@archiver.kernel.org>; Sun, 27 Mar 2022 19:38:19 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235807AbiC0Ome (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Sun, 27 Mar 2022 10:42:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36606 "EHLO
+        id S236187AbiC0Tjz (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Sun, 27 Mar 2022 15:39:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45444 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235775AbiC0Om2 (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Sun, 27 Mar 2022 10:42:28 -0400
-Received: from 189.cn (ptr.189.cn [183.61.185.103])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 0C95D366B8;
-        Sun, 27 Mar 2022 07:40:46 -0700 (PDT)
-HMM_SOURCE_IP: 10.64.8.31:39862.48814928
-HMM_ATTACHE_NUM: 0000
-HMM_SOURCE_TYPE: SMTP
-Received: from clientip-114.242.206.180 (unknown [10.64.8.31])
-        by 189.cn (HERMES) with SMTP id BEE5310023D;
-        Sun, 27 Mar 2022 22:40:43 +0800 (CST)
-Received: from  ([114.242.206.180])
-        by gateway-151646-dep-b7fbf7d79-bwdqx with ESMTP id e20d497b614a4615aaff82e2c62715ce for mripard@kernel.org;
-        Sun, 27 Mar 2022 22:40:45 CST
-X-Transaction-ID: e20d497b614a4615aaff82e2c62715ce
-X-Real-From: 15330273260@189.cn
-X-Receive-IP: 114.242.206.180
-X-MEDUSA-Status: 0
-Sender: 15330273260@189.cn
-From:   Sui Jingfeng <15330273260@189.cn>
-To:     Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Roland Scheidegger <sroland@vmware.com>,
-        Zack Rusin <zackr@vmware.com>,
-        Christian Gmeiner <christian.gmeiner@gmail.com>,
+        with ESMTP id S236115AbiC0Tjz (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Sun, 27 Mar 2022 15:39:55 -0400
+Received: from mx2.smtp.larsendata.com (mx2.smtp.larsendata.com [91.221.196.228])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43B21BB0
+        for <linux-mips@vger.kernel.org>; Sun, 27 Mar 2022 12:38:13 -0700 (PDT)
+Received: from mail01.mxhotel.dk (mail01.mxhotel.dk [91.221.196.236])
+        by mx2.smtp.larsendata.com (Halon) with ESMTPS
+        id 706f5c1a-ae05-11ec-9ac0-0050568cd888;
+        Sun, 27 Mar 2022 19:38:12 +0000 (UTC)
+Received: from ravnborg.org (80-162-45-141-cable.dk.customer.tdc.net [80.162.45.141])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: sam@ravnborg.org)
+        by mail01.mxhotel.dk (Postfix) with ESMTPSA id 2BB79194B68;
+        Sun, 27 Mar 2022 21:38:11 +0200 (CEST)
+Date:   Sun, 27 Mar 2022 21:38:07 +0200
+X-Report-Abuse-To: abuse@mxhotel.dk
+From:   Sam Ravnborg <sam@ravnborg.org>
+To:     Christophe Branchereau <cbranchereau@gmail.com>
+Cc:     Paul Cercueil <paul@crapouillou.net>,
         David Airlie <airlied@linux.ie>,
         Daniel Vetter <daniel@ffwll.ch>,
-        Rob Herring <robh+dt@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Andrey Zhizhikin <andrey.zhizhikin@leica-geosystems.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Lucas Stach <l.stach@pengutronix.de>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Ilia Mirkin <imirkin@alum.mit.edu>,
-        Qing Zhang <zhangqing@loongson.cn>,
-        suijingfeng <suijingfeng@loongson.cn>
-Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, dri-devel@lists.freedesktop.org
-Subject: [PATCH v13 6/6] MAINTAINERS: add maintainers for DRM LSDC driver
-Date:   Sun, 27 Mar 2022 22:40:21 +0800
-Message-Id: <20220327144021.2502082-7-15330273260@189.cn>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20220327144021.2502082-1-15330273260@189.cn>
-References: <20220327144021.2502082-1-15330273260@189.cn>
+        Thierry Reding <thierry.reding@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-mips@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH v5 2/3] drm/panel: Add panel driver for NewVision NV3052C
+ based LCDs
+Message-ID: <YkC9H7Gap3vCv6Bz@ravnborg.org>
+References: <20220321133651.291592-1-cbranchereau@gmail.com>
+ <20220321133651.291592-3-cbranchereau@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220321133651.291592-3-cbranchereau@gmail.com>
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
- This patch add myself as maintainer
+Hi Christophe
 
- My company email is <suijingfeng@loongson.cn>
- my personal email is <15330273260@189.cn>
+On Mon, Mar 21, 2022 at 02:36:50PM +0100, Christophe Branchereau wrote:
+> This driver supports the NewVision NV3052C based LCDs. Right now, it
+> only supports the LeadTek LTK035C5444T 2.4" 640x480 TFT LCD panel, which
+> can be found in the Anbernic RG-350M handheld console.
+> 
+> Signed-off-by: Christophe Branchereau <cbranchereau@gmail.com>
+Please add:
+Reviewed-by: Sam Ravnborg <sam@ravnborg.org>
 
-Signed-off-by: Sui Jingfeng <15330273260@189.cn>
----
- MAINTAINERS | 9 +++++++++
- 1 file changed, 9 insertions(+)
+from the previous review round.
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 10476280acb8..21184d8577f4 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -6487,6 +6487,15 @@ T:	git git://anongit.freedesktop.org/drm/drm-misc
- F:	drivers/gpu/drm/lima/
- F:	include/uapi/drm/lima_drm.h
- 
-+DRM DRIVERS FOR LOONGSON
-+M:	suijingfeng <suijingfeng@loongson.cn>
-+L:	dri-devel@lists.freedesktop.org
-+S:	Maintained
-+W:	https://www.loongson.cn/
-+T:	git git://anongit.freedesktop.org/drm/drm-misc
-+F:	Documentation/devicetree/bindings/display/loongson/
-+F:	drivers/gpu/drm/loongson/
-+
- DRM DRIVERS FOR MEDIATEK
- M:	Chun-Kuang Hu <chunkuang.hu@kernel.org>
- M:	Philipp Zabel <p.zabel@pengutronix.de>
--- 
-2.25.1
-
+	Sam

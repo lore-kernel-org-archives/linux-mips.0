@@ -2,344 +2,236 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C92B6C433EF
-	for <linux-mips@archiver.kernel.org>; Sat, 26 Mar 2022 10:04:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C4D07C433FE
+	for <linux-mips@archiver.kernel.org>; Sun, 27 Mar 2022 11:39:07 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231294AbiCZKGa (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Sat, 26 Mar 2022 06:06:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54062 "EHLO
+        id S233682AbiC0Lkn (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Sun, 27 Mar 2022 07:40:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45580 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230031AbiCZKG3 (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Sat, 26 Mar 2022 06:06:29 -0400
-Received: from 189.cn (ptr.189.cn [183.61.185.101])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id D679370F61;
-        Sat, 26 Mar 2022 03:04:50 -0700 (PDT)
-HMM_SOURCE_IP: 10.64.8.43:57148.2145324903
+        with ESMTP id S233345AbiC0Lkm (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Sun, 27 Mar 2022 07:40:42 -0400
+Received: from 189.cn (ptr.189.cn [183.61.185.103])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id CA7E645AEB;
+        Sun, 27 Mar 2022 04:39:01 -0700 (PDT)
+HMM_SOURCE_IP: 10.64.8.31:60662.210632910
 HMM_ATTACHE_NUM: 0000
 HMM_SOURCE_TYPE: SMTP
-Received: from clientip-114.242.206.180 (unknown [10.64.8.43])
-        by 189.cn (HERMES) with SMTP id BF4441002B2;
-        Sat, 26 Mar 2022 18:04:48 +0800 (CST)
-Received: from  ([172.27.8.53])
-        by gateway-151646-dep-b7fbf7d79-vjdjk with ESMTP id 0234fbac645941f997e9c113ad1bff80 for robh@kernel.org;
-        Sat, 26 Mar 2022 18:04:49 CST
-X-Transaction-ID: 0234fbac645941f997e9c113ad1bff80
+Received: from clientip-114.242.206.180 (unknown [10.64.8.31])
+        by 189.cn (HERMES) with SMTP id 7DA54100199;
+        Sun, 27 Mar 2022 19:38:48 +0800 (CST)
+Received: from  ([114.242.206.180])
+        by gateway-151646-dep-b7fbf7d79-bwdqx with ESMTP id 514bf9d62b8d488c9dbce10218197a13 for mripard@kernel.org;
+        Sun, 27 Mar 2022 19:39:00 CST
+X-Transaction-ID: 514bf9d62b8d488c9dbce10218197a13
 X-Real-From: 15330273260@189.cn
-X-Receive-IP: 172.27.8.53
+X-Receive-IP: 114.242.206.180
 X-MEDUSA-Status: 0
 Sender: 15330273260@189.cn
-Message-ID: <165597c7-3ac3-9d32-a70f-95214b242e0b@189.cn>
-Date:   Sat, 26 Mar 2022 18:04:46 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.7.0
-Subject: Re: [PATCH v11 5/7] dt-bindings: display: Add Loongson display
- controller
-Content-Language: en-US
-To:     Rob Herring <robh@kernel.org>
-Cc:     Qing Zhang <zhangqing@loongson.cn>,
-        David Airlie <airlied@linux.ie>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        linux-kernel@vger.kernel.org, Sam Ravnborg <sam@ravnborg.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        devicetree@vger.kernel.org, suijingfeng <suijingfeng@loongson.cn>,
+From:   Sui Jingfeng <15330273260@189.cn>
+To:     Maxime Ripard <mripard@kernel.org>,
         Thomas Zimmermann <tzimmermann@suse.de>,
         Roland Scheidegger <sroland@vmware.com>,
-        Andrey Zhizhikin <andrey.zhizhikin@leica-geosystems.com>,
-        dri-devel@lists.freedesktop.org,
+        Zack Rusin <zackr@vmware.com>,
+        Christian Gmeiner <christian.gmeiner@gmail.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Rob Herring <robh+dt@kernel.org>,
         Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        linux-mips@vger.kernel.org,
-        "David S . Miller" <davem@davemloft.net>
-References: <20220321162916.1116541-1-15330273260@189.cn>
- <20220321162916.1116541-6-15330273260@189.cn>
- <YjkITWpbnCmhKaX+@robh.at.kernel.org>
- <f7eb61bc-6784-c77a-083f-7408c0a17e05@189.cn>
- <Yjo3umi9bJ0xb2Gl@robh.at.kernel.org>
- <199a2869-cd83-d24e-0ad0-25d15d76fc13@189.cn>
- <YjsamuFslv6qlQMZ@robh.at.kernel.org>
- <ac75aeff-1fca-f46f-1043-8437ef845ff9@189.cn>
- <YjxxhNnmqteTIEOa@robh.at.kernel.org>
-From:   Sui Jingfeng <15330273260@189.cn>
-In-Reply-To: <YjxxhNnmqteTIEOa@robh.at.kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Andrey Zhizhikin <andrey.zhizhikin@leica-geosystems.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Lucas Stach <l.stach@pengutronix.de>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Ilia Mirkin <imirkin@alum.mit.edu>,
+        Qing Zhang <zhangqing@loongson.cn>,
+        suijingfeng <suijingfeng@loongson.cn>
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, dri-devel@lists.freedesktop.org
+Subject: [PATCH v12 0/6] drm/loongson: add drm driver for loongson display controller
+Date:   Sun, 27 Mar 2022 19:38:40 +0800
+Message-Id: <20220327113846.2498146-1-15330273260@189.cn>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
+There is a display controller in loongson's LS2K1000 SoC and LS7A1000
+bridge chip, the display controller is a PCI device in those chips. It
+has two display pipes but with only one hardware cursor. Each way has
+a DVO interface which provide RGB888 signals, vertical & horizontal
+synchronisations, data enable and the pixel clock. Each CRTC is able to
+scanout from 1920x1080 resolution at 60Hz, the maxmium resolution is
+2048x2048 according to the hardware spec. Loongson display controllers
+are simple which require scanout buffers to be physically contiguous.
 
-On 2022/3/24 21:26, Rob Herring wrote:
-> On Thu, Mar 24, 2022 at 09:48:19AM +0800, Sui Jingfeng wrote:
->> On 2022/3/23 21:03, Rob Herring wrote:
->>> On Wed, Mar 23, 2022 at 11:38:55AM +0800, Sui Jingfeng wrote:
->>>> On 2022/3/23 04:55, Rob Herring wrote:
->>>>> On Tue, Mar 22, 2022 at 10:33:45AM +0800, Sui Jingfeng wrote:
->>>>>> On 2022/3/22 07:20, Rob Herring wrote:
->>>>>>> On Tue, Mar 22, 2022 at 12:29:14AM +0800, Sui Jingfeng wrote:
->>>>>>>> From: suijingfeng <suijingfeng@loongson.cn>
->>>>>>>>
->>>>>>> Needs a commit message.
->>>>>>>
->>>>>>>> Signed-off-by: suijingfeng <suijingfeng@loongson.cn>
->>>>>>>> Signed-off-by: Sui Jingfeng <15330273260@189.cn>
->>>>>>> Same person? Don't need both emails.
->>>>>> Yes,  suijingfeng@loongson.cn is my company's email. But it can not be used
->>>>>> to send patches to dri-devel,
->>>>>>
->>>>>> when send patches with this email, the patch will not be shown on patch
->>>>>> works.
->>>>>>
->>>>>> Emails  are either blocked or got  rejected  by loongson's mail server.  It
->>>>>> can only receive emails
->>>>>>
->>>>>> from you and other people, but not dri-devel. so have to use my personal
->>>>>> email(15330273260@189.cn) to send patches.
->>>>>>
->>>>>>>> ---
->>>>>>>>      .../loongson/loongson,display-controller.yaml | 230 ++++++++++++++++++
->>>>>>>>      1 file changed, 230 insertions(+)
->>>>>>>>      create mode 100644 Documentation/devicetree/bindings/display/loongson/loongson,display-controller.yaml
->>>>>>>>
->>>>>>>> diff --git a/Documentation/devicetree/bindings/display/loongson/loongson,display-controller.yaml b/Documentation/devicetree/bindings/display/loongson/loongson,display-controller.yaml
->>>>>>>> new file mode 100644
->>>>>>>> index 000000000000..7be63346289e
->>>>>>>> --- /dev/null
->>>>>>>> +++ b/Documentation/devicetree/bindings/display/loongson/loongson,display-controller.yaml
->>>>>>>> @@ -0,0 +1,230 @@
->>>>>>>> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
->>>>>>>> +%YAML 1.2
->>>>>>>> +---
->>>>>>>> +$id: http://devicetree.org/schemas/display/loongson/loongson,display-controller.yaml#
->>>>>>>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->>>>>>>> +
->>>>>>>> +title: Loongson LS7A1000/LS2K1000/LS2K0500 Display Controller Device Tree Bindings
->>>>>>>> +
->>>>>>>> +maintainers:
->>>>>>>> +  - Sui Jingfeng <suijingfeng@loongson.cn>
->>>>>>>> +
->>>>>>>> +description: |+
->>>>>>>> +
->>>>>>>> +  Loongson display controllers are simple which require scanout buffers
->>>>>>>> +  to be physically contiguous. LS2K1000/LS2K0500 is a SOC, only system
->>>>>>>> +  memory is available. LS7A1000/LS7A2000 is bridge chip which is equipped
->>>>>>>> +  with a dedicated video RAM which is 64MB or more, precise size can be
->>>>>>>> +  read from the PCI BAR 2 of the GPU device(0x0014:0x7A15) in the bridge
->>>>>>>> +  chip.
->>>>>>>> +
->>>>>>>> +  LSDC has two display pipes, each way has a DVO interface which provide
->>>>>>>> +  RGB888 signals, vertical & horizontal synchronisations, data enable and
->>>>>>>> +  the pixel clock. LSDC has two CRTC, each CRTC is able to scanout from
->>>>>>>> +  1920x1080 resolution at 60Hz. Each CRTC has two FB address registers.
->>>>>>>> +
->>>>>>>> +  For LS7A1000, there are 4 dedicated GPIOs whose control register is
->>>>>>>> +  located at the DC register space. They are used to emulate two way i2c,
->>>>>>>> +  One for DVO0, another for DVO1.
->>>>>>>> +
->>>>>>>> +  LS2K1000 and LS2K0500 SoC grab i2c adapter from other module, either
->>>>>>>> +  general purpose GPIO emulated i2c or hardware i2c in the SoC.
->>>>>>>> +
->>>>>>>> +  LSDC's display pipeline have several components as below description,
->>>>>>>> +
->>>>>>>> +  The display controller in LS7A1000:
->>>>>>>> +     ___________________                                     _________
->>>>>>>> +    |            -------|                                   |         |
->>>>>>>> +    |  CRTC0 --> | DVO0 ----> Encoder0 ---> Connector0 ---> | Monitor |
->>>>>>>> +    |  _   _     -------|        ^             ^            |_________|
->>>>>>>> +    | | | | |    -------|        |             |
->>>>>>>> +    | |_| |_|    | i2c0 <--------+-------------+
->>>>>>>> +    |            -------|
->>>>>>>> +    |   DC IN LS7A1000  |
->>>>>>>> +    |  _   _     -------|
->>>>>>>> +    | | | | |    | i2c1 <--------+-------------+
->>>>>>>> +    | |_| |_|    -------|        |             |             _________
->>>>>>>> +    |            -------|        |             |            |         |
->>>>>>>> +    |  CRTC1 --> | DVO1 ----> Encoder1 ---> Connector1 ---> |  Panel  |
->>>>>>>> +    |            -------|                                   |_________|
->>>>>>>> +    |___________________|
->>>>>>>> +
->>>>>>>> +  Simple usage of LS7A1000 with LS3A4000 CPU:
->>>>>>>> +
->>>>>>>> +    +------+            +-----------------------------------+
->>>>>>>> +    | DDR4 |            |  +-------------------+            |
->>>>>>>> +    +------+            |  | PCIe Root complex |   LS7A1000 |
->>>>>>>> +       || MC0           |  +--++---------++----+            |
->>>>>>>> +  +----------+  HT 3.0  |     ||         ||                 |
->>>>>>>> +  | LS3A4000 |<-------->| +---++---+  +--++--+    +---------+   +------+
->>>>>>>> +  |   CPU    |<-------->| | GC1000 |  | LSDC |<-->| DDR3 MC |<->| VRAM |
->>>>>>>> +  +----------+          | +--------+  +-+--+-+    +---------+   +------+
->>>>>>>> +       || MC1           +---------------|--|----------------+
->>>>>>>> +    +------+                            |  |
->>>>>>>> +    | DDR4 |          +-------+   DVO0  |  |  DVO1   +------+
->>>>>>>> +    +------+   VGA <--|ADV7125|<--------+  +-------->|TFP410|--> DVI/HDMI
->>>>>>>> +                      +-------+                      +------+
->>>>>>>> +
->>>>>>>> +  The display controller in LS2K1000/LS2K0500:
->>>>>>>> +     ___________________                                     _________
->>>>>>>> +    |            -------|                                   |         |
->>>>>>>> +    |  CRTC0 --> | DVO0 ----> Encoder0 ---> Connector0 ---> | Monitor |
->>>>>>>> +    |  _   _     -------|        ^              ^           |_________|
->>>>>>>> +    | | | | |           |        |              |
->>>>>>>> +    | |_| |_|           |     +------+          |
->>>>>>>> +    |                   <---->| i2c0 |<---------+
->>>>>>>> +    |   DC IN LS2K1000  |     +------+
->>>>>>>> +    |  _   _            |     +------+
->>>>>>>> +    | | | | |           <---->| i2c1 |----------+
->>>>>>>> +    | |_| |_|           |     +------+          |            _________
->>>>>>>> +    |            -------|        |              |           |         |
->>>>>>>> +    |  CRTC1 --> | DVO1 ----> Encoder1 ---> Connector1 ---> |  Panel  |
->>>>>>>> +    |            -------|                                   |_________|
->>>>>>>> +    |___________________|
->>>>>>>> +
->>>>>>>> +properties:
->>>>>>>> +  $nodename:
->>>>>>>> +    pattern: "^display-controller@[0-9a-f],[0-9a-f]$"
->>>>>>>> +
->>>>>>>> +  compatible:
->>>>>>>> +    oneOf:
->>>>>>>> +      - items:
->>>>>>>> +          - enum:
->>>>>>>> +              - loongson,ls7a1000-dc
->>>>>>>> +              - loongson,ls2k1000-dc
->>>>>>>> +              - loongson,ls2k0500-dc
->>>>>>>> +
->>>>>>>> +  reg:
->>>>>>>> +    maxItems: 1
->>>>>>>> +
->>>>>>>> +  interrupts:
->>>>>>>> +    maxItems: 1
->>>>>>>> +
->>>>>>>> +  '#address-cells':
->>>>>>>> +    const: 1
->>>>>>>> +
->>>>>>>> +  '#size-cells':
->>>>>>>> +    const: 0
->>>>>>>> +
->>>>>>>> +  i2c-gpio@0:
->>>>>>>> +    description: |
->>>>>>>> +      Built-in GPIO emulate i2c exported for external display bridge
->>>>>>> If you have i2c-gpio, that belongs at the DT top-level, not here.
->>>>>>>
->>>>>>>> +      configuration, onitor detection and edid read back etc, for ls7a1000
->>>>>>>> +      only. Its compatible must be lsdc,i2c-gpio-0. The reg property can be
->>>>>>> No, there's a defined i2c-gpio compatible already.
->>>>>> This is different from the i2c-gpio already defined under drivers/i2c/busses/i2c-gpio.c,
->>>>>> By design, my i2c-gpio is vendor specific properties, lsdc device driver create the i2c
->>>>>> adapter at runtime. These are 4 dedicated GPIOs whose control register is located at the
->>>>>> LSDC register space, not general purpose GPIOs with separate control register resource.
->>>>>> So i think it is the child node of display-controller@6,1, it belongs to LSDC.
->>>>>> It seems that put it at the DT top-level break the hierarchy and relationship.
->>>>> Okay, I see. Then just 'i2c' for the node names. You need a reference to
->>>>> i2c-controller.yaml for these nodes too.
->>>>>
->>>>> The compatible should not have an index in it.
->>>> OK, i will fix this at the next version. thanks.
->>>>>>>> +      used to specify a I2c adapter bus number, if you don't specify one
->>>>>>>> +      i2c driver core will dynamically assign a bus number. Please specify
->>>>>>> Bus numbers are a linux detail not relevant to DT binding.
->>>>>>>
->>>>>>>> +      it only when its bus number matters. Bus number greater than 6 is safe
->>>>>>>> +      because ls7a1000 bridge have 6 hardware I2C controller integrated.
->>>>>>>> +
->>>>>>>> +  i2c-gpio@1:
->>>>>>>> +    description: |
->>>>>>>> +      Built-in GPIO emulate i2c exported for external display bridge
->>>>>>>> +      configuration, onitor detection and edid read back etc, for ls7a1000
->>>>>>>> +      only. Its compatible must be lsdc,i2c-gpio-1.
->>>>>>>> +
->>>>>>>> +  ports:
->>>>>>>> +    $ref: /schemas/graph.yaml#/properties/ports
->>>>>>>> +
->>>>>>>> +    properties:
->>>>>>>> +      port@0:
->>>>>>>> +        $ref: /schemas/graph.yaml#/properties/port
->>>>>>>> +        description: output port node connected with DPI panels or external encoders, with only one endpoint.
->>>>>>>> +
->>>>>>>> +      port@1:
->>>>>>>> +        $ref: /schemas/graph.yaml#/properties/port
->>>>>>>> +        description: output port node connected with DPI panels or external encoders, with only one endpoint.
->>>>>>>> +
->>>>>>>> +    required:
->>>>>>>> +      - port@0
->>>>>>>> +      - port@1
->>>>>>>> +
->>>>>>>> +required:
->>>>>>>> +  - compatible
->>>>>>>> +  - reg
->>>>>>>> +  - interrupts
->>>>>>>> +  - ports
->>>>>>>> +
->>>>>>>> +additionalProperties: false
->>>>>>>> +
->>>>>>>> +examples:
->>>>>>>> +  - |
->>>>>>>> +    #include <dt-bindings/interrupt-controller/irq.h>
->>>>>>>> +    bus {
->>>>>>>> +
->>>>>>>> +        #address-cells = <3>;
->>>>>>>> +        #size-cells = <2>;
->>>>>>>> +        #interrupt-cells = <2>;
->>>>>>>> +
->>>>>>>> +        display-controller@6,1 {
->>>>>>>> +            compatible = "loongson,ls7a1000-dc";
->>>>>>>> +            reg = <0x3100 0x0 0x0 0x0 0x0>;
->>>>>>>> +            interrupts = <28 IRQ_TYPE_LEVEL_HIGH>;
->>>>>>>> +
->>>>>>>> +            #address-cells = <1>;
->>>>>>>> +            #size-cells = <0>;
->>>>>>>> +
->>>>>>>> +            i2c-gpio@0 {
->>>>>>>> +                compatible = "lsdc,i2c-gpio-0";
->>>>>>>> +                reg = <6>;
->>>>> 'reg' needs to be documented with some description of what 6 and 7
->>>>> represent. If they are the control register offset, then make the
->>>>> address translatable (use 'ranges' and define the size).
->>>> By design, the reg property is used to specify a I2c adapter bus number,
->>>> if we don't specify one, i2c driver core will dynamically assign a bus number.
->>>> then the nr of the i2c adapter will started from 0. I want is start from 6
->>>> to avoid potential conflict feature hardware I2C driver.
->>>>
->>>> Because LS7A1000 bridge chip have 6 hardware I2C controller integrated,
->>>> but its driver is not up-streamed yet. By default these hardware I2C controller's
->>>> nr is started from 0.
->>> Linux's numbering doesn't belong in DT. So no, you can't use 'reg' in
->>> that way.
->> Then,  can i use something like lsdc,nr = <6> ?
->>>> Even through i2c driver core can dynamically generate a number, i still want it
->>>> to be fixed and keep consistent and explicit. That is, i2c6 is for display pipe 0,
->>>> i2c7 is for display pipe 1. This follow the convention and flexible enough.
->>> You may want that, but that is not how the kernel works. Specific
->>> numbers are not guaranteed. I'm sure you've seen this for disks, network
->>> interfaces, etc.
->>>
->>> Rob
->> 2c_bit_add_numbered_bus() will guarantee it for you as long as If no devices
->> have pre-been declared for this bus.
->>
->> you can read the comment of 2c_bit_add_numbered_bus() at
->> drivers/i2c/i2c-core-base.c
-> I didn't say it wasn't possible. It is not best practice. Grep
-> i2c_bit_add_numbered_bus and see how many users there are.
+For LS7A1000 bridge chip, the DC is equipped with a dedicated video RAM
+which is typically 64MB or more. In this case, VRAM helper based driver
+is intend to be used even through the DC can scanout form system memory.
 
-i2c-gpio.c at drivers/i2c/busses/ just do the same thing.
+While LS2K1000 is a SoC which is a typically UMA device, only system
+memory is available. Therefore CMA helper based driver is intend to be
+used. It is possible to use VRAM helper based driver on LS2K1000 by
+carving out part of system memory as VRAM though.
 
+For LS7A1000, there are 4 dedicated GPIOs whose control register is
+located at the DC register space, They are used to emulate two way i2c.
+One for DVO0, another for DVO1. LS2K1000 and LS2K0500 SoC don't have such
+GPIO hardwared, they grab i2c adapter from other module, either general
+purpose GPIO emulated i2c or hardware i2c adapter.
 
-+ nvidia,bpmp-bus-id: + $ref: /schemas/types.yaml#/definitions/uint32 + 
-description: Indicates the I2C bus number this DT node represents, + as 
-defined by the BPMP firmware.
+    +------+            +-----------------------------------+
+    | DDR4 |            |  +-------------------+            |
+    +------+            |  | PCIe Root complex |   LS7A1000 |
+       || MC0           |  +--++---------++----+            |
+  +----------+  HT 3.0  |     ||         ||                 |
+  | LS3A4000 |<-------->| +---++---+  +--++--+    +---------+   +------+
+  |   CPU    |<-------->| | GC1000 |  | LSDC |<-->| DDR3 MC |<->| VRAM |
+  +----------+          | +--------+  +-+--+-+    +---------+   +------+
+       || MC1           +---------------|--|----------------+
+    +------+                            |  |
+    | DDR4 |          +-------+   DVO0  |  |  DVO1   +------+
+    +------+   VGA <--|ADV7125|<--------+  +-------->|TFP410|--> DVI/HDMI
+                      +-------+                      +------+
 
-> Even if the kernel allows specifying bus numbers,your Linux bus numbers don't
-> belong in DT.
+The above picture give a simple usage of LS7A1000, note that the encoder
+is not necessary adv7125 or tfp410, other candicates can be ch7034b,
+sil9022, ite66121 and lt8618 etc.
 
-Again, Does does devicetree specification prohibit this?
+v2: Fixup warnings reported by kernel test robot
 
-Nvidia also put i2c bus number in the DT, we learn that from nvidia. [1][2]
+v3: Fix more grammar mistakes in Kconfig reported by Randy Dunlap and give
+    more details about lsdc.
 
-[1] Documentation/devicetree/bindings/i2c/nvidia,tegra186-bpmp-i2c.yaml
+v4:
+   1) Add dts required and explain why device tree is required.
+   2) Give more description about lsdc and VRAM helper based driver.
+   3) Fix warnings reported by kernel test robot.
+   4) Introduce stride_alignment member into struct lsdc_chip_desc, the
+      stride alignment is 256 bytes for ls7a1000, ls2k1000 and ls2k0500.
 
-[2] 
-https://lore.kernel.org/all/20211208143306.534700-1-thierry.reding@gmail.com/
+v5:
+   1) Using writel and readl replace writeq and readq, to fix kernel test
+      robot report build error on other archtecture.
+   2) Set default fb format to XRGB8888 at crtc reset time.
 
+v6:
+   1) Explain why we are not switch to drm dridge subsystem on ls2k1000.
+   2) Explain why tiny drm driver is not suitable for us.
+   3) Give a short description of the trival dirty update implement based
+      on CMA helper.
 
->
-> Rob
+v7:
+   1) Remove select I2C_GPIO and I2C_LS2X in Kconfig, it is not ready now
+   2) Licensing issues are fixed suggested by Krzysztof Kozlowski.
+   3) Remove lsdc_pixpll_print(), part of it move to debugfs.
+   4) Set prefer_shadow to true if vram based driver is in using.
+   5) Replace double blank lines with single line in all files.
+   6) Verbose cmd line parameter is replaced with drm_dbg()
+   7) All warnnings reported by ./scripts/checkpatch.pl --strict are fixed
+   8) Get edid from dtb support is removed as suggested by Maxime Ripard
+   9) Fix typos and various improvement
+
+v8:
+   1) Drop damage update implement and its command line.
+   2) Drop DRM_LSDC_VRAM_DRIVER config option as suggested by Maxime.
+   3) Deduce DC's identification from its compatible property.
+   4) Drop the board specific dts patch.
+   5) Add documention about the display controller device node.
+
+v9:
+   1) Fix the warnings reported by checkpatch script and fix typos
+
+v10:
+   1) Pass `make dt_binding_check` validation
+   2) Fix warnings reported by kernel test robot
+
+v11:
+   1) Convert the driver to use drm bridge and of graph framework.
+   2) Dump register value support through debugfs.
+   3) Select DRM_TTM and DRM_TTM_HELPER in Kconfig which fix linkage
+      problem when built it into the kernel.
+   4) Non 64 pixel(256 bytes aligned) horiziontal resolutons got
+      supported by hacking, default is disabled, enable it by using
+      'loongson.relax_alignment=1' on kernel cmd line.
+   5) Various improvement as required by Maxime.
+
+v12:
+   1) Add gammma support, it is broken because hardware engineer
+      does not implement this correctly. Using 'loongson.gamma=1' on
+      the kernel cmd line to enable this and see what will happen.
+      We implemlent this for IC varification.
+   2) Separate debugfs related code from lsdc_drv.c
+   3) Built-in GPIO emulate i2c refinement.
+   4) Various improvement as required by Rob.
+
+Sui Jingfeng (6):
+  MIPS: Loongson64: dts: update the display controller device node
+  MIPS: Loongson64: introduce board specific dts and add model property
+  dt-bindings: display: Add Loongson display controller
+  MIPS: Loongson64: defconfig: enable display bridge drivers
+  drm/loongson: add drm driver for loongson display controller
+  MAINTAINERS: add maintainers for DRM LSDC driver
+
+ .../loongson/loongson,display-controller.yaml | 322 ++++++++++
+ MAINTAINERS                                   |   9 +
+ arch/mips/boot/dts/loongson/Makefile          |   4 +
+ arch/mips/boot/dts/loongson/lemote_a1901.dts  |  96 +++
+ .../boot/dts/loongson/loongson64-2k1000.dtsi  |   8 +
+ .../boot/dts/loongson/ls2k1000_pai_udb.dts    | 107 ++++
+ .../boot/dts/loongson/ls3a4000_7a1000_evb.dts | 138 +++++
+ arch/mips/boot/dts/loongson/ls7a-pch.dtsi     |  24 +-
+ arch/mips/configs/loongson2k_defconfig        |   5 +
+ arch/mips/configs/loongson3_defconfig         |   5 +
+ drivers/gpu/drm/Kconfig                       |   2 +
+ drivers/gpu/drm/Makefile                      |   1 +
+ drivers/gpu/drm/loongson/Kconfig              |  25 +
+ drivers/gpu/drm/loongson/Makefile             |  16 +
+ drivers/gpu/drm/loongson/lsdc_crtc.c          | 395 ++++++++++++
+ drivers/gpu/drm/loongson/lsdc_debugfs.c       | 176 ++++++
+ drivers/gpu/drm/loongson/lsdc_debugfs.h       |  17 +
+ drivers/gpu/drm/loongson/lsdc_drv.c           | 417 +++++++++++++
+ drivers/gpu/drm/loongson/lsdc_drv.h           | 155 +++++
+ drivers/gpu/drm/loongson/lsdc_i2c.c           | 285 +++++++++
+ drivers/gpu/drm/loongson/lsdc_i2c.h           |  38 ++
+ drivers/gpu/drm/loongson/lsdc_irq.c           |  57 ++
+ drivers/gpu/drm/loongson/lsdc_irq.h           |  17 +
+ drivers/gpu/drm/loongson/lsdc_output.c        | 261 ++++++++
+ drivers/gpu/drm/loongson/lsdc_output.h        |  21 +
+ drivers/gpu/drm/loongson/lsdc_pci_drv.c       | 346 +++++++++++
+ drivers/gpu/drm/loongson/lsdc_plane.c         | 447 ++++++++++++++
+ drivers/gpu/drm/loongson/lsdc_pll.c           | 573 ++++++++++++++++++
+ drivers/gpu/drm/loongson/lsdc_pll.h           |  87 +++
+ drivers/gpu/drm/loongson/lsdc_regs.h          | 221 +++++++
+ 30 files changed, 4270 insertions(+), 5 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/display/loongson/loongson,display-controller.yaml
+ create mode 100644 arch/mips/boot/dts/loongson/lemote_a1901.dts
+ create mode 100644 arch/mips/boot/dts/loongson/ls2k1000_pai_udb.dts
+ create mode 100644 arch/mips/boot/dts/loongson/ls3a4000_7a1000_evb.dts
+ create mode 100644 drivers/gpu/drm/loongson/Kconfig
+ create mode 100644 drivers/gpu/drm/loongson/Makefile
+ create mode 100644 drivers/gpu/drm/loongson/lsdc_crtc.c
+ create mode 100644 drivers/gpu/drm/loongson/lsdc_debugfs.c
+ create mode 100644 drivers/gpu/drm/loongson/lsdc_debugfs.h
+ create mode 100644 drivers/gpu/drm/loongson/lsdc_drv.c
+ create mode 100644 drivers/gpu/drm/loongson/lsdc_drv.h
+ create mode 100644 drivers/gpu/drm/loongson/lsdc_i2c.c
+ create mode 100644 drivers/gpu/drm/loongson/lsdc_i2c.h
+ create mode 100644 drivers/gpu/drm/loongson/lsdc_irq.c
+ create mode 100644 drivers/gpu/drm/loongson/lsdc_irq.h
+ create mode 100644 drivers/gpu/drm/loongson/lsdc_output.c
+ create mode 100644 drivers/gpu/drm/loongson/lsdc_output.h
+ create mode 100644 drivers/gpu/drm/loongson/lsdc_pci_drv.c
+ create mode 100644 drivers/gpu/drm/loongson/lsdc_plane.c
+ create mode 100644 drivers/gpu/drm/loongson/lsdc_pll.c
+ create mode 100644 drivers/gpu/drm/loongson/lsdc_pll.h
+ create mode 100644 drivers/gpu/drm/loongson/lsdc_regs.h
+
+-- 
+2.25.1
+

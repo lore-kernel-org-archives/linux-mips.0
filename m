@@ -2,207 +2,95 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 73634C433FE
-	for <linux-mips@archiver.kernel.org>; Tue, 29 Mar 2022 13:28:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 58262C433F5
+	for <linux-mips@archiver.kernel.org>; Wed, 30 Mar 2022 01:46:24 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236814AbiC2N34 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 29 Mar 2022 09:29:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45044 "EHLO
+        id S241532AbiC3BsF (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 29 Mar 2022 21:48:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45816 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237295AbiC2N3w (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Tue, 29 Mar 2022 09:29:52 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 566ED23192D;
-        Tue, 29 Mar 2022 06:28:06 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 54A30B81814;
-        Tue, 29 Mar 2022 13:28:05 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 081A5C36AE2;
-        Tue, 29 Mar 2022 13:28:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1648560484;
-        bh=z0lSTjpuyGdMpUgrH3yye9jNeGEzuoSxD6CJSLPeIyE=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=YfXBuTtb0SSlZUf+DUFdggbi9FEh/nw1Snin40IWbyolsO371+/5NauUM8yDdWvlr
-         64iPxl5ySbuT05ES69glgZOcp6vrp5z7ELLQVFXX4/me5BLmDfCszxEiuenlx/wtez
-         7JZFHD76noW2jFdx1+03pMBMijOZh/QGIDi2BH47Tjfn9SSrzA0L2iqdorAoD6pBwK
-         yIwrePH9q9Tun5vOfraF6YTfViDKtSSNV8o0zCzddnIKR3UvHgtusxwDpIDNh4URI/
-         jxzIJp8van10IalWtAZuy6LKXdtZulLnqAcnk10L9iLpH3t7YoOqMgC0ueElpSD6mW
-         XoVK25/yRS3Xw==
-Received: by mail-ej1-f41.google.com with SMTP id j15so35115545eje.9;
-        Tue, 29 Mar 2022 06:28:03 -0700 (PDT)
-X-Gm-Message-State: AOAM532D4K9fNCQpSYzobb2jCVeaHLZWrJwhlhR3mCTs/4P/vdmDEwZv
-        a1U0tbqodDzAYrcSgaUe61wKYUIYaDyi+wrCDg==
-X-Google-Smtp-Source: ABdhPJzj3/gx2h6gfF3xH01UhGfHeUEzMlMnGo0qwB+pHUkiz744wEqEdbj9LVI48/pWxS09mmJzGL7SXddFerFK1UE=
-X-Received: by 2002:a17:907:2d8d:b0:6df:a06c:7c55 with SMTP id
- gt13-20020a1709072d8d00b006dfa06c7c55mr33872249ejc.325.1648560482148; Tue, 29
- Mar 2022 06:28:02 -0700 (PDT)
-MIME-Version: 1.0
-References: <20220328022835.2508587-1-15330273260@189.cn> <20220328022835.2508587-3-15330273260@189.cn>
-In-Reply-To: <20220328022835.2508587-3-15330273260@189.cn>
-From:   Rob Herring <robh+dt@kernel.org>
-Date:   Tue, 29 Mar 2022 08:27:50 -0500
-X-Gmail-Original-Message-ID: <CAL_Jsq+zO7RXzQLoPXR7Zm0mcsKCydK=8EFaNFGu-_THgJuh7Q@mail.gmail.com>
-Message-ID: <CAL_Jsq+zO7RXzQLoPXR7Zm0mcsKCydK=8EFaNFGu-_THgJuh7Q@mail.gmail.com>
-Subject: Re: [PATCH v13 3/6] dt-bindings: display: Add Loongson display controller
-To:     Sui Jingfeng <15330273260@189.cn>
-Cc:     Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Roland Scheidegger <sroland@vmware.com>,
-        Zack Rusin <zackr@vmware.com>,
-        Christian Gmeiner <christian.gmeiner@gmail.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
+        with ESMTP id S237034AbiC3BsF (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Tue, 29 Mar 2022 21:48:05 -0400
+Received: from out2.migadu.com (out2.migadu.com [IPv6:2001:41d0:2:aacc::])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6599BF56
+        for <linux-mips@vger.kernel.org>; Tue, 29 Mar 2022 18:46:20 -0700 (PDT)
+Subject: Re: [PATCH] MIPS: rb532: move GPIOD definition into C-files
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1648604777;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=WDanR9NTo8X+Kep+UFnFxSGgahGv1fmlsQMqw/4+lnw=;
+        b=FHw3PXcP+WVBOEapf+XSldutqzfFKccCasaULGrgI8B3bVQ3c1fJnvjA/p/7zp3SmMULEc
+        RxIXPisZVBR5se15jVEJNLVkm5IqD2HJFjXxhWH0HoGEu+mt99TQPPD5wjIXSXyYrfFHta
+        siDr5Nin3CpCJ9/Okao4VskxYXTZHFg=
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Ralf Baechle <ralf@linux-mips.org>,
         Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Andrey Zhizhikin <andrey.zhizhikin@leica-geosystems.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Lucas Stach <l.stach@pengutronix.de>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Ilia Mirkin <imirkin@alum.mit.edu>,
-        Qing Zhang <zhangqing@loongson.cn>,
-        suijingfeng <suijingfeng@loongson.cn>,
-        "open list:MIPS" <linux-mips@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        devicetree@vger.kernel.org,
-        dri-devel <dri-devel@lists.freedesktop.org>
-Content-Type: text/plain; charset="UTF-8"
+        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
+        Jonathan Cameron <jic23@kernel.org>
+References: <20220329014537.4180966-1-liu.yun@linux.dev>
+ <CAHp75VcAL6avNxMSVo9nWbxXOnKmXAiuGMV=uWwAx0BdHnf-+Q@mail.gmail.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Jackie Liu <liu.yun@linux.dev>
+Message-ID: <71d1da40-4772-b126-7cbe-0d99024fd284@linux.dev>
+Date:   Wed, 30 Mar 2022 09:46:07 +0800
+MIME-Version: 1.0
+In-Reply-To: <CAHp75VcAL6avNxMSVo9nWbxXOnKmXAiuGMV=uWwAx0BdHnf-+Q@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
+X-Migadu-Auth-User: linux.dev
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Sun, Mar 27, 2022 at 9:29 PM Sui Jingfeng <15330273260@189.cn> wrote:
->
-> Add DT bindings and simple usages for Loongson display controller
-> found in LS7A1000 bridge chip and LS2k1000 SoC.
->
-> Signed-off-by: Sui Jingfeng <15330273260@189.cn>
-> ---
->  .../loongson/loongson,display-controller.yaml | 321 ++++++++++++++++++
->  1 file changed, 321 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/display/loongson/loongson,display-controller.yaml
->
-> diff --git a/Documentation/devicetree/bindings/display/loongson/loongson,display-controller.yaml b/Documentation/devicetree/bindings/display/loongson/loongson,display-controller.yaml
-> new file mode 100644
-> index 000000000000..34060ed55a25
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/display/loongson/loongson,display-controller.yaml
-> @@ -0,0 +1,321 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/display/loongson/loongson,display-controller.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Loongson LS7A1000/LS2K1000/LS2K0500 Display Controller Device Tree Bindings
-> +
-> +maintainers:
-> +  - Sui Jingfeng <suijingfeng@loongson.cn>
-> +
-> +description: |+
-> +
-> +  Loongson display controllers are simple which require scanout buffers
-> +  to be physically contiguous. LS2K1000/LS2K0500 is a SOC, only system
-> +  memory is available. LS7A1000/LS7A2000 is bridge chip which is equipped
-> +  with a dedicated video RAM which is 64MB or more, precise size can be
-> +  read from the PCI BAR 2 of the GPU device(0x0014:0x7A15) in the bridge
-> +  chip.
-> +
-> +  LSDC has two display pipes, each way has a DVO interface which provide
-> +  RGB888 signals, vertical & horizontal synchronisations, data enable and
-> +  the pixel clock. LSDC has two CRTC, each CRTC is able to scanout from
-> +  1920x1080 resolution at 60Hz. Each CRTC has two FB address registers.
-> +
-> +  For LS7A1000, there are 4 dedicated GPIOs whose control register is
-> +  located at the DC register space. They are used to emulate two way i2c,
-> +  One for DVO0, another for DVO1.
-> +
-> +  LS2K1000 and LS2K0500 SoC grab i2c adapter from other module, either
-> +  general purpose GPIO emulated i2c or hardware i2c in the SoC.
-> +
-> +  LSDC's display pipeline have several components as below description,
-> +
-> +  The display controller in LS7A1000:
-> +     ___________________                                     _________
-> +    |            -------|                                   |         |
-> +    |  CRTC0 --> | DVO0 ----> Encoder0 ---> Connector0 ---> | Monitor |
-> +    |  _   _     -------|        ^             ^            |_________|
-> +    | | | | |    -------|        |             |
-> +    | |_| |_|    | i2c0 <--------+-------------+
-> +    |            -------|
-> +    |   DC IN LS7A1000  |
-> +    |  _   _     -------|
-> +    | | | | |    | i2c1 <--------+-------------+
-> +    | |_| |_|    -------|        |             |             _________
-> +    |            -------|        |             |            |         |
-> +    |  CRTC1 --> | DVO1 ----> Encoder1 ---> Connector1 ---> |  Panel  |
-> +    |            -------|                                   |_________|
-> +    |___________________|
-> +
-> +  Simple usage of LS7A1000 with LS3A4000 CPU:
-> +
-> +    +------+            +------------------------------------+
-> +    | DDR4 |            |  +-------------------+             |
-> +    +------+            |  | PCIe Root complex |   LS7A1000  |
-> +       || MC0           |  +--++---------++----+             |
-> +  +----------+  HT 3.0  |     ||         ||                  |
-> +  | LS3A4000 |<-------->| +---++---+  +--++--+     +---------+   +------+
-> +  |   CPU    |<-------->| | GC1000 |  | LSDC |<--->| DDR3 MC |<->| VRAM |
-> +  +----------+          | +--------+  +-+--+-+     +---------+   +------+
-> +       || MC1           +---------------|--|-----------------+
-> +    +------+                            |  |
-> +    | DDR4 |          +-------+   DVO0  |  |  DVO1   +------+
-> +    +------+   VGA <--|ADV7125|<--------+  +-------->|TFP410|--> DVI/HDMI
-> +                      +-------+                      +------+
-> +
-> +  The display controller in LS2K1000/LS2K0500:
-> +     ___________________                                     _________
-> +    |            -------|                                   |         |
-> +    |  CRTC0 --> | DVO0 ----> Encoder0 ---> Connector0 ---> | Monitor |
-> +    |  _   _     -------|        ^              ^           |_________|
-> +    | | | | |           |        |              |
-> +    | |_| |_|           |     +------+          |
-> +    |                   <---->| i2c0 |<---------+
-> +    |   DC IN LS2K1000  |     +------+
-> +    |  _   _            |     +------+
-> +    | | | | |           <---->| i2c1 |----------+
-> +    | |_| |_|           |     +------+          |            _________
-> +    |            -------|        |              |           |         |
-> +    |  CRTC1 --> | DVO1 ----> Encoder1 ---> Connector1 ---> |  Panel  |
-> +    |            -------|                                   |_________|
-> +    |___________________|
-> +
-> +properties:
-> +  $nodename:
-> +    pattern: "^display-controller@[0-9a-f],[0-9a-f]$"
-> +
-> +  compatible:
-> +    oneOf:
-> +      - items:
-> +          - enum:
-> +              - loongson,ls7a1000-dc
-> +              - loongson,ls2k1000-dc
-> +              - loongson,ls2k0500-dc
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  interrupts:
-> +    maxItems: 1
-> +
-> +  '#address-cells':
-> +    const: 1
-> +
-> +  '#size-cells':
-> +    const: 0
-> +
-> +  i2c@6:
 
-NAK on made-up bus numbers. See v11 discussion for details.
 
-Rob
+在 2022/3/29 下午8:54, Andy Shevchenko 写道:
+> On Tue, Mar 29, 2022 at 4:46 AM Jackie Liu <liu.yun@linux.dev> wrote:
+>>
+>> From: Jackie Liu <liuyun01@kylinos.cn>
+>>
+>> My kernel robot report build error from drivers/iio/adc/da9150-gpadc.c,
+>>
+>> We define GPIOD in rb.h, in fact he should only be used in gpio.c, but
+> 
+> he --> it
+> 
+>> it affects the driver da9150-gpadc.c which goes against the original
+>> intention of the design, just move it to his scope.
+> 
+>> At the same time, GPIONMIEN and IMASK6 are not used anywhere, just delete
+>> them.
+> 
+> While not being used it's good to leave (save) them since it might be
+> the only means of the HW documentation. I know that Git history will
+> keep that, but it is more explicit just to have them in the code.
+
+Sure.
+
+> 
+> ...
+> 
+>>   #define DEV3TC         0x01003C
+>>   #define BTCS           0x010040
+>>   #define BTCOMPARE      0x010044
+>> -#define GPIOBASE       0x050000
+> 
+> ...
+> 
+>> +#define GPIOBASE       0x050000
+> 
+> I think this one belongs to the header.
+
+I think it would be better to put it in gpio.c, after all it belongs to
+the GPIO module and is not used elsewhere. It doesn't feel good if we
+put it in the header file.
+
+
+--
+BR, Jackie Liu

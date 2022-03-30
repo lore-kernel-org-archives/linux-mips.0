@@ -2,297 +2,187 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C35A0C3527B
-	for <linux-mips@archiver.kernel.org>; Wed, 30 Mar 2022 14:43:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8D75CC433EF
+	for <linux-mips@archiver.kernel.org>; Wed, 30 Mar 2022 18:36:38 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347088AbiC3Op2 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 30 Mar 2022 10:45:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55348 "EHLO
+        id S1350214AbiC3SiO (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 30 Mar 2022 14:38:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57484 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347038AbiC3OpZ (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 30 Mar 2022 10:45:25 -0400
-Received: from mail.baikalelectronics.ru (mail.baikalelectronics.com [87.245.175.226])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 0D8925BE67;
-        Wed, 30 Mar 2022 07:43:36 -0700 (PDT)
-Received: from mail.baikalelectronics.ru (unknown [192.168.51.25])
-        by mail.baikalelectronics.ru (Postfix) with ESMTP id 48DAD16C0;
-        Wed, 30 Mar 2022 17:43:39 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mail.baikalelectronics.ru 48DAD16C0
-Received: from localhost (192.168.53.207) by mail (192.168.51.25) with
- Microsoft SMTP Server (TLS) id 15.0.1395.4; Wed, 30 Mar 2022 17:43:35 +0300
-From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
-To:     Jingoo Han <jingoohan1@gmail.com>,
-        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Rob Herring <robh+dt@kernel.org>
-CC:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        <linux-clk@vger.kernel.org>, <linux-pci@vger.kernel.org>,
-        <linux-mips@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <devicetree@vger.kernel.org>
-Subject: [PATCH v2 4/4] clk: baikal-t1: Add DDR/PCIe directly controlled resets support
-Date:   Wed, 30 Mar 2022 17:43:20 +0300
-Message-ID: <20220330144320.27039-5-Sergey.Semin@baikalelectronics.ru>
-In-Reply-To: <20220330144320.27039-1-Sergey.Semin@baikalelectronics.ru>
-References: <20220330144320.27039-1-Sergey.Semin@baikalelectronics.ru>
+        with ESMTP id S1351167AbiC3SdV (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 30 Mar 2022 14:33:21 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id D028A5131A
+        for <linux-mips@vger.kernel.org>; Wed, 30 Mar 2022 11:30:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1648665030;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=RZbGTsE6fj+tWEXGzmO8DRMy8Cnx5er20TMqeDcb2Ps=;
+        b=FvdKfycdo2LEiYciwI9rYAa1KN4KdYE2V3cr4N2xZBzkGfnF8+9Dsjgnq/RInuhq5om823
+        3/SH190syZT2ThpAms9PTHwnuCHmsXKxj5SGAip/dStmSTca2culTN3BbWPYfWtLkRCXxL
+        I60WOX4mWsM+0VN2IA7cJfSbrdmrbzg=
+Received: from mail-qv1-f72.google.com (mail-qv1-f72.google.com
+ [209.85.219.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-241-s9130-kvN7iDrvYToOXgZw-1; Wed, 30 Mar 2022 14:30:29 -0400
+X-MC-Unique: s9130-kvN7iDrvYToOXgZw-1
+Received: by mail-qv1-f72.google.com with SMTP id ke13-20020a056214300d00b00443901b0386so1346138qvb.14
+        for <linux-mips@vger.kernel.org>; Wed, 30 Mar 2022 11:30:27 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=RZbGTsE6fj+tWEXGzmO8DRMy8Cnx5er20TMqeDcb2Ps=;
+        b=BRTWiTL6f5gNw6/jDjWDndKpitu06ecidan0/UfGKFoR/jqs4NrEtuELPqsVuZtYHl
+         o2/QJdDR0j9g3wnlKLDe5o/UGlA8qcPYOGsd2Ft84XR1l+dRpo2rq1N0s0goGUouqVXX
+         NqpaEkI+NQSeXYzeyeFQ4kx+CkDux+RsSXbHA2dVTayT327QVBpz7GpPLdIlEAcLjpa+
+         zBzeTRIPRt01agzvsDIHa+Ry012pIfJpaob8mbvvev5Y8qxbFTU99IpLqe42dwl9sLOL
+         3e6w0htO/poub1osxtzyQfDm2zYOV0SV4EHrexZ+HGZiJA759yh+elxFvfJ/egrmuZP0
+         LYsA==
+X-Gm-Message-State: AOAM532terxDG694xaP8Narqb+gdcAE3LvtASVDnLUMYDIwC7VwjwRum
+        aiNQj+q6TFzcOvmu6gR4M6fNsS7MI+dShT81s6QJWfZHqFqzv1A4VqataVWOGHkORKA9qdTASik
+        mcdduBa0Bx/QPWmqVgxNvvQ==
+X-Received: by 2002:a37:414c:0:b0:67e:6d68:c585 with SMTP id o73-20020a37414c000000b0067e6d68c585mr756738qka.196.1648665026787;
+        Wed, 30 Mar 2022 11:30:26 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxV7GTt34CXdG/qDCogIthPSHMHYYlDRsKEVG6uvoZamRv82rxB1y8ernA5KphBy4D/a0zmOw==
+X-Received: by 2002:a37:414c:0:b0:67e:6d68:c585 with SMTP id o73-20020a37414c000000b0067e6d68c585mr756718qka.196.1648665026496;
+        Wed, 30 Mar 2022 11:30:26 -0700 (PDT)
+Received: from xz-m1.local (cpec09435e3e0ee-cmc09435e3e0ec.cpe.net.cable.rogers.com. [99.241.198.116])
+        by smtp.gmail.com with ESMTPSA id p13-20020a05622a048d00b002e1ce0c627csm18698113qtx.58.2022.03.30.11.30.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 30 Mar 2022 11:30:26 -0700 (PDT)
+Date:   Wed, 30 Mar 2022 14:30:24 -0400
+From:   Peter Xu <peterx@redhat.com>
+To:     David Matlack <dmatlack@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
+        Anup Patel <anup@brainfault.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Sean Christopherson <seanjc@google.com>,
+        Andrew Jones <drjones@redhat.com>,
+        Ben Gardon <bgardon@google.com>,
+        "Maciej S. Szmigiero" <maciej.szmigiero@oracle.com>,
+        "moderated list:KERNEL VIRTUAL MACHINE FOR ARM64 (KVM/arm64)" 
+        <kvmarm@lists.cs.columbia.edu>,
+        "open list:KERNEL VIRTUAL MACHINE FOR MIPS (KVM/mips)" 
+        <linux-mips@vger.kernel.org>,
+        "open list:KERNEL VIRTUAL MACHINE FOR MIPS (KVM/mips)" 
+        <kvm@vger.kernel.org>,
+        "open list:KERNEL VIRTUAL MACHINE FOR RISC-V (KVM/riscv)" 
+        <kvm-riscv@lists.infradead.org>, Peter Feiner <pfeiner@google.com>
+Subject: Re: [PATCH v2 16/26] KVM: x86/mmu: Cache the access bits of shadowed
+ translations
+Message-ID: <YkShwFaRqlQpyL87@xz-m1.local>
+References: <20220311002528.2230172-1-dmatlack@google.com>
+ <20220311002528.2230172-17-dmatlack@google.com>
+ <YjGgjTnP/9sG8L+2@xz-m1.local>
+ <CALzav=fZQYC7YyTbZqbkYTYVUXCq4skc6pkQ2S59BoSxbkKUhw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CALzav=fZQYC7YyTbZqbkYTYVUXCq4skc6pkQ2S59BoSxbkKUhw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Aside with a set of the trigger-like resets Baikal-T1 CCU provides two
-additional blocks with directly controlled reset signals. In particular it
-concerns DDR full and initial resets and various PCIe sub-domains resets.
-Let's add the direct reset assertion/de-assertion of the corresponding
-flags support into the Baikal-T1 CCU driver then. It will be required at
-least for the PCIe platform driver. Obviously the DDR controller isn't
-supposed to be fully reset in the kernel, so the corresponding controls
-are added just for the sake of the interface implementation completeness.
+On Tue, Mar 22, 2022 at 03:51:54PM -0700, David Matlack wrote:
+> On Wed, Mar 16, 2022 at 1:32 AM Peter Xu <peterx@redhat.com> wrote:
+> >
+> > On Fri, Mar 11, 2022 at 12:25:18AM +0000, David Matlack wrote:
+> > > In order to split a huge page we need to know what access bits to assign
+> > > to the role of the new child page table. This can't be easily derived
+> > > from the huge page SPTE itself since KVM applies its own access policies
+> > > on top, such as for HugePage NX.
+> > >
+> > > We could walk the guest page tables to determine the correct access
+> > > bits, but that is difficult to plumb outside of a vCPU fault context.
+> > > Instead, we can store the original access bits for each leaf SPTE
+> > > alongside the GFN in the gfns array. The access bits only take up 3
+> > > bits, which leaves 61 bits left over for gfns, which is more than
+> > > enough. So this change does not require any additional memory.
+> >
+> > I have a pure question on why eager page split needs to worry on hugepage
+> > nx..
+> >
+> > IIUC that was about forbidden huge page being mapped as executable.  So
+> > afaiu the only missing bit that could happen if we copy over the huge page
+> > ptes is the executable bit.
+> >
+> > But then?  I think we could get a page fault on fault->exec==true on the
+> > split small page (because when we copy over it's cleared, even though the
+> > page can actually be executable), but it should be well resolved right
+> > after that small page fault.
+> >
+> > The thing is IIUC this is a very rare case, IOW, it should mostly not
+> > happen in 99% of the use case?  And there's a slight penalty when it
+> > happens, but only perf-wise.
+> >
+> > As I'm not really fluent with the code base, perhaps I missed something?
+> 
+> You're right that we could get away with not knowing the shadowed
+> access permissions to assign to the child SPTEs when splitting a huge
+> SPTE. We could just copy the huge SPTE access permissions and then let
+> the execute bit be repaired on fault (although those faults would be a
+> performance cost).
+> 
+> But the access permissions are also needed to lookup an existing
+> shadow page (or create a new shadow page) to use to split the huge
+> page. For example, let's say we are going to split a huge page that
+> does not have execute permissions enabled. That could be because NX
+> HugePages are enabled or because we are shadowing a guest translation
+> that does not allow execution (or both). We wouldn't want to propagate
+> the no-execute permission into the child SP role.access if the
+> shadowed translation really does allow execution (and vice versa).
 
-Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
----
- drivers/clk/baikal-t1/ccu-rst.c     | 117 +++++++++++++++++++++++++++-
- drivers/clk/baikal-t1/ccu-rst.h     |   4 +
- include/dt-bindings/reset/bt1-ccu.h |   9 +++
- 3 files changed, 129 insertions(+), 1 deletion(-)
+Then the follow up (pure) question is what will happen if we simply
+propagate the no-exec permission into the child SP?
 
-diff --git a/drivers/clk/baikal-t1/ccu-rst.c b/drivers/clk/baikal-t1/ccu-rst.c
-index 5e33c3ce962a..186a1491a7d9 100644
---- a/drivers/clk/baikal-t1/ccu-rst.c
-+++ b/drivers/clk/baikal-t1/ccu-rst.c
-@@ -25,17 +25,33 @@
- #include "ccu-div.h"
- #include "ccu-rst.h"
- 
-+#define CCU_SYS_DDR_BASE		0x02c
-+#define CCU_SYS_PCIE_BASE		0x144
-+
- #define CCU_RST_MAP(_rst_id, _clk_id)		\
- 	{					\
- 		.rst_id = _rst_id,		\
- 		.clk_id = _clk_id,		\
- 	}
- 
-+#define CCU_RST_DIR(_rst_id, _base, _ofs)	\
-+	{					\
-+		.rst_id = _rst_id,		\
-+		.base = _base,			\
-+		.ofs = _ofs			\
-+	}
-+
- struct ccu_rst_map {
- 	unsigned int rst_id;
- 	unsigned int clk_id;
- };
- 
-+struct ccu_rst_dir {
-+	unsigned int rst_id;
-+	unsigned int base;
-+	unsigned int ofs;
-+};
-+
- struct ccu_rst_data {
- 	struct device_node *np;
- 	struct regmap *sys_regs;
-@@ -46,6 +62,9 @@ struct ccu_rst_data {
- 	unsigned int rsts_map_num;
- 	const struct ccu_rst_map *rsts_map;
- 
-+	unsigned int rsts_dir_num;
-+	const struct ccu_rst_dir *rsts_dir;
-+
- 	unsigned int divs_num;
- 	struct ccu_div **divs;
- 
-@@ -81,6 +100,23 @@ static const struct ccu_rst_map sys_rst_map[] = {
- 	CCU_RST_MAP(CCU_SYS_APB_RST, CCU_SYS_APB_CLK),
- };
- 
-+/*
-+ * DDR and PCIe sub-domains can be reset with directly controlled reset
-+ * signals. I wouldn't suggest to reset the DDR controller though at least
-+ * while the Linux kernel is working.
-+ */
-+static const struct ccu_rst_dir sys_rst_dir[] = {
-+	CCU_RST_DIR(CCU_SYS_DDR_FULL_RST, CCU_SYS_DDR_BASE, 1),
-+	CCU_RST_DIR(CCU_SYS_DDR_INIT_RST, CCU_SYS_DDR_BASE, 2),
-+	CCU_RST_DIR(CCU_SYS_PCIE_PCS_PHY_RST, CCU_SYS_PCIE_BASE, 0),
-+	CCU_RST_DIR(CCU_SYS_PCIE_PIPE0_RST, CCU_SYS_PCIE_BASE, 4),
-+	CCU_RST_DIR(CCU_SYS_PCIE_CORE_RST, CCU_SYS_PCIE_BASE, 8),
-+	CCU_RST_DIR(CCU_SYS_PCIE_PWR_RST, CCU_SYS_PCIE_BASE, 9),
-+	CCU_RST_DIR(CCU_SYS_PCIE_STICKY_RST, CCU_SYS_PCIE_BASE, 10),
-+	CCU_RST_DIR(CCU_SYS_PCIE_NSTICKY_RST, CCU_SYS_PCIE_BASE, 11),
-+	CCU_RST_DIR(CCU_SYS_PCIE_HOT_RST, CCU_SYS_PCIE_BASE, 12),
-+};
-+
- static int ccu_rst_reset(struct reset_controller_dev *rcdev,
- 			 unsigned long idx)
- {
-@@ -92,12 +128,81 @@ static int ccu_rst_reset(struct reset_controller_dev *rcdev,
- 		return -EINVAL;
- 	}
- 
-+	/*
-+	 * No CCU divider descriptor means having directly handled reset control,
-+	 * which is mapped into the CCU Divider registers.
-+	 */
- 	rst = &data->rsts[idx];
-+	if (!rst->div)
-+		return -EOPNOTSUPP;
-+
- 	return ccu_div_reset_domain(rst->div);
- }
- 
-+static int ccu_rst_set(struct ccu_rst_data *data,
-+		       unsigned long idx, bool high)
-+{
-+	struct ccu_rst *rst;
-+
-+	if (idx >= data->rsts_num) {
-+		pr_err("Invalid reset ID %lu specified\n", idx);
-+		return -EINVAL;
-+	}
-+
-+	/*
-+	 * Having CCU divider descriptor means trigger-like reset control so
-+	 * direct assertion/de-assertion is unsupported.
-+	 */
-+	rst = &data->rsts[idx];
-+	if (rst->div)
-+		return high ? -EOPNOTSUPP : 0;
-+
-+	return regmap_update_bits(data->sys_regs, rst->reg_ctl,
-+				  rst->mask, high ? rst->mask : 0);
-+}
-+
-+static int ccu_rst_assert(struct reset_controller_dev *rcdev,
-+			  unsigned long idx)
-+{
-+	struct ccu_rst_data *data = to_ccu_rst_data(rcdev);
-+
-+	return ccu_rst_set(data, idx, true);
-+}
-+
-+static int ccu_rst_deassert(struct reset_controller_dev *rcdev,
-+			    unsigned long idx)
-+{
-+	struct ccu_rst_data *data = to_ccu_rst_data(rcdev);
-+
-+	return ccu_rst_set(data, idx, false);
-+}
-+
-+static int ccu_rst_status(struct reset_controller_dev *rcdev,
-+			  unsigned long idx)
-+{
-+	struct ccu_rst_data *data = to_ccu_rst_data(rcdev);
-+	struct ccu_rst *rst;
-+	u32 val;
-+
-+	if (idx >= data->rsts_num) {
-+		pr_err("Invalid reset ID %lu specified\n", idx);
-+		return -EINVAL;
-+	}
-+
-+	rst = &data->rsts[idx];
-+	if (rst->div)
-+		return -EOPNOTSUPP;
-+
-+	regmap_read(data->sys_regs, rst->reg_ctl, &val);
-+
-+	return !!(val & rst->mask);
-+}
-+
- static const struct reset_control_ops ccu_rst_ops = {
- 	.reset = ccu_rst_reset,
-+	.assert = ccu_rst_assert,
-+	.deassert = ccu_rst_deassert,
-+	.status = ccu_rst_status,
- };
- 
- static int ccu_rst_of_idx_get(struct reset_controller_dev *rcdev,
-@@ -153,6 +258,8 @@ static struct ccu_rst_data *ccu_rst_create_data(const struct ccu_rst_init_data *
- 	} else if (of_device_is_compatible(data->np, "baikal,bt1-ccu-sys")) {
- 		data->rsts_map_num = ARRAY_SIZE(sys_rst_map);
- 		data->rsts_map = sys_rst_map;
-+		data->rsts_dir_num = ARRAY_SIZE(sys_rst_dir);
-+		data->rsts_dir = sys_rst_dir;
- 	} else {
- 		pr_err("Incompatible DT node '%s' specified\n",
- 			of_node_full_name(data->np));
-@@ -160,7 +267,7 @@ static struct ccu_rst_data *ccu_rst_create_data(const struct ccu_rst_init_data *
- 		goto err_kfree_data;
- 	}
- 
--	data->rsts_num = data->rsts_map_num;
-+	data->rsts_num = data->rsts_map_num + data->rsts_dir_num;
- 	data->rsts = kcalloc(data->rsts_num, sizeof(*data->rsts), GFP_KERNEL);
- 	if (!data->rsts) {
- 		ret = -ENOMEM;
-@@ -198,6 +305,14 @@ static int ccu_rst_init_desc(struct ccu_rst_data *data)
- 		}
- 	}
- 
-+	for (idx = 0; idx < data->rsts_dir_num; ++idx, ++rst) {
-+		const struct ccu_rst_dir *dir = &data->rsts_dir[idx];
-+
-+		rst->id = dir->rst_id;
-+		rst->reg_ctl = dir->base;
-+		rst->mask = BIT(dir->ofs);
-+	}
-+
- 	return 0;
- }
- 
-diff --git a/drivers/clk/baikal-t1/ccu-rst.h b/drivers/clk/baikal-t1/ccu-rst.h
-index 2ef82899dba8..58347dc8a504 100644
---- a/drivers/clk/baikal-t1/ccu-rst.h
-+++ b/drivers/clk/baikal-t1/ccu-rst.h
-@@ -33,10 +33,14 @@ struct ccu_rst_init_data {
-  * struct ccu_div - CCU Reset descriptor
-  * @id: Reset identifier.
-  * @div: Pointer to the CCU Divider descriptor (can be NULL).
-+ * @reg_ctl: reset control register base address.
-+ * @mask: reset flag within the control register.
-  */
- struct ccu_rst {
- 	unsigned int id;
- 	struct ccu_div *div;
-+	unsigned int reg_ctl;
-+	unsigned int mask;
- };
- 
- #ifdef CONFIG_CLK_BT1_CCU_RST
-diff --git a/include/dt-bindings/reset/bt1-ccu.h b/include/dt-bindings/reset/bt1-ccu.h
-index 3578e83026bc..c691efaa678f 100644
---- a/include/dt-bindings/reset/bt1-ccu.h
-+++ b/include/dt-bindings/reset/bt1-ccu.h
-@@ -21,5 +21,14 @@
- 
- #define CCU_SYS_SATA_REF_RST		0
- #define CCU_SYS_APB_RST			1
-+#define CCU_SYS_DDR_FULL_RST		2
-+#define CCU_SYS_DDR_INIT_RST		3
-+#define CCU_SYS_PCIE_PCS_PHY_RST	4
-+#define CCU_SYS_PCIE_PIPE0_RST		5
-+#define CCU_SYS_PCIE_CORE_RST		6
-+#define CCU_SYS_PCIE_PWR_RST		7
-+#define CCU_SYS_PCIE_STICKY_RST		8
-+#define CCU_SYS_PCIE_NSTICKY_RST	9
-+#define CCU_SYS_PCIE_HOT_RST		10
- 
- #endif /* __DT_BINDINGS_RESET_BT1_CCU_H */
+I think that only happens with direct sptes where guest used huge pages
+because that's where the shadow page will be huge, so IIUC that's checked
+here when the small page fault triggers:
+
+static void validate_direct_spte(struct kvm_vcpu *vcpu, u64 *sptep,
+				   unsigned direct_access)
+{
+	if (is_shadow_present_pte(*sptep) && !is_large_pte(*sptep)) {
+		struct kvm_mmu_page *child;
+
+		/*
+		 * For the direct sp, if the guest pte's dirty bit
+		 * changed form clean to dirty, it will corrupt the
+		 * sp's access: allow writable in the read-only sp,
+		 * so we should update the spte at this point to get
+		 * a new sp with the correct access.
+		 */
+		child = to_shadow_page(*sptep & PT64_BASE_ADDR_MASK);
+		if (child->role.access == direct_access)
+			return;
+
+		drop_parent_pte(child, sptep);
+		kvm_flush_remote_tlbs_with_address(vcpu->kvm, child->gfn, 1);
+	}
+}
+
+Due to missing EXEC the role.access check will not match with direct
+access, which is the guest pgtable value which has EXEC set.  Then IIUC
+we'll simply drop the no-exec SP and replace it with a new one with exec
+perm.  The question is, would that untimately work too?
+
+Even if that works, I agree this sounds tricky because we're potentially
+caching fake sp.role conditionally and it seems we never do that before.
+It's just that the other option that you proposed here seems to add other
+way of complexity on caching spte permission information while kvm doesn't
+do either before.  IMHO we need to see which is the best trade off.
+
+I could have missed something else, though.
+
+Thanks,
+
 -- 
-2.35.1
+Peter Xu
 

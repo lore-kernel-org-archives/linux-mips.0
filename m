@@ -2,60 +2,54 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 70BB5C433EF
-	for <linux-mips@archiver.kernel.org>; Wed, 30 Mar 2022 19:00:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AE4F7C4332F
+	for <linux-mips@archiver.kernel.org>; Wed, 30 Mar 2022 19:00:30 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349994AbiC3TCN (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 30 Mar 2022 15:02:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55080 "EHLO
+        id S1350266AbiC3TCO (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 30 Mar 2022 15:02:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55084 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350285AbiC3TCM (ORCPT
+        with ESMTP id S1350306AbiC3TCM (ORCPT
         <rfc822;linux-mips@vger.kernel.org>); Wed, 30 Mar 2022 15:02:12 -0400
 Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 63E49267B
-        for <linux-mips@vger.kernel.org>; Wed, 30 Mar 2022 12:00:26 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id CCE5265D3B;
+        Wed, 30 Mar 2022 12:00:26 -0700 (PDT)
 Received: from uucp (helo=alpha)
         by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1nZdYO-0003Qd-02; Wed, 30 Mar 2022 21:00:24 +0200
+        id 1nZdYO-0003Qd-01; Wed, 30 Mar 2022 21:00:24 +0200
 Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 8758EC4DEF; Wed, 30 Mar 2022 20:35:23 +0200 (CEST)
-Date:   Wed, 30 Mar 2022 20:35:23 +0200
+        id 63D91C4DEF; Wed, 30 Mar 2022 20:34:48 +0200 (CEST)
+Date:   Wed, 30 Mar 2022 20:34:48 +0200
 From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Jackie Liu <liu.yun@linux.dev>
-Cc:     linus.walleij@linaro.org, ralf@linux-mips.org,
-        linux-mips@vger.kernel.org, jic23@kernel.org,
-        andy.shevchenko@gmail.com, sergei.shtylyov@gmail.com
-Subject: Re: [PATCH v4] MIPS: rb532: move GPIOD definition into C-files
-Message-ID: <20220330183523.GC18042@alpha.franken.de>
-References: <20220330120921.1920941-1-liu.yun@linux.dev>
+To:     xkernel.wang@foxmail.com
+Cc:     john@phrozen.org, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] MIPS: lantiq: check the return value of kzalloc()
+Message-ID: <20220330183448.GB18042@alpha.franken.de>
+References: <tencent_3E071B85643888D2C8BF388804334CAE2706@qq.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20220330120921.1920941-1-liu.yun@linux.dev>
+In-Reply-To: <tencent_3E071B85643888D2C8BF388804334CAE2706@qq.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Wed, Mar 30, 2022 at 08:09:21PM +0800, Jackie Liu wrote:
-> From: Jackie Liu <liuyun01@kylinos.cn>
+On Fri, Mar 25, 2022 at 07:49:41PM +0800, xkernel.wang@foxmail.com wrote:
+> From: Xiaoke Wang <xkernel.wang@foxmail.com>
 > 
-> My kernel robot reports build error from drivers/iio/adc/da9150-gpadc.c,
+> kzalloc() is a memory allocation function which can return NULL when
+> some internal memory errors happen. So it is better to check the
+> return value of it to prevent potential wrong memory access or
+> memory leak.
 > 
->   drivers/iio/adc/da9150-gpadc.c:254:13: error: ‘DA9150_GPADC_CHAN_0x08’
->   undeclared here (not in a function); did you mean ‘DA9150_GPADC_CHAN_TBAT’?
->      254 |  .channel = DA9150_GPADC_CHAN_##_id,
-> 
-> We define GPIOD in rb.h, in fact it should only be used in gpio.c, but
-> it affects the driver da9150-gpadc.c which goes against the original
-> intention of the design, just move it to its scope.
-> 
-> Fixes: 1b432840d0a4 ("MIPS: RB532: GPIO register offsets are relative to GPIOBASE")
-> Suggested-by: Jonathan Cameron <jic23@kernel.org>
-> Suggested-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-> Reported-by: k2ci <kernel-bot@kylinos.cn>
-> Signed-off-by: Jackie Liu <liuyun01@kylinos.cn>
+> Signed-off-by: Xiaoke Wang <xkernel.wang@foxmail.com>
+> ---
+>  arch/mips/lantiq/falcon/sysctrl.c |  2 ++
+>  arch/mips/lantiq/xway/gptu.c      |  2 ++
+>  arch/mips/lantiq/xway/sysctrl.c   | 46 ++++++++++++++++++++-----------
+>  3 files changed, 34 insertions(+), 16 deletions(-)
 
 applied to mips-next.
 

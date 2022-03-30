@@ -2,35 +2,33 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1C5DEC433F5
-	for <linux-mips@archiver.kernel.org>; Wed, 30 Mar 2022 10:05:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 552E1C433F5
+	for <linux-mips@archiver.kernel.org>; Wed, 30 Mar 2022 11:01:01 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245143AbiC3KGv (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 30 Mar 2022 06:06:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38878 "EHLO
+        id S245685AbiC3LCo (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 30 Mar 2022 07:02:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55468 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245142AbiC3KGu (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 30 Mar 2022 06:06:50 -0400
-Received: from out0.migadu.com (out0.migadu.com [IPv6:2001:41d0:2:267::])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BA30DEBA9
-        for <linux-mips@vger.kernel.org>; Wed, 30 Mar 2022 03:05:05 -0700 (PDT)
-Subject: Re: [PATCH] MIPS: rb532: move GPIOD definition into C-files
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1648634703;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=3l57BQDTc2H3DsV7IaMaHCQmDl1v0nJZRFIODHJmecg=;
-        b=DiySYVvJxGuqo+MqwkTKzsIyyXNhqrUyrulhGkfCea1RhvQQdhr8ZglNfBWrvORotR0ah1
-        z2RAwi4zlLLkaZfNS9vSNIa+Wb0eKSMrByyS5hVxixy96WHRlkeVUrLUtIj+ysUBgF2nVJ
-        r3LSVmSqIFt502NJsQ1GeHc0Cj3IcCs=
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        with ESMTP id S241893AbiC3LCn (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 30 Mar 2022 07:02:43 -0400
+Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 817A0DF70
+        for <linux-mips@vger.kernel.org>; Wed, 30 Mar 2022 04:00:58 -0700 (PDT)
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1nZW4P-0007z0-00; Wed, 30 Mar 2022 13:00:57 +0200
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id F1201C2EE0; Wed, 30 Mar 2022 12:02:13 +0200 (CEST)
+Date:   Wed, 30 Mar 2022 12:02:13 +0200
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Jackie Liu <liu.yun@linux.dev>
+Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
         Linus Walleij <linus.walleij@linaro.org>,
         Ralf Baechle <ralf@linux-mips.org>,
         "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
         Jonathan Cameron <jic23@kernel.org>
+Subject: Re: [PATCH] MIPS: rb532: move GPIOD definition into C-files
+Message-ID: <20220330100213.GA8617@alpha.franken.de>
 References: <20220329014537.4180966-1-liu.yun@linux.dev>
  <CAHp75VcAL6avNxMSVo9nWbxXOnKmXAiuGMV=uWwAx0BdHnf-+Q@mail.gmail.com>
  <71d1da40-4772-b126-7cbe-0d99024fd284@linux.dev>
@@ -39,45 +37,82 @@ References: <20220329014537.4180966-1-liu.yun@linux.dev>
  <20220330093227.GA8224@alpha.franken.de>
  <CAHp75Vc+Gvte62Smnyi_RN=c0Fpy6LLyqJV2Oy0HP+Yv6CvtxQ@mail.gmail.com>
  <f601dcf3-892c-e8de-9028-9e5108322074@linux.dev>
- <CAHp75VdWBMQWtgL1ejk-2C2v4sfm48RzyJd-Z3hMcSvi=Tm4pg@mail.gmail.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Jackie Liu <liu.yun@linux.dev>
-Message-ID: <bb90ecd2-a750-574c-1b1c-6e06461c002a@linux.dev>
-Date:   Wed, 30 Mar 2022 18:04:55 +0800
 MIME-Version: 1.0
-In-Reply-To: <CAHp75VdWBMQWtgL1ejk-2C2v4sfm48RzyJd-Z3hMcSvi=Tm4pg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
-X-Migadu-Auth-User: linux.dev
+In-Reply-To: <f601dcf3-892c-e8de-9028-9e5108322074@linux.dev>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-
-
-在 2022/3/30 下午6:01, Andy Shevchenko 写道:
-> On Wed, Mar 30, 2022 at 12:56 PM Jackie Liu <liu.yun@linux.dev> wrote:
->> 在 2022/3/30 下午5:41, Andy Shevchenko 写道:
->>> On Wed, Mar 30, 2022 at 12:32 PM Thomas Bogendoerfer
->>> <tsbogend@alpha.franken.de> wrote:
+On Wed, Mar 30, 2022 at 05:56:03PM +0800, Jackie Liu wrote:
 > 
-> ...
+> 在 2022/3/30 下午5:41, Andy Shevchenko 写道:
+> > On Wed, Mar 30, 2022 at 12:32 PM Thomas Bogendoerfer
+> > <tsbogend@alpha.franken.de> wrote:
+> > > On Wed, Mar 30, 2022 at 12:23:59PM +0300, Andy Shevchenko wrote:
+> > > > On Wed, Mar 30, 2022 at 9:45 AM Thomas Bogendoerfer
+> > > > <tsbogend@alpha.franken.de> wrote:
+> > > > > On Wed, Mar 30, 2022 at 09:46:07AM +0800, Jackie Liu wrote:
+> > 
+> > ...
+> > 
+> > > > > I have a patchset, where the both files will go away. No need to
+> > > > > clean up now.
+> > > > 
+> > > > Do you plan them to be backported? If not, I would recommend applying
+> > > 
+> > > no plan for backporting
+> > > 
+> > > > this patch in order to have it backported and then do whatever you
+> > > > want we those files.
+> > > 
+> > > why ? This doesn't fix anything, doesn't it ?
 > 
->>> It fixes compilation breakage in some cases. I think the author of
->>> this patch can (should) elaborate.
->>> Also, it might need a Fixes tag.
->>
->> Um, it's really hard to say which commit is fixed, just because this
->> header file defines a GPIOD, and someone else uses this later.
+> Like the patch I submitted in the first version, there are some gcc
+> errors.
 > 
-> I think we may use the original commit where the header in mips
-> appeared with a justification that the definitions are not needed to
-> be there and it may induce build errors, which in fact happens.
+> [...]
+> drivers/iio/adc/da9150-gpadc.c:254:13: error: ‘DA9150_GPADC_CHAN_0x08’
+> undeclared here (not in a function); did you mean ‘DA9150_GPADC_CHAN_TBAT’?
+>    254 |  .channel = DA9150_GPADC_CHAN_##_id,   \
+>        |             ^~~~~~~~~~~~~~~~~~
+>  drivers/iio/adc/da9150-gpadc.c:273:2: note: in expansion of macro
+> ‘DA9150_GPADC_CHANNEL’
+>    273 |  DA9150_GPADC_CHANNEL(_id, _hw_id, _type,   \
+>        |  ^~~~~~~~~~~~~~~~~~~~
+>  drivers/iio/adc/da9150-gpadc.c:281:2: note: in expansion of macro
+> ‘DA9150_GPADC_CHANNEL_PROCESSED’
+>    281 |  DA9150_GPADC_CHANNEL_PROCESSED(GPIOD, GPIOD_6V, IIO_VOLTAGE,
+> NULL),
+>        |  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 > 
+> make[4]: *** [../scripts/Makefile.build:288: drivers/iio/adc/da9150-gpadc.o]
+> Error 1
+> make[3]: *** [../scripts/Makefile.build:550: drivers/iio/adc] Error 2
+> make[3]: *** Waiting for unfinished jobs....
+> 
+> > 
+> > It fixes compilation breakage in some cases. I think the author of
+> > this patch can (should) elaborate.
+> > Also, it might need a Fixes tag.
+> 
+> 
+> Um, it's really hard to say which commit is fixed, just because this
+> header file defines a GPIOD, and someone else uses this later.
 
-Sure, Thanks, I will send new patch v3 later.
+ok, now I got it.
 
---
-BR, Jackie Liu
+> > > But if it makes people happy, I'll apply it.
+> > 
+> > Yes, please.
+
+will do,
+
+Thomas.
+
+-- 
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]

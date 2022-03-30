@@ -2,117 +2,118 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 552E1C433F5
-	for <linux-mips@archiver.kernel.org>; Wed, 30 Mar 2022 11:01:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BF656C433FE
+	for <linux-mips@archiver.kernel.org>; Wed, 30 Mar 2022 12:28:27 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245685AbiC3LCo (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 30 Mar 2022 07:02:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55468 "EHLO
+        id S234807AbiC3M37 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 30 Mar 2022 08:29:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33854 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241893AbiC3LCn (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 30 Mar 2022 07:02:43 -0400
-Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 817A0DF70
-        for <linux-mips@vger.kernel.org>; Wed, 30 Mar 2022 04:00:58 -0700 (PDT)
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1nZW4P-0007z0-00; Wed, 30 Mar 2022 13:00:57 +0200
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id F1201C2EE0; Wed, 30 Mar 2022 12:02:13 +0200 (CEST)
-Date:   Wed, 30 Mar 2022 12:02:13 +0200
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Jackie Liu <liu.yun@linux.dev>
-Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Ralf Baechle <ralf@linux-mips.org>,
-        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
-        Jonathan Cameron <jic23@kernel.org>
-Subject: Re: [PATCH] MIPS: rb532: move GPIOD definition into C-files
-Message-ID: <20220330100213.GA8617@alpha.franken.de>
-References: <20220329014537.4180966-1-liu.yun@linux.dev>
- <CAHp75VcAL6avNxMSVo9nWbxXOnKmXAiuGMV=uWwAx0BdHnf-+Q@mail.gmail.com>
- <71d1da40-4772-b126-7cbe-0d99024fd284@linux.dev>
- <20220330064216.GA5811@alpha.franken.de>
- <CAHp75VencGLsfR=9ug1xBeWeSe+zy_vroaqkh2xWR7BojQOGEw@mail.gmail.com>
- <20220330093227.GA8224@alpha.franken.de>
- <CAHp75Vc+Gvte62Smnyi_RN=c0Fpy6LLyqJV2Oy0HP+Yv6CvtxQ@mail.gmail.com>
- <f601dcf3-892c-e8de-9028-9e5108322074@linux.dev>
+        with ESMTP id S1346346AbiC3MXR (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 30 Mar 2022 08:23:17 -0400
+Received: from out1.migadu.com (out1.migadu.com [IPv6:2001:41d0:2:863f::])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E10A29EE02
+        for <linux-mips@vger.kernel.org>; Wed, 30 Mar 2022 05:09:45 -0700 (PDT)
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1648642182;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=oCxFaMTEXV7tOHotZ8HirDBqY5mnMWXp+mUY/8HQN4s=;
+        b=XIOcrZURF8VbRVBNRo3oQAqhWlewoNofTloMfDKDsVZnGBEzcLMo/95L0IOZjj57mgFqQB
+        BcOZjdjspksYyK4RDxKttMAJR3stJ9NMFZpXJ6JXgvchXgm77RSI/ke5MpcmNOsWRbDZEx
+        IJU4hQya7lZ0xvOB70T3H9wA5aG84Yw=
+From:   Jackie Liu <liu.yun@linux.dev>
+To:     linus.walleij@linaro.org, ralf@linux-mips.org,
+        tsbogend@alpha.franken.de
+Cc:     linux-mips@vger.kernel.org, jic23@kernel.org,
+        andy.shevchenko@gmail.com, sergei.shtylyov@gmail.com,
+        liu.yun@linux.dev
+Subject: [PATCH v4] MIPS: rb532: move GPIOD definition into C-files
+Date:   Wed, 30 Mar 2022 20:09:21 +0800
+Message-Id: <20220330120921.1920941-1-liu.yun@linux.dev>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <f601dcf3-892c-e8de-9028-9e5108322074@linux.dev>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Migadu-Flow: FLOW_OUT
+X-Migadu-Auth-User: linux.dev
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Wed, Mar 30, 2022 at 05:56:03PM +0800, Jackie Liu wrote:
-> 
-> 在 2022/3/30 下午5:41, Andy Shevchenko 写道:
-> > On Wed, Mar 30, 2022 at 12:32 PM Thomas Bogendoerfer
-> > <tsbogend@alpha.franken.de> wrote:
-> > > On Wed, Mar 30, 2022 at 12:23:59PM +0300, Andy Shevchenko wrote:
-> > > > On Wed, Mar 30, 2022 at 9:45 AM Thomas Bogendoerfer
-> > > > <tsbogend@alpha.franken.de> wrote:
-> > > > > On Wed, Mar 30, 2022 at 09:46:07AM +0800, Jackie Liu wrote:
-> > 
-> > ...
-> > 
-> > > > > I have a patchset, where the both files will go away. No need to
-> > > > > clean up now.
-> > > > 
-> > > > Do you plan them to be backported? If not, I would recommend applying
-> > > 
-> > > no plan for backporting
-> > > 
-> > > > this patch in order to have it backported and then do whatever you
-> > > > want we those files.
-> > > 
-> > > why ? This doesn't fix anything, doesn't it ?
-> 
-> Like the patch I submitted in the first version, there are some gcc
-> errors.
-> 
-> [...]
-> drivers/iio/adc/da9150-gpadc.c:254:13: error: ‘DA9150_GPADC_CHAN_0x08’
-> undeclared here (not in a function); did you mean ‘DA9150_GPADC_CHAN_TBAT’?
->    254 |  .channel = DA9150_GPADC_CHAN_##_id,   \
->        |             ^~~~~~~~~~~~~~~~~~
->  drivers/iio/adc/da9150-gpadc.c:273:2: note: in expansion of macro
-> ‘DA9150_GPADC_CHANNEL’
->    273 |  DA9150_GPADC_CHANNEL(_id, _hw_id, _type,   \
->        |  ^~~~~~~~~~~~~~~~~~~~
->  drivers/iio/adc/da9150-gpadc.c:281:2: note: in expansion of macro
-> ‘DA9150_GPADC_CHANNEL_PROCESSED’
->    281 |  DA9150_GPADC_CHANNEL_PROCESSED(GPIOD, GPIOD_6V, IIO_VOLTAGE,
-> NULL),
->        |  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> 
-> make[4]: *** [../scripts/Makefile.build:288: drivers/iio/adc/da9150-gpadc.o]
-> Error 1
-> make[3]: *** [../scripts/Makefile.build:550: drivers/iio/adc] Error 2
-> make[3]: *** Waiting for unfinished jobs....
-> 
-> > 
-> > It fixes compilation breakage in some cases. I think the author of
-> > this patch can (should) elaborate.
-> > Also, it might need a Fixes tag.
-> 
-> 
-> Um, it's really hard to say which commit is fixed, just because this
-> header file defines a GPIOD, and someone else uses this later.
+From: Jackie Liu <liuyun01@kylinos.cn>
 
-ok, now I got it.
+My kernel robot reports build error from drivers/iio/adc/da9150-gpadc.c,
 
-> > > But if it makes people happy, I'll apply it.
-> > 
-> > Yes, please.
+  drivers/iio/adc/da9150-gpadc.c:254:13: error: ‘DA9150_GPADC_CHAN_0x08’
+  undeclared here (not in a function); did you mean ‘DA9150_GPADC_CHAN_TBAT’?
+     254 |  .channel = DA9150_GPADC_CHAN_##_id,
 
-will do,
+We define GPIOD in rb.h, in fact it should only be used in gpio.c, but
+it affects the driver da9150-gpadc.c which goes against the original
+intention of the design, just move it to its scope.
 
-Thomas.
+Fixes: 1b432840d0a4 ("MIPS: RB532: GPIO register offsets are relative to GPIOBASE")
+Suggested-by: Jonathan Cameron <jic23@kernel.org>
+Suggested-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Reported-by: k2ci <kernel-bot@kylinos.cn>
+Signed-off-by: Jackie Liu <liuyun01@kylinos.cn>
+---
+ v1->v2:
+   Keep GPIONMIEN and IMASK6 as hardware document.
 
+ v2->v3:
+   s/he/it/.
+
+ v3->v4:
+   s/his/its/.
+
+ arch/mips/include/asm/mach-rc32434/rb.h |  9 ---------
+ arch/mips/rb532/gpio.c                  | 10 ++++++++++
+ 2 files changed, 10 insertions(+), 9 deletions(-)
+
+diff --git a/arch/mips/include/asm/mach-rc32434/rb.h b/arch/mips/include/asm/mach-rc32434/rb.h
+index 34d179ca020b..dd9d4b026e62 100644
+--- a/arch/mips/include/asm/mach-rc32434/rb.h
++++ b/arch/mips/include/asm/mach-rc32434/rb.h
+@@ -29,15 +29,6 @@
+ #define DEV3TC		0x01003C
+ #define BTCS		0x010040
+ #define BTCOMPARE	0x010044
+-#define GPIOBASE	0x050000
+-/* Offsets relative to GPIOBASE */
+-#define GPIOFUNC	0x00
+-#define GPIOCFG		0x04
+-#define GPIOD		0x08
+-#define GPIOILEVEL	0x0C
+-#define GPIOISTAT	0x10
+-#define GPIONMIEN	0x14
+-#define IMASK6		0x38
+ #define LO_WPX		(1 << 0)
+ #define LO_ALE		(1 << 1)
+ #define LO_CLE		(1 << 2)
+diff --git a/arch/mips/rb532/gpio.c b/arch/mips/rb532/gpio.c
+index 94f02ada4082..29c21b9d42da 100644
+--- a/arch/mips/rb532/gpio.c
++++ b/arch/mips/rb532/gpio.c
+@@ -37,6 +37,16 @@
+ #include <asm/mach-rc32434/rb.h>
+ #include <asm/mach-rc32434/gpio.h>
+ 
++#define GPIOBASE	0x050000
++/* Offsets relative to GPIOBASE */
++#define GPIOFUNC	0x00
++#define GPIOCFG		0x04
++#define GPIOD		0x08
++#define GPIOILEVEL	0x0C
++#define GPIOISTAT	0x10
++#define GPIONMIEN	0x14
++#define IMASK6		0x38
++
+ struct rb532_gpio_chip {
+ 	struct gpio_chip chip;
+ 	void __iomem	 *regbase;
 -- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+2.25.1
+

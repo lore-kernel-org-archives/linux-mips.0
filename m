@@ -2,65 +2,60 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D4EB7C433F5
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 70BB5C433EF
 	for <linux-mips@archiver.kernel.org>; Wed, 30 Mar 2022 19:00:29 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345238AbiC3TCN (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        id S1349994AbiC3TCN (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
         Wed, 30 Mar 2022 15:02:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55082 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55080 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350284AbiC3TCM (ORCPT
+        with ESMTP id S1350285AbiC3TCM (ORCPT
         <rfc822;linux-mips@vger.kernel.org>); Wed, 30 Mar 2022 15:02:12 -0400
 Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 9649013E1D;
-        Wed, 30 Mar 2022 12:00:26 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 63E49267B
+        for <linux-mips@vger.kernel.org>; Wed, 30 Mar 2022 12:00:26 -0700 (PDT)
 Received: from uucp (helo=alpha)
         by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1nZdYO-0003Qd-00; Wed, 30 Mar 2022 21:00:24 +0200
+        id 1nZdYO-0003Qd-02; Wed, 30 Mar 2022 21:00:24 +0200
 Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 9EA7DC2EE6; Wed, 30 Mar 2022 20:34:01 +0200 (CEST)
-Date:   Wed, 30 Mar 2022 20:34:01 +0200
+        id 8758EC4DEF; Wed, 30 Mar 2022 20:35:23 +0200 (CEST)
+Date:   Wed, 30 Mar 2022 20:35:23 +0200
 From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     xkernel.wang@foxmail.com
-Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mips: sgi-ip22: add a check for the return of kzalloc()
-Message-ID: <20220330183401.GA18042@alpha.franken.de>
-References: <tencent_33384AA3FF65207ECC63B9531C1F1417E108@qq.com>
+To:     Jackie Liu <liu.yun@linux.dev>
+Cc:     linus.walleij@linaro.org, ralf@linux-mips.org,
+        linux-mips@vger.kernel.org, jic23@kernel.org,
+        andy.shevchenko@gmail.com, sergei.shtylyov@gmail.com
+Subject: Re: [PATCH v4] MIPS: rb532: move GPIOD definition into C-files
+Message-ID: <20220330183523.GC18042@alpha.franken.de>
+References: <20220330120921.1920941-1-liu.yun@linux.dev>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <tencent_33384AA3FF65207ECC63B9531C1F1417E108@qq.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20220330120921.1920941-1-liu.yun@linux.dev>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Fri, Mar 25, 2022 at 06:57:18PM +0800, xkernel.wang@foxmail.com wrote:
-> From: Xiaoke Wang <xkernel.wang@foxmail.com>
+On Wed, Mar 30, 2022 at 08:09:21PM +0800, Jackie Liu wrote:
+> From: Jackie Liu <liuyun01@kylinos.cn>
 > 
-> kzalloc() is a memory allocation function which can return NULL when
-> some internal memory errors happen. So it is better to check it to
-> prevent potential wrong memory access.
+> My kernel robot reports build error from drivers/iio/adc/da9150-gpadc.c,
 > 
-> Signed-off-by: Xiaoke Wang <xkernel.wang@foxmail.com>
-> ---
->  arch/mips/sgi-ip22/ip22-gio.c | 2 ++
->  1 file changed, 2 insertions(+)
+>   drivers/iio/adc/da9150-gpadc.c:254:13: error: ‘DA9150_GPADC_CHAN_0x08’
+>   undeclared here (not in a function); did you mean ‘DA9150_GPADC_CHAN_TBAT’?
+>      254 |  .channel = DA9150_GPADC_CHAN_##_id,
 > 
-> diff --git a/arch/mips/sgi-ip22/ip22-gio.c b/arch/mips/sgi-ip22/ip22-gio.c
-> index dfc52f6..38d12f4 100644
-> --- a/arch/mips/sgi-ip22/ip22-gio.c
-> +++ b/arch/mips/sgi-ip22/ip22-gio.c
-> @@ -363,6 +363,8 @@ static void ip22_check_gio(int slotno, unsigned long addr, int irq)
->  		printk(KERN_INFO "GIO: slot %d : %s (id %x)\n",
->  		       slotno, name, id);
->  		gio_dev = kzalloc(sizeof *gio_dev, GFP_KERNEL);
-> +		if (!gio_dev)
-> +			return;
->  		gio_dev->name = name;
->  		gio_dev->slotno = slotno;
->  		gio_dev->id.id = id;
-> -- 
+> We define GPIOD in rb.h, in fact it should only be used in gpio.c, but
+> it affects the driver da9150-gpadc.c which goes against the original
+> intention of the design, just move it to its scope.
+> 
+> Fixes: 1b432840d0a4 ("MIPS: RB532: GPIO register offsets are relative to GPIOBASE")
+> Suggested-by: Jonathan Cameron <jic23@kernel.org>
+> Suggested-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+> Reported-by: k2ci <kernel-bot@kylinos.cn>
+> Signed-off-by: Jackie Liu <liuyun01@kylinos.cn>
 
 applied to mips-next.
 

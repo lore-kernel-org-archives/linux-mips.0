@@ -2,190 +2,83 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B9FE9C433EF
-	for <linux-mips@archiver.kernel.org>; Thu, 31 Mar 2022 21:41:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4AA88C433F5
+	for <linux-mips@archiver.kernel.org>; Fri,  1 Apr 2022 09:10:06 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241909AbiCaVm4 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 31 Mar 2022 17:42:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50748 "EHLO
+        id S1344346AbiDAJLx (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 1 Apr 2022 05:11:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35704 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241948AbiCaVmw (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Thu, 31 Mar 2022 17:42:52 -0400
-Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DCFB3ED3A
-        for <linux-mips@vger.kernel.org>; Thu, 31 Mar 2022 14:41:04 -0700 (PDT)
-Received: by mail-lj1-x231.google.com with SMTP id s13so1509279ljd.5
-        for <linux-mips@vger.kernel.org>; Thu, 31 Mar 2022 14:41:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Rw60a4C/1buvlADobHgeyPYE1W+JkvNYCFomhSX9C/o=;
-        b=e8LF8Ze6zOwPt6FFnClACWV3Jo+f6do+thni5aGwt3k2enqe+nuyyjgZR38Yppr/YT
-         chMY6K4HfZZogZnG0SNby5Xd3KPWJtaiKDME29/XISJdc/xM37L/LXINl0tOn8ftgf0a
-         8p/G0yOxS/uqQaue2tGvoYPNzXGg0Xg1vsAiM+Y7V7qZTqVwgwqU8DmaceQfIIKHE6ZK
-         XYaw6qF/PswMla7HX7+k6mhIQkzuEyopPjxaCTxrXYbHadlmh4RXPZlq7Wpup4y3IDy+
-         CO46Pqn2+l1c379SxtQtpcvUEVWa1Z3A2K7K8dwzPnLwb8ZOCYuN3uQXgEe7k+hvbm0J
-         C1FA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Rw60a4C/1buvlADobHgeyPYE1W+JkvNYCFomhSX9C/o=;
-        b=shXTBa/dRskv+ay3XP8Rob7ZCujHdTHOjt5FKk8Yo0UU66+Tc6MBZb+5IQwfCz9Mpc
-         vj37r4+eNthePMkoQyMDxpicyLzEe++GIo2nfKi3ufI4hxRFJihxDyVg4H/mlcLMGHZB
-         bfCSmSKyBLFrJa+KU6azvLS+YZl+FHpVXCuh5H+Qc/rCICCuz3v3IOY9R7xzMU7fYKkq
-         fgxP7AAUDRyHG3P7gCaIoy8t8kaA6DlQ7ylVr67RlLdxZXt2w6GHTcL6zKNGDROIlhD8
-         Fq7qarrJko3hAdNcZrwLL27QonoyBU8g1D2cqmpWo+p30cUK7LlvHzKe6QRok+cXC/gI
-         14wA==
-X-Gm-Message-State: AOAM5327kFGJ9cGhGEBLTGFrtTetnoo8yNSJwIHxX6ZVhB1CDGK0G/Tq
-        C6i6IgGk44pU0dRRNq7g7k4wxQhD1N7xTyTLZS2AyA==
-X-Google-Smtp-Source: ABdhPJy1FVLnw5Ep7uY/xe1k2URbIcy58oenF966+ZOMopXj2kVs4i0JqYBjG3cke0TiYjLEYAK4qaG8FpyHQsm1lvQ=
-X-Received: by 2002:a2e:8913:0:b0:24a:fe47:36b with SMTP id
- d19-20020a2e8913000000b0024afe47036bmr1531024lji.361.1648762862151; Thu, 31
- Mar 2022 14:41:02 -0700 (PDT)
+        with ESMTP id S237887AbiDAJLx (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Fri, 1 Apr 2022 05:11:53 -0400
+Received: from mxout01.lancloud.ru (mxout01.lancloud.ru [45.84.86.81])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59D7C198EE3;
+        Fri,  1 Apr 2022 02:10:01 -0700 (PDT)
+Received: from LanCloud
+DKIM-Filter: OpenDKIM Filter v2.11.0 mxout01.lancloud.ru 3F4EA20B0ADF
+Received: from LanCloud
+Received: from LanCloud
+Received: from LanCloud
+Subject: Re: [PATCH v1] MIPS: ip22-gio: Add check for the return value of
+ kzalloc()
+To:     unSimple <unsimple1993@163.com>
+CC:     <tsbogend@alpha.franken.de>, <linux-kernel@vger.kernel.org>,
+        <linux-mips@vger.kernel.org>, <ralf@linux-mips.org>
+References: <1648454654-27200-1-git-send-email-unSimple1993@163.com>
+ <6dd8bcf0-20a1-0bab-b48e-ec1bac5c15f0@omp.ru>
+ <16aa9238.4bf6.17fd8fe37ad.Coremail.unsimple1993@163.com>
+From:   Sergey Shtylyov <s.shtylyov@omp.ru>
+Organization: Open Mobile Platform
+Message-ID: <4eb43887-44a4-4693-8488-4847d80b6bd8@omp.ru>
+Date:   Fri, 1 Apr 2022 12:09:57 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-References: <20220311002528.2230172-1-dmatlack@google.com> <20220311002528.2230172-17-dmatlack@google.com>
- <YjGgjTnP/9sG8L+2@xz-m1.local> <CALzav=fZQYC7YyTbZqbkYTYVUXCq4skc6pkQ2S59BoSxbkKUhw@mail.gmail.com>
- <YkShwFaRqlQpyL87@xz-m1.local>
-In-Reply-To: <YkShwFaRqlQpyL87@xz-m1.local>
-From:   David Matlack <dmatlack@google.com>
-Date:   Thu, 31 Mar 2022 14:40:35 -0700
-Message-ID: <CALzav=cxm=A31PJOMes3eWpCV8s0zQGgaGZhYiQFJyxY2dNDXg@mail.gmail.com>
-Subject: Re: [PATCH v2 16/26] KVM: x86/mmu: Cache the access bits of shadowed translations
-To:     Peter Xu <peterx@redhat.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
-        Anup Patel <anup@brainfault.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Sean Christopherson <seanjc@google.com>,
-        Andrew Jones <drjones@redhat.com>,
-        Ben Gardon <bgardon@google.com>,
-        "Maciej S. Szmigiero" <maciej.szmigiero@oracle.com>,
-        "moderated list:KERNEL VIRTUAL MACHINE FOR ARM64 (KVM/arm64)" 
-        <kvmarm@lists.cs.columbia.edu>,
-        "open list:KERNEL VIRTUAL MACHINE FOR MIPS (KVM/mips)" 
-        <linux-mips@vger.kernel.org>,
-        "open list:KERNEL VIRTUAL MACHINE FOR MIPS (KVM/mips)" 
-        <kvm@vger.kernel.org>,
-        "open list:KERNEL VIRTUAL MACHINE FOR RISC-V (KVM/riscv)" 
-        <kvm-riscv@lists.infradead.org>, Peter Feiner <pfeiner@google.com>
+In-Reply-To: <16aa9238.4bf6.17fd8fe37ad.Coremail.unsimple1993@163.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [192.168.11.198]
+X-ClientProxiedBy: LFEXT01.lancloud.ru (fd00:f066::141) To
+ LFEX1907.lancloud.ru (fd00:f066::207)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Wed, Mar 30, 2022 at 11:30 AM Peter Xu <peterx@redhat.com> wrote:
->
-> On Tue, Mar 22, 2022 at 03:51:54PM -0700, David Matlack wrote:
-> > On Wed, Mar 16, 2022 at 1:32 AM Peter Xu <peterx@redhat.com> wrote:
-> > >
-> > > On Fri, Mar 11, 2022 at 12:25:18AM +0000, David Matlack wrote:
-> > > > In order to split a huge page we need to know what access bits to assign
-> > > > to the role of the new child page table. This can't be easily derived
-> > > > from the huge page SPTE itself since KVM applies its own access policies
-> > > > on top, such as for HugePage NX.
-> > > >
-> > > > We could walk the guest page tables to determine the correct access
-> > > > bits, but that is difficult to plumb outside of a vCPU fault context.
-> > > > Instead, we can store the original access bits for each leaf SPTE
-> > > > alongside the GFN in the gfns array. The access bits only take up 3
-> > > > bits, which leaves 61 bits left over for gfns, which is more than
-> > > > enough. So this change does not require any additional memory.
-> > >
-> > > I have a pure question on why eager page split needs to worry on hugepage
-> > > nx..
-> > >
-> > > IIUC that was about forbidden huge page being mapped as executable.  So
-> > > afaiu the only missing bit that could happen if we copy over the huge page
-> > > ptes is the executable bit.
-> > >
-> > > But then?  I think we could get a page fault on fault->exec==true on the
-> > > split small page (because when we copy over it's cleared, even though the
-> > > page can actually be executable), but it should be well resolved right
-> > > after that small page fault.
-> > >
-> > > The thing is IIUC this is a very rare case, IOW, it should mostly not
-> > > happen in 99% of the use case?  And there's a slight penalty when it
-> > > happens, but only perf-wise.
-> > >
-> > > As I'm not really fluent with the code base, perhaps I missed something?
-> >
-> > You're right that we could get away with not knowing the shadowed
-> > access permissions to assign to the child SPTEs when splitting a huge
-> > SPTE. We could just copy the huge SPTE access permissions and then let
-> > the execute bit be repaired on fault (although those faults would be a
-> > performance cost).
-> >
-> > But the access permissions are also needed to lookup an existing
-> > shadow page (or create a new shadow page) to use to split the huge
-> > page. For example, let's say we are going to split a huge page that
-> > does not have execute permissions enabled. That could be because NX
-> > HugePages are enabled or because we are shadowing a guest translation
-> > that does not allow execution (or both). We wouldn't want to propagate
-> > the no-execute permission into the child SP role.access if the
-> > shadowed translation really does allow execution (and vice versa).
->
-> Then the follow up (pure) question is what will happen if we simply
-> propagate the no-exec permission into the child SP?
->
-> I think that only happens with direct sptes where guest used huge pages
-> because that's where the shadow page will be huge, so IIUC that's checked
-> here when the small page fault triggers:
->
-> static void validate_direct_spte(struct kvm_vcpu *vcpu, u64 *sptep,
->                                    unsigned direct_access)
-> {
->         if (is_shadow_present_pte(*sptep) && !is_large_pte(*sptep)) {
->                 struct kvm_mmu_page *child;
->
->                 /*
->                  * For the direct sp, if the guest pte's dirty bit
->                  * changed form clean to dirty, it will corrupt the
->                  * sp's access: allow writable in the read-only sp,
->                  * so we should update the spte at this point to get
->                  * a new sp with the correct access.
->                  */
->                 child = to_shadow_page(*sptep & PT64_BASE_ADDR_MASK);
->                 if (child->role.access == direct_access)
->                         return;
->
->                 drop_parent_pte(child, sptep);
->                 kvm_flush_remote_tlbs_with_address(vcpu->kvm, child->gfn, 1);
->         }
-> }
->
-> Due to missing EXEC the role.access check will not match with direct
-> access, which is the guest pgtable value which has EXEC set.  Then IIUC
-> we'll simply drop the no-exec SP and replace it with a new one with exec
-> perm.  The question is, would that untimately work too?
->
-> Even if that works, I agree this sounds tricky because we're potentially
-> caching fake sp.role conditionally and it seems we never do that before.
-> It's just that the other option that you proposed here seems to add other
-> way of complexity on caching spte permission information while kvm doesn't
-> do either before.  IMHO we need to see which is the best trade off.
+On 3/30/22 7:03 AM, unSimple wrote:
 
-Clever! I think you're right that it would work correctly.
+> OK, here is the new version.
 
-This approach avoids the need for caching access bits, but comes with downsides:
- - Performance impact from the extra faults needed to drop the SP and
-repair the execute permission bit.
- - Some amount of memory overhead from KVM allocating new SPs when it
-could re-use existing SPs.
+   That won't do, your original patch description should be here.
+And it should be a fresh posting with [PATCH v2] in the subject.
 
-Given the relative simplicity of access caching (and the fact that it
-requires no additional memory), I'm inclined to stick with it rather
-than taking the access permissions from the huge page.
+> Signed-off-by: QintaoShen <unSimple1993@163.com>
+> ---
 
->
-> I could have missed something else, though.
->
-> Thanks,
->
-> --
-> Peter Xu
->
+   You need to describe what changes between v1 and v2 here...
+
+>  arch/mips/sgi-ip22/ip22-gio.c | 4 ++++
+>  1 file changed, 4 insertions(+)
+> 
+> diff --git a/arch/mips/sgi-ip22/ip22-gio.c b/arch/mips/sgi-ip22/ip22-gio.c
+> index dfc52f6..f94f58b 100644
+> --- a/arch/mips/sgi-ip22/ip22-gio.c
+> +++ b/arch/mips/sgi-ip22/ip22-gio.c
+> @@ -363,6 +363,10 @@ static void ip22_check_gio(int slotno, unsigned long addr, int irq)
+>  printk(KERN_INFO "GIO: slot %d : %s (id %x)\n",
+>         slotno, name, id);
+>  gio_dev = kzalloc(sizeof *gio_dev, GFP_KERNEL);
+> +
+
+   No need for empty line here.
+
+> +if (!gio_dev)
+> +return;
+
+   Hm, the tabs were there but they got eaten when I replied.
+Your mail seems to be base64-encoded which I don't think is
+acceptable for patches -- they should be posted as plain text.
+
+[...]
+
+MBR, Sergey

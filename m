@@ -2,83 +2,69 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4AA88C433F5
-	for <linux-mips@archiver.kernel.org>; Fri,  1 Apr 2022 09:10:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 856E9C433EF
+	for <linux-mips@archiver.kernel.org>; Fri,  1 Apr 2022 11:45:15 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344346AbiDAJLx (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 1 Apr 2022 05:11:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35704 "EHLO
+        id S1345578AbiDALrD (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 1 Apr 2022 07:47:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42010 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237887AbiDAJLx (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Fri, 1 Apr 2022 05:11:53 -0400
-Received: from mxout01.lancloud.ru (mxout01.lancloud.ru [45.84.86.81])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59D7C198EE3;
-        Fri,  1 Apr 2022 02:10:01 -0700 (PDT)
-Received: from LanCloud
-DKIM-Filter: OpenDKIM Filter v2.11.0 mxout01.lancloud.ru 3F4EA20B0ADF
-Received: from LanCloud
-Received: from LanCloud
-Received: from LanCloud
-Subject: Re: [PATCH v1] MIPS: ip22-gio: Add check for the return value of
- kzalloc()
-To:     unSimple <unsimple1993@163.com>
-CC:     <tsbogend@alpha.franken.de>, <linux-kernel@vger.kernel.org>,
-        <linux-mips@vger.kernel.org>, <ralf@linux-mips.org>
-References: <1648454654-27200-1-git-send-email-unSimple1993@163.com>
- <6dd8bcf0-20a1-0bab-b48e-ec1bac5c15f0@omp.ru>
- <16aa9238.4bf6.17fd8fe37ad.Coremail.unsimple1993@163.com>
-From:   Sergey Shtylyov <s.shtylyov@omp.ru>
-Organization: Open Mobile Platform
-Message-ID: <4eb43887-44a4-4693-8488-4847d80b6bd8@omp.ru>
-Date:   Fri, 1 Apr 2022 12:09:57 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        with ESMTP id S1345577AbiDALrB (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Fri, 1 Apr 2022 07:47:01 -0400
+Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id C4F89EEA72;
+        Fri,  1 Apr 2022 04:45:11 -0700 (PDT)
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1naFiG-0000xJ-00; Fri, 01 Apr 2022 13:45:08 +0200
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id B9B39C4DEF; Fri,  1 Apr 2022 12:03:09 +0200 (CEST)
+Date:   Fri, 1 Apr 2022 12:03:09 +0200
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Paul Cercueil <paul@crapouillou.net>
+Cc:     Nick Desaulniers <ndesaulniers@google.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S . Miller" <davem@davemloft.net>,
+        "Maciej W . Rozycki" <macro@orcam.me.uk>,
+        linux-crypto@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
+        stable@vger.kernel.org, kernel test robot <lkp@intel.com>
+Subject: Re: [PATCH] MIPS: crypto: Fix CRC32 code
+Message-ID: <20220401100309.GA6670@alpha.franken.de>
+References: <20220331164200.177015-1-paul@crapouillou.net>
 MIME-Version: 1.0
-In-Reply-To: <16aa9238.4bf6.17fd8fe37ad.Coremail.unsimple1993@163.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [192.168.11.198]
-X-ClientProxiedBy: LFEXT01.lancloud.ru (fd00:f066::141) To
- LFEX1907.lancloud.ru (fd00:f066::207)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220331164200.177015-1-paul@crapouillou.net>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On 3/30/22 7:03 AM, unSimple wrote:
-
-> OK, here is the new version.
-
-   That won't do, your original patch description should be here.
-And it should be a fresh posting with [PATCH v2] in the subject.
-
-> Signed-off-by: QintaoShen <unSimple1993@163.com>
-> ---
-
-   You need to describe what changes between v1 and v2 here...
-
->  arch/mips/sgi-ip22/ip22-gio.c | 4 ++++
->  1 file changed, 4 insertions(+)
+On Thu, Mar 31, 2022 at 05:42:00PM +0100, Paul Cercueil wrote:
+> Commit 67512a8cf5a7 ("MIPS: Avoid macro redefinitions") changed how the
+> MIPS register macros were defined, in order to allow the code to compile
+> under LLVM/Clang.
 > 
-> diff --git a/arch/mips/sgi-ip22/ip22-gio.c b/arch/mips/sgi-ip22/ip22-gio.c
-> index dfc52f6..f94f58b 100644
-> --- a/arch/mips/sgi-ip22/ip22-gio.c
-> +++ b/arch/mips/sgi-ip22/ip22-gio.c
-> @@ -363,6 +363,10 @@ static void ip22_check_gio(int slotno, unsigned long addr, int irq)
->  printk(KERN_INFO "GIO: slot %d : %s (id %x)\n",
->         slotno, name, id);
->  gio_dev = kzalloc(sizeof *gio_dev, GFP_KERNEL);
-> +
+> The MIPS CRC32 code however wasn't updated accordingly, causing a build
+> bug when using a MIPS32r6 toolchain without CRC support.
+> 
+> Update the CRC32 code to use the macros correctly, to fix the build
+> failures.
+> 
+> Fixes: 67512a8cf5a7 ("MIPS: Avoid macro redefinitions")
+> Cc: <stable@vger.kernel.org>
+> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+> Reported-by: kernel test robot <lkp@intel.com>
+> ---
+>  arch/mips/crypto/crc32-mips.c | 46 ++++++++++++++++++++---------------
+>  1 file changed, 26 insertions(+), 20 deletions(-)
 
-   No need for empty line here.
+applied to mips-next.
 
-> +if (!gio_dev)
-> +return;
+Thomas.
 
-   Hm, the tabs were there but they got eaten when I replied.
-Your mail seems to be base64-encoded which I don't think is
-acceptable for patches -- they should be posted as plain text.
-
-[...]
-
-MBR, Sergey
+-- 
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]

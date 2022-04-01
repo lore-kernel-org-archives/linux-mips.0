@@ -2,47 +2,49 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1FFC3C3527D
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 86187C35295
 	for <linux-mips@archiver.kernel.org>; Fri,  1 Apr 2022 15:13:53 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244352AbiDAPPa (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 1 Apr 2022 11:15:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60616 "EHLO
+        id S1343763AbiDAPP3 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 1 Apr 2022 11:15:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60558 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350033AbiDAOrG (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Fri, 1 Apr 2022 10:47:06 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AD572A03E3;
-        Fri,  1 Apr 2022 07:36:59 -0700 (PDT)
+        with ESMTP id S1352593AbiDAOu7 (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Fri, 1 Apr 2022 10:50:59 -0400
+Received: from sin.source.kernel.org (sin.source.kernel.org [IPv6:2604:1380:40e1:4800::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 347632B3D7F;
+        Fri,  1 Apr 2022 07:42:05 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id C8F6EB8240E;
-        Fri,  1 Apr 2022 14:36:28 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B485FC34111;
-        Fri,  1 Apr 2022 14:36:26 +0000 (UTC)
+        by sin.source.kernel.org (Postfix) with ESMTPS id E19AECE258D;
+        Fri,  1 Apr 2022 14:41:47 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 565EBC34111;
+        Fri,  1 Apr 2022 14:41:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1648823787;
-        bh=OUyOOl54sxaGvC8uGjPJH5iu0OEiwKvOzm17ZD/Dil8=;
+        s=k20201202; t=1648824106;
+        bh=6QlKQl+0OseeNyRTe5krfh3/2JlBiteEUET6YMPdbJ8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hOlPEIwjj/lYTe7TLFqAo/PzCng3WpPVdiDH8/c1xmqMg+IRy3l32N2b5sQUjxm33
-         Fq7CGFG5nNqoDhrqMqWVsqiBPftR56u+9FB8bJglhhZ+iZ64dE6SeqFMSsnxRjokJi
-         sIcC7/LVjpbfTlI7GOPEMoRbJJygHDSmaqbPgwsbsA9R8RQpwVA9EIUdGmD3jNQIx8
-         SBazLg8zP7MAiMP1ynrmaM8wz+/SzvPCDa8qlL5SUK5hNMcH7QqYrgR8+vJPPFw9En
-         9orwBumOCKfg0ScVZBpyy2gV7EY3aFWNpOGf8QcbWVFvjU6oxMaWUSEow54Oslwujl
-         R8jirOUEzbUMA==
+        b=StMAKz2fDO+LlACn6nMJE9YrydiOn0JxztEUXu01YkfMCC57/06splwUK7DqHxNSi
+         E6Qxabec072YVhxQ33KEjaWi0fDf2CoXRwnJHI3N3NwKP9aotdaT/9lakIprVBdOGm
+         1BLC6EqLIXFfB0YwzArCSt7uiW697EZ3LMmZz44RrqUFYpU90miSCKrhLEqtT/fmSf
+         s9oVbW3M7NnyJ/DpAb40OYj1cyeX9mfBvu0OMbp4A17wsOuTKM2biuoEOSw2XRPtn0
+         StGE3c/Lw50LhmbfUSzB6N0+aMDG8gGyh2vceFAvbqBUEq8LJfs617i4TyIYj0mY92
+         TZdRzEtfwEFGQ==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Hangyu Hua <hbh25y@gmail.com>,
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Paul Cercueil <paul@crapouillou.net>,
         Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Sasha Levin <sashal@kernel.org>, john@phrozen.org,
-        linux-mips@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.16 077/109] mips: ralink: fix a refcount leak in ill_acc_of_setup()
-Date:   Fri,  1 Apr 2022 10:32:24 -0400
-Message-Id: <20220401143256.1950537-77-sashal@kernel.org>
+        Sasha Levin <sashal@kernel.org>, robh+dt@kernel.org,
+        krzk+dt@kernel.org, linux-mips@vger.kernel.org,
+        devicetree@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.15 90/98] MIPS: ingenic: correct unit node address
+Date:   Fri,  1 Apr 2022 10:37:34 -0400
+Message-Id: <20220401143742.1952163-90-sashal@kernel.org>
 X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20220401143256.1950537-1-sashal@kernel.org>
-References: <20220401143256.1950537-1-sashal@kernel.org>
+In-Reply-To: <20220401143742.1952163-1-sashal@kernel.org>
+References: <20220401143742.1952163-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -51,31 +53,35 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-From: Hangyu Hua <hbh25y@gmail.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
 
-[ Upstream commit 4a0a1436053b17e50b7c88858fb0824326641793 ]
+[ Upstream commit 8931ddd8d6a55fcefb20f44a38ba42bb746f0b62 ]
 
-of_node_put(np) needs to be called when pdev == NULL.
+Unit node addresses should not have leading 0x:
 
-Signed-off-by: Hangyu Hua <hbh25y@gmail.com>
+  Warning (unit_address_format): /nemc@13410000/efuse@d0/eth-mac-addr@0x22: unit name should not have leading "0x"
+
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Reviewed-by: Paul Cercueil <paul@crapouillou.net>
 Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/mips/ralink/ill_acc.c | 1 +
- 1 file changed, 1 insertion(+)
+ arch/mips/boot/dts/ingenic/jz4780.dtsi | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/mips/ralink/ill_acc.c b/arch/mips/ralink/ill_acc.c
-index bdf53807d7c2..bea857c9da8b 100644
---- a/arch/mips/ralink/ill_acc.c
-+++ b/arch/mips/ralink/ill_acc.c
-@@ -61,6 +61,7 @@ static int __init ill_acc_of_setup(void)
- 	pdev = of_find_device_by_node(np);
- 	if (!pdev) {
- 		pr_err("%pOFn: failed to lookup pdev\n", np);
-+		of_node_put(np);
- 		return -EINVAL;
- 	}
+diff --git a/arch/mips/boot/dts/ingenic/jz4780.dtsi b/arch/mips/boot/dts/ingenic/jz4780.dtsi
+index 9e34f433b9b5..efbbddaf0fde 100644
+--- a/arch/mips/boot/dts/ingenic/jz4780.dtsi
++++ b/arch/mips/boot/dts/ingenic/jz4780.dtsi
+@@ -450,7 +450,7 @@ efuse: efuse@d0 {
+ 			#address-cells = <1>;
+ 			#size-cells = <1>;
  
+-			eth0_addr: eth-mac-addr@0x22 {
++			eth0_addr: eth-mac-addr@22 {
+ 				reg = <0x22 0x6>;
+ 			};
+ 		};
 -- 
 2.34.1
 

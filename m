@@ -2,49 +2,48 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 632D1C433F5
-	for <linux-mips@archiver.kernel.org>; Fri,  1 Apr 2022 15:14:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8F8B2C433EF
+	for <linux-mips@archiver.kernel.org>; Fri,  1 Apr 2022 15:14:55 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241049AbiDAPP6 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 1 Apr 2022 11:15:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57448 "EHLO
+        id S1348819AbiDAPQG (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 1 Apr 2022 11:16:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59926 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350014AbiDAO6o (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Fri, 1 Apr 2022 10:58:44 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D3D617A5A4;
-        Fri,  1 Apr 2022 07:45:54 -0700 (PDT)
+        with ESMTP id S1349958AbiDAOrD (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Fri, 1 Apr 2022 10:47:03 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D5CF29FC6C;
+        Fri,  1 Apr 2022 07:36:50 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 9EB6160A53;
-        Fri,  1 Apr 2022 14:45:53 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B3448C2BBE4;
-        Fri,  1 Apr 2022 14:45:51 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 8BD38B82511;
+        Fri,  1 Apr 2022 14:36:48 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 11BFEC2BBE4;
+        Fri,  1 Apr 2022 14:36:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1648824353;
-        bh=pyBIW9b1FrQiCDlm04VO9gNZvMeq8CNpePqKlMuScQ8=;
+        s=k20201202; t=1648823807;
+        bh=+J85mgdjujhOY2rTpVGogK4UWt6pIJIp94Y7jijaXw0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nWHvX9ZpDQal73t3zGFDUTtoV5SkWceYm+WL6/OTBIcdTOriUplcVrBX7SraLlVE6
-         6LQCJhUsEkyNqbPtxIxhHnhkCt5qiDKDsjnOPJ2pkBuslYOIwNvWWkXB29n16NorBV
-         8fuA9qmfy00Hy7Ke87/VNjQHxARAmxYmI4PkieAWK0ltFZBeJoPtxFeOvd9AnNCxBt
-         5c/wLAoh10lvSYsiIRrd2NxtEGJrF3knlZsRpBPvh59H/p6u+3rJTPDOFySPq6NXZF
-         wkhtfDqPNaYiP82c9Mq4HM70BcdeLFM5+8jKOck/jxRlElHoXIeHWM1bl7loXW3Qkb
-         eVH99TW5G3ulg==
+        b=CV00tMvhKW43Y2vcHr68VHUl8lqrEI88NBoWmxjkTxba0cFPV/hAzfW8AD3tcjSiq
+         zjLPUyw0BTxMtjEvTAqGqAxlaflpPJp9FuixoG4FC2mApMjgclo+Owi0llaOzC5OWB
+         HeMRhlyKxQQJrRV+S+ivdiSoAjulSQCxX0U9TUTCka7GhnpWuYBgxECM9v8kjDOiH4
+         AKm2TBWXV2EY5pckoIBb9XSGDcQ46ZclXpLIWsAgccfVeWrJc2mTBF5TobButUjfIj
+         /K2QMTjiI121DAiJQP9zIvlwrsPZFC4LsjmcAZ9e5CLeDp3i2j/JNiFEliDdK2VKIU
+         vnCshkHHJNhYA==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Alexander Lobakin <alobakin@pm.me>,
         Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Sasha Levin <sashal@kernel.org>, akpm@linux-foundation.org,
-        david@redhat.com, ldufour@linux.ibm.com, dbueso@suse.de,
-        liam.howlett@oracle.com, f.fainelli@gmail.com,
-        ebiederm@xmission.com, linux-mips@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 29/37] MIPS: fix fortify panic when copying asm exception handlers
-Date:   Fri,  1 Apr 2022 10:44:38 -0400
-Message-Id: <20220401144446.1954694-29-sashal@kernel.org>
+        Sasha Levin <sashal@kernel.org>, f.fainelli@gmail.com,
+        ebiederm@xmission.com, akpm@linux-foundation.org, david@redhat.com,
+        liam.howlett@oracle.com, linux-mips@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.16 085/109] MIPS: fix fortify panic when copying asm exception handlers
+Date:   Fri,  1 Apr 2022 10:32:32 -0400
+Message-Id: <20220401143256.1950537-85-sashal@kernel.org>
 X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20220401144446.1954694-1-sashal@kernel.org>
-References: <20220401144446.1954694-1-sashal@kernel.org>
+In-Reply-To: <20220401143256.1950537-1-sashal@kernel.org>
+References: <20220401143256.1950537-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -102,10 +101,10 @@ index bb36a400203d..8c56b862fd9c 100644
  
  typedef void (*vi_handler_t)(void);
 diff --git a/arch/mips/kernel/traps.c b/arch/mips/kernel/traps.c
-index 8282d0feb0b2..749089c25d5e 100644
+index d26b0fb8ea06..b9b31b13062d 100644
 --- a/arch/mips/kernel/traps.c
 +++ b/arch/mips/kernel/traps.c
-@@ -2020,19 +2020,19 @@ static void *set_vi_srs_handler(int n, vi_handler_t addr, int srs)
+@@ -2091,19 +2091,19 @@ static void *set_vi_srs_handler(int n, vi_handler_t addr, int srs)
  		 * If no shadow set is selected then use the default handler
  		 * that does normal register saving and standard interrupt exit
  		 */
@@ -135,7 +134,7 @@ index 8282d0feb0b2..749089c25d5e 100644
  
  		if (handler_len > VECTORSPACING) {
  			/*
-@@ -2240,7 +2240,7 @@ void per_cpu_trap_init(bool is_boot_cpu)
+@@ -2311,7 +2311,7 @@ void per_cpu_trap_init(bool is_boot_cpu)
  }
  
  /* Install CPU exception handler */

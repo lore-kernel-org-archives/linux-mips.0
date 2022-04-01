@@ -2,48 +2,49 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8AD20C4332F
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 70329C433EF
 	for <linux-mips@archiver.kernel.org>; Fri,  1 Apr 2022 15:14:23 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348703AbiDAPPu (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 1 Apr 2022 11:15:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54400 "EHLO
+        id S1348603AbiDAPPp (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 1 Apr 2022 11:15:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58014 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350637AbiDAPAX (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Fri, 1 Apr 2022 11:00:23 -0400
+        with ESMTP id S1349532AbiDAO4u (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Fri, 1 Apr 2022 10:56:50 -0400
 Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25C1518545A;
-        Fri,  1 Apr 2022 07:48:15 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E436104A4B;
+        Fri,  1 Apr 2022 07:44:13 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id CCCDFB8240E;
-        Fri,  1 Apr 2022 14:48:13 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6D20BC2BBE4;
-        Fri,  1 Apr 2022 14:48:11 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 7F418B8240E;
+        Fri,  1 Apr 2022 14:44:12 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0A43BC3410F;
+        Fri,  1 Apr 2022 14:44:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1648824492;
-        bh=UiVYWP+yq50r/sTqzdo77qM1WOWiNUF315E1f9WUSRg=;
+        s=k20201202; t=1648824251;
+        bh=bBgfaiHq9DDlp4RICw1qrqSBrX1tPZhB8fDd4fcZzNk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=horz6GEqEYmUxtfZ+1XGQb/0r4tIvrWmmSHLvYbd3YuySYvy5kfHJ8ZEYAw0aB98n
-         w5Fjq6Nc09JqejA6QYzTdkspmPSmmiiiXWzrFvX2ASsym28MnEbWlKzNADNUNNzjo5
-         GG8fQ91xDd0O+EU/v4wefg/omvPJDsWmgWor85pMTO5kHJXsbekUsCxHdu0QKlPeMG
-         SBz7sHFDBsQWigwuWF0S9ugQHuJuTSwNpWhauw6dGjJaQmwh2yFzNzkHB7FDJkUS9Q
-         Xw2+yAY/3i8eSu0iP1g0KteYYH8snp9A5Mfe0TPkTVAo0uJ8nUDg9pvjBiCzeL2nd8
-         s2nxl+Gn1WuDA==
+        b=Bj6t0VqtclwqpO/CZAeo0GVuLkn0IgxYbjalvKrJGJ+NmCMvlfR0PLBJOOeV+K9en
+         yj5kFCbPh03AkkLPeINdfCH9kNAazpwtMSD2ciXR0Wv5PKawyK/VwLCW5FXECZBUE3
+         CWzNhAF5BoEcVR79hCcH3CZuTR682qu1xsIfmXHgqLLqPo664MNfTD+gm6N2GBdFo5
+         xPrd3EHn4CXuPVUBGzMSxI1rgqxySJi4T2QJBfJXzf0mK1olRJu6v6/wGvEwHpRJ5B
+         BEH9nQ6eUMvMTtuZ+Ab4jpgrlnwehs/gcIGYycTrq75PVp0Fj/+f0GLLWMI9NyyNPy
+         I+i02U6cN1/1g==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Alexander Lobakin <alobakin@pm.me>,
         Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Sasha Levin <sashal@kernel.org>, ebiederm@xmission.com,
-        akpm@linux-foundation.org, dbueso@suse.de, liam.howlett@oracle.com,
+        Sasha Levin <sashal@kernel.org>, dbueso@suse.de,
+        liam.howlett@oracle.com, david@redhat.com,
+        akpm@linux-foundation.org, ebiederm@xmission.com,
         f.fainelli@gmail.com, linux-mips@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.14 16/22] MIPS: fix fortify panic when copying asm exception handlers
-Date:   Fri,  1 Apr 2022 10:47:23 -0400
-Message-Id: <20220401144729.1955554-16-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.10 50/65] MIPS: fix fortify panic when copying asm exception handlers
+Date:   Fri,  1 Apr 2022 10:41:51 -0400
+Message-Id: <20220401144206.1953700-50-sashal@kernel.org>
 X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20220401144729.1955554-1-sashal@kernel.org>
-References: <20220401144729.1955554-1-sashal@kernel.org>
+In-Reply-To: <20220401144206.1953700-1-sashal@kernel.org>
+References: <20220401144206.1953700-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -88,10 +89,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  2 files changed, 12 insertions(+), 12 deletions(-)
 
 diff --git a/arch/mips/include/asm/setup.h b/arch/mips/include/asm/setup.h
-index d49d247d48a1..d48a5f18a267 100644
+index bb36a400203d..8c56b862fd9c 100644
 --- a/arch/mips/include/asm/setup.h
 +++ b/arch/mips/include/asm/setup.h
-@@ -14,7 +14,7 @@ static inline void setup_8250_early_printk_port(unsigned long base,
+@@ -16,7 +16,7 @@ static inline void setup_8250_early_printk_port(unsigned long base,
  	unsigned int reg_shift, unsigned int timeout) {}
  #endif
  
@@ -101,10 +102,10 @@ index d49d247d48a1..d48a5f18a267 100644
  
  typedef void (*vi_handler_t)(void);
 diff --git a/arch/mips/kernel/traps.c b/arch/mips/kernel/traps.c
-index 4a23d89e251c..abbc64788008 100644
+index e0352958e2f7..b1fe4518bd22 100644
 --- a/arch/mips/kernel/traps.c
 +++ b/arch/mips/kernel/traps.c
-@@ -2017,19 +2017,19 @@ static void *set_vi_srs_handler(int n, vi_handler_t addr, int srs)
+@@ -2097,19 +2097,19 @@ static void *set_vi_srs_handler(int n, vi_handler_t addr, int srs)
  		 * If no shadow set is selected then use the default handler
  		 * that does normal register saving and standard interrupt exit
  		 */
@@ -134,7 +135,7 @@ index 4a23d89e251c..abbc64788008 100644
  
  		if (handler_len > VECTORSPACING) {
  			/*
-@@ -2249,7 +2249,7 @@ void per_cpu_trap_init(bool is_boot_cpu)
+@@ -2317,7 +2317,7 @@ void per_cpu_trap_init(bool is_boot_cpu)
  }
  
  /* Install CPU exception handler */

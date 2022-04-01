@@ -2,56 +2,57 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 274D1C433EF
-	for <linux-mips@archiver.kernel.org>; Fri,  1 Apr 2022 17:56:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D7092C433EF
+	for <linux-mips@archiver.kernel.org>; Fri,  1 Apr 2022 17:56:42 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345860AbiDAR60 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 1 Apr 2022 13:58:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36548 "EHLO
+        id S1350749AbiDAR6a (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 1 Apr 2022 13:58:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36854 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350750AbiDAR6W (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Fri, 1 Apr 2022 13:58:22 -0400
-Received: from mail-pf1-x44a.google.com (mail-pf1-x44a.google.com [IPv6:2607:f8b0:4864:20::44a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB00A28D536
-        for <linux-mips@vger.kernel.org>; Fri,  1 Apr 2022 10:56:31 -0700 (PDT)
-Received: by mail-pf1-x44a.google.com with SMTP id c78-20020a624e51000000b004fadac38f65so1984642pfb.16
-        for <linux-mips@vger.kernel.org>; Fri, 01 Apr 2022 10:56:31 -0700 (PDT)
+        with ESMTP id S1350817AbiDAR6Z (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Fri, 1 Apr 2022 13:58:25 -0400
+Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E69D24B5F2
+        for <linux-mips@vger.kernel.org>; Fri,  1 Apr 2022 10:56:35 -0700 (PDT)
+Received: by mail-pl1-x649.google.com with SMTP id s5-20020a170902b18500b00155d6fbf4d4so1792801plr.18
+        for <linux-mips@vger.kernel.org>; Fri, 01 Apr 2022 10:56:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=SFXm2KwniaE00QEj2NzqHgvf1ASQ84rh2AbpNytHfco=;
-        b=qJlGcvodbGXModlH9jGukKmgTNEjWAOITQQu62mFHP6LKDJbwZqskUJsLcP86ZbJU6
-         ci9SF25lZR0byT8KkjvNOzhD5SdjyuAbbl77X2sYflrRrmhCGM3luPp1sOeeEkV+3EAL
-         72SOwJfxzbZxHxeJw0r5hmFUuOz8+1rGkoNZg9n+oGWFvq9KXzbUDF9pwFZSsRX7F7CU
-         QAYlhUtNCoVt4sAs4aFJDgnE2BjvLy8UVhToIBfsNEPPIcfoYrdvQP2Y5Al9np8aW+3Z
-         vZlfv9GdlmFaj4JXon3BM18j1zorzjZSDNDzm7hgwuUh83hha4yb45BqMoS1/CXJ+Jpn
-         +MMA==
+        bh=rk47OwLDTUZoPp3sSFPqcpIfMojh6XvvX1htIIdRD8M=;
+        b=s72V80y7tDOh1F0V57dD8TPMVDGZRFJLVeRypa2j6NOIeyK6OdhN/vMWnCocaWrr7k
+         CTCwsrxCAl4hj3azp9KbFVRgymRC6cGX41YRf3bKbcz4hip3E1y1CUleOkW/mRUjOv72
+         4q0juwIAEhigFEFYWcTUd2u5Yv+XnqXVD6a3pn/Ui+K8aArSkJYYBVjZFCZK1SOZsjC5
+         7Yesg542/Fq0ocOM9rn7tyOyRxQKZ3AxCieAlZZBYn/IE9/hjt2QS80Tz+PLFcorlflQ
+         sdxYZkSU8ub5I6xHkzMHujo97FILxUXUQ+MHykloWi+evJGsQ9HO/j+9n0zxGqN3fxiy
+         QTYQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=SFXm2KwniaE00QEj2NzqHgvf1ASQ84rh2AbpNytHfco=;
-        b=vIykz7TDjV4lnK/DbYADirxWPYjejDGng5lBa+wVRdrr+6BDgxrMrm5u5T/wcy/uP7
-         K0zKCs9sjpkdP4/qs8I1TL6TskWINnWBPdlQpqpa8PGkOt0XMywYPpmBm5eh+dyhO2bB
-         f0DrpR33bEoiyWfPoE+gUb8jyWOIKWzr0nNQoNUfYBMZQ/cyPcra+xzvg+hJkItseQXD
-         ayD5sKJzr1JGGh2qC6eXnCODoGWlVY3Q7d1QHwewNW9F3iArmdrZYIhM53Ygm6HxRQhD
-         WEkqsOHJi9xKrRleTvS46utD0KTErrf9jMhIPNtev/h7OUljnp4pGyW2CS8KUuyWwJfL
-         WgvQ==
-X-Gm-Message-State: AOAM530QhNqTF0ChxDqIc2tbK4RIwXQAZX2qkLIU6iac/BZee4vzTsjy
-        LXrKt14fahH+1qKCSSdoK5UltxjPe40nJw==
-X-Google-Smtp-Source: ABdhPJy5g1z/iSbFZBwpj7J/HiTUYMlrOwh+Ud1JO3xyCytgN0gs7EbKQm2V60MVCQpu5tAlITqiMh3TNmIocA==
+        bh=rk47OwLDTUZoPp3sSFPqcpIfMojh6XvvX1htIIdRD8M=;
+        b=2Ly/76//AMZuedPPkMZ5vOZxjtDhFeTLp0Q0ozCvwiqU9DaKoe2m1JHjhSaMeZmJwA
+         4UmayIYCTYDOtadg55eUknVwMIp1Er9yZsGth/oebabC9BjZxMBYpGLm112b/Jeg/ld/
+         I+oPpwzEEFkpnnVfyo/bCmHkMLmC5zhDHC9CMLDUe5Hwg2dqnewr8p+ZrlVqklrIyx4k
+         oQDUu87rzaM6spzwSfwM3Dy89ceKz92Zbq5t0W1sQsFI0+9yXFrmeYwa2XFoGwe8SbJl
+         AP7PUE/f60WkVCiUrGXU+BbBwcb1NKoDUv93ida515ExsZoD/yYjjQWT0kORY5wLbdFT
+         m06A==
+X-Gm-Message-State: AOAM532+YPVOE9b5hl+oSVpaIbpDzipnqBJ425pPuJqlo9gcH9e2Be7H
+        aaEL/kE+Tjv9xfVnnRHueaws+P5jm/ziPQ==
+X-Google-Smtp-Source: ABdhPJybrRr8dD4aYv/cbz/erk9I24s3Xk9K694qQkW/0pJU9JMwG7vQGFtAvLaRQheDfdF0TPnn3iF2T50Fnw==
 X-Received: from dmatlack-heavy.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:19cd])
- (user=dmatlack job=sendgmr) by 2002:a17:902:e78f:b0:156:3b3b:e4ce with SMTP
- id cp15-20020a170902e78f00b001563b3be4cemr17310175plb.8.1648835791370; Fri,
- 01 Apr 2022 10:56:31 -0700 (PDT)
-Date:   Fri,  1 Apr 2022 17:55:50 +0000
+ (user=dmatlack job=sendgmr) by 2002:a17:902:ce0f:b0:156:5a4:926c with SMTP id
+ k15-20020a170902ce0f00b0015605a4926cmr11415497plg.3.1648835794980; Fri, 01
+ Apr 2022 10:56:34 -0700 (PDT)
+Date:   Fri,  1 Apr 2022 17:55:52 +0000
 In-Reply-To: <20220401175554.1931568-1-dmatlack@google.com>
-Message-Id: <20220401175554.1931568-20-dmatlack@google.com>
+Message-Id: <20220401175554.1931568-22-dmatlack@google.com>
 Mime-Version: 1.0
 References: <20220401175554.1931568-1-dmatlack@google.com>
 X-Mailer: git-send-email 2.35.1.1094.g7c7d902a7c-goog
-Subject: [PATCH v3 19/23] KVM: x86/mmu: Refactor drop_large_spte()
+Subject: [PATCH v3 21/23] KVM: Allow GFP flags to be passed when topping up
+ MMU caches
 From:   David Matlack <dmatlack@google.com>
 To:     Paolo Bonzini <pbonzini@redhat.com>
 Cc:     Marc Zyngier <maz@kernel.org>, Huacai Chen <chenhuacai@kernel.org>,
@@ -78,71 +79,64 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-drop_large_spte() drops a large SPTE if it exists and then flushes TLBs.
-Its helper function, __drop_large_spte(), does the drop without the
-flush.
-
-In preparation for eager page splitting, which will need to sometimes
-flush when dropping large SPTEs (and sometimes not), push the flushing
-logic down into __drop_large_spte() and add a bool parameter to control
-it.
+This will be used in a subsequent commit to top-up MMU caches under the
+MMU lock with GFP_NOWAIT as part of eager page splitting.
 
 No functional change intended.
 
-Reviewed-by: Peter Xu <peterx@redhat.com>
+Reviewed-by: Ben Gardon <bgardon@google.com>
 Signed-off-by: David Matlack <dmatlack@google.com>
 ---
- arch/x86/kvm/mmu/mmu.c | 29 +++++++++++++++--------------
- 1 file changed, 15 insertions(+), 14 deletions(-)
+ include/linux/kvm_host.h | 1 +
+ virt/kvm/kvm_main.c      | 9 +++++++--
+ 2 files changed, 8 insertions(+), 2 deletions(-)
 
-diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-index 6390b23d286a..f058f28909ea 100644
---- a/arch/x86/kvm/mmu/mmu.c
-+++ b/arch/x86/kvm/mmu/mmu.c
-@@ -1184,28 +1184,29 @@ static void drop_spte(struct kvm *kvm, u64 *sptep)
- 		rmap_remove(kvm, sptep);
+diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
+index 252ee4a61b58..7d3a1f28beb2 100644
+--- a/include/linux/kvm_host.h
++++ b/include/linux/kvm_host.h
+@@ -1335,6 +1335,7 @@ void kvm_flush_remote_tlbs(struct kvm *kvm);
+ 
+ #ifdef KVM_ARCH_NR_OBJS_PER_MEMORY_CACHE
+ int kvm_mmu_topup_memory_cache(struct kvm_mmu_memory_cache *mc, int min);
++int __kvm_mmu_topup_memory_cache(struct kvm_mmu_memory_cache *mc, int min, gfp_t gfp);
+ int kvm_mmu_memory_cache_nr_free_objects(struct kvm_mmu_memory_cache *mc);
+ void kvm_mmu_free_memory_cache(struct kvm_mmu_memory_cache *mc);
+ void *kvm_mmu_memory_cache_alloc(struct kvm_mmu_memory_cache *mc);
+diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+index c4cac4195f4a..554148ea0c30 100644
+--- a/virt/kvm/kvm_main.c
++++ b/virt/kvm/kvm_main.c
+@@ -369,7 +369,7 @@ static inline void *mmu_memory_cache_alloc_obj(struct kvm_mmu_memory_cache *mc,
+ 		return (void *)__get_free_page(gfp_flags);
  }
  
--
--static bool __drop_large_spte(struct kvm *kvm, u64 *sptep)
-+static void __drop_large_spte(struct kvm *kvm, u64 *sptep, bool flush)
+-int kvm_mmu_topup_memory_cache(struct kvm_mmu_memory_cache *mc, int min)
++int __kvm_mmu_topup_memory_cache(struct kvm_mmu_memory_cache *mc, int min, gfp_t gfp)
  {
--	if (is_large_pte(*sptep)) {
--		WARN_ON(sptep_to_sp(sptep)->role.level == PG_LEVEL_4K);
--		drop_spte(kvm, sptep);
--		return true;
--	}
-+	struct kvm_mmu_page *sp;
+ 	void *obj;
  
--	return false;
--}
-+	if (!is_large_pte(*sptep))
-+		return;
- 
--static void drop_large_spte(struct kvm_vcpu *vcpu, u64 *sptep)
--{
--	if (__drop_large_spte(vcpu->kvm, sptep)) {
--		struct kvm_mmu_page *sp = sptep_to_sp(sptep);
-+	sp = sptep_to_sp(sptep);
-+	WARN_ON(sp->role.level == PG_LEVEL_4K);
- 
--		kvm_flush_remote_tlbs_with_address(vcpu->kvm, sp->gfn,
-+	drop_spte(kvm, sptep);
-+
-+	if (flush) {
-+		kvm_flush_remote_tlbs_with_address(kvm, sp->gfn,
- 			KVM_PAGES_PER_HPAGE(sp->role.level));
- 	}
+@@ -384,7 +384,7 @@ int kvm_mmu_topup_memory_cache(struct kvm_mmu_memory_cache *mc, int min)
+ 	if (mc->nobjs >= min)
+ 		return 0;
+ 	while (mc->nobjs < mc->capacity) {
+-		obj = mmu_memory_cache_alloc_obj(mc, GFP_KERNEL_ACCOUNT);
++		obj = mmu_memory_cache_alloc_obj(mc, gfp);
+ 		if (!obj)
+ 			return mc->nobjs >= min ? 0 : -ENOMEM;
+ 		mc->objects[mc->nobjs++] = obj;
+@@ -392,6 +392,11 @@ int kvm_mmu_topup_memory_cache(struct kvm_mmu_memory_cache *mc, int min)
+ 	return 0;
  }
  
-+static void drop_large_spte(struct kvm_vcpu *vcpu, u64 *sptep)
++int kvm_mmu_topup_memory_cache(struct kvm_mmu_memory_cache *mc, int min)
 +{
-+	return __drop_large_spte(vcpu->kvm, sptep, true);
++	return __kvm_mmu_topup_memory_cache(mc, min, GFP_KERNEL_ACCOUNT);
 +}
 +
- /*
-  * Write-protect on the specified @sptep, @pt_protect indicates whether
-  * spte write-protection is caused by protecting shadow page table.
+ int kvm_mmu_memory_cache_nr_free_objects(struct kvm_mmu_memory_cache *mc)
+ {
+ 	return mc->nobjs;
 -- 
 2.35.1.1094.g7c7d902a7c-goog
 

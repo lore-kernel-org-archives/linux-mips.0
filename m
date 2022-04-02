@@ -2,96 +2,61 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BA782C4332F
-	for <linux-mips@archiver.kernel.org>; Sat,  2 Apr 2022 13:48:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CAFFDC433F5
+	for <linux-mips@archiver.kernel.org>; Sat,  2 Apr 2022 13:48:39 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1355774AbiDBNuN (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Sat, 2 Apr 2022 09:50:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45328 "EHLO
+        id S1344402AbiDBNu1 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Sat, 2 Apr 2022 09:50:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45916 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1355772AbiDBNuM (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Sat, 2 Apr 2022 09:50:12 -0400
-X-Greylist: delayed 347 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sat, 02 Apr 2022 06:48:19 PDT
-Received: from condef-08.nifty.com (condef-08.nifty.com [202.248.20.73])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D87C57645;
-        Sat,  2 Apr 2022 06:48:19 -0700 (PDT)
-Received: from conssluserg-03.nifty.com ([10.126.8.82])by condef-08.nifty.com with ESMTP id 232Ddlv1014372;
-        Sat, 2 Apr 2022 22:39:47 +0900
-Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174]) (authenticated)
-        by conssluserg-03.nifty.com with ESMTP id 232DdMRx025764;
-        Sat, 2 Apr 2022 22:39:22 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-03.nifty.com 232DdMRx025764
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1648906763;
-        bh=DjlDOU+QMjAfHhVG3DyTJmpT3lFDSgL63YIdZlYs+Z8=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=lr+c/mzaLMgaRJRgNPfFw5IiHPTBdIkqnS6od8GjSnmMg1eb/tfOUlRtIZa9avst4
-         6a+vN7acgrXk05PbtA2+68CSpCxEu2b8pDvOMtsa3kVBzY1VUx3xV2SsaO0tRog6iI
-         vUz82EkYskvsy//IHP6ygaaH49PcaYrv6j4QGXCTfV6P93gftoO0mu/1XhpJkdGqeM
-         zYvxnsjLo/Boqe/Llud5fzagJmZP/bZtw+2oopK+QVF8OTarhrLxZwRAwrBmF1uzXO
-         L7vf71ky9ZM2ue421+N5i979hPn8k3UncyfwS6+Er752H6xLzsAtPwZpsRoZfz6ZxT
-         lxDAEBNfS8juw==
-X-Nifty-SrcIP: [209.85.214.174]
-Received: by mail-pl1-f174.google.com with SMTP id a16so4644581plh.13;
-        Sat, 02 Apr 2022 06:39:22 -0700 (PDT)
-X-Gm-Message-State: AOAM532eHPbvHmxUeXtZsRMD6HwJg5CK/98dNMtLkRzYAAySW8Fg7XHg
-        2uc1ePDBu08VphvqK1ZZE0qLSFjaosG0hcbhndM=
-X-Google-Smtp-Source: ABdhPJw2exoLpxI5c+cAeuK679q0cyMySJSrkv8rzRvz/yceSC8H6FLOcidZ+Bg1m2/S7aiMae+xzlzCK43rihaAn5w=
-X-Received: by 2002:a17:90b:4d01:b0:1c9:ec79:1b35 with SMTP id
- mw1-20020a17090b4d0100b001c9ec791b35mr16659993pjb.77.1648906761882; Sat, 02
- Apr 2022 06:39:21 -0700 (PDT)
+        with ESMTP id S1355795AbiDBNu1 (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Sat, 2 Apr 2022 09:50:27 -0400
+Received: from angie.orcam.me.uk (angie.orcam.me.uk [IPv6:2001:4190:8020::34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 4D96C315;
+        Sat,  2 Apr 2022 06:48:34 -0700 (PDT)
+Received: by angie.orcam.me.uk (Postfix, from userid 500)
+        id D5D9392009C; Sat,  2 Apr 2022 15:48:31 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by angie.orcam.me.uk (Postfix) with ESMTP id D308792009B;
+        Sat,  2 Apr 2022 14:48:31 +0100 (BST)
+Date:   Sat, 2 Apr 2022 14:48:31 +0100 (BST)
+From:   "Maciej W. Rozycki" <macro@orcam.me.uk>
+To:     yaliang.wang@windriver.com
+cc:     rppt@kernel.org, Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        huangpei@loongson.cn, Andrew Morton <akpm@linux-foundation.org>,
+        kumba@gentoo.org, Geert Uytterhoeven <geert@linux-m68k.org>,
+        anshuman.khandual@arm.com, penberg@kernel.org,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] MIPS: pgalloc: fix memory leak caused by pgd_free()
+In-Reply-To: <20220310113116.2068859-1-yaliang.wang@windriver.com>
+Message-ID: <alpine.DEB.2.21.2204021446370.47162@angie.orcam.me.uk>
+References: <20220310113116.2068859-1-yaliang.wang@windriver.com>
+User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
 MIME-Version: 1.0
-References: <20220402133544.2690231-1-guoren@kernel.org> <20220402133544.2690231-5-guoren@kernel.org>
-In-Reply-To: <20220402133544.2690231-5-guoren@kernel.org>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Sat, 2 Apr 2022 22:38:34 +0900
-X-Gmail-Original-Message-ID: <CAK7LNAS8i2xe2zFQo7mcJeujymhWB7hyp36UWS4Rp9T9dMUu2g@mail.gmail.com>
-Message-ID: <CAK7LNAS8i2xe2zFQo7mcJeujymhWB7hyp36UWS4Rp9T9dMUu2g@mail.gmail.com>
-Subject: Re: [PATCH V10 04/20] kconfig: Add SYSVIPC_COMPAT for all architectures
-To:     Guo Ren <guoren@kernel.org>
-Cc:     Palmer Dabbelt <palmer@dabbelt.com>, Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Christoph Hellwig <hch@lst.de>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:SIFIVE DRIVERS" <linux-riscv@lists.infradead.org>,
-        linux-csky@vger.kernel.org,
-        linux-s390 <linux-s390@vger.kernel.org>,
-        sparclinux <sparclinux@vger.kernel.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        Parisc List <linux-parisc@vger.kernel.org>,
-        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        X86 ML <x86@kernel.org>,
-        =?UTF-8?Q?Heiko_St=C3=BCbner?= <heiko@sntech.de>,
-        Guo Ren <guoren@linux.alibaba.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Sat, Apr 2, 2022 at 10:36 PM <guoren@kernel.org> wrote:
->
-> From: Guo Ren <guoren@linux.alibaba.com>
->
-> The existing per-arch definitions are pretty much historic cruft.
-> Move SYSVIPC_COMPAT into init/Kconfig.
->
-> Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
-> Signed-off-by: Guo Ren <guoren@kernel.org>
-> Acked-by: Arnd Bergmann <arnd@arndb.de>
-> Reviewed-by: Christoph Hellwig <hch@lst.de>
-> Tested-by: Heiko Stuebner <heiko@sntech.de>
-> Cc: Palmer Dabbelt <palmer@dabbelt.com>
-> ---
+On Thu, 10 Mar 2022, yaliang.wang@windriver.com wrote:
 
-Please use "arch:" or something for the commit subject.
+> pgd page is freed by generic implementation pgd_free() since commit
+> f9cb654cb550 ("asm-generic: pgalloc: provide generic pgd_free()"),
+> however, there are scenarios that the system uses more than one page as
+> the pgd table, in such cases the generic implementation pgd_free() won't
+> be applicable anymore. For example, when PAGE_SIZE_4KB is enabled and
+> MIPS_VA_BITS_48 is not enabled in a 64bit system, the macro "PGD_ORDER"
+> will be set as "1", which will cause allocating two pages as the pgd
+> table. Well, at the same time, the generic implementation pgd_free()
+> just free one pgd page, which will result in the memory leak.
+> 
+> The memory leak can be easily detected by executing shell command:
+> "while true; do ls > /dev/null; grep MemFree /proc/meminfo; done"
+> 
+> Fixes: f9cb654cb550 ("asm-generic: pgalloc: provide generic pgd_free()")
+> Signed-off-by: Yaliang Wang <Yaliang.Wang@windriver.com>
 
-I want to see "kconfig:" for
-changes under scripts/kconfig/.
+ As a critical regression shouldn't this have been marked for backporting 
+to stable branches?
 
-
-
--- 
-Best Regards
-Masahiro Yamada
+  Maciej

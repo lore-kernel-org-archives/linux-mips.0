@@ -2,499 +2,164 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BA5B9C43217
-	for <linux-mips@archiver.kernel.org>; Fri,  1 Apr 2022 17:56:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 52808C433EF
+	for <linux-mips@archiver.kernel.org>; Sat,  2 Apr 2022 05:49:45 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350737AbiDAR6c (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 1 Apr 2022 13:58:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36748 "EHLO
+        id S233513AbiDBFve (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Sat, 2 Apr 2022 01:51:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55534 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350824AbiDAR63 (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Fri, 1 Apr 2022 13:58:29 -0400
-Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45D2428F818
-        for <linux-mips@vger.kernel.org>; Fri,  1 Apr 2022 10:56:37 -0700 (PDT)
-Received: by mail-pg1-x549.google.com with SMTP id d6-20020a655886000000b00398b858cdd3so2017114pgu.7
-        for <linux-mips@vger.kernel.org>; Fri, 01 Apr 2022 10:56:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=5xLJkysC3ZlCsyjnevnbbczfF7DAWIHXhWTtUpk/DaM=;
-        b=BGWmxg2u+a742ZhGq8e/gaCDz955+1ZlJovsdI6L0nUAdWVa6Qdtc23Nr2Pjp8RQ3N
-         ACHnaXMUEZZJtcUTF+9+oQ7mPkwkih4Kyme64gsN+BLDFtcBI2OQ/7C0QjVXQ4T/159e
-         lLX9UO9w/OYj40ZxkmxV0yV/PEMV9uDKZXfTwSZfO+Vc4Ty6Q1q8YKMJMEFOWECBG+qC
-         Esy1K3+NzO2OoFIKu40KLMPncdvpA75at3FLolRVU1+pXbEb1fIbJA2nh41yucAQM+1F
-         fH1akGlZxRH6ir3R6Niw4Z7lGVNrxjVDaz6IRs2J8IbjR18pMPuYiYP1zkb/NFf1KEOc
-         1CWg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=5xLJkysC3ZlCsyjnevnbbczfF7DAWIHXhWTtUpk/DaM=;
-        b=XcaZ5B5la01JVwXJpzrs4ZYNorXcrPvDACBpk+eU0FY9e3wxpjkyK5IfBBeOhha6z3
-         2wDTSJSC/I3w5DLyQjYJOgFwkn6ByJAZGo3uEViBQCwqVk5BAhZ/v97/0xZQQis4Helm
-         imqVNQfwTiq0ccNyff4qVmjVHaEyQnFm2e+ZTOQxHhWGUCSda1DVbbqzueh87tvWnfH5
-         o3V1dDWund0PiTmj8QYxDP+ESWfb3V0AuEK+QqKbnQSsROZwh0EVqTbFW/+fWR5iiSud
-         lLyndN8Dk+3LbZxC6YRI3KrvSPpYDaHfD3sQ/+KIGPmAk795v6rrttAMNTrGti/6YmQN
-         b+0Q==
-X-Gm-Message-State: AOAM5302OUUT3OSij2+We4CwVd1MJZdd9olSb6/2lSpUpBwAcFXlvw5+
-        ivS/6QErYtSJu4hthCt/Hdkg4euJVb5MeA==
-X-Google-Smtp-Source: ABdhPJyRqF97zxTLz0gW9feu0V4xTh0qrgEHDZnAhXWlpLSbGZiPVvAurNY7AvSLmzoxLwnBmcQvKj8DX1SHqw==
-X-Received: from dmatlack-heavy.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:19cd])
- (user=dmatlack job=sendgmr) by 2002:aa7:81c1:0:b0:4f7:6ba1:553b with SMTP id
- c1-20020aa781c1000000b004f76ba1553bmr12211127pfn.45.1648835796738; Fri, 01
- Apr 2022 10:56:36 -0700 (PDT)
-Date:   Fri,  1 Apr 2022 17:55:53 +0000
-In-Reply-To: <20220401175554.1931568-1-dmatlack@google.com>
-Message-Id: <20220401175554.1931568-23-dmatlack@google.com>
-Mime-Version: 1.0
-References: <20220401175554.1931568-1-dmatlack@google.com>
-X-Mailer: git-send-email 2.35.1.1094.g7c7d902a7c-goog
-Subject: [PATCH v3 22/23] KVM: x86/mmu: Support Eager Page Splitting in the
- shadow MMU
-From:   David Matlack <dmatlack@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Marc Zyngier <maz@kernel.org>, Huacai Chen <chenhuacai@kernel.org>,
-        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
-        Anup Patel <anup@brainfault.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Sean Christopherson <seanjc@google.com>,
-        Andrew Jones <drjones@redhat.com>,
-        Ben Gardon <bgardon@google.com>, Peter Xu <peterx@redhat.com>,
-        maciej.szmigiero@oracle.com,
-        "moderated list:KERNEL VIRTUAL MACHINE FOR ARM64 (KVM/arm64)" 
-        <kvmarm@lists.cs.columbia.edu>,
-        "open list:KERNEL VIRTUAL MACHINE FOR MIPS (KVM/mips)" 
-        <linux-mips@vger.kernel.org>,
-        "open list:KERNEL VIRTUAL MACHINE FOR MIPS (KVM/mips)" 
-        <kvm@vger.kernel.org>,
-        "open list:KERNEL VIRTUAL MACHINE FOR RISC-V (KVM/riscv)" 
-        <kvm-riscv@lists.infradead.org>, Peter Feiner <pfeiner@google.com>,
-        David Matlack <dmatlack@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        with ESMTP id S229714AbiDBFvc (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Sat, 2 Apr 2022 01:51:32 -0400
+Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89B738EB68;
+        Fri,  1 Apr 2022 22:49:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1648878581; x=1680414581;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=TZGP2yFhIfg8kh6ZCxxoGQgrQRnyKJ7mHLD5XwA3Q/M=;
+  b=Ak1D2IxYLdvJ4VTDt77Ii5+l4vzUj/sXJDyHWQ2PHK6WvObOWfK1cQ0X
+   uqSJDZYdPU2qIVLGkM7mvtQxSpxS3CXCyPGfZov5R7FS4c1lkG3dIiiAu
+   +knDutS2Nkv8KB0d1sq+v3xcG/LfcKPh0ffw0ZaRR1uMx+XxCz8Mpjdg+
+   LA8a2zPGI0BigeEYm+IB8ZnUEo0Jv3jjgnQlB54Js5K4YrwMGTdTdn2WO
+   gXyhSEmAraQFMv2+fGbczXUjj3V1UJj6jEcjBdkqbTV2ng4wa+g2iMPyJ
+   0b609j/XJbHUvoOBj/3NPLx5wS8YH2T7n3C1ka+fWW4ow6iHhFx4y0SQg
+   Q==;
+X-IronPort-AV: E=McAfee;i="6200,9189,10304"; a="346718237"
+X-IronPort-AV: E=Sophos;i="5.90,229,1643702400"; 
+   d="scan'208";a="346718237"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Apr 2022 22:49:41 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.90,229,1643702400"; 
+   d="scan'208";a="696111634"
+Received: from lkp-server02.sh.intel.com (HELO 3231c491b0e2) ([10.239.97.151])
+  by fmsmga001.fm.intel.com with ESMTP; 01 Apr 2022 22:49:35 -0700
+Received: from kbuild by 3231c491b0e2 with local (Exim 4.95)
+        (envelope-from <lkp@intel.com>)
+        id 1naWdj-0001m0-A8;
+        Sat, 02 Apr 2022 05:49:35 +0000
+Date:   Sat, 2 Apr 2022 13:49:02 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Sui Jingfeng <15330273260@189.cn>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Roland Scheidegger <sroland@vmware.com>,
+        Zack Rusin <zackr@vmware.com>,
+        Christian Gmeiner <christian.gmeiner@gmail.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Rob Herring <robh+dt@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Dan Carpenter <error27@gmail.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Andrey Zhizhikin <andrey.zhizhikin@leica-geosystems.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Lucas Stach <l.stach@pengutronix.de>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Ilia Mirkin <imirkin@alum.mit.edu>,
+        Qing Zhang <zhangqing@loongson.cn>,
+        suijingfeng <suijingfeng@loongson.cn>
+Cc:     kbuild-all@lists.01.org, devicetree@vger.kernel.org,
+        linux-mips@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v14 5/6] drm/loongson: add drm driver for loongson
+ display controller
+Message-ID: <202204021321.5sYDUPbx-lkp@intel.com>
+References: <20220401162251.1665081-6-15330273260@189.cn>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220401162251.1665081-6-15330273260@189.cn>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Add support for Eager Page Splitting pages that are mapped by the shadow
-MMU. Walk through the rmap first splitting all 1GiB pages to 2MiB pages,
-and then splitting all 2MiB pages to 4KiB pages.
+Hi Sui,
 
-Splitting huge pages mapped by the shadow MMU requries dealing with some
-extra complexity beyond that of the TDP MMU:
+Thank you for the patch! Yet something to improve:
 
-(1) The shadow MMU has a limit on the number of shadow pages that are
-    allowed to be allocated. So, as a policy, Eager Page Splitting
-    refuses to split if there are KVM_MIN_FREE_MMU_PAGES or fewer
-    pages available.
+[auto build test ERROR on drm/drm-next]
+[also build test ERROR on robh/for-next linus/master v5.17 next-20220401]
+[cannot apply to mripard/sunxi/for-next]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch]
 
-(2) Huge pages may be mapped by indirect shadow pages which have the
-    possibility of being unsync. As a policy we opt not to split such
-    pages as their translation may no longer be valid.
+url:    https://github.com/intel-lab-lkp/linux/commits/Sui-Jingfeng/drm-loongson-add-drm-driver-for-loongson-display-controller/20220402-003557
+base:   git://anongit.freedesktop.org/drm/drm drm-next
+config: sparc-randconfig-r012-20220402 (https://download.01.org/0day-ci/archive/20220402/202204021321.5sYDUPbx-lkp@intel.com/config)
+compiler: sparc64-linux-gcc (GCC) 11.2.0
+reproduce (this is a W=1 build):
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # https://github.com/intel-lab-lkp/linux/commit/b52cc469ed1a99a0803faef886f81607b1f7f5c0
+        git remote add linux-review https://github.com/intel-lab-lkp/linux
+        git fetch --no-tags linux-review Sui-Jingfeng/drm-loongson-add-drm-driver-for-loongson-display-controller/20220402-003557
+        git checkout b52cc469ed1a99a0803faef886f81607b1f7f5c0
+        # save the config file to linux build tree
+        mkdir build_dir
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-11.2.0 make.cross O=build_dir ARCH=sparc SHELL=/bin/bash drivers/gpu/drm/loongson/
 
-(3) Splitting a huge page may end up re-using an existing lower level
-    shadow page tables. This is unlike the TDP MMU which always allocates
-    new shadow page tables when splitting.
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
 
-(4) When installing the lower level SPTEs, they must be added to the
-    rmap which may require allocating additional pte_list_desc structs.
+All errors (new ones prefixed by >>):
 
-Note, for case (3) we have to be careful about dealing with what's
-already in the lower level page table. Specifically the lower level page
-table may only be partially filled in and may point to even lower level
-page tables that are partially filled in. We can fill in non-present
-entries, but recursing into the lower level page tables would be too
-complex.
+   drivers/gpu/drm/loongson/lsdc_i2c.c: In function 'ls7a_gpio_i2c_set':
+>> drivers/gpu/drm/loongson/lsdc_i2c.c:37:23: error: implicit declaration of function 'readb' [-Werror=implicit-function-declaration]
+      37 |                 val = readb(li2c->dir_reg);
+         |                       ^~~~~
+>> drivers/gpu/drm/loongson/lsdc_i2c.c:39:17: error: implicit declaration of function 'writeb' [-Werror=implicit-function-declaration]
+      39 |                 writeb(val, li2c->dir_reg);
+         |                 ^~~~~~
+   cc1: some warnings being treated as errors
 
-This means that Eager Page Splitting may partially unmap a huge page.
-To handle this we flush TLBs after dropping the huge SPTE whenever we
-are about to install a lower level page table that was partially filled
-in (*). We can skip the TLB flush if the lower level page table was
-empty (no aliasing) or identical to what we were already going to
-populate it with (aliased huge page that was just eagerly split).
 
-(*) This TLB flush could probably be delayed until we're about to drop
-the MMU lock, which would also let us batch flushes for multiple splits.
-However such scenarios should be rare in practice (a huge page must be
-aliased in multiple SPTEs and have been split for NX Huge Pages in only
-some of them). Flushing immediately is simpler to plumb and also reduces
-the chances of tripping over a CPU bug (e.g. see iTLB multi-hit).
+vim +/readb +37 drivers/gpu/drm/loongson/lsdc_i2c.c
 
-Suggested-by: Peter Feiner <pfeiner@google.com>
-[ This commit is based off of the original implementation of Eager Page
-  Splitting from Peter in Google's kernel from 2016 that handles
-  cases (1) and (2) above. ]
-Signed-off-by: David Matlack <dmatlack@google.com>
----
- .../admin-guide/kernel-parameters.txt         |   3 -
- arch/x86/include/asm/kvm_host.h               |  12 +
- arch/x86/kvm/mmu/mmu.c                        | 268 ++++++++++++++++++
- arch/x86/kvm/x86.c                            |   6 +
- 4 files changed, 286 insertions(+), 3 deletions(-)
+    19	
+    20	/*
+    21	 * ls7a_gpio_i2c_set - set the state of a gpio pin, either high or low.
+    22	 * @mask: gpio pin mask indicate which pin to set
+    23	 */
+    24	static void ls7a_gpio_i2c_set(struct lsdc_i2c * const li2c, int mask, int state)
+    25	{
+    26		unsigned long flags;
+    27		u8 val;
+    28	
+    29		spin_lock_irqsave(&li2c->reglock, flags);
+    30	
+    31		if (state) {
+    32			/*
+    33			 * The high state is achieved by setting the direction as
+    34			 * input, because the GPIO is open drained with external
+    35			 * pull up resistance.
+    36			 */
+  > 37			val = readb(li2c->dir_reg);
+    38			val |= mask;
+  > 39			writeb(val, li2c->dir_reg);
+    40		} else {
+    41			/* First, set this pin as output */
+    42			val = readb(li2c->dir_reg);
+    43			val &= ~mask;
+    44			writeb(val, li2c->dir_reg);
+    45	
+    46			/* Then, set the state to it */
+    47			val = readb(li2c->dat_reg);
+    48			val &= ~mask;
+    49			writeb(val, li2c->dat_reg);
+    50		}
+    51	
+    52		spin_unlock_irqrestore(&li2c->reglock, flags);
+    53	}
+    54	
 
-diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-index 05161afd7642..495f6ac53801 100644
---- a/Documentation/admin-guide/kernel-parameters.txt
-+++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -2360,9 +2360,6 @@
- 			the KVM_CLEAR_DIRTY ioctl, and only for the pages being
- 			cleared.
- 
--			Eager page splitting currently only supports splitting
--			huge pages mapped by the TDP MMU.
--
- 			Default is Y (on).
- 
- 	kvm.enable_vmware_backdoor=[KVM] Support VMware backdoor PV interface.
-diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-index ffb2b99f3a60..053a32afd18b 100644
---- a/arch/x86/include/asm/kvm_host.h
-+++ b/arch/x86/include/asm/kvm_host.h
-@@ -1246,6 +1246,16 @@ struct kvm_arch {
- 	hpa_t	hv_root_tdp;
- 	spinlock_t hv_root_tdp_lock;
- #endif
-+
-+	/*
-+	 * Memory cache used to allocate pte_list_desc structs while splitting
-+	 * huge pages. In the worst case, to split one huge page we need 512
-+	 * pte_list_desc structs to add each lower level leaf sptep to the rmap
-+	 * plus 1 to extend the parent_ptes rmap of the lower level page table.
-+	 */
-+#define HUGE_PAGE_SPLIT_DESC_CACHE_CAPACITY 513
-+	__DEFINE_KVM_MMU_MEMORY_CACHE(huge_page_split_desc_cache,
-+				      HUGE_PAGE_SPLIT_DESC_CACHE_CAPACITY);
- };
- 
- struct kvm_vm_stat {
-@@ -1621,6 +1631,8 @@ void kvm_mmu_zap_all(struct kvm *kvm);
- void kvm_mmu_invalidate_mmio_sptes(struct kvm *kvm, u64 gen);
- void kvm_mmu_change_mmu_pages(struct kvm *kvm, unsigned long kvm_nr_mmu_pages);
- 
-+void free_huge_page_split_desc_cache(struct kvm *kvm);
-+
- int load_pdptrs(struct kvm_vcpu *vcpu, unsigned long cr3);
- 
- int emulator_write_phys(struct kvm_vcpu *vcpu, gpa_t gpa,
-diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-index a8200b3f8782..9adafed43048 100644
---- a/arch/x86/kvm/mmu/mmu.c
-+++ b/arch/x86/kvm/mmu/mmu.c
-@@ -5972,6 +5972,11 @@ void kvm_mmu_init_vm(struct kvm *kvm)
- 	node->track_write = kvm_mmu_pte_write;
- 	node->track_flush_slot = kvm_mmu_invalidate_zap_pages_in_memslot;
- 	kvm_page_track_register_notifier(kvm, node);
-+
-+	kvm->arch.huge_page_split_desc_cache.capacity =
-+		HUGE_PAGE_SPLIT_DESC_CACHE_CAPACITY;
-+	kvm->arch.huge_page_split_desc_cache.kmem_cache = pte_list_desc_cache;
-+	kvm->arch.huge_page_split_desc_cache.gfp_zero = __GFP_ZERO;
- }
- 
- void kvm_mmu_uninit_vm(struct kvm *kvm)
-@@ -6102,12 +6107,267 @@ void kvm_mmu_slot_remove_write_access(struct kvm *kvm,
- 		kvm_arch_flush_remote_tlbs_memslot(kvm, memslot);
- }
- 
-+static int topup_huge_page_split_desc_cache(struct kvm *kvm, bool locked)
-+{
-+	gfp_t gfp = gfp_flags_for_split(locked);
-+
-+	/*
-+	 * We may need up to HUGE_PAGE_SPLIT_DESC_CACHE_CAPACITY descriptors
-+	 * to split any given huge page. We could more accurately calculate how
-+	 * many we actually need by inspecting all the rmaps and check which
-+	 * will need new descriptors, but that's not worth the extra cost or
-+	 * code complexity.
-+	 */
-+	return __kvm_mmu_topup_memory_cache(
-+			&kvm->arch.huge_page_split_desc_cache,
-+			HUGE_PAGE_SPLIT_DESC_CACHE_CAPACITY,
-+			gfp);
-+}
-+
-+void free_huge_page_split_desc_cache(struct kvm *kvm)
-+{
-+	kvm_mmu_free_memory_cache(&kvm->arch.huge_page_split_desc_cache);
-+}
-+
-+static int alloc_memory_for_split(struct kvm *kvm, struct kvm_mmu_page **spp,
-+				  bool locked)
-+{
-+	int r;
-+
-+	r = topup_huge_page_split_desc_cache(kvm, locked);
-+	if (r)
-+		return r;
-+
-+	if (!*spp) {
-+		*spp = kvm_mmu_alloc_direct_sp_for_split(locked);
-+		r = *spp ? 0 : -ENOMEM;
-+	}
-+
-+	return r;
-+}
-+
-+static struct kvm_mmu_page *kvm_mmu_get_sp_for_split(struct kvm *kvm,
-+						     const struct kvm_memory_slot *slot,
-+						     u64 *huge_sptep,
-+						     struct kvm_mmu_page **spp)
-+{
-+	struct kvm_mmu_page *sp, *huge_sp = sptep_to_sp(huge_sptep);
-+	union kvm_mmu_page_role role;
-+	LIST_HEAD(invalid_list);
-+	unsigned int access;
-+	gfn_t gfn;
-+
-+	gfn = kvm_mmu_page_get_gfn(huge_sp, huge_sptep - huge_sp->spt);
-+	access = kvm_mmu_page_get_access(huge_sp, huge_sptep - huge_sp->spt);
-+
-+	/*
-+	 * Huge page splitting always uses direct shadow pages since we are
-+	 * directly mapping the huge page GFN region with smaller pages.
-+	 */
-+	role = kvm_mmu_child_role(huge_sptep, true, access);
-+
-+	sp = __kvm_mmu_find_shadow_page(kvm, gfn, role, &invalid_list);
-+	if (sp) {
-+		/* Direct SPs should never be unsync. */
-+		WARN_ON_ONCE(sp->unsync);
-+		trace_kvm_mmu_get_page(sp, false);
-+	} else {
-+		swap(sp, *spp);
-+		init_shadow_page(kvm, sp, slot, gfn, role);
-+		trace_kvm_mmu_get_page(sp, true);
-+	}
-+
-+	kvm_mmu_commit_zap_page(kvm, &invalid_list);
-+
-+	return sp;
-+}
-+
-+static void kvm_mmu_split_huge_page(struct kvm *kvm,
-+				    const struct kvm_memory_slot *slot,
-+				    u64 *huge_sptep, struct kvm_mmu_page **spp)
-+
-+{
-+	struct kvm_mmu_memory_cache *cache = &kvm->arch.huge_page_split_desc_cache;
-+	u64 huge_spte = READ_ONCE(*huge_sptep);
-+	struct kvm_mmu_page *sp;
-+	bool flush = false;
-+	u64 *sptep, spte;
-+	gfn_t gfn;
-+	int index;
-+
-+	sp = kvm_mmu_get_sp_for_split(kvm, slot, huge_sptep, spp);
-+
-+	for (index = 0; index < PT64_ENT_PER_PAGE; index++) {
-+		sptep = &sp->spt[index];
-+		gfn = kvm_mmu_page_get_gfn(sp, index);
-+
-+		/*
-+		 * sp may have populated page table entries, e.g. if this huge
-+		 * page is aliased by multiple sptes with the same access
-+		 * permissions. We know the sptes will be mapping the same
-+		 * gfn-to-pfn translation since sp is direct. However, a given
-+		 * spte may point to an even lower level page table. We don't
-+		 * know if that lower level page table is completely filled in,
-+		 * i.e. we may be effectively unmapping a region of memory, so
-+		 * we must flush the TLB.
-+		 */
-+		if (is_shadow_present_pte(*sptep)) {
-+			flush |= !is_last_spte(*sptep, sp->role.level);
-+			continue;
-+		}
-+
-+		spte = make_huge_page_split_spte(huge_spte, sp, index);
-+		mmu_spte_set(sptep, spte);
-+		__rmap_add(kvm, cache, slot, sptep, gfn, sp->role.access);
-+	}
-+
-+	/*
-+	 * Replace the huge spte with a pointer to the populated lower level
-+	 * page table. If the lower-level page table indentically maps the huge
-+	 * page, there's no need for a TLB flush. Otherwise, flush TLBs after
-+	 * dropping the huge page and before installing the shadow page table.
-+	 */
-+	__drop_large_spte(kvm, huge_sptep, flush);
-+	__link_shadow_page(cache, huge_sptep, sp);
-+}
-+
-+static int __try_split_huge_page(struct kvm *kvm,
-+				 const struct kvm_memory_slot *slot,
-+				 u64 *huge_sptep, struct kvm_mmu_page **spp)
-+{
-+	int r = 0;
-+
-+	if (kvm_mmu_available_pages(kvm) <= KVM_MIN_FREE_MMU_PAGES)
-+		return -ENOSPC;
-+
-+	if (need_resched() || rwlock_needbreak(&kvm->mmu_lock))
-+		goto drop_lock;
-+
-+	r = alloc_memory_for_split(kvm, spp, true);
-+	if (r)
-+		goto drop_lock;
-+
-+	kvm_mmu_split_huge_page(kvm, slot, huge_sptep, spp);
-+
-+	return 0;
-+
-+drop_lock:
-+	write_unlock(&kvm->mmu_lock);
-+	cond_resched();
-+	r = alloc_memory_for_split(kvm, spp, false);
-+	write_lock(&kvm->mmu_lock);
-+
-+	/*
-+	 * Ask the caller to try again if the allocation succeeded. We dropped
-+	 * the MMU lock so huge_sptep may no longer be valid.
-+	 */
-+	return r ?: -EAGAIN;
-+}
-+
-+static int try_split_huge_page(struct kvm *kvm,
-+			       const struct kvm_memory_slot *slot,
-+			       u64 *huge_sptep, struct kvm_mmu_page **spp)
-+{
-+	struct kvm_mmu_page *huge_sp = sptep_to_sp(huge_sptep);
-+	int level, r;
-+	gfn_t gfn;
-+	u64 spte;
-+
-+	/*
-+	 * Record information about the huge page being split to use in the
-+	 * tracepoint below. Do this now because __try_split_huge_page() may
-+	 * drop the MMU lock, after which huge_sptep may no longer be a valid
-+	 * pointer.
-+	 */
-+	gfn = kvm_mmu_page_get_gfn(huge_sp, huge_sptep - huge_sp->spt);
-+	level = huge_sp->role.level;
-+	spte = *huge_sptep;
-+
-+	r = __try_split_huge_page(kvm, slot, huge_sptep, spp);
-+
-+	trace_kvm_mmu_split_huge_page(gfn, spte, level, r);
-+
-+	return r;
-+}
-+
-+
-+static bool skip_split_huge_page(u64 *huge_sptep)
-+{
-+	struct kvm_mmu_page *sp = sptep_to_sp(huge_sptep);
-+
-+	if (WARN_ON_ONCE(!is_large_pte(*huge_sptep)))
-+		return true;
-+
-+	/*
-+	 * As a policy, do not split huge pages if the sp on which they reside
-+	 * is unsync. Unsync means the guest is modifying the page table being
-+	 * shadowed, so splitting may be a waste of cycles and memory.
-+	 */
-+	return sp->role.invalid || sp->unsync;
-+}
-+
-+static bool rmap_try_split_huge_pages(struct kvm *kvm,
-+				      struct kvm_rmap_head *rmap_head,
-+				      const struct kvm_memory_slot *slot)
-+{
-+	struct kvm_mmu_page *sp = NULL;
-+	struct rmap_iterator iter;
-+	u64 *huge_sptep;
-+	int r;
-+
-+restart:
-+	for_each_rmap_spte(rmap_head, &iter, huge_sptep) {
-+		if (skip_split_huge_page(huge_sptep))
-+			continue;
-+
-+		r = try_split_huge_page(kvm, slot, huge_sptep, &sp);
-+		if (r < 0 && r != -EAGAIN)
-+			break;
-+
-+		/*
-+		 * Splitting succeeded (and removed huge_sptep from the
-+		 * iterator) or we had to drop the MMU lock. Either way, restart
-+		 * the iterator to get it back into a consistent state.
-+		 */
-+		goto restart;
-+	}
-+
-+	if (sp)
-+		kvm_mmu_free_shadow_page(sp);
-+
-+	return false;
-+}
-+
-+static void kvm_rmap_try_split_huge_pages(struct kvm *kvm,
-+					  const struct kvm_memory_slot *slot,
-+					  gfn_t start, gfn_t end,
-+					  int target_level)
-+{
-+	int level;
-+
-+	/*
-+	 * Split huge pages starting with KVM_MAX_HUGEPAGE_LEVEL and working
-+	 * down to the target level. This ensures pages are recursively split
-+	 * all the way to the target level. There's no need to split pages
-+	 * already at the target level.
-+	 */
-+	for (level = KVM_MAX_HUGEPAGE_LEVEL; level > target_level; level--) {
-+		slot_handle_level_range(kvm, slot,
-+					rmap_try_split_huge_pages,
-+					level, level, start, end - 1,
-+					true, false);
-+	}
-+}
-+
- /* Must be called with the mmu_lock held in write-mode. */
- void kvm_mmu_try_split_huge_pages(struct kvm *kvm,
- 				   const struct kvm_memory_slot *memslot,
- 				   u64 start, u64 end,
- 				   int target_level)
- {
-+	if (kvm_memslots_have_rmaps(kvm))
-+		kvm_rmap_try_split_huge_pages(kvm, memslot, start, end, target_level);
-+
- 	if (is_tdp_mmu_enabled(kvm))
- 		kvm_tdp_mmu_try_split_huge_pages(kvm, memslot, start, end,
- 						 target_level, false);
-@@ -6125,6 +6385,14 @@ void kvm_mmu_slot_try_split_huge_pages(struct kvm *kvm,
- 	u64 start = memslot->base_gfn;
- 	u64 end = start + memslot->npages;
- 
-+	if (kvm_memslots_have_rmaps(kvm)) {
-+		topup_huge_page_split_desc_cache(kvm, false);
-+		write_lock(&kvm->mmu_lock);
-+		kvm_rmap_try_split_huge_pages(kvm, memslot, start, end, target_level);
-+		write_unlock(&kvm->mmu_lock);
-+		free_huge_page_split_desc_cache(kvm);
-+	}
-+
- 	if (is_tdp_mmu_enabled(kvm)) {
- 		read_lock(&kvm->mmu_lock);
- 		kvm_tdp_mmu_try_split_huge_pages(kvm, memslot, start, end, target_level, true);
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index d3a9ce07a565..02728c3f088e 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -12106,6 +12106,12 @@ static void kvm_mmu_slot_apply_flags(struct kvm *kvm,
- 		 * page faults will create the large-page sptes.
- 		 */
- 		kvm_mmu_zap_collapsible_sptes(kvm, new);
-+
-+		/*
-+		 * Free any memory left behind by eager page splitting. Ignore
-+		 * the module parameter since userspace might have changed it.
-+		 */
-+		free_huge_page_split_desc_cache(kvm);
- 	} else {
- 		/*
- 		 * Initially-all-set does not require write protecting any page,
 -- 
-2.35.1.1094.g7c7d902a7c-goog
-
+0-DAY CI Kernel Test Service
+https://01.org/lkp

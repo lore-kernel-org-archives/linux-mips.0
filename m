@@ -2,94 +2,74 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 69227C433EF
-	for <linux-mips@archiver.kernel.org>; Sat,  2 Apr 2022 09:05:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 807C8C433EF
+	for <linux-mips@archiver.kernel.org>; Sat,  2 Apr 2022 11:27:32 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354000AbiDBJHS (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Sat, 2 Apr 2022 05:07:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42540 "EHLO
+        id S1347191AbiDBL3W (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Sat, 2 Apr 2022 07:29:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45516 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354004AbiDBJHQ (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Sat, 2 Apr 2022 05:07:16 -0400
-Received: from 189.cn (ptr.189.cn [183.61.185.103])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 58B50186165;
-        Sat,  2 Apr 2022 02:05:25 -0700 (PDT)
-HMM_SOURCE_IP: 10.64.8.41:50516.2041797902
-HMM_ATTACHE_NUM: 0000
-HMM_SOURCE_TYPE: SMTP
-Received: from clientip-114.242.206.180 (unknown [10.64.8.41])
-        by 189.cn (HERMES) with SMTP id 9554C100295;
-        Sat,  2 Apr 2022 17:05:04 +0800 (CST)
-Received: from  ([172.27.8.53])
-        by gateway-151646-dep-b7fbf7d79-9vctg with ESMTP id ccdd091caa27475ab6716e093f9a59c3 for mripard@kernel.org;
-        Sat, 02 Apr 2022 17:05:24 CST
-X-Transaction-ID: ccdd091caa27475ab6716e093f9a59c3
-X-Real-From: 15330273260@189.cn
-X-Receive-IP: 172.27.8.53
-X-MEDUSA-Status: 0
-Sender: 15330273260@189.cn
-From:   Sui Jingfeng <15330273260@189.cn>
-To:     Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Roland Scheidegger <sroland@vmware.com>,
-        Zack Rusin <zackr@vmware.com>,
-        Christian Gmeiner <christian.gmeiner@gmail.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Rob Herring <robh+dt@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Andrey Zhizhikin <andrey.zhizhikin@leica-geosystems.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Lucas Stach <l.stach@pengutronix.de>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Ilia Mirkin <imirkin@alum.mit.edu>,
-        Qing Zhang <zhangqing@loongson.cn>,
-        suijingfeng <suijingfeng@loongson.cn>
-Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, dri-devel@lists.freedesktop.org
-Subject: [PATCH v15 6/6] MAINTAINERS: add maintainers for DRM LOONGSON driver
-Date:   Sat,  2 Apr 2022 17:02:52 +0800
-Message-Id: <20220402090252.1700974-7-15330273260@189.cn>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20220402090252.1700974-1-15330273260@189.cn>
-References: <20220402090252.1700974-1-15330273260@189.cn>
+        with ESMTP id S1348433AbiDBL3V (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Sat, 2 Apr 2022 07:29:21 -0400
+Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id AF9101A6E4E;
+        Sat,  2 Apr 2022 04:27:29 -0700 (PDT)
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1nabuh-0000Ts-00; Sat, 02 Apr 2022 13:27:27 +0200
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id E7F35C4E4E; Sat,  2 Apr 2022 13:27:19 +0200 (CEST)
+Date:   Sat, 2 Apr 2022 13:27:19 +0200
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     torvalds@linux-foundation.org
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [GIT PULL] MIPS fixes vor v5.18
+Message-ID: <20220402112719.GA5234@alpha.franken.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
- This patch add myself as maintainer
+The following changes since commit f8f9f21c7848e63133c16c899f3d84aa54eb79fe:
 
-Signed-off-by: Sui Jingfeng <15330273260@189.cn>
----
- MAINTAINERS | 9 +++++++++
- 1 file changed, 9 insertions(+)
+  MIPS: Fix build error for loongson64 and sgi-ip27 (2022-03-24 09:45:15 +0100)
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 10476280acb8..21184d8577f4 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -6487,6 +6487,15 @@ T:	git git://anongit.freedesktop.org/drm/drm-misc
- F:	drivers/gpu/drm/lima/
- F:	include/uapi/drm/lima_drm.h
- 
-+DRM DRIVERS FOR LOONGSON
-+M:	suijingfeng <suijingfeng@loongson.cn>
-+L:	dri-devel@lists.freedesktop.org
-+S:	Maintained
-+W:	https://www.loongson.cn/
-+T:	git git://anongit.freedesktop.org/drm/drm-misc
-+F:	Documentation/devicetree/bindings/display/loongson/
-+F:	drivers/gpu/drm/loongson/
-+
- DRM DRIVERS FOR MEDIATEK
- M:	Chun-Kuang Hu <chunkuang.hu@kernel.org>
- M:	Philipp Zabel <p.zabel@pengutronix.de>
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/mips/linux.git/ tags/mips_5.18_1
+
+for you to fetch changes up to 41022eff9c2d21e658c7a6fcd31005bf514d28b7:
+
+  MIPS: crypto: Fix CRC32 code (2022-04-01 10:19:03 +0200)
+
+----------------------------------------------------------------
+- build fix for gpio
+- fix crc32 build problems
+- check for failed memory allocations
+
+----------------------------------------------------------------
+Jackie Liu (1):
+      MIPS: rb532: move GPIOD definition into C-files
+
+Paul Cercueil (1):
+      MIPS: crypto: Fix CRC32 code
+
+Xiaoke Wang (2):
+      mips: sgi-ip22: add a check for the return of kzalloc()
+      MIPS: lantiq: check the return value of kzalloc()
+
+ arch/mips/crypto/crc32-mips.c           | 46 +++++++++++++++++++--------------
+ arch/mips/include/asm/mach-rc32434/rb.h |  9 -------
+ arch/mips/lantiq/falcon/sysctrl.c       |  2 ++
+ arch/mips/lantiq/xway/gptu.c            |  2 ++
+ arch/mips/lantiq/xway/sysctrl.c         | 46 +++++++++++++++++++++------------
+ arch/mips/rb532/gpio.c                  | 10 +++++++
+ arch/mips/sgi-ip22/ip22-gio.c           |  2 ++
+ 7 files changed, 72 insertions(+), 45 deletions(-)
+
 -- 
-2.25.1
-
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]

@@ -2,31 +2,31 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BF4B2C41535
-	for <linux-mips@archiver.kernel.org>; Mon,  4 Apr 2022 05:07:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8DC7AC3527E
+	for <linux-mips@archiver.kernel.org>; Mon,  4 Apr 2022 05:07:05 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377333AbiDDFIz (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 4 Apr 2022 01:08:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48188 "EHLO
+        id S1377317AbiDDFI5 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 4 Apr 2022 01:08:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48274 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1357115AbiDDFIs (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Mon, 4 Apr 2022 01:08:48 -0400
+        with ESMTP id S1377334AbiDDFI4 (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Mon, 4 Apr 2022 01:08:56 -0400
 Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 480CF35DF9;
-        Sun,  3 Apr 2022 22:06:49 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD6C435255;
+        Sun,  3 Apr 2022 22:07:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
         MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender
         :Reply-To:Content-Type:Content-ID:Content-Description;
-        bh=VlHGJyMm9vzjIewl+QL3o4DmXNPqBE0xLUE3ejLiJgA=; b=VvTajNYxlVH8VM8PJFY0XdrnDE
-        PYMemX1VnGoK/6lMerwGvFWsXR63qtldaV9JNnljEtSNzVgnoja0hj0U4yTVPJciulZJmTsOI3InN
-        9hUlVc62KvnpHo9FcY7S2qTjaXiVY8On07Etkgs7y+Zf1tacU/1T/jDeLWMfoNw99mUlitJW6j7sp
-        sR3bgvz3cSLVxwfkpBzV25UYIr9nlpUkxvMpGAkcr7rxsGfZ9bUZedEDez4l3//tIzUMxcmnj07eu
-        vbRPdl2Gx79fwX5yqj6ntMFxO89PZnRv3tx/aIDni2kH+augWjt6yLz05Y4QJbSg/3+OhHwoek82/
-        unMzf8FA==;
+        bh=RjiwiTF3Oxb6vRH/IITMaa9hgA1bQqA9QM5+9nVyYm8=; b=mYojJH8rP+rsDTvUcL/Rr9LyRc
+        QfbxMF/sAOYZNJbgDYgeYLuVB9ZrStMxJIXkPtMhoiCbVe7UghtQ/x02x7UvodNzmV7f6fI7WhvcO
+        0txUaVFA+MNQnVSaVdrdxYWIabZZHsZdu5x+1F4yvFVFH/tD8zNYhuq1x/d6ZlJQxKHLQu4tKKX+5
+        BwCpMsiKeNm14dtj97yy48dayCDrPzCHq90BUWXCwlstodf041pgu8aM3dn/gc8b5m9kLyXQknojd
+        lCgYWmFqQ6EjPT6Etu9ywpNyaq97PXE83giDAQY9bPEHcxUUqfFyjM93I0Iq3J16FRjRJisge8d9M
+        o7aPaUCA==;
 Received: from 089144211060.atnat0020.highway.a1.net ([89.144.211.60] helo=localhost)
         by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1nbEvG-00D95w-SQ; Mon, 04 Apr 2022 05:06:39 +0000
+        id 1nbEvS-00D9Gu-8c; Mon, 04 Apr 2022 05:06:51 +0000
 From:   Christoph Hellwig <hch@lst.de>
 To:     iommu@lists.linux-foundation.org
 Cc:     x86@kernel.org, Anshuman Khandual <anshuman.khandual@arm.com>,
@@ -45,9 +45,9 @@ Cc:     x86@kernel.org, Anshuman Khandual <anshuman.khandual@arm.com>,
         linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
         linux-hyperv@vger.kernel.org, tboot-devel@lists.sourceforge.net,
         linux-pci@vger.kernel.org
-Subject: [PATCH 08/15] x86: centralize setting SWIOTLB_FORCE when guest memory encryption is enabled
-Date:   Mon,  4 Apr 2022 07:05:52 +0200
-Message-Id: <20220404050559.132378-9-hch@lst.de>
+Subject: [PATCH 11/15] swiotlb: pass a gfp_mask argument to swiotlb_init_late
+Date:   Mon,  4 Apr 2022 07:05:55 +0200
+Message-Id: <20220404050559.132378-12-hch@lst.de>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20220404050559.132378-1-hch@lst.de>
 References: <20220404050559.132378-1-hch@lst.de>
@@ -58,67 +58,73 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Move enabling SWIOTLB_FORCE for guest memory encryption into common code.
+Let the caller chose a zone to allocate from.  This will be used
+later on by the xen-swiotlb initialization on arm.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
+Reviewed-by: Anshuman Khandual <anshuman.khandual@arm.com>
 ---
- arch/x86/kernel/cpu/mshyperv.c | 8 --------
- arch/x86/kernel/pci-dma.c      | 8 ++++++++
- arch/x86/mm/mem_encrypt_amd.c  | 3 ---
- 3 files changed, 8 insertions(+), 11 deletions(-)
+ arch/x86/pci/sta2x11-fixup.c | 2 +-
+ include/linux/swiotlb.h      | 2 +-
+ kernel/dma/swiotlb.c         | 7 ++-----
+ 3 files changed, 4 insertions(+), 7 deletions(-)
 
-diff --git a/arch/x86/kernel/cpu/mshyperv.c b/arch/x86/kernel/cpu/mshyperv.c
-index 4b67094215bba..5b8f2c3571601 100644
---- a/arch/x86/kernel/cpu/mshyperv.c
-+++ b/arch/x86/kernel/cpu/mshyperv.c
-@@ -337,14 +337,6 @@ static void __init ms_hyperv_init_platform(void)
- 			swiotlb_unencrypted_base = ms_hyperv.shared_gpa_boundary;
- #endif
- 		}
--
--#ifdef CONFIG_SWIOTLB
--		/*
--		 * Enable swiotlb force mode in Isolation VM to
--		 * use swiotlb bounce buffer for dma transaction.
--		 */
--		swiotlb_force = SWIOTLB_FORCE;
--#endif
- 		/* Isolation VMs are unenlightened SEV-based VMs, thus this check: */
- 		if (IS_ENABLED(CONFIG_AMD_MEM_ENCRYPT)) {
- 			if (hv_get_isolation_type() != HV_ISOLATION_TYPE_NONE)
-diff --git a/arch/x86/kernel/pci-dma.c b/arch/x86/kernel/pci-dma.c
-index df96926421be0..04140e20ef1a3 100644
---- a/arch/x86/kernel/pci-dma.c
-+++ b/arch/x86/kernel/pci-dma.c
-@@ -53,6 +53,14 @@ static void __init pci_swiotlb_detect(void)
- 	if (cc_platform_has(CC_ATTR_HOST_MEM_ENCRYPT))
- 		x86_swiotlb_enable = true;
+diff --git a/arch/x86/pci/sta2x11-fixup.c b/arch/x86/pci/sta2x11-fixup.c
+index e0c039a75b2db..c7e6faf59a861 100644
+--- a/arch/x86/pci/sta2x11-fixup.c
++++ b/arch/x86/pci/sta2x11-fixup.c
+@@ -57,7 +57,7 @@ static void sta2x11_new_instance(struct pci_dev *pdev)
+ 		int size = STA2X11_SWIOTLB_SIZE;
+ 		/* First instance: register your own swiotlb area */
+ 		dev_info(&pdev->dev, "Using SWIOTLB (size %i)\n", size);
+-		if (swiotlb_init_late(size))
++		if (swiotlb_init_late(size, GFP_DMA))
+ 			dev_emerg(&pdev->dev, "init swiotlb failed\n");
+ 	}
+ 	list_add(&instance->list, &sta2x11_instance_list);
+diff --git a/include/linux/swiotlb.h b/include/linux/swiotlb.h
+index eabdd89987027..ee655f2e4d28b 100644
+--- a/include/linux/swiotlb.h
++++ b/include/linux/swiotlb.h
+@@ -37,7 +37,7 @@ struct scatterlist;
+ int swiotlb_init_with_tbl(char *tlb, unsigned long nslabs, unsigned int flags);
+ unsigned long swiotlb_size_or_default(void);
+ extern int swiotlb_late_init_with_tbl(char *tlb, unsigned long nslabs);
+-int swiotlb_init_late(size_t size);
++int swiotlb_init_late(size_t size, gfp_t gfp_mask);
+ extern void __init swiotlb_update_mem_attributes(void);
  
-+	/*
-+	 * Guest with guest memory encryption currently perform all DMA through
-+	 * bounce buffers as the hypervisor can't access arbitrary VM memory
-+	 * that is not explicitly shared with it.
-+	 */
-+	if (cc_platform_has(CC_ATTR_GUEST_MEM_ENCRYPT))
-+		swiotlb_force = SWIOTLB_FORCE;
-+
- 	if (swiotlb_force == SWIOTLB_FORCE)
- 		x86_swiotlb_enable = true;
- }
-diff --git a/arch/x86/mm/mem_encrypt_amd.c b/arch/x86/mm/mem_encrypt_amd.c
-index 6169053c28541..d732d727d3dee 100644
---- a/arch/x86/mm/mem_encrypt_amd.c
-+++ b/arch/x86/mm/mem_encrypt_amd.c
-@@ -432,9 +432,6 @@ void __init sme_early_init(void)
- 	for (i = 0; i < ARRAY_SIZE(protection_map); i++)
- 		protection_map[i] = pgprot_encrypted(protection_map[i]);
+ phys_addr_t swiotlb_tbl_map_single(struct device *hwdev, phys_addr_t phys,
+diff --git a/kernel/dma/swiotlb.c b/kernel/dma/swiotlb.c
+index f6e091424af3d..119187afc65ec 100644
+--- a/kernel/dma/swiotlb.c
++++ b/kernel/dma/swiotlb.c
+@@ -292,7 +292,7 @@ void __init swiotlb_init(bool addressing_limit, unsigned int flags)
+  * initialize the swiotlb later using the slab allocator if needed.
+  * This should be just like above, but with some error catching.
+  */
+-int swiotlb_init_late(size_t size)
++int swiotlb_init_late(size_t size, gfp_t gfp_mask)
+ {
+ 	unsigned long nslabs = ALIGN(size >> IO_TLB_SHIFT, IO_TLB_SEGSIZE);
+ 	unsigned long bytes;
+@@ -303,15 +303,12 @@ int swiotlb_init_late(size_t size)
+ 	if (swiotlb_force_disable)
+ 		return 0;
  
--	if (cc_platform_has(CC_ATTR_GUEST_MEM_ENCRYPT))
--		swiotlb_force = SWIOTLB_FORCE;
--
- 	x86_platform.guest.enc_status_change_prepare = amd_enc_status_change_prepare;
- 	x86_platform.guest.enc_status_change_finish  = amd_enc_status_change_finish;
- 	x86_platform.guest.enc_tlb_flush_required    = amd_enc_tlb_flush_required;
+-	/*
+-	 * Get IO TLB memory from the low pages
+-	 */
+ 	order = get_order(nslabs << IO_TLB_SHIFT);
+ 	nslabs = SLABS_PER_PAGE << order;
+ 	bytes = nslabs << IO_TLB_SHIFT;
+ 
+ 	while ((SLABS_PER_PAGE << order) > IO_TLB_MIN_SLABS) {
+-		vstart = (void *)__get_free_pages(GFP_DMA | __GFP_NOWARN,
++		vstart = (void *)__get_free_pages(gfp_mask | __GFP_NOWARN,
+ 						  order);
+ 		if (vstart)
+ 			break;
 -- 
 2.30.2
 

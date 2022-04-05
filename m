@@ -2,32 +2,32 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5A625C43219
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 42819C433FE
 	for <linux-mips@archiver.kernel.org>; Tue,  5 Apr 2022 11:08:26 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240616AbiDELJN (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 5 Apr 2022 07:09:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58698 "EHLO
+        id S240130AbiDELJK (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 5 Apr 2022 07:09:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43216 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1358191AbiDEK2F (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Tue, 5 Apr 2022 06:28:05 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9653322C;
-        Tue,  5 Apr 2022 03:16:42 -0700 (PDT)
+        with ESMTP id S1349217AbiDEJt1 (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Tue, 5 Apr 2022 05:49:27 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39F3F22B25;
+        Tue,  5 Apr 2022 02:42:50 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 33EA461777;
-        Tue,  5 Apr 2022 10:16:42 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0F0FFC385A1;
-        Tue,  5 Apr 2022 10:16:41 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id CABC461576;
+        Tue,  5 Apr 2022 09:42:49 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A4F7AC385A1;
+        Tue,  5 Apr 2022 09:42:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1649153801;
-        bh=wWIyEUX8NHfXxKv2+lJj2WPl28YMSxmfK9FbYqJYans=;
+        s=korg; t=1649151769;
+        bh=KYXEhnswZ9GlBv57VQWGUAbK4dX9BNkHI4d1xHGhTd8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Xyok1SV3qOfF0Ld0upZZa61D7buYdtXPWuV7xRbJxy6ExE4lHcXISythc68G7MK2F
-         VFVco/7jElARgSJ2ysRjOmhYDFA+4NxFzj+tKgYC+3YNb2nOBoMV/UMDX3J3CAV2WL
-         pjPajVsi0Y/EqH8YoxzEcB1sXAxO9Ge2165yNwrw=
+        b=ImnbTmCXeOxhwLxNkCaMsSmA8cXu5QZn2YV3gqXGT5+oP+R32y/Y98gkODHBAhfQc
+         mqmWCODsTcmcKoDJaMRXb9aHXV28GFq32oFdjXAgC2MsYdOS/BzRPAhs+dcBpEkzOZ
+         Ntv3JFv0UhLR1gFNwRzRqktuYyQGmpp01zN3gOSs=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -41,12 +41,12 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Ralf Baechle <ralf@linux-mips.org>,
         Daniel Walter <dwalter@google.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 352/599] MIPS: RB532: fix return value of __setup handler
-Date:   Tue,  5 Apr 2022 09:30:46 +0200
-Message-Id: <20220405070309.299846620@linuxfoundation.org>
+Subject: [PATCH 5.15 533/913] MIPS: RB532: fix return value of __setup handler
+Date:   Tue,  5 Apr 2022 09:26:35 +0200
+Message-Id: <20220405070355.826391150@linuxfoundation.org>
 X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20220405070258.802373272@linuxfoundation.org>
-References: <20220405070258.802373272@linuxfoundation.org>
+In-Reply-To: <20220405070339.801210740@linuxfoundation.org>
+References: <20220405070339.801210740@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -87,10 +87,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 2 insertions(+), 4 deletions(-)
 
 diff --git a/arch/mips/rb532/devices.c b/arch/mips/rb532/devices.c
-index dd34f1b32b79..0e3c8d761a45 100644
+index 04684990e28e..b7f6f782d9a1 100644
 --- a/arch/mips/rb532/devices.c
 +++ b/arch/mips/rb532/devices.c
-@@ -310,11 +310,9 @@ static int __init plat_setup_devices(void)
+@@ -301,11 +301,9 @@ static int __init plat_setup_devices(void)
  static int __init setup_kmac(char *s)
  {
  	printk(KERN_INFO "korina mac = %s\n", s);

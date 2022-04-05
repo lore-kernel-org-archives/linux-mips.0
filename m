@@ -2,35 +2,35 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 687F6C43219
-	for <linux-mips@archiver.kernel.org>; Tue,  5 Apr 2022 07:15:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 54AA3C4707A
+	for <linux-mips@archiver.kernel.org>; Tue,  5 Apr 2022 07:15:08 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231461AbiDEHRB (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 5 Apr 2022 03:17:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55760 "EHLO
+        id S231465AbiDEHRC (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 5 Apr 2022 03:17:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57250 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231493AbiDEHQT (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Tue, 5 Apr 2022 03:16:19 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEB8CDFD8;
-        Tue,  5 Apr 2022 00:13:57 -0700 (PDT)
+        with ESMTP id S231603AbiDEHQ3 (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Tue, 5 Apr 2022 03:16:29 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2925101B;
+        Tue,  5 Apr 2022 00:14:30 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id C2828615F2;
-        Tue,  5 Apr 2022 07:13:56 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1C693C34110;
-        Tue,  5 Apr 2022 07:13:50 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 5E8DA615FB;
+        Tue,  5 Apr 2022 07:14:30 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E76F5C34112;
+        Tue,  5 Apr 2022 07:14:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1649142836;
-        bh=hq9Ro/6wNi6Bjr9TXkTjcr4R5bOTWBzCrcnIPIywIr0=;
+        s=k20201202; t=1649142869;
+        bh=e4dJybM58H7ucR3l1EiaumQDiYHocLzSiDptBO8ijKQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=kLLifNES58YAya08PsQCLUQ7pqPzfzz9WtyBHjwuWWLImu27zg/rZ2BjQgpW9zeoT
-         q50zE/PJKFrU5ABhVUnlWatCs+NZ0IUf91CKYP9AxDuY/tG5tO8CZjPEH6AVLf+xXm
-         E3741Qn+xWrHdc8T31lrgNUzkTF2PZjlGqwH0bbweHv/bfMSfmB2uxsXitKbxHzICN
-         LFG66MH1akvM+4N62lLUJpc5RRQPNiaficg9zP4Y8GdnV2LkCNJVdFkUN2CnzweA1k
-         8ofpFOnAbn42fDesJ16PmeHGa4WR3ze0qpavoV8lyd3aTkeRa0BB7ZAyVgY4yej0mx
-         csOMzAS+1N77Q==
+        b=WmsrWnVOUyIcrS5tWmU2iLmLp8+3hogXxjSjaasBNqPEpKn1S9WL7KGSvnuB1yTnl
+         HwEfhvkMYvuJvsM2lIyICdPfR8jHFJtLvelW9VDhhxenHhBqFj/FWesorVursc1ekD
+         2sJeroWj4+mCRIHvSRmc30RSy1fB+rc2v5CphlIjiozFVbzqFKmwdATqYkSoZvUqA9
+         fjc2r6798Zt0qx8UMVUod8s2bUb3L+OQY5Hs1rOaFf5ts7q9Ww1TDmQQKoMjGCiCtp
+         UQjMsnDYUcvSIF1XcAXumGoqtMQomiimurskMZYLNrpnmiktl7fBc9BO/7P2pEx+em
+         +29Vqav9TibyA==
 From:   guoren@kernel.org
 To:     guoren@kernel.org, palmer@dabbelt.com, arnd@arndb.de,
         gregkh@linuxfoundation.org, hch@lst.de, nathan@kernel.org,
@@ -40,15 +40,15 @@ Cc:     linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
         sparclinux@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
         linux-parisc@vger.kernel.org, linux-mips@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org, x86@kernel.org,
-        heiko@sntech.de, Guo Ren <guoren@linux.alibaba.com>,
-        Helge Deller <deller@gmx.de>
-Subject: [PATCH V12 04/20] arch: Add SYSVIPC_COMPAT for all architectures
-Date:   Tue,  5 Apr 2022 15:12:58 +0800
-Message-Id: <20220405071314.3225832-5-guoren@kernel.org>
+        heiko@sntech.de, Guo Ren <guoren@linux.alibaba.com>
+Subject: [PATCH V12 10/20] riscv: compat: Support TASK_SIZE for compat mode
+Date:   Tue,  5 Apr 2022 15:13:04 +0800
+Message-Id: <20220405071314.3225832-11-guoren@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20220405071314.3225832-1-guoren@kernel.org>
 References: <20220405071314.3225832-1-guoren@kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
@@ -56,160 +56,69 @@ X-Mailing-List: linux-mips@vger.kernel.org
 
 From: Guo Ren <guoren@linux.alibaba.com>
 
-The existing per-arch definitions are pretty much historic cruft.
-Move SYSVIPC_COMPAT into init/Kconfig.
+Make TASK_SIZE from const to dynamic detect TIF_32BIT flag
+function. Refer to arm64 to implement DEFAULT_MAP_WINDOW_64 for
+efi-stub.
+
+Limit 32-bit compatible process in 0-2GB virtual address range
+(which is enough for real scenarios), because it could avoid
+address sign extend problem when 32-bit enter 64-bit and ease
+software design.
+
+The standard 32-bit TASK_SIZE is 0x9dc00000:FIXADDR_START, and
+compared to a compatible 32-bit, it increases 476MB for the
+application's virtual address.
 
 Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
 Signed-off-by: Guo Ren <guoren@kernel.org>
-Acked-by: Arnd Bergmann <arnd@arndb.de>
-Reviewed-by: Christoph Hellwig <hch@lst.de>
+Reviewed-by: Arnd Bergmann <arnd@arndb.de>
 Tested-by: Heiko Stuebner <heiko@sntech.de>
-Acked-by: Helge Deller <deller@gmx.de>  # parisc
-Cc: Palmer Dabbelt <palmer@dabbelt.com>
 ---
- arch/arm64/Kconfig   | 4 ----
- arch/mips/Kconfig    | 5 -----
- arch/parisc/Kconfig  | 4 ----
- arch/powerpc/Kconfig | 5 -----
- arch/s390/Kconfig    | 3 ---
- arch/sparc/Kconfig   | 5 -----
- arch/x86/Kconfig     | 4 ----
- init/Kconfig         | 4 ++++
- 8 files changed, 4 insertions(+), 30 deletions(-)
+ arch/riscv/include/asm/pgtable.h   | 13 +++++++++++--
+ arch/riscv/include/asm/processor.h |  6 +++++-
+ 2 files changed, 16 insertions(+), 3 deletions(-)
 
-diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
-index 57c4c995965f..ff674808681a 100644
---- a/arch/arm64/Kconfig
-+++ b/arch/arm64/Kconfig
-@@ -2122,10 +2122,6 @@ config DMI
- 
- endmenu
- 
--config SYSVIPC_COMPAT
--	def_bool y
--	depends on COMPAT && SYSVIPC
--
- menu "Power management options"
- 
- source "kernel/power/Kconfig"
-diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-index de3b32a507d2..0055482cd20f 100644
---- a/arch/mips/Kconfig
-+++ b/arch/mips/Kconfig
-@@ -3198,16 +3198,12 @@ config MIPS32_COMPAT
- config COMPAT
- 	bool
- 
--config SYSVIPC_COMPAT
--	bool
--
- config MIPS32_O32
- 	bool "Kernel support for o32 binaries"
- 	depends on 64BIT
- 	select ARCH_WANT_OLD_COMPAT_IPC
- 	select COMPAT
- 	select MIPS32_COMPAT
--	select SYSVIPC_COMPAT if SYSVIPC
- 	help
- 	  Select this option if you want to run o32 binaries.  These are pure
- 	  32-bit binaries as used by the 32-bit Linux/MIPS port.  Most of
-@@ -3221,7 +3217,6 @@ config MIPS32_N32
- 	select ARCH_WANT_COMPAT_IPC_PARSE_VERSION
- 	select COMPAT
- 	select MIPS32_COMPAT
--	select SYSVIPC_COMPAT if SYSVIPC
- 	help
- 	  Select this option if you want to run n32 binaries.  These are
- 	  64-bit binaries using 32-bit quantities for addressing and certain
-diff --git a/arch/parisc/Kconfig b/arch/parisc/Kconfig
-index 52e550b45692..93cb07a4446f 100644
---- a/arch/parisc/Kconfig
-+++ b/arch/parisc/Kconfig
-@@ -331,10 +331,6 @@ config COMPAT
- 	def_bool y
- 	depends on 64BIT
- 
--config SYSVIPC_COMPAT
--	def_bool y
--	depends on COMPAT && SYSVIPC
--
- config AUDIT_ARCH
- 	def_bool y
- 
-diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
-index 174edabb74fa..6edb294a34ef 100644
---- a/arch/powerpc/Kconfig
-+++ b/arch/powerpc/Kconfig
-@@ -298,11 +298,6 @@ config COMPAT
- 	select ARCH_WANT_OLD_COMPAT_IPC
- 	select COMPAT_OLD_SIGACTION
- 
--config SYSVIPC_COMPAT
--	bool
--	depends on COMPAT && SYSVIPC
--	default y
--
- config SCHED_OMIT_FRAME_POINTER
- 	bool
- 	default y
-diff --git a/arch/s390/Kconfig b/arch/s390/Kconfig
-index 77b5a03de13a..555b7ea5ecf5 100644
---- a/arch/s390/Kconfig
-+++ b/arch/s390/Kconfig
-@@ -399,9 +399,6 @@ config COMPAT
- 	  (and some other stuff like libraries and such) is needed for
- 	  executing 31 bit applications.  It is safe to say "Y".
- 
--config SYSVIPC_COMPAT
--	def_bool y if COMPAT && SYSVIPC
--
- config SMP
- 	def_bool y
- 
-diff --git a/arch/sparc/Kconfig b/arch/sparc/Kconfig
-index 9200bc04701c..9c1cce74953a 100644
---- a/arch/sparc/Kconfig
-+++ b/arch/sparc/Kconfig
-@@ -488,9 +488,4 @@ config COMPAT
- 	select ARCH_WANT_OLD_COMPAT_IPC
- 	select COMPAT_OLD_SIGACTION
- 
--config SYSVIPC_COMPAT
--	bool
--	depends on COMPAT && SYSVIPC
--	default y
--
- source "drivers/sbus/char/Kconfig"
-diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-index b0142e01002e..65690b950f5f 100644
---- a/arch/x86/Kconfig
-+++ b/arch/x86/Kconfig
-@@ -2872,10 +2872,6 @@ config COMPAT
- if COMPAT
- config COMPAT_FOR_U64_ALIGNMENT
- 	def_bool y
--
--config SYSVIPC_COMPAT
--	def_bool y
--	depends on SYSVIPC
- endif
- 
- endmenu
-diff --git a/init/Kconfig b/init/Kconfig
-index ddcbefe535e9..9fa3ee6bf12a 100644
---- a/init/Kconfig
-+++ b/init/Kconfig
-@@ -390,6 +390,10 @@ config SYSVIPC_SYSCTL
- 	depends on SYSCTL
- 	default y
- 
-+config SYSVIPC_COMPAT
-+	def_bool y
-+	depends on COMPAT && SYSVIPC
+diff --git a/arch/riscv/include/asm/pgtable.h b/arch/riscv/include/asm/pgtable.h
+index 046b44225623..e32d75fef068 100644
+--- a/arch/riscv/include/asm/pgtable.h
++++ b/arch/riscv/include/asm/pgtable.h
+@@ -707,8 +707,17 @@ static inline pmd_t pmdp_establish(struct vm_area_struct *vma,
+  * 63–48 all equal to bit 47, or else a page-fault exception will occur."
+  */
+ #ifdef CONFIG_64BIT
+-#define TASK_SIZE      (PGDIR_SIZE * PTRS_PER_PGD / 2)
+-#define TASK_SIZE_MIN  (PGDIR_SIZE_L3 * PTRS_PER_PGD / 2)
++#define TASK_SIZE_64	(PGDIR_SIZE * PTRS_PER_PGD / 2)
++#define TASK_SIZE_MIN	(PGDIR_SIZE_L3 * PTRS_PER_PGD / 2)
 +
- config POSIX_MQUEUE
- 	bool "POSIX Message Queues"
- 	depends on NET
++#ifdef CONFIG_COMPAT
++#define TASK_SIZE_32	(_AC(0x80000000, UL) - PAGE_SIZE)
++#define TASK_SIZE	(test_thread_flag(TIF_32BIT) ? \
++			 TASK_SIZE_32 : TASK_SIZE_64)
++#else
++#define TASK_SIZE	TASK_SIZE_64
++#endif
++
+ #else
+ #define TASK_SIZE	FIXADDR_START
+ #define TASK_SIZE_MIN	TASK_SIZE
+diff --git a/arch/riscv/include/asm/processor.h b/arch/riscv/include/asm/processor.h
+index 0749924d9e55..21c8072dce17 100644
+--- a/arch/riscv/include/asm/processor.h
++++ b/arch/riscv/include/asm/processor.h
+@@ -19,7 +19,11 @@
+ #define TASK_UNMAPPED_BASE	PAGE_ALIGN(TASK_SIZE / 3)
+ 
+ #define STACK_TOP		TASK_SIZE
+-#define STACK_TOP_MAX		STACK_TOP
++#ifdef CONFIG_64BIT
++#define STACK_TOP_MAX		TASK_SIZE_64
++#else
++#define STACK_TOP_MAX		TASK_SIZE
++#endif
+ #define STACK_ALIGN		16
+ 
+ #ifndef __ASSEMBLY__
 -- 
 2.25.1
 

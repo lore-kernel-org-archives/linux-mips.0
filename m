@@ -2,74 +2,129 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6D855C43217
-	for <linux-mips@archiver.kernel.org>; Tue,  5 Apr 2022 11:08:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 10464C433EF
+	for <linux-mips@archiver.kernel.org>; Tue,  5 Apr 2022 11:08:27 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240809AbiDELJR (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 5 Apr 2022 07:09:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44248 "EHLO
+        id S238744AbiDELJV (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 5 Apr 2022 07:09:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44246 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349186AbiDEJt1 (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Tue, 5 Apr 2022 05:49:27 -0400
-Received: from angie.orcam.me.uk (angie.orcam.me.uk [IPv6:2001:4190:8020::34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 4DD0320181;
-        Tue,  5 Apr 2022 02:42:23 -0700 (PDT)
-Received: by angie.orcam.me.uk (Postfix, from userid 500)
-        id 0518E92009D; Tue,  5 Apr 2022 11:42:21 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by angie.orcam.me.uk (Postfix) with ESMTP id F2E5592009B;
-        Tue,  5 Apr 2022 10:42:21 +0100 (BST)
-Date:   Tue, 5 Apr 2022 10:42:21 +0100 (BST)
-From:   "Maciej W. Rozycki" <macro@orcam.me.uk>
-To:     Andrew Powers-Holmes <aholmes@omnom.net>
-cc:     yaliang.wang@windriver.com, rppt@kernel.org,
+        with ESMTP id S1349198AbiDEJt0 (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Tue, 5 Apr 2022 05:49:26 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65584C29;
+        Tue,  5 Apr 2022 02:42:10 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 22D2BB81B14;
+        Tue,  5 Apr 2022 09:42:09 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7A8C8C385A2;
+        Tue,  5 Apr 2022 09:42:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1649151727;
+        bh=nt0P5PwaV4eV2/k32xMWQtKBrmy1jnzvbGj/CcjZ0BM=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=rggby9WN1Ub1rowhjQZSYIBug9s0fSSkjnd8Tg8mWXS0XsSaE4uYr/QM2JOf9PW/i
+         2q3r9Mt3UB8woyt/MaqGrQeY3PY4Ory+cGF8Gr1YtDdup7DleEEmignazK1Fu++dg/
+         6fuFVHvIBlWvzz3kGzEZmfgJ359yxmER3lrGRqvw=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
+        kernel test robot <lkp@intel.com>,
+        Paul Burton <paulburton@kernel.org>,
         Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        huangpei@loongson.cn, Andrew Morton <akpm@linux-foundation.org>,
-        kumba@gentoo.org, Geert Uytterhoeven <geert@linux-m68k.org>,
-        anshuman.khandual@arm.com, penberg@kernel.org,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Greg KH <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH] MIPS: pgalloc: fix memory leak caused by pgd_free()
-In-Reply-To: <b273a9b7-82f7-5883-14d2-973dd005b005@omnom.net>
-Message-ID: <alpine.DEB.2.21.2204051027490.47162@angie.orcam.me.uk>
-References: <20220310113116.2068859-1-yaliang.wang@windriver.com> <alpine.DEB.2.21.2204021446370.47162@angie.orcam.me.uk> <9cc88b1c-8a8c-95ea-2cf7-31be3b771495@omnom.net> <alpine.DEB.2.21.2204031122020.47162@angie.orcam.me.uk>
- <b273a9b7-82f7-5883-14d2-973dd005b005@omnom.net>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+        "Maciej W. Rozycki" <macro@orcam.me.uk>,
+        linux-mips@vger.kernel.org, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.15 520/913] mips: DEC: honor CONFIG_MIPS_FP_SUPPORT=n
+Date:   Tue,  5 Apr 2022 09:26:22 +0200
+Message-Id: <20220405070355.440958448@linuxfoundation.org>
+X-Mailer: git-send-email 2.35.1
+In-Reply-To: <20220405070339.801210740@linuxfoundation.org>
+References: <20220405070339.801210740@linuxfoundation.org>
+User-Agent: quilt/0.66
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Mon, 4 Apr 2022, Andrew Powers-Holmes wrote:
+From: Randy Dunlap <rdunlap@infradead.org>
 
-> Fair enough :) apologies, didn't mean to sound combative or ungrateful.
-> I know there's far more work to go around than people to do it,
-> everyone's doing the best they can, and I have nothing but appreciation
-> for all the work the kernel community does.
+[ Upstream commit 97bf0395c226907e1a9b908511a35192bf1e09bb ]
 
- No offence taken; I just wanted to make it absolutely clear what the 
-situation currently is.
+Include the DECstation interrupt handler in opting out of
+FPU support.
 
-> It's just surprising that this *could* go unnoticed for over a year -
-> though I suppose most of the MIPS64 systems out there are running on one
-> or another old vendor SDK kernel so won't have been affected...
+Fixes a linker error:
 
- That's subject to the probability theory and depending on what people's 
-usage models are.
+mips-linux-ld: arch/mips/dec/int-handler.o: in function `fpu':
+(.text+0x148): undefined reference to `handle_fpe_int'
 
-> Would the best way to get this merged into 5.10/15 (and maybe .16 just
-> for good measure) be to email the stable team (since it's already in
-> Linus' tree)? Documentation/process/stable-kernel-rules seems to say
-> yes, but I'd like to avoid stepping on anyone's toes given that it's not
-> my patch.
+Fixes: 183b40f992c8 ("MIPS: Allow FP support to be disabled")
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Reported-by: kernel test robot <lkp@intel.com>
+Cc: Paul Burton <paulburton@kernel.org>
+Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc: Maciej W. Rozycki <macro@orcam.me.uk>
+Cc: linux-mips@vger.kernel.org
+Acked-by: Maciej W. Rozycki <macro@orcam.me.uk>
+Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ arch/mips/dec/int-handler.S | 6 +++---
+ arch/mips/dec/setup.c       | 3 ++-
+ 2 files changed, 5 insertions(+), 4 deletions(-)
 
- You seem the most severely affected so far, so why not act in your best 
-interest?  I think option #2 applies here and seems quite straightforward 
-to follow, referring commit 2bc5bab9a763 and using your use case as the 
-justification.  It doesn't have to be the author to request a backport.
+diff --git a/arch/mips/dec/int-handler.S b/arch/mips/dec/int-handler.S
+index ea5b5a83f1e1..011d1d678840 100644
+--- a/arch/mips/dec/int-handler.S
++++ b/arch/mips/dec/int-handler.S
+@@ -131,7 +131,7 @@
+ 		 */
+ 		mfc0	t0,CP0_CAUSE		# get pending interrupts
+ 		mfc0	t1,CP0_STATUS
+-#ifdef CONFIG_32BIT
++#if defined(CONFIG_32BIT) && defined(CONFIG_MIPS_FP_SUPPORT)
+ 		lw	t2,cpu_fpu_mask
+ #endif
+ 		andi	t0,ST0_IM		# CAUSE.CE may be non-zero!
+@@ -139,7 +139,7 @@
+ 
+ 		beqz	t0,spurious
+ 
+-#ifdef CONFIG_32BIT
++#if defined(CONFIG_32BIT) && defined(CONFIG_MIPS_FP_SUPPORT)
+ 		 and	t2,t0
+ 		bnez	t2,fpu			# handle FPU immediately
+ #endif
+@@ -280,7 +280,7 @@ handle_it:
+ 		j	dec_irq_dispatch
+ 		 nop
+ 
+-#ifdef CONFIG_32BIT
++#if defined(CONFIG_32BIT) && defined(CONFIG_MIPS_FP_SUPPORT)
+ fpu:
+ 		lw	t0,fpu_kstat_irq
+ 		nop
+diff --git a/arch/mips/dec/setup.c b/arch/mips/dec/setup.c
+index eaad0ed4b523..99b9b29750db 100644
+--- a/arch/mips/dec/setup.c
++++ b/arch/mips/dec/setup.c
+@@ -746,7 +746,8 @@ void __init arch_init_irq(void)
+ 		dec_interrupt[DEC_IRQ_HALT] = -1;
+ 
+ 	/* Register board interrupts: FPU and cascade. */
+-	if (dec_interrupt[DEC_IRQ_FPU] >= 0 && cpu_has_fpu) {
++	if (IS_ENABLED(CONFIG_MIPS_FP_SUPPORT) &&
++	    dec_interrupt[DEC_IRQ_FPU] >= 0 && cpu_has_fpu) {
+ 		struct irq_desc *desc_fpu;
+ 		int irq_fpu;
+ 
+-- 
+2.34.1
 
- NB I think it has to be backported to all the stable branches made since 
-the original breakage; i.e. v5.9+ (I haven't kept track of what they are).
 
-  Maciej
+

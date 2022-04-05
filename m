@@ -2,123 +2,62 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A89AFC433F5
-	for <linux-mips@archiver.kernel.org>; Tue,  5 Apr 2022 07:17:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DCDD9C433EF
+	for <linux-mips@archiver.kernel.org>; Tue,  5 Apr 2022 08:03:32 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230319AbiDEHTJ (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 5 Apr 2022 03:19:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36212 "EHLO
+        id S233175AbiDEIFZ (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 5 Apr 2022 04:05:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57660 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231547AbiDEHSR (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Tue, 5 Apr 2022 03:18:17 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7C8891AFB;
-        Tue,  5 Apr 2022 00:15:27 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 3B63EB81BAE;
-        Tue,  5 Apr 2022 07:15:26 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F3E12C340EE;
-        Tue,  5 Apr 2022 07:15:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1649142924;
-        bh=qts+XhXf9HFBnxM/+mMxHMF9ldoQz8C/1qg2SBDs/7s=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RywdVYOy18ZaA/hNwFHqKY/LT0HvTTalDyj0/M7FY0/SrlX5lfa5/bqbVtagr5bDJ
-         mIFlzNjxh+uEHqvAozQepWLb+IpWEH7OfZyH6rSej/BxR/eFnT2ZX+lm4AGIYV6jL1
-         LK8zYzKSAJwrxRBOD6hem/JwSER6AasuiLvN07j96ZPYqm/bZavqWXsLKkPpU/q8CL
-         vHhGRUVP5/A3uKHepxn2CdZdekrRdEwma2j0xxQrMJ693LTtpJ8H/1URKbHTq1U9Eh
-         kULJ1WOfyfcc9zK2xzxgYvbGreJIGoPrqZ5ATk+zFNsFCpzuQmVdsNdQq+ntAlZ6Bp
-         YguqIvGpghiWg==
-From:   guoren@kernel.org
-To:     guoren@kernel.org, palmer@dabbelt.com, arnd@arndb.de,
-        gregkh@linuxfoundation.org, hch@lst.de, nathan@kernel.org,
-        naresh.kamboju@linaro.org
-Cc:     linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
-        sparclinux@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-parisc@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, x86@kernel.org,
-        heiko@sntech.de, Guo Ren <guoren@linux.alibaba.com>
-Subject: [PATCH V12 20/20] riscv: compat: Add COMPAT Kbuild skeletal support
-Date:   Tue,  5 Apr 2022 15:13:14 +0800
-Message-Id: <20220405071314.3225832-21-guoren@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20220405071314.3225832-1-guoren@kernel.org>
-References: <20220405071314.3225832-1-guoren@kernel.org>
+        with ESMTP id S234106AbiDEH6A (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Tue, 5 Apr 2022 03:58:00 -0400
+X-Greylist: delayed 587 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 05 Apr 2022 00:51:57 PDT
+Received: from mail.bizcall.pl (mail.bizcall.pl [192.71.213.112])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC18F98F43
+        for <linux-mips@vger.kernel.org>; Tue,  5 Apr 2022 00:51:54 -0700 (PDT)
+Received: by mail.bizcall.pl (Postfix, from userid 1001)
+        id 2BA3E4105E; Tue,  5 Apr 2022 09:41:50 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=bizcall.pl; s=mail;
+        t=1649144522; bh=L7rZPDqncV/PGNK3vBL4eFyhOA8rMHMu3jCfxnl4mEc=;
+        h=Date:From:To:Subject:From;
+        b=JeqUuKg+smpRPb7702CiTKut8d2KYil0se4qZIp6KGLmM48fwSIRMFws+X2k8cFgi
+         FhvewbI+fiWwwPIAIiRFMCH+O936XCCOs8M+z9DCNs22U9ogV/mzVuqYGpGXAwZgYL
+         ldN4AjmczXKJ9YcG7DBim5yPTp2RUwsqlK89uWL+dzQheBvjW2t9l/3vo4XAz2bqeP
+         BkMA8tonjl2EpWpwv0oj7Xo7ZH3mUXcNa8tdHsyoh/yL7F2j6YADfpCpxhtXTbemkB
+         0Lh1zGiN1aQsndGjU4vnPUAcMSw5LWhZ9K/SwdVipVns4QU45B4mXj/BZsu5foRceC
+         HtIxFHZWdPRzw==
+Received: by mail.bizcall.pl for <linux-mips@vger.kernel.org>; Tue,  5 Apr 2022 07:38:54 GMT
+Message-ID: <20220405084501-0.1.1v.5hje.0.ilg3wed906@bizcall.pl>
+Date:   Tue,  5 Apr 2022 07:38:54 GMT
+From:   "Marek Onufrowicz" <marek.onufrowicz@bizcall.pl>
+To:     <linux-mips@vger.kernel.org>
+Subject: Prezentacja
+X-Mailer: mail.bizcall.pl
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-From: Guo Ren <guoren@linux.alibaba.com>
+Dzie=C5=84 dobry!
 
-Adds initial skeletal COMPAT Kbuild (Running 32bit U-mode on
-64bit S-mode) support.
- - Setup kconfig & dummy functions for compiling.
- - Implement compat_start_thread by the way.
+Czy m=C3=B3g=C5=82bym przedstawi=C4=87 rozwi=C4=85zanie, kt=C3=B3re umo=C5=
+=BCliwia monitoring ka=C5=BCdego auta w czasie rzeczywistym w tym jego po=
+zycj=C4=99, zu=C5=BCycie paliwa i przebieg?
 
-Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
-Signed-off-by: Guo Ren <guoren@kernel.org>
-Reviewed-by: Arnd Bergmann <arnd@arndb.de>
-Tested-by: Heiko Stuebner <heiko@sntech.de>
-Cc: Palmer Dabbelt <palmer@dabbelt.com>
----
- arch/riscv/Kconfig | 19 +++++++++++++++++++
- 1 file changed, 19 insertions(+)
+Dodatkowo nasze narz=C4=99dzie minimalizuje koszty utrzymania samochod=C3=
+=B3w, skraca czas przejazd=C3=B3w, a tak=C5=BCe tworzenie planu tras czy =
+dostaw.
 
-diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
-index 00fd9c548f26..def9798e9675 100644
---- a/arch/riscv/Kconfig
-+++ b/arch/riscv/Kconfig
-@@ -76,6 +76,7 @@ config RISCV
- 	select HAVE_ARCH_KGDB if !XIP_KERNEL
- 	select HAVE_ARCH_KGDB_QXFER_PKT
- 	select HAVE_ARCH_MMAP_RND_BITS if MMU
-+	select HAVE_ARCH_MMAP_RND_COMPAT_BITS if COMPAT
- 	select HAVE_ARCH_SECCOMP_FILTER
- 	select HAVE_ARCH_TRACEHOOK
- 	select HAVE_ARCH_TRANSPARENT_HUGEPAGE if 64BIT && MMU
-@@ -127,12 +128,18 @@ config ARCH_MMAP_RND_BITS_MIN
- 	default 18 if 64BIT
- 	default 8
- 
-+config ARCH_MMAP_RND_COMPAT_BITS_MIN
-+	default 8
-+
- # max bits determined by the following formula:
- #  VA_BITS - PAGE_SHIFT - 3
- config ARCH_MMAP_RND_BITS_MAX
- 	default 24 if 64BIT # SV39 based
- 	default 17
- 
-+config ARCH_MMAP_RND_COMPAT_BITS_MAX
-+	default 17
-+
- # set if we run in machine mode, cleared if we run in supervisor mode
- config RISCV_M_MODE
- 	bool
-@@ -394,6 +401,18 @@ config CRASH_DUMP
- 
- 	  For more details see Documentation/admin-guide/kdump/kdump.rst
- 
-+config COMPAT
-+	bool "Kernel support for 32-bit U-mode"
-+	default 64BIT
-+	depends on 64BIT && MMU
-+	help
-+	  This option enables support for a 32-bit U-mode running under a 64-bit
-+	  kernel at S-mode. riscv32-specific components such as system calls,
-+	  the user helper functions (vdso), signal rt_frame functions and the
-+	  ptrace interface are handled appropriately by the kernel.
-+
-+	  If you want to execute 32-bit userspace applications, say Y.
-+
- endmenu
- 
- menu "Boot options"
--- 
-2.25.1
+Z naszej wiedzy i do=C5=9Bwiadczenia korzysta ju=C5=BC ponad 49 tys. Klie=
+nt=C3=B3w. Monitorujemy 809 000 pojazd=C3=B3w na ca=C5=82ym =C5=9Bwiecie,=
+ co jest nasz=C4=85 najlepsz=C4=85 wizyt=C3=B3wk=C4=85.
 
+Bardzo prosz=C4=99 o e-maila zwrotnego, je=C5=9Bli mogliby=C5=9Bmy wsp=C3=
+=B3lnie om=C3=B3wi=C4=87 potencja=C5=82 wykorzystania takiego rozwi=C4=85=
+zania w Pa=C5=84stwa firmie.
+
+
+Pozdrawiam,
+Marek Onufrowicz

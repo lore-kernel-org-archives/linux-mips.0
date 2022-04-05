@@ -2,94 +2,98 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BE1DDC433F5
+	by smtp.lore.kernel.org (Postfix) with ESMTP id ED372C433FE
 	for <linux-mips@archiver.kernel.org>; Wed,  6 Apr 2022 03:47:20 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240778AbiDFDsP (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 5 Apr 2022 23:48:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45202 "EHLO
+        id S243096AbiDFDsf (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 5 Apr 2022 23:48:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40628 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1351921AbiDEVYT (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Tue, 5 Apr 2022 17:24:19 -0400
-Received: from aposti.net (aposti.net [89.234.176.197])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A58545AD8;
-        Tue,  5 Apr 2022 14:03:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crapouillou.net;
-        s=mail; t=1649192633; h=from:from:sender:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=3+gXLZmqhdPrOBrGZGktTeGHOT6E2+rkUcU65w77U9Q=;
-        b=icYQV0HoG9hcJUDeXuXeIU1WoXR6RQR8NP3K1VENb68F67Fe9qy7Gpm8XDNK8j16fqLl4N
-        kfR9fgtlPy/TXgEMLtLBxyy9fbdqmL1pEz43M9c99nYM+sfaV8N8a9AHvYeQsoWYW4L+bc
-        rFYBlHPAcvbgiPNfgIvsDiTEuof8ogg=
-Date:   Tue, 05 Apr 2022 22:03:38 +0100
-From:   Paul Cercueil <paul@crapouillou.net>
-Subject: Re: [PATCH v5 0/3] Ingenic DRM bridge_atomic_enable proposal
-To:     Christophe Branchereau <cbranchereau@gmail.com>
-Cc:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-mips@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        devicetree@vger.kernel.org
-Message-Id: <26XV9R.735J8E0AH281@crapouillou.net>
-In-Reply-To: <20220321133651.291592-1-cbranchereau@gmail.com>
-References: <20220321133651.291592-1-cbranchereau@gmail.com>
+        with ESMTP id S1573314AbiDESwq (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Tue, 5 Apr 2022 14:52:46 -0400
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9593B1AB6
+        for <linux-mips@vger.kernel.org>; Tue,  5 Apr 2022 11:50:46 -0700 (PDT)
+Received: by mail-pj1-x1030.google.com with SMTP id n6-20020a17090a670600b001caa71a9c4aso365815pjj.1
+        for <linux-mips@vger.kernel.org>; Tue, 05 Apr 2022 11:50:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=bII+JPpo5IH9mgrwvjzQUo8tjQFZBMZQwRPuej7AAhI=;
+        b=JhnKFhyHjciKLHFUxXi/UkE6P1dEsxlHONapSmJt19/k29RmjgUAVYbH3BesEwxHrM
+         nuNIoh8Ght/verLVCcyudWRbTuK5FB5gudUG6wfh5V1VAuQWy9TBV6zzGwym1GiydR03
+         vnd3aH+JrjMQfwQrsbFC9hq8xLKanduVOA/IqxyyGsIa5ifLQOmP1D8O/cYStr7eSdbC
+         YVTaw4fYG41B2EiuL56o5RPNJ7vL2GVgZKtRNqqIw+9SAl7p/3ivqlUyj/V5mSoe0bUG
+         hEZiL1xXFGX9YMwU5eHmsKruNMmxDqBv4xNEYyIZlXU9AWWlJscq27gS+fVn5TWRnDI1
+         gfTg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=bII+JPpo5IH9mgrwvjzQUo8tjQFZBMZQwRPuej7AAhI=;
+        b=as2yLjpT0F2CtPTv4bzLOssOcioCfvT0/0pOsUdXMHi5P++usmkhnaoUCQzr/K2/Dk
+         Vkw7KBhW1x1x3az+sxKuUsXT4H1iix6DOGRpZfIgsLFd9tjv9f1MWkd71AhT3DooCENL
+         Zbn4xeBqi4vo4wh1g2n3mMHGMjCZCZ1NKap3gRTAp1D28FH0sAgtdcQQ6Ua2VNSQ2bTB
+         Hq25cmorg0Qa0OXmsaG6OujeEW+y7lQCxDXWu4eRKvAjPV2IsMfgVZhRoQWdNwuGbmuZ
+         +P9C8ndiYELb/liHLnqBG/iU3SanIITnb5NkxfW+pOEMZKcqc88ZQ/lnxH02GrRYaG6M
+         FHUw==
+X-Gm-Message-State: AOAM531Go1TT9GnNSOqV3jDwCttOUBBh/FIKScYnN+ll0tGRk6wvNz35
+        qCWi20RqvThDi6NPt4ryIxs1ZDjffm7ISFnez9sZuw==
+X-Google-Smtp-Source: ABdhPJzAdZ+bLj6sxMy6NCkl3KdGndxeFm7oJtsBN+yYBEgdhfx+bLXHx0hNFl6alDAGRZ4eV0ogNMdiDO3mkNfNJ6k=
+X-Received: by 2002:a17:902:8b88:b0:156:2b14:cb6e with SMTP id
+ ay8-20020a1709028b8800b001562b14cb6emr4908764plb.14.1649184645775; Tue, 05
+ Apr 2022 11:50:45 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1; format=flowed
-Content-Transfer-Encoding: quoted-printable
+References: <20220404234154.1251388-1-yosryahmed@google.com> <YkyOJqTeGRUjtuX1@google.com>
+In-Reply-To: <YkyOJqTeGRUjtuX1@google.com>
+From:   Yosry Ahmed <yosryahmed@google.com>
+Date:   Tue, 5 Apr 2022 11:50:09 -0700
+Message-ID: <CAJD7tkYqSMk5UO5A46sR1cOviDeww0=JsR6QRMO9ZRF_7NLXBA@mail.gmail.com>
+Subject: Re: [PATCH v2 0/5] KVM: mm: count KVM page table pages in pagetable stats
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Huacai Chen <chenhuacai@kernel.org>,
+        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
+        Anup Patel <anup@brainfault.org>,
+        Atish Patra <atishp@atishpatra.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, mizhang@google.com,
+        David Matlack <dmatlack@google.com>, kvm@vger.kernel.org,
+        kvm-riscv@lists.infradead.org, linux-mips@vger.kernel.org,
+        Linux-MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Hi Christophe,
++Johannes Weiner  +Michal Hocko  +Roman Gushchin
 
-Merged to drm-misc-next.
+On Tue, Apr 5, 2022 at 11:45 AM Sean Christopherson <seanjc@google.com> wrote:
+>
+> On Mon, Apr 04, 2022, Yosry Ahmed wrote:
+> > We keep track of several kernel memory stats (total kernel memory, page
+> > tables, stack, vmalloc, etc) on multiple levels (global, per-node,
+> > per-memcg, etc). These stats give insights to users to how much memory
+> > is used by the kernel and for what purposes.
+> >
+> > Currently, memory used by kvm for its page tables is not accounted in
+> > the pagetable stats. This patch series accounts the memory pages used by
+> > KVM for page tables in those stats.
+>
+> It's still not obvious to me that piggybacking NR_PAGETABLE is desirable, probably
+> because I am quite clueless as to how these stats are used on the backend.  E.g.
+> why not have a NR_SECONDARY_PAGETABLE entry to track pages used for secondary MMU
+> page tables?
 
-Thanks,
--Paul
-
-
-Le lun., mars 21 2022 at 14:36:48 +0100, Christophe Branchereau=20
-<cbranchereau@gmail.com> a =E9crit :
-> Hello,
->=20
-> v5 :
->=20
-> - this set doesn't include the nv3052c bindings doc anymore,
->   as it's already applied
->=20
-> - nv3052c panel driver : removed empty lines, proceed to turn it off
->   even is sleeping in fails instead of stopping there
->=20
-> - abt panel : switched to REGCACHE_FLAT so we can disable sleep mode
->   in .enable with regmap_set_bits() instead of doing it at init time
->=20
-> - ingenic-drm-drv : added ingenic_drm_bridge_atomic_disable to balance
->   out ingenic_drm_bridge_atomic_enable
->=20
-> Tested working on the rg350m and rg280m
->=20
-> Christophe Branchereau (3):
->   drm/ingenic : add ingenic_drm_bridge_atomic_enable and disable
->   drm/panel: Add panel driver for NewVision NV3052C based LCDs
->   drm/panel : innolux-ej030na and abt-y030xx067a : add .enable and
->     .disable
->=20
->  drivers/gpu/drm/ingenic/ingenic-drm-drv.c     |  34 +-
->  drivers/gpu/drm/panel/Kconfig                 |   9 +
->  drivers/gpu/drm/panel/Makefile                |   1 +
->  drivers/gpu/drm/panel/panel-abt-y030xx067a.c  |  31 +-
->  drivers/gpu/drm/panel/panel-innolux-ej030na.c |  31 +-
->  .../gpu/drm/panel/panel-newvision-nv3052c.c   | 484=20
-> ++++++++++++++++++
->  6 files changed, 572 insertions(+), 18 deletions(-)
->  create mode 100644 drivers/gpu/drm/panel/panel-newvision-nv3052c.c
->=20
-> --
-> 2.35.1
->=20
-
-
+We can add NR_SECONDARY_PAGETABLE or even NR_KVM_PAGETABLE, but I am
+not sure whether this separation is desired on the MM side. Let's see
+what MM folks think about this.

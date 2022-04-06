@@ -2,79 +2,83 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C7E8DC433F5
-	for <linux-mips@archiver.kernel.org>; Wed,  6 Apr 2022 12:04:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E04A3C433F5
+	for <linux-mips@archiver.kernel.org>; Wed,  6 Apr 2022 13:46:54 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232064AbiDFMG2 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 6 Apr 2022 08:06:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56804 "EHLO
+        id S233706AbiDFNsw (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 6 Apr 2022 09:48:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33506 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232135AbiDFMFX (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 6 Apr 2022 08:05:23 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87A3A47CDF2;
-        Wed,  6 Apr 2022 00:48:52 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 3B738B82140;
-        Wed,  6 Apr 2022 07:48:51 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 07510C385A8;
-        Wed,  6 Apr 2022 07:48:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1649231330;
-        bh=5kdeIYu08lrxcinXo/wn2rGDmkAPiaise7blEAq0ra8=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=u5nFxI62qds5luCwfiabA3w51nPKdqqjIMBcDMinr/PHt+JWti3y2LkM+z89cdNFP
-         IYGef0xODvNkk/Ni/Fdlf++5AuKlIKNvd6egdZqdGWTy7N1Xv57DwKeWyJsZVlmuKS
-         wq8x0uZt/9WFgIcuo5V2nzIzlm+OqupK2uKxo5+vVcms9wGYqemQbIn72z91NEBQa1
-         jP5miy8EFXkaRB7WqSkWyNdJFDRtJFKFMA8pJ9Ov1VFMdRK7m/6SeeVogLeIidtAeO
-         +2qFGdy9YX9CB3xInHWLg5/11szsQVTLBU5G8yu2c1MARrRIDb2E9jAooM/g4zsNDw
-         Rz9d/EHKsWaRg==
-Received: by mail-wr1-f43.google.com with SMTP id r13so1863164wrr.9;
-        Wed, 06 Apr 2022 00:48:49 -0700 (PDT)
-X-Gm-Message-State: AOAM533pm8zTIRgXVpQoPw4+BO0J5m1I46SgmBLJ4mkdR8Ace9y7CVH4
-        /dPAHnJK2uDCU9vgAG2zUTrfvMCixxYnSzTevqA=
-X-Google-Smtp-Source: ABdhPJyT5POylyPh0xGqg/cwaHmEHQNuNvVWSCOrc2ZuVu++yjHmGBoQMupeKZkipi8ZB8yq6SetBZGxhL4xb51Ipy4=
-X-Received: by 2002:adf:d081:0:b0:1ef:9378:b7cc with SMTP id
- y1-20020adfd081000000b001ef9378b7ccmr5643198wrh.407.1649231328236; Wed, 06
- Apr 2022 00:48:48 -0700 (PDT)
-MIME-Version: 1.0
-References: <20220406041548.643503-1-kuba@kernel.org>
-In-Reply-To: <20220406041548.643503-1-kuba@kernel.org>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Wed, 6 Apr 2022 09:48:32 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a0N=Rn95T1jZCCcOcF4WiBsMkObw4FLjbZd91wbAi2zww@mail.gmail.com>
-Message-ID: <CAK8P3a0N=Rn95T1jZCCcOcF4WiBsMkObw4FLjbZd91wbAi2zww@mail.gmail.com>
-Subject: Re: [PATCH net-next] net: wan: remove the lanmedia (lmc) driver
+        with ESMTP id S233646AbiDFNsp (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 6 Apr 2022 09:48:45 -0400
+Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id D37546D1B48;
+        Wed,  6 Apr 2022 04:11:42 -0700 (PDT)
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1nc3ZY-00031I-01; Wed, 06 Apr 2022 13:11:36 +0200
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id 9C281C4E9D; Wed,  6 Apr 2022 13:11:25 +0200 (CEST)
+Date:   Wed, 6 Apr 2022 13:11:25 +0200
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     David Miller <davem@davemloft.net>, pabeni@redhat.com,
-        Networking <netdev@vger.kernel.org>,
-        =?UTF-8?Q?Krzysztof_Ha=C5=82asa?= <khalasa@piap.pl>,
-        Andrew Stanley-Jones <asj@cban.com>,
-        Rob Braun <bbraun@vix.com>, Michael Graff <explorer@vix.com>,
-        Matt Thomas <matt@3am-software.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+Cc:     davem@davemloft.net, pabeni@redhat.com, netdev@vger.kernel.org,
+        arnd@kernel.org, myxie@debian.org, Jesper Juhl <jj@chaosbits.net>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Chas Williams <3chas3@gmail.com>,
+        linux-atm-general@lists.sourceforge.net,
+        linux-mips@vger.kernel.org, p.zabel@pengutronix.de
+Subject: Re: [PATCH net-next] net: atm: remove the ambassador driver
+Message-ID: <20220406111125.GB19718@alpha.franken.de>
+References: <20220406041627.643617-1-kuba@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220406041627.643617-1-kuba@kernel.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Wed, Apr 6, 2022 at 6:15 AM Jakub Kicinski <kuba@kernel.org> wrote:
->
-> The driver for LAN Media WAN interfaces spews build warnings on
+On Tue, Apr 05, 2022 at 09:16:27PM -0700, Jakub Kicinski wrote:
+> The driver for ATM Ambassador devices spews build warnings on
 > microblaze. The virt_to_bus() calls discard the volatile keyword.
 > The right thing to do would be to migrate this driver to a modern
 > DMA API but it seems unlikely anyone is actually using it.
 > There had been no fixes or functional changes here since
 > the git era begun.
->
+> 
+> In fact it sounds like the FW loading was broken from 2008
+> 'til 2012 - see commit fcdc90b025e6 ("atm: forever loop loading
+> ambassador firmware").
+> 
 > Let's remove this driver, there isn't much changing in the APIs,
 > if users come forward we can apologize and revert.
->
+> 
 > Link: https://lore.kernel.org/all/20220321144013.440d7fc0@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com/
 > Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+> ---
+> CC: myxie@debian.org,gprocida@madge.com
+> CC: Jesper Juhl <jj@chaosbits.net>
+> CC: Dan Carpenter <dan.carpenter@oracle.com>
+> CC: Chas Williams <3chas3@gmail.com> # ATM
+> CC: linux-atm-general@lists.sourceforge.net
+> CC: tsbogend@alpha.franken.de # MIPS
+> CC: linux-mips@vger.kernel.org
+> CC: p.zabel@pengutronix.de # dunno why, get_maintainer
+> ---
+>  arch/mips/configs/gpr_defconfig  |    1 -
+>  arch/mips/configs/mtx1_defconfig |    1 -
+>  drivers/atm/Kconfig              |   25 -
+>  drivers/atm/Makefile             |    1 -
+>  drivers/atm/ambassador.c         | 2400 ------------------------------
+>  drivers/atm/ambassador.h         |  648 --------
+>  6 files changed, 3076 deletions(-)
+>  delete mode 100644 drivers/atm/ambassador.c
+>  delete mode 100644 drivers/atm/ambassador.h
 
-Acked-by: Arnd Bergmann <arnd@arndb.de>
+Acked-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+
+-- 
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]

@@ -2,91 +2,99 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CB028C4167D
-	for <linux-mips@archiver.kernel.org>; Wed,  6 Apr 2022 05:41:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9EBACC433EF
+	for <linux-mips@archiver.kernel.org>; Wed,  6 Apr 2022 12:02:19 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243685AbiDFDsO (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 5 Apr 2022 23:48:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46302 "EHLO
+        id S232715AbiDFMEN (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 6 Apr 2022 08:04:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52432 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1573286AbiDESq5 (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Tue, 5 Apr 2022 14:46:57 -0400
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 340F580227
-        for <linux-mips@vger.kernel.org>; Tue,  5 Apr 2022 11:44:59 -0700 (PDT)
-Received: by mail-pf1-x42e.google.com with SMTP id z16so294100pfh.3
-        for <linux-mips@vger.kernel.org>; Tue, 05 Apr 2022 11:44:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=BSTfu4XeI/ClhpJnOxug8bNrs6bcd1vbhIByuk9Td5A=;
-        b=FZ7CzdGv5IqR9igsKF5aVHLB8MfCD2UE6mGhWdabuDVB/PY75CERc0oW45pyoiFFsx
-         HLCOiljgUTbziKvTX7wZRoZqJ+RJ1Dea8AguoZhgeta2AWxRKKUV2iRUL0l0yDbf+TTN
-         ZiAbWnMeeHTkwk1JvBEs7xviif99t4lQdP3rhF94xjjOWUyQ5IYn9ZUuKyguEbSTvM9X
-         MpsV3tSkSRKbWT/1P6uf6AhXj04ePeO0yF7csRuDTu6ucoAxMuJ3t81XHgVFCM4FFTG+
-         SjX4Baa/CoEtOFP/F5srI+LydtG/vNCqkGlkcYX/sxjcplhmbQiJkxNjpWBgFSDO+Pmx
-         Gc4Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=BSTfu4XeI/ClhpJnOxug8bNrs6bcd1vbhIByuk9Td5A=;
-        b=E7k35mfDyO+dTkiGcplKT0OzLV2BbK4gHJi5tm8ilBGoqT1y8c/vY23rntoQPjPcDr
-         i1P/v3WGBthEjn6Ls42+mL4kDsS1n7queq62BAOUtuoY8Vu3Tk190SAAnX+NwfmllCwf
-         v7WytbOavNpyrByQnOb5qQh+KQ0gz/Dmyk5p40pW4h5qdavRkOI6E8+KGCncKIzg8MlQ
-         pW63K+EcGKO7Wl4HpYR7w07U0USuxETiqVW7Y4d93TWIULVRYJYF1igtQEI5uD6j0Qcb
-         s5AJDQXw4vGZ0IL4FaAAKBJHekmLcFcxeJYCTOEvjmgLbitcNvVmbqfOyvQu/MbLyPvD
-         IskA==
-X-Gm-Message-State: AOAM532ihRjZfb0/yJ0boTVyg7RxUV4aLZNIOE6Fa21MEnGanMGQfW0P
-        KVPvOUYyOio2KSy3xsyJfUN05A==
-X-Google-Smtp-Source: ABdhPJxqBsHYYYQ3r6tsKfeQNVI4VssdMtHw5QBcT84h3Z9HkLEDAYYEQ3XVRsYGURacbMDknChXvg==
-X-Received: by 2002:a65:57ca:0:b0:381:ea8d:4d1f with SMTP id q10-20020a6557ca000000b00381ea8d4d1fmr4102933pgr.143.1649184298506;
-        Tue, 05 Apr 2022 11:44:58 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id j70-20020a638b49000000b003985b5ddaa1sm13887990pge.49.2022.04.05.11.44.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Apr 2022 11:44:57 -0700 (PDT)
-Date:   Tue, 5 Apr 2022 18:44:54 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Yosry Ahmed <yosryahmed@google.com>
-Cc:     Huacai Chen <chenhuacai@kernel.org>,
-        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
-        Anup Patel <anup@brainfault.org>,
-        Atish Patra <atishp@atishpatra.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, mizhang@google.com,
-        David Matlack <dmatlack@google.com>, kvm@vger.kernel.org,
-        kvm-riscv@lists.infradead.org, linux-mips@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Shakeel Butt <shakeelb@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH v2 0/5] KVM: mm: count KVM page table pages in pagetable
- stats
-Message-ID: <YkyOJqTeGRUjtuX1@google.com>
-References: <20220404234154.1251388-1-yosryahmed@google.com>
+        with ESMTP id S233489AbiDFMD1 (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 6 Apr 2022 08:03:27 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEB9350BB62;
+        Wed,  6 Apr 2022 00:51:01 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 9CAC4B82140;
+        Wed,  6 Apr 2022 07:51:00 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5872DC385A1;
+        Wed,  6 Apr 2022 07:50:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1649231459;
+        bh=RVG9FfA/95qVG2QdZds4+9t4n1NB+/ldzTzaqZ3WVqM=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=fT5fIDoV/NWB6t4+2nKdZXyaMn2ZGq2ivHhTLkJVOVw72526DaEkdj+Q35ZNibbCR
+         Ey5TVux2blnk/bcJ2JfA2/wEIkiry7XTwHhXJAbOgnS8FxoXVbCN45gRBZmJQNc0eC
+         3w5bYhlnqGJ+NXNGG0f8aTIUxG2GtkETeXeayR9VkWPWmvBHNMsFwfgYY+Q3P4ichI
+         j7/BQx/dqilFauh9+ZAhKE6dedG54iesW01UW7rCBPugDWZz4bASJblvln2vM7pX+5
+         LeuzUnTF9ZLC9EJIz3w5efGgS76nRFHdSd8jqESShucOBseuFI0zzmZd+iO5ye+mxs
+         Cft4AryW/gtMQ==
+Received: by mail-wr1-f44.google.com with SMTP id w4so1847980wrg.12;
+        Wed, 06 Apr 2022 00:50:59 -0700 (PDT)
+X-Gm-Message-State: AOAM533rUF5Pg/5a/mRFvW+fcx+kIkF1yJW+Xrp5e54AoMptF/bfbF40
+        ci5S8Bxf75aAGm9YIvrZMLgyLBLe2hCIdmNieGo=
+X-Google-Smtp-Source: ABdhPJyiqjgdXKT+Gm3SGPYSCzPQJkLRQ8uaMQmjANYZyedWfv5cvhtw3ix0jOW8xkR6WQ9tZ0xvPwl85G+CJoj20I0=
+X-Received: by 2002:a05:6000:178c:b0:204:648:b4c4 with SMTP id
+ e12-20020a056000178c00b002040648b4c4mr5391670wrg.219.1649231457611; Wed, 06
+ Apr 2022 00:50:57 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220404234154.1251388-1-yosryahmed@google.com>
+References: <20220406041627.643617-1-kuba@kernel.org>
+In-Reply-To: <20220406041627.643617-1-kuba@kernel.org>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Wed, 6 Apr 2022 09:50:41 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a28s+NkN2XLghBgXA5i_g56z0yK0H3CVMZkLpamyZt2qw@mail.gmail.com>
+Message-ID: <CAK8P3a28s+NkN2XLghBgXA5i_g56z0yK0H3CVMZkLpamyZt2qw@mail.gmail.com>
+Subject: Re: [PATCH net-next] net: atm: remove the ambassador driver
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     David Miller <davem@davemloft.net>, pabeni@redhat.com,
+        Networking <netdev@vger.kernel.org>, myxie@debian.org,
+        Jesper Juhl <jj@chaosbits.net>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Chas Williams <3chas3@gmail.com>,
+        linux-atm-general@lists.sourceforge.net,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Mon, Apr 04, 2022, Yosry Ahmed wrote:
-> We keep track of several kernel memory stats (total kernel memory, page
-> tables, stack, vmalloc, etc) on multiple levels (global, per-node,
-> per-memcg, etc). These stats give insights to users to how much memory
-> is used by the kernel and for what purposes.
-> 
-> Currently, memory used by kvm for its page tables is not accounted in
-> the pagetable stats. This patch series accounts the memory pages used by
-> KVM for page tables in those stats.
+On Wed, Apr 6, 2022 at 6:16 AM Jakub Kicinski <kuba@kernel.org> wrote:
+>
+> The driver for ATM Ambassador devices spews build warnings on
+> microblaze. The virt_to_bus() calls discard the volatile keyword.
+> The right thing to do would be to migrate this driver to a modern
+> DMA API but it seems unlikely anyone is actually using it.
+> There had been no fixes or functional changes here since
+> the git era begun.
+>
+> In fact it sounds like the FW loading was broken from 2008
+> 'til 2012 - see commit fcdc90b025e6 ("atm: forever loop loading
+> ambassador firmware").
+>
+> Let's remove this driver, there isn't much changing in the APIs,
+> if users come forward we can apologize and revert.
+>
+> Link: https://lore.kernel.org/all/20220321144013.440d7fc0@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com/
+> Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+> ---
+> CC: myxie@debian.org,gprocida@madge.com
+> CC: Jesper Juhl <jj@chaosbits.net>
+> CC: Dan Carpenter <dan.carpenter@oracle.com>
+> CC: Chas Williams <3chas3@gmail.com> # ATM
+> CC: linux-atm-general@lists.sourceforge.net
+> CC: tsbogend@alpha.franken.de # MIPS
+> CC: linux-mips@vger.kernel.org
+> CC: p.zabel@pengutronix.de # dunno why, get_maintainer
+> ---
+>  arch/mips/configs/gpr_defconfig  |    1 -
+>  arch/mips/configs/mtx1_defconfig |    1 -
+>  drivers/atm/Kconfig              |   25 -
+>  drivers/atm/Makefile             |    1 -
+>  drivers/atm/ambassador.c         | 2400 ------------------------------
+>  drivers/atm/ambassador.h         |  648 --------
 
-It's still not obvious to me that piggybacking NR_PAGETABLE is desirable, probably
-because I am quite clueless as to how these stats are used on the backend.  E.g.
-why not have a NR_SECONDARY_PAGETABLE entry to track pages used for secondary MMU
-page tables?
+Acked-by: Arnd Bergmann <arnd@arndb.de>

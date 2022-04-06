@@ -2,78 +2,144 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B15D1C433EF
-	for <linux-mips@archiver.kernel.org>; Wed,  6 Apr 2022 17:05:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A3F38C433EF
+	for <linux-mips@archiver.kernel.org>; Wed,  6 Apr 2022 17:42:16 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238341AbiDFRHH (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 6 Apr 2022 13:07:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35042 "EHLO
+        id S239646AbiDFRoN (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 6 Apr 2022 13:44:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51940 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238272AbiDFRGv (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 6 Apr 2022 13:06:51 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2001E2EF846;
-        Wed,  6 Apr 2022 07:30:16 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id DA0FFB82437;
-        Wed,  6 Apr 2022 14:30:14 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 98A04C385AF;
-        Wed,  6 Apr 2022 14:30:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1649255413;
-        bh=yH/Z+/bCnu8gjgJYv5IUwtmwdylHuzPcKH3mqaX+6Ic=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=qsMLAbwCxRofgQ8SMKOgkH2q8St7V94l//kVdvP5n//fMVW5OUtWXFV4Riw1gsvr0
-         LJ6p3eHc2wPvRny/0EHpyhv08/pspEvciNtUR2GC55Vrofs0VkSsBDOfkk6j+ipMaI
-         ePYDmwkGmnV8XS33a0RhjPKy08rUrn1soXlTEv7QKFj22N+D5vhQF+tkXYvgpQITxd
-         lu4KhkFMB0mf/Bk0b1iGPAOJh9BDgDQ2B8jAoVyl0LzGDoqsLc3bD/5akI0zqkLkME
-         w7mpaxDK4RUXZSDPitY0MNIR72odZc7t92ngLcF+AxJjo4PYS62PWKmn+sD07ReX2m
-         z7fm0tGbs073w==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 71923E8DBDA;
-        Wed,  6 Apr 2022 14:30:13 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        with ESMTP id S239481AbiDFRoF (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 6 Apr 2022 13:44:05 -0400
+Received: from mo4-p02-ob.smtp.rzone.de (mo4-p02-ob.smtp.rzone.de [85.215.255.84])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 245CE296899;
+        Wed,  6 Apr 2022 09:26:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1649262373;
+    s=strato-dkim-0002; d=goldelico.com;
+    h=References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Cc:Date:
+    From:Subject:Sender;
+    bh=/Yq+n6cNzT+gxBZbrCtn24poPh8ut1JXnQGOstsLGOc=;
+    b=jkAB9q+SB9vNysgSIZNi3GPEW3S+QAnQq2/gPBTKLq8V0nEokg0tSLcS/GbdD7vlCh
+    5/Y2Ob90/X94q+oh30hBRMip+vhYVeTGPjOiZUPLoX+kBK1NovlLaT1Gj66LglwCXSoe
+    7uEjGG4IiY+CkdfHYzYiwa7l9+sr5VL7QuLGqghn3t75tofLkg24tlkmg3R2r9piXdKK
+    tUhyJROIl4zoEvbXKd4Xl/uxnVn4CsqAImoN0Ws1jBsjKceAMuCxRa2mqinP+LHGCNi3
+    P14ZtC6gHTxPGG4ZBKQVLfHKYqOyHfc+dN3EbMzxFaGe8Nrw7BEt+qhccG7+FWTM+QNC
+    4tpQ==
+Authentication-Results: strato.com;
+    dkim=none
+X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMhflhwDubTJ9o1OAA2UMf2MwPVbgcbPa"
+X-RZG-CLASS-ID: mo00
+Received: from iMac.fritz.box
+    by smtp.strato.de (RZmta 47.42.2 DYNA|AUTH)
+    with ESMTPSA id k708cfy36GQDgVP
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+    Wed, 6 Apr 2022 18:26:13 +0200 (CEST)
+From:   "H. Nikolaus Schaller" <hns@goldelico.com>
+To:     Andrzej Hajda <andrzej.hajda@intel.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Robert Foss <robert.foss@linaro.org>,
+        Paul Boddie <paul@boddie.org.uk>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Paul Cercueil <paul@crapouillou.net>,
+        Maxime Ripard <maxime@cerno.tech>,
+        "H. Nikolaus Schaller" <hns@goldelico.com>,
+        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
+Cc:     Jonas Karlman <jonas@kwiboo.se>, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linux-mips@vger.kernel.org,
+        letux-kernel@openphoenux.org
+Subject: [PATCH v17 3/6] drm/bridge: dw-hdmi: filter out YUV output formats when DVI
+Date:   Wed,  6 Apr 2022 18:26:05 +0200
+Message-Id: <92fce442c23ff855041bec2dfa4b4d4649c206be.1649262368.git.hns@goldelico.com>
+X-Mailer: git-send-email 2.33.0
+In-Reply-To: <cover.1649262368.git.hns@goldelico.com>
+References: <cover.1649262368.git.hns@goldelico.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next] net: wan: remove the lanmedia (lmc) driver
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <164925541346.21938.8264132794493725230.git-patchwork-notify@kernel.org>
-Date:   Wed, 06 Apr 2022 14:30:13 +0000
-References: <20220406041548.643503-1-kuba@kernel.org>
-In-Reply-To: <20220406041548.643503-1-kuba@kernel.org>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     davem@davemloft.net, pabeni@redhat.com, netdev@vger.kernel.org,
-        khalasa@piap.pl, asj@cban.com, bbraun@vix.com, explorer@vix.com,
-        matt@3am-software.com, arnd@kernel.org, tsbogend@alpha.franken.de,
-        linux-mips@vger.kernel.org, linus.walleij@linaro.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Hello:
+From: Neil Armstrong <narmstrong@baylibre.com>
 
-This patch was applied to netdev/net-next.git (master)
-by David S. Miller <davem@davemloft.net>:
+When the display is not an HDMI sink, only the RGB output format is
+valid. Thus stop returning YUV output formats when sink is not HDMI.
 
-On Tue,  5 Apr 2022 21:15:48 -0700 you wrote:
-> The driver for LAN Media WAN interfaces spews build warnings on
-> microblaze. The virt_to_bus() calls discard the volatile keyword.
-> The right thing to do would be to migrate this driver to a modern
-> DMA API but it seems unlikely anyone is actually using it.
-> There had been no fixes or functional changes here since
-> the git era begun.
-> 
-> [...]
+Fixes: 6c3c719936da ("drm/bridge: synopsys: dw-hdmi: add bus format negociation")
+Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
+Signed-off-by: H. Nikolaus Schaller <hns@goldelico.com>
+---
+ drivers/gpu/drm/bridge/synopsys/dw-hdmi.c | 17 +++++++++--------
+ 1 file changed, 9 insertions(+), 8 deletions(-)
 
-Here is the summary with links:
-  - [net-next] net: wan: remove the lanmedia (lmc) driver
-    https://git.kernel.org/netdev/net-next/c/a5b116a0fa90
-
-You are awesome, thank you!
+diff --git a/drivers/gpu/drm/bridge/synopsys/dw-hdmi.c b/drivers/gpu/drm/bridge/synopsys/dw-hdmi.c
+index a563460f8d209..f50af40e10340 100644
+--- a/drivers/gpu/drm/bridge/synopsys/dw-hdmi.c
++++ b/drivers/gpu/drm/bridge/synopsys/dw-hdmi.c
+@@ -2538,6 +2538,7 @@ static u32 *dw_hdmi_bridge_atomic_get_output_bus_fmts(struct drm_bridge *bridge,
+ 	struct drm_connector *conn = conn_state->connector;
+ 	struct drm_display_info *info = &conn->display_info;
+ 	struct drm_display_mode *mode = &crtc_state->mode;
++	struct dw_hdmi *hdmi = bridge->driver_private;
+ 	u8 max_bpc = conn_state->max_requested_bpc;
+ 	bool is_hdmi2_sink = info->hdmi.scdc.supported ||
+ 			     (info->color_formats & DRM_COLOR_FORMAT_YCBCR420);
+@@ -2564,7 +2565,7 @@ static u32 *dw_hdmi_bridge_atomic_get_output_bus_fmts(struct drm_bridge *bridge,
+ 	 * If the current mode enforces 4:2:0, force the output but format
+ 	 * to 4:2:0 and do not add the YUV422/444/RGB formats
+ 	 */
+-	if (conn->ycbcr_420_allowed &&
++	if (hdmi->sink_is_hdmi && conn->ycbcr_420_allowed &&
+ 	    (drm_mode_is_420_only(info, mode) ||
+ 	     (is_hdmi2_sink && drm_mode_is_420_also(info, mode)))) {
+ 
+@@ -2595,36 +2596,36 @@ static u32 *dw_hdmi_bridge_atomic_get_output_bus_fmts(struct drm_bridge *bridge,
+ 	 */
+ 
+ 	if (max_bpc >= 16 && info->bpc == 16) {
+-		if (info->color_formats & DRM_COLOR_FORMAT_YCBCR444)
++		if (hdmi->sink_is_hdmi && info->color_formats & DRM_COLOR_FORMAT_YCBCR444)
+ 			output_fmts[i++] = MEDIA_BUS_FMT_YUV16_1X48;
+ 
+ 		output_fmts[i++] = MEDIA_BUS_FMT_RGB161616_1X48;
+ 	}
+ 
+ 	if (max_bpc >= 12 && info->bpc >= 12) {
+-		if (info->color_formats & DRM_COLOR_FORMAT_YCBCR422)
++		if (hdmi->sink_is_hdmi && info->color_formats & DRM_COLOR_FORMAT_YCBCR422)
+ 			output_fmts[i++] = MEDIA_BUS_FMT_UYVY12_1X24;
+ 
+-		if (info->color_formats & DRM_COLOR_FORMAT_YCBCR444)
++		if (hdmi->sink_is_hdmi && info->color_formats & DRM_COLOR_FORMAT_YCBCR444)
+ 			output_fmts[i++] = MEDIA_BUS_FMT_YUV12_1X36;
+ 
+ 		output_fmts[i++] = MEDIA_BUS_FMT_RGB121212_1X36;
+ 	}
+ 
+ 	if (max_bpc >= 10 && info->bpc >= 10) {
+-		if (info->color_formats & DRM_COLOR_FORMAT_YCBCR422)
++		if (hdmi->sink_is_hdmi && info->color_formats & DRM_COLOR_FORMAT_YCBCR422)
+ 			output_fmts[i++] = MEDIA_BUS_FMT_UYVY10_1X20;
+ 
+-		if (info->color_formats & DRM_COLOR_FORMAT_YCBCR444)
++		if (hdmi->sink_is_hdmi && info->color_formats & DRM_COLOR_FORMAT_YCBCR444)
+ 			output_fmts[i++] = MEDIA_BUS_FMT_YUV10_1X30;
+ 
+ 		output_fmts[i++] = MEDIA_BUS_FMT_RGB101010_1X30;
+ 	}
+ 
+-	if (info->color_formats & DRM_COLOR_FORMAT_YCBCR422)
++	if (hdmi->sink_is_hdmi && info->color_formats & DRM_COLOR_FORMAT_YCBCR422)
+ 		output_fmts[i++] = MEDIA_BUS_FMT_UYVY8_1X16;
+ 
+-	if (info->color_formats & DRM_COLOR_FORMAT_YCBCR444)
++	if (hdmi->sink_is_hdmi && info->color_formats & DRM_COLOR_FORMAT_YCBCR444)
+ 		output_fmts[i++] = MEDIA_BUS_FMT_YUV8_1X24;
+ 
+ 	/* Default 8bit RGB fallback */
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+2.33.0
 

@@ -2,47 +2,47 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 90F9AC433EF
-	for <linux-mips@archiver.kernel.org>; Thu,  7 Apr 2022 01:19:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BE9C0C4167D
+	for <linux-mips@archiver.kernel.org>; Thu,  7 Apr 2022 01:19:40 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237747AbiDGBVd (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 6 Apr 2022 21:21:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35246 "EHLO
+        id S238621AbiDGBVe (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 6 Apr 2022 21:21:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60914 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238134AbiDGBRf (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 6 Apr 2022 21:17:35 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57002186881;
-        Wed,  6 Apr 2022 18:12:45 -0700 (PDT)
+        with ESMTP id S240381AbiDGBT6 (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 6 Apr 2022 21:19:58 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40BD9184B4A;
+        Wed,  6 Apr 2022 18:15:59 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 04B0CB81E79;
-        Thu,  7 Apr 2022 01:12:44 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C7F9DC385A3;
-        Thu,  7 Apr 2022 01:12:41 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id D261561DA8;
+        Thu,  7 Apr 2022 01:15:58 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6653BC385A3;
+        Thu,  7 Apr 2022 01:15:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1649293962;
-        bh=TGsK3aQ5NEMfZJcdqIApNUCgUyO9h4QFqmtyBlucvSM=;
+        s=k20201202; t=1649294158;
+        bh=lsTQfPcjQ3GMPoVWgE/XB3ejk49g6YF+BtG3dlMGAVs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hjZt0yX6m4ZrW8WRBOpxXtgrKqUa2soQVKKlW2rvhJnyUOr0jPgI04RnMUiFa4ill
-         hKJT4gQWOQh5YEua3VrU2IBWOylvSlgXocXabCBNI9RAq5QIRcbuNbBZpgjYm6SpAF
-         S1DTET0RAfR993CFMuBEtwB167BLQfmZhXFH6xKOsH9yMQUqkcOHjEYElxVjtTM+PU
-         a3OIVaFeQCJM+QrXzKz8IJYainkqWYjMShKyAJjYP+dMDDUsFYiKKOWd/91FamFIjH
-         4SDcB27/OF8ayZ9O/fHWS+KdvQFM2wMlbloNCEa51lqnbh7OlBksCLlWj3DoRrR2JV
-         hlI55qoAISiSw==
+        b=lsJDXnW5UkbOa24PlNX3viMnmhIlXvnR3mX0yOeKhFtyxYWeF8o/hnT8H4BVq330m
+         a0mS5ipRgBHyAjGCdT3futPMKiUTWGGXcuxRuS7zS4i8rsh+8o/Y/6Uv+pLKOs05Jk
+         vwSKCO3AvbC57I9IEHn6LTbGOrHBXjJcTxuE1NM7ajXGkdq0GRPgQ7xL+ewPovHDT5
+         5BI39GzqFEiqZiouiOs1immHrT4yNC1oGuwEOWX1qxp/qy2e8JLJ1o6ie3CU20M1df
+         cCdAGgJzI1Yn4M/4rWx56qityP5WmTxKv0yVKa8z4kXYFRr5btol0rUE0RYWUv9q6t
+         MxGZ21A99WA+A==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Xiaoke Wang <xkernel.wang@foxmail.com>,
         Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
         Sasha Levin <sashal@kernel.org>, john@phrozen.org,
         wangborong@cdjrlc.com, linux-mips@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.16 25/30] MIPS: lantiq: check the return value of kzalloc()
-Date:   Wed,  6 Apr 2022 21:11:35 -0400
-Message-Id: <20220407011140.113856-25-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.4 12/17] MIPS: lantiq: check the return value of kzalloc()
+Date:   Wed,  6 Apr 2022 21:15:16 -0400
+Message-Id: <20220407011521.115014-12-sashal@kernel.org>
 X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20220407011140.113856-1-sashal@kernel.org>
-References: <20220407011140.113856-1-sashal@kernel.org>
+In-Reply-To: <20220407011521.115014-1-sashal@kernel.org>
+References: <20220407011521.115014-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -70,7 +70,7 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  3 files changed, 34 insertions(+), 16 deletions(-)
 
 diff --git a/arch/mips/lantiq/falcon/sysctrl.c b/arch/mips/lantiq/falcon/sysctrl.c
-index 42222f849bd2..446a2536999b 100644
+index 037b08f3257e..a2837a54d972 100644
 --- a/arch/mips/lantiq/falcon/sysctrl.c
 +++ b/arch/mips/lantiq/falcon/sysctrl.c
 @@ -167,6 +167,8 @@ static inline void clkdev_add_sys(const char *dev, unsigned int module,
@@ -96,10 +96,10 @@ index 3d5683e75cf1..200fe9ff641d 100644
  	clk->cl.con_id = con;
  	clk->cl.clk = clk;
 diff --git a/arch/mips/lantiq/xway/sysctrl.c b/arch/mips/lantiq/xway/sysctrl.c
-index 917fac1636b7..084f6caba5f2 100644
+index 2ee68d6e8bb9..6c2d9779ac72 100644
 --- a/arch/mips/lantiq/xway/sysctrl.c
 +++ b/arch/mips/lantiq/xway/sysctrl.c
-@@ -315,6 +315,8 @@ static void clkdev_add_pmu(const char *dev, const char *con, bool deactivate,
+@@ -311,6 +311,8 @@ static void clkdev_add_pmu(const char *dev, const char *con, bool deactivate,
  {
  	struct clk *clk = kzalloc(sizeof(struct clk), GFP_KERNEL);
  
@@ -108,7 +108,7 @@ index 917fac1636b7..084f6caba5f2 100644
  	clk->cl.dev_id = dev;
  	clk->cl.con_id = con;
  	clk->cl.clk = clk;
-@@ -338,6 +340,8 @@ static void clkdev_add_cgu(const char *dev, const char *con,
+@@ -334,6 +336,8 @@ static void clkdev_add_cgu(const char *dev, const char *con,
  {
  	struct clk *clk = kzalloc(sizeof(struct clk), GFP_KERNEL);
  
@@ -117,7 +117,7 @@ index 917fac1636b7..084f6caba5f2 100644
  	clk->cl.dev_id = dev;
  	clk->cl.con_id = con;
  	clk->cl.clk = clk;
-@@ -356,24 +360,28 @@ static void clkdev_add_pci(void)
+@@ -352,24 +356,28 @@ static void clkdev_add_pci(void)
  	struct clk *clk_ext = kzalloc(sizeof(struct clk), GFP_KERNEL);
  
  	/* main pci clock */
@@ -162,7 +162,7 @@ index 917fac1636b7..084f6caba5f2 100644
  }
  
  /* xway socs can generate clocks on gpio pins */
-@@ -393,9 +401,15 @@ static void clkdev_add_clkout(void)
+@@ -389,9 +397,15 @@ static void clkdev_add_clkout(void)
  		char *name;
  
  		name = kzalloc(sizeof("clkout0"), GFP_KERNEL);

@@ -2,58 +2,58 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C7EC3C433EF
-	for <linux-mips@archiver.kernel.org>; Sat,  9 Apr 2022 13:27:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B7988C433EF
+	for <linux-mips@archiver.kernel.org>; Sat,  9 Apr 2022 13:28:17 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241966AbiDIN3F (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Sat, 9 Apr 2022 09:29:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41178 "EHLO
+        id S242046AbiDINaV (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Sat, 9 Apr 2022 09:30:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53798 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242216AbiDIN2C (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Sat, 9 Apr 2022 09:28:02 -0400
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91463BF534
-        for <linux-mips@vger.kernel.org>; Sat,  9 Apr 2022 06:24:52 -0700 (PDT)
-Received: by mail-ed1-x534.google.com with SMTP id t25so289923edt.9
-        for <linux-mips@vger.kernel.org>; Sat, 09 Apr 2022 06:24:52 -0700 (PDT)
+        with ESMTP id S234369AbiDINaQ (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Sat, 9 Apr 2022 09:30:16 -0400
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AD41A1B1
+        for <linux-mips@vger.kernel.org>; Sat,  9 Apr 2022 06:28:09 -0700 (PDT)
+Received: by mail-ej1-x62f.google.com with SMTP id n6so22225278ejc.13
+        for <linux-mips@vger.kernel.org>; Sat, 09 Apr 2022 06:28:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=message-id:date:mime-version:user-agent:subject:content-language:to
          :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=fDcvYkIEVq0f5BjuAYxIIri1A/cHLRrOx9YyUXqMPAI=;
-        b=UawB3WzU+FxwrZ0kFUke+Bm5I2fHVYUC0ogGFxCbj94TVJljWRaz0NDT5A7zTtAUZP
-         fw8JHjOxm0qDf1SFRI97P2JQv88wFOu2m9eUaHnYpkfvpZ25Rvb4FAMqI14CNSdAjI0q
-         MchM+RmS9n5ye2oDsJq58sV+qzk6fsAb7jzr2e4SvyCyBgoCRj4qEEcZZJWfJkv24jHM
-         RLCIy70bXWocIqk0Ww1n3bzsMfnl5U3iEJa6RmO6EmtvJN+P+HdPPAewAKhfBkB9OdPi
-         ypoMSsTJBzRCut4Tt2V/nUtglORaWD2g+yPw4BTVrKPG/Ir3Rfaxnpm309KIsB8iHEza
-         yEDg==
+        bh=WfUSXlXrMXR33ODc/54LO2tDQwXt6HKIL4RTuhmRewY=;
+        b=JCPkCyGCqp3BPrWxH7ovgeBbLYdi1tscFVS7xVKDVZlj7/NnSTs7WL5yT7RQtUIIzo
+         LsKcQj2cjcmJJNW6pV79TrPQ4t2C9084Kb36I4Hc/YcF44ZlGbZBEW2I6j0S12k9Wqzd
+         XOqfFDR9tWjlV+6xrxtfK3NJw9DfBradQBCYXyzVbVhG+obEE1HcWWz7Xl6Q23azCSd8
+         C1xpqI2ey4Z7MbHDvnQ0Q2GPdiPkkwULfQmErk6utUb8oINrUvnA3/cqFrCnOHxBMxXg
+         3IYNTe6nWOpIHJ+blYZ4h+YCkswD7v3nFsG2QuSunT+DONqwH0fQipjh8xbdqF7yQMpU
+         T4MA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
          :content-language:to:cc:references:from:in-reply-to
          :content-transfer-encoding;
-        bh=fDcvYkIEVq0f5BjuAYxIIri1A/cHLRrOx9YyUXqMPAI=;
-        b=FOh6bLqlg0QEphOcDWruN3ZLEgw4V3o1zTx+x/qck32587cJWPXgEF7CxwRrWuUkce
-         iwptjLugkAiMTUhwqDZJUPMaQOm705mwA22SSI95Kze4woISXx/3cEvACq+XFgmiS4bo
-         gtDL95t4XcQkH6pKWBVHltmoTf02x3uaxZYo/0SY5WTVioGUuQlgWXtLENPI65as16LD
-         RsCgTUY8qqzFKT23ejCpg+rAqFvN4MCjlEQWMkk5l31LRZPd8OJ4ksTYeT1nI/xYgNzY
-         yFljlIYDZLCr0ALQQ+A4S9fj403tRIMFndti3JicmbWWKJ3Wn24qS3aZlaADZkt7EUcV
-         qU8g==
-X-Gm-Message-State: AOAM5335sXUxBC+1Cs+tY1fNGs+wgc/GtWs3zQv8aFPUlSSplthzWu23
-        AmVdMKmhrk2xmZQguuVGxyEYOg==
-X-Google-Smtp-Source: ABdhPJw6YN/NpLXgV8emVgfWbE/XMoacETKHzCEKKobJ+5XMQwN9fvrsU3zZ93bJ71gUMnzQUAZ8xg==
-X-Received: by 2002:a50:8d09:0:b0:41c:b898:19a6 with SMTP id s9-20020a508d09000000b0041cb89819a6mr24551282eds.30.1649510690712;
-        Sat, 09 Apr 2022 06:24:50 -0700 (PDT)
+        bh=WfUSXlXrMXR33ODc/54LO2tDQwXt6HKIL4RTuhmRewY=;
+        b=uHi02SPONbvcrLrFtEGYG2TLNhccyGJbU73We2IqTyb5GXSPFchl+pKhMS4gWZZ/qC
+         E+o5qd6zIL2L7gJA4vIT6vLTasufeOCUB2sFZ1mR9EA6Jb9I9v6dzwaM4F6Wg/Q+GvAm
+         mJWLNqzG20QArtxjfMiB5UAFBkE/C0E73FYZ1vdt2myUNceuRC+3aNE/D1Fay5yj3vKx
+         PI5XAMO1L0r6JoUjAFG4nANT2XEIk6vRxTTat5EGY1UCUgN7Dld3ZuX4XARvaBwa4WgD
+         PCAEkCbIP1p0CDKF0/ClAMFnem1RTme8EhizVeE8VJF11tL3fohBzwfQBQaKqSrq/zkS
+         IqWA==
+X-Gm-Message-State: AOAM531hPRwUuh2CELuvRmgzdDGzhWPF34W5B0yVgcTKiz12PfzLtFvd
+        yRpDtg3JU7cJqCwEXOB8/wfg8eoUQ1q2nYOZ
+X-Google-Smtp-Source: ABdhPJzyu7DiTTQlw3nnSyPL0gMP7uVYvQ5deCqIFbrL6SGeB7jQY9o4HWRld6WxiWhvTxPLaVU7MQ==
+X-Received: by 2002:a17:907:2d9f:b0:6e8:58d9:8c4 with SMTP id gt31-20020a1709072d9f00b006e858d908c4mr6632748ejc.386.1649510887756;
+        Sat, 09 Apr 2022 06:28:07 -0700 (PDT)
 Received: from [192.168.0.188] (xdsl-188-155-201-27.adslplus.ch. [188.155.201.27])
-        by smtp.gmail.com with ESMTPSA id m20-20020a170906235400b006e718d8b849sm7846661eja.45.2022.04.09.06.24.49
+        by smtp.gmail.com with ESMTPSA id cb7-20020a170906a44700b006e879b4ba2dsm287759ejb.56.2022.04.09.06.28.06
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 09 Apr 2022 06:24:50 -0700 (PDT)
-Message-ID: <f40e1a00-be4d-11c7-6a7c-6b50635a2960@linaro.org>
-Date:   Sat, 9 Apr 2022 15:24:49 +0200
+        Sat, 09 Apr 2022 06:28:07 -0700 (PDT)
+Message-ID: <59eded10-699e-299a-a462-530c2e789151@linaro.org>
+Date:   Sat, 9 Apr 2022 15:28:06 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Thunderbird/91.7.0
-Subject: Re: [PATCH 05/18] MIPS: DTS: jz4780: fix pinctrl as reported by
+Subject: Re: [PATCH 10/18] MIPS: DTS: jz4780: fix uart dmas as reported by
  dtbscheck
 Content-Language: en-US
 To:     "H. Nikolaus Schaller" <hns@goldelico.com>
@@ -63,60 +63,34 @@ Cc:     Rob Herring <robh+dt@kernel.org>,
         linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
         linux-mips@vger.kernel.org, letux-kernel@openphoenux.org
 References: <cover.1649443080.git.hns@goldelico.com>
- <1941bc4ed553b27f399ad00ea61ff2b0237d14e3.1649443080.git.hns@goldelico.com>
- <e905896e-335d-a88a-1961-d17b92e46585@linaro.org>
- <530E0F7F-FC03-45DD-BF87-D049D3108AD3@goldelico.com>
- <c84b5ec0-0193-ab62-1985-25bc2baa9f05@linaro.org>
- <B5EB5983-DA9F-4631-B737-2B1417CF9054@goldelico.com>
+ <00ec9d965cac78b252e14444deed8c93f5116bca.1649443080.git.hns@goldelico.com>
+ <a7a46736-e917-7274-1593-147ed36a2a68@linaro.org>
+ <86044652-7B23-4F4D-B60F-C413F3C7BEF1@goldelico.com>
+ <79dd8425-947d-603c-ebab-0625921551d8@linaro.org>
+ <5F7268BB-CCF3-4F01-ABB9-D5C3319F31F1@goldelico.com>
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <B5EB5983-DA9F-4631-B737-2B1417CF9054@goldelico.com>
+In-Reply-To: <5F7268BB-CCF3-4F01-ABB9-D5C3319F31F1@goldelico.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On 09/04/2022 15:22, H. Nikolaus Schaller wrote:
+On 09/04/2022 15:26, H. Nikolaus Schaller wrote:
 >>
->> What does that mean? One cannot create multiple patches and apply them?
+>> Which does not make sense and there is no need... Automation does it
+>> (see Rob's tools). Don't make human life more difficult...
 > 
-> This patch set was created by some automatic scripts. And they produce one patch
-> per group of warnings.
+> Ok, you are right. If you apply this patch and then run dtbscheck again, there would be
+> a warning left over.
 > 
-> But here you ask me to merge 4 unrelated topics into a single one.
-> 
-> Or do you mean something else?
+> But may I honestly ask why you review the commits and read the commit message at all?
+> You could simply ignore it... And it would be easier for both of us to leave it completely
+> to Rob's tools :)
+>
 
-You can edit a commit, right? git commit --amend? So where is the problem?
-
-> 
->>
->>> And they are not related. Every one is based on a different .yaml
->>> schema file.
->>
->> Which does not matter, because the name of the node does not matter. We
->> enforce it in schema to makes things organized and easier in testing.
->> This does not fix any real problem, just the problem we created by
->> ourselves with schema.
->>
->>>
->>> That in all cases the result looks similar comes from similar
->>> requirements by the schemata and has no inherent connection.
->>
->> All schemas will require it, won't they? The same for arm...
-> 
-> We may be talking about different things here.
-> 
-> My understanding:
-> you ask me to merge 5/18, 8/18, 9/18, 12/18 because they contain "controller" in the node-name.
-> 
-> Right? If not then we must clarify that first.
-
-No. I ask you to fix all pin-controller cases, for entire MIPS, not just
-one.
-
-And in one month one more. And then again one more.
-
+I am not reading it. :) It takes more effort to scroll to the actual
+contents.
 
 Best regards,
 Krzysztof

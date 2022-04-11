@@ -2,99 +2,193 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A50A2C433EF
-	for <linux-mips@archiver.kernel.org>; Mon, 11 Apr 2022 15:52:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 057BAC433FE
+	for <linux-mips@archiver.kernel.org>; Mon, 11 Apr 2022 16:07:59 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348289AbiDKPy4 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 11 Apr 2022 11:54:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37508 "EHLO
+        id S1345875AbiDKQKL (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 11 Apr 2022 12:10:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41014 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234814AbiDKPy4 (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Mon, 11 Apr 2022 11:54:56 -0400
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F3721A067;
-        Mon, 11 Apr 2022 08:52:41 -0700 (PDT)
-Received: by mail-wr1-x433.google.com with SMTP id c7so23771516wrd.0;
-        Mon, 11 Apr 2022 08:52:41 -0700 (PDT)
+        with ESMTP id S242492AbiDKQKL (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Mon, 11 Apr 2022 12:10:11 -0400
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 353B115A1E;
+        Mon, 11 Apr 2022 09:07:56 -0700 (PDT)
+Received: by mail-wr1-x429.google.com with SMTP id u3so23776198wrg.3;
+        Mon, 11 Apr 2022 09:07:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=CSYUEobIbJ+4TacVBwZODzwx3QJifOGC6/qe9Ci+rXU=;
-        b=HBIWCROoEvWJ2eVhlcfE/vxsU+xGs7MV1CdImhOMNOC4DRNZEhgihXWCfC3ETJjijj
-         yAtCbJ5tCSqk1LNxp6VlZXiTnGGYwpgGwOJOcbH3ByUU8826g75+cbB2ESYqoLZ7U2Zh
-         fYY6dckPplB/h/oHDVL/cT0YhyWFjmRmXYpQSxy+6q5mlk/uOw9AWQbUb58XCvc+vzRJ
-         qOse1IX13DmxeCVjYZwcOXkg+/7RJh64U+7U4eiy06i3PPjfO6yDDdN8bHbZGa+Akz9r
-         8ERJTL5xBCMv4AV32OtlUmKpuYM3JlEvVT3SPaubosuykisD/bQU5zyAFzAR1y6sN+PB
-         D2+w==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=EhYDrblculfpaFgkZPez4Ue+cOiQQ05MeuW7S3DyiIQ=;
+        b=peziRnRsQBMeUf9bsErHa822sErI+XGFJPlvGIfWSlLK+E5KNdBBUE1ysbInn+jVLn
+         +71u2Nvi7f2G3r1tzUf1dWKGMZrxhqpEhnmx67X9CnsIAZjTsy6Jrv1fvZCDdJ3lNUJT
+         s3oAqGANXwMwhTAHpNSgJzNsIpsoNIk3zM+GHa78DiF9JEER71rD2KSJ9VxQGJqnNDCe
+         +GBrhD6kVWilJmwsOOhkQyg6ay3N9cdPK59+yRhk56qRrL7g3cB8HE1D1EMcJrBHLns3
+         u6frVHRgKaFsvgcFicBxIa5Uk72pbNTrLqPydmJMM6n+tADuC2TgVLA5JCWJuloH5Qp5
+         gG3A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=CSYUEobIbJ+4TacVBwZODzwx3QJifOGC6/qe9Ci+rXU=;
-        b=3VemBzj8X4J+LcsdTRicffly6DEnSQH5Pq+2KuQdd9gQL4tSstcOXE2BuMHc+su6M3
-         8zzuTULOov6Cdjn02XLwZ83LYsY1itiMdxlq0te/l5UTBBmCmFr74IPyVhDyay8oDSyU
-         1QUvgHo9Cb1ZkGcu/VrBS2htLeTvjeEpCoq4jYgHO8Jd2E/woPU216oyJVzQdlGf1CRg
-         f4v4Hl5J7CmlTAbB6wxkJmuTV4riKPpbMV/7qFUXkhTxBJYQXIq7ogwhN3cgtqoCG8zd
-         YTIKdJo2BpL6BSQ43o/6NiJmCyW2gQjcQbMyzGeoDeCfwY6UlVuhNS7A0vUzkI/y/kxN
-         UgBw==
-X-Gm-Message-State: AOAM530AwZYW1ohfFGP0dZU+5FP7SG5shU9rSZXs8TlEStEBe/+Zc+vI
-        JBN+Xec1ELQKGmVsuy3ucoapuviyhc6XyA==
-X-Google-Smtp-Source: ABdhPJxCMRZaoaSRaLPAztQnRdw7+/CWojexfEBQNrWbrHW1VwFLK8uUJTbLxyw4KCIaOnH7kLwGQQ==
-X-Received: by 2002:a05:6000:1044:b0:1eb:f72c:7f25 with SMTP id c4-20020a056000104400b001ebf72c7f25mr25187203wrx.155.1649692359757;
-        Mon, 11 Apr 2022 08:52:39 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=EhYDrblculfpaFgkZPez4Ue+cOiQQ05MeuW7S3DyiIQ=;
+        b=35Mh+F9Hiio3hMustUiZMsG7ewE1JH9QYgaYtD/28D6+s+kDdQcIQQGoqBmWnROHg+
+         8pycs49WchBcnsXolr6y4/T/X3S8VYwHWiVTkfGYy++dL7o+p0ULu/eB+mzrBgy2NZKF
+         o7llUhOUoLdlkLO/Kafj/I1wf7kfQNRjxZ2wgTMF7c/gU654IM5W7uPpf3c2EKxWzFZM
+         EdINmUbqepmLyKPwyq9R4RsWyHCp9xYA2DksToNugwfGe4x1hMvWD4Ovc8yBYv/xzyse
+         yj7DCUtCR1O+w6EZ//AZV5u0w+OzjBEUa9ONrM1mwhmt6QVQl1DWfHN6XBzyzHH1T4lB
+         Kg+A==
+X-Gm-Message-State: AOAM533CjJUyVuPSXzA05h44E2OUM/oCL6WYo9G6tpeTBfo5BQngkgPz
+        7yQkOd1dyErUup4lHZgoNQc=
+X-Google-Smtp-Source: ABdhPJxSqY98uimlygBQ4qN91Jukoq9MDcm+rrkCh8J2a6AoOBiLVcHq05gidksHoh8WqPBJLEvDug==
+X-Received: by 2002:a5d:6350:0:b0:207:98d5:9bcf with SMTP id b16-20020a5d6350000000b0020798d59bcfmr12885558wrw.40.1649693274790;
+        Mon, 11 Apr 2022 09:07:54 -0700 (PDT)
 Received: from localhost (92.40.202.92.threembb.co.uk. [92.40.202.92])
-        by smtp.gmail.com with ESMTPSA id t12-20020a05600001cc00b00207aac5d595sm1440015wrx.38.2022.04.11.08.52.38
+        by smtp.gmail.com with ESMTPSA id f13-20020a05600c154d00b0038ec43c48bfsm549775wmg.33.2022.04.11.09.07.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Apr 2022 08:52:39 -0700 (PDT)
+        Mon, 11 Apr 2022 09:07:54 -0700 (PDT)
+Date:   Mon, 11 Apr 2022 17:08:41 +0100
 From:   Aidan MacDonald <aidanmacdonald.0x0@gmail.com>
-To:     robh+dt@kernel.org, krzk+dt@kernel.org
-Cc:     paul@crapouillou.net, zhouyu@wanyeetech.com,
+To:     Paul Cercueil <paul@crapouillou.net>
+Cc:     robh+dt@kernel.org, krzk+dt@kernel.org, tsbogend@alpha.franken.de,
+        mturquette@baylibre.com, sboyd@kernel.org,
         linux-mips@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2] mips: dts: ingenic: x1000: Add PWM device tree node
-Date:   Mon, 11 Apr 2022 16:53:15 +0100
-Message-Id: <20220411155315.51769-1-aidanmacdonald.0x0@gmail.com>
+        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org
+Subject: Re: [PATCH v4 2/2] clk: ingenic-tcu: Fix missing TCU clock for X1000
+ SoCs
+Message-ID: <YlRSiUkdFkNoPMaH@localhost>
+References: <20220411154241.50834-1-aidanmacdonald.0x0@gmail.com>
+ <20220411154241.50834-3-aidanmacdonald.0x0@gmail.com>
+ <FKM6AR.T3U5W4W42W2R3@crapouillou.net>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <FKM6AR.T3U5W4W42W2R3@crapouillou.net>
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Copied from the jz4740 devicetree and trimmed to 5 timers, which
-is what the hardware supports.
+On Mon, Apr 11, 2022 at 04:48:15PM +0100, Paul Cercueil wrote:
+> Hi Aidan,
+> 
+> Le lun., avril 11 2022 at 16:42:41 +0100, Aidan MacDonald 
+> <aidanmacdonald.0x0@gmail.com> a écrit :
+> > The TCU clock gate on X1000 wasn't requested by the driver and could
+> > be gated automatically later on in boot, which prevents timers from
+> > running and breaks PWM.
+> > 
+> > Add a workaround to support old device trees that don't specify the
+> > "tcu" clock gate. In this case the kernel will print a warning and
+> > attempt to continue without the clock, which is wrong, but it could
+> > work if "clk_ignore_unused" is in the kernel arguments.
+> > 
+> > Signed-off-by: Aidan MacDonald <aidanmacdonald.0x0@gmail.com>
+> > ---
+> >  drivers/clk/ingenic/tcu.c | 38 ++++++++++++++++++++++++++------------
+> >  1 file changed, 26 insertions(+), 12 deletions(-)
+> > 
+> > diff --git a/drivers/clk/ingenic/tcu.c b/drivers/clk/ingenic/tcu.c
+> > index 77acfbeb4830..ce8c768db997 100644
+> > --- a/drivers/clk/ingenic/tcu.c
+> > +++ b/drivers/clk/ingenic/tcu.c
+> > @@ -31,6 +31,7 @@ struct ingenic_soc_info {
+> >  	unsigned int num_channels;
+> >  	bool has_ost;
+> >  	bool has_tcu_clk;
+> > +	bool allow_missing_tcu_clk;
+> >  };
+> > 
+> >  struct ingenic_tcu_clk_info {
+> > @@ -320,7 +321,8 @@ static const struct ingenic_soc_info 
+> > jz4770_soc_info = {
+> >  static const struct ingenic_soc_info x1000_soc_info = {
+> >  	.num_channels = 8,
+> >  	.has_ost = false, /* X1000 has OST, but it not belong TCU */
+> > -	.has_tcu_clk = false,
+> > +	.has_tcu_clk = true,
+> > +	.allow_missing_tcu_clk = true,
+> >  };
+> > 
+> >  static const struct of_device_id __maybe_unused 
+> > ingenic_tcu_of_match[] __initconst = {
+> > @@ -354,15 +356,27 @@ static int __init ingenic_tcu_probe(struct 
+> > device_node *np)
+> >  	if (tcu->soc_info->has_tcu_clk) {
+> >  		tcu->clk = of_clk_get_by_name(np, "tcu");
+> >  		if (IS_ERR(tcu->clk)) {
+> > -			ret = PTR_ERR(tcu->clk);
+> > -			pr_crit("Cannot get TCU clock\n");
+> > -			goto err_free_tcu;
+> > -		}
+> > -
+> > -		ret = clk_prepare_enable(tcu->clk);
+> > -		if (ret) {
+> > -			pr_crit("Unable to enable TCU clock\n");
+> > -			goto err_put_clk;
+> > +			/*
+> > +			 * Old device trees for some SoCs did not include the
+> > +			 * TCU clock because this driver (incorrectly) didn't
+> > +			 * use it. In this case we complain loudly and attempt
+> > +			 * to continue without the clock, which might work if
+> > +			 * booting with workarounds like "clk_ignore_unused".
+> > +			 */
+> 
+> Why not unconditionally enable it instead? Then it would boot without 
+> clk_ignore_unused.
+> 
+> Cheers,
+> -Paul
 
-Signed-off-by: Aidan MacDonald <aidanmacdonald.0x0@gmail.com>
----
-v2: Reduce regmap length since only the first 5 timers need to be accessed,
-    and don't wrap the clock-names at 80 columns.
+I could, but why add essentially dead code to the kernel? Maintaining the
+old behavior has the "advantage" that it remains broken in the same way as
+before, so any workarounds anyone was using will continue to work the same.
+And if they were not using workarounds and got a broken kernel, this patch
+will not make anything *more* broken, in fact it will not cause any change
+in behavior in that case (aside from the warning message).
 
- arch/mips/boot/dts/ingenic/x1000.dtsi | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+But if you think it's best to just enable the clock anyway, let me know
+and I'll send a new patch.
 
-diff --git a/arch/mips/boot/dts/ingenic/x1000.dtsi b/arch/mips/boot/dts/ingenic/x1000.dtsi
-index 8bd27edef216..c2cdbf947264 100644
---- a/arch/mips/boot/dts/ingenic/x1000.dtsi
-+++ b/arch/mips/boot/dts/ingenic/x1000.dtsi
-@@ -127,6 +127,18 @@ wdt: watchdog@0 {
- 			clocks = <&tcu TCU_CLK_WDT>;
- 			clock-names = "wdt";
- 		};
-+
-+		pwm: pwm@40 {
-+			compatible = "ingenic,x1000-pwm";
-+			reg = <0x40 0x50>;
-+
-+			#pwm-cells = <3>;
-+
-+			clocks = <&tcu TCU_CLK_TIMER0>, <&tcu TCU_CLK_TIMER1>,
-+				 <&tcu TCU_CLK_TIMER2>, <&tcu TCU_CLK_TIMER3>,
-+				 <&tcu TCU_CLK_TIMER4>;
-+			clock-names = "timer0", "timer1", "timer2", "timer3", "timer4";
-+		};
- 	};
- 
- 	rtc: rtc@10003000 {
--- 
-2.35.1
+Regards,
+Aidan
 
+> 
+> > +			if (tcu->soc_info->allow_missing_tcu_clk &&
+> > +			    PTR_ERR(tcu->clk) == -EINVAL) {
+> > +				pr_warn("TCU clock missing from device tree, please update your 
+> > device tree\n");
+> > +				tcu->clk = NULL;
+> > +			} else {
+> > +				pr_crit("Cannot get TCU clock from device tree\n");
+> > +				goto err_free_tcu;
+> > +			}
+> > +		} else {
+> > +			ret = clk_prepare_enable(tcu->clk);
+> > +			if (ret) {
+> > +				pr_crit("Unable to enable TCU clock\n");
+> > +				goto err_put_clk;
+> > +			}
+> >  		}
+> >  	}
+> > 
+> > @@ -432,10 +446,10 @@ static int __init ingenic_tcu_probe(struct 
+> > device_node *np)
+> >  			clk_hw_unregister(tcu->clocks->hws[i]);
+> >  	kfree(tcu->clocks);
+> >  err_clk_disable:
+> > -	if (tcu->soc_info->has_tcu_clk)
+> > +	if (tcu->clk)
+> >  		clk_disable_unprepare(tcu->clk);
+> >  err_put_clk:
+> > -	if (tcu->soc_info->has_tcu_clk)
+> > +	if (tcu->clk)
+> >  		clk_put(tcu->clk);
+> >  err_free_tcu:
+> >  	kfree(tcu);
+> > --
+> > 2.35.1
+> > 
+> 
+> 

@@ -2,31 +2,31 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 47736C352A7
-	for <linux-mips@archiver.kernel.org>; Mon, 11 Apr 2022 23:42:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 01BC6C433FE
+	for <linux-mips@archiver.kernel.org>; Mon, 11 Apr 2022 23:42:19 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235389AbiDKXob (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 11 Apr 2022 19:44:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52362 "EHLO
+        id S241964AbiDKXoa (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 11 Apr 2022 19:44:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54162 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242510AbiDKXnN (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Mon, 11 Apr 2022 19:43:13 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1ECFA2899B;
-        Mon, 11 Apr 2022 16:40:14 -0700 (PDT)
+        with ESMTP id S242003AbiDKXnI (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Mon, 11 Apr 2022 19:43:08 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [46.235.227.227])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFED227B1A;
+        Mon, 11 Apr 2022 16:40:05 -0700 (PDT)
 Received: from [127.0.0.1] (localhost [127.0.0.1])
         (Authenticated sender: dmitry.osipenko)
-        with ESMTPSA id D86491F43D58
+        with ESMTPSA id C54481F43D47
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1649720412;
-        bh=hM34PKEn71kZ4xmXtCUPFr55eHz3/O1kuCmTOESUU4Y=;
+        s=mail; t=1649720404;
+        bh=cnHjDAfLjeN/AIsHQIAOeHk5PbeJoiUi4VLInc7k0yc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PtPUJQlDJJ5rFuzVrYc+ESusSLLSHjZpdI9VFKwDgE+S5NJFGesj4Fc4uzYDZNjFE
-         Ocf1F6B6cNDijXJ8/rU+1itKUTFbA5k0hlMvClUxNU3r93u9bbCIlECnb3oK0D92VE
-         SmO2ItGQR3u4t4yU6MknssGmHsTeCAjU2I3E+avkHq/MTRdeRZ/rxlf8APJXUO/7bK
-         r60HG7usRXR0WITVJVWyXlqP8LliCU+Qfwy3xYSMvysUlHTbP4wCXc3foDBH00lfIw
-         n1XLBbyjWeLabI4Y6zfSOi7mGOmoxPMX56wdx1OGzy6vufi46SxqVuIBGfFcqihN3w
-         Oo5Wc9WAPzgqQ==
+        b=N3hDoAur/4R+Ao3qbUrQ9sph7VfA2pPJkO49+7pzUDxKozw+TJHr9twtA1owBoHaK
+         jeJ6B07npfM+SylxlSqnME8JfVE2vevyxKZ9lTn4s9Qw9vx+X6hhDoouVhYJDq5apc
+         y7lsoKFIkiE0/+667mmNFPBQQ/5lfxEeBIQEc7C2QBX4hmq+L87GQYAfi2gzcxAGio
+         u+zbvkNur7jarlv+OuyEU/CSCUrFclTe1l/ZXiNfPE9aKi/UUzKTU/f1AmCalNxuAo
+         3xfp4XM4wHtnjC3ixsxh5HNKTfwCEN6VEvSBB5gq5BRCqg81jXfmgQzP5Ib+l0LREw
+         E3JVhJaC/Ac2Q==
 From:   Dmitry Osipenko <dmitry.osipenko@collabora.com>
 To:     Thierry Reding <thierry.reding@gmail.com>,
         Jonathan Hunter <jonathanh@nvidia.com>,
@@ -78,9 +78,9 @@ Cc:     linux-kernel@vger.kernel.org, linux-csky@vger.kernel.org,
         linux-riscv@lists.infradead.org, linux-sh@vger.kernel.org,
         xen-devel@lists.xenproject.org, linux-acpi@vger.kernel.org,
         linux-pm@vger.kernel.org, linux-tegra@vger.kernel.org
-Subject: [PATCH v7 19/20] regulator: pfuze100: Use devm_register_sys_off_handler()
-Date:   Tue, 12 Apr 2022 02:38:31 +0300
-Message-Id: <20220411233832.391817-20-dmitry.osipenko@collabora.com>
+Subject: [PATCH v7 17/20] memory: emif: Use kernel_can_power_off()
+Date:   Tue, 12 Apr 2022 02:38:29 +0300
+Message-Id: <20220411233832.391817-18-dmitry.osipenko@collabora.com>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220411233832.391817-1-dmitry.osipenko@collabora.com>
 References: <20220411233832.391817-1-dmitry.osipenko@collabora.com>
@@ -90,108 +90,27 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Use devm_register_sys_off_handler() that replaces global
-pm_power_off_prepare variable and allows to register multiple
-power-off handlers.
+Replace legacy pm_power_off with kernel_can_power_off() helper that
+is aware about chained power-off handlers.
 
-Acked-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Dmitry Osipenko <dmitry.osipenko@collabora.com>
 ---
- drivers/regulator/pfuze100-regulator.c | 38 ++++++++++----------------
- 1 file changed, 14 insertions(+), 24 deletions(-)
+ drivers/memory/emif.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/regulator/pfuze100-regulator.c b/drivers/regulator/pfuze100-regulator.c
-index d60d7d1b7fa2..2eca8d43a097 100644
---- a/drivers/regulator/pfuze100-regulator.c
-+++ b/drivers/regulator/pfuze100-regulator.c
-@@ -10,6 +10,7 @@
- #include <linux/of_device.h>
- #include <linux/regulator/of_regulator.h>
- #include <linux/platform_device.h>
-+#include <linux/reboot.h>
- #include <linux/regulator/driver.h>
- #include <linux/regulator/machine.h>
- #include <linux/regulator/pfuze100.h>
-@@ -76,6 +77,7 @@ struct pfuze_chip {
- 	struct pfuze_regulator regulator_descs[PFUZE100_MAX_REGULATOR];
- 	struct regulator_dev *regulators[PFUZE100_MAX_REGULATOR];
- 	struct pfuze_regulator *pfuze_regulators;
-+	struct sys_off_handler sys_off;
- };
+diff --git a/drivers/memory/emif.c b/drivers/memory/emif.c
+index edf3ba7447ed..fa6845313a43 100644
+--- a/drivers/memory/emif.c
++++ b/drivers/memory/emif.c
+@@ -630,7 +630,7 @@ static irqreturn_t emif_threaded_isr(int irq, void *dev_id)
+ 		dev_emerg(emif->dev, "SDRAM temperature exceeds operating limit.. Needs shut down!!!\n");
  
- static const int pfuze100_swbst[] = {
-@@ -569,10 +571,10 @@ static inline struct device_node *match_of_node(int index)
- 	return pfuze_matches[index].of_node;
- }
- 
--static struct pfuze_chip *syspm_pfuze_chip;
--
--static void pfuze_power_off_prepare(void)
-+static void pfuze_power_off_prepare(struct power_off_prep_data *data)
- {
-+	struct pfuze_chip *syspm_pfuze_chip = data->cb_data;
-+
- 	dev_info(syspm_pfuze_chip->dev, "Configure standby mode for power off");
- 
- 	/* Switch from default mode: APS/APS to APS/Off */
-@@ -611,24 +613,23 @@ static void pfuze_power_off_prepare(void)
- 
- static int pfuze_power_off_prepare_init(struct pfuze_chip *pfuze_chip)
- {
-+	int err;
-+
- 	if (pfuze_chip->chip_id != PFUZE100) {
- 		dev_warn(pfuze_chip->dev, "Requested pm_power_off_prepare handler for not supported chip\n");
- 		return -ENODEV;
- 	}
- 
--	if (pm_power_off_prepare) {
--		dev_warn(pfuze_chip->dev, "pm_power_off_prepare is already registered.\n");
--		return -EBUSY;
--	}
-+	pfuze_chip->sys_off.power_off_prepare_cb = pfuze_power_off_prepare;
-+	pfuze_chip->sys_off.cb_data = pfuze_chip;
- 
--	if (syspm_pfuze_chip) {
--		dev_warn(pfuze_chip->dev, "syspm_pfuze_chip is already set.\n");
--		return -EBUSY;
-+	err = devm_register_sys_off_handler(pfuze_chip->dev, &pfuze_chip->sys_off);
-+	if (err) {
-+		dev_err(pfuze_chip->dev,
-+			"failed to register sys-off handler: %d\n", err);
-+		return err;
- 	}
- 
--	syspm_pfuze_chip = pfuze_chip;
--	pm_power_off_prepare = pfuze_power_off_prepare;
--
- 	return 0;
- }
- 
-@@ -837,23 +838,12 @@ static int pfuze100_regulator_probe(struct i2c_client *client,
- 	return 0;
- }
- 
--static int pfuze100_regulator_remove(struct i2c_client *client)
--{
--	if (syspm_pfuze_chip) {
--		syspm_pfuze_chip = NULL;
--		pm_power_off_prepare = NULL;
--	}
--
--	return 0;
--}
--
- static struct i2c_driver pfuze_driver = {
- 	.driver = {
- 		.name = "pfuze100-regulator",
- 		.of_match_table = pfuze_dt_ids,
- 	},
- 	.probe = pfuze100_regulator_probe,
--	.remove = pfuze100_regulator_remove,
- };
- module_i2c_driver(pfuze_driver);
- 
+ 		/* If we have Power OFF ability, use it, else try restarting */
+-		if (pm_power_off) {
++		if (kernel_can_power_off()) {
+ 			kernel_power_off();
+ 		} else {
+ 			WARN(1, "FIXME: NO pm_power_off!!! trying restart\n");
 -- 
 2.35.1
 

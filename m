@@ -2,31 +2,31 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A84B8C4321E
-	for <linux-mips@archiver.kernel.org>; Mon, 11 Apr 2022 23:42:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D26E1C433EF
+	for <linux-mips@archiver.kernel.org>; Mon, 11 Apr 2022 23:42:16 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240526AbiDKXoV (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 11 Apr 2022 19:44:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52604 "EHLO
+        id S241673AbiDKXoZ (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 11 Apr 2022 19:44:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53744 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239481AbiDKXmM (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Mon, 11 Apr 2022 19:42:12 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B097124F36;
-        Mon, 11 Apr 2022 16:39:49 -0700 (PDT)
+        with ESMTP id S241570AbiDKXnF (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Mon, 11 Apr 2022 19:43:05 -0400
+Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [46.235.227.227])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD40B27157;
+        Mon, 11 Apr 2022 16:40:01 -0700 (PDT)
 Received: from [127.0.0.1] (localhost [127.0.0.1])
         (Authenticated sender: dmitry.osipenko)
-        with ESMTPSA id AD56B1F43D26
+        with ESMTPSA id C16F31F43D44
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1649720388;
-        bh=GqegTH1d3tMqHPbUQWr88cV7jN0COVH27sIz9pT1gAo=;
+        s=mail; t=1649720400;
+        bh=tQBjrLc8wxDM/i52bUpXMeBe/Yyvxo9TnWn/cLTHgHQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=oNiifi7dKhRBJqlGqEGJN6kAbfl8D4gCFwyVEi2cbtQeDKacFGHrwrDqFrDieN4wA
-         WhU41Hw3FPE2AYgfpN+3OIBTLyDM6SATFLFgianFO+wlHnAZJ7DQGXWLQfkL9dJkaT
-         mB39pfoWli1fA81DJ8zLGK9wjZabPOgGwSSryJ+aE2QaqRXwuzGuq7Z1JX90KJJAAn
-         BKO/88PeAen8MwGhUWEcBs8eDaefezxNcymSAruqMCHCNlKwOD7WTRW6jTC+W8qLzu
-         ZDQ/PYjaYqEgi+LYSYEmG3SZyxk7xquxfA6vSz5KC0WdP1SUt4TzNPONt3aIqIrOCj
-         2bJE2XBftWM2g==
+        b=UkG7tcSwL+91g3dVfqEnPY3BuC71fVJElMqsfljBoKbyZADM1aklFPTybo4Yg/Sho
+         m1H9ejpSdOkWGU0WDyo+ejDP0+AWN8iLlx8aej6TjaLlhbeRjZhKn+mVxDsF00AdT6
+         GD71LDlNuOaEQ6Wg2bej41JN04RfNu1qafGZPu3z6U9Zy7WYCYx/OYXC4l6NzDw8fG
+         8JXkmUCmD6p9tsYvRq7TkB5WLA2gvNzOyALTkP3xqccJvx3C6460dShM7i36zJi1HJ
+         58I+BhUvpRHeCZfqxub8dMNc4jeg83wgps+KIWLm/iUHIlPtZWOlYdTWDl/M4yVzZN
+         k83/KXiUv8lzQ==
 From:   Dmitry Osipenko <dmitry.osipenko@collabora.com>
 To:     Thierry Reding <thierry.reding@gmail.com>,
         Jonathan Hunter <jonathanh@nvidia.com>,
@@ -78,9 +78,9 @@ Cc:     linux-kernel@vger.kernel.org, linux-csky@vger.kernel.org,
         linux-riscv@lists.infradead.org, linux-sh@vger.kernel.org,
         xen-devel@lists.xenproject.org, linux-acpi@vger.kernel.org,
         linux-pm@vger.kernel.org, linux-tegra@vger.kernel.org
-Subject: [PATCH v7 13/20] sh: Use do_kernel_power_off()
-Date:   Tue, 12 Apr 2022 02:38:25 +0300
-Message-Id: <20220411233832.391817-14-dmitry.osipenko@collabora.com>
+Subject: [PATCH v7 16/20] mips: Use do_kernel_power_off()
+Date:   Tue, 12 Apr 2022 02:38:28 +0300
+Message-Id: <20220411233832.391817-17-dmitry.osipenko@collabora.com>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220411233832.391817-1-dmitry.osipenko@collabora.com>
 References: <20220411233832.391817-1-dmitry.osipenko@collabora.com>
@@ -97,23 +97,23 @@ be converted to the new power-off API.
 
 Signed-off-by: Dmitry Osipenko <dmitry.osipenko@collabora.com>
 ---
- arch/sh/kernel/reboot.c | 3 +--
+ arch/mips/kernel/reset.c | 3 +--
  1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/arch/sh/kernel/reboot.c b/arch/sh/kernel/reboot.c
-index 5c33f036418b..e8eeedc9b182 100644
---- a/arch/sh/kernel/reboot.c
-+++ b/arch/sh/kernel/reboot.c
-@@ -46,8 +46,7 @@ static void native_machine_shutdown(void)
+diff --git a/arch/mips/kernel/reset.c b/arch/mips/kernel/reset.c
+index 6288780b779e..e7ce07b3e79b 100644
+--- a/arch/mips/kernel/reset.c
++++ b/arch/mips/kernel/reset.c
+@@ -114,8 +114,7 @@ void machine_halt(void)
  
- static void native_machine_power_off(void)
+ void machine_power_off(void)
  {
 -	if (pm_power_off)
 -		pm_power_off();
 +	do_kernel_power_off();
- }
  
- static void native_machine_halt(void)
+ #ifdef CONFIG_SMP
+ 	preempt_disable();
 -- 
 2.35.1
 

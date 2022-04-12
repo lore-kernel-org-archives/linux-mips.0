@@ -2,78 +2,116 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BDBCDC4321E
-	for <linux-mips@archiver.kernel.org>; Tue, 12 Apr 2022 18:30:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5B512C4332F
+	for <linux-mips@archiver.kernel.org>; Tue, 12 Apr 2022 19:33:02 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1358722AbiDLSdF (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 12 Apr 2022 14:33:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42688 "EHLO
+        id S1357395AbiDLTfR (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 12 Apr 2022 15:35:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41352 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1358721AbiDLScc (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Tue, 12 Apr 2022 14:32:32 -0400
-Received: from out28-49.mail.aliyun.com (out28-49.mail.aliyun.com [115.124.28.49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 500C84EA27;
-        Tue, 12 Apr 2022 11:30:13 -0700 (PDT)
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.1796213|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.00899754-0.00548934-0.985513;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047198;MF=zhouyanjie@wanyeetech.com;NM=1;PH=DS;RN=16;RT=16;SR=0;TI=SMTPD_---.NPNg.o-_1649788208;
-Received: from zhouyanjie-virtual-machine.localdomain(mailfrom:zhouyanjie@wanyeetech.com fp:SMTPD_---.NPNg.o-_1649788208)
-          by smtp.aliyun-inc.com(33.37.68.114);
-          Wed, 13 Apr 2022 02:30:09 +0800
-From:   =?UTF-8?q?=E5=91=A8=E7=90=B0=E6=9D=B0=20=28Zhou=20Yanjie=29?= 
-        <zhouyanjie@wanyeetech.com>
-To:     gregkh@linuxfoundation.org, hminas@synopsys.com,
-        robh+dt@kernel.org, krzk+dt@kernel.org
-Cc:     linux-usb@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        dragancecavac@yahoo.com, hns@goldelico.com,
-        dongsheng.qiu@ingenic.com, aric.pzqi@ingenic.com,
-        rick.tyliu@ingenic.com, sernia.zhou@foxmail.com,
-        zhenwenjin@gmail.com, reimu@sudomaker.com
-Subject: [PATCH v2 1/2] dt-bindings: dwc2: Add bindings for new Ingenic SoCs.
-Date:   Wed, 13 Apr 2022 02:30:00 +0800
-Message-Id: <1649788201-87620-2-git-send-email-zhouyanjie@wanyeetech.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1649788201-87620-1-git-send-email-zhouyanjie@wanyeetech.com>
-References: <1649788201-87620-1-git-send-email-zhouyanjie@wanyeetech.com>
+        with ESMTP id S243498AbiDLTfR (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Tue, 12 Apr 2022 15:35:17 -0400
+Received: from mail-oa1-f43.google.com (mail-oa1-f43.google.com [209.85.160.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0D654A3D5;
+        Tue, 12 Apr 2022 12:32:58 -0700 (PDT)
+Received: by mail-oa1-f43.google.com with SMTP id 586e51a60fabf-deb9295679so21841764fac.6;
+        Tue, 12 Apr 2022 12:32:58 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=k0JEyUctm+WKncuIF5YDm3I/aHHGOlYRWAe57/MVe48=;
+        b=YGZCGKtGTSzMAXb6bZ2qzaTjlRcNJW96ShcF4wBXtdauJWoIJcw3cx3ZRaTgcKavtI
+         Dz5UCMI8wuoalpDX2RfVDAB7tLSpW1VoTl6w+UxDJemB+hD5XKG7rP1eTZrzkJ6v5XgQ
+         bgH9BQq8wd9fjZCR3mrbW5rO5tGkUtRTo0I2djeI59s7kaa84hPdVDUMgWuof8EOXjTd
+         ffxKgz96qnN4Axfy/G1cnTIJYsrpd3T9yHesv0J0aw5+OL2faHANgKmhXujvNfqiS9g1
+         +3UY+sXbyGiQoU+0HDnrgFUeI8kRTqHbYSMtDMoidujbEsocjEdYIzqH/MKWmoaFUj4C
+         KswQ==
+X-Gm-Message-State: AOAM530y9HNxgUiJwyzveli7QNtwGuoNnL1DR/dwm41k0ueAzkQjp+3g
+        cfM8Og/vdVUY2jeZ+gBvaHr1+iA3MTyuDbSU
+X-Google-Smtp-Source: ABdhPJzKqpnOQeF5ge0Mlri3CvfaQN7htbpNRbOIl+GvNjpi7xpgJnJ65un1tqGlusbQDbUOW2YM5A==
+X-Received: by 2002:a05:6870:eaa9:b0:d6:f977:f757 with SMTP id s41-20020a056870eaa900b000d6f977f757mr2841115oap.18.1649791978050;
+        Tue, 12 Apr 2022 12:32:58 -0700 (PDT)
+Received: from mail-ot1-f44.google.com (mail-ot1-f44.google.com. [209.85.210.44])
+        by smtp.gmail.com with ESMTPSA id s65-20020acac244000000b002ef4ee8c800sm12785918oif.13.2022.04.12.12.32.57
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 12 Apr 2022 12:32:57 -0700 (PDT)
+Received: by mail-ot1-f44.google.com with SMTP id n19-20020a9d7113000000b005cd9cff76c3so14068864otj.1;
+        Tue, 12 Apr 2022 12:32:57 -0700 (PDT)
+X-Received: by 2002:a81:5210:0:b0:2ef:21e3:54dd with SMTP id
+ g16-20020a815210000000b002ef21e354ddmr5208597ywb.438.1649791608129; Tue, 12
+ Apr 2022 12:26:48 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20220412172754.149498-1-Jason@zx2c4.com> <20220412172754.149498-3-Jason@zx2c4.com>
+In-Reply-To: <20220412172754.149498-3-Jason@zx2c4.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 12 Apr 2022 21:26:36 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdXexfkgfrLcUis3DSWJ=SSC-CargHbMvopsjoWrvNacFg@mail.gmail.com>
+Message-ID: <CAMuHMdXexfkgfrLcUis3DSWJ=SSC-CargHbMvopsjoWrvNacFg@mail.gmail.com>
+Subject: Re: [PATCH v3 02/10] m68k: use fallback for random_get_entropy()
+ instead of zero
+To:     "Jason A. Donenfeld" <Jason@zx2c4.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Arnd Bergmann <arnd@arndb.de>, "Theodore Ts'o" <tytso@mit.edu>,
+        Dominik Brodowski <linux@dominikbrodowski.net>,
+        Russell King <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        "David S . Miller" <davem@davemloft.net>,
+        Richard Weinberger <richard@nod.at>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H . Peter Anvin" <hpa@zytor.com>, Chris Zankel <chris@zankel.net>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        John Stultz <john.stultz@linaro.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Dinh Nguyen <dinguyen@kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        sparclinux <sparclinux@vger.kernel.org>,
+        linux-um <linux-um@lists.infradead.org>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        "open list:TENSILICA XTENSA PORT (xtensa)" 
+        <linux-xtensa@linux-xtensa.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Add the dwc2 bindings for the JZ4775 SoC, the JZ4780 SoC, the X1000
-SoC, the X1600 SoC, the X1700 SoC, the X1830 SoC, and the X2000 SoC
-from Ingenic.
+On Tue, Apr 12, 2022 at 7:29 PM Jason A. Donenfeld <Jason@zx2c4.com> wrote:
+> In the event that random_get_entropy() can't access a cycle counter or
+> similar, falling back to returning 0 is really not the best we can do.
+> Instead, at least calling random_get_entropy_fallback() would be
+> preferable, because that always needs to return _something_, even
+> falling back to jiffies eventually. It's not as though
+> random_get_entropy_fallback() is super high precision or guaranteed to
+> be entropic, but basically anything that's not zero all the time is
+> better than returning zero all the time.
+>
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Arnd Bergmann <arnd@arndb.de>
+> Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+> Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
 
-Signed-off-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
-Acked-by: Rob Herring <robh@kernel.org>
----
+Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
 
-Notes:
-    v1->v2:
-    Add Rob Herring's Acked-by.
+Gr{oetje,eeting}s,
 
- Documentation/devicetree/bindings/usb/dwc2.yaml | 7 +++++++
- 1 file changed, 7 insertions(+)
+                        Geert
 
-diff --git a/Documentation/devicetree/bindings/usb/dwc2.yaml b/Documentation/devicetree/bindings/usb/dwc2.yaml
-index 4cebce6..c6e8c0b 100644
---- a/Documentation/devicetree/bindings/usb/dwc2.yaml
-+++ b/Documentation/devicetree/bindings/usb/dwc2.yaml
-@@ -17,6 +17,13 @@ properties:
-     oneOf:
-       - const: brcm,bcm2835-usb
-       - const: hisilicon,hi6220-usb
-+      - const: ingenic,jz4775-otg
-+      - const: ingenic,jz4780-otg
-+      - const: ingenic,x1000-otg
-+      - const: ingenic,x1600-otg
-+      - const: ingenic,x1700-otg
-+      - const: ingenic,x1830-otg
-+      - const: ingenic,x2000-otg
-       - items:
-           - const: rockchip,rk3066-usb
-           - const: snps,dwc2
--- 
-2.7.4
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds

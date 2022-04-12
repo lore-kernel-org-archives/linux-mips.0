@@ -2,110 +2,193 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BBB71C433EF
-	for <linux-mips@archiver.kernel.org>; Tue, 12 Apr 2022 17:32:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 55255C433F5
+	for <linux-mips@archiver.kernel.org>; Tue, 12 Apr 2022 18:30:48 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242689AbiDLRe2 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 12 Apr 2022 13:34:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37968 "EHLO
+        id S1358693AbiDLSdE (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 12 Apr 2022 14:33:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42794 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1358236AbiDLRcY (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Tue, 12 Apr 2022 13:32:24 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C5E4F46;
-        Tue, 12 Apr 2022 10:29:51 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id EE746B81F62;
-        Tue, 12 Apr 2022 17:29:49 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 469EBC385AA;
-        Tue, 12 Apr 2022 17:29:45 +0000 (UTC)
-Authentication-Results: smtp.kernel.org;
-        dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="Vof7oTMJ"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zx2c4.com; s=20210105;
-        t=1649784584;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=IHzRJmPvA7OgZjJx+ZTbqcYHIM/uCZIijqXsNo6FZ2U=;
-        b=Vof7oTMJysi9826NZ4wlTUzj07MRSpSZZLRNThVcodnHpNfVYD9AbgGScQ4b9YIr68xe13
-        pllwAUZ1aN8ajP631O+A2iZ/DS5Ii+7ZBpv+IhUqlhiWGaqgjObm2n7g7XVrH8Qvn+P1S5
-        K9LhwsoVl2jT/V71ZNOjmtwbBy150So=
-Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id 8bae4d27 (TLSv1.3:AEAD-AES256-GCM-SHA384:256:NO);
-        Tue, 12 Apr 2022 17:29:43 +0000 (UTC)
-From:   "Jason A. Donenfeld" <Jason@zx2c4.com>
-To:     linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
-        tglx@linutronix.de, arnd@arndb.de
-Cc:     "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        Theodore Ts'o <tytso@mit.edu>,
-        Dominik Brodowski <linux@dominikbrodowski.net>,
-        Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        "David S . Miller" <davem@davemloft.net>,
-        Richard Weinberger <richard@nod.at>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H . Peter Anvin" <hpa@zytor.com>, Chris Zankel <chris@zankel.net>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        John Stultz <john.stultz@linaro.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Dinh Nguyen <dinguyen@kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
-        linux-riscv@lists.infradead.org, sparclinux@vger.kernel.org,
-        linux-um@lists.infradead.org, x86@kernel.org,
-        linux-xtensa@linux-xtensa.org
-Subject: [PATCH v3 04/10] mips: use fallback for random_get_entropy() instead of zero
-Date:   Tue, 12 Apr 2022 19:27:48 +0200
-Message-Id: <20220412172754.149498-5-Jason@zx2c4.com>
-In-Reply-To: <20220412172754.149498-1-Jason@zx2c4.com>
-References: <20220412172754.149498-1-Jason@zx2c4.com>
+        with ESMTP id S1358727AbiDLSce (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Tue, 12 Apr 2022 14:32:34 -0400
+Received: from out28-169.mail.aliyun.com (out28-169.mail.aliyun.com [115.124.28.169])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B7DE4EA12;
+        Tue, 12 Apr 2022 11:30:14 -0700 (PDT)
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.08322316|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.0126115-0.000601172-0.986787;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047209;MF=zhouyanjie@wanyeetech.com;NM=1;PH=DS;RN=16;RT=16;SR=0;TI=SMTPD_---.NPNg.pv_1649788210;
+Received: from zhouyanjie-virtual-machine.localdomain(mailfrom:zhouyanjie@wanyeetech.com fp:SMTPD_---.NPNg.pv_1649788210)
+          by smtp.aliyun-inc.com(33.37.68.114);
+          Wed, 13 Apr 2022 02:30:11 +0800
+From:   =?UTF-8?q?=E5=91=A8=E7=90=B0=E6=9D=B0=20=28Zhou=20Yanjie=29?= 
+        <zhouyanjie@wanyeetech.com>
+To:     gregkh@linuxfoundation.org, hminas@synopsys.com,
+        robh+dt@kernel.org, krzk+dt@kernel.org
+Cc:     linux-usb@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        dragancecavac@yahoo.com, hns@goldelico.com,
+        dongsheng.qiu@ingenic.com, aric.pzqi@ingenic.com,
+        rick.tyliu@ingenic.com, sernia.zhou@foxmail.com,
+        zhenwenjin@gmail.com, reimu@sudomaker.com
+Subject: [PATCH v2 2/2] USB: dwc2: Add OTG support for Ingenic SoCs.
+Date:   Wed, 13 Apr 2022 02:30:01 +0800
+Message-Id: <1649788201-87620-3-git-send-email-zhouyanjie@wanyeetech.com>
+X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1649788201-87620-1-git-send-email-zhouyanjie@wanyeetech.com>
+References: <1649788201-87620-1-git-send-email-zhouyanjie@wanyeetech.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-In the event that random_get_entropy() can't access a cycle counter or
-similar, falling back to returning 0 is really not the best we can do.
-Instead, at least calling random_get_entropy_fallback() would be
-preferable, because that always needs to return _something_, even
-falling back to jiffies eventually. It's not as though
-random_get_entropy_fallback() is super high precision or guaranteed to
-be entropic, but basically anything that's not zero all the time is
-better than returning zero all the time.
+Add OTG support for the JZ4775 SoC, the JZ4780 SoC, the X1000 SoC,
+the X1600 SoC, the X1700 SoC, the X1830 SoC, and the X2000 SoC
+from Ingenic.
 
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Arnd Bergmann <arnd@arndb.de>
-Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
+Introduce support for disable Ingenic overcurrent detection, once
+selected, it enables the GOTGCTL register bits VbvalidOvEn and
+VbvalidOvVal to disable the VBUS overcurrent detection.
+
+This patch is derived from Dragan Čečavac (in the kernel 3.18.3
+tree of CI20). It is very useful for the MIPS Creator CI20 (r1).
+Without this patch, OTG port of CI20 has a great probability to
+face overcurrent warning, which breaks the OTG functionality.
+
+Signed-off-by: Dragan Čečavac <dragancecavac@yahoo.com>
+Signed-off-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
+Acked-by: Minas Harutyunyan <Minas.Harutyunyan@synopsys.com>
 ---
- arch/mips/include/asm/timex.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/mips/include/asm/timex.h b/arch/mips/include/asm/timex.h
-index b05bb70a2e46..abc60a6395e3 100644
---- a/arch/mips/include/asm/timex.h
-+++ b/arch/mips/include/asm/timex.h
-@@ -94,7 +94,7 @@ static inline unsigned long random_get_entropy(void)
- 	else if (likely(imp != PRID_IMP_R6000 && imp != PRID_IMP_R6000A))
- 		return read_c0_random();
- 	else
--		return 0;	/* no usable register */
-+		return random_get_entropy_fallback();	/* no usable register */
- }
- #define random_get_entropy random_get_entropy
+Notes:
+    v1->v2:
+    1.Add Minas Harutyunyan's Acked-by.
+    2.Use "activate_ingenic_overcurrent_detection" instead
+      "deactivate_ingenic_overcurrent_detection" as Greg's
+      suggestion.
+
+ drivers/usb/dwc2/core.c   |  9 +++++++++
+ drivers/usb/dwc2/core.h   |  5 +++++
+ drivers/usb/dwc2/params.c | 50 ++++++++++++++++++++++++++++++++++++++++++++++-
+ 3 files changed, 63 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/usb/dwc2/core.c b/drivers/usb/dwc2/core.c
+index cf0bcd0..dc4fc72 100644
+--- a/drivers/usb/dwc2/core.c
++++ b/drivers/usb/dwc2/core.c
+@@ -1153,6 +1153,7 @@ static void dwc2_set_turnaround_time(struct dwc2_hsotg *hsotg)
+ int dwc2_phy_init(struct dwc2_hsotg *hsotg, bool select_phy)
+ {
+ 	u32 usbcfg;
++	u32 otgctl;
+ 	int retval = 0;
  
+ 	if ((hsotg->params.speed == DWC2_SPEED_PARAM_FULL ||
+@@ -1187,6 +1188,14 @@ int dwc2_phy_init(struct dwc2_hsotg *hsotg, bool select_phy)
+ 		dwc2_writel(hsotg, usbcfg, GUSBCFG);
+ 	}
+ 
++	if (!hsotg->params.activate_ingenic_overcurrent_detection) {
++		if (dwc2_is_host_mode(hsotg)) {
++			otgctl = readl(hsotg->regs + GOTGCTL);
++			otgctl |= GOTGCTL_VBVALOEN | GOTGCTL_VBVALOVAL;
++			writel(otgctl, hsotg->regs + GOTGCTL);
++		}
++	}
++
+ 	return retval;
+ }
+ 
+diff --git a/drivers/usb/dwc2/core.h b/drivers/usb/dwc2/core.h
+index 88c337b..0683852 100644
+--- a/drivers/usb/dwc2/core.h
++++ b/drivers/usb/dwc2/core.h
+@@ -426,6 +426,10 @@ enum dwc2_ep0_state {
+  *			detection using GGPIO register.
+  *			0 - Deactivate the external level detection (default)
+  *			1 - Activate the external level detection
++ * @activate_ingenic_overcurrent_detection: Activate Ingenic overcurrent
++ *			detection.
++ *			0 - Deactivate the overcurrent detection
++ *			1 - Activate the overcurrent detection (default)
+  * @g_dma:              Enables gadget dma usage (default: autodetect).
+  * @g_dma_desc:         Enables gadget descriptor DMA (default: autodetect).
+  * @g_rx_fifo_size:	The periodic rx fifo size for the device, in
+@@ -494,6 +498,7 @@ struct dwc2_core_params {
+ 	u8 hird_threshold;
+ 	bool activate_stm_fs_transceiver;
+ 	bool activate_stm_id_vb_detection;
++	bool activate_ingenic_overcurrent_detection;
+ 	bool ipg_isoc_en;
+ 	u16 max_packet_count;
+ 	u32 max_transfer_size;
+diff --git a/drivers/usb/dwc2/params.c b/drivers/usb/dwc2/params.c
+index 1306f4e..fdb8a42f 100644
+--- a/drivers/usb/dwc2/params.c
++++ b/drivers/usb/dwc2/params.c
+@@ -73,6 +73,47 @@ static void dwc2_set_his_params(struct dwc2_hsotg *hsotg)
+ 	p->power_down = DWC2_POWER_DOWN_PARAM_NONE;
+ }
+ 
++static void dwc2_set_jz4775_params(struct dwc2_hsotg *hsotg)
++{
++	struct dwc2_core_params *p = &hsotg->params;
++
++	p->otg_caps.hnp_support = false;
++	p->speed = DWC2_SPEED_PARAM_HIGH;
++	p->phy_type = DWC2_PHY_TYPE_PARAM_UTMI;
++	p->phy_utmi_width = 16;
++	p->activate_ingenic_overcurrent_detection =
++		!device_property_read_bool(hsotg->dev, "disable-over-current");
++}
++
++static void dwc2_set_x1600_params(struct dwc2_hsotg *hsotg)
++{
++	struct dwc2_core_params *p = &hsotg->params;
++
++	p->otg_caps.hnp_support = false;
++	p->speed = DWC2_SPEED_PARAM_HIGH;
++	p->host_channels = 16;
++	p->phy_type = DWC2_PHY_TYPE_PARAM_UTMI;
++	p->phy_utmi_width = 16;
++	p->activate_ingenic_overcurrent_detection =
++		!device_property_read_bool(hsotg->dev, "disable-over-current");
++}
++
++static void dwc2_set_x2000_params(struct dwc2_hsotg *hsotg)
++{
++	struct dwc2_core_params *p = &hsotg->params;
++
++	p->otg_caps.hnp_support = false;
++	p->speed = DWC2_SPEED_PARAM_HIGH;
++	p->host_rx_fifo_size = 1024;
++	p->host_nperio_tx_fifo_size = 1024;
++	p->host_perio_tx_fifo_size = 1024;
++	p->host_channels = 16;
++	p->phy_type = DWC2_PHY_TYPE_PARAM_UTMI;
++	p->phy_utmi_width = 16;
++	p->activate_ingenic_overcurrent_detection =
++		!device_property_read_bool(hsotg->dev, "disable-over-current");
++}
++
+ static void dwc2_set_s3c6400_params(struct dwc2_hsotg *hsotg)
+ {
+ 	struct dwc2_core_params *p = &hsotg->params;
+@@ -221,7 +262,14 @@ static void dwc2_set_stm32mp15_hsotg_params(struct dwc2_hsotg *hsotg)
+ 
+ const struct of_device_id dwc2_of_match_table[] = {
+ 	{ .compatible = "brcm,bcm2835-usb", .data = dwc2_set_bcm_params },
+-	{ .compatible = "hisilicon,hi6220-usb", .data = dwc2_set_his_params  },
++	{ .compatible = "hisilicon,hi6220-usb", .data = dwc2_set_his_params },
++	{ .compatible = "ingenic,jz4775-otg", .data = dwc2_set_jz4775_params },
++	{ .compatible = "ingenic,jz4780-otg", .data = dwc2_set_jz4775_params },
++	{ .compatible = "ingenic,x1000-otg", .data = dwc2_set_jz4775_params },
++	{ .compatible = "ingenic,x1600-otg", .data = dwc2_set_x1600_params },
++	{ .compatible = "ingenic,x1700-otg", .data = dwc2_set_x1600_params },
++	{ .compatible = "ingenic,x1830-otg", .data = dwc2_set_x1600_params },
++	{ .compatible = "ingenic,x2000-otg", .data = dwc2_set_x2000_params },
+ 	{ .compatible = "rockchip,rk3066-usb", .data = dwc2_set_rk_params },
+ 	{ .compatible = "lantiq,arx100-usb", .data = dwc2_set_ltq_params },
+ 	{ .compatible = "lantiq,xrx200-usb", .data = dwc2_set_ltq_params },
 -- 
-2.35.1
+2.7.4
 

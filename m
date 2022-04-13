@@ -2,111 +2,206 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9E2DAC433F5
-	for <linux-mips@archiver.kernel.org>; Wed, 13 Apr 2022 10:41:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 66868C433EF
+	for <linux-mips@archiver.kernel.org>; Wed, 13 Apr 2022 11:54:36 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235013AbiDMKnf (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 13 Apr 2022 06:43:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37302 "EHLO
+        id S230072AbiDML4z (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 13 Apr 2022 07:56:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52030 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230071AbiDMKne (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 13 Apr 2022 06:43:34 -0400
-Received: from sender4-op-o14.zoho.com (sender4-op-o14.zoho.com [136.143.188.14])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BB7C53713;
-        Wed, 13 Apr 2022 03:41:09 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1649846438; cv=none; 
-        d=zohomail.com; s=zohoarc; 
-        b=hTK7F7eh6Xj5J9hP1dIAfil1UZQXRGvObkBRkCHTzuj0q+lftB/3yKqiMTFAIdVBma5pFUK4GvD+9o5kxtw8GPcV0uoSYViNV+3P9tCh13Y8rj6EbKqUXZeG+JIbmcPSmyOo09mjWI0rdks8X/kpwFelWwDS8FUsxvmaDpKqTM0=
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.com; s=zohoarc; 
-        t=1649846438; h=Content-Type:Content-Transfer-Encoding:Cc:Date:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:To; 
-        bh=8cuduJRz7v/CIkmAbDKACdBfRvx+g1IMGtExWKUFiic=; 
-        b=LrHwsyl96YzAPFyMZZpFmRM8ZAsJ7/WEnxyJJT47vRS3WxWnU2BBZFzoeMIHMJsIi/NUO3WoRdmkQnPEU83K6p2T35tvAWhFLlG4l91geiLdcIqHxkwTsURZrQTp1eCLlY/SNH8xoJJfwBFcQHP1JhSguHb/gquV5RSm7IEzzRI=
-ARC-Authentication-Results: i=1; mx.zohomail.com;
-        dkim=pass  header.i=arinc9.com;
-        spf=pass  smtp.mailfrom=arinc.unal@arinc9.com;
-        dmarc=pass header.from=<arinc.unal@arinc9.com>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1649846438;
-        s=zmail; d=arinc9.com; i=arinc.unal@arinc9.com;
-        h=Message-ID:Date:Date:MIME-Version:Subject:Subject:To:To:Cc:Cc:References:From:From:In-Reply-To:Content-Type:Content-Transfer-Encoding:Message-Id:Reply-To;
-        bh=8cuduJRz7v/CIkmAbDKACdBfRvx+g1IMGtExWKUFiic=;
-        b=V6098wza0NbqnazK1jLojGrElIUHRSajhlmRUN/clG2dIogHtpfLVNrqY+sw+VCA
-        AD3eI/5ydAsd+vuTzj7gvQxsFy/6SRuudVpbpvRuggPtxo+a6v7Y3wWh0EBBKvOYbG/
-        XrpN6GHMTC7RG28BeFmvGzv0bAV51k+Ci3sNHQ6g=
-Received: from [10.10.10.3] (85.117.236.245 [85.117.236.245]) by mx.zohomail.com
-        with SMTPS id 164984643564144.415058780915956; Wed, 13 Apr 2022 03:40:35 -0700 (PDT)
-Message-ID: <f5f3b847-eb6d-9978-3040-245e3b1acb23@arinc9.com>
-Date:   Wed, 13 Apr 2022 13:40:29 +0300
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.8.0
-Subject: Re: [PATCH 08/14] MAINTAINERS: add Ralink pinctrl driver
-Content-Language: en-US
-To:     Joe Perches <joe@perches.com>,
-        Sergio Paracuellos <sergio.paracuellos@gmail.com>,
-        Luiz Angelo Daros de Luca <luizluca@gmail.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzk+dt@kernel.org>,
+        with ESMTP id S232729AbiDML4y (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 13 Apr 2022 07:56:54 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 852712A24A;
+        Wed, 13 Apr 2022 04:54:33 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 3F4F2B82288;
+        Wed, 13 Apr 2022 11:54:32 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B3665C385A3;
+        Wed, 13 Apr 2022 11:54:27 +0000 (UTC)
+Authentication-Results: smtp.kernel.org;
+        dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="I24BDt43"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zx2c4.com; s=20210105;
+        t=1649850865;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=Syo5gf48g80rVSQvZPt751gQBfMbjfV+Pcog5nChNyY=;
+        b=I24BDt43uFrMKfHLaa3LqTNbmq29rFHJtUSqfd2IBpVMAS8hwKwxp1x+2z289sLn9xIZri
+        aRjISg9muRb3oVmWw2YEhAfoZGSLf6ndYbD2gygbm9q9BStKgkYMjpI+WyC1+vCfswcLMU
+        YfOZ10ZnCtEU7uXWC0RqOl1kTrVw5XI=
+Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id 832259f5 (TLSv1.3:AEAD-AES256-GCM-SHA384:256:NO);
+        Wed, 13 Apr 2022 11:54:25 +0000 (UTC)
+From:   "Jason A. Donenfeld" <Jason@zx2c4.com>
+To:     linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
+        tglx@linutronix.de, arnd@arndb.de
+Cc:     "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        Theodore Ts'o <tytso@mit.edu>,
+        Dominik Brodowski <linux@dominikbrodowski.net>,
+        Russell King <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
         Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Matthias Brugger <matthias.bgg@gmail.com>
-Cc:     erkin.bozoglu@xeront.com, linux-gpio@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mips@vger.kernel.org
-References: <20220413060729.27639-1-arinc.unal@arinc9.com>
- <20220413060729.27639-9-arinc.unal@arinc9.com>
- <d0ed8518dfb93e6f2bbbaf4aac3436dd20369c00.camel@perches.com>
-From:   =?UTF-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>
-In-Reply-To: <d0ed8518dfb93e6f2bbbaf4aac3436dd20369c00.camel@perches.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        "David S . Miller" <davem@davemloft.net>,
+        Richard Weinberger <richard@nod.at>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H . Peter Anvin" <hpa@zytor.com>, Chris Zankel <chris@zankel.net>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        John Stultz <john.stultz@linaro.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Dinh Nguyen <dinguyen@kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
+        linux-riscv@lists.infradead.org, sparclinux@vger.kernel.org,
+        linux-um@lists.infradead.org, x86@kernel.org,
+        linux-xtensa@linux-xtensa.org
+Subject: [PATCH v4 00/11] archs/random: fallback to best raw ktime when no cycle counter
+Date:   Wed, 13 Apr 2022 13:54:00 +0200
+Message-Id: <20220413115411.21489-1-Jason@zx2c4.com>
+MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-ZohoMailClient: External
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On 13/04/2022 11:29, Joe Perches wrote:
-> On Wed, 2022-04-13 at 09:07 +0300, Arınç ÜNAL wrote:
->> Add a new section for the Ralink pinctrl driver and add me and Sergio as
->> the maintainers.
->>
->> Signed-off-by: Arınç ÜNAL <arinc.unal@arinc9.com>
-> 
-> It's unusual for a last name to be completely capitalized.
+Hi folks,
 
-I was influenced by a law for official correspondence from where I live. 
-It sort of stuck with me. Surely that's not a problem?
+The RNG uses a function called random_get_entropy() basically anytime
+that it needs to timestamp an event. For example, an interrupt comes in,
+and we mix a random_get_entropy() into the entropy pool somehow.
+Somebody mashes their keyboard or moves their mouse around? We mix a
+random_get_entropy() into the entropy pool. It's one of the main
+varieties of input.
 
-> 
->> diff --git a/MAINTAINERS b/MAINTAINERS
-> []
->> @@ -16502,6 +16502,13 @@ L:	linux-mips@vger.kernel.org
->>   S:	Maintained
->>   F:	arch/mips/boot/dts/ralink/mt7621*
->>   
->> +RALINK PINCTRL DRIVER
->> +M:	Arınç ÜNAL <arinc.unal@arinc9.com>
->> +M:	Sergio Paracuellos <sergio.paracuellos@gmail.com>
->> +L:	linux-mips@vger.kernel.org
->> +S:	Maintained
->> +F:	drivers/pinctrl/ralink/*
-> 
-> Typically this is just the directory.
-> 
-> F:	drivers/pinctrl/ralink/
-> 
-> as this covers any file in the directory as well as
-> any possible subdirectories and files.
-> 
-> Using
-> 
-> F:	drivers/pinctrl/ralink/*
-> 
-> excludes any possible subdirectories and files within those
-> possible subdirectories.
+Unfortunately, it's always 0 on a few platforms. The RNG has accumulated
+various hacks to deal with this, but in general it's not great. Surely
+we can do better than 0. In fact, *anything* that's not the same exact
+value all the time would be better than 0. Even a counter that
+increments once per hour would be better than 0! I think you get the
+idea.
 
-Thanks! I'll change this if I get more stuff to address. I think this is 
-too minor of a change for resubmitting the series as there're no 
-subdirectories on there yet.
+On most platforms, random_get_entropy() is aliased to get_cycles(),
+which makes sense for platforms where get_cycles() is defined. RDTSC,
+for example, has all the characteristics we care about for this
+function: it's fast to acquire (i.e. acceptable in an irq handler),
+pretty high precision, available, forms a 2-monotone distribution, etc.
+But for platforms without that, what is the next best thing?
 
-Arınç
+Sometimes the next best thing is architecture-defined. For example,
+really old MIPS has the CP0 random register, which isn't a cycle
+counter, but is at least something. However, some platforms don't even
+have an architecture-defined fallback.
+
+Fortunately, the timekeeping subsystem has already solved this problem
+of trying to determine what the least bad clock is on constrained
+systems, falling back to jiffies in the worst case. By exporting the raw
+clock, we can get a decent fallback function for when there's no cycle
+counter or architecture-specific function.
+
+This series makes the RNG more useful on: m68k, RISC-V, MIPS, ARM32,
+NIOS II, SPARC32, Xtensa, and Usermode Linux. Previously these platforms
+would, in certain circumstances, but out of luck with regards to having
+any type of event timestamping source in the RNG.
+
+Finally, note that this series isn't about "jitter entropy" or other
+ways of initializing the RNG. That's a different topic for a different
+thread. Please don't let this discussion veer off into that. Here, I'm
+just trying to find a good fallback counter/timer for platforms without
+get_cycles(), a question with limited scope.
+
+If this (or a future revision) looks good to you all and receives the
+requisite acks, my plan was to take these through the random.git tree
+for 5.19, so that I can then build on top of it.
+
+Thanks,
+Jason
+
+Changes v3->v4:
+- Use EXPORT_SYMBOL_GPL instead of EXPORT_SYMBOL.
+
+Changes v2->v3:
+- Name the fallback function random_get_entropy_fallback(), so that it
+  can be changed out as needed.
+- Include header with prototype in timekeeping.c to avoid compiler
+  warning.
+- Export fallback function symbol.
+
+Changes v1->v2:
+- Use ktime_read_raw_clock() instead of sched_clock(), per Thomas'
+  suggestion.
+- Drop arm64 change.
+- Cleanup header inclusion ordering problem.
+
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: Theodore Ts'o <tytso@mit.edu>
+Cc: Dominik Brodowski <linux@dominikbrodowski.net>
+Cc: Russell King <linux@armlinux.org.uk>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Will Deacon <will@kernel.org>
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc: Paul Walmsley <paul.walmsley@sifive.com>
+Cc: Palmer Dabbelt <palmer@dabbelt.com>
+Cc: Albert Ou <aou@eecs.berkeley.edu>
+Cc: David S. Miller <davem@davemloft.net>
+Cc: Richard Weinberger <richard@nod.at>
+Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Cc: Johannes Berg <johannes@sipsolutions.net>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Borislav Petkov <bp@alien8.de>
+Cc: Dave Hansen <dave.hansen@linux.intel.com>
+Cc: H. Peter Anvin <hpa@zytor.com>
+Cc: Chris Zankel <chris@zankel.net>
+Cc: Max Filippov <jcmvbkbc@gmail.com>
+Cc: John Stultz <john.stultz@linaro.org>
+Cc: Stephen Boyd <sboyd@kernel.org>
+Cc: Dinh Nguyen <dinguyen@kernel.org>
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: linux-m68k@lists.linux-m68k.org
+Cc: linux-mips@vger.kernel.org
+Cc: linux-riscv@lists.infradead.org
+Cc: sparclinux@vger.kernel.org
+Cc: linux-um@lists.infradead.org
+Cc: x86@kernel.org
+Cc: linux-xtensa@linux-xtensa.org
+
+Jason A. Donenfeld (11):
+  timekeeping: add raw clock fallback for random_get_entropy()
+  m68k: use fallback for random_get_entropy() instead of zero
+  riscv: use fallback for random_get_entropy() instead of zero
+  mips: use fallback for random_get_entropy() instead of zero
+  arm: use fallback for random_get_entropy() instead of zero
+  nios2: use fallback for random_get_entropy() instead of zero
+  x86: use fallback for random_get_entropy() instead of zero
+  um: use fallback for random_get_entropy() instead of zero
+  sparc: use fallback for random_get_entropy() instead of zero
+  xtensa: use fallback for random_get_entropy() instead of zero
+  random: insist on random_get_entropy() existing in order to simplify
+
+ arch/arm/include/asm/timex.h      |  1 +
+ arch/m68k/include/asm/timex.h     |  2 +-
+ arch/mips/include/asm/timex.h     |  2 +-
+ arch/nios2/include/asm/timex.h    |  2 +
+ arch/riscv/include/asm/timex.h    |  2 +-
+ arch/sparc/include/asm/timex_32.h |  4 +-
+ arch/um/include/asm/timex.h       |  9 +---
+ arch/x86/include/asm/tsc.h        | 10 ++++
+ arch/xtensa/include/asm/timex.h   |  6 +--
+ drivers/char/random.c             | 87 ++++++++++---------------------
+ include/linux/timex.h             |  8 +++
+ kernel/time/timekeeping.c         | 10 ++++
+ 12 files changed, 67 insertions(+), 76 deletions(-)
+
+-- 
+2.35.1
+

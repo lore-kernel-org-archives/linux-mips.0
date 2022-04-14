@@ -2,129 +2,147 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9BE75C433FE
-	for <linux-mips@archiver.kernel.org>; Thu, 14 Apr 2022 14:14:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4F339C433F5
+	for <linux-mips@archiver.kernel.org>; Thu, 14 Apr 2022 16:47:49 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235758AbiDNOQc (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 14 Apr 2022 10:16:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54942 "EHLO
+        id S235332AbiDNQuM (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 14 Apr 2022 12:50:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38916 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343732AbiDNNn4 (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Thu, 14 Apr 2022 09:43:56 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53EF924951;
-        Thu, 14 Apr 2022 06:39:42 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id AB5BCB829A3;
-        Thu, 14 Apr 2022 13:39:40 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 14B8BC385A1;
-        Thu, 14 Apr 2022 13:39:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1649943579;
-        bh=zFT/33gx2QpYPbSY/7LiF+3Gf+gZx34HbhjPo3288vU=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0fycYHmxKEGO7vSXZXojet09xcnCwlemQ4LOrF0X8ENpR9QJT2G8WrU4QpshPLXjP
-         ZAKyr6tCAN2hOxce0Dr4f4weIsXIhQmvy5nA7mUhXtYvbYLJ7X/rCmF/OGzB1UNQTD
-         VCaavw3ItC9ibwLGkcZEJSZsF4ANeX000Zj3bQEQ=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
-        kernel test robot <lkp@intel.com>,
-        Paul Burton <paulburton@kernel.org>,
+        with ESMTP id S240379AbiDNQuA (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Thu, 14 Apr 2022 12:50:00 -0400
+Received: from mail-ot1-f46.google.com (mail-ot1-f46.google.com [209.85.210.46])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C27012F6EB;
+        Thu, 14 Apr 2022 09:17:31 -0700 (PDT)
+Received: by mail-ot1-f46.google.com with SMTP id c24-20020a9d6c98000000b005e6b7c0a8a8so3731820otr.2;
+        Thu, 14 Apr 2022 09:17:31 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=+dYyu7y5UVTMexCQcf0EtUHGOdwuv57lNmgQ07q4u5Y=;
+        b=3Jcz9zwGBF4OJpsQLzmGDyXF7Plri6Hb/uE02e38s+nci0gQas3LJZ66a6rL+3uqro
+         fsojxbVNXSxyEPlu8WhGjzyqL24loPCEa/M4RaBycbetBBczgxiqhh/bZZvHbv5wVx7k
+         ho7rnU7i7rAdaaSfgp2IlXgfE3OYqBy3tvSWJy9EBcW4V4ia53sVitmsRAYxwKSCa9Kn
+         ymg4KVO8fs7mnCXNycCgRUIn8WV7XDdjDwWqEptI6lapGbEGQcIQ/AIuH4PjbQbXPeGt
+         yJrQJSKrLQhDb/LQoze0D3wdjIcTZiP2NBqbJUQ8MYYmxeNJIfDrh7TEpzbK90LgjEsK
+         11fA==
+X-Gm-Message-State: AOAM53095RAJHAsRlemlRg7ljjly4qO+VjGicLe27QxFIR+rDmbr3moL
+        c14qUbh3olDEmEXTdBs5Ig==
+X-Google-Smtp-Source: ABdhPJzm1hyipOam0Bbm1/ZIUN7HVSh8anI4Sp0p0Vi30YCcZ20K4EDM6Ws/WU/LJosQ8gdb9KAMKQ==
+X-Received: by 2002:a9d:75cc:0:b0:5cd:9f3a:6ee6 with SMTP id c12-20020a9d75cc000000b005cd9f3a6ee6mr1186806otl.10.1649953050470;
+        Thu, 14 Apr 2022 09:17:30 -0700 (PDT)
+Received: from robh.at.kernel.org (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
+        by smtp.gmail.com with ESMTPSA id t6-20020a056870f20600b000e2a451bcaesm874137oao.17.2022.04.14.09.17.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Apr 2022 09:17:30 -0700 (PDT)
+Received: (nullmailer pid 2164706 invoked by uid 1000);
+        Thu, 14 Apr 2022 16:17:29 -0000
+Date:   Thu, 14 Apr 2022 11:17:29 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     =?utf-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Sergio Paracuellos <sergio.paracuellos@gmail.com>,
+        Luiz Angelo Daros de Luca <luizluca@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Krzysztof Kozlowski <krzk+dt@kernel.org>,
         Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        "Maciej W. Rozycki" <macro@orcam.me.uk>,
-        linux-mips@vger.kernel.org, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 205/475] mips: DEC: honor CONFIG_MIPS_FP_SUPPORT=n
-Date:   Thu, 14 Apr 2022 15:09:50 +0200
-Message-Id: <20220414110900.865986588@linuxfoundation.org>
-X-Mailer: git-send-email 2.35.2
-In-Reply-To: <20220414110855.141582785@linuxfoundation.org>
-References: <20220414110855.141582785@linuxfoundation.org>
-User-Agent: quilt/0.66
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        erkin.bozoglu@xeront.com, linux-gpio@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mips@vger.kernel.org
+Subject: Re: [PATCH 10/14] dt-bindings: pinctrl: rt2880: fix binding name,
+ pin groups and functions
+Message-ID: <YlhJGerakzbsXwnv@robh.at.kernel.org>
+References: <20220413060729.27639-1-arinc.unal@arinc9.com>
+ <20220413060729.27639-11-arinc.unal@arinc9.com>
+ <ba7cd13f-d216-0ac6-97e1-6c13f1e15f38@linaro.org>
+ <550b20f2-098e-0f25-ad9f-3ff523879cb7@arinc9.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <550b20f2-098e-0f25-ad9f-3ff523879cb7@arinc9.com>
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-From: Randy Dunlap <rdunlap@infradead.org>
+On Thu, Apr 14, 2022 at 11:34:31AM +0300, Arınç ÜNAL wrote:
+> On 13/04/2022 18:25, Krzysztof Kozlowski wrote:
+> > On 13/04/2022 08:07, Arınç ÜNAL wrote:
+> > > Change binding name from ralink,rt2880-pinmux to ralink,rt2880-pinctrl.
+> > > This is the binding for the Ralink RT2880 pinctrl subdriver.
+> > 
+> > What I don't see here is why you are doing this. pinmux/pinctrl have the
+> > same meaning, I guess?
+> 
+> What I understand is pinmux is rather a specific term for the muxing of pins
+> or pin groups. Pinctrl is what we prefer here since the term is more
+> inclusive of what the subdriver does: controlling pins. Any mediatek
+> driver/subdriver is called pinctrl so I'm not doing something uncommon.
 
-[ Upstream commit 97bf0395c226907e1a9b908511a35192bf1e09bb ]
+The correct name is really whatever the h/w block is called, not 
+whatever we've come up with for some class of devices.
 
-Include the DECstation interrupt handler in opting out of
-FPU support.
+> 
+> > 
+> > > 
+> > > Current pin group and function bindings are for MT7621. Put bindings for
+> > > RT2880 instead.
+> > > 
+> > > Signed-off-by: Arınç ÜNAL <arinc.unal@arinc9.com>
+> > > ---
+> > >   ...pinmux.yaml => ralink,rt2880-pinctrl.yaml} | 24 +++++++++----------
+> > >   1 file changed, 12 insertions(+), 12 deletions(-)
+> > >   rename Documentation/devicetree/bindings/pinctrl/{ralink,rt2880-pinmux.yaml => ralink,rt2880-pinctrl.yaml} (56%)
+> > > 
+> > > diff --git a/Documentation/devicetree/bindings/pinctrl/ralink,rt2880-pinmux.yaml b/Documentation/devicetree/bindings/pinctrl/ralink,rt2880-pinctrl.yaml
+> > > similarity index 56%
+> > > rename from Documentation/devicetree/bindings/pinctrl/ralink,rt2880-pinmux.yaml
+> > > rename to Documentation/devicetree/bindings/pinctrl/ralink,rt2880-pinctrl.yaml
+> > > index 9de8b0c075e2..c657bbf9fdda 100644
+> > > --- a/Documentation/devicetree/bindings/pinctrl/ralink,rt2880-pinmux.yaml
+> > > +++ b/Documentation/devicetree/bindings/pinctrl/ralink,rt2880-pinctrl.yaml
+> > > @@ -1,21 +1,23 @@
+> > >   # SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
+> > >   %YAML 1.2
+> > >   ---
+> > > -$id: http://devicetree.org/schemas/pinctrl/ralink,rt2880-pinmux.yaml#
+> > > +$id: http://devicetree.org/schemas/pinctrl/ralink,rt2880-pinctrl.yaml#
+> > >   $schema: http://devicetree.org/meta-schemas/core.yaml#
+> > > -title: Ralink rt2880 pinmux controller
+> > > +title: Ralink RT2880 Pin Controller
+> > >   maintainers:
+> > > +  - Arınç ÜNAL <arinc.unal@arinc9.com>
+> > 
+> > Mention this in commit msg.
+> 
+> Will do.
+> 
+> > 
+> > >     - Sergio Paracuellos <sergio.paracuellos@gmail.com>
+> > >   description:
+> > > -  The rt2880 pinmux can only set the muxing of pin groups. Muxing indiviual pins
+> > > +  Ralink RT2880 pin controller for RT2880 SoC.
+> > > +  The pin controller can only set the muxing of pin groups. Muxing indiviual pins
+> > >     is not supported. There is no pinconf support.
+> > >   properties:
+> > >     compatible:
+> > > -    const: ralink,rt2880-pinmux
+> > > +    const: ralink,rt2880-pinctrl
+> > 
+> > you need to deprecate old property and add a new one.
+> 
+> Do we really have to? That property name was inaccurate from the start. I
+> don't see a reason to keep it being referred to on the binding.
 
-Fixes a linker error:
+It's an ABI. There are exceptions, but you've got to spell out the 
+reasoning in the commit message.
 
-mips-linux-ld: arch/mips/dec/int-handler.o: in function `fpu':
-(.text+0x148): undefined reference to `handle_fpe_int'
+Really, who cares. It's just a unique identifier. Unless you also had a 
+h/w block called 'pinmux' in addition to a 'pinctrl' block it doesn't 
+matter. We could use just GUIDs instead.
 
-Fixes: 183b40f992c8 ("MIPS: Allow FP support to be disabled")
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Reported-by: kernel test robot <lkp@intel.com>
-Cc: Paul Burton <paulburton@kernel.org>
-Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc: Maciej W. Rozycki <macro@orcam.me.uk>
-Cc: linux-mips@vger.kernel.org
-Acked-by: Maciej W. Rozycki <macro@orcam.me.uk>
-Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- arch/mips/dec/int-handler.S | 6 +++---
- arch/mips/dec/setup.c       | 3 ++-
- 2 files changed, 5 insertions(+), 4 deletions(-)
-
-diff --git a/arch/mips/dec/int-handler.S b/arch/mips/dec/int-handler.S
-index a25ef822e725..5ed38e618019 100644
---- a/arch/mips/dec/int-handler.S
-+++ b/arch/mips/dec/int-handler.S
-@@ -131,7 +131,7 @@
- 		 */
- 		mfc0	t0,CP0_CAUSE		# get pending interrupts
- 		mfc0	t1,CP0_STATUS
--#ifdef CONFIG_32BIT
-+#if defined(CONFIG_32BIT) && defined(CONFIG_MIPS_FP_SUPPORT)
- 		lw	t2,cpu_fpu_mask
- #endif
- 		andi	t0,ST0_IM		# CAUSE.CE may be non-zero!
-@@ -139,7 +139,7 @@
- 
- 		beqz	t0,spurious
- 
--#ifdef CONFIG_32BIT
-+#if defined(CONFIG_32BIT) && defined(CONFIG_MIPS_FP_SUPPORT)
- 		 and	t2,t0
- 		bnez	t2,fpu			# handle FPU immediately
- #endif
-@@ -280,7 +280,7 @@ handle_it:
- 		j	dec_irq_dispatch
- 		 nop
- 
--#ifdef CONFIG_32BIT
-+#if defined(CONFIG_32BIT) && defined(CONFIG_MIPS_FP_SUPPORT)
- fpu:
- 		lw	t0,fpu_kstat_irq
- 		nop
-diff --git a/arch/mips/dec/setup.c b/arch/mips/dec/setup.c
-index 1fc8dffa8d1d..649b50ae5b1e 100644
---- a/arch/mips/dec/setup.c
-+++ b/arch/mips/dec/setup.c
-@@ -766,7 +766,8 @@ void __init arch_init_irq(void)
- 		dec_interrupt[DEC_IRQ_HALT] = -1;
- 
- 	/* Register board interrupts: FPU and cascade. */
--	if (dec_interrupt[DEC_IRQ_FPU] >= 0 && cpu_has_fpu) {
-+	if (IS_ENABLED(CONFIG_MIPS_FP_SUPPORT) &&
-+	    dec_interrupt[DEC_IRQ_FPU] >= 0 && cpu_has_fpu) {
- 		struct irq_desc *desc_fpu;
- 		int irq_fpu;
- 
--- 
-2.34.1
-
-
-
+Rob

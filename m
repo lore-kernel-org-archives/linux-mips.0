@@ -2,150 +2,194 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F006AC433EF
-	for <linux-mips@archiver.kernel.org>; Fri, 15 Apr 2022 12:26:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 50648C433F5
+	for <linux-mips@archiver.kernel.org>; Fri, 15 Apr 2022 14:22:49 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241453AbiDOM3T (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 15 Apr 2022 08:29:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55016 "EHLO
+        id S1354387AbiDOOZP (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 15 Apr 2022 10:25:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52000 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230172AbiDOM3S (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Fri, 15 Apr 2022 08:29:18 -0400
-Received: from angie.orcam.me.uk (angie.orcam.me.uk [78.133.224.34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 35895C1C9D;
-        Fri, 15 Apr 2022 05:26:50 -0700 (PDT)
-Received: by angie.orcam.me.uk (Postfix, from userid 500)
-        id 4C8D392009C; Fri, 15 Apr 2022 14:26:48 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by angie.orcam.me.uk (Postfix) with ESMTP id 4517592009B;
-        Fri, 15 Apr 2022 13:26:48 +0100 (BST)
-Date:   Fri, 15 Apr 2022 13:26:48 +0100 (BST)
-From:   "Maciej W. Rozycki" <macro@orcam.me.uk>
-To:     "Jason A. Donenfeld" <Jason@zx2c4.com>
-cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Arnd Bergmann <arnd@arndb.de>, Theodore Ts'o <tytso@mit.edu>,
-        Dominik Brodowski <linux@dominikbrodowski.net>,
-        Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        "David S . Miller" <davem@davemloft.net>,
-        Richard Weinberger <richard@nod.at>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H . Peter Anvin" <hpa@zytor.com>, Chris Zankel <chris@zankel.net>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        John Stultz <john.stultz@linaro.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Dinh Nguyen <dinguyen@kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        sparclinux@vger.kernel.org, linux-um@lists.infradead.org,
-        X86 ML <x86@kernel.org>, linux-xtensa@linux-xtensa.org
-Subject: Re: [PATCH v4 04/11] mips: use fallback for random_get_entropy()
- instead of zero
-In-Reply-To: <YlfoeGRM6w2O+eXA@zx2c4.com>
-Message-ID: <alpine.DEB.2.21.2204142349180.9383@angie.orcam.me.uk>
-References: <20220413115411.21489-1-Jason@zx2c4.com> <20220413115411.21489-5-Jason@zx2c4.com> <20220413122546.GA11860@alpha.franken.de> <alpine.DEB.2.21.2204131331450.9383@angie.orcam.me.uk> <CAHmME9pQ4xdeTUDxAdrOu=S9NRTonYzJVk50fa0Zfz4knZt5WA@mail.gmail.com>
- <alpine.DEB.2.21.2204140014580.9383@angie.orcam.me.uk> <YlfoeGRM6w2O+eXA@zx2c4.com>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+        with ESMTP id S1354571AbiDOOZF (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Fri, 15 Apr 2022 10:25:05 -0400
+Received: from out28-195.mail.aliyun.com (out28-195.mail.aliyun.com [115.124.28.195])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECDB7D1CCF;
+        Fri, 15 Apr 2022 07:22:25 -0700 (PDT)
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.07483269|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.0236375-0.00029974-0.976063;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047199;MF=zhouyanjie@wanyeetech.com;NM=1;PH=DS;RN=15;RT=15;SR=0;TI=SMTPD_---.NRMqfXs_1650032541;
+Received: from zhouyanjie-virtual-machine.localdomain(mailfrom:zhouyanjie@wanyeetech.com fp:SMTPD_---.NRMqfXs_1650032541)
+          by smtp.aliyun-inc.com(33.32.109.194);
+          Fri, 15 Apr 2022 22:22:22 +0800
+From:   =?UTF-8?q?=E5=91=A8=E7=90=B0=E6=9D=B0=20=28Zhou=20Yanjie=29?= 
+        <zhouyanjie@wanyeetech.com>
+To:     broonie@kernel.org, robh+dt@kernel.org, krzk+dt@kernel.org
+Cc:     linux-spi@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        paul@crapouillou.net, contact@artur-rojek.eu,
+        dongsheng.qiu@ingenic.com, aric.pzqi@ingenic.com,
+        rick.tyliu@ingenic.com, sernia.zhou@foxmail.com,
+        zhenwenjin@gmail.com, reimu@sudomaker.com
+Subject: [PATCH 3/3] SPI: Ingenic: Add support for new Ingenic SoCs.
+Date:   Fri, 15 Apr 2022 22:22:08 +0800
+Message-Id: <1650032528-118220-4-git-send-email-zhouyanjie@wanyeetech.com>
+X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1650032528-118220-1-git-send-email-zhouyanjie@wanyeetech.com>
+References: <1650032528-118220-1-git-send-email-zhouyanjie@wanyeetech.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Hi Jason,
+1.Since it would be dangerous to specify a newer SoC's compatible
+  string as the fallback of an older SoC's compatible string, we
+  add support for the "ingenic,jz4775-spi" compatible string in
+  the driver.
 
-> >  It depends on the exact system.  Some have a 32-bit high-resolution 
-> > counter in the chipset (arch/mips/kernel/csrc-ioasic.c) giving like 25MHz 
-> > resolution, some have nothing but jiffies.
-> 
-> Alright, so there _are_ machines with no c0 cycles but with a good
-> clock. Yet, 25MHz is still less than the cpu cycle, so this c0 random
-> ORing trick remains useful perhaps.
+  This will permit to support the JZ4775 by having:
+  compatible = "ingenic,jz4775-spi";
 
- It's not much less than the CPU cycle really, given that the R3k CPUs are 
-clocked at up to 40MHz in the systems concerned and likewise the buggy R4k 
-CPUs run at up to 60MHz (and mind that their CP0 Count register increments 
-at half the clock rate, so the rate is up to 30MHz anyway).  The overhead 
-of the calculation is more than that, let alone the latency and issue rate 
-of an uncached MMIO access to the chipset register.
+  Instead of doing:
+  compatible = "ingenic,jz4775-spi", "ingenic,jz4780-spi";
 
- Also the systems I have in mind and that lack a counter in the chipset 
-actually can make use of the buggy CP0 timer, because it's only when CP0 
-timer interrupts are used that the erratum matters, but they use a DS1287 
-RTC interrupt instead unconditionally as the clock event (see the comment 
-at the bottom of arch/mips/dec/time.c).  But this has not been factored in 
-with `can_use_mips_counter' (should it just check for `mips_hpt_frequency' 
-being zero perhaps, meaning the timer interrupt not being used?).
+2.Add support for probing the spi-ingenic driver on the X1000 SoC
+  from Ingenic. From the X1000 SoC onwards, the maximum frequency
+  allowed by the SSI module of Ingenic SoCs has been changed from
+  54MHz to 50MHz. So "max_speed_hz" is introduced in "jz_soc_info"
+  to set different maximum frequency values.
 
- Thomas, do you happen to know if any of the SGI systems that we support 
-had buggy early R4k chips?
+3.Add support for probing the spi-ingenic driver on the X2000 SoC
+  from Ingenic. The X2000 SoC has only one native chip select line,
+  so "max_native_cs" is introduced in "jz_soc_info" to set different
+  maximum number of native chip select lines.
 
-> >  It seems like a reasonable idea to me, but the details would have to be 
-> > sorted out, because where a chipset high-resolution counter is available 
-> > we want to factor it in, and otherwise we need to extract the right bits 
-> > from the CP0 Random register, either 13:8 for the R3k or 5:0 for the R4k.
-> 
-> One thing we could do here that would seemingly cover all the cases
-> without losing _that_ much would be:
-> 
->     return (random_get_entropy_fallback() << 13) | ((1<<13) - read_c0_random());
+4.Because of the introduction of support for the X-series SoCs, the
+  current driver is not only applicable to the JZ-series SoCs, so
+  the description texts has been modified to avoid misunderstanding.
 
- Except this would have to be:
+Signed-off-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
+---
+ drivers/spi/Kconfig       |  4 ++--
+ drivers/spi/spi-ingenic.c | 42 +++++++++++++++++++++++++++++++++++++-----
+ 2 files changed, 39 insertions(+), 7 deletions(-)
 
-    return (random_get_entropy_fallback() << 14) | ((1<<14) - read_c0_random());
+diff --git a/drivers/spi/Kconfig b/drivers/spi/Kconfig
+index d2815eb..cca92a8 100644
+--- a/drivers/spi/Kconfig
++++ b/drivers/spi/Kconfig
+@@ -419,10 +419,10 @@ config SPI_IMX
+ 	  This enables support for the Freescale i.MX SPI controllers.
+ 
+ config SPI_INGENIC
+-	tristate "Ingenic JZ47xx SoCs SPI controller"
++	tristate "Ingenic SoCs SPI controller"
+ 	depends on MACH_INGENIC || COMPILE_TEST
+ 	help
+-	  This enables support for the Ingenic JZ47xx SoCs SPI controller.
++	  This enables support for the Ingenic SoCs SPI controller.
+ 
+ 	  To compile this driver as a module, choose M here: the module
+ 	  will be called spi-ingenic.
+diff --git a/drivers/spi/spi-ingenic.c b/drivers/spi/spi-ingenic.c
+index 672e4ed..ff507c8 100644
+--- a/drivers/spi/spi-ingenic.c
++++ b/drivers/spi/spi-ingenic.c
+@@ -1,8 +1,9 @@
+ // SPDX-License-Identifier: GPL-2.0
+ /*
+- * SPI bus driver for the Ingenic JZ47xx SoCs
++ * SPI bus driver for the Ingenic SoCs
+  * Copyright (c) 2017-2021 Artur Rojek <contact@artur-rojek.eu>
+  * Copyright (c) 2017-2021 Paul Cercueil <paul@crapouillou.net>
++ * Copyright (c) 2022 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
+  */
+ 
+ #include <linux/clk.h>
+@@ -52,6 +53,9 @@ struct jz_soc_info {
+ 	u32 bits_per_word_mask;
+ 	struct reg_field flen_field;
+ 	bool has_trendian;
++
++	unsigned int max_speed_hz;
++	unsigned int max_native_cs;
+ };
+ 
+ struct ingenic_spi {
+@@ -418,7 +422,7 @@ static int spi_ingenic_probe(struct platform_device *pdev)
+ 
+ 	if (of_property_read_u32(dev->of_node, "num-cs", &num_cs)) {
+ 		dev_warn(dev, "Number of chip select lines not specified.\n");
+-		num_cs = 2;
++		num_cs = pdata->max_native_cs;
+ 	}
+ 
+ 	platform_set_drvdata(pdev, ctlr);
+@@ -433,9 +437,9 @@ static int spi_ingenic_probe(struct platform_device *pdev)
+ 	ctlr->max_dma_len = SPI_INGENIC_FIFO_SIZE;
+ 	ctlr->bits_per_word_mask = pdata->bits_per_word_mask;
+ 	ctlr->min_speed_hz = 7200;
+-	ctlr->max_speed_hz = 54000000;
++	ctlr->max_speed_hz = pdata->max_speed_hz;
+ 	ctlr->use_gpio_descriptors = true;
+-	ctlr->max_native_cs = 2;
++	ctlr->max_native_cs = pdata->max_native_cs;
+ 	ctlr->num_chipselect = num_cs;
+ 	ctlr->dev.of_node = pdev->dev.of_node;
+ 
+@@ -459,17 +463,44 @@ static const struct jz_soc_info jz4750_soc_info = {
+ 	.bits_per_word_mask = SPI_BPW_RANGE_MASK(2, 17),
+ 	.flen_field = REG_FIELD(REG_SSICR1, 4, 7),
+ 	.has_trendian = false,
++
++	.max_speed_hz = 54000000,
++	.max_native_cs = 2,
+ };
+ 
+ static const struct jz_soc_info jz4780_soc_info = {
+ 	.bits_per_word_mask = SPI_BPW_RANGE_MASK(2, 32),
+ 	.flen_field = REG_FIELD(REG_SSICR1, 3, 7),
+ 	.has_trendian = true,
++
++	.max_speed_hz = 54000000,
++	.max_native_cs = 2,
++};
++
++static const struct jz_soc_info x1000_soc_info = {
++	.bits_per_word_mask = SPI_BPW_RANGE_MASK(2, 32),
++	.flen_field = REG_FIELD(REG_SSICR1, 3, 7),
++	.has_trendian = true,
++
++	.max_speed_hz = 50000000,
++	.max_native_cs = 2,
++};
++
++static const struct jz_soc_info x2000_soc_info = {
++	.bits_per_word_mask = SPI_BPW_RANGE_MASK(2, 32),
++	.flen_field = REG_FIELD(REG_SSICR1, 3, 7),
++	.has_trendian = true,
++
++	.max_speed_hz = 50000000,
++	.max_native_cs = 1,
+ };
+ 
+ static const struct of_device_id spi_ingenic_of_match[] = {
+ 	{ .compatible = "ingenic,jz4750-spi", .data = &jz4750_soc_info },
++	{ .compatible = "ingenic,jz4775-spi", .data = &jz4780_soc_info },
+ 	{ .compatible = "ingenic,jz4780-spi", .data = &jz4780_soc_info },
++	{ .compatible = "ingenic,x1000-spi", .data = &x1000_soc_info },
++	{ .compatible = "ingenic,x2000-spi", .data = &x2000_soc_info },
+ 	{}
+ };
+ MODULE_DEVICE_TABLE(of, spi_ingenic_of_match);
+@@ -483,7 +514,8 @@ static struct platform_driver spi_ingenic_driver = {
+ };
+ 
+ module_platform_driver(spi_ingenic_driver);
+-MODULE_DESCRIPTION("SPI bus driver for the Ingenic JZ47xx SoCs");
++MODULE_DESCRIPTION("SPI bus driver for the Ingenic SoCs");
+ MODULE_AUTHOR("Artur Rojek <contact@artur-rojek.eu>");
+ MODULE_AUTHOR("Paul Cercueil <paul@crapouillou.net>");
++MODULE_AUTHOR("周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>");
+ MODULE_LICENSE("GPL");
+-- 
+2.7.4
 
-of course, as bit 13 is still one of the active ones in the R3k CP0 Random 
-register.
-
-> Or in case the 13 turns out to be wrong on some hardware, we could
-> mitigate the effect with:
-> 
->     return (random_get_entropy_fallback() << 13) ^ ((1<<13) - read_c0_random());
-
- There are two variants only of the CP0 Random register that we can ever 
-encounter, as it's been de-facto standardised in early 1990s already and 
-then written down in the MIPSr1 architecture specification ~2000.  So I 
-think it may make sense to actually handle them both explictitly with 
-individual calculations, possibly conditionalised on a CONFIG setting or 
-`cpu_has_3kex', because kernels that support the two variants of the MMU 
-architecture are mutually incompatible.
-
- Ah, there's that buggy non-compliant JZ4740 chip too.  I guess we can 
-figure out how many CP0 Random bits it implements, though it may be worth 
-noting that architecturally the register is not required to decrement, so 
-again it may be good to double-check how the JZ4740 selects the values 
-there.
-
- I think the check for a buggy CP0 timer in `can_use_mips_counter' should 
-also be qualified with !(CONFIG_CPU_MIPS32 || CONFIG_CPU_MIPS64), which 
-will reduce the function to a constant 1 for the overwhelming majority of 
-systems out there, without a need to refer to CP0 PRId every time.
-
-> As mentioned in the 1/xx patch of this series,
-> random_get_entropy_fallback() should call the highest resolution thing.
-> We then shave off the least-changing bits and stuff in the
-> faster-changing bits from read_c0_random(). Then, in order to keep it
-> counting up instead of down, we do the subtraction there.
-
- Isn't it going to be an issue for an entropy source that the distribution 
-of values obtained from the CP0 Random bit-field is not even, that is some 
-values from the 6-bit range will never appear?
-
-> What do you think of this plan?
-
- Otherwise it makes absolute sense to me.
-
-  Maciej

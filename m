@@ -2,120 +2,87 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A7457C433EF
-	for <linux-mips@archiver.kernel.org>; Mon, 18 Apr 2022 12:04:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 28AA4C4321E
+	for <linux-mips@archiver.kernel.org>; Mon, 18 Apr 2022 12:31:59 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237969AbiDRMG6 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 18 Apr 2022 08:06:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34590 "EHLO
+        id S239135AbiDRMed (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 18 Apr 2022 08:34:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51130 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237968AbiDRMG5 (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Mon, 18 Apr 2022 08:06:57 -0400
-Received: from ssl.serverraum.org (ssl.serverraum.org [176.9.125.105])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5011B15FDA;
-        Mon, 18 Apr 2022 05:04:18 -0700 (PDT)
-Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ssl.serverraum.org (Postfix) with ESMTPSA id 34DB422175;
-        Mon, 18 Apr 2022 14:04:16 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
-        t=1650283456;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=OOruPXULnAoAti7zK9CIqg2Yvot+7zRgvmQ60wa4z+o=;
-        b=M8C4AIhWHlFgBT/ZWxIY6IFRlmKw7xBLhdPb0w5dc/BusXwRU1ZVXxb4Gj+J9buPd/VjEg
-        DbSwmcgcwAGOmjlASvzxAgodj/RSp7+Re4q4xX5bDsGWAwrc1rbW3Ivf1CBiIuvitgjM95
-        aZfqXyrmJ0sXVfw0TuuzGdlwXhjyJhQ=
+        with ESMTP id S239821AbiDRMda (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Mon, 18 Apr 2022 08:33:30 -0400
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16A171BE96
+        for <linux-mips@vger.kernel.org>; Mon, 18 Apr 2022 05:26:50 -0700 (PDT)
+Received: by mail-ej1-x631.google.com with SMTP id ck12so5035279ejb.4
+        for <linux-mips@vger.kernel.org>; Mon, 18 Apr 2022 05:26:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=I3d5udvKIjqAWucjjIKmuyn7gYiBA99VwyV2DIv8hOs=;
+        b=O6i40JuKQXOyvwtn8Dy33ZqEQOG5EHZzXGoOpqZzNZ9ieOhuYgUKLhfzpGxvbXiAfC
+         Vwf80nHGzunG0NFoscB2CnQZ0JQu4sPahErZnIz5NgO6On1mSrWR8+eqgUYGkK04Z/cm
+         am6eYB6HIbNfNKmvh6CfzcqdjEqDMZklnqPh2wvAj+hoM7Z/WC2jzgm+/aKNM463g1jw
+         g7uQ/8uHdj6HIoospz4Bv4O6YviYZPMRyTqevmkLEkrfzf/jDuJ6B+t56CgXYgzMzeUH
+         zqzjkk8aXXXyzV9RR8CD0OyiQVQF/FlvxcK4hkfLOu+q4NO8TFovZ3kQgN5AmwmO6rfZ
+         2wEg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=I3d5udvKIjqAWucjjIKmuyn7gYiBA99VwyV2DIv8hOs=;
+        b=GoAdEiE3WicUk332HPy2ZmMvoJdGZeykSxQQMEelNkdHjnYOuny0sOseGd7nBxZEEM
+         dhqjN/dmcSyynHs5mxWOlg07bgk8KMMKLayaI7ySC1hzy9EjLC30OrRcnuyaZUCjvpfS
+         6TwF1saz9Cw1XlF0aD1TJXbX4NzptSA54WW1iP4TnPgGuYSJqDp8825pfQNdBZ05Q4ee
+         FSvRBf9oNDDQ963/P99yEiV+UqOzisvTWlSQxqOnY4eWgKSPlEvDxKNH7EDtvH+Z2F3B
+         bqn4MqC11x6TzgXdzxfP3bT+ZyI/G1WF8KbRDXHt8WxTG4Pn+RGPiDINzEhgU1gR3/Jc
+         cCVA==
+X-Gm-Message-State: AOAM531tEmqwWhCnNxTsKO8GsLZpGC16YdchZmf0AGlv0JGh8kE05kRB
+        nzehp5BcRxeWhPYAnTeX5x6CsA==
+X-Google-Smtp-Source: ABdhPJw1EAebv52D0fGCecrKQNHXpvA1WtVaDZlB3PXnrtrkiLQTkMClotu0rgBrzw31XDzOlJMw2A==
+X-Received: by 2002:a17:906:7a51:b0:6e8:8e6c:f182 with SMTP id i17-20020a1709067a5100b006e88e6cf182mr8740413ejo.506.1650284808614;
+        Mon, 18 Apr 2022 05:26:48 -0700 (PDT)
+Received: from [192.168.0.217] (xdsl-188-155-176-92.adslplus.ch. [188.155.176.92])
+        by smtp.gmail.com with ESMTPSA id gj3-20020a170906e10300b006e8ac161bcfsm4539377ejb.203.2022.04.18.05.26.47
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 18 Apr 2022 05:26:47 -0700 (PDT)
+Message-ID: <a81e72f0-f01f-723e-fb0e-7667b2d3ff3f@linaro.org>
+Date:   Mon, 18 Apr 2022 14:26:46 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Mon, 18 Apr 2022 14:04:16 +0200
-From:   Michael Walle <michael@walle.cc>
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Lars Povlsen <lars.povlsen@microchip.com>,
-        Steen Hegelund <Steen.Hegelund@microchip.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Gregory CLEMENT <gregory.clement@bootlin.com>,
-        Paul Burton <paulburton@kernel.org>,
-        Quentin Schulz <quentin.schulz@bootlin.com>,
-        Antoine Tenart <atenart@kernel.org>,
-        Kavyasree Kotagiri <kavyasree.kotagiri@microchip.com>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        UNGLinuxDriver@microchip.com, linux-gpio@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org
-Subject: Re: [PATCH v3 6/6] dt-bindings: pinctrl: convert ocelot-pinctrl to
- YAML format
-In-Reply-To: <de9b0114-23b5-04b4-86b3-0d393441a267@kernel.org>
-References: <20220319204628.1759635-1-michael@walle.cc>
- <20220319204628.1759635-7-michael@walle.cc>
- <CACRpkdbrw7Hjt9mB9pr_iNsGi71g_d8BGhpT_ih1RVgKJ5U0qQ@mail.gmail.com>
- <e02e22920ffe23b49237c0c1379e888b@walle.cc>
- <de9b0114-23b5-04b4-86b3-0d393441a267@kernel.org>
-User-Agent: Roundcube Webmail/1.4.13
-Message-ID: <735863d6476605e4ff72032d8971ac0d@walle.cc>
-X-Sender: michael@walle.cc
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.7.0
+Subject: Re: [PATCH 2/3] dt-bindings: SPI: Add bindings for new Ingenic SoCs.
+Content-Language: en-US
+To:     =?UTF-8?B?5ZGo55Cw5p2wIChaaG91IFlhbmppZSk=?= 
+        <zhouyanjie@wanyeetech.com>, broonie@kernel.org,
+        robh+dt@kernel.org, krzk+dt@kernel.org
+Cc:     linux-spi@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        paul@crapouillou.net, contact@artur-rojek.eu,
+        dongsheng.qiu@ingenic.com, aric.pzqi@ingenic.com,
+        rick.tyliu@ingenic.com, sernia.zhou@foxmail.com,
+        zhenwenjin@gmail.com, reimu@sudomaker.com
+References: <1650032528-118220-1-git-send-email-zhouyanjie@wanyeetech.com>
+ <1650032528-118220-3-git-send-email-zhouyanjie@wanyeetech.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <1650032528-118220-3-git-send-email-zhouyanjie@wanyeetech.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Am 2022-04-18 13:13, schrieb Krzysztof Kozlowski:
-> On 18/04/2022 10:19, Michael Walle wrote:
->> [resend, use Krysztof's new email address]
->> 
->> Am 2022-04-18 01:41, schrieb Linus Walleij:
->>> On Sat, Mar 19, 2022 at 9:47 PM Michael Walle <michael@walle.cc> 
->>> wrote:
->>> 
->>>> Convert the ocelot-pinctrl device tree binding to the new YAML 
->>>> format.
->>>> 
->>>> Additionally to the original binding documentation, add interrupt
->>>> properties which are optional and already used on several SoCs like
->>>> SparX-5, Luton, Ocelot and LAN966x but were not documented before.
->>>> 
->>>> Also, on the sparx5 and the lan966x SoCs there are two items for the
->>>> reg property.
->>>> 
->>>> Signed-off-by: Michael Walle <michael@walle.cc>
->>> 
->>> So is this single patch something I should apply to the pin control
->>> tree?
->> 
->> The first five patches will fix the validation errrors once the
->> binding is converted to the YAML format. So, do they need to go
->> through the same tree?
->> 
->> Also as mentioned, there is this pending series [1] which is the
->> reason I've converted the binding to YAML in the first place. So
->> at least the first patch of this series will have to go through
->> the same tree as the YAML conversion patch.
->> 
->> How can we move forward here? Krzysztof, maybe all of the dt
->> bindings patches can go through your tree and I'll reposting
->> the second patch of [1] afterwards?
+On 15/04/2022 16:22, 周琰杰 (Zhou Yanjie) wrote:
+> Add the SPI bindings for the JZ4775 SoC, the X1000 SoC,
+> and the X2000 SoC from Ingenic.
 > 
-> I think you got all necessary acks for this pinctrl bindings change and
-> the dependency ("add reset property"), so both can go via Linus' tree.
-> That's preferred.
-> 
-> DTS patches goes through your SoC maintainer tree.
+> Signed-off-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
 
-Ah, ok, I wasn't aware of that. Then yes, please go ahead and
-pick this and the first patch of [1] up, Linus.
 
-Of course if you like you can pick the second patch of [1],
-too. But I can also repost it without the RFC tag if that is
-preferred.
+Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
--michael
 
-[1] 
-https://lore.kernel.org/linux-gpio/20220313154640.63813-1-michael@walle.cc/
+Best regards,
+Krzysztof

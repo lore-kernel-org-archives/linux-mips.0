@@ -2,38 +2,36 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 846C4C433F5
-	for <linux-mips@archiver.kernel.org>; Mon, 18 Apr 2022 18:50:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 85409C4332F
+	for <linux-mips@archiver.kernel.org>; Mon, 18 Apr 2022 18:50:26 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347476AbiDRSwq (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 18 Apr 2022 14:52:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39718 "EHLO
+        id S1347499AbiDRSxD (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 18 Apr 2022 14:53:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39992 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234453AbiDRSwq (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Mon, 18 Apr 2022 14:52:46 -0400
+        with ESMTP id S1347492AbiDRSxB (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Mon, 18 Apr 2022 14:53:01 -0400
 Received: from aposti.net (aposti.net [89.234.176.197])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1E801D33F;
-        Mon, 18 Apr 2022 11:50:06 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3A5F2F39B;
+        Mon, 18 Apr 2022 11:50:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crapouillou.net;
-        s=mail; t=1650307795; h=from:from:sender:reply-to:subject:subject:date:date:
+        s=mail; t=1650307797; h=from:from:sender:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=7nc5sIEFkzgJ2j9U+7Rs4qBYEvdcvvjY3ksRsV+cjhc=;
-        b=0zEbo+PYGQgtMfZM6hGiyltpSPPhFv8Y6+yi5oZYU78tTx4Vkcn8sr25so6RaGPhgkhRBD
-        DeRV7xdx24/fVfMveXZv3OhVITOodRIvVfZcFS4CiC0NXL8rtbhzcjhIwldqUE4JeJjBGh
-        AEuxC66TNNwuE8EgsyqV4/+n2doloCE=
+        bh=gTydCTe/7cAyLlIMweK5uFG1GYH9QzGk2uqsrqg28Oo=;
+        b=HEvosaXqUAJaM43ThX9L/5w3WJ5BrXLFRg2EUIjxmL/MdlW+LOPXb1fnpElIc/Dgkc9Xng
+        aeTnMj+yhDrIWcGaCC964jixem3O3aRwgx1mr8OTX9vqrAhNRorIHgk/BaM4exFfF3q13i
+        23jRa11lv0AXN4W/s74zEnjewY7HOwI=
 From:   Paul Cercueil <paul@crapouillou.net>
 To:     Alessandro Zummo <a.zummo@towertech.it>,
         Alexandre Belloni <alexandre.belloni@bootlin.com>
 Cc:     list@opendingux.net, linux-rtc@vger.kernel.org,
         devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mips@vger.kernel.org, Paul Cercueil <paul@crapouillou.net>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
-Subject: [PATCH 1/5] dt-bindings: rtc: Rework compatible strings and add #clock-cells
-Date:   Mon, 18 Apr 2022 19:49:29 +0100
-Message-Id: <20220418184933.13172-2-paul@crapouillou.net>
+        linux-mips@vger.kernel.org, Paul Cercueil <paul@crapouillou.net>
+Subject: [PATCH 3/5] rtc: jz4740: Reset scratchpad register on power loss
+Date:   Mon, 18 Apr 2022 19:49:31 +0100
+Message-Id: <20220418184933.13172-4-paul@crapouillou.net>
 In-Reply-To: <20220418184933.13172-1-paul@crapouillou.net>
 References: <20220418184933.13172-1-paul@crapouillou.net>
 MIME-Version: 1.0
@@ -42,56 +40,82 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-The RTC in the JZ4770 is compatible with the JZ4760, but has an extra
-register that permits to configure the behaviour of the CLK32K pin. The
-same goes for the RTC in the JZ4780.
+On power loss, reading the RTC value would fail as the scratchpad lost
+its magic value, until the hardware clock was set once again.
 
-Therefore, the ingenic,jz4770-rtc and ingenic,jz4780-rtc strings do not
-fall back anymore to ingenic,jz4760-rtc. The ingenic,jz4780-rtc string
-now falls back to the ingenic,jz4770-rtc string.
-
-Additionally, since the RTCs in the JZ4770 and JZ4780 support outputting
-the input oscillator's clock to the CLK32K pin, the RTC node is now also
-a clock provider on these SoCs, so a #clock-cells property is added.
+To avoid that, reset the RTC value to Epoch in the probe if we detect
+that the scratchpad lost its magic value.
 
 Signed-off-by: Paul Cercueil <paul@crapouillou.net>
-Cc: Rob Herring <robh+dt@kernel.org>
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
 ---
- Documentation/devicetree/bindings/rtc/ingenic,rtc.yaml | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+ drivers/rtc/rtc-jz4740.c | 24 +++++++++++++++++++++---
+ 1 file changed, 21 insertions(+), 3 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/rtc/ingenic,rtc.yaml b/Documentation/devicetree/bindings/rtc/ingenic,rtc.yaml
-index b235b2441997..57393c3ac724 100644
---- a/Documentation/devicetree/bindings/rtc/ingenic,rtc.yaml
-+++ b/Documentation/devicetree/bindings/rtc/ingenic,rtc.yaml
-@@ -18,14 +18,14 @@ properties:
-       - enum:
-           - ingenic,jz4740-rtc
-           - ingenic,jz4760-rtc
-+          - ingenic,jz4770-rtc
-       - items:
-           - const: ingenic,jz4725b-rtc
-           - const: ingenic,jz4740-rtc
-       - items:
-           - enum:
--              - ingenic,jz4770-rtc
-               - ingenic,jz4780-rtc
--          - const: ingenic,jz4760-rtc
-+          - const: ingenic,jz4770-rtc
+diff --git a/drivers/rtc/rtc-jz4740.c b/drivers/rtc/rtc-jz4740.c
+index 119baf168b32..aac5f68bf626 100644
+--- a/drivers/rtc/rtc-jz4740.c
++++ b/drivers/rtc/rtc-jz4740.c
+@@ -42,6 +42,9 @@
+ /* Magic value to enable writes on jz4780 */
+ #define JZ_RTC_WENR_MAGIC	0xA55A
  
-   reg:
-     maxItems: 1
-@@ -39,6 +39,9 @@ properties:
-   clock-names:
-     const: rtc
- 
-+  "#clock-cells":
-+    const: 0
++/* Value written to the scratchpad to detect power losses */
++#define JZ_RTC_SCRATCHPAD_MAGIC	0x12345678
 +
-   system-power-controller:
-     description: |
-       Indicates that the RTC is responsible for powering OFF
+ #define JZ_RTC_WAKEUP_FILTER_MASK	0x0000FFE0
+ #define JZ_RTC_RESET_COUNTER_MASK	0x00000FE0
+ 
+@@ -134,10 +137,11 @@ static int jz4740_rtc_ctrl_set_bits(struct jz4740_rtc *rtc, uint32_t mask,
+ static int jz4740_rtc_read_time(struct device *dev, struct rtc_time *time)
+ {
+ 	struct jz4740_rtc *rtc = dev_get_drvdata(dev);
+-	uint32_t secs, secs2;
++	uint32_t secs, secs2, magic;
+ 	int timeout = 5;
+ 
+-	if (jz4740_rtc_reg_read(rtc, JZ_REG_RTC_SCRATCHPAD) != 0x12345678)
++	magic = jz4740_rtc_reg_read(rtc, JZ_REG_RTC_SCRATCHPAD);
++	if (magic != JZ_RTC_SCRATCHPAD_MAGIC)
+ 		return -EINVAL;
+ 
+ 	/* If the seconds register is read while it is updated, it can contain a
+@@ -169,7 +173,8 @@ static int jz4740_rtc_set_time(struct device *dev, struct rtc_time *time)
+ 	if (ret)
+ 		return ret;
+ 
+-	return jz4740_rtc_reg_write(rtc, JZ_REG_RTC_SCRATCHPAD, 0x12345678);
++	return jz4740_rtc_reg_write(rtc, JZ_REG_RTC_SCRATCHPAD,
++				    JZ_RTC_SCRATCHPAD_MAGIC);
+ }
+ 
+ static int jz4740_rtc_read_alarm(struct device *dev, struct rtc_wkalrm *alrm)
+@@ -307,6 +312,7 @@ static int jz4740_rtc_probe(struct platform_device *pdev)
+ 	struct jz4740_rtc *rtc;
+ 	unsigned long rate;
+ 	struct clk *clk;
++	uint32_t magic;
+ 	int ret, irq;
+ 
+ 	rtc = devm_kzalloc(dev, sizeof(*rtc), GFP_KERNEL);
+@@ -369,6 +375,18 @@ static int jz4740_rtc_probe(struct platform_device *pdev)
+ 	/* Each 1 Hz pulse should happen after (rate) ticks */
+ 	jz4740_rtc_reg_write(rtc, JZ_REG_RTC_REGULATOR, rate - 1);
+ 
++	magic = jz4740_rtc_reg_read(rtc, JZ_REG_RTC_SCRATCHPAD);
++	if (magic != JZ_RTC_SCRATCHPAD_MAGIC) {
++		/*
++		 * If the scratchpad doesn't hold our magic value, then a
++		 * power loss occurred. Reset to Epoch.
++		 */
++		struct rtc_time time;
++
++		rtc_time64_to_tm(0, &time);
++		jz4740_rtc_set_time(dev, &time);
++	}
++
+ 	ret = devm_rtc_register_device(rtc->rtc);
+ 	if (ret)
+ 		return ret;
 -- 
 2.35.1
 

@@ -2,35 +2,35 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2A922C433F5
-	for <linux-mips@archiver.kernel.org>; Tue, 19 Apr 2022 16:43:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 50134C388F3
+	for <linux-mips@archiver.kernel.org>; Tue, 19 Apr 2022 16:44:04 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240150AbiDSQqT (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 19 Apr 2022 12:46:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55338 "EHLO
+        id S1354903AbiDSQp5 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 19 Apr 2022 12:45:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51340 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244970AbiDSQqK (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Tue, 19 Apr 2022 12:46:10 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB69239692;
-        Tue, 19 Apr 2022 09:43:26 -0700 (PDT)
+        with ESMTP id S1354886AbiDSQmY (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Tue, 19 Apr 2022 12:42:24 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B8D415FDD;
+        Tue, 19 Apr 2022 09:39:41 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 6AB4D61877;
-        Tue, 19 Apr 2022 16:43:26 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 83A3AC385AE;
-        Tue, 19 Apr 2022 16:43:18 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 0D7A3B81BEB;
+        Tue, 19 Apr 2022 16:39:40 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 50CD1C385AF;
+        Tue, 19 Apr 2022 16:39:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1650386605;
-        bh=jVLr/dnEKwuj3c1vrZ91YoCk9HDGqp70ixnIySjnCzk=;
+        s=k20201202; t=1650386378;
+        bh=7xEnZ0JSPWZhTH940v/NcGNAbOyRIyfBWQe+0s0khHM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mWT14rZK6S8SuCBdSeUZzPrc9E19Tfk5z+4e9Xxz5EV84KlZjRCrsV4OOzxS7dHS6
-         4iexBwIyE7R2Bpu6+i2RCf1afkBlvNseI9hOFpc1KtSAzBYh231hgSqMVDhA681sMd
-         tSc90K1WjgKGfBNbN2rCf9UAT41xofayQcYjRr5RlfcxKZzE9DwCXzhkkSatqU7rJA
-         Txl8iVGB3rULKEKOFMBXqDJviTOWOEw+/wfcvwIbK1jtrAzCoSC461ZPz5HedxyzbB
-         zEfwanqzKNV6A15RBOC7RVLcka+KDcF2taZlmtRD7tt/hSaNrcpYJnLCOHouG9UN5P
-         xWRdDk2j4rGQQ==
+        b=U2+iU6c8bjeJ3b4/hWR8738LXyw2qX/PeoFQkQee06q/vC7ddu3A5paCnfw9cViZ0
+         1fBHsL7duftcUL7G4nuM2IRlQk2KY6lsgVtQuDj/pHPyjLxqHD/8dTXiqD3xm3lzOw
+         3zqMMyS3sa9kuU55H0WPkrepH99Qln75vsXp46325cju4AxH9JOASF64ejSwaYDiQW
+         XK4cjQPK/vvSqzAbE/RPMy1oHrXG/vxp89TInVKBQwrtCc6W5mnrs/h8bNfSFxEhEX
+         cWCDK6zl1DWuudpeHuSJIn2jTIsuGmr5kz5m3ceIgi2uQGIuHn5uclCDYzNllRUsoG
+         VX9+70vTRthWw==
 From:   Arnd Bergmann <arnd@kernel.org>
 To:     robert.jarzmik@free.fr, linux-arm-kernel@lists.infradead.org
 Cc:     Arnd Bergmann <arnd@arndb.de>, Daniel Mack <daniel@zonque.org>,
@@ -58,10 +58,11 @@ Cc:     Arnd Bergmann <arnd@arndb.de>, Daniel Mack <daniel@zonque.org>,
         linux-mmc@vger.kernel.org, linux-mtd@lists.infradead.org,
         linux-rtc@vger.kernel.org, linux-usb@vger.kernel.org,
         linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        alsa-devel@alsa-project.org
-Subject: [PATCH 35/48] ARM: pxa: remove get_clk_frequency_khz()
-Date:   Tue, 19 Apr 2022 18:37:57 +0200
-Message-Id: <20220419163810.2118169-36-arnd@kernel.org>
+        alsa-devel@alsa-project.org,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+Subject: [PATCH 06/48] ARM: pxa: stop using mach/bitfield.h
+Date:   Tue, 19 Apr 2022 18:37:28 +0200
+Message-Id: <20220419163810.2118169-7-arnd@kernel.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20220419163810.2118169-1-arnd@kernel.org>
 References: <20220419163810.2118169-1-arnd@kernel.org>
@@ -73,87 +74,82 @@ X-Mailing-List: linux-mips@vger.kernel.org
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-get_clk_frequency_khz() is not a proper name for a global function,
-and there is only one caller.
+There are two identical copies of mach/bitfield.h, one for
+mach-sa1100 and one for mach-pxa. The pxafb driver only
+makes use of two macros, which can be trivially open-coded
+in the header.
 
-Convert viper to use the properly namespaced
-pxa25x_get_clk_frequency_khz() and remove the other references.
-
-Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
+Cc: dri-devel@lists.freedesktop.org
+Acked-by: Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
 Acked-by: Robert Jarzmik <robert.jarzmik@free.fr>
-Cc: linux-pm@vger.kernel.org
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- arch/arm/mach-pxa/generic.c      | 15 ---------------
- arch/arm/mach-pxa/generic.h      |  1 -
- arch/arm/mach-pxa/viper.c        |  2 +-
- drivers/cpufreq/pxa2xx-cpufreq.c |  2 --
- 4 files changed, 1 insertion(+), 19 deletions(-)
+ arch/arm/mach-pxa/idp.c                   | 1 -
+ arch/arm/mach-pxa/include/mach/regs-lcd.h | 5 +++--
+ arch/arm/mach-pxa/regs-u2d.h              | 2 --
+ drivers/video/fbdev/pxafb.c               | 1 -
+ 4 files changed, 3 insertions(+), 6 deletions(-)
 
-diff --git a/arch/arm/mach-pxa/generic.c b/arch/arm/mach-pxa/generic.c
-index fe1d55d328e5..2c2c82fcf9cb 100644
---- a/arch/arm/mach-pxa/generic.c
-+++ b/arch/arm/mach-pxa/generic.c
-@@ -55,21 +55,6 @@ void __init pxa_timer_init(void)
- 	pxa_timer_nodt_init(IRQ_OST0, io_p2v(0x40a00000));
- }
+diff --git a/arch/arm/mach-pxa/idp.c b/arch/arm/mach-pxa/idp.c
+index 57c0511472bc..525d01ddfbbb 100644
+--- a/arch/arm/mach-pxa/idp.c
++++ b/arch/arm/mach-pxa/idp.c
+@@ -30,7 +30,6 @@
+ #include "pxa25x.h"
+ #include "idp.h"
+ #include <linux/platform_data/video-pxafb.h>
+-#include <mach/bitfield.h>
+ #include <linux/platform_data/mmc-pxamci.h>
+ #include <linux/smc91x.h>
  
--/*
-- * Get the clock frequency as reflected by CCCR and the turbo flag.
-- * We assume these values have been applied via a fcs.
-- * If info is not 0 we also display the current settings.
-- */
--unsigned int get_clk_frequency_khz(int info)
--{
--	if (cpu_is_pxa25x())
--		return pxa25x_get_clk_frequency_khz(info);
--	else if (cpu_is_pxa27x())
--		return pxa27x_get_clk_frequency_khz(info);
--	return 0;
--}
--EXPORT_SYMBOL(get_clk_frequency_khz);
+diff --git a/arch/arm/mach-pxa/include/mach/regs-lcd.h b/arch/arm/mach-pxa/include/mach/regs-lcd.h
+index e2b6e3d1f625..6a434675f84a 100644
+--- a/arch/arm/mach-pxa/include/mach/regs-lcd.h
++++ b/arch/arm/mach-pxa/include/mach/regs-lcd.h
+@@ -2,8 +2,6 @@
+ #ifndef __ASM_ARCH_REGS_LCD_H
+ #define __ASM_ARCH_REGS_LCD_H
+ 
+-#include <mach/bitfield.h>
 -
- void pxa_smemc_set_pcmcia_timing(int sock, u32 mcmem, u32 mcatt, u32 mcio)
- {
- 	__raw_writel(mcmem, MCMEM(sock));
-diff --git a/arch/arm/mach-pxa/generic.h b/arch/arm/mach-pxa/generic.h
-index 67925d3ea026..2f706ef97357 100644
---- a/arch/arm/mach-pxa/generic.h
-+++ b/arch/arm/mach-pxa/generic.h
-@@ -11,7 +11,6 @@
+ /*
+  * LCD Controller Registers and Bits Definitions
+  */
+@@ -86,6 +84,9 @@
+ #define LCCR0_OUC	(1 << 25)	/* Overlay Underlay control bit */
+ #define LCCR0_LDDALT	(1 << 26)	/* LDD alternate mapping control */
  
- struct irq_data;
++#define Fld(Size, Shft)	(((Size) << 16) + (Shft))
++#define FShft(Field)	((Field) & 0x0000FFFF)
++
+ #define LCCR1_PPL	Fld (10, 0)	/* Pixels Per Line - 1 */
+ #define LCCR1_DisWdth(Pixel)	(((Pixel) - 1) << FShft (LCCR1_PPL))
  
--extern unsigned int get_clk_frequency_khz(int info);
- extern void __init pxa_dt_irq_init(int (*fn)(struct irq_data *,
- 					     unsigned int));
- extern void __init pxa_map_io(void);
-diff --git a/arch/arm/mach-pxa/viper.c b/arch/arm/mach-pxa/viper.c
-index 600d9e80b00c..0782f0ed5a6e 100644
---- a/arch/arm/mach-pxa/viper.c
-+++ b/arch/arm/mach-pxa/viper.c
-@@ -851,7 +851,7 @@ static void __init viper_init_vcore_gpios(void)
- 		goto err_dir;
+diff --git a/arch/arm/mach-pxa/regs-u2d.h b/arch/arm/mach-pxa/regs-u2d.h
+index fe4c80ad87ec..ab517ba62c9a 100644
+--- a/arch/arm/mach-pxa/regs-u2d.h
++++ b/arch/arm/mach-pxa/regs-u2d.h
+@@ -2,8 +2,6 @@
+ #ifndef __ASM_ARCH_PXA3xx_U2D_H
+ #define __ASM_ARCH_PXA3xx_U2D_H
  
- 	/* c/should assume redboot set the correct level ??? */
--	viper_set_core_cpu_voltage(get_clk_frequency_khz(0), 1);
-+	viper_set_core_cpu_voltage(pxa25x_get_clk_frequency_khz(0), 1);
- 
- 	return;
- 
-diff --git a/drivers/cpufreq/pxa2xx-cpufreq.c b/drivers/cpufreq/pxa2xx-cpufreq.c
-index 0f0e676ff781..e74d36d6f78d 100644
---- a/drivers/cpufreq/pxa2xx-cpufreq.c
-+++ b/drivers/cpufreq/pxa2xx-cpufreq.c
-@@ -107,8 +107,6 @@ static struct pxa_freqs pxa27x_freqs[] = {
- static struct cpufreq_frequency_table
- 	pxa27x_freq_table[NUM_PXA27x_FREQS+1];
- 
--extern unsigned get_clk_frequency_khz(int info);
+-#include <mach/bitfield.h>
 -
- #ifdef CONFIG_REGULATOR
+ /*
+  * USB2 device controller registers and bits definitions
+  */
+diff --git a/drivers/video/fbdev/pxafb.c b/drivers/video/fbdev/pxafb.c
+index e3d1a184d2be..edf080f64a8c 100644
+--- a/drivers/video/fbdev/pxafb.c
++++ b/drivers/video/fbdev/pxafb.c
+@@ -64,7 +64,6 @@
+ #include <asm/io.h>
+ #include <asm/irq.h>
+ #include <asm/div64.h>
+-#include <mach/bitfield.h>
+ #include <linux/platform_data/video-pxafb.h>
  
- static int pxa_cpufreq_change_voltage(const struct pxa_freqs *pxa_freq)
+ /*
 -- 
 2.29.2
 

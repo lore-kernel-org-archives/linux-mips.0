@@ -2,35 +2,35 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9980CC43219
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BDD7AC4321E
 	for <linux-mips@archiver.kernel.org>; Tue, 19 Apr 2022 16:43:37 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241749AbiDSQqJ (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 19 Apr 2022 12:46:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54080 "EHLO
+        id S1346904AbiDSQqM (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 19 Apr 2022 12:46:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54886 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1355082AbiDSQoP (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Tue, 19 Apr 2022 12:44:15 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8AC523BF4;
-        Tue, 19 Apr 2022 09:41:31 -0700 (PDT)
+        with ESMTP id S1344027AbiDSQpX (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Tue, 19 Apr 2022 12:45:23 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2107F36152;
+        Tue, 19 Apr 2022 09:42:40 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 81744B819DE;
-        Tue, 19 Apr 2022 16:41:30 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 035C7C385AE;
-        Tue, 19 Apr 2022 16:41:21 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id A9E7A6145C;
+        Tue, 19 Apr 2022 16:42:39 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D0C57C385AD;
+        Tue, 19 Apr 2022 16:42:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1650386489;
-        bh=CV2DfOuzXf7kUPil8tZ7gZo9izvbbtgmXRdVGoTTjS0=;
+        s=k20201202; t=1650386559;
+        bh=6qz24JeYkT/szoUulUC11ktMbSMxaia2ZM53W0WWa5k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KP5D3/+gEbUNQwq4+2Dg5ZiO0/4UD7UBYxqQ+Yhzyb8rcMpQy8IwFnD3vc7nRThh9
-         0S/UDwriRgtkpACByKJG0x9h6S5YK9TudrYKnkr6NhsX4J5fKn6ygewSDktxKDpnIv
-         tCIuO2FwqWl//65PEBymVPwNOmkUQYMSZ9p1GIJ8MV0q3d+ZIUxvSSsZsxbivMXbmX
-         rBvFb4Uy8VNcVIp7gUj0ZEUm+nWs62XeJSEZiKgu2W6BY2wI3KzjhVsDVg/3FFR+Sz
-         R7ffATntjCQqbOT5/L1YIUTX+OZ6M/ixyUEcIRbi2l9O7ozPWfqM11qZUjM90rXQq0
-         vHB3D8vED3y3w==
+        b=OQbcZhU1YyaWiVoymRlCpzVRaDV6+oOUhic1Kg4DXMriEEdQTb3Ol248UgeiguRcV
+         AADXBOzx4zqgQNOk8kqSzTZHT8QIWeMxKyU23zO+RJE2VESVS0XI60vTW/g7muIAwS
+         8PC9xUtDQIiLYabZtjUMpFcY4iEN8SE8ABotebLwqZt2mev8Theryu21oiciT6uNJG
+         jkegeWr772BxLlRDA+zY95CIesNGVFaK7EjAjyLas9VMV8jQ2YcKVPWTYE+Of1svA5
+         xXLxVX0vDq/uA9rastXjDbWACQcopxN6Tk8sAWc6oesLyUD/wEISCwtksws8Opfw6K
+         j1eP3Wy/Abdpw==
 From:   Arnd Bergmann <arnd@kernel.org>
 To:     robert.jarzmik@free.fr, linux-arm-kernel@lists.infradead.org
 Cc:     Arnd Bergmann <arnd@arndb.de>, Daniel Mack <daniel@zonque.org>,
@@ -59,9 +59,9 @@ Cc:     Arnd Bergmann <arnd@arndb.de>, Daniel Mack <daniel@zonque.org>,
         linux-rtc@vger.kernel.org, linux-usb@vger.kernel.org,
         linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
         alsa-devel@alsa-project.org
-Subject: [PATCH 20/48] ARM: pxa: spitz: use gpio descriptors for audio
-Date:   Tue, 19 Apr 2022 18:37:42 +0200
-Message-Id: <20220419163810.2118169-21-arnd@kernel.org>
+Subject: [PATCH 29/48] Input: wm97xx - switch to using threaded IRQ
+Date:   Tue, 19 Apr 2022 18:37:51 +0200
+Message-Id: <20220419163810.2118169-30-arnd@kernel.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20220419163810.2118169-1-arnd@kernel.org>
 References: <20220419163810.2118169-1-arnd@kernel.org>
@@ -71,249 +71,114 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 
-The audio driver should not use a hardwired gpio number
-from the header. Change it to use a lookup table.
+Instead of manually disabling and enabling interrupts and scheduling work
+to access the device, let's use threaded oneshot interrupt handler. It
+simplifies things.
 
-Acked-by: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org
+Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- arch/arm/mach-pxa/spitz.c                    | 33 ++++++++++-
- arch/arm/mach-pxa/{include/mach => }/spitz.h |  2 +-
- arch/arm/mach-pxa/spitz_pm.c                 |  2 +-
- sound/soc/pxa/spitz.c                        | 58 ++++++++------------
- 4 files changed, 57 insertions(+), 38 deletions(-)
- rename arch/arm/mach-pxa/{include/mach => }/spitz.h (99%)
+ drivers/input/touchscreen/wm97xx-core.c | 42 +++++--------------------
+ include/linux/wm97xx.h                  |  1 -
+ 2 files changed, 7 insertions(+), 36 deletions(-)
 
-diff --git a/arch/arm/mach-pxa/spitz.c b/arch/arm/mach-pxa/spitz.c
-index a648e7094e84..cd8f00945373 100644
---- a/arch/arm/mach-pxa/spitz.c
-+++ b/arch/arm/mach-pxa/spitz.c
-@@ -44,7 +44,7 @@
- #include <linux/platform_data/mmc-pxamci.h>
- #include <linux/platform_data/usb-ohci-pxa27x.h>
- #include <linux/platform_data/video-pxafb.h>
--#include <mach/spitz.h>
-+#include "spitz.h"
- #include "sharpsl_pm.h"
- #include <mach/smemc.h>
+diff --git a/drivers/input/touchscreen/wm97xx-core.c b/drivers/input/touchscreen/wm97xx-core.c
+index 1b58611c8084..2757c7768ffe 100644
+--- a/drivers/input/touchscreen/wm97xx-core.c
++++ b/drivers/input/touchscreen/wm97xx-core.c
+@@ -285,11 +285,12 @@ void wm97xx_set_suspend_mode(struct wm97xx *wm, u16 mode)
+ EXPORT_SYMBOL_GPL(wm97xx_set_suspend_mode);
  
-@@ -962,11 +962,42 @@ static void __init spitz_i2c_init(void)
- static inline void spitz_i2c_init(void) {}
- #endif
- 
-+static struct gpiod_lookup_table spitz_audio_gpio_table = {
-+	.dev_id = "spitz-audio",
-+	.table = {
-+		GPIO_LOOKUP("sharp-scoop.0", SPITZ_GPIO_MUTE_L - SPITZ_SCP_GPIO_BASE,
-+			    "mute-l", GPIO_ACTIVE_HIGH),
-+		GPIO_LOOKUP("sharp-scoop.0", SPITZ_GPIO_MUTE_R - SPITZ_SCP_GPIO_BASE,
-+			    "mute-r", GPIO_ACTIVE_HIGH),
-+		GPIO_LOOKUP("sharp-scoop.1", SPITZ_GPIO_MIC_BIAS - SPITZ_SCP2_GPIO_BASE,
-+			    "mic", GPIO_ACTIVE_HIGH),
-+		{ },
-+	},
-+};
-+
-+static struct gpiod_lookup_table akita_audio_gpio_table = {
-+	.dev_id = "spitz-audio",
-+	.table = {
-+		GPIO_LOOKUP("sharp-scoop.0", SPITZ_GPIO_MUTE_L - SPITZ_SCP_GPIO_BASE,
-+			    "mute-l", GPIO_ACTIVE_HIGH),
-+		GPIO_LOOKUP("sharp-scoop.0", SPITZ_GPIO_MUTE_R - SPITZ_SCP_GPIO_BASE,
-+			    "mute-r", GPIO_ACTIVE_HIGH),
-+		GPIO_LOOKUP("i2c-max7310", AKITA_GPIO_MIC_BIAS - AKITA_IOEXP_GPIO_BASE,
-+			    "mic", GPIO_ACTIVE_HIGH),
-+		{ },
-+	},
-+};
-+
- /******************************************************************************
-  * Audio devices
-  ******************************************************************************/
- static inline void spitz_audio_init(void)
+ /*
+- * Handle a pen down interrupt.
++ * Codec PENDOWN irq handler
++ *
+  */
+-static void wm97xx_pen_irq_worker(struct work_struct *work)
++static irqreturn_t wm97xx_pen_interrupt(int irq, void *dev_id)
  {
-+	if (machine_is_akita())
-+		gpiod_add_lookup_table(&akita_audio_gpio_table);
-+	else
-+		gpiod_add_lookup_table(&spitz_audio_gpio_table);
-+
- 	platform_device_register_simple("spitz-audio", -1, NULL, 0);
- }
+-	struct wm97xx *wm = container_of(work, struct wm97xx, pen_event_work);
++	struct wm97xx *wm = dev_id;
+ 	int pen_was_down = wm->pen_is_down;
  
-diff --git a/arch/arm/mach-pxa/include/mach/spitz.h b/arch/arm/mach-pxa/spitz.h
-similarity index 99%
-rename from arch/arm/mach-pxa/include/mach/spitz.h
-rename to arch/arm/mach-pxa/spitz.h
-index 04828d8918aa..f97e3ebd762d 100644
---- a/arch/arm/mach-pxa/include/mach/spitz.h
-+++ b/arch/arm/mach-pxa/spitz.h
-@@ -11,7 +11,7 @@
- #define __ASM_ARCH_SPITZ_H  1
- #endif
+ 	/* do we need to enable the touch panel reader */
+@@ -343,27 +344,6 @@ static void wm97xx_pen_irq_worker(struct work_struct *work)
+ 	if (!wm->pen_is_down && wm->mach_ops->acc_enabled)
+ 		wm->mach_ops->acc_pen_up(wm);
  
--#include "irqs.h" /* PXA_NR_BUILTIN_GPIO, PXA_GPIO_TO_IRQ */
-+#include <mach/irqs.h> /* PXA_NR_BUILTIN_GPIO, PXA_GPIO_TO_IRQ */
- #include <linux/fb.h>
- 
- /* Spitz/Akita GPIOs */
-diff --git a/arch/arm/mach-pxa/spitz_pm.c b/arch/arm/mach-pxa/spitz_pm.c
-index 201dabe883b6..6689b67f9ce5 100644
---- a/arch/arm/mach-pxa/spitz_pm.c
-+++ b/arch/arm/mach-pxa/spitz_pm.c
-@@ -19,7 +19,7 @@
- #include <asm/irq.h>
- #include <asm/mach-types.h>
- 
--#include <mach/spitz.h>
-+#include "spitz.h"
- #include "pxa27x.h"
- #include "sharpsl_pm.h"
- 
-diff --git a/sound/soc/pxa/spitz.c b/sound/soc/pxa/spitz.c
-index 7c1384a869ca..44303b6eb228 100644
---- a/sound/soc/pxa/spitz.c
-+++ b/sound/soc/pxa/spitz.c
-@@ -14,13 +14,12 @@
- #include <linux/timer.h>
- #include <linux/interrupt.h>
- #include <linux/platform_device.h>
--#include <linux/gpio.h>
-+#include <linux/gpio/consumer.h>
- #include <sound/core.h>
- #include <sound/pcm.h>
- #include <sound/soc.h>
- 
- #include <asm/mach-types.h>
--#include <mach/spitz.h>
- #include "../codecs/wm8750.h"
- #include "pxa2xx-i2s.h"
- 
-@@ -37,7 +36,7 @@
- 
- static int spitz_jack_func;
- static int spitz_spk_func;
--static int spitz_mic_gpio;
-+static struct gpio_desc *gpiod_mic, *gpiod_mute_l, *gpiod_mute_r;
- 
- static void spitz_ext_control(struct snd_soc_dapm_context *dapm)
- {
-@@ -56,8 +55,8 @@ static void spitz_ext_control(struct snd_soc_dapm_context *dapm)
- 		snd_soc_dapm_disable_pin_unlocked(dapm, "Mic Jack");
- 		snd_soc_dapm_disable_pin_unlocked(dapm, "Line Jack");
- 		snd_soc_dapm_enable_pin_unlocked(dapm, "Headphone Jack");
--		gpio_set_value(SPITZ_GPIO_MUTE_L, 1);
--		gpio_set_value(SPITZ_GPIO_MUTE_R, 1);
-+		gpiod_set_value(gpiod_mute_l, 1);
-+		gpiod_set_value(gpiod_mute_r, 1);
- 		break;
- 	case SPITZ_MIC:
- 		/* enable mic jack and bias, mute hp */
-@@ -65,8 +64,8 @@ static void spitz_ext_control(struct snd_soc_dapm_context *dapm)
- 		snd_soc_dapm_disable_pin_unlocked(dapm, "Headset Jack");
- 		snd_soc_dapm_disable_pin_unlocked(dapm, "Line Jack");
- 		snd_soc_dapm_enable_pin_unlocked(dapm, "Mic Jack");
--		gpio_set_value(SPITZ_GPIO_MUTE_L, 0);
--		gpio_set_value(SPITZ_GPIO_MUTE_R, 0);
-+		gpiod_set_value(gpiod_mute_l, 0);
-+		gpiod_set_value(gpiod_mute_r, 0);
- 		break;
- 	case SPITZ_LINE:
- 		/* enable line jack, disable mic bias and mute hp */
-@@ -74,8 +73,8 @@ static void spitz_ext_control(struct snd_soc_dapm_context *dapm)
- 		snd_soc_dapm_disable_pin_unlocked(dapm, "Headset Jack");
- 		snd_soc_dapm_disable_pin_unlocked(dapm, "Mic Jack");
- 		snd_soc_dapm_enable_pin_unlocked(dapm, "Line Jack");
--		gpio_set_value(SPITZ_GPIO_MUTE_L, 0);
--		gpio_set_value(SPITZ_GPIO_MUTE_R, 0);
-+		gpiod_set_value(gpiod_mute_l, 0);
-+		gpiod_set_value(gpiod_mute_r, 0);
- 		break;
- 	case SPITZ_HEADSET:
- 		/* enable and unmute headset jack enable mic bias, mute L hp */
-@@ -83,8 +82,8 @@ static void spitz_ext_control(struct snd_soc_dapm_context *dapm)
- 		snd_soc_dapm_enable_pin_unlocked(dapm, "Mic Jack");
- 		snd_soc_dapm_disable_pin_unlocked(dapm, "Line Jack");
- 		snd_soc_dapm_enable_pin_unlocked(dapm, "Headset Jack");
--		gpio_set_value(SPITZ_GPIO_MUTE_L, 0);
--		gpio_set_value(SPITZ_GPIO_MUTE_R, 1);
-+		gpiod_set_value(gpiod_mute_l, 0);
-+		gpiod_set_value(gpiod_mute_r, 1);
- 		break;
- 	case SPITZ_HP_OFF:
- 
-@@ -93,8 +92,8 @@ static void spitz_ext_control(struct snd_soc_dapm_context *dapm)
- 		snd_soc_dapm_disable_pin_unlocked(dapm, "Headset Jack");
- 		snd_soc_dapm_disable_pin_unlocked(dapm, "Mic Jack");
- 		snd_soc_dapm_disable_pin_unlocked(dapm, "Line Jack");
--		gpio_set_value(SPITZ_GPIO_MUTE_L, 0);
--		gpio_set_value(SPITZ_GPIO_MUTE_R, 0);
-+		gpiod_set_value(gpiod_mute_l, 0);
-+		gpiod_set_value(gpiod_mute_r, 0);
- 		break;
- 	}
- 
-@@ -199,7 +198,7 @@ static int spitz_set_spk(struct snd_kcontrol *kcontrol,
- static int spitz_mic_bias(struct snd_soc_dapm_widget *w,
- 	struct snd_kcontrol *k, int event)
- {
--	gpio_set_value_cansleep(spitz_mic_gpio, SND_SOC_DAPM_EVENT_ON(event));
-+	gpiod_set_value_cansleep(gpiod_mic, SND_SOC_DAPM_EVENT_ON(event));
- 	return 0;
- }
- 
-@@ -287,39 +286,28 @@ static int spitz_probe(struct platform_device *pdev)
- 	struct snd_soc_card *card = &snd_soc_spitz;
- 	int ret;
- 
--	if (machine_is_akita())
--		spitz_mic_gpio = AKITA_GPIO_MIC_BIAS;
--	else
--		spitz_mic_gpio = SPITZ_GPIO_MIC_BIAS;
+-	wm->mach_ops->irq_enable(wm, 1);
+-}
 -
--	ret = gpio_request(spitz_mic_gpio, "MIC GPIO");
--	if (ret)
--		goto err1;
+-/*
+- * Codec PENDOWN irq handler
+- *
+- * We have to disable the codec interrupt in the handler because it
+- * can take up to 1ms to clear the interrupt source. We schedule a task
+- * in a work queue to do the actual interaction with the chip.  The
+- * interrupt is then enabled again in the slow handler when the source
+- * has been cleared.
+- */
+-static irqreturn_t wm97xx_pen_interrupt(int irq, void *dev_id)
+-{
+-	struct wm97xx *wm = dev_id;
 -
--	ret = gpio_direction_output(spitz_mic_gpio, 0);
--	if (ret)
--		goto err2;
-+	gpiod_mic = devm_gpiod_get(&pdev->dev, "mic", GPIOD_OUT_LOW);
-+	if (IS_ERR(gpiod_mic))
-+		return PTR_ERR(gpiod_mic);
-+	gpiod_mute_l = devm_gpiod_get(&pdev->dev, "mute-l", GPIOD_OUT_LOW);
-+	if (IS_ERR(gpiod_mute_l))
-+		return PTR_ERR(gpiod_mute_l);
-+	gpiod_mute_r = devm_gpiod_get(&pdev->dev, "mute-r", GPIOD_OUT_LOW);
-+	if (IS_ERR(gpiod_mute_r))
-+		return PTR_ERR(gpiod_mute_r);
- 
- 	card->dev = &pdev->dev;
- 
- 	ret = devm_snd_soc_register_card(&pdev->dev, card);
--	if (ret) {
-+	if (ret)
- 		dev_err(&pdev->dev, "snd_soc_register_card() failed: %d\n",
- 			ret);
--		goto err2;
+-	if (!work_pending(&wm->pen_event_work)) {
+-		wm->mach_ops->irq_enable(wm, 0);
+-		queue_work(wm->ts_workq, &wm->pen_event_work);
 -	}
 -
--	return 0;
- 
--err2:
--	gpio_free(spitz_mic_gpio);
--err1:
- 	return ret;
+ 	return IRQ_HANDLED;
  }
  
- static int spitz_remove(struct platform_device *pdev)
+@@ -374,12 +354,9 @@ static int wm97xx_init_pen_irq(struct wm97xx *wm)
  {
--	gpio_free(spitz_mic_gpio);
- 	return 0;
- }
+ 	u16 reg;
  
+-	/* If an interrupt is supplied an IRQ enable operation must also be
+-	 * provided. */
+-	BUG_ON(!wm->mach_ops->irq_enable);
+-
+-	if (request_irq(wm->pen_irq, wm97xx_pen_interrupt, IRQF_SHARED,
+-			"wm97xx-pen", wm)) {
++	if (request_threaded_irq(wm->pen_irq, NULL, wm97xx_pen_interrupt,
++				 IRQF_SHARED | IRQF_ONESHOT,
++				 "wm97xx-pen", wm)) {
+ 		dev_err(wm->dev,
+ 			"Failed to register pen down interrupt, polling");
+ 		wm->pen_irq = 0;
+@@ -509,7 +486,6 @@ static int wm97xx_ts_input_open(struct input_dev *idev)
+ 	wm->codec->dig_enable(wm, 1);
+ 
+ 	INIT_DELAYED_WORK(&wm->ts_reader, wm97xx_ts_reader);
+-	INIT_WORK(&wm->pen_event_work, wm97xx_pen_irq_worker);
+ 
+ 	wm->ts_reader_min_interval = HZ >= 100 ? HZ / 100 : 1;
+ 	if (wm->ts_reader_min_interval < 1)
+@@ -560,10 +536,6 @@ static void wm97xx_ts_input_close(struct input_dev *idev)
+ 
+ 	wm->pen_is_down = 0;
+ 
+-	/* Balance out interrupt disables/enables */
+-	if (cancel_work_sync(&wm->pen_event_work))
+-		wm->mach_ops->irq_enable(wm, 1);
+-
+ 	/* ts_reader rearms itself so we need to explicitly stop it
+ 	 * before we destroy the workqueue.
+ 	 */
+diff --git a/include/linux/wm97xx.h b/include/linux/wm97xx.h
+index 462854f4f286..85bd8dd3caea 100644
+--- a/include/linux/wm97xx.h
++++ b/include/linux/wm97xx.h
+@@ -281,7 +281,6 @@ struct wm97xx {
+ 	unsigned long ts_reader_min_interval; /* Minimum interval */
+ 	unsigned int pen_irq;		/* Pen IRQ number in use */
+ 	struct workqueue_struct *ts_workq;
+-	struct work_struct pen_event_work;
+ 	u16 acc_slot;			/* AC97 slot used for acc touch data */
+ 	u16 acc_rate;			/* acc touch data rate */
+ 	unsigned pen_is_down:1;		/* Pen is down */
 -- 
 2.29.2
 

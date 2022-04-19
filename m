@@ -2,35 +2,35 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 393D2C4332F
-	for <linux-mips@archiver.kernel.org>; Tue, 19 Apr 2022 16:43:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 633EDC433FE
+	for <linux-mips@archiver.kernel.org>; Tue, 19 Apr 2022 16:43:37 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344301AbiDSQp4 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 19 Apr 2022 12:45:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53632 "EHLO
+        id S1354943AbiDSQqI (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 19 Apr 2022 12:46:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53978 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1355054AbiDSQn0 (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Tue, 19 Apr 2022 12:43:26 -0400
+        with ESMTP id S1355077AbiDSQn5 (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Tue, 19 Apr 2022 12:43:57 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4807A2612A;
-        Tue, 19 Apr 2022 09:40:43 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 600E22A249;
+        Tue, 19 Apr 2022 09:41:14 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id D63E060B34;
-        Tue, 19 Apr 2022 16:40:42 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C4F6BC385A5;
-        Tue, 19 Apr 2022 16:40:34 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id F21E661821;
+        Tue, 19 Apr 2022 16:41:13 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 23064C385A5;
+        Tue, 19 Apr 2022 16:41:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1650386442;
-        bh=rF4AqAeeG3pFiw8ba+j1AjJKI0o8rpvYnUVlfmsd5CQ=;
+        s=k20201202; t=1650386473;
+        bh=UmyAEDevE+rFHmIeeKFFlzSBscHHSEtR+AtXVKUZXjI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rZcwYWiPc2XajjwXFY6Hgb0z8xaKQouR3mgetcNfOG0jAxjf+wc+NkAqTEieKNj2K
-         hTb4pSkBn4p6/vPrbGHHFSjrFJKYhOj58gtETWj5zjgxOpUV+N5TFkzWHrEi+oCpGA
-         Z7qHH3Z4/Qz1lfbHK13P/9eVzrzGxLoE72yig5fdPb2W9JmcSPG6EbgjwxoLszNbC8
-         JtYVwf2JvVtYboOyzewKz6pEaGgLg3OpWUMntuI+0iqBattNddhmtXKm3DuOkqoKaX
-         6oeCBZj9AZy/bFRn3L+Ral/WFjNSaI6bmC11HJKF0hZPiK+pyR2FGR0p1wVrtmDFDN
-         RN3P/E7CISDfQ==
+        b=VBOATLbRuYChK3MBgRX8mPip9VFQsTd4uM6E3FKAYou3P3IZa9nmev0mrBBoYpVGs
+         Nl+voA7jYEZWdMuLiO7BEMPH+MVsDjnXXGALSLYw1w1AX0WnSQTPUBDuRtK63hpICj
+         8+5p1J7vvcJkBz7CuQogkh9GDU2SBWlcgjibaorUtjAG4DdHSgFg+dieu5I1H5UTwe
+         yODr+X/HyGXAHTGbi4Lq4APNxVx4sfb3QJu3sbtv29oNO8I1LDZpvn7U0jmcS7bSjQ
+         9f0xIKo83CR6rz6qWgvk3LUsWMEix8qqKI0I+7fX418R/bEF9m0lgtwSh1l4J0GIYp
+         y51mpx0B4pZoQ==
 From:   Arnd Bergmann <arnd@kernel.org>
 To:     robert.jarzmik@free.fr, linux-arm-kernel@lists.infradead.org
 Cc:     Arnd Bergmann <arnd@arndb.de>, Daniel Mack <daniel@zonque.org>,
@@ -58,10 +58,10 @@ Cc:     Arnd Bergmann <arnd@arndb.de>, Daniel Mack <daniel@zonque.org>,
         linux-mmc@vger.kernel.org, linux-mtd@lists.infradead.org,
         linux-rtc@vger.kernel.org, linux-usb@vger.kernel.org,
         linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        alsa-devel@alsa-project.org, stable@vger.kernel.org
-Subject: [PATCH 14/48] ARM: pxa: maybe fix gpio lookup tables
-Date:   Tue, 19 Apr 2022 18:37:36 +0200
-Message-Id: <20220419163810.2118169-15-arnd@kernel.org>
+        alsa-devel@alsa-project.org
+Subject: [PATCH 18/48] ARM: pxa: hx4700: use gpio descriptors for audio
+Date:   Tue, 19 Apr 2022 18:37:40 +0200
+Message-Id: <20220419163810.2118169-19-arnd@kernel.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20220419163810.2118169-1-arnd@kernel.org>
 References: <20220419163810.2118169-1-arnd@kernel.org>
@@ -73,74 +73,194 @@ X-Mailing-List: linux-mips@vger.kernel.org
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-From inspection I found a couple of GPIO lookups that are
-listed with device "gpio-pxa", but actually have a number
-from a different gpio controller.
+The audio driver should not use a hardwired gpio number
+from the header. Change it to use a lookup table.
 
-Try to rectify that here, with a guess of what the actual
-device name is.
-
+Cc: Philipp Zabel <philipp.zabel@gmail.com>
+Cc: Paul Parsons <lost.distance@yahoo.com>
+Acked-by: Mark Brown <broonie@kernel.org>
 Acked-by: Robert Jarzmik <robert.jarzmik@free.fr>
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
-Cc: stable@vger.kernel.org
+Cc: alsa-devel@alsa-project.org
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- arch/arm/mach-pxa/cm-x300.c  | 8 ++++----
- arch/arm/mach-pxa/magician.c | 2 +-
- arch/arm/mach-pxa/tosa.c     | 4 ++--
- 3 files changed, 7 insertions(+), 7 deletions(-)
+ arch/arm/mach-pxa/hx4700-pcmcia.c             |  2 +-
+ arch/arm/mach-pxa/hx4700.c                    | 16 ++++++++-
+ arch/arm/mach-pxa/{include/mach => }/hx4700.h |  2 +-
+ sound/soc/pxa/hx4700.c                        | 34 ++++++++-----------
+ 4 files changed, 31 insertions(+), 23 deletions(-)
+ rename arch/arm/mach-pxa/{include/mach => }/hx4700.h (99%)
 
-diff --git a/arch/arm/mach-pxa/cm-x300.c b/arch/arm/mach-pxa/cm-x300.c
-index 09a5264a27c8..01f364a66446 100644
---- a/arch/arm/mach-pxa/cm-x300.c
-+++ b/arch/arm/mach-pxa/cm-x300.c
-@@ -356,13 +356,13 @@ static struct platform_device cm_x300_spi_gpio = {
- static struct gpiod_lookup_table cm_x300_spi_gpiod_table = {
- 	.dev_id         = "spi_gpio",
- 	.table          = {
--		GPIO_LOOKUP("gpio-pxa", GPIO_LCD_SCL,
-+		GPIO_LOOKUP("pca9555.1", GPIO_LCD_SCL - GPIO_LCD_BASE,
- 			    "sck", GPIO_ACTIVE_HIGH),
--		GPIO_LOOKUP("gpio-pxa", GPIO_LCD_DIN,
-+		GPIO_LOOKUP("pca9555.1", GPIO_LCD_DIN - GPIO_LCD_BASE,
- 			    "mosi", GPIO_ACTIVE_HIGH),
--		GPIO_LOOKUP("gpio-pxa", GPIO_LCD_DOUT,
-+		GPIO_LOOKUP("pca9555.1", GPIO_LCD_DOUT - GPIO_LCD_BASE,
- 			    "miso", GPIO_ACTIVE_HIGH),
--		GPIO_LOOKUP("gpio-pxa", GPIO_LCD_CS,
-+		GPIO_LOOKUP("pca9555.1", GPIO_LCD_CS - GPIO_LCD_BASE,
- 			    "cs", GPIO_ACTIVE_HIGH),
- 		{ },
+diff --git a/arch/arm/mach-pxa/hx4700-pcmcia.c b/arch/arm/mach-pxa/hx4700-pcmcia.c
+index e8acbfc9ef6c..e2331dfe427d 100644
+--- a/arch/arm/mach-pxa/hx4700-pcmcia.c
++++ b/arch/arm/mach-pxa/hx4700-pcmcia.c
+@@ -10,7 +10,7 @@
+ #include <linux/irq.h>
+ 
+ #include <asm/mach-types.h>
+-#include <mach/hx4700.h>
++#include "hx4700.h"
+ 
+ #include <pcmcia/soc_common.h>
+ 
+diff --git a/arch/arm/mach-pxa/hx4700.c b/arch/arm/mach-pxa/hx4700.c
+index 140a44cb2989..2b7f37172725 100644
+--- a/arch/arm/mach-pxa/hx4700.c
++++ b/arch/arm/mach-pxa/hx4700.c
+@@ -41,7 +41,7 @@
+ 
+ #include "pxa27x.h"
+ #include "addr-map.h"
+-#include <mach/hx4700.h>
++#include "hx4700.h"
+ #include <linux/platform_data/irda-pxaficp.h>
+ 
+ #include <sound/ak4641.h>
+@@ -834,6 +834,19 @@ static struct i2c_board_info i2c_board_info[] __initdata = {
  	},
-diff --git a/arch/arm/mach-pxa/magician.c b/arch/arm/mach-pxa/magician.c
-index 20ca3e28c7fb..d105deb1e098 100644
---- a/arch/arm/mach-pxa/magician.c
-+++ b/arch/arm/mach-pxa/magician.c
-@@ -681,7 +681,7 @@ static struct platform_device bq24022 = {
- static struct gpiod_lookup_table bq24022_gpiod_table = {
- 	.dev_id = "gpio-regulator",
- 	.table = {
--		GPIO_LOOKUP("gpio-pxa", EGPIO_MAGICIAN_BQ24022_ISET2,
-+		GPIO_LOOKUP("htc-egpio-0", EGPIO_MAGICIAN_BQ24022_ISET2 - MAGICIAN_EGPIO_BASE,
- 			    NULL, GPIO_ACTIVE_HIGH),
- 		GPIO_LOOKUP("gpio-pxa", GPIO30_MAGICIAN_BQ24022_nCHARGE_EN,
- 			    "enable", GPIO_ACTIVE_LOW),
-diff --git a/arch/arm/mach-pxa/tosa.c b/arch/arm/mach-pxa/tosa.c
-index 5af980d77d39..9476ed0f55e9 100644
---- a/arch/arm/mach-pxa/tosa.c
-+++ b/arch/arm/mach-pxa/tosa.c
-@@ -296,9 +296,9 @@ static struct gpiod_lookup_table tosa_mci_gpio_table = {
- 	.table = {
- 		GPIO_LOOKUP("gpio-pxa", TOSA_GPIO_nSD_DETECT,
- 			    "cd", GPIO_ACTIVE_LOW),
--		GPIO_LOOKUP("gpio-pxa", TOSA_GPIO_SD_WP,
-+		GPIO_LOOKUP("sharp-scoop.0", TOSA_GPIO_SD_WP - TOSA_SCOOP_GPIO_BASE,
- 			    "wp", GPIO_ACTIVE_LOW),
--		GPIO_LOOKUP("gpio-pxa", TOSA_GPIO_PWR_ON,
-+		GPIO_LOOKUP("sharp-scoop.0", TOSA_GPIO_PWR_ON - TOSA_SCOOP_GPIO_BASE,
- 			    "power", GPIO_ACTIVE_HIGH),
- 		{ },
- 	},
+ };
+ 
++static struct gpiod_lookup_table hx4700_audio_gpio_table = {
++	.dev_id = "hx4700-audio",
++	.table = {
++		GPIO_LOOKUP("gpio-pxa", GPIO75_HX4700_EARPHONE_nDET,
++			    "earphone-ndet", GPIO_ACTIVE_HIGH),
++		GPIO_LOOKUP("gpio-pxa", GPIO92_HX4700_HP_DRIVER,
++			    "hp-driver", GPIO_ACTIVE_HIGH),
++		GPIO_LOOKUP("gpio-pxa", GPIO107_HX4700_SPK_nSD,
++			    "spk-nsd", GPIO_ACTIVE_HIGH),
++		{ },
++	},
++};
++
+ static struct platform_device audio = {
+ 	.name	= "hx4700-audio",
+ 	.id	= -1,
+@@ -895,6 +908,7 @@ static void __init hx4700_init(void)
+ 
+ 	gpiod_add_lookup_table(&bq24022_gpiod_table);
+ 	gpiod_add_lookup_table(&gpio_vbus_gpiod_table);
++	gpiod_add_lookup_table(&hx4700_audio_gpio_table);
+ 	platform_add_devices(devices, ARRAY_SIZE(devices));
+ 	pwm_add_table(hx4700_pwm_lookup, ARRAY_SIZE(hx4700_pwm_lookup));
+ 
+diff --git a/arch/arm/mach-pxa/include/mach/hx4700.h b/arch/arm/mach-pxa/hx4700.h
+similarity index 99%
+rename from arch/arm/mach-pxa/include/mach/hx4700.h
+rename to arch/arm/mach-pxa/hx4700.h
+index 0c30e6d9c660..ce2db33989e1 100644
+--- a/arch/arm/mach-pxa/include/mach/hx4700.h
++++ b/arch/arm/mach-pxa/hx4700.h
+@@ -10,7 +10,7 @@
+ 
+ #include <linux/gpio.h>
+ #include <linux/mfd/asic3.h>
+-#include "irqs.h" /* PXA_NR_BUILTIN_GPIO */
++#include <mach/irqs.h> /* PXA_NR_BUILTIN_GPIO */
+ 
+ #define HX4700_ASIC3_GPIO_BASE	PXA_NR_BUILTIN_GPIO
+ #define HX4700_EGPIO_BASE	(HX4700_ASIC3_GPIO_BASE + ASIC3_NUM_GPIOS)
+diff --git a/sound/soc/pxa/hx4700.c b/sound/soc/pxa/hx4700.c
+index 7334fac758de..e70dc38d9892 100644
+--- a/sound/soc/pxa/hx4700.c
++++ b/sound/soc/pxa/hx4700.c
+@@ -10,7 +10,7 @@
+ #include <linux/interrupt.h>
+ #include <linux/platform_device.h>
+ #include <linux/delay.h>
+-#include <linux/gpio.h>
++#include <linux/gpio/consumer.h>
+ 
+ #include <sound/core.h>
+ #include <sound/jack.h>
+@@ -18,10 +18,10 @@
+ #include <sound/pcm_params.h>
+ #include <sound/soc.h>
+ 
+-#include <mach/hx4700.h>
+ #include <asm/mach-types.h>
+ #include "pxa2xx-i2s.h"
+ 
++static struct gpio_desc *gpiod_hp_driver, *gpiod_spk_nsd;
+ static struct snd_soc_jack hs_jack;
+ 
+ /* Headphones jack detection DAPM pin */
+@@ -40,9 +40,8 @@ static struct snd_soc_jack_pin hs_jack_pin[] = {
+ 
+ /* Headphones jack detection GPIO */
+ static struct snd_soc_jack_gpio hs_jack_gpio = {
+-	.gpio		= GPIO75_HX4700_EARPHONE_nDET,
+ 	.invert		= true,
+-	.name		= "hp-gpio",
++	.name		= "earphone-ndet",
+ 	.report		= SND_JACK_HEADPHONE,
+ 	.debounce_time	= 200,
+ };
+@@ -81,14 +80,14 @@ static const struct snd_soc_ops hx4700_ops = {
+ static int hx4700_spk_power(struct snd_soc_dapm_widget *w,
+ 			    struct snd_kcontrol *k, int event)
+ {
+-	gpio_set_value(GPIO107_HX4700_SPK_nSD, !!SND_SOC_DAPM_EVENT_ON(event));
++	gpiod_set_value(gpiod_spk_nsd, !!SND_SOC_DAPM_EVENT_ON(event));
+ 	return 0;
+ }
+ 
+ static int hx4700_hp_power(struct snd_soc_dapm_widget *w,
+ 			   struct snd_kcontrol *k, int event)
+ {
+-	gpio_set_value(GPIO92_HX4700_HP_DRIVER, !!SND_SOC_DAPM_EVENT_ON(event));
++	gpiod_set_value(gpiod_hp_driver, !!SND_SOC_DAPM_EVENT_ON(event));
+ 	return 0;
+ }
+ 
+@@ -162,11 +161,6 @@ static struct snd_soc_card snd_soc_card_hx4700 = {
+ 	.fully_routed		= true,
+ };
+ 
+-static struct gpio hx4700_audio_gpios[] = {
+-	{ GPIO107_HX4700_SPK_nSD, GPIOF_OUT_INIT_HIGH, "SPK_POWER" },
+-	{ GPIO92_HX4700_HP_DRIVER, GPIOF_OUT_INIT_LOW, "EP_POWER" },
+-};
+-
+ static int hx4700_audio_probe(struct platform_device *pdev)
+ {
+ 	int ret;
+@@ -174,26 +168,26 @@ static int hx4700_audio_probe(struct platform_device *pdev)
+ 	if (!machine_is_h4700())
+ 		return -ENODEV;
+ 
+-	ret = gpio_request_array(hx4700_audio_gpios,
+-				ARRAY_SIZE(hx4700_audio_gpios));
++	gpiod_hp_driver = devm_gpiod_get(&pdev->dev, "hp-driver", GPIOD_OUT_HIGH);
++	ret = PTR_ERR_OR_ZERO(gpiod_hp_driver);
++	if (ret)
++		return ret;
++	gpiod_spk_nsd = devm_gpiod_get(&pdev->dev, "spk-nsd", GPIOD_OUT_HIGH);
++	ret = PTR_ERR_OR_ZERO(gpiod_spk_nsd);
+ 	if (ret)
+ 		return ret;
+ 
++	hs_jack_gpio.gpiod_dev = &pdev->dev;
+ 	snd_soc_card_hx4700.dev = &pdev->dev;
+ 	ret = devm_snd_soc_register_card(&pdev->dev, &snd_soc_card_hx4700);
+-	if (ret)
+-		gpio_free_array(hx4700_audio_gpios,
+-				ARRAY_SIZE(hx4700_audio_gpios));
+ 
+ 	return ret;
+ }
+ 
+ static int hx4700_audio_remove(struct platform_device *pdev)
+ {
+-	gpio_set_value(GPIO92_HX4700_HP_DRIVER, 0);
+-	gpio_set_value(GPIO107_HX4700_SPK_nSD, 0);
+-
+-	gpio_free_array(hx4700_audio_gpios, ARRAY_SIZE(hx4700_audio_gpios));
++	gpiod_set_value(gpiod_hp_driver, 0);
++	gpiod_set_value(gpiod_spk_nsd, 0);
+ 	return 0;
+ }
+ 
 -- 
 2.29.2
 

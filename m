@@ -2,35 +2,35 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 63463C47082
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C6C2AC38A06
 	for <linux-mips@archiver.kernel.org>; Tue, 19 Apr 2022 16:44:04 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242153AbiDSQp6 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 19 Apr 2022 12:45:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52812 "EHLO
+        id S1348222AbiDSQqN (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 19 Apr 2022 12:46:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53402 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354977AbiDSQmt (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Tue, 19 Apr 2022 12:42:49 -0400
+        with ESMTP id S242507AbiDSQnM (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Tue, 19 Apr 2022 12:43:12 -0400
 Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AC9BE03D;
-        Tue, 19 Apr 2022 09:40:05 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10BD617E23;
+        Tue, 19 Apr 2022 09:40:29 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 09998B81BEF;
-        Tue, 19 Apr 2022 16:40:04 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E0A57C385B0;
-        Tue, 19 Apr 2022 16:39:54 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 8B4FDB819DE;
+        Tue, 19 Apr 2022 16:40:27 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DDD0FC385A5;
+        Tue, 19 Apr 2022 16:40:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1650386402;
-        bh=Fa4t+DkHHVinGTfyny9fnUHb+3BmvDV9Sv/bDUMb99g=;
+        s=k20201202; t=1650386426;
+        bh=ptMtOudbQ5loXUIBoTxa9Js2NvWZa4r2mq6O40yUHH0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=j/NCSeP8NzRWUw8W6MpOSbmGTBu7/2YhXCemKDewCPqMH6cwTZLL/oiGN4LpCoujp
-         1SH3dQdFs3D3xtEm0/2uHyHJF7ZmzaRFqw8BaYDXyP6SWjgPPzn/jAQpcq4C1TNBpv
-         thu2mXNQ6U7As7UR42IeQ64eiqae7mP2OoMLr4aAsZgj/eIm4qTKBztmk5D4dhw3th
-         zON/5Z8YRyAnPU6fpP3DtJeivcDYlhBEyShGPle3yivs+DidLS4qH4YNZZ6eCXuSjQ
-         NN99Z6FWIFBg8B1PRrkV9Ov79jsTc8IqXABoKaDE9bpFLy7xgW0qPIU9vBW0RFDG3G
-         QCDqkjxI1s54w==
+        b=sn7fnX8rRkBuqtQMfRkdqeTmIHa3aEVyEQqy3ea6Rcph7o5+q2+oJQtgfayzkGgGD
+         pBrobPc0a288Jt5l21HSNaRfaU6aAdkHaECQNojqoW85epuPmw1VvMwvkSO6N07k/3
+         115Wizs7BJeOANhRCBPtn5ETmJ1DN/7eD9VqdGz01zYvnNHqGUiTr7Xr5IQ32fnJKz
+         73a5FySo1/OXZDPRM/Hg6r35U+vs89tmssHNWG7O1Y8buOzXQepqwD84VLvP022GvN
+         c6H9ZVfE372WNIs8vRZiLFyLD+Hr6zPSL7rCagmKzA+O8wvtPs7NCaSk+bRoY9berF
+         uj9Ak7o458yOA==
 From:   Arnd Bergmann <arnd@kernel.org>
 To:     robert.jarzmik@free.fr, linux-arm-kernel@lists.infradead.org
 Cc:     Arnd Bergmann <arnd@arndb.de>, Daniel Mack <daniel@zonque.org>,
@@ -58,13 +58,10 @@ Cc:     Arnd Bergmann <arnd@arndb.de>, Daniel Mack <daniel@zonque.org>,
         linux-mmc@vger.kernel.org, linux-mtd@lists.infradead.org,
         linux-rtc@vger.kernel.org, linux-usb@vger.kernel.org,
         linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        alsa-devel@alsa-project.org,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        linux-watchdog@vger.kernel.org
-Subject: [PATCH 09/48] watchdog: sa1100: use platform device registration
-Date:   Tue, 19 Apr 2022 18:37:31 +0200
-Message-Id: <20220419163810.2118169-10-arnd@kernel.org>
+        alsa-devel@alsa-project.org
+Subject: [PATCH 12/48] ARM: pxa: make addr-map.h header local
+Date:   Tue, 19 Apr 2022 18:37:34 +0200
+Message-Id: <20220419163810.2118169-13-arnd@kernel.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20220419163810.2118169-1-arnd@kernel.org>
 References: <20220419163810.2118169-1-arnd@kernel.org>
@@ -76,352 +73,205 @@ X-Mailing-List: linux-mips@vger.kernel.org
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-Rather than relying on machine specific headers to
-pass down the reboot status and the register locations,
-use resources and platform_data.
+Drivers should not rely on the contents of this file, so
+move it into the platform directory directly.
 
-Aside from this, keep the changes to a minimum.
+Cc: Philipp Zabel <philipp.zabel@gmail.com>
+Cc: Paul Parsons <lost.distance@yahoo.com>
 
-Cc: Wim Van Sebroeck <wim@linux-watchdog.org>
-Cc: Guenter Roeck <linux@roeck-us.net>
-Cc: linux-watchdog@vger.kernel.org
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Link: https://lore.kernel.org/lkml/87mudkmx8g.fsf@belgarion.home/
 ---
- arch/arm/mach-pxa/devices.c               | 11 +++
- arch/arm/mach-pxa/include/mach/regs-ost.h |  2 +
- arch/arm/mach-pxa/include/mach/reset.h    |  2 +-
- arch/arm/mach-pxa/pxa25x.c                |  2 +-
- arch/arm/mach-pxa/pxa27x.c                |  2 +-
- arch/arm/mach-pxa/pxa3xx.c                |  2 +-
- arch/arm/mach-pxa/reset.c                 |  3 -
- arch/arm/mach-sa1100/generic.c            |  6 +-
- arch/arm/mach-sa1100/include/mach/reset.h |  1 -
- drivers/watchdog/sa1100_wdt.c             | 87 ++++++++++++++++-------
- 10 files changed, 83 insertions(+), 35 deletions(-)
+ arch/arm/mach-pxa/{include/mach => }/addr-map.h | 0
+ arch/arm/mach-pxa/generic.c                     | 2 +-
+ arch/arm/mach-pxa/hx4700.c                      | 2 +-
+ arch/arm/mach-pxa/lpd270.c                      | 2 +-
+ arch/arm/mach-pxa/magician.c                    | 2 +-
+ arch/arm/mach-pxa/mainstone.c                   | 2 +-
+ arch/arm/mach-pxa/pxa25x.c                      | 2 +-
+ arch/arm/mach-pxa/pxa25x.h                      | 2 +-
+ arch/arm/mach-pxa/pxa27x.c                      | 2 +-
+ arch/arm/mach-pxa/pxa27x.h                      | 2 +-
+ arch/arm/mach-pxa/pxa3xx.c                      | 2 +-
+ arch/arm/mach-pxa/pxa3xx.h                      | 2 +-
+ arch/arm/mach-pxa/trizeps4.h                    | 2 +-
+ arch/arm/mach-pxa/xcep.c                        | 2 +-
+ 14 files changed, 13 insertions(+), 13 deletions(-)
+ rename arch/arm/mach-pxa/{include/mach => }/addr-map.h (100%)
 
-diff --git a/arch/arm/mach-pxa/devices.c b/arch/arm/mach-pxa/devices.c
-index 454523237c97..12f78636045f 100644
---- a/arch/arm/mach-pxa/devices.c
-+++ b/arch/arm/mach-pxa/devices.c
-@@ -24,6 +24,8 @@
- #include <linux/platform_data/mmp_dma.h>
- #include <linux/platform_data/mtd-nand-pxa3xx.h>
+diff --git a/arch/arm/mach-pxa/include/mach/addr-map.h b/arch/arm/mach-pxa/addr-map.h
+similarity index 100%
+rename from arch/arm/mach-pxa/include/mach/addr-map.h
+rename to arch/arm/mach-pxa/addr-map.h
+diff --git a/arch/arm/mach-pxa/generic.c b/arch/arm/mach-pxa/generic.c
+index 3c3cd90bb9b4..f9083c4f0aea 100644
+--- a/arch/arm/mach-pxa/generic.c
++++ b/arch/arm/mach-pxa/generic.c
+@@ -22,7 +22,7 @@
+ #include <asm/mach/map.h>
+ #include <asm/mach-types.h>
  
-+#include <mach/regs-ost.h>
-+#include <mach/reset.h>
- #include "devices.h"
- #include "generic.h"
- 
-@@ -1118,3 +1120,12 @@ void __init pxa2xx_set_dmac_info(struct mmp_dma_platdata *dma_pdata)
- {
- 	pxa_register_device(&pxa2xx_pxa_dma, dma_pdata);
- }
-+
-+void __init pxa_register_wdt(unsigned int reset_status)
-+{
-+	struct resource res = DEFINE_RES_MEM(OST_PHYS, OST_LEN);
-+
-+	reset_status &= RESET_STATUS_WATCHDOG;
-+	platform_device_register_resndata(NULL, "sa1100_wdt", -1, &res, 1,
-+					  &reset_status, sizeof(reset_status));
-+}
-diff --git a/arch/arm/mach-pxa/include/mach/regs-ost.h b/arch/arm/mach-pxa/include/mach/regs-ost.h
-index 109d0ed264df..c8001cfc8d6b 100644
---- a/arch/arm/mach-pxa/include/mach/regs-ost.h
-+++ b/arch/arm/mach-pxa/include/mach/regs-ost.h
-@@ -7,6 +7,8 @@
- /*
-  * OS Timer & Match Registers
-  */
-+#define OST_PHYS	0x40A00000
-+#define OST_LEN		0x00000020
- 
- #define OSMR0		io_p2v(0x40A00000)  /* */
- #define OSMR1		io_p2v(0x40A00004)  /* */
-diff --git a/arch/arm/mach-pxa/include/mach/reset.h b/arch/arm/mach-pxa/include/mach/reset.h
-index e1c4d100fd45..963dd190bc13 100644
---- a/arch/arm/mach-pxa/include/mach/reset.h
-+++ b/arch/arm/mach-pxa/include/mach/reset.h
-@@ -8,8 +8,8 @@
- #define RESET_STATUS_GPIO	(1 << 3)	/* GPIO Reset */
- #define RESET_STATUS_ALL	(0xf)
- 
--extern unsigned int reset_status;
- extern void clear_reset_status(unsigned int mask);
-+extern void pxa_register_wdt(unsigned int reset_status);
- 
- /**
-  * init_gpio_reset() - register GPIO as reset generator
-diff --git a/arch/arm/mach-pxa/pxa25x.c b/arch/arm/mach-pxa/pxa25x.c
-index 305047ebd2f1..dfc90b41fba3 100644
---- a/arch/arm/mach-pxa/pxa25x.c
-+++ b/arch/arm/mach-pxa/pxa25x.c
-@@ -240,7 +240,7 @@ static int __init pxa25x_init(void)
- 
- 	if (cpu_is_pxa25x()) {
- 
--		reset_status = RCSR;
-+		pxa_register_wdt(RCSR);
- 
- 		pxa25x_init_pm();
- 
-diff --git a/arch/arm/mach-pxa/pxa27x.c b/arch/arm/mach-pxa/pxa27x.c
-index a81ac88ecbfd..38fdd22c4dc5 100644
---- a/arch/arm/mach-pxa/pxa27x.c
-+++ b/arch/arm/mach-pxa/pxa27x.c
-@@ -337,7 +337,7 @@ static int __init pxa27x_init(void)
- 
- 	if (cpu_is_pxa27x()) {
- 
--		reset_status = RCSR;
-+		pxa_register_wdt(RCSR);
- 
- 		pxa27x_init_pm();
- 
-diff --git a/arch/arm/mach-pxa/pxa3xx.c b/arch/arm/mach-pxa/pxa3xx.c
-index fc84aed99481..7c569fa2a6da 100644
---- a/arch/arm/mach-pxa/pxa3xx.c
-+++ b/arch/arm/mach-pxa/pxa3xx.c
-@@ -463,7 +463,7 @@ static int __init pxa3xx_init(void)
- 
- 	if (cpu_is_pxa3xx()) {
- 
--		reset_status = ARSR;
-+		pxa_register_wdt(ARSR);
- 
- 		/*
- 		 * clear RDH bit every time after reset
-diff --git a/arch/arm/mach-pxa/reset.c b/arch/arm/mach-pxa/reset.c
-index af78405aa4e9..fcb791c5ae3e 100644
---- a/arch/arm/mach-pxa/reset.c
-+++ b/arch/arm/mach-pxa/reset.c
-@@ -11,9 +11,6 @@
+-#include <mach/addr-map.h>
++#include "addr-map.h"
+ #include <mach/irqs.h>
  #include <mach/reset.h>
  #include <mach/smemc.h>
+diff --git a/arch/arm/mach-pxa/hx4700.c b/arch/arm/mach-pxa/hx4700.c
+index 191a6c24fe19..140a44cb2989 100644
+--- a/arch/arm/mach-pxa/hx4700.c
++++ b/arch/arm/mach-pxa/hx4700.c
+@@ -40,7 +40,7 @@
+ #include <asm/mach/arch.h>
  
--unsigned int reset_status;
--EXPORT_SYMBOL(reset_status);
--
- static void do_hw_reset(void);
+ #include "pxa27x.h"
+-#include <mach/addr-map.h>
++#include "addr-map.h"
+ #include <mach/hx4700.h>
+ #include <linux/platform_data/irda-pxaficp.h>
  
- static int reset_gpio = -1;
-diff --git a/arch/arm/mach-sa1100/generic.c b/arch/arm/mach-sa1100/generic.c
-index 4dfb7554649d..6c21f214cd60 100644
---- a/arch/arm/mach-sa1100/generic.c
-+++ b/arch/arm/mach-sa1100/generic.c
-@@ -39,9 +39,6 @@
+diff --git a/arch/arm/mach-pxa/lpd270.c b/arch/arm/mach-pxa/lpd270.c
+index 7f10b86f85fd..e03436710752 100644
+--- a/arch/arm/mach-pxa/lpd270.c
++++ b/arch/arm/mach-pxa/lpd270.c
+@@ -38,7 +38,7 @@
+ 
+ #include "pxa27x.h"
+ #include "lpd270.h"
+-#include <mach/addr-map.h>
++#include "addr-map.h"
+ #include <linux/platform_data/asoc-pxa.h>
+ #include <linux/platform_data/video-pxafb.h>
+ #include <linux/platform_data/mmc-pxamci.h>
+diff --git a/arch/arm/mach-pxa/magician.c b/arch/arm/mach-pxa/magician.c
+index 345a44d15a2c..20ca3e28c7fb 100644
+--- a/arch/arm/mach-pxa/magician.c
++++ b/arch/arm/mach-pxa/magician.c
+@@ -34,7 +34,7 @@
+ #include <asm/system_info.h>
+ 
+ #include "pxa27x.h"
+-#include <mach/addr-map.h>
++#include "addr-map.h"
+ #include <mach/magician.h>
+ #include <linux/platform_data/video-pxafb.h>
+ #include <linux/platform_data/mmc-pxamci.h>
+diff --git a/arch/arm/mach-pxa/mainstone.c b/arch/arm/mach-pxa/mainstone.c
+index c8200fc2159d..f0072e63b456 100644
+--- a/arch/arm/mach-pxa/mainstone.c
++++ b/arch/arm/mach-pxa/mainstone.c
+@@ -51,7 +51,7 @@
+ #include <linux/platform_data/irda-pxaficp.h>
+ #include <linux/platform_data/usb-ohci-pxa27x.h>
+ #include <linux/platform_data/keypad-pxa27x.h>
+-#include <mach/addr-map.h>
++#include "addr-map.h"
+ #include <mach/smemc.h>
+ 
  #include "generic.h"
- #include <clocksource/pxa.h>
+diff --git a/arch/arm/mach-pxa/pxa25x.c b/arch/arm/mach-pxa/pxa25x.c
+index dfc90b41fba3..8d21c7eef1d2 100644
+--- a/arch/arm/mach-pxa/pxa25x.c
++++ b/arch/arm/mach-pxa/pxa25x.c
+@@ -34,7 +34,7 @@
+ #include "pxa25x.h"
+ #include <mach/reset.h>
+ #include "pm.h"
+-#include <mach/addr-map.h>
++#include "addr-map.h"
+ #include <mach/smemc.h>
  
--unsigned int reset_status;
--EXPORT_SYMBOL(reset_status);
--
- #define NR_FREQS	16
+ #include "generic.h"
+diff --git a/arch/arm/mach-pxa/pxa25x.h b/arch/arm/mach-pxa/pxa25x.h
+index 403bc16c2ed2..4699ebf7b486 100644
+--- a/arch/arm/mach-pxa/pxa25x.h
++++ b/arch/arm/mach-pxa/pxa25x.h
+@@ -2,7 +2,7 @@
+ #ifndef __MACH_PXA25x_H
+ #define __MACH_PXA25x_H
  
- /*
-@@ -319,10 +316,13 @@ static struct platform_device *sa11x0_devices[] __initdata = {
+-#include <mach/addr-map.h>
++#include "addr-map.h"
+ #include <mach/pxa2xx-regs.h>
+ #include "mfp-pxa25x.h"
+ #include <mach/irqs.h>
+diff --git a/arch/arm/mach-pxa/pxa27x.c b/arch/arm/mach-pxa/pxa27x.c
+index 38fdd22c4dc5..c36a9784fab8 100644
+--- a/arch/arm/mach-pxa/pxa27x.c
++++ b/arch/arm/mach-pxa/pxa27x.c
+@@ -33,7 +33,7 @@
+ #include <mach/reset.h>
+ #include <linux/platform_data/usb-ohci-pxa27x.h>
+ #include "pm.h"
+-#include <mach/addr-map.h>
++#include "addr-map.h"
+ #include <mach/smemc.h>
  
- static int __init sa1100_init(void)
- {
-+	struct resource wdt_res = DEFINE_RES_MEM(0x90000000, 0x20);
- 	pm_power_off = sa1100_power_off;
+ #include "generic.h"
+diff --git a/arch/arm/mach-pxa/pxa27x.h b/arch/arm/mach-pxa/pxa27x.h
+index 6c99090647d2..bf2755561fe5 100644
+--- a/arch/arm/mach-pxa/pxa27x.h
++++ b/arch/arm/mach-pxa/pxa27x.h
+@@ -3,7 +3,7 @@
+ #define __MACH_PXA27x_H
  
- 	regulator_has_full_constraints();
+ #include <linux/suspend.h>
+-#include <mach/addr-map.h>
++#include "addr-map.h"
+ #include <mach/pxa2xx-regs.h>
+ #include "mfp-pxa27x.h"
+ #include <mach/irqs.h>
+diff --git a/arch/arm/mach-pxa/pxa3xx.c b/arch/arm/mach-pxa/pxa3xx.c
+index 7c569fa2a6da..7881888107c7 100644
+--- a/arch/arm/mach-pxa/pxa3xx.c
++++ b/arch/arm/mach-pxa/pxa3xx.c
+@@ -32,7 +32,7 @@
+ #include <mach/reset.h>
+ #include <linux/platform_data/usb-ohci-pxa27x.h>
+ #include "pm.h"
+-#include <mach/addr-map.h>
++#include "addr-map.h"
+ #include <mach/smemc.h>
+ #include <mach/irqs.h>
  
-+	platform_device_register_simple("sa1100_wdt", -1, &wdt_res, 1);
-+
- 	return platform_add_devices(sa11x0_devices, ARRAY_SIZE(sa11x0_devices));
- }
+diff --git a/arch/arm/mach-pxa/pxa3xx.h b/arch/arm/mach-pxa/pxa3xx.h
+index 22ace053ea25..6b424d328680 100644
+--- a/arch/arm/mach-pxa/pxa3xx.h
++++ b/arch/arm/mach-pxa/pxa3xx.h
+@@ -2,7 +2,7 @@
+ #ifndef __MACH_PXA3XX_H	
+ #define __MACH_PXA3XX_H
  
-diff --git a/arch/arm/mach-sa1100/include/mach/reset.h b/arch/arm/mach-sa1100/include/mach/reset.h
-index 27695650a567..a6723d45ae2a 100644
---- a/arch/arm/mach-sa1100/include/mach/reset.h
-+++ b/arch/arm/mach-sa1100/include/mach/reset.h
-@@ -10,7 +10,6 @@
- #define RESET_STATUS_GPIO	(1 << 3)	/* GPIO Reset */
- #define RESET_STATUS_ALL	(0xf)
+-#include <mach/addr-map.h>
++#include "addr-map.h"
+ #include <mach/pxa3xx-regs.h>
+ #include <mach/irqs.h>
  
--extern unsigned int reset_status;
- static inline void clear_reset_status(unsigned int mask)
- {
- 	RCSR = mask;
-diff --git a/drivers/watchdog/sa1100_wdt.c b/drivers/watchdog/sa1100_wdt.c
-index d33f0375112f..2d0a06a158a8 100644
---- a/drivers/watchdog/sa1100_wdt.c
-+++ b/drivers/watchdog/sa1100_wdt.c
-@@ -22,6 +22,7 @@
- #include <linux/types.h>
- #include <linux/kernel.h>
- #include <linux/fs.h>
-+#include <linux/platform_device.h>
- #include <linux/miscdevice.h>
- #include <linux/watchdog.h>
- #include <linux/init.h>
-@@ -30,16 +31,42 @@
- #include <linux/uaccess.h>
- #include <linux/timex.h>
+diff --git a/arch/arm/mach-pxa/trizeps4.h b/arch/arm/mach-pxa/trizeps4.h
+index 7597b9de11e2..e0f37c0ff06f 100644
+--- a/arch/arm/mach-pxa/trizeps4.h
++++ b/arch/arm/mach-pxa/trizeps4.h
+@@ -11,7 +11,7 @@
+ #ifndef _TRIPEPS4_H_
+ #define _TRIPEPS4_H_
  
--#ifdef CONFIG_ARCH_PXA
--#include <mach/regs-ost.h>
--#endif
-+#define REG_OSMR0  	0x0000  /* OS timer Match Reg. 0 */
-+#define REG_OSMR1  	0x0004  /* OS timer Match Reg. 1 */
-+#define REG_OSMR2  	0x0008  /* OS timer Match Reg. 2 */
-+#define REG_OSMR3  	0x000c  /* OS timer Match Reg. 3 */
-+#define REG_OSCR   	0x0010  /* OS timer Counter Reg. */
-+#define REG_OSSR   	0x0014  /* OS timer Status Reg. */
-+#define REG_OWER   	0x0018  /* OS timer Watch-dog Enable Reg. */
-+#define REG_OIER  	0x001C  /* OS timer Interrupt Enable Reg. */
+-#include <mach/addr-map.h>
++#include "addr-map.h"
+ #include <mach/irqs.h> /* PXA_GPIO_TO_IRQ */
  
--#include <mach/reset.h>
-+#define OSSR_M3		(1 << 3)	/* Match status channel 3 */
-+#define OSSR_M2		(1 << 2)	/* Match status channel 2 */
-+#define OSSR_M1		(1 << 1)	/* Match status channel 1 */
-+#define OSSR_M0		(1 << 0)	/* Match status channel 0 */
-+
-+#define OWER_WME	(1 << 0)	/* Watchdog Match Enable */
-+
-+#define OIER_E3		(1 << 3)	/* Interrupt enable channel 3 */
-+#define OIER_E2		(1 << 2)	/* Interrupt enable channel 2 */
-+#define OIER_E1		(1 << 1)	/* Interrupt enable channel 1 */
-+#define OIER_E0		(1 << 0)	/* Interrupt enable channel 0 */
+ /* physical memory regions */
+diff --git a/arch/arm/mach-pxa/xcep.c b/arch/arm/mach-pxa/xcep.c
+index e6ab428287ae..7389e0199144 100644
+--- a/arch/arm/mach-pxa/xcep.c
++++ b/arch/arm/mach-pxa/xcep.c
+@@ -25,7 +25,7 @@
+ #include <asm/mach/map.h>
  
- static unsigned long oscr_freq;
- static unsigned long sa1100wdt_users;
- static unsigned int pre_margin;
- static int boot_status;
-+static void __iomem *reg_base;
-+
-+static inline void sa1100_wr(u32 val, u32 offset)
-+{
-+	writel_relaxed(val, reg_base + offset);
-+}
-+
-+static inline u32 sa1100_rd(u32 offset)
-+{
-+	return readl_relaxed(reg_base + offset);
-+}
+ #include "pxa25x.h"
+-#include <mach/addr-map.h>
++#include "addr-map.h"
+ #include <mach/smemc.h>
  
- /*
-  *	Allow only one person to hold it open
-@@ -50,10 +77,10 @@ static int sa1100dog_open(struct inode *inode, struct file *file)
- 		return -EBUSY;
- 
- 	/* Activate SA1100 Watchdog timer */
--	writel_relaxed(readl_relaxed(OSCR) + pre_margin, OSMR3);
--	writel_relaxed(OSSR_M3, OSSR);
--	writel_relaxed(OWER_WME, OWER);
--	writel_relaxed(readl_relaxed(OIER) | OIER_E3, OIER);
-+	sa1100_wr(sa1100_rd(REG_OSCR) + pre_margin, REG_OSMR3);
-+	sa1100_wr(OSSR_M3, REG_OSSR);
-+	sa1100_wr(OWER_WME, REG_OWER);
-+	sa1100_wr(sa1100_rd(REG_OIER) | OIER_E3, REG_OIER);
- 	return stream_open(inode, file);
- }
- 
-@@ -61,7 +88,7 @@ static int sa1100dog_open(struct inode *inode, struct file *file)
-  * The watchdog cannot be disabled.
-  *
-  * Previous comments suggested that turning off the interrupt by
-- * clearing OIER[E3] would prevent the watchdog timing out but this
-+ * clearing REG_OIER[E3] would prevent the watchdog timing out but this
-  * does not appear to be true (at least on the PXA255).
-  */
- static int sa1100dog_release(struct inode *inode, struct file *file)
-@@ -76,7 +103,7 @@ static ssize_t sa1100dog_write(struct file *file, const char __user *data,
- {
- 	if (len)
- 		/* Refresh OSMR3 timer. */
--		writel_relaxed(readl_relaxed(OSCR) + pre_margin, OSMR3);
-+		sa1100_wr(sa1100_rd(REG_OSCR) + pre_margin, REG_OSMR3);
- 	return len;
- }
- 
-@@ -110,7 +137,7 @@ static long sa1100dog_ioctl(struct file *file, unsigned int cmd,
- 		break;
- 
- 	case WDIOC_KEEPALIVE:
--		writel_relaxed(readl_relaxed(OSCR) + pre_margin, OSMR3);
-+		sa1100_wr(sa1100_rd(REG_OSCR) + pre_margin, REG_OSMR3);
- 		ret = 0;
- 		break;
- 
-@@ -125,7 +152,7 @@ static long sa1100dog_ioctl(struct file *file, unsigned int cmd,
- 		}
- 
- 		pre_margin = oscr_freq * time;
--		writel_relaxed(readl_relaxed(OSCR) + pre_margin, OSMR3);
-+		sa1100_wr(sa1100_rd(REG_OSCR) + pre_margin, REG_OSMR3);
- 		fallthrough;
- 
- 	case WDIOC_GETTIMEOUT:
-@@ -151,12 +178,22 @@ static struct miscdevice sa1100dog_miscdev = {
- 	.fops		= &sa1100dog_fops,
- };
- 
--static int margin __initdata = 60;		/* (secs) Default is 1 minute */
-+static int margin = 60;		/* (secs) Default is 1 minute */
- static struct clk *clk;
- 
--static int __init sa1100dog_init(void)
-+static int sa1100dog_probe(struct platform_device *pdev)
- {
- 	int ret;
-+	int *platform_data;
-+	struct resource *res;
-+
-+	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-+	if (!res)
-+		return -ENXIO;
-+	reg_base = devm_ioremap(&pdev->dev, res->start, resource_size(res));
-+	ret = PTR_ERR_OR_ZERO(reg_base);
-+	if (ret)
-+		return ret;
- 
- 	clk = clk_get(NULL, "OSTIMER0");
- 	if (IS_ERR(clk)) {
-@@ -174,13 +211,9 @@ static int __init sa1100dog_init(void)
- 
- 	oscr_freq = clk_get_rate(clk);
- 
--	/*
--	 * Read the reset status, and save it for later.  If
--	 * we suspend, RCSR will be cleared, and the watchdog
--	 * reset reason will be lost.
--	 */
--	boot_status = (reset_status & RESET_STATUS_WATCHDOG) ?
--				WDIOF_CARDRESET : 0;
-+	platform_data = pdev->dev.platform_data;
-+	if (platform_data && *platform_data)
-+		boot_status = WDIOF_CARDRESET;
- 	pre_margin = oscr_freq * margin;
- 
- 	ret = misc_register(&sa1100dog_miscdev);
-@@ -196,15 +229,21 @@ static int __init sa1100dog_init(void)
- 	return ret;
- }
- 
--static void __exit sa1100dog_exit(void)
-+static int sa1100dog_remove(struct platform_device *pdev)
- {
- 	misc_deregister(&sa1100dog_miscdev);
- 	clk_disable_unprepare(clk);
- 	clk_put(clk);
-+
-+	return 0;
- }
- 
--module_init(sa1100dog_init);
--module_exit(sa1100dog_exit);
-+struct platform_driver sa1100dog_driver = {
-+	.driver.name = "sa1100_wdt",
-+	.probe	  = sa1100dog_probe,
-+	.remove	  = sa1100dog_remove,
-+};
-+module_platform_driver(sa1100dog_driver);
- 
- MODULE_AUTHOR("Oleg Drokin <green@crimea.edu>");
- MODULE_DESCRIPTION("SA1100/PXA2xx Watchdog");
+ #include "generic.h"
 -- 
 2.29.2
 

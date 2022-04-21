@@ -2,56 +2,147 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6E83AC433EF
-	for <linux-mips@archiver.kernel.org>; Thu, 21 Apr 2022 08:23:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5C2B0C433EF
+	for <linux-mips@archiver.kernel.org>; Thu, 21 Apr 2022 13:55:00 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356593AbiDUI02 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 21 Apr 2022 04:26:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43390 "EHLO
+        id S1387966AbiDUN5s (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 21 Apr 2022 09:57:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34388 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230391AbiDUI01 (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Thu, 21 Apr 2022 04:26:27 -0400
-X-Greylist: delayed 2359 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 21 Apr 2022 01:23:39 PDT
-Received: from mail.rubyinfo.pl (mail.rubyinfo.pl [5.249.159.30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 537896359
-        for <linux-mips@vger.kernel.org>; Thu, 21 Apr 2022 01:23:39 -0700 (PDT)
-Received: by mail.rubyinfo.pl (Postfix, from userid 1001)
-        id ABC5BA4F7B; Thu, 21 Apr 2022 08:43:53 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rubyinfo.pl; s=mail;
-        t=1650527059; bh=/9MpKlGUGEWWhiQdedVnMqaLo1WTRqCWHemvvbwCPnM=;
-        h=Date:From:To:Subject:From;
-        b=ZqqzmbJhEKHCpI8FSOVWpkoEq8ZJxeG0wj0CMMlDBVFdH68j19ydUN2JhVvmkYuRi
-         H9pPzC4VSNJgO9jARtCWtaobI4oRYDntbLyabAxQ7Oh0usORfIhzOYTb3v4pLAYKwE
-         GVzUrOnVA0KcD3gfEeifmVYY75R6hwBoWzE/DwN97bX6oKbTdRUPJwEkswTC/BFBui
-         BS58AqeK34ApptuhGBUt3/kQAhXt4B5JK+yyqSvhPYtmPS2uZtHGoJ6YNVTB/0XN/8
-         gNROXMt8VezCHfJaI2wer3Swz2RefDPISExRhS3DrpNpkuEcTJiRv3pcnhga7qJw0h
-         pPwYn/HFfYNQg==
-Received: by mail.rubyinfo.pl for <linux-mips@vger.kernel.org>; Thu, 21 Apr 2022 07:43:33 GMT
-Message-ID: <20220421073001-0.1.4t.p8my.0.1v1aq13e95@rubyinfo.pl>
-Date:   Thu, 21 Apr 2022 07:43:33 GMT
-From:   =?UTF-8?Q? "Miko=C5=82aj_Rudzik" ?= <mikolaj.rudzik@rubyinfo.pl>
-To:     <linux-mips@vger.kernel.org>
-Subject: =?UTF-8?Q?Nap=C5=82yw_Klient=C3=B3w_ze_strony?=
-X-Mailer: mail.rubyinfo.pl
+        with ESMTP id S1386982AbiDUN5q (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Thu, 21 Apr 2022 09:57:46 -0400
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47DEA25CF
+        for <linux-mips@vger.kernel.org>; Thu, 21 Apr 2022 06:54:55 -0700 (PDT)
+Received: by mail-lf1-x132.google.com with SMTP id w19so8818573lfu.11
+        for <linux-mips@vger.kernel.org>; Thu, 21 Apr 2022 06:54:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=kWBtjZ/u41ciVQ8eqRCZfXpmvt0679NfHMhFgpCEUzs=;
+        b=DrQFE5Ue2oD2fxauVOiZjO38io8f/v9u+jZfZKC3DiT6Yio76/QDFFy1r54tpiCKLU
+         Bae9C0+AEwzoqhKVPBCK+f1FurOag5SZMFfXfdcnyGTdIQgetZtHZvWsnhuArW/lQzj8
+         iLe5SO5aZU7Mbbt7NvcFhtSITQq3ccbZRcuClitErSEXhvL9K0JsDbHWtil4IqmO2Jxz
+         2TGrTY6+AQBZW000oXexntBGLo6jFLA0c5ElqwS5gen/ZnoVNmu1kP9WJfq4tDq1SnS3
+         b2vZJrqq0U+ZUEhU4kWzTMd7AxkNDG4MME6dh3vdC6kt2hdaBMoqHlr2pUJ5inzKKfar
+         ZSCw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=kWBtjZ/u41ciVQ8eqRCZfXpmvt0679NfHMhFgpCEUzs=;
+        b=dPPPldOBURKQ96lbCNFKyq9vy0pUvtw8ngpvXFYwzPOgCM+ejxxxfqBhI4I6NR0xr/
+         LY4B5LL7rskObxIbluboqRo2B0G4qji9C4O8qzwUBPOE0Ud8XpRCOTdtDLiNAjJ16/Hv
+         gIod02ijLyHZPDZ0aHg/MpRt7IknqrfeBAlO6tEYciI2IJrJjoM8eLK87ZFIcfa003QN
+         pZUOFDf8KvGXqyr74/OVIdDvQz2O/0mXDSCezqk6MJH5VbJiu3KCRUt+iwyTf7PkImKT
+         KNZCbyZD5B9tGFHhFZo6KMeAVSrIqEBD9smXoZBV6qzOCiXx+PXkQgmHQXU4AzTRX/jN
+         6jIQ==
+X-Gm-Message-State: AOAM5304PVdjYzZQoE9HGu/UPfyyXVUQuRetBtQvumVitiF4PEm2aPaW
+        BVrQ1jgJCo3oy5ffpVxph0x6wHL2sOaoSvTaG4ThQQ==
+X-Google-Smtp-Source: ABdhPJyPHSxcjMeoCqMPg/92niGB+5z9ocJsA4qd+sVPE7MSHNmj+16//1nBcKkS1oBD5MwwcxOtT5be7Js74qB5Lc0=
+X-Received: by 2002:a19:505d:0:b0:46d:167e:b9df with SMTP id
+ z29-20020a19505d000000b0046d167eb9dfmr18737298lfj.184.1650549293450; Thu, 21
+ Apr 2022 06:54:53 -0700 (PDT)
 MIME-Version: 1.0
+References: <20220411153753.50443-1-aidanmacdonald.0x0@gmail.com>
+In-Reply-To: <20220411153753.50443-1-aidanmacdonald.0x0@gmail.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Thu, 21 Apr 2022 15:54:16 +0200
+Message-ID: <CAPDyKFpuD1m68SRuCYj0q+KU2Ua1Jt+f3upbLavs8x4HS0-szA@mail.gmail.com>
+Subject: Re: [PATCH] mmc: jz4740: Apply DMA engine limits to maximum segment size
+To:     Aidan MacDonald <aidanmacdonald.0x0@gmail.com>
+Cc:     paul@crapouillou.net, linux-mips@vger.kernel.org,
+        linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Dzie=C5=84 dobry,
+On Mon, 11 Apr 2022 at 17:37, Aidan MacDonald
+<aidanmacdonald.0x0@gmail.com> wrote:
+>
+> Do what is done in other DMA-enabled MMC host drivers (cf. host/mmci.c) and
+> limit the maximum segment size based on the DMA engine's capabilities. This
+> is needed to avoid warnings like the following with CONFIG_DMA_API_DEBUG=y.
+>
+> ------------[ cut here ]------------
+> WARNING: CPU: 0 PID: 21 at kernel/dma/debug.c:1162 debug_dma_map_sg+0x2f4/0x39c
+> DMA-API: jz4780-dma 13420000.dma-controller: mapping sg segment longer than device claims to support [len=98304] [max=65536]
+> CPU: 0 PID: 21 Comm: kworker/0:1H Not tainted 5.18.0-rc1 #19
+> Workqueue: kblockd blk_mq_run_work_fn
+> Stack : 81575aec 00000004 80620000 80620000 80620000 805e7358 00000009 801537ac
+>         814c832c 806276e3 806e34b4 80620000 81575aec 00000001 81575ab8 09291444
+>         00000000 00000000 805e7358 81575958 ffffffea 8157596c 00000000 636f6c62
+>         6220646b 80387a70 0000000f 6d5f6b6c 80620000 00000000 81575ba4 00000009
+>         805e170c 80896640 00000001 00010000 00000000 00000000 00006098 806e0000
+>         ...
+> Call Trace:
+> [<80107670>] show_stack+0x84/0x120
+> [<80528cd8>] __warn+0xb8/0xec
+> [<80528d78>] warn_slowpath_fmt+0x6c/0xb8
+> [<8016f1d4>] debug_dma_map_sg+0x2f4/0x39c
+> [<80169d4c>] __dma_map_sg_attrs+0xf0/0x118
+> [<8016a27c>] dma_map_sg_attrs+0x14/0x28
+> [<804f66b4>] jz4740_mmc_prepare_dma_data+0x74/0xa4
+> [<804f6714>] jz4740_mmc_pre_request+0x30/0x54
+> [<804f4ff4>] mmc_blk_mq_issue_rq+0x6e0/0x7bc
+> [<804f5590>] mmc_mq_queue_rq+0x220/0x2d4
+> [<8038b2c0>] blk_mq_dispatch_rq_list+0x480/0x664
+> [<80391040>] blk_mq_do_dispatch_sched+0x2dc/0x370
+> [<80391468>] __blk_mq_sched_dispatch_requests+0xec/0x164
+> [<80391540>] blk_mq_sched_dispatch_requests+0x44/0x94
+> [<80387900>] __blk_mq_run_hw_queue+0xb0/0xcc
+> [<80134c14>] process_one_work+0x1b8/0x264
+> [<80134ff8>] worker_thread+0x2ec/0x3b8
+> [<8013b13c>] kthread+0x104/0x10c
+> [<80101dcc>] ret_from_kernel_thread+0x14/0x1c
+>
+> ---[ end trace 0000000000000000 ]---
+>
+> Signed-off-by: Aidan MacDonald <aidanmacdonald.0x0@gmail.com>
 
-chcia=C5=82bym poinformowa=C4=87 Pa=C5=84stwa o mo=C5=BCliwo=C5=9Bci pozy=
-skania nowych zlece=C5=84 ze strony www.
+Applied for next, thanks!
 
-Widzimy zainteresowanie potencjalnych Klient=C3=B3w Pa=C5=84stwa firm=C4=85=
-, dlatego ch=C4=99tnie pomo=C5=BCemy Pa=C5=84stwu dotrze=C4=87 z ofert=C4=
-=85 do wi=C4=99kszego grona odbiorc=C3=B3w poprzez efektywne metody pozyc=
-jonowania strony w Google.
-
-Czy m=C3=B3g=C5=82bym liczy=C4=87 na kontakt zwrotny?
+Kind regards
+Uffe
 
 
-Pozdrawiam serdecznie,
-Miko=C5=82aj Rudzik
+> ---
+>  drivers/mmc/host/jz4740_mmc.c | 20 ++++++++++++++++++++
+>  1 file changed, 20 insertions(+)
+>
+> diff --git a/drivers/mmc/host/jz4740_mmc.c b/drivers/mmc/host/jz4740_mmc.c
+> index 7ab1b38a7be5..b1d563b2ed1b 100644
+> --- a/drivers/mmc/host/jz4740_mmc.c
+> +++ b/drivers/mmc/host/jz4740_mmc.c
+> @@ -247,6 +247,26 @@ static int jz4740_mmc_acquire_dma_channels(struct jz4740_mmc_host *host)
+>                 return PTR_ERR(host->dma_rx);
+>         }
+>
+> +       /*
+> +        * Limit the maximum segment size in any SG entry according to
+> +        * the parameters of the DMA engine device.
+> +        */
+> +       if (host->dma_tx) {
+> +               struct device *dev = host->dma_tx->device->dev;
+> +               unsigned int max_seg_size = dma_get_max_seg_size(dev);
+> +
+> +               if (max_seg_size < host->mmc->max_seg_size)
+> +                       host->mmc->max_seg_size = max_seg_size;
+> +       }
+> +
+> +       if (host->dma_rx) {
+> +               struct device *dev = host->dma_rx->device->dev;
+> +               unsigned int max_seg_size = dma_get_max_seg_size(dev);
+> +
+> +               if (max_seg_size < host->mmc->max_seg_size)
+> +                       host->mmc->max_seg_size = max_seg_size;
+> +       }
+> +
+>         return 0;
+>  }
+>
+> --
+> 2.35.1
+>

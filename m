@@ -2,173 +2,117 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E1292C433F5
-	for <linux-mips@archiver.kernel.org>; Wed, 20 Apr 2022 23:32:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 76194C433F5
+	for <linux-mips@archiver.kernel.org>; Thu, 21 Apr 2022 08:00:52 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356889AbiDTXfn (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 20 Apr 2022 19:35:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38608 "EHLO
+        id S1386310AbiDUIDj (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 21 Apr 2022 04:03:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54824 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244412AbiDTXfm (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 20 Apr 2022 19:35:42 -0400
-X-Greylist: delayed 135 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 20 Apr 2022 16:32:54 PDT
-Received: from p3plsmtpa11-10.prod.phx3.secureserver.net (p3plsmtpa11-10.prod.phx3.secureserver.net [68.178.252.111])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A3982FFEA
-        for <linux-mips@vger.kernel.org>; Wed, 20 Apr 2022 16:32:54 -0700 (PDT)
-Received: from black ([209.234.248.132])
-        by :SMTPAUTH: with ESMTPSA
-        id hJmNn85L8pmFVhJmPn5OZs; Wed, 20 Apr 2022 16:30:39 -0700
-X-CMAE-Analysis: v=2.4 cv=f82NuM+M c=1 sm=1 tr=0 ts=6260979f
- a=QYjdx1n8fnJJ/8JFsBbjTg==:117 a=QYjdx1n8fnJJ/8JFsBbjTg==:17
- a=IkcTkHD0fZMA:10 a=NEAV23lmAAAA:8 a=VwQbUJbxAAAA:8 a=_twTT5zqAAAA:8
- a=pGLkceISAAAA:8 a=VrlHBnlMTWxngOB4VMsA:9 a=QEXdDO2ut3YA:10
- a=AjGcO6oz07-iQ99wixmX:22 a=ILoXdGDbYT3DTB7Z0gVI:22
-X-SECURESERVER-ACCT: dhu@hodcarrier.org
-Date:   Thu, 21 Apr 2022 07:30:34 +0800
-From:   Du Huanpeng <dhu@hodcarrier.org>
-To:     Sean Anderson <seanga2@gmail.com>
-Cc:     linux-mips@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Keguang Zhang <keguang.zhang@gmail.com>,
-        Stephen Boyd <sboyd@codeaurora.org>,
-        Yang Ling <gnaygnil@gmail.com>
-Subject: Re: [RFT PATCH] clk: ls1c: Fix PLL rate calculation
-Message-ID: <20220420233034.GA5694@black>
-References: <20220419051114.1569291-1-seanga2@gmail.com>
+        with ESMTP id S230260AbiDUIDi (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Thu, 21 Apr 2022 04:03:38 -0400
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EA2926F5;
+        Thu, 21 Apr 2022 01:00:49 -0700 (PDT)
+Received: by mail-ej1-x62a.google.com with SMTP id ks6so8381139ejb.1;
+        Thu, 21 Apr 2022 01:00:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=IvbH4EZL+5AN5QzEHqEkY2O3ivfSAm4vpHw9+hhvBhg=;
+        b=l9A2zxVr+iaQxUxYrdl2Ms8QPgKKprVPWu836jDS1a9kDgOF87eiKg/WQ2Pp7p0uU5
+         2yNRXou7K8UFGozJ+zY/Z4nvAWfNQL2rfMjP+xXVlPOuM9uOjKLpuuReXJ/1yNQdQwuh
+         j0rwMLAJikQsK++NSTkjAZZIpdlqPGGrisobY6AkDBUSn+EF1pPZ26RV1iYw2+CmyG9Z
+         D2LmcczIZ72xeD8VaXUH0mDdLEb2aoTOXjcPu5w7P06BXPfBaOVOvqtrL86fe03Il6B4
+         EOW8KU+HycFTbAN4tLYJDkZ3tbTG01Z6v9mMOvBRakLpz/3LsxFq95QSfevhyaAXz0Qd
+         bVTA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=IvbH4EZL+5AN5QzEHqEkY2O3ivfSAm4vpHw9+hhvBhg=;
+        b=mMPZHqY1pPIrpZpVe91YkXlWi42EV943ExfwYrB94+eLM+JHhgYYiLUWa6wjXQg8Al
+         iEdywdl0d4/O85cxNP9CrMfgunEr0so5FPn9VsMvihlhaXyIyGav2w3Pz8hKIdLofSGP
+         sqDCo49Cdf+BMHN2HPtr97VVyWbBbqPEJ51vjmqNa5nTEJyoDhHK7oVQIjqfgp8YpOS0
+         LjJDFKdb8qC3TPE1ilQsx7xAk6LAWhCVcrvUNOiTVfgGcdBraWzidRBKmqFpwbirl858
+         dGp206r/ZOscDjBrkHknCvp2iE/lhcx2aDA8S1VQjjmbrXg6u+78a6wIx0xciaoV+8l0
+         JdHw==
+X-Gm-Message-State: AOAM533SzGKV58ctiNpXlv1n0+2cwj9xTh4jrMlCnFkSrH+dT2JiUB/6
+        RCDpVcjScpNVJ8RUvsWJXTffBt0W0YJz/JJvArI=
+X-Google-Smtp-Source: ABdhPJwZVRm8KFRbk9B79qovRjYyl5U7m19/ioAtyBVJMdSRPYNtjRxgrnX2fTY7SlA9nxFEZPk7MVR3ZDEQhaVY+/E=
+X-Received: by 2002:a17:906:5e17:b0:6e8:b6b8:2b09 with SMTP id
+ n23-20020a1709065e1700b006e8b6b82b09mr20915528eju.477.1650528047664; Thu, 21
+ Apr 2022 01:00:47 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20220419051114.1569291-1-seanga2@gmail.com>
-X-CMAE-Envelope: MS4xfPEYo7+TzSzfoE9wr4Xt4tpOgDEJytkfrpg2EqyGeYHbHaYWP6bKmr5LO4CKiw1emz9MS9a9tONXOH3zWVOOolpKx9DPH65StwNnh8Rboe7/Jnfq0SSO
- 2SobRlNcKtY82aUuVQD41sNEEIATrrPb1Xk17EJfGQzc++4JjxLGe9009S0nXdWcsDB+23TZJwf43bA2zglMg9irWhYhiuZXQHerNQ9yf+c7oVPob8sIUnZ4
- bEILzOcC1rLn1hbO8mt5sV/dKh8E1wjOm8UgWsyNiMf6/SGPAT7C9x9xmq4ombpsd8kJ6Y0lKnU2id+n9dTkifRR/coD1neFSW1LttSoO9cwZW1zsMx9QNbE
- XwqyhtPJBHnB6vlDaxZElhYb7t8Y3VL1sJjKm9NdAcSWJOjEQuM=
+References: <20220419111650.1582274-1-Jason@zx2c4.com> <20220419111650.1582274-11-Jason@zx2c4.com>
+In-Reply-To: <20220419111650.1582274-11-Jason@zx2c4.com>
+From:   Max Filippov <jcmvbkbc@gmail.com>
+Date:   Thu, 21 Apr 2022 01:00:36 -0700
+Message-ID: <CAMo8Bf+ox2MQRkqsTaOOXOchOWpb+7P8GQ1c-TjwSpDgttXoFA@mail.gmail.com>
+Subject: Re: [PATCH v5 10/11] xtensa: use fallback for random_get_entropy()
+ instead of zero
+To:     "Jason A. Donenfeld" <Jason@zx2c4.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, linux-crypto@vger.kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Arnd Bergmann <arnd@arndb.de>, "Theodore Ts'o" <tytso@mit.edu>,
+        Dominik Brodowski <linux@dominikbrodowski.net>,
+        Russell King <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        "David S . Miller" <davem@davemloft.net>,
+        Richard Weinberger <richard@nod.at>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H . Peter Anvin" <hpa@zytor.com>, Chris Zankel <chris@zankel.net>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Dinh Nguyen <dinguyen@kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        "open list:M68K ARCHITECTURE" <linux-m68k@lists.linux-m68k.org>,
+        linux-mips@vger.kernel.org,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        "open list:SPARC + UltraSPAR..." <sparclinux@vger.kernel.org>,
+        linux-um@lists.infradead.org,
+        "maintainer:X86 ARCHITECTURE..." <x86@kernel.org>,
+        "open list:TENSILICA XTENSA PORT (xtensa)" 
+        <linux-xtensa@linux-xtensa.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Tue, Apr 19, 2022 at 01:11:14AM -0400, Sean Anderson wrote:
-> While reviewing Dhu's patch adding ls1c300 clock support to U-Boot [1], I
-> noticed the following calculation, which is copied from
-> drivers/clk/loongson1/clk-loongson1c.c:
-Hi, the calculate method is based on Loongson's manual(龙芯 1C300
-处理器用户手册 1.4)in page 35.
-| 注： PLL 的分频系数 N 固定为 4， PLL 的频率计算公式如下：
-| Freq_PLL = XIN *(M_PLL + FRAC_N)/4
-
-I aslo made a tool to set pll rate and generate asm code at the same
-time, I also put the formulae from the manual in code:
-
-the tool:
-[1]. https://github.com/hodcarrier/ls1c300_bsp/blob/master/clk-ls1c300.xlsx
-
-lowlevel_init.S:
-[2]. https://github.com/hodcarrier/u-boot/blob/lsmips/ls1c300b/arch/mips/mach-lsmips/ls1c300/lowlevel_init.S#L48
-|/* Document:
-| * Freq_PLL = XIN *(M_PLL + FRAC_N)/4
-| */
-
-The my v1 patch was using magic number for initialize pll, because I
-use this tool to generate the code.
-
-Set FRAC_N to 0, the pll can be adjust by step 6MHz. I noticed this
-issues, you can see I always set the FRAC_N to 0 in the tool[1].
-this will lost some pricise, but avoid to do the adventure...
-
-> 
-> ulong ls1c300_pll_get_rate(struct clk *clk)
-> {
-> 	unsigned int mult;
-> 	long long parent_rate;
-> 	void *base;
-> 	unsigned int val;
-> 
-> 	parent_rate = clk_get_parent_rate(clk);
-> 	base = (void *)clk->data;
-> 
-> 	val = readl(base + START_FREQ);
-> 	mult = FIELD_GET(FRAC_N, val) + FIELD_GET(M_PLL, val);
-> 	return (mult * parent_rate) / 4;
-> }
-> 
-> I would like to examine the use of M_PLL and FRAC_N to calculate the multiplier
-> for the PLL. The datasheet has the following to say:
-> 
-> START_FREQ 位    缺省值      描述
-> ========== ===== =========== ====================================
-> FRAC_N     23:16 0           PLL 倍频系数的小数部分
-> 
->                  由          PLL 倍频系数的整数部分
-> M_PLL      15:8  NAND_D[3:0] (理论可以达到 255，建议不要超过 100)
->                  配置
-> 
-> which according to google translate means
-> 
-> START_FREQ Bits  Default       Description
-> ========== ===== ============= ================================================
-> FRAC_N     23:16 0             Fractional part of the PLL multiplication factor
-> 
->                  Depends on    Integer part of PLL multiplication factor
-> M_PLL      15:8  NAND_D[3:0]   (Theoretically it can reach 255, [but] it is
->                  configuration  recommended not to exceed 100)
-> 
-> So just based on this description, I would expect that the formula to be
-> something like
-> 
-> 	rate = parent * (255 * M_PLL + FRAC_N) / 255 / 4
-> 
-> However, the datasheet also gives the following formula:
-> 
-> 	rate = parent * (M_PLL + FRAC_N) / 4
-> 
-> which is what the Linux driver has implemented. I find this very unusual.
-> First, the datasheet specifically says that these fields are the integer and
-> fractional parts of the multiplier. Second, I think such a construct does not
-> easily map to traditional PLL building blocks. Implementing this formula in
-> hardware would likely require an adder, just to then set the threshold of a
-> clock divider.
-> 
-> I think it is much more likely that the first formula is correct. The author of
-> the datasheet may think of a multiplier of (say) 3.14 as
-> 
-> 	M_PLL = 3
-> 	FRAC_N = 0.14
-> 
-> which together sum to the correct multiplier, even though the actual value
-> stored in FRAC_N would be 36.
-> 
-> I suspect that this has slipped by unnoticed because when FRAC_N is 0, there is
-> no difference in the formulae. The following patch is untested, but I suspect
-> it will fix this issue. I would appreciate if anyone with access to the
-> hardware could measure the output of the PLL (or one of its derived clocks) and
-> determine the correct formula.
-> 
-> [1] https://lore.kernel.org/u-boot/20220418204519.19991-1-dhu@hodcarrier.org/T/#u
-> 
-> Fixes: b4626a7f4892 ("CLK: Add Loongson1C clock support")
-> Signed-off-by: Sean Anderson <seanga2@gmail.com>
+On Tue, Apr 19, 2022 at 4:18 AM Jason A. Donenfeld <Jason@zx2c4.com> wrote:
+>
+> In the event that random_get_entropy() can't access a cycle counter or
+> similar, falling back to returning 0 is really not the best we can do.
+> Instead, at least calling random_get_entropy_fallback() would be
+> preferable, because that always needs to return _something_, even
+> falling back to jiffies eventually. It's not as though
+> random_get_entropy_fallback() is super high precision or guaranteed to
+> be entropic, but basically anything that's not zero all the time is
+> better than returning zero all the time.
+>
+> This is accomplished by just including the asm-generic code like on
+> other architectures, which means we can get rid of the empty stub
+> function here.
+>
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Arnd Bergmann <arnd@arndb.de>
+> Cc: Max Filippov <jcmvbkbc@gmail.com>
+> Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
 > ---
-> 
->  drivers/clk/loongson1/clk-loongson1c.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/clk/loongson1/clk-loongson1c.c b/drivers/clk/loongson1/clk-loongson1c.c
-> index 703f87622cf5..2b98a116c1ea 100644
-> --- a/drivers/clk/loongson1/clk-loongson1c.c
-> +++ b/drivers/clk/loongson1/clk-loongson1c.c
-> @@ -21,9 +21,9 @@ static unsigned long ls1x_pll_recalc_rate(struct clk_hw *hw,
->  	u32 pll, rate;
->  
->  	pll = __raw_readl(LS1X_CLK_PLL_FREQ);
-> -	rate = ((pll >> 8) & 0xff) + ((pll >> 16) & 0xff);
-> +	rate = (pll & 0xff00) + ((pll >> 16) & 0xff);
->  	rate *= OSC;
-> -	rate >>= 2;
-> +	rate >>= 10;
->  
->  	return rate;
->  }
-> -- 
-> 2.35.1
-> 
+>  arch/xtensa/include/asm/timex.h | 6 ++----
+>  1 file changed, 2 insertions(+), 4 deletions(-)
+
+Acked-by: Max Filippov <jcmvbkbc@gmail.com>
+
+-- 
+Thanks.
+-- Max

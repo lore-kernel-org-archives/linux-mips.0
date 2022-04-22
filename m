@@ -2,56 +2,57 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 70F81C433F5
-	for <linux-mips@archiver.kernel.org>; Fri, 22 Apr 2022 22:13:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7D9EAC433F5
+	for <linux-mips@archiver.kernel.org>; Fri, 22 Apr 2022 22:13:30 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232214AbiDVWQP (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 22 Apr 2022 18:16:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56202 "EHLO
+        id S232238AbiDVWQQ (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 22 Apr 2022 18:16:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57976 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232515AbiDVWPj (ORCPT
+        with ESMTP id S232490AbiDVWPj (ORCPT
         <rfc822;linux-mips@vger.kernel.org>); Fri, 22 Apr 2022 18:15:39 -0400
-Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19407224067
-        for <linux-mips@vger.kernel.org>; Fri, 22 Apr 2022 14:06:18 -0700 (PDT)
-Received: by mail-pl1-x649.google.com with SMTP id f8-20020a170902ce8800b00158ed29a480so5407781plg.1
-        for <linux-mips@vger.kernel.org>; Fri, 22 Apr 2022 14:06:18 -0700 (PDT)
+Received: from mail-pf1-x449.google.com (mail-pf1-x449.google.com [IPv6:2607:f8b0:4864:20::449])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32E6823E81C
+        for <linux-mips@vger.kernel.org>; Fri, 22 Apr 2022 14:06:15 -0700 (PDT)
+Received: by mail-pf1-x449.google.com with SMTP id m8-20020a62a208000000b0050593296139so6117486pff.1
+        for <linux-mips@vger.kernel.org>; Fri, 22 Apr 2022 14:06:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=csGYTTgLO7JTG/MJ5ZHEQ2SmxGLM+rnUmtz6vs2mn6s=;
-        b=l6jEQB9U0csYEWcZJhqMEDMGTLs5di/EI5F8Zl27LVUFQVVbi0H8o/zOFCcleLtiY+
-         DloYUdzhQnpql77qPuxt/n7StWTAaWm6cLKHG8wRlJyx6oTE2RRQMC0Yno3+3qbu/tSs
-         0lUXlo2suXJfMDuaOLenwPemb5XB88+bVHvMZL/08yLuT21GdYaE5z2agCUHVTlHs8mr
-         8b+WLywouaTvocy1dbYHvhiHpRAFotAB6zRcoBC1Uidlucu3YR5/JJT3PjudfZp+ZzGy
-         RXiOMXICz8LY6gLoV4fXLR77uTv0/nY8mThs4Fi/vx3UcL3wZfMcEOrAqbbJbMLUxsUD
-         Grcw==
+        bh=z0XSCH07in75tEpUNZM8MYk8qU4dimko+wjHO05t1Es=;
+        b=KD9t5eTkK3NVK3tDD7GdIoPNOwREuKL7cqyJGO4kzNMZf+MFH4XlV7cjFoRKeyOu3q
+         5ur3N4mfWODth+B68D1ssXTcuD3FaXVeCfIhZBY4/hMELOEAi0eyi67gBcSp+eLONfic
+         XRBRAXmfx/nh6QZq1tcHVjVKsSA7JXALFLvBZp8tdkPvM3oWGpiqUyHD2Fh6PND0M+Zn
+         Q9JPiPAUXvqMoSaGIAIwG1T91QRoM3EXmRYeWhrDpoSKOmQUj3iz6JDkrvXC86woQ/iy
+         J25MV0v5eMnTye2IhMVWXJLmCNAEMASYimVPnIDSdbMhxV0zClWVvkMmI2OeD4YSudGA
+         8RXA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=csGYTTgLO7JTG/MJ5ZHEQ2SmxGLM+rnUmtz6vs2mn6s=;
-        b=R6J5ZNtVFcyO30v0RbXAOF4H8FhtXVwyjLJEfVyZrb7bLsAkIDQUdQBMGg3t4PJuvX
-         KJ3QBVNAt8JWmkw5W3r6WKYFJK1a3g4C9BtoL6M/AGRY5OwWSNHK4+EWXwlzfGHyzGVU
-         YhPLb85y0CGUKfVXb7Qnms0xAwI11/e4uGiiyZO25SF2hErQz7JxP1z54HeF76QaEQae
-         8UVItVt2k+0kvryGv24q+PAO9c6iU5iZgy+E/RGyvGGvnJGP5SM1yLh8BhSbjx2ocCmX
-         Kcarb6hd3R+l462VJREe6YrSOCwQs0PmrUmfbShgZdGVXv+46mQFarnxYxBQyIKkemwg
-         hQzA==
-X-Gm-Message-State: AOAM533lP5HH37q+NjeDQMg4r/+of53Fs28aP0N+ou1C8DqjLAjUs9Yj
-        jYfASBGHufEAjRqGduzLHBxP9Hhe4UxRnQ==
-X-Google-Smtp-Source: ABdhPJxwGKSMoT7a6vuDBG/9QPLNL6WSI7Wg6RWBF/U9+Ei6+zMEnYYjdJzGj5E995zo4cGyM9VmfiTBeQH5gw==
+        bh=z0XSCH07in75tEpUNZM8MYk8qU4dimko+wjHO05t1Es=;
+        b=7AtTCk0deh8jzjzSPchJAY4SZCPj8VoyqfQBq5YXLAk0H10bzIThf3aIWmXfrEase/
+         waJHCyh0SpEs/g1+K6J0EAUscUHIV3Drh9jqgLbkHmjcoTnZ640yDjuVC/2y2ogXVmOx
+         ZXFIbRBSrFuNmGQ/F024DH4TDwrFJhg7gR43FpgZVkgY/DP7lvpc6S1wwxvMNvGC6wlw
+         s3Gm93PSZWStW7OeXutMyj2L8AxsdFNRu3O0PsZ6l3jl472DTt9nsQVlYn2W85chvmMP
+         VV3GxfM6k1ETkpTG5KEEc/IG3XAtJ39KkIsNL089wyz75qguHuZbWESfHe2quEkQs7B1
+         MRGA==
+X-Gm-Message-State: AOAM531Hrz5Hmxb6fkAHT2VWaWrZFP+16tFhaBu5rPYn9rHi9Tt/qJuR
+        iznsi2ZBI1bJL+4mxM0x4XS39ihWvjVlIQ==
+X-Google-Smtp-Source: ABdhPJxZKsBJ5rApfD6PzIxQyIWIsTbPHIisq+LTRCOt+rp7dIyugbvbwuSo/cZL8dyJFY11MYP1ozI/a3x51Q==
 X-Received: from dmatlack-heavy.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:19cd])
- (user=dmatlack job=sendgmr) by 2002:a17:90a:6d96:b0:1c9:c1de:ef2f with SMTP
- id a22-20020a17090a6d9600b001c9c1deef2fmr18212154pjk.210.1650661577643; Fri,
- 22 Apr 2022 14:06:17 -0700 (PDT)
-Date:   Fri, 22 Apr 2022 21:05:44 +0000
+ (user=dmatlack job=sendgmr) by 2002:a05:6a00:21c8:b0:4fd:f89f:ec0e with SMTP
+ id t8-20020a056a0021c800b004fdf89fec0emr6710829pfj.83.1650661574708; Fri, 22
+ Apr 2022 14:06:14 -0700 (PDT)
+Date:   Fri, 22 Apr 2022 21:05:42 +0000
 In-Reply-To: <20220422210546.458943-1-dmatlack@google.com>
-Message-Id: <20220422210546.458943-19-dmatlack@google.com>
+Message-Id: <20220422210546.458943-17-dmatlack@google.com>
 Mime-Version: 1.0
 References: <20220422210546.458943-1-dmatlack@google.com>
 X-Mailer: git-send-email 2.36.0.rc2.479.g8af0fa9b8e-goog
-Subject: [PATCH v4 18/20] KVM: x86/mmu: Refactor drop_large_spte()
+Subject: [PATCH v4 16/20] KVM: x86/mmu: Extend make_huge_page_split_spte() for
+ the shadow MMU
 From:   David Matlack <dmatlack@google.com>
 To:     Paolo Bonzini <pbonzini@redhat.com>
 Cc:     Marc Zyngier <maz@kernel.org>, Huacai Chen <chenhuacai@kernel.org>,
@@ -78,71 +79,93 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-drop_large_spte() drops a large SPTE if it exists and then flushes TLBs.
-Its helper function, __drop_large_spte(), does the drop without the
-flush.
+Currently make_huge_page_split_spte() assumes execute permissions can be
+granted to any 4K SPTE when splitting huge pages. This is true for the
+TDP MMU but is not necessarily true for the shadow MMU, since KVM may be
+shadowing a non-executable huge page.
 
-In preparation for eager page splitting, which will need to sometimes
-flush when dropping large SPTEs (and sometimes not), push the flushing
-logic down into __drop_large_spte() and add a bool parameter to control
-it.
+To fix this, pass in the child shadow page where the huge page will be
+split and derive the execution permission from the shadow page's role.
+This is correct because huge pages are always split with direct shadow
+page and thus the shadow page role contains the correct access
+permissions.
 
 No functional change intended.
 
-Reviewed-by: Peter Xu <peterx@redhat.com>
 Signed-off-by: David Matlack <dmatlack@google.com>
 ---
- arch/x86/kvm/mmu/mmu.c | 29 +++++++++++++++--------------
- 1 file changed, 15 insertions(+), 14 deletions(-)
+ arch/x86/kvm/mmu/spte.c    | 13 +++++++------
+ arch/x86/kvm/mmu/spte.h    |  2 +-
+ arch/x86/kvm/mmu/tdp_mmu.c |  2 +-
+ 3 files changed, 9 insertions(+), 8 deletions(-)
 
-diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-index 479c581e8a96..a5961c17eb36 100644
---- a/arch/x86/kvm/mmu/mmu.c
-+++ b/arch/x86/kvm/mmu/mmu.c
-@@ -1183,28 +1183,29 @@ static void drop_spte(struct kvm *kvm, u64 *sptep)
- 		rmap_remove(kvm, sptep);
- }
- 
--
--static bool __drop_large_spte(struct kvm *kvm, u64 *sptep)
-+static void __drop_large_spte(struct kvm *kvm, u64 *sptep, bool flush)
+diff --git a/arch/x86/kvm/mmu/spte.c b/arch/x86/kvm/mmu/spte.c
+index 4739b53c9734..9db98fbeee61 100644
+--- a/arch/x86/kvm/mmu/spte.c
++++ b/arch/x86/kvm/mmu/spte.c
+@@ -215,10 +215,11 @@ static u64 make_spte_executable(u64 spte)
+  * This is used during huge page splitting to build the SPTEs that make up the
+  * new page table.
+  */
+-u64 make_huge_page_split_spte(u64 huge_spte, int huge_level, int index)
++u64 make_huge_page_split_spte(u64 huge_spte, struct kvm_mmu_page *sp, int index)
  {
--	if (is_large_pte(*sptep)) {
--		WARN_ON(sptep_to_sp(sptep)->role.level == PG_LEVEL_4K);
--		drop_spte(kvm, sptep);
--		return true;
--	}
-+	struct kvm_mmu_page *sp;
++	bool exec_allowed = sp->role.access & ACC_EXEC_MASK;
++	int child_level = sp->role.level;
+ 	u64 child_spte;
+-	int child_level;
  
--	return false;
--}
-+	if (!is_large_pte(*sptep))
-+		return;
+ 	if (WARN_ON_ONCE(!is_shadow_present_pte(huge_spte)))
+ 		return 0;
+@@ -227,7 +228,6 @@ u64 make_huge_page_split_spte(u64 huge_spte, int huge_level, int index)
+ 		return 0;
  
--static void drop_large_spte(struct kvm_vcpu *vcpu, u64 *sptep)
--{
--	if (__drop_large_spte(vcpu->kvm, sptep)) {
--		struct kvm_mmu_page *sp = sptep_to_sp(sptep);
-+	sp = sptep_to_sp(sptep);
-+	WARN_ON(sp->role.level == PG_LEVEL_4K);
+ 	child_spte = huge_spte;
+-	child_level = huge_level - 1;
  
--		kvm_flush_remote_tlbs_with_address(vcpu->kvm, sp->gfn,
-+	drop_spte(kvm, sptep);
-+
-+	if (flush) {
-+		kvm_flush_remote_tlbs_with_address(kvm, sp->gfn,
- 			KVM_PAGES_PER_HPAGE(sp->role.level));
+ 	/*
+ 	 * The child_spte already has the base address of the huge page being
+@@ -240,10 +240,11 @@ u64 make_huge_page_split_spte(u64 huge_spte, int huge_level, int index)
+ 		child_spte &= ~PT_PAGE_SIZE_MASK;
+ 
+ 		/*
+-		 * When splitting to a 4K page, mark the page executable as the
+-		 * NX hugepage mitigation no longer applies.
++		 * When splitting to a 4K page where execution is allowed, mark
++		 * the page executable as the NX hugepage mitigation no longer
++		 * applies.
+ 		 */
+-		if (is_nx_huge_page_enabled())
++		if (exec_allowed && is_nx_huge_page_enabled())
+ 			child_spte = make_spte_executable(child_spte);
  	}
- }
  
-+static void drop_large_spte(struct kvm_vcpu *vcpu, u64 *sptep)
-+{
-+	return __drop_large_spte(vcpu->kvm, sptep, true);
-+}
-+
- /*
-  * Write-protect on the specified @sptep, @pt_protect indicates whether
-  * spte write-protection is caused by protecting shadow page table.
+diff --git a/arch/x86/kvm/mmu/spte.h b/arch/x86/kvm/mmu/spte.h
+index 73f12615416f..921ea77f1b5e 100644
+--- a/arch/x86/kvm/mmu/spte.h
++++ b/arch/x86/kvm/mmu/spte.h
+@@ -415,7 +415,7 @@ bool make_spte(struct kvm_vcpu *vcpu, struct kvm_mmu_page *sp,
+ 	       unsigned int pte_access, gfn_t gfn, kvm_pfn_t pfn,
+ 	       u64 old_spte, bool prefetch, bool can_unsync,
+ 	       bool host_writable, u64 *new_spte);
+-u64 make_huge_page_split_spte(u64 huge_spte, int huge_level, int index);
++u64 make_huge_page_split_spte(u64 huge_spte, struct kvm_mmu_page *sp, int index);
+ u64 make_nonleaf_spte(u64 *child_pt, bool ad_disabled);
+ u64 make_mmio_spte(struct kvm_vcpu *vcpu, u64 gfn, unsigned int access);
+ u64 mark_spte_for_access_track(u64 spte);
+diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
+index 566548a3efa7..110a34ca41c2 100644
+--- a/arch/x86/kvm/mmu/tdp_mmu.c
++++ b/arch/x86/kvm/mmu/tdp_mmu.c
+@@ -1469,7 +1469,7 @@ static int tdp_mmu_split_huge_page(struct kvm *kvm, struct tdp_iter *iter,
+ 	 * not been linked in yet and thus is not reachable from any other CPU.
+ 	 */
+ 	for (i = 0; i < PT64_ENT_PER_PAGE; i++)
+-		sp->spt[i] = make_huge_page_split_spte(huge_spte, level, i);
++		sp->spt[i] = make_huge_page_split_spte(huge_spte, sp, i);
+ 
+ 	/*
+ 	 * Replace the huge spte with a pointer to the populated lower level
 -- 
 2.36.0.rc2.479.g8af0fa9b8e-goog
 

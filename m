@@ -2,135 +2,120 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F1A76C433EF
-	for <linux-mips@archiver.kernel.org>; Fri, 22 Apr 2022 22:13:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8A570C3527D
+	for <linux-mips@archiver.kernel.org>; Fri, 22 Apr 2022 22:17:04 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232246AbiDVWQa (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 22 Apr 2022 18:16:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56426 "EHLO
+        id S232717AbiDVWT4 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 22 Apr 2022 18:19:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57040 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232321AbiDVWPf (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Fri, 22 Apr 2022 18:15:35 -0400
-Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63CE7243367
-        for <linux-mips@vger.kernel.org>; Fri, 22 Apr 2022 14:06:03 -0700 (PDT)
-Received: by mail-pg1-x549.google.com with SMTP id 64-20020a630843000000b0039d909676d5so5635033pgi.16
-        for <linux-mips@vger.kernel.org>; Fri, 22 Apr 2022 14:06:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=6Ge2konkzI9kQNZbecDBE3zVrokGdYazCMQ6Hdz7Pwc=;
-        b=AD8Y3WB05zkFGBEDy5r+SFYfa2sNP1cX5UEbVkBh7FjsDK04aTlV5V4DnMAa7Xmcc6
-         OyzgE7DlP8hdtrQxCidYsNj/YK7xEf8u1swAnALBHXRy+4GkAJ35kSjO3m7L0oaqAKEU
-         MnPIjC2QokD43JHymgLhIiCuaFp6/oISh+eS1yf5lmp+aRpaPWUt+uuVOE8sfKRMOww1
-         N17W5qyxxqKzCwYWcggy07wrq9uFZoudUbzXx9K0B63DfbTAo5HP/+vxQNO/O+slFhIm
-         hyrx4zUtX4fKgIO2JxEKn7cPxFO1lolKq407Rz6ywCy6eGUxTmsqGGwjDVI1EJA0LsB2
-         Ykig==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=6Ge2konkzI9kQNZbecDBE3zVrokGdYazCMQ6Hdz7Pwc=;
-        b=3S4celJUj0JM8K6SCs3+XPy9uoEng6HdgXPr57vinoGz2HSVnU6FTyBNfJU5q4inxw
-         fTzLMKCRh5CfMmFckSGOKPvPQZQ88iuvRWX2ned8x51mBYQRV8wcmHpUc96oNvwDDMFk
-         ME2U9QY1cfR/bb3QPv8RCWaj11jN8jJo2fCsa1Ec+8JWjNT1nsCpIBU9BuP+cL3ai76s
-         6GaafYlojmzk4sqDYkVLhmMdz1V1aBBYzOhQ6x1Xreg+Gzxmogl0iOnL0iX6Z+DsnoOt
-         AjEjXV6JaOJRkBCc3JHM5d5fTJqsXfKOKyx1JkS5glmQcdYr1uRLx078CQkZK4UwzZ4B
-         mO4Q==
-X-Gm-Message-State: AOAM530zFyL6chCFkxwaHNj1+5cNzOj6/B7EghmEPkS7Nd4Xo96ItrV2
-        ARnlxFBGtCfdTGNUrYwG+6RZMWdw/5nZqQ==
-X-Google-Smtp-Source: ABdhPJyGkgN0mxn2pzRhuXRhxNLv3I8AHy2/O/qb/da6JelMMUf8mJooEx0Eo7Gmh0ca+j3lSTwpgxrQLkmutw==
-X-Received: from dmatlack-heavy.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:19cd])
- (user=dmatlack job=sendgmr) by 2002:a05:6a00:14d2:b0:50a:48f0:881a with SMTP
- id w18-20020a056a0014d200b0050a48f0881amr6883386pfu.36.1650661562831; Fri, 22
- Apr 2022 14:06:02 -0700 (PDT)
-Date:   Fri, 22 Apr 2022 21:05:35 +0000
-In-Reply-To: <20220422210546.458943-1-dmatlack@google.com>
-Message-Id: <20220422210546.458943-10-dmatlack@google.com>
-Mime-Version: 1.0
-References: <20220422210546.458943-1-dmatlack@google.com>
-X-Mailer: git-send-email 2.36.0.rc2.479.g8af0fa9b8e-goog
-Subject: [PATCH v4 09/20] KVM: x86/mmu: Replace vcpu with kvm in kvm_mmu_alloc_shadow_page()
-From:   David Matlack <dmatlack@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Marc Zyngier <maz@kernel.org>, Huacai Chen <chenhuacai@kernel.org>,
-        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
-        Anup Patel <anup@brainfault.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Sean Christopherson <seanjc@google.com>,
-        Andrew Jones <drjones@redhat.com>,
-        Ben Gardon <bgardon@google.com>, Peter Xu <peterx@redhat.com>,
-        maciej.szmigiero@oracle.com,
-        "moderated list:KERNEL VIRTUAL MACHINE FOR ARM64 (KVM/arm64)" 
-        <kvmarm@lists.cs.columbia.edu>,
-        "open list:KERNEL VIRTUAL MACHINE FOR MIPS (KVM/mips)" 
-        <linux-mips@vger.kernel.org>,
-        "open list:KERNEL VIRTUAL MACHINE FOR MIPS (KVM/mips)" 
-        <kvm@vger.kernel.org>,
-        "open list:KERNEL VIRTUAL MACHINE FOR RISC-V (KVM/riscv)" 
-        <kvm-riscv@lists.infradead.org>, Peter Feiner <pfeiner@google.com>,
-        David Matlack <dmatlack@google.com>
+        with ESMTP id S233728AbiDVWSo (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Fri, 22 Apr 2022 18:18:44 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16A044705E;
+        Fri, 22 Apr 2022 15:04:51 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 9EC42B83272;
+        Fri, 22 Apr 2022 22:04:50 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 502FFC385AB;
+        Fri, 22 Apr 2022 22:04:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1650665089;
+        bh=zuNw6j1TShfoNbLYYIZxrZxreBGq9IdbmgqrCDzwCoE=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=GJHnYGm7kS7OYKfkAu61QcQIzQsPpKgiX8ZwFOEZB2cc8bdXfKuICeePb/LdLDWns
+         VNg0u6qUYqau/LeOFrayBulaQJxkihHPe/A2FqLymKPNdePaoUDSIGdGevpo7L/zJM
+         aFPhStRd09KzzfNR1joe6PwVDpjMzpbeziX7fgPmvokEvCi/0oFrjnwBTaaGfP/BOU
+         IUNNTQDtVNPw7mpJSpA99kiRdBDjanYdKye5l82yB0eqq3zLotqrujW7fvCIf2Ejkd
+         dAqJEF/tV2gwSfcpwtPVTrB+Lh9rnVah9UvWO9BhrH9MflpU1vh20qiOa/U8KRRaYH
+         giaZNTf1zCHIw==
+Received: by mail-wm1-f47.google.com with SMTP id q20so5841606wmq.1;
+        Fri, 22 Apr 2022 15:04:49 -0700 (PDT)
+X-Gm-Message-State: AOAM5316G1Qpk56Wu+UcOt6hj2nx1VfttOXlwvZpmLGd7jHRHONmsW3f
+        STOnEHKSTHIV4MExAz+NGq4VoEiQvcmEOpiQ/uQ=
+X-Google-Smtp-Source: ABdhPJxxyzPCyBaxXq4e/OKv6ds/3UgnpcR0jFo6uX7QoEAMCxGf0GP6zkRcnylbgWRsSBmj2Bdv9puvN/pDeVMDIcQ=
+X-Received: by 2002:a05:600c:4ed4:b0:392:90a5:b7e6 with SMTP id
+ g20-20020a05600c4ed400b0039290a5b7e6mr15508304wmq.33.1650665087477; Fri, 22
+ Apr 2022 15:04:47 -0700 (PDT)
+MIME-Version: 1.0
+References: <20220419163810.2118169-1-arnd@kernel.org> <20220422170530.GA2338209@roeck-us.net>
+ <CAK8P3a3V=qxUqYT3Yt=dpXVv58-Y+HVi952wO6D4LPN5NNphGA@mail.gmail.com> <8b36d3a4-ec85-2f9f-e4b7-734d8ddd3d8f@roeck-us.net>
+In-Reply-To: <8b36d3a4-ec85-2f9f-e4b7-734d8ddd3d8f@roeck-us.net>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Sat, 23 Apr 2022 00:04:31 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a0R9cpEb1d2=e9KnGSbi_uRv48RWfCu_J4DDak_cGZSuw@mail.gmail.com>
+Message-ID: <CAK8P3a0R9cpEb1d2=e9KnGSbi_uRv48RWfCu_J4DDak_cGZSuw@mail.gmail.com>
+Subject: Re: [PATCH v2 00/48] ARM: PXA multiplatform support
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Robert Jarzmik <robert.jarzmik@free.fr>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Arnd Bergmann <arnd@arndb.de>, Daniel Mack <daniel@zonque.org>,
+        Haojian Zhuang <haojian.zhuang@gmail.com>,
+        Marek Vasut <marek.vasut@gmail.com>,
+        Philipp Zabel <philipp.zabel@gmail.com>,
+        Lubomir Rintel <lkundrak@v3.sk>,
+        Paul Parsons <lost.distance@yahoo.com>,
+        Tomas Cech <sleep_walker@suse.com>,
+        Sergey Lapin <slapin@ossfans.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Dominik Brodowski <linux@dominikbrodowski.net>,
+        Helge Deller <deller@gmx.de>, Mark Brown <broonie@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
+        IDE-ML <linux-ide@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        Linux PM list <linux-pm@vger.kernel.org>,
+        "open list:HID CORE LAYER" <linux-input@vger.kernel.org>,
+        patches@opensource.cirrus.com, linux-leds@vger.kernel.org,
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        linux-mtd <linux-mtd@lists.infradead.org>,
+        linux-rtc@vger.kernel.org, USB list <linux-usb@vger.kernel.org>,
+        Linux Fbdev development list <linux-fbdev@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        ALSA Development Mailing List <alsa-devel@alsa-project.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-The vcpu pointer in kvm_mmu_alloc_shadow_page() is only used to get the
-kvm pointer. So drop the vcpu pointer and just pass in the kvm pointer.
+On Fri, Apr 22, 2022 at 10:55 PM Guenter Roeck <linux@roeck-us.net> wrote:
+> On 4/22/22 12:16, Arnd Bergmann wrote:
+> > On Fri, Apr 22, 2022 at 7:05 PM Guenter Roeck <linux@roeck-us.net> wrote:
+> >
+> > Which machine did you hit this on? Is this on hardware or in qemu?
+> >
+> qemu, as always. borzoi, spitz, terrier, tosa, z2, and sx1 fail.
+> Also, I just noticed that the failure is not always the same.
+> z2 fails to boot from initrd, and sx1 fails to boot completely.
 
-No functional change intended.
+That's a lot of machines failing, I hope at least we got the same bugs more
+than once here.
 
-Signed-off-by: David Matlack <dmatlack@google.com>
----
- arch/x86/kvm/mmu/mmu.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+For the I/O space, I found now that PXA was not using the standard
+virtual I/O address yet, but instead used a NULL-based offset.
 
-diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-index 943595ed0ba1..df110e0d57cf 100644
---- a/arch/x86/kvm/mmu/mmu.c
-+++ b/arch/x86/kvm/mmu/mmu.c
-@@ -2084,7 +2084,7 @@ struct shadow_page_caches {
- 	struct kvm_mmu_memory_cache *gfn_array_cache;
- };
- 
--static struct kvm_mmu_page *kvm_mmu_alloc_shadow_page(struct kvm_vcpu *vcpu,
-+static struct kvm_mmu_page *kvm_mmu_alloc_shadow_page(struct kvm *kvm,
- 						      struct shadow_page_caches *caches,
- 						      gfn_t gfn,
- 						      struct hlist_head *sp_list,
-@@ -2104,16 +2104,16 @@ static struct kvm_mmu_page *kvm_mmu_alloc_shadow_page(struct kvm_vcpu *vcpu,
- 	 * depends on valid pages being added to the head of the list.  See
- 	 * comments in kvm_zap_obsolete_pages().
- 	 */
--	sp->mmu_valid_gen = vcpu->kvm->arch.mmu_valid_gen;
--	list_add(&sp->link, &vcpu->kvm->arch.active_mmu_pages);
--	kvm_mod_used_mmu_pages(vcpu->kvm, +1);
-+	sp->mmu_valid_gen = kvm->arch.mmu_valid_gen;
-+	list_add(&sp->link, &kvm->arch.active_mmu_pages);
-+	kvm_mod_used_mmu_pages(kvm, +1);
- 
- 	sp->gfn = gfn;
- 	sp->role = role;
- 	hlist_add_head(&sp->hash_link, sp_list);
- 
- 	if (!role.direct)
--		account_shadowed(vcpu->kvm, sp);
-+		account_shadowed(kvm, sp);
- 
- 	return sp;
- }
-@@ -2132,7 +2132,7 @@ static struct kvm_mmu_page *__kvm_mmu_get_shadow_page(struct kvm_vcpu *vcpu,
- 	sp = kvm_mmu_find_shadow_page(vcpu, gfn, sp_list, role);
- 	if (!sp) {
- 		created = true;
--		sp = kvm_mmu_alloc_shadow_page(vcpu, caches, gfn, sp_list, role);
-+		sp = kvm_mmu_alloc_shadow_page(vcpu->kvm, caches, gfn, sp_list, role);
- 	}
- 
- 	trace_kvm_mmu_get_page(sp, created);
--- 
-2.36.0.rc2.479.g8af0fa9b8e-goog
+I'm not entirely happy with this patch, but this is an outline of what
+I think we need to fix that: https://pastebin.com/3nVgQsEw
+This one is probably incomplete, at least it breaks sa1100 for now,
+and it adds a bogus CONFIG_PCI dependency. I'm also not sure
+in what way the last patch in the series triggers it, rather than the
+one that removed mach/io.h.
 
+I had sx1 booting in qemu at least, with the omap1 multiplatform series only.
+If you have a custom config for this one, make sure you get the right
+DEBUG_LL address.
+
+> I'll do another round of bisects.
+
+Thanks!
+
+       Arnd

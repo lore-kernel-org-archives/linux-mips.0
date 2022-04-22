@@ -2,56 +2,56 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 59968C433F5
-	for <linux-mips@archiver.kernel.org>; Fri, 22 Apr 2022 22:13:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C20E9C433EF
+	for <linux-mips@archiver.kernel.org>; Fri, 22 Apr 2022 22:13:04 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232259AbiDVWPz (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 22 Apr 2022 18:15:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56434 "EHLO
+        id S232571AbiDVWP5 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 22 Apr 2022 18:15:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56208 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232411AbiDVWPf (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Fri, 22 Apr 2022 18:15:35 -0400
-Received: from mail-pg1-x54a.google.com (mail-pg1-x54a.google.com [IPv6:2607:f8b0:4864:20::54a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B0D531831B
-        for <linux-mips@vger.kernel.org>; Fri, 22 Apr 2022 14:06:01 -0700 (PDT)
-Received: by mail-pg1-x54a.google.com with SMTP id s12-20020a65644c000000b003aa6e932631so5394904pgv.0
-        for <linux-mips@vger.kernel.org>; Fri, 22 Apr 2022 14:06:01 -0700 (PDT)
+        with ESMTP id S231987AbiDVWPi (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Fri, 22 Apr 2022 18:15:38 -0400
+Received: from mail-oi1-x249.google.com (mail-oi1-x249.google.com [IPv6:2607:f8b0:4864:20::249])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D6A223E813
+        for <linux-mips@vger.kernel.org>; Fri, 22 Apr 2022 14:06:12 -0700 (PDT)
+Received: by mail-oi1-x249.google.com with SMTP id j62-20020acaeb41000000b00322b431712cso4062552oih.3
+        for <linux-mips@vger.kernel.org>; Fri, 22 Apr 2022 14:06:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=Dg1PH7BjeTSQCUbIIxUgi8hjVUGCMyesCca+07BQyc8=;
-        b=AMhArIcQXrqMcckg92lhWMKH1QeKs4x8XeJxDuyoZ9yS10/VEwmIJ6rHxjX1BLDv9R
-         SWK0Pm5FOfYu8Bbqjb9RKxAGPCzOe7iwo0WlDoubXJMnSGlUkop40lKTbS/68ODWCUXH
-         HHdQpIjpqGWSzPNmCIGfFPz+QrobAQIaG/1zHuD8hcEdjfQs0VxkS0MQe/Ip5Q/fdTVv
-         Jbozvr7ucx4aPi5+SoW0jeE1SWGBfnt44kZnanM44E/qlpxn+MA7cVn47wAhZKF731mO
-         LOZ0tqdT8COXtuU5yJt5sPRSVaqCZWnTb9R8dV3v28/fjV4HMw+o1lMlwRuIu8yBXf62
-         VouQ==
+        bh=1Ma2mq2tqg3XF3cItnkEgAe0AbxTi5US5d6CkbxLyzY=;
+        b=S9ojBi7tDpDCaCxycspq3eDg4sEc0jn081aq6nEMyQfLnL7gAjoNKktXvPrXiS+n/u
+         CWyt8oiu1mTkCxx7K4/m1IB8VJich1zJPODqXFhJtBj0uOiamEJAvlSkX//xN3hF7JEq
+         yQOYAB4Me8+Lyz9BWM86FfwQ0m8+ln7/I1xYK5r8GUiB04ZYrZXw4BvfshlpFRk9Pk+h
+         0/Fu66hOYjoVMUBRCB3iQY0QnmRhvJSA1eKyu7nJ6kuHd5hHR6U7PAqOv9e1f4YylWzf
+         aXTP4IdMiJa/WFK5npwCXMJw83etTBNT+q21glnPVqLQurDK4Rc2f5VtGRgEB1O0mszs
+         i9tQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=Dg1PH7BjeTSQCUbIIxUgi8hjVUGCMyesCca+07BQyc8=;
-        b=KmUJvTO7p5bPswa25LUdOxzIUsmGEAPKHBErUAnmnIGhbBH9QBqXTHZ9+glji9vg01
-         P1jyDeMZ27t7Ejj+fekJ8J7brT7fFjG8zBvIgoLKRDvrh+JpRqwXE/sK4fVVP6p4+L6i
-         iann08avZBf7j4IwglR5SdKZ/XV6qZ8eGlNIzUzchzWutX52ykNpXSMfAPagEif6Djtw
-         FTChITQJNzqKEtgPIAzawhQF7xYeKDjIhxCvP/781JYhMFiNSfGZRKCP6s5IBnlfnR1a
-         4Y6uWJPN88QqW7w2c4MMIms52SFSznHU8Udz94AUnIyPtoRezcupmJ2P5Vii4WUPh7fa
-         NPTA==
-X-Gm-Message-State: AOAM530Vu/3x9LpdsDwLtXqJMAxUmdahOgeMosEffulaCqyFhfjNgUzc
-        +LCXXxK1AFKefooNmnCmEzpTfuYrG/2G6g==
-X-Google-Smtp-Source: ABdhPJzDJjbIjcW7Eu/MaNR2zZ2b3z915sXuXeSjbkZoNuD4LijulQdRmQ44yy95TvovtmaDdMzDpWWe1erX7w==
+        bh=1Ma2mq2tqg3XF3cItnkEgAe0AbxTi5US5d6CkbxLyzY=;
+        b=As44khY/alpmO6s7wPLgeV6q34sP4cWVDO/SZH8eUR10hu0OzcNOSKxIxpNwfK8Rm4
+         bYEijOaWkjFcaMBPWml+8MfuWV58zjd1O2lJoQtchPkN9u83hcVIz+UjoG+eqJ3meZoS
+         duq2UDhd95BbkCgxA2fOKlJ9BOFT9gdiqQfER/5hhQV85sk0ngHImNKagZurnSg1iKE6
+         nTVYMSrF7qJTJ2zMbvbz3sMvN54xJrp9g7srxWKIk1kTpjzF6cAB+Z5uJONfswRx95AK
+         WT2LVoQsQpUvAP2Hq++4zaqMEFOXRUuixh2AdFagBvjEjlxsSbpsxaID2z1/H2ERpSav
+         JyIw==
+X-Gm-Message-State: AOAM531RXeO5p84dkQjckVxcwv3l8QRrr0+M5f0JX277MggxIct+MJX6
+        N+AVAa5O18jCb3ZLkaofjQvBpGY5NaZwSA==
+X-Google-Smtp-Source: ABdhPJwDDjoIaawjtg4ZDhMJO2ZlhsA18/U9VjgwlgPxS2OgCNgVlFFPSW6zH30w8J4mMULUnwBK45IzNNn2HQ==
 X-Received: from dmatlack-heavy.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:19cd])
- (user=dmatlack job=sendgmr) by 2002:a17:90b:314c:b0:1d4:d3c5:d8cd with SMTP
- id ip12-20020a17090b314c00b001d4d3c5d8cdmr7453205pjb.140.1650661561391; Fri,
- 22 Apr 2022 14:06:01 -0700 (PDT)
-Date:   Fri, 22 Apr 2022 21:05:34 +0000
+ (user=dmatlack job=sendgmr) by 2002:a05:6870:430a:b0:e2:776b:bf05 with SMTP
+ id w10-20020a056870430a00b000e2776bbf05mr2836930oah.269.1650661571558; Fri,
+ 22 Apr 2022 14:06:11 -0700 (PDT)
+Date:   Fri, 22 Apr 2022 21:05:40 +0000
 In-Reply-To: <20220422210546.458943-1-dmatlack@google.com>
-Message-Id: <20220422210546.458943-9-dmatlack@google.com>
+Message-Id: <20220422210546.458943-15-dmatlack@google.com>
 Mime-Version: 1.0
 References: <20220422210546.458943-1-dmatlack@google.com>
 X-Mailer: git-send-email 2.36.0.rc2.479.g8af0fa9b8e-goog
-Subject: [PATCH v4 08/20] KVM: x86/mmu: Pass memory caches to allocate SPs separately
+Subject: [PATCH v4 14/20] KVM: x86/mmu: Update page stats in __rmap_add()
 From:   David Matlack <dmatlack@google.com>
 To:     Paolo Bonzini <pbonzini@redhat.com>
 Cc:     Marc Zyngier <maz@kernel.org>, Huacai Chen <chenhuacai@kernel.org>,
@@ -78,99 +78,40 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Refactor kvm_mmu_alloc_shadow_page() to receive the caches from which it
-will allocate the various pieces of memory for shadow pages as a
-parameter, rather than deriving them from the vcpu pointer. This will be
-useful in a future commit where shadow pages are allocated during VM
-ioctls for eager page splitting, and thus will use a different set of
-caches.
-
-Preemptively pull the caches out all the way to
-kvm_mmu_get_shadow_page() since eager page splitting will not be calling
-kvm_mmu_alloc_shadow_page() directly.
+Update the page stats in __rmap_add() rather than at the call site. This
+will avoid having to manually update page stats when splitting huge
+pages in a subsequent commit.
 
 No functional change intended.
 
+Reviewed-by: Ben Gardon <bgardon@google.com>
+Reviewed-by: Peter Xu <peterx@redhat.com>
 Signed-off-by: David Matlack <dmatlack@google.com>
 ---
- arch/x86/kvm/mmu/mmu.c | 36 +++++++++++++++++++++++++++++-------
- 1 file changed, 29 insertions(+), 7 deletions(-)
+ arch/x86/kvm/mmu/mmu.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
 diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-index 4f894db88bbf..943595ed0ba1 100644
+index ed23782eef8a..6a190fe6c9dc 100644
 --- a/arch/x86/kvm/mmu/mmu.c
 +++ b/arch/x86/kvm/mmu/mmu.c
-@@ -2077,17 +2077,25 @@ static struct kvm_mmu_page *kvm_mmu_find_shadow_page(struct kvm_vcpu *vcpu,
- 	return sp;
- }
+@@ -1601,6 +1601,8 @@ static void __rmap_add(struct kvm *kvm,
  
-+/* Caches used when allocating a new shadow page. */
-+struct shadow_page_caches {
-+	struct kvm_mmu_memory_cache *page_header_cache;
-+	struct kvm_mmu_memory_cache *shadow_page_cache;
-+	struct kvm_mmu_memory_cache *gfn_array_cache;
-+};
+ 	sp = sptep_to_sp(spte);
+ 	kvm_mmu_page_set_gfn(sp, spte - sp->spt, gfn);
++	kvm_update_page_stats(kvm, sp->role.level, 1);
 +
- static struct kvm_mmu_page *kvm_mmu_alloc_shadow_page(struct kvm_vcpu *vcpu,
-+						      struct shadow_page_caches *caches,
- 						      gfn_t gfn,
- 						      struct hlist_head *sp_list,
- 						      union kvm_mmu_page_role role)
- {
- 	struct kvm_mmu_page *sp;
+ 	rmap_head = gfn_to_rmap(gfn, sp->role.level, slot);
+ 	rmap_count = pte_list_add(cache, spte, rmap_head);
  
--	sp = kvm_mmu_memory_cache_alloc(&vcpu->arch.mmu_page_header_cache);
--	sp->spt = kvm_mmu_memory_cache_alloc(&vcpu->arch.mmu_shadow_page_cache);
-+	sp = kvm_mmu_memory_cache_alloc(caches->page_header_cache);
-+	sp->spt = kvm_mmu_memory_cache_alloc(caches->shadow_page_cache);
- 	if (!role.direct)
--		sp->gfns = kvm_mmu_memory_cache_alloc(&vcpu->arch.mmu_gfn_array_cache);
-+		sp->gfns = kvm_mmu_memory_cache_alloc(caches->gfn_array_cache);
+@@ -2818,7 +2820,6 @@ static int mmu_set_spte(struct kvm_vcpu *vcpu, struct kvm_memory_slot *slot,
  
- 	set_page_private(virt_to_page(sp->spt), (unsigned long)sp);
- 
-@@ -2110,9 +2118,10 @@ static struct kvm_mmu_page *kvm_mmu_alloc_shadow_page(struct kvm_vcpu *vcpu,
- 	return sp;
- }
- 
--static struct kvm_mmu_page *kvm_mmu_get_shadow_page(struct kvm_vcpu *vcpu,
--						    gfn_t gfn,
--						    union kvm_mmu_page_role role)
-+static struct kvm_mmu_page *__kvm_mmu_get_shadow_page(struct kvm_vcpu *vcpu,
-+						      struct shadow_page_caches *caches,
-+						      gfn_t gfn,
-+						      union kvm_mmu_page_role role)
- {
- 	struct hlist_head *sp_list;
- 	struct kvm_mmu_page *sp;
-@@ -2123,13 +2132,26 @@ static struct kvm_mmu_page *kvm_mmu_get_shadow_page(struct kvm_vcpu *vcpu,
- 	sp = kvm_mmu_find_shadow_page(vcpu, gfn, sp_list, role);
- 	if (!sp) {
- 		created = true;
--		sp = kvm_mmu_alloc_shadow_page(vcpu, gfn, sp_list, role);
-+		sp = kvm_mmu_alloc_shadow_page(vcpu, caches, gfn, sp_list, role);
+ 	if (!was_rmapped) {
+ 		WARN_ON_ONCE(ret == RET_PF_SPURIOUS);
+-		kvm_update_page_stats(vcpu->kvm, level, 1);
+ 		rmap_add(vcpu, slot, sptep, gfn);
  	}
  
- 	trace_kvm_mmu_get_page(sp, created);
- 	return sp;
- }
- 
-+static struct kvm_mmu_page *kvm_mmu_get_shadow_page(struct kvm_vcpu *vcpu,
-+						    gfn_t gfn,
-+						    union kvm_mmu_page_role role)
-+{
-+	struct shadow_page_caches caches = {
-+		.page_header_cache = &vcpu->arch.mmu_page_header_cache,
-+		.shadow_page_cache = &vcpu->arch.mmu_shadow_page_cache,
-+		.gfn_array_cache = &vcpu->arch.mmu_gfn_array_cache,
-+	};
-+
-+	return __kvm_mmu_get_shadow_page(vcpu, &caches, gfn, role);
-+}
-+
- static union kvm_mmu_page_role kvm_mmu_child_role(u64 *sptep, bool direct, u32 access)
- {
- 	struct kvm_mmu_page *parent_sp = sptep_to_sp(sptep);
 -- 
 2.36.0.rc2.479.g8af0fa9b8e-goog
 

@@ -2,181 +2,126 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DA494C4167B
-	for <linux-mips@archiver.kernel.org>; Sun, 24 Apr 2022 02:09:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 66C0BC433F5
+	for <linux-mips@archiver.kernel.org>; Sun, 24 Apr 2022 02:35:40 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237653AbiDXCMJ (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Sat, 23 Apr 2022 22:12:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34774 "EHLO
+        id S235794AbiDXCif (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Sat, 23 Apr 2022 22:38:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49302 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237562AbiDXCMH (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Sat, 23 Apr 2022 22:12:07 -0400
-Received: from mail-ot1-x332.google.com (mail-ot1-x332.google.com [IPv6:2607:f8b0:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EA041AAB73;
-        Sat, 23 Apr 2022 19:09:08 -0700 (PDT)
-Received: by mail-ot1-x332.google.com with SMTP id i11-20020a9d4a8b000000b005cda3b9754aso8331781otf.12;
-        Sat, 23 Apr 2022 19:09:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=/4WY8lQ2r9E3jRayXo+cM/u5KEpSVq7T3K2hgqZLRN8=;
-        b=iMm7j9be64nnY2we3kMeOQC5Pj129NrX5ABYhzCFQgIRJ+Ik/psrhjF5r/pmbNZvJy
-         nA3uaouN4tuYuhiNIaHKYw+YwzjV+kJKW5pZWtDU0GTKWu//N59zGG1fdbP9tNgWJRjg
-         AqNszvtPvjJNt2cEMqoWc2MQsq1/aQ70s6DAcNDBOaPYwZvIWFR4+Zb0ls+3EVu9eOAb
-         KTSMm2n+k9g4CyFP8heqe4gzTDNSh2sRc5XtpvQCIpTgIm/O2folezzCln192gATJAVk
-         i8DvmOlTzlnLi/wkKkSV70TYGsg4chRlc2jxJB+NXokPS/xNBOb/lAVbFPkYyy464S89
-         OnjQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:sender:message-id:date:mime-version:user-agent
-         :subject:content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=/4WY8lQ2r9E3jRayXo+cM/u5KEpSVq7T3K2hgqZLRN8=;
-        b=qu/m1of248VHBxuc1OFIXpHOjbJQnrlCxWrc+gEO3APAnSUVmUd4lzJhlOcHXUO+o3
-         b7aV5T4ckScAIXLH1iq2bVMViS/SsBIESMLOhiDa6XoFoXMvkOEsUDIdG/XZfPQGis03
-         Uuvr8WRpjUCaIm6n+YFAU/7TLOWek9BRpQ3YrRgVw8pykVjnxCY8awZajB5Z0X2JphpF
-         2gqgTM1FdG9Z2s/QJKGaWbYQLYs4EIUdORK7CBzU8DLRkYzEJlzbsHUSGwAzuC4MW18I
-         JWVKqIIXOE2KwT6feO4mb8uMm+vIuLmHQOHM9HhIsV/hAneM3QOGMvOpsNvXaX72EFMR
-         AuvQ==
-X-Gm-Message-State: AOAM533Za/vln0QN96sAzdcfq/ZLx8o2e9zmD7/9NKnHIHpm0WJH+7Ox
-        sHOGrwM2WOT/0j54pKqPUls=
-X-Google-Smtp-Source: ABdhPJw1Nv7YurwGcrk889YKSXtPCE0PE6W5Bg0YNZLXIur1o0RT75r4zuYxuJBEQLPxL9fB1XCPwg==
-X-Received: by 2002:a05:6830:2b29:b0:605:7cdb:f10b with SMTP id l41-20020a0568302b2900b006057cdbf10bmr4208370otv.157.1650766147578;
-        Sat, 23 Apr 2022 19:09:07 -0700 (PDT)
-Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id j126-20020acab984000000b002da77222b7dsm2325070oif.22.2022.04.23.19.09.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 23 Apr 2022 19:09:06 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Message-ID: <3b4046ed-fd75-13ea-fac3-06469172806c@roeck-us.net>
-Date:   Sat, 23 Apr 2022 19:09:01 -0700
+        with ESMTP id S237658AbiDXCid (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Sat, 23 Apr 2022 22:38:33 -0400
+Received: from loongson.cn (mail.loongson.cn [114.242.206.163])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 036962B1BB
+        for <linux-mips@vger.kernel.org>; Sat, 23 Apr 2022 19:35:31 -0700 (PDT)
+Received: from localhost.localdomain (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9DxjxBrt2RidRIvAA--.30985S4;
+        Sun, 24 Apr 2022 10:35:28 +0800 (CST)
+From:   Hui Li <lihui@loongson.cn>
+To:     Simon Horman <horms@verge.net.au>
+Cc:     Eric Biederman <ebiederm@xmission.com>, kexec@lists.infradead.org,
+        linux-mips@vger.kernel.org
+Subject: [PATCH v2 2/2] kexec-tools: mips: Add initrd parameter to cmdline
+Date:   Sun, 24 Apr 2022 10:35:23 +0800
+Message-Id: <20220424023523.16869-3-lihui@loongson.cn>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20220424023523.16869-1-lihui@loongson.cn>
+References: <20220424023523.16869-1-lihui@loongson.cn>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.7.0
-Subject: Re: [PATCH v2 00/48] ARM: PXA multiplatform support
-Content-Language: en-US
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Robert Jarzmik <robert.jarzmik@free.fr>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Arnd Bergmann <arnd@arndb.de>, Daniel Mack <daniel@zonque.org>,
-        Haojian Zhuang <haojian.zhuang@gmail.com>,
-        Marek Vasut <marek.vasut@gmail.com>,
-        Philipp Zabel <philipp.zabel@gmail.com>,
-        Lubomir Rintel <lkundrak@v3.sk>,
-        Paul Parsons <lost.distance@yahoo.com>,
-        Tomas Cech <sleep_walker@suse.com>,
-        Sergey Lapin <slapin@ossfans.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Dominik Brodowski <linux@dominikbrodowski.net>,
-        Helge Deller <deller@gmx.de>, Mark Brown <broonie@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
-        IDE-ML <linux-ide@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        Linux PM list <linux-pm@vger.kernel.org>,
-        "open list:HID CORE LAYER" <linux-input@vger.kernel.org>,
-        patches@opensource.cirrus.com, linux-leds@vger.kernel.org,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        linux-mtd <linux-mtd@lists.infradead.org>,
-        linux-rtc@vger.kernel.org, USB list <linux-usb@vger.kernel.org>,
-        Linux Fbdev development list <linux-fbdev@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        ALSA Development Mailing List <alsa-devel@alsa-project.org>
-References: <20220419163810.2118169-1-arnd@kernel.org>
- <20220422170530.GA2338209@roeck-us.net>
- <CAK8P3a3V=qxUqYT3Yt=dpXVv58-Y+HVi952wO6D4LPN5NNphGA@mail.gmail.com>
- <8b36d3a4-ec85-2f9f-e4b7-734d8ddd3d8f@roeck-us.net>
- <CAK8P3a0R9cpEb1d2=e9KnGSbi_uRv48RWfCu_J4DDak_cGZSuw@mail.gmail.com>
- <20220422234150.GA3442771@roeck-us.net>
- <CAK8P3a3qZdEqnJ2nTOKwDMossngOgCpEvZq4cQMPQjSsUoU=6g@mail.gmail.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-In-Reply-To: <CAK8P3a3qZdEqnJ2nTOKwDMossngOgCpEvZq4cQMPQjSsUoU=6g@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: AQAAf9DxjxBrt2RidRIvAA--.30985S4
+X-Coremail-Antispam: 1UD129KBjvJXoW7tw1fuF1fWr18ur45ZFyUAwb_yoW8urWrpa
+        y2y3Z8Gw15Aw47tr1fAFs8W3y3Wwn3XwnrZayag3yDJ3WDtr1kt3yfXF1YvryDJ3y0vF1j
+        krZ8trykuayxZw7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUB2b7Iv0xC_Kw4lb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I2
+        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI
+        8067AKxVWUXwA2048vs2IY020Ec7CjxVAFwI0_JFI_Gr1l8cAvFVAK0II2c7xJM28CjxkF
+        64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW7JVWDJwA2z4x0Y4vE2Ix0cI8IcV
+        CY1x0267AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2
+        jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4
+        CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v26r1j6r4UMcvj
+        eVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwCY02Avz4vE14v_Gr1l42xK82IYc2
+        Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s02
+        6x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0x
+        vE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE
+        42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6x
+        kF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUgUDGDUUUU
+X-CM-SenderInfo: 5olk3xo6or00hjvr0hdfq/
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On 4/23/22 12:55, Arnd Bergmann wrote:
-> On Sat, Apr 23, 2022 at 1:41 AM Guenter Roeck <linux@roeck-us.net> wrote:
->>
->> On Sat, Apr 23, 2022 at 12:04:31AM +0200, Arnd Bergmann wrote:
->>> On Fri, Apr 22, 2022 at 10:55 PM Guenter Roeck <linux@roeck-us.net> wrote:
->>>> On 4/22/22 12:16, Arnd Bergmann wrote:
->>>>> On Fri, Apr 22, 2022 at 7:05 PM Guenter Roeck <linux@roeck-us.net> wrote:
->>>>>
->>>>> Which machine did you hit this on? Is this on hardware or in qemu?
->>>>>
->>>> qemu, as always. borzoi, spitz, terrier, tosa, z2, and sx1 fail.
->>>> Also, I just noticed that the failure is not always the same.
->>>> z2 fails to boot from initrd, and sx1 fails to boot completely.
->>>
->>> That's a lot of machines failing, I hope at least we got the same bugs more
->>> than once here.
->>>
->>> For the I/O space, I found now that PXA was not using the standard
->>> virtual I/O address yet, but instead used a NULL-based offset.
->>>
->>> I'm not entirely happy with this patch, but this is an outline of what
->>> I think we need to fix that: https://pastebin.com/3nVgQsEw
->>> This one is probably incomplete, at least it breaks sa1100 for now,
->>> and it adds a bogus CONFIG_PCI dependency. I'm also not sure
->>> in what way the last patch in the series triggers it, rather than the
->>> one that removed mach/io.h.
->>>
->>> I had sx1 booting in qemu at least, with the omap1 multiplatform series only.
->>> If you have a custom config for this one, make sure you get the right
->>> DEBUG_LL address.
->>>
->>>> I'll do another round of bisects.
->>>
->>
->> Here is the bisect for the sx1 boot failure.
-> 
-> Odd, I can't reproduce this at all. Do you get any console output at
-> all for this?
-> 
-> Is this the plain omap1_defconfig, or something else?
-> 
+Loongson platform obtain the initrd parameter through cmdline in kernel.
+But kexec-tools pass the initrd through DTB.So add initrd parameter
+to cmdline in order to compatible with some platforms.It is still
+to pass the initrd parameter via command line.
 
-No, it is my own sx1 specific configuration.
+Signed-off-by: Hui Li <lihui@loongson.cn>
+---
+ kexec/arch/mips/kexec-elf-mips.c | 43 ++++++++++++++++++++++++++++++++
+ 1 file changed, 43 insertions(+)
 
-https://github.com/groeck/linux-build-test/blob/master/rootfs/arm/qemu_sx1_defconfig
-
-I don't recall where I got it from but ...
-
-> One thing I keep having to apply myself is this snippet:
-> 
-> diff --git a/arch/arm/mm/proc-arm925.S b/arch/arm/mm/proc-arm925.S
-> index 0bfad62ea858..87c695703580 100644
-> --- a/arch/arm/mm/proc-arm925.S
-> +++ b/arch/arm/mm/proc-arm925.S
-> @@ -441,7 +441,6 @@ __arm925_setup:
-> 
->   #ifdef CONFIG_CPU_DCACHE_WRITETHROUGH
->          mov     r0, #4                          @ disable write-back
-> on caches explicitly
-> -       mcr     p15, 7, r0, c15, c0, 0
->   #endif
-
-it does not have CONFIG_CPU_DCACHE_WRITETHROUGH enabled.
-
-Guenter
-
-> 
->          adr     r5, arm925_crval
-> 
-> I don't remember what the story is behind this, but I can't actually manage
-> to boot omap1_defconfig on qemu with the instruction intact.
-> 
->         Arnd
+diff --git a/kexec/arch/mips/kexec-elf-mips.c b/kexec/arch/mips/kexec-elf-mips.c
+index a2d11fc..1de418e 100644
+--- a/kexec/arch/mips/kexec-elf-mips.c
++++ b/kexec/arch/mips/kexec-elf-mips.c
+@@ -40,6 +40,44 @@ static const int probe_debug = 0;
+ #define CMDLINE_PREFIX "kexec "
+ static char cmdline_buf[COMMAND_LINE_SIZE] = CMDLINE_PREFIX;
+ 
++/* Converts unsigned long to ascii string. */
++static void ultoa(unsigned long i, char *str)
++{
++	int j = 0, k;
++	char tmp;
++
++	do {
++		str[j++] = i % 10 + '0';
++	} while ((i /= 10) > 0);
++	str[j] = '\0';
++	/* Reverse the string. */
++	for (j = 0, k = strlen(str) - 1; j < k; j++, k--) {
++		tmp = str[k];
++		str[k] = str[j];
++		str[j] = tmp;
++	}
++}
++
++/* Adds initrd parameters to command line. */
++static int cmdline_add_initrd(char *cmdline, unsigned long addr, char *new_para)
++{
++	int cmdlen, len;
++	char str[30], *ptr;
++
++	ptr = str;
++	strcpy(str, new_para);
++	ptr += strlen(str);
++	ultoa(addr, ptr);
++	len = strlen(str);
++	cmdlen = strlen(cmdline) + len;
++	if (cmdlen > (COMMAND_LINE_SIZE - 1))
++		die("Command line overflow\n");
++	strcat(cmdline, str);
++
++	return 0;
++}
++
++
+ int elf_mips_probe(const char *buf, off_t len)
+ {
+ 	struct mem_ehdr ehdr;
+@@ -171,6 +209,11 @@ int elf_mips_load(int argc, char **argv, const char *buf, off_t len,
+ 		/* Now that the buffer for initrd is prepared, update the dtb
+ 		 * with an appropriate location */
+ 		dtb_set_initrd(&dtb_buf, &dtb_length, initrd_base, initrd_base + initrd_size);
++
++		/* Add the initrd parameters to cmdline */
++		cmdline_add_initrd(cmdline_buf, PAGE_OFFSET + initrd_base, " rd_start=");
++		cmdline_add_initrd(cmdline_buf, initrd_size, " rd_size=");
++
+ 	}
+ 
+ 
+-- 
+2.20.1
 

@@ -2,92 +2,98 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A51EEC4332F
-	for <linux-mips@archiver.kernel.org>; Sun, 24 Apr 2022 02:35:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0F5AAC4332F
+	for <linux-mips@archiver.kernel.org>; Sun, 24 Apr 2022 08:15:21 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237718AbiDXCih (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Sat, 23 Apr 2022 22:38:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49296 "EHLO
+        id S238631AbiDXISR (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Sun, 24 Apr 2022 04:18:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58060 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237712AbiDXCid (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Sat, 23 Apr 2022 22:38:33 -0400
-Received: from loongson.cn (mail.loongson.cn [114.242.206.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 04488193D4
-        for <linux-mips@vger.kernel.org>; Sat, 23 Apr 2022 19:35:26 -0700 (PDT)
-Received: from localhost.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9DxjxBrt2RidRIvAA--.30985S2;
-        Sun, 24 Apr 2022 10:35:23 +0800 (CST)
-From:   Hui Li <lihui@loongson.cn>
-To:     Simon Horman <horms@verge.net.au>
-Cc:     Eric Biederman <ebiederm@xmission.com>, kexec@lists.infradead.org,
-        linux-mips@vger.kernel.org
-Subject: [PATCH v2 0/2] kexec-tools:mips: Fix Kernel panic problem
-Date:   Sun, 24 Apr 2022 10:35:21 +0800
-Message-Id: <20220424023523.16869-1-lihui@loongson.cn>
-X-Mailer: git-send-email 2.20.1
+        with ESMTP id S236121AbiDXISP (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Sun, 24 Apr 2022 04:18:15 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A70B464731;
+        Sun, 24 Apr 2022 01:15:14 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 5E028B80E00;
+        Sun, 24 Apr 2022 08:15:13 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7B901C385A9;
+        Sun, 24 Apr 2022 08:15:08 +0000 (UTC)
+Authentication-Results: smtp.kernel.org;
+        dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="QQ7PQLbi"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zx2c4.com; s=20210105;
+        t=1650788106;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=zz5BWAECMqgYeyzIQatgn1YdaIX48xI6Btjx4R/QQM8=;
+        b=QQ7PQLbiv6h5RMKfyhPz+0uFS/QEk6cKxIFEdT/4w1vomvJYaek1ix2z1YnXUltNn4JNWs
+        ns72gMmUvnu2yAgEipWd73LYk7yThx0ACLC9UkoUd4mMs7onmV4qUH+mMgtRSeZCBhTJ5t
+        iZcOlpmCAAcVo/uGzHHPVJkmoTKoYzY=
+Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id a4e3a24b (TLSv1.3:AEAD-AES256-GCM-SHA384:256:NO);
+        Sun, 24 Apr 2022 08:15:06 +0000 (UTC)
+Date:   Sun, 24 Apr 2022 10:15:00 +0200
+From:   "Jason A. Donenfeld" <Jason@zx2c4.com>
+To:     "Maciej W. Rozycki" <macro@orcam.me.uk>
+Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Arnd Bergmann <arnd@arndb.de>, Theodore Ts'o <tytso@mit.edu>,
+        Dominik Brodowski <linux@dominikbrodowski.net>,
+        Russell King <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        "David S . Miller" <davem@davemloft.net>,
+        Richard Weinberger <richard@nod.at>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H . Peter Anvin" <hpa@zytor.com>, Chris Zankel <chris@zankel.net>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        John Stultz <john.stultz@linaro.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Dinh Nguyen <dinguyen@kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        sparclinux@vger.kernel.org, linux-um@lists.infradead.org,
+        X86 ML <x86@kernel.org>, linux-xtensa@linux-xtensa.org
+Subject: Re: [PATCH v4 04/11] mips: use fallback for random_get_entropy()
+ instead of zero
+Message-ID: <YmUHBKPC0bAbs4Vj@zx2c4.com>
+References: <20220413115411.21489-1-Jason@zx2c4.com>
+ <20220413115411.21489-5-Jason@zx2c4.com>
+ <20220413122546.GA11860@alpha.franken.de>
+ <alpine.DEB.2.21.2204131331450.9383@angie.orcam.me.uk>
+ <CAHmME9pQ4xdeTUDxAdrOu=S9NRTonYzJVk50fa0Zfz4knZt5WA@mail.gmail.com>
+ <alpine.DEB.2.21.2204140014580.9383@angie.orcam.me.uk>
+ <YlfoeGRM6w2O+eXA@zx2c4.com>
+ <alpine.DEB.2.21.2204142349180.9383@angie.orcam.me.uk>
+ <20220418071005.GA4075@alpha.franken.de>
+ <alpine.DEB.2.21.2204220029590.9383@angie.orcam.me.uk>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: AQAAf9DxjxBrt2RidRIvAA--.30985S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxJr1xGF4UAF15JrW8JF4fKrg_yoW8Gw13pr
-        42kFW5Jrs5Cw12vw1fAF4jq3yrAws3t3W0qFWSga9xZasYgr1qq3yavr15Jrnrtw1xK3W0
-        vr4FgF1YkFsxZaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUkSb7Iv0xC_KF4lb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I2
-        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
-        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xII
-        jxv20xvEc7CjxVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjc
-        xK6I8E87Iv6xkF7I0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVAC
-        Y4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r106r15McIj6I8E87Iv67AKxVWUJV
-        W8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lc2xSY4AK67AK6r4UMxAI
-        w28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr
-        4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxG
-        rwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8Jw
-        CI42IY6xAIw20EY4v20xvaj40_Wr1j6rW3Jr1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAI
-        cVC2z280aVCY1x0267AKxVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvjxU2a9aDUUUU
-X-CM-SenderInfo: 5olk3xo6or00hjvr0hdfq/
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <alpine.DEB.2.21.2204220029590.9383@angie.orcam.me.uk>
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Under loongson platform,use command:
-kexec -l vmlinux... --append="root=UUID=28e1..." --initrd=...
-kexec -e
-quick restart failed like this:
+On Sun, Apr 24, 2022 at 12:33:44AM +0100, Maciej W. Rozycki wrote:
+> unconditionally.  I think this discovery asks for code optimisation, which 
+> I'll try to cook up sometime.
 
-[    3.420791] VFS: Cannot open root device "UUID=6462a8a4-02fb-49ff-bcb6-54fe53813c2a" or unknown-block(0,0): error -6
-[    3.431262] Please append a correct "root=" boot option; here are the available partitions:
-...
-...
-...
-[    3.543175]   0801         4194304 sda1 554e69cc-01
-[    3.543175] 
-[    3.549494]   0802        62914560 sda2 554e69cc-02
-[    3.549495] 
-[    3.555818]   0803         8388608 sda3 554e69cc-03
-[    3.555819] 
-[    3.562139]   0804       174553229 sda4 554e69cc-04
-[    3.562139] 
-[    3.568463] 0b00         1048575 sr0 
-[    3.568464]  driver: sr
-[    3.574524] Kernel panic - not syncing: VFS: Unable to mount root fs on unknown-block(0,0)
-[    3.582750] ---[ end Kernel panic - not syncing: VFS: Unable to mount root fs on unknown-block(0,0) ]---
+At some point too, by the way, we might also consider putting that into
+a .c file rather than a static inline in the .h, since that function is
+starting to get sort of big.
 
-
-The reason of this problem:
-The kernel cannot parse the UUID,UUID is parsed in the initrd.
-Loongson platform obtain the initrd through cmdline in kernel.
-In kexec-tools, initrd is not added to cmdline.
-
-The following two steps to solve this problem.
-
-Hui Li (2):
-  kexec-tools: mips: Add CONFIG_LOONGSON option.
-  kexec-tools: mips: Add initrd parameter to cmdline
-
- configure.ac                     |  5 ++++
- kexec/arch/mips/crashdump-mips.h |  6 ++++-
- kexec/arch/mips/kexec-elf-mips.c | 43 ++++++++++++++++++++++++++++++++
- 3 files changed, 53 insertions(+), 1 deletion(-)
-
--- 
-2.20.1
-
+Jason

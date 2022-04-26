@@ -2,56 +2,56 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 944F4C433EF
-	for <linux-mips@archiver.kernel.org>; Tue, 26 Apr 2022 05:40:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8CCE2C43217
+	for <linux-mips@archiver.kernel.org>; Tue, 26 Apr 2022 05:40:07 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244639AbiDZFnH (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 26 Apr 2022 01:43:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44114 "EHLO
+        id S244556AbiDZFnL (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 26 Apr 2022 01:43:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42106 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244602AbiDZFmx (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Tue, 26 Apr 2022 01:42:53 -0400
-Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFB4C329AD
-        for <linux-mips@vger.kernel.org>; Mon, 25 Apr 2022 22:39:27 -0700 (PDT)
-Received: by mail-pg1-x549.google.com with SMTP id k12-20020a637b4c000000b003ab00477978so4382200pgn.8
-        for <linux-mips@vger.kernel.org>; Mon, 25 Apr 2022 22:39:27 -0700 (PDT)
+        with ESMTP id S244491AbiDZFma (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Tue, 26 Apr 2022 01:42:30 -0400
+Received: from mail-pj1-x104a.google.com (mail-pj1-x104a.google.com [IPv6:2607:f8b0:4864:20::104a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4251326F6
+        for <linux-mips@vger.kernel.org>; Mon, 25 Apr 2022 22:39:22 -0700 (PDT)
+Received: by mail-pj1-x104a.google.com with SMTP id o6-20020a17090a420600b001d90365bda4so659370pjg.1
+        for <linux-mips@vger.kernel.org>; Mon, 25 Apr 2022 22:39:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=UwrHlKcfzo3tcKJryiZhc3lnWD2SSBQRLRI0NxtXWrY=;
-        b=lNtBON0+mp7QtqbJUF/yxX4uqPIpQ5Y7hbeXAfVLxM4ZET7uCEK3knJCpkoyZMJa9s
-         i7nzVR4VlmZxg+avleS7/Kn/bJZBjnZBXIxlYf/uArgxa5lJaYe/WDTMeZAb28KsbwWU
-         ocTkXwvTjA1uESTwFj+I7wr5Rl5sM2mE2cN5TIARIpTfKY2dD2+gpHj1coFpygAy+fc7
-         zaCTEQdiWA+0CcKFMaPUEAafXSOqS1yBx10IaODNf6+xQNBSZhNIV/u+JCOUySMFWRfr
-         Ms9jv8dEpQuxx8npEiVjqTZIl7JhMtAENDSGpOK7TpWZOGwxxlN4+Ot896M99UFlnkfM
-         gIIQ==
+        bh=hEHBnHYwkzv2bOtPfk7H6AvzPnNcWPKpvOGkhdPVPjo=;
+        b=DLc3lupOo8rx1wWbuV0lLgrWbKtbqj3WcXXLDzE4k2Y8czyusZqACX6ZnOE6B8ztaC
+         am7MpQeXB4aItWkOAQ2oHlKhWHUdect3mQCIVLzhsaMmYiLv4m8FDjT5rGgSMVj6xFYe
+         n/2zHp73ToEvYp7vTtGZ/ZOGc9fhJjKlDa7mNMowqbkak7jlAdBqGFu6TyUdSzX7j+tW
+         1GvB7gFqlyLilqCV94FzR63CxUYfiYooVrXSE9xnDdRgW//UD6tV4gP3rptKWSzN29Uy
+         sjZA6fTvWQAJfVcB244P9F1XJ1tGayKZbE7/uQxhcWiS26Y/VIBnPxv5p5L8sde0AXSC
+         zWQA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=UwrHlKcfzo3tcKJryiZhc3lnWD2SSBQRLRI0NxtXWrY=;
-        b=Go13LX4KSyHSDXpxC+m0aaqYYnmSiQHJHk/0j8bEFrMHOVFWuWTlNPAUIAw4hM1imm
-         5mgFkpTHXxETDFUNbV5x+9ywKjaRLElo3O+/BiUOhY157IS/BQXGJXfyRXSSySim5eBN
-         MYfKAq3+DUCElGBNqPwv5KBJs+FMz4aC8z7o7VO50fodx0z5LM8CdKfPJUiSbD2CboYH
-         iJ5tx1rvb3zswF7lnUSq/rBEh86v+jqqnA+EEe4tlZVGBCpC0eQulp7XOVCRyBSGkcLH
-         oOknNXl6C/M3jXsNT54fDB8YiozPZo26gHbngNjgzCbaUTi9p/444h/os7MfHD/gEz4V
-         ymtA==
-X-Gm-Message-State: AOAM530IZ0tj+q3MYAzOLEyFGp8gNlgd6UiSJc3RmWbqbu6kTVAZRPSL
-        G0X4ucBJGI91yUzzXRC6FWK7lLhk1eeYesYR
-X-Google-Smtp-Source: ABdhPJx5ME5q1MQ2ad+XyRFl1/rgChFdKOrjKjC1cyKbrSm7xzgtrgQj+f7lrmteCRcN2yNApoWsTRuKdbMVeiBw
+        bh=hEHBnHYwkzv2bOtPfk7H6AvzPnNcWPKpvOGkhdPVPjo=;
+        b=YLkjPkJeVX1MUinFY8qwYDDaGGLm23yfuK7gMATE9uW2zJe+01o0C9DmiMJ0IS8xo+
+         399t8SsPV07mRU6BXZxXG2Bq30vyReoj1dHfAIq37BwDb88U7oI0ftZ38pQLu8GCnnqb
+         28R5VLP3S73m9u8D6cuAnPq7AYPiFeQS2Oe5n14eaT6bOvh/zviEKYCBJP/kHLSZlepN
+         vRFFd/5XiiUOAfra59uklWM5TOnYqB+t/3Ay8nlg7//4+byXaJXXGaFoipBp1M+RPTNY
+         XyWawruWi3PWbiafMXCIDQMAOZVhj5Si3prAZIXyxaPF6D9csgRmoHsM1xbtxtP8/IhI
+         0USQ==
+X-Gm-Message-State: AOAM530grtHjebGbn4Vll+N5Vb/4plcsWzKY15xmCkRIcN2SyKjjoMX2
+        W1rAU8KjRLRwuM2vllbkfsV7TuA/tIljM0up
+X-Google-Smtp-Source: ABdhPJw1/Xuct4B2pJQt4L0Xw8CSz2dpJiVWmWgaHUUCpj09w2ZMYvrNGeSsqW4nHEy3AMUsWi84mvmV71p47dv/
 X-Received: from yosry.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:2327])
- (user=yosryahmed job=sendgmr) by 2002:a05:6a00:1acd:b0:50c:f6ca:6e6f with
- SMTP id f13-20020a056a001acd00b0050cf6ca6e6fmr18897423pfv.75.1650951567275;
- Mon, 25 Apr 2022 22:39:27 -0700 (PDT)
-Date:   Tue, 26 Apr 2022 05:39:04 +0000
+ (user=yosryahmed job=sendgmr) by 2002:a05:6a00:1955:b0:505:7902:36d3 with
+ SMTP id s21-20020a056a00195500b00505790236d3mr22411201pfk.77.1650951562123;
+ Mon, 25 Apr 2022 22:39:22 -0700 (PDT)
+Date:   Tue, 26 Apr 2022 05:39:01 +0000
 In-Reply-To: <20220426053904.3684293-1-yosryahmed@google.com>
-Message-Id: <20220426053904.3684293-7-yosryahmed@google.com>
+Message-Id: <20220426053904.3684293-4-yosryahmed@google.com>
 Mime-Version: 1.0
 References: <20220426053904.3684293-1-yosryahmed@google.com>
 X-Mailer: git-send-email 2.36.0.rc2.479.g8af0fa9b8e-goog
-Subject: [PATCH v3 6/6] KVM: mips/mmu: count KVM page table pages in pagetable stats
+Subject: [PATCH v3 3/6] KVM: x86/mmu: count KVM page table pages in pagetable stats
 From:   Yosry Ahmed <yosryahmed@google.com>
 To:     Sean Christopherson <seanjc@google.com>,
         Huacai Chen <chenhuacai@kernel.org>,
@@ -84,82 +84,109 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Count the pages used by KVM in mips for page tables in pagetable stats.
+Count the pages used by KVM in x86 for page tables in pagetable stats.
+
+For legacy code, accounting pagetable stats is combined KVM's
+existing for mmu pages in newly introduced kvm_[un]account_mmu_page()
+helpers.
+
+For tdp mmu, introduce new tdp_[un]account_mmu_page() helpers. That
+combines accounting pagetable stats with the tdp_mmu_pages counter
+accounting.
+
+tdp_mmu_pages counter introduced in this series [1]. This patch was
+rebased on top of the first two patches in that series.
+
+[1]https://lore.kernel.org/lkml/20220401063636.2414200-1-mizhang@google.com/
 
 Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
 ---
- arch/mips/kvm/mips.c | 1 +
- arch/mips/kvm/mmu.c  | 9 ++++++++-
- 2 files changed, 9 insertions(+), 1 deletion(-)
+ arch/x86/kvm/mmu/mmu.c     | 16 ++++++++++++++--
+ arch/x86/kvm/mmu/tdp_mmu.c | 16 ++++++++++++++--
+ 2 files changed, 28 insertions(+), 4 deletions(-)
 
-diff --git a/arch/mips/kvm/mips.c b/arch/mips/kvm/mips.c
-index a25e0b73ee70..e60c1920a408 100644
---- a/arch/mips/kvm/mips.c
-+++ b/arch/mips/kvm/mips.c
-@@ -175,6 +175,7 @@ static void kvm_mips_free_gpa_pt(struct kvm *kvm)
+diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+index 78d8e1d8fb99..e5b0e826445d 100644
+--- a/arch/x86/kvm/mmu/mmu.c
++++ b/arch/x86/kvm/mmu/mmu.c
+@@ -1679,6 +1679,18 @@ static inline void kvm_mod_used_mmu_pages(struct kvm *kvm, long nr)
+ 	percpu_counter_add(&kvm_total_used_mmu_pages, nr);
+ }
+ 
++static void kvm_account_mmu_page(struct kvm *kvm, struct kvm_mmu_page *sp)
++{
++	kvm_mod_used_mmu_pages(kvm, +1);
++	kvm_account_pgtable_pages((void *)sp->spt, +1);
++}
++
++static void kvm_unaccount_mmu_page(struct kvm *kvm, struct kvm_mmu_page *sp)
++{
++	kvm_mod_used_mmu_pages(kvm, -1);
++	kvm_account_pgtable_pages((void *)sp->spt, -1);
++}
++
+ static void kvm_mmu_free_page(struct kvm_mmu_page *sp)
  {
- 	/* It should always be safe to remove after flushing the whole range */
- 	WARN_ON(!kvm_mips_flush_gpa_pt(kvm, 0, ~0));
-+	kvm_account_pgtable_pages((void *)kvm->arch.gpa_mm.pgd, -1);
- 	pgd_free(NULL, kvm->arch.gpa_mm.pgd);
+ 	MMU_WARN_ON(!is_empty_shadow_page(sp->spt));
+@@ -1734,7 +1746,7 @@ static struct kvm_mmu_page *kvm_mmu_alloc_page(struct kvm_vcpu *vcpu, int direct
+ 	 */
+ 	sp->mmu_valid_gen = vcpu->kvm->arch.mmu_valid_gen;
+ 	list_add(&sp->link, &vcpu->kvm->arch.active_mmu_pages);
+-	kvm_mod_used_mmu_pages(vcpu->kvm, +1);
++	kvm_account_mmu_page(vcpu->kvm, sp);
+ 	return sp;
  }
  
-diff --git a/arch/mips/kvm/mmu.c b/arch/mips/kvm/mmu.c
-index 1bfd1b501d82..18da2ac2ded7 100644
---- a/arch/mips/kvm/mmu.c
-+++ b/arch/mips/kvm/mmu.c
-@@ -81,8 +81,10 @@ pgd_t *kvm_pgd_alloc(void)
- 	pgd_t *ret;
- 
- 	ret = (pgd_t *)__get_free_pages(GFP_KERNEL, PGD_ORDER);
--	if (ret)
-+	if (ret) {
- 		kvm_pgd_init(ret);
-+		kvm_account_pgtable_pages((void *)ret, +1);
-+	}
- 
- 	return ret;
- }
-@@ -125,6 +127,7 @@ static pte_t *kvm_mips_walk_pgd(pgd_t *pgd, struct kvm_mmu_memory_cache *cache,
- 		pmd_init((unsigned long)new_pmd,
- 			 (unsigned long)invalid_pte_table);
- 		pud_populate(NULL, pud, new_pmd);
-+		kvm_account_pgtable_pages((void *)new_pmd, +1);
+@@ -2363,7 +2375,7 @@ static bool __kvm_mmu_prepare_zap_page(struct kvm *kvm,
+ 			list_add(&sp->link, invalid_list);
+ 		else
+ 			list_move(&sp->link, invalid_list);
+-		kvm_mod_used_mmu_pages(kvm, -1);
++		kvm_unaccount_mmu_page(kvm, sp);
+ 	} else {
+ 		/*
+ 		 * Remove the active root from the active page list, the root
+diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
+index 3456277ade18..6295c4da5dee 100644
+--- a/arch/x86/kvm/mmu/tdp_mmu.c
++++ b/arch/x86/kvm/mmu/tdp_mmu.c
+@@ -371,6 +371,18 @@ static void handle_changed_spte_dirty_log(struct kvm *kvm, int as_id, gfn_t gfn,
  	}
- 	pmd = pmd_offset(pud, addr);
- 	if (pmd_none(*pmd)) {
-@@ -135,6 +138,7 @@ static pte_t *kvm_mips_walk_pgd(pgd_t *pgd, struct kvm_mmu_memory_cache *cache,
- 		new_pte = kvm_mmu_memory_cache_alloc(cache);
- 		clear_page(new_pte);
- 		pmd_populate_kernel(NULL, pmd, new_pte);
-+		kvm_account_pgtable_pages((void *)new_pte, +1);
- 	}
- 	return pte_offset_kernel(pmd, addr);
  }
-@@ -189,6 +193,7 @@ static bool kvm_mips_flush_gpa_pmd(pmd_t *pmd, unsigned long start_gpa,
  
- 		if (kvm_mips_flush_gpa_pte(pte, start_gpa, end)) {
- 			pmd_clear(pmd + i);
-+			kvm_account_pgtable_pages((void *)pte, -1);
- 			pte_free_kernel(NULL, pte);
- 		} else {
- 			safe_to_remove = false;
-@@ -217,6 +222,7 @@ static bool kvm_mips_flush_gpa_pud(pud_t *pud, unsigned long start_gpa,
++static void tdp_account_mmu_page(struct kvm *kvm, struct kvm_mmu_page *sp)
++{
++	atomic64_inc(&kvm->arch.tdp_mmu_pages);
++	kvm_account_pgtable_pages((void *)sp->spt, +1);
++}
++
++static void tdp_unaccount_mmu_page(struct kvm *kvm, struct kvm_mmu_page *sp)
++{
++	atomic64_dec(&kvm->arch.tdp_mmu_pages);
++	kvm_account_pgtable_pages((void *)sp->spt, -1);
++}
++
+ /**
+  * tdp_mmu_unlink_sp() - Remove a shadow page from the list of used pages
+  *
+@@ -383,7 +395,7 @@ static void handle_changed_spte_dirty_log(struct kvm *kvm, int as_id, gfn_t gfn,
+ static void tdp_mmu_unlink_sp(struct kvm *kvm, struct kvm_mmu_page *sp,
+ 			      bool shared)
+ {
+-	atomic64_dec(&kvm->arch.tdp_mmu_pages);
++	tdp_unaccount_mmu_page(kvm, sp);
  
- 		if (kvm_mips_flush_gpa_pmd(pmd, start_gpa, end)) {
- 			pud_clear(pud + i);
-+			kvm_account_pgtable_pages((void *)pmd, -1);
- 			pmd_free(NULL, pmd);
- 		} else {
- 			safe_to_remove = false;
-@@ -247,6 +253,7 @@ static bool kvm_mips_flush_gpa_pgd(pgd_t *pgd, unsigned long start_gpa,
+ 	if (!sp->lpage_disallowed)
+ 		return;
+@@ -1121,7 +1133,7 @@ static int tdp_mmu_link_sp(struct kvm *kvm, struct tdp_iter *iter,
+ 		tdp_mmu_set_spte(kvm, iter, spte);
+ 	}
  
- 		if (kvm_mips_flush_gpa_pud(pud, start_gpa, end)) {
- 			pgd_clear(pgd + i);
-+			kvm_account_pgtable_pages((void *)pud, -1);
- 			pud_free(NULL, pud);
- 		} else {
- 			safe_to_remove = false;
+-	atomic64_inc(&kvm->arch.tdp_mmu_pages);
++	tdp_account_mmu_page(kvm, sp);
+ 
+ 	return 0;
+ }
 -- 
 2.36.0.rc2.479.g8af0fa9b8e-goog
 

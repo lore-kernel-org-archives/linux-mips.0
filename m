@@ -2,73 +2,69 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 31488C4332F
-	for <linux-mips@archiver.kernel.org>; Tue, 26 Apr 2022 14:32:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B5BF0C433F5
+	for <linux-mips@archiver.kernel.org>; Tue, 26 Apr 2022 14:33:00 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347801AbiDZOgD (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 26 Apr 2022 10:36:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56964 "EHLO
+        id S242070AbiDZOgG (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 26 Apr 2022 10:36:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57060 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S242070AbiDZOgD (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Tue, 26 Apr 2022 10:36:03 -0400
+        with ESMTP id S1350376AbiDZOgF (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Tue, 26 Apr 2022 10:36:05 -0400
 Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 9B1A3B7C4F;
-        Tue, 26 Apr 2022 07:32:55 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 81CD3B6D2A;
+        Tue, 26 Apr 2022 07:32:57 -0700 (PDT)
 Received: from uucp (helo=alpha)
         by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1njMFK-0004FF-04; Tue, 26 Apr 2022 16:32:54 +0200
+        id 1njMFK-0004FF-01; Tue, 26 Apr 2022 16:32:54 +0200
 Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 840B8C01C7; Tue, 26 Apr 2022 16:32:16 +0200 (CEST)
-Date:   Tue, 26 Apr 2022 16:32:16 +0200
+        id 63378C01C7; Tue, 26 Apr 2022 16:30:38 +0200 (CEST)
+Date:   Tue, 26 Apr 2022 16:30:38 +0200
 From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        linux-mips@vger.kernel.org
-Subject: Re: [PATCH] MIPS: SGI-IP30: Free some unused memory
-Message-ID: <20220426143216.GE18291@alpha.franken.de>
-References: <f9475119cf8d7dc51f9f993ab6a4de40a2735ca1.1650720466.git.christophe.jaillet@wanadoo.fr>
+To:     Stijn Tintel <stijn@linux-ipv6.be>
+Cc:     linux-mips@vger.kernel.org, rdunlap@infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] MIPS: Octeon: fix CN6640 hang on XAUI init
+Message-ID: <20220426143038.GB18291@alpha.franken.de>
+References: <20220403025950.837085-1-stijn@linux-ipv6.be>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <f9475119cf8d7dc51f9f993ab6a4de40a2735ca1.1650720466.git.christophe.jaillet@wanadoo.fr>
+In-Reply-To: <20220403025950.837085-1-stijn@linux-ipv6.be>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Sat, Apr 23, 2022 at 03:27:58PM +0200, Christophe JAILLET wrote:
-> platform_device_add_data() duplicates the memory it is passed. So we can
-> free some memory to save a few bytes that would remain unused otherwise.
+On Sun, Apr 03, 2022 at 05:59:49AM +0300, Stijn Tintel wrote:
+> Some CN66XX series Octeon II chips seem to hang if a reset is issued on
+> XAUI initialization. Avoid the hang by disabling the reset.
 > 
-> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+> Tested on SNIC10E.
+> 
+> Signed-off-by: Stijn Tintel <stijn@linux-ipv6.be>
 > ---
->  arch/mips/sgi-ip30/ip30-xtalk.c | 4 ++++
->  1 file changed, 4 insertions(+)
+>  arch/mips/cavium-octeon/executive/cvmx-helper-xaui.c | 5 +++--
+>  1 file changed, 3 insertions(+), 2 deletions(-)
 > 
-> diff --git a/arch/mips/sgi-ip30/ip30-xtalk.c b/arch/mips/sgi-ip30/ip30-xtalk.c
-> index 8a2894645529..8129524421cb 100644
-> --- a/arch/mips/sgi-ip30/ip30-xtalk.c
-> +++ b/arch/mips/sgi-ip30/ip30-xtalk.c
-> @@ -63,6 +63,8 @@ static void bridge_platform_create(int widget, int masterwid)
->  	}
->  	platform_device_add_resources(pdev, &w1_res, 1);
->  	platform_device_add_data(pdev, wd, sizeof(*wd));
-> +	/* platform_device_add_data() duplicates the data */
-> +	kfree(wd);
->  	platform_device_add(pdev);
+> diff --git a/arch/mips/cavium-octeon/executive/cvmx-helper-xaui.c b/arch/mips/cavium-octeon/executive/cvmx-helper-xaui.c
+> index fea71a85bb29..a92632223497 100644
+> --- a/arch/mips/cavium-octeon/executive/cvmx-helper-xaui.c
+> +++ b/arch/mips/cavium-octeon/executive/cvmx-helper-xaui.c
+> @@ -156,8 +156,9 @@ int __cvmx_helper_xaui_enable(int interface)
+>  	xauiCtl.u64 = cvmx_read_csr(CVMX_PCSXX_CONTROL1_REG(interface));
+>  	xauiCtl.s.lo_pwr = 0;
 >  
->  	bd = kzalloc(sizeof(*bd), GFP_KERNEL);
-> @@ -92,6 +94,8 @@ static void bridge_platform_create(int widget, int masterwid)
->  	bd->io_offset	= IP30_SWIN_BASE(widget);
+> -	/* Issuing a reset here seems to hang some CN68XX chips. */
+> -	if (!OCTEON_IS_MODEL(OCTEON_CN68XX_PASS1_X) &&
+> +	/* Issuing a reset here seems to hang some CN66XX/CN68XX chips. */
+> +	if (!OCTEON_IS_MODEL(OCTEON_CN66XX) &&
+> +	    !OCTEON_IS_MODEL(OCTEON_CN68XX_PASS1_X) &&
+>  	    !OCTEON_IS_MODEL(OCTEON_CN68XX_PASS2_X))
+>  		xauiCtl.s.reset = 1;
 >  
->  	platform_device_add_data(pdev, bd, sizeof(*bd));
-> +	/* platform_device_add_data() duplicates the data */
-> +	kfree(bd);
->  	platform_device_add(pdev);
->  	pr_info("xtalk:%x bridge widget\n", widget);
->  	return;
 > -- 
-> 2.32.0
+> 2.35.1
 
 applied to mips-next.
 

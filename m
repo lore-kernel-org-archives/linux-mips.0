@@ -2,57 +2,63 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B346AC43217
-	for <linux-mips@archiver.kernel.org>; Wed, 27 Apr 2022 09:10:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BACA2C433EF
+	for <linux-mips@archiver.kernel.org>; Wed, 27 Apr 2022 11:02:54 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234917AbiD0JNV (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 27 Apr 2022 05:13:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56888 "EHLO
+        id S232137AbiD0LGD (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 27 Apr 2022 07:06:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59040 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234031AbiD0JNN (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 27 Apr 2022 05:13:13 -0400
-Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 576BBCFB81;
-        Wed, 27 Apr 2022 02:09:56 -0700 (PDT)
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1njdfk-0000Hv-01; Wed, 27 Apr 2022 11:09:20 +0200
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id AB05AC01C9; Wed, 27 Apr 2022 10:59:29 +0200 (CEST)
-Date:   Wed, 27 Apr 2022 10:59:29 +0200
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Aidan MacDonald <aidanmacdonald.0x0@gmail.com>
-Cc:     robh+dt@kernel.org, krzk+dt@kernel.org, paul@crapouillou.net,
-        zhouyu@wanyeetech.com, linux-mips@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] mips: dts: ingenic: x1000: Add PWM device tree node
-Message-ID: <20220427085929.GB8404@alpha.franken.de>
-References: <20220411155315.51769-1-aidanmacdonald.0x0@gmail.com>
+        with ESMTP id S231948AbiD0LFw (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 27 Apr 2022 07:05:52 -0400
+Received: from angie.orcam.me.uk (angie.orcam.me.uk [78.133.224.34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id EEE08D17EB;
+        Wed, 27 Apr 2022 03:57:36 -0700 (PDT)
+Received: by angie.orcam.me.uk (Postfix, from userid 500)
+        id E291E92009C; Wed, 27 Apr 2022 12:57:35 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by angie.orcam.me.uk (Postfix) with ESMTP id DE67292009B;
+        Wed, 27 Apr 2022 11:57:35 +0100 (BST)
+Date:   Wed, 27 Apr 2022 11:57:35 +0100 (BST)
+From:   "Maciej W. Rozycki" <macro@orcam.me.uk>
+To:     Stephen Zhang <starzhangzsd@gmail.com>
+cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        liam.howlett@oracle.com, ebiederm@xmission.com, dbueso@suse.de,
+        alobakin@pm.me, f.fainelli@gmail.com,
+        zhangshida <zhangshida@kylinos.cn>, linux-kernel@vger.kernel.org,
+        linux-mips@vger.kernel.org
+Subject: Re: [PATCH] arch/mips/kernel/traps: add CONFIG_MIPS_FP_SUPPORT when
+ using handle_fpe
+In-Reply-To: <CANubcdWwHXqC4gUztNseoConYHp+G4nUSYFaO-Te3jFVqT=1sw@mail.gmail.com>
+Message-ID: <alpine.DEB.2.21.2204271156190.9383@angie.orcam.me.uk>
+References: <20220426083259.526685-1-starzhangzsd@gmail.com> <alpine.DEB.2.21.2204270130210.9383@angie.orcam.me.uk> <CANubcdWwHXqC4gUztNseoConYHp+G4nUSYFaO-Te3jFVqT=1sw@mail.gmail.com>
+User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220411155315.51769-1-aidanmacdonald.0x0@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Mon, Apr 11, 2022 at 04:53:15PM +0100, Aidan MacDonald wrote:
-> Copied from the jz4740 devicetree and trimmed to 5 timers, which
-> is what the hardware supports.
+On Wed, 27 Apr 2022, Stephen Zhang wrote:
+
+> Thanks for your comment. Do you mean  the following code:
 > 
-> Signed-off-by: Aidan MacDonald <aidanmacdonald.0x0@gmail.com>
-> ---
-> v2: Reduce regmap length since only the first 5 timers need to be accessed,
->     and don't wrap the clock-names at 80 columns.
+>  if (0 && !0)
+>     set_except_vector(15, handle_fpe);
 > 
->  arch/mips/boot/dts/ingenic/x1000.dtsi | 12 ++++++++++++
->  1 file changed, 12 insertions(+)
+> will be optimised away if !CONFIG_MIPS_FP_SUPPORT?
 
-applied to mips-next.
+ Yes.  Or more specifically the LHS of the conditional expression will be
+0 then, as shown above, and the whole statement will be gone.
 
-Thomas.
+> But we did get “undefined reference to `handle_fpe”  error when compiled with
+> !CONFIG_MIPS_FP_SUPPORT.
 
--- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+ Please send me .config causing it and tell me what compiler and version
+you have seen this error with.  We rely on things being optimised away
+heavily throughout the Linux kernel, so this is certainly something to
+investigate.  I have built such a config just fine, but maybe there's a
+bug somewhere my setup does not trigger.
+
+  Maciej

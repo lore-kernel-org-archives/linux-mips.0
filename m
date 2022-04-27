@@ -2,61 +2,56 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 55715C433EF
-	for <linux-mips@archiver.kernel.org>; Wed, 27 Apr 2022 09:10:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5BBE3C433EF
+	for <linux-mips@archiver.kernel.org>; Wed, 27 Apr 2022 09:10:14 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231453AbiD0JNT (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 27 Apr 2022 05:13:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56756 "EHLO
+        id S234668AbiD0JNU (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 27 Apr 2022 05:13:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57008 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233690AbiD0JNL (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 27 Apr 2022 05:13:11 -0400
+        with ESMTP id S234048AbiD0JNP (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 27 Apr 2022 05:13:15 -0400
 Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 20C29939B4;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 2102711D94B;
         Wed, 27 Apr 2022 02:09:54 -0700 (PDT)
 Received: from uucp (helo=alpha)
         by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1njdfk-0000Hv-00; Wed, 27 Apr 2022 11:09:20 +0200
+        id 1njdfk-0000Hv-02; Wed, 27 Apr 2022 11:09:20 +0200
 Received: by alpha.franken.de (Postfix, from userid 1000)
-        id E3A75C01C7; Wed, 27 Apr 2022 10:59:14 +0200 (CEST)
-Date:   Wed, 27 Apr 2022 10:59:14 +0200
+        id 05C4EC01C9; Wed, 27 Apr 2022 11:00:50 +0200 (CEST)
+Date:   Wed, 27 Apr 2022 11:00:50 +0200
 From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     =?utf-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>
-Cc:     Sergio Paracuellos <sergio.paracuellos@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzk+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
+To:     Michael Walle <michael@walle.cc>
+Cc:     Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        UNGLinuxDriver@microchip.com, Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
         linux-mips@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/3] mips: dts: ralink: mt7621: add mdio label to
- mdio-bus
-Message-ID: <20220427085914.GA8404@alpha.franken.de>
-References: <20220411112049.18001-1-arinc.unal@arinc9.com>
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/3] MIPS: mscc: jaguar2: rename pinctrl nodes
+Message-ID: <20220427090050.GC8404@alpha.franken.de>
+References: <20220420195018.3417053-1-michael@walle.cc>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20220411112049.18001-1-arinc.unal@arinc9.com>
+In-Reply-To: <20220420195018.3417053-1-michael@walle.cc>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Mon, Apr 11, 2022 at 02:20:47PM +0300, Arınç ÜNAL wrote:
-> Add mdio label to the mdio-bus node to easily refer to it.
+On Wed, Apr 20, 2022 at 09:50:16PM +0200, Michael Walle wrote:
+> The pinctrl device tree binding will be converted to YAML format. Rename
+> the pin nodes so they end with "-pins" to match the schema.
 > 
-> Use the newly created label on the GB-PC2 devicetree.
-> 
-> Signed-off-by: Arınç ÜNAL <arinc.unal@arinc9.com>
-> Reviewed-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
+> Signed-off-by: Michael Walle <michael@walle.cc>
 > ---
-> v2: add "ralink:" to the commit summary
+> The YAML conversion patch is alread in
+> https://git.kernel.org/pub/scm/linux/kernel/git/linusw/linux-pinctrl.git/log/?h=devel
 > 
-> ---
->  .../boot/dts/ralink/mt7621-gnubee-gb-pc2.dts   | 18 ++++++++----------
->  arch/mips/boot/dts/ralink/mt7621.dtsi          |  2 +-
->  2 files changed, 9 insertions(+), 11 deletions(-)
+>  arch/mips/boot/dts/mscc/jaguar2_pcb110.dts | 10 +++++-----
+>  arch/mips/boot/dts/mscc/jaguar2_pcb111.dts | 10 +++++-----
+>  arch/mips/boot/dts/mscc/jaguar2_pcb118.dts |  6 +++---
+>  3 files changed, 13 insertions(+), 13 deletions(-)
 
 series applied to mips-next.
 

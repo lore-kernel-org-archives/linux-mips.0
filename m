@@ -2,61 +2,76 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B6384C433EF
-	for <linux-mips@archiver.kernel.org>; Thu, 28 Apr 2022 08:36:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 81FD9C433EF
+	for <linux-mips@archiver.kernel.org>; Thu, 28 Apr 2022 09:00:22 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231869AbiD1IjV (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 28 Apr 2022 04:39:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38704 "EHLO
+        id S1344542AbiD1JDe (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 28 Apr 2022 05:03:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56594 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344363AbiD1Iif (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Thu, 28 Apr 2022 04:38:35 -0400
-X-Greylist: delayed 750 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 28 Apr 2022 01:30:42 PDT
-Received: from mail.profitbizdesign.com.pl (mail.profitbizdesign.com.pl [94.177.252.218])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76C17AAB54
-        for <linux-mips@vger.kernel.org>; Thu, 28 Apr 2022 01:30:42 -0700 (PDT)
-Received: by mail.profitbizdesign.com.pl (Postfix, from userid 1001)
-        id E0D72AA35C; Thu, 28 Apr 2022 09:11:39 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-        d=profitbizdesign.com.pl; s=mail; t=1651133552;
-        bh=Rfzvu4C+yJ1wyuJ4V+t/udh6cgYEQVnY6S5ltO4wdNg=;
-        h=Date:From:To:Subject:From;
-        b=c1Ty919mg1hSmKnsHvVQwga7DlY5RSX8HJ5E4dMDwruBhjOOqfXlBVy/l9Xb8PcJI
-         nPk1XzEBWdHN/ecQKUkFVNaPb+gJhozJOoB2jaNXsg+Q4YQBaXOdHjuE6aau6y5P5a
-         SQXSj0yZ7mQc3ZWjbYkOuhJ6aP6QGEHPZFWhBjxUhA2EGS2aNxFATC9xTigYL0jDjg
-         YMAlEkzOL0Lml788FuEpQix2nou9xrc3Hn2jrOoP+Gq5vvKo/kCZh0jHjye/ksBzaT
-         ahAEnqy2a7MPbUoyv2tT9g12Ud3G6bN+6KNHfdayCr0W/cJ8w2Ck+9TKrhu0/WkuKU
-         LaytmHoG5xK0A==
-Received: by mail.profitbizdesign.com.pl for <linux-mips@vger.kernel.org>; Thu, 28 Apr 2022 08:10:19 GMT
-Message-ID: <20220428074503-0.1.1z.5zgi.0.b8yotby45l@profitbizdesign.com.pl>
-Date:   Thu, 28 Apr 2022 08:10:19 GMT
-From:   =?UTF-8?Q? "Arkadiusz_Soko=C5=82owski" ?= 
-        <arkadiusz.sokolowski@profitbizdesign.com.pl>
-To:     <linux-mips@vger.kernel.org>
-Subject: Koszty instalacji fotowoltaicznej
-X-Mailer: mail.profitbizdesign.com.pl
+        with ESMTP id S1344564AbiD1JDd (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Thu, 28 Apr 2022 05:03:33 -0400
+Received: from angie.orcam.me.uk (angie.orcam.me.uk [IPv6:2001:4190:8020::34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 811752CC92;
+        Thu, 28 Apr 2022 02:00:14 -0700 (PDT)
+Received: by angie.orcam.me.uk (Postfix, from userid 500)
+        id 7D96092009D; Thu, 28 Apr 2022 11:00:13 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by angie.orcam.me.uk (Postfix) with ESMTP id 76A8C92009C;
+        Thu, 28 Apr 2022 10:00:13 +0100 (BST)
+Date:   Thu, 28 Apr 2022 10:00:13 +0100 (BST)
+From:   "Maciej W. Rozycki" <macro@orcam.me.uk>
+To:     Stephen Zhang <starzhangzsd@gmail.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Joshua Kinard <kumba@gentoo.org>
+cc:     liam.howlett@oracle.com, ebiederm@xmission.com, dbueso@suse.de,
+        alobakin@pm.me, f.fainelli@gmail.com,
+        zhangshida <zhangshida@kylinos.cn>, linux-kernel@vger.kernel.org,
+        linux-mips@vger.kernel.org
+Subject: Re: [PATCH] arch/mips/kernel/traps: add CONFIG_MIPS_FP_SUPPORT when
+ using handle_fpe
+In-Reply-To: <CANubcdUPQJcJ=dryJGsnQLhjcTouLUARD-GwCd7UjurUm+-GXg@mail.gmail.com>
+Message-ID: <alpine.DEB.2.21.2204280951510.9383@angie.orcam.me.uk>
+References: <20220426083259.526685-1-starzhangzsd@gmail.com> <alpine.DEB.2.21.2204270130210.9383@angie.orcam.me.uk> <CANubcdWwHXqC4gUztNseoConYHp+G4nUSYFaO-Te3jFVqT=1sw@mail.gmail.com> <alpine.DEB.2.21.2204271156190.9383@angie.orcam.me.uk>
+ <CANubcdUPQJcJ=dryJGsnQLhjcTouLUARD-GwCd7UjurUm+-GXg@mail.gmail.com>
+User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Dzie=C5=84 dobry,
+On Thu, 28 Apr 2022, Stephen Zhang wrote:
 
-stworzyli=C5=9Bmy specjaln=C4=85 ofert=C4=99 dla firm, na kompleksow=C4=85=
- obs=C5=82ug=C4=99 inwestycji w fotowoltaik=C4=99. =20
+> >  Please send me .config causing it and tell me what compiler and version
+> > you have seen this error with.  We rely on things being optimised away
+> > heavily throughout the Linux kernel, so this is certainly something to
+> > investigate.  I have built such a config just fine, but maybe there's a
+> > bug somewhere my setup does not trigger.
+> 
+> Okay. The compiler we used is:
+> 
+> Compiler gcc
+> Compiler version 10
+> Compiler string mips-linux-gnu-gcc (Debian 10.2.1-6) 10.2.1 20210110
+> Cross-compile  mips-linux-gnu
+> 
+> the  commit id of kernel is c00c5e1d157bec0ef0b0b59aa5482eb8dc7e8e49
+> 
+> and the .config file is sent as an attachment.
 
-Specjalizujemy si=C4=99 w zakresie doboru, monta=C5=BCu i serwisie instal=
-acji fotowoltaicznych, dysponujemy najnowocze=C5=9Bniejszymi rozwi=C4=85z=
-ania, kt=C3=B3re zapewni=C4=85 Pa=C5=84stwu oczekiwane rezultaty.
+ Thanks.
 
-Mo=C5=BCemy przygotowa=C4=87 dla Pa=C5=84stwa wst=C4=99pn=C4=85 kalkulacj=
-=C4=99 i przeanalizowa=C4=87 efekty mo=C5=BCliwe do osi=C4=85gni=C4=99cia=
-=2E
+ The bug is in arch/mips/include/asm/mach-ip27/cpu-feature-overrides.h, 
+which has:
 
-Czy s=C4=85 Pa=C5=84stwo otwarci na wst=C4=99pn=C4=85 rozmow=C4=99 w tym =
-temacie?
+#define cpu_has_fpu			1
 
-Pozdrawiam
-Arkadiusz Soko=C5=82owski
+(and similarly arch/mips/include/asm/mach-ip30/cpu-feature-overrides.h).
+This is not supported, as noted in arch/mips/include/asm/cpu-features.h:
+
+/* Don't override `cpu_has_fpu' to 1 or the "nofpu" option won't work.  */
+
+Perhaps we should explicitly undefine `cpu_has_fpu' if set to 1?
+
+  Maciej

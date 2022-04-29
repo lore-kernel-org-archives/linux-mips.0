@@ -2,31 +2,34 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 045D6C433EF
-	for <linux-mips@archiver.kernel.org>; Fri, 29 Apr 2022 14:57:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5C623C4332F
+	for <linux-mips@archiver.kernel.org>; Fri, 29 Apr 2022 14:57:14 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1378061AbiD2PA1 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 29 Apr 2022 11:00:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50902 "EHLO
+        id S1378077AbiD2PAb (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 29 Apr 2022 11:00:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51112 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1378062AbiD2PA1 (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Fri, 29 Apr 2022 11:00:27 -0400
+        with ESMTP id S1378079AbiD2PAa (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Fri, 29 Apr 2022 11:00:30 -0400
 Received: from angie.orcam.me.uk (angie.orcam.me.uk [78.133.224.34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 8691EB0A54;
-        Fri, 29 Apr 2022 07:57:07 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id DDC59AD11C;
+        Fri, 29 Apr 2022 07:57:11 -0700 (PDT)
 Received: by angie.orcam.me.uk (Postfix, from userid 500)
-        id A2CDF92009C; Fri, 29 Apr 2022 16:57:06 +0200 (CEST)
+        id 345C392009D; Fri, 29 Apr 2022 16:57:11 +0200 (CEST)
 Received: from localhost (localhost [127.0.0.1])
-        by angie.orcam.me.uk (Postfix) with ESMTP id 9E56892009B;
-        Fri, 29 Apr 2022 15:57:06 +0100 (BST)
-Date:   Fri, 29 Apr 2022 15:57:06 +0100 (BST)
+        by angie.orcam.me.uk (Postfix) with ESMTP id 2D5BC92009B;
+        Fri, 29 Apr 2022 15:57:11 +0100 (BST)
+Date:   Fri, 29 Apr 2022 15:57:11 +0100 (BST)
 From:   "Maciej W. Rozycki" <macro@orcam.me.uk>
 To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 cc:     Joshua Kinard <kumba@gentoo.org>,
         Stephen Zhang <starzhangzsd@gmail.com>,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 0/2] MIPS: Remove incorrect `cpu_has_fpu' overrides
-Message-ID: <alpine.DEB.2.21.2204291523460.9383@angie.orcam.me.uk>
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org
+Subject: [PATCH 1/2] MIPS: IP27: Remove incorrect `cpu_has_fpu' override
+In-Reply-To: <alpine.DEB.2.21.2204291523460.9383@angie.orcam.me.uk>
+Message-ID: <alpine.DEB.2.21.2204291529070.9383@angie.orcam.me.uk>
+References: <alpine.DEB.2.21.2204291523460.9383@angie.orcam.me.uk>
 User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -34,11 +37,33 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Hi,
+Remove unsupported forcing of `cpu_has_fpu' to 1, which makes the `nofpu' 
+kernel parameter non-functional, and also causes a link error:
 
- Forcing `cpu_has_fpu' to 1 is unsupported as it breaks the `nofpu' kernel 
-parameter and more recently also the CONFIG_MIPS_FP_SUPPORT configuration 
-option.  Remove the broken `cpu_has_fpu' overrides then for IP27 and IP30 
-systems.  Please apply.
+ld: arch/mips/kernel/traps.o: in function `trap_init':
+./arch/mips/include/asm/msa.h:(.init.text+0x348): undefined reference to `handle_fpe'
+ld: ./arch/mips/include/asm/msa.h:(.init.text+0x354): undefined reference to `handle_fpe'
+ld: ./arch/mips/include/asm/msa.h:(.init.text+0x360): undefined reference to `handle_fpe'
 
-  Maciej
+where the CONFIG_MIPS_FP_SUPPORT configuration option has been chosen.
+
+Signed-off-by: Maciej W. Rozycki <macro@orcam.me.uk>
+Fixes: 0ebb2f4159af ("MIPS: IP27: Update/restructure CPU overrides")
+Cc: stable@vger.kernel.org # v4.2+
+---
+ arch/mips/include/asm/mach-ip27/cpu-feature-overrides.h |    1 -
+ 1 file changed, 1 deletion(-)
+
+linux-mips-ip27-cpu-has-fpu.diff
+Index: linux-macro/arch/mips/include/asm/mach-ip27/cpu-feature-overrides.h
+===================================================================
+--- linux-macro.orig/arch/mips/include/asm/mach-ip27/cpu-feature-overrides.h
++++ linux-macro/arch/mips/include/asm/mach-ip27/cpu-feature-overrides.h
+@@ -25,7 +25,6 @@
+ #define cpu_has_4kex			1
+ #define cpu_has_3k_cache		0
+ #define cpu_has_4k_cache		1
+-#define cpu_has_fpu			1
+ #define cpu_has_nofpuex			0
+ #define cpu_has_32fpr			1
+ #define cpu_has_counter			1

@@ -2,172 +2,173 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E194FC433EF
-	for <linux-mips@archiver.kernel.org>; Fri,  6 May 2022 19:47:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6EE55C433EF
+	for <linux-mips@archiver.kernel.org>; Sat,  7 May 2022 00:10:58 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1391789AbiEFTvE (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 6 May 2022 15:51:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52934 "EHLO
+        id S1445027AbiEGAOl (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 6 May 2022 20:14:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60954 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1391850AbiEFTvC (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Fri, 6 May 2022 15:51:02 -0400
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72B496AA41
-        for <linux-mips@vger.kernel.org>; Fri,  6 May 2022 12:47:18 -0700 (PDT)
-Received: by mail-pj1-x1032.google.com with SMTP id iq2-20020a17090afb4200b001d93cf33ae9so11672081pjb.5
-        for <linux-mips@vger.kernel.org>; Fri, 06 May 2022 12:47:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=nmr+AH6GUiQVKg/lqAG1BcDa6rkwmcO9PiTJLcm3vjM=;
-        b=U2bwdDOISPfpNSZR7/BlxGhBrUPE80tEwKwbP78OiiiqRJAS7GEuBM4FtQq0mbcwwK
-         1eJ07Uq+ALubHgrrirJAgrVh3bK0cxESTZ41vWBDRSSoQ4p+EUYwSeotKxB+qT5dflR/
-         0bFjJQ++RP9GZ5CVlPHE7PUiV/zMVIvci8VDwW4+WVe5sP8iSYBwZ+CKqsBFvWgCL5XZ
-         nhFyG8n+bNq4qzsVlIdX7CMJQzQPgQ0fuIKbiEXUwvOZ/+9gtadOW9UAfhFV+VjXFGAa
-         oVoukit96tPbVfrWQ4mpFiFvUPZ2xpqRuq5IRIU93CVwGPX5dIzahsTxzlYlw1wfxEoO
-         uZUg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=nmr+AH6GUiQVKg/lqAG1BcDa6rkwmcO9PiTJLcm3vjM=;
-        b=UZsDaqbNZGpK1NREGQszOazZd/dtNe7czwaMXIik7MXX5XOvANmVCgaxioXKPWWjLN
-         5GGUmmxin9/AmVIxSI/OXzQU3Xj1HOUTm6NngQKgJ/PME09AR6az8G4UUDTNseUKd/3h
-         EmnppzdR6ILxPzjy2L0ftH+z8mcL1Bj623Zu2YAMb+lHlrnMgxwGF1w9PB0c7oojgLFF
-         vI5yYDGOOzFHchfXJJOLdMuHyOZl1POCuH2zl9HUmrQWhihe3S+dn0msGZ3tIzienmBX
-         mC1GYHX6WWtLWOfveP0BlI7RE1Dkpj58zb8iiEDCWWQF8KL0lCjzfpNs1D7CvlhbCvQr
-         O7/Q==
-X-Gm-Message-State: AOAM5313RZfndvc1PXA6CQVvfqqaEyAkFZBwiiw4UzpAaKU5YFLtNa/1
-        ywpjViLb7GFwWllMMy/1o3iddQ==
-X-Google-Smtp-Source: ABdhPJx2W2s0XDr5knnrxjU/QOn2nWMZ5XriOwGOqf4NFEZIHnzgq+6wjY1bPlgr+nIx5/fnbHXnhA==
-X-Received: by 2002:a17:902:ef45:b0:155:cede:5a9d with SMTP id e5-20020a170902ef4500b00155cede5a9dmr5107832plx.93.1651866437748;
-        Fri, 06 May 2022 12:47:17 -0700 (PDT)
-Received: from google.com (157.214.185.35.bc.googleusercontent.com. [35.185.214.157])
-        by smtp.gmail.com with ESMTPSA id gt9-20020a17090af2c900b001dc1e6db7c2sm7599741pjb.57.2022.05.06.12.47.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 06 May 2022 12:47:16 -0700 (PDT)
-Date:   Fri, 6 May 2022 19:47:13 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     David Matlack <dmatlack@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
-        Anup Patel <anup@brainfault.org>,
+        with ESMTP id S235557AbiEGAOg (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Fri, 6 May 2022 20:14:36 -0400
+X-Greylist: delayed 538 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 06 May 2022 17:10:50 PDT
+Received: from new4-smtp.messagingengine.com (new4-smtp.messagingengine.com [66.111.4.230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46FB8193D5;
+        Fri,  6 May 2022 17:10:48 -0700 (PDT)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 08A20581367;
+        Fri,  6 May 2022 20:01:49 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute5.internal (MEProxy); Fri, 06 May 2022 20:01:49 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:date:date:from:from
+        :in-reply-to:in-reply-to:message-id:mime-version:references
+        :reply-to:sender:subject:subject:to:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1651881709; x=
+        1651888909; bh=hJxEFAuP3W0ocRuq9vLXjN5OlZEUnHk8AMHl1pdwrIw=; b=C
+        xRLkEfhUbEyE90JzCIIfMF0OZav1zcZBYtpgecP8ApnTN4fdlBb3TWucKtiiLVnd
+        phR+z33NIKiN5vvoQl4oIZhk8c/stiSlc7YKhqnLniKgN7mh6i4gdLlpwMgXN8Jx
+        e7Ktbm6oij1Rve4npuV/JXnd7tlkfyM/0Bz3txW/0SUizxpE/JN1o4B4fiIigl5B
+        ODk4g+2AMO40GC7n/7n0pEgUnXqDIMz17cgAN6FmIv1e9zegzqwaJ0I+kStibxBe
+        g4XBZSsTbqspbyCFDBCsvGdO+loAMO92OKfZTh/4kTG2uqmiuWrZjJm45yvGLmba
+        KNmSVM+dKifWafpBnnHDw==
+X-ME-Sender: <xms:4rZ1Ytzfx8dyKZqHQrV2iYrMdgRUVRPJ5uUwNS7astnHeUoPA5JP-Q>
+    <xme:4rZ1YtQUABIDxMMBtegJM8AXkRrr-tzXbMdH0cN7W3yw1nTwwmuUilavkeuJbaLH-
+    jiXIcpKb_V12BfL3wo>
+X-ME-Received: <xmr:4rZ1YnWuj7-Y-n3U8_P9SrVRCen9EuBDcbjR5eG7oX-EXFUmoFKaghxcC96Gl5aI4_7s5rHGeJqG5FVCSZIPe5G--o2Z8oFtO20>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvfedrfeeggddviecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvvefujgfkfhggtgesthdtredttddtvdenucfhrhhomhephfhinhhnucfv
+    hhgrihhnuceofhhthhgrihhnsehlihhnuhigqdhmieekkhdrohhrgheqnecuggftrfgrth
+    htvghrnhepfeeiheejvdetgfeitddutefhkeeilefhveehgfdvtdekkedvkeehffdtkeev
+    vdeunecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucevlhhushhtvghrufhiiigvpe
+    dtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehfthhhrghinheslhhinhhugidqmheikehk
+    rdhorhhg
+X-ME-Proxy: <xmx:4rZ1YvjRqTV1kqzGfEZqExc-y3C87C0PjwUsUwS-om8USnmpQPRsXQ>
+    <xmx:4rZ1YvD61kgrS-YFzaAD5iTYUCb5iH6iosfkwZGmHVIza5eNfoZf5Q>
+    <xmx:4rZ1YoIUIx-XKteSS56qWnxoAmafmX5tikXV710a88-2E5zTPDOJsg>
+    <xmx:7bZ1Yh30nOThnpoXJeJtrRg9vb4kwFxuUl_bN4rVDjV8z-IxFV2paA>
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 6 May 2022 20:01:37 -0400 (EDT)
+Date:   Sat, 7 May 2022 10:01:39 +1000 (AEST)
+From:   Finn Thain <fthain@linux-m68k.org>
+To:     Niklas Schnelle <schnelle@linux.ibm.com>
+cc:     Bjorn Helgaas <helgaas@kernel.org>,
+        Arnd Bergmann <arnd@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        linux-pci <linux-pci@vger.kernel.org>,
+        Richard Henderson <rth@twiddle.net>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Michal Simek <monstr@monstr.eu>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
         Paul Walmsley <paul.walmsley@sifive.com>,
         Palmer Dabbelt <palmer@dabbelt.com>,
         Albert Ou <aou@eecs.berkeley.edu>,
-        Andrew Jones <drjones@redhat.com>,
-        Ben Gardon <bgardon@google.com>, Peter Xu <peterx@redhat.com>,
-        maciej.szmigiero@oracle.com,
-        "moderated list:KERNEL VIRTUAL MACHINE FOR ARM64 (KVM/arm64)" 
-        <kvmarm@lists.cs.columbia.edu>,
-        "open list:KERNEL VIRTUAL MACHINE FOR MIPS (KVM/mips)" 
-        <linux-mips@vger.kernel.org>,
-        "open list:KERNEL VIRTUAL MACHINE FOR MIPS (KVM/mips)" 
-        <kvm@vger.kernel.org>,
-        "open list:KERNEL VIRTUAL MACHINE FOR RISC-V (KVM/riscv)" 
-        <kvm-riscv@lists.infradead.org>, Peter Feiner <pfeiner@google.com>
-Subject: Re: [PATCH v4 15/20] KVM: x86/mmu: Cache the access bits of shadowed
- translations
-Message-ID: <YnV7QUOkYVg+Ktnl@google.com>
-References: <20220422210546.458943-1-dmatlack@google.com>
- <20220422210546.458943-16-dmatlack@google.com>
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        "open list:ALPHA PORT" <linux-alpha@vger.kernel.org>,
+        "moderated list:ARM PORT" <linux-arm-kernel@lists.infradead.org>,
+        "open list:IA64 (Itanium) PLATFORM" <linux-ia64@vger.kernel.org>,
+        "open list:M68K ARCHITECTURE" <linux-m68k@lists.linux-m68k.org>,
+        "open list:MIPS" <linux-mips@vger.kernel.org>,
+        "open list:PARISC ARCHITECTURE" <linux-parisc@vger.kernel.org>,
+        "open list:LINUX FOR POWERPC (32-BIT AND 64-BIT)" 
+        <linuxppc-dev@lists.ozlabs.org>,
+        "open list:RISC-V ARCHITECTURE" <linux-riscv@lists.infradead.org>,
+        "open list:SUPERH" <linux-sh@vger.kernel.org>,
+        "open list:SPARC + UltraSPARC (sparc/sparc64)" 
+        <sparclinux@vger.kernel.org>
+Subject: Re: [RFC v2 01/39] Kconfig: introduce HAS_IOPORT option and select
+ it as necessary
+In-Reply-To: <105ccec439f709846e82b69cb854ac825d7a6a49.camel@linux.ibm.com>
+Message-ID: <7dfa7578-039-e132-c573-ad89bd3215@linux-m68k.org>
+References: <20220505195342.GA509942@bhelgaas>  <22bec167-241f-2cbe-829f-a3f65e40e71@linux-m68k.org> <105ccec439f709846e82b69cb854ac825d7a6a49.camel@linux.ibm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220422210546.458943-16-dmatlack@google.com>
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Fri, Apr 22, 2022, David Matlack wrote:
-> diff --git a/arch/x86/kvm/mmu/paging_tmpl.h b/arch/x86/kvm/mmu/paging_tmpl.h
-> index a8a755e1561d..97bf53b29b88 100644
-> --- a/arch/x86/kvm/mmu/paging_tmpl.h
-> +++ b/arch/x86/kvm/mmu/paging_tmpl.h
-> @@ -978,7 +978,8 @@ static gpa_t FNAME(gva_to_gpa)(struct kvm_vcpu *vcpu, struct kvm_mmu *mmu,
->  }
->  
->  /*
-> - * Using the cached information from sp->gfns is safe because:
-> + * Using the information in sp->shadowed_translation (kvm_mmu_page_get_gfn()
-> + * and kvm_mmu_page_get_access()) is safe because:
->   * - The spte has a reference to the struct page, so the pfn for a given gfn
->   *   can't change unless all sptes pointing to it are nuked first.
->   *
-> @@ -1052,12 +1053,15 @@ static int FNAME(sync_page)(struct kvm_vcpu *vcpu, struct kvm_mmu_page *sp)
->  		if (sync_mmio_spte(vcpu, &sp->spt[i], gfn, pte_access))
->  			continue;
->  
-> -		if (gfn != sp->gfns[i]) {
-> +		if (gfn != kvm_mmu_page_get_gfn(sp, i)) {
->  			drop_spte(vcpu->kvm, &sp->spt[i]);
->  			flush = true;
->  			continue;
->  		}
->  
-> +		if (pte_access != kvm_mmu_page_get_access(sp, i))
-> +			kvm_mmu_page_set_access(sp, i, pte_access);
 
-Very tangentially related, and more an FYI than anything else (I'll send a patch
-separately)...   Replying here because this got me wondering about the validity of
-pte_access.
+On Fri, 6 May 2022, Niklas Schnelle wrote:
 
-There's an existing bug for nEPT here, which I proved after 3 hours of fighting
-with KUT's EPT tests (ugh).
-
-  1. execute-only EPT entries are supported
-  2. L1 creates a upper-level RW EPTE and a 4kb leaf RW EPTE
-  3. L2 accesses the address; KVM installs a SPTE
-  4. L1 modifies the leaf EPTE to be X-only, and does INVEPT
-  5. ept_sync_page() creates a SPTE with pte_access=0 / RWX=0
-
-The logic for pte_access (just above this code) is:
-
-		pte_access = sp->role.access;
-		pte_access &= FNAME(gpte_access)(gpte);
-
-The parent guest EPTE is 'RW', and so sp->role.access is 'RW'.  When the new 'X'
-EPTE is ANDed with the 'RW' parent protections, the result is a RWX=0 SPTE.  This
-is only possible if execute-only is supported, because otherwise PTEs are always
-readable, i.e. shadow_present_mask is non-zero.
-
-I don't think anything bad happens per se, but it's odd to have a !PRESENT in
-hardware, shadow-present SPTE.  I think the correct/easiest fix is:
-
-diff --git a/arch/x86/kvm/mmu/paging_tmpl.h b/arch/x86/kvm/mmu/paging_tmpl.h
-index b025decf610d..f8ea881cfce6 100644
---- a/arch/x86/kvm/mmu/paging_tmpl.h
-+++ b/arch/x86/kvm/mmu/paging_tmpl.h
-@@ -1052,7 +1052,7 @@ static int FNAME(sync_page)(struct kvm_vcpu *vcpu, struct kvm_mmu_page *sp)
-                if (sync_mmio_spte(vcpu, &sp->spt[i], gfn, pte_access))
-                        continue;
-
--               if (gfn != sp->gfns[i]) {
-+               if ((!pte_access && !shadow_present_mask) || gfn != sp->gfns[i]) {
-                        drop_spte(vcpu->kvm, &sp->spt[i]);
-                        flush = true;
-                        continue;
-diff --git a/arch/x86/kvm/mmu/spte.c b/arch/x86/kvm/mmu/spte.c
-index 75c9e87d446a..9ad60662beac 100644
---- a/arch/x86/kvm/mmu/spte.c
-+++ b/arch/x86/kvm/mmu/spte.c
-@@ -101,6 +101,8 @@ bool make_spte(struct kvm_vcpu *vcpu, struct kvm_mmu_page *sp,
-        u64 spte = SPTE_MMU_PRESENT_MASK;
-        bool wrprot = false;
-
-+       WARN_ON_ONCE(!pte_access && !shadow_present_mask);
-+
-        if (sp->role.ad_disabled)
-                spte |= SPTE_TDP_AD_DISABLED_MASK;
-        else if (kvm_mmu_page_ad_need_write_protect(sp))
-
-
-> +
->  		sptep = &sp->spt[i];
->  		spte = *sptep;
->  		host_writable = spte & shadow_host_writable_mask;
-> -- 
-> 2.36.0.rc2.479.g8af0fa9b8e-goog
+> On Fri, 2022-05-06 at 19:12 +1000, Finn Thain wrote:
+> > 
+> > On Thu, 5 May 2022, Bjorn Helgaas wrote:
+> > 
+> > > On Thu, May 05, 2022 at 07:39:42PM +0200, Arnd Bergmann wrote:
+> > > > On Thu, May 5, 2022 at 6:10 PM Bjorn Helgaas <helgaas@kernel.org> wrote:
+> > > > > On Wed, May 04, 2022 at 11:31:28PM +0200, Arnd Bergmann wrote:
+> > > > > > The main goal is to avoid c), which is what happens on s390, 
+> > > > > > but can also happen elsewhere. Catching b) would be nice as 
+> > > > > > well, but is much harder to do from generic code as you'd need 
+> > > > > > an architecture specific inline asm statement to insert a 
+> > > > > > ex_table fixup, or a runtime conditional on each access.
+> > > > > 
+> > > > > Or s390 could implement its own inb().
+> > > > > 
+> > > > > I'm hearing that generic powerpc kernels have to run both on 
+> > > > > machines that have I/O port space and those that don't.  That 
+> > > > > makes me think s390 could do something similar.
+> > > > 
+> > > > No, this is actually the current situation, and it makes 
+> > > > absolutely no sense. s390 has no way of implementing inb()/outb() 
+> > > > because there are no instructions for it and it cannot tunnel them 
+> > > > through a virtual address mapping like on most of the other 
+> > > > architectures. (it has special instructions for accessing memory 
+> > > > space, which is not the same as a pointer dereference here).
+> > > > 
+> > > > The existing implementation gets flagged as a NULL pointer 
+> > > > dereference by a compiler warning because it effectively is.
+> > > 
+> > > I think s390 currently uses the inb() in asm-generic/io.h, i.e., 
+> > > "__raw_readb(PCI_IOBASE + addr)".  I understand that's a NULL 
+> > > pointer dereference because the default PCI_IOBASE is 0.
+> > > 
+> > > I mooted a s390 inb() implementation like "return ~0" because that's 
+> > > what happens on most arches when there's no device to respond to the 
+> > > inb().
+> > > 
+> > > The HAS_IOPORT dependencies are fairly ugly IMHO, and they clutter 
+> > > drivers that use I/O ports in some cases but not others.  But maybe 
+> > > it's the most practical way.
+> > > 
+> > 
+> > Do you mean, "the most practical way to avoid a compiler warning on 
+> > s390"? What about "#pragma GCC diagnostic ignored"?
 > 
+> This actually happens with clang.
+
+That suggests a clang bug to me. If you believe GCC should behave like 
+clang, then I guess the pragma above really is the one you want. If you 
+somehow feel that the kernel should cater to gcc and clang even where they 
+disagree then you would have to use "#pragma clang diagnostic ignored".
+
+> Apart from that, I think this would also fall under the same argument as 
+> the original patch Linus unpulled. We would just paint over someting 
+> that we know at compile time won't work:
+> 
+> https://lore.kernel.org/lkml/CAHk-=wg80je=K7madF4e7WrRNp37e3qh6y10Svhdc7O8SZ_-8g@mail.gmail.com/
+> 
+
+I wasn't advocating adding any warnings.
+
+If you know at compile time that a driver won't work, the usual solution 
+is scripts/config -d CONFIG_SOME_UNDESIRED_DRIVER. Why is that no 
+longer appropriate for drivers that use IO ports?

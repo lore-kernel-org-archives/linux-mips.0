@@ -2,78 +2,145 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6F46DC433F5
-	for <linux-mips@archiver.kernel.org>; Mon,  9 May 2022 09:21:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 42F00C4332F
+	for <linux-mips@archiver.kernel.org>; Mon,  9 May 2022 09:49:18 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230122AbiEIJXv (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 9 May 2022 05:23:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46356 "EHLO
+        id S233660AbiEIJxJ (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 9 May 2022 05:53:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60662 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237144AbiEIJQZ (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Mon, 9 May 2022 05:16:25 -0400
-Received: from out28-124.mail.aliyun.com (out28-124.mail.aliyun.com [115.124.28.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A95D6205270;
-        Mon,  9 May 2022 02:12:29 -0700 (PDT)
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.411162|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_regular_dialog|0.0325975-0.00943409-0.957968;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047194;MF=zhouyanjie@wanyeetech.com;NM=1;PH=DS;RN=9;RT=9;SR=0;TI=SMTPD_---.NgYRNRV_1652087532;
-Received: from 192.168.1.123(mailfrom:zhouyanjie@wanyeetech.com fp:SMTPD_---.NgYRNRV_1652087532)
-          by smtp.aliyun-inc.com(33.40.73.199);
-          Mon, 09 May 2022 17:12:19 +0800
-Subject: Re: [PATCH v2 0/3] Clock fixes for Ingenic SoCs
-To:     Aidan MacDonald <aidanmacdonald.0x0@gmail.com>, sboyd@kernel.org,
-        mturquette@baylibre.com, tsbogend@alpha.franken.de
-Cc:     paulburton@kernel.org, paul@crapouillou.net,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-clk@vger.kernel.org
-References: <20220428164454.17908-1-aidanmacdonald.0x0@gmail.com>
-From:   =?UTF-8?B?5ZGo55Cw5p2w?= <zhouyanjie@wanyeetech.com>
-Message-ID: <f5ca7c72-6526-d733-93fd-933aa9b719bc@wanyeetech.com>
-Date:   Mon, 9 May 2022 17:12:11 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        with ESMTP id S238665AbiEIJjz (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Mon, 9 May 2022 05:39:55 -0400
+Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82B7618C06D;
+        Mon,  9 May 2022 02:36:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1652088961; x=1683624961;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=JULdTGBTfThIZcRLutbTwErm+tkVZJR7XHUyFQtfHus=;
+  b=I7KHiNxYzLnjnhp3L39e9Rbks2p6eiKRG0gNap7+/972wyozBhr4qQ8y
+   6qWauqHGCyGpHCWgKWTBLwShlMv4+cgw0S0Z+9cGu9GFV3Xrme6jlolVG
+   yHnz05zCDkXweBZHjra0Qsuu4KbyQ/LFPDhpqpKRvK68n4YEjEkW3DQDc
+   1WgjnEyqbSWNA1LH8Dnn/U/X+ecH/XtzEKBGZjmsnLwiUl/c7NPSqc7Yr
+   dZUpfsanIZj208oiX+uHDuJkZdRalHwKhXzzEGgBTVgI6+IWfu5aFLaiC
+   zEJcv7opiKNPSnQLE3QZxEwd0rN3U7m06aIR7++fh/60Sq9vUVOrYxjpB
+   Q==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10341"; a="249533352"
+X-IronPort-AV: E=Sophos;i="5.91,211,1647327600"; 
+   d="scan'208";a="249533352"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 May 2022 02:35:20 -0700
+X-IronPort-AV: E=Sophos;i="5.91,211,1647327600"; 
+   d="scan'208";a="564969629"
+Received: from mfuent2x-mobl1.amr.corp.intel.com (HELO ijarvine-MOBL2.ger.corp.intel.com) ([10.251.220.67])
+  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 May 2022 02:35:14 -0700
+From:   =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+To:     linux-serial@vger.kernel.org, Greg KH <gregkh@linuxfoundation.org>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Arnd Bergmann <arnd@arndb.de>, linux-alpha@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        sparclinux@vger.kernel.org, linux-arch@vger.kernel.org
+Cc:     =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Subject: [PATCH 3/3] termbits.h: Remove posix_types.h include
+Date:   Mon,  9 May 2022 12:34:46 +0300
+Message-Id: <20220509093446.6677-4-ilpo.jarvinen@linux.intel.com>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20220509093446.6677-1-ilpo.jarvinen@linux.intel.com>
+References: <20220509093446.6677-1-ilpo.jarvinen@linux.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20220428164454.17908-1-aidanmacdonald.0x0@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Hi,
+Nothing in termbits seems to require anything from linux/posix_types.h.
 
-On 2022/4/29 上午12:44, Aidan MacDonald wrote:
-> I ran across a problem trying to get Linux running on an Ingenic X1000 SoC:
-> since the memory clock isn't referenced by any driver, it appears unused and
-> gets disabled automatically. After that, the system hangs on any RAM access.
->
-> There is a hack in board-ingenic.c to forcibly enable the CPU clock, but this
-> is insufficient for the X1000 since the memory clock has its own gate and mux
-> that isn't tied to the CPU.
->
-> This patch series fixes the bug by adding CLK_IS_CRITICAL flags to important
-> clocks, which seems to be the approach used in many other SoC clock drivers.
->
-> v2: Add comments to patch 02 to explain why we need CLK_IS_CRITICAL.
->
-> Aidan MacDonald (3):
->    clk: ingenic: Allow specifying common clock flags
->    clk: ingenic: Mark critical clocks in Ingenic SoCs
->    mips: ingenic: Do not manually reference the CPU clock
->
->   arch/mips/generic/board-ingenic.c | 26 --------------------------
->   drivers/clk/ingenic/cgu.c         |  2 +-
->   drivers/clk/ingenic/cgu.h         |  3 +++
->   drivers/clk/ingenic/jz4725b-cgu.c | 10 ++++++++++
->   drivers/clk/ingenic/jz4740-cgu.c  | 10 ++++++++++
->   drivers/clk/ingenic/jz4760-cgu.c  | 10 ++++++++++
->   drivers/clk/ingenic/jz4770-cgu.c  |  5 +++++
->   drivers/clk/ingenic/jz4780-cgu.c  | 15 +++++++++++++++
->   drivers/clk/ingenic/x1000-cgu.c   | 15 +++++++++++++++
->   drivers/clk/ingenic/x1830-cgu.c   | 11 +++++++++++
->   10 files changed, 80 insertions(+), 27 deletions(-)
+Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
+---
+ arch/alpha/include/uapi/asm/termbits.h  | 2 --
+ arch/mips/include/uapi/asm/termbits.h   | 2 --
+ arch/parisc/include/uapi/asm/termbits.h | 2 --
+ arch/sparc/include/uapi/asm/termbits.h  | 2 --
+ include/uapi/asm-generic/termbits.h     | 2 --
+ 5 files changed, 10 deletions(-)
 
-
-Tested-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com> # On X1000 and 
-X1830
-
+diff --git a/arch/alpha/include/uapi/asm/termbits.h b/arch/alpha/include/uapi/asm/termbits.h
+index 735e9ffe2795..f1290b22072b 100644
+--- a/arch/alpha/include/uapi/asm/termbits.h
++++ b/arch/alpha/include/uapi/asm/termbits.h
+@@ -2,8 +2,6 @@
+ #ifndef _ALPHA_TERMBITS_H
+ #define _ALPHA_TERMBITS_H
+ 
+-#include <linux/posix_types.h>
+-
+ #include <asm-generic/termbits-common.h>
+ 
+ typedef unsigned int	tcflag_t;
+diff --git a/arch/mips/include/uapi/asm/termbits.h b/arch/mips/include/uapi/asm/termbits.h
+index 8fa3e79d4f94..1eb60903d6f0 100644
+--- a/arch/mips/include/uapi/asm/termbits.h
++++ b/arch/mips/include/uapi/asm/termbits.h
+@@ -11,8 +11,6 @@
+ #ifndef _ASM_TERMBITS_H
+ #define _ASM_TERMBITS_H
+ 
+-#include <linux/posix_types.h>
+-
+ #include <asm-generic/termbits-common.h>
+ 
+ typedef unsigned int	tcflag_t;
+diff --git a/arch/parisc/include/uapi/asm/termbits.h b/arch/parisc/include/uapi/asm/termbits.h
+index d72c5ebf3a3a..3a8938d26fb4 100644
+--- a/arch/parisc/include/uapi/asm/termbits.h
++++ b/arch/parisc/include/uapi/asm/termbits.h
+@@ -2,8 +2,6 @@
+ #ifndef __ARCH_PARISC_TERMBITS_H__
+ #define __ARCH_PARISC_TERMBITS_H__
+ 
+-#include <linux/posix_types.h>
+-
+ #include <asm-generic/termbits-common.h>
+ 
+ typedef unsigned int	tcflag_t;
+diff --git a/arch/sparc/include/uapi/asm/termbits.h b/arch/sparc/include/uapi/asm/termbits.h
+index cfcc4e07ce51..4321322701fc 100644
+--- a/arch/sparc/include/uapi/asm/termbits.h
++++ b/arch/sparc/include/uapi/asm/termbits.h
+@@ -2,8 +2,6 @@
+ #ifndef _UAPI_SPARC_TERMBITS_H
+ #define _UAPI_SPARC_TERMBITS_H
+ 
+-#include <linux/posix_types.h>
+-
+ #include <asm-generic/termbits-common.h>
+ 
+ #if defined(__sparc__) && defined(__arch64__)
+diff --git a/include/uapi/asm-generic/termbits.h b/include/uapi/asm-generic/termbits.h
+index c92179563289..890ef29053e2 100644
+--- a/include/uapi/asm-generic/termbits.h
++++ b/include/uapi/asm-generic/termbits.h
+@@ -2,8 +2,6 @@
+ #ifndef __ASM_GENERIC_TERMBITS_H
+ #define __ASM_GENERIC_TERMBITS_H
+ 
+-#include <linux/posix_types.h>
+-
+ #include <asm-generic/termbits-common.h>
+ 
+ typedef unsigned int	tcflag_t;
+-- 
+2.30.2
 

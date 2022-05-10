@@ -2,87 +2,109 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5279AC433F5
-	for <linux-mips@archiver.kernel.org>; Tue, 10 May 2022 11:44:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D9AC4C433FE
+	for <linux-mips@archiver.kernel.org>; Tue, 10 May 2022 12:14:29 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241178AbiEJLsl (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 10 May 2022 07:48:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48146 "EHLO
+        id S241599AbiEJMSV (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 10 May 2022 08:18:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47148 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236537AbiEJLsk (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Tue, 10 May 2022 07:48:40 -0400
-Received: from loongson.cn (mail.loongson.cn [114.242.206.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 11144250E8A;
-        Tue, 10 May 2022 04:44:42 -0700 (PDT)
-Received: from localhost.localdomain (unknown [10.2.9.158])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9AxutgpUHpiPAkQAA--.54769S2;
-        Tue, 10 May 2022 19:44:41 +0800 (CST)
-From:   Mao Bibo <maobibo@loongson.cn>
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] MIPS: smp: optimization for flush_tlb_mm when exiting
-Date:   Tue, 10 May 2022 19:44:41 +0800
-Message-Id: <20220510114441.2959886-1-maobibo@loongson.cn>
-X-Mailer: git-send-email 2.27.0
+        with ESMTP id S241592AbiEJMSS (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Tue, 10 May 2022 08:18:18 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBE1B244F2E;
+        Tue, 10 May 2022 05:14:20 -0700 (PDT)
+Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
+        by smtp-out1.suse.de (Postfix) with ESMTP id 6756A21B7F;
+        Tue, 10 May 2022 12:14:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1652184859; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=z0qCXGbgchboCgbitrJZObbFnXC/YqP7fhEXmnIw2vY=;
+        b=OcxDFXmKKoVdDJUxSKREkD35h3cfh7L/UHzdGP/cbflejeipwrciY4AbOjnQu6DKNCs7aq
+        Tea2QFXBj209QcyaHp7BuefH2IIusivsxr3vlgfi6p9lZaMFpVOppWn8lIP/+rweBZrcrm
+        +Lwt8IUC7jK6VwI0ouYkElgPt01wPwE=
+Received: from suse.cz (unknown [10.100.208.146])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by relay2.suse.de (Postfix) with ESMTPS id 552522C141;
+        Tue, 10 May 2022 12:14:16 +0000 (UTC)
+Date:   Tue, 10 May 2022 14:14:16 +0200
+From:   Petr Mladek <pmladek@suse.com>
+To:     "Guilherme G. Piccoli" <gpiccoli@igalia.com>
+Cc:     akpm@linux-foundation.org, bhe@redhat.com,
+        kexec@lists.infradead.org, linux-kernel@vger.kernel.org,
+        bcm-kernel-feedback-list@broadcom.com, coresight@lists.linaro.org,
+        linuxppc-dev@lists.ozlabs.org, linux-alpha@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-edac@vger.kernel.org,
+        linux-hyperv@vger.kernel.org, linux-leds@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
+        linux-s390@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org,
+        netdev@vger.kernel.org, openipmi-developer@lists.sourceforge.net,
+        rcu@vger.kernel.org, sparclinux@vger.kernel.org,
+        xen-devel@lists.xenproject.org, x86@kernel.org,
+        kernel-dev@igalia.com, kernel@gpiccoli.net, halves@canonical.com,
+        fabiomirmar@gmail.com, alejandro.j.jimenez@oracle.com,
+        andriy.shevchenko@linux.intel.com, arnd@arndb.de, bp@alien8.de,
+        corbet@lwn.net, d.hatayama@jp.fujitsu.com,
+        dave.hansen@linux.intel.com, dyoung@redhat.com,
+        feng.tang@intel.com, gregkh@linuxfoundation.org,
+        mikelley@microsoft.com, hidehiro.kawai.ez@hitachi.com,
+        jgross@suse.com, john.ogness@linutronix.de, keescook@chromium.org,
+        luto@kernel.org, mhiramat@kernel.org, mingo@redhat.com,
+        paulmck@kernel.org, peterz@infradead.org, rostedt@goodmis.org,
+        senozhatsky@chromium.org, stern@rowland.harvard.edu,
+        tglx@linutronix.de, vgoyal@redhat.com, vkuznets@redhat.com,
+        will@kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Mihai Carabas <mihai.carabas@oracle.com>,
+        Shile Zhang <shile.zhang@linux.alibaba.com>,
+        Wang ShaoBo <bobo.shaobowang@huawei.com>,
+        zhenwei pi <pizhenwei@bytedance.com>
+Subject: Re: [PATCH 05/30] misc/pvpanic: Convert regular spinlock into
+ trylock on panic path
+Message-ID: <YnpXGOXicwdy1E6n@alley>
+References: <20220427224924.592546-1-gpiccoli@igalia.com>
+ <20220427224924.592546-6-gpiccoli@igalia.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: AQAAf9AxutgpUHpiPAkQAA--.54769S2
-X-Coremail-Antispam: 1UD129KBjvdXoW7XryDWFyDur17Ww17Cw1Dtrb_yoWkXFXEyw
-        sIgwn5Gryrtw1Iv3yxWr4fWF909wsY9F1v9r9Fgr9Iy3s8tr1UZaykur97XrZ5XrZYvFZ5
-        Jr9xJryUAay2qjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUbxkYjsxI4VWkKwAYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I
-        6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM2
-        8CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW8JVW5JwA2z4x0Y4vE2Ix0
-        cI8IcVCY1x0267AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIE14v26F4UJVW0owA2z4x0Y4vEx4
-        A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IE
-        w4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_JF0_Jw1lYx0Ex4A2jsIE14v26r1j6r4UMc
-        vjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwCY02Avz4vE-syl42xK82IYc2Ij
-        64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1l4IxYO2xFxVAFwI0_Jrv_JF1lx2IqxVAqx4
-        xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1Y6r17
-        MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I
-        0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVW3JVWrJr1lIxAIcVC2z280aVAFwI0_
-        Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU5
-        B8BUUUUUU==
-X-CM-SenderInfo: xpdruxter6z05rqj20fqof0/
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220427224924.592546-6-gpiccoli@igalia.com>
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-When process exits or execute new binary, it will call function
-exit_mmap with old mm, there is such function call trace:
-  exit_mmap(struct mm_struct *mm)
-      --> tlb_finish_mmu(&tlb, 0, -1)
-         --> arch_tlb_finish_mmu(tlb, start, end, force)
-	    --> tlb_flush_mmu(tlb);
-               --> tlb_flush(struct mmu_gather *tlb)
-                  --> flush_tlb_mm(tlb->mm)
+On Wed 2022-04-27 19:48:59, Guilherme G. Piccoli wrote:
+> The pvpanic driver relies on panic notifiers to execute a callback
+> on panic event. Such function is executed in atomic context - the
+> panic function disables local IRQs, preemption and all other CPUs
+> that aren't running the panic code.
+> 
+> With that said, it's dangerous to use regular spinlocks in such path,
+> as introduced by commit b3c0f8774668 ("misc/pvpanic: probe multiple instances").
+> This patch fixes that by replacing regular spinlocks with the trylock
+> safer approach.
 
-It is not necessary to flush tlb since oldmm is not used anymore
-by the process, there is similar operations on IA64/ARM64 etc,
-this patch adds such optimization on MIPS.
+It seems that the lock is used just to manipulating a list. A super
+safe solution would be to use the rcu API: rcu_add_rcu() and
+list_del_rcu() under rcu_read_lock(). The spin lock will not be
+needed and the list will always be valid.
 
-Signed-off-by: Mao Bibo <maobibo@loongson.cn>
----
- arch/mips/kernel/smp.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+The advantage would be that it will always call members that
+were successfully added earlier. That said, I am not familiar
+with pvpanic and am not sure if it is worth it.
 
-diff --git a/arch/mips/kernel/smp.c b/arch/mips/kernel/smp.c
-index 1986d1309410..1d93b85271ba 100644
---- a/arch/mips/kernel/smp.c
-+++ b/arch/mips/kernel/smp.c
-@@ -518,6 +518,12 @@ static inline void smp_on_each_tlb(void (*func) (void *info), void *info)
- 
- void flush_tlb_mm(struct mm_struct *mm)
- {
-+	if (!mm)
-+		return;
-+
-+	if (atomic_read(&mm->mm_users) == 0)
-+		return;		/* happens as a result of exit_mmap() */
-+
- 	preempt_disable();
- 
- 	if (cpu_has_mmid) {
--- 
-2.27.0
+> It also fixes an old comment (about a long gone framebuffer code) and
+> the notifier priority - we should execute hypervisor notifiers early,
+> deferring this way the panic action to the hypervisor, as expected by
+> the users that are setting up pvpanic.
 
+This should be done in a separate patch. It changes the behavior.
+Also there might be a discussion whether it really should be
+the maximal priority.
+
+Best Regards,
+Petr

@@ -2,86 +2,99 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 429C1C433EF
-	for <linux-mips@archiver.kernel.org>; Wed, 11 May 2022 05:36:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B9EB4C433F5
+	for <linux-mips@archiver.kernel.org>; Wed, 11 May 2022 08:30:27 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241839AbiEKFg3 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 11 May 2022 01:36:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33472 "EHLO
+        id S243580AbiEKIaZ (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 11 May 2022 04:30:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52236 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241383AbiEKFf5 (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 11 May 2022 01:35:57 -0400
-Received: from nksmu.kylinos.cn (mailgw.kylinos.cn [123.150.8.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60CC6120B7;
-        Tue, 10 May 2022 22:35:51 -0700 (PDT)
-X-UUID: c15df73932a042b48c13c870fdd5a331-20220511
-X-UUID: c15df73932a042b48c13c870fdd5a331-20220511
-Received: from cs2c.com.cn [(172.17.111.24)] by nksmu.kylinos.cn
-        (envelope-from <jianghaoran@kylinos.cn>)
-        (Generic MTA)
-        with ESMTP id 1227716475; Wed, 11 May 2022 13:38:53 +0800
-X-ns-mid: postfix-627B4B26-356447265
-Received: from [172.30.60.211] (unknown [172.30.60.211])
-        by cs2c.com.cn (NSMail) with ESMTPSA id 4ED52384867C;
-        Wed, 11 May 2022 05:35:34 +0000 (UTC)
-Subject: Re: [PATCH] irqchip/loongson-liointc: 4 cores correspond to different
- interrupt status registers
-To:     Jiaxun Yang <jiaxun.yang@flygoat.com>, chenhuacai@kernel.org
-Cc:     tglx@linutronix.de, maz@kernel.org, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20220510055303.1907165-1-jianghaoran@kylinos.cn>
- <21bb46ea-6a36-b426-2ca9-4471af5879a1@flygoat.com>
-From:   jianghaoran <jianghaoran@kylinos.cn>
-Message-ID: <833ade5f-ab35-1d69-28b1-b50ae41df2f5@kylinos.cn>
-Date:   Wed, 11 May 2022 13:33:12 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        with ESMTP id S237797AbiEKIaW (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 11 May 2022 04:30:22 -0400
+Received: from loongson.cn (mail.loongson.cn [114.242.206.163])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id ADDCB18B965;
+        Wed, 11 May 2022 01:30:19 -0700 (PDT)
+Received: from localhost.localdomain (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9BxkNoPdHtiw+cQAA--.6S3;
+        Wed, 11 May 2022 16:30:09 +0800 (CST)
+From:   Qing Zhang <zhangqing@loongson.cn>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>
+Cc:     devicetree@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org, yangtiezhu@loongson.cn,
+        zhangqing@loongson.cn
+Subject: [PATCH 2/3] MIPS: Loongson64: DTS: Add Loongson-2K1000 DTS related smp support
+Date:   Wed, 11 May 2022 16:30:06 +0800
+Message-Id: <20220511083007.17700-2-zhangqing@loongson.cn>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20220511083007.17700-1-zhangqing@loongson.cn>
+References: <20220511083007.17700-1-zhangqing@loongson.cn>
 MIME-Version: 1.0
-In-Reply-To: <21bb46ea-6a36-b426-2ca9-4471af5879a1@flygoat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: AQAAf9BxkNoPdHtiw+cQAA--.6S3
+X-Coremail-Antispam: 1UD129KBjvdXoW7JFW7Jr4DtrW8ZrWxuw4rKrg_yoWkJFc_A3
+        WIvaykGFWrJFZ3ta48Xr4UJFy7u3yUA3WfC3WDWry0qasI9wn8JrW7AFWDKrnxGFWaqrs8
+        XFWrWr48AFn7KjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbSAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUGwA2048vs2IY02
+        0Ec7CjxVAFwI0_JFI_Gr1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xv
+        wVC0I7IYx2IY67AKxVW8JVW5JwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVWxJVW8Jr1l84
+        ACjcxK6I8E87Iv67AKxVWxJr0_GcWl84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s0DM2AI
+        xVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20x
+        vE14v26r1Y6r17McIj6I8E87Iv67AKxVW8JVWxJwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xv
+        r2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7MxkIecxEwVAFwVW8ZwCF04k20x
+        vY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I
+        3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIx
+        AIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAI
+        cVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2js
+        IEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUoVb9UUUUU=
+X-CM-SenderInfo: x2kd0wptlqwqxorr0wxvrqhubq/
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
+Add the device tree node and connect it to the CPU nodes.
 
+Signed-off-by: Qing Zhang <zhangqing@loongson.cn>
+---
+ .../mips/boot/dts/loongson/loongson64-2k1000.dtsi | 15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
 
-在 2022/5/10 下午8:15, Jiaxun Yang 写道:
-> 
-> 
-> 在 2022/5/10 6:53, Haoran Jiang 写道:
->> According to the loongson cpu manual,different cpu cores
->> correspond to different interrupt status registers
-> NAK!
-> 
-> It is intentional to do so.
-> 
-> The per-core ISR register is broken on 3B1500. So we use general ISR 
-> register here.
-> The per-core variable is left for LS2K.
-> 
-> Thanks
-> - Jiaxun
->>
->> Signed-off-by: Haoran Jiang <jianghaoran@kylinos.cn>
->> ---
->>   drivers/irqchip/irq-loongson-liointc.c | 2 +-
->>   1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/drivers/irqchip/irq-loongson-liointc.c 
->> b/drivers/irqchip/irq-loongson-liointc.c
->> index 649c58391618..f4e015b50af0 100644
->> --- a/drivers/irqchip/irq-loongson-liointc.c
->> +++ b/drivers/irqchip/irq-loongson-liointc.c
->> @@ -195,7 +195,7 @@ static int __init liointc_of_init(struct 
->> device_node *node,
->>           }
->>           for (i = 0; i < LIOINTC_NUM_CORES; i++)
->> -            priv->core_isr[i] = base + LIOINTC_REG_INTC_STATUS;
->> +            priv->core_isr[i] = base + LIOINTC_REG_INTC_STATUS + i*8;
->>       }
->>       for (i = 0; i < LIOINTC_NUM_PARENT; i++) {
-> 
+diff --git a/arch/mips/boot/dts/loongson/loongson64-2k1000.dtsi b/arch/mips/boot/dts/loongson/loongson64-2k1000.dtsi
+index 8143a61111e3..3b765c063d7a 100644
+--- a/arch/mips/boot/dts/loongson/loongson64-2k1000.dtsi
++++ b/arch/mips/boot/dts/loongson/loongson64-2k1000.dtsi
+@@ -20,6 +20,16 @@
+ 			reg = <0x0>;
+ 			#clock-cells = <1>;
+ 			clocks = <&cpu_clk>;
++			enable-method = "mmio-ipi";
++		};
++
++		cpu1: cpu@1 {
++			device_type = "cpu";
++			compatible = "loongson,gs264";
++			reg = <0x1>;
++			#clock-cells = <1>;
++			clocks = <&cpu_clk>;
++			enable-method = "mmio-ipi";
+ 		};
+ 	};
+ 
+@@ -44,6 +54,11 @@
+ 		compatible = "mti,cpu-interrupt-controller";
+ 	};
+ 
++	ipi: interrupt-controller@1fe11000 {
++		compatible = "loongson, mmio-ipi";
++		reg = <0 0x1fe11000 0 0x40>;
++	};
++
+ 	package0: bus@10000000 {
+ 		compatible = "simple-bus";
+ 		#address-cells = <2>;
+-- 
+2.20.1
 
-Thank you for your review!

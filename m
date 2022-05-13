@@ -2,56 +2,56 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 51745C433FE
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CFC2EC433EF
 	for <linux-mips@archiver.kernel.org>; Fri, 13 May 2022 20:29:28 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1384323AbiEMU30 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 13 May 2022 16:29:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60904 "EHLO
+        id S1383490AbiEMU31 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 13 May 2022 16:29:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60936 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1384354AbiEMU3V (ORCPT
+        with ESMTP id S1384357AbiEMU3V (ORCPT
         <rfc822;linux-mips@vger.kernel.org>); Fri, 13 May 2022 16:29:21 -0400
-Received: from mail-pj1-x1049.google.com (mail-pj1-x1049.google.com [IPv6:2607:f8b0:4864:20::1049])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99CF573781
-        for <linux-mips@vger.kernel.org>; Fri, 13 May 2022 13:29:01 -0700 (PDT)
-Received: by mail-pj1-x1049.google.com with SMTP id h23-20020a17090adb9700b001dcce3bb2d4so6683479pjv.7
-        for <linux-mips@vger.kernel.org>; Fri, 13 May 2022 13:29:01 -0700 (PDT)
+Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 819C279819
+        for <linux-mips@vger.kernel.org>; Fri, 13 May 2022 13:29:03 -0700 (PDT)
+Received: by mail-pg1-x549.google.com with SMTP id 137-20020a63028f000000b003db27cc5b31so4575323pgc.21
+        for <linux-mips@vger.kernel.org>; Fri, 13 May 2022 13:29:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=HdSYABheIVOM10QD4ZayPYXlWKlD3eG3FLGapADPyAM=;
-        b=DKv+56mwaJWUT+G4vsPsYCrRgu169RzDr1vagq7TzGEWd8AGHodvyf1WxeUSTaQk1R
-         NZpymIDqGyI73sb4uJT4lVVGGSNWJoPOGVC3ufHvKHKYMUDvpLfYxri94REs0NdLnym4
-         VQlUurwgO69SpR4w7OrRXKWUnkasbPEm/KGx2WDD45/Wch+D2vSCMrwnnLxBR5Dg+i++
-         RbIaYmLyPpn+RmzwOcwuiMaxrmfIOKCC9JC3SeXVyGnF3OPutmFP8inT0wwv8GBmXQ7k
-         up4S9n+QdlOKGVRoYLpl3fUoIcGjM0FIiWJyGxiCbZ5/sEGDz4LRyDtCZBI7ZEf5/LAe
-         dYYg==
+        bh=R2k5lQSqINgMzSg3h1Jv/V+x4VA+8gcfFTJByzEmdDA=;
+        b=EU3henCftOq2Phx82RY7J6BqUQU+5NnYx5FkdAcZ0AjTnM/NEfcaeb8QdDyAd2mn87
+         Ofot1wIIOg7d/ZxD2XEKWbYLKnHccAJ2tqSzLFxbb/YOleCCNYnl4lxWlgAbnQukzWPu
+         72LMPoClWYE+XWiNBre8Goc/f9udtUpYva7+hvc7GU2wnamgH0z+Eqw9vLj0LpGEb6KM
+         70CPZdMsZAUBI5mjCNpQRCQ8n7Xr9qtR6WPrqaCm5k9pIE4OhYSORd4IigD2RIyJ1bp4
+         oYhPb2mL8IIoTjyJ0FnJcfLzLVFuR31s36OqUpDHmT3XZkVUVX6kdG+1wHL0K+KFgtsG
+         BGww==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=HdSYABheIVOM10QD4ZayPYXlWKlD3eG3FLGapADPyAM=;
-        b=hqrdaEnw6vZeRusifJ6vFDfUPVcPrlV/EyGCzYwG7tvprA4dEXTRUC/f4ynN2Rh8KY
-         Br5O9AdQTosBgU8D6/NywXajCH2LV1fAY/qARqJeBqB8RQNwDnSXD7Kz35dXbLpmKdrp
-         LKoA5L37aPnpJ+NAzmW9YcCJWRd+9peTBdC2fhDGUiqZCNp7QY4ont9xLSTh6/YaLIDL
-         vsIdOk3xP6Ij+T5r+R4zLBHoaPSOQz/1+8hpeaYlLbqYywhnoNni3iEQlMdaZybN7tjg
-         GAuk4cDU/b0J+7BknlfwS3RjqGw5ZEuEXXAiz4KFwcHbrz5rFrAEcEpDod1Z5NmvpFKX
-         KzTg==
-X-Gm-Message-State: AOAM533ahGFqDl+2Gt5FT2oXqmK3x3vV8F4gVkPE6uXxV8tFFru/c/Bb
-        SnVf/6iDQgTei3ApiWZznR3eng/qvfecIQ==
-X-Google-Smtp-Source: ABdhPJwj07m7NSEGJMSuAfHJ7qPKyzdtRoR8FmJzEkiBVDgBAvJuoRdDpvYbVdyeM8hldK3oO0+DNeon+My0nA==
+        bh=R2k5lQSqINgMzSg3h1Jv/V+x4VA+8gcfFTJByzEmdDA=;
+        b=XXXQF3rgVzAIHZ5Guj8neyUNvH7KSILgpgzQBQjx2CjiXRVHXPWj+LLf2FbydIOfbZ
+         Nw6a0Iq31ooKimbT+PDxdnUYUp4xcZ3vEq1z3ekwHLEhAswVaZF52p079SUR1MvyrGU7
+         zCnbnu3Cqax4zDsnnq4WHrPe66oBzgAkDUdctWgtQ1xX+ZVJ784pUPfLNU9AOEQ29bp1
+         lIy7FOUCnLFbKNcErR4BBGDseLEa/KM2IcA/B/JQBRuG8svHWqgITxVsr55uozTgebdj
+         1hra4K8Oxnmw2tsz5DfxmPlfjPJ1dRyT7hrouvClc/jVwXQpfKTEvfz+4A2hmDRN7EKz
+         G+uA==
+X-Gm-Message-State: AOAM532kq8Uc3Jy3gVlvh5MvvYIXJSyeptAwDIynCpiozeaCNLHVLjH3
+        ir1qlgrEY9oVeyFwmtCU2XxEB+8Oo993yw==
+X-Google-Smtp-Source: ABdhPJxY2BhZKf4uGbUq4BeYViiLb0nNkU/Ef26vfAz8aiDUZBG4gjV5YebQ/CaStCtCadWMLVYtA+Ydny+dSA==
 X-Received: from dmatlack-heavy.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:19cd])
- (user=dmatlack job=sendgmr) by 2002:a17:90a:c7d2:b0:1d9:34fe:10dc with SMTP
- id gf18-20020a17090ac7d200b001d934fe10dcmr18025976pjb.109.1652473733328; Fri,
- 13 May 2022 13:28:53 -0700 (PDT)
-Date:   Fri, 13 May 2022 20:28:11 +0000
+ (user=dmatlack job=sendgmr) by 2002:a05:6a00:174a:b0:4fd:ac35:6731 with SMTP
+ id j10-20020a056a00174a00b004fdac356731mr5985955pfc.71.1652473737018; Fri, 13
+ May 2022 13:28:57 -0700 (PDT)
+Date:   Fri, 13 May 2022 20:28:13 +0000
 In-Reply-To: <20220513202819.829591-1-dmatlack@google.com>
-Message-Id: <20220513202819.829591-14-dmatlack@google.com>
+Message-Id: <20220513202819.829591-16-dmatlack@google.com>
 Mime-Version: 1.0
 References: <20220513202819.829591-1-dmatlack@google.com>
 X-Mailer: git-send-email 2.36.0.550.gb090851708-goog
-Subject: [PATCH v5 13/21] KVM: x86/mmu: Pass const memslot to rmap_add()
+Subject: [PATCH v5 15/21] KVM: x86/mmu: Update page stats in __rmap_add()
 From:   David Matlack <dmatlack@google.com>
 To:     Paolo Bonzini <pbonzini@redhat.com>
 Cc:     Marc Zyngier <maz@kernel.org>, Huacai Chen <chenhuacai@kernel.org>,
@@ -79,30 +79,40 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-rmap_add() only uses the slot to call gfn_to_rmap() which takes a const
-memslot.
+Update the page stats in __rmap_add() rather than at the call site. This
+will avoid having to manually update page stats when splitting huge
+pages in a subsequent commit.
 
 No functional change intended.
 
 Reviewed-by: Ben Gardon <bgardon@google.com>
+Reviewed-by: Peter Xu <peterx@redhat.com>
 Signed-off-by: David Matlack <dmatlack@google.com>
 ---
- arch/x86/kvm/mmu/mmu.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/x86/kvm/mmu/mmu.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
 diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-index bc66029d837f..8a6dec1c27c8 100644
+index 0a14320fb148..c7cc552440f7 100644
 --- a/arch/x86/kvm/mmu/mmu.c
 +++ b/arch/x86/kvm/mmu/mmu.c
-@@ -1582,7 +1582,7 @@ static bool kvm_test_age_rmapp(struct kvm *kvm, struct kvm_rmap_head *rmap_head,
+@@ -1588,6 +1588,8 @@ static void __rmap_add(struct kvm *kvm,
  
- #define RMAP_RECYCLE_THRESHOLD 1000
+ 	sp = sptep_to_sp(spte);
+ 	kvm_mmu_page_set_gfn(sp, spte - sp->spt, gfn);
++	kvm_update_page_stats(kvm, sp->role.level, 1);
++
+ 	rmap_head = gfn_to_rmap(gfn, sp->role.level, slot);
+ 	rmap_count = pte_list_add(cache, spte, rmap_head);
  
--static void rmap_add(struct kvm_vcpu *vcpu, struct kvm_memory_slot *slot,
-+static void rmap_add(struct kvm_vcpu *vcpu, const struct kvm_memory_slot *slot,
- 		     u64 *spte, gfn_t gfn)
- {
- 	struct kvm_mmu_page *sp;
+@@ -2810,7 +2812,6 @@ static int mmu_set_spte(struct kvm_vcpu *vcpu, struct kvm_memory_slot *slot,
+ 
+ 	if (!was_rmapped) {
+ 		WARN_ON_ONCE(ret == RET_PF_SPURIOUS);
+-		kvm_update_page_stats(vcpu->kvm, level, 1);
+ 		rmap_add(vcpu, slot, sptep, gfn);
+ 	}
+ 
 -- 
 2.36.0.550.gb090851708-goog
 

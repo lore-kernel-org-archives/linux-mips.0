@@ -2,225 +2,314 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C712EC4332F
-	for <linux-mips@archiver.kernel.org>; Fri, 13 May 2022 20:29:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AB7D1C433F5
+	for <linux-mips@archiver.kernel.org>; Sat, 14 May 2022 14:53:10 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1384332AbiEMU3n (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 13 May 2022 16:29:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59730 "EHLO
+        id S233514AbiENOxJ (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Sat, 14 May 2022 10:53:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47950 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1384349AbiEMU3V (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Fri, 13 May 2022 16:29:21 -0400
-Received: from mail-pl1-x64a.google.com (mail-pl1-x64a.google.com [IPv6:2607:f8b0:4864:20::64a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD4FD74840
-        for <linux-mips@vger.kernel.org>; Fri, 13 May 2022 13:29:01 -0700 (PDT)
-Received: by mail-pl1-x64a.google.com with SMTP id m11-20020a170902f64b00b0015820f8038fso4828534plg.23
-        for <linux-mips@vger.kernel.org>; Fri, 13 May 2022 13:29:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=kFuYqeri/i2mfzPJXttr8ceJqhbq0CpxLPyTsiOWWyk=;
-        b=O4NlK+8k7gmd18lqfTy8sEoNPPvMvxz5L/5++1dc4ytp2igE0C/3bmDVsBjymz4Vzz
-         L4lOXpWkRtxtjdbPnVIr5AinXZ6byMiNXFIKDi7VXznjjQRIQ081gsePpcnX5xPVURLC
-         oJQjOxNzGRaQFt8BgbCZHqChP9vy7zh0nEHGLkP/Xrj1NwIBiIO9p25vKfmq9hUhCcC0
-         C5wdaHimdFJuQxGDkihGSyidiZ0OELRqLU/1JkVkYuznhk1vi+mmv0I/vMT++0X/Lg6J
-         LhbrITbjUmFbGYd86xkaGerJuqs73y2X1MzDk592FIZ3FAKqHTRy9vkxVFGSNGBp96VP
-         G8DQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=kFuYqeri/i2mfzPJXttr8ceJqhbq0CpxLPyTsiOWWyk=;
-        b=v+rEJmnPqAsnEhTMin/FNPkpMfz82E1xMC3zFB2gJdKNMGA4G1P6WLL70550NVtOXF
-         YsQI8FmUkefOIxK88SJJ5dRursPteTreV/dAnutBBayVfQC7I3l1IluEfCeb3mdkNobk
-         0KNZ3QexAICowK0nEqnneGzwatnQcryYf2ABOSOne/MH7SMY+CXkHKd4jEncu4qZnCtQ
-         mtlsCvQlankt5uFCLaXWQ9bBvRTx9XDD8+OSw6fqyJHkUmCiIgYO38YZJcLOxIo5sc3d
-         kSOirqIVifk8FJ7pLXOLrst7odCYsrcVls6iDndwXSOtiK8wPpusHS9w3LyvnrNrM0A+
-         is7g==
-X-Gm-Message-State: AOAM532Yr8k86T6+AMH45reMVgC0vZ+rVaEbO728OtqZEABGRjJtmMm8
-        AEdtNofXuCPGpmU6ZAMlv1sMus7RtQsdlg==
-X-Google-Smtp-Source: ABdhPJwbhKeBP2C9GQ82ntIUdys3AYLftb+6HzL+D/4LCZmV5/QDrCtkTJx0DOJ9fPF4XW+LwcPUGW6co1h8zA==
-X-Received: from dmatlack-heavy.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:19cd])
- (user=dmatlack job=sendgmr) by 2002:a17:90a:8d83:b0:1dd:258c:7c55 with SMTP
- id d3-20020a17090a8d8300b001dd258c7c55mr250788pjo.1.1652473734975; Fri, 13
- May 2022 13:28:54 -0700 (PDT)
-Date:   Fri, 13 May 2022 20:28:12 +0000
-In-Reply-To: <20220513202819.829591-1-dmatlack@google.com>
-Message-Id: <20220513202819.829591-15-dmatlack@google.com>
-Mime-Version: 1.0
-References: <20220513202819.829591-1-dmatlack@google.com>
-X-Mailer: git-send-email 2.36.0.550.gb090851708-goog
-Subject: [PATCH v5 14/21] KVM: x86/mmu: Decouple rmap_add() and
- link_shadow_page() from kvm_vcpu
-From:   David Matlack <dmatlack@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Marc Zyngier <maz@kernel.org>, Huacai Chen <chenhuacai@kernel.org>,
-        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
-        Anup Patel <anup@brainfault.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Sean Christopherson <seanjc@google.com>,
-        Andrew Jones <drjones@redhat.com>,
-        Ben Gardon <bgardon@google.com>, Peter Xu <peterx@redhat.com>,
-        maciej.szmigiero@oracle.com,
-        "moderated list:KERNEL VIRTUAL MACHINE FOR ARM64 (KVM/arm64)" 
-        <kvmarm@lists.cs.columbia.edu>,
-        "open list:KERNEL VIRTUAL MACHINE FOR MIPS (KVM/mips)" 
-        <linux-mips@vger.kernel.org>,
-        "open list:KERNEL VIRTUAL MACHINE FOR MIPS (KVM/mips)" 
-        <kvm@vger.kernel.org>,
-        "open list:KERNEL VIRTUAL MACHINE FOR RISC-V (KVM/riscv)" 
-        <kvm-riscv@lists.infradead.org>, Peter Feiner <pfeiner@google.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        David Matlack <dmatlack@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        with ESMTP id S231407AbiENOxI (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Sat, 14 May 2022 10:53:08 -0400
+Received: from out28-1.mail.aliyun.com (out28-1.mail.aliyun.com [115.124.28.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9033A451;
+        Sat, 14 May 2022 07:53:02 -0700 (PDT)
+X-Alimail-AntiSpam: AC=CONTINUE;BC=0.07436291|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_regular_dialog|0.0596507-0.000320858-0.940028;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047212;MF=zhouyanjie@wanyeetech.com;NM=1;PH=DS;RN=15;RT=15;SR=0;TI=SMTPD_---.NkRoEBs_1652539974;
+Received: from 192.168.30.128(mailfrom:zhouyanjie@wanyeetech.com fp:SMTPD_---.NkRoEBs_1652539974)
+          by smtp.aliyun-inc.com(33.37.71.62);
+          Sat, 14 May 2022 22:52:55 +0800
+Subject: Re: Question about SC16IS752 device tree.
+To:     Rob Herring <robh@kernel.org>
+Cc:     "H. Nikolaus Schaller" <hns@goldelico.com>,
+        Paul Cercueil <paul@crapouillou.net>, jringle@gridpoint.com,
+        Alexander Shiyan <shc_work@mail.ru>,
+        Paul Boddie <paul@boddie.org.uk>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
+        linux-mips <linux-mips@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Johan Hovold <johan@kernel.org>, tomasz.mon@camlingroup.com,
+        l.perczak@camlintechnologies.com,
+        Yunian Yang <reimu@sudomaker.com>,
+        =?UTF-8?B?5ZGo5q2j?= <sernia.zhou@foxmail.com>
+References: <7c89db86-4055-90b5-6a67-611410f5759f@wanyeetech.com>
+ <ZYNMBR.VDVV3VHFQBMO1@crapouillou.net>
+ <04bd0853-7e34-5210-f1b5-f3ea8c35e484@wanyeetech.com>
+ <501852E6-6934-4BB2-850C-B53A07580568@goldelico.com>
+ <8533f999-f584-ea31-0c44-1ce29c066d88@wanyeetech.com>
+ <1B523C47-1F9C-42EE-B242-EF63F89B94F9@goldelico.com>
+ <35c60fea-ac74-9d23-51ac-b877a5b4eb86@wanyeetech.com>
+ <CAL_Jsq+vAtfOywCry+6A3cEKaKupyAC1aah6LNk+YdWzxtdVeA@mail.gmail.com>
+From:   Zhou Yanjie <zhouyanjie@wanyeetech.com>
+Message-ID: <b429a5a6-dad5-469b-a32b-8e2b17642586@wanyeetech.com>
+Date:   Sat, 14 May 2022 22:52:53 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
+MIME-Version: 1.0
+In-Reply-To: <CAL_Jsq+vAtfOywCry+6A3cEKaKupyAC1aah6LNk+YdWzxtdVeA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Allow adding new entries to the rmap and linking shadow pages without a
-struct kvm_vcpu pointer by moving the implementation of rmap_add() and
-link_shadow_page() into inner helper functions.
+Hi Rob,
 
-No functional change intended.
+On 2022/5/12 下午10:49, Rob Herring wrote:
+> On Tue, May 10, 2022 at 12:53 PM Zhou Yanjie <zhouyanjie@wanyeetech.com> wrote:
+>> Hi,
+>>
+>> On 2022/5/10 下午11:31, H. Nikolaus Schaller wrote:
+>>> Hi,
+>>>
+>>>> Am 10.05.2022 um 04:29 schrieb Zhou Yanjie <zhouyanjie@wanyeetech.com>:
+>>>>
+>>>> Hi Nikolaus,
+>>>>
+>>>> On 2022/5/10 上午4:19, H. Nikolaus Schaller wrote:
+>>>>> Hi,
+>>>>>
+>>>>>> Am 09.05.2022 um 20:41 schrieb Zhou Yanjie <zhouyanjie@wanyeetech.com>:
+>>>>>>
+>>>>>> Hi Paul,
+>>>>>>
+>>>>>> On 2022/5/10 上午2:13, Paul Cercueil wrote:
+>>>>>>> I can't say for sure that it's your problem, but your bluetooth nodes are missing "reg" properties.
+>>>>>> Unfortunately it doesn't seem to be the problem here, I added "reg" and
+>>>>>> the problem persists, and I've looked at other device trees that contain
+>>>>>> "brcm,bcm43438-bt", none of them use "reg", and "reg" is not mentioned in
+>>>>>> neither "Documentation/devicetree/bindings/serial/nxp,sc16is7xx.txt" nor
+>>>>>> "Documentation/devicetree/bindings/net/broadcom-bluetooth.yaml".
+>>>>> what happens if you remove the serdev children from DTS? Does the driver create two separate /dev/tty ports? And do they work?
+>>>> Yes, there will be two separate /dev/tty ports (ttySC0 and ttySC1), and
+>>>> both ports can work normally, but at this time the two bluetooth modules
+>>>> are not working.
+>>>>
+>>>> I guess it is because the driver does not detect bluetooth module nodes,
+>>>> so the inability to operate "reset-gpios" and "device-wakeup-gpios" causes
+>>>> the bluetooth module to work incorrectly.
+>>> I would assume that it is not prepared to handle two serdev subnodes and
+>>> assign the right gpios.
+>>
+>> I found something new now, if I follow the practice in
+>> "fsl-ls1012a-frdm.dts"
+>> and put the clock node inside the node of SC16IS752:
+>>
+>> &ssi0 {
+>>       status = "okay";
+>>
+>>       num-cs = <2>;
+>>
+>>       pinctrl-names = "default";
+>>       pinctrl-0 = <&pins_ssi0>;
+>>
+>>       sc16is752: expander@0 {
+>>           compatible = "nxp,sc16is752";
+>>           reg = <0>; /* CE0 */
+>>           #address-cells = <1>;
+>>           #size-cells = <0>;
+>>
+>>           spi-rx-bus-width = <1>;
+>>           spi-tx-bus-width = <1>;
+>>           spi-max-frequency = <6000000>;
+>>
+>>           clocks = <&exclk_sc16is752>;
+>>
+>>           interrupt-parent = <&gpb>;
+>>           interrupts = <18 IRQ_TYPE_EDGE_FALLING>;
+>>
+>>           gpio-controller;
+>>           #gpio-cells = <2>;
+>>
+>>           exclk_sc16is752: sc16is752 {
+>>               compatible = "fixed-clock";
+>>               #clock-cells = <0>;
+>>               clock-frequency = <48000000>;
+>>           };
+> That doesn't look right. This clock source is not part of or coming
+> from the sc16is752. This belongs at the top level.
 
-Reviewed-by: Ben Gardon <bgardon@google.com>
-Reviewed-by: Peter Xu <peterx@redhat.com>
-Signed-off-by: David Matlack <dmatlack@google.com>
----
- arch/x86/kvm/mmu/mmu.c | 45 +++++++++++++++++++++++++-----------------
- 1 file changed, 27 insertions(+), 18 deletions(-)
 
-diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-index 8a6dec1c27c8..0a14320fb148 100644
---- a/arch/x86/kvm/mmu/mmu.c
-+++ b/arch/x86/kvm/mmu/mmu.c
-@@ -699,11 +699,6 @@ static void mmu_free_memory_caches(struct kvm_vcpu *vcpu)
- 	kvm_mmu_free_memory_cache(&vcpu->arch.mmu_page_header_cache);
- }
- 
--static struct pte_list_desc *mmu_alloc_pte_list_desc(struct kvm_vcpu *vcpu)
--{
--	return kvm_mmu_memory_cache_alloc(&vcpu->arch.mmu_pte_list_desc_cache);
--}
--
- static void mmu_free_pte_list_desc(struct pte_list_desc *pte_list_desc)
- {
- 	kmem_cache_free(pte_list_desc_cache, pte_list_desc);
-@@ -858,7 +853,7 @@ gfn_to_memslot_dirty_bitmap(struct kvm_vcpu *vcpu, gfn_t gfn,
- /*
-  * Returns the number of pointers in the rmap chain, not counting the new one.
-  */
--static int pte_list_add(struct kvm_vcpu *vcpu, u64 *spte,
-+static int pte_list_add(struct kvm_mmu_memory_cache *cache, u64 *spte,
- 			struct kvm_rmap_head *rmap_head)
- {
- 	struct pte_list_desc *desc;
-@@ -869,7 +864,7 @@ static int pte_list_add(struct kvm_vcpu *vcpu, u64 *spte,
- 		rmap_head->val = (unsigned long)spte;
- 	} else if (!(rmap_head->val & 1)) {
- 		rmap_printk("%p %llx 1->many\n", spte, *spte);
--		desc = mmu_alloc_pte_list_desc(vcpu);
-+		desc = kvm_mmu_memory_cache_alloc(cache);
- 		desc->sptes[0] = (u64 *)rmap_head->val;
- 		desc->sptes[1] = spte;
- 		desc->spte_count = 2;
-@@ -881,7 +876,7 @@ static int pte_list_add(struct kvm_vcpu *vcpu, u64 *spte,
- 		while (desc->spte_count == PTE_LIST_EXT) {
- 			count += PTE_LIST_EXT;
- 			if (!desc->more) {
--				desc->more = mmu_alloc_pte_list_desc(vcpu);
-+				desc->more = kvm_mmu_memory_cache_alloc(cache);
- 				desc = desc->more;
- 				desc->spte_count = 0;
- 				break;
-@@ -1582,8 +1577,10 @@ static bool kvm_test_age_rmapp(struct kvm *kvm, struct kvm_rmap_head *rmap_head,
- 
- #define RMAP_RECYCLE_THRESHOLD 1000
- 
--static void rmap_add(struct kvm_vcpu *vcpu, const struct kvm_memory_slot *slot,
--		     u64 *spte, gfn_t gfn)
-+static void __rmap_add(struct kvm *kvm,
-+		       struct kvm_mmu_memory_cache *cache,
-+		       const struct kvm_memory_slot *slot,
-+		       u64 *spte, gfn_t gfn)
- {
- 	struct kvm_mmu_page *sp;
- 	struct kvm_rmap_head *rmap_head;
-@@ -1592,15 +1589,21 @@ static void rmap_add(struct kvm_vcpu *vcpu, const struct kvm_memory_slot *slot,
- 	sp = sptep_to_sp(spte);
- 	kvm_mmu_page_set_gfn(sp, spte - sp->spt, gfn);
- 	rmap_head = gfn_to_rmap(gfn, sp->role.level, slot);
--	rmap_count = pte_list_add(vcpu, spte, rmap_head);
-+	rmap_count = pte_list_add(cache, spte, rmap_head);
- 
- 	if (rmap_count > RMAP_RECYCLE_THRESHOLD) {
--		kvm_unmap_rmapp(vcpu->kvm, rmap_head, NULL, gfn, sp->role.level, __pte(0));
-+		kvm_unmap_rmapp(kvm, rmap_head, NULL, gfn, sp->role.level, __pte(0));
- 		kvm_flush_remote_tlbs_with_address(
--				vcpu->kvm, sp->gfn, KVM_PAGES_PER_HPAGE(sp->role.level));
-+				kvm, sp->gfn, KVM_PAGES_PER_HPAGE(sp->role.level));
- 	}
- }
- 
-+static void rmap_add(struct kvm_vcpu *vcpu, const struct kvm_memory_slot *slot,
-+		     u64 *spte, gfn_t gfn)
-+{
-+	__rmap_add(vcpu->kvm, &vcpu->arch.mmu_pte_list_desc_cache, slot, spte, gfn);
-+}
-+
- bool kvm_age_gfn(struct kvm *kvm, struct kvm_gfn_range *range)
- {
- 	bool young = false;
-@@ -1671,13 +1674,13 @@ static unsigned kvm_page_table_hashfn(gfn_t gfn)
- 	return hash_64(gfn, KVM_MMU_HASH_SHIFT);
- }
- 
--static void mmu_page_add_parent_pte(struct kvm_vcpu *vcpu,
-+static void mmu_page_add_parent_pte(struct kvm_mmu_memory_cache *cache,
- 				    struct kvm_mmu_page *sp, u64 *parent_pte)
- {
- 	if (!parent_pte)
- 		return;
- 
--	pte_list_add(vcpu, parent_pte, &sp->parent_ptes);
-+	pte_list_add(cache, parent_pte, &sp->parent_ptes);
- }
- 
- static void mmu_page_remove_parent_pte(struct kvm_mmu_page *sp,
-@@ -2276,8 +2279,8 @@ static void shadow_walk_next(struct kvm_shadow_walk_iterator *iterator)
- 	__shadow_walk_next(iterator, *iterator->sptep);
- }
- 
--static void link_shadow_page(struct kvm_vcpu *vcpu, u64 *sptep,
--			     struct kvm_mmu_page *sp)
-+static void __link_shadow_page(struct kvm_mmu_memory_cache *cache, u64 *sptep,
-+			       struct kvm_mmu_page *sp)
- {
- 	u64 spte;
- 
-@@ -2287,12 +2290,18 @@ static void link_shadow_page(struct kvm_vcpu *vcpu, u64 *sptep,
- 
- 	mmu_spte_set(sptep, spte);
- 
--	mmu_page_add_parent_pte(vcpu, sp, sptep);
-+	mmu_page_add_parent_pte(cache, sp, sptep);
- 
- 	if (sp->unsync_children || sp->unsync)
- 		mark_unsync(sptep);
- }
- 
-+static void link_shadow_page(struct kvm_vcpu *vcpu, u64 *sptep,
-+			     struct kvm_mmu_page *sp)
-+{
-+	__link_shadow_page(&vcpu->arch.mmu_pte_list_desc_cache, sptep, sp);
-+}
-+
- static void validate_direct_spte(struct kvm_vcpu *vcpu, u64 *sptep,
- 				   unsigned direct_access)
- {
--- 
-2.36.0.550.gb090851708-goog
+I saw in the "arch/arm64/boot/dts/freescale/fsl-ls1012a-frdm.dts" file 
+that the clock
+node was placed inside the SC16IS752 node, and I found that some 
+RaspberryPi developers
+did the same. I think the reason them do this may be because the clock 
+of SC16IS752 is
+provided by the oscillator circuit inside the chip (an external crystal 
+oscillator is
+required). If you feel this is inappropriate, I will leave the clock 
+node alone.
 
+
+>
+>>           bluetooth@0 {
+>>               compatible = "brcm,bcm43438-bt";
+>>               reg = <0>;
+>>               max-speed = <1000000>;
+>>
+>>               device-wakeup-gpios = <&gpc 26 GPIO_ACTIVE_HIGH>;
+>>               reset-gpios = <&gpb 17 GPIO_ACTIVE_LOW>;
+>>           };
+>>
+>>           bluetooth@1 {
+>>               compatible = "brcm,bcm43438-bt";
+>>               reg = <1>;
+>>               max-speed = <1000000>;
+>>
+>>               device-wakeup-gpios = <&gpc 28 GPIO_ACTIVE_HIGH>;
+>>               reset-gpios = <&gpb 19 GPIO_ACTIVE_LOW>;
+>>           };
+>>       };
+>> };
+>>
+>> This will cause all bluetooth modules to not work, and if the clock node
+>> is moved
+>> to the end of the child node, the bluetooth module connected to ttySC0
+>> can work
+>> normally, which seems to mean that only the first child node can work
+>> correctly.
+>>
+>>
+>>
+>> And I found this patch:
+>>
+>> https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git/commit/drivers/tty/serdev?h=usb-next&id=08fcee289f341786eb3b44e5f2d1dc850943238e
+>>
+>> It seems to mean that the SC16IS752 driver does not correctly
+>> distinguish between
+>> the two serial ports, which makes the serdev driver think that the child
+>> nodes are
+>> on the same serial device bus, which leads to the current problem.
+>>
+>>
+>>>>> Maybe the sc16is752 driver does not separate them for child nodes, i.e. while "reg" should be added it may not be handled?
+>>>> I'm not too sure, I'm not very familiar with serial port systems.
+>>>> If the truth is what you think, how should I improve it?
+>>> Unfortunately I also don't know how the serdev implementation really works.
+>>>
+>>> It was my nagging to make it happen by persistently proposing a non-universal
+>>> solutionsome years ago until one of the maintainers had mercy to write a general
+>>> solution. So I could switch my driver to simply use the serdev API. It was for a GPS
+>>> client device but not a tty side driver.
+>>>
+>>> I think if you look up the first patches for the serdev interface this should
+>>> reveal the original author an he should be able to help.
+>>
+>> The original author of the serdev driver is Rob Herring, the original
+>> author of the
+>> SC16IS752 is Jon Ringle, they are already on the CC list, I also added
+>> Johan Hovold
+>> and the two authors Tomasz Moń and Lech Percza who sent patches to the
+>> sc16is7xx.c
+>> driver in this year.
+>>
+>> Hopefully they can guide us here.
+> I think what needs to happen is of_serdev_register_devices() needs to
+> be passed the port index which can then be used to get the child with
+> a matching address/index.
+>
+> There's not any DT binding that defines how this looks. It could be
+> either the slave devices are direct child nodes like you have or each
+> serial port should have a child node for the port and the grandchild
+> nodes are the slave device. I'd suppose it is possible to have
+> multiple devices muxed to a single port (that's what the comment is
+> about and handling muxed devices would require more work in serdev).
+> That binding would end up looking just like the former style and the
+> serdev core could have a hard time figuring out whether it is multiple
+> ports or multiple mux settings. I suppose we would be able to
+> distinguish that with the presence of mux-control binding or not. In
+> any case, all that needs to be considered before we change serdev.
+
+
+I think it seems that the grandchild node scheme should be more in line 
+with the
+current situation, since on further exploration I found these:
+
+/sys/bus/platform/devices/10043000.spi/spi_master/spi0/spi0.0/serial0/serial0-0
+/sys/bus/platform/devices/10043000.spi/spi_master/spi0/spi0.0/serial1/serial1-0
+
+This means that for the SC16IS752 chip there are two serial device buses 
+(one for
+each serial port). The previous experimental results have proved that 
+the current
+driver does not seem to be able to correctly determine the 
+correspondence between
+two child nodes and two serial device buses, and when I removed the 2nd 
+bluetooth
+device (both module hardware and device tree node) and put the clock 
+node alone,
+I got these:
+
+[    1.208848] Bluetooth: HCI UART driver ver 2.3
+[    1.213302] Bluetooth: HCI UART protocol H4 registered
+[    1.220201] hci_uart_bcm serial0-0: No reset resource, using default 
+baud rate
+[    1.227717] Bluetooth: HCI UART protocol Broadcom registered
+[    1.240239] hci_uart_bcm: probe of serial1-0 failed with error -16
+
+The device tree at this time looks like this:
+
+&ssi0 {
+     status = "okay";
+
+     num-cs = <2>;
+
+     pinctrl-names = "default";
+     pinctrl-0 = <&pins_ssi0>;
+
+     sc16is752: expander@0 {
+         compatible = "nxp,sc16is752";
+         reg = <0>; /* CE0 */
+
+         spi-rx-bus-width = <1>;
+         spi-tx-bus-width = <1>;
+         spi-max-frequency = <4000000>;
+
+         clocks = <&exclk_sc16is752>;
+
+         interrupt-parent = <&gpb>;
+         interrupts = <18 IRQ_TYPE_EDGE_FALLING>;
+
+         gpio-controller;
+         #gpio-cells = <2>;
+
+         bluetooth {
+          compatible = "brcm,bcm43438-bt";
+          max-speed = <1000000>;
+
+          device-wakeup-gpios = <&gpc 26 GPIO_ACTIVE_HIGH>;
+          reset-gpios = <&gpb 17 GPIO_ACTIVE_LOW>;
+         };
+     };
+};
+
+I guess this is also because the current driver can't correctly 
+determine the
+correspondence between the child node and the two serial device buses:
+
+Both serial device buses think that this child node corresponds to 
+themselves,
+so they both try to register it, but because now ttySC1 (corresponding 
+to the
+second serial device bus) is not connected to any bluetooth module, 
+resulting
+in registration failure.
+
+If there are child nodes to represent each port, the correspondence between
+the slave devices (grandchild node) and the serial device buses (child node)
+will be very clear. But unfortunately, it seems that the current SC16IS752
+driver does not support this form (at least there is no relevant information
+in the "Example" given in nxp,sc16is7xx.txt).
+
+I'm not too sure what kind of modifications need to be made to the SC16IS752
+driver to achieve this, could you please give me some guidance (or 
+examples)?
+
+
+Thanks and best regards!
+
+
+>
+> Rob

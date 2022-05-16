@@ -2,56 +2,57 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 50F0EC4321E
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DAFF0C4167B
 	for <linux-mips@archiver.kernel.org>; Mon, 16 May 2022 23:21:54 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350271AbiEPXVx (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 16 May 2022 19:21:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58346 "EHLO
+        id S1350314AbiEPXVy (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 16 May 2022 19:21:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58626 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347171AbiEPXVs (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Mon, 16 May 2022 19:21:48 -0400
-Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 345B43FBCC
-        for <linux-mips@vger.kernel.org>; Mon, 16 May 2022 16:21:47 -0700 (PDT)
-Received: by mail-pg1-x549.google.com with SMTP id j187-20020a638bc4000000b003c1922b0f1bso8009938pge.3
-        for <linux-mips@vger.kernel.org>; Mon, 16 May 2022 16:21:47 -0700 (PDT)
+        with ESMTP id S241555AbiEPXVw (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Mon, 16 May 2022 19:21:52 -0400
+Received: from mail-pf1-x44a.google.com (mail-pf1-x44a.google.com [IPv6:2607:f8b0:4864:20::44a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF588424A7
+        for <linux-mips@vger.kernel.org>; Mon, 16 May 2022 16:21:50 -0700 (PDT)
+Received: by mail-pf1-x44a.google.com with SMTP id h19-20020aa796d3000000b0050d3c025470so6818488pfq.0
+        for <linux-mips@vger.kernel.org>; Mon, 16 May 2022 16:21:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=zkwVRlCBK+wAm9y2qZnwJE+dWQNdd4JJmhlMHaSmu7M=;
-        b=SGzud3XII9ilZZ9cJ3NATl2Luk5qA/LwCNuOYjpzH9/NNzuV3KE0B346ImYvfsFQCc
-         0tLA6vX+cj5T0JRstiFPYMnv70aHhmjTyTbm2lXjOCKi9Lx4rHnaRk/Cai3P/fGpwcKQ
-         /oMLInVXPjO0nLXXDaNjCwNLJPOTDNi3uPQvuu87ZdfYqCcXO6RwhrNeq6GnRNJfsWrW
-         nGCqj+DbMUHntM27KcB4Urc2ysW7SAnYBM7SbRlbYXrTDqqNj151FR48GSNq1Np503Mh
-         LzIQZ9K1g0eU3RKZeI8fpekfOxvTE12ARh7w8l+hazJRQeVT/+D/VPVkmyBUW3LKkXFS
-         mL8w==
+        bh=zRMoSkvlQMP0J3ZIrEKBPQbye/eobLBhFHUHq0UrotA=;
+        b=i4b8Sslhrx4Dwm3WSL32Kj53fMSbDzAQvsPQPAktc+O5vIsHbyIEY27MK7N6q7UBN3
+         mz4EBbel/cl83mS7bOt2BVROPvsrBHTIYINgpbiPLpvhdPYB5E7jlHgR46KRIhjSxSDV
+         GK4sTqMGhwWliylW0By2yW6CNjL4QKa8QHIBtqOuYcAF5+CXL2+rTW5pk16pM9TSOlVk
+         FFygOSZ122EqPc1ySnPkEiL185tl1JSLSBPplBYXXzNdmYSjAVQ0RKdzONodYoyC4ZC+
+         zJ0g4GncB0koOyAjBByr0BTyp4yRdGijrNYa4GoDtUxtyMwLyyDlbE41kDKfdLCAHsrD
+         tqsg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=zkwVRlCBK+wAm9y2qZnwJE+dWQNdd4JJmhlMHaSmu7M=;
-        b=JLbhcLQiaeAs/4Eea/56x3qKPFWIZLqlRi6shZV7xQMUdbDO0UlzP9vyRga2CrYSNn
-         pi0MiYahPLepJ4GWwGj2a5UJC60uLD4QX0ZK8HE6yIrbHPZysRT6B2IOtW9PtM+IGOCJ
-         JxQlUV1o635uJlBv+5peAePnz5mV3hwizLi1By4+HcL1K/GSZzICF2gm1a7rttXkz3SM
-         jxMZ4Pm/nnNgLoam7t5GXndq4A9pKXZWw0ZNi7MOmNxf7jzqLlJwUhV+u0xpI+GGU7AB
-         eBR2o4kqB8xkInnwdFQd26l1T577s7qxU8U/PHHVnTcxzjQDInFcXIufh+5MPtCZZb98
-         JbUw==
-X-Gm-Message-State: AOAM530GwrKX36M74lslqRhOXFZ79rLizPNwptPcaKlmaurhxbiW0q94
-        RNzMkgQZLN2tKdqvPJvgZ7DT9q1OX1it2A==
-X-Google-Smtp-Source: ABdhPJz8uccrEg4IPlytWVMEEgGF+hD2GjvQMOQbByqnliBhoAzZpHlwpUaLTsvf9VDP6uHQSyDcXWSqIuJRug==
+        bh=zRMoSkvlQMP0J3ZIrEKBPQbye/eobLBhFHUHq0UrotA=;
+        b=UgbuRRjAB1ylefauMO83U5AYXfqclYPLry5ZZ35pq312dXZKkU57WLQ9nP57OCOTIM
+         /u7SrhSrZcm3+PLvsWfZCTrTJpHhSxWvL/Y1vyW9a9yZQG+mFJmMKfoidnwuCNbrE8HW
+         Rb/ICvtxsSTaMlHZP+lEQMhpkuZMHQM8VuasBjrYprr0umziYmiemxZaR9gKo4l98K1x
+         whssoW8WGzci3FFi1aTiax+88ykds/SIoAQphIhTHCqfvk/XoccbviNdoat1xuU7cYjn
+         1AzoE1CVlE4J7vQ55OaabGWnJl8Oc/C7w3kmtXx/gSpzCvAi1jKHcRxv8veXKER9wZJw
+         4h6w==
+X-Gm-Message-State: AOAM5306ozCm/vsgFofMywD9S9Rpwp0nWsbU1PwkgO8bkECGj8HW2Xnc
+        ynGJghEzsKWj5yAk06qTQ6OXITLYxD/wnw==
+X-Google-Smtp-Source: ABdhPJwy2kPS7xTJ6DpUF909sFIWOnposTjd2jt6sbppESZNKwX/KGB2h4UmBZiOf2Df48+ykx72Muh7GNZbZA==
 X-Received: from dmatlack-heavy.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:19cd])
- (user=dmatlack job=sendgmr) by 2002:a17:903:40d1:b0:15e:f8ee:c278 with SMTP
- id t17-20020a17090340d100b0015ef8eec278mr19695401pld.100.1652743306698; Mon,
- 16 May 2022 16:21:46 -0700 (PDT)
-Date:   Mon, 16 May 2022 23:21:19 +0000
+ (user=dmatlack job=sendgmr) by 2002:a17:90a:8d83:b0:1dd:258c:7c55 with SMTP
+ id d3-20020a17090a8d8300b001dd258c7c55mr4003pjo.1.1652743309580; Mon, 16 May
+ 2022 16:21:49 -0700 (PDT)
+Date:   Mon, 16 May 2022 23:21:21 +0000
 In-Reply-To: <20220516232138.1783324-1-dmatlack@google.com>
-Message-Id: <20220516232138.1783324-4-dmatlack@google.com>
+Message-Id: <20220516232138.1783324-6-dmatlack@google.com>
 Mime-Version: 1.0
 References: <20220516232138.1783324-1-dmatlack@google.com>
 X-Mailer: git-send-email 2.36.0.550.gb090851708-goog
-Subject: [PATCH v6 03/22] KVM: x86/mmu: Stop passing @direct to mmu_alloc_root()
+Subject: [PATCH v6 05/22] KVM: x86/mmu: Always pass 0 for @quadrant when gptes
+ are 8 bytes
 From:   David Matlack <dmatlack@google.com>
 To:     Paolo Bonzini <pbonzini@redhat.com>
 Cc:     Marc Zyngier <maz@kernel.org>, Huacai Chen <chenhuacai@kernel.org>,
@@ -79,63 +80,64 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-The argument @direct is vcpu->arch.mmu->root_role.direct, so just use
-that.
+The quadrant is only used when gptes are 4 bytes, but
+mmu_alloc_{direct,shadow}_roots() pass in a non-zero quadrant for PAE
+page directories regardless. Make this less confusing by only passing in
+a non-zero quadrant when it is actually necessary.
 
-Suggested-by: Lai Jiangshan <jiangshanlai@gmail.com>
 Signed-off-by: David Matlack <dmatlack@google.com>
 ---
- arch/x86/kvm/mmu/mmu.c | 11 ++++++-----
- 1 file changed, 6 insertions(+), 5 deletions(-)
+ arch/x86/kvm/mmu/mmu.c | 18 ++++++++++++++----
+ 1 file changed, 14 insertions(+), 4 deletions(-)
 
 diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-index 34fb0cddff2b..a9d28bcabcbb 100644
+index 515e0b33144a..8508c4bfddb5 100644
 --- a/arch/x86/kvm/mmu/mmu.c
 +++ b/arch/x86/kvm/mmu/mmu.c
-@@ -3370,8 +3370,9 @@ static int mmu_check_root(struct kvm_vcpu *vcpu, gfn_t root_gfn)
- }
- 
- static hpa_t mmu_alloc_root(struct kvm_vcpu *vcpu, gfn_t gfn, gva_t gva,
--			    u8 level, bool direct)
-+			    u8 level)
- {
-+	bool direct = vcpu->arch.mmu->root_role.direct;
+@@ -3406,9 +3406,10 @@ static hpa_t mmu_alloc_root(struct kvm_vcpu *vcpu, gfn_t gfn, int quadrant,
  	struct kvm_mmu_page *sp;
  
- 	sp = kvm_mmu_get_page(vcpu, gfn, gva, level, direct, ACC_ALL);
-@@ -3397,7 +3398,7 @@ static int mmu_alloc_direct_roots(struct kvm_vcpu *vcpu)
- 		root = kvm_tdp_mmu_get_vcpu_root_hpa(vcpu);
- 		mmu->root.hpa = root;
- 	} else if (shadow_root_level >= PT64_ROOT_4LEVEL) {
--		root = mmu_alloc_root(vcpu, 0, 0, shadow_root_level, true);
-+		root = mmu_alloc_root(vcpu, 0, 0, shadow_root_level);
- 		mmu->root.hpa = root;
- 	} else if (shadow_root_level == PT32E_ROOT_LEVEL) {
- 		if (WARN_ON_ONCE(!mmu->pae_root)) {
-@@ -3409,7 +3410,7 @@ static int mmu_alloc_direct_roots(struct kvm_vcpu *vcpu)
+ 	role.level = level;
++	role.quadrant = quadrant;
+ 
+-	if (role.has_4_byte_gpte)
+-		role.quadrant = quadrant;
++	WARN_ON_ONCE(quadrant && !role.has_4_byte_gpte);
++	WARN_ON_ONCE(role.direct && role.has_4_byte_gpte);
+ 
+ 	sp = kvm_mmu_get_page(vcpu, gfn, role);
+ 	++sp->root_count;
+@@ -3444,7 +3445,7 @@ static int mmu_alloc_direct_roots(struct kvm_vcpu *vcpu)
+ 		for (i = 0; i < 4; ++i) {
  			WARN_ON_ONCE(IS_VALID_PAE_ROOT(mmu->pae_root[i]));
  
- 			root = mmu_alloc_root(vcpu, i << (30 - PAGE_SHIFT),
--					      i << 30, PT32_ROOT_LEVEL, true);
-+					      i << 30, PT32_ROOT_LEVEL);
+-			root = mmu_alloc_root(vcpu, i << (30 - PAGE_SHIFT), i,
++			root = mmu_alloc_root(vcpu, i << (30 - PAGE_SHIFT), 0,
+ 					      PT32_ROOT_LEVEL);
  			mmu->pae_root[i] = root | PT_PRESENT_MASK |
  					   shadow_me_mask;
- 		}
-@@ -3533,7 +3534,7 @@ static int mmu_alloc_shadow_roots(struct kvm_vcpu *vcpu)
- 	 */
- 	if (mmu->cpu_role.base.level >= PT64_ROOT_4LEVEL) {
- 		root = mmu_alloc_root(vcpu, root_gfn, 0,
--				      mmu->root_role.level, false);
-+				      mmu->root_role.level);
- 		mmu->root.hpa = root;
- 		goto set_root_pgd;
- 	}
-@@ -3579,7 +3580,7 @@ static int mmu_alloc_shadow_roots(struct kvm_vcpu *vcpu)
+@@ -3529,6 +3530,7 @@ static int mmu_alloc_shadow_roots(struct kvm_vcpu *vcpu)
+ 	struct kvm_mmu *mmu = vcpu->arch.mmu;
+ 	u64 pdptrs[4], pm_mask;
+ 	gfn_t root_gfn, root_pgd;
++	unsigned int quadrant;
+ 	hpa_t root;
+ 	unsigned i;
+ 	int r;
+@@ -3614,7 +3616,15 @@ static int mmu_alloc_shadow_roots(struct kvm_vcpu *vcpu)
+ 			root_gfn = pdptrs[i] >> PAGE_SHIFT;
  		}
  
- 		root = mmu_alloc_root(vcpu, root_gfn, i << 30,
--				      PT32_ROOT_LEVEL, false);
-+				      PT32_ROOT_LEVEL);
+-		root = mmu_alloc_root(vcpu, root_gfn, i, PT32_ROOT_LEVEL);
++		/*
++		 * If shadowing 32-bit non-PAE page tables, each PAE page
++		 * directory maps one quarter of the guest's non-PAE page
++		 * directory. Othwerise each PAE page direct shadows one guest
++		 * PAE page directory so that quadrant should be 0.
++		 */
++		quadrant = (mmu->cpu_role.base.level == PT32_ROOT_LEVEL) ? i : 0;
++
++		root = mmu_alloc_root(vcpu, root_gfn, quadrant, PT32_ROOT_LEVEL);
  		mmu->pae_root[i] = root | pm_mask;
  	}
  

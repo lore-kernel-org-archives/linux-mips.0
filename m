@@ -2,56 +2,57 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C9902C433EF
-	for <linux-mips@archiver.kernel.org>; Mon, 16 May 2022 23:22:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 63121C433F5
+	for <linux-mips@archiver.kernel.org>; Mon, 16 May 2022 23:22:34 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350430AbiEPXWc (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 16 May 2022 19:22:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59708 "EHLO
+        id S1350522AbiEPXWd (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 16 May 2022 19:22:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32896 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350447AbiEPXWU (ORCPT
+        with ESMTP id S1350448AbiEPXWU (ORCPT
         <rfc822;linux-mips@vger.kernel.org>); Mon, 16 May 2022 19:22:20 -0400
 Received: from mail-pg1-x54a.google.com (mail-pg1-x54a.google.com [IPv6:2607:f8b0:4864:20::54a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80CEB46B36
-        for <linux-mips@vger.kernel.org>; Mon, 16 May 2022 16:22:08 -0700 (PDT)
-Received: by mail-pg1-x54a.google.com with SMTP id p37-20020a631e65000000b003f266605a63so2392878pgm.5
-        for <linux-mips@vger.kernel.org>; Mon, 16 May 2022 16:22:08 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 388AC4704C
+        for <linux-mips@vger.kernel.org>; Mon, 16 May 2022 16:22:10 -0700 (PDT)
+Received: by mail-pg1-x54a.google.com with SMTP id h128-20020a636c86000000b003c574b3422aso7999374pgc.12
+        for <linux-mips@vger.kernel.org>; Mon, 16 May 2022 16:22:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=lm/bHTT/Nz8oe32Uk0HDnsFMBQkCUXnMmKcicUoGXfs=;
-        b=AiqFginchKqcmSIXeGtxPSBqb5MV1TnDVoarAOH7O4D7Zlwlhc8wdW1cAOq5/xNi5J
-         R4cHtwg9tW5UB/VNcissYapZvSpM9wSgWWr3dToUQG8YTIe6NchLfycinkA78fiQCN76
-         vlpsSJF0DyEhWxOFdrKCBjBG2kcCiPwCmp0TcOPcuPjD8prOEZ83AEv3sAVWPFmN/but
-         c2b0w9QbsvQbdE/Jehn+mo7pVEoU1Pd54G1MAmuCbm+7injGhfmnBG+Heq87ygFDb1h4
-         f++8OV2Cf3dOPV2B3RVqKJxop7CsrC4FHzXRm4eYeqU9LvpzZz3DxK29IAgBtoTTm5XP
-         JUEw==
+        bh=q0LsgOUH6fh/EMGEgMPSdRPwXrsuMMeqwhsgKGGJKHM=;
+        b=sYxBRUC4xCN0gxlNhyXh4ufIMQqfDpQw9fg0VVL0zI2FMLrgq4nlCYyXlslYTTGplN
+         VQrupVuKsqXc2SNFb2+VhZQRxQOvM2YnH3q3YSFqPcm692rXWSh+NUl7k+d70kZa9eBB
+         wxXdK/rsf+VNmJTQrWXEeM16bukVzOiurMq+cIDEC3jlVkM7E7l/hPAPO4kMJltEVJ2+
+         EQc+TESlu4v97mzryGnMTnAze7LS9b7TvaoA/H18t856AtOc1lpnM5DyaPUiUz3DwjzB
+         LNs3hvGx1VHDzpqotysdCyaQw0PxsX3Spv268K6bsyFhPR8sgZ8yP/+B5u+LOfsPTGIJ
+         mzfg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=lm/bHTT/Nz8oe32Uk0HDnsFMBQkCUXnMmKcicUoGXfs=;
-        b=MY9zB+4iUeyyCczuQ9hgIe+2Ue/m67N3nlmTc1DI2XHdeijZFx/qi2EvvCMV7s5jWN
-         9ktyTTGvCRheADtrIM4IxOyoqyfqyT9zrvT1ykU/JDzvtxdZJGBvQzQOJfUcQfNtXrkH
-         BpNoliVSNfS62Mra/Kr9vdvdSOzxD/VGSJ4pzT56PNgBYgfsaJ1GE/cS6Os8EVeXtGEZ
-         w+5+C+fTIqpX7HGpU0+59Ei5N0vPOB/Y9Re6uK7JQdwkdPjEe6jbXQ11wbLAX11xqM6g
-         9EbuH0kF+649OjfMmBdtn5mCEVcSjIlyxLLRKZR4Y2NUF58n6hZcx4UFAldqZ6mkwFn5
-         MAVQ==
-X-Gm-Message-State: AOAM533q1djcpqm4uHvOgBjiU0wVyQxJjq1T9TxjI5UHoRBVPEupc12b
-        BxdjtrzQOWy/PfI35NtGlzv/wYx4hmcREQ==
-X-Google-Smtp-Source: ABdhPJwB+FxzZW/zPu8VVr2QPbr7iRVb68cU3Dq9pd0u3oH6GpNdggozRZ5n4LJYaNZrt+GtEc+lvCKMYAzKJQ==
+        bh=q0LsgOUH6fh/EMGEgMPSdRPwXrsuMMeqwhsgKGGJKHM=;
+        b=agXy2yaizS2RKZLC/Rg4JYiG+CJea8BOTdMQNcWYT2HcCawFrZ364uHileVdaLq8wZ
+         piLgwE4aqTet6O8/qTMPFk+8o+9I7jhi8Eth54mjYvHdRAzObeNDZi6BUyOWG9hhYvWc
+         bWwxXzDW3u54XxgdWM4wIedO9XEFTL4IOirCHmca3stFtllSvVdqQMhlfCOII5rllGLk
+         tPEORcIRKtLHYPqlvndl2Q9mWO2Fe+bjK/WiBYGXwUt7+pcbPVqxZS+cbEtgq0NzDCMH
+         NtFZ+PFhdMa8LBOguhXC5745GXgAkJCOfHjB2QNMFJz1GJkkvCj9SduYtdaKQa96QjGI
+         uoOg==
+X-Gm-Message-State: AOAM532mWAEWfko1bcY3D5pMNifmsjRmYEvdtYh6z2cn3M1bTfzI0rVr
+        fatpM4O7CCGleo++A+KrUKPBb/G7wW9zMA==
+X-Google-Smtp-Source: ABdhPJxxVc2X+E/BqhlrQUzowWpF74AF8VV0DkGvXIAS9U+w0AyQGB7MWZQd1uKFsOcBrtNhibS7p0Bf0PvO6g==
 X-Received: from dmatlack-heavy.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:19cd])
- (user=dmatlack job=sendgmr) by 2002:a63:235c:0:b0:3c5:f761:12fd with SMTP id
- u28-20020a63235c000000b003c5f76112fdmr16850570pgm.416.1652743327301; Mon, 16
- May 2022 16:22:07 -0700 (PDT)
-Date:   Mon, 16 May 2022 23:21:32 +0000
+ (user=dmatlack job=sendgmr) by 2002:a17:903:22d2:b0:15e:a3a4:918c with SMTP
+ id y18-20020a17090322d200b0015ea3a4918cmr19126527plg.36.1652743330438; Mon,
+ 16 May 2022 16:22:10 -0700 (PDT)
+Date:   Mon, 16 May 2022 23:21:34 +0000
 In-Reply-To: <20220516232138.1783324-1-dmatlack@google.com>
-Message-Id: <20220516232138.1783324-17-dmatlack@google.com>
+Message-Id: <20220516232138.1783324-19-dmatlack@google.com>
 Mime-Version: 1.0
 References: <20220516232138.1783324-1-dmatlack@google.com>
 X-Mailer: git-send-email 2.36.0.550.gb090851708-goog
-Subject: [PATCH v6 16/22] KVM: x86/mmu: Update page stats in __rmap_add()
+Subject: [PATCH v6 18/22] KVM: x86/mmu: Extend make_huge_page_split_spte() for
+ the shadow MMU
 From:   David Matlack <dmatlack@google.com>
 To:     Paolo Bonzini <pbonzini@redhat.com>
 Cc:     Marc Zyngier <maz@kernel.org>, Huacai Chen <chenhuacai@kernel.org>,
@@ -79,40 +80,98 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Update the page stats in __rmap_add() rather than at the call site. This
-will avoid having to manually update page stats when splitting huge
-pages in a subsequent commit.
+Currently make_huge_page_split_spte() assumes execute permissions can be
+granted to any 4K SPTE when splitting huge pages. This is true for the
+TDP MMU but is not necessarily true for the shadow MMU, since KVM may be
+shadowing a non-executable huge page.
+
+To fix this, pass in the role of the child shadow page where the huge
+page will be split and derive the execution permission from that.  This
+is correct because huge pages are always split with direct shadow page
+and thus the shadow page role contains the correct access permissions.
 
 No functional change intended.
 
-Reviewed-by: Ben Gardon <bgardon@google.com>
-Reviewed-by: Peter Xu <peterx@redhat.com>
 Signed-off-by: David Matlack <dmatlack@google.com>
 ---
- arch/x86/kvm/mmu/mmu.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ arch/x86/kvm/mmu/spte.c    | 16 ++++++++--------
+ arch/x86/kvm/mmu/spte.h    |  2 +-
+ arch/x86/kvm/mmu/tdp_mmu.c |  2 +-
+ 3 files changed, 10 insertions(+), 10 deletions(-)
 
-diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-index 15c0f03848d3..6aef85dac1e2 100644
---- a/arch/x86/kvm/mmu/mmu.c
-+++ b/arch/x86/kvm/mmu/mmu.c
-@@ -1588,6 +1588,8 @@ static void __rmap_add(struct kvm *kvm,
+diff --git a/arch/x86/kvm/mmu/spte.c b/arch/x86/kvm/mmu/spte.c
+index b5960bbde7f7..237e8dc12993 100644
+--- a/arch/x86/kvm/mmu/spte.c
++++ b/arch/x86/kvm/mmu/spte.c
+@@ -244,10 +244,10 @@ static u64 make_spte_executable(u64 spte)
+  * This is used during huge page splitting to build the SPTEs that make up the
+  * new page table.
+  */
+-u64 make_huge_page_split_spte(u64 huge_spte, int huge_level, int index)
++u64 make_huge_page_split_spte(u64 huge_spte, union kvm_mmu_page_role role,
++			      int index)
+ {
+ 	u64 child_spte;
+-	int child_level;
  
- 	sp = sptep_to_sp(spte);
- 	kvm_mmu_page_set_gfn(sp, spte - sp->spt, gfn);
-+	kvm_update_page_stats(kvm, sp->role.level, 1);
-+
- 	rmap_head = gfn_to_rmap(gfn, sp->role.level, slot);
- 	rmap_count = pte_list_add(cache, spte, rmap_head);
+ 	if (WARN_ON_ONCE(!is_shadow_present_pte(huge_spte)))
+ 		return 0;
+@@ -256,23 +256,23 @@ u64 make_huge_page_split_spte(u64 huge_spte, int huge_level, int index)
+ 		return 0;
  
-@@ -2810,7 +2812,6 @@ static int mmu_set_spte(struct kvm_vcpu *vcpu, struct kvm_memory_slot *slot,
+ 	child_spte = huge_spte;
+-	child_level = huge_level - 1;
  
- 	if (!was_rmapped) {
- 		WARN_ON_ONCE(ret == RET_PF_SPURIOUS);
--		kvm_update_page_stats(vcpu->kvm, level, 1);
- 		rmap_add(vcpu, slot, sptep, gfn);
+ 	/*
+ 	 * The child_spte already has the base address of the huge page being
+ 	 * split. So we just have to OR in the offset to the page at the next
+ 	 * lower level for the given index.
+ 	 */
+-	child_spte |= (index * KVM_PAGES_PER_HPAGE(child_level)) << PAGE_SHIFT;
++	child_spte |= (index * KVM_PAGES_PER_HPAGE(role.level)) << PAGE_SHIFT;
+ 
+-	if (child_level == PG_LEVEL_4K) {
++	if (role.level == PG_LEVEL_4K) {
+ 		child_spte &= ~PT_PAGE_SIZE_MASK;
+ 
+ 		/*
+-		 * When splitting to a 4K page, mark the page executable as the
+-		 * NX hugepage mitigation no longer applies.
++		 * When splitting to a 4K page where execution is allowed, mark
++		 * the page executable as the NX hugepage mitigation no longer
++		 * applies.
+ 		 */
+-		if (is_nx_huge_page_enabled())
++		if ((role.access & ACC_EXEC_MASK) && is_nx_huge_page_enabled())
+ 			child_spte = make_spte_executable(child_spte);
  	}
  
+diff --git a/arch/x86/kvm/mmu/spte.h b/arch/x86/kvm/mmu/spte.h
+index 0127bb6e3c7d..3dada44cc066 100644
+--- a/arch/x86/kvm/mmu/spte.h
++++ b/arch/x86/kvm/mmu/spte.h
+@@ -425,7 +425,7 @@ bool make_spte(struct kvm_vcpu *vcpu, struct kvm_mmu_page *sp,
+ 	       unsigned int pte_access, gfn_t gfn, kvm_pfn_t pfn,
+ 	       u64 old_spte, bool prefetch, bool can_unsync,
+ 	       bool host_writable, u64 *new_spte);
+-u64 make_huge_page_split_spte(u64 huge_spte, int huge_level, int index);
++u64 make_huge_page_split_spte(u64 huge_spte, union kvm_mmu_page_role role, int index);
+ u64 make_nonleaf_spte(u64 *child_pt, bool ad_disabled);
+ u64 make_mmio_spte(struct kvm_vcpu *vcpu, u64 gfn, unsigned int access);
+ u64 mark_spte_for_access_track(u64 spte);
+diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
+index 841feaa48be5..a5472ee56080 100644
+--- a/arch/x86/kvm/mmu/tdp_mmu.c
++++ b/arch/x86/kvm/mmu/tdp_mmu.c
+@@ -1488,7 +1488,7 @@ static int tdp_mmu_split_huge_page(struct kvm *kvm, struct tdp_iter *iter,
+ 	 * not been linked in yet and thus is not reachable from any other CPU.
+ 	 */
+ 	for (i = 0; i < PT64_ENT_PER_PAGE; i++)
+-		sp->spt[i] = make_huge_page_split_spte(huge_spte, level, i);
++		sp->spt[i] = make_huge_page_split_spte(huge_spte, sp->role, i);
+ 
+ 	/*
+ 	 * Replace the huge spte with a pointer to the populated lower level
 -- 
 2.36.0.550.gb090851708-goog
 

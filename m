@@ -2,59 +2,60 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 48FE9C433EF
-	for <linux-mips@archiver.kernel.org>; Mon, 16 May 2022 21:38:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 22247C433FE
+	for <linux-mips@archiver.kernel.org>; Mon, 16 May 2022 23:21:51 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1349416AbiEPViv (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 16 May 2022 17:38:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46460 "EHLO
+        id S238802AbiEPXVt (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 16 May 2022 19:21:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58178 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1349430AbiEPVij (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Mon, 16 May 2022 17:38:39 -0400
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D4AF419BE
-        for <linux-mips@vger.kernel.org>; Mon, 16 May 2022 14:38:37 -0700 (PDT)
-Received: by mail-lf1-x12c.google.com with SMTP id y32so28076816lfa.6
-        for <linux-mips@vger.kernel.org>; Mon, 16 May 2022 14:38:37 -0700 (PDT)
+        with ESMTP id S239046AbiEPXVo (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Mon, 16 May 2022 19:21:44 -0400
+Received: from mail-pj1-x104a.google.com (mail-pj1-x104a.google.com [IPv6:2607:f8b0:4864:20::104a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BDC836152
+        for <linux-mips@vger.kernel.org>; Mon, 16 May 2022 16:21:44 -0700 (PDT)
+Received: by mail-pj1-x104a.google.com with SMTP id o8-20020a17090a9f8800b001dc9f554c7fso8824009pjp.4
+        for <linux-mips@vger.kernel.org>; Mon, 16 May 2022 16:21:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=RGRQiwR6nMDWdELQLZomuoHgNcB74pq7BSHN33rcyck=;
-        b=IsfR/Ba8Lmb+VJH2OG0mIgzWKLWgJSZ7G3RtQlM9ozVeYj+IjPRW4gphkF+ePx5pPK
-         /ARCnfbfKxB+CrmtIHAtVCy/macGC66sVlMQi2bYubo+LAEtIO2ur2X295UsCC4eOE7v
-         82TwvhmCNXtTf3reKHYT8k0OGZeIsyEqRaJx26mbJ9PuGA9weeVgy1owjHYkgctW2uN4
-         J04QlA82V/guPrOqw6heaj2eGWVasuQemmz6eps1IOJRq+16ntEJ8ldA2QCPV0k9PUqe
-         +2W1gTouJaPx1cvAB/rQVOnqnr4Q4qGiHJtgvdFD2hP4wp1H9uXHLOnm7lsfl8f+cuQj
-         zHVw==
+        bh=nd6Dxj+D3c/luGLy1QY1Ne5KCdEStn7D54niackY8Gg=;
+        b=i3uMJsKKZ/XQE4JHEj68rSTKlYb1NduEyUOZ3xS8XgWD9SjI/+SpqpYTidv2LQax4s
+         Kt2YfPCb390F3PDSFpc8dol9kk4EG2+VQ3LPEM39lW4asDIdueiF9ywQRN7ZDdQHFPxS
+         rjhXVZnTN3vQ1YyLF4Siw+CKlwy2IblDNMYwQZP8ODwweFgU3BUeA3pYmSiUZMJFO51g
+         gsn0ARDvZSuDL4E1HO+la9IDrMmxJJ3zomsyr8N+H2unSOY4V2ClpS2op9i2dY6w6twK
+         e76qUp9gPrSFHtqa97W8KhPb9zpg7aH3Sfxmp1NwBZk+eIe5o8iS9qIP7BftkJKcbzvR
+         Mm/g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=RGRQiwR6nMDWdELQLZomuoHgNcB74pq7BSHN33rcyck=;
-        b=JRoi26I00B7U7NPPqmstvJ/gVieOxdaa6cf+wtbNufh4JqPHcvz2jD1p854gvj3ePe
-         RyonafVgNilG1SDCfnqPgwL3aCZwMSR11b/dTKmQhi4DdJR16tvUiSsk7AD16Zr6QB4X
-         vClrqXCX69tfxTxqiQvDQdriZm7w+jXKIZpI8mIRBWGpfdT9qwBzD3BKbvf7qD3E1bFh
-         4LNsQxydGiAAwBdXs1HNigP4uaE7Ov/k09yB/kUmMD0w5N9Svf9gbkdaxptnhGVV3JTj
-         09pU+43ZWyk+UCIRDDBowW3kJ+UfKDAQE4ewBKp4XKtjo/rGcyNs/7eaXgJ0c/tpXujI
-         P7qA==
-X-Gm-Message-State: AOAM533owTwcMZj9c4NzDKkmujVr52GVkDvaS9kt1SBwRlTlOIXWhfWs
-        vV15j+PpGOq/dHMRHbUoAsL7I7VzZlvR5HJn4j0Lfg==
-X-Google-Smtp-Source: ABdhPJzhERAS9lHQHB6Dz/Db29pEQFX1daKzVrhh48FjaZbwCqNewI9tJhfWv44RYQoQCBR3iXMGVI6TmcXJ2YsQ79g=
-X-Received: by 2002:ac2:5399:0:b0:472:1f95:85df with SMTP id
- g25-20020ac25399000000b004721f9585dfmr14058450lfh.102.1652737115690; Mon, 16
- May 2022 14:38:35 -0700 (PDT)
-MIME-Version: 1.0
-References: <20220513202819.829591-1-dmatlack@google.com> <20220513202819.829591-4-dmatlack@google.com>
- <CAJhGHyAU_5Esn6i-eeBNKOh4XenOc9_1aiF8N0+CeMF5yyhxew@mail.gmail.com>
-In-Reply-To: <CAJhGHyAU_5Esn6i-eeBNKOh4XenOc9_1aiF8N0+CeMF5yyhxew@mail.gmail.com>
+        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=nd6Dxj+D3c/luGLy1QY1Ne5KCdEStn7D54niackY8Gg=;
+        b=YSD74cre7T1sQob2u+pfVAkccGbX2UpnuKL5bq0uUcNjAlkXbAGQUIRoJCQpqLOeMb
+         FOmJY6ZTqlvsmsCPeKhG57dUFodueysaxHB2A+k65gq0Zdhi7EskV7QN1nWYpW3sSjt1
+         cMO9dFNikyH0yS0+xsDc3z1U3lAYlu/dk9c9p6Qu1LY+4CVVztJkVIKxfgk+RlPjxtP7
+         ooHSddHAfFGEMf/xzIF6xXidNbNpDiNpK5O8XrKtxJ54yhROPhm/9lNiO+KxuD2cwDRi
+         0hj9kPnuCua5cxB/00JxIJibVe/wOLAbWNLqIaat6OdTw+yhym2Ia9PVmZtYR4zlvtKa
+         3eBQ==
+X-Gm-Message-State: AOAM531koNsbUQyUKnK+PfQ1bX0d+YiHniFddn7omNhFwJdhes+Pl1d8
+        xlxuGaM2QlsY4OMvJ+hY/X1o6OZZHxAKKg==
+X-Google-Smtp-Source: ABdhPJwZ4hPASu3hwlbQApjM3Qpw4pmZCcc7AWStf7IYvk7O3j5Z1wZRMVRJ5UOh13coV7lr1j1BYTYIPZhckg==
+X-Received: from dmatlack-heavy.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:19cd])
+ (user=dmatlack job=sendgmr) by 2002:a17:903:30d2:b0:161:70be:bf86 with SMTP
+ id s18-20020a17090330d200b0016170bebf86mr8770769plc.18.1652743303616; Mon, 16
+ May 2022 16:21:43 -0700 (PDT)
+Date:   Mon, 16 May 2022 23:21:17 +0000
+In-Reply-To: <20220516232138.1783324-1-dmatlack@google.com>
+Message-Id: <20220516232138.1783324-2-dmatlack@google.com>
+Mime-Version: 1.0
+References: <20220516232138.1783324-1-dmatlack@google.com>
+X-Mailer: git-send-email 2.36.0.550.gb090851708-goog
+Subject: [PATCH v6 01/22] KVM: x86/mmu: Optimize MMU page cache lookup for all
+ direct SPs
 From:   David Matlack <dmatlack@google.com>
-Date:   Mon, 16 May 2022 14:38:09 -0700
-Message-ID: <CALzav=cOS580FMr3zoDT+efYaBDSPSq+m84a1jQBv+jt3xvnqA@mail.gmail.com>
-Subject: Re: [PATCH v5 03/21] KVM: x86/mmu: Derive shadow MMU page role from parent
-To:     Lai Jiangshan <jiangshanlai@gmail.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
-        Huacai Chen <chenhuacai@kernel.org>,
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Marc Zyngier <maz@kernel.org>, Huacai Chen <chenhuacai@kernel.org>,
         Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
         Anup Patel <anup@brainfault.org>,
         Paul Walmsley <paul.walmsley@sifive.com>,
@@ -63,7 +64,7 @@ Cc:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
         Sean Christopherson <seanjc@google.com>,
         Andrew Jones <drjones@redhat.com>,
         Ben Gardon <bgardon@google.com>, Peter Xu <peterx@redhat.com>,
-        "Maciej S . Szmigiero" <maciej.szmigiero@oracle.com>,
+        maciej.szmigiero@oracle.com,
         "moderated list:KERNEL VIRTUAL MACHINE FOR ARM64 (KVM/arm64)" 
         <kvmarm@lists.cs.columbia.edu>,
         "open list:KERNEL VIRTUAL MACHINE FOR MIPS (KVM/mips)" 
@@ -71,52 +72,58 @@ Cc:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
         "open list:KERNEL VIRTUAL MACHINE FOR MIPS (KVM/mips)" 
         <kvm@vger.kernel.org>,
         "open list:KERNEL VIRTUAL MACHINE FOR RISC-V (KVM/riscv)" 
-        <kvm-riscv@lists.infradead.org>, Peter Feiner <pfeiner@google.com>
+        <kvm-riscv@lists.infradead.org>, Peter Feiner <pfeiner@google.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        David Matlack <dmatlack@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Sun, May 15, 2022 at 11:55 PM Lai Jiangshan <jiangshanlai@gmail.com> wrote:
->
-> On Sat, May 14, 2022 at 4:28 AM David Matlack <dmatlack@google.com> wrote:
->
-> > -static hpa_t mmu_alloc_root(struct kvm_vcpu *vcpu, gfn_t gfn, gva_t gva,
-> > +static hpa_t mmu_alloc_root(struct kvm_vcpu *vcpu, gfn_t gfn, int quadrant,
-> >                             u8 level, bool direct)
-> >  {
-> > +       union kvm_mmu_page_role role;
-> >         struct kvm_mmu_page *sp;
-> >
-> > -       sp = kvm_mmu_get_page(vcpu, gfn, gva, level, direct, ACC_ALL);
-> > +       role = vcpu->arch.mmu->root_role;
-> > +       role.level = level;
-> > +       role.direct = direct;
-> > +       role.access = ACC_ALL;
-> > +
-> > +       if (role.has_4_byte_gpte)
-> > +               role.quadrant = quadrant;
-> > +
-> > +       if (level <= vcpu->arch.mmu->cpu_role.base.level)
-> > +               role.passthrough = 0;
-> > +
->
->
->
-> +       role.level = level;
-> +
-> +       if (role.has_4_byte_gpte)
-> +               role.quadrant = quadrant;
->
-> Only these lines are needed because of mmu->pae_root, others are
-> the same as vcpu->arch.mmu->root_role.
->
-> The argument @direct is vcpu->arch.mmu->root_role.direct.
-> vcpu->arch.mmu->root_role.access is always set to be ACC_ALL.
->
-> vcpu->arch.mmu->root_role.passthrough is 0 when mmu->pae_root is used.
-> Or if vcpu->arch.mmu->root_role.passthrough is 1, @level must be 5
-> and vcpu->arch.mmu->cpu_role.base.level must be 4, the code here
-> is useless.
+Commit fb58a9c345f6 ("KVM: x86/mmu: Optimize MMU page cache lookup for
+fully direct MMUs") skipped the unsync checks and write flood clearing
+for full direct MMUs. We can extend this further to skip the checks for
+all direct shadow pages. Direct shadow pages in indirect MMUs (i.e.
+shadow paging) are used when shadowing a guest huge page with smaller
+pages. Such direct shadow pages, like their counterparts in fully direct
+MMUs, are never marked unsynced or have a non-zero write-flooding count.
 
-Ah, thank you for the tip. That is cleaner.
+Checking sp->role.direct also generates better code than checking
+direct_map because, due to register pressure, direct_map has to get
+shoved onto the stack and then pulled back off.
+
+No functional change intended.
+
+Reviewed-by: Lai Jiangshan <jiangshanlai@gmail.com>
+Reviewed-by: Sean Christopherson <seanjc@google.com>
+Reviewed-by: Peter Xu <peterx@redhat.com>
+Signed-off-by: David Matlack <dmatlack@google.com>
+---
+ arch/x86/kvm/mmu/mmu.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+index efe5a3dca1e0..774810d8a2ed 100644
+--- a/arch/x86/kvm/mmu/mmu.c
++++ b/arch/x86/kvm/mmu/mmu.c
+@@ -2026,7 +2026,6 @@ static struct kvm_mmu_page *kvm_mmu_get_page(struct kvm_vcpu *vcpu,
+ 					     int direct,
+ 					     unsigned int access)
+ {
+-	bool direct_mmu = vcpu->arch.mmu->root_role.direct;
+ 	union kvm_mmu_page_role role;
+ 	struct hlist_head *sp_list;
+ 	unsigned quadrant;
+@@ -2070,7 +2069,8 @@ static struct kvm_mmu_page *kvm_mmu_get_page(struct kvm_vcpu *vcpu,
+ 			continue;
+ 		}
+ 
+-		if (direct_mmu)
++		/* unsync and write-flooding only apply to indirect SPs. */
++		if (sp->role.direct)
+ 			goto trace_get_page;
+ 
+ 		if (sp->unsync) {
+-- 
+2.36.0.550.gb090851708-goog
+

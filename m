@@ -2,56 +2,57 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4AE50C433F5
-	for <linux-mips@archiver.kernel.org>; Mon, 16 May 2022 23:22:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 78228C433F5
+	for <linux-mips@archiver.kernel.org>; Mon, 16 May 2022 23:23:49 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350336AbiEPXWy (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 16 May 2022 19:22:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59188 "EHLO
+        id S1350478AbiEPXXs (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 16 May 2022 19:23:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33954 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350335AbiEPXV6 (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Mon, 16 May 2022 19:21:58 -0400
-Received: from mail-pj1-x104a.google.com (mail-pj1-x104a.google.com [IPv6:2607:f8b0:4864:20::104a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F3283EF21
-        for <linux-mips@vger.kernel.org>; Mon, 16 May 2022 16:21:56 -0700 (PDT)
-Received: by mail-pj1-x104a.google.com with SMTP id om14-20020a17090b3a8e00b001df42f1cbaaso405158pjb.5
-        for <linux-mips@vger.kernel.org>; Mon, 16 May 2022 16:21:56 -0700 (PDT)
+        with ESMTP id S1350467AbiEPXWj (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Mon, 16 May 2022 19:22:39 -0400
+Received: from mail-pf1-x449.google.com (mail-pf1-x449.google.com [IPv6:2607:f8b0:4864:20::449])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6FE04704C
+        for <linux-mips@vger.kernel.org>; Mon, 16 May 2022 16:22:30 -0700 (PDT)
+Received: by mail-pf1-x449.google.com with SMTP id c15-20020aa7880f000000b0051078df6964so6802166pfo.4
+        for <linux-mips@vger.kernel.org>; Mon, 16 May 2022 16:22:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=date:in-reply-to:message-id:mime-version:references:subject:from:to
          :cc;
-        bh=XWhilig2MoNteAc4T6eN7YonYu6WiPDe3XS3DlFt+jY=;
-        b=Gn0TUJQ0oAT0sUnrUouOEQhoOdkngm/EQPDfvbvia5LXjKS4924z23mrWOpTdrA/Hr
-         Bw8oQYobjaBro2pxwSLg7Fyc94HXzB+5ozfOiafwOz8WfwwQ0NzXhxecfa4kyTI3m2QJ
-         99hBZKdhULrDw3t74NLg8XNE1wzCoe9lf4nSUOv1nGOOaU9BsWElxyGN19tCYyEqYBFF
-         kPtYaSAu73qvhFt7XYJXU5LrZmtPnpOFV32EWiI7hMWCJ8Ez2KvMTRSoY4bg205rTmiF
-         wzgj+9/Cjm495lXdojVTMYd7TaQVu/fzG7qw4s/WRB2kSHkcrk8fwB9Vs0t75EFVkOfe
-         VAGw==
+        bh=UURvncKeO3sAXehwRUv/gDunrjLfV4Lf9rxel1o0OM8=;
+        b=KpoeoTCVfHu3FNGmamcPwJadyU2TWAS8aaIl+vMTmobYEd92bezU7ZnG3bz3soMSuK
+         ivbMGSkVpz/pfyD/H0kosgN8OX8CulFqeX0UZUPxnqlgbjBx0eCabhy5h9FS5MgXsR06
+         DZS7CeU9Sp3v6NxgwYYrcwhgCN5ErFTNB/tzZ2UtEJa5EXHHziIhH9QB21xBUqLAsI9W
+         VbqFJ1bv9BVGBXZyvGPyVG6KXKuPXCXIDjBKjW2qQvVK1YTGa7bWQt86Prpqz064stv3
+         tqPPyH9U4lwBSIeKhdCWYgsLoXOpYQ+GcC0EAXG6PiwlNGIyP0jco2HTmrFKkJ0ObFwK
+         shZw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=XWhilig2MoNteAc4T6eN7YonYu6WiPDe3XS3DlFt+jY=;
-        b=dJX7eKMHBlNRB09xAMVAMGLMSQ3Bun37+KNeLZI0ZkCBaW/cZv6+WGlhEj8fmqej7s
-         BV7mVxQs02kr3wetmnviCEPGUz33Fy8SqdI1iNm20KS1ivL3C6nggaqFSVllvuFP10bn
-         FGy+D8BpTczp3dMTvcpjlsOQ7byLt5LGrLAPGGewzpyVFClFMyi8Inomlr7Cd7ofnwdg
-         A/YcP0nHMNUuedYD+k5SHbnEJtewt1NF7uiHWnlxiJoPmdhetsldhR/WVKX0QJucUe8w
-         IY4W6xSIHz5g5X6E4zIJJ1TRuoV7CcfZ8w9Cxl9mVtIIoqytfmkHl2bK/WnIIxGdbQhc
-         JT7Q==
-X-Gm-Message-State: AOAM533f44qgWWlvRXxuQTC9sZbroztLpaGzRLSiV/PQB1wg/UK4sCjK
-        2sI8l6SV97U2jn9KIypuoY1H3+HYCH76Mg==
-X-Google-Smtp-Source: ABdhPJz+mv6KLWlHlnd0tKdGhB1w6C7WkQouE6ZrWpIM1Kdm38KemSHw4qOCxOwa0IH2ZdRnQndGM/F0DRga+A==
+        bh=UURvncKeO3sAXehwRUv/gDunrjLfV4Lf9rxel1o0OM8=;
+        b=j0oQdt4j96+1V9Xpwk4CkKEH99mxGeuNzLpaHbxPt61Okpxj5zx0RuTyylJaMimgsM
+         igMNyCDizUdIwzSUht4YIIVkzyHFo1rVpLjtj9WULbE7R+g/Go7zM1kpOucMPXI7qSET
+         pWgQiC4WwXRH56gITMOO8GJWCSDwJ15n7S8l1aqAxPpbdn7cd3FxAQanF/O+qSCyQpsK
+         0ehRkFOPnaYmb0JvVj5mRfGCsyjdFzlERdR/o6d8/a7lnC+DRzjWixUfimaEnppvMlLB
+         wlle/ge+pQZWDWtApzCgbaHsWhIOKxBiekBgRYLI+rysuC3k+CKk/45I8t7LDNh546Q/
+         N7/g==
+X-Gm-Message-State: AOAM530HDdc3bFX87goLZpz29sLYjY3ngmINDTebL7cU1f2MtDvSwbi3
+        GCqLdWPfwpr05EvIECwpAahQlK4PwkMHLw==
+X-Google-Smtp-Source: ABdhPJzaegKoAGTelKJdtAGJ+meljK9CMlvjRnSgskvqhbOFl0BuCne/24kQsRMxOY1jF7J3R50T5vN8ai28Vw==
 X-Received: from dmatlack-heavy.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:19cd])
- (user=dmatlack job=sendgmr) by 2002:a62:5ec6:0:b0:50d:a467:3cb7 with SMTP id
- s189-20020a625ec6000000b0050da4673cb7mr19714931pfb.85.1652743315785; Mon, 16
- May 2022 16:21:55 -0700 (PDT)
-Date:   Mon, 16 May 2022 23:21:25 +0000
+ (user=dmatlack job=sendgmr) by 2002:a17:90a:8d83:b0:1dd:258c:7c55 with SMTP
+ id d3-20020a17090a8d8300b001dd258c7c55mr4006pjo.1.1652743334892; Mon, 16 May
+ 2022 16:22:14 -0700 (PDT)
+Date:   Mon, 16 May 2022 23:21:37 +0000
 In-Reply-To: <20220516232138.1783324-1-dmatlack@google.com>
-Message-Id: <20220516232138.1783324-10-dmatlack@google.com>
+Message-Id: <20220516232138.1783324-22-dmatlack@google.com>
 Mime-Version: 1.0
 References: <20220516232138.1783324-1-dmatlack@google.com>
 X-Mailer: git-send-email 2.36.0.550.gb090851708-goog
-Subject: [PATCH v6 09/22] KVM: x86/mmu: Move guest PT write-protection to account_shadowed()
+Subject: [PATCH v6 21/22] KVM: Allow for different capacities in
+ kvm_mmu_memory_cache structs
 From:   David Matlack <dmatlack@google.com>
 To:     Paolo Bonzini <pbonzini@redhat.com>
 Cc:     Marc Zyngier <maz@kernel.org>, Huacai Chen <chenhuacai@kernel.org>,
@@ -79,51 +80,151 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Move the code that write-protects newly-shadowed guest page tables into
-account_shadowed(). This avoids a extra gfn-to-memslot lookup and is a
-more logical place for this code to live. But most importantly, this
-reduces kvm_mmu_alloc_shadow_page()'s reliance on having a struct
-kvm_vcpu pointer, which will be necessary when creating new shadow pages
-during VM ioctls for eager page splitting.
+Allow the capacity of the kvm_mmu_memory_cache struct to be chosen at
+declaration time rather than being fixed for all declarations. This will
+be used in a follow-up commit to declare an cache in x86 with a capacity
+of 512+ objects without having to increase the capacity of all caches in
+KVM.
 
-Note, it is safe to drop the role.level == PG_LEVEL_4K check since
-account_shadowed() returns early if role.level > PG_LEVEL_4K.
+This change requires each cache now specify its capacity at runtime,
+since the cache struct itself no longer has a fixed capacity known at
+compile time. To protect against someone accidentally defining a
+kvm_mmu_memory_cache struct directly (without the extra storage), this
+commit includes a WARN_ON() in kvm_mmu_topup_memory_cache().
+
+In order to support different capacities, this commit changes the
+objects pointer array to be dynamically allocated the first time the
+cache is topped-up.
+
+While here, opportunistically clean up the stack-allocated
+kvm_mmu_memory_cache structs in riscv and arm64 to use designated
+initializers.
 
 No functional change intended.
 
-Reviewed-by: Sean Christopherson <seanjc@google.com>
+Reviewed-by: Marc Zyngier <maz@kernel.org>
 Signed-off-by: David Matlack <dmatlack@google.com>
 ---
- arch/x86/kvm/mmu/mmu.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ arch/arm64/kvm/mmu.c      |  2 +-
+ arch/riscv/kvm/mmu.c      |  5 +----
+ include/linux/kvm_types.h |  6 +++++-
+ virt/kvm/kvm_main.c       | 33 ++++++++++++++++++++++++++++++---
+ 4 files changed, 37 insertions(+), 9 deletions(-)
 
-diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-index d342fcc5813d..6a3b1b00f02b 100644
---- a/arch/x86/kvm/mmu/mmu.c
-+++ b/arch/x86/kvm/mmu/mmu.c
-@@ -792,6 +792,9 @@ static void account_shadowed(struct kvm *kvm, struct kvm_mmu_page *sp)
- 						    KVM_PAGE_TRACK_WRITE);
+diff --git a/arch/arm64/kvm/mmu.c b/arch/arm64/kvm/mmu.c
+index 53ae2c0640bc..f443ed845f85 100644
+--- a/arch/arm64/kvm/mmu.c
++++ b/arch/arm64/kvm/mmu.c
+@@ -764,7 +764,7 @@ int kvm_phys_addr_ioremap(struct kvm *kvm, phys_addr_t guest_ipa,
+ {
+ 	phys_addr_t addr;
+ 	int ret = 0;
+-	struct kvm_mmu_memory_cache cache = { 0, __GFP_ZERO, NULL, };
++	struct kvm_mmu_memory_cache cache = { .gfp_zero = __GFP_ZERO };
+ 	struct kvm_pgtable *pgt = kvm->arch.mmu.pgt;
+ 	enum kvm_pgtable_prot prot = KVM_PGTABLE_PROT_DEVICE |
+ 				     KVM_PGTABLE_PROT_R |
+diff --git a/arch/riscv/kvm/mmu.c b/arch/riscv/kvm/mmu.c
+index f80a34fbf102..4d95ebe4114f 100644
+--- a/arch/riscv/kvm/mmu.c
++++ b/arch/riscv/kvm/mmu.c
+@@ -347,10 +347,7 @@ static int stage2_ioremap(struct kvm *kvm, gpa_t gpa, phys_addr_t hpa,
+ 	int ret = 0;
+ 	unsigned long pfn;
+ 	phys_addr_t addr, end;
+-	struct kvm_mmu_memory_cache pcache;
+-
+-	memset(&pcache, 0, sizeof(pcache));
+-	pcache.gfp_zero = __GFP_ZERO;
++	struct kvm_mmu_memory_cache pcache = { .gfp_zero = __GFP_ZERO };
  
- 	kvm_mmu_gfn_disallow_lpage(slot, gfn);
+ 	end = (gpa + size + PAGE_SIZE - 1) & PAGE_MASK;
+ 	pfn = __phys_to_pfn(hpa);
+diff --git a/include/linux/kvm_types.h b/include/linux/kvm_types.h
+index ac1ebb37a0ff..68529884eaf8 100644
+--- a/include/linux/kvm_types.h
++++ b/include/linux/kvm_types.h
+@@ -83,12 +83,16 @@ struct gfn_to_pfn_cache {
+  * MMU flows is problematic, as is triggering reclaim, I/O, etc... while
+  * holding MMU locks.  Note, these caches act more like prefetch buffers than
+  * classical caches, i.e. objects are not returned to the cache on being freed.
++ *
++ * The @capacity field and @objects array are lazily initialized when the cache
++ * is topped up (__kvm_mmu_topup_memory_cache()).
+  */
+ struct kvm_mmu_memory_cache {
+ 	int nobjs;
+ 	gfp_t gfp_zero;
+ 	struct kmem_cache *kmem_cache;
+-	void *objects[KVM_ARCH_NR_OBJS_PER_MEMORY_CACHE];
++	int capacity;
++	void **objects;
+ };
+ #endif
+ 
+diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+index e089db822c12..5e2e75014256 100644
+--- a/virt/kvm/kvm_main.c
++++ b/virt/kvm/kvm_main.c
+@@ -369,14 +369,31 @@ static inline void *mmu_memory_cache_alloc_obj(struct kvm_mmu_memory_cache *mc,
+ 		return (void *)__get_free_page(gfp_flags);
+ }
+ 
+-int kvm_mmu_topup_memory_cache(struct kvm_mmu_memory_cache *mc, int min)
++static int __kvm_mmu_topup_memory_cache(struct kvm_mmu_memory_cache *mc, int capacity, int min)
+ {
++	gfp_t gfp = GFP_KERNEL_ACCOUNT;
+ 	void *obj;
+ 
+ 	if (mc->nobjs >= min)
+ 		return 0;
+-	while (mc->nobjs < ARRAY_SIZE(mc->objects)) {
+-		obj = mmu_memory_cache_alloc_obj(mc, GFP_KERNEL_ACCOUNT);
 +
-+	if (kvm_mmu_slot_gfn_write_protect(kvm, slot, gfn, PG_LEVEL_4K))
-+		kvm_flush_remote_tlbs_with_address(kvm, gfn, 1);
++	if (unlikely(!mc->objects)) {
++		if (WARN_ON_ONCE(!capacity))
++			return -EIO;
++
++		mc->objects = kvmalloc_array(sizeof(void *), capacity, gfp);
++		if (!mc->objects)
++			return -ENOMEM;
++
++		mc->capacity = capacity;
++	}
++
++	/* It is illegal to request a different capacity across topups. */
++	if (WARN_ON_ONCE(mc->capacity != capacity))
++		return -EIO;
++
++	while (mc->nobjs < mc->capacity) {
++		obj = mmu_memory_cache_alloc_obj(mc, gfp);
+ 		if (!obj)
+ 			return mc->nobjs >= min ? 0 : -ENOMEM;
+ 		mc->objects[mc->nobjs++] = obj;
+@@ -384,6 +401,11 @@ int kvm_mmu_topup_memory_cache(struct kvm_mmu_memory_cache *mc, int min)
+ 	return 0;
  }
  
- void account_huge_nx_page(struct kvm *kvm, struct kvm_mmu_page *sp)
-@@ -2098,11 +2101,8 @@ static struct kvm_mmu_page *kvm_mmu_alloc_shadow_page(struct kvm_vcpu *vcpu,
- 	sp->gfn = gfn;
- 	sp->role = role;
- 	hlist_add_head(&sp->hash_link, sp_list);
--	if (sp_has_gptes(sp)) {
-+	if (sp_has_gptes(sp))
- 		account_shadowed(vcpu->kvm, sp);
--		if (role.level == PG_LEVEL_4K && kvm_vcpu_write_protect_gfn(vcpu, gfn))
--			kvm_flush_remote_tlbs_with_address(vcpu->kvm, gfn, 1);
--	}
- 
- 	return sp;
++int kvm_mmu_topup_memory_cache(struct kvm_mmu_memory_cache *mc, int min)
++{
++	return __kvm_mmu_topup_memory_cache(mc, KVM_ARCH_NR_OBJS_PER_MEMORY_CACHE, min);
++}
++
+ int kvm_mmu_memory_cache_nr_free_objects(struct kvm_mmu_memory_cache *mc)
+ {
+ 	return mc->nobjs;
+@@ -397,6 +419,11 @@ void kvm_mmu_free_memory_cache(struct kvm_mmu_memory_cache *mc)
+ 		else
+ 			free_page((unsigned long)mc->objects[--mc->nobjs]);
+ 	}
++
++	kvfree(mc->objects);
++
++	mc->objects = NULL;
++	mc->capacity = 0;
  }
+ 
+ void *kvm_mmu_memory_cache_alloc(struct kvm_mmu_memory_cache *mc)
 -- 
 2.36.0.550.gb090851708-goog
 

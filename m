@@ -2,147 +2,277 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5698FC433F5
-	for <linux-mips@archiver.kernel.org>; Thu, 19 May 2022 18:52:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8E332C4332F
+	for <linux-mips@archiver.kernel.org>; Thu, 19 May 2022 19:21:58 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244173AbiESSwO (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 19 May 2022 14:52:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39602 "EHLO
+        id S244504AbiESTVs (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 19 May 2022 15:21:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40896 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244150AbiESSwG (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Thu, 19 May 2022 14:52:06 -0400
-Received: from EUR05-AM6-obe.outbound.protection.outlook.com (mail-am6eur05on2134.outbound.protection.outlook.com [40.107.22.134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C34FD5EDFE;
-        Thu, 19 May 2022 11:52:02 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=lYfW7UCZdbt+fL/OtvnKphOn0+eIb/6rxshvWJaZXERMovTlkobLmqUl7Jvtgwv/fwA2jN4VV1WW7ISVB0utvqmCz6KtdjQqoYiHEmG/BO9SBuV5UE8CPG7tMjiN9DqLHKteqH9aQj4mNuwQely6cd6e1zU9sVUX9IJ7S+3NeOrwyEFwCY93FCL6aGMW4YskOp8voQdD0xJtNkPB1QFGCjMaT6gVMIH0RH63gPKWcNA4CjlbP+yolZdPID4QUCVfL5Jb7tzxuNnw8vM+caoweG06PrDrDtPmcZVrh6oihESbuDtClW88jQ1rwn4KRN0FdJ6Bd8ABdr99bahAZs71Rw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=+sIk5q85yQq2uTKia1ZwCqDKBQq6HgVhif9Iv7bGGBY=;
- b=jdy2Jy2AeelxK0s7aftA2jTkc4v2OynLF98wS3ZUKrYXs/HRsQg6ocjwx6XQtu9htP8BACYTJGQWAzQBCQHBeVeuLMluerLt06c3FMBCmKfa9HrVv/UBygChpTBUKQHclqZoJkLGkEHyXnvSxkeZBz7c1uKkzI4pmW/KH/Jdvv+g9kLtjhyuhunzZY6SWBepRAJjXh9x/JDb1878KGN9eI6A7CtckmFimfoYw+Al4Q+GLs5u8pFIOicg3f+bA0SI1gqrLgrpYp3VMpIhIFr+8LtqGRkmgMR6PU0RV3ipgiLnBpTgRCbo+cl7lcnk5e3xwt4HykTnk8r3qCFxdh9rCQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=syrmia.com; dmarc=pass action=none header.from=syrmia.com;
- dkim=pass header.d=syrmia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=syrmia.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=+sIk5q85yQq2uTKia1ZwCqDKBQq6HgVhif9Iv7bGGBY=;
- b=OMaLtagwaXQxC5m6f74rDUcbokP5BvEzDAajlGO3eGzk/VzQEkSu7jr4mFnLeyd6dnYDZEi9TsvqB3SG5Hgpm6SPWnE3lmA4hOdMdCpDpH1UtK1LA+19ixelkoRgaIZGHkDgTIOTLkxToXKeuIgSBEX6WoIOpLWJVNbbbgwfeP4=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=syrmia.com;
-Received: from VI1PR03MB4208.eurprd03.prod.outlook.com (2603:10a6:803:51::25)
- by AM5PR0301MB2546.eurprd03.prod.outlook.com (2603:10a6:203:a::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5273.17; Thu, 19 May
- 2022 18:51:49 +0000
-Received: from VI1PR03MB4208.eurprd03.prod.outlook.com
- ([fe80::b513:6272:f3c5:c709]) by VI1PR03MB4208.eurprd03.prod.outlook.com
- ([fe80::b513:6272:f3c5:c709%7]) with mapi id 15.20.5273.014; Thu, 19 May 2022
- 18:51:49 +0000
-From:   Dragan Mladjenovic <Dragan.Mladjenovic@syrmia.com>
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc:     Paul Burton <paulburton@kernel.org>,
-        Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>,
-        Hauke Mehrtens <hauke@hauke-m.de>,
-        Tiezhu Yang <yangtiezhu@loongson.cn>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Chao-ying Fu <cfu@wavecomp.com>
-Subject: [PATCH 11/12] MIPS: Report cluster in /proc/cpuinfo
-Date:   Thu, 19 May 2022 20:51:24 +0200
-Message-Id: <20220519185125.11686-12-Dragan.Mladjenovic@syrmia.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20220519185125.11686-1-Dragan.Mladjenovic@syrmia.com>
-References: <20220519185125.11686-1-Dragan.Mladjenovic@syrmia.com>
-Content-Type: text/plain
-X-ClientProxiedBy: VI1PR0602CA0016.eurprd06.prod.outlook.com
- (2603:10a6:800:bc::26) To VI1PR03MB4208.eurprd03.prod.outlook.com
- (2603:10a6:803:51::25)
+        with ESMTP id S244447AbiESTVq (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Thu, 19 May 2022 15:21:46 -0400
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 110555712C
+        for <linux-mips@vger.kernel.org>; Thu, 19 May 2022 12:21:38 -0700 (PDT)
+Received: by mail-pl1-x62f.google.com with SMTP id i17so5601385pla.10
+        for <linux-mips@vger.kernel.org>; Thu, 19 May 2022 12:21:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=broadcom.com; s=google;
+        h=message-id:date:mime-version:user-agent:subject:to:cc:references
+         :from:in-reply-to;
+        bh=wNk3T9xGpMyf89JGz9Id8RLi6i6yJPpW5zopmVI27mw=;
+        b=RGRUDejYscQKzSivyRY68oqCF9ZyRrI8qr1fVuGKaNCHgoSLaGuo2SSnf7D1SSbrlJ
+         +4V+9uG/FYvYAd07RGQIEsh6fR75v+f6iCjvSMHMHeUejg1FbEKLmm5e9p5amAVl61Am
+         pTy5ASPirxrR/P0/sBf2eGVZNsdMueOVkOjZU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :to:cc:references:from:in-reply-to;
+        bh=wNk3T9xGpMyf89JGz9Id8RLi6i6yJPpW5zopmVI27mw=;
+        b=bdEuBgXNmQa0faevSOVBdgBP8FAG/ixNN75HccAxjBjkWEV4yFp5zqUq2AYLKlT2/+
+         SHCqPCDK0pbmVxNpKKlYgO83U9lhJLmUu4U3XU/wHxWLZhTwALHOXZcwGsV/gt4ZWMQM
+         ir39h/GuJx6LhS7uzFeYy3NAEVlv/Vg9gNKnasr7mdtJWcdky6R7yfJfeUB44S1Fq7fW
+         CHGT0CAXyA0B/rv7QfrVkStVqKehjdQZu+9wc9sbKIoBdjA9e7aiwMqZkE0KpEoufAp3
+         0nogFp6/vhTJ9G+kc/5G1tieyd6FiujHeWsdKfimJfnnDz9a6+ibtmAB+LLe9b74g8bd
+         J0LA==
+X-Gm-Message-State: AOAM531P98+ocNY/xiDJwJQPa1Cdpy3M93RDpciWgrTSxczxDvmfZq3S
+        c4GfsupHZqf56SpVE3A9Wj1D1Q==
+X-Google-Smtp-Source: ABdhPJy10NyoQgp6RBZKGliXG8eNodnAGbYEZ6SUYrfrdh7Px/LOSRK6yXAE0oXiUJBwAYB6KTRkcw==
+X-Received: by 2002:a17:902:8644:b0:153:9f01:2090 with SMTP id y4-20020a170902864400b001539f012090mr5952326plt.101.1652988097307;
+        Thu, 19 May 2022 12:21:37 -0700 (PDT)
+Received: from [10.136.13.180] ([192.19.161.250])
+        by smtp.gmail.com with ESMTPSA id s13-20020a17090302cd00b0015e8d4eb244sm4097873plk.142.2022.05.19.12.20.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 19 May 2022 12:21:36 -0700 (PDT)
+Message-ID: <d1cc0bee-2a98-0c2e-8796-6fb7fae6b803@broadcom.com>
+Date:   Thu, 19 May 2022 12:20:54 -0700
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 1dfc7e15-7b79-499a-e963-08da39c8a0ca
-X-MS-TrafficTypeDiagnostic: AM5PR0301MB2546:EE_
-X-Microsoft-Antispam-PRVS: <AM5PR0301MB25467CB9A1278D2BFB7DD4C2EFD09@AM5PR0301MB2546.eurprd03.prod.outlook.com>
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: p54xtRdY0xXKlAukpW26qwlPaA8RxoiVV3bWxK8Y+qU3HauZerAiqUx8jvgTL9kK1XiQBRKTP08YtPwP6gOr9MNL5PAg/GNnpkhyaIuwYzWsEScNdmSQulYZjOwstkpYl8SDhGNpIJFuPh1UvCrDtEaYH/TrVAu7jagozQs41xIycC9lDqrf0zeZpyTsZcS0euvp3Ygr6hMc4xHbFMyV7PNrOcesr/4IREkNJEMsAnbAW4G1gHeaMC8NwTjCdJzDtFlDApf4zwWoSCq0eeqrlBDxKVax0C5dfWrb7VLF4d/8f49rpFw0TwhMSn0hp4C2V3xCaqxKHBKKrulRQQQi1tp2Ti0N1R9uAPb+b+3PNL4ZFvz1R+VtE2l7uH4MYIel0XFVryH0tSGv51LyCrzRZRbXKU8V/B8Z9tSFG60aNMjbtZRsQeuT6mxMMFvereQ3H8N7X1m3Hfs9Ww0Vm71adTYUtwHAdBkTvWmighORaPXM/Q8S4PujHlOq2/6K2SghthJvec/coKnfiLjojWRIb3rRcloN58ZhvUkRJkJa8pu3KRXxXrHQjlkduOhfXbnc6g+sr6fbiceXRxiiBggEI7vUKmCMFEQhtKF/qgDISzL8FLUDx0DPFDmSPHOR/83DmD0RLgbVKo8qUyylTdLl+3tkpfm1b8GWAVNKl/JWIYMhMcDLxfr3E8W7KGhia0wqqeikP9QV6cBefl0f5Dx2sQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR03MB4208.eurprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(376002)(346002)(366004)(39840400004)(396003)(136003)(5660300002)(66476007)(66556008)(38100700002)(4744005)(8676002)(38350700002)(4326008)(8936002)(66946007)(6512007)(26005)(86362001)(36756003)(52116002)(316002)(6666004)(41300700001)(2906002)(6916009)(54906003)(6506007)(6486002)(1076003)(2616005)(186003)(508600001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?/L+kARcVJ2+GfMTM81nLVbrcOgm2BRvsIEb2igmx367A5gmieTyz3dLD5ijm?=
- =?us-ascii?Q?QNFHRB0MwQLWdYoJy6fFUiQCTmxxK1UmiDh63co87MieyB1GweiIuH7ezbel?=
- =?us-ascii?Q?hJI1F+yp3lFyvFQiUD7BWc/mc8vwa7kTRYc5O+yFyjSaUhNOyqIRCzvkIlOw?=
- =?us-ascii?Q?sahmE0J5CLDTtr5ZJTfsF5j5nJpiSSxT1q32cgCSCN+7cih7M0E8toBV5DlL?=
- =?us-ascii?Q?/ch8PyLQ+IuUUwTti2siB9ROyRxvpsej/5sx6wEdIFMjAhhJ1bAfuCa8/XuI?=
- =?us-ascii?Q?6scOQtYanr8bTOfLGWqv1n/O9d0L5vx46+gzRdDpaYm5eeT8QDiqzYUrjjBF?=
- =?us-ascii?Q?EKNjxpGEDM/UM3taEuo08WngqYG6f4vYh9/i/6OruWNGYjcJ+n0/ajxn3JsM?=
- =?us-ascii?Q?GHOAeMLpTwRTe/R6xVP4+37Or5TSuJmGl9i1qmVEmW7AMwpSz0GfnTYSDXZt?=
- =?us-ascii?Q?HsdCrO2zeHa6rqWddcv+PNkZFDg+86XtO0Ybuwf8S6x8PjNcyTjc3AORYnlp?=
- =?us-ascii?Q?G2ZJlYZ3H/euQsbnB3jq5Hhm7WzL07nQOcbuOJCD0ykAtbD7PyJZ2975S/UO?=
- =?us-ascii?Q?K9ori+25IzOOsXs96dhiD+p97PlOEor12DRBVA1qbfTamouPrfeXpnSpZmk5?=
- =?us-ascii?Q?3S5BAQrVIx/AWuMR2JHRufDX+UHx0X1HmobaryRndDB9UdNoBfiWaH40Bok5?=
- =?us-ascii?Q?3E8TxdTKqZBt7Xi3E0M0EH5DGs5KkMFBmd7vjNzw6uuOwh5G4UtXJkfUi0/L?=
- =?us-ascii?Q?iTuTUOKG6fw3Ln/0z69gk2OhnQgZBI3TfqRjec8r6upaVD4TR6ADk0SxTeC0?=
- =?us-ascii?Q?1DJZ4hzm7iT6q3taDS8PFvmcd80AWtaGe2LZl74WjggYrzLjvbus1PuFTj0J?=
- =?us-ascii?Q?eDesqfKjCK7T9Tnsrs8EW2rLFMM2fThY0AImnK1ZG6J1NtreBykiSy2ybKwX?=
- =?us-ascii?Q?X5U0F/lfIShFSD2/MDBHbZz9zh+YpQICLLVysPNWMK/uAaAf8gvAzfgPuBQ4?=
- =?us-ascii?Q?yRaBVLuRYFJrprDKl67BaNlpit1Z9SnmVBmX1W3iTJ7mgx0+APL45jlXuenH?=
- =?us-ascii?Q?xMKRX19V8bqSqLPIX9Os73xnz0IITCTRsq1+Ae/mT3FOhyYd/ONWZ2ePwSQx?=
- =?us-ascii?Q?AobSw7WMcDcm1j89RiIQG3pk8Z+Xg4grJI+e/IEmO+sm8g7w3rGpNoJRQ/pR?=
- =?us-ascii?Q?fjOq+kTfnBR9Y5Hf9XOvHqYkRz0AWXjYzg5qBhKy1zt1iDytRxPJTEsfnUNT?=
- =?us-ascii?Q?OnpRYK9TSsIA5X2VsBTNkalP3Pu+/Z9oH4FfmKynlABectyupZVBtqWx4ppq?=
- =?us-ascii?Q?sHUCPB/EW8+PnXZ8MYlTNlcAAafDfe29DWoskENKPVHY295qD+X7mHH6688O?=
- =?us-ascii?Q?gKAEjDcJ4GvgtvftbuDX5XXb8LH/yzu88WL3/5+WGBuaRbeCAFOjP3STEyaS?=
- =?us-ascii?Q?bnSSe2jIQ4uBKhNdWbt5f0b6E2XTFZrI3Le4e/VIOMetoh5Ah0is2+BQDYqj?=
- =?us-ascii?Q?8LPavGjyhbbojsoFNlzHjU3GtoeQxTMvdWieWOZqfznAfNc3UiCtkL3yF+pn?=
- =?us-ascii?Q?5alkJfzChikKBsjhnlJHCn5HmFwsxyBhiKSH7E3MmH5bR83mzm5CNjGVwlsf?=
- =?us-ascii?Q?d6eQha5wogmPvb8m/h3c0bOA0j36uw+2Thu3M+TI2fArEZO5JC/GymcUWZ5Q?=
- =?us-ascii?Q?vfwUTvPcvTGtzg4Wq/XKM5RLXiezm9edC28J3kmSJ84ydu5yBK7hg032XtdY?=
- =?us-ascii?Q?OMcfX4JHakR3MOyjdjBxifsJ4qYvguvBNsYbW3CiZmr7LizBCrVx?=
-X-OriginatorOrg: syrmia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1dfc7e15-7b79-499a-e963-08da39c8a0ca
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR03MB4208.eurprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 May 2022 18:51:48.1335
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 19214a73-c1ab-4e19-8f59-14bdcb09a66e
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: BzN2LFE1zuBTHUOra/DhrntNuGopN4xyg/rC/Xv2o0tcYHevHrq4akH7Qxc3gE7GTQ9NXWPoyiKCrfpgSBzE8Rtc3G1TKE1weDMDYybzTDM=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM5PR0301MB2546
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.8.1
+Subject: Re: [PATCH 19/30] panic: Add the panic hypervisor notifier list
+To:     "Guilherme G. Piccoli" <gpiccoli@igalia.com>,
+        Petr Mladek <pmladek@suse.com>,
+        Sebastian Reichel <sre@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Desmond yan <desmond.yan@broadcom.com>
+Cc:     David Gow <davidgow@google.com>, Evan Green <evgreen@chromium.org>,
+        Julius Werner <jwerner@chromium.org>,
+        bcm-kernel-feedback-list@broadcom.com, linux-pm@vger.kernel.org,
+        akpm@linux-foundation.org, bhe@redhat.com,
+        kexec@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-alpha@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-edac@vger.kernel.org,
+        linux-hyperv@vger.kernel.org, linux-leds@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org,
+        linux-tegra@vger.kernel.org, linux-um@lists.infradead.org,
+        linux-xtensa@linux-xtensa.org, netdev@vger.kernel.org,
+        openipmi-developer@lists.sourceforge.net, rcu@vger.kernel.org,
+        sparclinux@vger.kernel.org, xen-devel@lists.xenproject.org,
+        x86@kernel.org, kernel-dev@igalia.com, kernel@gpiccoli.net,
+        halves@canonical.com, fabiomirmar@gmail.com,
+        alejandro.j.jimenez@oracle.com, andriy.shevchenko@linux.intel.com,
+        arnd@arndb.de, bp@alien8.de, corbet@lwn.net,
+        d.hatayama@jp.fujitsu.com, dave.hansen@linux.intel.com,
+        dyoung@redhat.com, feng.tang@intel.com, gregkh@linuxfoundation.org,
+        mikelley@microsoft.com, hidehiro.kawai.ez@hitachi.com,
+        jgross@suse.com, john.ogness@linutronix.de, keescook@chromium.org,
+        luto@kernel.org, mhiramat@kernel.org, mingo@redhat.com,
+        paulmck@kernel.org, peterz@infradead.org, rostedt@goodmis.org,
+        senozhatsky@chromium.org, stern@rowland.harvard.edu,
+        tglx@linutronix.de, vgoyal@redhat.com, vkuznets@redhat.com,
+        will@kernel.org, Alexander Gordeev <agordeev@linux.ibm.com>,
+        Andrea Parri <parri.andrea@gmail.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Brian Norris <computersforpeace@gmail.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        "David S. Miller" <davem@davemloft.net>,
+        Dexuan Cui <decui@microsoft.com>,
+        Doug Berger <opendmb@gmail.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Hari Bathini <hbathini@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Justin Chen <justinpopo6@gmail.com>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Markus Mayer <mmayer@broadcom.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Mihai Carabas <mihai.carabas@oracle.com>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Paul Mackerras <paulus@samba.org>, Pavel Machek <pavel@ucw.cz>,
+        Shile Zhang <shile.zhang@linux.alibaba.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Tianyu Lan <Tianyu.Lan@microsoft.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Wang ShaoBo <bobo.shaobowang@huawei.com>,
+        Wei Liu <wei.liu@kernel.org>,
+        zhenwei pi <pizhenwei@bytedance.com>
+References: <20220427224924.592546-1-gpiccoli@igalia.com>
+ <20220427224924.592546-20-gpiccoli@igalia.com> <YoJZVZl/MH0KiE/J@alley>
+ <ad082ce7-db50-13bb-3dbb-9b595dfa78be@igalia.com> <YoOpyW1+q+Z5as78@alley>
+ <d72b9aab-675c-ac89-b73a-b1de4a0b722d@igalia.com>
+ <81878a67-21f1-fee8-1add-f381bc8b05df@broadcom.com>
+ <edbaa4fa-561c-6f5e-f2ab-43ae68acaede@igalia.com>
+From:   Scott Branden <scott.branden@broadcom.com>
+In-Reply-To: <edbaa4fa-561c-6f5e-f2ab-43ae68acaede@igalia.com>
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
+        boundary="00000000000061f92305df6248cb"
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-From: Paul Burton <paulburton@kernel.org>
+--00000000000061f92305df6248cb
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-When >= CM3.5 output cluster number.
 
-Signed-off-by: Paul Burton <paulburton@kernel.org>
-Signed-off-by: Chao-ying Fu <cfu@wavecomp.com>
 
-diff --git a/arch/mips/kernel/proc.c b/arch/mips/kernel/proc.c
-index bb43bf850314..a66e7705315d 100644
---- a/arch/mips/kernel/proc.c
-+++ b/arch/mips/kernel/proc.c
-@@ -12,6 +12,7 @@
- #include <asm/cpu.h>
- #include <asm/cpu-features.h>
- #include <asm/idle.h>
-+#include <asm/mips-cps.h>
- #include <asm/mipsregs.h>
- #include <asm/processor.h>
- #include <asm/prom.h>
-@@ -282,6 +283,8 @@ static int show_cpuinfo(struct seq_file *m, void *v)
- 	seq_printf(m, "kscratch registers\t: %d\n",
- 		      hweight8(cpu_data[n].kscratch_mask));
- 	seq_printf(m, "package\t\t\t: %d\n", cpu_data[n].package);
-+	if (mips_cm_revision() >= CM_REV_CM3_5)
-+		seq_printf(m, "cluster\t\t\t: %d\n", cpu_cluster(&cpu_data[n]));
- 	seq_printf(m, "core\t\t\t: %d\n", cpu_core(&cpu_data[n]));
- 
- #if defined(CONFIG_MIPS_MT_SMP) || defined(CONFIG_CPU_MIPSR6)
--- 
-2.17.1
+On 2022-05-19 05:19, Guilherme G. Piccoli wrote:
+> On 18/05/2022 19:17, Scott Branden wrote:
+>> Hi Guilherme,
+>>
+>> +Desmond
+>> [...]
+>>>>> I'm afraid it breaks kdump if this device is not reset beforehand - it's
+>>>>> a doorbell write, so not high risk I think...
+>>>>>
+>>>>> But in case the not-reset device can be probed normally in kdump kernel,
+>>>>> then I'm fine in moving this to the reboot list! I don't have the HW to
+>>>>> test myself.
+>>>>
+>>>> Good question. Well, it if has to be called before kdump then
+>>>> even "hypervisor" list is a wrong place because is not always
+>>>> called before kdump.
+>>> [...]
+>> We register to the panic notifier so that we can kill the VK card ASAP
+>> to stop DMAing things over to the host side.  If it is not notified then
+>> memory may not be frozen when kdump is occurring.
+>> Notifying the card on panic is also needed to allow for any type of
+>> reset to occur.
+>>
+>> So, the only thing preventing moving the notifier later is the chance
+>> that memory is modified while kdump is occurring.  Or, if DMA is
+>> disabled before kdump already then this wouldn't be an issue and the
+>> notification to the card (to allow for clean resets) can be done later.
+> 
+> Hi Scott / Desmond, thanks for the detailed answer! Is this adapter
+> designed to run in x86 only or you have other architectures' use cases?
+The adapter may be used in any PCIe design that supports DMA.
+So it may be possible to run in arm64 servers.
+> 
+> I'm not expert on that, but I guess whether DMA is "kept" or not depends
+> a bit if IOMMU is used. IIRC, there was a copy of the DMAR table in
+> kdump (at least for Intel IOMMU). Also, devices are not properly
+> quiesced on kdump IIUC, we don't call shutdown/reset handlers, they're
+> skip due to the crash nature - so there is a risk of devices doing bad
+> things in the new kernel.
+> 
+> With that said, and given this is a lightweight notifier that ideally
+> should run ASAP, I'd keep this one in the hypervisor list. We can
+> "adjust" the semantic of this list to include lightweight notifiers that
+> reset adapters.
+Sounds the best to keep system operating as tested today.
+> 
+> With that said, Petr has a point - not always such list is going to be
+> called before kdump. So, that makes me think in another idea: what if we
+> have another list, but not on panic path, but instead in the custom
+> crash_shutdown()? Drivers could add callbacks there that must execute
+> before kexec/kdump, no matter what.
+It may be beneficial for some other drivers but for our use we would 
+then need to register for the panic path and the crash_shutdown path. 
+We notify the VK card for 2 purposes: one to stop DMA so memory stop 
+changing during a kdump.  And also to get the card into a good state so 
+resets happen cleanly.
+> 
+> Let me know your thoughts Scott / Desmond / Petr and all interested parties.
+> Cheers,
+> 
+> 
+> Guilherme
 
+--00000000000061f92305df6248cb
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
+
+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
+cRe0CRXA7ypOJSgxO/nOOyQoaJxT7CGg1npOeSpPjEuc3fE4xum3l0nvU85hj6MlKZu43hokdBh0
+D0nLyyhEwlR3AC/msdff/UGbM/JR9vk812RP4m/aNWZFJwIDAQABo4IB2zCCAdcwDgYDVR0PAQH/
+BAQDAgWgMIGjBggrBgEFBQcBAQSBljCBkzBOBggrBgEFBQcwAoZCaHR0cDovL3NlY3VyZS5nbG9i
+YWxzaWduLmNvbS9jYWNlcnQvZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAuY3J0MEEGCCsGAQUF
+BzABhjVodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9nc2djY3IzcGVyc29uYWxzaWduMmNhMjAy
+MDBNBgNVHSAERjBEMEIGCisGAQQBoDIBKAowNDAyBggrBgEFBQcCARYmaHR0cHM6Ly93d3cuZ2xv
+YmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wCQYDVR0TBAIwADBJBgNVHR8EQjBAMD6gPKA6hjhodHRw
+Oi8vY3JsLmdsb2JhbHNpZ24uY29tL2dzZ2NjcjNwZXJzb25hbHNpZ24yY2EyMDIwLmNybDAlBgNV
+HREEHjAcgRpzY290dC5icmFuZGVuQGJyb2FkY29tLmNvbTATBgNVHSUEDDAKBggrBgEFBQcDBDAf
+BgNVHSMEGDAWgBSWM9HmWBdbNHWKgVZk1b5I3qGPzzAdBgNVHQ4EFgQUOhjEpl04Sz9dh5MI82E1
+V39lM/owDQYJKoZIhvcNAQELBQADggEBAA7Rlypx/esz/iq1yA4+KW7uwV/aBY344BWcXt6I+SNK
+VwFBgFWfLj5vaEud9TVv2fPSiaHJo0umemOJk+43QD+bsoqmgcFXd21PrOt7Jjs+jjVED9VC5kJq
+S4NNKUkS+BqijJwSegtVygrc/atrIlJbjI21q4qpemUo5fgwqCNm++BmBGTI8yA09vtGSNDRN42k
+lLX9hl3iEj5SBgkQqCbbnoE+ZjjKfqt7ED166WhgyQWNrl39yLcvLj+JRUB3RuvXKZjH0NQEEBII
+wZBDSkyneykLt3CBNIhSCTxKM6OWxVp936ALSa5K9FNy00TeWSpokR6NmzaW8VD/EjTgvqAxggJt
+MIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTEwLwYD
+VQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgx9oXSJpKniO4dS
+Gk8wDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEILXYB80rvGoONbSrKccJNuW/yt4P
+RwosxTdX9/zqPyCuMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTIy
+MDUxOTE5MjEzN1owaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsG
+CWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEHMAsGCWCGSAFl
+AwQCATANBgkqhkiG9w0BAQEFAASCAQBsqFeeADkOUmIUQkOFTz4+tbTbcu1kJOu0o2LxolE41ACQ
+Jjl4mG3AxFObAA/vLQRFL2LzmM7+OQ1nUaL/1rIXCVF7a9/kONy4oIc1uslvIVE6XRS3TrWAZyJ1
+KXT1lLM7MUhCe5EkzcZxuapBiKdpmxfhxDzt27vOsC3LpZXW8YbnYGANBVAG0RYROLCIzpGsRUeh
+vHZtk9Zj5ppQPXoMCjx9Nah3XO3Uhnp0i0UbRd2dsZj60JkDxx2H+iX54btyjpq60IUp5n2ulZMN
+latE6tPUnpMceZbDhq45QMDYde9jGlCoU4/7lo4RwQhU+Kl7xsUECNDbTk4UszM1uyGJ
+--00000000000061f92305df6248cb--

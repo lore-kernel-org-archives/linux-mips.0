@@ -2,239 +2,172 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CD9BEC433EF
-	for <linux-mips@archiver.kernel.org>; Thu, 19 May 2022 15:35:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A797DC433FE
+	for <linux-mips@archiver.kernel.org>; Thu, 19 May 2022 15:46:40 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238895AbiESPfk (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 19 May 2022 11:35:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58026 "EHLO
+        id S232346AbiESPqi (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 19 May 2022 11:46:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53794 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241246AbiESPfY (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Thu, 19 May 2022 11:35:24 -0400
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4FDBED8ED
-        for <linux-mips@vger.kernel.org>; Thu, 19 May 2022 08:34:00 -0700 (PDT)
-Received: by mail-wr1-x429.google.com with SMTP id f2so7742972wrc.0
-        for <linux-mips@vger.kernel.org>; Thu, 19 May 2022 08:34:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=brainfault-org.20210112.gappssmtp.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=qbyCxuZ29f6WskkxByuyI9MB64JeWT48ILjv69TkKQc=;
-        b=omfH1aJuBDj4dpa8TTkzFwBnfq6unv6UUX17QanNhLrvYGjNmO/hv/5FjXtEorWIr6
-         uH1Ge9fFukT7RD6lVtsJg6YSxpqjXWpcDnpJB5gSw/9Bny1amRFF4N/lCDNHWvZQkL2F
-         eCJY+9lOSgVltfUuQTCLkzUh1dJDPJoIWl1t50k7xLHsnGWYdTyeRrhlCSAAz/IyIaok
-         h7jRLrZVynZZVX6Z8E5YHDcXjJ54oZeJsB9yVEL/YliIBpHChf07whofhq5CcxmmCn03
-         OMukqaF6AQUk2K0d16sKJBd7iiw4ertFY78w1MS49wAldiVOt5003mmzSF01Xvd6ceQU
-         nitw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=qbyCxuZ29f6WskkxByuyI9MB64JeWT48ILjv69TkKQc=;
-        b=tBLC4tm4BDpA+w1ivAO3KDXJHtqa9j8OuTjzvuaSRLzB3W2lylACJ/HRkVq6zx6S9t
-         /RFiFBUAruHQFGS89TN3jv6aSSyhJYhuYg1xXl046Rh/HGUOmUb3mcyFVtBNC9SBj6rz
-         J2HFScEKDfeSp5iM5bwAzHQpjZd9tF/lgNIRFtLdLW/E3L6IJKrDnSbjEKbPu3nreWNQ
-         XMAzVe4gvvVCnS9o9oiaM52UkUJB0U6vUwPEFDsYxn0ub/dYgvyyVCL2va6e0e0YI7TS
-         8Xx9/MGYgrKNE2zjemQyxVV3xFmGp2Bu36EuTXjXY6WEa6/ES9OBZ8vx2k82vA0vxhMk
-         qnZQ==
-X-Gm-Message-State: AOAM533IIGKt1p3qJAYK4VFoAST90r/90MYkdFLP/7zGJU20cl8RtED1
-        EAyg1JtFb91/DAbAO4YvIsPl5kuRKpz60WPW3+KWCg==
-X-Google-Smtp-Source: ABdhPJz9n7/WYKowTqaLjO6PZwmJ95x8Wu3I84HeVusJegUVevaq08lkBs9a/fBQkYDljVPvVNA0buz+sktyter8ByA=
-X-Received: by 2002:a5d:6c6b:0:b0:1ea:77ea:dde8 with SMTP id
- r11-20020a5d6c6b000000b001ea77eadde8mr4582799wrz.690.1652974439187; Thu, 19
- May 2022 08:33:59 -0700 (PDT)
+        with ESMTP id S238418AbiESPp7 (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Thu, 19 May 2022 11:45:59 -0400
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com [67.231.152.168])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC9E47C17D;
+        Thu, 19 May 2022 08:44:16 -0700 (PDT)
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+        by mx0b-001ae601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 24JBHtab024228;
+        Thu, 19 May 2022 10:43:25 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=from : to : cc :
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding : content-type; s=PODMain02222019;
+ bh=emFWkhbKLVsY07EOxiGd6bRhil5YXk3bYL2bmY5jBhs=;
+ b=gE7ASeZMhHcJqs5B7NPSes7hj5CyprtFA2EKL8SbShKqYtFabOCjJF7lHKhcfgMUPId6
+ H5i5uuPx0JpJd6dw/vMuYJ+ycfQdTOSeTcUCpx+ZuPweP8ubw1xH/HQQC37a0o+4gLx0
+ fmHIihOvrpnz60EkaRyDiWbmh8WzfP82quKCUXDQX+9ituAlqgSramhvSb+2sjA24+z/
+ /+KxTsJxKeUDCdhzA1XWFYzN6sOx6Hde58g5TSNOnX/zY2nRBMIDoxDU5xbO3i8DyeWo
+ bRwfWm722KdAMsBkUjmhOkZSurVQfRgJhxECR6BjHDc9bNdtsxML3x7OofG/TG9f2T/4 QQ== 
+Received: from ediex01.ad.cirrus.com ([84.19.233.68])
+        by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3g28upf5dm-3
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Thu, 19 May 2022 10:43:25 -0500
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.24; Thu, 19 May
+ 2022 16:43:18 +0100
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.1.2375.24 via Frontend
+ Transport; Thu, 19 May 2022 16:43:18 +0100
+Received: from algalon.ad.cirrus.com (algalon.ad.cirrus.com [198.90.251.122])
+        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id B4557475;
+        Thu, 19 May 2022 15:43:18 +0000 (UTC)
+From:   Charles Keepax <ckeepax@opensource.cirrus.com>
+To:     <broonie@kernel.org>
+CC:     <lgirdwood@gmail.com>, <kuninori.morimoto.gx@renesas.com>,
+        <nicolas.ferre@microchip.com>, <nsaenz@kernel.org>,
+        <shawnguo@kernel.org>, <linux-imx@nxp.com>,
+        <cezary.rojewski@intel.com>,
+        <pierre-louis.bossart@linux.intel.com>,
+        <linux-mips@vger.kernel.org>, <linux-mediatek@lists.infradead.org>,
+        <linux-amlogic@lists.infradead.org>, <daniel@zonque.org>,
+        <srinivas.kandagatla@linaro.org>,
+        <linux-rockchip@lists.infradead.org>, <krzk@kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-sunxi@lists.linux.dev>, <linux-tegra@vger.kernel.org>,
+        <linux-omap@vger.kernel.org>, <linux-xtensa@linux-xtensa.org>,
+        <peter.ujfalusi@gmail.com>, <jarkko.nikula@bitmer.com>,
+        <heiko@sntech.de>, <jbrunet@baylibre.com>, <kernel@pengutronix.de>,
+        <alsa-devel@alsa-project.org>, <patches@opensource.cirrus.com>
+Subject: [PATCH 05/56] ASoC: bcm: Update to use set_fmt_new callback
+Date:   Thu, 19 May 2022 16:42:27 +0100
+Message-ID: <20220519154318.2153729-6-ckeepax@opensource.cirrus.com>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20220519154318.2153729-1-ckeepax@opensource.cirrus.com>
+References: <20220519154318.2153729-1-ckeepax@opensource.cirrus.com>
 MIME-Version: 1.0
-References: <20220516232138.1783324-1-dmatlack@google.com> <20220516232138.1783324-22-dmatlack@google.com>
-In-Reply-To: <20220516232138.1783324-22-dmatlack@google.com>
-From:   Anup Patel <anup@brainfault.org>
-Date:   Thu, 19 May 2022 21:03:48 +0530
-Message-ID: <CAAhSdy3yHbGBYT6eYEjN7E9-pyiJB_mc+kL6wgREm2qzsHAenQ@mail.gmail.com>
-Subject: Re: [PATCH v6 21/22] KVM: Allow for different capacities in
- kvm_mmu_memory_cache structs
-To:     David Matlack <dmatlack@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Sean Christopherson <seanjc@google.com>,
-        Andrew Jones <drjones@redhat.com>,
-        Ben Gardon <bgardon@google.com>, Peter Xu <peterx@redhat.com>,
-        "Maciej S. Szmigiero" <maciej.szmigiero@oracle.com>,
-        "moderated list:KERNEL VIRTUAL MACHINE FOR ARM64 (KVM/arm64)" 
-        <kvmarm@lists.cs.columbia.edu>,
-        "open list:KERNEL VIRTUAL MACHINE FOR MIPS (KVM/mips)" 
-        <linux-mips@vger.kernel.org>,
-        "open list:KERNEL VIRTUAL MACHINE FOR MIPS (KVM/mips)" 
-        <kvm@vger.kernel.org>,
-        "open list:KERNEL VIRTUAL MACHINE FOR RISC-V (KVM/riscv)" 
-        <kvm-riscv@lists.infradead.org>, Peter Feiner <pfeiner@google.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-GUID: ajhifK472w28_I4WDVyEuSohJoIsbKCp
+X-Proofpoint-ORIG-GUID: ajhifK472w28_I4WDVyEuSohJoIsbKCp
+X-Proofpoint-Spam-Reason: safe
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Tue, May 17, 2022 at 4:52 AM David Matlack <dmatlack@google.com> wrote:
->
-> Allow the capacity of the kvm_mmu_memory_cache struct to be chosen at
-> declaration time rather than being fixed for all declarations. This will
-> be used in a follow-up commit to declare an cache in x86 with a capacity
-> of 512+ objects without having to increase the capacity of all caches in
-> KVM.
->
-> This change requires each cache now specify its capacity at runtime,
-> since the cache struct itself no longer has a fixed capacity known at
-> compile time. To protect against someone accidentally defining a
-> kvm_mmu_memory_cache struct directly (without the extra storage), this
-> commit includes a WARN_ON() in kvm_mmu_topup_memory_cache().
->
-> In order to support different capacities, this commit changes the
-> objects pointer array to be dynamically allocated the first time the
-> cache is topped-up.
->
-> While here, opportunistically clean up the stack-allocated
-> kvm_mmu_memory_cache structs in riscv and arm64 to use designated
-> initializers.
->
-> No functional change intended.
->
-> Reviewed-by: Marc Zyngier <maz@kernel.org>
-> Signed-off-by: David Matlack <dmatlack@google.com>
+As part of updating the core to directly tell drivers if they are clock
+provider or consumer update these CPU side drivers to use the new direct
+callback.
 
-Looks good to me for KVM RISC-V.
+Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+---
+ sound/soc/bcm/bcm2835-i2s.c | 22 +++++++++++-----------
+ sound/soc/bcm/cygnus-ssp.c  |  6 +++---
+ 2 files changed, 14 insertions(+), 14 deletions(-)
 
-Reviewed-by: Anup Patel <anup@brainfault.org>
+diff --git a/sound/soc/bcm/bcm2835-i2s.c b/sound/soc/bcm/bcm2835-i2s.c
+index e3fc4bee8cfdc..aa7d8e081f89a 100644
+--- a/sound/soc/bcm/bcm2835-i2s.c
++++ b/sound/soc/bcm/bcm2835-i2s.c
+@@ -133,8 +133,8 @@ static void bcm2835_i2s_start_clock(struct bcm2835_i2s_dev *dev)
+ 		return;
+ 
+ 	switch (provider) {
+-	case SND_SOC_DAIFMT_CBC_CFC:
+-	case SND_SOC_DAIFMT_CBC_CFP:
++	case SND_SOC_DAIFMT_BP_FP:
++	case SND_SOC_DAIFMT_BP_FC:
+ 		clk_prepare_enable(dev->clk);
+ 		dev->clk_prepared = true;
+ 		break;
+@@ -385,12 +385,12 @@ static int bcm2835_i2s_hw_params(struct snd_pcm_substream *substream,
+ 
+ 	/* Check if CPU is bit clock provider */
+ 	switch (dev->fmt & SND_SOC_DAIFMT_CLOCK_PROVIDER_MASK) {
+-	case SND_SOC_DAIFMT_CBC_CFC:
+-	case SND_SOC_DAIFMT_CBC_CFP:
++	case SND_SOC_DAIFMT_BP_FP:
++	case SND_SOC_DAIFMT_BP_FC:
+ 		bit_clock_provider = true;
+ 		break;
+-	case SND_SOC_DAIFMT_CBP_CFC:
+-	case SND_SOC_DAIFMT_CBP_CFP:
++	case SND_SOC_DAIFMT_BC_FP:
++	case SND_SOC_DAIFMT_BC_FC:
+ 		bit_clock_provider = false;
+ 		break;
+ 	default:
+@@ -399,12 +399,12 @@ static int bcm2835_i2s_hw_params(struct snd_pcm_substream *substream,
+ 
+ 	/* Check if CPU is frame sync provider */
+ 	switch (dev->fmt & SND_SOC_DAIFMT_CLOCK_PROVIDER_MASK) {
+-	case SND_SOC_DAIFMT_CBC_CFC:
+-	case SND_SOC_DAIFMT_CBP_CFC:
++	case SND_SOC_DAIFMT_BP_FP:
++	case SND_SOC_DAIFMT_BC_FP:
+ 		frame_sync_provider = true;
+ 		break;
+-	case SND_SOC_DAIFMT_CBC_CFP:
+-	case SND_SOC_DAIFMT_CBP_CFP:
++	case SND_SOC_DAIFMT_BP_FC:
++	case SND_SOC_DAIFMT_BC_FC:
+ 		frame_sync_provider = false;
+ 		break;
+ 	default:
+@@ -743,7 +743,7 @@ static const struct snd_soc_dai_ops bcm2835_i2s_dai_ops = {
+ 	.prepare	= bcm2835_i2s_prepare,
+ 	.trigger	= bcm2835_i2s_trigger,
+ 	.hw_params	= bcm2835_i2s_hw_params,
+-	.set_fmt	= bcm2835_i2s_set_dai_fmt,
++	.set_fmt_new	= bcm2835_i2s_set_dai_fmt,
+ 	.set_bclk_ratio	= bcm2835_i2s_set_dai_bclk_ratio,
+ 	.set_tdm_slot	= bcm2835_i2s_set_dai_tdm_slot,
+ };
+diff --git a/sound/soc/bcm/cygnus-ssp.c b/sound/soc/bcm/cygnus-ssp.c
+index 9698f4531c90f..257f3657bcd6e 100644
+--- a/sound/soc/bcm/cygnus-ssp.c
++++ b/sound/soc/bcm/cygnus-ssp.c
+@@ -849,11 +849,11 @@ static int cygnus_ssp_set_fmt(struct snd_soc_dai *cpu_dai, unsigned int fmt)
+ 	ssp_newcfg = 0;
+ 
+ 	switch (fmt & SND_SOC_DAIFMT_CLOCK_PROVIDER_MASK) {
+-	case SND_SOC_DAIFMT_CBP_CFP:
++	case SND_SOC_DAIFMT_BC_FC:
+ 		ssp_newcfg |= BIT(I2S_OUT_CFGX_SLAVE_MODE);
+ 		aio->is_slave = 1;
+ 		break;
+-	case SND_SOC_DAIFMT_CBC_CFC:
++	case SND_SOC_DAIFMT_BP_FP:
+ 		ssp_newcfg &= ~BIT(I2S_OUT_CFGX_SLAVE_MODE);
+ 		aio->is_slave = 0;
+ 		break;
+@@ -1148,7 +1148,7 @@ static const struct snd_soc_dai_ops cygnus_ssp_dai_ops = {
+ 	.shutdown	= cygnus_ssp_shutdown,
+ 	.trigger	= cygnus_ssp_trigger,
+ 	.hw_params	= cygnus_ssp_hw_params,
+-	.set_fmt	= cygnus_ssp_set_fmt,
++	.set_fmt_new	= cygnus_ssp_set_fmt,
+ 	.set_sysclk	= cygnus_ssp_set_sysclk,
+ 	.set_tdm_slot	= cygnus_set_dai_tdm_slot,
+ };
+-- 
+2.30.2
 
-A small heads-up that function stage2_ioremap() is going to be
-renamed for Linux-5.19 so you might have to rebase one more time.
-
-Thanks,
-Anup
-
-> ---
->  arch/arm64/kvm/mmu.c      |  2 +-
->  arch/riscv/kvm/mmu.c      |  5 +----
->  include/linux/kvm_types.h |  6 +++++-
->  virt/kvm/kvm_main.c       | 33 ++++++++++++++++++++++++++++++---
->  4 files changed, 37 insertions(+), 9 deletions(-)
->
-> diff --git a/arch/arm64/kvm/mmu.c b/arch/arm64/kvm/mmu.c
-> index 53ae2c0640bc..f443ed845f85 100644
-> --- a/arch/arm64/kvm/mmu.c
-> +++ b/arch/arm64/kvm/mmu.c
-> @@ -764,7 +764,7 @@ int kvm_phys_addr_ioremap(struct kvm *kvm, phys_addr_t guest_ipa,
->  {
->         phys_addr_t addr;
->         int ret = 0;
-> -       struct kvm_mmu_memory_cache cache = { 0, __GFP_ZERO, NULL, };
-> +       struct kvm_mmu_memory_cache cache = { .gfp_zero = __GFP_ZERO };
->         struct kvm_pgtable *pgt = kvm->arch.mmu.pgt;
->         enum kvm_pgtable_prot prot = KVM_PGTABLE_PROT_DEVICE |
->                                      KVM_PGTABLE_PROT_R |
-> diff --git a/arch/riscv/kvm/mmu.c b/arch/riscv/kvm/mmu.c
-> index f80a34fbf102..4d95ebe4114f 100644
-> --- a/arch/riscv/kvm/mmu.c
-> +++ b/arch/riscv/kvm/mmu.c
-> @@ -347,10 +347,7 @@ static int stage2_ioremap(struct kvm *kvm, gpa_t gpa, phys_addr_t hpa,
->         int ret = 0;
->         unsigned long pfn;
->         phys_addr_t addr, end;
-> -       struct kvm_mmu_memory_cache pcache;
-> -
-> -       memset(&pcache, 0, sizeof(pcache));
-> -       pcache.gfp_zero = __GFP_ZERO;
-> +       struct kvm_mmu_memory_cache pcache = { .gfp_zero = __GFP_ZERO };
->
->         end = (gpa + size + PAGE_SIZE - 1) & PAGE_MASK;
->         pfn = __phys_to_pfn(hpa);
-> diff --git a/include/linux/kvm_types.h b/include/linux/kvm_types.h
-> index ac1ebb37a0ff..68529884eaf8 100644
-> --- a/include/linux/kvm_types.h
-> +++ b/include/linux/kvm_types.h
-> @@ -83,12 +83,16 @@ struct gfn_to_pfn_cache {
->   * MMU flows is problematic, as is triggering reclaim, I/O, etc... while
->   * holding MMU locks.  Note, these caches act more like prefetch buffers than
->   * classical caches, i.e. objects are not returned to the cache on being freed.
-> + *
-> + * The @capacity field and @objects array are lazily initialized when the cache
-> + * is topped up (__kvm_mmu_topup_memory_cache()).
->   */
->  struct kvm_mmu_memory_cache {
->         int nobjs;
->         gfp_t gfp_zero;
->         struct kmem_cache *kmem_cache;
-> -       void *objects[KVM_ARCH_NR_OBJS_PER_MEMORY_CACHE];
-> +       int capacity;
-> +       void **objects;
->  };
->  #endif
->
-> diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
-> index e089db822c12..5e2e75014256 100644
-> --- a/virt/kvm/kvm_main.c
-> +++ b/virt/kvm/kvm_main.c
-> @@ -369,14 +369,31 @@ static inline void *mmu_memory_cache_alloc_obj(struct kvm_mmu_memory_cache *mc,
->                 return (void *)__get_free_page(gfp_flags);
->  }
->
-> -int kvm_mmu_topup_memory_cache(struct kvm_mmu_memory_cache *mc, int min)
-> +static int __kvm_mmu_topup_memory_cache(struct kvm_mmu_memory_cache *mc, int capacity, int min)
->  {
-> +       gfp_t gfp = GFP_KERNEL_ACCOUNT;
->         void *obj;
->
->         if (mc->nobjs >= min)
->                 return 0;
-> -       while (mc->nobjs < ARRAY_SIZE(mc->objects)) {
-> -               obj = mmu_memory_cache_alloc_obj(mc, GFP_KERNEL_ACCOUNT);
-> +
-> +       if (unlikely(!mc->objects)) {
-> +               if (WARN_ON_ONCE(!capacity))
-> +                       return -EIO;
-> +
-> +               mc->objects = kvmalloc_array(sizeof(void *), capacity, gfp);
-> +               if (!mc->objects)
-> +                       return -ENOMEM;
-> +
-> +               mc->capacity = capacity;
-> +       }
-> +
-> +       /* It is illegal to request a different capacity across topups. */
-> +       if (WARN_ON_ONCE(mc->capacity != capacity))
-> +               return -EIO;
-> +
-> +       while (mc->nobjs < mc->capacity) {
-> +               obj = mmu_memory_cache_alloc_obj(mc, gfp);
->                 if (!obj)
->                         return mc->nobjs >= min ? 0 : -ENOMEM;
->                 mc->objects[mc->nobjs++] = obj;
-> @@ -384,6 +401,11 @@ int kvm_mmu_topup_memory_cache(struct kvm_mmu_memory_cache *mc, int min)
->         return 0;
->  }
->
-> +int kvm_mmu_topup_memory_cache(struct kvm_mmu_memory_cache *mc, int min)
-> +{
-> +       return __kvm_mmu_topup_memory_cache(mc, KVM_ARCH_NR_OBJS_PER_MEMORY_CACHE, min);
-> +}
-> +
->  int kvm_mmu_memory_cache_nr_free_objects(struct kvm_mmu_memory_cache *mc)
->  {
->         return mc->nobjs;
-> @@ -397,6 +419,11 @@ void kvm_mmu_free_memory_cache(struct kvm_mmu_memory_cache *mc)
->                 else
->                         free_page((unsigned long)mc->objects[--mc->nobjs]);
->         }
-> +
-> +       kvfree(mc->objects);
-> +
-> +       mc->objects = NULL;
-> +       mc->capacity = 0;
->  }
->
->  void *kvm_mmu_memory_cache_alloc(struct kvm_mmu_memory_cache *mc)
-> --
-> 2.36.0.550.gb090851708-goog
->

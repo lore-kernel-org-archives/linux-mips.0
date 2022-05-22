@@ -2,69 +2,78 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 93681C433EF
-	for <linux-mips@archiver.kernel.org>; Sun, 22 May 2022 07:52:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9E143C433F5
+	for <linux-mips@archiver.kernel.org>; Sun, 22 May 2022 09:38:57 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236599AbiEVHwA (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Sun, 22 May 2022 03:52:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54058 "EHLO
+        id S238967AbiEVJiz (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Sun, 22 May 2022 05:38:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52778 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236250AbiEVHwA (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Sun, 22 May 2022 03:52:00 -0400
-Received: from jari.cn (unknown [218.92.28.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 48AEE167F8;
-        Sun, 22 May 2022 00:51:54 -0700 (PDT)
-Received: by ajax-webmail-localhost.localdomain (Coremail) ; Sun, 22 May
- 2022 15:46:18 +0800 (GMT+08:00)
-X-Originating-IP: [182.148.12.156]
-Date:   Sun, 22 May 2022 15:46:18 +0800 (GMT+08:00)
-X-CM-HeaderCharset: UTF-8
-From:   =?UTF-8?B?6ZmI5a2m5YW1?= <chenxuebing@jari.cn>
-To:     tsbogend@alpha.franken.de
-Cc:     catalin.marinas@arm.com, rdunlap@infradead.org, rppt@kernel.org,
-        rafael.j.wysocki@intel.com, linux-mips@vger.kernel.org,
+        with ESMTP id S236843AbiEVJiz (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Sun, 22 May 2022 05:38:55 -0400
+Received: from aposti.net (aposti.net [89.234.176.197])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECAAD3B3C9;
+        Sun, 22 May 2022 02:38:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crapouillou.net;
+        s=mail; t=1653212330; h=from:from:sender:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=hqD/oZcjT9FRYsqGzFInG5WgvxzOftyg0RKNFC2ww7o=;
+        b=FVSK1Pm7oLYN4Wygr8ewEmceAFkGgywZlcIA5rYPRgcOqvVobezKziIRP+8oU6I21fMzJ+
+        e5xUZi4NU6pLs0TdZwDKNxSpX5+I6QnnjY7iWEGooa+9Hop9/35vL00vPqwQPytPSAod+y
+        1qfQH1dR9utKidirmQMyikHPURajoD8=
+Date:   Sun, 22 May 2022 10:38:41 +0100
+From:   Paul Cercueil <paul@crapouillou.net>
+Subject: Re: [PATCH] dmaengine: jz4780: fix typo in comment
+To:     Julia Lawall <Julia.Lawall@inria.fr>
+Cc:     kernel-janitors@vger.kernel.org, Vinod Koul <vkoul@kernel.org>,
+        linux-mips@vger.kernel.org, dmaengine@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH] mips: setup: use strscpy to replace strlcpy
-X-Priority: 3
-X-Mailer: Coremail Webmail Server Version XT6.0.1 build 20210329(c53f3fee)
- Copyright (c) 2002-2022 www.mailtech.cn
- mispb-4e503810-ca60-4ec8-a188-7102c18937cf-zhkzyfz.cn
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset=UTF-8
+Message-Id: <HS2ACR.CGG9DJPX3OD31@crapouillou.net>
+In-Reply-To: <20220521111145.81697-20-Julia.Lawall@inria.fr>
+References: <20220521111145.81697-20-Julia.Lawall@inria.fr>
 MIME-Version: 1.0
-Message-ID: <533ed227.9dd.180eabb3189.Coremail.chenxuebing@jari.cn>
-X-Coremail-Locale: zh_CN
-X-CM-TRANSID: AQAAfwA3QW9K6oliBek2AA--.600W
-X-CM-SenderInfo: hfkh05pxhex0nj6mt2flof0/1tbiAQAKCmFEYxsjpwAJsR
-X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJ3iIAIbVAYjsxI4VWxJw
-        CS07vEb4IE77IF4wCS07vE1I0E4x80FVAKz4kxMIAIbVAFxVCaYxvI4VCIwcAKzIAtYxBI
-        daVFxhVjvjDU=
+Content-Type: text/plain; charset=iso-8859-1; format=flowed
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-ClRoZSBzdHJsY3B5IHNob3VsZCBub3QgYmUgdXNlZCBiZWNhdXNlIGl0IGRvZXNuJ3QgbGltaXQg
-dGhlIHNvdXJjZQpsZW5ndGguIFByZWZlcnJlZCBpcyBzdHJzY3B5LgoKU2lnbmVkLW9mZi1ieTog
-WHVlQmluZyBDaGVuIDxjaGVueHVlYmluZ0BqYXJpLmNuPgotLS0KIGFyY2gvbWlwcy9rZXJuZWwv
-c2V0dXAuYyB8IDYgKysrLS0tCiAxIGZpbGUgY2hhbmdlZCwgMyBpbnNlcnRpb25zKCspLCAzIGRl
-bGV0aW9ucygtKQoKZGlmZiAtLWdpdCBhL2FyY2gvbWlwcy9rZXJuZWwvc2V0dXAuYyBiL2FyY2gv
-bWlwcy9rZXJuZWwvc2V0dXAuYwppbmRleCBlZjczYmExZTBlYzEuLmFkM2FlYTgxZDBlMiAxMDA2
-NDQKLS0tIGEvYXJjaC9taXBzL2tlcm5lbC9zZXR1cC5jCisrKyBiL2FyY2gvbWlwcy9rZXJuZWwv
-c2V0dXAuYwpAQCAtNTU0LDcgKzU1NCw3IEBAIHN0YXRpYyB2b2lkIF9faW5pdCBib290Y21kbGlu
-ZV9pbml0KHZvaWQpCiAJICogdW5tb2RpZmllZC4KIAkgKi8KIAlpZiAoSVNfRU5BQkxFRChDT05G
-SUdfQ01ETElORV9PVkVSUklERSkpIHsKLQkJc3RybGNweShib290X2NvbW1hbmRfbGluZSwgYnVp
-bHRpbl9jbWRsaW5lLCBDT01NQU5EX0xJTkVfU0laRSk7CisJCXN0cnNjcHkoYm9vdF9jb21tYW5k
-X2xpbmUsIGJ1aWx0aW5fY21kbGluZSwgQ09NTUFORF9MSU5FX1NJWkUpOwogCQlyZXR1cm47CiAJ
-fQogCkBAIC01NjYsNyArNTY2LDcgQEAgc3RhdGljIHZvaWQgX19pbml0IGJvb3RjbWRsaW5lX2lu
-aXQodm9pZCkKIAkgKiBib290X2NvbW1hbmRfbGluZSB0byB1bmRvIGFueXRoaW5nIGVhcmx5X2lu
-aXRfZHRfc2Nhbl9jaG9zZW4oKSBkaWQuCiAJICovCiAJaWYgKElTX0VOQUJMRUQoQ09ORklHX01J
-UFNfQ01ETElORV9CVUlMVElOX0VYVEVORCkpCi0JCXN0cmxjcHkoYm9vdF9jb21tYW5kX2xpbmUs
-IGJ1aWx0aW5fY21kbGluZSwgQ09NTUFORF9MSU5FX1NJWkUpOworCQlzdHJzY3B5KGJvb3RfY29t
-bWFuZF9saW5lLCBidWlsdGluX2NtZGxpbmUsIENPTU1BTkRfTElORV9TSVpFKTsKIAllbHNlCiAJ
-CWJvb3RfY29tbWFuZF9saW5lWzBdID0gMDsKIApAQCAtNjI4LDcgKzYyOCw3IEBAIHN0YXRpYyB2
-b2lkIF9faW5pdCBhcmNoX21lbV9pbml0KGNoYXIgKipjbWRsaW5lX3ApCiAJbWVtYmxvY2tfc2V0
-X2JvdHRvbV91cCh0cnVlKTsKIAogCWJvb3RjbWRsaW5lX2luaXQoKTsKLQlzdHJsY3B5KGNvbW1h
-bmRfbGluZSwgYm9vdF9jb21tYW5kX2xpbmUsIENPTU1BTkRfTElORV9TSVpFKTsKKwlzdHJzY3B5
-KGNvbW1hbmRfbGluZSwgYm9vdF9jb21tYW5kX2xpbmUsIENPTU1BTkRfTElORV9TSVpFKTsKIAkq
-Y21kbGluZV9wID0gY29tbWFuZF9saW5lOwogCiAJcGFyc2VfZWFybHlfcGFyYW0oKTsKLS0gCjIu
-MzYuMQoKCg==
+Hi Julia,
+
+Le sam., mai 21 2022 at 13:10:30 +0200, Julia Lawall=20
+<Julia.Lawall@inria.fr> a =E9crit :
+> Spelling mistake (triple letters) in comment.
+> Detected with the help of Coccinelle.
+>=20
+> Signed-off-by: Julia Lawall <Julia.Lawall@inria.fr>
+
+Acked-by: Paul Cercueil <paul@crapouillou.net>
+
+Thanks!
+-Paul
+
+>=20
+> ---
+>  drivers/dma/dma-jz4780.c |    2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>=20
+> diff --git a/drivers/dma/dma-jz4780.c b/drivers/dma/dma-jz4780.c
+> index e2ec540e6519..2a483802d9ee 100644
+> --- a/drivers/dma/dma-jz4780.c
+> +++ b/drivers/dma/dma-jz4780.c
+> @@ -388,7 +388,7 @@ static struct dma_async_tx_descriptor=20
+> *jz4780_dma_prep_slave_sg(
+>=20
+>  		if (i !=3D (sg_len - 1) &&
+>  		    !(jzdma->soc_data->flags & JZ_SOC_DATA_BREAK_LINKS)) {
+> -			/* Automatically proceeed to the next descriptor. */
+> +			/* Automatically proceed to the next descriptor. */
+>  			desc->desc[i].dcm |=3D JZ_DMA_DCM_LINK;
+>=20
+>  			/*
+>=20
+
+

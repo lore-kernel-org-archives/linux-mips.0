@@ -2,56 +2,83 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E595BC433EF
-	for <linux-mips@archiver.kernel.org>; Mon, 23 May 2022 10:30:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 79FF6C433EF
+	for <linux-mips@archiver.kernel.org>; Mon, 23 May 2022 10:50:22 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234094AbiEWKai (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 23 May 2022 06:30:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55374 "EHLO
+        id S234329AbiEWKuV (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 23 May 2022 06:50:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34440 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234090AbiEWKah (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Mon, 23 May 2022 06:30:37 -0400
-Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id C740E4B4E8;
-        Mon, 23 May 2022 03:30:35 -0700 (PDT)
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1nt5K1-0001dy-00; Mon, 23 May 2022 12:29:57 +0200
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 304D0C02F4; Mon, 23 May 2022 11:39:40 +0200 (CEST)
-Date:   Mon, 23 May 2022 11:39:40 +0200
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     =?utf-8?B?6ZmI5a2m5YW1?= <chenxuebing@jari.cn>
-Cc:     catalin.marinas@arm.com, rdunlap@infradead.org, rppt@kernel.org,
-        rafael.j.wysocki@intel.com, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mips: setup: use strscpy to replace strlcpy
-Message-ID: <20220523093940.GA6296@alpha.franken.de>
-References: <533ed227.9dd.180eabb3189.Coremail.chenxuebing@jari.cn>
+        with ESMTP id S234343AbiEWKuQ (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Mon, 23 May 2022 06:50:16 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 539774CD5A;
+        Mon, 23 May 2022 03:50:15 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id B8D70B81032;
+        Mon, 23 May 2022 10:50:13 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 64358C34116;
+        Mon, 23 May 2022 10:50:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1653303012;
+        bh=RLHeGFzVSDV11EwgnKw/aguWyzZ0qKFGVx4BKotalhQ=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=O8ti3r6uJUFy8dfOhEOy6P1H6Op4O7M1vLHPJMCAZ9TZXpvamhD3Wu+rfaTuyaI1g
+         pqIInk2M5nusQ1TvCAWViS+tbNM2JDgYSVoTEcZu4f1MbGK12m3WYn+P67Zkpp/AQX
+         U7H8Ap020mgKB31JfFBJPb/ANG5gh3WnEjoqwklT6w2S8nlk+2vg1rtwvY4Zf/eMhz
+         wusL14kllR3jsIIg5QOadHSLTXYWGzGbCqp0aGqcKWTEBnJRX2BuZq5BuZVNWbhT6a
+         JnRDTqOjfXFfY9hCaJrOAcU8pXxK0HiS5lq8z+Q124slpW87roZnRwG3bZwokK+YqF
+         8TSp3gVdIXIGg==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 4A8B9F03943;
+        Mon, 23 May 2022 10:50:12 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <533ed227.9dd.180eabb3189.Coremail.chenxuebing@jari.cn>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Subject: Re: [PATCH net-next] eth: de4x5: remove support for Generic DECchip &
+ DIGITAL EtherWORKS PCI/EISA
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <165330301230.7594.1301485592206225247.git-patchwork-notify@kernel.org>
+Date:   Mon, 23 May 2022 10:50:12 +0000
+References: <20220519031345.2134401-1-kuba@kernel.org>
+In-Reply-To: <20220519031345.2134401-1-kuba@kernel.org>
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     davem@davemloft.net, netdev@vger.kernel.org, edumazet@google.com,
+        pabeni@redhat.com, corbet@lwn.net, tsbogend@alpha.franken.de,
+        mpe@ellerman.id.au, benh@kernel.crashing.org, paulus@samba.org,
+        sburla@marvell.com, vburru@marvell.com, aayarekar@marvell.com,
+        arnd@arndb.de, zhangyue1@kylinos.cn, linux-doc@vger.kernel.org,
+        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-parisc@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Sun, May 22, 2022 at 03:46:18PM +0800, 陈学兵 wrote:
+Hello:
+
+This patch was applied to netdev/net-next.git (master)
+by David S. Miller <davem@davemloft.net>:
+
+On Wed, 18 May 2022 20:13:45 -0700 you wrote:
+> Looks like almost all changes to this driver had been tree-wide
+> refactoring since git era begun. There is one commit from Al
+> 15 years ago which could potentially be fixing a real bug.
 > 
-> The strlcpy should not be used because it doesn't limit the source
-> length. Preferred is strscpy.
+> The driver is using virt_to_bus() and is a real magnet for pointless
+> cleanups. It seems unlikely to have real users. Let's try to shed
+> this maintenance burden.
 > 
-> Signed-off-by: XueBing Chen <chenxuebing@jari.cn>
-> ---
->  arch/mips/kernel/setup.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
+> [...]
 
-applied to mips-next.
+Here is the summary with links:
+  - [net-next] eth: de4x5: remove support for Generic DECchip & DIGITAL EtherWORKS PCI/EISA
+    https://git.kernel.org/netdev/net-next/c/32c53420d2a0
 
-Thomas.
-
+You are awesome, thank you!
 -- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+

@@ -2,71 +2,78 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F20CAC433F5
-	for <linux-mips@archiver.kernel.org>; Mon, 23 May 2022 09:31:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F1DB1C433EF
+	for <linux-mips@archiver.kernel.org>; Mon, 23 May 2022 09:32:00 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233150AbiEWJbp (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 23 May 2022 05:31:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38572 "EHLO
+        id S233201AbiEWJb5 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 23 May 2022 05:31:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39942 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233120AbiEWJbk (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Mon, 23 May 2022 05:31:40 -0400
+        with ESMTP id S233203AbiEWJbx (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Mon, 23 May 2022 05:31:53 -0400
 Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 91027DF8A;
-        Mon, 23 May 2022 02:31:36 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A521B167E9;
+        Mon, 23 May 2022 02:31:46 -0700 (PDT)
 Received: from uucp (helo=alpha)
         by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1nt4Or-0001Pn-00; Mon, 23 May 2022 11:30:53 +0200
+        id 1nt4Os-0001Pn-01; Mon, 23 May 2022 11:30:54 +0200
 Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 58DC0C02EA; Mon, 23 May 2022 11:16:07 +0200 (CEST)
-Date:   Mon, 23 May 2022 11:16:07 +0200
+        id 154F5C02F4; Mon, 23 May 2022 11:19:17 +0200 (CEST)
+Date:   Mon, 23 May 2022 11:19:17 +0200
 From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Genjian Zhang <zhanggenjian123@gmail.com>
-Cc:     maz@kernel.org, keescook@chromium.org, mark.rutland@arm.com,
-        nathan@kernel.org, siyanteng01@gmail.com, yyuasa@linux.com,
-        ralf@linux-mips.org, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org, huhai@kylinos.cn,
-        k2ci <kernel-bot@kylinos.cn>
-Subject: Re: [PATCH] irq: mips: Export irq_err_count to modules
-Message-ID: <20220523091607.GA5069@alpha.franken.de>
-References: <20220523081625.2074527-1-zhanggenjian@kylinos.cn>
+To:     =?utf-8?B?5ZGo55Cw5p2wIChaaG91IFlhbmppZSk=?= 
+        <zhouyanjie@wanyeetech.com>
+Cc:     paul@crapouillou.net, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-mips@vger.kernel.org,
+        dongsheng.qiu@ingenic.com, aric.pzqi@ingenic.com,
+        rick.tyliu@ingenic.com
+Subject: Re: [PATCH 0/3] Refresh device tree and defconfig for Ingenic SoCs
+ and boards.
+Message-ID: <20220523091916.GF5069@alpha.franken.de>
+References: <1652384021-46309-1-git-send-email-zhouyanjie@wanyeetech.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20220523081625.2074527-1-zhanggenjian@kylinos.cn>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1652384021-46309-1-git-send-email-zhouyanjie@wanyeetech.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Mon, May 23, 2022 at 04:16:25PM +0800, Genjian Zhang wrote:
-> From: huhai <huhai@kylinos.cn>
+On Fri, May 13, 2022 at 03:33:38AM +0800, 周琰杰 (Zhou Yanjie) wrote:
+> 1.Add PWM node for X1830 SoC from Ingenic.
+> 2.Add SSI nodes for X1000 SoC and X1830 SoC from Ingenic.
+> 3.Refresh SSI related nodes in CU1000-Neo and CU1830-Neo.
+> 4.The X1830 SoC used by the CU1830-Neo and the X1000 SoC
+>   used by the CU1000-Neo are both single-core processors,
+>   therefore the "OST_CLK_PERCPU_TIMER" ABI should not be
+>   used in the OST nodes of the CU1830-Neo and CU1000-Neo,
+>   it is just a coincidence that there is no problem now.
+>   So replace the misused "OST_CLK_PERCPU_TIMER" ABI with
+>   the correct "OST_CLK_EVENT_TIMER" ABI.
+> 5.Refresh the defconfig files of the CU1000-Neo board and
+>   the CU1830-Neo board, remove the selection of SPI-GPIO,
+>   and add the selection of SSI.
 > 
-> modpost complains once these drivers become modules.
->   ERROR: modpost: "irq_err_count" [drivers/gpio/gpio-vr41xx.ko] undefined!
+> 周琰杰 (Zhou Yanjie) (3):
+>   MIPS: Ingenic: Add PWM nodes for X1830.
+>   MIPS: Ingenic: Refresh device tree for Ingenic SoCs and boards.
+>   MIPS: Ingenic: Refresh defconfig for CU1000-Neo and CU1830-Neo.
 > 
-> Fix it by export them when that symbol is =m.
+>  arch/mips/boot/dts/ingenic/cu1000-neo.dts | 77 ++++++++++++++++---------------
+>  arch/mips/boot/dts/ingenic/cu1830-neo.dts | 76 +++++++++++++++---------------
+>  arch/mips/boot/dts/ingenic/x1000.dtsi     | 20 ++++++++
+>  arch/mips/boot/dts/ingenic/x1830.dtsi     | 53 +++++++++++++++++++++
+>  arch/mips/configs/cu1000-neo_defconfig    |  2 +-
+>  arch/mips/configs/cu1830-neo_defconfig    |  2 +-
+>  6 files changed, 154 insertions(+), 76 deletions(-)
 > 
-> Fixes: 27fdd325dace ("MIPS: Update VR41xx GPIO driver to use gpiolib")
-> Reported-by: k2ci <kernel-bot@kylinos.cn>
-> Signed-off-by: huhai <huhai@kylinos.cn>
-> ---
->  arch/mips/kernel/irq.c | 3 +++
->  1 file changed, 3 insertions(+)
-> 
-> diff --git a/arch/mips/kernel/irq.c b/arch/mips/kernel/irq.c
-> index 5e11582fe308..b0038b715008 100644
-> --- a/arch/mips/kernel/irq.c
-> +++ b/arch/mips/kernel/irq.c
-> @@ -38,6 +38,9 @@ void ack_bad_irq(unsigned int irq)
->  }
->  
->  atomic_t irq_err_count;
-> +#ifdef CONFIG_GPIO_VR41XX_MODULE
-> +EXPORT_SYMBOL_GPL(irq_err_count);
-> +#endif
+> -- 
+> 2.7.4
 
-please use spurious_interrupt() in drivers/gpio/gpio-vr41xx.c.
+seried applied to mips-next.
 
 Thomas.
 

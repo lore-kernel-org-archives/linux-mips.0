@@ -2,65 +2,72 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 185F3C433FE
-	for <linux-mips@archiver.kernel.org>; Mon, 23 May 2022 09:31:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DC123C433EF
+	for <linux-mips@archiver.kernel.org>; Mon, 23 May 2022 09:31:37 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232918AbiEWJa6 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 23 May 2022 05:30:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36002 "EHLO
+        id S233118AbiEWJbf (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 23 May 2022 05:31:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37174 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232868AbiEWJa5 (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Mon, 23 May 2022 05:30:57 -0400
+        with ESMTP id S233244AbiEWJbU (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Mon, 23 May 2022 05:31:20 -0400
 Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 6BEF749908;
-        Mon, 23 May 2022 02:30:56 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 177E51054D;
+        Mon, 23 May 2022 02:31:20 -0700 (PDT)
 Received: from uucp (helo=alpha)
         by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1nt4Or-0001Pn-01; Mon, 23 May 2022 11:30:53 +0200
+        id 1nt4Os-0001Pn-00; Mon, 23 May 2022 11:30:54 +0200
 Received: by alpha.franken.de (Postfix, from userid 1000)
-        id C3125C02F4; Mon, 23 May 2022 11:16:28 +0200 (CEST)
-Date:   Mon, 23 May 2022 11:16:28 +0200
+        id 4743AC02F4; Mon, 23 May 2022 11:18:27 +0200 (CEST)
+Date:   Mon, 23 May 2022 11:18:27 +0200
 From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Julia Lawall <Julia.Lawall@inria.fr>
-Cc:     kernel-janitors@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] MIPS: Octeon: fix typo in comment
-Message-ID: <20220523091628.GB5069@alpha.franken.de>
-References: <20220521111145.81697-65-Julia.Lawall@inria.fr>
+To:     Miaoqian Lin <linmq006@gmail.com>
+Cc:     Geert Uytterhoeven <geert+renesas@glider.be>,
+        Miodrag Dinic <miodrag.dinic@mips.com>,
+        James Hogan <jhogan@kernel.org>,
+        Paul Burton <paulburton@kernel.org>,
+        Aleksandar Markovic <aleksandar.markovic@mips.com>,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] MIPS: CPC: Fix refcount leak in
+ mips_cpc_default_phys_base
+Message-ID: <20220523091827.GE5069@alpha.franken.de>
+References: <20220516043353.8147-1-linmq006@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220521111145.81697-65-Julia.Lawall@inria.fr>
+In-Reply-To: <20220516043353.8147-1-linmq006@gmail.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Sat, May 21, 2022 at 01:11:15PM +0200, Julia Lawall wrote:
-> Spelling mistake (triple letters) in comment.
-> Detected with the help of Coccinelle.
+On Mon, May 16, 2022 at 08:33:50AM +0400, Miaoqian Lin wrote:
+> of_find_compatible_node() returns a node pointer with refcount
+> incremented, we should use of_node_put() on it when done.
+> Add missing of_node_put() to avoid refcount leak.
 > 
-> Signed-off-by: Julia Lawall <Julia.Lawall@inria.fr>
-> 
+> Fixes: 791412dafbbf ("MIPS: CPC: Map registers using DT in mips_cpc_default_phys_base()")
+> Signed-off-by: Miaoqian Lin <linmq006@gmail.com>
 > ---
->  arch/mips/pci/pcie-octeon.c |    2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  arch/mips/kernel/mips-cpc.c | 1 +
+>  1 file changed, 1 insertion(+)
 > 
-> diff --git a/arch/mips/pci/pcie-octeon.c b/arch/mips/pci/pcie-octeon.c
-> index 50a3394a9d25..c9edd3fb380d 100644
-> --- a/arch/mips/pci/pcie-octeon.c
-> +++ b/arch/mips/pci/pcie-octeon.c
-> @@ -895,7 +895,7 @@ static int __cvmx_pcie_rc_initialize_gen1(int pcie_port)
->  	mem_access_subid.s.nsw = 0;	/* Enable Snoop for Writes. */
->  	mem_access_subid.s.ror = 0;	/* Disable Relaxed Ordering for Reads. */
->  	mem_access_subid.s.row = 0;	/* Disable Relaxed Ordering for Writes. */
-> -	mem_access_subid.s.ba = 0;	/* PCIe Adddress Bits <63:34>. */
-> +	mem_access_subid.s.ba = 0;	/* PCIe Address Bits <63:34>. */
->  
->  	/*
->  	 * Setup mem access 12-15 for port 0, 16-19 for port 1,
+> diff --git a/arch/mips/kernel/mips-cpc.c b/arch/mips/kernel/mips-cpc.c
+> index 17aff13cd7ce..3e386f7e1545 100644
+> --- a/arch/mips/kernel/mips-cpc.c
+> +++ b/arch/mips/kernel/mips-cpc.c
+> @@ -28,6 +28,7 @@ phys_addr_t __weak mips_cpc_default_phys_base(void)
+>  	cpc_node = of_find_compatible_node(of_root, NULL, "mti,mips-cpc");
+>  	if (cpc_node) {
+>  		err = of_address_to_resource(cpc_node, 0, &res);
+> +		of_node_put(cpc_node);
+>  		if (!err)
+>  			return res.start;
+>  	}
+> -- 
+> 2.25.1
 
-applied to mips-next.
+this is already fixed in mips-next.
 
 Thomas.
 

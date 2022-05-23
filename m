@@ -2,96 +2,69 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 333C8C433EF
-	for <linux-mips@archiver.kernel.org>; Mon, 23 May 2022 08:17:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5C23EC433EF
+	for <linux-mips@archiver.kernel.org>; Mon, 23 May 2022 09:30:58 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231681AbiEWIRB (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 23 May 2022 04:17:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56162 "EHLO
+        id S232908AbiEWJa5 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 23 May 2022 05:30:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35960 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231691AbiEWIRA (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Mon, 23 May 2022 04:17:00 -0400
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DECBC24BF4;
-        Mon, 23 May 2022 01:16:56 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id oe17-20020a17090b395100b001df77d29587so16824553pjb.2;
-        Mon, 23 May 2022 01:16:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ovuY8Nt++zJ1053SzkHGKiigzS6Y0jV40vG6yt+W1eI=;
-        b=ZVjiyvO3qfxOX7tq+bEXO34TrQGvPMN7ovchF7PRGNt+OLzH/o0kfxCNYpEwVl8NIW
-         15DdN2AyLyNOFWCaLpY1THfBGYOmaJa0y3TAxVMKjHJPOMtKzNql/AdEvQMDIYdOw7qh
-         b0zaJoWQVVIxx/A64k7Xn6PL/0nqdWTYU7LUUIq/qCsDBw/6VEBjW62dqp72IuqJ/kCO
-         qfvwWvvK7E+K0MykJqdgZwjTnDx0W0b3DKJOMYwflmSytPKzgQkLnzrvFM+/Hc4QNaCm
-         hhGbU3uRmZAZxh/Urfwysqg2gUvsrriYMrUeah+qi+3NKnPE/vQft0dwrE+OVSF7jZ36
-         Vmow==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ovuY8Nt++zJ1053SzkHGKiigzS6Y0jV40vG6yt+W1eI=;
-        b=cYnz0fWQJJkV9m+IlX36t7bnzf9mXjoxI31vLDvFYE6vKOrYQwGTNrek9wqzLh/RmV
-         xOgd0LzAjCkaOboKUdKL6DMwGYrrjqDhkVw62IpDrEpBT+/KpclIC6WqH7j9Og+RKo69
-         pWmyzYK50Md8d6qRF33XLAxUOMl4loaJgHd8UTL/+2/O52S1tIViAng5aSUtI1S/0jCd
-         IRsxGqO1uKe1wYmIudeYcqWe1jlnkhmAVeQg3x+165w/p3avIupQxu7IHSnU0XxmlyNK
-         1YdsLV5RsN841+HeLC4ok64ofKJl6Nfdg7818VYeqmlamBojjnG1GZBNPT8jWL6WC7J5
-         Bm1g==
-X-Gm-Message-State: AOAM5326Ieo6MgVcy+w/eul+HEB4jbAQdzXchM3QGn93hfW7Nt+14ihs
-        t/F4NLevAboJKTmFK1HXegU=
-X-Google-Smtp-Source: ABdhPJxBLsxmZzFyXz9mQJ/BBH+eCob19fTghQvjFNlg3BJ57mCS2VDFpIaOm7yetJygOphj8RYjNA==
-X-Received: by 2002:a17:90b:1c12:b0:1df:d7e9:2edd with SMTP id oc18-20020a17090b1c1200b001dfd7e92eddmr23479751pjb.35.1653293816131;
-        Mon, 23 May 2022 01:16:56 -0700 (PDT)
-Received: from localhost.localdomain ([103.167.134.51])
-        by smtp.gmail.com with ESMTPSA id 142-20020a621794000000b00518a9c82d28sm1134707pfx.21.2022.05.23.01.16.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 May 2022 01:16:55 -0700 (PDT)
-From:   Genjian Zhang <zhanggenjian123@gmail.com>
-X-Google-Original-From: Genjian Zhang <zhanggenjian@kylinos.cn>
-To:     tsbogend@alpha.franken.de, maz@kernel.org, keescook@chromium.org,
-        mark.rutland@arm.com, nathan@kernel.org, siyanteng01@gmail.com,
-        yyuasa@linux.com, ralf@linux-mips.org
-Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        huhai@kylinos.cn, k2ci <kernel-bot@kylinos.cn>
-Subject: [PATCH] irq: mips: Export irq_err_count to modules
-Date:   Mon, 23 May 2022 16:16:25 +0800
-Message-Id: <20220523081625.2074527-1-zhanggenjian@kylinos.cn>
-X-Mailer: git-send-email 2.25.1
+        with ESMTP id S232905AbiEWJa4 (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Mon, 23 May 2022 05:30:56 -0400
+Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 600B549911;
+        Mon, 23 May 2022 02:30:55 -0700 (PDT)
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1nt4Or-0001Pn-02; Mon, 23 May 2022 11:30:53 +0200
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id 46EACC02F4; Mon, 23 May 2022 11:16:40 +0200 (CEST)
+Date:   Mon, 23 May 2022 11:16:40 +0200
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Juerg Haefliger <juerg.haefliger@canonical.com>
+Cc:     keguang.zhang@gmail.com, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Juerg Haefliger <juergh@canonical.com>
+Subject: Re: [PATCH] MIPS: loongson32: Kconfig: Remove extra space
+Message-ID: <20220523091640.GC5069@alpha.franken.de>
+References: <20220520115113.147170-1-juergh@canonical.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220520115113.147170-1-juergh@canonical.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-From: huhai <huhai@kylinos.cn>
+On Fri, May 20, 2022 at 01:51:13PM +0200, Juerg Haefliger wrote:
+> Remove extra space between 'prompt' keyword and string.
+> 
+> Signed-off-by: Juerg Haefliger <juergh@canonical.com>
+> ---
+>  arch/mips/loongson32/Kconfig | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/arch/mips/loongson32/Kconfig b/arch/mips/loongson32/Kconfig
+> index e27879b4813b..2ef9da0016df 100644
+> --- a/arch/mips/loongson32/Kconfig
+> +++ b/arch/mips/loongson32/Kconfig
+> @@ -46,7 +46,7 @@ menuconfig CEVT_CSRC_LS1X
+>  	  If unsure, say N.
+>  
+>  choice
+> -	prompt  "Select clockevent/clocksource"
+> +	prompt "Select clockevent/clocksource"
+>  	depends on CEVT_CSRC_LS1X
+>  	default TIMER_USE_PWM0
+>  
+> -- 
+> 2.32.0
 
-modpost complains once these drivers become modules.
-  ERROR: modpost: "irq_err_count" [drivers/gpio/gpio-vr41xx.ko] undefined!
+applied to mips-next.
 
-Fix it by export them when that symbol is =m.
+Thomas.
 
-Fixes: 27fdd325dace ("MIPS: Update VR41xx GPIO driver to use gpiolib")
-Reported-by: k2ci <kernel-bot@kylinos.cn>
-Signed-off-by: huhai <huhai@kylinos.cn>
----
- arch/mips/kernel/irq.c | 3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/arch/mips/kernel/irq.c b/arch/mips/kernel/irq.c
-index 5e11582fe308..b0038b715008 100644
---- a/arch/mips/kernel/irq.c
-+++ b/arch/mips/kernel/irq.c
-@@ -38,6 +38,9 @@ void ack_bad_irq(unsigned int irq)
- }
- 
- atomic_t irq_err_count;
-+#ifdef CONFIG_GPIO_VR41XX_MODULE
-+EXPORT_SYMBOL_GPL(irq_err_count);
-+#endif
- 
- int arch_show_interrupts(struct seq_file *p, int prec)
- {
 -- 
-2.27.0
-
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]

@@ -2,154 +2,57 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D7B6EC433FE
-	for <linux-mips@archiver.kernel.org>; Tue, 24 May 2022 08:05:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0A4B1C433F5
+	for <linux-mips@archiver.kernel.org>; Tue, 24 May 2022 08:13:43 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230354AbiEXIFC (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 24 May 2022 04:05:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57350 "EHLO
+        id S231668AbiEXINl (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 24 May 2022 04:13:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47382 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230180AbiEXIE6 (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Tue, 24 May 2022 04:04:58 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39D849A982;
-        Tue, 24 May 2022 01:04:54 -0700 (PDT)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out2.suse.de (Postfix) with ESMTP id C6A001F8B8;
-        Tue, 24 May 2022 08:04:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1653379492; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=+HrTVIvXJDgrzNQFl8Mhx0wGW/HWHO1IHY/NT0Ch0wc=;
-        b=cmANZ9kaIvAGzRMHaeCxB0LLBkrlXozlKGlr2MQNHSGuBkVg9GZ4ULppK80AYEMbn3sHQ3
-        SRCkpAxtJlotC4dIBTUf4LWabWRfn+CV2iXTLVzyyBDKp8B9onijAa8QBBUxy4R2DAxIkT
-        C3aqZP5pWFL7HdTOLlEm50sKDepVyxc=
-Received: from suse.cz (unknown [10.100.201.202])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by relay2.suse.de (Postfix) with ESMTPS id A47272C141;
-        Tue, 24 May 2022 08:04:51 +0000 (UTC)
-Date:   Tue, 24 May 2022 10:04:51 +0200
-From:   Petr Mladek <pmladek@suse.com>
-To:     "Guilherme G. Piccoli" <gpiccoli@igalia.com>
-Cc:     Scott Branden <scott.branden@broadcom.com>,
-        Sebastian Reichel <sre@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Desmond yan <desmond.yan@broadcom.com>,
-        David Gow <davidgow@google.com>,
-        Evan Green <evgreen@chromium.org>,
-        Julius Werner <jwerner@chromium.org>,
-        bcm-kernel-feedback-list@broadcom.com, linux-pm@vger.kernel.org,
-        akpm@linux-foundation.org, bhe@redhat.com,
-        kexec@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-alpha@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-edac@vger.kernel.org,
-        linux-hyperv@vger.kernel.org, linux-leds@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
-        linux-remoteproc@vger.kernel.org, linux-s390@vger.kernel.org,
-        linux-tegra@vger.kernel.org, linux-um@lists.infradead.org,
-        linux-xtensa@linux-xtensa.org, netdev@vger.kernel.org,
-        openipmi-developer@lists.sourceforge.net, rcu@vger.kernel.org,
-        sparclinux@vger.kernel.org, xen-devel@lists.xenproject.org,
-        x86@kernel.org, kernel-dev@igalia.com, kernel@gpiccoli.net,
-        halves@canonical.com, fabiomirmar@gmail.com,
-        alejandro.j.jimenez@oracle.com, andriy.shevchenko@linux.intel.com,
-        arnd@arndb.de, bp@alien8.de, corbet@lwn.net,
-        d.hatayama@jp.fujitsu.com, dave.hansen@linux.intel.com,
-        dyoung@redhat.com, feng.tang@intel.com, gregkh@linuxfoundation.org,
-        mikelley@microsoft.com, hidehiro.kawai.ez@hitachi.com,
-        jgross@suse.com, john.ogness@linutronix.de, keescook@chromium.org,
-        luto@kernel.org, mhiramat@kernel.org, mingo@redhat.com,
-        paulmck@kernel.org, peterz@infradead.org, rostedt@goodmis.org,
-        senozhatsky@chromium.org, stern@rowland.harvard.edu,
-        tglx@linutronix.de, vgoyal@redhat.com, vkuznets@redhat.com,
-        will@kernel.org, Alexander Gordeev <agordeev@linux.ibm.com>,
-        Andrea Parri <parri.andrea@gmail.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Brian Norris <computersforpeace@gmail.com>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        "David S. Miller" <davem@davemloft.net>,
-        Dexuan Cui <decui@microsoft.com>,
-        Doug Berger <opendmb@gmail.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Hari Bathini <hbathini@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Justin Chen <justinpopo6@gmail.com>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Markus Mayer <mmayer@broadcom.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Mihai Carabas <mihai.carabas@oracle.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Paul Mackerras <paulus@samba.org>, Pavel Machek <pavel@ucw.cz>,
-        Shile Zhang <shile.zhang@linux.alibaba.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Tianyu Lan <Tianyu.Lan@microsoft.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Wang ShaoBo <bobo.shaobowang@huawei.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        zhenwei pi <pizhenwei@bytedance.com>
-Subject: Re: [PATCH 19/30] panic: Add the panic hypervisor notifier list
-Message-ID: <YoyRo6gJrr4lsFpD@alley>
-References: <20220427224924.592546-1-gpiccoli@igalia.com>
- <20220427224924.592546-20-gpiccoli@igalia.com>
- <YoJZVZl/MH0KiE/J@alley>
- <ad082ce7-db50-13bb-3dbb-9b595dfa78be@igalia.com>
- <YoOpyW1+q+Z5as78@alley>
- <d72b9aab-675c-ac89-b73a-b1de4a0b722d@igalia.com>
- <81878a67-21f1-fee8-1add-f381bc8b05df@broadcom.com>
- <edbaa4fa-561c-6f5e-f2ab-43ae68acaede@igalia.com>
- <d1cc0bee-2a98-0c2e-8796-6fb7fae6b803@broadcom.com>
- <0fac8c71-6f18-d15c-23f5-075dbc45f3f9@igalia.com>
+        with ESMTP id S229711AbiEXINj (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Tue, 24 May 2022 04:13:39 -0400
+Received: from mail.greatagencyonline.pl (mail.greatagencyonline.pl [89.40.125.71])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81E7770914
+        for <linux-mips@vger.kernel.org>; Tue, 24 May 2022 01:13:35 -0700 (PDT)
+Received: by mail.greatagencyonline.pl (Postfix, from userid 1001)
+        id 46575A4CCF; Tue, 24 May 2022 09:02:03 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=greatagencyonline.pl;
+        s=mail; t=1653379338;
+        bh=ksvwLPFdjL017OLwir5xHXy3Vmrj/5fhZ5DwBI62qzc=;
+        h=Date:From:To:Subject:From;
+        b=oJRwgXAWN05rGwm6PTTYCdryF+qeIw50ijtg8jBeBa1OQuOxs1BWaq1gvsLGO2FnC
+         pGVOkI6TGDiukmgECa/+6sCYOpOEbNI6CTirTUUV5O6Rfdg66y6AXr1bQ+hIMvYDDs
+         XWvT8G47KuXA17smLiP/xAnlYPkXhhR6VcYHCC5NY9hePQ0QiI2ikaJkOyExDW78gk
+         wTpgNA7l92gQKQTLE7TbICDqBkN2VhtuBp6SRQcS9IuqBjS9ewx3cLp5erxaUyug9q
+         GiLGw311z5dwF7Q85vKTAFM0fkyXWmQQfnUHHPc4wImEk2EKgWPNuk+uaZDWLch+NK
+         UFN4LlBPK3AhQ==
+Received: by mail.greatagencyonline.pl for <linux-mips@vger.kernel.org>; Tue, 24 May 2022 08:00:54 GMT
+Message-ID: <20220524074502-0.1.43.vy8l.0.qyihmzfgi4@greatagencyonline.pl>
+Date:   Tue, 24 May 2022 08:00:54 GMT
+From:   =?UTF-8?Q? "Miko=C5=82aj_Rudzik" ?= 
+        <mikolaj.rudzik@greatagencyonline.pl>
+To:     <linux-mips@vger.kernel.org>
+Subject: =?UTF-8?Q?Nap=C5=82yw_Klient=C3=B3w_ze_strony?=
+X-Mailer: mail.greatagencyonline.pl
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0fac8c71-6f18-d15c-23f5-075dbc45f3f9@igalia.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Mon 2022-05-23 11:56:12, Guilherme G. Piccoli wrote:
-> On 19/05/2022 16:20, Scott Branden wrote:
-> > [...] 
-> >> Hi Scott / Desmond, thanks for the detailed answer! Is this adapter
-> >> designed to run in x86 only or you have other architectures' use cases?
-> > The adapter may be used in any PCIe design that supports DMA.
-> > So it may be possible to run in arm64 servers.
-> >>
-> >> [...]
-> >> With that said, and given this is a lightweight notifier that ideally
-> >> should run ASAP, I'd keep this one in the hypervisor list. We can
-> >> "adjust" the semantic of this list to include lightweight notifiers that
-> >> reset adapters.
-> > Sounds the best to keep system operating as tested today.
-> >>
-> >> With that said, Petr has a point - not always such list is going to be
-> >> called before kdump. So, that makes me think in another idea: what if we
-> >> have another list, but not on panic path, but instead in the custom
-> >> crash_shutdown()? Drivers could add callbacks there that must execute
-> >> before kexec/kdump, no matter what.
-> > It may be beneficial for some other drivers but for our use we would 
-> > then need to register for the panic path and the crash_shutdown path. 
-> > We notify the VK card for 2 purposes: one to stop DMA so memory stop 
-> > changing during a kdump.  And also to get the card into a good state so 
-> > resets happen cleanly.
-> 
-> Thanks Scott! With that, I guess it's really better to keep this
-> notifier in this hypervisor/early list - I'm planning to do that for V2.
-> Unless Petr or somebody has strong feelings against that, of course.
+Dzie=C5=84 dobry,
 
-I am fine with it because we do not have a better solution at the
-moment.
+chcia=C5=82bym poinformowa=C4=87 Pa=C5=84stwa o mo=C5=BCliwo=C5=9Bci pozy=
+skania nowych zlece=C5=84 ze strony www.
 
-It might be a good candidate for the 5th notifier list mentioned
-in the thread https://lore.kernel.org/r/YoyQyHHfhIIXSX0U@alley .
-But I am not sure if the 5th list is worth the complexity.
+Widzimy zainteresowanie potencjalnych Klient=C3=B3w Pa=C5=84stwa firm=C4=85=
+, dlatego ch=C4=99tnie pomo=C5=BCemy Pa=C5=84stwu dotrze=C4=87 z ofert=C4=
+=85 do wi=C4=99kszego grona odbiorc=C3=B3w poprzez efektywne metody pozyc=
+jonowania strony w Google.
 
-Best Regards,
-Petr
+Czy m=C3=B3g=C5=82bym liczy=C4=87 na kontakt zwrotny?
+
+
+Pozdrawiam,
+Miko=C5=82aj Rudzik

@@ -2,155 +2,174 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 333DBC4332F
-	for <linux-mips@archiver.kernel.org>; Wed, 25 May 2022 12:11:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8B64EC4321E
+	for <linux-mips@archiver.kernel.org>; Wed, 25 May 2022 12:44:28 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243407AbiEYMLq (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 25 May 2022 08:11:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36444 "EHLO
+        id S237505AbiEYMo0 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 25 May 2022 08:44:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60456 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243397AbiEYMLV (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 25 May 2022 08:11:21 -0400
-Received: from EUR03-DBA-obe.outbound.protection.outlook.com (mail-dbaeur03on2131.outbound.protection.outlook.com [40.107.104.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 947A02B275;
-        Wed, 25 May 2022 05:11:06 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=aeGrodi8SXc0DPhLLV4KprlfKfKJvLyQ+qx0m3hQO1JbdzaHY4y/UpOgAbeMF3u2C3e+YjEIk3yJZQYL+bPSCj+lewe7n9ys5U5uqO4br/BmDplc3CtHrKqp0MQJlWmBy/vMV5jW+SXqI+IohKOT2CzqZPcKBQJRql4V3dqILB9KnXqFYLfpLYhgOLofSUhNKJX7HF2hRsHfArtoHOzV7LYosbJdcTKdix6CuQJSdiX7tGdpmAop0ADhx5C16CKzP98RLPzOvrsfCHEZTshuzIqQkIZvHacbKAnsF37+D+qk94ug+hFb+AkuBLRkPqKG0114Iim/5AWKnYonw0qotA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Jjae7dwh6+X4JAvdK3cuLDQ6s2C6xrCvKxx6pngGV5Q=;
- b=HkFpiNMdWzSCJRzgmlgq3+rHrs2QGKB8iVAhF/i4WOZpKGlSm3q4OfiZCznWGgAOqIhBuuSlttGbgA5PneO/DkQ/qsREtkvgrpykVnQtapn1pOx3K56IKcnaF/D3jqmyhniabfi+hhzr1nQ/SbuD/yjGHq29N+jKUNhMbQ9OFczySJxypvtka28fxsoEL+uCJs6wWBV1fdzi6LUp5+7D2B9E/M9Ctx3GMTcGjixUrBifljIU6oeUsr1mUPS+epddChCvWdvz404ge6LP+nMUllTYVwnznH8fRJCJzR49rcomc2A59SFxyG1hQzhhSmwpVDSxb9mJkjyX5d3quQo4Zg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=syrmia.com; dmarc=pass action=none header.from=syrmia.com;
- dkim=pass header.d=syrmia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=syrmia.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Jjae7dwh6+X4JAvdK3cuLDQ6s2C6xrCvKxx6pngGV5Q=;
- b=TCNYQ+lBSL8/3mhHF5bItcV+cN8nmUIQjwqoy34CuoeYEnoh7DAm4gBR28p+sACDMCOKic0q6pZrwqRE/vUSX7ZdQwVchQdxyrzzlkYSWao2J0U9ViThpX/BrJDfmccdTwQGpriZecYwDzEBCfQF2KQb8teLJ3MNuLLLDnhd2QI=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=syrmia.com;
-Received: from VI1PR03MB4208.eurprd03.prod.outlook.com (2603:10a6:803:51::25)
- by VE1PR03MB5439.eurprd03.prod.outlook.com (2603:10a6:802:b2::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5293.13; Wed, 25 May
- 2022 12:11:00 +0000
-Received: from VI1PR03MB4208.eurprd03.prod.outlook.com
- ([fe80::cca9:49b6:f568:ecd9]) by VI1PR03MB4208.eurprd03.prod.outlook.com
- ([fe80::cca9:49b6:f568:ecd9%5]) with mapi id 15.20.5293.013; Wed, 25 May 2022
- 12:11:00 +0000
-From:   Dragan Mladjenovic <Dragan.Mladjenovic@syrmia.com>
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc:     Chao-ying Fu <cfu@wavecomp.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Greg Ungerer <gerg@kernel.org>,
-        Hauke Mehrtens <hauke@hauke-m.de>,
-        Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
-        Marc Zyngier <maz@kernel.org>,
-        Paul Burton <paulburton@kernel.org>,
+        with ESMTP id S233719AbiEYMoX (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 25 May 2022 08:44:23 -0400
+Received: from mail-qk1-x729.google.com (mail-qk1-x729.google.com [IPv6:2607:f8b0:4864:20::729])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03F808FF96
+        for <linux-mips@vger.kernel.org>; Wed, 25 May 2022 05:44:20 -0700 (PDT)
+Received: by mail-qk1-x729.google.com with SMTP id 190so10607868qkj.8
+        for <linux-mips@vger.kernel.org>; Wed, 25 May 2022 05:44:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20210112.gappssmtp.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=w0F6iR9EKs/zIprBUHWYk0xdfCPICb6b6FOC3ooI/Qg=;
+        b=LMEKNyEIRYPV5QWJlwplZCx+Yze+80z3MALcLFPz5jKdddgbR28N/X6bo9Jvgd00MP
+         WWkcUcb1+z91voFM8WjtduJpm5pvevvusNqH0PzjaxsPqwHpEmvLG6H17fO8d+8uqQ/c
+         xW/rbo+trH8MjL1X/foXOCmesnHHx99Tmug43Nb91EXZFTR7KAdlglnJRYtL1NUTbXz5
+         2CGVavB8u5eJ5bdNx8JVu0TNi6KB2NiCnWSVtKfIEdRU3i4wp/Kah2nDHcLAJXmplYfJ
+         xzofRGg4rofGSre9mJv/qm1XS4Pms5gIR+r4L8hjS8Owdd3qkT56i/sicOD/din7w+oO
+         VJFw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=w0F6iR9EKs/zIprBUHWYk0xdfCPICb6b6FOC3ooI/Qg=;
+        b=H5+9IO9QiBaTg3eTPCyU3zjDBkf3FVptemafvlLFhACDTMh5YUtzzQK0UCRswcdrpz
+         9RYovx6XKAVanXgHBvXHdGa2rsBNrUuMZZKNQ+ELJ7cXa/R/i6qcUq6WGu89vnR5SDli
+         Bmisz7hV0RjEDYSdTAimW42u6rkHY4qVmQ0/Kn6l7C3WiNpG31986huQb2PIwRqdmlJL
+         NqQO5gdo3ydUQiAUbkFB79ckZUooxa+ht5AQcVn/8PXSTLgnx330oM8VH4eu23FUJeLg
+         bfh5hV61UYXJ79jZwO6qeeHTo4e/M3Me5gssNyOX6FvjISazJRRtsDH/RyPbJ4JUDbjE
+         qCQQ==
+X-Gm-Message-State: AOAM533/9XiiJm9VARTJryIEMhp4fnx4qR2TxR/emkFGZ6wpX4Z++Lmh
+        w+3XEq9y6k0ysrBFyDkI6Zm5lw==
+X-Google-Smtp-Source: ABdhPJx/POKWSCbmzd2neCxXDwISwEb1wGzjcuEavupLeI/smDQTCNVGAU9PwpCoNv+A6qxiW2wj4Q==
+X-Received: by 2002:a05:620a:4047:b0:6a0:5dae:ad67 with SMTP id i7-20020a05620a404700b006a05daead67mr19946570qko.530.1653482659851;
+        Wed, 25 May 2022 05:44:19 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:480::1:741f])
+        by smtp.gmail.com with ESMTPSA id g25-20020ac870d9000000b002f9433ed963sm1207797qtp.64.2022.05.25.05.44.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 25 May 2022 05:44:19 -0700 (PDT)
+Date:   Wed, 25 May 2022 08:44:18 -0400
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Peter Xu <peterx@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Richard Henderson <rth@twiddle.net>,
+        David Hildenbrand <david@redhat.com>,
+        Matt Turner <mattst88@gmail.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Michal Simek <monstr@monstr.eu>,
+        Russell King <linux@armlinux.org.uk>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        linux-riscv@lists.infradead.org,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Jonas Bonn <jonas@southpole.se>, Will Deacon <will@kernel.org>,
+        "James E . J . Bottomley" <James.Bottomley@hansenpartnership.com>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        openrisc@lists.librecores.org, linux-s390@vger.kernel.org,
+        Ingo Molnar <mingo@redhat.com>,
+        linux-m68k@lists.linux-m68k.org,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Chris Zankel <chris@zankel.net>,
         Peter Zijlstra <peterz@infradead.org>,
-        Serge Semin <fancer.lancer@gmail.com>,
+        Alistair Popple <apopple@nvidia.com>,
+        linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
+        Vlastimil Babka <vbabka@suse.cz>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Tiezhu Yang <yangtiezhu@loongson.cn>,
-        Dragan Mladjenovic <dragan.mladjenovic@syrmia.com>
-Subject: [PATCH v2 11/12] MIPS: Report cluster in /proc/cpuinfo
-Date:   Wed, 25 May 2022 14:10:29 +0200
-Message-Id: <20220525121030.16054-12-Dragan.Mladjenovic@syrmia.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20220525121030.16054-1-Dragan.Mladjenovic@syrmia.com>
-References: <20220525121030.16054-1-Dragan.Mladjenovic@syrmia.com>
-Content-Type: text/plain
-X-ClientProxiedBy: VE1PR08CA0031.eurprd08.prod.outlook.com
- (2603:10a6:803:104::44) To VI1PR03MB4208.eurprd03.prod.outlook.com
- (2603:10a6:803:51::25)
+        sparclinux@vger.kernel.org,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Stafford Horne <shorne@gmail.com>,
+        Michael Ellerman <mpe@ellerman.id.au>, x86@kernel.org,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Paul Mackerras <paulus@samba.org>,
+        linux-arm-kernel@lists.infradead.org,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        linux-xtensa@linux-xtensa.org, Nicholas Piggin <npiggin@gmail.com>,
+        linux-sh@vger.kernel.org, Vasily Gorbik <gor@linux.ibm.com>,
+        Borislav Petkov <bp@alien8.de>, linux-mips@vger.kernel.org,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        Helge Deller <deller@gmx.de>, Vineet Gupta <vgupta@kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        linux-um@lists.infradead.org, linux-alpha@vger.kernel.org,
+        Johannes Berg <johannes@sipsolutions.net>,
+        linux-ia64@vger.kernel.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Dinh Nguyen <dinguyen@kernel.org>, Guo Ren <guoren@kernel.org>,
+        linux-snps-arc@lists.infradead.org,
+        Hugh Dickins <hughd@google.com>, Rich Felker <dalias@libc.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Richard Weinberger <richard@nod.at>,
+        linuxppc-dev@lists.ozlabs.org, Brian Cain <bcain@quicinc.com>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
+        linux-parisc@vger.kernel.org,
+        "David S . Miller" <davem@davemloft.net>
+Subject: Re: [PATCH v3] mm: Avoid unnecessary page fault retires on shared
+ memory types
+Message-ID: <Yo4kojxZfjNiZI7/@cmpxchg.org>
+References: <20220524234531.1949-1-peterx@redhat.com>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 8285ba3b-7220-4ddb-73ca-08da3e479fd9
-X-MS-TrafficTypeDiagnostic: VE1PR03MB5439:EE_
-X-Microsoft-Antispam-PRVS: <VE1PR03MB5439D3E0C3ABF4756CF22FD5EFD69@VE1PR03MB5439.eurprd03.prod.outlook.com>
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 7fWDWDEhdVS1xoUnoHv3AX8UpBZqnQuXIEfDGUD5wfQFCWCtmPswb+Au4LdwMqfzuNZW+KjlhDUNVl7bMKtYeNy3NZWcEvxkRYbPONMoCZ85aG/76IUP3B/m8BqWWG6JKFyOX9iqFSNQdOpWIVENXkC9ezwxqCP8b0T7nhzzSRoMrOI41QtHRaubqf6BAjHcPRE2u2SHbSy7RmX6OWnhU6D8Y7EkKIWpiOo0UaisanVOQWdmcPOPASUip4EFGE50F6vaH/QISp9cX25Kzz7LT5omrgAiQ+1e24ZB/mj4am+RTJRMeqYrGa8o/rur8a9DcZabR9JoeLV7ricyfHJ6eqXyKi+RCTeVRiPHmNw8k+PdROUB3F1Jq2aTZD6aNoeymPIeDF6khIb0HoIASPT0txpc7Xn0uXXSogsTqPmp1ioIJBvp66JNs9U42IXB3Yd9iFs0xU8uCPRFPksW0Z/4mX++KxESVLQnlQdrgcFJ+34cBQXF8zkGgymbfV7V7OlRhaWAWyiCZAUrIfQQGIAeamp4LkYyjIS61oolDTPK2+JCfQFqPhQXNnznSVFu/7pnAxodEJ8YcEGTqB4UwgTiBdV7RMskQW3dsKbMugQYqbRAA6BpB8lyzusj3RrEwcR0zdsamgrmm0jjpHMCKW+kTExokFIrMDn1pwKCnZluKC2RN4V5+y5L/8HT7vMa4/jib5idNuTz3pppvV3IkQc+eA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR03MB4208.eurprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230001)(136003)(396003)(39840400004)(376002)(366004)(346002)(36756003)(6486002)(7416002)(2906002)(6506007)(316002)(8936002)(86362001)(4326008)(66556008)(66946007)(52116002)(8676002)(6512007)(26005)(508600001)(5660300002)(6666004)(107886003)(54906003)(41300700001)(2616005)(66476007)(6916009)(1076003)(38100700002)(38350700002)(186003);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?vDDCGyG19l7vZzTs04oIbzH7dL1iWghHSkxGkrHv/MtNH4RokfQigrTQXjVA?=
- =?us-ascii?Q?jqTPRDR0viXugs87cZSg3Rpb70d3DfKwQn/dM5Fz6p4y6MF7+brYp2KO/UDe?=
- =?us-ascii?Q?pVrVaGNnY+KHINtehAMnzs3/pmURRlfG1rd5tDsrCdHvrF4Wl+1ZRoNMqyej?=
- =?us-ascii?Q?TTQH60xMYaH+V73MsPIhTztgv1gyXkwahYUMafsBXM6gP6/ISEGYtomu/a6P?=
- =?us-ascii?Q?wVQWXCa4ckaO0BFFQ7X+e3QgjIhoR1KUbhrkFknSaYUtpv9hq+AHAH/8XZ8m?=
- =?us-ascii?Q?wLXnqYFy/cEMfUyxWnK6AGezxHV0yGDPuKP6eSBlkjXl4gLW841FMXWSeOqb?=
- =?us-ascii?Q?IvLK5V/suARuznOFRRMNH5mcsRbzhbtX/KX92guLp6b61iXOPQ+RlxSFfpfD?=
- =?us-ascii?Q?DIbji1pNcYsC8aUbNr8fcqZscDDX93UevDeswFU1N7gAYUvG4nJE9xjSOkq+?=
- =?us-ascii?Q?3Jmjd0Tl5Rc14qUJC/VFEfzRQU6VzhhF50sQrGnJIic7ASew90gZQ+5Owa29?=
- =?us-ascii?Q?IxqmWLpb4Yrwj1HIomqR8dtYoI+V5eytlv2nkuq8WECCbWToFRbXG8oMQ1QD?=
- =?us-ascii?Q?LduJnWiDyf537rIv8gvwb2WXOMgkVP9YHmOpPaI07L0I+iWFCxUtrydH7B0X?=
- =?us-ascii?Q?VyQRMTO/SVu2gGWXv/FmlXf8pxc/pvz17hg3uvRLcbk6StiT5VKVGZY+gKfF?=
- =?us-ascii?Q?Bf8pkgwcR1WRhK4rtDoLnC7Fsf67Q0S6t1Ilgk8YMKNpATWO2zcCJCSXyzDg?=
- =?us-ascii?Q?sYV/vFDMX3GF6WAD/752B/qO+c1ZPvXtx65AvI6adRoqGYO0z46w0dGwj9WF?=
- =?us-ascii?Q?4C3AGVCQKlarIlz0hOL/Kp7tL56MFg+FBJzb4yT3D+pHS1ffnlGXt+J7GdxY?=
- =?us-ascii?Q?Nx3PKIn0zDVGRN5xJoV36LwMHUWcSgCVI/eQszqw/UjZAO2ul9COEe3VBzSW?=
- =?us-ascii?Q?XVrSXRqVROIloj/gqXRb/jw45otpOjNNWr9QjfVmV/O+Y6K83t+MxXzhoq9F?=
- =?us-ascii?Q?b50UsGLi4eKfwbqbzcpUt+5p7s7PAzUoP3lukdEg3HXNwo+JDeIcm+ujAWfk?=
- =?us-ascii?Q?+0abnoQVE/TNuIs5ZabJOrupHLnt5vmAvM/x4TjKThXY/RNBgIRXYY+Xk1XW?=
- =?us-ascii?Q?gfMaLPNpIZzpGyZOeZvE/5dxT4fRhnhRO4ejsZvokhaK2hnY+Qj/MYpI/XFA?=
- =?us-ascii?Q?SzNWTrTxx+FRD161bLn7NC0imPUZCrqPMpijbr2uey9I07wJ3gKWQG4cIi14?=
- =?us-ascii?Q?IIgRExNL8vC48FwLMNSuuJI0aJavm84fKrPtSnOqAkdR9njGBeFmE9tfxOej?=
- =?us-ascii?Q?93C+WdKxiWZ1glKVTVNatGYjsmNvtHLgIo/RmrEhQHbFqr2NkPGwoR/mNYjZ?=
- =?us-ascii?Q?UGgi5bD1dKMxY+TWlFOiMb5iXgTzYYShIeQuPW4VVNoBHYVH28cpbKp7kEvm?=
- =?us-ascii?Q?WxsgfWqpIDJ8x+3AnWo+fwGjzwxbRXAVDxCqI5Vty7mqbyjwM6u8FrhpRmMo?=
- =?us-ascii?Q?hu6VsZPkSdSkucKQE51MsfdLzyMX8KwJFhOilFI8h7uvO13tHDZSM4KHidKX?=
- =?us-ascii?Q?aLjuxziB/XawcxDXX1ygxeCXouH8xNnyVasg+/jPC0eWdmKWORs94KUGDP9V?=
- =?us-ascii?Q?w6xAWFjh9pXMKvEfb9360V0t7Ta0NnavFWiMDb6SRaAf837qWNuEjeumeTTj?=
- =?us-ascii?Q?y1RZ9MjrK5eSNcQPtXx5zzIvsJNahoyWl8n94DdFys6ee/ptVbINrqIHS9O/?=
- =?us-ascii?Q?9QEPwq+Hs3wxvL0LDUPelbLgint+1Fj58uNqij8KExdVXpv7tzQq?=
-X-OriginatorOrg: syrmia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8285ba3b-7220-4ddb-73ca-08da3e479fd9
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR03MB4208.eurprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 May 2022 12:10:57.3024
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 19214a73-c1ab-4e19-8f59-14bdcb09a66e
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: GoTVAjb5j9hYJEIAqfSZITfrl85SQCYnic55GWQlp7CMLQqNnwGWgi4LZoHbuvJJgNdrwR2Xum5a1MoRJzPmjWsWovIqcYKqOcm6qxUL4eE=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VE1PR03MB5439
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220524234531.1949-1-peterx@redhat.com>
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-From: Paul Burton <paulburton@kernel.org>
+On Tue, May 24, 2022 at 07:45:31PM -0400, Peter Xu wrote:
+> I observed that for each of the shared file-backed page faults, we're very
+> likely to retry one more time for the 1st write fault upon no page.  It's
+> because we'll need to release the mmap lock for dirty rate limit purpose
+> with balance_dirty_pages_ratelimited() (in fault_dirty_shared_page()).
+> 
+> Then after that throttling we return VM_FAULT_RETRY.
+> 
+> We did that probably because VM_FAULT_RETRY is the only way we can return
+> to the fault handler at that time telling it we've released the mmap lock.
+> 
+> However that's not ideal because it's very likely the fault does not need
+> to be retried at all since the pgtable was well installed before the
+> throttling, so the next continuous fault (including taking mmap read lock,
+> walk the pgtable, etc.) could be in most cases unnecessary.
+> 
+> It's not only slowing down page faults for shared file-backed, but also add
+> more mmap lock contention which is in most cases not needed at all.
+> 
+> To observe this, one could try to write to some shmem page and look at
+> "pgfault" value in /proc/vmstat, then we should expect 2 counts for each
+> shmem write simply because we retried, and vm event "pgfault" will capture
+> that.
+> 
+> To make it more efficient, add a new VM_FAULT_COMPLETED return code just to
+> show that we've completed the whole fault and released the lock.  It's also
+> a hint that we should very possibly not need another fault immediately on
+> this page because we've just completed it.
+> 
+> This patch provides a ~12% perf boost on my aarch64 test VM with a simple
+> program sequentially dirtying 400MB shmem file being mmap()ed and these are
+> the time it needs:
+> 
+>   Before: 650.980 ms (+-1.94%)
+>   After:  569.396 ms (+-1.38%)
+> 
+> I believe it could help more than that.
+> 
+> We need some special care on GUP and the s390 pgfault handler (for gmap
+> code before returning from pgfault), the rest changes in the page fault
+> handlers should be relatively straightforward.
+> 
+> Another thing to mention is that mm_account_fault() does take this new
+> fault as a generic fault to be accounted, unlike VM_FAULT_RETRY.
+> 
+> I explicitly didn't touch hmm_vma_fault() and break_ksm() because they do
+> not handle VM_FAULT_RETRY even with existing code, so I'm literally keeping
+> them as-is.
+> 
+> Signed-off-by: Peter Xu <peterx@redhat.com>
 
-When >= CM3.5 output cluster number.
-
-Signed-off-by: Paul Burton <paulburton@kernel.org>
-Signed-off-by: Dragan Mladjenovic <dragan.mladjenovic@syrmia.com>
-
-diff --git a/arch/mips/kernel/proc.c b/arch/mips/kernel/proc.c
-index bb43bf850314..a66e7705315d 100644
---- a/arch/mips/kernel/proc.c
-+++ b/arch/mips/kernel/proc.c
-@@ -12,6 +12,7 @@
- #include <asm/cpu.h>
- #include <asm/cpu-features.h>
- #include <asm/idle.h>
-+#include <asm/mips-cps.h>
- #include <asm/mipsregs.h>
- #include <asm/processor.h>
- #include <asm/prom.h>
-@@ -282,6 +283,8 @@ static int show_cpuinfo(struct seq_file *m, void *v)
- 	seq_printf(m, "kscratch registers\t: %d\n",
- 		      hweight8(cpu_data[n].kscratch_mask));
- 	seq_printf(m, "package\t\t\t: %d\n", cpu_data[n].package);
-+	if (mips_cm_revision() >= CM_REV_CM3_5)
-+		seq_printf(m, "cluster\t\t\t: %d\n", cpu_cluster(&cpu_data[n]));
- 	seq_printf(m, "core\t\t\t: %d\n", cpu_core(&cpu_data[n]));
- 
- #if defined(CONFIG_MIPS_MT_SMP) || defined(CONFIG_CPU_MIPSR6)
--- 
-2.17.1
-
+Acked-by: Johannes Weiner <hannes@cmpxchg.org>

@@ -2,138 +2,100 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9129FC433EF
-	for <linux-mips@archiver.kernel.org>; Sat, 28 May 2022 09:18:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 22779C433F5
+	for <linux-mips@archiver.kernel.org>; Sun, 29 May 2022 15:51:19 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232409AbiE1JSM (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Sat, 28 May 2022 05:18:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37840 "EHLO
+        id S231235AbiE2PvS (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Sun, 29 May 2022 11:51:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38764 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232397AbiE1JSK (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Sat, 28 May 2022 05:18:10 -0400
-Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66CA41C116;
-        Sat, 28 May 2022 02:18:09 -0700 (PDT)
-Received: by mail-lj1-x235.google.com with SMTP id u7so7091783ljd.11;
-        Sat, 28 May 2022 02:18:09 -0700 (PDT)
+        with ESMTP id S229782AbiE2PvS (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Sun, 29 May 2022 11:51:18 -0400
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25FF8703C0
+        for <linux-mips@vger.kernel.org>; Sun, 29 May 2022 08:51:17 -0700 (PDT)
+Received: by mail-lf1-x12b.google.com with SMTP id v8so13442646lfd.8
+        for <linux-mips@vger.kernel.org>; Sun, 29 May 2022 08:51:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=HVRfiub+OH+3yERsymAq7YJAzta8XBR77uv0v0VV0CI=;
-        b=emBIciAFdQnHcKQSohgcuqMQM4xd/Tz5hPJWkxKaoqpZiunJ9s/OTs4WGMG95NSW4L
-         IgZczc+9GJXxJcHaJPXn5wGWSwvNNr7NK0iPiKDna7ZgvHSU3H+3cqKDq++bLMIID/pg
-         WGi2IGkojhYGQUTThKK+rMJIPdLBixIvgKrHxkmswTwOqRnEJD7L5yQqGEaEOrvK5lk+
-         qkpbzv53N91WJdtTRf68St7YDzO4K7K4CZ379sj7xnW+IFrVVRAmkaJKxBPwkYKBzJkg
-         l3Y5YpoNbKupcj3Ag1FqEF0wqmBD5ctEDUT8y+jgldf7YfuRmpnjc1XtWB+r4HJU6Val
-         yWqw==
+        d=sudomaker-com.20210112.gappssmtp.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language
+         :from:to:references:in-reply-to:content-transfer-encoding;
+        bh=s+tcnPY6RDs/I3tvYQalyNObieEk8xx2Fm0hBzJoj0g=;
+        b=1DjUROjFkP/ZoCxf/jclBoiNYiQWGxjin9upYPKq5V0kg6xyvetuI7s48K8poZURLR
+         Y1Im6p0tul4FyHnWLDddwogUi9U5OwcSJ93zdJlvu4I4HQ10pQHz9uk5zheS+sIoOmFO
+         BOqsWlo3dhCYK3gOFTc/MD4kK6RW07RLZiHZkmqKyS3a8Em59PsGAHuJmhYR5+fDgJFQ
+         2iEpyJRTF5k7f+Y68hlFLXHuf1wxY/AA8meMPLQ3dgKYWrvwIQ+wuD0zCx/IF4KD1Y7T
+         We2bGmstXEyD8f8cGaVViMExDB6uX3VmfgfQMPiNH6/QBAhAd3/OT33zHQSsYPGSF+Vi
+         wMGA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
+         :content-language:from:to:references:in-reply-to
          :content-transfer-encoding;
-        bh=HVRfiub+OH+3yERsymAq7YJAzta8XBR77uv0v0VV0CI=;
-        b=gq/P7L/M2/eq8XmL8bVn07Yty8pWJv17dwwSlwcEIsYQS3AlnF2X57BWwMHt/ExPUN
-         ypDpzkwn++frvGSnAvg4ehPcVY5s5jGK0mqfthoGfCzi2hWllFwi6LOm5rzekML15IFh
-         VhAx/rHf4ITMx7nmfQzOwNMcrIDBZFYdOSJsv0f2lIJVwdjaE+0S/xfPrkRt6ZAIlOBK
-         vOhutONlH4Axi5vH1S2F+BnRs1HAwAsYErHD5zLNbxDCNIWV6iAgpk/jQuff3eNspLnD
-         sC/SNxPUX70Y1WB/3s1FfBMWa9tb8Tlob9sL/Zqh2C5EJHc65ybz51JiCBDU1c/dgaPZ
-         3v6g==
-X-Gm-Message-State: AOAM531HFL0iViMtYtka1hF8ULYzbgt1F/Hn9RUNc8VhdcIuLzS+5QoM
-        9XifyOak39NE8NUdWHHR1CA=
-X-Google-Smtp-Source: ABdhPJxNkzG4eousUKAj15zHH6g3YqSnU9H8B29bmyYBmgxkfeUg1JCXHoHxE95njq7TczFOLpZl7Q==
-X-Received: by 2002:a2e:a5ca:0:b0:253:c604:647c with SMTP id n10-20020a2ea5ca000000b00253c604647cmr27577549ljp.403.1653729487689;
-        Sat, 28 May 2022 02:18:07 -0700 (PDT)
-Received: from [10.0.0.127] (91-159-150-230.elisa-laajakaista.fi. [91.159.150.230])
-        by smtp.gmail.com with ESMTPSA id v9-20020a2ea449000000b0024f3d1daee2sm1402828ljn.106.2022.05.28.02.18.06
+        bh=s+tcnPY6RDs/I3tvYQalyNObieEk8xx2Fm0hBzJoj0g=;
+        b=HZGV1X/qUmlLFylXOHO7L8n+ouIBwPgD4wn+A0ctd6pGhuHpvNc0C2LpkRlFGmWdap
+         P8PMjJfClQkV2Wyvh+OmSeZBoHR3hTBtv0baJJMvXgU7+rQvRC0NHdKnx/7zCeRqRKXd
+         51cZX0uYsu0BpPbQS3bup58mTYe9soGD4zsgJ8IuWRbpMluwS1lHENJcnPKfNpINuhIz
+         U3oOojP4453Xb48ByxZc4/gnRKmG2WP65sz4IV3LEgBDUcORFRZMTr5vEGqs73kjfY1i
+         WU69GPUpXaiHjMZGALR8MSUSTSkIEmIKMr4GZmA2kkgKGqMmrbsmhLhyUKFBy8Nyo2GA
+         g7mA==
+X-Gm-Message-State: AOAM530RXMscUkqJiXELaTLo66bcGB96ok+H7ZNer1qOSITGuBg7Moi3
+        DkTPROk7bMeY4gKxYDxQZSmOKkogSVwyPpWLXMc=
+X-Google-Smtp-Source: ABdhPJwBvGC6mPG38RqIOPz0gedGUX/AAzvzq2sNz8JOAAfaZ3nYweYfS/qDbJKr77xwvNpsYW0i8A==
+X-Received: by 2002:a05:6512:2625:b0:478:5a51:7fe3 with SMTP id bt37-20020a056512262500b004785a517fe3mr29416853lfb.158.1653839475200;
+        Sun, 29 May 2022 08:51:15 -0700 (PDT)
+Received: from [172.16.24.11] ([91.219.212.219])
+        by smtp.gmail.com with ESMTPSA id be10-20020a056512250a00b00478cd831077sm883605lfb.271.2022.05.29.08.51.11
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 28 May 2022 02:18:07 -0700 (PDT)
-Message-ID: <454f31e4-12ce-2bee-8e95-d75854b34380@gmail.com>
-Date:   Sat, 28 May 2022 12:19:20 +0300
+        Sun, 29 May 2022 08:51:14 -0700 (PDT)
+Message-ID: <6235834d-d6bf-1567-6b4b-4131515baabd@sudomaker.com>
+Date:   Sun, 29 May 2022 23:50:42 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.9.1
-Subject: Re: [PATCH 52/56] ASoC: ti: Rename set_fmt_new back to set_fmt
+ Thunderbird/91.8.0
+Subject: Re: Ingenic X SoC cache problems
 Content-Language: en-US
-To:     Charles Keepax <ckeepax@opensource.cirrus.com>, broonie@kernel.org
-Cc:     lgirdwood@gmail.com, kuninori.morimoto.gx@renesas.com,
-        nicolas.ferre@microchip.com, nsaenz@kernel.org,
-        shawnguo@kernel.org, linux-imx@nxp.com, cezary.rojewski@intel.com,
-        pierre-louis.bossart@linux.intel.com, linux-mips@vger.kernel.org,
-        linux-mediatek@lists.infradead.org,
-        linux-amlogic@lists.infradead.org, daniel@zonque.org,
-        srinivas.kandagatla@linaro.org, linux-rockchip@lists.infradead.org,
-        krzk@kernel.org, linux-stm32@st-md-mailman.stormreply.com,
-        linux-sunxi@lists.linux.dev, linux-tegra@vger.kernel.org,
-        linux-omap@vger.kernel.org, linux-xtensa@linux-xtensa.org,
-        jarkko.nikula@bitmer.com, heiko@sntech.de, jbrunet@baylibre.com,
-        kernel@pengutronix.de, alsa-devel@alsa-project.org,
-        patches@opensource.cirrus.com
-References: <20220519154318.2153729-1-ckeepax@opensource.cirrus.com>
- <20220519154318.2153729-53-ckeepax@opensource.cirrus.com>
-From:   =?UTF-8?Q?P=c3=a9ter_Ujfalusi?= <peter.ujfalusi@gmail.com>
-In-Reply-To: <20220519154318.2153729-53-ckeepax@opensource.cirrus.com>
+From:   Yunian Yang <reimu@sudomaker.com>
+To:     linux-mips@vger.kernel.org, paul Cercueil <paul@crapouillou.net>,
+        zhouyanjie@wanyeetech.com
+References: <c102518f-3288-29fb-6653-0d39a53639df@sudomaker.com>
+In-Reply-To: <c102518f-3288-29fb-6653-0d39a53639df@sudomaker.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
+Brief update on the current situation.
 
+I have been working with Professor Zhou (zhouyanjie@wanyeetech.com) to diagnose this problem in the last 2 days. After multiple tests, we finally pinpointed the problem: the SLOB allocator.
 
-On 19/05/2022 18:43, Charles Keepax wrote:
-> Now the core has been migrated across to the new direct clock
-> specification we can move the drivers back to the normal set_fmt
-> callback.
+Using unpatched 5.18 kernel, under stress test, all DMA operations worked like a charm w/ SLAB or SLUB, but not SLOB.
 
-Acked-by: Peter Ujfalusi <peter.ujfalusi@gmail.com>
+The stress tests were conducted using the CU1000-Neo board. DMA-enabled components were: SPI & MSC (using PDMA), and dwc2 & SFC (they're bus masters). Also, the memory & kernel data structures debugging were ALL enabled in order to catch more silent memory corruptions. It involves performing these operations together:
+1. Continuously reading the eMMC storage via MSC0 (while :; do dd if=/dev/mmcblk0 of=/dev/null bs=1M 2> /dev/null; sleep 1; done&)
+2. Continuously reading the SPI NOR storage via SFC (while :; do dd if=/dev/mtdblock0 of=/dev/null bs=1M 2> /dev/null; sleep 1; done&)
+3. Continuously refreshing a ST7789V SPI LCD using the fb_tft driver (while :; do cat /dev/urandom > /dev/fb0 2> /dev/null; sleep 0.2; done&)
+4. Enable the USB CDC ACM gadget and continuously transfer large amount of data (PC side: cat /dev/urandom > /dev/ttyACM0) (X1000 side: cat /dev/ttyGS0 > /dev/null)
 
-> Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
-> ---
->  sound/soc/ti/davinci-i2s.c   | 2 +-
->  sound/soc/ti/davinci-mcasp.c | 2 +-
->  sound/soc/ti/omap-mcbsp.c    | 2 +-
->  3 files changed, 3 insertions(+), 3 deletions(-)
+With SLAB or SLUB, the X1000 survived these tests for more than 30 minutes. No silent corruptions were reported by the kernel.
+
+With SLOB, it instantly dies at the boot process (before init). Sometimes it's a linked list corruption, sometimes it's a null ptr dereference, and sometimes it simply becomes silent.
+
+I always used SLOB for devices with little RAM and thought it would be beneficial. But I never thought it would be a problem.
+
+Should this be forwarded to the linux-mm mailing list?
+
+Thanks and best regards!
+
+On 5/27/22 19:03, Yunian Yang wrote:
+> Hello all.
 > 
-> diff --git a/sound/soc/ti/davinci-i2s.c b/sound/soc/ti/davinci-i2s.c
-> index c7368d5296688..fe572b720b094 100644
-> --- a/sound/soc/ti/davinci-i2s.c
-> +++ b/sound/soc/ti/davinci-i2s.c
-> @@ -606,7 +606,7 @@ static const struct snd_soc_dai_ops davinci_i2s_dai_ops = {
->  	.prepare	= davinci_i2s_prepare,
->  	.trigger	= davinci_i2s_trigger,
->  	.hw_params	= davinci_i2s_hw_params,
-> -	.set_fmt_new	= davinci_i2s_set_dai_fmt,
-> +	.set_fmt	= davinci_i2s_set_dai_fmt,
->  	.set_clkdiv	= davinci_i2s_dai_set_clkdiv,
->  
->  };
-> diff --git a/sound/soc/ti/davinci-mcasp.c b/sound/soc/ti/davinci-mcasp.c
-> index 961bac6963652..e2aab4729f3ab 100644
-> --- a/sound/soc/ti/davinci-mcasp.c
-> +++ b/sound/soc/ti/davinci-mcasp.c
-> @@ -1620,7 +1620,7 @@ static const struct snd_soc_dai_ops davinci_mcasp_dai_ops = {
->  	.trigger	= davinci_mcasp_trigger,
->  	.delay		= davinci_mcasp_delay,
->  	.hw_params	= davinci_mcasp_hw_params,
-> -	.set_fmt_new	= davinci_mcasp_set_dai_fmt,
-> +	.set_fmt	= davinci_mcasp_set_dai_fmt,
->  	.set_clkdiv	= davinci_mcasp_set_clkdiv,
->  	.set_sysclk	= davinci_mcasp_set_sysclk,
->  	.set_tdm_slot	= davinci_mcasp_set_tdm_slot,
-> diff --git a/sound/soc/ti/omap-mcbsp.c b/sound/soc/ti/omap-mcbsp.c
-> index 5bfb56d4ff844..58d8e200a7b97 100644
-> --- a/sound/soc/ti/omap-mcbsp.c
-> +++ b/sound/soc/ti/omap-mcbsp.c
-> @@ -1271,7 +1271,7 @@ static const struct snd_soc_dai_ops mcbsp_dai_ops = {
->  	.trigger	= omap_mcbsp_dai_trigger,
->  	.delay		= omap_mcbsp_dai_delay,
->  	.hw_params	= omap_mcbsp_dai_hw_params,
-> -	.set_fmt_new	= omap_mcbsp_dai_set_dai_fmt,
-> +	.set_fmt	= omap_mcbsp_dai_set_dai_fmt,
->  	.set_clkdiv	= omap_mcbsp_dai_set_clkdiv,
->  	.set_sysclk	= omap_mcbsp_dai_set_dai_sysclk,
->  };
+> In the past month, I was struggling with random memory corruptions and crashes on the Ingenic X1000. After some detailed testing, I need to point out, the current cache management routines seems to be incorrect for X1000, and maybe all X series SoCs. It mainly affects DMA operations. Every form of peripheral to RAM transfer will corrupt the RAM, and this includes the dwc2 and SFC's DMA and the PDMA controller. If all the DMAs are disabled (e.g. hard coding dma_capable = false in dwc2), it will be fine running CPU and I/O benchmarks for a week. If you have the hardware, you can enable the kernel data structures & memory debugging and see for yourself.
+> 
+> So I went back and looked at Ingenic's old 4.4 and 3.10 kernel sources. They used a separate file (sc-xburst.c) for the cache routines, which is based on an very old sc-mips.c. And there are two important macros, called MIPS_CACHE_SYNC_WAR and MIPS_BRIDGE_SYNC_WAR. They're both set to 1. However these macros are removed from the kernel long time ago. The line `mips_sc_ops.bc_wback_inv = mips_bridge_sync_war;' seems to be the key point. 
+> 
+> Do you have any recommendations of what could be done to fix this problem?
+> 
+> Thanks and best regards!
 
--- 
-Péter

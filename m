@@ -2,136 +2,167 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 12D06C43219
-	for <linux-mips@archiver.kernel.org>; Mon, 30 May 2022 14:21:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8AF56C433F5
+	for <linux-mips@archiver.kernel.org>; Mon, 30 May 2022 16:01:07 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237565AbiE3OVl (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 30 May 2022 10:21:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42950 "EHLO
+        id S238235AbiE3QBC (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 30 May 2022 12:01:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53814 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241276AbiE3OR0 (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Mon, 30 May 2022 10:17:26 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73D669B199;
-        Mon, 30 May 2022 06:45:05 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id D24E0B80AE8;
-        Mon, 30 May 2022 13:45:03 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8EF44C385B8;
-        Mon, 30 May 2022 13:45:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1653918302;
-        bh=LSyYnQ80RRn/HYSrTP8taEbH6kR+0uM24sQ94XaQbAw=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gPBj34fOwVD+uBumpLNNwnc9XJ8LIt4B2i3QHkDCoDJPYjz4mxBZVHp5U2MsgQvsI
-         oTixNecAwSTYHEDpZ9pu/HyddJw9cD4o/qD4ZWh12p6rKdspRWLuTVdZppC4rqA691
-         Tby9Hw2MKgGyzQwfFiD8vog/nneF8xR14Kd5u+XWoBE9eGXheiq1kPD0LRFWusNqFK
-         eCVQCANj7Ceaah4Oh6SXGcINbCd1np/mGDGEVlmiH1yt6GTOwOkUFQS9OGvcKyEDDW
-         eRtqn3+yCPEDHuFpjc5lYL4T1J8XGmXHF0GDJQlPJqnVTNFvf63uakWAYqJfL7SR/q
-         JddQsLgvF19Tw==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Aidan MacDonald <aidanmacdonald.0x0@gmail.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Sasha Levin <sashal@kernel.org>, paul@crapouillou.net,
-        linux-mips@vger.kernel.org, linux-mmc@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.10 25/76] mmc: jz4740: Apply DMA engine limits to maximum segment size
-Date:   Mon, 30 May 2022 09:43:15 -0400
-Message-Id: <20220530134406.1934928-25-sashal@kernel.org>
-X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20220530134406.1934928-1-sashal@kernel.org>
-References: <20220530134406.1934928-1-sashal@kernel.org>
+        with ESMTP id S242437AbiE3P7l (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Mon, 30 May 2022 11:59:41 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 8C28639B81
+        for <linux-mips@vger.kernel.org>; Mon, 30 May 2022 08:53:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1653925992;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=bDYue/Afd3VGZHzU7tYF7qy5xBeBUpqe85rLuoAiRcE=;
+        b=ZdahPOBV5UiBAMnDfEqlScNiGBYmjAZhDtvEQEoVePqHL1FtX1gDzcB4eWo2oUQ3Pu541L
+        KPxCtpzbeQU9HJZh/Db4yCiZHmTb1oFF8+GoCo7s9eUqD3/8/sFIR1rfjGcgY2kX++HAH+
+        7Jpz1CitdLFUQqfKYO/j2z77v4lheCI=
+Received: from mail-il1-f199.google.com (mail-il1-f199.google.com
+ [209.85.166.199]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ us-mta-658-tC2sQD63N6KR-X-9b2lhIw-1; Mon, 30 May 2022 11:53:01 -0400
+X-MC-Unique: tC2sQD63N6KR-X-9b2lhIw-1
+Received: by mail-il1-f199.google.com with SMTP id g11-20020a056e021e0b00b002d1b5e8389bso8614977ila.2
+        for <linux-mips@vger.kernel.org>; Mon, 30 May 2022 08:53:01 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=bDYue/Afd3VGZHzU7tYF7qy5xBeBUpqe85rLuoAiRcE=;
+        b=5i+yuWWFIm3yKSOLxehmn/Zqg0oXmMLvnw+5NtL56EdW9YTsBdwDgQQmUKM3NLCdBA
+         tKH1inqL7I6lpmF6fXU9+Y3LgQgscMJd8vaUQWVQCU6iTO0M5iVltsyu6JukZ+aYvei8
+         lpnAkzEuIGUJ/3tYMJboBxE6tN09sY1ErFln8AVfggByatxBipBKSXoassq9DROLmZdu
+         Dycr4GkEVmXvI5+ug2/rJOXjrgOGTOof3OBNxIRMp/GJc9CaYQypYejvD/jQwlOGbqHd
+         NRheaUKAu1ESqJE2LAr2pnt4BvAaCQNyGTC1DuYg9WW6vgNaKDwMr/6Axe/etaRCi7Zr
+         awNg==
+X-Gm-Message-State: AOAM533mN2jzyI4H4vNM7fbUupsOBk18SVf4Fg/ykL88HOp+BZeoXwU9
+        etLl89NNbrQQkWwQQFVElusxmR308gZjKtG79MVnuh0XyqcKkox9Z/5YJjavU+m1oHmp9vOcZ7L
+        fPBXMq6TdLgukTgbDQ+6WKQ==
+X-Received: by 2002:a5d:9cc8:0:b0:663:2899:4b8 with SMTP id w8-20020a5d9cc8000000b00663289904b8mr16857366iow.192.1653925980592;
+        Mon, 30 May 2022 08:53:00 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyKQIoyyqGc41UCjMUnObS0GZ5Lh8IPSVLY8KDGIOa5YRMfMwdzANPXLWIG/1E7oUnwvcvO1w==
+X-Received: by 2002:a5d:9cc8:0:b0:663:2899:4b8 with SMTP id w8-20020a5d9cc8000000b00663289904b8mr16857337iow.192.1653925980357;
+        Mon, 30 May 2022 08:53:00 -0700 (PDT)
+Received: from xz-m1.local (cpec09435e3e0ee-cmc09435e3e0ec.cpe.net.cable.rogers.com. [99.241.198.116])
+        by smtp.gmail.com with ESMTPSA id 66-20020a021d45000000b0032e75bfe344sm2781109jaj.171.2022.05.30.08.52.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 30 May 2022 08:52:59 -0700 (PDT)
+Date:   Mon, 30 May 2022 11:52:54 -0400
+From:   Peter Xu <peterx@redhat.com>
+To:     Christian Borntraeger <borntraeger@linux.ibm.com>
+Cc:     Heiko Carstens <hca@linux.ibm.com>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, Will Deacon <will@kernel.org>,
+        Matt Turner <mattst88@gmail.com>, linux-s390@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Brian Cain <bcain@quicinc.com>, Borislav Petkov <bp@alien8.de>,
+        linux-alpha@vger.kernel.org, Alistair Popple <apopple@nvidia.com>,
+        Jonas Bonn <jonas@southpole.se>,
+        linux-arm-kernel@lists.infradead.org, linux-ia64@vger.kernel.org,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
+        linux-snps-arc@lists.infradead.org,
+        Vineet Gupta <vgupta@kernel.org>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Rich Felker <dalias@libc.org>, sparclinux@vger.kernel.org,
+        Russell King <linux@armlinux.org.uk>,
+        David Hildenbrand <david@redhat.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        "James E . J . Bottomley" <James.Bottomley@hansenpartnership.com>,
+        linux-xtensa@linux-xtensa.org, linux-sh@vger.kernel.org,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        linux-m68k@lists.linux-m68k.org, linuxppc-dev@lists.ozlabs.org,
+        Richard Henderson <rth@twiddle.net>,
+        Guo Ren <guoren@kernel.org>, linux-parisc@vger.kernel.org,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Helge Deller <deller@gmx.de>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        linux-um@lists.infradead.org, "H . Peter Anvin" <hpa@zytor.com>,
+        Janosch Frank <frankja@linux.ibm.com>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        openrisc@lists.librecores.org,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        linux-hexagon@vger.kernel.org, Andy Lutomirski <luto@kernel.org>,
+        Stafford Horne <shorne@gmail.com>, linux-csky@vger.kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-mips@vger.kernel.org, Paul Mackerras <paulus@samba.org>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Dinh Nguyen <dinguyen@kernel.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Hugh Dickins <hughd@google.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        linux-riscv@lists.infradead.org, Max Filippov <jcmvbkbc@gmail.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        Chris Zankel <chris@zankel.net>,
+        Michal Simek <monstr@monstr.eu>, x86@kernel.org,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Richard Weinberger <richard@nod.at>,
+        Ingo Molnar <mingo@kernel.org>
+Subject: Re: [PATCH v4] mm: Avoid unnecessary page fault retires on shared
+ memory types
+Message-ID: <YpToVpjXmdFqGOpY@xz-m1.local>
+References: <20220527193936.30678-1-peterx@redhat.com>
+ <YpPYkzbrQmy4FjrI@osiris>
+ <33fd4731-9765-d78b-bdc3-f8243c98e81f@linux.ibm.com>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <33fd4731-9765-d78b-bdc3-f8243c98e81f@linux.ibm.com>
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-From: Aidan MacDonald <aidanmacdonald.0x0@gmail.com>
+On Mon, May 30, 2022 at 11:35:10AM +0200, Christian Borntraeger wrote:
+> 
+> 
+> Am 29.05.22 um 22:33 schrieb Heiko Carstens:
+> [...]
+> > 
+> > Guess the patch below on top of your patch is what we want.
+> > Just for clarification: if gmap is not NULL then the process is a kvm
+> > process. So, depending on the workload, this optimization makes sense.
+> > 
+> > diff --git a/arch/s390/mm/fault.c b/arch/s390/mm/fault.c
+> > index 4608cc962ecf..e1d40ca341b7 100644
+> > --- a/arch/s390/mm/fault.c
+> > +++ b/arch/s390/mm/fault.c
+> > @@ -436,12 +436,11 @@ static inline vm_fault_t do_exception(struct pt_regs *regs, int access)
+> >   	/* The fault is fully completed (including releasing mmap lock) */
+> >   	if (fault & VM_FAULT_COMPLETED) {
+> > -		/*
+> > -		 * Gmap will need the mmap lock again, so retake it.  TODO:
+> > -		 * only conditionally take the lock when CONFIG_PGSTE set.
+> > -		 */
+> > -		mmap_read_lock(mm);
+> > -		goto out_gmap;
+> > +		if (gmap) {
+> > +			mmap_read_lock(mm);
+> > +			goto out_gmap;
+> > +		}
+> > +		goto out;
+> 
+> Yes, that makes sense. With that
+> 
+> Acked-by: Christian Borntraeger <borntraeger@linux.ibm.com>
 
-[ Upstream commit afadb04f1d6e74b18a253403f5274cde5e3fd7bd ]
+Looks sane, thanks Heiko, Christian.  I'll cook another one.
 
-Do what is done in other DMA-enabled MMC host drivers (cf. host/mmci.c) and
-limit the maximum segment size based on the DMA engine's capabilities. This
-is needed to avoid warnings like the following with CONFIG_DMA_API_DEBUG=y.
-
-------------[ cut here ]------------
-WARNING: CPU: 0 PID: 21 at kernel/dma/debug.c:1162 debug_dma_map_sg+0x2f4/0x39c
-DMA-API: jz4780-dma 13420000.dma-controller: mapping sg segment longer than device claims to support [len=98304] [max=65536]
-CPU: 0 PID: 21 Comm: kworker/0:1H Not tainted 5.18.0-rc1 #19
-Workqueue: kblockd blk_mq_run_work_fn
-Stack : 81575aec 00000004 80620000 80620000 80620000 805e7358 00000009 801537ac
-        814c832c 806276e3 806e34b4 80620000 81575aec 00000001 81575ab8 09291444
-        00000000 00000000 805e7358 81575958 ffffffea 8157596c 00000000 636f6c62
-        6220646b 80387a70 0000000f 6d5f6b6c 80620000 00000000 81575ba4 00000009
-        805e170c 80896640 00000001 00010000 00000000 00000000 00006098 806e0000
-        ...
-Call Trace:
-[<80107670>] show_stack+0x84/0x120
-[<80528cd8>] __warn+0xb8/0xec
-[<80528d78>] warn_slowpath_fmt+0x6c/0xb8
-[<8016f1d4>] debug_dma_map_sg+0x2f4/0x39c
-[<80169d4c>] __dma_map_sg_attrs+0xf0/0x118
-[<8016a27c>] dma_map_sg_attrs+0x14/0x28
-[<804f66b4>] jz4740_mmc_prepare_dma_data+0x74/0xa4
-[<804f6714>] jz4740_mmc_pre_request+0x30/0x54
-[<804f4ff4>] mmc_blk_mq_issue_rq+0x6e0/0x7bc
-[<804f5590>] mmc_mq_queue_rq+0x220/0x2d4
-[<8038b2c0>] blk_mq_dispatch_rq_list+0x480/0x664
-[<80391040>] blk_mq_do_dispatch_sched+0x2dc/0x370
-[<80391468>] __blk_mq_sched_dispatch_requests+0xec/0x164
-[<80391540>] blk_mq_sched_dispatch_requests+0x44/0x94
-[<80387900>] __blk_mq_run_hw_queue+0xb0/0xcc
-[<80134c14>] process_one_work+0x1b8/0x264
-[<80134ff8>] worker_thread+0x2ec/0x3b8
-[<8013b13c>] kthread+0x104/0x10c
-[<80101dcc>] ret_from_kernel_thread+0x14/0x1c
-
----[ end trace 0000000000000000 ]---
-
-Signed-off-by: Aidan MacDonald <aidanmacdonald.0x0@gmail.com>
-Link: https://lore.kernel.org/r/20220411153753.50443-1-aidanmacdonald.0x0@gmail.com
-Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- drivers/mmc/host/jz4740_mmc.c | 20 ++++++++++++++++++++
- 1 file changed, 20 insertions(+)
-
-diff --git a/drivers/mmc/host/jz4740_mmc.c b/drivers/mmc/host/jz4740_mmc.c
-index a1f92fed2a55..aa3dfb9c1071 100644
---- a/drivers/mmc/host/jz4740_mmc.c
-+++ b/drivers/mmc/host/jz4740_mmc.c
-@@ -236,6 +236,26 @@ static int jz4740_mmc_acquire_dma_channels(struct jz4740_mmc_host *host)
- 		return PTR_ERR(host->dma_rx);
- 	}
- 
-+	/*
-+	 * Limit the maximum segment size in any SG entry according to
-+	 * the parameters of the DMA engine device.
-+	 */
-+	if (host->dma_tx) {
-+		struct device *dev = host->dma_tx->device->dev;
-+		unsigned int max_seg_size = dma_get_max_seg_size(dev);
-+
-+		if (max_seg_size < host->mmc->max_seg_size)
-+			host->mmc->max_seg_size = max_seg_size;
-+	}
-+
-+	if (host->dma_rx) {
-+		struct device *dev = host->dma_rx->device->dev;
-+		unsigned int max_seg_size = dma_get_max_seg_size(dev);
-+
-+		if (max_seg_size < host->mmc->max_seg_size)
-+			host->mmc->max_seg_size = max_seg_size;
-+	}
-+
- 	return 0;
- }
- 
 -- 
-2.35.1
+Peter Xu
 

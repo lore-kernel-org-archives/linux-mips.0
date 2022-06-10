@@ -2,43 +2,43 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D290EC433EF
-	for <linux-mips@archiver.kernel.org>; Fri, 10 Jun 2022 08:48:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A1310CCA486
+	for <linux-mips@archiver.kernel.org>; Fri, 10 Jun 2022 08:48:59 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1348337AbiFJIs4 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 10 Jun 2022 04:48:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48358 "EHLO
+        id S1348374AbiFJIs6 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 10 Jun 2022 04:48:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47722 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348429AbiFJIsQ (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Fri, 10 Jun 2022 04:48:16 -0400
+        with ESMTP id S1348447AbiFJIsV (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Fri, 10 Jun 2022 04:48:21 -0400
 Received: from mx0a-00128a01.pphosted.com (mx0a-00128a01.pphosted.com [148.163.135.77])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7258B5B88A;
-        Fri, 10 Jun 2022 01:47:57 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 417046928F;
+        Fri, 10 Jun 2022 01:48:12 -0700 (PDT)
 Received: from pps.filterd (m0167089.ppops.net [127.0.0.1])
-        by mx0a-00128a01.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 25A7h8EN005272;
-        Fri, 10 Jun 2022 04:47:57 -0400
-Received: from nwd2mta4.analog.com ([137.71.173.58])
-        by mx0a-00128a01.pphosted.com (PPS) with ESMTPS id 3ghq33kq8d-1
+        by mx0a-00128a01.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 25A7noCg005281;
+        Fri, 10 Jun 2022 04:48:12 -0400
+Received: from nwd2mta3.analog.com ([137.71.173.56])
+        by mx0a-00128a01.pphosted.com (PPS) with ESMTPS id 3ghq33kqa1-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 10 Jun 2022 04:47:57 -0400
-Received: from ASHBMBX8.ad.analog.com (ASHBMBX8.ad.analog.com [10.64.17.5])
-        by nwd2mta4.analog.com (8.14.7/8.14.7) with ESMTP id 25A8lt7F027541
+        Fri, 10 Jun 2022 04:48:11 -0400
+Received: from ASHBMBX9.ad.analog.com (ASHBMBX9.ad.analog.com [10.64.17.10])
+        by nwd2mta3.analog.com (8.14.7/8.14.7) with ESMTP id 25A8mAvx023276
         (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 10 Jun 2022 04:47:55 -0400
-Received: from ASHBCASHYB4.ad.analog.com (10.64.17.132) by
- ASHBMBX8.ad.analog.com (10.64.17.5) with Microsoft SMTP Server
+        Fri, 10 Jun 2022 04:48:10 -0400
+Received: from ASHBCASHYB5.ad.analog.com (10.64.17.133) by
+ ASHBMBX9.ad.analog.com (10.64.17.10) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.986.14; Fri, 10 Jun 2022 04:47:54 -0400
+ 15.2.986.14; Fri, 10 Jun 2022 04:48:09 -0400
 Received: from ASHBMBX9.ad.analog.com (10.64.17.10) by
- ASHBCASHYB4.ad.analog.com (10.64.17.132) with Microsoft SMTP Server
+ ASHBCASHYB5.ad.analog.com (10.64.17.133) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.986.14; Fri, 10 Jun 2022 04:47:54 -0400
+ 15.2.986.14; Fri, 10 Jun 2022 04:48:09 -0400
 Received: from zeus.spd.analog.com (10.66.68.11) by ashbmbx9.ad.analog.com
  (10.64.17.10) with Microsoft SMTP Server id 15.2.986.14 via Frontend
- Transport; Fri, 10 Jun 2022 04:47:54 -0400
+ Transport; Fri, 10 Jun 2022 04:48:09 -0400
 Received: from nsa.ad.analog.com ([10.44.3.70])
-        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 25A8imih014275;
-        Fri, 10 Jun 2022 04:47:42 -0400
+        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 25A8imij014275;
+        Fri, 10 Jun 2022 04:47:57 -0400
 From:   =?UTF-8?q?Nuno=20S=C3=A1?= <nuno.sa@analog.com>
 To:     <linux-imx@nxp.com>, <linux-renesas-soc@vger.kernel.org>,
         <linux-mips@vger.kernel.org>,
@@ -91,9 +91,9 @@ CC:     Cai Huoqing <cai.huoqing@linux.dev>,
         "Olivier Moysan" <olivier.moysan@foss.st.com>,
         Eugen Hristev <eugen.hristev@microchip.com>,
         Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: [PATCH 21/34] iio: inkern: fix return value in devm_of_iio_channel_get_by_name()
-Date:   Fri, 10 Jun 2022 10:45:32 +0200
-Message-ID: <20220610084545.547700-22-nuno.sa@analog.com>
+Subject: [PATCH 23/34] iio: inkern: split of_iio_channel_get_by_name()
+Date:   Fri, 10 Jun 2022 10:45:34 +0200
+Message-ID: <20220610084545.547700-24-nuno.sa@analog.com>
 X-Mailer: git-send-email 2.36.1
 In-Reply-To: <20220610084545.547700-1-nuno.sa@analog.com>
 References: <20220610084545.547700-1-nuno.sa@analog.com>
@@ -101,8 +101,8 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 8bit
 X-ADIRuleOP-NewSCL: Rule Triggered
-X-Proofpoint-ORIG-GUID: zGySTyLHzuN506SK7GBBWcpQPn_ZINfL
-X-Proofpoint-GUID: zGySTyLHzuN506SK7GBBWcpQPn_ZINfL
+X-Proofpoint-ORIG-GUID: 2oH5KYMbOhj-Glg6FwhCeBTGAwA2tiGz
+X-Proofpoint-GUID: 2oH5KYMbOhj-Glg6FwhCeBTGAwA2tiGz
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.205,Aquarius:18.0.874,Hydra:6.0.517,FMLib:17.11.64.514
  definitions=2022-06-10_02,2022-06-09_02,2022-02-23_01
@@ -115,33 +115,111 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-of_iio_channel_get_by_name() can either return NULL or an error pointer
-so that only doing IS_ERR() is not enough. Fix it by checking the NULL
-pointer case and return -ENODEV in that case. Note this is done like this
-so that users of the function (which only check for error pointers) do
-not need to be changed. This is not ideal since we are losing error codes
-and as such, in a follow up change, things will be unified so that
-of_iio_channel_get_by_name() only returns error codes.
+This change splits of_iio_channel_get_by_name() so that it decouples
+looking for channels in the current node from looking in it's parents
+nodes. This will be helpful when moving to fwnode properties where we
+need to release the handles when looking for channels in parent's nodes.
 
-Fixes: 6e39b145cef7 ("iio: provide of_iio_channel_get_by_name() and devm_ version it")
+No functional change intended...
+
 Signed-off-by: Nuno Sá <nuno.sa@analog.com>
 ---
- drivers/iio/inkern.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/iio/inkern.c | 69 ++++++++++++++++++++++++++++----------------
+ 1 file changed, 44 insertions(+), 25 deletions(-)
 
 diff --git a/drivers/iio/inkern.c b/drivers/iio/inkern.c
-index 9d87057794fc..87fd2a0d44f2 100644
+index 31d9c122199a..dde47324b826 100644
 --- a/drivers/iio/inkern.c
 +++ b/drivers/iio/inkern.c
-@@ -412,6 +412,8 @@ struct iio_channel *devm_of_iio_channel_get_by_name(struct device *dev,
- 	channel = of_iio_channel_get_by_name(np, channel_name);
- 	if (IS_ERR(channel))
- 		return channel;
-+	if (!channel)
-+		return ERR_PTR(-ENODEV);
+@@ -211,44 +211,63 @@ static struct iio_channel *of_iio_channel_get(struct device_node *np, int index)
+ 	return ERR_PTR(err);
+ }
  
- 	ret = devm_add_action_or_reset(dev, devm_iio_channel_free, channel);
- 	if (ret)
++struct iio_channel *__of_iio_channel_get_by_name(struct device_node *np,
++						 const char *name,
++						 bool *parent_lookup)
++{
++	struct iio_channel *chan;
++	int index = 0;
++
++	/*
++	 * For named iio channels, first look up the name in the
++	 * "io-channel-names" property.  If it cannot be found, the
++	 * index will be an error code, and of_iio_channel_get()
++	 * will fail.
++	 */
++	if (name)
++		index = of_property_match_string(np, "io-channel-names", name);
++
++	chan = of_iio_channel_get(np, index);
++	if (!IS_ERR(chan) || PTR_ERR(chan) == -EPROBE_DEFER) {
++		*parent_lookup = false;
++	} else if (name && index >= 0) {
++		pr_err("ERROR: could not get IIO channel %pOF:%s(%i)\n",
++		       np, name ? name : "", index);
++		*parent_lookup = false;
++	}
++
++	return chan;
++}
++
+ struct iio_channel *of_iio_channel_get_by_name(struct device_node *np,
+ 					       const char *name)
+ {
+ 	struct iio_channel *chan;
++	bool parent_lookup = true;
+ 
+ 	/* Walk up the tree of devices looking for a matching iio channel */
++	chan = __of_iio_channel_get_by_name(np, name, &parent_lookup);
++	if (!parent_lookup)
++		return chan;
++
++	/*
++	 * No matching IIO channel found on this node.
++	 * If the parent node has a "io-channel-ranges" property,
++	 * then we can try one of its channels.
++	 */
++	np = np->parent;
+ 	while (np) {
+-		int index = 0;
+-
+-		/*
+-		 * For named iio channels, first look up the name in the
+-		 * "io-channel-names" property.  If it cannot be found, the
+-		 * index will be an error code, and of_iio_channel_get()
+-		 * will fail.
+-		 */
+-		if (name)
+-			index = of_property_match_string(np, "io-channel-names",
+-							 name);
+-		chan = of_iio_channel_get(np, index);
+-		if (!IS_ERR(chan) || PTR_ERR(chan) == -EPROBE_DEFER)
++		if (!of_get_property(np, "io-channel-ranges", NULL))
+ 			return chan;
+-		if (name && index >= 0) {
+-			pr_err("ERROR: could not get IIO channel %pOF:%s(%i)\n",
+-				np, name ? name : "", index);
++
++		chan = __of_iio_channel_get_by_name(np, name, &parent_lookup);
++		if (!parent_lookup)
+ 			return chan;
+-		}
+ 
+-		/*
+-		 * No matching IIO channel found on this node.
+-		 * If the parent node has a "io-channel-ranges" property,
+-		 * then we can try one of its channels.
+-		 */
+ 		np = np->parent;
+-		if (np && !of_get_property(np, "io-channel-ranges", NULL))
+-			return chan;
+ 	}
+ 
+-	return ERR_PTR(-ENODEV);
++	return chan;
+ }
+ EXPORT_SYMBOL_GPL(of_iio_channel_get_by_name);
+ 
 -- 
 2.36.1
 

@@ -2,110 +2,79 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9444FC43334
-	for <linux-mips@archiver.kernel.org>; Fri, 10 Jun 2022 04:44:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5B40FC43334
+	for <linux-mips@archiver.kernel.org>; Fri, 10 Jun 2022 07:30:16 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230083AbiFJEor (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 10 Jun 2022 00:44:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45658 "EHLO
+        id S1346945AbiFJHaO (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 10 Jun 2022 03:30:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39598 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232425AbiFJEop (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Fri, 10 Jun 2022 00:44:45 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2C7222ABEE;
-        Thu,  9 Jun 2022 21:44:41 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 61C6AB830F5;
-        Fri, 10 Jun 2022 04:44:40 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F3A7EC385A9;
-        Fri, 10 Jun 2022 04:44:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1654836279;
-        bh=6g8FeECka/KS2OLX1kxuu5yztPOwSYzNR43hULG6+8Q=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=E3wNbIM4qlOnhH5R9OAfUinrtC77k/72ABLwvZGgUA3Re9CWAXoP332lZlxjeRePm
-         /ZTNnWx2KC5UGLglD+QnvPKnhUrc1lMctnmAPgPlkrNXMcy+8bplePqGlhaEeMt2Gl
-         b4X1VWTEPm3/svMjAWhVp+Yzam3CFRy3riM5c5o179W/z1jGYBwLy8Bdw4rkhgHDC1
-         jrZAti5votTEtRGUfHycsBpw4E3zzgecUMhGu9YPTwe6QUqKhClmPJ3cVguY8qUSG6
-         ldKV73X5m/V5XGL4OPgn8eJ35MqME/ZrIKRNjB2RlFozaiGCIsCumj6J0pu8Z1sT4v
-         5xE1b3Z3OaY4Q==
-Received: by mail-lj1-f172.google.com with SMTP id b7so15806510ljr.6;
-        Thu, 09 Jun 2022 21:44:38 -0700 (PDT)
-X-Gm-Message-State: AOAM530/hIk6uyBooC8NfYJDFKAnY4SvXVMt6XMglXeiAL5lTJBBRgnL
-        5iCXiTzTz39Ltkh6m6iBLRM93C07Izvpz7j+tmY=
-X-Google-Smtp-Source: ABdhPJy5/YxRiE2j7JzJj5kNHWQCd1L9sjVAS061CWCsWWdXO/0bRtO7RJBYvN8z2BbzNpYDOyZk8RnoIs3UB2Vxfeg=
-X-Received: by 2002:a2e:9695:0:b0:255:6eb1:469c with SMTP id
- q21-20020a2e9695000000b002556eb1469cmr24151525lji.188.1654836276984; Thu, 09
- Jun 2022 21:44:36 -0700 (PDT)
+        with ESMTP id S1346869AbiFJHaB (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Fri, 10 Jun 2022 03:30:01 -0400
+X-Greylist: delayed 494 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 10 Jun 2022 00:29:52 PDT
+Received: from mail.baikalelectronics.com (mail.baikalelectronics.com [87.245.175.230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E0A953ED0F;
+        Fri, 10 Jun 2022 00:29:49 -0700 (PDT)
+Received: from mail (mail.baikal.int [192.168.51.25])
+        by mail.baikalelectronics.com (Postfix) with ESMTP id 2A610BD4;
+        Fri, 10 Jun 2022 10:22:25 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.baikalelectronics.com 2A610BD4
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baikalelectronics.ru; s=mail; t=1654845745;
+        bh=Xn98MR7V1F/LIQ3Yu3hI7bvvVoawgSacfNBPSyIHRWs=;
+        h=From:To:CC:Subject:Date:In-Reply-To:References:From;
+        b=dXLmf1ju+L/RuF5llUiwVW3rrNniU3MNHsT5Ntpy41mUvfoPxYPakZBtWXpI5qQCO
+         9i7zHT0HMlaY2ikp31vrYJNPr4rOz8eq/Me5AFCq2lPCzmWeKDlzIM71pW5p9jAV9Q
+         rdrK+H7t0tHQensYpuxroRUSoLFv6JYhO90/xxEk=
+Received: from localhost (192.168.53.207) by mail (192.168.51.25) with
+ Microsoft SMTP Server (TLS) id 15.0.1395.4; Fri, 10 Jun 2022 10:21:33 +0300
+From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
+To:     Stephen Boyd <sboyd@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Michael Turquette <mturquette@baylibre.com>
+CC:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
+        Serge Semin <fancer.lancer@gmail.com>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        <linux-clk@vger.kernel.org>, <linux-mips@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH v4 3/8] clk: baikal-t1: Fix invalid xGMAC PTP clock divider
+Date:   Fri, 10 Jun 2022 10:21:19 +0300
+Message-ID: <20220610072124.8714-4-Sergey.Semin@baikalelectronics.ru>
+In-Reply-To: <20220610072124.8714-1-Sergey.Semin@baikalelectronics.ru>
+References: <20220610072124.8714-1-Sergey.Semin@baikalelectronics.ru>
 MIME-Version: 1.0
-References: <20220610011958.3263650-1-liyupeng@zbhlos.com>
-In-Reply-To: <20220610011958.3263650-1-liyupeng@zbhlos.com>
-From:   Huacai Chen <chenhuacai@kernel.org>
-Date:   Fri, 10 Jun 2022 12:44:26 +0800
-X-Gmail-Original-Message-ID: <CAAhV-H7HY=vT5Z2d2WEt75LYSxEgrf+TSKebt0hjc7qUNhKd9g@mail.gmail.com>
-Message-ID: <CAAhV-H7HY=vT5Z2d2WEt75LYSxEgrf+TSKebt0hjc7qUNhKd9g@mail.gmail.com>
-Subject: Re: [PATCH 1/1] irqchip/loongson-liointc: Guard uses of cpu_logical_map
-To:     Yupeng Li <liyupeng@zbhlos.com>
-Cc:     Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>,
-        "open list:MIPS" <linux-mips@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, caizp2008@163.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Hi, Yupeng,
+Most likely due to copy-paste mistake the divider has been set to 10 while
+according to the SoC reference manual it's supposed to be 8 thus having
+PTP clock frequency of 156.25 MHz.
 
-On Fri, Jun 10, 2022 at 9:20 AM Yupeng Li <liyupeng@zbhlos.com> wrote:
->
->   cpu_logical_map is only defined for CONFIG_SMP builds, when we are in an
->   UP configuration, the boot CPU is 0. Some kernel compilation error
->   information is as follows:
->
->   CALL    scripts/atomic/check-atomics.sh
->   CALL    scripts/checksyscalls.sh
->   CHK     include/generated/compile.h
->   CC      drivers/irqchip/irq-loongson-liointc.o
-> drivers/irqchip/irq-loongson-liointc.c: In function 'liointc_chained_handle_irq':
-> drivers/irqchip/irq-loongson-liointc.c:60:13: error: implicit declaration of function 'cpu_logical_map' [-Werror=implicit-function-declaration]
->   int core = cpu_logical_map(smp_processor_id()) % LIOINTC_NUM_CORES;
->              ^~~~~~~~~~~~~~~
-> cc1: some warnings being treated as errors
-> make[2]: *** [scripts/Makefile.build:249:drivers/irqchip/irq-loongson-liointc.o] error 1
-> make[1]: *** [scripts/Makefile.build:466:drivers/irqchip] error 2
-This has been fixed by Jiaxun:
-https://lore.kernel.org/lkml/20220609175242.977-1-jiaxun.yang@flygoat.com/T/#t
+Fixes: 353afa3a8d2e ("clk: Add Baikal-T1 CCU Dividers driver")
+Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+---
+ drivers/clk/baikal-t1/clk-ccu-div.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
+diff --git a/drivers/clk/baikal-t1/clk-ccu-div.c b/drivers/clk/baikal-t1/clk-ccu-div.c
+index f141fda12b09..ea77eec40ddd 100644
+--- a/drivers/clk/baikal-t1/clk-ccu-div.c
++++ b/drivers/clk/baikal-t1/clk-ccu-div.c
+@@ -207,7 +207,7 @@ static const struct ccu_div_info sys_info[] = {
+ 	CCU_DIV_GATE_INFO(CCU_SYS_XGMAC_REF_CLK, "sys_xgmac_ref_clk",
+ 			  "eth_clk", CCU_SYS_XGMAC_BASE, 8),
+ 	CCU_DIV_FIXED_INFO(CCU_SYS_XGMAC_PTP_CLK, "sys_xgmac_ptp_clk",
+-			   "eth_clk", 10),
++			   "eth_clk", 8),
+ 	CCU_DIV_GATE_INFO(CCU_SYS_USB_CLK, "sys_usb_clk",
+ 			  "eth_clk", CCU_SYS_USB_BASE, 10),
+ 	CCU_DIV_VAR_INFO(CCU_SYS_PVT_CLK, "sys_pvt_clk",
+-- 
+2.35.1
 
-Huacai
-
->
-> Acked-by: Caicai <caizp2008@163.com>
-> Signed-off-by: Yupeng Li <liyupeng@zbhlos.com>
-> ---
->  drivers/irqchip/irq-loongson-liointc.c | 4 ++++
->  1 file changed, 4 insertions(+)
->
-> diff --git a/drivers/irqchip/irq-loongson-liointc.c b/drivers/irqchip/irq-loongson-liointc.c
-> index aed88857d90f..927e236bf18e 100644
-> --- a/drivers/irqchip/irq-loongson-liointc.c
-> +++ b/drivers/irqchip/irq-loongson-liointc.c
-> @@ -57,7 +57,11 @@ static void liointc_chained_handle_irq(struct irq_desc *desc)
->         struct liointc_handler_data *handler = irq_desc_get_handler_data(desc);
->         struct irq_chip *chip = irq_desc_get_chip(desc);
->         struct irq_chip_generic *gc = handler->priv->gc;
-> +#ifdef CONFIG_SMP
->         int core = cpu_logical_map(smp_processor_id()) % LIOINTC_NUM_CORES;
-> +#else
-> +       int core = 0;
-> +#endif
->         u32 pending;
->
->         chained_irq_enter(chip, desc);
-> --
-> 2.34.1
->

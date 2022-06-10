@@ -2,93 +2,65 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 53B8ACCA47B
-	for <linux-mips@archiver.kernel.org>; Fri, 10 Jun 2022 07:30:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2E3C3C43334
+	for <linux-mips@archiver.kernel.org>; Fri, 10 Jun 2022 08:34:21 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343916AbiFJHaW (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 10 Jun 2022 03:30:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38024 "EHLO
+        id S1347688AbiFJIeT (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 10 Jun 2022 04:34:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38052 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347025AbiFJHaE (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Fri, 10 Jun 2022 03:30:04 -0400
-Received: from mail.baikalelectronics.com (mail.baikalelectronics.com [87.245.175.230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id D4E7134650;
-        Fri, 10 Jun 2022 00:30:01 -0700 (PDT)
-Received: from mail (mail.baikal.int [192.168.51.25])
-        by mail.baikalelectronics.com (Postfix) with ESMTP id 63080BD2;
-        Fri, 10 Jun 2022 10:22:24 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mail.baikalelectronics.com 63080BD2
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baikalelectronics.ru; s=mail; t=1654845744;
-        bh=3UfPEG9NoKRc1ViJ6X0Y9kRe75ENoa5FpKOJZHHMvCA=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References:From;
-        b=avykppIBpoyrI2q5eEojPnj5AcXNHhy0xGSKlVn3x467yB9UU2sB55Ew7ADyBdUP5
-         OcNEGklL/IZTcEzFeFwR/TFkkxEU3SY7lm5GMi0PYy/4fcOTOOhE7NIUHWSSWCE7mq
-         wMOlLKlT9C5UQgHMN85vjegOvQHFAWeelS+YhZoI=
-Received: from localhost (192.168.53.207) by mail (192.168.51.25) with
- Microsoft SMTP Server (TLS) id 15.0.1395.4; Fri, 10 Jun 2022 10:21:31 +0300
-From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
-To:     Stephen Boyd <sboyd@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Mark Brown <broonie@kernel.org>,
-        Dmitry Osipenko <digetx@gmail.com>
-CC:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        <linux-clk@vger.kernel.org>, <linux-mips@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH v4 1/8] reset: Fix devm bulk optional exclusive control getter
-Date:   Fri, 10 Jun 2022 10:21:17 +0300
-Message-ID: <20220610072124.8714-2-Sergey.Semin@baikalelectronics.ru>
-In-Reply-To: <20220610072124.8714-1-Sergey.Semin@baikalelectronics.ru>
-References: <20220610072124.8714-1-Sergey.Semin@baikalelectronics.ru>
+        with ESMTP id S1347950AbiFJIdZ (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Fri, 10 Jun 2022 04:33:25 -0400
+Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id D68A93FBE9;
+        Fri, 10 Jun 2022 01:31:03 -0700 (PDT)
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1nza2n-0001hj-00; Fri, 10 Jun 2022 10:31:01 +0200
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id 61DD3C0331; Fri, 10 Jun 2022 10:30:44 +0200 (CEST)
+Date:   Fri, 10 Jun 2022 10:30:44 +0200
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Genjian Zhang <zhanggenjian123@gmail.com>
+Cc:     linus.walleij@linaro.org, brgl@bgdev.pl, f.fainelli@gmail.com,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-gpio@vger.kernel.org, huhai@kylinos.cn,
+        k2ci <kernel-bot@kylinos.cn>
+Subject: Re: [PATCH v3] MIPS: Remove repetitive increase irq_err_count
+Message-ID: <20220610083044.GA7565@alpha.franken.de>
+References: <20220525043916.584850-1-zhanggenjian@kylinos.cn>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220525043916.584850-1-zhanggenjian@kylinos.cn>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Most likely due to copy-paste mistake the device managed version of the
-denoted reset control getter has been implemented with invalid semantic,
-which can be immediately spotted by having "WARN_ON(shared && acquired)"
-warning in the system log as soon as the method is called. Anyway let's
-fix it by altering the boolean arguments passed to the
-__devm_reset_control_bulk_get() method from
-- shared = true, optional = false, acquired = true
-to
-+ shared = false, optional = true, acquired = true
-That's what they were supposed to be in the first place (see the non-devm
-version of the same method: reset_control_bulk_get_optional_exclusive()).
+On Wed, May 25, 2022 at 12:39:16PM +0800, Genjian Zhang wrote:
+> From: huhai <huhai@kylinos.cn>
+> 
+> commit 979934da9e7a ("[PATCH] mips: update IRQ handling for vr41xx") added
+> a function irq_dispatch, and it'll increase irq_err_count when the get_irq
+> callback returns a negative value, but increase irq_err_count in get_irq
+> was not removed.
+> 
+> And also, modpost complains once gpio-vr41xx drivers become modules.
+>   ERROR: modpost: "irq_err_count" [drivers/gpio/gpio-vr41xx.ko] undefined!
+> 
+> So it would be a good idea to remove repetitive increase irq_err_count in
+> get_irq callback.
+> 
+> Fixes: 27fdd325dace ("MIPS: Update VR41xx GPIO driver to use gpiolib")
+> Fixes: 979934da9e7a ("[PATCH] mips: update IRQ handling for vr41xx")
+> Reported-by: k2ci <kernel-bot@kylinos.cn>
+> Signed-off-by: huhai <huhai@kylinos.cn>
 
-Fixes: 48d71395896d ("reset: Add reset_control_bulk API")
-Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+This is missing your the Signed-off-by as submitter of the patch.
 
----
+Thomas.
 
-Changelog v4:
-- This is a new patch added on v4 lap of the series.
----
- include/linux/reset.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/include/linux/reset.h b/include/linux/reset.h
-index 8a21b5756c3e..514ddf003efc 100644
---- a/include/linux/reset.h
-+++ b/include/linux/reset.h
-@@ -731,7 +731,7 @@ static inline int __must_check
- devm_reset_control_bulk_get_optional_exclusive(struct device *dev, int num_rstcs,
- 					       struct reset_control_bulk_data *rstcs)
- {
--	return __devm_reset_control_bulk_get(dev, num_rstcs, rstcs, true, false, true);
-+	return __devm_reset_control_bulk_get(dev, num_rstcs, rstcs, false, true, true);
- }
- 
- /**
 -- 
-2.35.1
-
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]

@@ -2,470 +2,220 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 772AEC433EF
-	for <linux-mips@archiver.kernel.org>; Sat, 11 Jun 2022 15:38:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 56395CCA47F
+	for <linux-mips@archiver.kernel.org>; Sun, 12 Jun 2022 12:18:32 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238654AbiFKPiw (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Sat, 11 Jun 2022 11:38:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40344 "EHLO
+        id S236375AbiFLMSb (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Sun, 12 Jun 2022 08:18:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51376 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237099AbiFKPiv (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Sat, 11 Jun 2022 11:38:51 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9B0364BDA;
-        Sat, 11 Jun 2022 08:38:48 -0700 (PDT)
+        with ESMTP id S234382AbiFLMSa (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Sun, 12 Jun 2022 08:18:30 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A15FAE7E;
+        Sun, 12 Jun 2022 05:18:26 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 759A3B80951;
-        Sat, 11 Jun 2022 15:38:47 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 779EFC34116;
-        Sat, 11 Jun 2022 15:38:33 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id CFEF960EB6;
+        Sun, 12 Jun 2022 12:18:25 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 83C2CC34115;
+        Sun, 12 Jun 2022 12:18:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1654961926;
-        bh=MehqC0j0OTM5nbdYZxys+BnIW/puS7FSg3UX9pJ760Q=;
+        s=k20201202; t=1655036305;
+        bh=WgqWCXOvSOyYM9CA6unsEF9x7497RtdMdOYMhEwuXNA=;
         h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=l4UEIuqvNAEFuGJ2T/MPhdiSwFo6CLPtxOq92iXlMSxqX5qJ7+Jxj6W1vlRXFBfuN
-         o/1y0ratP0tXrESSwujeYtFvJa2lFjorHg5Pt9Ify1dSpdIUbJKa9Dzo7/4PGo8c/+
-         lIQO1Y5/d4WiHtCG3BRPQ3GMeIliu4h33XYpyxpqutDYe44u4t67/nJJtlbBclVBtR
-         7xmovpuZeGv3gy47PkxlkIuz3cEZn8PjDUUPWELnYtyOHJmYpg1kC4+AaC2G2qOM+n
-         zP0ZLSJFqD2SgXnCR+3gzmUTROqMzFrxUi8CiUA7FcEbgKrNyuS0/tmH1nVJKbjl8U
-         yVdDI9vJpQqqw==
-Date:   Sat, 11 Jun 2022 16:47:45 +0100
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Nuno =?UTF-8?B?U8Oh?= <nuno.sa@analog.com>
-Cc:     <linux-imx@nxp.com>, <linux-renesas-soc@vger.kernel.org>,
-        <linux-mips@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <chrome-platform@lists.linux.dev>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-msm@vger.kernel.org>, <linux-iio@vger.kernel.org>,
-        <openbmc@lists.ozlabs.org>, Cai Huoqing <cai.huoqing@linux.dev>,
-        Benjamin Fair <benjaminfair@google.com>,
-        Jishnu Prakash <quic_jprakash@quicinc.com>,
+        b=hJVwSxcZhwtzLwx3w1QhqIA1+qrWZ1YGyKj5qHKKPQ++Yqa816Xz6ppZ1R/IDxtM8
+         0mGodfwO2v8xthNHRtUQ7dsU9T6KZrnnSnwkX2Km4qoMD4VxgmypasgeO574/wxfWh
+         iPI0tb5tr49puQN4NIA3CqGVLyVln/zbm8lBPZ8hG8qBmrK2oCj41WK75ev21hQO/v
+         iwYspOZKGjKe7g7QShHcxe1rR10SCFSjyNkmdYBtuEMKE90L7FAENwgzstDNcN3N7s
+         6bz8ns5CJW9GDL1c/9Wzb9AS47ccvnKE6Mk6uAYpYzfOmoKzOnrDABFX7VAQu5vWRi
+         lMYiDZBwwPCeQ==
+Date:   Sun, 12 Jun 2022 21:18:02 +0900
+From:   Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     Jarkko Sakkinen <jarkko@kernel.org>, Song Liu <song@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Guo Ren <guoren@kernel.org>,
+        Jarkko Sakkinen <jarkko@profian.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Nathaniel McCallum <nathaniel@profian.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
+        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Kees Cook <keescook@chromium.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Josh Poimboeuf <jpoimboe@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Marco Elver <elver@google.com>,
+        Dan Li <ashimida@linux.alibaba.com>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>,
+        Nick Desaulniers <ndesaulniers@google.com>,
         Linus Walleij <linus.walleij@linaro.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Amit Kucheria <amitk@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Michael Hennerich <Michael.Hennerich@analog.com>,
-        Haibo Chen <haibo.chen@nxp.com>,
-        Benson Leung <bleung@chromium.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Christophe Branchereau <cbranchereau@gmail.com>,
-        Patrick Venture <venture@google.com>,
-        Arnd Bergmann <arnd@arndb.de>, Nancy Yuen <yuenn@google.com>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Gwendal Grignou <gwendal@chromium.org>,
-        Saravanan Sekar <sravanhome@gmail.com>,
-        Tali Perry <tali.perry1@gmail.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Paul Cercueil <paul@crapouillou.net>,
-        Thara Gopinath <thara.gopinath@linaro.org>,
-        Avi Fishman <avifishman70@gmail.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Claudiu Beznea <claudiu.beznea@microchip.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Fabrice Gasnier <fabrice.gasnier@foss.st.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Tomer Maimon <tmaimon77@gmail.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Guenter Roeck <groeck@chromium.org>,
-        Fabio Estevam <festevam@gmail.com>,
-        Olivier Moysan <olivier.moysan@foss.st.com>,
-        Eugen Hristev <eugen.hristev@microchip.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: Re: [PATCH 32/34] iio: adc: stm32-adc: convert to device properties
-Message-ID: <20220611164745.3e99b730@jic23-huawei>
-In-Reply-To: <20220610084545.547700-33-nuno.sa@analog.com>
-References: <20220610084545.547700-1-nuno.sa@analog.com>
-        <20220610084545.547700-33-nuno.sa@analog.com>
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.34; x86_64-pc-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+        Chen Zhongjin <chenzhongjin@huawei.com>,
+        Nicolas Pitre <nico@fluxnic.net>,
+        Mark Brown <broonie@kernel.org>,
+        Luis Machado <luis.machado@linaro.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Joey Gouly <joey.gouly@arm.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Atsushi Nemoto <anemo@mba.ocn.ne.jp>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Dave Anglin <dave.anglin@bell.net>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Daniel Axtens <dja@axtens.net>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        Jordan Niethe <jniethe5@gmail.com>,
+        Anup Patel <anup@brainfault.org>,
+        Atish Patra <atishp@atishpatra.org>,
+        Changbin Du <changbin.du@intel.com>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Liao Chang <liaochang1@huawei.com>,
+        Philipp Tomsich <philipp.tomsich@vrull.eu>,
+        Wu Caize <zepan@sipeed.com>,
+        Emil Renner Berthing <kernel@esmil.dk>,
+        Alexander Egorenkov <egorenar@linux.ibm.com>,
+        Thomas Richter <tmricht@linux.ibm.com>,
+        Tobias Huschle <huschle@linux.ibm.com>,
+        Ilya Leoshkevich <iii@linux.ibm.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Michael Roth <michael.roth@amd.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Javier Martinez Canillas <javierm@redhat.com>,
+        Miroslav Benes <mbenes@suse.cz>,
+        =?UTF-8?B?QW5kcsOp?= Almeida <andrealmeid@igalia.com>,
+        Tiezhu Yang <yangtiezhu@loongson.cn>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Aaron Tomlin <atomlin@redhat.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
+        Parisc List <linux-parisc@vger.kernel.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        linux-s390 <linux-s390@vger.kernel.org>,
+        sparclinux <sparclinux@vger.kernel.org>,
+        linux-modules@vger.kernel.org
+Subject: Re: [PATCH] kprobes: Enable tracing for mololithic kernel images
+Message-Id: <20220612211802.30a16623e8b0a55122b02386@kernel.org>
+In-Reply-To: <CAMj1kXGGyO-DL9hjKYKR2sp87s4KExiQybES8pp4JgqJcHkfLA@mail.gmail.com>
+References: <20220608000014.3054333-1-jarkko@profian.com>
+        <CAJF2gTQgCn2CyZ4+VBqEEBT2b4+1KxoEXxrd+Ritk=58+U8EFA@mail.gmail.com>
+        <YqAy0qjI4Lktk/uJ@iki.fi>
+        <20220608232115.ccd4399f4a1d133e9b65c2a9@kernel.org>
+        <CAPhsuW6iUieQvA6KqzSLgtxmjkVSWCuVwNA338DATb_myHxo7w@mail.gmail.com>
+        <YqHx1d+MwRLLzGQe@iki.fi>
+        <CAMj1kXGGyO-DL9hjKYKR2sp87s4KExiQybES8pp4JgqJcHkfLA@mail.gmail.com>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Fri, 10 Jun 2022 10:45:43 +0200
-Nuno S=C3=A1 <nuno.sa@analog.com> wrote:
+On Thu, 9 Jun 2022 15:23:16 +0200
+Ard Biesheuvel <ardb@kernel.org> wrote:
 
-> Make the conversion to firmware agnostic device properties. As part of
-> the conversion the IIO inkern interface 'of_xlate()' is also converted to
-> 'fwnode_xlate()'. The goal is to completely drop 'of_xlate' and hence OF
-> dependencies from IIO.
->=20
-> Signed-off-by: Nuno S=C3=A1 <nuno.sa@analog.com>
+> On Thu, 9 Jun 2022 at 15:14, Jarkko Sakkinen <jarkko@kernel.org> wrote:
+> >
+> > On Wed, Jun 08, 2022 at 09:12:34AM -0700, Song Liu wrote:
+> > > On Wed, Jun 8, 2022 at 7:21 AM Masami Hiramatsu <mhiramat@kernel.org> wrote:
+> > > >
+> > > > Hi Jarkko,
+> > > >
+> > > > On Wed, 8 Jun 2022 08:25:38 +0300
+> > > > Jarkko Sakkinen <jarkko@kernel.org> wrote:
+> > > >
+> > > > > On Wed, Jun 08, 2022 at 10:35:42AM +0800, Guo Ren wrote:
+> > > > > > .
+> > > > > >
+> > > > > > On Wed, Jun 8, 2022 at 8:02 AM Jarkko Sakkinen <jarkko@profian.com> wrote:
+> > > > > > >
+> > > > > > > Tracing with kprobes while running a monolithic kernel is currently
+> > > > > > > impossible because CONFIG_KPROBES is dependent of CONFIG_MODULES.  This
+> > > > > > > dependency is a result of kprobes code using the module allocator for the
+> > > > > > > trampoline code.
+> > > > > > >
+> > > > > > > Detaching kprobes from modules helps to squeeze down the user space,
+> > > > > > > e.g. when developing new core kernel features, while still having all
+> > > > > > > the nice tracing capabilities.
+> > > > > > >
+> > > > > > > For kernel/ and arch/*, move module_alloc() and module_memfree() to
+> > > > > > > module_alloc.c, and compile as part of vmlinux when either CONFIG_MODULES
+> > > > > > > or CONFIG_KPROBES is enabled.  In addition, flag kernel module specific
+> > > > > > > code with CONFIG_MODULES.
+> > > > > > >
+> > > > > > > As the result, kprobes can be used with a monolithic kernel.
+> > > > > > It's strange when MODULES is n, but vmlinux still obtains module_alloc.
+> > > > > >
+> > > > > > Maybe we need a kprobe_alloc, right?
+> > > > >
+> > > > > Perhaps not the best name but at least it documents the fact that
+> > > > > they use the same allocator.
+> > > > >
+> > > > > Few years ago I carved up something "half-way there" for kprobes,
+> > > > > and I used the name text_alloc() [*].
+> > > > >
+> > > > > [*] https://lore.kernel.org/all/20200724050553.1724168-1-jarkko.sakkinen@linux.intel.com/
+> > > >
+> > > > Yeah, I remember that. Thank you for updating your patch!
+> > > > I think the idea (split module_alloc() from CONFIG_MODULE) is good to me.
+> > > > If module support maintainers think this name is not good, you may be
+> > > > able to rename it as text_alloc() and make the module_alloc() as a
+> > > > wrapper of it.
+> > >
+> > > IIUC, most users of module_alloc() use it to allocate memory for text, except
+> > > that module code uses it for both text and data. Therefore, I guess calling it
+> > > text_alloc() is not 100% accurate until we change the module code (to use
+> > > a different API to allocate memory for data).
+> >
+> > After reading the feedback, I'd stay on using module_alloc() because
+> > it has arch-specific quirks baked in. Easier to deal with them in one
+> > place.
+> >
+> 
+> In that case, please ensure that you enable this only on architectures
+> where it is needed. arm64 implements alloc_insn_page() without relying
+> on module_alloc() so I would not expect to see any changes there.
 
-One trivial comment inline.=20
+Hmm, what about adding CONFIG_ARCH_HAVE_ALLOC_INSN_PAGE and check it?
+If it is defined, kprobes will not define the __weak function, but
+if not, it will use module_alloc()?
 
-In general this particular refactor is complex, so I either want
-eyes of those familiar with the driver and / or testing or we may want
-to reduce the scope to just the fwnode_xlate() and leave the more
-complex conversions for when we can get that testing done.
+Thank you,
 
-Let's see if we get the necessary review on this more complex patch.
-I just don't want us to get stalled by trying to do too much at once!
-
-Jonathan
-
-
-> ---
->  drivers/iio/adc/stm32-adc.c | 128 ++++++++++++++++++++----------------
->  1 file changed, 70 insertions(+), 58 deletions(-)
->=20
-> diff --git a/drivers/iio/adc/stm32-adc.c b/drivers/iio/adc/stm32-adc.c
-> index a68ecbda6480..87acef31ace1 100644
-> --- a/drivers/iio/adc/stm32-adc.c
-> +++ b/drivers/iio/adc/stm32-adc.c
-> @@ -21,11 +21,11 @@
->  #include <linux/io.h>
->  #include <linux/iopoll.h>
->  #include <linux/module.h>
-> +#include <linux/mod_devicetable.h>
->  #include <linux/nvmem-consumer.h>
->  #include <linux/platform_device.h>
->  #include <linux/pm_runtime.h>
-> -#include <linux/of.h>
-> -#include <linux/of_device.h>
-> +#include <linux/property.h>
-> =20
->  #include "stm32-adc-core.h"
-> =20
-> @@ -1524,8 +1524,8 @@ static int stm32_adc_update_scan_mode(struct iio_de=
-v *indio_dev,
->  	return ret;
->  }
-> =20
-> -static int stm32_adc_of_xlate(struct iio_dev *indio_dev,
-> -			      const struct of_phandle_args *iiospec)
-> +static int stm32_adc_fwnode_xlate(struct iio_dev *indio_dev,
-> +				  const struct fwnode_reference_args *iiospec)
->  {
->  	int i;
-> =20
-> @@ -1579,7 +1579,7 @@ static const struct iio_info stm32_adc_iio_info =3D=
- {
->  	.hwfifo_set_watermark =3D stm32_adc_set_watermark,
->  	.update_scan_mode =3D stm32_adc_update_scan_mode,
->  	.debugfs_reg_access =3D stm32_adc_debugfs_reg_access,
-> -	.of_xlate =3D stm32_adc_of_xlate,
-> +	.fwnode_xlate =3D stm32_adc_fwnode_xlate,
->  };
-> =20
->  static unsigned int stm32_adc_dma_residue(struct stm32_adc *adc)
-> @@ -1776,14 +1776,14 @@ static const struct iio_chan_spec_ext_info stm32_=
-adc_ext_info[] =3D {
->  	{},
->  };
-> =20
-> -static int stm32_adc_of_get_resolution(struct iio_dev *indio_dev)
-> +static int stm32_adc_fw_get_resolution(struct iio_dev *indio_dev)
->  {
-> -	struct device_node *node =3D indio_dev->dev.of_node;
-> +	struct device *dev =3D &indio_dev->dev;
->  	struct stm32_adc *adc =3D iio_priv(indio_dev);
->  	unsigned int i;
->  	u32 res;
-> =20
-> -	if (of_property_read_u32(node, "assigned-resolution-bits", &res))
-> +	if (device_property_read_u32(dev, "assigned-resolution-bits", &res))
->  		res =3D adc->cfg->adc_info->resolutions[0];
-> =20
->  	for (i =3D 0; i < adc->cfg->adc_info->num_res; i++)
-> @@ -1867,11 +1867,11 @@ static void stm32_adc_chan_init_one(struct iio_de=
-v *indio_dev,
-> =20
->  static int stm32_adc_get_legacy_chan_count(struct iio_dev *indio_dev, st=
-ruct stm32_adc *adc)
->  {
-> -	struct device_node *node =3D indio_dev->dev.of_node;
-> +	struct device *dev =3D &indio_dev->dev;
->  	const struct stm32_adc_info *adc_info =3D adc->cfg->adc_info;
->  	int num_channels =3D 0, ret;
-> =20
-> -	ret =3D of_property_count_u32_elems(node, "st,adc-channels");
-> +	ret =3D device_property_count_u32(dev, "st,adc-channels");
->  	if (ret > adc_info->max_channels) {
->  		dev_err(&indio_dev->dev, "Bad st,adc-channels?\n");
->  		return -EINVAL;
-> @@ -1879,18 +1879,17 @@ static int stm32_adc_get_legacy_chan_count(struct=
- iio_dev *indio_dev, struct stm
->  		num_channels +=3D ret;
->  	}
-> =20
-> -	ret =3D of_property_count_elems_of_size(node, "st,adc-diff-channels",
-> -					      sizeof(struct stm32_adc_diff_channel));
-> -	if (ret > adc_info->max_channels) {
-> +	ret =3D device_property_count_u32(dev, "st,adc-diff-channels");
-> +	if ((ret / 2) > adc_info->max_channels) {
-hmm. The magic '2' that is introduced here kind of looses some of the meani=
-ng
-that existed for the *_count_elems_of_size()
-
-Perhaps introduce a define or a comment on why it is 2?
-
->  		dev_err(&indio_dev->dev, "Bad st,adc-diff-channels?\n");
->  		return -EINVAL;
-> -	} else if (ret > 0) {
-> -		adc->num_diff =3D ret;
-> -		num_channels +=3D ret;
-> +	} else if ((ret / 2) > 0) {
-> +		adc->num_diff =3D ret / 2;
-> +		num_channels +=3D ret / 2;
->  	}
-> =20
->  	/* Optional sample time is provided either for each, or all channels */
-> -	ret =3D of_property_count_u32_elems(node, "st,min-sample-time-nsecs");
-> +	ret =3D device_property_count_u32(dev, "st,min-sample-time-nsecs");
->  	if (ret > 1 && ret !=3D num_channels) {
->  		dev_err(&indio_dev->dev, "Invalid st,min-sample-time-nsecs\n");
->  		return -EINVAL;
-> @@ -1901,21 +1900,20 @@ static int stm32_adc_get_legacy_chan_count(struct=
- iio_dev *indio_dev, struct stm
-> =20
->  static int stm32_adc_legacy_chan_init(struct iio_dev *indio_dev,
->  				      struct stm32_adc *adc,
-> -				      struct iio_chan_spec *channels)
-> +				      struct iio_chan_spec *channels,
-> +				      int nchans)
->  {
-> -	struct device_node *node =3D indio_dev->dev.of_node;
->  	const struct stm32_adc_info *adc_info =3D adc->cfg->adc_info;
->  	struct stm32_adc_diff_channel diff[STM32_ADC_CH_MAX];
-> +	struct device *dev =3D &indio_dev->dev;
->  	u32 num_diff =3D adc->num_diff;
->  	int size =3D num_diff * sizeof(*diff) / sizeof(u32);
-> -	int scan_index =3D 0, val, ret, i;
-> -	struct property *prop;
-> -	const __be32 *cur;
-> -	u32 smp =3D 0;
-> +	int scan_index =3D 0, ret, i;
-> +	u32 smp =3D 0, nsmps, smps[STM32_ADC_CH_MAX], chans[STM32_ADC_CH_MAX];
-> =20
->  	if (num_diff) {
-> -		ret =3D of_property_read_u32_array(node, "st,adc-diff-channels",
-> -						 (u32 *)diff, size);
-> +		ret =3D device_property_read_u32_array(dev, "st,adc-diff-channels",
-> +						     (u32 *)diff, size);
->  		if (ret) {
->  			dev_err(&indio_dev->dev, "Failed to get diff channels %d\n", ret);
->  			return ret;
-> @@ -1936,32 +1934,51 @@ static int stm32_adc_legacy_chan_init(struct iio_=
-dev *indio_dev,
->  		}
->  	}
-> =20
-> -	of_property_for_each_u32(node, "st,adc-channels", prop, cur, val) {
-> -		if (val >=3D adc_info->max_channels) {
-> -			dev_err(&indio_dev->dev, "Invalid channel %d\n", val);
-> +	ret =3D device_property_read_u32_array(dev, "st,adc-channels", chans,
-> +					     nchans);
-> +	if (ret)
-> +		return ret;
-> +
-> +	for (i =3D 0; i < nchans; i++) {
-> +		if (chans[i] >=3D adc_info->max_channels) {
-> +			dev_err(&indio_dev->dev, "Invalid channel %d\n",
-> +				chans[i]);
->  			return -EINVAL;
->  		}
-> =20
->  		/* Channel can't be configured both as single-ended & diff */
->  		for (i =3D 0; i < num_diff; i++) {
-> -			if (val =3D=3D diff[i].vinp) {
-> -				dev_err(&indio_dev->dev, "channel %d misconfigured\n",	val);
-> +			if (chans[i] =3D=3D diff[i].vinp) {
-> +				dev_err(&indio_dev->dev, "channel %d misconfigured\n",	chans[i]);
->  				return -EINVAL;
->  			}
->  		}
-> -		stm32_adc_chan_init_one(indio_dev, &channels[scan_index], val,
-> -					0, scan_index, false);
-> +		stm32_adc_chan_init_one(indio_dev, &channels[scan_index],
-> +					chans[i], 0, scan_index, false);
->  		scan_index++;
->  	}
-> =20
-> +	nsmps =3D device_property_count_u32(dev, "st,min-sample-time-nsecs");
-> +	if (nsmps) {
-> +		if (nsmps >=3D nchans)
-> +			nsmps =3D nchans;
-> +
-> +		ret =3D device_property_read_u32_array(dev, "st,min-sample-time-nsecs",
-> +						     smps, nsmps);
-> +		if (ret)
-> +			return ret;
-> +	}
-> +
->  	for (i =3D 0; i < scan_index; i++) {
->  		/*
-> -		 * Using of_property_read_u32_index(), smp value will only be
-> -		 * modified if valid u32 value can be decoded. This allows to
-> -		 * get either no value, 1 shared value for all indexes, or one
-> -		 * value per channel.
-> +		 * This check is used with the above logic so that smp value
-> +		 * will only be modified if valid u32 value can be decoded. This
-> +		 * allows to get either no value, 1 shared value for all indexes,
-> +		 * or one value per channel. The point is to have the same
-> +		 * behavior as 'of_property_read_u32_index()'.
->  		 */
-> -		of_property_read_u32_index(node, "st,min-sample-time-nsecs", i, &smp);
-> +		if (i < nsmps)
-> +			smp =3D smps[i];
-> =20
->  		/* Prepare sampling time settings */
->  		stm32_adc_smpr_init(adc, channels[i].channel, smp);
-> @@ -2004,22 +2021,21 @@ static int stm32_adc_generic_chan_init(struct iio=
-_dev *indio_dev,
->  				       struct stm32_adc *adc,
->  				       struct iio_chan_spec *channels)
->  {
-> -	struct device_node *node =3D indio_dev->dev.of_node;
->  	const struct stm32_adc_info *adc_info =3D adc->cfg->adc_info;
-> -	struct device_node *child;
-> +	struct fwnode_handle *child;
->  	const char *name;
->  	int val, scan_index =3D 0, ret;
->  	bool differential;
->  	u32 vin[2];
-> =20
-> -	for_each_available_child_of_node(node, child) {
-> -		ret =3D of_property_read_u32(child, "reg", &val);
-> +	device_for_each_child_node(&indio_dev->dev, child) {
-> +		ret =3D fwnode_property_read_u32(child, "reg", &val);
->  		if (ret) {
->  			dev_err(&indio_dev->dev, "Missing channel index %d\n", ret);
->  			goto err;
->  		}
-> =20
-> -		ret =3D of_property_read_string(child, "label", &name);
-> +		ret =3D fwnode_property_read_string(child, "label", &name);
->  		/* label is optional */
->  		if (!ret) {
->  			if (strlen(name) >=3D STM32_ADC_CH_SZ) {
-> @@ -2044,7 +2060,7 @@ static int stm32_adc_generic_chan_init(struct iio_d=
-ev *indio_dev,
->  		}
-> =20
->  		differential =3D false;
-> -		ret =3D of_property_read_u32_array(child, "diff-channels", vin, 2);
-> +		ret =3D fwnode_property_read_u32_array(child, "diff-channels", vin, 2);
->  		/* diff-channels is optional */
->  		if (!ret) {
->  			differential =3D true;
-> @@ -2061,7 +2077,7 @@ static int stm32_adc_generic_chan_init(struct iio_d=
-ev *indio_dev,
->  		stm32_adc_chan_init_one(indio_dev, &channels[scan_index], val,
->  					vin[1], scan_index, differential);
-> =20
-> -		ret =3D of_property_read_u32(child, "st,min-sample-time-ns", &val);
-> +		ret =3D fwnode_property_read_u32(child, "st,min-sample-time-ns", &val);
->  		/* st,min-sample-time-ns is optional */
->  		if (!ret) {
->  			stm32_adc_smpr_init(adc, channels[scan_index].channel, val);
-> @@ -2079,14 +2095,13 @@ static int stm32_adc_generic_chan_init(struct iio=
-_dev *indio_dev,
->  	return scan_index;
-> =20
->  err:
-> -	of_node_put(child);
-> +	fwnode_handle_put(child);
-> =20
->  	return ret;
->  }
-> =20
-> -static int stm32_adc_chan_of_init(struct iio_dev *indio_dev, bool timest=
-amping)
-> +static int stm32_adc_chan_fw_init(struct iio_dev *indio_dev, bool timest=
-amping)
->  {
-> -	struct device_node *node =3D indio_dev->dev.of_node;
->  	struct stm32_adc *adc =3D iio_priv(indio_dev);
->  	const struct stm32_adc_info *adc_info =3D adc->cfg->adc_info;
->  	struct iio_chan_spec *channels;
-> @@ -2096,7 +2111,7 @@ static int stm32_adc_chan_of_init(struct iio_dev *i=
-ndio_dev, bool timestamping)
->  	for (i =3D 0; i < STM32_ADC_INT_CH_NB; i++)
->  		adc->int_ch[i] =3D STM32_ADC_INT_CH_NONE;
-> =20
-> -	num_channels =3D of_get_available_child_count(node);
-> +	num_channels =3D device_get_child_node_count(&indio_dev->dev);
->  	/* If no channels have been found, fallback to channels legacy properti=
-es. */
->  	if (!num_channels) {
->  		legacy =3D true;
-> @@ -2127,7 +2142,8 @@ static int stm32_adc_chan_of_init(struct iio_dev *i=
-ndio_dev, bool timestamping)
->  		return -ENOMEM;
-> =20
->  	if (legacy)
-> -		ret =3D stm32_adc_legacy_chan_init(indio_dev, adc, channels);
-> +		ret =3D stm32_adc_legacy_chan_init(indio_dev, adc, channels,
-> +						 num_channels);
->  	else
->  		ret =3D stm32_adc_generic_chan_init(indio_dev, adc, channels);
->  	if (ret < 0)
-> @@ -2209,9 +2225,6 @@ static int stm32_adc_probe(struct platform_device *=
-pdev)
->  	bool timestamping =3D false;
->  	int ret;
-> =20
-> -	if (!pdev->dev.of_node)
-> -		return -ENODEV;
-> -
->  	indio_dev =3D devm_iio_device_alloc(&pdev->dev, sizeof(*adc));
->  	if (!indio_dev)
->  		return -ENOMEM;
-> @@ -2220,17 +2233,16 @@ static int stm32_adc_probe(struct platform_device=
- *pdev)
->  	adc->common =3D dev_get_drvdata(pdev->dev.parent);
->  	spin_lock_init(&adc->lock);
->  	init_completion(&adc->completion);
-> -	adc->cfg =3D (const struct stm32_adc_cfg *)
-> -		of_match_device(dev->driver->of_match_table, dev)->data;
-> +	adc->cfg =3D device_get_match_data(dev);
-> =20
->  	indio_dev->name =3D dev_name(&pdev->dev);
-> -	indio_dev->dev.of_node =3D pdev->dev.of_node;
-> +	device_set_node(&indio_dev->dev, dev_fwnode(&pdev->dev));
->  	indio_dev->info =3D &stm32_adc_iio_info;
->  	indio_dev->modes =3D INDIO_DIRECT_MODE | INDIO_HARDWARE_TRIGGERED;
-> =20
->  	platform_set_drvdata(pdev, indio_dev);
-> =20
-> -	ret =3D of_property_read_u32(pdev->dev.of_node, "reg", &adc->offset);
-> +	ret =3D device_property_read_u32(dev, "reg", &adc->offset);
->  	if (ret !=3D 0) {
->  		dev_err(&pdev->dev, "missing reg property\n");
->  		return -EINVAL;
-> @@ -2259,7 +2271,7 @@ static int stm32_adc_probe(struct platform_device *=
-pdev)
->  		}
->  	}
-> =20
-> -	ret =3D stm32_adc_of_get_resolution(indio_dev);
-> +	ret =3D stm32_adc_fw_get_resolution(indio_dev);
->  	if (ret < 0)
->  		return ret;
-> =20
-> @@ -2276,7 +2288,7 @@ static int stm32_adc_probe(struct platform_device *=
-pdev)
->  		timestamping =3D true;
->  	}
-> =20
-> -	ret =3D stm32_adc_chan_of_init(indio_dev, timestamping);
-> +	ret =3D stm32_adc_chan_fw_init(indio_dev, timestamping);
->  	if (ret < 0)
->  		goto err_dma_disable;
-> =20
-
+-- 
+Masami Hiramatsu (Google) <mhiramat@kernel.org>

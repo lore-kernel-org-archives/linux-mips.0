@@ -2,32 +2,32 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3CF5ACCA47B
-	for <linux-mips@archiver.kernel.org>; Mon, 13 Jun 2022 11:31:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 11D30CCA47B
+	for <linux-mips@archiver.kernel.org>; Mon, 13 Jun 2022 12:06:07 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1354014AbiFMLb1 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 13 Jun 2022 07:31:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43336 "EHLO
+        id S1358267AbiFMMGG (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 13 Jun 2022 08:06:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54270 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1354457AbiFML3f (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Mon, 13 Jun 2022 07:29:35 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34E15DEE1;
-        Mon, 13 Jun 2022 03:44:44 -0700 (PDT)
+        with ESMTP id S1359256AbiFMMFe (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Mon, 13 Jun 2022 08:05:34 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DED626134;
+        Mon, 13 Jun 2022 03:59:49 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id C408D61016;
-        Mon, 13 Jun 2022 10:44:43 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A6ACBC34114;
-        Mon, 13 Jun 2022 10:44:42 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 0C983B80EA8;
+        Mon, 13 Jun 2022 10:59:48 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3406AC34114;
+        Mon, 13 Jun 2022 10:59:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1655117083;
-        bh=mHXEFMwDKrvfDzcL1oVCWAqbKD/Z4Ksvn3N1vZsy8Vk=;
+        s=korg; t=1655117986;
+        bh=2xRg+D79i5GNl8UccOe7sFp/4aJop6QuUDfI2goaweQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=2Ejfl7ApYDVMgJ3Rvbujg6n+Tb/lXhNmR+EMHOXWPMUiUnFxyF6P1D43cgBM418yr
-         71G9mVW6LeRVyz22Ns8gOa6CE3MdetRdOXZrbkIdY8FO+ToeY8zQF/PkW8znqmHZ6i
-         XzhXVUQu7anXSKj1L2/1eMv7zCRCRZvZIAmHjt0Q=
+        b=agNjp7jMXrA9TqgI6g1CdLPQgX+K2v1Z1PPTTC56CtdmAShdrqsiCl1PDLMaa029f
+         oGg+rEOQX9l3x5nnykd/B7aeCZxN/Zces+Cf9TLRuY9UthB2UfXjGyDftSQwaRbbVt
+         jbZ8ZJPoIPJuWNjFLdjd6d1bx9PwqnH+RijvMHGQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -40,12 +40,12 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         linux-mips@vger.kernel.org, Manuel Lauss <manuel.lauss@gmail.com>,
         Dominik Brodowski <linux@dominikbrodowski.net>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.4 281/411] pcmcia: db1xxx_ss: restrict to MIPS_DB1XXX boards
-Date:   Mon, 13 Jun 2022 12:09:14 +0200
-Message-Id: <20220613094937.184824863@linuxfoundation.org>
+Subject: [PATCH 4.19 189/287] pcmcia: db1xxx_ss: restrict to MIPS_DB1XXX boards
+Date:   Mon, 13 Jun 2022 12:10:13 +0200
+Message-Id: <20220613094929.598096632@linuxfoundation.org>
 X-Mailer: git-send-email 2.36.1
-In-Reply-To: <20220613094928.482772422@linuxfoundation.org>
-References: <20220613094928.482772422@linuxfoundation.org>
+In-Reply-To: <20220613094923.832156175@linuxfoundation.org>
+References: <20220613094923.832156175@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -82,10 +82,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/drivers/pcmcia/Kconfig b/drivers/pcmcia/Kconfig
-index e004d8da03dc..73df71a14253 100644
+index cbbe4a285b48..a8fdd6df6a12 100644
 --- a/drivers/pcmcia/Kconfig
 +++ b/drivers/pcmcia/Kconfig
-@@ -151,7 +151,7 @@ config TCIC
+@@ -146,7 +146,7 @@ config TCIC
  
  config PCMCIA_ALCHEMY_DEVBOARD
  	tristate "Alchemy Db/Pb1xxx PCMCIA socket services"

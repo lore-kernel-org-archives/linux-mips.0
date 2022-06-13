@@ -2,102 +2,88 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0CCEDC43334
-	for <linux-mips@archiver.kernel.org>; Mon, 13 Jun 2022 14:06:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0AEABC433EF
+	for <linux-mips@archiver.kernel.org>; Mon, 13 Jun 2022 15:07:59 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1380648AbiFMOGz (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 13 Jun 2022 10:06:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51980 "EHLO
+        id S243192AbiFMPH6 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 13 Jun 2022 11:07:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60326 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1381440AbiFMOEV (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Mon, 13 Jun 2022 10:04:21 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F22DE2BB31;
-        Mon, 13 Jun 2022 04:39:33 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id AB962B80E2C;
-        Mon, 13 Jun 2022 11:39:32 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 01605C34114;
-        Mon, 13 Jun 2022 11:39:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1655120371;
-        bh=ki2qefTm409uZD7i1XoIBXQY54So3nahLBbsGRgRzEs=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lVeANvF39t0NDiHNZEXsroG8y4uT9JYsSSdYyCjhRv9B0ABWIwC5jip/1GKNyhZ1J
-         zeBcStCDxT+MeIHKWBCunoK5DRtfaxpsRm7Cr9rHwXTfpTJv5JWVLhj1BLwJn78NdK
-         To+u4LmD7DInYf60/Cb3cB4QK0r/ZA9KtsWConZw=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>,
-        kernel test robot <lkp@intel.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Kees Cook <keescook@chromium.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        linux-mips@vger.kernel.org, Manuel Lauss <manuel.lauss@gmail.com>,
-        Dominik Brodowski <linux@dominikbrodowski.net>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.17 001/298] pcmcia: db1xxx_ss: restrict to MIPS_DB1XXX boards
-Date:   Mon, 13 Jun 2022 12:08:15 +0200
-Message-Id: <20220613094924.962856311@linuxfoundation.org>
-X-Mailer: git-send-email 2.36.1
-In-Reply-To: <20220613094924.913340374@linuxfoundation.org>
-References: <20220613094924.913340374@linuxfoundation.org>
-User-Agent: quilt/0.66
-X-stable: review
-X-Patchwork-Hint: ignore
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+        with ESMTP id S242851AbiFMPHr (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Mon, 13 Jun 2022 11:07:47 -0400
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8DDE53A68;
+        Mon, 13 Jun 2022 05:14:13 -0700 (PDT)
+Received: by mail-ej1-x62b.google.com with SMTP id o7so10810383eja.1;
+        Mon, 13 Jun 2022 05:14:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:to:cc:subject:date:message-id;
+        bh=ZOSb9pg1CC7QiA6hpPCF1GAL0i7t8dmmtte682l7O5g=;
+        b=aEDGa3kWtRRvzYp+rcI42ukVWyZtgRs6xli28Pg17OiS+14bbfLbvcpNZyBXlOBy4a
+         Shl6VbaReFerfActKevQ8vxfh/kGbp+raKiJo9THOkPTf4nrC/9upPrni0UtVxJ6AbeF
+         6+2T6beOnxnONkX82dPAMeIgHEx8cYGW0pweHB0wH0y30jmkhVrHwsxXPfmAXsuQgOKG
+         aAj/nfiIgeWjwPcrXKWOq07xUUtJEzfcdhO1r5L5BS+njZ6fVXZONWOZe8wGjeeSsCwQ
+         ENxV2aNa7IVLVMQdMkn1PFOfhxMwSFPrJ/QkhrAnXYSvjsbyA6TcGmwQRdMzDNfxZ6uj
+         Z4jQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=ZOSb9pg1CC7QiA6hpPCF1GAL0i7t8dmmtte682l7O5g=;
+        b=IUwCak5EdiSp8a/OOdmxNGe91Ib93NL8qNBkmuHpsPI4OOrogAgRfCQHktUYw/PgmB
+         Gx1dmBELtffw/XlE4/LVb7wnq0KfCXKeXZfYVzsgcvjUrYli4ns//5CqUaewIROZEQv/
+         dcnZU9CnYt/ClgggqI22oYEP4BdE1uavH9MJatNa3i6Jhq03pBLZjiq/LoaIficJpI5j
+         ZpmQhi2/v9C3Or+IDHONg88kQDXRPhH0ugV9by4nJtG+7VbtZgWMlYkJ4hoVm0T6c/vb
+         NfXhoFZLACSeuS+xRfMbIiZNvk/w77pY3ZHDJGr4nI9X6gCm3je6JMcywvZNE7gDDMXA
+         eNQQ==
+X-Gm-Message-State: AOAM532KDfhpowykxgKnmOKpfGgRBWo/2ixyApEbIzOrpFtoPTn2jcxd
+        3yXDjWjaFCsgSqz6kN1Motg=
+X-Google-Smtp-Source: ABdhPJynhA0seghy2iemorEdB5BqNwm/BCYUfhCKm4Nq0gOgRaYKyRMEEsqwAQD7c02TgDJr4f08vA==
+X-Received: by 2002:a17:906:5189:b0:712:1017:8ce7 with SMTP id y9-20020a170906518900b0071210178ce7mr18384106ejk.196.1655122452179;
+        Mon, 13 Jun 2022 05:14:12 -0700 (PDT)
+Received: from felia.fritz.box (200116b8260df50011e978c0f780de03.dip.versatel-1u1.de. [2001:16b8:260d:f500:11e9:78c0:f780:de03])
+        by smtp.gmail.com with ESMTPSA id u26-20020a170906951a00b00709e786c7b2sm3751900ejx.213.2022.06.13.05.14.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 13 Jun 2022 05:14:11 -0700 (PDT)
+From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        linux-mips@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Subject: [PATCH] MAINTAINERS: add include/dt-bindings/mips to MIPS
+Date:   Mon, 13 Jun 2022 14:14:08 +0200
+Message-Id: <20220613121408.8786-1-lukas.bulwahn@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-From: Randy Dunlap <rdunlap@infradead.org>
+Maintainers of the directory Documentation/devicetree/bindings/mips
+are also the maintainers of the corresponding directory
+include/dt-bindings/mips.
 
-[ Upstream commit 3928cf08334ed895a31458cbebd8d4ec6d84c080 ]
+Add the file entry for include/dt-bindings/mips to the appropriate
+section in MAINTAINERS.
 
-When the MIPS_ALCHEMY board selection is MIPS_XXS1500 instead of
-MIPS_DB1XXX, the PCMCIA driver 'db1xxx_ss' has build errors due
-to missing DB1XXX symbols. The PCMCIA driver should be restricted
-to MIPS_DB1XXX instead of MIPS_ALCHEMY to fix this build error.
-
-ERROR: modpost: "bcsr_read" [drivers/pcmcia/db1xxx_ss.ko] undefined!
-ERROR: modpost: "bcsr_mod" [drivers/pcmcia/db1xxx_ss.ko] undefined!
-
-Fixes: 42a4f17dc356 ("MIPS: Alchemy: remove SOC_AU1X00 in favor of MIPS_ALCHEMY")
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Reported-by: kernel test robot <lkp@intel.com>
-Cc: Arnd Bergmann <arnd@arndb.de>
-Cc: Daniel Vetter <daniel.vetter@ffwll.ch>
-Cc: Kees Cook <keescook@chromium.org>
-Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc: linux-mips@vger.kernel.org
-Acked-by: Manuel Lauss <manuel.lauss@gmail.com>
-Signed-off-by: Dominik Brodowski <linux@dominikbrodowski.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
 ---
- drivers/pcmcia/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Thomas, please pick this MAINTAINERS addition to your section.
 
-diff --git a/drivers/pcmcia/Kconfig b/drivers/pcmcia/Kconfig
-index ab53eab635f6..1740a63b814d 100644
---- a/drivers/pcmcia/Kconfig
-+++ b/drivers/pcmcia/Kconfig
-@@ -151,7 +151,7 @@ config TCIC
+ MAINTAINERS | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 1b30f6b69477..6bf0c0ff935f 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -13362,6 +13362,7 @@ F:	Documentation/devicetree/bindings/mips/
+ F:	Documentation/mips/
+ F:	arch/mips/
+ F:	drivers/platform/mips/
++F:	include/dt-bindings/mips/
  
- config PCMCIA_ALCHEMY_DEVBOARD
- 	tristate "Alchemy Db/Pb1xxx PCMCIA socket services"
--	depends on MIPS_ALCHEMY && PCMCIA
-+	depends on MIPS_DB1XXX && PCMCIA
- 	help
- 	  Enable this driver of you want PCMCIA support on your Alchemy
- 	  Db1000, Db/Pb1100, Db/Pb1500, Db/Pb1550, Db/Pb1200, DB1300
+ MIPS BOSTON DEVELOPMENT BOARD
+ M:	Paul Burton <paulburton@kernel.org>
 -- 
-2.35.1
-
-
+2.17.1
 

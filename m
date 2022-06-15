@@ -2,70 +2,80 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0F3F6C43334
-	for <linux-mips@archiver.kernel.org>; Wed, 15 Jun 2022 14:42:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 74D3BCCA47E
+	for <linux-mips@archiver.kernel.org>; Wed, 15 Jun 2022 15:34:18 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345695AbiFOOm1 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 15 Jun 2022 10:42:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55706 "EHLO
+        id S1347386AbiFOPeR (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 15 Jun 2022 11:34:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58804 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1348322AbiFOOmX (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 15 Jun 2022 10:42:23 -0400
-X-Greylist: delayed 1831 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 15 Jun 2022 07:42:17 PDT
-Received: from mail-m963.mail.126.com (mail-m963.mail.126.com [123.126.96.3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 0E8AD3EF2C;
-        Wed, 15 Jun 2022 07:42:16 -0700 (PDT)
+        with ESMTP id S1348988AbiFOPeP (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 15 Jun 2022 11:34:15 -0400
+Received: from mail-m965.mail.126.com (mail-m965.mail.126.com [123.126.96.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id DAA7B2251F;
+        Wed, 15 Jun 2022 08:34:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=126.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=N3/Mt
-        kLzXrLRD+UKVMKP7QbmD7HARa8p9A8cQM7O1rk=; b=KytgcgfcwQxB1VKVIWE3A
-        83u2c2boVT7iSyFC6gR81619FEAfaEReROb5zWnFLAvRlZOoLY42QhEUlLi1knP5
-        jawTuBkryMBvOHNRmhnUVaulu7mJr5pd1L3ryr3AYWyXeL1ppZcR1adj+8obogtw
-        aw4CDuDaTE4YU/6vlF4bfM=
+        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=qA/Mf
+        K70pcaP6AdlLT8hpxzBJq/0hmiFokmu1lnak5Y=; b=kdp19rkbRAjsm89x+oNg/
+        9HneJ0oosgWT6JsWkGvnpa07MAO+P331qVi9niDbbh49ppafRhliZoQ05WkMKbUq
+        HSOw230L2Vx9Q5ErHtL2nbJLzuREMN7Q9QYSZ0sFesVScuwDe2dtJqorZ5pQdcbV
+        U3Frp0AWT66w7laTINfDus=
 Received: from localhost.localdomain (unknown [124.16.139.61])
-        by smtp8 (Coremail) with SMTP id NORpCgBnO1CM6KliFz2oFg--.54359S2;
-        Wed, 15 Jun 2022 22:11:25 +0800 (CST)
+        by smtp10 (Coremail) with SMTP id NuRpCgD3+0PT+6liQETOEg--.51059S2;
+        Wed, 15 Jun 2022 23:33:41 +0800 (CST)
 From:   Liang He <windhl@126.com>
-To:     miodrag.dinic@mips.com, paulburton@kernel.org,
-        tsbogend@alpha.franken.de
+To:     john@phrozen.org, tsbogend@alpha.franken.de
 Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
         windhl@126.com
-Subject: [PATCH] arch: mips: generic: Add missing of_node_put() in board-ranchu.c
-Date:   Wed, 15 Jun 2022 22:11:23 +0800
-Message-Id: <20220615141123.3968401-1-windhl@126.com>
+Subject: [PATCH] mips: lantiq: Add missing of_node_put() in irq.c
+Date:   Wed, 15 Jun 2022 23:33:39 +0800
+Message-Id: <20220615153339.3970658-1-windhl@126.com>
 X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: NORpCgBnO1CM6KliFz2oFg--.54359S2
-X-Coremail-Antispam: 1Uf129KBjvdXoWrtF1kKw4UWFy7Ar1UZw43Wrg_yoW3XwbEga
-        n7Z3ykWr1rXr4q9ay3ua13CwnIkwn3WrZ5Jr92q3WjyrWF9F47Wan7KrnrAw4IqrsIkrW5
-        GaykJrW8ArsF9jkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7sRtRRRJUUUUU==
+X-CM-TRANSID: NuRpCgD3+0PT+6liQETOEg--.51059S2
+X-Coremail-Antispam: 1Uf129KBjvdXoWrZr1rCry8Gw45uFykCFy7GFg_yoWDGFXEg3
+        WIgr9rG3yrJ3WrJrZruw4agFs8A397WFyrA3Z2yFySy3W3A3WDtr47Jr17A3yUXF4SvFW5
+        Cr1Dur4Yvw429jkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7xRK0eHtUUUUU==
 X-Originating-IP: [124.16.139.61]
-X-CM-SenderInfo: hzlqvxbo6rjloofrz/1tbiuA0hF2JVj4CirAAAs1
+X-CM-SenderInfo: hzlqvxbo6rjloofrz/1tbi2hUhF1uwMNZANgAAsC
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-In ranchu_measure_hpt_freq(), of_find_compatible_node() will return
-a node pointer with refcount incremented. We should use of_put_node()
+In icu_of_init(), of_find_compatible_node() will return a node
+pointer with refcount incremented. We should use of_node_put()
 when it is not used anymore.
 
 Signed-off-by: Liang He <windhl@126.com>
 ---
- arch/mips/generic/board-ranchu.c | 1 +
- 1 file changed, 1 insertion(+)
+ arch/mips/lantiq/irq.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/arch/mips/generic/board-ranchu.c b/arch/mips/generic/board-ranchu.c
-index a89aaad59cb1..930c45041882 100644
---- a/arch/mips/generic/board-ranchu.c
-+++ b/arch/mips/generic/board-ranchu.c
-@@ -44,6 +44,7 @@ static __init unsigned int ranchu_measure_hpt_freq(void)
- 		      __func__);
+diff --git a/arch/mips/lantiq/irq.c b/arch/mips/lantiq/irq.c
+index b732495f138a..62f1b20a2169 100644
+--- a/arch/mips/lantiq/irq.c
++++ b/arch/mips/lantiq/irq.c
+@@ -396,6 +396,9 @@ int __init icu_of_init(struct device_node *node, struct device_node *parent)
  
- 	rtc_base = of_iomap(np, 0);
-+	of_node_put(np);
- 	if (!rtc_base)
- 		panic("%s(): Failed to ioremap Goldfish RTC base!", __func__);
+ 		ret = of_property_read_u32_array(eiu_node, "lantiq,eiu-irqs",
+ 						ltq_eiu_irq, exin_avail);
++						
++		of_node_put(eiu_node);
++						
+ 		if (ret)
+ 			panic("failed to load external irq resources");
+ 
+@@ -409,6 +412,9 @@ int __init icu_of_init(struct device_node *node, struct device_node *parent)
+ 			panic("Failed to remap eiu memory");
+ 	}
+ 
++	/* if eiu_node&of_address_to_resource */
++	of_node_put(eiu_node);
++
+ 	return 0;
+ }
  
 -- 
 2.25.1

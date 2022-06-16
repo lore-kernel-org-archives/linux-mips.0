@@ -2,70 +2,113 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 797BBC43334
-	for <linux-mips@archiver.kernel.org>; Thu, 16 Jun 2022 14:29:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 468BFC43334
+	for <linux-mips@archiver.kernel.org>; Thu, 16 Jun 2022 14:35:24 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233481AbiFPO3Y (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 16 Jun 2022 10:29:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37218 "EHLO
+        id S230393AbiFPOfX (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 16 Jun 2022 10:35:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42528 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235576AbiFPO2U (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Thu, 16 Jun 2022 10:28:20 -0400
-Received: from mail-m964.mail.126.com (mail-m964.mail.126.com [123.126.96.4])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 32D381EADA;
-        Thu, 16 Jun 2022 07:28:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=126.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=grxoG
-        P1qCd90Ip8zeEhh6lnYzFuerUuxZRaP9WItxIg=; b=g0gbRY9ijw1dbfpBnoQOX
-        zG21PzqpZW7JTRFRa4nwrHP5OULLFbTrWl8sQaiOND+Zxi8oHGB+uQve+pfgTDHu
-        6iVl4B0aG+Ex24I8oTJhaWUhaSg3bYloRrJ7bNK/Flz/AueMaAkoN2NZc4Qgzceg
-        kH52J5eSWJPMq6r2J2Qbkk=
-Received: from localhost.localdomain (unknown [124.16.139.61])
-        by smtp9 (Coremail) with SMTP id NeRpCgA3HJHtPatigpSUEw--.41066S2;
-        Thu, 16 Jun 2022 22:27:58 +0800 (CST)
-From:   Liang He <windhl@126.com>
-To:     tsbogend@alpha.franken.de
-Cc:     windhl@126.com, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] mips: mti-malta: Fix refcount leak in malta-time.c
-Date:   Thu, 16 Jun 2022 22:27:56 +0800
-Message-Id: <20220616142756.3987475-1-windhl@126.com>
-X-Mailer: git-send-email 2.25.1
+        with ESMTP id S1377678AbiFPOfX (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Thu, 16 Jun 2022 10:35:23 -0400
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com [67.231.149.25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BE321CFFC;
+        Thu, 16 Jun 2022 07:35:22 -0700 (PDT)
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+        by mx0a-001ae601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 25G4igBg030693;
+        Thu, 16 Jun 2022 09:34:45 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=from : to : cc :
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding : content-type; s=PODMain02222019;
+ bh=DN8v8qtec1v5YCZ914sIJGES0VWwSNxzupuu1YFG+cU=;
+ b=Nf/tgL1kOqplx0AcPPM50B5b7lIY2MT/pGvtOxuN4EDF+NZpXIZUxvmveHuRIz327Cu5
+ b/MpAoUi3hR2D2X9Qsjf1zt2gu5m7+8pME+7gfCJwlhzczVtGDgr61lhEwj81B23/w28
+ Mpfsjq+z8ETVaiusDSmIKEDCsk8095kCp6S/edXF7qu0M4KeeytZA+ixSPrPYPbrqdX/
+ RQbjZuIxolL8rfi6+M+O7Iv2JreSEYhR5TyzpJqRptriL6xsE3COLTZ+2F2pZ7iRjeuc
+ 4YqzPf71/WF+lq0W7bbE6dPlo8ALEcO/2vwwrw9kXDm/w15YnBV4ZcL0yzcRtE0bBpB/ dA== 
+Received: from ediex02.ad.cirrus.com ([84.19.233.68])
+        by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3gmrf35vuw-11
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Thu, 16 Jun 2022 09:34:45 -0500
+Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.28; Thu, 16 Jun
+ 2022 15:34:34 +0100
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.1.2375.28 via Frontend
+ Transport; Thu, 16 Jun 2022 15:34:34 +0100
+Received: from algalon.ad.cirrus.com (algalon.ad.cirrus.com [198.90.251.122])
+        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 246C911D4;
+        Thu, 16 Jun 2022 14:34:34 +0000 (UTC)
+From:   Charles Keepax <ckeepax@opensource.cirrus.com>
+To:     <broonie@kernel.org>
+CC:     <lgirdwood@gmail.com>, <kuninori.morimoto.gx@renesas.com>,
+        <mripard@kernel.org>, <airlied@linux.ie>, <daniel@ffwll.ch>,
+        <vkoul@kernel.org>, <nicolas.ferre@microchip.com>,
+        <nsaenz@kernel.org>, <shawnguo@kernel.org>, <linux-imx@nxp.com>,
+        <cezary.rojewski@intel.com>,
+        <pierre-louis.bossart@linux.intel.com>,
+        <linux-mips@vger.kernel.org>, <linux-amlogic@lists.infradead.org>,
+        <daniel@zonque.org>, <srinivas.kandagatla@linaro.org>,
+        <linux-rockchip@lists.infradead.org>, <krzk@kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-sunxi@lists.linux.dev>, <linux-tegra@vger.kernel.org>,
+        <linux-omap@vger.kernel.org>, <linux-xtensa@linux-xtensa.org>,
+        <peter.ujfalusi@gmail.com>, <jarkko.nikula@bitmer.com>,
+        <heiko@sntech.de>, <jbrunet@baylibre.com>, <kernel@pengutronix.de>,
+        <alsa-devel@alsa-project.org>, <patches@opensource.cirrus.com>,
+        <dri-devel@lists.freedesktop.org>,
+        <linux-rpi-kernel@lists.infradead.org>
+Subject: [PATCH 53/96] ASoC: msm*: Remove now redundant non_legacy_dai_naming flag
+Date:   Thu, 16 Jun 2022 15:33:46 +0100
+Message-ID: <20220616143429.1324494-54-ckeepax@opensource.cirrus.com>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20220616143429.1324494-1-ckeepax@opensource.cirrus.com>
+References: <20220616143429.1324494-1-ckeepax@opensource.cirrus.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: NeRpCgA3HJHtPatigpSUEw--.41066S2
-X-Coremail-Antispam: 1Uf129KBjvdXoW7XF1UKr1DJw1rWw48Wr48WFg_yoW3XrX_Gr
-        nIy3WDtrWFq3WfZr9rur4fKF9rXw43Wrn7ZF9rtF17Kw1jvw4YgrWDJwnrGr17u3y5trWf
-        C395ZF4xKFW3GjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IUUasj5UUUUU==
-X-Originating-IP: [124.16.139.61]
-X-CM-SenderInfo: hzlqvxbo6rjloofrz/1tbi3A4iF1pEDu7zEwAAs5
+Content-Type: text/plain
+X-Proofpoint-GUID: fnW09lalbGeDbLapYuDuEImMovdEbBLN
+X-Proofpoint-ORIG-GUID: fnW09lalbGeDbLapYuDuEImMovdEbBLN
+X-Proofpoint-Spam-Reason: safe
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-In update_gic_frequency_dt(), of_find_compatible_node() will return
-a node pointer with refcount incremented. We should use of_node_put()
-when it is not used anymore.
+The ASoC core has now been changed to default to the non-legacy DAI
+naming, as such drivers using the new scheme no longer need to specify
+the non_legacy_dai_naming flag.
 
-Signed-off-by: Liang He <windhl@126.com>
+Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 ---
- arch/mips/mti-malta/malta-time.c | 2 ++
- 1 file changed, 2 insertions(+)
+ sound/soc/codecs/msm8916-wcd-analog.c  | 1 -
+ sound/soc/codecs/msm8916-wcd-digital.c | 1 -
+ 2 files changed, 2 deletions(-)
 
-diff --git a/arch/mips/mti-malta/malta-time.c b/arch/mips/mti-malta/malta-time.c
-index bbf1e38e1431..2cb708cdf01a 100644
---- a/arch/mips/mti-malta/malta-time.c
-+++ b/arch/mips/mti-malta/malta-time.c
-@@ -214,6 +214,8 @@ static void update_gic_frequency_dt(void)
+diff --git a/sound/soc/codecs/msm8916-wcd-analog.c b/sound/soc/codecs/msm8916-wcd-analog.c
+index e52a559c52d68..78e543eb3c834 100644
+--- a/sound/soc/codecs/msm8916-wcd-analog.c
++++ b/sound/soc/codecs/msm8916-wcd-analog.c
+@@ -1128,7 +1128,6 @@ static const struct snd_soc_component_driver pm8916_wcd_analog = {
+ 	.idle_bias_on		= 1,
+ 	.use_pmdown_time	= 1,
+ 	.endianness		= 1,
+-	.non_legacy_dai_naming	= 1,
+ };
  
- 	if (of_update_property(node, &gic_frequency_prop) < 0)
- 		pr_err("error updating gic frequency property\n");
-+
-+	of_node_put(node);
- }
+ static int pm8916_wcd_analog_parse_dt(struct device *dev,
+diff --git a/sound/soc/codecs/msm8916-wcd-digital.c b/sound/soc/codecs/msm8916-wcd-digital.c
+index 098a58990f07d..d490a0f186752 100644
+--- a/sound/soc/codecs/msm8916-wcd-digital.c
++++ b/sound/soc/codecs/msm8916-wcd-digital.c
+@@ -1155,7 +1155,6 @@ static const struct snd_soc_component_driver msm8916_wcd_digital = {
+ 	.idle_bias_on		= 1,
+ 	.use_pmdown_time	= 1,
+ 	.endianness		= 1,
+-	.non_legacy_dai_naming	= 1,
+ };
  
- #endif
+ static const struct regmap_config msm8916_codec_regmap_config = {
 -- 
-2.25.1
+2.30.2
 

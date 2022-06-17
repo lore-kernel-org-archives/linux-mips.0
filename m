@@ -2,146 +2,150 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 22F38C43334
-	for <linux-mips@archiver.kernel.org>; Fri, 17 Jun 2022 17:23:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E33D1C43334
+	for <linux-mips@archiver.kernel.org>; Fri, 17 Jun 2022 17:41:59 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1383010AbiFQRXg (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 17 Jun 2022 13:23:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59674 "EHLO
+        id S1382728AbiFQRl7 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 17 Jun 2022 13:41:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49570 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1382906AbiFQRXe (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Fri, 17 Jun 2022 13:23:34 -0400
-Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADBB918383;
-        Fri, 17 Jun 2022 10:23:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1655486613; x=1687022613;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=5r0rapPYszeZBBEbJ/ZlpHIsTYM/ozOqcBVhPIANdrM=;
-  b=eO+bj2hEeWAUudtg5CU9yl9fxz0asyamHWOeYHJ1EqkZMBoywm3DB07O
-   aGX083DvfOXZPN2ZXOmJI1ZgcaGukg1qroBnoGQ44xP2o8WFM+BeCkroY
-   rh4bWzzWk+OKKYO7SlwsYvamyMbMbntL3o0TRfPYlxn71wfwPsUjPs997
-   VpHzLjF8EJp3GU56yeCLC9Cd98FD81sLzoTPTPSA04zuJncDwl5qnKvvp
-   dDxBqAAkjRdtKVR1jj6BBg4lxGKmo83PxNNP67U5qSyrpa7eiLOlP28Ua
-   zGd05SBQxpAtIZDuL2dJMWgkX3KRRT8yqKE2dqZYhJkiV9k/NWy6nmCbr
-   g==;
-X-IronPort-AV: E=McAfee;i="6400,9594,10380"; a="259358208"
-X-IronPort-AV: E=Sophos;i="5.92,306,1650956400"; 
-   d="scan'208";a="259358208"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Jun 2022 10:06:56 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.92,306,1650956400"; 
-   d="scan'208";a="560563793"
-Received: from lkp-server01.sh.intel.com (HELO 60dabacc1df6) ([10.239.97.150])
-  by orsmga006.jf.intel.com with ESMTP; 17 Jun 2022 10:06:50 -0700
-Received: from kbuild by 60dabacc1df6 with local (Exim 4.95)
-        (envelope-from <lkp@intel.com>)
-        id 1o2FQn-000Pcp-M0;
-        Fri, 17 Jun 2022 17:06:49 +0000
-Date:   Sat, 18 Jun 2022 01:06:42 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Mike Kravetz <mike.kravetz@oracle.com>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-arm-kernel@lists.infradead.org, linux-s390@vger.kernel.org,
-        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
-        linux-ia64@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Cc:     kbuild-all@lists.01.org, Muchun Song <songmuchun@bytedance.com>,
-        Baolin Wang <baolin.wang@linux.alibaba.com>,
-        Michal Hocko <mhocko@suse.com>, Peter Xu <peterx@redhat.com>,
-        Naoya Horiguchi <naoya.horiguchi@linux.dev>,
-        James Houghton <jthoughton@google.com>,
-        Mina Almasry <almasrymina@google.com>,
-        "Aneesh Kumar K . V" <aneesh.kumar@linux.vnet.ibm.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
+        with ESMTP id S232124AbiFQRl6 (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Fri, 17 Jun 2022 13:41:58 -0400
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 866663F8B6
+        for <linux-mips@vger.kernel.org>; Fri, 17 Jun 2022 10:41:57 -0700 (PDT)
+Received: by mail-pl1-x631.google.com with SMTP id k7so4456626plg.7
+        for <linux-mips@vger.kernel.org>; Fri, 17 Jun 2022 10:41:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=/I2MpXcjw3AyYEvY6nT3sj6eeTPFPpb8SnX52+vnNhI=;
+        b=SrVIGN592I55tVcbNN6o+NeIvQUZsEvz/Cd/zBTooQP5MUHDNsHnEIe/HEIvL02MeS
+         +Vyb3GJ6hErVeRvGS4HKJZ8esknwX53f3/JYrKgK6qbHVwKjP6g5DTzaSfNSoSuWQSUE
+         0OpWVK9BS9qSSbcucEV6DeKwOo8YJIoV+RGeD2gyNROhhDqiT5D4ALRgYjWzdtBz4f1z
+         KKgXsB4qjmX8Ii5d4QgiGZj9HhJ2UScgx+TKViXz+8p4mWC2jvzXsTcDbiDYFKdUxp2Y
+         T0ok5qmZxXkaKD6iNmhtGJtvy5CJM+LV5fEouuWd7p08FI5WsuMwnP7LbyGa5BVLe0Zk
+         V/1A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=/I2MpXcjw3AyYEvY6nT3sj6eeTPFPpb8SnX52+vnNhI=;
+        b=kr4q4rzW/RckH4GM/IkSSFIS5OiDjWkh09gO2owguppFHct5sEr7h8VDAlCY3K9L5W
+         l9/ihUbEti7hKs0vPANYH1vKhJgUhCG26rfVFsShuwv4jFffAhlcn2yZ2tJpkql9bPG0
+         Khssfg1Fk5e/11sXWqiKOuA4QVTkvB/qea6IUAbT+jPRXiXOwd4pqWHnFOXG5GKgDxCL
+         rWb2zKB2kM8UehPXa8kxwQqbCUQBWqB6bIBVLrcMGtnbD/Zw87pNKjuo0EGLPMxvP1nG
+         xfMT0k9ew7HOcc71/FCkyKwB6pwEmNzTyoSwUiOuBBV8JtHvLFmyHYmTsTn1X6zHmrHU
+         EYZQ==
+X-Gm-Message-State: AJIora9u7PDzr3VoY+63S5u1b5y6hHzcJ+WGkSYSYq3XiYX6IVkTSphh
+        al4m7eT+ygTlUOiYYjLKefC7mw==
+X-Google-Smtp-Source: AGRyM1t9uTrYoSS1GO4s/tyedBnGd6ejt1GvCWW+u/gAjLzqhH4WzpxK/5q7wKeu3TQmWYILwdJAhA==
+X-Received: by 2002:a17:903:1105:b0:168:9cac:a0a5 with SMTP id n5-20020a170903110500b001689caca0a5mr10965048plh.59.1655487716808;
+        Fri, 17 Jun 2022 10:41:56 -0700 (PDT)
+Received: from google.com (123.65.230.35.bc.googleusercontent.com. [35.230.65.123])
+        by smtp.gmail.com with ESMTPSA id jj21-20020a170903049500b001616e19537esm3817546plb.213.2022.06.17.10.41.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 17 Jun 2022 10:41:56 -0700 (PDT)
+Date:   Fri, 17 Jun 2022 17:41:52 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     David Matlack <dmatlack@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
+        Anup Patel <anup@brainfault.org>,
         Paul Walmsley <paul.walmsley@sifive.com>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        catalin.marinas@arm.com, will@kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>
-Subject: Re: [PATCH 1/4] hugetlb: skip to end of PT page mapping when pte not
- present
-Message-ID: <202206180021.rcc4B1by-lkp@intel.com>
-References: <20220616210518.125287-2-mike.kravetz@oracle.com>
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Andrew Jones <drjones@redhat.com>,
+        Ben Gardon <bgardon@google.com>, Peter Xu <peterx@redhat.com>,
+        maciej.szmigiero@oracle.com,
+        "moderated list:KERNEL VIRTUAL MACHINE FOR ARM64 (KVM/arm64)" 
+        <kvmarm@lists.cs.columbia.edu>,
+        "open list:KERNEL VIRTUAL MACHINE FOR MIPS (KVM/mips)" 
+        <linux-mips@vger.kernel.org>,
+        "open list:KERNEL VIRTUAL MACHINE FOR MIPS (KVM/mips)" 
+        <kvm@vger.kernel.org>,
+        "open list:KERNEL VIRTUAL MACHINE FOR RISC-V (KVM/riscv)" 
+        <kvm-riscv@lists.infradead.org>, Peter Feiner <pfeiner@google.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>
+Subject: Re: [PATCH v6 21/22] KVM: Allow for different capacities in
+ kvm_mmu_memory_cache structs
+Message-ID: <Yqy84GkGAdE1BzI6@google.com>
+References: <20220516232138.1783324-1-dmatlack@google.com>
+ <20220516232138.1783324-22-dmatlack@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220616210518.125287-2-mike.kravetz@oracle.com>
+In-Reply-To: <20220516232138.1783324-22-dmatlack@google.com>
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Hi Mike,
+On Mon, May 16, 2022, David Matlack wrote:
+> -int kvm_mmu_topup_memory_cache(struct kvm_mmu_memory_cache *mc, int min)
+> +static int __kvm_mmu_topup_memory_cache(struct kvm_mmu_memory_cache *mc, int capacity, int min)
 
-I love your patch! Yet something to improve:
+I still find it somewhat kludgy to have callers provide an capacity.  It's not
+terrible while there's only a single call site, but if a use case comes along
+for using an oversized cache with multiple call sites, it'll be gross.
 
-[auto build test ERROR on soc/for-next]
-[also build test ERROR on linus/master v5.19-rc2 next-20220617]
-[cannot apply to arm64/for-next/core arm/for-next kvmarm/next xilinx-xlnx/master]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch]
+Tweaking my idea of a "custom" wrapper, what about adding an "oversized" wrapper?
+That yields clear, firm rules on when to use each helper, guards against calling
+the "standard" flavor with an impossible @min, and addresses Mingwei's concern
+that a misguided user could specify a nonsensically small capacity.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Mike-Kravetz/hugetlb-speed-up-linear-address-scanning/20220617-050726
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/soc/soc.git for-next
-config: i386-debian-10.3 (https://download.01.org/0day-ci/archive/20220618/202206180021.rcc4B1by-lkp@intel.com/config)
-compiler: gcc-11 (Debian 11.3.0-3) 11.3.0
-reproduce (this is a W=1 build):
-        # https://github.com/intel-lab-lkp/linux/commit/4c647687607f10fece04967b8180c0dadaf765e6
-        git remote add linux-review https://github.com/intel-lab-lkp/linux
-        git fetch --no-tags linux-review Mike-Kravetz/hugetlb-speed-up-linear-address-scanning/20220617-050726
-        git checkout 4c647687607f10fece04967b8180c0dadaf765e6
-        # save the config file
-        mkdir build_dir && cp config build_dir/.config
-        make W=1 O=build_dir ARCH=i386 SHELL=/bin/bash
+The only quirk is that kvm_mmu_topup_memory_cache_oversized() has a fixed min,
+but IMO that's an acceptable tradeoff, and it's a non-issue until another user
+pops up.
 
-If you fix the issue, kindly add following tag where applicable
-Reported-by: kernel test robot <lkp@intel.com>
+static int __kvm_mmu_topup_memory_cache(struct kvm_mmu_memory_cache *mc,
+					int capacity, int min)
+{
+	gfp_t gfp = GFP_KERNEL_ACCOUNT;
+	void *obj;
 
-All errors (new ones prefixed by >>):
+	if (mc->nobjs >= min)
+		return 0;
 
-   mm/hugetlb.c: In function 'hugetlb_mask_last_page':
->> mm/hugetlb.c:6901:9: error: duplicate case value
-    6901 |         case PUD_SIZE:
-         |         ^~~~
-   mm/hugetlb.c:6899:9: note: previously used here
-    6899 |         case P4D_SIZE:
-         |         ^~~~
+	if (unlikely(!mc->objects)) {
+		capacity = max(min, KVM_ARCH_NR_OBJS_PER_MEMORY_CACHE);
 
+		mc->objects = kvmalloc_array(sizeof(void *), capacity, gfp);
+		if (!mc->objects)
+			return -ENOMEM;
 
-vim +6901 mm/hugetlb.c
+		mc->capacity = capacity;
+	}
 
-  6886	
-  6887	/*
-  6888	 * Return a mask that can be used to update an address to the last huge
-  6889	 * page in a page table page mapping size.  Used to skip non-present
-  6890	 * page table entries when linearly scanning address ranges.  Architectures
-  6891	 * with unique huge page to page table relationships can define their own
-  6892	 * version of this routine.
-  6893	 */
-  6894	unsigned long hugetlb_mask_last_page(struct hstate *h)
-  6895	{
-  6896		unsigned long hp_size = huge_page_size(h);
-  6897	
-  6898		switch (hp_size) {
-  6899		case P4D_SIZE:
-  6900			return PGDIR_SIZE - P4D_SIZE;
-> 6901		case PUD_SIZE:
-  6902			return P4D_SIZE - PUD_SIZE;
-  6903		case PMD_SIZE:
-  6904			return PUD_SIZE - PMD_SIZE;
-  6905		default:
-  6906			break; /* Should never happen */
-  6907		}
-  6908	
-  6909		return ~(0UL);
-  6910	}
-  6911	
+	/* It is illegal to request a different capacity across topups. */
+	if (WARN_ON_ONCE(mc->capacity != capacity))
+		return -EIO;
 
--- 
-0-DAY CI Kernel Test Service
-https://01.org/lkp
+	while (mc->nobjs < mc->capacity) {
+		obj = mmu_memory_cache_alloc_obj(mc, gfp);
+		if (!obj)
+			return mc->nobjs >= min ? 0 : -ENOMEM;
+		mc->objects[mc->nobjs++] = obj;
+	}
+	return 0;
+}
+
+int kvm_mmu_topup_memory_cache(struct kvm_mmu_memory_cache *mc, int min)
+{
+	const int capacity = KVM_ARCH_NR_OBJS_PER_MEMORY_CACHE;
+
+	if (WARN_ON_ONCE(min > capacity))
+		min = capacity;
+
+	return __kvm_mmu_topup_memory_cache(mc, capacity, min);
+}
+
+/* Oversized caches have a fixed size, i.e. min == capacity == size. */
+int kvm_mmu_topup_memory_cache_oversized(struct kvm_mmu_memory_cache *mc, int size)
+{
+	if (WARN_ON_ONCE(size < KVM_ARCH_NR_OBJS_PER_MEMORY_CACHE)
+		size = KVM_ARCH_NR_OBJS_PER_MEMORY_CACHE;
+
+	return __kvm_mmu_topup_memory_cache(mc, size, size);
+}

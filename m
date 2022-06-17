@@ -2,52 +2,52 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E3DEFC433EF
-	for <linux-mips@archiver.kernel.org>; Fri, 17 Jun 2022 17:01:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7147CC433EF
+	for <linux-mips@archiver.kernel.org>; Fri, 17 Jun 2022 17:11:34 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235898AbiFQRBh (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 17 Jun 2022 13:01:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42952 "EHLO
+        id S1382627AbiFQRLd (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 17 Jun 2022 13:11:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49886 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231609AbiFQRBf (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Fri, 17 Jun 2022 13:01:35 -0400
-Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CA0C3054F
-        for <linux-mips@vger.kernel.org>; Fri, 17 Jun 2022 10:01:35 -0700 (PDT)
-Received: by mail-pg1-x534.google.com with SMTP id 31so4514603pgv.11
-        for <linux-mips@vger.kernel.org>; Fri, 17 Jun 2022 10:01:35 -0700 (PDT)
+        with ESMTP id S231674AbiFQRLc (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Fri, 17 Jun 2022 13:11:32 -0400
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79D8E3A73E
+        for <linux-mips@vger.kernel.org>; Fri, 17 Jun 2022 10:11:31 -0700 (PDT)
+Received: by mail-pl1-x629.google.com with SMTP id a17so2421097pls.6
+        for <linux-mips@vger.kernel.org>; Fri, 17 Jun 2022 10:11:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=SRO7S+VtYQQ7CuT0HxqPXVXaFoJKc9kcpBIC9Ny2GXE=;
-        b=H/yPj2x7BlxCCt81iCpTE5EkFP3Dty/VK1bZV1z25KE/LjGyN7SXeTJT2hDinGXVsP
-         yKnWD+bSnMg17PHjkfrn+c3NqZSIABspHotC46x9KpdL1XIujrP880h5/dYfIzpJqffP
-         r/IGHr8StQdM9Pv4HgEjUqpIBy/hAmMbDAuwsEalh68jgIXoLI4hMSbBS9C8QKV77NWi
-         1wOP8X1/Imj52YER3j06T7ncEH788Qvydm5p/zpwISDRL1jsOMw1jIGPJnqg/bFRCKJz
-         J43GPBCSUETfo7/1PtSdE4Pi9GCX0J2+XuZVUwLzY3a44bo+0aQMg7lgiSVpVcOKhTf5
-         hOyg==
+        bh=bdDDbsy5CGOO7wZD0IM4Eh6cCyQ0ONF/h8Wgyy1Nd18=;
+        b=QKAV7BGSNsPE9wA9Sqlq00olPyQu9PB6qK5tl1Rxnvu9fCuQ47fv7tZIRz9aybGRrv
+         3UrV5mRaMilV9R4lDQuOmyt+MPr9yWyqZpS64RJ3BfkNuoC3cwCM2QwDj1IanZEjLIHz
+         Fx/1KYX6+54ItOS2pBQcoF5+u1VFY7BL2bXTctivpXivDvWG3z4lR6r1ekopPf3Nj9GD
+         JHgW/PpUbR50V8UtSyZ7a6wsZBHXawSsbaSERvSJc9ccG9WlaemjVf5pcnvjBndz49Cm
+         dkSbH7nm5Mt86N20zqdhkw7OEFLOG9oMRPEcwR1uPz0/LHFlQj+EXTzTlNeOqnYalR45
+         lR/w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=SRO7S+VtYQQ7CuT0HxqPXVXaFoJKc9kcpBIC9Ny2GXE=;
-        b=M7QoHx4E2daX3v+fd84bWz86YHwh8OTVVq1VwwK9Ehf/a3xk5MpUeBeMs8r31Q7c2s
-         Ch5SBk96cfFDe435oU98L804QyNNs1L+O0glfrkr1FS+YpPV6yPGHgc97aaOyXrnLuXe
-         RXkb6kYFV2mCiIpdOgPUhXphf9ekgV01lunPtVQDXIr/zyGL0NVSfvS0ZVbCIfQ+7Sl9
-         f3K+xlrXO3EK3daiY5i7akdVQjJw4Gxmz72LFWMSfO3FeglRkrCalTpptKkItCHc6ZIG
-         cCbKB6DYDxDK38naNQxUKzx8VuouN0XS+z2sm8JkTLGAqmvSj6XL6dERAf96/MBQPCf4
-         TTmA==
-X-Gm-Message-State: AJIora/W8QUsmOyvey5cSi9LZtyQ478c5T2uGzk2qiEskNYIqGkb6n96
-        I2bi00WoXM2kFTlIX+AsMk4afA==
-X-Google-Smtp-Source: AGRyM1sFPXEURTOwpo2fql5+Md+sSZz0Ko9Lq4pBbmT0ckr/KaLsXrnXfTdc/59+n072/62ew2vEbw==
-X-Received: by 2002:a63:5a13:0:b0:3c6:3d28:87e5 with SMTP id o19-20020a635a13000000b003c63d2887e5mr10117659pgb.452.1655485294325;
-        Fri, 17 Jun 2022 10:01:34 -0700 (PDT)
+        bh=bdDDbsy5CGOO7wZD0IM4Eh6cCyQ0ONF/h8Wgyy1Nd18=;
+        b=02Tgg4J+Y4EiADnP0dziSsFCApS7GIoXPz97ehz8ymbo9UCEfczA/F9Vu4ZUoESBsY
+         r3gCaRuLsaQ44euk33AM8Yrs/huFoqCvREbGzuDPyBpQGWXbCt4cidIMqcy8wFn4/N/S
+         MdxrWO0CDbUUeIG/FyWQEoOr9VHjMC2CQoTX22WTDhr0XPX4tZ9o9PmyDoXdc78Zn5qc
+         zYGbtlkKTURVSvZoi+sDswWFTZU04tHR+OkZHruQLjmewb6MIMuoCoGVQxb41Bp6Bznr
+         kwuZ5MViNh8v6OxP2fRC99SMvcU5hoJHanEeYmIwOcMGUr8lSuI8x1W83HQW0Fu65Sze
+         WKew==
+X-Gm-Message-State: AJIora+t+M6YlYmlLILEysyRw+fnm4VgP25gaKKjOB0B5jZmrPfKsXdZ
+        GtRjsSam2cbQ2Jm+XGO/Xdx5Jg==
+X-Google-Smtp-Source: AGRyM1uXzqylJ7t0A4w2Rtgnm+iUT1OEcJxDjLWt6XST+qWVe58pzA+XrFJ2UZHi/ZCRvGo6mmHtTw==
+X-Received: by 2002:a17:90b:4b90:b0:1e8:48bd:453 with SMTP id lr16-20020a17090b4b9000b001e848bd0453mr22483076pjb.86.1655485890790;
+        Fri, 17 Jun 2022 10:11:30 -0700 (PDT)
 Received: from google.com (123.65.230.35.bc.googleusercontent.com. [35.230.65.123])
-        by smtp.gmail.com with ESMTPSA id a29-20020aa7971d000000b0051bc1865ca5sm4007529pfg.122.2022.06.17.10.01.33
+        by smtp.gmail.com with ESMTPSA id m2-20020a17090a858200b001ec7c8919f0sm1087504pjn.23.2022.06.17.10.11.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 17 Jun 2022 10:01:33 -0700 (PDT)
-Date:   Fri, 17 Jun 2022 17:01:30 +0000
+        Fri, 17 Jun 2022 10:11:30 -0700 (PDT)
+Date:   Fri, 17 Jun 2022 17:11:27 +0000
 From:   Sean Christopherson <seanjc@google.com>
 To:     David Matlack <dmatlack@google.com>
 Cc:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
@@ -69,94 +69,66 @@ Cc:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
         "open list:KERNEL VIRTUAL MACHINE FOR RISC-V (KVM/riscv)" 
         <kvm-riscv@lists.infradead.org>, Peter Feiner <pfeiner@google.com>,
         Lai Jiangshan <jiangshanlai@gmail.com>
-Subject: Re: [PATCH v6 19/22] KVM: x86/mmu: Zap collapsible SPTEs in shadow
- MMU at all possible levels
-Message-ID: <Yqyzavjp9eS9p4+m@google.com>
+Subject: Re: [PATCH v6 20/22] KVM: x86/mmu: Refactor drop_large_spte()
+Message-ID: <Yqy1v59ZDJ7EkCix@google.com>
 References: <20220516232138.1783324-1-dmatlack@google.com>
- <20220516232138.1783324-20-dmatlack@google.com>
+ <20220516232138.1783324-21-dmatlack@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220516232138.1783324-20-dmatlack@google.com>
+In-Reply-To: <20220516232138.1783324-21-dmatlack@google.com>
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
 On Mon, May 16, 2022, David Matlack wrote:
-> Currently KVM only zaps collapsible 4KiB SPTEs in the shadow MMU. This
-> is fine for now since KVM never creates intermediate huge pages during
-> dirty logging. In other words, KVM always replaces 1GiB pages directly
-> with 4KiB pages, so there is no reason to look for collapsible 2MiB
-> pages.
-> 
-> However, this will stop being true once the shadow MMU participates in
-> eager page splitting. During eager page splitting, each 1GiB is first
-> split into 2MiB pages and then those are split into 4KiB pages. The
-> intermediate 2MiB pages may be left behind if an error condition causes
-> eager page splitting to bail early.
-> 
-> No functional change intended.
-> 
-> Reviewed-by: Peter Xu <peterx@redhat.com>
-> Signed-off-by: David Matlack <dmatlack@google.com>
-> ---
->  arch/x86/kvm/mmu/mmu.c | 21 ++++++++++++++-------
->  1 file changed, 14 insertions(+), 7 deletions(-)
-> 
-> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-> index f83de72feeac..a5d96d452f42 100644
-> --- a/arch/x86/kvm/mmu/mmu.c
-> +++ b/arch/x86/kvm/mmu/mmu.c
-> @@ -6177,18 +6177,25 @@ static bool kvm_mmu_zap_collapsible_spte(struct kvm *kvm,
->  	return need_tlb_flush;
+>  static void drop_large_spte(struct kvm_vcpu *vcpu, u64 *sptep)
+>  {
+> -	if (__drop_large_spte(vcpu->kvm, sptep)) {
+> -		struct kvm_mmu_page *sp = sptep_to_sp(sptep);
+> -
+> -		kvm_flush_remote_tlbs_with_address(vcpu->kvm, sp->gfn,
+> -			KVM_PAGES_PER_HPAGE(sp->role.level));
+> -	}
+> +	return __drop_large_spte(vcpu->kvm, sptep, true);
+
+A "return" for a void function is unnecessary.  And since the shortlog is already
+a somewhat vague "do a refactor", I vote to opportunistically:
+
+  - rename drop_large_spte() to drop_spte_if_huge()
+  - rename __drop_large_spte() to drop_huge_spte()
+  - move "if (!is_large_pte(*sptep))" to drop_spte_if_huge() since the split path
+    should never pass in a non-huge SPTE.
+
+That last point will also clean up an oddity with with "flush" parameter; given
+the command-like name of "flush", it's a bit weird that __drop_large_spte() doesn't
+flush when the SPTE is large.
+
+
+static void drop_huge_spte(struct kvm *kvm, u64 *sptep, bool flush)
+{
+	struct kvm_mmu_page *sp;
+
+	sp = sptep_to_sp(sptep);
+	WARN_ON(sp->role.level == PG_LEVEL_4K);
+
+	drop_spte(kvm, sptep);
+
+	if (flush)
+		kvm_flush_remote_tlbs_with_address(kvm, sp->gfn,
+			KVM_PAGES_PER_HPAGE(sp->role.level));
+}
+
+static void drop_spte_if_huge(struct kvm_vcpu *vcpu, u64 *sptep)
+{
+	if (is_large_pte(*sptep))
+		drop_huge_spte(vcpu->kvm, sptep, true);
+}
+
+
 >  }
 >  
-> +static void kvm_rmap_zap_collapsible_sptes(struct kvm *kvm,
-> +					   const struct kvm_memory_slot *slot)
-> +{
-> +	/*
-> +	 * Note, use KVM_MAX_HUGEPAGE_LEVEL - 1 since there's no need to zap
-> +	 * pages that are already mapped at the maximum possible level.
-> +	 */
-> +	if (slot_handle_level(kvm, slot, kvm_mmu_zap_collapsible_spte,
-> +			      PG_LEVEL_4K, KVM_MAX_HUGEPAGE_LEVEL - 1,
-> +			      true))
-
-No need to wrap, "true" fits easily on the previous line.  That said, I don't see
-any point in adding a helper.  It's highly unlike there will be another caller,
-and IMO it's not any more readable since I have to go look at another function
-when reading kvm_mmu_zap_collapsible_sptes().
-
-With some gentle massaging, the comment can squeeze onto two lines even with the
-extra level of indentation.
-
-		/*
-	 	 * Note, use KVM_MAX_HUGEPAGE_LEVEL - 1, there's no need to zap
-		 * pages that are already mapped at the maximum hugepage level.
-		 */
-		if (slot_handle_level(kvm, slot, kvm_mmu_zap_collapsible_spte,
-				      PG_LEVEL_4K, KVM_MAX_HUGEPAGE_LEVEL - 1, true)
-			kvm_arch_flush_remote_tlbs_memslot(kvm, slot);
-
-> +		kvm_arch_flush_remote_tlbs_memslot(kvm, slot);
-> +}
-> +
->  void kvm_mmu_zap_collapsible_sptes(struct kvm *kvm,
->  				   const struct kvm_memory_slot *slot)
->  {
->  	if (kvm_memslots_have_rmaps(kvm)) {
->  		write_lock(&kvm->mmu_lock);
-> -		/*
-> -		 * Zap only 4k SPTEs since the legacy MMU only supports dirty
-> -		 * logging at a 4k granularity and never creates collapsible
-> -		 * 2m SPTEs during dirty logging.
-> -		 */
-> -		if (slot_handle_level_4k(kvm, slot, kvm_mmu_zap_collapsible_spte, true))
-> -			kvm_arch_flush_remote_tlbs_memslot(kvm, slot);
-> +		kvm_rmap_zap_collapsible_sptes(kvm, slot);
->  		write_unlock(&kvm->mmu_lock);
->  	}
->  
+>  /*
 > -- 
 > 2.36.0.550.gb090851708-goog
 > 

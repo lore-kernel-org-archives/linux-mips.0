@@ -2,80 +2,69 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 72C71CCA473
-	for <linux-mips@archiver.kernel.org>; Tue, 21 Jun 2022 15:22:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0B0BFC43334
+	for <linux-mips@archiver.kernel.org>; Tue, 21 Jun 2022 15:22:26 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352748AbiFUPWL (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 21 Jun 2022 11:22:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59858 "EHLO
+        id S1352740AbiFUPWY (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 21 Jun 2022 11:22:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59946 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352750AbiFUPWK (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Tue, 21 Jun 2022 11:22:10 -0400
+        with ESMTP id S1352789AbiFUPWS (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Tue, 21 Jun 2022 11:22:18 -0400
 Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A57802873E;
-        Tue, 21 Jun 2022 08:22:09 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 63E822936D;
+        Tue, 21 Jun 2022 08:22:15 -0700 (PDT)
 Received: from uucp (helo=alpha)
         by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1o3fh4-0001zL-07; Tue, 21 Jun 2022 17:21:30 +0200
+        id 1o3fh4-0001zL-04; Tue, 21 Jun 2022 17:21:30 +0200
 Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 81272C01AA; Tue, 21 Jun 2022 17:21:19 +0200 (CEST)
-Date:   Tue, 21 Jun 2022 17:21:19 +0200
+        id 30F0AC01AA; Tue, 21 Jun 2022 17:15:48 +0200 (CEST)
+Date:   Tue, 21 Jun 2022 17:15:48 +0200
 From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 To:     Liang He <windhl@126.com>
-Cc:     john@phrozen.org, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mips: lantiq: Add missing of_node_put() in irq.c
-Message-ID: <20220621152119.GB12322@alpha.franken.de>
-References: <20220615153339.3970658-1-windhl@126.com>
+Cc:     john@phrozen.org, xkernel.wang@foxmail.com,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mips: lantiq: xway: Fix refcount leak bug in sysctrl
+Message-ID: <20220621151548.GE12206@alpha.franken.de>
+References: <20220617122505.4048126-1-windhl@126.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220615153339.3970658-1-windhl@126.com>
+In-Reply-To: <20220617122505.4048126-1-windhl@126.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Wed, Jun 15, 2022 at 11:33:39PM +0800, Liang He wrote:
-> In icu_of_init(), of_find_compatible_node() will return a node
-> pointer with refcount incremented. We should use of_node_put()
-> when it is not used anymore.
+On Fri, Jun 17, 2022 at 08:25:05PM +0800, Liang He wrote:
+> In ltq_soc_init(), of_find_compatible_node() will return a node
+> pointer with refcount incremented. We should use of_node_put() when
+> it is not used anymore.
 > 
 > Signed-off-by: Liang He <windhl@126.com>
 > ---
->  arch/mips/lantiq/irq.c | 6 ++++++
->  1 file changed, 6 insertions(+)
+>  arch/mips/lantiq/xway/sysctrl.c | 4 ++++
+>  1 file changed, 4 insertions(+)
 > 
-> diff --git a/arch/mips/lantiq/irq.c b/arch/mips/lantiq/irq.c
-> index b732495f138a..62f1b20a2169 100644
-> --- a/arch/mips/lantiq/irq.c
-> +++ b/arch/mips/lantiq/irq.c
-> @@ -396,6 +396,9 @@ int __init icu_of_init(struct device_node *node, struct device_node *parent)
+> diff --git a/arch/mips/lantiq/xway/sysctrl.c b/arch/mips/lantiq/xway/sysctrl.c
+> index 084f6caba5f2..d444a1b98a72 100644
+> --- a/arch/mips/lantiq/xway/sysctrl.c
+> +++ b/arch/mips/lantiq/xway/sysctrl.c
+> @@ -441,6 +441,10 @@ void __init ltq_soc_init(void)
+>  			of_address_to_resource(np_ebu, 0, &res_ebu))
+>  		panic("Failed to get core resources");
 >  
->  		ret = of_property_read_u32_array(eiu_node, "lantiq,eiu-irqs",
->  						ltq_eiu_irq, exin_avail);
-> +						
-
-trailing whitespaces
-
-> +		of_node_put(eiu_node);
-> +						
-
-trailing whitespaces
-
->  		if (ret)
->  			panic("failed to load external irq resources");
->  
-> @@ -409,6 +412,9 @@ int __init icu_of_init(struct device_node *node, struct device_node *parent)
->  			panic("Failed to remap eiu memory");
->  	}
->  
-> +	/* if eiu_node&of_address_to_resource */
-> +	of_node_put(eiu_node);
+> +	of_node_put(np_pmu);
+> +	of_node_put(np_cgu);
+> +	of_node_put(np_ebu);
 > +
+>  	if (!request_mem_region(res_pmu.start, resource_size(&res_pmu),
+>  				res_pmu.name) ||
+>  		!request_mem_region(res_cgu.start, resource_size(&res_cgu),
+> -- 
+> 2.25.1
 
-if I'm not mistaken you are freeing the taken reference twice. Shouldn't
-it work by only adding the last of_node_put() ?
+applied to mips-fixes.
 
 Thomas.
 

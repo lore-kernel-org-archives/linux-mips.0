@@ -2,163 +2,386 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A31F8C43334
-	for <linux-mips@archiver.kernel.org>; Mon, 20 Jun 2022 21:34:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C643BC43334
+	for <linux-mips@archiver.kernel.org>; Tue, 21 Jun 2022 12:50:53 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236558AbiFTVeC (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 20 Jun 2022 17:34:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41888 "EHLO
+        id S1350839AbiFUMux (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 21 Jun 2022 08:50:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50144 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239653AbiFTVeB (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Mon, 20 Jun 2022 17:34:01 -0400
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10BD71570A;
-        Mon, 20 Jun 2022 14:34:00 -0700 (PDT)
-Received: by mail-lf1-x12d.google.com with SMTP id c2so19273884lfk.0;
-        Mon, 20 Jun 2022 14:33:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=s0R5mmM05lsGfWIfbL6p8eqpR6CxHgnjZf4kJe++K6A=;
-        b=XarjFldC0uD5OUmY2R2d+LkYVknWoBbcxLhDnPZZ5rj5CZfCZ89pqO75sRGhNRWJ67
-         QV6w6lX46zpW6uSgZp/gfYo9LhcajmzJvclYf48zdADp6EvTttBxURmfVcYEqjDnWeLj
-         ZkOkjtzfsONBTWvhTBpch1iXDkHYc3Dyqh+j+XNbL6jWYdrPIixDjopoYknYRaI0R27g
-         IoZ6XjQJyZRYCWuI6+O2VcZQ/ZqP0KLaAVGfCNxyD9OjcME7rgD8JS+Sb2T1WlZq+HA1
-         LiTv6dlmIG8blmjIjMKee+lIEVu1rwbt2ut7h26zb4Ezu5Oc1qo4o+W96nfBmiLDVzOh
-         rCGQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=s0R5mmM05lsGfWIfbL6p8eqpR6CxHgnjZf4kJe++K6A=;
-        b=r716l8DpJBuLIxrBCSTNCTN3kVzPp80bKPf14VWkPLG57b6YEapNrLV5OnNtqLFsps
-         Uas76h2Wc7k8m1t4BXDRyVYBBnuboQ7cLVoeKJKdlBELp2lX4fCr6ncAg1ivgbjm07ar
-         mgiGTjYwsq4y2QbQ+ren0g+3sVhM8fHi5twoklSHPlZRmZQZ7ImJUR3yva84XQGtNfas
-         cCCKJ9dCDakjD/him+Ke8doj7qgnz/Ezj2Wdv5jH4/pjJOcvplxvuuEm5+ny9OHW6/k/
-         twW2ptmmo5upbW9RURSmlewiAsaWBptGLYVzsPSaTFcviHoUT0Xc6I88+w0GtnSyJqmB
-         +85g==
-X-Gm-Message-State: AJIora/Yqf6CWP4p+MWZ8HFJ9GoV94HGsc77rsRy/3zYQcq3Y6omTo5s
-        1zf34qeY2XZMm6mR7/B0E5I=
-X-Google-Smtp-Source: AGRyM1tB6Drp/umy1VSMi2cffqS7UB8ehavkbrFBMG3EU0JZUloawCq0vJ3PgIQDSYEZMZgYjILLkg==
-X-Received: by 2002:a05:6512:238a:b0:47f:6a9a:ea39 with SMTP id c10-20020a056512238a00b0047f6a9aea39mr5283214lfv.215.1655760838354;
-        Mon, 20 Jun 2022 14:33:58 -0700 (PDT)
-Received: from mobilestation ([95.79.189.214])
-        by smtp.gmail.com with ESMTPSA id o7-20020a198c07000000b0047255d211e9sm1889833lfd.280.2022.06.20.14.33.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Jun 2022 14:33:57 -0700 (PDT)
-Date:   Tue, 21 Jun 2022 00:33:55 +0300
-From:   Serge Semin <fancer.lancer@gmail.com>
-To:     Philipp Zabel <p.zabel@pengutronix.de>,
-        Stephen Boyd <sboyd@kernel.org>
-Cc:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
+        with ESMTP id S1350812AbiFUMug (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Tue, 21 Jun 2022 08:50:36 -0400
+Received: from mga06.intel.com (mga06b.intel.com [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E2ED2A714;
+        Tue, 21 Jun 2022 05:50:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1655815835; x=1687351835;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=jphQvuNWUDLk1nLZ5YpCob7RfIIJgmVazyGz6XAGpTk=;
+  b=UeRJHhMK/gybZNqB2FSrb18X3qmoi5L9jqpm6UZm54au3VViNfZ3hfeo
+   h9oH+IuSjd7XY4TCsG3NhJdmhyNv5blmOc2OlVZ3zrSDsQMaKPgY1+Qxj
+   1h+46GYoSUKm4ER5zwPRrZ5R7pUxtw2dQHQCJEDdwJVFCnq8XJttuauwK
+   LKRMYLf1n/iU5VIQaUmjJWrPil0Pcsx3DRRJNqSGFl6WCg6EP3zATlwYN
+   nxmb78GliEdqtBh+USvSc3fLHTGMzL7YyoudiRTFFgwUO1HMkvRI3x9b1
+   MisEdv+dacLRn9r7Nb6kcSG5nzcBu3oCQVZ8xRqKboDpNhZVNz3uALNRl
+   w==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10384"; a="341793021"
+X-IronPort-AV: E=Sophos;i="5.92,209,1650956400"; 
+   d="scan'208";a="341793021"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jun 2022 05:50:34 -0700
+X-IronPort-AV: E=Sophos;i="5.92,209,1650956400"; 
+   d="scan'208";a="833561596"
+Received: from zjeffery-mobl1.ger.corp.intel.com (HELO ijarvine-MOBL2.ger.corp.intel.com) ([10.249.41.211])
+  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Jun 2022 05:50:30 -0700
+From:   =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+To:     linux-serial@vger.kernel.org, Greg KH <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
         Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        linux-clk@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 0/8] clk/resets: baikal-t1: Add DDR/PCIe resets and
- xGMAC/SATA fixes
-Message-ID: <20220620213355.q6qlpiy2orninq3g@mobilestation>
-References: <20220610072124.8714-1-Sergey.Semin@baikalelectronics.ru>
+        William Hubbs <w.d.hubbs@gmail.com>,
+        Chris Brannon <chris@the-brannons.com>,
+        Kirk Reiser <kirk@reisers.ca>,
+        Samuel Thibault <samuel.thibault@ens-lyon.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        speakup@linux-speakup.org, sparclinux@vger.kernel.org
+Cc:     =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Subject: [PATCH v2 6/6] serial: Consolidate BOTH_EMPTY use
+Date:   Tue, 21 Jun 2022 15:49:58 +0300
+Message-Id: <20220621124958.3342-7-ilpo.jarvinen@linux.intel.com>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20220621124958.3342-1-ilpo.jarvinen@linux.intel.com>
+References: <20220621124958.3342-1-ilpo.jarvinen@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220610072124.8714-1-Sergey.Semin@baikalelectronics.ru>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Hi @Philipp,
-Could you have a look at the reset-related patches of series? One of
-them is a fix and another one concerns the reset-part of the Clock/Reset
-controller embedded into our SoC.
+Per file BOTH_EMPTY defines are littering our source code here and
+there. Define once in serial.h and create helper for the check
+too.
 
-Hi @Stephen,
-The series has been here for about four months now. Can we speed the
-review up somehow?
+Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
+---
+ arch/mips/ath79/early_printk.c           |  9 +++++----
+ drivers/accessibility/speakup/serialio.h |  3 +--
+ drivers/tty/serial/8250/8250_early.c     |  4 +---
+ drivers/tty/serial/8250/8250_port.c      | 12 +++++-------
+ drivers/tty/serial/omap-serial.c         |  7 +++----
+ drivers/tty/serial/pch_uart.c            |  7 +++----
+ drivers/tty/serial/pxa.c                 |  5 ++---
+ drivers/tty/serial/sunsu.c               |  4 +---
+ drivers/tty/serial/vr41xx_siu.c          |  4 +---
+ include/linux/serial.h                   |  9 +++++++++
+ 10 files changed, 31 insertions(+), 33 deletions(-)
 
--Sergey
+diff --git a/arch/mips/ath79/early_printk.c b/arch/mips/ath79/early_printk.c
+index 8751d067f98f..f6d02b425a10 100644
+--- a/arch/mips/ath79/early_printk.c
++++ b/arch/mips/ath79/early_printk.c
+@@ -8,6 +8,7 @@
+ 
+ #include <linux/io.h>
+ #include <linux/errno.h>
++#include <linux/serial.h>
+ #include <linux/serial_reg.h>
+ #include <asm/addrspace.h>
+ #include <asm/setup.h>
+@@ -29,15 +30,15 @@ static inline void prom_putchar_wait(void __iomem *reg, u32 mask, u32 val)
+ 	} while (1);
+ }
+ 
+-#define BOTH_EMPTY (UART_LSR_TEMT | UART_LSR_THRE)
+-
+ static void prom_putchar_ar71xx(char ch)
+ {
+ 	void __iomem *base = (void __iomem *)(KSEG1ADDR(AR71XX_UART_BASE));
+ 
+-	prom_putchar_wait(base + UART_LSR * 4, BOTH_EMPTY, BOTH_EMPTY);
++	prom_putchar_wait(base + UART_LSR * 4, UART_LSR_BOTH_EMPTY,
++			  UART_LSR_BOTH_EMPTY);
+ 	__raw_writel((unsigned char)ch, base + UART_TX * 4);
+-	prom_putchar_wait(base + UART_LSR * 4, BOTH_EMPTY, BOTH_EMPTY);
++	prom_putchar_wait(base + UART_LSR * 4, UART_LSR_BOTH_EMPTY,
++			  UART_LSR_BOTH_EMPTY);
+ }
+ 
+ static void prom_putchar_ar933x(char ch)
+diff --git a/drivers/accessibility/speakup/serialio.h b/drivers/accessibility/speakup/serialio.h
+index 6f8f86f161bb..b4f9a1925b81 100644
+--- a/drivers/accessibility/speakup/serialio.h
++++ b/drivers/accessibility/speakup/serialio.h
+@@ -33,9 +33,8 @@ struct old_serial_port {
+ #define NUM_DISABLE_TIMEOUTS 3
+ /* buffer timeout in ms */
+ #define SPK_TIMEOUT 100
+-#define BOTH_EMPTY (UART_LSR_TEMT | UART_LSR_THRE)
+ 
+ #define spk_serial_tx_busy() \
+-	((inb(speakup_info.port_tts + UART_LSR) & BOTH_EMPTY) != BOTH_EMPTY)
++	(!uart_lsr_tx_empty(inb(speakup_info.port_tts + UART_LSR)))
+ 
+ #endif
+diff --git a/drivers/tty/serial/8250/8250_early.c b/drivers/tty/serial/8250/8250_early.c
+index e52585064565..f271becfc46c 100644
+--- a/drivers/tty/serial/8250/8250_early.c
++++ b/drivers/tty/serial/8250/8250_early.c
+@@ -84,8 +84,6 @@ static void serial8250_early_out(struct uart_port *port, int offset, int value)
+ 	}
+ }
+ 
+-#define BOTH_EMPTY (UART_LSR_TEMT | UART_LSR_THRE)
+-
+ static void serial_putc(struct uart_port *port, unsigned char c)
+ {
+ 	unsigned int status;
+@@ -94,7 +92,7 @@ static void serial_putc(struct uart_port *port, unsigned char c)
+ 
+ 	for (;;) {
+ 		status = serial8250_early_in(port, UART_LSR);
+-		if ((status & BOTH_EMPTY) == BOTH_EMPTY)
++		if (uart_lsr_tx_empty(status))
+ 			break;
+ 		cpu_relax();
+ 	}
+diff --git a/drivers/tty/serial/8250/8250_port.c b/drivers/tty/serial/8250/8250_port.c
+index 432742a567b6..647bd351e611 100644
+--- a/drivers/tty/serial/8250/8250_port.c
++++ b/drivers/tty/serial/8250/8250_port.c
+@@ -50,8 +50,6 @@
+ #define DEBUG_AUTOCONF(fmt...)	do { } while (0)
+ #endif
+ 
+-#define BOTH_EMPTY	(UART_LSR_TEMT | UART_LSR_THRE)
+-
+ /*
+  * Here we define the default xmit fifo size used for each type of UART.
+  */
+@@ -1841,7 +1839,7 @@ void serial8250_tx_chars(struct uart_8250_port *up)
+ 		if (uart_circ_empty(xmit))
+ 			break;
+ 		if ((up->capabilities & UART_CAP_HFIFO) &&
+-		    (serial_in(up, UART_LSR) & BOTH_EMPTY) != BOTH_EMPTY)
++		    !uart_lsr_tx_empty(serial_in(up, UART_LSR)))
+ 			break;
+ 		/* The BCM2835 MINI UART THRE bit is really a not-full bit. */
+ 		if ((up->capabilities & UART_CAP_MINI) &&
+@@ -2001,7 +1999,7 @@ static unsigned int serial8250_tx_empty(struct uart_port *port)
+ 
+ 	serial8250_rpm_put(up);
+ 
+-	return (lsr & BOTH_EMPTY) == BOTH_EMPTY ? TIOCSER_TEMT : 0;
++	return uart_lsr_tx_empty(lsr) ? TIOCSER_TEMT : 0;
+ }
+ 
+ unsigned int serial8250_do_get_mctrl(struct uart_port *port)
+@@ -2149,7 +2147,7 @@ static void serial8250_put_poll_char(struct uart_port *port,
+ 	else
+ 		serial_port_out(port, UART_IER, 0);
+ 
+-	wait_for_xmitr(up, BOTH_EMPTY);
++	wait_for_xmitr(up, UART_LSR_BOTH_EMPTY);
+ 	/*
+ 	 *	Send the character out.
+ 	 */
+@@ -2159,7 +2157,7 @@ static void serial8250_put_poll_char(struct uart_port *port,
+ 	 *	Finally, wait for transmitter to become empty
+ 	 *	and restore the IER
+ 	 */
+-	wait_for_xmitr(up, BOTH_EMPTY);
++	wait_for_xmitr(up, UART_LSR_BOTH_EMPTY);
+ 	serial_port_out(port, UART_IER, ier);
+ 	serial8250_rpm_put(up);
+ }
+@@ -3429,7 +3427,7 @@ void serial8250_console_write(struct uart_8250_port *up, const char *s,
+ 	 *	Finally, wait for transmitter to become empty
+ 	 *	and restore the IER
+ 	 */
+-	wait_for_xmitr(up, BOTH_EMPTY);
++	wait_for_xmitr(up, UART_LSR_BOTH_EMPTY);
+ 
+ 	if (em485) {
+ 		mdelay(port->rs485.delay_rts_after_send);
+diff --git a/drivers/tty/serial/omap-serial.c b/drivers/tty/serial/omap-serial.c
+index 98622c35d896..52cb1a68b053 100644
+--- a/drivers/tty/serial/omap-serial.c
++++ b/drivers/tty/serial/omap-serial.c
+@@ -19,6 +19,7 @@
+ #include <linux/module.h>
+ #include <linux/init.h>
+ #include <linux/console.h>
++#include <linux/serial.h>
+ #include <linux/serial_reg.h>
+ #include <linux/delay.h>
+ #include <linux/slab.h>
+@@ -1102,8 +1103,6 @@ serial_omap_type(struct uart_port *port)
+ 	return up->name;
+ }
+ 
+-#define BOTH_EMPTY (UART_LSR_TEMT | UART_LSR_THRE)
+-
+ static void __maybe_unused wait_for_xmitr(struct uart_omap_port *up)
+ {
+ 	unsigned int status, tmout = 10000;
+@@ -1118,7 +1117,7 @@ static void __maybe_unused wait_for_xmitr(struct uart_omap_port *up)
+ 		if (--tmout == 0)
+ 			break;
+ 		udelay(1);
+-	} while ((status & BOTH_EMPTY) != BOTH_EMPTY);
++	} while (!uart_lsr_tx_empty(status));
+ 
+ 	/* Wait up to 1s for flow control if necessary */
+ 	if (up->port.flags & UPF_CONS_FLOW) {
+@@ -1186,7 +1185,7 @@ static void omap_serial_early_putc(struct uart_port *port, unsigned char c)
+ 
+ 	for (;;) {
+ 		status = omap_serial_early_in(port, UART_LSR);
+-		if ((status & BOTH_EMPTY) == BOTH_EMPTY)
++		if (uart_lsr_tx_empty(status))
+ 			break;
+ 		cpu_relax();
+ 	}
+diff --git a/drivers/tty/serial/pch_uart.c b/drivers/tty/serial/pch_uart.c
+index 3b26524d48e3..8a9065e4a903 100644
+--- a/drivers/tty/serial/pch_uart.c
++++ b/drivers/tty/serial/pch_uart.c
+@@ -3,6 +3,7 @@
+  *Copyright (C) 2011 LAPIS Semiconductor Co., Ltd.
+  */
+ #include <linux/kernel.h>
++#include <linux/serial.h>
+ #include <linux/serial_reg.h>
+ #include <linux/slab.h>
+ #include <linux/module.h>
+@@ -189,8 +190,6 @@ enum {
+ #define PCH_UART_HAL_LOOP		(PCH_UART_MCR_LOOP)
+ #define PCH_UART_HAL_AFE		(PCH_UART_MCR_AFE)
+ 
+-#define BOTH_EMPTY (UART_LSR_TEMT | UART_LSR_THRE)
+-
+ #define DEFAULT_UARTCLK   1843200 /*   1.8432 MHz */
+ #define CMITC_UARTCLK   192000000 /* 192.0000 MHz */
+ #define FRI2_64_UARTCLK  64000000 /*  64.0000 MHz */
+@@ -1516,7 +1515,7 @@ static void pch_uart_put_poll_char(struct uart_port *port,
+ 	 * Finally, wait for transmitter to become empty
+ 	 * and restore the IER
+ 	 */
+-	wait_for_xmitr(priv, BOTH_EMPTY);
++	wait_for_xmitr(priv, UART_LSR_BOTH_EMPTY);
+ 	iowrite8(ier, priv->membase + UART_IER);
+ }
+ #endif /* CONFIG_CONSOLE_POLL */
+@@ -1602,7 +1601,7 @@ pch_console_write(struct console *co, const char *s, unsigned int count)
+ 	 *	Finally, wait for transmitter to become empty
+ 	 *	and restore the IER
+ 	 */
+-	wait_for_xmitr(priv, BOTH_EMPTY);
++	wait_for_xmitr(priv, UART_LSR_BOTH_EMPTY);
+ 	iowrite8(ier, priv->membase + UART_IER);
+ 
+ 	if (port_locked)
+diff --git a/drivers/tty/serial/pxa.c b/drivers/tty/serial/pxa.c
+index e80ba8e10407..9309ffd87c8e 100644
+--- a/drivers/tty/serial/pxa.c
++++ b/drivers/tty/serial/pxa.c
+@@ -23,6 +23,7 @@
+ #include <linux/init.h>
+ #include <linux/console.h>
+ #include <linux/sysrq.h>
++#include <linux/serial.h>
+ #include <linux/serial_reg.h>
+ #include <linux/circ_buf.h>
+ #include <linux/delay.h>
+@@ -575,8 +576,6 @@ static struct uart_driver serial_pxa_reg;
+ 
+ #ifdef CONFIG_SERIAL_PXA_CONSOLE
+ 
+-#define BOTH_EMPTY (UART_LSR_TEMT | UART_LSR_THRE)
+-
+ /*
+  *	Wait for transmitter & holding register to empty
+  */
+@@ -594,7 +593,7 @@ static void wait_for_xmitr(struct uart_pxa_port *up)
+ 		if (--tmout == 0)
+ 			break;
+ 		udelay(1);
+-	} while ((status & BOTH_EMPTY) != BOTH_EMPTY);
++	} while (!uart_lsr_tx_empty(status));
+ 
+ 	/* Wait up to 1s for flow control if necessary */
+ 	if (up->port.flags & UPF_CONS_FLOW) {
+diff --git a/drivers/tty/serial/sunsu.c b/drivers/tty/serial/sunsu.c
+index fff50b5b82eb..84d545e5a8c7 100644
+--- a/drivers/tty/serial/sunsu.c
++++ b/drivers/tty/serial/sunsu.c
+@@ -1249,8 +1249,6 @@ static int sunsu_kbd_ms_init(struct uart_sunsu_port *up)
+ 
+ #ifdef CONFIG_SERIAL_SUNSU_CONSOLE
+ 
+-#define BOTH_EMPTY (UART_LSR_TEMT | UART_LSR_THRE)
+-
+ /*
+  *	Wait for transmitter & holding register to empty
+  */
+@@ -1268,7 +1266,7 @@ static void wait_for_xmitr(struct uart_sunsu_port *up)
+ 		if (--tmout == 0)
+ 			break;
+ 		udelay(1);
+-	} while ((status & BOTH_EMPTY) != BOTH_EMPTY);
++	} while (!uart_lsr_tx_empty(status));
+ 
+ 	/* Wait up to 1s for flow control if necessary */
+ 	if (up->port.flags & UPF_CONS_FLOW) {
+diff --git a/drivers/tty/serial/vr41xx_siu.c b/drivers/tty/serial/vr41xx_siu.c
+index e0bf003ca3a1..1ba689a81abd 100644
+--- a/drivers/tty/serial/vr41xx_siu.c
++++ b/drivers/tty/serial/vr41xx_siu.c
+@@ -703,8 +703,6 @@ static int siu_init_ports(struct platform_device *pdev)
+ 
+ #ifdef CONFIG_SERIAL_VR41XX_CONSOLE
+ 
+-#define BOTH_EMPTY	(UART_LSR_TEMT | UART_LSR_THRE)
+-
+ static void wait_for_xmitr(struct uart_port *port)
+ {
+ 	int timeout = 10000;
+@@ -715,7 +713,7 @@ static void wait_for_xmitr(struct uart_port *port)
+ 		if (lsr & UART_LSR_BI)
+ 			lsr_break_flag[port->line] = UART_LSR_BI;
+ 
+-		if ((lsr & BOTH_EMPTY) == BOTH_EMPTY)
++		if (uart_lsr_tx_empty(lsr))
+ 			break;
+ 	} while (timeout-- > 0);
+ 
+diff --git a/include/linux/serial.h b/include/linux/serial.h
+index 70a9866e4abb..3d6fe3ef92cf 100644
+--- a/include/linux/serial.h
++++ b/include/linux/serial.h
+@@ -10,10 +10,19 @@
+ #define _LINUX_SERIAL_H
+ 
+ #include <uapi/linux/serial.h>
++#include <uapi/linux/serial_reg.h>
+ 
+ /* Helper for dealing with UART_LCR_WLEN* defines */
+ #define UART_LCR_WLEN(x)	((x) - 5)
+ 
++/* FIFO and shifting register empty */
++#define UART_LSR_BOTH_EMPTY	(UART_LSR_TEMT | UART_LSR_THRE)
++
++static inline bool uart_lsr_tx_empty(u16 lsr)
++{
++	return (lsr & UART_LSR_BOTH_EMPTY) == UART_LSR_BOTH_EMPTY;
++}
++
+ /*
+  * Counters of the input lines (CTS, DSR, RI, CD) interrupts
+  */
+-- 
+2.30.2
 
-On Fri, Jun 10, 2022 at 10:21:16AM +0300, Serge Semin wrote:
-> Short summary regarding this patchset. The series starts from fixing a
-> wrong semantic of the device managed optional exclusive bulk reset control
-> getter. Then we suggest a fix of the clocks glitching cause by the Renesas
-> 5P49V6901 chip in some circumstances. Afterwards a few more modifications
-> are introduced to finally finish the Baikal-T1 CCU unit support up and
-> prepare the code before adding the Baikal-T1 PCIe/xGMAC support. First of
-> all it turned out I specified wrong DW xGMAC PTP reference clock divider
-> in my initial patches. It must be 8, not 10. Secondly I was wrong to add a
-> joint xGMAC Ref and PTP clock instead of having them separately defined.
-> The SoC manual describes these clocks as separate fixed clock wrappers.
-> Finally in order to close the SoC clock/reset support up we need to add
-> the DDR and PCIe interfaces reset controls support. It's done in two
-> steps. First I've moved the reset-controls-related code into a dedicated
-> module. Then the DDR/PCIe reset-control functionality is added. As the
-> series finalization we've decided to convert the Baikal-T1 clock/reset
-> source drivers to mainly being the platform device driver and
-> pre-initialize the basic clocks only at the early kernel boot stages.
-> 
-> Link: https://lore.kernel.org/linux-pci/20220324010905.15589-1-Sergey.Semin@baikalelectronics.ru/
-> Changelog v2:
-> - Resubmit the series with adding @Philipp to the list of the recipients.
-> 
-> Link: https://lore.kernel.org/linux-pci/20220330144320.27039-1-Sergey.Semin@baikalelectronics.ru/
-> Changelog v3:
-> - No comments. Just resend the series.
-> - Rebased from v5.17 onto v5.18-rc3.
-> 
-> Link: https://lore.kernel.org/linux-clk/20220503205722.24755-1-Sergey.Semin@baikalelectronics.ru/
-> Changelog v4:
-> - Completely split the CCU Dividers and Resets functionality up. (@Stephen)
-> - Add a new fixes patch: "clk: baikal-t1: Actually enable SATA internal
->   ref clock".
-> - Add a new fixes patch: "reset: Fix devm bulk optional exclusive control
->   getter".
-> - Add a new fixes patch: "clk: vc5: Fix 5P49V6901 outputs disabling when
->   enabling FOD".
-> - Add a new feagure patch: "clk: baikal-t1: Convert to platform device
->   driver".
-> - Change the internal clock ID to the XGMAC-referred name.
-> - Rebase onto the kernel v5.18.
-> 
-> Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
-> Cc: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
-> Cc: Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>
-> Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-> Cc: linux-clk@vger.kernel.org
-> Cc: linux-mips@vger.kernel.org
-> Cc: linux-kernel@vger.kernel.org
-> 
-> Serge Semin (8):
->   reset: Fix devm bulk optional exclusive control getter
->   clk: vc5: Fix 5P49V6901 outputs disabling when enabling FOD
->   clk: baikal-t1: Fix invalid xGMAC PTP clock divider
->   clk: baikal-t1: Add shared xGMAC ref/ptp clocks internal parent
->   clk: baikal-t1: Add SATA internal ref clock buffer
->   clk: baikal-t1: Move reset-controls code into a dedicated module
->   clk: baikal-t1: Add DDR/PCIe directly controlled resets support
->   clk: baikal-t1: Convert to platform device driver
-> 
->  drivers/clk/baikal-t1/Kconfig       |  12 +-
->  drivers/clk/baikal-t1/Makefile      |   1 +
->  drivers/clk/baikal-t1/ccu-div.c     |  84 +++++++--
->  drivers/clk/baikal-t1/ccu-div.h     |  17 +-
->  drivers/clk/baikal-t1/ccu-pll.h     |   8 +
->  drivers/clk/baikal-t1/ccu-rst.c     |  99 ++++++++++
->  drivers/clk/baikal-t1/ccu-rst.h     |  79 ++++++++
->  drivers/clk/baikal-t1/clk-ccu-div.c | 272 +++++++++++++++++-----------
->  drivers/clk/baikal-t1/clk-ccu-pll.c | 128 ++++++++++---
->  drivers/clk/baikal-t1/clk-ccu-rst.c | 257 ++++++++++++++++++++++++++
->  drivers/clk/clk-versaclock5.c       |   2 +-
->  include/dt-bindings/reset/bt1-ccu.h |   9 +
->  include/linux/reset.h               |   2 +-
->  13 files changed, 814 insertions(+), 156 deletions(-)
->  create mode 100644 drivers/clk/baikal-t1/ccu-rst.c
->  create mode 100644 drivers/clk/baikal-t1/ccu-rst.h
->  create mode 100644 drivers/clk/baikal-t1/clk-ccu-rst.c
-> 
-> -- 
-> 2.35.1
-> 

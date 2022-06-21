@@ -2,67 +2,80 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 72627C433EF
-	for <linux-mips@archiver.kernel.org>; Tue, 21 Jun 2022 15:22:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 72C71CCA473
+	for <linux-mips@archiver.kernel.org>; Tue, 21 Jun 2022 15:22:12 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352741AbiFUPWK (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 21 Jun 2022 11:22:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59774 "EHLO
+        id S1352748AbiFUPWL (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 21 Jun 2022 11:22:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59858 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352742AbiFUPWF (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Tue, 21 Jun 2022 11:22:05 -0400
+        with ESMTP id S1352750AbiFUPWK (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Tue, 21 Jun 2022 11:22:10 -0400
 Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 3DB2F2873E;
-        Tue, 21 Jun 2022 08:22:04 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A57802873E;
+        Tue, 21 Jun 2022 08:22:09 -0700 (PDT)
 Received: from uucp (helo=alpha)
         by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1o3fh4-0001zL-01; Tue, 21 Jun 2022 17:21:30 +0200
+        id 1o3fh4-0001zL-07; Tue, 21 Jun 2022 17:21:30 +0200
 Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 567E8C01AA; Tue, 21 Jun 2022 17:14:38 +0200 (CEST)
-Date:   Tue, 21 Jun 2022 17:14:38 +0200
+        id 81272C01AA; Tue, 21 Jun 2022 17:21:19 +0200 (CEST)
+Date:   Tue, 21 Jun 2022 17:21:19 +0200
 From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 To:     Liang He <windhl@126.com>
-Cc:     miodrag.dinic@mips.com, paulburton@kernel.org,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] arch: mips: generic: Add missing of_node_put() in
- board-ranchu.c
-Message-ID: <20220621151438.GB12206@alpha.franken.de>
-References: <20220615141123.3968401-1-windhl@126.com>
+Cc:     john@phrozen.org, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mips: lantiq: Add missing of_node_put() in irq.c
+Message-ID: <20220621152119.GB12322@alpha.franken.de>
+References: <20220615153339.3970658-1-windhl@126.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220615141123.3968401-1-windhl@126.com>
+In-Reply-To: <20220615153339.3970658-1-windhl@126.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Wed, Jun 15, 2022 at 10:11:23PM +0800, Liang He wrote:
-> In ranchu_measure_hpt_freq(), of_find_compatible_node() will return
-> a node pointer with refcount incremented. We should use of_put_node()
+On Wed, Jun 15, 2022 at 11:33:39PM +0800, Liang He wrote:
+> In icu_of_init(), of_find_compatible_node() will return a node
+> pointer with refcount incremented. We should use of_node_put()
 > when it is not used anymore.
 > 
 > Signed-off-by: Liang He <windhl@126.com>
 > ---
->  arch/mips/generic/board-ranchu.c | 1 +
->  1 file changed, 1 insertion(+)
+>  arch/mips/lantiq/irq.c | 6 ++++++
+>  1 file changed, 6 insertions(+)
 > 
-> diff --git a/arch/mips/generic/board-ranchu.c b/arch/mips/generic/board-ranchu.c
-> index a89aaad59cb1..930c45041882 100644
-> --- a/arch/mips/generic/board-ranchu.c
-> +++ b/arch/mips/generic/board-ranchu.c
-> @@ -44,6 +44,7 @@ static __init unsigned int ranchu_measure_hpt_freq(void)
->  		      __func__);
+> diff --git a/arch/mips/lantiq/irq.c b/arch/mips/lantiq/irq.c
+> index b732495f138a..62f1b20a2169 100644
+> --- a/arch/mips/lantiq/irq.c
+> +++ b/arch/mips/lantiq/irq.c
+> @@ -396,6 +396,9 @@ int __init icu_of_init(struct device_node *node, struct device_node *parent)
 >  
->  	rtc_base = of_iomap(np, 0);
-> +	of_node_put(np);
->  	if (!rtc_base)
->  		panic("%s(): Failed to ioremap Goldfish RTC base!", __func__);
->  
-> -- 
-> 2.25.1
+>  		ret = of_property_read_u32_array(eiu_node, "lantiq,eiu-irqs",
+>  						ltq_eiu_irq, exin_avail);
+> +						
 
-applied to mips-fixes.
+trailing whitespaces
+
+> +		of_node_put(eiu_node);
+> +						
+
+trailing whitespaces
+
+>  		if (ret)
+>  			panic("failed to load external irq resources");
+>  
+> @@ -409,6 +412,9 @@ int __init icu_of_init(struct device_node *node, struct device_node *parent)
+>  			panic("Failed to remap eiu memory");
+>  	}
+>  
+> +	/* if eiu_node&of_address_to_resource */
+> +	of_node_put(eiu_node);
+> +
+
+if I'm not mistaken you are freeing the taken reference twice. Shouldn't
+it work by only adding the last of_node_put() ?
 
 Thomas.
 

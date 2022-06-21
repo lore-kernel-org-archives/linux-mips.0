@@ -2,94 +2,62 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BD4CCC43334
-	for <linux-mips@archiver.kernel.org>; Tue, 21 Jun 2022 15:21:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 85B78CCA482
+	for <linux-mips@archiver.kernel.org>; Tue, 21 Jun 2022 15:21:58 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1352674AbiFUPV4 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 21 Jun 2022 11:21:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59624 "EHLO
+        id S1352711AbiFUPV6 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 21 Jun 2022 11:21:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59638 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1352670AbiFUPVz (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Tue, 21 Jun 2022 11:21:55 -0400
+        with ESMTP id S1352670AbiFUPV5 (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Tue, 21 Jun 2022 11:21:57 -0400
 Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 788A9252BE;
-        Tue, 21 Jun 2022 08:21:54 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E821D252BD;
+        Tue, 21 Jun 2022 08:21:56 -0700 (PDT)
 Received: from uucp (helo=alpha)
         by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1o3fh4-0001zL-00; Tue, 21 Jun 2022 17:21:30 +0200
+        id 1o3fh4-0001zL-02; Tue, 21 Jun 2022 17:21:30 +0200
 Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 14293C0170; Tue, 21 Jun 2022 17:14:11 +0200 (CEST)
-Date:   Tue, 21 Jun 2022 17:14:11 +0200
+        id F264BC01AA; Tue, 21 Jun 2022 17:14:57 +0200 (CEST)
+Date:   Tue, 21 Jun 2022 17:14:57 +0200
 From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Genjian Zhang <zhanggenjian123@gmail.com>
-Cc:     linus.walleij@linaro.org, brgl@bgdev.pl, f.fainelli@gmail.com,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-gpio@vger.kernel.org, huhai <huhai@kylinos.cn>,
-        k2ci <kernel-bot@kylinos.cn>,
-        Genjian Zhang <zhanggenjian@kylinos.cn>
-Subject: Re: [PATCH v4] MIPS: Remove repetitive increase irq_err_count
-Message-ID: <20220621151410.GA12206@alpha.franken.de>
-References: <20220525043916.584850-1-zhanggenjian@kylinos.cn>
- <20220610111420.1520410-1-zhanggenjian@kylinos.cn>
+To:     Liang He <windhl@126.com>
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mips: mti-malta: Fix refcount leak in malta-time.c
+Message-ID: <20220621151457.GC12206@alpha.franken.de>
+References: <20220616142756.3987475-1-windhl@126.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220610111420.1520410-1-zhanggenjian@kylinos.cn>
+In-Reply-To: <20220616142756.3987475-1-windhl@126.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Fri, Jun 10, 2022 at 07:14:20PM +0800, Genjian Zhang wrote:
-> From: huhai <huhai@kylinos.cn>
+On Thu, Jun 16, 2022 at 10:27:56PM +0800, Liang He wrote:
+> In update_gic_frequency_dt(), of_find_compatible_node() will return
+> a node pointer with refcount incremented. We should use of_node_put()
+> when it is not used anymore.
 > 
-> commit 979934da9e7a ("[PATCH] mips: update IRQ handling for vr41xx") added
-> a function irq_dispatch, and it'll increase irq_err_count when the get_irq
-> callback returns a negative value, but increase irq_err_count in get_irq
-> was not removed.
-> 
-> And also, modpost complains once gpio-vr41xx drivers become modules.
->   ERROR: modpost: "irq_err_count" [drivers/gpio/gpio-vr41xx.ko] undefined!
-> 
-> So it would be a good idea to remove repetitive increase irq_err_count in
-> get_irq callback.
-> 
-> Fixes: 27fdd325dace ("MIPS: Update VR41xx GPIO driver to use gpiolib")
-> Fixes: 979934da9e7a ("[PATCH] mips: update IRQ handling for vr41xx")
-> Reported-by: k2ci <kernel-bot@kylinos.cn>
-> Signed-off-by: huhai <huhai@kylinos.cn>
-> Signed-off-by: Genjian Zhang <zhanggenjian@kylinos.cn>
+> Signed-off-by: Liang He <windhl@126.com>
 > ---
->  arch/mips/vr41xx/common/icu.c | 2 --
->  drivers/gpio/gpio-vr41xx.c    | 2 --
->  2 files changed, 4 deletions(-)
+>  arch/mips/mti-malta/malta-time.c | 2 ++
+>  1 file changed, 2 insertions(+)
 > 
-> diff --git a/arch/mips/vr41xx/common/icu.c b/arch/mips/vr41xx/common/icu.c
-> index 7b7f25b4b057..9240bcdbe74e 100644
-> --- a/arch/mips/vr41xx/common/icu.c
-> +++ b/arch/mips/vr41xx/common/icu.c
-> @@ -640,8 +640,6 @@ static int icu_get_irq(unsigned int irq)
+> diff --git a/arch/mips/mti-malta/malta-time.c b/arch/mips/mti-malta/malta-time.c
+> index bbf1e38e1431..2cb708cdf01a 100644
+> --- a/arch/mips/mti-malta/malta-time.c
+> +++ b/arch/mips/mti-malta/malta-time.c
+> @@ -214,6 +214,8 @@ static void update_gic_frequency_dt(void)
 >  
->  	printk(KERN_ERR "spurious ICU interrupt: %04x,%04x\n", pend1, pend2);
->  
-> -	atomic_inc(&irq_err_count);
-> -
->  	return -1;
+>  	if (of_update_property(node, &gic_frequency_prop) < 0)
+>  		pr_err("error updating gic frequency property\n");
+> +
+> +	of_node_put(node);
 >  }
 >  
-> diff --git a/drivers/gpio/gpio-vr41xx.c b/drivers/gpio/gpio-vr41xx.c
-> index 98cd715ccc33..8d09b619c166 100644
-> --- a/drivers/gpio/gpio-vr41xx.c
-> +++ b/drivers/gpio/gpio-vr41xx.c
-> @@ -217,8 +217,6 @@ static int giu_get_irq(unsigned int irq)
->  	printk(KERN_ERR "spurious GIU interrupt: %04x(%04x),%04x(%04x)\n",
->  	       maskl, pendl, maskh, pendh);
->  
-> -	atomic_inc(&irq_err_count);
-> -
->  	return -EINVAL;
->  }
->  
+>  #endif
 > -- 
 > 2.25.1
 

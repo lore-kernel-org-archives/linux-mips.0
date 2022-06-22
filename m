@@ -2,41 +2,41 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 75E5DCCA479
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CB54DCCA487
 	for <linux-mips@archiver.kernel.org>; Wed, 22 Jun 2022 19:27:32 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S242676AbiFVT1a (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 22 Jun 2022 15:27:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33444 "EHLO
+        id S1358202AbiFVT1b (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 22 Jun 2022 15:27:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33642 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1356284AbiFVT1Y (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 22 Jun 2022 15:27:24 -0400
+        with ESMTP id S1357558AbiFVT12 (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 22 Jun 2022 15:27:28 -0400
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 508123BF81
-        for <linux-mips@vger.kernel.org>; Wed, 22 Jun 2022 12:27:20 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 972C43E0F0
+        for <linux-mips@vger.kernel.org>; Wed, 22 Jun 2022 12:27:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1655926039;
+        s=mimecast20190719; t=1655926041;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=s79FYBIMXt/xfR/BYP7Rgx7NPNiR6fmBmIixdnDaf6E=;
-        b=SmYpbIn3F4hW7rg9ZWtesQOCqqRc8r5kGQ0zg4KT4+IRc3YFjvxpKlDjEJ7yCLkZcmorxt
-        xRudxANAB4U6XvUKPMGrBGTBVZ6XQwN6BHCAhC3TU9rkLtEVglP8bHjiBN3qgy7MXEjTdG
-        0gtbVMGryGjx87snYxAHRIwdtFdwfRA=
+        bh=etp7F+nHZLGC2FUtxJOh/TJ4hbdw8PGhFaNHreYRQAk=;
+        b=bCaZT5Xr62RZazW+7kYlZKuZzcLvEH92YYAvoVFUIFb88JCwH6ffKFL/C2mHMFbCqCKV78
+        cZnvPQT5zbDmqGEyuEFiGpZM30VZJdHjKxb9LOa65XwAVI1upaZZBnZ3OTY5bS//fmw20F
+        TK4q2TAIOKJMuzJXGyM8N4/zJQRHlgM=
 Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
  [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-418-3z5H9ysNMoepB2tICsIqMg-1; Wed, 22 Jun 2022 15:27:18 -0400
-X-MC-Unique: 3z5H9ysNMoepB2tICsIqMg-1
+ us-mta-2-AdnGv48ePD-TYpFwLVRxow-1; Wed, 22 Jun 2022 15:27:19 -0400
+X-MC-Unique: AdnGv48ePD-TYpFwLVRxow-1
 Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.rdu2.redhat.com [10.11.54.7])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 8CA4B811E76;
-        Wed, 22 Jun 2022 19:27:17 +0000 (UTC)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id B0548811E80;
+        Wed, 22 Jun 2022 19:27:18 +0000 (UTC)
 Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 3838C141510C;
-        Wed, 22 Jun 2022 19:27:17 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 5B3F1141510C;
+        Wed, 22 Jun 2022 19:27:18 +0000 (UTC)
 From:   Paolo Bonzini <pbonzini@redhat.com>
 To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
 Cc:     maz@kernel.org, anup@brainfault.org, seanjc@google.com,
@@ -44,9 +44,9 @@ Cc:     maz@kernel.org, anup@brainfault.org, seanjc@google.com,
         kvmarm@lists.cs.columbia.edu, linux-mips@vger.kernel.org,
         kvm-riscv@lists.infradead.org, pfeiner@google.com,
         jiangshanlai@gmail.com, dmatlack@google.com
-Subject: [PATCH v7 16/23] KVM: x86/mmu: Update page stats in __rmap_add()
-Date:   Wed, 22 Jun 2022 15:27:03 -0400
-Message-Id: <20220622192710.2547152-17-pbonzini@redhat.com>
+Subject: [PATCH v7 19/23] KVM: x86/mmu: Zap collapsible SPTEs in shadow MMU at all possible levels
+Date:   Wed, 22 Jun 2022 15:27:06 -0400
+Message-Id: <20220622192710.2547152-20-pbonzini@redhat.com>
 In-Reply-To: <20220622192710.2547152-1-pbonzini@redhat.com>
 References: <20220622192710.2547152-1-pbonzini@redhat.com>
 MIME-Version: 1.0
@@ -59,40 +59,63 @@ X-Mailing-List: linux-mips@vger.kernel.org
 
 From: David Matlack <dmatlack@google.com>
 
-Update the page stats in __rmap_add() rather than at the call site. This
-will avoid having to manually update page stats when splitting huge
-pages in a subsequent commit.
+Currently KVM only zaps collapsible 4KiB SPTEs in the shadow MMU. This
+is fine for now since KVM never creates intermediate huge pages during
+dirty logging. In other words, KVM always replaces 1GiB pages directly
+with 4KiB pages, so there is no reason to look for collapsible 2MiB
+pages.
+
+However, this will stop being true once the shadow MMU participates in
+eager page splitting. During eager page splitting, each 1GiB is first
+split into 2MiB pages and then those are split into 4KiB pages. The
+intermediate 2MiB pages may be left behind if an error condition causes
+eager page splitting to bail early.
 
 No functional change intended.
 
-Reviewed-by: Ben Gardon <bgardon@google.com>
 Reviewed-by: Peter Xu <peterx@redhat.com>
 Signed-off-by: David Matlack <dmatlack@google.com>
-Message-Id: <20220516232138.1783324-17-dmatlack@google.com>
+Message-Id: <20220516232138.1783324-20-dmatlack@google.com>
 Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
 ---
- arch/x86/kvm/mmu/mmu.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ arch/x86/kvm/mmu/mmu.c | 21 ++++++++++++++-------
+ 1 file changed, 14 insertions(+), 7 deletions(-)
 
 diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-index a8cdbe2958d9..7cca28d89a85 100644
+index 13a059ad5dc7..36bc49f08d60 100644
 --- a/arch/x86/kvm/mmu/mmu.c
 +++ b/arch/x86/kvm/mmu/mmu.c
-@@ -1562,6 +1562,8 @@ static void __rmap_add(struct kvm *kvm,
+@@ -6154,18 +6154,25 @@ static bool kvm_mmu_zap_collapsible_spte(struct kvm *kvm,
+ 	return need_tlb_flush;
+ }
  
- 	sp = sptep_to_sp(spte);
- 	kvm_mmu_page_set_gfn(sp, spte - sp->spt, gfn);
-+	kvm_update_page_stats(kvm, sp->role.level, 1);
++static void kvm_rmap_zap_collapsible_sptes(struct kvm *kvm,
++					   const struct kvm_memory_slot *slot)
++{
++	/*
++	 * Note, use KVM_MAX_HUGEPAGE_LEVEL - 1 since there's no need to zap
++	 * pages that are already mapped at the maximum possible level.
++	 */
++	if (slot_handle_level(kvm, slot, kvm_mmu_zap_collapsible_spte,
++			      PG_LEVEL_4K, KVM_MAX_HUGEPAGE_LEVEL - 1,
++			      true))
++		kvm_arch_flush_remote_tlbs_memslot(kvm, slot);
++}
 +
- 	rmap_head = gfn_to_rmap(gfn, sp->role.level, slot);
- 	rmap_count = pte_list_add(cache, spte, rmap_head);
- 
-@@ -2783,7 +2785,6 @@ static int mmu_set_spte(struct kvm_vcpu *vcpu, struct kvm_memory_slot *slot,
- 
- 	if (!was_rmapped) {
- 		WARN_ON_ONCE(ret == RET_PF_SPURIOUS);
--		kvm_update_page_stats(vcpu->kvm, level, 1);
- 		rmap_add(vcpu, slot, sptep, gfn);
+ void kvm_mmu_zap_collapsible_sptes(struct kvm *kvm,
+ 				   const struct kvm_memory_slot *slot)
+ {
+ 	if (kvm_memslots_have_rmaps(kvm)) {
+ 		write_lock(&kvm->mmu_lock);
+-		/*
+-		 * Zap only 4k SPTEs since the legacy MMU only supports dirty
+-		 * logging at a 4k granularity and never creates collapsible
+-		 * 2m SPTEs during dirty logging.
+-		 */
+-		if (slot_handle_level_4k(kvm, slot, kvm_mmu_zap_collapsible_spte, true))
+-			kvm_arch_flush_remote_tlbs_memslot(kvm, slot);
++		kvm_rmap_zap_collapsible_sptes(kvm, slot);
+ 		write_unlock(&kvm->mmu_lock);
  	}
  
 -- 

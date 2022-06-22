@@ -2,41 +2,41 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CB54DCCA487
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E90F2CCA488
 	for <linux-mips@archiver.kernel.org>; Wed, 22 Jun 2022 19:27:32 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1358202AbiFVT1b (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 22 Jun 2022 15:27:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33642 "EHLO
+        id S1358167AbiFVT1a (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 22 Jun 2022 15:27:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33564 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1357558AbiFVT12 (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 22 Jun 2022 15:27:28 -0400
+        with ESMTP id S1356787AbiFVT1Y (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 22 Jun 2022 15:27:24 -0400
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 972C43E0F0
-        for <linux-mips@vger.kernel.org>; Wed, 22 Jun 2022 12:27:22 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 218C13BBD2
+        for <linux-mips@vger.kernel.org>; Wed, 22 Jun 2022 12:27:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1655926041;
+        s=mimecast20190719; t=1655926039;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=etp7F+nHZLGC2FUtxJOh/TJ4hbdw8PGhFaNHreYRQAk=;
-        b=bCaZT5Xr62RZazW+7kYlZKuZzcLvEH92YYAvoVFUIFb88JCwH6ffKFL/C2mHMFbCqCKV78
-        cZnvPQT5zbDmqGEyuEFiGpZM30VZJdHjKxb9LOa65XwAVI1upaZZBnZ3OTY5bS//fmw20F
-        TK4q2TAIOKJMuzJXGyM8N4/zJQRHlgM=
+        bh=hGW/FKy2yGTHdwE4DwyvYNvZeSSvbQXgR8p2A1FLlvo=;
+        b=Bbx3FDxNStYNHAdHTvgFz/2SXQosiW0xLsSCerS5gZOuMtGQRuO5utekHhpUSW2L1y4J63
+        WWZRLprJECD+GglcWvCh+rqk1Jk4rqJxDmqrKzoOyBYrYUsQPJKk4ReXb8x5EaR/4MP01/
+        lMNpmsQqb4lfK+HZK+bn92QF3qKdEoY=
 Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
  [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-2-AdnGv48ePD-TYpFwLVRxow-1; Wed, 22 Jun 2022 15:27:19 -0400
-X-MC-Unique: AdnGv48ePD-TYpFwLVRxow-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.rdu2.redhat.com [10.11.54.7])
+ us-mta-214-bkI2lZpMOGGWfvfym1zdlg-1; Wed, 22 Jun 2022 15:27:14 -0400
+X-MC-Unique: bkI2lZpMOGGWfvfym1zdlg-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id B0548811E80;
-        Wed, 22 Jun 2022 19:27:18 +0000 (UTC)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 82DE980174C;
+        Wed, 22 Jun 2022 19:27:13 +0000 (UTC)
 Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 5B3F1141510C;
-        Wed, 22 Jun 2022 19:27:18 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 2C1A01121314;
+        Wed, 22 Jun 2022 19:27:13 +0000 (UTC)
 From:   Paolo Bonzini <pbonzini@redhat.com>
 To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
 Cc:     maz@kernel.org, anup@brainfault.org, seanjc@google.com,
@@ -44,79 +44,142 @@ Cc:     maz@kernel.org, anup@brainfault.org, seanjc@google.com,
         kvmarm@lists.cs.columbia.edu, linux-mips@vger.kernel.org,
         kvm-riscv@lists.infradead.org, pfeiner@google.com,
         jiangshanlai@gmail.com, dmatlack@google.com
-Subject: [PATCH v7 19/23] KVM: x86/mmu: Zap collapsible SPTEs in shadow MMU at all possible levels
-Date:   Wed, 22 Jun 2022 15:27:06 -0400
-Message-Id: <20220622192710.2547152-20-pbonzini@redhat.com>
+Subject: [PATCH v7 06/23] KVM: x86/mmu: Decompose kvm_mmu_get_page() into separate functions
+Date:   Wed, 22 Jun 2022 15:26:53 -0400
+Message-Id: <20220622192710.2547152-7-pbonzini@redhat.com>
 In-Reply-To: <20220622192710.2547152-1-pbonzini@redhat.com>
 References: <20220622192710.2547152-1-pbonzini@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.85 on 10.11.54.7
+X-Scanned-By: MIMEDefang 2.78 on 10.11.54.3
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
 From: David Matlack <dmatlack@google.com>
 
-Currently KVM only zaps collapsible 4KiB SPTEs in the shadow MMU. This
-is fine for now since KVM never creates intermediate huge pages during
-dirty logging. In other words, KVM always replaces 1GiB pages directly
-with 4KiB pages, so there is no reason to look for collapsible 2MiB
-pages.
+Decompose kvm_mmu_get_page() into separate helper functions to increase
+readability and prepare for allocating shadow pages without a vcpu
+pointer.
 
-However, this will stop being true once the shadow MMU participates in
-eager page splitting. During eager page splitting, each 1GiB is first
-split into 2MiB pages and then those are split into 4KiB pages. The
-intermediate 2MiB pages may be left behind if an error condition causes
-eager page splitting to bail early.
+Specifically, pull the guts of kvm_mmu_get_page() into 2 helper
+functions:
+
+kvm_mmu_find_shadow_page() -
+  Walks the page hash checking for any existing mmu pages that match the
+  given gfn and role.
+
+kvm_mmu_alloc_shadow_page()
+  Allocates and initializes an entirely new kvm_mmu_page. This currently
+  requries a vcpu pointer for allocation and looking up the memslot but
+  that will be removed in a future commit.
 
 No functional change intended.
 
-Reviewed-by: Peter Xu <peterx@redhat.com>
+Reviewed-by: Sean Christopherson <seanjc@google.com>
 Signed-off-by: David Matlack <dmatlack@google.com>
-Message-Id: <20220516232138.1783324-20-dmatlack@google.com>
+Message-Id: <20220516232138.1783324-7-dmatlack@google.com>
 Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
 ---
- arch/x86/kvm/mmu/mmu.c | 21 ++++++++++++++-------
- 1 file changed, 14 insertions(+), 7 deletions(-)
+ arch/x86/kvm/mmu/mmu.c | 52 +++++++++++++++++++++++++++++++-----------
+ 1 file changed, 39 insertions(+), 13 deletions(-)
 
 diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-index 13a059ad5dc7..36bc49f08d60 100644
+index f4e7978a6c6a..a59fe860da29 100644
 --- a/arch/x86/kvm/mmu/mmu.c
 +++ b/arch/x86/kvm/mmu/mmu.c
-@@ -6154,18 +6154,25 @@ static bool kvm_mmu_zap_collapsible_spte(struct kvm *kvm,
- 	return need_tlb_flush;
+@@ -1993,16 +1993,16 @@ static void clear_sp_write_flooding_count(u64 *spte)
+ 	__clear_sp_write_flooding_count(sptep_to_sp(spte));
  }
  
-+static void kvm_rmap_zap_collapsible_sptes(struct kvm *kvm,
-+					   const struct kvm_memory_slot *slot)
-+{
-+	/*
-+	 * Note, use KVM_MAX_HUGEPAGE_LEVEL - 1 since there's no need to zap
-+	 * pages that are already mapped at the maximum possible level.
-+	 */
-+	if (slot_handle_level(kvm, slot, kvm_mmu_zap_collapsible_spte,
-+			      PG_LEVEL_4K, KVM_MAX_HUGEPAGE_LEVEL - 1,
-+			      true))
-+		kvm_arch_flush_remote_tlbs_memslot(kvm, slot);
+-static struct kvm_mmu_page *kvm_mmu_get_page(struct kvm_vcpu *vcpu, gfn_t gfn,
+-					     union kvm_mmu_page_role role)
++static struct kvm_mmu_page *kvm_mmu_find_shadow_page(struct kvm_vcpu *vcpu,
++						     gfn_t gfn,
++						     struct hlist_head *sp_list,
++						     union kvm_mmu_page_role role)
+ {
+-	struct hlist_head *sp_list;
+ 	struct kvm_mmu_page *sp;
+ 	int ret;
+ 	int collisions = 0;
+ 	LIST_HEAD(invalid_list);
+ 
+-	sp_list = &vcpu->kvm->arch.mmu_page_hash[kvm_page_table_hashfn(gfn)];
+ 	for_each_valid_sp(vcpu->kvm, sp, sp_list) {
+ 		if (sp->gfn != gfn) {
+ 			collisions++;
+@@ -2027,7 +2027,7 @@ static struct kvm_mmu_page *kvm_mmu_get_page(struct kvm_vcpu *vcpu, gfn_t gfn,
+ 
+ 		/* unsync and write-flooding only apply to indirect SPs. */
+ 		if (sp->role.direct)
+-			goto trace_get_page;
++			goto out;
+ 
+ 		if (sp->unsync) {
+ 			/*
+@@ -2053,14 +2053,26 @@ static struct kvm_mmu_page *kvm_mmu_get_page(struct kvm_vcpu *vcpu, gfn_t gfn,
+ 
+ 		__clear_sp_write_flooding_count(sp);
+ 
+-trace_get_page:
+-		trace_kvm_mmu_get_page(sp, false);
+ 		goto out;
+ 	}
+ 
++	sp = NULL;
+ 	++vcpu->kvm->stat.mmu_cache_miss;
+ 
+-	sp = kvm_mmu_alloc_page(vcpu, role.direct);
++out:
++	kvm_mmu_commit_zap_page(vcpu->kvm, &invalid_list);
++
++	if (collisions > vcpu->kvm->stat.max_mmu_page_hash_collisions)
++		vcpu->kvm->stat.max_mmu_page_hash_collisions = collisions;
++	return sp;
 +}
 +
- void kvm_mmu_zap_collapsible_sptes(struct kvm *kvm,
- 				   const struct kvm_memory_slot *slot)
- {
- 	if (kvm_memslots_have_rmaps(kvm)) {
- 		write_lock(&kvm->mmu_lock);
--		/*
--		 * Zap only 4k SPTEs since the legacy MMU only supports dirty
--		 * logging at a 4k granularity and never creates collapsible
--		 * 2m SPTEs during dirty logging.
--		 */
--		if (slot_handle_level_4k(kvm, slot, kvm_mmu_zap_collapsible_spte, true))
--			kvm_arch_flush_remote_tlbs_memslot(kvm, slot);
-+		kvm_rmap_zap_collapsible_sptes(kvm, slot);
- 		write_unlock(&kvm->mmu_lock);
++static struct kvm_mmu_page *kvm_mmu_alloc_shadow_page(struct kvm_vcpu *vcpu,
++						      gfn_t gfn,
++						      struct hlist_head *sp_list,
++						      union kvm_mmu_page_role role)
++{
++	struct kvm_mmu_page *sp = kvm_mmu_alloc_page(vcpu, role.direct);
+ 
+ 	sp->gfn = gfn;
+ 	sp->role = role;
+@@ -2070,12 +2082,26 @@ static struct kvm_mmu_page *kvm_mmu_get_page(struct kvm_vcpu *vcpu, gfn_t gfn,
+ 		if (role.level == PG_LEVEL_4K && kvm_vcpu_write_protect_gfn(vcpu, gfn))
+ 			kvm_flush_remote_tlbs_with_address(vcpu->kvm, gfn, 1);
  	}
+-	trace_kvm_mmu_get_page(sp, true);
+-out:
+-	kvm_mmu_commit_zap_page(vcpu->kvm, &invalid_list);
+ 
+-	if (collisions > vcpu->kvm->stat.max_mmu_page_hash_collisions)
+-		vcpu->kvm->stat.max_mmu_page_hash_collisions = collisions;
++	return sp;
++}
++
++static struct kvm_mmu_page *kvm_mmu_get_page(struct kvm_vcpu *vcpu, gfn_t gfn,
++					     union kvm_mmu_page_role role)
++{
++	struct hlist_head *sp_list;
++	struct kvm_mmu_page *sp;
++	bool created = false;
++
++	sp_list = &vcpu->kvm->arch.mmu_page_hash[kvm_page_table_hashfn(gfn)];
++
++	sp = kvm_mmu_find_shadow_page(vcpu, gfn, sp_list, role);
++	if (!sp) {
++		created = true;
++		sp = kvm_mmu_alloc_shadow_page(vcpu, gfn, sp_list, role);
++	}
++
++	trace_kvm_mmu_get_page(sp, created);
+ 	return sp;
+ }
  
 -- 
 2.31.1

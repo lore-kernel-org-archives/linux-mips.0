@@ -2,41 +2,41 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C30ABCCA479
-	for <linux-mips@archiver.kernel.org>; Wed, 22 Jun 2022 19:27:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3970FCCA47E
+	for <linux-mips@archiver.kernel.org>; Wed, 22 Jun 2022 19:27:43 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1357409AbiFVT1l (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 22 Jun 2022 15:27:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33552 "EHLO
+        id S1357515AbiFVT1m (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 22 Jun 2022 15:27:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33446 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1355344AbiFVT1Y (ORCPT
+        with ESMTP id S1353034AbiFVT1Y (ORCPT
         <rfc822;linux-mips@vger.kernel.org>); Wed, 22 Jun 2022 15:27:24 -0400
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id C53333BA58
-        for <linux-mips@vger.kernel.org>; Wed, 22 Jun 2022 12:27:19 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id CB24D3B3DC
+        for <linux-mips@vger.kernel.org>; Wed, 22 Jun 2022 12:27:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1655926038;
+        s=mimecast20190719; t=1655926037;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=F73ZQSpJXAcM6JUMGTWxTim9jEMxT3dE24kf7MSiY/U=;
-        b=NpCP9LBSfwF/eUPjn8OozMRG7UEZKILIH5RbpLTJtEuKHdDt7I2ZxgvCb1k9KzDjWSiguv
-        CfMvrxxxnEks8d6dmI1JKOfzmjmp57SZ3bQeDG1AhpSUofhlyNhLyEkp4LYa4N9exZvJhd
-        Pugdq1basu4Fc6G+i/Dn/z/z1VpLrtw=
+        bh=CLXhh2jHdU4NArrkTkPf5gXuXh+EDE9oNWeupQnPsQk=;
+        b=OQJRCADz6IFfwC1Ig1qTuQSMvb0DGCudyTBAfjliL2+RsrisnKDoh/leSLqN0ck/fDW7lf
+        jIFtFDmGMHNzsnKIYdLPSMp+Pbs4yGEM5kM/owyrOUQW0Fv5Ipt5fULIDXJ2zo1Zpq9xxD
+        XBaIOGGvcMFsZTyRr+OVm2Z13D6cJqM=
 Received: from mimecast-mx02.redhat.com (mx3-rdu2.redhat.com
  [66.187.233.73]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-88-MEOckTHDNae0HiQ4MeKbbw-1; Wed, 22 Jun 2022 15:27:15 -0400
-X-MC-Unique: MEOckTHDNae0HiQ4MeKbbw-1
+ us-mta-22-4uDFGgT2PiWTMXu_E4ZL6Q-1; Wed, 22 Jun 2022 15:27:14 -0400
+X-MC-Unique: 4uDFGgT2PiWTMXu_E4ZL6Q-1
 Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id AC726294EDC2;
-        Wed, 22 Jun 2022 19:27:14 +0000 (UTC)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id E2430294EDC6;
+        Wed, 22 Jun 2022 19:27:13 +0000 (UTC)
 Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 562ED1121314;
-        Wed, 22 Jun 2022 19:27:14 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 8B3AE1121314;
+        Wed, 22 Jun 2022 19:27:13 +0000 (UTC)
 From:   Paolo Bonzini <pbonzini@redhat.com>
 To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
 Cc:     maz@kernel.org, anup@brainfault.org, seanjc@google.com,
@@ -44,9 +44,9 @@ Cc:     maz@kernel.org, anup@brainfault.org, seanjc@google.com,
         kvmarm@lists.cs.columbia.edu, linux-mips@vger.kernel.org,
         kvm-riscv@lists.infradead.org, pfeiner@google.com,
         jiangshanlai@gmail.com, dmatlack@google.com
-Subject: [PATCH v7 09/23] KVM: x86/mmu: Move guest PT write-protection to account_shadowed()
-Date:   Wed, 22 Jun 2022 15:26:56 -0400
-Message-Id: <20220622192710.2547152-10-pbonzini@redhat.com>
+Subject: [PATCH v7 07/23] KVM: x86/mmu: Consolidate shadow page allocation and initialization
+Date:   Wed, 22 Jun 2022 15:26:54 -0400
+Message-Id: <20220622192710.2547152-8-pbonzini@redhat.com>
 In-Reply-To: <20220622192710.2547152-1-pbonzini@redhat.com>
 References: <20220622192710.2547152-1-pbonzini@redhat.com>
 MIME-Version: 1.0
@@ -59,53 +59,76 @@ X-Mailing-List: linux-mips@vger.kernel.org
 
 From: David Matlack <dmatlack@google.com>
 
-Move the code that write-protects newly-shadowed guest page tables into
-account_shadowed(). This avoids a extra gfn-to-memslot lookup and is a
-more logical place for this code to live. But most importantly, this
-reduces kvm_mmu_alloc_shadow_page()'s reliance on having a struct
-kvm_vcpu pointer, which will be necessary when creating new shadow pages
-during VM ioctls for eager page splitting.
-
-Note, it is safe to drop the role.level == PG_LEVEL_4K check since
-account_shadowed() returns early if role.level > PG_LEVEL_4K.
+Consolidate kvm_mmu_alloc_page() and kvm_mmu_alloc_shadow_page() under
+the latter so that all shadow page allocation and initialization happens
+in one place.
 
 No functional change intended.
 
-Reviewed-by: Sean Christopherson <seanjc@google.com>
 Signed-off-by: David Matlack <dmatlack@google.com>
-Message-Id: <20220516232138.1783324-10-dmatlack@google.com>
+Message-Id: <20220516232138.1783324-8-dmatlack@google.com>
 Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
 ---
- arch/x86/kvm/mmu/mmu.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ arch/x86/kvm/mmu/mmu.c | 39 +++++++++++++++++----------------------
+ 1 file changed, 17 insertions(+), 22 deletions(-)
 
 diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-index bd45364bf465..2602c3642f23 100644
+index a59fe860da29..8b84cdd8c6cd 100644
 --- a/arch/x86/kvm/mmu/mmu.c
 +++ b/arch/x86/kvm/mmu/mmu.c
-@@ -766,6 +766,9 @@ static void account_shadowed(struct kvm *kvm, struct kvm_mmu_page *sp)
- 						    KVM_PAGE_TRACK_WRITE);
- 
- 	kvm_mmu_gfn_disallow_lpage(slot, gfn);
-+
-+	if (kvm_mmu_slot_gfn_write_protect(kvm, slot, gfn, PG_LEVEL_4K))
-+		kvm_flush_remote_tlbs_with_address(kvm, gfn, 1);
+@@ -1664,27 +1664,6 @@ static void drop_parent_pte(struct kvm_mmu_page *sp,
+ 	mmu_spte_clear_no_track(parent_pte);
  }
  
- void account_huge_nx_page(struct kvm *kvm, struct kvm_mmu_page *sp)
-@@ -2072,11 +2075,8 @@ static struct kvm_mmu_page *kvm_mmu_alloc_shadow_page(struct kvm_vcpu *vcpu,
+-static struct kvm_mmu_page *kvm_mmu_alloc_page(struct kvm_vcpu *vcpu, bool direct)
+-{
+-	struct kvm_mmu_page *sp;
+-
+-	sp = kvm_mmu_memory_cache_alloc(&vcpu->arch.mmu_page_header_cache);
+-	sp->spt = kvm_mmu_memory_cache_alloc(&vcpu->arch.mmu_shadow_page_cache);
+-	if (!direct)
+-		sp->gfns = kvm_mmu_memory_cache_alloc(&vcpu->arch.mmu_gfn_array_cache);
+-	set_page_private(virt_to_page(sp->spt), (unsigned long)sp);
+-
+-	/*
+-	 * active_mmu_pages must be a FIFO list, as kvm_zap_obsolete_pages()
+-	 * depends on valid pages being added to the head of the list.  See
+-	 * comments in kvm_zap_obsolete_pages().
+-	 */
+-	sp->mmu_valid_gen = vcpu->kvm->arch.mmu_valid_gen;
+-	list_add(&sp->link, &vcpu->kvm->arch.active_mmu_pages);
+-	kvm_mod_used_mmu_pages(vcpu->kvm, +1);
+-	return sp;
+-}
+-
+ static void mark_unsync(u64 *spte);
+ static void kvm_mmu_mark_parents_unsync(struct kvm_mmu_page *sp)
+ {
+@@ -2072,7 +2051,23 @@ static struct kvm_mmu_page *kvm_mmu_alloc_shadow_page(struct kvm_vcpu *vcpu,
+ 						      struct hlist_head *sp_list,
+ 						      union kvm_mmu_page_role role)
+ {
+-	struct kvm_mmu_page *sp = kvm_mmu_alloc_page(vcpu, role.direct);
++	struct kvm_mmu_page *sp;
++
++	sp = kvm_mmu_memory_cache_alloc(&vcpu->arch.mmu_page_header_cache);
++	sp->spt = kvm_mmu_memory_cache_alloc(&vcpu->arch.mmu_shadow_page_cache);
++	if (!role.direct)
++		sp->gfns = kvm_mmu_memory_cache_alloc(&vcpu->arch.mmu_gfn_array_cache);
++
++	set_page_private(virt_to_page(sp->spt), (unsigned long)sp);
++
++	/*
++	 * active_mmu_pages must be a FIFO list, as kvm_zap_obsolete_pages()
++	 * depends on valid pages being added to the head of the list.  See
++	 * comments in kvm_zap_obsolete_pages().
++	 */
++	sp->mmu_valid_gen = vcpu->kvm->arch.mmu_valid_gen;
++	list_add(&sp->link, &vcpu->kvm->arch.active_mmu_pages);
++	kvm_mod_used_mmu_pages(vcpu->kvm, +1);
+ 
  	sp->gfn = gfn;
  	sp->role = role;
- 	hlist_add_head(&sp->hash_link, sp_list);
--	if (sp_has_gptes(sp)) {
-+	if (sp_has_gptes(sp))
- 		account_shadowed(vcpu->kvm, sp);
--		if (role.level == PG_LEVEL_4K && kvm_vcpu_write_protect_gfn(vcpu, gfn))
--			kvm_flush_remote_tlbs_with_address(vcpu->kvm, gfn, 1);
--	}
- 
- 	return sp;
- }
 -- 
 2.31.1
 

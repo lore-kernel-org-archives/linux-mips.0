@@ -2,40 +2,40 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7124DCCA479
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C4ED8CCA47F
 	for <linux-mips@archiver.kernel.org>; Wed, 22 Jun 2022 19:27:27 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1356638AbiFVT1Y (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 22 Jun 2022 15:27:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33306 "EHLO
+        id S1357211AbiFVT10 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 22 Jun 2022 15:27:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33446 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236619AbiFVT1U (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 22 Jun 2022 15:27:20 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 4F3E63AA44
-        for <linux-mips@vger.kernel.org>; Wed, 22 Jun 2022 12:27:17 -0700 (PDT)
+        with ESMTP id S242195AbiFVT1X (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 22 Jun 2022 15:27:23 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 92BF83B3D4
+        for <linux-mips@vger.kernel.org>; Wed, 22 Jun 2022 12:27:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1655926036;
+        s=mimecast20190719; t=1655926037;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=TANehd7tekYb0UZg4NW5mydgr8WNy/wIBmS4rIExPPQ=;
-        b=R838LOISy23syi+rbq0Z53zfi2zpr8DaB9jh4pX33eCgEL+oEScc+8HfYV2eqDNH29FW9h
-        viEnAcPbQSpJyi016jNe+xufjPybqyHoKAUz91Q5w3S9Nk/ZiBBVGDPlVC7xuzKGP9Xejh
-        NGiMO9g6LFPxs+/VjsybvgUxuneRK4Y=
-Received: from mimecast-mx02.redhat.com (mx3-rdu2.redhat.com
- [66.187.233.73]) by relay.mimecast.com with ESMTP with STARTTLS
+        bh=UetEegWFrSI4DxaQkVqPZAaYbNMpqePnjSLMmI2uAtM=;
+        b=bbjrFrxnl2ANl1v4KT8S3JVcvqOFGpheUXUJ0/dvPQDQx0tDFF67zJ2bE3XqFoMusSQWRI
+        whxcNX2026+qEdYKA2G1oxbvU6BeuYGRqG+6JasbbiT4AcLf1kePP4LlBCLIkcK+wyrGax
+        q4zdZD0LzYwoq5AOyvYn+eUuj9+drnA=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-135-rWmigOwvMd6tIaaXzUsX2A-1; Wed, 22 Jun 2022 15:27:13 -0400
-X-MC-Unique: rWmigOwvMd6tIaaXzUsX2A-1
+ us-mta-464-nl_lej8DNwCY7ROTjZCaaA-1; Wed, 22 Jun 2022 15:27:12 -0400
+X-MC-Unique: nl_lej8DNwCY7ROTjZCaaA-1
 Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 5A440294EDC2;
-        Wed, 22 Jun 2022 19:27:12 +0000 (UTC)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 8D5ED102F0C1;
+        Wed, 22 Jun 2022 19:27:11 +0000 (UTC)
 Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 0410C1121314;
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 36C8B1121314;
         Wed, 22 Jun 2022 19:27:11 +0000 (UTC)
 From:   Paolo Bonzini <pbonzini@redhat.com>
 To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
@@ -44,9 +44,9 @@ Cc:     maz@kernel.org, anup@brainfault.org, seanjc@google.com,
         kvmarm@lists.cs.columbia.edu, linux-mips@vger.kernel.org,
         kvm-riscv@lists.infradead.org, pfeiner@google.com,
         jiangshanlai@gmail.com, dmatlack@google.com
-Subject: [PATCH v7 03/23] KVM: x86/mmu: Stop passing "direct" to mmu_alloc_root()
-Date:   Wed, 22 Jun 2022 15:26:50 -0400
-Message-Id: <20220622192710.2547152-4-pbonzini@redhat.com>
+Subject: [PATCH v7 01/23] KVM: x86/mmu: Optimize MMU page cache lookup for all direct SPs
+Date:   Wed, 22 Jun 2022 15:26:48 -0400
+Message-Id: <20220622192710.2547152-2-pbonzini@redhat.com>
 In-Reply-To: <20220622192710.2547152-1-pbonzini@redhat.com>
 References: <20220622192710.2547152-1-pbonzini@redhat.com>
 MIME-Version: 1.0
@@ -59,69 +59,52 @@ X-Mailing-List: linux-mips@vger.kernel.org
 
 From: David Matlack <dmatlack@google.com>
 
-The "direct" argument is vcpu->arch.mmu->root_role.direct,
-because unlike non-root page tables, it's impossible to have
-a direct root in an indirect MMU.  So just use that.
+Commit fb58a9c345f6 ("KVM: x86/mmu: Optimize MMU page cache lookup for
+fully direct MMUs") skipped the unsync checks and write flood clearing
+for full direct MMUs. We can extend this further to skip the checks for
+all direct shadow pages. Direct shadow pages in indirect MMUs (i.e.
+shadow paging) are used when shadowing a guest huge page with smaller
+pages. Such direct shadow pages, like their counterparts in fully direct
+MMUs, are never marked unsynced or have a non-zero write-flooding count.
 
-Suggested-by: Lai Jiangshan <jiangshanlai@gmail.com>
+Checking sp->role.direct also generates better code than checking
+direct_map because, due to register pressure, direct_map has to get
+shoved onto the stack and then pulled back off.
+
+No functional change intended.
+
+Reviewed-by: Lai Jiangshan <jiangshanlai@gmail.com>
+Reviewed-by: Sean Christopherson <seanjc@google.com>
+Reviewed-by: Peter Xu <peterx@redhat.com>
 Signed-off-by: David Matlack <dmatlack@google.com>
-Message-Id: <20220516232138.1783324-4-dmatlack@google.com>
+Message-Id: <20220516232138.1783324-2-dmatlack@google.com>
 Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
 ---
- arch/x86/kvm/mmu/mmu.c | 11 ++++++-----
- 1 file changed, 6 insertions(+), 5 deletions(-)
+ arch/x86/kvm/mmu/mmu.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-index 844b58ddb3bb..2e30398fe59f 100644
+index 27b2a5603496..c0afb4f1c8ae 100644
 --- a/arch/x86/kvm/mmu/mmu.c
 +++ b/arch/x86/kvm/mmu/mmu.c
-@@ -3369,8 +3369,9 @@ static int mmu_check_root(struct kvm_vcpu *vcpu, gfn_t root_gfn)
- }
- 
- static hpa_t mmu_alloc_root(struct kvm_vcpu *vcpu, gfn_t gfn, gva_t gva,
--			    u8 level, bool direct)
-+			    u8 level)
+@@ -2000,7 +2000,6 @@ static struct kvm_mmu_page *kvm_mmu_get_page(struct kvm_vcpu *vcpu,
+ 					     int direct,
+ 					     unsigned int access)
  {
-+	bool direct = vcpu->arch.mmu->root_role.direct;
- 	struct kvm_mmu_page *sp;
- 
- 	sp = kvm_mmu_get_page(vcpu, gfn, gva, level, direct, ACC_ALL);
-@@ -3396,7 +3397,7 @@ static int mmu_alloc_direct_roots(struct kvm_vcpu *vcpu)
- 		root = kvm_tdp_mmu_get_vcpu_root_hpa(vcpu);
- 		mmu->root.hpa = root;
- 	} else if (shadow_root_level >= PT64_ROOT_4LEVEL) {
--		root = mmu_alloc_root(vcpu, 0, 0, shadow_root_level, true);
-+		root = mmu_alloc_root(vcpu, 0, 0, shadow_root_level);
- 		mmu->root.hpa = root;
- 	} else if (shadow_root_level == PT32E_ROOT_LEVEL) {
- 		if (WARN_ON_ONCE(!mmu->pae_root)) {
-@@ -3408,7 +3409,7 @@ static int mmu_alloc_direct_roots(struct kvm_vcpu *vcpu)
- 			WARN_ON_ONCE(IS_VALID_PAE_ROOT(mmu->pae_root[i]));
- 
- 			root = mmu_alloc_root(vcpu, i << (30 - PAGE_SHIFT),
--					      i << 30, PT32_ROOT_LEVEL, true);
-+					      i << 30, PT32_ROOT_LEVEL);
- 			mmu->pae_root[i] = root | PT_PRESENT_MASK |
- 					   shadow_me_value;
- 		}
-@@ -3532,7 +3533,7 @@ static int mmu_alloc_shadow_roots(struct kvm_vcpu *vcpu)
- 	 */
- 	if (mmu->cpu_role.base.level >= PT64_ROOT_4LEVEL) {
- 		root = mmu_alloc_root(vcpu, root_gfn, 0,
--				      mmu->root_role.level, false);
-+				      mmu->root_role.level);
- 		mmu->root.hpa = root;
- 		goto set_root_pgd;
- 	}
-@@ -3578,7 +3579,7 @@ static int mmu_alloc_shadow_roots(struct kvm_vcpu *vcpu)
+-	bool direct_mmu = vcpu->arch.mmu->root_role.direct;
+ 	union kvm_mmu_page_role role;
+ 	struct hlist_head *sp_list;
+ 	unsigned quadrant;
+@@ -2060,7 +2059,8 @@ static struct kvm_mmu_page *kvm_mmu_get_page(struct kvm_vcpu *vcpu,
+ 			continue;
  		}
  
- 		root = mmu_alloc_root(vcpu, root_gfn, i << 30,
--				      PT32_ROOT_LEVEL, false);
-+				      PT32_ROOT_LEVEL);
- 		mmu->pae_root[i] = root | pm_mask;
- 	}
+-		if (direct_mmu)
++		/* unsync and write-flooding only apply to indirect SPs. */
++		if (sp->role.direct)
+ 			goto trace_get_page;
  
+ 		if (sp->unsync) {
 -- 
 2.31.1
 

@@ -2,413 +2,499 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BD1C5CCA495
-	for <linux-mips@archiver.kernel.org>; Thu, 23 Jun 2022 12:56:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 93978C43334
+	for <linux-mips@archiver.kernel.org>; Thu, 23 Jun 2022 16:18:11 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231889AbiFWM4i (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 23 Jun 2022 08:56:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41854 "EHLO
+        id S232080AbiFWQSL (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 23 Jun 2022 12:18:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52142 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232146AbiFWM4c (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Thu, 23 Jun 2022 08:56:32 -0400
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com [67.231.152.168])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83D804BFFD;
-        Thu, 23 Jun 2022 05:56:27 -0700 (PDT)
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
-        by mx0b-001ae601.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 25NBvlrM011978;
-        Thu, 23 Jun 2022 07:53:05 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=PODMain02222019;
- bh=/9B3Tv4x1R+WiyZZkgmE6X35871tNRl0teorevLnTSs=;
- b=nwfHcMkRaJARE75hfPCpExYvki9wShlIy05jrU9nPtv/totqPNEq4oL4cVXkobxQr/OV
- 5BnuO1e9KG85AJrMFweU6I5Xt1xx5pr3+u8VMbVxu3QZ2tQ9z/fkShts3NKBll1jHboG
- KvTlejLRB8IEiB5WEjrYhDsW+j2ykRNjvdu6UvgGJLXxg0M1GICTL5LF4c4G1NfkltNG
- dcu6hlStzUcYUYsiZXW0ckycDCE9eM4dz3fZU4kRSXE05qHR9YXMj9SMhmRHNyM3Ppxm
- RbbHVq+eLGPZ5vTbg7jsYxexvckL9wZyQ8vXCu/YEFLcvAJdZ68gDf99hwoEu/KM4nYq wg== 
-Received: from ediex02.ad.cirrus.com ([84.19.233.68])
-        by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3gsb4p6wvp-17
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Thu, 23 Jun 2022 07:53:05 -0500
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.28; Thu, 23 Jun
- 2022 13:52:55 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.1.2375.28 via Frontend
- Transport; Thu, 23 Jun 2022 13:52:55 +0100
-Received: from algalon.ad.cirrus.com (algalon.ad.cirrus.com [198.90.251.122])
-        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 2405311D3;
-        Thu, 23 Jun 2022 12:52:55 +0000 (UTC)
-From:   Charles Keepax <ckeepax@opensource.cirrus.com>
-To:     <broonie@kernel.org>
-CC:     <lgirdwood@gmail.com>, <kuninori.morimoto.gx@renesas.com>,
-        <mripard@kernel.org>, <airlied@linux.ie>, <daniel@ffwll.ch>,
-        <vkoul@kernel.org>, <nicolas.ferre@microchip.com>,
-        <nsaenz@kernel.org>, <shawnguo@kernel.org>, <linux-imx@nxp.com>,
-        <cezary.rojewski@intel.com>,
-        <pierre-louis.bossart@linux.intel.com>,
-        <linux-mips@vger.kernel.org>, <linux-amlogic@lists.infradead.org>,
-        <daniel@zonque.org>, <srinivas.kandagatla@linaro.org>,
-        <linux-rockchip@lists.infradead.org>, <krzk@kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-sunxi@lists.linux.dev>, <linux-tegra@vger.kernel.org>,
-        <linux-omap@vger.kernel.org>, <linux-xtensa@linux-xtensa.org>,
-        <peter.ujfalusi@gmail.com>, <jarkko.nikula@bitmer.com>,
-        <heiko@sntech.de>, <jbrunet@baylibre.com>, <kernel@pengutronix.de>,
-        <alsa-devel@alsa-project.org>, <patches@opensource.cirrus.com>,
-        <dri-devel@lists.freedesktop.org>,
-        <linux-rpi-kernel@lists.infradead.org>,
-        <frattaroli.nicolas@gmail.com>
-Subject: [PATCH v2 49/96] ASoC: cs*: Remove now redundant non_legacy_dai_naming flag
-Date:   Thu, 23 Jun 2022 13:52:03 +0100
-Message-ID: <20220623125250.2355471-50-ckeepax@opensource.cirrus.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20220623125250.2355471-1-ckeepax@opensource.cirrus.com>
-References: <20220623125250.2355471-1-ckeepax@opensource.cirrus.com>
+        with ESMTP id S231434AbiFWQSJ (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Thu, 23 Jun 2022 12:18:09 -0400
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAD4A113E
+        for <linux-mips@vger.kernel.org>; Thu, 23 Jun 2022 09:18:06 -0700 (PDT)
+Received: by mail-lf1-x12d.google.com with SMTP id z21so307989lfb.12
+        for <linux-mips@vger.kernel.org>; Thu, 23 Jun 2022 09:18:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=XY1W1mKHWqC6JBhKdaZEdWv44Lzb7X/o82EUgjd//SA=;
+        b=JkiFunDM2TCfNuZkrjD3IT0qRgCs8rQZ4pN+xY2TQvxVkjOIhcxSzj3R+0I3zt02ld
+         1TKu9fmxY4cuoVYdqngzyNTZJjgkFBJxsRF6p5WVj7fdJzvJ8ApoaEhq2o92Q8r7/9zd
+         SMJJaW/CdcxyhpUn4a3VdQSM4Lmgooef/hn18EB3ZbwxgkFDTJss3pflrCic31WvQkkf
+         5RpH87rCznFELMHuZP3RXiThh2KiwujffkjtTHw9a/1dAdNDC+yDV6a3mLEktX///Y9+
+         mcmzKsdD93JdgA4g1qNkc+8vgxQtcIBLE97MggWaej7UT2bpLjVyHrJnjMcB57w2PIMe
+         8Ghw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=XY1W1mKHWqC6JBhKdaZEdWv44Lzb7X/o82EUgjd//SA=;
+        b=oJ1Apff5KWGdbKN6iJuqrf1zxJPoK6qTEmdF9k8Yy5VFP9BGGlZnrhyb/4JWYCc5Pw
+         7ltGKfMu77Ry7vItkV5+QAy/pmSNRuItU5qHGstfc9KMI1Ta+Lk6wZuQIEXTVFK1ad4I
+         nFN0NR0RvOcN5yM+4ZZJ4m+1UD5ikodcYalEVbly6PQoMLsqLjblG2TgTEZSw2ovcvY2
+         BHOtMXoV5jucr0hcVyV8N3BsPt5M6+Qa5up/NLr1lMrPHDjwAg9bpraqiPcUkIDT4+bi
+         qBDqVazpsOlwBd/mY7rGcVwOMcCwd7NgRjKtYWyGIavuvDVbeMxK0biIVrKd2KFphcb8
+         O4jQ==
+X-Gm-Message-State: AJIora+GO3VqSaZdenC02hHHRvNb1mHtqd6FZBvkDYj0HnPk5vGYLjhb
+        F0mvorNrcayHX8KNh5ce2AFEHApZVA77oSLA9o6wqQ==
+X-Google-Smtp-Source: AGRyM1v51tmlNaPRLb/9IynHNT3iJOxkSdiI90POZx1bY+dbQw9ViydYq7Pf3pvVL06ddH8PPgUNlmWoBHKHYrJiTUA=
+X-Received: by 2002:a05:6512:3992:b0:47c:48fc:3c62 with SMTP id
+ j18-20020a056512399200b0047c48fc3c62mr5880295lfu.102.1656001084812; Thu, 23
+ Jun 2022 09:18:04 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-GUID: 0rLPDDbV6tR66bkSPf8IPzzNU8ZWDRS2
-X-Proofpoint-ORIG-GUID: 0rLPDDbV6tR66bkSPf8IPzzNU8ZWDRS2
-X-Proofpoint-Spam-Reason: safe
+References: <20220622192710.2547152-1-pbonzini@redhat.com> <20220622192710.2547152-23-pbonzini@redhat.com>
+In-Reply-To: <20220622192710.2547152-23-pbonzini@redhat.com>
+From:   David Matlack <dmatlack@google.com>
+Date:   Thu, 23 Jun 2022 09:17:38 -0700
+Message-ID: <CALzav=fH_9_LKVE0_UCftwy2KZaB3nSBoWU07aPWALag4_mcHQ@mail.gmail.com>
+Subject: Re: [PATCH v7 22/23] KVM: x86/mmu: Extend Eager Page Splitting to
+ nested MMUs
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        kvm list <kvm@vger.kernel.org>, Marc Zyngier <maz@kernel.org>,
+        Anup Patel <anup@brainfault.org>,
+        Sean Christopherson <seanjc@google.com>,
+        Ben Gardon <bgardon@google.com>, Peter Xu <peterx@redhat.com>,
+        "Maciej S. Szmigiero" <maciej.szmigiero@oracle.com>,
+        KVMARM <kvmarm@lists.cs.columbia.edu>,
+        LinuxMIPS <linux-mips@vger.kernel.org>,
+        "open list:KERNEL VIRTUAL MACHINE FOR RISC-V (KVM/riscv)" 
+        <kvm-riscv@lists.infradead.org>, Peter Feiner <pfeiner@google.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-The ASoC core has now been changed to default to the non-legacy DAI
-naming, as such drivers using the new scheme no longer need to specify
-the non_legacy_dai_naming flag.
+On Wed, Jun 22, 2022 at 12:27 PM Paolo Bonzini <pbonzini@redhat.com> wrote:
+>
+> From: David Matlack <dmatlack@google.com>
+>
+> Add support for Eager Page Splitting pages that are mapped by nested
+> MMUs. Walk through the rmap first splitting all 1GiB pages to 2MiB
+> pages, and then splitting all 2MiB pages to 4KiB pages.
+>
+> Note, Eager Page Splitting is limited to nested MMUs as a policy rather
+> than due to any technical reason (the sp->role.guest_mode check could
+> just be deleted and Eager Page Splitting would work correctly for all
+> shadow MMU pages). There is really no reason to support Eager Page
+> Splitting for tdp_mmu=N, since such support will eventually be phased
+> out, and there is no current use case supporting Eager Page Splitting on
+> hosts where TDP is either disabled or unavailable in hardware.
+> Furthermore, future improvements to nested MMU scalability may diverge
+> the code from the legacy shadow paging implementation. These
+> improvements will be simpler to make if Eager Page Splitting does not
+> have to worry about legacy shadow paging.
+>
+> Splitting huge pages mapped by nested MMUs requires dealing with some
+> extra complexity beyond that of the TDP MMU:
+>
+> (1) The shadow MMU has a limit on the number of shadow pages that are
+>     allowed to be allocated. So, as a policy, Eager Page Splitting
+>     refuses to split if there are KVM_MIN_FREE_MMU_PAGES or fewer
+>     pages available.
+>
+> (2) Splitting a huge page may end up re-using an existing lower level
+>     shadow page tables. This is unlike the TDP MMU which always allocates
+>     new shadow page tables when splitting.
+>
+> (3) When installing the lower level SPTEs, they must be added to the
+>     rmap which may require allocating additional pte_list_desc structs.
+>
+> Case (2) is especially interesting since it may require a TLB flush,
+> unlike the TDP MMU which can fully split huge pages without any TLB
+> flushes. Specifically, an existing lower level page table may point to
+> even lower level page tables that are not fully populated, effectively
+> unmapping a portion of the huge page, which requires a flush.  As of
+> this commit, a flush is always done always after dropping the huge page
+> and before installing the lower level page table.
+>
+> This TLB flush could instead be delayed until the MMU lock is about to be
+> dropped, which would batch flushes for multiple splits.  However these
+> flushes should be rare in practice (a huge page must be aliased in
+> multiple SPTEs and have been split for NX Huge Pages in only some of
+> them). Flushing immediately is simpler to plumb and also reduces the
+> chances of tripping over a CPU bug (e.g. see iTLB multihit).
+>
+> Suggested-by: Peter Feiner <pfeiner@google.com>
+> [ This commit is based off of the original implementation of Eager Page
+>   Splitting from Peter in Google's kernel from 2016. ]
+> Signed-off-by: David Matlack <dmatlack@google.com>
+> Message-Id: <20220516232138.1783324-23-dmatlack@google.com>
+> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+> ---
+>  .../admin-guide/kernel-parameters.txt         |   3 +-
+>  arch/x86/include/asm/kvm_host.h               |  22 ++
+>  arch/x86/kvm/mmu/mmu.c                        | 261 +++++++++++++++++-
+>  3 files changed, 277 insertions(+), 9 deletions(-)
+>
+> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+> index 97c16aa2f53f..329f0f274e2b 100644
+> --- a/Documentation/admin-guide/kernel-parameters.txt
+> +++ b/Documentation/admin-guide/kernel-parameters.txt
+> @@ -2418,8 +2418,7 @@
+>                         the KVM_CLEAR_DIRTY ioctl, and only for the pages being
+>                         cleared.
+>
+> -                       Eager page splitting currently only supports splitting
+> -                       huge pages mapped by the TDP MMU.
+> +                       Eager page splitting is only supported when kvm.tdp_mmu=Y.
+>
+>                         Default is Y (on).
+>
+> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
+> index 64efe8c90c31..665667d61caf 100644
+> --- a/arch/x86/include/asm/kvm_host.h
+> +++ b/arch/x86/include/asm/kvm_host.h
+> @@ -1338,6 +1338,28 @@ struct kvm_arch {
+>         u32 max_vcpu_ids;
+>
+>         bool disable_nx_huge_pages;
+> +
+> +       /*
+> +        * Memory caches used to allocate shadow pages when performing eager
+> +        * page splitting. No need for a shadowed_info_cache since eager page
+> +        * splitting only allocates direct shadow pages.
+> +        *
+> +        * Protected by kvm->slots_lock.
+> +        */
+> +       struct kvm_mmu_memory_cache split_shadow_page_cache;
+> +       struct kvm_mmu_memory_cache split_page_header_cache;
+> +
+> +       /*
+> +        * Memory cache used to allocate pte_list_desc structs while splitting
+> +        * huge pages. In the worst case, to split one huge page, 512
+> +        * pte_list_desc structs are needed to add each lower level leaf sptep
+> +        * to the rmap plus 1 to extend the parent_ptes rmap of the lower level
+> +        * page table.
+> +        *
+> +        * Protected by kvm->slots_lock.
+> +        */
+> +#define SPLIT_DESC_CACHE_MIN_NR_OBJECTS (SPTE_ENT_PER_PAGE + 1)
+> +       struct kvm_mmu_memory_cache split_desc_cache;
+>  };
+>
+>  struct kvm_vm_stat {
+> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+> index bf1ae5ebf41b..22681931921f 100644
+> --- a/arch/x86/kvm/mmu/mmu.c
+> +++ b/arch/x86/kvm/mmu/mmu.c
+> @@ -5942,9 +5942,25 @@ int kvm_mmu_init_vm(struct kvm *kvm)
+>         node->track_write = kvm_mmu_pte_write;
+>         node->track_flush_slot = kvm_mmu_invalidate_zap_pages_in_memslot;
+>         kvm_page_track_register_notifier(kvm, node);
+> +
+> +       kvm->arch.split_page_header_cache.kmem_cache = mmu_page_header_cache;
+> +       kvm->arch.split_page_header_cache.gfp_zero = __GFP_ZERO;
+> +
+> +       kvm->arch.split_shadow_page_cache.gfp_zero = __GFP_ZERO;
+> +
+> +       kvm->arch.split_desc_cache.kmem_cache = pte_list_desc_cache;
+> +       kvm->arch.split_desc_cache.gfp_zero = __GFP_ZERO;
+> +
+>         return 0;
+>  }
+>
+> +static void mmu_free_vm_memory_caches(struct kvm *kvm)
+> +{
+> +       kvm_mmu_free_memory_cache(&kvm->arch.split_desc_cache);
+> +       kvm_mmu_free_memory_cache(&kvm->arch.split_page_header_cache);
+> +       kvm_mmu_free_memory_cache(&kvm->arch.split_shadow_page_cache);
+> +}
+> +
+>  void kvm_mmu_uninit_vm(struct kvm *kvm)
+>  {
+>         struct kvm_page_track_notifier_node *node = &kvm->arch.mmu_sp_tracker;
+> @@ -5952,6 +5968,8 @@ void kvm_mmu_uninit_vm(struct kvm *kvm)
+>         kvm_page_track_unregister_notifier(kvm, node);
+>
+>         kvm_mmu_uninit_tdp_mmu(kvm);
+> +
+> +       mmu_free_vm_memory_caches(kvm);
+>  }
+>
+>  static bool __kvm_zap_rmaps(struct kvm *kvm, gfn_t gfn_start, gfn_t gfn_end)
+> @@ -6073,15 +6091,237 @@ void kvm_mmu_slot_remove_write_access(struct kvm *kvm,
+>                 kvm_arch_flush_remote_tlbs_memslot(kvm, memslot);
+>  }
+>
+> +static inline bool need_topup(struct kvm_mmu_memory_cache *cache, int min)
+> +{
+> +       return kvm_mmu_memory_cache_nr_free_objects(cache) < min;
+> +}
+> +
+> +static bool need_topup_split_caches_or_resched(struct kvm *kvm)
+> +{
+> +       if (need_resched() || rwlock_needbreak(&kvm->mmu_lock))
+> +               return true;
+> +
+> +       /*
+> +        * In the worst case, SPLIT_DESC_CACHE_MIN_NR_OBJECTS descriptors are needed
+> +        * to split a single huge page. Calculating how many are actually needed
+> +        * is possible but not worth the complexity.
+> +        */
+> +       return need_topup(&kvm->arch.split_desc_cache, SPLIT_DESC_CACHE_MIN_NR_OBJECTS) ||
+> +              need_topup(&kvm->arch.split_page_header_cache, 1) ||
+> +              need_topup(&kvm->arch.split_shadow_page_cache, 1);
+> +}
+> +
+> +static int topup_split_caches(struct kvm *kvm)
+> +{
+> +       int r;
+> +
+> +       lockdep_assert_held(&kvm->slots_lock);
+> +
+> +       /*
+> +        * It's common to need all SPLIT_DESC_CACHE_MIN_NR_OBJECTS (513) objects
+> +        * when splitting a page, but setting capacity == min would cause
+> +        * KVM to drop mmu_lock even if just one object was consumed from the
+> +        * cache.  So make capacity larger than min and handle two huge pages
+> +        * without having to drop the lock.
 
-Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
----
- sound/soc/codecs/cs35l32.c | 1 -
- sound/soc/codecs/cs35l33.c | 1 -
- sound/soc/codecs/cs35l34.c | 1 -
- sound/soc/codecs/cs35l35.c | 1 -
- sound/soc/codecs/cs35l36.c | 1 -
- sound/soc/codecs/cs4234.c  | 1 -
- sound/soc/codecs/cs4265.c  | 1 -
- sound/soc/codecs/cs4270.c  | 1 -
- sound/soc/codecs/cs4271.c  | 1 -
- sound/soc/codecs/cs42l42.c | 1 -
- sound/soc/codecs/cs42l51.c | 1 -
- sound/soc/codecs/cs42l52.c | 1 -
- sound/soc/codecs/cs42l56.c | 1 -
- sound/soc/codecs/cs42l73.c | 1 -
- sound/soc/codecs/cs42xx8.c | 1 -
- sound/soc/codecs/cs43130.c | 1 -
- sound/soc/codecs/cs4341.c  | 1 -
- sound/soc/codecs/cs4349.c  | 1 -
- sound/soc/codecs/cs47l15.c | 1 -
- sound/soc/codecs/cs47l24.c | 1 -
- sound/soc/codecs/cs47l35.c | 1 -
- sound/soc/codecs/cs47l85.c | 1 -
- sound/soc/codecs/cs47l90.c | 1 -
- sound/soc/codecs/cs47l92.c | 1 -
- sound/soc/codecs/cs53l30.c | 1 -
- 25 files changed, 25 deletions(-)
+I was going to do some testing this week to confirm, but IIUC KVM will
+only allocate from split_desc_cache if the L1 hypervisor has aliased a
+huge page in multiple {E,N}PT12 page table entries. i.e. L1 is mapping
+a huge page into an L2 multiple times, or mapped into multiple L2s.
+This should be common in traditional, process-level, shadow paging,
+but I think will be quite rare for nested shadow paging.
 
-diff --git a/sound/soc/codecs/cs35l32.c b/sound/soc/codecs/cs35l32.c
-index badfc55bc5fa0..8ff6f66be86fa 100644
---- a/sound/soc/codecs/cs35l32.c
-+++ b/sound/soc/codecs/cs35l32.c
-@@ -236,7 +236,6 @@ static const struct snd_soc_component_driver soc_component_dev_cs35l32 = {
- 	.idle_bias_on		= 1,
- 	.use_pmdown_time	= 1,
- 	.endianness		= 1,
--	.non_legacy_dai_naming	= 1,
- };
- 
- /* Current and threshold powerup sequence Pg37 in datasheet */
-diff --git a/sound/soc/codecs/cs35l33.c b/sound/soc/codecs/cs35l33.c
-index 47dc0f6d90a2a..082025fa0370c 100644
---- a/sound/soc/codecs/cs35l33.c
-+++ b/sound/soc/codecs/cs35l33.c
-@@ -840,7 +840,6 @@ static const struct snd_soc_component_driver soc_component_dev_cs35l33 = {
- 	.num_dapm_routes	= ARRAY_SIZE(cs35l33_audio_map),
- 	.use_pmdown_time	= 1,
- 	.endianness		= 1,
--	.non_legacy_dai_naming	= 1,
- };
- 
- static const struct regmap_config cs35l33_regmap = {
-diff --git a/sound/soc/codecs/cs35l34.c b/sound/soc/codecs/cs35l34.c
-index 50d509a060713..472ac982779be 100644
---- a/sound/soc/codecs/cs35l34.c
-+++ b/sound/soc/codecs/cs35l34.c
-@@ -787,7 +787,6 @@ static const struct snd_soc_component_driver soc_component_dev_cs35l34 = {
- 	.idle_bias_on		= 1,
- 	.use_pmdown_time	= 1,
- 	.endianness		= 1,
--	.non_legacy_dai_naming	= 1,
- };
- 
- static struct regmap_config cs35l34_regmap = {
-diff --git a/sound/soc/codecs/cs35l35.c b/sound/soc/codecs/cs35l35.c
-index 6b70afb70a674..714a759dca21b 100644
---- a/sound/soc/codecs/cs35l35.c
-+++ b/sound/soc/codecs/cs35l35.c
-@@ -1087,7 +1087,6 @@ static const struct snd_soc_component_driver soc_component_dev_cs35l35 = {
- 	.idle_bias_on		= 1,
- 	.use_pmdown_time	= 1,
- 	.endianness		= 1,
--	.non_legacy_dai_naming	= 1,
- };
- 
- static struct regmap_config cs35l35_regmap = {
-diff --git a/sound/soc/codecs/cs35l36.c b/sound/soc/codecs/cs35l36.c
-index dfe85dc2cd20f..4dc13e6f4874c 100644
---- a/sound/soc/codecs/cs35l36.c
-+++ b/sound/soc/codecs/cs35l36.c
-@@ -1300,7 +1300,6 @@ static const struct snd_soc_component_driver soc_component_dev_cs35l36 = {
- 	.idle_bias_on		= 1,
- 	.use_pmdown_time	= 1,
- 	.endianness		= 1,
--	.non_legacy_dai_naming	= 1,
- };
- 
- static struct regmap_config cs35l36_regmap = {
-diff --git a/sound/soc/codecs/cs4234.c b/sound/soc/codecs/cs4234.c
-index 881c5ba70c0ed..b49a3cf21ebe2 100644
---- a/sound/soc/codecs/cs4234.c
-+++ b/sound/soc/codecs/cs4234.c
-@@ -660,7 +660,6 @@ static const struct snd_soc_component_driver soc_component_cs4234 = {
- 	.controls		= cs4234_snd_controls,
- 	.num_controls		= ARRAY_SIZE(cs4234_snd_controls),
- 	.set_bias_level		= cs4234_set_bias_level,
--	.non_legacy_dai_naming	= 1,
- 	.idle_bias_on		= 1,
- 	.suspend_bias_off	= 1,
- 	.endianness		= 1,
-diff --git a/sound/soc/codecs/cs4265.c b/sound/soc/codecs/cs4265.c
-index 86bfa8d5ec787..76c19802d5fe1 100644
---- a/sound/soc/codecs/cs4265.c
-+++ b/sound/soc/codecs/cs4265.c
-@@ -553,7 +553,6 @@ static const struct snd_soc_component_driver soc_component_cs4265 = {
- 	.idle_bias_on		= 1,
- 	.use_pmdown_time	= 1,
- 	.endianness		= 1,
--	.non_legacy_dai_naming	= 1,
- };
- 
- static const struct regmap_config cs4265_regmap = {
-diff --git a/sound/soc/codecs/cs4270.c b/sound/soc/codecs/cs4270.c
-index 97d26b9e8f7fe..ba67e43edf351 100644
---- a/sound/soc/codecs/cs4270.c
-+++ b/sound/soc/codecs/cs4270.c
-@@ -619,7 +619,6 @@ static const struct snd_soc_component_driver soc_component_device_cs4270 = {
- 	.idle_bias_on		= 1,
- 	.use_pmdown_time	= 1,
- 	.endianness		= 1,
--	.non_legacy_dai_naming	= 1,
- };
- 
- /*
-diff --git a/sound/soc/codecs/cs4271.c b/sound/soc/codecs/cs4271.c
-index 7663f89ac6a24..2021cf4426061 100644
---- a/sound/soc/codecs/cs4271.c
-+++ b/sound/soc/codecs/cs4271.c
-@@ -642,7 +642,6 @@ static const struct snd_soc_component_driver soc_component_dev_cs4271 = {
- 	.idle_bias_on		= 1,
- 	.use_pmdown_time	= 1,
- 	.endianness		= 1,
--	.non_legacy_dai_naming	= 1,
- };
- 
- static int cs4271_common_probe(struct device *dev,
-diff --git a/sound/soc/codecs/cs42l42.c b/sound/soc/codecs/cs42l42.c
-index 6ca74c0d46eaa..d545a593a2516 100644
---- a/sound/soc/codecs/cs42l42.c
-+++ b/sound/soc/codecs/cs42l42.c
-@@ -581,7 +581,6 @@ static const struct snd_soc_component_driver soc_component_dev_cs42l42 = {
- 	.num_controls		= ARRAY_SIZE(cs42l42_snd_controls),
- 	.idle_bias_on		= 1,
- 	.endianness		= 1,
--	.non_legacy_dai_naming	= 1,
- };
- 
- /* Switch to SCLK. Atomic delay after the write to allow the switch to complete. */
-diff --git a/sound/soc/codecs/cs42l51.c b/sound/soc/codecs/cs42l51.c
-index 0e933181b5dbb..51721edd8f53c 100644
---- a/sound/soc/codecs/cs42l51.c
-+++ b/sound/soc/codecs/cs42l51.c
-@@ -600,7 +600,6 @@ static const struct snd_soc_component_driver soc_component_device_cs42l51 = {
- 	.idle_bias_on		= 1,
- 	.use_pmdown_time	= 1,
- 	.endianness		= 1,
--	.non_legacy_dai_naming	= 1,
- };
- 
- static bool cs42l51_writeable_reg(struct device *dev, unsigned int reg)
-diff --git a/sound/soc/codecs/cs42l52.c b/sound/soc/codecs/cs42l52.c
-index 10e696406a71b..90bf535fc5a52 100644
---- a/sound/soc/codecs/cs42l52.c
-+++ b/sound/soc/codecs/cs42l52.c
-@@ -1061,7 +1061,6 @@ static const struct snd_soc_component_driver soc_component_dev_cs42l52 = {
- 	.idle_bias_on		= 1,
- 	.use_pmdown_time	= 1,
- 	.endianness		= 1,
--	.non_legacy_dai_naming	= 1,
- };
- 
- /* Current and threshold powerup sequence Pg37 */
-diff --git a/sound/soc/codecs/cs42l56.c b/sound/soc/codecs/cs42l56.c
-index 510c94265b1f0..03e2540a0ba12 100644
---- a/sound/soc/codecs/cs42l56.c
-+++ b/sound/soc/codecs/cs42l56.c
-@@ -1114,7 +1114,6 @@ static const struct snd_soc_component_driver soc_component_dev_cs42l56 = {
- 	.idle_bias_on		= 1,
- 	.use_pmdown_time	= 1,
- 	.endianness		= 1,
--	.non_legacy_dai_naming	= 1,
- };
- 
- static const struct regmap_config cs42l56_regmap = {
-diff --git a/sound/soc/codecs/cs42l73.c b/sound/soc/codecs/cs42l73.c
-index 5a9166289f366..0a146319755a6 100644
---- a/sound/soc/codecs/cs42l73.c
-+++ b/sound/soc/codecs/cs42l73.c
-@@ -1256,7 +1256,6 @@ static const struct snd_soc_component_driver soc_component_dev_cs42l73 = {
- 	.idle_bias_on		= 1,
- 	.use_pmdown_time	= 1,
- 	.endianness		= 1,
--	.non_legacy_dai_naming	= 1,
- };
- 
- static const struct regmap_config cs42l73_regmap = {
-diff --git a/sound/soc/codecs/cs42xx8.c b/sound/soc/codecs/cs42xx8.c
-index 5d6ef660f851f..d14eb2f6e1dd4 100644
---- a/sound/soc/codecs/cs42xx8.c
-+++ b/sound/soc/codecs/cs42xx8.c
-@@ -497,7 +497,6 @@ static const struct snd_soc_component_driver cs42xx8_driver = {
- 	.num_dapm_routes	= ARRAY_SIZE(cs42xx8_dapm_routes),
- 	.use_pmdown_time	= 1,
- 	.endianness		= 1,
--	.non_legacy_dai_naming	= 1,
- };
- 
- const struct cs42xx8_driver_data cs42448_data = {
-diff --git a/sound/soc/codecs/cs43130.c b/sound/soc/codecs/cs43130.c
-index a2bce0f9f247b..ca4d47cc9c915 100644
---- a/sound/soc/codecs/cs43130.c
-+++ b/sound/soc/codecs/cs43130.c
-@@ -2345,7 +2345,6 @@ static struct snd_soc_component_driver soc_component_dev_cs43130 = {
- 	.idle_bias_on		= 1,
- 	.use_pmdown_time	= 1,
- 	.endianness		= 1,
--	.non_legacy_dai_naming	= 1,
- };
- 
- static const struct regmap_config cs43130_regmap = {
-diff --git a/sound/soc/codecs/cs4341.c b/sound/soc/codecs/cs4341.c
-index 8ac043f1aae01..ac1696034846d 100644
---- a/sound/soc/codecs/cs4341.c
-+++ b/sound/soc/codecs/cs4341.c
-@@ -202,7 +202,6 @@ static const struct snd_soc_component_driver soc_component_cs4341 = {
- 	.idle_bias_on		= 1,
- 	.use_pmdown_time	= 1,
- 	.endianness		= 1,
--	.non_legacy_dai_naming	= 1,
- };
- 
- static const struct of_device_id __maybe_unused cs4341_dt_ids[] = {
-diff --git a/sound/soc/codecs/cs4349.c b/sound/soc/codecs/cs4349.c
-index 7069e9b548576..f7c5c2fd43046 100644
---- a/sound/soc/codecs/cs4349.c
-+++ b/sound/soc/codecs/cs4349.c
-@@ -260,7 +260,6 @@ static const struct snd_soc_component_driver soc_component_dev_cs4349 = {
- 	.idle_bias_on		= 1,
- 	.use_pmdown_time	= 1,
- 	.endianness		= 1,
--	.non_legacy_dai_naming	= 1,
- };
- 
- static const struct regmap_config cs4349_regmap = {
-diff --git a/sound/soc/codecs/cs47l15.c b/sound/soc/codecs/cs47l15.c
-index 391fd7da331fd..0193173b86376 100644
---- a/sound/soc/codecs/cs47l15.c
-+++ b/sound/soc/codecs/cs47l15.c
-@@ -1353,7 +1353,6 @@ static const struct snd_soc_component_driver soc_component_dev_cs47l15 = {
- 	.num_dapm_routes	= ARRAY_SIZE(cs47l15_dapm_routes),
- 	.use_pmdown_time	= 1,
- 	.endianness		= 1,
--	.non_legacy_dai_naming	= 1,
- };
- 
- static int cs47l15_probe(struct platform_device *pdev)
-diff --git a/sound/soc/codecs/cs47l24.c b/sound/soc/codecs/cs47l24.c
-index 6356f81aafc56..f9a2b865d7176 100644
---- a/sound/soc/codecs/cs47l24.c
-+++ b/sound/soc/codecs/cs47l24.c
-@@ -1203,7 +1203,6 @@ static const struct snd_soc_component_driver soc_component_dev_cs47l24 = {
- 	.num_dapm_routes	= ARRAY_SIZE(cs47l24_dapm_routes),
- 	.use_pmdown_time	= 1,
- 	.endianness		= 1,
--	.non_legacy_dai_naming	= 1,
- };
- 
- static int cs47l24_probe(struct platform_device *pdev)
-diff --git a/sound/soc/codecs/cs47l35.c b/sound/soc/codecs/cs47l35.c
-index db2f844b8b17f..c1032d6c9143f 100644
---- a/sound/soc/codecs/cs47l35.c
-+++ b/sound/soc/codecs/cs47l35.c
-@@ -1638,7 +1638,6 @@ static const struct snd_soc_component_driver soc_component_dev_cs47l35 = {
- 	.num_dapm_routes	= ARRAY_SIZE(cs47l35_dapm_routes),
- 	.use_pmdown_time	= 1,
- 	.endianness		= 1,
--	.non_legacy_dai_naming	= 1,
- };
- 
- static int cs47l35_probe(struct platform_device *pdev)
-diff --git a/sound/soc/codecs/cs47l85.c b/sound/soc/codecs/cs47l85.c
-index d4fedc5ad516e..215d8211aa59b 100644
---- a/sound/soc/codecs/cs47l85.c
-+++ b/sound/soc/codecs/cs47l85.c
-@@ -2582,7 +2582,6 @@ static const struct snd_soc_component_driver soc_component_dev_cs47l85 = {
- 	.num_dapm_routes	= ARRAY_SIZE(cs47l85_dapm_routes),
- 	.use_pmdown_time	= 1,
- 	.endianness		= 1,
--	.non_legacy_dai_naming	= 1,
- };
- 
- static int cs47l85_probe(struct platform_device *pdev)
-diff --git a/sound/soc/codecs/cs47l90.c b/sound/soc/codecs/cs47l90.c
-index 5aec937a24629..1ad6526c78717 100644
---- a/sound/soc/codecs/cs47l90.c
-+++ b/sound/soc/codecs/cs47l90.c
-@@ -2497,7 +2497,6 @@ static const struct snd_soc_component_driver soc_component_dev_cs47l90 = {
- 	.num_dapm_routes	= ARRAY_SIZE(cs47l90_dapm_routes),
- 	.use_pmdown_time	= 1,
- 	.endianness		= 1,
--	.non_legacy_dai_naming	= 1,
- };
- 
- static int cs47l90_probe(struct platform_device *pdev)
-diff --git a/sound/soc/codecs/cs47l92.c b/sound/soc/codecs/cs47l92.c
-index a1b8dcdb9f7b7..59da34b480a87 100644
---- a/sound/soc/codecs/cs47l92.c
-+++ b/sound/soc/codecs/cs47l92.c
-@@ -1958,7 +1958,6 @@ static const struct snd_soc_component_driver soc_component_dev_cs47l92 = {
- 	.num_dapm_routes	= ARRAY_SIZE(cs47l92_dapm_routes),
- 	.use_pmdown_time	= 1,
- 	.endianness		= 1,
--	.non_legacy_dai_naming	= 1,
- };
- 
- static int cs47l92_probe(struct platform_device *pdev)
-diff --git a/sound/soc/codecs/cs53l30.c b/sound/soc/codecs/cs53l30.c
-index 360ca2ffd5069..8796d8e84b7a2 100644
---- a/sound/soc/codecs/cs53l30.c
-+++ b/sound/soc/codecs/cs53l30.c
-@@ -899,7 +899,6 @@ static const struct snd_soc_component_driver cs53l30_driver = {
- 	.num_dapm_routes	= ARRAY_SIZE(cs53l30_dapm_routes),
- 	.use_pmdown_time	= 1,
- 	.endianness		= 1,
--	.non_legacy_dai_naming	= 1,
- };
- 
- static struct regmap_config cs53l30_regmap = {
--- 
-2.30.2
+I don't have any objection to using 2x for capacity but I would
+recommend dropping the "It's common part ...," part from the comment.
 
+
+> +        */
+> +       r = __kvm_mmu_topup_memory_cache(&kvm->arch.split_desc_cache,
+> +                                        2 * SPLIT_DESC_CACHE_MIN_NR_OBJECTS,
+> +                                        SPLIT_DESC_CACHE_MIN_NR_OBJECTS);
+> +       if (r)
+> +               return r;
+> +
+> +       r = kvm_mmu_topup_memory_cache(&kvm->arch.split_page_header_cache, 1);
+> +       if (r)
+> +               return r;
+> +
+> +       return kvm_mmu_topup_memory_cache(&kvm->arch.split_shadow_page_cache, 1);
+> +}
+> +
+> +static struct kvm_mmu_page *shadow_mmu_get_sp_for_split(struct kvm *kvm, u64 *huge_sptep)
+> +{
+> +       struct kvm_mmu_page *huge_sp = sptep_to_sp(huge_sptep);
+> +       struct shadow_page_caches caches = {};
+> +       union kvm_mmu_page_role role;
+> +       unsigned int access;
+> +       gfn_t gfn;
+> +
+> +       gfn = kvm_mmu_page_get_gfn(huge_sp, huge_sptep - huge_sp->spt);
+> +       access = kvm_mmu_page_get_access(huge_sp, huge_sptep - huge_sp->spt);
+> +
+> +       /*
+> +        * Note, huge page splitting always uses direct shadow pages, regardless
+> +        * of whether the huge page itself is mapped by a direct or indirect
+> +        * shadow page, since the huge page region itself is being directly
+> +        * mapped with smaller pages.
+> +        */
+> +       role = kvm_mmu_child_role(huge_sptep, /*direct=*/true, access);
+> +
+> +       /* Direct SPs do not require a shadowed_info_cache. */
+> +       caches.page_header_cache = &kvm->arch.split_page_header_cache;
+> +       caches.shadow_page_cache = &kvm->arch.split_shadow_page_cache;
+> +
+> +       /* Safe to pass NULL for vCPU since requesting a direct SP. */
+> +       return __kvm_mmu_get_shadow_page(kvm, NULL, &caches, gfn, role);
+> +}
+> +
+> +static void shadow_mmu_split_huge_page(struct kvm *kvm,
+> +                                      const struct kvm_memory_slot *slot,
+> +                                      u64 *huge_sptep)
+> +
+> +{
+> +       struct kvm_mmu_memory_cache *cache = &kvm->arch.split_desc_cache;
+> +       u64 huge_spte = READ_ONCE(*huge_sptep);
+> +       struct kvm_mmu_page *sp;
+> +       u64 *sptep, spte;
+> +       gfn_t gfn;
+> +       int index;
+> +
+> +       sp = shadow_mmu_get_sp_for_split(kvm, huge_sptep);
+> +
+> +       for (index = 0; index < SPTE_ENT_PER_PAGE; index++) {
+> +               sptep = &sp->spt[index];
+> +               gfn = kvm_mmu_page_get_gfn(sp, index);
+> +
+> +               /*
+> +                * The SP may already have populated SPTEs, e.g. if this huge
+> +                * page is aliased by multiple sptes with the same access
+> +                * permissions. These entries are guaranteed to map the same
+> +                * gfn-to-pfn translation since the SP is direct, so no need to
+> +                * modify them.
+> +                *
+> +                * If a given SPTE points to a lower level page table, installing
+> +                * such SPTEs would effectively unmap a potion of the huge page.
+> +                * This is not an issue because __link_shadow_page() flushes the TLB
+> +                * when the passed sp replaces a large SPTE.
+> +                */
+> +               if (is_shadow_present_pte(*sptep))
+> +                       continue;
+> +
+> +               spte = make_huge_page_split_spte(kvm, huge_spte, sp->role, index);
+> +               mmu_spte_set(sptep, spte);
+> +               __rmap_add(kvm, cache, slot, sptep, gfn, sp->role.access);
+> +       }
+> +
+> +       __link_shadow_page(kvm, cache, huge_sptep, sp);
+> +}
+> +
+> +static int shadow_mmu_try_split_huge_page(struct kvm *kvm,
+> +                                         const struct kvm_memory_slot *slot,
+> +                                         u64 *huge_sptep)
+> +{
+> +       struct kvm_mmu_page *huge_sp = sptep_to_sp(huge_sptep);
+> +       int level, r = 0;
+> +       gfn_t gfn;
+> +       u64 spte;
+> +
+> +       /* Grab information for the tracepoint before dropping the MMU lock. */
+> +       gfn = kvm_mmu_page_get_gfn(huge_sp, huge_sptep - huge_sp->spt);
+> +       level = huge_sp->role.level;
+> +       spte = *huge_sptep;
+> +
+> +       if (kvm_mmu_available_pages(kvm) <= KVM_MIN_FREE_MMU_PAGES) {
+> +               r = -ENOSPC;
+> +               goto out;
+> +       }
+> +
+> +       if (need_topup_split_caches_or_resched(kvm)) {
+> +               write_unlock(&kvm->mmu_lock);
+> +               cond_resched();
+> +               /*
+> +                * If the topup succeeds, return -EAGAIN to indicate that the
+> +                * rmap iterator should be restarted because the MMU lock was
+> +                * dropped.
+> +                */
+> +               r = topup_split_caches(kvm) ?: -EAGAIN;
+> +               write_lock(&kvm->mmu_lock);
+> +               goto out;
+> +       }
+> +
+> +       shadow_mmu_split_huge_page(kvm, slot, huge_sptep);
+> +
+> +out:
+> +       trace_kvm_mmu_split_huge_page(gfn, spte, level, r);
+> +       return r;
+> +}
+> +
+> +static bool shadow_mmu_try_split_huge_pages(struct kvm *kvm,
+> +                                           struct kvm_rmap_head *rmap_head,
+> +                                           const struct kvm_memory_slot *slot)
+> +{
+> +       struct rmap_iterator iter;
+> +       struct kvm_mmu_page *sp;
+> +       u64 *huge_sptep;
+> +       int r;
+> +
+> +restart:
+> +       for_each_rmap_spte(rmap_head, &iter, huge_sptep) {
+> +               sp = sptep_to_sp(huge_sptep);
+> +
+> +               /* TDP MMU is enabled, so rmap only contains nested MMU SPs. */
+> +               if (WARN_ON_ONCE(!sp->role.guest_mode))
+> +                       continue;
+> +
+> +               /* The rmaps should never contain non-leaf SPTEs. */
+> +               if (WARN_ON_ONCE(!is_large_pte(*huge_sptep)))
+> +                       continue;
+> +
+> +               /* SPs with level >PG_LEVEL_4K should never by unsync. */
+> +               if (WARN_ON_ONCE(sp->unsync))
+> +                       continue;
+> +
+> +               /* Don't bother splitting huge pages on invalid SPs. */
+> +               if (sp->role.invalid)
+> +                       continue;
+> +
+> +               r = shadow_mmu_try_split_huge_page(kvm, slot, huge_sptep);
+> +
+> +               /*
+> +                * The split succeeded or needs to be retried because the MMU
+> +                * lock was dropped. Either way, restart the iterator to get it
+> +                * back into a consistent state.
+> +                */
+> +               if (!r || r == -EAGAIN)
+> +                       goto restart;
+> +
+> +               /* The split failed and shouldn't be retried (e.g. -ENOMEM). */
+> +               break;
+> +       }
+> +
+> +       return false;
+> +}
+> +
+> +static void kvm_shadow_mmu_try_split_huge_pages(struct kvm *kvm,
+> +                                               const struct kvm_memory_slot *slot,
+> +                                               gfn_t start, gfn_t end,
+> +                                               int target_level)
+> +{
+> +       int level;
+> +
+> +       /*
+> +        * Split huge pages starting with KVM_MAX_HUGEPAGE_LEVEL and working
+> +        * down to the target level. This ensures pages are recursively split
+> +        * all the way to the target level. There's no need to split pages
+> +        * already at the target level.
+> +        */
+> +       for (level = KVM_MAX_HUGEPAGE_LEVEL; level > target_level; level--) {
+> +               slot_handle_level_range(kvm, slot, shadow_mmu_try_split_huge_pages,
+> +                                       level, level, start, end - 1, true, false);
+> +       }
+> +}
+> +
+>  /* Must be called with the mmu_lock held in write-mode. */
+>  void kvm_mmu_try_split_huge_pages(struct kvm *kvm,
+>                                    const struct kvm_memory_slot *memslot,
+>                                    u64 start, u64 end,
+>                                    int target_level)
+>  {
+> -       if (is_tdp_mmu_enabled(kvm))
+> -               kvm_tdp_mmu_try_split_huge_pages(kvm, memslot, start, end,
+> -                                                target_level, false);
+> +       if (!is_tdp_mmu_enabled(kvm))
+> +               return;
+> +
+> +       if (kvm_memslots_have_rmaps(kvm))
+> +               kvm_shadow_mmu_try_split_huge_pages(kvm, memslot, start, end, target_level);
+> +
+> +       kvm_tdp_mmu_try_split_huge_pages(kvm, memslot, start, end, target_level, false);
+>
+>         /*
+>          * A TLB flush is unnecessary at this point for the same resons as in
+> @@ -6096,12 +6336,19 @@ void kvm_mmu_slot_try_split_huge_pages(struct kvm *kvm,
+>         u64 start = memslot->base_gfn;
+>         u64 end = start + memslot->npages;
+>
+> -       if (is_tdp_mmu_enabled(kvm)) {
+> -               read_lock(&kvm->mmu_lock);
+> -               kvm_tdp_mmu_try_split_huge_pages(kvm, memslot, start, end, target_level, true);
+> -               read_unlock(&kvm->mmu_lock);
+> +       if (!is_tdp_mmu_enabled(kvm))
+> +               return;
+> +
+> +       if (kvm_memslots_have_rmaps(kvm)) {
+> +               write_lock(&kvm->mmu_lock);
+> +               kvm_shadow_mmu_try_split_huge_pages(kvm, memslot, start, end, target_level);
+> +               write_unlock(&kvm->mmu_lock);
+>         }
+>
+> +       read_lock(&kvm->mmu_lock);
+> +       kvm_tdp_mmu_try_split_huge_pages(kvm, memslot, start, end, target_level, true);
+> +       read_unlock(&kvm->mmu_lock);
+> +
+>         /*
+>          * No TLB flush is necessary here. KVM will flush TLBs after
+>          * write-protecting and/or clearing dirty on the newly split SPTEs to
+> --
+> 2.31.1
+>
+>

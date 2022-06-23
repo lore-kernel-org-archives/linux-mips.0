@@ -2,85 +2,112 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3918DC43334
-	for <linux-mips@archiver.kernel.org>; Thu, 23 Jun 2022 04:40:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D8D8AC43334
+	for <linux-mips@archiver.kernel.org>; Thu, 23 Jun 2022 07:41:33 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229509AbiFWEjH (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 23 Jun 2022 00:39:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53408 "EHLO
+        id S230375AbiFWHld (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 23 Jun 2022 03:41:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55568 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229901AbiFWC7i (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 22 Jun 2022 22:59:38 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBA13E55;
-        Wed, 22 Jun 2022 19:59:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=sIfzbNhL8TrtFD7HElGf5ZhPwJycPkd0im274TrYgOE=; b=UnLy5cTQ9sM5zeCyJZzL7KnkWc
-        LhxMLklCHlYKiJrrXdupWsZKGXnFbZhYxYlgr9YBdgGDax6rz/IoYK7WIZV+rjNLdZxhrKFhr+801
-        y83vdod1sbpRBgyA5iR6JfWp0JFYMzrvSjEljyj9To2MadknSDDVbgfWR64/wydYAfOSNWQ9Z2kyo
-        l0DemHleTXJrCJOrjJ64mOHv3HUwlkFiikYhx/b/ryyd3u+lWw11VOuMQ7irm2/CLJc+GCLofGopK
-        kCJBoK8mqZpk0gYDRVWWvJdZXNq7OIgDLYoe9UByOuqlgrsGGMBb8aC0eANBcRahGA39veVoQDwcs
-        hne8NIzg==;
-Received: from [2601:1c0:6280:3f0::aa0b]
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1o4D46-007YCQ-Es; Thu, 23 Jun 2022 02:59:30 +0000
-Message-ID: <f174fa2c-40b8-af76-812f-0f3bb680b2da@infradead.org>
-Date:   Wed, 22 Jun 2022 19:59:26 -0700
+        with ESMTP id S230168AbiFWHla (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Thu, 23 Jun 2022 03:41:30 -0400
+Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com [209.85.218.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 894B94667F;
+        Thu, 23 Jun 2022 00:41:27 -0700 (PDT)
+Received: by mail-ej1-f43.google.com with SMTP id mf9so18885457ejb.0;
+        Thu, 23 Jun 2022 00:41:27 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=ZVb61+LDQ60uMHssCxzA52VpodCYtCxPvKQczsoS/1g=;
+        b=HVWh8WCV4xy7bwrZ3xEvdRWTNk5kEm3FXnxFq4ihWOrrn9kk3KuCoV/ksv8uKbudbl
+         iNbcC2GktafzMDmPsuAyb2Xi2M++IFJIt99XQTjtK/QTRnkqZq1uu0N13yqf+gYLal/y
+         b9EpkZB/keHs07v4PobB2pSDCJTZ4bUODzYatpy6LvCEN+coSAeqK5URr9Hu5C69gzXm
+         FZtPtzlt+Gry6wEZe9hXzFS6Tw7kkfjiqPX05zfsAfErIiGnQu783ab/tqCDbxLi3tKP
+         Pxm5HXyQ8dadPzH/cKh74rmx5XuPqLvt/W2vVWLDKk+UxtYZtMS7E/wG9km1eBiAjwyy
+         UiKA==
+X-Gm-Message-State: AJIora/RWe5uxmqLhB9S4upxtihkhNB57foyrPlfeBrfn8YpwRhh6bPw
+        uwryPUXtnMzEFllUSpmxkd0=
+X-Google-Smtp-Source: AGRyM1s2wuY4k6dNlSI0R4cdqh9+8L6y5hbgB1bq0e+g38e35h84OG+g2Wa3dMgBb5qJWTGviQlp0A==
+X-Received: by 2002:a17:906:6a1c:b0:70a:fd95:ee6a with SMTP id qw28-20020a1709066a1c00b0070afd95ee6amr6940892ejc.36.1655970086067;
+        Thu, 23 Jun 2022 00:41:26 -0700 (PDT)
+Received: from ?IPV6:2a0b:e7c0:0:107::70f? ([2a0b:e7c0:0:107::70f])
+        by smtp.gmail.com with ESMTPSA id la5-20020a170907780500b006f3ef214de7sm10485403ejc.77.2022.06.23.00.41.24
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 23 Jun 2022 00:41:25 -0700 (PDT)
+Message-ID: <03467516-3962-4ff2-23d2-2b3a1d647c5a@kernel.org>
+Date:   Thu, 23 Jun 2022 09:41:24 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
  Thunderbird/91.10.0
-Subject: Re: [PATCH] MIPS: Fix 2 typos
+Subject: Re: [PATCH v2 6/6] serial: Consolidate BOTH_EMPTY use
 Content-Language: en-US
-To:     Joe Perches <joe@perches.com>,
-        Zhang Jiaming <jiaming@nfschina.com>, tsbogend@alpha.franken.de
-Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        liqiong@nfschina.com, renyu@nfschina.com
-References: <20220622090713.24370-1-jiaming@nfschina.com>
- <d2112863-bd28-d6db-c353-1b7b94b45fcb@infradead.org>
- <37d560bc5267408eb9cc806339025418094cf5bb.camel@perches.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <37d560bc5267408eb9cc806339025418094cf5bb.camel@perches.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+To:     =?UTF-8?Q?Ilpo_J=c3=a4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+        linux-serial@vger.kernel.org, Greg KH <gregkh@linuxfoundation.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        William Hubbs <w.d.hubbs@gmail.com>,
+        Chris Brannon <chris@the-brannons.com>,
+        Kirk Reiser <kirk@reisers.ca>,
+        Samuel Thibault <samuel.thibault@ens-lyon.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        speakup@linux-speakup.org, sparclinux@vger.kernel.org
+References: <20220621124958.3342-1-ilpo.jarvinen@linux.intel.com>
+ <20220621124958.3342-7-ilpo.jarvinen@linux.intel.com>
+From:   Jiri Slaby <jirislaby@kernel.org>
+In-Reply-To: <20220621124958.3342-7-ilpo.jarvinen@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-
-
-On 6/22/22 07:46, Joe Perches wrote:
-> On Wed, 2022-06-22 at 07:28 -0700, Randy Dunlap wrote:
->> On 6/22/22 02:07, Zhang Jiaming wrote:
->>> Change 'modifed' to 'modified'.
->>> Change 'relys' to 'relays'.
-> []
->>> diff --git a/arch/mips/cavium-octeon/executive/cvmx-helper-board.c b/arch/mips/cavium-octeon/executive/cvmx-helper-board.c
-> []
->>> @@ -282,9 +282,9 @@ union cvmx_helper_link_info __cvmx_helper_board_link_get(int ipd_port)
->>>   * support and should return the number of actual ports on the
->>>   * board.
->>>   *
->>> - * This function must be modifed for every new Octeon board.
->>> + * This function must be modified for every new Octeon board.
->>>   * Internally it uses switch statements based on the cvmx_sysinfo
->>> - * data to determine board types and revisions. It relys on the
->>
->>                                                       relies
->>
->> But it would be better to restrict this barrage (or swarm) of patches
->> to Kconfig help text problems and/or strings that are printed to users.
+On 21. 06. 22, 14:49, Ilpo Järvinen wrote:
+> Per file BOTH_EMPTY defines are littering our source code here and
+> there. Define once in serial.h and create helper for the check
+> too.
 > 
-> I believe fixing typos isn't a particular problem and is
-> overall rather a good thing.
+> Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
 
-OK, I can agree with that.
+Reviewed-by: Jiri Slaby <jirislaby@kernel.org>
 
-> Though backporting these patches would be silly.
+> --- a/arch/mips/ath79/early_printk.c
+> +++ b/arch/mips/ath79/early_printk.c
+> @@ -8,6 +8,7 @@
+>   
+>   #include <linux/io.h>
+>   #include <linux/errno.h>
+> +#include <linux/serial.h>
+>   #include <linux/serial_reg.h>
+>   #include <asm/addrspace.h>
+>   #include <asm/setup.h>
+> @@ -29,15 +30,15 @@ static inline void prom_putchar_wait(void __iomem *reg, u32 mask, u32 val)
+>   	} while (1);
+>   }
+>   
+> -#define BOTH_EMPTY (UART_LSR_TEMT | UART_LSR_THRE)
+> -
+>   static void prom_putchar_ar71xx(char ch)
+>   {
+>   	void __iomem *base = (void __iomem *)(KSEG1ADDR(AR71XX_UART_BASE));
+>   
+> -	prom_putchar_wait(base + UART_LSR * 4, BOTH_EMPTY, BOTH_EMPTY);
+> +	prom_putchar_wait(base + UART_LSR * 4, UART_LSR_BOTH_EMPTY,
+> +			  UART_LSR_BOTH_EMPTY);
+>   	__raw_writel((unsigned char)ch, base + UART_TX * 4);
+> -	prom_putchar_wait(base + UART_LSR * 4, BOTH_EMPTY, BOTH_EMPTY);
+> +	prom_putchar_wait(base + UART_LSR * 4, UART_LSR_BOTH_EMPTY,
+> +			  UART_LSR_BOTH_EMPTY);
 
-Ack.
+Two observations apart from this patch:
+* prom_putchar_wait()'s last two parameters are always the same.
+   One should be removed, i.e. all this simplified.
+* prom_putchar_wait() should be implemented using
+   read_poll_timeout_atomic(), incl. failure/timeout handling.
 
+thanks,
 -- 
-~Randy
+js
+suse labs

@@ -2,190 +2,196 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EF468C43334
-	for <linux-mips@archiver.kernel.org>; Sat, 25 Jun 2022 20:25:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 73785CCA47C
+	for <linux-mips@archiver.kernel.org>; Sun, 26 Jun 2022 07:58:36 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233259AbiFYUZc (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Sat, 25 Jun 2022 16:25:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52856 "EHLO
+        id S234070AbiFZH6f (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Sun, 26 Jun 2022 03:58:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43458 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233236AbiFYUZb (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Sat, 25 Jun 2022 16:25:31 -0400
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D113FD1F
-        for <linux-mips@vger.kernel.org>; Sat, 25 Jun 2022 13:25:30 -0700 (PDT)
-Received: by mail-ej1-x629.google.com with SMTP id pk21so11331103ejb.2
-        for <linux-mips@vger.kernel.org>; Sat, 25 Jun 2022 13:25:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=3qgl5Ee8WKI0CrBADWH+qZ3W9EeMuc4SLtdmOrLuaW8=;
-        b=GtOkY4mUHQlYdFYLxuHVp5pwd0VTWKNtDqNp3uAnxX+1yS/x0fDKLDA1Dv2kDF0zGg
-         2di782eVEYxcoW7Gh9SmBojbL4EpQ3ZHHQfX4LjF+Wlvq5IHHjDNCJIqUALLZL77tHOn
-         zwM5gXK6gzl0tmjwRQiwK2F8B/sExicu4sNNv01zVKhdYzUx7NJYLS8/UgDcBFYg285q
-         MibmZQKBiT3J/0rlRz/9j5AGZg26Bv6REZAOJNVTjDWnYgnT8HcbN4DasG3KormouUrN
-         z3OiIGlOSryBP6q7n78GTl1+OpnlIb6KGhCWkh1xvXSs7NCzhMP/DKPG71eNkt4Sz0KV
-         ahTQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=3qgl5Ee8WKI0CrBADWH+qZ3W9EeMuc4SLtdmOrLuaW8=;
-        b=K62+QDPXecsnXyDbAoUcHe5Zjn6qnLl7HVRd+hArSs2v+df1i7scJhtCI0OoRlV9XQ
-         ZQogXhfb+OYWcAJqL0OurJccstuXQjih9y/ayPvQeB1wni1/q6+4vSpXIaerjePfAnQk
-         Ghbw4mLku9zYpX1/7WqOglkMgv5x9i+c+Bd/rzFW6/heZtJxD+cbjRyFOvdWiLkeVy2s
-         ZCDjJ8wSuuzy2xm8qbXJTW+Rdc0lvTocEVZAGH8UWB3SzPMsQfDpLSwjESfiF8531Q8t
-         OXYCP6cxLv2eo3pO95BVfJ9X16tIsgBQb4lSaCUC7Nw+lKLvnoOAQfHsD8OVY4zo1FHW
-         VBSA==
-X-Gm-Message-State: AJIora9jvSjgRJR0GTHPgDLyEtDuIDtNQznxH04XigYma/Z9fgd8406l
-        KiD29LYVt8zob8Gxo9rLyZ3HiA==
-X-Google-Smtp-Source: AGRyM1sgbqQFUKTOjqNo57WNDHvbGrzFxhvsjT9GEQyZOgnJCtoM3VtmTK5TdKslERBbwt6tCVgEnA==
-X-Received: by 2002:a17:906:58cb:b0:722:fc1a:4fd with SMTP id e11-20020a17090658cb00b00722fc1a04fdmr5325000ejs.548.1656188728680;
-        Sat, 25 Jun 2022 13:25:28 -0700 (PDT)
-Received: from [192.168.0.239] (xdsl-188-155-176-92.adslplus.ch. [188.155.176.92])
-        by smtp.gmail.com with ESMTPSA id b13-20020aa7c90d000000b0043564320274sm4571415edt.19.2022.06.25.13.25.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 25 Jun 2022 13:25:28 -0700 (PDT)
-Message-ID: <cc81b6ae-c1c1-78ec-b4e2-e165dcd5015b@linaro.org>
-Date:   Sat, 25 Jun 2022 22:25:27 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.10.0
-Subject: Re: [PATCH 1/2] MIPS: dts: correct gpio-keys names and properties
-Content-Language: en-US
-To:     Paul Cercueil <paul@crapouillou.net>
-Cc:     Rahul Bedarkar <rahulbedarkar89@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        with ESMTP id S233948AbiFZH6e (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Sun, 26 Jun 2022 03:58:34 -0400
+Received: from mx0a-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFD4F12D03;
+        Sun, 26 Jun 2022 00:58:33 -0700 (PDT)
+Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 25Q64Pvl025285;
+        Sun, 26 Jun 2022 07:58:00 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=XZ90HtNDrlRjkiJkulFjUc8f67d4YhL3Kx3bFG8OuUA=;
+ b=CSGvo7GpN5YCxmrbK/tIUTc+JZTqN4ZLc+WHmkDHA/NjREwnoCnDe+WOajL84uP2uU31
+ UluZkljR0GR1vutz2MpI/jHPJk9H3hhZ8WiVpXccBOooIz2hbldluTm8LEyHbGbz3sNb
+ 2szy4NmkG2RotrMOeSRekjxCS6dPpvRWAUMzgPozxpYVEryoTNeqoQGiqRRxjdHV3PMl
+ +1mk8GEQAs4mlu+cdIUidg1VkOwtRm9TNeav9H8DDdjxOX7W8v7FIp/ovEr6MZ6hVlxh
+ 2vXKFmEAPCV7j5YAR3No6i/vMgEIEaRRq63pUJV5UYB1z0nuoq3HonAp3PAMuE+lIJml fg== 
+Received: from ppma01fra.de.ibm.com (46.49.7a9f.ip4.static.sl-reverse.com [159.122.73.70])
+        by mx0b-001b2d01.pphosted.com (PPS) with ESMTPS id 3gxc046sh2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 26 Jun 2022 07:58:00 +0000
+Received: from pps.filterd (ppma01fra.de.ibm.com [127.0.0.1])
+        by ppma01fra.de.ibm.com (8.16.1.2/8.16.1.2) with SMTP id 25Q7pWED012856;
+        Sun, 26 Jun 2022 07:57:58 GMT
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
+        by ppma01fra.de.ibm.com with ESMTP id 3gwt08s2a1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 26 Jun 2022 07:57:58 +0000
+Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 25Q7vtdl14549294
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sun, 26 Jun 2022 07:57:55 GMT
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id E984DAE04D;
+        Sun, 26 Jun 2022 07:57:54 +0000 (GMT)
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 66C62AE045;
+        Sun, 26 Jun 2022 07:57:54 +0000 (GMT)
+Received: from li-4a3a4a4c-28e5-11b2-a85c-a8d192c6f089.ibm.com (unknown [9.145.144.178])
+        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Sun, 26 Jun 2022 07:57:54 +0000 (GMT)
+Date:   Sun, 26 Jun 2022 09:57:52 +0200
+From:   Alexander Gordeev <agordeev@linux.ibm.com>
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Mark Rutland <mark.rutland@arm.com>,
         Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        =?UTF-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>,
-        Sergio Paracuellos <sergio.paracuellos@gmail.com>,
-        linux-mips@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-References: <20220624170740.66271-1-krzysztof.kozlowski@linaro.org>
- <ZVVZDR.R2QT2GMTT9WS1@crapouillou.net>
- <89b6a40b-eb6b-eba5-78c3-6b5f35bed717@linaro.org>
- <EXU1ER.FH53VZXY9EYP3@crapouillou.net>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <EXU1ER.FH53VZXY9EYP3@crapouillou.net>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        linux-mips@vger.kernel.org, linux-s390@vger.kernel.org
+Subject: Re: [PATCH v2 1/3] jump_label: s390: avoid pointless initial NOP
+ patching
+Message-ID: <YrgRgKgBPs+oOVB3@li-4a3a4a4c-28e5-11b2-a85c-a8d192c6f089.ibm.com>
+References: <20220615154142.1574619-1-ardb@kernel.org>
+ <20220615154142.1574619-2-ardb@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220615154142.1574619-2-ardb@kernel.org>
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: b5QUtcNkKcJxrnkTgswLWrjaXCRAC_M2
+X-Proofpoint-GUID: b5QUtcNkKcJxrnkTgswLWrjaXCRAC_M2
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.883,Hydra:6.0.517,FMLib:17.11.122.1
+ definitions=2022-06-25_11,2022-06-24_01,2022-06-22_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 phishscore=0
+ suspectscore=0 impostorscore=0 mlxlogscore=999 bulkscore=0 adultscore=0
+ mlxscore=0 lowpriorityscore=0 spamscore=0 malwarescore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2204290000 definitions=main-2206260026
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On 25/06/2022 22:15, Paul Cercueil wrote:
-> Hi Krzysztof,
+On Wed, Jun 15, 2022 at 05:41:40PM +0200, Ard Biesheuvel wrote:
+> Patching NOPs into other NOPs at boot time serves no purpose, so let's
+> use the same NOP encodings at compile time and runtime.
 > 
-> Le sam., juin 25 2022 at 21:58:08 +0200, Krzysztof Kozlowski 
-> <krzysztof.kozlowski@linaro.org> a écrit :
->> On 24/06/2022 20:40, Paul Cercueil wrote:
->>>  Hi Krzysztof,
->>>
->>>  Le ven., juin 24 2022 at 19:07:39 +0200, Krzysztof Kozlowski
->>>  <krzysztof.kozlowski@linaro.org> a écrit :
->>>>  gpio-keys children do not use unit addresses.
->>>>
->>>>  Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
->>>>
->>>>  ---
->>>>
->>>>  See:
->>>>  
->>>> https://lore.kernel.org/all/20220616005224.18391-1-krzysztof.kozlowski@linaro.org/
->>>>  ---
->>>>   arch/mips/boot/dts/img/pistachio_marduk.dts   |  4 +--
->>>>   arch/mips/boot/dts/ingenic/gcw0.dts           | 31
->>>>  +++++++++----------
->>>>   arch/mips/boot/dts/ingenic/rs90.dts           | 18 +++++------
->>>>   arch/mips/boot/dts/pic32/pic32mzda_sk.dts     |  9 ++----
->>>>   .../boot/dts/qca/ar9132_tl_wr1043nd_v1.dts    |  6 ++--
->>>>   arch/mips/boot/dts/qca/ar9331_dpt_module.dts  |  4 +--
->>>>   .../mips/boot/dts/qca/ar9331_dragino_ms14.dts |  6 ++--
->>>>   arch/mips/boot/dts/qca/ar9331_omega.dts       |  4 +--
->>>>   .../qca/ar9331_openembed_som9331_board.dts    |  4 +--
->>>>   arch/mips/boot/dts/qca/ar9331_tl_mr3020.dts   |  8 ++---
->>>>   10 files changed, 37 insertions(+), 57 deletions(-)
->>>>
->>>>  diff --git a/arch/mips/boot/dts/img/pistachio_marduk.dts
->>>>  b/arch/mips/boot/dts/img/pistachio_marduk.dts
->>>>  index a8708783f04b..a8da2f992b1a 100644
->>>>  --- a/arch/mips/boot/dts/img/pistachio_marduk.dts
->>>>  +++ b/arch/mips/boot/dts/img/pistachio_marduk.dts
->>>>  @@ -59,12 +59,12 @@ led-1 {
->>>>
->>>>   	keys {
->>>>   		compatible = "gpio-keys";
->>>>  -		button@1 {
->>>>  +		button-1 {
->>>>   			label = "Button 1";
->>>>   			linux,code = <0x101>; /* BTN_1 */
->>>>   			gpios = <&gpio3 6 GPIO_ACTIVE_LOW>;
->>>>   		};
->>>>  -		button@2 {
->>>>  +		button-2 {
->>>>   			label = "Button 2";
->>>>   			linux,code = <0x102>; /* BTN_2 */
->>>>   			gpios = <&gpio2 14 GPIO_ACTIVE_LOW>;
->>>>  diff --git a/arch/mips/boot/dts/ingenic/gcw0.dts
->>>>  b/arch/mips/boot/dts/ingenic/gcw0.dts
->>>>  index 4abb0318416c..5d33f26fd28c 100644
->>>>  --- a/arch/mips/boot/dts/ingenic/gcw0.dts
->>>>  +++ b/arch/mips/boot/dts/ingenic/gcw0.dts
->>>>  @@ -130,89 +130,86 @@ backlight: backlight {
->>>>
->>>>   	gpio-keys {
->>>>   		compatible = "gpio-keys";
->>>>  -		#address-cells = <1>;
->>>>  -		#size-cells = <0>;
->>>
->>>  Are you sure you can remove these?
->>
->> Yes, from DT spec point of view, DT bindings and Linux implementation.
->> However this particular change was not tested, except building.
->>
->>>
->>>  Looking at paragraph 2.3.5 of the DT spec, I would think they have 
->>> to
->>>  stay (although with #address-cells = <0>).
->>
->> The paragraph 2.3.5 says nothing about regular properties (which can 
->> be
->> also child nodes). It says about children of a bus, right? It's not
->> related here, it's not a bus.
+> Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+> ---
+>  arch/s390/include/asm/jump_label.h |  5 ++---
+>  arch/s390/kernel/jump_label.c      | 23 +++++---------------
+>  2 files changed, 7 insertions(+), 21 deletions(-)
 > 
-> I quote:
-> "A DTSpec-compliant boot program shall supply #address-cells and 
-> #size-cells on all nodes that have children."
+> diff --git a/arch/s390/include/asm/jump_label.h b/arch/s390/include/asm/jump_label.h
+> index 916cfcb36d8a..895f774bbcc5 100644
+> --- a/arch/s390/include/asm/jump_label.h
+> +++ b/arch/s390/include/asm/jump_label.h
+> @@ -10,7 +10,6 @@
+>  #include <linux/stringify.h>
+>  
+>  #define JUMP_LABEL_NOP_SIZE 6
+> -#define JUMP_LABEL_NOP_OFFSET 2
+>  
+>  #ifdef CONFIG_CC_IS_CLANG
+>  #define JUMP_LABEL_STATIC_KEY_CONSTRAINT "i"
+> @@ -21,12 +20,12 @@
+>  #endif
+>  
+>  /*
+> - * We use a brcl 0,2 instruction for jump labels at compile time so it
+> + * We use a brcl 0,<offset> instruction for jump labels so it
+>   * can be easily distinguished from a hotpatch generated instruction.
+>   */
+>  static __always_inline bool arch_static_branch(struct static_key *key, bool branch)
+>  {
+> -	asm_volatile_goto("0:	brcl	0,"__stringify(JUMP_LABEL_NOP_OFFSET)"\n"
+> +	asm_volatile_goto("0:	brcl 0,%l[label]\n"
 
-And paragraph 2.2.3 says:
-"A unit address may be omitted if the full path to the node is unambiguous."
+Please, use tab after brcl, not space.
 
-You have address/size cells for nodes with children having unit
-addresses. If they don't unit addresses, you don't add address/size
-cells (with some exceptions).
+>  			  ".pushsection __jump_table,\"aw\"\n"
+>  			  ".balign	8\n"
+>  			  ".long	0b-.,%l[label]-.\n"
+> diff --git a/arch/s390/kernel/jump_label.c b/arch/s390/kernel/jump_label.c
+> index 6bec000c6c1c..d764f0d229ab 100644
+> --- a/arch/s390/kernel/jump_label.c
+> +++ b/arch/s390/kernel/jump_label.c
+> @@ -44,14 +44,8 @@ static void jump_label_bug(struct jump_entry *entry, struct insn *expected,
+>  	panic("Corrupted kernel text");
+>  }
+>  
+> -static struct insn orignop = {
+> -	.opcode = 0xc004,
+> -	.offset = JUMP_LABEL_NOP_OFFSET >> 1,
+> -};
+> -
+>  static void jump_label_transform(struct jump_entry *entry,
+> -				 enum jump_label_type type,
+> -				 int init)
+> +				 enum jump_label_type type)
+>  {
+>  	void *code = (void *)jump_entry_code(entry);
+>  	struct insn old, new;
+> @@ -63,27 +57,22 @@ static void jump_label_transform(struct jump_entry *entry,
+>  		jump_label_make_branch(entry, &old);
+>  		jump_label_make_nop(entry, &new);
+>  	}
+> -	if (init) {
+> -		if (memcmp(code, &orignop, sizeof(orignop)))
+> -			jump_label_bug(entry, &orignop, &new);
+> -	} else {
+> -		if (memcmp(code, &old, sizeof(old)))
+> -			jump_label_bug(entry, &old, &new);
+> -	}
+> +	if (memcmp(code, &old, sizeof(old)))
+> +		jump_label_bug(entry, &old, &new);
+>  	s390_kernel_write(code, &new, sizeof(new));
+>  }
+>  
+>  void arch_jump_label_transform(struct jump_entry *entry,
+>  			       enum jump_label_type type)
+>  {
+> -	jump_label_transform(entry, type, 0);
+> +	jump_label_transform(entry, type);
+>  	text_poke_sync();
+>  }
+>  
+>  bool arch_jump_label_transform_queue(struct jump_entry *entry,
+>  				     enum jump_label_type type)
+>  {
+> -	jump_label_transform(entry, type, 0);
+> +	jump_label_transform(entry, type);
+>  	return true;
+>  }
+>  
+> @@ -95,6 +84,4 @@ void arch_jump_label_transform_apply(void)
+>  void __init_or_module arch_jump_label_transform_static(struct jump_entry *entry,
+>  						       enum jump_label_type type)
+>  {
+> -	jump_label_transform(entry, type, 1);
+> -	text_poke_sync();
+>  }
 
-The paragraph 2.3.5 mentions "child device nodes" and these properties
-are not devices, although I agree that DT spec here is actually confusing.
 
+With the comment above:
+
+Acked-by: Alexander Gordeev <agordeev@linux.ibm.com>
+
+Thanks!
+
+> -- 
+> 2.35.1
 > 
-> The gpio-keys node has children nodes, therefore it should have 
-> #address-cells and #size-cells, there's no room for interpretation here.
-> 
->> Second, why exactly this one gpio-keys node is different than all 
->> other
->> gpio-keys everywhere and than bindings? Why this one has to be
->> incompatible/wrong according to bindings (which do not allow
->> address-cells and nodes with unit addresses)?
-> 
-> Nothing is different. I'm just stating that your proposed fix is 
-> invalid if we want to enforce compliance with the DT spec.
-
-In such case, we rather enforce the compliance with the bindings.
-
-Best regards,
-Krzysztof

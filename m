@@ -2,24 +2,24 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CD86CC43334
-	for <linux-mips@archiver.kernel.org>; Mon, 27 Jun 2022 05:00:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DA779CCA473
+	for <linux-mips@archiver.kernel.org>; Mon, 27 Jun 2022 05:00:44 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232258AbiF0FAb (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 27 Jun 2022 01:00:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39418 "EHLO
+        id S232348AbiF0FAn (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 27 Jun 2022 01:00:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39592 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231314AbiF0E75 (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Mon, 27 Jun 2022 00:59:57 -0400
+        with ESMTP id S230182AbiF0FAZ (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Mon, 27 Jun 2022 01:00:25 -0400
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 87CC72AF7;
-        Sun, 26 Jun 2022 21:59:56 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id BB1CA2BFA;
+        Sun, 26 Jun 2022 22:00:13 -0700 (PDT)
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 794F11595;
-        Sun, 26 Jun 2022 21:59:56 -0700 (PDT)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id AAB7F15BF;
+        Sun, 26 Jun 2022 22:00:13 -0700 (PDT)
 Received: from a077893.blr.arm.com (unknown [10.162.42.6])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id DA68A3F5A1;
-        Sun, 26 Jun 2022 21:59:48 -0700 (PDT)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 440783F5A1;
+        Sun, 26 Jun 2022 22:00:05 -0700 (PDT)
 From:   Anshuman Khandual <anshuman.khandual@arm.com>
 To:     linux-mm@kvack.org
 Cc:     hch@infradead.org, christophe.leroy@csgroup.eu,
@@ -35,10 +35,11 @@ Cc:     hch@infradead.org, christophe.leroy@csgroup.eu,
         linux-snps-arc@lists.infradead.org,
         linux-arm-kernel@lists.infradead.org, linux-um@lists.infradead.org,
         linux-sh@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Michal Simek <monstr@monstr.eu>
-Subject: [PATCH V5 08/26] microblaze/mm: Enable ARCH_HAS_VM_GET_PAGE_PROT
-Date:   Mon, 27 Jun 2022 10:28:15 +0530
-Message-Id: <20220627045833.1590055-9-anshuman.khandual@arm.com>
+        Jonas Bonn <jonas@southpole.se>,
+        Stafford Horne <shorne@gmail.com>
+Subject: [PATCH V5 10/26] openrisc/mm: Enable ARCH_HAS_VM_GET_PAGE_PROT
+Date:   Mon, 27 Jun 2022 10:28:17 +0530
+Message-Id: <20220627045833.1590055-11-anshuman.khandual@arm.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20220627045833.1590055-1-anshuman.khandual@arm.com>
 References: <20220627045833.1590055-1-anshuman.khandual@arm.com>
@@ -53,35 +54,37 @@ vm_get_page_prot() implementation via DECLARE_VM_GET_PAGE_PROT, which looks
 up a private and static protection_map[] array. Subsequently all __SXXX and
 __PXXX macros can be dropped which are no longer needed.
 
-Cc: Michal Simek <monstr@monstr.eu>
+Cc: Jonas Bonn <jonas@southpole.se>
+Cc: openrisc@lists.librecores.org
 Cc: linux-kernel@vger.kernel.org
+Acked-by: Stafford Horne <shorne@gmail.com>
 Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
 ---
- arch/microblaze/Kconfig               |  1 +
- arch/microblaze/include/asm/pgtable.h | 17 -----------------
- arch/microblaze/mm/init.c             | 20 ++++++++++++++++++++
- 3 files changed, 21 insertions(+), 17 deletions(-)
+ arch/openrisc/Kconfig               |  1 +
+ arch/openrisc/include/asm/pgtable.h | 18 ------------------
+ arch/openrisc/mm/init.c             | 20 ++++++++++++++++++++
+ 3 files changed, 21 insertions(+), 18 deletions(-)
 
-diff --git a/arch/microblaze/Kconfig b/arch/microblaze/Kconfig
-index 8cf429ad1c84..15f91ba8a0c4 100644
---- a/arch/microblaze/Kconfig
-+++ b/arch/microblaze/Kconfig
-@@ -7,6 +7,7 @@ config MICROBLAZE
- 	select ARCH_HAS_GCOV_PROFILE_ALL
- 	select ARCH_HAS_SYNC_DMA_FOR_CPU
+diff --git a/arch/openrisc/Kconfig b/arch/openrisc/Kconfig
+index e814df4c483c..fe0dfb50eb86 100644
+--- a/arch/openrisc/Kconfig
++++ b/arch/openrisc/Kconfig
+@@ -10,6 +10,7 @@ config OPENRISC
+ 	select ARCH_HAS_DMA_SET_UNCACHED
+ 	select ARCH_HAS_DMA_CLEAR_UNCACHED
  	select ARCH_HAS_SYNC_DMA_FOR_DEVICE
 +	select ARCH_HAS_VM_GET_PAGE_PROT
- 	select ARCH_MIGHT_HAVE_PC_PARPORT
- 	select ARCH_WANT_IPC_PARSE_VERSION
- 	select BUILDTIME_TABLE_SORT
-diff --git a/arch/microblaze/include/asm/pgtable.h b/arch/microblaze/include/asm/pgtable.h
-index 0c72646370e1..ba348e997dbb 100644
---- a/arch/microblaze/include/asm/pgtable.h
-+++ b/arch/microblaze/include/asm/pgtable.h
-@@ -204,23 +204,6 @@ extern pte_t *va_to_pte(unsigned long address);
-  * We consider execute permission the same as read.
-  * Also, write permissions imply read permissions.
-  */
+ 	select COMMON_CLK
+ 	select OF
+ 	select OF_EARLY_FLATTREE
+diff --git a/arch/openrisc/include/asm/pgtable.h b/arch/openrisc/include/asm/pgtable.h
+index c3abbf71e09f..dcae8aea132f 100644
+--- a/arch/openrisc/include/asm/pgtable.h
++++ b/arch/openrisc/include/asm/pgtable.h
+@@ -176,24 +176,6 @@ extern void paging_init(void);
+ 	__pgprot(_PAGE_ALL | _PAGE_SRE | _PAGE_SWE \
+ 		 | _PAGE_SHARED | _PAGE_DIRTY | _PAGE_EXEC | _PAGE_CI)
+ 
 -#define __P000	PAGE_NONE
 -#define __P001	PAGE_READONLY_X
 -#define __P010	PAGE_COPY
@@ -99,16 +102,17 @@ index 0c72646370e1..ba348e997dbb 100644
 -#define __S101	PAGE_READONLY_X
 -#define __S110	PAGE_SHARED
 -#define __S111	PAGE_SHARED_X
- 
- #ifndef __ASSEMBLY__
- /*
-diff --git a/arch/microblaze/mm/init.c b/arch/microblaze/mm/init.c
-index f4e503461d24..353fabdfcbc5 100644
---- a/arch/microblaze/mm/init.c
-+++ b/arch/microblaze/mm/init.c
-@@ -285,3 +285,23 @@ void * __ref zalloc_maybe_bootmem(size_t size, gfp_t mask)
- 
- 	return p;
+-
+ /* zero page used for uninitialized stuff */
+ extern unsigned long empty_zero_page[2048];
+ #define ZERO_PAGE(vaddr) (virt_to_page(empty_zero_page))
+diff --git a/arch/openrisc/mm/init.c b/arch/openrisc/mm/init.c
+index 3a021ab6f1ae..d531ab82be12 100644
+--- a/arch/openrisc/mm/init.c
++++ b/arch/openrisc/mm/init.c
+@@ -208,3 +208,23 @@ void __init mem_init(void)
+ 	mem_init_done = 1;
+ 	return;
  }
 +
 +static const pgprot_t protection_map[16] = {

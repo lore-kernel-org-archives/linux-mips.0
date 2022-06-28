@@ -2,47 +2,47 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CDC6ACCA47B
-	for <linux-mips@archiver.kernel.org>; Tue, 28 Jun 2022 02:29:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 60C08CCA47F
+	for <linux-mips@archiver.kernel.org>; Tue, 28 Jun 2022 02:29:35 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244221AbiF1C3d (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 27 Jun 2022 22:29:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40412 "EHLO
+        id S244563AbiF1C3e (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 27 Jun 2022 22:29:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40004 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244748AbiF1C1z (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Mon, 27 Jun 2022 22:27:55 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6228BB3;
-        Mon, 27 Jun 2022 19:26:01 -0700 (PDT)
+        with ESMTP id S244848AbiF1C2L (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Mon, 27 Jun 2022 22:28:11 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BE1124F3A;
+        Mon, 27 Jun 2022 19:26:51 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 4192C61753;
-        Tue, 28 Jun 2022 02:26:01 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BB1E3C341CA;
-        Tue, 28 Jun 2022 02:25:59 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id ACFF661934;
+        Tue, 28 Jun 2022 02:26:50 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4E19FC341CA;
+        Tue, 28 Jun 2022 02:26:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1656383160;
-        bh=7Qc7EGfD+hK4Oi74T/mMmKThV6rGCOJe2WCheaRzp1Y=;
+        s=k20201202; t=1656383210;
+        bh=f8urQyhZfNDI/vhswW1hvS7izR56LtuFpYxvqdIwRGs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=f8hWLN+iPDob97TGDpZf2grBNhXvf0F52u2YJ7HtHNHK1lMJIEVwCIhXGXE11AhZJ
-         BfwyiQrF1yNF3kwgOtk2gW9+Jqy+CD5o6YBOemxixt8rt22EQoEXuMvvrmLsrGAwUp
-         HvQMC0AsxQVIKzRrp9kmhnAHehPiWa12CEj7ZdDEloTkIyzWJ9j09f57CQlocUdlAw
-         iBuhJOcbrxZR0lKmrjWbA9Wkty4XkxRTg3qB+hYmQ9eljPoHv4rMngRqGXqPIF6rnj
-         E3O9wNV3jpQ4S7Wxpl4CBpzEgLVclbcjpsYHIGF2IQUGMStPWOLzdiP3mBzclXrnZD
-         O2eXGHlX75zLw==
+        b=rsfhvMCKtPf7wWu1cO0mseI5X+WEjJZhL2k7N+ywFQ7Gri7N27q43tQKOlPPalCHp
+         mFUE1A3piQIi1G3Fo8+vUpJoSiYDOWiGMXs8RMoqibh3FDf/SuczixrKeKowXSNnBy
+         pNidXoMV+N10ijjko4/u1j7LwUw0Qdlq98ggQH+xhOHffw0cDAwg/qTNZSkp6MdxBj
+         sYmJ8WLc6xL2dp9lYkTLqBrxEYJlcAeRcOMoemDSrkzKuGacfe2hkwx8sPwrSgDyB+
+         BjbQ/aSqXCtkkLOQ6mIp4npRmxkpdTL7azPjpx+jB9h4YPjSSwYG0Z1/ETagPyrNF8
+         lmJY6/+yXePng==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Liang He <windhl@126.com>,
         Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
         Sasha Levin <sashal@kernel.org>, john@phrozen.org,
         xkernel.wang@foxmail.com, linux-mips@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 17/22] mips: lantiq: xway: Fix refcount leak bug in sysctrl
-Date:   Mon, 27 Jun 2022 22:25:12 -0400
-Message-Id: <20220628022518.596687-17-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.14 14/17] mips: lantiq: xway: Fix refcount leak bug in sysctrl
+Date:   Mon, 27 Jun 2022 22:26:12 -0400
+Message-Id: <20220628022615.596977-14-sashal@kernel.org>
 X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20220628022518.596687-1-sashal@kernel.org>
-References: <20220628022518.596687-1-sashal@kernel.org>
+In-Reply-To: <20220628022615.596977-1-sashal@kernel.org>
+References: <20220628022615.596977-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -67,7 +67,7 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 4 insertions(+)
 
 diff --git a/arch/mips/lantiq/xway/sysctrl.c b/arch/mips/lantiq/xway/sysctrl.c
-index 293ebb833659..833a6b4f8383 100644
+index 1b1142c7bb85..454f10a8db50 100644
 --- a/arch/mips/lantiq/xway/sysctrl.c
 +++ b/arch/mips/lantiq/xway/sysctrl.c
 @@ -439,6 +439,10 @@ void __init ltq_soc_init(void)

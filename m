@@ -2,44 +2,44 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 97D3BCCA485
-	for <linux-mips@archiver.kernel.org>; Tue, 28 Jun 2022 02:29:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 029F9CCA482
+	for <linux-mips@archiver.kernel.org>; Tue, 28 Jun 2022 02:29:39 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244593AbiF1C3f (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 27 Jun 2022 22:29:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41150 "EHLO
+        id S244610AbiF1C3h (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 27 Jun 2022 22:29:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40048 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244839AbiF1C2K (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Mon, 27 Jun 2022 22:28:10 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E9C825281;
-        Mon, 27 Jun 2022 19:26:45 -0700 (PDT)
+        with ESMTP id S244854AbiF1C2L (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Mon, 27 Jun 2022 22:28:11 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 616B62529F;
+        Mon, 27 Jun 2022 19:26:56 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 3397961934;
-        Tue, 28 Jun 2022 02:26:45 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E2708C341CB;
-        Tue, 28 Jun 2022 02:26:43 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id F332161932;
+        Tue, 28 Jun 2022 02:26:55 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AC267C341CC;
+        Tue, 28 Jun 2022 02:26:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1656383204;
-        bh=+eDDetAjqwPG2Dy9hM1ugBJGaLmcBNLv0fJw2xkcJng=;
+        s=k20201202; t=1656383215;
+        bh=WQj+vlXUG9tNfMHNqFEpznWhZzUBGkgYCU7K18NUhuQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RkSKbNOuyFar/PoVFQCGd3slO9VxA2ctg10aEZhE3CbD3ufqerYoUHVcsQFbn3R2d
-         qrcSQFWoBlk9nM2PjORswVTFuj++K1qhpeil+9kEzlC1n7ISlrfQ92hxs/10NV6AOE
-         O71KeWpIhM4ONhxOeLklxVuo7wFHt4JlI/mHaJZlnP8a6BQ/W25qYZ/NTcrGN4QM6Y
-         kEFYwaYauKQ3DvxMW8pKlaO33/bJjkmrSK+8O/fNo98MIDo3+evr4JD+kt38hZzQro
-         fpNnnO7UKPCghzk9UGAXXQtkg/as9ZJ542f7hw2oWhWI7FM4QFOPUtdF2hzyBMqqPp
-         ARZoaR8UIjY7A==
+        b=Oj/DUrP2E9c2IwhOVj21gXCOgVet69FFBOYy1lwLov25Vp4v0Gqt5anGTiKCegXyy
+         5Go5wRfc0jquIpfM5sNgzUYVjzpViepHoGbMCHhW+nHz3Wv05GCVZ736vyUt0swUzL
+         R7w8DR5/Bm/5z7KeA72Axlg2+3jYNONkNuK68i8ODrDBUpXOCp1V3MNwGoVnIuzrJ7
+         oO0fs+nvNc+WuPJ+Wv4m1A0Q29Wfjg8ybUqLf0W67dg+bKsMRrNDLs89GCBgYe3pq4
+         D7TDxcccDb+Dn5bgQJkb9rm0zLSk00SR0dIM2knDVd//tl9yZyDIG8PdLnpLl66oLE
+         xz+s89P+5cNTQ==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Liang He <windhl@126.com>,
         Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
         Sasha Levin <sashal@kernel.org>, john@phrozen.org,
         linux-mips@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.14 12/17] mips: ralink: Fix refcount leak in of.c
-Date:   Mon, 27 Jun 2022 22:26:10 -0400
-Message-Id: <20220628022615.596977-12-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.14 16/17] mips: lantiq: Add missing of_node_put() in irq.c
+Date:   Mon, 27 Jun 2022 22:26:14 -0400
+Message-Id: <20220628022615.596977-16-sashal@kernel.org>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220628022615.596977-1-sashal@kernel.org>
 References: <20220628022615.596977-1-sashal@kernel.org>
@@ -53,9 +53,9 @@ X-Mailing-List: linux-mips@vger.kernel.org
 
 From: Liang He <windhl@126.com>
 
-[ Upstream commit 48ca54e39173d1ed4c4dc8cf045484014bb26eaf ]
+[ Upstream commit 3748d2185ac4c2c6f80989672253aad909ecaf95 ]
 
-In plat_of_remap_node(), plat_of_remap_node() will return a node
+In icu_of_init(), of_find_compatible_node() will return a node
 pointer with refcount incremented. We should use of_node_put()
 when it is not used anymore.
 
@@ -63,22 +63,21 @@ Signed-off-by: Liang He <windhl@126.com>
 Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/mips/ralink/of.c | 2 ++
- 1 file changed, 2 insertions(+)
+ arch/mips/lantiq/irq.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/arch/mips/ralink/of.c b/arch/mips/ralink/of.c
-index 1f7c686f7218..3cfd5809243e 100644
---- a/arch/mips/ralink/of.c
-+++ b/arch/mips/ralink/of.c
-@@ -42,6 +42,8 @@ __iomem void *plat_of_remap_node(const char *node)
- 	if (of_address_to_resource(np, 0, &res))
- 		panic("Failed to get resource for %s", node);
+diff --git a/arch/mips/lantiq/irq.c b/arch/mips/lantiq/irq.c
+index 0476d7e97a03..6e3ace045b26 100644
+--- a/arch/mips/lantiq/irq.c
++++ b/arch/mips/lantiq/irq.c
+@@ -342,6 +342,7 @@ int __init icu_of_init(struct device_node *node, struct device_node *parent)
+ 		if (!ltq_eiu_membase)
+ 			panic("Failed to remap eiu memory");
+ 	}
++	of_node_put(eiu_node);
  
-+	of_node_put(np);
-+
- 	if (!request_mem_region(res.start,
- 				resource_size(&res),
- 				res.name))
+ 	return 0;
+ }
 -- 
 2.35.1
 

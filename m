@@ -2,44 +2,44 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 01482CCA486
-	for <linux-mips@archiver.kernel.org>; Tue, 28 Jun 2022 02:21:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 069E5CCA47F
+	for <linux-mips@archiver.kernel.org>; Tue, 28 Jun 2022 02:21:38 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243748AbiF1CVc (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 27 Jun 2022 22:21:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33320 "EHLO
+        id S243625AbiF1CVf (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 27 Jun 2022 22:21:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32832 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243615AbiF1CVB (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Mon, 27 Jun 2022 22:21:01 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA8A7237F6;
-        Mon, 27 Jun 2022 19:20:33 -0700 (PDT)
+        with ESMTP id S243548AbiF1CVC (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Mon, 27 Jun 2022 22:21:02 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98A2524958;
+        Mon, 27 Jun 2022 19:20:43 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 78943617D4;
-        Tue, 28 Jun 2022 02:20:33 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EE9AAC341CB;
-        Tue, 28 Jun 2022 02:20:31 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 43C1CB818E4;
+        Tue, 28 Jun 2022 02:20:42 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 240BEC34115;
+        Tue, 28 Jun 2022 02:20:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1656382832;
-        bh=MrooapUMKALcR8HFD5baYxrzv3HsapBTLZUysWkl8/0=;
+        s=k20201202; t=1656382841;
+        bh=AcjC1jjE+jTG9hEhE6UMQJwpk9S501pZki2orxkU38E=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fq4xD8vhvgloa9qpCa/H5PW4OJhGYoRGnl2KP2mq3J8ZIBqVvi1fG7pqHSxP7W+V6
-         hkfxo1CcX0gbQKlvMy6phqYnRZqY5dv8j1kaokAK8oTcAL/0mLwxqCsKv4Izf1p4zy
-         Otwo1AV93KGEqyYWYK1MSub0LBrY/SvnZ5T5HEbOx6wB1nYbbx9e05EaovonBFqT4T
-         uWO7HwMV17P2bbSXTlZp40wIpiIYV9z2rpCMxMnaMRlrGG/8qA06TD/c9/Az7ags3C
-         Vg2oxvnOIpSDfn3rhW6IOYGeNiZADKIaBc3+ACDrtYyFTuNULrpv7iMT+Um8lKo559
-         0tXdfbYrFcCpg==
+        b=CBhhBwCUBDrUT31LWSAgthk9aSgbY0vfndqo7/LWpcz62MjGLb/IUe0yPWqS7AsRZ
+         Z4HQWDQVYFdA8+L9bvmyPXcCUeTje+wn8NCtXJ5fArzxyrFTq0AK0EJDwxC56O2xRG
+         vyvuw1129XQgnE/hcVNESnkABAkVhpk5UFRiHG62LZxoHZwRsp9cUNPjW+3lifKwvp
+         aYTjUTKobdFbG/056Gfy35c9+0mmWOWOacVbo36kkyXFpuhtIO4duEsN61sc1oIFUo
+         QJkIfX21XC6sCvcO1is9aX9hRj898ZsdE2irALSBV83wtAaDlH0GilBiwF9B9PEXg0
+         QFlh8vU2T3sKw==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Liang He <windhl@126.com>,
         Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
         Sasha Levin <sashal@kernel.org>, john@phrozen.org,
-        xkernel.wang@foxmail.com, linux-mips@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.18 43/53] mips: lantiq: xway: Fix refcount leak bug in sysctrl
-Date:   Mon, 27 Jun 2022 22:18:29 -0400
-Message-Id: <20220628021839.594423-43-sashal@kernel.org>
+        linux-mips@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.18 46/53] mips: lantiq: Add missing of_node_put() in irq.c
+Date:   Mon, 27 Jun 2022 22:18:32 -0400
+Message-Id: <20220628021839.594423-46-sashal@kernel.org>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220628021839.594423-1-sashal@kernel.org>
 References: <20220628021839.594423-1-sashal@kernel.org>
@@ -53,34 +53,31 @@ X-Mailing-List: linux-mips@vger.kernel.org
 
 From: Liang He <windhl@126.com>
 
-[ Upstream commit 76695592711ef1e215cc24ed3e1cd857d7fc3098 ]
+[ Upstream commit 3748d2185ac4c2c6f80989672253aad909ecaf95 ]
 
-In ltq_soc_init(), of_find_compatible_node() will return a node
-pointer with refcount incremented. We should use of_node_put() when
-it is not used anymore.
+In icu_of_init(), of_find_compatible_node() will return a node
+pointer with refcount incremented. We should use of_node_put()
+when it is not used anymore.
 
 Signed-off-by: Liang He <windhl@126.com>
 Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/mips/lantiq/xway/sysctrl.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ arch/mips/lantiq/irq.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/arch/mips/lantiq/xway/sysctrl.c b/arch/mips/lantiq/xway/sysctrl.c
-index 084f6caba5f2..d444a1b98a72 100644
---- a/arch/mips/lantiq/xway/sysctrl.c
-+++ b/arch/mips/lantiq/xway/sysctrl.c
-@@ -441,6 +441,10 @@ void __init ltq_soc_init(void)
- 			of_address_to_resource(np_ebu, 0, &res_ebu))
- 		panic("Failed to get core resources");
+diff --git a/arch/mips/lantiq/irq.c b/arch/mips/lantiq/irq.c
+index b732495f138a..20622bf0a9b3 100644
+--- a/arch/mips/lantiq/irq.c
++++ b/arch/mips/lantiq/irq.c
+@@ -408,6 +408,7 @@ int __init icu_of_init(struct device_node *node, struct device_node *parent)
+ 		if (!ltq_eiu_membase)
+ 			panic("Failed to remap eiu memory");
+ 	}
++	of_node_put(eiu_node);
  
-+	of_node_put(np_pmu);
-+	of_node_put(np_cgu);
-+	of_node_put(np_ebu);
-+
- 	if (!request_mem_region(res_pmu.start, resource_size(&res_pmu),
- 				res_pmu.name) ||
- 		!request_mem_region(res_cgu.start, resource_size(&res_cgu),
+ 	return 0;
+ }
 -- 
 2.35.1
 

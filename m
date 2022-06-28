@@ -2,45 +2,43 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DA792CCA482
-	for <linux-mips@archiver.kernel.org>; Tue, 28 Jun 2022 02:29:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CBCE5CCA483
+	for <linux-mips@archiver.kernel.org>; Tue, 28 Jun 2022 02:29:37 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244577AbiF1C3f (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 27 Jun 2022 22:29:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39918 "EHLO
+        id S244602AbiF1C3g (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 27 Jun 2022 22:29:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39860 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244844AbiF1C2K (ORCPT
+        with ESMTP id S244836AbiF1C2K (ORCPT
         <rfc822;linux-mips@vger.kernel.org>); Mon, 27 Jun 2022 22:28:10 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C36C25283;
-        Mon, 27 Jun 2022 19:26:48 -0700 (PDT)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8202B24F3D;
+        Mon, 27 Jun 2022 19:26:44 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 088CA618B9;
-        Tue, 28 Jun 2022 02:26:48 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 88614C34115;
-        Tue, 28 Jun 2022 02:26:46 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 0D7DB618F4;
+        Tue, 28 Jun 2022 02:26:44 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B9E04C34115;
+        Tue, 28 Jun 2022 02:26:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1656383207;
-        bh=s9Ol33kpSrjmzFWdc4sW7eWoQqLfe0AJTiY9sp9s7jY=;
+        s=k20201202; t=1656383203;
+        bh=Jbj3KyWfrVnGUc7SFB+0dOvbp461Vbc7uw0NCV65NlI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PKB1e82Xp8QN5mBRnV9FgcIK6Efh97vr1e9ttg6zFT3kl1X7bnqI2rAWaW29VZU+2
-         gD6UDRZnG8Ksws0RsW3ys1ycjXeVCnJ9TwYXDit8x+FSZ/61JAjuPHOKjryrP/cT9M
-         rGwgg6dhCkkKTIkBrW1Q7Hd+zOqXATG7AblqoAqq3munpqnPJ26nKRzyMryKIeCQZ/
-         Nz+VXNZnve++nzV/Nd/trS4AIkH2buVHugpxTw9AQSMM1HfCWhCyERkqZ8z/qQfomN
-         XI+UGYEzS4aqtZfGOobYa8bVuwgCOU7ytQz87/CPFfPR2ryjTBqP66ovoCaXxAc8ZI
-         7kRFWKoHRM+oA==
+        b=hIA5Mmw5fcwBASZaLlKM0/sDYrsDg6P748WxKwfknynhWEOqzbkXymMQBe5yRJCHP
+         zMkFBlahqfJ7Ose+Y8h8/smpMG/moPcIaKhBKqaN3fyJqSb/Uvg3W+0raPPibBkMPL
+         rAd0tCRSv+U1Q/I67YZKQh3QrOARzbRCpmxpb6GqAzzdKpJEo65cG7IzwImo10nWc0
+         Ezh1q47erh/eMRr9v5w9KL6GM3Ms23RnqbKZ7AxbU3Z2wJfjlWQkCwEDMsha6Uhg6F
+         5nn6Z9Tu2mciUVhzSnOBc7BKTdQXTFNucE99MVLyueszLyhjmwG6mR3sxsUsZTzo0S
+         ehuqF/LtfWygA==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Liang He <windhl@126.com>,
         Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Sasha Levin <sashal@kernel.org>, john@phrozen.org,
-        xkernel.wang@foxmail.com, wangborong@cdjrlc.com,
-        linux-mips@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.14 13/17] mips: lantiq: falcon: Fix refcount leak bug in sysctrl
-Date:   Mon, 27 Jun 2022 22:26:11 -0400
-Message-Id: <20220628022615.596977-13-sashal@kernel.org>
+        Sasha Levin <sashal@kernel.org>, linux-mips@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.14 11/17] mips: mti-malta: Fix refcount leak in malta-time.c
+Date:   Mon, 27 Jun 2022 22:26:09 -0400
+Message-Id: <20220628022615.596977-11-sashal@kernel.org>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20220628022615.596977-1-sashal@kernel.org>
 References: <20220628022615.596977-1-sashal@kernel.org>
@@ -54,36 +52,32 @@ X-Mailing-List: linux-mips@vger.kernel.org
 
 From: Liang He <windhl@126.com>
 
-[ Upstream commit 72a2af539fff975caadd9a4db3f99963569bd9c9 ]
+[ Upstream commit 608d94cb84c42585058d692f2fe5d327f8868cdb ]
 
-In ltq_soc_init(), of_find_compatible_node() will return a node pointer
-with refcount incremented. We should use of_node_put() when it is not
-used anymore.
+In update_gic_frequency_dt(), of_find_compatible_node() will return
+a node pointer with refcount incremented. We should use of_node_put()
+when it is not used anymore.
 
 Signed-off-by: Liang He <windhl@126.com>
 Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/mips/lantiq/falcon/sysctrl.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+ arch/mips/mti-malta/malta-time.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/arch/mips/lantiq/falcon/sysctrl.c b/arch/mips/lantiq/falcon/sysctrl.c
-index 714d92659489..665739bd4190 100644
---- a/arch/mips/lantiq/falcon/sysctrl.c
-+++ b/arch/mips/lantiq/falcon/sysctrl.c
-@@ -210,6 +210,12 @@ void __init ltq_soc_init(void)
- 			of_address_to_resource(np_sysgpe, 0, &res_sys[2]))
- 		panic("Failed to get core resources");
+diff --git a/arch/mips/mti-malta/malta-time.c b/arch/mips/mti-malta/malta-time.c
+index 66c866740ff2..eef336192d7f 100644
+--- a/arch/mips/mti-malta/malta-time.c
++++ b/arch/mips/mti-malta/malta-time.c
+@@ -231,6 +231,8 @@ static void update_gic_frequency_dt(void)
  
-+	of_node_put(np_status);
-+	of_node_put(np_ebu);
-+	of_node_put(np_sys1);
-+	of_node_put(np_syseth);
-+	of_node_put(np_sysgpe);
+ 	if (of_update_property(node, &gic_frequency_prop) < 0)
+ 		pr_err("error updating gic frequency property\n");
 +
- 	if ((request_mem_region(res_status.start, resource_size(&res_status),
- 				res_status.name) < 0) ||
- 		(request_mem_region(res_ebu.start, resource_size(&res_ebu),
++	of_node_put(node);
+ }
+ 
+ #endif
 -- 
 2.35.1
 

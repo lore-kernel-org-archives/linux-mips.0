@@ -2,136 +2,116 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 47E68CCA481
-	for <linux-mips@archiver.kernel.org>; Thu, 30 Jun 2022 05:24:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F0C31CCA47B
+	for <linux-mips@archiver.kernel.org>; Thu, 30 Jun 2022 06:05:28 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232787AbiF3FYX (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 30 Jun 2022 01:24:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40720 "EHLO
+        id S232524AbiF3GF2 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 30 Jun 2022 02:05:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49700 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232386AbiF3FWV (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Thu, 30 Jun 2022 01:22:21 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 8946F41629;
-        Wed, 29 Jun 2022 22:20:23 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 819FC1BB2;
-        Wed, 29 Jun 2022 22:20:23 -0700 (PDT)
-Received: from a077893.blr.arm.com (unknown [10.162.41.8])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id D6CEA3F66F;
-        Wed, 29 Jun 2022 22:20:14 -0700 (PDT)
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-To:     linux-mm@kvack.org, akpm@linux-foundation.org
-Cc:     hch@infradead.org, christophe.leroy@csgroup.eu,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        linuxppc-dev@lists.ozlabs.org, sparclinux@vger.kernel.org,
-        x86@kernel.org, openrisc@lists.librecores.org,
-        linux-xtensa@linux-xtensa.org, linux-csky@vger.kernel.org,
-        linux-hexagon@vger.kernel.org, linux-parisc@vger.kernel.org,
-        linux-alpha@vger.kernel.org, linux-riscv@lists.infradead.org,
-        linux-s390@vger.kernel.org, linux-ia64@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-        linux-snps-arc@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-um@lists.infradead.org,
-        linux-sh@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>
-Subject: [PATCH V6 25/26] sh/mm: Enable ARCH_HAS_VM_GET_PAGE_PROT
-Date:   Thu, 30 Jun 2022 10:46:29 +0530
-Message-Id: <20220630051630.1718927-26-anshuman.khandual@arm.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20220630051630.1718927-1-anshuman.khandual@arm.com>
-References: <20220630051630.1718927-1-anshuman.khandual@arm.com>
+        with ESMTP id S230099AbiF3GF1 (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Thu, 30 Jun 2022 02:05:27 -0400
+Received: from mout.kundenserver.de (mout.kundenserver.de [217.72.192.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B83F3E9C;
+        Wed, 29 Jun 2022 23:05:25 -0700 (PDT)
+Received: from mail-yb1-f180.google.com ([209.85.219.180]) by
+ mrelayeu.kundenserver.de (mreue108 [213.165.67.113]) with ESMTPSA (Nemesis)
+ id 1MDykM-1nwr8Z15L2-009u4R; Thu, 30 Jun 2022 08:05:23 +0200
+Received: by mail-yb1-f180.google.com with SMTP id v38so21245765ybi.3;
+        Wed, 29 Jun 2022 23:05:22 -0700 (PDT)
+X-Gm-Message-State: AJIora9mLhIkWMU2pw0+qpEOolnlhrptNeZMdvQLOvLxTO90T/tXSL5O
+        zFetecC19nQkamKR5oVGPtfJuS7QEDEtWLhuApw=
+X-Google-Smtp-Source: AGRyM1vtT3pzk3IDIUdnI7V5TjBcb4k7QQp50McXs21ca3emcSDlR6eKLW5igXc4ObexSkfmEIzbtJFUPtpYReNpT5o=
+X-Received: by 2002:a05:6902:120f:b0:668:2228:9627 with SMTP id
+ s15-20020a056902120f00b0066822289627mr7959756ybu.134.1656569121704; Wed, 29
+ Jun 2022 23:05:21 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20220630043237.2059576-1-chenhuacai@loongson.cn> <20220630043237.2059576-4-chenhuacai@loongson.cn>
+In-Reply-To: <20220630043237.2059576-4-chenhuacai@loongson.cn>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Thu, 30 Jun 2022 08:05:04 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a1f94z4oSnMr73PuiXkMR7uGhthzY_EWVniB+G4KXBcBQ@mail.gmail.com>
+Message-ID: <CAK8P3a1f94z4oSnMr73PuiXkMR7uGhthzY_EWVniB+G4KXBcBQ@mail.gmail.com>
+Subject: Re: [PATCH V2 3/4] mm/sparse-vmemmap: Generalise vmemmap_populate_hugepages()
+To:     Huacai Chen <chenhuacai@loongson.cn>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Huacai Chen <chenhuacai@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, loongarch@lists.linux.dev,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Xuefeng Li <lixuefeng@loongson.cn>,
+        Guo Ren <guoren@kernel.org>, Xuerui Wang <kernel@xen0n.name>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Feiyang Chen <chenfeiyang@loongson.cn>
+Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:isWkHM0zBfXkwCpnGWGutHkS/c7PTfYL+kPwzmCZnPTaur1N43j
+ trEAds4ISXh8H43i7dfbkWSQ4tq8gEWi9JKyY4iCJb/J4SD5dAW9u4Qx4iGNM7YwKyKMbuL
+ edDZoYeSJyIN+4bVRBDeeiiE2nDFLNfA/uaQ4aVs590jrjV1km5pJEbwcYcCL8jzX0/xM/1
+ mMSS5KFxjXx25Cx8ptu9Q==
+X-UI-Out-Filterresults: notjunk:1;V03:K0:K/dru+AXhPE=:25UZ8NKGZcBrkp36/wp5Gn
+ 0GqcT8r3sqJsAykWyp2uHh4zhJ0NgQQFNNldEGODKTiGV1wnvD3CULKr10UmH1OwtBlJcEoNg
+ pXTa1PyWq9+nTiK9JnSh/+zWV3UmpkaQtnoFuzV9UvbsPaZw12uotwhR+zGqbs4oMuaBpPqdd
+ eSkWZiPn5yT12e+1++b7pwmHdPhMjHizyTefRfKfx+5BVva82sfqZp0ksS2jqU4wcXx5fiGb7
+ MSMMiUQy6hDUdIySZZIG3NfBLXSZzvoJFxcwp+9picXPP0RdYVSeCqNfBbp9EC6cHSqGANztP
+ oUypRoKgLbGZiEgpLGUu1k7l+bz2vU+RbR2kNkZ+V137r30NXpN1VDQmXdToQxUNXNN1DKImz
+ EpOnGE8mqN0Yyk6xCTtofapJ+ytJyOGT2mCHeNTpzZV9sZvUkiq+377Bh3LUNLbHoUPi25rE2
+ 0A0Ul+KtW71sOhOtTQiZxjJa+nXe+dV9QXUI58YVVjE2yRIpHebVmxPk3lPStnFzoK1zU+KJx
+ F840O+8k7kQqeL3p+B1W0n1RnLARAgN2VbSapitu43we4+FkpcQg9+7J2TobO2UTq3yBSDrcl
+ R5bXusXaKOIRMkA8kkdUplPn/3SA4LalgAQLFQcWoNLN43FYrcfbfDc8YNFpp8IbdTzYxvObt
+ QswESTXgyebxy22XJI9SJ7zQYSMgr36k15TrPEAL+dUqPP2RaZ6lU0Pu+fLNCg/GcVJj2szbD
+ tJybH4N+QGrusm9GOU6xKSpwGYv8lMNsoDBvZV9r9DyCLYkgHVXZb9M0dycDkyfhLbmyY7YPI
+ YEgfnDZFdyOJnvycE4OxQJ32FpQViCqt3oYEZ4DTjw5CKfmZozsekrwz31uSHYLDm3TCE2KQE
+ jAma2Qnb4k9xIC6ZY+DQTFlC4nxLJMVyBclhq11Bc=
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-This enables ARCH_HAS_VM_GET_PAGE_PROT on the platform and exports standard
-vm_get_page_prot() implementation via DECLARE_VM_GET_PAGE_PROT, which looks
-up a private and static protection_map[] array. Subsequently all __SXXX and
-__PXXX macros can be dropped which are no longer needed.
+On Thu, Jun 30, 2022 at 6:32 AM Huacai Chen <chenhuacai@loongson.cn> wrote:
+>
+> From: Feiyang Chen <chenfeiyang@loongson.cn>
+>
+> Generalise vmemmap_populate_hugepages() so ARM64 & X86 & LoongArch can
+> share its implementation.
 
-Cc: Yoshinori Sato <ysato@users.sourceforge.jp>
-Cc: Rich Felker <dalias@libc.org>
-Cc: linux-sh@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
-Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
----
- arch/sh/Kconfig               |  1 +
- arch/sh/include/asm/pgtable.h | 17 -----------------
- arch/sh/mm/mmap.c             | 20 ++++++++++++++++++++
- 3 files changed, 21 insertions(+), 17 deletions(-)
+Sharing this function is good, thanks for consolidating this
 
-diff --git a/arch/sh/Kconfig b/arch/sh/Kconfig
-index 5f220e903e5a..91f3ea325388 100644
---- a/arch/sh/Kconfig
-+++ b/arch/sh/Kconfig
-@@ -12,6 +12,7 @@ config SUPERH
- 	select ARCH_HAS_GCOV_PROFILE_ALL
- 	select ARCH_HAS_PTE_SPECIAL
- 	select ARCH_HAS_TICK_BROADCAST if GENERIC_CLOCKEVENTS_BROADCAST
-+	select ARCH_HAS_VM_GET_PAGE_PROT
- 	select ARCH_HIBERNATION_POSSIBLE if MMU
- 	select ARCH_MIGHT_HAVE_PC_PARPORT
- 	select ARCH_WANT_IPC_PARSE_VERSION
-diff --git a/arch/sh/include/asm/pgtable.h b/arch/sh/include/asm/pgtable.h
-index d7ddb1ec86a0..6fb9ec54cf9b 100644
---- a/arch/sh/include/asm/pgtable.h
-+++ b/arch/sh/include/asm/pgtable.h
-@@ -89,23 +89,6 @@ static inline unsigned long phys_addr_mask(void)
-  * completely separate permission bits for user and kernel space.
-  */
- 	 /*xwr*/
--#define __P000	PAGE_NONE
--#define __P001	PAGE_READONLY
--#define __P010	PAGE_COPY
--#define __P011	PAGE_COPY
--#define __P100	PAGE_EXECREAD
--#define __P101	PAGE_EXECREAD
--#define __P110	PAGE_COPY
--#define __P111	PAGE_COPY
--
--#define __S000	PAGE_NONE
--#define __S001	PAGE_READONLY
--#define __S010	PAGE_WRITEONLY
--#define __S011	PAGE_SHARED
--#define __S100	PAGE_EXECREAD
--#define __S101	PAGE_EXECREAD
--#define __S110	PAGE_RWX
--#define __S111	PAGE_RWX
- 
- typedef pte_t *pte_addr_t;
- 
-diff --git a/arch/sh/mm/mmap.c b/arch/sh/mm/mmap.c
-index 6a1a1297baae..46c1183493af 100644
---- a/arch/sh/mm/mmap.c
-+++ b/arch/sh/mm/mmap.c
-@@ -162,3 +162,23 @@ int valid_mmap_phys_addr_range(unsigned long pfn, size_t size)
- {
- 	return 1;
- }
-+
-+static const pgprot_t protection_map[16] = {
-+	[VM_NONE]					= PAGE_NONE,
-+	[VM_READ]					= PAGE_READONLY,
-+	[VM_WRITE]					= PAGE_COPY,
-+	[VM_WRITE | VM_READ]				= PAGE_COPY,
-+	[VM_EXEC]					= PAGE_EXECREAD,
-+	[VM_EXEC | VM_READ]				= PAGE_EXECREAD,
-+	[VM_EXEC | VM_WRITE]				= PAGE_COPY,
-+	[VM_EXEC | VM_WRITE | VM_READ]			= PAGE_COPY,
-+	[VM_SHARED]					= PAGE_NONE,
-+	[VM_SHARED | VM_READ]				= PAGE_READONLY,
-+	[VM_SHARED | VM_WRITE]				= PAGE_WRITEONLY,
-+	[VM_SHARED | VM_WRITE | VM_READ]		= PAGE_SHARED,
-+	[VM_SHARED | VM_EXEC]				= PAGE_EXECREAD,
-+	[VM_SHARED | VM_EXEC | VM_READ]			= PAGE_EXECREAD,
-+	[VM_SHARED | VM_EXEC | VM_WRITE]		= PAGE_RWX,
-+	[VM_SHARED | VM_EXEC | VM_WRITE | VM_READ]	= PAGE_RWX
-+};
-+DECLARE_VM_GET_PAGE_PROT
--- 
-2.25.1
+> Signed-off-by: Huacai Chen <chenhuacai@loongson.cn>
+> Signed-off-by: Feiyang Chen <chenfeiyang@loongson.cn>
 
+The Signed-off-by lines are in the wrong order, it should start with the author
+and end with the final submitter.
+
+> index 33e2a1ceee72..6f2e40bb695d 100644
+> --- a/mm/sparse-vmemmap.c
+> +++ b/mm/sparse-vmemmap.c
+> @@ -686,6 +686,60 @@ int __meminit vmemmap_populate_basepages(unsigned long start, unsigned long end,
+>         return vmemmap_populate_range(start, end, node, altmap, NULL);
+>  }
+>
+> +void __weak __meminit vmemmap_set_pmd(pmd_t *pmd, void *p, int node,
+> +                                     unsigned long addr, unsigned long next)
+> +{
+> +}
+> +
+> +int __weak __meminit vmemmap_check_pmd(pmd_t *pmd, int node, unsigned long addr,
+> +                                      unsigned long next)
+> +{
+> +       return 0;
+> +}
+> +
+
+I think inline functions would be better here, both for compiler optimization
+and to make it easier to track the code flow. The normal way we do these
+in architecture specific headers is to override the functions by defining a
+macro of the same name.
+
+
+        Arnd

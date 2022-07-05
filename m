@@ -2,70 +2,79 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2A0BAC43334
-	for <linux-mips@archiver.kernel.org>; Tue,  5 Jul 2022 10:40:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 45E83CCA47F
+	for <linux-mips@archiver.kernel.org>; Tue,  5 Jul 2022 10:40:50 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230300AbiGEKkr (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 5 Jul 2022 06:40:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33718 "EHLO
+        id S230004AbiGEKks (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 5 Jul 2022 06:40:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33716 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230004AbiGEKkp (ORCPT
+        with ESMTP id S230082AbiGEKkp (ORCPT
         <rfc822;linux-mips@vger.kernel.org>); Tue, 5 Jul 2022 06:40:45 -0400
 Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 64AE215737
-        for <linux-mips@vger.kernel.org>; Tue,  5 Jul 2022 03:40:44 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 62B3E15727;
+        Tue,  5 Jul 2022 03:40:44 -0700 (PDT)
 Received: from uucp (helo=alpha)
         by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1o8fz0-0002Jv-01; Tue, 05 Jul 2022 12:40:42 +0200
+        id 1o8fz0-0002Jv-03; Tue, 05 Jul 2022 12:40:42 +0200
 Received: by alpha.franken.de (Postfix, from userid 1000)
-        id BF8E2C0230; Tue,  5 Jul 2022 12:23:00 +0200 (CEST)
-Date:   Tue, 5 Jul 2022 12:23:00 +0200
+        id 095BEC0230; Tue,  5 Jul 2022 12:24:43 +0200 (CEST)
+Date:   Tue, 5 Jul 2022 12:24:42 +0200
 From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Finn Thain <fthain@linux-m68k.org>, linux-mips@vger.kernel.org,
-        kernel@pengutronix.de
-Subject: Re: [PATCH] mips: sgi-ip22: Drop redundant check from .remove()
-Message-ID: <20220705102300.GE9951@alpha.franken.de>
-References: <20220618204037.35947-1-u.kleine-koenig@pengutronix.de>
+To:     Tiezhu Yang <yangtiezhu@loongson.cn>
+Cc:     Xuefeng Li <lixuefeng@loongson.cn>, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] MIPS: Loongson64: Fix section mismatch warning
+Message-ID: <20220705102442.GG9951@alpha.franken.de>
+References: <1656313633-1713-1-git-send-email-yangtiezhu@loongson.cn>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20220618204037.35947-1-u.kleine-koenig@pengutronix.de>
+In-Reply-To: <1656313633-1713-1-git-send-email-yangtiezhu@loongson.cn>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Sat, Jun 18, 2022 at 10:40:37PM +0200, Uwe Kleine-König wrote:
-> The remove callback is only called by the driver core if there is a
-> driver to unbind, so there is no need to check dev->driver to be
-> non-NULL.
+On Mon, Jun 27, 2022 at 03:07:13PM +0800, Tiezhu Yang wrote:
+> prom_init_numa_memory() is annotated __init and not used by any module,
+> thus don't export it.
 > 
-> Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+> Remove not needed EXPORT_SYMBOL for prom_init_numa_memory() to fix the
+> following section mismatch warning:
+> 
+>   LD      vmlinux.o
+>   MODPOST vmlinux.symvers
+> WARNING: modpost: vmlinux.o(___ksymtab+prom_init_numa_memory+0x0): Section mismatch in reference
+> from the variable __ksymtab_prom_init_numa_memory to the function .init.text:prom_init_numa_memory()
+> The symbol prom_init_numa_memory is exported and annotated __init
+> Fix this by removing the __init annotation of prom_init_numa_memory or drop the export.
+> 
+> This is build on Linux 5.19-rc4.
+> 
+> Fixes: 6fbde6b492df ("MIPS: Loongson64: Move files to the top-level directory")
+> Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
 > ---
->  arch/mips/sgi-ip22/ip22-gio.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/arch/mips/sgi-ip22/ip22-gio.c b/arch/mips/sgi-ip22/ip22-gio.c
-> index 38d12f417e48..8686e8c1c4e5 100644
-> --- a/arch/mips/sgi-ip22/ip22-gio.c
-> +++ b/arch/mips/sgi-ip22/ip22-gio.c
-> @@ -148,7 +148,7 @@ static void gio_device_remove(struct device *dev)
->  	struct gio_device *gio_dev = to_gio_device(dev);
->  	struct gio_driver *drv = to_gio_driver(dev->driver);
->  
-> -	if (dev->driver && drv->remove)
-> +	if (drv->remove)
->  		drv->remove(gio_dev);
+> v2: update the commit message and add Fixes tag
+> 
+>  arch/mips/loongson64/numa.c | 1 -
+>  1 file changed, 1 deletion(-)
+> 
+> diff --git a/arch/mips/loongson64/numa.c b/arch/mips/loongson64/numa.c
+> index 69a5331..8f61e93 100644
+> --- a/arch/mips/loongson64/numa.c
+> +++ b/arch/mips/loongson64/numa.c
+> @@ -196,7 +196,6 @@ void __init prom_init_numa_memory(void)
+>  	pr_info("CP0_PageGrain: CP0 5.1 (0x%x)\n", read_c0_pagegrain());
+>  	prom_meminit();
 >  }
+> -EXPORT_SYMBOL(prom_init_numa_memory);
 >  
-> 
-> base-commit: f2906aa863381afb0015a9eb7fefad885d4e5a56
+>  pg_data_t * __init arch_alloc_nodedata(int nid)
+>  {
 > -- 
-> 2.36.1
+> 2.1.0
 
 applied to mips-next.
 

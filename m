@@ -2,70 +2,70 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4C992C433EF
-	for <linux-mips@archiver.kernel.org>; Tue,  5 Jul 2022 10:40:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2A0BAC43334
+	for <linux-mips@archiver.kernel.org>; Tue,  5 Jul 2022 10:40:49 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231937AbiGEKkq (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 5 Jul 2022 06:40:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33726 "EHLO
+        id S230300AbiGEKkr (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 5 Jul 2022 06:40:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33718 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230300AbiGEKkq (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Tue, 5 Jul 2022 06:40:46 -0400
+        with ESMTP id S230004AbiGEKkp (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Tue, 5 Jul 2022 06:40:45 -0400
 Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 6496415734
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 64AE215737
         for <linux-mips@vger.kernel.org>; Tue,  5 Jul 2022 03:40:44 -0700 (PDT)
 Received: from uucp (helo=alpha)
         by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1o8fyz-0002Jv-00; Tue, 05 Jul 2022 12:40:41 +0200
+        id 1o8fz0-0002Jv-01; Tue, 05 Jul 2022 12:40:42 +0200
 Received: by alpha.franken.de (Postfix, from userid 1000)
-        id CC4C0C01FB; Tue,  5 Jul 2022 12:20:53 +0200 (CEST)
-Date:   Tue, 5 Jul 2022 12:20:53 +0200
+        id BF8E2C0230; Tue,  5 Jul 2022 12:23:00 +0200 (CEST)
+Date:   Tue, 5 Jul 2022 12:23:00 +0200
 From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Liang He <windhl@126.com>
-Cc:     linux-mips@vger.kernel.org
-Subject: Re: [PATCH] mips: cavium-octeon: Fix missing of_node_put() in
- octeon2_usb_clocks_start
-Message-ID: <20220705102053.GA9951@alpha.franken.de>
-References: <20220701124112.237902-1-windhl@126.com>
+To:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Finn Thain <fthain@linux-m68k.org>, linux-mips@vger.kernel.org,
+        kernel@pengutronix.de
+Subject: Re: [PATCH] mips: sgi-ip22: Drop redundant check from .remove()
+Message-ID: <20220705102300.GE9951@alpha.franken.de>
+References: <20220618204037.35947-1-u.kleine-koenig@pengutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20220701124112.237902-1-windhl@126.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20220618204037.35947-1-u.kleine-koenig@pengutronix.de>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Fri, Jul 01, 2022 at 08:41:12PM +0800, Liang He wrote:
-> We should call of_node_put() for the reference 'uctl_node' returned by
-> of_get_parent() which will increase the refcount. Otherwise, there will
-> be a refcount leak bug.
+On Sat, Jun 18, 2022 at 10:40:37PM +0200, Uwe Kleine-König wrote:
+> The remove callback is only called by the driver core if there is a
+> driver to unbind, so there is no need to check dev->driver to be
+> non-NULL.
 > 
-> Signed-off-by: Liang He <windhl@126.com>
+> Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
 > ---
->  arch/mips/cavium-octeon/octeon-platform.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
+>  arch/mips/sgi-ip22/ip22-gio.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/arch/mips/cavium-octeon/octeon-platform.c b/arch/mips/cavium-octeon/octeon-platform.c
-> index a994022e32c9..ce05c0dd3acd 100644
-> --- a/arch/mips/cavium-octeon/octeon-platform.c
-> +++ b/arch/mips/cavium-octeon/octeon-platform.c
-> @@ -86,11 +86,12 @@ static void octeon2_usb_clocks_start(struct device *dev)
->  					 "refclk-frequency", &clock_rate);
->  		if (i) {
->  			dev_err(dev, "No UCTL \"refclk-frequency\"\n");
-> +			of_node_put(uctl_node);
->  			goto exit;
->  		}
->  		i = of_property_read_string(uctl_node,
->  					    "refclk-type", &clock_type);
-> -
-> +		of_node_put(uctl_node);
->  		if (!i && strcmp("crystal", clock_type) == 0)
->  			is_crystal_clock = true;
->  	}
+> diff --git a/arch/mips/sgi-ip22/ip22-gio.c b/arch/mips/sgi-ip22/ip22-gio.c
+> index 38d12f417e48..8686e8c1c4e5 100644
+> --- a/arch/mips/sgi-ip22/ip22-gio.c
+> +++ b/arch/mips/sgi-ip22/ip22-gio.c
+> @@ -148,7 +148,7 @@ static void gio_device_remove(struct device *dev)
+>  	struct gio_device *gio_dev = to_gio_device(dev);
+>  	struct gio_driver *drv = to_gio_driver(dev->driver);
+>  
+> -	if (dev->driver && drv->remove)
+> +	if (drv->remove)
+>  		drv->remove(gio_dev);
+>  }
+>  
+> 
+> base-commit: f2906aa863381afb0015a9eb7fefad885d4e5a56
 > -- 
-> 2.25.1
+> 2.36.1
 
 applied to mips-next.
 

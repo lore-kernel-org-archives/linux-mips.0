@@ -2,143 +2,124 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 81CBDC433EF
-	for <linux-mips@archiver.kernel.org>; Wed,  6 Jul 2022 09:55:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BB214CCA473
+	for <linux-mips@archiver.kernel.org>; Wed,  6 Jul 2022 09:57:17 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232807AbiGFJzO (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 6 Jul 2022 05:55:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35484 "EHLO
+        id S231913AbiGFJ5Q (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 6 Jul 2022 05:57:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38192 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232034AbiGFJyN (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 6 Jul 2022 05:54:13 -0400
-Received: from mail-oa1-f52.google.com (mail-oa1-f52.google.com [209.85.160.52])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CA6725281;
-        Wed,  6 Jul 2022 02:54:10 -0700 (PDT)
-Received: by mail-oa1-f52.google.com with SMTP id 586e51a60fabf-10bf634bc50so11683649fac.3;
-        Wed, 06 Jul 2022 02:54:10 -0700 (PDT)
+        with ESMTP id S232467AbiGFJ5B (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 6 Jul 2022 05:57:01 -0400
+Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AD9B248F4;
+        Wed,  6 Jul 2022 02:56:59 -0700 (PDT)
+Received: by mail-ej1-x633.google.com with SMTP id u12so26118876eja.8;
+        Wed, 06 Jul 2022 02:56:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=googlemail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=pwJw4iG5MmI5M9vOBxQQYYpW8UUcING3fwN/HsK0A3s=;
+        b=kwC8kbk09dEP3xxP68XAwezdx0WWeSATpNwDyuveZbSAKEhQfUiJDiqz+lD0kC2D8T
+         /4s3G+fLP/bdfGJffrfO6D75PfYz2GTlVYOK/zzkLDcI4bQAS3qt2CKbv04NdchLcptz
+         nGIksdX+jtnhYF9CJDfhpvzxgdejmUl1Go9leBsD+iX4Nfjc1yNGRYkXW6CI8Jn+5ZDz
+         1Bp6wkqSaAUZ5Psx1d9Pn9V05e0NP48eNvJreUEwmTUGRLRsyF/H80rNVLOE3hIDoXSz
+         5cSBKg9Ixk2kMWU6i9w93rRHjUP7AZ/L2F2uTxdehnjJUgziQjlwg9Mhrvi72cfXQVUL
+         lI+w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=o8jOPstF035V3JBIGTjyEra8xnCZ4RAIho4NrHeIzoU=;
-        b=ifKui5S5rFjVMq/DNxGGiZYtnihyrIPz+XgGy+287htk2qPkSPTBDT6zU/bqaW0IAj
-         eEIcUuZm8zNyVqggg0vPkfq5SvWboTygMYut/vI30ZWm7OI6knykq5A50cyUN7yxHwbt
-         x3OJkAQz3rS3Y9MtqJ6NwJrgnwi7+6R6OQArw7NoCvrdzt2fl1u+Op6Sk71Eo0mnk7Kf
-         K4jGzZJ9jl69cTwc5fCZkxMTOGQj3eJLQiDqOz0u70kr/hzsHNPD58iNGRUJ3Qra3PtG
-         IF6KKSoTvxIaCco+8PSMr8pK01Kl4c2wWlCyc/+gJQOyWRzB04t4vTh7uCb3o8arKg4q
-         uq5Q==
-X-Gm-Message-State: AJIora8bNvFpKnAMxBIwdfj9hdkzH+LUCtZi660XXnMILcmdqPyTufKv
-        uEDKcQWoKlpivWccpTeeGBiDcGrSKa967ox8
-X-Google-Smtp-Source: AGRyM1uAKY8ZoN6KGv4/toshO1qHFCf+QFQjTKFAVF+YPn4y9ij2Yrnm8jj6CEE8H4m9dwU7r8nybw==
-X-Received: by 2002:a05:6870:b3a7:b0:10c:224c:a0b6 with SMTP id w39-20020a056870b3a700b0010c224ca0b6mr2265078oap.248.1657101249503;
-        Wed, 06 Jul 2022 02:54:09 -0700 (PDT)
-Received: from mail-oo1-f46.google.com (mail-oo1-f46.google.com. [209.85.161.46])
-        by smtp.gmail.com with ESMTPSA id r81-20020acaf354000000b003359fb6609asm8613210oih.22.2022.07.06.02.54.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 06 Jul 2022 02:54:09 -0700 (PDT)
-Received: by mail-oo1-f46.google.com with SMTP id m26-20020a4abc9a000000b00425cd321033so2843821oop.10;
-        Wed, 06 Jul 2022 02:54:09 -0700 (PDT)
-X-Received: by 2002:a05:6902:50e:b0:66e:7f55:7a66 with SMTP id
- x14-20020a056902050e00b0066e7f557a66mr6648581ybs.365.1657100796735; Wed, 06
- Jul 2022 02:46:36 -0700 (PDT)
+        bh=pwJw4iG5MmI5M9vOBxQQYYpW8UUcING3fwN/HsK0A3s=;
+        b=KML6z8IvvqSh0H1vqTt/TPEHi8EhEaXlTugStllfNtiYn7YUdDTTbL5TYUrDXvYNs9
+         bwomXhY2YC67cOVR0qjRsQH5X1tX6j0qXTD82tnw6GIQNT6Et36XNrfUaGTeZsiMq2ys
+         0CAZdKxISkWrb87LACYFdny4JGH2XETWYOJZI3NOg4dlArXK+cvFxAlh1MdU8l3vSvHv
+         DELybNkKpOgKSdmMs6+712smH3rcmHqhKaxYA0kK7Q7dRSLrQJUaanZZv+K4eZNr/gha
+         0u54qCDzxhsQO60IrEiBAUjOHOgXwwlu5uUkHClhgzZ0h8hov7Asw9Bqc2DdF6FjdP8h
+         pIOQ==
+X-Gm-Message-State: AJIora/hrtB0NLBBpkCuY5dj7tc3HSR7ytOKRxKvP63KMCNmbCzhXBJg
+        58N2NHTaxwl7K/ayEKKU6MFdBgbAFPfkSoRoAdzAx5vcBnQ=
+X-Google-Smtp-Source: AGRyM1sW8fKdWhuNAv1+5imcPo58CW4Wc6VxQSXaW7+SCoFr2m+aku0YGzrMlbLoFs7Iw1xRvCzGf6aAY/BVvDIozWI=
+X-Received: by 2002:a17:906:3f51:b0:712:3945:8c0d with SMTP id
+ f17-20020a1709063f5100b0071239458c0dmr38267927ejj.302.1657101417852; Wed, 06
+ Jul 2022 02:56:57 -0700 (PDT)
 MIME-Version: 1.0
-References: <20220608142723.103523089@infradead.org> <20220608144517.124597382@infradead.org>
-In-Reply-To: <20220608144517.124597382@infradead.org>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Wed, 6 Jul 2022 11:46:25 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdW4pT+YQfLzLTegFu1M3v9-9vaFDFAama7mc82=x6R__w@mail.gmail.com>
-Message-ID: <CAMuHMdW4pT+YQfLzLTegFu1M3v9-9vaFDFAama7mc82=x6R__w@mail.gmail.com>
-Subject: Re: [PATCH 19/36] objtool/idle: Validate __cpuidle code as noinstr
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Richard Henderson <rth@twiddle.net>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>,
-        Vineet Gupta <vgupta@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Hans Ulli Kroll <ulli.kroll@googlemail.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Sascha Hauer <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>, tony@atomide.com,
-        khilman@kernel.org, catalin.marinas@arm.com, will@kernel.org,
-        guoren@kernel.org, bcain@quicinc.com, chenhuacai@kernel.org,
-        kernel@xen0n.name, sammy@sammy.net, monstr@monstr.eu,
-        tsbogend@alpha.franken.de, dinguyen@kernel.org, jonas@southpole.se,
-        stefan.kristiansson@saunalahti.fi, shorne@gmail.com,
-        James.Bottomley@hansenpartnership.com, deller@gmx.de,
-        mpe@ellerman.id.au, benh@kernel.crashing.org, paulus@samba.org,
-        paul.walmsley@sifive.com, palmer@dabbelt.com,
-        aou@eecs.berkeley.edu, hca@linux.ibm.com, gor@linux.ibm.com,
-        agordeev@linux.ibm.com, borntraeger@linux.ibm.com,
-        svens@linux.ibm.com, ysato@users.sourceforge.jp, dalias@libc.org,
-        davem@davemloft.net, richard@nod.at,
-        anton.ivanov@cambridgegreys.com, johannes@sipsolutions.net,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
-        dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com,
-        acme@kernel.org, mark.rutland@arm.com,
-        alexander.shishkin@linux.intel.com, jolsa@kernel.org,
-        namhyung@kernel.org, jgross@suse.com, srivatsa@csail.mit.edu,
-        amakhalov@vmware.com, pv-drivers@vmware.com,
-        boris.ostrovsky@oracle.com, chris@zankel.net, jcmvbkbc@gmail.com,
-        rafael@kernel.org, lenb@kernel.org, pavel@ucw.cz,
-        gregkh@linuxfoundation.org, mturquette@baylibre.com,
-        sboyd@kernel.org, daniel.lezcano@linaro.org, lpieralisi@kernel.org,
-        sudeep.holla@arm.com, agross@kernel.org,
-        bjorn.andersson@linaro.org, anup@brainfault.org,
-        thierry.reding@gmail.com, jonathanh@nvidia.com,
-        jacob.jun.pan@linux.intel.com, Arnd Bergmann <arnd@arndb.de>,
-        yury.norov@gmail.com, andriy.shevchenko@linux.intel.com,
-        linux@rasmusvillemoes.dk, rostedt@goodmis.org, pmladek@suse.com,
-        senozhatsky@chromium.org, john.ogness@linutronix.de,
-        paulmck@kernel.org, frederic@kernel.org, quic_neeraju@quicinc.com,
-        josh@joshtriplett.org, mathieu.desnoyers@efficios.com,
-        jiangshanlai@gmail.com, joel@joelfernandes.org,
-        juri.lelli@redhat.com, vincent.guittot@linaro.org,
-        dietmar.eggemann@arm.com, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com, vschneid@redhat.com, jpoimboe@kernel.org,
-        linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-snps-arc@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org,
-        linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
-        linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-        linux-mips@vger.kernel.org, openrisc@lists.librecores.org,
-        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
-        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
-        linux-um@lists.infradead.org, linux-perf-users@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        xen-devel@lists.xenproject.org, linux-xtensa@linux-xtensa.org,
-        linux-acpi@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-clk@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-tegra@vger.kernel.org, linux-arch@vger.kernel.org,
-        rcu@vger.kernel.org
+References: <20220702190705.5319-1-olek2@wp.pl> <3c9a032edd0fb9b9608ad3ca08d6e3cc38f21464.camel@svanheule.net>
+ <87fsjen2kl.wl-maz@kernel.org> <20220706081901.GA10797@alpha.franken.de>
+In-Reply-To: <20220706081901.GA10797@alpha.franken.de>
+From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Date:   Wed, 6 Jul 2022 11:56:47 +0200
+Message-ID: <CAFBinCAsj=RNvitj2tXJU6pTLSbanRXdKM9H4vyF=N9N=PP06g@mail.gmail.com>
+Subject: Re: [PATCH] MIPS: smp-mt: enable all hardware interrupts on second VPE
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc:     Marc Zyngier <maz@kernel.org>,
+        Sander Vanheule <sander@svanheule.net>,
+        Aleksander Jan Bajkowski <olek2@wp.pl>,
+        Hauke Mehrtens <hauke@hauke-m.de>, git@birger-koblitz.de,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Wed, Jun 8, 2022 at 4:46 PM Peter Zijlstra <peterz@infradead.org> wrote:
-> Idle code is very like entry code in that RCU isn't available. As
-> such, add a little validation.
+Hi Thomas,
+
+On Wed, Jul 6, 2022 at 11:42 AM Thomas Bogendoerfer
+<tsbogend@alpha.franken.de> wrote:
+[...]
+> > But this is only enabling interrupts at the CPU level, right? And the
+> > irqchip is still in control of the masking of the individual
+> > interrupts?
 >
-> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> in the Lantiq case yes
+>
+> > If both assertions are true, then this patch seems OK. If it just let
+> > any interrupt through without any control, then this is wrong.
+> >
+> > So which one is it?
+>
+> if there isn't an additional irqchip connected to the cpu interrupt lines,
+> this patch will cause problems.
+on Lantiq xRX200 SoCs (34Kc with two VPEs) we basically have:
+  cpu_irqc: interrupt-controller {
+      compatible = "mti,cpu-interrupt-controller";
 
->  arch/m68k/kernel/vmlinux-nommu.lds   |    1 -
->  arch/m68k/kernel/vmlinux-std.lds     |    1 -
->  arch/m68k/kernel/vmlinux-sun3.lds    |    1 -
+      interrupt-controller;
+      #interrupt-cells = <1>;
+  };
 
-FWIW
-Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
+  &icu {
+      compatible = "lantiq,icu";
 
-Gr{oetje,eeting}s,
+      interrupt-parent = <&cpu_irqc>;
+      interrupts = <2>, <3>, <4>, <5>, <6>;
 
-                        Geert
+      interrupt-controller;
+      #interrupt-cells = <1>;
+  }
+meaning: the Lantiq ICU interrupt controller provides 5*32 interrupt
+lines through 5 MIPS CPU interrupt lines
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+Without this patch all interrupts are fine on VPE 0 and with SMP disabled.
+The ICU interrupt controller can route interrupts either to VPE 0 or VPE 1.
+Routing to VPE 1 is the problem: only the upper-most 32 interrupt
+lines (connected to MIPS CPU interrupt line 6) are working, all other
+interrupts never arrive on VPE 1. This is because MIPS CPU interrupt
+line is enabled, even before Aleksander's patch.
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+With Aleksander's patch all 5*32 interrupts (at least all the ones I
+have tested) can be routed to VPE 1 as well.
+I understand that this doesn't mean that Aleksander's patch is
+automatically correct. My two main questions are:
+- why can MIPS CPU interrupt 6 and 7 be enabled unconditionally while
+2-5 cannot be enabled unconditionally?
+- seeing that there's also a mips_gic_present() check in the opposite
+case of what Aleksander's patch modifies: does this indicate that
+unmasking CPU interrupt lines for VPE 1 is not handled by the MIPS CPU
+interrupt controller driver at all at this point (and if so: do you
+have any suggestions how to properly fix this)?
+
+
+Best regards,
+Martin

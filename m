@@ -2,106 +2,79 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D5D2DC433EF
-	for <linux-mips@archiver.kernel.org>; Thu,  7 Jul 2022 09:54:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 77A0DC433EF
+	for <linux-mips@archiver.kernel.org>; Thu,  7 Jul 2022 10:11:46 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232927AbiGGJyE (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 7 Jul 2022 05:54:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54162 "EHLO
+        id S235244AbiGGKLp (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 7 Jul 2022 06:11:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38312 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233939AbiGGJyD (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Thu, 7 Jul 2022 05:54:03 -0400
-Received: from aposti.net (aposti.net [89.234.176.197])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B2D94D14B;
-        Thu,  7 Jul 2022 02:54:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crapouillou.net;
-        s=mail; t=1657187641; h=from:from:sender:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=nve6BKmlaYOc+otcI5eNXohDPw2cjmzrRzVfk9qXlSw=;
-        b=QV8hoZwQTYaJ3Jt8bNtBQ+DQI0juH8x5zi9rMmqfAh1yP2oH9HizoJIn8ro25vqQChCN1G
-        M9ZoL16/rzcKJcqAfnOp+VBukhcMLdDuhYIfNUJ8x/h6/TaEa7+bcVkEkOOKymU+bhNVYu
-        KGkMwRNo+s52kdYt5n57pjrCZDEMZwE=
-Date:   Thu, 07 Jul 2022 10:53:47 +0100
-From:   Paul Cercueil <paul@crapouillou.net>
-Subject: Re: [PATCH 11/11] ASoC: jz4740-i2s: Support continuous sample rate
-To:     Aidan MacDonald <aidanmacdonald.0x0@gmail.com>
-Cc:     lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz,
-        tiwai@suse.com, linux-mips@vger.kernel.org,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-Message-Id: <N5ANER.SGRSW7GYX3423@crapouillou.net>
-In-Reply-To: <20220706211330.120198-12-aidanmacdonald.0x0@gmail.com>
-References: <20220706211330.120198-1-aidanmacdonald.0x0@gmail.com>
-        <20220706211330.120198-12-aidanmacdonald.0x0@gmail.com>
+        with ESMTP id S235246AbiGGKLl (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Thu, 7 Jul 2022 06:11:41 -0400
+Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id D6F0450706;
+        Thu,  7 Jul 2022 03:11:39 -0700 (PDT)
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1o9OTx-0007T4-02; Thu, 07 Jul 2022 12:11:37 +0200
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id 74EE3C02B6; Thu,  7 Jul 2022 12:06:30 +0200 (CEST)
+Date:   Thu, 7 Jul 2022 12:06:30 +0200
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Cc:     Marc Zyngier <maz@kernel.org>,
+        Sander Vanheule <sander@svanheule.net>,
+        Aleksander Jan Bajkowski <olek2@wp.pl>,
+        Hauke Mehrtens <hauke@hauke-m.de>, git@birger-koblitz.de,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] MIPS: smp-mt: enable all hardware interrupts on second
+ VPE
+Message-ID: <20220707100630.GC9894@alpha.franken.de>
+References: <20220702190705.5319-1-olek2@wp.pl>
+ <3c9a032edd0fb9b9608ad3ca08d6e3cc38f21464.camel@svanheule.net>
+ <87fsjen2kl.wl-maz@kernel.org>
+ <20220706081901.GA10797@alpha.franken.de>
+ <CAFBinCAsj=RNvitj2tXJU6pTLSbanRXdKM9H4vyF=N9N=PP06g@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1; format=flowed
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAFBinCAsj=RNvitj2tXJU6pTLSbanRXdKM9H4vyF=N9N=PP06g@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
+On Wed, Jul 06, 2022 at 11:56:47AM +0200, Martin Blumenstingl wrote:
+> Without this patch all interrupts are fine on VPE 0 and with SMP disabled.
 
+I fully understand the problem. But not everybody uses this interrupt
+setup, so changing generic code will have effects there too.
 
-Le mer., juil. 6 2022 at 22:13:30 +0100, Aidan MacDonald=20
-<aidanmacdonald.0x0@gmail.com> a =E9crit :
-> The I2S controller on JZ47xx SoCs doesn't impose restrictions on
-> sample rate and the driver doesn't make any assumptions about it,
-> so the DAI should advertise a continuous sample rate range.
->=20
-> Signed-off-by: Aidan MacDonald <aidanmacdonald.0x0@gmail.com>
+> - why can MIPS CPU interrupt 6 and 7 be enabled unconditionally while
+> 2-5 cannot be enabled unconditionally?
 
-Acked-by: Paul Cercueil <paul@crapouillou.net>
+7 is timer interrupt and is usually wired for 34K cpus and 6 is
+performance counter hopefully handled as well. And I agree that
+this still isn't the best approach here
 
-Cheers,
--Paul
+> - seeing that there's also a mips_gic_present() check in the opposite
+> case of what Aleksander's patch modifies: does this indicate that
+> unmasking CPU interrupt lines for VPE 1 is not handled by the MIPS CPU
+> interrupt controller driver at all at this point (and if so: do you
+> have any suggestions how to properly fix this)?
 
-> ---
->  sound/soc/jz4740/jz4740-i2s.c | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
->=20
-> diff --git a/sound/soc/jz4740/jz4740-i2s.c=20
-> b/sound/soc/jz4740/jz4740-i2s.c
-> index ee99c5e781ec..053697c7f19e 100644
-> --- a/sound/soc/jz4740/jz4740-i2s.c
-> +++ b/sound/soc/jz4740/jz4740-i2s.c
-> @@ -378,13 +378,13 @@ static struct snd_soc_dai_driver jz4740_i2s_dai=20
-> =3D {
->  	.playback =3D {
->  		.channels_min =3D 1,
->  		.channels_max =3D 2,
-> -		.rates =3D SNDRV_PCM_RATE_8000_48000,
-> +		.rates =3D SNDRV_PCM_RATE_CONTINUOUS,
->  		.formats =3D JZ4740_I2S_FMTS,
->  	},
->  	.capture =3D {
->  		.channels_min =3D 2,
->  		.channels_max =3D 2,
-> -		.rates =3D SNDRV_PCM_RATE_8000_48000,
-> +		.rates =3D SNDRV_PCM_RATE_CONTINUOUS,
->  		.formats =3D JZ4740_I2S_FMTS,
->  	},
->  	.symmetric_rate =3D 1,
-> @@ -415,13 +415,13 @@ static struct snd_soc_dai_driver jz4770_i2s_dai=20
-> =3D {
->  	.playback =3D {
->  		.channels_min =3D 1,
->  		.channels_max =3D 2,
-> -		.rates =3D SNDRV_PCM_RATE_8000_48000,
-> +		.rates =3D SNDRV_PCM_RATE_CONTINUOUS,
->  		.formats =3D JZ4740_I2S_FMTS,
->  	},
->  	.capture =3D {
->  		.channels_min =3D 2,
->  		.channels_max =3D 2,
-> -		.rates =3D SNDRV_PCM_RATE_8000_48000,
-> +		.rates =3D SNDRV_PCM_RATE_CONTINUOUS,
->  		.formats =3D JZ4740_I2S_FMTS,
->  	},
->  	.ops =3D &jz4740_i2s_dai_ops,
-> --
-> 2.35.1
->=20
+I haven't checked how GIC is integrated. Iirc it does something similair
+to Lantiq's irq controller and hides all CPU internal interrupts behind
+it.
 
+So I see two solutions for your problem.
 
+1. Add "mti,cpu-interrupt-controller" to the DT and wire it up
+2. Create your own struct plat_smp_ops using vsmp_smp_ops as
+   a template and overload .boot_secondary
+
+Thomas.
+
+-- 
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]

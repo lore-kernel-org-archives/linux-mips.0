@@ -2,39 +2,39 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 97FC7C43334
-	for <linux-mips@archiver.kernel.org>; Thu,  7 Jul 2022 09:16:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9F7A8C433EF
+	for <linux-mips@archiver.kernel.org>; Thu,  7 Jul 2022 09:31:07 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231831AbiGGJQ6 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 7 Jul 2022 05:16:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57786 "EHLO
+        id S231752AbiGGJbG (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 7 Jul 2022 05:31:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38008 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230272AbiGGJQ5 (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Thu, 7 Jul 2022 05:16:57 -0400
+        with ESMTP id S229951AbiGGJbF (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Thu, 7 Jul 2022 05:31:05 -0400
 Received: from aposti.net (aposti.net [89.234.176.197])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 863FA2CDDE;
-        Thu,  7 Jul 2022 02:16:56 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED1AE33E04;
+        Thu,  7 Jul 2022 02:31:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crapouillou.net;
-        s=mail; t=1657185414; h=from:from:sender:reply-to:subject:subject:date:date:
+        s=mail; t=1657186262; h=from:from:sender:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=0G9+ZdgiY1pf7540Iu8Mnhcomtxme7gXDOd3aBrjvco=;
-        b=VyD4jBxnLv08QoWXpC0q4O64XKy65EcXZ9cz2Bd64ITcPsfwEZHpaaMYN0/lJpIyXR2MRh
-        hbEdTldsBf/5cCq38mYAn3Q+lzpnsNSizOhJSXk3Nk0TSOzfYjYMo811SiofIV7BFjx9L4
-        9qQlmXByEkj81aMxv/rZ6wzmc8o098M=
-Date:   Thu, 07 Jul 2022 10:16:44 +0100
+        bh=3432oYUbB0NCbGzcaiDe7Zz5ohhG6Uoy9WG/btVsu7A=;
+        b=JtBdqbQGB661DJdFRqmt6kAQ1SROsa6wGDALoANOgBdiRAomxlU2IucnqCUihPqEtfIJmC
+        JMFLR0QwG9OjtAxsdBjEzmmZfgI1AdPXq3yS6K2bYCDsqeDtHGKebsQvudbQwBuYlL4GHT
+        kdoqEDR72JweoTDsQMMhimpdx1obwaU=
+Date:   Thu, 07 Jul 2022 10:30:51 +0100
 From:   Paul Cercueil <paul@crapouillou.net>
-Subject: Re: [PATCH 01/11] ASoC: jz4740-i2s: Remove Open Firmware dependency
+Subject: Re: [PATCH 02/11] ASoC: jz4740-i2s: Refactor DMA channel setup
 To:     Aidan MacDonald <aidanmacdonald.0x0@gmail.com>
 Cc:     lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz,
         tiwai@suse.com, linux-mips@vger.kernel.org,
         alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-Message-Id: <WF8NER.2XOF3ZGKDQYB3@crapouillou.net>
-In-Reply-To: <20220706211330.120198-2-aidanmacdonald.0x0@gmail.com>
+Message-Id: <F39NER.PND5B77O5GFP@crapouillou.net>
+In-Reply-To: <20220706211330.120198-3-aidanmacdonald.0x0@gmail.com>
 References: <20220706211330.120198-1-aidanmacdonald.0x0@gmail.com>
-        <20220706211330.120198-2-aidanmacdonald.0x0@gmail.com>
+        <20220706211330.120198-3-aidanmacdonald.0x0@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1; format=flowed
 Content-Transfer-Encoding: quoted-printable
@@ -42,56 +42,85 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Hi Aidan,
 
-Le mer., juil. 6 2022 at 22:13:20 +0100, Aidan MacDonald=20
+
+Le mer., juil. 6 2022 at 22:13:21 +0100, Aidan MacDonald=20
 <aidanmacdonald.0x0@gmail.com> a =E9crit :
-> This driver doesn't require Open Firmware support. Remove the
-> OF-specific includes and drop the Kconfig dependency.
+> It's simpler to set up the playback and capture DMA settings
+> at driver probe time instead of during DAI probing.
 >=20
 > Signed-off-by: Aidan MacDonald <aidanmacdonald.0x0@gmail.com>
+> ---
+>  sound/soc/jz4740/jz4740-i2s.c | 23 +++++------------------
+>  1 file changed, 5 insertions(+), 18 deletions(-)
+>=20
+> diff --git a/sound/soc/jz4740/jz4740-i2s.c=20
+> b/sound/soc/jz4740/jz4740-i2s.c
+> index 298ff0a83931..ecd8df70d39c 100644
+> --- a/sound/soc/jz4740/jz4740-i2s.c
+> +++ b/sound/soc/jz4740/jz4740-i2s.c
+> @@ -95,7 +95,6 @@ struct i2s_soc_info {
+>  struct jz4740_i2s {
+>  	struct resource *mem;
+>  	void __iomem *base;
+> -	dma_addr_t phys_base;
 
 Acked-by: Paul Cercueil <paul@crapouillou.net>
+
+Note that you can remove "mem" too, it's not used anywhere.
 
 Cheers,
 -Paul
 
-> ---
->  sound/soc/jz4740/Kconfig      | 2 +-
->  sound/soc/jz4740/jz4740-i2s.c | 3 +--
->  2 files changed, 2 insertions(+), 3 deletions(-)
 >=20
-> diff --git a/sound/soc/jz4740/Kconfig b/sound/soc/jz4740/Kconfig
-> index 29144720cb62..e72f826062e9 100644
-> --- a/sound/soc/jz4740/Kconfig
-> +++ b/sound/soc/jz4740/Kconfig
-> @@ -2,7 +2,7 @@
->  config SND_JZ4740_SOC_I2S
->  	tristate "SoC Audio (I2S protocol) for Ingenic JZ4740 SoC"
->  	depends on MIPS || COMPILE_TEST
-> -	depends on OF && HAS_IOMEM
-> +	depends on HAS_IOMEM
->  	select SND_SOC_GENERIC_DMAENGINE_PCM
->  	help
->  	  Say Y if you want to use I2S protocol and I2S codec on Ingenic=20
-> JZ4740
-> diff --git a/sound/soc/jz4740/jz4740-i2s.c=20
-> b/sound/soc/jz4740/jz4740-i2s.c
-> index 79afac0c5003..298ff0a83931 100644
-> --- a/sound/soc/jz4740/jz4740-i2s.c
-> +++ b/sound/soc/jz4740/jz4740-i2s.c
-> @@ -5,10 +5,9 @@
+>  	struct clk *clk_aic;
+>  	struct clk *clk_i2s;
+> @@ -370,21 +369,6 @@ static int jz4740_i2s_resume(struct=20
+> snd_soc_component *component)
+>  	return 0;
+>  }
 >=20
->  #include <linux/init.h>
->  #include <linux/io.h>
-> -#include <linux/of.h>
-> -#include <linux/of_device.h>
->  #include <linux/kernel.h>
->  #include <linux/module.h>
-> +#include <linux/mod_devicetable.h>
->  #include <linux/platform_device.h>
->  #include <linux/slab.h>
+> -static void jz4740_i2s_init_pcm_config(struct jz4740_i2s *i2s)
+> -{
+> -	struct snd_dmaengine_dai_dma_data *dma_data;
+> -
+> -	/* Playback */
+> -	dma_data =3D &i2s->playback_dma_data;
+> -	dma_data->maxburst =3D 16;
+> -	dma_data->addr =3D i2s->phys_base + JZ_REG_AIC_FIFO;
+> -
+> -	/* Capture */
+> -	dma_data =3D &i2s->capture_dma_data;
+> -	dma_data->maxburst =3D 16;
+> -	dma_data->addr =3D i2s->phys_base + JZ_REG_AIC_FIFO;
+> -}
+> -
+>  static int jz4740_i2s_dai_probe(struct snd_soc_dai *dai)
+>  {
+>  	struct jz4740_i2s *i2s =3D snd_soc_dai_get_drvdata(dai);
+> @@ -395,7 +379,6 @@ static int jz4740_i2s_dai_probe(struct=20
+> snd_soc_dai *dai)
+>  	if (ret)
+>  		return ret;
 >=20
+> -	jz4740_i2s_init_pcm_config(i2s);
+>  	snd_soc_dai_init_dma_data(dai, &i2s->playback_dma_data,
+>  		&i2s->capture_dma_data);
+>=20
+> @@ -529,7 +512,11 @@ static int jz4740_i2s_dev_probe(struct=20
+> platform_device *pdev)
+>  	if (IS_ERR(i2s->base))
+>  		return PTR_ERR(i2s->base);
+>=20
+> -	i2s->phys_base =3D mem->start;
+> +	i2s->playback_dma_data.maxburst =3D 16;
+> +	i2s->playback_dma_data.addr =3D mem->start + JZ_REG_AIC_FIFO;
+> +
+> +	i2s->capture_dma_data.maxburst =3D 16;
+> +	i2s->capture_dma_data.addr =3D mem->start + JZ_REG_AIC_FIFO;
+>=20
+>  	i2s->clk_aic =3D devm_clk_get(dev, "aic");
+>  	if (IS_ERR(i2s->clk_aic))
 > --
 > 2.35.1
 >=20

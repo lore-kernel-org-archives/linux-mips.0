@@ -2,87 +2,78 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0A91CC43334
-	for <linux-mips@archiver.kernel.org>; Fri,  8 Jul 2022 16:21:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D510DCCA47B
+	for <linux-mips@archiver.kernel.org>; Fri,  8 Jul 2022 19:28:27 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236500AbiGHQVq (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 8 Jul 2022 12:21:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33814 "EHLO
+        id S239798AbiGHT20 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 8 Jul 2022 15:28:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37648 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233022AbiGHQVq (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Fri, 8 Jul 2022 12:21:46 -0400
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F9E364D7;
-        Fri,  8 Jul 2022 09:21:45 -0700 (PDT)
-Received: by mail-pf1-x42e.google.com with SMTP id l124so13526004pfl.8;
-        Fri, 08 Jul 2022 09:21:45 -0700 (PDT)
+        with ESMTP id S239583AbiGHT2Y (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Fri, 8 Jul 2022 15:28:24 -0400
+Received: from mail.baikalelectronics.com (mail.baikalelectronics.com [87.245.175.230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 81EF05A478;
+        Fri,  8 Jul 2022 12:28:21 -0700 (PDT)
+Received: from mail (mail.baikal.int [192.168.51.25])
+        by mail.baikalelectronics.com (Postfix) with ESMTP id A381A16C4;
+        Fri,  8 Jul 2022 22:30:03 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.baikalelectronics.com A381A16C4
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=M2aoSokBLCYPbBjm+wHXpd3xRs663JjZw7y2yCoEjIk=;
-        b=SS68MlvF9YrmGrBs6VwKYWvOfU9VokMkrO1J3XoqHC8DT0pTyNg+uT3ktP0WMSJsXs
-         rdYRmD8Y/u5IvMz0sV8N1+7R43TItC2LZdQlIAWM5iEItArFDQLQpM3gacfug88a5hZt
-         2FMD3abr8a709V1kAfKZEO+i5rd/Q67hjc7rjg1ZXcMWJIAyy8xosLm5Qsg/UFqfsYFu
-         Nh8YzfA14OKNmDiCce5ZaAx/6R5ihrZ5EkcqnoQ2M3zeneMVTjmDKJ3F4WOt0nU1bA9n
-         nkZMzmb1wI/OM3smP323Zd67g5VfGps9Na8z0AcLw+6mAE6YgEohcoSqIiUwWeq8rPpr
-         ZQKw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=M2aoSokBLCYPbBjm+wHXpd3xRs663JjZw7y2yCoEjIk=;
-        b=4AHTzP8heDWIKPE+A4yl09bLPbJ6XyUdz4S3YUEcg6aNc6aXS4rLI0gQA5nK9nD/wS
-         sEzh1c13mzTm3syKTV9E04iIx2YvAuednC5DbqZogTHL8gPiRLWrkLO7C8+EBroo4Mz9
-         YM3WHM5zH626o+V9I0D+SD0K+l4qS6HA2kv/M98jsY6qtOGxvRzvuoWgvRHDx5v9NWYL
-         lSqilUI1E+BabmYFporSnc6mQAqotv9OWz5oRmhPhyDrCrcM23akybo92uA5MuuVO7uG
-         eRIERiDdbwM7DumFEFSl1rOtJxQyONK4bftXW2HRptpVXy4COAfJXVa7Kub3S/750Api
-         qT5w==
-X-Gm-Message-State: AJIora/psTOzwaQL8dz+Q5E8MZS64rLs2lggPZmWqClnQDy0BidmY6sM
-        32NI2xJRkrX9F73LVoVejFM=
-X-Google-Smtp-Source: AGRyM1s7gQ+8EBt8JaBQHvrtqSUB1FKBiK23I/bsfMU3WnKkyeBpPtkJpgg1ViUKGv956HekWpSuZQ==
-X-Received: by 2002:a05:6a02:113:b0:412:a7c0:da8e with SMTP id bg19-20020a056a02011300b00412a7c0da8emr4121437pgb.113.1657297304947;
-        Fri, 08 Jul 2022 09:21:44 -0700 (PDT)
-Received: from [10.67.48.245] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id i9-20020a170902cf0900b0016beea47800sm8923460plg.41.2022.07.08.09.21.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 08 Jul 2022 09:21:44 -0700 (PDT)
-Message-ID: <1d7a028e-55fb-d93c-97b7-750743db4dba@gmail.com>
-Date:   Fri, 8 Jul 2022 09:21:37 -0700
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.9.1
-Subject: Re: [PATCH] MIPS: Make phys_to_virt utilize __va()
-Content-Language: en-US
-To:     Serge Semin <fancer.lancer@gmail.com>
-Cc:     linux-mips@vger.kernel.org,
+        d=baikalelectronics.ru; s=mail; t=1657308603;
+        bh=Xn98MR7V1F/LIQ3Yu3hI7bvvVoawgSacfNBPSyIHRWs=;
+        h=From:To:CC:Subject:Date:In-Reply-To:References:From;
+        b=I+9yD5I6bNPsheWWKXHnd51rWKfVxWMTVu9RgSWqFT/fBRvQeV/T8+2qgO/jTS+P0
+         lC4j/TQrMt17FrQA1YJOmV5KsZl+WphcnPax5Aatt3cFIdpgpt5Vkb0dPAhEpKqj8Q
+         zRQE7jHYl/b5o0DkejkTEI3ccSjOtUZeUcnGYQ5o=
+Received: from localhost (192.168.53.207) by mail (192.168.51.25) with
+ Microsoft SMTP Server (TLS) id 15.0.1395.4; Fri, 8 Jul 2022 22:28:16 +0300
+From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
+To:     Stephen Boyd <sboyd@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Michael Turquette <mturquette@baylibre.com>
+CC:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
+        Serge Semin <fancer.lancer@gmail.com>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
         Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20220707203743.1226302-1-f.fainelli@gmail.com>
- <20220708123454.mj7f3gdzk3ct6seb@mobilestation>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-In-Reply-To: <20220708123454.mj7f3gdzk3ct6seb@mobilestation>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+        <linux-clk@vger.kernel.org>, <linux-mips@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH v6 2/7] clk: baikal-t1: Fix invalid xGMAC PTP clock divider
+Date:   Fri, 8 Jul 2022 22:27:20 +0300
+Message-ID: <20220708192725.9501-3-Sergey.Semin@baikalelectronics.ru>
+In-Reply-To: <20220708192725.9501-1-Sergey.Semin@baikalelectronics.ru>
+References: <20220708192725.9501-1-Sergey.Semin@baikalelectronics.ru>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On 7/8/22 05:34, Serge Semin wrote:
-> On Thu, Jul 07, 2022 at 01:37:42PM -0700, Florian Fainelli wrote:
->> The implementation is exactly the same, so avoid open-coding it in two
->> different locations.
->>
->> Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
-> 
-> Seems reasonable. Thanks.
-> 
-> Reviewed-by: Serge Semin <fancer.lancer@gmail.com>
-> 
-> *Note it now looks exactly as the generic phys_to_virt().
+Most likely due to copy-paste mistake the divider has been set to 10 while
+according to the SoC reference manual it's supposed to be 8 thus having
+PTP clock frequency of 156.25 MHz.
 
-True, though switching to asm-generic/io.h is a slightly bigger 
-undertaking. I will cook something towards that goal however.
+Fixes: 353afa3a8d2e ("clk: Add Baikal-T1 CCU Dividers driver")
+Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+---
+ drivers/clk/baikal-t1/clk-ccu-div.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/clk/baikal-t1/clk-ccu-div.c b/drivers/clk/baikal-t1/clk-ccu-div.c
+index f141fda12b09..ea77eec40ddd 100644
+--- a/drivers/clk/baikal-t1/clk-ccu-div.c
++++ b/drivers/clk/baikal-t1/clk-ccu-div.c
+@@ -207,7 +207,7 @@ static const struct ccu_div_info sys_info[] = {
+ 	CCU_DIV_GATE_INFO(CCU_SYS_XGMAC_REF_CLK, "sys_xgmac_ref_clk",
+ 			  "eth_clk", CCU_SYS_XGMAC_BASE, 8),
+ 	CCU_DIV_FIXED_INFO(CCU_SYS_XGMAC_PTP_CLK, "sys_xgmac_ptp_clk",
+-			   "eth_clk", 10),
++			   "eth_clk", 8),
+ 	CCU_DIV_GATE_INFO(CCU_SYS_USB_CLK, "sys_usb_clk",
+ 			  "eth_clk", CCU_SYS_USB_BASE, 10),
+ 	CCU_DIV_VAR_INFO(CCU_SYS_PVT_CLK, "sys_pvt_clk",
 -- 
-Florian
+2.35.1
+

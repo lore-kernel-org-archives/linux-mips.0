@@ -2,72 +2,75 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 03D8DC433EF
-	for <linux-mips@archiver.kernel.org>; Sat,  9 Jul 2022 08:31:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E7BF8C433EF
+	for <linux-mips@archiver.kernel.org>; Sat,  9 Jul 2022 10:43:41 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229475AbiGIIbw (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Sat, 9 Jul 2022 04:31:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36444 "EHLO
+        id S229568AbiGIKnl (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Sat, 9 Jul 2022 06:43:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56710 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229454AbiGIIbv (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Sat, 9 Jul 2022 04:31:51 -0400
-Received: from mailrelay4-1.pub.mailoutpod1-cph3.one.com (mailrelay4-1.pub.mailoutpod1-cph3.one.com [46.30.210.185])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8977566AC2
-        for <linux-mips@vger.kernel.org>; Sat,  9 Jul 2022 01:31:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ravnborg.org; s=rsa1;
-        h=in-reply-to:content-type:mime-version:references:message-id:subject:cc:to:
-         from:date:from;
-        bh=mO4Lux4zExqJwsq693AgROuTl+x+kJdHNbYuPHKBSt4=;
-        b=TgVX/ijFEvLZEAqewwRTuyPLSpy25GpVpFYJQKtA8fSYi5/MA0aNiH7u2/YEYlkiQoa6P7ORPk6PG
-         yOZWahlzVNMziT/ht5UMBtysZT773tSz69WcQwX5+dpfwmO/jUAtMNc+rxn/5vS9c+gc7+20uZP3Dk
-         ZJDw7fVFLkItZnveY70UQbGYe2Vow5SSniP6aJKrUUbkrSsOjkqmE4zxLTg9MlQbFB6+ZboyeAqFDu
-         DMxtTpXco05ux0xRTZMnnAHWhL5rz0aPeUrDLSbIEFjCWkePOuAxphr804WR4N2R1cO5RvEsrks+tW
-         tO1dnb8c1kCYG1n3bkdfOvHyvTpU1jA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed;
-        d=ravnborg.org; s=ed1;
-        h=in-reply-to:content-type:mime-version:references:message-id:subject:cc:to:
-         from:date:from;
-        bh=mO4Lux4zExqJwsq693AgROuTl+x+kJdHNbYuPHKBSt4=;
-        b=w9p/xLtYiE38/MV3LPBUup56d572jke4BSd/+BvCTTJzjswWF+S0dSaRFE3NsFFCB3Y8WIOTP/EFY
-         sICDM1ZCQ==
-X-HalOne-Cookie: 7fd59b46a51611b99b6b071a385538c9ebf1830c
-X-HalOne-ID: 91d73c41-ff61-11ec-823c-d0431ea8bb10
-Received: from mailproxy4.cst.dirpod3-cph3.one.com (2-105-2-98-cable.dk.customer.tdc.net [2.105.2.98])
-        by mailrelay4.pub.mailoutpod1-cph3.one.com (Halon) with ESMTPSA
-        id 91d73c41-ff61-11ec-823c-d0431ea8bb10;
-        Sat, 09 Jul 2022 08:31:46 +0000 (UTC)
-Date:   Sat, 9 Jul 2022 10:31:45 +0200
-From:   Sam Ravnborg <sam@ravnborg.org>
-To:     Paul Cercueil <paul@crapouillou.net>
+        with ESMTP id S229558AbiGIKnk (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Sat, 9 Jul 2022 06:43:40 -0400
+Received: from aposti.net (aposti.net [89.234.176.197])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81769BC98;
+        Sat,  9 Jul 2022 03:43:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crapouillou.net;
+        s=mail; t=1657363417; h=from:from:sender:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=HZm4gVWjiDEO5u30RuW6VoyxTvmlC8q+Qpm+4tGQ74c=;
+        b=RGYSTeN8yc1avmOrmXEF+5G8x0qBiLTYlaLGRTfv0Ur08nsmZIN1nQxFVg8sxhc5jgT/23
+        IAres0EXXDFv6C4qMzlSVyxiRiO0wanAYIP+cvBF3mdZimJ043vuUB+zjwrV/GN7GtooZl
+        8qxjC9mvgSbDa8qr4SiG6c1CC4I7nEE=
+Date:   Sat, 09 Jul 2022 11:43:27 +0100
+From:   Paul Cercueil <paul@crapouillou.net>
+Subject: Re: [PATCH 0/6] drm/ingenic: JZ4760(B) support and random changes
+To:     Sam Ravnborg <sam@ravnborg.org>
 Cc:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
         Christophe Branchereau <cbranchereau@gmail.com>,
         list@opendingux.net, dri-devel@lists.freedesktop.org,
         linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org
-Subject: Re: [PATCH 0/6] drm/ingenic: JZ4760(B) support and random changes
-Message-ID: <Ysk88cZO1iQhX/I2@ravnborg.org>
+Message-Id: <FS1RER.IMGKHPGOL0LF1@crapouillou.net>
+In-Reply-To: <Ysk88cZO1iQhX/I2@ravnborg.org>
 References: <20220708205406.96473-1-paul@crapouillou.net>
+        <Ysk88cZO1iQhX/I2@ravnborg.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220708205406.96473-1-paul@crapouillou.net>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Hi Paul,
+Hi Sam,
 
-On Fri, Jul 08, 2022 at 09:54:00PM +0100, Paul Cercueil wrote:
-> Hi,
-> 
-> A small set of changes to the ingenic-drm driver.
-> 
-> The most notable thing is that ingenic-ipu is now its own platform
-> driver.
-It would be nice to know what is achieved by this change, I could
-see the code being a tad simpler, but the cost was more EXPORTs.
+Le sam., juil. 9 2022 at 10:31:45 +0200, Sam Ravnborg=20
+<sam@ravnborg.org> a =C3=A9crit :
+> Hi Paul,
+>=20
+> On Fri, Jul 08, 2022 at 09:54:00PM +0100, Paul Cercueil wrote:
+>>  Hi,
+>>=20
+>>  A small set of changes to the ingenic-drm driver.
+>>=20
+>>  The most notable thing is that ingenic-ipu is now its own platform
+>>  driver.
+> It would be nice to know what is achieved by this change, I could
+> see the code being a tad simpler, but the cost was more EXPORTs.
 
-With the added explanation, which you can add when applying, all patches are:
-Acked-by: Sam Ravnborg <sam@ravnborg.org>
+Well=E2=80=A6 we now have two separate drivers instead of one driver that=20
+deals with two different devices. I thought the benefit here was=20
+obvious.
 
-	Sam
+> With the added explanation, which you can add when applying, all=20
+> patches are:
+> Acked-by: Sam Ravnborg <sam@ravnborg.org>
+
+I'll apply the other ones and keep this patch for a V2. You made me=20
+realize that I could use namespaced exports instead of global ones.
+
+Thanks,
+-Paul
+
+

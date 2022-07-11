@@ -2,71 +2,79 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B1363C43334
-	for <linux-mips@archiver.kernel.org>; Mon, 11 Jul 2022 08:41:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4127CC433EF
+	for <linux-mips@archiver.kernel.org>; Mon, 11 Jul 2022 08:41:07 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230222AbiGKIlF (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 11 Jul 2022 04:41:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46382 "EHLO
+        id S230088AbiGKIlG (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 11 Jul 2022 04:41:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46422 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230145AbiGKIkq (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Mon, 11 Jul 2022 04:40:46 -0400
+        with ESMTP id S230240AbiGKIkr (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Mon, 11 Jul 2022 04:40:47 -0400
 Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id D409B21E30;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id D401B21E2E;
         Mon, 11 Jul 2022 01:40:07 -0700 (PDT)
 Received: from uucp (helo=alpha)
         by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1oAoxa-0006eA-02; Mon, 11 Jul 2022 10:40:06 +0200
+        id 1oAoxa-0006eA-00; Mon, 11 Jul 2022 10:40:06 +0200
 Received: by alpha.franken.de (Postfix, from userid 1000)
-        id CB69DC0353; Mon, 11 Jul 2022 10:38:13 +0200 (CEST)
-Date:   Mon, 11 Jul 2022 10:38:13 +0200
+        id 95B8DC0344; Mon, 11 Jul 2022 10:37:35 +0200 (CEST)
+Date:   Mon, 11 Jul 2022 10:37:35 +0200
 From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Florian Fainelli <f.fainelli@gmail.com>
-Cc:     linux-mips@vger.kernel.org, Greg Ungerer <gerg@kernel.org>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] MIPS: vdso: Utilize __pa() for gic_pfn
-Message-ID: <20220711083813.GC6084@alpha.franken.de>
-References: <20220707202759.1224809-1-f.fainelli@gmail.com>
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        linux-mips@vger.kernel.org
+Subject: Re: [PATCH] MIPS: math-emu: Use the bitmap API to allocate bitmaps
+Message-ID: <20220711083735.GA6084@alpha.franken.de>
+References: <dd954ccb2472019c64da0dd3a90d7b39a2fadc98.1656960999.git.christophe.jaillet@wanadoo.fr>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220707202759.1224809-1-f.fainelli@gmail.com>
+In-Reply-To: <dd954ccb2472019c64da0dd3a90d7b39a2fadc98.1656960999.git.christophe.jaillet@wanadoo.fr>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Thu, Jul 07, 2022 at 01:27:58PM -0700, Florian Fainelli wrote:
-> The GIC user offset is mapped into every process' virtual address and is
-> therefore part of the hot-path of arch_setup_additional_pages(). Utilize
-> __pa() such that we are more optimal even when CONFIG_DEBUG_VIRTUAL is
-> enabled, and while at it utilize PFN_DOWN() instead of open-coding the
-> right shift by PAGE_SHIFT.
+On Mon, Jul 04, 2022 at 08:56:52PM +0200, Christophe JAILLET wrote:
+> Use bitmap_zalloc()/bitmap_free() instead of hand-writing them.
 > 
-> Reported-by: Greg Ungerer <gerg@kernel.org>
-> Suggested-by: Serge Semin <fancer.lancer@gmail.com>
-> Fixes: dfad83cb7193 ("MIPS: Add support for CONFIG_DEBUG_VIRTUAL")
-> Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+> It is less verbose and it improves the semantic.
+> 
+> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 > ---
->  arch/mips/kernel/vdso.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  arch/mips/math-emu/dsemul.c | 9 +++------
+>  1 file changed, 3 insertions(+), 6 deletions(-)
 > 
-> diff --git a/arch/mips/kernel/vdso.c b/arch/mips/kernel/vdso.c
-> index 3d0cf471f2fe..b2cc2c2dd4bf 100644
-> --- a/arch/mips/kernel/vdso.c
-> +++ b/arch/mips/kernel/vdso.c
-> @@ -159,7 +159,7 @@ int arch_setup_additional_pages(struct linux_binprm *bprm, int uses_interp)
->  	/* Map GIC user page. */
->  	if (gic_size) {
->  		gic_base = (unsigned long)mips_gic_base + MIPS_GIC_USER_OFS;
-> -		gic_pfn = virt_to_phys((void *)gic_base) >> PAGE_SHIFT;
-> +		gic_pfn = PFN_DOWN(__pa(gic_base));
+> diff --git a/arch/mips/math-emu/dsemul.c b/arch/mips/math-emu/dsemul.c
+> index e2d46cb93ca9..e02bd20b60a6 100644
+> --- a/arch/mips/math-emu/dsemul.c
+> +++ b/arch/mips/math-emu/dsemul.c
+> @@ -82,11 +82,8 @@ static int alloc_emuframe(void)
 >  
->  		ret = io_remap_pfn_range(vma, base, gic_pfn, gic_size,
->  					 pgprot_noncached(vma->vm_page_prot));
+>  	/* Ensure we have an allocation bitmap */
+>  	if (!mm_ctx->bd_emupage_allocmap) {
+> -		mm_ctx->bd_emupage_allocmap =
+> -			kcalloc(BITS_TO_LONGS(emupage_frame_count),
+> -					      sizeof(unsigned long),
+> -				GFP_ATOMIC);
+> -
+> +		mm_ctx->bd_emupage_allocmap = bitmap_zalloc(emupage_frame_count,
+> +							    GFP_ATOMIC);
+>  		if (!mm_ctx->bd_emupage_allocmap) {
+>  			idx = BD_EMUFRAME_NONE;
+>  			goto out_unlock;
+> @@ -206,7 +203,7 @@ void dsemul_mm_cleanup(struct mm_struct *mm)
+>  {
+>  	mm_context_t *mm_ctx = &mm->context;
+>  
+> -	kfree(mm_ctx->bd_emupage_allocmap);
+> +	bitmap_free(mm_ctx->bd_emupage_allocmap);
+>  }
+>  
+>  int mips_dsemul(struct pt_regs *regs, mips_instruction ir,
 > -- 
-> 2.25.1
+> 2.34.1
 
 applied to mips-next.
 

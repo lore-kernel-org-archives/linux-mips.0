@@ -2,154 +2,105 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A58B1C43334
-	for <linux-mips@archiver.kernel.org>; Mon, 11 Jul 2022 15:12:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 184D9C43334
+	for <linux-mips@archiver.kernel.org>; Mon, 11 Jul 2022 15:44:55 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232178AbiGKPMm (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 11 Jul 2022 11:12:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40962 "EHLO
+        id S231133AbiGKPoy (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 11 Jul 2022 11:44:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37840 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229706AbiGKPMl (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Mon, 11 Jul 2022 11:12:41 -0400
-Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 917D473923;
-        Mon, 11 Jul 2022 08:12:39 -0700 (PDT)
-Received: by mail-lj1-x231.google.com with SMTP id a39so6563855ljq.11;
-        Mon, 11 Jul 2022 08:12:39 -0700 (PDT)
+        with ESMTP id S229840AbiGKPox (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Mon, 11 Jul 2022 11:44:53 -0400
+Received: from mail.baikalelectronics.com (mail.baikalelectronics.com [87.245.175.230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 5F4912AC5C;
+        Mon, 11 Jul 2022 08:44:49 -0700 (PDT)
+Received: from mail (mail.baikal.int [192.168.51.25])
+        by mail.baikalelectronics.com (Postfix) with ESMTP id BDE5216AC;
+        Mon, 11 Jul 2022 18:46:39 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.baikalelectronics.com BDE5216AC
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=pjRUDXEBBcwSmCiD3m4BMtXVTKXGOIKhkWrDQAwd7uM=;
-        b=i4vY3VVsWv+bHyuXbdCVj/ibOZtbK2KBApk7BDa2fauU85bzJaoDSK7Vw8MiFiD7EJ
-         ot1A6QEuz61cgfxerZMhhRWqi3QpF3TcaKNaBnXiK8Lq+tF6kZRku28q40igTQQv/mMX
-         cQBPMX3lMHZ78asGDdz4OSW2MkxEMbW8zA9Blz+if1N1JPpm3lide9dWdOnoNLYp/NIF
-         2bjoTWACTd55YLjlVT1yH/LYpekVUtOjeGHgk2F2x2juMeySD+KO+j3Zf3U4eT/9fJrP
-         3LbGjvAp3YACsBy+4WKzN0lyAAVzlATJDP3Tvnk8mj1zFdA6wL0hTWv+Kn9brAQt1EDd
-         uB0A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=pjRUDXEBBcwSmCiD3m4BMtXVTKXGOIKhkWrDQAwd7uM=;
-        b=Z4VEPMHGQ/JIcxF8GzZJ2C9EJ+ym3PL/1/eSBp3HWWb1SNzfEZ3sSpecJMm1zIs/Ed
-         Z20FjQR9+zKkwdKLjCkFnht47txQmAizAzNO0AgWnL4AZsc2g+zpxHB5BHPMHMsShIn4
-         GSlg+bgGh/vbkRbutxidYRth+PyBstuqk83Cf2F9KdGWfIjIPSLeC3PyG4vKDzRCADLG
-         svTM2LrAR82gD+H9YwnqjE0UUVdHBZi36T9PDEwnX+Q5UF9P08bFMfqo7XM84+E09jVa
-         ge3KGpE2ut+qmptBjsvgeF5DbtnFCy0iibENst2Qgfw2z90y8YxubD68MhMt0CByIilx
-         QWyQ==
-X-Gm-Message-State: AJIora9Vw/15WF00xlzJ9NPqgwIOMaxpWYmxOMahI1DSQa/HCkYxg4gp
-        4Bs6D6UIJECQmE0MYw1J/BA=
-X-Google-Smtp-Source: AGRyM1uqCuw6kDX+p4gjHX6hRZQQQLWuGAYZCNeQAPsJMEy4SEjSMjEn4YAiR+dUiNxvbp+JGucDQw==
-X-Received: by 2002:a2e:a224:0:b0:25d:7448:75fe with SMTP id i4-20020a2ea224000000b0025d744875femr1060353ljm.280.1657552357949;
-        Mon, 11 Jul 2022 08:12:37 -0700 (PDT)
-Received: from mobilestation ([95.79.140.178])
-        by smtp.gmail.com with ESMTPSA id f17-20020a193811000000b00479307e4a1bsm1580284lfa.135.2022.07.11.08.12.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Jul 2022 08:12:37 -0700 (PDT)
-Date:   Mon, 11 Jul 2022 18:12:35 +0300
-From:   Serge Semin <fancer.lancer@gmail.com>
-To:     Philipp Zabel <p.zabel@pengutronix.de>
-Cc:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
-        Stephen Boyd <sboyd@kernel.org>,
+        d=baikalelectronics.ru; s=mail; t=1657554399;
+        bh=BveNLPY/YG4fFAd5N/AaPUO76c/YnxfM372ERsi7TmM=;
+        h=From:To:CC:Subject:Date:In-Reply-To:References:From;
+        b=RlIlhDFfXWOkpu1kI//ka6ng9WG2tyf9gWii03fuBSB/GJPxq0sNls2Z5z6PZNneQ
+         PjD+BvqUgZoBn8Pq0riIhtRPZlJY+2JBA+4SoTdfNk2tAop3cfhDEUFJWeQYyLhFL1
+         Qn4dCzKYzMCj03VBvdn/8BwGjF6TOX89rpqQL3Rk=
+Received: from localhost (192.168.53.207) by mail (192.168.51.25) with
+ Microsoft SMTP Server (TLS) id 15.0.1395.4; Mon, 11 Jul 2022 18:44:46 +0300
+From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
+To:     Stephen Boyd <sboyd@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
         Michael Turquette <mturquette@baylibre.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Luca Ceresoli <luca@lucaceresoli.net>,
+        Marek Vasut <marek.vasut@gmail.com>
+CC:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
+        Serge Semin <fancer.lancer@gmail.com>,
         Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
         Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
         Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        linux-clk@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH v6 6/7] clk: baikal-t1: Add DDR/PCIe directly controlled
- resets support
-Message-ID: <20220711151235.ausotedsmrgkccqn@mobilestation>
-References: <20220708192725.9501-1-Sergey.Semin@baikalelectronics.ru>
- <20220708192725.9501-7-Sergey.Semin@baikalelectronics.ru>
- <20220711132348.GB3771@pengutronix.de>
+        <linux-clk@vger.kernel.org>, <linux-mips@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, Stephen Boyd <sboyd@codeaurora.org>
+Subject: [PATCH v7 1/7] clk: vc5: Fix 5P49V6901 outputs disabling when enabling FOD
+Date:   Mon, 11 Jul 2022 18:44:27 +0300
+Message-ID: <20220711154433.15415-2-Sergey.Semin@baikalelectronics.ru>
+In-Reply-To: <20220711154433.15415-1-Sergey.Semin@baikalelectronics.ru>
+References: <20220711154433.15415-1-Sergey.Semin@baikalelectronics.ru>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220711132348.GB3771@pengutronix.de>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Mon, Jul 11, 2022 at 03:23:48PM +0200, Philipp Zabel wrote:
-> On Fri, Jul 08, 2022 at 10:27:24PM +0300, Serge Semin wrote:
-> > Aside with a set of the trigger-like resets Baikal-T1 CCU provides two
-> > additional blocks with directly controlled reset signals. In particular it
-> > concerns DDR full and initial resets and various PCIe sub-domains resets.
-> > Let's add the direct reset assertion/de-assertion of the corresponding
-> > flags support into the Baikal-T1 CCU driver then. It will be required at
-> > least for the PCIe platform driver. Obviously the DDR controller isn't
-> > supposed to be fully reset in the kernel, so the corresponding controls
-> > are added just for the sake of the interface implementation completeness.
-> > 
-> > Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
-> > 
-> > ---
-> > 
-> > Changelog v6:
-> > - Refactor the code to support the linear reset IDs only. (@Philipp)
-> > ---
-> >  drivers/clk/baikal-t1/ccu-rst.c     | 67 +++++++++++++++++++++++++++++
-> >  drivers/clk/baikal-t1/ccu-rst.h     | 10 +++++
-> >  include/dt-bindings/reset/bt1-ccu.h |  9 ++++
-> >  3 files changed, 86 insertions(+)
-> > 
-> > diff --git a/drivers/clk/baikal-t1/ccu-rst.c b/drivers/clk/baikal-t1/ccu-rst.c
-> > index 8fd40810d24e..c20aa3e07afb 100644
-> > --- a/drivers/clk/baikal-t1/ccu-rst.c
-> > +++ b/drivers/clk/baikal-t1/ccu-rst.c
-> > @@ -35,18 +35,29 @@
-> >  #define CCU_AXI_HWA_BASE		0x054
-> >  #define CCU_AXI_SRAM_BASE		0x058
-> >  
-> > +#define CCU_SYS_DDR_BASE		0x02c
-> >  #define CCU_SYS_SATA_REF_BASE		0x060
-> >  #define CCU_SYS_APB_BASE		0x064
-> > +#define CCU_SYS_PCIE_BASE		0x144
-> >  
-> >  #define CCU_RST_DELAY_US		1
-> >  
-> >  #define CCU_RST_TRIG(_base, _ofs)		\
-> >  	{					\
-> > +		.type = CCU_RST_TRIG,		\
-> > +		.base = _base,			\
-> > +		.mask = BIT(_ofs),		\
-> > +	}
-> > +
-> > +#define CCU_RST_DIR(_base, _ofs)		\
-> > +	{					\
-> > +		.type = CCU_RST_DIR,		\
-> >  		.base = _base,			\
-> >  		.mask = BIT(_ofs),		\
-> >  	}
-> >  
-> >  struct ccu_rst_info {
-> > +	enum ccu_rst_type type;
-> >  	unsigned int base;
-> >  	unsigned int mask;
-> >  };
-> > @@ -77,8 +88,18 @@ static const struct ccu_rst_info axi_rst_info[] = {
-> >   * well while the Linux kernel is working.
-> >   */
-> >  static const struct ccu_rst_info sys_rst_info[] = {
-> > +
-> 
+We have discovered random glitches during the system boot up procedure.
+The problem investigation led us to the weird outcomes: when none of the
+Renesas 5P49V6901 ports are explicitly enabled by the kernel driver, the
+glitches disappeared. It was a mystery since the SoC external clock
+domains were fed with different 5P49V6901 outputs. The driver code didn't
+seem like bogus either. We almost despaired to find out a root cause when
+the solution has been found for a more modern revision of the chip. It
+turned out the 5P49V6901 clock generator stopped its output for a short
+period of time during the VC5_OUT_DIV_CONTROL register writing. The same
+problem was found for the 5P49V6965 revision of the chip and was
+successfully fixed in commit fc336ae622df ("clk: vc5: fix output disabling
+when enabling a FOD") by enabling the "bypass_sync" flag hidden inside
+"Unused Factory Reserved Register". Even though the 5P49V6901 registers
+description and programming guide doesn't provide any intel regarding that
+flag, setting it up anyway in the officially unused register completely
+eliminated the denoted glitches. Thus let's activate the functionality
+submitted in commit fc336ae622df ("clk: vc5: fix output disabling when
+enabling a FOD") for the Renesas 5P49V6901 chip too in order to remove the
+ports implicit inter-dependency.
 
-> Please drop this empty line. Otherwise,
+Fixes: dbf6b16f5683 ("clk: vc5: Add support for IDT VersaClock 5P49V6901")
+Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+Reviewed-by: Luca Ceresoli <luca@lucaceresoli.net>
 
-Don't know how come this has got into the patch. Thanks for noticing
-this. I'll fix it in v7.
+---
 
-> 
-> Reviewed-by: Philipp Zabel <p.zabel@pengutronix.de>
+Changelog v4:
+- This is a new patch added on v4 lap of the series.
 
-Many thanks for review, Philipp. I really appreciate this.
+Changelog v5:
+- Fix some grammar mistakes in the commit log. (@Sergey Shtylyov)
+---
+ drivers/clk/clk-versaclock5.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
--Sergey
+diff --git a/drivers/clk/clk-versaclock5.c b/drivers/clk/clk-versaclock5.c
+index e7be3e54b9be..03cfef494b49 100644
+--- a/drivers/clk/clk-versaclock5.c
++++ b/drivers/clk/clk-versaclock5.c
+@@ -1204,7 +1204,7 @@ static const struct vc5_chip_info idt_5p49v6901_info = {
+ 	.model = IDT_VC6_5P49V6901,
+ 	.clk_fod_cnt = 4,
+ 	.clk_out_cnt = 5,
+-	.flags = VC5_HAS_PFD_FREQ_DBL,
++	.flags = VC5_HAS_PFD_FREQ_DBL | VC5_HAS_BYPASS_SYNC_BIT,
+ };
+ 
+ static const struct vc5_chip_info idt_5p49v6965_info = {
+-- 
+2.35.1
 
-> 
-> regards
-> Philipp

@@ -2,103 +2,153 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 610C5C433EF
-	for <linux-mips@archiver.kernel.org>; Tue, 12 Jul 2022 08:01:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5335FC43334
+	for <linux-mips@archiver.kernel.org>; Tue, 12 Jul 2022 08:33:55 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231814AbiGLIBU (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 12 Jul 2022 04:01:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34344 "EHLO
+        id S230285AbiGLIdy (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 12 Jul 2022 04:33:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37206 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231259AbiGLIBT (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Tue, 12 Jul 2022 04:01:19 -0400
-Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 27EAC24958;
-        Tue, 12 Jul 2022 01:01:18 -0700 (PDT)
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1oBApZ-0000Vp-00; Tue, 12 Jul 2022 10:01:17 +0200
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 41528C035A; Tue, 12 Jul 2022 09:30:01 +0200 (CEST)
-Date:   Tue, 12 Jul 2022 09:30:01 +0200
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Florian Fainelli <f.fainelli@gmail.com>
-Cc:     Serge Semin <fancer.lancer@gmail.com>, linux-mips@vger.kernel.org,
-        gerg@kernel.org, open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] MIPS: Fixed __debug_virt_addr_valid()
-Message-ID: <20220712073001.GA6980@alpha.franken.de>
-References: <20220707215237.1730283-1-f.fainelli@gmail.com>
- <20220711083848.GE6084@alpha.franken.de>
- <20220711104052.ddefbgd34xbbjykg@mobilestation>
- <20220711112740.GA12918@alpha.franken.de>
- <20220711112953.j4dwany3i77df4xe@mobilestation>
- <7fb06e9c-6405-9bee-5eda-7dbd56511e2c@gmail.com>
+        with ESMTP id S229762AbiGLIdx (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Tue, 12 Jul 2022 04:33:53 -0400
+Received: from mail-qv1-f50.google.com (mail-qv1-f50.google.com [209.85.219.50])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 811BC13F39;
+        Tue, 12 Jul 2022 01:33:51 -0700 (PDT)
+Received: by mail-qv1-f50.google.com with SMTP id g9so2089639qvq.7;
+        Tue, 12 Jul 2022 01:33:51 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=9+RlgqyNyozIyqu+u+nphr5l00NXcM+jNZnu9YO/k+k=;
+        b=zQ9RVDmQPEciAXIjs3g28Ba9v3Pmomu2UX8Kj6o/KjfzT56wzBJOWc4XKE6Ofo/L4O
+         DbgCCIsnz3+uMkz1BFTwf+qrYQsJPllz/8gJn+MLzkFMpUOsDx5oGRQY+/ir8gJ0cHp4
+         miRQTHzqJNDuQg1c9iFKqbY5hlVqlsNZ49A9uuQO+QZhbgjqG2qsAdkaR7dLOQwC4bzN
+         0vWArPomIyweuPbEKxbbRaPs9ovJqPP5LIk9i8Pr/b31+Dpw1lz92gNvOc/hSnchOGbB
+         By81P3ow0ELBotUL7omLEC+2JkSL4wFd58IJXevKkR2rKVl78wrG34mPF+ACkh8F2lo2
+         nPWQ==
+X-Gm-Message-State: AJIora+y9AygHCbIu8KEMi5wDzRulZVjZl4rtEvk/SeYai4KvtzHCC5c
+        VxTWWR0Wu3EEZqPUAFYIlSvnIju93OhAEA==
+X-Google-Smtp-Source: AGRyM1vFSZ+jjvqPv8ErEm7F8esv08GDYhlAWbFuBoo1LIKe2g7m499ZHQgzNrtKGGy5O6w7B8Cyvg==
+X-Received: by 2002:a05:6214:3006:b0:46e:6be4:2b7d with SMTP id ke6-20020a056214300600b0046e6be42b7dmr16448255qvb.84.1657614830455;
+        Tue, 12 Jul 2022 01:33:50 -0700 (PDT)
+Received: from mail-yb1-f173.google.com (mail-yb1-f173.google.com. [209.85.219.173])
+        by smtp.gmail.com with ESMTPSA id dt8-20020a05620a478800b006a91da2fc8dsm5892492qkb.0.2022.07.12.01.33.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 12 Jul 2022 01:33:49 -0700 (PDT)
+Received: by mail-yb1-f173.google.com with SMTP id h62so10130197ybb.11;
+        Tue, 12 Jul 2022 01:33:49 -0700 (PDT)
+X-Received: by 2002:a0d:c787:0:b0:31b:a963:e1de with SMTP id
+ j129-20020a0dc787000000b0031ba963e1demr23492652ywd.283.1657614516494; Tue, 12
+ Jul 2022 01:28:36 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <7fb06e9c-6405-9bee-5eda-7dbd56511e2c@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20220712075255.1345991-1-chenhuacai@loongson.cn> <20220712075255.1345991-3-chenhuacai@loongson.cn>
+In-Reply-To: <20220712075255.1345991-3-chenhuacai@loongson.cn>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 12 Jul 2022 10:28:25 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdUazqHLbc80vpZ+Msg9A3j5aPJ3fx+CdCG3kuWDSf8WSw@mail.gmail.com>
+Message-ID: <CAMuHMdUazqHLbc80vpZ+Msg9A3j5aPJ3fx+CdCG3kuWDSf8WSw@mail.gmail.com>
+Subject: Re: [PATCH 3/6] M68K: cpuinfo: Fix a warning for CONFIG_CPUMASK_OFFSTACK
+To:     Huacai Chen <chenhuacai@loongson.cn>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Michal Simek <monstr@monstr.eu>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>, Jeff Dike <jdike@addtoit.com>,
+        Richard Weinberger <richard@nod.at>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        loongarch@lists.linux.dev, Linux-Arch <linux-arch@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Huacai Chen <chenhuacai@gmail.com>,
+        Guo Ren <guoren@kernel.org>, Xuerui Wang <kernel@xen0n.name>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Linux-sh list <linux-sh@vger.kernel.org>,
+        linux-um <linux-um@lists.infradead.org>,
+        stable <stable@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Mon, Jul 11, 2022 at 05:02:51PM -0700, Florian Fainelli wrote:
-> On 7/11/2022 4:29 AM, Serge Semin wrote:
-> > On Mon, Jul 11, 2022 at 01:27:40PM +0200, Thomas Bogendoerfer wrote:
-> > > On Mon, Jul 11, 2022 at 01:40:52PM +0300, Serge Semin wrote:
-> > > > On Mon, Jul 11, 2022 at 10:38:48AM +0200, Thomas Bogendoerfer wrote:
-> > > > > On Thu, Jul 07, 2022 at 02:52:36PM -0700, Florian Fainelli wrote:
-> > > > > > It is permissible for kernel code to call virt_to_phys() against virtual
-> > > > > > addresses that are in KSEG0 or KSEG1 and we need to be dealing with both
-> > > > > > types. Add a final condition that ensures that the virtual address is
-> > > > > > below KSEG2.
-> > > > > > 
-> > > > > > Fixes: dfad83cb7193 ("MIPS: Add support for CONFIG_DEBUG_VIRTUAL")
-> > > > > > Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
-> > > > > > ---
-> > > > > >   arch/mips/mm/physaddr.c | 3 ++-
-> > > > > >   1 file changed, 2 insertions(+), 1 deletion(-)
-> > > > > > 
-> > > > > > diff --git a/arch/mips/mm/physaddr.c b/arch/mips/mm/physaddr.c
-> > > > > > index a1ced5e44951..a82f8f57a652 100644
-> > > > > > --- a/arch/mips/mm/physaddr.c
-> > > > > > +++ b/arch/mips/mm/physaddr.c
-> > > > > > @@ -5,6 +5,7 @@
-> > > > > >   #include <linux/mmdebug.h>
-> > > > > >   #include <linux/mm.h>
-> > > > > > +#include <asm/addrspace.h>
-> > > > > >   #include <asm/sections.h>
-> > > > > >   #include <asm/io.h>
-> > > > > >   #include <asm/page.h>
-> > > > > > @@ -30,7 +31,7 @@ static inline bool __debug_virt_addr_valid(unsigned long x)
-> > > > > >   	if (x == MAX_DMA_ADDRESS)
-> > > > > >   		return true;
-> > > > > > -	return false;
-> > > > > > +	return KSEGX(x) < KSEG2;
-> > > > > >   }
-> > > > > >   phys_addr_t __virt_to_phys(volatile const void *x)
-> > > > > > -- 
-> > > > > > 2.25.1
-> > > > > 
-> > > > 
-> > > > > applied to mips-next.
-> > > > 
-> > > > Are you sure it was ready to be applied?
-> > > > Link: https://lore.kernel.org/linux-mips/20220708115851.ejsooiilxcopkoei@mobilestation/
-> > > 
-> > 
-> > > your comment sounded like optimizing, which can be done later on, so
-> > > I assumed it ready.
-> > 
-> > What about Malta and EVA?
-> 
-> Sergey's comment definitively need to be addressed, and I would not see the
-> point in making an incremental change to a wrong fix. Can you drop that
-> patch for now? Thanks!
+Hi Huacai,
 
-dropped.
+Thanks for your patch!
 
-Thomas.
+On Tue, Jul 12, 2022 at 9:53 AM Huacai Chen <chenhuacai@loongson.cn> wrote:
+> When CONFIG_CPUMASK_OFFSTACK and CONFIG_DEBUG_PER_CPU_MAPS is selected,
 
--- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+DEBUG_PER_CPU_MAPS depends on SMP, which is not supported on m68k,
+and thus cannot be enabled.
+
+> cpu_max_bits_warn() generates a runtime warning similar as below while
+> we show /proc/cpuinfo. Fix this by using nr_cpu_ids (the runtime limit)
+> instead of NR_CPUS to iterate CPUs.
+>
+> [    3.052463] ------------[ cut here ]------------
+> [    3.059679] WARNING: CPU: 3 PID: 1 at include/linux/cpumask.h:108 show_cpuinfo+0x5e8/0x5f0
+> [    3.070072] Modules linked in: efivarfs autofs4
+
+efivarfs on m68k?
+
+EFIVAR_FS depends on EFI depends on !CPU_BIG_ENDIAN
+
+> [    3.076257] CPU: 0 PID: 1 Comm: systemd Not tainted 5.19-rc5+ #1052
+> [    3.099465] Stack : 9000000100157b08 9000000000f18530 9000000000cf846c 9000000100154000
+> [    3.109127]         9000000100157a50 0000000000000000 9000000100157a58 9000000000ef7430
+> [    3.118774]         90000001001578e8 0000000000000040 0000000000000020 ffffffffffffffff
+> [    3.128412]         0000000000aaaaaa 1ab25f00eec96a37 900000010021de80 900000000101c890
+> [    3.138056]         0000000000000000 0000000000000000 0000000000000000 0000000000aaaaaa
+> [    3.147711]         ffff8000339dc220 0000000000000001 0000000006ab4000 0000000000000000
+> [    3.157364]         900000000101c998 0000000000000004 9000000000ef7430 0000000000000000
+> [    3.167012]         0000000000000009 000000000000006c 0000000000000000 0000000000000000
+> [    3.176641]         9000000000d3de08 9000000001639390 90000000002086d8 00007ffff0080286
+> [    3.186260]         00000000000000b0 0000000000000004 0000000000000000 0000000000071c1c
+> [    3.195868]         ...
+> [    3.199917] Call Trace:
+> [    3.203941] [<90000000002086d8>] show_stack+0x38/0x14c
+> [    3.210666] [<9000000000cf846c>] dump_stack_lvl+0x60/0x88
+> [    3.217625] [<900000000023d268>] __warn+0xd0/0x100
+> [    3.223958] [<9000000000cf3c90>] warn_slowpath_fmt+0x7c/0xcc
+> [    3.231150] [<9000000000210220>] show_cpuinfo+0x5e8/0x5f0
+> [    3.238080] [<90000000004f578c>] seq_read_iter+0x354/0x4b4
+> [    3.245098] [<90000000004c2e90>] new_sync_read+0x17c/0x1c4
+> [    3.252114] [<90000000004c5174>] vfs_read+0x138/0x1d0
+> [    3.258694] [<90000000004c55f8>] ksys_read+0x70/0x100
+> [    3.265265] [<9000000000cfde9c>] do_syscall+0x7c/0x94
+> [    3.271820] [<9000000000202fe4>] handle_syscall+0xc4/0x160
+> [    3.281824] ---[ end trace 8b484262b4b8c24c ]---
+>
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Huacai Chen <chenhuacai@loongson.cn>
+
+Does this need a Fixes tag, so we know when the problem was introduced?
+
+> --- a/arch/m68k/kernel/setup_no.c
+> +++ b/arch/m68k/kernel/setup_no.c
+> @@ -201,7 +201,7 @@ static int show_cpuinfo(struct seq_file *m, void *v)
+>
+>  static void *c_start(struct seq_file *m, loff_t *pos)
+>  {
+> -       return *pos < NR_CPUS ? ((void *) 0x12345678) : NULL;
+> +       return *pos < nr_cpu_ids ? ((void *) 0x12345678) : NULL;
+>  }
+
+include/linux/cpumask.h has:
+
+    #if NR_CPUS == 1
+    #define nr_cpu_ids              1U
+
+so on m68k, both evaluate to the same value?
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds

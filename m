@@ -2,115 +2,105 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C79C4CCA47C
-	for <linux-mips@archiver.kernel.org>; Tue, 12 Jul 2022 12:08:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4C10EC43334
+	for <linux-mips@archiver.kernel.org>; Tue, 12 Jul 2022 12:15:15 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229691AbiGLMIt (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 12 Jul 2022 08:08:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54948 "EHLO
+        id S232851AbiGLMPO (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 12 Jul 2022 08:15:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32778 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229729AbiGLMIs (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Tue, 12 Jul 2022 08:08:48 -0400
-Received: from loongson.cn (mail.loongson.cn [114.242.206.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 3E87A658F;
-        Tue, 12 Jul 2022 05:08:45 -0700 (PDT)
-Received: from [10.180.13.185] (unknown [10.180.13.185])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dxv9BLZM1iC0kZAA--.15930S3;
-        Tue, 12 Jul 2022 20:08:43 +0800 (CST)
-Subject: Re: [PATCH] MIPS: fix pmd_mkinvalid
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <1657181495-33004-1-git-send-email-zhanghongchen@loongson.cn>
- <20220707092206.GA9894@alpha.franken.de>
- <bfb97f6b-7a39-8253-bc14-08f2f54ed312@loongson.cn>
- <0fd4e823-493f-07f0-08d5-f4a22491b602@loongson.cn>
- <20220712111917.GA10936@alpha.franken.de>
-From:   Hongchen Zhang <zhanghongchen@loongson.cn>
-Message-ID: <b2e74ba2-b831-d300-92f6-c410673e72cc@loongson.cn>
-Date:   Tue, 12 Jul 2022 20:08:43 +0800
-User-Agent: Mozilla/5.0 (X11; Linux loongarch64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        with ESMTP id S231902AbiGLMPN (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Tue, 12 Jul 2022 08:15:13 -0400
+Received: from mail.baikalelectronics.com (mail.baikalelectronics.com [87.245.175.230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id EC6A645056;
+        Tue, 12 Jul 2022 05:15:09 -0700 (PDT)
+Received: from mail (mail.baikal.int [192.168.51.25])
+        by mail.baikalelectronics.com (Postfix) with ESMTP id ECC98BC0;
+        Tue, 12 Jul 2022 15:17:01 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.baikalelectronics.com ECC98BC0
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baikalelectronics.ru; s=mail; t=1657628222;
+        bh=BveNLPY/YG4fFAd5N/AaPUO76c/YnxfM372ERsi7TmM=;
+        h=From:To:CC:Subject:Date:In-Reply-To:References:From;
+        b=S/UvqGHLTjAgh/hCwra5uJoir16ytBU7ZCQylF9DFOIQprsFP9B88V4s3KKqRi+OC
+         m/YpdyQWh8eqwatnYIGS7W/fLZnSLaPZ29AcK2kf/4njTcTuFFy+DhuDKgq0v8dMdB
+         98MAvS0Z8OXybDyDirizopQq7A5Pw7VI8HPTjwPk=
+Received: from localhost (192.168.53.207) by mail (192.168.51.25) with
+ Microsoft SMTP Server (TLS) id 15.0.1395.4; Tue, 12 Jul 2022 15:15:07 +0300
+From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
+To:     Stephen Boyd <sboyd@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Luca Ceresoli <luca@lucaceresoli.net>,
+        Marek Vasut <marek.vasut@gmail.com>
+CC:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
+        Serge Semin <fancer.lancer@gmail.com>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        <linux-clk@vger.kernel.org>, <linux-mips@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, Stephen Boyd <sboyd@codeaurora.org>
+Subject: [PATCH v8 1/7] clk: vc5: Fix 5P49V6901 outputs disabling when enabling FOD
+Date:   Tue, 12 Jul 2022 15:14:59 +0300
+Message-ID: <20220712121505.5671-2-Sergey.Semin@baikalelectronics.ru>
+In-Reply-To: <20220712121505.5671-1-Sergey.Semin@baikalelectronics.ru>
+References: <20220712121505.5671-1-Sergey.Semin@baikalelectronics.ru>
 MIME-Version: 1.0
-In-Reply-To: <20220712111917.GA10936@alpha.franken.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: AQAAf9Dxv9BLZM1iC0kZAA--.15930S3
-X-Coremail-Antispam: 1UD129KBjvJXoW7Ar17XF15Ww1DCr18ury7GFg_yoW8tr47pF
-        Z5tF1UtFWDtrn7Jr18Kr18JFyYyw15tw15Wrn5JF1UA392qr1Iqr4UX390934UXF4kGr1U
-        tF45XasrZw1UAaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUv0b7Iv0xC_Kw4lb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I2
-        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
-        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xII
-        jxv20xvEc7CjxVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4
-        A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IE
-        w4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMc
-        vjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvEwIxGrwCYjI0SjxkI62AI1cAE67vIY487MxkI
-        ecxEwVCm-wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F4
-        0E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jrv_JF1l
-        IxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxV
-        AFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_
-        Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU5
-        PpnJUUUUU==
-X-CM-SenderInfo: x2kd0w5krqwupkhqwqxorr0wxvrqhubq/
+Content-Type: text/plain
+X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On 2022/7/12 下午7:19, Thomas Bogendoerfer wrote:
-> On Tue, Jul 12, 2022 at 06:01:08PM +0800, Hongchen Zhang wrote:
->> On 2022/7/7 下午7:12, Hongchen Zhang wrote:
->>> On 2022/7/7 下午5:22, Thomas Bogendoerfer wrote:
->>>> On Thu, Jul 07, 2022 at 04:11:35PM +0800, Hongchen Zhang wrote:
->>>>> When a pmd entry is invalidated by pmd_mkinvalid,pmd_present should
->>>>> return true.
->>>>> So introduce a _PMD_PRESENT_INVALID_SHIFT bit to check if a pmd is
->>>>> present but invalidated by pmd_mkinvalid.
->>>>
->>>> What problem are you trying to fix ? What are the symptoms ?
->>>>
->>>>> Reported-by: kernel test robot <lkp@intel.com>
->>>>
->>>> the test robot showed problems with your last version of the patch,
->>>> which hasn't been integrated into at least the MIPS tree, so no
->>>> need to that.
->>>>
->>>> Thomas.
->>>>
->>>
->>> Hi Thomas,
->>>     The idea come from the commit:
->>>     b65399f6111b(arm64/mm: Change THP helpers to comply with generic MM
->>>   semantics).
->>>     There is an problem now:
->>>           CPU 0        CPU 1
->>>       pmdp_invalidate        do_page_fault
->>>       ...              __handle_mm_fault
->>>                       is_swap_pmd == true
->>>                       trigger VM_BUG_ON() ?
->>>       set_pmd_at
->>>     the reason is that pmd_present return true,after this commit
->>>     pmd_present will return false,and the VM_BUG_ON will not be triggered.
->>>     Like arm64 does,we can introduce a new bit to fix this.
->>>
->>> Thanks.
->> Hi Thomas,
->>   Is there problem of this patch? What's your opinion of this patch?
-> 
-> I haven't dig deeper into it, but needing more page bits is a pain
-> for 32bit kernel and would make it nearly impossible to get huge
-> page support there. And the description you gave me, needs to be
-> in the commit description.
-> 
-> Thomas.
-> 
-Hi Thomas,
-  Thanks for your patiently review. For your question,
-   1. I think there may be problem when compile 32bit kernel with huge 
-page support,because _PAGE_HUGE_SHIFT is only defined for R4K now.
-   2. I will modify the commit as you said and make a v2 patch.
+We have discovered random glitches during the system boot up procedure.
+The problem investigation led us to the weird outcomes: when none of the
+Renesas 5P49V6901 ports are explicitly enabled by the kernel driver, the
+glitches disappeared. It was a mystery since the SoC external clock
+domains were fed with different 5P49V6901 outputs. The driver code didn't
+seem like bogus either. We almost despaired to find out a root cause when
+the solution has been found for a more modern revision of the chip. It
+turned out the 5P49V6901 clock generator stopped its output for a short
+period of time during the VC5_OUT_DIV_CONTROL register writing. The same
+problem was found for the 5P49V6965 revision of the chip and was
+successfully fixed in commit fc336ae622df ("clk: vc5: fix output disabling
+when enabling a FOD") by enabling the "bypass_sync" flag hidden inside
+"Unused Factory Reserved Register". Even though the 5P49V6901 registers
+description and programming guide doesn't provide any intel regarding that
+flag, setting it up anyway in the officially unused register completely
+eliminated the denoted glitches. Thus let's activate the functionality
+submitted in commit fc336ae622df ("clk: vc5: fix output disabling when
+enabling a FOD") for the Renesas 5P49V6901 chip too in order to remove the
+ports implicit inter-dependency.
 
-Thanks.
-Hongchen Zhang
+Fixes: dbf6b16f5683 ("clk: vc5: Add support for IDT VersaClock 5P49V6901")
+Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+Reviewed-by: Luca Ceresoli <luca@lucaceresoli.net>
 
+---
+
+Changelog v4:
+- This is a new patch added on v4 lap of the series.
+
+Changelog v5:
+- Fix some grammar mistakes in the commit log. (@Sergey Shtylyov)
+---
+ drivers/clk/clk-versaclock5.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/clk/clk-versaclock5.c b/drivers/clk/clk-versaclock5.c
+index e7be3e54b9be..03cfef494b49 100644
+--- a/drivers/clk/clk-versaclock5.c
++++ b/drivers/clk/clk-versaclock5.c
+@@ -1204,7 +1204,7 @@ static const struct vc5_chip_info idt_5p49v6901_info = {
+ 	.model = IDT_VC6_5P49V6901,
+ 	.clk_fod_cnt = 4,
+ 	.clk_out_cnt = 5,
+-	.flags = VC5_HAS_PFD_FREQ_DBL,
++	.flags = VC5_HAS_PFD_FREQ_DBL | VC5_HAS_BYPASS_SYNC_BIT,
+ };
+ 
+ static const struct vc5_chip_info idt_5p49v6965_info = {
+-- 
+2.35.1
 

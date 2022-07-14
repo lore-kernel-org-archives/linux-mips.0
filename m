@@ -2,151 +2,166 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E99A7CCA487
-	for <linux-mips@archiver.kernel.org>; Thu, 14 Jul 2022 09:57:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9A1B1CCA47B
+	for <linux-mips@archiver.kernel.org>; Thu, 14 Jul 2022 12:34:30 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237658AbiGNJ5O (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 14 Jul 2022 05:57:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36380 "EHLO
+        id S239355AbiGNMe2 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 14 Jul 2022 08:34:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53068 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235898AbiGNJ5I (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Thu, 14 Jul 2022 05:57:08 -0400
-Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id D7F3D4C603;
-        Thu, 14 Jul 2022 02:57:06 -0700 (PDT)
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1oBvaj-0006rx-01; Thu, 14 Jul 2022 11:57:05 +0200
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 69F76C0493; Thu, 14 Jul 2022 11:55:06 +0200 (CEST)
-Date:   Thu, 14 Jul 2022 11:55:06 +0200
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] MIPS: Remove VR41xx support
-Message-ID: <20220714095506.GB10086@alpha.franken.de>
-References: <20220705164632.97942-1-tsbogend@alpha.franken.de>
+        with ESMTP id S239346AbiGNMe0 (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Thu, 14 Jul 2022 08:34:26 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8049352462;
+        Thu, 14 Jul 2022 05:34:24 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 4509CB824E2;
+        Thu, 14 Jul 2022 12:34:23 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C15ACC34115;
+        Thu, 14 Jul 2022 12:34:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1657802061;
+        bh=qBirXXWP2MvpS4lCr+loYwR+cC50dveyyNNYEAD0Bqs=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=knaJXlPNMLbIxCYOYMKHQqEMkMwL8qRRGZXzl/1Qohf6zRJ4xd5gHTnKhqZGWjL5z
+         IE3X3Bjl8UC8cPhRzT8Lo1Z77YCok4yj9Li87twVXITrGIy5y0GSYPTriXuzrL1ZRd
+         So5VG7MxrP7o5O2V7W9WewYzwer1iy2NrPvjAe+fJ+BQlJcSROjm4xmXwPYlK9qtjL
+         N9MlAm+IdGj8Lrx/MtDnSYWoQX2tVJlDZBeQbkBOwGGPU9MwhV3RYTqhi+0Sni30X3
+         VfzICXYjlk9lNLCwb4yVi+zsq16JVeK8ufwSXNeZ1D1dXediYjTaoI56H6W/usVSjy
+         pHwz+P4RBhSFw==
+Received: by mail-vs1-f42.google.com with SMTP id d187so1292168vsd.10;
+        Thu, 14 Jul 2022 05:34:21 -0700 (PDT)
+X-Gm-Message-State: AJIora84cXHFvQIsYwxi+I7hIj6cA0bjL7Tu2WfZZ0gZgDZPfptCnPzO
+        9zd5OuLT5i+Gv7AGkQUMMpHWTBsC1JFbRMchrUg=
+X-Google-Smtp-Source: AGRyM1ty5yRBbaVRJ8PJWbtdv5Dy7XJuthHHzmRMybTtmDUVI2vw0cugeBgictCY0ND5UquBP9+bozDTgNcHp02K6aM=
+X-Received: by 2002:a67:6fc3:0:b0:356:18:32ba with SMTP id k186-20020a676fc3000000b00356001832bamr3253584vsc.43.1657802060763;
+ Thu, 14 Jul 2022 05:34:20 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220705164632.97942-1-tsbogend@alpha.franken.de>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20220704112526.2492342-1-chenhuacai@loongson.cn>
+ <20220704112526.2492342-4-chenhuacai@loongson.cn> <20220705092937.GA552@willie-the-truck>
+ <CAAhV-H5r8HDaxt8fkO97in5-eH8X9gokVNervmUWn6km4S0e-w@mail.gmail.com>
+ <20220706161736.GC3204@willie-the-truck> <CAAhV-H7uY_KiLJRRjj4+8mewcWbuhvC=zDp5VAs03=BLdSMKLw@mail.gmail.com>
+In-Reply-To: <CAAhV-H7uY_KiLJRRjj4+8mewcWbuhvC=zDp5VAs03=BLdSMKLw@mail.gmail.com>
+From:   Huacai Chen <chenhuacai@kernel.org>
+Date:   Thu, 14 Jul 2022 20:34:08 +0800
+X-Gmail-Original-Message-ID: <CAAhV-H6EziBQ=3SveRvaPxHfbsGpmYrhVHfuBkpLJXn-t-uTZA@mail.gmail.com>
+Message-ID: <CAAhV-H6EziBQ=3SveRvaPxHfbsGpmYrhVHfuBkpLJXn-t-uTZA@mail.gmail.com>
+Subject: Re: [PATCH V4 3/4] mm/sparse-vmemmap: Generalise vmemmap_populate_hugepages()
+To:     Will Deacon <will@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Sudarshan Rajagopalan <quic_sudaraja@quicinc.com>
+Cc:     Huacai Chen <chenhuacai@loongson.cn>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        loongarch@lists.linux.dev, linux-arch <linux-arch@vger.kernel.org>,
+        Xuefeng Li <lixuefeng@loongson.cn>,
+        Guo Ren <guoren@kernel.org>, Xuerui Wang <kernel@xen0n.name>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        "open list:MIPS" <linux-mips@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Feiyang Chen <chenfeiyang@loongson.cn>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Tue, Jul 05, 2022 at 06:46:25PM +0200, Thomas Bogendoerfer wrote:
-> No (active) developer owns this hardware, so let's remove Linux support.
-> 
-> Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-> ---
->  arch/mips/Kbuild.platforms              |   1 -
->  arch/mips/Kconfig                       |  23 -
->  arch/mips/Makefile                      |   1 -
->  arch/mips/configs/capcella_defconfig    |  91 ---
->  arch/mips/configs/e55_defconfig         |  37 --
->  arch/mips/configs/mpc30x_defconfig      |  53 --
->  arch/mips/configs/tb0219_defconfig      |  76 ---
->  arch/mips/configs/tb0226_defconfig      |  71 ---
->  arch/mips/configs/tb0287_defconfig      |  84 ---
->  arch/mips/configs/workpad_defconfig     |  67 ---
->  arch/mips/include/asm/cpu-type.h        |  11 -
->  arch/mips/include/asm/cpu.h             |   3 +-
->  arch/mips/include/asm/mach-vr41xx/irq.h |   9 -
->  arch/mips/include/asm/mipsregs.h        |  14 -
->  arch/mips/include/asm/pgtable-32.h      |   5 -
->  arch/mips/include/asm/pgtable-64.h      |   5 -
->  arch/mips/include/asm/vermagic.h        |   2 -
->  arch/mips/include/asm/vr41xx/capcella.h |  30 -
->  arch/mips/include/asm/vr41xx/giu.h      |  41 --
->  arch/mips/include/asm/vr41xx/irq.h      |  97 ----
->  arch/mips/include/asm/vr41xx/mpc30x.h   |  24 -
->  arch/mips/include/asm/vr41xx/pci.h      |  77 ---
->  arch/mips/include/asm/vr41xx/siu.h      |  45 --
->  arch/mips/include/asm/vr41xx/tb0219.h   |  29 -
->  arch/mips/include/asm/vr41xx/tb0226.h   |  30 -
->  arch/mips/include/asm/vr41xx/tb0287.h   |  30 -
->  arch/mips/include/asm/vr41xx/vr41xx.h   | 148 -----
->  arch/mips/kernel/cpu-probe.c            |  40 --
->  arch/mips/lib/dump_tlb.c                |   8 -
->  arch/mips/mm/c-r4k.c                    |  44 --
->  arch/mips/mm/tlbex.c                    |  35 --
->  arch/mips/pci/Makefile                  |   6 -
->  arch/mips/pci/fixup-capcella.c          |  37 --
->  arch/mips/pci/fixup-mpc30x.c            |  36 --
->  arch/mips/pci/fixup-tb0219.c            |  38 --
->  arch/mips/pci/fixup-tb0226.c            |  73 ---
->  arch/mips/pci/fixup-tb0287.c            |  52 --
->  arch/mips/pci/ops-vr41xx.c              | 113 ----
->  arch/mips/pci/pci-vr41xx.c              | 309 ----------
->  arch/mips/pci/pci-vr41xx.h              | 141 -----
->  arch/mips/vr41xx/Kconfig                | 104 ----
->  arch/mips/vr41xx/Makefile               |   5 -
->  arch/mips/vr41xx/Platform               |  29 -
->  arch/mips/vr41xx/casio-e55/Makefile     |   6 -
->  arch/mips/vr41xx/casio-e55/setup.c      |  27 -
->  arch/mips/vr41xx/common/Makefile        |   6 -
->  arch/mips/vr41xx/common/bcu.c           | 210 -------
->  arch/mips/vr41xx/common/cmu.c           | 242 --------
->  arch/mips/vr41xx/common/giu.c           | 110 ----
->  arch/mips/vr41xx/common/icu.c           | 714 ------------------------
->  arch/mips/vr41xx/common/init.c          |  60 --
->  arch/mips/vr41xx/common/irq.c           | 106 ----
->  arch/mips/vr41xx/common/pmu.c           | 123 ----
->  arch/mips/vr41xx/common/rtc.c           | 105 ----
->  arch/mips/vr41xx/common/siu.c           | 142 -----
->  arch/mips/vr41xx/common/type.c          |  11 -
->  arch/mips/vr41xx/ibm-workpad/Makefile   |   6 -
->  arch/mips/vr41xx/ibm-workpad/setup.c    |  27 -
->  58 files changed, 1 insertion(+), 4068 deletions(-)
->  delete mode 100644 arch/mips/configs/capcella_defconfig
->  delete mode 100644 arch/mips/configs/e55_defconfig
->  delete mode 100644 arch/mips/configs/mpc30x_defconfig
->  delete mode 100644 arch/mips/configs/tb0219_defconfig
->  delete mode 100644 arch/mips/configs/tb0226_defconfig
->  delete mode 100644 arch/mips/configs/tb0287_defconfig
->  delete mode 100644 arch/mips/configs/workpad_defconfig
->  delete mode 100644 arch/mips/include/asm/mach-vr41xx/irq.h
->  delete mode 100644 arch/mips/include/asm/vr41xx/capcella.h
->  delete mode 100644 arch/mips/include/asm/vr41xx/giu.h
->  delete mode 100644 arch/mips/include/asm/vr41xx/irq.h
->  delete mode 100644 arch/mips/include/asm/vr41xx/mpc30x.h
->  delete mode 100644 arch/mips/include/asm/vr41xx/pci.h
->  delete mode 100644 arch/mips/include/asm/vr41xx/siu.h
->  delete mode 100644 arch/mips/include/asm/vr41xx/tb0219.h
->  delete mode 100644 arch/mips/include/asm/vr41xx/tb0226.h
->  delete mode 100644 arch/mips/include/asm/vr41xx/tb0287.h
->  delete mode 100644 arch/mips/include/asm/vr41xx/vr41xx.h
->  delete mode 100644 arch/mips/pci/fixup-capcella.c
->  delete mode 100644 arch/mips/pci/fixup-mpc30x.c
->  delete mode 100644 arch/mips/pci/fixup-tb0219.c
->  delete mode 100644 arch/mips/pci/fixup-tb0226.c
->  delete mode 100644 arch/mips/pci/fixup-tb0287.c
->  delete mode 100644 arch/mips/pci/ops-vr41xx.c
->  delete mode 100644 arch/mips/pci/pci-vr41xx.c
->  delete mode 100644 arch/mips/pci/pci-vr41xx.h
->  delete mode 100644 arch/mips/vr41xx/Kconfig
->  delete mode 100644 arch/mips/vr41xx/Makefile
->  delete mode 100644 arch/mips/vr41xx/Platform
->  delete mode 100644 arch/mips/vr41xx/casio-e55/Makefile
->  delete mode 100644 arch/mips/vr41xx/casio-e55/setup.c
->  delete mode 100644 arch/mips/vr41xx/common/Makefile
->  delete mode 100644 arch/mips/vr41xx/common/bcu.c
->  delete mode 100644 arch/mips/vr41xx/common/cmu.c
->  delete mode 100644 arch/mips/vr41xx/common/giu.c
->  delete mode 100644 arch/mips/vr41xx/common/icu.c
->  delete mode 100644 arch/mips/vr41xx/common/init.c
->  delete mode 100644 arch/mips/vr41xx/common/irq.c
->  delete mode 100644 arch/mips/vr41xx/common/pmu.c
->  delete mode 100644 arch/mips/vr41xx/common/rtc.c
->  delete mode 100644 arch/mips/vr41xx/common/siu.c
->  delete mode 100644 arch/mips/vr41xx/common/type.c
->  delete mode 100644 arch/mips/vr41xx/ibm-workpad/Makefile
->  delete mode 100644 arch/mips/vr41xx/ibm-workpad/setup.c
+Oh, Sudarshan Rajagopalan's Email has changed, Let's update.
 
-applied to mips-next.
+Huacai
 
-Thomas.
-
--- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+On Fri, Jul 8, 2022 at 5:47 PM Huacai Chen <chenhuacai@kernel.org> wrote:
+>
+> +Dan Williams
+> +Sudarshan Rajagopalan
+>
+> On Thu, Jul 7, 2022 at 12:17 AM Will Deacon <will@kernel.org> wrote:
+> >
+> > On Tue, Jul 05, 2022 at 09:07:59PM +0800, Huacai Chen wrote:
+> > > On Tue, Jul 5, 2022 at 5:29 PM Will Deacon <will@kernel.org> wrote:
+> > > > On Mon, Jul 04, 2022 at 07:25:25PM +0800, Huacai Chen wrote:
+> > > > > diff --git a/mm/sparse-vmemmap.c b/mm/sparse-vmemmap.c
+> > > > > index 33e2a1ceee72..6f2e40bb695d 100644
+> > > > > --- a/mm/sparse-vmemmap.c
+> > > > > +++ b/mm/sparse-vmemmap.c
+> > > > > @@ -686,6 +686,60 @@ int __meminit vmemmap_populate_basepages(unsigned long start, unsigned long end,
+> > > > >       return vmemmap_populate_range(start, end, node, altmap, NULL);
+> > > > >  }
+> > > > >
+> > > > > +void __weak __meminit vmemmap_set_pmd(pmd_t *pmd, void *p, int node,
+> > > > > +                                   unsigned long addr, unsigned long next)
+> > > > > +{
+> > > > > +}
+> > > > > +
+> > > > > +int __weak __meminit vmemmap_check_pmd(pmd_t *pmd, int node, unsigned long addr,
+> > > > > +                                    unsigned long next)
+> > > > > +{
+> > > > > +     return 0;
+> > > > > +}
+> > > > > +
+> > > > > +int __meminit vmemmap_populate_hugepages(unsigned long start, unsigned long end,
+> > > > > +                                      int node, struct vmem_altmap *altmap)
+> > > > > +{
+> > > > > +     unsigned long addr;
+> > > > > +     unsigned long next;
+> > > > > +     pgd_t *pgd;
+> > > > > +     p4d_t *p4d;
+> > > > > +     pud_t *pud;
+> > > > > +     pmd_t *pmd;
+> > > > > +
+> > > > > +     for (addr = start; addr < end; addr = next) {
+> > > > > +             next = pmd_addr_end(addr, end);
+> > > > > +
+> > > > > +             pgd = vmemmap_pgd_populate(addr, node);
+> > > > > +             if (!pgd)
+> > > > > +                     return -ENOMEM;
+> > > > > +
+> > > > > +             p4d = vmemmap_p4d_populate(pgd, addr, node);
+> > > > > +             if (!p4d)
+> > > > > +                     return -ENOMEM;
+> > > > > +
+> > > > > +             pud = vmemmap_pud_populate(p4d, addr, node);
+> > > > > +             if (!pud)
+> > > > > +                     return -ENOMEM;
+> > > > > +
+> > > > > +             pmd = pmd_offset(pud, addr);
+> > > > > +             if (pmd_none(READ_ONCE(*pmd))) {
+> > > > > +                     void *p;
+> > > > > +
+> > > > > +                     p = vmemmap_alloc_block_buf(PMD_SIZE, node, altmap);
+> > > > > +                     if (p) {
+> > > > > +                             vmemmap_set_pmd(pmd, p, node, addr, next);
+> > > > > +                             continue;
+> > > > > +                     } else if (altmap)
+> > > > > +                             return -ENOMEM; /* no fallback */
+> > > >
+> > > > Why do you return -ENOMEM if 'altmap' here? That seems to be different to
+> > > > what we currently have on arm64 and it's not clear to me why we're happy
+> > > > with an altmap for the pmd case, but not for the pte case.
+> > > The generic version is the same as X86. It seems that ARM64 always
+> > > fallback whether there is an altmap, but X86 only fallback in the no
+> > > altmap case. I don't know the reason of X86, can Dan Williams give
+> > > some explaination?
+> >
+> > Right, I think we need to understand the new behaviour here before we adopt
+> > it on arm64.
+> Hi, Dan,
+> Could you please tell us the reason? Thanks.
+>
+> And Sudarshan,
+> You are the author of adding a fallback mechanism to ARM64,  do you
+> know why ARM64 is different from X86 (only fallback in no altmap
+> case)?
+>
+> Huacai
+>
+> >
+> > Will

@@ -2,182 +2,65 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 54881C433EF
-	for <linux-mips@archiver.kernel.org>; Thu, 14 Jul 2022 09:22:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0C0FAC433EF
+	for <linux-mips@archiver.kernel.org>; Thu, 14 Jul 2022 09:57:12 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238111AbiGNJWh (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 14 Jul 2022 05:22:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50120 "EHLO
+        id S237163AbiGNJ5I (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 14 Jul 2022 05:57:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36354 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237765AbiGNJWP (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Thu, 14 Jul 2022 05:22:15 -0400
-Received: from aposti.net (aposti.net [89.234.176.197])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D0532AE24
-        for <linux-mips@vger.kernel.org>; Thu, 14 Jul 2022 02:19:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crapouillou.net;
-        s=mail; t=1657790341; h=from:from:sender:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=w+I3tk/TZHzQcdvoQrYaZloZZ61dEGXfgPmIsm/Y1zw=;
-        b=aj4ChXF7bUWtoA428VMU0Sj5qyW4+uvwqH5DXgvi+f2tnJjtM6EhMbVOlb6VhbNVahIIYK
-        /JzertlPmZtmVo8E6IrbzaO5MmFjZZWkhzLo16G8PQm0IGZEEv3yq1BdZenJLg0uVra43M
-        +16MlHYm8N2P1LYVjW+kL+xER1/hJe0=
-Date:   Thu, 14 Jul 2022 10:18:51 +0100
-From:   Paul Cercueil <paul@crapouillou.net>
-Subject: Re: RFC: Proper suspend-to-ram implementation of Ingenic SoCs
-To:     Zhou Yanjie <zhouyanjie@wanyeetech.com>
-Cc:     Mike Yang <reimu@sudomaker.com>, linux-mips@vger.kernel.org,
-        aidanmacdonald.0x0@gmail.com
-Message-Id: <F770FR.FHB5KN6OH1SB3@crapouillou.net>
-In-Reply-To: <e2bd1935-b7c6-0023-7a34-c896ca7a9463@wanyeetech.com>
-References: <e58406ce-a79b-fe91-9587-09e87953d0ab@sudomaker.com>
-        <FVCXER.DV642VYMZNVS1@crapouillou.net>
-        <41070648-3651-a6c4-4888-c142408f3e85@sudomaker.com>
-        <M1IXER.NDAP4RWR4EQZ1@crapouillou.net>
-        <13337393-f416-0a0f-a835-58035a3a3203@sudomaker.com>
-        <DIVYER.Y90Y2FPIT9K8@crapouillou.net>
-        <6e1d1815-31d5-da55-f601-cce788a836c7@sudomaker.com>
-        <4V8ZER.Y1888BONB1P@crapouillou.net>
-        <e2bd1935-b7c6-0023-7a34-c896ca7a9463@wanyeetech.com>
+        with ESMTP id S229868AbiGNJ5H (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Thu, 14 Jul 2022 05:57:07 -0400
+Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id D804A4C609;
+        Thu, 14 Jul 2022 02:57:06 -0700 (PDT)
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1oBvaj-0006rx-03; Thu, 14 Jul 2022 11:57:05 +0200
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id 517A0C0493; Thu, 14 Jul 2022 11:56:03 +0200 (CEST)
+Date:   Thu, 14 Jul 2022 11:56:03 +0200
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc:     Rahul Bedarkar <rahulbedarkar89@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Paul Cercueil <paul@crapouillou.net>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        =?utf-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>,
+        Sergio Paracuellos <sergio.paracuellos@gmail.com>,
+        linux-mips@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Subject: Re: [PATCH 2/2] MIPS: dts: align gpio-key node names with dtschema
+Message-ID: <20220714095603.GD10086@alpha.franken.de>
+References: <20220624170740.66271-1-krzysztof.kozlowski@linaro.org>
+ <20220624170740.66271-2-krzysztof.kozlowski@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220624170740.66271-2-krzysztof.kozlowski@linaro.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Hi Zhou,
+On Fri, Jun 24, 2022 at 07:07:40PM +0200, Krzysztof Kozlowski wrote:
+> The node names should be generic and DT schema expects certain pattern
+> (e.g. with key/button/switch).
+> 
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> ---
+>  arch/mips/boot/dts/ingenic/ci20.dts                        | 2 +-
+>  arch/mips/boot/dts/ralink/gardena_smart_gateway_mt7688.dts | 2 +-
+>  arch/mips/boot/dts/ralink/mt7621-gnubee-gb-pc1.dts         | 2 +-
+>  arch/mips/boot/dts/ralink/mt7621-gnubee-gb-pc2.dts         | 2 +-
+>  4 files changed, 4 insertions(+), 4 deletions(-)
 
-Le jeu., juil. 14 2022 at 12:14:07 +0800, Zhou Yanjie=20
-<zhouyanjie@wanyeetech.com> a =C3=A9crit :
-> Hi Paul,
->=20
-> On 2022/7/14 =E4=B8=8A=E5=8D=884:57, Paul Cercueil wrote:
->>=20
->>=20
->> Le jeu., juil. 14 2022 at 03:44:34 +0800, Mike Yang=20
->> =7F<reimu@sudomaker.com> a =C3=A9crit :
->>> Hi Paul,
->>>=20
->>> On 7/14/22 00:08, Paul Cercueil wrote:
->>>>  Hi Mike,
->>>>  [...]
->>>>=20
->>>>>  If I comment the "wait" instruction, it will exit the suspend=20
->>>>> =7F=7F=7F=7Fprocess immediately. And yes, I don't think it suspended=20
->>>>> properly.
->>>>=20
->>>>  Ok. I was suggesting to try that since it would show if the crash=20
->>>> =7F=7F=7Fhappens when a particular device gets suspended.
->>>>=20
->>>>  Are you certain that your wakeup IRQ is unmasked?
->>>=20
->>> I'm not sure. Which register should I check?
->>=20
->> Check the IMCR0 / IMCR1 registers. Everything should be masked=20
->> except =7Fyour wakeup source. If your wakeup source is a GPIO, also=20
->> check that =7Fthe mask register that corresponds to your GPIO.
->>=20
->=20
-> Do you mean ICMR0 and ICMR1 in  the Interrupt Controller?
+applied to mips-next.
 
-Yes, sorry.
+Thomas.
 
-Cheers,
--Paul
-
->>>>=20
->>>>  [...]
->>>>=20
->>>>>>>>   I'm afraid the above didn't work for me. Have you tested=20
->>>>>>>> =7F=7F=7F=7F=7F=7F=7Fsuspend-to-ram in person on a X series SoC?
->>>>>>=20
->>>>>>   I didn't test on X-series, I mostly work with JZ. But that=20
->>>>>> part =7F=7F=7F=7F=7Fof the design didn't change since the JZ4740.
->>>>>>=20
->>>>>>   Cheers,
->>>>>>   -Paul
->>>>>>=20
->>>>>>=20
->>>>>=20
->>>>>=20
->>>>>  To be honest, I never owned a board with a JZ series SoC. And=20
->>>>> =7F=7F=7F=7Fsorry for assuming the suspend-to-ram is unusable on all=20
->>>>> Ingenic =7F=7F=7F=7FSoCs. IIRC, all the JZ series SoCs have external=20
->>>>> DRAM, while the X =7F=7F=7F=7Fseries SoCs have internal DRAM. Also=20
->>>>> Ingenic advertised the power =7F=7F=7F=7Fsaving features of the X ser=
-ies=20
->>>>> SoCs heavily. Things might be =7F=7F=7F=7Fdifferent since it may invo=
-lve=20
->>>>> additional power management.
->>>>=20
->>>>  Even if the 3.x method you were describing works, the currently=20
->>>> =7F=7F=7Fupstream method should work as well, and if it doesn't, we=20
->>>> probably =7F=7F=7Fshould try to figure why.
->>>>=20
->>>>  I remember doing some tests on the JZ4770 some years ago, and I=20
->>>> =7F=7F=7Fwould get a power consumption of 7mA when suspended - that's=20
->>>> for the =7F=7F=7Fwhole board, measured at the 3.7V battery, so about=20
->>>> 0.026 W. The =7F=7F=7Fonly things powered ON then are the RAM chips an=
-d=20
->>>> the SoC's RTC module.
->>>>=20
->>>>>  At the time of writing the last sentence of the email, Dr. Zhou=20
->>>>> =7F=7F=7F=7Fjust pointed out that it may has something to do with the=
-=20
->>>>> secure =7F=7F=7F=7Fboot feature introduced in the X series SoC, altho=
-ugh=20
->>>>> the feature =7F=7F=7F=7Fis not enabled. I already mailed my X1000E &=20
->>>>> X1501 boards to Dr. =7F=7F=7F=7FZhou for further tests. You may want =
-to=20
->>>>> get a X1000(E) board (e.g. =7F=7F=7F=7Fhalley2) and test this by your=
-self.
->>>>=20
->>>>  I do have a Cu1000-Neo board, but I have never used it, I=20
->>>> wouldn't =7F=7F=7Fknow how to test this.
->>>>=20
->>>>  Cheers,
->>>>  -Paul
->>>>=20
->>>>=20
->>>=20
->>> Earlier today, Dr. Zhou and I talked to a senior engineer from=20
->>> =7F=7FIngenic. He said an extra piece of code is necessary for the X=20
->>> =7F=7Fseries, and more CPM registers (other than LPM) are needed to be=20
->>> =7F=7Fconfigured. The X series can't reconfigure the DRAM to exit=20
->>> =7F=7Fself-refresh mode by themselves. He also said, if we really don't=
-=20
->>> =7F=7Fwant to put the code inside the kernel, it's possible to store=20
->>> the =7F=7F$pc somewhere in the RAM and modify UBoot SPL to do=20
->>> additional checks =7F=7F(e.g. P0 powerup flag) and jump back to the $pc=
-=20
->>> after reconfiguring =7F=7FDRAM. I'm not sure if this will work, since=20
->>> the core will boot =7F=7Fstraight from the BROM, and the SFC and/or MSC=
-=20
->>> peripherals will be =7F=7Freconfigured before it can load SPL again=20
->>> into the SRAM. It may cause =7F=7Fconfusion to the kernel SFC/MSC=20
->>> drivers. From his words, we can have =7F=7Fanother method: incorporate=20
->>> the code inside UBoot and write it to the =7F=7FSRAM prior to booting=20
->>> the kernel. What's your opinion?
->>=20
->> The X1000 has more CPM registers and do support turning the CPU=20
->> =7Fcompletely off, which is new compared to the JZ4780, so that part=20
->> is =7Ftrue. However, the regular method to enter SLEEP mode is still=20
->> =7Fdescribed in the X1000, X1830 and X2000 programming manuals, and=20
->> it's =7Fthe exact same method described in the JZ4780 and even in the=20
->> JZ4740 =7Fprogramming manuals. So allow me to doubt.
->>=20
->> Knowing that Ingenic's 3.x kernel implements the "complete shutdown"=20
->> =7Fsleep mode, I would think that this is why your senior engineer=20
->> said =7Fthat an extra piece of code is necessary - because that's how=20
->> they =7Fimplemented it. But that does not mean that it is required,=20
->> and =7Fnothing in any of the X-series programming manuals suggests=20
->> that it is =7Frequired.
->>=20
->> Cheers,
->> -Paul
->>=20
-
-
+-- 
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]

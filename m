@@ -2,50 +2,69 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AD55AC433EF
-	for <linux-mips@archiver.kernel.org>; Fri, 15 Jul 2022 12:30:29 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AE155C43334
+	for <linux-mips@archiver.kernel.org>; Fri, 15 Jul 2022 16:58:46 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229582AbiGOMa1 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 15 Jul 2022 08:30:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45802 "EHLO
+        id S235093AbiGOQ6p (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 15 Jul 2022 12:58:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41856 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233723AbiGOMaW (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Fri, 15 Jul 2022 08:30:22 -0400
-Received: from mx0a-00128a01.pphosted.com (mx0a-00128a01.pphosted.com [148.163.135.77])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8B5E13D76;
-        Fri, 15 Jul 2022 05:30:21 -0700 (PDT)
-Received: from pps.filterd (m0167089.ppops.net [127.0.0.1])
-        by mx0a-00128a01.pphosted.com (8.17.1.5/8.17.1.5) with ESMTP id 26FAnJgD026918;
-        Fri, 15 Jul 2022 08:30:21 -0400
-Received: from nwd2mta3.analog.com ([137.71.173.56])
-        by mx0a-00128a01.pphosted.com (PPS) with ESMTPS id 3h9r37teb3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 15 Jul 2022 08:30:21 -0400
-Received: from ASHBMBX9.ad.analog.com (ASHBMBX9.ad.analog.com [10.64.17.10])
-        by nwd2mta3.analog.com (8.14.7/8.14.7) with ESMTP id 26FCUIoH061424
-        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 15 Jul 2022 08:30:18 -0400
-Received: from ASHBMBX8.ad.analog.com (10.64.17.5) by ASHBMBX9.ad.analog.com
- (10.64.17.10) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.14; Fri, 15 Jul
- 2022 08:30:17 -0400
-Received: from zeus.spd.analog.com (10.66.68.11) by ashbmbx8.ad.analog.com
- (10.64.17.5) with Microsoft SMTP Server id 15.2.986.14 via Frontend
- Transport; Fri, 15 Jul 2022 08:30:17 -0400
-Received: from nsa.ad.analog.com ([10.44.3.55])
-        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 26FCRxOA001007;
-        Fri, 15 Jul 2022 08:30:06 -0400
-From:   =?UTF-8?q?Nuno=20S=C3=A1?= <nuno.sa@analog.com>
-To:     <openbmc@lists.ozlabs.org>, <linux-imx@nxp.com>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-iio@vger.kernel.org>, <linux-mips@vger.kernel.org>,
-        <linux-renesas-soc@vger.kernel.org>,
+        with ESMTP id S235098AbiGOQ6n (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Fri, 15 Jul 2022 12:58:43 -0400
+Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A232DE0;
+        Fri, 15 Jul 2022 09:58:41 -0700 (PDT)
+Received: by mail-yb1-xb2f.google.com with SMTP id r3so9407735ybr.6;
+        Fri, 15 Jul 2022 09:58:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=6TdTlfwy3VaOHhzh3w0gNaUggIvchfGZQp8YCLWV7oY=;
+        b=BeFoKvyI8i2XygR6nvzh7zbxCtLGryeU7dNvVGH7jDZ1PJIBE83e3+PSNvY6ICgEUU
+         q58JAMYx/pm5PMQl4T8enDXIFWvqkymuoPwDcRRpW+OKwyxDlvr3n55AMW3xIbVHVKoC
+         8NanGry13JZTTag8itRIZr767/KfR//ctoGU3qzM7oTXayebuoVcPUn7s3Sp577DPiz6
+         qi48Fa7d6TVSPC8kxFPnxxN8uP5eK/jzPHexK8fxuMloHOSpedJqLcFd2agQd1WYL7Ik
+         DK0FLWqVYDZZb4lwlzcpy9kPNGX7EqvUn99mW8HHZv4YREmATxb/iaO1SXUUPYKdtszu
+         Pghg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=6TdTlfwy3VaOHhzh3w0gNaUggIvchfGZQp8YCLWV7oY=;
+        b=xrqQKWR6v9L07VP6ohjBsuLvIJsu8XGc/U9S4Avq0DG9ICYdp2XCD37D+A4iVio1bF
+         cU8GdBn85zH/UNysCC1MGi7ssWw63iBGwfmE7taqGUi9ggQFweMX7tM7+AV6zhOry++N
+         3vBz7lPX/QQLQV1eOemWMkH6SmWow4wWxs6rYyKhCh2JtJRZhxClp/3vpIpTj5+qoz8K
+         T34ow275YP8H59C1IV2KLwb4Elqa6W3nFmBn/Qk8/AArwIgFClZ0hae/fBoQVvUpB5Ij
+         gCm5Vn/xvgjY2r1qFdWwA4Qg2bn4wCiApNbrFVQ+PQTt+uvkejFaTB1ebf6swCgDGhp9
+         E6aQ==
+X-Gm-Message-State: AJIora/AMjaT7HLRfbXg5FYXgcZdFc58UvNbDFBzbViyBhvyM1OaGe5I
+        IGpf5oUnSpc+LMMkNmAMTaYVdZXlVJmfXww2sxI=
+X-Google-Smtp-Source: AGRyM1vz/6TKfh7SokVQwLtVlkAQ04xf3jyr6vlrHNLFud++94euqeWrbXjYuq+FWKtOVT/MHqSlYgTvyTdVSt/zQ4w=
+X-Received: by 2002:a5b:44d:0:b0:66f:ad5a:9d0b with SMTP id
+ s13-20020a5b044d000000b0066fad5a9d0bmr13586144ybp.79.1657904320602; Fri, 15
+ Jul 2022 09:58:40 -0700 (PDT)
+MIME-Version: 1.0
+References: <20220715122903.332535-1-nuno.sa@analog.com> <20220715122903.332535-16-nuno.sa@analog.com>
+In-Reply-To: <20220715122903.332535-16-nuno.sa@analog.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Fri, 15 Jul 2022 18:58:04 +0200
+Message-ID: <CAHp75Vdxa1MvzQ07abNL1LHB8e88tpBW0qmGx7_gY=CxvVxqkA@mail.gmail.com>
+Subject: Re: [PATCH v3 15/15] iio: inkern: fix coding style warnings
+To:     =?UTF-8?B?TnVubyBTw6E=?= <nuno.sa@analog.com>
+Cc:     OpenBMC Maillist <openbmc@lists.ozlabs.org>,
+        dl-linux-imx <linux-imx@nxp.com>,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-iio <linux-iio@vger.kernel.org>,
+        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        "moderated list:ARM/Mediatek SoC support" 
         <linux-mediatek@lists.infradead.org>,
-        <chrome-platform@lists.linux.dev>,
-        <linux-arm-kernel@lists.infradead.org>,
+        chrome-platform@lists.linux.dev,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
         Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        <linux-arm-msm@vger.kernel.org>
-CC:     Gwendal Grignou <gwendal@chromium.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Gwendal Grignou <gwendal@chromium.org>,
         Jonathan Cameron <jic23@kernel.org>,
         Saravanan Sekar <sravanhome@gmail.com>,
         Tomer Maimon <tmaimon77@gmail.com>,
@@ -79,7 +98,6 @@ CC:     Gwendal Grignou <gwendal@chromium.org>,
         Matthias Brugger <matthias.bgg@gmail.com>,
         Sascha Hauer <s.hauer@pengutronix.de>,
         Lars-Peter Clausen <lars@metafoo.de>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
         Guenter Roeck <groeck@chromium.org>,
         Paul Cercueil <paul@crapouillou.net>,
         Claudiu Beznea <claudiu.beznea@microchip.com>,
@@ -88,147 +106,323 @@ CC:     Gwendal Grignou <gwendal@chromium.org>,
         Michael Hennerich <Michael.Hennerich@analog.com>,
         Haibo Chen <haibo.chen@nxp.com>,
         Jishnu Prakash <quic_jprakash@quicinc.com>
-Subject: [PATCH v3 14/15] iio: inkern: remove OF dependencies
-Date:   Fri, 15 Jul 2022 14:29:02 +0200
-Message-ID: <20220715122903.332535-15-nuno.sa@analog.com>
-X-Mailer: git-send-email 2.37.1
-In-Reply-To: <20220715122903.332535-1-nuno.sa@analog.com>
-References: <20220715122903.332535-1-nuno.sa@analog.com>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-ADIRuleOP-NewSCL: Rule Triggered
-X-Proofpoint-GUID: uehSCiJQwF0lJ4Y9RJTlPVMFUgiTkVhA
-X-Proofpoint-ORIG-GUID: uehSCiJQwF0lJ4Y9RJTlPVMFUgiTkVhA
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.205,Aquarius:18.0.883,Hydra:6.0.517,FMLib:17.11.122.1
- definitions=2022-07-15_04,2022-07-15_01,2022-06-22_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- malwarescore=0 bulkscore=0 clxscore=1015 priorityscore=1501 phishscore=0
- spamscore=0 mlxlogscore=854 mlxscore=0 adultscore=0 suspectscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2206140000 definitions=main-2207150054
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Since all users of the OF dependendent API are now converted to use the
-firmware agnostic alternative, we can drop OF dependencies from the IIO
-in kernel interface.
+On Fri, Jul 15, 2022 at 2:30 PM Nuno S=C3=A1 <nuno.sa@analog.com> wrote:
+>
+> Just cosmetics. No functional change intended...
 
-Signed-off-by: Nuno Sá <nuno.sa@analog.com>
 Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
----
- drivers/iio/inkern.c         | 25 +------------------------
- include/linux/iio/consumer.h | 10 ----------
- include/linux/iio/iio.h      |  3 ---
- 3 files changed, 1 insertion(+), 37 deletions(-)
 
-diff --git a/drivers/iio/inkern.c b/drivers/iio/inkern.c
-index 95e015e88645..fab951546086 100644
---- a/drivers/iio/inkern.c
-+++ b/drivers/iio/inkern.c
-@@ -8,7 +8,6 @@
- #include <linux/property.h>
- #include <linux/slab.h>
- #include <linux/mutex.h>
--#include <linux/of.h>
- 
- #include <linux/iio/iio.h>
- #include <linux/iio/iio-opaque.h>
-@@ -143,26 +142,6 @@ static int __fwnode_iio_simple_xlate(struct iio_dev *indio_dev,
- 	return iiospec->args[0];
- }
- 
--/*
-- * Simple helper to copy fwnode_reference_args into of_phandle_args so we
-- * can pass it to of_xlate(). Ultimate goal is to drop this together with
-- * of_xlate().
-- */
--static int __fwnode_to_of_xlate(struct iio_dev *indio_dev,
--				const struct fwnode_reference_args *iiospec)
--{
--	struct of_phandle_args of_args;
--	unsigned int i;
--
--	of_args.args_count = iiospec->nargs;
--	of_args.np = to_of_node(iiospec->fwnode);
--
--	for (i = 0; i < MAX_PHANDLE_ARGS; i++)
--		of_args.args[i] = i < iiospec->nargs ? iiospec->args[i] : 0;
--
--	return indio_dev->info->of_xlate(indio_dev, &of_args);
--}
--
- static int __fwnode_iio_channel_get(struct iio_channel *channel,
- 				    struct fwnode_handle *fwnode, int index)
- {
-@@ -185,9 +164,7 @@ static int __fwnode_iio_channel_get(struct iio_channel *channel,
- 
- 	indio_dev = dev_to_iio_dev(idev);
- 	channel->indio_dev = indio_dev;
--	if (indio_dev->info->of_xlate)
--		index = __fwnode_to_of_xlate(indio_dev, &iiospec);
--	else if (indio_dev->info->fwnode_xlate)
-+	if (indio_dev->info->fwnode_xlate)
- 		index = indio_dev->info->fwnode_xlate(indio_dev, &iiospec);
- 	else
- 		index = __fwnode_iio_simple_xlate(indio_dev, &iiospec);
-diff --git a/include/linux/iio/consumer.h b/include/linux/iio/consumer.h
-index 2adb1306da3e..6802596b017c 100644
---- a/include/linux/iio/consumer.h
-+++ b/include/linux/iio/consumer.h
-@@ -7,14 +7,12 @@
- #ifndef _IIO_INKERN_CONSUMER_H_
- #define _IIO_INKERN_CONSUMER_H_
- 
--#include <linux/of.h>
- #include <linux/types.h>
- #include <linux/iio/types.h>
- 
- struct iio_dev;
- struct iio_chan_spec;
- struct device;
--struct device_node;
- struct fwnode_handle;
- 
- /**
-@@ -129,14 +127,6 @@ struct iio_channel *devm_fwnode_iio_channel_get_by_name(struct device *dev,
- 							struct fwnode_handle *fwnode,
- 							const char *consumer_channel);
- 
--static inline struct iio_channel
--*devm_of_iio_channel_get_by_name(struct device *dev, struct device_node *np,
--				 const char *consumer_channel)
--{
--	return devm_fwnode_iio_channel_get_by_name(dev, of_fwnode_handle(np),
--						   consumer_channel);
--}
--
- struct iio_cb_buffer;
- /**
-  * iio_channel_get_all_cb() - register callback for triggered capture
-diff --git a/include/linux/iio/iio.h b/include/linux/iio/iio.h
-index 494abb63406e..7093be1531c1 100644
---- a/include/linux/iio/iio.h
-+++ b/include/linux/iio/iio.h
-@@ -17,7 +17,6 @@
-  * Currently assumes nano seconds.
-  */
- 
--struct of_phandle_args;
- struct fwnode_reference_args;
- 
- enum iio_shared_by {
-@@ -511,8 +510,6 @@ struct iio_info {
- 	int (*debugfs_reg_access)(struct iio_dev *indio_dev,
- 				  unsigned reg, unsigned writeval,
- 				  unsigned *readval);
--	int (*of_xlate)(struct iio_dev *indio_dev,
--			const struct of_phandle_args *iiospec);
- 	int (*fwnode_xlate)(struct iio_dev *indio_dev,
- 			    const struct fwnode_reference_args *iiospec);
- 	int (*hwfifo_set_watermark)(struct iio_dev *indio_dev, unsigned val);
--- 
-2.37.1
+> Signed-off-by: Nuno S=C3=A1 <nuno.sa@analog.com>
+> ---
+>  drivers/iio/inkern.c | 64 ++++++++++++++++++++++----------------------
+>  1 file changed, 32 insertions(+), 32 deletions(-)
+>
+> diff --git a/drivers/iio/inkern.c b/drivers/iio/inkern.c
+> index fab951546086..0c9b1561af31 100644
+> --- a/drivers/iio/inkern.c
+> +++ b/drivers/iio/inkern.c
+> @@ -45,13 +45,13 @@ int iio_map_array_register(struct iio_dev *indio_dev,=
+ struct iio_map *maps)
+>         int i =3D 0, ret =3D 0;
+>         struct iio_map_internal *mapi;
+>
+> -       if (maps =3D=3D NULL)
+> +       if (!maps)
+>                 return 0;
+>
+>         mutex_lock(&iio_map_list_lock);
+> -       while (maps[i].consumer_dev_name !=3D NULL) {
+> +       while (maps[i].consumer_dev_name) {
+>                 mapi =3D kzalloc(sizeof(*mapi), GFP_KERNEL);
+> -               if (mapi =3D=3D NULL) {
+> +               if (!mapi) {
+>                         ret =3D -ENOMEM;
+>                         goto error_ret;
+>                 }
+> @@ -69,7 +69,6 @@ int iio_map_array_register(struct iio_dev *indio_dev, s=
+truct iio_map *maps)
+>  }
+>  EXPORT_SYMBOL_GPL(iio_map_array_register);
+>
+> -
+>  /*
+>   * Remove all map entries associated with the given iio device
+>   */
+> @@ -157,7 +156,7 @@ static int __fwnode_iio_channel_get(struct iio_channe=
+l *channel,
+>                 return err;
+>
+>         idev =3D bus_find_device_by_fwnode(&iio_bus_type, iiospec.fwnode)=
+;
+> -       if (idev =3D=3D NULL) {
+> +       if (!idev) {
+>                 fwnode_handle_put(iiospec.fwnode);
+>                 return -EPROBE_DEFER;
+>         }
+> @@ -190,7 +189,7 @@ static struct iio_channel *fwnode_iio_channel_get(str=
+uct fwnode_handle *fwnode,
+>                 return ERR_PTR(-EINVAL);
+>
+>         channel =3D kzalloc(sizeof(*channel), GFP_KERNEL);
+> -       if (channel =3D=3D NULL)
+> +       if (!channel)
+>                 return ERR_PTR(-ENOMEM);
+>
+>         err =3D __fwnode_iio_channel_get(channel, fwnode, index);
+> @@ -307,7 +306,7 @@ static struct iio_channel *fwnode_iio_channel_get_all=
+(struct device *dev)
+>
+>         /* NULL terminated array to save passing size */
+>         chans =3D kcalloc(nummaps + 1, sizeof(*chans), GFP_KERNEL);
+> -       if (chans =3D=3D NULL)
+> +       if (!chans)
+>                 return ERR_PTR(-ENOMEM);
+>
+>         /* Search for FW matches */
+> @@ -332,7 +331,7 @@ static struct iio_channel *iio_channel_get_sys(const =
+char *name,
+>         struct iio_channel *channel;
+>         int err;
+>
+> -       if (name =3D=3D NULL && channel_name =3D=3D NULL)
+> +       if (!(name || channel_name))
+>                 return ERR_PTR(-ENODEV);
+>
+>         /* first find matching entry the channel map */
+> @@ -347,11 +346,11 @@ static struct iio_channel *iio_channel_get_sys(cons=
+t char *name,
+>                 break;
+>         }
+>         mutex_unlock(&iio_map_list_lock);
+> -       if (c =3D=3D NULL)
+> +       if (!c)
+>                 return ERR_PTR(-ENODEV);
+>
+>         channel =3D kzalloc(sizeof(*channel), GFP_KERNEL);
+> -       if (channel =3D=3D NULL) {
+> +       if (!channel) {
+>                 err =3D -ENOMEM;
+>                 goto error_no_mem;
+>         }
+> @@ -363,7 +362,7 @@ static struct iio_channel *iio_channel_get_sys(const =
+char *name,
+>                         iio_chan_spec_from_name(channel->indio_dev,
+>                                                 c->map->adc_channel_label=
+);
+>
+> -               if (channel->channel =3D=3D NULL) {
+> +               if (!channel->channel) {
+>                         err =3D -EINVAL;
+>                         goto error_no_chan;
+>                 }
+> @@ -455,7 +454,7 @@ struct iio_channel *iio_channel_get_all(struct device=
+ *dev)
+>         int mapind =3D 0;
+>         int i, ret;
+>
+> -       if (dev =3D=3D NULL)
+> +       if (!dev)
+>                 return ERR_PTR(-EINVAL);
+>
+>         chans =3D fwnode_iio_channel_get_all(dev);
+> @@ -483,7 +482,7 @@ struct iio_channel *iio_channel_get_all(struct device=
+ *dev)
+>
+>         /* NULL terminated array to save passing size */
+>         chans =3D kcalloc(nummaps + 1, sizeof(*chans), GFP_KERNEL);
+> -       if (chans =3D=3D NULL) {
+> +       if (!chans) {
+>                 ret =3D -ENOMEM;
+>                 goto error_ret;
+>         }
+> @@ -497,7 +496,7 @@ struct iio_channel *iio_channel_get_all(struct device=
+ *dev)
+>                 chans[mapind].channel =3D
+>                         iio_chan_spec_from_name(chans[mapind].indio_dev,
+>                                                 c->map->adc_channel_label=
+);
+> -               if (chans[mapind].channel =3D=3D NULL) {
+> +               if (!chans[mapind].channel) {
+>                         ret =3D -EINVAL;
+>                         goto error_free_chans;
+>                 }
+> @@ -559,14 +558,14 @@ struct iio_channel *devm_iio_channel_get_all(struct=
+ device *dev)
+>  EXPORT_SYMBOL_GPL(devm_iio_channel_get_all);
+>
+>  static int iio_channel_read(struct iio_channel *chan, int *val, int *val=
+2,
+> -       enum iio_chan_info_enum info)
+> +                           enum iio_chan_info_enum info)
+>  {
+>         int unused;
+>         int vals[INDIO_MAX_RAW_ELEMENTS];
+>         int ret;
+>         int val_len =3D 2;
+>
+> -       if (val2 =3D=3D NULL)
+> +       if (!val2)
+>                 val2 =3D &unused;
+>
+>         if (!iio_channel_has_info(chan->channel, info))
+> @@ -578,9 +577,10 @@ static int iio_channel_read(struct iio_channel *chan=
+, int *val, int *val2,
+>                                         vals, &val_len, info);
+>                 *val =3D vals[0];
+>                 *val2 =3D vals[1];
+> -       } else
+> +       } else {
+>                 ret =3D chan->indio_dev->info->read_raw(chan->indio_dev,
+>                                         chan->channel, val, val2, info);
+> +       }
+>
+>         return ret;
+>  }
+> @@ -591,7 +591,7 @@ int iio_read_channel_raw(struct iio_channel *chan, in=
+t *val)
+>         int ret;
+>
+>         mutex_lock(&iio_dev_opaque->info_exist_lock);
+> -       if (chan->indio_dev->info =3D=3D NULL) {
+> +       if (!chan->indio_dev->info) {
+>                 ret =3D -ENODEV;
+>                 goto err_unlock;
+>         }
+> @@ -610,7 +610,7 @@ int iio_read_channel_average_raw(struct iio_channel *=
+chan, int *val)
+>         int ret;
+>
+>         mutex_lock(&iio_dev_opaque->info_exist_lock);
+> -       if (chan->indio_dev->info =3D=3D NULL) {
+> +       if (!chan->indio_dev->info) {
+>                 ret =3D -ENODEV;
+>                 goto err_unlock;
+>         }
+> @@ -624,7 +624,8 @@ int iio_read_channel_average_raw(struct iio_channel *=
+chan, int *val)
+>  EXPORT_SYMBOL_GPL(iio_read_channel_average_raw);
+>
+>  static int iio_convert_raw_to_processed_unlocked(struct iio_channel *cha=
+n,
+> -       int raw, int *processed, unsigned int scale)
+> +                                                int raw, int *processed,
+> +                                                unsigned int scale)
+>  {
+>         int scale_type, scale_val, scale_val2;
+>         int offset_type, offset_val, offset_val2;
+> @@ -657,7 +658,7 @@ static int iio_convert_raw_to_processed_unlocked(stru=
+ct iio_channel *chan,
+>         }
+>
+>         scale_type =3D iio_channel_read(chan, &scale_val, &scale_val2,
+> -                                       IIO_CHAN_INFO_SCALE);
+> +                                     IIO_CHAN_INFO_SCALE);
+>         if (scale_type < 0) {
+>                 /*
+>                  * If no channel scaling is available apply consumer scal=
+e to
+> @@ -702,19 +703,19 @@ static int iio_convert_raw_to_processed_unlocked(st=
+ruct iio_channel *chan,
+>  }
+>
+>  int iio_convert_raw_to_processed(struct iio_channel *chan, int raw,
+> -       int *processed, unsigned int scale)
+> +                                int *processed, unsigned int scale)
+>  {
+>         struct iio_dev_opaque *iio_dev_opaque =3D to_iio_dev_opaque(chan-=
+>indio_dev);
+>         int ret;
+>
+>         mutex_lock(&iio_dev_opaque->info_exist_lock);
+> -       if (chan->indio_dev->info =3D=3D NULL) {
+> +       if (!chan->indio_dev->info) {
+>                 ret =3D -ENODEV;
+>                 goto err_unlock;
+>         }
+>
+>         ret =3D iio_convert_raw_to_processed_unlocked(chan, raw, processe=
+d,
+> -                                                       scale);
+> +                                                   scale);
+>  err_unlock:
+>         mutex_unlock(&iio_dev_opaque->info_exist_lock);
+>
+> @@ -729,7 +730,7 @@ int iio_read_channel_attribute(struct iio_channel *ch=
+an, int *val, int *val2,
+>         int ret;
+>
+>         mutex_lock(&iio_dev_opaque->info_exist_lock);
+> -       if (chan->indio_dev->info =3D=3D NULL) {
+> +       if (!chan->indio_dev->info) {
+>                 ret =3D -ENODEV;
+>                 goto err_unlock;
+>         }
+> @@ -755,7 +756,7 @@ int iio_read_channel_processed_scale(struct iio_chann=
+el *chan, int *val,
+>         int ret;
+>
+>         mutex_lock(&iio_dev_opaque->info_exist_lock);
+> -       if (chan->indio_dev->info =3D=3D NULL) {
+> +       if (!chan->indio_dev->info) {
+>                 ret =3D -ENODEV;
+>                 goto err_unlock;
+>         }
+> @@ -833,7 +834,7 @@ int iio_read_avail_channel_raw(struct iio_channel *ch=
+an,
+>         int type;
+>
+>         ret =3D iio_read_avail_channel_attribute(chan, vals, &type, lengt=
+h,
+> -                                        IIO_CHAN_INFO_RAW);
+> +                                              IIO_CHAN_INFO_RAW);
+>
+>         if (ret >=3D 0 && type !=3D IIO_VAL_INT)
+>                 /* raw values are assumed to be IIO_VAL_INT */
+> @@ -917,7 +918,7 @@ int iio_get_channel_type(struct iio_channel *chan, en=
+um iio_chan_type *type)
+>         /* Need to verify underlying driver has not gone away */
+>
+>         mutex_lock(&iio_dev_opaque->info_exist_lock);
+> -       if (chan->indio_dev->info =3D=3D NULL) {
+> +       if (!chan->indio_dev->info) {
+>                 ret =3D -ENODEV;
+>                 goto err_unlock;
+>         }
+> @@ -944,7 +945,7 @@ int iio_write_channel_attribute(struct iio_channel *c=
+han, int val, int val2,
+>         int ret;
+>
+>         mutex_lock(&iio_dev_opaque->info_exist_lock);
+> -       if (chan->indio_dev->info =3D=3D NULL) {
+> +       if (!chan->indio_dev->info) {
+>                 ret =3D -ENODEV;
+>                 goto err_unlock;
+>         }
+> @@ -978,9 +979,8 @@ unsigned int iio_get_channel_ext_info_count(struct ii=
+o_channel *chan)
+>  }
+>  EXPORT_SYMBOL_GPL(iio_get_channel_ext_info_count);
+>
+> -static const struct iio_chan_spec_ext_info *iio_lookup_ext_info(
+> -                                               const struct iio_channel =
+*chan,
+> -                                               const char *attr)
+> +static const struct iio_chan_spec_ext_info *
+> +iio_lookup_ext_info(const struct iio_channel *chan, const char *attr)
+>  {
+>         const struct iio_chan_spec_ext_info *ext_info;
+>
+> --
+> 2.37.1
+>
 
+
+--=20
+With Best Regards,
+Andy Shevchenko

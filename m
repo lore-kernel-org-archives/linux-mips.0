@@ -2,135 +2,154 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CF0E7C43334
-	for <linux-mips@archiver.kernel.org>; Fri, 15 Jul 2022 21:18:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5C8D4C43334
+	for <linux-mips@archiver.kernel.org>; Fri, 15 Jul 2022 21:40:22 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230048AbiGOVSS (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 15 Jul 2022 17:18:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56552 "EHLO
+        id S231755AbiGOVkU (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 15 Jul 2022 17:40:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44844 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229513AbiGOVSR (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Fri, 15 Jul 2022 17:18:17 -0400
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 360AF2B620;
-        Fri, 15 Jul 2022 14:18:17 -0700 (PDT)
-Received: by mail-pl1-x636.google.com with SMTP id w7so4192637ply.12;
-        Fri, 15 Jul 2022 14:18:17 -0700 (PDT)
+        with ESMTP id S231734AbiGOVkT (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Fri, 15 Jul 2022 17:40:19 -0400
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 731E287F45
+        for <linux-mips@vger.kernel.org>; Fri, 15 Jul 2022 14:40:17 -0700 (PDT)
+Received: by mail-wr1-x430.google.com with SMTP id j1so3969698wrs.4
+        for <linux-mips@vger.kernel.org>; Fri, 15 Jul 2022 14:40:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
+        d=linaro.org; s=google;
         h=message-id:date:mime-version:user-agent:subject:content-language:to
          :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=zUmqRRlT3OTuRn9l8Mu2LnCH5PPWFieqtHz/92xaYnE=;
-        b=F76BVCheOLBPhMC/ki65FXn1MwQMyXsuhp3iBkE4OuL55ptNmr6tYZUvjQ84Hrw0kv
-         Uml5bvQZNLZ4prZHsn/xtFk6W7VpBt19GD4viAih6TUy1HIHzy3CZwkgTzb70eZEJuff
-         VNfEMR8z0TeJEcvOaX2rCBj6sdkZTwdPdKlO/ViiR3HT1t8ZbkGqDNwVEzX5wP4PCZkV
-         HySrFi8Wn3/NjGd86ehCJYsCirkc2T3/HmApocsaGuvDOldBK9wQlokDMWR0dEi3l3Da
-         bxeVYHvls9nLKC2pjhNf9KQkKmc6LZRFPlAd5Up5/nysDMK1aUezgZQiPa1x6ahxGAkN
-         G2xA==
+        bh=J6BSJtpNWZ2Z1cUANVaPa8k/01zDYr+V4xutkYf54NQ=;
+        b=EiZ/Jmkz5DdkNRwJGtK9gVoZ3BcJ8ejMk3yeeSneUGJiCM2csICY8AdW61vGapRVcY
+         UVEs2lvDUtUmSWhTy5Riy+DiODr1rNBvvUK4wbrRLT25XjOXefr0/051txgAy4PBorpi
+         GKNcSgswr6pLYwYHFSVzvB34JMrg+jT1ikpzno4L0ZOP0gQXJvWnMhCAGwkPbk+zk4T6
+         NHUHFy/WsEuLp1Gd3GTwIoolQEUdfvT1tqqUGbfp80W8fFmVfSTmouc1u2k89r7uyeR9
+         nYK4zK2wqlmEsLRHEwqRtcub6mC9oo2ROYXHqnHla+d+LumXFIkgFPThdJfozfzXSQFb
+         VGhA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
          :content-language:to:cc:references:from:in-reply-to
          :content-transfer-encoding;
-        bh=zUmqRRlT3OTuRn9l8Mu2LnCH5PPWFieqtHz/92xaYnE=;
-        b=Mn3a+2EanL9tAChdZsW5rCw4gLe8SJqDRAzQuPsFuu2viyCMvt3ScUilOhtzsGV7/Q
-         Vwc+bJhTRB82Qc2KghGBQ6RnXZf4nZccw6L7szLTIr9W9Sg2mFH2cWdkzTvMyhCLe6pt
-         bJ7avT4DaunYdj8k/Q+iCvTPdDfMwH1T2uk0K2/PooYqqV8l4DKdZ26GczvfMkKLeegp
-         e/YtIWwibHCjd5JvgA2hP5HsLPKOAHL9YvhtDgCHArYMjIb7MfCGjS6iPMtfl64wGGuT
-         I2s4pDPA2XMqXkJhgZ85y/Vfe2tp2TwGuSoVu9ekn33MKDZRawu/jCeCxxjGC/O8wriN
-         7c+g==
-X-Gm-Message-State: AJIora8IhqZJmyGcMmBmVepU2c4LHalJ710Pt41J+WbrOZkdOPAdYAqr
-        38bq868ZkQPTo8E7IJ4O8YhOi96gmtE=
-X-Google-Smtp-Source: AGRyM1ubpTmIraGhlalkvIRLqAHd5+iVym9jqH10InCDRKa153Mub67O9h4UXj2Q5AbyYC6m04iqjA==
-X-Received: by 2002:a17:902:ecd0:b0:16c:461d:8008 with SMTP id a16-20020a170902ecd000b0016c461d8008mr15481415plh.65.1657919896161;
-        Fri, 15 Jul 2022 14:18:16 -0700 (PDT)
-Received: from [10.67.48.245] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id f12-20020a17090a664c00b001eff36b1f2asm3965589pjm.0.2022.07.15.14.18.15
+        bh=J6BSJtpNWZ2Z1cUANVaPa8k/01zDYr+V4xutkYf54NQ=;
+        b=uPzVKuEhSI3r2f6XAYXUZj52tpdm89pTmO3129lUdadPlThls9Vx9KEffFWmi94zpj
+         vGgla0xt4/V4s9V7QjqR4NkMyLmvMWX9Q9A7cYDgESd7x6+7QGitRYv8DdJAt/w89reD
+         ka0SS9QXVJhLUH8iWZ0BSJ4OMgc0NkJrJ3jOtFxo5JHmVQyVALnvOSrwWdQqNK8CM+vm
+         dLJioQRkBVCepkz0xIHbgMzlXv3GBcaRMr9KAMN001ZpSHNS389pe7NdboSmfLehC5xu
+         xi9Y6FL7iI05mefNlzFWA7fmb23pfw/Qa7ljDlAWXi3KNiPGsNSRDLYj0m1y8X/sFHhG
+         kRCQ==
+X-Gm-Message-State: AJIora+w6x9ocBVOtC61kWlJWMm5FygHPbT57bV9VHc6bcD324+TOJ6W
+        jQ5I+YWry+e0j1GbalZoJkhlcw==
+X-Google-Smtp-Source: AGRyM1vl55wMLC6v4FE7361A1EgLL5IjuxGDiU+pOGyn8ZoWrdHGmzM+ZMQkW7lv66vojAGIB7e/MQ==
+X-Received: by 2002:a5d:4e04:0:b0:21d:6ec3:38a2 with SMTP id p4-20020a5d4e04000000b0021d6ec338a2mr14182586wrt.362.1657921215858;
+        Fri, 15 Jul 2022 14:40:15 -0700 (PDT)
+Received: from ?IPV6:2a05:6e02:1041:c10:a223:f4b3:40c9:43fa? ([2a05:6e02:1041:c10:a223:f4b3:40c9:43fa])
+        by smtp.googlemail.com with ESMTPSA id j27-20020a05600c1c1b00b0039c4ba160absm17678280wms.2.2022.07.15.14.40.12
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 15 Jul 2022 14:18:15 -0700 (PDT)
-Message-ID: <ed40a657-e2cd-0070-b192-469163f274d2@gmail.com>
-Date:   Fri, 15 Jul 2022 14:18:14 -0700
+        Fri, 15 Jul 2022 14:40:15 -0700 (PDT)
+Message-ID: <563e92de-68aa-7382-2564-c1ccc270c571@linaro.org>
+Date:   Fri, 15 Jul 2022 23:40:11 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.11.0
-Subject: Re: [PATCH 1/2] MIPS: CFE: Add cfe_die()
+ Thunderbird/91.9.1
+Subject: Re: [PATCH v3 06/15] thermal: qcom: qcom-spmi-adc-tm5: convert to IIO
+ fwnode API
 Content-Language: en-US
-To:     linux-mips@vger.kernel.org
-Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Broadcom internal kernel review list 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20220715194737.4174717-1-f.fainelli@gmail.com>
- <20220715194737.4174717-2-f.fainelli@gmail.com>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-In-Reply-To: <20220715194737.4174717-2-f.fainelli@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+To:     =?UTF-8?Q?Nuno_S=c3=a1?= <nuno.sa@analog.com>,
+        openbmc@lists.ozlabs.org, linux-imx@nxp.com,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-iio@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-renesas-soc@vger.kernel.org,
+        linux-mediatek@lists.infradead.org,
+        chrome-platform@lists.linux.dev,
+        linux-arm-kernel@lists.infradead.org,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+        linux-arm-msm@vger.kernel.org
+Cc:     Gwendal Grignou <gwendal@chromium.org>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Saravanan Sekar <sravanhome@gmail.com>,
+        Tomer Maimon <tmaimon77@gmail.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Fabio Estevam <festevam@gmail.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Olivier Moysan <olivier.moysan@foss.st.com>,
+        Tali Perry <tali.perry1@gmail.com>,
+        Thara Gopinath <thara.gopinath@linaro.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Benjamin Fair <benjaminfair@google.com>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Patrick Venture <venture@google.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabrice Gasnier <fabrice.gasnier@foss.st.com>,
+        Benson Leung <bleung@chromium.org>,
+        Nancy Yuen <yuenn@google.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Christophe Branchereau <cbranchereau@gmail.com>,
+        Cai Huoqing <cai.huoqing@linux.dev>,
+        Avi Fishman <avifishman70@gmail.com>,
+        Eugen Hristev <eugen.hristev@microchip.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Guenter Roeck <groeck@chromium.org>,
+        Paul Cercueil <paul@crapouillou.net>,
+        Claudiu Beznea <claudiu.beznea@microchip.com>,
+        Andy Gross <agross@kernel.org>,
+        Amit Kucheria <amitk@kernel.org>,
+        Michael Hennerich <Michael.Hennerich@analog.com>,
+        Haibo Chen <haibo.chen@nxp.com>,
+        Jishnu Prakash <quic_jprakash@quicinc.com>
+References: <20220715122903.332535-1-nuno.sa@analog.com>
+ <20220715122903.332535-7-nuno.sa@analog.com>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+In-Reply-To: <20220715122903.332535-7-nuno.sa@analog.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On 7/15/22 12:47, Florian Fainelli wrote:
-> Add a cfe_die() implementation which is useful when the kernel does an
-> early panic and no console is registered. This allows us to print
-> useful diagnostics such as an invalid DTB having been
-> configured/selected.
+On 15/07/2022 14:28, Nuno Sá wrote:
+> Make usage of the new firmware agnostic API
+> 'devm_of_iio_channel_get_by_name()' to get the IIO channel.
 > 
-> Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
-> ---
->  arch/mips/fw/cfe/cfe_api.c             | 48 +++++++++++++++++++++++++-
->  arch/mips/include/asm/fw/cfe/cfe_api.h |  2 ++
->  2 files changed, 49 insertions(+), 1 deletion(-)
-> 
-> diff --git a/arch/mips/fw/cfe/cfe_api.c b/arch/mips/fw/cfe/cfe_api.c
-> index 0c9c97ab291e..6e7883f1d47e 100644
-> --- a/arch/mips/fw/cfe/cfe_api.c
-> +++ b/arch/mips/fw/cfe/cfe_api.c
-> @@ -13,10 +13,15 @@
->   *
->   * Authors:  Mitch Lichtenberg, Chris Demetriou
->   */
-> -
-> +#include <linux/init.h>
-> +#include <linux/kernel.h>
-> +#include <linux/printk.h>
-> +#include <asm/mipsregs.h>
->  #include <asm/fw/cfe/cfe_api.h>
->  #include "cfe_api_int.h"
->  
-> +unsigned long __initdata cfe_seal;
-> +
->  /* Cast from a native pointer to a cfe_xptr_t and back.	 */
->  #define XPTR_FROM_NATIVE(n)	((cfe_xptr_t) (intptr_t) (n))
->  #define NATIVE_FROM_XPTR(x)	((void *) (intptr_t) (x))
-> @@ -412,3 +417,44 @@ int cfe_writeblk(int handle, s64 offset, const char *buffer, int length)
->  		return xiocb.xiocb_status;
->  	return xiocb.plist.xiocb_buffer.buf_retlen;
->  }
-> +
-> +void __init cfe_die(char *fmt, ...)
-> +{
-> +	char msg[128];
-> +	va_list ap;
-> +	int handle;
-> +	unsigned int count;
-> +
-> +	va_start(ap, fmt);
-> +	vsprintf(msg, fmt, ap);
-> +	strcat(msg, "\r\n");
-> +
-> +	if (cfe_seal != CFE_EPTSEAL)
-> +		goto no_cfe;
-> +
-> +	/* disable XKS01 so that CFE can access the registers */
-> +#if defined(CONFIG_CPU_BMIPS4380)
-> +	__write_32bit_c0_register($22, 3,
-> +		__read_32bit_c0_register($22, 3) & ~BIT(12));
-> +#elif defined(CONFIG_CPU_BMIPS5000)
-> +	__write_32bit_c0_register($22, 5,
-> +		__read_32bit_c0_register($22, 5) & ~BIT(8));
-> +#endif
+> Signed-off-by: Nuno Sá <nuno.sa@analog.com>
+> Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
 
-Need to make this dynamic using read_c0_prid() because we support selecting multiple types of CPU in a single kernel image. V2 coming shortly.
+Acked-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+
+> ---
+>   drivers/thermal/qcom/qcom-spmi-adc-tm5.c | 3 ++-
+>   1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/thermal/qcom/qcom-spmi-adc-tm5.c b/drivers/thermal/qcom/qcom-spmi-adc-tm5.c
+> index d9c9c975f931..0b8543c627f0 100644
+> --- a/drivers/thermal/qcom/qcom-spmi-adc-tm5.c
+> +++ b/drivers/thermal/qcom/qcom-spmi-adc-tm5.c
+> @@ -825,7 +825,8 @@ static int adc_tm5_get_dt_channel_data(struct adc_tm5_chip *adc_tm,
+>   	}
+>   	channel->adc_channel = args.args[0];
+>   
+> -	channel->iio = devm_of_iio_channel_get_by_name(adc_tm->dev, node, NULL);
+> +	channel->iio = devm_fwnode_iio_channel_get_by_name(adc_tm->dev,
+> +							   of_fwnode_handle(node), NULL);
+>   	if (IS_ERR(channel->iio)) {
+>   		ret = PTR_ERR(channel->iio);
+>   		if (ret != -EPROBE_DEFER)
+
+
 -- 
-Florian
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog

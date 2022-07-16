@@ -2,134 +2,110 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 22859C43334
-	for <linux-mips@archiver.kernel.org>; Fri, 15 Jul 2022 21:42:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5B18DC433EF
+	for <linux-mips@archiver.kernel.org>; Sat, 16 Jul 2022 23:23:04 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231782AbiGOVmA (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 15 Jul 2022 17:42:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46140 "EHLO
+        id S232637AbiGPXXD (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Sat, 16 Jul 2022 19:23:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48886 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231765AbiGOVl7 (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Fri, 15 Jul 2022 17:41:59 -0400
+        with ESMTP id S233033AbiGPXWy (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Sat, 16 Jul 2022 19:22:54 -0400
 Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A90C87215;
-        Fri, 15 Jul 2022 14:41:59 -0700 (PDT)
-Received: by mail-pj1-x1029.google.com with SMTP id g16-20020a17090a7d1000b001ea9f820449so12681083pjl.5;
-        Fri, 15 Jul 2022 14:41:59 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C35611826;
+        Sat, 16 Jul 2022 16:21:03 -0700 (PDT)
+Received: by mail-pj1-x1029.google.com with SMTP id o15so8688919pjh.1;
+        Sat, 16 Jul 2022 16:21:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=RIdtrkjIXYRsAlXMvpcKhoRTSlAlQo7ARrvd/qC7dvI=;
-        b=Fyih3flx8Q80JKoVHVT4iFhGN1fQegbt97eXYwrntP7nkRjBrgkWrrp/aJJ13MmDSC
-         q9gtE+8ie8tuIVsBPObPdfxjJgNeYNObrjOOCvAh2OArm9jcrwkjI4MI59vugJHscy9f
-         OcTWt3e83pHs+afPpjz9Ry0CNLliRW1c3RFI08P8ROhK0NBi4h/ks+Cd7LISx2BL0mfl
-         //i7Df9iGWfKalrvxs+ehJo5jDTb/RhiWwIcJDrKsk642P97dnC0g7INWh3nfjao6N2h
-         5UuesPQOdl16ObYjnom61G/I5PTG2lQDQ+24sBqS2hX8nSf9b6YrUmfzvur6SwVy5DEy
-         VQ/w==
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=6Lujf1vjjpR4foXbN5bgN3Hs30sniIkF599g7wlKOBQ=;
+        b=afJ5B8n3Efj0vZiNhW3XG5MYLzNKjqROPIDDKlOhtBJQzFemzmYA8ZxyKh/ydoPc2r
+         VD4DkeYgmLoQIn7MzMrjhU9ysrp651Xdhdgo3hr5QfhRq8nN3ZDIzgAD7sU9e+ixBCku
+         mqRNFPzOZHu/TENAPPVc3DrgFsdNxsGzxcVUXA8ZDS+IyxzJXI+AgHvY9U/8S4DhOMlI
+         wdiWnFeAKtoZkRSAZ+JdbBPTAYxnqHq9/WXs86J5/SZy9G17wXVkAOnrsP2UQCLFNGsK
+         4NAWACLUuoANVeMvWwZMn+JIDlWuxnEYyAS3JdAYKJdDXl4Gh3qG+hwG0AVvXPfdyPI0
+         7b1Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=RIdtrkjIXYRsAlXMvpcKhoRTSlAlQo7ARrvd/qC7dvI=;
-        b=rRlFv0NyBQBPM2aWLtpKSIyQf2KdNXAqZtqQ3NEAlzmYtlRZo3Bk9QbhR+wLLaCbNK
-         PwXvek0yRSBh3xpDtiKroZ4Ki/xMiNGdQvxGQjFtSVGPHSFSGYGDcyXeT5wFc4wcPI9x
-         RC2gPEblxZ2QwIS+Sh09dyfqC94/4ll9WIsnn+rnnRXHPQmiZyevWQD+EpIu53hhPbGu
-         N0DAwC2BCDNBUc3rNQBB8nhNqVXLSu+1CJa2AY94vGQ0YFpd1LcHVR0vSwd+nVGpa/Tj
-         cINUPC3onTdLB9RsGeuU7spQXoN7+RCMh6ywtXPaqw7T+UwW3wXvrVZgKxOsNCUYEVOh
-         llAg==
-X-Gm-Message-State: AJIora/f0CAll54fOWE8dNTXbltAnv4kFCEF+XusoaDauS3ReyNPQRT5
-        xhEauefxpXOF9Q+360st0A0LMYVF410=
-X-Google-Smtp-Source: AGRyM1sqmsek0U3VpD30xmyoilgquiRsCHkiQ6lRIZhSY+cc/PWz6KafVFwxbLJ9HMMVM/gw7rPsQQ==
-X-Received: by 2002:a17:902:c411:b0:16c:28e3:c33d with SMTP id k17-20020a170902c41100b0016c28e3c33dmr15829057plk.126.1657921318418;
-        Fri, 15 Jul 2022 14:41:58 -0700 (PDT)
-Received: from fainelli-desktop.igp.broadcom.net ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id d9-20020aa797a9000000b0052add461d2esm4289975pfq.103.2022.07.15.14.41.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Jul 2022 14:41:58 -0700 (PDT)
-From:   Florian Fainelli <f.fainelli@gmail.com>
-To:     linux-mips@vger.kernel.org
-Cc:     Florian Fainelli <f.fainelli@gmail.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Broadcom internal kernel review list 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH v2 2/2] MIPS: BMIPS: Utilize cfe_die() for invalid DTB
-Date:   Fri, 15 Jul 2022 14:37:47 -0700
-Message-Id: <20220715213747.111321-3-f.fainelli@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20220715213747.111321-1-f.fainelli@gmail.com>
-References: <20220715213747.111321-1-f.fainelli@gmail.com>
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=6Lujf1vjjpR4foXbN5bgN3Hs30sniIkF599g7wlKOBQ=;
+        b=dNMe5YHqP93kKpxPCLfAtfxW+w2RpiIMyi0jZ8986H2R0mGV9/hSyzzHq5LCLMtfnd
+         XDMSq3huuQV2Fh83dJiW3y1wc5ehVGkTbI4TXur5bhLUMF1M32Z0OQPdhZmH7cYhubkL
+         bfzFQq4O8WO9uMF3PJRcRnj0NKv+B7HE6tYZ87LChRWauMT6k5XGdJhwRObyTPlOmLxP
+         i1EZ8b1BFKL6sNvL6ZpYXoB1X95Nydn/EGgHVb7MdhEF1685Vksw6Y6y5vam3mGg7bIR
+         ZqyG5MlVRMkXjnK5O3AexpfwSuMmGQNBdGST9F4Y0Aj6YLU4ORhnB0v6ZmiNSCy7R6Ta
+         4J0A==
+X-Gm-Message-State: AJIora+hSRb7wXKskEJtNuYs2Q+uXKFNS6MNQuKIwZc+Typ8hQpA1Jst
+        h4OYGkFk3BwxmuSzdUoYayoWyBQypGE=
+X-Google-Smtp-Source: AGRyM1vOzZdM3a33bUnAbTJcBI7b9OKriE+uVyKu8lm6JhHM285LWF+zuzFdz3DxaowA2HExgRCgzA==
+X-Received: by 2002:a17:902:eb8e:b0:16c:5764:7dc0 with SMTP id q14-20020a170902eb8e00b0016c57647dc0mr21552372plg.63.1658013662622;
+        Sat, 16 Jul 2022 16:21:02 -0700 (PDT)
+Received: from ?IPV6:2600:8802:b00:4a48:22cf:30ff:fe38:5254? ([2600:8802:b00:4a48:22cf:30ff:fe38:5254])
+        by smtp.googlemail.com with ESMTPSA id j6-20020a17090a318600b001ece32cbec9sm8182604pjb.24.2022.07.16.16.21.01
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 16 Jul 2022 16:21:01 -0700 (PDT)
+Message-ID: <846d3845-1536-3306-b68d-d0097a2ff8ff@gmail.com>
+Date:   Sat, 16 Jul 2022 16:21:00 -0700
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Firefox/91.0 Thunderbird/91.11.0
+Subject: Re: [PATCH] tools: Fixed MIPS builds due to struct flock
+ re-definition
+Content-Language: en-US
+To:     linux-kernel@vger.kernel.org, hch@lst.de,
+        Arnd Bergmann <arnd@arndb.de>, linux-mips@vger.kernel.org,
+        "open list:GENERIC INCLUDE/ASM HEADER FILES" 
+        <linux-arch@vger.kernel.org>
+Cc:     nathan@kernel.org, naresh.kamboju@linaro.org, heiko@sntech.de,
+        Palmer Dabbelt <palmer@rivosinc.com>,
+        Guo Ren <guoren@kernel.org>
+References: <20220715185551.3951955-1-f.fainelli@gmail.com>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+In-Reply-To: <20220715185551.3951955-1-f.fainelli@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-If we were not specified a correct DTB, we will not be able to print
-anything useful with panic() which requires a working console of some
-sort. Utilize cfe_die() to callback into the CFE default UART and print
-some useful diagnostics.
+Le 15/07/2022 à 11:55, Florian Fainelli a écrit :
+> Building perf for MIPS failed after 9f79b8b72339 ("uapi: simplify
+> __ARCH_FLOCK{,64}_PAD a little") with the following error:
+> 
+>    CC
+> /home/fainelli/work/buildroot/output/bmips/build/linux-custom/tools/perf/trace/beauty/fcntl.o
+> In file included from
+> ../../../../host/mipsel-buildroot-linux-gnu/sysroot/usr/include/asm/fcntl.h:77,
+>                   from ../include/uapi/linux/fcntl.h:5,
+>                   from trace/beauty/fcntl.c:10:
+> ../include/uapi/asm-generic/fcntl.h:188:8: error: redefinition of
+> 'struct flock'
+>   struct flock {
+>          ^~~~~
+> In file included from ../include/uapi/linux/fcntl.h:5,
+>                   from trace/beauty/fcntl.c:10:
+> ../../../../host/mipsel-buildroot-linux-gnu/sysroot/usr/include/asm/fcntl.h:63:8:
+> note: originally defined here
+>   struct flock {
+>          ^~~~~
+> 
+> This is due to the local copy under
+> tools/include/uapi/asm-generic/fcntl.h including the toolchain's kernel
+> headers which already define 'struct flock' and define
+> HAVE_ARCH_STRUCT_FLOCK to future inclusions make a decision as to
+> whether re-defining 'struct flock' is appropriate or not.
+> 
+> Make sure what do not re-define 'struct flock'
+> when HAVE_ARCH_STRUCT_FLOCK is already defined.
+> 
+> Fixes: 9f79b8b72339 ("uapi: simplify __ARCH_FLOCK{,64}_PAD a little")
+> Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+> ---
 
-Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
----
- arch/mips/Kconfig       |  1 +
- arch/mips/bmips/setup.c | 14 +++++++++++++-
- 2 files changed, 14 insertions(+), 1 deletion(-)
-
-diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-index 8db38817320b..0c366088b707 100644
---- a/arch/mips/Kconfig
-+++ b/arch/mips/Kconfig
-@@ -294,6 +294,7 @@ config BMIPS_GENERIC
- 	select HARDIRQS_SW_RESEND
- 	select HAVE_PCI
- 	select PCI_DRIVERS_GENERIC
-+	select FW_CFE
- 	help
- 	  Build a generic DT-based kernel image that boots on select
- 	  BCM33xx cable modem chips, BCM63xx DSL chips, and BCM7xxx set-top
-diff --git a/arch/mips/bmips/setup.c b/arch/mips/bmips/setup.c
-index 31bcfa4e08b9..e95b3f78e7cd 100644
---- a/arch/mips/bmips/setup.c
-+++ b/arch/mips/bmips/setup.c
-@@ -28,6 +28,7 @@
- #include <asm/smp-ops.h>
- #include <asm/time.h>
- #include <asm/traps.h>
-+#include <asm/fw/cfe/cfe_api.h>
- 
- #define RELO_NORMAL_VEC		BIT(18)
- 
-@@ -123,8 +124,19 @@ static const struct bmips_quirk bmips_quirk_list[] = {
- 	{ },
- };
- 
-+static void __init bmips_init_cfe(void)
-+{
-+	cfe_seal = fw_arg3;
-+
-+	if (cfe_seal != CFE_EPTSEAL)
-+		return;
-+
-+	cfe_init(fw_arg0, fw_arg2);
-+}
-+
- void __init prom_init(void)
- {
-+	bmips_init_cfe();
- 	bmips_cpu_setup();
- 	register_bmips_smp_ops();
- }
-@@ -165,7 +177,7 @@ void __init plat_mem_setup(void)
- 		dtb = get_fdt();
- 
- 	if (!dtb)
--		panic("no dtb found");
-+		cfe_die("no dtb found");
- 
- 	__dt_setup_arch(dtb);
- 
+Any chance to apply this patch prior to v5.19 being final? Thanks!
 -- 
-2.25.1
-
+Florian

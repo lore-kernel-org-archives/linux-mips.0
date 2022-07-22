@@ -2,28 +2,64 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1BE10C433EF
-	for <linux-mips@archiver.kernel.org>; Fri, 22 Jul 2022 16:49:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 50C94C43334
+	for <linux-mips@archiver.kernel.org>; Fri, 22 Jul 2022 17:46:58 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235870AbiGVQtT (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 22 Jul 2022 12:49:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44196 "EHLO
+        id S235065AbiGVRq5 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 22 Jul 2022 13:46:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37666 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235893AbiGVQtH (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Fri, 22 Jul 2022 12:49:07 -0400
-Received: from out28-172.mail.aliyun.com (out28-172.mail.aliyun.com [115.124.28.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AF3A93C0E;
-        Fri, 22 Jul 2022 09:48:56 -0700 (PDT)
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.3241718|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_regular_dialog|0.0235158-0.00320354-0.973281;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047212;MF=zhouyanjie@wanyeetech.com;NM=1;PH=DS;RN=23;RT=23;SR=0;TI=SMTPD_---.Ob0cnML_1658508529;
-Received: from localhost.localdomain(mailfrom:zhouyanjie@wanyeetech.com fp:SMTPD_---.Ob0cnML_1658508529)
-          by smtp.aliyun-inc.com;
-          Sat, 23 Jul 2022 00:48:50 +0800
-From:   =?UTF-8?q?=E5=91=A8=E7=90=B0=E6=9D=B0=20=28Zhou=20Yanjie=29?= 
-        <zhouyanjie@wanyeetech.com>
-To:     tudor.ambarus@microchip.com, p.yadav@ti.com, michael@walle.cc,
-        miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
-        broonie@kernel.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org
+        with ESMTP id S232383AbiGVRq5 (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Fri, 22 Jul 2022 13:46:57 -0400
+Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A577391CD0
+        for <linux-mips@vger.kernel.org>; Fri, 22 Jul 2022 10:46:55 -0700 (PDT)
+Received: by mail-lj1-x235.google.com with SMTP id p6so6266904ljc.8
+        for <linux-mips@vger.kernel.org>; Fri, 22 Jul 2022 10:46:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=4pDf7ez85QHUoBuUMoHgMnyuDNXTg+iV62WcG6bVoxE=;
+        b=k5jT7LN8Fx7VEkTi0XgPQxBYvaHMVqDhNuzeipXMEE2dmex+dbNJnlmZiPyNCJMZ2P
+         Tc+7Z/KTvjKKzxfIihpYVp7o4uYWv8G5KY6JLb6/rgmcyvOEx53QIhkMr1TcCtHZtfjU
+         kR2I+YWQCWY/iBDDjTQS8dhgAfJ/0K0bl8gJSMEbFijjb/Kz5ONZ/AnK82jGsRcYFGlo
+         ww8uAvOc28X7SUpKNAUpNfi0Zd5z6ZTs0jfeIYhKjfVlo595c17U3QvI/4ImkcJcK0D4
+         1kk3nFzKiBm/S5GpZW+EwKlIH5ZfbHo/D94C8C9+GvpeC9PIm2ry3y0jI4UQANy9q4r/
+         XeNQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=4pDf7ez85QHUoBuUMoHgMnyuDNXTg+iV62WcG6bVoxE=;
+        b=1mf1q4QKj41NY4QjGZQPJOPalLWl92vxrl09vxMlVPXmqCk+c8n9u7zwGsrhWshQep
+         /PNo7LrJArPkmR07zdmAZu5KnMwVLlGDJ36DkbgkxukqShP1vqldkQlsEPWdSatWgwAg
+         40Yvnh+cgUV9IuQKYBvohqdjwJru0yNwq0uOqKsttYq+x1CbIWniEC6LZPpBYTKexKE0
+         +y9qGHdDUCulSO4YoI6ZDSMX9Ge0JCDK7A+mj+AyjYM/nPNSlKeRd45QVWhmY67GuTL5
+         nfgsGY8BVJvJvNXpOPejK583MmHy+V9LLzpuzo3TD7zc821m30UIQyxE7CuZxFRC89wa
+         3JDQ==
+X-Gm-Message-State: AJIora+CNceMlMSNFcrz6J1vNL+RxFfLTFQtOpex7HaVI/uBZCf6wWL2
+        w9qbzMBrAWENRxhufY3KBmu/1A==
+X-Google-Smtp-Source: AGRyM1sqFiGr1+mDJ9qbeVsgJ4L1DLzZ2N4yyzMkKPO7XUslPN8IvI+lN6tL17Kpq2z/VwHxUKK3hA==
+X-Received: by 2002:a2e:a5cb:0:b0:25d:7a70:2891 with SMTP id n11-20020a2ea5cb000000b0025d7a702891mr386558ljp.295.1658512013920;
+        Fri, 22 Jul 2022 10:46:53 -0700 (PDT)
+Received: from [192.168.10.173] (93.81-167-86.customer.lyse.net. [81.167.86.93])
+        by smtp.gmail.com with ESMTPSA id o1-20020a05651205c100b00489c7fb668dsm1163070lfo.182.2022.07.22.10.46.52
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 22 Jul 2022 10:46:53 -0700 (PDT)
+Message-ID: <487a93c4-3301-aefd-abba-aabf4cb8ec90@linaro.org>
+Date:   Fri, 22 Jul 2022 19:46:51 +0200
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.11.0
+Subject: Re: [PATCH 2/3] dt-bindings: SPI: Add Ingenic SFC bindings.
+Content-Language: en-US
+To:     =?UTF-8?B?5ZGo55Cw5p2wIChaaG91IFlhbmppZSk=?= 
+        <zhouyanjie@wanyeetech.com>, tudor.ambarus@microchip.com,
+        p.yadav@ti.com, michael@walle.cc, miquel.raynal@bootlin.com,
+        richard@nod.at, vigneshr@ti.com, broonie@kernel.org,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org
 Cc:     linux-mtd@lists.infradead.org, linux-spi@vger.kernel.org,
         linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
         devicetree@vger.kernel.org, aidanmacdonald.0x0@gmail.com,
@@ -31,98 +67,114 @@ Cc:     linux-mtd@lists.infradead.org, linux-spi@vger.kernel.org,
         aric.pzqi@ingenic.com, rick.tyliu@ingenic.com,
         jinghui.liu@ingenic.com, sernia.zhou@foxmail.com,
         reimu@sudomaker.com
-Subject: [PATCH 2/3] dt-bindings: SPI: Add Ingenic SFC bindings.
-Date:   Sat, 23 Jul 2022 00:48:29 +0800
-Message-Id: <1658508510-15400-3-git-send-email-zhouyanjie@wanyeetech.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1658508510-15400-1-git-send-email-zhouyanjie@wanyeetech.com>
 References: <1658508510-15400-1-git-send-email-zhouyanjie@wanyeetech.com>
-MIME-Version: 1.0
+ <1658508510-15400-3-git-send-email-zhouyanjie@wanyeetech.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <1658508510-15400-3-git-send-email-zhouyanjie@wanyeetech.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Add the SFC bindings for the X1000 SoC, the X1600 SoC, the X1830 SoC,
-and the X2000 SoC from Ingenic.
+On 22/07/2022 18:48, 周琰杰 (Zhou Yanjie) wrote:
+> Add the SFC bindings for the X1000 SoC, the X1600 SoC, the X1830 SoC,
+> and the X2000 SoC from Ingenic.
+> 
+> Signed-off-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
+> ---
+>  .../devicetree/bindings/spi/ingenic,sfc.yaml       | 64 ++++++++++++++++++++++
+>  1 file changed, 64 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/spi/ingenic,sfc.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/spi/ingenic,sfc.yaml b/Documentation/devicetree/bindings/spi/ingenic,sfc.yaml
+> new file mode 100644
+> index 00000000..b7c4cf4
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/spi/ingenic,sfc.yaml
+> @@ -0,0 +1,64 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/spi/ingenic,sfc.yaml#
 
-Signed-off-by: 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
----
- .../devicetree/bindings/spi/ingenic,sfc.yaml       | 64 ++++++++++++++++++++++
- 1 file changed, 64 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/spi/ingenic,sfc.yaml
+File name should be rather based on first compatible, so
+ingenic,x1000-sfc.yaml
 
-diff --git a/Documentation/devicetree/bindings/spi/ingenic,sfc.yaml b/Documentation/devicetree/bindings/spi/ingenic,sfc.yaml
-new file mode 100644
-index 00000000..b7c4cf4
---- /dev/null
-+++ b/Documentation/devicetree/bindings/spi/ingenic,sfc.yaml
-@@ -0,0 +1,64 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/spi/ingenic,sfc.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Bindings for SFC in Ingenic SoCs
-+
-+maintainers:
-+  - 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
-+
-+description:
-+  The SPI Flash Controller in Ingenic SoCs.
-+
-+properties:
-+  compatible:
-+    oneOf:
-+      - enum:
-+          - ingenic,x1000-sfc
-+          - ingenic,x1600-sfc
-+          - ingenic,x2000-sfc
-+      - items:
-+          - enum:
-+              - ingenic,x1830-sfc
-+          - const: ingenic,x1000-sfc
-+
-+  reg:
-+    maxItems: 1
-+
-+  interrupts:
-+    maxItems: 1
-+
-+  clocks:
-+    maxItems: 1
-+
-+  clock-names:
-+    const: sfc
-+
-+required:
-+  - compatible
-+  - reg
-+  - interrupts
-+  - clocks
-+  - clock-names
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/clock/ingenic,x1000-cgu.h>
-+
-+	sfc: spi@13440000 {
-+		compatible = "ingenic,x1000-sfc";
-+		reg = <0x13440000 0x1000>;
-+
-+		interrupt-parent = <&intc>;
-+		interrupts = <7>;
-+
-+		clocks = <&cgu X1000_CLK_SFC>;
-+		clock-names = "sfc";
-+
-+		status = "disabled";
-+	};
-+...
--- 
-2.7.4
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Bindings for SFC in Ingenic SoCs
+> +
+> +maintainers:
+> +  - 周琰杰 (Zhou Yanjie) <zhouyanjie@wanyeetech.com>
+> +
+> +description:
+> +  The SPI Flash Controller in Ingenic SoCs.
+> +
 
+You miss here allOf referencing spi-controller.
+
+> +properties:
+> +  compatible:
+> +    oneOf:
+> +      - enum:
+> +          - ingenic,x1000-sfc
+> +          - ingenic,x1600-sfc
+> +          - ingenic,x2000-sfc
+> +      - items:
+> +          - enum:
+> +              - ingenic,x1830-sfc
+> +          - const: ingenic,x1000-sfc
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  interrupts:
+> +    maxItems: 1
+> +
+> +  clocks:
+> +    maxItems: 1
+> +
+> +  clock-names:
+> +    const: sfc
+
+Remove the clock-names entirely, no benefits.
+
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - interrupts
+> +  - clocks
+> +  - clock-names
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/clock/ingenic,x1000-cgu.h>
+> +
+> +	sfc: spi@13440000 {
+> +		compatible = "ingenic,x1000-sfc";
+
+
+Use 4 spaces for example indentation.
+
+> +		reg = <0x13440000 0x1000>;
+> +
+> +		interrupt-parent = <&intc>;
+> +		interrupts = <7>;
+> +
+> +		clocks = <&cgu X1000_CLK_SFC>;
+> +		clock-names = "sfc";
+> +
+> +		status = "disabled";
+
+No status in example.
+
+> +	};
+> +...
+
+
+Best regards,
+Krzysztof

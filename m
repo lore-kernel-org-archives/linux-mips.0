@@ -2,157 +2,105 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 79929C3F6B0
-	for <linux-mips@archiver.kernel.org>; Thu, 28 Jul 2022 09:25:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5A0A8C04A68
+	for <linux-mips@archiver.kernel.org>; Thu, 28 Jul 2022 10:58:03 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233606AbiG1JZL (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 28 Jul 2022 05:25:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33442 "EHLO
+        id S236655AbiG1K6C (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 28 Jul 2022 06:58:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55148 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231260AbiG1JZK (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Thu, 28 Jul 2022 05:25:10 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 297453A0;
-        Thu, 28 Jul 2022 02:25:08 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id C290560D40;
-        Thu, 28 Jul 2022 09:25:07 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2B391C433D7;
-        Thu, 28 Jul 2022 09:25:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1659000307;
-        bh=7pq/2Z60GYWXwFYneAORoRndD27DanVgbiYGcaR6gLk=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=ffMQFUj302iUtf3No5xdZTKyr38PfuNjv35jUAOBYxbQpNOaYu5z1qie/PPrwudVp
-         rbor1vghIWM3G77lJrAH1ar/K9X8EzGnc9e8/UWwcqBQUJClCdBAXm5ooTEhvWwumk
-         nqWNMZknE4HIUKhEpEMEaSDf5b46pcxY5XBNcKVtb9D7GXve33Rx3pdiwh9bXodyFe
-         XEg3bRfmARBEBSYJiMwKWc/Xd5bITzO99wuWYIPrtYKdWbh4BZVGGcGNj9G+JeF806
-         5OBqXWTaqiT/tRN1vGY4LeozcX0cGiLJGgnRmws4Ijuhc3+ZSH82D/StYdeoCaOheq
-         jGKkfn69WhEcg==
-Received: by mail-vs1-f41.google.com with SMTP id b67so1095886vsc.1;
-        Thu, 28 Jul 2022 02:25:07 -0700 (PDT)
-X-Gm-Message-State: AJIora/RA0G/X6n9pwf0tjjfkUpCFfFHPThW7eZdpQ+D4nQA07Lj/Ckh
-        9KDeIkT09LKsSxyMORsaGskbxZIwsrf2THvXAD8=
-X-Google-Smtp-Source: AGRyM1vyH+nsbqzZjGAJ6qBx3wXBi1+dUz0jOf3JsHZ5+CvaVM8g+iopMUmY8qoZiCb4cLiRSfo3Wa34/mRjVsyJuuo=
-X-Received: by 2002:a67:d599:0:b0:358:6371:4cfb with SMTP id
- m25-20020a67d599000000b0035863714cfbmr6080587vsj.78.1659000306050; Thu, 28
- Jul 2022 02:25:06 -0700 (PDT)
-MIME-Version: 1.0
-References: <20220721130419.1904711-1-chenhuacai@loongson.cn>
- <20220721130419.1904711-4-chenhuacai@loongson.cn> <20220722091604.GD18125@willie-the-truck>
-In-Reply-To: <20220722091604.GD18125@willie-the-truck>
-From:   Huacai Chen <chenhuacai@kernel.org>
-Date:   Thu, 28 Jul 2022 17:24:52 +0800
-X-Gmail-Original-Message-ID: <CAAhV-H7sWvcVCNtzKscnYK5q0+MqdZiuywuy=_7oB7iLN9pQTA@mail.gmail.com>
-Message-ID: <CAAhV-H7sWvcVCNtzKscnYK5q0+MqdZiuywuy=_7oB7iLN9pQTA@mail.gmail.com>
-Subject: Re: [PATCH V5 3/4] mm/sparse-vmemmap: Generalise vmemmap_populate_hugepages()
-To:     Will Deacon <will@kernel.org>
-Cc:     Huacai Chen <chenhuacai@loongson.cn>,
-        Arnd Bergmann <arnd@arndb.de>,
+        with ESMTP id S236578AbiG1K55 (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Thu, 28 Jul 2022 06:57:57 -0400
+Received: from mail.baikalelectronics.com (unknown [87.245.175.230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 0ACF161136;
+        Thu, 28 Jul 2022 03:57:49 -0700 (PDT)
+Received: from mail (mail.baikal.int [192.168.51.25])
+        by mail.baikalelectronics.com (Postfix) with ESMTP id 738B216CC;
+        Thu, 28 Jul 2022 14:00:11 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.baikalelectronics.com 738B216CC
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baikalelectronics.ru; s=mail; t=1659006011;
+        bh=BveNLPY/YG4fFAd5N/AaPUO76c/YnxfM372ERsi7TmM=;
+        h=From:To:CC:Subject:Date:In-Reply-To:References:From;
+        b=bGCljDdsVryxjaz0biJCv36iFs44c720g/ck2YmtYO3ML7Lv+zvZG44Zuio+jmV7V
+         oMFD7fWLwRi4RNHvNfoXZnK6p/BTVFrjVBGJW6FL0oV5AOoJVu6ef5ZuECc7mpkosO
+         0J1t7GYS3eiBI9rUvx7OvBphKkhP8VxGdQIk0hqM=
+Received: from localhost (192.168.53.207) by mail (192.168.51.25) with
+ Microsoft SMTP Server (TLS) id 15.0.1395.4; Thu, 28 Jul 2022 13:57:46 +0300
+From:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
+To:     Stephen Boyd <sboyd@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Luca Ceresoli <luca@lucaceresoli.net>,
+        Marek Vasut <marek.vasut@gmail.com>
+CC:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
+        Serge Semin <fancer.lancer@gmail.com>,
+        Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+        Pavel Parkhomenko <Pavel.Parkhomenko@baikalelectronics.ru>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
         Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        loongarch@lists.linux.dev, linux-arch <linux-arch@vger.kernel.org>,
-        Xuefeng Li <lixuefeng@loongson.cn>,
-        Guo Ren <guoren@kernel.org>, Xuerui Wang <kernel@xen0n.name>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        "open list:MIPS" <linux-mips@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Feiyang Chen <chenfeiyang@loongson.cn>
-Content-Type: text/plain; charset="UTF-8"
+        <linux-clk@vger.kernel.org>, <linux-mips@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, Stephen Boyd <sboyd@codeaurora.org>
+Subject: [PATCH v9 1/7] clk: vc5: Fix 5P49V6901 outputs disabling when enabling FOD
+Date:   Thu, 28 Jul 2022 13:57:29 +0300
+Message-ID: <20220728105736.8266-2-Sergey.Semin@baikalelectronics.ru>
+In-Reply-To: <20220728105736.8266-1-Sergey.Semin@baikalelectronics.ru>
+References: <20220728105736.8266-1-Sergey.Semin@baikalelectronics.ru>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: MAIL.baikal.int (192.168.51.25) To mail (192.168.51.25)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Hi, Will,
+We have discovered random glitches during the system boot up procedure.
+The problem investigation led us to the weird outcomes: when none of the
+Renesas 5P49V6901 ports are explicitly enabled by the kernel driver, the
+glitches disappeared. It was a mystery since the SoC external clock
+domains were fed with different 5P49V6901 outputs. The driver code didn't
+seem like bogus either. We almost despaired to find out a root cause when
+the solution has been found for a more modern revision of the chip. It
+turned out the 5P49V6901 clock generator stopped its output for a short
+period of time during the VC5_OUT_DIV_CONTROL register writing. The same
+problem was found for the 5P49V6965 revision of the chip and was
+successfully fixed in commit fc336ae622df ("clk: vc5: fix output disabling
+when enabling a FOD") by enabling the "bypass_sync" flag hidden inside
+"Unused Factory Reserved Register". Even though the 5P49V6901 registers
+description and programming guide doesn't provide any intel regarding that
+flag, setting it up anyway in the officially unused register completely
+eliminated the denoted glitches. Thus let's activate the functionality
+submitted in commit fc336ae622df ("clk: vc5: fix output disabling when
+enabling a FOD") for the Renesas 5P49V6901 chip too in order to remove the
+ports implicit inter-dependency.
 
-On Fri, Jul 22, 2022 at 5:16 PM Will Deacon <will@kernel.org> wrote:
->
-> On Thu, Jul 21, 2022 at 09:04:18PM +0800, Huacai Chen wrote:
-> > diff --git a/mm/sparse-vmemmap.c b/mm/sparse-vmemmap.c
-> > index 0abcb0a5f1b5..eafd084b8e19 100644
-> > --- a/mm/sparse-vmemmap.c
-> > +++ b/mm/sparse-vmemmap.c
-> > @@ -694,6 +694,69 @@ int __meminit vmemmap_populate_basepages(unsigned long start, unsigned long end,
-> >       return vmemmap_populate_range(start, end, node, altmap, NULL);
-> >  }
-> >
-> > +void __weak __meminit vmemmap_set_pmd(pmd_t *pmd, void *p, int node,
-> > +                                   unsigned long addr, unsigned long next)
-> > +{
-> > +}
-> > +
-> > +int __weak __meminit vmemmap_check_pmd(pmd_t *pmd, int node, unsigned long addr,
-> > +                                    unsigned long next)
-> > +{
-> > +     return 0;
-> > +}
-> > +
-> > +int __meminit vmemmap_populate_hugepages(unsigned long start, unsigned long end,
-> > +                                      int node, struct vmem_altmap *altmap)
-> > +{
-> > +     unsigned long addr;
-> > +     unsigned long next;
-> > +     pgd_t *pgd;
-> > +     p4d_t *p4d;
-> > +     pud_t *pud;
-> > +     pmd_t *pmd;
-> > +
-> > +     for (addr = start; addr < end; addr = next) {
-> > +             next = pmd_addr_end(addr, end);
-> > +
-> > +             pgd = vmemmap_pgd_populate(addr, node);
-> > +             if (!pgd)
-> > +                     return -ENOMEM;
-> > +
-> > +             p4d = vmemmap_p4d_populate(pgd, addr, node);
-> > +             if (!p4d)
-> > +                     return -ENOMEM;
-> > +
-> > +             pud = vmemmap_pud_populate(p4d, addr, node);
-> > +             if (!pud)
-> > +                     return -ENOMEM;
-> > +
-> > +             pmd = pmd_offset(pud, addr);
-> > +             if (pmd_none(READ_ONCE(*pmd))) {
-> > +                     void *p;
-> > +
-> > +                     p = vmemmap_alloc_block_buf(PMD_SIZE, node, altmap);
-> > +                     if (p) {
-> > +                             vmemmap_set_pmd(pmd, p, node, addr, next);
-> > +                             continue;
-> > +                     } else if (altmap) {
-> > +                             /*
-> > +                              * No fallback: In any case we care about, the
-> > +                              * altmap should be reasonably sized and aligned
-> > +                              * such that vmemmap_alloc_block_buf() will always
-> > +                              * succeed. If there is no more space in the altmap
-> > +                              * and we'd have to fallback to PTE (highly unlikely).
->
-> Can you tweak the last couple of sentences please, as they don't make sense
-> to me? To be specific, I'd suggest replacing:
->
->   "If there is no more space in the altmap and we'd have to fallback to PTE
->   (highly unlikely). That could indicate an altmap-size configuration
->   issue."
->
-> with something like:
->
->   "For consistency with the PTE case, return an error here as failure could
->    indicate a configuration issue with the size of the altmap."
->
-> With that:
->
-> Acked-by: Will Deacon <will@kernel.org>
-OK, I will send V5, thanks.
+Fixes: dbf6b16f5683 ("clk: vc5: Add support for IDT VersaClock 5P49V6901")
+Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+Reviewed-by: Luca Ceresoli <luca@lucaceresoli.net>
 
-Huacai
->
-> Will
+---
+
+Changelog v4:
+- This is a new patch added on v4 lap of the series.
+
+Changelog v5:
+- Fix some grammar mistakes in the commit log. (@Sergey Shtylyov)
+---
+ drivers/clk/clk-versaclock5.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/clk/clk-versaclock5.c b/drivers/clk/clk-versaclock5.c
+index e7be3e54b9be..03cfef494b49 100644
+--- a/drivers/clk/clk-versaclock5.c
++++ b/drivers/clk/clk-versaclock5.c
+@@ -1204,7 +1204,7 @@ static const struct vc5_chip_info idt_5p49v6901_info = {
+ 	.model = IDT_VC6_5P49V6901,
+ 	.clk_fod_cnt = 4,
+ 	.clk_out_cnt = 5,
+-	.flags = VC5_HAS_PFD_FREQ_DBL,
++	.flags = VC5_HAS_PFD_FREQ_DBL | VC5_HAS_BYPASS_SYNC_BIT,
+ };
+ 
+ static const struct vc5_chip_info idt_5p49v6965_info = {
+-- 
+2.35.1
+

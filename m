@@ -2,67 +2,37 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6580CC25B0D
-	for <linux-mips@archiver.kernel.org>; Sun,  7 Aug 2022 00:50:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A17BDC19F2A
+	for <linux-mips@archiver.kernel.org>; Sun,  7 Aug 2022 06:44:31 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235169AbiHGAu0 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Sat, 6 Aug 2022 20:50:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49268 "EHLO
+        id S231887AbiHGGoa (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Sun, 7 Aug 2022 02:44:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49832 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234758AbiHGAuO (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Sat, 6 Aug 2022 20:50:14 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 753D0FF8;
-        Sat,  6 Aug 2022 17:50:13 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 1EBAFB80B36;
-        Sun,  7 Aug 2022 00:50:12 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id CC268C433D7;
-        Sun,  7 Aug 2022 00:50:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1659833410;
-        bh=OfI0SVIwsXpPk0HooNZxVkg4KFWZxbdAQjeFC2Jm4YA=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=l6J+vg2lG1EiyA2g5zEPRvfOLTmJlwIX+0E6e8HUR/+E5CAn1sW2ciJTPTwiOQwRb
-         iEYQ5PWiP2txoVFoe1zeJ/B/ld2AwGNjoFyXGvMu382MLOBqeVTS6QH6YfPxjWwTCZ
-         L5NsKibO73R4ZGvmaWGd9fMynkJi+bs9lgmdTfxczz/HR3MT4ZtZufDwmbh+AWxfkn
-         oZx+B/BRYzVwaFj1HHFwG0AYQ7/R/ri3PqJktHzQ/aSaF0ZfOxbCQfcy5DzlzxaCI4
-         wXJEcejmqHgHk79LbP6JYFtvEZEDavEN2x3zykOJDScoR4hd2iJR6Lz0SGpe7BVboZ
-         ZC8IAR66w+09A==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id BB899C43142;
-        Sun,  7 Aug 2022 00:50:10 +0000 (UTC)
-Subject: Re: [GIT PULL] MIPS changes for v6.0-rc1
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20220806083423.GA3635@alpha.franken.de>
-References: <20220806083423.GA3635@alpha.franken.de>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20220806083423.GA3635@alpha.franken.de>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/mips/linux.git/ tags/mips_6.0
-X-PR-Tracked-Commit-Id: 74de14fe05dd6b151d73cb0c73c8ec874cbdcde6
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: d77771c926671e0362af3fe792391be66072b242
-Message-Id: <165983341076.27609.1383633366027709205.pr-tracker-bot@kernel.org>
-Date:   Sun, 07 Aug 2022 00:50:10 +0000
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc:     torvalds@linux-foundation.org, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+        with ESMTP id S230338AbiHGGo3 (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Sun, 7 Aug 2022 02:44:29 -0400
+X-Greylist: delayed 400 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sat, 06 Aug 2022 23:44:28 PDT
+Received: from cloudhost-4892687.us-midwest-2.nxcli.net (cloudhost-4892687.us-midwest-2.nxcli.net [199.189.224.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6B9010543
+        for <linux-mips@vger.kernel.org>; Sat,  6 Aug 2022 23:44:28 -0700 (PDT)
+Received: (qmail 8060 invoked by uid 10064); 7 Aug 2022 06:37:47 +0000
+To:     linux-mips@vger.kernel.org
+Subject: =?us-ascii?Q?THE_FALL_IN_THE_PRICE_OF_BITCOIN_WILL_MAKE_YOU_?=  =?us-ascii?Q?A_MILLIONAIRE?=
+X-PHP-Originating-Script: 10064:PHPMailer.php
+Date:   Sun, 7 Aug 2022 06:37:47 +0000
+From:   Construction <info@yourdomain.com>
+Reply-To: info@yourdomain.com
+Message-ID: <mstrU6kEdqjhaskpnWrC9l87HuFLmGGLrhSCIxMtg@acadianaworkforce.org>
+X-Mailer: PHPMailer 6.6.0 (https://github.com/PHPMailer/PHPMailer)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-The pull request you sent on Sat, 6 Aug 2022 10:34:23 +0200:
+Message Body:
+FINANCIAL CRISIS CAN MAKE YOU RICH! https://telegra.ph/Cryptocurrency-makes-people-millionaires-at-15-people-per-hour---Page-127918-08-02
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/mips/linux.git/ tags/mips_6.0
+--
+This e-mail was sent from a contact form on Construction (http://yourdomain.com/)
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/d77771c926671e0362af3fe792391be66072b242
-
-Thank you!
-
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html

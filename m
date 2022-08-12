@@ -2,129 +2,177 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9DCE5C25B0F
-	for <linux-mips@archiver.kernel.org>; Fri, 12 Aug 2022 04:09:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4682CC25B0F
+	for <linux-mips@archiver.kernel.org>; Fri, 12 Aug 2022 16:43:32 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236269AbiHLEJt (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 12 Aug 2022 00:09:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34060 "EHLO
+        id S237771AbiHLQna (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 12 Aug 2022 12:43:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43924 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230271AbiHLEJs (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Fri, 12 Aug 2022 00:09:48 -0400
-Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CE92A0302;
-        Thu, 11 Aug 2022 21:09:47 -0700 (PDT)
-Received: by mail-yb1-xb2b.google.com with SMTP id g5so31201274ybg.11;
-        Thu, 11 Aug 2022 21:09:47 -0700 (PDT)
+        with ESMTP id S229664AbiHLQn3 (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Fri, 12 Aug 2022 12:43:29 -0400
+Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DCCCA7A92;
+        Fri, 12 Aug 2022 09:43:28 -0700 (PDT)
+Received: by mail-qt1-x82e.google.com with SMTP id e28so1176631qts.1;
+        Fri, 12 Aug 2022 09:43:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc;
-        bh=VElpo/hJHfw2RvZvud8eiJu3fb0VVkH8EWFL092LbyM=;
-        b=blP25JnLo2TmHjHag2bR+teBEK87Mz7SHz967KGBmFf1p5xgNeulgtkLNaOZsvHcFj
-         QTk4BI80mvvcE3TIP29g7aY4kmQ2qzqwYi98tdOyIcC9kPFx894zioqG/H5KiYSsm11b
-         1vOiScZd46PL3CMmNCrAhbxDa0dElvnru66liMq8I7HbUnqTWSibq9LDSmmxNh5AjdHp
-         jW4QKqsb5GiJX3ivYl19mwURClKJAgisYLz2AkCKMnyDPKfMmzC9vuByhCuFMtubmnUM
-         tEvwW/AK9qAKyhe2AAgc4blnry8Ish4U7kal/2L8VJL7cx3q1k5yffy9/pBPbnNcgDGy
-         +cXQ==
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc;
+        bh=3USZWIN42TMGW91mrZdIe2fOGVO44/PRBAX2ZkSHa9w=;
+        b=bV0o69XoHBOqPCgIjzUOW10xtQdByRjPI8METXiHSn32z7hV1Gp+iiGBe/3hHzXpKO
+         MMax4ggbZUCPWuRnN7F9gcfZAr6fOi6xaX6qJX99iko/ctonw+QmsU6SOF41kPuIstlb
+         1uqrks7uc/qy4gEi+Apy2uCw9mxxie1hkHGSetObOHPW0ChEhotmHjG2bIGsXG4PDNLj
+         c8VfC1A2F2n+uIos2AXHdZduKMp82GK6oOwBzRDf5ZeKmFbCs/iwHA+4wtJQK/vaAbRG
+         xKCFR60j0DtgHKcUAW/xGTKSOm7A1H2CJKwoWgFsh03tnZJAp2jLkPSYUEW0N4vse0Tq
+         t1YA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc;
-        bh=VElpo/hJHfw2RvZvud8eiJu3fb0VVkH8EWFL092LbyM=;
-        b=DqcRAAKJGZWl2phrrHPrTgrRy7tveR+2T17ngEJbZcGxGrmau6+HGbaWKiG72a6gTN
-         m8zX4cibP4auDY3KhLoGKWUwTrnd81+YIXbnYkuNZivow2n4fgegOEbc5to+vfaWpkXi
-         7pgG5FVq1cKknSe3SS9S/E5K4AGXeueBStPIFwGsx5XqvkADapSll/YyPv7dZihgIiej
-         aix4cTeYHeD7FyLyd5DxCPdORMTthntsq5xsZ+x1TEz7qRzILNP8vjVvS3mvN9wzfgBU
-         JfgZsWiPaZnXQvw2Tk2MDUEDyahR6bT0ULeYJyP+3eTf/+sb3jv3NBz19WoU99CiiUvH
-         g06g==
-X-Gm-Message-State: ACgBeo1ZysUrCmCVhW0WUp7iGNl4U1HmE7U/B9Q95mtbQOFlrMy0T66f
-        AjUgrrWfk5Q0eHipkS7Atfj81iR9Z9dMNRN1aaE=
-X-Google-Smtp-Source: AA6agR7aS8A13CrYgjl8GiA4yxSMSh8285o1W6Z9Itk2qso727yl4VcHZ225ZGHVW28V8MpIdpTrAfpF1lIigRh3rhI=
-X-Received: by 2002:a25:da13:0:b0:672:6a10:a033 with SMTP id
- n19-20020a25da13000000b006726a10a033mr2082818ybf.617.1660277386448; Thu, 11
- Aug 2022 21:09:46 -0700 (PDT)
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc;
+        bh=3USZWIN42TMGW91mrZdIe2fOGVO44/PRBAX2ZkSHa9w=;
+        b=Rvx2P1Le+JbqjI4kt5Xa5XZawhO7HA1DHTUOQ8R9ES46kektDBF4eV38tUlG05TV+G
+         0C4+tfzqhNJvrTqAxhIPRXvxuIohpEwh5TJ7CL8FGL0c7leRHwoMWbSNVtqXJ6oHTaxG
+         HMnSTKYTfcZi2YYnKsgUj2sMfRGkM4NNgSzsK9K/ulnuH91USIWXnzJZhYwhkM43kqsz
+         WPTPqY3wIg4M0aiqFXn5ygAeBIyjTs+Pk8cxwHUF9w/AbtkurtnWnB7nLiiJofZ3dvHy
+         dl+mJvoAhaRWPluVQdV+DTBG0F+ZqJKyZuckmUxOezr1HmPFQ3+z4w4ojafOjHQB6Z1t
+         GACw==
+X-Gm-Message-State: ACgBeo3n2FKLeE36W8WabpBZcrdrqvFL9HRrE+bxYbCtLulcnL2b1tsC
+        ozlGx3joCAzHUwj0twu2mOU=
+X-Google-Smtp-Source: AA6agR7FB9sjnJbz8bxM0fTIOs1CUGgdBpX/1WCCHOxG/ZfhC2Lu+d4G/6t1d5cOPCfSS1GTViBSsg==
+X-Received: by 2002:a05:622a:48f:b0:343:6db4:d3b1 with SMTP id p15-20020a05622a048f00b003436db4d3b1mr4216701qtx.202.1660322607234;
+        Fri, 12 Aug 2022 09:43:27 -0700 (PDT)
+Received: from [10.67.48.245] ([192.19.223.252])
+        by smtp.googlemail.com with ESMTPSA id c9-20020ac85a89000000b0033aac3da27dsm2259925qtc.19.2022.08.12.09.43.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 12 Aug 2022 09:43:26 -0700 (PDT)
+Message-ID: <ac5e544a-a9d7-37c7-3d0b-65e706d544a0@gmail.com>
+Date:   Fri, 12 Aug 2022 09:43:24 -0700
 MIME-Version: 1.0
-References: <YvVQEDs75pxSgxjM@debian> <20220811124637.4cdb84f1@kernel.org>
-In-Reply-To: <20220811124637.4cdb84f1@kernel.org>
-From:   Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Date:   Fri, 12 Aug 2022 05:09:10 +0100
-Message-ID: <CADVatmPQxgQoQ5o_9PhRphekhnmjndq2jd+0yXnDc1OuUphdpA@mail.gmail.com>
-Subject: Re: build failure of next-20220811 due to 332f1795ca20 ("Bluetooth:
- L2CAP: Fix l2cap_global_chan_by_psm regression")
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Luiz Augusto von Dentz <luiz.von.dentz@intel.com>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Marcel Holtmann <marcel@holtmann.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>, linux-bluetooth@vger.kernel.org,
-        linux-next <linux-next@vger.kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        linux-mips <linux-mips@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.11.0
+Subject: Re: [PATCH v2] MIPS: Expose prid and globalnumber to sysfs
+Content-Language: en-US
+To:     Jiaxun Yang <jiaxun.yang@flygoat.com>
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        tsbogend@alpha.franken.de, linux-api@vger.kernel.org
+References: <20220811101236.1925-1-jiaxun.yang@flygoat.com>
+ <66e7f45b-2292-f76e-b9a1-3db2af8c24a9@gmail.com>
+ <2ED0B1C9-07AB-4DE3-BC85-F490FA94785F@flygoat.com>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+In-Reply-To: <2ED0B1C9-07AB-4DE3-BC85-F490FA94785F@flygoat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Thu, Aug 11, 2022 at 8:46 PM Jakub Kicinski <kuba@kernel.org> wrote:
->
-> On Thu, 11 Aug 2022 19:53:04 +0100 Sudip Mukherjee (Codethink) wrote:
-> > Not sure if it has been reported, builds of csky and mips allmodconfig
-> > failed to build next-20220811 with gcc-12.
->
-> I can't repro with the cross compiler from kernel.org.
-> Can you test something like this?
+On 8/12/22 03:29, Jiaxun Yang wrote:
+> 
+> 
+>> 2022年8月12日 03:21，Florian Fainelli <f.fainelli@gmail.com 
+>> <mailto:f.fainelli@gmail.com>> 写道：
+>>
+>>
+>>
+>> On 8/11/2022 3:12 AM, Jiaxun Yang wrote:
+>>> Some application would like to know precise model and rev of processor
+>>> to do errata workaround or optimization.
+>>> Expose them in sysfs as:
+>>> /sys/devices/system/cpu/cpuX/regs/identification/prid
+>>> /sys/devices/system/cpu/cpuX/regs/identification/globalnumber
+>>> Reusing AArch64 CPU registers directory.
+>>> Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com 
+>>> <mailto:jiaxun.yang@flygoat.com>>
+>>> ---
+>>> v2: Drop static qualifier for kobj (gregkh)
+>>> ---
+>>>  .../ABI/testing/sysfs-devices-system-cpu      | 11 +++
+>>>  arch/mips/kernel/topology.c                   | 96 +++++++++++++++++++
+>>>  2 files changed, 107 insertions(+)
+>>> diff --git a/Documentation/ABI/testing/sysfs-devices-system-cpu 
+>>> b/Documentation/ABI/testing/sysfs-devices-system-cpu
+>>> index 5bf61881f012..adf855e7bb9b 100644
+>>> --- a/Documentation/ABI/testing/sysfs-devices-system-cpu
+>>> +++ b/Documentation/ABI/testing/sysfs-devices-system-cpu
+>>> @@ -512,6 +512,17 @@ Description:information about CPUs heterogeneity.
+>>> cpu_capacity: capacity of cpuX.
+>>>  +What:/sys/devices/system/cpu/cpuX/regs/
+>>> +/sys/devices/system/cpu/cpuX/regs/identification/
+>>> +/sys/devices/system/cpu/cpuX/regs/identification/prid
+>>> +/sys/devices/system/cpu/cpuX/regs/identification/globalnumber
+>>> +Date:Augest 2022
+>>
+>> typo: August
+> 
+> Thanks, good catch :-)
+> 
+>>
+>>> +Contact:Linux MIPS Kernel Mailing list <linux-mips@vger.kernel.org 
+>>> <mailto:linux-mips@vger.kernel.org>>
+>>> +Description:MIPS CPU registers
+>>> +
+>>> +'identification' directory exposes the Processor ID and Global Number
+>>> +registers for identifying model and revision of the CPU.
+>>> +
+>>>  What:/sys/devices/system/cpu/vulnerabilities
+>>> /sys/devices/system/cpu/vulnerabilities/meltdown
+>>> /sys/devices/system/cpu/vulnerabilities/spectre_v1
+>>> diff --git a/arch/mips/kernel/topology.c b/arch/mips/kernel/topology.c
+>>> index 9429d85a4703..0e3730f3c00f 100644
+>>> --- a/arch/mips/kernel/topology.c
+>>> +++ b/arch/mips/kernel/topology.c
+>>> @@ -5,6 +5,8 @@
+>>>  #include <linux/node.h>
+>>>  #include <linux/nodemask.h>
+>>>  #include <linux/percpu.h>
+>>> +#include <linux/seq_file.h>
+>>> +#include <linux/smp.h>
+>>>    static DEFINE_PER_CPU(struct cpu, cpu_devices);
+>>>  @@ -26,3 +28,97 @@ static int __init topology_init(void)
+>>>  }
+>>>    subsys_initcall(topology_init);
+>>> +
+>>> +static struct kobj_type cpuregs_kobj_type = {
+>>> +.sysfs_ops = &kobj_sysfs_ops,
+>>> +};
+>>> +
+>>> +struct cpureg {
+>>> +struct kobject kobj;
+>>> +struct cpuinfo_mips *info;
+>>> +};
+>>> +DEFINE_PER_CPU(struct cpureg, cpuregs);
+>>> +
+>>> +#define kobj_to_cpureg(kobj)container_of(kobj, struct cpureg, kobj)
+>>> +#define CPUREGS_ATTR_RO(_name, _field)\
+>>> +static ssize_t _name##_show(struct kobject *kobj,\
+>>> +struct kobj_attribute *attr, char *buf)\
+>>> +{\
+>>> +struct cpuinfo_mips *info = kobj_to_cpureg(kobj)->info;\
+>>> +\
+>>> +return sprintf(buf, "0x%08x\n", info->_field);\
+>>
+>> Would not you be able to simplify this greatly with just:
+>>
+>> struct cpuinfo_mips *info = current_cpu_data;
+> 
+> Because some fields in PRID and globalnumber are not consistent between 
+> cores
+> so it needs to be per CPU.
 
-With this patch I get new failure:
+Yes my bad, I was thinking that you could simplify things by always 
+getting the registers of the CPU you are running on, but you need to 
+create those attributes for each CPU in the system and ensure that they 
+do resolve to the actual cpuinfo_mips of said CPU, such that when you do:
 
-In file included from net/bluetooth/l2cap_core.c:37:
-./include/net/bluetooth/bluetooth.h: In function 'ba_is_any':
-./include/net/bluetooth/bluetooth.h:346:16: error: returning 'void *'
-from a function with return type 'int' makes integer from pointer
-without a cast [-Werror=int-conversion]
-  346 |         return memchr_inv(ba, sizeof(*ba), 0);
+cat /sys/device/system/cpu/cpu*/regs/prid
 
-So for a quick test, I modified it a little (just a typecast) which worked.
+we do return the actual information of that CPU number, not the one from 
+the CPU we are on.
 
-diff --git a/include/net/bluetooth/bluetooth.h
-b/include/net/bluetooth/bluetooth.h
-index e72f3b247b5e..19bdd2520070 100644
---- a/include/net/bluetooth/bluetooth.h
-+++ b/include/net/bluetooth/bluetooth.h
-@@ -341,6 +341,11 @@ static inline bool bdaddr_type_is_le(u8 type)
- #define BDADDR_ANY  (&(bdaddr_t) {{0, 0, 0, 0, 0, 0}})
- #define BDADDR_NONE (&(bdaddr_t) {{0xff, 0xff, 0xff, 0xff, 0xff, 0xff}})
-
-+static inline int ba_is_any(const bdaddr_t *ba)
-+{
-+       return (int) memchr_inv(ba, sizeof(*ba), 0);
-+}
-+
- /* Copy, swap, convert BD Address */
- static inline int bacmp(const bdaddr_t *ba1, const bdaddr_t *ba2)
- {
-diff --git a/net/bluetooth/l2cap_core.c b/net/bluetooth/l2cap_core.c
-index cbe0cae73434..67c5d923bc6c 100644
---- a/net/bluetooth/l2cap_core.c
-+++ b/net/bluetooth/l2cap_core.c
-@@ -2000,8 +2000,8 @@ static struct l2cap_chan
-*l2cap_global_chan_by_psm(int state, __le16 psm,
-                        }
-
-                        /* Closest match */
--                       src_any = !bacmp(&c->src, BDADDR_ANY);
--                       dst_any = !bacmp(&c->dst, BDADDR_ANY);
-+                       src_any = !ba_is_any(&c->src);
-+                       dst_any = !ba_is_any(&c->dst);
-                        if ((src_match && dst_any) || (src_any && dst_match) ||
-                            (src_any && dst_any))
-                                c1 = c;
-
-
-
+Thanks!
 -- 
-Regards
-Sudip
+Florian

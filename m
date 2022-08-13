@@ -2,177 +2,140 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4682CC25B0F
-	for <linux-mips@archiver.kernel.org>; Fri, 12 Aug 2022 16:43:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5162AC2BB47
+	for <linux-mips@archiver.kernel.org>; Sat, 13 Aug 2022 22:00:50 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237771AbiHLQna (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 12 Aug 2022 12:43:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43924 "EHLO
+        id S240267AbiHMWAs (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Sat, 13 Aug 2022 18:00:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35068 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229664AbiHLQn3 (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Fri, 12 Aug 2022 12:43:29 -0400
-Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DCCCA7A92;
-        Fri, 12 Aug 2022 09:43:28 -0700 (PDT)
-Received: by mail-qt1-x82e.google.com with SMTP id e28so1176631qts.1;
-        Fri, 12 Aug 2022 09:43:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc;
-        bh=3USZWIN42TMGW91mrZdIe2fOGVO44/PRBAX2ZkSHa9w=;
-        b=bV0o69XoHBOqPCgIjzUOW10xtQdByRjPI8METXiHSn32z7hV1Gp+iiGBe/3hHzXpKO
-         MMax4ggbZUCPWuRnN7F9gcfZAr6fOi6xaX6qJX99iko/ctonw+QmsU6SOF41kPuIstlb
-         1uqrks7uc/qy4gEi+Apy2uCw9mxxie1hkHGSetObOHPW0ChEhotmHjG2bIGsXG4PDNLj
-         c8VfC1A2F2n+uIos2AXHdZduKMp82GK6oOwBzRDf5ZeKmFbCs/iwHA+4wtJQK/vaAbRG
-         xKCFR60j0DtgHKcUAW/xGTKSOm7A1H2CJKwoWgFsh03tnZJAp2jLkPSYUEW0N4vse0Tq
-         t1YA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc;
-        bh=3USZWIN42TMGW91mrZdIe2fOGVO44/PRBAX2ZkSHa9w=;
-        b=Rvx2P1Le+JbqjI4kt5Xa5XZawhO7HA1DHTUOQ8R9ES46kektDBF4eV38tUlG05TV+G
-         0C4+tfzqhNJvrTqAxhIPRXvxuIohpEwh5TJ7CL8FGL0c7leRHwoMWbSNVtqXJ6oHTaxG
-         HMnSTKYTfcZi2YYnKsgUj2sMfRGkM4NNgSzsK9K/ulnuH91USIWXnzJZhYwhkM43kqsz
-         WPTPqY3wIg4M0aiqFXn5ygAeBIyjTs+Pk8cxwHUF9w/AbtkurtnWnB7nLiiJofZ3dvHy
-         dl+mJvoAhaRWPluVQdV+DTBG0F+ZqJKyZuckmUxOezr1HmPFQ3+z4w4ojafOjHQB6Z1t
-         GACw==
-X-Gm-Message-State: ACgBeo3n2FKLeE36W8WabpBZcrdrqvFL9HRrE+bxYbCtLulcnL2b1tsC
-        ozlGx3joCAzHUwj0twu2mOU=
-X-Google-Smtp-Source: AA6agR7FB9sjnJbz8bxM0fTIOs1CUGgdBpX/1WCCHOxG/ZfhC2Lu+d4G/6t1d5cOPCfSS1GTViBSsg==
-X-Received: by 2002:a05:622a:48f:b0:343:6db4:d3b1 with SMTP id p15-20020a05622a048f00b003436db4d3b1mr4216701qtx.202.1660322607234;
-        Fri, 12 Aug 2022 09:43:27 -0700 (PDT)
-Received: from [10.67.48.245] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id c9-20020ac85a89000000b0033aac3da27dsm2259925qtc.19.2022.08.12.09.43.25
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 12 Aug 2022 09:43:26 -0700 (PDT)
-Message-ID: <ac5e544a-a9d7-37c7-3d0b-65e706d544a0@gmail.com>
-Date:   Fri, 12 Aug 2022 09:43:24 -0700
+        with ESMTP id S240250AbiHMWAp (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Sat, 13 Aug 2022 18:00:45 -0400
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2890BF70;
+        Sat, 13 Aug 2022 15:00:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1660428043; x=1691964043;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=J2stkkYmPik2bQMds1PPTKQFWYY4K6w3/+pjsawBn4I=;
+  b=czriY2QSJtsHs+0YJIn5ie4MEylQAeO1kW/kS7jZoyutko3tg5lYKLsh
+   U8uwSotSnGfPl2vJQS7mXtH4oMFazwVlS/Xc7jXjm/W0R2M8xn4DxBnHw
+   kIWTBYyV1rhIi/CUgFr62xfLVN+CqYCowKo4VrUWdTiHHWU6njZrRlHxQ
+   kaTEKulZ63EuSu4qn9pNqf4xP0sdTWK/u2NAugMb9FbtEUSj30NAXgimh
+   5qPunzQISbEjtHhAHANiwq1Jl2HcUvhbN24qdPsixdN+lNMnl7ALLrf3m
+   ZKPstDNZJppuxJNs4K8cjvcKaPPyhu1ezSatsWfsJc/83jLR0F08xO9ot
+   w==;
+X-IronPort-AV: E=McAfee;i="6400,9594,10437"; a="293049446"
+X-IronPort-AV: E=Sophos;i="5.93,236,1654585200"; 
+   d="scan'208";a="293049446"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Aug 2022 15:00:42 -0700
+X-IronPort-AV: E=Sophos;i="5.93,236,1654585200"; 
+   d="scan'208";a="635047705"
+Received: from tsaiyinl-mobl1.amr.corp.intel.com (HELO localhost) ([10.209.125.19])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Aug 2022 15:00:40 -0700
+From:   ira.weiny@intel.com
+To:     Andy Whitcroft <apw@canonical.com>, Joe Perches <joe@perches.com>
+Cc:     Ira Weiny <ira.weiny@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Fabio M . De Francesco" <fmdefrancesco@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-snps-arc@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org,
+        loongarch@lists.linux.dev, linux-mips@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
+        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
+        linux-um@lists.infradead.org, x86@kernel.org,
+        linux-xtensa@linux-xtensa.org, keyrings@vger.kernel.org,
+        linux-ide@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-crypto@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-edac@vger.kernel.org, linux1394-devel@lists.sourceforge.net,
+        dri-devel@lists.freedesktop.org, dm-devel@redhat.com,
+        linux-raid@vger.kernel.org, linux-mmc@vger.kernel.org,
+        linux-rdma@vger.kernel.org, linux-mtd@lists.infradead.org,
+        netdev@vger.kernel.org, nvdimm@lists.linux.dev,
+        linux-nvme@lists.infradead.org, linux-scsi@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        linux-fsdevel@vger.kernel.org,
+        kgdb-bugreport@lists.sourceforge.net, iommu@lists.linux.dev,
+        bpf@vger.kernel.org, kvm@vger.kernel.org
+Subject: [PATCH] checkpatch: Add kmap and kmap_atomic to the deprecated list
+Date:   Sat, 13 Aug 2022 15:00:34 -0700
+Message-Id: <20220813220034.806698-1-ira.weiny@intel.com>
+X-Mailer: git-send-email 2.35.3
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.11.0
-Subject: Re: [PATCH v2] MIPS: Expose prid and globalnumber to sysfs
-Content-Language: en-US
-To:     Jiaxun Yang <jiaxun.yang@flygoat.com>
-Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        tsbogend@alpha.franken.de, linux-api@vger.kernel.org
-References: <20220811101236.1925-1-jiaxun.yang@flygoat.com>
- <66e7f45b-2292-f76e-b9a1-3db2af8c24a9@gmail.com>
- <2ED0B1C9-07AB-4DE3-BC85-F490FA94785F@flygoat.com>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-In-Reply-To: <2ED0B1C9-07AB-4DE3-BC85-F490FA94785F@flygoat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On 8/12/22 03:29, Jiaxun Yang wrote:
-> 
-> 
->> 2022年8月12日 03:21，Florian Fainelli <f.fainelli@gmail.com 
->> <mailto:f.fainelli@gmail.com>> 写道：
->>
->>
->>
->> On 8/11/2022 3:12 AM, Jiaxun Yang wrote:
->>> Some application would like to know precise model and rev of processor
->>> to do errata workaround or optimization.
->>> Expose them in sysfs as:
->>> /sys/devices/system/cpu/cpuX/regs/identification/prid
->>> /sys/devices/system/cpu/cpuX/regs/identification/globalnumber
->>> Reusing AArch64 CPU registers directory.
->>> Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com 
->>> <mailto:jiaxun.yang@flygoat.com>>
->>> ---
->>> v2: Drop static qualifier for kobj (gregkh)
->>> ---
->>>  .../ABI/testing/sysfs-devices-system-cpu      | 11 +++
->>>  arch/mips/kernel/topology.c                   | 96 +++++++++++++++++++
->>>  2 files changed, 107 insertions(+)
->>> diff --git a/Documentation/ABI/testing/sysfs-devices-system-cpu 
->>> b/Documentation/ABI/testing/sysfs-devices-system-cpu
->>> index 5bf61881f012..adf855e7bb9b 100644
->>> --- a/Documentation/ABI/testing/sysfs-devices-system-cpu
->>> +++ b/Documentation/ABI/testing/sysfs-devices-system-cpu
->>> @@ -512,6 +512,17 @@ Description:information about CPUs heterogeneity.
->>> cpu_capacity: capacity of cpuX.
->>>  +What:/sys/devices/system/cpu/cpuX/regs/
->>> +/sys/devices/system/cpu/cpuX/regs/identification/
->>> +/sys/devices/system/cpu/cpuX/regs/identification/prid
->>> +/sys/devices/system/cpu/cpuX/regs/identification/globalnumber
->>> +Date:Augest 2022
->>
->> typo: August
-> 
-> Thanks, good catch :-)
-> 
->>
->>> +Contact:Linux MIPS Kernel Mailing list <linux-mips@vger.kernel.org 
->>> <mailto:linux-mips@vger.kernel.org>>
->>> +Description:MIPS CPU registers
->>> +
->>> +'identification' directory exposes the Processor ID and Global Number
->>> +registers for identifying model and revision of the CPU.
->>> +
->>>  What:/sys/devices/system/cpu/vulnerabilities
->>> /sys/devices/system/cpu/vulnerabilities/meltdown
->>> /sys/devices/system/cpu/vulnerabilities/spectre_v1
->>> diff --git a/arch/mips/kernel/topology.c b/arch/mips/kernel/topology.c
->>> index 9429d85a4703..0e3730f3c00f 100644
->>> --- a/arch/mips/kernel/topology.c
->>> +++ b/arch/mips/kernel/topology.c
->>> @@ -5,6 +5,8 @@
->>>  #include <linux/node.h>
->>>  #include <linux/nodemask.h>
->>>  #include <linux/percpu.h>
->>> +#include <linux/seq_file.h>
->>> +#include <linux/smp.h>
->>>    static DEFINE_PER_CPU(struct cpu, cpu_devices);
->>>  @@ -26,3 +28,97 @@ static int __init topology_init(void)
->>>  }
->>>    subsys_initcall(topology_init);
->>> +
->>> +static struct kobj_type cpuregs_kobj_type = {
->>> +.sysfs_ops = &kobj_sysfs_ops,
->>> +};
->>> +
->>> +struct cpureg {
->>> +struct kobject kobj;
->>> +struct cpuinfo_mips *info;
->>> +};
->>> +DEFINE_PER_CPU(struct cpureg, cpuregs);
->>> +
->>> +#define kobj_to_cpureg(kobj)container_of(kobj, struct cpureg, kobj)
->>> +#define CPUREGS_ATTR_RO(_name, _field)\
->>> +static ssize_t _name##_show(struct kobject *kobj,\
->>> +struct kobj_attribute *attr, char *buf)\
->>> +{\
->>> +struct cpuinfo_mips *info = kobj_to_cpureg(kobj)->info;\
->>> +\
->>> +return sprintf(buf, "0x%08x\n", info->_field);\
->>
->> Would not you be able to simplify this greatly with just:
->>
->> struct cpuinfo_mips *info = current_cpu_data;
-> 
-> Because some fields in PRID and globalnumber are not consistent between 
-> cores
-> so it needs to be per CPU.
+From: Ira Weiny <ira.weiny@intel.com>
 
-Yes my bad, I was thinking that you could simplify things by always 
-getting the registers of the CPU you are running on, but you need to 
-create those attributes for each CPU in the system and ensure that they 
-do resolve to the actual cpuinfo_mips of said CPU, such that when you do:
+kmap() and kmap_atomic() are being deprecated in favor of
+kmap_local_page().
 
-cat /sys/device/system/cpu/cpu*/regs/prid
+There are two main problems with kmap(): (1) It comes with an overhead
+as mapping space is restricted and protected by a global lock for
+synchronization and (2) it also requires global TLB invalidation when
+the kmap’s pool wraps and it might block when the mapping space is fully
+utilized until a slot becomes available.
 
-we do return the actual information of that CPU number, not the one from 
-the CPU we are on.
+kmap_local_page() is safe from any context and is therefore redundant
+with kmap_atomic() with the exception of any pagefault or preemption
+disable requirements.  However, using kmap_atomic() for these side
+effects makes the code less clear.  So any requirement for pagefault or
+preemption disable should be made explicitly.
 
-Thanks!
+With kmap_local_page() the mappings are per thread, CPU local, can take
+page faults, and can be called from any context (including interrupts).
+It is faster than kmap() in kernels with HIGHMEM enabled. Furthermore,
+the tasks can be preempted and, when they are scheduled to run again,
+the kernel virtual addresses are restored.
+
+Suggested-by: Thomas Gleixner <tglx@linutronix.de>
+Suggested-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
+Signed-off-by: Ira Weiny <ira.weiny@intel.com>
+
+---
+Suggested by credits.
+	Thomas: Idea to keep from growing more kmap/kmap_atomic calls.
+	Fabio: Stole some of his boiler plate commit message.
+
+Notes on tree-wide conversions:
+
+I've cc'ed mailing lists for subsystems which currently contains either kmap()
+or kmap_atomic() calls.  As some of you already know Fabio and I have been
+working through converting kmap() calls to kmap_local_page().  But there is a
+lot more work to be done.  Help from the community is always welcome,
+especially with kmap_atomic() conversions.  To keep from stepping on each
+others toes I've created a spreadsheet of the current calls[1].  Please let me
+or Fabio know if you plan on tacking one of the conversions so we can mark it
+off the list.
+
+[1] https://docs.google.com/spreadsheets/d/1i_ckZ10p90bH_CkxD2bYNi05S2Qz84E2OFPv8zq__0w/edit#gid=1679714357
+
+---
+ scripts/checkpatch.pl | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+index 79e759aac543..9ff219e0a9d5 100755
+--- a/scripts/checkpatch.pl
++++ b/scripts/checkpatch.pl
+@@ -807,6 +807,8 @@ our %deprecated_apis = (
+ 	"rcu_barrier_sched"			=> "rcu_barrier",
+ 	"get_state_synchronize_sched"		=> "get_state_synchronize_rcu",
+ 	"cond_synchronize_sched"		=> "cond_synchronize_rcu",
++	"kmap"					=> "kmap_local_page",
++	"kmap_atomic"				=> "kmap_local_page",
+ );
+ 
+ #Create a search pattern for all these strings to speed up a loop below
+
+base-commit: 4a9350597aff50bbd0f4b80ccf49d2e02d1111f5
 -- 
-Florian
+2.35.3
+

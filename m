@@ -2,88 +2,120 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6E324C2BB41
-	for <linux-mips@archiver.kernel.org>; Sun, 14 Aug 2022 16:42:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3DD78C25B06
+	for <linux-mips@archiver.kernel.org>; Mon, 15 Aug 2022 12:36:42 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243222AbiHNQmk (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Sun, 14 Aug 2022 12:42:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34368 "EHLO
+        id S231732AbiHOMgl (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 15 Aug 2022 08:36:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47528 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243053AbiHNQj6 (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Sun, 14 Aug 2022 12:39:58 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69C5D21C;
-        Sun, 14 Aug 2022 09:30:12 -0700 (PDT)
+        with ESMTP id S229623AbiHOMgj (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Mon, 15 Aug 2022 08:36:39 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 130711A3BC;
+        Mon, 15 Aug 2022 05:36:38 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 23A30B80B3C;
-        Sun, 14 Aug 2022 16:30:11 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1DAF4C433D6;
-        Sun, 14 Aug 2022 16:30:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1660494609;
-        bh=EDm+cXKravyMKJOtAFbZaSk7wAygPsVXHZEc10Upyg8=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ezYlk5gDb6CRK90/3KUvQ7Hs8phvYgypBbgMKzqJvGiYtgTparRd3NRg+ePzduxSB
-         nyAuHJ+QJwJ3uc2Eb2qfCUlG6GzWfqTrcDnng7X93KYKv/F04tN9eg4nhBFon12cR5
-         ks3HNfkqAPp11R8+aHEACTkkTbog23JtcKjYwC8H3/e5hj6LMibQUwouHwNqpWyvrU
-         TK5pU3DbKxffHM4xWvgZE+AjPrXhGfyOqcVrMlRxv09a8mHOjJ54cP3mqu/XeHItVM
-         OxnwP7V4dGpp7F8FWJLLPM6k2fAU4ejSXuwuZPP8jSHGYCvyZY5P/SMrV6GHSxouSe
-         RgjQq95fikr1g==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Liang He <windhl@126.com>,
+        by dfw.source.kernel.org (Postfix) with ESMTPS id A1F0B611C6;
+        Mon, 15 Aug 2022 12:36:37 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1637DC433C1;
+        Mon, 15 Aug 2022 12:36:31 +0000 (UTC)
+From:   Huacai Chen <chenhuacai@loongson.cn>
+To:     Arnd Bergmann <arnd@arndb.de>, Huacai Chen <chenhuacai@kernel.org>,
         Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Sasha Levin <sashal@kernel.org>, ye.guojin@zte.com.cn,
-        linux-mips@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.14 3/9] mips: cavium-octeon: Fix missing of_node_put() in octeon2_usb_clocks_start
-Date:   Sun, 14 Aug 2022 12:29:53 -0400
-Message-Id: <20220814162959.2399011-3-sashal@kernel.org>
-X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20220814162959.2399011-1-sashal@kernel.org>
-References: <20220814162959.2399011-1-sashal@kernel.org>
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Dinh Nguyen <dinguyen@kernel.org>
+Cc:     loongarch@lists.linux.dev, linux-arch@vger.kernel.org,
+        Xuefeng Li <lixuefeng@loongson.cn>,
+        Guo Ren <guoren@kernel.org>, Xuerui Wang <kernel@xen0n.name>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        Huacai Chen <chenhuacai@loongson.cn>,
+        Feiyang Chen <chenfeiyang@loongson.cn>
+Subject: [PATCH V10 0/4] mm/sparse-vmemmap: Generalise helpers and enable for LoongArch
+Date:   Mon, 15 Aug 2022 20:36:09 +0800
+Message-Id: <20220815123613.3291770-1-chenhuacai@loongson.cn>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-From: Liang He <windhl@126.com>
+This series is in order to enable sparse-vmemmap for LoongArch. But
+LoongArch cannot use generic helpers directly because MIPS&LoongArch
+need to call pgd_init()/pud_init()/pmd_init() when populating page
+tables. So we adjust the prototypes of p?d_init() to make generic
+helpers can call them, then enable sparse-vmemmap with generic helpers,
+and to be further, generalise vmemmap_populate_hugepages() for ARM64,
+X86 and LoongArch.
 
-[ Upstream commit 7a9f743ceead60ed454c46fbc3085ee9a79cbebb ]
+V1 -> V2:
+Split ARCH_WANT_HUGETLB_PAGE_OPTIMIZE_VMEMMAP to a separate patch.
 
-We should call of_node_put() for the reference 'uctl_node' returned by
-of_get_parent() which will increase the refcount. Otherwise, there will
-be a refcount leak bug.
+V2 -> V3:
+1, Change the Signed-off-by order of author and committer;
+2, Update commit message about the build error on LoongArch.
 
-Signed-off-by: Liang He <windhl@126.com>
-Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+V3 -> V4:
+Change pmd to pmdp for ARM64 for consistency.
+
+V4 -> V5:
+Add a detailed comment for no-fallback in the altmap case.
+
+V5 -> V6:
+1, Fix build error for NIOS2;
+2, Fix build error for allnoconfig;
+3, Update comment for no-fallback in the altmap case.
+
+V6 -> V7:
+Fix build warnings of "no previous prototype".
+
+V7 -> V8:
+Fix build error for MIPS pud_init().
+
+V8 -> V9:
+Remove redundant #include to avoid build error with latest upstream
+kernel.
+
+V9 -> V10:
+Fix build error due to VMEMMAP changes in 6.0-rc1.
+
+Huacai Chen and Feiyang Chen(4):
+ MIPS&LoongArch&NIOS2: Adjust prototypes of p?d_init().
+ LoongArch: Add sparse memory vmemmap support.
+ mm/sparse-vmemmap: Generalise vmemmap_populate_hugepages().
+ LoongArch: Enable ARCH_WANT_HUGETLB_PAGE_OPTIMIZE_VMEMMAP.
+
+Signed-off-by: Huacai Chen <chenhuacai@loongson.cn>
+Signed-off-by: Feiyang Chen <chenfeiyang@loongson.cn> 
 ---
- arch/mips/cavium-octeon/octeon-platform.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/arch/mips/cavium-octeon/octeon-platform.c b/arch/mips/cavium-octeon/octeon-platform.c
-index ed42fc27033c..f2a1c316608a 100644
---- a/arch/mips/cavium-octeon/octeon-platform.c
-+++ b/arch/mips/cavium-octeon/octeon-platform.c
-@@ -86,11 +86,12 @@ static void octeon2_usb_clocks_start(struct device *dev)
- 					 "refclk-frequency", &clock_rate);
- 		if (i) {
- 			dev_err(dev, "No UCTL \"refclk-frequency\"\n");
-+			of_node_put(uctl_node);
- 			goto exit;
- 		}
- 		i = of_property_read_string(uctl_node,
- 					    "refclk-type", &clock_type);
--
-+		of_node_put(uctl_node);
- 		if (!i && strcmp("crystal", clock_type) == 0)
- 			is_crystal_clock = true;
- 	}
--- 
-2.35.1
+ arch/arm64/mm/mmu.c                    | 53 ++++++--------------
+ arch/loongarch/Kconfig                 |  2 +
+ arch/loongarch/include/asm/pgalloc.h   | 13 +----
+ arch/loongarch/include/asm/pgtable.h   | 13 +++--
+ arch/loongarch/include/asm/sparsemem.h |  8 +++
+ arch/loongarch/kernel/numa.c           |  4 +-
+ arch/loongarch/mm/init.c               | 44 +++++++++++++++-
+ arch/loongarch/mm/pgtable.c            | 23 +++++----
+ arch/mips/include/asm/pgalloc.h        |  8 +--
+ arch/mips/include/asm/pgtable-64.h     |  8 +--
+ arch/mips/kvm/mmu.c                    |  3 +-
+ arch/mips/mm/pgtable-32.c              | 10 ++--
+ arch/mips/mm/pgtable-64.c              | 18 ++++---
+ arch/mips/mm/pgtable.c                 |  2 +-
+ arch/x86/mm/init_64.c                  | 92 ++++++++++++----------------------
+ include/linux/mm.h                     |  8 +++
+ include/linux/page-flags.h             |  1 +
+ mm/sparse-vmemmap.c                    | 64 +++++++++++++++++++++++
+ 18 files changed, 222 insertions(+), 152 deletions(-)
+--
+2.27.0
 

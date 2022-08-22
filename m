@@ -2,94 +2,119 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D3C1BC00140
-	for <linux-mips@archiver.kernel.org>; Sun, 21 Aug 2022 18:36:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9F81EC38142
+	for <linux-mips@archiver.kernel.org>; Mon, 22 Aug 2022 08:23:52 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230047AbiHUSgK (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Sun, 21 Aug 2022 14:36:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42860 "EHLO
+        id S233956AbiHVIXt (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 22 Aug 2022 04:23:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56004 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229652AbiHUSgJ (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Sun, 21 Aug 2022 14:36:09 -0400
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F129A192A3;
-        Sun, 21 Aug 2022 11:36:03 -0700 (PDT)
-Received: by mail-lf1-x12e.google.com with SMTP id l1so11980842lfk.8;
-        Sun, 21 Aug 2022 11:36:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc;
-        bh=sWYRCKPzZNUJ326QE37gGcrO9oc82QKCR1L4KO18yAo=;
-        b=pOc6suRiQkBz2Vp98NTIR54smqmqCQJ5g05e+LES9vIwk1/jawZb1PuCuAoj0lSTFk
-         wHgDbIzMlZkhq3q2THxA6Xc6We3lp6zHweD0ddVT6a4XbybOK+4c6m6WyTVJzJEsrhtS
-         +X+JeUCxO2xOpz+rtHvWnXpS3MkybRQcJPnJQS1/Cs92NbM0If8DZGB1ikvt9yVtRKfU
-         XQW6GYfNSdGORrwf8KUHWK62fEvKP+Ew2b2Tg/QAX8RFMtVKdvH7nol7cmBJafWSeUrw
-         FM4pgbBI8xxuR/PFnCZxjrfjmns9kj+12hDIl/rpxyzbgJYj81fUZPeAL4STVZMC4Srb
-         Rm7A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc;
-        bh=sWYRCKPzZNUJ326QE37gGcrO9oc82QKCR1L4KO18yAo=;
-        b=ttlW8dfe+qhvgq/waCPFjR3rKhAJmx1TQLpDqnpwo/T6AgUKeD6isfdQ+3iS7SF/uR
-         +at5ditzJ5Gkqu0LJqgT3RPHHwmXWYOxBjYPdqWXUu+QZ14EA/nmqg/TSI/gqTy79eOU
-         +oWeHkuwewqOcuskyI1qZElXoHsoYxFh9F9EO15khwJDYzXmpKCLanOJlo0QKrl+fZgS
-         sxqX5919LRj1kKNPxkACn02V8yxd1mIw+Zrmyp6dbChu4uPWiSKY8O/uXByWfg8LpIcn
-         RqkiIenAOw3b+18IG/VU+86Ic3AZSs+5U+jtrvVN/Efqo/nFBflxaDkK7rgULbUpjrxT
-         CqOQ==
-X-Gm-Message-State: ACgBeo0PW172GGIv76egqt2Q16kAL+nY+nEStmlvswHdB4FpVk8htk8Z
-        U1dcozFaEauPmoVqIOqO+nNW2JkecneLyQ==
-X-Google-Smtp-Source: AA6agR5uMdLClrtMrGoVxtRJ7XAYtoRKdZwhTJ+dBE6NThLMmCjqZTmatid5GB4/oxWUGTmcMF06FA==
-X-Received: by 2002:a05:6512:110e:b0:48f:b9bf:8f4a with SMTP id l14-20020a056512110e00b0048fb9bf8f4amr6134901lfg.676.1661106962233;
-        Sun, 21 Aug 2022 11:36:02 -0700 (PDT)
-Received: from mobilestation ([95.79.140.178])
-        by smtp.gmail.com with ESMTPSA id x6-20020a056512078600b00492348c5ccesm792461lfr.281.2022.08.21.11.36.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 21 Aug 2022 11:36:01 -0700 (PDT)
-Date:   Sun, 21 Aug 2022 21:35:59 +0300
-From:   Serge Semin <fancer.lancer@gmail.com>
-To:     Shaomin Deng <dengshaomin@cdjrlc.com>
-Cc:     tglx@linutronix.de, maz@kernel.org, tsbogend@alpha.franken.de,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] irqchip/mips-gic: Fix typo in irq-mips-gic.c
-Message-ID: <20220821183559.pnduerff7nq76sfj@mobilestation>
-References: <20220811151657.10242-1-dengshaomin@cdjrlc.com>
+        with ESMTP id S233354AbiHVIXp (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Mon, 22 Aug 2022 04:23:45 -0400
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC7CB615A;
+        Mon, 22 Aug 2022 01:23:32 -0700 (PDT)
+Received: from canpemm500009.china.huawei.com (unknown [172.30.72.56])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4MB50n281BznTgN;
+        Mon, 22 Aug 2022 16:21:13 +0800 (CST)
+Received: from localhost.localdomain (10.67.164.66) by
+ canpemm500009.china.huawei.com (7.192.105.203) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.24; Mon, 22 Aug 2022 16:23:29 +0800
+From:   Yicong Yang <yangyicong@huawei.com>
+To:     <akpm@linux-foundation.org>, <linux-mm@kvack.org>,
+        <linux-arm-kernel@lists.infradead.org>, <x86@kernel.org>,
+        <catalin.marinas@arm.com>, <will@kernel.org>,
+        <linux-doc@vger.kernel.org>
+CC:     <corbet@lwn.net>, <peterz@infradead.org>, <arnd@arndb.de>,
+        <linux-kernel@vger.kernel.org>, <darren@os.amperecomputing.com>,
+        <yangyicong@hisilicon.com>, <huzhanyuan@oppo.com>,
+        <lipeifeng@oppo.com>, <zhangshiming@oppo.com>, <guojian@oppo.com>,
+        <realmz6@gmail.com>, <linux-mips@vger.kernel.org>,
+        <openrisc@lists.librecores.org>, <linuxppc-dev@lists.ozlabs.org>,
+        <linux-riscv@lists.infradead.org>, <linux-s390@vger.kernel.org>,
+        Barry Song <21cnbao@gmail.com>, <wangkefeng.wang@huawei.com>,
+        <xhao@linux.alibaba.com>, <prime.zeng@hisilicon.com>,
+        <anshuman.khandual@arm.com>
+Subject: [PATCH v3 0/4] mm: arm64: bring up BATCHED_UNMAP_TLB_FLUSH
+Date:   Mon, 22 Aug 2022 16:21:16 +0800
+Message-ID: <20220822082120.8347-1-yangyicong@huawei.com>
+X-Mailer: git-send-email 2.31.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20220811151657.10242-1-dengshaomin@cdjrlc.com>
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.67.164.66]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ canpemm500009.china.huawei.com (7.192.105.203)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Thu, Aug 11, 2022 at 11:16:57AM -0400, Shaomin Deng wrote:
-> Remove the rebundant word "the" in comments.
+From: Yicong Yang <yangyicong@hisilicon.com>
 
-Right. Thanks.
-Acked-by: Serge Semin <fancer.lancer@gmail.com>
+Though ARM64 has the hardware to do tlb shootdown, the hardware
+broadcasting is not free.
+A simplest micro benchmark shows even on snapdragon 888 with only
+8 cores, the overhead for ptep_clear_flush is huge even for paging
+out one page mapped by only one process:
+5.36%  a.out    [kernel.kallsyms]  [k] ptep_clear_flush
 
--Sergey
+While pages are mapped by multiple processes or HW has more CPUs,
+the cost should become even higher due to the bad scalability of
+tlb shootdown.
 
-> 
-> Signed-off-by: Shaomin Deng <dengshaomin@cdjrlc.com>
-> ---
->  drivers/irqchip/irq-mips-gic.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/irqchip/irq-mips-gic.c b/drivers/irqchip/irq-mips-gic.c
-> index ff89b36267dd..53daac318ccd 100644
-> --- a/drivers/irqchip/irq-mips-gic.c
-> +++ b/drivers/irqchip/irq-mips-gic.c
-> @@ -490,7 +490,7 @@ static int gic_irq_domain_map(struct irq_domain *d, unsigned int virq,
->  	map = GIC_MAP_PIN_MAP_TO_PIN | gic_cpu_pin;
->  
->  	/*
-> -	 * If adding support for more per-cpu interrupts, keep the the
-> +	 * If adding support for more per-cpu interrupts, keep the
->  	 * array in gic_all_vpes_irq_cpu_online() in sync.
->  	 */
->  	switch (intr) {
-> -- 
-> 2.35.1
-> 
+The same benchmark can result in 16.99% CPU consumption on ARM64
+server with around 100 cores according to Yicong's test on patch
+4/4.
+
+This patchset leverages the existing BATCHED_UNMAP_TLB_FLUSH by
+1. only send tlbi instructions in the first stage -
+	arch_tlbbatch_add_mm()
+2. wait for the completion of tlbi by dsb while doing tlbbatch
+	sync in arch_tlbbatch_flush()
+My testing on snapdragon shows the overhead of ptep_clear_flush
+is removed by the patchset. The micro benchmark becomes 5% faster
+even for one page mapped by single process on snapdragon 888.
+
+-v3:
+1. Declare arch's tlbbatch defer support by arch_tlbbatch_should_defer() instead
+   of ARCH_HAS_MM_CPUMASK, per Barry and Kefeng
+2. Add Tested-by from Xin Hao
+Link: https://lore.kernel.org/linux-mm/20220711034615.482895-1-21cnbao@gmail.com/
+
+-v2:
+1. Collected Yicong's test result on kunpeng920 ARM64 server;
+2. Removed the redundant vma parameter in arch_tlbbatch_add_mm()
+   according to the comments of Peter Zijlstra and Dave Hansen
+3. Added ARCH_HAS_MM_CPUMASK rather than checking if mm_cpumask
+   is empty according to the comments of Nadav Amit
+
+Thanks, Peter, Dave and Nadav for your testing or reviewing
+, and comments.
+
+-v1:
+https://lore.kernel.org/lkml/20220707125242.425242-1-21cnbao@gmail.com/
+
+Anshuman Khandual (1):
+  mm/tlbbatch: Introduce arch_tlbbatch_should_defer()
+
+Barry Song (3):
+  Revert "Documentation/features: mark BATCHED_UNMAP_TLB_FLUSH doesn't
+    apply to ARM64"
+  mm: rmap: Extend tlbbatch APIs to fit new platforms
+  arm64: support batched/deferred tlb shootdown during page reclamation
+
+ Documentation/features/arch-support.txt       |  1 -
+ .../features/vm/TLB/arch-support.txt          |  2 +-
+ arch/arm64/Kconfig                            |  1 +
+ arch/arm64/include/asm/tlbbatch.h             | 12 ++++++++
+ arch/arm64/include/asm/tlbflush.h             | 28 +++++++++++++++++--
+ arch/x86/include/asm/tlbflush.h               | 15 +++++++++-
+ mm/rmap.c                                     | 19 +++++--------
+ 7 files changed, 61 insertions(+), 17 deletions(-)
+ create mode 100644 arch/arm64/include/asm/tlbbatch.h
+
+-- 
+2.24.0
+

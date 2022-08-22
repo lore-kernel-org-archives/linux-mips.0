@@ -2,122 +2,167 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3650EC28D13
-	for <linux-mips@archiver.kernel.org>; Mon, 22 Aug 2022 08:24:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5AC70C32772
+	for <linux-mips@archiver.kernel.org>; Mon, 22 Aug 2022 09:05:37 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234017AbiHVIYB (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 22 Aug 2022 04:24:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54978 "EHLO
+        id S234151AbiHVJFg (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 22 Aug 2022 05:05:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47524 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233937AbiHVIXq (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Mon, 22 Aug 2022 04:23:46 -0400
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3519AB1FC;
-        Mon, 22 Aug 2022 01:23:35 -0700 (PDT)
-Received: from canpemm500009.china.huawei.com (unknown [172.30.72.53])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4MB4zR4wk3z1N7Vq;
-        Mon, 22 Aug 2022 16:20:03 +0800 (CST)
-Received: from localhost.localdomain (10.67.164.66) by
- canpemm500009.china.huawei.com (7.192.105.203) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Mon, 22 Aug 2022 16:23:30 +0800
-From:   Yicong Yang <yangyicong@huawei.com>
-To:     <akpm@linux-foundation.org>, <linux-mm@kvack.org>,
-        <linux-arm-kernel@lists.infradead.org>, <x86@kernel.org>,
-        <catalin.marinas@arm.com>, <will@kernel.org>,
-        <linux-doc@vger.kernel.org>
-CC:     <corbet@lwn.net>, <peterz@infradead.org>, <arnd@arndb.de>,
-        <linux-kernel@vger.kernel.org>, <darren@os.amperecomputing.com>,
-        <yangyicong@hisilicon.com>, <huzhanyuan@oppo.com>,
-        <lipeifeng@oppo.com>, <zhangshiming@oppo.com>, <guojian@oppo.com>,
-        <realmz6@gmail.com>, <linux-mips@vger.kernel.org>,
-        <openrisc@lists.librecores.org>, <linuxppc-dev@lists.ozlabs.org>,
-        <linux-riscv@lists.infradead.org>, <linux-s390@vger.kernel.org>,
-        Barry Song <21cnbao@gmail.com>, <wangkefeng.wang@huawei.com>,
-        <xhao@linux.alibaba.com>, <prime.zeng@hisilicon.com>,
-        <anshuman.khandual@arm.com>,
-        Anshuman Khandual <khandual@linux.vnet.ibm.com>
-Subject: [PATCH v3 2/4] mm/tlbbatch: Introduce arch_tlbbatch_should_defer()
-Date:   Mon, 22 Aug 2022 16:21:18 +0800
-Message-ID: <20220822082120.8347-3-yangyicong@huawei.com>
-X-Mailer: git-send-email 2.31.0
-In-Reply-To: <20220822082120.8347-1-yangyicong@huawei.com>
-References: <20220822082120.8347-1-yangyicong@huawei.com>
+        with ESMTP id S234143AbiHVJD2 (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Mon, 22 Aug 2022 05:03:28 -0400
+Received: from aposti.net (aposti.net [89.234.176.197])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2B882184;
+        Mon, 22 Aug 2022 02:03:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crapouillou.net;
+        s=mail; t=1661158992; h=from:from:sender:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=/BpMnlAU7QlyBal9Ml6AXqdPCMk964dk628E6HF4/7I=;
+        b=z5Yz2KFwTThKueUxoAnnOk9yOk04UN7nLhbmXbIlW1warVc0D4xrttnlNAVSk7baD7iFR7
+        0ZSbxN00/MxyG6lohewdN29dLIRtLhxOqdNguvecWRD1jqUU1X4+lOdAhSzi2UuKMjcMz8
+        HCM10Rx9l1Sy//CbEj0YO/PDdxmxv6M=
+Date:   Mon, 22 Aug 2022 11:03:03 +0200
+From:   Paul Cercueil <paul@crapouillou.net>
+Subject: Re: [PATCH 4/4] input: joystick: Fix buffer data parsing
+To:     Jonathan Cameron <jic23@kernel.org>
+Cc:     Artur Rojek <contact@artur-rojek.eu>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Chris Morgan <macromorgan@hotmail.com>,
+        linux-mips@vger.kernel.org, linux-iio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-input@vger.kernel.org
+Message-Id: <3HE0HR.IPKJTTCKEJUA1@crapouillou.net>
+In-Reply-To: <20220819185339.7f488ad8@jic23-huawei>
+References: <20220817105643.95710-1-contact@artur-rojek.eu>
+        <20220817105643.95710-5-contact@artur-rojek.eu>
+        <20220819185339.7f488ad8@jic23-huawei>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.67.164.66]
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- canpemm500009.china.huawei.com (7.192.105.203)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=iso-8859-1; format=flowed
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-From: Anshuman Khandual <khandual@linux.vnet.ibm.com>
+Hi Jonathan,
 
-The entire scheme of deferred TLB flush in reclaim path rests on the
-fact that the cost to refill TLB entries is less than flushing out
-individual entries by sending IPI to remote CPUs. But architecture
-can have different ways to evaluate that. Hence apart from checking
-TTU_BATCH_FLUSH in the TTU flags, rest of the decision should be
-architecture specific.
+Le ven., ao=FBt 19 2022 at 18:53:39 +0100, Jonathan Cameron=20
+<jic23@kernel.org> a =E9crit :
+> On Wed, 17 Aug 2022 12:56:43 +0200
+> Artur Rojek <contact@artur-rojek.eu> wrote:
+>=20
+>>  Don't try to access buffer data of a channel by its scan index.=20
+>> Instead,
+>>  use the newly introduced `iio_find_channel_offset_in_buffer` to get=20
+>> the
+>>  correct data offset.
+>>=20
+>>  The scan index of a channel does not represent its position in a=20
+>> buffer,
+>>  as the buffer will contain data for enabled channels only, affecting
+>>  data offsets and alignment.
+>>=20
+>>  Fixes: 2c2b364fddd5 ("Input: joystick - add ADC attached joystick=20
+>> driver.")
+>>  Reported-by: Chris Morgan <macromorgan@hotmail.com>
+>>  Tested-by: Paul Cercueil <paul@crapouillou.net>
+>>  Signed-off-by: Artur Rojek <contact@artur-rojek.eu>
+>>  ---
+>>   drivers/input/joystick/adc-joystick.c | 26=20
+>> +++++++++++++++++---------
+>>   1 file changed, 17 insertions(+), 9 deletions(-)
+>>=20
+>>  diff --git a/drivers/input/joystick/adc-joystick.c=20
+>> b/drivers/input/joystick/adc-joystick.c
+>>  index c0deff5d4282..aed853ebe1d1 100644
+>>  --- a/drivers/input/joystick/adc-joystick.c
+>>  +++ b/drivers/input/joystick/adc-joystick.c
+>>  @@ -6,6 +6,7 @@
+>>   #include <linux/ctype.h>
+>>   #include <linux/input.h>
+>>   #include <linux/iio/iio.h>
+>>  +#include <linux/iio/buffer.h>
+>>   #include <linux/iio/consumer.h>
+>>   #include <linux/module.h>
+>>   #include <linux/platform_device.h>
+>>  @@ -46,36 +47,43 @@ static void adc_joystick_poll(struct input_dev=20
+>> *input)
+>>   static int adc_joystick_handle(const void *data, void *private)
+>>   {
+>>   	struct adc_joystick *joy =3D private;
+>>  +	struct iio_buffer *buffer;
+>>   	enum iio_endian endianness;
+>>  -	int bytes, msb, val, idx, i;
+>>  -	const u16 *data_u16;
+>>  +	int bytes, msb, val, off;
+>>  +	const u8 *chan_data;
+>>  +	unsigned int i;
+>>   	bool sign;
+>>=20
+>>   	bytes =3D joy->chans[0].channel->scan_type.storagebits >> 3;
+>>=20
+>>   	for (i =3D 0; i < joy->num_chans; ++i) {
+>>  -		idx =3D joy->chans[i].channel->scan_index;
+>>   		endianness =3D joy->chans[i].channel->scan_type.endianness;
+>>   		msb =3D joy->chans[i].channel->scan_type.realbits - 1;
+>>   		sign =3D tolower(joy->chans[i].channel->scan_type.sign) =3D=3D 's';
+>>  +		buffer =3D iio_channel_cb_get_iio_buffer(joy->buffer);
+>>  +		off =3D iio_find_channel_offset_in_buffer(joy->chans[i].indio_dev,
+>>  +							joy->chans[i].channel,
+>>  +							buffer);
+>=20
+> With this call replaced with one that instead uses
+>=20
+> 		off =3D iio_find_channel_offset_in_buffer(joy->chans, i);
+>=20
+> which I'm fairly sure is enough via the info in chans[x]->channel to=20
+> establish this offset.
+>=20
+> All is good, though you should probably cache it as doing that maths=20
+> every
+> time seems excessive.
+>=20
+>=20
+>>  +		if (off < 0)
+>>  +			return off;
+>>  +
+>>  +		chan_data =3D (const u8 *)data + off;
+>>=20
+>>   		switch (bytes) {
+>>   		case 1:
+>>  -			val =3D ((const u8 *)data)[idx];
+>>  +			val =3D *chan_data;
+>>   			break;
+>>   		case 2:
+>>  -			data_u16 =3D (const u16 *)data + idx;
+>>  -
+>>   			/*
+>>   			 * Data is aligned to the sample size by IIO core.
+>>   			 * Call `get_unaligned_xe16` to hide type casting.
+>>   			 */
+>>   			if (endianness =3D=3D IIO_BE)
+>>  -				val =3D get_unaligned_be16(data_u16);
+>>  +				val =3D get_unaligned_be16(chan_data);
+>=20
+> I obviously missed this previously but these are aligned so we don't=20
+> need the
+> unaligned form.
 
-Signed-off-by: Anshuman Khandual <khandual@linux.vnet.ibm.com>
-[https://lore.kernel.org/linuxppc-dev/20171101101735.2318-2-khandual@linux.vnet.ibm.com/]
-Signed-off-by: Yicong Yang <yangyicong@hisilicon.com>
-[Rebase and fix incorrect return value type]
----
- arch/x86/include/asm/tlbflush.h | 12 ++++++++++++
- mm/rmap.c                       |  9 +--------
- 2 files changed, 13 insertions(+), 8 deletions(-)
+Yes, the comment above says that it's used to hide type casting.
 
-diff --git a/arch/x86/include/asm/tlbflush.h b/arch/x86/include/asm/tlbflush.h
-index cda3118f3b27..8a497d902c16 100644
---- a/arch/x86/include/asm/tlbflush.h
-+++ b/arch/x86/include/asm/tlbflush.h
-@@ -240,6 +240,18 @@ static inline void flush_tlb_page(struct vm_area_struct *vma, unsigned long a)
- 	flush_tlb_mm_range(vma->vm_mm, a, a + PAGE_SIZE, PAGE_SHIFT, false);
- }
- 
-+static inline bool arch_tlbbatch_should_defer(struct mm_struct *mm)
-+{
-+	bool should_defer = false;
-+
-+	/* If remote CPUs need to be flushed then defer batch the flush */
-+	if (cpumask_any_but(mm_cpumask(mm), get_cpu()) < nr_cpu_ids)
-+		should_defer = true;
-+	put_cpu();
-+
-+	return should_defer;
-+}
-+
- static inline u64 inc_mm_tlb_gen(struct mm_struct *mm)
- {
- 	/*
-diff --git a/mm/rmap.c b/mm/rmap.c
-index edc06c52bc82..a17a004550c6 100644
---- a/mm/rmap.c
-+++ b/mm/rmap.c
-@@ -687,17 +687,10 @@ static void set_tlb_ubc_flush_pending(struct mm_struct *mm, bool writable)
-  */
- static bool should_defer_flush(struct mm_struct *mm, enum ttu_flags flags)
- {
--	bool should_defer = false;
--
- 	if (!(flags & TTU_BATCH_FLUSH))
- 		return false;
- 
--	/* If remote CPUs need to be flushed then defer batch the flush */
--	if (cpumask_any_but(mm_cpumask(mm), get_cpu()) < nr_cpu_ids)
--		should_defer = true;
--	put_cpu();
--
--	return should_defer;
-+	return arch_tlbbatch_should_defer(mm);
- }
- 
- /*
--- 
-2.24.0
+Cheers,
+-Paul
+
+>>   			else if (endianness =3D=3D IIO_LE)
+>>  -				val =3D get_unaligned_le16(data_u16);
+>>  +				val =3D get_unaligned_le16(chan_data);
+>>   			else /* IIO_CPU */
+>>  -				val =3D *data_u16;
+>>  +				val =3D *(const u16 *)chan_data;
+>>   			break;
+>>   		default:
+>>   			return -EINVAL;
+>=20
+
 

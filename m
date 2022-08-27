@@ -2,116 +2,96 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 57FDFECAAD7
-	for <linux-mips@archiver.kernel.org>; Fri, 26 Aug 2022 19:02:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1FB28C0502A
+	for <linux-mips@archiver.kernel.org>; Sat, 27 Aug 2022 13:20:19 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237625AbiHZTCE (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 26 Aug 2022 15:02:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37248 "EHLO
+        id S230024AbiH0NUR (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Sat, 27 Aug 2022 09:20:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60068 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344166AbiHZTCB (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Fri, 26 Aug 2022 15:02:01 -0400
-Received: from mail-yw1-x1132.google.com (mail-yw1-x1132.google.com [IPv6:2607:f8b0:4864:20::1132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99BB64F1BA
-        for <linux-mips@vger.kernel.org>; Fri, 26 Aug 2022 12:01:59 -0700 (PDT)
-Received: by mail-yw1-x1132.google.com with SMTP id 00721157ae682-3321c2a8d4cso58858277b3.5
-        for <linux-mips@vger.kernel.org>; Fri, 26 Aug 2022 12:01:59 -0700 (PDT)
+        with ESMTP id S232642AbiH0NUQ (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Sat, 27 Aug 2022 09:20:16 -0400
+Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B53C0726BB;
+        Sat, 27 Aug 2022 06:20:14 -0700 (PDT)
+Received: by mail-lj1-x232.google.com with SMTP id n24so3920909ljc.13;
+        Sat, 27 Aug 2022 06:20:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=anyfinetworks-com.20210112.gappssmtp.com; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc;
-        bh=5IGsFt88U29g0FS5xaHF37h09E8wApZqucl8B7a7urU=;
-        b=NZ/IN3QHe1a9yv4nNj3dXDoQEezOohx3Y28Yw3TJWGSSiiN3cUtJlsU4Y0glp/12jc
-         a0FGOhIHCUpiu0+ed3TwJY8aVLdep/em/CfPOZy0LLh+R7iXzSxn7l35VkxZBRZ5fvRo
-         Zh3R2RbmKf0njkKWnyy3ElIwwssUsSL5tu7PjR1jH+eyi8D9ZpO9+PeS4QGhi0bEmRUN
-         LnKa7MUGyOfG4kF8R40+C7twpS/m0Hgy4jZFNjRGHjmmVGB0tctbbl21AB4DYrBKPHvM
-         60AtPTr04C6bV0xj+uh3LYbP69aVlToxjPJnqv1MTfG296dIdlEKZYPsXr38XtjSy62r
-         zl4Q==
+        d=gmail.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc;
+        bh=f7tUYcOnTSQ6ehz47fSrJPerbj7591RmFAoZlu//qIU=;
+        b=CMdaxjr5k48RIPG/4Z2eG8tCeGbiks757257PgoO5M8lP8UKsf+LeqrZqKW12xyBXl
+         RbSPCKwDh8Bh8KtswPcgFodMJxat4uxBxcS7695zKkZShVp38AatT8Omi5apGbuABqRH
+         zb74G2kYGwnW7vOk1sAgpibbraVd7nJNJNfqmDdN850sfHMHQOa9qcmf80XKT5ZxxxoG
+         RHlTCeZZu42ZJd9Zxp54Xd/51v40Q/inSQ+15ufRkMvU4CNQUW61+tNSo59XM5Azfxqc
+         JAhqhIXkGO/IbzxH4dIVp1PYBd79ZbnrBH3mlzYqY8036ZCEKnvLkncgQJ2xmMMaOGLi
+         0lvg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc;
-        bh=5IGsFt88U29g0FS5xaHF37h09E8wApZqucl8B7a7urU=;
-        b=dZAtLv8QGZImS1TNf9k82a240kO2wapfNBZAsn8I5IxSg7b3w63NcjgZ2c8N4tNto+
-         y2dpEDSQcGfI8F4NlHB5flkm7YiDSe8BV1B5W5tlvUehAA2Na/lq22MTz06dAxHFTNor
-         XWMgDxTuBHmU2XmDIzay3rIAoOfvGcPs8ZtSospnmm4KTJduSgyMAL/fppMwnDw6t0I6
-         ERhYHA/KfcPVV2TZ3Mnn/dc2s7NcSD6UUbPa22EdY2R44u7ixrGnmBDrbTtgcczvcR2P
-         1rf78ELpvz+G9/JZ4TAGDWnTvBWvbY7qpbT0vUeWjKJWdz275YwjfJzhzmEZj0ZhNh2u
-         njQw==
-X-Gm-Message-State: ACgBeo0Vrt9613rk5W5DjgKBlI+zT2d6sw+PFtRKwf+RxoSLkMzkx30l
-        fivAoNNWOXkoTZzYqYJ0nw3eC7pLvvg6dMyyJh6AgRVnfuRBKg==
-X-Google-Smtp-Source: AA6agR4uxOHFjT5D1AMN44XQ9iAS6JWEcXawPAt7q0Qtb27j+Gm7+llYNa1lyrnJhLcDNddcjsCmIFnqV2eyMU8iV1A=
-X-Received: by 2002:a81:430f:0:b0:33f:c37f:83bd with SMTP id
- q15-20020a81430f000000b0033fc37f83bdmr1235560ywa.438.1661540518831; Fri, 26
- Aug 2022 12:01:58 -0700 (PDT)
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc;
+        bh=f7tUYcOnTSQ6ehz47fSrJPerbj7591RmFAoZlu//qIU=;
+        b=oOMCMN5kPQPbO6i8hyVAYIp7bx+8Ij8w+TpcL35w/8qH72tQUjIjV65bpvjLsxiguv
+         dhBHIYmEOCnPSDj4om2RQzLm0aRKBLpLS9hLrycEnPK8qszZtfynRXp0miwvd6LH1gV2
+         pQlJ6j/1BbrntKbSMPHR4pqa08C1KCoX7kdgfzrPcxKITFCBlS6zBj7aCexDWRy84YPE
+         58OFkgBEkU8hDUSm3ag5HsYXbL/K4i2q/TgRio+hvgCsPF4G2tM30xfBsBwOtWjrChF8
+         d6hom6kRdPyJcrvLngvmXxbOnDJzPCC9BXtHTO95KDXCGSpOOgqj9KZqYgulO0J0ToOi
+         q4iQ==
+X-Gm-Message-State: ACgBeo0YXheqyYqfcFU9bwXhQUGCyESln4QUS1NnSVsqOIbIQTJfdljE
+        ZBmUoiigVENJvUiScWYBA77cLs9Ga+Q=
+X-Google-Smtp-Source: AA6agR7j1geMvHuxRq9Te6y1twd15DEbaIksazpuOVvPdRtk4ELKgwAy3Qj7FWPKYShB4MpXLgfriQ==
+X-Received: by 2002:a05:651c:49c:b0:261:ccdd:779d with SMTP id s28-20020a05651c049c00b00261ccdd779dmr3327211ljc.383.1661606412405;
+        Sat, 27 Aug 2022 06:20:12 -0700 (PDT)
+Received: from mobilestation ([95.79.140.178])
+        by smtp.gmail.com with ESMTPSA id t30-20020a05651c205e00b00261e50a2534sm760122ljo.33.2022.08.27.06.20.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 27 Aug 2022 06:20:11 -0700 (PDT)
+Date:   Sat, 27 Aug 2022 16:20:08 +0300
+From:   Serge Semin <fancer.lancer@gmail.com>
+To:     Jason Wang <wangborong@cdjrlc.com>
+Cc:     maz@kernel.org, tsbogend@alpha.franken.de, tglx@linutronix.de,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] irqchip/mips-gic: Fix comment typo
+Message-ID: <20220827132008.wb2kw2hs5rwfo23j@mobilestation>
+References: <20220802200106.5060-1-wangborong@cdjrlc.com>
 MIME-Version: 1.0
-References: <1661479927-6953-1-git-send-email-yangtiezhu@loongson.cn> <e785ac4b-c1d6-e9e9-df2f-869e474e18ba@iogearbox.net>
-In-Reply-To: <e785ac4b-c1d6-e9e9-df2f-869e474e18ba@iogearbox.net>
-From:   Johan Almbladh <johan.almbladh@anyfinetworks.com>
-Date:   Fri, 26 Aug 2022 21:01:46 +0200
-Message-ID: <CAM1=_QSNWm0AFA5gXE78ayafayJVQ3MNXjh8ttD-zkG7N6Y+1g@mail.gmail.com>
-Subject: Re: [PATCH bpf-next] bpf, mips: No need to use min() to get MAX_TAIL_CALL_CNT
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Tiezhu Yang <yangtiezhu@loongson.cn>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Paul Burton <paulburton@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        bpf@vger.kernel.org, linux-mips@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20220802200106.5060-1-wangborong@cdjrlc.com>
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Fri, Aug 26, 2022 at 6:18 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
->
-> On 8/26/22 4:12 AM, Tiezhu Yang wrote:
-> > MAX_TAIL_CALL_CNT is 33, so min(MAX_TAIL_CALL_CNT, 0xffff) is always
-> > MAX_TAIL_CALL_CNT, it is better to use MAX_TAIL_CALL_CNT directly.
-> >
-> > Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
-> > ---
-> >   arch/mips/net/bpf_jit_comp32.c | 2 +-
-> >   arch/mips/net/bpf_jit_comp64.c | 2 +-
-> >   2 files changed, 2 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/arch/mips/net/bpf_jit_comp32.c b/arch/mips/net/bpf_jit_comp32.c
-> > index 83c975d..8fee671 100644
-> > --- a/arch/mips/net/bpf_jit_comp32.c
-> > +++ b/arch/mips/net/bpf_jit_comp32.c
-> > @@ -1381,7 +1381,7 @@ void build_prologue(struct jit_context *ctx)
-> >        * 16-byte area in the parent's stack frame. On a tail call, the
-> >        * calling function jumps into the prologue after these instructions.
-> >        */
-> > -     emit(ctx, ori, MIPS_R_T9, MIPS_R_ZERO, min(MAX_TAIL_CALL_CNT, 0xffff));
->
-> I presume this is the max that can be encoded, right? Maybe just convert this
-> to a BUILD_BUG_ON(MAX_TAIL_CALL_CNT > 0xffff) with a comment on why the assertion
-> is there?
+On Wed, Aug 03, 2022 at 04:01:06AM +0800, Jason Wang wrote:
+> The double `the' is duplicated in the comment, remove one.
+> 
+> Signed-off-by: Jason Wang <wangborong@cdjrlc.com>
+> ---
+>  drivers/irqchip/irq-mips-gic.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/irqchip/irq-mips-gic.c b/drivers/irqchip/irq-mips-gic.c
+> index 1ba0f1555c80..1a6a7a672ad7 100644
+> --- a/drivers/irqchip/irq-mips-gic.c
+> +++ b/drivers/irqchip/irq-mips-gic.c
+> @@ -494,7 +494,7 @@ static int gic_irq_domain_map(struct irq_domain *d, unsigned int virq,
+>  	map = GIC_MAP_PIN_MAP_TO_PIN | gic_cpu_pin;
+>  
+>  	/*
 
-Correct. The min() is there for a reason. In the unlikely event that
-the TCC limit is raised to more than 16 bits, it is clamped to the
-maximum value allowed for the generated code (0xffff). One can argue
-that it is better fail to compile instead of degrading gracefully, but
-some kind check should be there IMO.
+> -	 * If adding support for more per-cpu interrupts, keep the the
+> +	 * If adding support for more per-cpu interrupts, keep the
 
->
-> > +     emit(ctx, ori, MIPS_R_T9, MIPS_R_ZERO, MAX_TAIL_CALL_CNT);
-> >       emit(ctx, sw, MIPS_R_T9, 0, MIPS_R_SP);
-> >
-> >       /*
-> > diff --git a/arch/mips/net/bpf_jit_comp64.c b/arch/mips/net/bpf_jit_comp64.c
-> > index 6475828..ac175af 100644
-> > --- a/arch/mips/net/bpf_jit_comp64.c
-> > +++ b/arch/mips/net/bpf_jit_comp64.c
-> > @@ -552,7 +552,7 @@ void build_prologue(struct jit_context *ctx)
-> >        * On a tail call, the calling function jumps into the prologue
-> >        * after this instruction.
-> >        */
-> > -     emit(ctx, ori, tc, MIPS_R_ZERO, min(MAX_TAIL_CALL_CNT, 0xffff));
-> > +     emit(ctx, ori, tc, MIPS_R_ZERO, MAX_TAIL_CALL_CNT);
-> >
-> >       /* === Entry-point for tail calls === */
-> >
-> >
->
+Thanks!
+
+Acked-by: Serge Semin <fancer.lancer@gmail.com>
+
+-Sergey
+
+>  	 * array in gic_all_vpes_irq_cpu_online() in sync.
+>  	 */
+>  	switch (intr) {
+> -- 
+> 2.35.1
+> 

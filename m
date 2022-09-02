@@ -2,55 +2,152 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 078D5ECAAA1
-	for <linux-mips@archiver.kernel.org>; Fri,  2 Sep 2022 08:15:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2FFF8ECAAA1
+	for <linux-mips@archiver.kernel.org>; Fri,  2 Sep 2022 22:46:40 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235547AbiIBIPQ (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 2 Sep 2022 04:15:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58634 "EHLO
+        id S229741AbiIBWqi (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 2 Sep 2022 18:46:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49344 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235673AbiIBIOm (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Fri, 2 Sep 2022 04:14:42 -0400
-Received: from mail.connexion24.pl (mail.connexion24.pl [141.94.21.111])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D756AC00CD
-        for <linux-mips@vger.kernel.org>; Fri,  2 Sep 2022 01:14:38 -0700 (PDT)
-Received: by mail.connexion24.pl (Postfix, from userid 1002)
-        id 62CB2AE0B8; Fri,  2 Sep 2022 07:55:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=connexion24.pl;
-        s=mail; t=1662105384;
-        bh=ChRcLNpIfKnVgp03/tSyWuRw1tWSTk/OEiEnuZMWs58=;
-        h=Date:From:To:Subject:From;
-        b=QlxH64hVVdTxPDkkg76Y75pGIGYSp7IKVqVIqFQ9/icP7cYndc9JYbFzt2uyIu8M5
-         vOTTPNk1qgZ87+98dhSAW0MVOof1VkbV8QzBVFplX56QjzEfQE4+nS0T1rfp2+PXpK
-         Vi7aVdfDNfJ0wMSDOlzB5lnIEgOY1QqioiVK/q+EBJ3kPZ8FMgtf9frXOthEomghRq
-         ojNDGUaRum2eoOoMHX1ZCuT3ZH2J8kOHp1Szsr1xwFEOasSz3ws24v8QBz24kzxAg1
-         PU0GW+oGjbRymFkAIahhiKfMHlIztlGbgD/wctiqqlk+rcRK2EAP4qPe766sl2bdDP
-         iKVFYS068MGfQ==
-Received: by mail.connexion24.pl for <linux-mips@vger.kernel.org>; Fri,  2 Sep 2022 07:55:42 GMT
-Message-ID: <20220902064500-0.1.5l.ytdj.0.dq8do44ida@connexion24.pl>
-Date:   Fri,  2 Sep 2022 07:55:42 GMT
-From:   "Norbert Karecki" <norbert.karecki@connexion24.pl>
-To:     <linux-mips@vger.kernel.org>
-Subject: Wycena paneli fotowoltaicznych
-X-Mailer: mail.connexion24.pl
+        with ESMTP id S229701AbiIBWqh (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Fri, 2 Sep 2022 18:46:37 -0400
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF8A3786D9;
+        Fri,  2 Sep 2022 15:46:35 -0700 (PDT)
+Received: by mail-lf1-x132.google.com with SMTP id z29so5175390lfb.13;
+        Fri, 02 Sep 2022 15:46:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date;
+        bh=8JyF5h1NzfqWpROtOZhApbTwVUFn3bdqXHoSB9MDQ6Q=;
+        b=jMimy5l5I4oiotjXk9cJr4xyY85ZSfbD1DEoXg6aNV8fouwI8CONs+rTpAgqtCH1+T
+         ca79nzi0ofPuaAEgn1018ViDEzA29byQF5e1MtFSpGlPs43a3R21MzIWAyWLXC1xuZTU
+         F1spXQFW6g3+lzWT0YcSGis1gu+rtKjgNGumpfIuPldZtZlDDRiq8XAmn8PaOR3Ld+vH
+         dIwBqTIW277HRUDAVWdQ6UNJmXEHDNuTLSUjMRKgyFVidhq8gVcUY7XcDForzdkSU354
+         3wdAK2hu16bhVWulujk6Jo9dEOMw2fJuU9nvSFvW9Ae7JaTUosGsxYAK8Ip4DqNaW5lZ
+         v/qw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date;
+        bh=8JyF5h1NzfqWpROtOZhApbTwVUFn3bdqXHoSB9MDQ6Q=;
+        b=CScZCH375eLPm+bf/gDjLD0L6SkrmyEpoaoWTnjrbxCwtFCvxOfprvcCJeb4485Tal
+         OvNeFmkOCPlSuebWBvF8iF6bTjjqzxiE6P0IVKJDmvAoXGnIlEU98iJ/1Z8R/BJvUlDt
+         BW6IvQ3dEdaNWNUldelQ221HoiV/VN4q4m2//+tRiz1Z/fm3340zvme+ha9dp3/aULy9
+         OBTmxyDCjTSJxTRssEGL6kSS/s7cSKcm0qy6Ot7RdRlP0dzvey1vE8jReeb42PB/Xwjn
+         PZhV7mCYxUb/oSmiazKrEZewuHyuYkoVfjZ2g9o/z6li+Vu5hiGKbN0S1NZYQExnsmkQ
+         jkLw==
+X-Gm-Message-State: ACgBeo2eCHfE/Tzdii99z0BfrIlIvaLxEOTQYIqpagy5WgHBDDg1hL3l
+        YvY1V/rlPTgu1Qj5bCLjjFw=
+X-Google-Smtp-Source: AA6agR6UpPhKUdRy7tF5AdDr2ocQqKxR8YXOGWLA/s7cUP7xh7CnnbgU/GcgvHPr2a6POowJgzvarg==
+X-Received: by 2002:a05:6512:16a1:b0:48a:87a2:103c with SMTP id bu33-20020a05651216a100b0048a87a2103cmr14428914lfb.554.1662158794090;
+        Fri, 02 Sep 2022 15:46:34 -0700 (PDT)
+Received: from mobilestation ([83.220.236.124])
+        by smtp.gmail.com with ESMTPSA id s4-20020a05651c048400b0025e040510e7sm316253ljc.74.2022.09.02.15.46.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 02 Sep 2022 15:46:33 -0700 (PDT)
+Date:   Sat, 3 Sep 2022 01:46:30 +0300
+From:   Serge Semin <fancer.lancer@gmail.com>
+To:     Kelvin Cheung <keguang.zhang@gmail.com>
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        "David S . Miller" <davem@davemloft.net>
+Subject: Re: [PATCH] MIPS: loongson32: Fix the validation failure of LS1B &
+ LS1C Ethernet PHY
+Message-ID: <20220902224630.tik2zt7vpwv3pcww@mobilestation>
+References: <20220818050019.1924408-1-keguang.zhang@gmail.com>
+ <20220821171030.wc343w6zmrtcz5to@mobilestation>
+ <CAJhJPsW0HTs+=PD2JvXZVTkm9zrnRYKtEwLNv3dsVsf1AUNjDQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAJhJPsW0HTs+=PD2JvXZVTkm9zrnRYKtEwLNv3dsVsf1AUNjDQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Dzie=C5=84 dobry,
+On Sun, Aug 28, 2022 at 09:31:25PM +0800, Kelvin Cheung wrote:
+> Hi Serge,
+> Your patch also works for me.
 
-dostrzegam mo=C5=BCliwo=C5=9B=C4=87 wsp=C3=B3=C5=82pracy z Pa=C5=84stwa f=
-irm=C4=85.
+Great. Could you submit it for review then with your tested-by tag
+added?
 
-=C5=9Awiadczymy kompleksow=C4=85 obs=C5=82ug=C4=99 inwestycji w fotowolta=
-ik=C4=99, kt=C3=B3ra obni=C5=BCa koszty energii elektrycznej nawet o 90%.
+> But what about the plat_dat->interface? Is it obsolete?
 
-Czy s=C4=85 Pa=C5=84stwo zainteresowani weryfikacj=C4=85 wst=C4=99pnych p=
-ropozycji?
+No. As I said in the patch log it's still used in the STMMAC driver
+but for the MAC-PCS mode setting. Such PCS isn't available on the most
+of the cases so the "phy_interface" field should be mainly utilized
+instead while the "interface" field is supposed to be left untouched.
+See the commit 0060c8783330 ("net: stmmac: implement support for
+passive mode converters via dt") for details.
 
+-Sergey
 
-Pozdrawiam,
-Norbert Karecki
+> 
+> Serge Semin <fancer.lancer@gmail.com> 于2022年8月22日周一 01:10写道：
+> >
+> > Hello Keguang
+> >
+> > On Thu, Aug 18, 2022 at 01:00:19PM +0800, Keguang Zhang wrote:
+> > > From: Kelvin Cheung <keguang.zhang@gmail.com>
+> > >
+> > > The Ethernet of LS1B/LS1C doesn't work due to the stmmac driver
+> > > using phylink_generic_validate() instead of stmmac_validate().
+> > > Moreover the driver assumes the PHY interface mode
+> > > passed in platform data is always supported.
+> > >
+> > > stmmaceth stmmaceth.0 eth0: validation of gmii with support 00000000,00000000,000062cf and advertisement 00000000,00000000,000062cf failed: -EINVAL
+> > > stmmaceth stmmaceth.0 eth0: stmmac_open: Cannot attach to PHY (error: -22)
+> > >
+> > > This patch sets phy_interface field of platform data.
+> >
+> > I've got a similar fix in my repo, though didn't have a chance to test
+> > it out due to lacking any loongson hardware. I've discovered the
+> > issues on my still going way of the STMMAC driver refactoring. Anyway
+> > IMO the problem is a bit different than you describe and should be
+> > fixed in a bit different way. Please see a patch attached to this
+> > email. Could you test it out on your hw? If it fixes the problem you
+> > can resend it as v2 patch.
+> >
+> > -Sergey
+> >
+> > >
+> > > Fixes: 04a0683f7db4 ("net: stmmac: convert to phylink_generic_validate()")
+> > > Fixes: d194923d51c9 ("net: stmmac: fill in supported_interfaces")
+> > > Signed-off-by: Kelvin Cheung <keguang.zhang@gmail.com>
+> > > ---
+> > >  arch/mips/loongson32/common/platform.c | 2 ++
+> > >  1 file changed, 2 insertions(+)
+> > >
+> > > diff --git a/arch/mips/loongson32/common/platform.c b/arch/mips/loongson32/common/platform.c
+> > > index 794c96c2a4cd..741aace80b80 100644
+> > > --- a/arch/mips/loongson32/common/platform.c
+> > > +++ b/arch/mips/loongson32/common/platform.c
+> > > @@ -147,8 +147,10 @@ static struct plat_stmmacenet_data ls1x_eth0_pdata = {
+> > >       .phy_addr               = -1,
+> > >  #if defined(CONFIG_LOONGSON1_LS1B)
+> > >       .interface              = PHY_INTERFACE_MODE_MII,
+> > > +     .phy_interface          = PHY_INTERFACE_MODE_MII,
+> > >  #elif defined(CONFIG_LOONGSON1_LS1C)
+> > >       .interface              = PHY_INTERFACE_MODE_RMII,
+> > > +     .phy_interface          = PHY_INTERFACE_MODE_RMII,
+> > >  #endif
+> > >       .mdio_bus_data          = &ls1x_mdio_bus_data,
+> > >       .dma_cfg                = &ls1x_eth_dma_cfg,
+> > >
+> > > base-commit: 568035b01cfb107af8d2e4bd2fb9aea22cf5b868
+> > > --
+> > > 2.34.1
+> > >
+> 
+> 
+> 
+> -- 
+> Best regards,
+> 
+> Kelvin Cheung

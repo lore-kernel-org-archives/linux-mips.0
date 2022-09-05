@@ -2,104 +2,162 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A0C9CC54EE9
-	for <linux-mips@archiver.kernel.org>; Sat,  3 Sep 2022 14:20:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7C40DECAAD3
+	for <linux-mips@archiver.kernel.org>; Mon,  5 Sep 2022 18:51:00 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229827AbiICOUP (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Sat, 3 Sep 2022 10:20:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60090 "EHLO
+        id S231981AbiIESu7 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 5 Sep 2022 14:50:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36734 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229741AbiICOUO (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Sat, 3 Sep 2022 10:20:14 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63EAA52FD9;
-        Sat,  3 Sep 2022 07:20:13 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id F2A17B80966;
-        Sat,  3 Sep 2022 14:20:11 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 97E69C43470;
-        Sat,  3 Sep 2022 14:20:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1662214810;
-        bh=0aD+VSuyqXxSIVEFulDlAaMzWs8mG1JCiPYrFvQbHqk=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=nXtwWlB287xOlDtpAHhVfl9tPu1xM3cR2NWG5pr9+m3HgOkV32Ou69hgAeGG7anmP
-         9vgQpEnwRDQdGij523rA5e3A6+g6VWHQfONrCeiZBbg8sCWW719hUzFtWf/E7+ICPh
-         YbGrLEsasbuQNEZc2LTc1tjCKOoyVSsGh10qw0qvvZk65xVoGL6WQofHN9cV3PXKXf
-         h9R2KOJKUHBiCOfc9twQPCvhHq5RWxVCGQ/rSJrJ9Xvrv667EDXCdteNQRwhnHqmDq
-         rXPZk0LklN7vT1GjywGscy8ifC+1ThJlqEGxLoum+VF06pyrsf84aszxg5mAly9Y/J
-         q/QWXeq+oz3og==
-Received: by mail-vk1-f172.google.com with SMTP id c2so2240942vkm.9;
-        Sat, 03 Sep 2022 07:20:10 -0700 (PDT)
-X-Gm-Message-State: ACgBeo3SXKi3/Qvvt1kXEmBWO1MaL+GKh//Fx/4BZ8q73eSGNe2OdQRw
-        GUa3Gl9eDtwnmtjD87c+ArY4v7gAyGkHkiPPs0w=
-X-Google-Smtp-Source: AA6agR4DjVYs1Z7O7YPPXaanoHXU3FRdvt+fv4WSmMa7CoMVispaaGhUAL5QcuLgVa9t520FJ2ydXbrkcTwKD8AFeaQ=
-X-Received: by 2002:ac5:cd82:0:b0:397:7f8d:95f7 with SMTP id
- i2-20020ac5cd82000000b003977f8d95f7mr2019923vka.18.1662214809526; Sat, 03 Sep
- 2022 07:20:09 -0700 (PDT)
+        with ESMTP id S232479AbiIESuv (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Mon, 5 Sep 2022 14:50:51 -0400
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 028135EDD6;
+        Mon,  5 Sep 2022 11:50:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1662403849; x=1693939849;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=ZTj2nmkgcLu3QTI5ZuLWIR3EG8xTNQmi+IkgjkuRQCM=;
+  b=WX43+NkX9kRnukAEIEPjyakjPEyrJpyHFw9fHf0kDBVO5BTKkbqCdfP2
+   0Ek0MykyQ7pJjBXQxcdUkV+MaGPVpdzeEV9U7sRWiwdGFuvOfCopaOfOe
+   +u0L0NEybozqqUKkkqBRObwGkGGY+n4W31Wh6hWwoOkxtgTaFibdPEsj3
+   GlE1Xn3sumRHOnbH07zUhXndYdoCi0hE+pCPb0qCtdi/ixEwpc1cN6Hy5
+   WudQPiPr78CXc1eQPRsNN8rC66yErH/Inj1qNmYNyYpN1Dz7OlehlNKoq
+   qw3rn6RQWcfZXzUkALOYLYKXb8rm+t2uKqL2fGbLKkCySCXlbJdZeb8io
+   g==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10461"; a="294026417"
+X-IronPort-AV: E=Sophos;i="5.93,292,1654585200"; 
+   d="scan'208";a="294026417"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Sep 2022 11:50:49 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.93,292,1654585200"; 
+   d="scan'208";a="717429161"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga002.fm.intel.com with ESMTP; 05 Sep 2022 11:50:48 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id 99765101; Mon,  5 Sep 2022 21:51:03 +0300 (EEST)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        Paul Cercueil <paul@crapouillou.net>,
+        linux-mips@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v1 1/1] pinctrl: ingenic: Switch to use fwnode instead of of_node
+Date:   Mon,  5 Sep 2022 21:51:02 +0300
+Message-Id: <20220905185102.74056-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.35.1
 MIME-Version: 1.0
-References: <cover.1662190009.git.zhoubinbin@loongson.cn> <6d01148014a62d8d412790dc8442af40368c6f8f.1662190009.git.zhoubinbin@loongson.cn>
- <bf3e7516c351f793de08d5311aff10c379720798.camel@xry111.site>
-In-Reply-To: <bf3e7516c351f793de08d5311aff10c379720798.camel@xry111.site>
-From:   Huacai Chen <chenhuacai@kernel.org>
-Date:   Sat, 3 Sep 2022 22:19:57 +0800
-X-Gmail-Original-Message-ID: <CAAhV-H4QXyaK+H-vMsDgXY+9J1FONKzEi-fm37J9NOr0n+tqOg@mail.gmail.com>
-Message-ID: <CAAhV-H4QXyaK+H-vMsDgXY+9J1FONKzEi-fm37J9NOr0n+tqOg@mail.gmail.com>
-Subject: Re: [PATCH 2/7] LoongArch: Enable LS2X RTC in loongson3_defconfig
-To:     Xi Ruoyao <xry111@xry111.site>
-Cc:     Binbin Zhou <zhoubinbin@loongson.cn>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        linux-rtc@vger.kernel.org,
-        "open list:MIPS" <linux-mips@vger.kernel.org>,
-        devicetree@vger.kernel.org, loongarch@lists.linux.dev,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        WANG Xuerui <git@xen0n.name>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Hi, Ruoyao,
+GPIO library now accepts fwnode as a firmware node, so
+switch the driver to use it.
 
-On Sat, Sep 3, 2022 at 6:45 PM Xi Ruoyao <xry111@xry111.site> wrote:
->
-> On Sat, 2022-09-03 at 17:34 +0800, Binbin Zhou wrote:
-> > This is now supported, enable for Loongson-3 systems.
-> > Other systems are unaffected.
-> >
-> > Signed-off-by: Binbin Zhou <zhoubinbin@loongson.cn>
-> > Cc: Huacai Chen <chenhuacai@kernel.org>
-> > Cc: WANG Xuerui <git@xen0n.name>
-> > Cc: loongarch@lists.linux.dev
-> > ---
-> >  arch/loongarch/configs/loongson3_defconfig | 1 +
-> >  1 file changed, 1 insertion(+)
-> >
-> > diff --git a/arch/loongarch/configs/loongson3_defconfig
-> > b/arch/loongarch/configs/loongson3_defconfig
-> > index 4083d3051109..b240bc4e2021 100644
-> > --- a/arch/loongarch/configs/loongson3_defconfig
-> > +++ b/arch/loongarch/configs/loongson3_defconfig
-> > @@ -660,6 +660,7 @@ CONFIG_USB_GADGET=y
-> >  CONFIG_INFINIBAND=m
-> >  CONFIG_RTC_CLASS=y
-> >  CONFIG_RTC_DRV_EFI=y
-> > +CONFIG_RTC_DRV_LS2X=y
->
-> We already have RTC_DRV_EFI=y, IIUC this means we leave LS7A RTC for the
-> firmware to drive and operate it through EFI service.  So is this really
-> needed for LoongArch systems?  And if we enable both RTC_DRV_EFI and
-> RTC_DRV_LS2X, will some bad thing (a conflict) happen?
-Don't worry, please. EFI RTC depends on EFI runtime, so we need an
-available RTC if EFI runtime is disabled (by command line or any other
-reasons). On the other hand, multi RTCs can perfectly co-exist, they
-will be rtc0 and rtc1 under sysfs and rtc0 is the default one.
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+ drivers/pinctrl/pinctrl-ingenic.c | 31 +++++++++++++++++--------------
+ 1 file changed, 17 insertions(+), 14 deletions(-)
 
-Huacai
->
-> --
-> Xi Ruoyao <xry111@xry111.site>
-> School of Aerospace Science and Technology, Xidian University
->
+diff --git a/drivers/pinctrl/pinctrl-ingenic.c b/drivers/pinctrl/pinctrl-ingenic.c
+index 3a9ee9c8af11..7e732076dedf 100644
+--- a/drivers/pinctrl/pinctrl-ingenic.c
++++ b/drivers/pinctrl/pinctrl-ingenic.c
+@@ -12,14 +12,14 @@
+ #include <linux/interrupt.h>
+ #include <linux/io.h>
+ #include <linux/kernel.h>
+-#include <linux/of_device.h>
+-#include <linux/of_irq.h>
+-#include <linux/of_platform.h>
++#include <linux/mod_devicetable.h>
++#include <linux/of.h>
+ #include <linux/pinctrl/pinctrl.h>
+ #include <linux/pinctrl/pinmux.h>
+ #include <linux/pinctrl/pinconf.h>
+ #include <linux/pinctrl/pinconf-generic.h>
+ #include <linux/platform_device.h>
++#include <linux/property.h>
+ #include <linux/regmap.h>
+ #include <linux/seq_file.h>
+ #include <linux/slab.h>
+@@ -4152,7 +4152,7 @@ static const struct of_device_id ingenic_gpio_of_matches[] __initconst = {
+ };
+ 
+ static int __init ingenic_gpio_probe(struct ingenic_pinctrl *jzpc,
+-				     struct device_node *node)
++				     struct fwnode_handle *fwnode)
+ {
+ 	struct ingenic_gpio_chip *jzgc;
+ 	struct device *dev = jzpc->dev;
+@@ -4160,7 +4160,7 @@ static int __init ingenic_gpio_probe(struct ingenic_pinctrl *jzpc,
+ 	unsigned int bank;
+ 	int err;
+ 
+-	err = of_property_read_u32(node, "reg", &bank);
++	err = fwnode_property_read_u32(fwnode, "reg", &bank);
+ 	if (err) {
+ 		dev_err(dev, "Cannot read \"reg\" property: %i\n", err);
+ 		return err;
+@@ -4185,7 +4185,7 @@ static int __init ingenic_gpio_probe(struct ingenic_pinctrl *jzpc,
+ 
+ 	jzgc->gc.ngpio = 32;
+ 	jzgc->gc.parent = dev;
+-	jzgc->gc.of_node = node;
++	jzgc->gc.fwnode = fwnode;
+ 	jzgc->gc.owner = THIS_MODULE;
+ 
+ 	jzgc->gc.set = ingenic_gpio_set;
+@@ -4196,9 +4196,12 @@ static int __init ingenic_gpio_probe(struct ingenic_pinctrl *jzpc,
+ 	jzgc->gc.request = gpiochip_generic_request;
+ 	jzgc->gc.free = gpiochip_generic_free;
+ 
+-	jzgc->irq = irq_of_parse_and_map(node, 0);
+-	if (!jzgc->irq)
++	err = fwnode_irq_get(fwnode, 0);
++	if (err < 0)
++		return err;
++	if (!err)
+ 		return -EINVAL;
++	jzgc->irq = err;
+ 
+ 	girq = &jzgc->gc.irq;
+ 	gpio_irq_chip_set_chip(girq, &ingenic_gpio_irqchip);
+@@ -4227,12 +4230,12 @@ static int __init ingenic_pinctrl_probe(struct platform_device *pdev)
+ 	struct pinctrl_desc *pctl_desc;
+ 	void __iomem *base;
+ 	const struct ingenic_chip_info *chip_info;
+-	struct device_node *node;
+ 	struct regmap_config regmap_config;
++	struct fwnode_handle *fwnode;
+ 	unsigned int i;
+ 	int err;
+ 
+-	chip_info = of_device_get_match_data(dev);
++	chip_info = device_get_match_data(dev);
+ 	if (!chip_info) {
+ 		dev_err(dev, "Unsupported SoC\n");
+ 		return -EINVAL;
+@@ -4319,11 +4322,11 @@ static int __init ingenic_pinctrl_probe(struct platform_device *pdev)
+ 
+ 	dev_set_drvdata(dev, jzpc->map);
+ 
+-	for_each_child_of_node(dev->of_node, node) {
+-		if (of_match_node(ingenic_gpio_of_matches, node)) {
+-			err = ingenic_gpio_probe(jzpc, node);
++	device_for_each_child_node(dev, fwnode) {
++		if (of_match_node(ingenic_gpio_of_matches, to_of_node(fwnode))) {
++			err = ingenic_gpio_probe(jzpc, fwnode);
+ 			if (err) {
+-				of_node_put(node);
++				fwnode_handle_put(fwnode);
+ 				return err;
+ 			}
+ 		}
+-- 
+2.35.1
+

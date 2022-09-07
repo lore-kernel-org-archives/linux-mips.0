@@ -2,70 +2,68 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 650A9C54EE9
-	for <linux-mips@archiver.kernel.org>; Wed,  7 Sep 2022 13:15:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DA183C38145
+	for <linux-mips@archiver.kernel.org>; Wed,  7 Sep 2022 13:15:55 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229644AbiIGNPz (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        id S229576AbiIGNPz (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
         Wed, 7 Sep 2022 09:15:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47398 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47386 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229748AbiIGNPg (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 7 Sep 2022 09:15:36 -0400
+        with ESMTP id S230133AbiIGNPe (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 7 Sep 2022 09:15:34 -0400
 Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 8AF087B1DF;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 8B23B8048D;
         Wed,  7 Sep 2022 06:15:15 -0700 (PDT)
 Received: from uucp (helo=alpha)
         by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1oVutd-0000YC-01; Wed, 07 Sep 2022 15:15:13 +0200
+        id 1oVutd-0000YC-00; Wed, 07 Sep 2022 15:15:13 +0200
 Received: by alpha.franken.de (Postfix, from userid 1000)
-        id BEA7BC0EC6; Wed,  7 Sep 2022 15:08:48 +0200 (CEST)
-Date:   Wed, 7 Sep 2022 15:08:48 +0200
+        id 8E9DDC0DBF; Wed,  7 Sep 2022 15:02:20 +0200 (CEST)
+Date:   Wed, 7 Sep 2022 15:02:20 +0200
 From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 To:     Alexander A Sverdlin <alexander.sverdlin@nokia.com>
-Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] MIPS: OCTEON: irq: Fix octeon_irq_force_ciu_mapping()
-Message-ID: <20220907130848.GB17817@alpha.franken.de>
-References: <20220906095943.60296-1-alexander.sverdlin@nokia.com>
- <20220906095943.60296-3-alexander.sverdlin@nokia.com>
+Cc:     Yu Zhao <yuzhao@google.com>, Joe Perches <joe@perches.com>,
+        linux-mips@vger.kernel.org, Corey Minyard <cminyard@mvista.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] MIPS: octeon: Get rid of preprocessor directives
+ around RESERVE32
+Message-ID: <20220907130220.GA17817@alpha.franken.de>
+References: <20220906083239.10163-1-alexander.sverdlin@nokia.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220906095943.60296-3-alexander.sverdlin@nokia.com>
+In-Reply-To: <20220906083239.10163-1-alexander.sverdlin@nokia.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Tue, Sep 06, 2022 at 11:59:43AM +0200, Alexander A Sverdlin wrote:
+On Tue, Sep 06, 2022 at 10:32:39AM +0200, Alexander A Sverdlin wrote:
 > From: Alexander Sverdlin <alexander.sverdlin@nokia.com>
 > 
-> For irq_domain_associate() to work the virq descriptor has to be
-> pre-allocated in advance. Otherwise the following happens:
+> Some of them were pointless because CONFIG_CAVIUM_RESERVE32 is now always
+> defined, some were not enough (Yu Zhao reported
+> "Failed to allocate CAVIUM_RESERVE32 memory area" error).
 > 
-> WARNING: CPU: 0 PID: 0 at .../kernel/irq/irqdomain.c:527 irq_domain_associate+0x298/0x2e8
-> error: virq128 is not allocated
-> Modules linked in:
-> CPU: 0 PID: 0 Comm: swapper/0 Not tainted 4.19.78-... #1
->         ...
-> Call Trace:
-> [<ffffffff801344c4>] show_stack+0x9c/0x130
-> [<ffffffff80769550>] dump_stack+0x90/0xd0
-> [<ffffffff801576d0>] __warn+0x118/0x130
-> [<ffffffff80157734>] warn_slowpath_fmt+0x4c/0x70
-> [<ffffffff801b83c0>] irq_domain_associate+0x298/0x2e8
-> [<ffffffff80a43bb8>] octeon_irq_init_ciu+0x4c8/0x53c
-> [<ffffffff80a76cbc>] of_irq_init+0x1e0/0x388
-> [<ffffffff80a452cc>] init_IRQ+0x4c/0xf4
-> [<ffffffff80a3cc00>] start_kernel+0x404/0x698
-> 
-> Use irq_alloc_desc_at() to avoid the above problem.
+> Removing the directives allows for compiler coverage of RESERVE32 code and
+> replacing one of [always-true] "ifdef" with a compiler conditional fixes
+> the [cosmetic] error message.
 > 
 > Signed-off-by: Alexander Sverdlin <alexander.sverdlin@nokia.com>
 > ---
->  arch/mips/cavium-octeon/octeon-irq.c | 10 ++++++++++
->  1 file changed, 10 insertions(+)
+> 
+> Changelog:
+> v2:
+> * Reduced the scope of addr variable
+> 
+>  arch/mips/cavium-octeon/executive/cvmx-cmd-queue.c |  4 ----
+>  arch/mips/cavium-octeon/setup.c                    | 27 +++++++++-------------
 
-applied to mips-fixes.
+applied to mips-fixes with
+
+Fixes: 3e3114ac460e ("MIPS: Introduce CAVIUM_RESERVE32 Kconfig option")
+
+added.
 
 Thomas.
 

@@ -2,71 +2,94 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DA183C38145
-	for <linux-mips@archiver.kernel.org>; Wed,  7 Sep 2022 13:15:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2FD2EC38145
+	for <linux-mips@archiver.kernel.org>; Wed,  7 Sep 2022 14:56:08 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229576AbiIGNPz (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 7 Sep 2022 09:15:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47386 "EHLO
+        id S229960AbiIGO4H (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 7 Sep 2022 10:56:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34480 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230133AbiIGNPe (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 7 Sep 2022 09:15:34 -0400
-Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 8B23B8048D;
-        Wed,  7 Sep 2022 06:15:15 -0700 (PDT)
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1oVutd-0000YC-00; Wed, 07 Sep 2022 15:15:13 +0200
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 8E9DDC0DBF; Wed,  7 Sep 2022 15:02:20 +0200 (CEST)
-Date:   Wed, 7 Sep 2022 15:02:20 +0200
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Alexander A Sverdlin <alexander.sverdlin@nokia.com>
-Cc:     Yu Zhao <yuzhao@google.com>, Joe Perches <joe@perches.com>,
-        linux-mips@vger.kernel.org, Corey Minyard <cminyard@mvista.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] MIPS: octeon: Get rid of preprocessor directives
- around RESERVE32
-Message-ID: <20220907130220.GA17817@alpha.franken.de>
-References: <20220906083239.10163-1-alexander.sverdlin@nokia.com>
+        with ESMTP id S230124AbiIGOzp (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 7 Sep 2022 10:55:45 -0400
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46451A2841;
+        Wed,  7 Sep 2022 07:55:17 -0700 (PDT)
+Received: by mail-lf1-x133.google.com with SMTP id bq23so22858252lfb.7;
+        Wed, 07 Sep 2022 07:55:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date;
+        bh=bS9XWRHxlvCbchNOjXWqC5HdNhAgYLYntcgyPEdzLyg=;
+        b=T6KW4iTPkBvzkp/G0l4Vm9GySDlc8a2nycwFdMCiGze9f830StRgywzypiu2Lxbk0G
+         U6U1UNvZxv8pfHPFD/mIvlWdboRt+XVd21Nmm2fD6Eqm3fBzgEtJDclI9hlntmr+Hb5G
+         W3LJidMyUChQZ9gor0VE11u/zrRIy04t++oJ1NGfp62rYrgNGQq9Kij+69jFgskfGoi7
+         k9IV3O+H/bp/6webGHOBUCnfsNb15EKJW9YiQDlSngV5cYeqKHpXZ2UfWpV8QNHc9Qtj
+         w05cZclR/2PYs6G1n/4yr+PYWeXtRaViJv7lUEzRNf0jbNp/2b/k91jmqo4Wac1PqBRm
+         9xZw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date;
+        bh=bS9XWRHxlvCbchNOjXWqC5HdNhAgYLYntcgyPEdzLyg=;
+        b=dYzpUiClsD/l/TZAtvJQt2lN3G2v53b578ZOtoYKj7hiqqxjDuVQut2/b3SA5XrIzW
+         ysM9Ax69338J4HBXRedt1lq7U23zE0L1Ti9nJG7BNF6Mz5mEf/hTo1GwOk5j5vBPZNii
+         jN5wF8dk2/yz47hK2ee/qHc4TIpmvARSfftsQL1W3bntdjsxO07JcdTrKpfFkqbTnp8y
+         NRoLZx5dHcJ4m3Keda2LduGXExjyxhnmKLwfltyn0JowXIjqHwIDTYTLbd0aNHuzKe+6
+         nfEirFHTlCBDb2gkwmeGgtC6wSKFcIoXdhGkZYcWenbsYCciSU/g7uxR3kaR9tCucH8J
+         mCmw==
+X-Gm-Message-State: ACgBeo31QY8o9ERk1TWbCygDitLB+kweSE3l7C+vhCNciOsZYaHOW9VK
+        Iemm3l8n87cNzqZkOeGP/Dc=
+X-Google-Smtp-Source: AA6agR4ESyrsMZ2Xixi8o8Ysak8zawSB94JsSeYjrsDCaYrn7mY192jTBluOtbxx8AccvCkzmm27nw==
+X-Received: by 2002:a05:6512:398c:b0:497:a0ad:c677 with SMTP id j12-20020a056512398c00b00497a0adc677mr1300774lfu.534.1662562514986;
+        Wed, 07 Sep 2022 07:55:14 -0700 (PDT)
+Received: from mobilestation (89-109-51-230.dynamic.mts-nn.ru. [89.109.51.230])
+        by smtp.gmail.com with ESMTPSA id s2-20020a056512214200b0048b969ac5cdsm2548079lfr.5.2022.09.07.07.55.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 07 Sep 2022 07:55:14 -0700 (PDT)
+Date:   Wed, 7 Sep 2022 17:55:12 +0300
+From:   Serge Semin <fancer.lancer@gmail.com>
+To:     Jason Wang <wangborong@cdjrlc.com>
+Cc:     maz@kernel.org, tsbogend@alpha.franken.de, tglx@linutronix.de,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] irqchip/mips-gic: Fix comment typo
+Message-ID: <20220907145512.yz27qxgdvzsjvrxg@mobilestation>
+References: <20220802200106.5060-1-wangborong@cdjrlc.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220906083239.10163-1-alexander.sverdlin@nokia.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20220802200106.5060-1-wangborong@cdjrlc.com>
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Tue, Sep 06, 2022 at 10:32:39AM +0200, Alexander A Sverdlin wrote:
-> From: Alexander Sverdlin <alexander.sverdlin@nokia.com>
+On Wed, Aug 03, 2022 at 04:01:06AM +0800, Jason Wang wrote:
+> The double `the' is duplicated in the comment, remove one.
+
+Thanks.
+Acked-by: Serge Semin <fancer.lancer@gmail.com>
+
+-Sergey
+
 > 
-> Some of them were pointless because CONFIG_CAVIUM_RESERVE32 is now always
-> defined, some were not enough (Yu Zhao reported
-> "Failed to allocate CAVIUM_RESERVE32 memory area" error).
-> 
-> Removing the directives allows for compiler coverage of RESERVE32 code and
-> replacing one of [always-true] "ifdef" with a compiler conditional fixes
-> the [cosmetic] error message.
-> 
-> Signed-off-by: Alexander Sverdlin <alexander.sverdlin@nokia.com>
+> Signed-off-by: Jason Wang <wangborong@cdjrlc.com>
 > ---
+>  drivers/irqchip/irq-mips-gic.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> Changelog:
-> v2:
-> * Reduced the scope of addr variable
+> diff --git a/drivers/irqchip/irq-mips-gic.c b/drivers/irqchip/irq-mips-gic.c
+> index 1ba0f1555c80..1a6a7a672ad7 100644
+> --- a/drivers/irqchip/irq-mips-gic.c
+> +++ b/drivers/irqchip/irq-mips-gic.c
+> @@ -494,7 +494,7 @@ static int gic_irq_domain_map(struct irq_domain *d, unsigned int virq,
+>  	map = GIC_MAP_PIN_MAP_TO_PIN | gic_cpu_pin;
+>  
+>  	/*
+> -	 * If adding support for more per-cpu interrupts, keep the the
+> +	 * If adding support for more per-cpu interrupts, keep the
+>  	 * array in gic_all_vpes_irq_cpu_online() in sync.
+>  	 */
+>  	switch (intr) {
+> -- 
+> 2.35.1
 > 
->  arch/mips/cavium-octeon/executive/cvmx-cmd-queue.c |  4 ----
->  arch/mips/cavium-octeon/setup.c                    | 27 +++++++++-------------
-
-applied to mips-fixes with
-
-Fixes: 3e3114ac460e ("MIPS: Introduce CAVIUM_RESERVE32 Kconfig option")
-
-added.
-
-Thomas.
-
--- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]

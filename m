@@ -2,51 +2,73 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 010BAC38145
-	for <linux-mips@archiver.kernel.org>; Wed,  7 Sep 2022 08:41:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 650A9C54EE9
+	for <linux-mips@archiver.kernel.org>; Wed,  7 Sep 2022 13:15:56 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230207AbiIGIlr (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 7 Sep 2022 04:41:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41344 "EHLO
+        id S229644AbiIGNPz (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 7 Sep 2022 09:15:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47398 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230116AbiIGIln (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 7 Sep 2022 04:41:43 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FEF4A5C6F;
-        Wed,  7 Sep 2022 01:41:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=oQ2Oy2vE4Y+KSIGzjxEVBp2pts3FTmVlEXlZ7nc293g=; b=YGqqWOkIlp4wL4QvSg1QvGSDJs
-        7BsBuJd2vZloqmqZVYag6GUx8MgGcG6k7N6Pa6WmrLW2v0P3Feauq1+vLQ+SwrwlRqvINZJTOwBl0
-        wxhU0qzT+TzCCWV4LS0+r0cG+EYsK+DYZQ3sjYAUWpcdmCUSBkcq7yVYgDJB9tmNVHEcj/tNk/8qu
-        Zas15dUPp2A0MEg+269FxCrDmahwz7NCf5U+096527uMjhfymAT6htBZOWtUlPACwRzC2Uh3xjDRb
-        38qUztzbGAsOSLShnevqSC1PVtIy2CBEGw05PdksfYfFhjkIJA01cvmGQEPnCpudRLstViBDIDa9+
-        BE6aP28g==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1oVqbG-004OIZ-BZ; Wed, 07 Sep 2022 08:39:58 +0000
-Date:   Wed, 7 Sep 2022 01:39:58 -0700
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Yu Zhao <yuzhao@google.com>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Dongli Zhang <dongli.zhang@oracle.com>, iommu@lists.linux.dev,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel test robot <lkp@intel.com>,
-        Dan Carpenter <dan.carpenter@oracle.com>
-Subject: Re: [PATCH v2] Revert "swiotlb: panic if nslabs is too small"
-Message-ID: <YxhY3nOLlRsDi6dj@infradead.org>
-References: <20220829232934.3277747-1-yuzhao@google.com>
- <20220831063818.3902572-1-yuzhao@google.com>
+        with ESMTP id S229748AbiIGNPg (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 7 Sep 2022 09:15:36 -0400
+Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 8AF087B1DF;
+        Wed,  7 Sep 2022 06:15:15 -0700 (PDT)
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1oVutd-0000YC-01; Wed, 07 Sep 2022 15:15:13 +0200
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id BEA7BC0EC6; Wed,  7 Sep 2022 15:08:48 +0200 (CEST)
+Date:   Wed, 7 Sep 2022 15:08:48 +0200
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Alexander A Sverdlin <alexander.sverdlin@nokia.com>
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] MIPS: OCTEON: irq: Fix octeon_irq_force_ciu_mapping()
+Message-ID: <20220907130848.GB17817@alpha.franken.de>
+References: <20220906095943.60296-1-alexander.sverdlin@nokia.com>
+ <20220906095943.60296-3-alexander.sverdlin@nokia.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220831063818.3902572-1-yuzhao@google.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <20220906095943.60296-3-alexander.sverdlin@nokia.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Thanks, applied.
+On Tue, Sep 06, 2022 at 11:59:43AM +0200, Alexander A Sverdlin wrote:
+> From: Alexander Sverdlin <alexander.sverdlin@nokia.com>
+> 
+> For irq_domain_associate() to work the virq descriptor has to be
+> pre-allocated in advance. Otherwise the following happens:
+> 
+> WARNING: CPU: 0 PID: 0 at .../kernel/irq/irqdomain.c:527 irq_domain_associate+0x298/0x2e8
+> error: virq128 is not allocated
+> Modules linked in:
+> CPU: 0 PID: 0 Comm: swapper/0 Not tainted 4.19.78-... #1
+>         ...
+> Call Trace:
+> [<ffffffff801344c4>] show_stack+0x9c/0x130
+> [<ffffffff80769550>] dump_stack+0x90/0xd0
+> [<ffffffff801576d0>] __warn+0x118/0x130
+> [<ffffffff80157734>] warn_slowpath_fmt+0x4c/0x70
+> [<ffffffff801b83c0>] irq_domain_associate+0x298/0x2e8
+> [<ffffffff80a43bb8>] octeon_irq_init_ciu+0x4c8/0x53c
+> [<ffffffff80a76cbc>] of_irq_init+0x1e0/0x388
+> [<ffffffff80a452cc>] init_IRQ+0x4c/0xf4
+> [<ffffffff80a3cc00>] start_kernel+0x404/0x698
+> 
+> Use irq_alloc_desc_at() to avoid the above problem.
+> 
+> Signed-off-by: Alexander Sverdlin <alexander.sverdlin@nokia.com>
+> ---
+>  arch/mips/cavium-octeon/octeon-irq.c | 10 ++++++++++
+>  1 file changed, 10 insertions(+)
+
+applied to mips-fixes.
+
+Thomas.
+
+-- 
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]

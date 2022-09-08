@@ -2,107 +2,108 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A14BCC6FA82
-	for <linux-mips@archiver.kernel.org>; Thu,  8 Sep 2022 12:22:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 38169C54EE9
+	for <linux-mips@archiver.kernel.org>; Thu,  8 Sep 2022 18:50:01 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231687AbiIHMWa (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 8 Sep 2022 08:22:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44726 "EHLO
+        id S232341AbiIHSuA (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 8 Sep 2022 14:50:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59364 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231638AbiIHMWZ (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Thu, 8 Sep 2022 08:22:25 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26D1C64D9;
-        Thu,  8 Sep 2022 05:22:24 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id A53D061C99;
-        Thu,  8 Sep 2022 12:22:23 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7A976C433D6;
-        Thu,  8 Sep 2022 12:22:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1662639743;
-        bh=c865XJLe4Z2ZkQVpfIUa6NvVVbhj/DHk8R5Iswb7/6M=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=X/B3/7aQ1H23MpMbYOEAHsluM/ebsaOP4LrfJ7XKXwjf1NzoAKOPAndPh/In2tlkt
-         ebeFZS7zjnMeFSz/5+4qcQhXuGe4zRMUpVS73l+JkhyphP/ep0SoFwhiyhXhAJ9gOx
-         W7RVone1Ma83uzslTrBWwAXX9IKRDFOtJvwGPVj4jEebb02TTUZShuPIXDn8Vouka9
-         a4vLscqy9qtW1Xw6GnXMNCai8U7QAv1FVnGw2Z8JgxgmXfjjZ0yEv9KkvfOE8RTRDA
-         axW/PvmWAHYAOdJOOcd9IqT5h+lCaV2DPl7ptgyVHsElEUhXCsd2l1yXf0z14TfJ/p
-         VO5vmUyqDJVEg==
-Date:   Thu, 8 Sep 2022 13:22:16 +0100
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Hauke Mehrtens <hauke@hauke-m.de>,
-        =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        linux-mips@vger.kernel.org, Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        llvm@lists.linux.dev, kernel test robot <lkp@intel.com>,
-        Tom Rix <trix@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org
-Subject: Re: [PATCH] MIPS: BCM47XX: Cast memcmp() of function to (void *)
-Message-ID: <YxneeP/9zOHNnt1E@work>
-References: <20220907230556.73536-1-keescook@chromium.org>
+        with ESMTP id S232402AbiIHSt4 (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Thu, 8 Sep 2022 14:49:56 -0400
+X-Greylist: delayed 904 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 08 Sep 2022 11:49:53 PDT
+Received: from sender4-op-o14.zoho.com (sender4-op-o14.zoho.com [136.143.188.14])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39B4245F67
+        for <linux-mips@vger.kernel.org>; Thu,  8 Sep 2022 11:49:52 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1662662078; cv=none; 
+        d=zohomail.com; s=zohoarc; 
+        b=fotINh0QiCBqqcjEu9X62O41+22XkqIOaA8IoniPpLGU7L8Aa6wCpVg7S05tntRfKUh4cvXvuOw4wApIhSoQmm2fJPTIeRMnhsDDF8nIqWemJRAIQqJ3TIBelXLTYlHWjK6AbjqxHQcChYgmDhQ7Rq4rI0SoB1fxaHJlQFt6rBk=
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.com; s=zohoarc; 
+        t=1662662078; h=Content-Type:Content-Transfer-Encoding:Cc:Date:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:To; 
+        bh=+ZSQ/hCiHo3MVsDOSXfFn92+sn56Fwr/PHvAptiaK+A=; 
+        b=mUsh8UFhbDzW+V4v8ZFt21iv2nR3rC2gya5WTWK9o8PPseGXyl7ZsGg+UoOuaXdBjwyLAwWTcchufLlqnDeTbCoMcUr2JtmFS452p8Xxn6SOCzp8bCgZyjw7a8Bb6BaIumM/GfiK5vNIihM6sEsy8z6NVShsTCUT6Y5HXqBQQkY=
+ARC-Authentication-Results: i=1; mx.zohomail.com;
+        dkim=pass  header.i=arinc9.com;
+        spf=pass  smtp.mailfrom=arinc.unal@arinc9.com;
+        dmarc=pass header.from=<arinc.unal@arinc9.com>
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1662662078;
+        s=zmail; d=arinc9.com; i=arinc.unal@arinc9.com;
+        h=Message-ID:Date:Date:MIME-Version:Subject:Subject:To:To:Cc:Cc:References:From:From:In-Reply-To:Content-Type:Content-Transfer-Encoding:Message-Id:Reply-To;
+        bh=+ZSQ/hCiHo3MVsDOSXfFn92+sn56Fwr/PHvAptiaK+A=;
+        b=Kay5Jtv3gpN79e6L0NKJCWvDM4zJeh3bn72RXvGBEeDy4jY3GcNm9Smf/YrDn712
+        OkIdFgFq5a6AWSpBEMc+E/zu48mwdO5YnsU/XeczAn92FZAcwnJYfVeQeNM4Rg1ZCt5
+        8yPjGSAjMxEi4iecpkCGe9rpJNK1SBx0Y781rdSw=
+Received: from [10.10.10.3] (37.120.152.236 [37.120.152.236]) by mx.zohomail.com
+        with SMTPS id 1662662076622445.43536504018743; Thu, 8 Sep 2022 11:34:36 -0700 (PDT)
+Message-ID: <055843d1-ec76-2db4-8860-4bf1e81110d3@arinc9.com>
+Date:   Thu, 8 Sep 2022 21:34:33 +0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.11.0
+Subject: Re: [PATCH] mips: ralink: mt7621: add device tree into the kernel
+Content-Language: en-US
+To:     Sergio Paracuellos <sergio.paracuellos@gmail.com>,
+        linux-mips@vger.kernel.org
+Cc:     tsbogend@alpha.franken.de, john@phrozen.org
+References: <20220908060804.1531428-1-sergio.paracuellos@gmail.com>
+From:   =?UTF-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>
+In-Reply-To: <20220908060804.1531428-1-sergio.paracuellos@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20220907230556.73536-1-keescook@chromium.org>
+X-ZohoMailClient: External
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Wed, Sep 07, 2022 at 04:05:56PM -0700, Kees Cook wrote:
-> Clang is especially sensitive about argument type matching when using
-> __overloaded functions (like memcmp(), etc). Help it see that function
-> pointers are just "void *". Avoids this error:
+On 8.09.2022 09:08, Sergio Paracuellos wrote:
+> Device tree blobs for ralink mt7621 SoCs depends on configuration
+> CONFIG_SOC_MT7621 kernel option. This blobs needs to be properly
+> builtin into the kernel in order to be able to properly boot the
+> Gnubee boards. Hence, select CONFIG_BUILTIN_DTB for mt7621 Socs.
+> This option was a miss when this related device tree files were
+> moved from staging into the real 'arch/mips/boot/dts/ralink'
+> folder in kernel.
 > 
-> arch/mips/bcm47xx/prom.c:89:8: error: no matching function for call to 'memcmp'
->                    if (!memcmp(prom_init, prom_init + mem, 32))
->                         ^~~~~~
-> include/linux/string.h:156:12: note: candidate function not viable: no known conversion from 'void (void)' to 'const void *' for 1st argument extern int memcmp(const void *,const void *,__kernel_size_t);
-> 
+> Fixes: 7a6ee0bbab25 ("mips: dts: ralink: add MT7621 SoC")
+> Signed-off-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
 
-Don't we have the same problem at line 162?
+I just tested this on a GB-PC2. If I understand correctly, this option 
+adds all compiled DT on top of the compiled linux image, vmlinux, 
+vmlinuz, etc..
 
-(next-20220908)arch/mips/bcm47xx/prom.c:
-161         for (extmem = 128 << 20; extmem < 512 << 20; extmem <<= 1) {
-162                 if (!memcmp(prom_init, (void *)(off + extmem), 16))
-163                         break;
-164         }
+DTB for GB-PC1 must come first since the bootloader on my GB-PC2 thinks 
+the device is GB-PC1.
 
---
-Gustavo
+[    0.000000] Linux version 6.0.0-rc3+ (arinc9@arinc9-PC) 
+(mipsel-linux-gnu-gcc (Ubuntu 10.3.0-1ubuntu1) 10.3.0, GNU ld (GNU 
+Binutils for Ubuntu) 2.38) #8 SMP Thu Sep 8 21:16:57 +03 2022
+[    0.000000] SoC Type: MediaTek MT7621 ver:1 eco:3
+[    0.000000] printk: bootconsole [early0] enabled
+[    0.000000] CPU0 revision is: 0001992f (MIPS 1004Kc)
+[    0.000000] MIPS: machine is GB-PC1
 
-> Cc: Hauke Mehrtens <hauke@hauke-m.de>
-> Cc: "Rafał Miłecki" <zajec5@gmail.com>
-> Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-> Cc: linux-mips@vger.kernel.org
-> Cc: Nathan Chancellor <nathan@kernel.org>
-> Cc: Nick Desaulniers <ndesaulniers@google.com>
-> Cc: llvm@lists.linux.dev
-> Reported-by: kernel test robot <lkp@intel.com>
-> Link: https://lore.kernel.org/lkml/202209080652.sz2d68e5-lkp@intel.com
-> Signed-off-by: Kees Cook <keescook@chromium.org>
+I think we should not make SOC_MT7621 select this option now that we 
+compile devicetrees for all devices which use the MT7621 SoC but rather 
+leave it to the OS builder, OpenWrt SDK, etc. to decide and add the DTB 
+on top of the compiled linux image.
+
+I think this is already the case for all arm devicetrees?
+
+Arınç
+
 > ---
->  arch/mips/bcm47xx/prom.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>   arch/mips/ralink/Kconfig | 1 +
+>   1 file changed, 1 insertion(+)
 > 
-> diff --git a/arch/mips/bcm47xx/prom.c b/arch/mips/bcm47xx/prom.c
-> index ab203e66ba0d..eb5c04a24531 100644
-> --- a/arch/mips/bcm47xx/prom.c
-> +++ b/arch/mips/bcm47xx/prom.c
-> @@ -86,7 +86,7 @@ static __init void prom_init_mem(void)
->  			pr_debug("Assume 128MB RAM\n");
->  			break;
->  		}
-> -		if (!memcmp(prom_init, prom_init + mem, 32))
-> +		if (!memcmp((void *)prom_init, (void *)prom_init + mem, 32))
->  			break;
->  	}
->  	lowmem = mem;
-> -- 
-> 2.34.1
-> 
+> diff --git a/arch/mips/ralink/Kconfig b/arch/mips/ralink/Kconfig
+> index f9fe15630abb..f3b14bfc8066 100644
+> --- a/arch/mips/ralink/Kconfig
+> +++ b/arch/mips/ralink/Kconfig
+> @@ -54,6 +54,7 @@ choice
+>   		select HAVE_PCI
+>   		select PCI_DRIVERS_GENERIC
+>   		select SOC_BUS
+> +		select BUILTIN_DTB
+>   
+>   		help
+>   		  The MT7621 system-on-a-chip includes an 880 MHz MIPS1004Kc dual-core CPU,

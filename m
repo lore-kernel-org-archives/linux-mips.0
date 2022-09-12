@@ -2,62 +2,62 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6885FC6FA83
-	for <linux-mips@archiver.kernel.org>; Mon, 12 Sep 2022 14:02:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 04EA4C6FA8E
+	for <linux-mips@archiver.kernel.org>; Mon, 12 Sep 2022 14:03:00 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230005AbiILOC5 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 12 Sep 2022 10:02:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56548 "EHLO
+        id S230024AbiILOC6 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 12 Sep 2022 10:02:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56374 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230022AbiILOCy (ORCPT
+        with ESMTP id S230012AbiILOCy (ORCPT
         <rfc822;linux-mips@vger.kernel.org>); Mon, 12 Sep 2022 10:02:54 -0400
 Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id BAA6532B8D;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id DE4EC32B9A;
         Mon, 12 Sep 2022 07:02:46 -0700 (PDT)
 Received: from uucp (helo=alpha)
         by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1oXk1M-0007Yg-03; Mon, 12 Sep 2022 16:02:44 +0200
+        id 1oXk1M-0007Yg-00; Mon, 12 Sep 2022 16:02:44 +0200
 Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 3CC74C1291; Mon, 12 Sep 2022 15:41:10 +0200 (CEST)
-Date:   Mon, 12 Sep 2022 15:41:10 +0200
+        id 841D7C1275; Mon, 12 Sep 2022 15:39:18 +0200 (CEST)
+Date:   Mon, 12 Sep 2022 15:39:18 +0200
 From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Jason Wang <wangborong@cdjrlc.com>
+To:     Shaomin Deng <dengshaomin@cdjrlc.com>
 Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] MIPS: Fix comment typo
-Message-ID: <20220912134110.GD9232@alpha.franken.de>
-References: <20220811121450.24057-1-wangborong@cdjrlc.com>
+Subject: Re: [PATCH] MIPS: Fix comments typo
+Message-ID: <20220912133918.GA9232@alpha.franken.de>
+References: <20220827154640.9687-1-dengshaomin@cdjrlc.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220811121450.24057-1-wangborong@cdjrlc.com>
+In-Reply-To: <20220827154640.9687-1-dengshaomin@cdjrlc.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Thu, Aug 11, 2022 at 08:14:50PM +0800, Jason Wang wrote:
-> The double `it' is duplicated in the comment, remove one.
+On Sat, Aug 27, 2022 at 11:46:40AM -0400, Shaomin Deng wrote:
+> Remove the repeated word "as" in comments.
 > 
-> Signed-off-by: Jason Wang <wangborong@cdjrlc.com>
+> Signed-off-by: Shaomin Deng <dengshaomin@cdjrlc.com>
 > ---
->  arch/mips/math-emu/cp1emu.c | 2 +-
+>  arch/mips/cavium-octeon/setup.c | 2 +-
 >  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/arch/mips/math-emu/cp1emu.c b/arch/mips/math-emu/cp1emu.c
-> index 587cf1d115e8..265bc57819df 100644
-> --- a/arch/mips/math-emu/cp1emu.c
-> +++ b/arch/mips/math-emu/cp1emu.c
-> @@ -1032,7 +1032,7 @@ static int cop1Emulate(struct pt_regs *xcp, struct mips_fpu_struct *ctx,
->  	 */
->  	if (dec_insn.micro_mips_mode) {
->  		/*
-> -		 * If next instruction is a 16-bit instruction, then it
-> +		 * If next instruction is a 16-bit instruction, then
->  		 * it cannot be a FPU instruction. This could happen
->  		 * since we can be called for non-FPU instructions.
->  		 */
+> diff --git a/arch/mips/cavium-octeon/setup.c b/arch/mips/cavium-octeon/setup.c
+> index 00bf269763cf..9ad12fb6a9a6 100644
+> --- a/arch/mips/cavium-octeon/setup.c
+> +++ b/arch/mips/cavium-octeon/setup.c
+> @@ -527,7 +527,7 @@ void octeon_user_io_init(void)
+>  	/* Get the current settings for CP0_CVMMEMCTL_REG */
+>  	cvmmemctl.u64 = read_c0_cvmmemctl();
+>  	/* R/W If set, marked write-buffer entries time out the same
+> -	 * as as other entries; if clear, marked write-buffer entries
+> +	 * as other entries; if clear, marked write-buffer entries
+>  	 * use the maximum timeout. */
+>  	cvmmemctl.s.dismarkwblongto = 1;
+>  	/* R/W If set, a merged store does not clear the write-buffer
 > -- 
-> 2.36.1
+> 2.35.1
 
 applied to mips-next.
 

@@ -2,174 +2,219 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 69648ECAAD3
-	for <linux-mips@archiver.kernel.org>; Wed, 14 Sep 2022 03:32:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4DD7EECAAD3
+	for <linux-mips@archiver.kernel.org>; Wed, 14 Sep 2022 08:55:43 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229710AbiINDc5 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 13 Sep 2022 23:32:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41468 "EHLO
+        id S229602AbiINIzm (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 14 Sep 2022 04:55:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35672 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229479AbiINDcy (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Tue, 13 Sep 2022 23:32:54 -0400
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 694705A8B0;
-        Tue, 13 Sep 2022 20:32:52 -0700 (PDT)
-Received: from dggpeml500021.china.huawei.com (unknown [172.30.72.53])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4MS5SK2j7pznTwp;
-        Wed, 14 Sep 2022 11:30:09 +0800 (CST)
-Received: from dggpeml500010.china.huawei.com (7.185.36.155) by
- dggpeml500021.china.huawei.com (7.185.36.21) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Wed, 14 Sep 2022 11:32:50 +0800
-Received: from huawei.com (10.67.175.33) by dggpeml500010.china.huawei.com
- (7.185.36.155) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.31; Wed, 14 Sep
- 2022 11:32:50 +0800
-From:   Lin Yujun <linyujun809@huawei.com>
-To:     <tsbogend@alpha.franken.de>, <christophe.jaillet@wanadoo.fr>,
-        <paulburton@kernel.org>
-CC:     <linux-mips@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH -next] MIPS: SGI-IP27: Fix platform-device leak in bridge_platform_create()
-Date:   Wed, 14 Sep 2022 11:29:17 +0800
-Message-ID: <20220914032917.97203-1-linyujun809@huawei.com>
-X-Mailer: git-send-email 2.17.1
+        with ESMTP id S229503AbiINIzl (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 14 Sep 2022 04:55:41 -0400
+Received: from sender4-op-o14.zoho.com (sender4-op-o14.zoho.com [136.143.188.14])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 316DF2CDF1;
+        Wed, 14 Sep 2022 01:55:38 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1663145710; cv=none; 
+        d=zohomail.com; s=zohoarc; 
+        b=N7z0aGEDn+0EwDA/Ajf3aOtLqdY5lJjAnszbXSoNbjDcezB8GBf5rBpa7uosirgbDyWSY3LykMOw3ELlDbgxnTb79lnhWFTrL5QuaYheaN4pHaK2bsl6vfEpf35LMlznqQ29mAQQNc205vGighBBW5+mjKkEIL320wNgG0yMqp8=
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.com; s=zohoarc; 
+        t=1663145710; h=Content-Type:Content-Transfer-Encoding:Cc:Date:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:To; 
+        bh=X/Wt+Y94rMwALGSEACdcswFA6kDWzirCzDRw4TCsfoc=; 
+        b=cCcXaAgU27pO/7t3PgKvWrnmg86uyGJrOF5E8F9lHKPKGS18hZOroRgr8EkcOAfEV/kdeZsNch1hSYnZhaH4yzyRnK/wdVNdoMY0Lf/oVTPM8YvBxC+s3QmFKuIiD1APnIN5T1rPXHgWZSvygDWdKIHFeGO4LOA/F4wfetVFXPI=
+ARC-Authentication-Results: i=1; mx.zohomail.com;
+        dkim=pass  header.i=arinc9.com;
+        spf=pass  smtp.mailfrom=arinc.unal@arinc9.com;
+        dmarc=pass header.from=<arinc.unal@arinc9.com>
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1663145710;
+        s=zmail; d=arinc9.com; i=arinc.unal@arinc9.com;
+        h=From:From:To:To:Cc:Cc:Subject:Subject:Date:Date:Message-Id:Message-Id:In-Reply-To:References:MIME-Version:Content-Type:Content-Transfer-Encoding:Reply-To;
+        bh=X/Wt+Y94rMwALGSEACdcswFA6kDWzirCzDRw4TCsfoc=;
+        b=LYyKqjUsaA8jZaKODD58+cY+MUE+CWTCXZMiGnkwmEm5CQ4YxVICll0S/87yQwz1
+        mC3LQ4i+p3A//oSNLTJpl5hudeOIr7tlxvY3XAEwlF3woUiPfo5z+4eY4TGeYATet6o
+        yY+x4c7t8M1jMuAY/bPiLlHD7SSo9xK+UOXk6Fvk=
+Received: from arinc9-PC.lan (37.120.152.236 [37.120.152.236]) by mx.zohomail.com
+        with SMTPS id 1663145707927783.0802898179184; Wed, 14 Sep 2022 01:55:07 -0700 (PDT)
+From:   =?UTF-8?q?Ar=C4=B1n=C3=A7=20=C3=9CNAL?= <arinc.unal@arinc9.com>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Landen Chao <Landen.Chao@mediatek.com>,
+        DENG Qingfang <dqfext@gmail.com>,
+        Sergio Paracuellos <sergio.paracuellos@gmail.com>,
+        erkin.bozoglu@xeront.com
+Cc:     netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mips@vger.kernel.org,
+        =?UTF-8?q?Ar=C4=B1n=C3=A7=20=C3=9CNAL?= <arinc.unal@arinc9.com>
+Subject: [PATCH 01/10] dt-bindings: net: drop old mediatek bindings
+Date:   Wed, 14 Sep 2022 11:54:42 +0300
+Message-Id: <20220914085451.11723-2-arinc.unal@arinc9.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20220914085451.11723-1-arinc.unal@arinc9.com>
+References: <20220914085451.11723-1-arinc.unal@arinc9.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.67.175.33]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggpeml500010.china.huawei.com (7.185.36.155)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-ZohoMailClient: External
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-In error case in bridge_platform_create after calling
-platform_device_add()/platform_device_add_data()/
-platform_device_add_resources(), release the failed
-'pdev' or it will be leak, call platform_device_put()
-to fix this problem.
+Remove these old mediatek bindings which are not used.
 
-Besides, 'pdev' is divided into 'pdev_wd' and 'pdev_bd',
-use platform_device_unregister() to release sgi_w1
-resources when xtalk-bridge registration fails.
-
-Fixes: 5dc76a96e95a ("MIPS: PCI: use information from 1-wire PROM for IOC3 detection")
-Signed-off-by: Lin Yujun <linyujun809@huawei.com>
+Signed-off-by: Arınç ÜNAL <arinc.unal@arinc9.com>
 ---
- arch/mips/sgi-ip27/ip27-xtalk.c | 70 +++++++++++++++++++++++----------
- 1 file changed, 50 insertions(+), 20 deletions(-)
+ .../bindings/net/mediatek,mt7620-gsw.txt      | 24 --------
+ .../bindings/net/ralink,rt2880-net.txt        | 59 -------------------
+ .../bindings/net/ralink,rt3050-esw.txt        | 30 ----------
+ 3 files changed, 113 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/net/mediatek,mt7620-gsw.txt
+ delete mode 100644 Documentation/devicetree/bindings/net/ralink,rt2880-net.txt
+ delete mode 100644 Documentation/devicetree/bindings/net/ralink,rt3050-esw.txt
 
-diff --git a/arch/mips/sgi-ip27/ip27-xtalk.c b/arch/mips/sgi-ip27/ip27-xtalk.c
-index e762886d1dda..5143d1cf8984 100644
---- a/arch/mips/sgi-ip27/ip27-xtalk.c
-+++ b/arch/mips/sgi-ip27/ip27-xtalk.c
-@@ -27,15 +27,18 @@ static void bridge_platform_create(nasid_t nasid, int widget, int masterwid)
- {
- 	struct xtalk_bridge_platform_data *bd;
- 	struct sgi_w1_platform_data *wd;
--	struct platform_device *pdev;
-+	struct platform_device *pdev_wd;
-+	struct platform_device *pdev_bd;
- 	struct resource w1_res;
- 	unsigned long offset;
- 
- 	offset = NODE_OFFSET(nasid);
- 
- 	wd = kzalloc(sizeof(*wd), GFP_KERNEL);
--	if (!wd)
--		goto no_mem;
-+	if (!wd) {
-+		pr_warn("xtalk:n%d/%x bridge create out of memory\n", nasid, widget);
-+		return;
-+	}
- 
- 	snprintf(wd->dev_id, sizeof(wd->dev_id), "bridge-%012lx",
- 		 offset + (widget << SWIN_SIZE_BITS));
-@@ -46,24 +49,35 @@ static void bridge_platform_create(nasid_t nasid, int widget, int masterwid)
- 	w1_res.end = w1_res.start + 3;
- 	w1_res.flags = IORESOURCE_MEM;
- 
--	pdev = platform_device_alloc("sgi_w1", PLATFORM_DEVID_AUTO);
--	if (!pdev) {
--		kfree(wd);
--		goto no_mem;
-+	pdev_wd = platform_device_alloc("sgi_w1", PLATFORM_DEVID_AUTO);
-+	if (!pdev_wd) {
-+		pr_warn("xtalk:n%d/%x bridge create out of memory\n", nasid, widget);
-+		goto err_kfree_wd;
-+	}
-+	if (platform_device_add_resources(pdev_wd, &w1_res, 1)) {
-+		pr_warn("xtalk:n%d/%x bridge failed to add platform resources.\n", nasid, widget);
-+		goto err_put_pdev_wd;
-+	}
-+	if (platform_device_add_data(pdev_wd, wd, sizeof(*wd))) {
-+		pr_warn("xtalk:n%d/%x bridge failed to add platform data.\n", nasid, widget);
-+		goto err_put_pdev_wd;
-+	}
-+	if (platform_device_add(pdev_wd)) {
-+		pr_warn("xtalk:n%d/%x bridge failed to add platform device.\n", nasid, widget);
-+		goto err_put_pdev_wd;
- 	}
--	platform_device_add_resources(pdev, &w1_res, 1);
--	platform_device_add_data(pdev, wd, sizeof(*wd));
- 	/* platform_device_add_data() duplicates the data */
- 	kfree(wd);
--	platform_device_add(pdev);
- 
- 	bd = kzalloc(sizeof(*bd), GFP_KERNEL);
--	if (!bd)
--		goto no_mem;
--	pdev = platform_device_alloc("xtalk-bridge", PLATFORM_DEVID_AUTO);
--	if (!pdev) {
--		kfree(bd);
--		goto no_mem;
-+	if (!bd) {
-+		pr_warn("xtalk:n%d/%x bridge create out of memory\n", nasid, widget);
-+		goto err_unregister_pdev_wd;
-+	}
-+	pdev_bd = platform_device_alloc("xtalk-bridge", PLATFORM_DEVID_AUTO);
-+	if (!pdev_bd) {
-+		pr_warn("xtalk:n%d/%x bridge create out of memory\n", nasid, widget);
-+		goto err_kfree_bd;
- 	}
- 
- 
-@@ -84,15 +98,31 @@ static void bridge_platform_create(nasid_t nasid, int widget, int masterwid)
- 	bd->io.flags	= IORESOURCE_IO;
- 	bd->io_offset	= offset;
- 
--	platform_device_add_data(pdev, bd, sizeof(*bd));
-+	if (platform_device_add_data(pdev_bd, bd, sizeof(*bd))) {
-+		pr_warn("xtalk:n%d/%x bridge failed to add platform data.\n", nasid, widget);
-+		goto err_put_pdev_bd;
-+	}
-+	if (platform_device_add(pdev_bd)) {
-+		pr_warn("xtalk:n%d/%x bridge failed to add platform device.\n", nasid, widget);
-+		goto err_put_pdev_bd;
-+	}
- 	/* platform_device_add_data() duplicates the data */
- 	kfree(bd);
--	platform_device_add(pdev);
- 	pr_info("xtalk:n%d/%x bridge widget\n", nasid, widget);
- 	return;
- 
--no_mem:
--	pr_warn("xtalk:n%d/%x bridge create out of memory\n", nasid, widget);
-+err_put_pdev_bd:
-+	platform_device_put(pdev_bd);
-+err_kfree_bd:
-+	kfree(bd);
-+err_unregister_pdev_wd:
-+	platform_device_unregister(pdev_wd);
-+	return;
-+err_put_pdev_wd:
-+	platform_device_put(pdev_wd);
-+err_kfree_wd:
-+	kfree(wd);
-+	return;
- }
- 
- static int probe_one_port(nasid_t nasid, int widget, int masterwid)
+diff --git a/Documentation/devicetree/bindings/net/mediatek,mt7620-gsw.txt b/Documentation/devicetree/bindings/net/mediatek,mt7620-gsw.txt
+deleted file mode 100644
+index 358fed2fab43..000000000000
+--- a/Documentation/devicetree/bindings/net/mediatek,mt7620-gsw.txt
++++ /dev/null
+@@ -1,24 +0,0 @@
+-Mediatek Gigabit Switch
+-=======================
+-
+-The mediatek gigabit switch can be found on Mediatek SoCs (mt7620, mt7621).
+-
+-Required properties:
+-- compatible: Should be "mediatek,mt7620-gsw" or "mediatek,mt7621-gsw"
+-- reg: Address and length of the register set for the device
+-- interrupts: Should contain the gigabit switches interrupt
+-- resets: Should contain the gigabit switches resets
+-- reset-names: Should contain the reset names "gsw"
+-
+-Example:
+-
+-gsw@10110000 {
+-	compatible = "ralink,mt7620-gsw";
+-	reg = <0x10110000 8000>;
+-
+-	resets = <&rstctrl 23>;
+-	reset-names = "gsw";
+-
+-	interrupt-parent = <&intc>;
+-	interrupts = <17>;
+-};
+diff --git a/Documentation/devicetree/bindings/net/ralink,rt2880-net.txt b/Documentation/devicetree/bindings/net/ralink,rt2880-net.txt
+deleted file mode 100644
+index 9fe1a0a22e44..000000000000
+--- a/Documentation/devicetree/bindings/net/ralink,rt2880-net.txt
++++ /dev/null
+@@ -1,59 +0,0 @@
+-Ralink Frame Engine Ethernet controller
+-=======================================
+-
+-The Ralink frame engine ethernet controller can be found on Ralink and
+-Mediatek SoCs (RT288x, RT3x5x, RT366x, RT388x, rt5350, mt7620, mt7621, mt76x8).
+-
+-Depending on the SoC, there is a number of ports connected to the CPU port
+-directly and/or via a (gigabit-)switch.
+-
+-* Ethernet controller node
+-
+-Required properties:
+-- compatible: Should be one of "ralink,rt2880-eth", "ralink,rt3050-eth",
+-  "ralink,rt3050-eth", "ralink,rt3883-eth", "ralink,rt5350-eth",
+-  "mediatek,mt7620-eth", "mediatek,mt7621-eth"
+-- reg: Address and length of the register set for the device
+-- interrupts: Should contain the frame engines interrupt
+-- resets: Should contain the frame engines resets
+-- reset-names: Should contain the reset names "fe". If a switch is present
+-  "esw" is also required.
+-
+-
+-* Ethernet port node
+-
+-Required properties:
+-- compatible: Should be "ralink,eth-port"
+-- reg: The number of the physical port
+-- phy-handle: reference to the node describing the phy
+-
+-Example:
+-
+-mdio-bus {
+-	...
+-	phy0: ethernet-phy@0 {
+-		phy-mode = "mii";
+-		reg = <0>;
+-	};
+-};
+-
+-ethernet@400000 {
+-	compatible = "ralink,rt2880-eth";
+-	reg = <0x00400000 10000>;
+-
+-	#address-cells = <1>;
+-	#size-cells = <0>;
+-
+-	resets = <&rstctrl 18>;
+-	reset-names = "fe";
+-
+-	interrupt-parent = <&cpuintc>;
+-	interrupts = <5>;
+-
+-	port@0 {
+-		compatible = "ralink,eth-port";
+-		reg = <0>;
+-		phy-handle = <&phy0>;
+-	};
+-
+-};
+diff --git a/Documentation/devicetree/bindings/net/ralink,rt3050-esw.txt b/Documentation/devicetree/bindings/net/ralink,rt3050-esw.txt
+deleted file mode 100644
+index 87e315856efa..000000000000
+--- a/Documentation/devicetree/bindings/net/ralink,rt3050-esw.txt
++++ /dev/null
+@@ -1,30 +0,0 @@
+-Ralink Fast Ethernet Embedded Switch
+-====================================
+-
+-The ralink fast ethernet embedded switch can be found on Ralink and Mediatek
+-SoCs (RT3x5x, RT5350, MT76x8).
+-
+-Required properties:
+-- compatible: Should be "ralink,rt3050-esw"
+-- reg: Address and length of the register set for the device
+-- interrupts: Should contain the embedded switches interrupt
+-- resets: Should contain the embedded switches resets
+-- reset-names: Should contain the reset names "esw"
+-
+-Optional properties:
+-- ralink,portmap: can be used to choose if the default switch setup is
+-  llllw or wllll
+-- ralink,led_polarity: override the active high/low settings of the leds
+-
+-Example:
+-
+-esw@10110000 {
+-	compatible = "ralink,rt3050-esw";
+-	reg = <0x10110000 8000>;
+-
+-	resets = <&rstctrl 23>;
+-	reset-names = "esw";
+-
+-	interrupt-parent = <&intc>;
+-	interrupts = <17>;
+-};
 -- 
-2.17.1
+2.34.1
 

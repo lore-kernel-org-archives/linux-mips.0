@@ -2,38 +2,38 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 817CFC6FA86
-	for <linux-mips@archiver.kernel.org>; Thu, 15 Sep 2022 06:58:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2EEB1C6FA8B
+	for <linux-mips@archiver.kernel.org>; Thu, 15 Sep 2022 06:58:45 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229914AbiIOG6k (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 15 Sep 2022 02:58:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39898 "EHLO
+        id S229979AbiIOG6l (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 15 Sep 2022 02:58:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40408 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229933AbiIOG6E (ORCPT
+        with ESMTP id S229735AbiIOG6E (ORCPT
         <rfc822;linux-mips@vger.kernel.org>); Thu, 15 Sep 2022 02:58:04 -0400
 Received: from sender4-op-o14.zoho.com (sender4-op-o14.zoho.com [136.143.188.14])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F8C97B1FD;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC34F7FE5C;
         Wed, 14 Sep 2022 23:57:31 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1663225010; cv=none; 
+ARC-Seal: i=1; a=rsa-sha256; t=1663225023; cv=none; 
         d=zohomail.com; s=zohoarc; 
-        b=ehPnzbvvznPAATqgIdoYPe9uBLvUR+z7YQFXY3VJXxe5YjgULocelK8YbsbR9H7aQkF1JK7ZC2doS6oB6v9rVQR3Qg/xidtUh4rmTJa/k0xdlKL6oNzH/2eiTnszVwyggVGc1v/z619I1uji3Nx9E0+6mrecKVxnKwyMmPfPp8I=
+        b=CNs2AW5H4dDTvLgtu1vUQG1bb73GF6bE+bOEQBsMVWZRL2WoCXmnDTSPc6YZxGHlVIwsOpbIX8ZFtltmgUFfgPgTbriFQ5rY97Xv+IEixeni9CI1OiBt+qKmHMb0UqSc01XZRJFFtkt9HOq3HyG04f86Xzs3h59A86tGE6iCPtg=
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.com; s=zohoarc; 
-        t=1663225010; h=Content-Type:Content-Transfer-Encoding:Cc:Date:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:To; 
-        bh=Sk44jnot7uocJ4arpLBcXWdU4CoMjGzCainAQsmuR8w=; 
-        b=gNWC6R9qgN+Rbfhzrx/y76P7jgPqypybPsUzKQuLw70QY1XB0PQRRc0ncWO5ysJQv84q82S3mqu/BzbqLwyjHIHiWyO0FzQjzO2jOh+yhQ3JrVMVqaJEDzjMYtb3bKMwC7o8NRqF95RCyTyEbDyVxSW3cjHcjN3g1V46rIwAVbI=
+        t=1663225023; h=Content-Type:Content-Transfer-Encoding:Cc:Date:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:To; 
+        bh=8AjFH1BLUb+TXyGp2qTPrkMzOdVeStVDjagqGC2aBMo=; 
+        b=KFrs9OqcYngQLSqvrsxRho9ER6yge/e+FxIpzdncakgKvKAuEzT43yZGB5c3EerFB/1XsdrVHioxv5U80dt1VJTmOGQS7xns0aVACyt7QtW8VGQ1odSpptTs3LJE06513v8eQsM2BTmYHIqcyEv0Y1qy+Wx6lq4U9He/GytkoOc=
 ARC-Authentication-Results: i=1; mx.zohomail.com;
         dkim=pass  header.i=arinc9.com;
         spf=pass  smtp.mailfrom=arinc.unal@arinc9.com;
         dmarc=pass header.from=<arinc.unal@arinc9.com>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1663225010;
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1663225023;
         s=zmail; d=arinc9.com; i=arinc.unal@arinc9.com;
         h=From:From:To:To:Cc:Cc:Subject:Subject:Date:Date:Message-Id:Message-Id:In-Reply-To:References:MIME-Version:Content-Type:Content-Transfer-Encoding:Reply-To;
-        bh=Sk44jnot7uocJ4arpLBcXWdU4CoMjGzCainAQsmuR8w=;
-        b=AbTuLrbc/qnVwI2zMprNbk+fyhKlwKdG1IMs8l98deHvgWKTjiQLPZv8Yrwzt/t9
-        QQtzQmICz8d4HSCVqnhvJ48ouXAODqFTN8XpqpU6ZqGV8lhPbx5JJFEwr2xEPka0G8o
-        pNS0agLgxYXVgll+lKmXfMx/9iNM1WO46qkORpgU=
+        bh=8AjFH1BLUb+TXyGp2qTPrkMzOdVeStVDjagqGC2aBMo=;
+        b=HULaQFufMOYqyloyhleYocI3EGw4XMQ7STyt3LItSPi30fSCSpnREeuMEau+syLa
+        RMhVxHt93VwCjyjbXtssfvuoR7eg91xvX9+Woqbu+TVt/J/gJumrqyeO9FIF1K5GNWB
+        bJRl3VZXIJ6tcham161/6QUDVygYtVC941e/+H40=
 Received: from arinc9-PC.lan (37.120.152.236 [37.120.152.236]) by mx.zohomail.com
-        with SMTPS id 1663225009736593.0930673821944; Wed, 14 Sep 2022 23:56:49 -0700 (PDT)
+        with SMTPS id 1663225021653925.7003964608373; Wed, 14 Sep 2022 23:57:01 -0700 (PDT)
 From:   =?UTF-8?q?Ar=C4=B1n=C3=A7=20=C3=9CNAL?= <arinc.unal@arinc9.com>
 To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
         Rob Herring <robh+dt@kernel.org>,
@@ -58,10 +58,10 @@ Cc:     netdev@vger.kernel.org, devicetree@vger.kernel.org,
         linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
         linux-mips@vger.kernel.org,
         =?UTF-8?q?Ar=C4=B1n=C3=A7=20=C3=9CNAL?= <arinc.unal@arinc9.com>,
-        Sungbo Eo <mans0n@gorani.run>
-Subject: [PATCH v2 net-next 08/10] mips: dts: ralink: mt7621: change mt7530 switch address
-Date:   Thu, 15 Sep 2022 09:55:40 +0300
-Message-Id: <20220915065542.13150-9-arinc.unal@arinc9.com>
+        Petr Louda <petr.louda@outlook.cz>
+Subject: [PATCH v2 net-next 10/10] mips: dts: ralink: mt7621: add GB-PC2 LEDs
+Date:   Thu, 15 Sep 2022 09:55:42 +0300
+Message-Id: <20220915065542.13150-11-arinc.unal@arinc9.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20220915065542.13150-1-arinc.unal@arinc9.com>
 References: <20220915065542.13150-1-arinc.unal@arinc9.com>
@@ -73,36 +73,99 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-In the case of muxing phy0 of the MT7530 switch, the switch and the phy
-will have the same address on the mdio bus, 0. This causes the ethernet
-driver to fail since devices on the mdio bus cannot share an address.
+Add the missing LEDs for GB-PC2. The ethblack-green, ethblue-green, power
+and system LEDs weren't added previously, because they don't exist on the
+device schematics. Tests on a GB-PC2 by me and Petr proved otherwise.
 
-Any address can be used for the switch, therefore, change the switch
-address to 0x1f.
+The i2c bus cannot be used on GB-PC2 as its pins are wired to LEDs instead,
+and GB-PC1 does not use it. Therefore, do not enable it on both devices.
 
-Suggested-by: Sungbo Eo <mans0n@gorani.run>
+Link: https://github.com/ngiger/GnuBee_Docs/blob/master/GB-PCx/Documents/GB-PC2_V1.1_schematic.pdf
+Tested-by: Petr Louda <petr.louda@outlook.cz>
 Signed-off-by: Arınç ÜNAL <arinc.unal@arinc9.com>
 Reviewed-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
 ---
- arch/mips/boot/dts/ralink/mt7621.dtsi | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ .../boot/dts/ralink/mt7621-gnubee-gb-pc1.dts  |  6 ---
+ .../boot/dts/ralink/mt7621-gnubee-gb-pc2.dts  | 42 ++++++++++++++++---
+ 2 files changed, 36 insertions(+), 12 deletions(-)
 
-diff --git a/arch/mips/boot/dts/ralink/mt7621.dtsi b/arch/mips/boot/dts/ralink/mt7621.dtsi
-index 3d4a8e4bd4f8..7900760212c9 100644
---- a/arch/mips/boot/dts/ralink/mt7621.dtsi
-+++ b/arch/mips/boot/dts/ralink/mt7621.dtsi
-@@ -340,9 +340,9 @@ mdio: mdio-bus {
- 			#address-cells = <1>;
- 			#size-cells = <0>;
+diff --git a/arch/mips/boot/dts/ralink/mt7621-gnubee-gb-pc1.dts b/arch/mips/boot/dts/ralink/mt7621-gnubee-gb-pc1.dts
+index 6ecb8165efe8..0128bd8fa7ed 100644
+--- a/arch/mips/boot/dts/ralink/mt7621-gnubee-gb-pc1.dts
++++ b/arch/mips/boot/dts/ralink/mt7621-gnubee-gb-pc1.dts
+@@ -20,12 +20,6 @@ chosen {
+ 		bootargs = "console=ttyS0,57600";
+ 	};
  
--			switch0: switch@0 {
-+			switch0: switch@1f {
- 				compatible = "mediatek,mt7621";
--				reg = <0>;
-+				reg = <0x1f>;
- 				mediatek,mcm;
- 				resets = <&sysc MT7621_RST_MCM>;
- 				reset-names = "mcm";
+-	palmbus: palmbus@1e000000 {
+-		i2c@900 {
+-			status = "okay";
+-		};
+-	};
+-
+ 	gpio-keys {
+ 		compatible = "gpio-keys";
+ 
+diff --git a/arch/mips/boot/dts/ralink/mt7621-gnubee-gb-pc2.dts b/arch/mips/boot/dts/ralink/mt7621-gnubee-gb-pc2.dts
+index 5f52193a4c37..7515555388ae 100644
+--- a/arch/mips/boot/dts/ralink/mt7621-gnubee-gb-pc2.dts
++++ b/arch/mips/boot/dts/ralink/mt7621-gnubee-gb-pc2.dts
+@@ -20,12 +20,6 @@ chosen {
+ 		bootargs = "console=ttyS0,57600";
+ 	};
+ 
+-	palmbus: palmbus@1e000000 {
+-		i2c@900 {
+-			status = "okay";
+-		};
+-	};
+-
+ 	gpio-keys {
+ 		compatible = "gpio-keys";
+ 
+@@ -35,6 +29,42 @@ key-reset {
+ 			linux,code = <KEY_RESTART>;
+ 		};
+ 	};
++
++	gpio-leds {
++		compatible = "gpio-leds";
++
++		ethblack-green {
++			label = "green:ethblack";
++			gpios = <&gpio 3 GPIO_ACTIVE_LOW>;
++		};
++
++		ethblue-green {
++			label = "green:ethblue";
++			gpios = <&gpio 4 GPIO_ACTIVE_LOW>;
++		};
++
++		ethyellow-green {
++			label = "green:ethyellow";
++			gpios = <&gpio 15 GPIO_ACTIVE_LOW>;
++		};
++
++		ethyellow-orange {
++			label = "orange:ethyellow";
++			gpios = <&gpio 13 GPIO_ACTIVE_LOW>;
++		};
++
++		power {
++			label = "green:power";
++			gpios = <&gpio 6 GPIO_ACTIVE_LOW>;
++			linux,default-trigger = "default-on";
++		};
++
++		system {
++			label = "green:system";
++			gpios = <&gpio 8 GPIO_ACTIVE_LOW>;
++			linux,default-trigger = "disk-activity";
++		};
++	};
+ };
+ 
+ &mmc {
 -- 
 2.34.1
 

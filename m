@@ -2,25 +2,25 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 035FAECAAA1
-	for <linux-mips@archiver.kernel.org>; Thu, 15 Sep 2022 13:22:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 29A1EC6FA8A
+	for <linux-mips@archiver.kernel.org>; Thu, 15 Sep 2022 13:22:08 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229649AbiIONWG (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 15 Sep 2022 09:22:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60518 "EHLO
+        id S229495AbiIONWH (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 15 Sep 2022 09:22:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60508 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229695AbiIONWD (ORCPT
+        with ESMTP id S229523AbiIONWD (ORCPT
         <rfc822;linux-mips@vger.kernel.org>); Thu, 15 Sep 2022 09:22:03 -0400
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B72085FE3
-        for <linux-mips@vger.kernel.org>; Thu, 15 Sep 2022 06:22:00 -0700 (PDT)
-Received: from kwepemi500012.china.huawei.com (unknown [172.30.72.54])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4MSyTb31pdznTyF;
-        Thu, 15 Sep 2022 21:19:15 +0800 (CST)
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAA6380B6D
+        for <linux-mips@vger.kernel.org>; Thu, 15 Sep 2022 06:22:01 -0700 (PDT)
+Received: from kwepemi500012.china.huawei.com (unknown [172.30.72.53])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4MSySN4KQfzmVMr;
+        Thu, 15 Sep 2022 21:18:12 +0800 (CST)
 Received: from cgs.huawei.com (10.244.148.83) by
  kwepemi500012.china.huawei.com (7.221.188.12) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.24; Thu, 15 Sep 2022 21:21:57 +0800
+ 15.1.2375.24; Thu, 15 Sep 2022 21:21:59 +0800
 From:   Gaosheng Cui <cuigaosheng1@huawei.com>
 To:     <tsbogend@alpha.franken.de>, <jiaxun.yang@flygoat.com>,
         <paulburton@kernel.org>, <hch@lst.de>, <konrad.wilk@oracle.com>,
@@ -28,10 +28,12 @@ To:     <tsbogend@alpha.franken.de>, <jiaxun.yang@flygoat.com>,
         <ddaney@caviumnetworks.com>, <florian@openwrt.org>,
         <cuigaosheng1@huawei.com>
 CC:     <linux-mips@vger.kernel.org>
-Subject: [PATCH 0/7] Remove orphan declarations for mips
-Date:   Thu, 15 Sep 2022 21:21:50 +0800
-Message-ID: <20220915132157.2132509-1-cuigaosheng1@huawei.com>
+Subject: [PATCH 4/7] MIPS: Octeon: remove orphan octeon_hal_setup_reserved32() declaration
+Date:   Thu, 15 Sep 2022 21:21:54 +0800
+Message-ID: <20220915132157.2132509-5-cuigaosheng1@huawei.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20220915132157.2132509-1-cuigaosheng1@huawei.com>
+References: <20220915132157.2132509-1-cuigaosheng1@huawei.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
 Content-Type:   text/plain; charset=US-ASCII
@@ -43,28 +45,28 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-This series contains a few cleanup patches, to remove unused
-declarations which have been removed. Thanks!
+All uses of octeon_hal_setup_reserved32() were removed by
+commit 1ef2887030db ("MIPS: Octeon: Remove vestiges of
+CONFIG_CAVIUM_RESERVE32_USE_WIRED_TLB"), so remove the
+orphan declaration, too.
 
-Gaosheng Cui (7):
-  MIPS: Loongson2ef: remove orphan sbx00_acpi_init() declaration
-  MIPS: Octeon: remove orphan octeon_swiotlb declaration
-  MIPS: Octeon: remove orphan cvmx_fpa_setup_pool() declaration
-  MIPS: Octeon: remove orphan octeon_hal_setup_reserved32() declaration
-  MIPS: IRQ: remove orphan declarations from arch/mips/include/asm/irq.h
-  MIPS: remove orphan sni_cpu_time_init() declaration
-  MIPS: AR7: remove orphan declarations from
-    arch/mips/include/asm/mach-ar7/ar7.h
+Signed-off-by: Gaosheng Cui <cuigaosheng1@huawei.com>
+---
+ arch/mips/include/asm/octeon/octeon.h | 1 -
+ 1 file changed, 1 deletion(-)
 
- arch/mips/include/asm/irq.h               |  2 --
- arch/mips/include/asm/mach-ar7/ar7.h      |  2 --
- arch/mips/include/asm/octeon/cvmx-fpa.h   | 20 --------------------
- arch/mips/include/asm/octeon/octeon.h     |  1 -
- arch/mips/include/asm/octeon/pci-octeon.h |  2 --
- arch/mips/include/asm/sni.h               |  3 ---
- arch/mips/loongson2ef/common/pci.c        |  2 --
- 7 files changed, 32 deletions(-)
-
+diff --git a/arch/mips/include/asm/octeon/octeon.h b/arch/mips/include/asm/octeon/octeon.h
+index 7e714aefc76d..5c1d726c702f 100644
+--- a/arch/mips/include/asm/octeon/octeon.h
++++ b/arch/mips/include/asm/octeon/octeon.h
+@@ -43,7 +43,6 @@ extern int octeon_get_southbridge_interrupt(void);
+ extern int octeon_get_boot_coremask(void);
+ extern int octeon_get_boot_num_arguments(void);
+ extern const char *octeon_get_boot_argument(int arg);
+-extern void octeon_hal_setup_reserved32(void);
+ extern void octeon_user_io_init(void);
+ 
+ extern void octeon_init_cvmcount(void);
 -- 
 2.25.1
 

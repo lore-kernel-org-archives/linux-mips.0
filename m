@@ -2,38 +2,38 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6FB64C54EE9
-	for <linux-mips@archiver.kernel.org>; Sun, 18 Sep 2022 13:42:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EEB76C6FA90
+	for <linux-mips@archiver.kernel.org>; Sun, 18 Sep 2022 13:42:28 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229733AbiIRNmX (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Sun, 18 Sep 2022 09:42:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53714 "EHLO
+        id S229786AbiIRNm0 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Sun, 18 Sep 2022 09:42:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53942 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229698AbiIRNmR (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Sun, 18 Sep 2022 09:42:17 -0400
+        with ESMTP id S229723AbiIRNmX (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Sun, 18 Sep 2022 09:42:23 -0400
 Received: from sender4-op-o14.zoho.com (sender4-op-o14.zoho.com [136.143.188.14])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC6E01A398;
-        Sun, 18 Sep 2022 06:42:14 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1663508514; cv=none; 
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB8F81A82D;
+        Sun, 18 Sep 2022 06:42:16 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1663508502; cv=none; 
         d=zohomail.com; s=zohoarc; 
-        b=S1qAyiqCwwGXSXSaum2foeUyBtDGDSP6pgA0t5noF79kSnhl/lmGngF72rFn90F3lN+zVir7kHfxNzCiYKBL1FDiyro3KtOW36MEUY5FJ0zzD3vn1ffdrXPDUxAxXo3/0q/JTgZwy3/03D4kTe8gPNXAXHZazI3UIKFFDZyAJw8=
+        b=OItcQHojLQt8Xpk2H4OgBvas5Hmz21To2oy5fjVvrnkzlN3eiGBl5paxagC+Y0DWL/9/e1WK/R/XiMuFB4THFu6CvEqnny+xyLXsrVo/D0Ckq/qRGDKhXjXLeGyKsgThZ0qiUZYBQGTgBlyBH4TAH+1kssD52SVmui526gsA8Bg=
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.com; s=zohoarc; 
-        t=1663508514; h=Content-Type:Content-Transfer-Encoding:Cc:Date:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:To; 
-        bh=QOwUQUGXzXW7a2cfxQ09efax8bzqXaZd89GFxaHq3Yo=; 
-        b=fkPnYbKyc3pHI+tKoFCQd1zRoEO3frde32u0NbrU/Dr+t6jUBIqIkIwUGN/7MF43eYuGwD8hlYQ8eBHzWJma/6NnIVlMr9xoEwxIyXcoFHL2l4zwTCFY7QJC/M4FLrzSVB2tVxwoJS0kmCmGTur0vx3ZHSk4GYRYoacNcTwH0Oc=
+        t=1663508502; h=Content-Type:Content-Transfer-Encoding:Cc:Date:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:To; 
+        bh=mv8wnCQI8K+FkvB2ZahCjYMMUvp+WpG/VEtG06Ocnio=; 
+        b=FpQdu0FgeDMcw3wK0DZrLL8gSF4hPghgUdr2rGQS3ekXvVbRHMllHMuZwwoMRj8h437T9ZUnQ450stVZ6MHC4t+82+5TxVTgImpnDBGqqjzlkNgMQ91tGdZIk5PrPOV0dVky76nBLpQo0QfbdV4GJp/Z2DUeuVaK3fvKql0vtC4=
 ARC-Authentication-Results: i=1; mx.zohomail.com;
         dkim=pass  header.i=arinc9.com;
         spf=pass  smtp.mailfrom=arinc.unal@arinc9.com;
         dmarc=pass header.from=<arinc.unal@arinc9.com>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1663508514;
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1663508502;
         s=zmail; d=arinc9.com; i=arinc.unal@arinc9.com;
         h=From:From:To:To:Cc:Cc:Subject:Subject:Date:Date:Message-Id:Message-Id:In-Reply-To:References:MIME-Version:Content-Type:Content-Transfer-Encoding:Reply-To;
-        bh=QOwUQUGXzXW7a2cfxQ09efax8bzqXaZd89GFxaHq3Yo=;
-        b=XZskVF4Jmr/dR96L5mac1dJRQIGQGMg3pfnfMOKRs71CoFYrmoH7AsSVlQJH/a/5
-        KUTFhFOyprMER/LJvT6uYLBs+4N7hAeDwy1ZzUuvms46xHUP9bLwKg6QqLuCnHCcLEP
-        OxBu5HYttglL5R106jmLgC6K0ErccISSrzy9lzCc=
+        bh=mv8wnCQI8K+FkvB2ZahCjYMMUvp+WpG/VEtG06Ocnio=;
+        b=Z/lZ7EVWbrFILGt5R6plaSvE+fsP6gxGgxfCo0dxnwh00EdMfCHKKRZ+gISGjot+
+        3uINCWoixO6lM/l7BhoyAUYWLoGQTM3alwZa3Jz7uGOZwVVDiYJixKWFq5NHyyaUOuz
+        HCsCv3tLDNy3l0U9vNywkKCgM8tT9jp+kZJQWyhY=
 Received: from arinc9-PC.lan (37.120.152.236 [37.120.152.236]) by mx.zohomail.com
-        with SMTPS id 1663508513207144.86270917599222; Sun, 18 Sep 2022 06:41:53 -0700 (PDT)
+        with SMTPS id 166350850131962.28244589605106; Sun, 18 Sep 2022 06:41:41 -0700 (PDT)
 From:   =?UTF-8?q?Ar=C4=B1n=C3=A7=20=C3=9CNAL?= <arinc.unal@arinc9.com>
 To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
         Rob Herring <robh+dt@kernel.org>,
@@ -57,10 +57,11 @@ Cc:     netdev@vger.kernel.org, devicetree@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org,
         linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
         linux-mips@vger.kernel.org,
-        =?UTF-8?q?Ar=C4=B1n=C3=A7=20=C3=9CNAL?= <arinc.unal@arinc9.com>
-Subject: [PATCH v3 net-next 04/10] dt-bindings: memory: mt7621: add syscon as compatible string
-Date:   Sun, 18 Sep 2022 16:41:12 +0300
-Message-Id: <20220918134118.554813-5-arinc.unal@arinc9.com>
+        =?UTF-8?q?Ar=C4=B1n=C3=A7=20=C3=9CNAL?= <arinc.unal@arinc9.com>,
+        Sungbo Eo <mans0n@gorani.run>, Rob Herring <robh@kernel.org>
+Subject: [PATCH v3 net-next 02/10] dt-bindings: net: dsa: mediatek,mt7530: change mt7530 switch address
+Date:   Sun, 18 Sep 2022 16:41:10 +0300
+Message-Id: <20220918134118.554813-3-arinc.unal@arinc9.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20220918134118.554813-1-arinc.unal@arinc9.com>
 References: <20220918134118.554813-1-arinc.unal@arinc9.com>
@@ -72,49 +73,96 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-The syscon string was introduced because the mt7621 clock driver needs to
-read some registers creating a regmap from the syscon. The bindings were
-added before the clock driver was properly mainlined and at first the clock
-driver was using ralink architecture dependent operations rt_memc_* defined
-in 'arch/mips/include/asm/mach-ralink/ralink_regs.h'.
+In the case of muxing phy0 of the MT7530 switch, the switch and the phy
+will have the same address on the mdio bus, 0. This causes the ethernet
+driver to fail since devices on the mdio bus cannot share an address.
 
-This string is already there on the memory controller node on mt7621.dtsi.
+Any address can be used for the switch, therefore, change the switch
+address to 0x1f.
 
-Add syscon as a constant string on the compatible property, now that memc
-became a syscon. Update the example accordingly.
-
-Fixes: 5278e4a181ff ("dt-bindings: memory: add binding for Mediatek's MT7621 SDRAM memory controller")
+Suggested-by: Sungbo Eo <mans0n@gorani.run>
 Signed-off-by: Arınç ÜNAL <arinc.unal@arinc9.com>
-Acked-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
+Acked-by: Rob Herring <robh@kernel.org>
 ---
- .../bindings/memory-controllers/mediatek,mt7621-memc.yaml | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+ .../bindings/net/dsa/mediatek,mt7530.yaml     | 24 +++++++++----------
+ 1 file changed, 12 insertions(+), 12 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/memory-controllers/mediatek,mt7621-memc.yaml b/Documentation/devicetree/bindings/memory-controllers/mediatek,mt7621-memc.yaml
-index 85e02854f083..ba8cd6d81d08 100644
---- a/Documentation/devicetree/bindings/memory-controllers/mediatek,mt7621-memc.yaml
-+++ b/Documentation/devicetree/bindings/memory-controllers/mediatek,mt7621-memc.yaml
-@@ -11,7 +11,9 @@ maintainers:
+diff --git a/Documentation/devicetree/bindings/net/dsa/mediatek,mt7530.yaml b/Documentation/devicetree/bindings/net/dsa/mediatek,mt7530.yaml
+index f9e7b6e20b35..2c73d13adf14 100644
+--- a/Documentation/devicetree/bindings/net/dsa/mediatek,mt7530.yaml
++++ b/Documentation/devicetree/bindings/net/dsa/mediatek,mt7530.yaml
+@@ -294,9 +294,9 @@ examples:
+         #address-cells = <1>;
+         #size-cells = <0>;
  
- properties:
-   compatible:
--    const: mediatek,mt7621-memc
-+    items:
-+      - const: mediatek,mt7621-memc
-+      - const: syscon
+-        switch@0 {
++        switch@1f {
+             compatible = "mediatek,mt7530";
+-            reg = <0>;
++            reg = <0x1f>;
  
-   reg:
-     maxItems: 1
-@@ -24,7 +26,7 @@ additionalProperties: false
+             reset-gpios = <&pio 33 0>;
  
- examples:
-   - |
--    memory-controller@5000 {
--        compatible = "mediatek,mt7621-memc";
-+    syscon@5000 {
-+        compatible = "mediatek,mt7621-memc", "syscon";
-         reg = <0x5000 0x1000>;
-     };
+@@ -356,9 +356,9 @@ examples:
+         #address-cells = <1>;
+         #size-cells = <0>;
+ 
+-        switch@0 {
++        switch@1f {
+             compatible = "mediatek,mt7530";
+-            reg = <0>;
++            reg = <0x1f>;
+ 
+             mediatek,mcm;
+             resets = <&ethsys MT2701_ETHSYS_MCM_RST>;
+@@ -486,9 +486,9 @@ examples:
+         #address-cells = <1>;
+         #size-cells = <0>;
+ 
+-        switch@0 {
++        switch@1f {
+             compatible = "mediatek,mt7621";
+-            reg = <0>;
++            reg = <0x1f>;
+ 
+             mediatek,mcm;
+             resets = <&sysc MT7621_RST_MCM>;
+@@ -573,9 +573,9 @@ examples:
+                 reg = <4>;
+             };
+ 
+-            switch@0 {
++            switch@1f {
+                 compatible = "mediatek,mt7621";
+-                reg = <0>;
++                reg = <0x1f>;
+ 
+                 mediatek,mcm;
+                 resets = <&sysc MT7621_RST_MCM>;
+@@ -664,9 +664,9 @@ examples:
+                 phy-mode = "rgmii";
+             };
+ 
+-            switch@0 {
++            switch@1f {
+                 compatible = "mediatek,mt7621";
+-                reg = <0>;
++                reg = <0x1f>;
+ 
+                 mediatek,mcm;
+                 resets = <&sysc MT7621_RST_MCM>;
+@@ -745,9 +745,9 @@ examples:
+                 phy-mode = "rgmii";
+             };
+ 
+-            switch@0 {
++            switch@1f {
+                 compatible = "mediatek,mt7621";
+-                reg = <0>;
++                reg = <0x1f>;
+ 
+                 mediatek,mcm;
+                 resets = <&sysc MT7621_RST_MCM>;
 -- 
 2.34.1
 

@@ -2,107 +2,87 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 44316C6FA90
-	for <linux-mips@archiver.kernel.org>; Sun, 18 Sep 2022 13:44:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B2E22C6FA82
+	for <linux-mips@archiver.kernel.org>; Sun, 18 Sep 2022 20:29:10 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230006AbiIRNoI (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Sun, 18 Sep 2022 09:44:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55160 "EHLO
+        id S229599AbiIRU3K (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Sun, 18 Sep 2022 16:29:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53096 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229804AbiIRNnj (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Sun, 18 Sep 2022 09:43:39 -0400
-Received: from sender4-op-o14.zoho.com (sender4-op-o14.zoho.com [136.143.188.14])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 318301D0D3;
-        Sun, 18 Sep 2022 06:43:03 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1663508538; cv=none; 
-        d=zohomail.com; s=zohoarc; 
-        b=nGcW+J7cUl4Npm7YylRYVaY3x4tmLfXLCiDmXgrD+BTVs7jiUqFCMLu4KOk1qAcvcIhL11nHer5DxIHmSGsGPtELImuHWBKfGUYV7JbmblLKYMXltIS46CVmRTefzmkRCNMbqEFjo8Z9gn/Nu+pGWcnO958DjGyNldx2AzDCbfg=
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.com; s=zohoarc; 
-        t=1663508538; h=Content-Type:Content-Transfer-Encoding:Cc:Date:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:To; 
-        bh=Sk44jnot7uocJ4arpLBcXWdU4CoMjGzCainAQsmuR8w=; 
-        b=DYez03mXmCqDDj/u6CGPeakJaFNwIuXUGabjpp8k8q5xpGFWiFRvs+FN/1EH/gJKdfeOT81v77yHoszmRdgayhBic+CL6v3KrPmArmJplNlPQ1kvBWVEKQdBkAJyf4OC87uw7CLJh6yGxifYU4CrYan9ayY1bkoEz1HWObDXJc0=
-ARC-Authentication-Results: i=1; mx.zohomail.com;
-        dkim=pass  header.i=arinc9.com;
-        spf=pass  smtp.mailfrom=arinc.unal@arinc9.com;
-        dmarc=pass header.from=<arinc.unal@arinc9.com>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1663508538;
-        s=zmail; d=arinc9.com; i=arinc.unal@arinc9.com;
-        h=From:From:To:To:Cc:Cc:Subject:Subject:Date:Date:Message-Id:Message-Id:In-Reply-To:References:MIME-Version:Content-Type:Content-Transfer-Encoding:Reply-To;
-        bh=Sk44jnot7uocJ4arpLBcXWdU4CoMjGzCainAQsmuR8w=;
-        b=EEP8sUuGCCt0h+GgcCvIr7ye+zABBtJ5LF9oJzskblPhpAIM6rYbbo+S6J4mbWAG
-        Y3qgQq86EjPZZ0gjzMGBKvlPTv5m4E1DJrIcaCNY6MA79hM4NPYqojCUTofKXgwgUgs
-        SvYWeyUQjT1xX19++IQ33AcufY9mK7YE23bQUsK8=
-Received: from arinc9-PC.lan (37.120.152.236 [37.120.152.236]) by mx.zohomail.com
-        with SMTPS id 1663508536708451.20108562227756; Sun, 18 Sep 2022 06:42:16 -0700 (PDT)
-From:   =?UTF-8?q?Ar=C4=B1n=C3=A7=20=C3=9CNAL?= <arinc.unal@arinc9.com>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Landen Chao <Landen.Chao@mediatek.com>,
-        DENG Qingfang <dqfext@gmail.com>,
-        Sergio Paracuellos <sergio.paracuellos@gmail.com>,
-        erkin.bozoglu@xeront.com
-Cc:     netdev@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mips@vger.kernel.org,
-        =?UTF-8?q?Ar=C4=B1n=C3=A7=20=C3=9CNAL?= <arinc.unal@arinc9.com>,
-        Sungbo Eo <mans0n@gorani.run>
-Subject: [PATCH v3 net-next 08/10] mips: dts: ralink: mt7621: change mt7530 switch address
-Date:   Sun, 18 Sep 2022 16:41:16 +0300
-Message-Id: <20220918134118.554813-9-arinc.unal@arinc9.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20220918134118.554813-1-arinc.unal@arinc9.com>
-References: <20220918134118.554813-1-arinc.unal@arinc9.com>
+        with ESMTP id S229568AbiIRU3J (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Sun, 18 Sep 2022 16:29:09 -0400
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EBED1401E
+        for <linux-mips@vger.kernel.org>; Sun, 18 Sep 2022 13:29:08 -0700 (PDT)
+Received: by mail-pl1-x62b.google.com with SMTP id f23so9928801plr.6
+        for <linux-mips@vger.kernel.org>; Sun, 18 Sep 2022 13:29:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :sender:from:to:cc:subject:date;
+        bh=o+Gxn2cPSSzd7lUTMPs9mUaoGflxYvHVdHLbNLyYS+Y=;
+        b=XXAmHnzQSgECvZMu35YD5jk3Z0eWD8YM62so3RPjZi1ja3Tt0vpBx/uetUAVQ0iYVv
+         OFK3gXvcgj0SuaIHrPZHPf0JnL7gISJWWeKoA06LsBLgYy+J5wqOBdWK3NvLBluf48Ih
+         TSt7Qy13x2nmRQ3iWkkdeXpPBQm7Bg3n6uyopGzPR69v8AZLDp5fm7o5GgaCEc8eBZaj
+         RLwWveplEFYHuB3K6HtkdDGlGrlRrae/VescqgkLjMCZ0TwcQBQI94pHktzyRIld45yY
+         jejb280cpBSaCY/d9IW5PDUgj4nfFJzA2cutNu7Vb3C4F4jUTAA1nbMCDyqfCgNxZcQ+
+         71ow==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :sender:x-gm-message-state:from:to:cc:subject:date;
+        bh=o+Gxn2cPSSzd7lUTMPs9mUaoGflxYvHVdHLbNLyYS+Y=;
+        b=PwOPnZf1FNMuOzutNOlP36gTyL12qGJlap/LP3JCsSSux+vM/EQ+uOGKeOk+LgYqVe
+         Z7ZHJdBl+myXntPTyAMPf1bHwgVYo1wxXD+DL3NHELAllC3IuTt+z5dpQf78sBc9AJY+
+         HLK/js/Rkj2hy6cXFUCfrGTRgBqQWLvVQNxVQ4DgFb8Bxmf7fOtZFGSfr8SPQOMO3urU
+         PaduL5qVJvvD1Zo19wjT84/3vSZuPKCFCM4dBX2XOKunL3dO5utJXlUJT26SIw6w5X9M
+         2rO2pAJYjE3+rPMYVs/jitqHACarYUIcbuP61duqHCnU7vWd/YT1vGuyAQLIWzOUvbZE
+         UR0A==
+X-Gm-Message-State: ACrzQf3WlvbwEOr8C9yPumtZ5mYnpQmWSviC1vNRUR6lXLPDdG6fg2hE
+        JWVg6+fB8Nh6qwErrSJJAGU=
+X-Google-Smtp-Source: AMsMyM4eTtw8yTQykaSnXxiqUoGo5ckajeikrePQcfU+jhv9EKWOqd2TDNvif13RgpTUwWVuQgQUrQ==
+X-Received: by 2002:a17:90b:388d:b0:202:be54:1691 with SMTP id mu13-20020a17090b388d00b00202be541691mr16851090pjb.31.1663532947694;
+        Sun, 18 Sep 2022 13:29:07 -0700 (PDT)
+Received: from [192.168.1.115] ([185.126.107.38])
+        by smtp.gmail.com with ESMTPSA id c13-20020a170903234d00b0016f85feae65sm19205153plh.87.2022.09.18.13.29.05
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 18 Sep 2022 13:29:07 -0700 (PDT)
+Sender: =?UTF-8?Q?Philippe_Mathieu=2DDaud=C3=A9?= 
+        <philippe.mathieu.daude@gmail.com>
+Message-ID: <3a2c8c5e-8cd0-62d5-9538-410db535dcc0@amsat.org>
+Date:   Sun, 18 Sep 2022 22:29:03 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:91.0)
+ Gecko/20100101 Thunderbird/91.13.0
+Subject: Re: [PATCH] platform/mips: Adjust Kconfig to keep consistency
+Content-Language: en-US
+To:     Huacai Chen <chenhuacai@loongson.cn>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc:     linux-mips@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Hans de Goede <hdegoede@redhat.com>
+References: <20220918101206.2381321-1-chenhuacai@loongson.cn>
+From:   =?UTF-8?Q?Philippe_Mathieu-Daud=c3=a9?= <f4bug@amsat.org>
+In-Reply-To: <20220918101206.2381321-1-chenhuacai@loongson.cn>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-ZohoMailClient: External
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-In the case of muxing phy0 of the MT7530 switch, the switch and the phy
-will have the same address on the mdio bus, 0. This causes the ethernet
-driver to fail since devices on the mdio bus cannot share an address.
+On 18/9/22 12:12, Huacai Chen wrote:
+> Drop the "if MIPS" and "endif" drivers/platform/Kconfig. Instead add
+> a "depends on MIPS" to "menuconfig MIPS_PLATFORM_DEVICES" in drivers/
+> platform/mips/Kconfig, like all the other subdirs are doing.
+> 
+> Suggested-by: Hans de Goede <hdegoede@redhat.com>
+> Signed-off-by: Huacai Chen <chenhuacai@loongson.cn>
+> ---
+>   drivers/platform/Kconfig      | 2 --
+>   drivers/platform/mips/Kconfig | 1 +
+>   2 files changed, 1 insertion(+), 2 deletions(-)
 
-Any address can be used for the switch, therefore, change the switch
-address to 0x1f.
-
-Suggested-by: Sungbo Eo <mans0n@gorani.run>
-Signed-off-by: Arınç ÜNAL <arinc.unal@arinc9.com>
-Reviewed-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
----
- arch/mips/boot/dts/ralink/mt7621.dtsi | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/arch/mips/boot/dts/ralink/mt7621.dtsi b/arch/mips/boot/dts/ralink/mt7621.dtsi
-index 3d4a8e4bd4f8..7900760212c9 100644
---- a/arch/mips/boot/dts/ralink/mt7621.dtsi
-+++ b/arch/mips/boot/dts/ralink/mt7621.dtsi
-@@ -340,9 +340,9 @@ mdio: mdio-bus {
- 			#address-cells = <1>;
- 			#size-cells = <0>;
- 
--			switch0: switch@0 {
-+			switch0: switch@1f {
- 				compatible = "mediatek,mt7621";
--				reg = <0>;
-+				reg = <0x1f>;
- 				mediatek,mcm;
- 				resets = <&sysc MT7621_RST_MCM>;
- 				reset-names = "mcm";
--- 
-2.34.1
+Reviewed-by: Philippe Mathieu-Daudé <f4bug@amsat.org>
 

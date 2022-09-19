@@ -2,66 +2,87 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BEBBCC54EE9
-	for <linux-mips@archiver.kernel.org>; Mon, 19 Sep 2022 14:51:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 24AC8C6FA91
+	for <linux-mips@archiver.kernel.org>; Mon, 19 Sep 2022 14:51:16 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229773AbiISOvN (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 19 Sep 2022 10:51:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36334 "EHLO
+        id S230168AbiISOvO (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 19 Sep 2022 10:51:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36332 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229566AbiISOvI (ORCPT
+        with ESMTP id S229570AbiISOvI (ORCPT
         <rfc822;linux-mips@vger.kernel.org>); Mon, 19 Sep 2022 10:51:08 -0400
 Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 81900DF0B
-        for <linux-mips@vger.kernel.org>; Mon, 19 Sep 2022 07:51:07 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id C97C810FDD;
+        Mon, 19 Sep 2022 07:51:02 -0700 (PDT)
 Received: from uucp (helo=alpha)
         by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1oaI6u-0005ft-07; Mon, 19 Sep 2022 16:51:00 +0200
+        id 1oaI6u-0005ft-05; Mon, 19 Sep 2022 16:51:00 +0200
 Received: by alpha.franken.de (Postfix, from userid 1000)
-        id C6B18C12F2; Mon, 19 Sep 2022 16:50:46 +0200 (CEST)
-Date:   Mon, 19 Sep 2022 16:50:46 +0200
+        id BAE67C12F2; Mon, 19 Sep 2022 16:49:36 +0200 (CEST)
+Date:   Mon, 19 Sep 2022 16:49:36 +0200
 From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Gaosheng Cui <cuigaosheng1@huawei.com>
-Cc:     jiaxun.yang@flygoat.com, paulburton@kernel.org, hch@lst.de,
-        konrad.wilk@oracle.com, david.daney@cavium.com,
-        ralf@linux-mips.org, ddaney@caviumnetworks.com,
-        florian@openwrt.org, linux-mips@vger.kernel.org
-Subject: Re: [PATCH 0/7] Remove orphan declarations for mips
-Message-ID: <20220919145046.GG7674@alpha.franken.de>
-References: <20220915132157.2132509-1-cuigaosheng1@huawei.com>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Hauke Mehrtens <hauke@hauke-m.de>,
+        =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+        linux-mips@vger.kernel.org, Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        llvm@lists.linux.dev, kernel test robot <lkp@intel.com>,
+        Tom Rix <trix@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org
+Subject: Re: [PATCH] MIPS: BCM47XX: Cast memcmp() of function to (void *)
+Message-ID: <20220919144936.GE7674@alpha.franken.de>
+References: <20220907230556.73536-1-keescook@chromium.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20220915132157.2132509-1-cuigaosheng1@huawei.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20220907230556.73536-1-keescook@chromium.org>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Thu, Sep 15, 2022 at 09:21:50PM +0800, Gaosheng Cui wrote:
-> This series contains a few cleanup patches, to remove unused
-> declarations which have been removed. Thanks!
+On Wed, Sep 07, 2022 at 04:05:56PM -0700, Kees Cook wrote:
+> Clang is especially sensitive about argument type matching when using
+> __overloaded functions (like memcmp(), etc). Help it see that function
+> pointers are just "void *". Avoids this error:
 > 
-> Gaosheng Cui (7):
->   MIPS: Loongson2ef: remove orphan sbx00_acpi_init() declaration
->   MIPS: Octeon: remove orphan octeon_swiotlb declaration
->   MIPS: Octeon: remove orphan cvmx_fpa_setup_pool() declaration
->   MIPS: Octeon: remove orphan octeon_hal_setup_reserved32() declaration
->   MIPS: IRQ: remove orphan declarations from arch/mips/include/asm/irq.h
->   MIPS: remove orphan sni_cpu_time_init() declaration
->   MIPS: AR7: remove orphan declarations from
->     arch/mips/include/asm/mach-ar7/ar7.h
+> arch/mips/bcm47xx/prom.c:89:8: error: no matching function for call to 'memcmp'
+>                    if (!memcmp(prom_init, prom_init + mem, 32))
+>                         ^~~~~~
+> include/linux/string.h:156:12: note: candidate function not viable: no known conversion from 'void (void)' to 'const void *' for 1st argument extern int memcmp(const void *,const void *,__kernel_size_t);
 > 
->  arch/mips/include/asm/irq.h               |  2 --
->  arch/mips/include/asm/mach-ar7/ar7.h      |  2 --
->  arch/mips/include/asm/octeon/cvmx-fpa.h   | 20 --------------------
->  arch/mips/include/asm/octeon/octeon.h     |  1 -
->  arch/mips/include/asm/octeon/pci-octeon.h |  2 --
->  arch/mips/include/asm/sni.h               |  3 ---
->  arch/mips/loongson2ef/common/pci.c        |  2 --
->  7 files changed, 32 deletions(-)
+> Cc: Hauke Mehrtens <hauke@hauke-m.de>
+> Cc: "Rafał Miłecki" <zajec5@gmail.com>
+> Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+> Cc: linux-mips@vger.kernel.org
+> Cc: Nathan Chancellor <nathan@kernel.org>
+> Cc: Nick Desaulniers <ndesaulniers@google.com>
+> Cc: llvm@lists.linux.dev
+> Reported-by: kernel test robot <lkp@intel.com>
+> Link: https://lore.kernel.org/lkml/202209080652.sz2d68e5-lkp@intel.com
+> Signed-off-by: Kees Cook <keescook@chromium.org>
+> ---
+>  arch/mips/bcm47xx/prom.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/arch/mips/bcm47xx/prom.c b/arch/mips/bcm47xx/prom.c
+> index ab203e66ba0d..eb5c04a24531 100644
+> --- a/arch/mips/bcm47xx/prom.c
+> +++ b/arch/mips/bcm47xx/prom.c
+> @@ -86,7 +86,7 @@ static __init void prom_init_mem(void)
+>  			pr_debug("Assume 128MB RAM\n");
+>  			break;
+>  		}
+> -		if (!memcmp(prom_init, prom_init + mem, 32))
+> +		if (!memcmp((void *)prom_init, (void *)prom_init + mem, 32))
+>  			break;
+>  	}
+>  	lowmem = mem;
+> -- 
+> 2.34.1
 
-series applied to mips-next.
+applied to mips-next with the second memcmp(prom_init changed as well.
 
 Thomas.
 

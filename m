@@ -2,44 +2,51 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B909DC6FA9D
-	for <linux-mips@archiver.kernel.org>; Mon, 19 Sep 2022 10:26:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EBFEBC6FA82
+	for <linux-mips@archiver.kernel.org>; Mon, 19 Sep 2022 10:51:24 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230000AbiISK0F (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 19 Sep 2022 06:26:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51200 "EHLO
+        id S230039AbiISKvX (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 19 Sep 2022 06:51:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41616 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230492AbiISKSY (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Mon, 19 Sep 2022 06:18:24 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EA552315E;
-        Mon, 19 Sep 2022 03:17:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Type:MIME-Version:References:
-        Subject:Cc:To:From:Date:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
-        Content-ID:Content-Description:In-Reply-To;
-        bh=E91useHlyUUQoMsCvOSeJGEyanvxTuAtV3Y/d5ylPRM=; b=hGt/xJ2SQRXoXSrBCbxX3cFd8f
-        52HmfdiOntPDCU+hb1dkcsUWs1PzLBY2j/KzLbtzGuUNUOlYNPVcRxNjCMNI5Mq4XICjpVk9r4hpE
-        sSIsz45MXZm83EbAluQ7KjR828woKYnLyNCOZvsU8Vqgt6rfl5vlkY1XkGM+Vz/KtViumtIMSbGTI
-        WF2th3sTSJxy+Nfah7YTGb1Gn9ajQ3fJuoC6fJvhSqopNBK+/+yMX9y2koHhYw0/wu0pWx9jslbcL
-        8Z90brg5YcoQiGBXmwoEPvStLEQX1f852nePfFmBYgNhfOMc2MSitQxznYyWh9kw2qJjIetYbDajg
-        r/+okNeA==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1oaDqA-004bEF-S9; Mon, 19 Sep 2022 10:17:26 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        with ESMTP id S229960AbiISKuy (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Mon, 19 Sep 2022 06:50:54 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93FBA237E6;
+        Mon, 19 Sep 2022 03:45:54 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id A0CC2302F81;
-        Mon, 19 Sep 2022 12:16:25 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id A6ECA2BAC75A5; Mon, 19 Sep 2022 12:16:22 +0200 (CEST)
-Message-ID: <20220919101523.177759249@infradead.org>
-User-Agent: quilt/0.66
-Date:   Mon, 19 Sep 2022 12:00:21 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     peterz@infradead.org
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 47D1122187;
+        Mon, 19 Sep 2022 10:45:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1663584353; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=TPY7EEFMWVrZdYCxqqnTs3va11awHySIxzPGii1FR0M=;
+        b=pcs8WC6C8N5NT2mpr02B5yJH+LTCvsIeYhCodeQGG/gLeD9Ve1ZmOFpkpwgw4V+wtja7aY
+        RddPku1MGLIpjFQcO9qKlpCVJhYCWu9Pg3CcPENFblbq3F4iOpEH9QM9LSmS5Ghy2jXKlf
+        wzEuCcR+PKVNegczAeY+9+l4n3MbDsI=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 85A4E13A96;
+        Mon, 19 Sep 2022 10:45:48 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id T0GyHlxIKGNkeAAAMHmgww
+        (envelope-from <jgross@suse.com>); Mon, 19 Sep 2022 10:45:48 +0000
+Message-ID: <41916640-cf05-c00d-95fa-1e0099741f4c@suse.com>
+Date:   Mon, 19 Sep 2022 12:45:47 +0200
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.2.2
+Subject: Re: [PATCH v2 30/44] cpuidle,xenpv: Make more PARAVIRT_XXL noinstr
+ clean
+Content-Language: en-US
+To:     Peter Zijlstra <peterz@infradead.org>
 Cc:     richard.henderson@linaro.org, ink@jurassic.park.msu.ru,
         mattst88@gmail.com, vgupta@kernel.org, linux@armlinux.org.uk,
         ulli.kroll@googlemail.com, linus.walleij@linaro.org,
@@ -63,12 +70,12 @@ Cc:     richard.henderson@linaro.org, ink@jurassic.park.msu.ru,
         dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com,
         acme@kernel.org, mark.rutland@arm.com,
         alexander.shishkin@linux.intel.com, jolsa@kernel.org,
-        namhyung@kernel.org, jgross@suse.com, srivatsa@csail.mit.edu,
-        amakhalov@vmware.com, pv-drivers@vmware.com,
-        boris.ostrovsky@oracle.com, chris@zankel.net, jcmvbkbc@gmail.com,
-        rafael@kernel.org, lenb@kernel.org, pavel@ucw.cz,
-        gregkh@linuxfoundation.org, mturquette@baylibre.com,
-        sboyd@kernel.org, daniel.lezcano@linaro.org, lpieralisi@kernel.org,
+        namhyung@kernel.org, srivatsa@csail.mit.edu, amakhalov@vmware.com,
+        pv-drivers@vmware.com, boris.ostrovsky@oracle.com,
+        chris@zankel.net, jcmvbkbc@gmail.com, rafael@kernel.org,
+        lenb@kernel.org, pavel@ucw.cz, gregkh@linuxfoundation.org,
+        mturquette@baylibre.com, sboyd@kernel.org,
+        daniel.lezcano@linaro.org, lpieralisi@kernel.org,
         sudeep.holla@arm.com, agross@kernel.org,
         bjorn.andersson@linaro.org, konrad.dybcio@somainline.org,
         anup@brainfault.org, thierry.reding@gmail.com,
@@ -99,178 +106,175 @@ Cc:     richard.henderson@linaro.org, ink@jurassic.park.msu.ru,
         linux-pm@vger.kernel.org, linux-clk@vger.kernel.org,
         linux-arm-msm@vger.kernel.org, linux-tegra@vger.kernel.org,
         linux-arch@vger.kernel.org, kasan-dev@googlegroups.com
-Subject: [PATCH v2 42/44] entry,kasan,x86: Disallow overriding mem*() functions
 References: <20220919095939.761690562@infradead.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+ <20220919101522.358582588@infradead.org>
+From:   Juergen Gross <jgross@suse.com>
+In-Reply-To: <20220919101522.358582588@infradead.org>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="------------uN7TNqTnDntgyCDMTfJPdXrr"
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-KASAN cannot just hijack the mem*() functions, it needs to emit
-__asan_mem*() variants if it wants instrumentation (other sanitizers
-already do this).
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--------------uN7TNqTnDntgyCDMTfJPdXrr
+Content-Type: multipart/mixed; boundary="------------bVxl0sFTg1HlWc0dYJ02yXYs";
+ protected-headers="v1"
+From: Juergen Gross <jgross@suse.com>
+To: Peter Zijlstra <peterz@infradead.org>
+Cc: richard.henderson@linaro.org, ink@jurassic.park.msu.ru,
+ mattst88@gmail.com, vgupta@kernel.org, linux@armlinux.org.uk,
+ ulli.kroll@googlemail.com, linus.walleij@linaro.org, shawnguo@kernel.org,
+ Sascha Hauer <s.hauer@pengutronix.de>, kernel@pengutronix.de,
+ festevam@gmail.com, linux-imx@nxp.com, tony@atomide.com, khilman@kernel.org,
+ catalin.marinas@arm.com, will@kernel.org, guoren@kernel.org,
+ bcain@quicinc.com, chenhuacai@kernel.org, kernel@xen0n.name,
+ geert@linux-m68k.org, sammy@sammy.net, monstr@monstr.eu,
+ tsbogend@alpha.franken.de, dinguyen@kernel.org, jonas@southpole.se,
+ stefan.kristiansson@saunalahti.fi, shorne@gmail.com,
+ James.Bottomley@HansenPartnership.com, deller@gmx.de, mpe@ellerman.id.au,
+ npiggin@gmail.com, christophe.leroy@csgroup.eu, paul.walmsley@sifive.com,
+ palmer@dabbelt.com, aou@eecs.berkeley.edu, hca@linux.ibm.com,
+ gor@linux.ibm.com, agordeev@linux.ibm.com, borntraeger@linux.ibm.com,
+ svens@linux.ibm.com, ysato@users.sourceforge.jp, dalias@libc.org,
+ davem@davemloft.net, richard@nod.at, anton.ivanov@cambridgegreys.com,
+ johannes@sipsolutions.net, tglx@linutronix.de, mingo@redhat.com,
+ bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com,
+ acme@kernel.org, mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
+ jolsa@kernel.org, namhyung@kernel.org, srivatsa@csail.mit.edu,
+ amakhalov@vmware.com, pv-drivers@vmware.com, boris.ostrovsky@oracle.com,
+ chris@zankel.net, jcmvbkbc@gmail.com, rafael@kernel.org, lenb@kernel.org,
+ pavel@ucw.cz, gregkh@linuxfoundation.org, mturquette@baylibre.com,
+ sboyd@kernel.org, daniel.lezcano@linaro.org, lpieralisi@kernel.org,
+ sudeep.holla@arm.com, agross@kernel.org, bjorn.andersson@linaro.org,
+ konrad.dybcio@somainline.org, anup@brainfault.org, thierry.reding@gmail.com,
+ jonathanh@nvidia.com, jacob.jun.pan@linux.intel.com, atishp@atishpatra.org,
+ Arnd Bergmann <arnd@arndb.de>, yury.norov@gmail.com,
+ andriy.shevchenko@linux.intel.com, linux@rasmusvillemoes.dk,
+ dennis@kernel.org, tj@kernel.org, cl@linux.com, rostedt@goodmis.org,
+ pmladek@suse.com, senozhatsky@chromium.org, john.ogness@linutronix.de,
+ juri.lelli@redhat.com, vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+ bsegall@google.com, mgorman@suse.de, bristot@redhat.com,
+ vschneid@redhat.com, fweisbec@gmail.com, ryabinin.a.a@gmail.com,
+ glider@google.com, andreyknvl@gmail.com, dvyukov@google.com,
+ vincenzo.frascino@arm.com, Andrew Morton <akpm@linux-foundation.org>,
+ jpoimboe@kernel.org, linux-alpha@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-snps-arc@lists.infradead.org,
+ linux-omap@vger.kernel.org, linux-csky@vger.kernel.org,
+ linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org,
+ loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
+ linux-mips@vger.kernel.org, openrisc@lists.librecores.org,
+ linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+ linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
+ linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
+ linux-um@lists.infradead.org, linux-perf-users@vger.kernel.org,
+ virtualization@lists.linux-foundation.org, linux-xtensa@linux-xtensa.org,
+ linux-acpi@vger.kernel.org, linux-pm@vger.kernel.org,
+ linux-clk@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+ linux-tegra@vger.kernel.org, linux-arch@vger.kernel.org,
+ kasan-dev@googlegroups.com
+Message-ID: <41916640-cf05-c00d-95fa-1e0099741f4c@suse.com>
+Subject: Re: [PATCH v2 30/44] cpuidle,xenpv: Make more PARAVIRT_XXL noinstr
+ clean
+References: <20220919095939.761690562@infradead.org>
+ <20220919101522.358582588@infradead.org>
+In-Reply-To: <20220919101522.358582588@infradead.org>
 
-vmlinux.o: warning: objtool: sync_regs+0x24: call to memcpy() leaves .noinstr.text section
-vmlinux.o: warning: objtool: vc_switch_off_ist+0xbe: call to memcpy() leaves .noinstr.text section
-vmlinux.o: warning: objtool: fixup_bad_iret+0x36: call to memset() leaves .noinstr.text section
-vmlinux.o: warning: objtool: __sev_get_ghcb+0xa0: call to memcpy() leaves .noinstr.text section
-vmlinux.o: warning: objtool: __sev_put_ghcb+0x35: call to memcpy() leaves .noinstr.text section
+--------------bVxl0sFTg1HlWc0dYJ02yXYs
+Content-Type: multipart/mixed; boundary="------------DqMcUwZmmixeMRf078SIWWNm"
 
-Remove the weak aliases to ensure nobody hijacks these functions and
-add them to the noinstr section.
+--------------DqMcUwZmmixeMRf078SIWWNm
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: base64
 
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
----
- arch/x86/lib/memcpy_64.S  |    5 ++---
- arch/x86/lib/memmove_64.S |    4 +++-
- arch/x86/lib/memset_64.S  |    4 +++-
- mm/kasan/kasan.h          |    4 ++++
- mm/kasan/shadow.c         |   38 ++++++++++++++++++++++++++++++++++++++
- tools/objtool/check.c     |    3 +++
- 6 files changed, 53 insertions(+), 5 deletions(-)
+T24gMTkuMDkuMjIgMTI6MDAsIFBldGVyIFppamxzdHJhIHdyb3RlOg0KPiB2bWxpbnV4Lm86
+IHdhcm5pbmc6IG9ianRvb2w6IGFjcGlfaWRsZV9lbnRlcl9zMmlkbGUrMHhkZTogY2FsbCB0
+byB3YmludmQoKSBsZWF2ZXMgLm5vaW5zdHIudGV4dCBzZWN0aW9uDQo+IHZtbGludXgubzog
+d2FybmluZzogb2JqdG9vbDogZGVmYXVsdF9pZGxlKzB4NDogY2FsbCB0byBhcmNoX3NhZmVf
+aGFsdCgpIGxlYXZlcyAubm9pbnN0ci50ZXh0IHNlY3Rpb24NCj4gdm1saW51eC5vOiB3YXJu
+aW5nOiBvYmp0b29sOiB4ZW5fc2FmZV9oYWx0KzB4YTogY2FsbCB0byBIWVBFUlZJU09SX3Nj
+aGVkX29wLmNvbnN0cHJvcC4wKCkgbGVhdmVzIC5ub2luc3RyLnRleHQgc2VjdGlvbg0KPiAN
+Cj4gU2lnbmVkLW9mZi1ieTogUGV0ZXIgWmlqbHN0cmEgKEludGVsKSA8cGV0ZXJ6QGluZnJh
+ZGVhZC5vcmc+DQo+IFJldmlld2VkLWJ5OiBTcml2YXRzYSBTLiBCaGF0IChWTXdhcmUpIDxz
+cml2YXRzYUBjc2FpbC5taXQuZWR1Pg0KDQpSZXZpZXdlZC1ieTogSnVlcmdlbiBHcm9zcyA8
+amdyb3NzQHN1c2UuY29tPg0KDQoNCkp1ZXJnZW4NCg0K
+--------------DqMcUwZmmixeMRf078SIWWNm
+Content-Type: application/pgp-keys; name="OpenPGP_0xB0DE9DD628BF132F.asc"
+Content-Disposition: attachment; filename="OpenPGP_0xB0DE9DD628BF132F.asc"
+Content-Description: OpenPGP public key
+Content-Transfer-Encoding: quoted-printable
 
---- a/arch/x86/lib/memcpy_64.S
-+++ b/arch/x86/lib/memcpy_64.S
-@@ -7,7 +7,7 @@
- #include <asm/alternative.h>
- #include <asm/export.h>
- 
--.pushsection .noinstr.text, "ax"
-+.section .noinstr.text, "ax"
- 
- /*
-  * We build a jump to memcpy_orig by default which gets NOPped out on
-@@ -42,7 +42,7 @@ SYM_FUNC_START(__memcpy)
- SYM_FUNC_END(__memcpy)
- EXPORT_SYMBOL(__memcpy)
- 
--SYM_FUNC_ALIAS_WEAK(memcpy, __memcpy)
-+SYM_FUNC_ALIAS(memcpy, __memcpy)
- EXPORT_SYMBOL(memcpy)
- 
- /*
-@@ -183,4 +183,3 @@ SYM_FUNC_START_LOCAL(memcpy_orig)
- 	RET
- SYM_FUNC_END(memcpy_orig)
- 
--.popsection
---- a/arch/x86/lib/memmove_64.S
-+++ b/arch/x86/lib/memmove_64.S
-@@ -13,6 +13,8 @@
- 
- #undef memmove
- 
-+.section .noinstr.text, "ax"
-+
- /*
-  * Implement memmove(). This can handle overlap between src and dst.
-  *
-@@ -213,5 +215,5 @@ SYM_FUNC_START(__memmove)
- SYM_FUNC_END(__memmove)
- EXPORT_SYMBOL(__memmove)
- 
--SYM_FUNC_ALIAS_WEAK(memmove, __memmove)
-+SYM_FUNC_ALIAS(memmove, __memmove)
- EXPORT_SYMBOL(memmove)
---- a/arch/x86/lib/memset_64.S
-+++ b/arch/x86/lib/memset_64.S
-@@ -6,6 +6,8 @@
- #include <asm/alternative.h>
- #include <asm/export.h>
- 
-+.section .noinstr.text, "ax"
-+
- /*
-  * ISO C memset - set a memory block to a byte value. This function uses fast
-  * string to get better performance than the original function. The code is
-@@ -43,7 +45,7 @@ SYM_FUNC_START(__memset)
- SYM_FUNC_END(__memset)
- EXPORT_SYMBOL(__memset)
- 
--SYM_FUNC_ALIAS_WEAK(memset, __memset)
-+SYM_FUNC_ALIAS(memset, __memset)
- EXPORT_SYMBOL(memset)
- 
- /*
---- a/mm/kasan/kasan.h
-+++ b/mm/kasan/kasan.h
-@@ -551,6 +551,10 @@ void __asan_set_shadow_f3(const void *ad
- void __asan_set_shadow_f5(const void *addr, size_t size);
- void __asan_set_shadow_f8(const void *addr, size_t size);
- 
-+void *__asan_memset(void *addr, int c, size_t len);
-+void *__asan_memmove(void *dest, const void *src, size_t len);
-+void *__asan_memcpy(void *dest, const void *src, size_t len);
-+
- void __hwasan_load1_noabort(unsigned long addr);
- void __hwasan_store1_noabort(unsigned long addr);
- void __hwasan_load2_noabort(unsigned long addr);
---- a/mm/kasan/shadow.c
-+++ b/mm/kasan/shadow.c
-@@ -38,6 +38,12 @@ bool __kasan_check_write(const volatile
- }
- EXPORT_SYMBOL(__kasan_check_write);
- 
-+#ifndef CONFIG_GENERIC_ENTRY
-+/*
-+ * CONFIG_GENERIC_ENTRY relies on compiler emitted mem*() calls to not be
-+ * instrumented. KASAN enabled toolchains should emit __asan_mem*() functions
-+ * for the sites they want to instrument.
-+ */
- #undef memset
- void *memset(void *addr, int c, size_t len)
- {
-@@ -68,6 +74,38 @@ void *memcpy(void *dest, const void *src
- 
- 	return __memcpy(dest, src, len);
- }
-+#endif
-+
-+void *__asan_memset(void *addr, int c, size_t len)
-+{
-+	if (!kasan_check_range((unsigned long)addr, len, true, _RET_IP_))
-+		return NULL;
-+
-+	return __memset(addr, c, len);
-+}
-+EXPORT_SYMBOL(__asan_memset);
-+
-+#ifdef __HAVE_ARCH_MEMMOVE
-+void *__asan_memmove(void *dest, const void *src, size_t len)
-+{
-+	if (!kasan_check_range((unsigned long)src, len, false, _RET_IP_) ||
-+	    !kasan_check_range((unsigned long)dest, len, true, _RET_IP_))
-+		return NULL;
-+
-+	return __memmove(dest, src, len);
-+}
-+EXPORT_SYMBOL(__asan_memmove);
-+#endif
-+
-+void *__asan_memcpy(void *dest, const void *src, size_t len)
-+{
-+	if (!kasan_check_range((unsigned long)src, len, false, _RET_IP_) ||
-+	    !kasan_check_range((unsigned long)dest, len, true, _RET_IP_))
-+		return NULL;
-+
-+	return __memcpy(dest, src, len);
-+}
-+EXPORT_SYMBOL(__asan_memcpy);
- 
- void kasan_poison(const void *addr, size_t size, u8 value, bool init)
- {
---- a/tools/objtool/check.c
-+++ b/tools/objtool/check.c
-@@ -956,6 +956,9 @@ static const char *uaccess_safe_builtin[
- 	"__asan_store16_noabort",
- 	"__kasan_check_read",
- 	"__kasan_check_write",
-+	"__asan_memset",
-+	"__asan_memmove",
-+	"__asan_memcpy",
- 	/* KASAN in-line */
- 	"__asan_report_load_n_noabort",
- 	"__asan_report_load1_noabort",
+-----BEGIN PGP PUBLIC KEY BLOCK-----
 
+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
+jR/i1DG86lem3iBDXzXsZDn8R38=3D
+=3D2wuH
+-----END PGP PUBLIC KEY BLOCK-----
 
+--------------DqMcUwZmmixeMRf078SIWWNm--
+
+--------------bVxl0sFTg1HlWc0dYJ02yXYs--
+
+--------------uN7TNqTnDntgyCDMTfJPdXrr
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmMoSFwFAwAAAAAACgkQsN6d1ii/Ey/T
+hwf/eGOkDCDy7F9Ra0L0GOLdv4GeCljWmcvbdITwnsuB7hQz/+M0V2k7PvSN/ISQ4Vf6Jn+jdWqe
+BIXXQbgSPEGvf145/zXXKI4Z/CR603o4j00ul4vrymonw4oMQfSU6XSgHQPxxoPF3hdqavHf2w48
+1DJPJ8whPxq8qCNOIZt3O0NWTtIKi2fdc7Gpw4aouzNtdCNdCQKzLjhN1LpTcokA22BVdYBG2wMF
+ZkBuZgDmH0auDXsstAEU8aSublQibxzVadACIUCRvtXxxTSXCujB3IoT9CgcYyav5uxi9nNvOEsp
+f9YTwuEzNv1IhRffytywrjyBDZdbHXFDZM0kU7zKkA==
+=9mzX
+-----END PGP SIGNATURE-----
+
+--------------uN7TNqTnDntgyCDMTfJPdXrr--

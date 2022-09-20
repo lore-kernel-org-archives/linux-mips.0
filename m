@@ -2,88 +2,136 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A064EC54EE9
-	for <linux-mips@archiver.kernel.org>; Tue, 20 Sep 2022 13:07:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A4F2BC54EE9
+	for <linux-mips@archiver.kernel.org>; Tue, 20 Sep 2022 13:33:31 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229655AbiITNHR (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 20 Sep 2022 09:07:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41890 "EHLO
+        id S229461AbiITNda (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 20 Sep 2022 09:33:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44290 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230231AbiITNHP (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Tue, 20 Sep 2022 09:07:15 -0400
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AEAEE08D
-        for <linux-mips@vger.kernel.org>; Tue, 20 Sep 2022 06:07:14 -0700 (PDT)
-Received: from kwepemi500012.china.huawei.com (unknown [172.30.72.55])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4MX1tf3n2rzlW7Q;
-        Tue, 20 Sep 2022 21:03:06 +0800 (CST)
-Received: from cgs.huawei.com (10.244.148.83) by
- kwepemi500012.china.huawei.com (7.221.188.12) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Tue, 20 Sep 2022 21:07:12 +0800
-From:   Gaosheng Cui <cuigaosheng1@huawei.com>
-To:     <tsbogend@alpha.franken.de>, <ralf@linux-mips.org>,
-        <paul.burton@mips.com>, <cuigaosheng1@huawei.com>
-CC:     <linux-mips@vger.kernel.org>
-Subject: [PATCH 1/2] MIPS: remove orphan sb1250_time_init() declaration
-Date:   Tue, 20 Sep 2022 21:07:10 +0800
-Message-ID: <20220920130711.1107018-2-cuigaosheng1@huawei.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20220920130711.1107018-1-cuigaosheng1@huawei.com>
-References: <20220920130711.1107018-1-cuigaosheng1@huawei.com>
+        with ESMTP id S230055AbiITNda (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Tue, 20 Sep 2022 09:33:30 -0400
+Received: from aposti.net (aposti.net [89.234.176.197])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBC1856B8C;
+        Tue, 20 Sep 2022 06:33:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crapouillou.net;
+        s=mail; t=1663680802; h=from:from:sender:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=1czWZauFxNtX7yu8h4BjguhMKq0iDi8NktR4AukipiQ=;
+        b=n46staB1GBYhjWfq1N9F6myYR2vdoXdTj2V6+MQWPBI+mdAopEqZN5jDHIMi8eDgrZpupY
+        IqqJU+2W6AHKBftMB++SKoiQaIIm/GCh0KR5UVPqlLsnwkPGUk2bXyusyTWACpeFYt7S8D
+        ke9VnSKXTAzjAjKLq1bYFW8HaOBHfN4=
+Date:   Tue, 20 Sep 2022 14:33:13 +0100
+From:   Paul Cercueil <paul@crapouillou.net>
+Subject: Re: Usefulness of CONFIG_MACH_JZ47*
+To:     "H. Nikolaus Schaller" <hns@goldelico.com>
+Cc:     linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-mips <linux-mips@vger.kernel.org>,
+        MIPS Creator CI20 Development 
+        <mips-creator-ci20-dev@googlegroups.com>
+Message-Id: <DBGIIR.8W0JWG83D6FE2@crapouillou.net>
+In-Reply-To: <F21B5D44-94D8-4BDB-BB34-9CBFC5F2B891@goldelico.com>
+References: <af10570000d7e103d70bbea590ce8df4f8902b67.1661330532.git.christophe.jaillet@wanadoo.fr>
+        <UC07HR.REF39SO0Y5PG2@crapouillou.net>
+        <CDEACE3D-5433-457B-AF77-E41F39A04CA4@goldelico.com>
+        <H34IIR.IGTU7CQ36OZK3@crapouillou.net>
+        <F21B5D44-94D8-4BDB-BB34-9CBFC5F2B891@goldelico.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.244.148.83]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- kwepemi500012.china.huawei.com (7.221.188.12)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=iso-8859-1; format=flowed
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-All uses of sb1250_time_init() have been removed by
-commit d527eef5b7f1 ("[MIPS] Sibyte: Finish conversion to modern
-time APIs."), so remove the orphan declaration.
 
-The comments about sb1250_time_init() is useless in arch_init_irq(),
-so remove these comments.
 
-Signed-off-by: Gaosheng Cui <cuigaosheng1@huawei.com>
----
- arch/mips/include/asm/sibyte/sb1250.h | 1 -
- arch/mips/sibyte/sb1250/irq.c         | 6 ------
- 2 files changed, 7 deletions(-)
+Le mar., sept. 20 2022 at 14:31:38 +0200, H. Nikolaus Schaller=20
+<hns@goldelico.com> a =E9crit :
+> Hi Paul,
+>=20
+>>  Am 20.09.2022 um 11:09 schrieb Paul Cercueil <paul@crapouillou.net>:
+>>=20
+>>  Hi Nikolaus,
+>>=20
+>>  Le mar., sept. 20 2022 at 08:31:30 +0200, H. Nikolaus Schaller=20
+>> <hns@goldelico.com> a =E9crit :
+>>>  Hi Paul,
+>>>  it seems as if there aren't many places left over where the=20
+>>> MACH_JZ47* configs are still in use:
+>>>  drivers/char/hw_ramdom/Kconfig
+>>>  drivers/clk/ingenic/Kconfig
+>>>  drivers/gpu/drm/ingenic/Kconfig
+>>>  drivers/pinctrl/pinctrl-ingenic.c
+>>>  Is it possible to get rid of them and just have=20
+>>> CONFIG_MACH_INGENIC_GENERIC?
+>>>  This might simplify my defconfig for multiple machines.
+>>=20
+>>  CONFIG_MIPS_GENERIC_KERNEL=3Dy
+>=20
+> This breaks compilation for me, e.g.
+>=20
+> arch/mips/mm/cache.c:203:6: error: 'cpu_has_tx39_cache' undeclared=20
+> (first use in this function)
 
-diff --git a/arch/mips/include/asm/sibyte/sb1250.h b/arch/mips/include/asm/sibyte/sb1250.h
-index dbde5f93f0dd..495b31925ed7 100644
---- a/arch/mips/include/asm/sibyte/sb1250.h
-+++ b/arch/mips/include/asm/sibyte/sb1250.h
-@@ -32,7 +32,6 @@ extern unsigned int soc_type;
- extern unsigned int periph_rev;
- extern unsigned int zbbus_mhz;
- 
--extern void sb1250_time_init(void);
- extern void sb1250_mask_irq(int cpu, int irq);
- extern void sb1250_unmask_irq(int cpu, int irq);
- 
-diff --git a/arch/mips/sibyte/sb1250/irq.c b/arch/mips/sibyte/sb1250/irq.c
-index 86f49c48fc34..2f08ad267a11 100644
---- a/arch/mips/sibyte/sb1250/irq.c
-+++ b/arch/mips/sibyte/sb1250/irq.c
-@@ -262,12 +262,6 @@ void __init arch_init_irq(void)
- 	__raw_writeq(tmp, IOADDR(A_IMR_REGISTER(0, R_IMR_INTERRUPT_MASK)));
- 	__raw_writeq(tmp, IOADDR(A_IMR_REGISTER(1, R_IMR_INTERRUPT_MASK)));
- 
--	/*
--	 * Note that the timer interrupts are also mapped, but this is
--	 * done in sb1250_time_init().	Also, the profiling driver
--	 * does its own management of IP7.
--	 */
--
- 	/* Enable necessary IPs, disable the rest */
- 	change_c0_status(ST0_IM, imask);
- }
--- 
-2.25.1
+v6.0-rc does not have 'cpu_has_tx39_cache' anywhere in that file, or in=20
+arch/mips/ for that matter. It was removed in v5.18.
+
+And a v5.17 kernel compiles fine here with these options enabled. So=20
+it's a problem on your side, I guess.
+
+>>  CONFIG_BOARD_INGENIC=3Dy
+>=20
+> This config option does not exist (at least in v6.0-rc). Probably you=20
+> refer to CONFIG_INGENIC_GENERIC_BOARD.
+
+No, I do not, and yes, it exists.
+
+> As far as I see, this does not choose to build any device tree blob.
+>=20
+> I tried some patch to get the .dtb built, but the resulting kernel=20
+> does not show any activity.
+>=20
+> If I e.g. switch back from CONFIG_INGENIC_GENERIC_BOARD=3Dy to=20
+> CONFIG_JZ4780_CI20=3Dy the kernel works.
+
+Because in the first case you build a generic kernel, which does not=20
+embed any .dtb, and you are responsible for providing the kernel with=20
+the blob at boot time; while if you build with CONFIG_JZ4780_CI20=3Dy it=20
+embeds the .dtb inside the kernel.
+
+You can embed the .dtb into the generic kernel at compile-time too,=20
+have a look at "Kernel type -> Kernel appended dtb support." Not sure=20
+why you'd want that for a generic kernel, though.
+
+>>=20
+>>  Then you can support all Ingenic-based boards alongside other MIPS=20
+>> boards.
+>=20
+> Yes, I know, but why are the MACH_JZ47* not replaced by=20
+> CONFIG_MACH_INGENIC_GENERIC if they are almost unused or completely=20
+> removed?
+
+They *are* used.
+
+> BTW: there are also seems to be some board specific CONFIGs in=20
+> processor specific code (e.g. CONFIG_JZ4780_CI20 in irqchip code).
+
+rgrep CI20 drivers/irqchip/
+
+returns nothing for me.
+
+> So selecting a MACH is not sufficient to get these features.
+>=20
+> All this looks a little fragile and incomplete... Maybe if I find=20
+> some time (which is unfortunately quite unlikely) I can propose some=20
+> fixes.
+
+It is not "fragile and incomplete", it works as intended, and it's a=20
+feature I use often.
+
+-Paul
+
 

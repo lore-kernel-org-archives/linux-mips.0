@@ -2,58 +2,58 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9AD68C54EE9
-	for <linux-mips@archiver.kernel.org>; Wed, 21 Sep 2022 00:33:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 70CECC6FA82
+	for <linux-mips@archiver.kernel.org>; Wed, 21 Sep 2022 00:33:45 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231187AbiIUAdk (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 20 Sep 2022 20:33:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34048 "EHLO
+        id S231429AbiIUAdn (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 20 Sep 2022 20:33:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34722 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231420AbiIUAdD (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Tue, 20 Sep 2022 20:33:03 -0400
-Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 067E5796A8
-        for <linux-mips@vger.kernel.org>; Tue, 20 Sep 2022 17:33:00 -0700 (PDT)
-Received: by mail-pl1-x649.google.com with SMTP id q3-20020a17090311c300b0017898180dddso2741637plh.0
-        for <linux-mips@vger.kernel.org>; Tue, 20 Sep 2022 17:33:00 -0700 (PDT)
+        with ESMTP id S231464AbiIUAdN (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Tue, 20 Sep 2022 20:33:13 -0400
+Received: from mail-pj1-x104a.google.com (mail-pj1-x104a.google.com [IPv6:2607:f8b0:4864:20::104a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABD9B792EE
+        for <linux-mips@vger.kernel.org>; Tue, 20 Sep 2022 17:33:03 -0700 (PDT)
+Received: by mail-pj1-x104a.google.com with SMTP id mi9-20020a17090b4b4900b00202b50464b6so7359095pjb.9
+        for <linux-mips@vger.kernel.org>; Tue, 20 Sep 2022 17:33:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:reply-to:from:to:cc:subject:date;
-        bh=qOL17Oc8lfNiT6vI1N2DgBeo2oQr9pvN4OAUhg4HlfA=;
-        b=ARUifQn8X722qfUwF91vggFYXNpMmdld6jHGucJn9mYIHgePg3e3ltjHazRJ7WJQIY
-         w+6+dDv/mxautN/CuWkRVIzUB4MM0mFVqAUofjmwyaRB9E3nNhDZAx6ZDYK3UkIvlcW3
-         K9NzDWtr9CpQ/CIsHl9VDcl9eNecHkOQ3A4eAV1FpyXScQBTQQwiNPVxGPrxUtBQTP6V
-         AEpBQWZgYOtijs1937kE9A8HMcoOQ+ZcnStpwMSDNJZXDvCTzuIS4CNbetfFaKrPYBbF
-         SNyUEVo0ACy2TKSphVy9cWwOnuMGoqVKl4ZpNYYdwpjQNgZOx/k9BLzDCMUkycF0nN5P
-         tZKA==
+        bh=+nmtDj/EH/uK0SyJnyCY1A9LxFaUnx5384By8rF2AcA=;
+        b=rpWC/VKjogxaSKricNAD/sRggDf2m+ppcZ99cC4f6M2lXn9866lNJfALVMtFhxatIn
+         qQLLRO1BUtEoQdRvY1yCuXD/CtkIEdb3+zCRL0TNiOdne1CQBhI/BizUOruqlzoGL1ru
+         VCaVy6ynkLdl8Y2SlQn7F72+sRnXKS9nW+9M+WtquUBaCslXgLIbNwAo/KbGQ39Ut11+
+         iX38zqjv00zbeQfFOy8nLz7/nmQA6SCthL08Bvu2Mg/I39d68rA1efgAA/OI3nSBX2ld
+         cXZNYtWAos3dWx8qB/6lW1KWT1k2gQ6b3mCS+VL9cYwYuehjdDCD0p4cY7hCsI3NeNJV
+         wlPQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:reply-to:x-gm-message-state:from:to:cc:subject:date;
-        bh=qOL17Oc8lfNiT6vI1N2DgBeo2oQr9pvN4OAUhg4HlfA=;
-        b=NTViIlpSBINjPGZn311KNHaScLRlWIpCwFJN43lZsBw72dhpx5HbcBpYpdBqCOW4Sh
-         N+aZiT1u5ffB6CedPLwqjdbOvsy5dZWIjCmqJo/BTG3fsj7Y8A2j8c2BwT4H3R7ff6zn
-         p+zyOwt3T5hwDW/QxAauaVGjZjl4khPwTIRCqqYkjuCoNI+OiGtQqSPtWgxFMm5/c1pu
-         Qod7vm7GXnTrLOKWA8Ls4ioGBKrJ/sROk2kMwbalom5mDnqpSmcy+klSXuF3UfFF0hoe
-         x6MZ1LLgxqzlR/oDbTaGUGVIpX2NuheRkwRtyqOs9LVltdGrZb5F66DhurAlYO9eC11M
-         wQEQ==
-X-Gm-Message-State: ACrzQf0fQtkWYvdEzhX1zb917iR27RoGCrxht0xY8pjRVDgrcOGSL7tI
-        F3PsQvSyttNyLg4tvh4JBrazWnB53Iw=
-X-Google-Smtp-Source: AMsMyM6CB910qkp43a3cP5VNkh9ZvqTlylmwVUImF03qdsZIEcBH6bFWk0KDb4437+crJl7uEogrf6c2DIk=
+        bh=+nmtDj/EH/uK0SyJnyCY1A9LxFaUnx5384By8rF2AcA=;
+        b=6dsvIZICt6R3I9LL+Cp9AJFgGbupKjwOd+2/rH6T4zjvpRBrRz5YJV/Wls8oW9z0h6
+         oCSmHqYtUdw1/y38pcpjCs5MSYrDHwfZbixc8b2wibWFJLGk6PynbTXDZxhkcz9jlIoC
+         UWS4gWTKV0Jrzfb4B0Ov3j47ilnpfgoNPc1M2BM+IYAwVuGYfD2cLY8fpVwTkqvSqlN4
+         5LPWc1zqSnHYeFT9FFTk1lFta0oOOfMWC8xXEKTpx+y+ZmEB1dWPP93A7x8lhYBJ6Fmr
+         rqUy8Ajesd7E3uEN18D9FCVM09Bjm3laDpZknIi/Nft1fKSkh/tpjNa2IZBR7XjUKkgI
+         sA+Q==
+X-Gm-Message-State: ACrzQf20l+SeR44cZKTrcZ+2CF89iBBoDQp3jYLpqpJ8Ek8/wzZzqt+v
+        qa/DzwG0TQV03C2N6vbm6TZ1NT62aoM=
+X-Google-Smtp-Source: AMsMyM6zSXdEm/sdOmQ6ucVPu4StzA9LzXizITrmOCaLxtYOZuSorePqxSyOnSzLlOuDLemc+6OfhU9oA1I=
 X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a17:903:26d4:b0:178:8de:fb5f with SMTP id
- jg20-20020a17090326d400b0017808defb5fmr2230591plb.45.1663720379233; Tue, 20
- Sep 2022 17:32:59 -0700 (PDT)
+ (user=seanjc job=sendgmr) by 2002:a17:90b:4a43:b0:202:7706:73d7 with SMTP id
+ lb3-20020a17090b4a4300b00202770673d7mr6477790pjb.137.1663720382986; Tue, 20
+ Sep 2022 17:33:02 -0700 (PDT)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Wed, 21 Sep 2022 00:31:56 +0000
+Date:   Wed, 21 Sep 2022 00:31:58 +0000
 In-Reply-To: <20220921003201.1441511-1-seanjc@google.com>
 Mime-Version: 1.0
 References: <20220921003201.1441511-1-seanjc@google.com>
 X-Mailer: git-send-email 2.37.3.968.ga6b4b080e4-goog
-Message-ID: <20220921003201.1441511-8-seanjc@google.com>
-Subject: [PATCH v4 07/12] KVM: nVMX: Make an event request if INIT or SIPI is
- pending on VM-Enter
+Message-ID: <20220921003201.1441511-10-seanjc@google.com>
+Subject: [PATCH v4 09/12] KVM: x86: Don't snapshot pending INIT/SIPI prior to
+ checking nested events
 From:   Sean Christopherson <seanjc@google.com>
 To:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
         Huacai Chen <chenhuacai@kernel.org>,
@@ -81,53 +81,115 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Evaluate interrupts, i.e. set KVM_REQ_EVENT, if INIT or SIPI is pending
-when emulating nested VM-Enter.  INIT is blocked while the CPU is in VMX
-root mode, but not in VMX non-root, i.e. becomes unblocked on VM-Enter.
-This bug has been masked by KVM calling ->check_nested_events() in the
-core run loop, but that hack will be fixed in the near future.
+Don't snapshot pending INIT/SIPI events prior to checking nested events,
+architecturally there's nothing wrong with KVM processing (dropping) a
+SIPI that is received immediately after synthesizing a VM-Exit.  Taking
+and consuming the snapshot makes the flow way more subtle than it needs
+to be, e.g. nVMX consumes/clears events that trigger VM-Exit (INIT/SIPI),
+and so at first glance it appears that KVM is double-dipping on pending
+INITs and SIPIs.  But that's not the case because INIT is blocked
+unconditionally in VMX root mode the CPU cannot be in wait-for_SIPI after
+VM-Exit, i.e. the paths that truly consume the snapshot are unreachable
+if apic->pending_events is modified by kvm_check_nested_events().
+
+nSVM is a similar story as GIF is cleared by the CPU on VM-Exit; INIT is
+blocked regardless of whether or not it was pending prior to VM-Exit.
+
+Drop the snapshot logic so that a future fix doesn't create weirdness
+when kvm_vcpu_running()'s call to kvm_check_nested_events() is moved to
+vcpu_block().  In that case, kvm_check_nested_events() will be called
+immediately before kvm_apic_accept_events(), which raises the obvious
+question of why that change doesn't break the snapshot logic.
+
+Note, there is a subtle functional change.  Previously, KVM would clear
+pending SIPIs if and only SIPI was pending prior to VM-Exit, whereas now
+KVM clears pending SIPI unconditionally if INIT+SIPI are blocked.  The
+latter is architecturally allowed, as SIPI is ignored if the CPU is not
+in wait-for-SIPI mode (arguably, KVM should be even more aggressive in
+dropping SIPIs).  It is software's responsibility to ensure the SIPI is
+delivered, i.e. software shouldn't be firing INIT-SIPI at a CPU until
+it knows with 100% certaining that the target CPU isn't in VMX root mode.
+
+Furthermore, the existing code is extra weird as SIPIs that arrive after
+VM-Exit _are_ dropped if there also happened to be a pending SIPI before
+VM-Exit.
 
 Signed-off-by: Sean Christopherson <seanjc@google.com>
 ---
- arch/x86/kvm/vmx/nested.c | 18 ++++++------------
- 1 file changed, 6 insertions(+), 12 deletions(-)
+ arch/x86/kvm/lapic.c | 36 ++++++++++--------------------------
+ 1 file changed, 10 insertions(+), 26 deletions(-)
 
-diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
-index 3a080051a4ec..5922531f6c52 100644
---- a/arch/x86/kvm/vmx/nested.c
-+++ b/arch/x86/kvm/vmx/nested.c
-@@ -3377,6 +3377,8 @@ enum nvmx_vmentry_status nested_vmx_enter_non_root_mode(struct kvm_vcpu *vcpu,
- 		(CPU_BASED_INTR_WINDOW_EXITING | CPU_BASED_NMI_WINDOW_EXITING);
- 	if (likely(!evaluate_pending_interrupts) && kvm_vcpu_apicv_active(vcpu))
- 		evaluate_pending_interrupts |= vmx_has_apicv_interrupt(vcpu);
-+	if (!evaluate_pending_interrupts)
-+		evaluate_pending_interrupts |= kvm_apic_has_pending_init_or_sipi(vcpu);
+diff --git a/arch/x86/kvm/lapic.c b/arch/x86/kvm/lapic.c
+index 2bd90effc653..d7639d126e6c 100644
+--- a/arch/x86/kvm/lapic.c
++++ b/arch/x86/kvm/lapic.c
+@@ -3025,17 +3025,8 @@ int kvm_apic_accept_events(struct kvm_vcpu *vcpu)
+ 	struct kvm_lapic *apic = vcpu->arch.apic;
+ 	u8 sipi_vector;
+ 	int r;
+-	unsigned long pe;
  
- 	if (!vmx->nested.nested_run_pending ||
- 	    !(vmcs12->vm_entry_controls & VM_ENTRY_LOAD_DEBUG_CONTROLS))
-@@ -3457,18 +3459,10 @@ enum nvmx_vmentry_status nested_vmx_enter_non_root_mode(struct kvm_vcpu *vcpu,
+-	if (!lapic_in_kernel(vcpu))
+-		return 0;
+-
+-	/*
+-	 * Read pending events before calling the check_events
+-	 * callback.
+-	 */
+-	pe = smp_load_acquire(&apic->pending_events);
+-	if (!pe)
++	if (!kvm_apic_has_pending_init_or_sipi(vcpu))
+ 		return 0;
+ 
+ 	if (is_guest_mode(vcpu)) {
+@@ -3043,38 +3034,31 @@ int kvm_apic_accept_events(struct kvm_vcpu *vcpu)
+ 		if (r < 0)
+ 			return r == -EBUSY ? 0 : r;
+ 		/*
+-		 * If an event has happened and caused a vmexit,
+-		 * we know INITs are latched and therefore
+-		 * we will not incorrectly deliver an APIC
+-		 * event instead of a vmexit.
++		 * Continue processing INIT/SIPI even if a nested VM-Exit
++		 * occurred, e.g. pending SIPIs should be dropped if INIT+SIPI
++		 * are blocked as a result of transitioning to VMX root mode.
+ 		 */
  	}
  
  	/*
--	 * If L1 had a pending IRQ/NMI until it executed
--	 * VMLAUNCH/VMRESUME which wasn't delivered because it was
--	 * disallowed (e.g. interrupts disabled), L0 needs to
--	 * evaluate if this pending event should cause an exit from L2
--	 * to L1 or delivered directly to L2 (e.g. In case L1 don't
--	 * intercept EXTERNAL_INTERRUPT).
--	 *
--	 * Usually this would be handled by the processor noticing an
--	 * IRQ/NMI window request, or checking RVI during evaluation of
--	 * pending virtual interrupts.  However, this setting was done
--	 * on VMCS01 and now VMCS02 is active instead. Thus, we force L0
--	 * to perform pending event evaluation by requesting a KVM_REQ_EVENT.
-+	 * Re-evaluate pending events if L1 had a pending IRQ/NMI/INIT/SIPI
-+	 * when it executed VMLAUNCH/VMRESUME, as entering non-root mode can
-+	 * effectively unblock various events, e.g. INIT/SIPI cause VM-Exit
-+	 * unconditionally.
+-	 * INITs are blocked while CPU is in specific states
+-	 * (SMM, VMX root mode, SVM with GIF=0).
+-	 * Because a CPU cannot be in these states immediately
+-	 * after it has processed an INIT signal (and thus in
+-	 * KVM_MP_STATE_INIT_RECEIVED state), just eat SIPIs
+-	 * and leave the INIT pending.
++	 * INITs are blocked while CPU is in specific states (SMM, VMX root
++	 * mode, SVM with GIF=0), while SIPIs are dropped if the CPU isn't in
++	 * wait-for-SIPI (WFS).
  	 */
- 	if (unlikely(evaluate_pending_interrupts))
- 		kvm_make_request(KVM_REQ_EVENT, vcpu);
+ 	if (!kvm_apic_init_sipi_allowed(vcpu)) {
+ 		WARN_ON_ONCE(vcpu->arch.mp_state == KVM_MP_STATE_INIT_RECEIVED);
+-		if (test_bit(KVM_APIC_SIPI, &pe))
+-			clear_bit(KVM_APIC_SIPI, &apic->pending_events);
++		clear_bit(KVM_APIC_SIPI, &apic->pending_events);
+ 		return 0;
+ 	}
+ 
+-	if (test_bit(KVM_APIC_INIT, &pe)) {
+-		clear_bit(KVM_APIC_INIT, &apic->pending_events);
++	if (test_and_clear_bit(KVM_APIC_INIT, &apic->pending_events)) {
+ 		kvm_vcpu_reset(vcpu, true);
+ 		if (kvm_vcpu_is_bsp(apic->vcpu))
+ 			vcpu->arch.mp_state = KVM_MP_STATE_RUNNABLE;
+ 		else
+ 			vcpu->arch.mp_state = KVM_MP_STATE_INIT_RECEIVED;
+ 	}
+-	if (test_bit(KVM_APIC_SIPI, &pe)) {
+-		clear_bit(KVM_APIC_SIPI, &apic->pending_events);
++	if (test_and_clear_bit(KVM_APIC_SIPI, &apic->pending_events)) {
+ 		if (vcpu->arch.mp_state == KVM_MP_STATE_INIT_RECEIVED) {
+ 			/* evaluate pending_events before reading the vector */
+ 			smp_rmb();
 -- 
 2.37.3.968.ga6b4b080e4-goog
 

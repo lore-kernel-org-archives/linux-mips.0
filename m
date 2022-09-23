@@ -2,127 +2,62 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B8421C6FA82
-	for <linux-mips@archiver.kernel.org>; Fri, 23 Sep 2022 04:55:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 818B9ECAAD8
+	for <linux-mips@archiver.kernel.org>; Fri, 23 Sep 2022 07:38:37 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229636AbiIWEzp (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 23 Sep 2022 00:55:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56546 "EHLO
+        id S229993AbiIWHih (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 23 Sep 2022 03:38:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50464 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229520AbiIWEzp (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Fri, 23 Sep 2022 00:55:45 -0400
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBDE1115BF3;
-        Thu, 22 Sep 2022 21:55:43 -0700 (PDT)
-Received: by mail-pj1-x102a.google.com with SMTP id fs14so11815554pjb.5;
-        Thu, 22 Sep 2022 21:55:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :from:to:cc:subject:date;
-        bh=DMY7HYkAo9zgeMOO5S3KtohOefOqFzrjWCOr/lBmUmU=;
-        b=HTq8Kfigc42bUsKkoQPRKB8JYBvkBiE88zo19G4EA85XzbeTRBq+xHSBHSGwJREsn8
-         6CDNEyOFfyU6NWdJlqLUHbcT6sfvy5AhiDtTJEcYw/ipshRw8ECAnRXZ+eGauVrcgisQ
-         OUcmzKID4mqNMqiloAp5ysn895x3Zj84iIyZW2AIzsSY1YXaRazGJN4h/LJGJKSTI6QX
-         UDUuO1nW4Wbs/pqUBNwoFcSXVIpSalMBKcIYA47YEb3pg6biJPB7ODsY3YTNHU6nHthk
-         Ahw1O/nzJJHOKOod9hyLLlcaLnLE5Ir2GJuOavmLQF7QokYsoi66UZjd6icts82y7uFr
-         cGkA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date;
-        bh=DMY7HYkAo9zgeMOO5S3KtohOefOqFzrjWCOr/lBmUmU=;
-        b=ikKUXxeqr7W5IDhVvGhm+7N0/bjh3AsRzZolihnFtjnK/huPt4xivZnpUfju9G1Igs
-         YIVoDpVSTdKJfrS6mteb34FXenVMmZxOjZkXEkXgM5B+/a/EdVuHNZbIV9w/KgMWoGlu
-         blrNP+7PFr29kU5CL1x2QrEJWUB0WzObKHr3kUmAcFOhV3jRDong9wT21Xl+dXJ81GP/
-         LO3begid4d32dwCYLaAcr/BTfDXM2yfrC2Gy9KX/pIFZtES7KloQFqQpZQ5jka2Ou9fV
-         nF7VLRBWCoxF+dx4OmekqXRAeShO8N9fTwnceo2hInEuIpMMHMp53nI2MXp3Vrl7EyWr
-         /gIQ==
-X-Gm-Message-State: ACrzQf3Sb8SZsQTyyFtERZihwqHzz/yKbc74+mbVc+mAbOAhCmCEueDV
-        ZFEZCTOyCuOCNTCtlGIFPXxYs6OsNvA=
-X-Google-Smtp-Source: AMsMyM7tr+hwYpg333yQ9TaHzZEsD01IaKnhHAwBKRuWOfQMXeY0OkXW5nknMiPnNnXdBgrnxnrLNA==
-X-Received: by 2002:a17:90b:4a50:b0:203:1204:5bc4 with SMTP id lb16-20020a17090b4a5000b0020312045bc4mr19228855pjb.79.1663908943293;
-        Thu, 22 Sep 2022 21:55:43 -0700 (PDT)
-Received: from google.com ([2620:15c:202:201:8b46:be3c:2c54:68a5])
-        by smtp.gmail.com with ESMTPSA id t10-20020a1709027fca00b00178112ed1e5sm4988076plb.117.2022.09.22.21.55.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Sep 2022 21:55:42 -0700 (PDT)
-Date:   Thu, 22 Sep 2022 21:55:40 -0700
-From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To:     John Crispin <john@phrozen.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] MIPS: Lantiq: switch vmmc to use gpiod API
-Message-ID: <Yy08TBymyuQb27NU@google.com>
+        with ESMTP id S231243AbiIWHig (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Fri, 23 Sep 2022 03:38:36 -0400
+Received: from mail.fadrush.pl (mail.fadrush.pl [54.37.225.211])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FE7312849A
+        for <linux-mips@vger.kernel.org>; Fri, 23 Sep 2022 00:38:35 -0700 (PDT)
+Received: by mail.fadrush.pl (Postfix, from userid 1002)
+        id 3D6732347C; Fri, 23 Sep 2022 07:37:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=fadrush.pl; s=mail;
+        t=1663918714; bh=bD6j9gIFU6CLTaCGl0Ow9oeIxtirvTfMeNZSfLEZQ+I=;
+        h=Date:From:To:Subject:From;
+        b=G727ufaAwLM5BEC9IrO308ZW1FHnyHeJog7RP///apVsSVROm6EllmefB8qNINxP+
+         zEnDAMp5J9r4oAT3btEK2PWiiDuzkTHMtvIcI2vw5LOXvvWUzqIQdvYWBxPrYHJY26
+         k+2ouY2lm6ZQrkGs7i3tIGfpJX17k2RPN6K8E33YiME3WSgKfP9or1sN0cFXeQkmRs
+         0sFLPY5Wx8OYXw6tB4FPtLyDDOnUTQyqPVDz/SRKY0dg7ElMy7cgGPHmic43g6Vz8q
+         qgD3Y2wtPOgBeynAZq12uqqnSWlg98IcpsBGC/+T8vzpBzpiR2MwK2wylsXLoqid+r
+         b/iLCs4F/95Eg==
+Received: by mail.fadrush.pl for <linux-mips@vger.kernel.org>; Fri, 23 Sep 2022 07:36:05 GMT
+Message-ID: <20220923064500-0.1.1t.ha6t.0.40l15i2c1m@fadrush.pl>
+Date:   Fri, 23 Sep 2022 07:36:05 GMT
+From:   "Jakub Olejniczak" <jakub.olejniczak@fadrush.pl>
+To:     <linux-mips@vger.kernel.org>
+Subject: =?UTF-8?Q?Zwi=C4=99kszenie_p=C5=82ynno=C5=9Bci_finansowej?=
+X-Mailer: mail.fadrush.pl
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-This switches vmmc to use gpiod API instead of OF-specific legacy gpio
-API that we want to stop exporting from gpiolib.
+Dzie=C5=84 dobry,
 
-Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
----
- arch/mips/lantiq/xway/vmmc.c | 22 +++++++++++++---------
- 1 file changed, 13 insertions(+), 9 deletions(-)
+kontaktuj=C4=99 si=C4=99 z Pa=C5=84stwem, poniewa=C5=BC chcia=C5=82bym za=
+proponowa=C4=87 wygodne rozwi=C4=85zanie, kt=C3=B3re umo=C5=BCliwi Pa=C5=84=
+stwa firmie stabilny rozw=C3=B3j.=20
 
-diff --git a/arch/mips/lantiq/xway/vmmc.c b/arch/mips/lantiq/xway/vmmc.c
-index 7a14da8d9d15..a1947306ac18 100644
---- a/arch/mips/lantiq/xway/vmmc.c
-+++ b/arch/mips/lantiq/xway/vmmc.c
-@@ -4,9 +4,10 @@
-  *  Copyright (C) 2012 John Crispin <john@phrozen.org>
-  */
- 
-+#include <linux/err.h>
- #include <linux/export.h>
-+#include <linux/gpio/consumer.h>
- #include <linux/of_platform.h>
--#include <linux/of_gpio.h>
- #include <linux/dma-mapping.h>
- 
- #include <lantiq_soc.h>
-@@ -25,6 +26,7 @@ EXPORT_SYMBOL(ltq_get_cp1_base);
- static int vmmc_probe(struct platform_device *pdev)
- {
- #define CP1_SIZE       (1 << 20)
-+	struct gpio_desc *gpio;
- 	int gpio_count;
- 	dma_addr_t dma;
- 
-@@ -32,16 +34,18 @@ static int vmmc_probe(struct platform_device *pdev)
- 		(void *) CPHYSADDR(dma_alloc_coherent(&pdev->dev, CP1_SIZE,
- 						    &dma, GFP_KERNEL));
- 
--	gpio_count = of_gpio_count(pdev->dev.of_node);
-+	gpio_count = gpiod_count(&pdev->dev, NULL);
- 	while (gpio_count > 0) {
--		enum of_gpio_flags flags;
--		int gpio = of_get_gpio_flags(pdev->dev.of_node,
--					     --gpio_count, &flags);
--		if (gpio_request(gpio, "vmmc-relay"))
-+		gpio = devm_gpiod_get_index(&pdev->dev,
-+					    NULL, --gpio_count, GPIOD_OUT_HIGH);
-+		if (IS_ERR(gpio)) {
-+			dev_err(&pdev->dev,
-+				"failed to request GPIO idx %d: %d\n",
-+				gpio_count, PTR_ERR(gpio);
- 			continue;
--		dev_info(&pdev->dev, "requested GPIO %d\n", gpio);
--		gpio_direction_output(gpio,
--				      (flags & OF_GPIO_ACTIVE_LOW) ? (0) : (1));
-+		}
-+
-+		gpio_consumer_set_name(gpio, "vmmc-relay");
- 	}
- 
- 	dev_info(&pdev->dev, "reserved %dMB at 0x%p", CP1_SIZE >> 20, cp1_base);
--- 
-2.37.3.998.g577e59143f-goog
+Konkurencyjne otoczenie wymaga ci=C4=85g=C5=82ego ulepszania i poszerzeni=
+a oferty, co z kolei wi=C4=85=C5=BCe si=C4=99 z konieczno=C5=9Bci=C4=85 i=
+nwestowania. Brak odpowiedniego kapita=C5=82u powa=C5=BCnie ogranicza tem=
+po rozwoju firmy.
+
+Od wielu lat z powodzeniem pomagam firmom w uzyskaniu najlepszej formy fi=
+nansowania z banku oraz UE. Mam sta=C5=82ych Klient=C3=B3w, kt=C3=B3rzy n=
+adal ch=C4=99tnie korzystaj=C4=85 z moich us=C5=82ug, a tak=C5=BCe poleca=
+j=C4=85 je innym.
+
+Czy chcieliby Pa=C5=84stwo skorzysta=C4=87 z pomocy wykwalifikowanego i d=
+o=C5=9Bwiadczonego doradcy finansowego?
 
 
--- 
-Dmitry
+Pozdrawiam
+Jakub Olejniczak

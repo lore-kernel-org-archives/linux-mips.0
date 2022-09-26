@@ -2,32 +2,32 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 43996C32771
-	for <linux-mips@archiver.kernel.org>; Mon, 26 Sep 2022 11:04:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6DACBC32771
+	for <linux-mips@archiver.kernel.org>; Mon, 26 Sep 2022 11:17:27 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237169AbiIZLEb (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 26 Sep 2022 07:04:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42788 "EHLO
+        id S237309AbiIZLR0 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 26 Sep 2022 07:17:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54660 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237116AbiIZLDL (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Mon, 26 Sep 2022 07:03:11 -0400
+        with ESMTP id S237648AbiIZLQZ (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Mon, 26 Sep 2022 07:16:25 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 047DF5D0FA;
-        Mon, 26 Sep 2022 03:32:11 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A26B65663;
+        Mon, 26 Sep 2022 03:37:45 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id A4D85609FB;
-        Mon, 26 Sep 2022 10:30:30 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9A331C433C1;
-        Mon, 26 Sep 2022 10:30:29 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id D71B160AD6;
+        Mon, 26 Sep 2022 10:37:44 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DF91CC433C1;
+        Mon, 26 Sep 2022 10:37:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1664188230;
+        s=korg; t=1664188664;
         bh=FGL8GAtxfMw4n0JvjxgP9LDX324kIAJjB3fsedpwHWk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=DQtN3GcetVTe1cgojssPkSbMfv5N3bCzo/RZFF1sl5xXMuKtiZbLvmH/N/TSwTMtz
-         0ELTg0DJiKqpjf1jGzdss88dFJ/OuraHVGtKWxYFwVt4B/9mVBrntJNCodxIQ0gCB0
-         hFoLnrE9wkqXVVwOV98i9+JeBOkPdNPvlpLlk5Sc=
+        b=S1XudpzRM7IDuimIMcy1pIyUNf3FvYRXYO3LUmpbwMQ4kWHRQYVTIViiHByZxX6yK
+         8fTqNoSr8/brvi4iy35RI6/746waCgJAWWc36VN2/DM+AW8fREHQBm4RlCdaaNIblR
+         Gcb9eFQkEnVstgouB82jjBTOPy4QN2pcZ5kid3a8=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -36,12 +36,12 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
         John Crispin <john@phrozen.org>, linux-mips@vger.kernel.org,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 082/141] MIPS: lantiq: export clk_get_io() for lantiq_wdt.ko
-Date:   Mon, 26 Sep 2022 12:11:48 +0200
-Message-Id: <20220926100757.429778779@linuxfoundation.org>
+Subject: [PATCH 5.15 080/148] MIPS: lantiq: export clk_get_io() for lantiq_wdt.ko
+Date:   Mon, 26 Sep 2022 12:11:54 +0200
+Message-Id: <20220926100759.042279398@linuxfoundation.org>
 X-Mailer: git-send-email 2.37.3
-In-Reply-To: <20220926100754.639112000@linuxfoundation.org>
-References: <20220926100754.639112000@linuxfoundation.org>
+In-Reply-To: <20220926100756.074519146@linuxfoundation.org>
+References: <20220926100756.074519146@linuxfoundation.org>
 User-Agent: quilt/0.67
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8

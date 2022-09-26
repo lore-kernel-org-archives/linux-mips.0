@@ -2,32 +2,32 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6DACBC32771
-	for <linux-mips@archiver.kernel.org>; Mon, 26 Sep 2022 11:17:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4672DC6FA86
+	for <linux-mips@archiver.kernel.org>; Mon, 26 Sep 2022 11:49:34 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237309AbiIZLR0 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 26 Sep 2022 07:17:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54660 "EHLO
+        id S238759AbiIZLtd (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 26 Sep 2022 07:49:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39474 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237648AbiIZLQZ (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Mon, 26 Sep 2022 07:16:25 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A26B65663;
-        Mon, 26 Sep 2022 03:37:45 -0700 (PDT)
+        with ESMTP id S239020AbiIZLtF (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Mon, 26 Sep 2022 07:49:05 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DFCA57201;
+        Mon, 26 Sep 2022 03:48:04 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id D71B160AD6;
-        Mon, 26 Sep 2022 10:37:44 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DF91CC433C1;
-        Mon, 26 Sep 2022 10:37:43 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id F1C07B80171;
+        Mon, 26 Sep 2022 10:46:50 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 56DC2C433C1;
+        Mon, 26 Sep 2022 10:46:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1664188664;
+        s=korg; t=1664189209;
         bh=FGL8GAtxfMw4n0JvjxgP9LDX324kIAJjB3fsedpwHWk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=S1XudpzRM7IDuimIMcy1pIyUNf3FvYRXYO3LUmpbwMQ4kWHRQYVTIViiHByZxX6yK
-         8fTqNoSr8/brvi4iy35RI6/746waCgJAWWc36VN2/DM+AW8fREHQBm4RlCdaaNIblR
-         Gcb9eFQkEnVstgouB82jjBTOPy4QN2pcZ5kid3a8=
+        b=qS1xfuibYClXLDgk3xDCQSMh1DWwEvPW2KjG4z2X9RgSuQasFTaxBN+fefe0njhqn
+         mXrX0p1L7t6y1O9AdzF28lo/y9spGz6ff5G2U+pxAjfj0o8TvfbsKpDnbCGD1lrJ/F
+         801ehcMPKGx2Wv4ZVstyT2ffNpHimSoPylkVLQWE=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -36,12 +36,12 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
         John Crispin <john@phrozen.org>, linux-mips@vger.kernel.org,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 080/148] MIPS: lantiq: export clk_get_io() for lantiq_wdt.ko
-Date:   Mon, 26 Sep 2022 12:11:54 +0200
-Message-Id: <20220926100759.042279398@linuxfoundation.org>
+Subject: [PATCH 5.19 110/207] MIPS: lantiq: export clk_get_io() for lantiq_wdt.ko
+Date:   Mon, 26 Sep 2022 12:11:39 +0200
+Message-Id: <20220926100811.527633314@linuxfoundation.org>
 X-Mailer: git-send-email 2.37.3
-In-Reply-To: <20220926100756.074519146@linuxfoundation.org>
-References: <20220926100756.074519146@linuxfoundation.org>
+In-Reply-To: <20220926100806.522017616@linuxfoundation.org>
+References: <20220926100806.522017616@linuxfoundation.org>
 User-Agent: quilt/0.67
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8

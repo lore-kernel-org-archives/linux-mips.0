@@ -2,109 +2,110 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 79913C433F5
-	for <linux-mips@archiver.kernel.org>; Fri, 30 Sep 2022 14:02:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 91F7BC433FE
+	for <linux-mips@archiver.kernel.org>; Fri, 30 Sep 2022 15:16:31 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231634AbiI3OCC (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 30 Sep 2022 10:02:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44668 "EHLO
+        id S231234AbiI3PQY (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 30 Sep 2022 11:16:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58956 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231639AbiI3OB4 (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Fri, 30 Sep 2022 10:01:56 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35F3A21824;
-        Fri, 30 Sep 2022 07:01:55 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id C2764B82779;
-        Fri, 30 Sep 2022 14:01:53 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 13ACCC433C1;
-        Fri, 30 Sep 2022 14:01:51 +0000 (UTC)
-Authentication-Results: smtp.kernel.org;
-        dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="QrmDnNcd"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zx2c4.com; s=20210105;
-        t=1664546510;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=6UOOg5IHINhdAb/kc7hzr49OF4tFMMPyJOm2kJXSQ58=;
-        b=QrmDnNcdtDElPz1tbbdwJoacxSO7nehxXO4EwFFB6/EQ/MV/xmYnI+q06JHP6eicqWgJqf
-        XDBgdweyUjgNqvTdecRz+UAcdsdkX7WTh6xey56Ot+mYwizpUvR4FAAXp/LJCkxhPpuMmU
-        h52RizHs7XmEC33Q9oRO3z6xfUMOwuw=
-Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id 79a49daa (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO);
-        Fri, 30 Sep 2022 14:01:49 +0000 (UTC)
-From:   "Jason A. Donenfeld" <Jason@zx2c4.com>
-To:     tsbogend@alpha.franken.de, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     "Jason A. Donenfeld" <Jason@zx2c4.com>
-Subject: [PATCH] mips: allow firmware to pass RNG seed to kernel
-Date:   Fri, 30 Sep 2022 16:01:38 +0200
-Message-Id: <20220930140138.575751-1-Jason@zx2c4.com>
+        with ESMTP id S231810AbiI3PQU (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Fri, 30 Sep 2022 11:16:20 -0400
+Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 5EF5011DFEF;
+        Fri, 30 Sep 2022 08:16:17 -0700 (PDT)
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1oeHkN-0003TJ-00; Fri, 30 Sep 2022 17:16:15 +0200
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id 14E97C0D1E; Fri, 30 Sep 2022 17:15:25 +0200 (CEST)
+Date:   Fri, 30 Sep 2022 17:15:25 +0200
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC/PATCH v2] MIPS: pci: lantiq: switch to using gpiod API
+Message-ID: <20220930151525.GC12989@alpha.franken.de>
+References: <YzE9E+Esv/rqO0MA@google.com>
+ <YzKDFCq3M2gxlJ2e@google.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <YzKDFCq3M2gxlJ2e@google.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Nearly all other firmware environments have some way of passing a RNG
-seed to initialize the RNG: DTB's rng-seed, EFI's RNG protocol, m68k's
-bootinfo block, x86's setup_data, and so forth. This adds something
-similar for MIPS, which will allow various firmware environments,
-bootloaders, and hypervisors to pass an RNG seed to initialize the
-kernel's RNG.
+On Mon, Sep 26, 2022 at 09:59:00PM -0700, Dmitry Torokhov wrote:
+> This patch switches the driver from legacy gpio API to the newer
+> gpiod API.
+> 
+> Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+> ---
+> v2 - actually compiles.
 
-Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
----
- arch/mips/kernel/setup.c | 21 +++++++++++++++++++++
- 1 file changed, 21 insertions(+)
+I have some doubts...
 
-diff --git a/arch/mips/kernel/setup.c b/arch/mips/kernel/setup.c
-index 2ca156a5b231..39c79f67c7a3 100644
---- a/arch/mips/kernel/setup.c
-+++ b/arch/mips/kernel/setup.c
-@@ -42,6 +42,7 @@
- #include <asm/setup.h>
- #include <asm/smp-ops.h>
- #include <asm/prom.h>
-+#include <asm/fw/fw.h>
- 
- #ifdef CONFIG_MIPS_ELF_APPENDED_DTB
- char __section(".appended_dtb") __appended_dtb[0x100000];
-@@ -756,6 +757,24 @@ static void __init prefill_possible_map(void)
- static inline void prefill_possible_map(void) {}
- #endif
- 
-+static void __init setup_rng_seed(void)
-+{
-+	char *rng_seed_hex = fw_getenv("rngseed");
-+	u8 rng_seed[512];
-+	size_t len;
-+
-+	if (!rng_seed_hex)
-+		return;
-+
-+	len = min(sizeof(rng_seed), strlen(rng_seed_hex) / 2);
-+	if (hex2bin(rng_seed, rng_seed_hex, len))
-+		return;
-+
-+	add_bootloader_randomness(rng_seed, len);
-+	memzero_explicit(rng_seed, len);
-+	memzero_explicit(rng_seed_hex, len * 2);
-+}
-+
- void __init setup_arch(char **cmdline_p)
- {
- 	cpu_probe();
-@@ -786,6 +805,8 @@ void __init setup_arch(char **cmdline_p)
- 	paging_init();
- 
- 	memblock_dump_all();
-+
-+	setup_rng_seed();
- }
- 
- unsigned long kernelsp[NR_CPUS];
+>  arch/mips/pci/pci-lantiq.c | 27 ++++++++++++---------------
+>  1 file changed, 12 insertions(+), 15 deletions(-)
+> 
+> diff --git a/arch/mips/pci/pci-lantiq.c b/arch/mips/pci/pci-lantiq.c
+> index 1ca42f482130..377b4a2577e1 100644
+> --- a/arch/mips/pci/pci-lantiq.c
+> +++ b/arch/mips/pci/pci-lantiq.c
+> @@ -9,11 +9,11 @@
+>  #include <linux/kernel.h>
+>  #include <linux/init.h>
+>  #include <linux/delay.h>
+> +#include <linux/gpio/consumer.h>
+>  #include <linux/mm.h>
+>  #include <linux/vmalloc.h>
+>  #include <linux/clk.h>
+>  #include <linux/of_platform.h>
+> -#include <linux/of_gpio.h>
+>  #include <linux/of_irq.h>
+>  #include <linux/of_pci.h>
+>  
+> @@ -62,7 +62,7 @@
+>  __iomem void *ltq_pci_mapped_cfg;
+>  static __iomem void *ltq_pci_membase;
+>  
+> -static int reset_gpio;
+> +static gpio_desc *reset_gpio;
+
+/local/tbogendoerfer/korg/linux/arch/mips/pci/pci-lantiq.c:65:8: error: unknown type name ‘gpio_desc’
+ static gpio_desc *reset_gpio;
+
+
+>  static struct clk *clk_pci, *clk_external;
+>  static struct resource pci_io_resource;
+>  static struct resource pci_mem_resource;
+> @@ -123,17 +123,14 @@ static int ltq_pci_startup(struct platform_device *pdev)
+>  		clk_disable(clk_external);
+>  
+>  	/* setup reset gpio used by pci */
+> -	reset_gpio = of_get_named_gpio(node, "gpio-reset", 0);
+> -	if (gpio_is_valid(reset_gpio)) {
+> -		int ret = devm_gpio_request(&pdev->dev,
+> -						reset_gpio, "pci-reset");
+> -		if (ret) {
+> -			dev_err(&pdev->dev,
+> -				"failed to request gpio %d\n", reset_gpio);
+> -			return ret;
+> -		}
+> -		gpio_direction_output(reset_gpio, 1);
+> +	reset_gpio = devm_gpiod_get_optional(&pdev->dev, "reset",
+> +					     GPIOD_OUT_LOW);
+> +	ret = PTR_ERR_OR_ZERO(reset_gpio);
+
+/local/tbogendoerfer/korg/linux/arch/mips/pci/pci-lantiq.c:128:2: error: ‘ret’ undeclared (first use in this function)
+  ret = PTR_ERR_OR_ZERO(reset_gpio);
+
+Thomas.
+
+
 -- 
-2.37.3
-
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]

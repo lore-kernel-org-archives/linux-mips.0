@@ -2,35 +2,35 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C0776C4332F
-	for <linux-mips@archiver.kernel.org>; Sun,  9 Oct 2022 21:00:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 78B5AC433FE
+	for <linux-mips@archiver.kernel.org>; Sun,  9 Oct 2022 21:03:29 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231395AbiJIVAn (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Sun, 9 Oct 2022 17:00:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59892 "EHLO
+        id S231390AbiJIVD2 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Sun, 9 Oct 2022 17:03:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47944 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230297AbiJIVAR (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Sun, 9 Oct 2022 17:00:17 -0400
+        with ESMTP id S231400AbiJIVDF (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Sun, 9 Oct 2022 17:03:05 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78C59267;
-        Sun,  9 Oct 2022 13:55:32 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C05B2FFF8;
+        Sun,  9 Oct 2022 13:57:23 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 96AC960C99;
-        Sun,  9 Oct 2022 20:54:28 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C94C4C43146;
-        Sun,  9 Oct 2022 20:54:26 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id CBE2860C85;
+        Sun,  9 Oct 2022 20:55:13 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0A156C433D6;
+        Sun,  9 Oct 2022 20:55:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1665348868;
+        s=k20201202; t=1665348913;
         bh=7Biv/RB4g1yWRQ3Ir7P+DO9H5qF3EuPehLJSXWw6ecI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WBgSFn3rmpxVfQffIAtoZRD7ipqfAZSBtl/nGCxz/as7QOE8l/h17eDVesQ/JWCoT
-         fIYTJFEhZxNTP9ChXYctI7zVMpp+iY2dY0qOoTzLVh3RAh6xreir+x5ZuGs01PTz1O
-         +j35NHpdoXNJ/zC90pMWgLj0kGgnOaCx/lrmlc3QADU8T5QVPDAvz3YRBd/sarPlLn
-         vseBOWqsqLx2xKwM0A0y+UhUhGNZqXqc/duMsvCa/p8lGp4atvTxqhmkVHp4uRIFgy
-         a2xZnhY2p0N8l26JJ0I0i3C5f/siJ6etEy07++da3w78zMPPzMnzkNfz0Rs1sjmEFB
-         dgCFVtH1hwa6A==
+        b=i7ux84fOPSHptFn/UJ4W9yZwCUSMm11Cfxwso0aYmAfMrW41D1yKTsqgtd7KhQC0F
+         r41oaQfgWLH5aqvtJHJPBoFepL8J1ETP67fi9LPUwiihPw5j3O3IGwpRoOpnuyUzoh
+         AvFtDZVysmKr26mu6j7omUfeD+kfd0WPfCGDnWc1MwKGky/58gdTbrJwM+/ucm+GB8
+         AoOPSakc5PaFFmZI3r0C8/nLfMJVu6CIznkxE6Bwn+RYd3wEOtBG9KOY1r5AXfV8pe
+         Cm/4+W2YJaYSCkZkcG7VvPJjUQoHb/EHhipgbfxfdZmqrcSRiFHgi+YxZ9JieDETjE
+         DQm6oA1/vQZfw==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Kees Cook <keescook@chromium.org>,
@@ -41,12 +41,12 @@ Cc:     Kees Cook <keescook@chromium.org>,
         Nick Desaulniers <ndesaulniers@google.com>,
         llvm@lists.linux.dev, kernel test robot <lkp@intel.com>,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 5.4 2/6] MIPS: BCM47XX: Cast memcmp() of function to (void *)
-Date:   Sun,  9 Oct 2022 16:54:18 -0400
-Message-Id: <20221009205423.1203538-2-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.9 2/4] MIPS: BCM47XX: Cast memcmp() of function to (void *)
+Date:   Sun,  9 Oct 2022 16:55:06 -0400
+Message-Id: <20221009205508.1204042-2-sashal@kernel.org>
 X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20221009205423.1203538-1-sashal@kernel.org>
-References: <20221009205423.1203538-1-sashal@kernel.org>
+In-Reply-To: <20221009205508.1204042-1-sashal@kernel.org>
+References: <20221009205508.1204042-1-sashal@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 X-stable: review

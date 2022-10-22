@@ -2,184 +2,248 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9F4F9C43217
-	for <linux-mips@archiver.kernel.org>; Fri, 21 Oct 2022 14:08:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 489E8ECDFA1
+	for <linux-mips@archiver.kernel.org>; Sat, 22 Oct 2022 01:44:44 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231314AbiJUOIr (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 21 Oct 2022 10:08:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47854 "EHLO
+        id S230046AbiJVBom (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 21 Oct 2022 21:44:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56778 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231218AbiJUOIq (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Fri, 21 Oct 2022 10:08:46 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE0817284E;
-        Fri, 21 Oct 2022 07:08:45 -0700 (PDT)
+        with ESMTP id S229947AbiJVBoh (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Fri, 21 Oct 2022 21:44:37 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBDE1386B9;
+        Fri, 21 Oct 2022 18:44:36 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 717D6B82C13;
-        Fri, 21 Oct 2022 14:08:44 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 203AEC43146;
-        Fri, 21 Oct 2022 14:08:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1666361323;
-        bh=Xo9JwJY/XMU3fy2R/321Jyhdz5lA7kxLyPv0VQaYCmg=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=Wwaa/+fZi02vh1Dn21QNaUJd4JP907px6Nm2UnMwpekf2npzFOwFvhPioALc1UONJ
-         8ofPTUVMkQw1G3VveiPd76Sos1nwVY2/heVdF4oWu/3qV/74un5rqmkowQV31T7UQw
-         t7ZNkB5TYOYj7abhCh2mSD7ofTrM63eidIF0dcEFUbCSKTFEfV23jErCMz0lyDrXtN
-         Pq8LYbHWAwUzAEd7hdrnsobs3zH6s5vlf62R8Rsl7pR/SBDWUOd9X2KrvYay9ZZVwI
-         N0MUMXqs3GsFnFvE/N8tXfXWWOuc1msGmZOhYsyr2bMyxB0ssBXFGLlxFhLJndP1Vo
-         b1rQ4qAJLUjbg==
-Received: by mail-ed1-f52.google.com with SMTP id w8so3982657edc.1;
-        Fri, 21 Oct 2022 07:08:43 -0700 (PDT)
-X-Gm-Message-State: ACrzQf01+uJx5KFCxnQpol9auhN3l1IJoRwwcLYwLinE3pFm/2eHEEtu
-        zDvLqADrm2h4e1FuBifXsWUi77bXoI593W3ZLmI=
-X-Google-Smtp-Source: AMsMyM56nUz8sGkCeqBVJoK6oDcAc8hZNHP1QjobCqaJwAuRDswWz3ulV0+QMeIS7x6P23jddz9EQQp/xYKEHom6WFA=
-X-Received: by 2002:aa7:d4d9:0:b0:45c:7eae:d8d8 with SMTP id
- t25-20020aa7d4d9000000b0045c7eaed8d8mr17594307edr.254.1666361321203; Fri, 21
- Oct 2022 07:08:41 -0700 (PDT)
-MIME-Version: 1.0
-References: <20221020072317.492906-1-chenhuacai@loongson.cn>
- <20221020072317.492906-5-chenhuacai@loongson.cn> <1ca11693-17c2-7260-b642-70b033c64b30@linaro.org>
-In-Reply-To: <1ca11693-17c2-7260-b642-70b033c64b30@linaro.org>
-From:   Huacai Chen <chenhuacai@kernel.org>
-Date:   Fri, 21 Oct 2022 22:08:28 +0800
-X-Gmail-Original-Message-ID: <CAAhV-H4ZtbPZE3edWmQJEmhBsg0QSfKjnCDrfSj2E4sZ12m5zg@mail.gmail.com>
-Message-ID: <CAAhV-H4ZtbPZE3edWmQJEmhBsg0QSfKjnCDrfSj2E4sZ12m5zg@mail.gmail.com>
-Subject: Re: [PATCH V12 4/4] LoongArch: Enable ARCH_WANT_HUGETLB_PAGE_OPTIMIZE_VMEMMAP
-To:     =?UTF-8?Q?Philippe_Mathieu=2DDaud=C3=A9?= <philmd@linaro.org>
-Cc:     Huacai Chen <chenhuacai@loongson.cn>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 7582C61FB9;
+        Sat, 22 Oct 2022 01:44:36 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E8EB2C43141;
+        Sat, 22 Oct 2022 01:44:32 +0000 (UTC)
+Authentication-Results: smtp.kernel.org;
+        dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="RYModmzz"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zx2c4.com; s=20210105;
+        t=1666403065;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=6V7n7WLPPuhmK3sEMGuUnn+DVRADTUodeMZgVjm6mzw=;
+        b=RYModmzzec1OgskkcQmS88KlPnl8bEDxVs4NFDzK61wcmW5QvikH5xeZo68AnjN6PonqCT
+        u/znWy0ao8IKhXHXs/gq7RjG6sZSoZ1g/F1NTIf3MbxHxZ33HyaUZgMQA9GjldEfSrFsFn
+        1AU24c29vQR9f+tA0s5hbhp1IEc7HeQ=
+Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id bec1a5aa (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO);
+        Sat, 22 Oct 2022 01:44:25 +0000 (UTC)
+From:   "Jason A. Donenfeld" <Jason@zx2c4.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        Kees Cook <keescook@chromium.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
         Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Dinh Nguyen <dinguyen@kernel.org>, loongarch@lists.linux.dev,
-        linux-arch@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>,
-        Guo Ren <guoren@kernel.org>, Xuerui Wang <kernel@xen0n.name>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        Feiyang Chen <chenfeiyang@loongson.cn>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        =?UTF-8?q?Christoph=20B=C3=B6hmwalder?= 
+        <christoph.boehmwalder@linbit.com>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        Richard Weinberger <richard@nod.at>,
+        "Darrick J . Wong" <djwong@kernel.org>,
+        SeongJae Park <sj@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Helge Deller <deller@gmx.de>, netdev@vger.kernel.org,
+        linux-crypto@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, loongarch@lists.linux.dev,
+        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-mmc@vger.kernel.org, linux-parisc@vger.kernel.org
+Subject: [PATCH v1 4/5] treewide: use get_random_u32_{above,below}() instead of manual loop
+Date:   Fri, 21 Oct 2022 21:44:02 -0400
+Message-Id: <20221022014403.3881893-5-Jason@zx2c4.com>
+In-Reply-To: <20221022014403.3881893-1-Jason@zx2c4.com>
+References: <20221022014403.3881893-1-Jason@zx2c4.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Hi, Philippe,
+These cases were done with this Coccinelle:
 
-On Fri, Oct 21, 2022 at 6:16 PM Philippe Mathieu-Daud=C3=A9
-<philmd@linaro.org> wrote:
->
-> On 20/10/22 09:23, Huacai Chen wrote:
-> > From: Feiyang Chen <chenfeiyang@loongson.cn>
-> >
-> > The feature of minimizing overhead of struct page associated with each
-> > HugeTLB page is implemented on x86_64. However, the infrastructure of
-> > this feature is already there, so just select ARCH_WANT_HUGETLB_PAGE_
-> > OPTIMIZE_VMEMMAP is enough to enable this feature for LoongArch.
-> >
-> > To avoid the following build error on LoongArch we should include linux=
-/
->
-> s/should/have to/
-Thanks, I will change it.
+@@
+expression E;
+identifier I;
+@@
+-   do {
+      ...
+-     I = get_random_u32();
+      ...
+-   } while (I > E);
++   I = get_random_u32_below(E + 1);
 
->
-> > static_key.h in page-flags.h.
->
-> This looks like 2 different changes in a single patch.. The first is a
-> generic "fix missing include" and the second is LoongArch specific.
-The static_key.h inclusion is also LoongArch-specific, implicitly. X86
-and ARM64 have no build errors without this inclusion, because they
-include static_key.h from their arch-specific core headers. Once
-before I have sent a separate patch to "fix missing include", but Greg
-said that "don't fix unless you have a real problem". :)
+@@
+expression E;
+identifier I;
+@@
+-   do {
+      ...
+-     I = get_random_u32();
+      ...
+-   } while (I >= E);
++   I = get_random_u32_below(E);
 
-Huacai
+@@
+expression E;
+identifier I;
+@@
+-   do {
+      ...
+-     I = get_random_u32();
+      ...
+-   } while (I < E);
++   I = get_random_u32_above(E - 1);
 
->
-> Splitting in 2 would ease backport cherry-picks.
->
-> > In file included from ./include/linux/mmzone.h:22,
-> > from ./include/linux/gfp.h:6,
-> > from ./include/linux/mm.h:7,
-> > from arch/loongarch/kernel/asm-offsets.c:9:
-> > ./include/linux/page-flags.h:208:1: warning: data definition has no
-> > type or storage class
-> > 208 | DECLARE_STATIC_KEY_MAYBE(CONFIG_HUGETLB_PAGE_OPTIMIZE_VMEMMAP_DEF=
-AULT_ON,
-> > | ^~~~~~~~~~~~~~~~~~~~~~~~
-> > ./include/linux/page-flags.h:208:1: error: type defaults to 'int' in
-> > declaration of 'DECLARE_STATIC_KEY_MAYBE' [-Werror=3Dimplicit-int]
-> > ./include/linux/page-flags.h:209:26: warning: parameter names (without
-> > types) in function declaration
-> > 209 | hugetlb_optimize_vmemmap_key);
-> > | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> > ./include/linux/page-flags.h: In function 'hugetlb_optimize_vmemmap_ena=
-bled':
-> > ./include/linux/page-flags.h:213:16: error: implicit declaration of
-> > function 'static_branch_maybe' [-Werror=3Dimplicit-function-declaration=
-]
-> > 213 | return static_branch_maybe(CONFIG_HUGETLB_PAGE_OPTIMIZE_VMEMMAP_D=
-EFAULT_ON,
-> > | ^~~~~~~~~~~~~~~~~~~
-> > ./include/linux/page-flags.h:213:36: error:
-> > 'CONFIG_HUGETLB_PAGE_OPTIMIZE_VMEMMAP_DEFAULT_ON' undeclared (first
-> > use in this function); did you mean
-> > 'CONFIG_HUGETLB_PAGE_OPTIMIZE_VMEMMAP'?
-> > 213 | return static_branch_maybe(CONFIG_HUGETLB_PAGE_OPTIMIZE_VMEMMAP_D=
-EFAULT_ON,
-> > | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> > | CONFIG_HUGETLB_PAGE_OPTIMIZE_VMEMMAP
-> > ./include/linux/page-flags.h:213:36: note: each undeclared identifier
-> > is reported only once for each function it appears in
-> > ./include/linux/page-flags.h:214:37: error:
-> > 'hugetlb_optimize_vmemmap_key' undeclared (first use in this
-> > function); did you mean 'hugetlb_optimize_vmemmap_enabled'?
-> > 214 | &hugetlb_optimize_vmemmap_key);
-> > | ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> > | hugetlb_optimize_vmemmap_enabled
-> >
-> > Signed-off-by: Feiyang Chen <chenfeiyang@loongson.cn>
-> > Signed-off-by: Huacai Chen <chenhuacai@loongson.cn>
-> > ---
-> >   arch/loongarch/Kconfig     | 1 +
-> >   include/linux/page-flags.h | 1 +
-> >   2 files changed, 2 insertions(+)
-> >
-> > diff --git a/arch/loongarch/Kconfig b/arch/loongarch/Kconfig
-> > index 6f7fa0c0ca08..0a6ef613124c 100644
-> > --- a/arch/loongarch/Kconfig
-> > +++ b/arch/loongarch/Kconfig
-> > @@ -52,6 +52,7 @@ config LOONGARCH
-> >       select ARCH_USE_QUEUED_RWLOCKS
-> >       select ARCH_USE_QUEUED_SPINLOCKS
-> >       select ARCH_WANT_DEFAULT_TOPDOWN_MMAP_LAYOUT
-> > +     select ARCH_WANT_HUGETLB_PAGE_OPTIMIZE_VMEMMAP
-> >       select ARCH_WANT_LD_ORPHAN_WARN
-> >       select ARCH_WANTS_NO_INSTR
-> >       select BUILDTIME_TABLE_SORT
-> > diff --git a/include/linux/page-flags.h b/include/linux/page-flags.h
-> > index 0b0ae5084e60..1aafdc73e399 100644
-> > --- a/include/linux/page-flags.h
-> > +++ b/include/linux/page-flags.h
-> > @@ -9,6 +9,7 @@
-> >   #include <linux/types.h>
-> >   #include <linux/bug.h>
-> >   #include <linux/mmdebug.h>
-> > +#include <linux/static_key.h>
-> >   #ifndef __GENERATING_BOUNDS_H
-> >   #include <linux/mm_types.h>
-> >   #include <generated/bounds.h>
->
-> Preferably splitting in 2 distinct patches (for each):
->
-> Reviewed-by: Philippe Mathieu-Daud=C3=A9 <philmd@linaro.org>
->
->
+@@
+expression E;
+identifier I;
+@@
+-   do {
+      ...
+-     I = get_random_u32();
+      ...
+-   } while (I <= E);
++   I = get_random_u32_above(E);
+
+@@
+identifier I;
+@@
+-   do {
+      ...
+-     I = get_random_u32();
+      ...
+-   } while (!I);
++   I = get_random_u32_above(0);
+
+@@
+identifier I;
+@@
+-   do {
+      ...
+-     I = get_random_u32();
+      ...
+-   } while (I == 0);
++   I = get_random_u32_above(0);
+
+@@
+expression E;
+identifier I;
+@@
+- E + 1 + get_random_u32_below(U32_MAX - E)
++ get_random_u32_above(E)
+
+Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
+---
+ fs/ext4/mmp.c            | 8 +-------
+ lib/test_fprobe.c        | 5 +----
+ lib/test_kprobes.c       | 5 +----
+ net/ipv6/output_core.c   | 8 +-------
+ net/vmw_vsock/af_vsock.c | 3 +--
+ 5 files changed, 5 insertions(+), 24 deletions(-)
+
+diff --git a/fs/ext4/mmp.c b/fs/ext4/mmp.c
+index 588cb09c5291..4681fff6665f 100644
+--- a/fs/ext4/mmp.c
++++ b/fs/ext4/mmp.c
+@@ -262,13 +262,7 @@ void ext4_stop_mmpd(struct ext4_sb_info *sbi)
+  */
+ static unsigned int mmp_new_seq(void)
+ {
+-	u32 new_seq;
+-
+-	do {
+-		new_seq = get_random_u32();
+-	} while (new_seq > EXT4_MMP_SEQ_MAX);
+-
+-	return new_seq;
++	return get_random_u32_below(EXT4_MMP_SEQ_MAX + 1);
+ }
+ 
+ /*
+diff --git a/lib/test_fprobe.c b/lib/test_fprobe.c
+index e0381b3ec410..1fb56cf5e5ce 100644
+--- a/lib/test_fprobe.c
++++ b/lib/test_fprobe.c
+@@ -144,10 +144,7 @@ static unsigned long get_ftrace_location(void *func)
+ 
+ static int fprobe_test_init(struct kunit *test)
+ {
+-	do {
+-		rand1 = get_random_u32();
+-	} while (rand1 <= div_factor);
+-
++	rand1 = get_random_u32_above(div_factor);
+ 	target = fprobe_selftest_target;
+ 	target2 = fprobe_selftest_target2;
+ 	target_ip = get_ftrace_location(target);
+diff --git a/lib/test_kprobes.c b/lib/test_kprobes.c
+index eeb1d728d974..1c95e5719802 100644
+--- a/lib/test_kprobes.c
++++ b/lib/test_kprobes.c
+@@ -339,10 +339,7 @@ static int kprobes_test_init(struct kunit *test)
+ 	stacktrace_target = kprobe_stacktrace_target;
+ 	internal_target = kprobe_stacktrace_internal_target;
+ 	stacktrace_driver = kprobe_stacktrace_driver;
+-
+-	do {
+-		rand1 = get_random_u32();
+-	} while (rand1 <= div_factor);
++	rand1 = get_random_u32_above(div_factor);
+ 	return 0;
+ }
+ 
+diff --git a/net/ipv6/output_core.c b/net/ipv6/output_core.c
+index 2685c3f15e9d..b5205311f372 100644
+--- a/net/ipv6/output_core.c
++++ b/net/ipv6/output_core.c
+@@ -15,13 +15,7 @@ static u32 __ipv6_select_ident(struct net *net,
+ 			       const struct in6_addr *dst,
+ 			       const struct in6_addr *src)
+ {
+-	u32 id;
+-
+-	do {
+-		id = get_random_u32();
+-	} while (!id);
+-
+-	return id;
++	return get_random_u32_above(0);
+ }
+ 
+ /* This function exists only for tap drivers that must support broken
+diff --git a/net/vmw_vsock/af_vsock.c b/net/vmw_vsock/af_vsock.c
+index f185f57c34e7..9cfed7fd8740 100644
+--- a/net/vmw_vsock/af_vsock.c
++++ b/net/vmw_vsock/af_vsock.c
+@@ -626,8 +626,7 @@ static int __vsock_bind_connectible(struct vsock_sock *vsk,
+ 	struct sockaddr_vm new_addr;
+ 
+ 	if (!port)
+-		port = LAST_RESERVED_PORT + 1 +
+-			get_random_u32_below(U32_MAX - LAST_RESERVED_PORT);
++		port = get_random_u32_above(LAST_RESERVED_PORT);
+ 
+ 	vsock_addr_init(&new_addr, addr->svm_cid, addr->svm_port);
+ 
+-- 
+2.38.1
+

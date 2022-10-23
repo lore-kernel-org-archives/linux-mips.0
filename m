@@ -2,172 +2,147 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 45985ECAAA1
-	for <linux-mips@archiver.kernel.org>; Sun, 23 Oct 2022 14:34:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EE3BAECAAA1
+	for <linux-mips@archiver.kernel.org>; Sun, 23 Oct 2022 14:57:07 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230226AbiJWOeL (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Sun, 23 Oct 2022 10:34:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35844 "EHLO
+        id S230273AbiJWO5G (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Sun, 23 Oct 2022 10:57:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35648 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230231AbiJWOdy (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Sun, 23 Oct 2022 10:33:54 -0400
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD29B659F9;
-        Sun, 23 Oct 2022 07:33:44 -0700 (PDT)
-Received: by mail-wr1-x42f.google.com with SMTP id j15so1301601wrq.3;
-        Sun, 23 Oct 2022 07:33:44 -0700 (PDT)
+        with ESMTP id S230251AbiJWO5G (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Sun, 23 Oct 2022 10:57:06 -0400
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 348185C9C4;
+        Sun, 23 Oct 2022 07:57:05 -0700 (PDT)
+Received: by mail-wr1-x433.google.com with SMTP id k8so3200143wrh.1;
+        Sun, 23 Oct 2022 07:57:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=yKcyGQjHmAJtNmBYOXlBo9pb7HsrytrHyz7qgBwYjhw=;
-        b=Zvuc+9WwEZdn3+oKyWUWeHWDi/YfGTZb1u1GwBxKUlcv0jfkZlXEpl4HTvEzUqokJq
-         jPVI6zHQSyBzvBjaMTO/Kk0I1hO33tDP7Jm8Wynpmd3vQhDBXMBN7s9+nutIvRL0DFIN
-         sSleOII1Y5QLenCixFn+Balet89evCr6TbpvJU4eXRNFpU2Ef/Ztiw97soIcQA0r+7fF
-         AqhHPA8YlYjg/H0TM0xvwV6f56VDypR4RXPiGHckcuqWSEt+eDwBQibmfYxRX2wIj3zT
-         A3uMpgrXG8DMWOgkNKNxSiTDV9J01GkhMSoU5orzD2L3cZNJHOxNQ8SQKhnC1mpI9OUl
-         4AhA==
+        bh=kj/OpguZjPKDUwIYpyWbwh1pY+n7iF9L6lxKcI6mhC0=;
+        b=Q1Pvk3yc4qV0TxhrAP7miQlUWAmmJr6qwWmuFLZZsjy0F7nXkhy53QgtCdBeLcHZ5L
+         IEkWt2Yhr3oQxdmcMJkMFOBkWP3j/A466/R6bLH/YmCiTY9pQc/2DTRigUbBNJ2tmIjv
+         3f/GwtSmf11x2SRBMTZtr+cXGOXzT4UvylbPPnvuKViBwJWuj3+XK8YmYPXBE2jJxTyn
+         NxQBCoa6UerAiwd6mzLC2SPABFmXiovSHPSUwNrV8hLRfxb2vUszm10qI8lriTFNZJKe
+         Wuv4qdi0oz0xNg4tfjX23VHmqEvtFvQ2b2Uk1ACJAhrnxs+trPH6JV0O8cacBXi8YPdD
+         MhDA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=yKcyGQjHmAJtNmBYOXlBo9pb7HsrytrHyz7qgBwYjhw=;
-        b=yEqu5SZpe4gzUegMakQNpBc5kzhJJxP+BNvimkyHAPegr3PFby/RRnDQb417oVBFJi
-         x9ZxfFKKI/QCWVDxpJaWD27Ca33AFDyGyn8j8d10fxBwyTyTmYkew+qDLyBJZxo+8Ccp
-         u9YRKkicVliiOonB7zhflfqN/t8dK6rLn5d8+rwRwT5fQJXkMeuVR3iwrAB+a7Hd5au1
-         qGfgYiPWXMJeXPo43PHxZ33RLFjKlp0F3qte0MJL4HCWm9eb9gYkn/GptmsYDURyVy6O
-         MHOa1+xWXmnHdM9J1lQb7JEmOSzvv3TopgipXsATAWfkHva0l/yaTN0rvphjpEmf3bfm
-         iF2g==
-X-Gm-Message-State: ACrzQf26zlG4z1IDJKdZbuco3jbIgSWiUar4a0ML/FFXpxCQsq1nXyY0
-        mzkAtNIkYiFigEsKjzu01Lo=
-X-Google-Smtp-Source: AMsMyM760Y2uGPzHs1dXIlqIe911hOUsZqHAkRRIwjSXF19eKoa/0dSBaVi5wAn5pEjH0TuJE/fxMQ==
-X-Received: by 2002:a5d:4f12:0:b0:22e:3920:a09c with SMTP id c18-20020a5d4f12000000b0022e3920a09cmr17811204wru.95.1666535622868;
-        Sun, 23 Oct 2022 07:33:42 -0700 (PDT)
+        bh=kj/OpguZjPKDUwIYpyWbwh1pY+n7iF9L6lxKcI6mhC0=;
+        b=MhgLf82HpqTewAH+IxSnKa2h57UWIoKn1iXC+nr2OPlOab0f8Zb1UYgsQqgUyGFmkQ
+         moRDdLqzrmN6QKu2Dkyt4s2BknruLw+4oyWPKQqr/E9kXSaseYJ928n0tjZlLAQpCNam
+         KjzRhDVG2EAgDNyB390SK0h2IVO8g4owLBa0cEcT6jbne7aIwHM4PS1sK8xF5nm/Cr6G
+         IHva7btG5Aa0ntMeti42M3JuJiMwcgp36WirS18J41ydzFldxTQWwpB5WXz7ULjJKBQ5
+         hvs2NldyHePgf84I2LPzw1K1iYEhIAbQB4LsRLT89DE82H1hG56aIfxhaYz5TKFopfi3
+         tDVw==
+X-Gm-Message-State: ACrzQf0rgrBac8UykYrgQDzgF450YL9LEV8M2hsQbXs+P1v8k3rtJbIk
+        clRIRPfN0ECQ1SgDBcP4N+s=
+X-Google-Smtp-Source: AMsMyM5ETqp1Bj57TU+4kYjUpQ3ScJ33WvuY7orTycMG9obvu4YGnUHkIJuyoi4RJwOUdCKeCFfOcw==
+X-Received: by 2002:adf:fb84:0:b0:21a:10f2:1661 with SMTP id a4-20020adffb84000000b0021a10f21661mr18224004wrr.2.1666537023782;
+        Sun, 23 Oct 2022 07:57:03 -0700 (PDT)
 Received: from localhost (94.197.10.75.threembb.co.uk. [94.197.10.75])
-        by smtp.gmail.com with ESMTPSA id o13-20020adfcf0d000000b0022cce7689d3sm7614395wrj.36.2022.10.23.07.33.42
+        by smtp.gmail.com with ESMTPSA id bg37-20020a05600c3ca500b003c706e177c1sm1758817wmb.14.2022.10.23.07.57.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 23 Oct 2022 07:33:42 -0700 (PDT)
+        Sun, 23 Oct 2022 07:57:03 -0700 (PDT)
 From:   Aidan MacDonald <aidanmacdonald.0x0@gmail.com>
-To:     paul@crapouillou.net, lgirdwood@gmail.com, broonie@kernel.org,
-        perex@perex.cz, tiwai@suse.com
+To:     paul@crapouillou.net, mturquette@baylibre.com, sboyd@kernel.org,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org
 Cc:     zhouyu@wanyeetech.com, linux-mips@vger.kernel.org,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v6 9/9] ASoC: jz4740-i2s: Refactor DAI probe/remove ops as component ops
-Date:   Sun, 23 Oct 2022 15:33:28 +0100
-Message-Id: <20221023143328.160866-10-aidanmacdonald.0x0@gmail.com>
-In-Reply-To: <20221023143328.160866-1-aidanmacdonald.0x0@gmail.com>
-References: <20221023143328.160866-1-aidanmacdonald.0x0@gmail.com>
+        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v1 1/5] clk: ingenic: Make PLL clock "od" field optional
+Date:   Sun, 23 Oct 2022 15:56:49 +0100
+Message-Id: <20221023145653.177234-2-aidanmacdonald.0x0@gmail.com>
+In-Reply-To: <20221023145653.177234-1-aidanmacdonald.0x0@gmail.com>
+References: <20221023145653.177234-1-aidanmacdonald.0x0@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Move most of the DAI probe/remove logic into component ops.
-This makes things more consistent because the AIC clock is
-now managed solely from the component side. And it makes it
-easier to add codec switching support later on.
+Add support for defining PLL clocks with od_bits = 0, meaning that
+OD is fixed to 1 and there is no OD field in the register.
 
-Reviewed-by: Paul Cercueil <paul@crapouillou.net>
 Signed-off-by: Aidan MacDonald <aidanmacdonald.0x0@gmail.com>
 ---
- sound/soc/jz4740/jz4740-i2s.c | 54 +++++++++++++++++++----------------
- 1 file changed, 30 insertions(+), 24 deletions(-)
+ drivers/clk/ingenic/cgu.c | 28 +++++++++++++++++++---------
+ drivers/clk/ingenic/cgu.h |  3 ++-
+ 2 files changed, 21 insertions(+), 10 deletions(-)
 
-diff --git a/sound/soc/jz4740/jz4740-i2s.c b/sound/soc/jz4740/jz4740-i2s.c
-index ac04b17c2787..b620d4462d90 100644
---- a/sound/soc/jz4740/jz4740-i2s.c
-+++ b/sound/soc/jz4740/jz4740-i2s.c
-@@ -305,32 +305,10 @@ static int jz4740_i2s_set_sysclk(struct snd_soc_dai *dai, int clk_id,
- static int jz4740_i2s_dai_probe(struct snd_soc_dai *dai)
- {
- 	struct jz4740_i2s *i2s = snd_soc_dai_get_drvdata(dai);
--	int ret;
--
--	ret = clk_prepare_enable(i2s->clk_aic);
--	if (ret)
--		return ret;
+diff --git a/drivers/clk/ingenic/cgu.c b/drivers/clk/ingenic/cgu.c
+index 861c50d6cb24..7dc2e2567d53 100644
+--- a/drivers/clk/ingenic/cgu.c
++++ b/drivers/clk/ingenic/cgu.c
+@@ -96,8 +96,11 @@ ingenic_pll_recalc_rate(struct clk_hw *hw, unsigned long parent_rate)
+ 	m += pll_info->m_offset;
+ 	n = (ctl >> pll_info->n_shift) & GENMASK(pll_info->n_bits - 1, 0);
+ 	n += pll_info->n_offset;
+-	od_enc = ctl >> pll_info->od_shift;
+-	od_enc &= GENMASK(pll_info->od_bits - 1, 0);
++
++	if (pll_info->od_bits > 0) {
++		od_enc = ctl >> pll_info->od_shift;
++		od_enc &= GENMASK(pll_info->od_bits - 1, 0);
++	}
  
- 	snd_soc_dai_init_dma_data(dai, &i2s->playback_dma_data,
- 		&i2s->capture_dma_data);
+ 	if (pll_info->bypass_bit >= 0) {
+ 		ctl = readl(cgu->base + pll_info->bypass_reg);
+@@ -108,12 +111,17 @@ ingenic_pll_recalc_rate(struct clk_hw *hw, unsigned long parent_rate)
+ 			return parent_rate;
+ 	}
  
--	regmap_write(i2s->regmap, JZ_REG_AIC_CONF, JZ_AIC_CONF_RESET);
--
--	regmap_write(i2s->regmap, JZ_REG_AIC_CONF,
--		     JZ_AIC_CONF_OVERFLOW_PLAY_LAST |
--		     JZ_AIC_CONF_I2S | JZ_AIC_CONF_INTERNAL_CODEC);
--
--	regmap_field_write(i2s->field_rx_fifo_thresh, 7);
--	regmap_field_write(i2s->field_tx_fifo_thresh, 8);
--
--	return 0;
--}
--
--static int jz4740_i2s_dai_remove(struct snd_soc_dai *dai)
--{
--	struct jz4740_i2s *i2s = snd_soc_dai_get_drvdata(dai);
--
--	clk_disable_unprepare(i2s->clk_aic);
- 	return 0;
- }
+-	for (od = 0; od < pll_info->od_max; od++) {
+-		if (pll_info->od_encoding[od] == od_enc)
+-			break;
++	if (pll_info->od_bits > 0) {
++		for (od = 0; od < pll_info->od_max; od++) {
++			if (pll_info->od_encoding[od] == od_enc)
++				break;
++		}
++		BUG_ON(od == pll_info->od_max);
++		od++;
++	} else {
++		/* OD is fixed to 1 if no OD field is present. */
++		od = 1;
+ 	}
+-	BUG_ON(od == pll_info->od_max);
+-	od++;
  
-@@ -350,7 +328,6 @@ static const struct snd_soc_dai_ops jz4740_i2s_dai_ops = {
+ 	return div_u64((u64)parent_rate * m * pll_info->rate_multiplier,
+ 		n * od);
+@@ -215,8 +223,10 @@ ingenic_pll_set_rate(struct clk_hw *hw, unsigned long req_rate,
+ 	ctl &= ~(GENMASK(pll_info->n_bits - 1, 0) << pll_info->n_shift);
+ 	ctl |= (n - pll_info->n_offset) << pll_info->n_shift;
  
- static struct snd_soc_dai_driver jz4740_i2s_dai = {
- 	.probe = jz4740_i2s_dai_probe,
--	.remove = jz4740_i2s_dai_remove,
- 	.playback = {
- 		.channels_min = 1,
- 		.channels_max = 2,
-@@ -386,7 +363,6 @@ static const struct i2s_soc_info jz4760_i2s_soc_info = {
+-	ctl &= ~(GENMASK(pll_info->od_bits - 1, 0) << pll_info->od_shift);
+-	ctl |= pll_info->od_encoding[od - 1] << pll_info->od_shift;
++	if (pll_info->od_bits > 0) {
++		ctl &= ~(GENMASK(pll_info->od_bits - 1, 0) << pll_info->od_shift);
++		ctl |= pll_info->od_encoding[od - 1] << pll_info->od_shift;
++	}
  
- static struct snd_soc_dai_driver jz4770_i2s_dai = {
- 	.probe = jz4740_i2s_dai_probe,
--	.remove = jz4740_i2s_dai_remove,
- 	.playback = {
- 		.channels_min = 1,
- 		.channels_max = 2,
-@@ -454,8 +430,38 @@ static int jz4740_i2s_resume(struct snd_soc_component *component)
- 	return 0;
- }
+ 	writel(ctl, cgu->base + pll_info->reg);
  
-+static int jz4740_i2s_probe(struct snd_soc_component *component)
-+{
-+	struct jz4740_i2s *i2s = snd_soc_component_get_drvdata(component);
-+	int ret;
-+
-+	ret = clk_prepare_enable(i2s->clk_aic);
-+	if (ret)
-+		return ret;
-+
-+	regmap_write(i2s->regmap, JZ_REG_AIC_CONF, JZ_AIC_CONF_RESET);
-+
-+	regmap_write(i2s->regmap, JZ_REG_AIC_CONF,
-+		     JZ_AIC_CONF_OVERFLOW_PLAY_LAST |
-+		     JZ_AIC_CONF_I2S | JZ_AIC_CONF_INTERNAL_CODEC);
-+
-+	regmap_field_write(i2s->field_rx_fifo_thresh, 7);
-+	regmap_field_write(i2s->field_tx_fifo_thresh, 8);
-+
-+	return 0;
-+}
-+
-+static void jz4740_i2s_remove(struct snd_soc_component *component)
-+{
-+	struct jz4740_i2s *i2s = snd_soc_component_get_drvdata(component);
-+
-+	clk_disable_unprepare(i2s->clk_aic);
-+}
-+
- static const struct snd_soc_component_driver jz4740_i2s_component = {
- 	.name			= "jz4740-i2s",
-+	.probe			= jz4740_i2s_probe,
-+	.remove			= jz4740_i2s_remove,
- 	.suspend		= jz4740_i2s_suspend,
- 	.resume			= jz4740_i2s_resume,
- 	.legacy_dai_naming	= 1,
+diff --git a/drivers/clk/ingenic/cgu.h b/drivers/clk/ingenic/cgu.h
+index 147b7df0d657..567142b584bb 100644
+--- a/drivers/clk/ingenic/cgu.h
++++ b/drivers/clk/ingenic/cgu.h
+@@ -33,7 +33,8 @@
+  * @od_shift: the number of bits to shift the post-VCO divider value by (ie.
+  *            the index of the lowest bit of the post-VCO divider value in
+  *            the PLL's control register)
+- * @od_bits: the size of the post-VCO divider field in bits
++ * @od_bits: the size of the post-VCO divider field in bits, or 0 if no
++ *	     OD field exists (then the OD is fixed to 1)
+  * @od_max: the maximum post-VCO divider value
+  * @od_encoding: a pointer to an array mapping post-VCO divider values to
+  *               their encoded values in the PLL control register, or -1 for
 -- 
 2.38.1
 

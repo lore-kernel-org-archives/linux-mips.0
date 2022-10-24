@@ -2,107 +2,205 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D7A99FA373D
-	for <linux-mips@archiver.kernel.org>; Mon, 24 Oct 2022 23:33:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E3FA9C67871
+	for <linux-mips@archiver.kernel.org>; Mon, 24 Oct 2022 23:42:44 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231363AbiJXXdB (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 24 Oct 2022 19:33:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49984 "EHLO
+        id S230182AbiJXXmn (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 24 Oct 2022 19:42:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37776 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230405AbiJXXcZ (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Mon, 24 Oct 2022 19:32:25 -0400
+        with ESMTP id S229822AbiJXXmY (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Mon, 24 Oct 2022 19:42:24 -0400
 Received: from aposti.net (aposti.net [89.234.176.197])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE040107A8C;
-        Mon, 24 Oct 2022 14:53:29 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EF4A1D73FB;
+        Mon, 24 Oct 2022 15:01:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crapouillou.net;
-        s=mail; t=1666644740; h=from:from:sender:reply-to:subject:subject:date:date:
+        s=mail; t=1666615860; h=from:from:sender:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-transfer-encoding:content-transfer-encoding:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=avcN02YNvaxpZRdy8N6BP2+uTVrnwX31SrzsZGCAp0c=;
-        b=Bmyh2YOhAjfg1GSy4ncnAj+0uagLOdl4JNbxAeyUKnYnHQsPI4htDWCoHQuYlBqCsqa7qz
-        a1TvbaO2+3VP3gUDS4UmlqXfBkR5Tze5O7MPfwSi++v+pk0pHtro5AQCZftppjugDkmdxZ
-        IqWyRrP0D7KxE5peHD5QjkDZvR7LGAI=
+        bh=6dhnHc0bAedKhrMgs9Dk+4I6+5jfqv63sCgiUYVWOcI=;
+        b=tn1ZvOhDMsL2gp6C/3Ym9t7tzU8xZKvHqGrY4PYZXRWhTkGcKydZ7EkM1OPd+MtYhJbqEU
+        gaeSSUu5ewEavK1O9aX2hgvviFqghRqzkRmSVnUBoMURUYz5BkO4yWfO/2k3UF6FZOwmlk
+        eYlYk1D+4AEN4Q6V/cyZPE1MQ5gYaoA=
+Date:   Mon, 24 Oct 2022 13:50:50 +0100
 From:   Paul Cercueil <paul@crapouillou.net>
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>
-Cc:     od@opendingux.net, linux-pwm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
-        Paul Cercueil <paul@crapouillou.net>, stable@vger.kernel.org
-Subject: [PATCH 1/5] pwm: jz4740: Fix pin level of disabled TCU2 channels, part 1
-Date:   Mon, 24 Oct 2022 21:52:09 +0100
-Message-Id: <20221024205213.327001-2-paul@crapouillou.net>
-In-Reply-To: <20221024205213.327001-1-paul@crapouillou.net>
-References: <20221024205213.327001-1-paul@crapouillou.net>
+Subject: Re: [PATCH v2 2/2] serial: 8250/ingenic: Add support for the
+ JZ4750/JZ4755
+To:     Siarhei Volkau <lis8215@gmail.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        linux-serial@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org
+Message-Id: <Q0D9KR.U3D9MHHH52AZ@crapouillou.net>
+In-Reply-To: <20221022151224.4000238-3-lis8215@gmail.com>
+References: <20221022151224.4000238-1-lis8215@gmail.com>
+        <20221022151224.4000238-3-lis8215@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=iso-8859-1; format=flowed
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-The "duty > cycle" trick to force the pin level of a disabled TCU2
-channel would only work when the channel had been enabled previously.
+Hi Siarhei,
 
-Address this issue by enabling the PWM mode in jz4740_pwm_disable
-(I know, right) so that the "duty > cycle" trick works before disabling
-the PWM channel right after.
+Le sam. 22 oct. 2022 =E0 18:12:24 +0300, Siarhei Volkau=20
+<lis8215@gmail.com> a =E9crit :
+> JZ4750/55/60 (but not JZ4760b) have an extra divisor in between extclk
+> and peripheral clock, called CPCCR.ECS, the driver can't figure out=20
+> the
+> real state of the divisor without dirty hack - peek CGU CPCCR=20
+> register.
+> However, we can rely on a vendor's bootloader (u-boot 1.1.6) behavior:
+> if (extclk > 16MHz)
+>     the divisor is enabled, so the UART driving clock is extclk/2.
+>=20
+> This behavior relies on hardware differences: most boards (if not all)
+> with those SoCs have 12 or 24 MHz oscillators but many peripherals=20
+> want
+> 12Mhz to operate properly (AIC and USB-PHY at least).
+>=20
+> The patch doesn't affect JZ4760's behavior as it is subject for=20
+> another
+> patchset with re-classification of all supported ingenic UARTs.
+>=20
+> Link:=20
+> https://github.com/carlos-wong/uboot_jz4755/blob/master/cpu/mips/jz_seria=
+l.c#L158
+> Signed-off-by: Siarhei Volkau <lis8215@gmail.com>
+> ---
+>  drivers/tty/serial/8250/8250_ingenic.c | 50=20
+> ++++++++++++++++++++++----
+>  1 file changed, 43 insertions(+), 7 deletions(-)
+>=20
+> diff --git a/drivers/tty/serial/8250/8250_ingenic.c=20
+> b/drivers/tty/serial/8250/8250_ingenic.c
+> index 2b2f5d8d2..3ffa6b722 100644
+> --- a/drivers/tty/serial/8250/8250_ingenic.c
+> +++ b/drivers/tty/serial/8250/8250_ingenic.c
+> @@ -87,24 +87,19 @@ static void __init=20
+> ingenic_early_console_setup_clock(struct earlycon_device *dev
+>  	dev->port.uartclk =3D be32_to_cpup(prop);
+>  }
+>=20
+> -static int __init ingenic_early_console_setup(struct earlycon_device=20
+> *dev,
+> -					      const char *opt)
+> +static int __init ingenic_earlycon_setup_tail(struct earlycon_device=20
+> *dev,
+> +					      const char *opt)
+>  {
+>  	struct uart_port *port =3D &dev->port;
+>  	unsigned int divisor;
+>  	int baud =3D 115200;
+>=20
+> -	if (!dev->port.membase)
+> -		return -ENODEV;
 
-This issue went unnoticed, as the PWM pins on the majority of the boards
-tested would default to the inactive level once the corresponding TCU
-clock was enabled, so the first call to jz4740_pwm_disable() would not
-actually change the pin levels.
+You can keep this here - no need to move it (and it'd avoid duplicating=20
+code).
 
-On the GCW Zero however, the PWM pin for the backlight (PWM1, which is
-a TCU2 channel) goes active as soon as the timer1 clock is enabled.
-Since the jz4740_pwm_disable() function did not work on channels not
-previously enabled, the backlight would shine at full brightness from
-the moment the backlight driver would probe, until the backlight driver
-tried to *enable* the PWM output.
+> -
+>  	if (opt) {
+>  		unsigned int parity, bits, flow; /* unused for now */
+>=20
+>  		uart_parse_options(opt, &baud, &parity, &bits, &flow);
+>  	}
+>=20
+> -	ingenic_early_console_setup_clock(dev);
+> -
+>  	if (dev->baud)
+>  		baud =3D dev->baud;
+>  	divisor =3D DIV_ROUND_CLOSEST(port->uartclk, 16 * baud);
+> @@ -129,9 +124,49 @@ static int __init=20
+> ingenic_early_console_setup(struct earlycon_device *dev,
+>  	return 0;
+>  }
+>=20
+> +static int __init ingenic_early_console_setup(struct earlycon_device=20
+> *dev,
+> +					      const char *opt)
+> +{
+> +	if (!dev->port.membase)
+> +		return -ENODEV;
+> +
+> +	ingenic_early_console_setup_clock(dev);
+> +
+> +	ingenic_earlycon_setup_tail(dev, opt);
+> +}
+> +
+> +static int __init jz4750_early_console_setup(struct earlycon_device=20
+> *dev,
+> +					     const char *opt)
+> +{
+> +	if (!dev->port.membase)
+> +		return -ENODEV;
+> +
+> +	/*
+> +	 * JZ4750/55/60 (not JZ4760b) have an extra divisor
+> +	 * between extclk and peripheral clock, the
+> +	 * driver can't figure out the real state of the
+> +	 * divisor without dirty hacks (peek CGU register).
+> +	 * However, we can rely on a vendor's behavior:
+> +	 * if (extclk > 16MHz)
+> +	 *   the divisor is enabled.
+> +	 * This behavior relies on hardware differences:
+> +	 * most boards with those SoCs have 12 or 24 MHz
+> +	 * oscillators but many peripherals want 12Mhz
+> +	 * to operate properly (AIC and USB-phy at least).
+> +	 */
+> +	ingenic_early_console_setup_clock(dev);
+> +	if (dev->port.uartclk > 16000000)
+> +		dev->port.uartclk /=3D 2;
 
-With this fix, the PWM pins will be forced inactive as soon as
-jz4740_pwm_apply() is called (and might be reconfigured to active if
-dictated by the pwm_state). This means that there is still a tiny time
-frame between the .request() and .apply() callbacks where the PWM pin
-might be active. Sadly, there is no way to fix this issue: it is
-impossible to write a PWM channel's registers if the corresponding clock
-is not enabled, and enabling the clock is what causes the PWM pin to go
-active.
+I would assume you could just do:
+dev->port.uartclk =3D 12000000;
 
-There is a workaround, though, which complements this fix: simply
-starting the backlight driver (or any PWM client driver) with a "init"
-pinctrl state that sets the pin as an inactive GPIO. Once the driver is
-probed and the pinctrl state switches to "default", the regular PWM pin
-configuration can be used as it will be properly driven.
+Since you'd always get a 12 MHz clock (either with a 12 MHz oscillator=20
+or a 24 MHz oscillator with a /2 divider).
 
-Fixes: c2693514a0a1 ("pwm: jz4740: Obtain regmap from parent node")
-Signed-off-by: Paul Cercueil <paul@crapouillou.net>
-Cc: stable@vger.kernel.org
----
- drivers/pwm/pwm-jz4740.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+With that said - I am fine with that code, it would allow to fine-tune=20
+the oscillator value (although I hightly doubt anybody is going to do=20
+that).
 
-diff --git a/drivers/pwm/pwm-jz4740.c b/drivers/pwm/pwm-jz4740.c
-index a5fdf97c0d2e..228eb104bf1e 100644
---- a/drivers/pwm/pwm-jz4740.c
-+++ b/drivers/pwm/pwm-jz4740.c
-@@ -102,11 +102,14 @@ static void jz4740_pwm_disable(struct pwm_chip *chip, struct pwm_device *pwm)
- 	struct jz4740_pwm_chip *jz = to_jz4740(chip);
- 
- 	/*
--	 * Set duty > period. This trick allows the TCU channels in TCU2 mode to
--	 * properly return to their init level.
-+	 * Set duty > period, then enable PWM mode and start the counter.
-+	 * This trick allows to force the inactive pin level for the TCU2
-+	 * channels.
- 	 */
- 	regmap_write(jz->map, TCU_REG_TDHRc(pwm->hwpwm), 0xffff);
- 	regmap_write(jz->map, TCU_REG_TDFRc(pwm->hwpwm), 0x0);
-+	regmap_set_bits(jz->map, TCU_REG_TCSRc(pwm->hwpwm), TCU_TCSR_PWM_EN);
-+	regmap_write(jz->map, TCU_REG_TESR, BIT(pwm->hwpwm));
- 
- 	/*
- 	 * Disable PWM output.
--- 
-2.35.1
+The 16 MHz value sounds very arbitrary, but I'll give it a pass.
+
+Cheers,
+-Paul
+
+> +
+> +	ingenic_earlycon_setup_tail(dev, opt);
+> +}
+> +
+>  OF_EARLYCON_DECLARE(jz4740_uart, "ingenic,jz4740-uart",
+>  		    ingenic_early_console_setup);
+>=20
+> +OF_EARLYCON_DECLARE(jz4750_uart, "ingenic,jz4750-uart",
+> +		    jz4750_early_console_setup);
+> +
+>  OF_EARLYCON_DECLARE(jz4770_uart, "ingenic,jz4770-uart",
+>  		    ingenic_early_console_setup);
+>=20
+> @@ -328,6 +363,7 @@ static const struct ingenic_uart_config=20
+> x1000_uart_config =3D {
+>=20
+>  static const struct of_device_id of_match[] =3D {
+>  	{ .compatible =3D "ingenic,jz4740-uart", .data =3D &jz4740_uart_config=20
+> },
+> +	{ .compatible =3D "ingenic,jz4750-uart", .data =3D &jz4760_uart_config=20
+> },
+>  	{ .compatible =3D "ingenic,jz4760-uart", .data =3D &jz4760_uart_config=20
+> },
+>  	{ .compatible =3D "ingenic,jz4770-uart", .data =3D &jz4760_uart_config=20
+> },
+>  	{ .compatible =3D "ingenic,jz4775-uart", .data =3D &jz4760_uart_config=20
+> },
+> --
+> 2.36.1
+>=20
+
 

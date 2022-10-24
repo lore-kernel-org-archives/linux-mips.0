@@ -2,169 +2,488 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 71AD2FA3740
-	for <linux-mips@archiver.kernel.org>; Mon, 24 Oct 2022 18:03:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D151EFA373F
+	for <linux-mips@archiver.kernel.org>; Mon, 24 Oct 2022 18:40:35 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232355AbiJXSDj (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 24 Oct 2022 14:03:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41486 "EHLO
+        id S232235AbiJXSkd (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 24 Oct 2022 14:40:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56840 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231778AbiJXSDA (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Mon, 24 Oct 2022 14:03:00 -0400
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on20629.outbound.protection.outlook.com [IPv6:2a01:111:f400:7e8a::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 202A81EAEA;
-        Mon, 24 Oct 2022 09:43:48 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ICDCvE1cGkaXDQ9dNdHygCGl4wXrKwHA0jssd1Q+yj9q9rko3Xdq3hK8c+NnDEw80iFQto06X96PtoqyEvChaUtzx4hY4VjvYJVoqMVnc4TqIU6c0Wl6+pMJFmX9eQUf9kslVG/Oqj06MJwZm/jW0FAyWmsiPSnuYW0G+x88AjzTrz5+V/owsC9OjsTUNjPw0OBS9RI8JPyG3THCMuIAyxLWiWLDoDwGY85Z2dBm+WgXevnwzARYHI1nbrnGjO7mBZjhmp635XJXnPkKAYLWo0+N6WqXs4ekOtYjMM5nR2movnDgpkewiV2lspqgtmAvCV0uTRZd7QL/K3W8qyIOGQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=k55sh9OjiE0ha8dqN/6u+9zcSFi0E1S4KdYJWOmTGq8=;
- b=k1paNC2UDXZMoacm7GoSMrLfWXRPnBrZO5Q4Jk3t165ZzZtKli8L+lv9l5QWkdcms59XwAC5VlnukykOwWUFbzke1CkP0XeC9yqDIbgV0qtlupU1tjqHOaaDugRvHTi9Z+KecqkSj7Hp8FbBYaRZGyW2HnXgRpgylPfVJvc0FvEioYtoWKCursbETUrCfkhwkJZGDJeryfCu9i4IN0xQypz2kWexGpZOV7c8sCtxw4WDs17nF4KdaCFUf2uMOJruQxrraK+tX/2ufj9TVwE2fPKn5bzlU4dbigndJOdnRA6hw/DT3Q6dIOcu9Z/YD88IzLftPixXU1z0xTOath/fGQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=k55sh9OjiE0ha8dqN/6u+9zcSFi0E1S4KdYJWOmTGq8=;
- b=kjj/r5Ny18+6u+JodYtWt44+A382Ma2Tku8hOID+C4vwVY7XqI7GVjiFyQ7qZKLPyR/fgT7fRQrsiN8M96MHIwfsINw1ue0f7OZ+8vBgHm4XpdYJBNoPt41bAxcYoVXrdtboiz5D9NLgnw2wnEMdQRn9UEGJY9PUy5Ejlm0Z7tvo2uzX0xObF+FGnGy9bsvhHy5VsCkzq6pU+1xOaXkf1FfMxfmMHCDYhzqDHbHAhshL1g7y9Ioo50uSD/rCK9IRHRyGm0s9P5p1vk9UGQoEdDtRiiqCfehbLFxvjaViN+W8jPgyAL+byR08oCcerfYBfOibHAO5NBYFrT0tfsJ9mQ==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
- by MN2PR12MB4238.namprd12.prod.outlook.com (2603:10b6:208:199::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.5746.23; Mon, 24 Oct
- 2022 16:37:13 +0000
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::7a81:a4e4:bb9c:d1de]) by LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::7a81:a4e4:bb9c:d1de%6]) with mapi id 15.20.5746.021; Mon, 24 Oct 2022
- 16:37:13 +0000
-Date:   Mon, 24 Oct 2022 13:37:12 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     "Jason A. Donenfeld" <Jason@zx2c4.com>
-Cc:     linux-kernel@vger.kernel.org, Kees Cook <keescook@chromium.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Christoph =?utf-8?Q?B=C3=B6hmwalder?= 
-        <christoph.boehmwalder@linbit.com>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Richard Weinberger <richard@nod.at>,
-        "Darrick J . Wong" <djwong@kernel.org>,
-        SeongJae Park <sj@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Helge Deller <deller@gmx.de>, netdev@vger.kernel.org,
-        linux-crypto@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, loongarch@lists.linux.dev,
-        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-mmc@vger.kernel.org, linux-parisc@vger.kernel.org
-Subject: Re: [PATCH v1 0/5] convert tree to
- get_random_u32_{below,above,between}()
-Message-ID: <Y1a/OAJdW+dERHiR@nvidia.com>
-References: <20221022014403.3881893-1-Jason@zx2c4.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20221022014403.3881893-1-Jason@zx2c4.com>
-X-ClientProxiedBy: MN2PR01CA0009.prod.exchangelabs.com (2603:10b6:208:10c::22)
- To LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
+        with ESMTP id S230190AbiJXSjj (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Mon, 24 Oct 2022 14:39:39 -0400
+Received: from aposti.net (aposti.net [89.234.176.197])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B74DE12275E;
+        Mon, 24 Oct 2022 10:21:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crapouillou.net;
+        s=mail; t=1666614599; h=from:from:sender:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Acp3Kr9Rs7kZrOB1WCK4HcTOBslQ2jN8/e+chtN/jqY=;
+        b=WAHE9I8RelYvsAmVfH3GhlIcSys0x96NZRLgZyWAt0cYT3z952z+p5pza9FuAeyhmpcler
+        Mws/WKt1MjfPeYwxeAqeg2tzNtTtja+B5yhhgrlYpzmhEdPlDGmUbyNZ1jNfX9crR2ozWz
+        r6zOVhj57Aw7mUShjZakBFJAh2Zy0dQ=
+Date:   Mon, 24 Oct 2022 13:29:49 +0100
+From:   Paul Cercueil <paul@crapouillou.net>
+Subject: Re: [PATCH v5 3/3] clk: Add Ingenic JZ4755 CGU driver
+To:     Siarhei Volkau <lis8215@gmail.com>
+Cc:     Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org
+Message-Id: <P1C9KR.ZX664MUK6CT43@crapouillou.net>
+In-Reply-To: <XJ49KR.X4N03MEX9E2C3@crapouillou.net>
+References: <20221024044057.4151633-1-lis8215@gmail.com>
+        <20221024044057.4151633-4-lis8215@gmail.com>
+        <XJ49KR.X4N03MEX9E2C3@crapouillou.net>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|MN2PR12MB4238:EE_
-X-MS-Office365-Filtering-Correlation-Id: 0fec61a3-506b-441f-0275-08dab5de00ff
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: EKf80sMrg5IUycWDwhzQGsqhRuRUNEo7co2x6wOatZpaB8t5SUjUHbjAzEr6sRorBvJGsd0/tcT09UpbrAJwcfNhYs/Jg5UoK3Jjoql0TRL1veT7dcI0rexcOtjQYU3c/PD586SfWLxsB8Qu4nrKs+amImQbAeOUnBw/xvaeBbsp819ObeGXW7RI8M5GCpbHipLB+bcZ2n7vo6ylspnISqWqRSjnnLcfbdirJAvcAWn1ijXq6fDiyGByuG31c/K3EBhQXKsv0PaaXjpw6WEimArqnEB4l5DezcFtAt1IHo9N2KF2UkNO7sE9JqcSt4KYZ0kKCslN4fmsF7a8PwpGRZ9gVxDLM7CeqF/JUdTgZcNjtNGogOtecNmLyHwXVD3Ds0lFHcSvpaSHe0XgkhK1MWz4ccGI4dC+r884Rl+W2TJVObYMgqkzkLoXCHJhQXY97m1ikA4hgZs0qvEgSPOUk8Flujc8ZakU95c0DL5zpCoSvqTvSHZEnJPlTYkGrelVPhoLhmLmMA2cr9tSlWcDfkAwBt2sxC09sjlXvRsx9sk502zBfEPjQe4hBEWImrRmfPTjdNKhMhbMXKZi+1sUpv4FTF/0F+TpkkUjJOXmAn2AIEGCDpfvxRSpcm6+V4wuVkaDazIw9R91Y8i0S3a3xNJ2wAD/SH4xrwI4lBKgw/000+OmPzXYst4AReTcXzGFIOGbziklkPp1hdsq1ntvJQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230022)(4636009)(39860400002)(376002)(346002)(136003)(396003)(366004)(451199015)(6486002)(478600001)(54906003)(316002)(7406005)(7416002)(66946007)(66556008)(66476007)(6506007)(8676002)(4326008)(41300700001)(6916009)(5660300002)(8936002)(26005)(36756003)(6512007)(38100700002)(83380400001)(2906002)(2616005)(186003)(86362001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?zV0ZvoIw8ElUdZSnE+53L7/s2Lw9Z0tCRY0pU4bjiONBEzMp//3qKb0bLgnT?=
- =?us-ascii?Q?luu646/cUA9wc8DJrSUGSGSkQB26guhodVON6cVMCUvYlPRSW4x+OrHc/AxZ?=
- =?us-ascii?Q?oNsxW+M+ZMFX9queecYkKl+Ho63dc2uIgb69s8faH+iDEyhnjNwZbp8QGI2z?=
- =?us-ascii?Q?WgAqd631DcIyDFUXxhewccmoWHUSxDdi1Z+NOprNHh56Hmccktkqu3K6LWBx?=
- =?us-ascii?Q?+35gJGUx0jrdX7omox7zE1Xtz5AarWKcQaVPV7qVLlBYX9c5P0y6QF/nao3N?=
- =?us-ascii?Q?BnP3pESNyEYS0FLK1l2XQ56MX2od6gRR7X3Fm4dZ10f2KLq1zTtuc61j4DV0?=
- =?us-ascii?Q?r7uf6ibUMK6KzxVlT4D3KLyOU925+dYqAsAOMOJoJ0yKqF4NHNJX+iN3fYD+?=
- =?us-ascii?Q?v/46CX0UTN9qbIs56xryLjUUtuJ4vNBdyxehJQ3msa70AyJTiE1sz+oEZYPV?=
- =?us-ascii?Q?b59iLoLm/BJkK4CBoKWP9/m1sWdPlHm4wA8zbLJ3ozQGAeDfoTZLEDnDre8b?=
- =?us-ascii?Q?CP3hwpxXpNd72XfNV0nMNyuSprnMyNCz8Ohi82MTNRoZMEUwsQiLqDeHGHuY?=
- =?us-ascii?Q?Jv4Ej/l3j2LVb8sFkoIQFvr45H7/SxqCd9PbkMiWx+p5/0yXk2seEYWRpA0M?=
- =?us-ascii?Q?ymi6OQ2p7MGVsyzLULIzz88eZT6UL8sQQIL3t5uGQZRwbhVWEUd7BG4LLDtw?=
- =?us-ascii?Q?SHn8bqfc163LfRlRmaveJCPELg0Au+5kM5Ux9zdU+80DYqSqbq6lTQPSY2BS?=
- =?us-ascii?Q?QV03v8PYp0RIbmagf5svpXc5w8UyWvXjPzC03jKKRnxCFHq7zDqSeMo85j62?=
- =?us-ascii?Q?vDMafIvempx1LImdNG+k6axHCPNkmdg3DB1FOprpdrFVgixQaPKd+L2LaKoY?=
- =?us-ascii?Q?pjqSHVnI1N/yST1NU4ZFh2BJ2yyqzzjSyGqj1blCMSzhlSlRJ3jf4uUCLGjK?=
- =?us-ascii?Q?x4wTgxuaG3fFRIRu/eSONbfIm84e8MXCt7sLfdvhQe10hk5Y5YT5gH81iPht?=
- =?us-ascii?Q?pmXR9NgmWM1Qglk2IqHrWyZvxpHqNWBvwA0CFYq9FIw/T9UvyLi447sXp0Fh?=
- =?us-ascii?Q?b/bIpp5pd+n4crt+I95W4IHQh6JsJz2EMyKKdrgUaJSlYWwIJbAOtpVCbwtt?=
- =?us-ascii?Q?NsMsCcHOLciSOTGO9tnG7k+JncjFoxOzCVPN8Vj7xa05uiEv9DML2obLP4Om?=
- =?us-ascii?Q?aNyrOjBMv3zOWG2Wb95mppM1PTQLvsf5DNN6+71IUwwPknrG+FdlrDKVimTh?=
- =?us-ascii?Q?JMb+HrGacxL3LV/0gjxOLL4xxKbn3GaYUYrIMoa4Ue+/Q6YAFPDJu1FdVcjo?=
- =?us-ascii?Q?ExfLabg1a/zAkF9Jexm/xdjR4ksawnbO6kvQKUqSQG0RpdktHcyd639dXpMf?=
- =?us-ascii?Q?LL3A0FFsCUXAhaCcQUYtIZ2oSzbyI6tt4yqq8SNDFbKx7AKKhk+6moaEx1E+?=
- =?us-ascii?Q?zWC7/maV8irSk1XSAVhM4XjpUu8WrZNwCo17MZlXrE6Kf4nSlQ00CQe2Rz5/?=
- =?us-ascii?Q?VyvZa1RqT/m42NrbvbnR17eddDyaXxk5KEbu37rw1QWQYgb/Gzfcj+wkGu4r?=
- =?us-ascii?Q?FAa7n4+VgqzXYzfguXg=3D?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0fec61a3-506b-441f-0275-08dab5de00ff
-X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Oct 2022 16:37:13.3550
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: M08JolLSTvc/mpUbbK/5pFVHM/zVSM/eOfwLc7op140A/TyaKEMEkxMK7/WMGLcq
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB4238
+Content-Type: text/plain; charset=iso-8859-1; format=flowed
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Fri, Oct 21, 2022 at 09:43:58PM -0400, Jason A. Donenfeld wrote:
-> Hey everyone,
-> 
-> Here's the second and final tranche of tree-wide conversions to get
-> random integer handling a bit tamer. It's predominantly another
-> Coccinelle-based patchset.
-> 
-> First we s/prandom_u32_max/get_random_u32_below/, since the former is
-> just a deprecated alias for the latter. Then in the next commit we can
-> remove prandom_u32_max all together. I'm quite happy about finally being
-> able to do that. It means that prandom.h is now only for deterministic and 
-> repeatable randomness, not non-deterministic/cryptographic randomness.
-> That line is no longer blurred.
-> 
-> Then, in order to clean up a bunch of inefficient patterns, we introduce
-> two trivial static inline helper functions built on top of
-> get_random_u32_below: get_random_u32_above and get_random_u32_between.
-> These are pretty straight forward to use and understand. Then the final
-> two patches convert some gnarly open-coded number juggling to use these
-> helpers.
-> 
-> I've used Coccinelle for all the treewide patches, so hopefully review
-> is rather uneventful. I didn't accept all of the changes that Coccinelle
-> proposed, though, as these tend to be somewhat context-specific. I erred
-> on the side of just going with the most obvious cases, at least this
-> time through. And then we can address more complicated cases through
-> actual maintainer trees.
-> 
-> Since get_random_u32_below() sits in my random.git tree, these patches
-> too will flow through that same tree.
-> 
-For drivers/infiniband
 
-Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
 
-Jason
+Le lun. 24 oct. 2022 =E0 10:47:57 +0100, Paul Cercueil=20
+<paul@crapouillou.net> a =E9crit :
+> Hi Siarhei,
+>=20
+> Le lun. 24 oct. 2022 =E0 07:40:56 +0300, Siarhei Volkau=20
+> <lis8215@gmail.com> a =E9crit :
+>> Add support for the clocks provided by the CGU in the Ingenic JZ4755
+>> SoC.
+>>=20
+>> Signed-off-by: Siarhei Volkau <lis8215@gmail.com>
+>> ---
+>>  drivers/clk/ingenic/Kconfig      |  10 +
+>>  drivers/clk/ingenic/Makefile     |   1 +
+>>  drivers/clk/ingenic/jz4755-cgu.c | 346=20
+>> =7F+++++++++++++++++++++++++++++++
+>>  3 files changed, 357 insertions(+)
+>>  create mode 100644 drivers/clk/ingenic/jz4755-cgu.c
+>>=20
+>> diff --git a/drivers/clk/ingenic/Kconfig=20
+>> b/drivers/clk/ingenic/Kconfig
+>> index 898f1bc47..f80ac4f29 100644
+>> --- a/drivers/clk/ingenic/Kconfig
+>> +++ b/drivers/clk/ingenic/Kconfig
+>> @@ -15,6 +15,16 @@ config INGENIC_CGU_JZ4740
+>>=20
+>>  	  If building for a JZ4740 SoC, you want to say Y here.
+>>=20
+>> +config INGENIC_CGU_JZ4755
+>> +	bool "Ingenic JZ4755 CGU driver"
+>> +	default MACH_JZ4755
+>> +	select INGENIC_CGU_COMMON
+>> +	help
+>> +	  Support the clocks provided by the CGU hardware on Ingenic JZ4755
+>> +	  and compatible SoCs.
+>> +
+>> +	  If building for a JZ4755 SoC, you want to say Y here.
+>> +
+>>  config INGENIC_CGU_JZ4725B
+>>  	bool "Ingenic JZ4725B CGU driver"
+>>  	default MACH_JZ4725B
+>> diff --git a/drivers/clk/ingenic/Makefile=20
+>> =7Fb/drivers/clk/ingenic/Makefile
+>> index 9edfaf461..81d8e23c2 100644
+>> --- a/drivers/clk/ingenic/Makefile
+>> +++ b/drivers/clk/ingenic/Makefile
+>> @@ -1,6 +1,7 @@
+>>  # SPDX-License-Identifier: GPL-2.0-only
+>>  obj-$(CONFIG_INGENIC_CGU_COMMON)	+=3D cgu.o pm.o
+>>  obj-$(CONFIG_INGENIC_CGU_JZ4740)	+=3D jz4740-cgu.o
+>> +obj-$(CONFIG_INGENIC_CGU_JZ4755)	+=3D jz4755-cgu.o
+>>  obj-$(CONFIG_INGENIC_CGU_JZ4725B)	+=3D jz4725b-cgu.o
+>>  obj-$(CONFIG_INGENIC_CGU_JZ4760)	+=3D jz4760-cgu.o
+>>  obj-$(CONFIG_INGENIC_CGU_JZ4770)	+=3D jz4770-cgu.o
+>> diff --git a/drivers/clk/ingenic/jz4755-cgu.c=20
+>> =7Fb/drivers/clk/ingenic/jz4755-cgu.c
+>> new file mode 100644
+>> index 000000000..4f869efa7
+>> --- /dev/null
+>> +++ b/drivers/clk/ingenic/jz4755-cgu.c
+>> @@ -0,0 +1,346 @@
+>> +// SPDX-License-Identifier: GPL-2.0
+>> +/*
+>> + * Ingenic JZ4755 SoC CGU driver
+>> + * Heavily based on JZ4725b CGU driver
+>> + *
+>> + * Copyright (C) 2022 Siarhei Volkau
+>> + * Author: Siarhei Volkau <lis8215@gmail.com>
+>> + */
+>> +
+>> +#include <linux/clk-provider.h>
+>> +#include <linux/delay.h>
+>> +#include <linux/of.h>
+>> +
+>> +#include <dt-bindings/clock/ingenic,jz4755-cgu.h>
+>> +
+>> +#include "cgu.h"
+>> +#include "pm.h"
+>> +
+>> +/* CGU register offsets */
+>> +#define CGU_REG_CPCCR		0x00
+>> +#define CGU_REG_LCR		0x04
+>> +#define CGU_REG_CPPCR		0x10
+>> +#define CGU_REG_CLKGR		0x20
+>> +#define CGU_REG_OPCR		0x24
+>> +#define CGU_REG_I2SCDR		0x60
+>> +#define CGU_REG_LPCDR		0x64
+>> +#define CGU_REG_MSCCDR		0x68
+>> +#define CGU_REG_SSICDR		0x74
+>> +#define CGU_REG_CIMCDR		0x7C
+>> +
+>> +/* bits within the LCR register */
+>> +#define LCR_SLEEP		BIT(0)
+>> +
+>> +static struct ingenic_cgu *cgu;
+>> +
+>> +static const s8 pll_od_encoding[4] =3D {
+>> +	0x0, 0x1, -1, 0x3,
+>> +};
+>> +
+>> +static const u8 jz4755_cgu_cpccr_div_table[] =3D {
+>> +	1, 2, 3, 4, 6, 8,
+>> +};
+>> +
+>> +static const u8 jz4755_cgu_pll_half_div_table[] =3D {
+>> +	2, 1,
+>> +};
+>> +
+>> +static const struct ingenic_cgu_clk_info jz4755_cgu_clocks[] =3D {
+>> +
+>> +	/* External clocks */
+>> +
+>> +	[JZ4755_CLK_EXT] =3D { "ext", CGU_CLK_EXT },
+>> +	[JZ4755_CLK_OSC32K] =3D { "osc32k", CGU_CLK_EXT },
+>> +
+>> +	[JZ4755_CLK_PLL] =3D {
+>> +		"pll", CGU_CLK_PLL,
+>> +		.parents =3D { JZ4755_CLK_EXT, -1, -1, -1 },
+>=20
+> You don't have CGU_CLK_MUX so you only have one parent, therefore you=20
+> can do:
+>=20
+> .parents =3D { JZ4755_CLK_EXT, },
+>=20
+> Sorry for not noticing it before.
+>=20
+> Same for all the other appearances below.
+>=20
+>> +		.pll =3D {
+>> +			.reg =3D CGU_REG_CPPCR,
+>> +			.rate_multiplier =3D 1,
+>> +			.m_shift =3D 23,
+>> +			.m_bits =3D 9,
+>> +			.m_offset =3D 2,
+>> +			.n_shift =3D 18,
+>> +			.n_bits =3D 5,
+>> +			.n_offset =3D 2,
+>> +			.od_shift =3D 16,
+>> +			.od_bits =3D 2,
+>> +			.od_max =3D 4,
+>> +			.od_encoding =3D pll_od_encoding,
+>> +			.stable_bit =3D 10,
+>> +			.bypass_reg =3D CGU_REG_CPPCR,
+>> +			.bypass_bit =3D 9,
+>> +			.enable_bit =3D 8,
+>> +		},
+>> +	},
+>> +
+>> +	/* Muxes & dividers */
+>> +
+>> +	[JZ4755_CLK_PLL_HALF] =3D {
+>> +		"pll half", CGU_CLK_DIV,
+>> +		.parents =3D { JZ4755_CLK_PLL, -1, -1, -1 },
+>> +		.div =3D {
+>> +			CGU_REG_CPCCR, 21, 1, 1, -1, -1, -1, 0,
+>> +			jz4755_cgu_pll_half_div_table,
+>> +		},
+>> +	},
+>> +
+>> +	[JZ4755_CLK_EXT_HALF] =3D {
+>> +		"ext half", CGU_CLK_DIV,
+>> +		.parents =3D { JZ4755_CLK_EXT, -1, -1, -1 },
+>> +		.div =3D {
+>> +			CGU_REG_CPCCR, 30, 1, 1, -1, -1, -1, 0,
+>> +			NULL,
+>> +		},
+>> +	},
+>> +
+>> +	[JZ4755_CLK_CCLK] =3D {
+>> +		"cclk", CGU_CLK_DIV,
+>> +		.parents =3D { JZ4755_CLK_PLL, -1, -1, -1 },
+>> +		.div =3D {
+>> +			CGU_REG_CPCCR, 0, 1, 4, 22, -1, -1, 0,
+>> +			jz4755_cgu_cpccr_div_table,
+>> +		},
+>> +	},
+>> +
+>> +	[JZ4755_CLK_H0CLK] =3D {
+>> +		"hclk", CGU_CLK_DIV,
+>> +		.parents =3D { JZ4755_CLK_PLL, -1, -1, -1 },
+>> +		.div =3D {
+>> +			CGU_REG_CPCCR, 4, 1, 4, 22, -1, -1, 0,
+>> +			jz4755_cgu_cpccr_div_table,
+>> +		},
+>> +	},
+>> +
+>> +	[JZ4755_CLK_PCLK] =3D {
+>> +		"pclk", CGU_CLK_DIV,
+>> +		.parents =3D { JZ4755_CLK_PLL, -1, -1, -1 },
+>> +		.div =3D {
+>> +			CGU_REG_CPCCR, 8, 1, 4, 22, -1, -1, 0,
+>> +			jz4755_cgu_cpccr_div_table,
+>> +		},
+>> +	},
+>> +
+>> +	[JZ4755_CLK_MCLK] =3D {
+>> +		"mclk", CGU_CLK_DIV,
+>> +		.parents =3D { JZ4755_CLK_PLL, -1, -1, -1 },
+>> +		.div =3D {
+>> +			CGU_REG_CPCCR, 12, 1, 4, 22, -1, -1, 0,
+>> +			jz4755_cgu_cpccr_div_table,
+>> +		},
+>> +	},
+>> +
+>> +	[JZ4755_CLK_H1CLK] =3D {
+>> +		"h1clk", CGU_CLK_DIV,
+>> +		.parents =3D { JZ4755_CLK_PLL, -1, -1, -1 },
+>> +		.div =3D {
+>> +			CGU_REG_CPCCR, 16, 1, 4, 22, -1, -1, 0,
+>> +			jz4755_cgu_cpccr_div_table,
+>> +		},
+>> +	},
+>> +
+>> +	[JZ4755_CLK_UDC] =3D {
+>> +		"udc", CGU_CLK_MUX | CGU_CLK_DIV | CGU_CLK_GATE,
+>> +		.parents =3D { JZ4755_CLK_EXT_HALF, JZ4755_CLK_PLL_HALF, -1, -1 },
+>=20
+> For "mux" clocks, if there's only one mux bit, then you can do:
+>=20
+> .parents =3D { JZ4755_CLK_EXT_HALF, JZ4755_CLK_PLL_HALF, },
+>=20
+> Same below.
+>=20
+>> +		.mux =3D { CGU_REG_CPCCR, 29, 1 },
+>> +		.div =3D { CGU_REG_CPCCR, 23, 1, 6, -1, -1, -1 },
+>> +		.gate =3D { CGU_REG_CLKGR, 10 },
+>> +	},
+>> +
+>> +	[JZ4755_CLK_LCD] =3D {
+>> +		"lcd", CGU_CLK_DIV | CGU_CLK_GATE,
+>> +		.parents =3D { JZ4755_CLK_PLL_HALF, -1, -1, -1 },
+>> +		.div =3D { CGU_REG_LPCDR, 0, 1, 11, -1, -1, -1 },
+>> +		.gate =3D { CGU_REG_CLKGR, 9 },
+>> +	},
+>> +
+>> +	[JZ4755_CLK_MMC] =3D {
+>> +		"mmc", CGU_CLK_DIV,
+>> +		.parents =3D { JZ4755_CLK_PLL_HALF, -1, -1, -1 },
+>> +		.div =3D { CGU_REG_MSCCDR, 0, 1, 5, -1, -1, -1 },
+>> +	},
+>> +
+>> +	[JZ4755_CLK_I2S] =3D {
+>> +		"i2s", CGU_CLK_MUX | CGU_CLK_DIV,
+>> +		.parents =3D { JZ4755_CLK_EXT_HALF, JZ4755_CLK_PLL_HALF, -1, -1 },
+>> +		.mux =3D { CGU_REG_CPCCR, 31, 1 },
+>> +		.div =3D { CGU_REG_I2SCDR, 0, 1, 9, -1, -1, -1 },
+>> +	},
+>> +
+>> +	[JZ4755_CLK_SPI] =3D {
+>> +		"spi", CGU_CLK_DIV | CGU_CLK_GATE,
+>> +		.parents =3D { JZ4755_CLK_PLL_HALF, -1, -1, -1 },
+>> +		.div =3D { CGU_REG_SSICDR, 0, 1, 4, -1, -1, -1 },
+>> +		.gate =3D { CGU_REG_CLKGR, 4 },
+>> +	},
+>> +
+>> +	[JZ4755_CLK_TVE] =3D {
+>> +		"tve", CGU_CLK_MUX | CGU_CLK_GATE,
+>> +		.parents =3D { JZ4755_CLK_LCD, JZ4755_CLK_EXT, -1, -1 },
+>> +		.mux =3D { CGU_REG_LPCDR, 31, 1 },
+>> +		.gate =3D { CGU_REG_CLKGR, 18 },
+>> +	},
+>> +
+>> +	[JZ4755_CLK_RTC] =3D {
+>> +		"rtc", CGU_CLK_MUX | CGU_CLK_GATE,
+>> +		.parents =3D { JZ4755_CLK_EXT512, JZ4755_CLK_OSC32K, -1, -1 },
+>> +		.mux =3D { CGU_REG_OPCR, 2, 1},
+>> +		.gate =3D { CGU_REG_CLKGR, 2 },
+>> +	},
+>> +
+>> +	[JZ4755_CLK_CIM] =3D {
+>> +		"cim", CGU_CLK_DIV | CGU_CLK_GATE,
+>> +		.parents =3D { JZ4755_CLK_PLL_HALF, -1, -1, -1 },
+>> +		.div =3D { CGU_REG_CIMCDR, 0, 1, 8, -1, -1, -1 },
+>> +		.gate =3D { CGU_REG_CLKGR, 8 },
+>> +	},
+>> +
+>> +	/* Gate-only clocks */
+>> +
+>> +	[JZ4755_CLK_UART0] =3D {
+>> +		"uart0", CGU_CLK_GATE,
+>> +		.parents =3D { JZ4755_CLK_EXT_HALF, -1, -1, -1 },
+>> +		.gate =3D { CGU_REG_CLKGR, 0 },
+>> +	},
+>> +
+>> +	[JZ4755_CLK_UART1] =3D {
+>> +		"uart1", CGU_CLK_GATE,
+>> +		.parents =3D { JZ4755_CLK_EXT_HALF, -1, -1, -1 },
+>> +		.gate =3D { CGU_REG_CLKGR, 14 },
+>> +	},
+>> +
+>> +	[JZ4755_CLK_UART2] =3D {
+>> +		"uart2", CGU_CLK_GATE,
+>> +		.parents =3D { JZ4755_CLK_EXT_HALF, -1, -1, -1 },
+>> +		.gate =3D { CGU_REG_CLKGR, 15 },
+>> +	},
+>> +
+>> +	[JZ4755_CLK_ADC] =3D {
+>> +		"adc", CGU_CLK_GATE,
+>> +		.parents =3D { JZ4755_CLK_EXT_HALF, -1, -1, -1 },
+>> +		.gate =3D { CGU_REG_CLKGR, 7 },
+>> +	},
+>> +
+>> +	[JZ4755_CLK_AIC] =3D {
+>> +		"aic", CGU_CLK_GATE,
+>> +		.parents =3D { JZ4755_CLK_EXT_HALF, -1, -1, -1 },
+>> +		.gate =3D { CGU_REG_CLKGR, 5 },
+>> +	},
+>> +
+>> +	[JZ4755_CLK_I2C] =3D {
+>> +		"i2c", CGU_CLK_GATE,
+>> +		.parents =3D { JZ4755_CLK_EXT_HALF, -1, -1, -1 },
+>> +		.gate =3D { CGU_REG_CLKGR, 3 },
+>> +	},
+>> +
+>> +	[JZ4755_CLK_BCH] =3D {
+>> +		"bch", CGU_CLK_GATE,
+>> +		.parents =3D { JZ4755_CLK_MCLK/* not sure */, -1, -1, -1 },
+>> +		.gate =3D { CGU_REG_CLKGR, 11 },
+>> +	},
+>> +
+>> +	[JZ4755_CLK_TCU] =3D {
+>> +		"tcu", CGU_CLK_GATE,
+>> +		.parents =3D { JZ4755_CLK_EXT, -1, -1, -1 },
+>> +		.gate =3D { CGU_REG_CLKGR, 1 },
+>> +	},
+>> +
+>> +	[JZ4755_CLK_DMA] =3D {
+>> +		"dma", CGU_CLK_GATE,
+>> +		.parents =3D { JZ4755_CLK_PCLK, -1, -1, -1 },
+>> +		.gate =3D { CGU_REG_CLKGR, 12 },
+>> +	},
+>> +
+>> +	[JZ4755_CLK_MMC0] =3D {
+>> +		"mmc0", CGU_CLK_GATE,
+>> +		.parents =3D { JZ4755_CLK_MMC, -1, -1, -1 },
+>> +		.gate =3D { CGU_REG_CLKGR, 6 },
+>> +	},
+>> +
+>> +	[JZ4755_CLK_MMC1] =3D {
+>> +		"mmc1", CGU_CLK_GATE,
+>> +		.parents =3D { JZ4755_CLK_MMC, -1, -1, -1 },
+>> +		.gate =3D { CGU_REG_CLKGR, 16 },
+>> +	},
+>> +
+>> +	[JZ4755_CLK_AUX_CPU] =3D {
+>> +		"aux_cpu", CGU_CLK_GATE,
+>> +		.parents =3D { JZ4755_CLK_H1CLK, -1, -1, -1 },
+>> +		.gate =3D { CGU_REG_CLKGR, 24 },
+>> +	},
+>> +
+>> +	[JZ4755_CLK_AHB1] =3D {
+>> +		"ahb1", CGU_CLK_GATE,
+>> +		.parents =3D { JZ4755_CLK_H1CLK, -1, -1, -1 },
+>> +		.gate =3D { CGU_REG_CLKGR, 23 },
+>> +	},
+>> +
+>> +	[JZ4755_CLK_IDCT] =3D {
+>> +		"idct", CGU_CLK_GATE,
+>> +		.parents =3D { JZ4755_CLK_H1CLK, -1, -1, -1 },
+>> +		.gate =3D { CGU_REG_CLKGR, 22 },
+>> +	},
+>> +
+>> +	[JZ4755_CLK_DB] =3D {
+>> +		"db", CGU_CLK_GATE,
+>> +		.parents =3D { JZ4755_CLK_H1CLK, -1, -1, -1 },
+>> +		.gate =3D { CGU_REG_CLKGR, 21 },
+>> +	},
+>> +
+>> +	[JZ4755_CLK_ME] =3D {
+>> +		"me", CGU_CLK_GATE,
+>> +		.parents =3D { JZ4755_CLK_H1CLK, -1, -1, -1 },
+>> +		.gate =3D { CGU_REG_CLKGR, 20 },
+>> +	},
+>> +
+>> +	[JZ4755_CLK_MC] =3D {
+>> +		"mc", CGU_CLK_GATE,
+>> +		.parents =3D { JZ4755_CLK_H1CLK, -1, -1, -1 },
+>> +		.gate =3D { CGU_REG_CLKGR, 19 },
+>> +	},
+>> +
+>> +	[JZ4755_CLK_TSSI] =3D {
+>> +		"tssi", CGU_CLK_GATE,
+>> +		.parents =3D { JZ4755_CLK_EXT_HALF/* not sure */, -1, -1, -1 },
+>> +		.gate =3D { CGU_REG_CLKGR, 17 },
+>> +	},
+>> +
+>> +	[JZ4755_CLK_IPU] =3D {
+>> +		"ipu", CGU_CLK_GATE,
+>> +		.parents =3D { JZ4755_CLK_PLL_HALF/* not sure */, -1, -1, -1 },
+>> +		.gate =3D { CGU_REG_CLKGR, 13 },
+>> +	},
+>> +
+>> +	[JZ4755_CLK_EXT512] =3D {
+>> +		"ext/512", CGU_CLK_FIXDIV,
+>> +		.parents =3D { JZ4755_CLK_EXT },
+>> +
+>> +		.fixdiv =3D { 512 },
+>> +	},
+>> +
+>> +	[JZ4755_CLK_UDC_PHY] =3D {
+>> +		"udc_phy", CGU_CLK_GATE,
+>> +		.parents =3D { JZ4755_CLK_EXT_HALF, -1, -1, -1 },
+>> +		.gate =3D { CGU_REG_OPCR, 6, true },
+>> +	},
+>> +};
+>> +
+>> +static void __init jz4755_cgu_init(struct device_node *np)
+>> +{
+>> +	int retval;
+>> +
+>> +	cgu =3D ingenic_cgu_new(jz4755_cgu_clocks,
+>> +			      ARRAY_SIZE(jz4755_cgu_clocks), np);
+>> +	if (!cgu) {
+>> +		pr_err("%s: failed to initialise CGU\n", __func__);
+>=20
+> initialise -> initialize
+
+Nevermind - "initialise" is correct, it's just the GB spelling while=20
+"initialize" is the US spelling. So I don't mind.
+
+Cheers,
+-Paul
+
+>> +		return;
+>> +	}
+>> +
+>> +	retval =3D ingenic_cgu_register_clocks(cgu);
+>> +	if (retval)
+>> +		pr_err("%s: failed to register CGU Clocks\n", __func__);
+>> +
+>> +	ingenic_cgu_register_syscore_ops(cgu);
+>> +}
+>> +CLK_OF_DECLARE_DRIVER(jz4755_cgu, "ingenic,jz4755-cgu",=20
+>> =7Fjz4755_cgu_init);
+>> --
+>> 2.36.1
+>>=20
+>=20
+
+

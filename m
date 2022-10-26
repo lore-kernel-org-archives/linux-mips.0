@@ -2,193 +2,292 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0FCC3ECDFA1
-	for <linux-mips@archiver.kernel.org>; Wed, 26 Oct 2022 19:45:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 24B6FC433FE
+	for <linux-mips@archiver.kernel.org>; Wed, 26 Oct 2022 22:43:41 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235188AbiJZTpj (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 26 Oct 2022 15:45:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40064 "EHLO
+        id S233880AbiJZWnj (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 26 Oct 2022 18:43:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54404 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235042AbiJZTox (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 26 Oct 2022 15:44:53 -0400
-Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4A0A11A952;
-        Wed, 26 Oct 2022 12:44:09 -0700 (PDT)
-Received: by mail-wr1-x434.google.com with SMTP id g12so15407491wrs.10;
-        Wed, 26 Oct 2022 12:44:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=lE6azSuCc8EUqYAerwdd+9S9IPnt0PRo5gKWCPKCQOE=;
-        b=ILlvEt429LwkbGO7/in9jQqADis59od+azklEB/jfc98bCoKyKuCmRAB34MdGZh3Gy
-         GsgNolEvGZSn5+u9LCTFWB9++W/XgkzyPw4cmH9DsVp90wuUTnEVtKkcc9YU+J377YpT
-         eqAvzFFboYQDMh8TcHonaYtS1rRU3vq4AHd/MGTb1RNwCGR6TwMbN1IBJ9sLQ33M72j3
-         dpPQbC4+nlKDsJ2hfrwJKonBiuswwB9w6Tzv/xTQ+Tf/ye5EM/0npCwKA2dCjHgAxyHN
-         /e4jS5lSyyP+uuFIcYw3Zdqv/u7Bw4fJZJDK8jB+DBeNEOdrE+wXW5ITSYgMwzPIe1DM
-         OC1w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=lE6azSuCc8EUqYAerwdd+9S9IPnt0PRo5gKWCPKCQOE=;
-        b=oVtjCt5bhubIlQWQEuxyUTbTDviMVYrsGQ4/4HtOAclu6xVwIerGVjPlEuofu9Pfn7
-         sr6uESrU3isVgQU8o+xlCm1z9yuMe6thRsGV0aNyfGhGPlM0Wqy2uRksicM18bIPeUhs
-         3qGsiGgFofK8c1S6BVs+wzH4EEbcRMD/L8y1iE/SWd1N3L83Axk02ukOmxY4Fepmw3z4
-         VvnU0zJ+1A7pAzodm5jquiSyMwaJq6ZDJBEEVaPbgQdn/Y4Dj7uIMMIOx4V25mxUlieJ
-         dPldgtPei7va/hjARIGL6SdWsB+/O0uIlOePSl1+9w5vMis926mHzPjKf/s1d5TqwzSk
-         2/ZQ==
-X-Gm-Message-State: ACrzQf0T2eXTBmcDtpx5kz6H2Po6U9fO2VVTA7ibOPEjGzi9p6igalqg
-        LEigoob2goAdTNi3LP7Yzs6NLtcLg/BaKg==
-X-Google-Smtp-Source: AMsMyM511lGpmOXeONGG6kS8SqTMVn2idkGvd3tr8ncWeQZJNJEg4ixEBKlWP3ybfFlreWNz8mSduQ==
-X-Received: by 2002:a5d:6488:0:b0:22b:3b0b:5e72 with SMTP id o8-20020a5d6488000000b0022b3b0b5e72mr30550771wri.138.1666813437470;
-        Wed, 26 Oct 2022 12:43:57 -0700 (PDT)
-Received: from localhost (188.28.0.84.threembb.co.uk. [188.28.0.84])
-        by smtp.gmail.com with ESMTPSA id m12-20020a05600c3b0c00b003b47ff307e1sm2754724wms.31.2022.10.26.12.43.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 26 Oct 2022 12:43:57 -0700 (PDT)
-From:   Aidan MacDonald <aidanmacdonald.0x0@gmail.com>
-To:     paul@crapouillou.net, mturquette@baylibre.com, sboyd@kernel.org,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org
-Cc:     zhouyu@wanyeetech.com, linux-mips@vger.kernel.org,
-        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2 5/6] clk: ingenic: Add X1000 audio clocks
-Date:   Wed, 26 Oct 2022 20:43:44 +0100
-Message-Id: <20221026194345.243007-6-aidanmacdonald.0x0@gmail.com>
-In-Reply-To: <20221026194345.243007-1-aidanmacdonald.0x0@gmail.com>
-References: <20221026194345.243007-1-aidanmacdonald.0x0@gmail.com>
+        with ESMTP id S233747AbiJZWnc (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 26 Oct 2022 18:43:32 -0400
+Received: from tarta.nabijaczleweli.xyz (unknown [139.28.40.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 88CCC13738E;
+        Wed, 26 Oct 2022 15:43:08 -0700 (PDT)
+Received: from tarta.nabijaczleweli.xyz (unknown [192.168.1.250])
+        by tarta.nabijaczleweli.xyz (Postfix) with ESMTPSA id D461F482E;
+        Thu, 27 Oct 2022 00:43:07 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=nabijaczleweli.xyz;
+        s=202205; t=1666824187;
+        bh=HaE4IXPdx+zXOUMr9BZGgBKqpp/SrgiEjg+jSxW76Go=;
+        h=Date:From:Cc:Subject:References:In-Reply-To:From;
+        b=L7s6hrXXlym5v2if6/tEycFPoqI7Ro7ohFfsKomakdmG0J7ZyvgXdkDpK/SMEinzO
+         KeXJK9Vu2EtbZtz8jxjcsargnEPo/dHpEdiY5U1kXH+3GpAG/aIS3S3krb53d/GAlO
+         5fjo5xLuteBo6whwP+ZJfaocxoQ1Nhl971iFDlz1gyvEY2yh2zdrRoWyQjqFgEzRu7
+         55ppghfsJBwtQ4UBbi/EyNWxtm/bVNFfrGLRV9Uu1A/zK17dNAZdYRxtv5BnHTdYYX
+         LOdO0u12AtRvyb4u6DEWdzJBBGn/1kyvd5PWkfJxo9na4FdSyFL5/V5RfDDivx9bWL
+         2JBbtsqpiFnHLzUrKUorhBRRoKIINkRUYjgIsnoqHEuOtseWNlcNYxnniNuJvtjSJX
+         6e9GMoAwSbkU7lHGgfnUDqGXNSqE+fNBG8jWBNTqYW1VTd+Ruei4FlAEDB8HhSYaOg
+         xr5+je/zhxRGrUiE3IMo8rFfaFlJOY1L3/t7r3X+B2b4TxIpzLN9B+WO4KXm6NqDM8
+         cXSMAcSpJ0I3SKi9AI9gYYC5sfuISR3G0D4gqXZ6n93TPxqfNQ89PbpzFn7Ngh3OLu
+         DBczps3Sbl8ssmF/2rgaKZJqVLuFTRzd6BEhZrvc6V6s7gyhAxnD4mnRC30EGAoKdl
+         iDPQuNFEhLwm84Vs4ZpjqkBg=
+Date:   Thu, 27 Oct 2022 00:43:06 +0200
+From:   =?utf-8?B?0L3QsNCx?= <nabijaczleweli@nabijaczleweli.xyz>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Federico Vaga <federico.vaga@vaga.pv.it>,
+        Alex Shi <alexs@kernel.org>,
+        Yanteng Si <siyanteng@loongson.cn>,
+        Hu Haowen <src.res@email.cn>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-doc-tw-discuss@lists.sourceforge.net,
+        linux-mips@vger.kernel.org
+Subject: [PATCH 07/15] MIPS: IP27: clean out sn/nmi.h
+Message-ID: <08c138e14f71c207c4428df9fd31154744be9d98.1666822928.git.nabijaczleweli@nabijaczleweli.xyz>
+References: <9a453437b5c3b4b1887c1bd84455b0cc3d1c40b2.1666822928.git.nabijaczleweli@nabijaczleweli.xyz>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="q6cphbowxihuyvxx"
+Content-Disposition: inline
+In-Reply-To: <9a453437b5c3b4b1887c1bd84455b0cc3d1c40b2.1666822928.git.nabijaczleweli@nabijaczleweli.xyz>
+User-Agent: NeoMutt/20220429
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-The X1000's CGU supplies the I2S system clock to the AIC module
-and ultimately the audio codec, represented by the "i2s" clock.
-It is a simple mux which can either pass through EXCLK or a PLL
-multiplied by a fractional divider (the "i2s_pll" clock).
 
-The AIC contains a separate 1/N divider controlled by the I2S
-driver, which generates the bit clock from the system clock.
-The frame clock is always fixed to 1/64th of the bit clock.
+--q6cphbowxihuyvxx
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Aidan MacDonald <aidanmacdonald.0x0@gmail.com>
+The only user is arch/mips/sgi-ip27/ip27-nmi.c;
+this file was imported wholesale in 2.3.99pre9-1,
+and received only whitespace updates since then
+
+NMI_MAGIC isn't a magic number; it's unclear if it's actually used
+by the firmware in some capacity or if it's a holdover from copying
+the SGI code, but in the former case it's API
+and in the latter it's dead cruft
+
+Lack of QEMU support makes this unvalidatable without the hardware,
+so leave it in
+
+Signed-off-by: Ahelenia Ziemia=C5=84ska <nabijaczleweli@nabijaczleweli.xyz>
 ---
-v1 -> v2:
-* Fix I2SCDR1 refresh to ensure the register is properly initialized
-  and we don't rely on the reset value. Since the I2SDIV_D field can
-  be automatically calculated by the hardware we don't need to provide
-  it, writing 0 triggers the auto calculation.
-* Remove redundant -1 entries from parent clocks.
+ Documentation/process/magic-number.rst        |  1 -
+ .../it_IT/process/magic-number.rst            |  1 -
+ .../zh_CN/process/magic-number.rst            |  1 -
+ .../zh_TW/process/magic-number.rst            |  1 -
+ arch/mips/include/asm/sn/nmi.h                | 60 -------------------
+ 5 files changed, 64 deletions(-)
 
- drivers/clk/ingenic/x1000-cgu.c | 70 +++++++++++++++++++++++++++++++++
- 1 file changed, 70 insertions(+)
-
-diff --git a/drivers/clk/ingenic/x1000-cgu.c b/drivers/clk/ingenic/x1000-cgu.c
-index b2ce3fb83f54..95d5e3a44cee 100644
---- a/drivers/clk/ingenic/x1000-cgu.c
-+++ b/drivers/clk/ingenic/x1000-cgu.c
-@@ -8,6 +8,7 @@
- #include <linux/delay.h>
- #include <linux/io.h>
- #include <linux/of.h>
-+#include <linux/rational.h>
- 
- #include <dt-bindings/clock/ingenic,x1000-cgu.h>
- 
-@@ -168,6 +169,38 @@ static const struct clk_ops x1000_otg_phy_ops = {
- 	.is_enabled	= x1000_usb_phy_is_enabled,
+diff --git a/Documentation/process/magic-number.rst b/Documentation/process=
+/magic-number.rst
+index 62a3a2113e7c..7dada7abc733 100644
+--- a/Documentation/process/magic-number.rst
++++ b/Documentation/process/magic-number.rst
+@@ -76,5 +76,4 @@ KV_MAGIC              0x5f4b565f       kernel_vars_s     =
+       ``arch/mips/incl
+ CCB_MAGIC             0xf2691ad2       ccb                      ``drivers/=
+scsi/ncr53c8xx.c``
+ QUEUE_MAGIC_FREE      0xf7e1c9a3       queue_entry              ``drivers/=
+scsi/arm/queue.c``
+ QUEUE_MAGIC_USED      0xf7e1cc33       queue_entry              ``drivers/=
+scsi/arm/queue.c``
+-NMI_MAGIC             0x48414d4d455201 nmi_s                    ``arch/mip=
+s/include/asm/sn/nmi.h``
+ =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D =3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D
+diff --git a/Documentation/translations/it_IT/process/magic-number.rst b/Do=
+cumentation/translations/it_IT/process/magic-number.rst
+index b20a54ee6fb2..f9634a04d349 100644
+--- a/Documentation/translations/it_IT/process/magic-number.rst
++++ b/Documentation/translations/it_IT/process/magic-number.rst
+@@ -82,5 +82,4 @@ KV_MAGIC              0x5f4b565f       kernel_vars_s     =
+       ``arch/mips/incl
+ CCB_MAGIC             0xf2691ad2       ccb                      ``drivers/=
+scsi/ncr53c8xx.c``
+ QUEUE_MAGIC_FREE      0xf7e1c9a3       queue_entry              ``drivers/=
+scsi/arm/queue.c``
+ QUEUE_MAGIC_USED      0xf7e1cc33       queue_entry              ``drivers/=
+scsi/arm/queue.c``
+-NMI_MAGIC             0x48414d4d455201 nmi_s                    ``arch/mip=
+s/include/asm/sn/nmi.h``
+ =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D =3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D
+diff --git a/Documentation/translations/zh_CN/process/magic-number.rst b/Do=
+cumentation/translations/zh_CN/process/magic-number.rst
+index e7781ab923f7..966b9e6b1a46 100644
+--- a/Documentation/translations/zh_CN/process/magic-number.rst
++++ b/Documentation/translations/zh_CN/process/magic-number.rst
+@@ -65,5 +65,4 @@ KV_MAGIC              0x5f4b565f       kernel_vars_s     =
+       ``arch/mips/incl
+ CCB_MAGIC             0xf2691ad2       ccb                      ``drivers/=
+scsi/ncr53c8xx.c``
+ QUEUE_MAGIC_FREE      0xf7e1c9a3       queue_entry              ``drivers/=
+scsi/arm/queue.c``
+ QUEUE_MAGIC_USED      0xf7e1cc33       queue_entry              ``drivers/=
+scsi/arm/queue.c``
+-NMI_MAGIC             0x48414d4d455201 nmi_s                    ``arch/mip=
+s/include/asm/sn/nmi.h``
+ =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D =3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D
+diff --git a/Documentation/translations/zh_TW/process/magic-number.rst b/Do=
+cumentation/translations/zh_TW/process/magic-number.rst
+index 5cc0bfa97d9d..f3e87a6b3a01 100644
+--- a/Documentation/translations/zh_TW/process/magic-number.rst
++++ b/Documentation/translations/zh_TW/process/magic-number.rst
+@@ -68,5 +68,4 @@ KV_MAGIC              0x5f4b565f       kernel_vars_s     =
+       ``arch/mips/incl
+ CCB_MAGIC             0xf2691ad2       ccb                      ``drivers/=
+scsi/ncr53c8xx.c``
+ QUEUE_MAGIC_FREE      0xf7e1c9a3       queue_entry              ``drivers/=
+scsi/arm/queue.c``
+ QUEUE_MAGIC_USED      0xf7e1cc33       queue_entry              ``drivers/=
+scsi/arm/queue.c``
+-NMI_MAGIC             0x48414d4d455201 nmi_s                    ``arch/mip=
+s/include/asm/sn/nmi.h``
+ =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D =3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D
+diff --git a/arch/mips/include/asm/sn/nmi.h b/arch/mips/include/asm/sn/nmi.h
+index 12ac210f12a1..0bd9458fc804 100644
+--- a/arch/mips/include/asm/sn/nmi.h
++++ b/arch/mips/include/asm/sn/nmi.h
+@@ -10,8 +10,6 @@
+ #ifndef __ASM_SN_NMI_H
+ #define __ASM_SN_NMI_H
+=20
+-#include <asm/sn/addrs.h>
+-
+ /*
+  * The launch data structure resides at a fixed place in each node's memory
+  * and is used to communicate between the master processor and the slave
+@@ -29,14 +27,6 @@
+  */
+=20
+ #define NMI_MAGIC		0x48414d4d455201
+-#define NMI_SIZEOF		0x40
+-
+-#define NMI_OFF_MAGIC		0x00	/* Struct offsets for assembly	    */
+-#define NMI_OFF_FLAGS		0x08
+-#define NMI_OFF_CALL		0x10
+-#define NMI_OFF_CALLC		0x18
+-#define NMI_OFF_CALLPARM	0x20
+-#define NMI_OFF_GMASTER		0x28
+=20
+ /*
+  * The NMI routine is called only if the complement address is
+@@ -48,8 +38,6 @@
+  *
+  */
+=20
+-#ifndef __ASSEMBLY__
+-
+ typedef struct nmi_s {
+ 	volatile unsigned long	 magic;		/* Magic number */
+ 	volatile unsigned long	 flags;		/* Combination of flags above */
+@@ -59,14 +47,10 @@ typedef struct nmi_s {
+ 	volatile unsigned long	 gmaster;	/* Flag true only on global master*/
+ } nmi_t;
+=20
+-#endif /* !__ASSEMBLY__ */
+-
+ /* Following definitions are needed both in the prom & the kernel
+  * to identify the format of the nmi cpu register save area in the
+  * low memory on each node.
+  */
+-#ifndef __ASSEMBLY__
+-
+ struct reg_struct {
+ 	unsigned long	gpr[32];
+ 	unsigned long	sr;
+@@ -78,48 +62,4 @@ struct reg_struct {
+ 	unsigned long	nmi_sr;
  };
- 
-+static void
-+x1000_i2spll_calc_m_n_od(const struct ingenic_cgu_pll_info *pll_info,
-+			 unsigned long rate, unsigned long parent_rate,
-+			 unsigned int *pm, unsigned int *pn, unsigned int *pod)
-+{
-+	const unsigned long m_max = GENMASK(pll_info->m_bits - 1, 0);
-+	const unsigned long n_max = GENMASK(pll_info->n_bits - 1, 0);
-+	unsigned long m, n;
-+
-+	rational_best_approximation(rate, parent_rate, m_max, n_max, &m, &n);
-+
-+	/* n should not be less than 2*m */
-+	if (n < 2 * m)
-+		n = 2 * m;
-+
-+	*pm = m;
-+	*pn = n;
-+	*pod = 1;
-+}
-+
-+static void
-+x1000_i2spll_set_rate_hook(const struct ingenic_cgu_pll_info *pll_info,
-+			   unsigned long rate, unsigned long parent_rate)
-+{
-+	/*
-+	 * Writing 0 causes I2SCDR1.I2SDIV_D to be automatically recalculated
-+	 * based on the current value of I2SCDR.I2SDIV_N, which is needed for
-+	 * the divider to function correctly.
-+	 */
-+	writel(0, cgu->base + CGU_REG_I2SCDR1);
-+}
-+
- static const s8 pll_od_encoding[8] = {
- 	0x0, 0x1, -1, 0x2, -1, -1, -1, 0x3,
- };
-@@ -319,6 +352,37 @@ static const struct ingenic_cgu_clk_info x1000_cgu_clocks[] = {
- 		.gate = { CGU_REG_CLKGR, 25 },
- 	},
- 
-+	[X1000_CLK_I2SPLLMUX] = {
-+		"i2s_pll_mux", CGU_CLK_MUX,
-+		.parents = { X1000_CLK_SCLKA, X1000_CLK_MPLL },
-+		.mux = { CGU_REG_I2SCDR, 31, 1 },
-+	},
-+
-+	[X1000_CLK_I2SPLL] = {
-+		"i2s_pll", CGU_CLK_PLL,
-+		.parents = { X1000_CLK_I2SPLLMUX },
-+		.pll = {
-+			.reg = CGU_REG_I2SCDR,
-+			.rate_multiplier = 1,
-+			.m_shift = 13,
-+			.m_bits = 9,
-+			.n_shift = 0,
-+			.n_bits = 13,
-+			.calc_m_n_od = x1000_i2spll_calc_m_n_od,
-+			.set_rate_hook = x1000_i2spll_set_rate_hook,
-+		},
-+	},
-+
-+	[X1000_CLK_I2S] = {
-+		"i2s", CGU_CLK_MUX,
-+		.parents = { X1000_CLK_EXCLK, -1, -1, X1000_CLK_I2SPLL },
-+		/*
-+		 * NOTE: the mux is at bit 30; bit 29 enables the M/N divider.
-+		 * Therefore, the divider is disabled when EXCLK is selected.
-+		 */
-+		.mux = { CGU_REG_I2SCDR, 29, 2 },
-+	},
-+
- 	[X1000_CLK_LCD] = {
- 		"lcd", CGU_CLK_MUX | CGU_CLK_DIV | CGU_CLK_GATE,
- 		.parents = { X1000_CLK_SCLKA, X1000_CLK_MPLL },
-@@ -426,6 +490,12 @@ static const struct ingenic_cgu_clk_info x1000_cgu_clocks[] = {
- 		.gate = { CGU_REG_CLKGR, 9 },
- 	},
- 
-+	[X1000_CLK_AIC] = {
-+		"aic", CGU_CLK_GATE,
-+		.parents = { X1000_CLK_EXCLK },
-+		.gate = { CGU_REG_CLKGR, 11 },
-+	},
-+
- 	[X1000_CLK_UART0] = {
- 		"uart0", CGU_CLK_GATE,
- 		.parents = { X1000_CLK_EXCLK, -1, -1, -1 },
--- 
-2.38.1
+=20
+-#endif /* !__ASSEMBLY__ */
+-
+-/* These are the assembly language offsets into the reg_struct structure */
+-
+-#define R0_OFF		0x0
+-#define R1_OFF		0x8
+-#define R2_OFF		0x10
+-#define R3_OFF		0x18
+-#define R4_OFF		0x20
+-#define R5_OFF		0x28
+-#define R6_OFF		0x30
+-#define R7_OFF		0x38
+-#define R8_OFF		0x40
+-#define R9_OFF		0x48
+-#define R10_OFF		0x50
+-#define R11_OFF		0x58
+-#define R12_OFF		0x60
+-#define R13_OFF		0x68
+-#define R14_OFF		0x70
+-#define R15_OFF		0x78
+-#define R16_OFF		0x80
+-#define R17_OFF		0x88
+-#define R18_OFF		0x90
+-#define R19_OFF		0x98
+-#define R20_OFF		0xa0
+-#define R21_OFF		0xa8
+-#define R22_OFF		0xb0
+-#define R23_OFF		0xb8
+-#define R24_OFF		0xc0
+-#define R25_OFF		0xc8
+-#define R26_OFF		0xd0
+-#define R27_OFF		0xd8
+-#define R28_OFF		0xe0
+-#define R29_OFF		0xe8
+-#define R30_OFF		0xf0
+-#define R31_OFF		0xf8
+-#define SR_OFF		0x100
+-#define CAUSE_OFF	0x108
+-#define EPC_OFF		0x110
+-#define BADVA_OFF	0x118
+-#define ERROR_EPC_OFF	0x120
+-#define CACHE_ERR_OFF	0x128
+-#define NMISR_OFF	0x130
+-
+ #endif /* __ASM_SN_NMI_H */
+--=20
+2.30.2
 
+--q6cphbowxihuyvxx
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEfWlHToQCjFzAxEFjvP0LAY0mWPEFAmNZt/oACgkQvP0LAY0m
+WPEByg//aGGsurgOuyOl2qmidd3+pAyPAl6kHAwylZ3CmbxelkCo5/eHCOenUUWn
+XAncJgYXmI2662Q6JT8dOsoHO1azc/dsHGzCUw8leWiTaEbOBpy8bISxQtc31ip6
+zNCR+wuvpCRuQrBH+oeTErhyhUCzBcD4RA2D7qHahahM9P1J9Qu0mS5aJ69LwiyC
+RfiQqG5X4x3sLkbboljFR97hXKzCC5tNgN+soK5y1uytO8QnRIeWUeWWxhPagkuM
+mjDpTxycJYbs0DjqnlgwX87iKf1QTZXCNKZ/XbrhtYOrZQKakCqm16MvNY5TOBaT
+8rb8gf2H5nNCiCF7hI5buXYLao6ViWcdiN3U4MGjd+9fh+SMN4UqvxA9dYy+0GO1
+J+3dBASCpafr6zLeeHELuxHhcY9TH9zW53Ipeh9WkRn/59Uf3AcqxlXDW0OB0n3u
+K7uq5xXlk/XwnvDtFn6lHQOghafa5HBhGLPYcphPppgKvetKCwxFNsG4F0umfOlI
+xt6DVSfljagP/b/Vb98QsPcIVoFJF25RK2ebaaZtG+6G1Fzl7OW3MJnC2vwakEpA
+kCqW5x65HIChL0LL+MVSQoyZIx+WuQuNG5G0VRG9VUCfYiEQ5h47UWcAp8J3ZoRi
+Hw/6XqHPf0EBifwT7cORKoVOVXiFP9U8rKxXHXmFmbfPUF8NAWk=
+=F6wi
+-----END PGP SIGNATURE-----
+
+--q6cphbowxihuyvxx--

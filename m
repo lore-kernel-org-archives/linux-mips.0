@@ -2,130 +2,134 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4492CFA3740
-	for <linux-mips@archiver.kernel.org>; Thu, 27 Oct 2022 12:51:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CF0B8FA3744
+	for <linux-mips@archiver.kernel.org>; Thu, 27 Oct 2022 12:55:03 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235838AbiJ0MvS (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 27 Oct 2022 08:51:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46450 "EHLO
+        id S235836AbiJ0MzD (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 27 Oct 2022 08:55:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56338 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235615AbiJ0MvJ (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Thu, 27 Oct 2022 08:51:09 -0400
+        with ESMTP id S235574AbiJ0MzB (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Thu, 27 Oct 2022 08:55:01 -0400
 Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 527556112D;
-        Thu, 27 Oct 2022 05:51:07 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B99672338B;
+        Thu, 27 Oct 2022 05:54:57 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id DD0B4B82617;
-        Thu, 27 Oct 2022 12:51:05 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2197BC433B5;
-        Thu, 27 Oct 2022 12:51:04 +0000 (UTC)
-Authentication-Results: smtp.kernel.org;
-        dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="f2fM4ZDI"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zx2c4.com; s=20210105;
-        t=1666875062;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=7IPqLid7IqQX7xaoa0h3UH2jSWB/Ci1zDdeGKf+rIB4=;
-        b=f2fM4ZDIKnXv9bRiVzrnlRhFtoKYOKi38u+1Cjf/ikMv1QsfHYOElJmM6dvRgufqXkl07H
-        9KKLhchavXNOUhSIrwv/HWESXrTvH5RII6KF7ZQMjOLhPNo1KJeSFs2UyANZjdg5Yg1jjt
-        yAbOl8idgbB+CTcIVlmplwVG3rHCdqw=
-Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id 4aff23bd (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO);
-        Thu, 27 Oct 2022 12:51:01 +0000 (UTC)
-Date:   Thu, 27 Oct 2022 14:26:26 +0200
-From:   "Jason A. Donenfeld" <Jason@zx2c4.com>
-To:     =?utf-8?B?0L3QsNCx?= <nabijaczleweli@nabijaczleweli.xyz>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Federico Vaga <federico.vaga@vaga.pv.it>,
-        Alex Shi <alexs@kernel.org>,
-        Yanteng Si <siyanteng@loongson.cn>,
-        Hu Haowen <src.res@email.cn>,
+        by ams.source.kernel.org (Postfix) with ESMTPS id 768BAB82631;
+        Thu, 27 Oct 2022 12:54:56 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 21BACC433B5;
+        Thu, 27 Oct 2022 12:54:49 +0000 (UTC)
+From:   Huacai Chen <chenhuacai@loongson.cn>
+To:     Arnd Bergmann <arnd@arndb.de>, Huacai Chen <chenhuacai@kernel.org>,
         Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-doc-tw-discuss@lists.sourceforge.net,
-        linux-mips@vger.kernel.org
-Subject: Re: [PATCH 07/15] MIPS: IP27: clean out sn/nmi.h
-Message-ID: <Y1p48oJVBeUSrfC2@zx2c4.com>
-References: <9a453437b5c3b4b1887c1bd84455b0cc3d1c40b2.1666822928.git.nabijaczleweli@nabijaczleweli.xyz>
- <08c138e14f71c207c4428df9fd31154744be9d98.1666822928.git.nabijaczleweli@nabijaczleweli.xyz>
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Dinh Nguyen <dinguyen@kernel.org>
+Cc:     loongarch@lists.linux.dev, linux-arch@vger.kernel.org,
+        Xuefeng Li <lixuefeng@loongson.cn>,
+        Guo Ren <guoren@kernel.org>, Xuerui Wang <kernel@xen0n.name>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        Huacai Chen <chenhuacai@loongson.cn>,
+        Feiyang Chen <chenfeiyang@loongson.cn>
+Subject: [PATCH V14 0/4] mm/sparse-vmemmap: Generalise helpers and enable for LoongArch
+Date:   Thu, 27 Oct 2022 20:52:49 +0800
+Message-Id: <20221027125253.3458989-1-chenhuacai@loongson.cn>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <08c138e14f71c207c4428df9fd31154744be9d98.1666822928.git.nabijaczleweli@nabijaczleweli.xyz>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Hi,
+This series is in order to enable sparse-vmemmap for LoongArch. But
+LoongArch cannot use generic helpers directly because MIPS&LoongArch
+need to call pgd_init()/pud_init()/pmd_init() when populating page
+tables. So we adjust the prototypes of p?d_init() to make generic
+helpers can call them, then enable sparse-vmemmap with generic helpers,
+and to be further, generalise vmemmap_populate_hugepages() for ARM64,
+X86 and LoongArch.
 
-Thanks for working on this patchset. The magic-number.rst file has
-always kind of bothered me with its outdated encouragements to magic up
-every struct.
+V1 -> V2:
+Split ARCH_WANT_HUGETLB_PAGE_OPTIMIZE_VMEMMAP to a separate patch.
 
-Technically, this series seems okay. It'd be nice if somebody had some
-SGI hardware to figure out what NMI_MAGIC is all about, but that doesn't
-need to block removing it from magic-number.rst, so that
-magic-number.rst can be put to rest. Interestingly, though,
-0x48414d4d455201 is "HAMMER\x01". The only reference to it I could find
-on the Internet that wasn't this file itself was some forum on Intel
-stuff? https://www.eevblog.com/forum/microcontrollers/intel-bare-metal-programming/msg1273587/#msg1273587
-No idea.
+V2 -> V3:
+1, Change the Signed-off-by order of author and committer;
+2, Update commit message about the build error on LoongArch.
 
-Anyway, I suspect the actual issues that remain are mostly formalities,
-as others have mentioned:
+V3 -> V4:
+Change pmd to pmdp for ARM64 for consistency.
 
-1) Add a 00/15 cover letter that explains your intentions, and make sure
-   the "right people" are CC'd on that. Hard to say who that might be,
-   given how diverse this patchset is. Maybe Andrew Morton? Or Kees
-   Cook? No idea.
+V4 -> V5:
+Add a detailed comment for no-fallback in the altmap case.
 
-2) Fix up your commit messages:
+V5 -> V6:
+1, Fix build error for NIOS2;
+2, Fix build error for allnoconfig;
+3, Update comment for no-fallback in the altmap case.
 
-> The only user is arch/mips/sgi-ip27/ip27-nmi.c;
-> this file was imported wholesale in 2.3.99pre9-1,
-> and received only whitespace updates since then
-> 
-> NMI_MAGIC isn't a magic number; it's unclear if it's actually used
-> by the firmware in some capacity or if it's a holdover from copying
-> the SGI code, but in the former case it's API
-> and in the latter it's dead cruft
-> 
-> Lack of QEMU support makes this unvalidatable without the hardware,
-> so leave it in
+V6 -> V7:
+Fix build warnings of "no previous prototype".
 
-Add some trailing periods, and reformat this to have the usual
-alignment. `gq` in vim will do that for you. So for that message, it
-should become:
+V7 -> V8:
+Fix build error for MIPS pud_init().
 
-| The only user is arch/mips/sgi-ip27/ip27-nmi.c; this file was imported
-| wholesale in 2.3.99pre9-1, and received only whitespace updates since
-| then.
-| 
-| NMI_MAGIC isn't a magic number; it's unclear if it's actually used by
-| the firmware in some capacity or if it's a holdover from copying the
-| SGI code, but in the former case it's API and in the latter it's dead
-| cruft.
-| 
-| Lack of QEMU support makes this unvalidatable without the hardware, so
-| leave it in.
+V8 -> V9:
+Remove redundant #include to avoid build error with latest upstream
+kernel.
 
-3) Ensure the "From:" header of your email matches your Signed-off-by:
-   trailer.
+V9 -> V10:
+Fix build error due to VMEMMAP changes in 6.0-rc1.
 
-4) Use "Link: " instead of "Ref: ", and make sure all of your tags are
-   *above* your Signed-off-by:, not below.
+V10 -> V11:
+Adjust context due to ARM64 changes in 6.1-rc1.
 
-5) Figure out what your name actually is. If it's fake (as somebody
-   earlier suggested), either don't make it fake, or don't get caught
-   with it being fake in some obvious way, as the kernel supposedly
-   requires real names (George Spelvin notwithstanding). Probably (3) is
-   enough to take care of this though.
+V11 -> V12:
+1, Fix build error for !SPARSEMEM;
+2, Simplify pagetable_init() for MIPS32.
 
-I realize this is likely annoying administrivia. Sorry. So it goes with
-Linux stuff.
+V12 -> V13:
+1, Add Acked-by and Reviewed-by tags;
+2, Update commit message for the 4th patch.
 
-Jason
+V13 -> V14:
+Remove the static_key.h inclusion in the 4th patch.
+
+Huacai Chen and Feiyang Chen(4):
+ MIPS&LoongArch&NIOS2: Adjust prototypes of p?d_init().
+ LoongArch: Add sparse memory vmemmap support.
+ mm/sparse-vmemmap: Generalise vmemmap_populate_hugepages().
+ LoongArch: Enable ARCH_WANT_HUGETLB_PAGE_OPTIMIZE_VMEMMAP.
+
+Signed-off-by: Huacai Chen <chenhuacai@loongson.cn>
+Signed-off-by: Feiyang Chen <chenfeiyang@loongson.cn> 
+---
+ arch/arm64/mm/mmu.c                    | 53 ++++++--------------
+ arch/loongarch/Kconfig                 |  2 +
+ arch/loongarch/include/asm/pgalloc.h   | 13 +----
+ arch/loongarch/include/asm/pgtable.h   | 13 +++--
+ arch/loongarch/include/asm/sparsemem.h |  8 +++
+ arch/loongarch/kernel/numa.c           |  4 +-
+ arch/loongarch/mm/init.c               | 44 +++++++++++++++-
+ arch/loongarch/mm/pgtable.c            | 23 +++++----
+ arch/mips/include/asm/pgalloc.h        |  8 +--
+ arch/mips/include/asm/pgtable-64.h     |  8 +--
+ arch/mips/kvm/mmu.c                    |  3 +-
+ arch/mips/mm/pgtable-32.c              | 10 ++--
+ arch/mips/mm/pgtable-64.c              | 18 ++++---
+ arch/mips/mm/pgtable.c                 |  2 +-
+ arch/x86/mm/init_64.c                  | 92 ++++++++++++----------------------
+ include/linux/mm.h                     |  8 +++
+ include/linux/page-flags.h             |  1 +
+ mm/sparse-vmemmap.c                    | 64 +++++++++++++++++++++++
+ 18 files changed, 222 insertions(+), 152 deletions(-)
+--
+2.27.0
+

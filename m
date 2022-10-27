@@ -2,130 +2,130 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C976DFA3740
-	for <linux-mips@archiver.kernel.org>; Thu, 27 Oct 2022 12:49:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4492CFA3740
+	for <linux-mips@archiver.kernel.org>; Thu, 27 Oct 2022 12:51:20 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235912AbiJ0Mtb (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 27 Oct 2022 08:49:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38098 "EHLO
+        id S235838AbiJ0MvS (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 27 Oct 2022 08:51:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46450 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235857AbiJ0MtW (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Thu, 27 Oct 2022 08:49:22 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7C4E16EA05;
-        Thu, 27 Oct 2022 05:49:21 -0700 (PDT)
+        with ESMTP id S235615AbiJ0MvJ (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Thu, 27 Oct 2022 08:51:09 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 527556112D;
+        Thu, 27 Oct 2022 05:51:07 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 84AA3622B7;
-        Thu, 27 Oct 2022 12:49:21 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DE7EEC4347C;
-        Thu, 27 Oct 2022 12:49:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1666874960;
-        bh=ayJrA1JTyWdSi5OrotRFQzWnZgKlqWS2GTryuNv9C3g=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=TENQaZ0qX8wT35paDg5nMw/zzqDcDEv6gQ/cVQgdGrgSOg6rcYgV82zB7lSd+aKWc
-         +im2fBZ6iDwS66vc3HKhmIPvDnkBzPWzAuPyrSgWZBgy+bdveHDvSvE1AQKBXXIAxh
-         LUksZbDLfpInJJ/P1SCJwJjBmGBzqyoa1xU2sRP3wdoDXnDJs6eHXezpsQxybLNmeU
-         UkuSpNW5BkYyHlEmTO/b46g/KZ5ZjdzER4j5ojkKYDlkhFith0OED+wB31MqxveAac
-         +bZnYuUAxtnuisxPxgDeKsNxiT++anokNcEa5KmETwhByjekKjuO5E86WulWhhVDMz
-         k5alL+wp+TuZA==
-Received: by mail-ej1-f50.google.com with SMTP id d26so4192081eje.10;
-        Thu, 27 Oct 2022 05:49:20 -0700 (PDT)
-X-Gm-Message-State: ACrzQf0pDxChIFEtAvC/WZ3EEahn+EtgW9rpk/4q0OpJTdikcALW6bH3
-        yqOInllefgdhJAOfHqxnQkn60/aygSTMf52XZ2U=
-X-Google-Smtp-Source: AMsMyM4y/u9sWFlXV8p8VaH9Xlg1ipNTnnAKSXBRsvzTB2BIHk4F2a4+XmGNyWABLqhGPAldl4sABjzRtQ5+fY6VgnY=
-X-Received: by 2002:a17:907:3ea2:b0:7ad:86f9:7b15 with SMTP id
- hs34-20020a1709073ea200b007ad86f97b15mr4488706ejc.272.1666874959084; Thu, 27
- Oct 2022 05:49:19 -0700 (PDT)
-MIME-Version: 1.0
-References: <20221024070105.306280-1-chenhuacai@loongson.cn>
- <20221024070105.306280-5-chenhuacai@loongson.cn> <CAJF2gTSN3zzvgAdiM8rYc3EGFxR4JJnHSh12mvsfUOQsqRRvkg@mail.gmail.com>
- <CAAhV-H40fcUW3jwGZXpPNjbpizXb85zytCpKGHvEGwoRpG3c0Q@mail.gmail.com> <3eb9b612-e765-7ad0-aed8-a50e28677e9c@linaro.org>
-In-Reply-To: <3eb9b612-e765-7ad0-aed8-a50e28677e9c@linaro.org>
-From:   Huacai Chen <chenhuacai@kernel.org>
-Date:   Thu, 27 Oct 2022 20:49:07 +0800
-X-Gmail-Original-Message-ID: <CAAhV-H7uTTaSqrYwhvy78CAVmAJi_jJ4BipgfOW6LV5vYm8=NQ@mail.gmail.com>
-Message-ID: <CAAhV-H7uTTaSqrYwhvy78CAVmAJi_jJ4BipgfOW6LV5vYm8=NQ@mail.gmail.com>
-Subject: Re: [PATCH V13 4/4] LoongArch: Enable ARCH_WANT_HUGETLB_PAGE_OPTIMIZE_VMEMMAP
-To:     =?UTF-8?Q?Philippe_Mathieu=2DDaud=C3=A9?= <philmd@linaro.org>
-Cc:     Guo Ren <guoren@kernel.org>, Huacai Chen <chenhuacai@loongson.cn>,
-        Arnd Bergmann <arnd@arndb.de>,
+        by ams.source.kernel.org (Postfix) with ESMTPS id DD0B4B82617;
+        Thu, 27 Oct 2022 12:51:05 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2197BC433B5;
+        Thu, 27 Oct 2022 12:51:04 +0000 (UTC)
+Authentication-Results: smtp.kernel.org;
+        dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="f2fM4ZDI"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zx2c4.com; s=20210105;
+        t=1666875062;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=7IPqLid7IqQX7xaoa0h3UH2jSWB/Ci1zDdeGKf+rIB4=;
+        b=f2fM4ZDIKnXv9bRiVzrnlRhFtoKYOKi38u+1Cjf/ikMv1QsfHYOElJmM6dvRgufqXkl07H
+        9KKLhchavXNOUhSIrwv/HWESXrTvH5RII6KF7ZQMjOLhPNo1KJeSFs2UyANZjdg5Yg1jjt
+        yAbOl8idgbB+CTcIVlmplwVG3rHCdqw=
+Received: by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id 4aff23bd (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO);
+        Thu, 27 Oct 2022 12:51:01 +0000 (UTC)
+Date:   Thu, 27 Oct 2022 14:26:26 +0200
+From:   "Jason A. Donenfeld" <Jason@zx2c4.com>
+To:     =?utf-8?B?0L3QsNCx?= <nabijaczleweli@nabijaczleweli.xyz>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Federico Vaga <federico.vaga@vaga.pv.it>,
+        Alex Shi <alexs@kernel.org>,
+        Yanteng Si <siyanteng@loongson.cn>,
+        Hu Haowen <src.res@email.cn>,
         Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Dinh Nguyen <dinguyen@kernel.org>, loongarch@lists.linux.dev,
-        linux-arch@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>,
-        Xuerui Wang <kernel@xen0n.name>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        Feiyang Chen <chenfeiyang@loongson.cn>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-doc-tw-discuss@lists.sourceforge.net,
+        linux-mips@vger.kernel.org
+Subject: Re: [PATCH 07/15] MIPS: IP27: clean out sn/nmi.h
+Message-ID: <Y1p48oJVBeUSrfC2@zx2c4.com>
+References: <9a453437b5c3b4b1887c1bd84455b0cc3d1c40b2.1666822928.git.nabijaczleweli@nabijaczleweli.xyz>
+ <08c138e14f71c207c4428df9fd31154744be9d98.1666822928.git.nabijaczleweli@nabijaczleweli.xyz>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <08c138e14f71c207c4428df9fd31154744be9d98.1666822928.git.nabijaczleweli@nabijaczleweli.xyz>
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Wed, Oct 26, 2022 at 9:44 PM Philippe Mathieu-Daud=C3=A9
-<philmd@linaro.org> wrote:
->
-> On 26/10/22 14:59, Huacai Chen wrote:
-> > On Mon, Oct 24, 2022 at 4:04 PM Guo Ren <guoren@kernel.org> wrote:
-> >> On Mon, Oct 24, 2022 at 3:05 PM Huacai Chen <chenhuacai@loongson.cn> w=
-rote:
-> >>>
-> >>> From: Feiyang Chen <chenfeiyang@loongson.cn>
-> >>>
-> >>> The feature of minimizing overhead of struct page associated with eac=
-h
-> >>> HugeTLB page is implemented on x86_64. However, the infrastructure of
-> >>> this feature is already there, so just select ARCH_WANT_HUGETLB_PAGE_
-> >>> OPTIMIZE_VMEMMAP is enough to enable this feature for LoongArch.
-> >>>
-> >>> To avoid the following build error on LoongArch we should include lin=
-ux/
-> >>> static_key.h in page-flags.h. This is straightforward but the build
-> >>> error is implicitly a LoongArch-specific problem, because ARM64 and X=
-86
-> >>> have already include static_key.h from their arch-specific core heade=
-rs.
->
-> >>> diff --git a/include/linux/page-flags.h b/include/linux/page-flags.h
-> >>> index 0b0ae5084e60..1aafdc73e399 100644
-> >>> --- a/include/linux/page-flags.h
-> >>> +++ b/include/linux/page-flags.h
-> >>> @@ -9,6 +9,7 @@
-> >>>   #include <linux/types.h>
-> >>>   #include <linux/bug.h>
-> >>>   #include <linux/mmdebug.h>
-> >>> +#include <linux/static_key.h>
-> >> Em... riscv needn't this.
->
-> Would guarding the header suffice and make riscv OK with this patch?
-Emm, since LoongArch has no build errors due to an accident now, I
-will send a new version without static_key.h inclusion. If one day the
-build error comes back, we can send a separate patch to fix it.
+Hi,
 
-Huacai
->
->   #ifdef CONFIG_HUGETLB_PAGE_OPTIMIZE_VMEMMAP
->   #include <linux/static_key.h>
->   #endif
->
-> > I found that after 36d4b36b69590fed99356a4426c940a25 (" lib/nodemask:
-> > inline next_node_in() and node_random()"), build errors have gone. But
-> > I think this is just an accident. Because that commit adds random.h
-> > inclusion in nodemask.h, then asm-offsets.c --> sched.h --> nodemask.h
-> > --> random.h --> once.h --> jump_label.h. If one day this chain is
-> > adjusted, then build errors come again.
-> >
-> > On the other hand, page-flags.h is obviously using some static_key
-> > macros, including static_key.h is straightforward for building.
-> >
-> > Huacai
+Thanks for working on this patchset. The magic-number.rst file has
+always kind of bothered me with its outdated encouragements to magic up
+every struct.
+
+Technically, this series seems okay. It'd be nice if somebody had some
+SGI hardware to figure out what NMI_MAGIC is all about, but that doesn't
+need to block removing it from magic-number.rst, so that
+magic-number.rst can be put to rest. Interestingly, though,
+0x48414d4d455201 is "HAMMER\x01". The only reference to it I could find
+on the Internet that wasn't this file itself was some forum on Intel
+stuff? https://www.eevblog.com/forum/microcontrollers/intel-bare-metal-programming/msg1273587/#msg1273587
+No idea.
+
+Anyway, I suspect the actual issues that remain are mostly formalities,
+as others have mentioned:
+
+1) Add a 00/15 cover letter that explains your intentions, and make sure
+   the "right people" are CC'd on that. Hard to say who that might be,
+   given how diverse this patchset is. Maybe Andrew Morton? Or Kees
+   Cook? No idea.
+
+2) Fix up your commit messages:
+
+> The only user is arch/mips/sgi-ip27/ip27-nmi.c;
+> this file was imported wholesale in 2.3.99pre9-1,
+> and received only whitespace updates since then
+> 
+> NMI_MAGIC isn't a magic number; it's unclear if it's actually used
+> by the firmware in some capacity or if it's a holdover from copying
+> the SGI code, but in the former case it's API
+> and in the latter it's dead cruft
+> 
+> Lack of QEMU support makes this unvalidatable without the hardware,
+> so leave it in
+
+Add some trailing periods, and reformat this to have the usual
+alignment. `gq` in vim will do that for you. So for that message, it
+should become:
+
+| The only user is arch/mips/sgi-ip27/ip27-nmi.c; this file was imported
+| wholesale in 2.3.99pre9-1, and received only whitespace updates since
+| then.
+| 
+| NMI_MAGIC isn't a magic number; it's unclear if it's actually used by
+| the firmware in some capacity or if it's a holdover from copying the
+| SGI code, but in the former case it's API and in the latter it's dead
+| cruft.
+| 
+| Lack of QEMU support makes this unvalidatable without the hardware, so
+| leave it in.
+
+3) Ensure the "From:" header of your email matches your Signed-off-by:
+   trailer.
+
+4) Use "Link: " instead of "Ref: ", and make sure all of your tags are
+   *above* your Signed-off-by:, not below.
+
+5) Figure out what your name actually is. If it's fake (as somebody
+   earlier suggested), either don't make it fake, or don't get caught
+   with it being fake in some obvious way, as the kernel supposedly
+   requires real names (George Spelvin notwithstanding). Probably (3) is
+   enough to take care of this though.
+
+I realize this is likely annoying administrivia. Sorry. So it goes with
+Linux stuff.
+
+Jason

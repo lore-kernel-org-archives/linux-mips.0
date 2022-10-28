@@ -2,94 +2,134 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B4C3DC38A02
-	for <linux-mips@archiver.kernel.org>; Fri, 28 Oct 2022 10:34:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 54058FA3744
+	for <linux-mips@archiver.kernel.org>; Fri, 28 Oct 2022 10:34:41 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230045AbiJ1Keh (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 28 Oct 2022 06:34:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39522 "EHLO
+        id S230137AbiJ1Kek (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 28 Oct 2022 06:34:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39532 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230019AbiJ1Keg (ORCPT
+        with ESMTP id S230314AbiJ1Keg (ORCPT
         <rfc822;linux-mips@vger.kernel.org>); Fri, 28 Oct 2022 06:34:36 -0400
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAC9925CB;
-        Fri, 28 Oct 2022 03:34:26 -0700 (PDT)
-Received: by mail-wr1-x436.google.com with SMTP id z14so6027002wrn.7;
-        Fri, 28 Oct 2022 03:34:26 -0700 (PDT)
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4086ADFD9;
+        Fri, 28 Oct 2022 03:34:29 -0700 (PDT)
+Received: by mail-wr1-x429.google.com with SMTP id v1so6025827wrt.11;
+        Fri, 28 Oct 2022 03:34:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=8NzwqSpckoNP17it2+mRAD4Pbxq1xir6QmYGwW3Pwv8=;
-        b=TBXDBLlQfNn38PkI94DTl4TOhBkjDateSFX08TuNwp5WHEFIN3YhBS+CJiShn3Ir30
-         sa/ND6BR8DwYh6gA4lKJ+R/FOSpO7FS/vcfK3X5gk3Wvehz714/KwqrJ2I+UlfKJueqK
-         mmgc5AABHvuRzpuku00latfv7Nn7HQKxRSXZ5/s3PN+yYJlK1OiB/W1/KzGemluzNNhP
-         jz30k4M6myvuCThPD7OyXvIMS4dxVHdsDGPCyLcTFPyiK7e7G3fHEfVm0YeX8EIElkIb
-         NCHqUjdsSX6tCQnwdR8tMbCeh0Jux2dBoqb/um4YnR5UuwovJDRjuqHPD72ttyPHFZGl
-         3e8g==
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=8Ea1wwle1wP6aS8WKh/9HKEpPf2vMavxdmBWSIJ+2x8=;
+        b=NNTAM0gN1azqcsIQcpxHh/vJKSdMlq2PNJCAVA94ROn0+UeZjBze0YQCH9cB+18hwo
+         VgvcWgMIuAhlhk6w1cDK+uHp/sJfOcXvz1PgIFgyNMkXrYcTuqXmtW3kKaHsScmKCSiz
+         sYYnwEiUoppjrmHhIbcmmWEfAiF+pRLfpYqWVQr4Kj786YQIc3KPec35hb1OZvGm9g1x
+         JwGIMbyNm8lFyDjDskUL5VmSGSRNOH0ZQrf7gkhaWXdFYtrMX8hy1/+sl2gTtIlt35Bb
+         ica46gWkMK7HiViHe73k0g5Jq/bPJQhaK8DGo4zI3Oo49JDMxPlzUMoDuIejti5yWx3Y
+         oFAw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=8NzwqSpckoNP17it2+mRAD4Pbxq1xir6QmYGwW3Pwv8=;
-        b=Z2WbxfhzghCJwxfhHGI1V3qP2nk9c0amzOMg45TabGVdSONX81+9mPk6dlfoARpfnG
-         or8DEa3WCtQadYwy74PbfYcKhDLC92CWU2cDBDVYQn41P518NR47UjiphsSqB9aZzfs8
-         FSAO9MXNDgL7mdyHzV1nsRR7e3iKXbg77H1LigoVDuaeVfr/DdxUCrFOkGp1wC4il4Qd
-         D6Wvlh6zHwykBGm90Jl6IcCrr+B6UbgdWW5Qg79+RhBMglxcGJLpU29f5J1f0LPVSwA1
-         LYrMX2ygyPF03Stz7TTGrvFrMCker1yEA1xPZlNhu75LR99jgKoOFbgb8arLvj5np+1/
-         4j3w==
-X-Gm-Message-State: ACrzQf0qHVpJQ9zBd1Tqa+nLoifrUk+cBaCAc5XhGbuM/ncwYn/DBzCA
-        Mg+BmxjVKd8TBwhntRa6KtRbgLOBX71hS9bU
-X-Google-Smtp-Source: AMsMyM5XHpNkQ+aqqZC8OjhAUpjzirc3Qe7lT1TlMRE+R0iEbBLi8U3FiHekJFB70tvRg+XqMKDMOA==
-X-Received: by 2002:adf:e64e:0:b0:236:76a9:446 with SMTP id b14-20020adfe64e000000b0023676a90446mr15760555wrn.696.1666953265347;
-        Fri, 28 Oct 2022 03:34:25 -0700 (PDT)
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=8Ea1wwle1wP6aS8WKh/9HKEpPf2vMavxdmBWSIJ+2x8=;
+        b=O+Ch6RYgkeDfnSxk1FfjmX4o4PMKtkHIY/nDpRFz+tnUnDllzDSGhEfrpv7bO2jkCS
+         dytgzE85ewvhPKNuSP/OP7AOBQDKACplLqR3ShByaEixfFi6xKYnhN+VGsRVBIDL2x+O
+         OmSiXLyBZ3oXpZAlAhMsSDSiN38KgM0HS4VoRCNqO6Ybpo7FIlmi98vh+fO7FvTaup9d
+         p1zJGGDF12etJmDtpIicCxg4PA60Ahxj+8iRG8eO9EdNMyWAEJKhW79ZP2YTfNUeHUAm
+         /p+5l7JfaNKZfj4A0JSnoINR7aBGbbexine020Bf46ea2wRB+B8cvJc/m6ubiRGI/Upf
+         sHGA==
+X-Gm-Message-State: ACrzQf3hyJOostUpg+J64r2ILW9mGfiw/PSst+qJD9Ja7slG7LZaQzOq
+        YgJWbUuQSO8RiC342F9iQt8=
+X-Google-Smtp-Source: AMsMyM4QIDPnl/FJuOUa3z7Y8zZHoMcOpnJ+EsbVC9SdL2Uoer1FNZxCWJbIqQnW+zje1w/fVlULVA==
+X-Received: by 2002:a05:6000:15ce:b0:230:a14d:997b with SMTP id y14-20020a05600015ce00b00230a14d997bmr35708359wry.370.1666953267858;
+        Fri, 28 Oct 2022 03:34:27 -0700 (PDT)
 Received: from localhost (94.197.40.204.threembb.co.uk. [94.197.40.204])
-        by smtp.gmail.com with ESMTPSA id 8-20020a05600c024800b003c6bd12ac27sm3841551wmj.37.2022.10.28.03.34.24
+        by smtp.gmail.com with ESMTPSA id ay31-20020a05600c1e1f00b003cf537ec2efsm4116465wmb.36.2022.10.28.03.34.27
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 28 Oct 2022 03:34:24 -0700 (PDT)
+        Fri, 28 Oct 2022 03:34:27 -0700 (PDT)
 From:   Aidan MacDonald <aidanmacdonald.0x0@gmail.com>
 To:     paul@crapouillou.net, lgirdwood@gmail.com, broonie@kernel.org,
         robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
         tsbogend@alpha.franken.de, perex@perex.cz, tiwai@suse.com
 Cc:     alsa-devel@alsa-project.org, linux-mips@vger.kernel.org,
         devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v1 0/3] ASoC: jz4740-i2s: Remove .set_sysclk() & friends
-Date:   Fri, 28 Oct 2022 11:34:15 +0100
-Message-Id: <20221028103418.17578-1-aidanmacdonald.0x0@gmail.com>
+Subject: [PATCH v1 2/3] mips: dts: ingenic: Remove unnecessary AIC clocks
+Date:   Fri, 28 Oct 2022 11:34:17 +0100
+Message-Id: <20221028103418.17578-3-aidanmacdonald.0x0@gmail.com>
+In-Reply-To: <20221028103418.17578-1-aidanmacdonald.0x0@gmail.com>
+References: <20221028103418.17578-1-aidanmacdonald.0x0@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-A quick series to get rid of .set_sysclk() from jz4740-i2s.
-It wasn't used in practice so this shouldn't be troublesome for anyone,
-and fortunately there aren't any backward compatibility concerns.
+These clocks arguably don't belong in the DT because there isn't
+much the AIC can do with them in principle. It's safe to remove
+them because the jz4740-i2s Linux driver has never depended on
+them in the DT, despite superficial appearances to the contrary.
 
-The actual rationale for removing it, as opposed to fixing the
-issues of the current DT bindings and implementation, is provided
-in the dt-bindings patch.
+Signed-off-by: Aidan MacDonald <aidanmacdonald.0x0@gmail.com>
+---
+ arch/mips/boot/dts/ingenic/jz4725b.dtsi | 7 ++-----
+ arch/mips/boot/dts/ingenic/jz4740.dtsi  | 7 ++-----
+ arch/mips/boot/dts/ingenic/jz4770.dtsi  | 5 ++---
+ 3 files changed, 6 insertions(+), 13 deletions(-)
 
-Note the last patch only applies cleanly on top of my earlier
-jz4740-i2s cleanup series, but doesn't strictly depend on it.
-
-Link: https://lore.kernel.org/alsa-devel/20221023143328.160866-1-aidanmacdonald.0x0@gmail.com/
-
-Aidan MacDonald (3):
-  dt-bindings: ingenic,aic: Remove unnecessary clocks from schema
-  mips: dts: ingenic: Remove unnecessary AIC clocks
-  ASoC: jz4740-i2s: Remove .set_sysclk()
-
- .../bindings/sound/ingenic,aic.yaml           | 10 ++----
- arch/mips/boot/dts/ingenic/jz4725b.dtsi       |  7 ++--
- arch/mips/boot/dts/ingenic/jz4740.dtsi        |  7 ++--
- arch/mips/boot/dts/ingenic/jz4770.dtsi        |  5 ++-
- sound/soc/jz4740/jz4740-i2s.c                 | 32 -------------------
- sound/soc/jz4740/jz4740-i2s.h                 | 10 ------
- 6 files changed, 8 insertions(+), 63 deletions(-)
- delete mode 100644 sound/soc/jz4740/jz4740-i2s.h
-
+diff --git a/arch/mips/boot/dts/ingenic/jz4725b.dtsi b/arch/mips/boot/dts/ingenic/jz4725b.dtsi
+index e9e48022f631..acbbe8c4664c 100644
+--- a/arch/mips/boot/dts/ingenic/jz4725b.dtsi
++++ b/arch/mips/boot/dts/ingenic/jz4725b.dtsi
+@@ -198,11 +198,8 @@ aic: audio-controller@10020000 {
+ 
+ 		#sound-dai-cells = <0>;
+ 
+-		clocks = <&cgu JZ4725B_CLK_AIC>,
+-			 <&cgu JZ4725B_CLK_I2S>,
+-			 <&cgu JZ4725B_CLK_EXT>,
+-			 <&cgu JZ4725B_CLK_PLL_HALF>;
+-		clock-names = "aic", "i2s", "ext", "pll half";
++		clocks = <&cgu JZ4725B_CLK_AIC>, <&cgu JZ4725B_CLK_I2S>;
++		clock-names = "aic", "i2s";
+ 
+ 		interrupt-parent = <&intc>;
+ 		interrupts = <10>;
+diff --git a/arch/mips/boot/dts/ingenic/jz4740.dtsi b/arch/mips/boot/dts/ingenic/jz4740.dtsi
+index 7f76cba03a08..bdd6f4d82ec9 100644
+--- a/arch/mips/boot/dts/ingenic/jz4740.dtsi
++++ b/arch/mips/boot/dts/ingenic/jz4740.dtsi
+@@ -192,11 +192,8 @@ aic: audio-controller@10020000 {
+ 		interrupt-parent = <&intc>;
+ 		interrupts = <18>;
+ 
+-		clocks = <&cgu JZ4740_CLK_AIC>,
+-			 <&cgu JZ4740_CLK_I2S>,
+-			 <&cgu JZ4740_CLK_EXT>,
+-			 <&cgu JZ4740_CLK_PLL_HALF>;
+-		clock-names = "aic", "i2s", "ext", "pll half";
++		clocks = <&cgu JZ4740_CLK_AIC>, <&cgu JZ4740_CLK_I2S>;
++		clock-names = "aic", "i2s";
+ 
+ 		dmas = <&dmac 25 0xffffffff>, <&dmac 24 0xffffffff>;
+ 		dma-names = "rx", "tx";
+diff --git a/arch/mips/boot/dts/ingenic/jz4770.dtsi b/arch/mips/boot/dts/ingenic/jz4770.dtsi
+index bda0a3a86ed5..9c0099919db7 100644
+--- a/arch/mips/boot/dts/ingenic/jz4770.dtsi
++++ b/arch/mips/boot/dts/ingenic/jz4770.dtsi
+@@ -238,9 +238,8 @@ aic: audio-controller@10020000 {
+ 
+ 		#sound-dai-cells = <0>;
+ 
+-		clocks = <&cgu JZ4770_CLK_AIC>, <&cgu JZ4770_CLK_I2S>,
+-			 <&cgu JZ4770_CLK_EXT>, <&cgu JZ4770_CLK_PLL0>;
+-		clock-names = "aic", "i2s", "ext", "pll half";
++		clocks = <&cgu JZ4770_CLK_AIC>, <&cgu JZ4770_CLK_I2S>;
++		clock-names = "aic", "i2s";
+ 
+ 		interrupt-parent = <&intc>;
+ 		interrupts = <34>;
 -- 
 2.38.1
 

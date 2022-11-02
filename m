@@ -2,58 +2,59 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6AF51C4332F
-	for <linux-mips@archiver.kernel.org>; Wed,  2 Nov 2022 23:24:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B1730C4321E
+	for <linux-mips@archiver.kernel.org>; Wed,  2 Nov 2022 23:24:13 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229624AbiKBXYK (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        id S230224AbiKBXYK (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
         Wed, 2 Nov 2022 19:24:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32818 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34048 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230224AbiKBXXd (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 2 Nov 2022 19:23:33 -0400
-Received: from mail-pl1-x64a.google.com (mail-pl1-x64a.google.com [IPv6:2607:f8b0:4864:20::64a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D7FAB87A
+        with ESMTP id S230297AbiKBXXl (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 2 Nov 2022 19:23:41 -0400
+Received: from mail-pg1-x54a.google.com (mail-pg1-x54a.google.com [IPv6:2607:f8b0:4864:20::54a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D9CDBC01
         for <linux-mips@vger.kernel.org>; Wed,  2 Nov 2022 16:20:14 -0700 (PDT)
-Received: by mail-pl1-x64a.google.com with SMTP id n1-20020a170902f60100b00179c0a5c51fso232757plg.7
+Received: by mail-pg1-x54a.google.com with SMTP id w191-20020a6382c8000000b0045bf92a0b5aso75901pgd.22
         for <linux-mips@vger.kernel.org>; Wed, 02 Nov 2022 16:20:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:reply-to:from:to:cc:subject:date:message-id:reply-to;
-        bh=5gvBLFzYAyi/HCXZ+GVBUHE668bhbiWmi3vwDs9Tl6k=;
-        b=I5bOS6bfxLXiEBfjSJmP2kPQXW/SHnwLLTr4Pv1YGOJfWIPhzpIEkiKigvzufOLE8z
-         PySBQSx0d0+tzNvKQjZSy72HymKoAuRoscdVD3mz0rt/jB8Y6EZI0Hs4WYS/QcUkjCkQ
-         w8JCNgcxA3AK/X9od3l54Dm9fYHBQunkNi2G+VlGLZfuFSeGcLjMIp0YguN3Du588HWY
-         UWsywY+dlyhYN95M8oqWM+ViHOjI8pWnpvPSFJCTuFlV7XnGnW9UVxSozj4IBjaVYRja
-         c+tkLJnZPA8seMLOKTKBakZMCiOE4R5iDaDnVWvTgDI/JcgRlH/AKu7MnFyysyA6h5nx
-         w+eQ==
+        bh=w/Q7bH8THgyaKP3B1ctDp6/bth9WI6Zn0uJypuG9eac=;
+        b=hkPOoen/pyqZsKi1YCSawLdA3GEp9C4f3mv9W0KoQWrN/JmnscJ/7nrSl0bhgo5kc/
+         284CZWTN6cQtZyS3BcYl1rO3d2JXX3uptOp6QgDDXHKKXwZWYnEXXtfdURHWu0sgST7b
+         SR2jmNv70MkTjk45xUfHV7CREolEUHHjBimLzgCj57Qvy29dchlrARjt1C82JrSjtdvz
+         CjPyz+19dEzhNchjZdr/kuW84eKlMR1llHgovF4ZVnGabG/rB0khgL15izrPpgwurgg8
+         AnCmcr2wDk7Yyae3uT31jet5RZCDh/LNmD6fqF7lWW4xFuTB9UT2b6Ep4Ac5WXcUuWtP
+         s9ug==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:reply-to:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=5gvBLFzYAyi/HCXZ+GVBUHE668bhbiWmi3vwDs9Tl6k=;
-        b=sPVrDyRZSYbKutxz0jXuigLKbfj+p1nThV+/Jh7C8+3PdDKdL6C7DSCLxyOzRG7SSt
-         FTb6nk7I7RfEXqW1TLjxk8vou3gDHd/kQdkydrhWpEFoD2mSk+QBX+kw0wQNtAop4jC/
-         06AKytjjrgLCZybuZMIejKZaHTqGApy/Fbv2xRJ6dpc3jaklIwien/jO557sonL5iDpt
-         4FnTj9J42aZNscC/Nbd72u0x0zMRQqUHzGNBMo3MntCBH9F1Q2yoDhNhBd5P4Mc5Puzk
-         y0tQekW8JD1AIPcowFRFSs4o+fNCnbBhipNSfBvPUKj/e6yFAT/Kddc2asgNd2rnbkRX
-         +zrg==
-X-Gm-Message-State: ACrzQf193MUWFDp3GPYMp6Km6h5BI34OOnZp36E4j8cfURwspGoU87Fu
-        SVI/SJMvRQcwZI1+Vecd0AKwhzzTNNQ=
-X-Google-Smtp-Source: AMsMyM6XQ/aBNhxY5VjT+v6espe0fFHwkGjh05tLgVXfHik64KiilbScLDe/Y3M46ipvBiC6zA50qPgHreE=
+        bh=w/Q7bH8THgyaKP3B1ctDp6/bth9WI6Zn0uJypuG9eac=;
+        b=Lf3FgvL8GBQQFXgvP0kZ2XGeh9M/6bf2NOrolxEJVbMf6unJIAnTh6aSXRn23XUVVL
+         HJAbMU7F1nSU1o4T9vz14taHH/GGbuKh9ZIAKz1l9bWwntcwRPV+6sAGRJAjPm+Wz+S8
+         PqTTVdTVu2+M8abQko7rBkw0tuIHhDODeJTuqgGVHOMr1P1rSZYYNmFAJfA9fj1jpBvo
+         3OubfIgLWAFwOPYKqj61PfNSFDpK5L3kadDjJ96xFZAjhpanLRRbaPaqmUmnMg1bfLGT
+         8jKhGe3Qf4c/r6HpKQfTB/NUhVlvKvK6kS/xmh2c4IOBzKOPllqvcrgVE44W/FJwywwT
+         rfrQ==
+X-Gm-Message-State: ACrzQf0qfDlhw1fULUrybuQ6UD2mQDq5Q2TdzNctw+G2q2b1rW2WYDgI
+        O0jjgmzmvdroz56xyqMshlfvhx3562g=
+X-Google-Smtp-Source: AMsMyM52tU6iRK0I4Ec35KUAzBrT1sghmvSrKR24lxi1BsrlBLfXrWc/1+j2917tMPr6x8h/JqOXwdenWAg=
 X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a05:6a00:2294:b0:56d:7387:8a06 with SMTP id
- f20-20020a056a00229400b0056d73878a06mr18916476pfe.17.1667431214429; Wed, 02
- Nov 2022 16:20:14 -0700 (PDT)
+ (user=seanjc job=sendgmr) by 2002:a05:6a00:852:b0:56d:e2bc:1978 with SMTP id
+ q18-20020a056a00085200b0056de2bc1978mr8835032pfk.47.1667431198455; Wed, 02
+ Nov 2022 16:19:58 -0700 (PDT)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Wed,  2 Nov 2022 23:19:02 +0000
+Date:   Wed,  2 Nov 2022 23:18:53 +0000
 In-Reply-To: <20221102231911.3107438-1-seanjc@google.com>
 Mime-Version: 1.0
 References: <20221102231911.3107438-1-seanjc@google.com>
 X-Mailer: git-send-email 2.38.1.431.g37b22c650d-goog
-Message-ID: <20221102231911.3107438-36-seanjc@google.com>
-Subject: [PATCH 35/44] KVM: SVM: Check for SVM support in CPU compatibility checks
+Message-ID: <20221102231911.3107438-27-seanjc@google.com>
+Subject: [PATCH 26/44] KVM: s390: Mark __kvm_s390_init() and its descendants
+ as __init
 From:   Sean Christopherson <seanjc@google.com>
 To:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
         Huacai Chen <chenhuacai@kernel.org>,
@@ -91,51 +92,94 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Check that SVM is supported and enabled in the processor compatibility
-checks.  SVM already checks for support during hardware enabling,
-i.e. this doesn't really add new functionality.  The net effect is that
-KVM will refuse to load if a CPU doesn't have SVM fully enabled, as
-opposed to failing KVM_CREATE_VM.
-
-Opportunistically move svm_check_processor_compat() up in svm.c so that
-it can be invoked during hardware enabling in a future patch.
+Tag __kvm_s390_init() and its unique helpers as __init.  These functions
+are only ever called during module_init(), but could not be tagged
+accordingly while they were invoked from the common kvm_arch_init(),
+which is not __init because of x86.
 
 Signed-off-by: Sean Christopherson <seanjc@google.com>
 ---
- arch/x86/kvm/svm/svm.c | 13 ++++++++-----
- 1 file changed, 8 insertions(+), 5 deletions(-)
+ arch/s390/kvm/interrupt.c | 2 +-
+ arch/s390/kvm/kvm-s390.c  | 4 ++--
+ arch/s390/kvm/kvm-s390.h  | 2 +-
+ arch/s390/kvm/pci.c       | 2 +-
+ arch/s390/kvm/pci.h       | 2 +-
+ 5 files changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-index 3523d24d004b..efda384d29d4 100644
---- a/arch/x86/kvm/svm/svm.c
-+++ b/arch/x86/kvm/svm/svm.c
-@@ -549,6 +549,14 @@ static bool kvm_is_svm_supported(void)
- 	return true;
+diff --git a/arch/s390/kvm/interrupt.c b/arch/s390/kvm/interrupt.c
+index ab569faf0df2..bf9d55fbc21a 100644
+--- a/arch/s390/kvm/interrupt.c
++++ b/arch/s390/kvm/interrupt.c
+@@ -3416,7 +3416,7 @@ void kvm_s390_gib_destroy(void)
+ 	gib = NULL;
  }
  
-+static int __init svm_check_processor_compat(void)
-+{
-+	if (!kvm_is_svm_supported())
-+		return -EIO;
-+
-+	return 0;
-+}
-+
- void __svm_write_tsc_multiplier(u64 multiplier)
+-int kvm_s390_gib_init(u8 nisc)
++int __init kvm_s390_gib_init(u8 nisc)
  {
- 	preempt_disable();
-@@ -4129,11 +4137,6 @@ svm_patch_hypercall(struct kvm_vcpu *vcpu, unsigned char *hypercall)
- 	hypercall[2] = 0xd9;
+ 	int rc = 0;
+ 
+diff --git a/arch/s390/kvm/kvm-s390.c b/arch/s390/kvm/kvm-s390.c
+index e1c9980aae78..f6ae845bc1c1 100644
+--- a/arch/s390/kvm/kvm-s390.c
++++ b/arch/s390/kvm/kvm-s390.c
+@@ -358,7 +358,7 @@ static __always_inline void __insn32_query(unsigned int opcode, u8 *query)
+ #define INSN_SORTL 0xb938
+ #define INSN_DFLTCC 0xb939
+ 
+-static void kvm_s390_cpu_feat_init(void)
++static void __init kvm_s390_cpu_feat_init(void)
+ {
+ 	int i;
+ 
+@@ -461,7 +461,7 @@ static void kvm_s390_cpu_feat_init(void)
+ 	 */
  }
  
--static int __init svm_check_processor_compat(void)
--{
--	return 0;
--}
--
- /*
-  * The kvm parameter can be NULL (module initialization, or invocation before
-  * VM creation). Be sure to check the kvm parameter before using it.
+-static int __kvm_s390_init(void)
++static int __init __kvm_s390_init(void)
+ {
+ 	int rc = -ENOMEM;
+ 
+diff --git a/arch/s390/kvm/kvm-s390.h b/arch/s390/kvm/kvm-s390.h
+index f6fd668f887e..e7f6166129eb 100644
+--- a/arch/s390/kvm/kvm-s390.h
++++ b/arch/s390/kvm/kvm-s390.h
+@@ -467,7 +467,7 @@ void kvm_s390_gisa_clear(struct kvm *kvm);
+ void kvm_s390_gisa_destroy(struct kvm *kvm);
+ void kvm_s390_gisa_disable(struct kvm *kvm);
+ void kvm_s390_gisa_enable(struct kvm *kvm);
+-int kvm_s390_gib_init(u8 nisc);
++int __init kvm_s390_gib_init(u8 nisc);
+ void kvm_s390_gib_destroy(void);
+ 
+ /* implemented in guestdbg.c */
+diff --git a/arch/s390/kvm/pci.c b/arch/s390/kvm/pci.c
+index c50c1645c0ae..60548791c077 100644
+--- a/arch/s390/kvm/pci.c
++++ b/arch/s390/kvm/pci.c
+@@ -670,7 +670,7 @@ int kvm_s390_pci_zpci_op(struct kvm *kvm, struct kvm_s390_zpci_op *args)
+ 	return r;
+ }
+ 
+-int kvm_s390_pci_init(void)
++int __init kvm_s390_pci_init(void)
+ {
+ 	zpci_kvm_hook.kvm_register = kvm_s390_pci_register_kvm;
+ 	zpci_kvm_hook.kvm_unregister = kvm_s390_pci_unregister_kvm;
+diff --git a/arch/s390/kvm/pci.h b/arch/s390/kvm/pci.h
+index 486d06ef563f..ff0972dd5e71 100644
+--- a/arch/s390/kvm/pci.h
++++ b/arch/s390/kvm/pci.h
+@@ -60,7 +60,7 @@ void kvm_s390_pci_clear_list(struct kvm *kvm);
+ 
+ int kvm_s390_pci_zpci_op(struct kvm *kvm, struct kvm_s390_zpci_op *args);
+ 
+-int kvm_s390_pci_init(void);
++int __init kvm_s390_pci_init(void);
+ void kvm_s390_pci_exit(void);
+ 
+ static inline bool kvm_s390_pci_interp_allowed(void)
 -- 
 2.38.1.431.g37b22c650d-goog
 

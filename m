@@ -2,58 +2,58 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0CBA9C43219
-	for <linux-mips@archiver.kernel.org>; Wed,  2 Nov 2022 23:24:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6AF51C4332F
+	for <linux-mips@archiver.kernel.org>; Wed,  2 Nov 2022 23:24:11 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229570AbiKBXYH (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 2 Nov 2022 19:24:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33970 "EHLO
+        id S229624AbiKBXYK (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 2 Nov 2022 19:24:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32818 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231171AbiKBXWz (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 2 Nov 2022 19:22:55 -0400
+        with ESMTP id S230224AbiKBXXd (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 2 Nov 2022 19:23:33 -0400
 Received: from mail-pl1-x64a.google.com (mail-pl1-x64a.google.com [IPv6:2607:f8b0:4864:20::64a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C427FB4A7
-        for <linux-mips@vger.kernel.org>; Wed,  2 Nov 2022 16:20:12 -0700 (PDT)
-Received: by mail-pl1-x64a.google.com with SMTP id l1-20020a170902f68100b00187117d8e44so242994plg.2
-        for <linux-mips@vger.kernel.org>; Wed, 02 Nov 2022 16:20:12 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D7FAB87A
+        for <linux-mips@vger.kernel.org>; Wed,  2 Nov 2022 16:20:14 -0700 (PDT)
+Received: by mail-pl1-x64a.google.com with SMTP id n1-20020a170902f60100b00179c0a5c51fso232757plg.7
+        for <linux-mips@vger.kernel.org>; Wed, 02 Nov 2022 16:20:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:reply-to:from:to:cc:subject:date:message-id:reply-to;
-        bh=QZsBYUGDC2IkAwbx22iS+bX782/JjRlyYtWOGf9fm5w=;
-        b=gOl3cNoBRYj8Qpc32NlIEZiSXsQpB/DCyQ/znrDYIZGa+s4IthUOkEHZQZ1ojKZDv7
-         pTCluXhDLSbuLtIDsd06JUGzyqeVDBKsjduC6joRT5sGTNYRsVo9p/G6Hqiv2ugKa8LH
-         rdr0QZPkDK278uG4dV/k1t11BIQxvRWGgZaRWsIg0DoysUSAp2Ijq63EEZdxc0KL4gix
-         0HGUBH8kF/zweMHI/2v4mLjob8+u7zdHCmj600jDg7rYDwZddIyY/q/ZMJIgho4CGwiq
-         Rf68OjR0Rg0ygAgFFNEea3lYykknrXRPiTB8JjAsW5m8iBtmAm27VPmRKJbUJVbPKnmY
-         wuxA==
+        bh=5gvBLFzYAyi/HCXZ+GVBUHE668bhbiWmi3vwDs9Tl6k=;
+        b=I5bOS6bfxLXiEBfjSJmP2kPQXW/SHnwLLTr4Pv1YGOJfWIPhzpIEkiKigvzufOLE8z
+         PySBQSx0d0+tzNvKQjZSy72HymKoAuRoscdVD3mz0rt/jB8Y6EZI0Hs4WYS/QcUkjCkQ
+         w8JCNgcxA3AK/X9od3l54Dm9fYHBQunkNi2G+VlGLZfuFSeGcLjMIp0YguN3Du588HWY
+         UWsywY+dlyhYN95M8oqWM+ViHOjI8pWnpvPSFJCTuFlV7XnGnW9UVxSozj4IBjaVYRja
+         c+tkLJnZPA8seMLOKTKBakZMCiOE4R5iDaDnVWvTgDI/JcgRlH/AKu7MnFyysyA6h5nx
+         w+eQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:reply-to:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=QZsBYUGDC2IkAwbx22iS+bX782/JjRlyYtWOGf9fm5w=;
-        b=CT2py7Gu/WiirPTQscUoP52GrDCepvio7CxZwuw0hRlPFti0AJHEPDSZHSDuz6ZO6N
-         46Irbru7DNXH7Scv+zXu9ITZZ86dPB3F6fydhqq1wnejhorj3dYtTCH5wKUr4AIyxi2f
-         nHLrbI4o+0Nlxc/4a817zaBaiGsW4VCvLbKf+VMUKCNY92vqtecvMNLgvklWHCu1cYmJ
-         Uwh2eP+XPFPiPgB8YaJyYB3EEg7v9KEsHgoMVYQWJ2/7w2dP1ehFT98Or55LzXEhfYOR
-         u3e+mOrw8nwZEwkrAFV0c4YtE1Jg8dVRc+7BsRVq6Fzxnu8k6mmgsOvHfd/XWZcQqQF3
-         Ke2A==
-X-Gm-Message-State: ACrzQf2Zb/NGOBMMD0piKra7ZwcpBZkUya5KpdBv4Q5ZuZ/7DNA0YSpT
-        InDSmInErMIt7pPMxM+wb06lD1IE5Ok=
-X-Google-Smtp-Source: AMsMyM4F5G3DDnuJC2f+gpo6muVhVlP37u9Rx2CD7FgkZCjySGE+h3yA4RelKa6dFXDwgnEtjORGLCa20Ec=
+        bh=5gvBLFzYAyi/HCXZ+GVBUHE668bhbiWmi3vwDs9Tl6k=;
+        b=sPVrDyRZSYbKutxz0jXuigLKbfj+p1nThV+/Jh7C8+3PdDKdL6C7DSCLxyOzRG7SSt
+         FTb6nk7I7RfEXqW1TLjxk8vou3gDHd/kQdkydrhWpEFoD2mSk+QBX+kw0wQNtAop4jC/
+         06AKytjjrgLCZybuZMIejKZaHTqGApy/Fbv2xRJ6dpc3jaklIwien/jO557sonL5iDpt
+         4FnTj9J42aZNscC/Nbd72u0x0zMRQqUHzGNBMo3MntCBH9F1Q2yoDhNhBd5P4Mc5Puzk
+         y0tQekW8JD1AIPcowFRFSs4o+fNCnbBhipNSfBvPUKj/e6yFAT/Kddc2asgNd2rnbkRX
+         +zrg==
+X-Gm-Message-State: ACrzQf193MUWFDp3GPYMp6Km6h5BI34OOnZp36E4j8cfURwspGoU87Fu
+        SVI/SJMvRQcwZI1+Vecd0AKwhzzTNNQ=
+X-Google-Smtp-Source: AMsMyM6XQ/aBNhxY5VjT+v6espe0fFHwkGjh05tLgVXfHik64KiilbScLDe/Y3M46ipvBiC6zA50qPgHreE=
 X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a17:90b:384a:b0:213:2907:a528 with SMTP id
- nl10-20020a17090b384a00b002132907a528mr27758885pjb.183.1667431193502; Wed, 02
- Nov 2022 16:19:53 -0700 (PDT)
+ (user=seanjc job=sendgmr) by 2002:a05:6a00:2294:b0:56d:7387:8a06 with SMTP id
+ f20-20020a056a00229400b0056d73878a06mr18916476pfe.17.1667431214429; Wed, 02
+ Nov 2022 16:20:14 -0700 (PDT)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Wed,  2 Nov 2022 23:18:50 +0000
+Date:   Wed,  2 Nov 2022 23:19:02 +0000
 In-Reply-To: <20221102231911.3107438-1-seanjc@google.com>
 Mime-Version: 1.0
 References: <20221102231911.3107438-1-seanjc@google.com>
 X-Mailer: git-send-email 2.38.1.431.g37b22c650d-goog
-Message-ID: <20221102231911.3107438-24-seanjc@google.com>
-Subject: [PATCH 23/44] KVM: RISC-V: Tag init functions and data with __init, __ro_after_init
+Message-ID: <20221102231911.3107438-36-seanjc@google.com>
+Subject: [PATCH 35/44] KVM: SVM: Check for SVM support in CPU compatibility checks
 From:   Sean Christopherson <seanjc@google.com>
 To:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
         Huacai Chen <chenhuacai@kernel.org>,
@@ -91,91 +91,51 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Now that KVM setup is handled directly in riscv_kvm_init(), tag functions
-and data that are used/set only during init with __init/__ro_after_init.
+Check that SVM is supported and enabled in the processor compatibility
+checks.  SVM already checks for support during hardware enabling,
+i.e. this doesn't really add new functionality.  The net effect is that
+KVM will refuse to load if a CPU doesn't have SVM fully enabled, as
+opposed to failing KVM_CREATE_VM.
+
+Opportunistically move svm_check_processor_compat() up in svm.c so that
+it can be invoked during hardware enabling in a future patch.
 
 Signed-off-by: Sean Christopherson <seanjc@google.com>
 ---
- arch/riscv/include/asm/kvm_host.h |  6 +++---
- arch/riscv/kvm/mmu.c              | 12 ++++++------
- arch/riscv/kvm/vmid.c             |  4 ++--
- 3 files changed, 11 insertions(+), 11 deletions(-)
+ arch/x86/kvm/svm/svm.c | 13 ++++++++-----
+ 1 file changed, 8 insertions(+), 5 deletions(-)
 
-diff --git a/arch/riscv/include/asm/kvm_host.h b/arch/riscv/include/asm/kvm_host.h
-index 8c771fc4f5d2..778ff0f282b7 100644
---- a/arch/riscv/include/asm/kvm_host.h
-+++ b/arch/riscv/include/asm/kvm_host.h
-@@ -295,11 +295,11 @@ int kvm_riscv_gstage_map(struct kvm_vcpu *vcpu,
- int kvm_riscv_gstage_alloc_pgd(struct kvm *kvm);
- void kvm_riscv_gstage_free_pgd(struct kvm *kvm);
- void kvm_riscv_gstage_update_hgatp(struct kvm_vcpu *vcpu);
--void kvm_riscv_gstage_mode_detect(void);
--unsigned long kvm_riscv_gstage_mode(void);
-+void __init kvm_riscv_gstage_mode_detect(void);
-+unsigned long __init kvm_riscv_gstage_mode(void);
- int kvm_riscv_gstage_gpa_bits(void);
- 
--void kvm_riscv_gstage_vmid_detect(void);
-+void __init kvm_riscv_gstage_vmid_detect(void);
- unsigned long kvm_riscv_gstage_vmid_bits(void);
- int kvm_riscv_gstage_vmid_init(struct kvm *kvm);
- bool kvm_riscv_gstage_vmid_ver_changed(struct kvm_vmid *vmid);
-diff --git a/arch/riscv/kvm/mmu.c b/arch/riscv/kvm/mmu.c
-index 3620ecac2fa1..f42a34c7879a 100644
---- a/arch/riscv/kvm/mmu.c
-+++ b/arch/riscv/kvm/mmu.c
-@@ -20,12 +20,12 @@
- #include <asm/pgtable.h>
- 
- #ifdef CONFIG_64BIT
--static unsigned long gstage_mode = (HGATP_MODE_SV39X4 << HGATP_MODE_SHIFT);
--static unsigned long gstage_pgd_levels = 3;
-+static unsigned long gstage_mode __ro_after_init = (HGATP_MODE_SV39X4 << HGATP_MODE_SHIFT);
-+static unsigned long gstage_pgd_levels __ro_after_init = 3;
- #define gstage_index_bits	9
- #else
--static unsigned long gstage_mode = (HGATP_MODE_SV32X4 << HGATP_MODE_SHIFT);
--static unsigned long gstage_pgd_levels = 2;
-+static unsigned long gstage_mode __ro_after_init = (HGATP_MODE_SV32X4 << HGATP_MODE_SHIFT);
-+static unsigned long gstage_pgd_levels __ro_after_init = 2;
- #define gstage_index_bits	10
- #endif
- 
-@@ -760,7 +760,7 @@ void kvm_riscv_gstage_update_hgatp(struct kvm_vcpu *vcpu)
- 		kvm_riscv_local_hfence_gvma_all();
+diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
+index 3523d24d004b..efda384d29d4 100644
+--- a/arch/x86/kvm/svm/svm.c
++++ b/arch/x86/kvm/svm/svm.c
+@@ -549,6 +549,14 @@ static bool kvm_is_svm_supported(void)
+ 	return true;
  }
  
--void kvm_riscv_gstage_mode_detect(void)
-+void __init kvm_riscv_gstage_mode_detect(void)
++static int __init svm_check_processor_compat(void)
++{
++	if (!kvm_is_svm_supported())
++		return -EIO;
++
++	return 0;
++}
++
+ void __svm_write_tsc_multiplier(u64 multiplier)
  {
- #ifdef CONFIG_64BIT
- 	/* Try Sv57x4 G-stage mode */
-@@ -784,7 +784,7 @@ void kvm_riscv_gstage_mode_detect(void)
- #endif
+ 	preempt_disable();
+@@ -4129,11 +4137,6 @@ svm_patch_hypercall(struct kvm_vcpu *vcpu, unsigned char *hypercall)
+ 	hypercall[2] = 0xd9;
  }
  
--unsigned long kvm_riscv_gstage_mode(void)
-+unsigned long __init kvm_riscv_gstage_mode(void)
- {
- 	return gstage_mode >> HGATP_MODE_SHIFT;
- }
-diff --git a/arch/riscv/kvm/vmid.c b/arch/riscv/kvm/vmid.c
-index 6cd93995fb65..5246da1c9167 100644
---- a/arch/riscv/kvm/vmid.c
-+++ b/arch/riscv/kvm/vmid.c
-@@ -17,10 +17,10 @@
- 
- static unsigned long vmid_version = 1;
- static unsigned long vmid_next;
--static unsigned long vmid_bits;
-+static unsigned long vmid_bits __ro_after_init;
- static DEFINE_SPINLOCK(vmid_lock);
- 
--void kvm_riscv_gstage_vmid_detect(void)
-+void __init kvm_riscv_gstage_vmid_detect(void)
- {
- 	unsigned long old;
- 
+-static int __init svm_check_processor_compat(void)
+-{
+-	return 0;
+-}
+-
+ /*
+  * The kvm parameter can be NULL (module initialization, or invocation before
+  * VM creation). Be sure to check the kvm parameter before using it.
 -- 
 2.38.1.431.g37b22c650d-goog
 

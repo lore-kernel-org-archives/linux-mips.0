@@ -2,35 +2,35 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4D23DC433FE
-	for <linux-mips@archiver.kernel.org>; Sun,  6 Nov 2022 17:11:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4DED5C4332F
+	for <linux-mips@archiver.kernel.org>; Sun,  6 Nov 2022 17:12:38 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230191AbiKFRLo (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Sun, 6 Nov 2022 12:11:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50750 "EHLO
+        id S230475AbiKFRMh (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Sun, 6 Nov 2022 12:12:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51626 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230219AbiKFRLR (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Sun, 6 Nov 2022 12:11:17 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50C3A11A20;
-        Sun,  6 Nov 2022 09:07:17 -0800 (PST)
+        with ESMTP id S231320AbiKFRLm (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Sun, 6 Nov 2022 12:11:42 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6DDC14097;
+        Sun,  6 Nov 2022 09:07:26 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 46933B80B3A;
-        Sun,  6 Nov 2022 17:06:58 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D3051C4347C;
-        Sun,  6 Nov 2022 17:06:55 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 61EE160D3C;
+        Sun,  6 Nov 2022 17:06:54 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C654EC43144;
+        Sun,  6 Nov 2022 17:06:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1667754417;
-        bh=vD0fS3vUM2Fo4/pNP8nVoqZGF21/4+JFozgreajiXVs=;
+        s=k20201202; t=1667754413;
+        bh=dPYviG2x1KuTLEznEqp0BpXt7OOMBWQoC0Si/zlHnRA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Eh+RSruFh2NXkJ33KMHpl67lxp7r8no9bFBrh3MILPdiYDsIBh/Mb12cDrNS5nUTw
-         GkAnQX8kU2ju5d1GGJz8sdh/GK16s56jtGyS7gn/hmOnE65ufDRACpHQbsDGnSpBTb
-         KyrjhIeqfxrZKANS6HHvRqMHFh5A2QTddT9wPw7Lm8Jg2lS0RFwNTjgrCtLsDjcyJZ
-         7fw7t8Kk1LWPxEZCfTu7Qlgoha7e1fl2cgeKbD2JHmMUeyRmOEwT2fMS/BaGfmZt+4
-         9Ndbei2V7DKnshOB/eIscLlGO8v4nm9q5+G+C3YkDDj4QpHwA5tme6QY3vVMMDEOTC
-         LS1mRHQJu9Jaw==
+        b=uIxIM+cVUkalFm7jehKSbl6v3kfyRxdRcuymSFO+wc9oPZ2NaMfrknhfgT5kP86VK
+         VTI+goPCzlbTA9n+akNoNHh5Ijp6PWgfutiq+ztwQH5bxhsx40xI42zror8dIHigXb
+         CSXnqnfXIdumbuImDV35Cg2VDe989p1xj1cv3lmqIcacdyYkSV4Bgt7guNmkibLSor
+         /txfiykzl2rJL5prszeaMUuiuEiCAIt1FIJJbxMaGNf0yiTABNw0Tk4k8He0QpdIbv
+         +WQrkkDC7eZ/0B2FHw8cnrIkUToRTK59+ujB8ppWQmf9Y0ECiHkTIPobSEv+zUC1VO
+         Q+22GsMLP97OA==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Siarhei Volkau <lis8215@gmail.com>,
@@ -38,9 +38,9 @@ Cc:     Siarhei Volkau <lis8215@gmail.com>,
         Sasha Levin <sashal@kernel.org>, paul@crapouillou.net,
         lgirdwood@gmail.com, perex@perex.cz, tiwai@suse.com,
         linux-mips@vger.kernel.org, alsa-devel@alsa-project.org
-Subject: [PATCH AUTOSEL 5.4 09/12] ASoC: codecs: jz4725b: fix capture selector naming
-Date:   Sun,  6 Nov 2022 12:06:33 -0500
-Message-Id: <20221106170637.1580802-9-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.4 07/12] ASoC: codecs: jz4725b: fix reported volume for Master ctl
+Date:   Sun,  6 Nov 2022 12:06:31 -0500
+Message-Id: <20221106170637.1580802-7-sashal@kernel.org>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20221106170637.1580802-1-sashal@kernel.org>
 References: <20221106170637.1580802-1-sashal@kernel.org>
@@ -54,60 +54,37 @@ X-Mailing-List: linux-mips@vger.kernel.org
 
 From: Siarhei Volkau <lis8215@gmail.com>
 
-[ Upstream commit 80852f8268769715db335a22305e81a0c4a38a84 ]
+[ Upstream commit 088777bf65b98cfa4b5378119d0a7d49a58ece44 ]
 
-At the moment Capture source selector appears on Playback
-tab in the alsamixer and has a senseless name.
+DAC volume control is the Master Playback Volume at the moment
+and it reports wrong levels in alsamixer and other alsa apps.
 
-Let's fix that.
+The patch fixes that, as stated in manual on the jz4725b SoC
+(16.6.3.4 Programmable attenuation: GOD) the ctl range varies
+from -22.5dB to 0dB with 1.5dB step.
 
 Signed-off-by: Siarhei Volkau <lis8215@gmail.com>
-Link: https://lore.kernel.org/r/20221016132648.3011729-5-lis8215@gmail.com
+Link: https://lore.kernel.org/r/20221016132648.3011729-3-lis8215@gmail.com
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/codecs/jz4725b.c | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+ sound/soc/codecs/jz4725b.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/sound/soc/codecs/jz4725b.c b/sound/soc/codecs/jz4725b.c
-index 1960516ac65e..ebe643e4aa2f 100644
+index a04b8d5d1ded..1f7a234266b9 100644
 --- a/sound/soc/codecs/jz4725b.c
 +++ b/sound/soc/codecs/jz4725b.c
-@@ -183,7 +183,7 @@ static SOC_VALUE_ENUM_SINGLE_DECL(jz4725b_codec_adc_src_enum,
- 				  jz4725b_codec_adc_src_texts,
- 				  jz4725b_codec_adc_src_values);
- static const struct snd_kcontrol_new jz4725b_codec_adc_src_ctrl =
--			SOC_DAPM_ENUM("Route", jz4725b_codec_adc_src_enum);
-+	SOC_DAPM_ENUM("ADC Source Capture Route", jz4725b_codec_adc_src_enum);
+@@ -142,8 +142,8 @@ struct jz_icdc {
+ 	struct clk *clk;
+ };
  
- static const struct snd_kcontrol_new jz4725b_codec_mixer_controls[] = {
- 	SOC_DAPM_SINGLE("Line In Bypass", JZ4725B_CODEC_REG_CR1,
-@@ -228,7 +228,7 @@ static const struct snd_soc_dapm_widget jz4725b_codec_dapm_widgets[] = {
- 	SND_SOC_DAPM_ADC("ADC", "Capture",
- 			 JZ4725B_CODEC_REG_PMR1, REG_PMR1_SB_ADC_OFFSET, 1),
+-static const SNDRV_CTL_TLVD_DECLARE_DB_LINEAR(jz4725b_dac_tlv, -2250, 0);
+ static const SNDRV_CTL_TLVD_DECLARE_DB_LINEAR(jz4725b_line_tlv, -1500, 600);
++static const SNDRV_CTL_TLVD_DECLARE_DB_SCALE(jz4725b_dac_tlv, -2250, 150, 0);
  
--	SND_SOC_DAPM_MUX("ADC Source", SND_SOC_NOPM, 0, 0,
-+	SND_SOC_DAPM_MUX("ADC Source Capture Route", SND_SOC_NOPM, 0, 0,
- 			 &jz4725b_codec_adc_src_ctrl),
- 
- 	/* Mixer */
-@@ -287,11 +287,11 @@ static const struct snd_soc_dapm_route jz4725b_codec_dapm_routes[] = {
- 	{"Mixer", NULL, "DAC to Mixer"},
- 
- 	{"Mixer to ADC", NULL, "Mixer"},
--	{"ADC Source", "Mixer", "Mixer to ADC"},
--	{"ADC Source", "Line In", "Line In"},
--	{"ADC Source", "Mic 1", "Mic 1"},
--	{"ADC Source", "Mic 2", "Mic 2"},
--	{"ADC", NULL, "ADC Source"},
-+	{"ADC Source Capture Route", "Mixer", "Mixer to ADC"},
-+	{"ADC Sourc Capture Routee", "Line In", "Line In"},
-+	{"ADC Source Capture Route", "Mic 1", "Mic 1"},
-+	{"ADC Source Capture Route", "Mic 2", "Mic 2"},
-+	{"ADC", NULL, "ADC Source Capture Route"},
- 
- 	{"Out Stage", NULL, "Mixer"},
- 	{"HP Out", NULL, "Out Stage"},
+ static const struct snd_kcontrol_new jz4725b_codec_controls[] = {
+ 	SOC_DOUBLE_TLV("Master Playback Volume",
 -- 
 2.35.1
 

@@ -2,150 +2,148 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EAE19C4332F
-	for <linux-mips@archiver.kernel.org>; Mon,  7 Nov 2022 09:56:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DDDD4C4332F
+	for <linux-mips@archiver.kernel.org>; Mon,  7 Nov 2022 10:57:35 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231460AbiKGJ4A (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 7 Nov 2022 04:56:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48162 "EHLO
+        id S231419AbiKGK5e (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 7 Nov 2022 05:57:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55422 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231381AbiKGJz6 (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Mon, 7 Nov 2022 04:55:58 -0500
-Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD79521A2
-        for <linux-mips@vger.kernel.org>; Mon,  7 Nov 2022 01:55:56 -0800 (PST)
-Received: by mail-lj1-x234.google.com with SMTP id t10so15433843ljj.0
-        for <linux-mips@vger.kernel.org>; Mon, 07 Nov 2022 01:55:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=aLtEeCFiCxXJ7VuUQxzHQNxi1R/lqsAPobiPIap7VVA=;
-        b=dL7S+hw+wOWhAN4nphHdzh4DQicj7fMvPh3u8c8zuOP66Wn4StLnil1Caxp1iMpvYx
-         us4mV7FtXnrgsxyDIV6dl532vc0kGUtNlo2F/JNCsDOz7vUktP0m431Z88ZL3N03KNWo
-         lziwpMT/0S9NXR2wINoQGyuy35qscW1YojLlBdSTLptDUw9KWQfQbQ7bR5fDYYAOFC+x
-         5DcA6yIz07aLmGf4jwOM2JWN4x8KnkdeJuymFiX04c7IL7YyquimT6UjtezgDUwCkT7Y
-         iMZmwP3usreIgjQmZ3v5ej/xJkLsfCMXvVNZtOCBedKjMNFsB0N1bFR9rqP9hsFgAiPj
-         rD+w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=aLtEeCFiCxXJ7VuUQxzHQNxi1R/lqsAPobiPIap7VVA=;
-        b=6BFLGFARO0ABMnHtupbIH8o7uW/5XcL/39Nn6S0U3m7oTeFHyRG39Nkw9aa1HvPJ5J
-         myRjT7UO6uxY8805cbPBUco2xjKGg31InDpOD0rZaIwRkuwmhDwQT5PeTztlGx7HMZE0
-         W88I0koyKUX9ecIWHeXdLhazhaVqAcq+fglWjqrfAPC/qdyQPIZ4zU3M8crMrQW71MkW
-         jj3WN2kpbWhnPBhLlKGJ6Y8QIiT9m9aEQv4oWBiLpyPW84bMvxrmRH7oKgPEVTvLbAOF
-         vfjQUAhH+XUYsel0XAlfGIElUsopv8ca1bwTIL61ApoUVUpgW/lY2ZmcYOWksa98Tsjw
-         c8kg==
-X-Gm-Message-State: ACrzQf1OhJz0m1nH+VIifcLKioUoGzCPburtoAezIQA75tlJ54bCPsxj
-        5sKsoC7dniXyqn6Hnprh+Y1Kuw==
-X-Google-Smtp-Source: AMsMyM69ATpe2QDRjleiuM/qB2AaNZ1K/eRBa4DKma6gQUdzgFkQoWcazLLmirIElWvKVk/7P8epyw==
-X-Received: by 2002:a2e:a553:0:b0:277:8b20:46bb with SMTP id e19-20020a2ea553000000b002778b2046bbmr5498982ljn.320.1667814955211;
-        Mon, 07 Nov 2022 01:55:55 -0800 (PST)
-Received: from [192.168.0.20] (088156142199.dynamic-2-waw-k-3-2-0.vectranet.pl. [88.156.142.199])
-        by smtp.gmail.com with ESMTPSA id 13-20020a05651c128d00b0027712379ec8sm1144495ljc.28.2022.11.07.01.55.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 07 Nov 2022 01:55:54 -0800 (PST)
-Message-ID: <e92beaac-aa88-0336-cb30-7de438de67c9@linaro.org>
-Date:   Mon, 7 Nov 2022 10:55:53 +0100
+        with ESMTP id S231922AbiKGK5J (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Mon, 7 Nov 2022 05:57:09 -0500
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com [67.231.152.168])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 089C0193D2;
+        Mon,  7 Nov 2022 02:57:08 -0800 (PST)
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+        by mx0b-001ae601.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 2A75Ku16012177;
+        Mon, 7 Nov 2022 04:56:54 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=PODMain02222019;
+ bh=MTDWpx1hsSGPKEDqYGlpVHQIbEswPJLgPoSW4FILuto=;
+ b=i917JrNjkH3z3a2XXOdwc3doHM6OAxz7LbDVUIm7C+E3Cwrb58ZxQpsKKdqXGk5Z9z+/
+ hzIdNQ85JqsCyNGRwGzs83o+jomuHbPhAuHnJILygojPwEG6jpejkauG5tvHq+6Mjx1T
+ 10Yn1n9hWdF7kaZM8JMcssci6VZmHmvumMtu+EtvU3lJyidhtFDMwmr56awM5w5p+0ch
+ stqQ4q3mYnrkiSj6po7T4la5GvjwlpX4RBmjPsI7iQ7y3uUL/hIt6CTV9TTf6ttWh4IS
+ JztSITFuL9+F5l7b8BFUGCyo8869zZsKrryWoIr9+DG4ZaxCTT2UTGw8JJDMLIjOfV8b vg== 
+Received: from ediex02.ad.cirrus.com ([84.19.233.68])
+        by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3knm8pa27e-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 07 Nov 2022 04:56:54 -0600
+Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.15; Mon, 7 Nov
+ 2022 04:56:53 -0600
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.2.1118.15 via Frontend
+ Transport; Mon, 7 Nov 2022 04:56:53 -0600
+Received: from ediswmail.ad.cirrus.com (ediswmail.ad.cirrus.com [198.61.86.93])
+        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 0BFD7468;
+        Mon,  7 Nov 2022 10:56:53 +0000 (UTC)
+Date:   Mon, 7 Nov 2022 10:56:53 +0000
+From:   Charles Keepax <ckeepax@opensource.cirrus.com>
+To:     Maxime Ripard <maxime@cerno.tech>
+CC:     Stephen Boyd <sboyd@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Chen-Yu Tsai <wens@csie.org>, Daniel Vetter <daniel@ffwll.ch>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Fabio Estevam <festevam@gmail.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Claudiu Beznea <claudiu.beznea@microchip.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Dinh Nguyen <dinguyen@kernel.org>,
+        Paul Cercueil <paul@crapouillou.net>,
+        Chunyan Zhang <zhang.lyra@gmail.com>,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        Andreas =?iso-8859-1?Q?F=E4rber?= <afaerber@suse.de>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Abel Vesa <abelvesa@kernel.org>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        Orson Zhai <orsonzhai@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Prashant Gaikwad <pgaikwad@nvidia.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Samuel Holland <samuel@sholland.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Richard Fitzgerald <rf@opensource.cirrus.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Sekhar Nori <nsekhar@ti.com>,
+        Kishon Vijay Abraham I <kishon@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Takashi Iwai <tiwai@suse.com>,
+        David Airlie <airlied@gmail.com>,
+        Luca Ceresoli <luca.ceresoli@bootlin.com>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Baolin Wang <baolin.wang@linux.alibaba.com>,
+        David Lechner <david@lechnology.com>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Mark Brown <broonie@kernel.org>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <alsa-devel@alsa-project.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <linux-phy@lists.infradead.org>, <linux-mips@vger.kernel.org>,
+        <linux-renesas-soc@vger.kernel.org>,
+        <linux-actions@lists.infradead.org>, <linux-clk@vger.kernel.org>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        <patches@opensource.cirrus.com>, <linux-tegra@vger.kernel.org>,
+        <linux-rtc@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-sunxi@lists.linux.dev>, <linux-kernel@vger.kernel.org>,
+        <dri-devel@lists.freedesktop.org>
+Subject: Re: [PATCH v2 65/65] clk: Warn if we register a mux without
+ determine_rate
+Message-ID: <20221107105653.GE10437@ediswmail.ad.cirrus.com>
+References: <20221018-clk-range-checks-fixes-v2-0-f6736dec138e@cerno.tech>
+ <20221018-clk-range-checks-fixes-v2-65-f6736dec138e@cerno.tech>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.4.2
-Subject: Re: [PATCH 2/2] dt-bindings: interrupt-controller: add yaml for
- LoongArch CPU interrupt controller
-Content-Language: en-US
-To:     Liu Peibao <liupeibao@loongson.cn>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        WANG Xuerui <kernel@xen0n.name>
-Cc:     Jianmin Lv <lvjianmin@loongson.cn>,
-        Yinbo Zhu <zhuyinbo@loongson.cn>, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20221107023404.26730-1-liupeibao@loongson.cn>
- <20221107023404.26730-2-liupeibao@loongson.cn>
- <b45b8cf8-de9d-7132-1a35-48deeb4b79d5@linaro.org>
- <196e80d8-f4fb-7393-81a5-bca757c805f5@loongson.cn>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <196e80d8-f4fb-7393-81a5-bca757c805f5@loongson.cn>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20221018-clk-range-checks-fixes-v2-65-f6736dec138e@cerno.tech>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-Proofpoint-ORIG-GUID: UMPSZnVO7oPJzivHhsi11mqwMsALxb4N
+X-Proofpoint-GUID: UMPSZnVO7oPJzivHhsi11mqwMsALxb4N
+X-Proofpoint-Spam-Reason: safe
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On 07/11/2022 10:21, Liu Peibao wrote:
-> On 11/7/22 4:28 PM, Krzysztof Kozlowski wrote:
->> On 07/11/2022 03:34, Liu Peibao wrote:
->>
->> Add commit msg explaining what you are doing here (e.g. the hardware).
->>
+On Fri, Nov 04, 2022 at 02:18:22PM +0100, Maxime Ripard wrote:
+> The determine_rate hook allows to select the proper parent and its rate
+> for a given clock configuration. On another hand, set_parent is there to
+> change the parent of a mux.
 > 
-> I just add this yaml for what I did in patch 1/2 and the header seems enough
-> to describe what I want to, so I did not add the commit log.
+> Some clocks provide a set_parent hook but don't implement
+> determine_rate. In such a case, set_parent is pretty much useless since
+> the clock framework will always assume the current parent is to be used,
+> and we will thus never change it.
+> 
+> This situation can be solved in two ways:
+>   - either we don't need to change the parent, and we thus shouldn't
+>     implement set_parent;
+>   - or we don't want to change the parent, in this case we should set
+>     CLK_SET_RATE_NO_REPARENT;
+>   - or we're missing a determine_rate implementation.
+> 
+> The latter is probably just an oversight from the driver's author, and
+> we should thus raise their awareness about the fact that the current
+> state of the driver is confusing.
+> 
+> It's not clear at this point how many drivers are affected though, so
+> let's make it a warning instead of an error for now.
+> 
 
-This should instead describe briefly the hardware here.
+Commit message could probably use updated to make the new state
+of the chain.
 
-> 
->>> Signed-off-by: Liu Peibao <liupeibao@loongson.cn>
->>> ---
->>>  .../loongarch,cpu-interrupt-controller.yaml   | 42 +++++++++++++++++++
->>>  1 file changed, 42 insertions(+)
->>>  create mode 100644 Documentation/devicetree/bindings/interrupt-controller/loongarch,cpu-interrupt-controller.yaml
->>>
->>> diff --git a/Documentation/devicetree/bindings/interrupt-controller/loongarch,cpu-interrupt-controller.yaml b/Documentation/devicetree/bindings/interrupt-controller/loongarch,cpu-interrupt-controller.yaml
->>> new file mode 100644
->>> index 000000000000..30b742661a3f
->>> --- /dev/null
->>> +++ b/Documentation/devicetree/bindings/interrupt-controller/loongarch,cpu-interrupt-controller.yaml
->>> @@ -0,0 +1,42 @@
->>> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
->>> +%YAML 1.2
->>> +---
->>> +$id: http://devicetree.org/schemas/interrupt-controller/loongarch,cpu-interrupt-controller.yaml#
->>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->>> +
->>> +title: LoongArch CPU Interrupt Controller
->>> +
->>> +description: >
->>> +   On LoongArch the loongarch_cpu_irq_of_init() helper can be used to initialize
->>> +   the 14 CPU IRQs from a devicetree file and create a irq_domain for this IRQ
->>> +   controller.
->>> +
->>> +   With the irq_domain in place we can describe how the 14 IRQs are wired to the
->>> +   platforms internal interrupt controller cascade.
->>
->> This should be the description of hardware, not Linux drivers.
->>
-> 
-> OK, I will remove this in the next version of this patch.
-> 
->>> +
->>> +maintainers:
->>> +  - Liu Peibao <liupeibao@loongson.cn>
->>> +
->>> +properties:
->>> +  compatible:
->>> +    const: loongarch,cpu-interrupt-controller
->>
->> You have exactly one and only one type of CPU interrupt controller for
->> all your Loongarch designs? All current and all future? All?
->>
-> 
-> It is sure of that "all current and recent designs". It is really hard to limit the
-> design in the distant future.
-> 
-> And if there is updating, maybe I will add additional things like this:
-> "loongarch,cpu-interrupt-controller-2.0".
-
-Unless you have a clear versioning of your hardware, adding 2.0 won't be
-correct. Don't you have this for specific SoC?
-
-Best regards,
-Krzysztof
-
+Thanks,
+Charles

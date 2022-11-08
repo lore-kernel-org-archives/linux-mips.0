@@ -2,151 +2,313 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 427BBC4167E
-	for <linux-mips@archiver.kernel.org>; Tue,  8 Nov 2022 13:27:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 625FAC433FE
+	for <linux-mips@archiver.kernel.org>; Tue,  8 Nov 2022 15:28:28 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233808AbiKHN1W (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 8 Nov 2022 08:27:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60998 "EHLO
+        id S234314AbiKHP21 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 8 Nov 2022 10:28:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51560 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234344AbiKHN1U (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Tue, 8 Nov 2022 08:27:20 -0500
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21CA44E433
-        for <linux-mips@vger.kernel.org>; Tue,  8 Nov 2022 05:27:19 -0800 (PST)
-Received: by mail-ej1-x62b.google.com with SMTP id n12so38506674eja.11
-        for <linux-mips@vger.kernel.org>; Tue, 08 Nov 2022 05:27:19 -0800 (PST)
+        with ESMTP id S233784AbiKHP2Z (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Tue, 8 Nov 2022 10:28:25 -0500
+Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BA4E2F9
+        for <linux-mips@vger.kernel.org>; Tue,  8 Nov 2022 07:28:22 -0800 (PST)
+Received: by mail-lj1-x236.google.com with SMTP id k19so21648187lji.2
+        for <linux-mips@vger.kernel.org>; Tue, 08 Nov 2022 07:28:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=N/2yj1vtV3WtEYwU3cNvgg/PVgtVCmwn3eJn8jo49wk=;
-        b=VMnat+U1KSonabFKRPuR13L5JqFFcM/AvvqPUwa+9VtqcDpyz6Op4uI9k8fhWWUfgj
-         OQMGyd7nBSVagfiyDveayuziCLNEcnxn2ErDoMUoLlpt3yo8/JHVhiTmfW1xUoXEQ8ch
-         5jJZRKNOXfrIQxouT0FZtywu8oBKzwLv6/7PIprEyWb5tHAmIqyiFvsPphy4dzO+D1O/
-         ByJEsT3p8EBbAPP+gKvFSCFRhufjqGSeVaHTdjl/xTUCo6crbpyBuirSVOUQflk15qBf
-         1q39gU7+oVdTRiJwpV9lCujVgxFVrOBGfRo6fbxcreewXR1hDWvKWjF1rSAwPNJVX2jh
-         IlsQ==
+        h=content-transfer-encoding:in-reply-to:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=rYyQ/3KwA5SEi7xobmtMHnwgbg0DrEr9YUI+FxITXks=;
+        b=oudhA7iWo073iyyJQt8Okd+b8G1K6VItNkGt4/f1tP4fNyw46cvITxgr/evZp9ORvq
+         rkKqlTFcDHk+3t7el5VIFhrrAQngAPgr6QOO+cfQayIr194tPIilrMUubBSC9iSNv2N4
+         gaptbtSKej2YQ0XMaua2sSnq2tBBTPd+6XX9IJoVzAU8xWAzvjeKyZccNt9GKW6RNjmF
+         BfKHbhmOe5/2s67vZQyjBLFMoJ/A8AWZnLZ53XhvDY+3kWHsxDxQ8aoRlTd1TincoTZP
+         c36QC8Cuzfa3bxTExcAgxbvK3Wu6BxjKMvIwuVPxDs5fcl8yslN13jt8lb0JUOP7udjN
+         8Fgw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=N/2yj1vtV3WtEYwU3cNvgg/PVgtVCmwn3eJn8jo49wk=;
-        b=0hXR/UmL7PCaoo8sPZPKxuLBE/czW91FnHFbchxTiYJakU7VqltEnIxgZY2pL6Ha7Q
-         eTv6ZyENdWlD3i4s84GTrcDER3kmW4cv724n6Ct8xH0hdwHnHQDnF+zDLtfvPT5Fm+Ya
-         BjiFCF9CCW45GoHZDpX3lzR/BTyISxwbqKubQinExxkgtdviehQAs4aQwaI2j8HZxm7h
-         w8d2BYBK1pz9Myqij3AvJBDPvGPBKBAfk7dPmOOgQ65YIQ1c8za/h+L5km8d1wSBi2Qg
-         132qFiTXVNdjpnr0vayv2OMNGuTcg4E4w7m7u8qaB+G0kVID7UUWcE72qk8N6QgWDYqZ
-         EOyQ==
-X-Gm-Message-State: ACrzQf1VQDNqMkNs1do3sX5rpGd9CbojzhwHjRtOnv1pZXaO/BngsKdO
-        prvy9yj8joJEWKph6q+UZAS0n0h8evNpPMs6G/Qg0A==
-X-Google-Smtp-Source: AMsMyM4SQlliAGfUpQoe5HVHzBogl+LIrkzKv8wyDOakcTA7xnKfY84HO6wUWBApVXLz+WmeEpt0AVEmstNop5fvJLQ=
-X-Received: by 2002:a17:906:4c4b:b0:7ad:a197:b58e with SMTP id
- d11-20020a1709064c4b00b007ada197b58emr54058070ejw.203.1667914037645; Tue, 08
- Nov 2022 05:27:17 -0800 (PST)
+        h=content-transfer-encoding:in-reply-to:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=rYyQ/3KwA5SEi7xobmtMHnwgbg0DrEr9YUI+FxITXks=;
+        b=kZIK1KYBVpYScYfJ7qmnvIs3XREkj/IMURQ4wEhBZXEodRzOOcWaM5jaM4oGPwchSp
+         r7+heopg6DecOSXhaeBz/IgJ/e2NXEmcXzUXu2tQWQFHSWjkUUze9YEuyHIx2UIo0Fzh
+         MxTJMyK3Ph09Za4Slo61T1CyhOL30tcN3rbYA4Y6MzZnDpDGdiCrF5OpLp1JpiySu6AQ
+         xSwtaMjU5irkNSvi+p5r9jt5UyfVtAqMaFLG7wTVq7aAijqYMsUmuDfDymtwqe/eMc+y
+         xPm7JFvtSfNvbbXyG4U5ioH7DhP+q/4hS/pBQgOsKdLYylIE0PiWbdnwp96YnCZdYAn9
+         W+QA==
+X-Gm-Message-State: ACrzQf3bcYHsuI24U0dVJDjv0LPrHqcL6qWG8IwwTl8QGA51FMtE+3HR
+        sbTayhd+CG/4lqpTbHMe4Unoiw==
+X-Google-Smtp-Source: AMsMyM7azffc3j7n0RlXzVVXhr4h6KU9GBtHDPvSR1EQLGZAnoaDtp1H2k8dV1j18dnuFx2eTd4lcw==
+X-Received: by 2002:a05:651c:88a:b0:26c:81e1:57dc with SMTP id d10-20020a05651c088a00b0026c81e157dcmr21276405ljq.236.1667921300408;
+        Tue, 08 Nov 2022 07:28:20 -0800 (PST)
+Received: from [192.168.0.20] (088156142199.dynamic-2-waw-k-3-2-0.vectranet.pl. [88.156.142.199])
+        by smtp.gmail.com with ESMTPSA id s2-20020a05651c048200b0026fc79fd67dsm1777329ljc.74.2022.11.08.07.28.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 08 Nov 2022 07:28:19 -0800 (PST)
+Message-ID: <d9edb6e1-c3da-0f5b-546d-37d8151aaa35@linaro.org>
+Date:   Tue, 8 Nov 2022 16:28:18 +0100
 MIME-Version: 1.0
-References: <20221018-clk-range-checks-fixes-v2-0-f6736dec138e@cerno.tech> <20221018-clk-range-checks-fixes-v2-35-f6736dec138e@cerno.tech>
-In-Reply-To: <20221018-clk-range-checks-fixes-v2-35-f6736dec138e@cerno.tech>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Tue, 8 Nov 2022 14:27:06 +0100
-Message-ID: <CACRpkdaOM=T1pRJNK6hdc76m5tQfrjvF9nVBp7ZDf3wOMNSwyg@mail.gmail.com>
-Subject: Re: [PATCH v2 35/65] clk: ux500: sysctrl: Add a determine_rate hook
-To:     Maxime Ripard <maxime@cerno.tech>
-Cc:     Stephen Boyd <sboyd@kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Chen-Yu Tsai <wens@csie.org>, Daniel Vetter <daniel@ffwll.ch>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Fabio Estevam <festevam@gmail.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Claudiu Beznea <claudiu.beznea@microchip.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Dinh Nguyen <dinguyen@kernel.org>,
-        Paul Cercueil <paul@crapouillou.net>,
-        Chunyan Zhang <zhang.lyra@gmail.com>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        =?UTF-8?Q?Andreas_F=C3=A4rber?= <afaerber@suse.de>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Abel Vesa <abelvesa@kernel.org>,
-        Charles Keepax <ckeepax@opensource.cirrus.com>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        Orson Zhai <orsonzhai@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Prashant Gaikwad <pgaikwad@nvidia.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Samuel Holland <samuel@sholland.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Richard Fitzgerald <rf@opensource.cirrus.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Sekhar Nori <nsekhar@ti.com>,
-        Kishon Vijay Abraham I <kishon@kernel.org>,
-        Takashi Iwai <tiwai@suse.com>,
-        David Airlie <airlied@gmail.com>,
-        Luca Ceresoli <luca.ceresoli@bootlin.com>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Baolin Wang <baolin.wang@linux.alibaba.com>,
-        David Lechner <david@lechnology.com>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Mark Brown <broonie@kernel.org>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        linux-stm32@st-md-mailman.stormreply.com,
-        alsa-devel@alsa-project.org, linux-mediatek@lists.infradead.org,
-        linux-phy@lists.infradead.org, linux-mips@vger.kernel.org,
-        linux-renesas-soc@vger.kernel.org,
-        linux-actions@lists.infradead.org, linux-clk@vger.kernel.org,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        patches@opensource.cirrus.com, linux-tegra@vger.kernel.org,
-        linux-rtc@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.4.2
+Subject: Re: [PATCH v1 2/2] dt-bindings: gpio: add loongson series gpio
+Content-Language: en-US
+To:     Yinbo Zhu <zhuyinbo@loongson.cn>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <brgl@bgdev.pl>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        WANG Xuerui <kernel@xen0n.name>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Juxin Gao <gaojuxin@loongson.cn>,
+        Bibo Mao <maobibo@loongson.cn>,
+        Yanteng Si <siyanteng@loongson.cn>, linux-gpio@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        loongarch@lists.linux.dev, linux-mips@vger.kernel.org,
+        richard.liu@st.com, Arnaud Patard <apatard@mandriva.com>,
+        Hongbing Hu <huhb@lemote.com>,
+        Huacai Chen <chenhuacai@kernel.org>
+References: <20221108092107.28996-1-zhuyinbo@loongson.cn>
+ <20221108092107.28996-2-zhuyinbo@loongson.cn>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20221108092107.28996-2-zhuyinbo@loongson.cn>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Fri, Nov 4, 2022 at 2:32 PM Maxime Ripard <maxime@cerno.tech> wrote:
+On 08/11/2022 10:21, Yinbo Zhu wrote:
+> Add the Loongson series gpio binding with DT schema format using
+> json-schema.
+> 
+> Signed-off-by: Yinbo Zhu <zhuyinbo@loongson.cn>
+> ---
+>  .../bindings/gpio/loongson,ls-gpio.yaml       | 154 ++++++++++++++++++
+>  MAINTAINERS                                   |  11 ++
+>  2 files changed, 165 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/gpio/loongson,ls-gpio.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/gpio/loongson,ls-gpio.yaml b/Documentation/devicetree/bindings/gpio/loongson,ls-gpio.yaml
+> new file mode 100644
+> index 000000000000..9d335262ddcc
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/gpio/loongson,ls-gpio.yaml
+> @@ -0,0 +1,154 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/gpio/loongson,ls-gpio.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Loongson series GPIO controller.
+> +
+> +maintainers:
+> +  - Yinbo Zhu <zhuyinbo@loongson.cn>
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - loongson,ls2k-gpio
+> +      - loongson,ls7a-gpio
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  ngpios: true
 
-> The UX500 sysctrl "set_parent" clocks implement a mux with a set_parent
-> hook, but doesn't provide a determine_rate implementation.
->
-> This is a bit odd, since set_parent() is there to, as its name implies,
-> change the parent of a clock. However, the most likely candidate to
-> trigger that parent change is a call to clk_set_rate(), with
-> determine_rate() figuring out which parent is the best suited for a
-> given rate.
->
-> The other trigger would be a call to clk_set_parent(), but it's far less
-> used, and it doesn't look like there's any obvious user for that clock.
->
-> So, the set_parent hook is effectively unused, possibly because of an
-> oversight. However, it could also be an explicit decision by the
-> original author to avoid any reparenting but through an explicit call to
-> clk_set_parent().
->
-> The latter case would be equivalent to setting the flag
-> CLK_SET_RATE_NO_REPARENT, together with setting our determine_rate hook
-> to __clk_mux_determine_rate(). Indeed, if no determine_rate
-> implementation is provided, clk_round_rate() (through
-> clk_core_round_rate_nolock()) will call itself on the parent if
-> CLK_SET_RATE_PARENT is set, and will not change the clock rate
-> otherwise. __clk_mux_determine_rate() has the exact same behavior when
-> CLK_SET_RATE_NO_REPARENT is set.
->
-> And if it was an oversight, then we are at least explicit about our
-> behavior now and it can be further refined down the line.
->
-> Signed-off-by: Maxime Ripard <maxime@cerno.tech>
+minimum? maximum?
 
-Acked-by: Linus Walleij <linus.walleij@linaro.org>
+> +
+> +  "#gpio-cells":
+> +    const: 2
+> +
+> +  gpio-controller: true
+> +
+> +  gpio-ranges: true
+> +
+> +  loongson,conf_offset:
 
-Yours,
-Linus Walleij
+No underscores in node names. Plus comments from Linus seem to apply
+here as well. Drop it entirely or explain why this is not part of
+compatible, why this is needed and why encoding programming model
+address in DT matches the DT...
+
+
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    description:
+> +      This option indicate this GPIO configuration offset address.
+> +
+> +  loongson,out_offset:
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    description:
+> +      This option indicate this GPIO output value offset address.
+
+Drop
+
+> +
+> +  loongson,in_offset:
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    description:
+> +      This option indicate this GPIO input value offset address.
+
+Drop
+
+
+> +
+> +  loongson,gpio_base:
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    description:
+> +      This option indicate the first GPIO number in this node.
+
+Drop
+
+
+> +
+> +  loongson,support_irq:
+> +    $ref: /schemas/types.yaml#/definitions/flag
+> +    description:
+> +      This option indicate this GPIO whether support interrupt.
+
+Drop
+
+> +
+> +  interrupts:
+> +    minItems: 1
+> +    maxItems: 64
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - ngpios
+> +  - "#gpio-cells"
+> +  - gpio-controller
+> +  - gpio-ranges
+> +  - interrupts
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/interrupt-controller/irq.h>
+> +
+> +    gpio0: gpio@1fe00500 {
+> +      compatible = "loongson,ls2k-gpio";
+> +      reg = <0x1fe00500 0x38>;
+> +      ngpios = <64>;
+> +      #gpio-cells = <2>;
+> +      gpio-controller;
+> +      gpio-ranges = <&pctrl 0 0 15>,
+> +                    <&pctrl 16 16 15>,
+> +                    <&pctrl 32 32 10>,
+> +                    <&pctrl 44 44 20>;
+> +      loongson,conf_offset = <0>;
+> +      loongson,out_offset = <0x10>;
+> +      loongson,in_offset = <0x20>;
+> +      loongson,gpio_base = <0>;
+> +      loongson,support_irq;
+> +      interrupt-parent = <&liointc1>;
+> +      interrupts = <28 IRQ_TYPE_LEVEL_LOW>,
+> +                   <29 IRQ_TYPE_LEVEL_LOW>,
+> +                   <30 IRQ_TYPE_LEVEL_LOW>,
+> +                   <30 IRQ_TYPE_LEVEL_LOW>,
+> +                   <26 IRQ_TYPE_LEVEL_LOW>,
+> +                   <26 IRQ_TYPE_LEVEL_LOW>,
+> +                   <26 IRQ_TYPE_LEVEL_LOW>,
+> +                   <26 IRQ_TYPE_LEVEL_LOW>,
+> +                   <26 IRQ_TYPE_LEVEL_LOW>,
+> +                   <26 IRQ_TYPE_LEVEL_LOW>,
+> +                   <26 IRQ_TYPE_LEVEL_LOW>,
+> +                   <26 IRQ_TYPE_LEVEL_LOW>,
+> +                   <26 IRQ_TYPE_LEVEL_LOW>,
+> +                   <26 IRQ_TYPE_LEVEL_LOW>,
+> +                   <26 IRQ_TYPE_LEVEL_LOW>,
+> +                   <>,
+> +                   <26 IRQ_TYPE_LEVEL_LOW>,
+> +                   <26 IRQ_TYPE_LEVEL_LOW>,
+> +                   <26 IRQ_TYPE_LEVEL_LOW>,
+> +                   <26 IRQ_TYPE_LEVEL_LOW>,
+> +                   <26 IRQ_TYPE_LEVEL_LOW>,
+> +                   <26 IRQ_TYPE_LEVEL_LOW>,
+> +                   <26 IRQ_TYPE_LEVEL_LOW>,
+> +                   <26 IRQ_TYPE_LEVEL_LOW>,
+> +                   <26 IRQ_TYPE_LEVEL_LOW>,
+> +                   <26 IRQ_TYPE_LEVEL_LOW>,
+> +                   <26 IRQ_TYPE_LEVEL_LOW>,
+> +                   <26 IRQ_TYPE_LEVEL_LOW>,
+> +                   <26 IRQ_TYPE_LEVEL_LOW>,
+> +                   <26 IRQ_TYPE_LEVEL_LOW>,
+> +                   <26 IRQ_TYPE_LEVEL_LOW>,
+> +                   <26 IRQ_TYPE_LEVEL_LOW>,
+> +                   <27 IRQ_TYPE_LEVEL_LOW>,
+> +                   <27 IRQ_TYPE_LEVEL_LOW>,
+> +                   <27 IRQ_TYPE_LEVEL_LOW>,
+> +                   <27 IRQ_TYPE_LEVEL_LOW>,
+> +                   <27 IRQ_TYPE_LEVEL_LOW>,
+> +                   <>,
+
+What's this?
+
+> +                   <27 IRQ_TYPE_LEVEL_LOW>,
+> +                   <27 IRQ_TYPE_LEVEL_LOW>,
+> +                   <27 IRQ_TYPE_LEVEL_LOW>,
+> +                   <27 IRQ_TYPE_LEVEL_LOW>,
+> +                   <>,
+> +                   <>,
+
+What's this?
+
+> +                   <27 IRQ_TYPE_LEVEL_LOW>,
+> +                   <27 IRQ_TYPE_LEVEL_LOW>,
+> +                   <27 IRQ_TYPE_LEVEL_LOW>,
+> +                   <27 IRQ_TYPE_LEVEL_LOW>,
+> +                   <27 IRQ_TYPE_LEVEL_LOW>,
+> +                   <27 IRQ_TYPE_LEVEL_LOW>,
+> +                   <27 IRQ_TYPE_LEVEL_LOW>,
+> +                   <27 IRQ_TYPE_LEVEL_LOW>,
+> +                   <27 IRQ_TYPE_LEVEL_LOW>,
+> +                   <27 IRQ_TYPE_LEVEL_LOW>,
+> +                   <27 IRQ_TYPE_LEVEL_LOW>,
+> +                   <27 IRQ_TYPE_LEVEL_LOW>,
+> +                   <27 IRQ_TYPE_LEVEL_LOW>,
+> +                   <27 IRQ_TYPE_LEVEL_LOW>,
+> +                   <27 IRQ_TYPE_LEVEL_LOW>,
+> +                   <27 IRQ_TYPE_LEVEL_LOW>,
+> +                   <27 IRQ_TYPE_LEVEL_LOW>,
+> +                   <27 IRQ_TYPE_LEVEL_LOW>,
+> +                   <27 IRQ_TYPE_LEVEL_LOW>,
+> +                   <27 IRQ_TYPE_LEVEL_LOW>;
+> +    };
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 916b2d9cffc0..878b8320ac3b 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -12048,6 +12048,17 @@ S:	Maintained
+>  F:	Documentation/devicetree/bindings/hwinfo/loongson,ls2k-chipid.yaml
+>  F:	drivers/soc/loongson/loongson2_guts.c
+>  
+> +LOONGSON SERIES GPIO DRIVER
+> +M:	Richard Liu, STMicroelectronics <richard.liu@st.com>
+> +M:	Arnaud Patard <apatard@mandriva.com>
+> +M:	Hongbing Hu <huhb@lemote.com>
+> +M:	Huacai Chen <chenhuacai@kernel.org>
+> +M:	Yinbo Zhu <zhuyinbo@loongson.cn>
+
+Are they all maintainers of this driver?
+
+> +L:	linux-gpio@vger.kernel.org
+> +S:	Maintained
+> +F:	Documentation/devicetree/bindings/gpio/loongson,ls-gpio.yaml
+> +F:	drivers/gpio/gpio-loongson.c
+> +
+>  LSILOGIC MPT FUSION DRIVERS (FC/SAS/SPI)
+>  M:	Sathya Prakash <sathya.prakash@broadcom.com>
+>  M:	Sreekanth Reddy <sreekanth.reddy@broadcom.com>
+
+Best regards,
+Krzysztof
+

@@ -2,74 +2,84 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2FC93C4167D
-	for <linux-mips@archiver.kernel.org>; Fri, 11 Nov 2022 15:09:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3C33BC433FE
+	for <linux-mips@archiver.kernel.org>; Fri, 11 Nov 2022 15:09:04 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234932AbiKKPJB (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 11 Nov 2022 10:09:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36182 "EHLO
+        id S234900AbiKKPJC (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 11 Nov 2022 10:09:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35802 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234900AbiKKPID (ORCPT
+        with ESMTP id S234914AbiKKPID (ORCPT
         <rfc822;linux-mips@vger.kernel.org>); Fri, 11 Nov 2022 10:08:03 -0500
 Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id AC703663D1;
-        Fri, 11 Nov 2022 07:06:46 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 4BE3866CA6;
+        Fri, 11 Nov 2022 07:06:50 -0800 (PST)
 Received: from uucp (helo=alpha)
         by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1otVcD-00037d-02; Fri, 11 Nov 2022 16:06:45 +0100
+        id 1otVcD-00037d-01; Fri, 11 Nov 2022 16:06:45 +0100
 Received: by alpha.franken.de (Postfix, from userid 1000)
-        id BBB41C11F2; Fri, 11 Nov 2022 16:04:06 +0100 (CET)
-Date:   Fri, 11 Nov 2022 16:04:06 +0100
+        id 88D11C11F2; Fri, 11 Nov 2022 16:03:51 +0100 (CET)
+Date:   Fri, 11 Nov 2022 16:03:51 +0100
 From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     linux-mips@vger.kernel.org, Bartosz Golaszewski <brgl@bgdev.pl>,
-        linux-gpio@vger.kernel.org,
-        Philippe =?iso-8859-1?Q?Mathieu-Daud=E9?= <philmd@linaro.org>
-Subject: Re: [PATCH v2] mips: alchemy: gpio: Include the right header
-Message-ID: <20221111150406.GC13465@alpha.franken.de>
-References: <20221103101535.715956-1-linus.walleij@linaro.org>
+To:     Liao Chang <liaochang1@huawei.com>
+Cc:     chenhuacai@kernel.org, jiaxun.yang@flygoat.com,
+        tangyouling@loongson.cn, hejinyang@loongson.cn,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] MIPS: Loongson64: Add WARN_ON on kexec related kmalloc
+ failed
+Message-ID: <20221111150351.GB13465@alpha.franken.de>
+References: <20221103011815.139424-1-liaochang1@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20221103101535.715956-1-linus.walleij@linaro.org>
+In-Reply-To: <20221103011815.139424-1-liaochang1@huawei.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Thu, Nov 03, 2022 at 11:15:35AM +0100, Linus Walleij wrote:
-> The local GPIO driver in the MIPS Alchemy is including the legacy
-> <linux/gpio.h> header but what it wants is to implement a GPIO
-> driver so include <linux/gpio/driver.h> instead.
+On Thu, Nov 03, 2022 at 09:18:15AM +0800, Liao Chang wrote:
+> Add WARN_ON on kexec related kmalloc failed, avoid to pass NULL pointer
+> to following memcpy and loongson_kexec_prepare.
 > 
-> Cc: Bartosz Golaszewski <brgl@bgdev.pl>
-> Cc: linux-gpio@vger.kernel.org
-> Reviewed-by: Philippe Mathieu-Daudé <philmd@linaro.org>
-> Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+> Fixes: 6ce48897ce47 ("MIPS: Loongson64: Add kexec/kdump support")
+> Signed-off-by: Liao Chang <liaochang1@huawei.com>
 > ---
-> ChangeLog v1->v2:
-> - Collect Philippe's review tag
-> - Resend to the right MIPS maintainer
-> ---
->  arch/mips/alchemy/common/gpiolib.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  arch/mips/loongson64/reset.c | 10 ++++++++++
+>  1 file changed, 10 insertions(+)
 > 
-> diff --git a/arch/mips/alchemy/common/gpiolib.c b/arch/mips/alchemy/common/gpiolib.c
-> index a17d7a8909c4..1b16daaa86ae 100644
-> --- a/arch/mips/alchemy/common/gpiolib.c
-> +++ b/arch/mips/alchemy/common/gpiolib.c
-> @@ -31,7 +31,7 @@
->  #include <linux/init.h>
->  #include <linux/kernel.h>
->  #include <linux/types.h>
-> -#include <linux/gpio.h>
-> +#include <linux/gpio/driver.h>
->  #include <asm/mach-au1x00/gpio-au1000.h>
->  #include <asm/mach-au1x00/gpio-au1300.h>
+> diff --git a/arch/mips/loongson64/reset.c b/arch/mips/loongson64/reset.c
+> index 758d5d26aaaa..e420800043b0 100644
+> --- a/arch/mips/loongson64/reset.c
+> +++ b/arch/mips/loongson64/reset.c
+> @@ -16,6 +16,7 @@
+>  #include <asm/bootinfo.h>
+>  #include <asm/idle.h>
+>  #include <asm/reboot.h>
+> +#include <asm/bug.h>
+>  
+>  #include <loongson.h>
+>  #include <boot_param.h>
+> @@ -159,8 +160,17 @@ static int __init mips_reboot_setup(void)
+>  
+>  #ifdef CONFIG_KEXEC
+>  	kexec_argv = kmalloc(KEXEC_ARGV_SIZE, GFP_KERNEL);
+> +	if (WARN_ON(!kexec_argv))
+> +		return -ENOMEM;
+> +
+>  	kdump_argv = kmalloc(KEXEC_ARGV_SIZE, GFP_KERNEL);
+> +	if (WARN_ON(!kdump_argv))
+> +		return -ENOMEM;
+> +
+>  	kexec_envp = kmalloc(KEXEC_ENVP_SIZE, GFP_KERNEL);
+> +	if (WARN_ON(!kexec_envp))
+> +		return -ENOMEM;
+> +
+>  	fw_arg1 = KEXEC_ARGV_ADDR;
+>  	memcpy(kexec_envp, (void *)fw_arg2, KEXEC_ENVP_SIZE);
 >  
 > -- 
-> 2.34.1
+> 2.17.1
 
 applied to mips-fixes.
 

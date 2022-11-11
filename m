@@ -2,63 +2,71 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 72EBBC4332F
-	for <linux-mips@archiver.kernel.org>; Fri, 11 Nov 2022 15:09:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6FC12C43219
+	for <linux-mips@archiver.kernel.org>; Fri, 11 Nov 2022 15:09:02 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234921AbiKKPI7 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 11 Nov 2022 10:08:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35818 "EHLO
+        id S234997AbiKKPJB (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 11 Nov 2022 10:09:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36168 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234907AbiKKPID (ORCPT
+        with ESMTP id S234902AbiKKPID (ORCPT
         <rfc822;linux-mips@vger.kernel.org>); Fri, 11 Nov 2022 10:08:03 -0500
 Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E21F46A74A;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 5A906663CF;
         Fri, 11 Nov 2022 07:06:47 -0800 (PST)
 Received: from uucp (helo=alpha)
         by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1otVcD-00037d-00; Fri, 11 Nov 2022 16:06:45 +0100
+        id 1otVcD-00037d-03; Fri, 11 Nov 2022 16:06:45 +0100
 Received: by alpha.franken.de (Postfix, from userid 1000)
-        id D41D1C116A; Fri, 11 Nov 2022 16:03:35 +0100 (CET)
-Date:   Fri, 11 Nov 2022 16:03:35 +0100
+        id F242CC11F2; Fri, 11 Nov 2022 16:04:24 +0100 (CET)
+Date:   Fri, 11 Nov 2022 16:04:24 +0100
 From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Rongwei Zhang <pudh4418@gmail.com>
-Cc:     Ralf Baechle <ralf@linux-mips.org>,
-        Maxim Uvarov <muvarov@gmail.com>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Tom Rix <trix@redhat.com>, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org, llvm@lists.linux.dev
-Subject: Re: [PATCH] MIPS: fix duplicate definitions for exported symbols
-Message-ID: <20221111150335.GA13465@alpha.franken.de>
-References: <Y2JiO+67E1NyFgca@pudh-loong.localdomain>
+To:     Jiaxun Yang <jiaxun.yang@flygoat.com>
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ardb@kernel.org, rostedt@goodmis.org, stable@vger.kernel.org,
+        Philippe =?iso-8859-1?Q?Mathieu-Daud=E9?= <philmd@linaro.org>
+Subject: Re: [PATCH v2] MIPS: jump_label: Fix compat branch range check
+Message-ID: <20221111150424.GD13465@alpha.franken.de>
+References: <20221103151053.213583-1-jiaxun.yang@flygoat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <Y2JiO+67E1NyFgca@pudh-loong.localdomain>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20221103151053.213583-1-jiaxun.yang@flygoat.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Wed, Nov 02, 2022 at 08:27:39PM +0800, Rongwei Zhang wrote:
-> Building with clang-14 fails with:
+On Thu, Nov 03, 2022 at 03:10:53PM +0000, Jiaxun Yang wrote:
+> Cast upper bound of branch range to long to do signed compare,
+> avoid negative offset trigger this warning.
 > 
-> AS      arch/mips/kernel/relocate_kernel.o
-> <unknown>:0: error: symbol 'kexec_args' is already defined
-> <unknown>:0: error: symbol 'secondary_kexec_args' is already defined
-> <unknown>:0: error: symbol 'kexec_start_address' is already defined
-> <unknown>:0: error: symbol 'kexec_indirection_page' is already defined
-> <unknown>:0: error: symbol 'relocate_new_kernel_size' is already defined
-> 
-> It turns out EXPORT defined in asm/asm.h expands to a symbol definition,
-> so there is no need to define these symbols again. Remove duplicated
-> symbol definitions.
-> 
-> Fixes: 7aa1c8f47e7e ("MIPS: kdump: Add support")
-> Signed-off-by: Rongwei Zhang <pudh4418@gmail.com>
+> Fixes: 9b6584e35f40 ("MIPS: jump_label: Use compact branches for >= r6")
+> Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+> Cc: stable@vger.kernel.org
+> Reviewed-by: Philippe Mathieu-Daudé <philmd@linaro.org>
 > ---
->  arch/mips/kernel/relocate_kernel.S | 15 +++++----------
->  1 file changed, 5 insertions(+), 10 deletions(-)
+> v2: Fix typo, collect review tags.
+> ---
+>  arch/mips/kernel/jump_label.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/arch/mips/kernel/jump_label.c b/arch/mips/kernel/jump_label.c
+> index 71a882c8c6eb..f7978d50a2ba 100644
+> --- a/arch/mips/kernel/jump_label.c
+> +++ b/arch/mips/kernel/jump_label.c
+> @@ -56,7 +56,7 @@ void arch_jump_label_transform(struct jump_entry *e,
+>  			 * The branch offset must fit in the instruction's 26
+>  			 * bit field.
+>  			 */
+> -			WARN_ON((offset >= BIT(25)) ||
+> +			WARN_ON((offset >= (long)BIT(25)) ||
+>  				(offset < -(long)BIT(25)));
+>  
+>  			insn.j_format.opcode = bc6_op;
+> -- 
+> 2.34.1
 
 applied to mips-fixes.
 

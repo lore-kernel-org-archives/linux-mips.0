@@ -2,84 +2,83 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3C33BC433FE
-	for <linux-mips@archiver.kernel.org>; Fri, 11 Nov 2022 15:09:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6B262C43217
+	for <linux-mips@archiver.kernel.org>; Fri, 11 Nov 2022 15:09:05 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234900AbiKKPJC (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 11 Nov 2022 10:09:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35802 "EHLO
+        id S234872AbiKKPJD (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 11 Nov 2022 10:09:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35792 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234914AbiKKPID (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Fri, 11 Nov 2022 10:08:03 -0500
+        with ESMTP id S234923AbiKKPIF (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Fri, 11 Nov 2022 10:08:05 -0500
 Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 4BE3866CA6;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id DDA376B211;
         Fri, 11 Nov 2022 07:06:50 -0800 (PST)
 Received: from uucp (helo=alpha)
         by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1otVcD-00037d-01; Fri, 11 Nov 2022 16:06:45 +0100
+        id 1otVcD-00037d-05; Fri, 11 Nov 2022 16:06:45 +0100
 Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 88D11C11F2; Fri, 11 Nov 2022 16:03:51 +0100 (CET)
-Date:   Fri, 11 Nov 2022 16:03:51 +0100
+        id D998FC11F2; Fri, 11 Nov 2022 16:05:51 +0100 (CET)
+Date:   Fri, 11 Nov 2022 16:05:51 +0100
 From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Liao Chang <liaochang1@huawei.com>
-Cc:     chenhuacai@kernel.org, jiaxun.yang@flygoat.com,
-        tangyouling@loongson.cn, hejinyang@loongson.cn,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] MIPS: Loongson64: Add WARN_ON on kexec related kmalloc
- failed
-Message-ID: <20221111150351.GB13465@alpha.franken.de>
-References: <20221103011815.139424-1-liaochang1@huawei.com>
+To:     John Thomson <git@johnthomson.fastmail.com.au>
+Cc:     keescook@chromium.org, linux-mips@vger.kernel.org,
+        linux-hardening@vger.kernel.org, kernel test robot <lkp@intel.com>
+Subject: Re: [PATCH v2] mips: boot/compressed: use __NO_FORTIFY
+Message-ID: <20221111150551.GF13465@alpha.franken.de>
+References: <20221031170749.2159430-1-git@johnthomson.fastmail.com.au>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20221103011815.139424-1-liaochang1@huawei.com>
+In-Reply-To: <20221031170749.2159430-1-git@johnthomson.fastmail.com.au>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Thu, Nov 03, 2022 at 09:18:15AM +0800, Liao Chang wrote:
-> Add WARN_ON on kexec related kmalloc failed, avoid to pass NULL pointer
-> to following memcpy and loongson_kexec_prepare.
+On Tue, Nov 01, 2022 at 03:07:49AM +1000, John Thomson wrote:
+> In the mips CONFIG_SYS_SUPPORTS_ZBOOT kernel, fix the compile error
+> when using CONFIG_FORTIFY_SOURCE=y
 > 
-> Fixes: 6ce48897ce47 ("MIPS: Loongson64: Add kexec/kdump support")
-> Signed-off-by: Liao Chang <liaochang1@huawei.com>
+> LD      vmlinuz
+> mipsel-openwrt-linux-musl-ld: arch/mips/boot/compressed/decompress.o: in
+> function `decompress_kernel':
+> ./include/linux/decompress/mm.h:(.text.decompress_kernel+0x177c):
+> undefined reference to `warn_slowpath_fmt'
+> 
+> kernel test robot helped identify this as related to fortify. The error
+> appeared with commit 54d9469bc515 ("fortify: Add run-time WARN for
+> cross-field memcpy()")
+> Link: https://lore.kernel.org/r/202209161144.x9xSqNQZ-lkp@intel.com/
+> 
+> Resolve this in the same style as commit cfecea6ead5f ("lib/string:
+> Move helper functions out of string.c")
+> 
+> Reported-by: kernel test robot <lkp@intel.com>
+> Fixes: 54d9469bc515 ("fortify: Add run-time WARN for cross-field memcpy()")
+> Reviewed-by: Kees Cook <keescook@chromium.org>
+> Signed-off-by: John Thomson <git@johnthomson.fastmail.com.au>
 > ---
->  arch/mips/loongson64/reset.c | 10 ++++++++++
->  1 file changed, 10 insertions(+)
+> v2:
+> fix subject typo: FORITFY->FORTIFY
+> ---
+>  arch/mips/boot/compressed/decompress.c | 1 +
+>  1 file changed, 1 insertion(+)
 > 
-> diff --git a/arch/mips/loongson64/reset.c b/arch/mips/loongson64/reset.c
-> index 758d5d26aaaa..e420800043b0 100644
-> --- a/arch/mips/loongson64/reset.c
-> +++ b/arch/mips/loongson64/reset.c
-> @@ -16,6 +16,7 @@
->  #include <asm/bootinfo.h>
->  #include <asm/idle.h>
->  #include <asm/reboot.h>
-> +#include <asm/bug.h>
+> diff --git a/arch/mips/boot/compressed/decompress.c b/arch/mips/boot/compressed/decompress.c
+> index 5b38a802e101..c5dd415254d3 100644
+> --- a/arch/mips/boot/compressed/decompress.c
+> +++ b/arch/mips/boot/compressed/decompress.c
+> @@ -9,6 +9,7 @@
 >  
->  #include <loongson.h>
->  #include <boot_param.h>
-> @@ -159,8 +160,17 @@ static int __init mips_reboot_setup(void)
+>  #define DISABLE_BRANCH_PROFILING
 >  
->  #ifdef CONFIG_KEXEC
->  	kexec_argv = kmalloc(KEXEC_ARGV_SIZE, GFP_KERNEL);
-> +	if (WARN_ON(!kexec_argv))
-> +		return -ENOMEM;
-> +
->  	kdump_argv = kmalloc(KEXEC_ARGV_SIZE, GFP_KERNEL);
-> +	if (WARN_ON(!kdump_argv))
-> +		return -ENOMEM;
-> +
->  	kexec_envp = kmalloc(KEXEC_ENVP_SIZE, GFP_KERNEL);
-> +	if (WARN_ON(!kexec_envp))
-> +		return -ENOMEM;
-> +
->  	fw_arg1 = KEXEC_ARGV_ADDR;
->  	memcpy(kexec_envp, (void *)fw_arg2, KEXEC_ENVP_SIZE);
->  
+> +#define __NO_FORTIFY
+>  #include <linux/types.h>
+>  #include <linux/kernel.h>
+>  #include <linux/string.h>
 > -- 
-> 2.17.1
+> 2.37.2
 
 applied to mips-fixes.
 

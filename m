@@ -2,60 +2,63 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 02935C43217
-	for <linux-mips@archiver.kernel.org>; Fri, 11 Nov 2022 15:08:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 72EBBC4332F
+	for <linux-mips@archiver.kernel.org>; Fri, 11 Nov 2022 15:09:01 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234987AbiKKPI5 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 11 Nov 2022 10:08:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35804 "EHLO
+        id S234921AbiKKPI7 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 11 Nov 2022 10:08:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35818 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234903AbiKKPID (ORCPT
+        with ESMTP id S234907AbiKKPID (ORCPT
         <rfc822;linux-mips@vger.kernel.org>); Fri, 11 Nov 2022 10:08:03 -0500
 Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id AC83A6A771;
-        Fri, 11 Nov 2022 07:06:46 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E21F46A74A;
+        Fri, 11 Nov 2022 07:06:47 -0800 (PST)
 Received: from uucp (helo=alpha)
         by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1otVcD-00037d-04; Fri, 11 Nov 2022 16:06:45 +0100
+        id 1otVcD-00037d-00; Fri, 11 Nov 2022 16:06:45 +0100
 Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 86DD8C11F2; Fri, 11 Nov 2022 16:05:19 +0100 (CET)
-Date:   Fri, 11 Nov 2022 16:05:19 +0100
+        id D41D1C116A; Fri, 11 Nov 2022 16:03:35 +0100 (CET)
+Date:   Fri, 11 Nov 2022 16:03:35 +0100
 From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     "Jason A. Donenfeld" <Jason@zx2c4.com>
-Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] MIPS: pic32: treat port as signed integer
-Message-ID: <20221111150519.GE13465@alpha.franken.de>
-References: <20221028132344.1993934-1-Jason@zx2c4.com>
+To:     Rongwei Zhang <pudh4418@gmail.com>
+Cc:     Ralf Baechle <ralf@linux-mips.org>,
+        Maxim Uvarov <muvarov@gmail.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tom Rix <trix@redhat.com>, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org, llvm@lists.linux.dev
+Subject: Re: [PATCH] MIPS: fix duplicate definitions for exported symbols
+Message-ID: <20221111150335.GA13465@alpha.franken.de>
+References: <Y2JiO+67E1NyFgca@pudh-loong.localdomain>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20221028132344.1993934-1-Jason@zx2c4.com>
+In-Reply-To: <Y2JiO+67E1NyFgca@pudh-loong.localdomain>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Fri, Oct 28, 2022 at 03:23:44PM +0200, Jason A. Donenfeld wrote:
-> get_port_from_cmdline() returns an int, yet is assigned to a char, which
-> is wrong in its own right, but also, with char becoming unsigned, this
-> poses problems, because -1 is used as an error value. Further
-> complicating things, fw_init_early_console() is only ever called with a
-> -1 argument. Fix this up by removing the unused argument from
-> fw_init_early_console() and treating port as a proper signed integer.
+On Wed, Nov 02, 2022 at 08:27:39PM +0800, Rongwei Zhang wrote:
+> Building with clang-14 fails with:
 > 
-> Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-> Signed-off-by: Jason A. Donenfeld <Jason@zx2c4.com>
+> AS      arch/mips/kernel/relocate_kernel.o
+> <unknown>:0: error: symbol 'kexec_args' is already defined
+> <unknown>:0: error: symbol 'secondary_kexec_args' is already defined
+> <unknown>:0: error: symbol 'kexec_start_address' is already defined
+> <unknown>:0: error: symbol 'kexec_indirection_page' is already defined
+> <unknown>:0: error: symbol 'relocate_new_kernel_size' is already defined
+> 
+> It turns out EXPORT defined in asm/asm.h expands to a symbol definition,
+> so there is no need to define these symbols again. Remove duplicated
+> symbol definitions.
+> 
+> Fixes: 7aa1c8f47e7e ("MIPS: kdump: Add support")
+> Signed-off-by: Rongwei Zhang <pudh4418@gmail.com>
 > ---
-> Thomas - this is part of the -funsigned-char work I've been accumulating
-> in my unsigned-char branch. If you want to take this as a fix for 6.1,
-> go ahead. Otherwise, Linus asked me to keep the 6.2 unsigned-char
-> patches together in my branch, so I'll take this, pending your Ack.
-> -Jason
-> 
->  arch/mips/include/asm/fw/fw.h             |  2 +-
->  arch/mips/pic32/pic32mzda/early_console.c | 13 ++++++-------
->  arch/mips/pic32/pic32mzda/init.c          |  2 +-
->  3 files changed, 8 insertions(+), 9 deletions(-)
+>  arch/mips/kernel/relocate_kernel.S | 15 +++++----------
+>  1 file changed, 5 insertions(+), 10 deletions(-)
 
 applied to mips-fixes.
 

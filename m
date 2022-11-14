@@ -2,23 +2,23 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6066AC43217
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E5752C433FE
 	for <linux-mips@archiver.kernel.org>; Mon, 14 Nov 2022 11:38:42 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236268AbiKNLil (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        id S236339AbiKNLil (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
         Mon, 14 Nov 2022 06:38:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35044 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35048 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236275AbiKNLid (ORCPT
+        with ESMTP id S236286AbiKNLid (ORCPT
         <rfc822;linux-mips@vger.kernel.org>); Mon, 14 Nov 2022 06:38:33 -0500
 Received: from loongson.cn (mail.loongson.cn [114.242.206.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 5FBD3E6F;
-        Mon, 14 Nov 2022 03:38:30 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 5FFBBE7F;
+        Mon, 14 Nov 2022 03:38:29 -0800 (PST)
 Received: from loongson.cn (unknown [10.20.42.77])
-        by gateway (Coremail) with SMTP id _____8Cxjdq1KHJjwOMGAA--.20508S3;
-        Mon, 14 Nov 2022 19:38:29 +0800 (CST)
+        by gateway (Coremail) with SMTP id _____8DxPdm0KHJjteMGAA--.20740S3;
+        Mon, 14 Nov 2022 19:38:28 +0800 (CST)
 Received: from loongson-PC.loongson.cn (unknown [10.20.42.77])
-        by localhost.localdomain (Coremail) with SMTP id AQAAf8BxTuCwKHJjCZMSAA--.50121S4;
+        by localhost.localdomain (Coremail) with SMTP id AQAAf8BxTuCwKHJjCZMSAA--.50121S2;
         Mon, 14 Nov 2022 19:38:28 +0800 (CST)
 From:   Liu Peibao <liupeibao@loongson.cn>
 To:     Thomas Gleixner <tglx@linutronix.de>,
@@ -32,87 +32,49 @@ Cc:     Jianmin Lv <lvjianmin@loongson.cn>,
         wanghongliang <wanghongliang@loongson.cn>,
         Liu Peibao <liupeibao@loongson.cn>, linux-mips@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v2 2/2] dt-bindings: interrupt-controller: add yaml for LoongArch CPU interrupt controller
-Date:   Mon, 14 Nov 2022 19:38:24 +0800
-Message-Id: <20221114113824.1880-3-liupeibao@loongson.cn>
+Subject: [PATCH v2 0/2] irqchip: loongarch-cpu: add DT support
+Date:   Mon, 14 Nov 2022 19:38:22 +0800
+Message-Id: <20221114113824.1880-1-liupeibao@loongson.cn>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20221114113824.1880-1-liupeibao@loongson.cn>
-References: <20221114113824.1880-1-liupeibao@loongson.cn>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: AQAAf8BxTuCwKHJjCZMSAA--.50121S4
-X-CM-SenderInfo: xolx1vpled0qxorr0wxvrqhubq/1tbiAQAKCmNw3mQUVAAAso
-X-Coremail-Antispam: 1Uk129KBjvJXoW7CFy5Xr18Aw17Zw4fGF1kAFb_yoW8Ar4fpF
-        W7CFsxWF40qF13Cws2ga40krnxZrnxCrn29an7tw47Gr1aga4UXay29F95JayrGr92qw17
-        Zw1Fq3W0q3W7JF7anT9S1TB71UUUUUJqnTZGkaVYY2UrUUUUj1kv1TuYvTs0mT0YCTnIWj
-        qI5I8CrVACY4xI64kE6c02F40Ex7xfYxn0WfASr-VFAUDa7-sFnT9fnUUIcSsGvfJTRUUU
-        bS8YFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I6I8E6xAIw20EY4v20xvaj40_Wr0E3s
-        1l1IIY67AEw4v_Jrv_JF1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xv
-        wVC0I7IYx2IY67AKxVW8JVW5JwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwA2z4
-        x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjcxK6I8E87Iv6xkF7I0E14v26F4UJVW0owAa
-        w2AFwI0_Jrv_JF1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqjxCEc2xF0cIa020Ex4CE44
-        I27wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jw0_WrylYx0Ex4A2
-        jsIE14v26r4j6F4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwCY1x0262
-        kKe7AKxVWUAVWUtwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwCFI7km
-        07C267AKxVWUXVWUAwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r
-        1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVW8
-        JVW5JwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6r
-        1j6r1xMIIF0xvEx4A2jsIE14v26r4j6F4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1U
-        YxBIdaVFxhVjvjDU0xZFpf9x07j2MKZUUUUU=
+X-CM-TRANSID: AQAAf8BxTuCwKHJjCZMSAA--.50121S2
+X-CM-SenderInfo: xolx1vpled0qxorr0wxvrqhubq/1tbiAQAKCmNw3mQUUAAAss
+X-Coremail-Antispam: 1Uk129KBjvdXoWrWFWDKr48CFW8WFW7Wr1ftFb_yoWxXrb_uF
+        1Iya45CryDCFyjyayqvr4rJ343JFWUXFyFka1DtF18XFn0yr15WFnrZ3y3Zr1vqFW5Jrn3
+        trs0yr4rAF17CjkaLaAFLSUrUUUUbb8apTn2vfkv8UJUUUU8wcxFpf9Il3svdxBIdaVrn0
+        xqx4xG64xvF2IEw4CE5I8CrVC2j2Jv73VFW2AGmfu7bjvjm3AaLaJ3UjIYCTnIWjp_UUUY
+        17kC6x804xWl14x267AKxVWUJVW8JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0rVWrJVCq3w
+        AFIxvE14AKwVWUXVWUAwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK
+        6xIIjxv20xvE14v26r1I6r4UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4j6F4UM28EF7
+        xvwVC2z280aVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Cr1j6rxdM2AI
+        xVAIcxkEcVAq07x20xvEncxIr21l57IF6xkI12xvs2x26I8E6xACxx1l5I8CrVACY4xI64
+        kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1Y6r17McIj6I8E87Iv67AKxVW8JVWxJwAm
+        72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41l42xK82IYc2Ij64vIr41l4I8I3I
+        0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWU
+        GVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI
+        0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0
+        rVWUJVWUCwCI42IY6I8E87Iv67AKxVW8JVWxJwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r
+        4UJbIYCTnIWIevJa73UjIFyTuYvjxUcVc_UUUUU
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Current LoongArch compatible CPUs support 14 CPU IRQs. We can describe how
-the 14 IRQs are wired to the platform's internal interrupt controller by
-devicetree.
+This patches add the DT support for LoongArch compatible CPU interrupt
+controller.
 
-Signed-off-by: Liu Peibao <liupeibao@loongson.cn>
----
+V1 -> V2: patch2/2: update commit log and remove redundant description in yaml.
+
+Liu Peibao (2):
+  irqchip: loongarch-cpu: add DT support
+  dt-bindings: interrupt-controller: add yaml for LoongArch CPU
+    interrupt controller
+
  .../loongarch,cpu-interrupt-controller.yaml   | 34 +++++++++++++++++++
- 1 file changed, 34 insertions(+)
+ drivers/irqchip/irq-loongarch-cpu.c           | 19 +++++++++++
+ 2 files changed, 53 insertions(+)
  create mode 100644 Documentation/devicetree/bindings/interrupt-controller/loongarch,cpu-interrupt-controller.yaml
 
-diff --git a/Documentation/devicetree/bindings/interrupt-controller/loongarch,cpu-interrupt-controller.yaml b/Documentation/devicetree/bindings/interrupt-controller/loongarch,cpu-interrupt-controller.yaml
-new file mode 100644
-index 000000000000..2a1cf885c99d
---- /dev/null
-+++ b/Documentation/devicetree/bindings/interrupt-controller/loongarch,cpu-interrupt-controller.yaml
-@@ -0,0 +1,34 @@
-+# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/interrupt-controller/loongarch,cpu-interrupt-controller.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: LoongArch CPU Interrupt Controller
-+
-+maintainers:
-+  - Liu Peibao <liupeibao@loongson.cn>
-+
-+properties:
-+  compatible:
-+    const: loongarch,cpu-interrupt-controller
-+
-+  '#interrupt-cells':
-+    const: 1
-+
-+  interrupt-controller: true
-+
-+additionalProperties: false
-+
-+required:
-+  - compatible
-+  - '#interrupt-cells'
-+  - interrupt-controller
-+
-+examples:
-+  - |
-+    interrupt-controller {
-+      compatible = "loongarch,cpu-interrupt-controller";
-+      #interrupt-cells = <1>;
-+      interrupt-controller;
-+    };
 -- 
 2.20.1
 

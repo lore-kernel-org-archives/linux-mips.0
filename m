@@ -2,270 +2,98 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BA9F7C4332F
-	for <linux-mips@archiver.kernel.org>; Fri, 18 Nov 2022 02:29:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4CD5CC4332F
+	for <linux-mips@archiver.kernel.org>; Fri, 18 Nov 2022 08:28:27 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235055AbiKRC3r (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 17 Nov 2022 21:29:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50506 "EHLO
+        id S235105AbiKRI20 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 18 Nov 2022 03:28:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47492 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232004AbiKRC3q (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Thu, 17 Nov 2022 21:29:46 -0500
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 213974AF03;
-        Thu, 17 Nov 2022 18:29:44 -0800 (PST)
-Received: from dggpemm500023.china.huawei.com (unknown [172.30.72.57])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4ND126472Wz15Mbg;
-        Fri, 18 Nov 2022 10:29:18 +0800 (CST)
-Received: from [10.174.187.128] (10.174.187.128) by
- dggpemm500023.china.huawei.com (7.185.36.83) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.31; Fri, 18 Nov 2022 10:29:41 +0800
-Subject: Re: disabling halt polling broken? (was Re: [PATCH 00/14] KVM:
- Halt-polling fixes, cleanups and a new stat)
-To:     David Matlack <dmatlack@google.com>
-CC:     Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>, kvm <kvm@vger.kernel.org>,
-        David Hildenbrand <david@redhat.com>,
-        "Kernel Mailing List, Linux" <linux-kernel@vger.kernel.org>,
-        Paul Mackerras <paulus@ozlabs.org>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        KVM ARM <kvmarm@lists.cs.columbia.edu>,
-        Janosch Frank <frankja@linux.ibm.com>,
-        Marc Zyngier <maz@kernel.org>, Joerg Roedel <joro@8bytes.org>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
-        Jon Cargille <jcargill@google.com>,
-        kvm-ppc <kvm-ppc@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Jim Mattson <jmattson@google.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        "open list:MIPS" <linux-mips@vger.kernel.org>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        "yuzenghui@huawei.com" <yuzenghui@huawei.com>,
-        <wangyuan38@huawei.com>
-References: <20210925005528.1145584-1-seanjc@google.com>
- <03f2f5ab-e809-2ba5-bd98-3393c3b843d2@de.ibm.com>
- <YVHcY6y1GmvGJnMg@google.com>
- <f37ab68c-61ce-b6fb-7a49-831bacfc7424@redhat.com>
- <43e42f5c-9d9f-9e8b-3a61-9a053a818250@de.ibm.com>
- <CABgObfYtS6wiQe=BhF3t5usr7J6q4PWE4=rwZMMukfC9wT_6fA@mail.gmail.com>
- <YVIAdVxc+q2UWB+J@google.com>
- <32810c89-44c6-6780-9d05-e49f6b897b6e@huawei.com>
- <Y3UboELxugwDJkIG@google.com>
-From:   "wangyanan (Y)" <wangyanan55@huawei.com>
-Message-ID: <e124456c-0691-460b-c471-00ac1d7b0254@huawei.com>
-Date:   Fri, 18 Nov 2022 10:29:40 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
-MIME-Version: 1.0
-In-Reply-To: <Y3UboELxugwDJkIG@google.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Originating-IP: [10.174.187.128]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggpemm500023.china.huawei.com (7.185.36.83)
-X-CFilter-Loop: Reflected
+        with ESMTP id S241379AbiKRI2Y (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Fri, 18 Nov 2022 03:28:24 -0500
+Received: from loongson.cn (mail.loongson.cn [114.242.206.163])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id EAD3293CF7;
+        Fri, 18 Nov 2022 00:28:22 -0800 (PST)
+Received: from loongson.cn (unknown [113.200.148.30])
+        by gateway (Coremail) with SMTP id _____8Dx_NgkQndjZ48IAA--.24119S3;
+        Fri, 18 Nov 2022 16:28:21 +0800 (CST)
+Received: from linux.localdomain (unknown [113.200.148.30])
+        by localhost.localdomain (Coremail) with SMTP id AQAAf8Cxb+IhQndjbGsWAA--.58945S2;
+        Fri, 18 Nov 2022 16:28:17 +0800 (CST)
+From:   Tiezhu Yang <yangtiezhu@loongson.cn>
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] MIPS: Use "grep -E" instead of "egrep"
+Date:   Fri, 18 Nov 2022 16:28:11 +0800
+Message-Id: <1668760091-20150-1-git-send-email-yangtiezhu@loongson.cn>
+X-Mailer: git-send-email 2.1.0
+X-CM-TRANSID: AQAAf8Cxb+IhQndjbGsWAA--.58945S2
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+X-Coremail-Antispam: 1Uk129KBjvJXoW7uFWUCFy3Kw1DtFyrWry7GFg_yoW8Ww1xpa
+        1Fk3WDtws7XryUGFWrCFW3Xw15tFs5J3yj9FWUtw15tas5X3W3Ar1fAFZ8XF17GrWkAay8
+        Was3uFy3Jr4kAwUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUj1kv1TuYvTs0mT0YCTnIWj
+        qI5I8CrVACY4xI64kE6c02F40Ex7xfYxn0WfASr-VFAUDa7-sFnT9fnUUIcSsGvfJTRUUU
+        b28YFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I6I8E6xAIw20EY4v20xvaj40_Wr0E3s
+        1l1IIY67AEw4v_JrI_Jryl8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xv
+        wVC0I7IYx2IY67AKxVW8JVW5JwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwA2z4
+        x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjcxK6I8E87Iv6xkF7I0E14v26r4UJVWxJr1l
+        e2I262IYc4CY6c8Ij28IcVAaY2xG8wAqjxCEc2xF0cIa020Ex4CE44I27wAqx4xG64xvF2
+        IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r4j6F4U
+        McvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwCF04k20xvY0x0EwIxGrwCFx2
+        IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v2
+        6r106r1rMI8E67AF67kF1VAFwI0_Jrv_JF1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67
+        AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IY
+        s7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r4j6F4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr
+        0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07jOF4_UUUUU=
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
+The latest version of grep claims the egrep is now obsolete so the build
+now contains warnings that look like:
+	egrep: warning: egrep is obsolescent; using grep -E
+fix this up by moving the related file to use "grep -E" instead.
 
+Here are the steps to install the latest grep:
 
-On 2022/11/17 1:19, David Matlack wrote:
-> On Tue, Nov 15, 2022 at 11:28:56AM +0800, wangyanan (Y) wrote:
->> Hi Sean, Paolo,
->>
->> I recently also notice the behavior change of param halt_poll_ns.
->> Now it loses the ability to:
->> 1) dynamically disable halt polling for all the running VMs
->> by `echo 0 > /sys`
->> 2) dynamically adjust the halt polling interval for all the
->> running VMs by `echo * > /sys`
->>
->> While in our cases, we usually use above two abilities, and
->> KVM_CAP_HALT_POLL is not used yet.
-> I think the right path forward is to make KVM_CAP_HALT_POLL a pure
-> override of halt_poll_ns, and restore the pre-existing behavior of
-> halt_poll_ns whenever KVM_CAP_HALT_POLL is not used. e.g. see the patch
-> below.
-Agree with this.
-kvm.halt_poll_ns serves like a legacy method to control halt polling
-globally. Once KVM_CAP_HALT_POLL is used for a VM, it should
-hold 100% responsibility to control on the VM, including disabling
-the polling. This strategy helps to keep the two mechanisms
-decoupled.
-> That will fix issues (1) and (2) above for any VM not using
-> KVM_CAP_HALT_POLL. If a VM is using KVM_CAP_HALT_POLL, it will ignore
-> all changes to halt_poll_ns. If we truly need a mechanism for admins to
-> disable halt-polling on VMs using KVM_CAP_HALT_POLL, we can introduce a
-> separate module parameter for that. But IMO, any setup that is
-> sophisticated enough to use KVM_CAP_HALT_POLL should also be able to use
-> KVM_CAP_HALT_POLL to disable halt polling.
->
-> If everyone is happy with this approach I can test and send a real patch
-> to the mailing list.
->
-> diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
-> index e6e66c5e56f2..253ad055b6ad 100644
-> --- a/include/linux/kvm_host.h
-> +++ b/include/linux/kvm_host.h
-> @@ -788,6 +788,7 @@ struct kvm {
->   	struct srcu_struct srcu;
->   	struct srcu_struct irq_srcu;
->   	pid_t userspace_pid;
-> +	bool override_halt_poll_ns;
->   	unsigned int max_halt_poll_ns;
->   	u32 dirty_ring_size;
->   	bool vm_bugged;
-> diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
-> index 43bbe4fde078..479d0d0da0b5 100644
-> --- a/virt/kvm/kvm_main.c
-> +++ b/virt/kvm/kvm_main.c
-> @@ -1198,8 +1198,6 @@ static struct kvm *kvm_create_vm(unsigned long type, const char *fdname)
->   			goto out_err_no_arch_destroy_vm;
->   	}
->   
-> -	kvm->max_halt_poll_ns = halt_poll_ns;
-> -
->   	r = kvm_arch_init_vm(kvm, type);
->   	if (r)
->   		goto out_err_no_arch_destroy_vm;
-> @@ -3371,7 +3369,7 @@ void kvm_sigset_deactivate(struct kvm_vcpu *vcpu)
->   	sigemptyset(&current->real_blocked);
->   }
->   
-> -static void grow_halt_poll_ns(struct kvm_vcpu *vcpu)
-> +static void grow_halt_poll_ns(struct kvm_vcpu *vcpu, unsigned int max)
->   {
->   	unsigned int old, val, grow, grow_start;
->   
-> @@ -3385,8 +3383,8 @@ static void grow_halt_poll_ns(struct kvm_vcpu *vcpu)
->   	if (val < grow_start)
->   		val = grow_start;
->   
-> -	if (val > vcpu->kvm->max_halt_poll_ns)
-> -		val = vcpu->kvm->max_halt_poll_ns;
-> +	if (val > max)
-> +		val = max;
->   
->   	vcpu->halt_poll_ns = val;
->   out:
-> @@ -3501,10 +3499,17 @@ void kvm_vcpu_halt(struct kvm_vcpu *vcpu)
->   {
->   	bool halt_poll_allowed = !kvm_arch_no_poll(vcpu);
->   	bool do_halt_poll = halt_poll_allowed && vcpu->halt_poll_ns;
-> +	unsigned int max_halt_poll_ns;
->   	ktime_t start, cur, poll_end;
-> +	struct kvm *kvm = vcpu->kvm;
->   	bool waited = false;
->   	u64 halt_ns;
->   
-> +	if (kvm->override_halt_poll_ns)
-> +		max_halt_poll_ns = kvm->max_halt_poll_ns;
-> +	else
-> +		max_halt_poll_ns = READ_ONCE(halt_poll_ns);
-> +
->   	start = cur = poll_end = ktime_get();
->   	if (do_halt_poll) {
->   		ktime_t stop = ktime_add_ns(start, vcpu->halt_poll_ns);
-> @@ -3545,17 +3550,16 @@ void kvm_vcpu_halt(struct kvm_vcpu *vcpu)
->   	if (halt_poll_allowed) {
->   		if (!vcpu_valid_wakeup(vcpu)) {
->   			shrink_halt_poll_ns(vcpu);
-> -		} else if (vcpu->kvm->max_halt_poll_ns) {
-> +		} else if (max_halt_poll_ns) {
->   			if (halt_ns <= vcpu->halt_poll_ns)
->   				;
->   			/* we had a long block, shrink polling */
-> -			else if (vcpu->halt_poll_ns &&
-> -				 halt_ns > vcpu->kvm->max_halt_poll_ns)
-> +			else if (vcpu->halt_poll_ns && halt_ns > max_halt_poll_ns)
->   				shrink_halt_poll_ns(vcpu);
->   			/* we had a short halt and our poll time is too small */
-> -			else if (vcpu->halt_poll_ns < vcpu->kvm->max_halt_poll_ns &&
-> -				 halt_ns < vcpu->kvm->max_halt_poll_ns)
-> -				grow_halt_poll_ns(vcpu);
-> +			else if (vcpu->halt_poll_ns < max_halt_poll_ns &&
-> +				 halt_ns < max_halt_poll_ns)
-> +				grow_halt_poll_ns(vcpu, max_halt_poll_ns);
->   		} else {
->   			vcpu->halt_poll_ns = 0;
->   		}
-> @@ -4588,6 +4592,7 @@ static int kvm_vm_ioctl_enable_cap_generic(struct kvm *kvm,
->   		if (cap->flags || cap->args[0] != (unsigned int)cap->args[0])
->   			return -EINVAL;
->   
-> +		kvm->override_halt_poll_ns = true;
->   		kvm->max_halt_poll_ns = cap->args[0];
->   		return 0;
->   	}
-Looks sensible to me overall.
-I will look at the RFC series, thanks for your quick response.
+  wget http://ftp.gnu.org/gnu/grep/grep-3.8.tar.gz
+  tar xf grep-3.8.tar.gz
+  cd grep-3.8 && ./configure && make
+  sudo make install
+  export PATH=/usr/local/bin:$PATH
 
-Yanan
-.
->> On 2021/9/28 1:33, Sean Christopherson wrote:
->>> On Mon, Sep 27, 2021, Paolo Bonzini wrote:
->>>> On Mon, Sep 27, 2021 at 5:17 PM Christian Borntraeger
->>>> <borntraeger@de.ibm.com> wrote:
->>>>>> So I think there are two possibilities that makes sense:
->>>>>>
->>>>>> * track what is using KVM_CAP_HALT_POLL, and make writes to halt_poll_ns follow that
->>>>> what about using halt_poll_ns for those VMs that did not uses KVM_CAP_HALT_POLL and the private number for those that did.
->>>> Yes, that's what I meant.  David pointed out that doesn't allow you to
->>>> disable halt polling altogether, but for that you can always ask each
->>>> VM's userspace one by one, or just not use KVM_CAP_HALT_POLL. (Also, I
->>>> don't know about Google's usecase, but mine was actually more about
->>>> using KVM_CAP_HALT_POLL to *disable* halt polling on some VMs!).
->>> I kinda like the idea if special-casing halt_poll_ns=0, e.g. for testing or
->>> in-the-field mitigation if halt-polling is broken.  It'd be trivial to support, e.g.
->> Do we have any plan to repost the diff as a fix?
->> I would be very nice that this issue can be solved.
->>
->> Besides, I think we may need some Doc for users to describe
->> how halt_poll_ns works with KVM_CAP_HALT_POLL, like
->> "Documentation/virt/guest-halt-polling.rst".
->>> @@ -3304,19 +3304,23 @@ void kvm_vcpu_halt(struct kvm_vcpu *vcpu)
->>>                   update_halt_poll_stats(vcpu, start, poll_end, !waited);
->>>
->>>           if (halt_poll_allowed) {
->>> +               max_halt_poll_ns = vcpu->kvm->max_halt_poll_ns;
->>> +               if (!max_halt_poll_ns || !halt_poll_ns)  <------ squish the max if halt_poll_ns==0
->>> +                       max_halt_poll_ns = halt_poll_ns;
->>> +
->> Does this mean that KVM_CAP_HALT_POLL will not be able to
->> disable halt polling for a VM individually when halt_poll_ns !=0?
->>>                   if (!vcpu_valid_wakeup(vcpu)) {
->>>                           shrink_halt_poll_ns(vcpu);
->>> -               } else if (vcpu->kvm->max_halt_poll_ns) {
->>> +               } else if (max_halt_poll_ns) {
->>>                           if (halt_ns <= vcpu->halt_poll_ns)
->>>                                   ;
->>>                           /* we had a long block, shrink polling */
->>>                           else if (vcpu->halt_poll_ns &&
->>> -                                halt_ns > vcpu->kvm->max_halt_poll_ns)
->>> +                                halt_ns > max_halt_poll_ns)
->>>                                   shrink_halt_poll_ns(vcpu);
->>>                           /* we had a short halt and our poll time is too small */
->>> -                       else if (vcpu->halt_poll_ns < vcpu->kvm->max_halt_poll_ns &&
->>> -                                halt_ns < vcpu->kvm->max_halt_poll_ns)
->>> -                               grow_halt_poll_ns(vcpu);
->>> +                       else if (vcpu->halt_poll_ns < max_halt_poll_ns &&
->>> +                                halt_ns < max_halt_poll_ns)
->>> +                               grow_halt_poll_ns(vcpu, max_halt_poll_ns);
->>>                   } else {
->>>                           vcpu->halt_poll_ns = 0;
->>>                   }
->>> _______________________________________________
->>> kvmarm mailing list
->>> kvmarm@lists.cs.columbia.edu
->>> https://lists.cs.columbia.edu/mailman/listinfo/kvmarm
->>> .
->> Thanks,
->> Yanan
-> .
+Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+---
+ arch/mips/Makefile      | 2 +-
+ arch/mips/vdso/Makefile | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/arch/mips/Makefile b/arch/mips/Makefile
+index b296e33..490dea0 100644
+--- a/arch/mips/Makefile
++++ b/arch/mips/Makefile
+@@ -318,7 +318,7 @@ KBUILD_LDFLAGS		+= -m $(ld-emul)
+ 
+ ifdef CONFIG_MIPS
+ CHECKFLAGS += $(shell $(CC) $(KBUILD_CFLAGS) -dM -E -x c /dev/null | \
+-	egrep -vw '__GNUC_(MINOR_|PATCHLEVEL_)?_' | \
++	grep -E -vw '__GNUC_(MINOR_|PATCHLEVEL_)?_' | \
+ 	sed -e "s/^\#define /-D'/" -e "s/ /'='/" -e "s/$$/'/" -e 's/\$$/&&/g')
+ endif
+ 
+diff --git a/arch/mips/vdso/Makefile b/arch/mips/vdso/Makefile
+index f72658b..1f7d5c6 100644
+--- a/arch/mips/vdso/Makefile
++++ b/arch/mips/vdso/Makefile
+@@ -71,7 +71,7 @@ KCOV_INSTRUMENT := n
+ 
+ # Check that we don't have PIC 'jalr t9' calls left
+ quiet_cmd_vdso_mips_check = VDSOCHK $@
+-      cmd_vdso_mips_check = if $(OBJDUMP) --disassemble $@ | egrep -h "jalr.*t9" > /dev/null; \
++      cmd_vdso_mips_check = if $(OBJDUMP) --disassemble $@ | grep -E -h "jalr.*t9" > /dev/null; \
+ 		       then (echo >&2 "$@: PIC 'jalr t9' calls are not supported"; \
+ 			     rm -f $@; /bin/false); fi
+ 
+-- 
+2.1.0
 

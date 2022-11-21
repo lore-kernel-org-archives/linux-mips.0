@@ -2,392 +2,670 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 33EADC43217
-	for <linux-mips@archiver.kernel.org>; Mon, 21 Nov 2022 11:11:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DF214C4332F
+	for <linux-mips@archiver.kernel.org>; Mon, 21 Nov 2022 12:36:42 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230399AbiKULK6 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 21 Nov 2022 06:10:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59854 "EHLO
+        id S230151AbiKUMgm (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 21 Nov 2022 07:36:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56278 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230283AbiKULJt (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Mon, 21 Nov 2022 06:09:49 -0500
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86721A84D5
-        for <linux-mips@vger.kernel.org>; Mon, 21 Nov 2022 03:07:08 -0800 (PST)
-Received: by mail-lf1-x12c.google.com with SMTP id bp15so18247197lfb.13
-        for <linux-mips@vger.kernel.org>; Mon, 21 Nov 2022 03:07:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ykrr97Kx6dPwpQpPLkSQPEIss0usMVQMF4V3McQGImg=;
-        b=aqIQbAwX7kJEr4u1y2d/vOKLmFZrO9Tr46iUeC6k3KtUD89g1BJF5rEtGzfYBNZ8kj
-         D5rMFPm7fjgyAzZFmghUYZqAYJbklnoAWq1GPWcZW8bWlBWHhf0PyFtRO2H5b2TCXsV3
-         aHYShVMWdPp9aJKEqrP5J9YGgv4G14SERxMTlgywtddqE+iK5fsnQYn0X7wPLN6B+PBn
-         ShE6SLKDCci4bQS1rFgh+/OR3/rnSVM4lMVDpTYl+mAEGisdkeIyUrHonUmg8MTqeXi5
-         3Cq66j29vBtJhRYcrIpm8QPE91IoQZ2s241/7C0IFL6A6uYq9HxVMUqPbB55Bv69xUz2
-         LhVQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ykrr97Kx6dPwpQpPLkSQPEIss0usMVQMF4V3McQGImg=;
-        b=P8NWbINPY9emzFeUJuskF+oVZKqYQOEj6H8WoIZd6TnpOPwDY1Pueiy2tE6d+1Gjg5
-         yDyYP5R0LVWhPq/dVUlK/9yF2t25en9Y0WIWgLZbaEEGTtmdfXAlHI9GG4TkAfQOccSq
-         1Hv4kZDkMf9cS6DYlAzON9jBdBnh6spxB8T94wk+7ki7/voSOSTQnBROD1dSsrAD3tww
-         DOuiufHgrdVffVnuqeFdAC17BjqOflHqTY5YbHTt5/vMXdMfTAapbEZicBWc5bqNx29T
-         FunUxjOxNH8MCuR+zAwl/VS4mP01C/SSJyZjMmIQ/jigPpvf4Ak786vVa3G1XxVUZYS9
-         itQg==
-X-Gm-Message-State: ANoB5pl2KN8xQyUs6+uplVmVheg4yHs4BNOh+YJIDfOwCt7GLEysD3X5
-        fOeFIMYXi4zNmWcgTG1ZQY17MQ==
-X-Google-Smtp-Source: AA0mqf5/enQ9D+vtSq4jU+plDQR2darfKhhZbr6PaDRoZIzW/KhmYoxs/Xb6U6lu4KGVoFJnJNKNJA==
-X-Received: by 2002:a05:6512:3248:b0:4aa:148d:5168 with SMTP id c8-20020a056512324800b004aa148d5168mr5432818lfr.561.1669028799198;
-        Mon, 21 Nov 2022 03:06:39 -0800 (PST)
-Received: from krzk-bin.NAT.warszawa.vectranet.pl (088156142067.dynamic-2-waw-k-3-2-0.vectranet.pl. [88.156.142.67])
-        by smtp.gmail.com with ESMTPSA id n1-20020a05651203e100b0049313f77755sm1991521lfq.213.2022.11.21.03.06.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Nov 2022 03:06:38 -0800 (PST)
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-To:     Rob Herring <robh+dt@kernel.org>,
+        with ESMTP id S231255AbiKUMga (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Mon, 21 Nov 2022 07:36:30 -0500
+Received: from loongson.cn (mail.loongson.cn [114.242.206.163])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A1A8DB4A6;
+        Mon, 21 Nov 2022 04:36:26 -0800 (PST)
+Received: from loongson.cn (unknown [10.180.13.64])
+        by gateway (Coremail) with SMTP id _____8CxLdnJcHtjKRoJAA--.25129S3;
+        Mon, 21 Nov 2022 20:36:25 +0800 (CST)
+Received: from [10.180.13.64] (unknown [10.180.13.64])
+        by localhost.localdomain (Coremail) with SMTP id AQAAf8BxmFfDcHtjF5kXAA--.43571S2;
+        Mon, 21 Nov 2022 20:36:22 +0800 (CST)
+Subject: Re: [PATCH v4 1/2] gpio: loongson: add dts and acpi support
+To:     Bartosz Golaszewski <brgl@bgdev.pl>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Andrew Lunn <andrew@lunn.ch>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-clk@vger.kernel.org, linux-riscv@lists.infradead.org,
-        linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-gpio@vger.kernel.org, linux-iio@vger.kernel.org,
-        linux-input@vger.kernel.org, linux-leds@vger.kernel.org,
-        linux-media@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-mmc@vger.kernel.org, linux-mtd@lists.infradead.org,
-        netdev@vger.kernel.org, linux-can@vger.kernel.org,
-        linux-pci@vger.kernel.org, linux-pwm@vger.kernel.org,
-        linux-rtc@vger.kernel.org, linux-serial@vger.kernel.org,
-        alsa-devel@alsa-project.org, linux-spi@vger.kernel.org,
-        linux-usb@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-watchdog@vger.kernel.org, Stephen Boyd <sboyd@kernel.org>,
-        Vinod Koul <vkoul@kernel.org>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Sebastian Reichel <sre@kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Guenter Roeck <linux@roeck-us.net>
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Subject: [PATCH v2 8/9] dt-bindings: clock: drop redundant part of title
-Date:   Mon, 21 Nov 2022 12:06:14 +0100
-Message-Id: <20221121110615.97962-9-krzysztof.kozlowski@linaro.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20221121110615.97962-1-krzysztof.kozlowski@linaro.org>
-References: <20221121110615.97962-1-krzysztof.kozlowski@linaro.org>
+        WANG Xuerui <kernel@xen0n.name>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Juxin Gao <gaojuxin@loongson.cn>,
+        Bibo Mao <maobibo@loongson.cn>,
+        Yanteng Si <siyanteng@loongson.cn>, linux-gpio@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        loongarch@lists.linux.dev, linux-mips@vger.kernel.org,
+        Arnaud Patard <apatard@mandriva.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Jianmin Lv <lvjianmin@loongson.cn>,
+        Hongchen Zhang <zhanghongchen@loongson.cn>,
+        Liu Peibao <liupeibao@loongson.cn>
+References: <20221117035902.13995-1-zhuyinbo@loongson.cn>
+ <CAMRc=MdDAoS+4djFX0mA5v-ceVFXYByHmWrfH+p4pVzsY8keXw@mail.gmail.com>
+From:   Yinbo Zhu <zhuyinbo@loongson.cn>
+Message-ID: <58a29930-874f-da5b-4bee-71c673970802@loongson.cn>
+Date:   Mon, 21 Nov 2022 20:36:19 +0800
+User-Agent: Mozilla/5.0 (X11; Linux loongarch64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
+In-Reply-To: <CAMRc=MdDAoS+4djFX0mA5v-ceVFXYByHmWrfH+p4pVzsY8keXw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: AQAAf8BxmFfDcHtjF5kXAA--.43571S2
+X-CM-SenderInfo: 52kx5xhqerqz5rrqw2lrqou0/
+X-Coremail-Antispam: 1Uk129KBjvAXoWfJrWDXr4xGr47CrWxXFyftFb_yoW8CF13to
+        W7GFZ3Z3yxXry7JF1Dt34FqF47Z3Wqva10yw1Ikan8Ga15ta4DKry3JrW3ZFW0yF1YqFWU
+        Za4xWw4SkFWxtF43n29KB7ZKAUJUUUUD529EdanIXcx71UUUUU7KY7ZEXasCq-sGcSsGvf
+        J3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU0xBIdaVrnRJU
+        UUPY1xkIjI8I6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_JrI_Jryl8cAvFV
+        AK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW8JVW5JwA2
+        z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIE14v26r4UJVWxJr
+        1l84ACjcxK6I8E87Iv6xkF7I0E14v26F4UJVW0owAaw2AFwI0_JF0_Jw1le2I262IYc4CY
+        6c8Ij28IcVAaY2xG8wAqjxCEc2xF0cIa020Ex4CE44I27wAqx4xG64xvF2IEw4CE5I8CrV
+        C2j2WlYx0E2Ix0cI8IcVAFwI0_JF0_Jw1lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE
+        7xkEbVWUJVW8JwACjcxG0xvEwIxGrwCYjI0SjxkI62AI1cAE67vIY487MxkF7I0En4kS14
+        v26r1q6r43MxAIw28IcxkI7VAKI48JMxAIw28IcVCjz48v1sIEY20_WwCFx2IqxVCFs4IE
+        7xkEbVWUJVW8JwCFI7km07C267AKxVWUAVWUtwC20s026c02F40E14v26r1j6r18MI8I3I
+        0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_GFv_WrylIxkGc2Ij64vIr41lIxAI
+        cVC0I7IYx2IY67AKxVWUCVW8JwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcV
+        CF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIE
+        c7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07jU2-nUUUUU=
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-The Devicetree bindings document does not have to say in the title that
-it is a "Devicetree binding", but instead just describe the hardware.
 
-Drop "Devicetree bindings" in various forms:
 
-  find Documentation/devicetree/bindings/ -type f -name '*.yaml' \
-    -exec sed -i -e 's/^title: [dD]evice[ -]\?[tT]ree [cC]lock [bB]indings\? for \([tT]he \)\?\(.*\)$/title: \u\2 Clock Controller/' {} \;
-
-  find Documentation/devicetree/bindings/ -type f -name '*.yaml' \
-    -exec sed -i -e 's/^title: [cC]lock [bB]indings\? for \([tT]he \)\?\(.*\)$/title: \u\2 Clock Controller/' {} \;
-
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Acked-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
-Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
----
- Documentation/devicetree/bindings/clock/calxeda.yaml           | 2 +-
- Documentation/devicetree/bindings/clock/imx1-clock.yaml        | 2 +-
- Documentation/devicetree/bindings/clock/imx21-clock.yaml       | 2 +-
- Documentation/devicetree/bindings/clock/imx23-clock.yaml       | 2 +-
- Documentation/devicetree/bindings/clock/imx25-clock.yaml       | 2 +-
- Documentation/devicetree/bindings/clock/imx27-clock.yaml       | 2 +-
- Documentation/devicetree/bindings/clock/imx28-clock.yaml       | 2 +-
- Documentation/devicetree/bindings/clock/imx31-clock.yaml       | 2 +-
- Documentation/devicetree/bindings/clock/imx35-clock.yaml       | 2 +-
- Documentation/devicetree/bindings/clock/imx5-clock.yaml        | 2 +-
- Documentation/devicetree/bindings/clock/imx6q-clock.yaml       | 2 +-
- Documentation/devicetree/bindings/clock/imx6sl-clock.yaml      | 2 +-
- Documentation/devicetree/bindings/clock/imx6sll-clock.yaml     | 2 +-
- Documentation/devicetree/bindings/clock/imx6sx-clock.yaml      | 2 +-
- Documentation/devicetree/bindings/clock/imx6ul-clock.yaml      | 2 +-
- Documentation/devicetree/bindings/clock/imx7d-clock.yaml       | 2 +-
- Documentation/devicetree/bindings/clock/imx7ulp-pcc-clock.yaml | 2 +-
- Documentation/devicetree/bindings/clock/imx7ulp-scg-clock.yaml | 2 +-
- Documentation/devicetree/bindings/clock/imxrt1050-clock.yaml   | 2 +-
- Documentation/devicetree/bindings/clock/ti,lmk04832.yaml       | 2 +-
- 20 files changed, 20 insertions(+), 20 deletions(-)
-
-diff --git a/Documentation/devicetree/bindings/clock/calxeda.yaml b/Documentation/devicetree/bindings/clock/calxeda.yaml
-index a34cbf3c9aaf..a88fbe20fef1 100644
---- a/Documentation/devicetree/bindings/clock/calxeda.yaml
-+++ b/Documentation/devicetree/bindings/clock/calxeda.yaml
-@@ -4,7 +4,7 @@
- $id: http://devicetree.org/schemas/clock/calxeda.yaml#
- $schema: http://devicetree.org/meta-schemas/core.yaml#
- 
--title: Device Tree Clock bindings for Calxeda highbank platform
-+title: Calxeda highbank platform Clock Controller
- 
- description: |
-   This binding covers the Calxeda SoC internal peripheral and bus clocks
-diff --git a/Documentation/devicetree/bindings/clock/imx1-clock.yaml b/Documentation/devicetree/bindings/clock/imx1-clock.yaml
-index 56f524780b1a..7ade4c32aff3 100644
---- a/Documentation/devicetree/bindings/clock/imx1-clock.yaml
-+++ b/Documentation/devicetree/bindings/clock/imx1-clock.yaml
-@@ -4,7 +4,7 @@
- $id: http://devicetree.org/schemas/clock/imx1-clock.yaml#
- $schema: http://devicetree.org/meta-schemas/core.yaml#
- 
--title: Clock bindings for Freescale i.MX1 CPUs
-+title: Freescale i.MX1 CPUs Clock Controller
- 
- maintainers:
-   - Alexander Shiyan <shc_work@mail.ru>
-diff --git a/Documentation/devicetree/bindings/clock/imx21-clock.yaml b/Documentation/devicetree/bindings/clock/imx21-clock.yaml
-index e2d50544700a..79cc843703ec 100644
---- a/Documentation/devicetree/bindings/clock/imx21-clock.yaml
-+++ b/Documentation/devicetree/bindings/clock/imx21-clock.yaml
-@@ -4,7 +4,7 @@
- $id: http://devicetree.org/schemas/clock/imx21-clock.yaml#
- $schema: http://devicetree.org/meta-schemas/core.yaml#
- 
--title: Clock bindings for Freescale i.MX21
-+title: Freescale i.MX21 Clock Controller
- 
- maintainers:
-   - Alexander Shiyan <shc_work@mail.ru>
-diff --git a/Documentation/devicetree/bindings/clock/imx23-clock.yaml b/Documentation/devicetree/bindings/clock/imx23-clock.yaml
-index 7e890ab9c77d..5e71c9219500 100644
---- a/Documentation/devicetree/bindings/clock/imx23-clock.yaml
-+++ b/Documentation/devicetree/bindings/clock/imx23-clock.yaml
-@@ -4,7 +4,7 @@
- $id: http://devicetree.org/schemas/clock/imx23-clock.yaml#
- $schema: http://devicetree.org/meta-schemas/core.yaml#
- 
--title: Clock bindings for Freescale i.MX23
-+title: Freescale i.MX23 Clock Controller
- 
- maintainers:
-   - Shawn Guo <shawnguo@kernel.org>
-diff --git a/Documentation/devicetree/bindings/clock/imx25-clock.yaml b/Documentation/devicetree/bindings/clock/imx25-clock.yaml
-index 1792e138984b..c626a158590e 100644
---- a/Documentation/devicetree/bindings/clock/imx25-clock.yaml
-+++ b/Documentation/devicetree/bindings/clock/imx25-clock.yaml
-@@ -4,7 +4,7 @@
- $id: http://devicetree.org/schemas/clock/imx25-clock.yaml#
- $schema: http://devicetree.org/meta-schemas/core.yaml#
- 
--title: Clock bindings for Freescale i.MX25
-+title: Freescale i.MX25 Clock Controller
- 
- maintainers:
-   - Sascha Hauer <s.hauer@pengutronix.de>
-diff --git a/Documentation/devicetree/bindings/clock/imx27-clock.yaml b/Documentation/devicetree/bindings/clock/imx27-clock.yaml
-index 99925aa22a4c..71d78a0b551f 100644
---- a/Documentation/devicetree/bindings/clock/imx27-clock.yaml
-+++ b/Documentation/devicetree/bindings/clock/imx27-clock.yaml
-@@ -4,7 +4,7 @@
- $id: http://devicetree.org/schemas/clock/imx27-clock.yaml#
- $schema: http://devicetree.org/meta-schemas/core.yaml#
- 
--title: Clock bindings for Freescale i.MX27
-+title: Freescale i.MX27 Clock Controller
- 
- maintainers:
-   - Fabio Estevam <festevam@gmail.com>
-diff --git a/Documentation/devicetree/bindings/clock/imx28-clock.yaml b/Documentation/devicetree/bindings/clock/imx28-clock.yaml
-index a542d680b1ca..4aaad7b9c66e 100644
---- a/Documentation/devicetree/bindings/clock/imx28-clock.yaml
-+++ b/Documentation/devicetree/bindings/clock/imx28-clock.yaml
-@@ -4,7 +4,7 @@
- $id: http://devicetree.org/schemas/clock/imx28-clock.yaml#
- $schema: http://devicetree.org/meta-schemas/core.yaml#
- 
--title: Clock bindings for Freescale i.MX28
-+title: Freescale i.MX28 Clock Controller
- 
- maintainers:
-   - Shawn Guo <shawnguo@kernel.org>
-diff --git a/Documentation/devicetree/bindings/clock/imx31-clock.yaml b/Documentation/devicetree/bindings/clock/imx31-clock.yaml
-index 168c8ada5e81..50a8498eef8a 100644
---- a/Documentation/devicetree/bindings/clock/imx31-clock.yaml
-+++ b/Documentation/devicetree/bindings/clock/imx31-clock.yaml
-@@ -4,7 +4,7 @@
- $id: http://devicetree.org/schemas/clock/imx31-clock.yaml#
- $schema: http://devicetree.org/meta-schemas/core.yaml#
- 
--title: Clock bindings for Freescale i.MX31
-+title: Freescale i.MX31 Clock Controller
- 
- maintainers:
-   - Fabio Estevam <festevam@gmail.com>
-diff --git a/Documentation/devicetree/bindings/clock/imx35-clock.yaml b/Documentation/devicetree/bindings/clock/imx35-clock.yaml
-index 6415bb6a8d04..c063369de3ec 100644
---- a/Documentation/devicetree/bindings/clock/imx35-clock.yaml
-+++ b/Documentation/devicetree/bindings/clock/imx35-clock.yaml
-@@ -4,7 +4,7 @@
- $id: http://devicetree.org/schemas/clock/imx35-clock.yaml#
- $schema: http://devicetree.org/meta-schemas/core.yaml#
- 
--title: Clock bindings for Freescale i.MX35
-+title: Freescale i.MX35 Clock Controller
- 
- maintainers:
-   - Steffen Trumtrar <s.trumtrar@pengutronix.de>
-diff --git a/Documentation/devicetree/bindings/clock/imx5-clock.yaml b/Documentation/devicetree/bindings/clock/imx5-clock.yaml
-index c0e19ff92c76..423c0142c1d3 100644
---- a/Documentation/devicetree/bindings/clock/imx5-clock.yaml
-+++ b/Documentation/devicetree/bindings/clock/imx5-clock.yaml
-@@ -4,7 +4,7 @@
- $id: http://devicetree.org/schemas/clock/imx5-clock.yaml#
- $schema: http://devicetree.org/meta-schemas/core.yaml#
- 
--title: Clock bindings for Freescale i.MX5
-+title: Freescale i.MX5 Clock Controller
- 
- maintainers:
-   - Fabio Estevam <festevam@gmail.com>
-diff --git a/Documentation/devicetree/bindings/clock/imx6q-clock.yaml b/Documentation/devicetree/bindings/clock/imx6q-clock.yaml
-index 4f4637eddb8b..bae4fcb3aacc 100644
---- a/Documentation/devicetree/bindings/clock/imx6q-clock.yaml
-+++ b/Documentation/devicetree/bindings/clock/imx6q-clock.yaml
-@@ -4,7 +4,7 @@
- $id: http://devicetree.org/schemas/clock/imx6q-clock.yaml#
- $schema: http://devicetree.org/meta-schemas/core.yaml#
- 
--title: Clock bindings for Freescale i.MX6 Quad
-+title: Freescale i.MX6 Quad Clock Controller
- 
- maintainers:
-   - Anson Huang <Anson.Huang@nxp.com>
-diff --git a/Documentation/devicetree/bindings/clock/imx6sl-clock.yaml b/Documentation/devicetree/bindings/clock/imx6sl-clock.yaml
-index b83c8f43d664..c85ff6ea3d24 100644
---- a/Documentation/devicetree/bindings/clock/imx6sl-clock.yaml
-+++ b/Documentation/devicetree/bindings/clock/imx6sl-clock.yaml
-@@ -4,7 +4,7 @@
- $id: http://devicetree.org/schemas/clock/imx6sl-clock.yaml#
- $schema: http://devicetree.org/meta-schemas/core.yaml#
- 
--title: Clock bindings for Freescale i.MX6 SoloLite
-+title: Freescale i.MX6 SoloLite Clock Controller
- 
- maintainers:
-   - Anson Huang <Anson.Huang@nxp.com>
-diff --git a/Documentation/devicetree/bindings/clock/imx6sll-clock.yaml b/Documentation/devicetree/bindings/clock/imx6sll-clock.yaml
-index 484894a4b23f..6b549ed1493c 100644
---- a/Documentation/devicetree/bindings/clock/imx6sll-clock.yaml
-+++ b/Documentation/devicetree/bindings/clock/imx6sll-clock.yaml
-@@ -4,7 +4,7 @@
- $id: http://devicetree.org/schemas/clock/imx6sll-clock.yaml#
- $schema: http://devicetree.org/meta-schemas/core.yaml#
- 
--title: Clock bindings for Freescale i.MX6 SLL
-+title: Freescale i.MX6 SLL Clock Controller
- 
- maintainers:
-   - Anson Huang <Anson.Huang@nxp.com>
-diff --git a/Documentation/devicetree/bindings/clock/imx6sx-clock.yaml b/Documentation/devicetree/bindings/clock/imx6sx-clock.yaml
-index e6c795657c24..55dcad18b7c6 100644
---- a/Documentation/devicetree/bindings/clock/imx6sx-clock.yaml
-+++ b/Documentation/devicetree/bindings/clock/imx6sx-clock.yaml
-@@ -4,7 +4,7 @@
- $id: http://devicetree.org/schemas/clock/imx6sx-clock.yaml#
- $schema: http://devicetree.org/meta-schemas/core.yaml#
- 
--title: Clock bindings for Freescale i.MX6 SoloX
-+title: Freescale i.MX6 SoloX Clock Controller
- 
- maintainers:
-   - Anson Huang <Anson.Huang@nxp.com>
-diff --git a/Documentation/devicetree/bindings/clock/imx6ul-clock.yaml b/Documentation/devicetree/bindings/clock/imx6ul-clock.yaml
-index 6a51a3f51cd9..be54d4df5afa 100644
---- a/Documentation/devicetree/bindings/clock/imx6ul-clock.yaml
-+++ b/Documentation/devicetree/bindings/clock/imx6ul-clock.yaml
-@@ -4,7 +4,7 @@
- $id: http://devicetree.org/schemas/clock/imx6ul-clock.yaml#
- $schema: http://devicetree.org/meta-schemas/core.yaml#
- 
--title: Clock bindings for Freescale i.MX6 UltraLite
-+title: Freescale i.MX6 UltraLite Clock Controller
- 
- maintainers:
-   - Anson Huang <Anson.Huang@nxp.com>
-diff --git a/Documentation/devicetree/bindings/clock/imx7d-clock.yaml b/Documentation/devicetree/bindings/clock/imx7d-clock.yaml
-index cefb61db01a8..e7d8427e4957 100644
---- a/Documentation/devicetree/bindings/clock/imx7d-clock.yaml
-+++ b/Documentation/devicetree/bindings/clock/imx7d-clock.yaml
-@@ -4,7 +4,7 @@
- $id: http://devicetree.org/schemas/clock/imx7d-clock.yaml#
- $schema: http://devicetree.org/meta-schemas/core.yaml#
- 
--title: Clock bindings for Freescale i.MX7 Dual
-+title: Freescale i.MX7 Dual Clock Controller
- 
- maintainers:
-   - Frank Li <Frank.Li@nxp.com>
-diff --git a/Documentation/devicetree/bindings/clock/imx7ulp-pcc-clock.yaml b/Documentation/devicetree/bindings/clock/imx7ulp-pcc-clock.yaml
-index 739c3378f8c8..76842038f52e 100644
---- a/Documentation/devicetree/bindings/clock/imx7ulp-pcc-clock.yaml
-+++ b/Documentation/devicetree/bindings/clock/imx7ulp-pcc-clock.yaml
-@@ -4,7 +4,7 @@
- $id: http://devicetree.org/schemas/clock/imx7ulp-pcc-clock.yaml#
- $schema: http://devicetree.org/meta-schemas/core.yaml#
- 
--title: Clock bindings for Freescale i.MX7ULP Peripheral Clock Control (PCC) modules
-+title: Freescale i.MX7ULP Peripheral Clock Control (PCC) modules Clock Controller
- 
- maintainers:
-   - A.s. Dong <aisheng.dong@nxp.com>
-diff --git a/Documentation/devicetree/bindings/clock/imx7ulp-scg-clock.yaml b/Documentation/devicetree/bindings/clock/imx7ulp-scg-clock.yaml
-index d06344d7e34f..5e25bc6d1372 100644
---- a/Documentation/devicetree/bindings/clock/imx7ulp-scg-clock.yaml
-+++ b/Documentation/devicetree/bindings/clock/imx7ulp-scg-clock.yaml
-@@ -4,7 +4,7 @@
- $id: http://devicetree.org/schemas/clock/imx7ulp-scg-clock.yaml#
- $schema: http://devicetree.org/meta-schemas/core.yaml#
- 
--title: Clock bindings for Freescale i.MX7ULP System Clock Generation (SCG) modules
-+title: Freescale i.MX7ULP System Clock Generation (SCG) modules Clock Controller
- 
- maintainers:
-   - A.s. Dong <aisheng.dong@nxp.com>
-diff --git a/Documentation/devicetree/bindings/clock/imxrt1050-clock.yaml b/Documentation/devicetree/bindings/clock/imxrt1050-clock.yaml
-index 03fc5c1a2939..777af4aad4b2 100644
---- a/Documentation/devicetree/bindings/clock/imxrt1050-clock.yaml
-+++ b/Documentation/devicetree/bindings/clock/imxrt1050-clock.yaml
-@@ -4,7 +4,7 @@
- $id: http://devicetree.org/schemas/clock/imxrt1050-clock.yaml#
- $schema: http://devicetree.org/meta-schemas/core.yaml#
- 
--title: Clock bindings for Freescale i.MXRT
-+title: Freescale i.MXRT Clock Controller
- 
- maintainers:
-   - Giulio Benetti <giulio.benetti@benettiengineering.com>
-diff --git a/Documentation/devicetree/bindings/clock/ti,lmk04832.yaml b/Documentation/devicetree/bindings/clock/ti,lmk04832.yaml
-index bd8173848253..73d17830f165 100644
---- a/Documentation/devicetree/bindings/clock/ti,lmk04832.yaml
-+++ b/Documentation/devicetree/bindings/clock/ti,lmk04832.yaml
-@@ -4,7 +4,7 @@
- $id: http://devicetree.org/schemas/clock/ti,lmk04832.yaml#
- $schema: http://devicetree.org/meta-schemas/core.yaml#
- 
--title: Clock bindings for the Texas Instruments LMK04832
-+title: Texas Instruments LMK04832 Clock Controller
- 
- maintainers:
-   - Liam Beguin <liambeguin@gmail.com>
--- 
-2.34.1
+在 2022/11/17 下午5:39, Bartosz Golaszewski 写道:
+> On Thu, Nov 17, 2022 at 4:59 AM Yinbo Zhu <zhuyinbo@loongson.cn> wrote:
+>>
+>> Latest Loongson platforms such as the Loongson-2 SoC series describe
+>> GPIO device resources with DTS or ACPI. Add such support to the
+>> existing platform device driver.
+>>
+>> Signed-off-by: Jianmin Lv <lvjianmin@loongson.cn>
+>> Signed-off-by: Hongchen Zhang <zhanghongchen@loongson.cn>
+>> Signed-off-by: Liu Peibao <liupeibao@loongson.cn>
+>> Signed-off-by: Juxin Gao <gaojuxin@loongson.cn>
+>> Signed-off-by: Yinbo Zhu <zhuyinbo@loongson.cn>
+>> ---
+>> Change in v4:
+>>                  1. Fixup name spelling about Signed-off-by.
+>>                  2. Drop "series" here and everywhere else.
+>>                  3. Fixup the copyright in driver.
+>>                  4. Drop the "else" in loongson_gpio_request.
+>>                  5. Use trinocular operation replace the related logic.
+>>                  6. Remove lable judgement in context about "lgpio->chip.to_irq =
+>>                     loongson_gpio_to_irq"
+>>                  7. Use dev_err replace pr_err in probe.
+>>                  8. Make legacy platform_data should be left out of this patch.
+>>                  9. Remove the mips config in gpio Kconfig.
+>> Change in v3:
+>>                  1. Move the gpio platform data struct from arch/ into include/linux/
+>>                     platform_data/.
+>>                  2. Replace platform_gpio_data with loongson_gpio_platform_data in .c.
+>>                  3. Add maintainer in MAINTAINERS file for include/linux/platform_data/
+>>                     gpio-loongson.h and gpio-loongson.c
+>> Change in v2:
+>>                  1. Fixup of_loongson_gpio_get_props and remove the parse logic about
+>>                     "loongson,conf_offset", "loongson,out_offset", "loongson,in_offset",
+>>                     "loongson,gpio_base", "loongson,support_irq" then kernel driver will
+>>                     initial them that depend compatible except "loongson,gpio_base".
+>>
+>>   MAINTAINERS                  |   8 +
+>>   drivers/gpio/Kconfig         |   6 +-
+>>   drivers/gpio/gpio-loongson.c | 403 ++++++++++++++++++++++++++++-------
+>>   3 files changed, 338 insertions(+), 79 deletions(-)
+>>
+>> diff --git a/MAINTAINERS b/MAINTAINERS
+>> index 5114db9c8f32..838b920efcef 100644
+>> --- a/MAINTAINERS
+>> +++ b/MAINTAINERS
+>> @@ -12051,6 +12051,14 @@ S:     Maintained
+>>   F:     Documentation/devicetree/bindings/hwinfo/loongson,ls2k-chipid.yaml
+>>   F:     drivers/soc/loongson/loongson2_guts.c
+>>
+>> +LOONGSON GPIO DRIVER
+>> +M:     Huacai Chen <chenhuacai@kernel.org>
+>> +M:     Yinbo Zhu <zhuyinbo@loongson.cn>
+>> +L:     linux-gpio@vger.kernel.org
+>> +S:     Maintained
+>> +F:     drivers/gpio/gpio-loongson.c
+>> +F:     include/linux/platform_data/gpio-loongson.h
+>> +
+>>   LSILOGIC MPT FUSION DRIVERS (FC/SAS/SPI)
+>>   M:     Sathya Prakash <sathya.prakash@broadcom.com>
+>>   M:     Sreekanth Reddy <sreekanth.reddy@broadcom.com>
+>> diff --git a/drivers/gpio/Kconfig b/drivers/gpio/Kconfig
+>> index a01af1180616..b4423c058b1d 100644
+>> --- a/drivers/gpio/Kconfig
+>> +++ b/drivers/gpio/Kconfig
+>> @@ -376,10 +376,10 @@ config GPIO_LOGICVC
+>>            programmable logic block.
+>>
+>>   config GPIO_LOONGSON
+>> -       bool "Loongson-2/3 GPIO support"
+>> -       depends on CPU_LOONGSON2EF || CPU_LOONGSON64
+>> +       bool "Loongson series GPIO support"
+>> +       depends on LOONGARCH || COMPILE_TEST
+>>          help
+>> -         Driver for GPIO functionality on Loongson-2F/3A/3B processors.
+>> +         Driver for GPIO functionality on Loongson seires processors.
+>>
+>>   config GPIO_LPC18XX
+>>          tristate "NXP LPC18XX/43XX GPIO support"
+>> diff --git a/drivers/gpio/gpio-loongson.c b/drivers/gpio/gpio-loongson.c
+>> index a42145873cc9..b9b191a541c0 100644
+>> --- a/drivers/gpio/gpio-loongson.c
+>> +++ b/drivers/gpio/gpio-loongson.c
+>> @@ -1,13 +1,11 @@
+>> -// SPDX-License-Identifier: GPL-2.0-or-later
+>> +// SPDX-License-Identifier: GPL-2.0+
+>>   /*
+>> - *  Loongson-2F/3A/3B GPIO Support
+>> + * Loongson GPIO Support
+>>    *
+>> - *  Copyright (c) 2008 Richard Liu,  STMicroelectronics         <richard.liu@st.com>
+>> - *  Copyright (c) 2008-2010 Arnaud Patard <apatard@mandriva.com>
+>> - *  Copyright (c) 2013 Hongbing Hu <huhb@lemote.com>
+>> - *  Copyright (c) 2014 Huacai Chen <chenhc@lemote.com>
+> 
+> Why are you removing other people's copyright notices?
+I will add a new file.
+> 
+>> + * Copyright (C) 2022 Loongson Technology Corporation Limited
+>>    */
+>>
+>> +#include <linux/acpi.h>
+>>   #include <linux/kernel.h>
+>>   #include <linux/init.h>
+>>   #include <linux/module.h>
+>> @@ -17,119 +15,372 @@
+>>   #include <linux/platform_device.h>
+>>   #include <linux/bitops.h>
+>>   #include <asm/types.h>
+>> -#include <loongson.h>
+>> +#include <asm/loongson.h>
+>>
+>> -#define STLS2F_N_GPIO          4
+>> -#define STLS3A_N_GPIO          16
+>> +#define LOONGSON_GPIO_IN(x)            (x->base + x->in_offset)
+>> +#define LOONGSON_GPIO_OUT(x)           (x->base + x->out_offset)
+>> +#define LOONGSON_GPIO_OEN(x)           (x->base + x->conf_offset)
+>>
+>> -#ifdef CONFIG_CPU_LOONGSON64
+>> -#define LOONGSON_N_GPIO        STLS3A_N_GPIO
+>> -#else
+>> -#define LOONGSON_N_GPIO        STLS2F_N_GPIO
+>> -#endif
+>> +#define LOONGSON_GPIO_IN_BYTE(x, gpio) (x->base +\
+>> +                                       x->in_offset + gpio)
+>> +#define LOONGSON_GPIO_OUT_BYTE(x, gpio)        (x->base +\
+>> +                                       x->out_offset + gpio)
+>> +#define LOONGSON_GPIO_OEN_BYTE(x, gpio)        (x->base +\
+>> +                                       x->conf_offset + gpio)
+>>
+>> -/*
+>> - * Offset into the register where we read lines, we write them from offset 0.
+>> - * This offset is the only thing that stand between us and using
+>> - * GPIO_GENERIC.
+>> - */
+>> -#define LOONGSON_GPIO_IN_OFFSET        16
+>> +struct loongson_gpio_chip {
+>> +       struct gpio_chip        chip;
+>> +       spinlock_t              lock;
+>> +       void __iomem            *base;
+>> +       int                     conf_offset;
+>> +       int                     out_offset;
+>> +       int                     in_offset;
+>> +       u16                     *gsi_idx_map;
+>> +       u16                     mapsize;
+>> +};
+>>
+>> -static DEFINE_SPINLOCK(gpio_lock);
+>> +static int loongson_gpio_request(
+>> +                       struct gpio_chip *chip, unsigned int pin)
+>> +{
+>> +       if (pin >= chip->ngpio)
+>> +               return -EINVAL;
+>> +
+>> +       return 0;
+>> +}
+>>
+>> -static int loongson_gpio_get_value(struct gpio_chip *chip, unsigned gpio)
+>> +static inline void __set_direction(struct loongson_gpio_chip *lgpio,
+>> +                       unsigned int pin, int input)
+>>   {
+>> -       u32 val;
+>> +       u64 qval;
+>> +       u8  bval;
+>> +
+>> +       if (!strcmp(lgpio->chip.label, "loongson,ls2k-gpio")) {
+>> +               qval = readq(LOONGSON_GPIO_OEN(lgpio));
+>> +               if (input)
+>> +                       qval |= 1ULL << pin;
+>> +               else
+>> +                       qval &= ~(1ULL << pin);
+>> +               writeq(qval, LOONGSON_GPIO_OEN(lgpio));
+>> +               return;
+>> +       }
+>>
+>> -       spin_lock(&gpio_lock);
+>> -       val = LOONGSON_GPIODATA;
+>> -       spin_unlock(&gpio_lock);
+>> +       if (!strcmp(lgpio->chip.label, "loongson,ls7a-gpio") ||
+>> +                       !strncmp(lgpio->chip.label, "LOON0002", 8)) {
+> 
+> This is ugly - can you instead use chip data associated with the
+> relevant compatible to store whatever custom info you need? See the
+> data field in struct of_device_id and acpi_device_id. Same elsewhere,
+> I really dislike this label parsing everywhere.
+okay, I got it.
+> 
+>> +               bval = input ? 1 : 0;
+>> +               writeb(bval, LOONGSON_GPIO_OEN_BYTE(lgpio, pin));
+>> +               return;
+>> +       }
+>>
+>> -       return !!(val & BIT(gpio + LOONGSON_GPIO_IN_OFFSET));
+>> +       if (!strcmp(lgpio->chip.label, "loongson,platform-gpio")) {
+>> +               if (input)
+>> +                       LOONGSON_GPIOIE |= BIT(pin);
+>> +               else
+>> +                       LOONGSON_GPIOIE &= ~BIT(pin);
+>> +               return;
+>> +       }
+>>   }
+>>
+>> -static void loongson_gpio_set_value(struct gpio_chip *chip,
+>> -               unsigned gpio, int value)
+>> +static void __set_level(struct loongson_gpio_chip *lgpio, unsigned int pin,
+>> +                       int high)
+>>   {
+>> -       u32 val;
+>> +       u64 qval;
+>> +       u8 bval;
+>>
+>> -       spin_lock(&gpio_lock);
+>> -       val = LOONGSON_GPIODATA;
+>> -       if (value)
+>> -               val |= BIT(gpio);
+>> -       else
+>> -               val &= ~BIT(gpio);
+>> -       LOONGSON_GPIODATA = val;
+>> -       spin_unlock(&gpio_lock);
+>> +       if (!strcmp(lgpio->chip.label, "loongson,ls2k-gpio")) {
+>> +               qval = readq(LOONGSON_GPIO_OUT(lgpio));
+>> +               if (high)
+>> +                       qval |= 1ULL << pin;
+>> +               else
+>> +                       qval &= ~(1ULL << pin);
+>> +               writeq(qval, LOONGSON_GPIO_OUT(lgpio));
+>> +               return;
+>> +       }
+>> +
+>> +       if (!strcmp(lgpio->chip.label, "loongson,ls7a-gpio") ||
+>> +                       !strncmp(lgpio->chip.label, "LOON0002", 8)) {
+>> +               bval = high ? 1 : 0;
+>> +               writeb(bval, LOONGSON_GPIO_OUT_BYTE(lgpio, pin));
+>> +               return;
+>> +       }
+>> +
+>> +       if (!strcmp(lgpio->chip.label, "loongson,platform-gpio")) {
+>> +               if (LOONGSON_GPIODATA)
+>> +                       LOONGSON_GPIODATA |= BIT(pin);
+>> +               else
+>> +                       LOONGSON_GPIODATA &= ~BIT(pin);
+>> +               return;
+>> +       }
+>>   }
+>>
+>> -static int loongson_gpio_direction_input(struct gpio_chip *chip, unsigned gpio)
+>> +static int loongson_gpio_direction_input(
+>> +                               struct gpio_chip *chip, unsigned int pin)
+>>   {
+>> -       u32 temp;
+>> +       unsigned long flags;
+>> +       struct loongson_gpio_chip *lgpio =
+>> +               container_of(chip, struct loongson_gpio_chip, chip);
+>>
+>> -       spin_lock(&gpio_lock);
+>> -       temp = LOONGSON_GPIOIE;
+>> -       temp |= BIT(gpio);
+>> -       LOONGSON_GPIOIE = temp;
+>> -       spin_unlock(&gpio_lock);
+>> +       spin_lock_irqsave(&lgpio->lock, flags);
+>> +       __set_direction(lgpio, pin, 1);
+>> +       spin_unlock_irqrestore(&lgpio->lock, flags);
+>>
+>>          return 0;
+>>   }
+>>
+>> -static int loongson_gpio_direction_output(struct gpio_chip *chip,
+>> -               unsigned gpio, int level)
+>> +static int loongson_gpio_direction_output(
+>> +                               struct gpio_chip *chip, unsigned int pin,
+>> +                               int value)
+>>   {
+>> -       u32 temp;
+>> +       struct loongson_gpio_chip *lgpio =
+>> +               container_of(chip, struct loongson_gpio_chip, chip);
+>> +       unsigned long flags;
+>>
+>> -       loongson_gpio_set_value(chip, gpio, level);
+>> -       spin_lock(&gpio_lock);
+>> -       temp = LOONGSON_GPIOIE;
+>> -       temp &= ~BIT(gpio);
+>> -       LOONGSON_GPIOIE = temp;
+>> -       spin_unlock(&gpio_lock);
+>> +       spin_lock_irqsave(&lgpio->lock, flags);
+>> +       __set_level(lgpio, pin, value);
+>> +       __set_direction(lgpio, pin, 0);
+>> +       spin_unlock_irqrestore(&lgpio->lock, flags);
+>>
+>>          return 0;
+>>   }
+>>
+>> +static int loongson_gpio_get(struct gpio_chip *chip, unsigned int pin)
+>> +{
+>> +       u64 qval;
+>> +       u8  bval;
+>> +       int val;
+>> +       struct loongson_gpio_chip *lgpio =
+>> +               container_of(chip, struct loongson_gpio_chip, chip);
+>> +
+>> +       if (!strcmp(lgpio->chip.label, "loongson,ls2k-gpio")) {
+>> +               qval = readq(LOONGSON_GPIO_IN(lgpio));
+>> +               return ((qval & (1ULL << pin)) != 0);
+>> +       }
+>> +
+>> +       if (!strcmp(lgpio->chip.label, "loongson,ls7a-gpio") ||
+>> +                       !strncmp(lgpio->chip.label, "LOON0002", 8)) {
+>> +               bval = readb(LOONGSON_GPIO_IN_BYTE(lgpio, pin));
+>> +               return (bval & 1);
+>> +       }
+>> +
+>> +       if (!strcmp(lgpio->chip.label, "loongson,platform-gpio")) {
+>> +               val = LOONGSON_GPIODATA;
+>> +               return !!(val & BIT(pin + lgpio->in_offset));
+>> +       }
+>> +
+>> +       return -ENXIO;
+>> +}
+>> +
+>> +static void loongson_gpio_set(struct gpio_chip *chip, unsigned int pin,
+>> +                       int value)
+>> +{
+>> +       unsigned long flags;
+>> +       struct loongson_gpio_chip *lgpio =
+>> +               container_of(chip, struct loongson_gpio_chip, chip);
+>> +
+>> +       spin_lock_irqsave(&lgpio->lock, flags);
+>> +       __set_level(lgpio, pin, value);
+>> +       spin_unlock_irqrestore(&lgpio->lock, flags);
+>> +}
+>> +
+>> +static int loongson_gpio_to_irq(
+>> +                       struct gpio_chip *chip, unsigned int offset)
+>> +{
+>> +       struct platform_device *pdev =
+>> +               container_of(chip->parent, struct platform_device, dev);
+>> +       struct loongson_gpio_chip *lgpio =
+>> +               container_of(chip, struct loongson_gpio_chip, chip);
+>> +
+>> +       if (offset >= chip->ngpio)
+>> +               return -EINVAL;
+>> +
+>> +       if ((lgpio->gsi_idx_map != NULL) && (offset < lgpio->mapsize))
+>> +               offset = lgpio->gsi_idx_map[offset];
+>> +
+>> +       return platform_get_irq(pdev, offset);
+>> +}
+>> +
+>> +static int loongson_gpio_init(
+>> +                       struct device *dev, struct loongson_gpio_chip *lgpio,
+>> +                       struct device_node *np, void __iomem *base)
+>> +{
+>> +       lgpio->chip.request = loongson_gpio_request;
+>> +       lgpio->chip.direction_input = loongson_gpio_direction_input;
+>> +       lgpio->chip.get = loongson_gpio_get;
+>> +       lgpio->chip.direction_output = loongson_gpio_direction_output;
+>> +       lgpio->chip.set = loongson_gpio_set;
+>> +       lgpio->chip.can_sleep = 0;
+>> +       lgpio->chip.of_node = np;
+>> +       lgpio->chip.parent = dev;
+>> +       spin_lock_init(&lgpio->lock);
+>> +       lgpio->base = (void __iomem *)base;
+>> +       lgpio->chip.to_irq = loongson_gpio_to_irq;
+>> +
+>> +       gpiochip_add(&lgpio->chip);
+>> +
+>> +       return 0;
+>> +}
+>> +
+>> +static void of_loongson_gpio_get_props(struct device_node *np,
+>> +                                 struct loongson_gpio_chip *lgpio)
+>> +{
+>> +       const char *name;
+>> +
+>> +       of_property_read_u32(np, "ngpios", (u32 *)&lgpio->chip.ngpio);
+>> +
+>> +       of_property_read_string(np, "compatible", &name);
+>> +       lgpio->chip.label = kstrdup(name, GFP_KERNEL);
+>> +
+>> +       if (!strcmp(name, "loongson,ls2k-gpio")) {
+>> +               lgpio->conf_offset = 0x0;
+>> +               lgpio->out_offset = 0x10;
+>> +               lgpio->in_offset = 0x20;
+>> +               return;
+>> +       }
+>> +
+>> +       if (!strcmp(name, "loongson,ls7a-gpio")) {
+>> +               lgpio->conf_offset = 0x800;
+>> +               lgpio->out_offset = 0x900;
+>> +               lgpio->in_offset = 0xa00;
+>> +               return;
+>> +       }
+>> +}
+>> +
+>> +static void acpi_loongson_gpio_get_props(struct platform_device *pdev,
+>> +                                 struct loongson_gpio_chip *lgpio)
+>> +{
+>> +
+>> +       struct device *dev = &pdev->dev;
+>> +       int rval;
+>> +
+>> +       device_property_read_u32(dev, "ngpios", (u32 *)&lgpio->chip.ngpio);
+>> +       device_property_read_u32(dev, "gpio_base", (u32 *)&lgpio->chip.base);
+>> +       device_property_read_u32(dev, "conf_offset",
+>> +                                       (u32 *)&lgpio->conf_offset);
+>> +       device_property_read_u32(dev, "out_offset",
+>> +                                       (u32 *)&lgpio->out_offset);
+>> +       device_property_read_u32(dev, "in_offset", (u32 *)&lgpio->in_offset);
+>> +
+>> +       rval = device_property_read_u16_array(dev, "gsi_idx_map", NULL, 0);
+>> +       if (rval > 0) {
+>> +               lgpio->gsi_idx_map =
+>> +                       kmalloc_array(rval, sizeof(*lgpio->gsi_idx_map),
+>> +                                       GFP_KERNEL);
+>> +               if (unlikely(!lgpio->gsi_idx_map)) {
+>> +                       dev_err(dev, "Alloc gsi_idx_map fail!\n");
+>> +               } else {
+>> +                       lgpio->mapsize = rval;
+>> +                       device_property_read_u16_array(dev, "gsi_idx_map",
+>> +                                       lgpio->gsi_idx_map, lgpio->mapsize);
+>> +               }
+>> +       }
+>> +
+>> +       lgpio->chip.label = kstrdup(pdev->name, GFP_KERNEL);
+>> +}
+>> +
+>> +static void platform_loongson_gpio_get_props(struct platform_device *pdev,
+>> +                                 struct loongson_gpio_chip *lgpio)
+>> +{
+>> +}
+> 
+> Drop it, if you don't use it.
+okay, I got it.
+> 
+>> +
+>>   static int loongson_gpio_probe(struct platform_device *pdev)
+>>   {
+>> -       struct gpio_chip *gc;
+>> +       struct resource *iores;
+>> +       void __iomem *base;
+>> +       struct loongson_gpio_chip *lgpio;
+>> +       struct device_node *np = pdev->dev.of_node;
+>>          struct device *dev = &pdev->dev;
+>> +       int ret = 0;
+>>
+>> -       gc = devm_kzalloc(dev, sizeof(*gc), GFP_KERNEL);
+>> -       if (!gc)
+>> +       lgpio = kzalloc(sizeof(struct loongson_gpio_chip), GFP_KERNEL);
+> 
+> Why stop using devres? Same elsewhere.
+okay, I had use it devres.
+> 
+>> +       if (!lgpio)
+>>                  return -ENOMEM;
+>>
+>> -       gc->label = "loongson-gpio-chip";
+>> -       gc->base = 0;
+>> -       gc->ngpio = LOONGSON_N_GPIO;
+>> -       gc->get = loongson_gpio_get_value;
+>> -       gc->set = loongson_gpio_set_value;
+>> -       gc->direction_input = loongson_gpio_direction_input;
+>> -       gc->direction_output = loongson_gpio_direction_output;
+>> +       if (np)
+>> +               of_loongson_gpio_get_props(np, lgpio);
+>> +       else if (ACPI_COMPANION(&pdev->dev))
+>> +               acpi_loongson_gpio_get_props(pdev, lgpio);
+>> +       else
+>> +               platform_loongson_gpio_get_props(pdev, lgpio);
+> 
+> I would prefer if you used generic device properties - like you
+> already do for acpi. They work for OF too thanks to the fwnode
+> abstraction.
+Some of these attributes I tried to define in the dts, but they are not
+generic, so I put them in xxx_ device_ id data field.
+> 
+>> +
+>> +       iores = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+>> +       if (!iores) {
+>> +               ret = -ENODEV;
+>> +               goto out;
+>> +       }
+>> +
+>> +       if (!request_mem_region(iores->start, resource_size(iores),
+>> +                               pdev->name)) {
+>> +               ret = -EBUSY;
+>> +               goto out;
+>> +       }
+>> +
+>> +       base = ioremap(iores->start, resource_size(iores));
+>> +       if (!base) {
+>> +               ret = -ENOMEM;
+>> +               goto out;
+>> +       }
+> 
+> Are you aware of the gpio-regmap interface? It seems to me that this
+> code could benefit from using it. There are already some good examples
+> in the tree.
+I tried to use regmap, but I found that my driver needs to access 64 bit
+registers, and regmap cannot cover it.
+> 
+>> +
+>> +       platform_set_drvdata(pdev, lgpio);
+>> +
+>> +       loongson_gpio_init(dev, lgpio, np, base);
+>> +
+>> +       return 0;
+>> +out:
+>> +       dev_err(dev, "missing mandatory property\n");
+>> +
+> 
+> So if request_mem_region() or ioremap() fails, we're printing this
+> error message? Doesn't seem right.
+> 
+>> +       return ret;
+>> +}
+>> +
+>> +static int loongson_gpio_remove(struct platform_device *pdev)
+>> +{
+>> +       struct loongson_gpio_chip *lgpio = platform_get_drvdata(pdev);
+>> +       struct resource         *mem;
+>>
+>> -       return gpiochip_add_data(gc, NULL);
+>> +       platform_set_drvdata(pdev, NULL);
+>> +
+>> +       gpiochip_remove(&lgpio->chip);
+>> +       iounmap(lgpio->base);
+>> +       kfree(lgpio->gsi_idx_map);
+>> +       kfree(lgpio);
+>> +       mem = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+>> +       release_mem_region(mem->start, resource_size(mem));
+>> +
+> 
+> This entire function can be dropped if you used devres.
+> 
+>> +       return 0;
+>>   }
+>>
+>> +static const struct of_device_id loongson_gpio_dt_ids[] = {
+>> +       { .compatible = "loongson,ls2k-gpio"},
+>> +       { .compatible = "loongson,ls7a-gpio"},
+>> +       {}
+>> +};
+>> +MODULE_DEVICE_TABLE(of, loongson_gpio_dt_ids);
+>> +
+>> +static const struct acpi_device_id loongson_gpio_acpi_match[] = {
+>> +       {"LOON0002"},
+>> +       {}
+>> +};
+>> +MODULE_DEVICE_TABLE(acpi, loongson_gpio_acpi_match);
+>> +
+>>   static struct platform_driver loongson_gpio_driver = {
+>>          .driver = {
+>>                  .name = "loongson-gpio",
+>> +               .owner = THIS_MODULE,
+>> +               .of_match_table = loongson_gpio_dt_ids,
+>> +               .acpi_match_table = ACPI_PTR(loongson_gpio_acpi_match),
+>>          },
+>>          .probe = loongson_gpio_probe,
+>> +       .remove = loongson_gpio_remove,
+>>   };
+>>
+>>   static int __init loongson_gpio_setup(void)
+>>   {
+>> -       struct platform_device *pdev;
+>> -       int ret;
+>> -
+>> -       ret = platform_driver_register(&loongson_gpio_driver);
+>> -       if (ret) {
+>> -               pr_err("error registering loongson GPIO driver\n");
+>> -               return ret;
+>> -       }
+>> -
+>> -       pdev = platform_device_register_simple("loongson-gpio", -1, NULL, 0);
+>> -       return PTR_ERR_OR_ZERO(pdev);
+>> +       return platform_driver_register(&loongson_gpio_driver);
+>>   }
+>>   postcore_initcall(loongson_gpio_setup);
+>> +
+>> +static void __exit loongson_gpio_exit(void)
+>> +{
+>> +       platform_driver_unregister(&loongson_gpio_driver);
+>> +}
+> 
+> This module cannot be unloaded so you can drop this. The __exit macro
+> will make the compiler drop it anyway.
+okay I got it.
+> 
+> Bart
+> 
+>> +
+>> +MODULE_DESCRIPTION("Loongson gpio driver");
+>> +MODULE_LICENSE("GPL");
+>> --
+>> 2.31.1
+>>
 

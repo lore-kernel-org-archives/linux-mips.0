@@ -2,27 +2,27 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D706FC4321E
-	for <linux-mips@archiver.kernel.org>; Wed, 23 Nov 2022 08:02:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E9C0CC4321E
+	for <linux-mips@archiver.kernel.org>; Wed, 23 Nov 2022 08:04:29 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235611AbiKWICT (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 23 Nov 2022 03:02:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40424 "EHLO
+        id S236083AbiKWIE2 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 23 Nov 2022 03:04:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43222 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235612AbiKWICR (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 23 Nov 2022 03:02:17 -0500
+        with ESMTP id S234151AbiKWIE1 (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 23 Nov 2022 03:04:27 -0500
 Received: from loongson.cn (mail.loongson.cn [114.242.206.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id CD8F92183C;
-        Wed, 23 Nov 2022 00:02:13 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 7D59415810;
+        Wed, 23 Nov 2022 00:04:25 -0800 (PST)
 Received: from loongson.cn (unknown [10.180.13.64])
-        by gateway (Coremail) with SMTP id _____8DxM_CE031jGTEAAA--.576S3;
-        Wed, 23 Nov 2022 16:02:12 +0800 (CST)
-Received: from [10.180.13.64] (unknown [10.180.13.64])
-        by localhost.localdomain (Coremail) with SMTP id AQAAf8Dx9VaB031j750YAA--.45728S2;
-        Wed, 23 Nov 2022 16:02:09 +0800 (CST)
-Subject: Re: [PATCH v5 2/3] gpio: loongson: add gpio driver support
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Bartosz Golaszewski <brgl@bgdev.pl>,
+        by gateway (Coremail) with SMTP id _____8Bx2+oI1H1jSjEAAA--.482S3;
+        Wed, 23 Nov 2022 16:04:24 +0800 (CST)
+Received: from localhost.localdomain (unknown [10.180.13.64])
+        by localhost.localdomain (Coremail) with SMTP id AQAAf8CxXuAB1H1jLZ4YAA--.63486S3;
+        Wed, 23 Nov 2022 16:04:22 +0800 (CST)
+From:   Yinbo Zhu <zhuyinbo@loongson.cn>
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <brgl@bgdev.pl>,
         Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
         WANG Xuerui <kernel@xen0n.name>,
@@ -35,283 +35,212 @@ Cc:     Bartosz Golaszewski <brgl@bgdev.pl>,
         loongarch@lists.linux.dev, linux-mips@vger.kernel.org,
         Arnaud Patard <apatard@mandriva.com>,
         Huacai Chen <chenhuacai@kernel.org>,
-        Jianmin Lv <lvjianmin@loongson.cn>,
-        Hongchen Zhang <zhanghongchen@loongson.cn>,
-        Liu Peibao <liupeibao@loongson.cn>
-References: <20221121123803.3786-1-zhuyinbo@loongson.cn>
- <20221121123803.3786-2-zhuyinbo@loongson.cn>
- <CACRpkda1adiNwbTZHdAyHKny3r5FFMP_XXVGbo1vnCdw9U1gNg@mail.gmail.com>
-From:   Yinbo Zhu <zhuyinbo@loongson.cn>
-Message-ID: <8a7abd77-9540-efa8-6f67-908530e85399@loongson.cn>
-Date:   Wed, 23 Nov 2022 16:02:08 +0800
-User-Agent: Mozilla/5.0 (X11; Linux loongarch64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Yinbo Zhu <zhuyinbo@loongson.cn>
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: [PATCH v6 2/2] dt-bindings: gpio: add loongson gpio
+Date:   Wed, 23 Nov 2022 16:04:14 +0800
+Message-Id: <20221123080414.14005-2-zhuyinbo@loongson.cn>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20221123080414.14005-1-zhuyinbo@loongson.cn>
+References: <20221123080414.14005-1-zhuyinbo@loongson.cn>
 MIME-Version: 1.0
-In-Reply-To: <CACRpkda1adiNwbTZHdAyHKny3r5FFMP_XXVGbo1vnCdw9U1gNg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: AQAAf8Dx9VaB031j750YAA--.45728S2
+X-CM-TRANSID: AQAAf8CxXuAB1H1jLZ4YAA--.63486S3
 X-CM-SenderInfo: 52kx5xhqerqz5rrqw2lrqou0/
-X-Coremail-Antispam: 1Uk129KBjvJXoW3AF43Kr1ktFy3Gw4kXFWDJwb_yoW3GF47pF
-        W5ua13Kr4DJr4jkr1DXrs8uF13Jr98KrsrtFs7C348AFyqvr97XFWj9F1ru3srurZ5Zr13
-        ZFWrCFy8u3Z8CaDanT9S1TB71UUUUjJqnTZGkaVYY2UrUUUUj1kv1TuYvTs0mT0YCTnIWj
+X-Coremail-Antispam: 1Uk129KBjvJXoWxXF47tF45Wry5Zw45GFWxWFg_yoWrtFWrp3
+        WDZFZxX3y2gr13tF45Ka17Zr4fAr1kC3WruwnxC3yxtrWUKwnxXFWfWFykG3Z3WrWUXF13
+        JwsrurWrta43Aw7anT9S1TB71UUUUjJqnTZGkaVYY2UrUUUUj1kv1TuYvTs0mT0YCTnIWj
         qI5I8CrVACY4xI64kE6c02F40Ex7xfYxn0WfASr-VFAUDa7-sFnT9fnUUIcSsGvfJTRUUU
-        bDAFc2x0x2IEx4CE42xK8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AKwVWUXVWUAwA2ocxC64
-        kIII0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20xvE14v26r4j6ryUM28E
-        F7xvwVC0I7IYx2IY6xkF7I0E14v26r4j6F4UM28EF7xvwVC2z280aVAFwI0_Gr1j6F4UJw
-        A2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gr1j6F4UJwAaw2AFwI0_JF0_Jw1le2I262IYc4CY
-        6c8Ij28IcVAaY2xG8wAqjxCEc2xF0cIa020Ex4CE44I27wAqx4xG64xvF2IEw4CE5I8CrV
-        C2j2WlYx0E2Ix0cI8IcVAFwI0_JF0_Jw1lYx0Ex4A2jsIE14v26r4j6F4UMcvjeVCFs4IE
-        7xkEbVWUJVW8JwACjcxG0xvEwIxGrwCYjI0SjxkI62AI1cAE67vIY487MxkF7I0En4kS14
-        v26r1q6r43MxAIw28IcxkI7VAKI48JMxAIw28IcVCjz48v1sIEY20_WwCFx2IqxVCFs4IE
-        7xkEbVWUJVW8JwCFI7km07C267AKxVWUAVWUtwC20s026c02F40E14v26r1j6r18MI8I3I
-        0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_GFv_WrylIxkGc2Ij64vIr41lIxAI
-        cVC0I7IYx2IY67AKxVWUCVW8JwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcV
-        CF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r4j6F4UMIIF0xvEx4A2jsIE
-        c7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07jnkucUUUUU=
+        bfAFc2x0x2IEx4CE42xK8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AKwVWUXVWUAwA2ocxC64
+        kIII0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20xvE14v26ryj6F1UM28E
+        F7xvwVC0I7IYx2IY6xkF7I0E14v26F4j6r4UJwA2z4x0Y4vEx4A2jsIE14v26r4UJVWxJr
+        1l84ACjcxK6I8E87Iv6xkF7I0E14v26r4UJVWxJr1ln4kS14v26r126r1DM2AIxVAIcxkE
+        cVAq07x20xvEncxIr21l57IF6xkI12xvs2x26I8E6xACxx1l5I8CrVACY4xI64kE6c02F4
+        0Ex7xfMcIj6xIIjxv20xvE14v26r1q6rW5McIj6I8E87Iv67AKxVW8JVWxJwAm72CE4IkC
+        6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lc7CjxVAaw2AFwI0_Jw0_GFyl42xK82IYc2
+        Ij64vIr41l42xK82IY6x8ErcxFaVAv8VWrMxC20s026xCaFVCjc4AY6r1j6r4UMxCIbckI
+        1I0E14v26r126r1DMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_Jr
+        Wlx4CE17CEb7AF67AKxVW8ZVWrXwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26ryj
+        6F1UMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr
+        0_JF4lIxAIcVC2z280aVAFwI0_Gr0_Cr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUv
+        cSsGvfC2KfnxnUUI43ZEXa7IU86yIUUUUUU==
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
+Add the Loongson platform gpio binding with DT schema format using
+json-schema.
 
+Signed-off-by: Yinbo Zhu <zhuyinbo@loongson.cn>
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+---
+Change in v6:
+		1. NO change, but other patch in this series of patches set has
+		   change.
+Change in v5:
+		1. NO change, but other patch in this series of patches set has
+		   change.
+Change in v4:
+		1. Remove the string "series".
+		2. Add the reviewed-by information.
+Change in v3:
+		1. Separate some changes of MAINTAINERS file and enter the first patch.
+Change in v2:
+		1. Drop "loongson,gpio_base" and "gpio-ranges" will cover it.
+		1. Drop "loongson,conf_offset", "loongson,out_offset", "loongson,in_offset",
+		   "loongson,support_irq" and kernel driver will initial them that depend
+		   compatible in kernel.
+		3. Fixup maintainer for this driver.
 
-在 2022/11/21 下午9:24, Linus Walleij 写道:
-> On Mon, Nov 21, 2022 at 1:38 PM Yinbo Zhu <zhuyinbo@loongson.cn> wrote:
-> 
->> The Loongson platforms GPIO controller contains 60 GPIO pins in total,
->> 4 of which are dedicated GPIO pins, and the remaining 56 are reused
->> with other functions. Each GPIO can set input/output and has the
->> interrupt capability.
->>
->> This driver added support for Loongson GPIO controller and support to
->> use DTS or ACPI to descibe GPIO device resources.
->>
->> Signed-off-by: Jianmin Lv <lvjianmin@loongson.cn>
->> Signed-off-by: Hongchen Zhang <zhanghongchen@loongson.cn>
->> Signed-off-by: Liu Peibao <liupeibao@loongson.cn>
->> Signed-off-by: Juxin Gao <gaojuxin@loongson.cn>
->> Signed-off-by: Yinbo Zhu <zhuyinbo@loongson.cn>
->> ---
->> Change in v5:
-> 
-> This is starting to look really good! We are getting to the final polish.
-> 
->> +config GPIO_LOONGSON
->> +       tristate "Loongson GPIO support"
->> +       depends on LOONGARCH || COMPILE_TEST
-> 
-> select GPIO_GENERIC
-> 
-> You should use this in the "bit mode".
-> 
->>   obj-$(CONFIG_GPIO_LOONGSON1)           += gpio-loongson1.o
->> +obj-$(CONFIG_GPIO_LOONGSON)            += gpio-loongson.o
-> 
-> Isn't this a bit confusing? What about naming it
-> gpio-loongson2.c?
-This driver was plan to cover all loongson platform, not only Loongson-2
-SoC but also other loongson platform. and I adop your advice in another
-mail. I named this driver was gpio-loongson-64bit.c.
-> 
->> +enum loongson_gpio_mode {
->> +       BIT_CTRL_MODE,
->> +       BYTE_CTRL_MODE,
->> +};
-> 
-> I don't think you will need to track this, jus assume BYTE_CTRL_MODE
-> in your callbacks because we will replace the bit mode with assigned
-> accessors from GPIO_GENERIC.
-  yes, but in loongson_gpio_init need a distinction, so I kept this.
-> 
->> +
->> +struct loongson_gpio_platform_data {
->> +       const char              *label;
->> +       enum loongson_gpio_mode mode;
-> 
-> So drop this.
+ .../bindings/gpio/loongson,ls-gpio.yaml       | 126 ++++++++++++++++++
+ MAINTAINERS                                   |   1 +
+ 2 files changed, 127 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/gpio/loongson,ls-gpio.yaml
 
-> 
->> +static int loongson_gpio_request(
->> +                       struct gpio_chip *chip, unsigned int pin)
->> +{
->> +       if (pin >= chip->ngpio)
->> +               return -EINVAL;
-> 
-> This is not needed, the gpiolib core already checks this. Drop it.
-I check gpio_request in gpilib, I notice gpio_is_valid is not equal to
-this condition, so I still kept it for byte mode.
-> 
->> +static inline void __set_direction(struct loongson_gpio_chip *lgpio,
->> +                       unsigned int pin, int input)
->> +{
->> +       u64 qval;
->> +       u8  bval;
->> +
->> +       if (lgpio->p_data->mode == BIT_CTRL_MODE) {
->> +               qval = readq(LOONGSON_GPIO_OEN(lgpio));
->> +               if (input)
->> +                       qval |= 1ULL << pin;
->> +               else
->> +                       qval &= ~(1ULL << pin);
->> +               writeq(qval, LOONGSON_GPIO_OEN(lgpio));
->> +       } else {
->> +               bval = input ? 1 : 0;
->> +               writeb(bval, LOONGSON_GPIO_OEN_BYTE(lgpio, pin));
->> +       }
-> 
-> Drop bit mode keep only byte mode.
-okay, I will drop it.
-> 
->> +static void __set_level(struct loongson_gpio_chip *lgpio, unsigned int pin,
->> +                       int high)
->> +{
->> +       u64 qval;
->> +       u8 bval;
->> +
->> +       if (lgpio->p_data->mode == BIT_CTRL_MODE) {
->> +               qval = readq(LOONGSON_GPIO_OUT(lgpio));
->> +               if (high)
->> +                       qval |= 1ULL << pin;
->> +               else
->> +                       qval &= ~(1ULL << pin);
->> +               writeq(qval, LOONGSON_GPIO_OUT(lgpio));
->> +       } else {
->> +               bval = high ? 1 : 0;
->> +               writeb(bval, LOONGSON_GPIO_OUT_BYTE(lgpio, pin));
->> +       }
-> 
-> Dito.
-okay, I will drop bit mode.
-> 
->> +static int loongson_gpio_get(struct gpio_chip *chip, unsigned int pin)
->> +{
->> +       u64 qval;
->> +       u8  bval;
->> +       int val;
->> +
->> +       struct loongson_gpio_chip *lgpio =
->> +               container_of(chip, struct loongson_gpio_chip, chip);
->> +
->> +       if (lgpio->p_data->mode == BIT_CTRL_MODE) {
->> +               qval = readq(LOONGSON_GPIO_IN(lgpio));
->> +               val = (qval & (1ULL << pin)) != 0;
->> +       } else {
->> +               bval = readb(LOONGSON_GPIO_IN_BYTE(lgpio, pin));
->> +               val = bval & 1;
->> +       }
-> 
-> Dito.
-okay, I will drop bit mode.
-> 
->> +static int loongson_gpio_to_irq(
->> +                       struct gpio_chip *chip, unsigned int offset)
->> +{
->> +       struct platform_device *pdev =
->> +               container_of(chip->parent, struct platform_device, dev);
->> +       struct loongson_gpio_chip *lgpio =
->> +               container_of(chip, struct loongson_gpio_chip, chip);
->> +
->> +       if (offset >= chip->ngpio)
->> +               return -EINVAL;
->> +
->> +       if ((lgpio->gsi_idx_map != NULL) && (offset < lgpio->mapsize))
->> +               offset = lgpio->gsi_idx_map[offset];
->> +       else
->> +               return -EINVAL;
->> +
->> +       return platform_get_irq(pdev, offset);
->> +}
-> 
-> I'm a bit suspicious about this. See the following in
-> Documentation/driver-api/gpio/driver.rst:
-> 
-> ------------------
-> It is legal for any IRQ consumer to request an IRQ from any irqchip even if it
-> is a combined GPIO+IRQ driver. The basic premise is that gpio_chip and
-> irq_chip are orthogonal, and offering their services independent of each
-> other.
-> 
-> gpiod_to_irq() is just a convenience function to figure out the IRQ for a
-> certain GPIO line and should not be relied upon to have been called before
-> the IRQ is used.
-> 
-> Always prepare the hardware and make it ready for action in respective
-> callbacks from the GPIO and irq_chip APIs. Do not rely on gpiod_to_irq() having
-> been called first.
-> ------------------
-> 
-> I am bit suspicious that your IRQchip implementation expects consumers
-> to call gpiod_to_irq() first and this is not legal.
-okay, I got it, and other driver use gpio interrupt doesn't rely on 
-gpiod_to_irq, but can use gpiod_to_irq.
-
-The reason is that gpio interrupt wasn't an independent module,  The
-loongson interrupt controller liointc include lots of interrupt was
-route to perpherial, such as i2c/spi .. gpio, so gpio interrupt as
-normal perpherial interrupt, It is unnecessary and redundant to
-implement a gpio irq chip. The liointc controller driver had cover all
-interrupt.
-> 
->> +static int loongson_gpio_init(
->> +                       struct device *dev, struct loongson_gpio_chip *lgpio,
->> +                       struct device_node *np, void __iomem *base)
->> +{
-> 
-> Do something like this:
-> 
-> #define LOONGSON_GPIO_IN(x)            (x->base + x->p_data->in_offset)
-> +#define LOONGSON_GPIO_OUT(x)           (x->base + x->p_data->out_offset)
-> +#define LOONGSON_GPIO_OEN(x)           (x->base + x->p_data->conf_offset)
-> 
-> if (lgpio->p_data->mode == BIT_CTRL_MODE) {
->         ret = bgpio_init(&g->gc, dev, 8,
->                           lgpio->base + lgpio->p_data->in_offset,
->                           lgpio->base + lgpio->p_data->out_offset,
->                           0,
->                           lgpio->base + lgpio->p_data->conf_offset,
->                           NULL,
->                           0);
->          if (ret) {
->                  dev_err(dev, "unable to init generic GPIO\n");
->                  goto dis_clk;
->          }
-> 
-> If you actually have a special purpose clear register in your hardware
-> which is not included here, then add it in the line with just 0 for that
-> function.
-okay, I had do it.
-in addition,  I don't like to use the dynamically allocated gpio base, 
-so I set the gpio base after call bgpio_init.
-
-> 
-> See the kerneldoc in bgpio_init() in drivers/gpio/gpio-mmio.c.
-> 
-> Then:
-> 
-> }  else {
-> 
->> +       lgpio->chip.request = loongson_gpio_request;
->> +       lgpio->chip.direction_input = loongson_gpio_direction_input;
->> +       lgpio->chip.get = loongson_gpio_get;
->> +       lgpio->chip.direction_output = loongson_gpio_direction_output;
->> +       lgpio->chip.set = loongson_gpio_set;
-> 
-> Note also: implement loongson_gpio_get_direction(). To read the setting
-> of the conf register on startup. You now only need to implement it for
-> byte mode.
-okay, I had implement it.
-> 
-> }
-> 
-> After this you should set ngpios, because bgpio_init() will overwrite it
-> with 64, so it cannot be done directly when parsing platform data,
-> cache it somewhere and write it here.
-okay, I will do it.
-> 
-> (...)
-> 
-> Yours,
-> Linus Walleij
-> 
+diff --git a/Documentation/devicetree/bindings/gpio/loongson,ls-gpio.yaml b/Documentation/devicetree/bindings/gpio/loongson,ls-gpio.yaml
+new file mode 100644
+index 000000000000..fb86e8ce6349
+--- /dev/null
++++ b/Documentation/devicetree/bindings/gpio/loongson,ls-gpio.yaml
+@@ -0,0 +1,126 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/gpio/loongson,ls-gpio.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Loongson GPIO controller.
++
++maintainers:
++  - Yinbo Zhu <zhuyinbo@loongson.cn>
++
++properties:
++  compatible:
++    enum:
++      - loongson,ls2k-gpio
++      - loongson,ls7a-gpio
++
++  reg:
++    maxItems: 1
++
++  ngpios:
++    minimum: 1
++    maximum: 64
++
++  "#gpio-cells":
++    const: 2
++
++  gpio-controller: true
++
++  gpio-ranges: true
++
++  interrupts:
++    minItems: 1
++    maxItems: 64
++
++required:
++  - compatible
++  - reg
++  - ngpios
++  - "#gpio-cells"
++  - gpio-controller
++  - gpio-ranges
++  - interrupts
++
++additionalProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/interrupt-controller/irq.h>
++
++    gpio0: gpio@1fe00500 {
++      compatible = "loongson,ls2k-gpio";
++      reg = <0x1fe00500 0x38>;
++      ngpios = <64>;
++      #gpio-cells = <2>;
++      gpio-controller;
++      gpio-ranges = <&pctrl 0 0 15>,
++                    <&pctrl 16 16 15>,
++                    <&pctrl 32 32 10>,
++                    <&pctrl 44 44 20>;
++      interrupt-parent = <&liointc1>;
++      interrupts = <28 IRQ_TYPE_LEVEL_LOW>,
++                   <29 IRQ_TYPE_LEVEL_LOW>,
++                   <30 IRQ_TYPE_LEVEL_LOW>,
++                   <30 IRQ_TYPE_LEVEL_LOW>,
++                   <26 IRQ_TYPE_LEVEL_LOW>,
++                   <26 IRQ_TYPE_LEVEL_LOW>,
++                   <26 IRQ_TYPE_LEVEL_LOW>,
++                   <26 IRQ_TYPE_LEVEL_LOW>,
++                   <26 IRQ_TYPE_LEVEL_LOW>,
++                   <26 IRQ_TYPE_LEVEL_LOW>,
++                   <26 IRQ_TYPE_LEVEL_LOW>,
++                   <26 IRQ_TYPE_LEVEL_LOW>,
++                   <26 IRQ_TYPE_LEVEL_LOW>,
++                   <26 IRQ_TYPE_LEVEL_LOW>,
++                   <26 IRQ_TYPE_LEVEL_LOW>,
++                   <>,
++                   <26 IRQ_TYPE_LEVEL_LOW>,
++                   <26 IRQ_TYPE_LEVEL_LOW>,
++                   <26 IRQ_TYPE_LEVEL_LOW>,
++                   <26 IRQ_TYPE_LEVEL_LOW>,
++                   <26 IRQ_TYPE_LEVEL_LOW>,
++                   <26 IRQ_TYPE_LEVEL_LOW>,
++                   <26 IRQ_TYPE_LEVEL_LOW>,
++                   <26 IRQ_TYPE_LEVEL_LOW>,
++                   <26 IRQ_TYPE_LEVEL_LOW>,
++                   <26 IRQ_TYPE_LEVEL_LOW>,
++                   <26 IRQ_TYPE_LEVEL_LOW>,
++                   <26 IRQ_TYPE_LEVEL_LOW>,
++                   <26 IRQ_TYPE_LEVEL_LOW>,
++                   <26 IRQ_TYPE_LEVEL_LOW>,
++                   <26 IRQ_TYPE_LEVEL_LOW>,
++                   <26 IRQ_TYPE_LEVEL_LOW>,
++                   <27 IRQ_TYPE_LEVEL_LOW>,
++                   <27 IRQ_TYPE_LEVEL_LOW>,
++                   <27 IRQ_TYPE_LEVEL_LOW>,
++                   <27 IRQ_TYPE_LEVEL_LOW>,
++                   <27 IRQ_TYPE_LEVEL_LOW>,
++                   <>,
++                   <27 IRQ_TYPE_LEVEL_LOW>,
++                   <27 IRQ_TYPE_LEVEL_LOW>,
++                   <27 IRQ_TYPE_LEVEL_LOW>,
++                   <27 IRQ_TYPE_LEVEL_LOW>,
++                   <>,
++                   <>,
++                   <27 IRQ_TYPE_LEVEL_LOW>,
++                   <27 IRQ_TYPE_LEVEL_LOW>,
++                   <27 IRQ_TYPE_LEVEL_LOW>,
++                   <27 IRQ_TYPE_LEVEL_LOW>,
++                   <27 IRQ_TYPE_LEVEL_LOW>,
++                   <27 IRQ_TYPE_LEVEL_LOW>,
++                   <27 IRQ_TYPE_LEVEL_LOW>,
++                   <27 IRQ_TYPE_LEVEL_LOW>,
++                   <27 IRQ_TYPE_LEVEL_LOW>,
++                   <27 IRQ_TYPE_LEVEL_LOW>,
++                   <27 IRQ_TYPE_LEVEL_LOW>,
++                   <27 IRQ_TYPE_LEVEL_LOW>,
++                   <27 IRQ_TYPE_LEVEL_LOW>,
++                   <27 IRQ_TYPE_LEVEL_LOW>,
++                   <27 IRQ_TYPE_LEVEL_LOW>,
++                   <27 IRQ_TYPE_LEVEL_LOW>,
++                   <27 IRQ_TYPE_LEVEL_LOW>,
++                   <27 IRQ_TYPE_LEVEL_LOW>,
++                   <27 IRQ_TYPE_LEVEL_LOW>,
++                   <27 IRQ_TYPE_LEVEL_LOW>;
++    };
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 2854da69cabb..b8a02a60973d 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -12055,6 +12055,7 @@ LOONGSON GPIO DRIVER
+ M:	Yinbo Zhu <zhuyinbo@loongson.cn>
+ L:	linux-gpio@vger.kernel.org
+ S:	Maintained
++F:	Documentation/devicetree/bindings/gpio/loongson,ls-gpio.yaml
+ F:	drivers/gpio/gpio-loongson-64bit.c
+ 
+ LSILOGIC MPT FUSION DRIVERS (FC/SAS/SPI)
+-- 
+2.31.1
 

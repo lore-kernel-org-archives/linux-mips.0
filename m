@@ -2,58 +2,59 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B30F5C47088
-	for <linux-mips@archiver.kernel.org>; Wed, 30 Nov 2022 23:12:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2AAC1C4321E
+	for <linux-mips@archiver.kernel.org>; Wed, 30 Nov 2022 23:12:10 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229844AbiK3XLw (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 30 Nov 2022 18:11:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47100 "EHLO
+        id S229685AbiK3XMG (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 30 Nov 2022 18:12:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46878 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229919AbiK3XLC (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 30 Nov 2022 18:11:02 -0500
-Received: from mail-pl1-x64a.google.com (mail-pl1-x64a.google.com [IPv6:2607:f8b0:4864:20::64a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B51D198943
-        for <linux-mips@vger.kernel.org>; Wed, 30 Nov 2022 15:10:09 -0800 (PST)
-Received: by mail-pl1-x64a.google.com with SMTP id j13-20020a170902c3cd00b0018981349b36so13354252plj.11
-        for <linux-mips@vger.kernel.org>; Wed, 30 Nov 2022 15:10:09 -0800 (PST)
+        with ESMTP id S229936AbiK3XLF (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 30 Nov 2022 18:11:05 -0500
+Received: from mail-pj1-x1049.google.com (mail-pj1-x1049.google.com [IPv6:2607:f8b0:4864:20::1049])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 598159AE1B
+        for <linux-mips@vger.kernel.org>; Wed, 30 Nov 2022 15:10:15 -0800 (PST)
+Received: by mail-pj1-x1049.google.com with SMTP id x17-20020a17090a8a9100b002196a3b190cso2698235pjn.6
+        for <linux-mips@vger.kernel.org>; Wed, 30 Nov 2022 15:10:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:reply-to:from:to:cc:subject:date:message-id:reply-to;
-        bh=MJave+Z+CqVOQlKYNh+9u1XLbNgTtvhVtL4XdeBXq3U=;
-        b=ZO3Ftedng5ZXtAj1HLjLejIkXeEuGF++TCmzhSGUO/jffRhjc4H+xBEcj7yIeqEdat
-         0U3Y+Ads6LzFvxNp27Uo8B2HMacUCZIv0pSE92rlIHxzWTi7f9KsRULC+bwhGX87ZVPR
-         vnMRqpKsuzzrvEbFNarvM7whj/3tQRNLMCHwuLgw98CUXaVYGXJOn+GNNpcbHsAkPmeN
-         tXU852Btu7ns0KpVR55ygwmLkYJEnvUvyvy5iEVsL5b//kXV7FWMRdutGQwiv7w9+h2Y
-         WeYcLiKtjVQOAjeb0ZzTx4wnLQ7dUbOEoRqTrEQ9fS/dnvpncahogy2siy31VVqOiND3
-         XFqA==
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:reply-to:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=uj+BMG24gpugAApyuMjfHhGTokqhj/HfOHcPzx/7Ixc=;
+        b=rXveYksPcbHAdLQWx0Se3mgCcQvIusgWV2YBwsk350kO+gwstaEEoshUZTFpuvac++
+         pLds7vX8HQyFV+EXcCsNs4Huph1CvEcQOXAAAxG85uCm3rCCbxscdft2ZxjRveL1foHX
+         Lrax89MRhf3bE1bAwMOLphkpziYLo/XzKTjZtkj0KrWsaZWT2gVodfm1c5joltsrB5eF
+         W0icMxnX0hgljPZjSz6UkymZcq3fcWnGh4feMzJb8fuOAJykHj0A+tcjteTkrK4SYiHc
+         +b7l66OJ0teH4JUbB2xCLD5wxFKLZ8CELPJsM7W7cN4l69kYm6xFX8ZvCrFTJGzWVhEq
+         HM9A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:reply-to:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=MJave+Z+CqVOQlKYNh+9u1XLbNgTtvhVtL4XdeBXq3U=;
-        b=6gQd/Tjfu5wU7kBkRlf6fNTNt2ueJZNdqT9y30YFp6rLkcTPFxxfJab5xbgltzLRVN
-         L04jrC02y3QCWSUYloeutiRw4LQmqJOUXSX5URJnhqjr4hgZu6q6qDpIZbgfhygSapt1
-         3QD0I6Ohu6ZxuRj7uV+B9yuTeZ1uwefsrdcTOmossnbb6SO6YmVvceujY166/MLymaU/
-         PbURsYFT2UZPGvaAqaNXf+SUUy6oyrgI0yokSAqjs8lujr08JfjsEN5RPbDY2GUyMzao
-         +cF+uDBRTIapr3QUxnj8J0mMtoNzd05cPZqRrvw37n7p033jwJTDqo2K5zdtvpn+p6Jo
-         o2YQ==
-X-Gm-Message-State: ANoB5plvqL4EKd0ivfaMr6KET9Z8y9cfEZhncXltdq+i1bRH/xW1O4IU
-        RNWm2T4qde5VcmWmQOFdmdtYh6d/His=
-X-Google-Smtp-Source: AA0mqf5OF5+sS7pzLlgqnJtqaKfzLdsx3EOQi2ZpWetSPzJEZYu9zjdDHGwAbdG5EGES6Cvu/KbnbnXMVFE=
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:reply-to:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=uj+BMG24gpugAApyuMjfHhGTokqhj/HfOHcPzx/7Ixc=;
+        b=4ENJ/nDclgyzJjF0RzJTEY1NyE5ZUog4Mk8CWED1+rQp3p0JWqUM63XJVhoj9yotwF
+         CLQQG+tJC3wpb9jNc5cT7NDq1beep7hxSQxQXq1VHA8pRzNYUOKcs/FYPP3gAU2xAFKB
+         cCxH9XmcaF9SP9MUrbp+CdQvy7HsMK4sN1N2qilHLk7sNUTY03MnOmwURL4GnEPPSyn3
+         fB6TPVSvQ5xBY3X1hjXVTK1cfrfiElDp3QXi1yJMavXqy9KoptNDCPFlK4TYo0cax3Xs
+         E88xm0OfBRQlSaM+UOlH1r/tFtb/BUpu1EwWR+8PSGJc7MeS8Yob8yKOX+FJw5BuqgJs
+         rGkA==
+X-Gm-Message-State: ANoB5pk8+ReVrJZWWDJ+x5KJ4W4dgGuoxZL8LaGDvlPkdvh2cg/UIEfU
+        Qh20eX1Jx4yyRXiaGxpb6kqnQ1mQz2Q=
+X-Google-Smtp-Source: AA0mqf4xYnJCkXbWk/N31ZRo5enbQfT7p8hAsoCQiyumsmQYs6alw3yUJytbRmVQwuUcUkB1fPIndjJ7nUc=
 X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:aa7:8090:0:b0:575:4e92:189e with SMTP id
- v16-20020aa78090000000b005754e92189emr14689428pff.59.1669849799328; Wed, 30
- Nov 2022 15:09:59 -0800 (PST)
+ (user=seanjc job=sendgmr) by 2002:a05:6a00:1624:b0:573:993b:ea6d with SMTP id
+ e4-20020a056a00162400b00573993bea6dmr46050829pfc.10.1669849814934; Wed, 30
+ Nov 2022 15:10:14 -0800 (PST)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Wed, 30 Nov 2022 23:08:57 +0000
+Date:   Wed, 30 Nov 2022 23:09:06 +0000
 In-Reply-To: <20221130230934.1014142-1-seanjc@google.com>
 Mime-Version: 1.0
 References: <20221130230934.1014142-1-seanjc@google.com>
 X-Mailer: git-send-email 2.38.1.584.g0f3c55d4c2-goog
-Message-ID: <20221130230934.1014142-14-seanjc@google.com>
-Subject: [PATCH v2 13/50] KVM: x86: Move guts of kvm_arch_init() to standalone helper
+Message-ID: <20221130230934.1014142-23-seanjc@google.com>
+Subject: [PATCH v2 22/50] KVM: MIPS: Setup VZ emulation? directly from kvm_mips_init()
 From:   Sean Christopherson <seanjc@google.com>
 To:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
         Huacai Chen <chenhuacai@kernel.org>,
@@ -90,177 +91,52 @@ Cc:     James Morse <james.morse@arm.com>,
         Kai Huang <kai.huang@intel.com>, Chao Gao <chao.gao@intel.com>,
         Thomas Gleixner <tglx@linutronix.de>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Move the guts of kvm_arch_init() to a new helper, kvm_x86_vendor_init(),
-so that VMX can do _all_ arch and vendor initialization before calling
-kvm_init().  Calling kvm_init() must be the _very_ last step during init,
-as kvm_init() exposes /dev/kvm to userspace, i.e. allows creating VMs.
+Invoke kvm_mips_emulation_init() directly from kvm_mips_init() instead
+of bouncing through kvm_init()=3D>kvm_arch_init().  Functionally, this is
+a glorified nop as invoking kvm_arch_init() is the very first action
+performed by kvm_init().
+
+Emptying kvm_arch_init() will allow dropping the hook entirely once all
+architecture implementations are nops.
 
 No functional change intended.
 
 Signed-off-by: Sean Christopherson <seanjc@google.com>
+Reviewed-by: Philippe Mathieu-Daud=C3=A9 <philmd@linaro.org>
 ---
- arch/x86/include/asm/kvm_host.h |  3 +++
- arch/x86/kvm/svm/svm.c          | 23 +++++++++++++++++++++--
- arch/x86/kvm/vmx/vmx.c          | 21 +++++++++++++++------
- arch/x86/kvm/x86.c              | 15 +++++++++++++--
- 4 files changed, 52 insertions(+), 10 deletions(-)
+ arch/mips/kvm/mips.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-index 70af7240a1d5..04a9ae66fb8d 100644
---- a/arch/x86/include/asm/kvm_host.h
-+++ b/arch/x86/include/asm/kvm_host.h
-@@ -1758,6 +1758,9 @@ extern struct kvm_x86_ops kvm_x86_ops;
- #define KVM_X86_OP_OPTIONAL_RET0 KVM_X86_OP
- #include <asm/kvm-x86-ops.h>
- 
-+int kvm_x86_vendor_init(struct kvm_x86_init_ops *ops);
-+void kvm_x86_vendor_exit(void);
-+
- #define __KVM_HAVE_ARCH_VM_ALLOC
- static inline struct kvm *kvm_arch_alloc_vm(void)
- {
-diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-index 91352d692845..19e81a99c58f 100644
---- a/arch/x86/kvm/svm/svm.c
-+++ b/arch/x86/kvm/svm/svm.c
-@@ -5091,15 +5091,34 @@ static struct kvm_x86_init_ops svm_init_ops __initdata = {
- 
- static int __init svm_init(void)
- {
-+	int r;
-+
- 	__unused_size_checks();
- 
--	return kvm_init(&svm_init_ops, sizeof(struct vcpu_svm),
--			__alignof__(struct vcpu_svm), THIS_MODULE);
-+	r = kvm_x86_vendor_init(&svm_init_ops);
-+	if (r)
-+		return r;
-+
-+	/*
-+	 * Common KVM initialization _must_ come last, after this, /dev/kvm is
-+	 * exposed to userspace!
-+	 */
-+	r = kvm_init(&svm_init_ops, sizeof(struct vcpu_svm),
-+		     __alignof__(struct vcpu_svm), THIS_MODULE);
-+	if (r)
-+		goto err_kvm_init;
-+
-+	return 0;
-+
-+err_kvm_init:
-+	kvm_x86_vendor_exit();
-+	return r;
- }
- 
- static void __exit svm_exit(void)
- {
- 	kvm_exit();
-+	kvm_x86_vendor_exit();
- }
- 
- module_init(svm_init)
-diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-index b8bf95b9710d..8e81cd94407d 100644
---- a/arch/x86/kvm/vmx/vmx.c
-+++ b/arch/x86/kvm/vmx/vmx.c
-@@ -8529,6 +8529,7 @@ static void vmx_exit(void)
- #endif
- 
- 	kvm_exit();
-+	kvm_x86_vendor_exit();
- 
- 	vmx_cleanup_l1d_flush();
- 
-@@ -8546,23 +8547,25 @@ static int __init vmx_init(void)
- 	 */
- 	hv_init_evmcs();
- 
-+	r = kvm_x86_vendor_init(&vmx_init_ops);
-+	if (r)
-+		return r;
-+
- 	r = kvm_init(&vmx_init_ops, sizeof(struct vcpu_vmx),
- 		     __alignof__(struct vcpu_vmx), THIS_MODULE);
- 	if (r)
--		return r;
-+		goto err_kvm_init;
- 
- 	/*
--	 * Must be called after kvm_init() so enable_ept is properly set
-+	 * Must be called after common x86 init so enable_ept is properly set
- 	 * up. Hand the parameter mitigation value in which was stored in
- 	 * the pre module init parser. If no parameter was given, it will
- 	 * contain 'auto' which will be turned into the default 'cond'
- 	 * mitigation mode.
- 	 */
- 	r = vmx_setup_l1d_flush(vmentry_l1d_flush_param);
--	if (r) {
--		vmx_exit();
--		return r;
--	}
-+	if (r)
-+		goto err_l1d_flush;
- 
- 	vmx_setup_fb_clear_ctrl();
- 
-@@ -8587,5 +8590,11 @@ static int __init vmx_init(void)
- 		allow_smaller_maxphyaddr = true;
- 
- 	return 0;
-+
-+err_l1d_flush:
-+	vmx_exit();
-+err_kvm_init:
-+	kvm_x86_vendor_exit();
-+	return r;
- }
- module_init(vmx_init);
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index 915d57c3b41d..b33932fca36e 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -9278,7 +9278,16 @@ static inline void kvm_ops_update(struct kvm_x86_init_ops *ops)
- 
+diff --git a/arch/mips/kvm/mips.c b/arch/mips/kvm/mips.c
+index f0a6c245d1ff..75681281e2df 100644
+--- a/arch/mips/kvm/mips.c
++++ b/arch/mips/kvm/mips.c
+@@ -1012,7 +1012,7 @@ long kvm_arch_vm_ioctl(struct file *filp, unsigned in=
+t ioctl, unsigned long arg)
+=20
  int kvm_arch_init(void *opaque)
  {
--	struct kvm_x86_init_ops *ops = opaque;
+-	return kvm_mips_emulation_init();
 +	return 0;
-+}
-+
-+void kvm_arch_exit(void)
-+{
-+
-+}
-+
-+int kvm_x86_vendor_init(struct kvm_x86_init_ops *ops)
-+{
- 	u64 host_pat;
- 	int r;
- 
-@@ -9410,8 +9419,9 @@ int kvm_arch_init(void *opaque)
- 	kmem_cache_destroy(x86_emulator_cache);
- 	return r;
  }
-+EXPORT_SYMBOL_GPL(kvm_x86_vendor_init);
- 
--void kvm_arch_exit(void)
-+void kvm_x86_vendor_exit(void)
- {
- 	kvm_unregister_perf_callbacks();
- 
-@@ -9440,6 +9450,7 @@ void kvm_arch_exit(void)
- 	WARN_ON(static_branch_unlikely(&kvm_xen_enabled.key));
- #endif
- }
-+EXPORT_SYMBOL_GPL(kvm_x86_vendor_exit);
- 
- static int __kvm_emulate_halt(struct kvm_vcpu *vcpu, int state, int reason)
- {
--- 
+=20
+ void kvm_arch_exit(void)
+@@ -1636,6 +1636,10 @@ static int __init kvm_mips_init(void)
+ 	if (ret)
+ 		return ret;
+=20
++	ret =3D kvm_mips_emulation_init();
++	if (ret)
++		return ret;
++
+ 	ret =3D kvm_init(NULL, sizeof(struct kvm_vcpu), 0, THIS_MODULE);
+=20
+ 	if (ret)
+--=20
 2.38.1.584.g0f3c55d4c2-goog
 

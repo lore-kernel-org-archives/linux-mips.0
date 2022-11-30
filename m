@@ -2,38 +2,38 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E381CC46467
-	for <linux-mips@archiver.kernel.org>; Wed, 30 Nov 2022 14:30:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BD5A8C433FE
+	for <linux-mips@archiver.kernel.org>; Wed, 30 Nov 2022 14:31:13 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229850AbiK3OaS (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 30 Nov 2022 09:30:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59438 "EHLO
+        id S229761AbiK3Oan (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 30 Nov 2022 09:30:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59464 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229559AbiK3OaP (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 30 Nov 2022 09:30:15 -0500
+        with ESMTP id S229883AbiK3OaU (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 30 Nov 2022 09:30:20 -0500
 Received: from sender4-op-o14.zoho.com (sender4-op-o14.zoho.com [136.143.188.14])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D0EC52888;
-        Wed, 30 Nov 2022 06:30:14 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; t=1669817506; cv=none; 
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96F525477B;
+        Wed, 30 Nov 2022 06:30:19 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; t=1669817569; cv=none; 
         d=zohomail.com; s=zohoarc; 
-        b=MBcgFbrxBMjCUsYG5JPRrKKOle/H+6CLvHLsKhUx7pGZLSo7InNJY1XoZh2orec8LiN/fuMmkzcItQOuWc/Oggq4K+ooy2GsQTgCZopz0ITgJ7F4AJjYcXkOgFtZGIDyF/Tn6FBiWEp7A4+dyD+Hdg3v0fIBLNLvbvcpb9fPBq8=
+        b=JSacKIfuxVnGPNdOvTNL3VXsKQM4qKYAcNyM62uN0wuH9uI7u4LEUiHbLOklN7MsfxHvazieG2u/0J81Px89NKXRwBPqu4Pw6jInhCXzE3rdWRXhdfZaNTzHLSO9lJPkKtwpitvMR3jgZVj/fr12LzFmvrFen8xyh/DxxgNJ+14=
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.com; s=zohoarc; 
-        t=1669817506; h=Content-Type:Content-Transfer-Encoding:Cc:Date:From:MIME-Version:Message-ID:Subject:To; 
-        bh=QF5pLbXUIUVP28HpDZnKqlToc38teR4R32c+jesH+QM=; 
-        b=TUNQ8cHrgqns0eHBc3DfXD+rwLkdzqPFztq0Ens1q4Zt1GNyinG8t3QVugkQj7nYzeGT5iZRg3ZGY9NBCMcqf6mfCOBhZ5qZhBxo3uw9/X9o3OXvbuXEXBncGS8d0munLxduoEP5BKia9DYBqh3wBR+nZ9st98uToRtnBgFSTSY=
+        t=1669817569; h=Content-Type:Content-Transfer-Encoding:Cc:Date:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:To; 
+        bh=rw2F9BBmZz7hCr2YZL7OfKiCcti+Y/szmYlgYlkB1sE=; 
+        b=Qz//DYinXkVfGaASn1n1TLCXq2S9vL1Nmzeni4L4pbkQxUX6o2mfkIOQEpBudE90saz+FnsTnRKRDmS+fdI2X0cjmxoXlNAtqnUhiMpOl52qMuR2sraP/JJbtqDyyJvA3zg+R3KPiIff8pxLZ0GD4b8+VoOj+usjoXQ7TcBh7Zo=
 ARC-Authentication-Results: i=1; mx.zohomail.com;
         dkim=pass  header.i=arinc9.com;
         spf=pass  smtp.mailfrom=arinc.unal@arinc9.com;
         dmarc=pass header.from=<arinc.unal@arinc9.com>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1669817506;
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1669817569;
         s=zmail; d=arinc9.com; i=arinc.unal@arinc9.com;
-        h=From:From:To:To:Cc:Cc:Subject:Subject:Date:Date:Message-Id:Message-Id:MIME-Version:Content-Type:Content-Transfer-Encoding:Reply-To;
-        bh=QF5pLbXUIUVP28HpDZnKqlToc38teR4R32c+jesH+QM=;
-        b=HfKAf4+Fel3coxytPwxCdcvr10bO6It6KMz9XQGSx8zBhVPLMBNwvphkDbv4PRBH
-        46P1LoZCIUxZawUHkV429aO6CGMJEcZ9QLB02hIwx4g/Dp5bRfd5jX7+E5Rxcd0iWFW
-        XVs2bsC3ntk6QlmzoL111TFrzu1K8SiYvYhUQudo=
+        h=From:From:To:To:Cc:Cc:Subject:Subject:Date:Date:Message-Id:Message-Id:In-Reply-To:References:MIME-Version:Content-Type:Content-Transfer-Encoding:Reply-To;
+        bh=rw2F9BBmZz7hCr2YZL7OfKiCcti+Y/szmYlgYlkB1sE=;
+        b=Y3UfQeV6t5e6v1+lcSZhghTS0CZxtNhA9fhWhX01/PX+V0q+eUWYHvSIyUBh2gw0
+        hVkCpwAY6EqKEk+cLkhndVHFFnyrRhER+VrpqH9ZxtSVnoH+Ecw3yVjk12T2WlQlAT3
+        hGUf4H0F/Rx7+ehrD/hI7pNaE5FDByojV/CtfC+c=
 Received: from arinc9-PC.lan (37.120.152.236 [37.120.152.236]) by mx.zohomail.com
-        with SMTPS id 1669817503309623.081549759161; Wed, 30 Nov 2022 06:11:43 -0800 (PST)
+        with SMTPS id 1669817565868514.798752313474; Wed, 30 Nov 2022 06:12:45 -0800 (PST)
 From:   =?UTF-8?q?Ar=C4=B1n=C3=A7=20=C3=9CNAL?= <arinc.unal@arinc9.com>
 To:     Vladimir Oltean <vladimir.oltean@nxp.com>,
         Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
@@ -96,10 +96,12 @@ Cc:     netdev@vger.kernel.org, devicetree@vger.kernel.org,
         linux-stm32@st-md-mailman.stormreply.com,
         linux-sunxi@lists.linux.dev, linux-rockchip@lists.infradead.org,
         linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Subject: [PATCH 0/5] remove label = "cpu" from DSA dt-binding
-Date:   Wed, 30 Nov 2022 17:10:35 +0300
-Message-Id: <20221130141040.32447-1-arinc.unal@arinc9.com>
+Subject: [PATCH 4/5] mips: dts: remove label = "cpu" from DSA dt-binding
+Date:   Wed, 30 Nov 2022 17:10:39 +0300
+Message-Id: <20221130141040.32447-5-arinc.unal@arinc9.com>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20221130141040.32447-1-arinc.unal@arinc9.com>
+References: <20221130141040.32447-1-arinc.unal@arinc9.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -108,44 +110,38 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Hello folks,
+This is not used by the DSA dt-binding, so remove it from all devicetrees.
 
-With this patch series, we're completely getting rid of 'label = "cpu";'
-which is not used by the DSA dt-binding at all.
+Signed-off-by: Arınç ÜNAL <arinc.unal@arinc9.com>
+---
+ arch/mips/boot/dts/qca/ar9331.dtsi    | 1 -
+ arch/mips/boot/dts/ralink/mt7621.dtsi | 1 -
+ 2 files changed, 2 deletions(-)
 
-Information for taking the patches for maintainers:
-Patch 1: netdev maintainers (based off netdev/net-next.git main)
-Patch 2-3: SoC maintainers (based off soc/soc.git soc/dt)
-Patch 4: MIPS maintainers (based off mips/linux.git mips-next)
-Patch 5: PowerPC maintainers (based off powerpc/linux.git next-test)
-
-I've been meaning to submit this for a few months. Find the relevant
-conversation here:
-https://lore.kernel.org/netdev/20220913155408.GA3802998-robh@kernel.org/
-
-Here's how I did it, for the interested (or suggestions):
-
-Find the platforms which have got 'label = "cpu";' defined.
-grep -rnw . -e 'label = "cpu";'
-
-Remove the line where 'label = "cpu";' is included.
-sed -i /'label = "cpu";'/,+d arch/arm/boot/dts/*
-sed -i /'label = "cpu";'/,+d arch/arm64/boot/dts/freescale/*
-sed -i /'label = "cpu";'/,+d arch/arm64/boot/dts/marvell/*
-sed -i /'label = "cpu";'/,+d arch/arm64/boot/dts/mediatek/*
-sed -i /'label = "cpu";'/,+d arch/arm64/boot/dts/rockchip/*
-sed -i /'label = "cpu";'/,+d arch/mips/boot/dts/qca/*
-sed -i /'label = "cpu";'/,+d arch/mips/boot/dts/ralink/*
-sed -i /'label = "cpu";'/,+d arch/powerpc/boot/dts/turris1x.dts
-sed -i /'label = "cpu";'/,+d Documentation/devicetree/bindings/net/qca,ar71xx.yaml
-
-Restore the symlink files which typechange after running sed.
-
-Arınç ÜNAL (5):
-  dt-bindings: net: qca,ar71xx: remove label = "cpu" from examples
-  arm: dts: remove label = "cpu" from DSA dt-binding
-  arm64: dts: remove label = "cpu" from DSA dt-binding
-  mips: dts: remove label = "cpu" from DSA dt-binding
-  powerpc: dts: remove label = "cpu" from DSA dt-binding
-
+diff --git a/arch/mips/boot/dts/qca/ar9331.dtsi b/arch/mips/boot/dts/qca/ar9331.dtsi
+index c4102b280b47..768ac0f869b1 100644
+--- a/arch/mips/boot/dts/qca/ar9331.dtsi
++++ b/arch/mips/boot/dts/qca/ar9331.dtsi
+@@ -176,7 +176,6 @@ ports {
+ 
+ 						switch_port0: port@0 {
+ 							reg = <0x0>;
+-							label = "cpu";
+ 							ethernet = <&eth1>;
+ 
+ 							phy-mode = "gmii";
+diff --git a/arch/mips/boot/dts/ralink/mt7621.dtsi b/arch/mips/boot/dts/ralink/mt7621.dtsi
+index f3f4c1f26e01..445817cbf376 100644
+--- a/arch/mips/boot/dts/ralink/mt7621.dtsi
++++ b/arch/mips/boot/dts/ralink/mt7621.dtsi
+@@ -386,7 +386,6 @@ port@4 {
+ 
+ 					port@6 {
+ 						reg = <6>;
+-						label = "cpu";
+ 						ethernet = <&gmac0>;
+ 						phy-mode = "trgmii";
+ 
+-- 
+2.34.1
 

@@ -2,59 +2,59 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6D463C47088
-	for <linux-mips@archiver.kernel.org>; Wed, 30 Nov 2022 23:12:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7916EC4321E
+	for <linux-mips@archiver.kernel.org>; Wed, 30 Nov 2022 23:12:35 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229796AbiK3XMG (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 30 Nov 2022 18:12:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47176 "EHLO
+        id S229777AbiK3XMd (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 30 Nov 2022 18:12:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46902 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229751AbiK3XLF (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 30 Nov 2022 18:11:05 -0500
-Received: from mail-pl1-x64a.google.com (mail-pl1-x64a.google.com [IPv6:2607:f8b0:4864:20::64a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5B9B9AE14
-        for <linux-mips@vger.kernel.org>; Wed, 30 Nov 2022 15:10:13 -0800 (PST)
-Received: by mail-pl1-x64a.google.com with SMTP id b6-20020a170902d50600b00189a5536820so5305227plg.16
-        for <linux-mips@vger.kernel.org>; Wed, 30 Nov 2022 15:10:13 -0800 (PST)
+        with ESMTP id S229947AbiK3XLU (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 30 Nov 2022 18:11:20 -0500
+Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5929E9AE0C
+        for <linux-mips@vger.kernel.org>; Wed, 30 Nov 2022 15:10:19 -0800 (PST)
+Received: by mail-pg1-x549.google.com with SMTP id 38-20020a630b26000000b004773803dda1so62384pgl.17
+        for <linux-mips@vger.kernel.org>; Wed, 30 Nov 2022 15:10:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:reply-to:from:to:cc:subject:date:message-id:reply-to;
-        bh=grdSlJzFo0VwdV8xgzvuVpRwKnA9GO3Mob4PH+ot8/0=;
-        b=CQKSwij2dM5sxTN5vEM9Pg0UGQR7vXxLholFOCIYMDxZ1/3rA7vH+RqFmN1n0beWlD
-         7+BAU4/MoU1Z2zohEeDLQA2mrNFcLMI1vaNT8JUT+3n3Smxr3wpQu7rVUMeYIUjzYrKM
-         QQRXU+fmSvdsXsp/lH1ncccopWZ+njKFlSsnkmBo5RgV0L2uInmLnHD4wZGB2dqPvFNW
-         AFZHsbz5az7ZAwj41de9s/UvOppce1LN8jHb5JWdYWBnJ4FReLvafLy5jclWK6UngF05
-         cPIBeGpzAB3DL/mtUhAd3V5apiG8/mbBEcTlCsb8iWOJpXlQdaq+hFXcxIhaHoaH5jmv
-         rjIg==
+        bh=DDPlKttPz95bIPigIbsZnvNedazYOn7GaaeDonhS6tI=;
+        b=Z6nLxfTzgTUuiwpAG8cvYQa+dN+u8gdYDmvalMupYvTiyNB08ya32PPN3JMi5MQ+zn
+         CKFON4bHGY9uO+OU5rvKypZLm5hBqJSLnUUDK1HFwnV5UgI7QftrXIwrcqqGD/J7JfqE
+         CFBmidj59C7V6og88vcOwpoym4GNhD2bRgcqaNBUXoe/misowqQibWZd3vr8QsfUhhwX
+         i4uWK4yeRp3DB4lRFiuIJyrUfchRtOmsamHvLHwY72jxQuWnDEt5quvvWruAYj+4E7Dq
+         3qk+oHrWcenEcx4E4wlD8i3c5crP7WSMTS/kUAiUvOcd3cx88naWVp5yOAiefRxYVySU
+         2z9A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:reply-to:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=grdSlJzFo0VwdV8xgzvuVpRwKnA9GO3Mob4PH+ot8/0=;
-        b=uAq+ky9y7ao0sshX1QmDd+0x6EMp4psJi2DR3Az4dXc9JJDWgngKF7Bdu2nsqcNQ8v
-         A3/UZUkKZgNZ7ZOnVMZiem9h+6yNPhAZN+rhe5J/rjdhcm3ee1R5aGcThGXCCPrBYx1A
-         StbWOHYAqL/fIE8S3OKXSHsqulleUb8cC1W/esYhzbCxpC729MxM3CXgQXNzoh5wp6Hv
-         OQr31jMiBK+JV/vcam2/roPCZkwz+ww0kjk3xSHUB5bhKpI2NUz9ci6RSn5ehYi/Njq5
-         RTvYgLQBGjYcp6yNkw6WNOPdeSp8u5UkLE+SOlXsDCL1jYRzLfuUniKjFkW2HUOdZuZw
-         /06g==
-X-Gm-Message-State: ANoB5pk87zFodnFisE5aEO1ghC13fSwcZaVieJXbdx9iBpUA/RvC461d
-        Xzm20+haY7NHWFrOfK7kPnuMoBEfY3c=
-X-Google-Smtp-Source: AA0mqf5utOkOs36wj8G4rTpG0ELlL4JMVDy82zEmZIH7sIXiucVOps+Q5AZsFyLWVU+C/qKz+GIkdE+8/9Y=
+        bh=DDPlKttPz95bIPigIbsZnvNedazYOn7GaaeDonhS6tI=;
+        b=RspkMBbbvrmdJlWF8lm6Os53WdI2iaORiLGK1qiY7V0xdzMSO1BCFPrG0KdutWL+qQ
+         4gfrg0fLFauqH/NW31S6rYARH9Y21AU9i9UlQXpAufUM5rgSYyzgUREWpwP15eayaE/E
+         iXOnth9I4SwVUR6ec4JW05iIKToLMIIrcEhAKzNMBl0w05bTnCU+c/FDCJKdmqGK/ZeI
+         WWrBzfp8qgwsw9eWjCMinJC5dpxjZwqKJjGsfx1faLKNL3nuat68ZF1WAYgOSH12k3IF
+         csn1H3+pQ9RL8KMk484qPTKY2konsBP49f5uE1qsnZDU4Syf/TTIIusUKA5aRoftXojo
+         5ijQ==
+X-Gm-Message-State: ANoB5plX45V1AZJ08WXXuojMaTzm314gJPIShpf8aHWsMdOJw8FGHMGg
+        WbjEi2SJvIxmu2e1xx2IZDHpNaC9ghc=
+X-Google-Smtp-Source: AA0mqf5zruXq4Znt6GWyW9YI72qBn8AYfe7bpB45wh6N7oxAIVQAewpSb0tYUlF1SUbzH3yBDOmCkMMzIcM=
 X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a62:648a:0:b0:572:76dd:3756 with SMTP id
- y132-20020a62648a000000b0057276dd3756mr45058073pfb.9.1669849813287; Wed, 30
- Nov 2022 15:10:13 -0800 (PST)
+ (user=seanjc job=sendgmr) by 2002:a17:902:b691:b0:17e:fb19:63ba with SMTP id
+ c17-20020a170902b69100b0017efb1963bamr47034838pls.160.1669849802860; Wed, 30
+ Nov 2022 15:10:02 -0800 (PST)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Wed, 30 Nov 2022 23:09:05 +0000
+Date:   Wed, 30 Nov 2022 23:08:59 +0000
 In-Reply-To: <20221130230934.1014142-1-seanjc@google.com>
 Mime-Version: 1.0
 References: <20221130230934.1014142-1-seanjc@google.com>
 X-Mailer: git-send-email 2.38.1.584.g0f3c55d4c2-goog
-Message-ID: <20221130230934.1014142-22-seanjc@google.com>
-Subject: [PATCH v2 21/50] KVM: MIPS: Hardcode callbacks to hardware
- virtualization extensions
+Message-ID: <20221130230934.1014142-16-seanjc@google.com>
+Subject: [PATCH v2 15/50] KVM: x86: Serialize vendor module initialization
+ (hardware setup)
 From:   Sean Christopherson <seanjc@google.com>
 To:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
         Huacai Chen <chenhuacai@kernel.org>,
@@ -95,124 +95,174 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Now that KVM no longer supports trap-and-emulate (see commit 45c7e8af4a5e
-"MIPS: Remove KVM_TE support"), hardcode the MIPS callbacks to the
-virtualization callbacks.
+Acquire a new mutex, vendor_module_lock, in kvm_x86_vendor_init() while
+doing hardware setup to ensure that concurrent calls are fully serialized.
+KVM rejects attempts to load vendor modules if a different module has
+already been loaded, but doesn't handle the case where multiple vendor
+modules are loaded at the same time, and module_init() doesn't run under
+the global module_mutex.
 
-Harcoding the callbacks eliminates the technically-unnecessary check on
-non-NULL kvm_mips_callbacks in kvm_arch_init().  MIPS has never supported
-multiple in-tree modules, i.e. barring an out-of-tree module, where
-copying and renaming kvm.ko counts as "out-of-tree", KVM could never
-encounter a non-NULL set of callbacks during module init.
+Note, in practice, this is likely a benign bug as no platform exists that
+supports both SVM and VMX, i.e. barring a weird VM setup, one of the
+vendor modules is guaranteed to fail a support check before modifying
+common KVM state.
 
-The callback check is also subtly broken, as it is not thread safe,
-i.e. if there were multiple modules, loading both concurrently would
-create a race between checking and setting kvm_mips_callbacks.
+Alternatively, KVM could perform an atomic CMPXCHG on .hardware_enable,
+but that comes with its own ugliness as it would require setting
+.hardware_enable before success is guaranteed, e.g. attempting to load
+the "wrong" could result in spurious failure to load the "right" module.
 
-Given that out-of-tree shenanigans are not the kernel's responsibility,
-hardcode the callbacks to simplify the code.
+Introduce a new mutex as using kvm_lock is extremely deadlock prone due
+to kvm_lock being taken under cpus_write_lock(), and in the future, under
+under cpus_read_lock().  Any operation that takes cpus_read_lock() while
+holding kvm_lock would potentially deadlock, e.g. kvm_timer_init() takes
+cpus_read_lock() to register a callback.  In theory, KVM could avoid
+such problematic paths, i.e. do less setup under kvm_lock, but avoiding
+all calls to cpus_read_lock() is subtly difficult and thus fragile.  E.g.
+updating static calls also acquires cpus_read_lock().
+
+Inverting the lock ordering, i.e. always taking kvm_lock outside
+cpus_read_lock(), is not a viable option as kvm_lock is taken in various
+callbacks that may be invoked under cpus_read_lock(), e.g. x86's
+kvmclock_cpufreq_notifier().
+
+The lockdep splat below is dependent on future patches to take
+cpus_read_lock() in hardware_enable_all(), but as above, deadlock is
+already is already possible.
+
+  ======================================================
+  WARNING: possible circular locking dependency detected
+  6.0.0-smp--7ec93244f194-init2 #27 Tainted: G           O
+  ------------------------------------------------------
+  stable/251833 is trying to acquire lock:
+  ffffffffc097ea28 (kvm_lock){+.+.}-{3:3}, at: hardware_enable_all+0x1f/0xc0 [kvm]
+
+               but task is already holding lock:
+  ffffffffa2456828 (cpu_hotplug_lock){++++}-{0:0}, at: hardware_enable_all+0xf/0xc0 [kvm]
+
+               which lock already depends on the new lock.
+
+               the existing dependency chain (in reverse order) is:
+
+               -> #1 (cpu_hotplug_lock){++++}-{0:0}:
+         cpus_read_lock+0x2a/0xa0
+         __cpuhp_setup_state+0x2b/0x60
+         __kvm_x86_vendor_init+0x16a/0x1870 [kvm]
+         kvm_x86_vendor_init+0x23/0x40 [kvm]
+         0xffffffffc0a4d02b
+         do_one_initcall+0x110/0x200
+         do_init_module+0x4f/0x250
+         load_module+0x1730/0x18f0
+         __se_sys_finit_module+0xca/0x100
+         __x64_sys_finit_module+0x1d/0x20
+         do_syscall_64+0x3d/0x80
+         entry_SYSCALL_64_after_hwframe+0x63/0xcd
+
+               -> #0 (kvm_lock){+.+.}-{3:3}:
+         __lock_acquire+0x16f4/0x30d0
+         lock_acquire+0xb2/0x190
+         __mutex_lock+0x98/0x6f0
+         mutex_lock_nested+0x1b/0x20
+         hardware_enable_all+0x1f/0xc0 [kvm]
+         kvm_dev_ioctl+0x45e/0x930 [kvm]
+         __se_sys_ioctl+0x77/0xc0
+         __x64_sys_ioctl+0x1d/0x20
+         do_syscall_64+0x3d/0x80
+         entry_SYSCALL_64_after_hwframe+0x63/0xcd
+
+               other info that might help us debug this:
+
+   Possible unsafe locking scenario:
+
+         CPU0                    CPU1
+         ----                    ----
+    lock(cpu_hotplug_lock);
+                                 lock(kvm_lock);
+                                 lock(cpu_hotplug_lock);
+    lock(kvm_lock);
+
+                *** DEADLOCK ***
+
+  1 lock held by stable/251833:
+   #0: ffffffffa2456828 (cpu_hotplug_lock){++++}-{0:0}, at: hardware_enable_all+0xf/0xc0 [kvm]
 
 Signed-off-by: Sean Christopherson <seanjc@google.com>
 ---
- arch/mips/include/asm/kvm_host.h |  2 +-
- arch/mips/kvm/Makefile           |  2 +-
- arch/mips/kvm/callback.c         | 14 --------------
- arch/mips/kvm/mips.c             |  9 ++-------
- arch/mips/kvm/vz.c               |  7 ++++---
- 5 files changed, 8 insertions(+), 26 deletions(-)
- delete mode 100644 arch/mips/kvm/callback.c
+ Documentation/virt/kvm/locking.rst |  6 ++++++
+ arch/x86/kvm/x86.c                 | 18 ++++++++++++++++--
+ 2 files changed, 22 insertions(+), 2 deletions(-)
 
-diff --git a/arch/mips/include/asm/kvm_host.h b/arch/mips/include/asm/kvm_host.h
-index 28f0ba97db71..2803c9c21ef9 100644
---- a/arch/mips/include/asm/kvm_host.h
-+++ b/arch/mips/include/asm/kvm_host.h
-@@ -758,7 +758,7 @@ struct kvm_mips_callbacks {
- 	void (*vcpu_reenter)(struct kvm_vcpu *vcpu);
- };
- extern struct kvm_mips_callbacks *kvm_mips_callbacks;
--int kvm_mips_emulation_init(struct kvm_mips_callbacks **install_callbacks);
-+int kvm_mips_emulation_init(void);
- 
- /* Debug: dump vcpu state */
- int kvm_arch_vcpu_dump_regs(struct kvm_vcpu *vcpu);
-diff --git a/arch/mips/kvm/Makefile b/arch/mips/kvm/Makefile
-index 21ff75bcdbc4..805aeea2166e 100644
---- a/arch/mips/kvm/Makefile
-+++ b/arch/mips/kvm/Makefile
-@@ -17,4 +17,4 @@ kvm-$(CONFIG_CPU_LOONGSON64) += loongson_ipi.o
- 
- kvm-y		+= vz.o
- obj-$(CONFIG_KVM)	+= kvm.o
--obj-y			+= callback.o tlb.o
-+obj-y			+= tlb.o
-diff --git a/arch/mips/kvm/callback.c b/arch/mips/kvm/callback.c
-deleted file mode 100644
-index d88aa2173fb0..000000000000
---- a/arch/mips/kvm/callback.c
-+++ /dev/null
-@@ -1,14 +0,0 @@
--/*
-- * This file is subject to the terms and conditions of the GNU General Public
-- * License.  See the file "COPYING" in the main directory of this archive
-- * for more details.
-- *
-- * Copyright (C) 2012  MIPS Technologies, Inc.  All rights reserved.
-- * Authors: Yann Le Du <ledu@kymasys.com>
-- */
--
--#include <linux/export.h>
--#include <linux/kvm_host.h>
--
--struct kvm_mips_callbacks *kvm_mips_callbacks;
--EXPORT_SYMBOL_GPL(kvm_mips_callbacks);
-diff --git a/arch/mips/kvm/mips.c b/arch/mips/kvm/mips.c
-index af29490d9740..f0a6c245d1ff 100644
---- a/arch/mips/kvm/mips.c
-+++ b/arch/mips/kvm/mips.c
-@@ -1012,17 +1012,12 @@ long kvm_arch_vm_ioctl(struct file *filp, unsigned int ioctl, unsigned long arg)
- 
- int kvm_arch_init(void *opaque)
- {
--	if (kvm_mips_callbacks) {
--		kvm_err("kvm: module already exists\n");
--		return -EEXIST;
--	}
--
--	return kvm_mips_emulation_init(&kvm_mips_callbacks);
-+	return kvm_mips_emulation_init();
- }
- 
- void kvm_arch_exit(void)
- {
--	kvm_mips_callbacks = NULL;
+diff --git a/Documentation/virt/kvm/locking.rst b/Documentation/virt/kvm/locking.rst
+index 845a561629f1..132a9e5436e5 100644
+--- a/Documentation/virt/kvm/locking.rst
++++ b/Documentation/virt/kvm/locking.rst
+@@ -282,3 +282,9 @@ time it will be set using the Dirty tracking mechanism described above.
+ 		wakeup notification event since external interrupts from the
+ 		assigned devices happens, we will find the vCPU on the list to
+ 		wakeup.
 +
++``vendor_module_lock``
++^^^^^^^^^^^^^^^^^^^^^^^^^^^^
++:Type:		mutex
++:Arch:		x86
++:Protects:	loading a vendor module (kvm_amd or kvm_intel)
+diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+index b33932fca36e..45184ca89317 100644
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -128,6 +128,7 @@ static int kvm_vcpu_do_singlestep(struct kvm_vcpu *vcpu);
+ static int __set_sregs2(struct kvm_vcpu *vcpu, struct kvm_sregs2 *sregs2);
+ static void __get_sregs2(struct kvm_vcpu *vcpu, struct kvm_sregs2 *sregs2);
+ 
++static DEFINE_MUTEX(vendor_module_lock);
+ struct kvm_x86_ops kvm_x86_ops __read_mostly;
+ 
+ #define KVM_X86_OP(func)					     \
+@@ -9286,7 +9287,7 @@ void kvm_arch_exit(void)
+ 
  }
  
- int kvm_arch_vcpu_ioctl_get_sregs(struct kvm_vcpu *vcpu,
-diff --git a/arch/mips/kvm/vz.c b/arch/mips/kvm/vz.c
-index c706f5890a05..dafab003ea0d 100644
---- a/arch/mips/kvm/vz.c
-+++ b/arch/mips/kvm/vz.c
-@@ -3304,7 +3304,10 @@ static struct kvm_mips_callbacks kvm_vz_callbacks = {
- 	.vcpu_reenter = kvm_vz_vcpu_reenter,
- };
- 
--int kvm_mips_emulation_init(struct kvm_mips_callbacks **install_callbacks)
-+/* FIXME: Get rid of the callbacks now that trap-and-emulate is gone. */
-+struct kvm_mips_callbacks *kvm_mips_callbacks = &kvm_vz_callbacks;
-+
-+int kvm_mips_emulation_init(void)
+-int kvm_x86_vendor_init(struct kvm_x86_init_ops *ops)
++static int __kvm_x86_vendor_init(struct kvm_x86_init_ops *ops)
  {
- 	if (!cpu_has_vz)
- 		return -ENODEV;
-@@ -3318,7 +3321,5 @@ int kvm_mips_emulation_init(struct kvm_mips_callbacks **install_callbacks)
- 		return -ENODEV;
- 
- 	pr_info("Starting KVM with MIPS VZ extensions\n");
--
--	*install_callbacks = &kvm_vz_callbacks;
- 	return 0;
+ 	u64 host_pat;
+ 	int r;
+@@ -9419,6 +9420,17 @@ int kvm_x86_vendor_init(struct kvm_x86_init_ops *ops)
+ 	kmem_cache_destroy(x86_emulator_cache);
+ 	return r;
  }
++
++int kvm_x86_vendor_init(struct kvm_x86_init_ops *ops)
++{
++	int r;
++
++	mutex_lock(&vendor_module_lock);
++	r = __kvm_x86_vendor_init(ops);
++	mutex_unlock(&vendor_module_lock);
++
++	return r;
++}
+ EXPORT_SYMBOL_GPL(kvm_x86_vendor_init);
+ 
+ void kvm_x86_vendor_exit(void)
+@@ -9441,7 +9453,6 @@ void kvm_x86_vendor_exit(void)
+ 	cancel_work_sync(&pvclock_gtod_work);
+ #endif
+ 	static_call(kvm_x86_hardware_unsetup)();
+-	kvm_x86_ops.hardware_enable = NULL;
+ 	kvm_mmu_vendor_module_exit();
+ 	free_percpu(user_return_msrs);
+ 	kmem_cache_destroy(x86_emulator_cache);
+@@ -9449,6 +9460,9 @@ void kvm_x86_vendor_exit(void)
+ 	static_key_deferred_flush(&kvm_xen_enabled);
+ 	WARN_ON(static_branch_unlikely(&kvm_xen_enabled.key));
+ #endif
++	mutex_lock(&vendor_module_lock);
++	kvm_x86_ops.hardware_enable = NULL;
++	mutex_unlock(&vendor_module_lock);
+ }
+ EXPORT_SYMBOL_GPL(kvm_x86_vendor_exit);
+ 
 -- 
 2.38.1.584.g0f3c55d4c2-goog
 

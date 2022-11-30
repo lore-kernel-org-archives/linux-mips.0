@@ -2,59 +2,59 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4D5C5C4321E
-	for <linux-mips@archiver.kernel.org>; Wed, 30 Nov 2022 23:11:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 55D93C4321E
+	for <linux-mips@archiver.kernel.org>; Wed, 30 Nov 2022 23:11:52 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229948AbiK3XLV (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 30 Nov 2022 18:11:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47726 "EHLO
+        id S229972AbiK3XLu (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 30 Nov 2022 18:11:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47586 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229897AbiK3XK2 (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 30 Nov 2022 18:10:28 -0500
-Received: from mail-pf1-x449.google.com (mail-pf1-x449.google.com [IPv6:2607:f8b0:4864:20::449])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 840665AE36
-        for <linux-mips@vger.kernel.org>; Wed, 30 Nov 2022 15:10:01 -0800 (PST)
-Received: by mail-pf1-x449.google.com with SMTP id u3-20020a056a00124300b0056d4ab0c7cbso190454pfi.7
-        for <linux-mips@vger.kernel.org>; Wed, 30 Nov 2022 15:10:01 -0800 (PST)
+        with ESMTP id S229848AbiK3XLC (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 30 Nov 2022 18:11:02 -0500
+Received: from mail-pj1-x1049.google.com (mail-pj1-x1049.google.com [IPv6:2607:f8b0:4864:20::1049])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6051199F67
+        for <linux-mips@vger.kernel.org>; Wed, 30 Nov 2022 15:10:10 -0800 (PST)
+Received: by mail-pj1-x1049.google.com with SMTP id l2-20020a17090add8200b00218daa1a812so177109pjv.3
+        for <linux-mips@vger.kernel.org>; Wed, 30 Nov 2022 15:10:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:reply-to:from:to:cc:subject:date:message-id:reply-to;
-        bh=di4GPfaF6WKRfgW0XqJub+upfuRM26VzAsGaqEV4LGw=;
-        b=Zp0X+tvqlodbVDmXJAlHsgiG3eKVrrt9FqJ/G91Ka+FyaPGocW43mHdutS/PZpQE36
-         Iieu9/BWXmUBsCNeoXw2w6AGd8PrG42NkgB6lU08wcdcc8UwAyPwoD57C6YJX6W8d8L6
-         zT+J1YBLZIf8EiLqUI0I1OI8MzvM21Wx5gQBxNbTBtyOAXzto+GobOper+U00pyFgXJf
-         UdMZA+TjdcslZ9rB8fGS/EHatJp3upDo3FA+0llGAcT+1sttGOmsewFGvBZuTST5TDKg
-         atyPT5DCNi18z7jSv+tnMdXu5HV1aXplTTP+Szmkxtce4LN+raVvUsuQA85wOwn+8uqH
-         psnA==
+        bh=3q8g1I3CG/zN/S6yfEuz3UEYEnVKGNtIkvlUCCz4wMk=;
+        b=IzqZX1vpqBRD6eqp/m2lCIonVBr9d0e0dYh+rnORdsBouvRr/LJHoAVFCGYwduLpYW
+         OTMMo4gprlzO/u6ojuhJyOc3wk8iW8vMqSUKMIfurZ/dESMUEks0XD0dELDo/XLaovGl
+         EKo5NrbtnviyIeCdpV2+U1bLcQY9lYskXKPUNJWsxtd+ecYNZC7sEQkVg+anA/T0XgVe
+         YvNoKh5i6BiC33HYuQOVTGAT9N1QTpRLVSSatOGlZCfv03s8ZzOwEte840f58eQcGUDe
+         h1+xBUE24TMAZ61kNCycVQsK/JxxPJO1UMM34/IR0XeCfuqHb2uwlievzCRoo9MRdbjv
+         0jwg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:reply-to:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=di4GPfaF6WKRfgW0XqJub+upfuRM26VzAsGaqEV4LGw=;
-        b=ctAin18R1ZSUxThiacf6SjelL+Hs0BMRsXEo5MhjEthV3TG6MvwNA7Rh2NB3WPVmpp
-         n8SWM6LkQYr+qG84cVHM6r4MhqOY+GTYDPk7oLutOTwssrG/lt6T96UeJaOiplol6scW
-         p/M2p4wR2xZt8Kw1ewlTjwFBVbHRXodA49J1bN5LJn6GhGeZxXYUMlBeMdQJdTNp6cpC
-         w3M83nIzPTKVo+Q+Er42tvzbSbjhZ8p4sw24k18PwTkXcIZxBfthMKp2ouyhBoUvQCf/
-         b2S7uZk6t9AhdyUfLoTYZLMIG2vqbeT8ycMGnGt6KCk3Y9x6cUhBWKZ8RbWVzsjX51LH
-         S3WQ==
-X-Gm-Message-State: ANoB5plaISg4Et21Ps+QrsVGVN05/TQaMK2xnXYcCMME7IFOTWQuHC4d
-        SBtueMOOWSVhAaRLUhvQsamvZ4KpVIU=
-X-Google-Smtp-Source: AA0mqf4OklfcBkfFMEfVjeAO6z8Tg9xRFY+PEerZY3OMpeOrjrDiJtxtxuLC1x65bjbuGkZn4Pd66WRIuco=
+        bh=3q8g1I3CG/zN/S6yfEuz3UEYEnVKGNtIkvlUCCz4wMk=;
+        b=1cp7otKBtCL6Y8Tw36ksvVre0uvu4d3pOLCbgeXqXAB+hoaywN2+9b7FYhTMYZSDKT
+         m0CA6cSyAniZsbijF+Ru6teEO8fPe9g/XXAwGFIk1eEgFHvB6fA08Ch8cd+6mC2btndB
+         mYK/T6BwugHMsyujaC8UZPGKfbYF2i+3shxhlLvbQcgwKC8WSCM5gn32Je9KQQlx4iRL
+         TaWp5xOm0kI2CsxuN34o8MaZTjS82OuIGEdatttFF+ihcQDOfrSRkh/1tBHr3MnxRkZ3
+         c2WS+X+FXzgcpuHN/bi3d4TiqURJWuAg6LwbdkSsZH/8tOENqjn6BsW1mMoSf62z+15z
+         qhlQ==
+X-Gm-Message-State: ANoB5pmjFJz/4JpoRxXSnC/HOsW1SrUoZtc5oVVDrcJVQyq+QCs2OoIJ
+        0rb3EXPVxVI1V4SXthLqlqoi8w+o6lU=
+X-Google-Smtp-Source: AA0mqf4/tiOg+xYgcsoY9u5fwhXNPg1RVdsGA6s6X0UqfvBtJFvF15IrbdNSIgjSxdrgTr0k96rlZxXDdGM=
 X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a05:6a00:1409:b0:56b:e1d8:e7a1 with SMTP id
- l9-20020a056a00140900b0056be1d8e7a1mr44197245pfu.28.1669849801157; Wed, 30
- Nov 2022 15:10:01 -0800 (PST)
+ (user=seanjc job=sendgmr) by 2002:aa7:8bc1:0:b0:575:bfb9:b1fa with SMTP id
+ s1-20020aa78bc1000000b00575bfb9b1famr7674415pfd.62.1669849810052; Wed, 30 Nov
+ 2022 15:10:10 -0800 (PST)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Wed, 30 Nov 2022 23:08:58 +0000
+Date:   Wed, 30 Nov 2022 23:09:03 +0000
 In-Reply-To: <20221130230934.1014142-1-seanjc@google.com>
 Mime-Version: 1.0
 References: <20221130230934.1014142-1-seanjc@google.com>
 X-Mailer: git-send-email 2.38.1.584.g0f3c55d4c2-goog
-Message-ID: <20221130230934.1014142-15-seanjc@google.com>
-Subject: [PATCH v2 14/50] KVM: VMX: Do _all_ initialization before exposing
- /dev/kvm to userspace
+Message-ID: <20221130230934.1014142-20-seanjc@google.com>
+Subject: [PATCH v2 19/50] KVM: arm64: Do arm/arch initialization without
+ bouncing through kvm_init()
 From:   Sean Christopherson <seanjc@google.com>
 To:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
         Huacai Chen <chenhuacai@kernel.org>,
@@ -95,109 +95,87 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Call kvm_init() only after _all_ setup is complete, as kvm_init() exposes
-/dev/kvm to userspace and thus allows userspace to create VMs (and call
-other ioctls).  E.g. KVM will encounter a NULL pointer when attempting to
-add a vCPU to the per-CPU loaded_vmcss_on_cpu list if userspace is able to
-create a VM before vmx_init() configures said list.
+Do arm/arch specific initialization directly in arm's module_init(), now
+called kvm_arm_init(), instead of bouncing through kvm_init() to reach
+kvm_arch_init().  Invoking kvm_arch_init() is the very first action
+performed by kvm_init(), so from a initialization perspective this is a
+glorified nop.
 
- BUG: kernel NULL pointer dereference, address: 0000000000000008
- #PF: supervisor write access in kernel mode
- #PF: error_code(0x0002) - not-present page
- PGD 0 P4D 0
- Oops: 0002 [#1] SMP
- CPU: 6 PID: 1143 Comm: stable Not tainted 6.0.0-rc7+ #988
- Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 0.0.0 02/06/2015
- RIP: 0010:vmx_vcpu_load_vmcs+0x68/0x230 [kvm_intel]
-  <TASK>
-  vmx_vcpu_load+0x16/0x60 [kvm_intel]
-  kvm_arch_vcpu_load+0x32/0x1f0 [kvm]
-  vcpu_load+0x2f/0x40 [kvm]
-  kvm_arch_vcpu_create+0x231/0x310 [kvm]
-  kvm_vm_ioctl+0x79f/0xe10 [kvm]
-  ? handle_mm_fault+0xb1/0x220
-  __x64_sys_ioctl+0x80/0xb0
-  do_syscall_64+0x2b/0x50
-  entry_SYSCALL_64_after_hwframe+0x46/0xb0
- RIP: 0033:0x7f5a6b05743b
-  </TASK>
- Modules linked in: vhost_net vhost vhost_iotlb tap kvm_intel(+) kvm irqbypass
+Avoiding kvm_arch_init() also fixes a mostly benign bug as kvm_arch_exit()
+doesn't properly unwind if a later stage of kvm_init() fails.  While the
+soon-to-be-deleted comment about compiling as a module being unsupported
+is correct, kvm_arch_exit() can still be called by kvm_init() if any step
+after the call to kvm_arch_init() succeeds.
 
-Cc: stable@vger.kernel.org
+Add a FIXME to call out that pKVM initialization isn't unwound if
+kvm_init() fails, which is a pre-existing problem inherited from
+kvm_arch_exit().
+
+Making kvm_arch_init() a nop will also allow dropping kvm_arch_init() and
+kvm_arch_exit() entirely once all other architectures follow suit.
+
 Signed-off-by: Sean Christopherson <seanjc@google.com>
 ---
- arch/x86/kvm/vmx/vmx.c | 34 +++++++++++++++++++++-------------
- 1 file changed, 21 insertions(+), 13 deletions(-)
+ arch/arm64/kvm/arm.c | 25 ++++++++++++++++---------
+ 1 file changed, 16 insertions(+), 9 deletions(-)
 
-diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-index 8e81cd94407d..76185a7a7ded 100644
---- a/arch/x86/kvm/vmx/vmx.c
-+++ b/arch/x86/kvm/vmx/vmx.c
-@@ -8521,19 +8521,23 @@ static void vmx_cleanup_l1d_flush(void)
- 	l1tf_vmx_mitigation = VMENTER_L1D_FLUSH_AUTO;
- }
- 
--static void vmx_exit(void)
-+static void __vmx_exit(void)
+diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
+index e6f6fcfe6bcc..d3a4db1abf32 100644
+--- a/arch/arm64/kvm/arm.c
++++ b/arch/arm64/kvm/arm.c
+@@ -2195,7 +2195,7 @@ void kvm_arch_irq_bypass_start(struct irq_bypass_consumer *cons)
+ /**
+  * Initialize Hyp-mode and memory mappings on all CPUs.
+  */
+-int kvm_arch_init(void *opaque)
++int kvm_arm_init(void)
  {
-+	allow_smaller_maxphyaddr = false;
-+
- #ifdef CONFIG_KEXEC_CORE
- 	RCU_INIT_POINTER(crash_vmclear_loaded_vmcss, NULL);
- 	synchronize_rcu();
- #endif
--
--	kvm_exit();
--	kvm_x86_vendor_exit();
--
- 	vmx_cleanup_l1d_flush();
-+}
- 
--	allow_smaller_maxphyaddr = false;
-+static void vmx_exit(void)
-+{
-+	kvm_exit();
-+	kvm_x86_vendor_exit();
-+
-+	__vmx_exit();
- }
- module_exit(vmx_exit);
- 
-@@ -8551,11 +8555,6 @@ static int __init vmx_init(void)
- 	if (r)
- 		return r;
- 
--	r = kvm_init(&vmx_init_ops, sizeof(struct vcpu_vmx),
--		     __alignof__(struct vcpu_vmx), THIS_MODULE);
--	if (r)
--		goto err_kvm_init;
--
- 	/*
- 	 * Must be called after common x86 init so enable_ept is properly set
- 	 * up. Hand the parameter mitigation value in which was stored in
-@@ -8589,11 +8588,20 @@ static int __init vmx_init(void)
- 	if (!enable_ept)
- 		allow_smaller_maxphyaddr = true;
+ 	int err;
+ 	bool in_hyp_mode;
+@@ -2269,6 +2269,14 @@ int kvm_arch_init(void *opaque)
+ 		kvm_info("Hyp mode initialized successfully\n");
+ 	}
  
 +	/*
-+	 * Common KVM initialization _must_ come last, after this, /dev/kvm is
-+	 * exposed to userspace!
++	 * FIXME: Do something reasonable if kvm_init() fails after pKVM
++	 * hypervisor protection is finalized.
 +	 */
-+	r = kvm_init(&vmx_init_ops, sizeof(struct vcpu_vmx),
-+		     __alignof__(struct vcpu_vmx), THIS_MODULE);
-+	if (r)
-+		goto err_kvm_init;
++	err = kvm_init(NULL, sizeof(struct kvm_vcpu), 0, THIS_MODULE);
++	if (err)
++		goto out_subs;
 +
  	return 0;
  
--err_l1d_flush:
--	vmx_exit();
- err_kvm_init:
-+	__vmx_exit();
-+err_l1d_flush:
- 	kvm_x86_vendor_exit();
- 	return r;
+ out_subs:
+@@ -2281,10 +2289,15 @@ int kvm_arch_init(void *opaque)
+ 	return err;
  }
+ 
++int kvm_arch_init(void *opaque)
++{
++	return 0;
++}
++
+ /* NOP: Compiling as a module not supported */
+ void kvm_arch_exit(void)
+ {
+-	kvm_unregister_perf_callbacks();
++
+ }
+ 
+ static int __init early_kvm_mode_cfg(char *arg)
+@@ -2325,10 +2338,4 @@ enum kvm_mode kvm_get_mode(void)
+ 	return kvm_mode;
+ }
+ 
+-static int arm_init(void)
+-{
+-	int rc = kvm_init(NULL, sizeof(struct kvm_vcpu), 0, THIS_MODULE);
+-	return rc;
+-}
+-
+-module_init(arm_init);
++module_init(kvm_arm_init);
 -- 
 2.38.1.584.g0f3c55d4c2-goog
 

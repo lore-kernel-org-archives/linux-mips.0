@@ -2,58 +2,59 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F0316C4321E
-	for <linux-mips@archiver.kernel.org>; Wed, 30 Nov 2022 23:11:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 53494C352A1
+	for <linux-mips@archiver.kernel.org>; Wed, 30 Nov 2022 23:11:21 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229939AbiK3XLQ (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 30 Nov 2022 18:11:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46158 "EHLO
+        id S229775AbiK3XLS (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 30 Nov 2022 18:11:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47706 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229888AbiK3XK2 (ORCPT
+        with ESMTP id S229893AbiK3XK2 (ORCPT
         <rfc822;linux-mips@vger.kernel.org>); Wed, 30 Nov 2022 18:10:28 -0500
 Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41F769895D
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2F509801C
         for <linux-mips@vger.kernel.org>; Wed, 30 Nov 2022 15:09:58 -0800 (PST)
-Received: by mail-pl1-x649.google.com with SMTP id s15-20020a170902ea0f00b0018970bb67bfso15430312plg.3
+Received: by mail-pl1-x649.google.com with SMTP id k18-20020a170902c41200b001896d523dc8so15759220plk.19
         for <linux-mips@vger.kernel.org>; Wed, 30 Nov 2022 15:09:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:reply-to:from:to:cc:subject:date:message-id:reply-to;
-        bh=7yWYfpXTDQbZLx47MbNcDj0N66CBaR6qG+PnY/I15CM=;
-        b=bT3dL2RNgcw1MpeUO77l7FsTfdHMpEPlJatekk/DzFXJMm693HavywTCaGv6OqR75P
-         CEGSx4lH9Jtd0fa2semdatuM2+6/GtUmIUJQimOKEXQM8pMgCWT8njsrI/UOhbCPveML
-         q4zrbtboaVnIfVEgvLRQEAam2V+r4+zAGV7lL18Zl2LduEOPaMTpPlFnw/B6EsrXnukj
-         2pbaAxvJ9zg/7eNsW555x3IFXEMVva/FgAmoY74Di0SuLoDCFLXDc3bBoL6HnnnAq35N
-         reo1l2pMb3FCDaYjA4+6K/LTtV98kIt8jz3I1oCTyDyB/5twL2Ezyrmfizfy7s3Xbw19
-         DN3w==
+        bh=uhI8yDhdR7lIAaqvku/gdFE7HWy6VU8JNAGQp8QsO6I=;
+        b=JGKTwFHTr3zFyFeRyDhx800NTwE8fbKBoChRZ4rCsQDcOc/eGjPbGsVDNkCwWmSHdn
+         4zWsAcy02h7DG9I7KIrR/3G3ynUAl5zHFprvqWawNYq0ujuz0rj9xQPN87hRttEvJWya
+         MaZkpYk6hJDhRKiSggxmfSLSCGk6wAycOhmze7v3vnTNsBJM82DsGnT9K7gXXth5q453
+         GXnW0gnhFQMQ7rKcFFJUmj9xHXOE1CyUnZYbsfJ9eekI1f6DwJJHgA0YwjDavFZGHgxi
+         PIdF3Xw7u6ZSs+rqvW6sJFzKLF1Mn/CCKFnzXLHVYU5aHYTg5a9RqdAAC/8bhq/W34bo
+         HRWw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:reply-to:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=7yWYfpXTDQbZLx47MbNcDj0N66CBaR6qG+PnY/I15CM=;
-        b=aNlZVax7rJ1Snek8HHcfPb3SKHSkvuAPQFdhNfgOkjqPv4TdlmnqyovCDyzPaJx9ja
-         yEwpfWSDPXS/2yKEf2SM9Na6IbyGmHBOf/yrF9Xviy47fgvjaAXzhXvsNau1SA6sUrxu
-         unpg1yhEOm92Xisrnn6Spwdvs93cXt6ZmJSwatnRCcq8DaqxjZQjVps2M2MwUFexJVPw
-         D1suHMCQFL12hu+Wpg92EmE1fOyksIDtlt+2VsUnbuhNEtR25Bw/BcayfSOxLIk2uSRg
-         1/hag5zWVEjGRigFhgQsHnCeHOyJzsIOdpIieilDUiPjCZLW0MW/fYNlIzdBRRWV9O77
-         ozJg==
-X-Gm-Message-State: ANoB5pm48jSNbXl6lmyQMITQeLBz+y/Pd66PEtdE+9i+mmaEmwMJH629
-        sKrk7CtVWQMHPD7tI9kol4G3K6n1jc8=
-X-Google-Smtp-Source: AA0mqf63J5CYVyPrHNleGtfRjvZIjPjkTqLR79wPGUIq9AORVm0CVLKuvvqzhbFB0T9FDbVeahYix13Gv4o=
+        bh=uhI8yDhdR7lIAaqvku/gdFE7HWy6VU8JNAGQp8QsO6I=;
+        b=Bt+lNh5UKcajEbWYyZH9bEJi3IahYjNaDBRZwPYWnlXv36d+6xf+o9RriL+or/+41U
+         ktx+l6T5Frj8GohezzP47bJN7+td4eWMuqZ5fXC6y9rswknOOFLnx2zJSso1/ENqXNfp
+         prJ+OA/UNCJ2vvxzlPw6i1iZ66n4xI8/hHCcv/K3oqQZhWpH8pCGbkBryRnDgvwrVjLx
+         ms0J/vqq4aJKqFcYI2CmyZNHt1+orCdq7iXbUBDzfrC8JCv85XuPuQ1xPyOY+JNBf+I8
+         vfzr5WwVg4gBnvT6rbSDiTrmISU7r9FTFp52lsBCHP/dc1il50XgDqMZQPM0m/AlmSQC
+         xleg==
+X-Gm-Message-State: ANoB5pl1isbbnwLQGTTNnLF+Iayuz5Zot03DARrVx3IXny8/lvFN9RmK
+        2ZR+0sp3nHN2A9I2S8nzCk3YvdYf/R4=
+X-Google-Smtp-Source: AA0mqf4UbHeO/7xp9TeaJC3lcd9wjoTeVcRzR2/roKzeL1N7msdBGBxph7L3Wcu7JbcPwh3sZzXNOI19OJg=
 X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a17:902:ee55:b0:176:a16a:417d with SMTP id
- 21-20020a170902ee5500b00176a16a417dmr47218439plo.46.1669849797761; Wed, 30
- Nov 2022 15:09:57 -0800 (PST)
+ (user=seanjc job=sendgmr) by 2002:a62:3084:0:b0:56d:dd2a:c494 with SMTP id
+ w126-20020a623084000000b0056ddd2ac494mr44472082pfw.76.1669849796263; Wed, 30
+ Nov 2022 15:09:56 -0800 (PST)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Wed, 30 Nov 2022 23:08:56 +0000
+Date:   Wed, 30 Nov 2022 23:08:55 +0000
 In-Reply-To: <20221130230934.1014142-1-seanjc@google.com>
 Mime-Version: 1.0
 References: <20221130230934.1014142-1-seanjc@google.com>
 X-Mailer: git-send-email 2.38.1.584.g0f3c55d4c2-goog
-Message-ID: <20221130230934.1014142-13-seanjc@google.com>
-Subject: [PATCH v2 12/50] KVM: VMX: Move Hyper-V eVMCS initialization to helper
+Message-ID: <20221130230934.1014142-12-seanjc@google.com>
+Subject: [PATCH v2 11/50] KVM: VMX: Don't bother disabling eVMCS static key on
+ module exit
 From:   Sean Christopherson <seanjc@google.com>
 To:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
         Huacai Chen <chenhuacai@kernel.org>,
@@ -94,124 +95,30 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Move Hyper-V's eVMCS initialization to a dedicated helper to clean up
-vmx_init(), and add a comment to call out that the Hyper-V init code
-doesn't need to be unwound if vmx_init() ultimately fails.
-
-No functional change intended.
+Don't disable the eVMCS static key on module exit, kvm_intel.ko owns the
+key so there can't possibly be users after the kvm_intel.ko is unloaded,
+at least not without much bigger issues.
 
 Signed-off-by: Sean Christopherson <seanjc@google.com>
 ---
- arch/x86/kvm/vmx/vmx.c | 73 +++++++++++++++++++++++++-----------------
- 1 file changed, 43 insertions(+), 30 deletions(-)
+ arch/x86/kvm/vmx/vmx.c | 4 ----
+ 1 file changed, 4 deletions(-)
 
 diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-index c0de7160700b..b8bf95b9710d 100644
+index d85d175dca70..c0de7160700b 100644
 --- a/arch/x86/kvm/vmx/vmx.c
 +++ b/arch/x86/kvm/vmx/vmx.c
-@@ -523,6 +523,8 @@ static inline void vmx_segment_cache_clear(struct vcpu_vmx *vmx)
- static unsigned long host_idt_base;
+@@ -8490,10 +8490,6 @@ static void vmx_exit(void)
  
- #if IS_ENABLED(CONFIG_HYPERV)
-+static struct kvm_x86_ops vmx_x86_ops __initdata;
-+
- static bool __read_mostly enlightened_vmcs = true;
- module_param(enlightened_vmcs, bool, 0444);
- 
-@@ -551,6 +553,43 @@ static int hv_enable_l2_tlb_flush(struct kvm_vcpu *vcpu)
- 	return 0;
- }
- 
-+static __init void hv_init_evmcs(void)
-+{
-+	int cpu;
-+
-+	if (!enlightened_vmcs)
-+		return;
-+
-+	/*
-+	 * Enlightened VMCS usage should be recommended and the host needs
-+	 * to support eVMCS v1 or above.
-+	 */
-+	if (ms_hyperv.hints & HV_X64_ENLIGHTENED_VMCS_RECOMMENDED &&
-+	    (ms_hyperv.nested_features & HV_X64_ENLIGHTENED_VMCS_VERSION) >=
-+	     KVM_EVMCS_VERSION) {
-+
-+		/* Check that we have assist pages on all online CPUs */
-+		for_each_online_cpu(cpu) {
-+			if (!hv_get_vp_assist_page(cpu)) {
-+				enlightened_vmcs = false;
-+				break;
-+			}
-+		}
-+
-+		if (enlightened_vmcs) {
-+			pr_info("KVM: vmx: using Hyper-V Enlightened VMCS\n");
-+			static_branch_enable(&enable_evmcs);
-+		}
-+
-+		if (ms_hyperv.nested_features & HV_X64_NESTED_DIRECT_FLUSH)
-+			vmx_x86_ops.enable_l2_tlb_flush
-+				= hv_enable_l2_tlb_flush;
-+
-+	} else {
-+		enlightened_vmcs = false;
-+	}
-+}
-+
- static void hv_reset_evmcs(void)
- {
- 	struct hv_vp_assist_page *vp_ap;
-@@ -577,6 +616,7 @@ static void hv_reset_evmcs(void)
- }
- 
- #else /* IS_ENABLED(CONFIG_HYPERV) */
-+static void hv_init_evmcs(void) {}
- static void hv_reset_evmcs(void) {}
- #endif /* IS_ENABLED(CONFIG_HYPERV) */
- 
-@@ -8500,38 +8540,11 @@ static int __init vmx_init(void)
- {
- 	int r, cpu;
+ 	kvm_exit();
  
 -#if IS_ENABLED(CONFIG_HYPERV)
- 	/*
--	 * Enlightened VMCS usage should be recommended and the host needs
--	 * to support eVMCS v1 or above. We can also disable eVMCS support
--	 * with module parameter.
-+	 * Note, hv_init_evmcs() touches only VMX knobs, i.e. there's nothing
-+	 * to unwind if a later step fails.
- 	 */
--	if (enlightened_vmcs &&
--	    ms_hyperv.hints & HV_X64_ENLIGHTENED_VMCS_RECOMMENDED &&
--	    (ms_hyperv.nested_features & HV_X64_ENLIGHTENED_VMCS_VERSION) >=
--	    KVM_EVMCS_VERSION) {
--
--		/* Check that we have assist pages on all online CPUs */
--		for_each_online_cpu(cpu) {
--			if (!hv_get_vp_assist_page(cpu)) {
--				enlightened_vmcs = false;
--				break;
--			}
--		}
--
--		if (enlightened_vmcs) {
--			pr_info("KVM: vmx: using Hyper-V Enlightened VMCS\n");
--			static_branch_enable(&enable_evmcs);
--		}
--
--		if (ms_hyperv.nested_features & HV_X64_NESTED_DIRECT_FLUSH)
--			vmx_x86_ops.enable_l2_tlb_flush
--				= hv_enable_l2_tlb_flush;
--
--	} else {
--		enlightened_vmcs = false;
--	}
+-	if (static_branch_unlikely(&enable_evmcs))
+-		static_branch_disable(&enable_evmcs);
 -#endif
-+	hv_init_evmcs();
+ 	vmx_cleanup_l1d_flush();
  
- 	r = kvm_init(&vmx_init_ops, sizeof(struct vcpu_vmx),
- 		     __alignof__(struct vcpu_vmx), THIS_MODULE);
+ 	allow_smaller_maxphyaddr = false;
 -- 
 2.38.1.584.g0f3c55d4c2-goog
 

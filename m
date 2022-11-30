@@ -2,58 +2,59 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 45FFDC4321E
-	for <linux-mips@archiver.kernel.org>; Wed, 30 Nov 2022 23:14:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0B1E8C47089
+	for <linux-mips@archiver.kernel.org>; Wed, 30 Nov 2022 23:15:04 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229782AbiK3XOx (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 30 Nov 2022 18:14:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47524 "EHLO
+        id S230145AbiK3XPD (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 30 Nov 2022 18:15:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46986 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229851AbiK3XOC (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 30 Nov 2022 18:14:02 -0500
+        with ESMTP id S229940AbiK3XOJ (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 30 Nov 2022 18:14:09 -0500
 Received: from mail-pj1-x104a.google.com (mail-pj1-x104a.google.com [IPv6:2607:f8b0:4864:20::104a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17FBC9F4BF
-        for <linux-mips@vger.kernel.org>; Wed, 30 Nov 2022 15:10:56 -0800 (PST)
-Received: by mail-pj1-x104a.google.com with SMTP id on5-20020a17090b1d0500b0021821a07953so3793390pjb.4
-        for <linux-mips@vger.kernel.org>; Wed, 30 Nov 2022 15:10:56 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4907DA1A03
+        for <linux-mips@vger.kernel.org>; Wed, 30 Nov 2022 15:11:01 -0800 (PST)
+Received: by mail-pj1-x104a.google.com with SMTP id a3-20020a17090a8c0300b00218bfce4c03so3812344pjo.1
+        for <linux-mips@vger.kernel.org>; Wed, 30 Nov 2022 15:11:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:reply-to:from:to:cc:subject:date:message-id:reply-to;
-        bh=feUvU0TLPbMF/Oljy4/vBwowA1Kv3aShJc2OjvbIIRg=;
-        b=XCz6nxyHGgxyXLRmcMfZAC0EtbhsJIztANoSGpUb1GyxR0U89bx0wlthHvMKMPI0ma
-         xTY/WZ7Fnj2wVoHKg3Vrqyc1suf4XCMLsHgGlIH3pS8IMgIqbDNn8Omsv3AOuHpjB+t4
-         oJgjvYZQ+8fVUpIqLH/jYWFcOCZ826P4/OUhmmvNmOkV9CXcwA4ogZ7MlttInnuYA3IQ
-         qZwoJRmoUlDf0X9EXI/DaNlV615GX7fyKck9fxTOKS6fYcbuWk1qBQZKq1fDAhiXHC8W
-         oTikmOFUnyHawi/4Gg7a9PphvtU6rlpDzwiPDXnAHDvGYvOqtwCfNDpZ92x3xkT78SFn
-         sWLQ==
+        bh=sHcyHjJ8KuW26EmyMG2GCKXDxJlY2ojJURA0kcfw/9k=;
+        b=VFFqhuPme1m1eQU16n2iG/J4RAGy2zrHzndrwcDa2UqPCuhmGJAJUoqWiUJ0hBawNj
+         h+1PCcwEa7TWtGKSi7eE+1ph58rOUBv3xDHOkx/n95w6cUeiQfhXEh79gM7EIyUtnO0y
+         ioN8O+FtRJeTVR0iP2uSqqMMZ5ce7bBX8TmoSKstA2185sSr20JSkv0QaUPbyNWz1HPN
+         V+igGOZxxi1EiiIK8zOP02RlczC9ypmTY7mqbv223oTCKi8YwUrElYdikisBH1Zh971w
+         Fr2k5IgU2gcv415RYRumMziSQSo+TFWu1mQkGuJbocDRmVfBg+o1I6JFksOzDsAHNWBN
+         gCrw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:reply-to:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=feUvU0TLPbMF/Oljy4/vBwowA1Kv3aShJc2OjvbIIRg=;
-        b=lYpJ41cigKIVS/yUnTj8OHkhzf5HMlwq/hr8TcadlCNNLKl5ZUbH1JoPLF2qXpSLXm
-         Gj9xRPt7EADddm5mfP+LypgUMMAHpJ3SpttyFU63kNdX7a0lwugHDQ0/B9sxPN7N2Cou
-         /PeRaDhr8SVBfvGy0CyNO8BQeulfSWsk3TrV/jAqd1ewwYr9Ac5FwRfrPmJHoCs9J/5a
-         441dhO6eJJtRBDZ00LWALti8+33qt/y7kYm/oClDYi2c1DOSrmtQNM8xEiW5YLOMHw0M
-         WzrLkbTp+lFocerVDiyA1c6/qY9+L96hlDsja1XCvso3abXr5q8Up5eNnUh2kZofYJgY
-         E4Tw==
-X-Gm-Message-State: ANoB5plGChicaQnUSoh+bOhjYV4BhwTAF30CxlN3a+HbnzN3JoNGhDfx
-        kZR34napERIAzM1K1W9deXwpMkpfK1Q=
-X-Google-Smtp-Source: AA0mqf7uQUQw4xuwzzaB6cJbzF2qtgtcI8g7o82e8li02vBC7sSOacIeo1pVvgKatFPeZtczncyD3ypFXvs=
+        bh=sHcyHjJ8KuW26EmyMG2GCKXDxJlY2ojJURA0kcfw/9k=;
+        b=kzdJ51LemOBxpgsJoKhTUoYnkRnBNs7iH4ZiXKGkIozEOEBTrTIamtWJQiRaNv95aI
+         3eq1l2cpGUDELO1gliCTX6s23N2Jy7/nQzDnmUbsZCINPWPI4SfV4ikNZ9nIiGQ0UPql
+         1agyS+F7BY5Nsg/OX8jRvpTKdZ7TfNZovR5zRv/ZV1m+0qc6Bvb3CEeXZ+XQbZukuflR
+         dKIBLe0itTG4KGYlBOKss3HxctD+EwhAfWrp4DAfL3KdTwmpEM67DJdhN764wSQTOrOh
+         hOFFQf8LxNqy62sLYp6zHPlkfNBrkB838oOcwTo5uRuOxLayV+18Gc94ssKHfHdiZ2Te
+         ZFxw==
+X-Gm-Message-State: ANoB5pkDGiOPawyNeXDQZGpGRzrI3JKBtFvkb8gmR67P+U4deMkVygF7
+        mTL42CXeE73Uv/xbUDX5H+hxW5fFQLY=
+X-Google-Smtp-Source: AA0mqf6iPCX6KyjCp3cF1IRt5Mv13lZJWlEm0jsHehxUqphsE1Cogz37ZNgUSTWxB9XNJiT56sIeMfxkVVA=
 X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a17:903:268d:b0:189:a50d:2a23 with SMTP id
- jf13-20020a170903268d00b00189a50d2a23mr7180858plb.32.1669849855698; Wed, 30
- Nov 2022 15:10:55 -0800 (PST)
+ (user=seanjc job=sendgmr) by 2002:a65:63d8:0:b0:477:172b:c350 with SMTP id
+ n24-20020a6563d8000000b00477172bc350mr40707643pgv.313.1669849838234; Wed, 30
+ Nov 2022 15:10:38 -0800 (PST)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Wed, 30 Nov 2022 23:09:29 +0000
+Date:   Wed, 30 Nov 2022 23:09:19 +0000
 In-Reply-To: <20221130230934.1014142-1-seanjc@google.com>
 Mime-Version: 1.0
 References: <20221130230934.1014142-1-seanjc@google.com>
 X-Mailer: git-send-email 2.38.1.584.g0f3c55d4c2-goog
-Message-ID: <20221130230934.1014142-46-seanjc@google.com>
-Subject: [PATCH v2 45/50] KVM: Remove on_each_cpu(hardware_disable_nolock) in kvm_exit()
+Message-ID: <20221130230934.1014142-36-seanjc@google.com>
+Subject: [PATCH v2 35/50] KVM: VMX: Use current CPU's info to perform
+ "disabled by BIOS?" checks
 From:   Sean Christopherson <seanjc@google.com>
 To:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
         Huacai Chen <chenhuacai@kernel.org>,
@@ -94,38 +95,40 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-From: Isaku Yamahata <isaku.yamahata@intel.com>
+Use this_cpu_has() instead of boot_cpu_has() to perform the effective
+"disabled by BIOS?" checks for VMX.  This will allow consolidating code
+between vmx_disabled_by_bios() and vmx_check_processor_compat().
 
-Drop the superfluous invocation of hardware_disable_nolock() during
-kvm_exit(), as it's nothing more than a glorified nop.
+Checking the boot CPU isn't a strict requirement as any divergence in VMX
+enabling between the boot CPU and other CPUs will result in KVM refusing
+to load thanks to the aforementioned vmx_check_processor_compat().
 
-KVM automatically disables hardware on all CPUs when the last VM is
-destroyed, and kvm_exit() cannot be called until the last VM goes
-away as the calling module is pinned by an elevated refcount of the fops
-associated with /dev/kvm.  This holds true even on x86, where the caller
-of kvm_exit() is not kvm.ko, but is instead a dependent module, kvm_amd.ko
-or kvm_intel.ko, as kvm_chardev_ops.owner is set to the module that calls
-kvm_init(), not hardcoded to the base kvm.ko module.
+Furthermore, using the boot CPU was an unintentional change introduced by
+commit a4d0b2fdbcf7 ("KVM: VMX: Use VMX feature flag to query BIOS
+enabling").  Prior to using the feature flags, KVM checked the raw MSR
+value from the current CPU.
 
-Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
-[sean: rework changelog]
+Reported-by: Kai Huang <kai.huang@intel.com>
 Signed-off-by: Sean Christopherson <seanjc@google.com>
 ---
- virt/kvm/kvm_main.c | 1 -
- 1 file changed, 1 deletion(-)
+ arch/x86/kvm/vmx/vmx.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
-index 6a8fb53b32f0..a27ded004644 100644
---- a/virt/kvm/kvm_main.c
-+++ b/virt/kvm/kvm_main.c
-@@ -5981,7 +5981,6 @@ void kvm_exit(void)
- 	unregister_syscore_ops(&kvm_syscore_ops);
- 	unregister_reboot_notifier(&kvm_reboot_notifier);
- 	cpuhp_remove_state_nocalls(CPUHP_AP_KVM_ONLINE);
--	on_each_cpu(hardware_disable_nolock, NULL, 1);
- 	kvm_irqfd_exit();
- 	free_cpumask_var(cpus_hardware_enabled);
+diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+index e859d2b7daa4..3f7d9f88b314 100644
+--- a/arch/x86/kvm/vmx/vmx.c
++++ b/arch/x86/kvm/vmx/vmx.c
+@@ -2492,8 +2492,8 @@ static __init int cpu_has_kvm_support(void)
+ 
+ static __init int vmx_disabled_by_bios(void)
+ {
+-	return !boot_cpu_has(X86_FEATURE_MSR_IA32_FEAT_CTL) ||
+-	       !boot_cpu_has(X86_FEATURE_VMX);
++	return !this_cpu_has(X86_FEATURE_MSR_IA32_FEAT_CTL) ||
++	       !this_cpu_has(X86_FEATURE_VMX);
  }
+ 
+ static int kvm_cpu_vmxon(u64 vmxon_pointer)
 -- 
 2.38.1.584.g0f3c55d4c2-goog
 

@@ -2,29 +2,29 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8AF6DC47090
-	for <linux-mips@archiver.kernel.org>; Fri,  2 Dec 2022 16:50:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 30571C63715
+	for <linux-mips@archiver.kernel.org>; Fri,  2 Dec 2022 16:50:16 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234212AbiLBQuP (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 2 Dec 2022 11:50:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46138 "EHLO
+        id S233497AbiLBQuO (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 2 Dec 2022 11:50:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46062 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234110AbiLBQuJ (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Fri, 2 Dec 2022 11:50:09 -0500
-Received: from michel.telenet-ops.be (michel.telenet-ops.be [IPv6:2a02:1800:110:4::f00:18])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3AF4D37A5
+        with ESMTP id S233534AbiLBQuG (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Fri, 2 Dec 2022 11:50:06 -0500
+Received: from laurent.telenet-ops.be (laurent.telenet-ops.be [IPv6:2a02:1800:110:4::f00:19])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A61ACFE62
         for <linux-mips@vger.kernel.org>; Fri,  2 Dec 2022 08:50:02 -0800 (PST)
 Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed20:2d07:19c5:4d8b:89d9])
-        by michel.telenet-ops.be with bizsmtp
-        id rUpW2800U0ys3B706UpWZy; Fri, 02 Dec 2022 17:49:59 +0100
+        by laurent.telenet-ops.be with bizsmtp
+        id rUpW280060ys3B701UpWDH; Fri, 02 Dec 2022 17:49:59 +0100
 Received: from rox.of.borg ([192.168.97.57])
         by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
         (Exim 4.93)
         (envelope-from <geert@linux-m68k.org>)
-        id 1p19E9-002K5y-Lq; Fri, 02 Dec 2022 17:49:29 +0100
+        id 1p19E9-002K5u-2v; Fri, 02 Dec 2022 17:49:29 +0100
 Received: from geert by rox.of.borg with local (Exim 4.93)
         (envelope-from <geert@linux-m68k.org>)
-        id 1p19E8-006WaU-CO; Fri, 02 Dec 2022 17:49:28 +0100
+        id 1p19E8-006Wa2-8O; Fri, 02 Dec 2022 17:49:28 +0100
 From:   Geert Uytterhoeven <geert+renesas@glider.be>
 To:     =?UTF-8?q?Beno=C3=AEt=20Cousson?= <bcousson@baylibre.com>,
         Tony Lindgren <tony@atomide.com>,
@@ -59,9 +59,9 @@ Cc:     Rob Herring <robh+dt@kernel.org>,
         linux-aspeed@lists.ozlabs.org, openbmc@lists.ozlabs.org,
         linux-renesas-soc@vger.kernel.org, linux-mips@vger.kernel.org,
         linuxppc-dev@lists.ozlabs.org, devicetree@vger.kernel.org
-Subject: [PATCH 05/11] ARM: dts: socfpga: Fix pca9548 i2c-mux node name
-Date:   Fri,  2 Dec 2022 17:49:20 +0100
-Message-Id: <a7bcc2de6c2c0946f56b2d9f9584c55cf28545dc.1669999298.git.geert+renesas@glider.be>
+Subject: [PATCH 01/11] ARM: dts: ti: Fix pca954x i2c-mux node names
+Date:   Fri,  2 Dec 2022 17:49:16 +0100
+Message-Id: <bc964109db8a5f29124580165e925bd3bfe36661.1669999298.git.geert+renesas@glider.be>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <cover.1669999298.git.geert+renesas@glider.be>
 References: <cover.1669999298.git.geert+renesas@glider.be>
@@ -73,33 +73,43 @@ X-Mailing-List: linux-mips@vger.kernel.org
 
 "make dtbs_check":
 
-    arch/arm/boot/dts/socfpga_cyclone5_vining_fpga.dtb: i2cswitch@70: $nodename:0: 'i2cswitch@70' does not match '^(i2c-?)?mux'
+    arch/arm/boot/dts/am3874-iceboard.dtb: pca9548@70: $nodename:0: 'pca9548@70' does not match '^(i2c-?)?mux'
 	    From schema: Documentation/devicetree/bindings/i2c/i2c-mux-pca954x.yaml
-    arch/arm/boot/dts/socfpga_cyclone5_vining_fpga.dtb: i2cswitch@70: Unevaluated properties are not allowed ('#address-cells', '#size-cells', 'i2c@0', 'i2c@1', 'i2c@2', 'i2c@3', 'i2c@4', 'i2c@5', 'i2c@6', 'i2c@7' were unexpected)
-        From schema: Documentation/devicetree/bindings/i2c/i2c-mux-pca954x.yaml
+    arch/arm/boot/dts/am3874-iceboard.dtb: pca9548@70: Unevaluated properties are not allowed ('#address-cells', '#size-cells', 'i2c@0', 'i2c@1', 'i2c@2', 'i2c@3', 'i2c@4', 'i2c@5', 'i2c@6', 'i2c@7' were unexpected)
+	    From schema: Documentation/devicetree/bindings/i2c/i2c-mux-pca954x.yaml
+    ...
 
-Fix this by renaming the PCA9548 node to "i2c-mux", to match the I2C bus
+Fix this by renaming PCA954x nodes to "i2c-mux", to match the I2C bus
 multiplexer/switch DT bindings and the Generic Names Recommendation in
 the Devicetree Specification.
 
 Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
 ---
- arch/arm/boot/dts/socfpga_cyclone5_vining_fpga.dts | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/arm/boot/dts/am3874-iceboard.dts | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm/boot/dts/socfpga_cyclone5_vining_fpga.dts b/arch/arm/boot/dts/socfpga_cyclone5_vining_fpga.dts
-index f24f17c2f5ee6bc4..e0630b0eed036d35 100644
---- a/arch/arm/boot/dts/socfpga_cyclone5_vining_fpga.dts
-+++ b/arch/arm/boot/dts/socfpga_cyclone5_vining_fpga.dts
-@@ -141,7 +141,7 @@ at24@50 {
- 		reg = <0x50>;
- 	};
+diff --git a/arch/arm/boot/dts/am3874-iceboard.dts b/arch/arm/boot/dts/am3874-iceboard.dts
+index d039af87936761a3..791478e81c5ad5b3 100644
+--- a/arch/arm/boot/dts/am3874-iceboard.dts
++++ b/arch/arm/boot/dts/am3874-iceboard.dts
+@@ -106,7 +106,7 @@ &i2c1 {
+ 	 * "i2c-mux-idle-disconnect" is important.
+ 	 */
  
--	i2cswitch@70 {
+-	pca9548@70 {
 +	i2c-mux@70 {
  		compatible = "nxp,pca9548";
+ 		reg = <0x70>;
  		#address-cells = <1>;
- 		#size-cells = <0>;
+@@ -256,7 +256,7 @@ u59: pca9575@23 {
+ };
+ 
+ &i2c2 {
+-	pca9548@71 {
++	i2c-mux@71 {
+ 		compatible = "nxp,pca9548";
+ 		reg = <0x71>;
+ 		#address-cells = <1>;
 -- 
 2.25.1
 

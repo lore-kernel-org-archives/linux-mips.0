@@ -2,217 +2,104 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 987CDC4321E
-	for <linux-mips@archiver.kernel.org>; Fri,  2 Dec 2022 16:32:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 68CC2C636F9
+	for <linux-mips@archiver.kernel.org>; Fri,  2 Dec 2022 16:50:09 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234100AbiLBQbz (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 2 Dec 2022 11:31:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45998 "EHLO
+        id S234099AbiLBQuI (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 2 Dec 2022 11:50:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45988 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234174AbiLBQba (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Fri, 2 Dec 2022 11:31:30 -0500
-Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A8A19A4E7
-        for <linux-mips@vger.kernel.org>; Fri,  2 Dec 2022 08:31:23 -0800 (PST)
-Received: by mail-pg1-x52a.google.com with SMTP id 82so4833818pgc.0
-        for <linux-mips@vger.kernel.org>; Fri, 02 Dec 2022 08:31:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=RsaZyzKJOuyFVoAfYZw39HCTNem7JcJUeEd5tgG0e8Y=;
-        b=JuBGytq8t5tr5SVnzdgiUWfOnnv3YoaxJ/EPOkhREUxf0Lu7Q36UoNdircCDscdJe1
-         Ne3pPvJP46804SbaTNQC7CD0nyOf+6DUf7RttT6MnjeqYf2tKeLulPmMzXN6C0vzpI5a
-         kmqZ1b2nEnQBpLkucgI+K9CNuj0M6idXU9Z/tpGiUmJvFfSAKZUEJ0tYDDD5QTm1XgZh
-         KUg4c1fCmmWL1AfPqQe/Q+7M8gt59bLLwzR5wrgb2mkyqnFKW9rqK8zn1jiKosWg6tGN
-         xvGvpF7x1Z6otoY0Ddi4ibaMdJj9vaSCpFDZW9nFUZDm9ecAOG+G1OAJWfl9eXVsVqrU
-         2Qew==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=RsaZyzKJOuyFVoAfYZw39HCTNem7JcJUeEd5tgG0e8Y=;
-        b=nPnmvQvM9Q/Z82ymLKeYXWCswr1IBRPMhYgIs7FtmDEvwT3G5mjGmfVhWPotGbjWVp
-         YxAbrr/BwoXI5TJ7gPeeTuKWaYC7HaV2es8AFeD5MovINFVtsUeDgKb6Ju7LLfVYBDHH
-         lOeVxO0n3csAwPglqzF9vnQOSI2o1FSIAL8idhIYqbfv7bCzJrlNSmvg93VMS3X/FhGy
-         G9e1bfLxJYYAwsuazJ9GGVNNndLcTDNBaFC2CIlU1XuKonEtVp05xMD6C8aNcF6GRzud
-         /+f7J2/2tpOH0jqYmbkwuK6OjktSa+lV76Bk1PdhzTBp0+HqP7DjreTdAh2og06zAxy7
-         x4pg==
-X-Gm-Message-State: ANoB5pmkJbb/E1+otGKqtwC9WRGoo1hqtLROFYM4nrVjWkWmXklYmHa1
-        nGp/YF5FRcpITzhYE1lS/Ldt9w==
-X-Google-Smtp-Source: AA0mqf5YDkgE2z83Sno75+zaFki0bhnK0sTw98u0yDu/SzUnzr69GggIhlhUBJVYlhlyDIQeZ9Y6nA==
-X-Received: by 2002:a65:5601:0:b0:43c:4eef:bac7 with SMTP id l1-20020a655601000000b0043c4eefbac7mr46619641pgs.356.1669998682344;
-        Fri, 02 Dec 2022 08:31:22 -0800 (PST)
-Received: from google.com (7.104.168.34.bc.googleusercontent.com. [34.168.104.7])
-        by smtp.gmail.com with ESMTPSA id g204-20020a6252d5000000b005756a67e227sm5438977pfb.90.2022.12.02.08.31.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 02 Dec 2022 08:31:21 -0800 (PST)
-Date:   Fri, 2 Dec 2022 16:31:18 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     "Huang, Kai" <kai.huang@intel.com>
-Cc:     "chenhuacai@kernel.org" <chenhuacai@kernel.org>,
-        "maz@kernel.org" <maz@kernel.org>,
-        "frankja@linux.ibm.com" <frankja@linux.ibm.com>,
-        "borntraeger@linux.ibm.com" <borntraeger@linux.ibm.com>,
-        "farman@linux.ibm.com" <farman@linux.ibm.com>,
-        "aou@eecs.berkeley.edu" <aou@eecs.berkeley.edu>,
-        "palmer@dabbelt.com" <palmer@dabbelt.com>,
-        "paul.walmsley@sifive.com" <paul.walmsley@sifive.com>,
-        "pbonzini@redhat.com" <pbonzini@redhat.com>,
-        "dwmw2@infradead.org" <dwmw2@infradead.org>,
-        "aleksandar.qemu.devel@gmail.com" <aleksandar.qemu.devel@gmail.com>,
-        "imbrenda@linux.ibm.com" <imbrenda@linux.ibm.com>,
-        "paul@xen.org" <paul@xen.org>,
-        "mjrosato@linux.ibm.com" <mjrosato@linux.ibm.com>,
-        "vkuznets@redhat.com" <vkuznets@redhat.com>,
-        "anup@brainfault.org" <anup@brainfault.org>,
-        "oliver.upton@linux.dev" <oliver.upton@linux.dev>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "cohuck@redhat.com" <cohuck@redhat.com>,
-        "farosas@linux.ibm.com" <farosas@linux.ibm.com>,
-        "david@redhat.com" <david@redhat.com>,
-        "james.morse@arm.com" <james.morse@arm.com>,
-        "Yao, Yuan" <yuan.yao@intel.com>,
-        "alexandru.elisei@arm.com" <alexandru.elisei@arm.com>,
-        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "mpe@ellerman.id.au" <mpe@ellerman.id.au>,
-        "Yamahata, Isaku" <isaku.yamahata@intel.com>,
-        "kvmarm@lists.linux.dev" <kvmarm@lists.linux.dev>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "suzuki.poulose@arm.com" <suzuki.poulose@arm.com>,
-        "kvm-riscv@lists.infradead.org" <kvm-riscv@lists.infradead.org>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
-        "kvmarm@lists.cs.columbia.edu" <kvmarm@lists.cs.columbia.edu>,
-        "philmd@linaro.org" <philmd@linaro.org>,
-        "atishp@atishpatra.org" <atishp@atishpatra.org>,
-        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
-        "Gao, Chao" <chao.gao@intel.com>
-Subject: Re: [PATCH v2 42/50] KVM: Disable CPU hotplug during hardware
- enabling/disabling
-Message-ID: <Y4ooVrDTkscy68vg@google.com>
-References: <20221130230934.1014142-1-seanjc@google.com>
- <20221130230934.1014142-43-seanjc@google.com>
- <8b1053781e859aa95a08c10b0e8a06912a2b42a2.camel@intel.com>
+        with ESMTP id S233914AbiLBQuE (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Fri, 2 Dec 2022 11:50:04 -0500
+Received: from laurent.telenet-ops.be (laurent.telenet-ops.be [IPv6:2a02:1800:110:4::f00:19])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F34C6C3FEC
+        for <linux-mips@vger.kernel.org>; Fri,  2 Dec 2022 08:50:01 -0800 (PST)
+Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed20:2d07:19c5:4d8b:89d9])
+        by laurent.telenet-ops.be with bizsmtp
+        id rUpW280080ys3B701UpWDJ; Fri, 02 Dec 2022 17:49:59 +0100
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1p19E9-002K5w-2N; Fri, 02 Dec 2022 17:49:29 +0100
+Received: from geert by rox.of.borg with local (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1p19E8-006WaG-Am; Fri, 02 Dec 2022 17:49:28 +0100
+From:   Geert Uytterhoeven <geert+renesas@glider.be>
+To:     =?UTF-8?q?Beno=C3=AEt=20Cousson?= <bcousson@baylibre.com>,
+        Tony Lindgren <tony@atomide.com>,
+        Joel Stanley <joel@jms.id.au>,
+        Andrew Jeffery <andrew@aj.id.au>,
+        Avi Fishman <avifishman70@gmail.com>,
+        Tomer Maimon <tmaimon77@gmail.com>,
+        Tali Perry <tali.perry1@gmail.com>,
+        Patrick Venture <venture@google.com>,
+        Nancy Yuen <yuenn@google.com>,
+        Benjamin Fair <benjaminfair@google.com>,
+        Dinh Nguyen <dinguyen@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Stefan Agner <stefan@agner.ch>, Li Yang <leoyang.li@nxp.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        UNGLinuxDriver@microchip.com,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-aspeed@lists.ozlabs.org, openbmc@lists.ozlabs.org,
+        linux-renesas-soc@vger.kernel.org, linux-mips@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, devicetree@vger.kernel.org
+Subject: [PATCH 03/11] ARM: dts: imx: Fix pca9547 i2c-mux node name
+Date:   Fri,  2 Dec 2022 17:49:18 +0100
+Message-Id: <fb231affc38b4d122c8ce733ea23f6da5c14f812.1669999298.git.geert+renesas@glider.be>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <cover.1669999298.git.geert+renesas@glider.be>
+References: <cover.1669999298.git.geert+renesas@glider.be>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <8b1053781e859aa95a08c10b0e8a06912a2b42a2.camel@intel.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Fri, Dec 02, 2022, Huang, Kai wrote:
-> On Wed, 2022-11-30 at 23:09 +0000, Sean Christopherson wrote:
-> > From: Chao Gao <chao.gao@intel.com>
-> > 
-> > Disable CPU hotplug when enabling/disabling hardware to prevent the
-> > corner case where if the following sequence occurs:
-> > 
-> >   1. A hotplugged CPU marks itself online in cpu_online_mask
-> >   2. The hotplugged CPU enables interrupt before invoking KVM's ONLINE
-> >      callback
-> >   3  hardware_{en,dis}able_all() is invoked on another CPU
-> > 
-> > the hotplugged CPU will be included in on_each_cpu() and thus get sent
-> > through hardware_{en,dis}able_nolock() before kvm_online_cpu() is called.
-> 
-> Should we explicitly call out what is the consequence of such case, otherwise
-> it's hard to tell whether this truly is an issue?
->
-> IIUC, since now the compatibility check has already been moved to
-> kvm_arch_hardware_enable(), the consequence is hardware_enable_all() will fail
-> if the now online cpu isn't compatible, which will results in failing to create
-> the first VM.  This isn't ideal since the incompatible cpu should be rejected to
-> go online instead.
+"make dtbs_check":
 
-Actually, in that specific scenario, KVM should not reject the CPU.  E.g. if KVM
-is autoloaded (common with systemd and/or qemu-kvm installed), but not used by
-userspace, then KVM is overstepping by rejecting the incompatible CPU since the
-user likely cares more about onlining a CPU than they do about KVM.
+    arch/arm/boot/dts/imx53-ppd.dtb: i2c-switch@70: $nodename:0: 'i2c-switch@70' does not match '^(i2c-?)?mux'
+	    From schema: Documentation/devicetree/bindings/i2c/i2c-mux-pca954x.yaml
+    arch/arm/boot/dts/imx53-ppd.dtb: i2c-switch@70: Unevaluated properties are not allowed ('#address-cells', '#size-cells', 'i2c@0', 'i2c@1', 'i2c@2', 'i2c@3', 'i2c@4', 'i2c@5', 'i2c@6', 'i2c@7' were unexpected)
+	    From schema: Documentation/devicetree/bindings/i2c/i2c-mux-pca954x.yaml
 
-> > KVM currently fudges around this race by keeping track of which CPUs have
-> > done hardware enabling (see commit 1b6c016818a5 "KVM: Keep track of which
-> > cpus have virtualization enabled"), but that's an inefficient, convoluted,
-> > and hacky solution.
+Fix this by renaming the PCA9547 node to "i2c-mux", to match the I2C bus
+multiplexer/switch DT bindings and the Generic Names Recommendation in
+the Devicetree Specification.
 
-...
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+---
+ arch/arm/boot/dts/imx53-ppd.dts | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> > +	/*
-> > +	 * Compatibility checks are done when loading KVM and when enabling
-> > +	 * hardware, e.g. during CPU hotplug, to ensure all online CPUs are
-> > +	 * compatible, i.e. KVM should never perform a compatibility check on
-> > +	 * an offline CPU.
-> > +	 */
-> > +	WARN_ON(!cpu_online(cpu));
-> 
-> IMHO this chunk logically should belong to previous patch.  IIUC disabling CPU
-> hotplug during hardware_enable_all() doesn't have relationship to this WARN().
-
-Hmm, yeah, I agree.  I'll move it.
-
-> >  static int hardware_enable_all(void)
-> >  {
-> >  	int r = 0;
-> >  
-> > +	/*
-> > +	 * When onlining a CPU, cpu_online_mask is set before kvm_online_cpu()
-> > +	 * is called, and so on_each_cpu() between them includes the CPU that
-> > +	 * is being onlined.  As a result, hardware_enable_nolock() may get
-> > +	 * invoked before kvm_online_cpu(), which also enables hardware if the
-> > +	 * usage count is non-zero.  Disable CPU hotplug to avoid attempting to
-> > +	 * enable hardware multiple times.
-> 
-> It won't enable hardware multiple times, right?  Since hardware_enable_nolock()
-> has below check:
-> 
->         if (cpumask_test_cpu(cpu, cpus_hardware_enabled))                      
->                 return;                                                        
->                                                                                                                                                    
->         cpumask_set_cpu(cpu, cpus_hardware_enabled);     
-> 
-> IIUC the only issue is the one that I replied in the changelog.
-> 
-> Or perhaps I am missing something?
-
-You're not missing anything in terms of code.  What the comment means by "attempting"
-in this case is calling hardware_enable_nolock().  As called out in the changelog,
-guarding against this race with cpus_hardware_enabled is a hack, i.e. KVM should
-not have to rely on a per-CPU flag.
-
- : KVM currently fudges around this race by keeping track of which CPUs have
- : done hardware enabling (see commit 1b6c016818a5 "KVM: Keep track of which
- : cpus have virtualization enabled"), but that's an inefficient, convoluted,
- : and hacky solution.
-
-I actually considered removing the per-CPU flag, but decided not to because it's
-simpler to blast
-
-	on_each_cpu(hardware_disable_nolock, ...)
-
-in kvm_reboot() and if enabling hardware fails on one or more CPUs, and taking a
-#UD on VMXOFF in the latter case is really unnecessary, i.e. the flag is nice to
-have for other reasons.
-
-That said, after this patch, KVM should be able to WARN in the enable path.  I'll
-test that and do a more thorough audit; unless I'm missing something, I'll add a
-patch to do:
-
-diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
-index b8c6bfb46066..ee896fa2f196 100644
---- a/virt/kvm/kvm_main.c
-+++ b/virt/kvm/kvm_main.c
-@@ -5027,7 +5027,7 @@ static int kvm_usage_count;
+diff --git a/arch/arm/boot/dts/imx53-ppd.dts b/arch/arm/boot/dts/imx53-ppd.dts
+index 37d0cffea99c56ec..70c4a4852256c4ef 100644
+--- a/arch/arm/boot/dts/imx53-ppd.dts
++++ b/arch/arm/boot/dts/imx53-ppd.dts
+@@ -488,7 +488,7 @@ &i2c1 {
+ 	scl-gpios = <&gpio3 21 GPIO_ACTIVE_HIGH>;
+ 	status = "okay";
  
- static int __hardware_enable_nolock(void)
- {
--       if (__this_cpu_read(hardware_enabled))
-+       if (WARN_ON_ONCE(__this_cpu_read(hardware_enabled)))
-                return 0;
- 
-        if (kvm_arch_hardware_enable()) {
+-	i2c-switch@70 {
++	i2c-mux@70 {
+ 		compatible = "nxp,pca9547";
+ 		#address-cells = <1>;
+ 		#size-cells = <0>;
+-- 
+2.25.1
 

@@ -2,29 +2,29 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 06A0DC63707
-	for <linux-mips@archiver.kernel.org>; Fri,  2 Dec 2022 16:50:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AFCDAC6370D
+	for <linux-mips@archiver.kernel.org>; Fri,  2 Dec 2022 16:50:15 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234078AbiLBQuM (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 2 Dec 2022 11:50:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45974 "EHLO
+        id S233511AbiLBQuO (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 2 Dec 2022 11:50:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45990 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233403AbiLBQuF (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Fri, 2 Dec 2022 11:50:05 -0500
+        with ESMTP id S233497AbiLBQuG (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Fri, 2 Dec 2022 11:50:06 -0500
 Received: from albert.telenet-ops.be (albert.telenet-ops.be [IPv6:2a02:1800:110:4::f00:1a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F31F1B0B45
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F382DC869F
         for <linux-mips@vger.kernel.org>; Fri,  2 Dec 2022 08:50:01 -0800 (PST)
 Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed20:2d07:19c5:4d8b:89d9])
         by albert.telenet-ops.be with bizsmtp
-        id rUpW2800C0ys3B706UpWC6; Fri, 02 Dec 2022 17:49:59 +0100
+        id rUpW2800B0ys3B706UpWC5; Fri, 02 Dec 2022 17:49:59 +0100
 Received: from rox.of.borg ([192.168.97.57])
         by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
         (Exim 4.93)
         (envelope-from <geert@linux-m68k.org>)
-        id 1p19E9-002K66-7w; Fri, 02 Dec 2022 17:49:29 +0100
+        id 1p19E9-002K5x-6t; Fri, 02 Dec 2022 17:49:29 +0100
 Received: from geert by rox.of.borg with local (Exim 4.93)
         (envelope-from <geert@linux-m68k.org>)
-        id 1p19E8-006Wb3-GZ; Fri, 02 Dec 2022 17:49:28 +0100
+        id 1p19E8-006WaN-BY; Fri, 02 Dec 2022 17:49:28 +0100
 From:   Geert Uytterhoeven <geert+renesas@glider.be>
 To:     =?UTF-8?q?Beno=C3=AEt=20Cousson?= <bcousson@baylibre.com>,
         Tony Lindgren <tony@atomide.com>,
@@ -59,9 +59,9 @@ Cc:     Rob Herring <robh+dt@kernel.org>,
         linux-aspeed@lists.ozlabs.org, openbmc@lists.ozlabs.org,
         linux-renesas-soc@vger.kernel.org, linux-mips@vger.kernel.org,
         linuxppc-dev@lists.ozlabs.org, devicetree@vger.kernel.org
-Subject: [PATCH 10/11] MIPS: mscc: jaguar2: Fix pca9545 i2c-mux node names
-Date:   Fri,  2 Dec 2022 17:49:25 +0100
-Message-Id: <5eb01c348c5dd90887b33e866555df8f1067e9df.1669999298.git.geert+renesas@glider.be>
+Subject: [PATCH 04/11] ARM: dts: nuvoton: Fix pca954x i2c-mux node names
+Date:   Fri,  2 Dec 2022 17:49:19 +0100
+Message-Id: <9b10ee878f8c54d9d26a92749108304d47f4dbbf.1669999298.git.geert+renesas@glider.be>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <cover.1669999298.git.geert+renesas@glider.be>
 References: <cover.1669999298.git.geert+renesas@glider.be>
@@ -73,41 +73,171 @@ X-Mailing-List: linux-mips@vger.kernel.org
 
 "make dtbs_check":
 
-    arch/mips/boot/dts/mscc/jaguar2_pcb110.dtb: pca9545@70: $nodename:0: 'pca9545@70' does not match '^(i2c-?)?mux'
-	    From schema: Documentation/devicetree/bindings/i2c/i2c-mux-pca954x.yaml
-    arch/mips/boot/dts/mscc/jaguar2_pcb110.dtb: pca9545@70: Unevaluated properties are not allowed ('#address-cells', '#size-cells', 'i2c@0', 'i2c@1', 'i2c@2', 'i2c@3' were unexpected)
+    arch/arm/boot/dts/nuvoton-npcm730-gbs.dtb: i2c-switch@71: $nodename:0: 'i2c-switch@71' does not match '^(i2c-?)?mux'
 	    From schema: Documentation/devicetree/bindings/i2c/i2c-mux-pca954x.yaml
     ...
 
-Fix this by renaming PCA9545 nodes to "i2c-mux", to match the I2C bus
+Fix this by renaming PCA954x nodes to "i2c-mux", to match the I2C bus
 multiplexer/switch DT bindings and the Generic Names Recommendation in
 the Devicetree Specification.
 
 Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
 ---
- arch/mips/boot/dts/mscc/jaguar2_pcb110.dts | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ arch/arm/boot/dts/nuvoton-npcm730-gbs.dts        | 16 ++++++++--------
+ arch/arm/boot/dts/nuvoton-npcm730-gsj.dts        |  2 +-
+ arch/arm/boot/dts/nuvoton-npcm730-kudo.dts       |  8 ++++----
+ .../boot/dts/nuvoton-npcm750-runbmc-olympus.dts  |  4 ++--
+ 4 files changed, 15 insertions(+), 15 deletions(-)
 
-diff --git a/arch/mips/boot/dts/mscc/jaguar2_pcb110.dts b/arch/mips/boot/dts/mscc/jaguar2_pcb110.dts
-index 0ea7bc5b5746842f..1813f4e32e55fadb 100644
---- a/arch/mips/boot/dts/mscc/jaguar2_pcb110.dts
-+++ b/arch/mips/boot/dts/mscc/jaguar2_pcb110.dts
-@@ -208,7 +208,7 @@ i2cmux_3: i2cmux-3-pins {
- };
+diff --git a/arch/arm/boot/dts/nuvoton-npcm730-gbs.dts b/arch/arm/boot/dts/nuvoton-npcm730-gbs.dts
+index 9e9eba8bad5e424a..9f64c85e1c206494 100644
+--- a/arch/arm/boot/dts/nuvoton-npcm730-gbs.dts
++++ b/arch/arm/boot/dts/nuvoton-npcm730-gbs.dts
+@@ -525,7 +525,7 @@ &i2c0 {
+ 	clock-frequency = <100000>;
+ 	status = "okay";
  
- &i2c0 {
--	pca9545@70 {
-+	i2c-mux@70 {
- 		compatible = "nxp,pca9545";
- 		reg = <0x70>;
+-	i2c-switch@71 {
++	i2c-mux@71 {
+ 		compatible = "nxp,pca9546";
  		#address-cells = <1>;
-@@ -236,7 +236,7 @@ i2c127: i2c@3 {
- 			reg = <3>;
- 		};
+ 		#size-cells = <0>;
+@@ -666,7 +666,7 @@ mb_fru@50 {
+ 		reg = <0x50>;
  	};
--	pca9545@71 {
+ 
+-	i2c-switch@71 {
++	i2c-mux@71 {
+ 		compatible = "nxp,pca9546";
+ 		#address-cells = <1>;
+ 		#size-cells = <0>;
+@@ -727,7 +727,7 @@ &i2c6 {
+ 	clock-frequency = <100000>;
+ 	status = "okay";
+ 
+-	i2c-switch@73 {
++	i2c-mux@73 {
+ 		compatible = "nxp,pca9545";
+ 		#address-cells = <1>;
+ 		#size-cells = <0>;
+@@ -763,7 +763,7 @@ &i2c7 {
+ 	clock-frequency = <100000>;
+ 	status = "okay";
+ 
+-	i2c-switch@72 {
++	i2c-mux@72 {
+ 		compatible = "nxp,pca9545";
+ 		#address-cells = <1>;
+ 		#size-cells = <0>;
+@@ -812,7 +812,7 @@ &i2c9 {
+ 	clock-frequency = <100000>;
+ 	status = "okay";
+ 
+-	i2c-switch@71 {
++	i2c-mux@71 {
+ 		compatible = "nxp,pca9546";
+ 		#address-cells = <1>;
+ 		#size-cells = <0>;
+@@ -866,7 +866,7 @@ &i2c10 {
+ 	clock-frequency = <100000>;
+ 	status = "okay";
+ 
+-	i2c-switch@71 {
 +	i2c-mux@71 {
  		compatible = "nxp,pca9545";
+ 		#address-cells = <1>;
+ 		#size-cells = <0>;
+@@ -902,7 +902,7 @@ &i2c11 {
+ 	clock-frequency = <100000>;
+ 	status = "okay";
+ 
+-	i2c-switch@76 {
++	i2c-mux@76 {
+ 		compatible = "nxp,pca9545";
+ 		#address-cells = <1>;
+ 		#size-cells = <0>;
+@@ -961,7 +961,7 @@ &i2c14 {
+ 	clock-frequency = <100000>;
+ 	status = "okay";
+ 
+-	i2c-switch@70 {
++	i2c-mux@70 {
+ 		compatible = "nxp,pca9545";
+ 		#address-cells = <1>;
+ 		#size-cells = <0>;
+diff --git a/arch/arm/boot/dts/nuvoton-npcm730-gsj.dts b/arch/arm/boot/dts/nuvoton-npcm730-gsj.dts
+index 2a394cc15284c55d..9b1cc7f4adf0909d 100644
+--- a/arch/arm/boot/dts/nuvoton-npcm730-gsj.dts
++++ b/arch/arm/boot/dts/nuvoton-npcm730-gsj.dts
+@@ -303,7 +303,7 @@ ucd90160@6b {
+ &i2c15 {
+ 	status = "okay";
+ 
+-	i2c-switch@75 {
++	i2c-mux@75 {
+ 		compatible = "nxp,pca9548";
+ 		#address-cells = <1>;
+ 		#size-cells = <0>;
+diff --git a/arch/arm/boot/dts/nuvoton-npcm730-kudo.dts b/arch/arm/boot/dts/nuvoton-npcm730-kudo.dts
+index f7b38bee039bcab5..58329adbd9186fd7 100644
+--- a/arch/arm/boot/dts/nuvoton-npcm730-kudo.dts
++++ b/arch/arm/boot/dts/nuvoton-npcm730-kudo.dts
+@@ -494,7 +494,7 @@ &adc {
+ 
+ &i2c1 {
+ 	status = "okay";
+-	i2c-switch@75 {
++	i2c-mux@75 {
+ 		compatible = "nxp,pca9548";
+ 		#address-cells = <1>;
+ 		#size-cells = <0>;
+@@ -573,7 +573,7 @@ lm75@5c {
+ 			};
+ 		};
+ 	};
+-	i2c-switch@77 {
++	i2c-mux@77 {
+ 		compatible = "nxp,pca9548";
+ 		#address-cells = <1>;
+ 		#size-cells = <0>;
+@@ -613,7 +613,7 @@ &i2c3 {
+ 
+ &i2c4 {
+ 	status = "okay";
+-	i2c-switch@77 {
++	i2c-mux@77 {
+ 		compatible = "nxp,pca9548";
+ 		#address-cells = <1>;
+ 		#size-cells = <0>;
+@@ -684,7 +684,7 @@ ssif-bmc@10 {
+ 
+ &i2c13 {
+ 	status = "okay";
+-	i2c-switch@77 {
++	i2c-mux@77 {
+ 		compatible = "nxp,pca9548";
+ 		#address-cells = <1>;
+ 		#size-cells = <0>;
+diff --git a/arch/arm/boot/dts/nuvoton-npcm750-runbmc-olympus.dts b/arch/arm/boot/dts/nuvoton-npcm750-runbmc-olympus.dts
+index 87359ab05db3ebab..209fa3400317bf19 100644
+--- a/arch/arm/boot/dts/nuvoton-npcm750-runbmc-olympus.dts
++++ b/arch/arm/boot/dts/nuvoton-npcm750-runbmc-olympus.dts
+@@ -208,7 +208,7 @@ &gmac0 {
+ &i2c1 {
+ 	status = "okay";
+ 
+-	i2c-switch@70 {
++	i2c-mux@70 {
+ 		compatible = "nxp,pca9548";
+ 		#address-cells = <1>;
+ 		#size-cells = <0>;
+@@ -258,7 +258,7 @@ i2c_slot5: i2c-bus@6 {
+ 		};
+ 	};
+ 
+-	i2c-switch@71 {
++	i2c-mux@71 {
+ 		compatible = "nxp,pca9546";
  		reg = <0x71>;
  		#address-cells = <1>;
 -- 

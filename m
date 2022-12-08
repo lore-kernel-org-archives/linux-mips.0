@@ -2,79 +2,69 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EB736C4332F
-	for <linux-mips@archiver.kernel.org>; Thu,  8 Dec 2022 11:00:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DC456C63705
+	for <linux-mips@archiver.kernel.org>; Thu,  8 Dec 2022 11:00:12 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230161AbiLHLAJ (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 8 Dec 2022 06:00:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34974 "EHLO
+        id S229725AbiLHLAK (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 8 Dec 2022 06:00:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35582 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230241AbiLHK7v (ORCPT
+        with ESMTP id S230164AbiLHK7v (ORCPT
         <rfc822;linux-mips@vger.kernel.org>); Thu, 8 Dec 2022 05:59:51 -0500
 Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 0AE9862D8
-        for <linux-mips@vger.kernel.org>; Thu,  8 Dec 2022 02:52:39 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 0B7596408;
+        Thu,  8 Dec 2022 02:52:39 -0800 (PST)
 Received: from uucp (helo=alpha)
         by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1p3EW2-0002wy-02; Thu, 08 Dec 2022 11:52:34 +0100
+        id 1p3EW2-0002wy-00; Thu, 08 Dec 2022 11:52:34 +0100
 Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 57CBDC2487; Thu,  8 Dec 2022 11:52:22 +0100 (CET)
-Date:   Thu, 8 Dec 2022 11:52:22 +0100
+        id B762FC2060; Thu,  8 Dec 2022 11:36:18 +0100 (CET)
+Date:   Thu, 8 Dec 2022 11:36:18 +0100
 From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Huacai Chen <chenhuacai@loongson.cn>
-Cc:     linux-mips@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Hans de Goede <hdegoede@redhat.com>
-Subject: Re: [PATCH] platform/mips: Adjust Kconfig to keep consistency
-Message-ID: <20221208105222.GC8388@alpha.franken.de>
-References: <20220918101206.2381321-1-chenhuacai@loongson.cn>
+To:     yang.yang29@zte.com.cn
+Cc:     julia.lawall@inria.fr, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org, xu.panda@zte.com.cn
+Subject: Re: [PATCH linux-next] MIPS: OCTEON: cvmx-bootmem: use strscpy() to
+ instead of? strncpy()
+Message-ID: <20221208103618.GA8388@alpha.franken.de>
+References: <202212031417162803709@zte.com.cn>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20220918101206.2381321-1-chenhuacai@loongson.cn>
+In-Reply-To: <202212031417162803709@zte.com.cn>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Sun, Sep 18, 2022 at 06:12:06PM +0800, Huacai Chen wrote:
-> Drop the "if MIPS" and "endif" drivers/platform/Kconfig. Instead add
-> a "depends on MIPS" to "menuconfig MIPS_PLATFORM_DEVICES" in drivers/
-> platform/mips/Kconfig, like all the other subdirs are doing.
+On Sat, Dec 03, 2022 at 02:17:16PM +0800, yang.yang29@zte.com.cn wrote:
+> From: Xu Panda <xu.panda@zte.com.cn>
 > 
-> Suggested-by: Hans de Goede <hdegoede@redhat.com>
-> Signed-off-by: Huacai Chen <chenhuacai@loongson.cn>
+> The implementation of strscpy() is more robust and safer.
+> 
+> Signed-off-by: Xu Panda <xu.panda@zte.com.cn>
+> Signed-off-by: Yang Yang <yang.yang29@zte.com>
 > ---
->  drivers/platform/Kconfig      | 2 --
->  drivers/platform/mips/Kconfig | 1 +
->  2 files changed, 1 insertion(+), 2 deletions(-)
+>  arch/mips/cavium-octeon/executive/cvmx-bootmem.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
 > 
-> diff --git a/drivers/platform/Kconfig b/drivers/platform/Kconfig
-> index b437847b6237..8ddfe5ce153f 100644
-> --- a/drivers/platform/Kconfig
-> +++ b/drivers/platform/Kconfig
-> @@ -1,7 +1,5 @@
->  # SPDX-License-Identifier: GPL-2.0-only
-> -if MIPS
->  source "drivers/platform/mips/Kconfig"
-> -endif
->  
->  source "drivers/platform/goldfish/Kconfig"
->  
-> diff --git a/drivers/platform/mips/Kconfig b/drivers/platform/mips/Kconfig
-> index 6b51ad01f791..fb4ac4b08e89 100644
-> --- a/drivers/platform/mips/Kconfig
-> +++ b/drivers/platform/mips/Kconfig
-> @@ -6,6 +6,7 @@
->  menuconfig MIPS_PLATFORM_DEVICES
->  	bool "MIPS Platform Specific Device Drivers"
->  	default y
-> +	depends on MIPS
->  	help
->  	  Say Y here to get to see options for device drivers of various
->  	  MIPS platforms, including vendor-specific netbook/laptop/desktop
+> diff --git a/arch/mips/cavium-octeon/executive/cvmx-bootmem.c b/arch/mips/cavium-octeon/executive/cvmx-bootmem.c
+> index 306cee07ce3f..334bf8e577e5 100644
+> --- a/arch/mips/cavium-octeon/executive/cvmx-bootmem.c
+> +++ b/arch/mips/cavium-octeon/executive/cvmx-bootmem.c
+> @@ -780,9 +780,8 @@ int64_t cvmx_bootmem_phy_named_block_alloc(uint64_t size, uint64_t min_addr,
+>  	if (addr_allocated >= 0) {
+>  		named_block_desc_ptr->base_addr = addr_allocated;
+>  		named_block_desc_ptr->size = size;
+> -		strncpy(named_block_desc_ptr->name, name,
+> +		strscpy(named_block_desc_ptr->name, name,
+>  			cvmx_bootmem_desc->named_block_name_len);
+> -		named_block_desc_ptr->name[cvmx_bootmem_desc->named_block_name_len - 1] = 0;
+>  	}
+> 
+>  	if (!(flags & CVMX_BOOTMEM_FLAG_NO_LOCKING))
 > -- 
-> 2.31.1
+> 2.15.2
 
 applied to mips-next.
 

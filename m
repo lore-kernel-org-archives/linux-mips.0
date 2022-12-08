@@ -2,57 +2,56 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E1169C4332F
-	for <linux-mips@archiver.kernel.org>; Thu,  8 Dec 2022 19:40:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2A344C001B2
+	for <linux-mips@archiver.kernel.org>; Thu,  8 Dec 2022 19:40:35 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230011AbiLHTka (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 8 Dec 2022 14:40:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57804 "EHLO
+        id S230025AbiLHTkd (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 8 Dec 2022 14:40:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58288 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229848AbiLHTkL (ORCPT
+        with ESMTP id S229961AbiLHTkL (ORCPT
         <rfc822;linux-mips@vger.kernel.org>); Thu, 8 Dec 2022 14:40:11 -0500
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD21A1AA0D
-        for <linux-mips@vger.kernel.org>; Thu,  8 Dec 2022 11:39:56 -0800 (PST)
-Received: by mail-yb1-xb4a.google.com with SMTP id t9-20020a5b03c9000000b006cff5077dc9so2553131ybp.3
-        for <linux-mips@vger.kernel.org>; Thu, 08 Dec 2022 11:39:56 -0800 (PST)
+Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC4AA1AA06
+        for <linux-mips@vger.kernel.org>; Thu,  8 Dec 2022 11:39:55 -0800 (PST)
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-3d3769a8103so25014617b3.17
+        for <linux-mips@vger.kernel.org>; Thu, 08 Dec 2022 11:39:55 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=IGXwNDL4QYyEmLxSnzAicnadmof6UqucM+DSeXyfLbg=;
-        b=e2wlSIbIUNSSfaa5cE8nlhbofFQRnDINdERr5/zptolHxRg/aPkZUAkV/kMjTwqvnL
-         VAny0I7JM9mmYwlM19HgFZ4z/Bt+AByLMvJNwn4T4fl0KwFC3zH/PllsEXxvlbxKUkc0
-         NdMHxpCwQrIPT0+bestZB+Anm+CNeXCBzxYs+7pB5OowuPNVic/k7alXblYXNWUiyNRn
-         3s7YLdEKTaInLDTRes3bQcWtyjH3N9OVLHAzY6Bg1V5A6pocb3CfBR9ECK9NIDh6py2b
-         FQXi6i4x7GPqtsNYbTReUTLXYmSwdtvZ+/Ai3ANOoadydeN1zSK+lfHKCn5oiJ5BQfNn
-         SJvw==
+        bh=dgqMnMt1QIlmBLa3o//o520F4RUXcCCtqFrzTbNkpWk=;
+        b=f4QHeg61IzowzK+7yuPHF1TXnPTFwNskqnQKjcsu0WxAKIY1McB7wZRn+VuSfBM9b8
+         ylyyA9kcFWxQm6+GX+bMJZFHcWTGXb7YNV/fpxz2TqMv2QX/5/VLhbXkWs5BZNCv8lvE
+         iAqaka88+2+N5tw21tP1s0c6lUAdukNFngVoXini/VGsGOpfrraDUlE9nKTf3FFTHm9y
+         KUTGqSOH2A4NquRC0hECU12i0F9wQKuKP4xBOjtC4vxLFMrVdTK8VzxOC9xjDjBZVdgu
+         7TIFyQpSoyu3BW883wqt4S03Vt2JnLjwrIPiyoLIXLGjApjxjBQRjkRdpzCFxXjOiqSy
+         115A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=IGXwNDL4QYyEmLxSnzAicnadmof6UqucM+DSeXyfLbg=;
-        b=aqvmGE4t55mfIgF8IVfZYFiooI0c9oRoJjzZWupSxvwYB3JI/vFad2QIkMdpCH6HGZ
-         zNG2fH5OLwQBTS8d2uWT+e4LyevPgCxKAUzxCDn3wvAUVFGqfmOv7Vka8MAWNGUEMkdr
-         b/krjcXHxYI/fEtUHLD2HYVBnPlC9ASFY40QWQmAH518Zt0TnXCxz8cLY1z9MsADEmfB
-         RQGesxDdhuU/TXjPKewO3AhxAvrwNFraS4Ra0AouqiaEj498ma1tIJVx+hLUntG6wFuq
-         YHWDVJPJc47Jxk/tOZAlB9z4bKrxHbLAHUauuR/BAP2oOyfAh83LYzwZPrJFgHQhdL52
-         ZmJQ==
-X-Gm-Message-State: ANoB5pm2Wk3axZ00/NTutAWKZM/xMg+Fhn8bIySfGyKzWhA3VXJ/u/YL
-        XSExm/CUlBl+N/vFM8Uw9hAObJHwQc9C8Q==
-X-Google-Smtp-Source: AA0mqf7NcSr4AIKU//qVuXa9coH1f9XMOTx1jz8qMU/k8ctWA7f2fWXafNUay3Wq3KgA3j2vNzHhSJ2naqJ0zg==
+        bh=dgqMnMt1QIlmBLa3o//o520F4RUXcCCtqFrzTbNkpWk=;
+        b=W9iI08f89RqsPaYxJsNERT7jLYDpKwXQt6z5iS2wdEqpobv6jBPdLGN7zWZhS2Jgrr
+         xsoJgwFPwJBMUlIozZdiKC4f2CaaiFeZ8wPMKI6Fs5p2/XyQ+u89g2asMD2ntGumKe8f
+         O+uCM1rWfkCwehVLFsLENkHxZWZ+YxHvgbltYh/RtK24CnEhmix0SaneA1+8zsVjes6R
+         khb7M7nve4i6xXv4L87bPZ4Xc0CcAKLh+CxKSKACXQodwIxEnIvJvW+znKx//OzZAty+
+         7EgJ5iUxBNBtx3MYcfm3Q5OxTxs1WmvfntWAWz6JN48XEXDrcxqISkWjc+eXgNYCAEmM
+         X7xw==
+X-Gm-Message-State: ANoB5pnMDyk4YzIfCtQFoJ4RiIxWMiTXZ7arSuFk1h2O19V/Kr57pMP7
+        Y00Y+lJ3UUgXlSo26/tqaed3Wyf3fC2v+A==
+X-Google-Smtp-Source: AA0mqf5mi9mDJ9tYVtakRomun512INrgKlNeUrlvHGHQBPGnddPX6ZC9IDNboVvCBGP15bWz6s6DsMaL8j57qA==
 X-Received: from dmatlack-n2d-128.c.googlers.com ([fda3:e722:ac3:cc00:20:ed76:c0a8:1309])
- (user=dmatlack job=sendgmr) by 2002:a81:6309:0:b0:3b0:773b:2b8f with SMTP id
- x9-20020a816309000000b003b0773b2b8fmr1555613ywb.350.1670528395580; Thu, 08
- Dec 2022 11:39:55 -0800 (PST)
-Date:   Thu,  8 Dec 2022 11:38:49 -0800
+ (user=dmatlack job=sendgmr) by 2002:a25:b885:0:b0:701:49ca:8ae8 with SMTP id
+ w5-20020a25b885000000b0070149ca8ae8mr16438842ybj.553.1670528392392; Thu, 08
+ Dec 2022 11:39:52 -0800 (PST)
+Date:   Thu,  8 Dec 2022 11:38:47 -0800
 In-Reply-To: <20221208193857.4090582-1-dmatlack@google.com>
 Mime-Version: 1.0
 References: <20221208193857.4090582-1-dmatlack@google.com>
 X-Mailer: git-send-email 2.39.0.rc1.256.g54fd8350bd-goog
-Message-ID: <20221208193857.4090582-30-dmatlack@google.com>
-Subject: [RFC PATCH 29/37] KVM: x86/mmu: Collapse kvm_flush_remote_tlbs_with_{range,address}()
- together
+Message-ID: <20221208193857.4090582-28-dmatlack@google.com>
+Subject: [RFC PATCH 27/37] KVM: MMU: Move mmu_page_header_cache to common code
 From:   David Matlack <dmatlack@google.com>
 To:     Paolo Bonzini <pbonzini@redhat.com>
 Cc:     Marc Zyngier <maz@kernel.org>, James Morse <james.morse@arm.com>,
@@ -93,57 +92,140 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Collapse kvm_flush_remote_tlbs_with_range() and
-kvm_flush_remote_tlbs_with_address() into a single function. This
-eliminates some lines of code and a useless NULL check on the range
-struct.
+Move vcpu->arch.mmu_page_header_cache and its backing kmem_cache to common code
+in preparation for moving the TDP MMU to common code in a future commit.
 
-Opportunistically switch from ENOTSUPP to EOPNOTSUPP to make checkpatch
-happy.
+The kmem_cache is still only initialized and used on x86 for the time being to
+avoid affecting other architectures. A future commit can move the code to
+manage this cache to common code.
+
+No functional change intended.
 
 Signed-off-by: David Matlack <dmatlack@google.com>
 ---
- arch/x86/kvm/mmu/mmu.c | 19 ++++++-------------
- 1 file changed, 6 insertions(+), 13 deletions(-)
+ arch/x86/kvm/mmu/mmu.c          | 11 +++++------
+ arch/x86/kvm/mmu/mmu_internal.h |  2 --
+ arch/x86/kvm/mmu/tdp_mmu.c      |  2 +-
+ include/kvm/mmu.h               |  2 ++
+ include/linux/kvm_host.h        |  3 +++
+ virt/kvm/kvm_main.c             |  1 +
+ 6 files changed, 12 insertions(+), 9 deletions(-)
 
 diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-index f01ee01f3509..b7bbabac9127 100644
+index a845e9141ad4..f01ee01f3509 100644
 --- a/arch/x86/kvm/mmu/mmu.c
 +++ b/arch/x86/kvm/mmu/mmu.c
-@@ -244,27 +244,20 @@ static inline bool kvm_available_flush_tlb_with_range(void)
- 	return kvm_x86_ops.tlb_remote_flush_with_range;
+@@ -163,7 +163,6 @@ struct kvm_shadow_walk_iterator {
+ 	     __shadow_walk_next(&(_walker), spte))
+ 
+ static struct kmem_cache *pte_list_desc_cache;
+-struct kmem_cache *mmu_page_header_cache;
+ static struct percpu_counter kvm_total_used_mmu_pages;
+ 
+ static void mmu_spte_set(u64 *sptep, u64 spte);
+@@ -674,7 +673,7 @@ static int mmu_topup_memory_caches(struct kvm_vcpu *vcpu, bool maybe_indirect)
+ 		if (r)
+ 			return r;
+ 	}
+-	return kvm_mmu_topup_memory_cache(&vcpu->arch.mmu_page_header_cache,
++	return kvm_mmu_topup_memory_cache(&vcpu->mmu_page_header_cache,
+ 					  PT64_ROOT_MAX_LEVEL);
  }
  
--static void kvm_flush_remote_tlbs_with_range(struct kvm *kvm,
--		struct kvm_tlb_range *range)
--{
--	int ret = -ENOTSUPP;
--
--	if (range && kvm_x86_ops.tlb_remote_flush_with_range)
--		ret = static_call(kvm_x86_tlb_remote_flush_with_range)(kvm, range);
--
--	if (ret)
--		kvm_flush_remote_tlbs(kvm);
--}
--
- void kvm_flush_remote_tlbs_with_address(struct kvm *kvm,
- 		u64 start_gfn, u64 pages)
+@@ -683,7 +682,7 @@ static void mmu_free_memory_caches(struct kvm_vcpu *vcpu)
+ 	kvm_mmu_free_memory_cache(&vcpu->arch.mmu_pte_list_desc_cache);
+ 	kvm_mmu_free_memory_cache(&vcpu->mmu_page_table_cache);
+ 	kvm_mmu_free_memory_cache(&vcpu->arch.mmu_shadowed_info_cache);
+-	kvm_mmu_free_memory_cache(&vcpu->arch.mmu_page_header_cache);
++	kvm_mmu_free_memory_cache(&vcpu->mmu_page_header_cache);
+ }
+ 
+ static void mmu_free_pte_list_desc(struct pte_list_desc *pte_list_desc)
+@@ -2217,7 +2216,7 @@ static struct kvm_mmu_page *kvm_mmu_get_shadow_page(struct kvm_vcpu *vcpu,
+ 						    union kvm_mmu_page_role role)
  {
- 	struct kvm_tlb_range range;
-+	int ret = -EOPNOTSUPP;
+ 	struct shadow_page_caches caches = {
+-		.page_header_cache = &vcpu->arch.mmu_page_header_cache,
++		.page_header_cache = &vcpu->mmu_page_header_cache,
+ 		.shadow_page_cache = &vcpu->mmu_page_table_cache,
+ 		.shadowed_info_cache = &vcpu->arch.mmu_shadowed_info_cache,
+ 	};
+@@ -5917,8 +5916,8 @@ int kvm_mmu_create(struct kvm_vcpu *vcpu)
+ 	vcpu->arch.mmu_pte_list_desc_cache.kmem_cache = pte_list_desc_cache;
+ 	vcpu->arch.mmu_pte_list_desc_cache.gfp_zero = __GFP_ZERO;
  
- 	range.start_gfn = start_gfn;
- 	range.pages = pages;
+-	vcpu->arch.mmu_page_header_cache.kmem_cache = mmu_page_header_cache;
+-	vcpu->arch.mmu_page_header_cache.gfp_zero = __GFP_ZERO;
++	vcpu->mmu_page_header_cache.kmem_cache = mmu_page_header_cache;
++	vcpu->mmu_page_header_cache.gfp_zero = __GFP_ZERO;
  
--	kvm_flush_remote_tlbs_with_range(kvm, &range);
-+	if (kvm_x86_ops.tlb_remote_flush_with_range)
-+		ret = static_call(kvm_x86_tlb_remote_flush_with_range)(kvm, &range);
+ 	vcpu->mmu_page_table_cache.gfp_zero = __GFP_ZERO;
+ 
+diff --git a/arch/x86/kvm/mmu/mmu_internal.h b/arch/x86/kvm/mmu/mmu_internal.h
+index d3c1d08002af..4aa60d5d87b0 100644
+--- a/arch/x86/kvm/mmu/mmu_internal.h
++++ b/arch/x86/kvm/mmu/mmu_internal.h
+@@ -44,8 +44,6 @@ extern bool dbg;
+ #define INVALID_PAE_ROOT	0
+ #define IS_VALID_PAE_ROOT(x)	(!!(x))
+ 
+-extern struct kmem_cache *mmu_page_header_cache;
+-
+ static inline bool kvm_mmu_page_ad_need_write_protect(struct kvm_mmu_page *sp)
+ {
+ 	/*
+diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
+index 922815407b7e..891877a6fb78 100644
+--- a/arch/x86/kvm/mmu/tdp_mmu.c
++++ b/arch/x86/kvm/mmu/tdp_mmu.c
+@@ -263,7 +263,7 @@ static struct kvm_mmu_page *tdp_mmu_alloc_sp(struct kvm_vcpu *vcpu)
+ {
+ 	struct kvm_mmu_page *sp;
+ 
+-	sp = kvm_mmu_memory_cache_alloc(&vcpu->arch.mmu_page_header_cache);
++	sp = kvm_mmu_memory_cache_alloc(&vcpu->mmu_page_header_cache);
+ 	sp->spt = kvm_mmu_memory_cache_alloc(&vcpu->mmu_page_table_cache);
+ 
+ 	return sp;
+diff --git a/include/kvm/mmu.h b/include/kvm/mmu.h
+index 425db8e4f8e9..f1416828f8fe 100644
+--- a/include/kvm/mmu.h
++++ b/include/kvm/mmu.h
+@@ -4,6 +4,8 @@
+ 
+ #include <kvm/mmu_types.h>
+ 
++extern struct kmem_cache *mmu_page_header_cache;
 +
-+	if (ret)
-+		kvm_flush_remote_tlbs(kvm);
- }
+ static inline struct kvm_mmu_page *to_shadow_page(hpa_t shadow_page)
+ {
+ 	struct page *page = pfn_to_page((shadow_page) >> PAGE_SHIFT);
+diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
+index 0a9baa493760..ec3a6de6d54e 100644
+--- a/include/linux/kvm_host.h
++++ b/include/linux/kvm_host.h
+@@ -391,6 +391,9 @@ struct kvm_vcpu {
+ #ifdef KVM_ARCH_NR_OBJS_PER_MEMORY_CACHE
+ 	/* Cache used to allocate pages for use as page tables. */
+ 	struct kvm_mmu_memory_cache mmu_page_table_cache;
++
++	/* Cache used to allocate kvm_mmu_page structs. */
++	struct kvm_mmu_memory_cache mmu_page_header_cache;
+ #endif
+ };
  
- static void mark_mmio_spte(struct kvm_vcpu *vcpu, u64 *sptep, u64 gfn,
+diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+index 954ab969f55e..0f1d48ed7d57 100644
+--- a/virt/kvm/kvm_main.c
++++ b/virt/kvm/kvm_main.c
+@@ -108,6 +108,7 @@ static int kvm_usage_count;
+ static atomic_t hardware_enable_failed;
+ 
+ static struct kmem_cache *kvm_vcpu_cache;
++struct kmem_cache *mmu_page_header_cache;
+ 
+ static __read_mostly struct preempt_ops kvm_preempt_ops;
+ static DEFINE_PER_CPU(struct kvm_vcpu *, kvm_running_vcpu);
 -- 
 2.39.0.rc1.256.g54fd8350bd-goog
 

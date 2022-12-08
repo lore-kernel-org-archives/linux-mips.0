@@ -2,57 +2,56 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C1C29C10F1B
-	for <linux-mips@archiver.kernel.org>; Thu,  8 Dec 2022 19:39:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0A493C10F31
+	for <linux-mips@archiver.kernel.org>; Thu,  8 Dec 2022 19:39:22 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229699AbiLHTjQ (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 8 Dec 2022 14:39:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56932 "EHLO
+        id S229755AbiLHTjU (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 8 Dec 2022 14:39:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56978 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229735AbiLHTjN (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Thu, 8 Dec 2022 14:39:13 -0500
-Received: from mail-pj1-x1049.google.com (mail-pj1-x1049.google.com [IPv6:2607:f8b0:4864:20::1049])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E48585D23
-        for <linux-mips@vger.kernel.org>; Thu,  8 Dec 2022 11:39:09 -0800 (PST)
-Received: by mail-pj1-x1049.google.com with SMTP id mn20-20020a17090b189400b0021941492f66so5466707pjb.0
-        for <linux-mips@vger.kernel.org>; Thu, 08 Dec 2022 11:39:09 -0800 (PST)
+        with ESMTP id S229724AbiLHTjP (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Thu, 8 Dec 2022 14:39:15 -0500
+Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DF2C7683B
+        for <linux-mips@vger.kernel.org>; Thu,  8 Dec 2022 11:39:13 -0800 (PST)
+Received: by mail-pg1-x549.google.com with SMTP id h185-20020a636cc2000000b0046fc6e0065dso1623565pgc.5
+        for <linux-mips@vger.kernel.org>; Thu, 08 Dec 2022 11:39:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=zB9oiH2BRr4yMBo3wf45SO3Nck80VorbJdVA47iblXM=;
-        b=g9cixz5ghWNJL3K+TodNMkBqI/oQhLTOr97M7M2/XpZEkjrmI3nr8w2JGkmRiCYvFp
-         oCqkxLLopMMEof8X6INg95QudTyolVDU+RZhaURZt8OAHqkW63+Kglxtq76sXMR3UwFq
-         TH0D0M7upbnITs3QBeHc4oBh6Bot1NKIQBOUihmvyAsu3jIi5z0OXboG4BlLnZQDvrbN
-         irbKiodu/sENkvb3heU4imTZch1oJk77UygEm5fQ1B7wZYOkf7/kSwfDOcxQWmBFS0gg
-         yWvbjdMM2Sl2l6GeuSkr5btl/7w76Xe8GfrXo/KlMP5jfkzzRUjzb+ofPgAfWivKb76C
-         TC7g==
+        bh=zPqhilQnjSVH+DKsiF3UuxsA3mWYraWvqkpSQiCn4mk=;
+        b=iEvz84VootOQzL2fuUOye77ff0RBTUJwBPc/nCp9n7wqfMIJewYjnWs+e+UV8BdMIw
+         elYqajuLHReDubNQsxzeD4LQOafn7i58BjesdxlcK+vzw+x1HQo9F7VP57LAnqtKoesr
+         UywCJYsjvD0BlUoCSDFWtr6dHwgWaW3JtPzOAkFIkkT8WGiWMzZ2oAHhyStfBm7eJSsS
+         38EqRrqfu/Bb+ppVcaHkYCPUXH92lKxDVFDbgcDFRtoe1sRIy80NzBB22C9JYr71mn8T
+         A1Ozw0Mgmaj7KonevqN/mmVI3ivsgF7FtLFAmhFybNP5PHPBvBWnlJEVJf0pakv7c2rW
+         r4Fg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=zB9oiH2BRr4yMBo3wf45SO3Nck80VorbJdVA47iblXM=;
-        b=ioQBOSxYRNHXjz/qQ3eska7v0SHPG0DDkjo3vbxSmLNeeuYqoafIrF+0Y6pWBbV+HO
-         koAxVV/zOb6DbTaGBQ8X0fWcTh03U2HhhKVLmogi+3+z5MckW8WntJqd5QhyeM7yN1Bw
-         w7NNEeQ0mvvE93S+97xAIBkqZ1sI0sbAHjE4FfnvTTbueDjhR/sKMSjLclrXUvxFJcMf
-         8v4JnseWCr6WpUexU+qWYG+v3AkiTvdCjpERalIcp+kFBD6XuhOruxkoR4Fdse4a+WZk
-         IZ2rORY8iq9fMe0cIKqfA7cVp1OWSfiktLvRK5vQVgy3P36FwJJvotH40XcuVJKbHIuo
-         H6Sg==
-X-Gm-Message-State: ANoB5plfXkjtm+l5qQPLya8KdpjXbOcE6Sfa9NAJkDQs3JdT0ExqwFzc
-        pAHrquF+/SvQZW6JA0/sWuc+RcQ/SppZ3A==
-X-Google-Smtp-Source: AA0mqf4iTqxLqkeKUJGKBK2vDw/TcOMUrCzACSliwb1y6sicvyYssf60rgU2Phn8zeoC+EETXrN69Yd24770KA==
+        bh=zPqhilQnjSVH+DKsiF3UuxsA3mWYraWvqkpSQiCn4mk=;
+        b=MbC3yq0M2CfAKnWyvqYLM9IrHEafx4ptzSXVncMpsvtVMy2/GbCxZIyg1aIH5R8b6o
+         p/xqZVNuYbvZ5zMBTWOmoliH0zO6L6RSv2DoeYlqQvhooVZqdyZxiPnk0zmYHKUEHKJ2
+         alJUHA/DIiDU2eT5C4qoPf2eQdahbctg47EGQz2FOs8jTRw2tpA2gO7GdjjViUuL4VEO
+         it6n+mXXJekeMW8RSTZ+/CX2BoLqlq0prnkeUX6kYTX7ySz7vyab5fbjdpQIYtGCyYgz
+         mjZJZKgqwxvAbi559NVkp0rCMQW7wj9QuRULmfXxzdDH2Fs7W9/Cnl69TcOa4/HsY1Mq
+         Uqow==
+X-Gm-Message-State: ANoB5plVfmBo6fULrSCmX8ufGUFYpIgADLPwJQqSqB/pQoVnyt1SwC6J
+        I+5T7VMtyjT8dwUJVQ6tVxL4dxI0IHmwUw==
+X-Google-Smtp-Source: AA0mqf7eM5A3bS0eYMJF7BGmyZN+evZ/sdXM528vLtaTteWzbjmMBYJhb583jjAiLFnL4yHJF6g542RYvvvpWw==
 X-Received: from dmatlack-n2d-128.c.googlers.com ([fda3:e722:ac3:cc00:20:ed76:c0a8:1309])
- (user=dmatlack job=sendgmr) by 2002:a17:90b:33c8:b0:219:94b2:2004 with SMTP
- id lk8-20020a17090b33c800b0021994b22004mr28273120pjb.215.1670528349120; Thu,
- 08 Dec 2022 11:39:09 -0800 (PST)
-Date:   Thu,  8 Dec 2022 11:38:21 -0800
+ (user=dmatlack job=sendgmr) by 2002:a05:6a00:1623:b0:577:4baf:f412 with SMTP
+ id e3-20020a056a00162300b005774baff412mr10161002pfc.77.1670528352538; Thu, 08
+ Dec 2022 11:39:12 -0800 (PST)
+Date:   Thu,  8 Dec 2022 11:38:23 -0800
 In-Reply-To: <20221208193857.4090582-1-dmatlack@google.com>
 Mime-Version: 1.0
 References: <20221208193857.4090582-1-dmatlack@google.com>
 X-Mailer: git-send-email 2.39.0.rc1.256.g54fd8350bd-goog
-Message-ID: <20221208193857.4090582-2-dmatlack@google.com>
-Subject: [RFC PATCH 01/37] KVM: x86/mmu: Store the address space ID directly
- in kvm_mmu_page_role
+Message-ID: <20221208193857.4090582-4-dmatlack@google.com>
+Subject: [RFC PATCH 03/37] KVM: MMU: Move tdp_ptep_t into common code
 From:   David Matlack <dmatlack@google.com>
 To:     Paolo Bonzini <pbonzini@redhat.com>
 Cc:     Marc Zyngier <maz@kernel.org>, James Morse <james.morse@arm.com>,
@@ -93,158 +92,41 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Rename kvm_mmu_page_role.smm with kvm_mmu_page_role.as_id and use it
-directly as the address space ID throughout the KVM MMU code. This
-eliminates a needless level of indirection, kvm_mmu_role_as_id(), and
-prepares for making kvm_mmu_page_role architecture-neutral.
+Move the definition of tdp_ptep_t into kvm/mmu_types.h so it can be used
+from common code in future commits.
+
+No functional changed intended.
 
 Signed-off-by: David Matlack <dmatlack@google.com>
 ---
- arch/x86/include/asm/kvm_host.h |  4 ++--
- arch/x86/kvm/mmu/mmu.c          |  6 +++---
- arch/x86/kvm/mmu/mmu_internal.h | 10 ----------
- arch/x86/kvm/mmu/tdp_iter.c     |  2 +-
- arch/x86/kvm/mmu/tdp_mmu.c      | 12 ++++++------
- 5 files changed, 12 insertions(+), 22 deletions(-)
+ arch/x86/kvm/mmu/mmu_internal.h | 2 --
+ include/kvm/mmu_types.h         | 2 ++
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-index aa4eb8cfcd7e..0a819d40131a 100644
---- a/arch/x86/include/asm/kvm_host.h
-+++ b/arch/x86/include/asm/kvm_host.h
-@@ -348,7 +348,7 @@ union kvm_mmu_page_role {
- 		 * simple shift.  While there is room, give it a whole
- 		 * byte so it is also faster to load it from memory.
- 		 */
--		unsigned smm:8;
-+		unsigned as_id:8;
- 	};
- };
- 
-@@ -2056,7 +2056,7 @@ enum {
- # define __KVM_VCPU_MULTIPLE_ADDRESS_SPACE
- # define KVM_ADDRESS_SPACE_NUM 2
- # define kvm_arch_vcpu_memslots_id(vcpu) ((vcpu)->arch.hflags & HF_SMM_MASK ? 1 : 0)
--# define kvm_memslots_for_spte_role(kvm, role) __kvm_memslots(kvm, (role).smm)
-+# define kvm_memslots_for_spte_role(kvm, role) __kvm_memslots(kvm, (role).as_id)
- #else
- # define kvm_memslots_for_spte_role(kvm, role) __kvm_memslots(kvm, 0)
- #endif
-diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-index 4d188f056933..f375b719f565 100644
---- a/arch/x86/kvm/mmu/mmu.c
-+++ b/arch/x86/kvm/mmu/mmu.c
-@@ -5056,7 +5056,7 @@ kvm_calc_cpu_role(struct kvm_vcpu *vcpu, const struct kvm_mmu_role_regs *regs)
- 	union kvm_cpu_role role = {0};
- 
- 	role.base.access = ACC_ALL;
--	role.base.smm = is_smm(vcpu);
-+	role.base.as_id = is_smm(vcpu);
- 	role.base.guest_mode = is_guest_mode(vcpu);
- 	role.ext.valid = 1;
- 
-@@ -5112,7 +5112,7 @@ kvm_calc_tdp_mmu_root_page_role(struct kvm_vcpu *vcpu,
- 	role.access = ACC_ALL;
- 	role.cr0_wp = true;
- 	role.efer_nx = true;
--	role.smm = cpu_role.base.smm;
-+	role.as_id = cpu_role.base.as_id;
- 	role.guest_mode = cpu_role.base.guest_mode;
- 	role.ad_disabled = !kvm_ad_enabled();
- 	role.level = kvm_mmu_get_tdp_level(vcpu);
-@@ -5233,7 +5233,7 @@ kvm_calc_shadow_ept_root_page_role(struct kvm_vcpu *vcpu, bool accessed_dirty,
- 
- 	/*
- 	 * KVM does not support SMM transfer monitors, and consequently does not
--	 * support the "entry to SMM" control either.  role.base.smm is always 0.
-+	 * support the "entry to SMM" control either.  role.base.as_id is always 0.
- 	 */
- 	WARN_ON_ONCE(is_smm(vcpu));
- 	role.base.level = level;
 diff --git a/arch/x86/kvm/mmu/mmu_internal.h b/arch/x86/kvm/mmu/mmu_internal.h
-index ac00bfbf32f6..5427f65117b4 100644
+index c19a80fdeb8d..e32379c5b1ad 100644
 --- a/arch/x86/kvm/mmu/mmu_internal.h
 +++ b/arch/x86/kvm/mmu/mmu_internal.h
-@@ -133,16 +133,6 @@ struct kvm_mmu_page {
+@@ -44,8 +44,6 @@ extern bool dbg;
+ #define INVALID_PAE_ROOT	0
+ #define IS_VALID_PAE_ROOT(x)	(!!(x))
  
- extern struct kmem_cache *mmu_page_header_cache;
- 
--static inline int kvm_mmu_role_as_id(union kvm_mmu_page_role role)
--{
--	return role.smm ? 1 : 0;
--}
+-typedef u64 __rcu *tdp_ptep_t;
 -
--static inline int kvm_mmu_page_as_id(struct kvm_mmu_page *sp)
--{
--	return kvm_mmu_role_as_id(sp->role);
--}
--
- static inline bool kvm_mmu_page_ad_need_write_protect(struct kvm_mmu_page *sp)
- {
+ struct kvm_mmu_page {
  	/*
-diff --git a/arch/x86/kvm/mmu/tdp_iter.c b/arch/x86/kvm/mmu/tdp_iter.c
-index 39b48e7d7d1a..4a7d58bf81c4 100644
---- a/arch/x86/kvm/mmu/tdp_iter.c
-+++ b/arch/x86/kvm/mmu/tdp_iter.c
-@@ -52,7 +52,7 @@ void tdp_iter_start(struct tdp_iter *iter, struct kvm_mmu_page *root,
- 	iter->root_level = root_level;
- 	iter->min_level = min_level;
- 	iter->pt_path[iter->root_level - 1] = (tdp_ptep_t)root->spt;
--	iter->as_id = kvm_mmu_page_as_id(root);
-+	iter->as_id = root->role.as_id;
+ 	 * Note, "link" through "spt" fit in a single 64 byte cache line on
+diff --git a/include/kvm/mmu_types.h b/include/kvm/mmu_types.h
+index 3f35a924e031..14099956fdac 100644
+--- a/include/kvm/mmu_types.h
++++ b/include/kvm/mmu_types.h
+@@ -34,4 +34,6 @@ union kvm_mmu_page_role {
  
- 	tdp_iter_restart(iter);
- }
-diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
-index 764f7c87286f..7ccac1aa8df6 100644
---- a/arch/x86/kvm/mmu/tdp_mmu.c
-+++ b/arch/x86/kvm/mmu/tdp_mmu.c
-@@ -237,7 +237,7 @@ static struct kvm_mmu_page *tdp_mmu_next_root(struct kvm *kvm,
- 	     _root;								\
- 	     _root = tdp_mmu_next_root(_kvm, _root, _shared, _only_valid))	\
- 		if (kvm_lockdep_assert_mmu_lock_held(_kvm, _shared) &&		\
--		    kvm_mmu_page_as_id(_root) != _as_id) {			\
-+		    _root->role.as_id != _as_id) {			\
- 		} else
+ static_assert(sizeof(union kvm_mmu_page_role) == sizeof_field(union kvm_mmu_page_role, word));
  
- #define for_each_valid_tdp_mmu_root_yield_safe(_kvm, _root, _as_id, _shared)	\
-@@ -256,7 +256,7 @@ static struct kvm_mmu_page *tdp_mmu_next_root(struct kvm *kvm,
- #define for_each_tdp_mmu_root(_kvm, _root, _as_id)			\
- 	list_for_each_entry(_root, &_kvm->arch.tdp_mmu_roots, link)	\
- 		if (kvm_lockdep_assert_mmu_lock_held(_kvm, false) &&	\
--		    kvm_mmu_page_as_id(_root) != _as_id) {		\
-+		    _root->role.as_id != _as_id) {		\
- 		} else
- 
- static struct kvm_mmu_page *tdp_mmu_alloc_sp(struct kvm_vcpu *vcpu)
-@@ -310,7 +310,7 @@ hpa_t kvm_tdp_mmu_get_vcpu_root_hpa(struct kvm_vcpu *vcpu)
- 	 * Check for an existing root before allocating a new one.  Note, the
- 	 * role check prevents consuming an invalid root.
- 	 */
--	for_each_tdp_mmu_root(kvm, root, kvm_mmu_role_as_id(role)) {
-+	for_each_tdp_mmu_root(kvm, root, role.as_id) {
- 		if (root->role.word == role.word &&
- 		    kvm_tdp_mmu_get_root(root))
- 			goto out;
-@@ -496,8 +496,8 @@ static void handle_removed_pt(struct kvm *kvm, tdp_ptep_t pt, bool shared)
- 			old_spte = kvm_tdp_mmu_write_spte(sptep, old_spte,
- 							  REMOVED_SPTE, level);
- 		}
--		handle_changed_spte(kvm, kvm_mmu_page_as_id(sp), gfn,
--				    old_spte, REMOVED_SPTE, level, shared);
-+		handle_changed_spte(kvm, sp->role.as_id, gfn, old_spte,
-+				    REMOVED_SPTE, level, shared);
- 	}
- 
- 	call_rcu(&sp->rcu_head, tdp_mmu_free_sp_rcu_callback);
-@@ -923,7 +923,7 @@ bool kvm_tdp_mmu_zap_sp(struct kvm *kvm, struct kvm_mmu_page *sp)
- 	if (WARN_ON_ONCE(!is_shadow_present_pte(old_spte)))
- 		return false;
- 
--	__tdp_mmu_set_spte(kvm, kvm_mmu_page_as_id(sp), sp->ptep, old_spte, 0,
-+	__tdp_mmu_set_spte(kvm, sp->role.as_id, sp->ptep, old_spte, 0,
- 			   sp->gfn, sp->role.level + 1, true, true);
- 
- 	return true;
++typedef u64 __rcu *tdp_ptep_t;
++
+ #endif /* !__KVM_MMU_TYPES_H */
 -- 
 2.39.0.rc1.256.g54fd8350bd-goog
 

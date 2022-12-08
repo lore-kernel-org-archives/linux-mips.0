@@ -2,56 +2,56 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DF76FC2D0CB
-	for <linux-mips@archiver.kernel.org>; Thu,  8 Dec 2022 19:39:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 56F60C4332F
+	for <linux-mips@archiver.kernel.org>; Thu,  8 Dec 2022 19:39:31 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229724AbiLHTjY (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 8 Dec 2022 14:39:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56926 "EHLO
+        id S229782AbiLHTja (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 8 Dec 2022 14:39:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57228 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229734AbiLHTjW (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Thu, 8 Dec 2022 14:39:22 -0500
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C15685D1D
-        for <linux-mips@vger.kernel.org>; Thu,  8 Dec 2022 11:39:16 -0800 (PST)
-Received: by mail-yb1-xb49.google.com with SMTP id t9-20020a5b03c9000000b006cff5077dc9so2551426ybp.3
-        for <linux-mips@vger.kernel.org>; Thu, 08 Dec 2022 11:39:16 -0800 (PST)
+        with ESMTP id S229757AbiLHTj2 (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Thu, 8 Dec 2022 14:39:28 -0500
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98E7982F90
+        for <linux-mips@vger.kernel.org>; Thu,  8 Dec 2022 11:39:19 -0800 (PST)
+Received: by mail-yb1-xb4a.google.com with SMTP id b17-20020a25b851000000b006e32b877068so2544604ybm.16
+        for <linux-mips@vger.kernel.org>; Thu, 08 Dec 2022 11:39:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20210112;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=7K9ka6MUeaf4VmwASDJsBFWEG85o/chirVO+ir7DJ1k=;
-        b=irP5mcGoAOYc8wosnD/TtALC0WWa+NGjhVIHJTTnr/3Z8yjzEK7JM4oiVhdZFBRQwy
-         zJ2t/ttFB0YDo1jKtcssuFL71HMxb9Mn2FDYgr/S1maeH1kDPYzBK0DF9LASFH6X+Gyz
-         ADGVieTHTJS3Xu0juG8XWrdDMzDZvqxucwC6VjLm3/r24BngHKVLne44DdbtStaOGGOh
-         nAuOImwdaJqBcKx9C/oAm0bmd7zRXkwa5CkgPV2RFBbSGZAPdiE+y9pF0NYdTwDcUcBb
-         YIWPvUTgaFvUXFehRkfrZQ4c+oYOqfGi3KvXXK7lpuBLnfpJgagtw4O5VTtpSo61tAre
-         q86Q==
+        bh=yTAZyHH91Hz9k7OZtf9gLdlJIIrZMhdblzaFwMket5k=;
+        b=GOQt4+sFqigGxf6Aa3fTvktBe1mjQiluGE/Jj6vv/IvtdV7LliPzUDKCSdDx4Qr+HY
+         SefezSHoN8FcvlmM5v70XQPk/EyYEeJUQTBJUq5h/NPog1UINNQReWUqbVEFjNE5psNx
+         aagqyJsONr1NaCPx7WLFrSAq/6+YU9H0nX9KZhJN95FCQM9/NOhRMdNzFnOuadNLctYN
+         G+xWcIxFKNvCVcBGdVMIWulIdzku3X8ojhuncsVZJ/7ZuOiqyWG7OUDtS4/fr9vosjH0
+         V6V8OE7BSYaG+WEMOpz2hhgLOVkbabsraMBHq3XN+o9hqQFkHr8FyeB1wUdGuE+kwW+d
+         bbVQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=7K9ka6MUeaf4VmwASDJsBFWEG85o/chirVO+ir7DJ1k=;
-        b=oZ3oEbpHSVeRYQbXelbn9KDXUU88nUH6iaLTg3WeVdm1n4rCMgA/zZya5XY1pFHZG8
-         eWG9Xal2lh7XfivcbSNCGRb18q3PfpFasYJ91nk6Lic9crV5m7bnp1XaAwQAdEtRP5AF
-         TWL2gtLnZ9jiGXVgf6fWfUdoFjA4BflRQ0Gy9H8FDpw1z3AYeMEMPj9lNels1hvSfweE
-         5NdHLN+MSVJ7l5G9qV9Jr2TMOUjueth8yGO7XKu5ErguinvT0CZdW+mus3X2Gjj85pYa
-         5kaUuLfA4RWNrqC15NHzXygWhP+hgTOb1kpPqCwvpdZtGZzPU1qRonkDQGMtPi9ZxYNb
-         oh7w==
-X-Gm-Message-State: ANoB5pnL/Md7eFMV97pzKCpUSAzzC0p4be0FiDe8HXxUwuy3Ac0qbDU8
-        a3zjgS10gHMMYZrcd6dIoL2d5IQiFOKkxw==
-X-Google-Smtp-Source: AA0mqf4/lKyQk5lKEjo3ymU4c9dqtITM1gYvYc6O/tXnyNlkcxf5NSwbnRprMsGK5JwDZSs7UsMVtOf+2DbYHA==
+        bh=yTAZyHH91Hz9k7OZtf9gLdlJIIrZMhdblzaFwMket5k=;
+        b=pe9V63RGcu8S/t0FWjxOQE2jy/kguKG24Qb18QrCk53t5lI3uwjn1JN/TiEIogkyiT
+         +Qw4TRIQeQW6JiPog8aO2yOUW9EIQyIODYOeA01/yGZdYwu83BpX8ZHeI/ToOIBAgxC8
+         oSEZhkCU//iRcvgaa7Vc6mgh0O3ZVxuxqO8K1IxFMG09mNbQNc29CfUI+NA7UQ+2yvY3
+         u3qbnF9+PzUcxUj8E8XTefD1geGaJhILsWiYDcmxTotOAKe8g/OCFdssMn5jEesrDI/e
+         3eVtHODZQCask/C4HzhLVrxoLThVpKjmLjjcotePdXtkY/imqVB9ztRBankIWfYD9+YM
+         LeXw==
+X-Gm-Message-State: ANoB5pm3Wtn8OJd3ePYDd3Nqq0nVms5mV2fsbiygMazsuudmmi+YeW/J
+        wxIoktVHiqm0TNpm5lXo3hjNDJmBnec/ZQ==
+X-Google-Smtp-Source: AA0mqf4+9oetgR3uKpdfVrPGzq2N3r/JU0sb91m8xpA2HrSBGD0IqxC3Vg4zr/dJJfrFDGejU78ci1LRJL+iRw==
 X-Received: from dmatlack-n2d-128.c.googlers.com ([fda3:e722:ac3:cc00:20:ed76:c0a8:1309])
- (user=dmatlack job=sendgmr) by 2002:a81:120d:0:b0:3d5:ecbb:2923 with SMTP id
- 13-20020a81120d000000b003d5ecbb2923mr35023748yws.485.1670528355728; Thu, 08
- Dec 2022 11:39:15 -0800 (PST)
-Date:   Thu,  8 Dec 2022 11:38:25 -0800
+ (user=dmatlack job=sendgmr) by 2002:a25:9f85:0:b0:700:f93d:c7cd with SMTP id
+ u5-20020a259f85000000b00700f93dc7cdmr16638924ybq.166.1670528358851; Thu, 08
+ Dec 2022 11:39:18 -0800 (PST)
+Date:   Thu,  8 Dec 2022 11:38:27 -0800
 In-Reply-To: <20221208193857.4090582-1-dmatlack@google.com>
 Mime-Version: 1.0
 References: <20221208193857.4090582-1-dmatlack@google.com>
 X-Mailer: git-send-email 2.39.0.rc1.256.g54fd8350bd-goog
-Message-ID: <20221208193857.4090582-6-dmatlack@google.com>
-Subject: [RFC PATCH 05/37] KVM: x86/mmu: Unify TDP MMU and Shadow MMU root refcounts
+Message-ID: <20221208193857.4090582-8-dmatlack@google.com>
+Subject: [RFC PATCH 07/37] mm: Introduce architecture-neutral PG_LEVEL macros
 From:   David Matlack <dmatlack@google.com>
 To:     Paolo Bonzini <pbonzini@redhat.com>
 Cc:     Marc Zyngier <maz@kernel.org>, James Morse <james.morse@arm.com>,
@@ -92,173 +92,59 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Use the same field for refcounting roots in the TDP MMU and Shadow MMU.
-The atomicity provided by refcount_t is overkill for the Shadow MMU,
-since it holds the write-lock. But converging this field will enable a
-future commit to more easily move struct kvm_mmu_page to common code.
-
-Note, refcount_dec_and_test() returns true if the resulting refcount is
-0. Hence the check in mmu_free_root_page() is inverted to check if
-shadow root refcount is 0.
+Introduce architecture-neutral versions of the x86 macros PG_LEVEL_4K,
+PG_LEVEL_2M, etc. The x86 macros are used extensively by KVM/x86's page
+table management code. Introducing architecture-neutral version of these
+macros paves the way for porting KVM/x86's page table management code to
+architecture-neutral code.
 
 Signed-off-by: David Matlack <dmatlack@google.com>
 ---
- arch/x86/kvm/mmu/mmu.c          | 14 +++++++-------
- arch/x86/kvm/mmu/mmu_internal.h |  6 ++----
- arch/x86/kvm/mmu/mmutrace.h     |  2 +-
- arch/x86/kvm/mmu/tdp_mmu.c      |  8 ++++----
- arch/x86/kvm/mmu/tdp_mmu.h      |  2 +-
- 5 files changed, 15 insertions(+), 17 deletions(-)
+ arch/x86/include/asm/pgtable_types.h | 12 ++++--------
+ include/linux/mm_types.h             |  9 +++++++++
+ 2 files changed, 13 insertions(+), 8 deletions(-)
 
-diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-index f7668a32721d..11cef930d5ed 100644
---- a/arch/x86/kvm/mmu/mmu.c
-+++ b/arch/x86/kvm/mmu/mmu.c
-@@ -2498,14 +2498,14 @@ static bool __kvm_mmu_prepare_zap_page(struct kvm *kvm,
+diff --git a/arch/x86/include/asm/pgtable_types.h b/arch/x86/include/asm/pgtable_types.h
+index aa174fed3a71..bdf41325f089 100644
+--- a/arch/x86/include/asm/pgtable_types.h
++++ b/arch/x86/include/asm/pgtable_types.h
+@@ -518,14 +518,10 @@ extern void native_pagetable_init(void);
+ struct seq_file;
+ extern void arch_report_meminfo(struct seq_file *m);
  
- 	if (sp->unsync)
- 		kvm_unlink_unsync_page(kvm, sp);
--	if (!sp->root_count) {
-+	if (!refcount_read(&sp->root_refcount)) {
- 		/* Count self */
- 		(*nr_zapped)++;
+-enum pg_level {
+-	PG_LEVEL_NONE,
+-	PG_LEVEL_4K,
+-	PG_LEVEL_2M,
+-	PG_LEVEL_1G,
+-	PG_LEVEL_512G,
+-	PG_LEVEL_NUM
+-};
++#define PG_LEVEL_4K	PG_LEVEL_PTE
++#define PG_LEVEL_2M	PG_LEVEL_PMD
++#define PG_LEVEL_1G	PG_LEVEL_PUD
++#define PG_LEVEL_512G	PG_LEVEL_P4D
  
- 		/*
- 		 * Already invalid pages (previously active roots) are not on
- 		 * the active page list.  See list_del() in the "else" case of
--		 * !sp->root_count.
-+		 * !sp->root_refcount.
- 		 */
- 		if (sp->role.invalid)
- 			list_add(&sp->link, invalid_list);
-@@ -2515,7 +2515,7 @@ static bool __kvm_mmu_prepare_zap_page(struct kvm *kvm,
- 	} else {
- 		/*
- 		 * Remove the active root from the active page list, the root
--		 * will be explicitly freed when the root_count hits zero.
-+		 * will be explicitly freed when the root_refcount hits zero.
- 		 */
- 		list_del(&sp->link);
+ #ifdef CONFIG_PROC_FS
+ extern void update_page_count(int level, unsigned long pages);
+diff --git a/include/linux/mm_types.h b/include/linux/mm_types.h
+index 500e536796ca..0445d0673afe 100644
+--- a/include/linux/mm_types.h
++++ b/include/linux/mm_types.h
+@@ -1003,4 +1003,13 @@ enum fault_flag {
  
-@@ -2570,7 +2570,7 @@ static void kvm_mmu_commit_zap_page(struct kvm *kvm,
- 	kvm_flush_remote_tlbs(kvm);
+ typedef unsigned int __bitwise zap_flags_t;
  
- 	list_for_each_entry_safe(sp, nsp, invalid_list, link) {
--		WARN_ON(!sp->role.invalid || sp->root_count);
-+		WARN_ON(!sp->role.invalid || refcount_read(&sp->root_refcount));
- 		kvm_mmu_free_shadow_page(sp);
- 	}
- }
-@@ -2593,7 +2593,7 @@ static unsigned long kvm_mmu_zap_oldest_mmu_pages(struct kvm *kvm,
- 		 * Don't zap active root pages, the page itself can't be freed
- 		 * and zapping it will just force vCPUs to realloc and reload.
- 		 */
--		if (sp->root_count)
-+		if (refcount_read(&sp->root_refcount))
- 			continue;
- 
- 		unstable = __kvm_mmu_prepare_zap_page(kvm, sp, &invalid_list,
-@@ -3481,7 +3481,7 @@ static void mmu_free_root_page(struct kvm *kvm, hpa_t *root_hpa,
- 
- 	if (is_tdp_mmu_page(sp))
- 		kvm_tdp_mmu_put_root(kvm, sp, false);
--	else if (!--sp->root_count && sp->role.invalid)
-+	else if (refcount_dec_and_test(&sp->root_refcount) && sp->role.invalid)
- 		kvm_mmu_prepare_zap_page(kvm, sp, invalid_list);
- 
- 	*root_hpa = INVALID_PAGE;
-@@ -3592,7 +3592,7 @@ static hpa_t mmu_alloc_root(struct kvm_vcpu *vcpu, gfn_t gfn, int quadrant,
- 	WARN_ON_ONCE(role.arch.direct && role.arch.has_4_byte_gpte);
- 
- 	sp = kvm_mmu_get_shadow_page(vcpu, gfn, role);
--	++sp->root_count;
-+	refcount_inc(&sp->root_refcount);
- 
- 	return __pa(sp->spt);
- }
-diff --git a/arch/x86/kvm/mmu/mmu_internal.h b/arch/x86/kvm/mmu/mmu_internal.h
-index c1a379fba24d..fd4990c8b0e9 100644
---- a/arch/x86/kvm/mmu/mmu_internal.h
-+++ b/arch/x86/kvm/mmu/mmu_internal.h
-@@ -87,10 +87,8 @@ struct kvm_mmu_page {
- 	u64 *shadowed_translation;
- 
- 	/* Currently serving as active root */
--	union {
--		int root_count;
--		refcount_t tdp_mmu_root_count;
--	};
-+	refcount_t root_refcount;
++enum pg_level {
++	PG_LEVEL_NONE,
++	PG_LEVEL_PTE,
++	PG_LEVEL_PMD,
++	PG_LEVEL_PUD,
++	PG_LEVEL_P4D,
++	PG_LEVEL_NUM
++};
 +
- 	unsigned int unsync_children;
- 	union {
- 		struct kvm_rmap_head parent_ptes; /* rmap pointers to parent sptes */
-diff --git a/arch/x86/kvm/mmu/mmutrace.h b/arch/x86/kvm/mmu/mmutrace.h
-index 6a4a43b90780..ffd10ce3eae3 100644
---- a/arch/x86/kvm/mmu/mmutrace.h
-+++ b/arch/x86/kvm/mmu/mmutrace.h
-@@ -19,7 +19,7 @@
- 	__entry->mmu_valid_gen = sp->mmu_valid_gen;	\
- 	__entry->gfn = sp->gfn;				\
- 	__entry->role = sp->role.word;			\
--	__entry->root_count = sp->root_count;		\
-+	__entry->root_count = refcount_read(&sp->root_refcount);	\
- 	__entry->unsync = sp->unsync;
- 
- #define KVM_MMU_PAGE_PRINTK() ({				        \
-diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
-index fc0b87ceb1ea..34d674080170 100644
---- a/arch/x86/kvm/mmu/tdp_mmu.c
-+++ b/arch/x86/kvm/mmu/tdp_mmu.c
-@@ -130,7 +130,7 @@ void kvm_tdp_mmu_put_root(struct kvm *kvm, struct kvm_mmu_page *root,
- {
- 	kvm_lockdep_assert_mmu_lock_held(kvm, shared);
- 
--	if (!refcount_dec_and_test(&root->tdp_mmu_root_count))
-+	if (!refcount_dec_and_test(&root->root_refcount))
- 		return;
- 
- 	/*
-@@ -158,7 +158,7 @@ void kvm_tdp_mmu_put_root(struct kvm *kvm, struct kvm_mmu_page *root,
- 	 * zap the root because a root cannot go from invalid to valid.
- 	 */
- 	if (!kvm_tdp_root_mark_invalid(root)) {
--		refcount_set(&root->tdp_mmu_root_count, 1);
-+		refcount_set(&root->root_refcount, 1);
- 
- 		/*
- 		 * Zapping the root in a worker is not just "nice to have";
-@@ -316,7 +316,7 @@ hpa_t kvm_tdp_mmu_get_vcpu_root_hpa(struct kvm_vcpu *vcpu)
- 	root = tdp_mmu_alloc_sp(vcpu);
- 	tdp_mmu_init_sp(root, NULL, 0, role);
- 
--	refcount_set(&root->tdp_mmu_root_count, 1);
-+	refcount_set(&root->root_refcount, 1);
- 
- 	spin_lock(&kvm->arch.tdp_mmu_pages_lock);
- 	list_add_rcu(&root->link, &kvm->arch.tdp_mmu_roots);
-@@ -883,7 +883,7 @@ static void tdp_mmu_zap_root(struct kvm *kvm, struct kvm_mmu_page *root,
- 	 * and lead to use-after-free as zapping a SPTE triggers "writeback" of
- 	 * dirty accessed bits to the SPTE's associated struct page.
- 	 */
--	WARN_ON_ONCE(!refcount_read(&root->tdp_mmu_root_count));
-+	WARN_ON_ONCE(!refcount_read(&root->root_refcount));
- 
- 	kvm_lockdep_assert_mmu_lock_held(kvm, shared);
- 
-diff --git a/arch/x86/kvm/mmu/tdp_mmu.h b/arch/x86/kvm/mmu/tdp_mmu.h
-index 18d3719f14ea..19d3153051a3 100644
---- a/arch/x86/kvm/mmu/tdp_mmu.h
-+++ b/arch/x86/kvm/mmu/tdp_mmu.h
-@@ -14,7 +14,7 @@ hpa_t kvm_tdp_mmu_get_vcpu_root_hpa(struct kvm_vcpu *vcpu);
- 
- __must_check static inline bool kvm_tdp_mmu_get_root(struct kvm_mmu_page *root)
- {
--	return refcount_inc_not_zero(&root->tdp_mmu_root_count);
-+	return refcount_inc_not_zero(&root->root_refcount);
- }
- 
- void kvm_tdp_mmu_put_root(struct kvm *kvm, struct kvm_mmu_page *root,
+ #endif /* _LINUX_MM_TYPES_H */
 -- 
 2.39.0.rc1.256.g54fd8350bd-goog
 

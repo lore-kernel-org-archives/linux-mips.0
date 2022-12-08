@@ -2,92 +2,92 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 44182C63709
-	for <linux-mips@archiver.kernel.org>; Thu,  8 Dec 2022 11:00:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 53D8EC4332F
+	for <linux-mips@archiver.kernel.org>; Thu,  8 Dec 2022 11:27:08 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229753AbiLHLAN (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 8 Dec 2022 06:00:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35596 "EHLO
+        id S229530AbiLHL1H (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 8 Dec 2022 06:27:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57262 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229786AbiLHK7y (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Thu, 8 Dec 2022 05:59:54 -0500
-Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 4A04B5C77D;
-        Thu,  8 Dec 2022 02:52:55 -0800 (PST)
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1p3EW2-0002wy-01; Thu, 08 Dec 2022 11:52:34 +0100
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 99685C2487; Thu,  8 Dec 2022 11:36:47 +0100 (CET)
-Date:   Thu, 8 Dec 2022 11:36:47 +0100
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Geert Uytterhoeven <geert+renesas@glider.be>
-Cc:     =?iso-8859-1?Q?Beno=EEt?= Cousson <bcousson@baylibre.com>,
-        Tony Lindgren <tony@atomide.com>,
-        Joel Stanley <joel@jms.id.au>,
-        Andrew Jeffery <andrew@aj.id.au>,
-        Avi Fishman <avifishman70@gmail.com>,
-        Tomer Maimon <tmaimon77@gmail.com>,
-        Tali Perry <tali.perry1@gmail.com>,
-        Patrick Venture <venture@google.com>,
-        Nancy Yuen <yuenn@google.com>,
-        Benjamin Fair <benjaminfair@google.com>,
-        Dinh Nguyen <dinguyen@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Stefan Agner <stefan@agner.ch>, Li Yang <leoyang.li@nxp.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        UNGLinuxDriver@microchip.com,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-aspeed@lists.ozlabs.org, openbmc@lists.ozlabs.org,
-        linux-renesas-soc@vger.kernel.org, linux-mips@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH 10/11] MIPS: mscc: jaguar2: Fix pca9545 i2c-mux node names
-Message-ID: <20221208103647.GB8388@alpha.franken.de>
-References: <cover.1669999298.git.geert+renesas@glider.be>
- <5eb01c348c5dd90887b33e866555df8f1067e9df.1669999298.git.geert+renesas@glider.be>
+        with ESMTP id S229972AbiLHL1G (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Thu, 8 Dec 2022 06:27:06 -0500
+X-Greylist: delayed 61 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 08 Dec 2022 03:27:05 PST
+Received: from h2.cmg1.smtp.forpsi.com (h2.cmg1.smtp.forpsi.com [81.2.195.163])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17306318
+        for <linux-mips@vger.kernel.org>; Thu,  8 Dec 2022 03:27:04 -0800 (PST)
+Received: from lenoch ([91.218.190.200])
+        by cmgsmtp with ESMTPSA
+        id 3F2Lp3OeBPm6C3F2PpJ7vx; Thu, 08 Dec 2022 12:26:01 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=triops.cz; s=f2019;
+        t=1670498761; bh=LN1T34mwUqz5rlSJTi6bRhKPfe5rEZQ16cXZkGXMi5U=;
+        h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type;
+        b=gD+2oqJRvMkqJmrokuC3sRhRatEJnJDEh+rxWEF0cKXjJYCZdscz0lxB7flqBu6uS
+         YIa9ofALXBkHOcAJQkg6R9vIg97NZEUE2sWAxyRLLEDggSBzqHy5wR4BO5KBz4Yp5f
+         JEXg4QiqJeGj+OTDgdcNPoF1pBDt2Ck5PveCV9Cy0dPLc8rdCnwrsZrEb4t12vfLNu
+         18/++QT8tVq/kUK+YkZouLM2mJFs+mNsxBRmz+2VsA8oU44IG4m0B0SOpJf5iVMW2E
+         uvPx3qTB2M5CQRPR0Eeh/0OLmVjoByueojLpf0j239INbTuHjEahuktJcGK5No4xmQ
+         SdvGSzbGGmUCw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=triops.cz; s=f2019;
+        t=1670498761; bh=LN1T34mwUqz5rlSJTi6bRhKPfe5rEZQ16cXZkGXMi5U=;
+        h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type;
+        b=gD+2oqJRvMkqJmrokuC3sRhRatEJnJDEh+rxWEF0cKXjJYCZdscz0lxB7flqBu6uS
+         YIa9ofALXBkHOcAJQkg6R9vIg97NZEUE2sWAxyRLLEDggSBzqHy5wR4BO5KBz4Yp5f
+         JEXg4QiqJeGj+OTDgdcNPoF1pBDt2Ck5PveCV9Cy0dPLc8rdCnwrsZrEb4t12vfLNu
+         18/++QT8tVq/kUK+YkZouLM2mJFs+mNsxBRmz+2VsA8oU44IG4m0B0SOpJf5iVMW2E
+         uvPx3qTB2M5CQRPR0Eeh/0OLmVjoByueojLpf0j239INbTuHjEahuktJcGK5No4xmQ
+         SdvGSzbGGmUCw==
+Date:   Thu, 8 Dec 2022 12:25:57 +0100
+From:   Ladislav Michl <oss-lists@triops.cz>
+To:     linux-mips@vger.kernel.org
+Cc:     Aaro Koskinen <aaro.koskinen@iki.fi>
+Subject: [PATCH] MIPS: OCTEON: warn only once if deprecated link status is
+ being used
+Message-ID: <Y5HJxeWqJFK0oWyS@lenoch>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <5eb01c348c5dd90887b33e866555df8f1067e9df.1669999298.git.geert+renesas@glider.be>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+X-CMAE-Envelope: MS4wfGcd758Z/N2fSs+aJsIR8cSZ7JGvxnBQAZsZnCGpgp0krvnn5/0dIj4HiXMiVlQZgcBIRJ1GmAyyD+rqHRvXCYEH8z5m5+pTaYqiwEPU9ClrqxrQvMQf
+ XT+9+qEv1qqxdhaKmmadMV5BuB6gbOFTp3xzrR12Rngb5uz5wQju53ldPvzYG9bgCcX+Op+BHOdny9M893tAynzhTaT/0ljajbs=
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Fri, Dec 02, 2022 at 05:49:25PM +0100, Geert Uytterhoeven wrote:
-> "make dtbs_check":
-> 
->     arch/mips/boot/dts/mscc/jaguar2_pcb110.dtb: pca9545@70: $nodename:0: 'pca9545@70' does not match '^(i2c-?)?mux'
-> 	    From schema: Documentation/devicetree/bindings/i2c/i2c-mux-pca954x.yaml
->     arch/mips/boot/dts/mscc/jaguar2_pcb110.dtb: pca9545@70: Unevaluated properties are not allowed ('#address-cells', '#size-cells', 'i2c@0', 'i2c@1', 'i2c@2', 'i2c@3' were unexpected)
-> 	    From schema: Documentation/devicetree/bindings/i2c/i2c-mux-pca954x.yaml
->     ...
-> 
-> Fix this by renaming PCA9545 nodes to "i2c-mux", to match the I2C bus
-> multiplexer/switch DT bindings and the Generic Names Recommendation in
-> the Devicetree Specification.
-> 
-> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-> ---
->  arch/mips/boot/dts/mscc/jaguar2_pcb110.dts | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+From: Ladislav Michl <ladis@linux-mips.org>
 
-applied to mips-next.
+Avoid flooding kernel log with warnings.
 
-Thomas.
+Fixes: 2c0756d306c2 ("MIPS: OCTEON: warn if deprecated link status is being used")
+Signed-off-by: Ladislav Michl <ladis@linux-mips.org>
+---
+ arch/mips/cavium-octeon/executive/cvmx-helper-board.c | 2 +-
+ arch/mips/cavium-octeon/executive/cvmx-helper.c       | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
+diff --git a/arch/mips/cavium-octeon/executive/cvmx-helper-board.c b/arch/mips/cavium-octeon/executive/cvmx-helper-board.c
+index d09d0769f549..0fd9ac76eb74 100644
+--- a/arch/mips/cavium-octeon/executive/cvmx-helper-board.c
++++ b/arch/mips/cavium-octeon/executive/cvmx-helper-board.c
+@@ -211,7 +211,7 @@ union cvmx_helper_link_info __cvmx_helper_board_link_get(int ipd_port)
+ {
+ 	union cvmx_helper_link_info result;
+ 
+-	WARN(!octeon_is_simulation(),
++	WARN_ONCE(!octeon_is_simulation(),
+ 	     "Using deprecated link status - please update your DT");
+ 
+ 	/* Unless we fix it later, all links are defaulted to down */
+diff --git a/arch/mips/cavium-octeon/executive/cvmx-helper.c b/arch/mips/cavium-octeon/executive/cvmx-helper.c
+index 6f49fd9be1f3..9abfc4bf9bd8 100644
+--- a/arch/mips/cavium-octeon/executive/cvmx-helper.c
++++ b/arch/mips/cavium-octeon/executive/cvmx-helper.c
+@@ -1096,7 +1096,7 @@ union cvmx_helper_link_info cvmx_helper_link_get(int ipd_port)
+ 		if (index == 0)
+ 			result = __cvmx_helper_rgmii_link_get(ipd_port);
+ 		else {
+-			WARN(1, "Using deprecated link status - please update your DT");
++			WARN_ONCE(1, "Using deprecated link status - please update your DT");
+ 			result.s.full_duplex = 1;
+ 			result.s.link_up = 1;
+ 			result.s.speed = 1000;
 -- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+2.32.0

@@ -2,102 +2,71 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3E4B0C4708E
-	for <linux-mips@archiver.kernel.org>; Fri,  9 Dec 2022 14:05:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8564AC04FDE
+	for <linux-mips@archiver.kernel.org>; Fri,  9 Dec 2022 15:51:52 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230119AbiLIOFx (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 9 Dec 2022 09:05:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33660 "EHLO
+        id S230476AbiLIPvv (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 9 Dec 2022 10:51:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40142 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229964AbiLIOFV (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Fri, 9 Dec 2022 09:05:21 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD1A176143;
-        Fri,  9 Dec 2022 06:05:19 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 26115B8288B;
-        Fri,  9 Dec 2022 14:05:16 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 86F9DC432C7;
-        Fri,  9 Dec 2022 14:05:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1670594714;
-        bh=VZG0mIrnpRYSLmP6v+aPSsXqssZN+JxVOB0YXZxJtgI=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vBPCGJ3ydqDKIQkyQiwvx3XBhQ8eYOJI6wjL7rjJduxKvPdzdS5X9EDTcy8k6PxC5
-         r2hMYtQ9BPJ38yd40f/xppo09a5tY54ooaCwgv7bHH17qds/lSpnelHcNAThBeuhz/
-         BrjSw3OEW9PtnBWPMuErakJhKSnTpv80Bhu0T8z2VQr2n8I3BcENT58IDq8oT3n6n1
-         tTRDCz/w4Ra6GZ99RJmFy8Jv1kiZqdKtmbldZW9z01mSQohFyIF2INRmpczT8jgrZz
-         Z0gTo7WjVwGW5u9NI6AhHt2Jgp4Dh0CnSQTmD8OJ6yRG7UYz6t6F6Ux+of7yFXakxf
-         EI6muweRqyVcg==
-Received: from johan by xi.lan with local (Exim 4.94.2)
-        (envelope-from <johan+linaro@kernel.org>)
-        id 1p3e0J-0000SD-QA; Fri, 09 Dec 2022 15:05:31 +0100
-From:   Johan Hovold <johan+linaro@kernel.org>
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
-        platform-driver-x86@vger.kernel.org,
+        with ESMTP id S230493AbiLIPv0 (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Fri, 9 Dec 2022 10:51:26 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2BC88E5A0;
+        Fri,  9 Dec 2022 07:51:02 -0800 (PST)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1670601061;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=eKbpp0wjvU8vo2TqfIGB4ga/ChhXXFfrT2TPlT3D1Nk=;
+        b=sledpoQWuT20D5jkQAu4GGNLhHWxtTvIUw6G9s12oo9IQPcXAFQh+IhDHLlmCjd/V5CyRn
+        GNObOg/5CVjpPrtLIgMgyJBL4IWAuR74SbroIc/cT+iGgKcLCeqI68bpd/E/eS3h0qMoQI
+        /SdVBtzyg7YWZnHftbvc+iHnzKyWwqwHFC3FIw9ANKAHwYCqa3ANwIqL3qmry2nuC7xwym
+        F+iPBGLir6UYXcQlWEpVl8p7B1wpHYs1AV98dTh4Sh/FsimVS55vXTGdYIe/HK9l1SgOVv
+        fgm72hkHD/C32NLQ+m7OMEDQTXSbLisJupZrbmlt8mYlyfXwv4lVax8tFBvFWQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1670601061;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=eKbpp0wjvU8vo2TqfIGB4ga/ChhXXFfrT2TPlT3D1Nk=;
+        b=hetIRQeDX4NGfdgSfbTAKYfGFcw/k9tfmfap29Z8THL1ipf8rXNMZ5nTv7bNsdIRnNik00
+        rJERnr0NlQ75uZCA==
+To:     Johan Hovold <johan+linaro@kernel.org>,
+        Marc Zyngier <maz@kernel.org>
+Cc:     x86@kernel.org, platform-driver-x86@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
         linux-kernel@vger.kernel.org,
         Johan Hovold <johan+linaro@kernel.org>
-Subject: [PATCH v3 18/19] irqchip/mvebu-odmi: Use irq_domain_create_hierarchy()
-Date:   Fri,  9 Dec 2022 15:01:49 +0100
-Message-Id: <20221209140150.1453-19-johan+linaro@kernel.org>
-X-Mailer: git-send-email 2.37.4
+Subject: Re: [PATCH v3 00/19] irqdomain: fix mapping race and clean up locking
 In-Reply-To: <20221209140150.1453-1-johan+linaro@kernel.org>
 References: <20221209140150.1453-1-johan+linaro@kernel.org>
+Date:   Fri, 09 Dec 2022 16:51:00 +0100
+Message-ID: <87o7scd197.ffs@tglx>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Use the irq_domain_create_hierarchy() helper to create the hierarchical
-domain, which both serves as documentation and avoids poking at
-irqdomain internals.
+Johan!
 
-Signed-off-by: Johan Hovold <johan+linaro@kernel.org>
----
- drivers/irqchip/irq-mvebu-odmi.c | 13 +++++++------
- 1 file changed, 7 insertions(+), 6 deletions(-)
+On Fri, Dec 09 2022 at 15:01, Johan Hovold wrote:
+> Parallel probing (e.g. due to asynchronous probing) of devices that
+> share interrupts can currently result in two mappings for the same
+> hardware interrupt to be created.
+>
+> This series fixes this mapping race and clean up the irqdomain locking
+> so that in the end the global irq_domain_mutex is only used for managing
+> the likewise global irq_domain_list, while domain operations (e.g.
+> IRQ allocations) use per-domain (hierarchy) locking.
 
-diff --git a/drivers/irqchip/irq-mvebu-odmi.c b/drivers/irqchip/irq-mvebu-odmi.c
-index dc4145abdd6f..108091533e10 100644
---- a/drivers/irqchip/irq-mvebu-odmi.c
-+++ b/drivers/irqchip/irq-mvebu-odmi.c
-@@ -161,7 +161,7 @@ static struct msi_domain_info odmi_msi_domain_info = {
- static int __init mvebu_odmi_init(struct device_node *node,
- 				  struct device_node *parent)
- {
--	struct irq_domain *inner_domain, *plat_domain;
-+	struct irq_domain *parent_domain, *inner_domain, *plat_domain;
- 	int ret, i;
- 
- 	if (of_property_read_u32(node, "marvell,odmi-frames", &odmis_count))
-@@ -197,16 +197,17 @@ static int __init mvebu_odmi_init(struct device_node *node,
- 		}
- 	}
- 
--	inner_domain = irq_domain_create_linear(of_node_to_fwnode(node),
--						odmis_count * NODMIS_PER_FRAME,
--						&odmi_domain_ops, NULL);
-+	parent_domain = irq_find_host(parent);
-+
-+	inner_domain = irq_domain_create_hierarchy(parent_domain, 0,
-+						   odmis_count * NODMIS_PER_FRAME,
-+						   of_node_to_fwnode(node),
-+						   &odmi_domain_ops, NULL);
- 	if (!inner_domain) {
- 		ret = -ENOMEM;
- 		goto err_unmap;
- 	}
- 
--	inner_domain->parent = irq_find_host(parent);
--
- 	plat_domain = platform_msi_create_irq_domain(of_node_to_fwnode(node),
- 						     &odmi_msi_domain_info,
- 						     inner_domain);
--- 
-2.37.4
+Can you please rebase that on top of:
 
+  git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git irq/core
+
+Thanks,
+
+        tglx

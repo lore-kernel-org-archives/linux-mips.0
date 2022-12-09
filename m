@@ -2,76 +2,56 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 499BEC04FDE
-	for <linux-mips@archiver.kernel.org>; Fri,  9 Dec 2022 19:53:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C4FBAC4332F
+	for <linux-mips@archiver.kernel.org>; Fri,  9 Dec 2022 22:42:40 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229951AbiLITxc (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 9 Dec 2022 14:53:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44302 "EHLO
+        id S229538AbiLIWmj (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 9 Dec 2022 17:42:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42614 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229573AbiLITxc (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Fri, 9 Dec 2022 14:53:32 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E2CB6B9B4;
-        Fri,  9 Dec 2022 11:53:31 -0800 (PST)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1670615608;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=2vgxfx/i9kYzvSYspcEHbEEAe0+JN+WukTrnXgbW7wY=;
-        b=XKzurZMWPYfNQs5p8r67n9C0fgxSEHaIAiIYu/Pm1lg48sdwqnhkn7Y2m3GuOimHVqKjrT
-        ExmvtetajHnYz97oVeQAOvkw3z1eae3xJ8sx9j70aX09BNoxePCV8udcvC7y+vIIUakS36
-        OWtUNrj6pdrnhfqkkPTX+snB/fsYiNOIUw5Mmbnk1m46riCRmHpPtHf0xLZTf/3kafxUqf
-        YrXJBT47POQZw2h3PdydAVknVXAzL0VBZkyMjrGwJjeVCzaNxHzE7Qr8YQlRCM59LRO5lt
-        Lix9aNxms4sEB1lbL3qh5NstHDLK5l0TMpwN3f9bKZKbdfy95YTcsus4A0WW1Q==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1670615608;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=2vgxfx/i9kYzvSYspcEHbEEAe0+JN+WukTrnXgbW7wY=;
-        b=LCJeDN4TmIQw3S7soch4Gm6FTqCBtP4eFmM6foQtsFJOjidIKlDvmHtRnJ887106JJAxya
-        XIbQS2UyZJnBAuBQ==
-To:     Johan Hovold <johan@kernel.org>
-Cc:     Johan Hovold <johan+linaro@kernel.org>,
-        Marc Zyngier <maz@kernel.org>, x86@kernel.org,
-        platform-driver-x86@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 00/19] irqdomain: fix mapping race and clean up locking
-In-Reply-To: <Y5NfZ3bKTA15MWpu@hovoldconsulting.com>
-References: <20221209140150.1453-1-johan+linaro@kernel.org>
- <87o7scd197.ffs@tglx> <Y5NfZ3bKTA15MWpu@hovoldconsulting.com>
-Date:   Fri, 09 Dec 2022 20:53:28 +0100
-Message-ID: <87lengcq13.ffs@tglx>
+        with ESMTP id S229512AbiLIWmj (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Fri, 9 Dec 2022 17:42:39 -0500
+Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 4A1A06267
+        for <linux-mips@vger.kernel.org>; Fri,  9 Dec 2022 14:42:36 -0800 (PST)
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1p3m4f-0005PX-01; Fri, 09 Dec 2022 23:42:33 +0100
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id 0D0D2C2491; Fri,  9 Dec 2022 23:41:58 +0100 (CET)
+Date:   Fri, 9 Dec 2022 23:41:57 +0100
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Ladislav Michl <oss-lists@triops.cz>
+Cc:     linux-mips@vger.kernel.org, Aaro Koskinen <aaro.koskinen@iki.fi>
+Subject: Re: [PATCH] MIPS: OCTEON: warn only once if deprecated link status
+ is being used
+Message-ID: <20221209224157.GB4928@alpha.franken.de>
+References: <Y5HJxeWqJFK0oWyS@lenoch>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Y5HJxeWqJFK0oWyS@lenoch>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Fri, Dec 09 2022 at 17:16, Johan Hovold wrote:
-> On Fri, Dec 09, 2022 at 04:51:00PM +0100, Thomas Gleixner wrote:
->> On Fri, Dec 09 2022 at 15:01, Johan Hovold wrote:
->> > Parallel probing (e.g. due to asynchronous probing) of devices that
->> > share interrupts can currently result in two mappings for the same
->> > hardware interrupt to be created.
->> >
->> > This series fixes this mapping race and clean up the irqdomain locking
->> > so that in the end the global irq_domain_mutex is only used for managing
->> > the likewise global irq_domain_list, while domain operations (e.g.
->> > IRQ allocations) use per-domain (hierarchy) locking.
->> 
->> Can you please rebase that on top of:
->> 
->>   git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git irq/core
->
-> The series is based on next-20221208 which should contain that branch in
-> its current state if I'm not mistaken.
->
-> I just tried applying it on top of irq/core and did not notice any
-> problems.
+On Thu, Dec 08, 2022 at 12:25:57PM +0100, Ladislav Michl wrote:
+> From: Ladislav Michl <ladis@linux-mips.org>
+> 
+> Avoid flooding kernel log with warnings.
+> 
+> Fixes: 2c0756d306c2 ("MIPS: OCTEON: warn if deprecated link status is being used")
+> Signed-off-by: Ladislav Michl <ladis@linux-mips.org>
+> ---
+>  arch/mips/cavium-octeon/executive/cvmx-helper-board.c | 2 +-
+>  arch/mips/cavium-octeon/executive/cvmx-helper.c       | 2 +-
+>  2 files changed, 2 insertions(+), 2 deletions(-)
 
-Sorry for the noise. Pilot error. -ETOOMANYBRANCHES :)
+applied to mips-next.
+
+Thomas.
+
+-- 
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]

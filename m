@@ -2,143 +2,169 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BD0F9C001B2
-	for <linux-mips@archiver.kernel.org>; Thu,  8 Dec 2022 19:41:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 37717C4332F
+	for <linux-mips@archiver.kernel.org>; Fri,  9 Dec 2022 02:19:05 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229968AbiLHTlZ (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 8 Dec 2022 14:41:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57584 "EHLO
+        id S229867AbiLICTD (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 8 Dec 2022 21:19:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45754 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230031AbiLHTki (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Thu, 8 Dec 2022 14:40:38 -0500
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A9F4389CC
-        for <linux-mips@vger.kernel.org>; Thu,  8 Dec 2022 11:40:19 -0800 (PST)
-Received: by mail-yb1-xb49.google.com with SMTP id 195-20020a2505cc000000b0071163981d18so2516937ybf.13
-        for <linux-mips@vger.kernel.org>; Thu, 08 Dec 2022 11:40:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=tkNWRrDgNwNzqtgNwpxgN/DTrlBNLFki8K4gCSCF3lo=;
-        b=Jeo44smHjnYpe2uFwUmmqKcQe01M1Ze9ea9B4uMIU5ntQkPkvB3Zc4thQ3NAsyCsM6
-         njB6ARB2/jwqICHZjLWARLgqlROkOE8dE/Nlmg+cddGuhCUdBUCre+Ape5y9bEn1AH0m
-         QTNzlGiRNxTFT7VabJhOsxdhwjPofjbAJZ1PCWCHwTDUYPBouSQgwVrjYVu7xNslHehx
-         1YNfAbWUQ8IDhGJBMwkGg2u+vzD4HHd3ftPyCOz4Y9YrRbPnwANRWTtpcXIgRmYN6yTS
-         OWchh5FCUZ+isGuwUpxCxPxLXQApiy8OtxlS5CtERREsPneeyxTaL8RKmGDzc7PdZpGa
-         /plg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=tkNWRrDgNwNzqtgNwpxgN/DTrlBNLFki8K4gCSCF3lo=;
-        b=M9q3nqSoTnMfiDjo178DNVr72F9AKllM0aBdQHe33evsDIg0rQCox59St472r5WNC+
-         3QmS5p2OYCaBLRRzmsTf9QPB3Q0c9HiVKjGKeIj1Xt1mv93j6XFXBiuWBP2DmR8JSPnH
-         kAu8Q70HOlyOJVbreqExXvYpbSPYlF9ew77zWN1ACmdhxABCEKKfiSU3m8XwqhNAIC95
-         AiJyTH77nckCqcaw/VCmVsiFNgIQ4JBuuHJQD/D/0FfYrqvAzy2hT+Uil+Xnp/QsNT18
-         wst7YbiBHTDT8vBBvEIAVixWI5GaI0585f1MO6Bi7wzcMe74AaWYsTXMcz9gE+lEe8Q5
-         DVDA==
-X-Gm-Message-State: ANoB5plzLqbXrgc8TX3U1K0dpiZUN//exUqU56EjBQtxLlJXt+9skenx
-        dPu9/LPD6ZdGTmDioRsv0TqkYxRSLH0SmQ==
-X-Google-Smtp-Source: AA0mqf6e/93WEAJhtz+5cgWWhhHXPdHpxdnhitMPWlmfhQ9qhBNIB9WsoIo+5YOGLZdc8lSlrXS+3/eouLkxig==
-X-Received: from dmatlack-n2d-128.c.googlers.com ([fda3:e722:ac3:cc00:20:ed76:c0a8:1309])
- (user=dmatlack job=sendgmr) by 2002:a25:818d:0:b0:70e:58c:1c8b with SMTP id
- p13-20020a25818d000000b0070e058c1c8bmr2474845ybk.229.1670528408086; Thu, 08
- Dec 2022 11:40:08 -0800 (PST)
-Date:   Thu,  8 Dec 2022 11:38:56 -0800
-In-Reply-To: <20221208193857.4090582-1-dmatlack@google.com>
-Mime-Version: 1.0
-References: <20221208193857.4090582-1-dmatlack@google.com>
-X-Mailer: git-send-email 2.39.0.rc1.256.g54fd8350bd-goog
-Message-ID: <20221208193857.4090582-37-dmatlack@google.com>
-Subject: [RFC PATCH 36/37] KVM: x86/mmu: Move is_tdp_mmu_page() to mmu_internal.h
-From:   David Matlack <dmatlack@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Marc Zyngier <maz@kernel.org>, James Morse <james.morse@arm.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
-        Anup Patel <anup@brainfault.org>,
-        Atish Patra <atishp@atishpatra.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Sean Christopherson <seanjc@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Matlack <dmatlack@google.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Nadav Amit <namit@vmware.com>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        "Liam R. Howlett" <Liam.Howlett@Oracle.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Peter Xu <peterx@redhat.com>, xu xin <cgel.zte@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>, Yu Zhao <yuzhao@google.com>,
-        Colin Cross <ccross@google.com>,
-        Hugh Dickins <hughd@google.com>,
-        Ben Gardon <bgardon@google.com>,
-        Mingwei Zhang <mizhang@google.com>,
-        Krish Sadhukhan <krish.sadhukhan@oracle.com>,
-        Ricardo Koller <ricarkol@google.com>,
-        Jing Zhang <jingzhangos@google.com>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        kvmarm@lists.cs.columbia.edu, linux-mips@vger.kernel.org,
-        kvm@vger.kernel.org, kvm-riscv@lists.infradead.org,
-        linux-riscv@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
+        with ESMTP id S229795AbiLICS6 (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Thu, 8 Dec 2022 21:18:58 -0500
+Received: from loongson.cn (mail.loongson.cn [114.242.206.163])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 99A784C24A;
+        Thu,  8 Dec 2022 18:18:56 -0800 (PST)
+Received: from loongson.cn (unknown [117.133.84.183])
+        by gateway (Coremail) with SMTP id _____8Bx1vAPm5JjvE4EAA--.9895S3;
+        Fri, 09 Dec 2022 10:18:55 +0800 (CST)
+Received: from [192.168.1.2] (unknown [117.133.84.183])
+        by localhost.localdomain (Coremail) with SMTP id AQAAf8BxHuIMm5JjrckoAA--.34956S3;
+        Fri, 09 Dec 2022 10:18:54 +0800 (CST)
+Message-ID: <ee87dbf5-2338-1bc0-9d70-ea0b1a5582a0@loongson.cn>
+Date:   Fri, 9 Dec 2022 10:18:51 +0800
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.5.0
+Subject: Re: [PATCH v1] irqchip: loongson-liointc: add hierarchy irq support
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     Huacai Chen <chenhuacai@kernel.org>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jianmin Lv <lvjianmin@loongson.cn>
+References: <20221207014555.22465-1-zhuyinbo@loongson.cn>
+ <874ju7tz4r.wl-maz@kernel.org>
+ <cfbfe5c1-2dbb-a057-b56c-13900ba8c953@loongson.cn>
+ <86ilinlbf2.wl-maz@kernel.org>
+From:   Yinbo Zhu <zhuyinbo@loongson.cn>
+In-Reply-To: <86ilinlbf2.wl-maz@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: AQAAf8BxHuIMm5JjrckoAA--.34956S3
+X-CM-SenderInfo: 52kx5xhqerqz5rrqw2lrqou0/
+X-Coremail-Antispam: 1Uk129KBjvJXoWxZr4kWFykGw4fZw48JF47Jwb_yoWrWrW5pF
+        W8Ja12kF45Jr17urya9r1DX3sIyryrtrWqvw4fKF9rZFyDJrn7CF18ZF1q9r1Fkr18G3WU
+        ZF1UGFW3uF15AaDanT9S1TB71UUUUUDqnTZGkaVYY2UrUUUUj1kv1TuYvTs0mT0YCTnIWj
+        qI5I8CrVACY4xI64kE6c02F40Ex7xfYxn0WfASr-VFAUDa7-sFnT9fnUUIcSsGvfJTRUUU
+        bxxFc2x0x2IEx4CE42xK8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AKwVWUGVWUXwA2ocxC64
+        kIII0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20xvE14v26r4j6ryUM28E
+        F7xvwVC0I7IYx2IY6xkF7I0E14v26r4j6F4UM28EF7xvwVC2z280aVAFwI0_Gr1j6F4UJw
+        A2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gr1j6F4UJwAS0I0E0xvYzxvE52x082IY62kv0487
+        Mc804VCY07AIYIkI8VC2zVCFFI0UMc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2
+        IY67AKxVWUXVWUAwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0
+        Y48IcVAKI48JMxk0xIA0c2IEe2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l42xK82IY6x
+        8ErcxFaVAv8VWrMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4l
+        x2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrw
+        CI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI
+        42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z2
+        80aVCY1x0267AKxVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvjxUzFApUUUUU
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Move is_tdp_mmu_page(), which is x86-specific, into mmu_internal.h. This
-prepares for moving tdp_mmu.h into common code.
 
-No functional change intended.
+在 2022/12/7 19:07, Marc Zyngier 写道:
+> On Wed, 07 Dec 2022 10:50:56 +0000,
+> Yinbo Zhu <zhuyinbo@loongson.cn> wrote:
+>>
+>> 在 2022/12/7 16:08, Marc Zyngier 写道:
+>>> On Wed, 07 Dec 2022 01:45:55 +0000,
+>>> Yinbo Zhu <zhuyinbo@loongson.cn> wrote:
+>>>> When the irq of hierarchical interrupt chip was routed to liointc
+>>>> that asked liointc driver to support hierarchy irq and this patch
+>>>> was to add such support.
+>>>>
+>>>> In addition, this patch only consider dts, and acpi hierarchy irq
+>>>> support will be added later as required.
+>>>>
+>>>> Signed-off-by: Yinbo Zhu <zhuyinbo@loongson.cn>
+>>>> ---
+>>>>    drivers/irqchip/irq-loongson-liointc.c | 31 ++++++++++++++++++++++++++
+>>>>    1 file changed, 31 insertions(+)
+>>>>
+>>>> diff --git a/drivers/irqchip/irq-loongson-liointc.c b/drivers/irqchip/irq-loongson-liointc.c
+>>>> index 0da8716f8f24..58e43a2cd02e 100644
+>>>> --- a/drivers/irqchip/irq-loongson-liointc.c
+>>>> +++ b/drivers/irqchip/irq-loongson-liointc.c
+>>>> @@ -177,6 +177,32 @@ static const struct irq_domain_ops acpi_irq_gc_ops = {
+>>>>    	.xlate	= liointc_domain_xlate,
+>>>>    };
+>>>>    +#ifdef	CONFIG_IRQ_DOMAIN_HIERARCHY
+>>>> +static int liointc_domain_alloc(struct irq_domain *domain, unsigned int virq,
+>>>> +				unsigned int nr_irqs, void *arg)
+>>>> +{
+>>>> +	int i, ret;
+>>>> +	irq_hw_number_t hwirq;
+>>>> +	unsigned int type = IRQ_TYPE_NONE;
+>>>> +	struct irq_fwspec *fwspec = arg;
+>>>> +
+>>>> +	ret = irq_domain_translate_twocell(domain, fwspec, &hwirq, &type);
+>>>> +	if (ret)
+>>>> +		return ret;
+>>>> +
+>>>> +	for (i = 0; i < nr_irqs; i++)
+>>>> +		irq_map_generic_chip(domain, virq + i, hwirq + i);
+>>>> +
+>>>> +	return 0;
+>>>> +}
+>>>> +
+>>>> +static const struct irq_domain_ops of_irq_gc_ops = {
+>>>> +	.translate	= irq_domain_translate_twocell,
+>>>> +	.alloc		= liointc_domain_alloc,
+>>>> +	.free		= irq_domain_free_irqs_top,
+>>>> +};
+>>>> +#endif
+>>>> +
+>>>>    static int liointc_init(phys_addr_t addr, unsigned long size, int revision,
+>>>>    		struct fwnode_handle *domain_handle, struct device_node *node)
+>>>>    {
+>>>> @@ -218,8 +244,13 @@ static int liointc_init(phys_addr_t addr, unsigned long size, int revision,
+>>>>    		domain = irq_domain_create_linear(domain_handle, LIOINTC_CHIP_IRQ,
+>>>>    					&acpi_irq_gc_ops, priv);
+>>>>    	else
+>>>> +#ifdef	CONFIG_IRQ_DOMAIN_HIERARCHY
+>>>> +		domain = irq_domain_create_linear(domain_handle, LIOINTC_CHIP_IRQ,
+>>>> +					&of_irq_gc_ops, priv);
+>>>> +#else
+>>>>    		domain = irq_domain_create_linear(domain_handle, LIOINTC_CHIP_IRQ,
+>>>>    					&irq_generic_chip_ops, priv);
+>>>> +#endif
+>>> Two things:
+>>>
+>>> - Why do we need three calls to create the same domains depending on
+>>>     what firmware is used and kernel configuration?
+>> yes, It depend on firmeware and kernel configuration.
+> Read again:
+>
+> why do we need 3 different calls to irq_domain_create_linear when you
+> can *indirect* them with a pointer to the correct structure?
+It was not considered comprehensively before, one call is enough.
+>
+>>> - who is going to decide whether to select the
+>>>     CONFIG_IRQ_DOMAIN_HIERARCHY option?
+>> The latest gpio driver will select  CONFIG_IRQ_DOMAIN_HIERARCHY
+> Then why do we need two different behaviours? The same kernel should
+> run everywhere.
 
-Signed-off-by: David Matlack <dmatlack@google.com>
----
- arch/x86/kvm/mmu/mmu_internal.h | 9 +++++++++
- arch/x86/kvm/mmu/tdp_mmu.h      | 9 ---------
- 2 files changed, 9 insertions(+), 9 deletions(-)
+in fact, A behaviours can handle it, and I will add proper change
 
-diff --git a/arch/x86/kvm/mmu/mmu_internal.h b/arch/x86/kvm/mmu/mmu_internal.h
-index df815cb84bd2..51aef9624521 100644
---- a/arch/x86/kvm/mmu/mmu_internal.h
-+++ b/arch/x86/kvm/mmu/mmu_internal.h
-@@ -147,4 +147,13 @@ void *mmu_memory_cache_alloc(struct kvm_mmu_memory_cache *mc);
- void track_possible_nx_huge_page(struct kvm *kvm, struct kvm_mmu_page *sp);
- void untrack_possible_nx_huge_page(struct kvm *kvm, struct kvm_mmu_page *sp);
- 
-+#ifdef CONFIG_X86_64
-+static inline bool is_tdp_mmu_page(struct kvm_mmu_page *sp)
-+{
-+	return !sp->arch.shadow_mmu_page;
-+}
-+#else
-+static inline bool is_tdp_mmu_page(struct kvm_mmu_page *sp) { return false; }
-+#endif
-+
- #endif /* __KVM_X86_MMU_INTERNAL_H */
-diff --git a/arch/x86/kvm/mmu/tdp_mmu.h b/arch/x86/kvm/mmu/tdp_mmu.h
-index 897608be7f75..607c1417abd1 100644
---- a/arch/x86/kvm/mmu/tdp_mmu.h
-+++ b/arch/x86/kvm/mmu/tdp_mmu.h
-@@ -71,13 +71,4 @@ int kvm_tdp_mmu_get_walk(struct kvm_vcpu *vcpu, u64 addr, u64 *sptes,
- u64 *kvm_tdp_mmu_fast_pf_get_last_sptep(struct kvm_vcpu *vcpu, u64 addr,
- 					u64 *spte);
- 
--#ifdef CONFIG_X86_64
--static inline bool is_tdp_mmu_page(struct kvm_mmu_page *sp)
--{
--	return !sp->arch.shadow_mmu_page;
--}
--#else
--static inline bool is_tdp_mmu_page(struct kvm_mmu_page *sp) { return false; }
--#endif
--
- #endif /* __KVM_X86_MMU_TDP_MMU_H */
--- 
-2.39.0.rc1.256.g54fd8350bd-goog
+in v2.
+
+>
+>>> I'd really like to see a statement from the Loongson folks about what
+>>> this whole DT stuff is all about. AFAICT, the core ACPICA stuff isn't
+>>> even fully merged (i.e. we still rely on arch-specific hacks).
+>> The support of dts is mainly for Loongson embedded chips, such as
+>> LoongArch Loongson-2 series SoC.  and it use dts to descripte device
+>> and don't support acpi.
+> That doesn't answer my question. Please have a *consistent* approach
+> to your interrupt handling, and work with your ACPI colleagues.
+
+I have a talk with ACPI colleagues that the dts and acpi can keep consistent
+
+approach and I will add it in v2.
+
+>
+> 	M.
+>
 

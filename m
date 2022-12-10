@@ -2,80 +2,144 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D4ED2C4332F
-	for <linux-mips@archiver.kernel.org>; Fri,  9 Dec 2022 22:42:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 04C49C4708D
+	for <linux-mips@archiver.kernel.org>; Sat, 10 Dec 2022 01:07:49 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229512AbiLIWms (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 9 Dec 2022 17:42:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42860 "EHLO
+        id S229661AbiLJBHs (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 9 Dec 2022 20:07:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46946 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229563AbiLIWmq (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Fri, 9 Dec 2022 17:42:46 -0500
-Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 0E7BD165B1;
-        Fri,  9 Dec 2022 14:42:44 -0800 (PST)
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1p3m4f-0005PX-00; Fri, 09 Dec 2022 23:42:33 +0100
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 56DCFC248E; Fri,  9 Dec 2022 23:41:40 +0100 (CET)
-Date:   Fri, 9 Dec 2022 23:41:40 +0100
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Anastasia Belova <abelova@astralinux.ru>
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Ralf Baechle <ralf@linux-mips.org>,
-        Maxime Bizon <mbizon@freebox.fr>, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org, lvc-project@linuxtesting.org
-Subject: Re: [PATCH v3] MIPS: BCM63xx: Add check for NULL for clk in
- clk_enable
-Message-ID: <20221209224140.GA4928@alpha.franken.de>
-References: <20221209100550.30470-1-abelova@astralinux.ru>
+        with ESMTP id S229478AbiLJBHr (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Fri, 9 Dec 2022 20:07:47 -0500
+Received: from mail-yw1-x112c.google.com (mail-yw1-x112c.google.com [IPv6:2607:f8b0:4864:20::112c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55BF011801
+        for <linux-mips@vger.kernel.org>; Fri,  9 Dec 2022 17:07:45 -0800 (PST)
+Received: by mail-yw1-x112c.google.com with SMTP id 00721157ae682-381662c78a9so73588197b3.7
+        for <linux-mips@vger.kernel.org>; Fri, 09 Dec 2022 17:07:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=I2GE1P9MKB5IEXA78EjWjeGIw+fkI4b001mr77BECX4=;
+        b=Zz3MbiPPY1SHgc009qCyxMWHtFmspb6G3A0xzYMbttsp31nw0tSX4tppfrsPzNCIF6
+         D7iZa+LTmezBYiYDtrAmYb1oC/fxxbCFXDl2x8spANHzzlsqXtea4DYwT5ZwgelbohYZ
+         089wInVCX/E1aq3PKr5hxN9tOHp0A9lXSiHrUb2tvZFE38B1gNZClvkVFMpcr2O4jVlr
+         9bJlXy7+oFG62lvofRFDdTYYtZ7NVMOdXK6E5CeH1XdzyTgiFtvIInk1zIkAc8vPoxQI
+         9f4u+ARi+JH2GcPIweLO4Jw0BwgiylZumo9BqAOOnhTCwihz86Bnx7mwqeF8hZA9e/Yn
+         C+tQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=I2GE1P9MKB5IEXA78EjWjeGIw+fkI4b001mr77BECX4=;
+        b=gqpKCLXXu9SzeHUoW49JcCKufiIciobge2q8vb/m2b6TWRnoX+mPtRw9W9CBLhuWBY
+         o7rWj84V5M6E1uwJLdneJmmyZGIN3iko84asI3aaqkYr4d1NDtnom8430JR8U+hR7QB9
+         cVanqngNxqxt01HuNwvkNKwyRsE6Osk+/iB9KU6seLtj/RqI9fYcz34esa7BW7IfI3Zg
+         1vK0P4Ho9yVaDKtFEvz1HarSqpJ0yYxGqwdaJnRuhY9yGXljnQfA/jdSz6i8yob74ROD
+         +3okkTmmLBzTlH90xdx+hcieAJDCaxs+HYplJ+m6BH98dBzdqVRXNqQW2i8GnM12BfaR
+         clvQ==
+X-Gm-Message-State: ANoB5pkgXxI39B8wrMxb/w1TnirsdYmHi9oDsksWKMpFkrLXSrUG+FrG
+        31+IyAomupF+tStalzS4fBgc5B9gj8JX04A+WmiRNA==
+X-Google-Smtp-Source: AA0mqf7NPTsewklw8WtJjMQ5b4Z4DLLXvnPd6MTLSGVUxVce2NMxMIFrAkSkhyQdcwqQG9PUK7aUBAXAR0abljqhaUo=
+X-Received: by 2002:a81:1401:0:b0:3b0:b9aa:46eb with SMTP id
+ 1-20020a811401000000b003b0b9aa46ebmr2248873ywu.150.1670634464404; Fri, 09 Dec
+ 2022 17:07:44 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20221209100550.30470-1-abelova@astralinux.ru>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20221208193857.4090582-1-dmatlack@google.com> <Y5OHVzBSHPmAq2FO@google.com>
+In-Reply-To: <Y5OHVzBSHPmAq2FO@google.com>
+From:   David Matlack <dmatlack@google.com>
+Date:   Fri, 9 Dec 2022 17:07:18 -0800
+Message-ID: <CALzav=c328M1jgApAEEnz5B6h_pr5w07VpcMx0kSg0MtJjAf2w@mail.gmail.com>
+Subject: Re: [RFC PATCH 00/37] KVM: Refactor the KVM/x86 TDP MMU into common code
+To:     Oliver Upton <oliver.upton@linux.dev>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
+        Anup Patel <anup@brainfault.org>,
+        Atish Patra <atishp@atishpatra.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Sean Christopherson <seanjc@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Nadav Amit <namit@vmware.com>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        "Liam R. Howlett" <Liam.Howlett@oracle.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Peter Xu <peterx@redhat.com>, xu xin <cgel.zte@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>, Yu Zhao <yuzhao@google.com>,
+        Colin Cross <ccross@google.com>,
+        Hugh Dickins <hughd@google.com>,
+        Ben Gardon <bgardon@google.com>,
+        Mingwei Zhang <mizhang@google.com>,
+        Krish Sadhukhan <krish.sadhukhan@oracle.com>,
+        Ricardo Koller <ricarkol@google.com>,
+        Jing Zhang <jingzhangos@google.com>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        kvmarm@lists.cs.columbia.edu, linux-mips@vger.kernel.org,
+        kvm@vger.kernel.org, kvm-riscv@lists.infradead.org,
+        linux-riscv@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Fri, Dec 09, 2022 at 01:05:50PM +0300, Anastasia Belova wrote:
-> Check clk for NULL before calling clk_enable_unlocked where clk
-> is dereferenced. There is such check in other implementations
-> of clk_enable.
-> 
-> Found by Linux Verification Center (linuxtesting.org) with SVACE.
-> 
-> Fixes: e7300d04bd08 ("MIPS: BCM63xx: Add support for the Broadcom BCM63xx family of SOCs.")
-> Signed-off-by: Anastasia Belova <abelova@astralinux.ru>
-> ---
-> v2: Fix errors reported by kernel test robot <lkp@intel.com>.
-> v3: Merge several patches into single one.
->  arch/mips/bcm63xx/clk.c | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/arch/mips/bcm63xx/clk.c b/arch/mips/bcm63xx/clk.c
-> index 6e6756e8fa0a..86a6e2590866 100644
-> --- a/arch/mips/bcm63xx/clk.c
-> +++ b/arch/mips/bcm63xx/clk.c
-> @@ -361,6 +361,8 @@ static struct clk clk_periph = {
->   */
->  int clk_enable(struct clk *clk)
->  {
-> +	if (!clk)
-> +		return 0;
->  	mutex_lock(&clocks_mutex);
->  	clk_enable_unlocked(clk);
->  	mutex_unlock(&clocks_mutex);
-> -- 
-> 2.30.2
+On Fri, Dec 9, 2022 at 11:07 AM Oliver Upton <oliver.upton@linux.dev> wrote:
+>
+> On Thu, Dec 08, 2022 at 11:38:20AM -0800, David Matlack wrote:
+>
+> >    Also do we want to keep "TDP" or switch
+> >    to something more familiar across architectures (e.g. ARM and RISC-V
+> >    both use "Stage-2")?
+>
+> As it relates to guest memory management I don't see much of an issue
+> with it, TBH. It is sufficiently arch-generic and gets the point across.
+>
+> Beyond that I think it really depends on the scope of the common code.
+>
+> To replace the arm64 table walkers we will need to use it for stage-1
+> tables.
 
-applied to mips-next.
+Speaking of, have ARM folks ever discussed deduplicating the KVM/ARM
+stage-1 code with the Linux stage-1 table code (<linux/pgtable.h>),
+which is already architecture-neutral? It seems backwards for us to
+build out an architecture-neutral stage-1 walker in KVM when one
+already exists.
 
-Thomas.
+For example, arch/arm64/kvm/mmu.c:get_user_mapping_size() looks like
+it could be reimplemented using <linux/pgtable.h>, rather than using
+KVM code. In fact that's what we do for walking stage-1 page tables in
+KVM/x86. Take a look at
+arch/x86/kvm/mmu/mmu.c:host_pfn_mapping_level(). I bet we could move
+that somewhere in mm/ so that it could be shared across KVM/x86 and
+KVM/ARM.
 
--- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+> I'm only hand-waving at the cover letter and need to do more
+> reading, but is it possible to accomplish some division:
+>
+>  - A set of generic table walkers that implement common operations, like
+>    map and unmap. Names and types at this layer wouldn't be
+>    virt-specific.
+>
+>  - Memory management for KVM guests that uses the table walker library,
+>    which we can probably still call the TDP MMU.
+>
+> Certainly this doesn't need to be addressed in the first series, as the x86
+> surgery is enough on its own. Nonetheless, it is probably worthwhile to
+> get the conversation started about how this code can actually be used by
+> the other arches.
+
+Yup, we'll need some sort of split like that in order to integrate
+with KVM/ARM, since the hyp can't access struct kvm, work_queues, etc.
+in tdp_mmu.c. I don't think we'll need that split for KVM/RISC-V
+though. So for the sake of incremental progress I'm not planning on
+doing any of that refactoring preemptively. Plus it should be possible
+to keep the TDP MMU API constant when the internal implementation
+eventually gets split up. i.e. I don't forsee it creating a bunch of
+churn down the road.

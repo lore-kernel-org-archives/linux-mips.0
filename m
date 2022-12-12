@@ -2,180 +2,93 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 93A97C4332F
-	for <linux-mips@archiver.kernel.org>; Mon, 12 Dec 2022 22:30:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id ECF44C00145
+	for <linux-mips@archiver.kernel.org>; Mon, 12 Dec 2022 22:32:58 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233788AbiLLWak (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 12 Dec 2022 17:30:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36964 "EHLO
+        id S233744AbiLLWc5 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 12 Dec 2022 17:32:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38804 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229872AbiLLWai (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Mon, 12 Dec 2022 17:30:38 -0500
-Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 171D11AF1C
-        for <linux-mips@vger.kernel.org>; Mon, 12 Dec 2022 14:30:35 -0800 (PST)
-Received: by mail-pg1-x530.google.com with SMTP id 82so9241676pgc.0
-        for <linux-mips@vger.kernel.org>; Mon, 12 Dec 2022 14:30:35 -0800 (PST)
+        with ESMTP id S233780AbiLLWcy (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Mon, 12 Dec 2022 17:32:54 -0500
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11276BCA1
+        for <linux-mips@vger.kernel.org>; Mon, 12 Dec 2022 14:32:52 -0800 (PST)
+Received: by mail-ed1-x533.google.com with SMTP id c66so15222838edf.5
+        for <linux-mips@vger.kernel.org>; Mon, 12 Dec 2022 14:32:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=wDIyaaZP6Sx38V8+GZMMaiCN2LYY75lyx3Qk2zggJjY=;
-        b=AsH0HY9ES//YrqC7aVzHEC/CizcXUu59joNA74umGoNmkMvxLqS0wCffNxDluDxyKo
-         EAqtkusIPRaWsTDrdjn9/llFRUygCmGbtm2vECAI+G08t237WcwWOvji02G3iAivLRkK
-         XtmAOzz+XqYsq2GDP6d9iwh7sTltvZI9fxPTUGYZWGyPiUekYEmb0NyP6jBH0aSpM1QX
-         0tz4LyerHFPtS+ochp41KGvy5c0kQvu3ZBbrMJ4Y8A8WkC/7Ukk+1JDMNDpCdZbv+wUw
-         sB78NjP1UXJBhqkf6gNp2CwQYVDksQEYfo+cDNGLFgrv7+7q0LQlQIxLu11hgJt4KH7o
-         881Q==
+        d=linaro.org; s=google;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=+Pjg7gEEIEiqG8qk2Ag4JmG2Wml3Gf+/D4oy6vrZzZk=;
+        b=xag3aT0psNGFTj6HoRP4mFN+Tv5GrB35lv/JUZKmQhtLPegCrvZwdDUSxVPaFKqFjX
+         jfxG7SrIBf3aEEfd1m8fT66MnkCbuaZaWRDbvFxAxtX2CsLOnRFN2uMTh+cKrftASE6K
+         nJ9u8XyOfoV4IDC8AqdJkUp9mz+OUNsGslBhJDTLNx+V7d+5LsZjZZz+AHD7q2QWRwJR
+         keEvy2cYu0H9a+jJlpX+2oDA6HJNi5Nq2if1Qu4L4gxi/nnhwBoH1Jbs5CfeEDWAFasa
+         ASctHEKRJFsKHmd6BVJiEYtT25v/8RODzt7/eNCOZb6fJ3puDG/7gs7xFWC7y2DfRSJV
+         +vMg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=wDIyaaZP6Sx38V8+GZMMaiCN2LYY75lyx3Qk2zggJjY=;
-        b=cd4JGscIxmk+bpjR/xID33NqSLywoo0VkSkJGx1aLU5zBgq2RLyLEp2k9oH9c6kyVt
-         2uEN+UYaEDDkc9g7W1W0K3Rpye1tH9QwKjSs7F0EhiyQhESDMy69OmKyQlfw6SW8XSLn
-         cBtuWPPH25XJ/PZpTJ4hnpHzxJuG8feMMzPhh+O0knWSGr0UgrAfx2id0xEgoq4bZRsk
-         xelX5UUNYQdrXWO92wtMsyZzj4WDvQ5gMHHe12FlE2Fu40PD7LnRCPkxP8DoS7vDsCQw
-         LwZoeW3BF536qG3vGB9WWakq5tLy/mnaQilSAavpWKmKFbsdfP6fHh/zEe5Hz29R4dsY
-         0mPQ==
-X-Gm-Message-State: ANoB5pktTBNDvhmn+KSHAsDTKdkeooEk04KMt2uclut/OXq0phcSW8Cg
-        ilZzNNNVKBfsQTO3kAQ60kSRkw==
-X-Google-Smtp-Source: AA0mqf74FM6U4ztV3LqdnGXHnnnSC43RbbAIDoSZcE8bsILwNcSluJ+18YStm6rGNZYFVpgbA3RNLg==
-X-Received: by 2002:aa7:9a1c:0:b0:574:3e1d:72dd with SMTP id w28-20020aa79a1c000000b005743e1d72ddmr18119342pfj.19.1670884234340;
-        Mon, 12 Dec 2022 14:30:34 -0800 (PST)
-Received: from google.com (223.103.125.34.bc.googleusercontent.com. [34.125.103.223])
-        by smtp.gmail.com with ESMTPSA id q13-20020aa7842d000000b0056d98e31439sm6499921pfn.140.2022.12.12.14.30.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Dec 2022 14:30:33 -0800 (PST)
-Date:   Mon, 12 Dec 2022 14:30:28 -0800
-From:   David Matlack <dmatlack@google.com>
-To:     Ben Gardon <bgardon@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
-        Anup Patel <anup@brainfault.org>,
-        Atish Patra <atishp@atishpatra.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Sean Christopherson <seanjc@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Nadav Amit <namit@vmware.com>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        "Liam R. Howlett" <Liam.Howlett@oracle.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Peter Xu <peterx@redhat.com>, xu xin <cgel.zte@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>, Yu Zhao <yuzhao@google.com>,
-        Colin Cross <ccross@google.com>,
-        Hugh Dickins <hughd@google.com>,
-        Mingwei Zhang <mizhang@google.com>,
-        Krish Sadhukhan <krish.sadhukhan@oracle.com>,
-        Ricardo Koller <ricarkol@google.com>,
-        Jing Zhang <jingzhangos@google.com>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        kvmarm@lists.cs.columbia.edu, linux-mips@vger.kernel.org,
-        kvm@vger.kernel.org, kvm-riscv@lists.infradead.org,
-        linux-riscv@lists.infradead.org
-Subject: Re: [RFC PATCH 10/37] KVM: MMU: Move struct kvm_page_fault to common
- code
-Message-ID: <Y5erhA1QOBhqnO5C@google.com>
-References: <20221208193857.4090582-1-dmatlack@google.com>
- <20221208193857.4090582-11-dmatlack@google.com>
- <CANgfPd-DaxszBe6vLQGe=LKNKx8bDX-AC_30qLVAyYkQXwN7WA@mail.gmail.com>
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=+Pjg7gEEIEiqG8qk2Ag4JmG2Wml3Gf+/D4oy6vrZzZk=;
+        b=Po6iOq3r4zXAi5oCkvsjJSW8oh233K6BVwIDDNiJLmD5uFnWVTl4h7k0uKhCXwbdXX
+         K+n5sfs4maAc2SmIlavN1RtfuN7nvphJsbF3fTbxHlX+ghXqOv0MJHt13jOQX6fvmh7f
+         Eqr4bQqEfPACEqWQivmH+L6iFxW5lVd8OhWlw+ZMDhrgosNk6THmNu3hbEVc0sVpiH0f
+         zX1zOWpPKm/99YqvRp8sNSWxQ4n0suZ5i+NUuyp7Tdlw1ccKASLBQnxe5Nhcv60sOHmL
+         Aaf3mIphgplA68f66DAnZdFd2t7URFOlH+s5o5sqXja7A/NBUi4PMiTHwypthfAtTm5q
+         jDbw==
+X-Gm-Message-State: ANoB5plD5EgPIBihxpos/QmDqWzXvFzSmAYYIfk4jjS4zFzAaHTuF0r2
+        hF3RuhF9g6flFPPptgQ/6KVmQQ==
+X-Google-Smtp-Source: AA0mqf4dgq6Z+VUlK2J2S80+mq9mLtLqx77Gpw8++bCFzvwCrmOS21zVC/w8NXL3b0+mwn2Zu0jkNg==
+X-Received: by 2002:aa7:db91:0:b0:461:9075:4161 with SMTP id u17-20020aa7db91000000b0046190754161mr14410616edt.15.1670884370561;
+        Mon, 12 Dec 2022 14:32:50 -0800 (PST)
+Received: from [192.168.1.115] ([185.126.107.38])
+        by smtp.gmail.com with ESMTPSA id m15-20020a50930f000000b00463597d2c25sm4368051eda.74.2022.12.12.14.32.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 12 Dec 2022 14:32:50 -0800 (PST)
+Message-ID: <6509898d-a16a-7202-f650-0426936ecc34@linaro.org>
+Date:   Mon, 12 Dec 2022 23:32:48 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CANgfPd-DaxszBe6vLQGe=LKNKx8bDX-AC_30qLVAyYkQXwN7WA@mail.gmail.com>
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.5.1
+Subject: Re: [PATCH v3 10/19] irqdomain: Clean up irq_domain_push/pop_irq()
+Content-Language: en-US
+To:     Johan Hovold <johan+linaro@kernel.org>,
+        Marc Zyngier <maz@kernel.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
+        platform-driver-x86@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20221209140150.1453-1-johan+linaro@kernel.org>
+ <20221209140150.1453-11-johan+linaro@kernel.org>
+From:   =?UTF-8?Q?Philippe_Mathieu-Daud=c3=a9?= <philmd@linaro.org>
+In-Reply-To: <20221209140150.1453-11-johan+linaro@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Mon, Dec 12, 2022 at 10:24:31AM -0800, Ben Gardon wrote:
-> On Thu, Dec 8, 2022 at 11:39 AM David Matlack <dmatlack@google.com> wrote:
-> >
-> > Move struct kvm_page_fault to common code. This will be used in a future
-> > commit to move the TDP MMU to common code.
-> >
-> > No functional change intended.
-> >
-> > Signed-off-by: David Matlack <dmatlack@google.com>
-> > ---
-[...]
-> > diff --git a/include/kvm/mmu_types.h b/include/kvm/mmu_types.h
-> > index a9da33d4baa8..9f0ca920bf68 100644
-> > --- a/include/kvm/mmu_types.h
-> > +++ b/include/kvm/mmu_types.h
-> > @@ -66,4 +66,48 @@ struct kvm_mmu_page {
-> >         struct kvm_mmu_page_arch arch;
-> >  };
-> >
-> > +struct kvm_page_fault {
-> > +       /* The raw faulting address. */
-> > +       const gpa_t addr;
-> > +
-> > +       /* Whether the fault was synthesized to prefetch a mapping. */
-> > +       const bool prefetch;
-> > +
-> > +       /* Information about the cause of the fault. */
-> > +       const bool write;
-> > +       const bool exec;
-> > +
-> > +       /* Shifted addr, or result of guest page table walk if shadow paging. */
-> > +       gfn_t gfn;
+On 9/12/22 15:01, Johan Hovold wrote:
+> The irq_domain_push_irq() interface is used to add a new (outmost) level
+> to a hierarchical domain after IRQs have been allocated.
 > 
-> Is this redundant to have in common code? If we're not doing common
-> shadow paging, then this is just addr shifted. Would this be better
-> placed in the arch specific struct?
-
-Yes it's redundant but it is actually used by the TDP MMU, unlike @addr.
-So if anything I would rather move @addr to kvm_page_fault_arch.
-
+> Possibly due to differing mental images of hierarchical domains, the
+> names used for the irq_data variables make these functions much harder
+> to understand than what they need to be.
 > 
-> > +
-> > +       /* The memslot that contains @gfn. May be NULL. */
-> > +       struct kvm_memory_slot *slot;
-> > +
-> > +       /* Maximum page size that can be created for this fault. */
-> > +       u8 max_level;
-> > +
-> > +       /*
-> > +        * Page size that can be created based on the max_level and the page
-> > +        * size used by the host mapping.
-> > +        */
-> > +       u8 req_level;
-> > +
-> > +       /* Final page size that will be created. */
-> > +       u8 goal_level;
-> > +
-> > +       /*
-> > +        * The value of kvm->mmu_invalidate_seq before fetching the host
-> > +        * mapping. Used to verify that the host mapping has not changed
-> > +        * after grabbing the MMU lock.
-> > +        */
-> > +       unsigned long mmu_seq;
+> Rename the struct irq_data pointer to the data embedded in the
+> descriptor as simply 'irq_data' and refer to the data allocated by this
+> interface as 'parent_irq_data' so that the names reflect how
+> hierarchical domains are implemented.
 > 
-> Should this be ifdef'ed with  KVM_ARCH_WANT_MMU_NOTIFIER?
+> Signed-off-by: Johan Hovold <johan+linaro@kernel.org>
+> ---
+>   kernel/irq/irqdomain.c | 65 +++++++++++++++++++++---------------------
+>   1 file changed, 32 insertions(+), 33 deletions(-)
 
-I'll have to take a closer look, but probably yes.
+Reviewed-by: Philippe Mathieu-Daudé <philmd@linaro.org>
 
-> 
-> > +
-> > +       /* Information about the host mapping. */
-> > +       kvm_pfn_t pfn;
-> > +       hva_t hva;
-> > +       bool map_writable;
-> > +
-> > +       struct kvm_page_fault_arch arch;
-> > +};
-> > +
-> >  #endif /* !__KVM_MMU_TYPES_H */
-> > --
-> > 2.39.0.rc1.256.g54fd8350bd-goog
-> >

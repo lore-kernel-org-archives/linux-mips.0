@@ -2,103 +2,92 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3748EC4332F
-	for <linux-mips@archiver.kernel.org>; Sat, 17 Dec 2022 07:48:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E4380C4332F
+	for <linux-mips@archiver.kernel.org>; Sat, 17 Dec 2022 18:25:21 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229518AbiLQHsN (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Sat, 17 Dec 2022 02:48:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35406 "EHLO
+        id S229851AbiLQSZU (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Sat, 17 Dec 2022 13:25:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36122 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229453AbiLQHsL (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Sat, 17 Dec 2022 02:48:11 -0500
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC0032229F;
-        Fri, 16 Dec 2022 23:48:10 -0800 (PST)
-Received: by mail-wm1-x329.google.com with SMTP id z8-20020a05600c220800b003d33b0bda11so3285531wml.0;
-        Fri, 16 Dec 2022 23:48:10 -0800 (PST)
+        with ESMTP id S229469AbiLQSZT (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Sat, 17 Dec 2022 13:25:19 -0500
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5D98E09D
+        for <linux-mips@vger.kernel.org>; Sat, 17 Dec 2022 10:25:18 -0800 (PST)
+Received: by mail-ej1-x635.google.com with SMTP id fc4so13027926ejc.12
+        for <linux-mips@vger.kernel.org>; Sat, 17 Dec 2022 10:25:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=FCuhVA2QnIxJAItrYIuYngYcscicxz+A2JVO1VvMZCU=;
-        b=fVaNpm0HO3nfen5vzNgP2ZNXG74nbdiS6u8WUcUf1SJv7ih7u4/NEbBxN4pQ5jB8/N
-         GC6PeSLSPyneWpZcKt6kttZVd0X/D1Ak5e7FY20mn0lcDHXjzBxAxyfKs1KYZxahSB28
-         hTw++V6jmg/2MU1n1ZFwDGUJIJBmKjX3hTtV0K+R+BL07LBITOWr6DpHsFfs1IHs95AD
-         +M3apo1wEBbHsTQdOQvnoRdHmI+6td7ui4tYFuKF+9+8WRey9gasiK7GYP8ULb4KrTDt
-         M/LfYaK8lEDVMiWDYCAIdIpMuorr/jM3wFFqNBl5w1iCsNUL6XSP5HNpX7EbT3YtN5fK
-         SeXQ==
+        d=linaro.org; s=google;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=6sjokT3o59YQmhEsW2Y1r40UA0KaXAmerdEu90dROAY=;
+        b=CQdZuISZPwK8T2Igz6EXHHza5LmPrAP3Av2BNIh7xkU0F0I5db0YlLhLzJIMdXtLyR
+         tjq/fF5teRiddgSjlEM4WBAPEilKCqCrDif48dtUX7sJ1fZMpJ6FWdJFNj3+IomUJup/
+         +lA6EMn7FLv/wfrm//S3jhfgdDdvFJLjtcskA16EatZcERedpTFmgwY0Lc9jnZsCjsHN
+         /K86FemMEVFUE4ZLrNL4ox56mq1aJLsONwyR0XXVy4ZkC2koODuYJVqmiFctjH8xPmxT
+         5x0a/t50Ud0g7LaWe7UBonApgk2NwUBNODFe7uV+yoH66++0CRfWQGprnrv9oKFXMnvG
+         kgeg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=FCuhVA2QnIxJAItrYIuYngYcscicxz+A2JVO1VvMZCU=;
-        b=NU6vKsRyMR6iFCQhsf6d5u9/HL9X5gjxgywDrLz7E9UoBT1tGZQkqrkrPEbb+UrMgu
-         ZsbbvzjIfNDAUiHK3G0Z5cxuNrwC0jCs+PFj+0+ZAXoeT62or/mxnA59W4vAPcTGL2St
-         A0Wc8a2+KDxYyBa46Bu+taFhg2WpPACo4Al1V3CUXSWdgl2lSJWi2awPI8A9mh7XNL+U
-         NKlgENSbGCvvIZV8iRghV/UV3r6m7+qHrfGua+lJxjgo4bkKV3FWnLKojV7DVDdFKoz4
-         3XNUEBWcVqVOaZ7rzWIYApRUaRpQrncTlTp5I+4JCrVyEjOrcWT/6YNqjWy5ibo/0gQL
-         ccFA==
-X-Gm-Message-State: ANoB5pkOdmjZeGxHsqiDF0raWm+wEoePMfI8eQGRHEJ8UvliIE4IAhJC
-        LdiQn5j8P23rPQkiPTunwJIQBZ01ltc=
-X-Google-Smtp-Source: AA0mqf4NqcHY0jDhe4xGAhogCnAKfzyMNBPs03tbjCdXeso0tlWjfyuhhZiGMDoHqv0ig9NFBikebA==
-X-Received: by 2002:a05:600c:1e8f:b0:3cf:728e:c224 with SMTP id be15-20020a05600c1e8f00b003cf728ec224mr26909481wmb.6.1671263288526;
-        Fri, 16 Dec 2022 23:48:08 -0800 (PST)
-Received: from localhost.localdomain (188.red-88-10-59.dynamicip.rima-tde.net. [88.10.59.188])
-        by smtp.gmail.com with ESMTPSA id z1-20020a5d6541000000b00241f029e672sm4202749wrv.107.2022.12.16.23.48.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Dec 2022 23:48:07 -0800 (PST)
-From:   Sergio Paracuellos <sergio.paracuellos@gmail.com>
-To:     linux-mips@vger.kernel.org
-Cc:     tsbogend@alpha.franken.de, john@phrozen.org,
-        p.zabel@pengutronix.de, gregkh@linuxfoundation.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] MIPS: ralink: mt7621: avoid to init common ralink reset controller
-Date:   Sat, 17 Dec 2022 08:48:06 +0100
-Message-Id: <20221217074806.3225150-1-sergio.paracuellos@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=6sjokT3o59YQmhEsW2Y1r40UA0KaXAmerdEu90dROAY=;
+        b=e/yM0qQfhqVDg+/uC9L5V2GRX67EOO+BG2q6ARMgeUETmzqChqpX41XwFF1TSxg8f1
+         lPXr0KiNKWxEwfTtxGDt49aPvJ9BF4mPreZFT83PGHFnoFHeZfrOI9Qqy9vkV2uqiwNo
+         Tr2TBCIhuet6W4179cliUwI2/gxa2nY3sMYm2Pc8bwvLjFlJ5F8T5T4CZBqXrLtGQcjT
+         x+aVXoLH6JjQGsJBdxVHrY6trct3RdzS+f+NbeAZFw/0ShbRBinhtyOu8F0FKf2/KkcG
+         X1/wUPT9/QMo5OL0MQQ7pONbWJuAcAkvz3hKPjbLgdAzwNSi2ABHG2ejiB9moRTHD7uN
+         Pl8Q==
+X-Gm-Message-State: ANoB5pkroGZQn/VF5ibc+2cwoBre/Awi3XPPOqMsBzZbzrqs8LCSCDV0
+        GqVIbZcExHepW9+bjgTL+BvdwhfKOlyf+w6oF40=
+X-Google-Smtp-Source: AA0mqf6tsKCjicf5xWmWMZtETvmXoMoLo598/C0L2Sw/QKMWL532MWBl9iftPhMfnmtPg4iCxHd5zQ==
+X-Received: by 2002:a17:906:5a54:b0:7c0:eba2:f9dd with SMTP id my20-20020a1709065a5400b007c0eba2f9ddmr32447381ejc.53.1671301517250;
+        Sat, 17 Dec 2022 10:25:17 -0800 (PST)
+Received: from [192.168.1.115] ([185.126.107.38])
+        by smtp.gmail.com with ESMTPSA id e8-20020a170906314800b007bf988ce9f7sm2235244eje.38.2022.12.17.10.25.15
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 17 Dec 2022 10:25:16 -0800 (PST)
+Message-ID: <e5cdc996-3b0a-5d7e-fc0c-76a2ebce3fb7@linaro.org>
+Date:   Sat, 17 Dec 2022 19:25:14 +0100
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.5.1
+Subject: Re: [PATCH 0/2] Couple of Broadcom L2 driver fixes
+Content-Language: en-US
+To:     Florian Fainelli <f.fainelli@gmail.com>,
+        linux-kernel@vger.kernel.org
+Cc:     Broadcom internal kernel review list 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>, Rob Herring <robh@kernel.org>,
+        Doug Berger <opendmb@gmail.com>,
+        Jason Cooper <jason@lakedaemon.net>,
+        "open list:BROADCOM BMIPS MIPS ARCHITECTURE" 
+        <linux-mips@vger.kernel.org>,
+        "moderated list:BROADCOM BCM7XXX ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>
+References: <20221216230934.2478345-1-f.fainelli@gmail.com>
+From:   =?UTF-8?Q?Philippe_Mathieu-Daud=c3=a9?= <philmd@linaro.org>
+In-Reply-To: <20221216230934.2478345-1-f.fainelli@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Commit 38a8553b0a22 ("clk: ralink: make system controller node a reset provider")
-make system controller a reset provider for mt7621 ralink SoCs. Ralink init code
-also tries to start previous common reset controller which at the end tries to
-find device tree node 'ralink,rt2880-reset'. mt7621 device tree file is not
-using at all this node anymore. Hence avoid to init this common reset controller
-for mt7621 ralink SoCs to avoid 'Failed to find reset controller node' boot
-error trace error.
+On 17/12/22 00:09, Florian Fainelli wrote:
+> This small patch series ensures that IRQ_LEVEL is set for level
+> triggered interupts in both the irq-bcm7120-l2 and the irq-brcmstb-l2
+> driver.
+> 
+> Thanks
+> 
+> Florian Fainelli (2):
+>    irqchip/irq-brcmstb-l2: Set IRQ_LEVEL for level triggered interrupts
+>    irqchip/irq-bcm7120-l2: Set IRQ_LEVEL for level triggered interrupts
 
-Fixes: 64b2d6ffff86 ("staging: mt7621-dts: align resets with binding documentation")
-Signed-off-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
----
- arch/mips/ralink/of.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
-
-diff --git a/arch/mips/ralink/of.c b/arch/mips/ralink/of.c
-index ea8072acf8d9..01c132bc33d5 100644
---- a/arch/mips/ralink/of.c
-+++ b/arch/mips/ralink/of.c
-@@ -21,6 +21,7 @@
- #include <asm/bootinfo.h>
- #include <asm/addrspace.h>
- #include <asm/prom.h>
-+#include <asm/mach-ralink/ralink_regs.h>
- 
- #include "common.h"
- 
-@@ -81,7 +82,8 @@ static int __init plat_of_setup(void)
- 	__dt_register_buses(soc_info.compatible, "palmbus");
- 
- 	/* make sure that the reset controller is setup early */
--	ralink_rst_init();
-+	if (ralink_soc != MT762X_SOC_MT7621AT)
-+		ralink_rst_init();
- 
- 	return 0;
- }
--- 
-2.25.1
+Series:
+Reviewed-by: Philippe Mathieu-Daudé <philmd@linaro.org>
 

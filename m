@@ -2,95 +2,86 @@ Return-Path: <linux-mips-owner@kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8B4F9C4167B
-	for <linux-mips@archiver.kernel.org>; Tue, 20 Dec 2022 22:26:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2EFE8C4332F
+	for <linux-mips@archiver.kernel.org>; Wed, 21 Dec 2022 13:07:02 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234346AbiLTW0H (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 20 Dec 2022 17:26:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37860 "EHLO
+        id S233976AbiLUNHB (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 21 Dec 2022 08:07:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54394 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234116AbiLTWZk (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Tue, 20 Dec 2022 17:25:40 -0500
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DBD121808
-        for <linux-mips@vger.kernel.org>; Tue, 20 Dec 2022 14:23:35 -0800 (PST)
-Received: by mail-ed1-x531.google.com with SMTP id s5so19515867edc.12
-        for <linux-mips@vger.kernel.org>; Tue, 20 Dec 2022 14:23:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=gPinbhCY/qLJ78szXx6XoCTi8eFJr1hKIpZwZPsNAkI=;
-        b=fq75tUZOYmRtie/VdRSdYDMBMHd3x05fl/0pFMn4dzARo3l0ShPWMjfblu/1o/U4l9
-         bT4vgGCH9s1Y5O01GakXDtXaYDJSTQReOe6k6nOVr90H1StE003aJ89tRsgQv9kT7u6B
-         GhmKBfvp5N83Dx+icpPZ7eN9nb6ng5sXxbOXr3GKPahBluQ9e74Gq/GBN0T8XPhQiVNh
-         GvJDZ6PyngAj/TZ0PV6Jp+tnUV3WARjV7LyjU51Y9rJT3FlKClPW/3PjZYI3B0eRCNI9
-         c0pMRUWSt+7OuYuOwoV8GRIMyrCZSavnjiErxMQfeZFaiUPE9Msn258A73/DYRFt2GPm
-         Ke4g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=gPinbhCY/qLJ78szXx6XoCTi8eFJr1hKIpZwZPsNAkI=;
-        b=eIxl+euIEDM7IpQABjRAar3kswSGbhHikLoLnz2I619VZn27NRa8s7JHOjwvCAMhAk
-         Cc1fXuXeD+sQHLmc1rdz4N03yTYIQ9K5RrBejdAdHq8Jt09ixhdc+Y1aQzBwkR87CIwF
-         A8c+yMlfJhF/T+UO6E2BNDjluRfpEeqAC0oWnz0rMMdEkq4IjtWEYl2FEVtu9RJzVjE+
-         l3hItcmktn3HEWRq7qFA4GNcFJumTtJd9EeVVhxuubz1prrr6dd/F3OalzvGpwVyru5W
-         8h/zgn1TmtKV8tOgJDM+SwawAgTd4FlV7egB84wibBAgy8zpiz/e6l3ytzJvfukHJPL9
-         Fzag==
-X-Gm-Message-State: AFqh2kpEPAq+mCHtcguXnW72tFZ1l7HQEI+gMf0Ifrd7JLX+Y0SG9ZCU
-        tiYmJwpko435DuuFq1x8Up7aJAYDsTwM4YHD8bI=
-X-Google-Smtp-Source: AMrXdXtl4ur95attZp35Xum8Dn8CBHUcjpvLAW2ADAXFRmHPh7poUsL/kZW+oo12sUWhF+lgHKu4hA==
-X-Received: by 2002:a05:6402:1f86:b0:461:ed1f:e707 with SMTP id c6-20020a0564021f8600b00461ed1fe707mr3766295edc.17.1671575013752;
-        Tue, 20 Dec 2022 14:23:33 -0800 (PST)
-Received: from [192.168.1.115] ([185.126.107.38])
-        by smtp.gmail.com with ESMTPSA id i5-20020aa7c9c5000000b0046b00a9eeb5sm6140154edt.49.2022.12.20.14.23.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 20 Dec 2022 14:23:33 -0800 (PST)
-Message-ID: <7be2da65-2882-5e25-c492-f4e44dafe468@linaro.org>
-Date:   Tue, 20 Dec 2022 23:23:31 +0100
+        with ESMTP id S229791AbiLUNGz (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 21 Dec 2022 08:06:55 -0500
+Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 3B9D123398;
+        Wed, 21 Dec 2022 05:06:49 -0800 (PST)
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1p7yo2-0008Uq-01; Wed, 21 Dec 2022 14:06:46 +0100
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id 4F28CC254F; Wed, 21 Dec 2022 14:06:39 +0100 (CET)
+Date:   Wed, 21 Dec 2022 14:06:39 +0100
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Sergio Paracuellos <sergio.paracuellos@gmail.com>
+Cc:     linux-mips@vger.kernel.org, john@phrozen.org,
+        p.zabel@pengutronix.de, gregkh@linuxfoundation.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] MIPS: ralink: mt7621: avoid to init common ralink reset
+ controller
+Message-ID: <20221221130639.GB6643@alpha.franken.de>
+References: <20221217074806.3225150-1-sergio.paracuellos@gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.6.0
-Subject: Re: [PATCH] MIPS: dts: bcm63268: Add missing properties to the TWD
- node
-Content-Language: en-US
-To:     Florian Fainelli <f.fainelli@gmail.com>, linux-mips@vger.kernel.org
-Cc:     Broadcom internal kernel review list 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20221220190947.2681192-1-f.fainelli@gmail.com>
-From:   =?UTF-8?Q?Philippe_Mathieu-Daud=c3=a9?= <philmd@linaro.org>
-In-Reply-To: <20221220190947.2681192-1-f.fainelli@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20221217074806.3225150-1-sergio.paracuellos@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On 20/12/22 20:09, Florian Fainelli wrote:
-> We currently have a DTC warning with the current DTS due to the lack of
-> a suitable #address-cells and #size-cells property:
+On Sat, Dec 17, 2022 at 08:48:06AM +0100, Sergio Paracuellos wrote:
+> Commit 38a8553b0a22 ("clk: ralink: make system controller node a reset provider")
+> make system controller a reset provider for mt7621 ralink SoCs. Ralink init code
+> also tries to start previous common reset controller which at the end tries to
+> find device tree node 'ralink,rt2880-reset'. mt7621 device tree file is not
+> using at all this node anymore. Hence avoid to init this common reset controller
+> for mt7621 ralink SoCs to avoid 'Failed to find reset controller node' boot
+> error trace error.
 > 
->    DTC     arch/mips/boot/dts/brcm/bcm63268-comtrend-vr-3032u.dtb
-> arch/mips/boot/dts/brcm/bcm63268.dtsi:115.5-22: Warning (reg_format): /ubus/timer-mfd@10000080/timer@0:reg: property has invalid length (8 bytes) (#address-cells == 2, #size-cells == 1)
-> arch/mips/boot/dts/brcm/bcm63268.dtsi:120.5-22: Warning (reg_format): /ubus/timer-mfd@10000080/watchdog@1c:reg: property has invalid length (8 bytes) (#address-cells == 2, #size-cells == 1)
-> arch/mips/boot/dts/brcm/bcm63268.dtsi:111.4-35: Warning (ranges_format): /ubus/timer-mfd@10000080:ranges: "ranges" property has invalid length (12 bytes) (parent #address-cells == 1, child #address-cells == 2, #size-cells == 1)
-> 
-> Fixes: d3db4b96ab7f ("mips: dts: bcm63268: add TWD block timer")
-> Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+> Fixes: 64b2d6ffff86 ("staging: mt7621-dts: align resets with binding documentation")
+> Signed-off-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
 > ---
->   arch/mips/boot/dts/brcm/bcm63268.dtsi | 2 ++
->   1 file changed, 2 insertions(+)
+>  arch/mips/ralink/of.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+> 
+> diff --git a/arch/mips/ralink/of.c b/arch/mips/ralink/of.c
+> index ea8072acf8d9..01c132bc33d5 100644
+> --- a/arch/mips/ralink/of.c
+> +++ b/arch/mips/ralink/of.c
+> @@ -21,6 +21,7 @@
+>  #include <asm/bootinfo.h>
+>  #include <asm/addrspace.h>
+>  #include <asm/prom.h>
+> +#include <asm/mach-ralink/ralink_regs.h>
+>  
+>  #include "common.h"
+>  
+> @@ -81,7 +82,8 @@ static int __init plat_of_setup(void)
+>  	__dt_register_buses(soc_info.compatible, "palmbus");
+>  
+>  	/* make sure that the reset controller is setup early */
+> -	ralink_rst_init();
+> +	if (ralink_soc != MT762X_SOC_MT7621AT)
+> +		ralink_rst_init();
+>  
+>  	return 0;
+>  }
+> -- 
+> 2.25.1
 
-Reviewed-by: Philippe Mathieu-Daudé <philmd@linaro.org>
+applied.
 
+Thomas.
 
+-- 
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]

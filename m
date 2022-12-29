@@ -2,124 +2,122 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0B65BC5479D
-	for <linux-mips@archiver.kernel.org>; Thu, 29 Dec 2022 16:23:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8338CC3DA7A
+	for <linux-mips@archiver.kernel.org>; Thu, 29 Dec 2022 20:53:22 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233675AbiL2QWx (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 29 Dec 2022 11:22:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54216 "EHLO
+        id S230160AbiL2UxV (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 29 Dec 2022 15:53:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59794 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233626AbiL2QW0 (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Thu, 29 Dec 2022 11:22:26 -0500
-Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1FB713DD3
-        for <linux-mips@vger.kernel.org>; Thu, 29 Dec 2022 08:22:25 -0800 (PST)
-Received: by mail-pg1-x532.google.com with SMTP id b12so12664515pgj.6
-        for <linux-mips@vger.kernel.org>; Thu, 29 Dec 2022 08:22:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dabbelt-com.20210112.gappssmtp.com; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:to:from:cc
-         :in-reply-to:subject:date:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=lGyrD0+PhkAL5dbAeObFs9RwoqBo5ONG0NwovuaDsrM=;
-        b=dahVygbdXamhJiKEgN7Jyg1lXYgvfTSo1DMUkYl6yXrdIMvfnyRS0HpjAJGhYD3IFg
-         E+JY0GnUUwwkM2h9ox2Zgy/UxJJ4gx7kMRbUi8BoQs1MkH7ANMKs27AnO7PEO784TqXp
-         ruuAqGepnkn93qVt3OFjdbG1AsqdvffnpusA3lSTC6zFKd8HiqB0qYg9fELjUJN4UbO/
-         3lnm7IU3UfXKaT3AUgnmQMHaYpOZ2VZND7TcbraC5FIjkTHVAEIVzHPRo5TQwNIMJbMP
-         q3kZJpTtujX11O+tGSd8oHpehkbK7CbScXp9TvIT0cj2FcWn3tOzaHwI3gNMSd/9wBDx
-         rNGw==
+        with ESMTP id S234086AbiL2UxR (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Thu, 29 Dec 2022 15:53:17 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FD9AAE41
+        for <linux-mips@vger.kernel.org>; Thu, 29 Dec 2022 12:52:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1672347148;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=DeG05ASAQvY/FceYSGJdKCGQ3OFwx25lz4jlpRPWbnU=;
+        b=CyydvGwzPP3fLVYWpVliXmXQqCrkO5vFWqD2G/eF6WnvrzLE9bE4odPOFEByCJPXx1zK7N
+        3CW4NLlm4xL0AqHnTqMhsk9cWBJ6Uuhsic1loBCpqEVeOVsFEOTwngBg+tn14ERoLM33Ac
+        yUygSuFg7+aLVxGsIqRVpizKmEoGM14=
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
+ [209.85.218.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
+ us-mta-14-irsGEM0cPOOcfUpvj28z2w-1; Thu, 29 Dec 2022 15:52:27 -0500
+X-MC-Unique: irsGEM0cPOOcfUpvj28z2w-1
+Received: by mail-ej1-f72.google.com with SMTP id nb4-20020a1709071c8400b007c18ba778e9so13074489ejc.16
+        for <linux-mips@vger.kernel.org>; Thu, 29 Dec 2022 12:52:27 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:to:from:cc
-         :in-reply-to:subject:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=lGyrD0+PhkAL5dbAeObFs9RwoqBo5ONG0NwovuaDsrM=;
-        b=IzTzs32aPMGwpqL0FnyusJOcb4dvY/CksVWSSg0SbCdh9693w5EyepHhce7Q+ThBKR
-         6gBllhaz2uTjhoc1ny7x5YoZu8ohRbyxflJMKFnYHxX5bXqWMX+kFT03V2eIdyd/iiga
-         iSqLXLfhw+xYPZ0kEj3GbOOsMn3qGn0eVpHug/og4/9aiUXeDNfMoPAz8Bo3+OX+uNbZ
-         XwnIeQvNlqBn9VXxjX5E8zIYBveOZB1Tsj0glmjviyPFvaO3BsnLFXemWjezLglwuz06
-         U6driIwT7PduBknFS/bRz7sLbcHoCZ77kz8lCSlgSfMvrfhm4S4wZLFzbfefokyDsGK7
-         EA+A==
-X-Gm-Message-State: AFqh2kq/pj7kozaTovc1smU8x+lJ4D7tRu/ELJM5/W69wCn2nyVgh4rP
-        XSJRo08u4RfY5u3LaWSRC5pROg==
-X-Google-Smtp-Source: AMrXdXvpdMbR8CMYmi4dUk/9PgGNumQG+p4T2pa56FD3JYpViB2+8Ov5fWBEh9VYECa0d3vj+bwoEw==
-X-Received: by 2002:aa7:99cb:0:b0:580:d188:f516 with SMTP id v11-20020aa799cb000000b00580d188f516mr22924872pfi.19.1672330945228;
-        Thu, 29 Dec 2022 08:22:25 -0800 (PST)
-Received: from localhost ([135.180.226.51])
-        by smtp.gmail.com with ESMTPSA id x185-20020a6286c2000000b0056bfebfa6e4sm12277463pfd.190.2022.12.29.08.22.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Dec 2022 08:22:24 -0800 (PST)
-Date:   Thu, 29 Dec 2022 08:22:24 -0800 (PST)
-X-Google-Original-Date: Thu, 29 Dec 2022 07:53:04 PST (-0800)
-Subject:     Re: [PATCH v2] vdso: Improve cmd_vdso_check to check all dynamic relocations
-In-Reply-To: <20221221235147.45lkqmosndritfpe@google.com>
-CC:     christophe.leroy@csgroup.eu, luto@kernel.org, tglx@linutronix.de,
-        vincenzo.frascino@arm.com, Arnd Bergmann <arnd@arndb.de>,
-        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-csky@vger.kernel.org, linux-mips@vger.kernel.org,
-        loongarch@lists.linux.dev, linux-riscv@lists.infradead.org,
-        linuxppc-dev@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org
-From:   Palmer Dabbelt <palmer@dabbelt.com>
-To:     maskray@google.com
-Message-ID: <mhng-17d41c33-7f33-4a1c-8af2-ae7d07134e8c@palmer-ri-x1c9>
-Mime-Version: 1.0 (MHng)
-Content-Type: text/plain; charset=utf-8; format=flowed
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=DeG05ASAQvY/FceYSGJdKCGQ3OFwx25lz4jlpRPWbnU=;
+        b=dtZ2wPIW1IW5sqggIlIeMLfskWAg8FIvMTkLGzyJ9HY6cOsz+ld58Ctfa9ha6CSsH0
+         FNoWlbcTmraQpZWs6EeQfUX35QUuG4deq79RMleMiQYzfju1ZgtLprwg3RCGk4WBkETV
+         rATk4nobAOTz1qiyNdRLxUMKzhD78yUNAW8noAfMpwqDmUJpaAmHMfX7vPucL2q/xjOj
+         zhyPMoSE/lYKsGwpcVQrVO0Q0n7YKLPNNq44AxmpobVfsaM0g25EB0+qtG4r+9S0aDO6
+         MfMR2B2NPsBXywyqs4vDkg//S0c8TmYzO5XM5uXSI62QZPryYdFwKYqBm7Rrraqpi3AT
+         Gzng==
+X-Gm-Message-State: AFqh2kqr/e7bbLNEWfYnOyb/ocAu3etmseG/ZI512L3XSE1meovt0BXV
+        uCgToW0OX7Tb1tybD2qTCRRBaPnEhYTxVxOea1buOD9N2CObI+eWpROec67693ZN9bzIM3eJxZy
+        Sy/16tln+QVdJonuB1ieR3A==
+X-Received: by 2002:a17:907:6f09:b0:7c1:37:6d5e with SMTP id sy9-20020a1709076f0900b007c100376d5emr4872269ejc.2.1672347146330;
+        Thu, 29 Dec 2022 12:52:26 -0800 (PST)
+X-Google-Smtp-Source: AMrXdXuAZx8SHyajJmJ++QT23AGJAvs5IxosEfN11APvih7Pbj5KPIpkonmPHiwyMLfqMEbO8Dqn3Q==
+X-Received: by 2002:a17:907:6f09:b0:7c1:37:6d5e with SMTP id sy9-20020a1709076f0900b007c100376d5emr4872244ejc.2.1672347146101;
+        Thu, 29 Dec 2022 12:52:26 -0800 (PST)
+Received: from ?IPV6:2001:b07:6468:f312::529? ([2001:b07:6468:f312::529])
+        by smtp.googlemail.com with ESMTPSA id 23-20020a170906301700b0084c90164a56sm1096571ejz.29.2022.12.29.12.52.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 29 Dec 2022 12:52:25 -0800 (PST)
+Message-ID: <4d73d1b9-2c28-ab6a-2963-579bcc7a9e67@redhat.com>
+Date:   Thu, 29 Dec 2022 21:52:21 +0100
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.5.1
+Subject: Re: [PATCH v2 00/50] KVM: Rework kvm_init() and hardware enabling
+Content-Language: en-US
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
+        Anup Patel <anup@brainfault.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Janosch Frank <frankja@linux.ibm.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        Matthew Rosato <mjrosato@linux.ibm.com>,
+        Eric Farman <farman@linux.ibm.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Paul Durrant <paul@xen.org>, James Morse <james.morse@arm.com>,
+        Alexandru Elisei <alexandru.elisei@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        Atish Patra <atishp@atishpatra.org>,
+        David Hildenbrand <david@redhat.com>, kvm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        kvmarm@lists.cs.columbia.edu, linux-mips@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, kvm-riscv@lists.infradead.org,
+        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Yuan Yao <yuan.yao@intel.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Isaku Yamahata <isaku.yamahata@intel.com>,
+        =?UTF-8?Q?Philippe_Mathieu-Daud=c3=a9?= <philmd@linaro.org>,
+        Fabiano Rosas <farosas@linux.ibm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Kai Huang <kai.huang@intel.com>, Chao Gao <chao.gao@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>
+References: <20221227130249.1650197-1-pbonzini@redhat.com>
+ <9acea262dec3511e9cf63081506f0bd7@kernel.org>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+In-Reply-To: <9acea262dec3511e9cf63081506f0bd7@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Wed, 21 Dec 2022 15:51:47 PST (-0800), maskray@google.com wrote:
-> The actual intention is that no dynamic relocation exists. However, some
-> GNU ld ports produce unneeded R_*_NONE. (If a port fails to determine
-> the exact .rel[a].dyn size, the trailing zeros become R_*_NONE
-> relocations. E.g. ld's powerpc port recently fixed
-> https://sourceware.org/bugzilla/show_bug.cgi?id=29540) R_*_NONE are
-> generally no-op in the dynamic loaders. So just ignore them.
->
-> With the change, we can remove ARCH_REL_TYPE_ABS. ARCH_REL_TYPE_ABS is a
-> bit misnomer as ports may check RELAVETIVE/GLOB_DAT/JUMP_SLOT which are
-> not called "absolute relocations". (The patch is motivated by the arm64
-> port missing R_AARCH64_RELATIVE.)
->
-> Signed-off-by: Fangrui Song <maskray@google.com>
-> Reviewed-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-> ---
-> Change from v1:
-> * rebase after 8ac3b5cd3e0521d92f9755e90d140382fc292510 (lib/vdso: use "grep -E" instead of "egrep")
-> * change the commit message to mention an example GNU ld bug; no longer say the patch fixes a deprecated egrep use
-> ---
->   arch/arm/vdso/Makefile            |  3 ---
->   arch/arm64/kernel/vdso/Makefile   |  3 ---
->   arch/arm64/kernel/vdso32/Makefile |  3 ---
->   arch/csky/kernel/vdso/Makefile    |  3 ---
->   arch/loongarch/vdso/Makefile      |  3 ---
->   arch/mips/vdso/Makefile           |  3 ---
->   arch/powerpc/kernel/vdso/Makefile |  1 -
->   arch/riscv/kernel/vdso/Makefile   |  3 ---
->   arch/s390/kernel/vdso32/Makefile  |  2 --
->   arch/s390/kernel/vdso64/Makefile  |  2 --
->   arch/x86/entry/vdso/Makefile      |  4 ----
->   lib/vdso/Makefile                 | 13 ++++---------
->   12 files changed, 4 insertions(+), 39 deletions(-)
+On 12/28/22 12:22, Marc Zyngier wrote:
+> 
+>> Queued, thanks.  I will leave this in kvm/queue after testing everything
+>> else and moving it to kvm/next; this way, we can wait for test results
+>> on other architectures.
+> 
+> Can you please make this a topic branch, and if possible based
+> on a released -rc? It would make it a lot easier for everyone.
 
-[snip]
+This is now refs/heads/kvm-hw-enable-refactor in 
+https://git.kernel.org/pub/scm/virt/kvm/kvm.git.
 
-> diff --git a/arch/riscv/kernel/vdso/Makefile b/arch/riscv/kernel/vdso/Makefile
-> index 06e6b27f3bcc..d85c37e11b21 100644
-> --- a/arch/riscv/kernel/vdso/Makefile
-> +++ b/arch/riscv/kernel/vdso/Makefile
-> @@ -1,9 +1,6 @@
->   # SPDX-License-Identifier: GPL-2.0-only
->   # Copied from arch/tile/kernel/vdso/Makefile
->
-> -# Absolute relocation type $(ARCH_REL_TYPE_ABS) needs to be defined before
-> -# the inclusion of generic Makefile.
-> -ARCH_REL_TYPE_ABS := R_RISCV_32|R_RISCV_64|R_RISCV_JUMP_SLOT
->   include $(srctree)/lib/vdso/Makefile
->   # Symbols present in the vdso
->   vdso-syms  = rt_sigreturn
+The commits for this series start at hash fc471e831016.
 
-Acked-by: Palmer Dabbelt <palmer@rivosinc.com> # RISC-V
+Paolo
 
-Thanks!

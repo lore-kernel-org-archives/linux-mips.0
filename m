@@ -2,122 +2,90 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8338CC3DA7A
-	for <linux-mips@archiver.kernel.org>; Thu, 29 Dec 2022 20:53:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 982A5C4167B
+	for <linux-mips@archiver.kernel.org>; Fri, 30 Dec 2022 11:46:18 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230160AbiL2UxV (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 29 Dec 2022 15:53:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59794 "EHLO
+        id S229924AbiL3LqP (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 30 Dec 2022 06:46:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42518 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234086AbiL2UxR (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Thu, 29 Dec 2022 15:53:17 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FD9AAE41
-        for <linux-mips@vger.kernel.org>; Thu, 29 Dec 2022 12:52:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1672347148;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=DeG05ASAQvY/FceYSGJdKCGQ3OFwx25lz4jlpRPWbnU=;
-        b=CyydvGwzPP3fLVYWpVliXmXQqCrkO5vFWqD2G/eF6WnvrzLE9bE4odPOFEByCJPXx1zK7N
-        3CW4NLlm4xL0AqHnTqMhsk9cWBJ6Uuhsic1loBCpqEVeOVsFEOTwngBg+tn14ERoLM33Ac
-        yUygSuFg7+aLVxGsIqRVpizKmEoGM14=
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
- [209.85.218.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_128_GCM_SHA256) id
- us-mta-14-irsGEM0cPOOcfUpvj28z2w-1; Thu, 29 Dec 2022 15:52:27 -0500
-X-MC-Unique: irsGEM0cPOOcfUpvj28z2w-1
-Received: by mail-ej1-f72.google.com with SMTP id nb4-20020a1709071c8400b007c18ba778e9so13074489ejc.16
-        for <linux-mips@vger.kernel.org>; Thu, 29 Dec 2022 12:52:27 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=DeG05ASAQvY/FceYSGJdKCGQ3OFwx25lz4jlpRPWbnU=;
-        b=dtZ2wPIW1IW5sqggIlIeMLfskWAg8FIvMTkLGzyJ9HY6cOsz+ld58Ctfa9ha6CSsH0
-         FNoWlbcTmraQpZWs6EeQfUX35QUuG4deq79RMleMiQYzfju1ZgtLprwg3RCGk4WBkETV
-         rATk4nobAOTz1qiyNdRLxUMKzhD78yUNAW8noAfMpwqDmUJpaAmHMfX7vPucL2q/xjOj
-         zhyPMoSE/lYKsGwpcVQrVO0Q0n7YKLPNNq44AxmpobVfsaM0g25EB0+qtG4r+9S0aDO6
-         MfMR2B2NPsBXywyqs4vDkg//S0c8TmYzO5XM5uXSI62QZPryYdFwKYqBm7Rrraqpi3AT
-         Gzng==
-X-Gm-Message-State: AFqh2kqr/e7bbLNEWfYnOyb/ocAu3etmseG/ZI512L3XSE1meovt0BXV
-        uCgToW0OX7Tb1tybD2qTCRRBaPnEhYTxVxOea1buOD9N2CObI+eWpROec67693ZN9bzIM3eJxZy
-        Sy/16tln+QVdJonuB1ieR3A==
-X-Received: by 2002:a17:907:6f09:b0:7c1:37:6d5e with SMTP id sy9-20020a1709076f0900b007c100376d5emr4872269ejc.2.1672347146330;
-        Thu, 29 Dec 2022 12:52:26 -0800 (PST)
-X-Google-Smtp-Source: AMrXdXuAZx8SHyajJmJ++QT23AGJAvs5IxosEfN11APvih7Pbj5KPIpkonmPHiwyMLfqMEbO8Dqn3Q==
-X-Received: by 2002:a17:907:6f09:b0:7c1:37:6d5e with SMTP id sy9-20020a1709076f0900b007c100376d5emr4872244ejc.2.1672347146101;
-        Thu, 29 Dec 2022 12:52:26 -0800 (PST)
-Received: from ?IPV6:2001:b07:6468:f312::529? ([2001:b07:6468:f312::529])
-        by smtp.googlemail.com with ESMTPSA id 23-20020a170906301700b0084c90164a56sm1096571ejz.29.2022.12.29.12.52.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 29 Dec 2022 12:52:25 -0800 (PST)
-Message-ID: <4d73d1b9-2c28-ab6a-2963-579bcc7a9e67@redhat.com>
-Date:   Thu, 29 Dec 2022 21:52:21 +0100
+        with ESMTP id S229505AbiL3LqO (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Fri, 30 Dec 2022 06:46:14 -0500
+Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FA0B62DB;
+        Fri, 30 Dec 2022 03:46:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1672400773; x=1703936773;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=+C+F27SERRX5/mMHkFvQQdCIf1T1mofGj6ltPhh/hUw=;
+  b=UEa/ZLr7wul3SdojNttLMFDxKCtJafnLcKDGVx2eUTSfftisfFJTgyoV
+   5C789plYN8K2eWqxSir8DfTBSxNyEfXLw9gBm+gw+lzx+0/b2rjnHXswE
+   RWLjkmnWzcxbsA9IgOQnKVyx3/6iOOL0azEJsf9u0JbN9AJAe1MYwVW1T
+   cXu9ndJl2S+mLa1StRaOs7CI96tGrDuBfZKhXewFdwhOt97eXfOQkagXw
+   CdUTWxHw5XwudfECJS7RnwsbNtLzLKik+EQU7Bq6/TKYhQahbQBB49Nb8
+   V6RE2kGCoc5YF6+OeVPnfpwFF2F2/b0PWickWF46BveCdnAxyo1iPHvUi
+   w==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10575"; a="301567990"
+X-IronPort-AV: E=Sophos;i="5.96,287,1665471600"; 
+   d="scan'208";a="301567990"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Dec 2022 03:46:12 -0800
+X-IronPort-AV: E=McAfee;i="6500,9779,10575"; a="653865346"
+X-IronPort-AV: E=Sophos;i="5.96,287,1665471600"; 
+   d="scan'208";a="653865346"
+Received: from vsemouch-mobl.ger.corp.intel.com (HELO ijarvine-MOBL2.ger.corp.intel.com) ([10.249.41.102])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Dec 2022 03:46:09 -0800
+From:   =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        linux-serial@vger.kernel.org,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        linux-mips@vger.kernel.org
+Cc:     inux-kernel@vger.kernel.org,
+        =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Subject: [PATCH 0/3] serial: Separate RT288x/Au1xxx code into own file
+Date:   Fri, 30 Dec 2022 13:46:00 +0200
+Message-Id: <20221230114603.16946-1-ilpo.jarvinen@linux.intel.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.5.1
-Subject: Re: [PATCH v2 00/50] KVM: Rework kvm_init() and hardware enabling
-Content-Language: en-US
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
-        Anup Patel <anup@brainfault.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Janosch Frank <frankja@linux.ibm.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        Matthew Rosato <mjrosato@linux.ibm.com>,
-        Eric Farman <farman@linux.ibm.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Paul Durrant <paul@xen.org>, James Morse <james.morse@arm.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        Atish Patra <atishp@atishpatra.org>,
-        David Hildenbrand <david@redhat.com>, kvm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        kvmarm@lists.cs.columbia.edu, linux-mips@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, kvm-riscv@lists.infradead.org,
-        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Yuan Yao <yuan.yao@intel.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Isaku Yamahata <isaku.yamahata@intel.com>,
-        =?UTF-8?Q?Philippe_Mathieu-Daud=c3=a9?= <philmd@linaro.org>,
-        Fabiano Rosas <farosas@linux.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Kai Huang <kai.huang@intel.com>, Chao Gao <chao.gao@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>
-References: <20221227130249.1650197-1-pbonzini@redhat.com>
- <9acea262dec3511e9cf63081506f0bd7@kernel.org>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-In-Reply-To: <9acea262dec3511e9cf63081506f0bd7@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On 12/28/22 12:22, Marc Zyngier wrote:
-> 
->> Queued, thanks.  I will leave this in kvm/queue after testing everything
->> else and moving it to kvm/next; this way, we can wait for test results
->> on other architectures.
-> 
-> Can you please make this a topic branch, and if possible based
-> on a released -rc? It would make it a lot easier for everyone.
+A non-trivial amount of RT288x/Au1xxx code is encapsulated into
+ifdeffery in 8250_port / 8250_early and some if/switch UPIO_AU blocks.
+Create a separate file from them and do a few additional cleanups.
 
-This is now refs/heads/kvm-hw-enable-refactor in 
-https://git.kernel.org/pub/scm/virt/kvm/kvm.git.
+I kept the Kconfig entry as bool because the code has somewhat tricky
+dependency chain (mips arch code and 8250_of driver). It would be nice
+to make it tristate but I don't know how blocking some invalid =m + =y
+combinations would be best addressed. It should probably be best done
+on top of this series independent of the split itself anyway.
 
-The commits for this series start at hash fc471e831016.
+UPIO_AU could now be removed because it's same as UPIO_MEM for the
+remaining code path but I'm unsure if that's allowed (is the port
+iotype part of stable ABI or not)?
 
-Paolo
+Ilpo Järvinen (3):
+  serial: 8250: RT288x/Au1xxx code away from core
+  serial: 8250_rt288x: Name non-standard divisor latch reg
+  serial: 8250_rt288x: Remove unnecessary UART_REG_UNMAPPED
+
+ arch/mips/alchemy/common/platform.c   |  10 +-
+ drivers/tty/serial/8250/8250_core.c   |   4 +
+ drivers/tty/serial/8250/8250_early.c  |  21 ----
+ drivers/tty/serial/8250/8250_of.c     |   4 +-
+ drivers/tty/serial/8250/8250_port.c   |  78 ---------------
+ drivers/tty/serial/8250/8250_rt288x.c | 135 ++++++++++++++++++++++++++
+ drivers/tty/serial/8250/Makefile      |   1 +
+ include/linux/serial_8250.h           |  14 ++-
+ 8 files changed, 163 insertions(+), 104 deletions(-)
+ create mode 100644 drivers/tty/serial/8250/8250_rt288x.c
+
+-- 
+2.30.2
 

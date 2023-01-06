@@ -2,42 +2,42 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D6BD4C54EBD
-	for <linux-mips@archiver.kernel.org>; Fri,  6 Jan 2023 21:59:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 181E3C678D5
+	for <linux-mips@archiver.kernel.org>; Fri,  6 Jan 2023 21:59:24 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234603AbjAFV7U (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 6 Jan 2023 16:59:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42304 "EHLO
+        id S236265AbjAFV7W (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 6 Jan 2023 16:59:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42324 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231531AbjAFV7R (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Fri, 6 Jan 2023 16:59:17 -0500
+        with ESMTP id S233616AbjAFV7T (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Fri, 6 Jan 2023 16:59:19 -0500
 Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63B8A6B5F0;
-        Fri,  6 Jan 2023 13:59:16 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9081676DE;
+        Fri,  6 Jan 2023 13:59:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1673042356; x=1704578356;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=FTUwp6vti/6MjCft69xiR34bTAXHpf/OAp2V3llnAHs=;
-  b=D1tQDPo9TrhOYvZa93zi7L81VmQS9VqWkH6CGSaWBfGStkJpwd1u6ecF
-   TchpRB6A3AKwqgIxqWBIBlPbsdTw4o1LHEspKokxyCZ7fbhmJs5qVzlpU
-   1YNZGOyZHBITUfnqC+9Vfmczekl9PB89RbWs4tC77F6YjSR1tPYefy/xL
-   eHggPprNBhIacdKcj3By/z0NwhapEPlWKFsKiJS0fixvs0Po6hjsC9xjk
-   Px/5NLVLCnWyyCoSmACWYSUPUebYJvxdsHPlsRmgqFJ5ohGoO51VGhLbz
-   /tvo3XPcyaAS7VdMpL5zZNVd676wsRioB3GwUJ6euR3C0MUMYyHg84HY3
-   Q==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10582"; a="387030696"
+  t=1673042359; x=1704578359;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=YxmNblIsKqhfyJq7N8D9hjsKeTOrNyEjlTYDV33bZjo=;
+  b=VXX7vg31fAd/2yeyvsuO2tyhbOQJHg914hhCBY9Eg765noFLqsG0A/YW
+   xVa4i/hJFBXkzgoBoKVCq3yO4bJiWXmtZIlwNoOPCsEbCGXyTtD5ZR/NO
+   /gZDFo8d++of32H43g4nSruw/rX3p0XwjSxUUCAEGy4roMiSrxB9uI1Ap
+   mhnZsLbNpobq4LkSObZMNrhYaP5fFAkLq4eTjF0ywRYe2odObbm9aKSO9
+   1TUY4Ia3fbGc+io6AKw76f6mKANiWpASX9VY6w8Aohg550kDj4RL/hclk
+   IukSkqYYrXe27uOf/0RL7dEY27b6BgwYwmvhZvTECgIHxzv+Ddyhdb6eK
+   A==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10582"; a="387030707"
 X-IronPort-AV: E=Sophos;i="5.96,306,1665471600"; 
-   d="scan'208";a="387030696"
+   d="scan'208";a="387030707"
 Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Jan 2023 13:59:15 -0800
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Jan 2023 13:59:18 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6500,9779,10582"; a="763652873"
+X-IronPort-AV: E=McAfee;i="6500,9779,10582"; a="763652885"
 X-IronPort-AV: E=Sophos;i="5.96,306,1665471600"; 
-   d="scan'208";a="763652873"
+   d="scan'208";a="763652885"
 Received: from avenkata-desk0.sc.intel.com ([172.25.112.60])
-  by fmsmga002.fm.intel.com with ESMTP; 06 Jan 2023 13:59:15 -0800
+  by fmsmga002.fm.intel.com with ESMTP; 06 Jan 2023 13:59:16 -0800
 From:   Anirudh Venkataramanan <anirudh.venkataramanan@intel.com>
 To:     netdev@vger.kernel.org
 Cc:     linux-pci@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
@@ -45,87 +45,39 @@ Cc:     linux-pci@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
         sparclinux@vger.kernel.org,
         Anirudh Venkataramanan <anirudh.venkataramanan@intel.com>,
         Leon Romanovsky <leon@kernel.org>
-Subject: [PATCH net-next 0/7] Remove three Sun net drivers
-Date:   Fri,  6 Jan 2023 14:00:13 -0800
-Message-Id: <20230106220020.1820147-1-anirudh.venkataramanan@intel.com>
+Subject: [PATCH net-next 3/7] powerpc: configs: Remove reference to CONFIG_CASSINI
+Date:   Fri,  6 Jan 2023 14:00:16 -0800
+Message-Id: <20230106220020.1820147-4-anirudh.venkataramanan@intel.com>
 X-Mailer: git-send-email 2.37.2
+In-Reply-To: <20230106220020.1820147-1-anirudh.venkataramanan@intel.com>
+References: <20230106220020.1820147-1-anirudh.venkataramanan@intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-This series removes the Sun Cassini, LDOM vswitch and sunvnet drivers.
+An earlier patch removed the Sun Cassnini driver. Remove references to
+CONFIG_CASSINI from the ppc6xx defconfig.
 
-In a recent patch series that touched these drivers [1], it was suggested
-that these drivers should be removed completely. git logs suggest that
-there hasn't been any significant feature addition, improvement or fixes
-to user-visible bugs in a while. A web search didn't indicate any recent
-discussions or any evidence that there are users out there who care about
-these drivers.
-
-The idea behind putting out this series is to either establish that these
-drivers are used and should be maintained, or remove them.
-
-While the bulk of the code removal is in the networking s, and so
-multiple subsystem lists are cc'd. Here's a quick breakdown:
-
-  - patches 1/7 and 5/7 remove the drivers (netdev)
-  - patch 2/7 removes Sun device IDs from pci_ids.h (linux-pci)
-  - patch 3/7 changes ppc6xx_defconfig (linuxppc)
-  - patch 4/7 changes MIPS mtx1_defconfig (linux-mips)
-  - patch 6/7 removes the event tracing header sunvnet.h (linux-trace)
-  - patch 7/7 changes sparc64_defconfig (sparclinux)
-
-This series was compile tested as follows:
-
-make O=b1 ARCH=mips CROSS_COMPILE=mips64-linux-gnu- defconfig
-make -j$(nproc) O=b1 ARCH=mips CROSS_COMPILE=mips64-linux-gnu- all
-
-make O=b2 ARCH=sparc64 CROSS_COMPILE=sparc64-linux-gnu- defconfig
-make -j$(nproc) O=b2 ARCH=sparc64 CROSS_COMPILE=sparc64-linux-gnu- all
-
-make O=b3 ARCH=powerpc CROSS_COMPILE=ppc64-linux-gnu- ppc6xx_defconfig
-make -j$(nproc) O=b3 ARCH=powerpc CROSS_COMPILE=ppc64-linux-gnu- all
-
-[1] https://lore.kernel.org/netdev/99629223-ac1b-0f82-50b8-ea307b3b0197@intel.com/T/#t
-
-Suggested-by: Leon Romanovsky <leon@kernel.org>
+Cc: Leon Romanovsky <leon@kernel.org>
 Signed-off-by: Anirudh Venkataramanan <anirudh.venkataramanan@intel.com>
+---
+ arch/powerpc/configs/ppc6xx_defconfig | 1 -
+ 1 file changed, 1 deletion(-)
 
-Anirudh Venkataramanan (7):
-  ethernet: Remove the Sun Cassini driver
-  PCI: Remove PCI IDs used by the Sun Cassini driver
-  powerpc: configs: Remove reference to CONFIG_CASSINI
-  mips: configs: Remove reference to CONFIG_CASSINI
-  ethernet: Remove the Sun LDOM vswitch and sunvnet drivers
-  sunvnet: Remove event tracing file
-  sparc: configs: Remove references to CONFIG_SUNVNET and CONFIG_LDMVSW
-
- arch/mips/configs/mtx1_defconfig          |    1 -
- arch/powerpc/configs/ppc6xx_defconfig     |    1 -
- arch/sparc/configs/sparc64_defconfig      |    2 -
- drivers/net/ethernet/sun/Kconfig          |   35 -
- drivers/net/ethernet/sun/Makefile         |    4 -
- drivers/net/ethernet/sun/cassini.c        | 5215 ---------------------
- drivers/net/ethernet/sun/cassini.h        | 2900 ------------
- drivers/net/ethernet/sun/ldmvsw.c         |  476 --
- drivers/net/ethernet/sun/sunvnet.c        |  567 ---
- drivers/net/ethernet/sun/sunvnet_common.c | 1813 -------
- drivers/net/ethernet/sun/sunvnet_common.h |  157 -
- include/linux/pci_ids.h                   |    2 -
- include/trace/events/sunvnet.h            |  140 -
- 13 files changed, 11313 deletions(-)
- delete mode 100644 drivers/net/ethernet/sun/cassini.c
- delete mode 100644 drivers/net/ethernet/sun/cassini.h
- delete mode 100644 drivers/net/ethernet/sun/ldmvsw.c
- delete mode 100644 drivers/net/ethernet/sun/sunvnet.c
- delete mode 100644 drivers/net/ethernet/sun/sunvnet_common.c
- delete mode 100644 drivers/net/ethernet/sun/sunvnet_common.h
- delete mode 100644 include/trace/events/sunvnet.h
-
-
-base-commit: 6bd4755c7c499dbcef46eaaeafa1a319da583b29
+diff --git a/arch/powerpc/configs/ppc6xx_defconfig b/arch/powerpc/configs/ppc6xx_defconfig
+index 1102582..0eba1de 100644
+--- a/arch/powerpc/configs/ppc6xx_defconfig
++++ b/arch/powerpc/configs/ppc6xx_defconfig
+@@ -487,7 +487,6 @@ CONFIG_PCMCIA_SMC91C92=m
+ CONFIG_EPIC100=m
+ CONFIG_HAPPYMEAL=m
+ CONFIG_SUNGEM=m
+-CONFIG_CASSINI=m
+ CONFIG_NIU=m
+ CONFIG_TEHUTI=m
+ CONFIG_TLAN=m
 -- 
 2.37.2
 

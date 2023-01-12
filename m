@@ -2,43 +2,42 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 87722C677F1
-	for <linux-mips@archiver.kernel.org>; Thu, 12 Jan 2023 20:01:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 67801C61DB3
+	for <linux-mips@archiver.kernel.org>; Thu, 12 Jan 2023 20:01:12 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240821AbjALUBF (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 12 Jan 2023 15:01:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44148 "EHLO
+        id S240827AbjALUBI (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 12 Jan 2023 15:01:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44282 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239134AbjALT7V (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Thu, 12 Jan 2023 14:59:21 -0500
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AEDE389D;
-        Thu, 12 Jan 2023 11:58:19 -0800 (PST)
+        with ESMTP id S233504AbjALT7Q (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Thu, 12 Jan 2023 14:59:16 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4765610C2;
+        Thu, 12 Jan 2023 11:58:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=Content-Type:MIME-Version:References:
+        d=infradead.org; s=casper.20170209; h=Content-Type:MIME-Version:References:
         Subject:Cc:To:From:Date:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
         Content-ID:Content-Description:In-Reply-To;
-        bh=GvwbGFmvCEUlvMDtuRKKain2RkezywAYf/go7N4onKI=; b=UZP1WhwWXNKsSNjUZl7FaNdKCn
-        ddEQs2bPXQi5qPjj7qlJxw/QPW/0nxOgZLN8xBPDMZ/1zjz4Cj4cBDEZBuYnBOjn9uMSnfZ/x7+2I
-        9dTh9PKCvuDC56aeAA3cL71DKDuGL799xQcS7MxhLz5jtlqRv3ljsfno7QvEUZeBL/ZKqQpiu6eX8
-        1n/CZuVsNYoC/48UeqqLacX54nCFrLom4QSa5qKlMYqjjQVNzfHjWkBbeNM7/Bwfq6S/ww+f2nN0u
-        0BjGg5qo+ibAucyPfwz5pwvtUQ9FofzqrnD212u/gvXOr0euOanteiang6T+NsdgqQ3BiJZ1d+Ozd
-        /GvjuQPw==;
+        bh=A36GBNDeZcYlVC8rkRiSg7Fkb66ciqPmteGiazOXnKo=; b=f8TroYQijIlc9MuWlP4LwBLqev
+        fPz8ciZ+SdwGgd+2dJNYnnpQQfPyL98wQLCxEdxcxA7jXGonUiF59Vm/+fX/v7qM8g5FLUmOTcYTd
+        hqPpoLIDep8jXNb4QI+vppOcG4nANADValU324FWAQyr0xAZKKscT0Fj8Jrh7UyUfLwpsYnsOEWNz
+        eQRPSdLyPwoJR6DYI9crm2nvFg9liwcgMxc46hAGZACQUxHgHL8kM0Lc1lLwF9174dIfxotwuNWx0
+        KkzVpLQtlnyo1ad4E13LtdvMggDa3/MeFTlRbijDXhqwH1GQuZNTKtNRZ9gryMA3HVyhHm3enhGOO
+        s4VYrYww==;
 Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1pG3hO-0045qe-0S;
-        Thu, 12 Jan 2023 19:57:37 +0000
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1pG3hZ-005Odk-U3; Thu, 12 Jan 2023 19:57:30 +0000
 Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits))
         (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 2274B303473;
-        Thu, 12 Jan 2023 20:57:14 +0100 (CET)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 5088930341D;
+        Thu, 12 Jan 2023 20:57:13 +0100 (CET)
 Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id 5F8C02CD066D4; Thu, 12 Jan 2023 20:57:08 +0100 (CET)
-Message-ID: <20230112195542.028523143@infradead.org>
+        id DFC6A2CCF1F66; Thu, 12 Jan 2023 20:57:07 +0100 (CET)
+Message-ID: <20230112195540.373461409@infradead.org>
 User-Agent: quilt/0.66
-Date:   Thu, 12 Jan 2023 20:43:58 +0100
+Date:   Thu, 12 Jan 2023 20:43:31 +0100
 From:   Peter Zijlstra <peterz@infradead.org>
 To:     peterz@infradead.org
 Cc:     richard.henderson@linaro.org, ink@jurassic.park.msu.ru,
@@ -105,7 +104,7 @@ Cc:     richard.henderson@linaro.org, ink@jurassic.park.msu.ru,
         linux-trace-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
         "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
         Ulf Hansson <ulf.hansson@linaro.org>
-Subject: [PATCH v3 44/51] entry,kasan,x86: Disallow overriding mem*() functions
+Subject: [PATCH v3 17/51] objtool/idle: Validate __cpuidle code as noinstr
 References: <20230112194314.845371875@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -113,174 +112,459 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-KASAN cannot just hijack the mem*() functions, it needs to emit
-__asan_mem*() variants if it wants instrumentation (other sanitizers
-already do this).
-
-vmlinux.o: warning: objtool: sync_regs+0x24: call to memcpy() leaves .noinstr.text section
-vmlinux.o: warning: objtool: vc_switch_off_ist+0xbe: call to memcpy() leaves .noinstr.text section
-vmlinux.o: warning: objtool: fixup_bad_iret+0x36: call to memset() leaves .noinstr.text section
-vmlinux.o: warning: objtool: __sev_get_ghcb+0xa0: call to memcpy() leaves .noinstr.text section
-vmlinux.o: warning: objtool: __sev_put_ghcb+0x35: call to memcpy() leaves .noinstr.text section
-
-Remove the weak aliases to ensure nobody hijacks these functions and
-add them to the noinstr section.
+Idle code is very like entry code in that RCU isn't available. As
+such, add a little validation.
 
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
 Acked-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 Acked-by: Frederic Weisbecker <frederic@kernel.org>
 Tested-by: Tony Lindgren <tony@atomide.com>
 Tested-by: Ulf Hansson <ulf.hansson@linaro.org>
 ---
- arch/x86/lib/memcpy_64.S  |    5 ++---
- arch/x86/lib/memmove_64.S |    4 +++-
- arch/x86/lib/memset_64.S  |    4 +++-
- mm/kasan/kasan.h          |    4 ++++
- mm/kasan/shadow.c         |   38 ++++++++++++++++++++++++++++++++++++++
- tools/objtool/check.c     |    3 +++
- 6 files changed, 53 insertions(+), 5 deletions(-)
+ arch/alpha/kernel/vmlinux.lds.S      |    1 -
+ arch/arc/kernel/vmlinux.lds.S        |    1 -
+ arch/arm/include/asm/vmlinux.lds.h   |    1 -
+ arch/arm64/kernel/vmlinux.lds.S      |    1 -
+ arch/csky/kernel/vmlinux.lds.S       |    1 -
+ arch/hexagon/kernel/vmlinux.lds.S    |    1 -
+ arch/ia64/kernel/vmlinux.lds.S       |    1 -
+ arch/loongarch/kernel/vmlinux.lds.S  |    1 -
+ arch/m68k/kernel/vmlinux-nommu.lds   |    1 -
+ arch/m68k/kernel/vmlinux-std.lds     |    1 -
+ arch/m68k/kernel/vmlinux-sun3.lds    |    1 -
+ arch/microblaze/kernel/vmlinux.lds.S |    1 -
+ arch/mips/kernel/vmlinux.lds.S       |    1 -
+ arch/nios2/kernel/vmlinux.lds.S      |    1 -
+ arch/openrisc/kernel/vmlinux.lds.S   |    1 -
+ arch/parisc/kernel/vmlinux.lds.S     |    1 -
+ arch/powerpc/kernel/vmlinux.lds.S    |    1 -
+ arch/riscv/kernel/vmlinux-xip.lds.S  |    1 -
+ arch/riscv/kernel/vmlinux.lds.S      |    1 -
+ arch/s390/kernel/vmlinux.lds.S       |    1 -
+ arch/sh/kernel/vmlinux.lds.S         |    1 -
+ arch/sparc/kernel/vmlinux.lds.S      |    1 -
+ arch/um/kernel/dyn.lds.S             |    1 -
+ arch/um/kernel/uml.lds.S             |    1 -
+ arch/x86/include/asm/irqflags.h      |   11 ++++-------
+ arch/x86/include/asm/mwait.h         |    2 +-
+ arch/x86/kernel/vmlinux.lds.S        |    1 -
+ arch/xtensa/kernel/vmlinux.lds.S     |    1 -
+ include/asm-generic/vmlinux.lds.h    |    9 +++------
+ include/linux/compiler_types.h       |    8 ++++++--
+ include/linux/cpu.h                  |    3 ---
+ tools/objtool/check.c                |   13 +++++++++++++
+ 32 files changed, 27 insertions(+), 45 deletions(-)
 
---- a/arch/x86/lib/memcpy_64.S
-+++ b/arch/x86/lib/memcpy_64.S
-@@ -7,7 +7,7 @@
- #include <asm/alternative.h>
- #include <asm/export.h>
+--- a/arch/alpha/kernel/vmlinux.lds.S
++++ b/arch/alpha/kernel/vmlinux.lds.S
+@@ -27,7 +27,6 @@ SECTIONS
+ 		HEAD_TEXT
+ 		TEXT_TEXT
+ 		SCHED_TEXT
+-		CPUIDLE_TEXT
+ 		LOCK_TEXT
+ 		*(.fixup)
+ 		*(.gnu.warning)
+--- a/arch/arc/kernel/vmlinux.lds.S
++++ b/arch/arc/kernel/vmlinux.lds.S
+@@ -85,7 +85,6 @@ SECTIONS
+ 		_stext = .;
+ 		TEXT_TEXT
+ 		SCHED_TEXT
+-		CPUIDLE_TEXT
+ 		LOCK_TEXT
+ 		KPROBES_TEXT
+ 		IRQENTRY_TEXT
+--- a/arch/arm/include/asm/vmlinux.lds.h
++++ b/arch/arm/include/asm/vmlinux.lds.h
+@@ -96,7 +96,6 @@
+ 		SOFTIRQENTRY_TEXT					\
+ 		TEXT_TEXT						\
+ 		SCHED_TEXT						\
+-		CPUIDLE_TEXT						\
+ 		LOCK_TEXT						\
+ 		KPROBES_TEXT						\
+ 		ARM_STUBS_TEXT						\
+--- a/arch/arm64/kernel/vmlinux.lds.S
++++ b/arch/arm64/kernel/vmlinux.lds.S
+@@ -175,7 +175,6 @@ SECTIONS
+ 			ENTRY_TEXT
+ 			TEXT_TEXT
+ 			SCHED_TEXT
+-			CPUIDLE_TEXT
+ 			LOCK_TEXT
+ 			KPROBES_TEXT
+ 			HYPERVISOR_TEXT
+--- a/arch/csky/kernel/vmlinux.lds.S
++++ b/arch/csky/kernel/vmlinux.lds.S
+@@ -34,7 +34,6 @@ SECTIONS
+ 		SOFTIRQENTRY_TEXT
+ 		TEXT_TEXT
+ 		SCHED_TEXT
+-		CPUIDLE_TEXT
+ 		LOCK_TEXT
+ 		KPROBES_TEXT
+ 		*(.fixup)
+--- a/arch/hexagon/kernel/vmlinux.lds.S
++++ b/arch/hexagon/kernel/vmlinux.lds.S
+@@ -41,7 +41,6 @@ SECTIONS
+ 		IRQENTRY_TEXT
+ 		SOFTIRQENTRY_TEXT
+ 		SCHED_TEXT
+-		CPUIDLE_TEXT
+ 		LOCK_TEXT
+ 		KPROBES_TEXT
+ 		*(.fixup)
+--- a/arch/ia64/kernel/vmlinux.lds.S
++++ b/arch/ia64/kernel/vmlinux.lds.S
+@@ -51,7 +51,6 @@ SECTIONS {
+ 		__end_ivt_text = .;
+ 		TEXT_TEXT
+ 		SCHED_TEXT
+-		CPUIDLE_TEXT
+ 		LOCK_TEXT
+ 		KPROBES_TEXT
+ 		IRQENTRY_TEXT
+--- a/arch/loongarch/kernel/vmlinux.lds.S
++++ b/arch/loongarch/kernel/vmlinux.lds.S
+@@ -42,7 +42,6 @@ SECTIONS
+ 	.text : {
+ 		TEXT_TEXT
+ 		SCHED_TEXT
+-		CPUIDLE_TEXT
+ 		LOCK_TEXT
+ 		KPROBES_TEXT
+ 		IRQENTRY_TEXT
+--- a/arch/m68k/kernel/vmlinux-nommu.lds
++++ b/arch/m68k/kernel/vmlinux-nommu.lds
+@@ -48,7 +48,6 @@ SECTIONS {
+ 		IRQENTRY_TEXT
+ 		SOFTIRQENTRY_TEXT
+ 		SCHED_TEXT
+-		CPUIDLE_TEXT
+ 		LOCK_TEXT
+ 		*(.fixup)
+ 		. = ALIGN(16);
+--- a/arch/m68k/kernel/vmlinux-std.lds
++++ b/arch/m68k/kernel/vmlinux-std.lds
+@@ -19,7 +19,6 @@ SECTIONS
+ 	IRQENTRY_TEXT
+ 	SOFTIRQENTRY_TEXT
+ 	SCHED_TEXT
+-	CPUIDLE_TEXT
+ 	LOCK_TEXT
+ 	*(.fixup)
+ 	*(.gnu.warning)
+--- a/arch/m68k/kernel/vmlinux-sun3.lds
++++ b/arch/m68k/kernel/vmlinux-sun3.lds
+@@ -19,7 +19,6 @@ SECTIONS
+ 	IRQENTRY_TEXT
+ 	SOFTIRQENTRY_TEXT
+ 	SCHED_TEXT
+-	CPUIDLE_TEXT
+ 	LOCK_TEXT
+ 	*(.fixup)
+ 	*(.gnu.warning)
+--- a/arch/microblaze/kernel/vmlinux.lds.S
++++ b/arch/microblaze/kernel/vmlinux.lds.S
+@@ -36,7 +36,6 @@ SECTIONS {
+ 		EXIT_TEXT
+ 		EXIT_CALL
+ 		SCHED_TEXT
+-		CPUIDLE_TEXT
+ 		LOCK_TEXT
+ 		KPROBES_TEXT
+ 		IRQENTRY_TEXT
+--- a/arch/mips/kernel/vmlinux.lds.S
++++ b/arch/mips/kernel/vmlinux.lds.S
+@@ -61,7 +61,6 @@ SECTIONS
+ 	.text : {
+ 		TEXT_TEXT
+ 		SCHED_TEXT
+-		CPUIDLE_TEXT
+ 		LOCK_TEXT
+ 		KPROBES_TEXT
+ 		IRQENTRY_TEXT
+--- a/arch/nios2/kernel/vmlinux.lds.S
++++ b/arch/nios2/kernel/vmlinux.lds.S
+@@ -24,7 +24,6 @@ SECTIONS
+ 	.text : {
+ 		TEXT_TEXT
+ 		SCHED_TEXT
+-		CPUIDLE_TEXT
+ 		LOCK_TEXT
+ 		IRQENTRY_TEXT
+ 		SOFTIRQENTRY_TEXT
+--- a/arch/openrisc/kernel/vmlinux.lds.S
++++ b/arch/openrisc/kernel/vmlinux.lds.S
+@@ -52,7 +52,6 @@ SECTIONS
+           _stext = .;
+ 	  TEXT_TEXT
+ 	  SCHED_TEXT
+-	  CPUIDLE_TEXT
+ 	  LOCK_TEXT
+ 	  KPROBES_TEXT
+ 	  IRQENTRY_TEXT
+--- a/arch/parisc/kernel/vmlinux.lds.S
++++ b/arch/parisc/kernel/vmlinux.lds.S
+@@ -86,7 +86,6 @@ SECTIONS
+ 		TEXT_TEXT
+ 		LOCK_TEXT
+ 		SCHED_TEXT
+-		CPUIDLE_TEXT
+ 		KPROBES_TEXT
+ 		IRQENTRY_TEXT
+ 		SOFTIRQENTRY_TEXT
+--- a/arch/powerpc/kernel/vmlinux.lds.S
++++ b/arch/powerpc/kernel/vmlinux.lds.S
+@@ -111,7 +111,6 @@ SECTIONS
+ #endif
+ 		NOINSTR_TEXT
+ 		SCHED_TEXT
+-		CPUIDLE_TEXT
+ 		LOCK_TEXT
+ 		KPROBES_TEXT
+ 		IRQENTRY_TEXT
+--- a/arch/riscv/kernel/vmlinux-xip.lds.S
++++ b/arch/riscv/kernel/vmlinux-xip.lds.S
+@@ -39,7 +39,6 @@ SECTIONS
+ 		_stext = .;
+ 		TEXT_TEXT
+ 		SCHED_TEXT
+-		CPUIDLE_TEXT
+ 		LOCK_TEXT
+ 		KPROBES_TEXT
+ 		ENTRY_TEXT
+--- a/arch/riscv/kernel/vmlinux.lds.S
++++ b/arch/riscv/kernel/vmlinux.lds.S
+@@ -42,7 +42,6 @@ SECTIONS
+ 		_stext = .;
+ 		TEXT_TEXT
+ 		SCHED_TEXT
+-		CPUIDLE_TEXT
+ 		LOCK_TEXT
+ 		KPROBES_TEXT
+ 		ENTRY_TEXT
+--- a/arch/s390/kernel/vmlinux.lds.S
++++ b/arch/s390/kernel/vmlinux.lds.S
+@@ -42,7 +42,6 @@ SECTIONS
+ 		HEAD_TEXT
+ 		TEXT_TEXT
+ 		SCHED_TEXT
+-		CPUIDLE_TEXT
+ 		LOCK_TEXT
+ 		KPROBES_TEXT
+ 		IRQENTRY_TEXT
+--- a/arch/sh/kernel/vmlinux.lds.S
++++ b/arch/sh/kernel/vmlinux.lds.S
+@@ -29,7 +29,6 @@ SECTIONS
+ 		HEAD_TEXT
+ 		TEXT_TEXT
+ 		SCHED_TEXT
+-		CPUIDLE_TEXT
+ 		LOCK_TEXT
+ 		KPROBES_TEXT
+ 		IRQENTRY_TEXT
+--- a/arch/sparc/kernel/vmlinux.lds.S
++++ b/arch/sparc/kernel/vmlinux.lds.S
+@@ -50,7 +50,6 @@ SECTIONS
+ 		HEAD_TEXT
+ 		TEXT_TEXT
+ 		SCHED_TEXT
+-		CPUIDLE_TEXT
+ 		LOCK_TEXT
+ 		KPROBES_TEXT
+ 		IRQENTRY_TEXT
+--- a/arch/um/kernel/dyn.lds.S
++++ b/arch/um/kernel/dyn.lds.S
+@@ -74,7 +74,6 @@ SECTIONS
+     _stext = .;
+     TEXT_TEXT
+     SCHED_TEXT
+-    CPUIDLE_TEXT
+     LOCK_TEXT
+     IRQENTRY_TEXT
+     SOFTIRQENTRY_TEXT
+--- a/arch/um/kernel/uml.lds.S
++++ b/arch/um/kernel/uml.lds.S
+@@ -35,7 +35,6 @@ SECTIONS
+     _stext = .;
+     TEXT_TEXT
+     SCHED_TEXT
+-    CPUIDLE_TEXT
+     LOCK_TEXT
+     IRQENTRY_TEXT
+     SOFTIRQENTRY_TEXT
+--- a/arch/x86/include/asm/irqflags.h
++++ b/arch/x86/include/asm/irqflags.h
+@@ -8,9 +8,6 @@
  
--.pushsection .noinstr.text, "ax"
-+.section .noinstr.text, "ax"
+ #include <asm/nospec-branch.h>
  
+-/* Provide __cpuidle; we can't safely include <linux/cpu.h> */
+-#define __cpuidle __section(".cpuidle.text")
+-
  /*
-  * We build a jump to memcpy_orig by default which gets NOPped out on
-@@ -42,7 +42,7 @@ SYM_FUNC_START(__memcpy)
- SYM_FUNC_END(__memcpy)
- EXPORT_SYMBOL(__memcpy)
- 
--SYM_FUNC_ALIAS_WEAK(memcpy, __memcpy)
-+SYM_FUNC_ALIAS(memcpy, __memcpy)
- EXPORT_SYMBOL(memcpy)
- 
- /*
-@@ -183,4 +183,3 @@ SYM_FUNC_START_LOCAL(memcpy_orig)
- 	RET
- SYM_FUNC_END(memcpy_orig)
- 
--.popsection
---- a/arch/x86/lib/memmove_64.S
-+++ b/arch/x86/lib/memmove_64.S
-@@ -13,6 +13,8 @@
- 
- #undef memmove
- 
-+.section .noinstr.text, "ax"
-+
- /*
-  * Implement memmove(). This can handle overlap between src and dst.
-  *
-@@ -213,5 +215,5 @@ SYM_FUNC_START(__memmove)
- SYM_FUNC_END(__memmove)
- EXPORT_SYMBOL(__memmove)
- 
--SYM_FUNC_ALIAS_WEAK(memmove, __memmove)
-+SYM_FUNC_ALIAS(memmove, __memmove)
- EXPORT_SYMBOL(memmove)
---- a/arch/x86/lib/memset_64.S
-+++ b/arch/x86/lib/memset_64.S
-@@ -6,6 +6,8 @@
- #include <asm/alternative.h>
- #include <asm/export.h>
- 
-+.section .noinstr.text, "ax"
-+
- /*
-  * ISO C memset - set a memory block to a byte value. This function uses fast
-  * string to get better performance than the original function. The code is
-@@ -43,7 +45,7 @@ SYM_FUNC_START(__memset)
- SYM_FUNC_END(__memset)
- EXPORT_SYMBOL(__memset)
- 
--SYM_FUNC_ALIAS_WEAK(memset, __memset)
-+SYM_FUNC_ALIAS(memset, __memset)
- EXPORT_SYMBOL(memset)
- 
- /*
---- a/mm/kasan/kasan.h
-+++ b/mm/kasan/kasan.h
-@@ -551,6 +551,10 @@ void __asan_set_shadow_f3(const void *ad
- void __asan_set_shadow_f5(const void *addr, size_t size);
- void __asan_set_shadow_f8(const void *addr, size_t size);
- 
-+void *__asan_memset(void *addr, int c, size_t len);
-+void *__asan_memmove(void *dest, const void *src, size_t len);
-+void *__asan_memcpy(void *dest, const void *src, size_t len);
-+
- void __hwasan_load1_noabort(unsigned long addr);
- void __hwasan_store1_noabort(unsigned long addr);
- void __hwasan_load2_noabort(unsigned long addr);
---- a/mm/kasan/shadow.c
-+++ b/mm/kasan/shadow.c
-@@ -38,6 +38,12 @@ bool __kasan_check_write(const volatile
+  * Interrupt control:
+  */
+@@ -45,13 +42,13 @@ static __always_inline void native_irq_e
+ 	asm volatile("sti": : :"memory");
  }
- EXPORT_SYMBOL(__kasan_check_write);
  
-+#ifndef CONFIG_GENERIC_ENTRY
-+/*
-+ * CONFIG_GENERIC_ENTRY relies on compiler emitted mem*() calls to not be
-+ * instrumented. KASAN enabled toolchains should emit __asan_mem*() functions
-+ * for the sites they want to instrument.
-+ */
- #undef memset
- void *memset(void *addr, int c, size_t len)
+-static inline __cpuidle void native_safe_halt(void)
++static __always_inline void native_safe_halt(void)
  {
-@@ -68,6 +74,38 @@ void *memcpy(void *dest, const void *src
- 
- 	return __memcpy(dest, src, len);
+ 	mds_idle_clear_cpu_buffers();
+ 	asm volatile("sti; hlt": : :"memory");
  }
-+#endif
-+
-+void *__asan_memset(void *addr, int c, size_t len)
-+{
-+	if (!kasan_check_range((unsigned long)addr, len, true, _RET_IP_))
-+		return NULL;
-+
-+	return __memset(addr, c, len);
-+}
-+EXPORT_SYMBOL(__asan_memset);
-+
-+#ifdef __HAVE_ARCH_MEMMOVE
-+void *__asan_memmove(void *dest, const void *src, size_t len)
-+{
-+	if (!kasan_check_range((unsigned long)src, len, false, _RET_IP_) ||
-+	    !kasan_check_range((unsigned long)dest, len, true, _RET_IP_))
-+		return NULL;
-+
-+	return __memmove(dest, src, len);
-+}
-+EXPORT_SYMBOL(__asan_memmove);
-+#endif
-+
-+void *__asan_memcpy(void *dest, const void *src, size_t len)
-+{
-+	if (!kasan_check_range((unsigned long)src, len, false, _RET_IP_) ||
-+	    !kasan_check_range((unsigned long)dest, len, true, _RET_IP_))
-+		return NULL;
-+
-+	return __memcpy(dest, src, len);
-+}
-+EXPORT_SYMBOL(__asan_memcpy);
  
- void kasan_poison(const void *addr, size_t size, u8 value, bool init)
+-static inline __cpuidle void native_halt(void)
++static __always_inline void native_halt(void)
  {
+ 	mds_idle_clear_cpu_buffers();
+ 	asm volatile("hlt": : :"memory");
+@@ -84,7 +81,7 @@ static __always_inline void arch_local_i
+  * Used in the idle loop; sti takes one instruction cycle
+  * to complete:
+  */
+-static inline __cpuidle void arch_safe_halt(void)
++static __always_inline void arch_safe_halt(void)
+ {
+ 	native_safe_halt();
+ }
+@@ -93,7 +90,7 @@ static inline __cpuidle void arch_safe_h
+  * Used when interrupts are already enabled or to
+  * shutdown the processor:
+  */
+-static inline __cpuidle void halt(void)
++static __always_inline void halt(void)
+ {
+ 	native_halt();
+ }
+--- a/arch/x86/include/asm/mwait.h
++++ b/arch/x86/include/asm/mwait.h
+@@ -105,7 +105,7 @@ static inline void __sti_mwait(unsigned
+  * New with Core Duo processors, MWAIT can take some hints based on CPU
+  * capability.
+  */
+-static inline void mwait_idle_with_hints(unsigned long eax, unsigned long ecx)
++static __always_inline void mwait_idle_with_hints(unsigned long eax, unsigned long ecx)
+ {
+ 	if (static_cpu_has_bug(X86_BUG_MONITOR) || !current_set_polling_and_test()) {
+ 		if (static_cpu_has_bug(X86_BUG_CLFLUSH_MONITOR)) {
+--- a/arch/x86/kernel/vmlinux.lds.S
++++ b/arch/x86/kernel/vmlinux.lds.S
+@@ -129,7 +129,6 @@ SECTIONS
+ 		HEAD_TEXT
+ 		TEXT_TEXT
+ 		SCHED_TEXT
+-		CPUIDLE_TEXT
+ 		LOCK_TEXT
+ 		KPROBES_TEXT
+ 		SOFTIRQENTRY_TEXT
+--- a/arch/xtensa/kernel/vmlinux.lds.S
++++ b/arch/xtensa/kernel/vmlinux.lds.S
+@@ -125,7 +125,6 @@ SECTIONS
+     ENTRY_TEXT
+     TEXT_TEXT
+     SCHED_TEXT
+-    CPUIDLE_TEXT
+     LOCK_TEXT
+     *(.fixup)
+   }
+--- a/include/asm-generic/vmlinux.lds.h
++++ b/include/asm-generic/vmlinux.lds.h
+@@ -580,6 +580,9 @@
+ 		ALIGN_FUNCTION();					\
+ 		__noinstr_text_start = .;				\
+ 		*(.noinstr.text)					\
++		__cpuidle_text_start = .;				\
++		*(.cpuidle.text)					\
++		__cpuidle_text_end = .;					\
+ 		__noinstr_text_end = .;
+ 
+ /*
+@@ -620,12 +623,6 @@
+ 		*(.spinlock.text)					\
+ 		__lock_text_end = .;
+ 
+-#define CPUIDLE_TEXT							\
+-		ALIGN_FUNCTION();					\
+-		__cpuidle_text_start = .;				\
+-		*(.cpuidle.text)					\
+-		__cpuidle_text_end = .;
+-
+ #define KPROBES_TEXT							\
+ 		ALIGN_FUNCTION();					\
+ 		__kprobes_text_start = .;				\
+--- a/include/linux/compiler_types.h
++++ b/include/linux/compiler_types.h
+@@ -232,11 +232,15 @@ struct ftrace_likely_data {
+ #endif
+ 
+ /* Section for code which can't be instrumented at all */
+-#define noinstr								\
+-	noinline notrace __attribute((__section__(".noinstr.text")))	\
++#define __noinstr_section(section)					\
++	noinline notrace __attribute((__section__(section)))		\
+ 	__no_kcsan __no_sanitize_address __no_profile __no_sanitize_coverage \
+ 	__no_sanitize_memory
+ 
++#define noinstr __noinstr_section(".noinstr.text")
++
++#define __cpuidle __noinstr_section(".cpuidle.text")
++
+ #endif /* __KERNEL__ */
+ 
+ #endif /* __ASSEMBLY__ */
+--- a/include/linux/cpu.h
++++ b/include/linux/cpu.h
+@@ -176,9 +176,6 @@ void __noreturn cpu_startup_entry(enum c
+ 
+ void cpu_idle_poll_ctrl(bool enable);
+ 
+-/* Attach to any functions which should be considered cpuidle. */
+-#define __cpuidle	__section(".cpuidle.text")
+-
+ bool cpu_in_idle(unsigned long pc);
+ 
+ void arch_cpu_idle(void);
 --- a/tools/objtool/check.c
 +++ b/tools/objtool/check.c
-@@ -956,6 +956,9 @@ static const char *uaccess_safe_builtin[
- 	"__asan_store16_noabort",
- 	"__kasan_check_read",
- 	"__kasan_check_write",
-+	"__asan_memset",
-+	"__asan_memmove",
-+	"__asan_memcpy",
- 	/* KASAN in-line */
- 	"__asan_report_load_n_noabort",
- 	"__asan_report_load1_noabort",
+@@ -376,6 +376,7 @@ static int decode_instructions(struct ob
+ 
+ 		if (!strcmp(sec->name, ".noinstr.text") ||
+ 		    !strcmp(sec->name, ".entry.text") ||
++		    !strcmp(sec->name, ".cpuidle.text") ||
+ 		    !strncmp(sec->name, ".text.__x86.", 12))
+ 			sec->noinstr = true;
+ 
+@@ -3361,6 +3362,12 @@ static inline bool noinstr_call_dest(str
+ 		return true;
+ 
+ 	/*
++	 * If the symbol is a static_call trampoline, we can't tell.
++	 */
++	if (func->static_call_tramp)
++		return true;
++
++	/*
+ 	 * The __ubsan_handle_*() calls are like WARN(), they only happen when
+ 	 * something 'BAD' happened. At the risk of taking the machine down,
+ 	 * let them proceed to get the message out.
+@@ -4155,6 +4162,12 @@ static int validate_noinstr_sections(str
+ 	if (sec) {
+ 		warnings += validate_section(file, sec);
+ 		warnings += validate_unwind_hints(file, sec);
++	}
++
++	sec = find_section_by_name(file->elf, ".cpuidle.text");
++	if (sec) {
++		warnings += validate_section(file, sec);
++		warnings += validate_unwind_hints(file, sec);
+ 	}
+ 
+ 	return warnings;
 
 

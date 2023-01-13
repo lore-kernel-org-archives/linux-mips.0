@@ -2,40 +2,41 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D9350C54EBD
-	for <linux-mips@archiver.kernel.org>; Fri, 13 Jan 2023 17:11:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CD793C54EBE
+	for <linux-mips@archiver.kernel.org>; Fri, 13 Jan 2023 17:12:59 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229499AbjAMRLi (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 13 Jan 2023 12:11:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52658 "EHLO
+        id S229796AbjAMRM6 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 13 Jan 2023 12:12:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53212 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229600AbjAMRLh (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Fri, 13 Jan 2023 12:11:37 -0500
+        with ESMTP id S229484AbjAMRM4 (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Fri, 13 Jan 2023 12:12:56 -0500
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F53F71482
-        for <linux-mips@vger.kernel.org>; Fri, 13 Jan 2023 09:10:49 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CEE987F27
+        for <linux-mips@vger.kernel.org>; Fri, 13 Jan 2023 09:11:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1673629848;
+        s=mimecast20190719; t=1673629863;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=ckKqRBtsefZM1JDfoCvf0Xxq+48ay8EjXnX8re+vcnw=;
-        b=YXxN+nWFcJ4qhkfa4OGIiHqUUme/YHJOSz2u+wJQt2yg2ydHs9HymvX/j9h8hRGCXcUY1c
-        zYhYG5bcFiukATXw3qwYq2rODu4NB0RpW/5pWuEbXszayPzdHgFQZbbOtKpQh0pxZPHJRS
-        a5rvHP1Xqud1FoD3i4ori8e5eoDogAY=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=5U3pYo5y6zzHhtAhfPB+ppqMEJelTMM0ZMYgpBnRMmY=;
+        b=Yw+r4tJk+HSXAOLY2HFoCipFcO0yBhhYoSimtE7CR1IrlqPhda8mKWBo9V2+YTZFLATG/r
+        FtzWKtNSZAyXHLUweEHPQpQMd39x8XYCmd2Dq3osZvlf3X/DAGFk24i8EbsLgCnk5NdEIj
+        CmM+kqCrE8bCK4qiu8NPxtjLhM87xCk=
+Received: from mimecast-mx02.redhat.com (mx3-rdu2.redhat.com
+ [66.187.233.73]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-635-AC9lyTUMPqafMM3-Wo5Sqg-1; Fri, 13 Jan 2023 12:10:45 -0500
-X-MC-Unique: AC9lyTUMPqafMM3-Wo5Sqg-1
+ us-mta-623-lgz3QbC4OT6mzf0WDlrJUQ-1; Fri, 13 Jan 2023 12:11:01 -0500
+X-MC-Unique: lgz3QbC4OT6mzf0WDlrJUQ-1
 Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 25E25858F09;
-        Fri, 13 Jan 2023 17:10:44 +0000 (UTC)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id E6F651C05136;
+        Fri, 13 Jan 2023 17:10:59 +0000 (UTC)
 Received: from t480s.fritz.box (unknown [10.39.193.196])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 2951C40C2064;
-        Fri, 13 Jan 2023 17:10:27 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 5142640C2064;
+        Fri, 13 Jan 2023 17:10:52 +0000 (UTC)
 From:   David Hildenbrand <david@redhat.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     Andrew Morton <akpm@linux-foundation.org>,
@@ -59,44 +60,14 @@ Cc:     Andrew Morton <akpm@linux-foundation.org>,
         linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
         linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org,
         David Hildenbrand <david@redhat.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Borislav Petkov <bp@alien8.de>, Brian Cain <bcain@quicinc.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Chris Zankel <chris@zankel.net>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Dinh Nguyen <dinguyen@kernel.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        Guo Ren <guoren@kernel.org>, Helge Deller <deller@gmx.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        Matt Turner <mattst88@gmail.com>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Michal Simek <monstr@monstr.eu>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
         Richard Henderson <richard.henderson@linaro.org>,
-        Richard Weinberger <richard@nod.at>,
-        Rich Felker <dalias@libc.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Stafford Horne <shorne@gmail.com>,
-        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vineet Gupta <vgupta@kernel.org>,
-        WANG Xuerui <kernel@xen0n.name>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>
-Subject: [PATCH mm-unstable v1 00/26] mm: support __HAVE_ARCH_PTE_SWP_EXCLUSIVE on all architectures with swap PTEs
-Date:   Fri, 13 Jan 2023 18:10:00 +0100
-Message-Id: <20230113171026.582290-1-david@redhat.com>
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>
+Subject: [PATCH mm-unstable v1 02/26] alpha/mm: support __HAVE_ARCH_PTE_SWP_EXCLUSIVE
+Date:   Fri, 13 Jan 2023 18:10:02 +0100
+Message-Id: <20230113171026.582290-3-david@redhat.com>
+In-Reply-To: <20230113171026.582290-1-david@redhat.com>
+References: <20230113171026.582290-1-david@redhat.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Scanned-By: MIMEDefang 3.1 on 10.11.54.1
@@ -104,146 +75,87 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-This is the follow-up on [1]:
-	[PATCH v2 0/8] mm: COW fixes part 3: reliable GUP R/W FOLL_GET of
-	anonymous pages
+Let's support __HAVE_ARCH_PTE_SWP_EXCLUSIVE by stealing one bit
+from the type. Generic MM currently only uses 5 bits for the type
+(MAX_SWAPFILES_SHIFT), so the stolen bit is effectively unused.
 
-After we implemented __HAVE_ARCH_PTE_SWP_EXCLUSIVE on most prominent
-enterprise architectures, implement __HAVE_ARCH_PTE_SWP_EXCLUSIVE on all
-remaining architectures that support swap PTEs.
+While at it, mask the type in mk_swap_pte() as well.
 
-This makes sure that exclusive anonymous pages will stay exclusive, even
-after they were swapped out -- for example, making GUP R/W FOLL_GET of
-anonymous pages reliable. Details can be found in [1].
+Cc: Richard Henderson <richard.henderson@linaro.org>
+Cc: Ivan Kokshaysky <ink@jurassic.park.msu.ru>
+Cc: Matt Turner <mattst88@gmail.com>
+Signed-off-by: David Hildenbrand <david@redhat.com>
+---
+ arch/alpha/include/asm/pgtable.h | 41 ++++++++++++++++++++++++++++----
+ 1 file changed, 37 insertions(+), 4 deletions(-)
 
-This primarily fixes remaining known O_DIRECT memory corruptions that can
-happen on concurrent swapout, whereby we can lose DMA reads to a page
-(modifying the user page by writing to it).
-
-To verify, there are two test cases (requiring swap space, obviously):
-(1) The O_DIRECT+swapout test case [2] from Andrea. This test case tries
-    triggering a race condition.
-(2) My vmsplice() test case [3] that tries to detect if the exclusive
-    marker was lost during swapout, not relying on a race condition.
-
-
-For example, on 32bit x86 (with and without PAE), my test case fails
-without these patches:
-	$ ./test_swp_exclusive
-	FAIL: page was replaced during COW
-But succeeds with these patches:
-	$ ./test_swp_exclusive
-	PASS: page was not replaced during COW
-
-
-Why implement __HAVE_ARCH_PTE_SWP_EXCLUSIVE for all architectures, even
-the ones where swap support might be in a questionable state? This is the
-first step towards removing "readable_exclusive" migration entries, and
-instead using pte_swp_exclusive() also with (readable) migration entries
-instead (as suggested by Peter). The only missing piece for that is
-supporting pmd_swp_exclusive() on relevant architectures with THP
-migration support.
-
-As all relevant architectures now implement __HAVE_ARCH_PTE_SWP_EXCLUSIVE,,
-we can drop __HAVE_ARCH_PTE_SWP_EXCLUSIVE in the last patch.
-
-I tried cross-compiling all relevant setups and tested on x86 and sparc64
-so far.
-
-CCing arch maintainers only on this cover letter and on the respective
-patch(es).
-
-[1] https://lkml.kernel.org/r/20220329164329.208407-1-david@redhat.com
-[2] https://gitlab.com/aarcange/kernel-testcases-for-v5.11/-/blob/main/page_count_do_wp_page-swap.c
-[3] https://gitlab.com/davidhildenbrand/scratchspace/-/blob/main/test_swp_exclusive.c
-
-
-RFC -> v1:
-* Some smaller comment+patch description changes
-* "powerpc/mm: support __HAVE_ARCH_PTE_SWP_EXCLUSIVE on 32bit book3s"
- -> Fixup swap PTE description
-
-
-David Hildenbrand (26):
-  mm/debug_vm_pgtable: more pte_swp_exclusive() sanity checks
-  alpha/mm: support __HAVE_ARCH_PTE_SWP_EXCLUSIVE
-  arc/mm: support __HAVE_ARCH_PTE_SWP_EXCLUSIVE
-  arm/mm: support __HAVE_ARCH_PTE_SWP_EXCLUSIVE
-  csky/mm: support __HAVE_ARCH_PTE_SWP_EXCLUSIVE
-  hexagon/mm: support __HAVE_ARCH_PTE_SWP_EXCLUSIVE
-  ia64/mm: support __HAVE_ARCH_PTE_SWP_EXCLUSIVE
-  loongarch/mm: support __HAVE_ARCH_PTE_SWP_EXCLUSIVE
-  m68k/mm: remove dummy __swp definitions for nommu
-  m68k/mm: support __HAVE_ARCH_PTE_SWP_EXCLUSIVE
-  microblaze/mm: support __HAVE_ARCH_PTE_SWP_EXCLUSIVE
-  mips/mm: support __HAVE_ARCH_PTE_SWP_EXCLUSIVE
-  nios2/mm: refactor swap PTE layout
-  nios2/mm: support __HAVE_ARCH_PTE_SWP_EXCLUSIVE
-  openrisc/mm: support __HAVE_ARCH_PTE_SWP_EXCLUSIVE
-  parisc/mm: support __HAVE_ARCH_PTE_SWP_EXCLUSIVE
-  powerpc/mm: support __HAVE_ARCH_PTE_SWP_EXCLUSIVE on 32bit book3s
-  powerpc/nohash/mm: support __HAVE_ARCH_PTE_SWP_EXCLUSIVE
-  riscv/mm: support __HAVE_ARCH_PTE_SWP_EXCLUSIVE
-  sh/mm: support __HAVE_ARCH_PTE_SWP_EXCLUSIVE
-  sparc/mm: support __HAVE_ARCH_PTE_SWP_EXCLUSIVE on 32bit
-  sparc/mm: support __HAVE_ARCH_PTE_SWP_EXCLUSIVE on 64bit
-  um/mm: support __HAVE_ARCH_PTE_SWP_EXCLUSIVE
-  x86/mm: support __HAVE_ARCH_PTE_SWP_EXCLUSIVE also on 32bit
-  xtensa/mm: support __HAVE_ARCH_PTE_SWP_EXCLUSIVE
-  mm: remove __HAVE_ARCH_PTE_SWP_EXCLUSIVE
-
- arch/alpha/include/asm/pgtable.h              | 40 ++++++++-
- arch/arc/include/asm/pgtable-bits-arcv2.h     | 26 +++++-
- arch/arm/include/asm/pgtable-2level.h         |  3 +
- arch/arm/include/asm/pgtable-3level.h         |  3 +
- arch/arm/include/asm/pgtable.h                | 34 +++++--
- arch/arm64/include/asm/pgtable.h              |  1 -
- arch/csky/abiv1/inc/abi/pgtable-bits.h        | 13 ++-
- arch/csky/abiv2/inc/abi/pgtable-bits.h        | 19 ++--
- arch/csky/include/asm/pgtable.h               | 17 ++++
- arch/hexagon/include/asm/pgtable.h            | 36 ++++++--
- arch/ia64/include/asm/pgtable.h               | 31 ++++++-
- arch/loongarch/include/asm/pgtable-bits.h     |  4 +
- arch/loongarch/include/asm/pgtable.h          | 38 +++++++-
- arch/m68k/include/asm/mcf_pgtable.h           | 35 +++++++-
- arch/m68k/include/asm/motorola_pgtable.h      | 37 +++++++-
- arch/m68k/include/asm/pgtable_no.h            |  6 --
- arch/m68k/include/asm/sun3_pgtable.h          | 38 +++++++-
- arch/microblaze/include/asm/pgtable.h         | 44 +++++++---
- arch/mips/include/asm/pgtable-32.h            | 88 ++++++++++++++++---
- arch/mips/include/asm/pgtable-64.h            | 23 ++++-
- arch/mips/include/asm/pgtable.h               | 35 ++++++++
- arch/nios2/include/asm/pgtable-bits.h         |  3 +
- arch/nios2/include/asm/pgtable.h              | 37 ++++++--
- arch/openrisc/include/asm/pgtable.h           | 40 +++++++--
- arch/parisc/include/asm/pgtable.h             | 40 ++++++++-
- arch/powerpc/include/asm/book3s/32/pgtable.h  | 37 ++++++--
- arch/powerpc/include/asm/book3s/64/pgtable.h  |  1 -
- arch/powerpc/include/asm/nohash/32/pgtable.h  | 22 +++--
- arch/powerpc/include/asm/nohash/32/pte-40x.h  |  6 +-
- arch/powerpc/include/asm/nohash/32/pte-44x.h  | 18 +---
- arch/powerpc/include/asm/nohash/32/pte-85xx.h |  4 +-
- arch/powerpc/include/asm/nohash/64/pgtable.h  | 24 ++++-
- arch/powerpc/include/asm/nohash/pgtable.h     | 15 ++++
- arch/powerpc/include/asm/nohash/pte-e500.h    |  1 -
- arch/riscv/include/asm/pgtable-bits.h         |  3 +
- arch/riscv/include/asm/pgtable.h              | 28 ++++--
- arch/s390/include/asm/pgtable.h               |  1 -
- arch/sh/include/asm/pgtable_32.h              | 53 ++++++++---
- arch/sparc/include/asm/pgtable_32.h           | 26 +++++-
- arch/sparc/include/asm/pgtable_64.h           | 37 +++++++-
- arch/sparc/include/asm/pgtsrmmu.h             | 14 +--
- arch/um/include/asm/pgtable.h                 | 36 +++++++-
- arch/x86/include/asm/pgtable-2level.h         | 26 ++++--
- arch/x86/include/asm/pgtable-3level.h         | 26 +++++-
- arch/x86/include/asm/pgtable.h                |  3 -
- arch/xtensa/include/asm/pgtable.h             | 31 +++++--
- include/linux/pgtable.h                       | 29 ------
- mm/debug_vm_pgtable.c                         | 25 +++++-
- mm/memory.c                                   |  4 -
- mm/rmap.c                                     | 11 ---
- 50 files changed, 944 insertions(+), 228 deletions(-)
-
+diff --git a/arch/alpha/include/asm/pgtable.h b/arch/alpha/include/asm/pgtable.h
+index 9e45f6735d5d..970abf511b13 100644
+--- a/arch/alpha/include/asm/pgtable.h
++++ b/arch/alpha/include/asm/pgtable.h
+@@ -74,6 +74,9 @@ struct vm_area_struct;
+ #define _PAGE_DIRTY	0x20000
+ #define _PAGE_ACCESSED	0x40000
+ 
++/* We borrow bit 39 to store the exclusive marker in swap PTEs. */
++#define _PAGE_SWP_EXCLUSIVE	0x8000000000UL
++
+ /*
+  * NOTE! The "accessed" bit isn't necessarily exact:  it can be kept exactly
+  * by software (use the KRE/URE/KWE/UWE bits appropriately), but I'll fake it.
+@@ -301,18 +304,48 @@ extern inline void update_mmu_cache(struct vm_area_struct * vma,
+ }
+ 
+ /*
+- * Non-present pages:  high 24 bits are offset, next 8 bits type,
+- * low 32 bits zero.
++ * Encode/decode swap entries and swap PTEs. Swap PTEs are all PTEs that
++ * are !pte_none() && !pte_present().
++ *
++ * Format of swap PTEs:
++ *
++ *   6 6 6 6 5 5 5 5 5 5 5 5 5 5 4 4 4 4 4 4 4 4 4 4 3 3 3 3 3 3 3 3
++ *   3 2 1 0 9 8 7 6 5 4 3 2 1 0 9 8 7 6 5 4 3 2 1 0 9 8 7 6 5 4 3 2
++ *   <------------------- offset ------------------> E <--- type -->
++ *
++ *   3 3 2 2 2 2 2 2 2 2 2 2 1 1 1 1 1 1 1 1 1 1
++ *   1 0 9 8 7 6 5 4 3 2 1 0 9 8 7 6 5 4 3 2 1 0 9 8 7 6 5 4 3 2 1 0
++ *   <--------------------------- zeroes -------------------------->
++ *
++ *   E is the exclusive marker that is not stored in swap entries.
+  */
+ extern inline pte_t mk_swap_pte(unsigned long type, unsigned long offset)
+-{ pte_t pte; pte_val(pte) = (type << 32) | (offset << 40); return pte; }
++{ pte_t pte; pte_val(pte) = ((type & 0x7f) << 32) | (offset << 40); return pte; }
+ 
+-#define __swp_type(x)		(((x).val >> 32) & 0xff)
++#define __swp_type(x)		(((x).val >> 32) & 0x7f)
+ #define __swp_offset(x)		((x).val >> 40)
+ #define __swp_entry(type, off)	((swp_entry_t) { pte_val(mk_swap_pte((type), (off))) })
+ #define __pte_to_swp_entry(pte)	((swp_entry_t) { pte_val(pte) })
+ #define __swp_entry_to_pte(x)	((pte_t) { (x).val })
+ 
++#define __HAVE_ARCH_PTE_SWP_EXCLUSIVE
++static inline int pte_swp_exclusive(pte_t pte)
++{
++	return pte_val(pte) & _PAGE_SWP_EXCLUSIVE;
++}
++
++static inline pte_t pte_swp_mkexclusive(pte_t pte)
++{
++	pte_val(pte) |= _PAGE_SWP_EXCLUSIVE;
++	return pte;
++}
++
++static inline pte_t pte_swp_clear_exclusive(pte_t pte)
++{
++	pte_val(pte) &= ~_PAGE_SWP_EXCLUSIVE;
++	return pte;
++}
++
+ #define pte_ERROR(e) \
+ 	printk("%s:%d: bad pte %016lx.\n", __FILE__, __LINE__, pte_val(e))
+ #define pmd_ERROR(e) \
 -- 
 2.39.0
 

@@ -2,230 +2,96 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2B863C678D6
-	for <linux-mips@archiver.kernel.org>; Thu, 12 Jan 2023 20:12:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9570CC61DB3
+	for <linux-mips@archiver.kernel.org>; Fri, 13 Jan 2023 11:15:15 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S241352AbjALUMP (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 12 Jan 2023 15:12:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44224 "EHLO
+        id S241529AbjAMLPM (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 13 Jan 2023 06:15:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36108 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232226AbjALT7M (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Thu, 12 Jan 2023 14:59:12 -0500
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97EE5B8D;
-        Thu, 12 Jan 2023 11:58:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=Content-Type:MIME-Version:References:
-        Subject:Cc:To:From:Date:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
-        Content-ID:Content-Description:In-Reply-To;
-        bh=tPOdw9LFGiPCDTfwXmDjC03yH+Atd2yWpwgqK4SP6Bs=; b=MCFGk/zfAQ1MOxe655CfrxSndB
-        KMsj8OM47QEIEF+dE7LPbkmxg/PQAts31gFJ5Xz3no3m62IuisxdrSXrLN8SYgr1mtDIwtR8p1Foy
-        vgMnbz7h6ch5F50b53yunuqk9MFEuX5uEMORRcRhTqQRFnQzXIgNjlWLrzQ8IyZodgjiEI5j/hfm2
-        jtsLGmSu2xYww6Em1c+Sd7XPqSMSM0BgTy1Y9iUSaQMsmpIltEMs2Z+FvPcdV8LPGTs0uCR8XY70j
-        Jdml4OVol/2E06Nb6eijodGglka4wn0K9TaSFCWA1YgF/306McxeUsk6Jgniwje3STV7G1K2gesSb
-        SZObcOlw==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1pG3hA-0045no-1f;
-        Thu, 12 Jan 2023 19:57:05 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 6D3F6301D8A;
-        Thu, 12 Jan 2023 20:57:11 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id 9180D2CCF0C22; Thu, 12 Jan 2023 20:57:07 +0100 (CET)
-Message-ID: <20230112195539.453613251@infradead.org>
-User-Agent: quilt/0.66
-Date:   Thu, 12 Jan 2023 20:43:16 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     peterz@infradead.org
-Cc:     richard.henderson@linaro.org, ink@jurassic.park.msu.ru,
-        mattst88@gmail.com, vgupta@kernel.org, linux@armlinux.org.uk,
-        nsekhar@ti.com, brgl@bgdev.pl, ulli.kroll@googlemail.com,
-        linus.walleij@linaro.org, shawnguo@kernel.org,
-        Sascha Hauer <s.hauer@pengutronix.de>, kernel@pengutronix.de,
-        festevam@gmail.com, linux-imx@nxp.com, tony@atomide.com,
-        khilman@kernel.org, krzysztof.kozlowski@linaro.org,
-        alim.akhtar@samsung.com, catalin.marinas@arm.com, will@kernel.org,
-        guoren@kernel.org, bcain@quicinc.com, chenhuacai@kernel.org,
-        kernel@xen0n.name, geert@linux-m68k.org, sammy@sammy.net,
-        monstr@monstr.eu, tsbogend@alpha.franken.de, dinguyen@kernel.org,
-        jonas@southpole.se, stefan.kristiansson@saunalahti.fi,
-        shorne@gmail.com, James.Bottomley@HansenPartnership.com,
-        deller@gmx.de, mpe@ellerman.id.au, npiggin@gmail.com,
-        christophe.leroy@csgroup.eu, paul.walmsley@sifive.com,
-        palmer@dabbelt.com, aou@eecs.berkeley.edu, hca@linux.ibm.com,
-        gor@linux.ibm.com, agordeev@linux.ibm.com,
-        borntraeger@linux.ibm.com, svens@linux.ibm.com,
-        ysato@users.sourceforge.jp, dalias@libc.org, davem@davemloft.net,
-        richard@nod.at, anton.ivanov@cambridgegreys.com,
-        johannes@sipsolutions.net, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org,
-        hpa@zytor.com, acme@kernel.org, mark.rutland@arm.com,
-        alexander.shishkin@linux.intel.com, jolsa@kernel.org,
-        namhyung@kernel.org, jgross@suse.com, srivatsa@csail.mit.edu,
-        amakhalov@vmware.com, pv-drivers@vmware.com,
-        boris.ostrovsky@oracle.com, chris@zankel.net, jcmvbkbc@gmail.com,
-        rafael@kernel.org, lenb@kernel.org, pavel@ucw.cz,
-        gregkh@linuxfoundation.org, mturquette@baylibre.com,
-        sboyd@kernel.org, daniel.lezcano@linaro.org, lpieralisi@kernel.org,
-        sudeep.holla@arm.com, agross@kernel.org, andersson@kernel.org,
-        konrad.dybcio@linaro.org, anup@brainfault.org,
-        thierry.reding@gmail.com, jonathanh@nvidia.com,
-        jacob.jun.pan@linux.intel.com, atishp@atishpatra.org,
-        Arnd Bergmann <arnd@arndb.de>, yury.norov@gmail.com,
-        andriy.shevchenko@linux.intel.com, linux@rasmusvillemoes.dk,
-        dennis@kernel.org, tj@kernel.org, cl@linux.com,
-        rostedt@goodmis.org, mhiramat@kernel.org, frederic@kernel.org,
-        paulmck@kernel.org, pmladek@suse.com, senozhatsky@chromium.org,
-        john.ogness@linutronix.de, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        bsegall@google.com, mgorman@suse.de, bristot@redhat.com,
-        vschneid@redhat.com, ryabinin.a.a@gmail.com, glider@google.com,
-        andreyknvl@gmail.com, dvyukov@google.com,
-        vincenzo.frascino@arm.com,
-        Andrew Morton <akpm@linux-foundation.org>, jpoimboe@kernel.org,
-        linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-snps-arc@lists.infradead.org, linux-omap@vger.kernel.org,
-        linux-samsung-soc@vger.kernel.org, linux-csky@vger.kernel.org,
-        linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org,
-        loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
-        linux-mips@vger.kernel.org, openrisc@lists.librecores.org,
-        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
-        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
-        linux-um@lists.infradead.org, linux-perf-users@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-xtensa@linux-xtensa.org, linux-acpi@vger.kernel.org,
-        linux-pm@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-mm@kvack.org,
-        linux-trace-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>
-Subject: [PATCH v3 02/51] x86/idle: Replace x86_idle with a static_call
-References: <20230112194314.845371875@infradead.org>
+        with ESMTP id S239679AbjAMLNG (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Fri, 13 Jan 2023 06:13:06 -0500
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB13A5C1C7;
+        Fri, 13 Jan 2023 03:10:50 -0800 (PST)
+Received: by mail-pf1-x433.google.com with SMTP id 20so10504432pfu.13;
+        Fri, 13 Jan 2023 03:10:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=jqiLRE9h/fekKbJDmUy9t3EeJ+WTeQsUaiDr7CJjX90=;
+        b=L4fJ71iaxbvPAX7vFbFgYrkDfOgL55S8aFPY0Pw7dQktBZYUvXtC3+eX8aMGhc8QAg
+         YZIIzsPu+BVrpCejeLFXdoKu4v20SbSt5LhumRjBF1e/0+9oA1q6mWS1xo2i188UfNo2
+         gkdDnY5fYPen/iPtrxL/LZzLFt+TdjdNsD8rxy/ASD+/UAZp3ooilR7mJYD+UbX7WmDb
+         Wsmq0OSj0cefmXYIlykjbYwMFgbYVHGpkuJlFMPcmWrTrIn9vLKf3rJKowkgsSzC06OB
+         W+m1PKHYugBBbhgWV5S5GRjKosnK0GbOp+/M1I6taEg8jIzOObDToSxjOdjtExCwhZ1v
+         P3TA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=jqiLRE9h/fekKbJDmUy9t3EeJ+WTeQsUaiDr7CJjX90=;
+        b=dfpCK7xGJpAX9r8587VtncxWSTMqFU8EhNMFVmEIFLDIXFozLq1gahL0/qMBlBvdX7
+         PsSL0ypiKoFMm50ylSH/rnATovps1QT1vwYbRrAmNmretgAEQE2NRHxZjToW145JdzQn
+         mR2Mf6Mw1pV5Y1VAkpf4I9oXZm0vxLXw/tOtbksr+0W6i1JV5iJW4EqCrHLYN5hWHaCY
+         EMbKFVCJJTag6gx8/t7tq4tJhNKBfxfkjEs3fjhFb752fIsnj0an23lCMYmWYxb+p7ti
+         T6tZyKhD0lyYP9W7vdGPlUn0l/M9hyTUxq1DJp9v5IW3nA0JKtVcVJSVK5ENQWDGmKiO
+         AAvg==
+X-Gm-Message-State: AFqh2kqDDDvUoL7neguPd7EnzElqwaNV3bkKTnoHevbMu2vsBrHb2cSU
+        LkV0PPuUzlnRAYaVSpnKLCYPUjH3I1aCKxN0
+X-Google-Smtp-Source: AMrXdXs+lHN+WnuOFCl7Dj6tqaQC4Q0yCMDe2a9LKsyLA3199pbRURp9GgW2cD4No57iCRDtWscUvg==
+X-Received: by 2002:a05:6a00:4c94:b0:58b:b9ce:cd88 with SMTP id eb20-20020a056a004c9400b0058bb9cecd88mr1705706pfb.20.1673608250034;
+        Fri, 13 Jan 2023 03:10:50 -0800 (PST)
+Received: from kelvin-ThinkPad-L14-Gen-1.. (ec2-18-163-35-77.ap-east-1.compute.amazonaws.com. [18.163.35.77])
+        by smtp.gmail.com with ESMTPSA id x189-20020a6263c6000000b00576259507c0sm13410597pfb.100.2023.01.13.03.09.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 13 Jan 2023 03:10:49 -0800 (PST)
+From:   Keguang Zhang <keguang.zhang@gmail.com>
+To:     linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Keguang Zhang <keguang.zhang@gmail.com>
+Subject: [PATCH 0/2] Devicetree support for Loongson-1 clock
+Date:   Fri, 13 Jan 2023 19:07:36 +0800
+Message-Id: <20230113110738.1505973-1-keguang.zhang@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Typical boot time setup; no need to suffer an indirect call for that.
+This patchset adds devicetree support for Loongson-1 clock,
+including the devicetree binding and the driver.
 
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Reviewed-by: Frederic Weisbecker <frederic@kernel.org>
-Reviewed-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-Tested-by: Tony Lindgren <tony@atomide.com>
-Tested-by: Ulf Hansson <ulf.hansson@linaro.org>
----
- arch/x86/kernel/process.c |   50 +++++++++++++++++++++++++---------------------
- 1 file changed, 28 insertions(+), 22 deletions(-)
+Keguang Zhang (2):
+  dt-bindings: clock: Add binding for Loongson-1 clock driver
+  clk: loongson1: Refactor to add devicetree support
 
---- a/arch/x86/kernel/process.c
-+++ b/arch/x86/kernel/process.c
-@@ -24,6 +24,7 @@
- #include <linux/cpuidle.h>
- #include <linux/acpi.h>
- #include <linux/elf-randomize.h>
-+#include <linux/static_call.h>
- #include <trace/events/power.h>
- #include <linux/hw_breakpoint.h>
- #include <asm/cpu.h>
-@@ -692,7 +693,23 @@ void __switch_to_xtra(struct task_struct
- unsigned long boot_option_idle_override = IDLE_NO_OVERRIDE;
- EXPORT_SYMBOL(boot_option_idle_override);
- 
--static void (*x86_idle)(void);
-+/*
-+ * We use this if we don't have any better idle routine..
-+ */
-+void __cpuidle default_idle(void)
-+{
-+	raw_safe_halt();
-+}
-+#if defined(CONFIG_APM_MODULE) || defined(CONFIG_HALTPOLL_CPUIDLE_MODULE)
-+EXPORT_SYMBOL(default_idle);
-+#endif
-+
-+DEFINE_STATIC_CALL_NULL(x86_idle, default_idle);
-+
-+static bool x86_idle_set(void)
-+{
-+	return !!static_call_query(x86_idle);
-+}
- 
- #ifndef CONFIG_SMP
- static inline void play_dead(void)
-@@ -715,28 +732,17 @@ void arch_cpu_idle_dead(void)
- /*
-  * Called from the generic idle code.
-  */
--void arch_cpu_idle(void)
--{
--	x86_idle();
--}
--
--/*
-- * We use this if we don't have any better idle routine..
-- */
--void __cpuidle default_idle(void)
-+void __cpuidle arch_cpu_idle(void)
- {
--	raw_safe_halt();
-+	static_call(x86_idle)();
- }
--#if defined(CONFIG_APM_MODULE) || defined(CONFIG_HALTPOLL_CPUIDLE_MODULE)
--EXPORT_SYMBOL(default_idle);
--#endif
- 
- #ifdef CONFIG_XEN
- bool xen_set_default_idle(void)
- {
--	bool ret = !!x86_idle;
-+	bool ret = x86_idle_set();
- 
--	x86_idle = default_idle;
-+	static_call_update(x86_idle, default_idle);
- 
- 	return ret;
- }
-@@ -859,20 +865,20 @@ void select_idle_routine(const struct cp
- 	if (boot_option_idle_override == IDLE_POLL && smp_num_siblings > 1)
- 		pr_warn_once("WARNING: polling idle and HT enabled, performance may degrade\n");
- #endif
--	if (x86_idle || boot_option_idle_override == IDLE_POLL)
-+	if (x86_idle_set() || boot_option_idle_override == IDLE_POLL)
- 		return;
- 
- 	if (boot_cpu_has_bug(X86_BUG_AMD_E400)) {
- 		pr_info("using AMD E400 aware idle routine\n");
--		x86_idle = amd_e400_idle;
-+		static_call_update(x86_idle, amd_e400_idle);
- 	} else if (prefer_mwait_c1_over_halt(c)) {
- 		pr_info("using mwait in idle threads\n");
--		x86_idle = mwait_idle;
-+		static_call_update(x86_idle, mwait_idle);
- 	} else if (cpu_feature_enabled(X86_FEATURE_TDX_GUEST)) {
- 		pr_info("using TDX aware idle routine\n");
--		x86_idle = tdx_safe_halt;
-+		static_call_update(x86_idle, tdx_safe_halt);
- 	} else
--		x86_idle = default_idle;
-+		static_call_update(x86_idle, default_idle);
- }
- 
- void amd_e400_c1e_apic_setup(void)
-@@ -925,7 +931,7 @@ static int __init idle_setup(char *str)
- 		 * To continue to load the CPU idle driver, don't touch
- 		 * the boot_option_idle_override.
- 		 */
--		x86_idle = default_idle;
-+		static_call_update(x86_idle, default_idle);
- 		boot_option_idle_override = IDLE_HALT;
- 	} else if (!strcmp(str, "nomwait")) {
- 		/*
+ .../bindings/clock/loongson,ls1x-clk.yaml     |  81 ++++
+ drivers/clk/Makefile                          |   2 +-
+ drivers/clk/clk-loongson1.c                   | 348 ++++++++++++++++++
+ drivers/clk/loongson1/Makefile                |   4 -
+ drivers/clk/loongson1/clk-loongson1b.c        | 118 ------
+ drivers/clk/loongson1/clk-loongson1c.c        |  95 -----
+ drivers/clk/loongson1/clk.c                   |  41 ---
+ drivers/clk/loongson1/clk.h                   |  15 -
+ 8 files changed, 430 insertions(+), 274 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/clock/loongson,ls1x-clk.yaml
+ create mode 100644 drivers/clk/clk-loongson1.c
+ delete mode 100644 drivers/clk/loongson1/Makefile
+ delete mode 100644 drivers/clk/loongson1/clk-loongson1b.c
+ delete mode 100644 drivers/clk/loongson1/clk-loongson1c.c
+ delete mode 100644 drivers/clk/loongson1/clk.c
+ delete mode 100644 drivers/clk/loongson1/clk.h
 
+
+base-commit: 1b929c02afd37871d5afb9d498426f83432e71c2
+-- 
+2.34.1
 

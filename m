@@ -2,41 +2,41 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 00B16C3DA78
-	for <linux-mips@archiver.kernel.org>; Fri, 13 Jan 2023 17:13:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 56D6BC3DA78
+	for <linux-mips@archiver.kernel.org>; Fri, 13 Jan 2023 17:13:34 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229484AbjAMRM7 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 13 Jan 2023 12:12:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53102 "EHLO
+        id S229553AbjAMRNc (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 13 Jan 2023 12:13:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53546 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229769AbjAMRM4 (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Fri, 13 Jan 2023 12:12:56 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9483582B81
-        for <linux-mips@vger.kernel.org>; Fri, 13 Jan 2023 09:11:00 -0800 (PST)
+        with ESMTP id S229868AbjAMRNL (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Fri, 13 Jan 2023 12:13:11 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C50988DC7
+        for <linux-mips@vger.kernel.org>; Fri, 13 Jan 2023 09:11:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1673629859;
+        s=mimecast20190719; t=1673629873;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=rXiyu4T9E3cHd7BmjOKGfZSf96+T1UTdr6M/Zzcd1iA=;
-        b=V7MnlPVCPAhX2TVHBxnmCQ3V70vNnlQpK/LlzUnuiPe5m92tF9p2OA1NGXXrrRB+P24N3F
-        EpC0Q8SrV7DabAvRP2FELeYsdS9PGP6327vNewEQVX8PoglyrKSAdN0klqhU8q9Sf8KXKs
-        q9e/Vatu8IA0NTqSoP/yFZbOlSSyHho=
-Received: from mimecast-mx02.redhat.com (mx3-rdu2.redhat.com
- [66.187.233.73]) by relay.mimecast.com with ESMTP with STARTTLS
+        bh=CsZI6CBJjkMgqSDB0pNEUq6oiZDvtrxY4s2APwPC8ec=;
+        b=GFMy5MssnTcaUIIjE1lH1kmZ+hEynp2ZUs0Ab2IQFmAAmUkOCpLGIaZ/NNVjHbNbcohFIN
+        ABFlInWxPMPy72xIpVDF2xo+XeKgu+iNC8aAM9wETwBlB13M6q3Z0Y3WehapenS0a1VU8P
+        zHRnacXNyQxEQp5qeeeMxjKn1Edezrk=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-131-UP7pYWA7N8-Lxng6Qfiptg-1; Fri, 13 Jan 2023 12:10:53 -0500
-X-MC-Unique: UP7pYWA7N8-Lxng6Qfiptg-1
+ us-mta-226-ElAanbZ3Nt6z3bJp0Ss8PQ-1; Fri, 13 Jan 2023 12:11:08 -0500
+X-MC-Unique: ElAanbZ3Nt6z3bJp0Ss8PQ-1
 Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id E39ED3C0D195;
-        Fri, 13 Jan 2023 17:10:51 +0000 (UTC)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id A512010113C2;
+        Fri, 13 Jan 2023 17:11:06 +0000 (UTC)
 Received: from t480s.fritz.box (unknown [10.39.193.196])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 8457040C2064;
-        Fri, 13 Jan 2023 17:10:44 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 7DEC840C2064;
+        Fri, 13 Jan 2023 17:11:00 +0000 (UTC)
 From:   David Hildenbrand <david@redhat.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     Andrew Morton <akpm@linux-foundation.org>,
@@ -59,10 +59,11 @@ Cc:     Andrew Morton <akpm@linux-foundation.org>,
         linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
         linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
         linux-um@lists.infradead.org, linux-xtensa@linux-xtensa.org,
-        David Hildenbrand <david@redhat.com>
-Subject: [PATCH mm-unstable v1 01/26] mm/debug_vm_pgtable: more pte_swp_exclusive() sanity checks
-Date:   Fri, 13 Jan 2023 18:10:01 +0100
-Message-Id: <20230113171026.582290-2-david@redhat.com>
+        David Hildenbrand <david@redhat.com>,
+        Vineet Gupta <vgupta@kernel.org>
+Subject: [PATCH mm-unstable v1 03/26] arc/mm: support __HAVE_ARCH_PTE_SWP_EXCLUSIVE
+Date:   Fri, 13 Jan 2023 18:10:03 +0100
+Message-Id: <20230113171026.582290-4-david@redhat.com>
 In-Reply-To: <20230113171026.582290-1-david@redhat.com>
 References: <20230113171026.582290-1-david@redhat.com>
 MIME-Version: 1.0
@@ -72,62 +73,68 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-We want to implement __HAVE_ARCH_PTE_SWP_EXCLUSIVE on all architectures.
-Let's extend our sanity checks, especially testing that our PTE bit
-does not affect:
-* is_swap_pte() -> pte_present() and pte_none()
-* the swap entry + type
-* pte_swp_soft_dirty()
+Let's support __HAVE_ARCH_PTE_SWP_EXCLUSIVE by using bit 5, which is yet
+unused. The only important parts seems to be to not use _PAGE_PRESENT
+(bit 9).
 
-Especially, the pfn_pte() is dodgy when the swap PTE layout differs
-heavily from ordinary PTEs. Let's properly construct a swap PTE from
-swap type+offset.
-
+Cc: Vineet Gupta <vgupta@kernel.org>
 Signed-off-by: David Hildenbrand <david@redhat.com>
 ---
- mm/debug_vm_pgtable.c | 23 ++++++++++++++++++++++-
- 1 file changed, 22 insertions(+), 1 deletion(-)
+ arch/arc/include/asm/pgtable-bits-arcv2.h | 27 ++++++++++++++++++++---
+ 1 file changed, 24 insertions(+), 3 deletions(-)
 
-diff --git a/mm/debug_vm_pgtable.c b/mm/debug_vm_pgtable.c
-index bb3328f46126..a0730beffd78 100644
---- a/mm/debug_vm_pgtable.c
-+++ b/mm/debug_vm_pgtable.c
-@@ -811,13 +811,34 @@ static void __init pmd_swap_soft_dirty_tests(struct pgtable_debug_args *args) {
- static void __init pte_swap_exclusive_tests(struct pgtable_debug_args *args)
- {
- #ifdef __HAVE_ARCH_PTE_SWP_EXCLUSIVE
--	pte_t pte = pfn_pte(args->fixed_pte_pfn, args->page_prot);
-+	unsigned long max_swapfile_size = generic_max_swapfile_size();
-+	swp_entry_t entry, entry2;
-+	pte_t pte;
+diff --git a/arch/arc/include/asm/pgtable-bits-arcv2.h b/arch/arc/include/asm/pgtable-bits-arcv2.h
+index 515e82db519f..611f412713b9 100644
+--- a/arch/arc/include/asm/pgtable-bits-arcv2.h
++++ b/arch/arc/include/asm/pgtable-bits-arcv2.h
+@@ -26,6 +26,9 @@
+ #define _PAGE_GLOBAL		(1 << 8)  /* ASID agnostic (H) */
+ #define _PAGE_PRESENT		(1 << 9)  /* PTE/TLB Valid (H) */
  
- 	pr_debug("Validating PTE swap exclusive\n");
++/* We borrow bit 5 to store the exclusive marker in swap PTEs. */
++#define _PAGE_SWP_EXCLUSIVE	_PAGE_DIRTY
 +
-+	/* Create a swp entry with all possible bits set */
-+	entry = swp_entry((1 << MAX_SWAPFILES_SHIFT) - 1,
-+			  max_swapfile_size - 1);
-+
-+	pte = swp_entry_to_pte(entry);
-+	WARN_ON(pte_swp_exclusive(pte));
-+	WARN_ON(!is_swap_pte(pte));
-+	entry2 = pte_to_swp_entry(pte);
-+	WARN_ON(memcmp(&entry, &entry2, sizeof(entry)));
-+
- 	pte = pte_swp_mkexclusive(pte);
- 	WARN_ON(!pte_swp_exclusive(pte));
-+	WARN_ON(!is_swap_pte(pte));
-+	WARN_ON(pte_swp_soft_dirty(pte));
-+	entry2 = pte_to_swp_entry(pte);
-+	WARN_ON(memcmp(&entry, &entry2, sizeof(entry)));
-+
- 	pte = pte_swp_clear_exclusive(pte);
- 	WARN_ON(pte_swp_exclusive(pte));
-+	WARN_ON(!is_swap_pte(pte));
-+	entry2 = pte_to_swp_entry(pte);
-+	WARN_ON(memcmp(&entry, &entry2, sizeof(entry)));
- #endif /* __HAVE_ARCH_PTE_SWP_EXCLUSIVE */
- }
+ #ifdef CONFIG_ARC_MMU_V4
+ #define _PAGE_HW_SZ		(1 << 10)  /* Normal/super (H) */
+ #else
+@@ -106,9 +109,18 @@ static inline void set_pte_at(struct mm_struct *mm, unsigned long addr,
+ void update_mmu_cache(struct vm_area_struct *vma, unsigned long address,
+ 		      pte_t *ptep);
  
+-/* Encode swap {type,off} tuple into PTE
+- * We reserve 13 bits for 5-bit @type, keeping bits 12-5 zero, ensuring that
+- * PAGE_PRESENT is zero in a PTE holding swap "identifier"
++/*
++ * Encode/decode swap entries and swap PTEs. Swap PTEs are all PTEs that
++ * are !pte_none() && !pte_present().
++ *
++ * Format of swap PTEs:
++ *
++ *   3 3 2 2 2 2 2 2 2 2 2 2 1 1 1 1 1 1 1 1 1 1
++ *   1 0 9 8 7 6 5 4 3 2 1 0 9 8 7 6 5 4 3 2 1 0 9 8 7 6 5 4 3 2 1 0
++ *   <-------------- offset -------------> <--- zero --> E < type ->
++ *
++ *   E is the exclusive marker that is not stored in swap entries.
++ *   The zero'ed bits include _PAGE_PRESENT.
+  */
+ #define __swp_entry(type, off)		((swp_entry_t) \
+ 					{ ((type) & 0x1f) | ((off) << 13) })
+@@ -120,6 +132,15 @@ void update_mmu_cache(struct vm_area_struct *vma, unsigned long address,
+ #define __pte_to_swp_entry(pte)		((swp_entry_t) { pte_val(pte) })
+ #define __swp_entry_to_pte(x)		((pte_t) { (x).val })
+ 
++#define __HAVE_ARCH_PTE_SWP_EXCLUSIVE
++static inline int pte_swp_exclusive(pte_t pte)
++{
++	return pte_val(pte) & _PAGE_SWP_EXCLUSIVE;
++}
++
++PTE_BIT_FUNC(swp_mkexclusive, |= (_PAGE_SWP_EXCLUSIVE));
++PTE_BIT_FUNC(swp_clear_exclusive, &= ~(_PAGE_SWP_EXCLUSIVE));
++
+ #ifdef CONFIG_TRANSPARENT_HUGEPAGE
+ #include <asm/hugepage.h>
+ #endif
 -- 
 2.39.0
 

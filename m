@@ -2,97 +2,158 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 50A2EC678D7
-	for <linux-mips@archiver.kernel.org>; Mon, 16 Jan 2023 13:50:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D16B6C46467
+	for <linux-mips@archiver.kernel.org>; Mon, 16 Jan 2023 13:50:59 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230312AbjAPNuz (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 16 Jan 2023 08:50:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60240 "EHLO
+        id S231518AbjAPNu4 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 16 Jan 2023 08:50:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60642 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231425AbjAPNun (ORCPT
+        with ESMTP id S231436AbjAPNun (ORCPT
         <rfc822;linux-mips@vger.kernel.org>); Mon, 16 Jan 2023 08:50:43 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A315A21974;
-        Mon, 16 Jan 2023 05:50:41 -0800 (PST)
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20C2421945;
+        Mon, 16 Jan 2023 05:50:42 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 3C52860FC7;
+        by dfw.source.kernel.org (Postfix) with ESMTPS id B28DE60FC6;
         Mon, 16 Jan 2023 13:50:41 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8C0A8C433F2;
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9767DC43392;
         Mon, 16 Jan 2023 13:50:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1673877040;
-        bh=Oycgtjbj5Je/2GUULN931D+KpOMY5u4TF17SbiYzKnc=;
+        bh=Sc/MXrEwZaxI4omzYCVHgWpM1c0Ozs8INEgkW+Kkfxo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MCQANLu5lUMIayX0woy6ZFaEDn1mFl7y9QyW1Zksz0ZsxxCzmLeChINV4ZcbsucPs
-         Ukk1k03scIziJ1c+gqy9tkrjFAUh7QAS6YvpS0PHxe/wB4Lo4n/KVWVMYFrDGpgidr
-         K/IxXlyPsyZJfS3JkiaeZnph0OIyrsfZbzb3a5p4I2xG2P2HW0uBgDPGjCpmu0vLnu
-         Ibkye6ETKn8m5wN89rbhv5Ptq9gKhoUwYjayNOOcgoIE/H/a/4l85/PVIql8WytZu3
-         lEjQAkBxlXxZguotXXTPBUeLOaVnjx/3sMD/kN6APt40RaILS+IdfeXQ3pMmJrnToK
-         hxvtjSydPg1oA==
+        b=GZdwS8bAvdzWN/C6v/U15xmHvbQMQMJusVQTi9CqJfflW/jPFbn3aYdXTST2GS1hv
+         ChWtwzHM9Mo6bKs2CLsEmdTjFdL/zEumhE3mzEhXtRCRsHvoeixjPySaA7MX0P6B55
+         Vhw9Kbo3g3EM6g0/QTjGYHErVQuIgXI6FpFpnntNtkCY56NtR4870LolZ9+RXwI0eW
+         KjvIpJ5o/R9jTF1Dlw9S97JdX8yEZqI9ZaszR6vU9qk3jNFuBgQn5xOBl18KH7oGFb
+         x0ft+UcfE6D4hkXHV3EOcU2UDR0XlFd/EaW6NVQItAnk0l2yIvJmHlMp8mS8jkV/Ya
+         5tidaNTVroP+Q==
 Received: from johan by xi.lan with local (Exim 4.94.2)
         (envelope-from <johan+linaro@kernel.org>)
-        id 1pHPt5-0003uo-NM; Mon, 16 Jan 2023 14:50:59 +0100
+        id 1pHPt5-0003ux-Vi; Mon, 16 Jan 2023 14:51:00 +0100
 From:   Johan Hovold <johan+linaro@kernel.org>
 To:     Marc Zyngier <maz@kernel.org>, Thomas Gleixner <tglx@linutronix.de>
 Cc:     x86@kernel.org, platform-driver-x86@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
         linux-kernel@vger.kernel.org,
         Johan Hovold <johan+linaro@kernel.org>,
-        =?UTF-8?q?Philippe=20Mathieu-Daud=C3=A9?= <philmd@linaro.org>,
         Hsin-Yi Wang <hsinyi@chromium.org>,
         Mark-PK Tsai <mark-pk.tsai@mediatek.com>
-Subject: [PATCH v4 03/19] irqdomain: Drop leftover brackets
-Date:   Mon, 16 Jan 2023 14:50:28 +0100
-Message-Id: <20230116135044.14998-4-johan+linaro@kernel.org>
+Subject: [PATCH v4 06/19] irqdomain: Drop revmap mutex
+Date:   Mon, 16 Jan 2023 14:50:31 +0100
+Message-Id: <20230116135044.14998-7-johan+linaro@kernel.org>
 X-Mailer: git-send-email 2.38.2
 In-Reply-To: <20230116135044.14998-1-johan+linaro@kernel.org>
 References: <20230116135044.14998-1-johan+linaro@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Drop some unnecessary brackets that were left in place when the
-corresponding code was updated.
+The global irq_domain_mutex is now held in all paths that update the
+revmap structures so there is no longer any need for the revmap mutex.
 
-Reviewed-by: Philippe Mathieu-Daudé <philmd@linaro.org>
 Tested-by: Hsin-Yi Wang <hsinyi@chromium.org>
 Tested-by: Mark-PK Tsai <mark-pk.tsai@mediatek.com>
 Signed-off-by: Johan Hovold <johan+linaro@kernel.org>
 ---
- kernel/irq/irqdomain.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+ include/linux/irqdomain.h |  2 --
+ kernel/irq/irqdomain.c    | 13 ++++++-------
+ 2 files changed, 6 insertions(+), 9 deletions(-)
 
+diff --git a/include/linux/irqdomain.h b/include/linux/irqdomain.h
+index 5b2718e1c6de..7fd3939328c2 100644
+--- a/include/linux/irqdomain.h
++++ b/include/linux/irqdomain.h
+@@ -143,7 +143,6 @@ struct irq_domain_chip_generic;
+  * Revmap data, used internally by the irq domain code:
+  * @revmap_size:	Size of the linear map table @revmap[]
+  * @revmap_tree:	Radix map tree for hwirqs that don't fit in the linear map
+- * @revmap_mutex:	Lock for the revmap
+  * @revmap:		Linear table of irq_data pointers
+  */
+ struct irq_domain {
+@@ -171,7 +170,6 @@ struct irq_domain {
+ 	irq_hw_number_t			hwirq_max;
+ 	unsigned int			revmap_size;
+ 	struct radix_tree_root		revmap_tree;
+-	struct mutex			revmap_mutex;
+ 	struct irq_data __rcu		*revmap[];
+ };
+ 
 diff --git a/kernel/irq/irqdomain.c b/kernel/irq/irqdomain.c
-index fe9ec53fe7aa..dfd60bd49109 100644
+index 23f5919e58b7..248e6acfafbe 100644
 --- a/kernel/irq/irqdomain.c
 +++ b/kernel/irq/irqdomain.c
-@@ -219,9 +219,8 @@ struct irq_domain *__irq_domain_add(struct fwnode_handle *fwnode, unsigned int s
+@@ -214,7 +214,6 @@ struct irq_domain *__irq_domain_add(struct fwnode_handle *fwnode, unsigned int s
+ 
+ 	/* Fill structure */
+ 	INIT_RADIX_TREE(&domain->revmap_tree, GFP_KERNEL);
+-	mutex_init(&domain->revmap_mutex);
+ 	domain->ops = ops;
  	domain->host_data = host_data;
  	domain->hwirq_max = hwirq_max;
+@@ -501,30 +500,30 @@ static bool irq_domain_is_nomap(struct irq_domain *domain)
+ static void irq_domain_clear_mapping(struct irq_domain *domain,
+ 				     irq_hw_number_t hwirq)
+ {
++	lockdep_assert_held(&irq_domain_mutex);
++
+ 	if (irq_domain_is_nomap(domain))
+ 		return;
  
--	if (direct_max) {
-+	if (direct_max)
- 		domain->flags |= IRQ_DOMAIN_FLAG_NO_MAP;
--	}
- 
- 	domain->revmap_size = size;
- 
-@@ -615,9 +614,8 @@ void irq_domain_associate_many(struct irq_domain *domain, unsigned int irq_base,
- 	pr_debug("%s(%s, irqbase=%i, hwbase=%i, count=%i)\n", __func__,
- 		of_node_full_name(of_node), irq_base, (int)hwirq_base, count);
- 
--	for (i = 0; i < count; i++) {
-+	for (i = 0; i < count; i++)
- 		irq_domain_associate(domain, irq_base + i, hwirq_base + i);
--	}
+-	mutex_lock(&domain->revmap_mutex);
+ 	if (hwirq < domain->revmap_size)
+ 		rcu_assign_pointer(domain->revmap[hwirq], NULL);
+ 	else
+ 		radix_tree_delete(&domain->revmap_tree, hwirq);
+-	mutex_unlock(&domain->revmap_mutex);
  }
- EXPORT_SYMBOL_GPL(irq_domain_associate_many);
  
+ static void irq_domain_set_mapping(struct irq_domain *domain,
+ 				   irq_hw_number_t hwirq,
+ 				   struct irq_data *irq_data)
+ {
++	lockdep_assert_held(&irq_domain_mutex);
++
+ 	if (irq_domain_is_nomap(domain))
+ 		return;
+ 
+-	mutex_lock(&domain->revmap_mutex);
+ 	if (hwirq < domain->revmap_size)
+ 		rcu_assign_pointer(domain->revmap[hwirq], irq_data);
+ 	else
+ 		radix_tree_insert(&domain->revmap_tree, hwirq, irq_data);
+-	mutex_unlock(&domain->revmap_mutex);
+ }
+ 
+ static void irq_domain_disassociate(struct irq_domain *domain, unsigned int irq)
+@@ -1511,11 +1510,12 @@ static void irq_domain_fix_revmap(struct irq_data *d)
+ {
+ 	void __rcu **slot;
+ 
++	lockdep_assert_held(&irq_domain_mutex);
++
+ 	if (irq_domain_is_nomap(d->domain))
+ 		return;
+ 
+ 	/* Fix up the revmap. */
+-	mutex_lock(&d->domain->revmap_mutex);
+ 	if (d->hwirq < d->domain->revmap_size) {
+ 		/* Not using radix tree */
+ 		rcu_assign_pointer(d->domain->revmap[d->hwirq], d);
+@@ -1524,7 +1524,6 @@ static void irq_domain_fix_revmap(struct irq_data *d)
+ 		if (slot)
+ 			radix_tree_replace_slot(&d->domain->revmap_tree, slot, d);
+ 	}
+-	mutex_unlock(&d->domain->revmap_mutex);
+ }
+ 
+ /**
 -- 
 2.38.2
 

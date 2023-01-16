@@ -2,52 +2,52 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0975DC678D7
-	for <linux-mips@archiver.kernel.org>; Mon, 16 Jan 2023 13:15:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 16F67C46467
+	for <linux-mips@archiver.kernel.org>; Mon, 16 Jan 2023 13:15:55 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230166AbjAPNPw (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 16 Jan 2023 08:15:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35624 "EHLO
+        id S231297AbjAPNPx (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 16 Jan 2023 08:15:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36164 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230347AbjAPNPd (ORCPT
+        with ESMTP id S230284AbjAPNPd (ORCPT
         <rfc822;linux-mips@vger.kernel.org>); Mon, 16 Jan 2023 08:15:33 -0500
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC5CF1D937;
-        Mon, 16 Jan 2023 05:12:39 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD1AF1D926;
+        Mon, 16 Jan 2023 05:12:40 -0800 (PST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 9AB4967840;
-        Mon, 16 Jan 2023 13:12:38 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 80E3467853;
+        Mon, 16 Jan 2023 13:12:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1673874758; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1673874759; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=Ub/S5lUTk4UdOnl+Asnj3p00yoXGxL5j3bEBHrB28Qc=;
-        b=PYrOQkWmr0HtH6SHms1C+IBgmfIkLRkFa1on31+4/yBstOuRQLV0wc7YSuGvgrfZgradB+
-        LB2CtQuscXtaR5jQOfJG5Ix8p/1L7NfF/5GhP1z2U0a+kkG/8Yj+v5PTE3t94MzNIo0BOI
-        YGYcADoU/0xLt2zTJq6bjFRrz7aeKg8=
+        bh=ux8DO5Cbg3WS+Dfk4vpf92hsyg6mGAUkiBHpQHhMXvk=;
+        b=0udO1KOY9nse10LxnrwMJ/4ZBUmhjfQOxP9YFBL2ZxLj3CfzcWAjAOExUTIMm24SZobp1H
+        DvxZ0zUaperDGLiu36fywRIwV4O3kGFoaVLE78Wu/hbk/ICHfXwCBTrGC2qMpxsbbw6m7d
+        DMAKQUFqxRABvqGDM/iZ0TaY6nuYYBA=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1673874758;
+        s=susede2_ed25519; t=1673874759;
         h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=Ub/S5lUTk4UdOnl+Asnj3p00yoXGxL5j3bEBHrB28Qc=;
-        b=G/FkVCcvAScwBwu42w8kUPDztimBY71Aunb3cwlCHeFjHpV+xEGLlIJWQXQjjtSgCBW4P8
-        mp7goEWSEaOxKACg==
+        bh=ux8DO5Cbg3WS+Dfk4vpf92hsyg6mGAUkiBHpQHhMXvk=;
+        b=0kAsl8d5/KED7Gle3yOJOyWgMXWXtm6cjqGel8SpMUh/SCfZ64itz4QqFBB4i9CN68yps5
+        HJXIA+2DwlHYM9Dw==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 5B8EA138FA;
-        Mon, 16 Jan 2023 13:12:38 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 3B449139C3;
+        Mon, 16 Jan 2023 13:12:39 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id uGFEFUZNxWNrNQAAMHmgww
-        (envelope-from <tzimmermann@suse.de>); Mon, 16 Jan 2023 13:12:38 +0000
+        id OLCbDUdNxWNrNQAAMHmgww
+        (envelope-from <tzimmermann@suse.de>); Mon, 16 Jan 2023 13:12:39 +0000
 From:   Thomas Zimmermann <tzimmermann@suse.de>
 To:     sam@ravnborg.org, daniel@ffwll.ch, airlied@gmail.com
 Cc:     dri-devel@lists.freedesktop.org, amd-gfx@lists.freedesktop.org,
@@ -56,9 +56,9 @@ Cc:     dri-devel@lists.freedesktop.org, amd-gfx@lists.freedesktop.org,
         nouveau@lists.freedesktop.org, linux-rockchip@lists.infradead.org,
         linux-renesas-soc@vger.kernel.org, linux-sunxi@lists.linux.dev,
         Thomas Zimmermann <tzimmermann@suse.de>
-Subject: [PATCH 04/22] drm/arm/komeda: Remove unnecessary include statements for drm_crtc_helper.h
-Date:   Mon, 16 Jan 2023 14:12:17 +0100
-Message-Id: <20230116131235.18917-5-tzimmermann@suse.de>
+Subject: [PATCH 07/22] drm/bridge: Remove unnecessary include statements for drm_crtc_helper.h
+Date:   Mon, 16 Jan 2023 14:12:20 +0100
+Message-Id: <20230116131235.18917-8-tzimmermann@suse.de>
 X-Mailer: git-send-email 2.39.0
 In-Reply-To: <20230116131235.18917-1-tzimmermann@suse.de>
 References: <20230116131235.18917-1-tzimmermann@suse.de>
@@ -77,34 +77,99 @@ possible.
 
 Signed-off-by: Thomas Zimmermann <tzimmermann@suse.de>
 ---
- drivers/gpu/drm/arm/display/komeda/komeda_crtc.c | 1 -
- drivers/gpu/drm/arm/display/komeda/komeda_kms.h  | 1 -
- 2 files changed, 2 deletions(-)
+ drivers/gpu/drm/bridge/analogix/analogix-anx6345.c  | 1 -
+ drivers/gpu/drm/bridge/analogix/anx7625.c           | 1 -
+ drivers/gpu/drm/bridge/cadence/cdns-mhdp8546-core.c | 1 -
+ drivers/gpu/drm/bridge/ite-it6505.c                 | 1 -
+ drivers/gpu/drm/bridge/ite-it66121.c                | 1 -
+ drivers/gpu/drm/bridge/tc358768.c                   | 1 -
+ drivers/gpu/drm/bridge/tc358775.c                   | 1 -
+ 7 files changed, 7 deletions(-)
 
-diff --git a/drivers/gpu/drm/arm/display/komeda/komeda_crtc.c b/drivers/gpu/drm/arm/display/komeda/komeda_crtc.c
-index 4cc07d6bb9d8..cea3fd5772b5 100644
---- a/drivers/gpu/drm/arm/display/komeda/komeda_crtc.c
-+++ b/drivers/gpu/drm/arm/display/komeda/komeda_crtc.c
-@@ -10,7 +10,6 @@
+diff --git a/drivers/gpu/drm/bridge/analogix/analogix-anx6345.c b/drivers/gpu/drm/bridge/analogix/analogix-anx6345.c
+index 339e0f05b260..3577c532abb4 100644
+--- a/drivers/gpu/drm/bridge/analogix/analogix-anx6345.c
++++ b/drivers/gpu/drm/bridge/analogix/analogix-anx6345.c
+@@ -22,7 +22,6 @@
+ #include <drm/drm_atomic_helper.h>
+ #include <drm/drm_bridge.h>
+ #include <drm/drm_crtc.h>
+-#include <drm/drm_crtc_helper.h>
+ #include <drm/drm_edid.h>
+ #include <drm/drm_of.h>
+ #include <drm/drm_panel.h>
+diff --git a/drivers/gpu/drm/bridge/analogix/anx7625.c b/drivers/gpu/drm/bridge/analogix/anx7625.c
+index b375887e655d..6846199a2ee1 100644
+--- a/drivers/gpu/drm/bridge/analogix/anx7625.c
++++ b/drivers/gpu/drm/bridge/analogix/anx7625.c
+@@ -26,7 +26,6 @@
+ #include <drm/display/drm_hdcp_helper.h>
+ #include <drm/drm_atomic_helper.h>
+ #include <drm/drm_bridge.h>
+-#include <drm/drm_crtc_helper.h>
+ #include <drm/drm_edid.h>
+ #include <drm/drm_mipi_dsi.h>
+ #include <drm/drm_of.h>
+diff --git a/drivers/gpu/drm/bridge/cadence/cdns-mhdp8546-core.c b/drivers/gpu/drm/bridge/cadence/cdns-mhdp8546-core.c
+index 31442a922502..f6822dfa3805 100644
+--- a/drivers/gpu/drm/bridge/cadence/cdns-mhdp8546-core.c
++++ b/drivers/gpu/drm/bridge/cadence/cdns-mhdp8546-core.c
+@@ -43,7 +43,6 @@
+ #include <drm/drm_atomic_state_helper.h>
+ #include <drm/drm_bridge.h>
+ #include <drm/drm_connector.h>
+-#include <drm/drm_crtc_helper.h>
+ #include <drm/drm_edid.h>
+ #include <drm/drm_modeset_helper_vtables.h>
+ #include <drm/drm_print.h>
+diff --git a/drivers/gpu/drm/bridge/ite-it6505.c b/drivers/gpu/drm/bridge/ite-it6505.c
+index 9cda2df21b88..bc451b2a77c2 100644
+--- a/drivers/gpu/drm/bridge/ite-it6505.c
++++ b/drivers/gpu/drm/bridge/ite-it6505.c
+@@ -26,7 +26,6 @@
+ #include <drm/drm_atomic_helper.h>
+ #include <drm/drm_bridge.h>
+ #include <drm/drm_crtc.h>
+-#include <drm/drm_crtc_helper.h>
+ #include <drm/drm_edid.h>
+ #include <drm/drm_print.h>
+ #include <drm/drm_probe_helper.h>
+diff --git a/drivers/gpu/drm/bridge/ite-it66121.c b/drivers/gpu/drm/bridge/ite-it66121.c
+index b34860871627..a2d723d6a4be 100644
+--- a/drivers/gpu/drm/bridge/ite-it66121.c
++++ b/drivers/gpu/drm/bridge/ite-it66121.c
+@@ -22,7 +22,6 @@
  
- #include <drm/drm_atomic.h>
+ #include <drm/drm_atomic_helper.h>
+ #include <drm/drm_bridge.h>
+-#include <drm/drm_crtc_helper.h>
+ #include <drm/drm_edid.h>
+ #include <drm/drm_modes.h>
+ #include <drm/drm_print.h>
+diff --git a/drivers/gpu/drm/bridge/tc358768.c b/drivers/gpu/drm/bridge/tc358768.c
+index 839b8832b9b5..7c0cbe84611b 100644
+--- a/drivers/gpu/drm/bridge/tc358768.c
++++ b/drivers/gpu/drm/bridge/tc358768.c
+@@ -15,7 +15,6 @@
+ #include <linux/slab.h>
+ 
  #include <drm/drm_atomic_helper.h>
 -#include <drm/drm_crtc_helper.h>
- #include <drm/drm_print.h>
- #include <drm/drm_vblank.h>
- 
-diff --git a/drivers/gpu/drm/arm/display/komeda/komeda_kms.h b/drivers/gpu/drm/arm/display/komeda/komeda_kms.h
-index 7339339ef6b8..3a872c292091 100644
---- a/drivers/gpu/drm/arm/display/komeda/komeda_kms.h
-+++ b/drivers/gpu/drm/arm/display/komeda/komeda_kms.h
-@@ -11,7 +11,6 @@
- #include <drm/drm_atomic.h>
+ #include <drm/drm_drv.h>
+ #include <drm/drm_mipi_dsi.h>
+ #include <drm/drm_of.h>
+diff --git a/drivers/gpu/drm/bridge/tc358775.c b/drivers/gpu/drm/bridge/tc358775.c
+index 91b5e1207c47..19316994ddd1 100644
+--- a/drivers/gpu/drm/bridge/tc358775.c
++++ b/drivers/gpu/drm/bridge/tc358775.c
+@@ -23,7 +23,6 @@
+ #include <drm/display/drm_dp_helper.h>
  #include <drm/drm_atomic_helper.h>
- #include <drm/drm_blend.h>
+ #include <drm/drm_bridge.h>
 -#include <drm/drm_crtc_helper.h>
- #include <drm/drm_device.h>
- #include <drm/drm_writeback.h>
- #include <drm/drm_print.h>
+ #include <drm/drm_mipi_dsi.h>
+ #include <drm/drm_of.h>
+ #include <drm/drm_panel.h>
 -- 
 2.39.0
 

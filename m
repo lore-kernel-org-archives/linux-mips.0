@@ -2,100 +2,95 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4C741C54EBE
-	for <linux-mips@archiver.kernel.org>; Mon, 16 Jan 2023 10:01:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3D30FC54EBE
+	for <linux-mips@archiver.kernel.org>; Mon, 16 Jan 2023 13:15:48 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229681AbjAPKBL (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 16 Jan 2023 05:01:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49558 "EHLO
+        id S231585AbjAPNPr (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 16 Jan 2023 08:15:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35832 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229744AbjAPKAt (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Mon, 16 Jan 2023 05:00:49 -0500
-Received: from mail-qv1-f42.google.com (mail-qv1-f42.google.com [209.85.219.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17537A5D4;
-        Mon, 16 Jan 2023 02:00:48 -0800 (PST)
-Received: by mail-qv1-f42.google.com with SMTP id qb7so19259374qvb.5;
-        Mon, 16 Jan 2023 02:00:48 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ZcfbiaOtd0rIUu3J0LzMQ7r+7EcuQP5IsDRStK58JTY=;
-        b=Iw+E2l7iP+BBT8wRY6KgUlaJY+XOp81ebji0YGTQl0mfalLqk8KwdJH/d4pLncKqtJ
-         y7I1g+kIcwfV5SRNRr99uL6HX4rfWdDoHawXeeUShcqBPugheTY+yc+BpLVKvszGo3j7
-         FBaecPSOf17aKObAFZ8+trpHDKjtMBWIGSQYFeAm0J7aFndDMbsTPd20s1EsKvs52dLQ
-         FZuMmDD/eWn9xeXJeKO6l97CWw5XGO6MN8JAENZZb39tEsWKkIMAIhFmkTVd/UP+3C+v
-         LU1gHqwWZmZyTVa9ajp81qJFoYuKkURzSnoXXGP6mKuJzlYde1wRQQZZwsbnALZP6TVE
-         gZwQ==
-X-Gm-Message-State: AFqh2kqbRoHXRslXHqm+0ZvAGJVODn7P3DztMINdEfkYbY5h0sFOYr5X
-        vLxwZY9qiX70ef99uheXcIMU7QiqujjkYA==
-X-Google-Smtp-Source: AMrXdXuiuftiU4iE277WG3SmWjPXImBlsWEUzPQF8WNXLe8Y4WX4/6CWP8AJZgR2D+F1RJx2UMKg6A==
-X-Received: by 2002:a0c:fb44:0:b0:532:21bf:bb41 with SMTP id b4-20020a0cfb44000000b0053221bfbb41mr46054145qvq.18.1673863246977;
-        Mon, 16 Jan 2023 02:00:46 -0800 (PST)
-Received: from mail-yb1-f171.google.com (mail-yb1-f171.google.com. [209.85.219.171])
-        by smtp.gmail.com with ESMTPSA id k19-20020a05620a415300b006fbaf9c1b70sm2819430qko.133.2023.01.16.02.00.46
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 16 Jan 2023 02:00:46 -0800 (PST)
-Received: by mail-yb1-f171.google.com with SMTP id d62so13502101ybh.8;
-        Mon, 16 Jan 2023 02:00:45 -0800 (PST)
-X-Received: by 2002:a25:46c6:0:b0:7b8:a0b8:f7ec with SMTP id
- t189-20020a2546c6000000b007b8a0b8f7ecmr4703291yba.36.1673863245804; Mon, 16
- Jan 2023 02:00:45 -0800 (PST)
+        with ESMTP id S229817AbjAPNPb (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Mon, 16 Jan 2023 08:15:31 -0500
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1358E1D924;
+        Mon, 16 Jan 2023 05:12:39 -0800 (PST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id B44BA35158;
+        Mon, 16 Jan 2023 13:12:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1673874757; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ITnI0XcaOgBozCNGQvMCHLKvTccFiv1JJ1OmJ6lJUM8=;
+        b=XNsBNq5dq2brRY7RO7JRFikjKp1Z682mm7GWdRchOeaVg2VZlPY/6XmNJFoEOPiSi7c/HE
+        3p5JPbHg+Z9EhbRdukWBGxTbbKHRzkld8rZLE4O5X/QlY1JJJOY0QGDWsLOqHRVGTAav5E
+        wnfKsLvE1Kgjoxb6HqPYT4pjd2dujI4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1673874757;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ITnI0XcaOgBozCNGQvMCHLKvTccFiv1JJ1OmJ6lJUM8=;
+        b=YopPr79IgVzdChnlR0M+YNXZaEptY9Q0PDnD8Zy4j55svRJx8MLj//a0DLYEt0Bn3XL3pV
+        xfbliVm1Mn2AKdCw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 65FCF139C3;
+        Mon, 16 Jan 2023 13:12:37 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id WIsEGEVNxWNrNQAAMHmgww
+        (envelope-from <tzimmermann@suse.de>); Mon, 16 Jan 2023 13:12:37 +0000
+From:   Thomas Zimmermann <tzimmermann@suse.de>
+To:     sam@ravnborg.org, daniel@ffwll.ch, airlied@gmail.com
+Cc:     dri-devel@lists.freedesktop.org, amd-gfx@lists.freedesktop.org,
+        linux-aspeed@lists.ozlabs.org,
+        linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
+        nouveau@lists.freedesktop.org, linux-rockchip@lists.infradead.org,
+        linux-renesas-soc@vger.kernel.org, linux-sunxi@lists.linux.dev,
+        Thomas Zimmermann <tzimmermann@suse.de>
+Subject: [PATCH 01/22] drm/amdgpu: Fix coding style
+Date:   Mon, 16 Jan 2023 14:12:14 +0100
+Message-Id: <20230116131235.18917-2-tzimmermann@suse.de>
+X-Mailer: git-send-email 2.39.0
+In-Reply-To: <20230116131235.18917-1-tzimmermann@suse.de>
+References: <20230116131235.18917-1-tzimmermann@suse.de>
 MIME-Version: 1.0
-References: <Y7P9IcR7/jgYWMcq@osiris> <20230105095426.2163354-1-andrzej.hajda@intel.com>
-In-Reply-To: <20230105095426.2163354-1-andrzej.hajda@intel.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 16 Jan 2023 11:00:33 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdUhPjya8zWMxEN8U8pjf4M2u_+HOfxQ2NP1XOcX9EpAKg@mail.gmail.com>
-Message-ID: <CAMuHMdUhPjya8zWMxEN8U8pjf4M2u_+HOfxQ2NP1XOcX9EpAKg@mail.gmail.com>
-Subject: Re: [PATCH v4] arch: rename all internal names __xchg to __arch_xchg
-To:     Andrzej Hajda <andrzej.hajda@intel.com>
-Cc:     linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-snps-arc@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org,
-        loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
-        linux-mips@vger.kernel.org, openrisc@lists.librecores.org,
-        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
-        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
-        linux-xtensa@linux-xtensa.org, intel-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org,
-        Mark Rutland <mark.rutland@arm.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Heiko Carstens <hca@linux.ibm.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Thu, Jan 5, 2023 at 10:54 AM Andrzej Hajda <andrzej.hajda@intel.com> wrote:
-> __xchg will be used for non-atomic xchg macro.
->
-> Signed-off-by: Andrzej Hajda <andrzej.hajda@intel.com>
-> Reviewed-by: Arnd Bergmann <arnd@arndb.de>
-> ---
-> v2: squashed all arch patches into one
-> v3: fixed alpha/xchg_local, thx to lkp@intel.com
-> v4: adjusted indentation (Heiko)
+Align a closing brace and remove trailing whitespaces. No functional
+changes.
 
->  arch/m68k/include/asm/cmpxchg.h      |  6 +++---
+Signed-off-by: Thomas Zimmermann <tzimmermann@suse.de>
+---
+ drivers/gpu/drm/amd/amdgpu/amdgpu_device.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Acked-by: Geert Uytterhoeven <geert@linux-m68k.org> [m68k]
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
+index e47058c2c294..0993ee91fe18 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_device.c
+@@ -5871,8 +5871,8 @@ void amdgpu_device_invalidate_hdp(struct amdgpu_device *adev,
+ int amdgpu_in_reset(struct amdgpu_device *adev)
+ {
+ 	return atomic_read(&adev->reset_domain->in_gpu_reset);
+-	}
+-	
++}
++
+ /**
+  * amdgpu_device_halt() - bring hardware to some kind of halt state
+  *
+-- 
+2.39.0
 
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds

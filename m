@@ -2,42 +2,41 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C610DC46467
-	for <linux-mips@archiver.kernel.org>; Mon, 16 Jan 2023 20:32:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EE7D8C46467
+	for <linux-mips@archiver.kernel.org>; Mon, 16 Jan 2023 20:32:44 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231765AbjAPUcG (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 16 Jan 2023 15:32:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40136 "EHLO
+        id S232003AbjAPUcn (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 16 Jan 2023 15:32:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40184 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230238AbjAPUcF (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Mon, 16 Jan 2023 15:32:05 -0500
-X-Greylist: delayed 964 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 16 Jan 2023 12:32:04 PST
-Received: from mailrelay1-1.pub.mailoutpod2-cph3.one.com (mailrelay1-1.pub.mailoutpod2-cph3.one.com [IPv6:2a02:2350:5:400::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86EB72A16B
-        for <linux-mips@vger.kernel.org>; Mon, 16 Jan 2023 12:32:04 -0800 (PST)
+        with ESMTP id S231703AbjAPUcm (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Mon, 16 Jan 2023 15:32:42 -0500
+Received: from mailrelay5-1.pub.mailoutpod2-cph3.one.com (mailrelay5-1.pub.mailoutpod2-cph3.one.com [46.30.211.180])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22B832A165
+        for <linux-mips@vger.kernel.org>; Mon, 16 Jan 2023 12:32:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ravnborg.org; s=rsa2;
         h=in-reply-to:content-type:mime-version:references:message-id:subject:cc:to:
          from:date:from;
-        bh=qWZKxlX4KW/JmPpNe4hoOYISYsciP5gHQlpn+CvfXf8=;
-        b=kt2RebpVMaIBssccQkMEgek+nwW85G6J0siMHGZ1qETVQeJlMBKmjG0mlVm3r7ePnu8jfPm81ygq7
-         Mz8rQydCpwnm7+yWjbjNIN/fzDJe5WsKcBoAUsBadcQc0vOYb6T41tQjEeU/05VcOGjEkJnNNqYFDv
-         W6Hs6b61sUUwtJAeXWksNEBFK4Y9hM1amCX4haYovx3yLNNcTv+aB4AWsRcwfANqGXT1LV3gcWRrqV
-         ROUTznYXXwPl8HONFIMoZCbhWD4ezvanZv5cXNNxoJUbsVJ4K/EAnSMi/8BPSb4nuXYYFMXiL4SyAH
-         nCwGrMJpVzOvZphymhAQroedp3D9X1Q==
+        bh=dxZrgiFiSWE0neC/Zn81efMq20upjy192H3IxuR5/u8=;
+        b=acpUj4knulQkBKBaY+52P5qMowzl3CqetGOVLg/297AeK+8Ryp/AKK2Xhs78wcpqAWKMYggzJWDzB
+         biPi7fjApEW+sEGRVKj43UtyH27cyE30zC5xeKBIWLeDxMvBMaWIQ9C2KNsct8BVV/z5Xi2Z9xmXdN
+         iB2Tp6//DgFIal9nwQvjsa5mljq2hOLf4Zl++xLkESSZCEU8Wx7V/M8Yabz6d5rgsJjERIdkci8tJF
+         BzJIC9Ass7ItSJBCwTMvAx3dwBffjSnlLBYYHAB6/KYGwz02LqImL0TBBlVYOqzuWH81uTr8k+kGQw
+         oF52hXCmjcfEX0rspiuM5UBSj5DoeAQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed;
         d=ravnborg.org; s=ed2;
         h=in-reply-to:content-type:mime-version:references:message-id:subject:cc:to:
          from:date:from;
-        bh=qWZKxlX4KW/JmPpNe4hoOYISYsciP5gHQlpn+CvfXf8=;
-        b=xE4aoD0tRO5MstpdlKpx4S2jKlZCleYS/37b6LqWjWapIOw44SoqoiaLAWrBeI0WODd2oUSv6O6cJ
-         cNcxfeJCQ==
-X-HalOne-ID: 90146bb7-95da-11ed-afa2-11abd97b9443
+        bh=dxZrgiFiSWE0neC/Zn81efMq20upjy192H3IxuR5/u8=;
+        b=R3QeKkvU5DTf1usW/irfIsJev9hjfAQvABn1WhWFZnkOGF2yihtMhXjFJCHCSPYm0dh3TEmBVSzY6
+         8ufGRagDA==
+X-HalOne-ID: c3e8962f-95dc-11ed-8539-7703b0afff57
 Received: from ravnborg.org (2-105-2-98-cable.dk.customer.tdc.net [2.105.2.98])
-        by mailrelay1 (Halon) with ESMTPSA
-        id 90146bb7-95da-11ed-afa2-11abd97b9443;
-        Mon, 16 Jan 2023 20:15:49 +0000 (UTC)
-Date:   Mon, 16 Jan 2023 21:15:47 +0100
+        by mailrelay5 (Halon) with ESMTPSA
+        id c3e8962f-95dc-11ed-8539-7703b0afff57;
+        Mon, 16 Jan 2023 20:31:35 +0000 (UTC)
+Date:   Mon, 16 Jan 2023 21:31:34 +0100
 From:   Sam Ravnborg <sam@ravnborg.org>
 To:     Thomas Zimmermann <tzimmermann@suse.de>
 Cc:     daniel@ffwll.ch, airlied@gmail.com,
@@ -46,96 +45,50 @@ Cc:     daniel@ffwll.ch, airlied@gmail.com,
         linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
         nouveau@lists.freedesktop.org, linux-rockchip@lists.infradead.org,
         linux-renesas-soc@vger.kernel.org, linux-sunxi@lists.linux.dev
-Subject: Re: [PATCH 02/22] drm: Remove unnecessary include statements for
- drm_crtc_helper.h
-Message-ID: <Y8Wwcy3LuknhDQz1@ravnborg.org>
+Subject: Re: [PATCH 18/22] drm/sun4i: Remove unnecessary include statements
+ for drm_crtc_helper.h
+Message-ID: <Y8W0JnmbyQnObFa+@ravnborg.org>
 References: <20230116131235.18917-1-tzimmermann@suse.de>
- <20230116131235.18917-3-tzimmermann@suse.de>
+ <20230116131235.18917-19-tzimmermann@suse.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230116131235.18917-3-tzimmermann@suse.de>
+In-Reply-To: <20230116131235.18917-19-tzimmermann@suse.de>
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Hi Thomas.
-
-On Mon, Jan 16, 2023 at 02:12:15PM +0100, Thomas Zimmermann wrote:
-> Several DRM core and helper source files include drm_crtc_helper.h
-> without needing it or only to get its transitive include statements;
-> leading to unnecessary compile-time dependencies.
+On Mon, Jan 16, 2023 at 02:12:31PM +0100, Thomas Zimmermann wrote:
+> Several source files include drm_crtc_helper.h without needing it or
+> only to get its transitive include statements; leading to unnecessary
+> compile-time dependencies.
 > 
 > Directly include required headers and drop drm_crtc_helper.h where
-> possible. The header file, drm_fixed.h, includes <linux/kernel.h>
-> for lower_32_bits().
+> possible.
 > 
 > Signed-off-by: Thomas Zimmermann <tzimmermann@suse.de>
 > ---
->  drivers/gpu/drm/drm_crtc_helper.c  | 1 -
->  drivers/gpu/drm/drm_lease.c        | 2 +-
->  drivers/gpu/drm/drm_plane_helper.c | 1 -
->  include/drm/drm_fixed.h            | 1 +
->  4 files changed, 2 insertions(+), 3 deletions(-)
+>  drivers/gpu/drm/sun4i/sun8i_dw_hdmi.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/drivers/gpu/drm/drm_crtc_helper.c b/drivers/gpu/drm/drm_crtc_helper.c
-> index a209659a996c..e7a23e18140c 100644
-> --- a/drivers/gpu/drm/drm_crtc_helper.c
-> +++ b/drivers/gpu/drm/drm_crtc_helper.c
-> @@ -39,7 +39,6 @@
->  #include <drm/drm_atomic_uapi.h>
->  #include <drm/drm_bridge.h>
->  #include <drm/drm_crtc.h>
+> diff --git a/drivers/gpu/drm/sun4i/sun8i_dw_hdmi.c b/drivers/gpu/drm/sun4i/sun8i_dw_hdmi.c
+> index 477cb6985b4d..37dc66332bbd 100644
+> --- a/drivers/gpu/drm/sun4i/sun8i_dw_hdmi.c
+> +++ b/drivers/gpu/drm/sun4i/sun8i_dw_hdmi.c
+> @@ -8,8 +8,8 @@
+>  #include <linux/of_device.h>
+>  #include <linux/platform_device.h>
+>  
 > -#include <drm/drm_crtc_helper.h>
+>  #include <drm/drm_of.h>
+> +#include <drm/drm_modeset_helper_vtables.h>
 
-drm_crtc_helper.c may not require drm/drm_crtc_helper.h, but it should
-include it so we get a warning in case there is a mismatch between the
-header file and the implementation.
-I think sparse would also complain that the function is not declared
-or something like that.
-
-With this fixed:
+Move one up to maintain sorting.
+With that fixed:
 Reviewed-by: Sam Ravnborg <sam@ravnborg.org>
 
->  #include <drm/drm_drv.h>
->  #include <drm/drm_edid.h>
->  #include <drm/drm_encoder.h>
-> diff --git a/drivers/gpu/drm/drm_lease.c b/drivers/gpu/drm/drm_lease.c
-> index 08ab75303a00..150fe1555068 100644
-> --- a/drivers/gpu/drm/drm_lease.c
-> +++ b/drivers/gpu/drm/drm_lease.c
-> @@ -6,7 +6,7 @@
->  #include <linux/uaccess.h>
+>  #include <drm/drm_simple_kms_helper.h>
 >  
->  #include <drm/drm_auth.h>
-> -#include <drm/drm_crtc_helper.h>
-> +#include <drm/drm_crtc.h>
->  #include <drm/drm_drv.h>
->  #include <drm/drm_file.h>
->  #include <drm/drm_lease.h>
-> diff --git a/drivers/gpu/drm/drm_plane_helper.c b/drivers/gpu/drm/drm_plane_helper.c
-> index ba6a9136a065..c91e454eba09 100644
-> --- a/drivers/gpu/drm/drm_plane_helper.c
-> +++ b/drivers/gpu/drm/drm_plane_helper.c
-> @@ -28,7 +28,6 @@
->  #include <drm/drm_atomic.h>
->  #include <drm/drm_atomic_helper.h>
->  #include <drm/drm_atomic_uapi.h>
-> -#include <drm/drm_crtc_helper.h>
->  #include <drm/drm_device.h>
->  #include <drm/drm_drv.h>
->  #include <drm/drm_encoder.h>
-> diff --git a/include/drm/drm_fixed.h b/include/drm/drm_fixed.h
-> index 553210c02ee0..255645c1f9a8 100644
-> --- a/include/drm/drm_fixed.h
-> +++ b/include/drm/drm_fixed.h
-> @@ -25,6 +25,7 @@
->  #ifndef DRM_FIXED_H
->  #define DRM_FIXED_H
->  
-> +#include <linux/kernel.h>
->  #include <linux/math64.h>
->  
->  typedef union dfixed {
+>  #include "sun8i_dw_hdmi.h"
 > -- 
 > 2.39.0

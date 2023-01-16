@@ -2,51 +2,51 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DF038C677F1
-	for <linux-mips@archiver.kernel.org>; Mon, 16 Jan 2023 13:15:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0975DC678D7
+	for <linux-mips@archiver.kernel.org>; Mon, 16 Jan 2023 13:15:54 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231636AbjAPNPv (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 16 Jan 2023 08:15:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35626 "EHLO
+        id S230166AbjAPNPw (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 16 Jan 2023 08:15:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35624 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230166AbjAPNPc (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Mon, 16 Jan 2023 08:15:32 -0500
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FAE01D92C;
-        Mon, 16 Jan 2023 05:12:40 -0800 (PST)
+        with ESMTP id S230347AbjAPNPd (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Mon, 16 Jan 2023 08:15:33 -0500
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC5CF1D937;
+        Mon, 16 Jan 2023 05:12:39 -0800 (PST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 3796A67784;
-        Mon, 16 Jan 2023 13:12:39 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 9AB4967840;
+        Mon, 16 Jan 2023 13:12:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1673874759; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1673874758; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=qnxmLVBM3b5pX8woukmNI4lXDkoScqQDZfPuhN17SoA=;
-        b=Ki78kxq5ook/MB+oBsjo/QwrX+4u05UI6B07emgGVaZws7APKtrEOj8FfLfJxuBb8pvUoo
-        K3xf0p76E+khWGvFH4Zx7QYk6PLNqBkviFywHoTc0WEvGbU+sM4DXpGsLM1d8Ix72TYntr
-        XWHaGgJXlANWMSxjWNNzSZICGWe9y0Q=
+        bh=Ub/S5lUTk4UdOnl+Asnj3p00yoXGxL5j3bEBHrB28Qc=;
+        b=PYrOQkWmr0HtH6SHms1C+IBgmfIkLRkFa1on31+4/yBstOuRQLV0wc7YSuGvgrfZgradB+
+        LB2CtQuscXtaR5jQOfJG5Ix8p/1L7NfF/5GhP1z2U0a+kkG/8Yj+v5PTE3t94MzNIo0BOI
+        YGYcADoU/0xLt2zTJq6bjFRrz7aeKg8=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1673874759;
+        s=susede2_ed25519; t=1673874758;
         h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=qnxmLVBM3b5pX8woukmNI4lXDkoScqQDZfPuhN17SoA=;
-        b=mS2UGuvsvQrsC0iwGxsxEyLqbV9mbvfXKLBIk4Nb9SlYrsNtFW2ThorRECRcKstVQs6qbp
-        I0tkPGMIywTKE1AA==
+        bh=Ub/S5lUTk4UdOnl+Asnj3p00yoXGxL5j3bEBHrB28Qc=;
+        b=G/FkVCcvAScwBwu42w8kUPDztimBY71Aunb3cwlCHeFjHpV+xEGLlIJWQXQjjtSgCBW4P8
+        mp7goEWSEaOxKACg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id E94BB138FA;
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 5B8EA138FA;
         Mon, 16 Jan 2023 13:12:38 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id 0An9N0ZNxWNrNQAAMHmgww
+        id uGFEFUZNxWNrNQAAMHmgww
         (envelope-from <tzimmermann@suse.de>); Mon, 16 Jan 2023 13:12:38 +0000
 From:   Thomas Zimmermann <tzimmermann@suse.de>
 To:     sam@ravnborg.org, daniel@ffwll.ch, airlied@gmail.com
@@ -56,9 +56,9 @@ Cc:     dri-devel@lists.freedesktop.org, amd-gfx@lists.freedesktop.org,
         nouveau@lists.freedesktop.org, linux-rockchip@lists.infradead.org,
         linux-renesas-soc@vger.kernel.org, linux-sunxi@lists.linux.dev,
         Thomas Zimmermann <tzimmermann@suse.de>
-Subject: [PATCH 06/22] drm/ast: Remove unnecessary include statements for drm_crtc_helper.h
-Date:   Mon, 16 Jan 2023 14:12:19 +0100
-Message-Id: <20230116131235.18917-7-tzimmermann@suse.de>
+Subject: [PATCH 04/22] drm/arm/komeda: Remove unnecessary include statements for drm_crtc_helper.h
+Date:   Mon, 16 Jan 2023 14:12:17 +0100
+Message-Id: <20230116131235.18917-5-tzimmermann@suse.de>
 X-Mailer: git-send-email 2.39.0
 In-Reply-To: <20230116131235.18917-1-tzimmermann@suse.de>
 References: <20230116131235.18917-1-tzimmermann@suse.de>
@@ -77,47 +77,34 @@ possible.
 
 Signed-off-by: Thomas Zimmermann <tzimmermann@suse.de>
 ---
- drivers/gpu/drm/ast/ast_drv.c  | 1 -
- drivers/gpu/drm/ast/ast_main.c | 1 -
- drivers/gpu/drm/ast/ast_mode.c | 1 -
- 3 files changed, 3 deletions(-)
+ drivers/gpu/drm/arm/display/komeda/komeda_crtc.c | 1 -
+ drivers/gpu/drm/arm/display/komeda/komeda_kms.h  | 1 -
+ 2 files changed, 2 deletions(-)
 
-diff --git a/drivers/gpu/drm/ast/ast_drv.c b/drivers/gpu/drm/ast/ast_drv.c
-index 420fc75c240e..d78852c7cf5b 100644
---- a/drivers/gpu/drm/ast/ast_drv.c
-+++ b/drivers/gpu/drm/ast/ast_drv.c
-@@ -31,7 +31,6 @@
+diff --git a/drivers/gpu/drm/arm/display/komeda/komeda_crtc.c b/drivers/gpu/drm/arm/display/komeda/komeda_crtc.c
+index 4cc07d6bb9d8..cea3fd5772b5 100644
+--- a/drivers/gpu/drm/arm/display/komeda/komeda_crtc.c
++++ b/drivers/gpu/drm/arm/display/komeda/komeda_crtc.c
+@@ -10,7 +10,6 @@
  
- #include <drm/drm_aperture.h>
+ #include <drm/drm_atomic.h>
  #include <drm/drm_atomic_helper.h>
 -#include <drm/drm_crtc_helper.h>
- #include <drm/drm_drv.h>
- #include <drm/drm_fbdev_generic.h>
- #include <drm/drm_gem_shmem_helper.h>
-diff --git a/drivers/gpu/drm/ast/ast_main.c b/drivers/gpu/drm/ast/ast_main.c
-index bffa310a0431..f83ce77127cb 100644
---- a/drivers/gpu/drm/ast/ast_main.c
-+++ b/drivers/gpu/drm/ast/ast_main.c
-@@ -29,7 +29,6 @@
- #include <linux/pci.h>
+ #include <drm/drm_print.h>
+ #include <drm/drm_vblank.h>
  
+diff --git a/drivers/gpu/drm/arm/display/komeda/komeda_kms.h b/drivers/gpu/drm/arm/display/komeda/komeda_kms.h
+index 7339339ef6b8..3a872c292091 100644
+--- a/drivers/gpu/drm/arm/display/komeda/komeda_kms.h
++++ b/drivers/gpu/drm/arm/display/komeda/komeda_kms.h
+@@ -11,7 +11,6 @@
+ #include <drm/drm_atomic.h>
  #include <drm/drm_atomic_helper.h>
+ #include <drm/drm_blend.h>
 -#include <drm/drm_crtc_helper.h>
- #include <drm/drm_drv.h>
- #include <drm/drm_gem.h>
- #include <drm/drm_managed.h>
-diff --git a/drivers/gpu/drm/ast/ast_mode.c b/drivers/gpu/drm/ast/ast_mode.c
-index e82e9a8d85e5..dcb8ced4ce75 100644
---- a/drivers/gpu/drm/ast/ast_mode.c
-+++ b/drivers/gpu/drm/ast/ast_mode.c
-@@ -35,7 +35,6 @@
- #include <drm/drm_atomic_helper.h>
- #include <drm/drm_atomic_state_helper.h>
- #include <drm/drm_crtc.h>
--#include <drm/drm_crtc_helper.h>
- #include <drm/drm_damage_helper.h>
- #include <drm/drm_edid.h>
- #include <drm/drm_format_helper.h>
+ #include <drm/drm_device.h>
+ #include <drm/drm_writeback.h>
+ #include <drm/drm_print.h>
 -- 
 2.39.0
 

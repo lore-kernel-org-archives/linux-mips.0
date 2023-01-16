@@ -2,109 +2,97 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A498CC678DE
-	for <linux-mips@archiver.kernel.org>; Mon, 16 Jan 2023 13:16:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 13DBDC54EBE
+	for <linux-mips@archiver.kernel.org>; Mon, 16 Jan 2023 13:50:55 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231684AbjAPNQM (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 16 Jan 2023 08:16:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35862 "EHLO
+        id S231324AbjAPNuy (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 16 Jan 2023 08:50:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60618 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230507AbjAPNPg (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Mon, 16 Jan 2023 08:15:36 -0500
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FE9A1D93E;
-        Mon, 16 Jan 2023 05:12:45 -0800 (PST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        with ESMTP id S231478AbjAPNun (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Mon, 16 Jan 2023 08:50:43 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 864272006B;
+        Mon, 16 Jan 2023 05:50:41 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id D486F3751A;
-        Mon, 16 Jan 2023 13:12:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1673874763; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=OO536y1oIIavqxJbggquU+Ve/xMHXk1PsPJeSriBnEc=;
-        b=Udkbksja4U2SmueaT/CBQsB1+CnfK2yVlqG1l9ZE5v78J3trCBUlXz2roVXvwoK8JV+j/5
-        RJBpTXJMbF1eF1IVQTt5IsaogDnmOtmBRNYkOH3qPIyZY2v7XlyXWADk1UpBB17xSI4khU
-        CZJDLkGyF0XQJr3XVOuEWpBhmMoHRt4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1673874763;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=OO536y1oIIavqxJbggquU+Ve/xMHXk1PsPJeSriBnEc=;
-        b=9MzN2mh+4Y19EA2xQcARcGH/wwJ5CLbTFhxyzTEtdsZAzOAJxfT4YnHxkMNDoB0Q8nvGy/
-        kHh7OuLMzJlFZ8AQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 94FAB138FA;
-        Mon, 16 Jan 2023 13:12:43 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id WB17I0tNxWNrNQAAMHmgww
-        (envelope-from <tzimmermann@suse.de>); Mon, 16 Jan 2023 13:12:43 +0000
-From:   Thomas Zimmermann <tzimmermann@suse.de>
-To:     sam@ravnborg.org, daniel@ffwll.ch, airlied@gmail.com
-Cc:     dri-devel@lists.freedesktop.org, amd-gfx@lists.freedesktop.org,
-        linux-aspeed@lists.ozlabs.org,
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 25D1360F95;
+        Mon, 16 Jan 2023 13:50:41 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7F8F2C433D2;
+        Mon, 16 Jan 2023 13:50:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1673877040;
+        bh=WOLEYv/LC2uRo2oOqpCuxx1j2Jg09eJ+FL+Ym0vCxkA=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=S7gB9oP1nlNtzHy6VDK5Mbnw+MZRfv/CQ8NrAx76e1s+PSpferOR5tbrxFiNltPDM
+         q/SPDI4AS+XNO2gPWB3FhMzrH8Qu+BYh1uFsbEJgepXZSN+bZJlj2yenpb/jMPjwYu
+         6N8WmfT35dhIpIjYZ4KL8rRz9IcYi5B48B/6tIKHfji6F7lJgEKWKDn602u09PaPwf
+         usbjHvcXLR4HR2KAPJs5YFSc4CMLZo6HPRiPb5wyhRSRJRmYiMPyMMaXWGdrN2KJ1I
+         ZRUdzuf11uKMNvgetNjirHXPM4Qv6ZgYhEZ8Fzi1zCbadCy/xsieBkDWhoc6OARX+P
+         23K36jP0fbovA==
+Received: from johan by xi.lan with local (Exim 4.94.2)
+        (envelope-from <johan+linaro@kernel.org>)
+        id 1pHPt5-0003um-Ku; Mon, 16 Jan 2023 14:50:59 +0100
+From:   Johan Hovold <johan+linaro@kernel.org>
+To:     Marc Zyngier <maz@kernel.org>, Thomas Gleixner <tglx@linutronix.de>
+Cc:     x86@kernel.org, platform-driver-x86@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
-        nouveau@lists.freedesktop.org, linux-rockchip@lists.infradead.org,
-        linux-renesas-soc@vger.kernel.org, linux-sunxi@lists.linux.dev,
-        Thomas Zimmermann <tzimmermann@suse.de>
-Subject: [PATCH 22/22] drm/crtc-helper: Remove most include statements from drm_crtc_helper.h
-Date:   Mon, 16 Jan 2023 14:12:35 +0100
-Message-Id: <20230116131235.18917-23-tzimmermann@suse.de>
-X-Mailer: git-send-email 2.39.0
-In-Reply-To: <20230116131235.18917-1-tzimmermann@suse.de>
-References: <20230116131235.18917-1-tzimmermann@suse.de>
+        linux-kernel@vger.kernel.org,
+        Johan Hovold <johan+linaro@kernel.org>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        Mark-PK Tsai <mark-pk.tsai@mediatek.com>
+Subject: [PATCH v4 02/19] irqdomain: Drop dead domain-name assignment
+Date:   Mon, 16 Jan 2023 14:50:27 +0100
+Message-Id: <20230116135044.14998-3-johan+linaro@kernel.org>
+X-Mailer: git-send-email 2.38.2
+In-Reply-To: <20230116135044.14998-1-johan+linaro@kernel.org>
+References: <20230116135044.14998-1-johan+linaro@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Remove most include statements from crm_crtc_helper.h and forward-
-declare the contained types in drm_crtc_helper.h. Only keep <linux/types.h>
-for the definition of 'bool'.
+Since commit d59f6617eef0 ("genirq: Allow fwnode to carry name
+information only") an IRQ domain is always given a name during
+allocation (e.g. used for the debugfs entry).
 
-Suggested-by: Sam Ravnborg <sam@ravnborg.org>
-Signed-off-by: Thomas Zimmermann <tzimmermann@suse.de>
+Drop the leftover name assignment when allocating the first IRQ.
+
+Tested-by: Hsin-Yi Wang <hsinyi@chromium.org>
+Tested-by: Mark-PK Tsai <mark-pk.tsai@mediatek.com>
+Signed-off-by: Johan Hovold <johan+linaro@kernel.org>
 ---
- include/drm/drm_crtc_helper.h | 14 +++++++++-----
- 1 file changed, 9 insertions(+), 5 deletions(-)
+ kernel/irq/irqdomain.c | 8 --------
+ 1 file changed, 8 deletions(-)
 
-diff --git a/include/drm/drm_crtc_helper.h b/include/drm/drm_crtc_helper.h
-index 072bc4f90349..8c886fc46ef2 100644
---- a/include/drm/drm_crtc_helper.h
-+++ b/include/drm/drm_crtc_helper.h
-@@ -33,13 +33,17 @@
- #ifndef __DRM_CRTC_HELPER_H__
- #define __DRM_CRTC_HELPER_H__
+diff --git a/kernel/irq/irqdomain.c b/kernel/irq/irqdomain.c
+index bf67de1733ee..fe9ec53fe7aa 100644
+--- a/kernel/irq/irqdomain.c
++++ b/kernel/irq/irqdomain.c
+@@ -593,10 +593,6 @@ int irq_domain_associate(struct irq_domain *domain, unsigned int virq,
+ 			mutex_unlock(&irq_domain_mutex);
+ 			return ret;
+ 		}
+-
+-		/* If not already assigned, give the domain the chip's name */
+-		if (!domain->name && irq_data->chip)
+-			domain->name = irq_data->chip->name;
+ 	}
  
--#include <linux/spinlock.h>
- #include <linux/types.h>
--#include <linux/idr.h>
+ 	domain->mapcount++;
+@@ -1118,10 +1114,6 @@ static void irq_domain_insert_irq(int virq)
  
--#include <drm/drm_crtc.h>
--#include <drm/drm_modeset_helper_vtables.h>
--#include <drm/drm_modeset_helper.h>
-+struct drm_atomic_state;
-+struct drm_connector;
-+struct drm_crtc;
-+struct drm_device;
-+struct drm_display_mode;
-+struct drm_encoder;
-+struct drm_framebuffer;
-+struct drm_mode_set;
-+struct drm_modeset_acquire_ctx;
+ 		domain->mapcount++;
+ 		irq_domain_set_mapping(domain, data->hwirq, data);
+-
+-		/* If not already assigned, give the domain the chip's name */
+-		if (!domain->name && data->chip)
+-			domain->name = data->chip->name;
+ 	}
  
- void drm_helper_disable_unused_functions(struct drm_device *dev);
- int drm_crtc_helper_set_config(struct drm_mode_set *set,
+ 	irq_clear_status_flags(virq, IRQ_NOREQUEST);
 -- 
-2.39.0
+2.38.2
 

@@ -2,71 +2,209 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C88F6C00A5A
-	for <linux-mips@archiver.kernel.org>; Tue, 17 Jan 2023 22:56:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D9701C00A5A
+	for <linux-mips@archiver.kernel.org>; Tue, 17 Jan 2023 23:04:18 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229567AbjAQW4f (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 17 Jan 2023 17:56:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52750 "EHLO
+        id S229485AbjAQXER (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 17 Jan 2023 18:04:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57450 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229949AbjAQWz4 (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Tue, 17 Jan 2023 17:55:56 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 885B659554;
-        Tue, 17 Jan 2023 13:42:18 -0800 (PST)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1673991697;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=pjnVo30EwkdZMiQXoApdgvzG4xzAT8a665VwNTtK+J4=;
-        b=2I2N0NTW1TsDU1KAv/gGB973pE2Syyjwx4b6WZ9UdixYpDTGvHDxpAZ3GRimudNUiV3xEn
-        MjxPsn1G26qGpA39VtoxVzMQfJ3Q3pX49mLleMmCXi+9+HuvO1CmqD4jDMFKclDsu5oLg6
-        xd4NfdcR8L//4YnvVa3IeqUBlYoh84afxLuDpQRrP6lXlW4zPSQCCYFXqORuOFmswRQm24
-        MwBGEbM2IIOzP7COKWxqebnOJZx8GyccxaaSG8OSeBEvLLk4DHXYI52gQjOTN3LBDfBF10
-        NqrAytCobgV8e387ITz4mB7tnlgeFrJK8Ru1VYsOSrsOc4/32NtugTYSVzBakg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1673991697;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=pjnVo30EwkdZMiQXoApdgvzG4xzAT8a665VwNTtK+J4=;
-        b=beUKnEpt1WUsXSBhCWU0P+wMataT5eQFR+dj1V+D8rZcQ+YdMjej7Y5BHWdoOWpBDgsnKC
-        2cdJd1sU4h8IuTCQ==
-To:     Johan Hovold <johan+linaro@kernel.org>,
-        Marc Zyngier <maz@kernel.org>
-Cc:     x86@kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Johan Hovold <johan+linaro@kernel.org>,
-        Philippe =?utf-8?Q?Mathieu-Daud=C3=A9?= <philmd@linaro.org>,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        Mark-PK Tsai <mark-pk.tsai@mediatek.com>
-Subject: Re: [PATCH v4 11/19] x86/ioapic: Use irq_domain_create_hierarchy()
-In-Reply-To: <20230116135044.14998-12-johan+linaro@kernel.org>
-References: <20230116135044.14998-1-johan+linaro@kernel.org>
- <20230116135044.14998-12-johan+linaro@kernel.org>
-Date:   Tue, 17 Jan 2023 22:41:36 +0100
-Message-ID: <87pmbckfe7.ffs@tglx>
+        with ESMTP id S229804AbjAQXDZ (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Tue, 17 Jan 2023 18:03:25 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 040B514E9C
+        for <linux-mips@vger.kernel.org>; Tue, 17 Jan 2023 13:37:24 -0800 (PST)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1pHtch-0003AJ-Gz; Tue, 17 Jan 2023 22:36:03 +0100
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+        by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.94.2)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1pHtcf-006lgW-EK; Tue, 17 Jan 2023 22:36:01 +0100
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1pHtce-00DhTI-Jk; Tue, 17 Jan 2023 22:36:00 +0100
+Date:   Tue, 17 Jan 2023 22:35:56 +0100
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Paul Cercueil <paul@crapouillou.net>
+Cc:     Thierry Reding <thierry.reding@gmail.com>, od@opendingux.net,
+        linux-pwm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mips@vger.kernel.org, stable@vger.kernel.org
+Subject: Re: [PATCH 1/5] pwm: jz4740: Fix pin level of disabled TCU2
+ channels, part 1
+Message-ID: <20230117213556.vdurctncvnjom62g@pengutronix.de>
+References: <20221024205213.327001-1-paul@crapouillou.net>
+ <20221024205213.327001-2-paul@crapouillou.net>
+ <20221025062129.drzltbavg6hrhv7r@pengutronix.de>
+ <CVZAKR.06MA7BGA170W3@crapouillou.net>
+ <20221117132927.mom5klfd4eww5amk@pengutronix.de>
+ <SKFJLR.07UMT1VWJOD52@crapouillou.net>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="ffbebyuuq2pqxxtl"
+Content-Disposition: inline
+In-Reply-To: <SKFJLR.07UMT1VWJOD52@crapouillou.net>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-mips@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Mon, Jan 16 2023 at 14:50, Johan Hovold wrote:
->  
-> -	ip->irqdomain = irq_domain_create_linear(fn, hwirqs, cfg->ops,
-> -						 (void *)(long)ioapic);
-> -
-> +	ip->irqdomain = irq_domain_create_hierarchy(parent, 0, hwirqs, fn,
-> +						    cfg->ops,
-> +						    (void *)(long)ioapic);
 
-The 80 character limit has been lifted quite some time ago. Please use
-the 100 which are now the norm.
+--ffbebyuuq2pqxxtl
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Thanks,
+Hello Paul,
 
-        tglx
+On Fri, Nov 18, 2022 at 09:55:40AM +0000, Paul Cercueil wrote:
+> Le jeu. 17 nov. 2022 =E0 14:29:27 +0100, Uwe Kleine-K=F6nig
+> <u.kleine-koenig@pengutronix.de> a =E9crit :
+> > Hello Paul,
+> >=20
+> > On Tue, Oct 25, 2022 at 11:02:00AM +0100, Paul Cercueil wrote:
+> > >  Le mar. 25 oct. 2022 =E0 08:21:29 +0200, Uwe Kleine-K=F6nig
+> > >  <u.kleine-koenig@pengutronix.de> a =E9crit :
+> > >  > Hello,
+> > >  >
+> > >  > On Mon, Oct 24, 2022 at 09:52:09PM +0100, Paul Cercueil wrote:
+> > >  > >  The "duty > cycle" trick to force the pin level of a disabled
+> > > TCU2
+> > >  > >  channel would only work when the channel had been enabled
+> > >  > > previously.
+> > >  > >
+> > >  > >  Address this issue by enabling the PWM mode in
+> > > jz4740_pwm_disable
+> > >  > >  (I know, right) so that the "duty > cycle" trick works before
+> > >  > > disabling
+> > >  > >  the PWM channel right after.
+> > >  > >
+> > >  > >  This issue went unnoticed, as the PWM pins on the majority of
+> > > the
+> > >  > > boards
+> > >  > >  tested would default to the inactive level once the
+> > > corresponding
+> > >  > > TCU
+> > >  > >  clock was enabled, so the first call to jz4740_pwm_disable()
+> > > would
+> > >  > > not
+> > >  > >  actually change the pin levels.
+> > >  > >
+> > >  > >  On the GCW Zero however, the PWM pin for the backlight (PWM1,
+> > > which
+> > >  > > is
+> > >  > >  a TCU2 channel) goes active as soon as the timer1 clock is
+> > > enabled.
+> > >  > >  Since the jz4740_pwm_disable() function did not work on
+> > > channels not
+> > >  > >  previously enabled, the backlight would shine at full
+> > > brightness
+> > >  > > from
+> > >  > >  the moment the backlight driver would probe, until the
+> > > backlight
+> > >  > > driver
+> > >  > >  tried to *enable* the PWM output.
+> > >  > >
+> > >  > >  With this fix, the PWM pins will be forced inactive as soon as
+> > >  > >  jz4740_pwm_apply() is called (and might be reconfigured to
+> > > active if
+> > >  > >  dictated by the pwm_state). This means that there is still a
+> > > tiny
+> > >  > > time
+> > >  > >  frame between the .request() and .apply() callbacks where the
+> > > PWM
+> > >  > > pin
+> > >  > >  might be active. Sadly, there is no way to fix this issue: it
+> > > is
+> > >  > >  impossible to write a PWM channel's registers if the
+> > > corresponding
+> > >  > > clock
+> > >  > >  is not enabled, and enabling the clock is what causes the PWM
+> > > pin
+> > >  > > to go
+> > >  > >  active.
+> > >  > >
+> > >  > >  There is a workaround, though, which complements this fix:
+> > > simply
+> > >  > >  starting the backlight driver (or any PWM client driver) with a
+> > >  > > "init"
+> > >  > >  pinctrl state that sets the pin as an inactive GPIO. Once the
+> > >  > > driver is
+> > >  > >  probed and the pinctrl state switches to "default", the
+> > > regular PWM
+> > >  > > pin
+> > >  > >  configuration can be used as it will be properly driven.
+> > >  > >
+> > >  > >  Fixes: c2693514a0a1 ("pwm: jz4740: Obtain regmap from parent
+> > > node")
+> > >  > >  Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+> > >  > >  Cc: stable@vger.kernel.org
+> > >  >
+> > >  > OK, understood the issue. I think there is another similar issue:
+> > > The
+> > >  > clk is get and enabled only in the .request() callback. The
+> > > result is (I
+> > >  > think---depends on a few further conditions) that if you have the
+> > >  > backlight driver as a module and the bootloader enables the
+> > > backlight to
+> > >  > show a splash screen, the backlight goes off because of the
+> > >  > clk_disable_unused initcall.
+> > >=20
+> > >  I will have to verify, but I'm pretty sure disabling the clock
+> > > doesn't
+> > >  change the pin level back to inactive.
+> >=20
+> > Given that you set the clk's rate depending on the period to apply, I'd
+> > claim that you need to keep the clk on. Maybe it doesn't hurt, because
+> > another component of the system keeps the clk running, but it's wrong
+> > anyhow. Assumptions like these tend to break on new chip revisions.
+>=20
+> If the backlight driver is a module then it will probe before the
+> clk_disable_unused initcall, unless something is really wrong.
+
+I'd claim the clk_disable_unused initcall is called before userspace
+starts and so before the module can be loaded. Who is wrong here?
+
+> So the backlight would stay ON if it was enabled by the bootloader,
+> unless the DTB decides it doesn't have to be.
+
+Don't understand that. How could hte DTB decide the backlight can be
+disabled?
+=20
+> Anyway, I can try your suggestion, and move the trick to force-disable PWM
+> pins in the probe(). After that, the clocks can be safely disabled, so I =
+can
+> disable them (for the disabled PWMs) at the end of the probe and re-enable
+> them again in their respective .request() callback.
+
+I really lost track of the problem here and would appreciate a new
+submission of the remaining (and improved?) patches.
+
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--ffbebyuuq2pqxxtl
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmPHFLkACgkQwfwUeK3K
+7AkUMQgAns6EZuWoQbrriCFcoXRMg4koUFPdc/FSKe6eZ0FHjDDrSq7AHB0ScMAP
+8Hzb+8HTg7MfoGYxkbq63wpziNNpxMsqL1WP2SXNqDVsgfH6f9SZRiMshHhEHukO
+dgRvPGQ38iyZzRDERLAgt6PqPDvDsyTH8Tty8Urt4SdM7ipR2y0oBjwWoZw4nrNS
+0MhiwAZy90h7gopH3IE8xtewJJlYGeFOSIcp2/fPb6+9nceAfP9VWAu95MQi62iD
+8fkMNOgu3iroH5mhL1VjtGF8Iy72irnytMYAD1ikKG8K4RJT4zN9l63lJLsGoLVT
+UcZr84b3LhgJg5pd5luNIj0UVnJXvA==
+=U6a6
+-----END PGP SIGNATURE-----
+
+--ffbebyuuq2pqxxtl--

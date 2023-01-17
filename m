@@ -2,38 +2,38 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D8647C00A5A
-	for <linux-mips@archiver.kernel.org>; Tue, 17 Jan 2023 23:26:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BCBB1C00A5A
+	for <linux-mips@archiver.kernel.org>; Tue, 17 Jan 2023 23:35:02 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229879AbjAQX0i (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 17 Jan 2023 18:26:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49814 "EHLO
+        id S229695AbjAQXfB (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 17 Jan 2023 18:35:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59766 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229628AbjAQX0L (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Tue, 17 Jan 2023 18:26:11 -0500
+        with ESMTP id S230051AbjAQXeb (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Tue, 17 Jan 2023 18:34:31 -0500
 Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D04C838B4A;
-        Tue, 17 Jan 2023 13:23:21 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CC3F10F2;
+        Tue, 17 Jan 2023 13:20:48 -0800 (PST)
 From:   Thomas Gleixner <tglx@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1673990600;
+        s=2020; t=1673990446;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=9cR92r6412sVEgsFseieEmbL64hVIExQVx/uajzRUqs=;
-        b=4gvMSIqJNtFm0M4IlaLBv7hv9uh6wP/jv5tuk+SV8v0eTmaYmF1JpftSG0ZJy0oBApIwa0
-        w+F2HouWmAJVKfl5R+L+cea7gKk3FrL+h9hnITaMdz3/IS66/In2gga9M+EUwbEsl+YbY+
-        vP94ozvjRJSEvNh4gJ4qLAtMLC8W3wy3+HGT+21nDnmwNeuIrRVwCTg4degx5NlUuPF31m
-        F+VGgGqJAqEJjJfZ9a84Fi65CQtT2qryxyGVmG3p4UNaVPZVmyLGFuWDQH6OMlHYT1zkU/
-        cL3/8dMghsZ2FdahcLDDPgj1rmU533JPtI/aFr+MJE1GmoVtAMRxk8wCIZmXtg==
+        bh=uFt1AJQ9n7qGyugZoMBl7mWBYMnX6oI/Uf8Kag8wje0=;
+        b=NvUPD+FWtELzTgMxbE9uDL2FKa1hRDnJvkJKh6TK1nwWJdESVKTzRLOtgwCAnRCZv94iG+
+        8YNU6ZRAyiWfB8WmDGifmKKfoQKiBJjTpCE1At9hpzbwQQXI0vT/k2mOZi8p6rzV01/KVs
+        cSxE7XL2+1bVq9jZdmzR+YztzHYBOh/Q9vWORgjXiYi9Yj187fbjctDCb11f+ubqKjKEqU
+        ZF23xjhRzJWOopLQlr71d5J6EsZDSYKBJWmq2o6CbZ1bbtZ6LoCVpGRw3W9IF83j3eTN+7
+        VhLkf2sBDdRShXWGyjbkuCQpbYmiujP7rTRBPGmiSiYSLf0USsqg8oZpmpKtVA==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1673990600;
+        s=2020e; t=1673990446;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=9cR92r6412sVEgsFseieEmbL64hVIExQVx/uajzRUqs=;
-        b=IazwIGkx4PC9hoLOSFvpMA991cbQcJeJhX2yOasyZlxAXJ+KRq46Q/ubauNBbC2xEC/u7P
-        tjfvpSXkS3vXS1CA==
+        bh=uFt1AJQ9n7qGyugZoMBl7mWBYMnX6oI/Uf8Kag8wje0=;
+        b=/Ktw//WEB6yelYeDZAO9repdpMW0rl4hya6E88cwj+07K0+gYzAbmtZI1P/iOX6LTBHEBN
+        IczWgVOGX/eVb0AQ==
 To:     Johan Hovold <johan+linaro@kernel.org>,
         Marc Zyngier <maz@kernel.org>
 Cc:     x86@kernel.org, platform-driver-x86@vger.kernel.org,
@@ -42,12 +42,12 @@ Cc:     x86@kernel.org, platform-driver-x86@vger.kernel.org,
         Johan Hovold <johan+linaro@kernel.org>,
         Hsin-Yi Wang <hsinyi@chromium.org>,
         Mark-PK Tsai <mark-pk.tsai@mediatek.com>
-Subject: Re: [PATCH v4 06/19] irqdomain: Drop revmap mutex
-In-Reply-To: <20230116135044.14998-7-johan+linaro@kernel.org>
+Subject: Re: [PATCH v4 04/19] irqdomain: Fix association race
+In-Reply-To: <20230116135044.14998-5-johan+linaro@kernel.org>
 References: <20230116135044.14998-1-johan+linaro@kernel.org>
- <20230116135044.14998-7-johan+linaro@kernel.org>
-Date:   Tue, 17 Jan 2023 22:23:20 +0100
-Message-ID: <871qnslut3.ffs@tglx>
+ <20230116135044.14998-5-johan+linaro@kernel.org>
+Date:   Tue, 17 Jan 2023 22:20:46 +0100
+Message-ID: <874jsoluxd.ffs@tglx>
 MIME-Version: 1.0
 Content-Type: text/plain
 Precedence: bulk
@@ -55,21 +55,22 @@ List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
 On Mon, Jan 16 2023 at 14:50, Johan Hovold wrote:
-> The global irq_domain_mutex is now held in all paths that update the
-> revmap structures so there is no longer any need for the revmap mutex.
+> The sanity check for an already mapped virq was done outside of the
 
-This can also go after the 3rd race fix, but ...
+s/was/is/
 
->  static void irq_domain_clear_mapping(struct irq_domain *domain,
->  				     irq_hw_number_t hwirq)
->  {
-> +	lockdep_assert_held(&irq_domain_mutex);
+> irq_domain_mutex-protected section which meant that an (unlikely) racing
 
-these lockdep asserts want to be part of the [dis]association race
-fixes. They are completely unrelated to the removal of the revmap_mutex.
+s/meant/means/
 
-Your race fixes change the locking and you want to ensure that all
-callers comply right there, no?
+> association may not be detected.
+
+You describe the status quo and then correctly what the fix is:
+
+> Fix this by factoring out the association implementation, which will
+> also be used in follow-on changes to rework the locking.
+
+Otherwise your fix fixes something which existed in the past, no?
 
 Thanks,
 

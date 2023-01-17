@@ -2,85 +2,67 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1A6E6C3DA71
-	for <linux-mips@archiver.kernel.org>; Tue, 17 Jan 2023 22:06:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8AECDC38159
+	for <linux-mips@archiver.kernel.org>; Tue, 17 Jan 2023 22:48:16 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229960AbjAQWEq (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 17 Jan 2023 17:04:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46798 "EHLO
+        id S230024AbjAQWsF (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 17 Jan 2023 17:48:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46332 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229821AbjAQWEF (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Tue, 17 Jan 2023 17:04:05 -0500
-Received: from outpost1.zedat.fu-berlin.de (outpost1.zedat.fu-berlin.de [130.133.4.66])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 554FB4F87F;
-        Tue, 17 Jan 2023 12:37:39 -0800 (PST)
-Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
-          by outpost.zedat.fu-berlin.de (Exim 4.95)
-          with esmtps (TLS1.3)
-          tls TLS_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@zedat.fu-berlin.de>)
-          id 1pHsi7-002brB-VR; Tue, 17 Jan 2023 21:37:35 +0100
-Received: from p57bd9464.dip0.t-ipconnect.de ([87.189.148.100] helo=[192.168.178.81])
-          by inpost2.zedat.fu-berlin.de (Exim 4.95)
-          with esmtpsa (TLS1.3)
-          tls TLS_AES_128_GCM_SHA256
-          (envelope-from <glaubitz@physik.fu-berlin.de>)
-          id 1pHsi7-003MvY-Or; Tue, 17 Jan 2023 21:37:35 +0100
-Message-ID: <0d238f02-4d78-6f14-1b1b-f53f0317a910@physik.fu-berlin.de>
-Date:   Tue, 17 Jan 2023 21:37:35 +0100
+        with ESMTP id S230041AbjAQWrA (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Tue, 17 Jan 2023 17:47:00 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A81D749012;
+        Tue, 17 Jan 2023 13:50:41 -0800 (PST)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1673992240;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=9kRvzgCBVx5CsqZCT0iVya/YuDwD7HvQx/Cdez2OwYE=;
+        b=FmB0R3FWVjeezvBTl+OQJhL03fZ9wAuT6NypmKWIyV9GNt1Fq1xulnRnzRI1YsJqDNaijF
+        3gUGS/eoBjK+CB1Tk5PE6FX/fqZe8oBmJEKH7crllx2jlfcuVs9qUn8fqT0Ksm4t2/KHWg
+        qvAeQLfjoDK5StxfglOc/NIGTz2JIVKofzXUhmfIK6rgIRqI03lDOhtduH70Oh1JNYpSh7
+        hI8v9nXWiE+1oEiZKM8vv2yG6m4948t3ubhOi25Vd2Gl3jg5grNKEbNnxHvScJc+sr3ZFI
+        3x4HI7ztFPTZ17igeR5EpjZbgrN4VHYjptf1vtQrx60zBqvc7W1WbYFfm4sIZA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1673992240;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=9kRvzgCBVx5CsqZCT0iVya/YuDwD7HvQx/Cdez2OwYE=;
+        b=yjCanFJ8Zq9WV1KKf+FZelQ0VydqlG6wcxsPQ3lHAcaYAt6NUH8Cd1kwT4oXLHjvlfNaZJ
+        K9L7IPHH/y1qWOBg==
+To:     Johan Hovold <johan+linaro@kernel.org>,
+        Marc Zyngier <maz@kernel.org>
+Cc:     x86@kernel.org, platform-driver-x86@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Johan Hovold <johan+linaro@kernel.org>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        Mark-PK Tsai <mark-pk.tsai@mediatek.com>
+Subject: Re: [PATCH v4 19/19] irqdomain: Switch to per-domain locking
+In-Reply-To: <20230116135044.14998-20-johan+linaro@kernel.org>
+References: <20230116135044.14998-1-johan+linaro@kernel.org>
+ <20230116135044.14998-20-johan+linaro@kernel.org>
+Date:   Tue, 17 Jan 2023 22:50:39 +0100
+Message-ID: <87mt6gkez4.ffs@tglx>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.6.1
-Subject: Re: Calculating array sizes in C - was: Re: Build
- regressions/improvements in v6.2-rc1
-Content-Language: en-US
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     linux-kernel@vger.kernel.org, amd-gfx@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org,
-        linux-wireless@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-sh@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        linuxppc-dev@lists.ozlabs.org, kasan-dev@googlegroups.com,
-        linux-xtensa@linux-xtensa.org,
-        Michael Karcher <kernel@mkarcher.dialup.fu-berlin.de>,
-        Arnd Bergmann <arnd@arndb.de>
-References: <CAHk-=wgf929uGOVpiWALPyC7pv_9KbwB2EAvQ3C4woshZZ5zqQ@mail.gmail.com>
- <20221227082932.798359-1-geert@linux-m68k.org>
- <alpine.DEB.2.22.394.2212270933530.311423@ramsan.of.borg>
- <c05bee5d-0d69-289b-fe4b-98f4cd31a4f5@physik.fu-berlin.de>
- <CAMuHMdXNJveXHeS=g-aHbnxtyACxq1wCeaTg8LbpYqJTCqk86g@mail.gmail.com>
- <3800eaa8-a4da-b2f0-da31-6627176cb92e@physik.fu-berlin.de>
- <CAMuHMdWbBRkhecrqcir92TgZnffMe8ku2t7PcVLqA6e6F-j=iw@mail.gmail.com>
- <429140e0-72fe-c91c-53bc-124d33ab5ffa@physik.fu-berlin.de>
- <CAMuHMdWpHSsAB3WosyCVgS6+t4pU35Xfj3tjmdCDoyS2QkS7iw@mail.gmail.com>
-From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-In-Reply-To: <CAMuHMdWpHSsAB3WosyCVgS6+t4pU35Xfj3tjmdCDoyS2QkS7iw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Original-Sender: glaubitz@physik.fu-berlin.de
-X-Originating-IP: 87.189.148.100
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Hi!
+On Mon, Jan 16 2023 at 14:50, Johan Hovold wrote:
+> The IRQ domain structures are currently protected by the global
+> irq_domain_mutex. Switch to using more fine-grained per-domain locking,
+> which may potentially speed up parallel probing somewhat.
 
-On 1/17/23 21:05, Geert Uytterhoeven wrote:
->> Isn't this supposed to be caught by this check:
->>
->>          a, __same_type(a, NULL)
->>
->> ?
-> 
-> Yeah, but gcc thinks it is smarter than us...
-> Probably it drops the test, assuming UB cannot happen.
+Does it or not?
 
-Hmm, sounds like a GGC bug to me then. Not sure how to fix this then.
+If not then why adding all this churn for no real value?
 
-Adrian
+Thanks,
 
--- 
-  .''`.  John Paul Adrian Glaubitz
-: :' :  Debian Developer
-`. `'   Physicist
-   `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
-
+        tglx

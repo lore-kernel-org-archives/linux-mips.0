@@ -2,73 +2,75 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C3220C54EBE
-	for <linux-mips@archiver.kernel.org>; Wed, 18 Jan 2023 09:28:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 18B57C32793
+	for <linux-mips@archiver.kernel.org>; Wed, 18 Jan 2023 09:43:46 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230077AbjARJ2i (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 18 Jan 2023 04:28:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47482 "EHLO
+        id S230225AbjARJno (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 18 Jan 2023 04:43:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60824 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230273AbjARJZO (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 18 Jan 2023 04:25:14 -0500
-Received: from mail.bostmarktrun.com (mail.bostmarktrun.com [135.125.238.46])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F275470B1
-        for <linux-mips@vger.kernel.org>; Wed, 18 Jan 2023 00:50:35 -0800 (PST)
-Received: by mail.bostmarktrun.com (Postfix, from userid 1002)
-        id 0F834A274A; Wed, 18 Jan 2023 08:50:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=bostmarktrun.com;
-        s=mail; t=1674031834;
-        bh=gfWmJwOZk+B/IN1TMPg7emKhIvoExrJdUiyEL8yd2Jk=;
-        h=Date:From:To:Subject:From;
-        b=aHMODYRBzGRF5ajEq1XqO5F1Qvf4mwwfmrcY/NPGx2hIziVRR9Rht4fBUEimmyWH2
-         cNI0YQf3PujQL+GA6yElBo3TGYEQiuKLQpsEhRTqpKUS+U7mC+9AA3rbtXoku3XS/S
-         XOjYiBW0VWNxmMRW926X0mfWyRN5uLmlIuLSQHH3JPJl1Kqipfxe14k0FtcpmmcQdy
-         rkcJtkB/7SuoJjzN2qsi1IF72kSI3HzOIqYwlbWdlKpo8jQP33VsF1QDm/bof8LarZ
-         BceTLGej7VpE/68Z3Jj0zvCRiDiRy/tmXfybNJbCnqA3GrHQaO6/qEn2BOVyuYZ66X
-         GNw0S0weVxwaA==
-Received: by mail.bostmarktrun.com for <linux-mips@vger.kernel.org>; Wed, 18 Jan 2023 08:50:31 GMT
-Message-ID: <20230118074500-0.1.4p.wrp3.0.0irg2ftfio@bostmarktrun.com>
-Date:   Wed, 18 Jan 2023 08:50:31 GMT
-From:   "Corey Webb" <corey.webb@bostmarktrun.com>
-To:     <linux-mips@vger.kernel.org>
-Subject: Custom Software Development
-X-Mailer: mail.bostmarktrun.com
+        with ESMTP id S230421AbjARJmI (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 18 Jan 2023 04:42:08 -0500
+Received: from mailgw.kylinos.cn (unknown [124.126.103.232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 099FF66FAB;
+        Wed, 18 Jan 2023 00:58:52 -0800 (PST)
+X-UUID: 75e262cb2b40474cbae37b4990fb7b92-20230118
+X-CPASD-INFO: e91bbc8fd9d74cad94acf213d1775d91@rolrgo-VZpaQWaaDg6asnlllkZOXXlG
+        CpmtXZ2OUZVGVhH5xTV5nX1V9gnNXZF5dXFV3dnBQY2BhXVJ3i3-XblBgXoZgUZB3tHtrgpKRaA==
+X-CLOUD-ID: e91bbc8fd9d74cad94acf213d1775d91
+X-CPASD-SUMMARY: SIP:-1,APTIP:-2.0,KEY:0.0,FROMBLOCK:1,OB:0.0,URL:-5,TVAL:197.
+        0,ESV:0.0,ECOM:-5.0,ML:0.0,FD:1.0,CUTS:102.0,IP:-2.0,MAL:-5.0,PHF:-5.0,PHC:-5
+        .0,SPF:4.0,EDMS:-5,IPLABEL:4480.0,FROMTO:0,AD:0,FFOB:0.0,CFOB:0.0,SPC:0,SIG:-
+        5,AUF:9,DUF:13236,ACD:206,DCD:206,SL:0,EISP:0,AG:0,CFC:0.139,CFSR:0.205,UAT:0
+        ,RAF:0,IMG:-5.0,DFA:0,DTA:0,IBL:-2.0,ADI:-5,SBL:0,REDM:0,REIP:0,ESB:0,ATTNUM:
+        0,EAF:0,CID:-5.0,VERSION:2.3.17
+X-CPASD-ID: 75e262cb2b40474cbae37b4990fb7b92-20230118
+X-CPASD-BLOCK: 1001
+X-CPASD-STAGE: 1
+X-UUID: 75e262cb2b40474cbae37b4990fb7b92-20230118
+X-User: xurui@kylinos.cn
+Received: from localhost.localdomain [(116.128.244.169)] by mailgw
+        (envelope-from <xurui@kylinos.cn>)
+        (Generic MTA)
+        with ESMTP id 849748297; Wed, 18 Jan 2023 16:58:52 +0800
+From:   xurui <xurui@kylinos.cn>
+To:     tsbogend@alpha.franken.de, ralf@linux-mips.org
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        rdunlap@infradead.org, xurui <xurui@kylinos.cn>
+Subject: [RFC] MIPS: Fix a compilation issue
+Date:   Wed, 18 Jan 2023 16:59:12 +0800
+Message-Id: <20230118085912.608758-1-xurui@kylinos.cn>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Hi,=20
+arch/mips/include/asm/mach-rc32434/pci.h:377:
+cc1: error: result of ‘-117440512 << 16’ requires 44 bits to represent, but ‘int’ only has 32 bits [-Werror=shift-overflow=]
 
-I would like to reach the person responsible for the implementation of yo=
-ur company's goals, vision and mission or the decision-maker in the devel=
-opment of your technology strategy.
+I guss we don`t need a left shift here?
 
-I represent provider of lucrative IT solutions that remove the barriers t=
-o process development resulting from limited access to appropriate IT res=
-ources.
+Signed-off-by: xurui <xurui@kylinos.cn>
+---
+ arch/mips/include/asm/mach-rc32434/pci.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-We guarantee you access to the knowledge and experience of outstanding 3,=
-000 software developers from Poland and 500 professional consultants and =
-senior developers in the United States and other Western countries. =20
+diff --git a/arch/mips/include/asm/mach-rc32434/pci.h b/arch/mips/include/asm/mach-rc32434/pci.h
+index 9a6eefd12757..3eb767c8a4ee 100644
+--- a/arch/mips/include/asm/mach-rc32434/pci.h
++++ b/arch/mips/include/asm/mach-rc32434/pci.h
+@@ -374,7 +374,7 @@ struct pci_msu {
+ 				 PCI_CFG04_STAT_SSE | \
+ 				 PCI_CFG04_STAT_PE)
+ 
+-#define KORINA_CNFG1		((KORINA_STAT<<16)|KORINA_CMD)
++#define KORINA_CNFG1		(KORINA_STAT | KORINA_CMD)
+ 
+ #define KORINA_REVID		0
+ #define KORINA_CLASS_CODE	0
+-- 
+2.25.1
 
-We respond to a variety of needs, ranging from expanding your project tea=
-m with specialists with specific skills to supporting project managers, e=
-xperienced innovation teams to creating a Minimum Viable Project (MVP).
-
-The comprehensiveness of our services guarantees you dynamic software dev=
-elopment including creation, testing and implementation systems that are =
-the backbone of effective management of the entire organization.
-
-A partnership that lasts for years is the best proof that our clients mee=
-t their unique requirements within a specific timeframe, introduce new op=
-portunities and grow their business while we solve their problems.
-
-Are you available for a brief call? I will be looking forward to hearing =
-from you.
-
-
-Best regards
-Corey Webb

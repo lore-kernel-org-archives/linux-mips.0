@@ -2,121 +2,100 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7474BC677F1
-	for <linux-mips@archiver.kernel.org>; Fri, 20 Jan 2023 04:28:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 92F09C38159
+	for <linux-mips@archiver.kernel.org>; Fri, 20 Jan 2023 06:34:43 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230032AbjATE2r (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 19 Jan 2023 23:28:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40696 "EHLO
+        id S229553AbjATGem (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 20 Jan 2023 01:34:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36742 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229797AbjATE2b (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Thu, 19 Jan 2023 23:28:31 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEDEDB1ED3;
-        Thu, 19 Jan 2023 20:28:27 -0800 (PST)
+        with ESMTP id S229437AbjATGem (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Fri, 20 Jan 2023 01:34:42 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99E8A654C3;
+        Thu, 19 Jan 2023 22:34:41 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 279F8B82698;
-        Thu, 19 Jan 2023 17:24:30 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C0EE7C433EF;
-        Thu, 19 Jan 2023 17:24:28 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 04910B81B1C;
+        Fri, 20 Jan 2023 06:34:40 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 50181C433EF;
+        Fri, 20 Jan 2023 06:34:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1674149068;
-        bh=esmAuiMb4cE5hZfqa2pdZ4JKU4zWFBBvjoAoXwc+zAk=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=FItgwmM67QScUUENZ8Zwtagr5mIdG5cEHxPFfSNuC1jM6dBrsQGhnCtdKL1v4Yf0w
-         dW3PN2nS8nWYwK6BvAjRYCRs1jNPqcxP6UwIOvTzzQ9T/wZ6VcEzgDHqur2z3W0vff
-         Q1U6HgQ7VMeTq9MX32okWCpOlh8xJ8QfczraVmhyB125dZQ7bsUFjHD48Lr2RB1Xwn
-         dCD05u76MAQiAcbWsup1KSQa2MZ/UMnuWZVUxW8VbUZw7v99qBSmYLqsbt+GBlaRNB
-         uIlEinXfjpAehqjV461mc7XifGdWsWw6VTkhkWgCHrf79SoBq2+sYdBD1CdMnGEwy+
-         8vQzGzULTP5uQ==
-Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.95)
-        (envelope-from <maz@kernel.org>)
-        id 1pIYeI-003A4j-5l;
-        Thu, 19 Jan 2023 17:24:26 +0000
-Date:   Thu, 19 Jan 2023 17:24:25 +0000
-Message-ID: <86tu0mmo8m.wl-maz@kernel.org>
-From:   Marc Zyngier <maz@kernel.org>
-To:     David Matlack <dmatlack@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        James Morse <james.morse@arm.com>,
-        Alexandru Elisei <alexandru.elisei@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
-        Anup Patel <anup@brainfault.org>,
-        Atish Patra <atishp@atishpatra.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Sean Christopherson <seanjc@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Nadav Amit <namit@vmware.com>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        "Liam R. Howlett" <Liam.Howlett@oracle.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Peter Xu <peterx@redhat.com>, xu xin <cgel.zte@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>, Yu Zhao <yuzhao@google.com>,
-        Colin Cross <ccross@google.com>,
-        Hugh Dickins <hughd@google.com>,
-        Ben Gardon <bgardon@google.com>,
-        Mingwei Zhang <mizhang@google.com>,
-        Krish Sadhukhan <krish.sadhukhan@oracle.com>,
-        Ricardo Koller <ricarkol@google.com>,
-        Jing Zhang <jingzhangos@google.com>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        kvmarm@lists.cs.columbia.edu, linux-mips@vger.kernel.org,
-        kvm@vger.kernel.org, kvm-riscv@lists.infradead.org,
-        linux-riscv@lists.infradead.org,
-        Alexandre Ghiti <alexghiti@rivosinc.com>,
-        Raghavendra Rao Ananta <rananta@google.com>
-Subject: Re: [RFC PATCH 00/37] KVM: Refactor the KVM/x86 TDP MMU into common code
-In-Reply-To: <Y8l6egh2wWN7BUlZ@google.com>
-References: <20221208193857.4090582-1-dmatlack@google.com>
-        <Y8l6egh2wWN7BUlZ@google.com>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
- FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/28.2
- (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-X-SA-Exim-Connect-IP: 185.219.108.64
-X-SA-Exim-Rcpt-To: dmatlack@google.com, pbonzini@redhat.com, james.morse@arm.com, alexandru.elisei@arm.com, suzuki.poulose@arm.com, oliver.upton@linux.dev, chenhuacai@kernel.org, aleksandar.qemu.devel@gmail.com, anup@brainfault.org, atishp@atishpatra.org, paul.walmsley@sifive.com, palmer@dabbelt.com, aou@eecs.berkeley.edu, seanjc@google.com, akpm@linux-foundation.org, anshuman.khandual@arm.com, namit@vmware.com, willy@infradead.org, vbabka@suse.cz, Liam.Howlett@oracle.com, surenb@google.com, peterx@redhat.com, cgel.zte@gmail.com, arnd@arndb.de, yuzhao@google.com, ccross@google.com, hughd@google.com, bgardon@google.com, mizhang@google.com, krish.sadhukhan@oracle.com, ricarkol@google.com, jingzhangos@google.com, linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev, kvmarm@lists.cs.columbia.edu, linux-mips@vger.kernel.org, kvm@vger.kernel.org, kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org, alexghiti@rivosinc.com, rananta@google.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+        s=k20201202; t=1674196478;
+        bh=BTZ5ynW9dFHI8pgU+nM0G7IYtTLPvBGRXUKA8tahUxE=;
+        h=From:To:Cc:Subject:Date:From;
+        b=P08vpsyuerHT57RhU3qAy42QsR7AGWBzh05St7h44YqpzP2+pEfgfTpZIEy8wiN3w
+         hhuGBPJCzask6xjzaG9sAfn86lJZQXItSnXUHSxgVK3Q/HZuTrlMBC+gqyj0LshIYs
+         1A3wN0RZncbFREnLe/Zn4LuEq+cS6obwqLIQCK2kAFigK8IekqnbClQaN/ZlDPn5S1
+         9xZaxqV9ss/yz5uVlt63mMu56+ZfhvI+ZPJwzJw/kGo51I4/tchyq2RejLVsX9ItDH
+         eEmK61VFjcCT5VuxnGtCNlfWC676WfVD68FY2gKLaw30DD0IKfqSN272FBFfbLtynn
+         OHzNi+bfu3I5Q==
+From:   Masahiro Yamada <masahiroy@kernel.org>
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        linux-mips@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org,
+        Nathan Chancellor <nathan@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>
+Subject: [PATCH] MIPS: remove CONFIG_MIPS_LD_CAN_LINK_VDSO
+Date:   Fri, 20 Jan 2023 15:33:51 +0900
+Message-Id: <20230120063351.433502-1-masahiroy@kernel.org>
+X-Mailer: git-send-email 2.34.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Thu, 19 Jan 2023 17:14:34 +0000,
-David Matlack <dmatlack@google.com> wrote:
-> 
-> On Thu, Dec 08, 2022 at 11:38:20AM -0800, David Matlack wrote:
-> > 
-> > Hello,
-> > 
-> > This series refactors the KVM/x86 "TDP MMU" into common code. This is
-> > the first step toward sharing TDP (aka Stage-2) page table management
-> > code across architectures that support KVM.
-> 
-> Thank you everyone for the feedback on this RFC. I have a couple of
-> updates to share and a question at the end.
-> 
-> First, Alexandre Ghiti from Rivos is going to work on the RISC-V port.
-> I'd like to target RISC-V first, since it has significantly lower risk
-> and complexity than e.g. ARM (which has pKVM, stage-1 walkers, and
-> [soon] nested virtualization to deal with).
+Given commit e4412739472b ("Documentation: raise minimum supported
+version of binutils to 2.25"), CONFIG_MIPS_LD_CAN_LINK_VDSO is always
+'y'.
 
-And (joy, happiness), the upcoming 128bit page table support[1].
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+---
 
-	M.
+ arch/mips/vdso/Kconfig  | 14 +-------------
+ arch/mips/vdso/Makefile |  3 ---
+ 2 files changed, 1 insertion(+), 16 deletions(-)
 
-[1] https://developer.arm.com/documentation/ddi0601/2022-12/AArch64-Registers/TTBR0-EL1--Translation-Table-Base-Register-0--EL1-?lang=en
-
+diff --git a/arch/mips/vdso/Kconfig b/arch/mips/vdso/Kconfig
+index a665f6108cb5..70140248da72 100644
+--- a/arch/mips/vdso/Kconfig
++++ b/arch/mips/vdso/Kconfig
+@@ -1,18 +1,6 @@
+-# For the pre-R6 code in arch/mips/vdso/vdso.h for locating
+-# the base address of VDSO, the linker will emit a R_MIPS_PC32
+-# relocation in binutils > 2.25 but it will fail with older versions
+-# because that relocation is not supported for that symbol. As a result
+-# of which we are forced to disable the VDSO symbols when building
+-# with < 2.25 binutils on pre-R6 kernels. For more references on why we
+-# can't use other methods to get the base address of VDSO please refer to
+-# the comments on that file.
+-#
+ # GCC (at least up to version 9.2) appears to emit function calls that make use
+ # of the GOT when targeting microMIPS, which we can't use in the VDSO due to
+ # the lack of relocations. As such, we disable the VDSO for microMIPS builds.
+ 
+-config MIPS_LD_CAN_LINK_VDSO
+-	def_bool LD_VERSION >= 22500 || LD_IS_LLD
+-
+ config MIPS_DISABLE_VDSO
+-	def_bool CPU_MICROMIPS || (!CPU_MIPSR6 && !MIPS_LD_CAN_LINK_VDSO)
++	def_bool CPU_MICROMIPS
+diff --git a/arch/mips/vdso/Makefile b/arch/mips/vdso/Makefile
+index 1f7d5c6c10b0..18af9474ed0e 100644
+--- a/arch/mips/vdso/Makefile
++++ b/arch/mips/vdso/Makefile
+@@ -52,9 +52,6 @@ endif
+ CFLAGS_REMOVE_vgettimeofday.o = $(CC_FLAGS_FTRACE)
+ 
+ ifdef CONFIG_MIPS_DISABLE_VDSO
+-  ifndef CONFIG_MIPS_LD_CAN_LINK_VDSO
+-    $(warning MIPS VDSO requires binutils >= 2.25)
+-  endif
+   obj-vdso-y := $(filter-out vgettimeofday.o, $(obj-vdso-y))
+ endif
+ 
 -- 
-Without deviation from the norm, progress is not possible.
+2.34.1
+

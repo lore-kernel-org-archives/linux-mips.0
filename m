@@ -2,32 +2,58 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 692B6C54E94
-	for <linux-mips@archiver.kernel.org>; Tue, 24 Jan 2023 17:26:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5DEC3C25B4E
+	for <linux-mips@archiver.kernel.org>; Tue, 24 Jan 2023 17:28:59 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233149AbjAXR0i (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 24 Jan 2023 12:26:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58918 "EHLO
+        id S233331AbjAXR26 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 24 Jan 2023 12:28:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60284 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232166AbjAXR0h (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Tue, 24 Jan 2023 12:26:37 -0500
-X-Greylist: delayed 552 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 24 Jan 2023 09:26:33 PST
-Received: from out-72.mta0.migadu.com (out-72.mta0.migadu.com [91.218.175.72])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BACFC4AA6E
-        for <linux-mips@vger.kernel.org>; Tue, 24 Jan 2023 09:26:33 -0800 (PST)
-Date:   Tue, 24 Jan 2023 17:17:12 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1674580638;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=KIEASO5qPs55lTPiWLXCZgFc1uWbFeBJE6bZJxvRUc0=;
-        b=pHL003ov1XfnmIFlNayK1LaKatLGFuHSsS50iKWIk9FUm7eZ3+Hh4zvnZo0gD4kA+Ikrly
-        jgan9mv2Uos5m1WyH5cRwTLVHswqpM8wNprQ67Jyt6Jw1juH3/vuLsyhSdzSnnXDYt8ofY
-        ju2OUJ7yTEO4EIJpNHPVHxdHb1S591c=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Oliver Upton <oliver.upton@linux.dev>
-To:     David Matlack <dmatlack@google.com>
+        with ESMTP id S229486AbjAXR25 (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Tue, 24 Jan 2023 12:28:57 -0500
+Received: from mail-yw1-x112a.google.com (mail-yw1-x112a.google.com [IPv6:2607:f8b0:4864:20::112a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C1D046149
+        for <linux-mips@vger.kernel.org>; Tue, 24 Jan 2023 09:28:57 -0800 (PST)
+Received: by mail-yw1-x112a.google.com with SMTP id 00721157ae682-4c131bede4bso228443957b3.5
+        for <linux-mips@vger.kernel.org>; Tue, 24 Jan 2023 09:28:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=4sHQzscpqG9TR78740t1qks4GROeGMyOxwyGqktGwJE=;
+        b=Wv/Y/FHqEIrZHr/zsNPKlIP0whUgie/P2KEuD/n0uk24KW6tZ8c5E2dlYQQksvdoXc
+         MIGHEBlUyUiurRHKw8Eli/ImV02k9ot4n+oIcF3KHN0Eg97UZIY86sENWVWQU92/wEku
+         tC53N+VqDQm61+7t4vsGLZJKabtV7K36r+12kp1mA/pYMQNNe9IENQSoeoOTDJhNIfIi
+         pwMTsdVKm9K2Zr4mYwzujPCEe6yuR+ktXBivdEw3X1L9xQ34O0xjHOv/b0Y/qsZO4lf3
+         CRYLcBg/1JEoF9JDtZGWN8+JUGWeccq8WSx3xvS9w95XtQVb/oCmR3pU9VOfVK3eaNRc
+         R3JA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=4sHQzscpqG9TR78740t1qks4GROeGMyOxwyGqktGwJE=;
+        b=38Ys8GqjSw9RxT1WgY00wxfHsReE3G9HBz/ibM53QEHkaaNsWV3I8jKFR6SyPu/lfn
+         vcYxe9l6Lo0jk7rwrqKjvm2G4jZI27b84XyCKbd9hvL95Z4Gkzlv8xfUH61qRsHiM83r
+         DNYCi6PIMvV2tPoiFJgjpI+DOninNOtOD/RA+X7zEV0RdIl4KaKD/sl/RKU0o+DyOuVy
+         5zMeSY/u3on0itytnMa90iDb+QvZQsXNKM0ekjuZ6DJ4TbaSdoBJArzz0QC229owOm6v
+         b3u04DbIJQ5ICR76zYA+iKZ2DsgEdWRiA86lBLnJat6yFGkg4UUFOfYH0tvs4ZxhsEeP
+         AIgQ==
+X-Gm-Message-State: AFqh2kqgqV6TAQOu9cy99lTdokT413qcBZuVicsq6NJB+Xvah7JSSsyN
+        QUeapVaxOeS7BamrZIP77LAvm0DEadR9eXFZwESiRA==
+X-Google-Smtp-Source: AMrXdXtoN51iKqcC09s8NkQ+YBm6QxH/37ZW+Hv6vzsZE0mZGYF6ccuLxsS+T0REhESD+5OAPgve9W78T1Q827MM4i4=
+X-Received: by 2002:a0d:f807:0:b0:477:b56e:e1d6 with SMTP id
+ i7-20020a0df807000000b00477b56ee1d6mr3560086ywf.188.1674581336255; Tue, 24
+ Jan 2023 09:28:56 -0800 (PST)
+MIME-Version: 1.0
+References: <20230119173559.2517103-1-dmatlack@google.com> <20230119173559.2517103-3-dmatlack@google.com>
+ <Y9ASmOvJutgGLVnT@google.com>
+In-Reply-To: <Y9ASmOvJutgGLVnT@google.com>
+From:   David Matlack <dmatlack@google.com>
+Date:   Tue, 24 Jan 2023 09:28:29 -0800
+Message-ID: <CALzav=fbzgpktnCX9Z7G_gN=yVVLuwB5Of3_pq3LHrQGySbHsg@mail.gmail.com>
+Subject: Re: [PATCH 2/7] KVM: arm64: Use kvm_arch_flush_remote_tlbs()
+To:     Oliver Upton <oliver.upton@linux.dev>
 Cc:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
         James Morse <james.morse@arm.com>,
         Suzuki K Poulose <suzuki.poulose@arm.com>,
@@ -45,55 +71,21 @@ Cc:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
         kvm@vger.kernel.org, kvm-riscv@lists.infradead.org,
         linux-riscv@lists.infradead.org,
         Raghavendra Rao Ananta <rananta@google.com>
-Subject: Re: [PATCH 2/7] KVM: arm64: Use kvm_arch_flush_remote_tlbs()
-Message-ID: <Y9ASmOvJutgGLVnT@google.com>
-References: <20230119173559.2517103-1-dmatlack@google.com>
- <20230119173559.2517103-3-dmatlack@google.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230119173559.2517103-3-dmatlack@google.com>
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Hi David,
+On Tue, Jan 24, 2023 at 9:17 AM Oliver Upton <oliver.upton@linux.dev> wrote:
+> On Thu, Jan 19, 2023 at 09:35:54AM -0800, David Matlack wrote:
+> >
+> >  arch/arm64/include/asm/kvm_host.h | 3 +++
+> >  arch/arm64/kvm/Kconfig            | 1 -
+> >  arch/arm64/kvm/mmu.c              | 6 +++---
+> >  virt/kvm/kvm_main.c               | 2 --
+> >  4 files changed, 6 insertions(+), 6 deletions(-)
+>
+> I think you're missing the diff that actually drops the Kconfig opton
+> from virt/kvm/Kconfig.
 
-On Thu, Jan 19, 2023 at 09:35:54AM -0800, David Matlack wrote:
-> Use kvm_arch_flush_remote_tlbs() instead of
-> CONFIG_HAVE_KVM_ARCH_TLB_FLUSH_ALL. The two mechanisms solve the same
-> problem, allowing architecture-specific code to provide a non-IPI
-> implementation of remote TLB flushing.
-> 
-> Dropping CONFIG_HAVE_KVM_ARCH_TLB_FLUSH_ALL allows KVM to standardize
-> all architectures on kvm_arch_flush_remote_tlbs() instead of maintaining
-> two mechanisms.
-> 
-> Opt to standardize on kvm_arch_flush_remote_tlbs() since it avoids
-> duplicating the generic TLB stats across architectures that implement
-> their own remote TLB flush.
-> 
-> This adds an extra function call to the ARM64 kvm_flush_remote_tlbs()
-> path, but (I assume) that is a small cost in comparison to flushing
-> remote TLBs.
-
-A fair assumption indeed. The real pile up occurs on the DSB subsequent
-to the TLBI.
-
-> No functional change intended.
-> 
-> Signed-off-by: David Matlack <dmatlack@google.com>
-> ---
->  arch/arm64/include/asm/kvm_host.h | 3 +++
->  arch/arm64/kvm/Kconfig            | 1 -
->  arch/arm64/kvm/mmu.c              | 6 +++---
->  virt/kvm/kvm_main.c               | 2 --
->  4 files changed, 6 insertions(+), 6 deletions(-)
-
-I think you're missing the diff that actually drops the Kconfig opton
-from virt/kvm/Kconfig.
-
---
-Thanks,
-Oliver
+Indeed I am, thanks for catching that!

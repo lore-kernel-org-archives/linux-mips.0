@@ -2,72 +2,123 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2814EC38142
-	for <linux-mips@archiver.kernel.org>; Fri, 27 Jan 2023 16:29:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 12FC1C61DA7
+	for <linux-mips@archiver.kernel.org>; Fri, 27 Jan 2023 23:19:41 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233732AbjA0Q3G (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 27 Jan 2023 11:29:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56450 "EHLO
+        id S232949AbjA0XTk (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 27 Jan 2023 18:19:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35238 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234921AbjA0Q3G (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Fri, 27 Jan 2023 11:29:06 -0500
-Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id BAEE183069;
-        Fri, 27 Jan 2023 08:29:03 -0800 (PST)
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1pLRav-0002kp-02; Fri, 27 Jan 2023 17:28:53 +0100
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id AC99EC2638; Fri, 27 Jan 2023 17:28:11 +0100 (CET)
-Date:   Fri, 27 Jan 2023 17:28:11 +0100
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     xurui <xurui@kylinos.cn>
-Cc:     ralf@linux-mips.org, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org, rdunlap@infradead.org
-Subject: Re: [RFC] MIPS: Fix a compilation issue
-Message-ID: <20230127162811.GC6090@alpha.franken.de>
-References: <20230118085912.608758-1-xurui@kylinos.cn>
+        with ESMTP id S232922AbjA0XTj (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Fri, 27 Jan 2023 18:19:39 -0500
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B18093FD
+        for <linux-mips@vger.kernel.org>; Fri, 27 Jan 2023 15:19:38 -0800 (PST)
+Received: by mail-pj1-x1035.google.com with SMTP id e8-20020a17090a9a8800b0022c387f0f93so5076941pjp.3
+        for <linux-mips@vger.kernel.org>; Fri, 27 Jan 2023 15:19:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=8CUiuR0W5E+PBhliE9B5Xpc1hgvQcn7IvZXYHXz1Ztk=;
+        b=paJf4L9cWbEi06hvXF3W+dvDzKcJfx5lCtIJZryT2W6x9jn8QFdqdeSxBXueWWBz4l
+         rmERWAhF8Jm6eVjAbcEKqXWk92TaZ81krplTYlrMd/cx7BLYELfqbb5CODOLpDvn3Wml
+         kRDg2FG0oQukaBrpadAmUfS7JdX6dtNX5Yhxfrmh9fF25lANpaUbh+OUe4mJnDmapjXX
+         gkAdUczu4u3q5myPePEFbhYsOrjzSYhCHKeHI7PmJlrIZYidHb64mfDumPwdlk9pOjoP
+         gInzuu73k1EMmj9geC+hKbAVQjTYtmE/jHVcj9mm7ngPUJ7ymq4p0azycwmTjONcP99X
+         kwzg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=8CUiuR0W5E+PBhliE9B5Xpc1hgvQcn7IvZXYHXz1Ztk=;
+        b=ag+Sd3qIZMc/9fL2CKObldd/RlJMCNAqK8PkDgzrktgZY8V6TxgYnJiBKcYtf+Ew+W
+         zuUEPXOL7V/nBvec60jJioSYCj7mP+1nRQmIc91CGgvf/NdZlolEw2vFRJ1R+aPKv0Ur
+         L0v6XXyBozemSG1VYUDCzjlfqCKr0h5aXlNuGWCPo3fccpFMQJ+oxsD28qzsOYbtrwfm
+         FG0ticFW5AdKfN+TaRmpBDd+GIr00cMCO8IyUiaddPybEqsIAvBX5TZhNhzFDqi77pVG
+         M7rJHYoWLQWlwg7EIhU5w4j2B0zDacuieCcwTUlAh7BnD+uqt6FjZWv2d/0gtiv5sEq9
+         lzqA==
+X-Gm-Message-State: AO0yUKXpQOIk7zifgsGz6SulUOXN51jv6aOBHEsMqvfDomu/E+uOX14t
+        o3kVm1twOQpDSUAnQaPXxl8Zxii7ZjkMHhDXojzgRA==
+X-Google-Smtp-Source: AK7set86nD7AHLHjFHADNw68YHO3+pTEXmPYEX73qRUo91NxvyvumPLImtBCeS4GMfu57Ja5MOsxUjtYU3znLSUgghw=
+X-Received: by 2002:a17:90a:2ec7:b0:22c:419a:f4cd with SMTP id
+ h7-20020a17090a2ec700b0022c419af4cdmr750919pjs.74.1674861577303; Fri, 27 Jan
+ 2023 15:19:37 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230118085912.608758-1-xurui@kylinos.cn>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20221221235147.45lkqmosndritfpe@google.com> <mhng-17d41c33-7f33-4a1c-8af2-ae7d07134e8c@palmer-ri-x1c9>
+In-Reply-To: <mhng-17d41c33-7f33-4a1c-8af2-ae7d07134e8c@palmer-ri-x1c9>
+From:   Fangrui Song <maskray@google.com>
+Date:   Fri, 27 Jan 2023 18:19:25 -0500
+Message-ID: <CAFP8O3J1Pn+_BMKXtxB+avtYyZ+bBKffHfNOXoJPMD5QHv5obQ@mail.gmail.com>
+Subject: Re: [PATCH v2] vdso: Improve cmd_vdso_check to check all dynamic relocations
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     christophe.leroy@csgroup.eu, Palmer Dabbelt <palmer@dabbelt.com>,
+        luto@kernel.org, tglx@linutronix.de, vincenzo.frascino@arm.com,
+        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-csky@vger.kernel.org, linux-mips@vger.kernel.org,
+        loongarch@lists.linux.dev, linux-riscv@lists.infradead.org,
+        linuxppc-dev@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Wed, Jan 18, 2023 at 04:59:12PM +0800, xurui wrote:
-> arch/mips/include/asm/mach-rc32434/pci.h:377:
-> cc1: error: result of ‘-117440512 << 16’ requires 44 bits to represent, but ‘int’ only has 32 bits [-Werror=shift-overflow=]
-> 
-> I guss we don`t need a left shift here?
-> 
-> Signed-off-by: xurui <xurui@kylinos.cn>
-> ---
->  arch/mips/include/asm/mach-rc32434/pci.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/arch/mips/include/asm/mach-rc32434/pci.h b/arch/mips/include/asm/mach-rc32434/pci.h
-> index 9a6eefd12757..3eb767c8a4ee 100644
-> --- a/arch/mips/include/asm/mach-rc32434/pci.h
-> +++ b/arch/mips/include/asm/mach-rc32434/pci.h
-> @@ -374,7 +374,7 @@ struct pci_msu {
->  				 PCI_CFG04_STAT_SSE | \
->  				 PCI_CFG04_STAT_PE)
->  
-> -#define KORINA_CNFG1		((KORINA_STAT<<16)|KORINA_CMD)
-> +#define KORINA_CNFG1		(KORINA_STAT | KORINA_CMD)
->  
->  #define KORINA_REVID		0
->  #define KORINA_CLASS_CODE	0
-> -- 
-> 2.25.1
+On Thu, Dec 29, 2022 at 11:22 AM Palmer Dabbelt <palmer@dabbelt.com> wrote:
+>
+> On Wed, 21 Dec 2022 15:51:47 PST (-0800), maskray@google.com wrote:
+> > The actual intention is that no dynamic relocation exists. However, some
+> > GNU ld ports produce unneeded R_*_NONE. (If a port fails to determine
+> > the exact .rel[a].dyn size, the trailing zeros become R_*_NONE
+> > relocations. E.g. ld's powerpc port recently fixed
+> > https://sourceware.org/bugzilla/show_bug.cgi?id=29540) R_*_NONE are
+> > generally no-op in the dynamic loaders. So just ignore them.
+> >
+> > With the change, we can remove ARCH_REL_TYPE_ABS. ARCH_REL_TYPE_ABS is a
+> > bit misnomer as ports may check RELAVETIVE/GLOB_DAT/JUMP_SLOT which are
+> > not called "absolute relocations". (The patch is motivated by the arm64
+> > port missing R_AARCH64_RELATIVE.)
+> >
+> > Signed-off-by: Fangrui Song <maskray@google.com>
+> > Reviewed-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+> > ---
+> > Change from v1:
+> > * rebase after 8ac3b5cd3e0521d92f9755e90d140382fc292510 (lib/vdso: use "grep -E" instead of "egrep")
+> > * change the commit message to mention an example GNU ld bug; no longer say the patch fixes a deprecated egrep use
+> > ---
+> >   arch/arm/vdso/Makefile            |  3 ---
+> >   arch/arm64/kernel/vdso/Makefile   |  3 ---
+> >   arch/arm64/kernel/vdso32/Makefile |  3 ---
+> >   arch/csky/kernel/vdso/Makefile    |  3 ---
+> >   arch/loongarch/vdso/Makefile      |  3 ---
+> >   arch/mips/vdso/Makefile           |  3 ---
+> >   arch/powerpc/kernel/vdso/Makefile |  1 -
+> >   arch/riscv/kernel/vdso/Makefile   |  3 ---
+> >   arch/s390/kernel/vdso32/Makefile  |  2 --
+> >   arch/s390/kernel/vdso64/Makefile  |  2 --
+> >   arch/x86/entry/vdso/Makefile      |  4 ----
+> >   lib/vdso/Makefile                 | 13 ++++---------
+> >   12 files changed, 4 insertions(+), 39 deletions(-)
+>
+> [snip]
+>
+> > diff --git a/arch/riscv/kernel/vdso/Makefile b/arch/riscv/kernel/vdso/Makefile
+> > index 06e6b27f3bcc..d85c37e11b21 100644
+> > --- a/arch/riscv/kernel/vdso/Makefile
+> > +++ b/arch/riscv/kernel/vdso/Makefile
+> > @@ -1,9 +1,6 @@
+> >   # SPDX-License-Identifier: GPL-2.0-only
+> >   # Copied from arch/tile/kernel/vdso/Makefile
+> >
+> > -# Absolute relocation type $(ARCH_REL_TYPE_ABS) needs to be defined before
+> > -# the inclusion of generic Makefile.
+> > -ARCH_REL_TYPE_ABS := R_RISCV_32|R_RISCV_64|R_RISCV_JUMP_SLOT
+> >   include $(srctree)/lib/vdso/Makefile
+> >   # Symbols present in the vdso
+> >   vdso-syms  = rt_sigreturn
+>
+> Acked-by: Palmer Dabbelt <palmer@rivosinc.com> # RISC-V
+>
+> Thanks!
 
-applied to mips-next.
-
-Thomas.
-
--- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+Looks like this patch hasn't been picked yet...

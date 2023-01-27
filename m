@@ -2,77 +2,67 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 33A93C54EAA
-	for <linux-mips@archiver.kernel.org>; Fri, 27 Jan 2023 16:28:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2814EC38142
+	for <linux-mips@archiver.kernel.org>; Fri, 27 Jan 2023 16:29:07 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234803AbjA0Q26 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 27 Jan 2023 11:28:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56084 "EHLO
+        id S233732AbjA0Q3G (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 27 Jan 2023 11:29:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56450 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234882AbjA0Q24 (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Fri, 27 Jan 2023 11:28:56 -0500
+        with ESMTP id S234921AbjA0Q3G (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Fri, 27 Jan 2023 11:29:06 -0500
 Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 4BB867BBE0;
-        Fri, 27 Jan 2023 08:28:55 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id BAEE183069;
+        Fri, 27 Jan 2023 08:29:03 -0800 (PST)
 Received: from uucp (helo=alpha)
         by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1pLRav-0002kp-01; Fri, 27 Jan 2023 17:28:53 +0100
+        id 1pLRav-0002kp-02; Fri, 27 Jan 2023 17:28:53 +0100
 Received: by alpha.franken.de (Postfix, from userid 1000)
-        id A0ADDC2638; Fri, 27 Jan 2023 17:27:55 +0100 (CET)
-Date:   Fri, 27 Jan 2023 17:27:55 +0100
+        id AC99EC2638; Fri, 27 Jan 2023 17:28:11 +0100 (CET)
+Date:   Fri, 27 Jan 2023 17:28:11 +0100
 From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Sander Vanheule <sander@svanheule.net>
-Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Olliver Schinagl <oliver@schinagl.nl>
-Subject: Re: [PATCH] mips: Realtek RTL: select NO_EXCEPT_FILL
-Message-ID: <20230127162755.GB6090@alpha.franken.de>
-References: <20230115121922.6359-1-sander@svanheule.net>
+To:     xurui <xurui@kylinos.cn>
+Cc:     ralf@linux-mips.org, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org, rdunlap@infradead.org
+Subject: Re: [RFC] MIPS: Fix a compilation issue
+Message-ID: <20230127162811.GC6090@alpha.franken.de>
+References: <20230118085912.608758-1-xurui@kylinos.cn>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20230115121922.6359-1-sander@svanheule.net>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20230118085912.608758-1-xurui@kylinos.cn>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Sun, Jan 15, 2023 at 01:19:22PM +0100, Sander Vanheule wrote:
-> The CPUs in these SoCs support MIPS32 R2, and allow ebase relocation.
-> Even if the default exception base of 0x80000000 is used, the
-> MIPS_GENERIC load address of 0x80100000 leaves sufficient space to not
-> need an extra 0x400 bytes of padding.
+On Wed, Jan 18, 2023 at 04:59:12PM +0800, xurui wrote:
+> arch/mips/include/asm/mach-rc32434/pci.h:377:
+> cc1: error: result of ‘-117440512 << 16’ requires 44 bits to represent, but ‘int’ only has 32 bits [-Werror=shift-overflow=]
 > 
-> Suggested-by: Olliver Schinagl <oliver@schinagl.nl>
-> Signed-off-by: Sander Vanheule <sander@svanheule.net>
+> I guss we don`t need a left shift here?
+> 
+> Signed-off-by: xurui <xurui@kylinos.cn>
 > ---
-> Olliver has suggested to make this change, in order to reduce the delta
-> with a fully generic MIPS kernel.
-> I hope the patch description makes sense, as I based the argumentation
-> on the behaviour of the code, and similar commits 7d6d28377783 ("MIPS:
-> Loongson64: select NO_EXCEPT_FILL") and dd54dedd947d ("MIPS: BCM47XX:
-> select NO_EXCEPT_FILL"). The change was tested on an RTL8380 and an
-> RTL8393 device, where it appears to work as expected.
+>  arch/mips/include/asm/mach-rc32434/pci.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> Best,
-> Sander
-> 
->  arch/mips/Kconfig | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-> index 2db5c853992e..a8895aaa490e 100644
-> --- a/arch/mips/Kconfig
-> +++ b/arch/mips/Kconfig
-> @@ -627,6 +627,7 @@ config MACH_REALTEK_RTL
->  	select IRQ_MIPS_CPU
->  	select CEVT_R4K
->  	select CSRC_R4K
-> +	select NO_EXCEPT_FILL
->  	select SYS_HAS_CPU_MIPS32_R1
->  	select SYS_HAS_CPU_MIPS32_R2
->  	select SYS_SUPPORTS_32BIT_KERNEL
+> diff --git a/arch/mips/include/asm/mach-rc32434/pci.h b/arch/mips/include/asm/mach-rc32434/pci.h
+> index 9a6eefd12757..3eb767c8a4ee 100644
+> --- a/arch/mips/include/asm/mach-rc32434/pci.h
+> +++ b/arch/mips/include/asm/mach-rc32434/pci.h
+> @@ -374,7 +374,7 @@ struct pci_msu {
+>  				 PCI_CFG04_STAT_SSE | \
+>  				 PCI_CFG04_STAT_PE)
+>  
+> -#define KORINA_CNFG1		((KORINA_STAT<<16)|KORINA_CMD)
+> +#define KORINA_CNFG1		(KORINA_STAT | KORINA_CMD)
+>  
+>  #define KORINA_REVID		0
+>  #define KORINA_CLASS_CODE	0
 > -- 
-> 2.39.0
+> 2.25.1
 
 applied to mips-next.
 

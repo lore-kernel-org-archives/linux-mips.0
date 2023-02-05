@@ -2,103 +2,71 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6D58DC636CC
-	for <linux-mips@archiver.kernel.org>; Sat,  4 Feb 2023 21:44:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1A234C636CC
+	for <linux-mips@archiver.kernel.org>; Sun,  5 Feb 2023 16:19:47 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229877AbjBDVoK (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Sat, 4 Feb 2023 16:44:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42526 "EHLO
+        id S229527AbjBEQTq (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Sun, 5 Feb 2023 11:19:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54980 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229648AbjBDVoK (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Sat, 4 Feb 2023 16:44:10 -0500
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0FBF29411;
-        Sat,  4 Feb 2023 13:44:06 -0800 (PST)
-Received: by mail-ej1-x62d.google.com with SMTP id me3so24465674ejb.7;
-        Sat, 04 Feb 2023 13:44:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=gSolVd9RWMTQSGbJqovrCQiB4009f4Lndk05i70gnIY=;
-        b=lQ4aNoWvyVyDWs2ag2z6wtGto/556ysvijhmA4FO6nliibbt063l2SOFtxffM+cppz
-         xhRj3qEklIxr7eDtOanI05D9BQPhD8XWLCKB2R/ZtY8pWnTbjdiY57pN1D8y3Cdwrt35
-         MpgWgKucuXggwxbQz4cCCkjQa268odK4CJ29r8CBmaQewBuWClMoiLIk8wf4qHuQsIA8
-         x4WUvhuAILtcInBdzz9k7lW90xQ2Sm4+lQ6JaycC6QRurGD88R0I79uZJlUz6MIAvpH5
-         vtG7iKPcJZ6IVKjjFrB3ISJIe1wMWyc7tyw7TfAwGE+Lgf8i5m0yKUaNGeztp/JSaTn9
-         6Gkw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=gSolVd9RWMTQSGbJqovrCQiB4009f4Lndk05i70gnIY=;
-        b=YLMPZWLbcZRX1hS+PydGbC63g2L1eMeFduEZ/EHFpgjbBEU0Xgz7Zy43AGj7YDq+Ww
-         tYPFO89W9j9TV1pqeIurMRMqP2CP8JlPKepAFX6tcvpzBhmk6up23lj8jyWCNEdr4GKG
-         njwHyRAd8CVsvi4qGt7+KD2cqkNZRpl1Tj3irLiRsgrlNc6aejT4lzz8JSrJlfHqo10e
-         z/u07jmbxW9tXzLwqPiT32ZEQ0a9fvRpuEvCJLUAzCE5fRiZ/EmshlmzdvaFHfKNE1E7
-         MC3/I8tyOF5+sgnZ0ewHs8ZO4Tns2iN3B3HzGOWFE8pFX0Krln/VprRDmMrL4/rT59hH
-         qNJw==
-X-Gm-Message-State: AO0yUKXKskaGXh7pM+R5iDK6gIcVWf6gz8DuSq7lvuJmGuOsfkQ+nsyv
-        OQIKVvBOI7JLSpRbqbBwoBM=
-X-Google-Smtp-Source: AK7set/DmWvUisy2uLNLU53cfFYRwZomx58/Y39PhmCOQ6PjHWamFCJNQIzoZ3JtB7cgCoMaskNykQ==
-X-Received: by 2002:a17:907:9d08:b0:87b:f7dd:792f with SMTP id kt8-20020a1709079d0800b0087bf7dd792fmr6718214ejc.8.1675547045136;
-        Sat, 04 Feb 2023 13:44:05 -0800 (PST)
-Received: from arinc9-PC.lan ([37.120.152.236])
-        by smtp.gmail.com with ESMTPSA id oq26-20020a170906cc9a00b00886faa3d569sm3295453ejb.58.2023.02.04.13.44.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 04 Feb 2023 13:44:04 -0800 (PST)
-From:   arinc9.unal@gmail.com
-X-Google-Original-From: arinc.unal@arinc9.com
-To:     John Crispin <john@phrozen.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc:     =?UTF-8?q?Ar=C4=B1n=C3=A7=20=C3=9CNAL?= <arinc.unal@arinc9.com>,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Sergio Paracuellos <sergio.paracuellos@gmail.com>,
-        erkin.bozoglu@xeront.com
-Subject: [PATCH] mips: ralink: make SOC_MT7621 select PINCTRL_MT7621 and fix help section
-Date:   Sun,  5 Feb 2023 00:42:49 +0300
-Message-Id: <20230204214249.134937-1-arinc.unal@arinc9.com>
-X-Mailer: git-send-email 2.37.2
+        with ESMTP id S229528AbjBEQTp (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Sun, 5 Feb 2023 11:19:45 -0500
+Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E520D6EA3;
+        Sun,  5 Feb 2023 08:19:43 -0800 (PST)
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1pOhjy-0000RS-02; Sun, 05 Feb 2023 17:19:42 +0100
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id E13A4C265A; Sun,  5 Feb 2023 17:03:01 +0100 (CET)
+Date:   Sun, 5 Feb 2023 17:03:01 +0100
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Jonathan =?iso-8859-1?Q?Neusch=E4fer?= <j.neuschaefer@gmx.net>
+Cc:     linux-mips@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] MIPS: dts: lantiq: Remove bogus interrupt-parent; line
+Message-ID: <20230205160301.GC4459@alpha.franken.de>
+References: <20230129152059.1535947-1-j.neuschaefer@gmx.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20230129152059.1535947-1-j.neuschaefer@gmx.net>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-From: Arınç ÜNAL <arinc.unal@arinc9.com>
+On Sun, Jan 29, 2023 at 04:20:58PM +0100, Jonathan Neusch�fer wrote:
+> Specifying interrupt-parent without a value (in other words, as a bool)
+> doesn't really mean anything. Remove one such property in the Lantiq
+> Danube DT, at /sram@1f000000/eiu@101000.
+> 
+> Signed-off-by: Jonathan Neusch�fer <j.neuschaefer@gmx.net>
+> ---
+>  arch/mips/boot/dts/lantiq/danube.dtsi | 1 -
+>  1 file changed, 1 deletion(-)
+> 
+> diff --git a/arch/mips/boot/dts/lantiq/danube.dtsi b/arch/mips/boot/dts/lantiq/danube.dtsi
+> index 510be63c8bdf1..7a7ba66aa5349 100644
+> --- a/arch/mips/boot/dts/lantiq/danube.dtsi
+> +++ b/arch/mips/boot/dts/lantiq/danube.dtsi
+> @@ -40,7 +40,6 @@ sram@1f000000 {
+>  		eiu0: eiu@101000 {
+>  			#interrupt-cells = <1>;
+>  			interrupt-controller;
+> -			interrupt-parent;
+>  			compatible = "lantiq,eiu-xway";
+>  			reg = <0x101000 0x1000>;
+>  		};
+> --
+> 2.39.0
 
-The dt-binding of the MT7621 SoC uses the pinctrl driver. Therefore, have
-this driver selected by default.
+applied to mips-next.
 
-The help section for SOC_MT7621 exceeds 80 columns which is the preferred
-limit of a single line. A tab character is 8 columns. Rearrange the text
-accordingly.
+Thomas.
 
-Signed-off-by: Arınç ÜNAL <arinc.unal@arinc9.com>
----
- arch/mips/ralink/Kconfig | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
-
-diff --git a/arch/mips/ralink/Kconfig b/arch/mips/ralink/Kconfig
-index f9fe15630abb..06031796c87b 100644
---- a/arch/mips/ralink/Kconfig
-+++ b/arch/mips/ralink/Kconfig
-@@ -54,10 +54,11 @@ choice
- 		select HAVE_PCI
- 		select PCI_DRIVERS_GENERIC
- 		select SOC_BUS
-+		select PINCTRL_MT7621
- 
- 		help
--		  The MT7621 system-on-a-chip includes an 880 MHz MIPS1004Kc dual-core CPU,
--		  a 5-port 10/100/1000 switch/PHY and one RGMII.
-+		  The MT7621 system-on-a-chip includes an 880 MHz MIPS1004Kc
-+		  dual-core CPU, a 5-port 10/100/1000 switch/PHY and one RGMII.
- endchoice
- 
- choice
 -- 
-2.37.2
-
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]

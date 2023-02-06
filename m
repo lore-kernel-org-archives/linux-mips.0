@@ -2,52 +2,53 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E426CC05027
-	for <linux-mips@archiver.kernel.org>; Mon,  6 Feb 2023 10:16:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F3E2CC636D6
+	for <linux-mips@archiver.kernel.org>; Mon,  6 Feb 2023 10:17:01 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229875AbjBFKQz (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 6 Feb 2023 05:16:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41564 "EHLO
+        id S229548AbjBFKRB (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 6 Feb 2023 05:17:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41624 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229548AbjBFKQy (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Mon, 6 Feb 2023 05:16:54 -0500
+        with ESMTP id S230197AbjBFKQ5 (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Mon, 6 Feb 2023 05:16:57 -0500
 Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7F25A1;
-        Mon,  6 Feb 2023 02:16:53 -0800 (PST)
-Received: by mail-ej1-x62f.google.com with SMTP id mc11so32647246ejb.10;
-        Mon, 06 Feb 2023 02:16:53 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 441F71BED;
+        Mon,  6 Feb 2023 02:16:55 -0800 (PST)
+Received: by mail-ej1-x62f.google.com with SMTP id mc11so32647642ejb.10;
+        Mon, 06 Feb 2023 02:16:55 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=Zj0iJ9zJndmf6HAIt6XGl1Fw/U6CT/Qa0nnBg5oFCNU=;
-        b=hdQYMwAbQvxI1WGT//tDVozvUgpX5yddF8Wg6KFQdiqJa2pZAMGaDQsONpF/FIVTDy
-         rUOUJdZdFVWxELBAc9qMJqere11Lp6K9wMvBEVpU3bVtmnRUEIWBzDjuW8XWvSOuH9CK
-         mv7B6UxrA5g3OUn20mZ3Xg0B2xtwzowtwQec9kBlyWOx/8WZzSXb77geyRUVmoT5JTyW
-         tR9jV2fLi/v+gnw1qEzXKmzT99LBanM7VXJbUUFVGhHxVF1e9vLZlcnza9NBzsSvlTCk
-         0homvUbrEyHotUs+s24DaCCFEZcgfmM6oJWpzoNPSXvtj+9eAxbfNgyDLsQD7k+9Rc3B
-         WvMQ==
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=NaHb57ie27t7sx02n9fnOtU+5lDezV2NzpCj5krDBkk=;
+        b=qhRI6z/EKxXVF4OV0/1XtnQmyWLNB8sb4HfKXV+xn4TlnkT1HDYa1zidWqykMzxAYb
+         skRJFkAK1NdszFKs7tNQOJNv4wC8z3wGT2MAN0338yx0kbkrGRa2mDay/Z0gt29VLJkz
+         8iRe+fltR2GLsu5J7WFoWrdE0XAS7i0z2GxR3vbTd0+5B3CAG7Pvl6/T+NVg+vIIlJc2
+         7UMJz02qtml7yZNvD6kYVHOB5CHNG4XUEGoJPo/ay2T9tZnccaXSlHc8mtXYdwzILOng
+         opTSWew0O7d+4uH4WhGoWv4+9S8Jh8Kq1/RSubiPa+PYZt+surh3H5seVzOVpf/GaNPL
+         +ypg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Zj0iJ9zJndmf6HAIt6XGl1Fw/U6CT/Qa0nnBg5oFCNU=;
-        b=Ez1HjRrmrdki3fZOm1+OsANh+gsIPhXTsYzZ6dUNqSB9Gaalj9qkeNNGipfb8ct9PX
-         3Kuy5tQQG18gHijWdVR9V8AC/DvUiLzfmwyE36pkgq/nG8Zi5WnKZNX61OaFh1W+PHlD
-         GYezUwVPF6Dshox5ctSWXQ+VOpqAeqFLD5bEp9cffGfYm5mCSiLZDRzj9oztSLpBPTPG
-         VXiYqvIlbMdBosfrrsh/1NGHBNkbdFZzDX7qetNUudnHULodnN8VntIWRlEQ2ur3UtwM
-         Pau6F6YWtJQ3qVu02rR0bHVtgVvKzSynPjeb2PNG/rG3cTIxtad8mE5zT7A2Lu25aRuP
-         YCYg==
-X-Gm-Message-State: AO0yUKVnyy63ROwOl3l9fK1p7uARQZ6GB6Xjrc6oQuChkeE6Xwl0xDU0
-        ivs7+STTAG1b6EibNcjckIk=
-X-Google-Smtp-Source: AK7set+3bQWTUHdtQKp9Mb9+4ujtU4ZdfHrkX6p+49wHbaqo1A9Gaqcpd5rfSUXqObjvuZrPZvzb4Q==
-X-Received: by 2002:a17:907:1dc2:b0:888:a29:b645 with SMTP id og2-20020a1709071dc200b008880a29b645mr17866345ejc.64.1675678612300;
-        Mon, 06 Feb 2023 02:16:52 -0800 (PST)
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=NaHb57ie27t7sx02n9fnOtU+5lDezV2NzpCj5krDBkk=;
+        b=JdDT1i12En2DncF3DeMf4YxjiB3Ydyscuh7UjrkKDH13zWzEnNo96afGmtjrm7pOu2
+         RMD6lwQ4+MBfm3Sp0WGxFCaxUyjM9Fcug0bT/rruhiKkgEocs2Hp4IDDOe5m6R2BO8I7
+         Vt2hWtx7YN1T44Ol7/YcDVHGrDDExOVakSn5PF3DRtcqLkPpLj8Mny7XaPrSybE71K+R
+         vPcPYtH4DtdVSd9UMxWTgWRCbV2bZbI3PcAVDM9C2znYmmsq9LKt0CjLNm2FzNDi3hHv
+         XJ0Gda2GhGWxP9rub5uqRNmgwt1r9h56jqqdmm+ferW5pVitk9rurkomkBCS8iaZdEZj
+         TIGQ==
+X-Gm-Message-State: AO0yUKU+v1gZHuXLM0S7MyC5QClm+qQQve5VGVAMOw2GiBgLQuT6PIVw
+        WZOCK/vbv+z343wOkEsmNlw=
+X-Google-Smtp-Source: AK7set8eqweCYkTJHa5IlZM3FNA8Y53SWlZroCZVo32uXRsMo9wnuHcFu9XwyzJ2gBmhkS+2r4sqGg==
+X-Received: by 2002:a17:907:a089:b0:88d:ba89:1838 with SMTP id hu9-20020a170907a08900b0088dba891838mr17543237ejc.9.1675678614907;
+        Mon, 06 Feb 2023 02:16:54 -0800 (PST)
 Received: from arinc9-PC.lan ([37.120.152.236])
-        by smtp.gmail.com with ESMTPSA id hz19-20020a1709072cf300b008847d7ed37bsm5285983ejc.100.2023.02.06.02.16.50
+        by smtp.gmail.com with ESMTPSA id hz19-20020a1709072cf300b008847d7ed37bsm5285983ejc.100.2023.02.06.02.16.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 06 Feb 2023 02:16:51 -0800 (PST)
+        Mon, 06 Feb 2023 02:16:54 -0800 (PST)
 From:   arinc9.unal@gmail.com
 X-Google-Original-From: wdehoog@exalondelft.nl
 To:     =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>,
@@ -59,43 +60,58 @@ Cc:     =?UTF-8?q?Ar=C4=B1n=C3=A7=20=C3=9CNAL?= <arinc.unal@arinc9.com>,
         =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>,
         linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
         erkin.bozoglu@xeront.com
-Subject: [PATCH 0/2] nvmem: brcm_nvram: use buffered nvram data for cell values
-Date:   Mon,  6 Feb 2023 13:16:40 +0300
-Message-Id: <20230206101642.22720-1-wdehoog@exalondelft.nl>
+Subject: [PATCH v2 2/2] nvmem: brcm_nvram: use bcm47xx buffered data
+Date:   Mon,  6 Feb 2023 13:16:42 +0300
+Message-Id: <20230206101642.22720-3-wdehoog@exalondelft.nl>
 X-Mailer: git-send-email 2.37.2
+In-Reply-To: <20230206101642.22720-1-wdehoog@exalondelft.nl>
+References: <20230206101642.22720-1-wdehoog@exalondelft.nl>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Words from Willem-Jan de Hoog:
+From: Willem-Jan de Hoog <wdehoog@exalondelft.nl>
 
-On OpenWrt 22.03.3, Asus RT-AC88U does not boot anymore:
+The bcm47xx module has a copy of the NVRAM data in ram. When available, use
+this one instead of reading from io memory since it causes mtd/ubi to fail.
 
-  UBI: auto-attach mtd4
-  ubi0: attaching mtd4
-  ubi0 error: 0xc04f0b3c: PEB 0 contains corrupted VID header, and the
-     data does not contain all 0xFF
-  ubi0 error: 0xc04f0b4c: this may be a non-UBI PEB or a severe VID
-     header corruption which requires manual inspection
+[ arinc.unal@arinc9.com: Improved patch subject and log ]
 
-The problem seems to be that brcm_nvram_read accesses its (mapped) io
-memory. When doing so the correct data is read but after that the
-mtd/ubi process fails to work.
+Signed-off-by: Willem-Jan de Hoog <wdehoog@exalondelft.nl>
+Signed-off-by: Arınç ÜNAL <arinc.unal@arinc9.com>
+---
+ drivers/nvmem/brcm_nvram.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-The bcm47xx_nvram.c code has buffered the nvram data so the cells value
-can be read from there.
-
-v2: Fix the wrong author information.
-
-Willem-Jan de Hoog (2):
-  firmware: bcm47xx_nvram: allow to read from buffered nvram data
-  nvmem: brcm_nvram: use bcm47xx buffered data
-
- drivers/firmware/broadcom/bcm47xx_nvram.c | 14 ++++++++++++++
- drivers/nvmem/brcm_nvram.c                |  8 ++++++++
- include/linux/bcm47xx_nvram.h             |  6 ++++++
- 3 files changed, 28 insertions(+)
-
+diff --git a/drivers/nvmem/brcm_nvram.c b/drivers/nvmem/brcm_nvram.c
+index 34130449f2d2..f74bcb1c948e 100644
+--- a/drivers/nvmem/brcm_nvram.c
++++ b/drivers/nvmem/brcm_nvram.c
+@@ -33,6 +33,12 @@ struct brcm_nvram_header {
+ static int brcm_nvram_read(void *context, unsigned int offset, void *val,
+ 			   size_t bytes)
+ {
++#ifdef CONFIG_BCM47XX_NVRAM
++
++	return bcm47xx_nvram_read(offset, val, bytes);
++
++#else
++
+ 	struct brcm_nvram *priv = context;
+ 	u8 *dst = val;
+ 
+@@ -40,6 +46,8 @@ static int brcm_nvram_read(void *context, unsigned int offset, void *val,
+ 		*dst++ = readb(priv->base + offset++);
+ 
+ 	return 0;
++
++#endif
+ }
+ 
+ static int brcm_nvram_add_cells(struct brcm_nvram *priv, uint8_t *data,
+-- 
+2.37.2
 

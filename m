@@ -2,140 +2,129 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9B339C61DA4
-	for <linux-mips@archiver.kernel.org>; Mon,  6 Feb 2023 10:17:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7E6E2C05027
+	for <linux-mips@archiver.kernel.org>; Mon,  6 Feb 2023 10:45:10 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230237AbjBFKRB (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 6 Feb 2023 05:17:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41646 "EHLO
+        id S229781AbjBFKpJ (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 6 Feb 2023 05:45:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47614 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230205AbjBFKQ6 (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Mon, 6 Feb 2023 05:16:58 -0500
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05F68A1;
-        Mon,  6 Feb 2023 02:16:55 -0800 (PST)
-Received: by mail-ej1-x62a.google.com with SMTP id ml19so32853117ejb.0;
-        Mon, 06 Feb 2023 02:16:54 -0800 (PST)
+        with ESMTP id S229572AbjBFKpJ (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Mon, 6 Feb 2023 05:45:09 -0500
+Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAACE768F
+        for <linux-mips@vger.kernel.org>; Mon,  6 Feb 2023 02:45:07 -0800 (PST)
+Received: by mail-wr1-x42c.google.com with SMTP id r2so9913073wrv.7
+        for <linux-mips@vger.kernel.org>; Mon, 06 Feb 2023 02:45:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=1J7ZP1tAjzZR1au9SSxeWX9KZ/yZIvEyiSLMpncK6LM=;
-        b=kZWJXfH14q+3wxQT+8AxR2F9bgvMv5yFLiF5eC9TtuR6VDECfBwGOMiLk8hh5hfKLo
-         YNM/BDFGaPOjNb8s+ChgBmbOyEHeIZHCXP7tAmBbH765kqVVzBTRZ9vNazSrCUSNg0Zw
-         sRMRq7zueJlkfXJVi2xpyNaha9ib0wMfT5YWH/uhh9zU09n/G/XADjXX2C2ndT+WUkIe
-         yoC04xtue/tFsVmkMNIYoIVEtELLOtR+kdOCpiK9SZ87fWSayvNPYrcRHMFdZ8NPndpG
-         RRl+rFctH1auGorq2SDjbDfyfU3flCxJjWD1Y2o8/sEJivfGpMloFKBG3tRVAwixHlhn
-         s+Aw==
+        d=linaro.org; s=google;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=2NrnM3FG0e7QhbFCjFG7aIqrnfRYfB8sX8+GS0tlerk=;
+        b=g7VaVQIaZuUW0FvSZehAeCHC5dlDxe5XlqNw/7/w7jSeWiyZcILcm5XydsKtsZ3aIN
+         oHTVOMsefhsAFwJcJklu4e4q22lat2SMV3qdNbr7fSCj9Pt2wDHHPv0IrPGPAoBnfrQz
+         k9ByUyRieI7X9Ndn2hkK5CrcYnBBfFRwsE1mY4kPUWeMSpplgT5/I0H5YpJ1ZP5Di1aT
+         b0+awITw9L4SQgaDrH9sXRMtKYgcqLxOknqLdJ5G5Jv4Dba6Mermzt4KV2drSUu57bbF
+         lVCGcNeYa6evqMJGSvtIILc4b5kudF1I2MkgE6PwIIPNCRdV/dC4KNfWm+Eo47fG1sSh
+         kAjQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=1J7ZP1tAjzZR1au9SSxeWX9KZ/yZIvEyiSLMpncK6LM=;
-        b=PRl+MBYTkLBNnQ1hnuTl4WybWOPtVAdxTaQ90eT44OoPIVwewwokI0CjDvF6TvZy7t
-         5CiP8EL7IMZcZDaiBOfzLnmnLJYeTNkOAgrOfjFJabJCATbRmcGX/k6X7PZjVuipEkLC
-         schUYAa3KMfHIwDZ7WDViya/SF3cVOLYIYahjNtdpLmG+50XYB68kE3ijmz+XfKu9QYU
-         y/7BnFFhBNkrqx0poGTV+GIxXMNs488vnYQr9u0gcuvGCuBI/KdJnJQMHPjJrJGo/J/V
-         1Wx7CraU08A6fJPVpTFOvTrKxFsQWauTYe13Ell2gKQm6mo8q6NualK+9g8f3nhsECYu
-         Aqng==
-X-Gm-Message-State: AO0yUKXuxBBa3RgSxodw5Z1hy53JcMBCkrdP08UHOGDC/7S41qasXytg
-        KiUvk3ZnZhdnMc8LuJ+cZAdMkFc0v/t9fT46nY0=
-X-Google-Smtp-Source: AK7set+5QLFKEekBI5FC/esyhHmblPhL//SxS7aAdjKXtwz1p6KryhbGgzBmHdmWQjP3cuNky44dhQ==
-X-Received: by 2002:a17:907:cf48:b0:895:58be:94a with SMTP id uv8-20020a170907cf4800b0089558be094amr7304229ejc.14.1675678613598;
-        Mon, 06 Feb 2023 02:16:53 -0800 (PST)
-Received: from arinc9-PC.lan ([37.120.152.236])
-        by smtp.gmail.com with ESMTPSA id hz19-20020a1709072cf300b008847d7ed37bsm5285983ejc.100.2023.02.06.02.16.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 06 Feb 2023 02:16:53 -0800 (PST)
-From:   arinc9.unal@gmail.com
-X-Google-Original-From: wdehoog@exalondelft.nl
-To:     =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=2NrnM3FG0e7QhbFCjFG7aIqrnfRYfB8sX8+GS0tlerk=;
+        b=stoRVSa5SNGcewo+scYAz0RJER5YSEOpdXhkqIVCM2QNSkkk2zwB3DtmhU+92BMVF3
+         LHwRud45Kg38TLXK7rPj+4tPQB6gIWv4FLRI7TH5xa4JFPE6XunM+G0SW0QkKj7qkTgE
+         BjiOvTq6Ywz9jSopvvVgb7m99B7UbV2RSHerMoutx4S4sUR0OgxY6NRktct/hkY4FZ/Y
+         YNW3q/8gzKEr2fuH8D8v5wjPLsezYxacNgsmFb964cHRJrqWCFkTGdZPkak6dsxOQUdM
+         xA+1x4lSPseFXZlyuxk2NNNjbihu0eb0t3heJiCUB00YLMka9TK36XfXPmPyU7USardi
+         xSfQ==
+X-Gm-Message-State: AO0yUKWIAOwQ4UmdwZivXzDRFGhn7BYm2/AYISJ8tN+BUqoDsl5VjlUl
+        dC2mfAdwi2TLH2dHOKX1ILHB8Q==
+X-Google-Smtp-Source: AK7set98dqxPimNIdMv8ZWaDeY74ILWNJFHHUvcX0aaDiko9DbYMvXVwMFPziFrbh8Gil435TSMhkg==
+X-Received: by 2002:a5d:6351:0:b0:2c3:dfa7:9155 with SMTP id b17-20020a5d6351000000b002c3dfa79155mr6346758wrw.59.1675680306443;
+        Mon, 06 Feb 2023 02:45:06 -0800 (PST)
+Received: from [192.168.1.195] ([5.133.47.210])
+        by smtp.googlemail.com with ESMTPSA id e20-20020a5d5954000000b002bfd524255esm8632069wri.43.2023.02.06.02.45.05
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 06 Feb 2023 02:45:05 -0800 (PST)
+Message-ID: <13261104-4544-b198-0d0c-0d39651f27c9@linaro.org>
+Date:   Mon, 6 Feb 2023 10:45:03 +0000
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.4.2
+Subject: Re: [PATCH v2 2/2] nvmem: brcm_nvram: use bcm47xx buffered data
+Content-Language: en-US
+To:     arinc9.unal@gmail.com,
+        =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
         Linus Walleij <linus.walleij@linaro.org>,
         Willem-Jan de Hoog <wdehoog@exalondelft.nl>,
         Florian Fainelli <f.fainelli@gmail.com>
-Cc:     =?UTF-8?q?Ar=C4=B1n=C3=A7=20=C3=9CNAL?= <arinc.unal@arinc9.com>,
-        =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>,
+Cc:     =?UTF-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>,
+        =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>,
         linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
         erkin.bozoglu@xeront.com
-Subject: [PATCH v2 1/2] firmware: bcm47xx_nvram: allow to read from buffered nvram data
-Date:   Mon,  6 Feb 2023 13:16:41 +0300
-Message-Id: <20230206101642.22720-2-wdehoog@exalondelft.nl>
-X-Mailer: git-send-email 2.37.2
-In-Reply-To: <20230206101642.22720-1-wdehoog@exalondelft.nl>
 References: <20230206101642.22720-1-wdehoog@exalondelft.nl>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+ <20230206101642.22720-3-wdehoog@exalondelft.nl>
+From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+In-Reply-To: <20230206101642.22720-3-wdehoog@exalondelft.nl>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-From: Willem-Jan de Hoog <wdehoog@exalondelft.nl>
 
-The bcm47xx code makes a copy of the NVRAM data in ram. Allow access to
-this data so property values can be read using nvmem cell api.
 
-[ arinc.unal@arinc9.com: Improved patch subject and log ]
+On 06/02/2023 10:16, arinc9.unal@gmail.com wrote:
+> From: Willem-Jan de Hoog <wdehoog@exalondelft.nl>
+> 
+> The bcm47xx module has a copy of the NVRAM data in ram. When available, use
+> this one instead of reading from io memory since it causes mtd/ubi to fail.
+> 
+> [ arinc.unal@arinc9.com: Improved patch subject and log ]
+> 
+> Signed-off-by: Willem-Jan de Hoog <wdehoog@exalondelft.nl>
+> Signed-off-by: Arınç ÜNAL <arinc.unal@arinc9.com>
+> ---
+>   drivers/nvmem/brcm_nvram.c | 8 ++++++++
+>   1 file changed, 8 insertions(+)
+> 
+> diff --git a/drivers/nvmem/brcm_nvram.c b/drivers/nvmem/brcm_nvram.c
+> index 34130449f2d2..f74bcb1c948e 100644
+> --- a/drivers/nvmem/brcm_nvram.c
+> +++ b/drivers/nvmem/brcm_nvram.c
+> @@ -33,6 +33,12 @@ struct brcm_nvram_header {
+>   static int brcm_nvram_read(void *context, unsigned int offset, void *val,
+>   			   size_t bytes)
+>   {
+> +#ifdef CONFIG_BCM47XX_NVRAM
+> +
+Hmm this is not the right way to fix/add support for this, consider 
+adding SoC specific compatible and based on that you can take right 
+choice at runtime.
 
-Signed-off-by: Willem-Jan de Hoog <wdehoog@exalondelft.nl>
-Signed-off-by: Arınç ÜNAL <arinc.unal@arinc9.com>
----
- drivers/firmware/broadcom/bcm47xx_nvram.c | 14 ++++++++++++++
- include/linux/bcm47xx_nvram.h             |  6 ++++++
- 2 files changed, 20 insertions(+)
+there are 2 issues with this patch which you should probably consider.
+1. no dependency expressed in any way in Kconfig.
+2. If we build these as modules everything will break as the symbol is 
+not exported.
 
-diff --git a/drivers/firmware/broadcom/bcm47xx_nvram.c b/drivers/firmware/broadcom/bcm47xx_nvram.c
-index 5f47dbf4889a..7e5c62dc702f 100644
---- a/drivers/firmware/broadcom/bcm47xx_nvram.c
-+++ b/drivers/firmware/broadcom/bcm47xx_nvram.c
-@@ -182,6 +182,20 @@ static int nvram_init(void)
- 	return -ENXIO;
- }
- 
-+int bcm47xx_nvram_read(unsigned int offset, char *val, size_t val_len)
-+{
-+	if (!nvram_len)
-+		return -ENXIO;
-+
-+	if ((offset+val_len) > nvram_len)
-+		return -EINVAL;
-+
-+	while (val_len--)
-+		*val++ = nvram_buf[offset++];
-+
-+	return 0;
-+}
-+
- int bcm47xx_nvram_getenv(const char *name, char *val, size_t val_len)
- {
- 	char *var, *value, *end, *eq;
-diff --git a/include/linux/bcm47xx_nvram.h b/include/linux/bcm47xx_nvram.h
-index 7615f8d7b1ed..b265b8ce6434 100644
---- a/include/linux/bcm47xx_nvram.h
-+++ b/include/linux/bcm47xx_nvram.h
-@@ -20,6 +20,7 @@ static inline void bcm47xx_nvram_release_contents(char *nvram)
- {
- 	vfree(nvram);
- };
-+int bcm47xx_nvram_read(unsigned int offset, char *val, size_t val_len);
- #else
- static inline int bcm47xx_nvram_init_from_iomem(void __iomem *nvram_start,
- 						size_t res_size)
-@@ -48,6 +49,11 @@ static inline char *bcm47xx_nvram_get_contents(size_t *val_len)
- static inline void bcm47xx_nvram_release_contents(char *nvram)
- {
- };
-+
-+static inline int bcm47xx_nvram_read(unsigned int offset, char *val, size_t val_len)
-+{
-+	return -ENOTSUPP;
-+}:
- #endif
- 
- #endif /* __BCM47XX_NVRAM_H */
--- 
-2.37.2
 
+--srini
+> +	return bcm47xx_nvram_read(offset, val, bytes);
+> +
+> +#else
+> +
+>   	struct brcm_nvram *priv = context;
+>   	u8 *dst = val;
+>   
+> @@ -40,6 +46,8 @@ static int brcm_nvram_read(void *context, unsigned int offset, void *val,
+>   		*dst++ = readb(priv->base + offset++);
+>   
+>   	return 0;
+> +
+> +#endif
+>   }
+>   
+>   static int brcm_nvram_add_cells(struct brcm_nvram *priv, uint8_t *data,

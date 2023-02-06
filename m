@@ -2,55 +2,54 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8C504C61DA4
-	for <linux-mips@archiver.kernel.org>; Mon,  6 Feb 2023 10:06:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E426CC05027
+	for <linux-mips@archiver.kernel.org>; Mon,  6 Feb 2023 10:16:55 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229838AbjBFKG0 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 6 Feb 2023 05:06:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57468 "EHLO
+        id S229875AbjBFKQz (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 6 Feb 2023 05:16:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41564 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230212AbjBFKF6 (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Mon, 6 Feb 2023 05:05:58 -0500
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D2D193F4;
-        Mon,  6 Feb 2023 02:05:16 -0800 (PST)
-Received: by mail-ej1-x62e.google.com with SMTP id m2so32588378ejb.8;
-        Mon, 06 Feb 2023 02:05:16 -0800 (PST)
+        with ESMTP id S229548AbjBFKQy (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Mon, 6 Feb 2023 05:16:54 -0500
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7F25A1;
+        Mon,  6 Feb 2023 02:16:53 -0800 (PST)
+Received: by mail-ej1-x62f.google.com with SMTP id mc11so32647246ejb.10;
+        Mon, 06 Feb 2023 02:16:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Gqf1vCXAbzOf8WDTZTA0pRXwIBMxs7RLBp7o8lAX0PU=;
-        b=T/BkKnXItAdLlJcLNUMa+VCEdmv6AMdP0dWS0Of5OxiLbWBVgnVYIECIo6c4MYN47H
-         g07qpZLpDfvrFdME3IiSyDfrdO+nKnoc2wP2GNGGzi2Gpt/1C+MdoYydbc+AHnDq6llK
-         Ibt5bSqGyn75c/DvpwlAAAaR7/ueJdl12v4G2HAaQXD4iAP+tpNVWsiFvCYl3czcy7zm
-         C/mheRhfSuXWdl9r8yyMu6sjpeyMZuOq4lYtzBUkZ+TkHnwZcLbn22kgDOWDo2rwqwMD
-         2ChYMIagNBEEAjPE/6C/karJX0/R8mWFcAXkRp+zxig32eruF3TvopdD/AYuYmvZGAyb
-         Vc1w==
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Zj0iJ9zJndmf6HAIt6XGl1Fw/U6CT/Qa0nnBg5oFCNU=;
+        b=hdQYMwAbQvxI1WGT//tDVozvUgpX5yddF8Wg6KFQdiqJa2pZAMGaDQsONpF/FIVTDy
+         rUOUJdZdFVWxELBAc9qMJqere11Lp6K9wMvBEVpU3bVtmnRUEIWBzDjuW8XWvSOuH9CK
+         mv7B6UxrA5g3OUn20mZ3Xg0B2xtwzowtwQec9kBlyWOx/8WZzSXb77geyRUVmoT5JTyW
+         tR9jV2fLi/v+gnw1qEzXKmzT99LBanM7VXJbUUFVGhHxVF1e9vLZlcnza9NBzsSvlTCk
+         0homvUbrEyHotUs+s24DaCCFEZcgfmM6oJWpzoNPSXvtj+9eAxbfNgyDLsQD7k+9Rc3B
+         WvMQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Gqf1vCXAbzOf8WDTZTA0pRXwIBMxs7RLBp7o8lAX0PU=;
-        b=7VPThdA8GwGXYwBrzGZzyY7O8FKsJm4Y9QYNZtp7Z2H+8hJIuONNz4PPiAwi9NDU6T
-         jCIv5nwwLyCWBNEnPwUb2IBkQcHf9fuy7+PKX2Ou2F5ItRpn1A7ixVAl++u8/9aNUZHc
-         tJb9i1KqEh7Bw/pU/wXsSQzmafTAyKTjfqVDmcAcWxtMJkSiSKe20c88wLuI8nqVmNse
-         oq8+3t9r/CwPi3zG9qO+O93t35oZg38a/UGnTPJCvbsx/vHiL+IKQUmf4a+4/v1KWEUh
-         9hBWBcLSksmpQ/wIA32Cb99gPcyNOK3wOUk4wfwAsdtHtz31Gna2Kpnlpk/bYpPIiUNq
-         Euaw==
-X-Gm-Message-State: AO0yUKXt/cvFC5IguPnpwePe/Qd7hZQYswRhYRB1UvvwFc128iuHkb3d
-        +DjhMLFF5Yo1Bl3M08Qm0nc=
-X-Google-Smtp-Source: AK7set+dLPcd5QuiLWBH7phQh03dPTamLJPxtAgvDwcz5xmNJIQ3hFiqOl4bmWdL30CfeqcEyDuZLA==
-X-Received: by 2002:a17:907:94c2:b0:88d:ba89:1851 with SMTP id dn2-20020a17090794c200b0088dba891851mr16848475ejc.34.1675677914683;
-        Mon, 06 Feb 2023 02:05:14 -0800 (PST)
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Zj0iJ9zJndmf6HAIt6XGl1Fw/U6CT/Qa0nnBg5oFCNU=;
+        b=Ez1HjRrmrdki3fZOm1+OsANh+gsIPhXTsYzZ6dUNqSB9Gaalj9qkeNNGipfb8ct9PX
+         3Kuy5tQQG18gHijWdVR9V8AC/DvUiLzfmwyE36pkgq/nG8Zi5WnKZNX61OaFh1W+PHlD
+         GYezUwVPF6Dshox5ctSWXQ+VOpqAeqFLD5bEp9cffGfYm5mCSiLZDRzj9oztSLpBPTPG
+         VXiYqvIlbMdBosfrrsh/1NGHBNkbdFZzDX7qetNUudnHULodnN8VntIWRlEQ2ur3UtwM
+         Pau6F6YWtJQ3qVu02rR0bHVtgVvKzSynPjeb2PNG/rG3cTIxtad8mE5zT7A2Lu25aRuP
+         YCYg==
+X-Gm-Message-State: AO0yUKVnyy63ROwOl3l9fK1p7uARQZ6GB6Xjrc6oQuChkeE6Xwl0xDU0
+        ivs7+STTAG1b6EibNcjckIk=
+X-Google-Smtp-Source: AK7set+3bQWTUHdtQKp9Mb9+4ujtU4ZdfHrkX6p+49wHbaqo1A9Gaqcpd5rfSUXqObjvuZrPZvzb4Q==
+X-Received: by 2002:a17:907:1dc2:b0:888:a29:b645 with SMTP id og2-20020a1709071dc200b008880a29b645mr17866345ejc.64.1675678612300;
+        Mon, 06 Feb 2023 02:16:52 -0800 (PST)
 Received: from arinc9-PC.lan ([37.120.152.236])
-        by smtp.gmail.com with ESMTPSA id s19-20020a1709067b9300b008878909859bsm5240746ejo.152.2023.02.06.02.05.13
+        by smtp.gmail.com with ESMTPSA id hz19-20020a1709072cf300b008847d7ed37bsm5285983ejc.100.2023.02.06.02.16.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 06 Feb 2023 02:05:14 -0800 (PST)
-From:   Willem-Jan de Hoog <arinc9.unal@gmail.com>
-X-Google-Original-From: Willem-Jan de Hoog <wdehoog@exalondelft.nl>
+        Mon, 06 Feb 2023 02:16:51 -0800 (PST)
+From:   arinc9.unal@gmail.com
+X-Google-Original-From: wdehoog@exalondelft.nl
 To:     =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>,
         Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
         Linus Walleij <linus.walleij@linaro.org>,
@@ -60,80 +59,43 @@ Cc:     =?UTF-8?q?Ar=C4=B1n=C3=A7=20=C3=9CNAL?= <arinc.unal@arinc9.com>,
         =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>,
         linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
         erkin.bozoglu@xeront.com
-Subject: [PATCH 1/2] firmware: bcm47xx_nvram: allow to read from buffered nvram data
-Date:   Mon,  6 Feb 2023 13:05:01 +0300
-Message-Id: <20230206100502.20243-2-wdehoog@exalondelft.nl>
+Subject: [PATCH 0/2] nvmem: brcm_nvram: use buffered nvram data for cell values
+Date:   Mon,  6 Feb 2023 13:16:40 +0300
+Message-Id: <20230206101642.22720-1-wdehoog@exalondelft.nl>
 X-Mailer: git-send-email 2.37.2
-In-Reply-To: <20230206100502.20243-1-wdehoog@exalondelft.nl>
-References: <20230206100502.20243-1-wdehoog@exalondelft.nl>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-The bcm47xx code makes a copy of the NVRAM data in ram. Allow access to
-this data so property values can be read using nvmem cell api.
+Words from Willem-Jan de Hoog:
 
-[ arinc.unal: Improved patch subject and log ]
+On OpenWrt 22.03.3, Asus RT-AC88U does not boot anymore:
 
-Signed-off-by: Willem-Jan de Hoog <wdehoog@exalondelft.nl>
-Signed-off-by: Arınç ÜNAL <arinc.unal@arinc9.com>
----
+  UBI: auto-attach mtd4
+  ubi0: attaching mtd4
+  ubi0 error: 0xc04f0b3c: PEB 0 contains corrupted VID header, and the
+     data does not contain all 0xFF
+  ubi0 error: 0xc04f0b4c: this may be a non-UBI PEB or a severe VID
+     header corruption which requires manual inspection
+
+The problem seems to be that brcm_nvram_read accesses its (mapped) io
+memory. When doing so the correct data is read but after that the
+mtd/ubi process fails to work.
+
+The bcm47xx_nvram.c code has buffered the nvram data so the cells value
+can be read from there.
+
+v2: Fix the wrong author information.
+
+Willem-Jan de Hoog (2):
+  firmware: bcm47xx_nvram: allow to read from buffered nvram data
+  nvmem: brcm_nvram: use bcm47xx buffered data
+
  drivers/firmware/broadcom/bcm47xx_nvram.c | 14 ++++++++++++++
+ drivers/nvmem/brcm_nvram.c                |  8 ++++++++
  include/linux/bcm47xx_nvram.h             |  6 ++++++
- 2 files changed, 20 insertions(+)
+ 3 files changed, 28 insertions(+)
 
-diff --git a/drivers/firmware/broadcom/bcm47xx_nvram.c b/drivers/firmware/broadcom/bcm47xx_nvram.c
-index 5f47dbf4889a..7e5c62dc702f 100644
---- a/drivers/firmware/broadcom/bcm47xx_nvram.c
-+++ b/drivers/firmware/broadcom/bcm47xx_nvram.c
-@@ -182,6 +182,20 @@ static int nvram_init(void)
- 	return -ENXIO;
- }
- 
-+int bcm47xx_nvram_read(unsigned int offset, char *val, size_t val_len)
-+{
-+	if (!nvram_len)
-+		return -ENXIO;
-+
-+	if ((offset+val_len) > nvram_len)
-+		return -EINVAL;
-+
-+	while (val_len--)
-+		*val++ = nvram_buf[offset++];
-+
-+	return 0;
-+}
-+
- int bcm47xx_nvram_getenv(const char *name, char *val, size_t val_len)
- {
- 	char *var, *value, *end, *eq;
-diff --git a/include/linux/bcm47xx_nvram.h b/include/linux/bcm47xx_nvram.h
-index 7615f8d7b1ed..b265b8ce6434 100644
---- a/include/linux/bcm47xx_nvram.h
-+++ b/include/linux/bcm47xx_nvram.h
-@@ -20,6 +20,7 @@ static inline void bcm47xx_nvram_release_contents(char *nvram)
- {
- 	vfree(nvram);
- };
-+int bcm47xx_nvram_read(unsigned int offset, char *val, size_t val_len);
- #else
- static inline int bcm47xx_nvram_init_from_iomem(void __iomem *nvram_start,
- 						size_t res_size)
-@@ -48,6 +49,11 @@ static inline char *bcm47xx_nvram_get_contents(size_t *val_len)
- static inline void bcm47xx_nvram_release_contents(char *nvram)
- {
- };
-+
-+static inline int bcm47xx_nvram_read(unsigned int offset, char *val, size_t val_len)
-+{
-+	return -ENOTSUPP;
-+}:
- #endif
- 
- #endif /* __BCM47XX_NVRAM_H */
--- 
-2.37.2
 

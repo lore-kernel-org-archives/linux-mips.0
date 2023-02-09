@@ -2,55 +2,55 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E95F2C05027
-	for <linux-mips@archiver.kernel.org>; Thu,  9 Feb 2023 12:11:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7932CC636D3
+	for <linux-mips@archiver.kernel.org>; Thu,  9 Feb 2023 12:11:22 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230097AbjBIMLU (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 9 Feb 2023 07:11:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49726 "EHLO
+        id S230325AbjBIMLV (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 9 Feb 2023 07:11:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49728 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229632AbjBIMLA (ORCPT
+        with ESMTP id S229709AbjBIMLA (ORCPT
         <rfc822;linux-mips@vger.kernel.org>); Thu, 9 Feb 2023 07:11:00 -0500
 Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 597888A58
-        for <linux-mips@vger.kernel.org>; Thu,  9 Feb 2023 04:08:48 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 6C939975E;
+        Thu,  9 Feb 2023 04:08:50 -0800 (PST)
 Received: from uucp (helo=alpha)
         by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1pQ5jK-0008Pq-00; Thu, 09 Feb 2023 13:08:46 +0100
+        id 1pQ5jK-0008Pq-03; Thu, 09 Feb 2023 13:08:46 +0100
 Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 056EBC26B8; Thu,  9 Feb 2023 13:07:30 +0100 (CET)
-Date:   Thu, 9 Feb 2023 13:07:30 +0100
+        id A46D9C26DF; Thu,  9 Feb 2023 13:08:18 +0100 (CET)
+Date:   Thu, 9 Feb 2023 13:08:18 +0100
 From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>
-Cc:     Hauke Mehrtens <hauke@hauke-m.de>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        linux-mips@vger.kernel.org, bcm-kernel-feedback-list@broadcom.com,
-        =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>
-Subject: Re: [PATCH] MIPS: BCM47XX: Add support for Linksys E2500 V3
-Message-ID: <20230209120730.GA11168@alpha.franken.de>
-References: <20230208070301.5338-1-zajec5@gmail.com>
+To:     ye.xingchen@zte.com.cn
+Cc:     matthias.bgg@gmail.com, angelogioacchino.delregno@collabora.com,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Subject: Re: [PATCH] MIPS: =?iso-8859-1?Q?pci-mt762?=
+ =?iso-8859-1?Q?0=3A_Use=A0devm=5Fplatform=5Fget=5Fand=5Fioremap=5Fresourc?=
+ =?iso-8859-1?B?ZSgp?=
+Message-ID: <20230209120818.GD11168@alpha.franken.de>
+References: <202302081048037733713@zte.com.cn>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230208070301.5338-1-zajec5@gmail.com>
+In-Reply-To: <202302081048037733713@zte.com.cn>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Wed, Feb 08, 2023 at 08:03:01AM +0100, Rafał Miłecki wrote:
-> From: Rafał Miłecki <rafal@milecki.pl>
+On Wed, Feb 08, 2023 at 10:48:03AM +0800, ye.xingchen@zte.com.cn wrote:
+> From: Ye Xingchen <ye.xingchen@zte.com.cn>
 > 
-> It's a BCM5358 based home WiFi router. 16 MiB flash, 64 MiB RAM, BCM5325
-> switch, on-SoC 802.11n radio.
+> Convert platform_get_resource(), devm_ioremap_resource() to a single
+> call to devm_platform_get_and_ioremap_resource(), as this is exactly
+> what this function does.
 > 
-> Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
+> Signed-off-by: Ye Xingchen <ye.xingchen@zte.com.cn>
 > ---
->  arch/mips/bcm47xx/board.c                          | 1 +
->  arch/mips/bcm47xx/buttons.c                        | 9 +++++++++
->  arch/mips/include/asm/mach-bcm47xx/bcm47xx_board.h | 1 +
->  3 files changed, 11 insertions(+)
+>  arch/mips/pci/pci-mt7620.c | 8 ++------
+>  1 file changed, 2 insertions(+), 6 deletions(-)
 
 applied to mips-next.
 

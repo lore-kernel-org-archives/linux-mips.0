@@ -2,38 +2,38 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 337B5C6FA99
-	for <linux-mips@archiver.kernel.org>; Thu,  9 Feb 2023 13:31:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 29852C6FA9D
+	for <linux-mips@archiver.kernel.org>; Thu,  9 Feb 2023 13:31:02 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229598AbjBINa6 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 9 Feb 2023 08:30:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56978 "EHLO
+        id S230318AbjBINbA (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 9 Feb 2023 08:31:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56958 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230258AbjBINav (ORCPT
+        with ESMTP id S230253AbjBINav (ORCPT
         <rfc822;linux-mips@vger.kernel.org>); Thu, 9 Feb 2023 08:30:51 -0500
 Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 853C05EBFF;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65A9E5EBF5;
         Thu,  9 Feb 2023 05:30:48 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id AEBBBB82144;
+        by ams.source.kernel.org (Postfix) with ESMTPS id 98DEBB82143;
         Thu,  9 Feb 2023 13:30:45 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AB0D0C43234;
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 596E2C4333D;
         Thu,  9 Feb 2023 13:30:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1675949443;
-        bh=xReQQbRP8f3ZcgElG5HL2OX/F0HPnUSW+WJ1I2BgRtE=;
+        bh=CUH46wTeOwx9zhTRGAsxA0DLFQlKaikmOpM12h4ppVc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TpFoR87h4CVzdcgL6j8nfk4026l69oWKrVtkrpvIeqrZjLp9OWcf3VFYh5hp5SmCS
-         +sZpIY55fJc4MDomzGwRj8GEbDdhQ6zAU+YGpbXiNCXfRci4pkncf7GYrzr28MyumC
-         oDNGbTj78k0MRJQEXKikjKowEvQ+HCS88FcxdKa7+KJF8IV4h8RuVjWUTXr3m/9agS
-         6zS3tMt1GcOVs/vmfRJjj7nlk/rCyDQ+80rE0GzN0+YQT6jvRgMBt9+Ni541c4oauH
-         e90S7lza9Ol4zhgFuYxE2TVY9sroziB9bu+seZ2YhwnvALGuybqzfUJeZX4vP22EvJ
-         wdSPEA9SiHQ4Q==
+        b=slw/hj1S/XeU+KKtyA0HKphJhu31WTvfBhywUH7t1ewc3qDR2XuntztVosWwhOwMO
+         KVx3EhSV94TVN4wDk1tgsSdiv1z/6Q8ZiBVyfi/d6fXVBC9skGunDYcdUTpY+olWBl
+         9yXFKvVlWl/w1TvfmtBU+qbWBZ+mX8AJTl2U0hw0bUPy91tXW1L6B5Huvl/O2jd1/8
+         9ivRtx2HYM9o0aVqS1LVrbHm9Az+F0epLbm5rDUkSfXxWt4BqRyyqco/c3traWvlbQ
+         Iqhib/OEire19qpGYAws0JwY5lrnjszJbJeDNdhe4DNwoAKGrVMvsiJ4CG4fL2keWa
+         cNEv/uyT70gVw==
 Received: from johan by xi.lan with local (Exim 4.94.2)
         (envelope-from <johan+linaro@kernel.org>)
-        id 1pQ71H-0001La-JB; Thu, 09 Feb 2023 14:31:23 +0100
+        id 1pQ71H-0001LM-54; Thu, 09 Feb 2023 14:31:23 +0100
 From:   Johan Hovold <johan+linaro@kernel.org>
 To:     Marc Zyngier <maz@kernel.org>, Thomas Gleixner <tglx@linutronix.de>
 Cc:     x86@kernel.org, platform-driver-x86@vger.kernel.org,
@@ -43,9 +43,9 @@ Cc:     x86@kernel.org, platform-driver-x86@vger.kernel.org,
         =?UTF-8?q?Philippe=20Mathieu-Daud=C3=A9?= <philmd@linaro.org>,
         Hsin-Yi Wang <hsinyi@chromium.org>,
         Mark-PK Tsai <mark-pk.tsai@mediatek.com>
-Subject: [PATCH v5 17/19] irqchip/loongson-pch-msi: Use irq_domain_create_hierarchy()
-Date:   Thu,  9 Feb 2023 14:23:21 +0100
-Message-Id: <20230209132323.4599-18-johan+linaro@kernel.org>
+Subject: [PATCH v5 12/19] x86/apic: Use irq_domain_create_hierarchy()
+Date:   Thu,  9 Feb 2023 14:23:16 +0100
+Message-Id: <20230209132323.4599-13-johan+linaro@kernel.org>
 X-Mailer: git-send-email 2.39.1
 In-Reply-To: <20230209132323.4599-1-johan+linaro@kernel.org>
 References: <20230209132323.4599-1-johan+linaro@kernel.org>
@@ -65,34 +65,27 @@ Tested-by: Hsin-Yi Wang <hsinyi@chromium.org>
 Tested-by: Mark-PK Tsai <mark-pk.tsai@mediatek.com>
 Signed-off-by: Johan Hovold <johan+linaro@kernel.org>
 ---
- drivers/irqchip/irq-loongson-pch-msi.c | 9 ++++-----
- 1 file changed, 4 insertions(+), 5 deletions(-)
+ arch/x86/platform/uv/uv_irq.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/irqchip/irq-loongson-pch-msi.c b/drivers/irqchip/irq-loongson-pch-msi.c
-index a72ede90ffc6..6e1e1f011bb2 100644
---- a/drivers/irqchip/irq-loongson-pch-msi.c
-+++ b/drivers/irqchip/irq-loongson-pch-msi.c
-@@ -163,16 +163,15 @@ static int pch_msi_init_domains(struct pch_msi_data *priv,
- {
- 	struct irq_domain *middle_domain, *msi_domain;
+diff --git a/arch/x86/platform/uv/uv_irq.c b/arch/x86/platform/uv/uv_irq.c
+index 1a536a187d74..ee21d6a36a80 100644
+--- a/arch/x86/platform/uv/uv_irq.c
++++ b/arch/x86/platform/uv/uv_irq.c
+@@ -166,10 +166,9 @@ static struct irq_domain *uv_get_irq_domain(void)
+ 	if (!fn)
+ 		goto out;
  
--	middle_domain = irq_domain_create_linear(domain_handle,
--						priv->num_irqs,
--						&pch_msi_middle_domain_ops,
--						priv);
-+	middle_domain = irq_domain_create_hierarchy(parent, 0, priv->num_irqs,
-+						    domain_handle,
-+						    &pch_msi_middle_domain_ops,
-+						    priv);
- 	if (!middle_domain) {
- 		pr_err("Failed to create the MSI middle domain\n");
- 		return -ENOMEM;
- 	}
- 
--	middle_domain->parent = parent;
- 	irq_domain_update_bus_token(middle_domain, DOMAIN_BUS_NEXUS);
- 
- 	msi_domain = pci_msi_create_irq_domain(domain_handle,
+-	uv_domain = irq_domain_create_tree(fn, &uv_domain_ops, NULL);
+-	if (uv_domain)
+-		uv_domain->parent = x86_vector_domain;
+-	else
++	uv_domain = irq_domain_create_hierarchy(x86_vector_domain, 0, 0, fn,
++						&uv_domain_ops, NULL);
++	if (!uv_domain)
+ 		irq_domain_free_fwnode(fn);
+ out:
+ 	mutex_unlock(&uv_lock);
 -- 
 2.39.1
 

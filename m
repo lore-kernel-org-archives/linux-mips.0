@@ -2,45 +2,42 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7932CC636D3
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C0B31C61DA4
 	for <linux-mips@archiver.kernel.org>; Thu,  9 Feb 2023 12:11:22 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230325AbjBIMLV (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 9 Feb 2023 07:11:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49728 "EHLO
+        id S229881AbjBIMLW (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 9 Feb 2023 07:11:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49730 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229709AbjBIMLA (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Thu, 9 Feb 2023 07:11:00 -0500
+        with ESMTP id S230288AbjBIMLB (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Thu, 9 Feb 2023 07:11:01 -0500
 Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 6C939975E;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 6CB969ED4;
         Thu,  9 Feb 2023 04:08:50 -0800 (PST)
 Received: from uucp (helo=alpha)
         by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1pQ5jK-0008Pq-03; Thu, 09 Feb 2023 13:08:46 +0100
+        id 1pQ5jK-0008Pq-04; Thu, 09 Feb 2023 13:08:46 +0100
 Received: by alpha.franken.de (Postfix, from userid 1000)
-        id A46D9C26DF; Thu,  9 Feb 2023 13:08:18 +0100 (CET)
-Date:   Thu, 9 Feb 2023 13:08:18 +0100
+        id 4806EC26DF; Thu,  9 Feb 2023 13:08:33 +0100 (CET)
+Date:   Thu, 9 Feb 2023 13:08:33 +0100
 From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 To:     ye.xingchen@zte.com.cn
-Cc:     matthias.bgg@gmail.com, angelogioacchino.delregno@collabora.com,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-Subject: Re: [PATCH] MIPS: =?iso-8859-1?Q?pci-mt762?=
- =?iso-8859-1?Q?0=3A_Use=A0devm=5Fplatform=5Fget=5Fand=5Fioremap=5Fresourc?=
- =?iso-8859-1?B?ZSgp?=
-Message-ID: <20230209120818.GD11168@alpha.franken.de>
-References: <202302081048037733713@zte.com.cn>
+Cc:     john@phrozen.org, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] MIPS: ralink: Use
+ devm_platform_get_and_ioremap_resource()
+Message-ID: <20230209120833.GE11168@alpha.franken.de>
+References: <202302081049172703754@zte.com.cn>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <202302081048037733713@zte.com.cn>
+In-Reply-To: <202302081049172703754@zte.com.cn>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Wed, Feb 08, 2023 at 10:48:03AM +0800, ye.xingchen@zte.com.cn wrote:
+On Wed, Feb 08, 2023 at 10:49:17AM +0800, ye.xingchen@zte.com.cn wrote:
 > From: Ye Xingchen <ye.xingchen@zte.com.cn>
 > 
 > Convert platform_get_resource(), devm_ioremap_resource() to a single
@@ -49,8 +46,8 @@ On Wed, Feb 08, 2023 at 10:48:03AM +0800, ye.xingchen@zte.com.cn wrote:
 > 
 > Signed-off-by: Ye Xingchen <ye.xingchen@zte.com.cn>
 > ---
->  arch/mips/pci/pci-mt7620.c | 8 ++------
->  1 file changed, 2 insertions(+), 6 deletions(-)
+>  arch/mips/ralink/timer.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
 
 applied to mips-next.
 

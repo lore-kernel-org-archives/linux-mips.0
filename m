@@ -2,198 +2,228 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 48723C64ED9
-	for <linux-mips@archiver.kernel.org>; Thu,  9 Feb 2023 13:31:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D2398C05027
+	for <linux-mips@archiver.kernel.org>; Thu,  9 Feb 2023 14:03:26 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230340AbjBINbC (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 9 Feb 2023 08:31:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56896 "EHLO
+        id S230202AbjBIOD0 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 9 Feb 2023 09:03:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33476 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230127AbjBINat (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Thu, 9 Feb 2023 08:30:49 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 168585EBEC;
-        Thu,  9 Feb 2023 05:30:48 -0800 (PST)
+        with ESMTP id S230030AbjBIODY (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Thu, 9 Feb 2023 09:03:24 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA8BB2D6F;
+        Thu,  9 Feb 2023 06:03:23 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id B9D2EB8213A;
-        Thu,  9 Feb 2023 13:30:44 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D9AE1C43444;
-        Thu,  9 Feb 2023 13:30:42 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 65FA461A78;
+        Thu,  9 Feb 2023 14:03:23 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BAB71C433EF;
+        Thu,  9 Feb 2023 14:03:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1675949442;
-        bh=clVu7cbCZQuWFAo+ktM63h/7vhzeIYuPjrlK28Oxe1M=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Z2LJ0U80DYRmMQXaQwA3/hkYeCb4mnqhbSI/By28AYQcAYBDcImK1LsUA5UoijJ2X
-         s9xjTcGQxrcGwLxOYmC+8OkPDEKDd4Nr4icStwH/hGj8kMyKy9Qq1GJrWn7EUNzemt
-         b/csjHUvlAttKtjzaMWJv1wfpTcBKJQm1An3X7roqcf+Jg2yrkuV7AjG9HD6Tpv8JY
-         HaTahCw5rbasawXYXJuZ3NqdlM/ivvCQQm+xxZeGnS17yNBoild0oY+wfBVWs5OXsi
-         nKFxt9vI9kkmBzkJhiaPKyBXrLT02K6xRlNqeNqsucH/R0tt/VfC6ZLXeSBt2mWc8Q
-         Rpm2h6NGXG0dw==
-Received: from johan by xi.lan with local (Exim 4.94.2)
-        (envelope-from <johan+linaro@kernel.org>)
-        id 1pQ71G-0001Kr-HG; Thu, 09 Feb 2023 14:31:22 +0100
-From:   Johan Hovold <johan+linaro@kernel.org>
-To:     Marc Zyngier <maz@kernel.org>, Thomas Gleixner <tglx@linutronix.de>
-Cc:     x86@kernel.org, platform-driver-x86@vger.kernel.org,
+        s=k20201202; t=1675951402;
+        bh=3JCu6SWDhRVQ0rFnujYBUtGwwy/pPjw4FuegeZK3AAE=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=JZXPWu4/X/G4qoSiHhNVQyAWH3EJlNzyFJDOCtgMLgf1PWPRgN4TiBrZOYZeUUNph
+         EaGz3k/t1E0c2gkyeFW90gwClHilCJ6B0i3W5TkoI1IE/rdyOCmGb5dObbeyfmPc08
+         Bk6vdoQEVgkG1D8s1gtnGmuSXJ/LfjdRYD09D4H9rPGXVXAMvrDXAfO3iNnyFrC3Nq
+         8A/P28ia0ViWhzaxAS9mfMiuVskM3v0aJ5pWGQGtOI3+gvT8zadxVAnJGjgg8KmQVU
+         iXhlRjDublWzjoL5k36TVTq8ttYRi96JjDH8UNdVIrvB8xnq0n1A3NMUxQzn07Zuzz
+         OZNMa04mD1qVw==
+Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.95)
+        (envelope-from <maz@kernel.org>)
+        id 1pQ7WC-0090HQ-Ad;
+        Thu, 09 Feb 2023 14:03:20 +0000
+Date:   Thu, 09 Feb 2023 14:03:19 +0000
+Message-ID: <86edqzylzs.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Johan Hovold <johan+linaro@kernel.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
+        platform-driver-x86@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Johan Hovold <johan+linaro@kernel.org>, stable@vger.kernel.org,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Dmitry Torokhov <dtor@chromium.org>,
+        Jon Hunter <jonathanh@nvidia.com>,
         Hsin-Yi Wang <hsinyi@chromium.org>,
         Mark-PK Tsai <mark-pk.tsai@mediatek.com>
-Subject: [PATCH v5 05/19] irqdomain: Refactor __irq_domain_alloc_irqs()
-Date:   Thu,  9 Feb 2023 14:23:09 +0100
-Message-Id: <20230209132323.4599-6-johan+linaro@kernel.org>
-X-Mailer: git-send-email 2.39.1
-In-Reply-To: <20230209132323.4599-1-johan+linaro@kernel.org>
+Subject: Re: [PATCH v5 06/19] irqdomain: Fix mapping-creation race
+In-Reply-To: <20230209132323.4599-7-johan+linaro@kernel.org>
 References: <20230209132323.4599-1-johan+linaro@kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        <20230209132323.4599-7-johan+linaro@kernel.org>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/28.2
+ (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: johan+linaro@kernel.org, tglx@linutronix.de, x86@kernel.org, platform-driver-x86@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org, stable@vger.kernel.org, dtor@chromium.org, jonathanh@nvidia.com, hsinyi@chromium.org, mark-pk.tsai@mediatek.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Refactor __irq_domain_alloc_irqs() so that it can be called internally
-while holding the irq_domain_mutex.
+On Thu, 09 Feb 2023 13:23:10 +0000,
+Johan Hovold <johan+linaro@kernel.org> wrote:
+> 
+> Parallel probing of devices that share interrupts (e.g. when a driver
+> uses asynchronous probing) can currently result in two mappings for the
+> same hardware interrupt to be created due to missing serialisation.
+> 
+> Make sure to hold the irq_domain_mutex when creating mappings so that
+> looking for an existing mapping before creating a new one is done
+> atomically.
+> 
+> Fixes: 765230b5f084 ("driver-core: add asynchronous probing support for drivers")
+> Fixes: b62b2cf5759b ("irqdomain: Fix handling of type settings for existing mappings")
+> Link: https://lore.kernel.org/r/YuJXMHoT4ijUxnRb@hovoldconsulting.com
+> Cc: stable@vger.kernel.org      # 4.8
+> Cc: Dmitry Torokhov <dtor@chromium.org>
+> Cc: Jon Hunter <jonathanh@nvidia.com>
+> Tested-by: Hsin-Yi Wang <hsinyi@chromium.org>
+> Tested-by: Mark-PK Tsai <mark-pk.tsai@mediatek.com>
+> Signed-off-by: Johan Hovold <johan+linaro@kernel.org>
+> ---
+>  kernel/irq/irqdomain.c | 55 ++++++++++++++++++++++++++++++------------
+>  1 file changed, 40 insertions(+), 15 deletions(-)
+> 
+> diff --git a/kernel/irq/irqdomain.c b/kernel/irq/irqdomain.c
+> index 7b57949bc79c..1ddb01bd49a4 100644
+> --- a/kernel/irq/irqdomain.c
+> +++ b/kernel/irq/irqdomain.c
+> @@ -25,6 +25,9 @@ static DEFINE_MUTEX(irq_domain_mutex);
+>  
+>  static struct irq_domain *irq_default_domain;
+>  
+> +static int irq_domain_alloc_irqs_locked(struct irq_domain *domain, int irq_base,
+> +					unsigned int nr_irqs, int node, void *arg,
+> +					bool realloc, const struct irq_affinity_desc *affinity);
+>  static void irq_domain_check_hierarchy(struct irq_domain *domain);
+>  
+>  struct irqchip_fwid {
+> @@ -682,9 +685,9 @@ unsigned int irq_create_direct_mapping(struct irq_domain *domain)
+>  EXPORT_SYMBOL_GPL(irq_create_direct_mapping);
+>  #endif
+>  
+> -static unsigned int __irq_create_mapping_affinity(struct irq_domain *domain,
+> -						  irq_hw_number_t hwirq,
+> -						  const struct irq_affinity_desc *affinity)
+> +static unsigned int irq_create_mapping_affinity_locked(struct irq_domain *domain,
+> +						       irq_hw_number_t hwirq,
+> +						       const struct irq_affinity_desc *affinity)
+>  {
+>  	struct device_node *of_node = irq_domain_get_of_node(domain);
+>  	int virq;
+> @@ -699,7 +702,7 @@ static unsigned int __irq_create_mapping_affinity(struct irq_domain *domain,
+>  		return 0;
+>  	}
+>  
+> -	if (irq_domain_associate(domain, virq, hwirq)) {
+> +	if (irq_domain_associate_locked(domain, virq, hwirq)) {
+>  		irq_free_desc(virq);
+>  		return 0;
+>  	}
+> @@ -735,14 +738,20 @@ unsigned int irq_create_mapping_affinity(struct irq_domain *domain,
+>  		return 0;
+>  	}
+>  
+> +	mutex_lock(&irq_domain_mutex);
+> +
+>  	/* Check if mapping already exists */
+>  	virq = irq_find_mapping(domain, hwirq);
+>  	if (virq) {
+>  		pr_debug("existing mapping on virq %d\n", virq);
+> -		return virq;
+> +		goto out;
+>  	}
+>  
+> -	return __irq_create_mapping_affinity(domain, hwirq, affinity);
+> +	virq = irq_create_mapping_affinity_locked(domain, hwirq, affinity);
+> +out:
+> +	mutex_unlock(&irq_domain_mutex);
+> +
+> +	return virq;
+>  }
+>  EXPORT_SYMBOL_GPL(irq_create_mapping_affinity);
+>  
+> @@ -809,6 +818,8 @@ unsigned int irq_create_fwspec_mapping(struct irq_fwspec *fwspec)
+>  	if (WARN_ON(type & ~IRQ_TYPE_SENSE_MASK))
+>  		type &= IRQ_TYPE_SENSE_MASK;
+>  
+> +	mutex_lock(&irq_domain_mutex);
+> +
+>  	/*
+>  	 * If we've already configured this interrupt,
+>  	 * don't do it again, or hell will break loose.
+> @@ -821,7 +832,7 @@ unsigned int irq_create_fwspec_mapping(struct irq_fwspec *fwspec)
+>  		 * interrupt number.
+>  		 */
+>  		if (type == IRQ_TYPE_NONE || type == irq_get_trigger_type(virq))
+> -			return virq;
+> +			goto out;
+>  
+>  		/*
+>  		 * If the trigger type has not been set yet, then set
+> @@ -830,36 +841,43 @@ unsigned int irq_create_fwspec_mapping(struct irq_fwspec *fwspec)
+>  		if (irq_get_trigger_type(virq) == IRQ_TYPE_NONE) {
+>  			irq_data = irq_get_irq_data(virq);
+>  			if (!irq_data)
+> -				return 0;
+> +				goto err;
+>  
+>  			irqd_set_trigger_type(irq_data, type);
+> -			return virq;
+> +			goto out;
+>  		}
+>  
+>  		pr_warn("type mismatch, failed to map hwirq-%lu for %s!\n",
+>  			hwirq, of_node_full_name(to_of_node(fwspec->fwnode)));
+> -		return 0;
+> +		goto err;
+>  	}
+>  
+>  	if (irq_domain_is_hierarchy(domain)) {
+> -		virq = irq_domain_alloc_irqs(domain, 1, NUMA_NO_NODE, fwspec);
+> +		virq = irq_domain_alloc_irqs_locked(domain, -1, 1, NUMA_NO_NODE,
+> +						    fwspec, false, NULL);
+>  		if (virq <= 0)
+> -			return 0;
+> +			goto err;
+>  	} else {
+>  		/* Create mapping */
+> -		virq = __irq_create_mapping_affinity(domain, hwirq, NULL);
+> +		virq = irq_create_mapping_affinity_locked(domain, hwirq, NULL);
+>  		if (!virq)
+> -			return virq;
+> +			goto err;
+>  	}
+>  
+>  	irq_data = irq_get_irq_data(virq);
+>  	if (WARN_ON(!irq_data))
+> -		return 0;
+> +		goto err;
+>  
+>  	/* Store trigger type */
+>  	irqd_set_trigger_type(irq_data, type);
+> +out:
+> +	mutex_unlock(&irq_domain_mutex);
+>  
+>  	return virq;
+> +err:
+> +	mutex_unlock(&irq_domain_mutex);
+> +
+> +	return 0;
 
-This will be used to fix a shared-interrupt mapping race, hence the
-Fixes tag.
+nit: it'd look better if we had a single exit path with the unlock,
+setting virq to 0 on failure. Not a big deal, as this can be tidied up
+when applied.
 
-Fixes: b62b2cf5759b ("irqdomain: Fix handling of type settings for existing mappings")
-Cc: stable@vger.kernel.org      # 4.8
-Tested-by: Hsin-Yi Wang <hsinyi@chromium.org>
-Tested-by: Mark-PK Tsai <mark-pk.tsai@mediatek.com>
-Signed-off-by: Johan Hovold <johan+linaro@kernel.org>
----
- kernel/irq/irqdomain.c | 88 +++++++++++++++++++++++-------------------
- 1 file changed, 48 insertions(+), 40 deletions(-)
+Thanks,
 
-diff --git a/kernel/irq/irqdomain.c b/kernel/irq/irqdomain.c
-index 3d6a14efae62..7b57949bc79c 100644
---- a/kernel/irq/irqdomain.c
-+++ b/kernel/irq/irqdomain.c
-@@ -1441,40 +1441,12 @@ int irq_domain_alloc_irqs_hierarchy(struct irq_domain *domain,
- 	return domain->ops->alloc(domain, irq_base, nr_irqs, arg);
- }
- 
--/**
-- * __irq_domain_alloc_irqs - Allocate IRQs from domain
-- * @domain:	domain to allocate from
-- * @irq_base:	allocate specified IRQ number if irq_base >= 0
-- * @nr_irqs:	number of IRQs to allocate
-- * @node:	NUMA node id for memory allocation
-- * @arg:	domain specific argument
-- * @realloc:	IRQ descriptors have already been allocated if true
-- * @affinity:	Optional irq affinity mask for multiqueue devices
-- *
-- * Allocate IRQ numbers and initialized all data structures to support
-- * hierarchy IRQ domains.
-- * Parameter @realloc is mainly to support legacy IRQs.
-- * Returns error code or allocated IRQ number
-- *
-- * The whole process to setup an IRQ has been split into two steps.
-- * The first step, __irq_domain_alloc_irqs(), is to allocate IRQ
-- * descriptor and required hardware resources. The second step,
-- * irq_domain_activate_irq(), is to program the hardware with preallocated
-- * resources. In this way, it's easier to rollback when failing to
-- * allocate resources.
-- */
--int __irq_domain_alloc_irqs(struct irq_domain *domain, int irq_base,
--			    unsigned int nr_irqs, int node, void *arg,
--			    bool realloc, const struct irq_affinity_desc *affinity)
-+static int irq_domain_alloc_irqs_locked(struct irq_domain *domain, int irq_base,
-+					unsigned int nr_irqs, int node, void *arg,
-+					bool realloc, const struct irq_affinity_desc *affinity)
- {
- 	int i, ret, virq;
- 
--	if (domain == NULL) {
--		domain = irq_default_domain;
--		if (WARN(!domain, "domain is NULL; cannot allocate IRQ\n"))
--			return -EINVAL;
--	}
--
- 	if (realloc && irq_base >= 0) {
- 		virq = irq_base;
- 	} else {
-@@ -1493,24 +1465,18 @@ int __irq_domain_alloc_irqs(struct irq_domain *domain, int irq_base,
- 		goto out_free_desc;
- 	}
- 
--	mutex_lock(&irq_domain_mutex);
- 	ret = irq_domain_alloc_irqs_hierarchy(domain, virq, nr_irqs, arg);
--	if (ret < 0) {
--		mutex_unlock(&irq_domain_mutex);
-+	if (ret < 0)
- 		goto out_free_irq_data;
--	}
- 
- 	for (i = 0; i < nr_irqs; i++) {
- 		ret = irq_domain_trim_hierarchy(virq + i);
--		if (ret) {
--			mutex_unlock(&irq_domain_mutex);
-+		if (ret)
- 			goto out_free_irq_data;
--		}
- 	}
--	
-+
- 	for (i = 0; i < nr_irqs; i++)
- 		irq_domain_insert_irq(virq + i);
--	mutex_unlock(&irq_domain_mutex);
- 
- 	return virq;
- 
-@@ -1520,6 +1486,48 @@ int __irq_domain_alloc_irqs(struct irq_domain *domain, int irq_base,
- 	irq_free_descs(virq, nr_irqs);
- 	return ret;
- }
-+
-+/**
-+ * __irq_domain_alloc_irqs - Allocate IRQs from domain
-+ * @domain:	domain to allocate from
-+ * @irq_base:	allocate specified IRQ number if irq_base >= 0
-+ * @nr_irqs:	number of IRQs to allocate
-+ * @node:	NUMA node id for memory allocation
-+ * @arg:	domain specific argument
-+ * @realloc:	IRQ descriptors have already been allocated if true
-+ * @affinity:	Optional irq affinity mask for multiqueue devices
-+ *
-+ * Allocate IRQ numbers and initialized all data structures to support
-+ * hierarchy IRQ domains.
-+ * Parameter @realloc is mainly to support legacy IRQs.
-+ * Returns error code or allocated IRQ number
-+ *
-+ * The whole process to setup an IRQ has been split into two steps.
-+ * The first step, __irq_domain_alloc_irqs(), is to allocate IRQ
-+ * descriptor and required hardware resources. The second step,
-+ * irq_domain_activate_irq(), is to program the hardware with preallocated
-+ * resources. In this way, it's easier to rollback when failing to
-+ * allocate resources.
-+ */
-+int __irq_domain_alloc_irqs(struct irq_domain *domain, int irq_base,
-+			    unsigned int nr_irqs, int node, void *arg,
-+			    bool realloc, const struct irq_affinity_desc *affinity)
-+{
-+	int ret;
-+
-+	if (domain == NULL) {
-+		domain = irq_default_domain;
-+		if (WARN(!domain, "domain is NULL; cannot allocate IRQ\n"))
-+			return -EINVAL;
-+	}
-+
-+	mutex_lock(&irq_domain_mutex);
-+	ret = irq_domain_alloc_irqs_locked(domain, irq_base, nr_irqs, node, arg,
-+					   realloc, affinity);
-+	mutex_unlock(&irq_domain_mutex);
-+
-+	return ret;
-+}
- EXPORT_SYMBOL_GPL(__irq_domain_alloc_irqs);
- 
- /* The irq_data was moved, fix the revmap to refer to the new location */
+	M.
+
 -- 
-2.39.1
-
+Without deviation from the norm, progress is not possible.

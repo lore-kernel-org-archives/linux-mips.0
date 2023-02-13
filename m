@@ -2,53 +2,63 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2BDCCC636D4
-	for <linux-mips@archiver.kernel.org>; Mon, 13 Feb 2023 10:43:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2ACA9C636D4
+	for <linux-mips@archiver.kernel.org>; Mon, 13 Feb 2023 12:07:41 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230484AbjBMKnm (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 13 Feb 2023 05:43:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49250 "EHLO
+        id S230209AbjBMMHk (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 13 Feb 2023 07:07:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46716 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230181AbjBMKn0 (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Mon, 13 Feb 2023 05:43:26 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49DEE17158;
-        Mon, 13 Feb 2023 02:43:23 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 306AFB810AC;
-        Mon, 13 Feb 2023 10:43:19 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 12414C4333D;
-        Mon, 13 Feb 2023 10:43:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1676284997;
-        bh=CUH46wTeOwx9zhTRGAsxA0DLFQlKaikmOpM12h4ppVc=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=P3wiRa+Pr6BJ8JnisiohjbgJZzKknaFiA/I3ZmrTKFCT/BJ5aX6t6PIYJJaIMWRvC
-         R1I9UwqJnssdoJw8nHI0sWXnJOa0p4eJ0umf6XRumYX8orVoFfTVgCmR7LWhRUmegQ
-         K9tZYDJQnGrDWsT3jNtRQd0TVlO2gH3cqXAJ8qLJ8zX9s6KP1l46eSPc3nds22nzbc
-         jKQPrZAMOEnUegDgcAlYjK+Tj+zpuwZn14k9s0jryTni1MlBQevHIiuap4tyf+G/ST
-         lprINV0Hz76ejomhkAD7GD33abBMfh25LVh5o8W6Fzpyk2hQ9lA3Qg5ZMbXBlLQ3H+
-         cqhzPGdPSh43A==
-Received: from johan by xi.lan with local (Exim 4.94.2)
-        (envelope-from <johan+linaro@kernel.org>)
-        id 1pRWJc-0004Ws-2a; Mon, 13 Feb 2023 11:44:08 +0100
-From:   Johan Hovold <johan+linaro@kernel.org>
-To:     Marc Zyngier <maz@kernel.org>, Thomas Gleixner <tglx@linutronix.de>
-Cc:     x86@kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Johan Hovold <johan+linaro@kernel.org>,
-        =?UTF-8?q?Philippe=20Mathieu-Daud=C3=A9?= <philmd@linaro.org>,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        Mark-PK Tsai <mark-pk.tsai@mediatek.com>
-Subject: [PATCH v6 13/20] x86/uv: Use irq_domain_create_hierarchy()
-Date:   Mon, 13 Feb 2023 11:42:55 +0100
-Message-Id: <20230213104302.17307-14-johan+linaro@kernel.org>
-X-Mailer: git-send-email 2.39.1
-In-Reply-To: <20230213104302.17307-1-johan+linaro@kernel.org>
-References: <20230213104302.17307-1-johan+linaro@kernel.org>
+        with ESMTP id S230059AbjBMMHi (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Mon, 13 Feb 2023 07:07:38 -0500
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 613D31A667;
+        Mon, 13 Feb 2023 04:07:10 -0800 (PST)
+Received: by mail-wm1-x336.google.com with SMTP id n13so8530368wmr.4;
+        Mon, 13 Feb 2023 04:07:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=qIe/r9mtEwhdvVyE7xopkyv6C9oZIn7clQlBN8qdMMY=;
+        b=kepk6NN6rirGl0ugTuXjEO0p/+KlA4ZL8G9nVAH71WeykU6x0KkaXcLvHnMgdQymLd
+         gsDiG2lRWktkwtQuN9cwvazad9kDEBORfoAnxYX05ziLGmOiM20cwndYpgpVv/X+RtHM
+         vZT6CbQmaYvMQX4oHwkQk3AlDHWAmAP1/ZLXOFa4jQq1o6vsevphFHbWgQ48F5X5FB3o
+         7i7HWWY1RuCSvLC38doiZdm7qaEr1DAgtmkWAHu6gcs8yj6/yWVg4JRWpAVHsYmB7hSy
+         UOb5UKZt0Adi/QU31jEnsu9N4yxty4/o/2cCGcoJG8J4z54s28R/3TY7okXw184OajSs
+         +EAg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=qIe/r9mtEwhdvVyE7xopkyv6C9oZIn7clQlBN8qdMMY=;
+        b=u6DPZGqIZg5NpSk3YnKjDMWC5GwSxEnm/ZoPwaH1ILmlCWRpMtg+uwsVq5VAdnt5GO
+         YVIX7TrSMqSQCvCcR44anUNgtEdQ6vfhSAtAC1UUrZ8oNTuFebti81BMZxXWcU93d6hV
+         pMemN60E4A28NdzsT72EYJMnHMY8Admz1jxjiLfUXc5HBdXHF9dacis1rSDZtlJ9mHKo
+         rVlcuvWumYwJUnF1L05eAU9iM66yQu80DuOdbsLGdvY4IIefodcgOHGut3h7wlSJgiGp
+         3RGsk1UWY6Fqq2lcHupaLsqjjMWMHJ06eItZRO0XnX6OyH0iP6UJlvdHcYBO1iogkyLA
+         qMCQ==
+X-Gm-Message-State: AO0yUKXmUU0hQxLvDbvqGx+XBYO9DzGuev3dKUqjU2Z5xhWU2fQer9aW
+        w+EbH0Omz+OEoNJADWfTWR2tLxgSuwk=
+X-Google-Smtp-Source: AK7set/15D6mq15XzGu3c5gMXOqy6dzq7wfhOfQQCzO/fzVFdTPZAlofS7xN9HHMY7EqGV4jZVoDRg==
+X-Received: by 2002:a05:600c:331c:b0:3df:ee43:860b with SMTP id q28-20020a05600c331c00b003dfee43860bmr18775270wmp.23.1676290000779;
+        Mon, 13 Feb 2023 04:06:40 -0800 (PST)
+Received: from localhost.localdomain (23.red-88-10-60.dynamicip.rima-tde.net. [88.10.60.23])
+        by smtp.gmail.com with ESMTPSA id n13-20020a05600c3b8d00b003dc434900e1sm14798046wms.34.2023.02.13.04.06.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 13 Feb 2023 04:06:40 -0800 (PST)
+From:   Sergio Paracuellos <sergio.paracuellos@gmail.com>
+To:     linux-watchdog@vger.kernel.org
+Cc:     wim@linux-watchdog.org, linux@roeck-us.net, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, matthias.bgg@gmail.com,
+        arinc.unal@arinc9.com, tsbogend@alpha.franken.de,
+        p.zabel@pengutronix.de, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-mips@vger.kernel.org
+Subject: [PATCH v5 0/2] avoid globals and arch dependencies
+Date:   Mon, 13 Feb 2023 13:06:36 +0100
+Message-Id: <20230213120638.850612-1-sergio.paracuellos@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -56,36 +66,68 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Use the irq_domain_create_hierarchy() helper to create the hierarchical
-domain, which both serves as documentation and avoids poking at
-irqdomain internals.
+Hi all,
 
-Reviewed-by: Philippe Mathieu-Daudé <philmd@linaro.org>
-Tested-by: Hsin-Yi Wang <hsinyi@chromium.org>
-Tested-by: Mark-PK Tsai <mark-pk.tsai@mediatek.com>
-Signed-off-by: Johan Hovold <johan+linaro@kernel.org>
----
- arch/x86/platform/uv/uv_irq.c | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+This series make an update in the MT7621 SoC's watchdog driver code. This
+SoC already provides a system controller node to access reset status
+register needed for the watchdog. Instead of using MIPS architecture
+dependent operations in header 'asm/mach-ralink/ralink_regs.h' could use
+a phandle to the system controller node and use it through regmap APIs
+from the code. However this means to break dtb's ABI so previous series
+patches related with this have been droped from this version.
+Driver is also using some globals that are not needed at all if a driver
+data structure is used along the code. Hence, add all new needed stuff
+inside a new driver data structure.
 
-diff --git a/arch/x86/platform/uv/uv_irq.c b/arch/x86/platform/uv/uv_irq.c
-index 1a536a187d74..ee21d6a36a80 100644
---- a/arch/x86/platform/uv/uv_irq.c
-+++ b/arch/x86/platform/uv/uv_irq.c
-@@ -166,10 +166,9 @@ static struct irq_domain *uv_get_irq_domain(void)
- 	if (!fn)
- 		goto out;
- 
--	uv_domain = irq_domain_create_tree(fn, &uv_domain_ops, NULL);
--	if (uv_domain)
--		uv_domain->parent = x86_vector_domain;
--	else
-+	uv_domain = irq_domain_create_hierarchy(x86_vector_domain, 0, 0, fn,
-+						&uv_domain_ops, NULL);
-+	if (!uv_domain)
- 		irq_domain_free_fwnode(fn);
- out:
- 	mutex_unlock(&uv_lock);
+Thanks in advance for reviewing this!
+
+v1 of this series here [0].
+v2 os thise series here [1].
+v3 os thise series here [2].
+v4 os thise series here [3].
+
+Changes in v5:
+    - Drop patches related with device tree ABI breakage and only
+      maintain the rest.
+    - Collect Arinc 'Reviewed-by' tag for watchdog node warning fix.
+
+Changes in v4:
+    - Add a patch to fix a watchdog node warning with 'make dtbs_check'
+      because of a wrong node name.
+    - Collect Guenter 'Reviewed-by' tags for watchdog driver code.
+    - Add a missing 'COMPILE_TEST' to Kconfig which was lost when driver
+      code was split in two patches in v2.
+
+Changes in v3:
+    - rename phandler from 'ralink,sysctl' into 'mediatek,sysctl'.
+    - Drop error message added in PATCH 3 that modifies functionality
+      and we only want to maintain current functionaloty by now.
+
+Changes in v2:
+    - Remove no needed compatible 'syscon' from bindings.
+    - Rewrite new syscon phandle description in bindings.
+    - Remove 'syscon' from compatible in 'mt7621.dtsi'.
+    - Split PATCH 3 into two different patches:
+        - PATCH 3: removes static globals using a driver data structure.
+        - PATCH 4: remove ralink architecture dependent includes and code.
+
+Best regards,
+    Sergio Paracuellos
+
+[0]: https://lore.kernel.org/linux-watchdog/20230210065621.598120-1-sergio.paracuellos@gmail.com/T/#t
+[1]: https://lore.kernel.org/linux-watchdog/20230210121735.639089-1-sergio.paracuellos@gmail.com/T/#t
+[2]: https://lore.kernel.org/linux-watchdog/20230210173841.705783-1-sergio.paracuellos@gmail.com/T/#t
+[3]: https://lore.kernel.org/linux-watchdog/20230211073357.755893-1-sergio.paracuellos@gmail.com/T/#t
+
+Sergio Paracuellos (2):
+  mips: dts: ralink: mt7621: rename watchdog node from 'wdt' into
+    'watchdog'
+  watchdog: mt7621-wdt: avoid static global declarations
+
+ arch/mips/boot/dts/ralink/mt7621.dtsi |   2 +-
+ drivers/watchdog/mt7621_wdt.c         | 102 ++++++++++++++++----------
+ 2 files changed, 66 insertions(+), 38 deletions(-)
+
 -- 
-2.39.1
+2.25.1
 

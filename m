@@ -2,166 +2,141 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 906DDC64EC4
-	for <linux-mips@archiver.kernel.org>; Mon, 13 Feb 2023 10:43:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 94518C6FD1A
+	for <linux-mips@archiver.kernel.org>; Mon, 13 Feb 2023 10:43:28 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230098AbjBMKnY (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 13 Feb 2023 05:43:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49188 "EHLO
+        id S230183AbjBMKn0 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 13 Feb 2023 05:43:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49210 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229828AbjBMKnV (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Mon, 13 Feb 2023 05:43:21 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 065D316AC5;
+        with ESMTP id S229539AbjBMKnW (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Mon, 13 Feb 2023 05:43:22 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0631C166FE;
         Mon, 13 Feb 2023 02:43:19 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id F07A960F9C;
-        Mon, 13 Feb 2023 10:43:17 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CBB99C4332C;
+        by ams.source.kernel.org (Postfix) with ESMTPS id 95F68B810A1;
+        Mon, 13 Feb 2023 10:43:18 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7B89FC433A1;
         Mon, 13 Feb 2023 10:43:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1676284996;
-        bh=jG6rsHBlaySwcTGxM4i/Yv7OoULWC4BZGtew3BKDrmQ=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=VD3wANQs5Yd7RS1wkxMz820j7dCirJeEVLOw5B9xQOPz0fTANEFosCnUtLsY8Fmy3
-         o4KkydYPUtZfDSovElJtER1i+aqtipVHT5YU5h5wTc5af+3i1C5BU77xMNcroV7rhm
-         NM+ZMTDErzonZ+pv88c7gCN/X5DACne3542lRyknMlhEFDPylyrbUd0uwPpHDZ/dNm
-         63dRzIGWTkj+vXFRzYCwWqsVn/ZQT1V/+yjQNb8ghqgI/jwTqGQa9n2MuNNfAOD5L7
-         NoyKm49r87hBQHSyO8D8CKWAyWI2RhS6U/4UqhqnnK9Od8wIL4ngWjQhlr/zCcmHfv
-         lQ1a66XLPjbCA==
+        bh=AIFFvMOlcdsA/E6sRshF70eAgmoIe63jSj35tjGCv9k=;
+        h=From:To:Cc:Subject:Date:From;
+        b=eD7p4UJwQPJh9BvldPsrctsrFPnALwdirXaSusln/9byZ/enNSFZZ13X4i0lC28hV
+         L9BNBaWZ/JId+39vvWDG/hqr8C21ZVo6mwZ1DWbSoYgtYJPf0lBTj7ZnNDkAiFQ9H0
+         LGCQF1zaY+fO6TgJ3cvPJOjwA5/WRplM2MgzvpIuE21chHgB1gUvfo7pGiOMI8Ic3p
+         1fNOVoenGJq88pl0s8SlYyUEIf/rX0YQsHqCnHdWbUU07FSvlBfFUzSQT7o6MxAAww
+         uKDnRIzWjWUFgrWnsD5U8jeoi/8da5Y2hEI4LcXlDXc/CKk96MhGjIFad8TjcjU78Q
+         1GGbbvzhOa82w==
 Received: from johan by xi.lan with local (Exim 4.94.2)
         (envelope-from <johan+linaro@kernel.org>)
-        id 1pRWJb-0004Wc-K4; Mon, 13 Feb 2023 11:44:07 +0100
+        id 1pRWJa-0004WH-RV; Mon, 13 Feb 2023 11:44:06 +0100
 From:   Johan Hovold <johan+linaro@kernel.org>
 To:     Marc Zyngier <maz@kernel.org>, Thomas Gleixner <tglx@linutronix.de>
 Cc:     x86@kernel.org, platform-driver-x86@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
         linux-kernel@vger.kernel.org,
-        Johan Hovold <johan+linaro@kernel.org>,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        Mark-PK Tsai <mark-pk.tsai@mediatek.com>
-Subject: [PATCH v6 08/20] irqdomain: Drop revmap mutex
-Date:   Mon, 13 Feb 2023 11:42:50 +0100
-Message-Id: <20230213104302.17307-9-johan+linaro@kernel.org>
+        Johan Hovold <johan+linaro@kernel.org>
+Subject: [PATCH v6 00/20] irqdomain: fix mapping race and rework locking
+Date:   Mon, 13 Feb 2023 11:42:42 +0100
+Message-Id: <20230213104302.17307-1-johan+linaro@kernel.org>
 X-Mailer: git-send-email 2.39.1
-In-Reply-To: <20230213104302.17307-1-johan+linaro@kernel.org>
-References: <20230213104302.17307-1-johan+linaro@kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-The revmap mutex is essentially only used to maintain the integrity of
-the radix tree during updates (lookups use RCU).
+Parallel probing (e.g. due to asynchronous probing) of devices that
+share interrupts can currently result in two mappings for the same
+hardware interrupt to be created.
 
-As the global irq_domain_mutex is now held in all paths that update the
-revmap structures there is strictly no longer any need for the dedicated
-mutex, which can be removed.
+This series fixes this mapping race and reworks the irqdomain locking so
+that in the end the global irq_domain_mutex is only used for managing
+the likewise global irq_domain_list, while domain operations (e.g. IRQ
+allocations) use per-domain (hierarchy) locking.
 
-Drop the revmap mutex and add lockdep assertions to the revmap helpers
-to make sure that the global lock is always held when updating the
-revmap.
+Johan
 
-Tested-by: Hsin-Yi Wang <hsinyi@chromium.org>
-Tested-by: Mark-PK Tsai <mark-pk.tsai@mediatek.com>
-Signed-off-by: Johan Hovold <johan+linaro@kernel.org>
----
- include/linux/irqdomain.h |  2 --
- kernel/irq/irqdomain.c    | 13 ++++++-------
- 2 files changed, 6 insertions(+), 9 deletions(-)
 
-diff --git a/include/linux/irqdomain.h b/include/linux/irqdomain.h
-index a372086750ca..16399de00b48 100644
---- a/include/linux/irqdomain.h
-+++ b/include/linux/irqdomain.h
-@@ -143,7 +143,6 @@ struct irq_domain_chip_generic;
-  * Revmap data, used internally by the irq domain code:
-  * @revmap_size:	Size of the linear map table @revmap[]
-  * @revmap_tree:	Radix map tree for hwirqs that don't fit in the linear map
-- * @revmap_mutex:	Lock for the revmap
-  * @revmap:		Linear table of irq_data pointers
-  */
- struct irq_domain {
-@@ -171,7 +170,6 @@ struct irq_domain {
- 	irq_hw_number_t			hwirq_max;
- 	unsigned int			revmap_size;
- 	struct radix_tree_root		revmap_tree;
--	struct mutex			revmap_mutex;
- 	struct irq_data __rcu		*revmap[];
- };
- 
-diff --git a/kernel/irq/irqdomain.c b/kernel/irq/irqdomain.c
-index 8e14805c5508..f2247186f71d 100644
---- a/kernel/irq/irqdomain.c
-+++ b/kernel/irq/irqdomain.c
-@@ -206,7 +206,6 @@ static struct irq_domain *__irq_domain_create(struct fwnode_handle *fwnode,
- 
- 	/* Fill structure */
- 	INIT_RADIX_TREE(&domain->revmap_tree, GFP_KERNEL);
--	mutex_init(&domain->revmap_mutex);
- 	domain->ops = ops;
- 	domain->host_data = host_data;
- 	domain->hwirq_max = hwirq_max;
-@@ -526,30 +525,30 @@ static bool irq_domain_is_nomap(struct irq_domain *domain)
- static void irq_domain_clear_mapping(struct irq_domain *domain,
- 				     irq_hw_number_t hwirq)
- {
-+	lockdep_assert_held(&irq_domain_mutex);
-+
- 	if (irq_domain_is_nomap(domain))
- 		return;
- 
--	mutex_lock(&domain->revmap_mutex);
- 	if (hwirq < domain->revmap_size)
- 		rcu_assign_pointer(domain->revmap[hwirq], NULL);
- 	else
- 		radix_tree_delete(&domain->revmap_tree, hwirq);
--	mutex_unlock(&domain->revmap_mutex);
- }
- 
- static void irq_domain_set_mapping(struct irq_domain *domain,
- 				   irq_hw_number_t hwirq,
- 				   struct irq_data *irq_data)
- {
-+	lockdep_assert_held(&irq_domain_mutex);
-+
- 	if (irq_domain_is_nomap(domain))
- 		return;
- 
--	mutex_lock(&domain->revmap_mutex);
- 	if (hwirq < domain->revmap_size)
- 		rcu_assign_pointer(domain->revmap[hwirq], irq_data);
- 	else
- 		radix_tree_insert(&domain->revmap_tree, hwirq, irq_data);
--	mutex_unlock(&domain->revmap_mutex);
- }
- 
- static void irq_domain_disassociate(struct irq_domain *domain, unsigned int irq)
-@@ -1580,11 +1579,12 @@ static void irq_domain_fix_revmap(struct irq_data *d)
- {
- 	void __rcu **slot;
- 
-+	lockdep_assert_held(&irq_domain_mutex);
-+
- 	if (irq_domain_is_nomap(d->domain))
- 		return;
- 
- 	/* Fix up the revmap. */
--	mutex_lock(&d->domain->revmap_mutex);
- 	if (d->hwirq < d->domain->revmap_size) {
- 		/* Not using radix tree */
- 		rcu_assign_pointer(d->domain->revmap[d->hwirq], d);
-@@ -1593,7 +1593,6 @@ static void irq_domain_fix_revmap(struct irq_data *d)
- 		if (slot)
- 			radix_tree_replace_slot(&d->domain->revmap_tree, slot, d);
- 	}
--	mutex_unlock(&d->domain->revmap_mutex);
- }
- 
- /**
+Changes in v6
+ - use common exit path in irq_create_fwspec_mapping() (6/20)
+ - fix domain registration race (7/20, new)
+ - fix x86/uv commit prefix (13/20)
+ - use &domain->root->mutex also for non-hierarchichal domains (20/20)
+ - fix kernel doc typo (20/20)
+
+Changes in v5
+ - reorder patches (since we do care about stable after all)
+ - tweak commit messages and add stable tags
+ - use '__locked' suffix for new helper functions
+ - drop a line break from an argument list (11/19)
+
+Changes in v4
+ - add a comment to __irq_domain_add() as further documentation of the
+   domain lock and root pointer (19/19)
+ - add a comment documenting that the lockdep assertion in
+   irq_domain_set_mapping() also verifies that the domains in a
+   hierarchy point to the same root (19/19)
+
+Changes in v3
+ - drop dead and bogus code (1--3/19, new)
+ - fix racy mapcount accesses (5/19, new)
+ - drop revmap mutex (6/19, new)
+ - use irq_domain_mutex to address mapping race (9/19)
+ - clean up irq_domain_push/pop_irq() (10/19, new)
+ - use irq_domain_create_hierarchy() to construct hierarchies
+   (11--18/19, new)
+ - switch to per-domain locking (19/19, new)
+
+Changes in v2
+ - split out redundant-lookup cleanup (1/4)
+ - use a per-domain mutex to address mapping race (2/4)
+ - move kernel-doc to exported function (2/4)
+ - fix association race (3/4, new)
+ - use per-domain mutex for associations (4/4, new)
+
+
+Johan Hovold (19):
+  irqdomain: Fix association race
+  irqdomain: Fix disassociation race
+  irqdomain: Drop bogus fwspec-mapping error handling
+  irqdomain: Look for existing mapping only once
+  irqdomain: Refactor __irq_domain_alloc_irqs()
+  irqdomain: Fix mapping-creation race
+  irqdomain: Drop revmap mutex
+  irqdomain: Drop dead domain-name assignment
+  irqdomain: Drop leftover brackets
+  irqdomain: Clean up irq_domain_push/pop_irq()
+  x86/ioapic: Use irq_domain_create_hierarchy()
+  x86/uv: Use irq_domain_create_hierarchy()
+  irqchip/alpine-msi: Use irq_domain_add_hierarchy()
+  irqchip/gic-v2m: Use irq_domain_create_hierarchy()
+  irqchip/gic-v3-its: Use irq_domain_create_hierarchy()
+  irqchip/gic-v3-mbi: Use irq_domain_create_hierarchy()
+  irqchip/loongson-pch-msi: Use irq_domain_create_hierarchy()
+  irqchip/mvebu-odmi: Use irq_domain_create_hierarchy()
+  irqdomain: Switch to per-domain locking
+
+Marc Zyngier (1):
+  irqdomain: Fix domain registration race
+
+ arch/x86/kernel/apic/io_apic.c         |   7 +-
+ arch/x86/platform/uv/uv_irq.c          |   7 +-
+ drivers/irqchip/irq-alpine-msi.c       |   8 +-
+ drivers/irqchip/irq-gic-v2m.c          |   5 +-
+ drivers/irqchip/irq-gic-v3-its.c       |  13 +-
+ drivers/irqchip/irq-gic-v3-mbi.c       |   5 +-
+ drivers/irqchip/irq-loongson-pch-msi.c |   9 +-
+ drivers/irqchip/irq-mvebu-odmi.c       |  13 +-
+ include/linux/irqdomain.h              |   6 +-
+ kernel/irq/irqdomain.c                 | 408 +++++++++++++++----------
+ 10 files changed, 279 insertions(+), 202 deletions(-)
+
 -- 
 2.39.1
 

@@ -2,275 +2,163 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A79AFC678D4
-	for <linux-mips@archiver.kernel.org>; Mon, 13 Feb 2023 12:07:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 44AA8C636CC
+	for <linux-mips@archiver.kernel.org>; Mon, 13 Feb 2023 12:15:37 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229897AbjBMMHm (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 13 Feb 2023 07:07:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46704 "EHLO
+        id S229561AbjBMMPg (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 13 Feb 2023 07:15:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58186 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229976AbjBMMHj (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Mon, 13 Feb 2023 07:07:39 -0500
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 851AC1A668;
-        Mon, 13 Feb 2023 04:07:10 -0800 (PST)
-Received: by mail-wm1-x336.google.com with SMTP id j29-20020a05600c1c1d00b003dc52fed235so8838377wms.1;
-        Mon, 13 Feb 2023 04:07:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=eTGPGFaQb/DlfYZrXhPbzKJDWxh4+D5n3UiQCEuPX0I=;
-        b=YWEYH2b4HN6eXkFJ4ZK0M9uKlH+diuyglQ3ucbPo0c5udpBqN8KzCUjKu0vtByRLzm
-         U9rOv4twjtKU+nrbatLFkPcTjvhhCrjGuB5gmkg56R0gsPA34m9B9kQHAnBydqL46K+c
-         Cv/66HidLtwjUuF92jE/y27EOI6euOsnoq281+DugGlllySwwUx4E/m2d02DX6EDj6bZ
-         WQFkn9WeMVza+CbtHuf/Qz/0zkhYrw87AD0e9wzbEuwKROWdPQTPwTozYEx4JOQWagai
-         +QYsilt3vsQHJWi3TGCgtjZHOgkmmVJ3poA6AGQTwLun+B0X1C4+RdhVyO5E9MsJUhMO
-         q9cg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=eTGPGFaQb/DlfYZrXhPbzKJDWxh4+D5n3UiQCEuPX0I=;
-        b=jCJVOod8vDxqzilsTP12v0c9xWMOCJdsgl5oiGBKAq3QKgeBvblCs7xIRuXjcjGrUG
-         MmNEv7C5Zdyac9RfdDomWM5jUylSGMR4NMjcChKz+xIcu4Hq4daG1mh8o8uVZkTyS3RF
-         uJ4MrGx4zLCSAPejdDBVn6DY60ZMv7cl6XVTTXCeWfqzqSRZLYlrmF1ExEFozItcIMCj
-         AY0yQTBY2XwCxTbkcIc0s//4+GPsFrtF1MDnegPAJMk14Zi8hdAlDB0c9FJljJYXVyuk
-         S1Ujo779P6wd1r4I9NVjQMp6ARx+yPXhbgk+iBfyC4boZSlM2HJg7KDrwYATCGlYgcwP
-         0dQg==
-X-Gm-Message-State: AO0yUKXfx2OIEEtbLA+WB9RDS59qS6XZ+IWPQ+MW9Y2jfLel3Nr+xOWt
-        SWOt4nJtB7NOxhkpKmaeRmceIvIGsEg=
-X-Google-Smtp-Source: AK7set+qiS7u+ciqsP2eXoLSrpYMakN/XMoBiyNBZdnB2U3QH9SjOan1nLFzuIGgXJUtTBJhBuPILA==
-X-Received: by 2002:a05:600c:993:b0:3dc:4fd7:31e9 with SMTP id w19-20020a05600c099300b003dc4fd731e9mr20318806wmp.7.1676290003233;
-        Mon, 13 Feb 2023 04:06:43 -0800 (PST)
-Received: from localhost.localdomain (23.red-88-10-60.dynamicip.rima-tde.net. [88.10.60.23])
-        by smtp.gmail.com with ESMTPSA id n13-20020a05600c3b8d00b003dc434900e1sm14798046wms.34.2023.02.13.04.06.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Feb 2023 04:06:42 -0800 (PST)
-From:   Sergio Paracuellos <sergio.paracuellos@gmail.com>
-To:     linux-watchdog@vger.kernel.org
-Cc:     wim@linux-watchdog.org, linux@roeck-us.net, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, matthias.bgg@gmail.com,
-        arinc.unal@arinc9.com, tsbogend@alpha.franken.de,
-        p.zabel@pengutronix.de, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-mips@vger.kernel.org
-Subject: [PATCH v5 2/2] watchdog: mt7621-wdt: avoid static global declarations
-Date:   Mon, 13 Feb 2023 13:06:38 +0100
-Message-Id: <20230213120638.850612-3-sergio.paracuellos@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230213120638.850612-1-sergio.paracuellos@gmail.com>
-References: <20230213120638.850612-1-sergio.paracuellos@gmail.com>
+        with ESMTP id S229704AbjBMMPf (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Mon, 13 Feb 2023 07:15:35 -0500
+Received: from loongson.cn (mail.loongson.cn [114.242.206.163])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id BF7F17ECE;
+        Mon, 13 Feb 2023 04:15:29 -0800 (PST)
+Received: from loongson.cn (unknown [112.20.108.204])
+        by gateway (Coremail) with SMTP id _____8AxqtngKepjfBQAAA--.224S3;
+        Mon, 13 Feb 2023 20:15:28 +0800 (CST)
+Received: from localhost.localdomain (unknown [112.20.108.204])
+        by localhost.localdomain (Coremail) with SMTP id AQAAf8CxPuTdKepjPEQyAA--.58840S3;
+        Mon, 13 Feb 2023 20:15:27 +0800 (CST)
+From:   Binbin Zhou <zhoubinbin@loongson.cn>
+To:     Huacai Chen <chenhuacai@kernel.org>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
+Cc:     Jianmin Lv <lvjianmin@loongson.cn>,
+        Huacai Chen <chenhuacai@loongson.cn>,
+        linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
+        loongarch@lists.linux.dev, devicetree@vger.kernel.org,
+        loongson-kernel@lists.loongnix.cn,
+        Binbin Zhou <zhoubinbin@loongson.cn>
+Subject: [PATCH V2 1/2] dt-bindings: interrupt-controller: Add Loongson EIOINTC
+Date:   Mon, 13 Feb 2023 20:15:27 +0800
+Message-Id: <a9f697906df6599e6b001981e668479da71aa7a0.1676289084.git.zhoubinbin@loongson.cn>
+X-Mailer: git-send-email 2.39.0
+In-Reply-To: <cover.1676289084.git.zhoubinbin@loongson.cn>
+References: <cover.1676289084.git.zhoubinbin@loongson.cn>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: AQAAf8CxPuTdKepjPEQyAA--.58840S3
+X-CM-SenderInfo: p2kr3uplqex0o6or00hjvr0hdfq/
+X-Coremail-Antispam: 1Uk129KBjvJXoW7ZF18Jr17ZF15ur18JryxXwb_yoW5JF43pF
+        W7C3ZxWF4UtF17AayrtFy0kF15ZrZ5AwnxCws7J3y7JF9rK34UXr4akFn8J3W3Cr97X3W2
+        vF1F93W8Kay7AF7anT9S1TB71UUUUjDqnTZGkaVYY2UrUUUUj1kv1TuYvTs0mT0YCTnIWj
+        qI5I8CrVACY4xI64kE6c02F40Ex7xfYxn0WfASr-VFAUDa7-sFnT9fnUUIcSsGvfJTRUUU
+        bS8YFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I6I8E6xAIw20EY4v20xvaj40_Wr0E3s
+        1l1IIY67AEw4v_Jrv_JF1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xv
+        wVC0I7IYx2IY67AKxVW8JVW5JwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwA2z4
+        x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjcxK6I8E87Iv6xkF7I0E14v26F4UJVW0owAa
+        w2AFwI0_JF0_Jw1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqjxCEc2xF0cIa020Ex4CE44
+        I27wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jw0_WrylYx0Ex4A2
+        jsIE14v26r4j6F4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwCY1x0262
+        kKe7AKxVWUAVWUtwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwCFI7km
+        07C267AKxVWUAVWUtwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r
+        1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVW8
+        JVW5JwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6r
+        1j6r1xMIIF0xvEx4A2jsIE14v26r4j6F4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1U
+        YxBIdaVFxhVjvjDU0xZFpf9x07jz5lbUUUUU=
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Instead of using static global definitions in driver code, refactor code
-introducing a new watchdog driver data structure and use it along the
-code.
+Add Loongson Extended I/O Interrupt controller binding with DT schema
+format using json-schema.
 
-Reviewed-by: Guenter Roeck <linux@roeck-us.net>
-Signed-off-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
+Signed-off-by: Binbin Zhou <zhoubinbin@loongson.cn>
 ---
- drivers/watchdog/mt7621_wdt.c | 102 ++++++++++++++++++++++------------
- 1 file changed, 65 insertions(+), 37 deletions(-)
+ .../loongson,eiointc.yaml                     | 80 +++++++++++++++++++
+ 1 file changed, 80 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/interrupt-controller/loongson,eiointc.yaml
 
-diff --git a/drivers/watchdog/mt7621_wdt.c b/drivers/watchdog/mt7621_wdt.c
-index a8aa3522c..40fb2c9ba 100644
---- a/drivers/watchdog/mt7621_wdt.c
-+++ b/drivers/watchdog/mt7621_wdt.c
-@@ -31,8 +31,11 @@
- #define TMR1CTL_RESTART			BIT(9)
- #define TMR1CTL_PRESCALE_SHIFT		16
- 
--static void __iomem *mt7621_wdt_base;
--static struct reset_control *mt7621_wdt_reset;
-+struct mt7621_wdt_data {
-+	void __iomem *base;
-+	struct reset_control *rst;
-+	struct watchdog_device wdt;
-+};
- 
- static bool nowayout = WATCHDOG_NOWAYOUT;
- module_param(nowayout, bool, 0);
-@@ -40,27 +43,31 @@ MODULE_PARM_DESC(nowayout,
- 		 "Watchdog cannot be stopped once started (default="
- 		 __MODULE_STRING(WATCHDOG_NOWAYOUT) ")");
- 
--static inline void rt_wdt_w32(unsigned reg, u32 val)
-+static inline void rt_wdt_w32(void __iomem *base, unsigned reg, u32 val)
- {
--	iowrite32(val, mt7621_wdt_base + reg);
-+	iowrite32(val, base + reg);
- }
- 
--static inline u32 rt_wdt_r32(unsigned reg)
-+static inline u32 rt_wdt_r32(void __iomem *base, unsigned reg)
- {
--	return ioread32(mt7621_wdt_base + reg);
-+	return ioread32(base + reg);
- }
- 
- static int mt7621_wdt_ping(struct watchdog_device *w)
- {
--	rt_wdt_w32(TIMER_REG_TMRSTAT, TMR1CTL_RESTART);
-+	struct mt7621_wdt_data *drvdata = watchdog_get_drvdata(w);
+diff --git a/Documentation/devicetree/bindings/interrupt-controller/loongson,eiointc.yaml b/Documentation/devicetree/bindings/interrupt-controller/loongson,eiointc.yaml
+new file mode 100644
+index 000000000000..88580297f955
+--- /dev/null
++++ b/Documentation/devicetree/bindings/interrupt-controller/loongson,eiointc.yaml
+@@ -0,0 +1,80 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: "http://devicetree.org/schemas/interrupt-controller/loongson,eiointc.yaml#"
++$schema: "http://devicetree.org/meta-schemas/core.yaml#"
 +
-+	rt_wdt_w32(drvdata->base, TIMER_REG_TMRSTAT, TMR1CTL_RESTART);
- 
- 	return 0;
- }
- 
- static int mt7621_wdt_set_timeout(struct watchdog_device *w, unsigned int t)
- {
-+	struct mt7621_wdt_data *drvdata = watchdog_get_drvdata(w);
++title: Loongson Extended I/O Interrupt Controller
 +
- 	w->timeout = t;
--	rt_wdt_w32(TIMER_REG_TMR1LOAD, t * 1000);
-+	rt_wdt_w32(drvdata->base, TIMER_REG_TMR1LOAD, t * 1000);
- 	mt7621_wdt_ping(w);
- 
- 	return 0;
-@@ -68,29 +75,31 @@ static int mt7621_wdt_set_timeout(struct watchdog_device *w, unsigned int t)
- 
- static int mt7621_wdt_start(struct watchdog_device *w)
- {
-+	struct mt7621_wdt_data *drvdata = watchdog_get_drvdata(w);
- 	u32 t;
- 
- 	/* set the prescaler to 1ms == 1000us */
--	rt_wdt_w32(TIMER_REG_TMR1CTL, 1000 << TMR1CTL_PRESCALE_SHIFT);
-+	rt_wdt_w32(drvdata->base, TIMER_REG_TMR1CTL, 1000 << TMR1CTL_PRESCALE_SHIFT);
- 
- 	mt7621_wdt_set_timeout(w, w->timeout);
- 
--	t = rt_wdt_r32(TIMER_REG_TMR1CTL);
-+	t = rt_wdt_r32(drvdata->base, TIMER_REG_TMR1CTL);
- 	t |= TMR1CTL_ENABLE;
--	rt_wdt_w32(TIMER_REG_TMR1CTL, t);
-+	rt_wdt_w32(drvdata->base, TIMER_REG_TMR1CTL, t);
- 
- 	return 0;
- }
- 
- static int mt7621_wdt_stop(struct watchdog_device *w)
- {
-+	struct mt7621_wdt_data *drvdata = watchdog_get_drvdata(w);
- 	u32 t;
- 
- 	mt7621_wdt_ping(w);
- 
--	t = rt_wdt_r32(TIMER_REG_TMR1CTL);
-+	t = rt_wdt_r32(drvdata->base, TIMER_REG_TMR1CTL);
- 	t &= ~TMR1CTL_ENABLE;
--	rt_wdt_w32(TIMER_REG_TMR1CTL, t);
-+	rt_wdt_w32(drvdata->base, TIMER_REG_TMR1CTL, t);
- 
- 	return 0;
- }
-@@ -105,7 +114,9 @@ static int mt7621_wdt_bootcause(void)
- 
- static int mt7621_wdt_is_running(struct watchdog_device *w)
- {
--	return !!(rt_wdt_r32(TIMER_REG_TMR1CTL) & TMR1CTL_ENABLE);
-+	struct mt7621_wdt_data *drvdata = watchdog_get_drvdata(w);
++maintainers:
++  - Binbin Zhou <zhoubinbin@loongson.cn>
 +
-+	return !!(rt_wdt_r32(drvdata->base, TIMER_REG_TMR1CTL) & TMR1CTL_ENABLE);
- }
- 
- static const struct watchdog_info mt7621_wdt_info = {
-@@ -121,30 +132,39 @@ static const struct watchdog_ops mt7621_wdt_ops = {
- 	.set_timeout = mt7621_wdt_set_timeout,
- };
- 
--static struct watchdog_device mt7621_wdt_dev = {
--	.info = &mt7621_wdt_info,
--	.ops = &mt7621_wdt_ops,
--	.min_timeout = 1,
--	.max_timeout = 0xfffful / 1000,
--};
--
- static int mt7621_wdt_probe(struct platform_device *pdev)
- {
- 	struct device *dev = &pdev->dev;
--	mt7621_wdt_base = devm_platform_ioremap_resource(pdev, 0);
--	if (IS_ERR(mt7621_wdt_base))
--		return PTR_ERR(mt7621_wdt_base);
-+	struct watchdog_device *mt7621_wdt;
-+	struct mt7621_wdt_data *drvdata;
-+	int err;
++description: |
++  This interrupt controller is found on the Loongson-3 family chips and
++  Loongson-2K0500 chip and is used to distribute interrupts directly to
++  individual cores without forwarding them through the HT's interrupt line.
 +
-+	drvdata = devm_kzalloc(dev, sizeof(*drvdata), GFP_KERNEL);
-+	if (!drvdata)
-+		return -ENOMEM;
- 
--	mt7621_wdt_reset = devm_reset_control_get_exclusive(dev, NULL);
--	if (!IS_ERR(mt7621_wdt_reset))
--		reset_control_deassert(mt7621_wdt_reset);
-+	drvdata->base = devm_platform_ioremap_resource(pdev, 0);
-+	if (IS_ERR(drvdata->base))
-+		return PTR_ERR(drvdata->base);
- 
--	mt7621_wdt_dev.bootstatus = mt7621_wdt_bootcause();
-+	drvdata->rst = devm_reset_control_get_exclusive(dev, NULL);
-+	if (!IS_ERR(drvdata->rst))
-+		reset_control_deassert(drvdata->rst);
- 
--	watchdog_init_timeout(&mt7621_wdt_dev, mt7621_wdt_dev.max_timeout,
--			      dev);
--	watchdog_set_nowayout(&mt7621_wdt_dev, nowayout);
--	if (mt7621_wdt_is_running(&mt7621_wdt_dev)) {
-+	mt7621_wdt = &drvdata->wdt;
-+	mt7621_wdt->info = &mt7621_wdt_info;
-+	mt7621_wdt->ops = &mt7621_wdt_ops;
-+	mt7621_wdt->min_timeout = 1;
-+	mt7621_wdt->max_timeout = 0xfffful / 1000;
-+	mt7621_wdt->parent = dev;
++allOf:
++  - $ref: /schemas/interrupt-controller.yaml#
 +
-+	mt7621_wdt->bootstatus = mt7621_wdt_bootcause();
++properties:
++  compatible:
++    enum:
++      - loongson,eiointc-1.0
 +
-+	watchdog_init_timeout(mt7621_wdt, mt7621_wdt->max_timeout, dev);
-+	watchdog_set_nowayout(mt7621_wdt, nowayout);
-+	watchdog_set_drvdata(mt7621_wdt, drvdata);
++  reg:
++    minItems: 1
++    maxItems: 3
 +
-+	if (mt7621_wdt_is_running(mt7621_wdt)) {
- 		/*
- 		 * Make sure to apply timeout from watchdog core, taking
- 		 * the prescaler of this driver here into account (the
-@@ -154,17 +174,25 @@ static int mt7621_wdt_probe(struct platform_device *pdev)
- 		 * we first disable the watchdog, set the new prescaler
- 		 * and timeout, and then re-enable the watchdog.
- 		 */
--		mt7621_wdt_stop(&mt7621_wdt_dev);
--		mt7621_wdt_start(&mt7621_wdt_dev);
--		set_bit(WDOG_HW_RUNNING, &mt7621_wdt_dev.status);
-+		mt7621_wdt_stop(mt7621_wdt);
-+		mt7621_wdt_start(mt7621_wdt);
-+		set_bit(WDOG_HW_RUNNING, &mt7621_wdt->status);
- 	}
- 
--	return devm_watchdog_register_device(dev, &mt7621_wdt_dev);
-+	err = devm_watchdog_register_device(dev, &drvdata->wdt);
-+	if (err)
-+		return err;
++  interrupt-controller: true
 +
-+	platform_set_drvdata(pdev, drvdata);
++  interrupts:
++    description:
++      Interrupt source of the CPU interrupts.
 +
-+	return 0;
- }
- 
- static void mt7621_wdt_shutdown(struct platform_device *pdev)
- {
--	mt7621_wdt_stop(&mt7621_wdt_dev);
-+	struct mt7621_wdt_data *drvdata = platform_get_drvdata(pdev);
++  interrupt-names:
++    description:
++      List of names for the parent interrupts.
++    items:
++      - const: int0
 +
-+	mt7621_wdt_stop(&drvdata->wdt);
- }
- 
- static const struct of_device_id mt7621_wdt_match[] = {
++  '#interrupt-cells':
++    const: 1
++
++  'loongson,eio-num-vecs':
++    description:
++      The number of devices supported by the extended I/O interrupt vector.
++    $ref: "/schemas/types.yaml#/definitions/uint32"
++    minimum: 1
++    maximum: 256
++
++required:
++  - compatible
++  - reg
++  - interrupts
++  - interrupt-controller
++  - '#interrupt-cells'
++  - 'loongson,eio-num-vecs'
++
++unevaluatedProperties: false
++
++examples:
++  - |
++    eiointc: interrupt-controller@1fe11600 {
++      compatible = "loongson,eiointc-1.0";
++      reg = <0x1fe11600 0x8
++             0x1fe11700 0x8
++             0x1fe11800 0x8>;
++
++      interrupt-controller;
++      #interrupt-cells = <1>;
++
++      interrupt-parent = <&cpuintc>;
++      interrupts = <3>;
++      interrupt-names = "int0";
++
++      loongson,eio-num-vecs = <128>;
++
++    };
++
++...
 -- 
-2.25.1
+2.39.0
 

@@ -2,88 +2,94 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7F67DC636CC
-	for <linux-mips@archiver.kernel.org>; Tue, 14 Feb 2023 01:09:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D0449C05027
+	for <linux-mips@archiver.kernel.org>; Tue, 14 Feb 2023 07:07:28 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230120AbjBNBJr (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 13 Feb 2023 20:09:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33816 "EHLO
+        id S231824AbjBNHH1 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 14 Feb 2023 02:07:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49676 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229812AbjBNBJp (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Mon, 13 Feb 2023 20:09:45 -0500
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5662D2D7C;
-        Mon, 13 Feb 2023 17:09:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
-        Content-ID:Content-Description:In-Reply-To:References;
-        bh=/eABX6egoR0ltWSchldSbx/9FFqW2AHIMhWCGphM4EY=; b=2hzbhy8v65THGe976hZPPjc08P
-        oegSFNkNGtnSaT2ET0jQuZ3GspnlP1n22uio3LGfxKOuibZ5NeJJvdl70qrZ7M13DkrBNtbzemhE7
-        50GiaYhRG14WEmd7l7Er+7zySyJYfat4fhBygkIs3Pz2YIQImzAhDl9GBkE25PydIiF9DLy4wAYDk
-        BN+f0L/CwUpz0FTSNJTGnw6nWOl8PajrW8XZvBApaBf7IzcsnNUnN3tDf+MICUUn5y+cQj4hwjIvd
-        LZWBTkkxKXyuLR+N2e6qzPH0S9GfvGdq77rndxV9foCaT73RCP6jGQcE53G7opvOX7OmrlYhXwhi5
-        JiswBvag==;
-Received: from [2601:1c2:980:9ec0::df2f] (helo=bombadil.infradead.org)
-        by bombadil.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1pRjpH-00GyUj-4f; Tue, 14 Feb 2023 01:09:43 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
+        with ESMTP id S231802AbjBNHHW (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Tue, 14 Feb 2023 02:07:22 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78D6E1E2A3;
+        Mon, 13 Feb 2023 23:06:55 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id BE36C61465;
+        Tue, 14 Feb 2023 07:06:52 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7744CC433AE;
+        Tue, 14 Feb 2023 07:06:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1676358412;
+        bh=Ya58HiCcymNeXiDsDrSrB3MVa42ANSTnVDrYM/I8DGE=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=o1g46MnmwcBx8T5+mpqxpWg9RNiPGwxWh7u50+UbvVV/HCNE/CzztVflEM53qxglv
+         YYK/YrY0Q9V6xIHds9bSBH9HN0lqUKa6Z1xe3cfCjxpSNsspagp2pNbL0WMNKEQ0Rx
+         pzr+HaAh9N3K2/cV0XtAVxzNNCB75oEBpHNITqIRR27J3mfkFgz/r562+bVXahSIST
+         IY0Pnmrhw/r9K8+6kstkVaj4pLQJnS5iSYM8p9up4WRV2EcZ3VkSKGVUgn+3GYoIew
+         SCyrNFtXGmtYxVMosYI0z60anWodjY2gKyCCb0H5AEcAnHnT5mlvQpZIVvTrKYjllD
+         UOkJrRuEY33Fg==
+From:   Josh Poimboeuf <jpoimboe@kernel.org>
 To:     linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        kernel test robot <lkp@intel.com>,
-        Dengcheng Zhu <dzhu@wavecomp.com>,
-        John Crispin <john@phrozen.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        linux-mips@vger.kernel.org
-Subject: [PATCH] MIPS: vpe-mt: provide a default 'physical_memsize'
-Date:   Mon, 13 Feb 2023 17:09:42 -0800
-Message-Id: <20230214010942.25143-1-rdunlap@infradead.org>
+Cc:     jgross@suse.com, richard.henderson@linaro.org,
+        ink@jurassic.park.msu.ru, mattst88@gmail.com,
+        linux-alpha@vger.kernel.org, linux@armlinux.org.uk,
+        linux-arm-kernel@lists.infradead.org, catalin.marinas@arm.com,
+        will@kernel.org, guoren@kernel.org, linux-csky@vger.kernel.org,
+        linux-ia64@vger.kernel.org, chenhuacai@kernel.org,
+        kernel@xen0n.name, loongarch@lists.linux.dev, f.fainelli@gmail.com,
+        bcm-kernel-feedback-list@broadcom.com, tsbogend@alpha.franken.de,
+        linux-mips@vger.kernel.org, jiaxun.yang@flygoat.com,
+        mpe@ellerman.id.au, npiggin@gmail.com, christophe.leroy@csgroup.eu,
+        linuxppc-dev@lists.ozlabs.org, ysato@users.sourceforge.jp,
+        dalias@libc.org, linux-sh@vger.kernel.org, davem@davemloft.net,
+        sparclinux@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org,
+        hpa@zytor.com, chris@zankel.net, jcmvbkbc@gmail.com,
+        linux-xtensa@linux-xtensa.org, peterz@infradead.org,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org,
+        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+        mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com,
+        paulmck@kernel.org
+Subject: [PATCH v2 02/24] alpha/cpu: Make sure arch_cpu_idle_dead() doesn't return
+Date:   Mon, 13 Feb 2023 23:05:36 -0800
+Message-Id: <19ffef09a175fecb783abcd44d6bcfeade2857eb.1676358308.git.jpoimboe@kernel.org>
 X-Mailer: git-send-email 2.39.1
+In-Reply-To: <cover.1676358308.git.jpoimboe@kernel.org>
+References: <cover.1676358308.git.jpoimboe@kernel.org>
 MIME-Version: 1.0
+Content-type: text/plain
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-When neither LANTIQ nor MIPS_MALTA is set, 'physical_memsize' is not
-declared. This causes the build to fail with:
+arch_cpu_idle_dead() doesn't return.  Make that more explicit with a
+BUG().
 
-mips-linux-ld: arch/mips/kernel/vpe-mt.o: in function `vpe_run':
-arch/mips/kernel/vpe-mt.c:(.text.vpe_run+0x280): undefined reference to `physical_memsize'
+BUG() is preferable to unreachable() because BUG() is a more explicit
+failure mode and avoids undefined behavior like falling off the edge of
+the function into whatever code happens to be next.
 
-Fix this by declaring a 0-value physical_memsize with neither LANTIQ
-nor MIPS_MALTA is set, like LANTIQ does.
-
-Fixes: 1a2a6d7e8816 ("MIPS: APRP: Split VPE loader into separate files.")
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Reported-by: kernel test robot <lkp@intel.com>
-Link: https://lore.kernel.org/all/202302030625.2g3E98sY-lkp@intel.com/
-Cc: Dengcheng Zhu <dzhu@wavecomp.com>
-Cc: John Crispin <john@phrozen.org>
-Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc: linux-mips@vger.kernel.org
+Signed-off-by: Josh Poimboeuf <jpoimboe@kernel.org>
 ---
-How has this build error not been detected for 10 years?
+ arch/alpha/kernel/process.c | 1 +
+ 1 file changed, 1 insertion(+)
 
- arch/mips/kernel/vpe-mt.c |    9 +++++++++
- 1 file changed, 9 insertions(+)
-
-diff -- a/arch/mips/kernel/vpe-mt.c b/arch/mips/kernel/vpe-mt.c
---- a/arch/mips/kernel/vpe-mt.c
-+++ b/arch/mips/kernel/vpe-mt.c
-@@ -22,6 +22,15 @@ static int major;
- /* The number of TCs and VPEs physically available on the core */
- static int hw_tcs, hw_vpes;
- 
-+#if !defined(CONFIG_MIPS_MALTA) && !defined(CONFIG_LANTIQ)
-+/* The 2 above provide their own 'physical_memsize' variable. */
-+/*
-+ * This is needed by the vpe-mt loader code, just set it to 0 and assume
-+ * that the firmware hardcodes this value to something useful.
-+ */
-+unsigned long physical_memsize = 0L;
-+#endif
-+
- /* We are prepared so configure and start the VPE... */
- int vpe_run(struct vpe *v)
+diff --git a/arch/alpha/kernel/process.c b/arch/alpha/kernel/process.c
+index d1f2e8b6b107..d0ff06eda8fa 100644
+--- a/arch/alpha/kernel/process.c
++++ b/arch/alpha/kernel/process.c
+@@ -63,6 +63,7 @@ void arch_cpu_idle(void)
+ void arch_cpu_idle_dead(void)
  {
+ 	wtint(INT_MAX);
++	BUG();
+ }
+ #endif /* ALPHA_WTINT */
+ 
+-- 
+2.39.1
+

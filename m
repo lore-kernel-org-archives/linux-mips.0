@@ -2,139 +2,158 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BB065C6379F
-	for <linux-mips@archiver.kernel.org>; Tue, 14 Feb 2023 08:15:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 68ABAC61DA4
+	for <linux-mips@archiver.kernel.org>; Tue, 14 Feb 2023 08:31:21 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231286AbjBNIPG (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 14 Feb 2023 03:15:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51864 "EHLO
+        id S231734AbjBNIbU (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 14 Feb 2023 03:31:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36764 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232062AbjBNIOy (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Tue, 14 Feb 2023 03:14:54 -0500
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C834BAD1D
-        for <linux-mips@vger.kernel.org>; Tue, 14 Feb 2023 00:14:51 -0800 (PST)
-Received: by mail-wr1-x432.google.com with SMTP id bk16so14714047wrb.11
-        for <linux-mips@vger.kernel.org>; Tue, 14 Feb 2023 00:14:51 -0800 (PST)
+        with ESMTP id S231567AbjBNIbT (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Tue, 14 Feb 2023 03:31:19 -0500
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1EBB6A70
+        for <linux-mips@vger.kernel.org>; Tue, 14 Feb 2023 00:31:17 -0800 (PST)
+Received: by mail-wm1-x332.google.com with SMTP id he5so2593695wmb.3
+        for <linux-mips@vger.kernel.org>; Tue, 14 Feb 2023 00:31:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20210112.gappssmtp.com; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=OjnDXT2YCrpWOoVnrYNkTuZIq4oC+7zvNAb1MUNa5/c=;
-        b=doj3ihw2ryLRC8f29i99NL2fwaGqn4CpXMd97+dwyictmuXkOTVA3vSN+VHk/PL0kf
-         FxQRafQ1Jt/CNIN6lVBhNNArczrIy10FqfWYvnAbdsShwiby/3DTFWhrBeUy18cY73Eu
-         E3vQL2utHUsfq64MZdoEZbAML53OwZSFv1czAWyM31Shgci31oFfy6gfRTZFzd55RXjO
-         XSWJuB7qGztVLm0ISy6iV/oGFJm6s+0D0JcCtuAy6rPxbA8LU7KapUgGY7jLMRciHJGu
-         tSDQUfV66Cg6ku0ogdvTEqZppDCuIdWj8dYNveiHQUMsl6bUb56BPhszaqAKgBoZrOa/
-         fCZQ==
+        d=linaro.org; s=google;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=os/Pu/ytp1Ibc8eJhaBf3RWMghtAOmFyabVWn60UWeE=;
+        b=mn9sMGtSZU0HO8NAKb8Ow2EVR7hrQRUVGDYjifb+WyJ8p1TOaUueYUorNDlzasrt5e
+         nIDDL4dOXkOIZgmbqyBHm1Digb4sY7DnRLcDCtqztcySZFNIjagFUwn75DrJc2OyBgHI
+         XW0EJr41sz7biU98YQ7A3OBwRAMDuTx9ZZLVgKgSa+Bn3+lOlcXF7Po4mAmzcd6jteBW
+         alKTLBugea5aSphDOlMFSH2+ZJc6aBfJUAJ4S56OEokpoyvVe+2Fv3LRMAZEw44HOhj1
+         Jsg8O9qD1skBMkWypOCJTNjtRL9CxJDHLDkprEruV97iDBU50l2pGrqOAaFgAMbQFvC9
+         3YBA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=OjnDXT2YCrpWOoVnrYNkTuZIq4oC+7zvNAb1MUNa5/c=;
-        b=MoL20HlFBmuXr3fQ3N0ib7xnhQCXVLVJgr59R9yZTybtHlAQkDMGhQFjMq3IhxdwRY
-         vLi03irnUEx2T16Man6lTuT7VHkNpQTHcbxBdYwFlG0IOD1Qwy7RIE1L311p8luYTDaW
-         tRdTbO1yG4lF7Ku5pfeHSpgvgnLwOJFxv1MY2/B8G3/T8s07VDoiGiF7WnmRyrD1ljwl
-         31jrxG+NIM4ADXFaRvmwe0lC/3QH46b6SUzlzouqMbgvZPilLPgU0pgKukgFil4r5zWd
-         Nws4bc3QIo2wKptxBY9u8H1finPAxi25aXysH1VpDRevvYPmzy1sluLzcztqsKTNqKhF
-         BNDA==
-X-Gm-Message-State: AO0yUKVZcOtwns7ZuJPRHGNhpWjguYYDpa9PeK2YYqMIN9iRvEKmWwBo
-        cRyk8pSiLXHL4ZaKoe197ac73g==
-X-Google-Smtp-Source: AK7set/msAZJj448Cov5vdV+SLyxrlNLKv4T+REkQ+fV1an22f34T0IiaHil6N7s6KZj8YpicdZPqA==
-X-Received: by 2002:adf:f04e:0:b0:2bf:dcdc:afb8 with SMTP id t14-20020adff04e000000b002bfdcdcafb8mr1245734wro.64.1676362490423;
-        Tue, 14 Feb 2023 00:14:50 -0800 (PST)
-Received: from alex-rivos.ba.rivosinc.com (lfbn-lyo-1-450-160.w2-7.abo.wanadoo.fr. [2.7.42.160])
-        by smtp.gmail.com with ESMTPSA id n2-20020a5d67c2000000b002c53f6c7599sm11659511wrw.29.2023.02.14.00.14.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Feb 2023 00:14:50 -0800 (PST)
-From:   Alexandre Ghiti <alexghiti@rivosinc.com>
-To:     Jonathan Corbet <corbet@lwn.net>,
-        Richard Henderson <richard.henderson@linaro.org>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>,
-        Vineet Gupta <vgupta@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        WANG Xuerui <kernel@xen0n.name>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Michal Simek <monstr@monstr.eu>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        "James E . J . Bottomley" <James.Bottomley@HansenPartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Sven Schnelle <svens@linux.ibm.com>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Rich Felker <dalias@libc.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H . Peter Anvin" <hpa@zytor.com>, Chris Zankel <chris@zankel.net>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-alpha@vger.kernel.org,
-        linux-snps-arc@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-ia64@vger.kernel.org,
-        loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
-        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
-        linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
-        sparclinux@vger.kernel.org, linux-xtensa@linux-xtensa.org,
-        linux-arch@vger.kernel.org
-Cc:     Palmer Dabbelt <palmer@rivosinc.com>
-Subject: [PATCH v3 24/24] s390: Remove empty <uapi/asm/setup.h>
-Date:   Tue, 14 Feb 2023 08:49:25 +0100
-Message-Id: <20230214074925.228106-25-alexghiti@rivosinc.com>
-X-Mailer: git-send-email 2.37.2
-In-Reply-To: <20230214074925.228106-1-alexghiti@rivosinc.com>
-References: <20230214074925.228106-1-alexghiti@rivosinc.com>
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=os/Pu/ytp1Ibc8eJhaBf3RWMghtAOmFyabVWn60UWeE=;
+        b=TxHxSuPpULJS4UYK3GlPtmx439zHbGDvDPhdDUOPRE/5Cq1HLSygfbn2UWreA9AvGK
+         K1xV4V8Pcn5iT6x16NmPAmmGKr7TdIpdiBRDya8N8KjRimPAITkFzeHq+3aucvAFx17S
+         rGYaeDbAyi0txOr44wInEoD2Ajtd17/kPVd8M2p5NCv+n7wrsugt5XrEBNnG/hIGw0zi
+         cy3GSVrpioQwdlTK2qi1CBfgxT468i7eLLk7lKf/5Ay/ledWnUTg3t/B4usdqaNaFDCE
+         /OUCWBC1odhEtNM8+uGwCOnY2HCY4xvqZ/xYk1jXRoOIsr/Ft0KbBv0oFH53SyU1XnCX
+         bjyg==
+X-Gm-Message-State: AO0yUKWwlahzBwPeLejY+eX70K1eYiYauVheznOBTTDON1R14F1497XN
+        aSdrnvm45JWD/JFHaqO0ppy/7g==
+X-Google-Smtp-Source: AK7set/1tDyZOmr9NeHyiA+DvIFIP6+HQ+LlDLNyXkj/u+3DXu9qyEFqG5yjJimmW874DmxSBGzAbg==
+X-Received: by 2002:a05:600c:1695:b0:3dc:561a:79e7 with SMTP id k21-20020a05600c169500b003dc561a79e7mr1294842wmn.2.1676363476339;
+        Tue, 14 Feb 2023 00:31:16 -0800 (PST)
+Received: from [192.168.1.109] ([178.197.216.144])
+        by smtp.gmail.com with ESMTPSA id m23-20020a7bca57000000b003de8a1b06c0sm19380466wml.7.2023.02.14.00.31.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 14 Feb 2023 00:31:15 -0800 (PST)
+Message-ID: <f105c7a8-8821-1e7b-af46-13a46971db63@linaro.org>
+Date:   Tue, 14 Feb 2023 09:31:14 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.7.1
+Subject: Re: [PATCH v6 3/3] watchdog: mt7621-wdt: avoid ralink architecture
+ dependent code
+Content-Language: en-US
+To:     Sergio Paracuellos <sergio.paracuellos@gmail.com>,
+        linux-watchdog@vger.kernel.org
+Cc:     wim@linux-watchdog.org, linux@roeck-us.net, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, matthias.bgg@gmail.com,
+        arinc.unal@arinc9.com, tsbogend@alpha.franken.de,
+        p.zabel@pengutronix.de, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-mips@vger.kernel.org
+References: <20230213200519.889503-1-sergio.paracuellos@gmail.com>
+ <20230213200519.889503-4-sergio.paracuellos@gmail.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230213200519.889503-4-sergio.paracuellos@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-From: Palmer Dabbelt <palmer@rivosinc.com>
+On 13/02/2023 21:05, Sergio Paracuellos wrote:
+> MT7621 SoC has a system controller node. Watchdog need to access to reset
+> status register. Ralink architecture and related driver are old and from
+> the beggining they are using some architecture dependent operations for
+> accessing this shared registers through 'asm/mach-ralink/ralink_regs.h'
+> header file. However this is not ideal from a driver perspective which can
+> just access to the system controller registers in an arch independent way
+> using regmap syscon APIs. Update Kconfig accordingly to select new added
+> dependencies and allow driver to be compile tested.
+> 
+> Signed-off-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
+> ---
+>  drivers/watchdog/Kconfig      |  4 +++-
+>  drivers/watchdog/mt7621_wdt.c | 18 +++++++++++++-----
+>  2 files changed, 16 insertions(+), 6 deletions(-)
+> 
+> diff --git a/drivers/watchdog/Kconfig b/drivers/watchdog/Kconfig
+> index b64bc49c7..cf752ad64 100644
+> --- a/drivers/watchdog/Kconfig
+> +++ b/drivers/watchdog/Kconfig
+> @@ -1865,7 +1865,9 @@ config GXP_WATCHDOG
+>  config MT7621_WDT
+>  	tristate "Mediatek SoC watchdog"
+>  	select WATCHDOG_CORE
+> -	depends on SOC_MT7620 || SOC_MT7621
+> +	select REGMAP_MMIO
+> +	select MFD_SYSCON
+> +	depends on SOC_MT7620 || SOC_MT7621 || COMPILE_TEST
+>  	help
+>  	  Hardware driver for the Mediatek/Ralink MT7621/8 SoC Watchdog Timer.
+>  
+> diff --git a/drivers/watchdog/mt7621_wdt.c b/drivers/watchdog/mt7621_wdt.c
+> index 40fb2c9ba..22e979bdd 100644
+> --- a/drivers/watchdog/mt7621_wdt.c
+> +++ b/drivers/watchdog/mt7621_wdt.c
+> @@ -15,8 +15,8 @@
+>  #include <linux/moduleparam.h>
+>  #include <linux/platform_device.h>
+>  #include <linux/mod_devicetable.h>
+> -
+> -#include <asm/mach-ralink/ralink_regs.h>
+> +#include <linux/mfd/syscon.h>
+> +#include <linux/regmap.h>
+>  
+>  #define SYSC_RSTSTAT			0x38
+>  #define WDT_RST_CAUSE			BIT(1)
+> @@ -34,6 +34,7 @@
+>  struct mt7621_wdt_data {
+>  	void __iomem *base;
+>  	struct reset_control *rst;
+> +	struct regmap *sysc;
+>  	struct watchdog_device wdt;
+>  };
+>  
+> @@ -104,9 +105,12 @@ static int mt7621_wdt_stop(struct watchdog_device *w)
+>  	return 0;
+>  }
+>  
+> -static int mt7621_wdt_bootcause(void)
+> +static int mt7621_wdt_bootcause(struct mt7621_wdt_data *d)
+>  {
+> -	if (rt_sysc_r32(SYSC_RSTSTAT) & WDT_RST_CAUSE)
+> +	u32 val;
+> +
+> +	regmap_read(d->sysc, SYSC_RSTSTAT, &val);
+> +	if (val & WDT_RST_CAUSE)
+>  		return WDIOF_CARDRESET;
+>  
+>  	return 0;
+> @@ -143,6 +147,10 @@ static int mt7621_wdt_probe(struct platform_device *pdev)
+>  	if (!drvdata)
+>  		return -ENOMEM;
+>  
+> +	drvdata->sysc = syscon_regmap_lookup_by_compatible("mediatek,mt7621-sysc");
+> +	if (IS_ERR(drvdata->sysc))
+> +		return PTR_ERR(drvdata->sysc);
 
-Signed-off-by: Palmer Dabbelt <palmer@rivosinc.com>
----
- arch/s390/include/asm/setup.h      | 1 -
- arch/s390/include/uapi/asm/setup.h | 1 -
- 2 files changed, 2 deletions(-)
- delete mode 100644 arch/s390/include/uapi/asm/setup.h
+This should be the backup/error path for original code using syscon
+property. Looking up by compatible is really not portable/re-usable.
 
-diff --git a/arch/s390/include/asm/setup.h b/arch/s390/include/asm/setup.h
-index 177bf6deaa27..99c1cc97350a 100644
---- a/arch/s390/include/asm/setup.h
-+++ b/arch/s390/include/asm/setup.h
-@@ -7,7 +7,6 @@
- #define _ASM_S390_SETUP_H
- 
- #include <linux/bits.h>
--#include <uapi/asm/setup.h>
- #include <linux/build_bug.h>
- 
- #define PARMAREA		0x10400
-diff --git a/arch/s390/include/uapi/asm/setup.h b/arch/s390/include/uapi/asm/setup.h
-deleted file mode 100644
-index 598d769e76df..000000000000
---- a/arch/s390/include/uapi/asm/setup.h
-+++ /dev/null
-@@ -1 +0,0 @@
--/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
--- 
-2.37.2
+Best regards,
+Krzysztof
 

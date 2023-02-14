@@ -2,101 +2,155 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A1633C6379F
-	for <linux-mips@archiver.kernel.org>; Tue, 14 Feb 2023 07:51:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D1BD9C05027
+	for <linux-mips@archiver.kernel.org>; Tue, 14 Feb 2023 07:51:18 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230158AbjBNHvF (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 14 Feb 2023 02:51:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49300 "EHLO
+        id S231446AbjBNHvR (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 14 Feb 2023 02:51:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49080 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230240AbjBNHu6 (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Tue, 14 Feb 2023 02:50:58 -0500
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D38F020071
-        for <linux-mips@vger.kernel.org>; Mon, 13 Feb 2023 23:50:56 -0800 (PST)
-Received: by mail-wm1-x32d.google.com with SMTP id l21-20020a05600c1d1500b003dfe462b7e4so689826wms.0
-        for <linux-mips@vger.kernel.org>; Mon, 13 Feb 2023 23:50:56 -0800 (PST)
+        with ESMTP id S230354AbjBNHvC (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Tue, 14 Feb 2023 02:51:02 -0500
+Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 425C51E2BD
+        for <linux-mips@vger.kernel.org>; Mon, 13 Feb 2023 23:51:01 -0800 (PST)
+Received: by mail-wr1-x42f.google.com with SMTP id r2so14671008wrv.7
+        for <linux-mips@vger.kernel.org>; Mon, 13 Feb 2023 23:51:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=zFkW6VXT2fJOMq6WUaQRBhQCIVLvw3497deAs8udnhc=;
-        b=b2BkfvRtFc9qhL9RxXaUQvxTUsLUpsHLXh8vIrxL+M+JiOUhz32HAYvSUPPyTdQl77
-         1p3HUUIWnP0wozCAjwY8VxpC5Hjl2+v3GwjG/dFVysmWZhGHWvr/6iIH91gfRtudx5ii
-         egD42T62aSSeAUQAoZ3bftvq6oEk1IvgPTqvhyz2/H8/FloRkK5BRF9A8eWltvJmLwJI
-         Uf0s9r16yQhJARquCcxwXlLrVW3jKQORB/2Pnub6HP1P/jj2kw2BN2QNr8FaScNfp7xd
-         Jpk95lFXnJ80tAWYVStTx2EDtvvDFldUhYT6kDqrJVlji1UtQ+TxVDywjsr26yaPckWo
-         FVEA==
+        d=rivosinc-com.20210112.gappssmtp.com; s=20210112;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=UfhnFvdOBMaLaqHchQiBMEzcSlF2Fa7xiydpzk9bce4=;
+        b=C2iakMWMXSP/c9K7z5Xrdh2FZ8isHrwxMldv7DFWh875IFzrwvaewsb7pv+pVa32tl
+         uGCdv0Gz5Sla77Gz5skt6wbYUcHV0MvrDD91ZQ6pbR0FErzvIa+siHbNV83wcBxe5ArP
+         aJt1rzTFYZAlJ16o/6rxYLUe5PNm3Cl+WBlup3rC4VDyDpLzh+6dKa0ocOU49K1pDDRG
+         2DU7qDQ8it3t/pBnyu9Q2n/Gn2V8da6o1Pd0nCVDpMY7pf+5XFSyefWucX0xtqrzNgZK
+         hOieCgCpkZJ2M+Y8BO8XCPqXTZ1/32v6n2w6GpPqHXYf4CRyUxX7PkOvD2S1cOWpGGyY
+         hVgA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=zFkW6VXT2fJOMq6WUaQRBhQCIVLvw3497deAs8udnhc=;
-        b=5B4NjFzNumEnGvnlsTocVe/yUWKLzKXtvDbaxlSfOJ+E8/rfuWUemBRDSlk9l+E94W
-         dvQ/3zsjxziplp0td1k8RcpqksTdrZRyq9KE19MPu8tboqwS8D/iz9vofcYzIYH3caay
-         eB1Lquyez9fDJMQxfDSofElvvOMZQUPfzyB68sYyvLoKevexLZ5LGFnPXWhPHtzfF8n6
-         U2Pyrvhbk/Q2Bub2izXLZwNV6hWeGPPvYndUrouQg9wCmhWRgIGQU8mpfuRSUSO9kuMW
-         pJZeSijug3iDmKXoj2mIEzWgKI2//N/z+xdKUBZDUB02TLR3J3aAXlLPgN5YC51DK6YD
-         8OQw==
-X-Gm-Message-State: AO0yUKV4WsDKAa1oAinBBEmjAyMJaRK2Att8qUvejFmqW5kLsYBUfWBI
-        DtMBNZ6ueE61jiaAy9Q55k7J6w==
-X-Google-Smtp-Source: AK7set8OwsFg75MOvBTEy09aU+PMdliA4+gMU5XeiDY9OERUz4XXU+M2RI99OwrD6TCFxsze20SfqA==
-X-Received: by 2002:a05:600c:1609:b0:3df:f85a:472f with SMTP id m9-20020a05600c160900b003dff85a472fmr1835747wmn.13.1676361054982;
-        Mon, 13 Feb 2023 23:50:54 -0800 (PST)
-Received: from [192.168.30.216] ([81.0.6.76])
-        by smtp.gmail.com with ESMTPSA id bg23-20020a05600c3c9700b003dd1bd66e0dsm18073301wmb.3.2023.02.13.23.50.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 13 Feb 2023 23:50:54 -0800 (PST)
-Message-ID: <56249307-5093-1283-d2db-26c5b20881fa@linaro.org>
-Date:   Tue, 14 Feb 2023 08:50:51 +0100
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=UfhnFvdOBMaLaqHchQiBMEzcSlF2Fa7xiydpzk9bce4=;
+        b=DQfR6gGi/Yfhl2waoyuS4m9SJUOhabsvLukcwrTeDxz7HRlj/Y1H3naxpGw2CU8xlW
+         WaPmhYFXrxEePpkByri7u1oBRnYoqygpcCy12Efe/DeMZC9DTa8EiuI2eTRX0H6KmDIx
+         ngeC914In5x/vqUDBl0p3A0UeH4FmfgpsrSAKQBi3ttza5pMzj+5CGBLDYOvaoS3Ar4J
+         QqftGuHu1jGoszU9AgmZiGHX0kNjowqnBtEbEnnG/tSxWRwkUFPt1S28o2xgOA7xHAOp
+         FND3CZh2B2ZV7TQ8gJL2uRtnWP/mpmruUUqoMAWV1ev9LN6vgKUeZWoO1P+eSb19z7IV
+         FTlQ==
+X-Gm-Message-State: AO0yUKX9HRAeDCeXWtWBAWqzDO7xsBGLXeGx/zY1nnJgHZKDIKw5zkJ+
+        tdZMFwvPWaLj3bzVEh8CAT2+2g==
+X-Google-Smtp-Source: AK7set+tz6eryASejtd5hVfxacJT6BORz8YwC4GVnZIt8q/N1OOFFLu4x7zoiximKp+ApGKLpAFEDQ==
+X-Received: by 2002:adf:fd45:0:b0:2c3:e300:f5a2 with SMTP id h5-20020adffd45000000b002c3e300f5a2mr1090779wrs.50.1676361059827;
+        Mon, 13 Feb 2023 23:50:59 -0800 (PST)
+Received: from alex-rivos.ba.rivosinc.com (lfbn-lyo-1-450-160.w2-7.abo.wanadoo.fr. [2.7.42.160])
+        by smtp.gmail.com with ESMTPSA id f5-20020adff445000000b002c53f5b13f9sm12091737wrp.0.2023.02.13.23.50.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 13 Feb 2023 23:50:59 -0800 (PST)
+From:   Alexandre Ghiti <alexghiti@rivosinc.com>
+To:     Jonathan Corbet <corbet@lwn.net>,
+        Richard Henderson <richard.henderson@linaro.org>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>,
+        Vineet Gupta <vgupta@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        WANG Xuerui <kernel@xen0n.name>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Michal Simek <monstr@monstr.eu>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        "James E . J . Bottomley" <James.Bottomley@HansenPartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H . Peter Anvin" <hpa@zytor.com>, Chris Zankel <chris@zankel.net>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-alpha@vger.kernel.org,
+        linux-snps-arc@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-ia64@vger.kernel.org,
+        loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
+        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
+        linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
+        sparclinux@vger.kernel.org, linux-xtensa@linux-xtensa.org,
+        linux-arch@vger.kernel.org
+Cc:     Palmer Dabbelt <palmer@rivosinc.com>
+Subject: [PATCH v3 01/24] alpha: Remove COMMAND_LINE_SIZE from uapi
+Date:   Tue, 14 Feb 2023 08:49:02 +0100
+Message-Id: <20230214074925.228106-2-alexghiti@rivosinc.com>
+X-Mailer: git-send-email 2.37.2
+In-Reply-To: <20230214074925.228106-1-alexghiti@rivosinc.com>
+References: <20230214074925.228106-1-alexghiti@rivosinc.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.7.2
-Subject: Re: [PATCH v2 11/24] mips/cpu: Mark play_dead() __noreturn
-Content-Language: en-US
-To:     Josh Poimboeuf <jpoimboe@kernel.org>, linux-kernel@vger.kernel.org
-Cc:     jgross@suse.com, richard.henderson@linaro.org,
-        ink@jurassic.park.msu.ru, mattst88@gmail.com,
-        linux-alpha@vger.kernel.org, linux@armlinux.org.uk,
-        linux-arm-kernel@lists.infradead.org, catalin.marinas@arm.com,
-        will@kernel.org, guoren@kernel.org, linux-csky@vger.kernel.org,
-        linux-ia64@vger.kernel.org, chenhuacai@kernel.org,
-        kernel@xen0n.name, loongarch@lists.linux.dev, f.fainelli@gmail.com,
-        bcm-kernel-feedback-list@broadcom.com, tsbogend@alpha.franken.de,
-        linux-mips@vger.kernel.org, jiaxun.yang@flygoat.com,
-        mpe@ellerman.id.au, npiggin@gmail.com, christophe.leroy@csgroup.eu,
-        linuxppc-dev@lists.ozlabs.org, ysato@users.sourceforge.jp,
-        dalias@libc.org, linux-sh@vger.kernel.org, davem@davemloft.net,
-        sparclinux@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org,
-        hpa@zytor.com, chris@zankel.net, jcmvbkbc@gmail.com,
-        linux-xtensa@linux-xtensa.org, peterz@infradead.org,
-        juri.lelli@redhat.com, vincent.guittot@linaro.org,
-        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-        mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com,
-        paulmck@kernel.org
-References: <cover.1676358308.git.jpoimboe@kernel.org>
- <2897b51a9b8beb5b594fe66fb1d3a479ddd2a0e2.1676358308.git.jpoimboe@kernel.org>
-From:   =?UTF-8?Q?Philippe_Mathieu-Daud=c3=a9?= <philmd@linaro.org>
-In-Reply-To: <2897b51a9b8beb5b594fe66fb1d3a479ddd2a0e2.1676358308.git.jpoimboe@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On 14/2/23 08:05, Josh Poimboeuf wrote:
-> play_dead() doesn't return.  Annotate it as such.  By extension this
-> also makes arch_cpu_idle_dead() noreturn.
-> 
-> Acked-by: Florian Fainelli <f.fainelli@gmail.com>
-> Signed-off-by: Josh Poimboeuf <jpoimboe@kernel.org>
-> ---
->   arch/mips/include/asm/smp.h | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
+From: Palmer Dabbelt <palmer@rivosinc.com>
 
-Reviewed-by: Philippe Mathieu-Daudé <philmd@linaro.org>
+As far as I can tell this is not used by userspace and thus should not
+be part of the user-visible API.
 
+Signed-off-by: Palmer Dabbelt <palmer@rivosinc.com>
+---
+ arch/alpha/include/asm/setup.h      | 4 ++--
+ arch/alpha/include/uapi/asm/setup.h | 2 --
+ 2 files changed, 2 insertions(+), 4 deletions(-)
+
+diff --git a/arch/alpha/include/asm/setup.h b/arch/alpha/include/asm/setup.h
+index 262aab99e391..ea08ca45efa8 100644
+--- a/arch/alpha/include/asm/setup.h
++++ b/arch/alpha/include/asm/setup.h
+@@ -2,8 +2,6 @@
+ #ifndef __ALPHA_SETUP_H
+ #define __ALPHA_SETUP_H
+ 
+-#include <uapi/asm/setup.h>
+-
+ /*
+  * We leave one page for the initial stack page, and one page for
+  * the initial process structure. Also, the console eats 3 MB for
+@@ -14,6 +12,8 @@
+ /* Remove when official MILO sources have ELF support: */
+ #define BOOT_SIZE	(16*1024)
+ 
++#define COMMAND_LINE_SIZE	256
++
+ #ifdef CONFIG_ALPHA_LEGACY_START_ADDRESS
+ #define KERNEL_START_PHYS	0x300000 /* Old bootloaders hardcoded this.  */
+ #else
+diff --git a/arch/alpha/include/uapi/asm/setup.h b/arch/alpha/include/uapi/asm/setup.h
+index f881ea5947cb..9b3b5ba39b1d 100644
+--- a/arch/alpha/include/uapi/asm/setup.h
++++ b/arch/alpha/include/uapi/asm/setup.h
+@@ -2,6 +2,4 @@
+ #ifndef _UAPI__ALPHA_SETUP_H
+ #define _UAPI__ALPHA_SETUP_H
+ 
+-#define COMMAND_LINE_SIZE	256
+-
+ #endif /* _UAPI__ALPHA_SETUP_H */
+-- 
+2.37.2
 

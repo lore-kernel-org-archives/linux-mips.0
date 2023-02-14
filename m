@@ -2,35 +2,35 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EE805C678D4
-	for <linux-mips@archiver.kernel.org>; Tue, 14 Feb 2023 07:09:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 15D9CC6379F
+	for <linux-mips@archiver.kernel.org>; Tue, 14 Feb 2023 07:10:05 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232091AbjBNHJf (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 14 Feb 2023 02:09:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52286 "EHLO
+        id S232122AbjBNHJp (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 14 Feb 2023 02:09:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53082 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231951AbjBNHHx (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Tue, 14 Feb 2023 02:07:53 -0500
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3F2C1E1D4;
-        Mon, 13 Feb 2023 23:07:27 -0800 (PST)
+        with ESMTP id S231851AbjBNHIL (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Tue, 14 Feb 2023 02:08:11 -0500
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 647621F919;
+        Mon, 13 Feb 2023 23:07:32 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id D1FD9B81C13;
-        Tue, 14 Feb 2023 07:07:13 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E5E18C433D2;
-        Tue, 14 Feb 2023 07:07:10 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id DCED561486;
+        Tue, 14 Feb 2023 07:07:31 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 99164C433EF;
+        Tue, 14 Feb 2023 07:07:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1676358432;
-        bh=m+7K5x/TKiEj3Gy7/GvXMcVUaI8EGyr7dPyawUZEKXQ=;
+        s=k20201202; t=1676358451;
+        bh=/E6ppJbV5z5ApVdewyuTHf7CvoK0nTKINkqTWba4hWQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fOpRTeaeqj7hhaGmET48v/uJfiCnR9WNdfn8ZFw7ORfMJaETjqccEYQqZqCgVORhN
-         dd/OOQ8j6dRStxceWMED1vf7o2DVlLr8j5I/tYedDKi+X5u6X1sxCVvCrWSEssWddS
-         GGM63fRebwPaXosH+NvNaaJoQlvxVTTRU8RCVlA5gO7tdOJQG7CacZD3MILsrijiVH
-         k+GbCTQ+whZStivN99KdDh6cSLrC9i5RzLyA1L/2wZ7DZoTD1LAhiQ3M953wxi8Zrt
-         Q706WZCFFns6QWrdh3xYBCIvXV3fPLHaYT/Qq1T7t2MAcMw1dYiRA/OI5B6Cy2NHtD
-         HPkrBoE/aroSw==
+        b=eAVhDP/nnUmK2Tbt0WlSlbeLwZc48daDDUfA+WcRQcgABUpHOLC4W6mRlYkn3B0wb
+         pyPJkCGDfhtKyYAAyB7i0WULfwtLfuoylAXfq26jq+r6cd9pmJTf8Y7Sdz9uNbPFGD
+         K42IQuFDnlwzEU/X635kfqpIVB/BjhOS6kor7Lo+J8wO3PWI6MUZksGoZIin9FsGib
+         dDZLKpP0ITxkWimDoJJt9mabyqo+rPT12nL/g6KtsdX0FQq3IFPm3DMc246TJwAe8b
+         RoULbiJpr7jsVWWMB2lWHrmGsaLZlzYGOxbtkqHjzyKdQQj7sniVYEyt3W2dldlRvs
+         MuPWVOv6ThwRg==
 From:   Josh Poimboeuf <jpoimboe@kernel.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     jgross@suse.com, richard.henderson@linaro.org,
@@ -53,9 +53,9 @@ Cc:     jgross@suse.com, richard.henderson@linaro.org,
         dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
         mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com,
         paulmck@kernel.org
-Subject: [PATCH v2 13/24] sh/cpu: Make sure play_dead() doesn't return
-Date:   Mon, 13 Feb 2023 23:05:47 -0800
-Message-Id: <d0c3ff5349adfe8fd227acc236ae2c278a05eb4c.1676358308.git.jpoimboe@kernel.org>
+Subject: [PATCH v2 23/24] init: Make arch_call_rest_init() and rest_init() __noreturn
+Date:   Mon, 13 Feb 2023 23:05:57 -0800
+Message-Id: <8e901950d98b940972920578654ce186b714e74b.1676358308.git.jpoimboe@kernel.org>
 X-Mailer: git-send-email 2.39.1
 In-Reply-To: <cover.1676358308.git.jpoimboe@kernel.org>
 References: <cover.1676358308.git.jpoimboe@kernel.org>
@@ -66,29 +66,90 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-play_dead() doesn't return.  Make that more explicit with a BUG().
+arch_call_rest_init() and rest_init() don't return.  Annotate them as
+such.
 
-BUG() is preferable to unreachable() because BUG() is a more explicit
-failure mode and avoids undefined behavior like falling off the edge of
-the function into whatever code happens to be next.
+Fixes the following warning:
+
+  init/main.o: warning: objtool: start_kernel+0x4ad: unreachable instruction
 
 Signed-off-by: Josh Poimboeuf <jpoimboe@kernel.org>
 ---
- arch/sh/include/asm/smp-ops.h | 1 +
- 1 file changed, 1 insertion(+)
+ arch/s390/kernel/setup.c     | 2 +-
+ include/linux/start_kernel.h | 4 ++--
+ init/main.c                  | 4 ++--
+ tools/objtool/check.c        | 2 ++
+ 4 files changed, 7 insertions(+), 5 deletions(-)
 
-diff --git a/arch/sh/include/asm/smp-ops.h b/arch/sh/include/asm/smp-ops.h
-index e27702130eb6..63866b1595a0 100644
---- a/arch/sh/include/asm/smp-ops.h
-+++ b/arch/sh/include/asm/smp-ops.h
-@@ -27,6 +27,7 @@ static inline void plat_smp_setup(void)
- static inline void play_dead(void)
- {
- 	mp_ops->play_dead();
-+	BUG();
+diff --git a/arch/s390/kernel/setup.c b/arch/s390/kernel/setup.c
+index 696c9e007a36..85abff362f29 100644
+--- a/arch/s390/kernel/setup.c
++++ b/arch/s390/kernel/setup.c
+@@ -393,7 +393,7 @@ int __init arch_early_irq_init(void)
+ 	return 0;
  }
  
- extern void register_smp_ops(struct plat_smp_ops *ops);
+-void __init arch_call_rest_init(void)
++void __init __noreturn arch_call_rest_init(void)
+ {
+ 	unsigned long stack;
+ 
+diff --git a/include/linux/start_kernel.h b/include/linux/start_kernel.h
+index 8b369a41c03c..864921e54c92 100644
+--- a/include/linux/start_kernel.h
++++ b/include/linux/start_kernel.h
+@@ -9,7 +9,7 @@
+    up something else. */
+ 
+ extern asmlinkage void __init start_kernel(void);
+-extern void __init arch_call_rest_init(void);
+-extern void __ref rest_init(void);
++extern void __init __noreturn arch_call_rest_init(void);
++extern void __ref __noreturn rest_init(void);
+ 
+ #endif /* _LINUX_START_KERNEL_H */
+diff --git a/init/main.c b/init/main.c
+index e1c3911d7c70..ef71a9902e47 100644
+--- a/init/main.c
++++ b/init/main.c
+@@ -683,7 +683,7 @@ static void __init setup_command_line(char *command_line)
+ 
+ static __initdata DECLARE_COMPLETION(kthreadd_done);
+ 
+-noinline void __ref rest_init(void)
++noinline void __ref __noreturn rest_init(void)
+ {
+ 	struct task_struct *tsk;
+ 	int pid;
+@@ -889,7 +889,7 @@ static int __init early_randomize_kstack_offset(char *buf)
+ early_param("randomize_kstack_offset", early_randomize_kstack_offset);
+ #endif
+ 
+-void __init __weak arch_call_rest_init(void)
++void __init __weak __noreturn arch_call_rest_init(void)
+ {
+ 	rest_init();
+ }
+diff --git a/tools/objtool/check.c b/tools/objtool/check.c
+index 0a1cf867d9b2..f79baae3e338 100644
+--- a/tools/objtool/check.c
++++ b/tools/objtool/check.c
+@@ -167,6 +167,7 @@ static bool __dead_end_function(struct objtool_file *file, struct symbol *func,
+ 		"__reiserfs_panic",
+ 		"__stack_chk_fail",
+ 		"__ubsan_handle_builtin_unreachable",
++		"arch_call_rest_init",
+ 		"cpu_bringup_and_idle",
+ 		"cpu_startup_entry",
+ 		"do_exit",
+@@ -181,6 +182,7 @@ static bool __dead_end_function(struct objtool_file *file, struct symbol *func,
+ 		"machine_real_restart",
+ 		"make_task_dead",
+ 		"panic",
++		"rest_init",
+ 		"rewind_stack_and_make_dead",
+ 		"sev_es_terminate",
+ 		"snp_abort",
 -- 
 2.39.1
 

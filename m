@@ -2,144 +2,110 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5B63AC636D4
-	for <linux-mips@archiver.kernel.org>; Wed, 15 Feb 2023 14:51:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A1F3FC636D4
+	for <linux-mips@archiver.kernel.org>; Wed, 15 Feb 2023 17:32:22 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229517AbjBOOvB (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 15 Feb 2023 09:51:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46636 "EHLO
+        id S229504AbjBORcW (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 15 Feb 2023 12:32:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37534 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229516AbjBOOvB (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 15 Feb 2023 09:51:01 -0500
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E35D738B7A;
-        Wed, 15 Feb 2023 06:50:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1676472659; x=1708008659;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=Bwfn9iLSdbAEiFOdAhEpJrxKbpghfRzY7pn4NQ6Y3GY=;
-  b=lhvLG27SfpSkGtns1W42aT2VPZe20YtISkHr7+P+5pdQMHfouTzwZdR4
-   VtxmGNHnbyBkUVsSY7WBXsVpepTa7Zw6ZpX4jfq6u75lo/brTa73fwLSb
-   t6Gbif6LFpahBoceVZsxQ4qPrFcLagBqveImQEhC+TfVyQ5yM1HpRyHYX
-   iRHuXuby1ZOBtggnpXluT5iR/3IoBCKT0x09Oitz/g6H6bducppDMoYlx
-   /UAHHLNEfxNhh8rVP4SWjws8l/qn5k1Jqr14+6Hun5tns6/gkXZPrwmDo
-   DkmiOU/YiKH5VAydxXwxxDlrvMSRZBGENX1XyoNlGckyn+m6D9v500T1m
-   Q==;
-X-IronPort-AV: E=McAfee;i="6500,9779,10621"; a="331442778"
-X-IronPort-AV: E=Sophos;i="5.97,299,1669104000"; 
-   d="scan'208";a="331442778"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Feb 2023 06:50:59 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6500,9779,10621"; a="699994163"
-X-IronPort-AV: E=Sophos;i="5.97,299,1669104000"; 
-   d="scan'208";a="699994163"
-Received: from lkp-server01.sh.intel.com (HELO 4455601a8d94) ([10.239.97.150])
-  by orsmga008.jf.intel.com with ESMTP; 15 Feb 2023 06:50:55 -0800
-Received: from kbuild by 4455601a8d94 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1pSJ7R-0009Sn-21;
-        Wed, 15 Feb 2023 14:50:49 +0000
-Date:   Wed, 15 Feb 2023 22:50:39 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Willem-Jan de Hoog <arinc9.unal@gmail.com>,
-        =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+        with ESMTP id S229593AbjBORcV (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 15 Feb 2023 12:32:21 -0500
+Received: from mo4-p02-ob.smtp.rzone.de (mo4-p02-ob.smtp.rzone.de [81.169.146.168])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93F9B2A6C5;
+        Wed, 15 Feb 2023 09:32:19 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; t=1676482320; cv=none;
+    d=strato.com; s=strato-dkim-0002;
+    b=HQvqT92bUalYDEXcdWaXhiyY/rvg7K6sYAq3GVh1o6qml7ccm1TDu4Fkgts0OKwncU
+    iNcLQpB83UwJj7eMv4smMaZPsipNrCyaQVxvPKAr4l3JtpbcnrELKVIegvvGpXf36+yz
+    2DWVq0EblirVEPw5LNMm/2O8ts7IfttqQBUKtY2dsZqIxBAhJOoe5SyeD3Iy8vtMN4ji
+    4nwDBCDgBBezsvOiRXrlDiN5unaVC4bNvZJvU2I3HTwa4itX2CAiVJqIB01Jh6t6+pHu
+    Vun2RCCOwEtRp2AdJ7xtlfAiZKEPVfbI9u0ZA0VLIWqAU5TKisiZQ8tn0unMY6ZIz0xj
+    D4WQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1676482320;
+    s=strato-dkim-0002; d=strato.com;
+    h=References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Cc:Date:
+    From:Subject:Sender;
+    bh=POPnc3DgxELJpdHFCNQYcK/7farU8e90UR7vp24J0Pg=;
+    b=TAmr9DJ/o8yHciZS3o5KhVX84JFKJaPtcukPskoj7HXZdZETNrZeDBtNzTQGmtQtOb
+    KH84QspR2JVoQkgdd9w3FL4pSQHrKmDjU9rWKAs5gALevIo7Ze7giJYrlHaWU3hzVMnR
+    Z7mkmuAL5mRvjRhG3vWC0uf7MTH/SwjT4fiujRhTY0AB0oL21uPiB/XclnRYw+Zz+w/4
+    yDIxiNQ9c0NuFZbbPZBLt6GHI2vDvRL+GGgMbClB4SDeJywIE2oyeYzg0MjpTw8C2+UJ
+    cZJ5t9B06+AkUjSDQ46VkXuSFjiKrGnFNKpGUNoqH6HS5p5wHdzOp5pTqZUZz5DL+O8h
+    hJIA==
+ARC-Authentication-Results: i=1; strato.com;
+    arc=none;
+    dkim=none
+X-RZG-CLASS-ID: mo02
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1676482320;
+    s=strato-dkim-0002; d=goldelico.com;
+    h=References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Cc:Date:
+    From:Subject:Sender;
+    bh=POPnc3DgxELJpdHFCNQYcK/7farU8e90UR7vp24J0Pg=;
+    b=tFwpzl5lxKyU4IxiJvVMotxkgk3/0CIATG7/ooLO/fwa0cAleNrsK6cS8xrNIehBa7
+    egEYhBlVTMdy7u8twWdXBwvtnSSSZoTCFSSF4K0+bGIiib6FUykjs0ElCe32aM9c7Ugm
+    rKptTEv6qpb0byvfBTADkx4qOfma2p70+vI9nWLoVEI1Xx9UGo81KdVx6H2yu9YqbNqv
+    9E2TINqxDnZmyYk7TVFz5OODD1qg+UhI2f8SZPJqGEbuw7eirrY4WGeDFElzXj4LN1C+
+    W80+0M7vf90rlD45xFD32BZ3AwpjjQofr30xMlzccCAz2DH+Twoe5V2ZMRlcTdJwlL3u
+    pv8A==
+X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMhflhwDubTJ9o1iTDUhfN4hi3qVZrWLJ"
+Received: from iMac.fritz.box
+    by smtp.strato.de (RZmta 49.3.0 DYNA|AUTH)
+    with ESMTPSA id 326d57z1FHW0ZCP
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+    Wed, 15 Feb 2023 18:32:00 +0100 (CET)
+From:   "H. Nikolaus Schaller" <hns@goldelico.com>
+To:     Paul Cercueil <paul@crapouillou.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Arnd Bergmann <arnd@arndb.de>,
         Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Willem-Jan de Hoog <wdehoog@exalondelft.nl>,
-        Florian Fainelli <f.fainelli@gmail.com>
-Cc:     oe-kbuild-all@lists.linux.dev,
-        =?utf-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        erkin.bozoglu@xeront.com
-Subject: Re: [PATCH 1/2] firmware: bcm47xx_nvram: allow to read from buffered
- nvram data
-Message-ID: <202302152222.wtVZ1npH-lkp@intel.com>
-References: <20230206100502.20243-2-wdehoog@exalondelft.nl>
+        =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>
+Cc:     riccardo Mottola <riccardo.mottola@libero.it>, paul@boddie.org.uk,
+        linux-mips@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, letux-kernel@openphoenux.org,
+        kernel@pyra-handheld.com,
+        "H. Nikolaus Schaller" <hns@goldelico.com>
+Subject: [RFC 1/3] MIPS: DTS: jz4780: add #clock-cells to rtc_dev
+Date:   Wed, 15 Feb 2023 18:31:56 +0100
+Message-Id: <77bcc96a2b81e42b32d48a041d7fac31e7240e56.1676482318.git.hns@goldelico.com>
+X-Mailer: git-send-email 2.38.1
+In-Reply-To: <cover.1676482318.git.hns@goldelico.com>
+References: <cover.1676482318.git.hns@goldelico.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230206100502.20243-2-wdehoog@exalondelft.nl>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Hi Willem-Jan,
+This makes the driver present the clk32k signal if requested.
+It is needed to clock the PMU of the BCM4330 WiFi and Bluetooth
+module of the CI20 board.
 
-Thank you for the patch! Perhaps something to improve:
+Signed-off-by: H. Nikolaus Schaller <hns@goldelico.com>
+---
+ arch/mips/boot/dts/ingenic/jz4780.dtsi | 2 ++
+ 1 file changed, 2 insertions(+)
 
-[auto build test WARNING on linus/master]
-[also build test WARNING on v6.2-rc8 next-20230215]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Willem-Jan-de-Hoog/firmware-bcm47xx_nvram-allow-to-read-from-buffered-nvram-data/20230206-180737
-patch link:    https://lore.kernel.org/r/20230206100502.20243-2-wdehoog%40exalondelft.nl
-patch subject: [PATCH 1/2] firmware: bcm47xx_nvram: allow to read from buffered nvram data
-config: arm64-defconfig (https://download.01.org/0day-ci/archive/20230215/202302152222.wtVZ1npH-lkp@intel.com/config)
-compiler: aarch64-linux-gcc (GCC) 12.1.0
-reproduce (this is a W=1 build):
-        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-        chmod +x ~/bin/make.cross
-        # https://github.com/intel-lab-lkp/linux/commit/763f6661565b50b967e4f22e41cf46d27e14e58f
-        git remote add linux-review https://github.com/intel-lab-lkp/linux
-        git fetch --no-tags linux-review Willem-Jan-de-Hoog/firmware-bcm47xx_nvram-allow-to-read-from-buffered-nvram-data/20230206-180737
-        git checkout 763f6661565b50b967e4f22e41cf46d27e14e58f
-        # save the config file
-        mkdir build_dir && cp config build_dir/.config
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-12.1.0 make.cross W=1 O=build_dir ARCH=arm64 olddefconfig
-        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-12.1.0 make.cross W=1 O=build_dir ARCH=arm64 SHELL=/bin/bash drivers/net/ethernet/broadcom/
-
-If you fix the issue, kindly add following tag where applicable
-| Reported-by: kernel test robot <lkp@intel.com>
-| Link: https://lore.kernel.org/oe-kbuild-all/202302152222.wtVZ1npH-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
-   In file included from drivers/net/ethernet/broadcom/bgmac.c:15:
-   include/linux/bcm47xx_nvram.h:56:2: error: expected identifier or '(' before ':' token
-      56 | }:
-         |  ^
-   In file included from include/linux/ethtool.h:19,
-                    from include/linux/phy.h:16,
-                    from drivers/net/ethernet/broadcom/bgmac.c:16:
->> include/uapi/linux/ethtool.h:125:49: warning: 'struct ethtool_cmd' declared inside parameter list will not be visible outside of this definition or declaration
-     125 | static inline void ethtool_cmd_speed_set(struct ethtool_cmd *ep,
-         |                                                 ^~~~~~~~~~~
-   include/uapi/linux/ethtool.h: In function 'ethtool_cmd_speed_set':
-   include/uapi/linux/ethtool.h:128:11: error: invalid use of undefined type 'struct ethtool_cmd'
-     128 |         ep->speed = (__u16)(speed & 0xFFFF);
-         |           ^~
-   include/uapi/linux/ethtool.h:129:11: error: invalid use of undefined type 'struct ethtool_cmd'
-     129 |         ep->speed_hi = (__u16)(speed >> 16);
-         |           ^~
-   include/uapi/linux/ethtool.h: At top level:
-   include/uapi/linux/ethtool.h:132:52: warning: 'struct ethtool_cmd' declared inside parameter list will not be visible outside of this definition or declaration
-     132 | static inline __u32 ethtool_cmd_speed(const struct ethtool_cmd *ep)
-         |                                                    ^~~~~~~~~~~
-   include/uapi/linux/ethtool.h: In function 'ethtool_cmd_speed':
-   include/uapi/linux/ethtool.h:134:19: error: invalid use of undefined type 'const struct ethtool_cmd'
-     134 |         return (ep->speed_hi << 16) | ep->speed;
-         |                   ^~
-   include/uapi/linux/ethtool.h:134:41: error: invalid use of undefined type 'const struct ethtool_cmd'
-     134 |         return (ep->speed_hi << 16) | ep->speed;
-         |                                         ^~
-
-
-vim +125 include/uapi/linux/ethtool.h
-
-607ca46e97a1b6 David Howells    2012-10-13  124  
-607ca46e97a1b6 David Howells    2012-10-13 @125  static inline void ethtool_cmd_speed_set(struct ethtool_cmd *ep,
-607ca46e97a1b6 David Howells    2012-10-13  126  					 __u32 speed)
-607ca46e97a1b6 David Howells    2012-10-13  127  {
-85a624403c77c3 Jesse Brandeburg 2016-10-13  128  	ep->speed = (__u16)(speed & 0xFFFF);
-607ca46e97a1b6 David Howells    2012-10-13  129  	ep->speed_hi = (__u16)(speed >> 16);
-607ca46e97a1b6 David Howells    2012-10-13  130  }
-607ca46e97a1b6 David Howells    2012-10-13  131  
-
+diff --git a/arch/mips/boot/dts/ingenic/jz4780.dtsi b/arch/mips/boot/dts/ingenic/jz4780.dtsi
+index c182a656d63bc..18affff85ce38 100644
+--- a/arch/mips/boot/dts/ingenic/jz4780.dtsi
++++ b/arch/mips/boot/dts/ingenic/jz4780.dtsi
+@@ -155,6 +155,8 @@ rtc_dev: rtc@10003000 {
+ 
+ 		clocks = <&cgu JZ4780_CLK_RTCLK>;
+ 		clock-names = "rtc";
++
++		#clock-cells = <0>;
+ 	};
+ 
+ 	pinctrl: pin-controller@10010000 {
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests
+2.38.1
+

@@ -2,59 +2,57 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8FD8DC636D7
-	for <linux-mips@archiver.kernel.org>; Wed, 15 Feb 2023 17:32:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7403FC636D7
+	for <linux-mips@archiver.kernel.org>; Wed, 15 Feb 2023 17:32:31 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229981AbjBORcW (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 15 Feb 2023 12:32:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37536 "EHLO
+        id S230100AbjBORcb (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 15 Feb 2023 12:32:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37768 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229797AbjBORcV (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 15 Feb 2023 12:32:21 -0500
-Received: from mo4-p02-ob.smtp.rzone.de (mo4-p02-ob.smtp.rzone.de [85.215.255.83])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86C5244A3;
-        Wed, 15 Feb 2023 09:32:19 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; t=1676482321; cv=none;
+        with ESMTP id S230106AbjBORc2 (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 15 Feb 2023 12:32:28 -0500
+Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de [85.215.255.54])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58CFD3B0C0;
+        Wed, 15 Feb 2023 09:32:26 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; t=1676482320; cv=none;
     d=strato.com; s=strato-dkim-0002;
-    b=eoe67TwneMl/5/Tr/xoBlxst7yXuwE1u+Ibt8IaToVhkSnpCfVYUVDzgEy0WdBO1ls
-    Q1rmxrK9PbbIJN5IPyQ9JvokvVTelcDeMvch0NljASk7jINp7mCH7NZjAVIliZChl+dv
-    jyqpcVe0qAQcwIdG9csoIbj1S34efdiB48odYfGwbi2SgVQjpsV9+dS8pwhHI4XlurCi
-    wKUUUESrrZqJRffTDg1d1XdRkEVA77/RyyrD6fL0/nbkJ9fdFUnhV1HTgQKo/u5RsMb4
-    9bUUFIx6zolQUQnw8q7QmCiGYTQKWZ607AbDc35HrnT9CUJer6bv+/TYIwgHf5mhBiM1
-    Sszw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1676482321;
+    b=lWVu/79ca+93h6jMeSMlnFeeBVM7mvnPj8rL1DQE2H0erZKkUZQkJFj8TD7PR/UQtc
+    AME7VGWtS7sS7cnAkq8hn6XjQ6zRcc2Vp2lBvfPqddyhF7l+yPpYNsZj5vr+PpDdSDiy
+    hHxDiqja4ghxfsyc1DcxzCYiSMHd87XyQZ9PK0YFriWzXZHPszP6AMZe6ntHhIOzrRcr
+    /6I6syrvGT2aFMuvLjdZjdf8jai7rdGYt50JoiF11YLqGrdBqXwG+ATaS9UJDV3g4zJM
+    yakbIiKbk15hTizbw0zp0NElvlcv5iZvyQN9Wq53uiHdAzM/T1YVtaAC2va0HhTuduaE
+    nGTw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1676482320;
     s=strato-dkim-0002; d=strato.com;
-    h=References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Cc:Date:
-    From:Subject:Sender;
-    bh=XW0+Qgb0myceiEMjaao1wM/4c+vauOGDaJPcYXWeNpY=;
-    b=to/2qoEPvVNMKm4lNj1Y0CHDXtYUr8VjJgHJlDP8maxS2DCIEezZNM0O+BPx10Wg5W
-    7cQTyymIN6wTCWa/ri5Ww+mL8Z/zJ9BSkwq1OV708Kb9DoMGmjIVQn4+JH1pcTwRt/NW
-    Se5fKO34E7WAoWEQV7qKjaYfFh4DlzBYqSLf9NH1kvUq6PEbMkYz49h3mqeCP3gJ8J3P
-    r+rPAqIZjdW0GJzTButZE6PSXjy+HKzDLNebfIYo/MIwdxjz3T9xz9l3xT+FFSHswii6
-    qB8M3/UwmUlzM5QQ+d/evsYtMFP3q3RaWy5AJfdEw+TsCjaN3Vjq9Uqm++Y4xhgcMs0P
-    XSgA==
+    h=Message-Id:Date:Subject:Cc:To:From:Cc:Date:From:Subject:Sender;
+    bh=bbHmsUjBPSu5l9/TxHE+oHyJRc0agWyhyIiPL5eQgSs=;
+    b=D4a+GO0n0EYgIDcjiFWfce2rARO8keGb7eVzogKNh83Z+18Wv6wWqVsd1WAqec/Kf+
+    bsUslEj752Zo3BCxBq9+FIpRo1rIMw7JF+uJeKh+17Z1RDLr2OQBf8KVaYoWiUD//7KA
+    8eTvC8nT6SoJKY/qVjj28/W1zpyzqOIHGCNXvWNAFGp3zzggmcRt3LZG3FQaAtnvSYi+
+    wVMyAizGTkGOwBdhiR+XbhwkoNeZ/Xqrd89jJwHtTFCfSHzxRBY2uOELRxrN3WOPtALN
+    GGUcBIUWGqsdUkMj5mq6prB8ux+1vNa5Adg8+i5QTMOg0trlJAWcPyixWk9YFRXTJ+Ex
+    b2Qg==
 ARC-Authentication-Results: i=1; strato.com;
     arc=none;
     dkim=none
-X-RZG-CLASS-ID: mo02
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1676482321;
+X-RZG-CLASS-ID: mo01
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1676482320;
     s=strato-dkim-0002; d=goldelico.com;
-    h=References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Cc:Date:
-    From:Subject:Sender;
-    bh=XW0+Qgb0myceiEMjaao1wM/4c+vauOGDaJPcYXWeNpY=;
-    b=EjjNBSCLDRCmFyY86H/68RbYMcYvBVCt+di/I/VNDo+ZdiU620ACs2N4rEDsifyHDb
-    kN25Zj9L9v5EL6mQnb5QDgrW0m7F/O3GTogiUKOijZHOePqUuNK+2fEOjy3SvA/kA471
-    7qE9m7jNKA4z+F3wW0tiQFB8whNpMRxEe22LNBt6rcDq4JXVLRJC7HAwPXN8EpYDPGyW
-    7Bj++hieGlPS6zXRgG8SR5G2fnKE7U69szhN2GaNFsjuIbHikA00SnJ2H4ADXvUlTr+Z
-    Q0yFjYotT/YlJXDfO2lkavL2j9mzvQw6CbxW3ilZIfTta+XKwA3kCulLV1RAtYdLz1QO
-    s48Q==
+    h=Message-Id:Date:Subject:Cc:To:From:Cc:Date:From:Subject:Sender;
+    bh=bbHmsUjBPSu5l9/TxHE+oHyJRc0agWyhyIiPL5eQgSs=;
+    b=qZUkv5MmC6X6qSsnaKNKmqBmFYozWJvR0TJJRr0pgBCjmQB66sBKXA86TrgvHnuugJ
+    H15eaqaGNpy+IBm2s8j7ncI31iHXycT2psq49YNkkgHtfkFnF+vLkTB/w9fA3R3QdpUK
+    jdGJ9JZozuRRZUMtb6u+Zw6x3Ick1iQCkwiYerXKpLNpxd7p54EZFixNQoFLFGYL35c5
+    LfDlVYdqh1SEFuriz9bV++ZWuzSwN0by9NSSzNgwIOKXiauhyR5T5d6pJbOHX2fIrbiU
+    P0g/nztd3C2tTSTlWsc7BhZxWfTL869uYnCnP0gCACvoFGatpy6AhT55L8cXbSSVkJIT
+    7oqA==
 X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMhflhwDubTJ9o1iTDUhfN4hi3qVZrWLJ"
 Received: from iMac.fritz.box
     by smtp.strato.de (RZmta 49.3.0 DYNA|AUTH)
-    with ESMTPSA id 326d57z1FHW0ZCQ
+    with ESMTPSA id 326d57z1FHVxZCO
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
         (Client did not present a certificate);
-    Wed, 15 Feb 2023 18:32:00 +0100 (CET)
+    Wed, 15 Feb 2023 18:31:59 +0100 (CET)
 From:   "H. Nikolaus Schaller" <hns@goldelico.com>
 To:     Paul Cercueil <paul@crapouillou.net>,
         Rob Herring <robh+dt@kernel.org>,
@@ -71,12 +69,10 @@ Cc:     riccardo Mottola <riccardo.mottola@libero.it>, paul@boddie.org.uk,
         linux-kernel@vger.kernel.org, letux-kernel@openphoenux.org,
         kernel@pyra-handheld.com,
         "H. Nikolaus Schaller" <hns@goldelico.com>
-Subject: [RFC 2/3] MIPS: DTS: CI20: fixes for WiFi/Bluetooth
-Date:   Wed, 15 Feb 2023 18:31:57 +0100
-Message-Id: <142872751b252b6028ea574593d53110d6e0c4a5.1676482318.git.hns@goldelico.com>
+Subject: [RFC 0/3] Make WLAN and Bluetooth basically work for CI20
+Date:   Wed, 15 Feb 2023 18:31:55 +0100
+Message-Id: <cover.1676482318.git.hns@goldelico.com>
 X-Mailer: git-send-email 2.38.1
-In-Reply-To: <cover.1676482318.git.hns@goldelico.com>
-References: <cover.1676482318.git.hns@goldelico.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain; charset="us-ascii"
@@ -84,164 +80,33 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-CI20 has a BCM4330 based WiFi and Bluetooth module.
+RFC V1 2023-02-15 18:31:58:
+With the applied patch
 
-- add proper power supply regulators
-- fix polarity of some GPIOs
-- add a simple pwrseq node for WiFi
-- reduce max-frequency for WiFi since 50 MHz seems not to work
-- add fixed regulators to activate the BT_WAKE and WL_WAKE gpios
-  before the chip is powered up.
-  This can not be done by the driver since it is not loaded if
-  compiled as kernel module before the WiFi/BT module responds.
-- add clock chain from the external i2c rtc through the clk32k
-  to the WiFi and Bluetooth module.
+rtc: jz4740: Register clock provider for the CLK32K pin
 
-Signed-off-by: H. Nikolaus Schaller <hns@goldelico.com>
----
- arch/mips/boot/dts/ingenic/ci20.dts | 77 ++++++++++++++++++++++++-----
- 1 file changed, 65 insertions(+), 12 deletions(-)
+by Paul Cercueil <paul@crapouillou.net> it is now possible to make the
+CI20 WiFi and Bluetooth setup do something reasonable.
 
-diff --git a/arch/mips/boot/dts/ingenic/ci20.dts b/arch/mips/boot/dts/ingenic/ci20.dts
-index 8f21d2304737c..139507d8c26e3 100644
---- a/arch/mips/boot/dts/ingenic/ci20.dts
-+++ b/arch/mips/boot/dts/ingenic/ci20.dts
-@@ -97,13 +97,45 @@ ir: ir {
- 		gpios = <&gpe 3 GPIO_ACTIVE_LOW>;
- 	};
- 
-+	/* WORKAROUND: Keeping WLAN wake high before power on. No simple driver fix */
-+	wlan0_wake: fixedregulator@4 {
-+		compatible = "regulator-fixed";
-+		regulator-name = "wlan0_wake";
-+		regulator-min-microvolt = <3300000>;
-+		regulator-max-microvolt = <3300000>;
-+		gpio = <&gpd 9 GPIO_ACTIVE_HIGH>;/* WL_WAKE */
-+		enable-active-high;
-+		regulator-always-on;
-+	};
-+
-+	/* WORKAROUND: Keeping BT wake high before power on. No simple driver fix */
-+	bt_wake: fixedregulator@7 {
-+		compatible = "regulator-fixed";
-+		regulator-name = "bt_wake";
-+		regulator-min-microvolt = <3300000>;
-+		regulator-max-microvolt = <3300000>;
-+		gpio = <&gpf 5 GPIO_ACTIVE_HIGH>;
-+		enable-active-high;
-+	};
-+
-+	wlan0_pwrseq: wlan0_pwrseq {
-+		compatible = "mmc-pwrseq-simple";
-+		reset-gpios = <&gpf 7 GPIO_ACTIVE_LOW>;
-+		clocks = <&rtc_dev>;
-+		clock-names = "clk32k";
-+		post-power-on-delay-ms = <150>;
-+	};
-+
- 	wlan0_power: fixedregulator@1 {
- 		compatible = "regulator-fixed";
- 
- 		regulator-name = "wlan0_power";
-+		regulator-min-microvolt = <3300000>;
-+		regulator-max-microvolt = <3300000>;
- 
--		gpio = <&gpb 19 GPIO_ACTIVE_LOW>;
-+		gpio = <&gpb 19 GPIO_ACTIVE_HIGH>;
- 		enable-active-high;
-+		regulator-always-on;
- 	};
- 
- 	otg_power: fixedregulator@2 {
-@@ -159,6 +191,9 @@ &mmc0 {
- 	pinctrl-names = "default";
- 	pinctrl-0 = <&pins_mmc0>;
- 
-+	vmmc-supply = <&vcc_33>;
-+	vqmmc-supply = <&vcc_33>;	/* VDDIOMSC */
-+
- 	cd-gpios = <&gpf 20 GPIO_ACTIVE_LOW>;
- };
- 
-@@ -166,21 +201,34 @@ &mmc1 {
- 	status = "okay";
- 
- 	bus-width = <4>;
--	max-frequency = <50000000>;
-+	max-frequency = <25000000>;
- 	non-removable;
- 
- 	pinctrl-names = "default";
- 	pinctrl-0 = <&pins_mmc1>;
- 
-+	vmmc-supply = <&wlan0_power>;
-+	vqmmc-supply = <&wlan0_io>;
-+
-+	mmc-pwrseq = <&wlan0_pwrseq>;
-+
-+	#address-cells = <1>;
-+	#size-cells = <0>;
-+
- 	brcmf: wifi@1 {
--/*		reg = <4>;*/
-+		reg = <1>;
- 		compatible = "brcm,bcm4330-fmac";
- 		vcc-supply = <&wlan0_power>;
--		device-wakeup-gpios = <&gpd 9 GPIO_ACTIVE_HIGH>;
--		shutdown-gpios = <&gpf 7 GPIO_ACTIVE_LOW>;
- 	};
- };
- 
-+&rtc_dev {
-+	clocks = <&ext_rtc 0>, <&ext_rtc 0>;
-+	clock-names = "rtc", "clk32k";
-+
-+	system-power-controller;
-+};
-+
- &uart0 {
- 	status = "okay";
- 
-@@ -204,11 +252,16 @@ &uart2 {
- 
- 	bluetooth {
- 		compatible = "brcm,bcm4330-bt";
--		reset-gpios = <&gpf 8 GPIO_ACTIVE_HIGH>;
--		vcc-supply = <&wlan0_power>;
--		device-wakeup-gpios = <&gpf 5 GPIO_ACTIVE_HIGH>;
--		host-wakeup-gpios = <&gpf 6 GPIO_ACTIVE_HIGH>;
--		shutdown-gpios = <&gpf 4 GPIO_ACTIVE_LOW>;
-+		vbat-supply = <&wlan0_power &bt_wake>;
-+		vddio-supply = <&wlan0_power>;
-+		max-speed = <115200>;	/* stay with default data rate */
-+		brcm,bt-pcm-int-params = [01 02 00 01 01];
-+		shutdown-gpios = <&gpf 4 GPIO_ACTIVE_HIGH>;
-+		reset-gpios = <&gpf 8 GPIO_ACTIVE_LOW>;
-+		interrupt-parent = <&gpf>;
-+		interrupts = <6 IRQ_TYPE_EDGE_FALLING>;
-+		clocks = <&rtc_dev>;
-+		clock-names = "clk32k";
- 	};
- };
- 
-@@ -270,7 +323,7 @@ vcc_25: LDO_REG5 {
- 				regulator-max-microvolt = <2500000>;
- 				regulator-always-on;
- 			};
--			wifi_io: LDO_REG6 {
-+			wlan0_io: LDO_REG6 {
- 				regulator-name = "LDO_REG6";
- 				regulator-min-microvolt = <2500000>;
- 				regulator-max-microvolt = <2500000>;
-@@ -344,7 +397,7 @@ &i2c4 {
- 
- 	clock-frequency = <400000>;
- 
--		rtc@51 {
-+		ext_rtc: rtc@51 {
- 			compatible = "nxp,pcf8563";
- 			reg = <0x51>;
- 
+This series adds #clock-cells to the jz4780 and fixes the device tree for
+the CI20. It contains two ugly workarounds since BL_WAKE and WL_WAKE can not
+be controlled as shutdown-gpios or device-wakeup-gpios by the drivers.
+We also update the power setup and sequencing and add a clock chain for
+the 32 kHz clock.
+Finally, we enable some required CONFIGs for the CI20.
+
+Tested on CI20 with v6.2-rc6.
+
+H. Nikolaus Schaller (3):
+  MIPS: DTS: jz4780: add #clock-cells to rtc_dev
+  MIPS: DTS: CI20: fixes for WiFi/Bluetooth
+  MIPS: configs: ci20: enable drivers we need for WiFi/Bluetooth
+
+ arch/mips/boot/dts/ingenic/ci20.dts    | 77 ++++++++++++++++++++++----
+ arch/mips/boot/dts/ingenic/jz4780.dtsi |  2 +
+ arch/mips/configs/ci20_defconfig       | 18 +++++-
+ 3 files changed, 84 insertions(+), 13 deletions(-)
+
 -- 
 2.38.1
 

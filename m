@@ -2,75 +2,67 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 19DFFC636D4
-	for <linux-mips@archiver.kernel.org>; Fri, 17 Feb 2023 11:05:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CF0C7C636D4
+	for <linux-mips@archiver.kernel.org>; Fri, 17 Feb 2023 11:58:30 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229734AbjBQLFo (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 17 Feb 2023 06:05:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44106 "EHLO
+        id S229573AbjBQL6a (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 17 Feb 2023 06:58:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38952 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229679AbjBQLFk (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Fri, 17 Feb 2023 06:05:40 -0500
+        with ESMTP id S229525AbjBQL62 (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Fri, 17 Feb 2023 06:58:28 -0500
 Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id C5398642FB;
-        Fri, 17 Feb 2023 03:05:10 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id AA11A644D6;
+        Fri, 17 Feb 2023 03:58:27 -0800 (PST)
 Received: from uucp (helo=alpha)
         by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1pSyXr-0008WE-00; Fri, 17 Feb 2023 12:04:51 +0100
+        id 1pSzNi-0000bS-01; Fri, 17 Feb 2023 12:58:26 +0100
 Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 0C3AAC2860; Fri, 17 Feb 2023 12:02:48 +0100 (CET)
-Date:   Fri, 17 Feb 2023 12:02:47 +0100
+        id 562A6C28A2; Fri, 17 Feb 2023 12:58:12 +0100 (CET)
+Date:   Fri, 17 Feb 2023 12:58:12 +0100
 From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     arinc9.unal@gmail.com
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Paul Cercueil <paul@crapouillou.net>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Sergio Paracuellos <sergio.paracuellos@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        =?utf-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        devicetree@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, erkin.bozoglu@xeront.com
-Subject: Re: [PATCH 1/2] mips: dts: align LED node names with dtschema
-Message-ID: <20230217110247.GA7138@alpha.franken.de>
-References: <20230211104915.116253-1-arinc.unal@arinc9.com>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     Philippe =?iso-8859-1?Q?Mathieu-Daud=E9?= <philmd@linaro.org>,
+        linux-kernel@vger.kernel.org, Song Liu <song@kernel.org>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        linux-mips@vger.kernel.org
+Subject: Re: [PATCH] module: fix MIPS module_layout -> module_memory
+Message-ID: <20230217115812.GB7701@alpha.franken.de>
+References: <20230214005400.17137-1-rdunlap@infradead.org>
+ <59c0ba61-c5d6-b74f-0fbd-844b08d13e5d@linaro.org>
+ <2e17b8f6-0c2d-e705-63b9-47077b442d68@infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230211104915.116253-1-arinc.unal@arinc9.com>
+In-Reply-To: <2e17b8f6-0c2d-e705-63b9-47077b442d68@infradead.org>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Sat, Feb 11, 2023 at 01:49:14PM +0300, arinc9.unal@gmail.com wrote:
-> From: ArÄ±nÃ§ ÃœNAL <arinc.unal@arinc9.com>
+On Tue, Feb 14, 2023 at 08:52:04AM -0800, Randy Dunlap wrote:
 > 
-> The node names should be generic and DT schema expects certain pattern:
 > 
->   mt7621-gnubee-gb-pc1.dtb: gpio-leds: 'power', 'system' do not match any of the regexes: '(^led-[0-9a-f]$|led)', 'pinctrl-[0-9]+'
+> On 2/13/23 23:22, Philippe Mathieu-Daudé wrote:
+> > Hi Randy,
+> > 
+> > On 14/2/23 01:54, Randy Dunlap wrote:
+> >> Correct the struct's field/member name from mod_mem to mem.
+> >>
+> >> Fixes this build error:
+> >> ../arch/mips/kernel/vpe.c: In function 'vpe_elfload':
+> >> ../arch/mips/kernel/vpe.c:643:41: error: 'struct module' has no member named 'mod_mem'
+> >>    643 |         v->load_addr = alloc_progmem(mod.mod_mem[MOD_TEXT].size);
+> >>
+> >> Fixes: 2ece476a2346 ("module: replace module_layout with module_memory")
+> > 
+> > On which tree is your patch based?
 > 
-> Signed-off-by: ArÄ±nÃ§ ÃœNAL <arinc.unal@arinc9.com>
-> ---
->  .../dts/cavium-octeon/dlink_dsr-1000n.dts     | 10 ++++-----
->  .../boot/dts/cavium-octeon/dlink_dsr-500n.dts |  6 ++---
->  arch/mips/boot/dts/ingenic/ci20.dts           |  8 +++----
->  arch/mips/boot/dts/pic32/pic32mzda_sk.dts     |  6 ++---
->  .../boot/dts/qca/ar9132_tl_wr1043nd_v1.dts    |  8 +++----
->  .../mips/boot/dts/qca/ar9331_dragino_ms14.dts |  8 +++----
->  arch/mips/boot/dts/qca/ar9331_omega.dts       |  2 +-
->  arch/mips/boot/dts/qca/ar9331_tl_mr3020.dts   |  8 +++----
->  .../ralink/gardena_smart_gateway_mt7688.dts   | 22 +++++++++----------
->  .../boot/dts/ralink/mt7621-gnubee-gb-pc1.dts  |  4 ++--
->  .../boot/dts/ralink/mt7621-gnubee-gb-pc2.dts  | 12 +++++-----
->  11 files changed, 47 insertions(+), 47 deletions(-)
+> linux-next-20230213.
 
-applied to mips-next.
+so I can't apply, because this is not in mips-next tree. It should be
+applied to the tree, where this commit is coming from.
 
 Thomas.
 

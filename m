@@ -2,73 +2,100 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 59408C05027
-	for <linux-mips@archiver.kernel.org>; Fri, 17 Feb 2023 11:58:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 70246C636D4
+	for <linux-mips@archiver.kernel.org>; Fri, 17 Feb 2023 12:35:15 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229848AbjBQL6b (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 17 Feb 2023 06:58:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38964 "EHLO
+        id S229672AbjBQMfO (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 17 Feb 2023 07:35:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40450 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229736AbjBQL6a (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Fri, 17 Feb 2023 06:58:30 -0500
-Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id C31B8644D6;
-        Fri, 17 Feb 2023 03:58:29 -0800 (PST)
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1pSzNi-0000bS-00; Fri, 17 Feb 2023 12:58:26 +0100
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 9F274C28A0; Fri, 17 Feb 2023 12:57:13 +0100 (CET)
-Date:   Fri, 17 Feb 2023 12:57:13 +0100
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     Philippe =?iso-8859-1?Q?Mathieu-Daud=E9?= <philmd@linaro.org>,
-        linux-kernel@vger.kernel.org, kernel test robot <lkp@intel.com>,
-        Dengcheng Zhu <dzhu@wavecomp.com>,
-        John Crispin <john@phrozen.org>, linux-mips@vger.kernel.org,
-        Qais Yousef <qyousef@layalina.io>
-Subject: Re: [PATCH] MIPS: vpe-mt: provide a default 'physical_memsize'
-Message-ID: <20230217115713.GA7701@alpha.franken.de>
-References: <20230214010942.25143-1-rdunlap@infradead.org>
- <7a2eca01-8420-dd98-9d4d-edf192f099fb@linaro.org>
- <a2a7806b-ba53-9f37-938b-d3f48ea217f2@infradead.org>
+        with ESMTP id S229536AbjBQMfO (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Fri, 17 Feb 2023 07:35:14 -0500
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7F054BE8E
+        for <linux-mips@vger.kernel.org>; Fri, 17 Feb 2023 04:35:12 -0800 (PST)
+Received: by mail-wr1-x434.google.com with SMTP id l8so786060wrv.2
+        for <linux-mips@vger.kernel.org>; Fri, 17 Feb 2023 04:35:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Ulodh2s1JoWOl+tuXSPL0lutsfuMxf0JZzlK5FzFZjo=;
+        b=OtpGArm1ZFpOZIJ8J3qFJ+1snmCnrz1HAO9FCrzl1YNQ0/Dwlcl8WOs46Y4vYR4YxR
+         H26kqUWew6cpCf7WyOeIsVsEuQcv8vTdSnfjWjc0cmAdGOqMJp/nHN8jDDA8GUI3WcWu
+         YA77JD1A0WaNt9YVLz4EwBftIfTZJIrHnUcdclQhmFIdC4VI1PE6A9oEZK4FA25ps7MY
+         YI7XWMtQuHxomMEdx99DHOuRLH8DXkQfh+DZTRZ7WPgih02jwqpb8Cc0NhbJwxyT27xz
+         025vYoiR8UYJmFik8pmQoOrumnNcRAV36LtCZL9jmXYzekm9TpED+MhXtkSb+lKAYeyD
+         YIZQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Ulodh2s1JoWOl+tuXSPL0lutsfuMxf0JZzlK5FzFZjo=;
+        b=dbB1+H0H+EGxqgr53W/CdOTnY1v0NGFiDQnpcHs+JqAv+qbdNHplJixOwmt0znBWSt
+         U+xl1YEjfb4ZOhyn0Ye6UeeecCpfKFSkbu+kf/fQzbiRZjVDMJun222INrgouB2cPZJg
+         wblMk5JZzi96YDkbrDyIcyYM/ts+r1j5NLeGQV8CuTD3xDRfiovFn/t9eH02a9olD1Fx
+         ZsP0yt7iUsRx7/2XLRctNywRn4dEX1Lt2QCSbcJXTOl/alVF8gebypmstvbXMy0veElw
+         /yGeAxeJu/ySfVhS6GLAhgpYk/Z8lcHy2APxXyyni0+ZOIQ6TloYZzJd3XqsCq6ax08E
+         2/wQ==
+X-Gm-Message-State: AO0yUKUdONzCAlo5R5HyDjeuaQN2V+to/ULyy/x3WJ1ln4SZh0gus/Lw
+        9IOx4Bis+AfmU5SflZKvhybgAw==
+X-Google-Smtp-Source: AK7set+UTJc+bQ8j4x9nFLzmFQMKhMUdty9MeSaF9k7F0Kwe7y+KqIEPGfXmVGFigvbkO7JwtDBXlQ==
+X-Received: by 2002:adf:e241:0:b0:2c5:54a7:363e with SMTP id bl1-20020adfe241000000b002c554a7363emr610075wrb.3.1676637311390;
+        Fri, 17 Feb 2023 04:35:11 -0800 (PST)
+Received: from [192.168.30.216] ([81.0.6.76])
+        by smtp.gmail.com with ESMTPSA id v5-20020adff685000000b002c559def236sm3352450wrp.57.2023.02.17.04.35.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 17 Feb 2023 04:35:10 -0800 (PST)
+Message-ID: <1dac9eee-f0b9-a6f0-9fed-359242ccb02e@linaro.org>
+Date:   Fri, 17 Feb 2023 13:35:09 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a2a7806b-ba53-9f37-938b-d3f48ea217f2@infradead.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.8.0
+Subject: Re: [PATCH] module: fix MIPS module_layout -> module_memory
+Content-Language: en-US
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Randy Dunlap <rdunlap@infradead.org>
+Cc:     linux-kernel@vger.kernel.org, Song Liu <song@kernel.org>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        linux-mips@vger.kernel.org
+References: <20230214005400.17137-1-rdunlap@infradead.org>
+ <59c0ba61-c5d6-b74f-0fbd-844b08d13e5d@linaro.org>
+ <2e17b8f6-0c2d-e705-63b9-47077b442d68@infradead.org>
+ <20230217115812.GB7701@alpha.franken.de>
+From:   =?UTF-8?Q?Philippe_Mathieu-Daud=c3=a9?= <philmd@linaro.org>
+In-Reply-To: <20230217115812.GB7701@alpha.franken.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Wed, Feb 15, 2023 at 10:59:35PM -0800, Randy Dunlap wrote:
-> > I agree this is where this variable has be be declared / initialized,
-> > but having this dependent on CONFIG_MIPS_MALTA/CONFIG_LANTIQ machines
-> > doesn't seem right.
+On 17/2/23 12:58, Thomas Bogendoerfer wrote:
+> On Tue, Feb 14, 2023 at 08:52:04AM -0800, Randy Dunlap wrote:
+>>
+>>
+>> On 2/13/23 23:22, Philippe Mathieu-Daudé wrote:
+>>> Hi Randy,
+>>>
+>>> On 14/2/23 01:54, Randy Dunlap wrote:
+>>>> Correct the struct's field/member name from mod_mem to mem.
+>>>>
+>>>> Fixes this build error:
+>>>> ../arch/mips/kernel/vpe.c: In function 'vpe_elfload':
+>>>> ../arch/mips/kernel/vpe.c:643:41: error: 'struct module' has no member named 'mod_mem'
+>>>>     643 |         v->load_addr = alloc_progmem(mod.mod_mem[MOD_TEXT].size);
+>>>>
+>>>> Fixes: 2ece476a2346 ("module: replace module_layout with module_memory")
+>>>
+>>> On which tree is your patch based?
+>>
+>> linux-next-20230213.
 > 
-> So far I have been able to consolidate the LANTIQ code into a general
-> patch, but not MALTA.
+> so I can't apply, because this is not in mips-next tree. It should be
+> applied to the tree, where this commit is coming from.
 
-if I didn't miss something physical_memory is always 0 for LANTIQ 
-and something for MALTA depending on command line/DT. Now
+Or squashed...
 
-arch/mips/kernel/vpe-mt.c contains
-
-        /*
-         * The sde-kit passes 'memsize' to __start in $a3, so set something
-         * here...  Or set $a3 to zero and define DFLT_STACK_SIZE and
-         * DFLT_HEAP_SIZE when you compile your program
-         */
-        mttgpr(6, v->ntcs);
-        mttgpr(7, physical_memsize);
-
-so the 0 for LANTIQ is fine with the correct VPE payload. But for
-MALTA could cause major problems, if the VPE payload uses the top
-of memory for it's stack. So I would guess nobody uses this "mode".
-Therefore let's get rid of physical_memory in vpe.c completly.
-
-Thomas.
-
--- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]

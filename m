@@ -2,137 +2,113 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 274D2C64ED8
-	for <linux-mips@archiver.kernel.org>; Thu, 16 Feb 2023 18:43:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9D2E8C636CC
+	for <linux-mips@archiver.kernel.org>; Fri, 17 Feb 2023 00:50:01 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229806AbjBPSnC (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 16 Feb 2023 13:43:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48398 "EHLO
+        id S229759AbjBQAuB (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 16 Feb 2023 19:50:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56388 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229731AbjBPSm7 (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Thu, 16 Feb 2023 13:42:59 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B54569766;
-        Thu, 16 Feb 2023 10:42:53 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 4A5C962067;
-        Thu, 16 Feb 2023 18:42:53 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F2134C433D2;
-        Thu, 16 Feb 2023 18:42:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1676572972;
-        bh=TlkXm7VNtzsJ7EfaEbNCQ0jrF6Prk2gRLM56xZV0kHk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=gKpTH6Xma+bwkChOl4NLqIndv0Q0HNEGdo6fSGe2zx9UY2BJokLjGScUyDUFIyjs9
-         wHG7zTGmWy1W1NXsvoAG52q2DP0SVTJfLhB/sg40zsXEkiXxqQfCmiK5HkoaXoi50K
-         RajXDINrwduwnFFcetLEurxPZRsCdQSD9lXzw5lPbEjrfxkkYiP49ODJA32x+gCeCZ
-         Qz7xF5LCN8Pkp+5JWe3iXQAVfIJDqbiEKe6CoSERnlnc9RX8jR98iPo7qWnXozME9c
-         lzv2gmFirTvDhgkYO8L7uGcZgBqTJWPnxzROBXQ924iZHTN2zPNmp9qGv97dKbm8K7
-         3PR4cj03EaGxg==
-Date:   Thu, 16 Feb 2023 10:42:49 -0800
-From:   Josh Poimboeuf <jpoimboe@kernel.org>
-To:     Philippe =?utf-8?Q?Mathieu-Daud=C3=A9?= <philmd@linaro.org>
-Cc:     linux-kernel@vger.kernel.org, jgross@suse.com,
-        richard.henderson@linaro.org, ink@jurassic.park.msu.ru,
-        mattst88@gmail.com, linux-alpha@vger.kernel.org,
-        linux@armlinux.org.uk, linux-arm-kernel@lists.infradead.org,
-        catalin.marinas@arm.com, will@kernel.org, guoren@kernel.org,
-        linux-csky@vger.kernel.org, linux-ia64@vger.kernel.org,
-        chenhuacai@kernel.org, kernel@xen0n.name,
-        loongarch@lists.linux.dev, f.fainelli@gmail.com,
-        bcm-kernel-feedback-list@broadcom.com, tsbogend@alpha.franken.de,
-        linux-mips@vger.kernel.org, jiaxun.yang@flygoat.com,
-        mpe@ellerman.id.au, npiggin@gmail.com, christophe.leroy@csgroup.eu,
-        linuxppc-dev@lists.ozlabs.org, ysato@users.sourceforge.jp,
-        dalias@libc.org, linux-sh@vger.kernel.org, davem@davemloft.net,
-        sparclinux@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org,
-        hpa@zytor.com, chris@zankel.net, jcmvbkbc@gmail.com,
-        linux-xtensa@linux-xtensa.org, peterz@infradead.org,
-        juri.lelli@redhat.com, vincent.guittot@linaro.org,
-        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-        mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com,
-        paulmck@kernel.org
-Subject: [PATCH v2.1 09/24] mips/cpu: Expose play_dead()'s prototype
- definition
-Message-ID: <20230216184249.ogaqsaykottpxtcb@treble>
-References: <cover.1676358308.git.jpoimboe@kernel.org>
- <39835bc75af2e812fce56400533cb2ab41bcf0e2.1676358308.git.jpoimboe@kernel.org>
- <080a5ccb-7fa0-1a75-538f-a09dc146fc4e@linaro.org>
- <20230214181101.3a2tscbmwdnwbqpu@treble>
- <c56dc4b9-035d-7773-ecb2-0e1ac6af7abc@linaro.org>
+        with ESMTP id S229534AbjBQAuA (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Thu, 16 Feb 2023 19:50:00 -0500
+Received: from smtpbguseast3.qq.com (smtpbguseast3.qq.com [54.243.244.52])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F034F3C7B7;
+        Thu, 16 Feb 2023 16:49:56 -0800 (PST)
+X-QQ-mid: bizesmtp76t1676594974t44ilj1c
+Received: from localhost.localdomain ( [116.30.131.224])
+        by bizesmtp.qq.com (ESMTP) with 
+        id ; Fri, 17 Feb 2023 08:49:31 +0800 (CST)
+X-QQ-SSF: 01200000000000C0T000000A0000000
+X-QQ-FEAT: znfcQSa1hKbHsodWWJ7dLyJeU0dQLSJ2PPtzz1iLzMNgSELCkUn2ujNlhycbg
+        vLg03SNvb9EFMysNu9WjgjH2yYBaAi1fGVqPKaFhctNfTwt+bbxYpXQIVh9rDo/8cNrLyPt
+        ToX08gVh/Po6w/uiFpE5NpG8RVgjCEHPEAjNBEvKB228hcFV2zJd7lPvufzHTfmfzprQ+fT
+        BT5FvJHdZIQ0ZHz+hIneTfMRDTSLb6HDEunI+ke40/IGoYkdjw1kyDvwLpdYHmyCpkkWnqA
+        O1Hes08eR/3n/SlY9lwkeFrEDn7M4DXKn75YILTWaoiJycDGTzD8fi1d+13MWbJyxm4+S3n
+        g5P3PHo4ATnp0TD9593FPSzON//EjXHb6RjyzNWaKJfKxUqmS92Hopcemr0iQ8IBGReu7VW
+X-QQ-GoodBg: 0
+From:   Zhangjin Wu <falcon@tinylab.org>
+To:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mips@vger.kernel.org
+Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Palmer Dabbelt <palmer@rivosinc.com>, Willy Tarreau <w@1wt.eu>,
+        Paul Burton <paulburton@kernel.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Nicholas Mc Guire <hofrat@osadl.org>,
+        Zhangjin Wu <falcon@tinylab.org>
+Subject: [RFC PATCH 1/5] syscall: Allow configure used system calls
+Date:   Fri, 17 Feb 2023 08:49:21 +0800
+Message-Id: <ad53ec9ec7168b6ca5a55e4c6b4583baa4dd0fc6.1676594211.git.falcon@tinylab.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <cover.1676594211.git.falcon@tinylab.org>
+References: <cover.1676594211.git.falcon@tinylab.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <c56dc4b9-035d-7773-ecb2-0e1ac6af7abc@linaro.org>
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:tinylab.org:qybglogicsvr:qybglogicsvr7
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Include <asm/smp.h> to make sure play_dead() matches its prototype going
-forward.
+A new CONFIG_SYSCALLS_USED is added to configure the system calls used
+in a target system (especially for the ultra small embedded systems),
+the other system calls will be disabled.
 
-Acked-by: Florian Fainelli <f.fainelli@gmail.com>
-Reviewed-by: Philippe Mathieu-Daudé <philmd@linaro.org>
-Signed-off-by: Josh Poimboeuf <jpoimboe@kernel.org>
+If further enabling CONFIG_HAVE_LD_DEAD_CODE_DATA_ELIMINATION, the other
+ones (if also not used by kernel itself) will be removed automatically.
+
+The used system calls should be listed one by one like this:
+
+    write exit reboot
+
+The architecture should implement it and then select the
+HAVE_SYSCALLS_USED option.
+
+Signed-off-by: Zhangjin Wu <falcon@tinylab.org>
 ---
- arch/mips/cavium-octeon/smp.c | 1 +
- arch/mips/kernel/smp-bmips.c  | 1 +
- arch/mips/kernel/smp-cps.c    | 1 +
- arch/mips/loongson64/smp.c    | 1 +
- 4 files changed, 4 insertions(+)
+ init/Kconfig | 22 ++++++++++++++++++++++
+ 1 file changed, 22 insertions(+)
 
-diff --git a/arch/mips/cavium-octeon/smp.c b/arch/mips/cavium-octeon/smp.c
-index 89954f5f87fb..4212584e6efa 100644
---- a/arch/mips/cavium-octeon/smp.c
-+++ b/arch/mips/cavium-octeon/smp.c
-@@ -20,6 +20,7 @@
- #include <asm/mmu_context.h>
- #include <asm/time.h>
- #include <asm/setup.h>
-+#include <asm/smp.h>
+diff --git a/init/Kconfig b/init/Kconfig
+index 44e90b28a30f..2c4b8b234168 100644
+--- a/init/Kconfig
++++ b/init/Kconfig
+@@ -1502,6 +1502,10 @@ config BPF
+ 	bool
+ 	select CRYPTO_LIB_SHA1
  
- #include <asm/octeon/octeon.h>
++config HAVE_SYSCALLS_USED
++	bool
++	default n
++
+ menuconfig EXPERT
+ 	bool "Configure standard kernel features (expert users)"
+ 	# Unhide debug options, to make the on-by-default options visible
+@@ -1728,6 +1732,24 @@ config MEMBARRIER
  
-diff --git a/arch/mips/kernel/smp-bmips.c b/arch/mips/kernel/smp-bmips.c
-index f5d7bfa3472a..df9158e8329d 100644
---- a/arch/mips/kernel/smp-bmips.c
-+++ b/arch/mips/kernel/smp-bmips.c
-@@ -38,6 +38,7 @@
- #include <asm/traps.h>
- #include <asm/barrier.h>
- #include <asm/cpu-features.h>
-+#include <asm/smp.h>
+ 	  If unsure, say Y.
  
- static int __maybe_unused max_cpus = 1;
- 
-diff --git a/arch/mips/kernel/smp-cps.c b/arch/mips/kernel/smp-cps.c
-index bcd6a944b839..6d69a9ba8167 100644
---- a/arch/mips/kernel/smp-cps.c
-+++ b/arch/mips/kernel/smp-cps.c
-@@ -20,6 +20,7 @@
- #include <asm/mipsregs.h>
- #include <asm/pm-cps.h>
- #include <asm/r4kcache.h>
-+#include <asm/smp.h>
- #include <asm/smp-cps.h>
- #include <asm/time.h>
- #include <asm/uasm.h>
-diff --git a/arch/mips/loongson64/smp.c b/arch/mips/loongson64/smp.c
-index 660e1de4412a..4e24b317e7cb 100644
---- a/arch/mips/loongson64/smp.c
-+++ b/arch/mips/loongson64/smp.c
-@@ -14,6 +14,7 @@
- #include <linux/cpufreq.h>
- #include <linux/kexec.h>
- #include <asm/processor.h>
-+#include <asm/smp.h>
- #include <asm/time.h>
- #include <asm/tlbflush.h>
- #include <asm/cacheflush.h>
++config SYSCALLS_USED
++	string "Configure used syscalls (EXPERIMENTAL)"  if EXPERT
++	depends on HAVE_SYSCALLS_USED
++	default ""
++	help
++          This option allows to configure the system calls used in a target
++          system, the other system calls will be disabled.
++
++          If further enabling CONFIG_HAVE_LD_DEAD_CODE_DATA_ELIMINATION, the
++          other ones (if also not used by kernel itself) will be removed
++          automatically.
++
++          The used system calls should be listed one by one like this:
++
++              write exit reboot
++
++          If unsure, keep this empty.
++
+ config KALLSYMS
+ 	bool "Load all symbols for debugging/ksymoops" if EXPERT
+ 	default y
 -- 
-2.39.1
+2.25.1
 

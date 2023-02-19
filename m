@@ -2,100 +2,90 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D2FF8C61DA4
-	for <linux-mips@archiver.kernel.org>; Sat, 18 Feb 2023 22:44:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CEF11C05027
+	for <linux-mips@archiver.kernel.org>; Sun, 19 Feb 2023 09:03:04 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229553AbjBRWoH (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Sat, 18 Feb 2023 17:44:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42980 "EHLO
+        id S229606AbjBSJDE (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Sun, 19 Feb 2023 04:03:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39876 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229489AbjBRWoG (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Sat, 18 Feb 2023 17:44:06 -0500
-Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8710B125AD;
-        Sat, 18 Feb 2023 14:44:05 -0800 (PST)
-Received: by mail-lj1-x22f.google.com with SMTP id y41so510070ljq.5;
-        Sat, 18 Feb 2023 14:44:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:subject:cc:to
-         :from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=OszOCijG/p5iaPYxbmUtU8TwmY3BccM9/PpC7rZG5O4=;
-        b=o8fEem/p5ufwZZIjf6O4/1NQ7ayrOwvqaQTBifuRM3Anp5hxVO9xDPgLaTezsKNZDx
-         UGIU4nQu/v6un+RqEGw1P79HZOR2ZIQGShZbNS7WXb1VcYU+ZfbQNZ0UimCsbd6tjfg5
-         rtp0a2FifSckSUGCXqsMy6wkXamFYug+oaXYrSPgwQP+2n26IdOp2RGkTdmTcm5Q4Cmf
-         M+CWpo8h/oDvo82hDJzvbUYI5KOUPRAFaHKRj1VWR39FnBa9ErQW8miF2ph+HXwPdFm8
-         xhTA+zuSg9n4h5z/GtanrfrjTHJjDf/4+g5lJdeKzy2Lmo9ZLlBt5EJ0u7fXYFqSU1YH
-         UWwg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:message-id:subject:cc:to
-         :from:date:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=OszOCijG/p5iaPYxbmUtU8TwmY3BccM9/PpC7rZG5O4=;
-        b=7sWdZX7vg7+rGxfKZ3jFg+0hgepEUGdY1WuLlboDBzYBvy6TLog3H/ZQ03LABHwC9/
-         GLhLj+5u2froKtYDelHdmEpQPrl7ToxTuwRAxRsQjTX3CC8+W2Gio3QTF3O+9ph/rGao
-         BS7zt0UUbnfeNtQj9C3vEAoezy9IuxfNQTZzG5xErTsi6DarBZkKu4KKmAuXdhOiq0Vk
-         Vjo2Z8ZWqWdoYW0MFNW6NWFpPHZ1Dfx73vc0dRON6FZSBc15IxtRCaoT1g5fPeUnqijX
-         pnhZUdQRFZSsEJr2joEWNxBobharDNmDbMbrk32RhfyOTu0/TuPvy+/QLOKqMNpuASr6
-         nQ9Q==
-X-Gm-Message-State: AO0yUKVeO2JdN8wwSbGeM+Zj1FtvW/QPdkWEVG1DxwvM/wfhxPGjW2xI
-        IbblvphYEJ77QETs4K4TQSxdZpbHNndU0w==
-X-Google-Smtp-Source: AK7set8EcE06V+CX/t1geSQACNxysUOqGl+9Xd3S1u2sF+rTGZl8VNIOlD4WG404w6HT1tAw2GFCaA==
-X-Received: by 2002:a2e:978f:0:b0:293:4fed:737 with SMTP id y15-20020a2e978f000000b002934fed0737mr1474393lji.18.1676760243732;
-        Sat, 18 Feb 2023 14:44:03 -0800 (PST)
-Received: from akathisia (c-276fe655.022-307-6762674.bbcust.telenor.se. [85.230.111.39])
-        by smtp.gmail.com with ESMTPSA id u12-20020a2e844c000000b002935d75761dsm1027401ljh.4.2023.02.18.14.44.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 18 Feb 2023 14:44:03 -0800 (PST)
-Date:   Sat, 18 Feb 2023 23:43:59 +0100
-From:   Elvira Khabirova <lineprinter0@gmail.com>
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc:     "Dmitry V. Levin" <ldv@strace.io>, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Ralf Baechle <ralf@linux-mips.org>,
-        Paul Burton <paul.burton@mips.com>,
-        James Hogan <jhogan@kernel.org>,
-        Andreas Henriksson <ah@debian.org>
-Subject: [PATCH] mips: fix syscall_get_nr
-Message-ID: <20230218233212.1fed456b@akathisia>
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-pc-linux-gnu)
+        with ESMTP id S229459AbjBSJDD (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Sun, 19 Feb 2023 04:03:03 -0500
+Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id C86C01117D;
+        Sun, 19 Feb 2023 01:03:00 -0800 (PST)
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1pTfaz-0000LC-01; Sun, 19 Feb 2023 10:02:57 +0100
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id 4CE44C28CF; Sun, 19 Feb 2023 09:30:39 +0100 (CET)
+Date:   Sun, 19 Feb 2023 09:30:39 +0100
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     linux-kernel@vger.kernel.org, Dengcheng Zhu <dzhu@wavecomp.com>,
+        Paul Burton <paulburton@kernel.org>,
+        linux-mips@vger.kernel.org,
+        Sergei Shtylyov <sergei.shtylyov@gmail.com>
+Subject: Re: [PATCH v2] MIPS: SMP-CPS: fix build error when HOTPLUG_CPU not
+ set
+Message-ID: <20230219083039.GB2924@alpha.franken.de>
+References: <20230217200749.1001-1-rdunlap@infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230217200749.1001-1-rdunlap@infradead.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-The implementation of syscall_get_nr on mips used to ignore the task
-argument and return the syscall number of the calling thread instead of
-the target thread.
+On Fri, Feb 17, 2023 at 12:07:49PM -0800, Randy Dunlap wrote:
+> When MIPS_CPS=y, MIPS_CPS_PM is not set, HOTPLUG_CPU is not set, and
+> KEXEC=y, cps_shutdown_this_cpu() attempts to call cps_pm_enter_state(),
+> which is not built when MIPS_CPS_PM is not set.
+> Conditionally execute the else branch based on CONFIG_HOTPLUG_CPU
+> to remove the build error.
+> This build failure is from a randconfig file.
+> 
+> mips-linux-ld: arch/mips/kernel/smp-cps.o: in function `$L162':
+> smp-cps.c:(.text.cps_kexec_nonboot_cpu+0x31c): undefined reference to `cps_pm_enter_state'
+> 
+> Fixes: 1447864bee4c ("MIPS: kexec: CPS systems to halt nonboot CPUs")
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> Cc: Dengcheng Zhu <dzhu@wavecomp.com>
+> Cc: Paul Burton <paulburton@kernel.org>
+> Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+> Cc: linux-mips@vger.kernel.org
+> Cc: Sergei Shtylyov <sergei.shtylyov@gmail.com>
+> ---
+> v2: use IS_ENABLED() instead of #ifdef-ery (Sergei)
+> 
+>  arch/mips/kernel/smp-cps.c |    8 +++++---
+>  1 file changed, 5 insertions(+), 3 deletions(-)
+> 
+> diff -- a/arch/mips/kernel/smp-cps.c b/arch/mips/kernel/smp-cps.c
+> --- a/arch/mips/kernel/smp-cps.c
+> +++ b/arch/mips/kernel/smp-cps.c
+> @@ -424,9 +424,11 @@ static void cps_shutdown_this_cpu(enum c
+>  			wmb();
+>  		}
+>  	} else {
+> -		pr_debug("Gating power to core %d\n", core);
+> -		/* Power down the core */
+> -		cps_pm_enter_state(CPS_PM_POWER_GATED);
+> +		if (IS_ENABLED(CONFIG_HOTPLUG_CPU)) {
+> +			pr_debug("Gating power to core %d\n", core);
+> +			/* Power down the core */
+> +			cps_pm_enter_state(CPS_PM_POWER_GATED);
+> +		}
+>  	}
+>  }
+>  
 
-The bug was exposed to user space by commit 201766a20e30f ("ptrace: add
-PTRACE_GET_SYSCALL_INFO request") and detected by strace test suite.
+applied to mips-next.
 
-Link: https://github.com/strace/strace/issues/235
-Fixes: c2d9f1775731 ("MIPS: Fix syscall_get_nr for the syscall exit tracing.")
-Cc: <stable@vger.kernel.org> # v3.19+
-Co-developed-by: Dmitry V. Levin <ldv@strace.io>
-Signed-off-by: Dmitry V. Levin <ldv@strace.io>
-Signed-off-by: Elvira Khabirova <lineprinter0@gmail.com>
----
- arch/mips/include/asm/syscall.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Thomas.
 
-diff --git a/arch/mips/include/asm/syscall.h b/arch/mips/include/asm/syscall.h
-index 25fa651c937d..ebdf4d910af2 100644
---- a/arch/mips/include/asm/syscall.h
-+++ b/arch/mips/include/asm/syscall.h
-@@ -38,7 +38,7 @@ static inline bool mips_syscall_is_indirect(struct task_struct *task,
- static inline long syscall_get_nr(struct task_struct *task,
- 				  struct pt_regs *regs)
- {
--	return current_thread_info()->syscall;
-+	return task_thread_info(task)->syscall;
- }
- 
- static inline void mips_syscall_update_nr(struct task_struct *task,
 -- 
-
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]

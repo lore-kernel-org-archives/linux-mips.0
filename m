@@ -2,21 +2,21 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 00A1FC636D7
-	for <linux-mips@archiver.kernel.org>; Tue, 21 Feb 2023 17:55:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4C0B7C61DA3
+	for <linux-mips@archiver.kernel.org>; Tue, 21 Feb 2023 17:57:19 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230113AbjBURzC (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 21 Feb 2023 12:55:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42034 "EHLO
+        id S232938AbjBUR5S (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 21 Feb 2023 12:57:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46052 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234986AbjBURy5 (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Tue, 21 Feb 2023 12:54:57 -0500
+        with ESMTP id S233129AbjBUR5H (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Tue, 21 Feb 2023 12:57:07 -0500
 Received: from verein.lst.de (verein.lst.de [213.95.11.211])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95D222FCE1;
-        Tue, 21 Feb 2023 09:54:35 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C6ED2FCFF;
+        Tue, 21 Feb 2023 09:56:39 -0800 (PST)
 Received: by verein.lst.de (Postfix, from userid 2407)
-        id ED7DC68AFE; Tue, 21 Feb 2023 18:54:24 +0100 (CET)
-Date:   Tue, 21 Feb 2023 18:54:23 +0100
+        id 2263C68B05; Tue, 21 Feb 2023 18:56:29 +0100 (CET)
+Date:   Tue, 21 Feb 2023 18:56:28 +0100
 From:   Christoph Hellwig <hch@lst.de>
 To:     Jiaxun Yang <jiaxun.yang@flygoat.com>
 Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
@@ -24,18 +24,42 @@ Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
         mpe@ellerman.id.au, paul.walmsley@sifive.com, palmer@dabbelt.com,
         robh+dt@kernel.org, hch@lst.de, m.szyprowski@samsung.com,
         robin.murphy@arm.com
-Subject: Re: [PATCH 0/7] MIPS DMA coherence fixes
-Message-ID: <20230221175423.GA15247@lst.de>
-References: <20230221124613.2859-1-jiaxun.yang@flygoat.com>
+Subject: Re: [PATCH 1/7] MIPS: Remove DMA_PERDEV_COHERENT
+Message-ID: <20230221175628.GB15247@lst.de>
+References: <20230221124613.2859-1-jiaxun.yang@flygoat.com> <20230221124613.2859-2-jiaxun.yang@flygoat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230221124613.2859-1-jiaxun.yang@flygoat.com>
+In-Reply-To: <20230221124613.2859-2-jiaxun.yang@flygoat.com>
 User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Can you explain the motivation here?  Also why riscv patches are at
-the end of a mips fіxes series?
+On Tue, Feb 21, 2023 at 12:46:07PM +0000, Jiaxun Yang wrote:
+> As now we are always managing DMA coherence on per dev bias,
+> there is no need to have such option. And it's not selected
+> by any platform.
+
+I think the real point here is that this is dead code, so it can
+obviously go away, but:
+
+>  config MIPS_GENERIC_KERNEL
+>  	bool "Generic board-agnostic MIPS kernel"
+> -	select ARCH_HAS_SETUP_DMA_OPS
+>  	select MIPS_GENERIC
+>  	select BOOT_RAW
+>  	select BUILTIN_DTB
+> @@ -1079,11 +1078,6 @@ config FW_CFE
+>  config ARCH_SUPPORTS_UPROBES
+>  	bool
+
+> @@ -1097,6 +1091,7 @@ config DMA_NONCOHERENT
+>  	select ARCH_HAS_DMA_PREP_COHERENT
+>  	select ARCH_HAS_SYNC_DMA_FOR_DEVICE
+>  	select ARCH_HAS_DMA_SET_UNCACHED
+> +	select ARCH_HAS_SETUP_DMA_OPS
+
+This is an unrelated und undocument change.  If you want to do it,
+please do that as a separate patch with a commit log documenting
+the rationale.

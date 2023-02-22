@@ -2,73 +2,75 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3464BC61DA4
-	for <linux-mips@archiver.kernel.org>; Wed, 22 Feb 2023 12:43:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 923C5C61DA4
+	for <linux-mips@archiver.kernel.org>; Wed, 22 Feb 2023 12:55:27 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232191AbjBVMni (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 22 Feb 2023 07:43:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41956 "EHLO
+        id S229749AbjBVMz0 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 22 Feb 2023 07:55:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49942 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229557AbjBVMni (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 22 Feb 2023 07:43:38 -0500
-Received: from fgw20-7.mail.saunalahti.fi (fgw20-7.mail.saunalahti.fi [62.142.5.81])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 480661286B
-        for <linux-mips@vger.kernel.org>; Wed, 22 Feb 2023 04:43:37 -0800 (PST)
-Received: from localhost (88-113-24-128.elisa-laajakaista.fi [88.113.24.128])
-        by fgw20.mail.saunalahti.fi (Halon) with ESMTP
-        id e168f4d2-b2aa-11ed-bd9b-005056bd6ce9;
-        Wed, 22 Feb 2023 14:17:31 +0200 (EET)
-From:   andy.shevchenko@gmail.com
-Date:   Wed, 22 Feb 2023 14:17:31 +0200
-To:     Keguang Zhang <keguang.zhang@gmail.com>
-Cc:     linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <brgl@bgdev.pl>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
-Subject: Re: [PATCH 1/4] gpio: loongson1: Update copyright
-Message-ID: <Y/YH20aKp+u+QEwA@surfacebook>
-References: <20230222111213.2241633-1-keguang.zhang@gmail.com>
- <20230222111213.2241633-2-keguang.zhang@gmail.com>
+        with ESMTP id S229612AbjBVMz0 (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 22 Feb 2023 07:55:26 -0500
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id D560834F47;
+        Wed, 22 Feb 2023 04:55:24 -0800 (PST)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8C680139F;
+        Wed, 22 Feb 2023 04:56:07 -0800 (PST)
+Received: from [10.57.16.42] (unknown [10.57.16.42])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id F21063F703;
+        Wed, 22 Feb 2023 04:55:22 -0800 (PST)
+Message-ID: <a46e1840-89be-de8f-6a91-3e4a16fa17c2@arm.com>
+Date:   Wed, 22 Feb 2023 12:55:17 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230222111213.2241633-2-keguang.zhang@gmail.com>
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:102.0) Gecko/20100101
+ Thunderbird/102.7.2
+Subject: Re: [PATCH 0/7] MIPS DMA coherence fixes
+Content-Language: en-GB
+To:     Jiaxun Yang <jiaxun.yang@flygoat.com>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
+        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        mpe@ellerman.id.au, paul.walmsley@sifive.com, palmer@dabbelt.com,
+        Rob Herring <robh+dt@kernel.org>, m.szyprowski@samsung.com
+References: <20230221124613.2859-1-jiaxun.yang@flygoat.com>
+ <20230221175423.GA15247@lst.de>
+ <A8AC22A0-E883-4D9B-A629-5A3721B976C5@flygoat.com>
+ <ed2d7750-786d-82a1-5e79-1f216a682b20@arm.com>
+ <34578218-DC7A-4C8B-A01A-AD64831CCB43@flygoat.com>
+From:   Robin Murphy <robin.murphy@arm.com>
+In-Reply-To: <34578218-DC7A-4C8B-A01A-AD64831CCB43@flygoat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Wed, Feb 22, 2023 at 07:12:10PM +0800, Keguang Zhang kirjoitti:
-> This patch updates copyright and author information.
+On 2023-02-21 19:55, Jiaxun Yang wrote:
+> 
+> 
+>> 2023年2月21日 19:46，Robin Murphy <robin.murphy@arm.com> 写道：
+>>
+>> On 2023-02-21 18:15, Jiaxun Yang wrote:
+>>>> 2023年2月21日 17:54，Christoph Hellwig <hch@lst.de> 写道：
+>>>>
+>>>> Can you explain the motivation here?  Also why riscv patches are at
+>>>> the end of a mips fіxes series?
+>>> Ah sorry for any confusion.
+>>> So the main purpose of this patch is to fix MIPS’s broken per-device coherency.
+>>> To be more precise, we want to be able to control the default coherency for all devices probed from
+>>> devicetree in early boot code.
+>>
+>> Including the patch which actually does that would be helpful. As it is, patches 4-7 here just appear to be moving an option around for no practical effect.
+> 
+> Well the affect is default coherency of devicetree probed devices are now following dma_default_coherent
+> instead of a static Kconfig option. For MIPS platform, dma_default_coherent will be determined by boot code.
 
-...
+"Will be" is the issue I'm getting at. We can't review some future 
+promise of a patch, we can only review actual patches. And it's hard to 
+meaningfully review preparatory patches for some change without the full 
+context of that change.
 
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-
-Have you talked to your lawers? This is an inequivalent to what was written
-below.
-
->  /*
->   * GPIO Driver for Loongson 1 SoC
->   *
-> - * Copyright (C) 2015-2016 Zhang, Keguang <keguang.zhang@gmail.com>
-> - *
-> - * This file is licensed under the terms of the GNU General Public
-> - * License version 2. This program is licensed "as is" without any
-> - * warranty of any kind, whether express or implied.
-> + * Copyright (C) 2015-2023 Keguang Zhang <keguang.zhang@gmail.com>
->   */
-
-...
-
-> -MODULE_AUTHOR("Kelvin Cheung <keguang.zhang@gmail.com>");
-> +MODULE_AUTHOR("Keguang Zhang <keguang.zhang@gmail.com>");
-
-So, which name here is in your official documents?
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+Thanks,
+Robin.

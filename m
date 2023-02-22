@@ -2,110 +2,155 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5627FC64EC7
-	for <linux-mips@archiver.kernel.org>; Wed, 22 Feb 2023 16:55:28 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A6EAFC636D6
+	for <linux-mips@archiver.kernel.org>; Wed, 22 Feb 2023 16:59:49 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232276AbjBVQz0 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 22 Feb 2023 11:55:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43884 "EHLO
+        id S232448AbjBVQ7s (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 22 Feb 2023 11:59:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46758 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232410AbjBVQzX (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 22 Feb 2023 11:55:23 -0500
-Received: from loongson.cn (mail.loongson.cn [114.242.206.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 14B7634016;
-        Wed, 22 Feb 2023 08:55:18 -0800 (PST)
-Received: from loongson.cn (unknown [10.20.42.133])
-        by gateway (Coremail) with SMTP id _____8CxC9r0SPZjeKYDAA--.7809S3;
-        Thu, 23 Feb 2023 00:55:16 +0800 (CST)
-Received: from openarena.loongson.cn (unknown [10.20.42.133])
-        by localhost.localdomain (Coremail) with SMTP id AQAAf8BxTL7ySPZjRes4AA--.38394S2;
-        Thu, 23 Feb 2023 00:55:14 +0800 (CST)
-From:   suijingfeng <suijingfeng@loongson.cn>
-To:     Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Rob Herring <robh+dt@kernel.org>,
+        with ESMTP id S232334AbjBVQ7p (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 22 Feb 2023 11:59:45 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5A1038008;
+        Wed, 22 Feb 2023 08:59:43 -0800 (PST)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 75339B811EA;
+        Wed, 22 Feb 2023 16:59:42 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8C971C433D2;
+        Wed, 22 Feb 2023 16:59:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1677085181;
+        bh=05pnDDaGSd/n9BoMAzcvuoBw0s4bNC2y1LFQEokKBb0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=V+uFDfDIRLI1AfecAWJjAZ5A0Zkm7piM/TEzBTKpVWGwx7Fq/EMnQlSiUyz0TtDHY
+         CNsgE6iwRF4PRrjXV8QMJUSvaH/q1McGj2NYwYQQ4py4oViUILpx0HvCFL72fD864D
+         0Dfy7P9LA0BQHG0pSjTHNxptBTfpbmc5BTx8MAEqDQQ46QIsSA2z1q3DO0VgEY9JjG
+         M5ZyxadkbhXfxRJncn95G16RfEeO1Y/usqoKXSuNxYznig686RZ0Ej+4MvGxiTWyG8
+         fZTKYrFMZJHnrpcAZ4ckFpQT2zr5QoyGXOW1XS2F3eKYXScRkZidMDJcA18Yal5gpU
+         9ubEJ0TFCiOCA==
+Date:   Wed, 22 Feb 2023 16:59:36 +0000
+From:   Conor Dooley <conor@kernel.org>
+To:     Jiaxun Yang <jiaxun.yang@flygoat.com>
+Cc:     "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
+        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
         Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        suijingfeng <suijingfeng@loongson.cn>
-Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, dri-devel@lists.freedesktop.org
-Subject: [PATCH 1/2] Mips: ls2k1000: dts: add the display controller device node
-Date:   Thu, 23 Feb 2023 00:55:13 +0800
-Message-Id: <20230222165514.684729-1-suijingfeng@loongson.cn>
-X-Mailer: git-send-email 2.34.1
+        mpe@ellerman.id.au, paul.walmsley@sifive.com, palmer@dabbelt.com,
+        Rob Herring <robh+dt@kernel.org>,
+        Christoph Hellwig <hch@lst.de>, m.szyprowski@samsung.com,
+        robin.murphy@arm.com, linux-riscv@lists.infradead.org
+Subject: Re: [PATCH 2/3] riscv: Set dma_default_coherent to true
+Message-ID: <Y/ZJ+N4m6UUmIpL0@spud>
+References: <20230222133712.8079-1-jiaxun.yang@flygoat.com>
+ <20230222133712.8079-3-jiaxun.yang@flygoat.com>
+ <Y/YrvDBJcYUQt4WC@spud>
+ <6BBA7BEA-8595-436D-B4BF-D7DB95069C53@flygoat.com>
+ <Y/Y8lEndecMfD+Ur@spud>
+ <E46E0161-24E3-4185-B408-9357C49F1B51@flygoat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: AQAAf8BxTL7ySPZjRes4AA--.38394S2
-X-CM-SenderInfo: xvxlyxpqjiv03j6o00pqjv00gofq/
-X-Coremail-Antispam: 1Uk129KBjvJXoW7ZrW5Kw47Gr1UWrykKryxGrg_yoW8GF4Up3
-        WDAay7Kr4rWF1Iqws5JFy8Jr4fZF95AF97GrsFyr1UWwn2v3Wqvr4fJF1ftF4aqrWUJa4j
-        vF18GrWxKF1xCw7anT9S1TB71UUUUj7qnTZGkaVYY2UrUUUUj1kv1TuYvTs0mT0YCTnIWj
-        qI5I8CrVACY4xI64kE6c02F40Ex7xfYxn0WfASr-VFAUDa7-sFnT9fnUUIcSsGvfJTRUUU
-        bfxYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I6I8E6xAIw20EY4v20xvaj40_Wr0E3s
-        1l1IIY67AEw4v_Jrv_JF1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xv
-        wVC0I7IYx2IY67AKxVWUCVW8JwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwA2z4
-        x0Y4vEx4A2jsIE14v26r4j6F4UM28EF7xvwVC2z280aVCY1x0267AKxVW8JVW8Jr1ln4kS
-        14v26r126r1DM2AIxVAIcxkEcVAq07x20xvEncxIr21l57IF6xkI12xvs2x26I8E6xACxx
-        1l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r126r1DMcIj6I8E87Iv
-        67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lc7CjxVAaw2
-        AFwI0_JF0_Jw1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1l4IxYO2xF
-        xVAFwI0_JF0_Jw1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWw
-        C2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_JFI_
-        Gr1lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJV
-        WUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBI
-        daVFxhVjvjDU0xZFpf9x07j5o7tUUUUU=
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="DDJ+GjGaXN0PLxMy"
+Content-Disposition: inline
+In-Reply-To: <E46E0161-24E3-4185-B408-9357C49F1B51@flygoat.com>
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-The display controller is a pci device, it's pci vendor id is
-0x0014, it's pci device id is 0x7a06.
 
-Signed-off-by: suijingfeng <suijingfeng@loongson.cn>
----
- .../boot/dts/loongson/loongson64-2k1000.dtsi  | 21 +++++++++++++++++++
- 1 file changed, 21 insertions(+)
+--DDJ+GjGaXN0PLxMy
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/arch/mips/boot/dts/loongson/loongson64-2k1000.dtsi b/arch/mips/boot/dts/loongson/loongson64-2k1000.dtsi
-index 8143a61111e3..a528af3977d9 100644
---- a/arch/mips/boot/dts/loongson/loongson64-2k1000.dtsi
-+++ b/arch/mips/boot/dts/loongson/loongson64-2k1000.dtsi
-@@ -31,6 +31,18 @@ memory@200000 {
- 			<0x00000001 0x10000000 0x00000001 0xb0000000>; /* 6912 MB at 4352MB */
- 	};
- 
-+	reserved-memory {
-+		#address-cells = <2>;
-+		#size-cells = <2>;
-+		ranges;
-+
-+		display_reserved: framebuffer@30000000 {
-+			compatible = "shared-dma-pool";
-+			reg = <0x0 0x30000000 0x0 0x04000000>; /* 64M */
-+			linux,cma-default;
-+		};
-+	};
-+
- 	cpu_clk: cpu_clk {
- 		#clock-cells = <0>;
- 		compatible = "fixed-clock";
-@@ -198,6 +210,15 @@ sata@8,0 {
- 				interrupt-parent = <&liointc0>;
- 			};
- 
-+			display-controller@6,0 {
-+				compatible = "loongson,ls2k1000-dc";
-+
-+				reg = <0x3000 0x0 0x0 0x0 0x0>;
-+				interrupts = <28 IRQ_TYPE_LEVEL_LOW>;
-+				interrupt-parent = <&liointc0>;
-+				memory-region = <&display_reserved>;
-+			};
-+
- 			pci_bridge@9,0 {
- 				compatible = "pci0014,7a19.0",
- 						   "pci0014,7a19",
--- 
-2.34.1
+On Wed, Feb 22, 2023 at 04:20:16PM +0000, Jiaxun Yang wrote:
+> > 2023=E5=B9=B42=E6=9C=8822=E6=97=A5 16:02=EF=BC=8CConor Dooley <conor@ke=
+rnel.org> =E5=86=99=E9=81=93=EF=BC=9A
+> > On Wed, Feb 22, 2023 at 03:55:19PM +0000, Jiaxun Yang wrote:
+> >>> 2023=E5=B9=B42=E6=9C=8822=E6=97=A5 14:50=EF=BC=8CConor Dooley <conor@=
+kernel.org> =E5=86=99=E9=81=93=EF=BC=9A
+> >>> On Wed, Feb 22, 2023 at 01:37:11PM +0000, Jiaxun Yang wrote:
+> >>>> For riscv our assumption is unless a device states it is non-coheren=
+t,
+> >>>> we take it to be DMA coherent.
+> >>>>=20
+> >>>> For devicetree probed devices that have been true since very begining
+> >>>> with OF_DMA_DEFAULT_COHERENT selected.
+> >>>>=20
+> >>>> Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+> >>>> ---
+> >>>> arch/riscv/kernel/setup.c | 3 +++
+> >>>> 1 file changed, 3 insertions(+)
+> >>>>=20
+> >>>> diff --git a/arch/riscv/kernel/setup.c b/arch/riscv/kernel/setup.c
+> >>>> index 376d2827e736..34b371180976 100644
+> >>>> --- a/arch/riscv/kernel/setup.c
+> >>>> +++ b/arch/riscv/kernel/setup.c
+> >>>> @@ -300,6 +300,9 @@ void __init setup_arch(char **cmdline_p)
+> >>>> riscv_init_cbom_blocksize();
+> >>>> riscv_fill_hwcap();
+> >>>> apply_boot_alternatives();
+> >>>> +#ifdef CONFIG_RISCV_DMA_NONCOHERENT
+> >>>> + dma_default_coherent =3D true;
+> >>>> +#endif
+> >>>=20
+> >>> Do we really need to add ifdeffery for this here?
+> >>> It's always coherent by default, so why do we need to say set it in
+> >>> setup_arch() when we know that, regardless of options, it is true?
+> >>=20
+> >> Because this symbol is only a variable when:
+> >>=20
+> >> defined(CONFIG_ARCH_HAS_SYNC_DMA_FOR_DEVICE) || \
+> >> defined(CONFIG_ARCH_HAS_SYNC_DMA_FOR_CPU) || \
+> >> defined(CONFIG_ARCH_HAS_SYNC_DMA_FOR_CPU_ALL)
+> >>=20
+> >> Which is only true if  CONFIG_RISCV_DMA_NONCOHERENT is selected.
+> >>=20
+> >> Otherwise this symbol is defined to true and we can=E2=80=99t make a a=
+ssignment to it.
 
+> > Maybe I am just slow today, but I don't get why you need to add
+> > ifdeffery to setup_arch() to do something that is always true.
+> > Why can't you just set this in riscv/mm/dma-noncoherent.c? What am I
+> > missing?
+>=20
+> Hmm that sounds like a good idea but I was unable to find a place for thi=
+s.
+>=20
+> riscv/mm/dma-noncoherent.c are just a bunch of callbacks, there is no ini=
+tialisation
+> function that will always run on every boot. riscv_noncoherent_supported =
+is only
+> called conditionally.
+
+Right, that's fair. riscv_noncoherent_supported() is for when we know we
+can support non-coherent DMA, not to detect whether we can, hence the
+conditional nature.
+Apologies for sending you on a wild goose chase there.
+
+> Perhaps I can add a initcall in dma-noncoherent.c but it seems to be a li=
+ttle bit
+> overkilling.
+
+Yah, probably would be.
+
+> Actually I=E2=80=99d prefer to have a config option for the default value=
+ but it seems like
+> it=E2=80=99s not in Christoph=E2=80=99s flavour.
+
+We already have a config option that sets things up nicely for RISC-V
+that you're getting rid of! ;)
+
+--DDJ+GjGaXN0PLxMy
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCY/ZJ9wAKCRB4tDGHoIJi
+0qO+AP0TUzGgL8wcTkrt9H19B7SAYoCE0ZZtKTmEp6bWgR/zGAD8Ckvf3sAHVPCu
++k9dqAZE4SyR7ZcmrNr2SezV/436agk=
+=K9OI
+-----END PGP SIGNATURE-----
+
+--DDJ+GjGaXN0PLxMy--

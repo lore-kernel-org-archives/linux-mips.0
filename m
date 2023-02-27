@@ -2,97 +2,122 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 35A30C64ED6
-	for <linux-mips@archiver.kernel.org>; Mon, 27 Feb 2023 18:46:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3AA27C7EE31
+	for <linux-mips@archiver.kernel.org>; Mon, 27 Feb 2023 18:46:40 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230110AbjB0Sqi (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 27 Feb 2023 13:46:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56142 "EHLO
+        id S230052AbjB0Sqj (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 27 Feb 2023 13:46:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56146 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230052AbjB0Sqh (ORCPT
+        with ESMTP id S229953AbjB0Sqh (ORCPT
         <rfc822;linux-mips@vger.kernel.org>); Mon, 27 Feb 2023 13:46:37 -0500
 Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com [66.111.4.26])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54B882057B
-        for <linux-mips@vger.kernel.org>; Mon, 27 Feb 2023 10:46:34 -0800 (PST)
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailout.nyi.internal (Postfix) with ESMTP id BDE535C0055;
-        Mon, 27 Feb 2023 13:46:33 -0500 (EST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 079641EBC0
+        for <linux-mips@vger.kernel.org>; Mon, 27 Feb 2023 10:46:37 -0800 (PST)
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailout.nyi.internal (Postfix) with ESMTP id 727125C014E;
+        Mon, 27 Feb 2023 13:46:36 -0500 (EST)
 Received: from mailfrontend1 ([10.202.2.162])
-  by compute3.internal (MEProxy); Mon, 27 Feb 2023 13:46:33 -0500
+  by compute1.internal (MEProxy); Mon, 27 Feb 2023 13:46:36 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=flygoat.com; h=
         cc:cc:content-transfer-encoding:date:date:from:from:in-reply-to
-        :message-id:mime-version:reply-to:sender:subject:subject:to:to;
-         s=fm2; t=1677523593; x=1677609993; bh=k7xoS8wRwxWAy+JxfJuVES/Lu
-        x/LzCk+nkMTBmHCciI=; b=SQx/ShkgEIHM50cVBNruOAOPcJkTVl8vmWgmHN5MQ
-        7Vv5iYBx3Hd4ccDG5VRydM2JI84zMPKo76qD/QOJ3ht4OQFhBvrgwFHDmmMS/jcR
-        8D6JhsIGeOVUXBKHqR/2Y4eGsjOEqzFGkRBpwC3tPOecI6/P1i7auF9737lfAMzm
-        3ZsV2hfOf5XEJULEr/lNlW9o091O/DD7IsS9GGtOzNJQWgUpC5rkYk0cEmR7bNO2
-        3lPTZPlhdhdsKjKHuCoDhku6pfallOYpsjhcQy1iUKrZWX4WohROdlzRtrM1KgVK
-        xeczpyyEavhR2lQvDiUPRp8z6+bkgPyEvNs1Zzmg5VZyg==
+        :in-reply-to:message-id:mime-version:references:reply-to:sender
+        :subject:subject:to:to; s=fm2; t=1677523596; x=1677609996; bh=tk
+        YSi5juO1fpA/QTqFPOuO7luI8cWacMhKNoz2bpA6o=; b=l7mYq0OEMa8ouF3AeN
+        pPmqz7zvHpvfWNZ/lj5GIs8sujjBEAc1BaD+gOvZkf4WCqMaaKMDj4qw6hgx6Noh
+        2J0PEW7D6MEtu/YPl7vLcwIp/cxQ9b2NA2fed4iJtX0hiwsG/rhdUy/C2xrYDJio
+        E4gcitJq7T6AW6s1XkSrlvlvDnk0Sel1e7Q92NRk9RXE6kaTdEUgmxQJ0F1opmF2
+        eeJalbink0/pFiFZU4yvyWIgytmrVGpOkrp/9zvXXuG5zIHgZ6AzevVSa8ZhRoxv
+        bnNIJW1icPgAooh+2QcMfSiRacCflk0OamI6ahTLxpzeLzWE9sYmr3bxSGiSD+LL
+        k9Cg==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:cc:content-transfer-encoding:date:date
-        :feedback-id:feedback-id:from:from:in-reply-to:message-id
-        :mime-version:reply-to:sender:subject:subject:to:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=
-        1677523593; x=1677609993; bh=k7xoS8wRwxWAy+JxfJuVES/Lux/LzCk+nkM
-        TBmHCciI=; b=HZB92WesvJFTOHVQY+ZqoLLDp3YHQzNXAZjHMOUgh5mZgt6aOey
-        dza66hqhJZf+fCb2JSO8GvZ95EoOL/zXOfc1j7KVxy591griXJhW95aLdDb2TgxM
-        EQpRzsU3JFWswa/wIEl5VW4LAR6ybEmTvyz/DH0hpP262Es98D5jmTGBFl5XJa2S
-        TmZ91ZDE5wy0AlDL87XuDkj6jBOVyyYGL+3QPYvM7TXIswstKfNiYcpcnPYKw03Q
-        PZ6sRbbhgqaI+zpRpD1x4Aj1i2U735tslq61gc1DciBequWSh58V0+DC2j/zP0ej
-        G/TxMbQg0k62Xp1FNLIYTIosvw6RD4LF0Dw==
-X-ME-Sender: <xms:iPr8Y1gGC1UlWISekB0oU54_9XwxXl0Ij-2kaQA3c39--8WtZ5bhVQ>
-    <xme:iPr8Y6Dfeo5AEHdbuP0MqlwDZEeGcCEMV00JiqLHDsoRD-MoAw-hX65W9s2uDZaz5
-    jG__dK1dluUHhin4wk>
-X-ME-Received: <xmr:iPr8Y1FPG-5kvmV-82RBYSmtk2UfBz3vSzXv1nx6gLD-pdAAYZLm7g38S2jO-cG1AX-mFER2DdrHisV7M6a1wMtlEE21JyczmAIh1g4>
+        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm1; t=1677523596; x=1677609996; bh=tkYSi5juO1fpA
+        /QTqFPOuO7luI8cWacMhKNoz2bpA6o=; b=NSqsakHrhULhULJ1clJ8zDzQgSohl
+        4oepbqfiet7nzxBc5smOuU+PfnVSvGYBCVDf5YPPw55aJDoG5WNgeofxH8FDvMs/
+        jBRvL85ciBhR/wD4VlYv7tXbzkR2pN6duwcrNcpXktevkoAlMLlN+y+lHdYZcwXZ
+        vWIzHnZIODtglkSPSyBnJtZMg5xwLH9ngnCvAYaZe3ngiyw5AFys2vV41afZVuLF
+        H6fULmjtGTPM9/QTIkZH0yAQ8LWSjRn3Z2tJlI3j+XoYptlDnegyqZFwTd4b2Chd
+        YINSj6Mipw6y8oY+NP/hSyONBooMtlFYtQRyy2f9f65UK5z2GxqdcLknw==
+X-ME-Sender: <xms:jPr8Y6Nb9kNT-TLuDJ06VD1E9ybC3LVl1pxuvGQMT4dagC2sCKxslA>
+    <xme:jPr8Y4-Sc2Jft1x0sJJqoztq9Q2h5lU8D38wIeAMHIZ67ZjIBVGbrnCY0T3PrmcdN
+    J7EBmHHJcWo70qs25U>
+X-ME-Received: <xmr:jPr8YxQ5FtZQNXKZdyTTNsLnYtjSbEHY9WKcZsuCJVTaGmTR8ImVzkWQVtH8fHWNGdHNjkM9dn8OEwO3Re1UaMzYXAodH6WfnVIS00s>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrudeltddguddufecutefuodetggdotefrod
     ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecunecujfgurhephffvvefufffkofgggfestdekre
-    dtredttdenucfhrhhomheplfhirgiguhhnucgjrghnghcuoehjihgrgihunhdrhigrnhhg
-    sehflhihghhorghtrdgtohhmqeenucggtffrrghtthgvrhhnpefhtedutdduveeileejje
-    etffehueejudehgfffjeduhfeuleeludfffefgffevkeenucevlhhushhtvghrufhiiigv
-    pedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehjihgrgihunhdrhigrnhhgsehflhihgh
-    horghtrdgtohhm
-X-ME-Proxy: <xmx:iPr8Y6T3coxB1-DkGwXrzcNbEpBGhkUf0lYaptyTpAm32WCiwbH-Dg>
-    <xmx:iPr8YyyN5NY2aNbmhs6Whd7X6PmEX7mJA9ypNtE7HeWzIduhM18v8w>
-    <xmx:iPr8Yw5AnKPokFejt_sTP9GShiGBoP_ac0P8-_6jdaCZNCUK8degjA>
-    <xmx:ifr8Y9-TSx-ZttM-bl0WuUpigErx8LolFinbk_Y-_FOhRNVPRtDQLw>
+    necuuegrihhlohhuthemuceftddtnecunecujfgurhephffvvefufffkofgjfhgggfestd
+    ekredtredttdenucfhrhhomheplfhirgiguhhnucgjrghnghcuoehjihgrgihunhdrhigr
+    nhhgsehflhihghhorghtrdgtohhmqeenucggtffrrghtthgvrhhnpeefledufeehgedvue
+    dvvdegkefgvddttedtleeiiefhgeetudegkefhvdfhjeeftdenucevlhhushhtvghrufhi
+    iigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehjihgrgihunhdrhigrnhhgsehflh
+    ihghhorghtrdgtohhm
+X-ME-Proxy: <xmx:jPr8Y6uxEVqUs37EIUyjJujHM5b-2nQTXpr6xFs7Q-vqOILSiBIJiw>
+    <xmx:jPr8YycMEI_PaScBBTsE-d82LPfUHFQaos9t6mjemS5B3BKSag2zcQ>
+    <xmx:jPr8Y-3SmttEqHXd9VoSbdS1EndPDO4R_bWqhDy17N-qPsFBOFWQ7A>
+    <xmx:jPr8YzrXCyAyXoG3N4wRcV8tKexnrvzb84wB-mF7vs89MbbbdQQBuw>
 Feedback-ID: ifd894703:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 27 Feb 2023 13:46:31 -0500 (EST)
+ 27 Feb 2023 13:46:35 -0500 (EST)
 From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
 To:     linux-mips@vger.kernel.org
 Cc:     tsbogend@alpha.franken.de, philmd@linaro.org,
         Jiaxun Yang <jiaxun.yang@flygoat.com>
-Subject: [PATCH v2 0/2] MIPS Booting fixes
-Date:   Mon, 27 Feb 2023 18:46:12 +0000
-Message-Id: <20230227184614.70026-1-jiaxun.yang@flygoat.com>
+Subject: [PATCH v2 2/2] MIPS: cevt-r4k: Offset the value used to clear compare interrupt
+Date:   Mon, 27 Feb 2023 18:46:14 +0000
+Message-Id: <20230227184614.70026-3-jiaxun.yang@flygoat.com>
 X-Mailer: git-send-email 2.37.1 (Apple Git-137.1)
+In-Reply-To: <20230227184614.70026-1-jiaxun.yang@flygoat.com>
+References: <20230227184614.70026-1-jiaxun.yang@flygoat.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Hi all,
+In c0_compare_int_usable we clear compare interrupt by write value
+just read out from counter to compare register.
 
-This patchset fixes two issues that was found when doing reboot
-stress test on Malta/Boston FPGA board with various MIPS cores.
+However sometimes if those all instructions are graduated together
+then it's possible that at the time compare register is written, the
+counter haven't progressed, thus the interrupt is triggered again.
 
-Perhaps they should go through the mips-fixes tree.
+It also applies to QEMU that instructions is executed significantly
+faster then counter.
 
-Thanks
+Offset the value used to clear interrupt by one to prevent that happen.
 
-Jiaxun Yang (2):
-  MIPS: smp-cps: Don't rely on CP0_CMGCRBASE
-  MIPS: cevt-r4k: Offset the value used to clear compare interrupt
+Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+---
+v2: Don't touch value of cnt, just offset one
+---
+ arch/mips/kernel/cevt-r4k.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
- arch/mips/include/asm/smp-cps.h |  4 ++++
- arch/mips/kernel/cevt-r4k.c     |  4 ++--
- arch/mips/kernel/cps-vec.S      | 35 ++++++++++++++-------------------
- arch/mips/kernel/smp-cps.c      |  2 ++
- 4 files changed, 23 insertions(+), 22 deletions(-)
-
+diff --git a/arch/mips/kernel/cevt-r4k.c b/arch/mips/kernel/cevt-r4k.c
+index 32ec67c9ab67..368e8475870f 100644
+--- a/arch/mips/kernel/cevt-r4k.c
++++ b/arch/mips/kernel/cevt-r4k.c
+@@ -200,7 +200,7 @@ int c0_compare_int_usable(void)
+ 	 */
+ 	if (c0_compare_int_pending()) {
+ 		cnt = read_c0_count();
+-		write_c0_compare(cnt);
++		write_c0_compare(cnt - 1);
+ 		back_to_back_c0_hazard();
+ 		while (read_c0_count() < (cnt  + COMPARE_INT_SEEN_TICKS))
+ 			if (!c0_compare_int_pending())
+@@ -228,7 +228,7 @@ int c0_compare_int_usable(void)
+ 	if (!c0_compare_int_pending())
+ 		return 0;
+ 	cnt = read_c0_count();
+-	write_c0_compare(cnt);
++	write_c0_compare(cnt - 1);
+ 	back_to_back_c0_hazard();
+ 	while (read_c0_count() < (cnt + COMPARE_INT_SEEN_TICKS))
+ 		if (!c0_compare_int_pending())
 -- 
 2.37.1 (Apple Git-137.1)
 

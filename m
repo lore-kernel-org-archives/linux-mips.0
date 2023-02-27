@@ -2,60 +2,60 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 29855C64ED8
-	for <linux-mips@archiver.kernel.org>; Mon, 27 Feb 2023 10:59:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BF6B0C7EE37
+	for <linux-mips@archiver.kernel.org>; Mon, 27 Feb 2023 10:59:03 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229975AbjB0K6d (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 27 Feb 2023 05:58:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59084 "EHLO
+        id S230281AbjB0K7B (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 27 Feb 2023 05:59:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59308 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230118AbjB0K6X (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Mon, 27 Feb 2023 05:58:23 -0500
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73D7E1B572;
-        Mon, 27 Feb 2023 02:58:19 -0800 (PST)
-Received: by mail-wr1-x42e.google.com with SMTP id q16so5750438wrw.2;
-        Mon, 27 Feb 2023 02:58:19 -0800 (PST)
+        with ESMTP id S230147AbjB0K6Z (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Mon, 27 Feb 2023 05:58:25 -0500
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7155D10AAE;
+        Mon, 27 Feb 2023 02:58:21 -0800 (PST)
+Received: by mail-wm1-x32d.google.com with SMTP id l7-20020a05600c4f0700b003e79fa98ce1so3559817wmq.2;
+        Mon, 27 Feb 2023 02:58:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=brrg22pJXALLuqjwL3ofKoGSohLv11kyaas+ufZNm48=;
-        b=RIhWaol/uA/GNrRqyAErinRj1oB4C/GL0DLtY0DOT2EJ+VVYsUi/YSlfPHNlwGpN1x
-         FGP8CNWcKOnQjKERksMLpDjk0u+4UGV3ExIzToMCsEKTR5Maapq5t4cXkvxT9iYSWLAG
-         ritysr5OvqfRTuwE97V4/8yaRrBWX06n11KuQtEz/Dd9IJCLwReXZ9HZtn+2PwYU76+f
-         O7ACNKJl2yFoFOnKoFtQ/KhGM94bTFMP9i5HLXWkgSe/L/M5Fpq2uumH747ryXgM9B4g
-         dG5k5YpxI7VmMcb/m6md6KDLFFSc/We4MJCGDadidjJ8li4dxHUJGINPO5G8youlnUD1
-         QphA==
+        bh=LUIj51PNz0xKbBS1KQE1NGFBEuNj+zGXmUx8EwDrEEo=;
+        b=TJYUtDgqq9fjYccEW/VNEByBE9lmodlqJVkF6UoDUTECzXGQdVxmSRkGnC4sgATJ3C
+         OpV7BIvpnGMbb7e69N6ba26mdPG9o4UWaAMeMFP2M3c7urK3w3RT4ftZBgAHY1V+DMIL
+         90aS0fgh3JohfkogcQBFi2Kt1DY36wNdY9iOzRZ31CUkyzQUPnOEeNrFkdr7ka54XUaM
+         /lZ/W9DlOkXM50U25a06s5tX4JAh5Ns5MfDkuDmNC2zWOc7ZgXQJHYBppp5RdzzqQzqe
+         EL2rlrcA8QcuAJ6JpAQOpbNh5q4gGhhrZ1/sGnin3kTYE7H/Ixh1OpS0h6FtvSQLqwNs
+         NSnw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20210112;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=brrg22pJXALLuqjwL3ofKoGSohLv11kyaas+ufZNm48=;
-        b=bY+RwKuCz7eFPQu60J5atcamzns9BRkQmRsqgsNu3ZR33sn2pqk3IauVo3itX+qlgr
-         f12AwV+C7ScrO1UEnou01px36fWZtZeAojI488qgHon0uxk7t2632meMXlvzvbdM+KFf
-         c+8VcP3URM71xmXOCubzTZGgYWkUkPkuCaliIhbyIzbbUvUAcNMjYiUFlyEP35GmjKcm
-         9HOlBLyZr/lQGbtjoR/UvICUJNNzm9XJx04wHnWI11st1vr2EVuF2zaEs4uNxYeKIf4P
-         VtGCfORvWMmbtAxtqPbolHEc6viQbZOjs/U9G9pRtEM8F9ANEawE/NyqGdrUdFIJxv0v
-         dOAQ==
-X-Gm-Message-State: AO0yUKV3XtGBBqZ79RK6X+4Dct8xWxOr8PNELzWoXfrkM+j+bFkNb5pK
-        hmoWhV6QaTkSttWw9wV0VH1UWLonLY4=
-X-Google-Smtp-Source: AK7set9lNcxC/d4NqXiCLUZzcfLrT9s1IijfjXJOsnnvvduAq/nlWLBWs9mgyUZbl/vGDvggQC29FA==
-X-Received: by 2002:adf:dd45:0:b0:2c7:a55:bef5 with SMTP id u5-20020adfdd45000000b002c70a55bef5mr14150209wrm.23.1677495497782;
-        Mon, 27 Feb 2023 02:58:17 -0800 (PST)
+        bh=LUIj51PNz0xKbBS1KQE1NGFBEuNj+zGXmUx8EwDrEEo=;
+        b=18PhZNM2JKTkS/imc+fwP4Icb9490dJYlWjPDcXIMJTSq8hvuPk0cTGOzdgUdvMeCR
+         7Ma0pJTxVzgMYd49b3V6AWeBzRY9CoZ1bfpFMcYVZ5bGl7qeEe9SSXCcsye4FvRdXdyj
+         ZIViPWG2/Q9+mAywtdzBKxS6BufswwBFsddlL674h268vaIpVtiDEZXPJw8kQXjUONdV
+         t/eWrpt2ZaTnpvZvq76mXe/BQeDKpWx6uQQcQPSJHDzRKpoC9t1B6RTOpu7lYTkzrlSM
+         SuAhTov+6dBUX9nLKRpprZwcGaxFfw4L6GPzXTFEzBVCvIjklC8eJGXiX7AIzY+otZ4g
+         yGNw==
+X-Gm-Message-State: AO0yUKV5zaTt/40pIH9i7PCG7AXJI7Fol1kyeWlpQBs1oQjjEiADwC10
+        UWVGm25s3s9Hszu31V1XThmJbllWpiI=
+X-Google-Smtp-Source: AK7set8P3IPV4EDc0sawNE5O19VB7XhcUX9DCeoL6NHPAEmlnNulXRB7DJzxpQ1Nlmp34Q5Xp35isg==
+X-Received: by 2002:a05:600c:19cb:b0:3eb:4cb5:e13 with SMTP id u11-20020a05600c19cb00b003eb4cb50e13mr386314wmq.31.1677495499660;
+        Mon, 27 Feb 2023 02:58:19 -0800 (PST)
 Received: from localhost.localdomain (106.red-88-13-29.dynamicip.rima-tde.net. [88.13.29.106])
-        by smtp.gmail.com with ESMTPSA id a4-20020a5d5704000000b002c559843748sm6806122wrv.10.2023.02.27.02.58.16
+        by smtp.gmail.com with ESMTPSA id a4-20020a5d5704000000b002c559843748sm6806122wrv.10.2023.02.27.02.58.18
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Feb 2023 02:58:17 -0800 (PST)
+        Mon, 27 Feb 2023 02:58:19 -0800 (PST)
 From:   Sergio Paracuellos <sergio.paracuellos@gmail.com>
 To:     linux-mips@vger.kernel.org
 Cc:     tsbogend@alpha.franken.de, john@phrozen.org,
         linux-kernel@vger.kernel.org, git@johnthomson.fastmail.com.au
-Subject: [PATCH 10/12] mips: ralink: mt7620: define MT7620_SYSC_BASE with __iomem
-Date:   Mon, 27 Feb 2023 11:58:04 +0100
-Message-Id: <20230227105806.2394101-11-sergio.paracuellos@gmail.com>
+Subject: [PATCH 12/12] mips: ralink: mt7620: introduce 'soc_device' initialization
+Date:   Mon, 27 Feb 2023 11:58:06 +0100
+Message-Id: <20230227105806.2394101-13-sergio.paracuellos@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20230227105806.2394101-1-sergio.paracuellos@gmail.com>
 References: <20230227105806.2394101-1-sergio.paracuellos@gmail.com>
@@ -65,83 +65,106 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-So that MT7620_SYSC_BASE can be used later in multiple functions without
-needing to repeat this __iomem declaration each time
+MT7620 SoCs have their own 'ralink_soc_info' structure with some
+information about the soc itself. In order to be able to retrieve this
+information from driver code and avoid architecture dependencies for
+retrieving these details introduce this 'soc_device'. Set 'data' pointer
+points to the struct 'ralink_soc_info' to be able to export also current
+soc information using this mechanism. We need to select 'SOC_BUS' in
+Kconfig configuration for these SoCs.
 
 Signed-off-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
 ---
- arch/mips/include/asm/mach-ralink/mt7620.h |  3 ++-
- arch/mips/ralink/mt7620.c                  | 15 +++++++--------
- 2 files changed, 9 insertions(+), 9 deletions(-)
+ arch/mips/ralink/Kconfig  |  1 +
+ arch/mips/ralink/mt7620.c | 44 +++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 45 insertions(+)
 
-diff --git a/arch/mips/include/asm/mach-ralink/mt7620.h b/arch/mips/include/asm/mach-ralink/mt7620.h
-index d51dfad8f543..3e37705ea9cf 100644
---- a/arch/mips/include/asm/mach-ralink/mt7620.h
-+++ b/arch/mips/include/asm/mach-ralink/mt7620.h
-@@ -11,7 +11,8 @@
- #ifndef _MT7620_REGS_H_
- #define _MT7620_REGS_H_
+diff --git a/arch/mips/ralink/Kconfig b/arch/mips/ralink/Kconfig
+index 3e01e2df96b0..088d46f16800 100644
+--- a/arch/mips/ralink/Kconfig
++++ b/arch/mips/ralink/Kconfig
+@@ -44,6 +44,7 @@ choice
+ 		bool "MT7620/8"
+ 		select CPU_MIPSR2_IRQ_VI
+ 		select HAVE_PCI
++		select SOC_BUS
  
--#define MT7620_SYSC_BASE		0x10000000
-+#define IOMEM(x)			((void __iomem *)(KSEG1ADDR(x)))
-+#define MT7620_SYSC_BASE		IOMEM(0x10000000)
- 
- #define SYSC_REG_CHIP_NAME0		0x00
- #define SYSC_REG_CHIP_NAME1		0x04
+ 	config SOC_MT7621
+ 		bool "MT7621"
 diff --git a/arch/mips/ralink/mt7620.c b/arch/mips/ralink/mt7620.c
-index ae1fa0391c88..c13b73b6ee3f 100644
+index 8604d91f3375..4435f50b8d24 100644
 --- a/arch/mips/ralink/mt7620.c
 +++ b/arch/mips/ralink/mt7620.c
-@@ -326,7 +326,6 @@ mt7628_dram_init(struct ralink_soc_info *soc_info)
+@@ -11,6 +11,8 @@
+ #include <linux/kernel.h>
+ #include <linux/init.h>
+ #include <linux/bug.h>
++#include <linux/slab.h>
++#include <linux/sys_soc.h>
  
+ #include <asm/mipsregs.h>
+ #include <asm/mach-ralink/ralink_regs.h>
+@@ -49,6 +51,8 @@
+ /* does the board have sdram or ddram */
+ static int dram_type;
+ 
++static struct ralink_soc_info *soc_info_ptr;
++
+ static __init u32
+ mt7620_calc_rate(u32 ref_rate, u32 mul, u32 div)
+ {
+@@ -410,6 +414,44 @@ static const char __init *mt7620_get_soc_name(struct ralink_soc_info *soc_info)
+ 	}
+ }
+ 
++static const char __init *mt7620_get_soc_id_name(void)
++{
++	if (ralink_soc == MT762X_SOC_MT7620A)
++		return "mt7620a";
++	else if (ralink_soc == MT762X_SOC_MT7620N)
++		return "mt7620n";
++	else if (ralink_soc == MT762X_SOC_MT7688)
++		return "mt7688";
++	else if (ralink_soc == MT762X_SOC_MT7628AN)
++		return "mt7628n";
++	else
++		return "invalid";
++}
++
++static int __init mt7620_soc_dev_init(void)
++{
++	struct soc_device *soc_dev;
++	struct soc_device_attribute *soc_dev_attr;
++
++	soc_dev_attr = kzalloc(sizeof(*soc_dev_attr), GFP_KERNEL);
++	if (!soc_dev_attr)
++		return -ENOMEM;
++
++	soc_dev_attr->family = "Ralink";
++	soc_dev_attr->soc_id = mt7620_get_soc_id_name();
++
++	soc_dev_attr->data = soc_info_ptr;
++
++	soc_dev = soc_device_register(soc_dev_attr);
++	if (IS_ERR(soc_dev)) {
++		kfree(soc_dev_attr);
++		return PTR_ERR(soc_dev);
++	}
++
++	return 0;
++}
++device_initcall(mt7620_soc_dev_init);
++
  void __init prom_soc_init(struct ralink_soc_info *soc_info)
  {
--	void __iomem *sysc = (void __iomem *) KSEG1ADDR(MT7620_SYSC_BASE);
- 	unsigned char *name = NULL;
- 	u32 n0;
- 	u32 n1;
-@@ -336,9 +335,9 @@ void __init prom_soc_init(struct ralink_soc_info *soc_info)
- 	u32 pmu1;
- 	u32 bga;
- 
--	n0 = __raw_readl(sysc + SYSC_REG_CHIP_NAME0);
--	n1 = __raw_readl(sysc + SYSC_REG_CHIP_NAME1);
--	rev = __raw_readl(sysc + SYSC_REG_CHIP_REV);
-+	n0 = __raw_readl(MT7620_SYSC_BASE + SYSC_REG_CHIP_NAME0);
-+	n1 = __raw_readl(MT7620_SYSC_BASE + SYSC_REG_CHIP_NAME1);
-+	rev = __raw_readl(MT7620_SYSC_BASE + SYSC_REG_CHIP_REV);
- 	bga = (rev >> CHIP_REV_PKG_SHIFT) & CHIP_REV_PKG_MASK;
- 
- 	if (n0 == MT7620_CHIP_NAME0 && n1 == MT7620_CHIP_NAME1) {
-@@ -352,7 +351,7 @@ void __init prom_soc_init(struct ralink_soc_info *soc_info)
- 			soc_info->compatible = "ralink,mt7620n-soc";
- 		}
- 	} else if (n0 == MT7620_CHIP_NAME0 && n1 == MT7628_CHIP_NAME1) {
--		u32 efuse = __raw_readl(sysc + SYSC_REG_EFUSE_CFG);
-+		u32 efuse = __raw_readl(MT7620_SYSC_BASE + SYSC_REG_EFUSE_CFG);
- 
- 		if (efuse & EFUSE_MT7688) {
- 			ralink_soc = MT762X_SOC_MT7688;
-@@ -372,7 +371,7 @@ void __init prom_soc_init(struct ralink_soc_info *soc_info)
- 		(rev >> CHIP_REV_VER_SHIFT) & CHIP_REV_VER_MASK,
- 		(rev & CHIP_REV_ECO_MASK));
- 
--	cfg0 = __raw_readl(sysc + SYSC_REG_SYSTEM_CONFIG0);
-+	cfg0 = __raw_readl(MT7620_SYSC_BASE + SYSC_REG_SYSTEM_CONFIG0);
- 	if (is_mt76x8()) {
- 		dram_type = cfg0 & DRAM_TYPE_MT7628_MASK;
- 	} else {
-@@ -388,8 +387,8 @@ void __init prom_soc_init(struct ralink_soc_info *soc_info)
- 	else
- 		mt7620_dram_init(soc_info);
- 
--	pmu0 = __raw_readl(sysc + PMU0_CFG);
--	pmu1 = __raw_readl(sysc + PMU1_CFG);
-+	pmu0 = __raw_readl(MT7620_SYSC_BASE + PMU0_CFG);
-+	pmu1 = __raw_readl(MT7620_SYSC_BASE + PMU1_CFG);
- 
- 	pr_info("Analog PMU set to %s control\n",
+ 	const char *name = mt7620_get_soc_name(soc_info);
+@@ -444,4 +486,6 @@ void __init prom_soc_init(struct ralink_soc_info *soc_info)
  		(pmu0 & PMU_SW_SET) ? ("sw") : ("hw"));
+ 	pr_info("Digital PMU set to %s control\n",
+ 		(pmu1 & DIG_SW_SEL) ? ("sw") : ("hw"));
++
++	soc_info_ptr = soc_info;
+ }
 -- 
 2.25.1
 

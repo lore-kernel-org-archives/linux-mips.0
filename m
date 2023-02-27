@@ -2,204 +2,144 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 351ADC64ED8
-	for <linux-mips@archiver.kernel.org>; Mon, 27 Feb 2023 10:59:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B5F6BC64ED8
+	for <linux-mips@archiver.kernel.org>; Mon, 27 Feb 2023 11:45:17 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229572AbjB0K7D (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 27 Feb 2023 05:59:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59256 "EHLO
+        id S229379AbjB0LpQ (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 27 Feb 2023 06:45:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40528 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230139AbjB0K6Y (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Mon, 27 Feb 2023 05:58:24 -0500
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D57812BF8;
-        Mon, 27 Feb 2023 02:58:20 -0800 (PST)
-Received: by mail-wr1-x429.google.com with SMTP id j2so5715324wrh.9;
-        Mon, 27 Feb 2023 02:58:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=sUV9hLKOdU18pBMiDrMjFGutWffcfv1IB6gkYAwpmlw=;
-        b=Ur6w/ahwqv/lj3FjKNGY7RbDcan7PvkgloTbDyYRRh1gpj8KzbA6Cmb/d4LIRKLjUs
-         MJineUYEOjpaR6vbOXl5TblUDJfBPY+BiNhXfhK6B1aoZimRLaXWLFjzRtf6UlnGn+lM
-         IB9kUKCSF7RpIaG2//IlpXEh+ZaMkaTBdDKylIyBlhFFJgy1Zpk4PAAYTaxWy5ku7Ly4
-         Lrb8VHOmhzoDVpr6cIND+rwszj80mOfEy1qelMInJv8ynnDmDCZyRqsFSp4c4aI2zEFd
-         NAglJ5HfohCpioezXfvPVgytrnC/+pdsf5FNcamWme1fJ3C7+GlMzQuhn0ARd1knGz4Q
-         os0Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=sUV9hLKOdU18pBMiDrMjFGutWffcfv1IB6gkYAwpmlw=;
-        b=6G92hDgRd5sGLbVa90gbh40znFX/kMZuI2G7DtoMnSITVk4STCZn+EoQNZr0SHdudC
-         HrA1fnKm5UmOcYVsdBBIoOGrXnTKfWfulk8HBTT9QG6U7YvN4C03HL+slQG9ijS9gYGd
-         miiCDQY5jM5ASly6vGO3FTJDTChm9xUmDMkgdLpCQPvKDsO3YeiASTHIxqoGAbVpdzBQ
-         ss4Ta12V70g5pRUiU9f0Gf1dDl0SZk+0kOe0QCldX81vlwn9raqeGmRgFuTNE3SDnaaO
-         NGQ3V46/8+p5onzsveCM6rCiISacb4oSR+C+v7ujHoWEx9HrS4EKy9wWJG7A8PbYUzyF
-         mx8Q==
-X-Gm-Message-State: AO0yUKVb9ceEVAwH+5mkElZ7Tml/kz31VFbEOhNEqycJkClvttbTcwkg
-        2JoUQJKZqBFlNKBKbHef8hRuxadHhxA=
-X-Google-Smtp-Source: AK7set8vQA/DiJ5hLWxIEZq7BZ30IrR4eJYp1TCY+Wu0F8k/8RowI0djS8gFJDaDzVXUm2sEo1/Nrg==
-X-Received: by 2002:adf:fbc8:0:b0:2c5:5ff8:93e5 with SMTP id d8-20020adffbc8000000b002c55ff893e5mr18944881wrs.44.1677495498702;
-        Mon, 27 Feb 2023 02:58:18 -0800 (PST)
-Received: from localhost.localdomain (106.red-88-13-29.dynamicip.rima-tde.net. [88.13.29.106])
-        by smtp.gmail.com with ESMTPSA id a4-20020a5d5704000000b002c559843748sm6806122wrv.10.2023.02.27.02.58.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 27 Feb 2023 02:58:18 -0800 (PST)
-From:   Sergio Paracuellos <sergio.paracuellos@gmail.com>
-To:     linux-mips@vger.kernel.org
-Cc:     tsbogend@alpha.franken.de, john@phrozen.org,
-        linux-kernel@vger.kernel.org, git@johnthomson.fastmail.com.au
-Subject: [PATCH 11/12] mips: ralink: mt7620: soc queries and tests as functions
-Date:   Mon, 27 Feb 2023 11:58:05 +0100
-Message-Id: <20230227105806.2394101-12-sergio.paracuellos@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230227105806.2394101-1-sergio.paracuellos@gmail.com>
-References: <20230227105806.2394101-1-sergio.paracuellos@gmail.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        with ESMTP id S229566AbjB0LpP (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Mon, 27 Feb 2023 06:45:15 -0500
+Received: from wout4-smtp.messagingengine.com (wout4-smtp.messagingengine.com [64.147.123.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F3007AB9
+        for <linux-mips@vger.kernel.org>; Mon, 27 Feb 2023 03:45:03 -0800 (PST)
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailout.west.internal (Postfix) with ESMTP id A9B9A320090D;
+        Mon, 27 Feb 2023 06:45:02 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute1.internal (MEProxy); Mon, 27 Feb 2023 06:45:02 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=flygoat.com; h=
+        cc:cc:content-transfer-encoding:content-type:date:date:from:from
+        :in-reply-to:in-reply-to:message-id:mime-version:references
+        :reply-to:sender:subject:subject:to:to; s=fm2; t=1677498302; x=
+        1677584702; bh=/NTTKTkIyXjSNbjfUDX725jgeGwv8aaQYHAS65/2+AA=; b=n
+        9nksoMfAhd/JPkT9RS80r10pOgE3Z6rLiCQdlV7q/uzmR5UFRx+JpdcMkQBG2PHS
+        c6YRJo5dSZyexvVxf3a2XbBxG+8Yn6XTQp1zjpstOhTAnoxZi3qBuTlFqO48K4DJ
+        Y2uUBzngMZBDAPxuzYqpIEyN1HfLaA78WOtiGk79Hx7hDpxeaIDmvvGe+xM127vK
+        LdieIYsbOUF1CYtFy78m9izXgrcVo6XbmgfYdCCXHNP2Qw9YbD48F7CJ+UQu3XjX
+        ywSy11adTu800Q0OQ7UFagSq8+ImQkVocplKfsfhHmIya6aNIS69myC/G8jbKxMZ
+        1BiP0l+436tMDi+xCE6Xg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-transfer-encoding
+        :content-type:date:date:feedback-id:feedback-id:from:from
+        :in-reply-to:in-reply-to:message-id:mime-version:references
+        :reply-to:sender:subject:subject:to:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1677498302; x=
+        1677584702; bh=/NTTKTkIyXjSNbjfUDX725jgeGwv8aaQYHAS65/2+AA=; b=R
+        3MTk0maP10QjmPk6qkJustDXs0mDAesi4x47S5/ENRgS0y+/qJ8JMqdlRtwZ7FFW
+        p6L/xWCuaEN0COb5kHulAd+XsVAV2nxDqNCT0KsVDk+fDtQ7UXrmG4Njar3xfzGf
+        ssTBv4hRch5Zb0/2ePajQ70WOqVssebCMwn+MRvx3uRJsVoL8e27wmnTzjrDPyw5
+        wDvE4GmTXUr8IuzMvhNA4iO/qn7iIUQWIGM4PL+5SC5CU2K/B0ugeq+VWChB2gD1
+        5qkm09wlNMu7HXAeetQS5o70tC0LUmeQCwJp8GZxMBCBvTt/deZ1cGZQzPBNP8hW
+        4Nz5tj3juTW4WJ8Bbes9g==
+X-ME-Sender: <xms:vZf8Yx-Ksk0gq5MGYKk3fSIqbAZ5OHyRHD2qiVGJR-xJ2UieVvU0gg>
+    <xme:vZf8Y1vFpvvIk4bgJRkPAYPlumSjfLVj9ylvCz312SURUbBbAobulyZU6YVsm2qLe
+    cVZqQhG7hLlI3o52Zk>
+X-ME-Received: <xmr:vZf8Y_Ahlsyw8vNh8pS3TuYbSDTr17WMhbGf69wVPzlLHERREkeg8ShExDZagHPC2DB8ZBIonyCGShARNbyuiT77J5eXU7-7>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrudeltddgvdekucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurheptggguffhjgffvefgkfhfvffosehtqhhmtdhhtdejnecuhfhrohhmpeflihgr
+    gihunhcujggrnhhguceojhhirgiguhhnrdihrghnghesfhhlhihgohgrthdrtghomheqne
+    cuggftrfgrthhtvghrnhepuddtjeffteetfeekjeeiheefueeigeeutdevieejveeihfff
+    ledvgfduiefhvddtnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilh
+    hfrhhomhepjhhirgiguhhnrdihrghnghesfhhlhihgohgrthdrtghomh
+X-ME-Proxy: <xmx:vZf8Y1d_jay6Nu5K9Q9WiPPJgERnH-OPZ4_LSOdaMLspfJZHQgEV2Q>
+    <xmx:vZf8Y2MmH6tXbpgXovUObIyA2P_8ONFykqFsX69S1ghhpq6UdDP4jA>
+    <xmx:vZf8Y3nm6pZj9PCNm_OeXMKiy0r1rjHQYszPeMPSdCVnpPQq7wBsUw>
+    <xmx:vpf8YwWNa77mCN5-fzZAa41MSNr8N0fY4fEf97ZWB4zOafFP9iUwYA>
+Feedback-ID: ifd894703:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 27 Feb 2023 06:45:01 -0500 (EST)
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3731.400.51.1.1\))
+Subject: Re: [PATCH 2/2] MIPS: cevt-r4k: Offset counter value for clearing
+ compare interrupt
+From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
+In-Reply-To: <20230227093126.GA6152@alpha.franken.de>
+Date:   Mon, 27 Feb 2023 11:44:48 +0000
+Cc:     "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <1386E355-383C-464E-9821-34BA8ED4DCE3@flygoat.com>
+References: <20230225221008.8520-1-jiaxun.yang@flygoat.com>
+ <20230225221008.8520-3-jiaxun.yang@flygoat.com>
+ <20230226232331.GA9208@alpha.franken.de>
+ <579403EF-8E0D-4AC9-9AB1-51CBB433E114@flygoat.com>
+ <20230227093126.GA6152@alpha.franken.de>
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+X-Mailer: Apple Mail (2.3731.400.51.1.1)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Move the SoC register value queries and tests to specific functions,
-to remove repetition of logic. No functional changes intended
 
-Signed-off-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
----
- arch/mips/ralink/mt7620.c | 94 ++++++++++++++++++++++++++++++---------
- 1 file changed, 72 insertions(+), 22 deletions(-)
 
-diff --git a/arch/mips/ralink/mt7620.c b/arch/mips/ralink/mt7620.c
-index c13b73b6ee3f..8604d91f3375 100644
---- a/arch/mips/ralink/mt7620.c
-+++ b/arch/mips/ralink/mt7620.c
-@@ -324,34 +324,76 @@ mt7628_dram_init(struct ralink_soc_info *soc_info)
- 	}
- }
- 
--void __init prom_soc_init(struct ralink_soc_info *soc_info)
-+static unsigned int __init mt7620_get_soc_name0(void)
- {
--	unsigned char *name = NULL;
--	u32 n0;
--	u32 n1;
--	u32 rev;
--	u32 cfg0;
--	u32 pmu0;
--	u32 pmu1;
--	u32 bga;
-+	return __raw_readl(MT7620_SYSC_BASE + SYSC_REG_CHIP_NAME0);
-+}
-+
-+static unsigned int __init mt7620_get_soc_name1(void)
-+{
-+	return __raw_readl(MT7620_SYSC_BASE + SYSC_REG_CHIP_NAME1);
-+}
-+
-+static bool __init mt7620_soc_valid(void)
-+{
-+	if (mt7620_get_soc_name0() == MT7620_CHIP_NAME0 &&
-+	    mt7620_get_soc_name1() == MT7620_CHIP_NAME1)
-+		return true;
-+	else
-+		return false;
-+}
-+
-+static bool __init mt7628_soc_valid(void)
-+{
-+	if (mt7620_get_soc_name0() == MT7620_CHIP_NAME0 &&
-+	    mt7620_get_soc_name1() == MT7628_CHIP_NAME1)
-+		return true;
-+	else
-+		return false;
-+}
- 
--	n0 = __raw_readl(MT7620_SYSC_BASE + SYSC_REG_CHIP_NAME0);
--	n1 = __raw_readl(MT7620_SYSC_BASE + SYSC_REG_CHIP_NAME1);
--	rev = __raw_readl(MT7620_SYSC_BASE + SYSC_REG_CHIP_REV);
--	bga = (rev >> CHIP_REV_PKG_SHIFT) & CHIP_REV_PKG_MASK;
-+static unsigned int __init mt7620_get_rev(void)
-+{
-+	return __raw_readl(MT7620_SYSC_BASE + SYSC_REG_CHIP_REV);
-+}
-+
-+static unsigned int __init mt7620_get_bga(void)
-+{
-+	return (mt7620_get_rev() >> CHIP_REV_PKG_SHIFT) & CHIP_REV_PKG_MASK;
-+}
-+
-+static unsigned int __init mt7620_get_efuse(void)
-+{
-+	return __raw_readl(MT7620_SYSC_BASE + SYSC_REG_EFUSE_CFG);
-+}
-+
-+static unsigned int __init mt7620_get_soc_ver(void)
-+{
-+	return (mt7620_get_rev() >> CHIP_REV_VER_SHIFT) & CHIP_REV_VER_MASK;
-+}
-+
-+static unsigned int __init mt7620_get_soc_eco(void)
-+{
-+	return (mt7620_get_rev() & CHIP_REV_ECO_MASK);
-+}
-+
-+static const char __init *mt7620_get_soc_name(struct ralink_soc_info *soc_info)
-+{
-+	if (mt7620_soc_valid()) {
-+		u32 bga = mt7620_get_bga();
- 
--	if (n0 == MT7620_CHIP_NAME0 && n1 == MT7620_CHIP_NAME1) {
- 		if (bga) {
- 			ralink_soc = MT762X_SOC_MT7620A;
--			name = "MT7620A";
- 			soc_info->compatible = "ralink,mt7620a-soc";
-+			return "MT7620A";
- 		} else {
- 			ralink_soc = MT762X_SOC_MT7620N;
--			name = "MT7620N";
- 			soc_info->compatible = "ralink,mt7620n-soc";
-+			return "MT7620N";
- 		}
--	} else if (n0 == MT7620_CHIP_NAME0 && n1 == MT7628_CHIP_NAME1) {
--		u32 efuse = __raw_readl(MT7620_SYSC_BASE + SYSC_REG_EFUSE_CFG);
-+	} else if (mt7628_soc_valid()) {
-+		u32 efuse = mt7620_get_efuse();
-+		unsigned char *name = NULL;
- 
- 		if (efuse & EFUSE_MT7688) {
- 			ralink_soc = MT762X_SOC_MT7688;
-@@ -361,15 +403,23 @@ void __init prom_soc_init(struct ralink_soc_info *soc_info)
- 			name = "MT7628AN";
- 		}
- 		soc_info->compatible = "ralink,mt7628an-soc";
-+		return name;
- 	} else {
--		panic("mt762x: unknown SoC, n0:%08x n1:%08x\n", n0, n1);
-+		panic("mt762x: unknown SoC, n0:%08x n1:%08x\n",
-+		      mt7620_get_soc_name0(), mt7620_get_soc_name1());
- 	}
-+}
-+
-+void __init prom_soc_init(struct ralink_soc_info *soc_info)
-+{
-+	const char *name = mt7620_get_soc_name(soc_info);
-+	u32 cfg0;
-+	u32 pmu0;
-+	u32 pmu1;
- 
- 	snprintf(soc_info->sys_type, RAMIPS_SYS_TYPE_LEN,
- 		"MediaTek %s ver:%u eco:%u",
--		name,
--		(rev >> CHIP_REV_VER_SHIFT) & CHIP_REV_VER_MASK,
--		(rev & CHIP_REV_ECO_MASK));
-+		name, mt7620_get_soc_ver(), mt7620_get_soc_eco());
- 
- 	cfg0 = __raw_readl(MT7620_SYSC_BASE + SYSC_REG_SYSTEM_CONFIG0);
- 	if (is_mt76x8()) {
--- 
-2.25.1
+> 2023=E5=B9=B42=E6=9C=8827=E6=97=A5 09:31=EF=BC=8CThomas Bogendoerfer =
+<tsbogend@alpha.franken.de> =E5=86=99=E9=81=93=EF=BC=9A
+>=20
+> On Mon, Feb 27, 2023 at 01:22:47AM +0000, Jiaxun Yang wrote:
+>>=20
+>>=20
+>>=20
+[...]
+>> Clearing interrupt happens in write_c0_compare but the problem is the =
+interrupt
+>> does really get cleared because it triggered again straight away.
+>=20
+> the function you are patching is a test function whether =
+counter/compare
+> is usable, so it's not in the normal timer handling. See a problem =
+there
+> would more to broken hardware than to a bug in that function.
+
+The problem is sometimes on a multi-core system this function managed
+to run on one of the core but then fail on another.
+
+In our real use of compare interrupt, we are clearing interrupt by =
+writing back
+old value of compare, which is guarenteed to be smaller then current =
+count
+because there are so many instructions being executed from exception =
+vector
+to here.
+
+Also as we have no way to disable compare interrupt, if this function =
+determined
+compare to be broken then it won=E2=80=99t register event_handler =
+function, which will
+cause panic for null pointer when unexpected-ish interrupt comes.
+
+>=20
+>> Had confirmed issue on MIPS I6500 uarch simulation trace.
+>=20
+> so not seen on real hardware ?
+
+It was discovered on FPGA and then I tried to debug with simulation to =
+reveal what=E2=80=99s
+going on hardware side.
+
+Thanks
+- Jiaxun
+
+>=20
+> Thomas.
+>=20
+> --=20
+> Crap can work. Given enough thrust pigs will fly, but it's not =
+necessarily a
+> good idea.                                                [ RFC1925, =
+2.3 ]
+
 

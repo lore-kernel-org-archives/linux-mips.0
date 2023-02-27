@@ -2,63 +2,78 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 95422C64ED6
-	for <linux-mips@archiver.kernel.org>; Mon, 27 Feb 2023 22:56:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 72C2BC7EE30
+	for <linux-mips@archiver.kernel.org>; Mon, 27 Feb 2023 22:56:13 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229823AbjB0W4L (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 27 Feb 2023 17:56:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43278 "EHLO
+        id S229587AbjB0W4N (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 27 Feb 2023 17:56:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43292 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229619AbjB0W4L (ORCPT
+        with ESMTP id S229756AbjB0W4L (ORCPT
         <rfc822;linux-mips@vger.kernel.org>); Mon, 27 Feb 2023 17:56:11 -0500
 Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id D1910BDFF
-        for <linux-mips@vger.kernel.org>; Mon, 27 Feb 2023 14:56:09 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 935E82006E;
+        Mon, 27 Feb 2023 14:56:10 -0800 (PST)
 Received: from uucp (helo=alpha)
         by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1pWmPg-0007zQ-01; Mon, 27 Feb 2023 23:56:08 +0100
+        id 1pWmPg-0007zQ-03; Mon, 27 Feb 2023 23:56:08 +0100
 Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 5870DC0F89; Mon, 27 Feb 2023 23:54:08 +0100 (CET)
-Date:   Mon, 27 Feb 2023 23:54:08 +0100
+        id 372F5C0F89; Mon, 27 Feb 2023 23:55:37 +0100 (CET)
+Date:   Mon, 27 Feb 2023 23:55:37 +0100
 From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Jiaxun Yang <jiaxun.yang@flygoat.com>
-Cc:     linux-mips@vger.kernel.org, philmd@linaro.org
-Subject: Re: [PATCH v2 0/2] MIPS Booting fixes
-Message-ID: <20230227225408.GA23071@alpha.franken.de>
-References: <20230227184614.70026-1-jiaxun.yang@flygoat.com>
+To:     arinc9.unal@gmail.com
+Cc:     John Crispin <john@phrozen.org>,
+        =?utf-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Sergio Paracuellos <sergio.paracuellos@gmail.com>,
+        erkin.bozoglu@xeront.com
+Subject: Re: [PATCH 1/2] mips: remove SYS_HAS_CPU_MIPS32_R1 from RALINK
+Message-ID: <20230227225537.GC23071@alpha.franken.de>
+References: <20230221092435.22069-1-arinc.unal@arinc9.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20230227184614.70026-1-jiaxun.yang@flygoat.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20230221092435.22069-1-arinc.unal@arinc9.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Mon, Feb 27, 2023 at 06:46:12PM +0000, Jiaxun Yang wrote:
-> Hi all,
+On Tue, Feb 21, 2023 at 12:24:34PM +0300, arinc9.unal@gmail.com wrote:
+> From: Arınç ÜNAL <arinc.unal@arinc9.com>
 > 
-> This patchset fixes two issues that was found when doing reboot
-> stress test on Malta/Boston FPGA board with various MIPS cores.
+> All MIPS processors on the Ralink SoCs implement the MIPS32 Release 2
+> Architecture. Remove SYS_HAS_CPU_MIPS32_R1.
 > 
-> Perhaps they should go through the mips-fixes tree.
+> Signed-off-by: Arınç ÜNAL <arinc.unal@arinc9.com>
+> ---
 > 
-> Thanks
+> The RT2880 SoC is MIPS 4KEc, the remaining SoCs are MIPS 24KEc. All of
+> which implement the MIPS32 Release 2 Architecture, if I understand
+> correctly. My incentive for this is to automatically have MIPS32R2 selected
+> as the CPU type.
 > 
-> Jiaxun Yang (2):
->   MIPS: smp-cps: Don't rely on CP0_CMGCRBASE
->   MIPS: cevt-r4k: Offset the value used to clear compare interrupt
+> ---
+>  arch/mips/Kconfig | 1 -
+>  1 file changed, 1 deletion(-)
 > 
->  arch/mips/include/asm/smp-cps.h |  4 ++++
->  arch/mips/kernel/cevt-r4k.c     |  4 ++--
->  arch/mips/kernel/cps-vec.S      | 35 ++++++++++++++-------------------
->  arch/mips/kernel/smp-cps.c      |  2 ++
->  4 files changed, 23 insertions(+), 22 deletions(-)
-> 
+> diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
+> index 37072e15b263..0e8dab9a57de 100644
+> --- a/arch/mips/Kconfig
+> +++ b/arch/mips/Kconfig
+> @@ -610,7 +610,6 @@ config RALINK
+>  	select DMA_NONCOHERENT
+>  	select IRQ_MIPS_CPU
+>  	select USE_OF
+> -	select SYS_HAS_CPU_MIPS32_R1
+>  	select SYS_HAS_CPU_MIPS32_R2
+>  	select SYS_SUPPORTS_32BIT_KERNEL
+>  	select SYS_SUPPORTS_LITTLE_ENDIAN
 > -- 
-> 2.37.1 (Apple Git-137.1)
+> 2.37.2
 
-applied to mips-next (will send in a second PR for this merge window).
+applied to mips-next.
 
 Thomas.
 

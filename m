@@ -2,124 +2,143 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 95AD1C6FA9D
-	for <linux-mips@archiver.kernel.org>; Wed,  1 Mar 2023 18:16:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5307FC8300C
+	for <linux-mips@archiver.kernel.org>; Thu,  2 Mar 2023 03:17:31 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230159AbjCASQw (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 1 Mar 2023 13:16:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53540 "EHLO
+        id S229662AbjCBDR3 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 1 Mar 2023 22:17:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33360 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229595AbjCASQv (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 1 Mar 2023 13:16:51 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AE8B4BEB6;
-        Wed,  1 Mar 2023 10:16:44 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 94CCF6145E;
-        Wed,  1 Mar 2023 18:16:43 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 41182C433EF;
-        Wed,  1 Mar 2023 18:16:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1677694603;
-        bh=y8I+qHPjyMsWTIcZZzinTslQl9KBS0SHFE/bCto1EBg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Jgvht4/35VGCp62Mm0crvOWS+Q7yksEpq6+xalFSCejazQSuSFo7RkAWv8vzHB9S2
-         zSy/z5Ss9N5OsVMpm/HzrMXHuWn7HjaEGg9AyzGemnp6Rfdd/r+gRYAGt5E/grCKaY
-         X2FljVYzonJlRyi4MEX9i01auwqLdTducL4xcx2MIAX09cIiSGLJDeVasqEnZsN3Vo
-         LsgtvCrNy6uIrbuQ7oURfpO6JyzJiRyDby5JhWqmOoSrGxzF3cyQh0NFHygpNf7/m9
-         a/zuTndIX0Ftw16vWcuXp1h96arpnB/D6P/tnWRBJjLkk9cGU04BzQjtCx6PDs5EjX
-         5Blvv0WLKwW1w==
-Date:   Wed, 1 Mar 2023 10:16:39 -0800
-From:   Josh Poimboeuf <jpoimboe@kernel.org>
-To:     Philippe =?utf-8?Q?Mathieu-Daud=C3=A9?= <philmd@linaro.org>
-Cc:     linux-kernel@vger.kernel.org, jgross@suse.com,
-        richard.henderson@linaro.org, ink@jurassic.park.msu.ru,
-        mattst88@gmail.com, linux-alpha@vger.kernel.org,
-        linux@armlinux.org.uk, linux-arm-kernel@lists.infradead.org,
-        catalin.marinas@arm.com, will@kernel.org, guoren@kernel.org,
-        linux-csky@vger.kernel.org, linux-ia64@vger.kernel.org,
-        chenhuacai@kernel.org, kernel@xen0n.name,
-        loongarch@lists.linux.dev, f.fainelli@gmail.com,
-        bcm-kernel-feedback-list@broadcom.com, tsbogend@alpha.franken.de,
-        linux-mips@vger.kernel.org, jiaxun.yang@flygoat.com,
+        with ESMTP id S229803AbjCBDR0 (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 1 Mar 2023 22:17:26 -0500
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A6095506C
+        for <linux-mips@vger.kernel.org>; Wed,  1 Mar 2023 19:17:20 -0800 (PST)
+Received: by mail-pj1-x1032.google.com with SMTP id y2so15474289pjg.3
+        for <linux-mips@vger.kernel.org>; Wed, 01 Mar 2023 19:17:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dabbelt-com.20210112.gappssmtp.com; s=20210112; t=1677727040;
+        h=content-transfer-encoding:mime-version:message-id:to:from:cc
+         :in-reply-to:subject:date:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=On9It+4zdvXePGpqvCCrKF4Zz8YWrxnIbxTBVMgkuCs=;
+        b=It4hmxTEAyg7hPQnG8xuSpgz+jJKrlOhrcoQbLU4P/YxhalWRyom0ZRJ9msu/DO/86
+         AiIsktubYrvwpRFNifmG+BrBU8v6Yala4vW9pwjX/bv47kqdaFRBl58uJ5bIBRTWVMBT
+         NEWSeyJD4fgG+iWneC8bOvtxcO0rBYIjkLBer1PgLGvr/r+TBMTp8+ncLKFkUa5GBOHq
+         LyRA8ug4TwsdvYR3u1GIAGW60jHpBModJwHYh1E3SbElOIomsRGv1pXdHkKrQoLtx60j
+         B+LSax1q+0/Z9R4mu/KI8ChOEX0yXbPBPiNHSvaszPAfYNONdpL5L3WAXmTh1suUklGm
+         5kcw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1677727040;
+        h=content-transfer-encoding:mime-version:message-id:to:from:cc
+         :in-reply-to:subject:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=On9It+4zdvXePGpqvCCrKF4Zz8YWrxnIbxTBVMgkuCs=;
+        b=Siunqfx0hHfVJcWAe46EXO/L/LdeVGBPsUIcRZgzQqIARs7Hi0fBlGxtBMj3dcpBwN
+         p+eDdrDrJlIiGCqT9A9Oz0aWrb0QLAKyjdzAXGIKk0wfEmNrt5zLogAaj+1NJA3DxcXD
+         DaMfs/L4HnAvqUqlQv1CCiBSbjusKscVbAt4U7t1QiJicHQ50URv3SzHlcvs8kispWAK
+         oJV2cI5VKftYNlv4K/YiJ6PTPRcVSA5xwXDNL67+KgA5SLGKGxj7JC0i07Y4ik7uF0CR
+         nujZMg8yw2eKxa1QMUnxJIWnwElw0NsKphC2UcbJn83yLihuVUzqolZvA2Pf7j1y354A
+         O5Zw==
+X-Gm-Message-State: AO0yUKUM8j3rvhTy+ZcWMxrXO47AGo8PRdO7pCSkn7nvHYe8o3rAA89X
+        mXd74ib6WNpXUyIB6jTL8a6MrA==
+X-Google-Smtp-Source: AK7set9NlkpYiMNjk7pdCtbLbxqSj79/p1ppAGwB6F9HvsUOQ5DEbSCAxLqrZ/Sx9hwWvoGz24uxIQ==
+X-Received: by 2002:a17:90b:1c8d:b0:236:76cb:99d2 with SMTP id oo13-20020a17090b1c8d00b0023676cb99d2mr10274539pjb.8.1677727039843;
+        Wed, 01 Mar 2023 19:17:19 -0800 (PST)
+Received: from localhost ([50.221.140.188])
+        by smtp.gmail.com with ESMTPSA id d7-20020a17090a498700b002340b2c62e7sm437605pjh.55.2023.03.01.19.17.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 01 Mar 2023 19:17:18 -0800 (PST)
+Date:   Wed, 01 Mar 2023 19:17:18 -0800 (PST)
+X-Google-Original-Date: Wed, 01 Mar 2023 19:04:58 PST (-0800)
+Subject:     Re: [PATCH v3 00/24] Remove COMMAND_LINE_SIZE from uapi
+In-Reply-To: <Y+tSBlSsQBQF/Ro2@osiris>
+CC:     geert@linux-m68k.org, alexghiti@rivosinc.com, corbet@lwn.net,
+        Richard Henderson <richard.henderson@linaro.org>,
+        ink@jurassic.park.msu.ru, mattst88@gmail.com, vgupta@kernel.org,
+        linux@armlinux.org.uk, Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, chenhuacai@kernel.org,
+        kernel@xen0n.name, monstr@monstr.eu, tsbogend@alpha.franken.de,
+        James.Bottomley@hansenpartnership.com, deller@gmx.de,
         mpe@ellerman.id.au, npiggin@gmail.com, christophe.leroy@csgroup.eu,
-        linuxppc-dev@lists.ozlabs.org, ysato@users.sourceforge.jp,
-        dalias@libc.org, linux-sh@vger.kernel.org, davem@davemloft.net,
-        sparclinux@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org,
-        hpa@zytor.com, chris@zankel.net, jcmvbkbc@gmail.com,
-        linux-xtensa@linux-xtensa.org, peterz@infradead.org,
-        juri.lelli@redhat.com, vincent.guittot@linaro.org,
-        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-        mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com,
-        paulmck@kernel.org
-Subject: Re: [PATCH v2.1 09/24] mips/cpu: Expose play_dead()'s prototype
- definition
-Message-ID: <20230301181639.ajqdeh7g3m3fpqhk@treble>
-References: <cover.1676358308.git.jpoimboe@kernel.org>
- <39835bc75af2e812fce56400533cb2ab41bcf0e2.1676358308.git.jpoimboe@kernel.org>
- <080a5ccb-7fa0-1a75-538f-a09dc146fc4e@linaro.org>
- <20230214181101.3a2tscbmwdnwbqpu@treble>
- <c56dc4b9-035d-7773-ecb2-0e1ac6af7abc@linaro.org>
- <20230216184249.ogaqsaykottpxtcb@treble>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        aou@eecs.berkeley.edu, gor@linux.ibm.com, agordeev@linux.ibm.com,
+        borntraeger@linux.ibm.com, svens@linux.ibm.com,
+        ysato@users.sourceforge.jp, dalias@libc.org, davem@davemloft.net,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
+        dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com,
+        chris@zankel.net, jcmvbkbc@gmail.com,
+        Arnd Bergmann <arnd@arndb.de>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-alpha@vger.kernel.org,
+        linux-snps-arc@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-ia64@vger.kernel.org,
+        loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
+        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
+        linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
+        sparclinux@vger.kernel.org, linux-xtensa@linux-xtensa.org,
+        linux-arch@vger.kernel.org
+From:   Palmer Dabbelt <palmer@dabbelt.com>
+To:     hca@linux.ibm.com
+Message-ID: <mhng-e8b09772-24e5-4729-a0bf-01a9e4c76636@palmer-ri-x1c9a>
+Mime-Version: 1.0 (MHng)
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230216184249.ogaqsaykottpxtcb@treble>
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Thu, Feb 16, 2023 at 10:42:52AM -0800, Josh Poimboeuf wrote:
-> Include <asm/smp.h> to make sure play_dead() matches its prototype going
-> forward.
-> 
-> Acked-by: Florian Fainelli <f.fainelli@gmail.com>
-> Reviewed-by: Philippe Mathieu-Daudé <philmd@linaro.org>
-> Signed-off-by: Josh Poimboeuf <jpoimboe@kernel.org>
+On Tue, 14 Feb 2023 01:19:02 PST (-0800), hca@linux.ibm.com wrote:
+> On Tue, Feb 14, 2023 at 09:58:17AM +0100, Geert Uytterhoeven wrote:
+>> Hi Heiko,
+>>
+>> On Tue, Feb 14, 2023 at 9:39 AM Heiko Carstens <hca@linux.ibm.com> wrote:
+>> > On Tue, Feb 14, 2023 at 08:49:01AM +0100, Alexandre Ghiti wrote:
+>> > > This all came up in the context of increasing COMMAND_LINE_SIZE in the
+>> > > RISC-V port.  In theory that's a UABI break, as COMMAND_LINE_SIZE is the
+>> > > maximum length of /proc/cmdline and userspace could staticly rely on
+>> > > that to be correct.
+>> > >
+>> > > Usually I wouldn't mess around with changing this sort of thing, but
+>> > > PowerPC increased it with a5980d064fe2 ("powerpc: Bump COMMAND_LINE_SIZE
+>> > > to 2048").  There are also a handful of examples of COMMAND_LINE_SIZE
+>> > > increasing, but they're from before the UAPI split so I'm not quite sure
+>> > > what that means: e5a6a1c90948 ("powerpc: derive COMMAND_LINE_SIZE from
+>> > > asm-generic"), 684d2fd48e71 ("[S390] kernel: Append scpdata to kernel
+>> > > boot command line"), 22242681cff5 ("MIPS: Extend COMMAND_LINE_SIZE"),
+>> > > and 2b74b85693c7 ("sh: Derive COMMAND_LINE_SIZE from
+>> > > asm-generic/setup.h.").
+>> > >
+>> > > It seems to me like COMMAND_LINE_SIZE really just shouldn't have been
+>> > > part of the uapi to begin with, and userspace should be able to handle
+>> > > /proc/cmdline of whatever length it turns out to be.  I don't see any
+>> > > references to COMMAND_LINE_SIZE anywhere but Linux via a quick Google
+>> > > search, but that's not really enough to consider it unused on my end.
+>> > >
+>> > > The feedback on the v1 seemed to indicate that COMMAND_LINE_SIZE really
+>> > > shouldn't be part of uapi, so this now touches all the ports.  I've
+>> > > tried to split this all out and leave it bisectable, but I haven't
+>> > > tested it all that aggressively.
+>> >
+>> > Just to confirm this assumption a bit more: that's actually the same
+>> > conclusion that we ended up with when commit 3da0243f906a ("s390: make
+>> > command line configurable") went upstream.
 
-The latest version of this patch triggered a new kbuild warning which is
-fixed by the below patch.  If there are no objections I'll bundle it in
-with the rest of the set for merging.
+Thanks, I guess I'd missed that one.  At some point I think there was 
+some discussion of making this a Kconfig for everyone, which seems 
+reasonable to me -- our use case for this being extended is syzkaller, 
+but we're sort of just picking a value that's big enough for now and 
+running with it.
 
----8<---
+Probably best to get it out of uapi first, though, as that way at least 
+it's clear that it's not uABI.
 
-Subject: [PATCH] mips/smp: Add CONFIG_SMP guard for raw_smp_processor_id()
-Content-type: text/plain
+>> Commit 622021cd6c560ce7 ("s390: make command line configurable"),
+>> I assume?
+>
+> Yes, sorry for that. I got distracted while writing and used the wrong
+> branch to look this up.
 
-Without CONFIG_SMP, raw_smp_processor_id() is not expected to be defined
-by the arch.
-
-Reported-by: kernel test robot <lkp@intel.com>
-Link: https://lore.kernel.org/oe-kbuild-all/202302220755.HM8J8GOR-lkp@intel.com/
-Signed-off-by: Josh Poimboeuf <jpoimboe@kernel.org>
----
- arch/mips/include/asm/smp.h | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/arch/mips/include/asm/smp.h b/arch/mips/include/asm/smp.h
-index 4eee29b7845c..cf992b8b1e46 100644
---- a/arch/mips/include/asm/smp.h
-+++ b/arch/mips/include/asm/smp.h
-@@ -25,6 +25,7 @@ extern cpumask_t cpu_sibling_map[];
- extern cpumask_t cpu_core_map[];
- extern cpumask_t cpu_foreign_map[];
- 
-+#ifdef CONFIG_SMP
- static inline int raw_smp_processor_id(void)
- {
- #if defined(__VDSO__)
-@@ -36,6 +37,7 @@ static inline int raw_smp_processor_id(void)
- #endif
- }
- #define raw_smp_processor_id raw_smp_processor_id
-+#endif
- 
- /* Map from cpu id to sequential logical cpu number.  This will only
-    not be idempotent when cpus failed to come on-line.	*/
--- 
-2.39.1
-
+Alex: Probably worth adding that to the list in the cover letter as it 
+looks like you were planning on a v4 anyway (which I guess you now have 
+to do, given that I just added the issue to RISC-V).

@@ -2,55 +2,30 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D0DE5C7EE3A
-	for <linux-mips@archiver.kernel.org>; Thu,  2 Mar 2023 10:02:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E0A2CC6FA8E
+	for <linux-mips@archiver.kernel.org>; Thu,  2 Mar 2023 10:07:13 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229800AbjCBKBt (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 2 Mar 2023 05:01:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40550 "EHLO
+        id S229844AbjCBKGm (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 2 Mar 2023 05:06:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55826 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229983AbjCBKAu (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Thu, 2 Mar 2023 05:00:50 -0500
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F54F5FD0
-        for <linux-mips@vger.kernel.org>; Thu,  2 Mar 2023 02:00:23 -0800 (PST)
-Received: by mail-wr1-x429.google.com with SMTP id t15so15919116wrz.7
-        for <linux-mips@vger.kernel.org>; Thu, 02 Mar 2023 02:00:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20210112.gappssmtp.com; s=20210112; t=1677751162;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ILvb9GZC9A1qdpzGm/54DVnwfbD0aC1FwyW+Sl0y38Q=;
-        b=iEFVfsrb5OtcQreF8wlM/GwKwWXjAdiB5zFZjDGOkxsfSSW2ix9k7XafXuRFWHkNIw
-         TQUj1z5ar2C0vEVfH9chUCmNH/nteRlN1JdwyEUKTQ48/qxc5zj7lbxM6oIumNApIlqo
-         K5VLD6wVEEWQMgZjLuZL0KrTQGr9096IfMMlinEHKNGLif5eFvYvdBjXluO8Ix1w5R4U
-         RJY91d9JKU56mcqJltFuMP1hPTP3suLy9poPdP2dzMNCJAeF1wsN9BU7pj1S6IwmR5Pr
-         qxXd+GuaTvJtDc6/YI8Kl6o8vw4aO5d1givhUukt4+tiF5HMj/+lNEF0nfMftS0WTvNr
-         b4nQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1677751162;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ILvb9GZC9A1qdpzGm/54DVnwfbD0aC1FwyW+Sl0y38Q=;
-        b=zrBoUtsrQn5LSc81P5nG7YCJjTlYiSyvrET09fG1AcaCnSOYImFj2YDctIcHCCt8sd
-         /qPTcQT68OofbO7dnsRSZ0afFGyzU+EfaW59myTKiQ82G6MePwH0LXZoGP8OIFLgLqK8
-         ZQ+bWySHBDlfs2BXlfsbUQPplMWJAeI/OgN8wUUx6iNlCF7+PcCSY/a+OB7+Px7CLUmw
-         LIJ6AjrMgshsDBT8BHsI4tbYBQUq/m/dqYlWfX5eTu4KGV0lGaqKsUtHmVWxHe5O7xCV
-         FzMuMeiFdXKGyx6NLhJGt7SKSxzfXdGzAW39V6rlYk/PwL1xXLjLe4gf5ZTZH2JQJQVU
-         DtxQ==
-X-Gm-Message-State: AO0yUKWPX91z/gC5h01z0zd+iXGuuCkVt5haXsSqXSuj3WftgKXQufSM
-        xBL8af5RZqu3LjYQJIY2Fod2cQ==
-X-Google-Smtp-Source: AK7set/ZaZqc8Pqp5NMCbp2YvB641qs31ffprFtxgjh4YFRfODcsMY9Ph9awlpUQ4nOMh9NRpwbCrA==
-X-Received: by 2002:adf:db90:0:b0:2c5:8d06:75c2 with SMTP id u16-20020adfdb90000000b002c58d0675c2mr7214454wri.35.1677751161891;
-        Thu, 02 Mar 2023 01:59:21 -0800 (PST)
-Received: from alex-rivos.home (amontpellier-656-1-456-62.w92-145.abo.wanadoo.fr. [92.145.124.62])
-        by smtp.gmail.com with ESMTPSA id s17-20020adff811000000b002c758fe9689sm14771605wrp.52.2023.03.02.01.59.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Mar 2023 01:59:21 -0800 (PST)
-From:   Alexandre Ghiti <alexghiti@rivosinc.com>
-To:     Jonathan Corbet <corbet@lwn.net>,
+        with ESMTP id S230383AbjCBKGf (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Thu, 2 Mar 2023 05:06:35 -0500
+Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net [217.70.183.197])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 399309EE9;
+        Thu,  2 Mar 2023 02:06:31 -0800 (PST)
+Received: (Authenticated sender: alex@ghiti.fr)
+        by mail.gandi.net (Postfix) with ESMTPSA id 181981C0004;
+        Thu,  2 Mar 2023 10:06:11 +0000 (UTC)
+Message-ID: <040104fc-81b7-fd45-b268-111e39f2927f@ghiti.fr>
+Date:   Thu, 2 Mar 2023 11:06:11 +0100
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.7.1
+Subject: Re: [PATCH v4 00/24] Remove COMMAND_LINE_SIZE from uapi
+Content-Language: en-US
+To:     Alexandre Ghiti <alexghiti@rivosinc.com>,
+        Jonathan Corbet <corbet@lwn.net>,
         Richard Henderson <richard.henderson@linaro.org>,
         Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
         Matt Turner <mattst88@gmail.com>,
@@ -93,39 +68,140 @@ To:     Jonathan Corbet <corbet@lwn.net>,
         linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
         linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
         sparclinux@vger.kernel.org, linux-xtensa@linux-xtensa.org,
-        linux-arch@vger.kernel.org
-Cc:     Palmer Dabbelt <palmer@rivosinc.com>
-Subject: [PATCH v4 23/24] mips: Remove empty <uapi/asm/setup.h>
-Date:   Thu,  2 Mar 2023 10:35:38 +0100
-Message-Id: <20230302093539.372962-24-alexghiti@rivosinc.com>
-X-Mailer: git-send-email 2.37.2
-In-Reply-To: <20230302093539.372962-1-alexghiti@rivosinc.com>
+        linux-arch@vger.kernel.org,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
 References: <20230302093539.372962-1-alexghiti@rivosinc.com>
-MIME-Version: 1.0
+From:   Alexandre Ghiti <alex@ghiti.fr>
+In-Reply-To: <20230302093539.372962-1-alexghiti@rivosinc.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-From: Palmer Dabbelt <palmer@rivosinc.com>
+Hi Arnd,
 
-Signed-off-by: Palmer Dabbelt <palmer@rivosinc.com>
----
- arch/mips/include/uapi/asm/setup.h | 5 -----
- 1 file changed, 5 deletions(-)
- delete mode 100644 arch/mips/include/uapi/asm/setup.h
+On 3/2/23 10:35, Alexandre Ghiti wrote:
+> This all came up in the context of increasing COMMAND_LINE_SIZE in the
+> RISC-V port.  In theory that's a UABI break, as COMMAND_LINE_SIZE is the
+> maximum length of /proc/cmdline and userspace could staticly rely on
+> that to be correct.
+>
+> Usually I wouldn't mess around with changing this sort of thing, but
+> PowerPC increased it with a5980d064fe2 ("powerpc: Bump COMMAND_LINE_SIZE
+> to 2048").  There are also a handful of examples of COMMAND_LINE_SIZE
+> increasing, but they're from before the UAPI split so I'm not quite sure
+> what that means: e5a6a1c90948 ("powerpc: derive COMMAND_LINE_SIZE from
+> asm-generic"), 684d2fd48e71 ("[S390] kernel: Append scpdata to kernel
+> boot command line"), 22242681cff5 ("MIPS: Extend COMMAND_LINE_SIZE"),
+> and 2b74b85693c7 ("sh: Derive COMMAND_LINE_SIZE from
+> asm-generic/setup.h.").
+>
+> It seems to me like COMMAND_LINE_SIZE really just shouldn't have been
+> part of the uapi to begin with, and userspace should be able to handle
+> /proc/cmdline of whatever length it turns out to be.  I don't see any
+> references to COMMAND_LINE_SIZE anywhere but Linux via a quick Google
+> search, but that's not really enough to consider it unused on my end.
+>
+> This issue was already considered in s390 and they reached the same
+> conclusion in commit 622021cd6c56 ("s390: make command line
+> configurable").
+>
+> The feedback on the v1 seemed to indicate that COMMAND_LINE_SIZE really
+> shouldn't be part of uapi, so this now touches all the ports.  I've
+> tried to split this all out and leave it bisectable, but I haven't
+> tested it all that aggressively.
+>
+> Changes since v3 <https://lore.kernel.org/all/20230214074925.228106-1-alexghiti@rivosinc.com/>:
+> * Added RB/AB
+> * Added a mention to commit 622021cd6c56 ("s390: make command line
+>    configurable") in the cover letter
+>
+> Changes since v2 <https://lore.kernel.org/all/20221211061358.28035-1-palmer@rivosinc.com/>:
+> * Fix sh, csky and ia64 builds, as reported by kernel test robot
+>
+> Changes since v1 <https://lore.kernel.org/all/20210423025545.313965-1-palmer@dabbelt.com/>:
+> * Touches every arch.
+>
+> base-commit-tag: next-20230207
+>
+> Palmer Dabbelt (24):
+>    alpha: Remove COMMAND_LINE_SIZE from uapi
+>    arm64: Remove COMMAND_LINE_SIZE from uapi
+>    arm: Remove COMMAND_LINE_SIZE from uapi
+>    ia64: Remove COMMAND_LINE_SIZE from uapi
+>    m68k: Remove COMMAND_LINE_SIZE from uapi
+>    microblaze: Remove COMMAND_LINE_SIZE from uapi
+>    mips: Remove COMMAND_LINE_SIZE from uapi
+>    parisc: Remove COMMAND_LINE_SIZE from uapi
+>    powerpc: Remove COMMAND_LINE_SIZE from uapi
+>    sparc: Remove COMMAND_LINE_SIZE from uapi
+>    xtensa: Remove COMMAND_LINE_SIZE from uapi
+>    asm-generic: Remove COMMAND_LINE_SIZE from uapi
+>    alpha: Remove empty <uapi/asm/setup.h>
+>    arc: Remove empty <uapi/asm/setup.h>
+>    m68k: Remove empty <uapi/asm/setup.h>
+>    arm64: Remove empty <uapi/asm/setup.h>
+>    microblaze: Remove empty <uapi/asm/setup.h>
+>    sparc: Remove empty <uapi/asm/setup.h>
+>    parisc: Remove empty <uapi/asm/setup.h>
+>    x86: Remove empty <uapi/asm/setup.h>
+>    xtensa: Remove empty <uapi/asm/setup.h>
+>    powerpc: Remove empty <uapi/asm/setup.h>
+>    mips: Remove empty <uapi/asm/setup.h>
+>    s390: Remove empty <uapi/asm/setup.h>
+>
+>   .../admin-guide/kernel-parameters.rst         |  2 +-
+>   arch/alpha/include/asm/setup.h                |  4 +--
+>   arch/alpha/include/uapi/asm/setup.h           |  7 -----
+>   arch/arc/include/asm/setup.h                  |  1 -
+>   arch/arc/include/uapi/asm/setup.h             |  6 -----
+>   arch/arm/include/asm/setup.h                  |  1 +
+>   arch/arm/include/uapi/asm/setup.h             |  2 --
+>   arch/arm64/include/asm/setup.h                |  3 ++-
+>   arch/arm64/include/uapi/asm/setup.h           | 27 -------------------
+>   arch/ia64/include/asm/setup.h                 | 10 +++++++
+>   arch/ia64/include/uapi/asm/setup.h            |  6 ++---
+>   arch/loongarch/include/asm/setup.h            |  2 +-
+>   arch/m68k/include/asm/setup.h                 |  3 +--
+>   arch/m68k/include/uapi/asm/setup.h            | 17 ------------
+>   arch/microblaze/include/asm/setup.h           |  2 +-
+>   arch/microblaze/include/uapi/asm/setup.h      | 20 --------------
+>   arch/mips/include/asm/setup.h                 |  3 ++-
+>   arch/mips/include/uapi/asm/setup.h            |  8 ------
+>   arch/parisc/include/{uapi => }/asm/setup.h    |  0
+>   arch/powerpc/include/asm/setup.h              |  2 +-
+>   arch/powerpc/include/uapi/asm/setup.h         |  7 -----
+>   arch/s390/include/asm/setup.h                 |  1 -
+>   arch/s390/include/uapi/asm/setup.h            |  1 -
+>   arch/sh/include/asm/setup.h                   |  2 +-
+>   arch/sparc/include/asm/setup.h                |  6 ++++-
+>   arch/sparc/include/uapi/asm/setup.h           | 16 -----------
+>   arch/x86/include/asm/setup.h                  |  2 --
+>   arch/x86/include/uapi/asm/setup.h             |  1 -
+>   arch/xtensa/include/{uapi => }/asm/setup.h    |  0
+>   include/asm-generic/Kbuild                    |  1 +
+>   include/{uapi => }/asm-generic/setup.h        |  0
+>   include/uapi/asm-generic/Kbuild               |  1 -
+>   32 files changed, 31 insertions(+), 133 deletions(-)
+>   delete mode 100644 arch/alpha/include/uapi/asm/setup.h
+>   delete mode 100644 arch/arc/include/uapi/asm/setup.h
+>   delete mode 100644 arch/arm64/include/uapi/asm/setup.h
+>   create mode 100644 arch/ia64/include/asm/setup.h
+>   delete mode 100644 arch/m68k/include/uapi/asm/setup.h
+>   delete mode 100644 arch/microblaze/include/uapi/asm/setup.h
+>   delete mode 100644 arch/mips/include/uapi/asm/setup.h
+>   rename arch/parisc/include/{uapi => }/asm/setup.h (100%)
+>   delete mode 100644 arch/powerpc/include/uapi/asm/setup.h
+>   delete mode 100644 arch/s390/include/uapi/asm/setup.h
+>   delete mode 100644 arch/sparc/include/uapi/asm/setup.h
+>   delete mode 100644 arch/x86/include/uapi/asm/setup.h
+>   rename arch/xtensa/include/{uapi => }/asm/setup.h (100%)
+>   rename include/{uapi => }/asm-generic/setup.h (100%)
+>
+Björn noticed that I should also remove the command line size for riscv 
+since it was picked up in 6.3 by Palmer...I send a v6 right now, sorry 
+about that.
 
-diff --git a/arch/mips/include/uapi/asm/setup.h b/arch/mips/include/uapi/asm/setup.h
-deleted file mode 100644
-index 157c3c392fb4..000000000000
---- a/arch/mips/include/uapi/asm/setup.h
-+++ /dev/null
-@@ -1,5 +0,0 @@
--/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
--#ifndef _UAPI_MIPS_SETUP_H
--#define _UAPI_MIPS_SETUP_H
--
--#endif /* _UAPI_MIPS_SETUP_H */
--- 
-2.37.2
+Alex
 

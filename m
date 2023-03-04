@@ -2,73 +2,73 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 129B5C6FD18
-	for <linux-mips@archiver.kernel.org>; Sat,  4 Mar 2023 22:15:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 42827C6FD19
+	for <linux-mips@archiver.kernel.org>; Sat,  4 Mar 2023 22:15:42 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229437AbjCDWPk (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Sat, 4 Mar 2023 17:15:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54526 "EHLO
+        id S229615AbjCDWPl (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Sat, 4 Mar 2023 17:15:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54540 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229519AbjCDWPi (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Sat, 4 Mar 2023 17:15:38 -0500
+        with ESMTP id S229519AbjCDWPk (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Sat, 4 Mar 2023 17:15:40 -0500
 Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com [66.111.4.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D1B913D4C
-        for <linux-mips@vger.kernel.org>; Sat,  4 Mar 2023 14:15:37 -0800 (PST)
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
-        by mailout.nyi.internal (Postfix) with ESMTP id 934045C00A3;
-        Sat,  4 Mar 2023 17:15:36 -0500 (EST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C78412F22
+        for <linux-mips@vger.kernel.org>; Sat,  4 Mar 2023 14:15:39 -0800 (PST)
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailout.nyi.internal (Postfix) with ESMTP id B18095C00F4;
+        Sat,  4 Mar 2023 17:15:38 -0500 (EST)
 Received: from mailfrontend1 ([10.202.2.162])
-  by compute6.internal (MEProxy); Sat, 04 Mar 2023 17:15:36 -0500
+  by compute3.internal (MEProxy); Sat, 04 Mar 2023 17:15:38 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=flygoat.com; h=
         cc:cc:content-transfer-encoding:content-type:date:date:from:from
         :in-reply-to:in-reply-to:message-id:mime-version:references
-        :reply-to:sender:subject:subject:to:to; s=fm2; t=1677968136; x=
-        1678054536; bh=VeDodKZEgELcf7cULKp+pzsVOFJzzBJRdNWzyJCeFOo=; b=L
-        UzeOps1ul0MKFj4NkTI0E0dSg8oaQs3ZVBAGcl4zcSRbAcQTzM/KlKIIMEMNCb38
-        BjqIbgzffLz+VND+2X/cZYeOGcZXiIE1vGgpCkE6ISIXE/AbE1RoX5JleleptIIs
-        LBc1/IszrpKtPIMWlNVlKq7nxbd12q1NqwmzsWJAEmBAp6S8u7WGsMT5I7Ecp9fI
-        pQjG8KssQfnuIzsZcri9C/Y5JkMcrLuOhdFBQEhwWAM+UBQHVYrEfRsOMG75ICCk
-        e/B0pVRyJUbDDVYq7lL4enMzZ3N8I6qf9E5Vv5BSCLT9rQBMuzbET0AiMvgtdVMU
-        2d9gKxtKiPcKhs+H39rjQ==
+        :reply-to:sender:subject:subject:to:to; s=fm2; t=1677968138; x=
+        1678054538; bh=wIDTEiHzh6Ropf3Pdulwmt7BPaBwI6CcgfYjGy9/w/Q=; b=D
+        npk+L0UeS4u8EwAUVFobdkspFgnx9pgUaMknItGjoWWLxPTpx+4vFvk0mLFf6Lfl
+        g7Fjmp/zXPiE/tLqXWiuuc7urF+oAECyxLYKa0qozjV/XwZLAjTTQ+kP22idhq4W
+        wo9jIdiR8LAVeecyQQ+2JNU0Ba7zLIxj9VoZA8pq9Akqjx1JnPZCGSYe6uque/R9
+        DwUvT51Ti5J/6tWaOOVXMQOy1oaYoOBEOjwO+pCdk8fzzhkDgfX3oTC6bh/wNBG3
+        9k0vXnNT6i2sFb/9JiwY9fHyyiFLwf1OQaiVLGibi5JwlkZ3ZwC91D5kKDDQsB9A
+        KzBFgHrL65z6L8dBvSUUQ==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:cc:content-transfer-encoding
         :content-type:date:date:feedback-id:feedback-id:from:from
         :in-reply-to:in-reply-to:message-id:mime-version:references
         :reply-to:sender:subject:subject:to:to:x-me-proxy:x-me-proxy
-        :x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1677968136; x=
-        1678054536; bh=VeDodKZEgELcf7cULKp+pzsVOFJzzBJRdNWzyJCeFOo=; b=Z
-        JhfkK50AQLmDdj9rffqltpIObB6xU50yaOlNtG4f1PonKB61dLzfjz6pjpNXLNBZ
-        4dCKfOsojXhnDEU9Ddt+GLAh29eS2KAHDy03T6TuUr9SoSPbuxZRaSsR8g19nhLS
-        UAhDN6kQwh9xgxkyEH+/I3GdKLCd7+2+/QYqZ6dviksvZ6gZGn9o/0/H3+GRh9qt
-        ewpLZ+TIWoVse7MZ9sbPvQd6xyJsr1d611yV/wZ/KOett1ZHMQT0MlYwH+x2yZUq
-        jIbPBgC9JUPVgjXuja3u/M6DwllqPpa42dEjz3feK2ZG8jhAJA3+245onwMjC6ov
-        gywPu6aldyv1pGRyEOUsA==
-X-ME-Sender: <xms:CMMDZCTzfzGHliQwbDwJI8VWff7_aMnff2_dcQNOUrvukdkU6A31qQ>
-    <xme:CMMDZHz6Eq0Ip3D2hn9u57xwhLbzYGpdkBSxh4uuQFa3S-xoKeK32vTUb_wVPeq0i
-    FgToYI_FKKkbP8pBto>
-X-ME-Received: <xmr:CMMDZP1m0CfbWyEpkrq65GW68LB5qYEz_HGOAyokJK0dmtVV4gSjPc3MCQ6q>
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1677968138; x=
+        1678054538; bh=wIDTEiHzh6Ropf3Pdulwmt7BPaBwI6CcgfYjGy9/w/Q=; b=Y
+        pU0CyAf5jltoxhrAYX5MMXIPW2zRQIHWTiG0eHHqFL8UyxE1av3dnnH4ardJJyx2
+        wPPEWeBEpVHuEeTT72dI8f1rSSpiLkzRKrvgW7e1v+/bjqgAjDsT8nYl9MzTB+dM
+        SduKoJZxJGKbiF9+85HFMPvUoKCjWdEBVlVxmJhINM/WMfTlmeFbzSYRfNMxXpbZ
+        JL8qAuSMKZfGf3+af+6ZLQjD+jtlASMCVSccyFWUhb1A+901Wyufxo8pl/5bvSoO
+        omExICkc9sXCmJB91IpOk08eT4RKr40qTe1hsEKbF/4sjbMNz4f445Mkx1qZqjR+
+        CtIAD628irar/mtCik53Q==
+X-ME-Sender: <xms:CsMDZNpv7q2G4ehfuTKHVUTTZCC5xCPBtL3LIB415faW3tEU5rVX0A>
+    <xme:CsMDZPqX8bfLiR4-FQq0EgSRDOeY4N6g5EY9F7DU4jukNCogbY7EzDj_4qz1jLUV-
+    djkVjAt6EVSNYqIYd4>
+X-ME-Received: <xmr:CsMDZKOpQD6x0zxdv-fQzBjEDHTrdmKjzZ5gIoy5M2TEg1_dPja4hDuH5ml_>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrvddtuddgudehiecutefuodetggdotefrod
     ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
     necuuegrihhlohhuthemuceftddtnecunecujfgurhephffvvefufffkofgjfhgggfestd
     ekredtredttdenucfhrhhomheplfhirgiguhhnucgjrghnghcuoehjihgrgihunhdrhigr
-    nhhgsehflhihghhorghtrdgtohhmqeenucggtffrrghtthgvrhhnpeevgfdtleegudehge
-    eiudejtdfgtedvudejleevheduhfdvieegtddvvdevffdvhfenucffohhmrghinheptghp
-    shdqvhgvtgdrshgsnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilh
-    hfrhhomhepjhhirgiguhhnrdihrghnghesfhhlhihgohgrthdrtghomh
-X-ME-Proxy: <xmx:CMMDZOCTYsw8ICaquTL5KQVMCyU5HGgJpDjw8UB-VzC9ynanVS4qjg>
-    <xmx:CMMDZLj6l2X7-VvNEIg29Tp8y8nxeltvNdCHIS6bsf2BY2_ctnBO5Q>
-    <xmx:CMMDZKqsff_Cavwf0ET7259oGmzmlZ-7bN9TtA_j4786NbDyShjULg>
-    <xmx:CMMDZOumsr4HrDcamBvLG8NnAu0oi7TNSWJId_48QAvdBjc392b4QA>
+    nhhgsehflhihghhorghtrdgtohhmqeenucggtffrrghtthgvrhhnpeefledufeehgedvue
+    dvvdegkefgvddttedtleeiiefhgeetudegkefhvdfhjeeftdenucevlhhushhtvghrufhi
+    iigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehjihgrgihunhdrhigrnhhgsehflh
+    ihghhorghtrdgtohhm
+X-ME-Proxy: <xmx:CsMDZI4YGJvqRhGtm6LHBewgd8_RvI27Xu9-sXkONannDJQmeCC7GA>
+    <xmx:CsMDZM7MfbLXMPFgjX33CHcUTYN9-q2CPIxiDuE4JQWkEFOtZPVU4w>
+    <xmx:CsMDZAjkX_gcIK9JuvlWUXWJkRVCi7ykSbYJQMlLOiVvoKRoUlHQKA>
+    <xmx:CsMDZMFl_Gx5L0lPPx0yfpmPdhpFW1q9MYvGeP-56W9lfQyEMPfMLQ>
 Feedback-ID: ifd894703:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sat,
- 4 Mar 2023 17:15:35 -0500 (EST)
+ 4 Mar 2023 17:15:37 -0500 (EST)
 From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
 To:     linux-mips@vger.kernel.org
 Cc:     tsbogend@alpha.franken.de, philmd@linaro.org,
         Jiaxun Yang <jiaxun.yang@flygoat.com>
-Subject: [PATCH 02/12] MIPS: smp-cps: Disable coherence setup for unsupported ISA
-Date:   Sat,  4 Mar 2023 22:15:14 +0000
-Message-Id: <20230304221524.47160-3-jiaxun.yang@flygoat.com>
+Subject: [PATCH 04/12] MIPS: Octeon: Opt-out 4k_cache feature
+Date:   Sat,  4 Mar 2023 22:15:16 +0000
+Message-Id: <20230304221524.47160-5-jiaxun.yang@flygoat.com>
 X-Mailer: git-send-email 2.37.1 (Apple Git-137.1)
 In-Reply-To: <20230304221524.47160-1-jiaxun.yang@flygoat.com>
 References: <20230304221524.47160-1-jiaxun.yang@flygoat.com>
@@ -78,80 +78,44 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-We don't know how to do coherence setup on ISA before MIPS
-Release 1.
+Octeon has a different cache interface with traditional R4K one,
+just opt-out this flag for octeon to avoid run R4K cache initialization
+code accidentally.
 
-As CPS support only servers simulation purpose on those cores,
-and simulators are always coherent, just disable initialization
-code and provide user a warning in case coherence is not setup
-properly.
+Also remove ISA level assumption for 4k cache.
 
 Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
 ---
- arch/mips/kernel/cps-vec.S | 5 +++++
- arch/mips/kernel/smp-cps.c | 5 +++++
- 2 files changed, 10 insertions(+)
+ arch/mips/include/asm/cpu-features.h | 2 +-
+ arch/mips/kernel/cpu-probe.c         | 2 ++
+ 2 files changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/arch/mips/kernel/cps-vec.S b/arch/mips/kernel/cps-vec.S
-index 8ef492da827f..64ecfdac6580 100644
---- a/arch/mips/kernel/cps-vec.S
-+++ b/arch/mips/kernel/cps-vec.S
-@@ -116,6 +116,8 @@ not_nmi:
- 	li	t0, ST0_CU1 | ST0_CU0 | ST0_BEV | STATUS_BITDEPS
- 	mtc0	t0, CP0_STATUS
- 
-+	/* We don't know how to do coherence setup on earlier ISA */
-+#if MIPS_ISA_REV > 0
- 	/* Skip cache & coherence setup if we're already coherent */
- 	lw	s7, GCR_CL_COHERENCE_OFS(s1)
- 	bnez	s7, 1f
-@@ -129,6 +131,7 @@ not_nmi:
- 	li	t0, 0xff
- 	sw	t0, GCR_CL_COHERENCE_OFS(s1)
- 	ehb
-+#endif /* MIPS_ISA_REV > 0 */
- 
- 	/* Set Kseg0 CCA to that in s0 */
- 1:	mfc0	t0, CP0_CONFIG
-@@ -515,6 +518,7 @@ LEAF(mips_cps_boot_vpes)
- 	 nop
- 	END(mips_cps_boot_vpes)
- 
-+#if MIPS_ISA_REV > 0
- LEAF(mips_cps_cache_init)
- 	/*
- 	 * Clear the bits used to index the caches. Note that the architecture
-@@ -588,6 +592,7 @@ dcache_done:
- 	jr	ra
- 	 nop
- 	END(mips_cps_cache_init)
-+#endif /* MIPS_ISA_REV > 0 */
- 
- #if defined(CONFIG_MIPS_CPS_PM) && defined(CONFIG_CPU_PM)
- 
-diff --git a/arch/mips/kernel/smp-cps.c b/arch/mips/kernel/smp-cps.c
-index 4fc288bb85b9..f968a319d87f 100644
---- a/arch/mips/kernel/smp-cps.c
-+++ b/arch/mips/kernel/smp-cps.c
-@@ -361,6 +361,8 @@ static int cps_boot_secondary(int cpu, struct task_struct *idle)
- 
- static void cps_init_secondary(void)
+diff --git a/arch/mips/include/asm/cpu-features.h b/arch/mips/include/asm/cpu-features.h
+index c0983130a44c..c613426b0bfc 100644
+--- a/arch/mips/include/asm/cpu-features.h
++++ b/arch/mips/include/asm/cpu-features.h
+@@ -118,7 +118,7 @@
+ #define cpu_has_3k_cache	__isa_lt_and_opt(1, MIPS_CPU_3K_CACHE)
+ #endif
+ #ifndef cpu_has_4k_cache
+-#define cpu_has_4k_cache	__isa_ge_or_opt(1, MIPS_CPU_4K_CACHE)
++#define cpu_has_4k_cache	__opt(MIPS_CPU_4K_CACHE)
+ #endif
+ #ifndef cpu_has_octeon_cache
+ #define cpu_has_octeon_cache	0
+diff --git a/arch/mips/kernel/cpu-probe.c b/arch/mips/kernel/cpu-probe.c
+index 7ddf07f255f3..6d15a398d389 100644
+--- a/arch/mips/kernel/cpu-probe.c
++++ b/arch/mips/kernel/cpu-probe.c
+@@ -1602,6 +1602,8 @@ static inline void cpu_probe_broadcom(struct cpuinfo_mips *c, unsigned int cpu)
+ static inline void cpu_probe_cavium(struct cpuinfo_mips *c, unsigned int cpu)
  {
-+	int core = cpu_core(&current_cpu_data);
-+
- 	/* Disable MT - we only want to run 1 TC per VPE */
- 	if (cpu_has_mipsmt)
- 		dmt();
-@@ -376,6 +378,9 @@ static void cps_init_secondary(void)
- 		BUG_ON(ident != mips_cm_vp_id(smp_processor_id()));
- 	}
- 
-+	if (core > 0 && !read_gcr_cl_coherence())
-+		pr_warn("Core %u is not in coherent domain\n", core);
-+
- 	if (cpu_has_veic)
- 		clear_c0_status(ST0_IM);
- 	else
+ 	decode_configs(c);
++	/* Octeon has different cache interface */
++	c->options &= ~MIPS_CPU_4K_CACHE;
+ 	switch (c->processor_id & PRID_IMP_MASK) {
+ 	case PRID_IMP_CAVIUM_CN38XX:
+ 	case PRID_IMP_CAVIUM_CN31XX:
 -- 
 2.34.1
 

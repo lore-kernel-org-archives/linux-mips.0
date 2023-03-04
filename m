@@ -2,52 +2,52 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7A783C678DB
-	for <linux-mips@archiver.kernel.org>; Sat,  4 Mar 2023 22:15:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7C833C6FA8E
+	for <linux-mips@archiver.kernel.org>; Sat,  4 Mar 2023 22:15:41 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229461AbjCDWPj (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Sat, 4 Mar 2023 17:15:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54514 "EHLO
+        id S229590AbjCDWPk (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Sat, 4 Mar 2023 17:15:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54528 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229437AbjCDWPi (ORCPT
+        with ESMTP id S229615AbjCDWPi (ORCPT
         <rfc822;linux-mips@vger.kernel.org>); Sat, 4 Mar 2023 17:15:38 -0500
 Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com [66.111.4.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D42C512F22
-        for <linux-mips@vger.kernel.org>; Sat,  4 Mar 2023 14:15:36 -0800 (PST)
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailout.nyi.internal (Postfix) with ESMTP id 7AF9B5C0101;
-        Sat,  4 Mar 2023 17:15:35 -0500 (EST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3556C13DDE
+        for <linux-mips@vger.kernel.org>; Sat,  4 Mar 2023 14:15:38 -0800 (PST)
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
+        by mailout.nyi.internal (Postfix) with ESMTP id 9DCE95C0106;
+        Sat,  4 Mar 2023 17:15:37 -0500 (EST)
 Received: from mailfrontend1 ([10.202.2.162])
-  by compute1.internal (MEProxy); Sat, 04 Mar 2023 17:15:35 -0500
+  by compute2.internal (MEProxy); Sat, 04 Mar 2023 17:15:37 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=flygoat.com; h=
         cc:cc:content-transfer-encoding:content-type:date:date:from:from
         :in-reply-to:in-reply-to:message-id:mime-version:references
-        :reply-to:sender:subject:subject:to:to; s=fm2; t=1677968135; x=
-        1678054535; bh=6wu56FuUf5PEAXYiDOFQaP4gNqab8JFzm14DGfaET4A=; b=L
-        fND/DOLdlKm1ufsqFjiyx/iq6zK3mgNu8lCHOzcDvx0fqfQ/UkuSoAJTd4KjrPfj
-        QEk+Xq0vgk1JlOSz5gCnw/tmS7HuJeKhW5YXvrEu7j7Calg3SoBeHnDkd2t+i6tN
-        RTE1k4MRlQr+1jhZYsrg/WEBdlu801CcN1GQEue57LiFNaF1ZhQM7u7o9bDlP2hL
-        6ws22/HQaX1MeQ87bt+3vUPYtVPNh/VL4SjlKKN19d5NpEhM2d16tj6TCylR7Qg6
-        PCjRqZ63eIscGEyAw5VSBculbeITTxO1+lPQSCstaOhQBctoDeWjcYrWjGPskRNq
-        ELMO3KFUV5caxtMZU5hjA==
+        :reply-to:sender:subject:subject:to:to; s=fm2; t=1677968137; x=
+        1678054537; bh=FyiMnbB7vO9pKAJ1t/+CxPIKESYZIYJEg2a1QH+wfQ8=; b=B
+        HhLKo5GuHr1+dLVzEass+HU63KzURwi6TEFYfnkk4dq9dsIQ59+UnsssZJ+aK3sP
+        qsSyJdnDxojaU1Fq/UT6FVPmMBik7jBSOeuRQsmMm3+cDWbLUCDSliuw4PuU2SzT
+        4quzLeZYzwYlH4lrAvFbM96p9N0wsch1O0wfClpu9KGnziJwCvUaKizInucZkF+0
+        INxuYAJnhe2Hh/QkvvnRw9vQg/3430Qh9pew6tynpyBAsHFqoizIRysX5ofNZRKd
+        7y8MWeeQW1UD0zJVQAOLzTiZ5H56R+94Y6eg6YW6jlsWFiZDpQ53CuLtXrz1bkx9
+        Qdwm84BWD7UuCaLU1f30Q==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:cc:content-transfer-encoding
         :content-type:date:date:feedback-id:feedback-id:from:from
         :in-reply-to:in-reply-to:message-id:mime-version:references
         :reply-to:sender:subject:subject:to:to:x-me-proxy:x-me-proxy
-        :x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1677968135; x=
-        1678054535; bh=6wu56FuUf5PEAXYiDOFQaP4gNqab8JFzm14DGfaET4A=; b=H
-        89j96yLIvbyugdaT84BvLRHQTCOQ+neMTQA34R/4zAfD3gORk/5gaANOIM/3onIb
-        f+vwyG15ewIwdFgvIiXl97j9E9tCWLnfvOgmg0onyCrkRTIcSRYCjwBNBLL7xSLv
-        l0KRfOC0JAdks35sZTBiy5MOGVDBYte9mEV6uoW0zB1RKtUwd8iEQQ5lL3wbzrRK
-        Qgr/C3Il0DjqR2DtoA4x/oh0Fs7U4v+MQQjOqHM/3xkoWZbIf5bjSH+srEb2/kkx
-        fofnkXi4CTT/7h0KxQteD7PLwtszi+WcTTF51HWwDidbvL7nBov/QGP4ZQFqgyLk
-        2SlDzp4EHMC2M+hGgCPLQ==
-X-ME-Sender: <xms:B8MDZFRODksUtYU_t5gaVy1jD7aTzwlv8izY3mkXa5Xz7W93KitESg>
-    <xme:B8MDZOzt3CShWCcPno0Vp-UFHOzEVpw8ZwVQwpL7KE9CrYqs6lHLFqGSqGN2B2Hi2
-    1_0LLJ-A1C6jH6oDKA>
-X-ME-Received: <xmr:B8MDZK2twyQRyrnjag8Kcvm1aMjUE8RHIOR1UT6qngvFYolxY4oeM2kyioXf>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrvddtuddgudehhecutefuodetggdotefrod
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1677968137; x=
+        1678054537; bh=FyiMnbB7vO9pKAJ1t/+CxPIKESYZIYJEg2a1QH+wfQ8=; b=t
+        a+m2WdbLYeQSTLijUzxhiv3/aCVA1D+LLAVK4JBbDiDl0tEp2cKAfduGP1rRDLbQ
+        fqgEJRUnjmHIneW2TU8/F8hVEyOMvOUCQDBzplOzEr+KFUs5dMgoCmh65aRgYuhG
+        8hsQC+y2mv9zPH8No94NOgRRNJzbbS+J2Pn7CWi44HrLxQZ2/G9TKiPYoM+MYtka
+        OavMmf/DV9kzmFDBDd0PRo3YnTnjzL6zg1N7JkQyyHroUdLplck+j3fwkF7C9NDK
+        9grqjwbLFTwkJANdASPVc3kAkENqf10OjLghqPo4BvhSxDeXJ7n7L72dTZDbCuo6
+        /5OP2J4JvRx3w5HODJpvw==
+X-ME-Sender: <xms:CcMDZIvan_-J6qwLCW8KLBPafKvMF53awAJhPuBGvd-uGAvDQQ6R0g>
+    <xme:CcMDZFcLg7-aNwh_bLqsSS8_z_uuIwH2oth9UDoThqDfbe5gRgUj27q4xfrs_qRPr
+    9kK87TM9jHE4GHmbRk>
+X-ME-Received: <xmr:CcMDZDxWkCR5EUji84ZxbZjZPHnxfHyxZVVIcGO9KG5WuLJtp593BN7qc8Q3>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrvddtuddgudehiecutefuodetggdotefrod
     ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
     necuuegrihhlohhuthemuceftddtnecunecujfgurhephffvvefufffkofgjfhgggfestd
     ekredtredttdenucfhrhhomheplfhirgiguhhnucgjrghnghcuoehjihgrgihunhdrhigr
@@ -55,20 +55,20 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrvddtuddgudehhecutefuodetgg
     dvvdegkefgvddttedtleeiiefhgeetudegkefhvdfhjeeftdenucevlhhushhtvghrufhi
     iigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehjihgrgihunhdrhigrnhhgsehflh
     ihghhorghtrdgtohhm
-X-ME-Proxy: <xmx:B8MDZNDMudv66Rr-SHdV65qGN77kdjLUuBo5xwFSeipSVbQqziXdQA>
-    <xmx:B8MDZOjYIuhCRXM5bJy91OvAoURtFm6LMB1LOEpv2bwWNxPHYL1zqg>
-    <xmx:B8MDZBpnfczXh0mgW-RHIlW6exc_QQKwmOEKN_nHkDRCAC4A_UTPtQ>
-    <xmx:B8MDZBsbib_if6ArALbSxdNSZO-2Jcm4fPm0DMGzki-2FT_wxf9iRw>
+X-ME-Proxy: <xmx:CcMDZLMLIgsgaFHXrWDA63PJu9tQ25UDaIyE5KFsF4SPqcjiS1orbQ>
+    <xmx:CcMDZI-RSZMh1x2Es5LcLUvZORuwoILq1BK9ms0M879WUMeU1fd_iA>
+    <xmx:CcMDZDUQ1IEqDKN5eBCPNcn_-_nqWPtfjodb8X3oaqkKF3FuczKOWA>
+    <xmx:CcMDZKKhWUXLX-iSEc50XSqJHHPBUxUxGhXFdp7jQnJuiyyGd3SeMg>
 Feedback-ID: ifd894703:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sat,
- 4 Mar 2023 17:15:34 -0500 (EST)
+ 4 Mar 2023 17:15:36 -0500 (EST)
 From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
 To:     linux-mips@vger.kernel.org
 Cc:     tsbogend@alpha.franken.de, philmd@linaro.org,
         Jiaxun Yang <jiaxun.yang@flygoat.com>
-Subject: [PATCH 01/12] MIPS: Move declaration of bcache ops to cache.c
-Date:   Sat,  4 Mar 2023 22:15:13 +0000
-Message-Id: <20230304221524.47160-2-jiaxun.yang@flygoat.com>
+Subject: [PATCH 03/12] MIPS: mips-cm: Check availability of config registers
+Date:   Sat,  4 Mar 2023 22:15:15 +0000
+Message-Id: <20230304221524.47160-4-jiaxun.yang@flygoat.com>
 X-Mailer: git-send-email 2.37.1 (Apple Git-137.1)
 In-Reply-To: <20230304221524.47160-1-jiaxun.yang@flygoat.com>
 References: <20230304221524.47160-1-jiaxun.yang@flygoat.com>
@@ -78,76 +78,36 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-bcache is not tied to CPU's cache interface. Just move those
-declaration to cache.c so it can be avaialble to CPU with all
-cache types.
+Prevent reading unsupported config register during probing process.
 
 Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
 ---
- arch/mips/mm/c-r4k.c | 14 --------------
- arch/mips/mm/cache.c | 17 +++++++++++++++++
- 2 files changed, 17 insertions(+), 14 deletions(-)
+ arch/mips/kernel/mips-cm.c | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
 
-diff --git a/arch/mips/mm/c-r4k.c b/arch/mips/mm/c-r4k.c
-index a549fa98c2f4..fd660d5c5328 100644
---- a/arch/mips/mm/c-r4k.c
-+++ b/arch/mips/mm/c-r4k.c
-@@ -110,20 +110,6 @@ static unsigned long dcache_size __read_mostly;
- static unsigned long vcache_size __read_mostly;
- static unsigned long scache_size __read_mostly;
+diff --git a/arch/mips/kernel/mips-cm.c b/arch/mips/kernel/mips-cm.c
+index b4f7d950c846..3f00788b0871 100644
+--- a/arch/mips/kernel/mips-cm.c
++++ b/arch/mips/kernel/mips-cm.c
+@@ -181,11 +181,16 @@ static DEFINE_PER_CPU_ALIGNED(unsigned long, cm_core_lock_flags);
  
--/*
-- * Dummy cache handling routines for machines without boardcaches
-- */
--static void cache_noop(void) {}
--
--static struct bcache_ops no_sc_ops = {
--	.bc_enable = (void *)cache_noop,
--	.bc_disable = (void *)cache_noop,
--	.bc_wback_inv = (void *)cache_noop,
--	.bc_inv = (void *)cache_noop
--};
--
--struct bcache_ops *bcops = &no_sc_ops;
--
- #define cpu_is_r4600_v1_x()	((read_c0_prid() & 0xfffffff0) == 0x00002010)
- #define cpu_is_r4600_v2_x()	((read_c0_prid() & 0xfffffff0) == 0x00002020)
+ phys_addr_t __mips_cm_phys_base(void)
+ {
+-	u32 config3 = read_c0_config3();
+ 	unsigned long cmgcr;
  
-diff --git a/arch/mips/mm/cache.c b/arch/mips/mm/cache.c
-index 11b3e7ddafd5..25cedd6ee572 100644
---- a/arch/mips/mm/cache.c
-+++ b/arch/mips/mm/cache.c
-@@ -17,6 +17,7 @@
- #include <linux/highmem.h>
- #include <linux/pagemap.h>
- 
-+#include <asm/bcache.h>
- #include <asm/cacheflush.h>
- #include <asm/processor.h>
- #include <asm/cpu.h>
-@@ -56,6 +57,22 @@ EXPORT_SYMBOL_GPL(local_flush_data_cache_page);
- EXPORT_SYMBOL(flush_data_cache_page);
- EXPORT_SYMBOL(flush_icache_all);
- 
-+#ifdef CONFIG_BOARD_SCACHE
-+/*
-+ * Dummy cache handling routines for machines without boardcaches
-+ */
-+static void cache_noop(void) {}
+ 	/* Check the CMGCRBase register is implemented */
+-	if (!(config3 & MIPS_CONF3_CMGCR))
++	if (!(read_c0_config() & MIPS_CONF_M))
++		return 0;
 +
-+static struct bcache_ops no_sc_ops = {
-+	.bc_enable = (void *)cache_noop,
-+	.bc_disable = (void *)cache_noop,
-+	.bc_wback_inv = (void *)cache_noop,
-+	.bc_inv = (void *)cache_noop
-+};
++	if (!(read_c0_config2() & MIPS_CONF_M))
++		return 0;
 +
-+struct bcache_ops *bcops = &no_sc_ops;
-+#endif
-+
- #ifdef CONFIG_DMA_NONCOHERENT
++	if (!(read_c0_config3() & MIPS_CONF3_CMGCR))
+ 		return 0;
  
- /* DMA cache operations. */
+ 	/* Read the address from CMGCRBase */
 -- 
 2.34.1
 

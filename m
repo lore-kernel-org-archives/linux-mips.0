@@ -2,52 +2,52 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B5855C6FD1A
-	for <linux-mips@archiver.kernel.org>; Sat,  4 Mar 2023 22:15:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3098EC6FD1B
+	for <linux-mips@archiver.kernel.org>; Sat,  4 Mar 2023 22:15:45 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229519AbjCDWPm (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Sat, 4 Mar 2023 17:15:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54546 "EHLO
+        id S229653AbjCDWPo (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Sat, 4 Mar 2023 17:15:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54586 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229607AbjCDWPl (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Sat, 4 Mar 2023 17:15:41 -0500
+        with ESMTP id S229651AbjCDWPn (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Sat, 4 Mar 2023 17:15:43 -0500
 Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com [66.111.4.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6459913D4C
-        for <linux-mips@vger.kernel.org>; Sat,  4 Mar 2023 14:15:40 -0800 (PST)
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailout.nyi.internal (Postfix) with ESMTP id D06005C00A3;
-        Sat,  4 Mar 2023 17:15:39 -0500 (EST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB7F316336
+        for <linux-mips@vger.kernel.org>; Sat,  4 Mar 2023 14:15:42 -0800 (PST)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailout.nyi.internal (Postfix) with ESMTP id 3515E5C0101;
+        Sat,  4 Mar 2023 17:15:42 -0500 (EST)
 Received: from mailfrontend1 ([10.202.2.162])
-  by compute3.internal (MEProxy); Sat, 04 Mar 2023 17:15:39 -0500
+  by compute5.internal (MEProxy); Sat, 04 Mar 2023 17:15:42 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=flygoat.com; h=
         cc:cc:content-transfer-encoding:content-type:date:date:from:from
         :in-reply-to:in-reply-to:message-id:mime-version:references
-        :reply-to:sender:subject:subject:to:to; s=fm2; t=1677968139; x=
-        1678054539; bh=xKLtOb+OCG0wlvXXdSELiGL5SM7bkhu1Ggfd/j2VE7s=; b=d
-        Mt5t2CxBrlPJ9bUG/AkiVJPvJ4aQ7q7Z+lZyLaa7pvsvNgYp0MeUUlsY3MT9VLSQ
-        XRuLYt6zMkxOsKWkv0vDJ1BER13c+2OmUWDxntq95tMymtBad6u56H3xzTV8xtH5
-        QnM+OqvR9BQPuDFQg66dUkqjZXoLuQhbbfQJYdrZMWPPnsp5nWRg3IsoNkfp0jQZ
-        XKhTjJm68Yv8eMuEL6+Jr1UfN8jcwX7iPPcmoLQEMJIEipY1z84aXwJVJJiI9VSb
-        qgw5Kx5FEU2ahiaFKGb9vZKmsVKLzCa7tmISai4CAzlrtNgBx+0eV/ArshiXdUJx
-        5hl2+vkXavsGTHX9KfdMQ==
+        :reply-to:sender:subject:subject:to:to; s=fm2; t=1677968142; x=
+        1678054542; bh=fDyL1JljQsZoXFLAXwN//RV19WQQKUijfcIVBv0fh6k=; b=L
+        RS2ZXbxNFyHrT3ZMpW1Kb/Xn6dpcCConGmpD8CQ5PANpRxLAa7aeTgC6clNG00Jm
+        UN2HMscDDQELfUdAAMg9W797pvPtOGkRsGGKkAKl6znn0gtttMMRg7Irsiz7TJ2O
+        I9d3ROTCsG/V54BZ6bJj+gi14sshqRp1bBr9NwB4hqNtF4BxhEN0ZiCJtlNdZEsq
+        PZQEGY/cQ7JL29niy3ibMvsZV+PcjNdSl/SM0BaevGl5/VwBpsIDYmpvQhHac4e5
+        HrAEf/QQrlOnRH7h66ESWJ/F6d4cLPreARZyj78UprxBvy9d3auETkfSxGhLkLDJ
+        /HniLaO/SxT1hy4pUh5dg==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:cc:content-transfer-encoding
         :content-type:date:date:feedback-id:feedback-id:from:from
         :in-reply-to:in-reply-to:message-id:mime-version:references
         :reply-to:sender:subject:subject:to:to:x-me-proxy:x-me-proxy
-        :x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1677968139; x=
-        1678054539; bh=xKLtOb+OCG0wlvXXdSELiGL5SM7bkhu1Ggfd/j2VE7s=; b=C
-        ZVy6ezKfq48tgUac+kX38vuWypYmq8RRNdPiPNr5iqtionhJHUM4MZDE8h4cOGN/
-        4Mj7AjPMLFCgyau37DJHtQzJ1VijPnFQYMikgS8FMDtG0ws71QQUKqKLtBLM+7Rg
-        YkMoICH4bwYc0Us99fQH+HoPwjqp6+6UxDBKcCnxtHxwYALJGmrjJ3MwCC6uirgt
-        oPdv2CHwvDqDMTJkIpiAlFRclWbn7dQ6UEPfunrpHLbk5Bw9ni9f91FPNVCG67ly
-        tt8WkpVlqlma1EYaPo3rczphA9LvSHqOimT4fRP9zGUgM97DL8u7lU8AVAGHtOB1
-        5uqZXp0Mrw29zEDVz4QFw==
-X-ME-Sender: <xms:C8MDZLSjm8E1IVDy0pEkBi1fZYYr90GTJXRLn_9WXzSy2lyUoqi7eg>
-    <xme:C8MDZMyHPo6dHtFBOPwNb6G2CilwEoAjYmYJm2mj54p4vYgesFgZ7l5eHosPGjYlo
-    CD7-Psqp-DvP_VUvDE>
-X-ME-Received: <xmr:C8MDZA1yEc6HVbVD1e0W9xI3V5xwd4MMXpfFWZgYkzyG6hI9cpwEQ8mHP1J4>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrvddtuddgudehiecutefuodetggdotefrod
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1677968142; x=
+        1678054542; bh=fDyL1JljQsZoXFLAXwN//RV19WQQKUijfcIVBv0fh6k=; b=Q
+        WjTClmn8oKBHv2CUXoVdjfQSMaOH9GwnMEaxp7lkj/2pqs5fVutohSKaALammG+G
+        8Ev0qas0lLQNvWS+tbFSSQWMT2LKRw09dqhYgo8SnIEP2DwutAoW11xDo5zr5Uhx
+        /ZY+kUIhDxBnDPFxUw+gs6cRmdOCpCOtb/Ug0Ewi9zmQnSmkDMZR838ODzG9+2UB
+        yt71v+SM/NdiVkU1/ZjphPIImWo+rituSs3XmIJs2RtY7/7hQxnJR7Dxu5hHdhJV
+        6UFV3XgfviWKhNXESjZt5VDqcKj8LCstV7Qz4wnnN+NafAic9Xoe3Zg4KZK9Bdsp
+        Ot1gcsyC+zPv1QECYvWjw==
+X-ME-Sender: <xms:DsMDZIVY_pR7Orz0DqQJfsxRydCskD08rfIlri4NjPlR8yEXQIgL5g>
+    <xme:DsMDZMlKZSye2z5WHadrKd1Lzd5_Me-mrGIJ6ZV9iDxEPJCFaDAQE62rZu51QB9qD
+    BklOcO3Kqp9aMW-HSo>
+X-ME-Received: <xmr:DsMDZMbF_R6zzH7yUiCr381Rmli23EaT6s1b5ee4YQqXYMpQ0a9tuByJbYhL>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrvddtuddgudehhecutefuodetggdotefrod
     ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
     necuuegrihhlohhuthemuceftddtnecunecujfgurhephffvvefufffkofgjfhgggfestd
     ekredtredttdenucfhrhhomheplfhirgiguhhnucgjrghnghcuoehjihgrgihunhdrhigr
@@ -55,20 +55,20 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrvddtuddgudehiecutefuodetgg
     dvvdegkefgvddttedtleeiiefhgeetudegkefhvdfhjeeftdenucevlhhushhtvghrufhi
     iigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehjihgrgihunhdrhigrnhhgsehflh
     ihghhorghtrdgtohhm
-X-ME-Proxy: <xmx:C8MDZLCpxBjcFXHcDyvd3TWB3tAWJbVtaSZfJkAJhzkv_DQPQmu5Aw>
-    <xmx:C8MDZEgktIbSzMN64iY4ZhNPWXi5AgtkfiJ70ljGfGMoKyZiMj1Jjg>
-    <xmx:C8MDZPq-kpYe9dJBMsZVW-XIPeEzmgTz2dwX9GU8p3nYQhFoUsUqZg>
-    <xmx:C8MDZHty9PIQrnHj_IrJMkZHHMjvp19xFNTJXcsbIIoPQNetAhlQQw>
+X-ME-Proxy: <xmx:DsMDZHWFKH0aY4VMKKSq9tr0XC8ZSfT0mpabmaHfKfi3j65TlSoVnw>
+    <xmx:DsMDZCm1R2xQvKUkEKGC8_CZmZMeVYRP3bL4xC1jFjWaNGCwxHuP0w>
+    <xmx:DsMDZMeU_Ze5FdPIWcSRDzRVNrQPoFD-HxjcuFlie_pMVk6yTTm9dA>
+    <xmx:DsMDZHzeeuHjg7n7BOcEUVy5PCwbXp1auKMc7wMTNhDSnrr7vdUo_g>
 Feedback-ID: ifd894703:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sat,
- 4 Mar 2023 17:15:38 -0500 (EST)
+ 4 Mar 2023 17:15:41 -0500 (EST)
 From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
 To:     linux-mips@vger.kernel.org
 Cc:     tsbogend@alpha.franken.de, philmd@linaro.org,
         Jiaxun Yang <jiaxun.yang@flygoat.com>
-Subject: [PATCH 05/12] MIPS: cpu-features: Enable octeon_cache by cpu_type
-Date:   Sat,  4 Mar 2023 22:15:17 +0000
-Message-Id: <20230304221524.47160-6-jiaxun.yang@flygoat.com>
+Subject: [PATCH 07/12] MIPS: Octeon: Allow CVMSEG to be disabled
+Date:   Sat,  4 Mar 2023 22:15:19 +0000
+Message-Id: <20230304221524.47160-8-jiaxun.yang@flygoat.com>
 X-Mailer: git-send-email 2.37.1 (Apple Git-137.1)
 In-Reply-To: <20230304221524.47160-1-jiaxun.yang@flygoat.com>
 References: <20230304221524.47160-1-jiaxun.yang@flygoat.com>
@@ -78,47 +78,62 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-cpu_has_octeon_cache was tied to 0 for generic cpu-features,
-whith this generic kernel built for octeon CPU won't boot.
+Don't include cvmseg states into thread_status when
+CONFIG_CAVIUM_OCTEON_CVMSEG_SIZE is not defined or 0.
 
-Just enable this flag by cpu_type. It won't hurt orther platforms
-because compiler will eliminate the code path on other processors.
+Fix compile for kernel without this feature.
 
 Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
 ---
- arch/mips/include/asm/cpu-features.h | 19 ++++++++++++++++++-
- 1 file changed, 18 insertions(+), 1 deletion(-)
+ arch/mips/include/asm/processor.h | 7 ++++++-
+ arch/mips/kernel/asm-offsets.c    | 3 +++
+ 2 files changed, 9 insertions(+), 1 deletion(-)
 
-diff --git a/arch/mips/include/asm/cpu-features.h b/arch/mips/include/asm/cpu-features.h
-index c613426b0bfc..51a1737b03d0 100644
---- a/arch/mips/include/asm/cpu-features.h
-+++ b/arch/mips/include/asm/cpu-features.h
-@@ -121,7 +121,24 @@
- #define cpu_has_4k_cache	__opt(MIPS_CPU_4K_CACHE)
+diff --git a/arch/mips/include/asm/processor.h b/arch/mips/include/asm/processor.h
+index 3fde1ff72bd1..ae2cd37a38f0 100644
+--- a/arch/mips/include/asm/processor.h
++++ b/arch/mips/include/asm/processor.h
+@@ -202,11 +202,13 @@ struct octeon_cop2_state {
+ #define COP2_INIT						\
+ 	.cp2			= {0,},
+ 
++#if defined(CONFIG_CAVIUM_OCTEON_CVMSEG_SIZE) && \
++	CONFIG_CAVIUM_OCTEON_CVMSEG_SIZE > 0
+ struct octeon_cvmseg_state {
+ 	unsigned long cvmseg[CONFIG_CAVIUM_OCTEON_CVMSEG_SIZE]
+ 			    [cpu_dcache_line_size() / sizeof(unsigned long)];
+ };
+-
++#endif
+ #else
+ #define COP2_INIT
  #endif
- #ifndef cpu_has_octeon_cache
--#define cpu_has_octeon_cache	0
-+#define cpu_has_octeon_cache						\
-+({									\
-+	int __res;							\
-+									\
-+	switch (current_cpu_type()) {					\
-+	case CPU_CAVIUM_OCTEON:						\
-+	case CPU_CAVIUM_OCTEON_PLUS:					\
-+	case CPU_CAVIUM_OCTEON2:					\
-+	case CPU_CAVIUM_OCTEON3:					\
-+		__res = 1;						\
-+		break;							\
-+									\
-+	default:							\
-+		__res = 0;						\
-+	}								\
-+									\
-+	__res;								\
-+})
+@@ -263,7 +265,10 @@ struct thread_struct {
+ 	unsigned long trap_nr;
+ #ifdef CONFIG_CPU_CAVIUM_OCTEON
+ 	struct octeon_cop2_state cp2 __attribute__ ((__aligned__(128)));
++#if defined(CONFIG_CAVIUM_OCTEON_CVMSEG_SIZE) && \
++	CONFIG_CAVIUM_OCTEON_CVMSEG_SIZE > 0
+ 	struct octeon_cvmseg_state cvmseg __attribute__ ((__aligned__(128)));
++#endif
  #endif
- /* Don't override `cpu_has_fpu' to 1 or the "nofpu" option won't work.  */
- #ifndef cpu_has_fpu
+ 	struct mips_abi *abi;
+ };
+diff --git a/arch/mips/kernel/asm-offsets.c b/arch/mips/kernel/asm-offsets.c
+index c4501897b870..40fd4051bb3d 100644
+--- a/arch/mips/kernel/asm-offsets.c
++++ b/arch/mips/kernel/asm-offsets.c
+@@ -306,7 +306,10 @@ void output_octeon_cop2_state_defines(void)
+ 	OFFSET(OCTEON_CP2_HSH_IVW,	octeon_cop2_state, cop2_hsh_ivw);
+ 	OFFSET(OCTEON_CP2_SHA3,		octeon_cop2_state, cop2_sha3);
+ 	OFFSET(THREAD_CP2,	task_struct, thread.cp2);
++#if defined(CONFIG_CAVIUM_OCTEON_CVMSEG_SIZE) && \
++	CONFIG_CAVIUM_OCTEON_CVMSEG_SIZE > 0
+ 	OFFSET(THREAD_CVMSEG,	task_struct, thread.cvmseg.cvmseg);
++#endif
+ 	BLANK();
+ }
+ #endif
 -- 
 2.34.1
 

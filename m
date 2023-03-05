@@ -2,46 +2,46 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AFAFDC678DB
-	for <linux-mips@archiver.kernel.org>; Sun,  5 Mar 2023 13:56:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C8460C6FA8E
+	for <linux-mips@archiver.kernel.org>; Sun,  5 Mar 2023 13:58:17 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230225AbjCEN40 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Sun, 5 Mar 2023 08:56:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43804 "EHLO
+        id S230198AbjCEN6Q (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Sun, 5 Mar 2023 08:58:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43730 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230110AbjCEN4D (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Sun, 5 Mar 2023 08:56:03 -0500
+        with ESMTP id S230033AbjCEN5x (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Sun, 5 Mar 2023 08:57:53 -0500
 Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8053FCA07;
-        Sun,  5 Mar 2023 05:55:17 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BD701C32B;
+        Sun,  5 Mar 2023 05:56:59 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 81A23B80AD4;
-        Sun,  5 Mar 2023 13:54:32 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AEB71C433EF;
-        Sun,  5 Mar 2023 13:54:30 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 2ED72B80AD3;
+        Sun,  5 Mar 2023 13:55:32 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 52567C433EF;
+        Sun,  5 Mar 2023 13:55:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1678024471;
-        bh=Hzk9IvwA7y6VQfWSvbFOzDfMXY+1sArz+O0UOp50ojY=;
+        s=k20201202; t=1678024530;
+        bh=OzBV5aBqKSqmojYY0HRKAqEqSDU504pp8GTe0Af+pj0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=k2CgCk5pDsqAEOWcteHYKbUHeDV+Q6BCGFmPJjPO9I/5oDX4WuM6mKHXm0NYk/hXM
-         WoliUnq9IuQCyhWQ4+eiYjLzGv+0eMLs3uVFupTd/zoud6XqMNNCA/1WgNX39geWNC
-         /o9yt/zZet77sujQ1t3xbwlhto9DyML95HEloLNCb357fE1uWjTEnxPE+kBGgbpppD
-         qMHUUHcdlkQ83R00ScbhU7UAADAuGtATab2oUTOMmEQWbbVhEJOCCh0kJTrBMO0YDx
-         8kHYicWkEnpNQqnDDM5AO/4efh+doqxMhB0azqoURXmbyiRGUKLqxqVG9uC9xvhbBG
-         /agLfHtiMHCBA==
+        b=R1iQNNTMMC0F+RR0LhEo8yrbkl28u+QNqPE66lJh05ZpeCeV3co+ZMlHYINyVyPof
+         s6EE56zkoQ7531e8450Aw+mZTaw17VvIf4bCC9kRNf5B4HNv6d4eqjuwspDc08ZiQg
+         p4gZ62xAHqx9zAfXKuEqiGdcqYC77NtvV4gj3Fk2lu8xj9U0zEEXqVznqkGqdNL09J
+         5aqV17sWXOA7v3myneAAnm0UePhFUEqBP69v3QEEJZ9IMRyflKkuG+Z6JT8U74Sl7s
+         NTAwvV/DrY5HK4EFezGDGHfdzjt7MNcCd5KosZaZLivTUgijnn9FrkTXc61fcdXQN2
+         F9xlhQkQ/ww8A==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     xurui <xurui@kylinos.cn>,
         Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
         Sasha Levin <sashal@kernel.org>, linux-mips@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.10 2/8] MIPS: Fix a compilation issue
-Date:   Sun,  5 Mar 2023 08:54:19 -0500
-Message-Id: <20230305135425.1793964-2-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.14 2/6] MIPS: Fix a compilation issue
+Date:   Sun,  5 Mar 2023 08:55:21 -0500
+Message-Id: <20230305135525.1794277-2-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230305135425.1793964-1-sashal@kernel.org>
-References: <20230305135425.1793964-1-sashal@kernel.org>
+In-Reply-To: <20230305135525.1794277-1-sashal@kernel.org>
+References: <20230305135525.1794277-1-sashal@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 X-stable: review
@@ -69,10 +69,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/arch/mips/include/asm/mach-rc32434/pci.h b/arch/mips/include/asm/mach-rc32434/pci.h
-index 9a6eefd127571..3eb767c8a4eec 100644
+index 6f40d1515580b..1ff8a987025c8 100644
 --- a/arch/mips/include/asm/mach-rc32434/pci.h
 +++ b/arch/mips/include/asm/mach-rc32434/pci.h
-@@ -374,7 +374,7 @@ struct pci_msu {
+@@ -377,7 +377,7 @@ struct pci_msu {
  				 PCI_CFG04_STAT_SSE | \
  				 PCI_CFG04_STAT_PE)
  

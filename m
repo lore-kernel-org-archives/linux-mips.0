@@ -2,85 +2,107 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2AB23C678DB
-	for <linux-mips@archiver.kernel.org>; Sun,  5 Mar 2023 14:08:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 41762C6FA99
+	for <linux-mips@archiver.kernel.org>; Sun,  5 Mar 2023 20:11:18 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230271AbjCEOIm (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Sun, 5 Mar 2023 09:08:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39070 "EHLO
+        id S229691AbjCEULR (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Sun, 5 Mar 2023 15:11:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53860 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230231AbjCEOIj (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Sun, 5 Mar 2023 09:08:39 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DA6011170;
-        Sun,  5 Mar 2023 06:08:15 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 4DEC260B19;
-        Sun,  5 Mar 2023 13:55:15 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 23254C433EF;
-        Sun,  5 Mar 2023 13:55:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1678024514;
-        bh=OzBV5aBqKSqmojYY0HRKAqEqSDU504pp8GTe0Af+pj0=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lKc/nrE9bjg1TnOtP/+iX7tdOViN2+/QujaG4Mta6d18qx5PLC9ZbMc/181extD/q
-         OPiPq95tPhnihc1nkO3l3DK1IXjZV8a4j4KTzFlDhXV9vmlR78/FoW7kyfiZfDW/8Y
-         Cpxq4OQyufZzIr9Ca/hIJ4mLgq0+QcvHnJhzgw5yxK1uUfGgH24hU2xyblatZzHFRA
-         QBosNt3FyAyYTZHekc7DmzsFvEWJpxOrJUXzjm0h/LBK7am+61qIdfmUxIqwlGOzBv
-         /1kY1RGqiq3zY1nq2aCedwBohgEyntJX+pI+G6PAFuDW+E9GaqW8CD3SKjHo1V430W
-         EsiBk/1Ex+JXQ==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     xurui <xurui@kylinos.cn>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Sasha Levin <sashal@kernel.org>, linux-mips@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 2/6] MIPS: Fix a compilation issue
-Date:   Sun,  5 Mar 2023 08:55:05 -0500
-Message-Id: <20230305135509.1794186-2-sashal@kernel.org>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230305135509.1794186-1-sashal@kernel.org>
-References: <20230305135509.1794186-1-sashal@kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+        with ESMTP id S229688AbjCEULP (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Sun, 5 Mar 2023 15:11:15 -0500
+Received: from out5-smtp.messagingengine.com (out5-smtp.messagingengine.com [66.111.4.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77ECC16891;
+        Sun,  5 Mar 2023 12:10:56 -0800 (PST)
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
+        by mailout.nyi.internal (Postfix) with ESMTP id 456115C00E6;
+        Sun,  5 Mar 2023 15:10:53 -0500 (EST)
+Received: from imap51 ([10.202.2.101])
+  by compute6.internal (MEProxy); Sun, 05 Mar 2023 15:10:53 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+        :cc:content-transfer-encoding:content-type:content-type:date
+        :date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:sender:subject:subject:to:to; s=fm1; t=
+        1678047053; x=1678133453; bh=cjW13UmZQsjwyJDeHx5kIcthGLujwjX/c4O
+        TYrUnVEo=; b=M+iX57D3tki6mdnYuiW2+/TVDcTnCB2Ga/GIjvvg25JyIDtZhzU
+        mLkYC+yAY4SFZTnNttwjLlO8DD8yCYVw2kqWR6oHe88HECHGwU2I7Axt7fx139oN
+        etVdN33n4Awn9hGCJAMtMjqHAQtx2VRikVcaIkNPJ7OSOLVm6//NltGUsHzgIj37
+        6Q3ejPZj5Yi2cHI9b414CB+2Y/WNWnifgSj0Gzxyz7KQ4KCQRarWS5CulHYbi5eC
+        ag9J4dSS2qmKbTaLa9/5xYv+fAFL3Yxj7jbc/4GSpKvlOtsPrPUdGxBgQX6SJ5Z/
+        5TNCZ2yUU9mfrFdl1+bt1hfGmpR+ALzk/+w==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-transfer-encoding
+        :content-type:content-type:date:date:feedback-id:feedback-id
+        :from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:sender:subject:subject:to:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=
+        1678047053; x=1678133453; bh=cjW13UmZQsjwyJDeHx5kIcthGLujwjX/c4O
+        TYrUnVEo=; b=CYjynxi2XdbvcwdySeuJXuc1PmUeES5qN5N0+ACWBaHPfzz2mdY
+        KOtHjXR5RghXHpnlzSUA3NKQ8HzaPRpU50fjVFpJJj2Vy6sGAfy9/jRTA0VzqhBk
+        8GsAumW0PCYRukJgw9SVPtwhkxwpu7ePss7hnK46F7qIf9wvuoF9/IIYqYHLSQ6S
+        WYeQ8pkNDtW0oDCAUXUKxKH9ooj8BOTq4NG7N1mHccROcNqGiApuSD4gGmN67hlg
+        /JkwqqShEOb8mieY78lGMfW+Gz28CVp4X2Co4shGbu4N41Qb30SR08YRmY/mYRXg
+        wfIYMYkcUjgcGZeIAy669di3WjfqzK4B1xQ==
+X-ME-Sender: <xms:TPcEZBo-q52j-jqchY2XGMpcTPYR06yXpKAxCmCfSK69n_WJZvxBew>
+    <xme:TPcEZDrpog9WoSHrCoXbSnoa2mLg-BTyPhTgGzmB-0qEgXBt4T7_tYyFgcQXJBgjV
+    lAj5AsSTwmqOpGlKmY>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrvddtgedgudefgecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpefofgggkfgjfhffhffvvefutgfgsehtqhertderreejnecuhfhrohhmpedf
+    tehrnhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrf
+    grthhtvghrnhepgfekueelgeeigefhudduledtkeefffejueelheelfedutedttdfgveeu
+    feefieegnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucevlhhushhtvghrufhiii
+    gvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrrhhnugesrghrnhgusgdruggv
+X-ME-Proxy: <xmx:TPcEZOPBv0ou0224OqiUylR9QEbHsuuPAEnRPF5o8Yfvrtw8YAv_tg>
+    <xmx:TPcEZM7r_vfyT0vMjnpfebYe8dIUVygFUa3KtMBPW88bfxP-LizgeA>
+    <xmx:TPcEZA4_keGj9AgoFlOut-Hu30B0X1Jw1pHtsEd1RMfb_pDQw2T6KA>
+    <xmx:TfcEZLJhlAB4TepxklBPOSFU5nuw9mrTxiy269e0J3uc6tV0KxUo8A>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 15985B60086; Sun,  5 Mar 2023 15:10:51 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.9.0-alpha0-183-gbf7d00f500-fm-20230220.001-gbf7d00f5
+Mime-Version: 1.0
+Message-Id: <5dec69d0-0bc9-4f6c-8d0d-ee5422783100@app.fastmail.com>
+In-Reply-To: <CAMuHMdXoM24uAZGcjBtscNMOSY_+4u08PEOR7gOfCH7jvCceDg@mail.gmail.com>
+References: <20230303102817.212148-1-bhe@redhat.com>
+ <20230303102817.212148-3-bhe@redhat.com> <87sfej1rie.fsf@mpe.ellerman.id.au>
+ <CAMuHMdXoM24uAZGcjBtscNMOSY_+4u08PEOR7gOfCH7jvCceDg@mail.gmail.com>
+Date:   Sun, 05 Mar 2023 21:10:31 +0100
+From:   "Arnd Bergmann" <arnd@arndb.de>
+To:     "Geert Uytterhoeven" <geert@linux-m68k.org>,
+        "Michael Ellerman" <mpe@ellerman.id.au>
+Cc:     Linux-Arch <linux-arch@vger.kernel.org>,
+        "Baoquan He" <bhe@redhat.com>, linux-sh@vger.kernel.org,
+        linux-m68k@lists.linux-m68k.org, linux-hexagon@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
+        "Christoph Hellwig" <hch@infradead.org>, linux-mm@kvack.org,
+        "Luis Chamberlain" <mcgrof@kernel.org>,
+        linux-parisc@vger.kernel.org, linux-alpha@vger.kernel.org,
+        sparclinux@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Subject: Re: [PATCH v3 2/2] arch/*/io.h: remove ioremap_uc in some architectures
+Content-Type: text/plain;charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-From: xurui <xurui@kylinos.cn>
+On Sun, Mar 5, 2023, at 10:29, Geert Uytterhoeven wrote:
+>
+> On Sun, Mar 5, 2023 at 10:23=E2=80=AFAM Michael Ellerman <mpe@ellerman=
+.id.au> wrote:
+>> Maybe that exact code path is only reachable on x86/ia64? But if so
+>> please explain why.
+>>
+>> Otherwise it looks like this series could break that driver on powerpc
+>> at least.
+>
+> Indeed.
 
-[ Upstream commit 109d587a4b4d7ccca2200ab1f808f43ae23e2585 ]
+When I last looked into this, I sent a patch to use ioremap()
+on non-x86:
 
-arch/mips/include/asm/mach-rc32434/pci.h:377:
-cc1: error: result of ‘-117440512 << 16’ requires 44 bits to represent, but ‘int’ only has 32 bits [-Werror=shift-overflow=]
+https://lore.kernel.org/all/20191111192258.2234502-1-arnd@arndb.de/
 
-All bits in KORINA_STAT are already at the correct position, so there is
-no addtional shift needed.
-
-Signed-off-by: xurui <xurui@kylinos.cn>
-Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- arch/mips/include/asm/mach-rc32434/pci.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/arch/mips/include/asm/mach-rc32434/pci.h b/arch/mips/include/asm/mach-rc32434/pci.h
-index 6f40d1515580b..1ff8a987025c8 100644
---- a/arch/mips/include/asm/mach-rc32434/pci.h
-+++ b/arch/mips/include/asm/mach-rc32434/pci.h
-@@ -377,7 +377,7 @@ struct pci_msu {
- 				 PCI_CFG04_STAT_SSE | \
- 				 PCI_CFG04_STAT_PE)
- 
--#define KORINA_CNFG1		((KORINA_STAT<<16)|KORINA_CMD)
-+#define KORINA_CNFG1		(KORINA_STAT | KORINA_CMD)
- 
- #define KORINA_REVID		0
- #define KORINA_CLASS_CODE	0
--- 
-2.39.2
-
+    Arnd

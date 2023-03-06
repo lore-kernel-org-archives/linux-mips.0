@@ -2,95 +2,118 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 43D67C6FA99
-	for <linux-mips@archiver.kernel.org>; Mon,  6 Mar 2023 14:56:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EDE5BC61DA4
+	for <linux-mips@archiver.kernel.org>; Mon,  6 Mar 2023 10:45:35 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229842AbjCFO4j (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 6 Mar 2023 09:56:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37066 "EHLO
+        id S229636AbjCFKpf (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 6 Mar 2023 05:45:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53960 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230085AbjCFO4i (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Mon, 6 Mar 2023 09:56:38 -0500
-Received: from sender4-op-o10.zoho.com (sender4-op-o10.zoho.com [136.143.188.10])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75956CA29;
-        Mon,  6 Mar 2023 06:56:26 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; t=1678114559; cv=none; 
-        d=zohomail.com; s=zohoarc; 
-        b=msY3Rd6XS3xqaxJl4LGanNjzLlMn4D8qSKys/ZRSpHDX9wFeRnbb2SWGgB1VYyQmaFcq+xB13R8jkUAiwHgQ+g5I0/T+ib1w2bUiMIwNwCxM8pOehbDfH7Mfym5+yPm8Mto8OoBxubperIwcEpq9oSgmIDpcxx/MyshGz2JZY3I=
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.com; s=zohoarc; 
-        t=1678114559; h=Content-Type:Content-Transfer-Encoding:Cc:Date:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:To; 
-        bh=9nd+k8XAgPSgixGUgbvKDnLLladecVQNt6nXtFJIVZE=; 
-        b=kOGm43Rs2U1fNoz+m4m2WUtxQVDAT0YRuzmw8Owd9FW1Wnyo6hAL8bW5kaoAIwtMLDZ0bjasdubyK6UknMqw2WvTkM7BIlwlL3ECKT7HAQ/bUJMw4gHhF2uAb7N0I0G8FAM95sW7Me1grGlJErpLHA6cTJqwTVRzqJdG3652LcY=
-ARC-Authentication-Results: i=1; mx.zohomail.com;
-        dkim=pass  header.i=arinc9.com;
-        spf=pass  smtp.mailfrom=arinc.unal@arinc9.com;
-        dmarc=pass header.from=<arinc.unal@arinc9.com>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1678114559;
-        s=zmail; d=arinc9.com; i=arinc.unal@arinc9.com;
-        h=Message-ID:Date:Date:MIME-Version:Subject:Subject:To:To:Cc:Cc:References:From:From:In-Reply-To:Content-Type:Content-Transfer-Encoding:Message-Id:Reply-To;
-        bh=9nd+k8XAgPSgixGUgbvKDnLLladecVQNt6nXtFJIVZE=;
-        b=VA12CC+3jMsU/u8aqp6hpuRoil8nuXF/2ajC2F1arRIzefc4vtLnfnuLu33Z63Et
-        vbfT1meJmQ2UdQ9qZKlSEb1HishyAySPdOVp/LlxD4VjI7BMeP/qhzXCEBM1HYXlyQM
-        DF9nCGtgVgx1lSgqr/wK2qJUP9eCxho9M4FzsBeA=
-Received: from [10.10.10.3] (212.68.60.226 [212.68.60.226]) by mx.zohomail.com
-        with SMTPS id 1678114557969142.92607754783864; Mon, 6 Mar 2023 06:55:57 -0800 (PST)
-Message-ID: <486ebf30-dde3-b77d-c292-ba7605313273@arinc9.com>
-Date:   Mon, 6 Mar 2023 17:55:51 +0300
+        with ESMTP id S229558AbjCFKpe (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Mon, 6 Mar 2023 05:45:34 -0500
+X-Greylist: delayed 539 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 06 Mar 2023 02:45:33 PST
+Received: from dvalin.narfation.org (dvalin.narfation.org [213.160.73.56])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F3C91C5BE
+        for <linux-mips@vger.kernel.org>; Mon,  6 Mar 2023 02:45:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=narfation.org;
+        s=20121; t=1678098974;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=u4rIRxinr1EJC64oGURBJXPpjgsfhmHhuJGOQcUl8tE=;
+        b=O6sxW8F4mUPaIGrSkpZsODy4dqTQN3fPoJdipaKwVFn/+3IQ3thkANTcKlNUFuoBoC1yNU
+        VeBvmQvLwMBGvGaUMFtjvkOVOeRYO4vZQp8BbaY46fGw+CCEgcwF0Y0HhijMfgf8wXKujM
+        IH3fh3WKAy+7XEpuALN2SrNUSvGr2NQ=
+X-Mailbox-Line: From sven@narfation.org Mon Mar 06 10:28:15 2023
+From:   Sven Eckelmann <sven@narfation.org>
+To:     linux-mips@linux-mips.org, Ralf Baechle <ralf@linux-mips.org>,
+        Paul Burton <paul.burton@imgtec.com>
+Cc:     Paul Burton <paul.burton@imgtec.com>,
+        James Hogan <james.hogan@imgtec.com>,
+        Joshua Kinard <kumba@gentoo.org>,
+        Paul Gortmaker <paul.gortmaker@windriver.com>,
+        linux-kernel@vger.kernel.org,
+        "Maciej W. Rozycki" <macro@codesourcery.com>,
+        Markos Chandras <markos.chandras@imgtec.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        David Bauer <mail@david-bauer.net>
+Subject: Re: [PATCH 1/2] MIPS: Add barriers between dcache & icache flushes
+Date:   Mon, 06 Mar 2023 11:28:15 +0100
+Message-ID: <4818332.31r3eYUQgx@ripper>
+X-KMail-Identity: 80820071
+X-KMail-Transport: 1618418458
+X-KMail-Fcc: 108
+X-KMail-Identity-Name: Sven Eckelmann
+X-KMail-Transport-Name: narfation.org
+In-Reply-To: <1456164585-26910-1-git-send-email-paul.burton@imgtec.com>
+References: <1456164585-26910-1-git-send-email-paul.burton@imgtec.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.7.1
-Subject: Re: [PATCH 00/20] pinctrl: ralink: fix ABI, improve driver, move to
- mediatek, improve dt-bindings
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        linux-mediatek@lists.infradead.org, linux-mips@vger.kernel.org,
-        linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Sergio Paracuellos <sergio.paracuellos@gmail.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Sean Wang <sean.wang@kernel.org>,
-        William Dean <williamsukatube@gmail.com>,
-        Daniel Golle <daniel@makrotopia.org>,
-        Daniel Santos <daniel.santos@pobox.com>,
-        Luiz Angelo Daros de Luca <luizluca@gmail.com>,
-        Frank Wunderlich <frank-w@public-files.de>,
-        Landen Chao <Landen.Chao@mediatek.com>,
-        DENG Qingfang <dqfext@gmail.com>,
-        Sean Wang <sean.wang@mediatek.com>, erkin.bozoglu@xeront.com
-References: <20230303002850.51858-1-arinc.unal@arinc9.com>
- <CACRpkdayVLTT0x6hfnwvL-Atafkj8PRw5uwe7Wic3jtn+X-axA@mail.gmail.com>
-Content-Language: en-US
-From:   =?UTF-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>
-In-Reply-To: <CACRpkdayVLTT0x6hfnwvL-Atafkj8PRw5uwe7Wic3jtn+X-axA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ZohoMailClient: External
+Content-Type: multipart/signed; boundary="nextPart4473054.LvFx2qVVIh";
+ micalg="pgp-sha512"; protocol="application/pgp-signature"
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On 6.03.2023 16:50, Linus Walleij wrote:
-> On Fri, Mar 3, 2023 at 1:29 AM <arinc9.unal@gmail.com> wrote:
-> 
->> [PATCH 00/20] pinctrl: ralink: fix ABI, improve driver, move to mediatek, improve dt-bindings
->>
->> This is an ambitious effort I've been wanting to do for months.
-> 
-> Good with ambitions :)
-> 
-> As long as Sergio is on board and can test the changes and as long
-> as the DT maintainers do not explicitly disapprove, I'm game to merge
-> this.
+--nextPart4473054.LvFx2qVVIh
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"; protected-headers="v1"
+From: Sven Eckelmann <sven@narfation.org>
+Date: Mon, 06 Mar 2023 11:28:15 +0100
+Message-ID: <4818332.31r3eYUQgx@ripper>
+References: <1456164585-26910-1-git-send-email-paul.burton@imgtec.com>
+MIME-Version: 1.0
 
-Cheers.
-
+On Monday, 22 February 2016 19:09:44 CET Paul Burton wrote:
+> Index-based cache operations may be arbitrarily reordered by out of
+> order CPUs. Thus code which writes back the dcache & then invalidates
+> the icache using indexed cache ops must include a barrier between
+> operating on the 2 caches in order to prevent the scenario in which:
 > 
-> I guess you will respin on top of v6.3-rc1 when the first round of
-> non-RFC feedback is collected.
+>   - icache invalidation occurs.
+> 
+>   - icache fetch occurs, due to speculation.
+> 
+>   - dcache writeback occurs.
+> 
+> If the above were allowed to happen then the icache would contain stale
+> data. Forcing the dcache writeback to complete before the icache
+> invalidation avoids this.
+> 
+> Signed-off-by: Paul Burton <paul.burton@imgtec.com>
+> Cc: James Hogan <james.hogan@imgtec.com>
+> ---
 
-Sure, if it's necessary. Once I get feedback, I'll rebase it to your 
-linusw/linux-pinctrl.git for-next tree, see if it needs manual changes. 
-I'll let you know.
+What happened to this patch? Because it seems like it is required for some 
+74kc devices to get them booting (instead of being stuck in an endless
+tlbmiss_handler_setup_pgd loop):
 
-Arınç
+* https://github.com/freifunk-gluon/gluon/issues/2784
+* https://github.com/openwrt/openwrt/commit/ea6fb9c16dfb9763ea681803db65644b68bae873
+* https://github.com/freifunk-gluon/gluon/pull/2810
+
+Kind regards,
+	Sven
+--nextPart4473054.LvFx2qVVIh
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part.
+Content-Transfer-Encoding: 7Bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEF10rh2Elc9zjMuACXYcKB8Eme0YFAmQFwD8ACgkQXYcKB8Em
+e0bR3Q//Riq/B7nemvF/RQ63b4IjVgBkq81+RlQ6xLBdaDEnFr8phcT8RnSJ74tb
+ljc8OkXvqL56Ddt9svcyBRHma4gu3UbowdxJCMw4xgv6SV0Fa8yd0Yk5NSlvOsv2
+dlg21L+515rYEz9Ow/FcvC1x60CIOTZLMIw87qu2lOgQY7SdG0QB4z/GZWg6xubR
+J3iHMB1b0JGdZRLA+u5GK0235oZXU0zbMk8ZOovu111E7AMULcnwCmbUvPEbr21k
+Gw1BPAuYYpb8h3dk3lkY3GxkwGyeZrblFiOav8pd2y73hDdWgo4da8t+BCAUV4oM
+Ks7DabVTGZyAFlXcrQZ0RczK3C6MZF6Z1KXSuJxI2NiTNvl78OUbfek9DDVYgA8g
+nLcjXNZtoOVoF5/1I8+7bCcNnXwfhaEHidO0IkY9RkezYoQWeFeIeLfaV2BFFwG7
+RllYLH/NJGVAWJJrmcZEWF6v9Q6w/G/QySO+OjJ007Ph9HyjWLmiHGrizOkkTj0z
+KozMR8iRY6bpT6B+t2Zm0xmN9JRDpHRgCVkqZcE4BF2fptwcB/7GsfiogJ7heiIL
+OyDLNNoUmE7I6eJDCR/bHL4yLHp/8SctrD/wB7nk9NEouhXeCtqw/xg5e2elOBGw
+7K3T3F5lICq0FXFZg5dM863XK7sCeIVzObj2O9CBuS3BGZhwDL4=
+=WpWD
+-----END PGP SIGNATURE-----
+
+--nextPart4473054.LvFx2qVVIh--
+

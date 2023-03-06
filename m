@@ -2,54 +2,56 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D76A1C61DA4
-	for <linux-mips@archiver.kernel.org>; Mon,  6 Mar 2023 19:02:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 16844C61DA4
+	for <linux-mips@archiver.kernel.org>; Mon,  6 Mar 2023 19:02:26 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229876AbjCFTCW (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 6 Mar 2023 14:02:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47850 "EHLO
+        id S229890AbjCFTCZ (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 6 Mar 2023 14:02:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47928 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229813AbjCFTCU (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Mon, 6 Mar 2023 14:02:20 -0500
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 748CE30290
-        for <linux-mips@vger.kernel.org>; Mon,  6 Mar 2023 11:02:00 -0800 (PST)
-Received: by mail-yb1-xb49.google.com with SMTP id o3-20020a257303000000b00a131264017aso11591507ybc.20
-        for <linux-mips@vger.kernel.org>; Mon, 06 Mar 2023 11:02:00 -0800 (PST)
+        with ESMTP id S229813AbjCFTCY (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Mon, 6 Mar 2023 14:02:24 -0500
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9E8232CFF
+        for <linux-mips@vger.kernel.org>; Mon,  6 Mar 2023 11:02:03 -0800 (PST)
+Received: by mail-yb1-xb4a.google.com with SMTP id 66-20020a250245000000b00a53c1100d72so11493654ybc.0
+        for <linux-mips@vger.kernel.org>; Mon, 06 Mar 2023 11:02:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112; t=1678129319;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=C+DxnQV3hp0RGd+ug96FCObNfG/ILFIXHP4OvcDjXtA=;
-        b=VWgYmSrmEfZIk/6E1VMbGjDaim/LrqhaEaWbHuc+fH+V6S1DKdJkRtZ34FezlMlvhM
-         U6mcoknL3sAYb7G1m+RD4Ig6gMHZ3RTQuTmwizQCiRBj2rGy41IyS90Qy6jvQXVsrewL
-         9SFoAxeMBzW5t2TD3YILUvsMiBUCUbLVi57NBysGJg1yYn7YuGGMcpOxrx1eRRLBIO55
-         6Jbb9BwFCYffUcjzVZAFu0HkR94u7+bMfdsXfZ8y0VaWIgzYSxnsXzYIhqkR9LOZ5C0I
-         6G5p1/Kff9hdoITAYU26Wdj64V3gzTqUAgddrH7mg7Qk+8AvTWLN0NmGqN/B0ffPRXLb
-         3ITQ==
+        d=google.com; s=20210112; t=1678129323;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=YtNaR+Rua5pfZ3i1GgJ4+hfSm+WXWk7IiLK4Wtb8+uM=;
+        b=A42BX/LP2I7Yrldf83rjJjVVWP9EY7MIToR2w3fKfHNuwlJilnDlJG9Ga110/MBKfg
+         bANY0GGZpHkSiBa5gtT3zYMm3kqQ6eoCd9XQbU1Nw97OaGmCCVTg5gCJq6SSBEjZs5D2
+         WXuRcS2VBsFJxrimrp+JQlNpq+OFmS1Ohh71sBzmcc1MXrTW549F5OJ3aZCaRVfQfJrL
+         Xl5df+WIcc/z0GU55ilZ3Am2ARcrEJpAjke5BrZTBJ9d+m4fByyPMgXYOtOtNovF1gQu
+         M0K+F9OgIzJN5j3FpXghI6sTRl0hwMpb0KkZDbWtWBZRE7ORKqG1rS1sA7NOJROAsX6B
+         zrWA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1678129319;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=C+DxnQV3hp0RGd+ug96FCObNfG/ILFIXHP4OvcDjXtA=;
-        b=jcp/rTLXkPGQiYLxK7ail1U0MvPtadUere1ElIbe4zricuqh93CCliiaP5bUWw+oze
-         apSx9BK3xS49hw0Pd52fIlTXjveTEo4YyNGCB9L1rZTZ0YCu8UXElxflHI4EvWsBy0TO
-         yGwj6mBpE6R+wnMJ5TQHMeq1aHMUK6odYz8kpw9dtwUCb66kVb17fZHMHheX/C9Sce9w
-         KekdaUgu9laFmVU9tdtctmkYW9sz7VT3DfJMgiyAQIVAro/CSqBUpFcY1AcglUVrfmMG
-         SLqe8oFrYkGBKsDpnHSuBo6f6Ix0DElSqfmghEWvYsKiCjJRGfIPRhQTK4pb8cT9ku+p
-         dpCQ==
-X-Gm-Message-State: AO0yUKW0kybd73YVUZski7/UquweYZ8f6qBji7G8KhT1Y5zafDsIBRkq
-        XV7KM8JBCsEZW5fVIXm7awLeyzqg9WN9Rg==
-X-Google-Smtp-Source: AK7set/pVosUQpXpF+342Y6QcFu+4eURtJP2+OiNzV4zJi7D/yZ3hybJi6gL3lLKDOrFj5EE1HIssi/eN+VpiA==
+        d=1e100.net; s=20210112; t=1678129323;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=YtNaR+Rua5pfZ3i1GgJ4+hfSm+WXWk7IiLK4Wtb8+uM=;
+        b=PPQbflXTX2iq03nQdmp6+fcsGK/aCtI6YhC7YdqwQhzzAPVzp/a/4tkjZ8vTB/YVku
+         Nj6BqLE8TB8niXD9nWjVrvHHWHeq3t+acyqyxpIvq/IMUONgvjzPeBFd5+pFoZUjKKbs
+         IYE7Gl5ehzaomT4tgHrPAvWJcssgjsqgaTNNSR2w5WCvN5G8tdWrRiOyT9wUXdSbUGWt
+         NWyzTRvBo6tD3/ppbYmrFU7Z5ZVxLT4+KsbWPPw57IwGyzwjBpicEnEzsGlitjxKlSTr
+         Zr2ahBBmbUiZWLmHbml4Pyf82oZPlUQtJBHGksppNv9pISLP2StIi88rp5WMfHVtqQo/
+         FInA==
+X-Gm-Message-State: AO0yUKX/WJCCwjsawKP5XADqhsiCRvkBf72JVVDbju6MLGMz06Mfl0XK
+        nUk1X4ZOAood1IyFloCHOxVCQkIV1LCo5w==
+X-Google-Smtp-Source: AK7set90Igml/rc2W0Ya1hk1eHjjJqlvHrIGVSaZmJTzp6vbZseA2XP1DWQDVsfl/YAYC2c0ne8CFj1tJ7LMiQ==
 X-Received: from dmatlack-n2d-128.c.googlers.com ([fda3:e722:ac3:cc00:20:ed76:c0a8:1309])
- (user=dmatlack job=sendgmr) by 2002:a81:b723:0:b0:536:38b4:f51 with SMTP id
- v35-20020a81b723000000b0053638b40f51mr7493840ywh.5.1678129319569; Mon, 06 Mar
- 2023 11:01:59 -0800 (PST)
-Date:   Mon,  6 Mar 2023 11:01:52 -0800
+ (user=dmatlack job=sendgmr) by 2002:a81:ad0d:0:b0:52e:b635:5496 with SMTP id
+ l13-20020a81ad0d000000b0052eb6355496mr7126400ywh.2.1678129323101; Mon, 06 Mar
+ 2023 11:02:03 -0800 (PST)
+Date:   Mon,  6 Mar 2023 11:01:54 -0800
+In-Reply-To: <20230306190156.434452-1-dmatlack@google.com>
 Mime-Version: 1.0
+References: <20230306190156.434452-1-dmatlack@google.com>
 X-Mailer: git-send-email 2.40.0.rc0.216.gc4246ad0f0-goog
-Message-ID: <20230306190156.434452-1-dmatlack@google.com>
-Subject: [PATCH v2 0/4] KVM: Refactor KVM stats macros and enable custom stat names
+Message-ID: <20230306190156.434452-3-dmatlack@google.com>
+Subject: [PATCH v2 2/4] KVM: Refactor designated initializer macros for struct _kvm_stats_desc
 From:   David Matlack <dmatlack@google.com>
 To:     Paolo Bonzini <pbonzini@redhat.com>
 Cc:     Marc Zyngier <maz@kernel.org>,
@@ -84,55 +86,103 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-This series refactors the KVM stats macros to reduce duplication and
-adds the support for choosing custom names for stats.
+Refactor the macros that generate struct _kvm_stats_desc designated
+initializers to cut down on duplication.
 
-Custom name makes it possible to decouple the userspace-visible stat
-names from their internal representation in C. This can allow future
-commits to refactor the various stats structs without impacting
-userspace tools that read KVM stats.
+No functional change intended.
 
-This also allows stats to be stored in data structures such as arrays,
-without needing unions to access specific stats. Case in point, the last
-patch in this series removes the pages_{4k,2m,1g} union, which is a
-useful cleanup to prepare for sharing paging code across architectures
-[1].
+Signed-off-by: David Matlack <dmatlack@google.com>
+---
+ include/linux/kvm_host.h | 75 +++++++++++++++++++---------------------
+ 1 file changed, 35 insertions(+), 40 deletions(-)
 
-And for full transparency, another motivation for this series it that at
-Google we have several out-of-tree stats that use arrays. Custom name
-support is something we added internally and it reduces our technical
-debt to get the support merged upstream.
-
-Tested on x86. Compile tested on ARM. Not yet tested on any other
-architectures.
-
-Link: https://lore.kernel.org/kvm/20221208193857.4090582-1-dmatlack@google.com/
-
-v2:
- - Refactor stat macros (patch 1) to reduce duplication and make it
-   simpler to add custom name support [Sean]
-
-v1: https://lore.kernel.org/kvm/20230118175300.790835-1-dmatlack@google.com/
-
-David Matlack (4):
-  KVM: Refactor stats descriptor generation macros
-  KVM: Refactor designated initializer macros for struct _kvm_stats_desc
-  KVM: Allow custom names for KVM_STAT()
-  KVM: x86: Drop union for pages_{4k,2m,1g} stats
-
- arch/arm64/kvm/guest.c          |  14 +--
- arch/mips/kvm/mips.c            |  54 ++++-----
- arch/powerpc/kvm/book3s.c       |  62 +++++-----
- arch/powerpc/kvm/booke.c        |  48 ++++----
- arch/riscv/kvm/vcpu.c           |  16 +--
- arch/s390/kvm/kvm-s390.c        | 198 ++++++++++++++++----------------
- arch/x86/include/asm/kvm_host.h |   9 +-
- arch/x86/kvm/x86.c              |  94 +++++++--------
- include/linux/kvm_host.h        | 179 +++++++++++------------------
- 9 files changed, 314 insertions(+), 360 deletions(-)
-
-
-base-commit: 45dd9bc75d9adc9483f0c7d662ba6e73ed698a0b
+diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
+index 02b1151c2753..6673ae757c4e 100644
+--- a/include/linux/kvm_host.h
++++ b/include/linux/kvm_host.h
+@@ -1744,47 +1744,42 @@ struct _kvm_stats_desc {
+ 	char name[KVM_STATS_NAME_SIZE];
+ };
+ 
+-#define STATS_DESC_COMMON(type, unit, base, exp, sz, bsz)		       \
+-	.flags = type | unit | base |					       \
+-		 BUILD_BUG_ON_ZERO(type & ~KVM_STATS_TYPE_MASK) |	       \
+-		 BUILD_BUG_ON_ZERO(unit & ~KVM_STATS_UNIT_MASK) |	       \
+-		 BUILD_BUG_ON_ZERO(base & ~KVM_STATS_BASE_MASK),	       \
+-	.exponent = exp,						       \
+-	.size = sz,							       \
+-	.bucket_size = bsz
+-
+-#define VM_GENERIC_STATS_DESC(stat, type, unit, base, exp, sz, bsz)	       \
++/* Generates a designated initializer list for a struct _kvm_stats_desc. */
++#define _KVM_STATS_DESC(_struct, _field, _name, _type, _unit, _base,	       \
++			_exponent, _size, _bucket_size)			       \
++{									       \
+ 	{								       \
+-		{							       \
+-			STATS_DESC_COMMON(type, unit, base, exp, sz, bsz),     \
+-			.offset = offsetof(struct kvm_vm_stat, generic.stat)   \
+-		},							       \
+-		.name = #stat,						       \
+-	}
+-#define VCPU_GENERIC_STATS_DESC(stat, type, unit, base, exp, sz, bsz)	       \
+-	{								       \
+-		{							       \
+-			STATS_DESC_COMMON(type, unit, base, exp, sz, bsz),     \
+-			.offset = offsetof(struct kvm_vcpu_stat, generic.stat) \
+-		},							       \
+-		.name = #stat,						       \
+-	}
+-#define VM_STATS_DESC(stat, type, unit, base, exp, sz, bsz)		       \
+-	{								       \
+-		{							       \
+-			STATS_DESC_COMMON(type, unit, base, exp, sz, bsz),     \
+-			.offset = offsetof(struct kvm_vm_stat, stat)	       \
+-		},							       \
+-		.name = #stat,						       \
+-	}
+-#define VCPU_STATS_DESC(stat, type, unit, base, exp, sz, bsz)		       \
+-	{								       \
+-		{							       \
+-			STATS_DESC_COMMON(type, unit, base, exp, sz, bsz),     \
+-			.offset = offsetof(struct kvm_vcpu_stat, stat)	       \
+-		},							       \
+-		.name = #stat,						       \
+-	}
++		.flags = _type | _unit | _base |			       \
++			 BUILD_BUG_ON_ZERO(_type & ~KVM_STATS_TYPE_MASK) |     \
++			 BUILD_BUG_ON_ZERO(_unit & ~KVM_STATS_UNIT_MASK) |     \
++			 BUILD_BUG_ON_ZERO(_base & ~KVM_STATS_BASE_MASK),      \
++		.exponent = _exponent,					       \
++		.size = _size,						       \
++		.bucket_size = _bucket_size,				       \
++		.offset = offsetof(_struct, _field),			       \
++	},								       \
++	.name = _name,							       \
++}
++
++#define VM_GENERIC_STATS_DESC(_stat, _type, _unit, _base, _exponent, _size,    \
++			      _bucket_size)				       \
++	_KVM_STATS_DESC(struct kvm_vm_stat, generic._stat, #_stat, _type,      \
++			_unit, _base, _exponent, _size, _bucket_size)
++
++#define VCPU_GENERIC_STATS_DESC(_stat, _type, _unit, _base, _exponent, _size,  \
++				_bucket_size)				       \
++	_KVM_STATS_DESC(struct kvm_vcpu_stat, generic._stat, #_stat, _type,    \
++			_unit, _base, _exponent, _size, _bucket_size)
++
++#define VM_STATS_DESC(_stat, _type, _unit, _base, _exponent, _size,	       \
++		      _bucket_size)					       \
++	_KVM_STATS_DESC(struct kvm_vm_stat, _stat, #_stat, _type, _unit,       \
++			_base, _exponent, _size, _bucket_size)
++
++#define VCPU_STATS_DESC(_stat, _type, _unit, _base, _exponent, _size,	       \
++			_bucket_size)					       \
++	_KVM_STATS_DESC(struct kvm_vcpu_stat, _stat, #_stat, _type, _unit,     \
++			_base, _exponent, _size, _bucket_size)
+ 
+ /* SCOPE: VM, VM_GENERIC, VCPU, VCPU_GENERIC */
+ #define STATS_DESC(SCOPE, stat, type, unit, base, exp, sz, bsz)		       \
 -- 
 2.40.0.rc0.216.gc4246ad0f0-goog
 

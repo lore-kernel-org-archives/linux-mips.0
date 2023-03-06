@@ -2,181 +2,137 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5A05AC6FD1C
-	for <linux-mips@archiver.kernel.org>; Mon,  6 Mar 2023 19:02:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CB05FC6FD1E
+	for <linux-mips@archiver.kernel.org>; Mon,  6 Mar 2023 19:55:41 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229927AbjCFTC0 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 6 Mar 2023 14:02:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47942 "EHLO
+        id S230181AbjCFTzk (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 6 Mar 2023 14:55:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57178 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229787AbjCFTCZ (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Mon, 6 Mar 2023 14:02:25 -0500
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E0C642BF3
-        for <linux-mips@vger.kernel.org>; Mon,  6 Mar 2023 11:02:05 -0800 (PST)
-Received: by mail-yb1-xb49.google.com with SMTP id d7-20020a25adc7000000b00953ffdfbe1aso11658491ybe.23
-        for <linux-mips@vger.kernel.org>; Mon, 06 Mar 2023 11:02:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20210112; t=1678129324;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=XCoFR/ZEz+o/3af75F9xOrPS2psj7bAuPaV+hSWOgQo=;
-        b=UtpACFkTBCbOuRJEDO4GIV5VZyNtvBXfzND3oU3x+MTJtqKf4RC+aJ4iEUgKvk/Gbv
-         QwvfJnU9JToxEfS+WRcwSwlVT4IlfuPHxbDlaSiueIsWANa2Ta9bs7g2Xb/SoaztXvbW
-         AcZzwTzgMy8MObXk877NToyNHzCNVG6tPs8bD3L2lDLtP1vJbpQNVe/QUw4MOneGcben
-         A12+mWFZoMCKAD0Z64Pf8fB/rO0lgxgHvfoLNCDEimxkEwLixX3fA9CtbPgaW1lHLH/k
-         mZfeAEacPOyAvkjV/89Ze4YmYA+t2BabNvI12wvTJZnOvTvidyImSKerp51EgZ1O07yo
-         W1MA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1678129324;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=XCoFR/ZEz+o/3af75F9xOrPS2psj7bAuPaV+hSWOgQo=;
-        b=15zjmzGdYXY+lk1NI8XXGBmQr8yPwbm6fjITb0dRl5loyFVal/Y09ePddM+Me39Pro
-         qRzkeZwxiyTb9ZwsT3hhyI/I4p7lY2R/IV0BTb/22gaH2e5TIfEusW2IIfa89S10TT5e
-         DQ7RTq00BQ+xapXLv5pjn+2VUINZxrt9AmOn4Ch8XZPZY3bEF1QmCY7uUZRxXSHS0k8G
-         jyYPH6vF/2SSqP8FIlyvxTBmrizJ+iiRbVA++FUc8ixnEkjnsj1WuVB1rz/N6AQll3gy
-         dMVcWcvO4XonpYOmesVoYlQ557xez1o4ejMbqLw1O8PCd4mn+SKB/UfPSeq4uHVSK2+E
-         H1/Q==
-X-Gm-Message-State: AO0yUKVvxSFZFbrpTQoZQ8HilHRHhzZRqV+NqcmTV+cAQOXEMEpRpQER
-        G9PVn9kPiVsVkJCTRATnKK/K5nlYMoh4+A==
-X-Google-Smtp-Source: AK7set//cZ5G8Yg9tzyC35+cBUfG5YD+QOMFZSqm+c6ivqgffhDJvoZQbaLGDxeXrS7rdZX3Y2pHJ1bn0bJjqg==
-X-Received: from dmatlack-n2d-128.c.googlers.com ([fda3:e722:ac3:cc00:20:ed76:c0a8:1309])
- (user=dmatlack job=sendgmr) by 2002:a81:ac4b:0:b0:533:9ffb:cb12 with SMTP id
- z11-20020a81ac4b000000b005339ffbcb12mr7643877ywj.10.1678129324575; Mon, 06
- Mar 2023 11:02:04 -0800 (PST)
-Date:   Mon,  6 Mar 2023 11:01:55 -0800
-In-Reply-To: <20230306190156.434452-1-dmatlack@google.com>
-Mime-Version: 1.0
-References: <20230306190156.434452-1-dmatlack@google.com>
-X-Mailer: git-send-email 2.40.0.rc0.216.gc4246ad0f0-goog
-Message-ID: <20230306190156.434452-4-dmatlack@google.com>
-Subject: [PATCH v2 3/4] KVM: Allow custom names for KVM_STAT()
-From:   David Matlack <dmatlack@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Marc Zyngier <maz@kernel.org>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        James Morse <james.morse@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Zenghui Yu <yuzenghui@huawei.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
-        Anup Patel <anup@brainfault.org>,
-        Atish Patra <atishp@atishpatra.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Janosch Frank <frankja@linux.ibm.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        David Hildenbrand <david@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Eric Farman <farman@linux.ibm.com>,
-        "=?UTF-8?q?Philippe=20Mathieu-Daud=C3=A9?=" <philmd@linaro.org>,
-        David Matlack <dmatlack@google.com>,
-        Sathvika Vasireddy <sv@linux.ibm.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        linux-mips@vger.kernel.org, kvm@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, kvm-riscv@lists.infradead.org,
-        linux-riscv@lists.infradead.org,
-        Jing Zhang <jingzhangos@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        with ESMTP id S230164AbjCFTzj (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Mon, 6 Mar 2023 14:55:39 -0500
+Received: from wout1-smtp.messagingengine.com (wout1-smtp.messagingengine.com [64.147.123.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA3E064AAE
+        for <linux-mips@vger.kernel.org>; Mon,  6 Mar 2023 11:55:37 -0800 (PST)
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailout.west.internal (Postfix) with ESMTP id 2F3983200950;
+        Mon,  6 Mar 2023 14:55:37 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute4.internal (MEProxy); Mon, 06 Mar 2023 14:55:37 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=flygoat.com; h=
+        cc:cc:content-transfer-encoding:content-type:content-type:date
+        :date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:sender:subject:subject:to:to; s=fm2; t=
+        1678132536; x=1678218936; bh=wjRFLafO5+UkXxRW7xeQv6nssC0G5qSZ0pi
+        M7Nw/R78=; b=T/IvqsShH6d0/yknkhygehYVpXSxAFhL7465GeUQ6ANndtcd/hE
+        0UNX6HnBat1ieV2milm+mG3fMeQ1nuzTqmtSlWB5Kl8U5vQDRWGyE+nigo9oUtMb
+        DhLuyoJWG4QcfupE5pY2Y3i8+FF0uIVbJBx94u/qvwCq6TKWGZ6kKhW+PWjjMtUS
+        hp9ZeUk14uqvgD+Gra0kwdxIhFSRBfWPpqkBiqg2yAOWEMlrhOkP/xgq+APIdAgL
+        CUXwA+n8MfSau3HmCtyHuPLA4bZULYIXxlHxB+aJ2NHj5fkPyLGVfOHTCXzCFa4z
+        Fn4QH/aynQOTGRHxupGZPsdHH+7WlQ6ZYig==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-transfer-encoding
+        :content-type:content-type:date:date:feedback-id:feedback-id
+        :from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:sender:subject:subject:to:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=
+        1678132536; x=1678218936; bh=wjRFLafO5+UkXxRW7xeQv6nssC0G5qSZ0pi
+        M7Nw/R78=; b=KPavNYHxLz6bsQuSzwYyC6prjVoukFVKHMQt12bu6gm+wGroSk/
+        EkYist00A6P1YedDZn18Ri6aBIKi7t2EtXXulkrpAmP5hbaOJJHSZ5Q7D82Lugmh
+        VhEII1y7vKJZwFS0L85+ZKqvapQ2qQOpRSEUvmBnQUmx+W0Bn78YNw8qRxYwggsu
+        F6EoEze4FnQUJVr2NkQ1EP66N4JNzepamECB5jkP5OBuazAQWTguwVTPwqijgMSO
+        q6CKY98zakcMaleyrvezEzYfERC7h93dzbsQqutUikReCS2rcIjHnubJuVi6mdcg
+        nrzrUXUUGMNyaFgXl1grUmmPTLjzwjWnMjA==
+X-ME-Sender: <xms:OEUGZP9glzXvO2iTG3m9UJL0hYjUgljWBVllnNZZc2OUUTLQrzCm9A>
+    <xme:OEUGZLuCo6eKUwosGwXQe03JQxCH3DZigqllRTyOMUeRnP6pTSKiVsnej_q8g7EZI
+    F6FfxvX5OjKEa2HBS4>
+X-ME-Received: <xmr:OEUGZNAD1-0UyvPuPs5D3Dgxa2tsYzgHJ9T2Fs6vDdN8yabIH57MSKSPocYVNwOITFVg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrvddtkedguddtvdcutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpegtggfuhfgjffevgffkfhfvofesthhqmhdthhdtjeenucfhrhhomheplfhi
+    rgiguhhnucgjrghnghcuoehjihgrgihunhdrhigrnhhgsehflhihghhorghtrdgtohhmqe
+    enucggtffrrghtthgvrhhnpedutdejffetteefkeejieehfeeuieeguedtveeijeeviefh
+    ffelvdfgudeihfdvtdenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrih
+    hlfhhrohhmpehjihgrgihunhdrhigrnhhgsehflhihghhorghtrdgtohhm
+X-ME-Proxy: <xmx:OEUGZLfrnJrlb3mrFdO6tCnNJvBEe_Tnnafmk_ryk3xodaKPQcpOQw>
+    <xmx:OEUGZEOLjgsIk7_r9rSwD2aD4a8sNtDwj_hVsBwq8lFSdsXS8xYnew>
+    <xmx:OEUGZNkZevksdvWSWJ-hB_dZw2mgGBN8yP1bq2ru1Hj2ycRGeIHBPQ>
+    <xmx:OEUGZNadWIAEnhyF5HgbKAeyBt3MGKtf-EO-uHFe-LAAffoUpZJ0jA>
+Feedback-ID: ifd894703:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 6 Mar 2023 14:55:35 -0500 (EST)
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3731.400.51.1.1\))
+Subject: Re: [PATCH 04/12] MIPS: Octeon: Opt-out 4k_cache feature
+From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
+In-Reply-To: <b09d488f-ba4c-dba3-e2ee-87b5660dbdda@intel.com>
+Date:   Mon, 6 Mar 2023 19:55:23 +0000
+Cc:     "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        =?utf-8?Q?Philippe_Mathieu-Daud=C3=A9?= <philmd@linaro.org>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <A09E74C0-BA5A-4BAA-B6DD-74109090A153@flygoat.com>
+References: <20230304221524.47160-1-jiaxun.yang@flygoat.com>
+ <20230304221524.47160-5-jiaxun.yang@flygoat.com>
+ <b09d488f-ba4c-dba3-e2ee-87b5660dbdda@intel.com>
+To:     Alexander Lobakin <aleksander.lobakin@intel.com>
+X-Mailer: Apple Mail (2.3731.400.51.1.1)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Allow custom names to be specified for stats built on KVM_STAT() via a
-new inner macro __KVM_STAT(). e.g.
 
-  KVM_STAT(VM, CUMULATIVE, NONE, foo),
-  __KVM_STAT(VM, CUMULATIVE, NONE, bar, "custom_name"),
-  ...
 
-Custom name support enables decoupling the userspace-visible stat names
-from their internal representation in C. This can allow future commits
-to refactor the various stats structs without impacting userspace tools
-that read KVM stats.
+> 2023=E5=B9=B43=E6=9C=886=E6=97=A5 14:28=EF=BC=8CAlexander Lobakin =
+<aleksander.lobakin@intel.com> =E5=86=99=E9=81=93=EF=BC=9A
+>=20
+> From: Jiaxun Yang <jiaxun.yang@flygoat.com>
+> Date: Sat,  4 Mar 2023 22:15:16 +0000
+>=20
+>> Octeon has a different cache interface with traditional R4K one,
+>> just opt-out this flag for octeon to avoid run R4K cache =
+initialization
+>> code accidentally.
+>>=20
+>> Also remove ISA level assumption for 4k cache.
+>>=20
+>> Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+>> ---
+>> arch/mips/include/asm/cpu-features.h | 2 +-
+>> arch/mips/kernel/cpu-probe.c         | 2 ++
+>> 2 files changed, 3 insertions(+), 1 deletion(-)
+>>=20
+>> diff --git a/arch/mips/include/asm/cpu-features.h =
+b/arch/mips/include/asm/cpu-features.h
+>> index c0983130a44c..c613426b0bfc 100644
+>> --- a/arch/mips/include/asm/cpu-features.h
+>> +++ b/arch/mips/include/asm/cpu-features.h
+>> @@ -118,7 +118,7 @@
+>> #define cpu_has_3k_cache __isa_lt_and_opt(1, MIPS_CPU_3K_CACHE)
+>> #endif
+>> #ifndef cpu_has_4k_cache
+>> -#define cpu_has_4k_cache __isa_ge_or_opt(1, MIPS_CPU_4K_CACHE)
+>> +#define cpu_has_4k_cache __opt(MIPS_CPU_4K_CACHE)
+>=20
+> This breaks compile-time optimization for this feature =3D> hurts
+> performance on non-Octeon machines. Could this be done some other way?
+> E.g. could this be defined depending on
+> CONFIG_SYS_HAS_CPU_OCTEON_WHATEVER? Via its own cpu-features.h or =
+here,
+> that's the second question. So that the platforms which 100% can't =
+have
+> this family of CPUs wouldn't get affected.
 
-This also allows stats to be stored in data structures such as arrays,
-without needing unions to access specific stats. For example, the union
-for pages_{4k,2m,1g} is no longer necessary. At Google, we have several
-other out-of-tree stats that would benefit from this support.
+Thanks for the comment.
 
-No functional change intended.
+This feature is only checked once during boot and never checked at =
+runtime so I think impact
+should be negligible.
 
-Link: https://lore.kernel.org/all/20211019000459.3163029-1-jingzhangos@google.com/
-Suggested-by: Jing Zhang <jingzhangos@google.com>
-Signed-off-by: David Matlack <dmatlack@google.com>
----
- include/linux/kvm_host.h | 35 +++++++++++++++++++----------------
- 1 file changed, 19 insertions(+), 16 deletions(-)
+Just don=E2=80=99t want to have another ifdef here :-)
 
-diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
-index 6673ae757c4e..fa026e8997b2 100644
---- a/include/linux/kvm_host.h
-+++ b/include/linux/kvm_host.h
-@@ -1761,40 +1761,43 @@ struct _kvm_stats_desc {
- 	.name = _name,							       \
- }
- 
--#define VM_GENERIC_STATS_DESC(_stat, _type, _unit, _base, _exponent, _size,    \
--			      _bucket_size)				       \
--	_KVM_STATS_DESC(struct kvm_vm_stat, generic._stat, #_stat, _type,      \
-+#define VM_GENERIC_STATS_DESC(_stat, _name, _type, _unit, _base, _exponent,    \
-+			      _size, _bucket_size)			       \
-+	_KVM_STATS_DESC(struct kvm_vm_stat, generic._stat, _name, _type,       \
- 			_unit, _base, _exponent, _size, _bucket_size)
- 
--#define VCPU_GENERIC_STATS_DESC(_stat, _type, _unit, _base, _exponent, _size,  \
--				_bucket_size)				       \
--	_KVM_STATS_DESC(struct kvm_vcpu_stat, generic._stat, #_stat, _type,    \
-+#define VCPU_GENERIC_STATS_DESC(_stat, _name, _type, _unit, _base, _exponent,  \
-+				_size, _bucket_size)			       \
-+	_KVM_STATS_DESC(struct kvm_vcpu_stat, generic._stat, _name, _type,     \
- 			_unit, _base, _exponent, _size, _bucket_size)
- 
--#define VM_STATS_DESC(_stat, _type, _unit, _base, _exponent, _size,	       \
-+#define VM_STATS_DESC(_stat, _name, _type, _unit, _base, _exponent, _size,     \
- 		      _bucket_size)					       \
--	_KVM_STATS_DESC(struct kvm_vm_stat, _stat, #_stat, _type, _unit,       \
-+	_KVM_STATS_DESC(struct kvm_vm_stat, _stat, _name, _type, _unit,	       \
- 			_base, _exponent, _size, _bucket_size)
- 
--#define VCPU_STATS_DESC(_stat, _type, _unit, _base, _exponent, _size,	       \
-+#define VCPU_STATS_DESC(_stat, _name, _type, _unit, _base, _exponent, _size,   \
- 			_bucket_size)					       \
--	_KVM_STATS_DESC(struct kvm_vcpu_stat, _stat, #_stat, _type, _unit,     \
-+	_KVM_STATS_DESC(struct kvm_vcpu_stat, _stat, _name, _type, _unit,      \
- 			_base, _exponent, _size, _bucket_size)
- 
- /* SCOPE: VM, VM_GENERIC, VCPU, VCPU_GENERIC */
--#define STATS_DESC(SCOPE, stat, type, unit, base, exp, sz, bsz)		       \
--	SCOPE##_STATS_DESC(stat, type, unit, base, exp, sz, bsz)
-+#define STATS_DESC(SCOPE, stat, name, type, unit, base, exp, sz, bsz)	       \
-+	SCOPE##_STATS_DESC(stat, name, type, unit, base, exp, sz, bsz)
- 
--#define KVM_STAT(SCOPE, TYPE, UNIT, _stat)				       \
--	STATS_DESC(SCOPE, _stat, KVM_STATS_TYPE_##TYPE,			       \
-+#define __KVM_STAT(SCOPE, TYPE, UNIT, _stat, _name)			       \
-+	STATS_DESC(SCOPE, _stat, _name, KVM_STATS_TYPE_##TYPE,		       \
- 		   KVM_STATS_UNIT_##UNIT, KVM_STATS_BASE_POW10, 0, 1, 0)
- 
-+#define KVM_STAT(SCOPE, TYPE, UNIT, _stat)				       \
-+	__KVM_STAT(SCOPE, TYPE, UNIT, _stat, #_stat)
-+
- #define KVM_STAT_NSEC(SCOPE, _stat)					       \
--	STATS_DESC(SCOPE, _stat, KVM_STATS_TYPE_CUMULATIVE,		       \
-+	STATS_DESC(SCOPE, _stat, #_stat, KVM_STATS_TYPE_CUMULATIVE,	       \
- 		   KVM_STATS_UNIT_SECONDS, KVM_STATS_BASE_POW10, -9, 1, 0)
- 
- #define KVM_HIST_NSEC(SCOPE, TYPE, _stat, _size, _bucket_size)		       \
--	STATS_DESC(VCPU_GENERIC, _stat, KVM_STATS_TYPE_##TYPE##_HIST,	       \
-+	STATS_DESC(VCPU_GENERIC, _stat, #_stat, KVM_STATS_TYPE_##TYPE##_HIST,  \
- 		   KVM_STATS_UNIT_SECONDS, KVM_STATS_BASE_POW10, -9,	       \
- 		   _size, _bucket_size)
- 
--- 
-2.40.0.rc0.216.gc4246ad0f0-goog
 
+Thanks
+- Jiaxun=

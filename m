@@ -2,126 +2,122 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4F80DC6FD1A
-	for <linux-mips@archiver.kernel.org>; Tue,  7 Mar 2023 15:00:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 041CBC678D5
+	for <linux-mips@archiver.kernel.org>; Tue,  7 Mar 2023 16:53:31 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230037AbjCGPAd (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 7 Mar 2023 10:00:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37488 "EHLO
+        id S230240AbjCGQx3 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 7 Mar 2023 11:53:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50078 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229838AbjCGPAH (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Tue, 7 Mar 2023 10:00:07 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3D0592245
-        for <linux-mips@vger.kernel.org>; Tue,  7 Mar 2023 06:42:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1678200165;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=sqdAC23AFCpafEftyGbYSrYoVeo5kk0ftc/PmTPLnCU=;
-        b=RnC1oS1yl0HbZ6NepuOhyPYVwAjK6Mk7qGZXoASawD2ef7nVBqaZ6swRZ0HWFA2cmztZqt
-        qImrU8q6eS3qjV4LXLya5ja/QLYrcd0WUi3zCK+WDsUBEeEUEDh8l8rCy5jMaKPTkSM0zN
-        8OZ8AZBy8/I6JvGvtDb3ktw1MLPK6/0=
-Received: from mimecast-mx02.redhat.com (mx3-rdu2.redhat.com
- [66.187.233.73]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-316--Mbwj-W3NLC_0yM8Mt1Txw-1; Tue, 07 Mar 2023 09:36:31 -0500
-X-MC-Unique: -Mbwj-W3NLC_0yM8Mt1Txw-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 8FCA33C6986A;
-        Tue,  7 Mar 2023 14:36:30 +0000 (UTC)
-Received: from vschneid.remote.csb (unknown [10.33.37.13])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 79249401B290;
-        Tue,  7 Mar 2023 14:36:26 +0000 (UTC)
-From:   Valentin Schneider <vschneid@redhat.com>
-To:     linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-snps-arc@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org,
-        linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org,
-        loongarch@lists.linux.dev, linux-mips@vger.kernel.org,
-        openrisc@lists.librecores.org, linux-parisc@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
-        linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
-        sparclinux@vger.kernel.org, linux-xtensa@linux-xtensa.org,
-        x86@kernel.org
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Marcelo Tosatti <mtosatti@redhat.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Marc Zyngier <maz@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Guo Ren <guoren@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: [PATCH v5 1/7] trace: Add trace_ipi_send_cpumask()
-Date:   Tue,  7 Mar 2023 14:35:52 +0000
-Message-Id: <20230307143558.294354-2-vschneid@redhat.com>
-In-Reply-To: <20230307143558.294354-1-vschneid@redhat.com>
-References: <20230307143558.294354-1-vschneid@redhat.com>
+        with ESMTP id S230036AbjCGQw6 (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Tue, 7 Mar 2023 11:52:58 -0500
+Received: from mail-vs1-xe2a.google.com (mail-vs1-xe2a.google.com [IPv6:2607:f8b0:4864:20::e2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 471ED99242
+        for <linux-mips@vger.kernel.org>; Tue,  7 Mar 2023 08:49:02 -0800 (PST)
+Received: by mail-vs1-xe2a.google.com with SMTP id by13so12876415vsb.3
+        for <linux-mips@vger.kernel.org>; Tue, 07 Mar 2023 08:49:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20210112.gappssmtp.com; s=20210112; t=1678207740;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=BAM6KLGzntkSWdjqY00tOO6Re1CtThRvd/af47qdcys=;
+        b=sMlSZ99iY1HXbVfOwHWFFNCePy6z5mMJc7oroohOrUO5Kd6B/PA4UN67MKzkTIxBlr
+         0XDLyNp2UMVwMgLjhSbmqBS5pHRXTpRHGdPbbOH5EL64VbBmd/hA/94DVXvxqt+8CNEQ
+         f25B+F75LFjlhslV28C/rEhR0lE6N+uOI6de+I7EMlLSqZj7sdUqm5gDDkTVoYk7KfjJ
+         mUFwn2S2OQ0F6yfEr5zB38OS+OuvtzjMjqBIaoB6iq+T/OSB2JbIjrK7bMxBUr02pIBG
+         x6EZDyyt7243EaX3u/ayDVZJkJwbXwbOPUBv+RVL9FCdEFDyhEz/fb+Qtpow3oyYsAaP
+         iPOg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1678207740;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=BAM6KLGzntkSWdjqY00tOO6Re1CtThRvd/af47qdcys=;
+        b=cnm2UQDRlb0+PYxLXSgNAvaoIl+Q/khIVeX6Lxgn7K2VoYkJ6R7odTO8vUS6Tmsd+8
+         i1rw2j5xXAx5ZY70jDdneWKWkPK46uOxyKpI3Qrqh7/gqmCgNfd8V/Ya0kNidRwszbi+
+         lvPHK4AxJJlZ9pFEkM4tSQ7SYPuV2FUHq4oQYbFCb9VEVZbzjOu0eysZFMqGLZdnxAah
+         9H9MGEv2yEvU4C18blscbe7tku/Uv2jXDLX3xDMS0HfYwH8sf5RQnWFyaGE/xW//5BoH
+         +yVj2YfZNwXGF7lPlctTydSh2lchopjNwa6mO8k2hy7flgHU3ua+1+r6ggX2kVS0LsPi
+         URcQ==
+X-Gm-Message-State: AO0yUKW/dfth0EeJfCLRMs4qEF5W5I3Bx9JoXRGFnvO2gXhKAM0HgRg+
+        Xn7nDnHKVHd0FmcJWdvmGhlwtmQLGmeZJ/8or12Pfw==
+X-Google-Smtp-Source: AK7set/aGZTSkM0B9sWQYZhfE6LKKIa7JSaHfa8fNaeVAqzf3UgTfODCbnSXRvhpl/MM03uqaOH4EQYIMkUsDvh2F0s=
+X-Received: by 2002:a67:ead9:0:b0:411:ffe1:9c6 with SMTP id
+ s25-20020a67ead9000000b00411ffe109c6mr10136669vso.0.1678207739881; Tue, 07
+ Mar 2023 08:48:59 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.1
+References: <20230302125215.214014-1-keguang.zhang@gmail.com>
+ <20230302125215.214014-2-keguang.zhang@gmail.com> <CAMRc=Me=Yrr5BuRaMd4r91URzmdYHWUvVGvLL9YFuZPaV0WYFA@mail.gmail.com>
+ <CAJhJPsVf8EvFc9N8eMtc8Qu2BhODv7PzZm9C5ePR+GdTFiAY1w@mail.gmail.com>
+In-Reply-To: <CAJhJPsVf8EvFc9N8eMtc8Qu2BhODv7PzZm9C5ePR+GdTFiAY1w@mail.gmail.com>
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+Date:   Tue, 7 Mar 2023 17:48:49 +0100
+Message-ID: <CAMRc=Me3Lnf0W=Y0oMkUGJ59rVCRb+qGq2Eb3vqRZm5gQUwOxQ@mail.gmail.com>
+Subject: Re: [PATCH v2 1/5] gpio: loongson1: Convert to SPDX identifier
+To:     Keguang Zhang <keguang.zhang@gmail.com>
+Cc:     linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-trace_ipi_raise() is unsuitable for generically tracing IPI sources due to
-its "reason" argument being an uninformative string (on arm64 all you get
-is "Function call interrupts" for SMP calls).
+On Tue, Mar 7, 2023 at 3:25=E2=80=AFAM Keguang Zhang <keguang.zhang@gmail.c=
+om> wrote:
+>
+> On Mon, Mar 6, 2023 at 5:29=E2=80=AFPM Bartosz Golaszewski <brgl@bgdev.pl=
+> wrote:
+> >
+> > On Thu, Mar 2, 2023 at 1:52=E2=80=AFPM Keguang Zhang <keguang.zhang@gma=
+il.com> wrote:
+> > >
+> > > Use SPDX-License-Identifier instead of the license text and
+> > > update the author information.
+> > >
+> > > Signed-off-by: Keguang Zhang <keguang.zhang@gmail.com>
+> > > ---
+> > > V1 -> V2: Keep GPLv2, just convert to SPDX identifier
+> > > ---
+> > >  drivers/gpio/gpio-loongson1.c | 9 +++------
+> > >  1 file changed, 3 insertions(+), 6 deletions(-)
+> > >
+> > > diff --git a/drivers/gpio/gpio-loongson1.c b/drivers/gpio/gpio-loongs=
+on1.c
+> > > index 5d90b3bc5a25..8862c9ea0d41 100644
+> > > --- a/drivers/gpio/gpio-loongson1.c
+> > > +++ b/drivers/gpio/gpio-loongson1.c
+> > > @@ -1,11 +1,8 @@
+> > > +// SPDX-License-Identifier: GPL-2.0-only
+> > >  /*
+> > >   * GPIO Driver for Loongson 1 SoC
+> > >   *
+> > > - * Copyright (C) 2015-2016 Zhang, Keguang <keguang.zhang@gmail.com>
+> > > - *
+> > > - * This file is licensed under the terms of the GNU General Public
+> > > - * License version 2. This program is licensed "as is" without any
+> > > - * warranty of any kind, whether express or implied.
+> > > + * Copyright (C) 2015-2023 Keguang Zhang <keguang.zhang@gmail.com>
+> > >   */
+> > >
+> > >  #include <linux/module.h>
+> > > @@ -90,6 +87,6 @@ static struct platform_driver ls1x_gpio_driver =3D =
+{
+> > >
+> > >  module_platform_driver(ls1x_gpio_driver);
+> > >
+> > > -MODULE_AUTHOR("Kelvin Cheung <keguang.zhang@gmail.com>");
+> >
+> > Why are you removing credits of the old author?
+> Kelvin Cheung and Keguang Zhang are the same person.
+> This change is to keep pace with the related entry of MAINTAINERS.
+>
 
-Add a variant of it that exports a target cpumask, a callsite and a callback.
+Even so - how could I have possibly known this? Please put it into the
+commit message, it's crucial information for this change.
 
-Signed-off-by: Valentin Schneider <vschneid@redhat.com>
-Reviewed-by: Steven Rostedt (Google) <rostedt@goodmis.org>
----
- include/trace/events/ipi.h | 22 ++++++++++++++++++++++
- 1 file changed, 22 insertions(+)
-
-diff --git a/include/trace/events/ipi.h b/include/trace/events/ipi.h
-index 0be71dad6ec03..b1125dc27682c 100644
---- a/include/trace/events/ipi.h
-+++ b/include/trace/events/ipi.h
-@@ -35,6 +35,28 @@ TRACE_EVENT(ipi_raise,
- 	TP_printk("target_mask=%s (%s)", __get_bitmask(target_cpus), __entry->reason)
- );
- 
-+TRACE_EVENT(ipi_send_cpumask,
-+
-+	TP_PROTO(const struct cpumask *cpumask, unsigned long callsite, void *callback),
-+
-+	TP_ARGS(cpumask, callsite, callback),
-+
-+	TP_STRUCT__entry(
-+		__cpumask(cpumask)
-+		__field(void *, callsite)
-+		__field(void *, callback)
-+	),
-+
-+	TP_fast_assign(
-+		__assign_cpumask(cpumask, cpumask_bits(cpumask));
-+		__entry->callsite = (void *)callsite;
-+		__entry->callback = callback;
-+	),
-+
-+	TP_printk("cpumask=%s callsite=%pS callback=%pS",
-+		  __get_cpumask(cpumask), __entry->callsite, __entry->callback)
-+);
-+
- DECLARE_EVENT_CLASS(ipi_handler,
- 
- 	TP_PROTO(const char *reason),
--- 
-2.31.1
-
+Bart

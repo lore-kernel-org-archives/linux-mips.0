@@ -2,41 +2,41 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E351EC678D5
-	for <linux-mips@archiver.kernel.org>; Wed,  8 Mar 2023 13:11:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5D8B2C678D5
+	for <linux-mips@archiver.kernel.org>; Wed,  8 Mar 2023 13:13:11 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231162AbjCHNLL (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 8 Mar 2023 08:11:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51086 "EHLO
+        id S231469AbjCHNNK (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 8 Mar 2023 08:13:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60260 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231192AbjCHNKq (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 8 Mar 2023 08:10:46 -0500
+        with ESMTP id S231181AbjCHNMp (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 8 Mar 2023 08:12:45 -0500
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50633838A5
-        for <linux-mips@vger.kernel.org>; Wed,  8 Mar 2023 05:08:19 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37B29C6E5A
+        for <linux-mips@vger.kernel.org>; Wed,  8 Mar 2023 05:09:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1678280855;
+        s=mimecast20190719; t=1678280876;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=QTt8B6xdpie3JQtkOGQkvv8PGf5htHiQBmIwsiz6QFE=;
-        b=DIop1s5cTi6V/wwiX8zzL2aSs32Vy5PG336FZWT190J2tNomCJbdmDmkB2RDNuHqrlB0we
-        IVQaOUggkiuWvdUvhPDBWP1LEpEKWlv4nFFVknkQWryu2l7p1LUwh3f/J+NoPgCdJHxxAn
-        BYvqTAXxJR2ZyFlcT4ujJLUm81iKGts=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+        bh=gLq762oeic7hM/krtcOf8E8H5QTsFuEhCmd4UZ/jjZs=;
+        b=YKZuO6GAmx+C3S0ugh0LkZAtQolpu6HUJrqDOydSVIIMy00UnCnxJBQMm7gotfA4/8P2uU
+        7JfgIak0EyviPtRnlmVXz22g2jiNR/r2OkMR98CW+MNTlHCtrsxLPRiS2FHZZxzcRmyw3t
+        zdt3orM37aDBn2pUlCU2d9l3wESlNt4=
+Received: from mimecast-mx02.redhat.com (mx3-rdu2.redhat.com
+ [66.187.233.73]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-61-zmKLBDpnNMKup2LB2LatPQ-1; Wed, 08 Mar 2023 08:07:34 -0500
-X-MC-Unique: zmKLBDpnNMKup2LB2LatPQ-1
+ us-mta-637-uSFGI7sxPSKXvm-FACyRDg-1; Wed, 08 Mar 2023 08:07:51 -0500
+X-MC-Unique: uSFGI7sxPSKXvm-FACyRDg-1
 Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 6B469857D07;
-        Wed,  8 Mar 2023 13:07:33 +0000 (UTC)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 505EC2932493;
+        Wed,  8 Mar 2023 13:07:50 +0000 (UTC)
 Received: from MiWiFi-R3L-srv.redhat.com (ovpn-12-137.pek2.redhat.com [10.72.12.137])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 0CAC32166B26;
-        Wed,  8 Mar 2023 13:07:25 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 0CAD02166B26;
+        Wed,  8 Mar 2023 13:07:42 +0000 (UTC)
 From:   Baoquan He <bhe@redhat.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     linux-arch@vger.kernel.org, linux-mm@kvack.org, arnd@arndb.de,
@@ -49,9 +49,9 @@ Cc:     linux-arch@vger.kernel.org, linux-mm@kvack.org, arnd@arndb.de,
         Huacai Chen <chenhuacai@kernel.org>,
         Jiaxun Yang <jiaxun.yang@flygoat.com>,
         linux-mips@vger.kernel.org
-Subject: [PATCH v4 2/4] mips: add <asm-generic/io.h> including
-Date:   Wed,  8 Mar 2023 21:07:08 +0800
-Message-Id: <20230308130710.368085-3-bhe@redhat.com>
+Subject: [PATCH v4 4/4] mips: io: remove duplicated codes
+Date:   Wed,  8 Mar 2023 21:07:10 +0800
+Message-Id: <20230308130710.368085-5-bhe@redhat.com>
 In-Reply-To: <20230308130710.368085-1-bhe@redhat.com>
 References: <20230308130710.368085-1-bhe@redhat.com>
 MIME-Version: 1.0
@@ -62,12 +62,14 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-With the adding, some default ioremap_xx methods defined in
-asm-generic/io.h can be used. E.g the default ioremap_uc() returning
-NULL.
+By adding asm-generic/io.h support, there are some duplicated function
+implementation, like phys_to_virt, memset_io, memcpy_(from|to)io.
+Let's remove them to use the default version in asm-neneric/io.h.
+
+Meanwhile move isa_bus_to_virt() down below <asm-generic/io.h> including
+line to fix the compiling error of missing phys_to_virt definition.
 
 Signed-off-by: Baoquan He <bhe@redhat.com>
-Reviewed-by: Arnd Bergmann <arnd@arndb.de>
 Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 Cc: Geert Uytterhoeven <geert@linux-m68k.org>
 Cc: Helge Deller <deller@gmx.de>
@@ -77,137 +79,82 @@ Cc: Huacai Chen <chenhuacai@kernel.org>
 Cc: Jiaxun Yang <jiaxun.yang@flygoat.com>
 Cc: linux-mips@vger.kernel.org
 ---
- arch/mips/include/asm/io.h | 78 ++++++++++++++++++++++++++++++++++----
- 1 file changed, 70 insertions(+), 8 deletions(-)
+ arch/mips/include/asm/io.h | 45 +++++---------------------------------
+ 1 file changed, 5 insertions(+), 40 deletions(-)
 
 diff --git a/arch/mips/include/asm/io.h b/arch/mips/include/asm/io.h
-index cec8347f0b85..6756baadba6c 100644
+index da0a625c3c6d..1b38f02bc608 100644
 --- a/arch/mips/include/asm/io.h
 +++ b/arch/mips/include/asm/io.h
-@@ -126,6 +126,7 @@ static inline phys_addr_t virt_to_phys(const volatile void *x)
-  *     almost all conceivable cases a device driver should not be using
-  *     this function
-  */
-+#define phys_to_virt phys_to_virt
- static inline void * phys_to_virt(unsigned long address)
- {
- 	return __va(address);
-@@ -359,6 +360,27 @@ __BUILD_MEMORY_PFX(__raw_, q, u64, 0)
- __BUILD_MEMORY_PFX(__mem_, q, u64, 0)
- #endif
- 
-+#define readb readb
-+#define readw readw
-+#define readl readl
-+#define writeb writeb
-+#define writew writew
-+#define writel writel
-+
-+#ifdef CONFIG_64BIT
-+#define readq readq
-+#define writeq writeq
-+#define __raw_readq __raw_readq
-+#define __raw_writeq __raw_writeq
-+#endif
-+
-+#define __raw_readb __raw_readb
-+#define __raw_readw __raw_readw
-+#define __raw_readl __raw_readl
-+#define __raw_writeb __raw_writeb
-+#define __raw_writew __raw_writew
-+#define __raw_writel __raw_writel
-+
- #define __BUILD_IOPORT_PFX(bus, bwlq, type)				\
- 	__BUILD_IOPORT_SINGLE(bus, bwlq, type, 1, 0,)			\
- 	__BUILD_IOPORT_SINGLE(bus, bwlq, type, 1, 0, _p)
-@@ -374,6 +396,27 @@ BUILDIO_IOPORT(l, u32)
- BUILDIO_IOPORT(q, u64)
- #endif
- 
-+#define inb inb
-+#define inw inw
-+#define inl inl
-+#define inb_p inb_p
-+#define inw_p inw_p
-+#define inl_p inl_p
-+
-+#define outb outb
-+#define outw outw
-+#define outl outl
-+#define outb_p outb_p
-+#define outw_p outw_p
-+#define outl_p outl_p
-+
-+#ifdef CONFIG_64BIT
-+#define inq inq
-+#define outq outq
-+#define inq_p inq_p
-+#define outq_p outq_p
-+#endif
-+
- #define __BUILDIO(bwlq, type)						\
- 									\
- __BUILD_MEMORY_SINGLE(____raw_, bwlq, type, 1, 0, 0)
-@@ -412,14 +455,6 @@ __BUILDIO(q, u64)
- #define writeq_be(val, addr)						\
- 	__raw_writeq(cpu_to_be64((val)), (__force unsigned *)(addr))
+@@ -114,24 +114,6 @@ static inline phys_addr_t virt_to_phys(const volatile void *x)
+ 	return __virt_to_phys(x);
+ }
  
 -/*
-- * Some code tests for these symbols
+- *     phys_to_virt    -       map physical address to virtual
+- *     @address: address to remap
+- *
+- *     The returned virtual address is a current CPU mapping for
+- *     the memory address given. It is only valid to use this function on
+- *     addresses that have a kernel mapping
+- *
+- *     This function does not handle bus mappings for DMA transfers. In
+- *     almost all conceivable cases a device driver should not be using
+- *     this function
 - */
--#ifdef CONFIG_64BIT
--#define readq				readq
--#define writeq				writeq
--#endif
+-#define phys_to_virt phys_to_virt
+-static inline void * phys_to_virt(unsigned long address)
+-{
+-	return __va(address);
+-}
 -
- #define __BUILD_MEMORY_STRING(bwlq, type)				\
- 									\
- static inline void writes##bwlq(volatile void __iomem *mem,		\
-@@ -480,14 +515,39 @@ BUILDSTRING(l, u32)
- BUILDSTRING(q, u64)
+ /*
+  * ISA I/O bus memory addresses are 1:1 with the physical address.
+  */
+@@ -140,11 +122,6 @@ static inline unsigned long isa_virt_to_bus(volatile void *address)
+ 	return virt_to_phys(address);
+ }
+ 
+-static inline void *isa_bus_to_virt(unsigned long address)
+-{
+-	return phys_to_virt(address);
+-}
+-
+ /*
+  * Change "struct page" to physical address.
+  */
+@@ -535,23 +512,6 @@ BUILDSTRING(q, u64)
+ #define writesq writesq
  #endif
  
-+#define insb insb
-+#define insw insw
-+#define insl insl
-+#define outsb outsb
-+#define outsw outsw
-+#define outsl outsl
-+
-+#define readsb readsb
-+#define readsw readsw
-+#define readsl readsl
-+#define writesb writesb
-+#define writesw writesw
-+#define writesl writesl
-+
-+#ifdef CONFIG_64BIT
-+#define insq insq
-+#define readsq readsq
-+#define readsq readsq
-+#define writesq writesq
-+#endif
-+
-+
-+#define memset_io memset_io
- static inline void memset_io(volatile void __iomem *addr, unsigned char val, int count)
- {
- 	memset((void __force *) addr, val, count);
- }
-+#define memcpy_fromio memcpy_fromio
- static inline void memcpy_fromio(void *dst, const volatile void __iomem *src, int count)
- {
- 	memcpy(dst, (void __force *) src, count);
- }
-+#define memcpy_toio memcpy_toio
- static inline void memcpy_toio(volatile void __iomem *dst, const void *src, int count)
- {
- 	memcpy((void __force *) dst, src, count);
-@@ -556,4 +616,6 @@ extern void (*_dma_cache_inv)(unsigned long start, unsigned long size);
+-
+-#define memset_io memset_io
+-static inline void memset_io(volatile void __iomem *addr, unsigned char val, int count)
+-{
+-	memset((void __force *) addr, val, count);
+-}
+-#define memcpy_fromio memcpy_fromio
+-static inline void memcpy_fromio(void *dst, const volatile void __iomem *src, int count)
+-{
+-	memcpy(dst, (void __force *) src, count);
+-}
+-#define memcpy_toio memcpy_toio
+-static inline void memcpy_toio(volatile void __iomem *dst, const void *src, int count)
+-{
+-	memcpy((void __force *) dst, src, count);
+-}
+-
+ /*
+  * The caches on some architectures aren't dma-coherent and have need to
+  * handle this in software.  There are three types of operations that
+@@ -617,4 +577,9 @@ void __ioread64_copy(void *to, const void __iomem *from, size_t count);
  
- void __ioread64_copy(void *to, const void __iomem *from, size_t count);
+ #include <asm-generic/io.h>
  
-+#include <asm-generic/io.h>
++static inline void *isa_bus_to_virt(unsigned long address)
++{
++	return phys_to_virt(address);
++}
 +
  #endif /* _ASM_IO_H */
 -- 

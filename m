@@ -2,221 +2,147 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7773AC64EC4
-	for <linux-mips@archiver.kernel.org>; Wed,  8 Mar 2023 13:16:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1B9C5C678D5
+	for <linux-mips@archiver.kernel.org>; Wed,  8 Mar 2023 14:44:01 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231167AbjCHNQL (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 8 Mar 2023 08:16:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36762 "EHLO
+        id S231940AbjCHOn5 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 8 Mar 2023 09:43:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50132 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231184AbjCHNPk (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 8 Mar 2023 08:15:40 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FF99D00AF
-        for <linux-mips@vger.kernel.org>; Wed,  8 Mar 2023 05:11:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1678281061;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=YuzOmgr2u1PyDfkmKFazdLyWcjTDX0CNS9csyPmB6+k=;
-        b=ZKrQRuSUQ1fIN2aKDR/R1DC5TCJZsmBG4ixFSBtSd/Lix/sIqhQ67hXH2XfcR4tFm1N5kO
-        Rn8YpNzOFVGzynjlRMrHCyrSmSFxgbW0bHB78PFob13dICqB1CDk2fjE8rXrmMK45x2YtV
-        dHLgp0Um6XA4FIdd4fuTi469SBPYSU8=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- us-mta-209-h5-YcZh5Ok2x1n76ZKCkaw-1; Wed, 08 Mar 2023 08:07:43 -0500
-X-MC-Unique: h5-YcZh5Ok2x1n76ZKCkaw-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 2F67B185A794;
-        Wed,  8 Mar 2023 13:07:42 +0000 (UTC)
-Received: from MiWiFi-R3L-srv.redhat.com (ovpn-12-137.pek2.redhat.com [10.72.12.137])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 3B58D2166B2A;
-        Wed,  8 Mar 2023 13:07:33 +0000 (UTC)
-From:   Baoquan He <bhe@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     linux-arch@vger.kernel.org, linux-mm@kvack.org, arnd@arndb.de,
-        mpe@ellerman.id.au, geert@linux-m68k.org, mcgrof@kernel.org,
-        hch@infradead.org, Baoquan He <bhe@redhat.com>,
-        linux-alpha@vger.kernel.org, linux-hexagon@vger.kernel.org,
-        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
-        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org
-Subject: [PATCH v4 3/4] arch/*/io.h: remove ioremap_uc in some architectures
-Date:   Wed,  8 Mar 2023 21:07:09 +0800
-Message-Id: <20230308130710.368085-4-bhe@redhat.com>
-In-Reply-To: <20230308130710.368085-1-bhe@redhat.com>
-References: <20230308130710.368085-1-bhe@redhat.com>
+        with ESMTP id S231998AbjCHOng (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 8 Mar 2023 09:43:36 -0500
+Received: from stravinsky.debian.org (stravinsky.debian.org [IPv6:2001:41b8:202:deb::311:108])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C662D160F;
+        Wed,  8 Mar 2023 06:41:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=debian.org;
+        s=smtpauto.stravinsky; h=X-Debian-User:In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=DEabxd1v23Tin5QpBxzS/rr27f1GPpemZn4RAYsZQ4g=; b=WVAd2GG64xSxybP+9vkI0rAy7R
+        /U+clgaDlEs+OF8N7VpCHYBj1ufEfkJPXDGFhYA6UOIWjiw0/kOuKiVUZ6j/WNqQOkO4sl/zsBU99
+        zYUUK8yCjdNYu6cG7CarMorJaNpL2KSIUp4XYDFkO0X4EXZy+oAY6BjNqi8ydxJMb8EwsKhgmBfsA
+        n+Qd+dPsBgF3+aW8uzb6mYAY7CQeB8rLWprtwDFYG/1hcfB2Z6HfZ4vgjF0Rh1wZDrU4ux7MWiTph
+        qGAFaOG8TSsCFtYnmVSPdo1CmA0bUYKOMbuy1o5TR8rXnEUMNMv/RMK7SFDtFQqeX+WUMzZFBN5Tz
+        WKGnblzQ==;
+Received: from authenticated user
+        by stravinsky.debian.org with esmtpsa (TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+        (Exim 4.94.2)
+        (envelope-from <kibi@debian.org>)
+        id 1pZuyb-003fuS-9j; Wed, 08 Mar 2023 14:41:10 +0000
+Date:   Wed, 8 Mar 2023 15:41:05 +0100
+From:   Cyril Brulebois <kibi@debian.org>
+To:     Johan Hovold <johan+linaro@kernel.org>
+Cc:     Marc Zyngier <maz@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
+        platform-driver-x86@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Dmitry Torokhov <dtor@chromium.org>,
+        Jon Hunter <jonathanh@nvidia.com>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        Mark-PK Tsai <mark-pk.tsai@mediatek.com>
+Subject: Re: [PATCH v6 06/20] irqdomain: Fix mapping-creation race
+Message-ID: <20230308144105.di552lbogqv2s7fk@mraw.org>
+Organization: Debian
+References: <20230213104302.17307-1-johan+linaro@kernel.org>
+ <20230213104302.17307-7-johan+linaro@kernel.org>
 MIME-Version: 1.0
-Content-type: text/plain
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.1 on 10.11.54.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="bswmu74sozzwegdo"
+Content-Disposition: inline
+In-Reply-To: <20230213104302.17307-7-johan+linaro@kernel.org>
+X-Debian-User: kibi
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-ioremap_uc() is only meaningful on old x86-32 systems with the PAT
-extension, and on ia64 with its slightly unconventional ioremap()
-behavior. So remove the ioremap_uc() definition in architecutures
-other than x86 and ia64. These architectures all have asm-generic/io.h
-included and will have the default ioremap_uc() definition which
-returns NULL.
 
-This changes the existing behaviour, while no need to worry about
-any breakage because in the only callsite of ioremap_uc(), code
-has been adjusted to eliminate the impact. Please see
-atyfb_setup_generic() of drivers/video/fbdev/aty/atyfb_base.c.
+--bswmu74sozzwegdo
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-If any new invocation of ioremap_uc() need be added, please consider
-using ioremap() intead or adding a ARCH specific version if necessary.
+Hi Johan,
 
-Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
-Signed-off-by: Baoquan He <bhe@redhat.com>
-Cc: linux-alpha@vger.kernel.org
-Cc: linux-hexagon@vger.kernel.org
-Cc: linux-m68k@lists.linux-m68k.org
-Cc: linux-mips@vger.kernel.org
-Cc: linux-parisc@vger.kernel.org
-Cc: linuxppc-dev@lists.ozlabs.org
-Cc: linux-sh@vger.kernel.org
-Cc: sparclinux@vger.kernel.org
----
- Documentation/driver-api/device-io.rst | 9 +++++----
- arch/alpha/include/asm/io.h            | 1 -
- arch/hexagon/include/asm/io.h          | 3 ---
- arch/m68k/include/asm/kmap.h           | 1 -
- arch/mips/include/asm/io.h             | 1 -
- arch/parisc/include/asm/io.h           | 2 --
- arch/powerpc/include/asm/io.h          | 1 -
- arch/sh/include/asm/io.h               | 2 --
- arch/sparc/include/asm/io_64.h         | 1 -
- 9 files changed, 5 insertions(+), 16 deletions(-)
+And thanks so much for this patch series.
 
-diff --git a/Documentation/driver-api/device-io.rst b/Documentation/driver-api/device-io.rst
-index 4d2baac0311c..d55384b106bd 100644
---- a/Documentation/driver-api/device-io.rst
-+++ b/Documentation/driver-api/device-io.rst
-@@ -408,11 +408,12 @@ functions for details on the CPU side of things.
- ioremap_uc()
- ------------
- 
--ioremap_uc() behaves like ioremap() except that on the x86 architecture without
--'PAT' mode, it marks memory as uncached even when the MTRR has designated
--it as cacheable, see Documentation/x86/pat.rst.
-+ioremap_uc() is only meaningful on old x86-32 systems with the PAT extension,
-+and on ia64 with its slightly unconventional ioremap() behavior, everywhere
-+elss ioremap_uc() defaults to return NULL.
- 
--Portable drivers should avoid the use of ioremap_uc().
-+
-+Portable drivers should avoid the use of ioremap_uc(), use ioremap() instead.
- 
- ioremap_cache()
- ---------------
-diff --git a/arch/alpha/include/asm/io.h b/arch/alpha/include/asm/io.h
-index 7aeaf7c30a6f..076f0e4e7f1e 100644
---- a/arch/alpha/include/asm/io.h
-+++ b/arch/alpha/include/asm/io.h
-@@ -308,7 +308,6 @@ static inline void __iomem *ioremap(unsigned long port, unsigned long size)
- }
- 
- #define ioremap_wc ioremap
--#define ioremap_uc ioremap
- 
- static inline void iounmap(volatile void __iomem *addr)
- {
-diff --git a/arch/hexagon/include/asm/io.h b/arch/hexagon/include/asm/io.h
-index dcd9cbbf5934..b9847472f25c 100644
---- a/arch/hexagon/include/asm/io.h
-+++ b/arch/hexagon/include/asm/io.h
-@@ -176,9 +176,6 @@ static inline void writel(u32 data, volatile void __iomem *addr)
- #define _PAGE_IOREMAP (_PAGE_PRESENT | _PAGE_READ | _PAGE_WRITE | \
- 		       (__HEXAGON_C_DEV << 6))
- 
--#define ioremap_uc(addr, size) ioremap((addr), (size))
--
--
- #define __raw_writel writel
- 
- static inline void memcpy_fromio(void *dst, const volatile void __iomem *src,
-diff --git a/arch/m68k/include/asm/kmap.h b/arch/m68k/include/asm/kmap.h
-index 4efb3efa593a..b778f015c917 100644
---- a/arch/m68k/include/asm/kmap.h
-+++ b/arch/m68k/include/asm/kmap.h
-@@ -25,7 +25,6 @@ static inline void __iomem *ioremap(unsigned long physaddr, unsigned long size)
- 	return __ioremap(physaddr, size, IOMAP_NOCACHE_SER);
- }
- 
--#define ioremap_uc ioremap
- #define ioremap_wt ioremap_wt
- static inline void __iomem *ioremap_wt(unsigned long physaddr,
- 				       unsigned long size)
-diff --git a/arch/mips/include/asm/io.h b/arch/mips/include/asm/io.h
-index 6756baadba6c..da0a625c3c6d 100644
---- a/arch/mips/include/asm/io.h
-+++ b/arch/mips/include/asm/io.h
-@@ -167,7 +167,6 @@ void iounmap(const volatile void __iomem *addr);
-  */
- #define ioremap(offset, size)						\
- 	ioremap_prot((offset), (size), _CACHE_UNCACHED)
--#define ioremap_uc		ioremap
- 
- /*
-  * ioremap_cache -	map bus memory into CPU space
-diff --git a/arch/parisc/include/asm/io.h b/arch/parisc/include/asm/io.h
-index 366537042465..48630c78714a 100644
---- a/arch/parisc/include/asm/io.h
-+++ b/arch/parisc/include/asm/io.h
-@@ -132,8 +132,6 @@ static inline void gsc_writeq(unsigned long long val, unsigned long addr)
- 
- #define ioremap_wc(addr, size)  \
- 	ioremap_prot((addr), (size), _PAGE_IOREMAP)
--#define ioremap_uc(addr, size)  \
--	ioremap_prot((addr), (size), _PAGE_IOREMAP)
- 
- #define pci_iounmap			pci_iounmap
- 
-diff --git a/arch/powerpc/include/asm/io.h b/arch/powerpc/include/asm/io.h
-index 978d687edf32..7873fc83c82c 100644
---- a/arch/powerpc/include/asm/io.h
-+++ b/arch/powerpc/include/asm/io.h
-@@ -863,7 +863,6 @@ void __iomem *ioremap_wt(phys_addr_t address, unsigned long size);
- #endif
- 
- void __iomem *ioremap_coherent(phys_addr_t address, unsigned long size);
--#define ioremap_uc(addr, size)		ioremap((addr), (size))
- #define ioremap_cache(addr, size) \
- 	ioremap_prot((addr), (size), pgprot_val(PAGE_KERNEL))
- 
-diff --git a/arch/sh/include/asm/io.h b/arch/sh/include/asm/io.h
-index b3a26b405c8d..12a892804082 100644
---- a/arch/sh/include/asm/io.h
-+++ b/arch/sh/include/asm/io.h
-@@ -278,8 +278,6 @@ unsigned long long poke_real_address_q(unsigned long long addr,
- 	ioremap_prot((addr), (size), pgprot_val(PAGE_KERNEL))
- #endif /* CONFIG_MMU */
- 
--#define ioremap_uc	ioremap
--
- /*
-  * Convert a physical pointer to a virtual kernel pointer for /dev/mem
-  * access
-diff --git a/arch/sparc/include/asm/io_64.h b/arch/sparc/include/asm/io_64.h
-index 9303270b22f3..d8ee1442f303 100644
---- a/arch/sparc/include/asm/io_64.h
-+++ b/arch/sparc/include/asm/io_64.h
-@@ -423,7 +423,6 @@ static inline void __iomem *ioremap(unsigned long offset, unsigned long size)
- 	return (void __iomem *)offset;
- }
- 
--#define ioremap_uc(X,Y)			ioremap((X),(Y))
- #define ioremap_wc(X,Y)			ioremap((X),(Y))
- #define ioremap_wt(X,Y)			ioremap((X),(Y))
- static inline void __iomem *ioremap_np(unsigned long offset, unsigned long size)
--- 
-2.34.1
+Johan Hovold <johan+linaro@kernel.org> (2023-02-13):
+> Parallel probing of devices that share interrupts (e.g. when a driver
+> uses asynchronous probing) can currently result in two mappings for the
+> same hardware interrupt to be created due to missing serialisation.
+>=20
+> Make sure to hold the irq_domain_mutex when creating mappings so that
+> looking for an existing mapping before creating a new one is done
+> atomically.
 
+Just for information: This patch fixes a long-standing regression
+regarding Raspberry Pi devices, which have been failing to boot (at
+least reliably) due to MMC timeouts for a long while; I think that
+started between v5.17 and v5.19, but I couldn't bisect at the time
+(I was already chasing some other regression).
+
+Example bug report:
+  https://bugs.debian.org/1019700
+
+Before trying to pinpoint when the regression appeared, I've checked
+these versions, with a Debian testing userspace as of 2023-03-07:
+ - v6.1.12: affected.
+ - v6.2: affected.
+ - v6.3-rc1: not affected.
+
+A bisect between v6.2 and v6.3-rc1 led me to this patch specifically.
+Seeing how it's part of a patch series, and how previous patches are
+preliminary ones, I've checked that cherry-picking the first 6 patches
+on top of v6.1.15 indeed fixes the problem there too, and it does
+(git cherry-pick v6.2-rc4..601363cc08da25747feb87c55573dd54de91d66a).
+
+
+With the following systems:
+ - Pi 4 B, using external storage (SD card),
+ - CM4 Lite on CM4 IO Board, using external storage (SD card),
+ - CM4 on CM4 IO Board, using internal storage (eMMC),
+
+I've been able to verify that v6.1.12 (baseline in Debian testing)
+triggers this MMC timeout issue, while v6.1.15 + the aforementioned
+range of cherry-picked commits no longer triggers this issue.
+
+(Methodology: cold boot then reboot 20 times, monitoring via serial
+console to keep HDMI output of the equation; affected systems stop
+booting after 1-4 boots; unaffected systems boot and reboot just fine
+all the time.)
+
+
+This looks like a critical bugfix for Raspberry Pi users.
+
+Seeing the stable@ mention is about 4.8, I suppose this is going to be
+considered for a wide range of kernels already=E2=80=A6 but I'm happy to dig
+into this further to pinpoint when the regression appeared, if that's
+helpful.
+
+
+Cheers,
+--=20
+Cyril Brulebois (kibi@debian.org)            <https://debamax.com/>
+D-I release manager -- Release team member -- Freelance Consultant
+
+--bswmu74sozzwegdo
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEtg6/KYRFPHDXTPR4/5FK8MKzVSAFAmQInn4ACgkQ/5FK8MKz
+VSCE9BAAgmMQR4Q3Zho88R/bmOrHbVmcbWcuRY4R1Xt4JP2sJ/3KX9L4nDOVuw2X
+u/0AdJ23/Ahgyp681MJJKWm7i2kW8qleOtsoxSUunPwzNIA/ulCrMSITJYY3FB/a
+dczq66dvClI3YW2wbT/ruuw+0qr/c594rOD9SeGtmeiWxV/ac6tz5TG10yvMQadi
+EKayXUiNRmSL93aN67YnugG0YMqqo8hDLVivlcES5IYtCbQTyxV4ucA6qBITAybc
+AxMZXtEkCnTCgD8svyehp0P2CQeyJbpj0JS68sJW9GeJoeLyf0+b8zW9a4aLPQQr
+5ngBZldPDCf0lE1u5XlV4is46AN5CjyjwRbIUZTN6fzt8zlI8jZuHQF2R7UeWwB8
+qvlO9eXziVPp+DruSy5rFppZJ7OKq04POCL4AIcron4kaUpt2TIuD+pjtsZEbMld
+0a/BjD+YR91kikMTgBHD5G9qu1Dcc5HG6akGfjNzf3poZF8aJzEC3C8cGP2sM/bh
+//TN0Flsf5PoMAsWcFeVEvxtoWp27JCFDsG0FEl8OhEDQesUQynKaAyAVj+TGVq+
+ILd2qtPJJxC5HCbUX4OHymZtbyEi2C1RyyquAyRb81wxEWd6AO2699SgcMgbbOZY
+uDTAEWhb4stci4FveA7xK/cFAfjTdXdJkpEwhw1iTX26lNWZQ5k=
+=HYJC
+-----END PGP SIGNATURE-----
+
+--bswmu74sozzwegdo--

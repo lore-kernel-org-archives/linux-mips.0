@@ -2,54 +2,89 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E9B01C742A7
-	for <linux-mips@archiver.kernel.org>; Fri, 10 Mar 2023 15:05:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9E027C64EC4
+	for <linux-mips@archiver.kernel.org>; Fri, 10 Mar 2023 17:14:16 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233088AbjCJPFb (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 10 Mar 2023 10:05:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55076 "EHLO
+        id S229937AbjCJROP (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 10 Mar 2023 12:14:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36072 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233900AbjCJPFE (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Fri, 10 Mar 2023 10:05:04 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D00F76FFF6;
-        Fri, 10 Mar 2023 06:58:28 -0800 (PST)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 3842F61A60;
-        Fri, 10 Mar 2023 14:56:48 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 21271C4339B;
-        Fri, 10 Mar 2023 14:56:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1678460207;
-        bh=0c03yv2yV54bjuZYZpO/e8nXYQRtPfKHOb0arqMEtQo=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=yggWlCvC3WriYxmHeA6kkcuUv0tSTnPsLhNe+xL4mHYvlJDUP9mC8mhCYLuHEX6OE
-         BW0JR/Ao53upf2fhBQfeGgqkAoRG0i+2tAo4GM6876Gmg+JwJNSkK1w/hRJ0tsiJxj
-         26l38K9aKnNu5vOETlIfDPOvjMW8DjaIxvmyVmmY=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     stable@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        patches@lists.linux.dev, Randy Dunlap <rdunlap@infradead.org>,
-        kernel test robot <lkp@intel.com>,
-        Dengcheng Zhu <dzhu@wavecomp.com>,
-        John Crispin <john@phrozen.org>,
+        with ESMTP id S229680AbjCJROO (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Fri, 10 Mar 2023 12:14:14 -0500
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12A696EB91;
+        Fri, 10 Mar 2023 09:14:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1678468445; x=1710004445;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=ImovGyFssY2h57L8ILEiNfPIEtHnJufocebXbe8t0O4=;
+  b=GsNXLO0uTT051pbP3zjHib22x8IqLgNZ5QhQiUyc5SneYEVaceux3WNi
+   3QKRYFPyBSDQ4pZwLRqknq7YGSqP7IYZIjjkp5K2IyBSxwDlDxPYUt13j
+   MSDxqkknMdKXsR4aS8ctO+D9/rPPUZFN5Ig9WIgMalGD/icyftbrFs7KX
+   uVsmBfYcFcW3MtvkGW6gpf8PrL2qKvqGVIo3b6TGRHnokRADFqrUNspgc
+   ObiuVPiLMlPaeszslQ/V0ztelC6U6rvADrmciW3fsCqvD1B3n/MbGJAOY
+   IZ7zFGMveKXCyyi7u9N1ZDtX7SE40hee/6lYPVKOwkEZCoain+TUBbpFS
+   w==;
+X-IronPort-AV: E=McAfee;i="6500,9779,10645"; a="325132197"
+X-IronPort-AV: E=Sophos;i="5.98,250,1673942400"; 
+   d="scan'208";a="325132197"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Mar 2023 09:13:47 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6500,9779,10645"; a="655250048"
+X-IronPort-AV: E=Sophos;i="5.98,250,1673942400"; 
+   d="scan'208";a="655250048"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by orsmga006.jf.intel.com with ESMTP; 10 Mar 2023 09:13:37 -0800
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id 6CDBF154; Fri, 10 Mar 2023 19:14:21 +0200 (EET)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Niklas Schnelle <schnelle@linux.ibm.com>,
+        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>,
+        "Maciej W. Rozycki" <macro@orcam.me.uk>,
+        Juergen Gross <jgross@suse.com>,
+        Dominik Brodowski <linux@dominikbrodowski.net>,
+        linux-kernel@vger.kernel.org, linux-alpha@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-sh@vger.kernel.org,
+        sparclinux@vger.kernel.org, linux-pci@vger.kernel.org,
+        xen-devel@lists.xenproject.org, linux-acpi@vger.kernel.org
+Cc:     Miguel Ojeda <ojeda@kernel.org>,
+        Richard Henderson <richard.henderson@linaro.org>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        Gregory Clement <gregory.clement@bootlin.com>,
         Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        =?UTF-8?q?Philippe=20Mathieu-Daud=C3=A9?= <philmd@linaro.org>,
-        "Steven J. Hill" <Steven.Hill@imgtec.com>,
-        Qais Yousef <Qais.Yousef@imgtec.com>,
-        Yang Yingliang <yangyingliang@huawei.com>,
-        Hauke Mehrtens <hauke@hauke-m.de>,
-        James Hogan <jhogan@kernel.org>, linux-mips@vger.kernel.org,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 259/529] MIPS: vpe-mt: drop physical_memsize
-Date:   Fri, 10 Mar 2023 14:36:42 +0100
-Message-Id: <20230310133816.965801835@linuxfoundation.org>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230310133804.978589368@linuxfoundation.org>
-References: <20230310133804.978589368@linuxfoundation.org>
-User-Agent: quilt/0.67
+        Nicholas Piggin <npiggin@gmail.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Anatolij Gustschin <agust@denx.de>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>,
+        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>
+Subject: [PATCH v4 2/4] PCI: Split pci_bus_for_each_resource_p() out of pci_bus_for_each_resource()
+Date:   Fri, 10 Mar 2023 19:14:14 +0200
+Message-Id: <20230310171416.23356-3-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.39.1
+In-Reply-To: <20230310171416.23356-1-andriy.shevchenko@linux.intel.com>
+References: <20230310171416.23356-1-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -57,96 +92,217 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-From: Randy Dunlap <rdunlap@infradead.org>
+Refactor pci_bus_for_each_resource() in the same way as it's done in
+pci_dev_for_each_resource() case. This will allow to hide iterator
+inside the loop, where it's not used otherwise.
 
-[ Upstream commit 91dc288f4edf0d768e46c2c6d33e0ab703403459 ]
+No functional changes intended.
 
-When neither LANTIQ nor MIPS_MALTA is set, 'physical_memsize' is not
-declared. This causes the build to fail with:
-
-mips-linux-ld: arch/mips/kernel/vpe-mt.o: in function `vpe_run':
-arch/mips/kernel/vpe-mt.c:(.text.vpe_run+0x280): undefined reference to `physical_memsize'
-
-LANTIQ is not using 'physical_memsize' and MIPS_MALTA's use of it is
-self-contained in mti-malta/malta-dtshim.c.
-Use of physical_memsize in vpe-mt.c appears to be unused, so eliminate
-this loader mode completely and require VPE programs to be compiled with
-DFLT_STACK_SIZE and DFLT_HEAP_SIZE defined.
-
-Fixes: 9050d50e2244 ("MIPS: lantiq: Set physical_memsize")
-Fixes: 1a2a6d7e8816 ("MIPS: APRP: Split VPE loader into separate files.")
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Reported-by: kernel test robot <lkp@intel.com>
-Link: https://lore.kernel.org/all/202302030625.2g3E98sY-lkp@intel.com/
-Cc: Dengcheng Zhu <dzhu@wavecomp.com>
-Cc: John Crispin <john@phrozen.org>
-Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc: Philippe Mathieu-Daudé <philmd@linaro.org>
-Cc: "Steven J. Hill" <Steven.Hill@imgtec.com>
-Cc: Qais Yousef <Qais.Yousef@imgtec.com>
-Cc: Yang Yingliang <yangyingliang@huawei.com>
-Cc: Hauke Mehrtens <hauke@hauke-m.de>
-Cc: James Hogan <jhogan@kernel.org>
-Cc: linux-mips@vger.kernel.org
-Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Reviewed-by: Krzysztof Wilczyński <kw@linux.com>
 ---
- arch/mips/include/asm/vpe.h | 1 -
- arch/mips/kernel/vpe-mt.c   | 7 +++----
- arch/mips/lantiq/prom.c     | 6 ------
- 3 files changed, 3 insertions(+), 11 deletions(-)
+ .clang-format                      |  1 +
+ drivers/pci/bus.c                  |  7 +++----
+ drivers/pci/hotplug/shpchp_sysfs.c |  8 ++++----
+ drivers/pci/pci.c                  |  5 ++---
+ drivers/pci/probe.c                |  2 +-
+ drivers/pci/setup-bus.c            | 10 ++++------
+ include/linux/pci.h                | 14 ++++++++++----
+ 7 files changed, 25 insertions(+), 22 deletions(-)
 
-diff --git a/arch/mips/include/asm/vpe.h b/arch/mips/include/asm/vpe.h
-index 80e70dbd1f641..012731546cf60 100644
---- a/arch/mips/include/asm/vpe.h
-+++ b/arch/mips/include/asm/vpe.h
-@@ -104,7 +104,6 @@ struct vpe_control {
- 	struct list_head tc_list;       /* Thread contexts */
- };
+diff --git a/.clang-format b/.clang-format
+index 266abb843654..81c9f055086f 100644
+--- a/.clang-format
++++ b/.clang-format
+@@ -520,6 +520,7 @@ ForEachMacros:
+   - 'of_property_for_each_string'
+   - 'of_property_for_each_u32'
+   - 'pci_bus_for_each_resource'
++  - 'pci_bus_for_each_resource_p'
+   - 'pci_dev_for_each_resource'
+   - 'pci_dev_for_each_resource_p'
+   - 'pci_doe_for_each_off'
+diff --git a/drivers/pci/bus.c b/drivers/pci/bus.c
+index 83ae838ceb5f..b48bcc965a42 100644
+--- a/drivers/pci/bus.c
++++ b/drivers/pci/bus.c
+@@ -161,13 +161,13 @@ static int pci_bus_alloc_from_region(struct pci_bus *bus, struct resource *res,
+ 		void *alignf_data,
+ 		struct pci_bus_region *region)
+ {
+-	int i, ret;
+ 	struct resource *r, avail;
+ 	resource_size_t max;
++	int ret;
  
--extern unsigned long physical_memsize;
- extern struct vpe_control vpecontrol;
- extern const struct file_operations vpe_fops;
+ 	type_mask |= IORESOURCE_TYPE_BITS;
  
-diff --git a/arch/mips/kernel/vpe-mt.c b/arch/mips/kernel/vpe-mt.c
-index 9fd7cd48ea1d2..496ed8f362f62 100644
---- a/arch/mips/kernel/vpe-mt.c
-+++ b/arch/mips/kernel/vpe-mt.c
-@@ -92,12 +92,11 @@ int vpe_run(struct vpe *v)
- 	write_tc_c0_tchalt(read_tc_c0_tchalt() & ~TCHALT_H);
+-	pci_bus_for_each_resource(bus, r, i) {
++	pci_bus_for_each_resource_p(bus, r) {
+ 		resource_size_t min_used = min;
  
- 	/*
--	 * The sde-kit passes 'memsize' to __start in $a3, so set something
--	 * here...  Or set $a3 to zero and define DFLT_STACK_SIZE and
--	 * DFLT_HEAP_SIZE when you compile your program
-+	 * We don't pass the memsize here, so VPE programs need to be
-+	 * compiled with DFLT_STACK_SIZE and DFLT_HEAP_SIZE defined.
- 	 */
-+	mttgpr(7, 0);
- 	mttgpr(6, v->ntcs);
--	mttgpr(7, physical_memsize);
+ 		if (!r)
+@@ -268,9 +268,8 @@ bool pci_bus_clip_resource(struct pci_dev *dev, int idx)
+ 	struct resource *res = &dev->resource[idx];
+ 	struct resource orig_res = *res;
+ 	struct resource *r;
+-	int i;
  
- 	/* set up VPE1 */
- 	/*
-diff --git a/arch/mips/lantiq/prom.c b/arch/mips/lantiq/prom.c
-index 3f568f5aae2d1..2729a4b63e187 100644
---- a/arch/mips/lantiq/prom.c
-+++ b/arch/mips/lantiq/prom.c
-@@ -22,12 +22,6 @@
- DEFINE_SPINLOCK(ebu_lock);
- EXPORT_SYMBOL_GPL(ebu_lock);
+-	pci_bus_for_each_resource(bus, r, i) {
++	pci_bus_for_each_resource_p(bus, r) {
+ 		resource_size_t start, end;
  
--/*
-- * This is needed by the VPE loader code, just set it to 0 and assume
-- * that the firmware hardcodes this value to something useful.
-- */
--unsigned long physical_memsize = 0L;
--
- /*
-  * this struct is filled by the soc specific detection code and holds
-  * information about the specific soc type, revision and name
+ 		if (!r)
+diff --git a/drivers/pci/hotplug/shpchp_sysfs.c b/drivers/pci/hotplug/shpchp_sysfs.c
+index 64beed7a26be..ff04f0c5e7c3 100644
+--- a/drivers/pci/hotplug/shpchp_sysfs.c
++++ b/drivers/pci/hotplug/shpchp_sysfs.c
+@@ -24,16 +24,16 @@
+ static ssize_t show_ctrl(struct device *dev, struct device_attribute *attr, char *buf)
+ {
+ 	struct pci_dev *pdev;
+-	int index, busnr;
+ 	struct resource *res;
+ 	struct pci_bus *bus;
+ 	size_t len = 0;
++	int busnr;
+ 
+ 	pdev = to_pci_dev(dev);
+ 	bus = pdev->subordinate;
+ 
+ 	len += sysfs_emit_at(buf, len, "Free resources: memory\n");
+-	pci_bus_for_each_resource(bus, res, index) {
++	pci_bus_for_each_resource_p(bus, res) {
+ 		if (res && (res->flags & IORESOURCE_MEM) &&
+ 				!(res->flags & IORESOURCE_PREFETCH)) {
+ 			len += sysfs_emit_at(buf, len,
+@@ -43,7 +43,7 @@ static ssize_t show_ctrl(struct device *dev, struct device_attribute *attr, char
+ 		}
+ 	}
+ 	len += sysfs_emit_at(buf, len, "Free resources: prefetchable memory\n");
+-	pci_bus_for_each_resource(bus, res, index) {
++	pci_bus_for_each_resource_p(bus, res) {
+ 		if (res && (res->flags & IORESOURCE_MEM) &&
+ 			       (res->flags & IORESOURCE_PREFETCH)) {
+ 			len += sysfs_emit_at(buf, len,
+@@ -53,7 +53,7 @@ static ssize_t show_ctrl(struct device *dev, struct device_attribute *attr, char
+ 		}
+ 	}
+ 	len += sysfs_emit_at(buf, len, "Free resources: IO\n");
+-	pci_bus_for_each_resource(bus, res, index) {
++	pci_bus_for_each_resource_p(bus, res) {
+ 		if (res && (res->flags & IORESOURCE_IO)) {
+ 			len += sysfs_emit_at(buf, len,
+ 					     "start = %8.8llx, length = %8.8llx\n",
+diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
+index 7a67611dc5f4..2f8915ab41ef 100644
+--- a/drivers/pci/pci.c
++++ b/drivers/pci/pci.c
+@@ -779,9 +779,8 @@ struct resource *pci_find_parent_resource(const struct pci_dev *dev,
+ {
+ 	const struct pci_bus *bus = dev->bus;
+ 	struct resource *r;
+-	int i;
+ 
+-	pci_bus_for_each_resource(bus, r, i) {
++	pci_bus_for_each_resource_p(bus, r) {
+ 		if (!r)
+ 			continue;
+ 		if (resource_contains(r, res)) {
+@@ -799,7 +798,7 @@ struct resource *pci_find_parent_resource(const struct pci_dev *dev,
+ 			 * be both a positively-decoded aperture and a
+ 			 * subtractively-decoded region that contain the BAR.
+ 			 * We want the positively-decoded one, so this depends
+-			 * on pci_bus_for_each_resource() giving us those
++			 * on pci_bus_for_each_resource_p() giving us those
+ 			 * first.
+ 			 */
+ 			return r;
+diff --git a/drivers/pci/probe.c b/drivers/pci/probe.c
+index a3f68b6ba6ac..5ada4c155d3c 100644
+--- a/drivers/pci/probe.c
++++ b/drivers/pci/probe.c
+@@ -533,7 +533,7 @@ void pci_read_bridge_bases(struct pci_bus *child)
+ 	pci_read_bridge_mmio_pref(child);
+ 
+ 	if (dev->transparent) {
+-		pci_bus_for_each_resource(child->parent, res, i) {
++		pci_bus_for_each_resource_p(child->parent, res) {
+ 			if (res && res->flags) {
+ 				pci_bus_add_resource(child, res,
+ 						     PCI_SUBTRACTIVE_DECODE);
+diff --git a/drivers/pci/setup-bus.c b/drivers/pci/setup-bus.c
+index d4fc7665f70a..d6ead027255f 100644
+--- a/drivers/pci/setup-bus.c
++++ b/drivers/pci/setup-bus.c
+@@ -770,9 +770,8 @@ static struct resource *find_bus_resource_of_type(struct pci_bus *bus,
+ 						  unsigned long type)
+ {
+ 	struct resource *r, *r_assigned = NULL;
+-	int i;
+ 
+-	pci_bus_for_each_resource(bus, r, i) {
++	pci_bus_for_each_resource_p(bus, r) {
+ 		if (r == &ioport_resource || r == &iomem_resource)
+ 			continue;
+ 		if (r && (r->flags & type_mask) == type && !r->parent)
+@@ -1204,7 +1203,7 @@ void __pci_bus_size_bridges(struct pci_bus *bus, struct list_head *realloc_head)
+ 			additional_mmio_pref_size = 0;
+ 	struct resource *pref;
+ 	struct pci_host_bridge *host;
+-	int hdr_type, i, ret;
++	int hdr_type, ret;
+ 
+ 	list_for_each_entry(dev, &bus->devices, bus_list) {
+ 		struct pci_bus *b = dev->subordinate;
+@@ -1228,7 +1227,7 @@ void __pci_bus_size_bridges(struct pci_bus *bus, struct list_head *realloc_head)
+ 		host = to_pci_host_bridge(bus->bridge);
+ 		if (!host->size_windows)
+ 			return;
+-		pci_bus_for_each_resource(bus, pref, i)
++		pci_bus_for_each_resource_p(bus, pref)
+ 			if (pref && (pref->flags & IORESOURCE_PREFETCH))
+ 				break;
+ 		hdr_type = -1;	/* Intentionally invalid - not a PCI device. */
+@@ -1333,12 +1332,11 @@ EXPORT_SYMBOL(pci_bus_size_bridges);
+ 
+ static void assign_fixed_resource_on_bus(struct pci_bus *b, struct resource *r)
+ {
+-	int i;
+ 	struct resource *parent_r;
+ 	unsigned long mask = IORESOURCE_IO | IORESOURCE_MEM |
+ 			     IORESOURCE_PREFETCH;
+ 
+-	pci_bus_for_each_resource(b, parent_r, i) {
++	pci_bus_for_each_resource_p(b, parent_r) {
+ 		if (!parent_r)
+ 			continue;
+ 
+diff --git a/include/linux/pci.h b/include/linux/pci.h
+index 670f01c5538c..aac72c247bed 100644
+--- a/include/linux/pci.h
++++ b/include/linux/pci.h
+@@ -1456,10 +1456,16 @@ int devm_request_pci_bus_resources(struct device *dev,
+ /* Temporary until new and working PCI SBR API in place */
+ int pci_bridge_secondary_bus_reset(struct pci_dev *dev);
+ 
+-#define pci_bus_for_each_resource(bus, res, i)				\
+-	for (i = 0;							\
+-	    (res = pci_bus_resource_n(bus, i)) || i < PCI_BRIDGE_RESOURCE_NUM; \
+-	     i++)
++#define __pci_bus_for_each_resource(bus, res, __i, vartype)			\
++	for (vartype __i = 0;							\
++	     res = pci_bus_resource_n(bus, __i), __i < PCI_BRIDGE_RESOURCE_NUM;	\
++	     __i++)
++
++#define pci_bus_for_each_resource(bus, res, i)					\
++	__pci_bus_for_each_resource(bus, res, i, )
++
++#define pci_bus_for_each_resource_p(bus, res)					\
++	__pci_bus_for_each_resource(bus, res, i, unsigned int)
+ 
+ int __must_check pci_bus_alloc_resource(struct pci_bus *bus,
+ 			struct resource *res, resource_size_t size,
 -- 
-2.39.2
-
-
+2.39.1
 

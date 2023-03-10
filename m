@@ -2,32 +2,32 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 93207C6FD1E
-	for <linux-mips@archiver.kernel.org>; Fri, 10 Mar 2023 13:49:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 23A3CC6FA99
+	for <linux-mips@archiver.kernel.org>; Fri, 10 Mar 2023 14:20:45 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230417AbjCJNtd (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 10 Mar 2023 08:49:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51172 "EHLO
+        id S232214AbjCJOUo (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 10 Mar 2023 09:20:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58174 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230407AbjCJNt0 (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Fri, 10 Mar 2023 08:49:26 -0500
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D75FE15CB5;
-        Fri, 10 Mar 2023 05:49:22 -0800 (PST)
+        with ESMTP id S231893AbjCJOU0 (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Fri, 10 Mar 2023 09:20:26 -0500
+Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80D4A1184D8;
+        Fri, 10 Mar 2023 06:18:56 -0800 (PST)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 28F3E617B4;
-        Fri, 10 Mar 2023 13:49:22 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 05249C433EF;
-        Fri, 10 Mar 2023 13:49:21 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 63F63B822BA;
+        Fri, 10 Mar 2023 14:18:55 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9090AC433D2;
+        Fri, 10 Mar 2023 14:18:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1678456161;
-        bh=pv8blzxQ/MeEGjtsb1NAa7l3avihZdu1oc42qxEyTAU=;
+        s=korg; t=1678457934;
+        bh=2uL77yoXW7d+No2Z1+Gc0AOKw3r6sunhT8N2HSr/S48=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=g7TeDbrBj1ibL9fLHcM1IuVtG7WiEZeRA/zYWdcq5/UdYWaP1GfqMD+vft45pNuEL
-         YnAlqUrzhyheoZo8ZkYCv13HVjCUK1SyNy0aQhZMPj/L/Pl3Vy3Ytz8VltFAHlkdiY
-         O4pHLkeRWjoSkcdpSTTonESX7Ei0cWX38mLc8PJ0=
+        b=Hd6wqaisDRpvWM1Pda472IX3dvI/xtunI0YJOS/T+WjRspOLga9tuTPynPs3fbf34
+         i9WpJx++qXyHKEiEYLrswJq+RgWo2IEVHd2K2Wxt3/MHaB7fuPkLHccqxA8T+hnXqr
+         LNEXyTZAeEmfVDkBo9/kaGU6i3+inetWth/c4Xus=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     stable@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -43,12 +43,12 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Hauke Mehrtens <hauke@hauke-m.de>,
         James Hogan <jhogan@kernel.org>, linux-mips@vger.kernel.org,
         Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.14 071/193] MIPS: vpe-mt: drop physical_memsize
-Date:   Fri, 10 Mar 2023 14:37:33 +0100
-Message-Id: <20230310133713.399921999@linuxfoundation.org>
+Subject: [PATCH 4.19 107/252] MIPS: vpe-mt: drop physical_memsize
+Date:   Fri, 10 Mar 2023 14:37:57 +0100
+Message-Id: <20230310133722.043506424@linuxfoundation.org>
 X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230310133710.926811681@linuxfoundation.org>
-References: <20230310133710.926811681@linuxfoundation.org>
+In-Reply-To: <20230310133718.803482157@linuxfoundation.org>
+References: <20230310133718.803482157@linuxfoundation.org>
 User-Agent: quilt/0.67
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -129,10 +129,10 @@ index 9fd7cd48ea1d2..496ed8f362f62 100644
  	/* set up VPE1 */
  	/*
 diff --git a/arch/mips/lantiq/prom.c b/arch/mips/lantiq/prom.c
-index a26322ff57e01..8cf1868540312 100644
+index dceab67e481a8..02cf9b27b7859 100644
 --- a/arch/mips/lantiq/prom.c
 +++ b/arch/mips/lantiq/prom.c
-@@ -25,12 +25,6 @@
+@@ -24,12 +24,6 @@
  DEFINE_SPINLOCK(ebu_lock);
  EXPORT_SYMBOL_GPL(ebu_lock);
  

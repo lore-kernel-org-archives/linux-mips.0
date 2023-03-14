@@ -2,51 +2,56 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 06374C6FD1C
-	for <linux-mips@archiver.kernel.org>; Tue, 14 Mar 2023 16:27:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B364EC7618B
+	for <linux-mips@archiver.kernel.org>; Tue, 14 Mar 2023 16:27:15 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230031AbjCNQ1N (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        id S230200AbjCNQ1N (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
         Tue, 14 Mar 2023 12:27:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58260 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58232 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230045AbjCNQ1I (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Tue, 14 Mar 2023 12:27:08 -0400
+        with ESMTP id S229616AbjCNQ1J (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Tue, 14 Mar 2023 12:27:09 -0400
 Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 48E284FAA9;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id D22158482D;
         Tue, 14 Mar 2023 09:26:57 -0700 (PDT)
 Received: from uucp (helo=alpha)
         by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1pc7UG-00048S-00; Tue, 14 Mar 2023 17:26:56 +0100
+        id 1pc7UG-00048S-02; Tue, 14 Mar 2023 17:26:56 +0100
 Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 7B753C12F6; Tue, 14 Mar 2023 17:18:30 +0100 (CET)
-Date:   Tue, 14 Mar 2023 17:18:30 +0100
+        id F224DC131B; Tue, 14 Mar 2023 17:20:48 +0100 (CET)
+Date:   Tue, 14 Mar 2023 17:20:48 +0100
 From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Rob Herring <robh@kernel.org>
-Cc:     devicetree@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mips: Use of_property_read_bool() for boolean properties
-Message-ID: <20230314161830.GA18446@alpha.franken.de>
-References: <20230310144656.1540950-1-robh@kernel.org>
+To:     Keguang Zhang <keguang.zhang@gmail.com>
+Cc:     linux-mips@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>
+Subject: Re: [PATCH v3] dt-bindings: mips: loongson: Add Loongson-1 based
+ boards
+Message-ID: <20230314162048.GC18446@alpha.franken.de>
+References: <20230221110142.2121482-1-keguang.zhang@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230310144656.1540950-1-robh@kernel.org>
+In-Reply-To: <20230221110142.2121482-1-keguang.zhang@gmail.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Fri, Mar 10, 2023 at 08:46:56AM -0600, Rob Herring wrote:
-> It is preferred to use typed property access functions (i.e.
-> of_property_read_<type> functions) rather than low-level
-> of_get_property/of_find_property functions for reading properties.
-> Convert reading boolean properties to to of_property_read_bool().
+On Tue, Feb 21, 2023 at 07:01:42PM +0800, Keguang Zhang wrote:
+> Add two Loongson-1 based boards: LSGZ 1B and Smartloong 1C.
 > 
-> Signed-off-by: Rob Herring <robh@kernel.org>
+> Signed-off-by: Keguang Zhang <keguang.zhang@gmail.com>
 > ---
->  arch/mips/pci/pci-lantiq.c | 2 +-
->  arch/mips/pci/pci-rt3883.c | 2 +-
->  2 files changed, 2 insertions(+), 2 deletions(-)
+> V2 -> V3: Amend the vendor prefix
+> V1 -> V2: Add the according vendor prefix
+>           Change the board string to enum
+>           Modify the board description
+> ---
+>  .../devicetree/bindings/mips/loongson/devices.yaml   | 12 ++++++++++++
+>  .../devicetree/bindings/vendor-prefixes.yaml         |  2 ++
+>  2 files changed, 14 insertions(+)
 
 applied to mips-next.
 

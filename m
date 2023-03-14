@@ -2,56 +2,58 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B364EC7618B
-	for <linux-mips@archiver.kernel.org>; Tue, 14 Mar 2023 16:27:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C3088C74A4B
+	for <linux-mips@archiver.kernel.org>; Tue, 14 Mar 2023 16:27:16 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230200AbjCNQ1N (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 14 Mar 2023 12:27:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58232 "EHLO
+        id S230140AbjCNQ1Q (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 14 Mar 2023 12:27:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59798 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229616AbjCNQ1J (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Tue, 14 Mar 2023 12:27:09 -0400
+        with ESMTP id S230131AbjCNQ1K (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Tue, 14 Mar 2023 12:27:10 -0400
 Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id D22158482D;
-        Tue, 14 Mar 2023 09:26:57 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 7920186DCE
+        for <linux-mips@vger.kernel.org>; Tue, 14 Mar 2023 09:26:58 -0700 (PDT)
 Received: from uucp (helo=alpha)
         by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1pc7UG-00048S-02; Tue, 14 Mar 2023 17:26:56 +0100
+        id 1pc7UG-00048S-04; Tue, 14 Mar 2023 17:26:56 +0100
 Received: by alpha.franken.de (Postfix, from userid 1000)
-        id F224DC131B; Tue, 14 Mar 2023 17:20:48 +0100 (CET)
-Date:   Tue, 14 Mar 2023 17:20:48 +0100
+        id 3BB58C131B; Tue, 14 Mar 2023 17:21:55 +0100 (CET)
+Date:   Tue, 14 Mar 2023 17:21:55 +0100
 From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Keguang Zhang <keguang.zhang@gmail.com>
-Cc:     linux-mips@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>
-Subject: Re: [PATCH v3] dt-bindings: mips: loongson: Add Loongson-1 based
- boards
-Message-ID: <20230314162048.GC18446@alpha.franken.de>
-References: <20230221110142.2121482-1-keguang.zhang@gmail.com>
+To:     Florian Fainelli <f.fainelli@gmail.com>
+Cc:     =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+        Hauke Mehrtens <hauke@hauke-m.de>, linux-mips@vger.kernel.org,
+        bcm-kernel-feedback-list@broadcom.com,
+        =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>
+Subject: Re: [PATCH] MIPS: BCM47XX: Add support for Huawei B593u-12
+Message-ID: <20230314162155.GE18446@alpha.franken.de>
+References: <20230227080911.15039-1-zajec5@gmail.com>
+ <7731bf3a-b9ce-9020-6d6d-a13d39a9088c@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20230221110142.2121482-1-keguang.zhang@gmail.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <7731bf3a-b9ce-9020-6d6d-a13d39a9088c@gmail.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Tue, Feb 21, 2023 at 07:01:42PM +0800, Keguang Zhang wrote:
-> Add two Loongson-1 based boards: LSGZ 1B and Smartloong 1C.
+On Tue, Feb 28, 2023 at 01:54:30PM -0800, Florian Fainelli wrote:
 > 
-> Signed-off-by: Keguang Zhang <keguang.zhang@gmail.com>
-> ---
-> V2 -> V3: Amend the vendor prefix
-> V1 -> V2: Add the according vendor prefix
->           Change the board string to enum
->           Modify the board description
-> ---
->  .../devicetree/bindings/mips/loongson/devices.yaml   | 12 ++++++++++++
->  .../devicetree/bindings/vendor-prefixes.yaml         |  2 ++
->  2 files changed, 14 insertions(+)
+> 
+> On 2/27/2023 12:09 AM, Rafał Miłecki wrote:
+> > From: Rafał Miłecki <rafal@milecki.pl>
+> > 
+> > It's a BCM5358 based home router. One of very few bcm47xx devices with
+> > cellular modems (here: LTE).
+> > 
+> > Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
+> 
+> Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
+> -- 
+> Florian
 
 applied to mips-next.
 

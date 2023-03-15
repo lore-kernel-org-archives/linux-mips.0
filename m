@@ -2,79 +2,86 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EF611C61DA4
-	for <linux-mips@archiver.kernel.org>; Wed, 15 Mar 2023 14:21:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E4D39C61DA4
+	for <linux-mips@archiver.kernel.org>; Wed, 15 Mar 2023 19:05:04 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231983AbjCOOVb (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 15 Mar 2023 10:21:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40510 "EHLO
+        id S232492AbjCOTFD (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 15 Mar 2023 15:05:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42702 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229941AbjCOOVa (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 15 Mar 2023 10:21:30 -0400
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D72FE67031;
-        Wed, 15 Mar 2023 07:21:29 -0700 (PDT)
-Received: from relay2.suse.de (relay2.suse.de [149.44.160.134])
-        by smtp-out1.suse.de (Postfix) with ESMTP id 97BB0219BD;
-        Wed, 15 Mar 2023 14:21:28 +0000 (UTC)
-Received: from adalid.arch.suse.de (adalid.arch.suse.de [10.161.8.13])
-        by relay2.suse.de (Postfix) with ESMTP id 7E6D92C141;
-        Wed, 15 Mar 2023 14:21:28 +0000 (UTC)
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] MIPS: sibyte: Replace BCM1125H with SB1250 option
-Date:   Wed, 15 Mar 2023 15:21:24 +0100
-Message-Id: <20230315142124.110732-1-tsbogend@alpha.franken.de>
-X-Mailer: git-send-email 2.35.3
+        with ESMTP id S232500AbjCOTEv (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 15 Mar 2023 15:04:51 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF6CB6C19B;
+        Wed, 15 Mar 2023 12:04:49 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 700D561E07;
+        Wed, 15 Mar 2023 19:04:49 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CAF1EC433D2;
+        Wed, 15 Mar 2023 19:04:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1678907088;
+        bh=PHCqtfNPtykLQzgOmD479r+vtvy5dP8Tx6mGL6Sg3ak=;
+        h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+        b=qKdBV3PNcXnrOccuRb2+b9kinnFWwz05lqXdy54fU9J37SpHDUIgXnn+I5S/6WeHL
+         SK5wZW1D/TPAQUvevh/VOdHiBJ36RAZHiRiiCAQMG2i2mVflMV8GVgPn+bb64VQ1r7
+         FTmMRDRRa7LtxOdgTvCoT5RYJ73jU61FiUUwua4PCTNb26Ru8s2IGnKwIAVeG/uWrD
+         hXcWvJuaDN5zf8fsF5/oxF85WKAfK8HHP0LGVdxLOLX3zQOSxLkpsf5iureCBqXgGi
+         vlZxwRkaz+ZrHr3/mxSHeqj3leMNtVB54aDyYPuSGMUH/4A0f70QY4VEzOKuFgO3g/
+         y5kek1OV90Atg==
+Message-ID: <48d30bc1f094bee18a2180a5b8e65e40.sboyd@kernel.org>
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <CAJhJPsWDO_nyPLH7uMTB+ODS74SAKDPGOXxk_Nperk1dKBKStQ@mail.gmail.com>
+References: <20230210111141.1379645-1-keguang.zhang@gmail.com> <a3e6f6038511ad48258627dbf4c335e2.sboyd@kernel.org> <CAJhJPsUQN5Lo_rVUbbmGY68gorwkcQT=9AXfcEh371cP97Wj_A@mail.gmail.com> <20230315092910.GA8008@alpha.franken.de> <CAJhJPsWDO_nyPLH7uMTB+ODS74SAKDPGOXxk_Nperk1dKBKStQ@mail.gmail.com>
+Subject: Re: [PATCH] MIPS: loongson32: Update the clock initialization
+From:   Stephen Boyd <sboyd@kernel.org>
+Cc:     linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mips@vger.kernel.org,
+        Serge Semin <Sergey.Semin@baikalelectronics.ru>
+To:     Keguang Zhang <keguang.zhang@gmail.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Date:   Wed, 15 Mar 2023 12:04:46 -0700
+User-Agent: alot/0.10
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-SIBYTE_BCM1125H is identical to SIBYTE_SB1250, so remove one of them.
+Quoting Keguang Zhang (2023-03-15 02:43:02)
+> On Wed, Mar 15, 2023 at 5:29=E2=80=AFPM Thomas Bogendoerfer
+> <tsbogend@alpha.franken.de> wrote:
+> >
+> > On Wed, Mar 15, 2023 at 11:07:23AM +0800, Keguang Zhang wrote:
+> > > On Sat, Feb 11, 2023 at 7:31=E2=80=AFAM Stephen Boyd <sboyd@kernel.or=
+g> wrote:
+> > > >
+> > > > Quoting Keguang Zhang (2023-02-10 03:11:41)
+> > > > > The Loongson-1 clock driver is under re-implementation
+> > > > > to add DT support. As a result, ls1x_clk_init() will be dropped s=
+oon.
+> > > > > Therefore, call of_clk_init() for clock initialization instead.
+> > > > >
+> > > > > Link: https://lore.kernel.org/all/20230209132614.1079198-3-keguan=
+g.zhang@gmail.com
+> > > > > Link: https://lore.kernel.org/all/20230209132614.1079198-4-keguan=
+g.zhang@gmail.com
+> > >
+> > > Hi Thomas,
+> > > Sorry to bother you.
+> > > For fear of raising build error, is it possible to merge this patch
+> > > before the above two patches getting applied?
+> > > Or is there anything to improve?
+> > > Thanks very much!
+> >
+> > the IMHO best way would be to let this patch go the same way as
+> > the other patch set. So Stephen could you take this into your
+> > tree, too ?
+> >
+> Sure. Will do.
+>=20
 
-Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
----
- arch/mips/Kconfig        |  2 +-
- arch/mips/sibyte/Kconfig | 11 -----------
- 2 files changed, 1 insertion(+), 12 deletions(-)
-
-diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-index 277daaab1b0d..e1e67b1eae3e 100644
---- a/arch/mips/Kconfig
-+++ b/arch/mips/Kconfig
-@@ -808,7 +808,7 @@ config SIBYTE_CRHONE
- config SIBYTE_RHONE
- 	bool "Sibyte BCM91125E-Rhone"
- 	select BOOT_ELF32
--	select SIBYTE_BCM1125H
-+	select SIBYTE_SB1250
- 	select SWAP_IO_SPACE
- 	select SYS_HAS_CPU_SB1
- 	select SYS_SUPPORTS_BIG_ENDIAN
-diff --git a/arch/mips/sibyte/Kconfig b/arch/mips/sibyte/Kconfig
-index c4596d49edf1..5fb92fe84149 100644
---- a/arch/mips/sibyte/Kconfig
-+++ b/arch/mips/sibyte/Kconfig
-@@ -20,17 +20,6 @@ config SIBYTE_BCM1125
- 	select SIBYTE_HAS_ZBUS_PROFILING
- 	select SIBYTE_SB1xxx_SOC
- 
--config SIBYTE_BCM1125H
--	bool
--	select CEVT_SB1250
--	select CSRC_SB1250
--	select HAVE_PCI
--	select IRQ_MIPS_CPU
--	select SIBYTE_BCM112X
--	select SIBYTE_ENABLE_LDT_IF_PCI
--	select SIBYTE_HAS_ZBUS_PROFILING
--	select SIBYTE_SB1xxx_SOC
--
- config SIBYTE_BCM112X
- 	bool
- 	select CEVT_SB1250
--- 
-2.35.3
-
+Please resend this patch along with the loongson patches that it goes
+with.

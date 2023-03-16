@@ -2,105 +2,262 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A4986C6FD1F
-	for <linux-mips@archiver.kernel.org>; Thu, 16 Mar 2023 11:50:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0D78EC6FD1F
+	for <linux-mips@archiver.kernel.org>; Thu, 16 Mar 2023 17:41:03 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229733AbjCPLuC (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 16 Mar 2023 07:50:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51778 "EHLO
+        id S229849AbjCPRlB (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 16 Mar 2023 13:41:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37386 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230314AbjCPLt5 (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Thu, 16 Mar 2023 07:49:57 -0400
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FF55527C;
-        Thu, 16 Mar 2023 04:49:56 -0700 (PDT)
-Received: by mail-ed1-x531.google.com with SMTP id w9so6524680edc.3;
-        Thu, 16 Mar 2023 04:49:56 -0700 (PDT)
+        with ESMTP id S229599AbjCPRlA (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Thu, 16 Mar 2023 13:41:00 -0400
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2045ABCFCA;
+        Thu, 16 Mar 2023 10:40:19 -0700 (PDT)
+Received: by mail-pj1-x1031.google.com with SMTP id p13-20020a17090a284d00b0023d2e945aebso6232594pjf.0;
+        Thu, 16 Mar 2023 10:40:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1678967395;
-        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=gC4X7gyYMX27ih55GNpE0NiMJD+KDeM3ZDEJ0rkCdRU=;
-        b=BnVZVkixrG4X8QtUa3sqYoBoJdvoMIiemrrDTnlRGv1vTLoMlKoxafcTDaKPdkJii3
-         gTNBIfkFbMy1t0f7Crsu6zIAd6IZD7H2CND2uNOA06vsrV4Oqw4+wya0yZmb+3QGOcYL
-         uTSqTP8E4/iCGEDYaCFZtl2cvu/gHN7/AxNTCOSoIl+oDOkXpDdseiupk3PmELIk4vql
-         mmJIR76ouW7Ldsdtr/vkbNJs6u/VHXmHUAMaklXrTRo83QDCUME3IuJLuOcXJ2AS9YKn
-         tyspUfvY8SPlAEQkhuuQDLSh17VrWPmJMs8A4tyMUNu0s+cxgEmpog6lQRRRnqaX8mju
-         J49Q==
+        d=gmail.com; s=20210112; t=1678988417;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=JnLT3w3MddT1FeU+yFD8gqkc17TpH98T7IaFk8jMiuk=;
+        b=A522MBa9ryjX761nW+71GjDjKYGiIKHWptxTWoLKOtkAQhKCK/vraNVWKsi2q2Cv9z
+         IflKUMiGMS67v7WUk9czaRDi1K6fyWxt54iYTf3f+A6t4uCK8myIjPuQFZpJkf/5OBXn
+         LIlxsQqHQf+mNjvXy2jFZn52EKQ+ZjfqVVl0gkc2BGZzZFkmCzlzAqajTSofgWp6vol2
+         bD+CUUOO0NWD84SS/YQMVpZ9VJ0a219ZDWG9D8/QfkKkm+wsxZV/7di9onO0SAwiuNuI
+         haJJbvZLDnpwVn7JnIXHPbQRtQoN9XCGA9V5ycuMRoUNp2ppN7gGO6Mxcx4wxwd3uq3t
+         zGOw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1678967395;
-        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=gC4X7gyYMX27ih55GNpE0NiMJD+KDeM3ZDEJ0rkCdRU=;
-        b=K6IxRJ69xLY+wtVThub0lkwhtVjp+mtKqmdofDKG7Mtfq1ES/s3JksDC3vQK030GyA
-         qK+qMBgt4c1lKU1UWchagjEo+0sd71TeHvmXoptxq6wInHVpXkC5xzDnIM9dcjLfiMlV
-         tK4eVGMRZH6eqoxa+5Hy6VHE7xfCIzESqu/V/aVqJGLiUcMoUcKWw35BQsQUKX1p0oKd
-         70GKS/CGpLgwshixGfj0ukS24xDY95zDLXO1RtEznskcwKJxgOdfTU5W0YrD2x3KzSDa
-         Ctg4O2joqFRYIM8vVehNYuuYV3pjnSmQRYOyleOCC8uaVsMgPBLjeOgukyNwwAWJ/OhD
-         QxAA==
-X-Gm-Message-State: AO0yUKVTvzydEKMomoFzeLY1TULdCuyBniOrsbI0Olwg2tO3RPhuBW6/
-        YxIb5t9Q0R179JZVQ5l/P8U=
-X-Google-Smtp-Source: AK7set+9frqBtAJD8IC4XNzK5Mu2xwczlVSFBoe+ym6swjbG9Bt1fit7bePBC77hi8Yrv/e5uloFbg==
-X-Received: by 2002:aa7:d8c4:0:b0:4fd:298a:fa12 with SMTP id k4-20020aa7d8c4000000b004fd298afa12mr5974053eds.3.1678967394853;
-        Thu, 16 Mar 2023 04:49:54 -0700 (PDT)
-Received: from felia.fritz.box ([2a02:810d:2a40:1104:a05c:be0f:b1e7:779e])
-        by smtp.gmail.com with ESMTPSA id i9-20020a50d749000000b004af6163f845sm3718720edj.28.2023.03.16.04.49.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 Mar 2023 04:49:54 -0700 (PDT)
-From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        John Crispin <john@phrozen.org>, linux-mips@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Subject: [PATCH] MIPS: ath79: remove obsolete ATH79_DEV_* configs
-Date:   Thu, 16 Mar 2023 12:49:52 +0100
-Message-Id: <20230316114952.26253-1-lukas.bulwahn@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        d=1e100.net; s=20210112; t=1678988417;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=JnLT3w3MddT1FeU+yFD8gqkc17TpH98T7IaFk8jMiuk=;
+        b=vWZFrYwzkuQC+HyDKOlYvGM2H9zu8BiwpBQRQ80BbVMKN7hUru5RplZvp16TW2ax2C
+         Qwa7GNVjopYWKHyNu7ciZNW5mSYTQQF5pOx8H+bUVKuCuDgF0oZjqI+PLz0ydw1gg0m8
+         TX1SZGEUi89aVuVzfQmz8pjspVsczhcBPvmTgFVD+ws+x3dnJAJUs5UXPgmeYkQZhDYP
+         rOHDWzGfH2C824+ntm0/KzvnL3mkz+2uTAgoiL5jNnz6qgxFBpNRd8hPMRprw5SO0+7X
+         T5LGVrT/UUCakq5vGNLDBDI1kkYmr/wF+SnPux4cOSMjqyqDvwSLUnWm2MB2iSlSF5HX
+         YFzg==
+X-Gm-Message-State: AO0yUKVHPFRMCyY3Dqi4RqrsxYLVkC34SHhIkzr24NbtWqkd/pbVJFdQ
+        M4OtQf7D8rKfDrehXAIE6I+i1pclq1A=
+X-Google-Smtp-Source: AK7set9kh6aca4zZSdEU93VoALZWhpFld2TQbqwAcIVZHGekqVMhgMPTiYNMpbMACQS2cFEFXA1aGw==
+X-Received: by 2002:a05:6a20:bf02:b0:d0:4297:c698 with SMTP id gc2-20020a056a20bf0200b000d04297c698mr4380556pzb.9.1678988416446;
+        Thu, 16 Mar 2023 10:40:16 -0700 (PDT)
+Received: from [10.67.48.245] ([192.19.223.252])
+        by smtp.googlemail.com with ESMTPSA id f24-20020aa78b18000000b005898fcb7c1bsm5885178pfd.177.2023.03.16.10.40.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 16 Mar 2023 10:40:15 -0700 (PDT)
+Message-ID: <fd4cb74c-3a8e-c9c0-f9ac-312fb916275c@gmail.com>
+Date:   Thu, 16 Mar 2023 10:40:10 -0700
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.7.1
+Subject: Re: [PATCH] mips: bmips: BCM6358: disable arch_sync_dma_for_cpu_all()
+Content-Language: en-US
+To:     =?UTF-8?Q?=c3=81lvaro_Fern=c3=a1ndez_Rojas?= <noltari@gmail.com>
+Cc:     William Zhang <william.zhang@broadcom.com>,
+        Jonas Gorski <jonas.gorski@gmail.com>,
+        bcm-kernel-feedback-list@broadcom.com, tsbogend@alpha.franken.de,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20230310121306.4632-1-noltari@gmail.com>
+ <da5d150e-a2db-573d-e231-b4fd9fdaf63b@gmail.com>
+ <CAOiHx=njCvfVju9BAe7gTzMq0vybQF-gy4SRZrhEJFULGLhC7w@mail.gmail.com>
+ <5b4d3eef-ff80-29e8-9be0-d487aee5e4e2@broadcom.com>
+ <a88fc41b-69d3-b042-fa91-e403d1263742@gmail.com>
+ <CAKR-sGfL5_VU9uxJHGyZ-bj2P_7R6+OOfWs6Yf-ihcCF8bD2MA@mail.gmail.com>
+ <e3cff853-8d5d-acdf-8e6a-3322c4de2023@gmail.com>
+ <CAKR-sGcyMF26NGoeEApKuKDe6=14nCGKwRYx-o68LHAcmUNXhA@mail.gmail.com>
+ <7517f1b0-2afb-7edf-a847-e839a410f46f@gmail.com>
+ <CAKR-sGdOeg185sPFi0nwDxd6Fjx_SxyBgvtmFEiO9Y_50Wf2Bw@mail.gmail.com>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+In-Reply-To: <CAKR-sGdOeg185sPFi0nwDxd6Fjx_SxyBgvtmFEiO9Y_50Wf2Bw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Commit 85b9686dae30 ("MIPS: ath79: drop platform device registration code")
-removes all files arch/mips/ath79/dev-*.[ch], adjusts the Makefile, but
-misses to adjust the Kconfig file. Hence, since then, the configs
-ATH79_DEV_* are really dead.
+On 3/14/23 11:14, Álvaro Fernández Rojas wrote:
+> Hi Florian,
+> 
+> El lun, 13 mar 2023 a las 22:46, Florian Fainelli
+> (<f.fainelli@gmail.com>) escribió:
+>>
+>> (please don't top post)
+>>
+>> On 3/13/23 14:39, Álvaro Fernández Rojas wrote:
+>>> Hi Florian,
+>>>
+>>> I did another test changing from TP1 to TP0 and this is the result:
+>>> [ 0.000000] Linux version 5.15.98 (noltari@atlantis)
+>>> (mips-openwrt-linux-musl-gcc (OpenWrt GCC 12.2.0 r22187+1-19817fa3f5)
+>>> 12.2.0, GNU ld (GNU Binutils) 2.40.0) #0 SMP Sun Mar 12 18:23:28 2023
+>>> [ 0.000000] bmips_cpu_setup: read_c0_brcm_config_0() = 0xe30e1006
+>>> [ 0.000000] bmips_cpu_setup: BMIPS_RAC_CONFIG = 0x2a00015
+>>> [ 0.000000] CPU0 revision is: 0002a010 (Broadcom BMIPS4350)
+>>>
+>>> And there were no exceptions with EHCI/OHCI as opposed to TP1.
+>>> So the issue is only happening when booting from TP1.
+>>
+>> Ah, that explains it then, I was just about to ask you which TP was the
+>> kernel booted on.
+>>
+>>> Maybe it's due to the fact that BCM6358 has a shared TLB?
+>>
+>> I think it has to do with the fact that the BMIPS_RAC_CONFIG_1 is likely
+>> not enabling the RAC since that register pertains to TP1, could you dump
+>> its contents, and if they do not set bit 0 and/or 1, please set them and
+>> try again and see whether it works any better? The RAC provides
+>> substantial performance improvements, it would be a change to keep it
+>> disabled.
+> 
+> This is the code that I added to bmips_cpu_setup():
+>      case CPU_BMIPS4350:
+>          cfg = read_c0_brcm_cmt_local();
+>          pr_info("bmips_cpu_setup: read_c0_brcm_cmt_local() = 0x%x\n", cfg);
+> 
+>          cfg = read_c0_brcm_config_0();
+>          pr_info("bmips_cpu_setup: read_c0_brcm_config_0() = 0x%x\n", cfg);
+> 
+>          cfg = __raw_readl(cbr + BMIPS_RAC_ADDRESS_RANGE);
+>          pr_info("bmips_cpu_setup: BMIPS_RAC_ADDRESS_RANGE = 0x%x\n", cfg);
+> 
+>          cfg = __raw_readl(cbr + BMIPS_L2_CONFIG);
+>          pr_info("bmips_cpu_setup: BMIPS_L2_CONFIG = 0x%x\n", cfg);
+> 
+>          cfg = __raw_readl(cbr + BMIPS_LMB_CONTROL);
+>          pr_info("bmips_cpu_setup: BMIPS_LMB_CONTROL = 0x%x\n", cfg);
+> 
+>          cfg = __raw_readl(cbr + BMIPS_RAC_CONFIG);
+>          pr_info("bmips_cpu_setup: BMIPS_RAC_CONFIG = 0x%x\n", cfg);
+>          __raw_writel(cfg | BIT(0) | BIT(1), cbr + BMIPS_RAC_CONFIG);
+>          pr_info("bmips_cpu_setup: BMIPS_RAC_CONFIG = 0x%x\n", cfg);
+>          __raw_readl(cbr + BMIPS_RAC_CONFIG);
+> 
+>          cfg = __raw_readl(cbr + BMIPS_RAC_CONFIG_1);
+>          pr_info("bmips_cpu_setup: BMIPS_RAC_CONFIG_1 = 0x%x\n", cfg);
+>          __raw_writel(cfg | BIT(0) | BIT(1), cbr + BMIPS_RAC_CONFIG_1);
+>          pr_info("bmips_cpu_setup: BMIPS_RAC_CONFIG_1 = 0x%x\n", cfg);
+>          __raw_readl(cbr + BMIPS_RAC_CONFIG_1);
+>          break;
+> 
+> And this is the result:
+> [    0.000000] bmips_cpu_setup: read_c0_brcm_cmt_local() = 0x80000000
 
-Commit 3a77e0d75eed ("MIPS: ath79: drop machfiles") already removes all
-configs that select ATH79_DEV_* config. So at that point, they was not a
-way to enable them with a kernel build configuration.
+OK, so we are executing from TP1, but we knew that already.
 
-Remove these obsolete ATH79_DEV_* configs.
+> [    0.000000] bmips_cpu_setup: read_c0_brcm_config_0() = 0xe30e1006
 
-Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
----
- arch/mips/ath79/Kconfig | 16 ----------------
- 1 file changed, 16 deletions(-)
+bit 31: instruction cache enabled
+bit 30: data cache enabled
+bit 29: RAC present
+bit 25: DSU power enabled
+bit 24: data cache power enabled
+bit 19: low-latency memory bus (LMB) present
+bit 18: concurrent multi threading (CMT) present
+bit 17: reserved
+bit 12: split instruction cache
+bit 2: number of Hi/Lo special registers - 1
+bit 1: eDSP present
 
-diff --git a/arch/mips/ath79/Kconfig b/arch/mips/ath79/Kconfig
-index 7367416642cb..04154128c4de 100644
---- a/arch/mips/ath79/Kconfig
-+++ b/arch/mips/ath79/Kconfig
-@@ -29,20 +29,4 @@ config SOC_QCA955X
- config PCI_AR724X
- 	def_bool n
- 
--config ATH79_DEV_GPIO_BUTTONS
--	def_bool n
--
--config ATH79_DEV_LEDS_GPIO
--	def_bool n
--
--config ATH79_DEV_SPI
--	def_bool n
--
--config ATH79_DEV_USB
--	def_bool n
--
--config ATH79_DEV_WMAC
--	depends on (SOC_AR913X || SOC_AR933X || SOC_AR934X || SOC_QCA955X)
--	def_bool n
--
- endif
+This seems to match the recommended and default values
+
+> [    0.000000] bmips_cpu_setup: BMIPS_RAC_ADDRESS_RANGE = 0x277bdab0
+
+That does not look intended, the reset value is supposed to be 0. Can 
+you apply the same values as the ones programmed in the CPU_BMIPS_3300 case?
+
+> [    0.000000] bmips_cpu_setup: BMIPS_L2_CONFIG = 0x241a0008
+
+
+> [    0.000000] bmips_cpu_setup: BMIPS_LMB_CONTROL = 0x0
+
+LMB not enabled, that's OK.
+
+> [    0.000000] bmips_cpu_setup: BMIPS_RAC_CONFIG = 0x3c1b8041
+> [    0.000000] bmips_cpu_setup: BMIPS_RAC_CONFIG = 0x3c1b8041
+> [    0.000000] bmips_cpu_setup: BMIPS_RAC_CONFIG_1 = 0x3600008
+> [    0.000000] bmips_cpu_setup: BMIPS_RAC_CONFIG_1 = 0x3600008
+> 
+> As you can see the bit's aren't set and all the registers appear to
+> have strange values and not the usual ones when initialized by the
+> bootloader...
+
+Yes, so maybe the best way to go about is indeed to go with your change 
+such that if we are running on TP1, it is safe to assume that CFE has 
+not done any sensible initialization, and we have a non functional RAC.
+
+> 
+>>
+>>>
+>>> Maybe the correct way of solving the issue would be by adding the
+>>> following code at bcm6358_quirks():
+>>> if (read_c0_brcm_cmt_local() & (1 << 31))
+>>>       bmips_dma_sync_disabled = 1;
+>>>
+>>> BTW, if I understood it correctly, you want me to reverse the logic,
+>>> so bmips_dma_sync_disabled instead of bmips_dma_sync_enabled.
+>>> Is this correct?
+>>
+>> Yes, I want the logic such that we need to set a variable to 1/true
+>> rather setting one to 0, less change to get it wrong IMHO.
+>>
+>>>
+>>> Best regards,
+>>> Álvaro.
+>>>
+>>>
+>>> El lun, 13 mar 2023 a las 18:37, Florian Fainelli
+>>> (<f.fainelli@gmail.com>) escribió:
+>>>>
+>>>> On 3/12/23 11:50, Álvaro Fernández Rojas wrote:
+>>>>> Hi Florian,
+>>>>>
+>>>>> I tried what you suggested but it stil panics on EHCI:
+>>>>>
+>>>>> [    0.000000] Linux version 5.15.98 (noltari@atlantis)
+>>>>> (mips-openwrt-linux-musl-gcc (OpenWrt GCC 12.2.0 r22187+1-19817fa3f5)
+>>>>> 12.2.0, GNU ld (GNU Binutils) 2.40.0) #0 SMP Sun Mar 12 18:23:28 2023
+>>>>> [    0.000000] bmips_cpu_setup: read_c0_brcm_config_0() = 0xe30e1006
+>>>>> [    0.000000] bmips_cpu_setup: cbr + BMIPS_RAC_CONFIG = 0x3c1b8041
+>>>>> [    0.000000] CPU0 revision is: 0002a010 (Broadcom BMIPS4350)
+>>>>>
+>>>>> It looks like bit 29 is set so RAC should be present.
+>>>>> And RAC_I seems to be set, but not RAC_D...
+>>>>>
+>>>>> BTW, this is what I added to bmips_cpu_setup:
+>>>>>
+>>>>> case CPU_BMIPS4350:
+>>>>> cfg = read_c0_brcm_config_0();
+>>>>> pr_info("bmips_cpu_setup: read_c0_brcm_config_0() = 0x%x\n", cfg);
+>>>>>
+>>>>> cfg = __raw_readl(cbr + BMIPS_RAC_CONFIG);
+>>>>> pr_info("bmips_cpu_setup: cbr + BMIPS_RAC_CONFIG = 0x%x\n", cfg);
+>>>>> __raw_writel(cfg | BIT(0) | BIT(1), cbr + BMIPS_RAC_CONFIG);
+>>>>> __raw_readl(cbr + BMIPS_RAC_CONFIG);
+>>>>> break;
+>>>>
+>>>> Thanks for running those experiments, I cannot explain what you are
+>>>> seeing, so there must be some sort of erratum applicable to the
+>>>> BMIPS4380 revision used on the 6358 somehow...
+>>>>
+>>>> If you can make the suggested change to use negative logic in order to
+>>>> disable the RAC flushing, that would work for me, also maybe add a
+>>>> Fixes: tag so it gets backported to stable trees?
+>>>>
+>>>> Thanks!
+>>>> --
+>>>> Florian
+>>>>
+>>
+>> --
+>> Florian
+>>
+> 
+> Álvaro
+
 -- 
-2.17.1
+Florian
 

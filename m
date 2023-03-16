@@ -2,154 +2,120 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9B2E1C6FD1F
-	for <linux-mips@archiver.kernel.org>; Thu, 16 Mar 2023 07:55:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 943ECC6FD1F
+	for <linux-mips@archiver.kernel.org>; Thu, 16 Mar 2023 10:47:24 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230286AbjCPHyp (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 16 Mar 2023 03:54:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52670 "EHLO
+        id S230194AbjCPKrX (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 16 Mar 2023 06:47:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34480 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230238AbjCPHym (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Thu, 16 Mar 2023 03:54:42 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9BA81D93F
-        for <linux-mips@vger.kernel.org>; Thu, 16 Mar 2023 00:53:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1678953225;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=aZYLoXgK/JW3b9cmlgSFtaDq15S+diTkjhEeDbb70oY=;
-        b=IdUuh5JNrZJPjGTIUyzudtERX5y2RcB81vTI94yaPvGqcyZiGgYd2A1ikoNTwPuMIcAiOU
-        9e8iPx7ZyOOlaZvml3Y4LU06F0l9ZdL/3L1CbJSHxHlbowNg/4BqvZxtXXN1sBNCp1Stpr
-        S3glGTlIZaKKRunF2MDX3gfFgwQipyk=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-471-1O5mUOyqOyOXLmQO3w8T2Q-1; Thu, 16 Mar 2023 03:53:44 -0400
-X-MC-Unique: 1O5mUOyqOyOXLmQO3w8T2Q-1
-Received: by mail-ed1-f72.google.com with SMTP id y24-20020aa7ccd8000000b004be3955a42eso1767130edt.22
-        for <linux-mips@vger.kernel.org>; Thu, 16 Mar 2023 00:53:44 -0700 (PDT)
+        with ESMTP id S230030AbjCPKrS (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Thu, 16 Mar 2023 06:47:18 -0400
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69586B854D;
+        Thu, 16 Mar 2023 03:47:17 -0700 (PDT)
+Received: by mail-pl1-x62d.google.com with SMTP id h8so1237324plf.10;
+        Thu, 16 Mar 2023 03:47:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112; t=1678963636;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=sARMOewAiJNOJtS/RRcjmmgBbN0L7rWCfxuqDehP+MQ=;
+        b=dpGSN3jOw4n9s1Ax3nsBLmwBq4kF6qhUNyP5tdxK+zYs5m39cF1Axk/vNSA11kT2Pq
+         MCAlSSHBgtyCEnGZ/vJduGlsVXL9u/LBP91KyEkAtRd4G0HbuV3j3iqwoTVaBihCJ3Z9
+         NyIzSqnioJhYp4P3SbYcjOKaVEAjqihAGG8TbQIFIr0J1vN0EaYZfvNxEyJu8eX4K9r+
+         S/3aUHv+1vRqMapbD59ygvnfcrCH8eySbwLzu9sYnW/MoXiiNAq0ig/17YI62X9ja1/i
+         AxweE44CM+HbmxwmD4A3J8ltetlqiBgGsdiozsLRIqcnU+Nacm25oQxo1+xELk/07AQ1
+         hGqA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1678953223;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=aZYLoXgK/JW3b9cmlgSFtaDq15S+diTkjhEeDbb70oY=;
-        b=BDNec8SzGp52W/yeLz7DH4ZzzExpISMVaPzascYfl5GYU+jWlpzLXoJL+a8bVCqHMN
-         lpsMHykUUZub4HPiR1D4BuItKhYuEPTaXjG9zZZ5DrNSkCGpQF2R/zFjPfTtz5q+0Yot
-         kv9/1tG2eiZ4jvmkbaFMym1ZN2+5W8wduJ09TkrZN5RWRiojd5YPwV7Jh3USuU+ZN3ua
-         MUaAEydQkCQtEpakGMSiI0oLuToGpTc/UQi5niiimHxqz9i8c9idbHbLtj2hksD7TH80
-         +HhHTqfs287+xR3PGCqeZrWaaCNwsigMtB7y5YbXWwOlLP0kSwvQ6yDjSgtu/78JpEfh
-         MDBw==
-X-Gm-Message-State: AO0yUKXIAK7b9bV3z4aIoaPXLT5MKsQwhCEqRg2boG5DgePgSW5Z0lVG
-        DTLXepcnTjUC0LYB5VCsvNKzDZBIRjt6ehfanP+pcPo449PQ63VlMiMmoORw/zu+5RONwpUDcfg
-        I9cOTIwrdBc1Q8qNJPL8Nk/KIul1zW/M=
-X-Received: by 2002:a17:907:60c9:b0:8e1:12b6:a8fc with SMTP id hv9-20020a17090760c900b008e112b6a8fcmr11086093ejc.4.1678953223003;
-        Thu, 16 Mar 2023 00:53:43 -0700 (PDT)
-X-Google-Smtp-Source: AK7set84iHWAWy9wrsukpTv+yvJRTM3Gf1ub8/HI94lAt1/UoUW/Pjk54pFWWJhGC8DFoWm9E8vr+w==
-X-Received: by 2002:a17:907:60c9:b0:8e1:12b6:a8fc with SMTP id hv9-20020a17090760c900b008e112b6a8fcmr11086065ejc.4.1678953222665;
-        Thu, 16 Mar 2023 00:53:42 -0700 (PDT)
-Received: from [10.43.17.73] (nat-pool-brq-t.redhat.com. [213.175.37.10])
-        by smtp.gmail.com with ESMTPSA id mh1-20020a170906eb8100b008eddbd46d7esm3482399ejb.31.2023.03.16.00.53.41
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 16 Mar 2023 00:53:42 -0700 (PDT)
-Message-ID: <c8e4cc40-f764-0a99-be50-015d4000adfd@redhat.com>
-Date:   Thu, 16 Mar 2023 08:53:41 +0100
+        d=1e100.net; s=20210112; t=1678963636;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=sARMOewAiJNOJtS/RRcjmmgBbN0L7rWCfxuqDehP+MQ=;
+        b=4dqOTmt0i09W12d/ncZ3FCPqZt/KWAaWH+8CMFtvFCGG9FaNuOAieTlEh7o+38g3my
+         ijl2pYTS3VSjXd+svNN2YYxpR0QHQbq+pnZ6WAOAwiaNe6GR5Ptja6H+bIthRBQA0D7N
+         7cQ7QD90I6SiZKFZG+TrgTpzzzfrlwJvCTKfahN9Zyhp2XTPyza8BHdyf5j+R+CepMpS
+         Og8rQFxAjtj/yoE5Q76vsDOuI8zqBllxkjZ8U7ZAL28uU81iUDTNXe79AwHclMjhX3tu
+         EIYanOryvCkk1XVPCtX45KeClymTZ2ZP/3SnWDJlv7Xt1F7WKKTaBAUvDfJpSiVnCN1c
+         8djA==
+X-Gm-Message-State: AO0yUKX2+0naItSnhn1bHjca4BRqNNsg+nSbXlJkU9IqZF5Glo/7441j
+        o5S5GV9eLw2C/tUhexHnAReti7ujox6J/w==
+X-Google-Smtp-Source: AK7set8RKHXbcmQkOIL7eB7IjStAEF3yZHLQ4Yv28epu2B3lhayzDR0FHUU7j01EpjMG4i67nD5sDA==
+X-Received: by 2002:a05:6a20:c124:b0:d4:72ab:df31 with SMTP id bh36-20020a056a20c12400b000d472abdf31mr2774384pzb.11.1678963636478;
+        Thu, 16 Mar 2023 03:47:16 -0700 (PDT)
+Received: from kelvin-ThinkPad-L14-Gen-1.. (94.130.220.35.bc.googleusercontent.com. [35.220.130.94])
+        by smtp.gmail.com with ESMTPSA id f11-20020aa78b0b000000b005d4e89b69e5sm5143263pfd.127.2023.03.16.03.47.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 16 Mar 2023 03:47:16 -0700 (PDT)
+From:   Keguang Zhang <keguang.zhang@gmail.com>
+To:     linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Keguang Zhang <keguang.zhang@gmail.com>
+Subject: [PATCH v3 0/4] Devicetree support for Loongson-1 clock
+Date:   Thu, 16 Mar 2023 18:47:03 +0800
+Message-Id: <20230316104707.236034-1-keguang.zhang@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.8.0
-Subject: Re: next: arm-32bit: build errors: kernel/module/internal.h:252:56:
- error: expected ';', ',' or ')' before 'const'
-Content-Language: en-US
-To:     Naresh Kamboju <naresh.kamboju@linaro.org>,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        lkft-triage@lists.linaro.org, bpf <bpf@vger.kernel.org>,
-        linux-mips@vger.kernel.org,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Arnd Bergmann <arnd@arndb.de>, Jiri Olsa <jolsa@kernel.org>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>
-References: <CA+G9fYsqpaicB4TKpMHKbma+YKs0Lm_mpsGBnxvh4tHcubAUeg@mail.gmail.com>
-From:   Viktor Malik <vmalik@redhat.com>
-In-Reply-To: <CA+G9fYsqpaicB4TKpMHKbma+YKs0Lm_mpsGBnxvh4tHcubAUeg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On 3/16/23 08:14, Naresh Kamboju wrote:
-> Results from Linaro’s test farm.
-> Following mips and arm builds failed.
-> 
-> Regressions found on mips:
->   - build/gcc-12-ath79_defconfig
->   - build/gcc-8-ath79_defconfig
-> 
-> Regressions found on arm:
->   - build/gcc-8-omap1_defconfig
->   - build/gcc-12-omap1_defconfig
->   - build/clang-nightly-omap1_defconfig
->   - build/clang-16-omap1_defconfig
-> 
-> 
-> Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
-> 
-> Build log:
-> ------------
-> 
-> In file included from kernel/module/main.c:59:
-> kernel/module/internal.h:252:56: error: expected ';', ',' or ')' before 'const'
->    252 |                                                        const char *name)
->        |                                                        ^~~~~
-> make[4]: *** [scripts/Makefile.build:252: kernel/module/main.o] Error 1
-> In file included from kernel/module/strict_rwx.c:12:
-> kernel/module/internal.h:252:56: error: expected ';', ',' or ')' before 'const'
->    252 |                                                        const char *name)
->        |                                                        ^~~~~
-> make[4]: *** [scripts/Makefile.build:252: kernel/module/strict_rwx.o] Error 1
-> In file included from kernel/module/tree_lookup.c:11:
-> kernel/module/internal.h:252:56: error: expected ';', ',' or ')' before 'const'
->    252 |                                                        const char *name)
->        |                                                        ^~~~~
-> make[4]: *** [scripts/Makefile.build:252: kernel/module/tree_lookup.o] Error 1
-> In file included from kernel/module/procfs.c:13:
-> kernel/module/internal.h:252:56: error: expected ';', ',' or ')' before 'const'
->    252 |                                                        const char *name)
->        |                                                        ^~~~~
-> make[4]: *** [scripts/Makefile.build:252: kernel/module/procfs.o] Error 1
-> In file included from kernel/module/sysfs.c:15:
-> kernel/module/internal.h:252:56: error: expected ';', ',' or ')' before 'const'
->    252 |                                                        const char *name)
->        |                                                        ^~~~~
-> make[4]: *** [scripts/Makefile.build:252: kernel/module/sysfs.o] Error 1
-> 
-> 
-> build log:
->   - https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20230316/testrun/15632981/suite/build/test/gcc-12-omap1_defconfig/log
->   - https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20230316/testrun/15632981/suite/build/test/gcc-12-omap1_defconfig/details/
-> 
+Removes the old Loongson-1 clock driver and related code
+mainly because of no DT support and outdated implementation.
 
-Hi,
+Then, re-implement it to solve the above issues,
+along with the devicetree binding document.
 
-this was fixed by Alexei by force-pushing bpf-next [1] but it seems that 
-linux-next has managed to pull bpf-next in the meantime. I'm not sure 
-what is the best way to fix this in linux-next, let me know if I should 
-send a patch.
+Changelog
+V2 -> V3: Add 'reg' property into the 'required' field
+          Delete the unnecessary property 'clock-names'
+          Use the same license as binding document for the header file.
+          Add MODULE_AUTHOR and MODULE_DESCRIPTION info
+          Add patch "MIPS: loongson32: Update the clock initialization" into this series
+	  Add Acked-by tag from Stephen Boyd and Thomas Bogendoerfer
+V1 -> V2: Change to one clock controller (suggested by Krzysztof Kozlowski)
+          Add clock-related dt-binding header file
+          Fix the warning of dt_binding_check
+          Split the driver removal to a separate patch
+          Implement one clock controller instead of single clocks
+          (suggested by Krzysztof Kozlowski)
 
-I apologize for the trouble.
-Viktor
+Keguang Zhang (4):
+  dt-bindings: clock: Add Loongson-1 clock
+  clk: loongson1: Remove the outdated driver
+  clk: loongson1: Re-implement the clock driver
+  MIPS: loongson32: Update the clock initialization
 
-[1] 
-https://lore.kernel.org/bpf/6c8f828c-3995-a9b0-3bdd-37724e96a4ce@redhat.com/T/#m44dc53d16524fa818d6a9397487107805e5f0713
+ .../bindings/clock/loongson,ls1x-clk.yaml     |  45 +++
+ .../include/asm/mach-loongson32/platform.h    |   1 -
+ arch/mips/loongson32/common/time.c            |   3 +-
+ drivers/clk/Makefile                          |   2 +-
+ drivers/clk/clk-loongson1.c                   | 301 ++++++++++++++++++
+ drivers/clk/loongson1/Makefile                |   4 -
+ drivers/clk/loongson1/clk-loongson1b.c        | 118 -------
+ drivers/clk/loongson1/clk-loongson1c.c        |  95 ------
+ drivers/clk/loongson1/clk.c                   |  41 ---
+ drivers/clk/loongson1/clk.h                   |  15 -
+ include/dt-bindings/clock/loongson,ls1x-clk.h |  19 ++
+ 11 files changed, 368 insertions(+), 276 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/clock/loongson,ls1x-clk.yaml
+ create mode 100644 drivers/clk/clk-loongson1.c
+ delete mode 100644 drivers/clk/loongson1/Makefile
+ delete mode 100644 drivers/clk/loongson1/clk-loongson1b.c
+ delete mode 100644 drivers/clk/loongson1/clk-loongson1c.c
+ delete mode 100644 drivers/clk/loongson1/clk.c
+ delete mode 100644 drivers/clk/loongson1/clk.h
+ create mode 100644 include/dt-bindings/clock/loongson,ls1x-clk.h
 
-> 
-> --
-> Linaro LKFT
-> https://lkft.linaro.org
-> 
+
+base-commit: 6f173737e1b5670c200329677e821cce1d3d755e
+-- 
+2.34.1
 

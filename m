@@ -2,56 +2,52 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7B055C7618B
-	for <linux-mips@archiver.kernel.org>; Fri, 17 Mar 2023 10:25:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4D324C761A6
+	for <linux-mips@archiver.kernel.org>; Fri, 17 Mar 2023 10:25:53 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230254AbjCQKZv (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 17 Mar 2023 06:25:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39228 "EHLO
+        id S229703AbjCQKZw (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 17 Mar 2023 06:25:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39226 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229985AbjCQKZt (ORCPT
+        with ESMTP id S230043AbjCQKZt (ORCPT
         <rfc822;linux-mips@vger.kernel.org>); Fri, 17 Mar 2023 06:25:49 -0400
 Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 59B3DE4C67;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 59873E4C65;
         Fri, 17 Mar 2023 03:25:47 -0700 (PDT)
 Received: from uucp (helo=alpha)
         by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1pd7HN-0002Ik-00; Fri, 17 Mar 2023 11:25:45 +0100
+        id 1pd7HN-0002Ik-02; Fri, 17 Mar 2023 11:25:45 +0100
 Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 85E9CC1AFC; Fri, 17 Mar 2023 11:22:32 +0100 (CET)
-Date:   Fri, 17 Mar 2023 11:22:32 +0100
+        id 7BBC9C1B05; Fri, 17 Mar 2023 11:23:09 +0100 (CET)
+Date:   Fri, 17 Mar 2023 11:23:09 +0100
 From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Cc:     John Crispin <john@phrozen.org>, linux-mips@vger.kernel.org,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] MIPS: ath79: remove obsolete ATH79_DEV_* configs
-Message-ID: <20230317102232.GA7054@alpha.franken.de>
-References: <20230316114952.26253-1-lukas.bulwahn@gmail.com>
+To:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] MIPS: sibyte: Remove unused config option SIBYTE_BCM1x55
+Message-ID: <20230317102309.GC7054@alpha.franken.de>
+References: <20230315135509.102542-1-tsbogend@alpha.franken.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230316114952.26253-1-lukas.bulwahn@gmail.com>
+In-Reply-To: <20230315135509.102542-1-tsbogend@alpha.franken.de>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Thu, Mar 16, 2023 at 12:49:52PM +0100, Lukas Bulwahn wrote:
-> Commit 85b9686dae30 ("MIPS: ath79: drop platform device registration code")
-> removes all files arch/mips/ath79/dev-*.[ch], adjusts the Makefile, but
-> misses to adjust the Kconfig file. Hence, since then, the configs
-> ATH79_DEV_* are really dead.
+On Wed, Mar 15, 2023 at 02:55:09PM +0100, Thomas Bogendoerfer wrote:
+> SIBYTE_BCM1x55 is not selected anywhere, so let's get rid of it.
 > 
-> Commit 3a77e0d75eed ("MIPS: ath79: drop machfiles") already removes all
-> configs that select ATH79_DEV_* config. So at that point, they was not a
-> way to enable them with a kernel build configuration.
-> 
-> Remove these obsolete ATH79_DEV_* configs.
-> 
-> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+> Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 > ---
->  arch/mips/ath79/Kconfig | 16 ----------------
->  1 file changed, 16 deletions(-)
+>  arch/mips/Kbuild.platforms            |  1 -
+>  arch/mips/sibyte/Kconfig              | 13 +------------
+>  arch/mips/sibyte/Makefile             |  2 --
+>  arch/mips/sibyte/Platform             |  4 ----
+>  arch/mips/sibyte/common/bus_watcher.c |  4 ++--
+>  arch/mips/sibyte/common/cfe.c         |  2 +-
+>  arch/mips/sibyte/common/sb_tbprof.c   | 10 +++++-----
+>  arch/mips/sibyte/swarm/setup.c        |  6 +++---
+>  8 files changed, 12 insertions(+), 30 deletions(-)
 
 applied to mips-next.
 

@@ -2,60 +2,60 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1AAB1C7619A
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B0E1BC7618B
 	for <linux-mips@archiver.kernel.org>; Fri, 17 Mar 2023 21:32:20 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231280AbjCQVcS (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 17 Mar 2023 17:32:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44126 "EHLO
+        id S231285AbjCQVcT (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 17 Mar 2023 17:32:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43424 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230403AbjCQVbs (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Fri, 17 Mar 2023 17:31:48 -0400
-Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 695532F042;
-        Fri, 17 Mar 2023 14:31:14 -0700 (PDT)
-Received: by mail-ed1-x52e.google.com with SMTP id o12so25382189edb.9;
-        Fri, 17 Mar 2023 14:31:14 -0700 (PDT)
+        with ESMTP id S231149AbjCQVbu (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Fri, 17 Mar 2023 17:31:50 -0400
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0319BE1939;
+        Fri, 17 Mar 2023 14:31:19 -0700 (PDT)
+Received: by mail-ed1-x52b.google.com with SMTP id x3so25370210edb.10;
+        Fri, 17 Mar 2023 14:31:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1679088664;
+        d=gmail.com; s=20210112; t=1679088669;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=8yu8jx+Bn0uWS9+tZTglcUL4SPeA/bfBOXrCTgW/Wh8=;
-        b=NCH49KH2VkHoh831KGaAOFlseyHE3VCIXNcClKuzOAwnzCuK9IDHNy/okJHMGbuqqe
-         iUJeo5btO3kz/xFM7Z2k+Xo3lJyo8PB/49N8vNLF9D37EONx3lHvA04OmQfLjeR7BbtU
-         XYVrKZDf675Agr6C2qHmJPSEuoxJYSGRPlwa5v+GRUogygtO+A9Vz2KpDywXPS+ZLBny
-         sBoftZdbLj0xmqgykSlfgxPXjpzoLKyLP3K0hKhMWD3ZiiErs+TaNSJudXm9ed+xKMWl
-         YOZ/8kCQ7DOfhFsJ+zYyxTKo2DfsQs4zHaklXGW+l9JmfbnyUTUMvBwyAjP2+U1Vu/b6
-         /P3Q==
+        bh=gA3EusZCOhK627Wk0FirSH/GwKNGmUqwf4ijzEsCNuk=;
+        b=SzjAbA2qsawtxmUxI1XuRk4mZffC5q2hSDgqbFtLfE49cZ3+PZdeenZnNp7Y0SBOll
+         gYrqyca7M465hBdEXzA2swDdCSxwjoQGx16kwpodEGCMXhItidBxbQIdeDd+m68DL6IN
+         KY413kGA430d3GTBArcfyP+B84Ar+FhdVcHpujv5QISjot37GImrKvG+B5RDPFYTtIXh
+         TSPaSyo6kcV+TfMngTjm4bL6p/nbNf+Gb0ihJiz/nUqReMQG03I+/2myV/yfVspGEls+
+         8fCOtkdytqKI0nxCMFe34xpIO+Sx/kwa3OAL1sUBGA3AHy/259Um2vaW/ny9E4AzeyCI
+         OvBQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1679088664;
+        d=1e100.net; s=20210112; t=1679088669;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=8yu8jx+Bn0uWS9+tZTglcUL4SPeA/bfBOXrCTgW/Wh8=;
-        b=C04EOTUM2LBCZwX5pfyKqb7j7ap1Hf+Gckq31Xv92Xh01gBANtJyugWE4Avye1VrYP
-         QCExRC7kytnQ6sOaP7IZQVspBrXp3100ELvJrC3KPQoPas2bw7M4/fczYTAk1NrjEtpv
-         0RjqRb1m6LDmGzyjFn/Spyg2es9x4vp4qeRbHIYZmJjUyYcU4NAVQ2G3PHY0SBjQYd1o
-         WwgtTVFTcFzHF0tCBI5mWGSezFNN9YAnkiufjE0r4d/SgVCWpxgvfGHBzKKCKXdLyHdo
-         fRcKOhfdd0bqj9EWwWRDND1KvDFNtSjk33evZi2uR6117AKH/ogSpSxHhvBm4dFKnGkb
-         o4AQ==
-X-Gm-Message-State: AO0yUKVBqLx4716V8UYfznfnT/ZJzWptEgHnog+plKd5G5tqxqx/vx0x
-        XGir2hIwZ3btQbz0jIXPpcg=
-X-Google-Smtp-Source: AK7set+XWrvn/B2c82lPXMjGRfcClzfOs4Wo1ND1mkunRJMAvsfAC6nfbVm8A1au4PCBEBGAenKWhg==
-X-Received: by 2002:a17:906:118e:b0:930:6db6:39c0 with SMTP id n14-20020a170906118e00b009306db639c0mr901706eja.61.1679088664479;
-        Fri, 17 Mar 2023 14:31:04 -0700 (PDT)
+        bh=gA3EusZCOhK627Wk0FirSH/GwKNGmUqwf4ijzEsCNuk=;
+        b=u7wjs6O3SMBFmI7TH3Fo72X9Ees3AtKp5njAPqBgmheyL0E+oDyMAFV9iZi/Se/Aow
+         u3ztwJcnkQQkRele4OEIT8URxL/8zj28DCuibwk7YXirT2E1ULqPgnVJSjO/OH5U2jDw
+         s9cUkBh6r9sy/WMS2EnfqG8i7PZkHxPPZMKGKHJavuoZ98/fuc+PgfHDLDj3lNbbnbhb
+         hlb26yld4RFawLPwSfHhL5ePJpNfFsyvFh4mH7Ql4xVeI0ptOypd34mVwNbNXpvY+eJi
+         jhi7zEZnhtDq/iR5+2Q3C5xZzJ1mvv3ZMFMaPE+QWs8XJs5+M0FgD7MB7Y274jT4Vi6q
+         4gWg==
+X-Gm-Message-State: AO0yUKWzfErOeWsgV/aV2ryVkAyzioRdWDRYA7iM7AzeSJFl7kTfcdih
+        rR+Mhxr+twxy19/3puNhy7c=
+X-Google-Smtp-Source: AK7set/PsH37vV26HFz0DUNVPwUSw8kToM24rwlbs1ygRWWocDwys742MwLTFeeRwnWp9Vpfbez3bA==
+X-Received: by 2002:a17:906:5017:b0:92a:3709:e872 with SMTP id s23-20020a170906501700b0092a3709e872mr859654ejj.19.1679088669349;
+        Fri, 17 Mar 2023 14:31:09 -0700 (PDT)
 Received: from arinc9-PC.lan ([149.91.1.15])
-        by smtp.gmail.com with ESMTPSA id v19-20020a17090651d300b0092b86d41dbasm1404683ejk.114.2023.03.17.14.31.02
+        by smtp.gmail.com with ESMTPSA id v19-20020a17090651d300b0092b86d41dbasm1404683ejk.114.2023.03.17.14.31.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 17 Mar 2023 14:31:04 -0700 (PDT)
+        Fri, 17 Mar 2023 14:31:09 -0700 (PDT)
 From:   arinc9.unal@gmail.com
 X-Google-Original-From: arinc.unal@arinc9.com
 To:     Linus Walleij <linus.walleij@linaro.org>,
         Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
 Cc:     =?UTF-8?q?Ar=C4=B1n=C3=A7=20=C3=9CNAL?= <arinc.unal@arinc9.com>,
-        Rob Herring <robh@kernel.org>,
+        Sergio Paracuellos <sergio.paracuellos@gmail.com>,
         William Dean <williamsukatube@gmail.com>,
         Sean Wang <sean.wang@kernel.org>,
         Andy Teng <andy.teng@mediatek.com>,
@@ -64,7 +64,6 @@ Cc:     =?UTF-8?q?Ar=C4=B1n=C3=A7=20=C3=9CNAL?= <arinc.unal@arinc9.com>,
         Hui Liu <hui.liu@mediatek.com>,
         Zhiyong Tao <zhiyong.tao@mediatek.com>,
         =?UTF-8?q?Bernhard=20Rosenkr=C3=A4nzer?= <bero@baylibre.com>,
-        Sergio Paracuellos <sergio.paracuellos@gmail.com>,
         Daniel Santos <daniel.santos@pobox.com>,
         Luiz Angelo Daros de Luca <luizluca@gmail.com>,
         Frank Wunderlich <frank-w@public-files.de>,
@@ -75,9 +74,9 @@ Cc:     =?UTF-8?q?Ar=C4=B1n=C3=A7=20=C3=9CNAL?= <arinc.unal@arinc9.com>,
         linux-mediatek@lists.infradead.org, linux-gpio@vger.kernel.org,
         devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org
-Subject: [PATCH v3 19/21] dt-bindings: pinctrl: ralink: rt305x: split binding
-Date:   Sat, 18 Mar 2023 00:30:09 +0300
-Message-Id: <20230317213011.13656-20-arinc.unal@arinc9.com>
+Subject: [PATCH v3 21/21] MAINTAINERS: move ralink pinctrl to mediatek mips pinctrl
+Date:   Sat, 18 Mar 2023 00:30:11 +0300
+Message-Id: <20230317213011.13656-22-arinc.unal@arinc9.com>
 X-Mailer: git-send-email 2.37.2
 In-Reply-To: <20230317213011.13656-1-arinc.unal@arinc9.com>
 References: <20230317213011.13656-1-arinc.unal@arinc9.com>
@@ -90,627 +89,64 @@ X-Mailing-List: linux-mips@vger.kernel.org
 
 From: Arınç ÜNAL <arinc.unal@arinc9.com>
 
-The RT3352 and RT5350 SoCs each contain different pin muxing information,
-therefore, should be split. This can be done now that there are compatible
-strings to distinguish them from other SoCs.
-
-Split the schema out to ralink,rt3352-pinctrl.yaml and
-ralink,rt5350-pinctrl.yaml.
-
-Remove ralink,rt3352-pinctrl and ralink,rt5350-pinctrl from rt305x.
+The Ralink pinctrl driver is now under the name of MediaTek MIPS pin
+controller. Move the maintainer information accordingly. Add dt-binding
+schema files. Add linux-mediatek@lists.infradead.org as an associated
+mailing list.
 
 Signed-off-by: Arınç ÜNAL <arinc.unal@arinc9.com>
-Reviewed-by: Rob Herring <robh@kernel.org>
+Acked-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
 ---
- .../pinctrl/ralink,rt305x-pinctrl.yaml        |  83 +-----
- .../pinctrl/ralink,rt3352-pinctrl.yaml        | 243 ++++++++++++++++++
- .../pinctrl/ralink,rt5350-pinctrl.yaml        | 206 +++++++++++++++
- 3 files changed, 455 insertions(+), 77 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/pinctrl/ralink,rt3352-pinctrl.yaml
- create mode 100644 Documentation/devicetree/bindings/pinctrl/ralink,rt5350-pinctrl.yaml
+ MAINTAINERS | 29 ++++++++++++++++++++++-------
+ 1 file changed, 22 insertions(+), 7 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/pinctrl/ralink,rt305x-pinctrl.yaml b/Documentation/devicetree/bindings/pinctrl/ralink,rt305x-pinctrl.yaml
-index 55c6f9826e76..95a904273009 100644
---- a/Documentation/devicetree/bindings/pinctrl/ralink,rt305x-pinctrl.yaml
-+++ b/Documentation/devicetree/bindings/pinctrl/ralink,rt305x-pinctrl.yaml
-@@ -11,17 +11,13 @@ maintainers:
-   - Sergio Paracuellos <sergio.paracuellos@gmail.com>
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 6048bbe0e672..f4ee11dab1ab 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -16521,6 +16521,28 @@ F:	Documentation/devicetree/bindings/pinctrl/mediatek,mt7622-pinctrl.yaml
+ F:	Documentation/devicetree/bindings/pinctrl/mediatek,mt8183-pinctrl.yaml
+ F:	drivers/pinctrl/mediatek/
  
- description: |
--  Ralink RT305X pin controller for RT3050, RT3052, RT3350, RT3352 and RT5350
--  SoCs.
-+  Ralink RT305X pin controller for RT3050, RT3052, and RT3350 SoCs.
-   The pin controller can only set the muxing of pin groups. Muxing individual
-   pins is not supported. There is no pinconf support.
++PIN CONTROLLER - MEDIATEK MIPS
++M:	Arınç ÜNAL <arinc.unal@arinc9.com>
++M:	Sergio Paracuellos <sergio.paracuellos@gmail.com>
++L:	linux-mediatek@lists.infradead.org (moderated for non-subscribers)
++L:	linux-mips@vger.kernel.org
++S:	Maintained
++F:	Documentation/devicetree/bindings/pinctrl/mediatek,mt7620-pinctrl.yaml
++F:	Documentation/devicetree/bindings/pinctrl/mediatek,mt7621-pinctrl.yaml
++F:	Documentation/devicetree/bindings/pinctrl/mediatek,mt76x8-pinctrl.yaml
++F:	Documentation/devicetree/bindings/pinctrl/ralink,rt2880-pinctrl.yaml
++F:	Documentation/devicetree/bindings/pinctrl/ralink,rt305x-pinctrl.yaml
++F:	Documentation/devicetree/bindings/pinctrl/ralink,rt3352-pinctrl.yaml
++F:	Documentation/devicetree/bindings/pinctrl/ralink,rt3883-pinctrl.yaml
++F:	Documentation/devicetree/bindings/pinctrl/ralink,rt5350-pinctrl.yaml
++F:	drivers/pinctrl/mediatek/pinctrl-mt7620.c
++F:	drivers/pinctrl/mediatek/pinctrl-mt7621.c
++F:	drivers/pinctrl/mediatek/pinctrl-mt76x8.c
++F:	drivers/pinctrl/mediatek/pinctrl-mtmips.*
++F:	drivers/pinctrl/mediatek/pinctrl-rt2880.c
++F:	drivers/pinctrl/mediatek/pinctrl-rt305x.c
++F:	drivers/pinctrl/mediatek/pinctrl-rt3883.c
++
+ PIN CONTROLLER - MICROCHIP AT91
+ M:	Ludovic Desroches <ludovic.desroches@microchip.com>
+ L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
+@@ -17496,13 +17518,6 @@ L:	linux-mips@vger.kernel.org
+ S:	Maintained
+ F:	arch/mips/boot/dts/ralink/mt7621*
  
- properties:
-   compatible:
--    enum:
--      - ralink,rt305x-pinctrl
--      - ralink,rt3352-pinctrl
--      - ralink,rt5350-pinctrl
-+    const: ralink,rt305x-pinctrl
- 
- patternProperties:
-   '-pins$':
-@@ -39,21 +35,9 @@ patternProperties:
-           function:
-             description:
-               A string containing the name of the function to mux to the group.
--            anyOf:
--              - description: For RT3050, RT3052 and RT3350 SoCs
--                enum: [gpio, gpio i2s, gpio uartf, i2c, i2s uartf, jtag, mdio,
--                       pcm gpio, pcm i2s, pcm uartf, rgmii, sdram, spi, uartf,
--                       uartlite]
+-RALINK PINCTRL DRIVER
+-M:	Arınç ÜNAL <arinc.unal@arinc9.com>
+-M:	Sergio Paracuellos <sergio.paracuellos@gmail.com>
+-L:	linux-mips@vger.kernel.org
+-S:	Maintained
+-F:	drivers/pinctrl/ralink/
 -
--              - description: For RT3352 SoC
--                enum: [gpio, gpio i2s, gpio uartf, i2c, i2s uartf, jtag, led,
--                       lna, mdio, pa, pcm gpio, pcm i2s, pcm uartf, rgmii, spi,
--                       spi_cs1, uartf, uartlite, wdg_cs1]
--
--              - description: For RT5350 SoC
--                enum: [gpio, gpio i2s, gpio uartf, i2c, i2s uartf, jtag, led,
--                       pcm gpio, pcm i2s, pcm uartf, spi, spi_cs1, uartf,
--                       uartlite, wdg_cs1]
-+            enum: [gpio, gpio i2s, gpio uartf, i2c, i2s uartf, jtag, mdio,
-+                   pcm gpio, pcm i2s, pcm uartf, rgmii, sdram, spi, uartf,
-+                   uartlite]
- 
-           groups:
-             description:
-@@ -72,17 +56,7 @@ patternProperties:
-             then:
-               properties:
-                 groups:
--                  anyOf:
--                    - description: For RT3050, RT3052 and RT3350 SoCs
--                      enum: [i2c, jtag, mdio, rgmii, sdram, spi, uartf,
--                             uartlite]
--
--                    - description: For RT3352 SoC
--                      enum: [i2c, jtag, led, lna, mdio, pa, rgmii, spi, spi_cs1,
--                             uartf, uartlite]
--
--                    - description: For RT5350 SoC
--                      enum: [i2c, jtag, led, spi, spi_cs1, uartf, uartlite]
-+                  enum: [i2c, jtag, mdio, rgmii, sdram, spi, uartf, uartlite]
- 
-           - if:
-               properties:
-@@ -129,24 +103,6 @@ patternProperties:
-                 groups:
-                   enum: [jtag]
- 
--          - if:
--              properties:
--                function:
--                  const: led
--            then:
--              properties:
--                groups:
--                  enum: [led]
--
--          - if:
--              properties:
--                function:
--                  const: lna
--            then:
--              properties:
--                groups:
--                  enum: [lna]
--
-           - if:
-               properties:
-                 function:
-@@ -156,15 +112,6 @@ patternProperties:
-                 groups:
-                   enum: [mdio]
- 
--          - if:
--              properties:
--                function:
--                  const: pa
--            then:
--              properties:
--                groups:
--                  enum: [pa]
--
-           - if:
-               properties:
-                 function:
-@@ -219,15 +166,6 @@ patternProperties:
-                 groups:
-                   enum: [spi]
- 
--          - if:
--              properties:
--                function:
--                  const: spi_cs1
--            then:
--              properties:
--                groups:
--                  enum: [spi_cs1]
--
-           - if:
-               properties:
-                 function:
-@@ -246,15 +184,6 @@ patternProperties:
-                 groups:
-                   enum: [uartlite]
- 
--          - if:
--              properties:
--                function:
--                  const: wdg_cs1
--            then:
--              properties:
--                groups:
--                  enum: [spi_cs1]
--
- allOf:
-   - $ref: pinctrl.yaml#
- 
-diff --git a/Documentation/devicetree/bindings/pinctrl/ralink,rt3352-pinctrl.yaml b/Documentation/devicetree/bindings/pinctrl/ralink,rt3352-pinctrl.yaml
-new file mode 100644
-index 000000000000..c9bc6cfd834c
---- /dev/null
-+++ b/Documentation/devicetree/bindings/pinctrl/ralink,rt3352-pinctrl.yaml
-@@ -0,0 +1,243 @@
-+# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/pinctrl/ralink,rt3352-pinctrl.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Ralink RT3352 Pin Controller
-+
-+maintainers:
-+  - Arınç ÜNAL <arinc.unal@arinc9.com>
-+  - Sergio Paracuellos <sergio.paracuellos@gmail.com>
-+
-+description: |
-+  Ralink RT3352 pin controller for RT3352 SoC.
-+  The pin controller can only set the muxing of pin groups. Muxing individual
-+  pins is not supported. There is no pinconf support.
-+
-+properties:
-+  compatible:
-+    const: ralink,rt3352-pinctrl
-+
-+patternProperties:
-+  '-pins$':
-+    type: object
-+    additionalProperties: false
-+
-+    patternProperties:
-+      '^(.*-)?pinmux$':
-+        type: object
-+        description: node for pinctrl.
-+        $ref: pinmux-node.yaml#
-+        additionalProperties: false
-+
-+        properties:
-+          function:
-+            description:
-+              A string containing the name of the function to mux to the group.
-+            enum: [gpio, gpio i2s, gpio uartf, i2c, i2s uartf, jtag, led, lna,
-+                   mdio, pa, pcm gpio, pcm i2s, pcm uartf, rgmii, spi, spi_cs1,
-+                   uartf, uartlite, wdg_cs1]
-+
-+          groups:
-+            description:
-+              An array of strings. Each string contains the name of a group.
-+            maxItems: 1
-+
-+        required:
-+          - groups
-+          - function
-+
-+        allOf:
-+          - if:
-+              properties:
-+                function:
-+                  const: gpio
-+            then:
-+              properties:
-+                groups:
-+                  enum: [i2c, jtag, led, lna, mdio, pa, rgmii, spi, spi_cs1,
-+                         uartf, uartlite]
-+
-+          - if:
-+              properties:
-+                function:
-+                  const: gpio i2s
-+            then:
-+              properties:
-+                groups:
-+                  enum: [uartf]
-+
-+          - if:
-+              properties:
-+                function:
-+                  const: gpio uartf
-+            then:
-+              properties:
-+                groups:
-+                  enum: [uartf]
-+
-+          - if:
-+              properties:
-+                function:
-+                  const: i2c
-+            then:
-+              properties:
-+                groups:
-+                  enum: [i2c]
-+
-+          - if:
-+              properties:
-+                function:
-+                  const: i2s uartf
-+            then:
-+              properties:
-+                groups:
-+                  enum: [uartf]
-+
-+          - if:
-+              properties:
-+                function:
-+                  const: jtag
-+            then:
-+              properties:
-+                groups:
-+                  enum: [jtag]
-+
-+          - if:
-+              properties:
-+                function:
-+                  const: led
-+            then:
-+              properties:
-+                groups:
-+                  enum: [led]
-+
-+          - if:
-+              properties:
-+                function:
-+                  const: lna
-+            then:
-+              properties:
-+                groups:
-+                  enum: [lna]
-+
-+          - if:
-+              properties:
-+                function:
-+                  const: mdio
-+            then:
-+              properties:
-+                groups:
-+                  enum: [mdio]
-+
-+          - if:
-+              properties:
-+                function:
-+                  const: pa
-+            then:
-+              properties:
-+                groups:
-+                  enum: [pa]
-+
-+          - if:
-+              properties:
-+                function:
-+                  const: pcm gpio
-+            then:
-+              properties:
-+                groups:
-+                  enum: [uartf]
-+
-+          - if:
-+              properties:
-+                function:
-+                  const: pcm i2s
-+            then:
-+              properties:
-+                groups:
-+                  enum: [uartf]
-+
-+          - if:
-+              properties:
-+                function:
-+                  const: pcm uartf
-+            then:
-+              properties:
-+                groups:
-+                  enum: [uartf]
-+
-+          - if:
-+              properties:
-+                function:
-+                  const: rgmii
-+            then:
-+              properties:
-+                groups:
-+                  enum: [rgmii]
-+
-+          - if:
-+              properties:
-+                function:
-+                  const: spi
-+            then:
-+              properties:
-+                groups:
-+                  enum: [spi]
-+
-+          - if:
-+              properties:
-+                function:
-+                  const: spi_cs1
-+            then:
-+              properties:
-+                groups:
-+                  enum: [spi_cs1]
-+
-+          - if:
-+              properties:
-+                function:
-+                  const: uartf
-+            then:
-+              properties:
-+                groups:
-+                  enum: [uartf]
-+
-+          - if:
-+              properties:
-+                function:
-+                  const: uartlite
-+            then:
-+              properties:
-+                groups:
-+                  enum: [uartlite]
-+
-+          - if:
-+              properties:
-+                function:
-+                  const: wdg_cs1
-+            then:
-+              properties:
-+                groups:
-+                  enum: [spi_cs1]
-+
-+allOf:
-+  - $ref: pinctrl.yaml#
-+
-+required:
-+  - compatible
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    pinctrl {
-+      compatible = "ralink,rt3352-pinctrl";
-+
-+      i2c_pins: i2c0-pins {
-+        pinmux {
-+          groups = "i2c";
-+          function = "i2c";
-+        };
-+      };
-+    };
-diff --git a/Documentation/devicetree/bindings/pinctrl/ralink,rt5350-pinctrl.yaml b/Documentation/devicetree/bindings/pinctrl/ralink,rt5350-pinctrl.yaml
-new file mode 100644
-index 000000000000..f248202ce866
---- /dev/null
-+++ b/Documentation/devicetree/bindings/pinctrl/ralink,rt5350-pinctrl.yaml
-@@ -0,0 +1,206 @@
-+# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/pinctrl/ralink,rt5350-pinctrl.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Ralink RT5350 Pin Controller
-+
-+maintainers:
-+  - Arınç ÜNAL <arinc.unal@arinc9.com>
-+  - Sergio Paracuellos <sergio.paracuellos@gmail.com>
-+
-+description: |
-+  Ralink RT5350 pin controller for RT5350 SoC.
-+  The pin controller can only set the muxing of pin groups. Muxing individual
-+  pins is not supported. There is no pinconf support.
-+
-+properties:
-+  compatible:
-+    const: ralink,rt5350-pinctrl
-+
-+patternProperties:
-+  '-pins$':
-+    type: object
-+    additionalProperties: false
-+
-+    patternProperties:
-+      '^(.*-)?pinmux$':
-+        type: object
-+        description: node for pinctrl.
-+        $ref: pinmux-node.yaml#
-+        additionalProperties: false
-+
-+        properties:
-+          function:
-+            description:
-+              A string containing the name of the function to mux to the group.
-+            enum: [gpio, gpio i2s, gpio uartf, i2c, i2s uartf, jtag, led,
-+                   pcm gpio, pcm i2s, pcm uartf, spi, spi_cs1, uartf, uartlite,
-+                   wdg_cs1]
-+
-+          groups:
-+            description:
-+              An array of strings. Each string contains the name of a group.
-+            maxItems: 1
-+
-+        required:
-+          - groups
-+          - function
-+
-+        allOf:
-+          - if:
-+              properties:
-+                function:
-+                  const: gpio
-+            then:
-+              properties:
-+                groups:
-+                  enum: [i2c, jtag, led, spi, spi_cs1, uartf, uartlite]
-+
-+          - if:
-+              properties:
-+                function:
-+                  const: gpio i2s
-+            then:
-+              properties:
-+                groups:
-+                  enum: [uartf]
-+
-+          - if:
-+              properties:
-+                function:
-+                  const: gpio uartf
-+            then:
-+              properties:
-+                groups:
-+                  enum: [uartf]
-+
-+          - if:
-+              properties:
-+                function:
-+                  const: i2c
-+            then:
-+              properties:
-+                groups:
-+                  enum: [i2c]
-+
-+          - if:
-+              properties:
-+                function:
-+                  const: i2s uartf
-+            then:
-+              properties:
-+                groups:
-+                  enum: [uartf]
-+
-+          - if:
-+              properties:
-+                function:
-+                  const: jtag
-+            then:
-+              properties:
-+                groups:
-+                  enum: [jtag]
-+
-+          - if:
-+              properties:
-+                function:
-+                  const: led
-+            then:
-+              properties:
-+                groups:
-+                  enum: [led]
-+
-+          - if:
-+              properties:
-+                function:
-+                  const: pcm gpio
-+            then:
-+              properties:
-+                groups:
-+                  enum: [uartf]
-+
-+          - if:
-+              properties:
-+                function:
-+                  const: pcm i2s
-+            then:
-+              properties:
-+                groups:
-+                  enum: [uartf]
-+
-+          - if:
-+              properties:
-+                function:
-+                  const: pcm uartf
-+            then:
-+              properties:
-+                groups:
-+                  enum: [uartf]
-+
-+          - if:
-+              properties:
-+                function:
-+                  const: spi
-+            then:
-+              properties:
-+                groups:
-+                  enum: [spi]
-+
-+          - if:
-+              properties:
-+                function:
-+                  const: spi_cs1
-+            then:
-+              properties:
-+                groups:
-+                  enum: [spi_cs1]
-+
-+          - if:
-+              properties:
-+                function:
-+                  const: uartf
-+            then:
-+              properties:
-+                groups:
-+                  enum: [uartf]
-+
-+          - if:
-+              properties:
-+                function:
-+                  const: uartlite
-+            then:
-+              properties:
-+                groups:
-+                  enum: [uartlite]
-+
-+          - if:
-+              properties:
-+                function:
-+                  const: wdg_cs1
-+            then:
-+              properties:
-+                groups:
-+                  enum: [spi_cs1]
-+
-+allOf:
-+  - $ref: pinctrl.yaml#
-+
-+required:
-+  - compatible
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    pinctrl {
-+      compatible = "ralink,rt5350-pinctrl";
-+
-+      i2c_pins: i2c0-pins {
-+        pinmux {
-+          groups = "i2c";
-+          function = "i2c";
-+        };
-+      };
-+    };
+ RALINK RT2X00 WIRELESS LAN DRIVER
+ M:	Stanislaw Gruszka <stf_xl@wp.pl>
+ M:	Helmut Schaa <helmut.schaa@googlemail.com>
 -- 
 2.37.2
 

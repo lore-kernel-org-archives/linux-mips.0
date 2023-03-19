@@ -2,35 +2,35 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AF3FBC7618A
-	for <linux-mips@archiver.kernel.org>; Sun, 19 Mar 2023 22:02:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 776DBC77B60
+	for <linux-mips@archiver.kernel.org>; Sun, 19 Mar 2023 22:02:22 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230392AbjCSWCT (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Sun, 19 Mar 2023 18:02:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53746 "EHLO
+        id S230285AbjCSWCV (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Sun, 19 Mar 2023 18:02:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53790 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230219AbjCSWB6 (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Sun, 19 Mar 2023 18:01:58 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 918C71D909;
-        Sun, 19 Mar 2023 15:01:04 -0700 (PDT)
+        with ESMTP id S230266AbjCSWB7 (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Sun, 19 Mar 2023 18:01:59 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2620F1EBF8;
+        Sun, 19 Mar 2023 15:01:14 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 04FB1B80D28;
-        Sun, 19 Mar 2023 22:01:00 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C56DEC4339B;
-        Sun, 19 Mar 2023 22:00:55 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 9B7B8611A7;
+        Sun, 19 Mar 2023 22:01:13 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0FEBEC4339B;
+        Sun, 19 Mar 2023 22:01:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1679263258;
-        bh=Ku/Uu0hCGZmfa3FpxlgXCqadz2KVOyqdqD9q1uKHmwo=;
+        s=k20201202; t=1679263273;
+        bh=PogP7wRngXQiUqmQnWvQozicSIVShAdtUNbeYC8wpS8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=N5K4QQ46qKwNSCgWcOY2eoUQDG6tMOpzrVlfzMqd5KxSDU8D54PeXg7BVDbq88NAy
-         7qTkcbcGwgHcOiLDqN8zW2dwEl9CQ2/ZNPFDPQEgyWthnciohBW/LqLaGTv5rcaOxa
-         1nFGfP3zT3Kxeqh8smJtVZwsXNG4Z5pDoKozcP4ncrAfv9xOF6FlBA/J45wfO58IB6
-         OXsJRt6r7PccybHaqWRB+ls1lMAEIO9qlvxm8l8I46JCYdZ3H/RaViKbjvWqL1pKcP
-         JQTWfTfu4giRjda+PXnQooYJl3x/nDL/M7LYoJjobqh4D/jU1/N5DVZzAEHxc6znBz
-         hS5OotitB1CUw==
+        b=BbRrG7/No3s+Wxn35WykZgqumgAtgA71gdQ5J12dxWsQy8T8UYZ0xOfDgvafCU0gU
+         juKoeAAlcxDYKBZj7ANUaIDhkirDSSOn9GQHrhjrlBMAH632EHvpMIDKl/8mm6psIy
+         x4E9jus7CN4xPRD62XXDkHy6wYmKhH/Rrkc6uE9Pi+lX/HLxmCNzPlOAfx4mQDCypg
+         0IKAP5boUvNjsBQkM3+RA309/oZJHntXBHJ5Xor9n1MvaJQAHrzbMA0bHab61TmasX
+         l+NN5p1t3GG1PEDp6Sv0t7ytroVh+moRTc2smV8hZ2vuDxm+xP/p1KRVuZ4d2A2bEy
+         5G44pgtQ35qMQ==
 From:   Mike Rapoport <rppt@kernel.org>
 To:     Andrew Morton <akpm@linux-foundation.org>
 Cc:     David Hildenbrand <david@redhat.com>,
@@ -40,9 +40,9 @@ Cc:     David Hildenbrand <david@redhat.com>,
         Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
         Vlastimil Babka <vbabka@suse.cz>, linux-kernel@vger.kernel.org,
         linux-mips@vger.kernel.org, linux-mm@kvack.org
-Subject: [PATCH 10/15] mm: move init_mem_debugging_and_hardening() to mm/mm_init.c
-Date:   Mon, 20 Mar 2023 00:00:03 +0200
-Message-Id: <20230319220008.2138576-11-rppt@kernel.org>
+Subject: [PATCH 14/15] mm: move vmalloc_init() declaration to mm/internal.h
+Date:   Mon, 20 Mar 2023 00:00:07 +0200
+Message-Id: <20230319220008.2138576-15-rppt@kernel.org>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20230319220008.2138576-1-rppt@kernel.org>
 References: <20230319220008.2138576-1-rppt@kernel.org>
@@ -54,262 +54,53 @@ X-Mailing-List: linux-mips@vger.kernel.org
 
 From: "Mike Rapoport (IBM)" <rppt@kernel.org>
 
-init_mem_debugging_and_hardening() is only called from mm_core_init().
+vmalloc_init() is called only from mm_core_init(), there is no need to
+declare it in include/linux/vmalloc.h
 
-Move it close to the caller and make it static.
+Move vmalloc_init() declaration to mm/internal.h
 
 Signed-off-by: Mike Rapoport (IBM) <rppt@kernel.org>
 ---
- include/linux/mm.h |  1 -
- mm/internal.h      |  8 ++++
- mm/mm_init.c       | 89 +++++++++++++++++++++++++++++++++++++++++++
- mm/page_alloc.c    | 95 ----------------------------------------------
- 4 files changed, 97 insertions(+), 96 deletions(-)
+ include/linux/vmalloc.h | 4 ----
+ mm/internal.h           | 5 +++++
+ 2 files changed, 5 insertions(+), 4 deletions(-)
 
-diff --git a/include/linux/mm.h b/include/linux/mm.h
-index c3c67d8bc833..2fecabb1a328 100644
---- a/include/linux/mm.h
-+++ b/include/linux/mm.h
-@@ -3394,7 +3394,6 @@ extern int apply_to_existing_page_range(struct mm_struct *mm,
- 				   unsigned long address, unsigned long size,
- 				   pte_fn_t fn, void *data);
+diff --git a/include/linux/vmalloc.h b/include/linux/vmalloc.h
+index 69250efa03d1..351fc7697214 100644
+--- a/include/linux/vmalloc.h
++++ b/include/linux/vmalloc.h
+@@ -131,12 +131,8 @@ extern void *vm_map_ram(struct page **pages, unsigned int count, int node);
+ extern void vm_unmap_aliases(void);
  
--extern void __init init_mem_debugging_and_hardening(void);
- #ifdef CONFIG_PAGE_POISONING
- extern void __kernel_poison_pages(struct page *page, int numpages);
- extern void __kernel_unpoison_pages(struct page *page, int numpages);
-diff --git a/mm/internal.h b/mm/internal.h
-index 6b154b4a538f..827499e39d78 100644
---- a/mm/internal.h
-+++ b/mm/internal.h
-@@ -204,6 +204,14 @@ pmd_t *mm_find_pmd(struct mm_struct *mm, unsigned long address);
- 
- extern char * const zone_names[MAX_NR_ZONES];
- 
-+/* perform sanity checks on struct pages being allocated or freed */
-+DECLARE_STATIC_KEY_MAYBE(CONFIG_DEBUG_VM, check_pages_enabled);
-+
-+static inline bool is_check_pages_enabled(void)
-+{
-+	return static_branch_unlikely(&check_pages_enabled);
-+}
-+
- /*
-  * Structure for holding the mostly immutable allocation parameters passed
-  * between functions involved in allocations, including the alloc_pages*
-diff --git a/mm/mm_init.c b/mm/mm_init.c
-index a91fbb57c4cc..ae6bd26cf5a2 100644
---- a/mm/mm_init.c
-+++ b/mm/mm_init.c
-@@ -2517,6 +2517,95 @@ static void __init pgtable_init(void)
- 	pgtable_cache_init();
- }
- 
-+static bool _init_on_alloc_enabled_early __read_mostly
-+				= IS_ENABLED(CONFIG_INIT_ON_ALLOC_DEFAULT_ON);
-+static int __init early_init_on_alloc(char *buf)
-+{
-+
-+	return kstrtobool(buf, &_init_on_alloc_enabled_early);
-+}
-+early_param("init_on_alloc", early_init_on_alloc);
-+
-+static bool _init_on_free_enabled_early __read_mostly
-+				= IS_ENABLED(CONFIG_INIT_ON_FREE_DEFAULT_ON);
-+static int __init early_init_on_free(char *buf)
-+{
-+	return kstrtobool(buf, &_init_on_free_enabled_early);
-+}
-+early_param("init_on_free", early_init_on_free);
-+
-+DEFINE_STATIC_KEY_MAYBE(CONFIG_DEBUG_VM, check_pages_enabled);
-+
-+/*
-+ * Enable static keys related to various memory debugging and hardening options.
-+ * Some override others, and depend on early params that are evaluated in the
-+ * order of appearance. So we need to first gather the full picture of what was
-+ * enabled, and then make decisions.
-+ */
-+static void __init init_mem_debugging_and_hardening(void)
-+{
-+	bool page_poisoning_requested = false;
-+	bool want_check_pages = false;
-+
-+#ifdef CONFIG_PAGE_POISONING
-+	/*
-+	 * Page poisoning is debug page alloc for some arches. If
-+	 * either of those options are enabled, enable poisoning.
-+	 */
-+	if (page_poisoning_enabled() ||
-+	     (!IS_ENABLED(CONFIG_ARCH_SUPPORTS_DEBUG_PAGEALLOC) &&
-+	      debug_pagealloc_enabled())) {
-+		static_branch_enable(&_page_poisoning_enabled);
-+		page_poisoning_requested = true;
-+		want_check_pages = true;
-+	}
-+#endif
-+
-+	if ((_init_on_alloc_enabled_early || _init_on_free_enabled_early) &&
-+	    page_poisoning_requested) {
-+		pr_info("mem auto-init: CONFIG_PAGE_POISONING is on, "
-+			"will take precedence over init_on_alloc and init_on_free\n");
-+		_init_on_alloc_enabled_early = false;
-+		_init_on_free_enabled_early = false;
-+	}
-+
-+	if (_init_on_alloc_enabled_early) {
-+		want_check_pages = true;
-+		static_branch_enable(&init_on_alloc);
-+	} else {
-+		static_branch_disable(&init_on_alloc);
-+	}
-+
-+	if (_init_on_free_enabled_early) {
-+		want_check_pages = true;
-+		static_branch_enable(&init_on_free);
-+	} else {
-+		static_branch_disable(&init_on_free);
-+	}
-+
-+	if (IS_ENABLED(CONFIG_KMSAN) &&
-+	    (_init_on_alloc_enabled_early || _init_on_free_enabled_early))
-+		pr_info("mem auto-init: please make sure init_on_alloc and init_on_free are disabled when running KMSAN\n");
-+
-+#ifdef CONFIG_DEBUG_PAGEALLOC
-+	if (debug_pagealloc_enabled()) {
-+		want_check_pages = true;
-+		static_branch_enable(&_debug_pagealloc_enabled);
-+
-+		if (debug_guardpage_minorder())
-+			static_branch_enable(&_debug_guardpage_enabled);
-+	}
-+#endif
-+
-+	/*
-+	 * Any page debugging or hardening option also enables sanity checking
-+	 * of struct pages being allocated or freed. With CONFIG_DEBUG_VM it's
-+	 * enabled already.
-+	 */
-+	if (!IS_ENABLED(CONFIG_DEBUG_VM) && want_check_pages)
-+		static_branch_enable(&check_pages_enabled);
-+}
-+
- /* Report memory auto-initialization states for this boot. */
- static void __init report_meminit(void)
- {
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index d1276bfe7a30..2f333c26170c 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -240,31 +240,6 @@ EXPORT_SYMBOL(init_on_alloc);
- DEFINE_STATIC_KEY_MAYBE(CONFIG_INIT_ON_FREE_DEFAULT_ON, init_on_free);
- EXPORT_SYMBOL(init_on_free);
- 
--/* perform sanity checks on struct pages being allocated or freed */
--static DEFINE_STATIC_KEY_MAYBE(CONFIG_DEBUG_VM, check_pages_enabled);
--
--static inline bool is_check_pages_enabled(void)
+ #ifdef CONFIG_MMU
+-extern void __init vmalloc_init(void);
+ extern unsigned long vmalloc_nr_pages(void);
+ #else
+-static inline void vmalloc_init(void)
 -{
--	return static_branch_unlikely(&check_pages_enabled);
 -}
--
--static bool _init_on_alloc_enabled_early __read_mostly
--				= IS_ENABLED(CONFIG_INIT_ON_ALLOC_DEFAULT_ON);
--static int __init early_init_on_alloc(char *buf)
--{
--
--	return kstrtobool(buf, &_init_on_alloc_enabled_early);
--}
--early_param("init_on_alloc", early_init_on_alloc);
--
--static bool _init_on_free_enabled_early __read_mostly
--				= IS_ENABLED(CONFIG_INIT_ON_FREE_DEFAULT_ON);
--static int __init early_init_on_free(char *buf)
--{
--	return kstrtobool(buf, &_init_on_free_enabled_early);
--}
--early_param("init_on_free", early_init_on_free);
--
- /*
-  * A cached value of the page's pageblock's migratetype, used when the page is
-  * put on a pcplist. Used to avoid the pageblock migratetype lookup when
-@@ -798,76 +773,6 @@ static inline void clear_page_guard(struct zone *zone, struct page *page,
- 				unsigned int order, int migratetype) {}
+ static inline unsigned long vmalloc_nr_pages(void) { return 0; }
  #endif
  
--/*
-- * Enable static keys related to various memory debugging and hardening options.
-- * Some override others, and depend on early params that are evaluated in the
-- * order of appearance. So we need to first gather the full picture of what was
-- * enabled, and then make decisions.
-- */
--void __init init_mem_debugging_and_hardening(void)
--{
--	bool page_poisoning_requested = false;
--	bool want_check_pages = false;
--
--#ifdef CONFIG_PAGE_POISONING
--	/*
--	 * Page poisoning is debug page alloc for some arches. If
--	 * either of those options are enabled, enable poisoning.
--	 */
--	if (page_poisoning_enabled() ||
--	     (!IS_ENABLED(CONFIG_ARCH_SUPPORTS_DEBUG_PAGEALLOC) &&
--	      debug_pagealloc_enabled())) {
--		static_branch_enable(&_page_poisoning_enabled);
--		page_poisoning_requested = true;
--		want_check_pages = true;
--	}
--#endif
--
--	if ((_init_on_alloc_enabled_early || _init_on_free_enabled_early) &&
--	    page_poisoning_requested) {
--		pr_info("mem auto-init: CONFIG_PAGE_POISONING is on, "
--			"will take precedence over init_on_alloc and init_on_free\n");
--		_init_on_alloc_enabled_early = false;
--		_init_on_free_enabled_early = false;
--	}
--
--	if (_init_on_alloc_enabled_early) {
--		want_check_pages = true;
--		static_branch_enable(&init_on_alloc);
--	} else {
--		static_branch_disable(&init_on_alloc);
--	}
--
--	if (_init_on_free_enabled_early) {
--		want_check_pages = true;
--		static_branch_enable(&init_on_free);
--	} else {
--		static_branch_disable(&init_on_free);
--	}
--
--	if (IS_ENABLED(CONFIG_KMSAN) &&
--	    (_init_on_alloc_enabled_early || _init_on_free_enabled_early))
--		pr_info("mem auto-init: please make sure init_on_alloc and init_on_free are disabled when running KMSAN\n");
--
--#ifdef CONFIG_DEBUG_PAGEALLOC
--	if (debug_pagealloc_enabled()) {
--		want_check_pages = true;
--		static_branch_enable(&_debug_pagealloc_enabled);
--
--		if (debug_guardpage_minorder())
--			static_branch_enable(&_debug_guardpage_enabled);
--	}
--#endif
--
--	/*
--	 * Any page debugging or hardening option also enables sanity checking
--	 * of struct pages being allocated or freed. With CONFIG_DEBUG_VM it's
--	 * enabled already.
--	 */
--	if (!IS_ENABLED(CONFIG_DEBUG_VM) && want_check_pages)
--		static_branch_enable(&check_pages_enabled);
--}
--
- static inline void set_buddy_order(struct page *page, unsigned int order)
- {
- 	set_page_private(page, order);
+diff --git a/mm/internal.h b/mm/internal.h
+index 1be4278d7913..7e22137b4e86 100644
+--- a/mm/internal.h
++++ b/mm/internal.h
+@@ -895,9 +895,14 @@ size_t splice_folio_into_pipe(struct pipe_inode_info *pipe,
+  * mm/vmalloc.c
+  */
+ #ifdef CONFIG_MMU
++void __init vmalloc_init(void);
+ int vmap_pages_range_noflush(unsigned long addr, unsigned long end,
+                 pgprot_t prot, struct page **pages, unsigned int page_shift);
+ #else
++static inline void vmalloc_init(void)
++{
++}
++
+ static inline
+ int vmap_pages_range_noflush(unsigned long addr, unsigned long end,
+                 pgprot_t prot, struct page **pages, unsigned int page_shift)
 -- 
 2.35.1
 

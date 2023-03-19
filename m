@@ -2,35 +2,35 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C9B20C6FD1F
-	for <linux-mips@archiver.kernel.org>; Sun, 19 Mar 2023 22:02:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 281EEC6FD1F
+	for <linux-mips@archiver.kernel.org>; Sun, 19 Mar 2023 22:02:20 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230322AbjCSWCC (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Sun, 19 Mar 2023 18:02:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53016 "EHLO
+        id S230388AbjCSWCT (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Sun, 19 Mar 2023 18:02:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53004 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230330AbjCSWBn (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Sun, 19 Mar 2023 18:01:43 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB35F14E86;
-        Sun, 19 Mar 2023 15:01:00 -0700 (PDT)
+        with ESMTP id S230036AbjCSWB6 (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Sun, 19 Mar 2023 18:01:58 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20F4C16AED;
+        Sun, 19 Mar 2023 15:01:07 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id CCA30611CF;
-        Sun, 19 Mar 2023 22:00:55 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 396ADC4339C;
-        Sun, 19 Mar 2023 22:00:52 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id ABCD0B80D2D;
+        Sun, 19 Mar 2023 22:01:03 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5AD33C4339E;
+        Sun, 19 Mar 2023 22:00:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1679263255;
-        bh=Y2ZZ0QRBPTa6+gDvoBKxwGRBX0o95+AmHfq1WGe72cg=;
+        s=k20201202; t=1679263262;
+        bh=967+3O+np6cjBUo4maqL5M/MoNfM+0xG04PeQyxPgnI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NyEJQwJpkU2SMv4Y3ZZ45lRC4TFwcsj5YD9lknG7TIGUO6XHl7Tsz5bSI+MiTUkVj
-         CLIkYngq4kK29V2ziLnjs/6syWGxq+b5U+Zq0OqwNgyVx22M/GMBKXltpZ+pjGAH9W
-         gZtDiEsLitP9aR+nNb8lJ0kk5Kdw7vqWjGaV1Wa6EmugEersPCV/IF8uZoCnloJ2OT
-         GwOkl1T42rTo4uq0GPZVgA8gnWyneA5YN4+FIZRVcxYPr9bnrk33nluhaurvCn9GEa
-         q77ullFT+nmwLLP+mQ8+DUqLF1x/kNgJNyy9+TLFNiIGWc4SwzeW8WtpoVr7210dDx
-         45oeEcYLogZJQ==
+        b=kOd7Gv5m/2xJyFfcUY6qVcv/DS05Vhxg28CbZOm1yHQ8fQBZrEnyLXI8A/BQZeAVZ
+         PiLJw4jUvUeh7VaCBe65lOjWv7ahlTb+Fn1ZrLZwGyD378pSK1SbVtsoc0an9Lh4To
+         FkUFTbGuvHM1w9iM5uRBWUoWg1PHTZSbtCAaLguK2MNva5sczzZzcZVgudK4IbAyxE
+         rS8rd/XjLwVGlHY+lX6zVm16lXK5HMqkj9j5FNiJbWbTXEHmTe4jWaAK+8sQPvHZpy
+         F99UJ4JCko9T5QC93h8zgGRLd+q32X01F9a2FQSVyrnb+W9Sx+cHhHLpcMo2c97KgO
+         MOV+qAjnx9eJg==
 From:   Mike Rapoport <rppt@kernel.org>
 To:     Andrew Morton <akpm@linux-foundation.org>
 Cc:     David Hildenbrand <david@redhat.com>,
@@ -40,9 +40,9 @@ Cc:     David Hildenbrand <david@redhat.com>,
         Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
         Vlastimil Babka <vbabka@suse.cz>, linux-kernel@vger.kernel.org,
         linux-mips@vger.kernel.org, linux-mm@kvack.org
-Subject: [PATCH 09/15] mm: move pgtable_init() to mm/mm_init.c and make it static
-Date:   Mon, 20 Mar 2023 00:00:02 +0200
-Message-Id: <20230319220008.2138576-10-rppt@kernel.org>
+Subject: [PATCH 11/15] init,mm: fold late call to page_ext_init() to page_alloc_init_late()
+Date:   Mon, 20 Mar 2023 00:00:04 +0200
+Message-Id: <20230319220008.2138576-12-rppt@kernel.org>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20230319220008.2138576-1-rppt@kernel.org>
 References: <20230319220008.2138576-1-rppt@kernel.org>
@@ -54,50 +54,80 @@ X-Mailing-List: linux-mips@vger.kernel.org
 
 From: "Mike Rapoport (IBM)" <rppt@kernel.org>
 
-pgtable_init() is only called from mm_core_init().
+When deferred initialization of struct pages is enabled, page_ext_init()
+must be called after all the deferred initialization is done, but there
+is no point to keep it a separate call from kernel_init_freeable() right
+after page_alloc_init_late().
 
-Move it close to the caller and make it static.
+Fold the call to page_ext_init() into page_alloc_init_late() and
+localize deferred_struct_pages variable.
 
 Signed-off-by: Mike Rapoport (IBM) <rppt@kernel.org>
 ---
- include/linux/mm.h | 6 ------
- mm/mm_init.c       | 6 ++++++
- 2 files changed, 6 insertions(+), 6 deletions(-)
+ include/linux/page_ext.h | 2 --
+ init/main.c              | 4 ----
+ mm/mm_init.c             | 6 +++++-
+ 3 files changed, 5 insertions(+), 7 deletions(-)
 
-diff --git a/include/linux/mm.h b/include/linux/mm.h
-index 2d7f095136fc..c3c67d8bc833 100644
---- a/include/linux/mm.h
-+++ b/include/linux/mm.h
-@@ -2782,12 +2782,6 @@ static inline bool ptlock_init(struct page *page) { return true; }
- static inline void ptlock_free(struct page *page) {}
- #endif /* USE_SPLIT_PTE_PTLOCKS */
+diff --git a/include/linux/page_ext.h b/include/linux/page_ext.h
+index bc2e39090a1f..67314f648aeb 100644
+--- a/include/linux/page_ext.h
++++ b/include/linux/page_ext.h
+@@ -29,8 +29,6 @@ struct page_ext_operations {
+ 	bool need_shared_flags;
+ };
  
--static inline void pgtable_init(void)
--{
--	ptlock_cache_init();
--	pgtable_cache_init();
--}
+-extern bool deferred_struct_pages;
 -
- static inline bool pgtable_pte_page_ctor(struct page *page)
- {
- 	if (!ptlock_init(page))
+ #ifdef CONFIG_PAGE_EXTENSION
+ 
+ /*
+diff --git a/init/main.c b/init/main.c
+index 8a20b4c25f24..04113514e56a 100644
+--- a/init/main.c
++++ b/init/main.c
+@@ -62,7 +62,6 @@
+ #include <linux/rmap.h>
+ #include <linux/mempolicy.h>
+ #include <linux/key.h>
+-#include <linux/page_ext.h>
+ #include <linux/debug_locks.h>
+ #include <linux/debugobjects.h>
+ #include <linux/lockdep.h>
+@@ -1561,9 +1560,6 @@ static noinline void __init kernel_init_freeable(void)
+ 
+ 	padata_init();
+ 	page_alloc_init_late();
+-	/* Initialize page ext after all struct pages are initialized. */
+-	if (deferred_struct_pages)
+-		page_ext_init();
+ 
+ 	do_basic_setup();
+ 
 diff --git a/mm/mm_init.c b/mm/mm_init.c
-index 1da48762e4a2..a91fbb57c4cc 100644
+index ae6bd26cf5a2..2d73d8b05a69 100644
 --- a/mm/mm_init.c
 +++ b/mm/mm_init.c
-@@ -2511,6 +2511,12 @@ void __init memblock_free_pages(struct page *page, unsigned long pfn,
- 	__free_pages_core(page, order);
+@@ -225,7 +225,7 @@ static unsigned long nr_kernel_pages __initdata;
+ static unsigned long nr_all_pages __initdata;
+ static unsigned long dma_reserve __initdata;
+ 
+-bool deferred_struct_pages __meminitdata;
++static bool deferred_struct_pages __meminitdata;
+ 
+ static DEFINE_PER_CPU(struct per_cpu_nodestat, boot_nodestats);
+ 
+@@ -2338,6 +2338,10 @@ void __init page_alloc_init_late(void)
+ 
+ 	for_each_populated_zone(zone)
+ 		set_zone_contiguous(zone);
++
++	/* Initialize page ext after all struct pages are initialized. */
++	if (deferred_struct_pages)
++		page_ext_init();
  }
  
-+static void __init pgtable_init(void)
-+{
-+	ptlock_cache_init();
-+	pgtable_cache_init();
-+}
-+
- /* Report memory auto-initialization states for this boot. */
- static void __init report_meminit(void)
- {
+ #ifndef __HAVE_ARCH_RESERVED_KERNEL_PAGES
 -- 
 2.35.1
 

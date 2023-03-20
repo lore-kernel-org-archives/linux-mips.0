@@ -2,67 +2,67 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8BB22C7618A
-	for <linux-mips@archiver.kernel.org>; Mon, 20 Mar 2023 10:48:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 312C6C7618A
+	for <linux-mips@archiver.kernel.org>; Mon, 20 Mar 2023 10:49:07 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231229AbjCTKsD (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 20 Mar 2023 06:48:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43676 "EHLO
+        id S229524AbjCTKtD (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 20 Mar 2023 06:49:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43910 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231244AbjCTKr3 (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Mon, 20 Mar 2023 06:47:29 -0400
+        with ESMTP id S230313AbjCTKs0 (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Mon, 20 Mar 2023 06:48:26 -0400
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B35D128E52
-        for <linux-mips@vger.kernel.org>; Mon, 20 Mar 2023 03:44:38 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3C7D26CE4
+        for <linux-mips@vger.kernel.org>; Mon, 20 Mar 2023 03:45:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1679308980;
+        s=mimecast20190719; t=1679309078;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=26nymbdY5u8lbHR6tGhq6iWNHbEegWrEQrrqMsFd9eI=;
-        b=g8Sdqcp4vdpI4W4YoFAEG9UQlbEQJiDem2jvYW3PZ+qJtLuTGKT0Sk7k/IytTJRjE4FPt4
-        EG06ww9TDZ7zOnvdKAbpmbYeMBVOhFuCIbklKS7gFz4+Juo9HdGtUMf007c4I9EymETElV
-        Rhw98cyMqzWYBdBnjN/50TDbVM0pOsg=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
+        bh=i/zfm/iMBqjihSZrFF9A/S4gBRsOTN99Y8OwQCdHpx4=;
+        b=VxmvtzQbBAEQcjdZTKbISqnq8vFLpcjmMu/7Xtx5ZkMHPMI3/fRRMfDPULPun1nRj3G6ce
+        PRe4Z3Kj1Efy3uOAs72Q/pP2+MGilMHTcCi4jcvwrK7QsF5oe/i04XyUHgIGJ0jIV9BdCQ
+        Oj9aPDgxI0XBmWxdywAvPqdpQN+IbY8=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-303--2SO9hyWOAuNaNqZiR9Hxg-1; Mon, 20 Mar 2023 06:39:32 -0400
-X-MC-Unique: -2SO9hyWOAuNaNqZiR9Hxg-1
-Received: by mail-wm1-f71.google.com with SMTP id m30-20020a05600c3b1e00b003ed31d151ecso4244332wms.1
-        for <linux-mips@vger.kernel.org>; Mon, 20 Mar 2023 03:39:31 -0700 (PDT)
+ us-mta-6-nLsvgmeBPSOx6k-3Tm2Dsw-1; Mon, 20 Mar 2023 06:41:24 -0400
+X-MC-Unique: nLsvgmeBPSOx6k-3Tm2Dsw-1
+Received: by mail-wm1-f72.google.com with SMTP id j36-20020a05600c1c2400b003ed245a452fso5327808wms.3
+        for <linux-mips@vger.kernel.org>; Mon, 20 Mar 2023 03:41:24 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1679308771;
+        d=1e100.net; s=20210112; t=1679308883;
         h=content-transfer-encoding:in-reply-to:organization:from:references
          :cc:to:content-language:subject:user-agent:mime-version:date
          :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=26nymbdY5u8lbHR6tGhq6iWNHbEegWrEQrrqMsFd9eI=;
-        b=YjC6neB8nO7Gw9w1wNDzXWaCKaNtCjMdZ58a1LNGFwqqsJAeLnshE8vW0onODs3xaC
-         vVgCtx9Wa0PanN2COsnGCDqE9g1IyTOL9hUkpxzDHhFlzzJcugihvqcPMFeJqDMcQpDn
-         6wFBDanJPcOHuEZgUKHP/4H21YUhktF17SBHtuhLkc2lSt/FK8a/AEVhb5tZupuGYWhi
-         2hydtmjL+jVUvjYN1uiAoVd++RG/uR69i0qh6OMNiz1tiOunXoLtRIOARZs+Pn1LB53J
-         zJ/RS68ee5xDvBaFTZWQvL0de2iW5RNrlunpSm13UN+pQRtl67v/Fu8kuK1ff4nQBBlR
-         WWJA==
-X-Gm-Message-State: AO0yUKV5V8jYp05IfJnz50034Hdhod87RxEjsOKakys1yAxD6NqrCoXk
-        BTxJCrTk2rh8tUowGTWG26+huje6kY4PK52cuY4olC2EsDutTm9m0fpvH5rDalfgQFVmyn4HOHx
-        WBR0VGFsntTEl+vhMhPIiWg==
-X-Received: by 2002:a05:600c:3ca2:b0:3eb:3104:efec with SMTP id bg34-20020a05600c3ca200b003eb3104efecmr33198194wmb.16.1679308770987;
-        Mon, 20 Mar 2023 03:39:30 -0700 (PDT)
-X-Google-Smtp-Source: AK7set9NBj44qlarRe5btSusjcRWML7XEeQG/k8kSYzk0ECsow+UousrzVViL3IUmOf4g4r58+RnIQ==
-X-Received: by 2002:a05:600c:3ca2:b0:3eb:3104:efec with SMTP id bg34-20020a05600c3ca200b003eb3104efecmr33198180wmb.16.1679308770675;
-        Mon, 20 Mar 2023 03:39:30 -0700 (PDT)
+        bh=i/zfm/iMBqjihSZrFF9A/S4gBRsOTN99Y8OwQCdHpx4=;
+        b=hetry+QzbOsmJen4nDoy7Uuykq11ovQUic43kWaqiVEtkgRouKIg67h+LTVcWxto+9
+         n6Tdnf6fqO+Mq66PjtVd+/DFC51dGIZaoJLsfr64qk3IARqnaPqjcm4Gwkipnc/3TWvt
+         3EK9IJB0MmIWGMgteGkJCHLtzqP+mEbA/Bp818wSmT1yM2AxWmSSutIZYvzSK8+Xj/Le
+         PiRDck/kYpMR/W53gc+uPVY8S0Bp/hMy685mbdrgfffzFtWgiRvGaRe7W3EeBUycMfLs
+         pgQuCXpXQNDdW1ytKjM00YZiFVw3gDQmKyQa/7VkGu/OflI7/rftEMRp5PcFSjXymuYG
+         f41A==
+X-Gm-Message-State: AO0yUKUhC7h2rIhB0yMT+GkHO75yKqteJhlcmo+sym1tZ3yH5azpapDa
+        neMO2x3BRfcH25WWbo0nyfdnhRixjmCHDpZFuoXoBUD3j9saTEeqmh4v/QauH3Q9MsBI0dkUj2k
+        BdQVitBqjlwgaCvNAJEsSFcCWTvyFZA==
+X-Received: by 2002:a7b:ce03:0:b0:3ed:5a7d:fcfe with SMTP id m3-20020a7bce03000000b003ed5a7dfcfemr12841651wmc.3.1679308883702;
+        Mon, 20 Mar 2023 03:41:23 -0700 (PDT)
+X-Google-Smtp-Source: AK7set8VZjkq7GCgobpz8BUvT0F46hv0XS185gY9bV0RE1/Uo0GRuPBNbY0rUOAkJA7byaVeIEmCUA==
+X-Received: by 2002:a7b:ce03:0:b0:3ed:5a7d:fcfe with SMTP id m3-20020a7bce03000000b003ed5a7dfcfemr12841637wmc.3.1679308883377;
+        Mon, 20 Mar 2023 03:41:23 -0700 (PDT)
 Received: from ?IPV6:2003:cb:c702:4100:a064:1ded:25ec:cf2f? (p200300cbc7024100a0641ded25eccf2f.dip0.t-ipconnect.de. [2003:cb:c702:4100:a064:1ded:25ec:cf2f])
-        by smtp.gmail.com with ESMTPSA id e24-20020a05600c219800b003ed1f111fdesm10006176wme.20.2023.03.20.03.39.29
+        by smtp.gmail.com with ESMTPSA id q13-20020a05600c46cd00b003e1202744f2sm16423888wmo.31.2023.03.20.03.41.22
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 20 Mar 2023 03:39:30 -0700 (PDT)
-Message-ID: <496d8ba6-dea6-159e-3e98-75d8dee58a12@redhat.com>
-Date:   Mon, 20 Mar 2023 11:39:29 +0100
+        Mon, 20 Mar 2023 03:41:22 -0700 (PDT)
+Message-ID: <078af8b0-4f4f-41f0-40d8-2beba34d0e76@redhat.com>
+Date:   Mon, 20 Mar 2023 11:41:21 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.8.0
-Subject: Re: [PATCH 10/15] mm: move init_mem_debugging_and_hardening() to
- mm/mm_init.c
+Subject: Re: [PATCH 14/15] mm: move vmalloc_init() declaration to
+ mm/internal.h
 Content-Language: en-US
 To:     Mike Rapoport <rppt@kernel.org>,
         Andrew Morton <akpm@linux-foundation.org>
@@ -72,10 +72,10 @@ Cc:     Matthew Wilcox <willy@infradead.org>, Mel Gorman <mgorman@suse.de>,
         Vlastimil Babka <vbabka@suse.cz>, linux-kernel@vger.kernel.org,
         linux-mips@vger.kernel.org, linux-mm@kvack.org
 References: <20230319220008.2138576-1-rppt@kernel.org>
- <20230319220008.2138576-11-rppt@kernel.org>
+ <20230319220008.2138576-15-rppt@kernel.org>
 From:   David Hildenbrand <david@redhat.com>
 Organization: Red Hat
-In-Reply-To: <20230319220008.2138576-11-rppt@kernel.org>
+In-Reply-To: <20230319220008.2138576-15-rppt@kernel.org>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
@@ -85,13 +85,15 @@ X-Mailing-List: linux-mips@vger.kernel.org
 On 19.03.23 23:00, Mike Rapoport wrote:
 > From: "Mike Rapoport (IBM)" <rppt@kernel.org>
 > 
-> init_mem_debugging_and_hardening() is only called from mm_core_init().
+> vmalloc_init() is called only from mm_core_init(), there is no need to
+> declare it in include/linux/vmalloc.h
 > 
+> Move vmalloc_init() declaration to mm/internal.h
+> 
+> Signed-off-by: Mike Rapoport (IBM) <rppt@kernel.org>
+> ---
 
-While at it, maybe rename it to ..._init() like most other such 
-functions in there?
-
-Acked-by: David Hildenbrand <david@redhat.com>
+Reviewed-by: David Hildenbrand <david@redhat.com>
 
 -- 
 Thanks,

@@ -2,98 +2,122 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DF637C761A6
-	for <linux-mips@archiver.kernel.org>; Mon, 20 Mar 2023 10:40:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2151DC7618A
+	for <linux-mips@archiver.kernel.org>; Mon, 20 Mar 2023 10:42:49 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229508AbjCTKkM (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 20 Mar 2023 06:40:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51920 "EHLO
+        id S231163AbjCTKmr (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 20 Mar 2023 06:42:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59474 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231157AbjCTKjO (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Mon, 20 Mar 2023 06:39:14 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D36D7AAA
-        for <linux-mips@vger.kernel.org>; Mon, 20 Mar 2023 03:37:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1679308666;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=z3q/VrYNqGMx2nbuJd3OpHcyuerGqYFRs5YEB6SDNJQ=;
-        b=cOt3/HGhxeCWKbSpzQfyN6gbnOl3tUPzZObW7xg2v+iQhP/Em8z9Ijk2iinxoSqTkzJJqR
-        4U82vRvFUOKZswZyan9JjjIf2TZdMEFQ96rA/gVO3JdePIEPMG66yIvIT4s9RhcLLbisCw
-        FhEzDbm6EfKRbkKGZ30021Kbb9sVU4I=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-346-RsREsiTLPHG-SU-k2ij7NA-1; Mon, 20 Mar 2023 06:37:45 -0400
-X-MC-Unique: RsREsiTLPHG-SU-k2ij7NA-1
-Received: by mail-wm1-f71.google.com with SMTP id i8-20020a05600c354800b003ed59bae33bso4223272wmq.5
-        for <linux-mips@vger.kernel.org>; Mon, 20 Mar 2023 03:37:45 -0700 (PDT)
+        with ESMTP id S229786AbjCTKmY (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Mon, 20 Mar 2023 06:42:24 -0400
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C451D26CC9;
+        Mon, 20 Mar 2023 03:40:31 -0700 (PDT)
+Received: by mail-pl1-x62e.google.com with SMTP id k2so11926352pll.8;
+        Mon, 20 Mar 2023 03:40:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112; t=1679308810;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=ytodzSMqKI+g6vziElNMEkt2Uz4MK0qBsUvh5kc4oY0=;
+        b=aVBcSvaWtaFyKL45eHS55ASyUBgV5hhFSlWXe/FsfV8IvzxFyee8V/j4n+ZXr0cA8h
+         ZVO2KBURAWTx2sUgqY4G8Ljf25jjf0Y6HIDXcyB7YvRQGkw0Sh5T1+SvoFSwmWjobvks
+         QdM8Sp+gEDAYzFGmYlS6aUYGI3/nbVRQ5KRxBhe/Z/XPBb7JjsonC28RDfnFDjMX73cb
+         CXMPSorHzThl8TuhJ0P5QdTG6RvDljh+uBZOSaKN5lHngSq8Kv9/V9jo8hCbVN18KvlG
+         6eT4AVsfw9ulFNRBoqJxRYRzmQO657hP6slEvoeZWBff7wJzglbmd/KaG7ZAZRrd88JH
+         dH4A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1679308664;
-        h=content-transfer-encoding:in-reply-to:organization:from:references
-         :cc:to:content-language:subject:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=1e100.net; s=20210112; t=1679308810;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=z3q/VrYNqGMx2nbuJd3OpHcyuerGqYFRs5YEB6SDNJQ=;
-        b=C+jBXnSsRWHvA3OsWbAKR7g4Gy/0DAxcC7BORO5uKHqLrBDYD2MaDZC7qluohJUup0
-         RM7/kmgs1CQsb/mm246Q1DzOusumN49FUGEMZaKR7Huw5bDn3GDvMc+A4BEGQvkiubKc
-         bQwkbRTX1jjMQM4pdgV5x2d3k0NOJMen8wdSaDVrbAiPXYPRWR11HDPzLSXpRGH6H+Vh
-         W8Gwbkx6WRewTSuB4VUu8nlQVC90qNfVwfaFjImY1BC6SZhkTeEBx1meF6BWkEewmQGk
-         /4iFzPdrSHLjPcQTF1Wa7iJLRL2E4uum05rWMwbaS/gf4fkABhQVt9S4hvHUXeUrgZoj
-         Tfcw==
-X-Gm-Message-State: AO0yUKUpEGqcZ9kj0HwTwsqvymSSEu0H660AM+0P7U3Mw7A2x2QJpFnC
-        4TMj0Rw111fWLK18wXCK9zAjbFWrdhz61B84nSwq7Y3ZmTX9BFlnHUgyyz4cYS2joZ7YdAntYSU
-        ECznRTSKyPWns8ARKB5jAVQ==
-X-Received: by 2002:a05:600c:2193:b0:3ed:af6b:7fb3 with SMTP id e19-20020a05600c219300b003edaf6b7fb3mr6429627wme.2.1679308664208;
-        Mon, 20 Mar 2023 03:37:44 -0700 (PDT)
-X-Google-Smtp-Source: AK7set9nu9AUM11EMOey9gw9s7r1RxvuKD2hoESr3zs9Dn3KEhaTkAv9L39m+Xqo0Tr0kNa2Gefx7A==
-X-Received: by 2002:a05:600c:2193:b0:3ed:af6b:7fb3 with SMTP id e19-20020a05600c219300b003edaf6b7fb3mr6429607wme.2.1679308663897;
-        Mon, 20 Mar 2023 03:37:43 -0700 (PDT)
-Received: from ?IPV6:2003:cb:c702:4100:a064:1ded:25ec:cf2f? (p200300cbc7024100a0641ded25eccf2f.dip0.t-ipconnect.de. [2003:cb:c702:4100:a064:1ded:25ec:cf2f])
-        by smtp.gmail.com with ESMTPSA id f1-20020a1c6a01000000b003edcc2223c6sm5338002wmc.28.2023.03.20.03.37.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 20 Mar 2023 03:37:43 -0700 (PDT)
-Message-ID: <99391ca1-a9b8-401d-0042-c8b7d1cfab9c@redhat.com>
-Date:   Mon, 20 Mar 2023 11:37:42 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.8.0
-Subject: Re: [PATCH 09/15] mm: move pgtable_init() to mm/mm_init.c and make it
- static
-Content-Language: en-US
-To:     Mike Rapoport <rppt@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Matthew Wilcox <willy@infradead.org>, Mel Gorman <mgorman@suse.de>,
-        Michal Hocko <mhocko@kernel.org>,
+        bh=ytodzSMqKI+g6vziElNMEkt2Uz4MK0qBsUvh5kc4oY0=;
+        b=LNyoPqbq8mpUAVlFIgJ5aZEFi7/+dhpyzkhsAy/Lpl36euktrsuu1Ly67kiVZYRxKj
+         4dTwqXR3NYRXUtGVkiF6JqWPQJu46FLXWd+4jCsI0qdVvVf8Bai+6zc4h0GDt/kaGbvw
+         aIBziinUV1RHL56vSDm8wTkvUNvxbxfNsfjtYBQy4OvBjo4j2ouTGtwBfJxUOy7R68Om
+         gjgqKtxSSIwcsrwTWr4p9bxd/Mncd/0/XWpLOlcQ1+i/K5XofYWh372EkX87H6DcGB2S
+         WWb+eUz1N6cSoVLTJb27a1MrPO/+6LTfGsnD2M5UECCMQ/8kyy3lyJs/iKCCh0uXWmru
+         yMCw==
+X-Gm-Message-State: AO0yUKUqEVahlWpqxXiY28y8p3b61iCF0k+/E2Cj9cLEqCV0crG2q6EJ
+        3Seq1vP6CmAWs97sFNhj/sT0kLY4OpI=
+X-Google-Smtp-Source: AK7set9p7RaTki583fnEIoXwiT2hgRfy0b/tvJDJntOFblX1CVmcZ4gFnxZPOBptOMTfENV0EHIrrw==
+X-Received: by 2002:a05:6a20:4321:b0:cd:1367:3b69 with SMTP id h33-20020a056a20432100b000cd13673b69mr19206208pzk.17.1679308810517;
+        Mon, 20 Mar 2023 03:40:10 -0700 (PDT)
+Received: from kelvin-ThinkPad-L14-Gen-1.. (94.130.220.35.bc.googleusercontent.com. [35.220.130.94])
+        by smtp.gmail.com with ESMTPSA id e17-20020a63ee11000000b00478c48cf73csm5922535pgi.82.2023.03.20.03.40.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 20 Mar 2023 03:40:10 -0700 (PDT)
+From:   Keguang Zhang <keguang.zhang@gmail.com>
+To:     linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
         Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Vlastimil Babka <vbabka@suse.cz>, linux-kernel@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-mm@kvack.org
-References: <20230319220008.2138576-1-rppt@kernel.org>
- <20230319220008.2138576-10-rppt@kernel.org>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-In-Reply-To: <20230319220008.2138576-10-rppt@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+        Keguang Zhang <keguang.zhang@gmail.com>
+Subject: [PATCH v4 0/4] Devicetree support for Loongson-1 clock
+Date:   Mon, 20 Mar 2023 18:39:59 +0800
+Message-Id: <20230320104003.407844-1-keguang.zhang@gmail.com>
+X-Mailer: git-send-email 2.34.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On 19.03.23 23:00, Mike Rapoport wrote:
-> From: "Mike Rapoport (IBM)" <rppt@kernel.org>
-> 
-> pgtable_init() is only called from mm_core_init().
-> 
-> Move it close to the caller and make it static.
+Removes the old Loongson-1 clock driver and related code
+mainly because of no DT support and outdated implementation.
 
-Why not inline it completely into the single caller? I don't see too 
-much value of this indirection.
+Then, re-implement it to solve the above issues,
+along with the devicetree binding document.
 
+Changelog
+V3 -> V4: Fix the build error of missing linux/module.h
+          Add Reviewed-by tag from Krzysztof Kozlowski
+V2 -> V3: Add 'reg' property into the 'required' field
+          Delete the unnecessary property 'clock-names'
+          Use the same license as binding document for the header file.
+          Add MODULE_AUTHOR and MODULE_DESCRIPTION info
+          Add patch "MIPS: loongson32: Update the clock initialization" into this series
+	  Add Acked-by tag from Stephen Boyd and Thomas Bogendoerfer
+V1 -> V2: Change to one clock controller (suggested by Krzysztof Kozlowski)
+          Add clock-related dt-binding header file
+          Fix the warning of dt_binding_check
+          Split the driver removal to a separate patch
+          Implement one clock controller instead of single clocks
+          (suggested by Krzysztof Kozlowski)
+
+Keguang Zhang (4):
+  dt-bindings: clock: Add Loongson-1 clock
+  clk: loongson1: Remove the outdated driver
+  clk: loongson1: Re-implement the clock driver
+  MIPS: loongson32: Update the clock initialization
+
+ .../bindings/clock/loongson,ls1x-clk.yaml     |  45 +++
+ .../include/asm/mach-loongson32/platform.h    |   1 -
+ arch/mips/loongson32/common/time.c            |   3 +-
+ drivers/clk/Makefile                          |   2 +-
+ drivers/clk/clk-loongson1.c                   | 302 ++++++++++++++++++
+ drivers/clk/loongson1/Makefile                |   4 -
+ drivers/clk/loongson1/clk-loongson1b.c        | 118 -------
+ drivers/clk/loongson1/clk-loongson1c.c        |  95 ------
+ drivers/clk/loongson1/clk.c                   |  41 ---
+ drivers/clk/loongson1/clk.h                   |  15 -
+ include/dt-bindings/clock/loongson,ls1x-clk.h |  19 ++
+ 11 files changed, 369 insertions(+), 276 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/clock/loongson,ls1x-clk.yaml
+ create mode 100644 drivers/clk/clk-loongson1.c
+ delete mode 100644 drivers/clk/loongson1/Makefile
+ delete mode 100644 drivers/clk/loongson1/clk-loongson1b.c
+ delete mode 100644 drivers/clk/loongson1/clk-loongson1c.c
+ delete mode 100644 drivers/clk/loongson1/clk.c
+ delete mode 100644 drivers/clk/loongson1/clk.h
+ create mode 100644 include/dt-bindings/clock/loongson,ls1x-clk.h
+
+
+base-commit: d8bb7bcf754c39de7347b746766ed45932e787d1
 -- 
-Thanks,
-
-David / dhildenb
+2.34.1
 

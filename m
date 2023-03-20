@@ -2,383 +2,207 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 820A7C761AF
-	for <linux-mips@archiver.kernel.org>; Mon, 20 Mar 2023 16:26:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EA55BC6FD1D
+	for <linux-mips@archiver.kernel.org>; Mon, 20 Mar 2023 16:42:33 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231952AbjCTQ0u (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 20 Mar 2023 12:26:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36504 "EHLO
+        id S232484AbjCTQmc (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 20 Mar 2023 12:42:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33024 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232155AbjCTQZu (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Mon, 20 Mar 2023 12:25:50 -0400
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C68427986;
-        Mon, 20 Mar 2023 09:18:49 -0700 (PDT)
-Received: by mail-wm1-x336.google.com with SMTP id i10-20020a05600c354a00b003ee0da1132eso1278354wmq.4;
-        Mon, 20 Mar 2023 09:18:48 -0700 (PDT)
+        with ESMTP id S232383AbjCTQmE (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Mon, 20 Mar 2023 12:42:04 -0400
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09AD5658F
+        for <linux-mips@vger.kernel.org>; Mon, 20 Mar 2023 09:36:43 -0700 (PDT)
+Received: by mail-ed1-x535.google.com with SMTP id ek18so49142608edb.6
+        for <linux-mips@vger.kernel.org>; Mon, 20 Mar 2023 09:36:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1679329117;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=grqoFusieSFLlzdw4ec4Bf4f2qrdCAeFYyShBkRscNA=;
-        b=mA0w1261Lh/9CKlKIEGIj2JyshocIOzTrPb6QCVIEJgMRveAoHzRcs6rhS4x69m1tM
-         3cDS/LIjl0cGWfiLX/WihK6lelLWS0GYqL5e14u3ev8AtUQWmoGknzv2YdWpc2/Dw78K
-         arNKrHw/BVCVqGg6Bd+cOuPfRiMevdYQfa7nGa7xIHpef7ffAdG4EzXScbhXR5bZGv/a
-         AaCyK58kWMjkZhSykYAQ7Tj17QfweLA0P1zOptuS8kRx87dK6EmpfxFmbubsxqcK0Xf9
-         7XAs9Z2U1HjwZeCDnGl/6lRUoRXwuUhI1lN4RNeaq/b2btSlUt6fX++LcyRXMvg/yGUm
-         EjUQ==
+        d=linaro.org; s=google; t=1679330197;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=cYulapKXJcRNM3aIWY+CATrCMO6Luzk86prrhy43Hig=;
+        b=n538UNSKRmPvLy7Ou9k++tMYrnhxlAeHEOECR4SMk8PtyLTMF4Zl19OdJAoSaDElP0
+         1n2+KNlP1Gqj1x3DdeJIuZOwUBE7pU4ffc3v8ecVbN1Ncv4y3u5PVY/0iKIcWrKoZeVl
+         vImhNYWuc3KNne8cL7TlNi1hXyt0tO+kV2u7zA2RKlSSBWmgunQbQXUzyzQyFvUBbx7t
+         g9MB/9I2a5uBEVJuHQeXJk8ymvpSefEBIctpBSuZfMp6ZS0VSJpIOTSo37BIE5DzyWA7
+         RMukv5osQkf79pRAwKTGTzez83TjyYtDyFCbk8saujbY1HpBqg+iPxzjDshTJor1a/fR
+         eYXg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1679329117;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=grqoFusieSFLlzdw4ec4Bf4f2qrdCAeFYyShBkRscNA=;
-        b=IoULfq/YGTrTRnWiynnyvx7oMSu/FcOWsONyn4SntDnVpT1xz6bC4a6VWARQ9gT1Pk
-         JehzaptDxLnaFokYyHUNs8s5MSkjsMD3awM1G+0kKu3wFMQTTcO56Zb5ucsDsKZH96Vy
-         Baxlp3yW0yp8pcLV6jAc8qxMliQDZkVj3jkQ22yMRJGigxjYnU/J9v+IAcwJmnBOT+jP
-         vAvaWD7sDZIF/FaG0rIRnAzaS41gOeXWwAvVndBZUl+l3Y98ETNT1FkrmNaG8rlteHsp
-         EPKeini3UQfkRd6jF7tEudEkEMrjSJHMFBzmNTZvCUaS2FldF52LLZl3ty2SJkdLgy/w
-         uAYw==
-X-Gm-Message-State: AO0yUKXM5kkhcfhilJJbk6rp4iwaYhZZR8xpP84xG/2xKWzH448FYf0O
-        BYeFIJ+cbW81ZGnNhfzSf/XWdubNFMw=
-X-Google-Smtp-Source: AK7set/U38JaiuXaJw+oihAA0wwNU5MzLw/a8ghPCbHJeO3R4ATkRZbN9d4GkRsJTd4/WfKodpIEsg==
-X-Received: by 2002:a7b:c4d1:0:b0:3ee:1fbb:c64 with SMTP id g17-20020a7bc4d1000000b003ee1fbb0c64mr86455wmk.20.1679329116715;
-        Mon, 20 Mar 2023 09:18:36 -0700 (PDT)
-Received: from localhost.localdomain (106.red-88-13-29.dynamicip.rima-tde.net. [88.13.29.106])
-        by smtp.gmail.com with ESMTPSA id iv16-20020a05600c549000b003ee1acdaf95sm847776wmb.36.2023.03.20.09.18.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Mar 2023 09:18:36 -0700 (PDT)
-From:   Sergio Paracuellos <sergio.paracuellos@gmail.com>
-To:     linux-clk@vger.kernel.org
+        d=1e100.net; s=20210112; t=1679330197;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=cYulapKXJcRNM3aIWY+CATrCMO6Luzk86prrhy43Hig=;
+        b=7NFnYP3urr619g8RU0q/aByO2eapvmVr3sL9V1JwZ3GoLvr56BY8gM6QEfTAM8n7ez
+         U+KG8k7D+0+A8Gu5/9JH4686vXmzcavJyzHCgzIF9SwepiTfe/4jMNfPzyLeyA3z97Hl
+         Y15xTfHKSTYbvtoqZy+FDn0MdbkfqxPZqyyGntoOkpJiCwqh8bW9uW1Z3iZKiVeO5LzN
+         y8ArzE82lQbDncqNiirmQUlVQFGtUESJqV5B9tsvOEWBvN8lphDf6mMZvXBBgeYq7LQ+
+         bSGEMXiZNEIZmU4deq8Rhw8mygY2JbYVaaQG2J4d5v+f4KgsUsMyCya4eVs9fwt66g41
+         THtQ==
+X-Gm-Message-State: AO0yUKX00mamPxhqU9Ed1Op+0PlG8YCZLLnSISwgp2UneiazChDztsaW
+        PJNBrBIcwY1IfF9Jwzz8Zlda0w==
+X-Google-Smtp-Source: AK7set/O3GQ82ux1OEooC6qaPiTzTPK580FO+l2yiNgQvzSM/GSxrfib6ObUxT0SGjC1U8bsSL+0sQ==
+X-Received: by 2002:a17:907:77d4:b0:930:45ea:4a28 with SMTP id kz20-20020a17090777d400b0093045ea4a28mr11748494ejc.35.1679330197565;
+        Mon, 20 Mar 2023 09:36:37 -0700 (PDT)
+Received: from ?IPV6:2a02:810d:15c0:828:458e:64e7:8cf1:78b0? ([2a02:810d:15c0:828:458e:64e7:8cf1:78b0])
+        by smtp.gmail.com with ESMTPSA id jj4-20020a170907984400b009323f08827dsm4218103ejc.13.2023.03.20.09.36.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 20 Mar 2023 09:36:36 -0700 (PDT)
+Message-ID: <1e2f67b4-3bfb-d394-4f60-e6f63ce6a2fd@linaro.org>
+Date:   Mon, 20 Mar 2023 17:36:35 +0100
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.9.0
+Subject: Re: [PATCH 01/10] dt: bindings: clock: add mtmips SoCs clock device
+ tree binding documentation
+Content-Language: en-US
+To:     Sergio Paracuellos <sergio.paracuellos@gmail.com>,
+        linux-clk@vger.kernel.org
 Cc:     linux-mips@vger.kernel.org, tsbogend@alpha.franken.de,
         john@phrozen.org, linux-kernel@vger.kernel.org,
         p.zabel@pengutronix.de, mturquette@baylibre.com, sboyd@kernel.org,
         robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
         matthias.bgg@gmail.com, devicetree@vger.kernel.org,
         arinc.unal@arinc9.com
-Subject: [PATCH 06/10]  mips: ralink: mt7620: remove clock related code
-Date:   Mon, 20 Mar 2023 17:18:19 +0100
-Message-Id: <20230320161823.1424278-7-sergio.paracuellos@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230320161823.1424278-1-sergio.paracuellos@gmail.com>
 References: <20230320161823.1424278-1-sergio.paracuellos@gmail.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+ <20230320161823.1424278-2-sergio.paracuellos@gmail.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20230320161823.1424278-2-sergio.paracuellos@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-A proper clock driver for ralink SoCs has been added. Hence there is no
-need to have clock related code in 'arch/mips/ralink' folder anymore.
+On 20/03/2023 17:18, Sergio Paracuellos wrote:
+> Adds device tree binding documentation for clocks and resets in the
+> Mediatek MIPS and Ralink SOCs. This covers RT2880, RT3050, RT3052, RT3350,
+> RT3883, RT5350, MT7620, MT7628 and MT7688 SoCs.
 
-Signed-off-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
----
- arch/mips/include/asm/mach-ralink/mt7620.h |  35 ----
- arch/mips/ralink/mt7620.c                  | 226 ---------------------
- 2 files changed, 261 deletions(-)
+Use subject prefixes matching the subsystem (which you can get for
+example with `git log --oneline -- DIRECTORY_OR_FILE` on the directory
+your patch is touching).
 
-diff --git a/arch/mips/include/asm/mach-ralink/mt7620.h b/arch/mips/include/asm/mach-ralink/mt7620.h
-index 3e37705ea9cf..62f4f072c003 100644
---- a/arch/mips/include/asm/mach-ralink/mt7620.h
-+++ b/arch/mips/include/asm/mach-ralink/mt7620.h
-@@ -20,52 +20,17 @@
- #define SYSC_REG_CHIP_REV		0x0c
- #define SYSC_REG_SYSTEM_CONFIG0		0x10
- #define SYSC_REG_SYSTEM_CONFIG1		0x14
--#define SYSC_REG_CLKCFG0		0x2c
--#define SYSC_REG_CPU_SYS_CLKCFG		0x3c
--#define SYSC_REG_CPLL_CONFIG0		0x54
--#define SYSC_REG_CPLL_CONFIG1		0x58
- 
- #define MT7620_CHIP_NAME0		0x3637544d
- #define MT7620_CHIP_NAME1		0x20203032
- #define MT7628_CHIP_NAME1		0x20203832
- 
--#define SYSCFG0_XTAL_FREQ_SEL		BIT(6)
--
- #define CHIP_REV_PKG_MASK		0x1
- #define CHIP_REV_PKG_SHIFT		16
- #define CHIP_REV_VER_MASK		0xf
- #define CHIP_REV_VER_SHIFT		8
- #define CHIP_REV_ECO_MASK		0xf
- 
--#define CLKCFG0_PERI_CLK_SEL		BIT(4)
--
--#define CPU_SYS_CLKCFG_OCP_RATIO_SHIFT	16
--#define CPU_SYS_CLKCFG_OCP_RATIO_MASK	0xf
--#define CPU_SYS_CLKCFG_OCP_RATIO_1	0	/* 1:1   (Reserved) */
--#define CPU_SYS_CLKCFG_OCP_RATIO_1_5	1	/* 1:1.5 (Reserved) */
--#define CPU_SYS_CLKCFG_OCP_RATIO_2	2	/* 1:2   */
--#define CPU_SYS_CLKCFG_OCP_RATIO_2_5	3       /* 1:2.5 (Reserved) */
--#define CPU_SYS_CLKCFG_OCP_RATIO_3	4	/* 1:3   */
--#define CPU_SYS_CLKCFG_OCP_RATIO_3_5	5	/* 1:3.5 (Reserved) */
--#define CPU_SYS_CLKCFG_OCP_RATIO_4	6	/* 1:4   */
--#define CPU_SYS_CLKCFG_OCP_RATIO_5	7	/* 1:5   */
--#define CPU_SYS_CLKCFG_OCP_RATIO_10	8	/* 1:10  */
--#define CPU_SYS_CLKCFG_CPU_FDIV_SHIFT	8
--#define CPU_SYS_CLKCFG_CPU_FDIV_MASK	0x1f
--#define CPU_SYS_CLKCFG_CPU_FFRAC_SHIFT	0
--#define CPU_SYS_CLKCFG_CPU_FFRAC_MASK	0x1f
--
--#define CPLL_CFG0_SW_CFG		BIT(31)
--#define CPLL_CFG0_PLL_MULT_RATIO_SHIFT	16
--#define CPLL_CFG0_PLL_MULT_RATIO_MASK   0x7
--#define CPLL_CFG0_LC_CURFCK		BIT(15)
--#define CPLL_CFG0_BYPASS_REF_CLK	BIT(14)
--#define CPLL_CFG0_PLL_DIV_RATIO_SHIFT	10
--#define CPLL_CFG0_PLL_DIV_RATIO_MASK	0x3
--
--#define CPLL_CFG1_CPU_AUX1		BIT(25)
--#define CPLL_CFG1_CPU_AUX0		BIT(24)
--
- #define SYSCFG0_DRAM_TYPE_MASK		0x3
- #define SYSCFG0_DRAM_TYPE_SHIFT		4
- #define SYSCFG0_DRAM_TYPE_SDRAM		0
-diff --git a/arch/mips/ralink/mt7620.c b/arch/mips/ralink/mt7620.c
-index 4435f50b8d24..f44915b0b0c2 100644
---- a/arch/mips/ralink/mt7620.c
-+++ b/arch/mips/ralink/mt7620.c
-@@ -36,12 +36,6 @@
- #define PMU1_CFG		0x8C
- #define DIG_SW_SEL		BIT(25)
- 
--/* clock scaling */
--#define CLKCFG_FDIV_MASK	0x1f00
--#define CLKCFG_FDIV_USB_VAL	0x0300
--#define CLKCFG_FFRAC_MASK	0x001f
--#define CLKCFG_FFRAC_USB_VAL	0x0003
--
- /* EFUSE bits */
- #define EFUSE_MT7688		0x100000
- 
-@@ -53,226 +47,6 @@ static int dram_type;
- 
- static struct ralink_soc_info *soc_info_ptr;
- 
--static __init u32
--mt7620_calc_rate(u32 ref_rate, u32 mul, u32 div)
--{
--	u64 t;
--
--	t = ref_rate;
--	t *= mul;
--	do_div(t, div);
--
--	return t;
--}
--
--#define MHZ(x)		((x) * 1000 * 1000)
--
--static __init unsigned long
--mt7620_get_xtal_rate(void)
--{
--	u32 reg;
--
--	reg = rt_sysc_r32(SYSC_REG_SYSTEM_CONFIG0);
--	if (reg & SYSCFG0_XTAL_FREQ_SEL)
--		return MHZ(40);
--
--	return MHZ(20);
--}
--
--static __init unsigned long
--mt7620_get_periph_rate(unsigned long xtal_rate)
--{
--	u32 reg;
--
--	reg = rt_sysc_r32(SYSC_REG_CLKCFG0);
--	if (reg & CLKCFG0_PERI_CLK_SEL)
--		return xtal_rate;
--
--	return MHZ(40);
--}
--
--static const u32 mt7620_clk_divider[] __initconst = { 2, 3, 4, 8 };
--
--static __init unsigned long
--mt7620_get_cpu_pll_rate(unsigned long xtal_rate)
--{
--	u32 reg;
--	u32 mul;
--	u32 div;
--
--	reg = rt_sysc_r32(SYSC_REG_CPLL_CONFIG0);
--	if (reg & CPLL_CFG0_BYPASS_REF_CLK)
--		return xtal_rate;
--
--	if ((reg & CPLL_CFG0_SW_CFG) == 0)
--		return MHZ(600);
--
--	mul = (reg >> CPLL_CFG0_PLL_MULT_RATIO_SHIFT) &
--	      CPLL_CFG0_PLL_MULT_RATIO_MASK;
--	mul += 24;
--	if (reg & CPLL_CFG0_LC_CURFCK)
--		mul *= 2;
--
--	div = (reg >> CPLL_CFG0_PLL_DIV_RATIO_SHIFT) &
--	      CPLL_CFG0_PLL_DIV_RATIO_MASK;
--
--	WARN_ON(div >= ARRAY_SIZE(mt7620_clk_divider));
--
--	return mt7620_calc_rate(xtal_rate, mul, mt7620_clk_divider[div]);
--}
--
--static __init unsigned long
--mt7620_get_pll_rate(unsigned long xtal_rate, unsigned long cpu_pll_rate)
--{
--	u32 reg;
--
--	reg = rt_sysc_r32(SYSC_REG_CPLL_CONFIG1);
--	if (reg & CPLL_CFG1_CPU_AUX1)
--		return xtal_rate;
--
--	if (reg & CPLL_CFG1_CPU_AUX0)
--		return MHZ(480);
--
--	return cpu_pll_rate;
--}
--
--static __init unsigned long
--mt7620_get_cpu_rate(unsigned long pll_rate)
--{
--	u32 reg;
--	u32 mul;
--	u32 div;
--
--	reg = rt_sysc_r32(SYSC_REG_CPU_SYS_CLKCFG);
--
--	mul = reg & CPU_SYS_CLKCFG_CPU_FFRAC_MASK;
--	div = (reg >> CPU_SYS_CLKCFG_CPU_FDIV_SHIFT) &
--	      CPU_SYS_CLKCFG_CPU_FDIV_MASK;
--
--	return mt7620_calc_rate(pll_rate, mul, div);
--}
--
--static const u32 mt7620_ocp_dividers[16] __initconst = {
--	[CPU_SYS_CLKCFG_OCP_RATIO_2] = 2,
--	[CPU_SYS_CLKCFG_OCP_RATIO_3] = 3,
--	[CPU_SYS_CLKCFG_OCP_RATIO_4] = 4,
--	[CPU_SYS_CLKCFG_OCP_RATIO_5] = 5,
--	[CPU_SYS_CLKCFG_OCP_RATIO_10] = 10,
--};
--
--static __init unsigned long
--mt7620_get_dram_rate(unsigned long pll_rate)
--{
--	if (dram_type == SYSCFG0_DRAM_TYPE_SDRAM)
--		return pll_rate / 4;
--
--	return pll_rate / 3;
--}
--
--static __init unsigned long
--mt7620_get_sys_rate(unsigned long cpu_rate)
--{
--	u32 reg;
--	u32 ocp_ratio;
--	u32 div;
--
--	reg = rt_sysc_r32(SYSC_REG_CPU_SYS_CLKCFG);
--
--	ocp_ratio = (reg >> CPU_SYS_CLKCFG_OCP_RATIO_SHIFT) &
--		    CPU_SYS_CLKCFG_OCP_RATIO_MASK;
--
--	if (WARN_ON(ocp_ratio >= ARRAY_SIZE(mt7620_ocp_dividers)))
--		return cpu_rate;
--
--	div = mt7620_ocp_dividers[ocp_ratio];
--	if (WARN(!div, "invalid divider for OCP ratio %u", ocp_ratio))
--		return cpu_rate;
--
--	return cpu_rate / div;
--}
--
--void __init ralink_clk_init(void)
--{
--	unsigned long xtal_rate;
--	unsigned long cpu_pll_rate;
--	unsigned long pll_rate;
--	unsigned long cpu_rate;
--	unsigned long sys_rate;
--	unsigned long dram_rate;
--	unsigned long periph_rate;
--	unsigned long pcmi2s_rate;
--
--	xtal_rate = mt7620_get_xtal_rate();
--
--#define RFMT(label)	label ":%lu.%03luMHz "
--#define RINT(x)		((x) / 1000000)
--#define RFRAC(x)	(((x) / 1000) % 1000)
--
--	if (is_mt76x8()) {
--		if (xtal_rate == MHZ(40))
--			cpu_rate = MHZ(580);
--		else
--			cpu_rate = MHZ(575);
--		dram_rate = sys_rate = cpu_rate / 3;
--		periph_rate = MHZ(40);
--		pcmi2s_rate = MHZ(480);
--
--		ralink_clk_add("10000d00.uartlite", periph_rate);
--		ralink_clk_add("10000e00.uartlite", periph_rate);
--	} else {
--		cpu_pll_rate = mt7620_get_cpu_pll_rate(xtal_rate);
--		pll_rate = mt7620_get_pll_rate(xtal_rate, cpu_pll_rate);
--
--		cpu_rate = mt7620_get_cpu_rate(pll_rate);
--		dram_rate = mt7620_get_dram_rate(pll_rate);
--		sys_rate = mt7620_get_sys_rate(cpu_rate);
--		periph_rate = mt7620_get_periph_rate(xtal_rate);
--		pcmi2s_rate = periph_rate;
--
--		pr_debug(RFMT("XTAL") RFMT("CPU_PLL") RFMT("PLL"),
--			 RINT(xtal_rate), RFRAC(xtal_rate),
--			 RINT(cpu_pll_rate), RFRAC(cpu_pll_rate),
--			 RINT(pll_rate), RFRAC(pll_rate));
--
--		ralink_clk_add("10000500.uart", periph_rate);
--	}
--
--	pr_debug(RFMT("CPU") RFMT("DRAM") RFMT("SYS") RFMT("PERIPH"),
--		 RINT(cpu_rate), RFRAC(cpu_rate),
--		 RINT(dram_rate), RFRAC(dram_rate),
--		 RINT(sys_rate), RFRAC(sys_rate),
--		 RINT(periph_rate), RFRAC(periph_rate));
--#undef RFRAC
--#undef RINT
--#undef RFMT
--
--	ralink_clk_add("cpu", cpu_rate);
--	ralink_clk_add("10000100.timer", periph_rate);
--	ralink_clk_add("10000120.watchdog", periph_rate);
--	ralink_clk_add("10000900.i2c", periph_rate);
--	ralink_clk_add("10000a00.i2s", pcmi2s_rate);
--	ralink_clk_add("10000b00.spi", sys_rate);
--	ralink_clk_add("10000b40.spi", sys_rate);
--	ralink_clk_add("10000c00.uartlite", periph_rate);
--	ralink_clk_add("10000d00.uart1", periph_rate);
--	ralink_clk_add("10000e00.uart2", periph_rate);
--	ralink_clk_add("10180000.wmac", xtal_rate);
--
--	if (IS_ENABLED(CONFIG_USB) && !is_mt76x8()) {
--		/*
--		 * When the CPU goes into sleep mode, the BUS clock will be
--		 * too low for USB to function properly. Adjust the busses
--		 * fractional divider to fix this
--		 */
--		u32 val = rt_sysc_r32(SYSC_REG_CPU_SYS_CLKCFG);
--
--		val &= ~(CLKCFG_FDIV_MASK | CLKCFG_FFRAC_MASK);
--		val |= CLKCFG_FDIV_USB_VAL | CLKCFG_FFRAC_USB_VAL;
--
--		rt_sysc_w32(val, SYSC_REG_CPU_SYS_CLKCFG);
--	}
--}
--
- void __init ralink_of_remap(void)
- {
- 	rt_sysc_membase = plat_of_remap_node("ralink,mt7620a-sysc");
--- 
-2.25.1
+Subject: drop second/last, redundant "device tree binding
+documentation". The "dt-bindings" prefix is already stating that these
+are bindings.
+(BTW, that's the longest redundant component I ever saw)
+
+> 
+> Signed-off-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
+> ---
+>  .../bindings/clock/mtmips-clock.yaml          | 68 +++++++++++++++++++
+>  1 file changed, 68 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/clock/mtmips-clock.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/clock/mtmips-clock.yaml b/Documentation/devicetree/bindings/clock/mtmips-clock.yaml
+> new file mode 100644
+> index 000000000000..c92969ce231d
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/clock/mtmips-clock.yaml
+
+Filename matching compatible, so vendor prefix and device name (or
+family of names).
+
+> @@ -0,0 +1,68 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/clock/mtmips-clock.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: MTMIPS SoCs Clock
+
+One clock? Are you sure these describe exactly one clock?
+
+> +
+> +maintainers:
+> +  - Sergio Paracuellos <sergio.paracuellos@gmail.com>
+> +
+> +description: |
+> +  MediaTek MIPS and Ralink SoCs have an XTAL from where the cpu clock is
+> +  provided as well as derived clocks for the bus and the peripherals.
+> +
+> +  Each clock is assigned an identifier and client nodes use this identifier
+> +  to specify the clock which they consume.
+
+Drop useless or obvious pieces of description. Describe the hardware.
+
+> +
+> +  The clocks are provided inside a system controller node.
+
+???
+
+> +
+> +  This node is also a reset provider for all the peripherals.
+
+??? Does it mean it is not only "Clock" but also reset controller?
+
+> +
+> +properties:
+> +  compatible:
+> +    items:
+> +      - enum:
+> +          - ralink,rt2880-sysc
+> +          - ralink,rt3050-sysc
+> +          - ralink,rt3052-sysc
+> +          - ralink,rt3352-sysc
+> +          - ralink,rt3883-sysc
+> +          - ralink,rt5350-sysc
+> +          - ralink,mt7620-sysc
+> +          - ralink,mt7620a-sysc
+> +          - ralink,mt7628-sysc
+> +          - ralink,mt7688-sysc
+> +          - ralink,rt2880-reset
+
+That's odd. rt2880 is sysc and reset? One device with two compatibles?
+
+Also, order these by name.
+
+
+> +      - const: syscon
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  '#clock-cells':
+> +    description:
+> +      The first cell indicates the clock number.
+> +    const: 1
+> +
+> +  '#reset-cells':
+> +    description:
+> +      The first cell indicates the reset bit within the register.
+> +    const: 1
+
+Wait, only rt2880-reset is reset controller? This is confusing.
+
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - '#clock-cells'
+> +  - '#reset-cells'
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    sysc: sysc@0 {
+
+Drop label.
+
+Node names should be generic, clock-controller or reset-controller or
+system-controller sometimes.
+https://devicetree-specification.readthedocs.io/en/latest/chapter2-devicetree-basics.html#generic-names-recommendation
+
+> +      compatible = "ralink,rt5350-sysc", "syscon";
+> +      reg = <0x0 0x100>;
+> +      #clock-cells = <1>;
+> +      #reset-cells = <1>;
+> +    };
+
+Best regards,
+Krzysztof
 

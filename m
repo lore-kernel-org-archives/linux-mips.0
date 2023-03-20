@@ -2,206 +2,126 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EA55BC6FD1D
-	for <linux-mips@archiver.kernel.org>; Mon, 20 Mar 2023 16:42:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7E028C6FD1D
+	for <linux-mips@archiver.kernel.org>; Mon, 20 Mar 2023 17:05:22 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232484AbjCTQmc (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 20 Mar 2023 12:42:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33024 "EHLO
+        id S232742AbjCTRFU (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 20 Mar 2023 13:05:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39822 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232383AbjCTQmE (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Mon, 20 Mar 2023 12:42:04 -0400
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09AD5658F
-        for <linux-mips@vger.kernel.org>; Mon, 20 Mar 2023 09:36:43 -0700 (PDT)
-Received: by mail-ed1-x535.google.com with SMTP id ek18so49142608edb.6
-        for <linux-mips@vger.kernel.org>; Mon, 20 Mar 2023 09:36:43 -0700 (PDT)
+        with ESMTP id S233386AbjCTRFD (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Mon, 20 Mar 2023 13:05:03 -0400
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36D81123
+        for <linux-mips@vger.kernel.org>; Mon, 20 Mar 2023 09:59:35 -0700 (PDT)
+Received: by mail-ed1-x536.google.com with SMTP id cy23so49293965edb.12
+        for <linux-mips@vger.kernel.org>; Mon, 20 Mar 2023 09:59:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1679330197;
+        d=linaro.org; s=google; t=1679331503;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=cYulapKXJcRNM3aIWY+CATrCMO6Luzk86prrhy43Hig=;
-        b=n538UNSKRmPvLy7Ou9k++tMYrnhxlAeHEOECR4SMk8PtyLTMF4Zl19OdJAoSaDElP0
-         1n2+KNlP1Gqj1x3DdeJIuZOwUBE7pU4ffc3v8ecVbN1Ncv4y3u5PVY/0iKIcWrKoZeVl
-         vImhNYWuc3KNne8cL7TlNi1hXyt0tO+kV2u7zA2RKlSSBWmgunQbQXUzyzQyFvUBbx7t
-         g9MB/9I2a5uBEVJuHQeXJk8ymvpSefEBIctpBSuZfMp6ZS0VSJpIOTSo37BIE5DzyWA7
-         RMukv5osQkf79pRAwKTGTzez83TjyYtDyFCbk8saujbY1HpBqg+iPxzjDshTJor1a/fR
-         eYXg==
+        bh=kFJSUgHgBA6fVjFOsVCUCNBjQjOx28L2GR1TCgVlFOc=;
+        b=cRj98hNdz1fKs62Zkg+yVXjwrlZKGLPXnB6W/PSLbqd42bur41gy1nbYkrqDMhbY1v
+         1IWMx28F+Wq2ZhkLQXaJ5E51ySNwu2chfY+kA10NHulmfcS8A9t4alJwHrTJmMhDIt4a
+         bGFb/l0Cb9xY4enbUxS3n6pkrGH4jS/eqa6Wn+FlchciatqbPEqnIFjKLDZW6dfSKVuQ
+         MJPO0xK42nMH3IIPsbEqrKZCY0yacCOEjmn5+scKHwt2XDR4A67u5mkg07ZZ9MRvqTRH
+         /DS8/RaBY2qzjVpV4cWAlV44Q9SZlf0ZQ8HCFZxgGxuRYNiAoMyaiXt+udXCuuckdK0M
+         xbEQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1679330197;
+        d=1e100.net; s=20210112; t=1679331503;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=cYulapKXJcRNM3aIWY+CATrCMO6Luzk86prrhy43Hig=;
-        b=7NFnYP3urr619g8RU0q/aByO2eapvmVr3sL9V1JwZ3GoLvr56BY8gM6QEfTAM8n7ez
-         U+KG8k7D+0+A8Gu5/9JH4686vXmzcavJyzHCgzIF9SwepiTfe/4jMNfPzyLeyA3z97Hl
-         Y15xTfHKSTYbvtoqZy+FDn0MdbkfqxPZqyyGntoOkpJiCwqh8bW9uW1Z3iZKiVeO5LzN
-         y8ArzE82lQbDncqNiirmQUlVQFGtUESJqV5B9tsvOEWBvN8lphDf6mMZvXBBgeYq7LQ+
-         bSGEMXiZNEIZmU4deq8Rhw8mygY2JbYVaaQG2J4d5v+f4KgsUsMyCya4eVs9fwt66g41
-         THtQ==
-X-Gm-Message-State: AO0yUKX00mamPxhqU9Ed1Op+0PlG8YCZLLnSISwgp2UneiazChDztsaW
-        PJNBrBIcwY1IfF9Jwzz8Zlda0w==
-X-Google-Smtp-Source: AK7set/O3GQ82ux1OEooC6qaPiTzTPK580FO+l2yiNgQvzSM/GSxrfib6ObUxT0SGjC1U8bsSL+0sQ==
-X-Received: by 2002:a17:907:77d4:b0:930:45ea:4a28 with SMTP id kz20-20020a17090777d400b0093045ea4a28mr11748494ejc.35.1679330197565;
-        Mon, 20 Mar 2023 09:36:37 -0700 (PDT)
+        bh=kFJSUgHgBA6fVjFOsVCUCNBjQjOx28L2GR1TCgVlFOc=;
+        b=Ygs95rlL5ECnkpx2rx4L5/yrpyIMXJsXpTf5Ck1wimOEmhfwH3S4xPpsPoAm2emnMn
+         mNg3HBeGO2vdxQ86MNmhLQqsllV0Ezu0Po9alOUOYj7igQZNte6cinJEi450cIRLbsYR
+         mDgESq5YKARIlxcDAiG3gvoza2SvGxD24BEyns0OfhlL/h10rkG00ZJxQsnXG6wnL/5g
+         mxK8AuRXDHVOgJa7S64gMGj7A+BcWZhqA2n17o3OdhnvcuZFOwI4p7XGGqqUaCHB7fUX
+         po4Q+kkDuXhBRMuPGn2hRZut7rjcaL0jQRSKuIqkrNW3OJEpFzkUX2LRpgDzADQ53kU2
+         6Jag==
+X-Gm-Message-State: AO0yUKWDzjfPpC+CsN7ptRN30s0itnAXughnGukNCTleEdXGjO+MF4Kg
+        UUEATo/3MUz5l7gtTy7t2kW3sPVORuSllCK04Sg=
+X-Google-Smtp-Source: AK7set8b9t2ZFlGF1WY07Zu3lWziOZGj1aKUfLhWe2QE7mDcO8rGB3IIiBBozLUDLT39ruGI1pOJeQ==
+X-Received: by 2002:a05:6402:150e:b0:4fe:96a9:ab0a with SMTP id f14-20020a056402150e00b004fe96a9ab0amr207881edw.1.1679331022727;
+        Mon, 20 Mar 2023 09:50:22 -0700 (PDT)
 Received: from ?IPV6:2a02:810d:15c0:828:458e:64e7:8cf1:78b0? ([2a02:810d:15c0:828:458e:64e7:8cf1:78b0])
-        by smtp.gmail.com with ESMTPSA id jj4-20020a170907984400b009323f08827dsm4218103ejc.13.2023.03.20.09.36.36
+        by smtp.gmail.com with ESMTPSA id i20-20020a508714000000b004fc649481basm5185947edb.58.2023.03.20.09.50.21
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 20 Mar 2023 09:36:36 -0700 (PDT)
-Message-ID: <1e2f67b4-3bfb-d394-4f60-e6f63ce6a2fd@linaro.org>
-Date:   Mon, 20 Mar 2023 17:36:35 +0100
+        Mon, 20 Mar 2023 09:50:22 -0700 (PDT)
+Message-ID: <182d39e4-fa11-c914-7015-80bd68c91596@linaro.org>
+Date:   Mon, 20 Mar 2023 17:50:21 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.9.0
 Subject: Re: [PATCH 01/10] dt: bindings: clock: add mtmips SoCs clock device
  tree binding documentation
 Content-Language: en-US
-To:     Sergio Paracuellos <sergio.paracuellos@gmail.com>,
+To:     =?UTF-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>,
+        Sergio Paracuellos <sergio.paracuellos@gmail.com>,
         linux-clk@vger.kernel.org
 Cc:     linux-mips@vger.kernel.org, tsbogend@alpha.franken.de,
         john@phrozen.org, linux-kernel@vger.kernel.org,
         p.zabel@pengutronix.de, mturquette@baylibre.com, sboyd@kernel.org,
         robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        matthias.bgg@gmail.com, devicetree@vger.kernel.org,
-        arinc.unal@arinc9.com
+        matthias.bgg@gmail.com, devicetree@vger.kernel.org
 References: <20230320161823.1424278-1-sergio.paracuellos@gmail.com>
  <20230320161823.1424278-2-sergio.paracuellos@gmail.com>
+ <1e2f67b4-3bfb-d394-4f60-e6f63ce6a2fd@linaro.org>
+ <b98429b7-2932-6bd5-39bc-f82c747b4333@arinc9.com>
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <20230320161823.1424278-2-sergio.paracuellos@gmail.com>
+In-Reply-To: <b98429b7-2932-6bd5-39bc-f82c747b4333@arinc9.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On 20/03/2023 17:18, Sergio Paracuellos wrote:
-> Adds device tree binding documentation for clocks and resets in the
-> Mediatek MIPS and Ralink SOCs. This covers RT2880, RT3050, RT3052, RT3350,
-> RT3883, RT5350, MT7620, MT7628 and MT7688 SoCs.
-
-Use subject prefixes matching the subsystem (which you can get for
-example with `git log --oneline -- DIRECTORY_OR_FILE` on the directory
-your patch is touching).
-
-Subject: drop second/last, redundant "device tree binding
-documentation". The "dt-bindings" prefix is already stating that these
-are bindings.
-(BTW, that's the longest redundant component I ever saw)
-
+On 20/03/2023 17:43, Arınç ÜNAL wrote:
+> On 20.03.2023 19:36, Krzysztof Kozlowski wrote:
+>> On 20/03/2023 17:18, Sergio Paracuellos wrote:
+>>> Adds device tree binding documentation for clocks and resets in the
+>>> Mediatek MIPS and Ralink SOCs. This covers RT2880, RT3050, RT3052, RT3350,
+>>> RT3883, RT5350, MT7620, MT7628 and MT7688 SoCs.
+>>
+>> Use subject prefixes matching the subsystem (which you can get for
+>> example with `git log --oneline -- DIRECTORY_OR_FILE` on the directory
+>> your patch is touching).
+>>
+>> Subject: drop second/last, redundant "device tree binding
+>> documentation". The "dt-bindings" prefix is already stating that these
+>> are bindings.
+>> (BTW, that's the longest redundant component I ever saw)
+>>
+>>>
+>>> Signed-off-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
+>>> ---
+>>>   .../bindings/clock/mtmips-clock.yaml          | 68 +++++++++++++++++++
+>>>   1 file changed, 68 insertions(+)
+>>>   create mode 100644 Documentation/devicetree/bindings/clock/mtmips-clock.yaml
+>>>
+>>> diff --git a/Documentation/devicetree/bindings/clock/mtmips-clock.yaml b/Documentation/devicetree/bindings/clock/mtmips-clock.yaml
+>>> new file mode 100644
+>>> index 000000000000..c92969ce231d
+>>> --- /dev/null
+>>> +++ b/Documentation/devicetree/bindings/clock/mtmips-clock.yaml
+>>
+>> Filename matching compatible, so vendor prefix and device name (or
+>> family of names).
 > 
-> Signed-off-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
-> ---
->  .../bindings/clock/mtmips-clock.yaml          | 68 +++++++++++++++++++
->  1 file changed, 68 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/clock/mtmips-clock.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/clock/mtmips-clock.yaml b/Documentation/devicetree/bindings/clock/mtmips-clock.yaml
-> new file mode 100644
-> index 000000000000..c92969ce231d
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/clock/mtmips-clock.yaml
+> I influenced Sergio to use MTMIPS here as I want to designate it the 
+> family name for the MediaTek MIPS and Ralink SoCs.
 
-Filename matching compatible, so vendor prefix and device name (or
-family of names).
+I don't know how to respond to this. Is it argument for not using naming
+style?
 
-> @@ -0,0 +1,68 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/clock/mtmips-clock.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: MTMIPS SoCs Clock
+> We can't change the 
+> compatible string as it's established from my pinctrl patch series we 
+> don't do that.
 
-One clock? Are you sure these describe exactly one clock?
-
-> +
-> +maintainers:
-> +  - Sergio Paracuellos <sergio.paracuellos@gmail.com>
-> +
-> +description: |
-> +  MediaTek MIPS and Ralink SoCs have an XTAL from where the cpu clock is
-> +  provided as well as derived clocks for the bus and the peripherals.
-> +
-> +  Each clock is assigned an identifier and client nodes use this identifier
-> +  to specify the clock which they consume.
-
-Drop useless or obvious pieces of description. Describe the hardware.
-
-> +
-> +  The clocks are provided inside a system controller node.
-
-???
-
-> +
-> +  This node is also a reset provider for all the peripherals.
-
-??? Does it mean it is not only "Clock" but also reset controller?
-
-> +
-> +properties:
-> +  compatible:
-> +    items:
-> +      - enum:
-> +          - ralink,rt2880-sysc
-> +          - ralink,rt3050-sysc
-> +          - ralink,rt3052-sysc
-> +          - ralink,rt3352-sysc
-> +          - ralink,rt3883-sysc
-> +          - ralink,rt5350-sysc
-> +          - ralink,mt7620-sysc
-> +          - ralink,mt7620a-sysc
-> +          - ralink,mt7628-sysc
-> +          - ralink,mt7688-sysc
-> +          - ralink,rt2880-reset
-
-That's odd. rt2880 is sysc and reset? One device with two compatibles?
-
-Also, order these by name.
-
-
-> +      - const: syscon
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  '#clock-cells':
-> +    description:
-> +      The first cell indicates the clock number.
-> +    const: 1
-> +
-> +  '#reset-cells':
-> +    description:
-> +      The first cell indicates the reset bit within the register.
-> +    const: 1
-
-Wait, only rt2880-reset is reset controller? This is confusing.
-
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - '#clock-cells'
-> +  - '#reset-cells'
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    sysc: sysc@0 {
-
-Drop label.
-
-Node names should be generic, clock-controller or reset-controller or
-system-controller sometimes.
-https://devicetree-specification.readthedocs.io/en/latest/chapter2-devicetree-basics.html#generic-names-recommendation
-
-> +      compatible = "ralink,rt5350-sysc", "syscon";
-> +      reg = <0x0 0x100>;
-> +      #clock-cells = <1>;
-> +      #reset-cells = <1>;
-> +    };
+The patch did not say it is documenting existing compatibles in the
+kernel DTS. And if we are at this, ralink,rt2880-reset does not look
+like single clock nor like clock controller.
 
 Best regards,
 Krzysztof

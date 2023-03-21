@@ -2,107 +2,161 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E6315C6FD1D
-	for <linux-mips@archiver.kernel.org>; Tue, 21 Mar 2023 17:08:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0FDEEC6FD1D
+	for <linux-mips@archiver.kernel.org>; Tue, 21 Mar 2023 22:18:44 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230390AbjCURIX (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 21 Mar 2023 13:08:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32916 "EHLO
+        id S229833AbjCUWSm (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 21 Mar 2023 18:18:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44940 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230482AbjCURIL (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Tue, 21 Mar 2023 13:08:11 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E846053716;
-        Tue, 21 Mar 2023 10:07:29 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 29775B818FC;
-        Tue, 21 Mar 2023 17:06:21 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 72A63C4339B;
-        Tue, 21 Mar 2023 17:06:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1679418379;
-        bh=KhfLtALYKzODXFE/bKaEWmdPAncGVA8ZXqw3mr1syxI=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iP13+nPFKWexWO3d0/NXkearn4Tj8eWKPbGRJCvBjOENCtyJZblBuGz9AdeeUfjdA
-         EMjeaK/CSluxUo7Ua2KaaJmij2/OzMp5dxXpPxj04YzyIGphxVJMKhOF4bXMSL94nz
-         ol5MOh1u+X7joFijl49MvNJQdym1l9XEL8k6DV2Hki6DyjSX4rtuMvSy1ILwGRIi44
-         XrAoxjg2ZccTAZ8/36v34co5C40IvtmtGUbbKNLnmjVEj9VBI5qp0vymUpsAr05iX4
-         k26ZQ8N0iCz8C/Gsjz8cV7FjFtufjJ/T1bSEgNV3NbZ/t6IPG5KpyVbUKrbwbSXAmj
-         579oV8zZkoCuw==
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     David Hildenbrand <david@redhat.com>,
-        Doug Berger <opendmb@gmail.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Mel Gorman <mgorman@suse.de>, Michal Hocko <mhocko@kernel.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Vlastimil Babka <vbabka@suse.cz>, linux-kernel@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-mm@kvack.org
-Subject: [PATCH v2 13/14] mm: move vmalloc_init() declaration to mm/internal.h
-Date:   Tue, 21 Mar 2023 19:05:12 +0200
-Message-Id: <20230321170513.2401534-14-rppt@kernel.org>
-X-Mailer: git-send-email 2.35.1
-In-Reply-To: <20230321170513.2401534-1-rppt@kernel.org>
-References: <20230321170513.2401534-1-rppt@kernel.org>
+        with ESMTP id S229565AbjCUWSk (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Tue, 21 Mar 2023 18:18:40 -0400
+Received: from mail-ot1-f44.google.com (mail-ot1-f44.google.com [209.85.210.44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8EE81E5F7;
+        Tue, 21 Mar 2023 15:18:39 -0700 (PDT)
+Received: by mail-ot1-f44.google.com with SMTP id 14-20020a9d010e000000b0069f1287f557so5029305otu.0;
+        Tue, 21 Mar 2023 15:18:39 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1679437119;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=PgT8vls4hh33J9msm1OhhnWu9ZRUnj1Q8H8sA1kcql4=;
+        b=2j1XzdhuJEgmIpJjAEjO4juWgUjZhnhG4F+vsFq4Fs1JeMUCW/eIwYloRHP/AEMz0Z
+         DSbaIHp+FEKUml/nMMI2a4PtDFITbIrnwoKnAEIvqmdfzuuaq4VsUfDxcvQtQy1ZbGsG
+         63R7sdtvAe9EKhnn8/9smsw/wOTc3S2nBYEvfqeQL2yTY33aUz0xUgrZOyBvDK25fT/r
+         KNxEHBLbbR301JfVDIXL70UN8H/NL3L87CfL8GyuBkToo8GR9jLFSoLAZOcHFY2qCVgl
+         hzAAtgUpR98UTWx8PQLlFMfAFoFyFCRGPhvVRCUPLzoFUwN0AvHjr/5Rjt+8/1EtcYpP
+         9Pmg==
+X-Gm-Message-State: AO0yUKXR0S0IIES71tHon3po1bVdBnW68dLLeg+Fy7kUwJr/g7S6555+
+        G3xQ37Lf63xXO9h0C3fdWguzAKU2Lg==
+X-Google-Smtp-Source: AK7set+rU5ha02hkCLeAmjMoAnusptaZ98SOslOUw6UTplb/Yxc9KvFfzwg/VROypKzVU4n34lhKIA==
+X-Received: by 2002:a9d:3f6:0:b0:693:c3bb:8392 with SMTP id f109-20020a9d03f6000000b00693c3bb8392mr74660otf.7.1679437119170;
+        Tue, 21 Mar 2023 15:18:39 -0700 (PDT)
+Received: from robh_at_kernel.org (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
+        by smtp.gmail.com with ESMTPSA id q204-20020a4a33d5000000b0053853156b5csm5163244ooq.8.2023.03.21.15.18.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 21 Mar 2023 15:18:38 -0700 (PDT)
+Received: (nullmailer pid 1764639 invoked by uid 1000);
+        Tue, 21 Mar 2023 22:18:37 -0000
+Date:   Tue, 21 Mar 2023 17:18:37 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     =?utf-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>
+Cc:     Sergio Paracuellos <sergio.paracuellos@gmail.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        linux-clk@vger.kernel.org, linux-mips@vger.kernel.org,
+        tsbogend@alpha.franken.de, john@phrozen.org,
+        linux-kernel@vger.kernel.org, p.zabel@pengutronix.de,
+        mturquette@baylibre.com, sboyd@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, matthias.bgg@gmail.com,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH v2 1/9] dt-bindings: clock: add mtmips SoCs system
+ controller
+Message-ID: <20230321221837.GA1751474-robh@kernel.org>
+References: <20230321050034.1431379-1-sergio.paracuellos@gmail.com>
+ <20230321050034.1431379-2-sergio.paracuellos@gmail.com>
+ <5f295438-8334-d374-2ae6-2a385ffb317d@linaro.org>
+ <CAMhs-H_dSgcPNQVusHWVvztYHptOxSJ_o7G0eU9=M1C7RXdsVw@mail.gmail.com>
+ <ce13ca6c-e61a-d31e-2626-d818a5d0e15e@arinc9.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <ce13ca6c-e61a-d31e-2626-d818a5d0e15e@arinc9.com>
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-From: "Mike Rapoport (IBM)" <rppt@kernel.org>
+On Tue, Mar 21, 2023 at 10:09:59AM +0300, Arınç ÜNAL wrote:
+> On 21.03.2023 10:00, Sergio Paracuellos wrote:
+> > On Tue, Mar 21, 2023 at 7:45 AM Krzysztof Kozlowski
+> > <krzysztof.kozlowski@linaro.org> wrote:
+> > > 
+> > > On 21/03/2023 06:00, Sergio Paracuellos wrote:
+> > > > Adds device tree binding documentation for system controller node present
+> > > > in Mediatek MIPS and Ralink SOCs. This node is a clock and reset provider
+> > > > for the rest of the world. This covers RT2880, RT3050, RT3052, RT3350,
+> > > > RT3883, RT5350, MT7620, MT7628 and MT7688 SoCs.
+> > > > 
+> > > > Signed-off-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
+> > > > ---
+> > > >   .../bindings/clock/mediatek,mtmips-sysc.yaml  | 65 +++++++++++++++++++
+> > > >   1 file changed, 65 insertions(+)
+> > > >   create mode 100644 Documentation/devicetree/bindings/clock/mediatek,mtmips-sysc.yaml
+> > > > 
+> > > > diff --git a/Documentation/devicetree/bindings/clock/mediatek,mtmips-sysc.yaml b/Documentation/devicetree/bindings/clock/mediatek,mtmips-sysc.yaml
+> > > > new file mode 100644
+> > > > index 000000000000..f07e1652723b
+> > > > --- /dev/null
+> > > > +++ b/Documentation/devicetree/bindings/clock/mediatek,mtmips-sysc.yaml
+> > > > @@ -0,0 +1,65 @@
+> > > > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> > > > +%YAML 1.2
+> > > > +---
+> > > > +$id: http://devicetree.org/schemas/clock/mediatek,mtmips-sysc.yaml#
+> > > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > > > +
+> > > > +title: MTMIPS SoCs System Controller
+> > > > +
+> > > > +maintainers:
+> > > > +  - Sergio Paracuellos <sergio.paracuellos@gmail.com>
+> > > > +
+> > > > +description: |
+> > > > +  MediaTek MIPS and Ralink SoCs provides a system controller to allow
+> > > > +  to access to system control registers. These registers include clock
+> > > > +  and reset related ones so this node is both clock and reset provider
+> > > > +  for the rest of the world.
+> > > > +
+> > > > +  These SoCs have an XTAL from where the cpu clock is
+> > > > +  provided as well as derived clocks for the bus and the peripherals.
+> > > > +
+> > > > +properties:
+> > > > +  compatible:
+> > > > +    items:
+> > > > +      - enum:
+> > > > +          - ralink,mt7620-sysc
+> > > 
+> > > Since you decided to send it before we finish discussion:
+> > > NAK - this is already used as mediatek
+> > 
+> > Sorry, there was too much stuff commented so I preferred to clean up
+> > all of them while maintaining the compatibles with the ralink prefix
+> > instead since that was where the current discussion was at that point.
+> > 
+> > > 
+> > > > +          - ralink,mt7620a-sysc
+> > 
+> > As I have said, this one exists:
+> > 
+> > arch/mips/ralink/mt7620.c:      rt_sysc_membase =
+> > plat_of_remap_node("ralink,mt7620a-sysc");
+> > 
+> > 
+> > > > +          - ralink,mt7628-sysc
+> > > 
+> > > Same here.
+> > > 
+> > > > +          - ralink,mt7688-sysc
+> > > 
+> > > I expect you to check the others.
+> > 
+> > I can change others to mediatek but that would be a bit weird, don't you think?
+> 
+> I've seen some parts of the MTMIPS platform use mediatek compatible strings
+> thanks to Krzysztof pointing them out. I don't like having some parts of the
+> MTMIPS platform (pci, mmc, usbphy, etc.) with mediatek compatible string
+> while others are ralink.
 
-vmalloc_init() is called only from mm_core_init(), there is no need to
-declare it in include/linux/vmalloc.h
+That's unfortunate, but again, compatibles are just unique identifiers. 
+They are only wrong if they aren't unique...
 
-Move vmalloc_init() declaration to mm/internal.h
+> Like Krzysztof said [0], Ralink is now Mediatek, thus there is no conflict
+> and no issues with different vendor used. So I'd rather keep new things
+> Ralink and gradually change these mediatek strings to ralink.
 
-Signed-off-by: Mike Rapoport (IBM) <rppt@kernel.org>
-Reviewed-by: David Hildenbrand <david@redhat.com>
----
- include/linux/vmalloc.h | 4 ----
- mm/internal.h           | 5 +++++
- 2 files changed, 5 insertions(+), 4 deletions(-)
+So break the ABI multiple times slowly. Again, either you live with 
+*all* the existing compatible strings or you declare it is fine to break 
+the ABI on these platforms and switch everything at once. Carrying both 
+strings (in bindings or drivers) and breaking the ABI is lose-lose.
 
-diff --git a/include/linux/vmalloc.h b/include/linux/vmalloc.h
-index 69250efa03d1..351fc7697214 100644
---- a/include/linux/vmalloc.h
-+++ b/include/linux/vmalloc.h
-@@ -131,12 +131,8 @@ extern void *vm_map_ram(struct page **pages, unsigned int count, int node);
- extern void vm_unmap_aliases(void);
- 
- #ifdef CONFIG_MMU
--extern void __init vmalloc_init(void);
- extern unsigned long vmalloc_nr_pages(void);
- #else
--static inline void vmalloc_init(void)
--{
--}
- static inline unsigned long vmalloc_nr_pages(void) { return 0; }
- #endif
- 
-diff --git a/mm/internal.h b/mm/internal.h
-index 02273c5e971f..c05ad651b515 100644
---- a/mm/internal.h
-+++ b/mm/internal.h
-@@ -900,9 +900,14 @@ size_t splice_folio_into_pipe(struct pipe_inode_info *pipe,
-  * mm/vmalloc.c
-  */
- #ifdef CONFIG_MMU
-+void __init vmalloc_init(void);
- int vmap_pages_range_noflush(unsigned long addr, unsigned long end,
-                 pgprot_t prot, struct page **pages, unsigned int page_shift);
- #else
-+static inline void vmalloc_init(void)
-+{
-+}
-+
- static inline
- int vmap_pages_range_noflush(unsigned long addr, unsigned long end,
-                 pgprot_t prot, struct page **pages, unsigned int page_shift)
--- 
-2.35.1
-
+Rob

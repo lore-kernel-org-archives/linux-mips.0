@@ -2,138 +2,123 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 682F8C77B70
-	for <linux-mips@archiver.kernel.org>; Tue, 21 Mar 2023 05:01:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 31A70C6FD1D
+	for <linux-mips@archiver.kernel.org>; Tue, 21 Mar 2023 06:33:31 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230001AbjCUFBS (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 21 Mar 2023 01:01:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39004 "EHLO
+        id S229828AbjCUGd3 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 21 Mar 2023 02:33:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36764 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229936AbjCUFBF (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Tue, 21 Mar 2023 01:01:05 -0400
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86FCC28D25;
-        Mon, 20 Mar 2023 22:00:48 -0700 (PDT)
-Received: by mail-wm1-x32d.google.com with SMTP id p13-20020a05600c358d00b003ed346d4522so8727889wmq.2;
-        Mon, 20 Mar 2023 22:00:48 -0700 (PDT)
+        with ESMTP id S229743AbjCUGd2 (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Tue, 21 Mar 2023 02:33:28 -0400
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F8253B212
+        for <linux-mips@vger.kernel.org>; Mon, 20 Mar 2023 23:33:01 -0700 (PDT)
+Received: by mail-ed1-x532.google.com with SMTP id h8so55595185ede.8
+        for <linux-mips@vger.kernel.org>; Mon, 20 Mar 2023 23:33:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1679374847;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=oM8GpGbGiC8m3xETpqZOKVCeTGKwMkImG6hLD6+J4YY=;
-        b=GfRBIcpe3wFNdHmhexJwF7JilSuXtkvzLBf8rdiQVvXhG5EPxSRgNak5MWg1O7f9VP
-         QiZ5iwBFX1gZwsa+r5FrGnNSrnBgemWKXY0utmECwMZArVW2ATKhGK8+AMGf9rbFWaE1
-         hpMWsVMuNwP0M2xAXq8XJ/2un4B2mie3V4AbNn0ZMM+UBuWm6NNNEZVlrMdLkzg74ooh
-         4wwxIRdOj4ecLpQq7eorfk8QtvKC0iYR8ZyLXYhUkKu42eM+1UQcoJ2j4K4XpaVZo7T4
-         gsoEiVW6CpujiFCt7WV4XfyLvV+zaTpFSBgpe+NU4G0PLa0LTA21baJju06Sv8tb2tMp
-         v2OA==
+        d=linaro.org; s=google; t=1679380380;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=+HtQTr70p9g0PFqB21eWyfcsMG//fwSOn6c9K2QaLZg=;
+        b=U0naptLlEpIIIPIujtsOPbCXgtUTGWKYTvhXhVRe0+VrDYAC1jzdgU8unYp+1fWM+a
+         K4s9mQWcd9Fn1xPdQhA70P6yAMxmkXr0MKWS/Aeq6WaKV4Xd0zWw+6FaZMyDHg2IjdgI
+         xvin3/erA8RN5zf2AGuo20nWq7ptInWL+iZC1Q5WBsSFzunxx8rhuySAhR5YoXqBZ0+q
+         xiWd4wr9EGF7jEJRyzJp5ziCZNdy94gtKLqGjvzamsH4wIJFQlZ3DxYWuKrmYz8cGCjp
+         Kht/hVbxz/6z0EpfI+bDtXVah7uiYbSF7kNK8IFD6EtVE2vZU05bF6x9RkVkLZISNlFr
+         Xy2Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1679374847;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=oM8GpGbGiC8m3xETpqZOKVCeTGKwMkImG6hLD6+J4YY=;
-        b=yPJoSh9QAUr+FB/+x0IWlRdv8kL2haGM1CZnFD8+hD0GGdxoI8BIG9ZLqGLELJ6Q5p
-         JoKcmLk2ZxkguvCndEPvuAJIGodKZ2roWWq8fl/6LkNxIcZD4IivGi9CdQt4Deqst0Bz
-         8SUfeOG6m3w6NrH1XTbK4ZqRRZOQHVNmYJaS5WPTlUuvDuET7LAgsy8iXkI741NqxFbk
-         NgFlkkIsO1lDYEFjM36o4ZvcDsqWqq9kkqTuhHFvIluGEtU0oqhrqFtljGVLjMlxqw+H
-         PkyNGgApYa24HIOqe7v3+DwCK/onkBy9BO+5GwsDpKdzrlue+Rvj2uKnJAIdkyR5d0nI
-         5QKA==
-X-Gm-Message-State: AO0yUKWWG8r6+kTBGL2rrLsG7OT1LPF4VJgEqTA3QeGfkDIo1kegy+Mv
-        m32EKStTdpDGnH0P9k0ObiNzK+sU+0k=
-X-Google-Smtp-Source: AK7set8HBXWS/FYkcRKE3pknFN6YBcSsisaXT198uTqdLgQGJavlJmTYeuzoxwj+VJqh+g7goG9/pA==
-X-Received: by 2002:a7b:c00b:0:b0:3ed:2b27:5bcc with SMTP id c11-20020a7bc00b000000b003ed2b275bccmr1286063wmb.38.1679374847534;
-        Mon, 20 Mar 2023 22:00:47 -0700 (PDT)
-Received: from localhost.localdomain (106.red-88-13-29.dynamicip.rima-tde.net. [88.13.29.106])
-        by smtp.gmail.com with ESMTPSA id 3-20020a05600c020300b003eddefd8792sm6238432wmi.14.2023.03.20.22.00.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Mar 2023 22:00:47 -0700 (PDT)
-From:   Sergio Paracuellos <sergio.paracuellos@gmail.com>
-To:     linux-clk@vger.kernel.org
-Cc:     linux-mips@vger.kernel.org, tsbogend@alpha.franken.de,
-        john@phrozen.org, linux-kernel@vger.kernel.org,
-        p.zabel@pengutronix.de, mturquette@baylibre.com, sboyd@kernel.org,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        matthias.bgg@gmail.com, devicetree@vger.kernel.org,
-        arinc.unal@arinc9.com
-Subject: [PATCH v2 8/9] mips: ralink: get cpu rate from new driver code
-Date:   Tue, 21 Mar 2023 06:00:33 +0100
-Message-Id: <20230321050034.1431379-9-sergio.paracuellos@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230321050034.1431379-1-sergio.paracuellos@gmail.com>
-References: <20230321050034.1431379-1-sergio.paracuellos@gmail.com>
+        d=1e100.net; s=20210112; t=1679380380;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=+HtQTr70p9g0PFqB21eWyfcsMG//fwSOn6c9K2QaLZg=;
+        b=I4eGvoZZnGOcYLPaGMi2R1e0aWCV1DxlwBvAeXSEnbxVl51QZUt3qA/QRkWq1jSs4a
+         2bXxrknnfKWrhNj5eBsuYMZL0KiD2/1Wzfd6WW1E3VkYsKqJcNyj+i8KzmJsXUzSibty
+         lfETcs9jr/GET/udYjDLV+jyL6f/Iw2/xlq4q+bbw9c99oZgzodWWAO9gR/ZaDgQTZSM
+         PmhgjfWynNqCzHFTxBLwValHztFQM5Pm4+QqSLXBK/QBAviQUkAavCSDuFovg4ABHOAp
+         ThxCTSGu/Fh6PuLSeKy6fIUfl2yNG4xVUHFVXkH06nosfb/0d3+7DntyKQWOe16adlxL
+         z3wA==
+X-Gm-Message-State: AO0yUKV02VuwNHcSsbbKyqJ7JmgHUyC9tHolgerDcNytVhgPwQ2CM295
+        PEEns5GttCNehXJjbgbmZQCxIg==
+X-Google-Smtp-Source: AK7set+X26OM3FXuIWXm2jm5XGPMTjCpHNvsswvRWpweqJQXypouCjDAycl742Es0v6RCKzFZmHJAw==
+X-Received: by 2002:a17:906:86cd:b0:878:545b:e540 with SMTP id j13-20020a17090686cd00b00878545be540mr1633577ejy.51.1679380379982;
+        Mon, 20 Mar 2023 23:32:59 -0700 (PDT)
+Received: from ?IPV6:2a02:810d:15c0:828:2142:d8da:5ae4:d817? ([2a02:810d:15c0:828:2142:d8da:5ae4:d817])
+        by smtp.gmail.com with ESMTPSA id a11-20020a17090680cb00b00930d22474dbsm5358277ejx.97.2023.03.20.23.32.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 20 Mar 2023 23:32:59 -0700 (PDT)
+Message-ID: <39ba681e-5bab-cffc-edf7-4bf86387987c@linaro.org>
+Date:   Tue, 21 Mar 2023 07:32:58 +0100
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.9.0
+Subject: Re: [PATCH 01/10] dt: bindings: clock: add mtmips SoCs clock device
+ tree binding documentation
+Content-Language: en-US
+To:     Sergio Paracuellos <sergio.paracuellos@gmail.com>
+Cc:     =?UTF-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>,
+        linux-clk@vger.kernel.org, linux-mips@vger.kernel.org,
+        tsbogend@alpha.franken.de, john@phrozen.org,
+        linux-kernel@vger.kernel.org, p.zabel@pengutronix.de,
+        mturquette@baylibre.com, sboyd@kernel.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, matthias.bgg@gmail.com,
+        devicetree@vger.kernel.org
+References: <20230320161823.1424278-1-sergio.paracuellos@gmail.com>
+ <20230320161823.1424278-2-sergio.paracuellos@gmail.com>
+ <1e2f67b4-3bfb-d394-4f60-e6f63ce6a2fd@linaro.org>
+ <CAMhs-H8OQ9gJLsifLuHD2GN8rYwnY=Zmdb0kMEfX4UUHhjMUyQ@mail.gmail.com>
+ <d0f74721-bf5a-62de-53dc-62e7e735e2dc@linaro.org>
+ <bdc82b4a-f1a9-0372-5a57-200a422b1b70@arinc9.com>
+ <21a90597-78c9-4d46-7b01-257702e7afca@linaro.org>
+ <525a6388-a4b8-3052-fe81-5aa21d8f424a@arinc9.com>
+ <507f79cf-acd8-5238-031a-fd71024e0c6a@linaro.org>
+ <CAMhs-H8_S5eO7B+dZ7jeq7Jjnw71QBmSo4M+woe3U5sH7dCADg@mail.gmail.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <CAMhs-H8_S5eO7B+dZ7jeq7Jjnw71QBmSo4M+woe3U5sH7dCADg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-At very early stage on boot, there is a need to set 'mips_hpt_frequency'.
-This timer frequency is a half of the CPU frequency. To get clocks properly
-set we need to call to 'of_clk_init()' and properly get cpu clock frequency
-afterwards. Depending on the SoC, CPU clock index in the clock provider is
-different being two for MT7620 SoC and one for the rest. Hence, adapt code
-to be aligned with new clock driver.
+On 21/03/2023 05:34, Sergio Paracuellos wrote:
+> On Mon, Mar 20, 2023 at 7:15 PM Krzysztof Kozlowski
+> <krzysztof.kozlowski@linaro.org> wrote:
+>>
+>> On 20/03/2023 19:09, Arınç ÜNAL wrote:
+>>>>> Would mediatek,mtmips-clock.yaml make sense?
+>>>>
+>>>> More, except:
+>>>> 1. This is not clock, but sysc.
+>>>
+>>> Sergio, beware.
+>>
+>> I meant, that's what I understood from what Sergio said. :)
+> 
+> Yes, you understood properly. I will use 'sysc' instead.
+> 
+>>
+>>>
+>>>> 2. mips sounds redundant. Do you have rt2xxx and mt7xxx chips which are ARM?
+>>>
+>>> All of the SoCs, RTXXXX, MT7620, MT7621, MT7628, MT7688 are MIPS. So I
+>>> decided to call this platform MTMIPS as I've seen MediaTek use this on
+>>> other projects like U-Boot. This is what I did on my pinctrl patch
+>>> series as well.
+>>
+>> Ah, but indeed there are newer Mediatek MT6xxx and MT8xxx SoCs which are
+>> ARM, so mediatek,mtmips-sysc would work.
+> 
+> I can use 'mediatek,mtmips-sysc.yaml' as the name but compatibles will
+> start with ralink. There are already some existent compatibles for
+> mt762x already having ralink as prefix, so to be coherent ralink
+> should be maintained as prefix.
 
-Signed-off-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
----
- arch/mips/ralink/clk.c | 26 +++++++++++++++++++-------
- 1 file changed, 19 insertions(+), 7 deletions(-)
+The compatibles I mentioned start already with mediatek, so why do you
+want to introduce incorrect vendor name for these?
 
-diff --git a/arch/mips/ralink/clk.c b/arch/mips/ralink/clk.c
-index 5b02bb7e0829..3d29e956f785 100644
---- a/arch/mips/ralink/clk.c
-+++ b/arch/mips/ralink/clk.c
-@@ -11,29 +11,41 @@
- #include <linux/clkdev.h>
- #include <linux/clk.h>
- #include <linux/clk-provider.h>
-+#include <asm/mach-ralink/ralink_regs.h>
- 
- #include <asm/time.h>
- 
- #include "common.h"
- 
--void ralink_clk_add(const char *dev, unsigned long rate)
-+static int clk_cpu_index(void)
- {
--	struct clk *clk = clk_register_fixed_rate(NULL, dev, NULL, 0, rate);
-+	if (ralink_soc == RALINK_UNKNOWN)
-+		return -1;
- 
--	if (!clk)
--		panic("failed to add clock");
-+	if (ralink_soc == MT762X_SOC_MT7620A ||
-+	    ralink_soc == MT762X_SOC_MT7620N)
-+		return 2;
- 
--	clkdev_create(clk, NULL, "%s", dev);
-+	return 1;
- }
- 
- void __init plat_time_init(void)
- {
-+	struct of_phandle_args clkspec;
- 	struct clk *clk;
-+	int cpu_clk_idx;
- 
- 	ralink_of_remap();
- 
--	ralink_clk_init();
--	clk = clk_get_sys("cpu", NULL);
-+	cpu_clk_idx = clk_cpu_index();
-+	if (cpu_clk_idx == -1)
-+		panic("unable to get CPU clock index");
-+
-+	of_clk_init(NULL);
-+	clkspec.np = of_find_node_by_name(NULL, "sysc");
-+	clkspec.args_count = 1;
-+	clkspec.args[0] = cpu_clk_idx;
-+	clk = of_clk_get_from_provider(&clkspec);
- 	if (IS_ERR(clk))
- 		panic("unable to get CPU clock, err=%ld", PTR_ERR(clk));
- 	pr_info("CPU Clock: %ldMHz\n", clk_get_rate(clk) / 1000000);
--- 
-2.25.1
+Best regards,
+Krzysztof
 

@@ -2,74 +2,74 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A31CCC74A5B
-	for <linux-mips@archiver.kernel.org>; Tue, 21 Mar 2023 10:50:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1E49FC7618D
+	for <linux-mips@archiver.kernel.org>; Tue, 21 Mar 2023 10:50:34 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229923AbjCUKuD (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 21 Mar 2023 06:50:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49654 "EHLO
+        id S230272AbjCUKuF (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 21 Mar 2023 06:50:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50266 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230254AbjCUKth (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Tue, 21 Mar 2023 06:49:37 -0400
+        with ESMTP id S230454AbjCUKtl (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Tue, 21 Mar 2023 06:49:41 -0400
 Received: from wout3-smtp.messagingengine.com (wout3-smtp.messagingengine.com [64.147.123.19])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42DF2113FF
-        for <linux-mips@vger.kernel.org>; Tue, 21 Mar 2023 03:49:20 -0700 (PDT)
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailout.west.internal (Postfix) with ESMTP id 66F693200C5F;
-        Tue, 21 Mar 2023 06:49:19 -0400 (EDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 020981991
+        for <linux-mips@vger.kernel.org>; Tue, 21 Mar 2023 03:49:26 -0700 (PDT)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailout.west.internal (Postfix) with ESMTP id D6FC63200C5C;
+        Tue, 21 Mar 2023 06:49:25 -0400 (EDT)
 Received: from mailfrontend1 ([10.202.2.162])
-  by compute3.internal (MEProxy); Tue, 21 Mar 2023 06:49:19 -0400
+  by compute5.internal (MEProxy); Tue, 21 Mar 2023 06:49:26 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=flygoat.com; h=
         cc:cc:content-transfer-encoding:content-type:date:date:from:from
         :in-reply-to:in-reply-to:message-id:mime-version:references
-        :reply-to:sender:subject:subject:to:to; s=fm3; t=1679395759; x=
-        1679482159; bh=wmfk/M+inHtT+XqYs41kjtCCrZqjfEWCXUmezQAgSaM=; b=u
-        Z/ESGNut9dkgpwJREiJSCTH2jAd/wJQH97yb25pVmvX9JePkakfaHsvQUrUE053M
-        kSwD4mOqwDRo7KSyz8K3P4HmsdOM4s2jxMycE/BJTHvpD2o/NK/bKQBpuXfVD8eK
-        mKZA07SgHp51sDDu5y8+YTJSFlSqJZXAV8yHw96nBAB145z5JJZ32KRyBL8T2Hgh
-        THDOhWFozLVZ+a1B5skbGKcSCHCU86AxWycndcH1ifDBxS4NoKioiGg/0QRUXqoL
-        NihA686si0CJ9Cb78CrPap2V2T5mItXaCjONcyGur2zBoaTj/2PNbExDfATG8YDF
-        aTpwNLYb6BMM4pNcJVBZw==
+        :reply-to:sender:subject:subject:to:to; s=fm3; t=1679395765; x=
+        1679482165; bh=Sb4jsHlaQCYItYoBUEr7TaMKOC5OYkGYt/uxG9hD3bE=; b=T
+        kWYeZT17abL3Dce3Bp4dKk1XnRgB8pjJKlQRN20IiUzf7z3lM1UYvNg5j2NdiGkl
+        MKJvZJQKNamEkX4DafXH4rofqYEPRycvYQzV6LcIINANAVjacWvBkfkryYz8iuqh
+        3+d1TwjYsE7M7DqL+GwCkLOik09vKAmxvjirk1+XVYFpytZtW53VZACcXhRPdLMS
+        tnLHZhhoXkar3SD29cp0BHWAMUFM/Xa4YWB9/c9xZQdgXjIJWqK8pPh+j4cIpP9I
+        r7MycckEABxOLTquS/pg3nsRKhGkNocF3IFmG89UT5RY7RNGOMnyH7o/xesWvE18
+        KNY/KleOP4oMLxoipi9Aw==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:cc:content-transfer-encoding
         :content-type:date:date:feedback-id:feedback-id:from:from
         :in-reply-to:in-reply-to:message-id:mime-version:references
         :reply-to:sender:subject:subject:to:to:x-me-proxy:x-me-proxy
-        :x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1679395759; x=
-        1679482159; bh=wmfk/M+inHtT+XqYs41kjtCCrZqjfEWCXUmezQAgSaM=; b=S
-        Ms9sFziZwqsAHNQkq38YKGgZeN21IHeuMwlx3zUzBngfrM/FF1eY++wZLNe3qiy+
-        w53EAZVYGM0fdeWfGZlG/Lg4BtfAHYcnPQYx8x/Tai/MD2jh64MJ4SQuPt311f34
-        uCPchNf9DiJvCg3xylDiNxnRp5vehxWJqDfQEmRsGDDGs32qPxaJ2odx6mjkU9ZZ
-        syHVBra3BG5hkpEiWD6srvVtFI+ttqrjw6I/n27YY048vmczdm+jLPogpNW9f5QJ
-        TNRzXNZyZAuNbfGht/rJb67R0M76jESUnOWE35HMlpYzLlomy/p0275V6PIAyquL
-        tWPuT0F6nAGFpooRwYNPw==
-X-ME-Sender: <xms:rosZZKNjGYVUTJX8XmltC1KGcq9WyPOyenu7JKDPzHNlN8RBtqVKng>
-    <xme:rosZZI_6jfeHdqlfBeZlsGFXysle5XZ2rL5MXvH0dYIJl1i84XkmcyRiz7nxitz3F
-    pK9tbDKxld7grujMmg>
-X-ME-Received: <xmr:rosZZBSBxOsr2UBohaCqxIW8FEUfx53Sn6FzpjlHZLhZPz9TBY8qF3Al3BOR1G71u0OEPnmXcLY>
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1679395765; x=
+        1679482165; bh=Sb4jsHlaQCYItYoBUEr7TaMKOC5OYkGYt/uxG9hD3bE=; b=b
+        IMwiGFBslaDYbMGxQsHYxsteUoKFArpWOQN23Ud3zPaC/4kvR0BbXTqCnLvzIY40
+        eM69zMKLd8tcXLIXw0coDXTeV//tEihlBFG5L5VFbVcAzcZMU82qIjkkO4kor5it
+        WDQzwYwxkjBVIA7o1sIt0DmxG2HM5TU1TrLvjJh1c97QAu9KHzR9Cv9uB5GxpcWi
+        XFHHtVRb/PrUC//gJIejMVHv1VJ7xHn4AbLHemVN4t90oTgSef9kv0VDyVJfbvlb
+        MAk572rUbrPUn23ekI4U+aufQoiiVyP+UT/WtmeSqjeIdlSHS6Lzc+xJBlDXldMf
+        jETEQ3NZHnM3L4HIj8DwA==
+X-ME-Sender: <xms:tYsZZM-rM1LzK27lIKBKtOTasUMQu605eldsj5r2-YYHpn2QU1Gusg>
+    <xme:tYsZZEs9JpksgfvtTed1U0hXjaYNdHtPAxqKy439LtE1V5Gq-fx0zPd31FY8q_qtN
+    OcNtm-Dwv6PQUDsqag>
+X-ME-Received: <xmr:tYsZZCDT3RKz7-m19QflHS-dMhEiIOIzvUGttx4XA-XGzWwYuGy0hfETsCVcRQvijoN3PIIDJP8>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrvdegtddgvddtucetufdoteggodetrfdotf
     fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
     uceurghilhhouhhtmecufedttdenucenucfjughrpefhvfevufffkffojghfggfgsedtke
     ertdertddtnecuhfhrohhmpeflihgrgihunhcujggrnhhguceojhhirgiguhhnrdihrghn
     ghesfhhlhihgohgrthdrtghomheqnecuggftrfgrthhtvghrnhepfeeludefheegvdeuvd
     dvgeekgfdvtdettdelieeihfegtedugeekhfdvhfejfedtnecuvehluhhsthgvrhfuihii
-    vgepfeenucfrrghrrghmpehmrghilhhfrhhomhepjhhirgiguhhnrdihrghnghesfhhlhi
+    vgeptdenucfrrghrrghmpehmrghilhhfrhhomhepjhhirgiguhhnrdihrghnghesfhhlhi
     hgohgrthdrtghomh
-X-ME-Proxy: <xmx:rosZZKtZ9omscsYV_rSxSUD9PhphOdh8usxiVhX0MjOR4Z87g_q_iw>
-    <xmx:rosZZCeUW0JDTLR7n9cQ7DPefUT04cpNaNb31CE4dp_G1JSc8zjPIA>
-    <xmx:rosZZO26826WxZK-lB43QfmShqBjHpr7ku1YXcbBjq00RLUVs1rsKQ>
-    <xmx:r4sZZB5k3z2VlO44bQ0SKJwAfZMKfZbSeDT7uKanJ30GEO9tAmtMPg>
+X-ME-Proxy: <xmx:tYsZZMcQhfpyWwzBrFrz8R9H_UKfCbqYi8utOiSACopFdYu0pJof4g>
+    <xmx:tYsZZBOzcn33cNb3q1uJ_hk10C81E1pP55ASvRAdKw3CkBaSZgOzzA>
+    <xmx:tYsZZGntI4eNFJ1dbhfrrODVFoyAUl-PcWMgTSfcWKm8gAf0bD-fhw>
+    <xmx:tYsZZGrYAd--XL4hLthCuJAzDo1G4dJRO1vCd1rll3jvjrTTZgJaAw>
 Feedback-ID: ifd894703:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 21 Mar 2023 06:49:17 -0400 (EDT)
+ 21 Mar 2023 06:49:24 -0400 (EDT)
 From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
 To:     linux-mips@vger.kernel.org
 Cc:     tsbogend@alpha.franken.de, philmd@linaro.org,
         sergei.shtylyov@gmail.com, aleksander.lobakin@intel.com,
         Jiaxun Yang <jiaxun.yang@flygoat.com>
-Subject: [PATCH v2 09/12] MIPS: Loongson: Don't select platform features with CPU
-Date:   Tue, 21 Mar 2023 10:48:49 +0000
-Message-Id: <20230321104852.25284-10-jiaxun.yang@flygoat.com>
+Subject: [PATCH v2 12/12] MIPS: generic: Enable all CPUs supported by virt board in Kconfig
+Date:   Tue, 21 Mar 2023 10:48:52 +0000
+Message-Id: <20230321104852.25284-13-jiaxun.yang@flygoat.com>
 X-Mailer: git-send-email 2.37.1 (Apple Git-137.1)
 In-Reply-To: <20230321104852.25284-1-jiaxun.yang@flygoat.com>
 References: <20230321104852.25284-1-jiaxun.yang@flygoat.com>
@@ -79,63 +79,36 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-ARCH_HAS_PHYS_TO_DMA and GPIOLIB are all platform level features
-they shouldn't be selected with CPU.
+Enable extra CPUs that may be supported by virt board, including
+R4x00 (R4000 in QEMU), Cavium Octeon (Octeon68XX in QEMU), loongson2e,
+loongson2f.
 
 Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
 ---
- arch/mips/Kconfig             | 2 --
- arch/mips/loongson2ef/Kconfig | 3 +++
- 2 files changed, 3 insertions(+), 2 deletions(-)
+ arch/mips/Kconfig | 4 ++++
+ 1 file changed, 4 insertions(+)
 
 diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-index e2f3ca73f40d..940ade1c9449 100644
+index 940ade1c9449..53160d49387c 100644
 --- a/arch/mips/Kconfig
 +++ b/arch/mips/Kconfig
-@@ -1366,7 +1366,6 @@ config CPU_LOONGSON2F
- 	bool "Loongson 2F"
- 	depends on SYS_HAS_CPU_LOONGSON2F
- 	select CPU_LOONGSON2EF
--	select GPIOLIB
- 	help
- 	  The Loongson 2F processor implements the MIPS III instruction set
- 	  with many extensions.
-@@ -1788,7 +1787,6 @@ config CPU_LOONGSON2EF
- 	select CPU_SUPPORTS_64BIT_KERNEL
- 	select CPU_SUPPORTS_HIGHMEM
- 	select CPU_SUPPORTS_HUGEPAGES
--	select ARCH_HAS_PHYS_TO_DMA
- 
- config CPU_LOONGSON32
- 	bool
-diff --git a/arch/mips/loongson2ef/Kconfig b/arch/mips/loongson2ef/Kconfig
-index 96dc6eba4310..f93eb6f42238 100644
---- a/arch/mips/loongson2ef/Kconfig
-+++ b/arch/mips/loongson2ef/Kconfig
-@@ -7,6 +7,7 @@ choice
- config LEMOTE_FULOONG2E
- 	bool "Lemote Fuloong(2e) mini-PC"
- 	select ARCH_SPARSEMEM_ENABLE
-+	select ARCH_HAS_PHYS_TO_DMA
- 	select ARCH_MIGHT_HAVE_PC_PARPORT
- 	select ARCH_MIGHT_HAVE_PC_SERIO
- 	select CEVT_R4K
-@@ -36,6 +37,7 @@ config LEMOTE_FULOONG2E
- config LEMOTE_MACH2F
- 	bool "Lemote Loongson 2F family machines"
- 	select ARCH_SPARSEMEM_ENABLE
-+	select ARCH_HAS_PHYS_TO_DMA
- 	select ARCH_MIGHT_HAVE_PC_PARPORT
- 	select ARCH_MIGHT_HAVE_PC_SERIO
- 	select BOARD_SCACHE
-@@ -46,6 +48,7 @@ config LEMOTE_MACH2F
- 	select CSRC_R4K if ! MIPS_EXTERNAL_TIMER
- 	select DMA_NONCOHERENT
- 	select GENERIC_ISA_DMA_SUPPORT_BROKEN
-+	select GPIOLIB
- 	select FORCE_PCI
- 	select I8259
- 	select IRQ_MIPS_CPU
+@@ -155,12 +155,16 @@ config MIPS_GENERIC_KERNEL
+ 	select PCI_DRIVERS_GENERIC
+ 	select SMP_UP if SMP
+ 	select SWAP_IO_SPACE
++	select SYS_HAS_CPU_CAVIUM_OCTEON
++	select SYS_HAS_CPU_LOONGSON2E
++	select SYS_HAS_CPU_LOONGSON2F
+ 	select SYS_HAS_CPU_MIPS32_R1
+ 	select SYS_HAS_CPU_MIPS32_R2
+ 	select SYS_HAS_CPU_MIPS32_R6
+ 	select SYS_HAS_CPU_MIPS64_R1
+ 	select SYS_HAS_CPU_MIPS64_R2
+ 	select SYS_HAS_CPU_MIPS64_R6
++	select SYS_HAS_CPU_R4X00
+ 	select SYS_SUPPORTS_32BIT_KERNEL
+ 	select SYS_SUPPORTS_64BIT_KERNEL
+ 	select SYS_SUPPORTS_BIG_ENDIAN
 -- 
 2.37.1 (Apple Git-137.1)
 

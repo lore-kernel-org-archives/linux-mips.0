@@ -2,35 +2,35 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B374DC6FD1D
-	for <linux-mips@archiver.kernel.org>; Tue, 21 Mar 2023 17:07:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E3C4CC74A5B
+	for <linux-mips@archiver.kernel.org>; Tue, 21 Mar 2023 17:07:14 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230446AbjCURG7 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 21 Mar 2023 13:06:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33518 "EHLO
+        id S229971AbjCURHN (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 21 Mar 2023 13:07:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32886 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230511AbjCURGk (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Tue, 21 Mar 2023 13:06:40 -0400
+        with ESMTP id S231133AbjCURGu (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Tue, 21 Mar 2023 13:06:50 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38D7553D8D;
-        Tue, 21 Mar 2023 10:06:02 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29F8624BEA;
+        Tue, 21 Mar 2023 10:06:15 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 8EC1A61D51;
-        Tue, 21 Mar 2023 17:06:00 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 94EA9C433EF;
-        Tue, 21 Mar 2023 17:05:56 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 7A1A061D0F;
+        Tue, 21 Mar 2023 17:06:12 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 812AFC4339E;
+        Tue, 21 Mar 2023 17:06:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1679418360;
-        bh=l6knMFWLRO6NO1OlV9wEy5NTCDPOQC0mr+EPbgyJTJM=;
+        s=k20201202; t=1679418371;
+        bh=fqHaVBEvzabne3Dop/TkCX/BaEIQUJvhFGbckVVeK4Q=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=O1+3RUxV8PjdFb2Z3pJU1FBDhbdrnaFRGETGsBn//Zlj51dbwei2/lrw+AKTnP3qK
-         qsLdEwU+0j0zaQJcDaezHRMSOUDut9/IXVVYbHpy6ARc6hmxNtTBb4JqDZdVtaZM6X
-         76LGkvPoFkzHwg8h5UbNJUW8+gfXg2GYAB0/nU95mx/46l8TKFO3TW0tQbKHq9/HT/
-         /DtKEAieU2fZHcDcpayxDcyi3p1HUnTgwmMyG/cW7RdQ8qbAjSmtDkYY+EWN8lHthX
-         YILzxaJYNzM6fK66YFzIOp0ztAWP9rSZiErQ/EN26L3SNzNsUPYM70hZHcb757bUb1
-         OSSJqMpe8djdg==
+        b=EswGc4q0QKmJ7EyhCkitVV0N/4ViId31sNORi954j8wnF/z0Piph4dSyMRuZXT10B
+         b4KTwFQDgSUf68C8Jy4KFF1qFuZmAyzpyBOZzyXo0YcpImj2kItQE2Z/rWH90IArLh
+         BLVoShVB5l7vZAezjAlG7xRqJ/SOrSXbTGEDFx1cNWjSy+u5sNTid6qd9v4xpb13N9
+         0QEg0DQIP6zfBM1gdULTCdjKt1bdCwWWMEsu3JLuYRZ8YViyE9UKpJQY4N9pVRcFQM
+         eXVjTXOcDceZTfRls65Qp3Hxifo5eomdIn+n2rVV79KZNxNcabX9tgwegKbMv33jp+
+         zKtajkzcBNKng==
 From:   Mike Rapoport <rppt@kernel.org>
 To:     Andrew Morton <akpm@linux-foundation.org>
 Cc:     David Hildenbrand <david@redhat.com>,
@@ -41,9 +41,9 @@ Cc:     David Hildenbrand <david@redhat.com>,
         Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
         Vlastimil Babka <vbabka@suse.cz>, linux-kernel@vger.kernel.org,
         linux-mips@vger.kernel.org, linux-mm@kvack.org
-Subject: [PATCH v2 08/14] mm: call {ptlock,pgtable}_cache_init() directly from mm_core_init()
-Date:   Tue, 21 Mar 2023 19:05:07 +0200
-Message-Id: <20230321170513.2401534-9-rppt@kernel.org>
+Subject: [PATCH v2 11/14] mm: move mem_init_print_info() to mm_init.c
+Date:   Tue, 21 Mar 2023 19:05:10 +0200
+Message-Id: <20230321170513.2401534-12-rppt@kernel.org>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20230321170513.2401534-1-rppt@kernel.org>
 References: <20230321170513.2401534-1-rppt@kernel.org>
@@ -55,46 +55,185 @@ X-Mailing-List: linux-mips@vger.kernel.org
 
 From: "Mike Rapoport (IBM)" <rppt@kernel.org>
 
-and drop pgtable_init() as it has no real value and it's name is
-misleading.
+mem_init_print_info() is only called from mm_core_init().
+
+Move it close to the caller and make it static.
 
 Signed-off-by: Mike Rapoport (IBM) <rppt@kernel.org>
+Acked-by: David Hildenbrand <david@redhat.com>
 ---
- include/linux/mm.h | 6 ------
- mm/mm_init.c       | 3 ++-
- 2 files changed, 2 insertions(+), 7 deletions(-)
+ include/linux/mm.h |  1 -
+ mm/internal.h      |  1 +
+ mm/mm_init.c       | 53 ++++++++++++++++++++++++++++++++++++++++++++++
+ mm/page_alloc.c    | 53 ----------------------------------------------
+ 4 files changed, 54 insertions(+), 54 deletions(-)
 
 diff --git a/include/linux/mm.h b/include/linux/mm.h
-index 2d7f095136fc..c3c67d8bc833 100644
+index 2fecabb1a328..e249208f8fbe 100644
 --- a/include/linux/mm.h
 +++ b/include/linux/mm.h
-@@ -2782,12 +2782,6 @@ static inline bool ptlock_init(struct page *page) { return true; }
- static inline void ptlock_free(struct page *page) {}
- #endif /* USE_SPLIT_PTE_PTLOCKS */
+@@ -2925,7 +2925,6 @@ extern unsigned long free_reserved_area(void *start, void *end,
+ 					int poison, const char *s);
  
--static inline void pgtable_init(void)
--{
--	ptlock_cache_init();
--	pgtable_cache_init();
--}
--
- static inline bool pgtable_pte_page_ctor(struct page *page)
- {
- 	if (!ptlock_init(page))
+ extern void adjust_managed_page_count(struct page *page, long count);
+-extern void mem_init_print_info(void);
+ 
+ extern void reserve_bootmem_region(phys_addr_t start, phys_addr_t end);
+ 
+diff --git a/mm/internal.h b/mm/internal.h
+index 4750e3a7fd0d..02273c5e971f 100644
+--- a/mm/internal.h
++++ b/mm/internal.h
+@@ -201,6 +201,7 @@ pmd_t *mm_find_pmd(struct mm_struct *mm, unsigned long address);
+ /*
+  * in mm/page_alloc.c
+  */
++#define K(x) ((x) << (PAGE_SHIFT-10))
+ 
+ extern char * const zone_names[MAX_NR_ZONES];
+ 
 diff --git a/mm/mm_init.c b/mm/mm_init.c
-index bba73f1fb277..f1475413394d 100644
+index ff70da11e797..8adadf51bbd2 100644
 --- a/mm/mm_init.c
 +++ b/mm/mm_init.c
-@@ -2584,7 +2584,8 @@ void __init mm_core_init(void)
- 	 */
- 	page_ext_init_flatmem_late();
- 	kmemleak_init();
--	pgtable_init();
-+	ptlock_cache_init();
-+	pgtable_cache_init();
- 	debug_objects_mem_init();
- 	vmalloc_init();
- 	/* If no deferred init page_ext now, as vmap is fully initialized */
+@@ -24,6 +24,8 @@
+ #include <linux/page_ext.h>
+ #include <linux/pti.h>
+ #include <linux/pgtable.h>
++#include <linux/swap.h>
++#include <linux/cma.h>
+ #include "internal.h"
+ #include "shuffle.h"
+ 
+@@ -2649,6 +2651,57 @@ static void __init report_meminit(void)
+ 		pr_info("mem auto-init: clearing system memory may take some time...\n");
+ }
+ 
++static void __init mem_init_print_info(void)
++{
++	unsigned long physpages, codesize, datasize, rosize, bss_size;
++	unsigned long init_code_size, init_data_size;
++
++	physpages = get_num_physpages();
++	codesize = _etext - _stext;
++	datasize = _edata - _sdata;
++	rosize = __end_rodata - __start_rodata;
++	bss_size = __bss_stop - __bss_start;
++	init_data_size = __init_end - __init_begin;
++	init_code_size = _einittext - _sinittext;
++
++	/*
++	 * Detect special cases and adjust section sizes accordingly:
++	 * 1) .init.* may be embedded into .data sections
++	 * 2) .init.text.* may be out of [__init_begin, __init_end],
++	 *    please refer to arch/tile/kernel/vmlinux.lds.S.
++	 * 3) .rodata.* may be embedded into .text or .data sections.
++	 */
++#define adj_init_size(start, end, size, pos, adj) \
++	do { \
++		if (&start[0] <= &pos[0] && &pos[0] < &end[0] && size > adj) \
++			size -= adj; \
++	} while (0)
++
++	adj_init_size(__init_begin, __init_end, init_data_size,
++		     _sinittext, init_code_size);
++	adj_init_size(_stext, _etext, codesize, _sinittext, init_code_size);
++	adj_init_size(_sdata, _edata, datasize, __init_begin, init_data_size);
++	adj_init_size(_stext, _etext, codesize, __start_rodata, rosize);
++	adj_init_size(_sdata, _edata, datasize, __start_rodata, rosize);
++
++#undef	adj_init_size
++
++	pr_info("Memory: %luK/%luK available (%luK kernel code, %luK rwdata, %luK rodata, %luK init, %luK bss, %luK reserved, %luK cma-reserved"
++#ifdef	CONFIG_HIGHMEM
++		", %luK highmem"
++#endif
++		")\n",
++		K(nr_free_pages()), K(physpages),
++		codesize / SZ_1K, datasize / SZ_1K, rosize / SZ_1K,
++		(init_data_size + init_code_size) / SZ_1K, bss_size / SZ_1K,
++		K(physpages - totalram_pages() - totalcma_pages),
++		K(totalcma_pages)
++#ifdef	CONFIG_HIGHMEM
++		, K(totalhigh_pages())
++#endif
++		);
++}
++
+ /*
+  * Set up kernel memory allocators
+  */
+diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+index 2f333c26170c..bb0099f7da93 100644
+--- a/mm/page_alloc.c
++++ b/mm/page_alloc.c
+@@ -5239,8 +5239,6 @@ static bool show_mem_node_skip(unsigned int flags, int nid, nodemask_t *nodemask
+ 	return !node_isset(nid, *nodemask);
+ }
+ 
+-#define K(x) ((x) << (PAGE_SHIFT-10))
+-
+ static void show_migration_types(unsigned char type)
+ {
+ 	static const char types[MIGRATE_TYPES] = {
+@@ -6200,57 +6198,6 @@ unsigned long free_reserved_area(void *start, void *end, int poison, const char
+ 	return pages;
+ }
+ 
+-void __init mem_init_print_info(void)
+-{
+-	unsigned long physpages, codesize, datasize, rosize, bss_size;
+-	unsigned long init_code_size, init_data_size;
+-
+-	physpages = get_num_physpages();
+-	codesize = _etext - _stext;
+-	datasize = _edata - _sdata;
+-	rosize = __end_rodata - __start_rodata;
+-	bss_size = __bss_stop - __bss_start;
+-	init_data_size = __init_end - __init_begin;
+-	init_code_size = _einittext - _sinittext;
+-
+-	/*
+-	 * Detect special cases and adjust section sizes accordingly:
+-	 * 1) .init.* may be embedded into .data sections
+-	 * 2) .init.text.* may be out of [__init_begin, __init_end],
+-	 *    please refer to arch/tile/kernel/vmlinux.lds.S.
+-	 * 3) .rodata.* may be embedded into .text or .data sections.
+-	 */
+-#define adj_init_size(start, end, size, pos, adj) \
+-	do { \
+-		if (&start[0] <= &pos[0] && &pos[0] < &end[0] && size > adj) \
+-			size -= adj; \
+-	} while (0)
+-
+-	adj_init_size(__init_begin, __init_end, init_data_size,
+-		     _sinittext, init_code_size);
+-	adj_init_size(_stext, _etext, codesize, _sinittext, init_code_size);
+-	adj_init_size(_sdata, _edata, datasize, __init_begin, init_data_size);
+-	adj_init_size(_stext, _etext, codesize, __start_rodata, rosize);
+-	adj_init_size(_sdata, _edata, datasize, __start_rodata, rosize);
+-
+-#undef	adj_init_size
+-
+-	pr_info("Memory: %luK/%luK available (%luK kernel code, %luK rwdata, %luK rodata, %luK init, %luK bss, %luK reserved, %luK cma-reserved"
+-#ifdef	CONFIG_HIGHMEM
+-		", %luK highmem"
+-#endif
+-		")\n",
+-		K(nr_free_pages()), K(physpages),
+-		codesize / SZ_1K, datasize / SZ_1K, rosize / SZ_1K,
+-		(init_data_size + init_code_size) / SZ_1K, bss_size / SZ_1K,
+-		K(physpages - totalram_pages() - totalcma_pages),
+-		K(totalcma_pages)
+-#ifdef	CONFIG_HIGHMEM
+-		, K(totalhigh_pages())
+-#endif
+-		);
+-}
+-
+ static int page_alloc_cpu_dead(unsigned int cpu)
+ {
+ 	struct zone *zone;
 -- 
 2.35.1
 

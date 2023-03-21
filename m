@@ -2,35 +2,35 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6CF96C6FD1D
-	for <linux-mips@archiver.kernel.org>; Tue, 21 Mar 2023 17:07:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E6315C6FD1D
+	for <linux-mips@archiver.kernel.org>; Tue, 21 Mar 2023 17:08:24 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230351AbjCURHe (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 21 Mar 2023 13:07:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60634 "EHLO
+        id S230390AbjCURIX (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 21 Mar 2023 13:08:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32916 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230515AbjCURHF (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Tue, 21 Mar 2023 13:07:05 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92D3453DB3;
-        Tue, 21 Mar 2023 10:06:30 -0700 (PDT)
+        with ESMTP id S230482AbjCURIL (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Tue, 21 Mar 2023 13:08:11 -0400
+Received: from ams.source.kernel.org (ams.source.kernel.org [145.40.68.75])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E846053716;
+        Tue, 21 Mar 2023 10:07:29 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 8629461D40;
-        Tue, 21 Mar 2023 17:06:08 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 87D0FC433EF;
-        Tue, 21 Mar 2023 17:06:04 +0000 (UTC)
+        by ams.source.kernel.org (Postfix) with ESMTPS id 29775B818FC;
+        Tue, 21 Mar 2023 17:06:21 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 72A63C4339B;
+        Tue, 21 Mar 2023 17:06:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1679418367;
-        bh=oPygRvX6RQAe+5eleW7V1m91ykfqAM2HaXq3tUgRD/w=;
+        s=k20201202; t=1679418379;
+        bh=KhfLtALYKzODXFE/bKaEWmdPAncGVA8ZXqw3mr1syxI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=S6Igbn+hx9kvz+8nl0l0isAVjYko/QzPOG59FO2v+dyXOHfJ5CiXlxbTS8jr9Ekks
-         Sf7vWxebifU9v9ZP2pGM8iWmX4AhTu0A+XnBUsvNJzH9MSHIh6mMOyH38kSTEidmQz
-         qCxspDb7L34nmybV3wlEo9UdlhZxgAUiLn1f5S0xDoVvza+3nb4bSQ6sGM22c3S7En
-         Z1XEDv6X7cynI3+638uL6VeJ2obx0l/9uZ2YtOS0sSvWrs4hPv8Sd5C42hDfm4OC5c
-         zmNsYvjnP61UXUd+uaJKEjMbzrAMN31WrmpAUn33F4EAZgqJDhePMJeKNHwYUQz3dz
-         i40ILUcN2Ne5Q==
+        b=iP13+nPFKWexWO3d0/NXkearn4Tj8eWKPbGRJCvBjOENCtyJZblBuGz9AdeeUfjdA
+         EMjeaK/CSluxUo7Ua2KaaJmij2/OzMp5dxXpPxj04YzyIGphxVJMKhOF4bXMSL94nz
+         ol5MOh1u+X7joFijl49MvNJQdym1l9XEL8k6DV2Hki6DyjSX4rtuMvSy1ILwGRIi44
+         XrAoxjg2ZccTAZ8/36v34co5C40IvtmtGUbbKNLnmjVEj9VBI5qp0vymUpsAr05iX4
+         k26ZQ8N0iCz8C/Gsjz8cV7FjFtufjJ/T1bSEgNV3NbZ/t6IPG5KpyVbUKrbwbSXAmj
+         579oV8zZkoCuw==
 From:   Mike Rapoport <rppt@kernel.org>
 To:     Andrew Morton <akpm@linux-foundation.org>
 Cc:     David Hildenbrand <david@redhat.com>,
@@ -41,9 +41,9 @@ Cc:     David Hildenbrand <david@redhat.com>,
         Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
         Vlastimil Babka <vbabka@suse.cz>, linux-kernel@vger.kernel.org,
         linux-mips@vger.kernel.org, linux-mm@kvack.org
-Subject: [PATCH v2 10/14] init,mm: fold late call to page_ext_init() to page_alloc_init_late()
-Date:   Tue, 21 Mar 2023 19:05:09 +0200
-Message-Id: <20230321170513.2401534-11-rppt@kernel.org>
+Subject: [PATCH v2 13/14] mm: move vmalloc_init() declaration to mm/internal.h
+Date:   Tue, 21 Mar 2023 19:05:12 +0200
+Message-Id: <20230321170513.2401534-14-rppt@kernel.org>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20230321170513.2401534-1-rppt@kernel.org>
 References: <20230321170513.2401534-1-rppt@kernel.org>
@@ -55,81 +55,54 @@ X-Mailing-List: linux-mips@vger.kernel.org
 
 From: "Mike Rapoport (IBM)" <rppt@kernel.org>
 
-When deferred initialization of struct pages is enabled, page_ext_init()
-must be called after all the deferred initialization is done, but there
-is no point to keep it a separate call from kernel_init_freeable() right
-after page_alloc_init_late().
+vmalloc_init() is called only from mm_core_init(), there is no need to
+declare it in include/linux/vmalloc.h
 
-Fold the call to page_ext_init() into page_alloc_init_late() and
-localize deferred_struct_pages variable.
+Move vmalloc_init() declaration to mm/internal.h
 
 Signed-off-by: Mike Rapoport (IBM) <rppt@kernel.org>
 Reviewed-by: David Hildenbrand <david@redhat.com>
 ---
- include/linux/page_ext.h | 2 --
- init/main.c              | 4 ----
- mm/mm_init.c             | 6 +++++-
- 3 files changed, 5 insertions(+), 7 deletions(-)
+ include/linux/vmalloc.h | 4 ----
+ mm/internal.h           | 5 +++++
+ 2 files changed, 5 insertions(+), 4 deletions(-)
 
-diff --git a/include/linux/page_ext.h b/include/linux/page_ext.h
-index bc2e39090a1f..67314f648aeb 100644
---- a/include/linux/page_ext.h
-+++ b/include/linux/page_ext.h
-@@ -29,8 +29,6 @@ struct page_ext_operations {
- 	bool need_shared_flags;
- };
+diff --git a/include/linux/vmalloc.h b/include/linux/vmalloc.h
+index 69250efa03d1..351fc7697214 100644
+--- a/include/linux/vmalloc.h
++++ b/include/linux/vmalloc.h
+@@ -131,12 +131,8 @@ extern void *vm_map_ram(struct page **pages, unsigned int count, int node);
+ extern void vm_unmap_aliases(void);
  
--extern bool deferred_struct_pages;
--
- #ifdef CONFIG_PAGE_EXTENSION
+ #ifdef CONFIG_MMU
+-extern void __init vmalloc_init(void);
+ extern unsigned long vmalloc_nr_pages(void);
+ #else
+-static inline void vmalloc_init(void)
+-{
+-}
+ static inline unsigned long vmalloc_nr_pages(void) { return 0; }
+ #endif
  
- /*
-diff --git a/init/main.c b/init/main.c
-index 8a20b4c25f24..04113514e56a 100644
---- a/init/main.c
-+++ b/init/main.c
-@@ -62,7 +62,6 @@
- #include <linux/rmap.h>
- #include <linux/mempolicy.h>
- #include <linux/key.h>
--#include <linux/page_ext.h>
- #include <linux/debug_locks.h>
- #include <linux/debugobjects.h>
- #include <linux/lockdep.h>
-@@ -1561,9 +1560,6 @@ static noinline void __init kernel_init_freeable(void)
- 
- 	padata_init();
- 	page_alloc_init_late();
--	/* Initialize page ext after all struct pages are initialized. */
--	if (deferred_struct_pages)
--		page_ext_init();
- 
- 	do_basic_setup();
- 
-diff --git a/mm/mm_init.c b/mm/mm_init.c
-index 43f6d3ed24ef..ff70da11e797 100644
---- a/mm/mm_init.c
-+++ b/mm/mm_init.c
-@@ -225,7 +225,7 @@ static unsigned long nr_kernel_pages __initdata;
- static unsigned long nr_all_pages __initdata;
- static unsigned long dma_reserve __initdata;
- 
--bool deferred_struct_pages __meminitdata;
-+static bool deferred_struct_pages __meminitdata;
- 
- static DEFINE_PER_CPU(struct per_cpu_nodestat, boot_nodestats);
- 
-@@ -2358,6 +2358,10 @@ void __init page_alloc_init_late(void)
- 
- 	for_each_populated_zone(zone)
- 		set_zone_contiguous(zone);
+diff --git a/mm/internal.h b/mm/internal.h
+index 02273c5e971f..c05ad651b515 100644
+--- a/mm/internal.h
++++ b/mm/internal.h
+@@ -900,9 +900,14 @@ size_t splice_folio_into_pipe(struct pipe_inode_info *pipe,
+  * mm/vmalloc.c
+  */
+ #ifdef CONFIG_MMU
++void __init vmalloc_init(void);
+ int vmap_pages_range_noflush(unsigned long addr, unsigned long end,
+                 pgprot_t prot, struct page **pages, unsigned int page_shift);
+ #else
++static inline void vmalloc_init(void)
++{
++}
 +
-+	/* Initialize page ext after all struct pages are initialized. */
-+	if (deferred_struct_pages)
-+		page_ext_init();
- }
- 
- #ifndef __HAVE_ARCH_RESERVED_KERNEL_PAGES
+ static inline
+ int vmap_pages_range_noflush(unsigned long addr, unsigned long end,
+                 pgprot_t prot, struct page **pages, unsigned int page_shift)
 -- 
 2.35.1
 

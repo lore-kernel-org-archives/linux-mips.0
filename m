@@ -2,35 +2,35 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B3351C74A5B
-	for <linux-mips@archiver.kernel.org>; Tue, 21 Mar 2023 17:05:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 36318C7619A
+	for <linux-mips@archiver.kernel.org>; Tue, 21 Mar 2023 17:06:19 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230440AbjCURFy (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 21 Mar 2023 13:05:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32890 "EHLO
+        id S230489AbjCURGR (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 21 Mar 2023 13:06:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60442 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229622AbjCURFr (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Tue, 21 Mar 2023 13:05:47 -0400
-Received: from ams.source.kernel.org (ams.source.kernel.org [IPv6:2604:1380:4601:e00::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8E8025E34;
-        Tue, 21 Mar 2023 10:05:37 -0700 (PDT)
+        with ESMTP id S230437AbjCURFy (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Tue, 21 Mar 2023 13:05:54 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 751A052F5F;
+        Tue, 21 Mar 2023 10:05:45 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by ams.source.kernel.org (Postfix) with ESMTPS id 6BFDDB818B9;
-        Tue, 21 Mar 2023 17:05:36 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C86B5C4339C;
-        Tue, 21 Mar 2023 17:05:31 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id AE47C61D4E;
+        Tue, 21 Mar 2023 17:05:44 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B4D45C433EF;
+        Tue, 21 Mar 2023 17:05:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1679418335;
-        bh=I9y2VS2sujmV0QDCgNwqn2cmquxP68oIIJXpFeZ8zWQ=;
+        s=k20201202; t=1679418344;
+        bh=MPWRuoot5VH9l7RTC3NQyqOuQ7W1sTgroDlLaej4jgM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rvU/i21VgZbcmY0RKxM7OfYu+1hxrZakEd0qKlbAVLq51IJjKj6CKIcCK9ES+4LDa
-         r0GXrHFiB4bewcM9qeWDh0R4qbZZpydLGatuQAdqquua5BUoy3cgjwnftNe2vICXgk
-         TsJya2xDyox9It3dWIYTidriR688fhCIfmDNluEO305v19/xELXcjykEw3+9opOrh6
-         j4JkM1QSbBxxf6Gi4okJjw4G5rC/LNmMKcrQ21dwK7mzp5N3rfjBiQ2ovPN8tR2szf
-         v+9rKcE3YA7RQs/YMnkyaHdIu7kUj5Hu0Zm+3dYlQEJ8RZLovqVXqCPD7NH5ImyjDd
-         ua/+qlh76Uwxw==
+        b=ki4HDy3h8Gte0ZZEiRROBgIVBKFw/KuBSOBtijYBxEVe/p0aoS4vQdaXkNPzwqJiy
+         jm62Y7wVswZ217UB4t9S6RFrE+xX2Aao48V72Jt+lJScMIs2rLYjzI38K++ZlzsIkN
+         i/L8Zo/nLOb/yunaZ65ZbQOSUL5sKCjfTgEaxzzfUa94sKcDTnLlLzB5lPAVdkSyyy
+         F8EUSzfSGiOVR8MHUlvJfsNjsn63XilQL/5NFHyCYEiYete/89jyWdOkUmMYvIpQ5N
+         we3BPRxPxI0VZoDmzEjWBv4KLNuxG9TJ5NQq7Hxa4nTmiROIigUvgn7nULl7rQz+Jr
+         MhE9LOk0eZosw==
 From:   Mike Rapoport <rppt@kernel.org>
 To:     Andrew Morton <akpm@linux-foundation.org>
 Cc:     David Hildenbrand <david@redhat.com>,
@@ -41,9 +41,9 @@ Cc:     David Hildenbrand <david@redhat.com>,
         Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
         Vlastimil Babka <vbabka@suse.cz>, linux-kernel@vger.kernel.org,
         linux-mips@vger.kernel.org, linux-mm@kvack.org
-Subject: [PATCH v2 02/14] mm/page_alloc: add helper for checking if check_pages_enabled
-Date:   Tue, 21 Mar 2023 19:05:01 +0200
-Message-Id: <20230321170513.2401534-3-rppt@kernel.org>
+Subject: [PATCH v2 04/14] mm: handle hashdist initialization in mm/mm_init.c
+Date:   Tue, 21 Mar 2023 19:05:03 +0200
+Message-Id: <20230321170513.2401534-5-rppt@kernel.org>
 X-Mailer: git-send-email 2.35.1
 In-Reply-To: <20230321170513.2401534-1-rppt@kernel.org>
 References: <20230321170513.2401534-1-rppt@kernel.org>
@@ -55,58 +55,92 @@ X-Mailing-List: linux-mips@vger.kernel.org
 
 From: "Mike Rapoport (IBM)" <rppt@kernel.org>
 
-Instead of duplicating long static_branch_enabled(&check_pages_enabled)
-wrap it in a helper function is_check_pages_enabled()
+The hashdist variable must be initialized before the first call to
+alloc_large_system_hash() and free_area_init() looks like a better place
+for it than page_alloc_init().
+
+Move hashdist handling to mm/mm_init.c
 
 Signed-off-by: Mike Rapoport (IBM) <rppt@kernel.org>
-Reviewed-by: David Hildenbrand <david@redhat.com>
+Acked-by: David Hildenbrand <david@redhat.com>
 ---
- mm/page_alloc.c | 11 ++++++++---
- 1 file changed, 8 insertions(+), 3 deletions(-)
+ mm/mm_init.c    | 22 ++++++++++++++++++++++
+ mm/page_alloc.c | 18 ------------------
+ 2 files changed, 22 insertions(+), 18 deletions(-)
 
+diff --git a/mm/mm_init.c b/mm/mm_init.c
+index 68d0187c7886..2e60c7186132 100644
+--- a/mm/mm_init.c
++++ b/mm/mm_init.c
+@@ -607,6 +607,25 @@ int __meminit early_pfn_to_nid(unsigned long pfn)
+ 
+ 	return nid;
+ }
++
++int hashdist = HASHDIST_DEFAULT;
++
++static int __init set_hashdist(char *str)
++{
++	if (!str)
++		return 0;
++	hashdist = simple_strtoul(str, &str, 0);
++	return 1;
++}
++__setup("hashdist=", set_hashdist);
++
++static inline void fixup_hashdist(void)
++{
++	if (num_node_state(N_MEMORY) == 1)
++		hashdist = 0;
++}
++#else
++static inline void fixup_hashdist(void) {}
+ #endif /* CONFIG_NUMA */
+ 
+ #ifdef CONFIG_DEFERRED_STRUCT_PAGE_INIT
+@@ -1855,6 +1874,9 @@ void __init free_area_init(unsigned long *max_zone_pfn)
+ 	}
+ 
+ 	memmap_init();
++
++	/* disable hash distribution for systems with a single node */
++	fixup_hashdist();
+ }
+ 
+ /**
 diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index 87d760236dba..e1149d54d738 100644
+index c56c147bdf27..ff6a2fff2880 100644
 --- a/mm/page_alloc.c
 +++ b/mm/page_alloc.c
-@@ -245,6 +245,11 @@ EXPORT_SYMBOL(init_on_free);
- /* perform sanity checks on struct pages being allocated or freed */
- static DEFINE_STATIC_KEY_MAYBE(CONFIG_DEBUG_VM, check_pages_enabled);
+@@ -6383,28 +6383,10 @@ static int page_alloc_cpu_online(unsigned int cpu)
+ 	return 0;
+ }
  
-+static inline bool is_check_pages_enabled(void)
-+{
-+	return static_branch_unlikely(&check_pages_enabled);
-+}
-+
- static bool _init_on_alloc_enabled_early __read_mostly
- 				= IS_ENABLED(CONFIG_INIT_ON_ALLOC_DEFAULT_ON);
- static int __init early_init_on_alloc(char *buf)
-@@ -1443,7 +1448,7 @@ static __always_inline bool free_pages_prepare(struct page *page,
- 		for (i = 1; i < (1 << order); i++) {
- 			if (compound)
- 				bad += free_tail_pages_check(page, page + i);
--			if (static_branch_unlikely(&check_pages_enabled)) {
-+			if (is_check_pages_enabled()) {
- 				if (unlikely(free_page_is_bad(page + i))) {
- 					bad++;
- 					continue;
-@@ -1456,7 +1461,7 @@ static __always_inline bool free_pages_prepare(struct page *page,
- 		page->mapping = NULL;
- 	if (memcg_kmem_online() && PageMemcgKmem(page))
- 		__memcg_kmem_uncharge_page(page, order);
--	if (static_branch_unlikely(&check_pages_enabled)) {
-+	if (is_check_pages_enabled()) {
- 		if (free_page_is_bad(page))
- 			bad++;
- 		if (bad)
-@@ -2366,7 +2371,7 @@ static int check_new_page(struct page *page)
- 
- static inline bool check_new_pages(struct page *page, unsigned int order)
+-#ifdef CONFIG_NUMA
+-int hashdist = HASHDIST_DEFAULT;
+-
+-static int __init set_hashdist(char *str)
+-{
+-	if (!str)
+-		return 0;
+-	hashdist = simple_strtoul(str, &str, 0);
+-	return 1;
+-}
+-__setup("hashdist=", set_hashdist);
+-#endif
+-
+ void __init page_alloc_init(void)
  {
--	if (static_branch_unlikely(&check_pages_enabled)) {
-+	if (is_check_pages_enabled()) {
- 		for (int i = 0; i < (1 << order); i++) {
- 			struct page *p = page + i;
+ 	int ret;
  
+-#ifdef CONFIG_NUMA
+-	if (num_node_state(N_MEMORY) == 1)
+-		hashdist = 0;
+-#endif
+-
+ 	ret = cpuhp_setup_state_nocalls(CPUHP_PAGE_ALLOC,
+ 					"mm/page_alloc:pcp",
+ 					page_alloc_cpu_online,
 -- 
 2.35.1
 

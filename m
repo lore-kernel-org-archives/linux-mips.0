@@ -2,98 +2,169 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 57F08C6FD1F
-	for <linux-mips@archiver.kernel.org>; Wed, 22 Mar 2023 17:40:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 01E13C6FD1F
+	for <linux-mips@archiver.kernel.org>; Wed, 22 Mar 2023 18:24:03 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229522AbjCVRkU (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 22 Mar 2023 13:40:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54896 "EHLO
+        id S230076AbjCVSYD (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 22 Mar 2023 14:24:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49338 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229646AbjCVRkT (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 22 Mar 2023 13:40:19 -0400
-X-Greylist: delayed 1669 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 22 Mar 2023 10:40:18 PDT
-Received: from www381.your-server.de (www381.your-server.de [78.46.137.84])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FDCED310;
-        Wed, 22 Mar 2023 10:40:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=metafoo.de;
-        s=default2002; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:
-        References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender:Reply-To:
-        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID;
-        bh=j4kDtes5yQEhSaRkdjJ6fUBQBcvH3mVXdZYGKrFGxjk=; b=Um6Hi4/teqDwXcPpVqXZfqL9wl
-        rh9z89rWSr1ADTHi6PGRDt/QxiPhbq7Iq8QI9A2wBV8PFwp42Io8KM42i52LXmGiOwXbuZ6iIFLDt
-        M9n2s3vJvqLDUVMhvctvvzqw04J8y8PpWQsnuSVQjsYjdQ43HTNd+K9Ii/PfSBRLnYuctDrXyCuTt
-        oNhxRsPJMyYDKKv5m6r9ONErfTbEWJiF4+It3HJ/sEYr+oxhnoBylIDGVDD65Iei9iZCX4quZXRwO
-        6eAvWcHmPUAHoL1b5h033pm/YwiF9dOWu5WdmPNLGh/GErdDP0sMHJv1KlbMhn+RVnrObJLIJC3S1
-        Q6AtSM0g==;
-Received: from sslproxy05.your-server.de ([78.46.172.2])
-        by www381.your-server.de with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <lars@metafoo.de>)
-        id 1pf1jJ-000O2z-6W; Wed, 22 Mar 2023 17:54:29 +0100
-Received: from [2604:5500:c0e5:eb00:da5e:d3ff:feff:933b]
-        by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <lars@metafoo.de>)
-        id 1pf1jI-000RWx-Qu; Wed, 22 Mar 2023 17:54:28 +0100
-Message-ID: <997596d9-dc80-4aff-2875-869a54442e36@metafoo.de>
-Date:   Wed, 22 Mar 2023 09:54:26 -0700
+        with ESMTP id S230028AbjCVSYC (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 22 Mar 2023 14:24:02 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00DC467728
+        for <linux-mips@vger.kernel.org>; Wed, 22 Mar 2023 11:22:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1679509364;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=AQmTyEbfymjzRNtIW6wpo43MqQOqbzqrZwvZwgWkUpU=;
+        b=Qz+ZTZgACt5m772TMUBWqzASLKBfkzLzGxqFKBvJBsDR+CxXP9haXT+NokLMkarigAWHQy
+        6KHgl8j0jIJIQoyaW1i+GWK0+WAcPrOsNEM66j1CbddM3QYh+OdzxAioQxUQIE/o6cvr/Y
+        NZczEIbOf2aDVv2FRJu4NPg3YbeQa0Q=
+Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
+ [209.85.222.199]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-647-_xbXJ9qWPaK94OsulRn6tQ-1; Wed, 22 Mar 2023 14:22:37 -0400
+X-MC-Unique: _xbXJ9qWPaK94OsulRn6tQ-1
+Received: by mail-qk1-f199.google.com with SMTP id 187-20020a3707c4000000b007468d9a30faso4515115qkh.23
+        for <linux-mips@vger.kernel.org>; Wed, 22 Mar 2023 11:22:37 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1679509357;
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=AQmTyEbfymjzRNtIW6wpo43MqQOqbzqrZwvZwgWkUpU=;
+        b=2u3i0vHAXuFiGNXr7npU/ZpGRQlUZzAKH/xTS1P77AtQfqJ2fPmpA3oH1ND5HILb4U
+         CjtENTjIR8PXRegPP7BH/x9TQZjrd3ZrQOE5hEy1Qsy6Jx20NrMqjuYFgqdueI0HdTb4
+         CmFalcw45os4EWYNIOtShAmcm6Bpw3lNCJfbJvMZFj5b8V/oJ7UJoITvC6uVbWLiS0/I
+         Y8/7kZyk9hHDL3irEf62pzi79bvanuu7KkM2tYB6nd7uog74R7CDx3XAE4CLcRmim6zD
+         izyCIHbxKJfTMncrbh49XiOsnshvtZXuifdCZmHxz0qIg2W2CBzD4tJdTtgVNDZdZHlH
+         +u+w==
+X-Gm-Message-State: AO0yUKVxoyWaJkokGAEuGqwabDUE6A5I16UneThTQwixviXbWvgYMu9B
+        5vmxKkH34kWsMsO6UtvJUbFxZ6IikqEH2oQZR3kGRuK255q2RWDoWf0BDDxPWlXHdcP9V5DqKGP
+        xZFP19UiOTAzQQ4R+Q2VS8w==
+X-Received: by 2002:ac8:594a:0:b0:3e3:7e53:9a8f with SMTP id 10-20020ac8594a000000b003e37e539a8fmr7511727qtz.50.1679509356909;
+        Wed, 22 Mar 2023 11:22:36 -0700 (PDT)
+X-Google-Smtp-Source: AK7set+t7wmz3/x7URy1IAcP9apu1JV9+38nhf9A/nHJ2ae3E1Cp8z62mk26+NWh6ExaxyxmUk07Nw==
+X-Received: by 2002:ac8:594a:0:b0:3e3:7e53:9a8f with SMTP id 10-20020ac8594a000000b003e37e539a8fmr7511693qtz.50.1679509356631;
+        Wed, 22 Mar 2023 11:22:36 -0700 (PDT)
+Received: from vschneid.remote.csb ([154.57.232.159])
+        by smtp.gmail.com with ESMTPSA id j23-20020ac86657000000b003e0c29112b6sm6351465qtp.7.2023.03.22.11.22.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 22 Mar 2023 11:22:36 -0700 (PDT)
+From:   Valentin Schneider <vschneid@redhat.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-snps-arc@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org,
+        linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org,
+        loongarch@lists.linux.dev, linux-mips@vger.kernel.org,
+        openrisc@lists.librecores.org, linux-parisc@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
+        linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
+        sparclinux@vger.kernel.org, linux-xtensa@linux-xtensa.org,
+        x86@kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Marcelo Tosatti <mtosatti@redhat.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Marc Zyngier <maz@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Guo Ren <guoren@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: Re: [PATCH v5 7/7] sched, smp: Trace smp callback causing an IPI
+In-Reply-To: <20230322172242.GH2357380@hirez.programming.kicks-ass.net>
+References: <20230307143558.294354-1-vschneid@redhat.com>
+ <20230307143558.294354-8-vschneid@redhat.com>
+ <20230322095329.GS2017917@hirez.programming.kicks-ass.net>
+ <xhsmhmt45c703.mognet@vschneid.remote.csb>
+ <20230322140434.GC2357380@hirez.programming.kicks-ass.net>
+ <xhsmhjzz8d8km.mognet@vschneid.remote.csb>
+ <20230322172242.GH2357380@hirez.programming.kicks-ass.net>
+Date:   Wed, 22 Mar 2023 18:22:28 +0000
+Message-ID: <xhsmhh6ucd4t7.mognet@vschneid.remote.csb>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.9.0
-Subject: Re: [PATCH] mmc: jz4740: Use dev_err_probe()
-Content-Language: en-US
-To:     Paul Cercueil <paul@crapouillou.net>,
-        Sergei Shtylyov <sergei.shtylyov@gmail.com>,
-        ye.xingchen@zte.com.cn, ulf.hansson@linaro.org
-Cc:     linux-mips@vger.kernel.org, linux-mmc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <202303221707010277273@zte.com.cn>
- <d91d6e3c-da8c-0601-0cd7-45bfe7c4ad50@gmail.com>
- <6aa6d80cb587c98dba5c04b47cd78f93bb3bafec.camel@crapouillou.net>
-From:   Lars-Peter Clausen <lars@metafoo.de>
-In-Reply-To: <6aa6d80cb587c98dba5c04b47cd78f93bb3bafec.camel@crapouillou.net>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Authenticated-Sender: lars@metafoo.de
-X-Virus-Scanned: Clear (ClamAV 0.103.8/26851/Wed Mar 22 08:22:49 2023)
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On 3/22/23 02:25, Paul Cercueil wrote:
-> Le mercredi 22 mars 2023 à 12:18 +0300, Sergei Shtylyov a écrit :
->> On 3/22/23 12:07 PM, ye.xingchen@zte.com.cn wrote:
->>
->>> From: Ye Xingchen <ye.xingchen@zte.com.cn>
->>>
->>> Replace the open-code with dev_err_probe() to simplify the code.
->>>
->>> Signed-off-by: Ye Xingchen <ye.xingchen@zte.com.cn>
->>> ---
->>>   drivers/mmc/host/jz4740_mmc.c | 5 +----
->>>   1 file changed, 1 insertion(+), 4 deletions(-)
->>>
->>> diff --git a/drivers/mmc/host/jz4740_mmc.c
->>> b/drivers/mmc/host/jz4740_mmc.c
->>> index 698450afa7bb..a6ad03b24add 100644
->>> --- a/drivers/mmc/host/jz4740_mmc.c
->>> +++ b/drivers/mmc/host/jz4740_mmc.c
->>> @@ -232,10 +232,7 @@ static int
->>> jz4740_mmc_acquire_dma_channels(struct jz4740_mmc_host *host)
->>>          if (!IS_ERR(host->dma_tx))
->>>                  return 0;
->>>
->>> -       if (PTR_ERR(host->dma_tx) != -ENODEV) {
->>> -               dev_err(dev, "Failed to get dma tx-rx channel\n");
->>> -               return PTR_ERR(host->dma_tx);
->>> -       }
->>> +       return dev_err_probe(dev, PTR_ERR(host->dma_tx), "Failed to
->>> get dma tx-rx channel\n");
->>     I'm afraid this makes the following code unreachable...
-> Also, this is not a probe(), so I don't see a point of using
-> dev_err_probe() here.
-The function is only called from probe(), I think it makes sense to use 
-dev_err_probe() here.
+On 22/03/23 18:22, Peter Zijlstra wrote:
+> On Wed, Mar 22, 2023 at 05:01:13PM +0000, Valentin Schneider wrote:
+>
+>> > So I was thinking something like this:
+>
+>> Hm, this does get rid of the func being passed down the helpers, but this
+>> means the trace events are now stateful, i.e. I need the first and last
+>> events in a CSD stack to figure out which one actually caused the IPI.
+>
+> Isn't much of tracing stateful? I mean, why am I always writing awk
+> programs to parse trace output?
+>
+> The one that is directly followed by
+> generic_smp_call_function_single_interrupt() (horrible name that), is
+> the one that tripped the IPI.
+>
 
+Right.
+
+>> It also requires whoever is looking at the trace to be aware of which IPIs
+>> are attached to a CSD, and which ones aren't. ATM that's only the resched
+>> IPI, but per the cover letter there's more to come (e.g. tick_broadcast()
+>> for arm64/riscv and a few others). For instance:
+>> 
+>>        hackbench-157   [001]    10.894320: ipi_send_cpu:         cpu=3 callsite=check_preempt_curr+0x37 callback=0x0
+>
+> Arguably we should be setting callback to scheduler_ipi(), except
+> ofcourse, that's not an actual function...
+>
+> Maybe we can do "extern inline" for the actual users and provide a dummy
+> function for the symbol when tracing.
+>
+
+Huh, I wasn't aware that was an option, I'll look into that. I did scribble
+down a comment next to smp_send_reschedule(), but having a decodable
+function name would be better!
+
+>>        hackbench-157   [001]    10.895068: ipi_send_cpu:         cpu=3 callsite=try_to_wake_up+0x29e callback=sched_ttwu_pending+0x0
+>>        hackbench-157   [001]    10.895068: ipi_send_cpu:         cpu=3 callsite=try_to_wake_up+0x29e callback=generic_smp_call_function_single_interrupt+0x0
+>> 
+>> That first one sent a RESCHEDULE IPI, the second one a CALL_FUNCTION one,
+>> but you really have to know what you're looking at...
+>
+> But you have to know that anyway, you can't do tracing and not know wtf
+> you're doing. Or rather, if you do, I don't give a crap and you can keep
+> the pieces :-)
+>
+> Grepping the callback should be pretty quick resolution at to what trips
+> it, no?
+>
+> (also, if you *realllllly* can't manage, we can always add yet another
+> argument that gives a type thingy)
+>
+
+Ah, I was a bit unclear here - I don't care too much about the IPI type
+being used, but rather being able to figure out on IRQ entry where that IPI
+came from - thinking some more about now, I don't think logging *all* CSDs
+causes an issue there, as you'd look at the earliest-not-seen-yet event
+targeting this CPU anyway.
+
+That'll be made easy once I get to having cpumask filters for ftrace, so
+I can just issue something like:
+
+  trace-cmd record -e 'ipi_send_cpu' -f "cpu == 3" -e 'ipi_send_cpumask' -f "cpus \in {3}" -T hackbench 
+
+(it's somewhere on the todolist...)
+
+TL;DR: I *think* I've convinced myself logging all of them isn't an issue -
+I'm going to play with this on something "smarter" than just hackbench
+under QEMU just to drill it in.
 

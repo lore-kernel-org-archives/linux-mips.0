@@ -2,134 +2,103 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E46B9C6FD1F
-	for <linux-mips@archiver.kernel.org>; Wed, 22 Mar 2023 09:55:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8FA73C6FD1C
+	for <linux-mips@archiver.kernel.org>; Wed, 22 Mar 2023 10:03:05 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230161AbjCVJzU (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 22 Mar 2023 05:55:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41172 "EHLO
+        id S229664AbjCVKDF (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 22 Mar 2023 06:03:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56218 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229731AbjCVJys (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 22 Mar 2023 05:54:48 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 004DE367C8;
-        Wed, 22 Mar 2023 02:54:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=dfqJs0p1KTlCgT/AzQPPoQtSmUdmtzuztLmCgmrMzTI=; b=CzzNDRhr38Kip/OFg6dq3dQ4EV
-        +GktrtbeR8GTSIKCXFNIi+R0Uog/v4u3G/O25UfC/mgZT3ndlGcMabgm6LrFN6fGis9ydvHcppxLT
-        VwY3AmsL8HPpn5zrgxUXGj6CeuAuLVZoJ7UhzkhlIInAFBW3QLRk/B/v7JvwmMujV1bNxp++Hjosy
-        wZt5vtgdBxpEoKGx18nO98pgqPhFFQBy0Pj+s5w9JmrOA97n6Bu/+USPMl8ce2eWJVbxbyQjTP6hs
-        mqyM/HOaIsbNgCi2gGUWk2nA/SAiwaMSIlKMsEneUn3H6IgrNoG7/6DpUd9PIcenBZzlTeCjIrCVD
-        xEhMpymQ==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1pev9u-002tfl-CF; Wed, 22 Mar 2023 09:53:30 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id B96773001F7;
-        Wed, 22 Mar 2023 10:53:29 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id A09DA205D08C3; Wed, 22 Mar 2023 10:53:29 +0100 (CET)
-Date:   Wed, 22 Mar 2023 10:53:29 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Valentin Schneider <vschneid@redhat.com>
-Cc:     linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-snps-arc@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org,
-        linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org,
-        loongarch@lists.linux.dev, linux-mips@vger.kernel.org,
-        openrisc@lists.librecores.org, linux-parisc@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
-        linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
-        sparclinux@vger.kernel.org, linux-xtensa@linux-xtensa.org,
-        x86@kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Marcelo Tosatti <mtosatti@redhat.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Marc Zyngier <maz@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Guo Ren <guoren@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: Re: [PATCH v5 7/7] sched, smp: Trace smp callback causing an IPI
-Message-ID: <20230322095329.GS2017917@hirez.programming.kicks-ass.net>
-References: <20230307143558.294354-1-vschneid@redhat.com>
- <20230307143558.294354-8-vschneid@redhat.com>
+        with ESMTP id S229436AbjCVKDE (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 22 Mar 2023 06:03:04 -0400
+Received: from wout2-smtp.messagingengine.com (wout2-smtp.messagingengine.com [64.147.123.25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2E0110AA1;
+        Wed, 22 Mar 2023 03:03:02 -0700 (PDT)
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailout.west.internal (Postfix) with ESMTP id 454F032001FC;
+        Wed, 22 Mar 2023 06:03:01 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Wed, 22 Mar 2023 06:03:02 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=shutemov.name;
+         h=cc:cc:content-type:content-type:date:date:from:from
+        :in-reply-to:in-reply-to:message-id:mime-version:references
+        :reply-to:sender:subject:subject:to:to; s=fm3; t=1679479380; x=
+        1679565780; bh=01BphvSHd3yOGvmiCEj40q4zB9VSZQG06l0nNVJyKc8=; b=O
+        0Rr9HNXSPG0YhJe6vpGux0Bj/p3aK207o1OzFfe3ISExY2Ie8qC1M43BBYhiREDp
+        5QNkGZpKeKHViH5ZG0SwWdeWAI78YgugXITjjpeSVRWJIVz1W23/eL9lmCd5+3lq
+        eDkO78DWxNLzNZAZVcHoqPnwQ/1iB+NWOC3/A5gNYEyleJ4LjDMKkcS7Rt+ajyNg
+        4gz0oTH6nhRyQBLCLznx+B/1IeYLPCufNUA2pFcp9GCGAqzg1lsFfkhsd4BBsZeh
+        SUyOZe9kgw+S/Cljj5yvNlxi7q07Tu4fbg+AYoCRkWuTmBq+nODTPWr3EKXmwJqD
+        H/INQXX3PRESsO2hbSeYA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:content-type:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm2; t=1679479380; x=1679565780; bh=01BphvSHd3yOG
+        vmiCEj40q4zB9VSZQG06l0nNVJyKc8=; b=VT+StNbV7vIVRrtHIUe2nD3pFRu96
+        eVD3XMpG5MDhzhFHuNZv3tfx5Omgy5LQRZwGCyJp6z467HrffGFE0QbnCtIvDgXO
+        uZBsSkAxD/NloWPlT0VZzKYR0VBDFsDQb9JwOrAU9Uc7Gg31Z81iCscgdDow7fvb
+        rSzHPhT3ksqtPa5ipUazip27+IQIYr/TM0CI0ajdZTaeUKaMzFitJcODFPPem5qt
+        gW38d8P7mMKynLUVB+dKavxb+oszHaUTrJ3iPhQHQXaLH53TVwkTyhDaVvSJZpLV
+        bZDMCSdaX6fOiT/qYu7n978QF8xBvYDrOL481JO+94YlHxK1JRxbQTD9A==
+X-ME-Sender: <xms:VNIaZCXC9PtCC7IKndfCUhoZ1Tn86zg0Vua4LXrzwFPzBsTS1mZ6jw>
+    <xme:VNIaZOkDtoUcrlBtolMIm_fBV8qNYRhzL2qGGLmnmL31iQgM2xVmo070QlxZHvsaV
+    IWxYYIExdA9EylCDF0>
+X-ME-Received: <xmr:VNIaZGZYLxZfeOGZUn-VjGx3wxClqrRrBMQCp6MBXosBGEkcWkUka20A2u83G0lD-fYsqQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrvdegvddguddvucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepfdfmihhr
+    ihhllhcutedrucfuhhhuthgvmhhovhdfuceokhhirhhilhhlsehshhhuthgvmhhovhdrnh
+    grmhgvqeenucggtffrrghtthgvrhhnpeekvddvjeffheetgedtvdfgieejiedvgeejieet
+    jeehieehveffueekfeehffdvveenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmh
+    epmhgrihhlfhhrohhmpehkihhrihhllhesshhhuhhtvghmohhvrdhnrghmvg
+X-ME-Proxy: <xmx:VNIaZJWzfzIz-QB-mJb7wS9uCFs1PQ0JeVL2LDjftU1ZxdbrW0SV8Q>
+    <xmx:VNIaZMkYVzsDSkypd0kz-Y_8Qz0W6LowTJrOpJsRPL8DjqaQ3IAPkw>
+    <xmx:VNIaZOe_jCzCXIzIHDTjSDJUKafdldG-fVCOs356poeXBmsUhVJHAg>
+    <xmx:VNIaZGVaPHeo8dgohOOGUlxMbs9RJkGYZbHzBd1wo_8aGchL6RGSrg>
+Feedback-ID: ie3994620:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 22 Mar 2023 06:03:00 -0400 (EDT)
+Received: by box.shutemov.name (Postfix, from userid 1000)
+        id 9FD9310A603; Wed, 22 Mar 2023 13:02:58 +0300 (+03)
+Date:   Wed, 22 Mar 2023 13:02:58 +0300
+From:   "Kirill A. Shutemov" <kirill@shutemov.name>
+To:     Mike Rapoport <rppt@kernel.org>
+Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        WANG Xuerui <kernel@xen0n.name>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linux-mips@vger.kernel.org
+Subject: Re: [PATCH] mips: drop ranges for definition of ARCH_FORCE_MAX_ORDER
+Message-ID: <20230322100258.bgqgawzpfoetqlbc@box>
+References: <20230322081520.2516226-1-rppt@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230307143558.294354-8-vschneid@redhat.com>
+In-Reply-To: <20230322081520.2516226-1-rppt@kernel.org>
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Tue, Mar 07, 2023 at 02:35:58PM +0000, Valentin Schneider wrote:
+On Wed, Mar 22, 2023 at 10:15:20AM +0200, Mike Rapoport wrote:
+> From: "Mike Rapoport (IBM)" <rppt@kernel.org>
+> 
+> MIPS defines insane ranges for ARCH_FORCE_MAX_ORDER allowing MAX_ORDER
+> up to 63, which implies maximal contiguous allocation size of 2^63
+> pages.
+> 
+> Drop bogus definitions of ranges for ARCH_FORCE_MAX_ORDER and leave it a
+> simple integer with sensible defaults.
+> 
+> Users that *really* need to change the value of ARCH_FORCE_MAX_ORDER
+> will be able to do so but they won't be mislead by the bogus ranges.
+> 
+> Signed-off-by: Mike Rapoport (IBM) <rppt@kernel.org>
 
-> @@ -477,6 +490,25 @@ static __always_inline void csd_unlock(struct __call_single_data *csd)
->  	smp_store_release(&csd->node.u_flags, 0);
->  }
->  
-> +static __always_inline void
-> +raw_smp_call_single_queue(int cpu, struct llist_node *node, smp_call_func_t func)
-> +{
-> +	/*
-> +	 * The list addition should be visible to the target CPU when it pops
-> +	 * the head of the list to pull the entry off it in the IPI handler
-> +	 * because of normal cache coherency rules implied by the underlying
-> +	 * llist ops.
-> +	 *
-> +	 * If IPIs can go out of order to the cache coherency protocol
-> +	 * in an architecture, sufficient synchronisation should be added
-> +	 * to arch code to make it appear to obey cache coherency WRT
-> +	 * locking and barrier primitives. Generic code isn't really
-> +	 * equipped to do the right thing...
-> +	 */
-> +	if (llist_add(node, &per_cpu(call_single_queue, cpu)))
-> +		send_call_function_single_ipi(cpu, func);
-> +}
-> +
->  static DEFINE_PER_CPU_SHARED_ALIGNED(call_single_data_t, csd_data);
->  
->  void __smp_call_single_queue(int cpu, struct llist_node *node)
-> @@ -493,21 +525,25 @@ void __smp_call_single_queue(int cpu, struct llist_node *node)
->  		}
->  	}
->  #endif
->  	/*
-> +	 * We have to check the type of the CSD before queueing it, because
-> +	 * once queued it can have its flags cleared by
-> +	 *   flush_smp_call_function_queue()
-> +	 * even if we haven't sent the smp_call IPI yet (e.g. the stopper
-> +	 * executes migration_cpu_stop() on the remote CPU).
->  	 */
-> +	if (trace_ipi_send_cpumask_enabled()) {
-> +		call_single_data_t *csd;
-> +		smp_call_func_t func;
-> +
-> +		csd = container_of(node, call_single_data_t, node.llist);
-> +		func = CSD_TYPE(csd) == CSD_TYPE_TTWU ?
-> +			sched_ttwu_pending : csd->func;
-> +
-> +		raw_smp_call_single_queue(cpu, node, func);
-> +	} else {
-> +		raw_smp_call_single_queue(cpu, node, NULL);
-> +	}
->  }
+Acked-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
 
-Hurmph... so we only really consume @func when we IPI. Would it not be
-more useful to trace this thing for *every* csd enqeued?
-
-
-
+-- 
+  Kiryl Shutsemau / Kirill A. Shutemov

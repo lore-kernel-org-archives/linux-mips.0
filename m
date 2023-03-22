@@ -2,139 +2,235 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2AE09C6FD1F
-	for <linux-mips@archiver.kernel.org>; Wed, 22 Mar 2023 16:48:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4F567C6FD1F
+	for <linux-mips@archiver.kernel.org>; Wed, 22 Mar 2023 17:03:26 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230241AbjCVQsu (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 22 Mar 2023 12:48:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51816 "EHLO
+        id S229905AbjCVRDX (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 22 Mar 2023 13:03:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55582 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230072AbjCVQss (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 22 Mar 2023 12:48:48 -0400
-Received: from mail-ua1-x935.google.com (mail-ua1-x935.google.com [IPv6:2607:f8b0:4864:20::935])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1367D567BF
-        for <linux-mips@vger.kernel.org>; Wed, 22 Mar 2023 09:48:42 -0700 (PDT)
-Received: by mail-ua1-x935.google.com with SMTP id x33so13078471uaf.12
-        for <linux-mips@vger.kernel.org>; Wed, 22 Mar 2023 09:48:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20210112.gappssmtp.com; s=20210112; t=1679503721;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=2w0LAtw9cPfSNM4qX5A/16NLh+XxymxwSqd/uu1gfQU=;
-        b=RyjBxDPR9Gaa2RWhPtZwOgt/F7XlwPMCS9VUiT2DPq+iirNmsZnpWZUIFrFJo7YSid
-         OTI4uancfUSnhPkwaehBVH+XRm32vttS69BLXU/wY/gWONf+Wxr1HdQoJmRmBLepuIMG
-         c3B9YgQTrYX9KGhqMlwANDi8yY5dJVd4cf6zFbtg91qD8/0tTA87NAAbaXBQOjwHeFaS
-         i1ZlwAWQ40NjAlIDGmBcKdym3nD79WlUE8ZRSvfu6N7l1numhTv/q8SxQow1kmRetpm1
-         pkk4gx35heDUY/1HkanuMYR3dqdBfSzdIiWVBJvVNDrJ3fApnCjTNSqxxefzkZZQlrlE
-         z1HA==
+        with ESMTP id S230236AbjCVRDV (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 22 Mar 2023 13:03:21 -0400
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E483C14EB2
+        for <linux-mips@vger.kernel.org>; Wed, 22 Mar 2023 10:02:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1679504484;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=2ZS63eR35hQQpuztlWGnGcv/jaBVlYMjTvbdWWfPWAY=;
+        b=R3wXvEy72H8DcVvRWZo9a//6v+b5En0EzBxfc4xHkMLClw1tc78evZr3GgYrWXhBrKPOXg
+        PEwV9S3IIQ+BoQp1ZiT51WCfYq0YSGMMCv6TBC3xop+CgRumdNECwRpYwXSVkF+1+n4K0G
+        +R5bCoOdVHpe8s7wie3+uVSMT3ivBYQ=
+Received: from mail-oi1-f198.google.com (mail-oi1-f198.google.com
+ [209.85.167.198]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-35-QNY-eFdSN0GUIBaHx60_yw-1; Wed, 22 Mar 2023 13:01:23 -0400
+X-MC-Unique: QNY-eFdSN0GUIBaHx60_yw-1
+Received: by mail-oi1-f198.google.com with SMTP id w11-20020a0568080d4b00b00386d5b8445dso6116395oik.1
+        for <linux-mips@vger.kernel.org>; Wed, 22 Mar 2023 10:01:23 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1679503721;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=2w0LAtw9cPfSNM4qX5A/16NLh+XxymxwSqd/uu1gfQU=;
-        b=gVNwcZ1i0M9PcfKJxQsVuB8SZ78z3x21JlcPsvJMF1esCCIHFIhfdbwzAax7wb9FBx
-         CT3VGGf/RAiTMZ1RGSQrYUFD8cNgU1+R2Yg3faQvi6jZvm5P9Ntgmz8PTZHL1sEgFrBR
-         yAhEfBbf7xax/H9VRDBvrZsU4vCttsAboPI3v+vCVvR5IhNak97Lw2DqPpK0ENoSLpWO
-         8yC1gk4ODal2cB86ZsFDiarlM0jr2IKzaIL3lMQmb0YiSxC3aYYijlg/MPsPapvPK8nk
-         QUmzUA6KEwvZvxhDMp9aY5MHbjJRZdt+b9vv0SP75CNPWOauxCl6QS76IoMDvQc1fiOH
-         F+jw==
-X-Gm-Message-State: AAQBX9dhSffMZgEhdj2OnP3PlDK44j79MpDjyxppirqlBJa6583KUg81
-        YrKF1+QYD2V33u0EDCzISbj4J1qW1wOHpdULkrfYHA==
-X-Google-Smtp-Source: AKy350ZLZo/F6L7OujzYN41ze3NYo682Vo6dkHIwnotz4DMq72LZxaPffaxLlojXIZ4FO8//leYaf4FE/3yOtteccKU=
-X-Received: by 2002:a05:6130:290:b0:688:d612:2024 with SMTP id
- q16-20020a056130029000b00688d6122024mr3518649uac.2.1679503721140; Wed, 22 Mar
- 2023 09:48:41 -0700 (PDT)
+        d=1e100.net; s=20210112; t=1679504482;
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=2ZS63eR35hQQpuztlWGnGcv/jaBVlYMjTvbdWWfPWAY=;
+        b=S1GsF1oCiBXv8v2DlbydzXVLKD1rZ3RJq0JFvwfo67ihLiU52lt3W8BDo8rHeQZkyX
+         PWZ2cN8QQyOBOv/+FxjII/wGSiAEZ3vAPFE0hHQGUnrpNe3wE7CqXgZPzXySL6+mJlPh
+         m202keEYoQ11cquSAIQ0npfz2DzojX7YMx1KOLagd2jNeYBX5g71SdaXgmm37c3/MBw/
+         +QYtKmGazMLP+3FuHJKTLk4MWD3JYeAgtAjanjTraF53/sVUQ0U9kojV0hfG4MMxTiOG
+         hE3/fsDKkhZuk/PBjfBfqJWsVxYeAtQhJbuBJveouh4LG9Kh7kfbm3iQGElC8rsaaIRx
+         fgNQ==
+X-Gm-Message-State: AO0yUKUEjXK7ZEnJXBCMm5350/yiyoI2K++mrAY+yej4ep78ib1EvyNS
+        QwMhDZpvb3qLhaLhrE/ZlW19gmp1WRc9hzijBW6ijnp3uFIwL3f5dSm6qzPG6ojVcfuktZHwPUc
+        Xg+Bi7/v858PAmPxcr+b0GQ==
+X-Received: by 2002:a05:6830:1397:b0:69b:c665:95ef with SMTP id d23-20020a056830139700b0069bc66595efmr1849094otq.32.1679504481964;
+        Wed, 22 Mar 2023 10:01:21 -0700 (PDT)
+X-Google-Smtp-Source: AK7set9OhxWG20qH1i/Yp6i2el5aA4zIJA9CTIhUo/MbvkBAyasdde0EdhDBEsgwB6QV+kPj7JTH5w==
+X-Received: by 2002:a05:6830:1397:b0:69b:c665:95ef with SMTP id d23-20020a056830139700b0069bc66595efmr1849034otq.32.1679504481408;
+        Wed, 22 Mar 2023 10:01:21 -0700 (PDT)
+Received: from vschneid.remote.csb ([154.57.232.159])
+        by smtp.gmail.com with ESMTPSA id g19-20020a05620a40d300b007290be5557bsm11733172qko.38.2023.03.22.10.01.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 22 Mar 2023 10:01:20 -0700 (PDT)
+From:   Valentin Schneider <vschneid@redhat.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-snps-arc@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org,
+        linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org,
+        loongarch@lists.linux.dev, linux-mips@vger.kernel.org,
+        openrisc@lists.librecores.org, linux-parisc@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
+        linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
+        sparclinux@vger.kernel.org, linux-xtensa@linux-xtensa.org,
+        x86@kernel.org, "Paul E. McKenney" <paulmck@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Marcelo Tosatti <mtosatti@redhat.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Marc Zyngier <maz@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Guo Ren <guoren@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: Re: [PATCH v5 7/7] sched, smp: Trace smp callback causing an IPI
+In-Reply-To: <20230322140434.GC2357380@hirez.programming.kicks-ass.net>
+References: <20230307143558.294354-1-vschneid@redhat.com>
+ <20230307143558.294354-8-vschneid@redhat.com>
+ <20230322095329.GS2017917@hirez.programming.kicks-ass.net>
+ <xhsmhmt45c703.mognet@vschneid.remote.csb>
+ <20230322140434.GC2357380@hirez.programming.kicks-ass.net>
+Date:   Wed, 22 Mar 2023 17:01:13 +0000
+Message-ID: <xhsmhjzz8d8km.mognet@vschneid.remote.csb>
 MIME-Version: 1.0
-References: <20230315110650.142577-1-keguang.zhang@gmail.com> <20230315110650.142577-4-keguang.zhang@gmail.com>
-In-Reply-To: <20230315110650.142577-4-keguang.zhang@gmail.com>
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-Date:   Wed, 22 Mar 2023 17:48:30 +0100
-Message-ID: <CAMRc=MezbVO93WYw2PPV-0qTFid5BE01dfPptNWS4Kc9AXL+fA@mail.gmail.com>
-Subject: Re: [PATCH v3 3/4] gpio: loongson1: Add DT support
-To:     Keguang Zhang <keguang.zhang@gmail.com>
-Cc:     linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Wed, Mar 15, 2023 at 12:07=E2=80=AFPM Keguang Zhang <keguang.zhang@gmail=
-.com> wrote:
+On 22/03/23 15:04, Peter Zijlstra wrote:
+> On Wed, Mar 22, 2023 at 12:20:28PM +0000, Valentin Schneider wrote:
+>> On 22/03/23 10:53, Peter Zijlstra wrote:
 >
-> This patch adds DT support for Loongson-1 GPIO driver.
+>> > Hurmph... so we only really consume @func when we IPI. Would it not be
+>> > more useful to trace this thing for *every* csd enqeued?
+>>
+>> It's true that any CSD enqueued on that CPU's call_single_queue in the
+>> [first CSD llist_add()'ed, IPI IRQ hits] timeframe is a potential source of
+>> interference.
+>>
+>> However, can we be sure that first CSD isn't an indirect cause for the
+>> following ones? say the target CPU exits RCU EQS due to the IPI, there's a
+>> bit of time before it gets to flush_smp_call_function_queue() where some other CSD
+>> could be enqueued *because* of that change in state.
+>>
+>> I couldn't find a easy example of that, I might be biased as this is where
+>> I'd like to go wrt IPI'ing isolated CPUs in usermode. But regardless, when
+>> correlating an IPI IRQ with its source, we'd always have to look at the
+>> first CSD in that CSD stack.
 >
-> Signed-off-by: Keguang Zhang <keguang.zhang@gmail.com>
+> So I was thinking something like this:
+>
 > ---
-> V2 -> V3: None
-> V1 -> V2: Let gpiolib parse ngpios property
->           Remove unnecessary alias id parsing
->           Remove superfluous initialization done by bgpio_init()
->           Add MODULE_DEVICE_TABLE()
->           Other minor fixes
+> Subject: trace,smp: Trace all smp_function_call*() invocations
+> From: Peter Zijlstra <peterz@infradead.org>
+> Date: Wed Mar 22 14:58:36 CET 2023
+>
+> (Ab)use the trace_ipi_send_cpu*() family to trace all
+> smp_function_call*() invocations, not only those that result in an
+> actual IPI.
+>
+> The queued entries log their callback function while the actual IPIs
+> are traced on generic_smp_call_function_single_interrupt().
+>
+> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 > ---
->  drivers/gpio/gpio-loongson1.c | 19 ++++++++++++++++---
->  1 file changed, 16 insertions(+), 3 deletions(-)
+>  kernel/smp.c |   58 ++++++++++++++++++++++++++++++----------------------------
+>  1 file changed, 30 insertions(+), 28 deletions(-)
 >
-> diff --git a/drivers/gpio/gpio-loongson1.c b/drivers/gpio/gpio-loongson1.=
-c
-> index dddfc71f0e10..6ca3b969db4d 100644
-> --- a/drivers/gpio/gpio-loongson1.c
-> +++ b/drivers/gpio/gpio-loongson1.c
-> @@ -68,25 +68,38 @@ static int ls1x_gpio_probe(struct platform_device *pd=
-ev)
->         ls1x_gc->gc.owner =3D THIS_MODULE;
->         ls1x_gc->gc.request =3D ls1x_gpio_request;
->         ls1x_gc->gc.free =3D ls1x_gpio_free;
-> -       ls1x_gc->gc.base =3D pdev->id * 32;
-> +       /*
-> +        * Clear ngpio to let gpiolib get the correct number
-> +        * by reading ngpios property
-> +        */
-> +       ls1x_gc->gc.ngpio =3D 0;
->
->         ret =3D devm_gpiochip_add_data(dev, &ls1x_gc->gc, ls1x_gc);
->         if (ret)
->                 goto err;
->
->         platform_set_drvdata(pdev, ls1x_gc);
-> -       dev_info(dev, "Loongson1 GPIO driver registered\n");
-> +
-> +       dev_info(dev, "GPIO controller registered with %d pins\n",
-> +                ls1x_gc->gc.ngpio);
->
->         return 0;
->  err:
-> -       dev_err(dev, "failed to register GPIO device\n");
-> +       dev_err(dev, "failed to register GPIO controller\n");
->         return ret;
+> --- a/kernel/smp.c
+> +++ b/kernel/smp.c
+> @@ -106,18 +106,20 @@ void __init call_function_init(void)
 >  }
 >
-> +static const struct of_device_id ls1x_gpio_dt_ids[] =3D {
-> +       { .compatible =3D "loongson,ls1x-gpio" },
-> +       { /* sentinel */ }
-> +};
-> +MODULE_DEVICE_TABLE(of, ls1x_gpio_dt_ids);
-> +
->  static struct platform_driver ls1x_gpio_driver =3D {
->         .probe  =3D ls1x_gpio_probe,
->         .driver =3D {
->                 .name   =3D "ls1x-gpio",
-> +               .of_match_table =3D ls1x_gpio_dt_ids,
->         },
->  };
->
-> --
-> 2.34.1
->
+>  static __always_inline void
+> -send_call_function_single_ipi(int cpu, smp_call_func_t func)
+> +send_call_function_single_ipi(int cpu)
+>  {
+>       if (call_function_single_prep_ipi(cpu)) {
+> -		trace_ipi_send_cpu(cpu, _RET_IP_, func);
+> +		trace_ipi_send_cpu(cpu, _RET_IP_,
+> +				   generic_smp_call_function_single_interrupt);
 
-I applied this and the last one but switched patches 3 and 4 as it's
-customary to have bindings in the tree before DT support.
+Hm, this does get rid of the func being passed down the helpers, but this
+means the trace events are now stateful, i.e. I need the first and last
+events in a CSD stack to figure out which one actually caused the IPI.
 
-Bart
+It also requires whoever is looking at the trace to be aware of which IPIs
+are attached to a CSD, and which ones aren't. ATM that's only the resched
+IPI, but per the cover letter there's more to come (e.g. tick_broadcast()
+for arm64/riscv and a few others). For instance:
+
+       hackbench-157   [001]    10.894320: ipi_send_cpu:         cpu=3 callsite=check_preempt_curr+0x37 callback=0x0
+       hackbench-157   [001]    10.895068: ipi_send_cpu:         cpu=3 callsite=try_to_wake_up+0x29e callback=sched_ttwu_pending+0x0
+       hackbench-157   [001]    10.895068: ipi_send_cpu:         cpu=3 callsite=try_to_wake_up+0x29e callback=generic_smp_call_function_single_interrupt+0x0
+
+That first one sent a RESCHEDULE IPI, the second one a CALL_FUNCTION one,
+but you really have to know what you're looking at...
+
+Are you worried about the @func being pushed down? Staring at x86 asm is
+not good for the soul, but AFAICT this does cause an extra register to be
+popped in the prologue because all of the helpers are __always_inline, so
+both paths of the static key(s) are in the same stackframe.
+
+I can "improve" this with:
+
+---
+diff --git a/kernel/smp.c b/kernel/smp.c
+index 5cd680a7e78ef..55f120dae1713 100644
+--- a/kernel/smp.c
++++ b/kernel/smp.c
+@@ -511,6 +511,26 @@ raw_smp_call_single_queue(int cpu, struct llist_node *node, smp_call_func_t func
+ 
+ static DEFINE_PER_CPU_SHARED_ALIGNED(call_single_data_t, csd_data);
+ 
++static noinline void __smp_call_single_queue_trace(int cpu, struct llist_node *node)
++{
++	call_single_data_t *csd;
++	smp_call_func_t func;
++
++
++	/*
++	 * We have to check the type of the CSD before queueing it, because
++	 * once queued it can have its flags cleared by
++	 *   flush_smp_call_function_queue()
++	 * even if we haven't sent the smp_call IPI yet (e.g. the stopper
++	 * executes migration_cpu_stop() on the remote CPU).
++	 */
++	csd = container_of(node, call_single_data_t, node.llist);
++	func = CSD_TYPE(csd) == CSD_TYPE_TTWU ?
++		sched_ttwu_pending : csd->func;
++
++	raw_smp_call_single_queue(cpu, node, func);
++}
++
+ void __smp_call_single_queue(int cpu, struct llist_node *node)
+ {
+ #ifdef CONFIG_CSD_LOCK_WAIT_DEBUG
+@@ -525,25 +545,10 @@ void __smp_call_single_queue(int cpu, struct llist_node *node)
+ 		}
+ 	}
+ #endif
+-	/*
+-	 * We have to check the type of the CSD before queueing it, because
+-	 * once queued it can have its flags cleared by
+-	 *   flush_smp_call_function_queue()
+-	 * even if we haven't sent the smp_call IPI yet (e.g. the stopper
+-	 * executes migration_cpu_stop() on the remote CPU).
+-	 */
+-	if (trace_ipi_send_cpumask_enabled()) {
+-		call_single_data_t *csd;
+-		smp_call_func_t func;
+-
+-		csd = container_of(node, call_single_data_t, node.llist);
+-		func = CSD_TYPE(csd) == CSD_TYPE_TTWU ?
+-			sched_ttwu_pending : csd->func;
+-
+-		raw_smp_call_single_queue(cpu, node, func);
+-	} else {
++	if (trace_ipi_send_cpumask_enabled())
++		__smp_call_single_queue_trace(cpu, node);
++	else
+ 		raw_smp_call_single_queue(cpu, node, NULL);
+-	}
+ }
+ 
+ /*
+

@@ -2,52 +2,47 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C0EDFC6FD20
-	for <linux-mips@archiver.kernel.org>; Fri, 24 Mar 2023 13:13:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 76C4EC761AF
+	for <linux-mips@archiver.kernel.org>; Fri, 24 Mar 2023 13:13:44 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229734AbjCXNNn (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        id S231808AbjCXNNn (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
         Fri, 24 Mar 2023 09:13:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34038 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34046 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230495AbjCXNNm (ORCPT
+        with ESMTP id S231320AbjCXNNm (ORCPT
         <rfc822;linux-mips@vger.kernel.org>); Fri, 24 Mar 2023 09:13:42 -0400
 Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id B0FCD2128;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id B3EBFA270;
         Fri, 24 Mar 2023 06:13:40 -0700 (PDT)
 Received: from uucp (helo=alpha)
         by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1pfhEh-00010v-04; Fri, 24 Mar 2023 14:13:39 +0100
+        id 1pfhEh-00010v-01; Fri, 24 Mar 2023 14:13:39 +0100
 Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 9A431C1B8C; Fri, 24 Mar 2023 14:13:10 +0100 (CET)
-Date:   Fri, 24 Mar 2023 14:13:10 +0100
+        id 35452C1B8C; Fri, 24 Mar 2023 14:12:13 +0100 (CET)
+Date:   Fri, 24 Mar 2023 14:12:13 +0100
 From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Jiaxun Yang <jiaxun.yang@flygoat.com>
-Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        hch@lst.de
-Subject: Re: [PATCH v2 4/4] MIPS: c-r4k: Always install dma flush functions
-Message-ID: <20230324131310.GE15824@alpha.franken.de>
-References: <20230222132425.7442-1-jiaxun.yang@flygoat.com>
- <20230222132425.7442-5-jiaxun.yang@flygoat.com>
+To:     Rob Herring <robh@kernel.org>
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] MIPS: octeon: Use of_address_to_resource()
+Message-ID: <20230324131213.GB15824@alpha.franken.de>
+References: <20230319163148.225443-1-robh@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230222132425.7442-5-jiaxun.yang@flygoat.com>
+In-Reply-To: <20230319163148.225443-1-robh@kernel.org>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Wed, Feb 22, 2023 at 01:24:25PM +0000, Jiaxun Yang wrote:
-> As nowadays DMA coherence is managed per device, it is possible
-> to have a system that is defaulted to coherent dma but still
-> have noncoherent device that needs to use those flush functions.
+On Sun, Mar 19, 2023 at 11:31:48AM -0500, Rob Herring wrote:
+> Replace of_get_address() and of_translate_address() calls with single
+> call to of_address_to_resource().
 > 
-> Just install them unconditionally.
-> 
-> Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+> Signed-off-by: Rob Herring <robh@kernel.org>
 > ---
->  arch/mips/mm/c-r4k.c | 12 +++---------
->  1 file changed, 3 insertions(+), 9 deletions(-)
+>  arch/mips/cavium-octeon/octeon-irq.c | 35 ++++++++++++----------------
+>  1 file changed, 15 insertions(+), 20 deletions(-)
 
 applied to mips-next.
 

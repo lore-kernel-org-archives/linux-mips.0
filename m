@@ -2,56 +2,92 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D2500C77B61
-	for <linux-mips@archiver.kernel.org>; Tue, 28 Mar 2023 07:47:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DDDA6C761A6
+	for <linux-mips@archiver.kernel.org>; Tue, 28 Mar 2023 12:05:45 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230093AbjC1Hre (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 28 Mar 2023 03:47:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33056 "EHLO
+        id S230478AbjC1MFo (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 28 Mar 2023 08:05:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60880 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232303AbjC1Hrd (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Tue, 28 Mar 2023 03:47:33 -0400
-Received: from mail.lokoho.com (mail.lokoho.com [217.61.105.98])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65038118
-        for <linux-mips@vger.kernel.org>; Tue, 28 Mar 2023 00:47:32 -0700 (PDT)
-Received: by mail.lokoho.com (Postfix, from userid 1001)
-        id 542DF83F43; Tue, 28 Mar 2023 08:46:00 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lokoho.com; s=mail;
-        t=1679989562; bh=Z0N5VlX9/JlryGOL5I747Le9USomZJCRNNGRT3LbbKc=;
-        h=Date:From:To:Subject:From;
-        b=qYfM19711p20d4hKEg4yA9zBTM2Ygs8zSkSj3TkdE61XsJMJpbBMu/D1Hv37JJsTT
-         yOuls6/i5zRqx/m6oRiqws+YjmycKnb0qme96bvckqofBeLd/KSaf8INb4lVf/5/Hc
-         gBEJOd5FpZ2JcPjn3sPnY0I3DorSfgu2fAI0zY+sfo7JoD25aG3266mk0Lg2ZtD2sD
-         5XnuqnHWOfV5a8mlMciqfhHEVgqC2+muTx/m9Z2k2KsV+Y184DWsjtpviowtcwDqPj
-         SRBty9eEB15NkJgbPczoHXAIRIR6xrt8+bI9sx1ZBQjnRZg6fkvfyiSokYdxqqCrwd
-         YSZYfI5mn/Hxw==
-Received: by mail.lokoho.com for <linux-mips@vger.kernel.org>; Tue, 28 Mar 2023 07:45:59 GMT
-Message-ID: <20230328074501-0.1.4x.1n09w.0.legddb0bb7@lokoho.com>
-Date:   Tue, 28 Mar 2023 07:45:59 GMT
-From:   "Adam Charachuta" <adam.charachuta@lokoho.com>
-To:     <linux-mips@vger.kernel.org>
-Subject: =?UTF-8?Q?S=C5=82owa_kluczowe_do_wypozycjonowania?=
-X-Mailer: mail.lokoho.com
+        with ESMTP id S230280AbjC1MFn (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Tue, 28 Mar 2023 08:05:43 -0400
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6D277DB1;
+        Tue, 28 Mar 2023 05:05:17 -0700 (PDT)
+Received: by mail-pl1-x62e.google.com with SMTP id o2so11413515plg.4;
+        Tue, 28 Mar 2023 05:05:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112; t=1680005117;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=nPmXX1hgKpt/BYBMC6yN1gahjjJEjANZpQyVziEPpes=;
+        b=ST4nocriMAAXBAacSI1ZwetD0Femj7VgBRIjRFPGLYGn7klPoTVq3Sfn5CvaIZQjgR
+         nWUk/l6PWtl9uezfCCSC5EDPyIT4FOsd31j2VeOfesy9AeHwGGga3qvN87/nQo4Eoto5
+         cx38g5oZb49oh/pHnf5FyYb06fQadrLr0l7Chnw7MHQhlSs3CPYBNGkwSE00R45iTjg/
+         AL6Ss8uumL7ynJL6RVW1hsQTA4naoVjpQ3DzP2DMnKWkahwEtrxG/vJ9ea1HVBpXa0M1
+         YSRWodEpr/rttG3N4dw2yHiHzb1KgFV8YyHADn88pTwwsFwZtAkD1SBRWbWSMHaDiWl3
+         dbKg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1680005117;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=nPmXX1hgKpt/BYBMC6yN1gahjjJEjANZpQyVziEPpes=;
+        b=eakc3HVnDXxkQgkvvpT6k7Cq9V8udxn0eb4bHcR0Et2RhFkfXmFhXJWFt7DrSnM7MX
+         K6kXfZv7ov761t6xLi/0xummq7Qdp5HnQknkH3ZmGgMFSf5sD+Zy95r3h2s0dXN0HCp/
+         CXoI4oTM2l49f7/tsyu9i3ehN2pN27twSVzXGGEcnRyJuwLyK1Qyl0YhVW67Xce0FJZq
+         bAv1vSZyImyVgfjp4zZ7CmJUMq36G8l0n+6h3Pccnk/8DO3HGU1u6CDlwta46wOTNlO5
+         dA4VVvAk4oGA0ceFCepGQOHyjRnCzMZyKWhxMVbCyUSA3SjWcBTAtHGmZFjLtKnFb+Ij
+         eBAw==
+X-Gm-Message-State: AAQBX9cEq92J/GF42PE1VF/Djtg6TM1B0RZ76z/NrzxJxePytB9vAPa5
+        y1rJ0qxNTdD6xTpIjPtDG+3jIZ/Pf+/qVA==
+X-Google-Smtp-Source: AKy350ZgxWbNC6s6F1wnOqlzm1o/JQ1Ze0KdehbawRAn6htMsNtoi2+0+LeJiPJMiAByZ/zbgilhcg==
+X-Received: by 2002:a17:902:f2ca:b0:1a1:c54c:1a36 with SMTP id h10-20020a170902f2ca00b001a1c54c1a36mr12338427plc.63.1680005116895;
+        Tue, 28 Mar 2023 05:05:16 -0700 (PDT)
+Received: from kelvin-ThinkPad-L14-Gen-1.. (94.130.220.35.bc.googleusercontent.com. [35.220.130.94])
+        by smtp.gmail.com with ESMTPSA id ju10-20020a170903428a00b0019a83f2c99bsm21013956plb.28.2023.03.28.05.05.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 28 Mar 2023 05:05:16 -0700 (PDT)
+From:   Keguang Zhang <keguang.zhang@gmail.com>
+To:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-mips@vger.kernel.org
+Cc:     Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Keguang Zhang <keguang.zhang@gmail.com>
+Subject: [PATCH 0/3] Move Loongson1 PWM timer to clocksource framework
+Date:   Tue, 28 Mar 2023 20:05:03 +0800
+Message-Id: <20230328120506.375864-1-keguang.zhang@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Dzie=C5=84 dobry,
+Move Loongson1 PWM timer to clocksource framework
+and update the Kconfig/Makefile options accordingly.
 
-zapozna=C5=82em si=C4=99 z Pa=C5=84stwa ofert=C4=85 i z przyjemno=C5=9Bci=
-=C4=85 przyznaj=C4=99, =C5=BCe przyci=C4=85ga uwag=C4=99 i zach=C4=99ca d=
-o dalszych rozm=C3=B3w.=20
+Keguang Zhang (3):
+  MIPS: Loongson32: Remove deprecated PWM timer clocksource
+  dt-bindings: timer: Add Loongson-1 clocksource
+  clocksource: loongson1: Move PWM timer to clocksource framework
 
-Pomy=C5=9Bla=C5=82em, =C5=BCe mo=C5=BCe m=C3=B3g=C5=82bym mie=C4=87 sw=C3=
-=B3j wk=C5=82ad w Pa=C5=84stwa rozw=C3=B3j i pom=C3=B3c dotrze=C4=87 z t=C4=
-=85 ofert=C4=85 do wi=C4=99kszego grona odbiorc=C3=B3w. Pozycjonuj=C4=99 =
-strony www, dzi=C4=99ki czemu generuj=C4=85 =C5=9Bwietny ruch w sieci.
+ .../timer/loongson,ls1x-pwmtimer.yaml         |  48 ++++
+ arch/mips/loongson32/Kconfig                  |  37 ---
+ arch/mips/loongson32/common/time.c            | 210 ----------------
+ drivers/clocksource/Kconfig                   |   9 +
+ drivers/clocksource/Makefile                  |   1 +
+ drivers/clocksource/timer-loongson1-pwm.c     | 236 ++++++++++++++++++
+ 6 files changed, 294 insertions(+), 247 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/timer/loongson,ls1x-pwmtimer.yaml
+ create mode 100644 drivers/clocksource/timer-loongson1-pwm.c
 
-Mo=C5=BCemy porozmawia=C4=87 w najbli=C5=BCszym czasie?
 
+base-commit: f7b5a248213f0976c7944925f3f3ab7ff199e581
+-- 
+2.34.1
 
-Pozdrawiam
-Adam Charachuta

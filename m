@@ -2,50 +2,50 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 22885C7EE26
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EBD9FC77B6D
 	for <linux-mips@archiver.kernel.org>; Wed, 29 Mar 2023 15:53:50 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231215AbjC2PxX (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 29 Mar 2023 11:53:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42928 "EHLO
+        id S231225AbjC2PxY (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 29 Mar 2023 11:53:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42926 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230113AbjC2PxO (ORCPT
+        with ESMTP id S230110AbjC2PxO (ORCPT
         <rfc822;linux-mips@vger.kernel.org>); Wed, 29 Mar 2023 11:53:14 -0400
-Received: from mail-oa1-f41.google.com (mail-oa1-f41.google.com [209.85.160.41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B5771FD8;
-        Wed, 29 Mar 2023 08:53:10 -0700 (PDT)
-Received: by mail-oa1-f41.google.com with SMTP id 586e51a60fabf-17997ccf711so16697497fac.0;
-        Wed, 29 Mar 2023 08:53:10 -0700 (PDT)
+Received: from mail-oo1-f48.google.com (mail-oo1-f48.google.com [209.85.161.48])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78ABA10F0;
+        Wed, 29 Mar 2023 08:53:08 -0700 (PDT)
+Received: by mail-oo1-f48.google.com with SMTP id p2-20020a056820044200b0053e5914a50fso1233252oou.2;
+        Wed, 29 Mar 2023 08:53:08 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680105190;
+        d=1e100.net; s=20210112; t=1680105188;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=o+n6GH4Nk3FkonjtkMjc2Nc5AHFrGJ7ZcCh9y20RfPM=;
-        b=t16RGkAGgM9KhBHOlaER2V+7DfsbXQipFXyB1gauZKY6Cwndf4VNz4qV75x3vnhXGH
-         4XtnhmSDGQBj6AGwoPAWN+UoDiSj0b71dJ0lRt4PB8Ri4hwa+g3R8iw+C2BMZKOhHBtT
-         xFobQe+npj/NrXtPl2R+PKJ239ZAOjW2rZvKriB0vUJ/yTXpi6YAxYb3G1t5wyyb1wSf
-         zwYUkGXklGpJDqmiYIJDADHEXldWskcmnnmGPb94NIGUMCqs3yHSRqhoyIpTwYkBwrqO
-         FcUokPjo5jsuKxuPXxNTHtaY2Ad2Wndgi4wsiGADdAZbEqyXRTMqvH6ii+DawVq+nX2U
-         8VpQ==
-X-Gm-Message-State: AAQBX9fV6KjCDp6IC4I+CrDdx4KbKiSeeeSnn/YYLdaQrg6jlnyTQn48
-        8INlOsQAEq9tJUmmZwqlEg==
-X-Google-Smtp-Source: AK7set9TWw7WlWpaVRoaXna+i6jfLH3b5BBVKHUpgOSqr1CxQaOSf7zeRp9d9vawXGilKhjHZUk1VQ==
-X-Received: by 2002:a05:6870:a2d4:b0:17a:a959:ea2c with SMTP id w20-20020a056870a2d400b0017aa959ea2cmr12910266oak.34.1680105189867;
-        Wed, 29 Mar 2023 08:53:09 -0700 (PDT)
+        bh=/qOq2NGpUAbxXp1g8F5WR4fkX2S7bH0m0xxnMP60FJ8=;
+        b=XkouJt2RhMRBqqeek+OXcgxC+1hWWNASgQzUkUrKoEW7RtA/WdqoU9GOtiIPVKFXzo
+         sBR6a4W4Zg6cbvEQ+qWh7bZegVwFBM6n9Owe45S6Q6P6hWPvp3obfuLoT67jYsQBFKeV
+         878ZISfyJATV4JVdqnktH5ike1z0F6kW2n/V8xVVZojnqFQg7fybDDiFr5EvI+c2iPLI
+         ET/ngT7/4A+GtqxM0OJI2IRCf829K+Ce4ULfrXfIcagQgEyJYtgE/yn1/RHhzxBlPb1q
+         JFnUbKrm/5/2aEZG1nJEuTi/QovIOEErBbtPcvx7nDQGRA3mSdh5UvqbUn0lszjGWp7i
+         Qrmw==
+X-Gm-Message-State: AO0yUKXFNw29Se3D8m+XmEmCBSVbCPVMp5j7I7F5Xr3/H7FMbu9q1Oxf
+        IyQfINoGWPSRPoPP/+l7rA==
+X-Google-Smtp-Source: AK7set+oji6+6UZVdlF32jW97Cd5wKPzdK3BfB/MTFUCEZ/Z55TdZpfcLorcJt7g+5txg06Aa2xkVA==
+X-Received: by 2002:a4a:3797:0:b0:538:1e63:1725 with SMTP id r145-20020a4a3797000000b005381e631725mr10070334oor.4.1680105187664;
+        Wed, 29 Mar 2023 08:53:07 -0700 (PDT)
 Received: from robh_at_kernel.org (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
-        by smtp.gmail.com with ESMTPSA id y18-20020a056830109200b0069fb033f577sm7210819oto.51.2023.03.29.08.53.08
+        by smtp.gmail.com with ESMTPSA id s9-20020a4a9689000000b005255e556399sm13966954ooi.43.2023.03.29.08.53.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 29 Mar 2023 08:53:09 -0700 (PDT)
-Received: (nullmailer pid 3198081 invoked by uid 1000);
+        Wed, 29 Mar 2023 08:53:07 -0700 (PDT)
+Received: (nullmailer pid 3198063 invoked by uid 1000);
         Wed, 29 Mar 2023 15:52:45 -0000
 From:   Rob Herring <robh@kernel.org>
-Date:   Wed, 29 Mar 2023 10:52:07 -0500
-Subject: [PATCH 10/19] cacheinfo: Adjust includes to remove of_device.h
+Date:   Wed, 29 Mar 2023 10:51:58 -0500
+Subject: [PATCH 01/19] of: Make devtree_lock declaration private
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20230329-dt-cpu-header-cleanups-v1-10-581e2605fe47@kernel.org>
+Message-Id: <20230329-dt-cpu-header-cleanups-v1-1-581e2605fe47@kernel.org>
 References: <20230329-dt-cpu-header-cleanups-v1-0-581e2605fe47@kernel.org>
 In-Reply-To: <20230329-dt-cpu-header-cleanups-v1-0-581e2605fe47@kernel.org>
 To:     "David S. Miller" <davem@davemloft.net>,
@@ -98,30 +98,69 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Now that of_cpu_device_node_get() is defined in of.h, of_device.h is just
-implicitly including other includes, and is no longer needed. Update the
-includes to use of.h instead of of_device.h.
+Sparc is the only place devtree_lock is used outside of drivers/of/.
+Move the devtree_lock declaration into of_private.h and Sparc's prom.h
+so pulling in spinlock.h to of.h can be avoided for everything besides
+Sparc.
 
 Signed-off-by: Rob Herring <robh@kernel.org>
 ---
-Please ack and I will take the series via the DT tree.
----
- drivers/base/cacheinfo.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/sparc/include/asm/prom.h | 3 +++
+ drivers/of/of_private.h       | 1 +
+ include/linux/of.h            | 2 --
+ 3 files changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/base/cacheinfo.c b/drivers/base/cacheinfo.c
-index f6573c335f4c..a5f7a1063411 100644
---- a/drivers/base/cacheinfo.c
-+++ b/drivers/base/cacheinfo.c
-@@ -14,7 +14,7 @@
- #include <linux/cpu.h>
- #include <linux/device.h>
- #include <linux/init.h>
--#include <linux/of_device.h>
-+#include <linux/of.h>
- #include <linux/sched.h>
- #include <linux/slab.h>
- #include <linux/smp.h>
+diff --git a/arch/sparc/include/asm/prom.h b/arch/sparc/include/asm/prom.h
+index 587edb8b5a65..8184575b1336 100644
+--- a/arch/sparc/include/asm/prom.h
++++ b/arch/sparc/include/asm/prom.h
+@@ -19,11 +19,14 @@
+ #include <linux/mutex.h>
+ #include <linux/atomic.h>
+ #include <linux/irqdomain.h>
++#include <linux/spinlock.h>
+ 
+ #define of_compat_cmp(s1, s2, l)	strncmp((s1), (s2), (l))
+ #define of_prop_cmp(s1, s2)		strcasecmp((s1), (s2))
+ #define of_node_cmp(s1, s2)		strcmp((s1), (s2))
+ 
++extern raw_spinlock_t devtree_lock;
++
+ struct of_irq_controller {
+ 	unsigned int	(*irq_build)(struct device_node *, unsigned int, void *);
+ 	void		*data;
+diff --git a/drivers/of/of_private.h b/drivers/of/of_private.h
+index fb6792d381a6..b57f1014e419 100644
+--- a/drivers/of/of_private.h
++++ b/drivers/of/of_private.h
+@@ -38,6 +38,7 @@ struct alias_prop {
+ #define OF_ROOT_NODE_SIZE_CELLS_DEFAULT 1
+ 
+ extern struct mutex of_mutex;
++extern raw_spinlock_t devtree_lock;
+ extern struct list_head aliases_lookup;
+ extern struct kset *of_kset;
+ 
+diff --git a/include/linux/of.h b/include/linux/of.h
+index 0af611307db2..36cf94596eba 100644
+--- a/include/linux/of.h
++++ b/include/linux/of.h
+@@ -16,7 +16,6 @@
+ #include <linux/errno.h>
+ #include <linux/kobject.h>
+ #include <linux/mod_devicetable.h>
+-#include <linux/spinlock.h>
+ #include <linux/topology.h>
+ #include <linux/notifier.h>
+ #include <linux/property.h>
+@@ -145,7 +144,6 @@ extern struct device_node *of_root;
+ extern struct device_node *of_chosen;
+ extern struct device_node *of_aliases;
+ extern struct device_node *of_stdout;
+-extern raw_spinlock_t devtree_lock;
+ 
+ /*
+  * struct device_node flag descriptions
 
 -- 
 2.39.2

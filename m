@@ -2,57 +2,61 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 35798C87FE1
-	for <linux-mips@archiver.kernel.org>; Wed, 29 Mar 2023 15:54:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8F16FC74A5B
+	for <linux-mips@archiver.kernel.org>; Wed, 29 Mar 2023 15:58:45 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230271AbjC2Pxs (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 29 Mar 2023 11:53:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42926 "EHLO
+        id S231251AbjC2P6o convert rfc822-to-8bit (ORCPT
+        <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 29 Mar 2023 11:58:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47428 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230484AbjC2PxS (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 29 Mar 2023 11:53:18 -0400
-Received: from mail-ot1-f50.google.com (mail-ot1-f50.google.com [209.85.210.50])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 325791FD3;
-        Wed, 29 Mar 2023 08:53:17 -0700 (PDT)
-Received: by mail-ot1-f50.google.com with SMTP id cm7-20020a056830650700b006a11f365d13so7134427otb.0;
-        Wed, 29 Mar 2023 08:53:17 -0700 (PDT)
+        with ESMTP id S230494AbjC2P62 (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 29 Mar 2023 11:58:28 -0400
+Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D99D15BBE;
+        Wed, 29 Mar 2023 08:57:50 -0700 (PDT)
+Received: by mail-ed1-f46.google.com with SMTP id er13so24283845edb.9;
+        Wed, 29 Mar 2023 08:57:50 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680105196;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=tWmtLeCB2PTcAHpGNr0ZZYDBf99xMHUdOSjMIZXheFk=;
-        b=gT+gIRABipFTEumNuWr5OL4/LCOnJwyueWpyK6R4odBzFtJLcFWfuB3HLqw4JPYcfb
-         Ehucm1O/0IUGKFHv8c0l8s3s9eU2ee2s4igCVbjadowvVW6nbl6NJcCHJkg8MplO8Eh3
-         anfkbGqG5CXPo3dv3cV5wT9e99eelVaodzOOU3dsHjvbjYMGGsdVK5mW8SPjbU03wDfU
-         y8XGfyUu1FF+ChZEXzBo0TOUqahIcplqC5srwW8PSNdRnmOYOW25UT1zDh/7MCVzISVq
-         s8BDVXAbCaaK7cEmWV7D3q4msqEWxoRaSGjf/vsRUElHzm+1pBML8c0shEI19K6yMYnl
-         6Eiw==
-X-Gm-Message-State: AO0yUKV2NI1lPw0Wrsju9M7Zvo/8ZtfH98jRbPf93rmLFEdoTNxcwron
-        BMn2QThOjvoYArCE4zKMuQ==
-X-Google-Smtp-Source: AKy350by63hvThVx+G6CTPOFFLOe4lmhMruBxp6akfw7h8ZCmJHsyJFTMVn+Dn/8by4Bc4xtRU8hFQ==
-X-Received: by 2002:a05:6830:1695:b0:694:3972:dbae with SMTP id k21-20020a056830169500b006943972dbaemr9305044otr.2.1680105196435;
-        Wed, 29 Mar 2023 08:53:16 -0700 (PDT)
-Received: from robh_at_kernel.org (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
-        by smtp.gmail.com with ESMTPSA id q4-20020a9d4b04000000b0069f509ad088sm5047619otf.65.2023.03.29.08.53.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 29 Mar 2023 08:53:16 -0700 (PDT)
-Received: (nullmailer pid 3198067 invoked by uid 1000);
-        Wed, 29 Mar 2023 15:52:45 -0000
-From:   Rob Herring <robh@kernel.org>
-Date:   Wed, 29 Mar 2023 10:52:00 -0500
-Subject: [PATCH 03/19] of: Move of_device_get_match_data() declaration
+        d=1e100.net; s=20210112; t=1680105431;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :reply-to:in-reply-to:references:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Mv45vqNNvk7gfjj9ywv5t87xL9EGo+L1vyvtzDS68LU=;
+        b=zneWHeMjHgnz/FlxY9gOdWel+Biu6vY1wIVNBypUud5cFuWy94VgNkIcDMlQshlMC1
+         kSohzem/DqzemmVfmIGPJZcGllbtu79NUk1TL57qBwIkdrYYywC0n5aj0toQG3B2XDWb
+         HDULPB40D7bHs9ihfkasaCJa2joUY7YG4NTeMOGVaPlrVEdzpfro6wBPwDjX15ErEA6k
+         epf4TKCjT2oe/LbqftMpyKMBBf0Ws07rCnQ5POrJZfQKR02lB00N2Vx5UbJPXl6aynjq
+         Y6HfckyT1N2r+FRHYus8JcOxbaXxGVnZRyhI3XYMKTNOodty+Em/LLhTUI4KiGxrWj80
+         laSA==
+X-Gm-Message-State: AAQBX9c1NNl26lM1cCqY0dkxXjKpPvohyKm3pYfdIHThNisOc8vYyZRo
+        p7MuNNMcfbhSaQfrXyqIGIf/QB7ATNIq6/1b
+X-Google-Smtp-Source: AKy350bDNHP9CTNtTgHuTD8bHAM78SJBcIfhWL/xWstN3I5lT2k2VUVe+z1yT6ySAusC85ZuE0Q6RQ==
+X-Received: by 2002:a17:906:3288:b0:8b1:fc58:a4ad with SMTP id 8-20020a170906328800b008b1fc58a4admr21801432ejw.11.1680105431102;
+        Wed, 29 Mar 2023 08:57:11 -0700 (PDT)
+Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com. [209.85.128.47])
+        by smtp.gmail.com with ESMTPSA id wf4-20020a170907d68400b0093f3d12d64bsm5930422ejc.179.2023.03.29.08.57.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 29 Mar 2023 08:57:11 -0700 (PDT)
+Received: by mail-wm1-f47.google.com with SMTP id q7-20020a05600c46c700b003ef6e809574so6728778wmo.4;
+        Wed, 29 Mar 2023 08:57:10 -0700 (PDT)
+X-Received: by 2002:a5d:591c:0:b0:2ca:4533:5d6a with SMTP id
+ v28-20020a5d591c000000b002ca45335d6amr4154237wrd.7.1680105410028; Wed, 29 Mar
+ 2023 08:56:50 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20230329-dt-cpu-header-cleanups-v1-3-581e2605fe47@kernel.org>
-References: <20230329-dt-cpu-header-cleanups-v1-0-581e2605fe47@kernel.org>
-In-Reply-To: <20230329-dt-cpu-header-cleanups-v1-0-581e2605fe47@kernel.org>
-To:     "David S. Miller" <davem@davemloft.net>,
+References: <20230329-dt-cpu-header-cleanups-v1-0-581e2605fe47@kernel.org> <20230329-dt-cpu-header-cleanups-v1-6-581e2605fe47@kernel.org>
+In-Reply-To: <20230329-dt-cpu-header-cleanups-v1-6-581e2605fe47@kernel.org>
+Reply-To: wens@csie.org
+From:   Chen-Yu Tsai <wens@csie.org>
+Date:   Wed, 29 Mar 2023 23:56:38 +0800
+X-Gmail-Original-Message-ID: <CAGb2v64tNZa_LCUpHBbBUdpftB_Dms=oHcb7ZAD42qL-ov73hw@mail.gmail.com>
+Message-ID: <CAGb2v64tNZa_LCUpHBbBUdpftB_Dms=oHcb7ZAD42qL-ov73hw@mail.gmail.com>
+Subject: Re: [PATCH 06/19] ARM: sunxi: Drop of_device.h include
+To:     Rob Herring <robh@kernel.org>
+Cc:     "David S. Miller" <davem@davemloft.net>,
         Rob Herring <robh+dt@kernel.org>,
         Frank Rowand <frowand.list@gmail.com>,
         Russell King <linux@armlinux.org.uk>,
-        Chen-Yu Tsai <wens@csie.org>,
         Jernej Skrabec <jernej.skrabec@gmail.com>,
         Samuel Holland <samuel@sholland.org>,
         Paul Walmsley <paul.walmsley@sifive.com>,
@@ -86,54 +90,50 @@ To:     "David S. Miller" <davem@davemloft.net>,
         Jiaxun Yang <jiaxun.yang@flygoat.com>,
         Marc Zyngier <maz@kernel.org>,
         Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
-        Stephen Boyd <sboyd@kernel.org>
-Cc:     sparclinux@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-sunxi@lists.linux.dev, linux-riscv@lists.infradead.org,
-        linux-pm@vger.kernel.org, linux-mediatek@lists.infradead.org,
-        linuxppc-dev@lists.ozlabs.org, linux-tegra@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-mips@vger.kernel.org
-X-Mailer: b4 0.13-dev
+        Stephen Boyd <sboyd@kernel.org>, sparclinux@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev,
+        linux-riscv@lists.infradead.org, linux-pm@vger.kernel.org,
+        linux-mediatek@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
+        linux-tegra@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-mips@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-of_device.h mostly defines functions for bus drivers whereas
-of_device_get_match_data() is used by drivers. Let's move it to of.h.
+On Wed, Mar 29, 2023 at 11:53 PM Rob Herring <robh@kernel.org> wrote:
+>
+> Now that of_cpu_device_node_get() is defined in of.h, of_device.h is just
+> implicitly including other includes, and is no longer needed. Just drop
+> including of_device.h as of.h is already included.
+>
+> Signed-off-by: Rob Herring <robh@kernel.org>
+> ---
+> Please ack and I will take the series via the DT tree.
 
-Signed-off-by: Rob Herring <robh@kernel.org>
----
- include/linux/of.h        | 2 ++
- include/linux/of_device.h | 2 --
- 2 files changed, 2 insertions(+), 2 deletions(-)
+Acked-by: Chen-Yu Tsai <wens@csie.org>
 
-diff --git a/include/linux/of.h b/include/linux/of.h
-index 36cf94596eba..b7118d68c73a 100644
---- a/include/linux/of.h
-+++ b/include/linux/of.h
-@@ -416,6 +416,8 @@ extern int of_detach_node(struct device_node *);
- 
- #define of_match_ptr(_ptr)	(_ptr)
- 
-+extern const void *of_device_get_match_data(const struct device *dev);
-+
- /*
-  * struct property *prop;
-  * const __be32 *p;
-diff --git a/include/linux/of_device.h b/include/linux/of_device.h
-index e4aa61cb2bd0..6af4c3acd502 100644
---- a/include/linux/of_device.h
-+++ b/include/linux/of_device.h
-@@ -26,8 +26,6 @@ static inline int of_driver_match_device(struct device *dev,
- 	return of_match_device(drv->of_match_table, dev) != NULL;
- }
- 
--extern const void *of_device_get_match_data(const struct device *dev);
--
- extern ssize_t of_device_modalias(struct device *dev, char *str, ssize_t len);
- extern int of_device_request_module(struct device *dev);
- 
+I doubt this file would ever see any more changes.
 
--- 
-2.39.2
-
+> ---
+>  arch/arm/mach-sunxi/mc_smp.c | 1 -
+>  1 file changed, 1 deletion(-)
+>
+> diff --git a/arch/arm/mach-sunxi/mc_smp.c b/arch/arm/mach-sunxi/mc_smp.c
+> index 26cbce135338..cb63921232a6 100644
+> --- a/arch/arm/mach-sunxi/mc_smp.c
+> +++ b/arch/arm/mach-sunxi/mc_smp.c
+> @@ -19,7 +19,6 @@
+>  #include <linux/irqchip/arm-gic.h>
+>  #include <linux/of.h>
+>  #include <linux/of_address.h>
+> -#include <linux/of_device.h>
+>  #include <linux/smp.h>
+>
+>  #include <asm/cacheflush.h>
+>
+> --
+> 2.39.2
+>

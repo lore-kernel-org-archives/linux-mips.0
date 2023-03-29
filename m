@@ -2,50 +2,50 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 44AD6C7EE45
-	for <linux-mips@archiver.kernel.org>; Wed, 29 Mar 2023 15:54:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 35798C87FE1
+	for <linux-mips@archiver.kernel.org>; Wed, 29 Mar 2023 15:54:24 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231338AbjC2Pxy (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 29 Mar 2023 11:53:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42896 "EHLO
+        id S230271AbjC2Pxs (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 29 Mar 2023 11:53:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42926 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229929AbjC2PxO (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 29 Mar 2023 11:53:14 -0400
-Received: from mail-oi1-f175.google.com (mail-oi1-f175.google.com [209.85.167.175])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D9E91FD3;
-        Wed, 29 Mar 2023 08:53:06 -0700 (PDT)
-Received: by mail-oi1-f175.google.com with SMTP id bj20so11922666oib.3;
-        Wed, 29 Mar 2023 08:53:06 -0700 (PDT)
+        with ESMTP id S230484AbjC2PxS (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 29 Mar 2023 11:53:18 -0400
+Received: from mail-ot1-f50.google.com (mail-ot1-f50.google.com [209.85.210.50])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 325791FD3;
+        Wed, 29 Mar 2023 08:53:17 -0700 (PDT)
+Received: by mail-ot1-f50.google.com with SMTP id cm7-20020a056830650700b006a11f365d13so7134427otb.0;
+        Wed, 29 Mar 2023 08:53:17 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680105185;
+        d=1e100.net; s=20210112; t=1680105196;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=m4/7KPsNb+9xFZnBvWPuvHxFUZ+0wY+oqrqhzOTeb8U=;
-        b=fu+XBy6INa2LX4BHAD5kKrqHmwqTZoY026sz8jV7qNxcBhluiv5nTJEZ5kj90AUopf
-         Zxlo3ZDsmzP9apqcSw4XiziN3mtsFibAyzI5kov2b2+Wd8pV0F+fZ0QBFjPbnXMn1eQI
-         I5Wo4zLN2ZGoa19/FSRX3NrTaL+fQEncmhtarvuEFfeINDSMzBl3T7TlQuGhKPZTNFW+
-         U3smpKxkMTVkDCnO1y7TLbeTYsjcUhRPTMqYsz4fASD0gMsUJ74m9mfKYsOA0TEq29hk
-         hgVx0/10VKQ2RGfPlhpCS/eweShU4NxmEb1YlKdAKcfoy3vwh+ltD8UT8m4U0EbK1ANU
-         9PIA==
-X-Gm-Message-State: AO0yUKUI2GgtvSAGfX2zmv16mlSOJDl4Gu/XP9pqBww/ONcr3+AX71lh
-        Hr21V2xbJlZFZ3Er93DVMybs4Y1AZA==
-X-Google-Smtp-Source: AK7set+4b8TVt2XSxmpWLVvJqTy6ovjjoLfneQ9RKzw6pkGeQwoKn8nerPqu8oZLFPwkmZXWaUmfeA==
-X-Received: by 2002:a05:6808:2995:b0:37f:7770:4c01 with SMTP id ex21-20020a056808299500b0037f77704c01mr7467612oib.28.1680105185402;
-        Wed, 29 Mar 2023 08:53:05 -0700 (PDT)
+        bh=tWmtLeCB2PTcAHpGNr0ZZYDBf99xMHUdOSjMIZXheFk=;
+        b=gT+gIRABipFTEumNuWr5OL4/LCOnJwyueWpyK6R4odBzFtJLcFWfuB3HLqw4JPYcfb
+         Ehucm1O/0IUGKFHv8c0l8s3s9eU2ee2s4igCVbjadowvVW6nbl6NJcCHJkg8MplO8Eh3
+         anfkbGqG5CXPo3dv3cV5wT9e99eelVaodzOOU3dsHjvbjYMGGsdVK5mW8SPjbU03wDfU
+         y8XGfyUu1FF+ChZEXzBo0TOUqahIcplqC5srwW8PSNdRnmOYOW25UT1zDh/7MCVzISVq
+         s8BDVXAbCaaK7cEmWV7D3q4msqEWxoRaSGjf/vsRUElHzm+1pBML8c0shEI19K6yMYnl
+         6Eiw==
+X-Gm-Message-State: AO0yUKV2NI1lPw0Wrsju9M7Zvo/8ZtfH98jRbPf93rmLFEdoTNxcwron
+        BMn2QThOjvoYArCE4zKMuQ==
+X-Google-Smtp-Source: AKy350by63hvThVx+G6CTPOFFLOe4lmhMruBxp6akfw7h8ZCmJHsyJFTMVn+Dn/8by4Bc4xtRU8hFQ==
+X-Received: by 2002:a05:6830:1695:b0:694:3972:dbae with SMTP id k21-20020a056830169500b006943972dbaemr9305044otr.2.1680105196435;
+        Wed, 29 Mar 2023 08:53:16 -0700 (PDT)
 Received: from robh_at_kernel.org (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
-        by smtp.gmail.com with ESMTPSA id y184-20020aca32c1000000b0037841fb9a65sm13730637oiy.5.2023.03.29.08.53.03
+        by smtp.gmail.com with ESMTPSA id q4-20020a9d4b04000000b0069f509ad088sm5047619otf.65.2023.03.29.08.53.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 29 Mar 2023 08:53:04 -0700 (PDT)
-Received: (nullmailer pid 3198077 invoked by uid 1000);
+        Wed, 29 Mar 2023 08:53:16 -0700 (PDT)
+Received: (nullmailer pid 3198067 invoked by uid 1000);
         Wed, 29 Mar 2023 15:52:45 -0000
 From:   Rob Herring <robh@kernel.org>
-Date:   Wed, 29 Mar 2023 10:52:05 -0500
-Subject: [PATCH 08/19] riscv: Add explicit include for cpu.h
+Date:   Wed, 29 Mar 2023 10:52:00 -0500
+Subject: [PATCH 03/19] of: Move of_device_get_match_data() declaration
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20230329-dt-cpu-header-cleanups-v1-8-581e2605fe47@kernel.org>
+Message-Id: <20230329-dt-cpu-header-cleanups-v1-3-581e2605fe47@kernel.org>
 References: <20230329-dt-cpu-header-cleanups-v1-0-581e2605fe47@kernel.org>
 In-Reply-To: <20230329-dt-cpu-header-cleanups-v1-0-581e2605fe47@kernel.org>
 To:     "David S. Miller" <davem@davemloft.net>,
@@ -98,40 +98,41 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Removing the include of cpu.h from of_device.h (included by
-of_platform.h) causes an error in setup.c:
-
-arch/riscv/kernel/setup.c:313:22: error: arithmetic on a pointer to an incomplete type 'typeof(struct cpu)' (aka 'struct cpu')
-
-The of_platform.h header is not necessary either, so it can be dropped.
+of_device.h mostly defines functions for bus drivers whereas
+of_device_get_match_data() is used by drivers. Let's move it to of.h.
 
 Signed-off-by: Rob Herring <robh@kernel.org>
 ---
-Please ack and I will take the series via the DT tree.
----
- arch/riscv/kernel/setup.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ include/linux/of.h        | 2 ++
+ include/linux/of_device.h | 2 --
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/riscv/kernel/setup.c b/arch/riscv/kernel/setup.c
-index 376d2827e736..dcfa4b6fa4b1 100644
---- a/arch/riscv/kernel/setup.c
-+++ b/arch/riscv/kernel/setup.c
-@@ -8,6 +8,7 @@
-  *  Nick Kossifidis <mick@ics.forth.gr>
-  */
+diff --git a/include/linux/of.h b/include/linux/of.h
+index 36cf94596eba..b7118d68c73a 100644
+--- a/include/linux/of.h
++++ b/include/linux/of.h
+@@ -416,6 +416,8 @@ extern int of_detach_node(struct device_node *);
  
-+#include <linux/cpu.h>
- #include <linux/init.h>
- #include <linux/mm.h>
- #include <linux/memblock.h>
-@@ -15,7 +16,6 @@
- #include <linux/console.h>
- #include <linux/screen_info.h>
- #include <linux/of_fdt.h>
--#include <linux/of_platform.h>
- #include <linux/sched/task.h>
- #include <linux/smp.h>
- #include <linux/efi.h>
+ #define of_match_ptr(_ptr)	(_ptr)
+ 
++extern const void *of_device_get_match_data(const struct device *dev);
++
+ /*
+  * struct property *prop;
+  * const __be32 *p;
+diff --git a/include/linux/of_device.h b/include/linux/of_device.h
+index e4aa61cb2bd0..6af4c3acd502 100644
+--- a/include/linux/of_device.h
++++ b/include/linux/of_device.h
+@@ -26,8 +26,6 @@ static inline int of_driver_match_device(struct device *dev,
+ 	return of_match_device(drv->of_match_table, dev) != NULL;
+ }
+ 
+-extern const void *of_device_get_match_data(const struct device *dev);
+-
+ extern ssize_t of_device_modalias(struct device *dev, char *str, ssize_t len);
+ extern int of_device_request_module(struct device *dev);
+ 
 
 -- 
 2.39.2

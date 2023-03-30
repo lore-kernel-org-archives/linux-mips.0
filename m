@@ -2,61 +2,61 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1A264C761A6
-	for <linux-mips@archiver.kernel.org>; Thu, 30 Mar 2023 11:33:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A5FCBC6FD1D
+	for <linux-mips@archiver.kernel.org>; Thu, 30 Mar 2023 11:33:14 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231643AbjC3LdM (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 30 Mar 2023 07:33:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43356 "EHLO
+        id S231605AbjC3LdN (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 30 Mar 2023 07:33:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43342 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229563AbjC3LdL (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Thu, 30 Mar 2023 07:33:11 -0400
+        with ESMTP id S231604AbjC3LdM (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Thu, 30 Mar 2023 07:33:12 -0400
 Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id D875D30D2;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id D8F9B9ECB;
         Thu, 30 Mar 2023 04:33:03 -0700 (PDT)
 Received: from uucp (helo=alpha)
         by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1phqWX-0002LY-01; Thu, 30 Mar 2023 13:32:57 +0200
+        id 1phqWX-0002LY-00; Thu, 30 Mar 2023 13:32:57 +0200
 Received: by alpha.franken.de (Postfix, from userid 1000)
-        id BF819C1DC7; Thu, 30 Mar 2023 13:30:53 +0200 (CEST)
-Date:   Thu, 30 Mar 2023 13:30:53 +0200
+        id 60EEFC1D41; Thu, 30 Mar 2023 13:30:03 +0200 (CEST)
+Date:   Thu, 30 Mar 2023 13:30:03 +0200
 From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 To:     Keguang Zhang <keguang.zhang@gmail.com>
-Cc:     linux-watchdog@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Yang Ling <gnaygnil@gmail.com>
-Subject: Re: [PATCH 1/2] MIPS: Loongson32: Remove reset.c
-Message-ID: <20230330113053.GB9674@alpha.franken.de>
-References: <20230330102013.545588-1-keguang.zhang@gmail.com>
- <20230330102013.545588-2-keguang.zhang@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-mips@vger.kernel.org,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Stephen Boyd <sboyd@kernel.org>
+Subject: Re: [PATCH v2 1/3] MIPS: Loongson32: Remove deprecated PWM timer
+ clocksource
+Message-ID: <20230330113003.GA9674@alpha.franken.de>
+References: <20230330101506.545040-1-keguang.zhang@gmail.com>
+ <20230330101506.545040-2-keguang.zhang@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230330102013.545588-2-keguang.zhang@gmail.com>
+In-Reply-To: <20230330101506.545040-2-keguang.zhang@gmail.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Thu, Mar 30, 2023 at 06:20:12PM +0800, Keguang Zhang wrote:
-> The Loongson-1 restart handler will be moved to watchdog driver,
-> then _machine_restart is no longer needed.
-> The _machine_halt and pm_power_off are also unnecessary,
-> which contain no hardware operations.
-> 
-> Therefore, remove the entire reset.c and related header file.
-> Update the Makefile accordingly.
+On Thu, Mar 30, 2023 at 06:15:04PM +0800, Keguang Zhang wrote:
+> The Loongson1 PWM timer will be moved to clocksource framework.
+> Then, the old driver is no longer needed.
+> Remove the deprecated code and update the Kconfig.
 > 
 > Signed-off-by: Keguang Zhang <keguang.zhang@gmail.com>
 > ---
->  .../include/asm/mach-loongson32/regs-wdt.h    | 15 ------
->  arch/mips/loongson32/common/Makefile          |  2 +-
->  arch/mips/loongson32/common/reset.c           | 51 -------------------
->  3 files changed, 1 insertion(+), 67 deletions(-)
->  delete mode 100644 arch/mips/include/asm/mach-loongson32/regs-wdt.h
->  delete mode 100644 arch/mips/loongson32/common/reset.c
+> V1 -> V2: Delete the obsolete header file regs-pwm.h
+> ---
+>  .../include/asm/mach-loongson32/regs-pwm.h    |  25 ---
+>  arch/mips/loongson32/Kconfig                  |  37 ---
+>  arch/mips/loongson32/common/time.c            | 210 ------------------
+>  3 files changed, 272 deletions(-)
+>  delete mode 100644 arch/mips/include/asm/mach-loongson32/regs-pwm.h
 
 Acked-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 

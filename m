@@ -2,197 +2,193 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 13694C761AF
-	for <linux-mips@archiver.kernel.org>; Tue,  4 Apr 2023 13:23:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C0505C761A6
+	for <linux-mips@archiver.kernel.org>; Tue,  4 Apr 2023 13:32:46 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235158AbjDDNXb (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 4 Apr 2023 09:23:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34918 "EHLO
+        id S234587AbjDDNcp (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 4 Apr 2023 09:32:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41564 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234487AbjDDNX0 (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Tue, 4 Apr 2023 09:23:26 -0400
-Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E46333C16;
-        Tue,  4 Apr 2023 06:23:21 -0700 (PDT)
-Received: by mail-qk1-x72e.google.com with SMTP id q2so10336629qki.3;
-        Tue, 04 Apr 2023 06:23:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1680614601;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=kVV5FfyLXKvr30JASXaFzrtmOvguU/pSGwBivgkkCt8=;
-        b=CxCzEj2L7VIhJL6LkhpoeSyjitfjUIwxyK7WygTAvIMrtL8sNfxriP0xlU7D62WQoz
-         JS8ax3M/Eesvd5oi0sr1H03A3xMMSSa82fhef9qRDqrlsouM+KCZqqtCxNs6kzj4t5Ub
-         F7DDt5YscrWWbseYb3G5W9hFZRpZsQPXo27yv0jzn2w9mDA1ooRuDwc7z6znLG2Vi+Bi
-         tq4rA2ZMQA51NCQ7Ksdo8VwWalrmJJS5r9RCMSPpRrKxpS4no0h4o3ze6IAi22w6AMMd
-         0et5DLzt+KCxhgyjPFDLnq1TYfArzjvJxF3PKXuT3UfUffLUWpYKI/WE/kzz1oDnvdpX
-         Etng==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20210112; t=1680614601;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=kVV5FfyLXKvr30JASXaFzrtmOvguU/pSGwBivgkkCt8=;
-        b=g7noGniqiKG2bQ/xoI+RDfzHjD8Px09rLJxo/+i02hrI8q9r2m2bF8cFgh9bQAXiTR
-         oxc85X68y3tl5uctdrlgcjGGcPTYNRsziu21NMPveTEq2O4jSfBozZXix/Ks8/EzSRJr
-         2BXE70E5ye89ACfR1O3X1j5c3MDnobrlhGvAdEjlZe7mUBhIIzocabKj0OVHeOENUwjG
-         3OlNy4XXZiBAZ3EZCsLqKhguq87T7dVSqOSy+0SX+kI7M4o24lxMRDIfG9rwSaCZxqdc
-         dA2vWquijByMCCIRBxfhnC21ssfzxuzEo8ECpVuGD3Lelk6JPVu9wzTAUqNInE3TDuBd
-         XBzA==
-X-Gm-Message-State: AAQBX9cGVvtszEqlfAii2r4YQWfaUd/DpVO/gBfvBFe4WA72X31ob/rQ
-        WlQMb6PFfqf9eZs9qLeW68FvBXP/WR5x5hhL8PE=
-X-Google-Smtp-Source: AKy350b/r9epx7QN6cXCoxgIbACmW4sFS0VlXrzPHDsCvgVLRBRS+bIi9gMlH812VAfYBgK5rBITGvtyCoxFOxnCyYI=
-X-Received: by 2002:a05:620a:404f:b0:74a:28c4:64ea with SMTP id
- i15-20020a05620a404f00b0074a28c464eamr911755qko.6.1680614600864; Tue, 04 Apr
- 2023 06:23:20 -0700 (PDT)
+        with ESMTP id S234437AbjDDNco (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Tue, 4 Apr 2023 09:32:44 -0400
+Received: from new3-smtp.messagingengine.com (new3-smtp.messagingengine.com [66.111.4.229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E895030EB;
+        Tue,  4 Apr 2023 06:32:42 -0700 (PDT)
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 22F96581F6B;
+        Tue,  4 Apr 2023 09:32:42 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute2.internal (MEProxy); Tue, 04 Apr 2023 09:32:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=cc
+        :cc:content-transfer-encoding:content-type:content-type:date
+        :date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:sender:subject:subject:to:to; s=fm3; t=
+        1680615162; x=1680622362; bh=vrfzoheDDKqftYvuykRmc8QiWwzudHZE2qX
+        zjDQOLxM=; b=m/DfsQmAQRF+rJw0HonZCfszHHerFFcnDOr2l/WnVous8juq0Vz
+        Xj/GFFoezm/cVfAzLSONhVny5pszKi/Yl/d6+0riAT0jHaf2A4eIa0LrCDKMCSEk
+        vgVeCTDcQFX/bPmy1j2PaxY72prdDJ23WOlqR2wCKICDKQ5JdLyHIyTZFdUDftFk
+        SARFMOB383uJcsBsML39zgqHQRfCGUfL1CE28aEqUHYQydj2fTi5Gtk02ZekzluL
+        Z9cSojtLX9XtEU6M4z54f9zSJwb9YqbUOyRHtvmk/CSbGtTAiY49TKOtlMPIWllt
+        zHQ1wBV7BmEDUMnxwalqwBo9aVrjS47By7g==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-transfer-encoding
+        :content-type:content-type:date:date:feedback-id:feedback-id
+        :from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:sender:subject:subject:to:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=
+        1680615162; x=1680622362; bh=vrfzoheDDKqftYvuykRmc8QiWwzudHZE2qX
+        zjDQOLxM=; b=XI81MScU/bNDKOoe0KCzFM0XgUJOz2U3n4N3opocW077rGp3Gyi
+        Jgamyb0BFj3aT7RhazL/FC078PplH5UVPsQgs06b1jfcRxwtUUfwIukQSU9BfIup
+        Lfl1c73o/z77rqt5YzjhBmOUbymF5yoB3FKAh5I2sEqJd7YaAULlDQKBbQmQiYe+
+        djkVAOz8mRTVKHvb5pbnJRruI9ATAYw3nP/mu6XR3ZCuJPBM6xvcnEVGp3toS6jB
+        nwRa03TgWYxWPn1iqRUSf4t4BQZO4IztbQ9WIJrZ0m8Z3HpnatMA6776Rzp1yMN+
+        AFDpEyYuJX9d2lfoX9QDjljIuJsFuZIRhNA==
+X-ME-Sender: <xms:-CYsZC08spgEPV9rjBdVKDTCSlwSkn7-iqBVJ7cnxM91WrCRGN_YRg>
+    <xme:-CYsZFEpZu13i_yGe5phyly0EsCyU6RR7BCMmiVOL3IzgnyxJZzHKDtH1WdaGL_kL
+    vR4THseGf1wBc_LC3Q>
+X-ME-Received: <xmr:-CYsZK61qik7F94_LZwDTdqa5cXngqFSsBq4FuJLuJ1tDVAcq2a8rH2pClj9byb3gVx8xaM3dEtssOb0wZYO7pjRwJMe-Vk>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrvdeiledgieehucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhephfffufggtgfgkfhfjgfvvefosehtjeertdertdejnecuhfhrohhmpeforgig
+    ihhmvgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrf
+    grthhtvghrnhepvedvleeijeegvdekffehkeehieelhfeggfffheetkeeuledvtdeuffeh
+    teeltdffnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
+    epmhgrgihimhgvsegtvghrnhhordhtvggthh
+X-ME-Proxy: <xmx:-CYsZD0bNcINFGIpKgEaUh2KorcYbpY1yVkJYHLHs7FNTtz_3VVSBg>
+    <xmx:-CYsZFErlaVw96orIPLm0LAy-JkcHSD-L_FYj_jnzpNQl-meW1lL5A>
+    <xmx:-CYsZM_TADPYKpHUi3ybJx_ZJjtkDtTOtNqDqwilQ7gWXe98aZW-SQ>
+    <xmx:-iYsZFxf3FPLsOcicFZiv7bNpji03k3wqxxjOvCGgICu0C0Nag7F6w>
+Feedback-ID: i8771445c:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
+ 4 Apr 2023 09:32:38 -0400 (EDT)
+From:   Maxime Ripard <maxime@cerno.tech>
+Date:   Tue, 04 Apr 2023 12:11:29 +0200
+Subject: [PATCH v3 39/65] phy: cadence: torrent: Add a determine_rate hook
 MIME-Version: 1.0
-References: <20230305205628.27385-1-ubizjak@gmail.com> <20230305205628.27385-2-ubizjak@gmail.com>
- <ZB2v+avNt52ac/+w@FVFF77S0Q05N> <CAFULd4ZCgxDYnyy--qdgKoAo_y7MbNSaQdbdBFefnFuMoM2OYw@mail.gmail.com>
- <ZB3MR8lGbnea9ui6@FVFF77S0Q05N> <ZB3QtDYuWdpiD5qk@FVFF77S0Q05N>
- <CAFULd4aFUF5k=QJD8tDp4qzm2iBF7=rNvp1SJWrg44X5hTFxtQ@mail.gmail.com>
- <ZCqoRNU8EJhKJVEu@FVFF77S0Q05N> <CAFULd4ZUnbtDYXBBbuTJnq9wLSf5cZTc=hUPxg6-8KRNA7YVeQ@mail.gmail.com>
- <ZCwj19okhYNRN8er@FVFF77S0Q05N.cambridge.arm.com>
-In-Reply-To: <ZCwj19okhYNRN8er@FVFF77S0Q05N.cambridge.arm.com>
-From:   Uros Bizjak <ubizjak@gmail.com>
-Date:   Tue, 4 Apr 2023 15:23:09 +0200
-Message-ID: <CAFULd4ZypxQULgq-MYgzsYd8k_BV0aH0eRhggX3MHWCgvKW=Bg@mail.gmail.com>
-Subject: Re: [PATCH 01/10] locking/atomic: Add missing cast to try_cmpxchg() fallbacks
-To:     Mark Rutland <mark.rutland@arm.com>
-Cc:     linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org,
-        loongarch@lists.linux.dev, linux-mips@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-arch@vger.kernel.org,
-        linux-perf-users@vger.kernel.org, Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Boqun Feng <boqun.feng@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20221018-clk-range-checks-fixes-v3-39-9a1358472d52@cerno.tech>
+References: <20221018-clk-range-checks-fixes-v3-0-9a1358472d52@cerno.tech>
+In-Reply-To: <20221018-clk-range-checks-fixes-v3-0-9a1358472d52@cerno.tech>
+To:     Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        =?utf-8?q?Andreas_F=C3=A4rber?= <afaerber@suse.de>,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Claudiu Beznea <claudiu.beznea@microchip.com>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        Charles Keepax <ckeepax@opensource.cirrus.com>,
+        Richard Fitzgerald <rf@opensource.cirrus.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Luca Ceresoli <luca.ceresoli@bootlin.com>,
+        David Lechner <david@lechnology.com>,
+        Sekhar Nori <nsekhar@ti.com>, Abel Vesa <abelvesa@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Dinh Nguyen <dinguyen@kernel.org>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        Prashant Gaikwad <pgaikwad@nvidia.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>, Vinod Koul <vkoul@kernel.org>,
+        Kishon Vijay Abraham I <kishon@kernel.org>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Samuel Holland <samuel@sholland.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Paul Cercueil <paul@crapouillou.net>,
+        Orson Zhai <orsonzhai@gmail.com>,
+        Baolin Wang <baolin.wang@linux.alibaba.com>,
+        Chunyan Zhang <zhang.lyra@gmail.com>
+Cc:     linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-actions@lists.infradead.org, patches@opensource.cirrus.com,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-mediatek@lists.infradead.org,
+        linux-renesas-soc@vger.kernel.org, linux-tegra@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linux-phy@lists.infradead.org,
+        linux-rtc@vger.kernel.org, linux-sunxi@lists.linux.dev,
+        alsa-devel@alsa-project.org, linux-mips@vger.kernel.org,
+        Maxime Ripard <maxime@cerno.tech>
+X-Mailer: b4 0.12.1
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2298; i=maxime@cerno.tech;
+ h=from:subject:message-id; bh=JQSTFMJLoT+23FQjGZTzhN+eYIN/szkjs6l6H5EcB7o=;
+ b=owGbwMvMwCX2+D1vfrpE4FHG02pJDCna37fFijD5XPuXPTMvqrdfZssl9Qs24adeXfvByhgx69GR
+ GTejOkpZGMS4GGTFFFlihM2XxJ2a9bqTjW8ezBxWJpAhDFycAjCRojhGht35XrmzrA+2t7y6Uv11Xs
+ D7S+FpcTolt9YF+D47rDx1VjnD/wr28PKXOzs6XiSafXoh0XfjUFTBnTMHWuvdv6ZIrj76gwEA
+X-Developer-Key: i=maxime@cerno.tech; a=openpgp;
+ fpr=BE5675C37E818C8B5764241C254BCFC56BF6CE8D
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Tue, Apr 4, 2023 at 3:19=E2=80=AFPM Mark Rutland <mark.rutland@arm.com> =
-wrote:
->
-> On Tue, Apr 04, 2023 at 02:24:38PM +0200, Uros Bizjak wrote:
-> > On Mon, Apr 3, 2023 at 12:19=E2=80=AFPM Mark Rutland <mark.rutland@arm.=
-com> wrote:
-> > >
-> > > On Sun, Mar 26, 2023 at 09:28:38PM +0200, Uros Bizjak wrote:
-> > > > On Fri, Mar 24, 2023 at 5:33=E2=80=AFPM Mark Rutland <mark.rutland@=
-arm.com> wrote:
-> > > > >
-> > > > > On Fri, Mar 24, 2023 at 04:14:22PM +0000, Mark Rutland wrote:
-> > > > > > On Fri, Mar 24, 2023 at 04:43:32PM +0100, Uros Bizjak wrote:
-> > > > > > > On Fri, Mar 24, 2023 at 3:13=E2=80=AFPM Mark Rutland <mark.ru=
-tland@arm.com> wrote:
-> > > > > > > >
-> > > > > > > > On Sun, Mar 05, 2023 at 09:56:19PM +0100, Uros Bizjak wrote=
-:
-> > > > > > > > > Cast _oldp to the type of _ptr to avoid incompatible-poin=
-ter-types warning.
-> > > > > > > >
-> > > > > > > > Can you give an example of where we are passing an incompat=
-ible pointer?
-> > > > > > >
-> > > > > > > An example is patch 10/10 from the series, which will fail wi=
-thout
-> > > > > > > this fix when fallback code is used. We have:
-> > > > > > >
-> > > > > > > -       } while (local_cmpxchg(&rb->head, offset, head) !=3D =
-offset);
-> > > > > > > +       } while (!local_try_cmpxchg(&rb->head, &offset, head)=
-);
-> > > > > > >
-> > > > > > > where rb->head is defined as:
-> > > > > > >
-> > > > > > > typedef struct {
-> > > > > > >    atomic_long_t a;
-> > > > > > > } local_t;
-> > > > > > >
-> > > > > > > while offset is defined as 'unsigned long'.
-> > > > > >
-> > > > > > Ok, but that's because we're doing the wrong thing to start wit=
-h.
-> > > > > >
-> > > > > > Since local_t is defined in terms of atomic_long_t, we should d=
-efine the
-> > > > > > generic local_try_cmpxchg() in terms of atomic_long_try_cmpxchg=
-(). We'll still
-> > > > > > have a mismatch between 'long *' and 'unsigned long *', but the=
-n we can fix
-> > > > > > that in the callsite:
-> > > > > >
-> > > > > >       while (!local_try_cmpxchg(&rb->head, &(long *)offset, hea=
-d))
-> > > > >
-> > > > > Sorry, that should be:
-> > > > >
-> > > > >         while (!local_try_cmpxchg(&rb->head, (long *)&offset, hea=
-d))
-> > > >
-> > > > The fallbacks are a bit more complicated than above, and are differ=
-ent
-> > > > from atomic_try_cmpxchg.
-> > > >
-> > > > Please note in patch 2/10, the falbacks when arch_try_cmpxchg_local
-> > > > are not defined call arch_cmpxchg_local. Also in patch 2/10,
-> > > > try_cmpxchg_local is introduced, where it calls
-> > > > arch_try_cmpxchg_local. Targets (and generic code) simply define (e=
-.g.
-> > > > :
-> > > >
-> > > > #define local_cmpxchg(l, o, n) \
-> > > >        (cmpxchg_local(&((l)->a.counter), (o), (n)))
-> > > > +#define local_try_cmpxchg(l, po, n) \
-> > > > +       (try_cmpxchg_local(&((l)->a.counter), (po), (n)))
-> > > >
-> > > > which is part of the local_t API. Targets should either define all
-> > > > these #defines, or none. There are no partial fallbacks as is the c=
-ase
-> > > > with atomic_t.
-> > >
-> > > Whether or not there are fallbacks is immaterial.
-> > >
-> > > In those cases, architectures can just as easily write C wrappers, e.=
-g.
-> > >
-> > > long local_cmpxchg(local_t *l, long old, long new)
-> > > {
-> > >         return cmpxchg_local(&l->a.counter, old, new);
-> > > }
-> > >
-> > > long local_try_cmpxchg(local_t *l, long *old, long new)
-> > > {
-> > >         return try_cmpxchg_local(&l->a.counter, old, new);
-> > > }
-> >
-> > Please find attached the complete prototype patch that implements the
-> > above suggestion.
-> >
-> > The patch includes:
-> > - implementation of instrumented try_cmpxchg{,64}_local definitions
-> > - corresponding arch_try_cmpxchg{,64}_local fallback definitions
-> > - generic local{,64}_try_cmpxchg (and local{,64}_cmpxchg) C wrappers
-> >
-> > - x86 specific local_try_cmpxchg (and local_cmpxchg) C wrappers
-> > - x86 specific arch_try_cmpxchg_local definition
-> >
-> > - kernel/events/ring_buffer.c change to test local_try_cmpxchg
-> > implementation and illustrate the transition
-> > - arch/x86/events/core.c change to test local64_try_cmpxchg
-> > implementation and illustrate the transition
-> >
-> > The definition of atomic_long_t is different for 64-bit and 32-bit
-> > targets (s64 vs int), so target specific C wrappers have to use
-> > different casts to account for this difference.
-> >
-> > Uros.
->
-> Thanks for this!
->
-> FWIW, the patch (inline below) looks good to me.
+The Cadence Torrent refclk clock implements a mux with a set_parent
+hook, but doesn't provide a determine_rate implementation.
 
-Thanks, I will prepare a patch series for submission later today.
+This is a bit odd, since set_parent() is there to, as its name implies,
+change the parent of a clock. However, the most likely candidate to
+trigger that parent change is a call to clk_set_rate(), with
+determine_rate() figuring out which parent is the best suited for a
+given rate.
 
-Uros.
+The other trigger would be a call to clk_set_parent(), but it's far less
+used, and it doesn't look like there's any obvious user for that clock.
+
+So, the set_parent hook is effectively unused, possibly because of an
+oversight. However, it could also be an explicit decision by the
+original author to avoid any reparenting but through an explicit call to
+clk_set_parent().
+
+The latter case would be equivalent to setting the flag
+CLK_SET_RATE_NO_REPARENT, together with setting our determine_rate hook
+to __clk_mux_determine_rate(). Indeed, if no determine_rate
+implementation is provided, clk_round_rate() (through
+clk_core_round_rate_nolock()) will call itself on the parent if
+CLK_SET_RATE_PARENT is set, and will not change the clock rate
+otherwise. __clk_mux_determine_rate() has the exact same behavior when
+CLK_SET_RATE_NO_REPARENT is set.
+
+And if it was an oversight, then we are at least explicit about our
+behavior now and it can be further refined down the line.
+
+Since the CLK_SET_RATE_NO_REPARENT flag was already set though, it seems
+unlikely.
+
+Signed-off-by: Maxime Ripard <maxime@cerno.tech>
+---
+ drivers/phy/cadence/phy-cadence-torrent.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/phy/cadence/phy-cadence-torrent.c b/drivers/phy/cadence/phy-cadence-torrent.c
+index 3831f596d50c..62e59d1bb9c3 100644
+--- a/drivers/phy/cadence/phy-cadence-torrent.c
++++ b/drivers/phy/cadence/phy-cadence-torrent.c
+@@ -1861,6 +1861,7 @@ static const struct clk_ops cdns_torrent_refclk_driver_ops = {
+ 	.enable = cdns_torrent_refclk_driver_enable,
+ 	.disable = cdns_torrent_refclk_driver_disable,
+ 	.is_enabled = cdns_torrent_refclk_driver_is_enabled,
++	.determine_rate = __clk_mux_determine_rate,
+ 	.set_parent = cdns_torrent_refclk_driver_set_parent,
+ 	.get_parent = cdns_torrent_refclk_driver_get_parent,
+ };
+
+-- 
+2.39.2
+

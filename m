@@ -2,193 +2,392 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3890BC77B6C
-	for <linux-mips@archiver.kernel.org>; Tue,  4 Apr 2023 12:54:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 08230C6FD1D
+	for <linux-mips@archiver.kernel.org>; Tue,  4 Apr 2023 13:20:35 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234511AbjDDMyF (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 4 Apr 2023 08:54:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58010 "EHLO
+        id S235032AbjDDNUd (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 4 Apr 2023 09:20:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59630 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235084AbjDDMyE (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Tue, 4 Apr 2023 08:54:04 -0400
-Received: from new3-smtp.messagingengine.com (new3-smtp.messagingengine.com [66.111.4.229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6D02172C;
-        Tue,  4 Apr 2023 05:54:02 -0700 (PDT)
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailnew.nyi.internal (Postfix) with ESMTP id D9E26582090;
-        Tue,  4 Apr 2023 08:54:01 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute5.internal (MEProxy); Tue, 04 Apr 2023 08:54:01 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=cc
-        :cc:content-transfer-encoding:content-type:content-type:date
-        :date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-        :references:reply-to:sender:subject:subject:to:to; s=fm3; t=
-        1680612841; x=1680620041; bh=4NvJp7jYUED4O4aUShshRJGoUDX/FaepDgp
-        PhaXdD/I=; b=Ye1oyDOVVUhC6pcS2ENQfOcf8EhgUU4DIPZkeGsgHcxDEcyiq1n
-        fPv2C5s7zuBfpqoHqcGmF6OlEUpTCXO2PfYaMQOBLBLJ37sL0tiFwpxCxS33xats
-        NkwMEiRyCsfMozpo/6jgxpoBP7SUbh++uzofP+yckN0B+kQcjRpH3lRpUmyGnNxd
-        tB3DH2vJ5GtpXaIA6c095pG8uRMJCQF0av5yALbzIqW2CLrDTS543hEE0ShKrTUW
-        oyuvTB4F5CMBmfKPlujr4RBGLos8S9W7fgyufPn29FeosXThUw5rsM4VuLmEyCI0
-        pVnOLsSZ6T0PAxor9g1rXA6dX04bWiigl/Q==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-transfer-encoding
-        :content-type:content-type:date:date:feedback-id:feedback-id
-        :from:from:in-reply-to:in-reply-to:message-id:mime-version
-        :references:reply-to:sender:subject:subject:to:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=
-        1680612841; x=1680620041; bh=4NvJp7jYUED4O4aUShshRJGoUDX/FaepDgp
-        PhaXdD/I=; b=rNT1HqodPYK+/LS60v3Nt/wCfyi5JlbD4datIbSUiuZ/grTBSnU
-        a8xfU4DBb0FQ3pmkXnDujMDuiCJZbG1BBiA7DKU7lU1kxjuRQey5GmUJ0Dz2Lgt/
-        BM4ZXGMjGBXUO+40xYtt1cfT6B++tyo3xWz0jYZjBbjwCR69+pS1mKs+Pwssc5Xh
-        PD+5R0vPZ3BIqQiz8DnDfHGN2jDCjD+NBiY1dixxJ5LxwXheXzWqqUH2nYWlnbOa
-        TJJV7EfqyrpH6EpIv4XGE5J4a0qC9x+fEpGyYUvNZw6WOwECtLV5+CnFUxAyKzb4
-        3uB+ICPt3gee+xM/epabHz+B5hqvoTxV3KA==
-X-ME-Sender: <xms:5x0sZNcdVuUlLla0JA2KutcTkw8q0gSGSlBlfvUgObT5MIuduvmlUg>
-    <xme:5x0sZLP6o0DQ-qG1VK_POKJUyWJaCgXgCEDaWI8o7HRpOAjgJ__u-dO1Nz8_igQwK
-    BLfZGt0BFNsNRufdY0>
-X-ME-Received: <xmr:5x0sZGjocidVDNEGOa92b4XeXLrqyqybVMpRXAcTQziwTH70bax0LzWyqqZyYKhU2mzffOecGGKplXWMeur6H_jpv_kcYkY>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrvdeiledgheejucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhephfffufggtgfgkfhfjgfvvefosehtjeertdertdejnecuhfhrohhmpeforgig
-    ihhmvgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrf
-    grthhtvghrnhepvedvleeijeegvdekffehkeehieelhfeggfffheetkeeuledvtdeuffeh
-    teeltdffnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
-    epmhgrgihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:5x0sZG_Qfb3zdZRiVuBaXPgVWFjtoYYJ793KmmICs2oqUquy0HcuwA>
-    <xmx:5x0sZJs9bVyDWcirwlmqThhbh2l-1exQL1qyey_hlzjHv_y0oh8c-g>
-    <xmx:5x0sZFEZpzV5ZUTvyLYGhIuBOUhtaG498impCO_NeNOhJUE5WOdw8A>
-    <xmx:6R0sZLaX1l1EE8i8lmKEHLxInwetLLNkFpgU1V44xJoUwbYnRE7j-g>
-Feedback-ID: i8771445c:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 4 Apr 2023 08:53:57 -0400 (EDT)
-From:   Maxime Ripard <maxime@cerno.tech>
-Date:   Tue, 04 Apr 2023 12:11:28 +0200
-Subject: [PATCH v3 38/65] phy: cadence: sierra: Add a determine_rate hook
+        with ESMTP id S235000AbjDDNUa (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Tue, 4 Apr 2023 09:20:30 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 4499A4688;
+        Tue,  4 Apr 2023 06:20:07 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id ED0B3D75;
+        Tue,  4 Apr 2023 06:20:07 -0700 (PDT)
+Received: from FVFF77S0Q05N.cambridge.arm.com (FVFF77S0Q05N.cambridge.arm.com [10.1.35.139])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id EE7773F762;
+        Tue,  4 Apr 2023 06:19:21 -0700 (PDT)
+Date:   Tue, 4 Apr 2023 14:19:19 +0100
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     Uros Bizjak <ubizjak@gmail.com>
+Cc:     linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org,
+        loongarch@lists.linux.dev, linux-mips@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-arch@vger.kernel.org,
+        linux-perf-users@vger.kernel.org, Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Boqun Feng <boqun.feng@gmail.com>
+Subject: Re: [PATCH 01/10] locking/atomic: Add missing cast to try_cmpxchg()
+ fallbacks
+Message-ID: <ZCwj19okhYNRN8er@FVFF77S0Q05N.cambridge.arm.com>
+References: <20230305205628.27385-1-ubizjak@gmail.com>
+ <20230305205628.27385-2-ubizjak@gmail.com>
+ <ZB2v+avNt52ac/+w@FVFF77S0Q05N>
+ <CAFULd4ZCgxDYnyy--qdgKoAo_y7MbNSaQdbdBFefnFuMoM2OYw@mail.gmail.com>
+ <ZB3MR8lGbnea9ui6@FVFF77S0Q05N>
+ <ZB3QtDYuWdpiD5qk@FVFF77S0Q05N>
+ <CAFULd4aFUF5k=QJD8tDp4qzm2iBF7=rNvp1SJWrg44X5hTFxtQ@mail.gmail.com>
+ <ZCqoRNU8EJhKJVEu@FVFF77S0Q05N>
+ <CAFULd4ZUnbtDYXBBbuTJnq9wLSf5cZTc=hUPxg6-8KRNA7YVeQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20221018-clk-range-checks-fixes-v3-38-9a1358472d52@cerno.tech>
-References: <20221018-clk-range-checks-fixes-v3-0-9a1358472d52@cerno.tech>
-In-Reply-To: <20221018-clk-range-checks-fixes-v3-0-9a1358472d52@cerno.tech>
-To:     Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        =?utf-8?q?Andreas_F=C3=A4rber?= <afaerber@suse.de>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Claudiu Beznea <claudiu.beznea@microchip.com>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        Charles Keepax <ckeepax@opensource.cirrus.com>,
-        Richard Fitzgerald <rf@opensource.cirrus.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Luca Ceresoli <luca.ceresoli@bootlin.com>,
-        David Lechner <david@lechnology.com>,
-        Sekhar Nori <nsekhar@ti.com>, Abel Vesa <abelvesa@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Dinh Nguyen <dinguyen@kernel.org>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        Prashant Gaikwad <pgaikwad@nvidia.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>, Vinod Koul <vkoul@kernel.org>,
-        Kishon Vijay Abraham I <kishon@kernel.org>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Samuel Holland <samuel@sholland.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Paul Cercueil <paul@crapouillou.net>,
-        Orson Zhai <orsonzhai@gmail.com>,
-        Baolin Wang <baolin.wang@linux.alibaba.com>,
-        Chunyan Zhang <zhang.lyra@gmail.com>
-Cc:     linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-actions@lists.infradead.org, patches@opensource.cirrus.com,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-mediatek@lists.infradead.org,
-        linux-renesas-soc@vger.kernel.org, linux-tegra@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, linux-phy@lists.infradead.org,
-        linux-rtc@vger.kernel.org, linux-sunxi@lists.linux.dev,
-        alsa-devel@alsa-project.org, linux-mips@vger.kernel.org,
-        Maxime Ripard <maxime@cerno.tech>
-X-Mailer: b4 0.12.1
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2192; i=maxime@cerno.tech;
- h=from:subject:message-id; bh=emCWDi8Q7v/nBEvpOPyhOffdcXDoO1tJu6NLHT7Pw0Y=;
- b=owGbwMvMwCX2+D1vfrpE4FHG02pJDCna37e9Mq+YuERpz7kyfgHzS492PO3q//LuRQkjG/tEp7Zv
- P/YwdZSyMIhxMciKKbLECJsviTs163UnG988mDmsTCBDGLg4BWAiG+IY/qmuP9x1pfrK3oD/0xnDxb
- Rnbsuv1d5+WGGPRVVlTK3UzrWMDO/F/jEkLhWKV4tRNJJf5Cu8fqqQqPfpejXrLZnWaV8UeQA=
-X-Developer-Key: i=maxime@cerno.tech; a=openpgp;
- fpr=BE5675C37E818C8B5764241C254BCFC56BF6CE8D
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAFULd4ZUnbtDYXBBbuTJnq9wLSf5cZTc=hUPxg6-8KRNA7YVeQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-The Cadence Sierra PLL clock implements a mux with a set_parent hook,
-but doesn't provide a determine_rate implementation.
+On Tue, Apr 04, 2023 at 02:24:38PM +0200, Uros Bizjak wrote:
+> On Mon, Apr 3, 2023 at 12:19 PM Mark Rutland <mark.rutland@arm.com> wrote:
+> >
+> > On Sun, Mar 26, 2023 at 09:28:38PM +0200, Uros Bizjak wrote:
+> > > On Fri, Mar 24, 2023 at 5:33 PM Mark Rutland <mark.rutland@arm.com> wrote:
+> > > >
+> > > > On Fri, Mar 24, 2023 at 04:14:22PM +0000, Mark Rutland wrote:
+> > > > > On Fri, Mar 24, 2023 at 04:43:32PM +0100, Uros Bizjak wrote:
+> > > > > > On Fri, Mar 24, 2023 at 3:13 PM Mark Rutland <mark.rutland@arm.com> wrote:
+> > > > > > >
+> > > > > > > On Sun, Mar 05, 2023 at 09:56:19PM +0100, Uros Bizjak wrote:
+> > > > > > > > Cast _oldp to the type of _ptr to avoid incompatible-pointer-types warning.
+> > > > > > >
+> > > > > > > Can you give an example of where we are passing an incompatible pointer?
+> > > > > >
+> > > > > > An example is patch 10/10 from the series, which will fail without
+> > > > > > this fix when fallback code is used. We have:
+> > > > > >
+> > > > > > -       } while (local_cmpxchg(&rb->head, offset, head) != offset);
+> > > > > > +       } while (!local_try_cmpxchg(&rb->head, &offset, head));
+> > > > > >
+> > > > > > where rb->head is defined as:
+> > > > > >
+> > > > > > typedef struct {
+> > > > > >    atomic_long_t a;
+> > > > > > } local_t;
+> > > > > >
+> > > > > > while offset is defined as 'unsigned long'.
+> > > > >
+> > > > > Ok, but that's because we're doing the wrong thing to start with.
+> > > > >
+> > > > > Since local_t is defined in terms of atomic_long_t, we should define the
+> > > > > generic local_try_cmpxchg() in terms of atomic_long_try_cmpxchg(). We'll still
+> > > > > have a mismatch between 'long *' and 'unsigned long *', but then we can fix
+> > > > > that in the callsite:
+> > > > >
+> > > > >       while (!local_try_cmpxchg(&rb->head, &(long *)offset, head))
+> > > >
+> > > > Sorry, that should be:
+> > > >
+> > > >         while (!local_try_cmpxchg(&rb->head, (long *)&offset, head))
+> > >
+> > > The fallbacks are a bit more complicated than above, and are different
+> > > from atomic_try_cmpxchg.
+> > >
+> > > Please note in patch 2/10, the falbacks when arch_try_cmpxchg_local
+> > > are not defined call arch_cmpxchg_local. Also in patch 2/10,
+> > > try_cmpxchg_local is introduced, where it calls
+> > > arch_try_cmpxchg_local. Targets (and generic code) simply define (e.g.
+> > > :
+> > >
+> > > #define local_cmpxchg(l, o, n) \
+> > >        (cmpxchg_local(&((l)->a.counter), (o), (n)))
+> > > +#define local_try_cmpxchg(l, po, n) \
+> > > +       (try_cmpxchg_local(&((l)->a.counter), (po), (n)))
+> > >
+> > > which is part of the local_t API. Targets should either define all
+> > > these #defines, or none. There are no partial fallbacks as is the case
+> > > with atomic_t.
+> >
+> > Whether or not there are fallbacks is immaterial.
+> >
+> > In those cases, architectures can just as easily write C wrappers, e.g.
+> >
+> > long local_cmpxchg(local_t *l, long old, long new)
+> > {
+> >         return cmpxchg_local(&l->a.counter, old, new);
+> > }
+> >
+> > long local_try_cmpxchg(local_t *l, long *old, long new)
+> > {
+> >         return try_cmpxchg_local(&l->a.counter, old, new);
+> > }
+> 
+> Please find attached the complete prototype patch that implements the
+> above suggestion.
+> 
+> The patch includes:
+> - implementation of instrumented try_cmpxchg{,64}_local definitions
+> - corresponding arch_try_cmpxchg{,64}_local fallback definitions
+> - generic local{,64}_try_cmpxchg (and local{,64}_cmpxchg) C wrappers
+> 
+> - x86 specific local_try_cmpxchg (and local_cmpxchg) C wrappers
+> - x86 specific arch_try_cmpxchg_local definition
+> 
+> - kernel/events/ring_buffer.c change to test local_try_cmpxchg
+> implementation and illustrate the transition
+> - arch/x86/events/core.c change to test local64_try_cmpxchg
+> implementation and illustrate the transition
+> 
+> The definition of atomic_long_t is different for 64-bit and 32-bit
+> targets (s64 vs int), so target specific C wrappers have to use
+> different casts to account for this difference.
+> 
+> Uros.
 
-This is a bit odd, since set_parent() is there to, as its name implies,
-change the parent of a clock. However, the most likely candidate to
-trigger that parent change is a call to clk_set_rate(), with
-determine_rate() figuring out which parent is the best suited for a
-given rate.
+Thanks for this!
 
-The other trigger would be a call to clk_set_parent(), but it's far less
-used, and it doesn't look like there's any obvious user for that clock.
+FWIW, the patch (inline below) looks good to me.
 
-So, the set_parent hook is effectively unused, possibly because of an
-oversight. However, it could also be an explicit decision by the
-original author to avoid any reparenting but through an explicit call to
-clk_set_parent().
+Mark.
 
-The latter case would be equivalent to setting the flag
-CLK_SET_RATE_NO_REPARENT, together with setting our determine_rate hook
-to __clk_mux_determine_rate(). Indeed, if no determine_rate
-implementation is provided, clk_round_rate() (through
-clk_core_round_rate_nolock()) will call itself on the parent if
-CLK_SET_RATE_PARENT is set, and will not change the clock rate
-otherwise. __clk_mux_determine_rate() has the exact same behavior when
-CLK_SET_RATE_NO_REPARENT is set.
-
-And if it was an oversight, then we are at least explicit about our
-behavior now and it can be further refined down the line.
-
-Since the CLK_SET_RATE_NO_REPARENT flag was already set though, it seems
-unlikely.
-
-Signed-off-by: Maxime Ripard <maxime@cerno.tech>
----
- drivers/phy/cadence/phy-cadence-sierra.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/drivers/phy/cadence/phy-cadence-sierra.c b/drivers/phy/cadence/phy-cadence-sierra.c
-index ab0a37618ef3..19a50247e305 100644
---- a/drivers/phy/cadence/phy-cadence-sierra.c
-+++ b/drivers/phy/cadence/phy-cadence-sierra.c
-@@ -716,6 +716,7 @@ static int cdns_sierra_pll_mux_set_parent(struct clk_hw *hw, u8 index)
- }
- 
- static const struct clk_ops cdns_sierra_pll_mux_ops = {
-+	.determine_rate = __clk_mux_determine_rate,
- 	.set_parent = cdns_sierra_pll_mux_set_parent,
- 	.get_parent = cdns_sierra_pll_mux_get_parent,
- };
-
--- 
-2.39.2
+> diff --git a/arch/x86/events/core.c b/arch/x86/events/core.c
+> index d096b04bf80e..d9310e9363f1 100644
+> --- a/arch/x86/events/core.c
+> +++ b/arch/x86/events/core.c
+> @@ -129,13 +129,12 @@ u64 x86_perf_event_update(struct perf_event *event)
+>  	 * exchange a new raw count - then add that new-prev delta
+>  	 * count to the generic event atomically:
+>  	 */
+> -again:
+>  	prev_raw_count = local64_read(&hwc->prev_count);
+> -	rdpmcl(hwc->event_base_rdpmc, new_raw_count);
+>  
+> -	if (local64_cmpxchg(&hwc->prev_count, prev_raw_count,
+> -					new_raw_count) != prev_raw_count)
+> -		goto again;
+> +	do {
+> +		rdpmcl(hwc->event_base_rdpmc, new_raw_count);
+> +	} while (!local64_try_cmpxchg(&hwc->prev_count, &prev_raw_count,
+> +				      new_raw_count));
+>  
+>  	/*
+>  	 * Now we have the new raw value and have updated the prev
+> diff --git a/arch/x86/include/asm/cmpxchg.h b/arch/x86/include/asm/cmpxchg.h
+> index 94fbe6ae7431..540573f515b7 100644
+> --- a/arch/x86/include/asm/cmpxchg.h
+> +++ b/arch/x86/include/asm/cmpxchg.h
+> @@ -221,9 +221,15 @@ extern void __add_wrong_size(void)
+>  #define __try_cmpxchg(ptr, pold, new, size)				\
+>  	__raw_try_cmpxchg((ptr), (pold), (new), (size), LOCK_PREFIX)
+>  
+> +#define __try_cmpxchg_local(ptr, pold, new, size)			\
+> +	__raw_try_cmpxchg((ptr), (pold), (new), (size), "")
+> +
+>  #define arch_try_cmpxchg(ptr, pold, new) 				\
+>  	__try_cmpxchg((ptr), (pold), (new), sizeof(*(ptr)))
+>  
+> +#define arch_try_cmpxchg_local(ptr, pold, new)				\
+> +	__try_cmpxchg_local((ptr), (pold), (new), sizeof(*(ptr)))
+> +
+>  /*
+>   * xadd() adds "inc" to "*ptr" and atomically returns the previous
+>   * value of "*ptr".
+> diff --git a/arch/x86/include/asm/local.h b/arch/x86/include/asm/local.h
+> index 349a47acaa4a..d286a6c7c0b7 100644
+> --- a/arch/x86/include/asm/local.h
+> +++ b/arch/x86/include/asm/local.h
+> @@ -120,8 +120,20 @@ static inline long local_sub_return(long i, local_t *l)
+>  #define local_inc_return(l)  (local_add_return(1, l))
+>  #define local_dec_return(l)  (local_sub_return(1, l))
+>  
+> -#define local_cmpxchg(l, o, n) \
+> -	(cmpxchg_local(&((l)->a.counter), (o), (n)))
+> +static inline long local_cmpxchg(local_t *l, long old, long new)
+> +{
+> +	return cmpxchg_local(&l->a.counter, old, new);
+> +}
+> +
+> +static inline bool local_try_cmpxchg(local_t *l, long *old, long new)
+> +{
+> +#ifdef CONFIG_64BIT
+> +	return try_cmpxchg_local(&l->a.counter, (s64 *)old, new);
+> +#else
+> +	return try_cmpxchg_local(&l->a.counter, (int *)old, new);
+> +#endif
+> +}
+> +
+>  /* Always has a lock prefix */
+>  #define local_xchg(l, n) (xchg(&((l)->a.counter), (n)))
+>  
+> diff --git a/include/asm-generic/local.h b/include/asm-generic/local.h
+> index fca7f1d84818..7f97018df66f 100644
+> --- a/include/asm-generic/local.h
+> +++ b/include/asm-generic/local.h
+> @@ -42,6 +42,7 @@ typedef struct
+>  #define local_inc_return(l) atomic_long_inc_return(&(l)->a)
+>  
+>  #define local_cmpxchg(l, o, n) atomic_long_cmpxchg((&(l)->a), (o), (n))
+> +#define local_try_cmpxchg(l, po, n) atomic_long_try_cmpxchg((&(l)->a), (po), (n))
+>  #define local_xchg(l, n) atomic_long_xchg((&(l)->a), (n))
+>  #define local_add_unless(l, _a, u) atomic_long_add_unless((&(l)->a), (_a), (u))
+>  #define local_inc_not_zero(l) atomic_long_inc_not_zero(&(l)->a)
+> diff --git a/include/asm-generic/local64.h b/include/asm-generic/local64.h
+> index 765be0b7d883..14963a7a6253 100644
+> --- a/include/asm-generic/local64.h
+> +++ b/include/asm-generic/local64.h
+> @@ -42,7 +42,16 @@ typedef struct {
+>  #define local64_sub_return(i, l) local_sub_return((i), (&(l)->a))
+>  #define local64_inc_return(l)	local_inc_return(&(l)->a)
+>  
+> -#define local64_cmpxchg(l, o, n) local_cmpxchg((&(l)->a), (o), (n))
+> +static inline s64 local64_cmpxchg(local64_t *l, s64 old, s64 new)
+> +{
+> +	return local_cmpxchg(&l->a, old, new);
+> +}
+> +
+> +static inline bool local64_try_cmpxchg(local64_t *l, s64 *old, s64 new)
+> +{
+> +	return local_try_cmpxchg(&l->a, (long *)old, new);
+> +}
+> +
+>  #define local64_xchg(l, n)	local_xchg((&(l)->a), (n))
+>  #define local64_add_unless(l, _a, u) local_add_unless((&(l)->a), (_a), (u))
+>  #define local64_inc_not_zero(l)	local_inc_not_zero(&(l)->a)
+> @@ -81,6 +90,7 @@ typedef struct {
+>  #define local64_inc_return(l)	atomic64_inc_return(&(l)->a)
+>  
+>  #define local64_cmpxchg(l, o, n) atomic64_cmpxchg((&(l)->a), (o), (n))
+> +#define local64_try_cmpxchg(l, po, n) atomic64_try_cmpxchg((&(l)->a), (po), (n))
+>  #define local64_xchg(l, n)	atomic64_xchg((&(l)->a), (n))
+>  #define local64_add_unless(l, _a, u) atomic64_add_unless((&(l)->a), (_a), (u))
+>  #define local64_inc_not_zero(l)	atomic64_inc_not_zero(&(l)->a)
+> diff --git a/include/linux/atomic/atomic-arch-fallback.h b/include/linux/atomic/atomic-arch-fallback.h
+> index 77bc5522e61c..36c92851cdee 100644
+> --- a/include/linux/atomic/atomic-arch-fallback.h
+> +++ b/include/linux/atomic/atomic-arch-fallback.h
+> @@ -217,6 +217,28 @@
+>  
+>  #endif /* arch_try_cmpxchg64_relaxed */
+>  
+> +#ifndef arch_try_cmpxchg_local
+> +#define arch_try_cmpxchg_local(_ptr, _oldp, _new) \
+> +({ \
+> +	typeof(*(_ptr)) *___op = (_oldp), ___o = *___op, ___r; \
+> +	___r = arch_cmpxchg_local((_ptr), ___o, (_new)); \
+> +	if (unlikely(___r != ___o)) \
+> +		*___op = ___r; \
+> +	likely(___r == ___o); \
+> +})
+> +#endif /* arch_try_cmpxchg_local */
+> +
+> +#ifndef arch_try_cmpxchg64_local
+> +#define arch_try_cmpxchg64_local(_ptr, _oldp, _new) \
+> +({ \
+> +	typeof(*(_ptr)) *___op = (_oldp), ___o = *___op, ___r; \
+> +	___r = arch_cmpxchg64_local((_ptr), ___o, (_new)); \
+> +	if (unlikely(___r != ___o)) \
+> +		*___op = ___r; \
+> +	likely(___r == ___o); \
+> +})
+> +#endif /* arch_try_cmpxchg64_local */
+> +
+>  #ifndef arch_atomic_read_acquire
+>  static __always_inline int
+>  arch_atomic_read_acquire(const atomic_t *v)
+> @@ -2456,4 +2478,4 @@ arch_atomic64_dec_if_positive(atomic64_t *v)
+>  #endif
+>  
+>  #endif /* _LINUX_ATOMIC_FALLBACK_H */
+> -// b5e87bdd5ede61470c29f7a7e4de781af3770f09
+> +// 1f49bd4895a4b7a5383906649027205c52ec80ab
+> diff --git a/include/linux/atomic/atomic-instrumented.h b/include/linux/atomic/atomic-instrumented.h
+> index 7a139ec030b0..14a9212cc987 100644
+> --- a/include/linux/atomic/atomic-instrumented.h
+> +++ b/include/linux/atomic/atomic-instrumented.h
+> @@ -2066,6 +2066,24 @@ atomic_long_dec_if_positive(atomic_long_t *v)
+>  	arch_sync_cmpxchg(__ai_ptr, __VA_ARGS__); \
+>  })
+>  
+> +#define try_cmpxchg_local(ptr, oldp, ...) \
+> +({ \
+> +	typeof(ptr) __ai_ptr = (ptr); \
+> +	typeof(oldp) __ai_oldp = (oldp); \
+> +	instrument_atomic_write(__ai_ptr, sizeof(*__ai_ptr)); \
+> +	instrument_atomic_write(__ai_oldp, sizeof(*__ai_oldp)); \
+> +	arch_try_cmpxchg_local(__ai_ptr, __ai_oldp, __VA_ARGS__); \
+> +})
+> +
+> +#define try_cmpxchg64_local(ptr, oldp, ...) \
+> +({ \
+> +	typeof(ptr) __ai_ptr = (ptr); \
+> +	typeof(oldp) __ai_oldp = (oldp); \
+> +	instrument_atomic_write(__ai_ptr, sizeof(*__ai_ptr)); \
+> +	instrument_atomic_write(__ai_oldp, sizeof(*__ai_oldp)); \
+> +	arch_try_cmpxchg64_local(__ai_ptr, __ai_oldp, __VA_ARGS__); \
+> +})
+> +
+>  #define cmpxchg_double(ptr, ...) \
+>  ({ \
+>  	typeof(ptr) __ai_ptr = (ptr); \
+> @@ -2083,4 +2101,4 @@ atomic_long_dec_if_positive(atomic_long_t *v)
+>  })
+>  
+>  #endif /* _LINUX_ATOMIC_INSTRUMENTED_H */
+> -// 764f741eb77a7ad565dc8d99ce2837d5542e8aee
+> +// 456e206c7e4e681126c482e4edcc6f46921ac731
+> diff --git a/kernel/events/ring_buffer.c b/kernel/events/ring_buffer.c
+> index 273a0fe7910a..111ab85ee97d 100644
+> --- a/kernel/events/ring_buffer.c
+> +++ b/kernel/events/ring_buffer.c
+> @@ -191,9 +191,10 @@ __perf_output_begin(struct perf_output_handle *handle,
+>  
+>  	perf_output_get_handle(handle);
+>  
+> +	offset = local_read(&rb->head);
+>  	do {
+>  		tail = READ_ONCE(rb->user_page->data_tail);
+> -		offset = head = local_read(&rb->head);
+> +		head = offset;
+>  		if (!rb->overwrite) {
+>  			if (unlikely(!ring_buffer_has_space(head, tail,
+>  							    perf_data_size(rb),
+> @@ -217,7 +218,7 @@ __perf_output_begin(struct perf_output_handle *handle,
+>  			head += size;
+>  		else
+>  			head -= size;
+> -	} while (local_cmpxchg(&rb->head, offset, head) != offset);
+> +	} while (!local_try_cmpxchg(&rb->head, &offset, head));
+>  
+>  	if (backward) {
+>  		offset = head;
+> diff --git a/scripts/atomic/gen-atomic-fallback.sh b/scripts/atomic/gen-atomic-fallback.sh
+> index 3a07695e3c89..6e853f0dad8d 100755
+> --- a/scripts/atomic/gen-atomic-fallback.sh
+> +++ b/scripts/atomic/gen-atomic-fallback.sh
+> @@ -225,6 +225,10 @@ for cmpxchg in "cmpxchg" "cmpxchg64"; do
+>  	gen_try_cmpxchg_fallbacks "${cmpxchg}"
+>  done
+>  
+> +for cmpxchg in "cmpxchg_local" "cmpxchg64_local"; do
+> +	gen_try_cmpxchg_fallback "${cmpxchg}" ""
+> +done
+> +
+>  grep '^[a-z]' "$1" | while read name meta args; do
+>  	gen_proto "${meta}" "${name}" "atomic" "int" ${args}
+>  done
+> diff --git a/scripts/atomic/gen-atomic-instrumented.sh b/scripts/atomic/gen-atomic-instrumented.sh
+> index 77c06526a574..c8165e9431bf 100755
+> --- a/scripts/atomic/gen-atomic-instrumented.sh
+> +++ b/scripts/atomic/gen-atomic-instrumented.sh
+> @@ -173,7 +173,7 @@ for xchg in "xchg" "cmpxchg" "cmpxchg64" "try_cmpxchg" "try_cmpxchg64"; do
+>  	done
+>  done
+>  
+> -for xchg in "cmpxchg_local" "cmpxchg64_local" "sync_cmpxchg"; do
+> +for xchg in "cmpxchg_local" "cmpxchg64_local" "sync_cmpxchg" "try_cmpxchg_local" "try_cmpxchg64_local" ; do
+>  	gen_xchg "${xchg}" "" ""
+>  	printf "\n"
+>  done
 

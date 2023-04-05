@@ -2,44 +2,42 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B09E4C7619A
-	for <linux-mips@archiver.kernel.org>; Wed,  5 Apr 2023 18:43:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 86C2DC76188
+	for <linux-mips@archiver.kernel.org>; Wed,  5 Apr 2023 18:43:23 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229993AbjDESnO (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 5 Apr 2023 14:43:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41046 "EHLO
+        id S230012AbjDESnX (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 5 Apr 2023 14:43:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41118 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229507AbjDESnN (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 5 Apr 2023 14:43:13 -0400
+        with ESMTP id S233330AbjDESnS (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 5 Apr 2023 14:43:18 -0400
 Received: from vern.gendns.com (vern.gendns.com [98.142.107.122])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6243519BD
-        for <linux-mips@vger.kernel.org>; Wed,  5 Apr 2023 11:43:12 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAF8135B1
+        for <linux-mips@vger.kernel.org>; Wed,  5 Apr 2023 11:43:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=lechnology.com; s=default; h=Content-Transfer-Encoding:Content-Type:
         In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
         :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
         Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
         List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=9w+mHpl3Feo9gU6TGM0RoWAtGMwIO5vz3Gl4AH/wd0s=; b=ZvxTGezmCbRayrfaajPz6xpEHS
-        9xqTZcht8r4gHITGoiwsva82Nok6b15BGWuZKWSrLl+I3zBJjcFwf+UVlJquHBRv6wFvYI9XwrFAK
-        AgzAnA6iLxp8/KslBLav3VPrwP7yzajCOoDMluwwA0p5IDJNk2ky2i4WBjsguubUmD9qlk9wIZdLh
-        Rs9LU80gk8BAFm6YxVWrvCkmN0PF+4w7b3AUJGiu8cG62CLZzIb1Vo9yu+vnZpxcqYUXpp9KjjPdh
-        et6d+RYaSjzfpPU1FvXvLAARE6lEgkgpZ0BcGTPgYxK70fO1YQVl313vPOEpltdyn9itg7zaF7T+j
-        NqJK3XzQ==;
-Received: from ip98-183-112-29.ok.ok.cox.net ([98.183.112.29]:57812 helo=[192.168.0.134])
+        bh=WEVhki1z04JzpG6JGv+tXPk2KVEYI5pMsCd6omv0e8Y=; b=Oqb3PO1k4CqBJ/hcNQoQc+Xjed
+        eqJ8vOTGWrK6NhOYRyoWYY4aVIyndl7gxFnpfFolncw0Z9voV1OiJ34cx8DI5SlracX7U/bo5KRaU
+        DzOLBECWff7waN7kl5pjbA+z6u9PMEFYB6+ajs7fS0CXZGw40zjzdo0rWKS8xMJmOVnDXIFueTgH6
+        lxiuEmeKpsF9wRHjxbmkeO0Mqa9IgYFF3iW++MSoQIiqip/0SHWaz7KosJ8I7VUFw7LVrqjDGC8jw
+        23/tXgr5RlS0iaJ9nSDJPDrclY9+f3iUBwbWWkjX2TCAO2a7+mA2Py7eJ4NjhNAeH7qlGdjkUunR3
+        bJRwCG0A==;
+Received: from ip98-183-112-29.ok.ok.cox.net ([98.183.112.29]:40758 helo=[192.168.0.134])
         by vern.gendns.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
         (Exim 4.96)
         (envelope-from <david@lechnology.com>)
-        id 1pk4gc-0004aP-2T;
-        Wed, 05 Apr 2023 11:04:35 -0400
-Message-ID: <2c8c6e3e-835e-f545-2a57-8e037d32fe9b@lechnology.com>
-Date:   Wed, 5 Apr 2023 10:04:28 -0500
+        id 1pk4fg-0004Km-04;
+        Wed, 05 Apr 2023 11:03:36 -0400
+Message-ID: <04f5d305-9992-bcdc-cd54-111eb8254155@lechnology.com>
+Date:   Wed, 5 Apr 2023 10:03:24 -0500
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
  Thunderbird/102.9.0
-Subject: Re: [PATCH v3 21/65] clk: davinci: da8xx-cfgchip: Add a
- determine_rate hook
-Content-Language: en-US
+Subject: Re: [PATCH v3 54/65] clk: da8xx: clk48: Switch to determine_rate
 To:     Maxime Ripard <maxime@cerno.tech>,
         Michael Turquette <mturquette@baylibre.com>,
         Stephen Boyd <sboyd@kernel.org>,
@@ -96,9 +94,10 @@ Cc:     linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-rtc@vger.kernel.org, linux-sunxi@lists.linux.dev,
         alsa-devel@alsa-project.org, linux-mips@vger.kernel.org
 References: <20221018-clk-range-checks-fixes-v3-0-9a1358472d52@cerno.tech>
- <20221018-clk-range-checks-fixes-v3-21-9a1358472d52@cerno.tech>
+ <20221018-clk-range-checks-fixes-v3-54-9a1358472d52@cerno.tech>
+Content-Language: en-US
 From:   David Lechner <david@lechnology.com>
-In-Reply-To: <20221018-clk-range-checks-fixes-v3-21-9a1358472d52@cerno.tech>
+In-Reply-To: <20221018-clk-range-checks-fixes-v3-54-9a1358472d52@cerno.tech>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
@@ -116,7 +115,7 @@ List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
 On 4/4/23 5:11 AM, Maxime Ripard wrote:
-> The Davinci DA8xxx cfgchip mux clock implements a mux with a set_parent
+> The TI DA8xx USB0 clk48 clocks implements a mux with a set_parent
 > hook, but doesn't provide a determine_rate implementation.
 > 
 > This is a bit odd, since set_parent() is there to, as its name implies,
@@ -128,5 +127,4 @@ On 4/4/23 5:11 AM, Maxime Ripard wrote:
 
 As mentioned in my previous review, parent is selected by device
 tree and should never be changed after init.
-
 

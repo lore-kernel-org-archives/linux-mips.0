@@ -2,105 +2,125 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4B41AC76188
-	for <linux-mips@archiver.kernel.org>; Wed,  5 Apr 2023 08:29:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A31F9C76188
+	for <linux-mips@archiver.kernel.org>; Wed,  5 Apr 2023 08:30:37 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237205AbjDEI3J (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 5 Apr 2023 04:29:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49894 "EHLO
+        id S237128AbjDEIag (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 5 Apr 2023 04:30:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52184 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237165AbjDEI3H (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 5 Apr 2023 04:29:07 -0400
-Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E9EBF2699
-        for <linux-mips@vger.kernel.org>; Wed,  5 Apr 2023 01:29:02 -0700 (PDT)
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1pjyVe-0007pG-00; Wed, 05 Apr 2023 10:28:50 +0200
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id E320EC2116; Wed,  5 Apr 2023 10:26:03 +0200 (CEST)
-Date:   Wed, 5 Apr 2023 10:26:03 +0200
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Jiaxun Yang <jiaxun.yang@flygoat.com>
-Cc:     linux-mips@vger.kernel.org, philmd@linaro.org,
-        sergei.shtylyov@gmail.com, aleksander.lobakin@intel.com
-Subject: Re: [PATCH v3 00/12] MIPS Virt board support
-Message-ID: <20230405082603.GA5556@alpha.franken.de>
-References: <20230404093351.4233-1-jiaxun.yang@flygoat.com>
+        with ESMTP id S237111AbjDEIaf (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 5 Apr 2023 04:30:35 -0400
+Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCC8A1FF9;
+        Wed,  5 Apr 2023 01:30:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1680683434; x=1712219434;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=o2D+LfXhLk+QrH3a0th/mLBmSHhjZTr2yV97vm5EWfI=;
+  b=FEU+acUl60xzaexBT4lEK/sOyrPml79xYWAAMKYJv6+bVdHv/HsJt1kt
+   m58JUrDb29h11muh4ZzNEnHV74xZpQNqntEwQGiKuYCXgN/zIBZmKgR+Y
+   JjFAOLUo0OxSsZqoTQZPsXpy2G+RdGT+jKJgmNmFvmKlim3Lwab9nFlO6
+   dFqUc6FUgyrYHaTqS0IFrcrPMTlWf5DtgQxCF+BFZUehd9gnL2SymL3KH
+   fLP6GucbReryfzQfL4hulmNKm28fC60WC0FGkjXOjPIHDnowHbWLXyCl1
+   XispgM/9/Z26IZN/bEdNrRJFOPk2heJGydKDJGlOi9r+zg2BxhqWbtmmm
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10670"; a="322058589"
+X-IronPort-AV: E=Sophos;i="5.98,319,1673942400"; 
+   d="scan'208";a="322058589"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Apr 2023 01:30:34 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10670"; a="860894821"
+X-IronPort-AV: E=Sophos;i="5.98,319,1673942400"; 
+   d="scan'208";a="860894821"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by orsmga005.jf.intel.com with ESMTP; 05 Apr 2023 01:30:23 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.96)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1pjyX4-00Ckbm-35;
+        Wed, 05 Apr 2023 11:30:18 +0300
+Date:   Wed, 5 Apr 2023 11:30:18 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     =?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@digikod.net>,
+        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Philippe =?iso-8859-1?Q?Mathieu-Daud=E9?= <philmd@linaro.org>,
+        Niklas Schnelle <schnelle@linux.ibm.com>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>,
+        "Maciej W. Rozycki" <macro@orcam.me.uk>,
+        Juergen Gross <jgross@suse.com>,
+        Dominik Brodowski <linux@dominikbrodowski.net>,
+        linux-kernel@vger.kernel.org, linux-alpha@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-sh@vger.kernel.org,
+        sparclinux@vger.kernel.org, linux-pci@vger.kernel.org,
+        xen-devel@lists.xenproject.org, linux-acpi@vger.kernel.org
+Cc:     Miguel Ojeda <ojeda@kernel.org>,
+        Richard Henderson <richard.henderson@linaro.org>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Anatolij Gustschin <agust@denx.de>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>,
+        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>
+Subject: Re: [PATCH v8 7/7] pcmcia: Convert to use less arguments in
+ pci_bus_for_each_resource()
+Message-ID: <ZC0xmk71jQrx3AeH@smile.fi.intel.com>
+References: <20230330162434.35055-1-andriy.shevchenko@linux.intel.com>
+ <20230330162434.35055-8-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230404093351.4233-1-jiaxun.yang@flygoat.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20230330162434.35055-8-andriy.shevchenko@linux.intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Tue, Apr 04, 2023 at 10:33:39AM +0100, Jiaxun Yang wrote:
-> Hi all,
-> 
-> This patchset adds support for the MIPS Virt board, which is based
-> on my QEMU patch [1].
-> 
-> It can work with all CPUs from MIPS Technologies, and also Loongson-2E,
-> Loongson-2F, Cavium Octeon, R4000.
-> 
-> Thanks to generic platform, there is nothing much to do for the platform
-> support, mostly decoupling CPU features with platform features, except for
-> last two patches.
-> 
-> Note that due to QEMU limitation, SMP support is currently broken for all
-> processors other than MIPS I6400/I6500. This is because QEMU is now treatiing
-> secundary CPUs as a VPE (MIPS Release 6 VP). I'm going to fix that after getting
-> virt board support merged in QEMU.
-> 
-> Thanks.
-> 
-> - Jiaxun
-> [1]: https://lore.kernel.org/qemu-devel/20230308000745.56394-1-philmd@linaro.org/
-> 
-> Jiaxun Yang (12):
->   MIPS: Move declaration of bcache ops to cache.c
->   MIPS: smp-cps: Disable coherence setup for unsupported ISA
->   MIPS: mips-cm: Check availability of config registers
->   MIPS: Octeon: Opt-out 4k_cache feature
->   MIPS: cpu-features: Enable octeon_cache by cpu_type
->   MIPS: c-octeon: Provide alternative SMP cache flush function
->   MIPS: Octeon: Allow CVMSEG to be disabled
->   MIPS: Loongson: Move arch cflags to MIPS top level Makefile
->   MIPS: Loongson: Don't select platform features with CPU
->   MIPS: Octeon: Disable CVMSEG by default on other platforms
->   MIPS: Add board config for virt board
->   MIPS: generic: Enable all CPUs supported by virt board in Kconfig
-> 
->  arch/mips/Kconfig                           |  6 ++--
->  arch/mips/Makefile                          | 38 +++++++++++++++++++++
->  arch/mips/cavium-octeon/Kconfig             |  3 +-
->  arch/mips/configs/generic/board-virt.config | 38 +++++++++++++++++++++
->  arch/mips/include/asm/cache.h               |  2 ++
->  arch/mips/include/asm/cpu-features.h        | 21 ++++++++++--
->  arch/mips/include/asm/processor.h           |  7 +++-
->  arch/mips/kernel/asm-offsets.c              |  3 ++
->  arch/mips/kernel/cps-vec.S                  |  5 +++
->  arch/mips/kernel/cpu-probe.c                |  2 ++
->  arch/mips/kernel/mips-cm.c                  |  9 +++--
->  arch/mips/kernel/smp-cps.c                  |  5 +++
->  arch/mips/loongson2ef/Kconfig               |  3 ++
->  arch/mips/loongson2ef/Platform              | 35 -------------------
->  arch/mips/loongson64/Platform               | 16 ---------
->  arch/mips/mm/c-octeon.c                     |  5 +++
->  arch/mips/mm/c-r4k.c                        | 14 --------
->  arch/mips/mm/cache.c                        | 19 +++++++++++
->  18 files changed, 158 insertions(+), 73 deletions(-)
->  create mode 100644 arch/mips/configs/generic/board-virt.config
-> 
-> -- 
-> 2.39.2 (Apple Git-143)
+On Thu, Mar 30, 2023 at 07:24:34PM +0300, Andy Shevchenko wrote:
 
-series applied to mips-next.
+...
 
-Thomas.
+> @@ -960,12 +960,9 @@ static int nonstatic_autoadd_resources(struct pcmcia_socket *s)
+>  	 */
+>  	if (s->cb_dev->bus->number == 0)
+>  		return -EINVAL;
+> -
+> -	for (i = 0; i < PCI_BRIDGE_RESOURCE_NUM; i++) {
+> -		res = s->cb_dev->bus->resource[i];
+> -#else
+> -	pci_bus_for_each_resource(s->cb_dev->bus, res, i) {
+>  #endif
+> +
+> +	pci_bus_for_each_resource(s->cb_dev->bus, res) {
+>  		if (!res)
+>  			continue;
+
+As pointed out in the reply to Bjorn's email this hunk needs to be revisited,
+since I wrote the documentation for the above call I have started understanding
+the deal behind this special treatment for X86 case.
 
 -- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+With Best Regards,
+Andy Shevchenko
+
+

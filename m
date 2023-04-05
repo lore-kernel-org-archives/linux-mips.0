@@ -2,96 +2,132 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C08EAC76188
-	for <linux-mips@archiver.kernel.org>; Wed,  5 Apr 2023 16:37:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B6B48C7619A
+	for <linux-mips@archiver.kernel.org>; Wed,  5 Apr 2023 18:28:28 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231804AbjDEQhZ (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 5 Apr 2023 12:37:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42552 "EHLO
+        id S232783AbjDES22 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 5 Apr 2023 14:28:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57894 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232558AbjDEQhX (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 5 Apr 2023 12:37:23 -0400
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8CCC4C1F;
-        Wed,  5 Apr 2023 09:37:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1680712643; x=1712248643;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=0xErBa/ZTd4QuIygEuCmz4Ddp7YfQ0AoZ3dVIG2ez3Y=;
-  b=dqLPk3bQ9PiFQn0zDY+AcZjtRALJZLymqJ4MJ4H9QMKAMOhpd8WOcXId
-   k8Hf8+rgp+Z9K7SytT0q1mK5gw1d8TiO59HJfrKBwaf3Ffu/xBXejZc5M
-   1CMxxfS8HdphHR60dFj3ZWKdWUEOaBFZ8wF/LRaiaTsD5QU7PzZzVwNxv
-   ZqCUYGItOeP3xk/3Ed6MvLguxuRN9XP+gDmYljboI1X1P5bjtsN5QuS9g
-   mz1Vde2rXtnqNox+BC5E/d4/hW4YoMlhq311JQWEDB6ZvqP3Cb+hd0T2x
-   xI4aUSmEvHngGnTNoQVFY+0+jF/VkgQCEE4xCX3DM1kEDdkimHQX98SoS
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10671"; a="339995929"
-X-IronPort-AV: E=Sophos;i="5.98,321,1673942400"; 
-   d="scan'208";a="339995929"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Apr 2023 09:37:22 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10671"; a="932891908"
-X-IronPort-AV: E=Sophos;i="5.98,321,1673942400"; 
-   d="scan'208";a="932891908"
-Received: from kyunghyu-mobl2.amr.corp.intel.com (HELO [10.209.6.69]) ([10.209.6.69])
-  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Apr 2023 09:37:05 -0700
-Message-ID: <7360ffd2-a5aa-1373-8309-93e71ff36cbb@intel.com>
-Date:   Wed, 5 Apr 2023 09:37:04 -0700
+        with ESMTP id S232717AbjDES21 (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 5 Apr 2023 14:28:27 -0400
+X-Greylist: delayed 3604 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 05 Apr 2023 11:28:17 PDT
+Received: from vern.gendns.com (vern.gendns.com [98.142.107.122])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 665324EDB
+        for <linux-mips@vger.kernel.org>; Wed,  5 Apr 2023 11:28:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=lechnology.com; s=default; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=KwsN1Jqgdt0Ru2Hhoc0LBYnmZhb8r5La/ON0Ev0Izhg=; b=Y+x4KEnYaxmTOeuiHyftGo9xdQ
+        I1IkCDLcv6rx19nvnc017O7Q0VqCDu/q1lgaWg61g+UYbu9cqTokgl5+9DYvnSjmbBS3XgKXxpY3Q
+        S11J4aG6c4qnzIG5yHCr/oioEBkYd+W6IFaxyucGat2uI5SFQAEeax52nY11iIGwn3haXiEgEunrY
+        GE5ldbrx/L9zfJkJEcvT9/Iw5bVgh8UKVwKHUzD0TmBvaglCDwoIUaZTLqI/42TdooiVpNtHzagsr
+        /5M9aotBK1c5PBNn4KWBcwtwjXsUxY1OdDbrvlDUkuwgElxvxLOuPdTvVcCbh3Sax5X6zA/ZvkOjL
+        cTDrBcPw==;
+Received: from ip98-183-112-29.ok.ok.cox.net ([98.183.112.29]:45982 helo=[192.168.0.134])
+        by vern.gendns.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.96)
+        (envelope-from <david@lechnology.com>)
+        id 1pk4gF-0004Ux-2Q;
+        Wed, 05 Apr 2023 11:04:12 -0400
+Message-ID: <ca8efcd8-b2f1-b84d-8087-7f60795f0c0e@lechnology.com>
+Date:   Wed, 5 Apr 2023 10:04:04 -0500
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.8.0
-Subject: Re: [PATCH v2 0/5] locking: Introduce local{,64}_try_cmpxchg
+ Thunderbird/102.9.0
+Subject: Re: [PATCH v3 22/65] clk: davinci: da8xx-cfgchip: Add a
+ determine_rate hook
 Content-Language: en-US
-To:     Uros Bizjak <ubizjak@gmail.com>, linux-alpha@vger.kernel.org,
-        loongarch@lists.linux.dev, linux-mips@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, x86@kernel.org,
-        linux-arch@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Richard Henderson <richard.henderson@linaro.org>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        WANG Xuerui <kernel@xen0n.name>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Arnd Bergmann <arnd@arndb.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Ian Rogers <irogers@google.com>, Will Deacon <will@kernel.org>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Jun Yi <yijun@loongson.cn>
-References: <20230405141710.3551-1-ubizjak@gmail.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-In-Reply-To: <20230405141710.3551-1-ubizjak@gmail.com>
-Content-Type: text/plain; charset=UTF-8
+To:     Maxime Ripard <maxime@cerno.tech>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        =?UTF-8?Q?Andreas_F=c3=a4rber?= <afaerber@suse.de>,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Claudiu Beznea <claudiu.beznea@microchip.com>,
+        Max Filippov <jcmvbkbc@gmail.com>,
+        Charles Keepax <ckeepax@opensource.cirrus.com>,
+        Richard Fitzgerald <rf@opensource.cirrus.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Luca Ceresoli <luca.ceresoli@bootlin.com>,
+        Sekhar Nori <nsekhar@ti.com>, Abel Vesa <abelvesa@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Dinh Nguyen <dinguyen@kernel.org>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        Prashant Gaikwad <pgaikwad@nvidia.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>, Vinod Koul <vkoul@kernel.org>,
+        Kishon Vijay Abraham I <kishon@kernel.org>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Samuel Holland <samuel@sholland.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Paul Cercueil <paul@crapouillou.net>,
+        Orson Zhai <orsonzhai@gmail.com>,
+        Baolin Wang <baolin.wang@linux.alibaba.com>,
+        Chunyan Zhang <zhang.lyra@gmail.com>
+Cc:     linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-actions@lists.infradead.org, patches@opensource.cirrus.com,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-mediatek@lists.infradead.org,
+        linux-renesas-soc@vger.kernel.org, linux-tegra@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linux-phy@lists.infradead.org,
+        linux-rtc@vger.kernel.org, linux-sunxi@lists.linux.dev,
+        alsa-devel@alsa-project.org, linux-mips@vger.kernel.org
+References: <20221018-clk-range-checks-fixes-v3-0-9a1358472d52@cerno.tech>
+ <20221018-clk-range-checks-fixes-v3-22-9a1358472d52@cerno.tech>
+From:   David Lechner <david@lechnology.com>
+In-Reply-To: <20221018-clk-range-checks-fixes-v3-22-9a1358472d52@cerno.tech>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - vern.gendns.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - lechnology.com
+X-Get-Message-Sender-Via: vern.gendns.com: authenticated_id: davidmain+lechnology.com/only user confirmed/virtual account not confirmed
+X-Authenticated-Sender: vern.gendns.com: davidmain@lechnology.com
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On 4/5/23 07:17, Uros Bizjak wrote:
-> Add generic and target specific support for local{,64}_try_cmpxchg
-> and wire up support for all targets that use local_t infrastructure.
+On 4/4/23 5:11 AM, Maxime Ripard wrote:
+> The Davinci DA8xxx cfgchip "clk48" clock implements a mux with a
+> set_parent hook, but doesn't provide a determine_rate implementation.
+> 
+> This is a bit odd, since set_parent() is there to, as its name implies,
+> change the parent of a clock. However, the most likely candidate to
+> trigger that parent change is a call to clk_set_rate(), with
+> determine_rate() figuring out which parent is the best suited for a
+> given rate.
+> 
 
-I feel like I'm missing some context.
+As mentioned in my previous review, parent is selected by device
+tree and should never be changed after init.
 
-What are the actual end user visible effects of this series?  Is there a
-measurable decrease in perf overhead?  Why go to all this trouble for
-perf?  Who else will use local_try_cmpxchg()?
 
-I'm all for improving things, and perf is an important user.  But, if
-the goal here is improving performance, it would be nice to see at least
-a stab at quantifying the performance delta.

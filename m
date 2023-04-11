@@ -2,523 +2,198 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9FC32C77B6F
-	for <linux-mips@archiver.kernel.org>; Tue, 11 Apr 2023 11:13:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 798D3C7619A
+	for <linux-mips@archiver.kernel.org>; Tue, 11 Apr 2023 11:14:31 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229608AbjDKLNF (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 11 Apr 2023 07:13:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48576 "EHLO
+        id S229490AbjDKLOb (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 11 Apr 2023 07:14:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51414 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230030AbjDKLM7 (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Tue, 11 Apr 2023 07:12:59 -0400
-Received: from out5-smtp.messagingengine.com (out5-smtp.messagingengine.com [66.111.4.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91482BA;
-        Tue, 11 Apr 2023 04:12:49 -0700 (PDT)
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailout.nyi.internal (Postfix) with ESMTP id C12315C00C2;
-        Tue, 11 Apr 2023 07:12:48 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute3.internal (MEProxy); Tue, 11 Apr 2023 07:12:48 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=flygoat.com; h=
-        cc:cc:content-transfer-encoding:content-type:content-type:date
-        :date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-        :references:reply-to:sender:subject:subject:to:to; s=fm1; t=
-        1681211568; x=1681297968; bh=NAKOvLI4RsnFPGBuXhbz8aSMu8was8JKV0h
-        Nv5q1VA8=; b=pr58Mj2zWse46UhLZETmLm0mcc9bIqiMMtnNhYau09iIZae6+6M
-        mcb24FYU4MfmAGudC/Ne3e2Q07Bq/y4fymnmrV96vcncTK9ppSb2QDFUTB1kDgja
-        oen/awyUGTMQz2GhEW6iFsPwiH6NZneK2UQByDQJsEQtL4sejOAZNNUzVk3EpG3y
-        WMVWiI5hiaMZ/HFwZpVlUuSXtQqlVQsbLaeM90z1YN6Z5QMSKLXiKfC4WJvWPVHO
-        fzalwqlmXgwnAGf2So2PiD+gQKR5Da6wrHHR67zPWX55QLpNyn7HQe75BBNEjZjj
-        PYz4HMpsfB7qTn1huaAU5tx0B/DTMr2GJ/w==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-transfer-encoding
-        :content-type:content-type:date:date:feedback-id:feedback-id
-        :from:from:in-reply-to:in-reply-to:message-id:mime-version
-        :references:reply-to:sender:subject:subject:to:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=
-        1681211568; x=1681297968; bh=NAKOvLI4RsnFPGBuXhbz8aSMu8was8JKV0h
-        Nv5q1VA8=; b=A3yYMyOqUNqzAPkBisn9yrJfGFvpIEWKbfw5lFqhGVGz5xd/VLC
-        TDyE4LHUjs9CsoXFoFKlC9ML3lmzCJ4VhM0eETcgxEA3SY718voF03T7s7/xIsrm
-        57mag4e1ZtBlpe4YSjvO9zkpSDPIGA7/8qgZdDjLrKXgov5Mz2ebCDGFB8XZ86vb
-        /WkKFJor5pa2+4HDpo5fobJ+TlT/fQuVBmX84FyVOqzKqhJ/lcsf3VyzIlG7YjHK
-        Qpkw2GPHfkVsjruCsFR3zCqaoHRq4ZaiV4yNWt/HBKgBj0OQQt9dRDp92PnkvVwy
-        GOimB8g4IlFz0nHf0IBvL4xTL8Zl1sK+Wvg==
-X-ME-Sender: <xms:sEA1ZIZW035zfxWhjOO0i5MKThViJKghRZ8Ymv8HeRaAVMrHJgbFog>
-    <xme:sEA1ZDZXNh_cM9GcHBVj7n-VlbUhpNfchwZHc2HotQrAQQBVJPH_w61rQXJOd6GQ9
-    TSj66eZPooHLYrZKkw>
-X-ME-Received: <xmr:sEA1ZC_-pU3HEaj0WnZuAG-94ZAXxwiv0HXS1vbAkS5sjh0n08GpCuUG45dZ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrvdekgedgfeejucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucenucfjughrpefhvfevufffkffojghfgggtgfesth
-    ekredtredtjeenucfhrhhomheplfhirgiguhhnucgjrghnghcuoehjihgrgihunhdrhigr
-    nhhgsehflhihghhorghtrdgtohhmqeenucggtffrrghtthgvrhhnpeevfedtffekjeefff
-    ejtdduvddujeefvdejleeutdeufefffedtueevvdduveejffenucevlhhushhtvghrufhi
-    iigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehjihgrgihunhdrhigrnhhgsehflh
-    ihghhorghtrdgtohhm
-X-ME-Proxy: <xmx:sEA1ZCrgQowqWvfFyjG7anV8B5sFLuA8i__wE_o6uocI9WtlkuQ1DQ>
-    <xmx:sEA1ZDry2hzpiFB2Y1rvxdxuKy7eiJ2sPLa0svqLX0Lp9F7gdAmvyA>
-    <xmx:sEA1ZATbNxluZZG04eOWVDhZukA4Uf_UlMvzlVARB87BjfZfa51iRA>
-    <xmx:sEA1ZCUdd_q-VRcAN87A52dpaCh5ip3wCZdfHrebNkRSh1yvaae6vg>
-Feedback-ID: ifd894703:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 11 Apr 2023 07:12:47 -0400 (EDT)
-From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
-To:     linux-mips@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, tsbogend@alpha.franken.de,
-        and@gmx.com, Jiaxun Yang <jiaxun.yang@flygoat.com>
-Subject: [PATCH 8/8] MIPS: Implement microMIPS MT ASE helpers
-Date:   Tue, 11 Apr 2023 12:12:25 +0100
-Message-Id: <20230411111225.55725-9-jiaxun.yang@flygoat.com>
-X-Mailer: git-send-email 2.39.2 (Apple Git-143)
-In-Reply-To: <20230411111225.55725-1-jiaxun.yang@flygoat.com>
-References: <20230411111225.55725-1-jiaxun.yang@flygoat.com>
+        with ESMTP id S229541AbjDKLOa (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Tue, 11 Apr 2023 07:14:30 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C7834210
+        for <linux-mips@vger.kernel.org>; Tue, 11 Apr 2023 04:14:01 -0700 (PDT)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1pmBv0-0004gl-Lm; Tue, 11 Apr 2023 13:12:10 +0200
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+        by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.94.2)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1pmBuf-00AURe-AU; Tue, 11 Apr 2023 13:11:49 +0200
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1pmBue-00CH5H-AL; Tue, 11 Apr 2023 13:11:48 +0200
+Date:   Tue, 11 Apr 2023 13:11:48 +0200
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Miquel Raynal <miquel.raynal@bootlin.com>
+Cc:     Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Valentin Korenblit <vkorenblit@sequans.com>,
+        Lucas Stach <dev@lynxeye.de>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Stefan Agner <stefan@agner.ch>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Paul Cercueil <paul@crapouillou.net>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Liang Yang <liang.yang@amlogic.com>,
+        Naga Sureshkumar Relli <nagasure@xilinx.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Han Xu <han.xu@nxp.com>, Chuanhong Guo <gch981213@gmail.com>,
+        linux-stm32@st-md-mailman.stormreply.com,
+        Heiko Stuebner <heiko@sntech.de>,
+        Marek =?utf-8?B?QmVow7pu?= <kabel@kernel.org>,
+        Samuel Holland <samuel@sholland.org>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        linux-rockchip@lists.infradead.org,
+        Tudor Ambarus <tudor.ambarus@linaro.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Miaoqian Lin <linmq006@gmail.com>,
+        Yang Yingliang <yangyingliang@huawei.com>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        Jack Wang <jinpu.wang@ionos.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        linux-sunxi@lists.linux.dev, ye xingchen <ye.xingchen@zte.com.cn>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        linux-arm-msm@vger.kernel.org, Vladimir Zapolskiy <vz@mleia.com>,
+        Roger Quadros <rogerq@kernel.org>,
+        Wang Weiyang <wangweiyang2@huawei.com>,
+        Harvey Hunt <harveyhuntnexus@gmail.com>,
+        linux-mediatek@lists.infradead.org, linux-mtd@lists.infradead.org,
+        linux-tegra@vger.kernel.org, linux-amlogic@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Christophe Kerello <christophe.kerello@foss.st.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        linux-mips@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        kernel@pengutronix.de, Richard Weinberger <richard@nod.at>,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        linux-oxnas@groups.io, Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>,
+        Claudiu Beznea <claudiu.beznea@microchip.com>
+Subject: Re: [PATCH] mtd: nand: Convert to platform remove callback returning
+ void
+Message-ID: <20230411111148.yefmzohsvk3facq3@pengutronix.de>
+References: <20230401161938.2503204-1-u.kleine-koenig@pengutronix.de>
+ <20230407101043.299f5e22@xps-13>
+ <20230408185332.d2g2ao4tdp6ltm4i@pengutronix.de>
+ <20230411102025.6b2fdc9e@xps-13>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="he6vq5knkogtd7j7"
+Content-Disposition: inline
+In-Reply-To: <20230411102025.6b2fdc9e@xps-13>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-mips@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Implement various microMIPS MT ASE helpers accroading to:
 
-MIPS® Architecture for Programmers
-Volume IV-f: The MIPS® MT Module for the microMIPS32™ Architecture
+--he6vq5knkogtd7j7
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Fixes build error:
-{standard input}:2616: Error: branch to a symbol in another ISA mode
+Hello Miquel,
 
-Boot tested on M5150 with microMIPS enabled on M5150.
+On Tue, Apr 11, 2023 at 10:20:25AM +0200, Miquel Raynal wrote:
+> > On Fri, Apr 07, 2023 at 10:10:43AM +0200, Miquel Raynal wrote:
+> > > I've looked at the different patches, they look good to me but as they
+> > > are all trivial and exactly identical, would you mind sending this
+> > > again all squashed in a single patch? A subsystem-wide conversion see=
+ms
+> > > appropriate. In all cases I plan to take this for the next merge
+> > > window. =20
+> >=20
+> > I slightly prefer them separately, because I like small patches and
+> > because the Acks and Reviews only apply to the individual drivers.
+> > But I don't mind seriously, so here comes the series squashed into one.
+>=20
+> For any non trivial change, I would definitely do that as well.
 
-Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
----
- arch/mips/include/asm/asmmacro.h   |  22 ++-
- arch/mips/include/asm/mipsmtregs.h | 256 +++++++++++++++++------------
- arch/mips/include/asm/mipsregs.h   |   9 +
- 3 files changed, 177 insertions(+), 110 deletions(-)
+A patch is only trivial as long as it doesn't do anything wrong.
+I don't assume any problem, but it wouldn't be the first. The first was
+bcm2835_spi_remove() being used in bcm2835_spi_shutdown().
 
-diff --git a/arch/mips/include/asm/asmmacro.h b/arch/mips/include/asm/asmmacro.h
-index de9688911cae..e56bdda483f5 100644
---- a/arch/mips/include/asm/asmmacro.h
-+++ b/arch/mips/include/asm/asmmacro.h
-@@ -217,27 +217,33 @@
-  * Temporary until all gas have MT ASE support
-  */
- 	.macro	DMT	reg=0
--	.word	0x41600bc1 | (\reg << 16)
-+	insn_if_mips	0x41600bc1 | (\reg << 16)
-+	insn32_if_mm    0x0000057C | (\reg << 21)
- 	.endm
- 
- 	.macro	EMT	reg=0
--	.word	0x41600be1 | (\reg << 16)
-+	insn_if_mips	0x41600be1 | (\reg << 16)
-+	insn32_if_mm    0x0000257C | (\reg << 21)
- 	.endm
- 
- 	.macro	DVPE	reg=0
--	.word	0x41600001 | (\reg << 16)
-+	insn_if_mips	0x41600001 | (\reg << 16)
-+	insn32_if_mm    0x0000157C | (\reg << 21)
- 	.endm
- 
- 	.macro	EVPE	reg=0
--	.word	0x41600021 | (\reg << 16)
-+	insn_if_mips	0x41600021 | (\reg << 16)
-+	insn32_if_mm    0x0000357C | (\reg << 21)
- 	.endm
- 
--	.macro	MFTR	rt=0, rd=0, u=0, sel=0
--	 .word	0x41000000 | (\rt << 16) | (\rd << 11) | (\u << 5) | (\sel)
-+	.macro	MFTR	rs=0, rt=0, u=0, sel=0
-+	insn_if_mips	0x41000000 | (\rt << 16) | (\rs << 11) | (\u << 5) | (\sel)
-+	insn32_if_mm	0x0000000E | (\rt << 21) | (\rs << 16) | (\u << 10) | (\sel << 4)
- 	.endm
- 
--	.macro	MTTR	rt=0, rd=0, u=0, sel=0
--	 .word	0x41800000 | (\rt << 16) | (\rd << 11) | (\u << 5) | (\sel)
-+	.macro	MTTR	rt=0, rs=0, u=0, sel=0
-+	insn_if_mips	0x41800000 | (\rt << 16) | (\rs << 11) | (\u << 5) | (\sel)
-+	insn32_if_mm	0x00000006 | (\rt << 21) | (\rs << 16) | (\u << 10) | (\sel << 4)
- 	.endm
- 
- #ifdef CONFIG_AS_HAS_MSA
-diff --git a/arch/mips/include/asm/mipsmtregs.h b/arch/mips/include/asm/mipsmtregs.h
-index b6dea86b1b82..30e86861c206 100644
---- a/arch/mips/include/asm/mipsmtregs.h
-+++ b/arch/mips/include/asm/mipsmtregs.h
-@@ -189,19 +189,24 @@ static inline unsigned core_nvpes(void)
- 	return ((conf0 & MVPCONF0_PVPE) >> MVPCONF0_PVPE_SHIFT) + 1;
- }
- 
-+#define _ASM_SET_DVPE							\
-+	_ASM_MACRO_1R(dvpe, rt,						\
-+			_ASM_INSN_IF_MIPS(0x41600001 | __rt << 16)	\
-+			_ASM_INSN32_IF_MM(0x0000157C | __rt << 21))
-+#define _ASM_UNSET_DVPE ".purgem dvpe\n\t"
-+
- static inline unsigned int dvpe(void)
- {
- 	int res = 0;
- 
- 	__asm__ __volatile__(
--	"	.set	push						\n"
--	"	.set	noreorder					\n"
--	"	.set	noat						\n"
--	"	.set	"MIPS_ISA_LEVEL"				\n"
--	"	.word	0x41610001		# dvpe $1		\n"
--	"	move	%0, $1						\n"
--	"	ehb							\n"
--	"	.set	pop						\n"
-+	"	.set	push					\n"
-+	"	.set	"MIPS_ISA_LEVEL"			\n"
-+	_ASM_SET_DVPE
-+	"	dvpe	%0					\n"
-+	"	ehb						\n"
-+	_ASM_UNSET_DVPE
-+	"	.set	pop					\n"
- 	: "=r" (res));
- 
- 	instruction_hazard();
-@@ -209,16 +214,22 @@ static inline unsigned int dvpe(void)
- 	return res;
- }
- 
-+#define _ASM_SET_EVPE							\
-+	_ASM_MACRO_1R(evpe, rt,					\
-+			_ASM_INSN_IF_MIPS(0x41600021 | __rt << 16)	\
-+			_ASM_INSN32_IF_MM(0x0000357C | __rt << 21))
-+#define _ASM_UNSET_EVPE ".purgem evpe\n\t"
-+
- static inline void __raw_evpe(void)
- {
- 	__asm__ __volatile__(
--	"	.set	push						\n"
--	"	.set	noreorder					\n"
--	"	.set	noat						\n"
--	"	.set	"MIPS_ISA_LEVEL"				\n"
--	"	.word	0x41600021		# evpe			\n"
--	"	ehb							\n"
--	"	.set	pop						\n");
-+	"	.set	push					\n"
-+	"	.set	"MIPS_ISA_LEVEL"			\n"
-+	_ASM_SET_EVPE
-+	"	evpe    $0					\n"
-+	"	ehb						\n"
-+	_ASM_UNSET_EVPE
-+	"	.set	pop					\n");
- }
- 
- /* Enable virtual processor execution if previous suggested it should be.
-@@ -232,18 +243,24 @@ static inline void evpe(int previous)
- 		__raw_evpe();
- }
- 
-+#define _ASM_SET_DMT							\
-+	_ASM_MACRO_1R(dmt, rt,						\
-+			_ASM_INSN_IF_MIPS(0x41600bc1 | __rt << 16)	\
-+			_ASM_INSN32_IF_MM(0x0000057C | __rt << 21))
-+#define _ASM_UNSET_DMT ".purgem dmt\n\t"
-+
- static inline unsigned int dmt(void)
- {
- 	int res;
- 
- 	__asm__ __volatile__(
--	"	.set	push						\n"
--	"	.set	"MIPS_ISA_LEVEL"				\n"
--	"	.set	noat						\n"
--	"	.word	0x41610BC1			# dmt $1	\n"
--	"	ehb							\n"
--	"	move	%0, $1						\n"
--	"	.set	pop						\n"
-+	"	.set	push					\n"
-+	"	.set	"MIPS_ISA_LEVEL"			\n"
-+	_ASM_SET_DMT
-+	"	dmt	%0					\n"
-+	"	ehb						\n"
-+	_ASM_UNSET_DMT
-+	"	.set	pop					\n"
- 	: "=r" (res));
- 
- 	instruction_hazard();
-@@ -251,14 +268,21 @@ static inline unsigned int dmt(void)
- 	return res;
- }
- 
-+#define _ASM_SET_EMT							\
-+	_ASM_MACRO_1R(emt, rt,						\
-+			_ASM_INSN_IF_MIPS(0x41600be1 | __rt << 16)	\
-+			_ASM_INSN32_IF_MM(0x0000257C | __rt << 21))
-+#define _ASM_UNSET_EMT ".purgem emt\n\t"
-+
- static inline void __raw_emt(void)
- {
- 	__asm__ __volatile__(
--	"	.set	push						\n"
--	"	.set	noreorder					\n"
--	"	.set	"MIPS_ISA_LEVEL"				\n"
--	"	.word	0x41600be1			# emt		\n"
--	"	ehb							\n"
-+	"	.set	push					\n"
-+	"	.set	"MIPS_ISA_LEVEL"			\n"
-+	_ASM_SET_EMT
-+	"	emt	$0					\n"
-+	_ASM_UNSET_EMT
-+	"	ehb						\n"
- 	"	.set	pop");
- }
- 
-@@ -276,41 +300,55 @@ static inline void emt(int previous)
- static inline void ehb(void)
- {
- 	__asm__ __volatile__(
--	"	.set	push					\n"
--	"	.set	"MIPS_ISA_LEVEL"			\n"
--	"	ehb						\n"
--	"	.set	pop					\n");
-+	"	.set	push				\n"
-+	"	.set	"MIPS_ISA_LEVEL"		\n"
-+	"	ehb					\n"
-+	"	.set	pop				\n");
- }
- 
--#define mftc0(rt,sel)							\
-+#define _ASM_SET_MFTC0							\
-+	_ASM_MACRO_2R_1S(mftc0, rs, rt, sel,				\
-+			_ASM_INSN_IF_MIPS(0x41000000 | __rt << 16 |	\
-+				__rs << 11 | \\sel)			\
-+			_ASM_INSN32_IF_MM(0x0000000E | __rt << 21 |	\
-+				__rs << 16 | \\sel << 4))
-+#define _ASM_UNSET_MFTC0 ".purgem mftc0\n\t"
-+
-+#define mftc0(rt, sel)							\
- ({									\
--	 unsigned long	__res;						\
-+	unsigned long	__res;						\
- 									\
- 	__asm__ __volatile__(						\
--	"	.set	push					\n"	\
--	"	.set	"MIPS_ISA_LEVEL"			\n"	\
--	"	.set	noat					\n"	\
--	"	# mftc0 $1, $" #rt ", " #sel "			\n"	\
--	"	.word	0x41000800 | (" #rt " << 16) | " #sel " \n"	\
--	"	move	%0, $1					\n"	\
--	"	.set	pop					\n"	\
-+	"	.set	push				\n"	\
-+	"	.set	"MIPS_ISA_LEVEL"		\n"	\
-+	_ASM_SET_MFTC0							\
-+	"	mftc0	$1, " #rt ", " #sel "		\n"	\
-+	_ASM_UNSET_MFTC0						\
-+	"	.set	pop				\n"	\
- 	: "=r" (__res));						\
- 									\
- 	__res;								\
- })
- 
-+#define _ASM_SET_MFTGPR							\
-+	_ASM_MACRO_2R(mftgpr, rs, rt,					\
-+			_ASM_INSN_IF_MIPS(0x41000020 | __rt << 16 |	\
-+				__rs << 11)				\
-+			_ASM_INSN32_IF_MM(0x0000040E | __rt << 21 |	\
-+				__rs << 16))
-+#define _ASM_UNSET_MFTGPR ".purgem mftgpr\n\t"
-+
- #define mftgpr(rt)							\
- ({									\
- 	unsigned long __res;						\
- 									\
- 	__asm__ __volatile__(						\
--	"	.set	push					\n"	\
--	"	.set	noat					\n"	\
--	"	.set	"MIPS_ISA_LEVEL"			\n"	\
--	"	# mftgpr $1," #rt "				\n"	\
--	"	.word	0x41000820 | (" #rt " << 16)		\n"	\
--	"	move	%0, $1					\n"	\
--	"	.set	pop					\n"	\
-+	"	.set	push				\n"	\
-+	"	.set	"MIPS_ISA_LEVEL"		\n"	\
-+	_ASM_SET_MFTGPR							\
-+	"	mftgpr	%0," #rt "			\n"	\
-+	_ASM_UNSET_MFTGPR						\
-+	"	.set	pop				\n"	\
- 	: "=r" (__res));						\
- 									\
- 	__res;								\
-@@ -321,35 +359,49 @@ static inline void ehb(void)
- 	unsigned long __res;						\
- 									\
- 	__asm__ __volatile__(						\
--	"	mftr	%0, " #rt ", " #u ", " #sel "		\n"	\
-+	"	mftr	%0, " #rt ", " #u ", " #sel "	\n"	\
- 	: "=r" (__res));						\
- 									\
- 	__res;								\
- })
- 
--#define mttgpr(rd,v)							\
-+#define _ASM_SET_MTTGPR							\
-+	_ASM_MACRO_2R(mttgpr, rt, rs,					\
-+			_ASM_INSN_IF_MIPS(0x41800020 | __rt << 16 |	\
-+				__rs << 11)				\
-+			_ASM_INSN32_IF_MM(0x00000406 | __rt << 21 |	\
-+				__rs << 16))
-+#define _ASM_UNSET_MTTGPR ".purgem mttgpr\n\t"
-+
-+#define mttgpr(rs, v)							\
- do {									\
- 	__asm__ __volatile__(						\
--	"	.set	push					\n"	\
--	"	.set	"MIPS_ISA_LEVEL"			\n"	\
--	"	.set	noat					\n"	\
--	"	move	$1, %0					\n"	\
--	"	# mttgpr $1, " #rd "				\n"	\
--	"	.word	0x41810020 | (" #rd " << 11)		\n"	\
--	"	.set	pop					\n"	\
-+	"	.set	push				\n"	\
-+	"	.set	"MIPS_ISA_LEVEL"		\n"	\
-+	_ASM_SET_MTTGPR							\
-+	"	mttgpr	%0, " #rs "			\n"	\
-+	_ASM_UNSET_MTTGPR						\
-+	"	.set	pop				\n"	\
- 	: : "r" (v));							\
- } while (0)
- 
--#define mttc0(rd, sel, v)							\
-+#define _ASM_SET_MTTC0							\
-+	_ASM_MACRO_2R_1S(mttc0, rt, rs, sel,				\
-+			_ASM_INSN_IF_MIPS(0x41800000 | __rt << 16 |	\
-+				__rs << 11 | \\sel)			\
-+			_ASM_INSN32_IF_MM(0x0000040E | __rt << 21 |	\
-+				__rs << 16 | \\sel << 4))
-+#define _ASM_UNSET_MTTC0 ".purgem mttc0\n\t"
-+
-+#define mttc0(rs, sel, v)							\
- ({									\
- 	__asm__ __volatile__(						\
--	"	.set	push					\n"	\
--	"	.set	"MIPS_ISA_LEVEL"			\n"	\
--	"	.set	noat					\n"	\
--	"	move	$1, %0					\n"	\
--	"	# mttc0 %0," #rd ", " #sel "			\n"	\
--	"	.word	0x41810000 | (" #rd " << 11) | " #sel " \n"	\
--	"	.set	pop					\n"	\
-+	"	.set	push				\n"	\
-+	"	.set	"MIPS_ISA_LEVEL"		\n"	\
-+	_ASM_SET_MTTC0							\
-+	"	mttc0	%0," #rs ", " #sel "		\n"	\
-+	_ASM_UNSET_MTTC0						\
-+	"	.set	pop				\n"	\
- 	:								\
- 	: "r" (v));							\
- })
-@@ -371,49 +423,49 @@ do {									\
- 
- 
- /* you *must* set the target tc (settc) before trying to use these */
--#define read_vpe_c0_vpecontrol()	mftc0(1, 1)
--#define write_vpe_c0_vpecontrol(val)	mttc0(1, 1, val)
--#define read_vpe_c0_vpeconf0()		mftc0(1, 2)
--#define write_vpe_c0_vpeconf0(val)	mttc0(1, 2, val)
--#define read_vpe_c0_vpeconf1()		mftc0(1, 3)
--#define write_vpe_c0_vpeconf1(val)	mttc0(1, 3, val)
--#define read_vpe_c0_count()		mftc0(9, 0)
--#define write_vpe_c0_count(val)		mttc0(9, 0, val)
--#define read_vpe_c0_status()		mftc0(12, 0)
--#define write_vpe_c0_status(val)	mttc0(12, 0, val)
--#define read_vpe_c0_cause()		mftc0(13, 0)
--#define write_vpe_c0_cause(val)		mttc0(13, 0, val)
--#define read_vpe_c0_config()		mftc0(16, 0)
--#define write_vpe_c0_config(val)	mttc0(16, 0, val)
--#define read_vpe_c0_config1()		mftc0(16, 1)
--#define write_vpe_c0_config1(val)	mttc0(16, 1, val)
--#define read_vpe_c0_config7()		mftc0(16, 7)
--#define write_vpe_c0_config7(val)	mttc0(16, 7, val)
--#define read_vpe_c0_ebase()		mftc0(15, 1)
--#define write_vpe_c0_ebase(val)		mttc0(15, 1, val)
--#define write_vpe_c0_compare(val)	mttc0(11, 0, val)
--#define read_vpe_c0_badvaddr()		mftc0(8, 0)
--#define read_vpe_c0_epc()		mftc0(14, 0)
--#define write_vpe_c0_epc(val)		mttc0(14, 0, val)
-+#define read_vpe_c0_vpecontrol()	mftc0($1, 1)
-+#define write_vpe_c0_vpecontrol(val)	mttc0($1, 1, val)
-+#define read_vpe_c0_vpeconf0()		mftc0($1, 2)
-+#define write_vpe_c0_vpeconf0(val)	mttc0($1, 2, val)
-+#define read_vpe_c0_vpeconf1()		mftc0($1, 3)
-+#define write_vpe_c0_vpeconf1(val)	mttc0($1, 3, val)
-+#define read_vpe_c0_count()		mftc0($9, 0)
-+#define write_vpe_c0_count(val)		mttc0($9, 0, val)
-+#define read_vpe_c0_status()		mftc0($12, 0)
-+#define write_vpe_c0_status(val)	mttc0($12, 0, val)
-+#define read_vpe_c0_cause()		mftc0($13, 0)
-+#define write_vpe_c0_cause(val)		mttc0($13, 0, val)
-+#define read_vpe_c0_config()		mftc0($16, 0)
-+#define write_vpe_c0_config(val)	mttc0($16, 0, val)
-+#define read_vpe_c0_config1()		mftc0($16, 1)
-+#define write_vpe_c0_config1(val)	mttc0($16, 1, val)
-+#define read_vpe_c0_config7()		mftc0($16, 7)
-+#define write_vpe_c0_config7(val)	mttc0($16, 7, val)
-+#define read_vpe_c0_ebase()		mftc0($15, 1)
-+#define write_vpe_c0_ebase(val)		mttc0($15, 1, val)
-+#define write_vpe_c0_compare(val)	mttc0($11, 0, val)
-+#define read_vpe_c0_badvaddr()		mftc0($8, 0)
-+#define read_vpe_c0_epc()		mftc0($14, 0)
-+#define write_vpe_c0_epc(val)		mttc0($14, 0, val)
- 
- 
- /* TC */
--#define read_tc_c0_tcstatus()		mftc0(2, 1)
--#define write_tc_c0_tcstatus(val)	mttc0(2, 1, val)
--#define read_tc_c0_tcbind()		mftc0(2, 2)
--#define write_tc_c0_tcbind(val)		mttc0(2, 2, val)
--#define read_tc_c0_tcrestart()		mftc0(2, 3)
--#define write_tc_c0_tcrestart(val)	mttc0(2, 3, val)
--#define read_tc_c0_tchalt()		mftc0(2, 4)
--#define write_tc_c0_tchalt(val)		mttc0(2, 4, val)
--#define read_tc_c0_tccontext()		mftc0(2, 5)
--#define write_tc_c0_tccontext(val)	mttc0(2, 5, val)
-+#define read_tc_c0_tcstatus()		mftc0($2, 1)
-+#define write_tc_c0_tcstatus(val)	mttc0($2, 1, val)
-+#define read_tc_c0_tcbind()		mftc0($2, 2)
-+#define write_tc_c0_tcbind(val)		mttc0($2, 2, val)
-+#define read_tc_c0_tcrestart()		mftc0($2, 3)
-+#define write_tc_c0_tcrestart(val)	mttc0($2, 3, val)
-+#define read_tc_c0_tchalt()		mftc0($2, 4)
-+#define write_tc_c0_tchalt(val)		mttc0($2, 4, val)
-+#define read_tc_c0_tccontext()		mftc0($2, 5)
-+#define write_tc_c0_tccontext(val)	mttc0($2, 5, val)
- 
- /* GPR */
--#define read_tc_gpr_sp()		mftgpr(29)
--#define write_tc_gpr_sp(val)		mttgpr(29, val)
--#define read_tc_gpr_gp()		mftgpr(28)
--#define write_tc_gpr_gp(val)		mttgpr(28, val)
-+#define read_tc_gpr_sp()		mftgpr($29)
-+#define write_tc_gpr_sp(val)		mttgpr($29, val)
-+#define read_tc_gpr_gp()		mftgpr($28)
-+#define write_tc_gpr_gp(val)		mttgpr($28, val)
- 
- __BUILD_SET_C0(mvpcontrol)
- 
-diff --git a/arch/mips/include/asm/mipsregs.h b/arch/mips/include/asm/mipsregs.h
-index 7d2c1c90fa10..b30d5e1672c4 100644
---- a/arch/mips/include/asm/mipsregs.h
-+++ b/arch/mips/include/asm/mipsregs.h
-@@ -1310,6 +1310,15 @@ static inline int mm_insn_16bit(u16 insn)
-  * the ENC encodings.
-  */
- 
-+/* Instructions with 1 register operand */
-+#define _ASM_MACRO_1R(OP, R1, ENC)				\
-+		".macro	" #OP " " #R1 "\n\t"			\
-+		_ASM_SET_PARSE_R					\
-+		"parse_r __" #R1 ", \\" #R1 "\n\t"			\
-+		ENC							\
-+		_ASM_UNSET_PARSE_R					\
-+		".endm\n\t"
-+
- /* Instructions with 1 register operand & 1 immediate operand */
- #define _ASM_MACRO_1R1I(OP, R1, I2, ENC)				\
- 		".macro	" #OP " " #R1 ", " #I2 "\n\t"			\
--- 
-2.39.2 (Apple Git-143)
+> The thing is, by collecting the tags with b4, you lost all the Acks and
+> Reviews targets, while we could prevent this, see below.
+>=20
+> > While going through the changed, probably the s3c24xx driver (which
+> > isn't exactly identical to the other changes) could benefit from an
+> > additional change throwing out the early exit (which---I guess---cannot
+> > be hit).
+>=20
+> Yes, I believe the 'info =3D=3D NULL' condition is useless, feel free to
+> drop it in a second patch if you wish.
 
+Yeah.
+
+> > BTW, I constructed the lists of acks/reviews myself and found the same
+> > set. However b4 wailed about each patch claiming:
+> >=20
+> > 	    =E2=9C=97 BADSIG: DKIM/infradead.org
+>=20
+> No idea what this means, any pointer?
+
+lists.infradead.org signs all outgoing mail and something between these
+outgoing mails and b4 consuming them breaks the signature. I didn't
+debug, but depending on where the problem is, either
+postmaster@lists.infradead.org or the admins of lore.kernel.org or the
+maintainer of b4 might want to know and fix.
+
+> > And it didn't like you producing the tags, saying:
+> >=20
+> > 	NOTE: some trailers ignored due to from/email mismatches:
+> > 	    ! Trailer: Acked-by: Roger Quadros <rogerq@kernel.org>
+> > 	     Msg From: Miquel Raynal <miquel.raynal@bootlin.com>
+> > 	    [...]
+>=20
+> Well, yes, I don't expect b4 to read plain english when I say "I
+> collected them for you" ^^ But at least my list had a '# <area>' suffix
+> for each of the Acked and Reviewed changes, which is now missing. I
+> don't know  how useful they actually are, but it seems to me that the
+> information was lost between v1 and v2?
+
+That's right. I will resend in a separate thread with the annotations
+fixed. Sorry for the noise.
+
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=C3=B6nig         =
+   |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--he6vq5knkogtd7j7
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmQ1QHMACgkQj4D7WH0S
+/k59PQgApmYCdD89s3AZJOYu84R1sSO13lJD2sW2YG/826FnsTQ8v5JAAMkZRhMV
+k+MCufvC25ennRcrXR5Uv8O1rreswBF1+9WhnWNEGGzaOsRqvVjkbsrMHgpJUsh3
+FMlNyvjm6KpNJhqF46lITimOhkWph7CAmCq1OMnfs5D1/biK19XqlwyNlOrka0XW
+8dwB13fYwc9PnEdLkyfmzqtcQbGBezwBjXzPkAls4+2qwIJkinKwMZACrpKd1VUr
+VOROg0xogL+KfIkaVvPu4UQTs2jpIf13YnyBfynr+pg81qKqHh6lHeS9zaMbTEhM
+JRbE//97QsOix1ZjsQHXvFD4zk8yjQ==
+=LsjF
+-----END PGP SIGNATURE-----
+
+--he6vq5knkogtd7j7--

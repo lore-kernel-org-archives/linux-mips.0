@@ -2,63 +2,93 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C677DC76196
-	for <linux-mips@archiver.kernel.org>; Tue, 11 Apr 2023 07:18:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 00135C77B71
+	for <linux-mips@archiver.kernel.org>; Tue, 11 Apr 2023 07:18:02 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229766AbjDKHSA (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 11 Apr 2023 03:18:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38218 "EHLO
+        id S229868AbjDKHSC (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 11 Apr 2023 03:18:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38238 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229838AbjDKHSA (ORCPT
+        with ESMTP id S229862AbjDKHSA (ORCPT
         <rfc822;linux-mips@vger.kernel.org>); Tue, 11 Apr 2023 03:18:00 -0400
 Received: from loongson.cn (mail.loongson.cn [114.242.206.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 0C6CC90;
-        Tue, 11 Apr 2023 00:17:56 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id AECCC11D;
+        Tue, 11 Apr 2023 00:17:57 -0700 (PDT)
 Received: from loongson.cn (unknown [113.200.148.30])
-        by gateway (Coremail) with SMTP id _____8CxhdijCTVkswYaAA--.40580S3;
-        Tue, 11 Apr 2023 15:17:55 +0800 (CST)
+        by gateway (Coremail) with SMTP id _____8BxedmkCTVkuQYaAA--.40312S3;
+        Tue, 11 Apr 2023 15:17:56 +0800 (CST)
 Received: from linux.localdomain (unknown [113.200.148.30])
-        by localhost.localdomain (Coremail) with SMTP id AQAAf8CxPL6iCTVkKRkeAA--.33433S2;
-        Tue, 11 Apr 2023 15:17:55 +0800 (CST)
+        by localhost.localdomain (Coremail) with SMTP id AQAAf8CxPL6iCTVkKRkeAA--.33433S4;
+        Tue, 11 Apr 2023 15:17:56 +0800 (CST)
 From:   Tiezhu Yang <yangtiezhu@loongson.cn>
 To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
         loongson-kernel@lists.loongnix.cn
-Subject: [PATCH 0/2] Clean up uprobes for MIPS
-Date:   Tue, 11 Apr 2023 15:17:46 +0800
-Message-Id: <1681197468-20658-1-git-send-email-yangtiezhu@loongson.cn>
+Subject: [PATCH 2/2] MIPS: Remove set_swbp() in uprobes.c
+Date:   Tue, 11 Apr 2023 15:17:48 +0800
+Message-Id: <1681197468-20658-3-git-send-email-yangtiezhu@loongson.cn>
 X-Mailer: git-send-email 2.1.0
-X-CM-TRANSID: AQAAf8CxPL6iCTVkKRkeAA--.33433S2
+In-Reply-To: <1681197468-20658-1-git-send-email-yangtiezhu@loongson.cn>
+References: <1681197468-20658-1-git-send-email-yangtiezhu@loongson.cn>
+X-CM-TRANSID: AQAAf8CxPL6iCTVkKRkeAA--.33433S4
 X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
-X-Coremail-Antispam: 1Uk129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7KY7
-        ZEXasCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29K
-        BjDU0xBIdaVrnRJUUUyEb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26c
-        xKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vE
-        j48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7CjxV
-        AFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAF
-        wI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqjxCEc2xF0cIa020Ex4CE44I27w
-        Aqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE
-        14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwCF04k20xvY0x
-        0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E
-        7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcV
-        C0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF
-        04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7
-        CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7IU8j-e5UUUUU==
+X-Coremail-Antispam: 1Uk129KBjvJXoW7Kw4ftrWDAw48CrW8urykKrg_yoW8JF43pa
+        n3Jw13KF4Yg348GryDZrykZ34Skrn3Z3y2q3W7tryFkwn8ZF45WFn3G3WxXFW09rWkK3WF
+        yw4ruryUZFZ7Aw7anT9S1TB71UUUUUDqnTZGkaVYY2UrUUUUj1kv1TuYvTs0mT0YCTnIWj
+        qI5I8CrVACY4xI64kE6c02F40Ex7xfYxn0WfASr-VFAUDa7-sFnT9fnUUIcSsGvfJTRUUU
+        bzAYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I6I8E6xAIw20EY4v20xvaj40_Wr0E3s
+        1l1IIY67AEw4v_JF0_JFyl8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xv
+        wVC0I7IYx2IY67AKxVW5JVW7JwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwA2z4
+        x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oVCq3wAS0I0E
+        0xvYzxvE52x082IY62kv0487Mc804VCY07AIYIkI8VC2zVCFFI0UMc02F40EFcxC0VAKzV
+        Aqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUAVWUtwAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S
+        6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JMxAIw28IcxkI7VAKI48JMxC20s026x
+        CaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_
+        JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r
+        1I6r4UMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_
+        Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVWUJVW8Jb
+        IYCTnIWIevJa73UjIFyTuYvjxU2Z2-UUUUU
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-When I read uprobes code of all archs, I found that some code for MIPS
-is useless, so do some cleanups.
+set_swbp() in arch/mips/kernel/uprobes.c is same with the weak version
+in kernel/events/uprobes.c, remove it.
 
-Tiezhu Yang (2):
-  MIPS: Use def_bool y for ARCH_SUPPORTS_UPROBES
-  MIPS: Remove set_swbp() in uprobes.c
-
- arch/mips/Kconfig          |  3 +--
+Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+---
  arch/mips/kernel/uprobes.c | 18 ------------------
- 2 files changed, 1 insertion(+), 20 deletions(-)
+ 1 file changed, 18 deletions(-)
 
+diff --git a/arch/mips/kernel/uprobes.c b/arch/mips/kernel/uprobes.c
+index 6c063aa..6b630ed 100644
+--- a/arch/mips/kernel/uprobes.c
++++ b/arch/mips/kernel/uprobes.c
+@@ -207,24 +207,6 @@ unsigned long arch_uretprobe_hijack_return_addr(
+ 	return ra;
+ }
+ 
+-/**
+- * set_swbp - store breakpoint at a given address.
+- * @auprobe: arch specific probepoint information.
+- * @mm: the probed process address space.
+- * @vaddr: the virtual address to insert the opcode.
+- *
+- * For mm @mm, store the breakpoint instruction at @vaddr.
+- * Return 0 (success) or a negative errno.
+- *
+- * This version overrides the weak version in kernel/events/uprobes.c.
+- * It is required to handle MIPS16 and microMIPS.
+- */
+-int __weak set_swbp(struct arch_uprobe *auprobe, struct mm_struct *mm,
+-	unsigned long vaddr)
+-{
+-	return uprobe_write_opcode(auprobe, mm, vaddr, UPROBE_SWBP_INSN);
+-}
+-
+ void arch_uprobe_copy_ixol(struct page *page, unsigned long vaddr,
+ 				  void *src, unsigned long len)
+ {
 -- 
 2.1.0
 

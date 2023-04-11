@@ -2,131 +2,109 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C45BCC76196
-	for <linux-mips@archiver.kernel.org>; Tue, 11 Apr 2023 11:16:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7754FC7619A
+	for <linux-mips@archiver.kernel.org>; Tue, 11 Apr 2023 11:21:58 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229804AbjDKLQB (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 11 Apr 2023 07:16:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54312 "EHLO
+        id S229907AbjDKLV5 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 11 Apr 2023 07:21:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32974 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230054AbjDKLP6 (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Tue, 11 Apr 2023 07:15:58 -0400
-Received: from out5-smtp.messagingengine.com (out5-smtp.messagingengine.com [66.111.4.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56AE43C25;
-        Tue, 11 Apr 2023 04:15:43 -0700 (PDT)
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailout.nyi.internal (Postfix) with ESMTP id 82E7D5C01E1;
-        Tue, 11 Apr 2023 07:15:42 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Tue, 11 Apr 2023 07:15:42 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=flygoat.com; h=
-        cc:cc:content-transfer-encoding:content-type:content-type:date
-        :date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-        :references:reply-to:sender:subject:subject:to:to; s=fm1; t=
-        1681211742; x=1681298142; bh=rNxd2zGmgkAmADZ+JZbkF3uw4Ve/3YJzCvs
-        xLSYPEwg=; b=BMW5j8L6xNOfYHv84A9/6RVR0mcIpsBIDHdaZ2DFEq9NRyIyOfO
-        VAe3gVhDcPS/n+SHKf3n7LVX+I0Fmlcabjo4xe3x2XgWHJSf3gXZWKhlEqSwrSCH
-        2pk55diKRZo04FctPe5d/UFRH58vDq+DXVuR6sQGpjJsyeyOPMX619XqwOaeelpI
-        Vtz0g/TZ/0xzVMEXr7Kp0/scypvsU1ttVFtIPlim+6fNb2O6g45GzZHKcU2MySlv
-        9NDFptmm79w3kmcZG0iOyu1ZCOJ+K9sVT+B9r0k7nudEjSQ6+AcEbZwYwtAF5/VR
-        mFG3YMdJb3pEA/j9OfagNg8v37GOo3CDmHA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-transfer-encoding
-        :content-type:content-type:date:date:feedback-id:feedback-id
-        :from:from:in-reply-to:in-reply-to:message-id:mime-version
-        :references:reply-to:sender:subject:subject:to:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=
-        1681211742; x=1681298142; bh=rNxd2zGmgkAmADZ+JZbkF3uw4Ve/3YJzCvs
-        xLSYPEwg=; b=g2DYhg5Z1dLc7RiFbdAXqGwt+YLpWHNVw7S9N5GvyNFliKw23+8
-        BEJL/xLH4/kNm346JAm1EhrLXvQaK0mcoDDy6RtTEhmy8hpLtbvHiv3+DILXVUU3
-        +e5FQL/JBIlRaNV8H7tYdirsPOXgGaG4WtIuqWBOTiMXPZAqYDsFQkCB0ApWXMoD
-        DRZlc0fFDCOZDfDCn0plXsc7yv2+SfiLESPfwAdRaTwcoXtjXo3+NVDzkUc5TySZ
-        RgOgCEEwyZLH0qdHeXckUl+4yS5EuKY3XV6LMzTFU0oHi+CvUJpws0grh759kOzH
-        EielPD16WZopvmfp8SYukKRdQmO0A/zEkqQ==
-X-ME-Sender: <xms:XkE1ZJ74szy2ZTNzomXRE5miE8h4zlbnlRA-jvJMeFc35vrUd3HcpA>
-    <xme:XkE1ZG7rnAchmTkyeFzcQ5InrZuELxm2bWZ7JtsIuwV5KkdSkkV4ivAgzorclT_eF
-    X97IpfhUaGLTBx-xPQ>
-X-ME-Received: <xmr:XkE1ZAdqHZ5SqSeiLLVrQOmbSzp3nwd7oDZVDZIJxoKIwcaop9BkREWDGUj5-UprFa9M>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrvdekgedgfeekucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurheptggguffhjgffvefgkfhfvffosehtqhhmtdhhtdejnecuhfhrohhmpeflihgr
-    gihunhcujggrnhhguceojhhirgiguhhnrdihrghnghesfhhlhihgohgrthdrtghomheqne
-    cuggftrfgrthhtvghrnhepgeejffefgfefudehfefftefhffdvteeuveeifeetiefffeeg
-    keehvdeggfejheejnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghdpghhithhhuhgsrd
-    gtohhmnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhep
-    jhhirgiguhhnrdihrghnghesfhhlhihgohgrthdrtghomh
-X-ME-Proxy: <xmx:XkE1ZCLbH9UDFN40q7boLNbSUTVoOoOeabJ5fFQ-uMWZ4EbknxECMQ>
-    <xmx:XkE1ZNKdDBnflIrOITnXM4mW7QmkW2TUiHfsex7t8ulzOvLlKlrZag>
-    <xmx:XkE1ZLx6qBqo-DVz0Y7s3m6qwY6s9PhoWY1DG9d8kh0xTOETw4ZOCg>
-    <xmx:XkE1ZEXTygqIePEwsfYScnY2dyKfuNoHa13e2bafccQYG3oR41AyFA>
-Feedback-ID: ifd894703:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 11 Apr 2023 07:15:41 -0400 (EDT)
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3731.500.231\))
-Subject: Re: [PATCH 0/7] MIPS: LLVM build fixes
-From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
-In-Reply-To: <20230411111225.55725-1-jiaxun.yang@flygoat.com>
-Date:   Tue, 11 Apr 2023 12:15:30 +0100
-Cc:     linux-kernel@vger.kernel.org,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>, and@gmx.com
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <1D934EAE-574B-46B0-AC91-E71A96C10E8E@flygoat.com>
-References: <20230411111225.55725-1-jiaxun.yang@flygoat.com>
-To:     "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>
-X-Mailer: Apple Mail (2.3731.500.231)
+        with ESMTP id S229667AbjDKLV4 (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Tue, 11 Apr 2023 07:21:56 -0400
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 332D730DC;
+        Tue, 11 Apr 2023 04:21:53 -0700 (PDT)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 587DED75;
+        Tue, 11 Apr 2023 04:14:10 -0700 (PDT)
+Received: from FVFF77S0Q05N (unknown [10.57.20.166])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 57B213F6C4;
+        Tue, 11 Apr 2023 04:13:24 -0700 (PDT)
+Date:   Tue, 11 Apr 2023 12:13:21 +0100
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     Uros Bizjak <ubizjak@gmail.com>
+Cc:     linux-alpha@vger.kernel.org, loongarch@lists.linux.dev,
+        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        x86@kernel.org, linux-arch@vger.kernel.org,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH v2 2/5] locking/generic: Wire up local{,64}_try_cmpxchg
+Message-ID: <ZDVA0a6QHaONg8AL@FVFF77S0Q05N>
+References: <20230405141710.3551-1-ubizjak@gmail.com>
+ <20230405141710.3551-3-ubizjak@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230405141710.3551-3-ubizjak@gmail.com>
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
+On Wed, Apr 05, 2023 at 04:17:07PM +0200, Uros Bizjak wrote:
+> Implement generic support for local{,64}_try_cmpxchg.
+> 
+> Redirect to the atomic_ family of functions when the target
+> does not provide its own local.h definitions.
+> 
+> For 64-bit targets, implement local64_try_cmpxchg and
+> local64_cmpxchg using typed C wrappers that call local_
+> family of functions and provide additional checking
+> of their input arguments.
+> 
+> Cc: Arnd Bergmann <arnd@arndb.de>
+> Signed-off-by: Uros Bizjak <ubizjak@gmail.com>
 
+Acked-by: Mark Rutland <mark.rutland@arm.com>
 
-> 2023=E5=B9=B44=E6=9C=8811=E6=97=A5 12:12=EF=BC=8CJiaxun Yang =
-<jiaxun.yang@flygoat.com> =E5=86=99=E9=81=93=EF=BC=9A
->=20
-> Hi all,
->=20
-> This series fixes some build errors when building with LLVM.
-> Some of them was discorved by inspecting the tree.
->=20
-> Tested with LLVM + LLVM_IAS=3D{0, 1} and GCC against:
->=20
-> allnoconfig, allmodconfig, 32r2_defconfig, 32r2el_defconfig, =
-64r2_defconfig,
-> 64r2el_defconfig, micro32r2el_defconfig, 32r6el_defconfig, =
-64r6el_defconfig,
-> loongson3_defconfig, lemote2f_defconfig, ip22_defconfig, =
-cavium_octeon_defconfig,
-> malta_defconfig
->=20
-> With other patchsets [1] [2] [3] I sent before, on my CI [4], with =
-tree [5].
->=20
-> allmodconfig is still failing but it's not related to MIPS.
+Mark.
 
-Oops, not intended to resend that.
-Please ignore this thread.
-Sorry for the noise.
-
-Thanks
-- Jiaxun
-
->=20
-> [1]: =
-https://patchwork.kernel.org/project/linux-mips/patch/20230407102721.14814=
--2-jiaxun.yang@flygoat.com/
-> [2]: =
-https://patchwork.kernel.org/project/linux-mips/patch/20230408115936.6631-=
-1-jiaxun.yang@flygoat.com/
-> [3]: =
-https://patchwork.kernel.org/project/linux-mips/patch/20230407102721.14814=
--2-jiaxun.yang@flygoat.com/
-> [4]: =
-https://github.com/FlyGoat/kernel-action-ci/actions/runs/4649898964/jobs/8=
-228560848
-> [5]: =
-https://github.com/FlyGoat/kernel-action-ci/tree/71d3f53e9c44cebf62cfa4ed7=
-ec3b0ce6452555f
-
+> ---
+>  include/asm-generic/local.h   |  1 +
+>  include/asm-generic/local64.h | 12 +++++++++++-
+>  2 files changed, 12 insertions(+), 1 deletion(-)
+> 
+> diff --git a/include/asm-generic/local.h b/include/asm-generic/local.h
+> index fca7f1d84818..7f97018df66f 100644
+> --- a/include/asm-generic/local.h
+> +++ b/include/asm-generic/local.h
+> @@ -42,6 +42,7 @@ typedef struct
+>  #define local_inc_return(l) atomic_long_inc_return(&(l)->a)
+>  
+>  #define local_cmpxchg(l, o, n) atomic_long_cmpxchg((&(l)->a), (o), (n))
+> +#define local_try_cmpxchg(l, po, n) atomic_long_try_cmpxchg((&(l)->a), (po), (n))
+>  #define local_xchg(l, n) atomic_long_xchg((&(l)->a), (n))
+>  #define local_add_unless(l, _a, u) atomic_long_add_unless((&(l)->a), (_a), (u))
+>  #define local_inc_not_zero(l) atomic_long_inc_not_zero(&(l)->a)
+> diff --git a/include/asm-generic/local64.h b/include/asm-generic/local64.h
+> index 765be0b7d883..14963a7a6253 100644
+> --- a/include/asm-generic/local64.h
+> +++ b/include/asm-generic/local64.h
+> @@ -42,7 +42,16 @@ typedef struct {
+>  #define local64_sub_return(i, l) local_sub_return((i), (&(l)->a))
+>  #define local64_inc_return(l)	local_inc_return(&(l)->a)
+>  
+> -#define local64_cmpxchg(l, o, n) local_cmpxchg((&(l)->a), (o), (n))
+> +static inline s64 local64_cmpxchg(local64_t *l, s64 old, s64 new)
+> +{
+> +	return local_cmpxchg(&l->a, old, new);
+> +}
+> +
+> +static inline bool local64_try_cmpxchg(local64_t *l, s64 *old, s64 new)
+> +{
+> +	return local_try_cmpxchg(&l->a, (long *)old, new);
+> +}
+> +
+>  #define local64_xchg(l, n)	local_xchg((&(l)->a), (n))
+>  #define local64_add_unless(l, _a, u) local_add_unless((&(l)->a), (_a), (u))
+>  #define local64_inc_not_zero(l)	local_inc_not_zero(&(l)->a)
+> @@ -81,6 +90,7 @@ typedef struct {
+>  #define local64_inc_return(l)	atomic64_inc_return(&(l)->a)
+>  
+>  #define local64_cmpxchg(l, o, n) atomic64_cmpxchg((&(l)->a), (o), (n))
+> +#define local64_try_cmpxchg(l, po, n) atomic64_try_cmpxchg((&(l)->a), (po), (n))
+>  #define local64_xchg(l, n)	atomic64_xchg((&(l)->a), (n))
+>  #define local64_add_unless(l, _a, u) atomic64_add_unless((&(l)->a), (_a), (u))
+>  #define local64_inc_not_zero(l)	atomic64_inc_not_zero(&(l)->a)
+> -- 
+> 2.39.2
+> 

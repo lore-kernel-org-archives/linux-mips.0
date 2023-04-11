@@ -2,172 +2,141 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F221EC77B72
-	for <linux-mips@archiver.kernel.org>; Tue, 11 Apr 2023 11:10:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 03DC9C76196
+	for <linux-mips@archiver.kernel.org>; Tue, 11 Apr 2023 11:12:43 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229882AbjDKLKf (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 11 Apr 2023 07:10:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44228 "EHLO
+        id S229571AbjDKLMm (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 11 Apr 2023 07:12:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47398 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229804AbjDKLKe (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Tue, 11 Apr 2023 07:10:34 -0400
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 17042E62;
-        Tue, 11 Apr 2023 04:10:31 -0700 (PDT)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D18F3D75;
-        Tue, 11 Apr 2023 04:11:15 -0700 (PDT)
-Received: from FVFF77S0Q05N (unknown [10.57.20.166])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 90C313F6C4;
-        Tue, 11 Apr 2023 04:10:29 -0700 (PDT)
-Date:   Tue, 11 Apr 2023 12:10:22 +0100
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Uros Bizjak <ubizjak@gmail.com>
-Cc:     linux-alpha@vger.kernel.org, loongarch@lists.linux.dev,
-        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        x86@kernel.org, linux-arch@vger.kernel.org,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Boqun Feng <boqun.feng@gmail.com>
-Subject: Re: [PATCH v2 1/5] locking/atomic: Add generic
- try_cmpxchg{,64}_local support
-Message-ID: <ZDVAHkkbxJOlKFzi@FVFF77S0Q05N>
-References: <20230405141710.3551-1-ubizjak@gmail.com>
- <20230405141710.3551-2-ubizjak@gmail.com>
+        with ESMTP id S229526AbjDKLMl (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Tue, 11 Apr 2023 07:12:41 -0400
+Received: from out5-smtp.messagingengine.com (out5-smtp.messagingengine.com [66.111.4.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBD14E5F;
+        Tue, 11 Apr 2023 04:12:39 -0700 (PDT)
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailout.nyi.internal (Postfix) with ESMTP id 2836E5C0098;
+        Tue, 11 Apr 2023 07:12:39 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute1.internal (MEProxy); Tue, 11 Apr 2023 07:12:39 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=flygoat.com; h=
+        cc:cc:content-transfer-encoding:content-type:content-type:date
+        :date:from:from:in-reply-to:message-id:mime-version:reply-to
+        :sender:subject:subject:to:to; s=fm1; t=1681211559; x=
+        1681297959; bh=PMqqr88crw3e/FBcE7+PtWmriJr6ml+310l16WR9uDE=; b=S
+        Js5+f5AIDMKMpprBscSE7GMgHwHstngC7MN78l+7N7GzCEzfOTtfhTiLSCZxs3x/
+        9iLaeCDCy1Dy3WCzVjY6S5Mlc3Y+Fpr0EOIjNR4I4bfX2wjXvC9FzJidaaHBIulI
+        kUY4gkcvTxXerzE0nLWiRNlg6NiBl0xoCD0Cb8YjS9Ttk6THOi4Xd/8ix6Z+ETIr
+        4+HwIp2IYqjcO2AZtxBXo0mDrNbw8yR2VjPh8aE5kWLPxyqZZQSZqn+5uuVBbgA9
+        i78zNsOc1L6ITV0447/t6HlbP3cIaE/YeCn34NV3ns7HrCnSb2mopH0y9aAVO7hf
+        34p6qpC3sBabd1Ar8K7uA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-transfer-encoding
+        :content-type:content-type:date:date:feedback-id:feedback-id
+        :from:from:in-reply-to:message-id:mime-version:reply-to:sender
+        :subject:subject:to:to:x-me-proxy:x-me-proxy:x-me-sender
+        :x-me-sender:x-sasl-enc; s=fm3; t=1681211559; x=1681297959; bh=P
+        Mqqr88crw3e/FBcE7+PtWmriJr6ml+310l16WR9uDE=; b=WSXYfmv3bD7xpK39y
+        xtgqik5zXTvNddVhbO0KZRPFLFbuq7LgslTEwk1SuoUMLcJnQyEQvY7z2yl1EqDU
+        3JmXtgW6DAlT5YgAnT7c5GfisTTK1PpUY2P8dwvwn9fnYufOcFTMVSPSkJ32ll6E
+        2Rbs5quDsx295bvsiFqdTqQXorG0Vle7fn19PTMyWfTlqQifrXeOQ4BER0T0hNrL
+        xPyfT9iQAONB6NVfpocmGNqRp14Xt4Ec7J5MYkKEffuEzW4uWBKftXpyNXVEkPwA
+        20TmTwSKjZvFi5y8R8jNMfZoMqu/RB70OXjTuJ9M6hUNm4U9M+hcXm7oyOTYjV0H
+        DyDNA==
+X-ME-Sender: <xms:pkA1ZJpMK949mggMz6Nd8uMDj3nsYJoDMK_XHWQRoF7Q6ZX-Tsav-w>
+    <xme:pkA1ZLoVMPGdv4IroZLFHeOn9ZPya7UI-I8KbCQEnOBbnsXS0pU8gZfDM5FTcRfWC
+    9SAKyTM1rMeTt32iS8>
+X-ME-Received: <xmr:pkA1ZGO01i-L5g1R1gZOtMirdjSHRZUrSsG4fvug0MatqKN5AAB_oWl2gXkF>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrvdekgedgfeejucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucenucfjughrpefhvfevufffkffogggtgfesthekre
+    dtredtjeenucfhrhhomheplfhirgiguhhnucgjrghnghcuoehjihgrgihunhdrhigrnhhg
+    sehflhihghhorghtrdgtohhmqeenucggtffrrghtthgvrhhnpeejueekkedvfeekudfhhe
+    eliedugefgffduveeviedvffeiueekiefhtdekueeuudenucffohhmrghinhepkhgvrhhn
+    vghlrdhorhhgpdhgihhthhhusgdrtghomhenucevlhhushhtvghrufhiiigvpedtnecurf
+    grrhgrmhepmhgrihhlfhhrohhmpehjihgrgihunhdrhigrnhhgsehflhihghhorghtrdgt
+    ohhm
+X-ME-Proxy: <xmx:pkA1ZE4so64hSpnTAkJkksasijDc2iyaqROC4hEni87DjzsVVPbqxA>
+    <xmx:pkA1ZI61c63DFiXYqXdn08GQrRdrcQXFztZ4HZYmE627tt_L5Eh0mQ>
+    <xmx:pkA1ZMh9MNO_jSqvaXrbK8lxilJ1gVkrd5Vid2xWyZDH4cAtOZdV1Q>
+    <xmx:p0A1ZGnU76JpL9dC0ICqGUJ_6O5FPcPiXuuspj2M33Hn0-t1ySYDgg>
+Feedback-ID: ifd894703:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
+ 11 Apr 2023 07:12:37 -0400 (EDT)
+From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
+To:     linux-mips@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, tsbogend@alpha.franken.de,
+        and@gmx.com, Jiaxun Yang <jiaxun.yang@flygoat.com>
+Subject: [PATCH 0/7] MIPS: LLVM build fixes
+Date:   Tue, 11 Apr 2023 12:12:17 +0100
+Message-Id: <20230411111225.55725-1-jiaxun.yang@flygoat.com>
+X-Mailer: git-send-email 2.39.2 (Apple Git-143)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230405141710.3551-2-ubizjak@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Wed, Apr 05, 2023 at 04:17:06PM +0200, Uros Bizjak wrote:
-> Add generic support for try_cmpxchg{,64}_local and their falbacks.
-> 
-> These provides the generic try_cmpxchg_local family of functions
-> from the arch_ prefixed version, also adding explicit instrumentation.
-> 
-> Cc: Will Deacon <will@kernel.org>
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Cc: Boqun Feng <boqun.feng@gmail.com>
-> Cc: Mark Rutland <mark.rutland@arm.com>
-> Signed-off-by: Uros Bizjak <ubizjak@gmail.com>
+Hi all,
 
-Acked-by: Mark Rutland <mark.rutland@arm.com>
+This series fixes some build errors when building with LLVM.
+Some of them was discorved by inspecting the tree.
 
-Mark.
+Tested with LLVM + LLVM_IAS={0, 1} and GCC against:
 
-> ---
->  include/linux/atomic/atomic-arch-fallback.h | 24 ++++++++++++++++++++-
->  include/linux/atomic/atomic-instrumented.h  | 20 ++++++++++++++++-
->  scripts/atomic/gen-atomic-fallback.sh       |  4 ++++
->  scripts/atomic/gen-atomic-instrumented.sh   |  2 +-
->  4 files changed, 47 insertions(+), 3 deletions(-)
-> 
-> diff --git a/include/linux/atomic/atomic-arch-fallback.h b/include/linux/atomic/atomic-arch-fallback.h
-> index 77bc5522e61c..36c92851cdee 100644
-> --- a/include/linux/atomic/atomic-arch-fallback.h
-> +++ b/include/linux/atomic/atomic-arch-fallback.h
-> @@ -217,6 +217,28 @@
->  
->  #endif /* arch_try_cmpxchg64_relaxed */
->  
-> +#ifndef arch_try_cmpxchg_local
-> +#define arch_try_cmpxchg_local(_ptr, _oldp, _new) \
-> +({ \
-> +	typeof(*(_ptr)) *___op = (_oldp), ___o = *___op, ___r; \
-> +	___r = arch_cmpxchg_local((_ptr), ___o, (_new)); \
-> +	if (unlikely(___r != ___o)) \
-> +		*___op = ___r; \
-> +	likely(___r == ___o); \
-> +})
-> +#endif /* arch_try_cmpxchg_local */
-> +
-> +#ifndef arch_try_cmpxchg64_local
-> +#define arch_try_cmpxchg64_local(_ptr, _oldp, _new) \
-> +({ \
-> +	typeof(*(_ptr)) *___op = (_oldp), ___o = *___op, ___r; \
-> +	___r = arch_cmpxchg64_local((_ptr), ___o, (_new)); \
-> +	if (unlikely(___r != ___o)) \
-> +		*___op = ___r; \
-> +	likely(___r == ___o); \
-> +})
-> +#endif /* arch_try_cmpxchg64_local */
-> +
->  #ifndef arch_atomic_read_acquire
->  static __always_inline int
->  arch_atomic_read_acquire(const atomic_t *v)
-> @@ -2456,4 +2478,4 @@ arch_atomic64_dec_if_positive(atomic64_t *v)
->  #endif
->  
->  #endif /* _LINUX_ATOMIC_FALLBACK_H */
-> -// b5e87bdd5ede61470c29f7a7e4de781af3770f09
-> +// 1f49bd4895a4b7a5383906649027205c52ec80ab
-> diff --git a/include/linux/atomic/atomic-instrumented.h b/include/linux/atomic/atomic-instrumented.h
-> index 7a139ec030b0..14a9212cc987 100644
-> --- a/include/linux/atomic/atomic-instrumented.h
-> +++ b/include/linux/atomic/atomic-instrumented.h
-> @@ -2066,6 +2066,24 @@ atomic_long_dec_if_positive(atomic_long_t *v)
->  	arch_sync_cmpxchg(__ai_ptr, __VA_ARGS__); \
->  })
->  
-> +#define try_cmpxchg_local(ptr, oldp, ...) \
-> +({ \
-> +	typeof(ptr) __ai_ptr = (ptr); \
-> +	typeof(oldp) __ai_oldp = (oldp); \
-> +	instrument_atomic_write(__ai_ptr, sizeof(*__ai_ptr)); \
-> +	instrument_atomic_write(__ai_oldp, sizeof(*__ai_oldp)); \
-> +	arch_try_cmpxchg_local(__ai_ptr, __ai_oldp, __VA_ARGS__); \
-> +})
-> +
-> +#define try_cmpxchg64_local(ptr, oldp, ...) \
-> +({ \
-> +	typeof(ptr) __ai_ptr = (ptr); \
-> +	typeof(oldp) __ai_oldp = (oldp); \
-> +	instrument_atomic_write(__ai_ptr, sizeof(*__ai_ptr)); \
-> +	instrument_atomic_write(__ai_oldp, sizeof(*__ai_oldp)); \
-> +	arch_try_cmpxchg64_local(__ai_ptr, __ai_oldp, __VA_ARGS__); \
-> +})
-> +
->  #define cmpxchg_double(ptr, ...) \
->  ({ \
->  	typeof(ptr) __ai_ptr = (ptr); \
-> @@ -2083,4 +2101,4 @@ atomic_long_dec_if_positive(atomic_long_t *v)
->  })
->  
->  #endif /* _LINUX_ATOMIC_INSTRUMENTED_H */
-> -// 764f741eb77a7ad565dc8d99ce2837d5542e8aee
-> +// 456e206c7e4e681126c482e4edcc6f46921ac731
-> diff --git a/scripts/atomic/gen-atomic-fallback.sh b/scripts/atomic/gen-atomic-fallback.sh
-> index 3a07695e3c89..6e853f0dad8d 100755
-> --- a/scripts/atomic/gen-atomic-fallback.sh
-> +++ b/scripts/atomic/gen-atomic-fallback.sh
-> @@ -225,6 +225,10 @@ for cmpxchg in "cmpxchg" "cmpxchg64"; do
->  	gen_try_cmpxchg_fallbacks "${cmpxchg}"
->  done
->  
-> +for cmpxchg in "cmpxchg_local" "cmpxchg64_local"; do
-> +	gen_try_cmpxchg_fallback "${cmpxchg}" ""
-> +done
-> +
->  grep '^[a-z]' "$1" | while read name meta args; do
->  	gen_proto "${meta}" "${name}" "atomic" "int" ${args}
->  done
-> diff --git a/scripts/atomic/gen-atomic-instrumented.sh b/scripts/atomic/gen-atomic-instrumented.sh
-> index 77c06526a574..c8165e9431bf 100755
-> --- a/scripts/atomic/gen-atomic-instrumented.sh
-> +++ b/scripts/atomic/gen-atomic-instrumented.sh
-> @@ -173,7 +173,7 @@ for xchg in "xchg" "cmpxchg" "cmpxchg64" "try_cmpxchg" "try_cmpxchg64"; do
->  	done
->  done
->  
-> -for xchg in "cmpxchg_local" "cmpxchg64_local" "sync_cmpxchg"; do
-> +for xchg in "cmpxchg_local" "cmpxchg64_local" "sync_cmpxchg" "try_cmpxchg_local" "try_cmpxchg64_local" ; do
->  	gen_xchg "${xchg}" "" ""
->  	printf "\n"
->  done
-> -- 
-> 2.39.2
-> 
+allnoconfig, allmodconfig, 32r2_defconfig, 32r2el_defconfig, 64r2_defconfig,
+64r2el_defconfig, micro32r2el_defconfig, 32r6el_defconfig, 64r6el_defconfig,
+loongson3_defconfig, lemote2f_defconfig, ip22_defconfig, cavium_octeon_defconfig,
+malta_defconfig
+
+With other patchsets [1] [2] [3] I sent before, on my CI [4], with tree [5].
+
+allmodconfig is still failing but it's not related to MIPS.
+
+[1]: https://patchwork.kernel.org/project/linux-mips/patch/20230407102721.14814-2-jiaxun.yang@flygoat.com/
+[2]: https://patchwork.kernel.org/project/linux-mips/patch/20230408115936.6631-1-jiaxun.yang@flygoat.com/
+[3]: https://patchwork.kernel.org/project/linux-mips/patch/20230407102721.14814-2-jiaxun.yang@flygoat.com/
+[4]: https://github.com/FlyGoat/kernel-action-ci/actions/runs/4649898964/jobs/8228560848
+[5]: https://github.com/FlyGoat/kernel-action-ci/tree/71d3f53e9c44cebf62cfa4ed7ec3b0ce6452555f
+
+Thanks
+Jiaxun
+
+Jiaxun Yang (8):
+  MIPS: Replace assembly isa level directives with macros
+  MIPS: Set ISA level for MSA control reg helpers
+  MIPS: loongson2ef: Add missing break in cs5536_isa
+  MIPS: asmmacro: Restore fp macro after undef
+  MIPS: mipsregs: Parse fp and sp register by name in parse_r
+  MIPS: c-r4k: Use cache_op function for rm7k_erratum31
+  MIPS: octeon_switch: Remove duplicated labels
+  MIPS: Implement microMIPS MT ASE helpers
+
+ arch/mips/alchemy/common/sleeper.S            |   6 +-
+ arch/mips/include/asm/asmmacro.h              |  57 ++--
+ arch/mips/include/asm/futex.h                 |   8 +-
+ arch/mips/include/asm/hazards.h               |   2 +-
+ arch/mips/include/asm/io.h                    |   4 +-
+ arch/mips/include/asm/mipsmtregs.h            | 256 +++++++++++-------
+ arch/mips/include/asm/mipsregs.h              |  63 +++--
+ arch/mips/include/asm/msa.h                   |   2 +
+ arch/mips/include/asm/stackframe.h            |   2 +-
+ arch/mips/kernel/bmips_vec.S                  |   4 +-
+ arch/mips/kernel/csrc-r4k.c                   |   2 +-
+ arch/mips/kernel/genex.S                      |   8 +-
+ arch/mips/kernel/idle.c                       |   6 +-
+ arch/mips/kernel/octeon_switch.S              |   6 -
+ arch/mips/kernel/r4k_fpu.S                    |   4 +-
+ arch/mips/kernel/syscall.c                    |   2 +-
+ arch/mips/lantiq/clk.c                        |   2 +-
+ arch/mips/lib/csum_partial.S                  |   5 +-
+ .../loongson2ef/common/cs5536/cs5536_isa.c    |   2 +-
+ arch/mips/mm/c-r4k.c                          |  33 +--
+ arch/mips/mm/cex-oct.S                        |   2 +-
+ arch/mips/mm/sc-ip22.c                        |   6 +-
+ 22 files changed, 277 insertions(+), 205 deletions(-)
+
+-- 
+2.39.2 (Apple Git-143)
+

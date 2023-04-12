@@ -2,72 +2,75 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 054E1C77B6E
-	for <linux-mips@archiver.kernel.org>; Wed, 12 Apr 2023 13:34:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0B8C0C77B77
+	for <linux-mips@archiver.kernel.org>; Wed, 12 Apr 2023 13:34:22 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230258AbjDLNeS (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 12 Apr 2023 09:34:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36694 "EHLO
+        id S230328AbjDLNeU (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 12 Apr 2023 09:34:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36718 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229583AbjDLNeQ (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 12 Apr 2023 09:34:16 -0400
+        with ESMTP id S230223AbjDLNeR (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 12 Apr 2023 09:34:17 -0400
 Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 9B7739742;
-        Wed, 12 Apr 2023 06:33:38 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 2A00F83D7;
+        Wed, 12 Apr 2023 06:33:39 -0700 (PDT)
 Received: from uucp (helo=alpha)
         by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1pmabN-0000FF-05; Wed, 12 Apr 2023 15:33:33 +0200
+        id 1pmabN-0000FF-00; Wed, 12 Apr 2023 15:33:33 +0200
 Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 70732C2458; Wed, 12 Apr 2023 15:32:34 +0200 (CEST)
-Date:   Wed, 12 Apr 2023 15:32:34 +0200
+        id 4E6A6C2449; Wed, 12 Apr 2023 15:27:06 +0200 (CEST)
+Date:   Wed, 12 Apr 2023 15:27:06 +0200
 From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Jiaxun Yang <jiaxun.yang@flygoat.com>
-Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        and@gmx.com, stable@vger.kernel.org
-Subject: Re: [PATCH] MIPS: fw: Allow firmware to pass a empty env
-Message-ID: <20230412133234.GF11717@alpha.franken.de>
-References: <20230411111426.55889-1-jiaxun.yang@flygoat.com>
+To:     John Crispin <john@phrozen.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Serge Semin <fancer.lancer@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Subject: Re: [PATCH] MIPS: Remove deprecated CONFIG_MIPS_CMP
+Message-ID: <20230412132706.GA11717@alpha.franken.de>
+References: <20230405185128.15237-1-tsbogend@alpha.franken.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230411111426.55889-1-jiaxun.yang@flygoat.com>
+In-Reply-To: <20230405185128.15237-1-tsbogend@alpha.franken.de>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Tue, Apr 11, 2023 at 12:14:26PM +0100, Jiaxun Yang wrote:
-> fw_getenv will use env entry to determine style of env,
-> however it is legal for firmware to just pass a empty list.
+On Wed, Apr 05, 2023 at 08:51:27PM +0200, Thomas Bogendoerfer wrote:
+> Commit 5cac93b35c14 ("MIPS: Deprecate CONFIG_MIPS_CMP") deprecated
+> CONFIG_MIPS_CMP and after 9 years it's time to remove it.
 > 
-> Check if first entry exist before running strchr to avoid
-> null pointer dereference.
-> 
-> Cc: stable@vger.kernel.org
-> Link: https://github.com/clbr/n64bootloader/issues/5
-> Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+> Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 > ---
-> Note: Fixes tag is intentionally omitted for this patch, although
-> the booting issue only comes in 6.1, the logic issue is been since very start.
-> ---
->  arch/mips/fw/lib/cmdline.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> Marc, if you prefer an extra patch for the irqchip change, I'll
+> split this. Otherwise I would take it through the MIPS tree.
 > 
-> diff --git a/arch/mips/fw/lib/cmdline.c b/arch/mips/fw/lib/cmdline.c
-> index f24cbb4a39b5..892765b742bb 100644
-> --- a/arch/mips/fw/lib/cmdline.c
-> +++ b/arch/mips/fw/lib/cmdline.c
-> @@ -53,7 +53,7 @@ char *fw_getenv(char *envname)
->  {
->  	char *result = NULL;
->  
-> -	if (_fw_envp != NULL) {
-> +	if (_fw_envp != NULL && fw_envp(0) != NULL) {
->  		/*
->  		 * Return a pointer to the given environment variable.
->  		 * YAMON uses "name", "value" pairs, while U-Boot uses
-> -- 
-> 2.39.2 (Apple Git-143)
+>  arch/mips/Kconfig                    |  34 +----
+>  arch/mips/include/asm/rtlx.h         |   1 -
+>  arch/mips/include/asm/smp-ops.h      |  16 ---
+>  arch/mips/include/asm/vpe.h          |   4 -
+>  arch/mips/kernel/Makefile            |   3 -
+>  arch/mips/kernel/rtlx-cmp.c          | 122 ------------------
+>  arch/mips/kernel/smp-cmp.c           | 148 ----------------------
+>  arch/mips/kernel/vpe-cmp.c           | 180 ---------------------------
+>  arch/mips/kernel/vpe.c               |   2 +-
+>  arch/mips/mti-malta/Makefile         |   2 -
+>  arch/mips/mti-malta/malta-amon.c     |  88 -------------
+>  arch/mips/mti-malta/malta-init.c     |   2 -
+>  arch/mips/mti-malta/malta-platform.c |   2 -
+>  arch/mips/ralink/mt7621.c            |   2 -
+>  drivers/irqchip/irq-mips-gic.c       |  26 ----
+>  15 files changed, 3 insertions(+), 629 deletions(-)
+>  delete mode 100644 arch/mips/kernel/rtlx-cmp.c
+>  delete mode 100644 arch/mips/kernel/smp-cmp.c
+>  delete mode 100644 arch/mips/kernel/vpe-cmp.c
+>  delete mode 100644 arch/mips/mti-malta/malta-amon.c
 
 applied to mips-next.
 

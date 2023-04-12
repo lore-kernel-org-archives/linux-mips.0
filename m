@@ -2,77 +2,53 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 0B8C0C77B77
-	for <linux-mips@archiver.kernel.org>; Wed, 12 Apr 2023 13:34:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9A032C77B6F
+	for <linux-mips@archiver.kernel.org>; Wed, 12 Apr 2023 13:34:21 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230328AbjDLNeU (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 12 Apr 2023 09:34:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36718 "EHLO
+        id S230048AbjDLNeT (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 12 Apr 2023 09:34:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36720 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230223AbjDLNeR (ORCPT
+        with ESMTP id S230241AbjDLNeR (ORCPT
         <rfc822;linux-mips@vger.kernel.org>); Wed, 12 Apr 2023 09:34:17 -0400
 Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 2A00F83D7;
-        Wed, 12 Apr 2023 06:33:39 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 11BD1974B;
+        Wed, 12 Apr 2023 06:33:41 -0700 (PDT)
 Received: from uucp (helo=alpha)
         by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1pmabN-0000FF-00; Wed, 12 Apr 2023 15:33:33 +0200
+        id 1pmabN-0000FF-04; Wed, 12 Apr 2023 15:33:33 +0200
 Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 4E6A6C2449; Wed, 12 Apr 2023 15:27:06 +0200 (CEST)
-Date:   Wed, 12 Apr 2023 15:27:06 +0200
+        id 3C019C2458; Wed, 12 Apr 2023 15:32:19 +0200 (CEST)
+Date:   Wed, 12 Apr 2023 15:32:19 +0200
 From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     John Crispin <john@phrozen.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-Subject: Re: [PATCH] MIPS: Remove deprecated CONFIG_MIPS_CMP
-Message-ID: <20230412132706.GA11717@alpha.franken.de>
-References: <20230405185128.15237-1-tsbogend@alpha.franken.de>
+To:     Tiezhu Yang <yangtiezhu@loongson.cn>
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        loongson-kernel@lists.loongnix.cn
+Subject: Re: [PATCH 0/2] Clean up uprobes for MIPS
+Message-ID: <20230412133219.GE11717@alpha.franken.de>
+References: <1681197468-20658-1-git-send-email-yangtiezhu@loongson.cn>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230405185128.15237-1-tsbogend@alpha.franken.de>
+In-Reply-To: <1681197468-20658-1-git-send-email-yangtiezhu@loongson.cn>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Wed, Apr 05, 2023 at 08:51:27PM +0200, Thomas Bogendoerfer wrote:
-> Commit 5cac93b35c14 ("MIPS: Deprecate CONFIG_MIPS_CMP") deprecated
-> CONFIG_MIPS_CMP and after 9 years it's time to remove it.
+On Tue, Apr 11, 2023 at 03:17:46PM +0800, Tiezhu Yang wrote:
+> When I read uprobes code of all archs, I found that some code for MIPS
+> is useless, so do some cleanups.
 > 
-> Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-> ---
-> Marc, if you prefer an extra patch for the irqchip change, I'll
-> split this. Otherwise I would take it through the MIPS tree.
+> Tiezhu Yang (2):
+>   MIPS: Use def_bool y for ARCH_SUPPORTS_UPROBES
+>   MIPS: Remove set_swbp() in uprobes.c
 > 
->  arch/mips/Kconfig                    |  34 +----
->  arch/mips/include/asm/rtlx.h         |   1 -
->  arch/mips/include/asm/smp-ops.h      |  16 ---
->  arch/mips/include/asm/vpe.h          |   4 -
->  arch/mips/kernel/Makefile            |   3 -
->  arch/mips/kernel/rtlx-cmp.c          | 122 ------------------
->  arch/mips/kernel/smp-cmp.c           | 148 ----------------------
->  arch/mips/kernel/vpe-cmp.c           | 180 ---------------------------
->  arch/mips/kernel/vpe.c               |   2 +-
->  arch/mips/mti-malta/Makefile         |   2 -
->  arch/mips/mti-malta/malta-amon.c     |  88 -------------
->  arch/mips/mti-malta/malta-init.c     |   2 -
->  arch/mips/mti-malta/malta-platform.c |   2 -
->  arch/mips/ralink/mt7621.c            |   2 -
->  drivers/irqchip/irq-mips-gic.c       |  26 ----
->  15 files changed, 3 insertions(+), 629 deletions(-)
->  delete mode 100644 arch/mips/kernel/rtlx-cmp.c
->  delete mode 100644 arch/mips/kernel/smp-cmp.c
->  delete mode 100644 arch/mips/kernel/vpe-cmp.c
->  delete mode 100644 arch/mips/mti-malta/malta-amon.c
+>  arch/mips/Kconfig          |  3 +--
+>  arch/mips/kernel/uprobes.c | 18 ------------------
+>  2 files changed, 1 insertion(+), 20 deletions(-)
 
-applied to mips-next.
+series applied to mips-next.
 
 Thomas.
 

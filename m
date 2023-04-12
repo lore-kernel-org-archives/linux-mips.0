@@ -2,82 +2,119 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E086FC77B6F
-	for <linux-mips@archiver.kernel.org>; Wed, 12 Apr 2023 13:34:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0D8E4C7619A
+	for <linux-mips@archiver.kernel.org>; Wed, 12 Apr 2023 13:38:06 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230163AbjDLNeX (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 12 Apr 2023 09:34:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36712 "EHLO
+        id S229561AbjDLNiF (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 12 Apr 2023 09:38:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41072 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230007AbjDLNeR (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 12 Apr 2023 09:34:17 -0400
-Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 9B25993F4
-        for <linux-mips@vger.kernel.org>; Wed, 12 Apr 2023 06:33:38 -0700 (PDT)
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1pmabN-0000FF-01; Wed, 12 Apr 2023 15:33:33 +0200
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 4D641C2458; Wed, 12 Apr 2023 15:31:13 +0200 (CEST)
-Date:   Wed, 12 Apr 2023 15:31:13 +0200
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Jiaxun Yang <jiaxun.yang@flygoat.com>
-Cc:     linux-mips@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>
-Subject: Re: [PATCH] MIPS: Set better default CPU model and kernel code model
-Message-ID: <20230412133113.GB11717@alpha.franken.de>
-References: <20230408115936.6631-1-jiaxun.yang@flygoat.com>
+        with ESMTP id S229521AbjDLNiE (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 12 Apr 2023 09:38:04 -0400
+Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEE2340F2;
+        Wed, 12 Apr 2023 06:38:02 -0700 (PDT)
+Received: by mail-qk1-x731.google.com with SMTP id bj35so4378019qkb.7;
+        Wed, 12 Apr 2023 06:38:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1681306682; x=1683898682;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=WWdLpuhyNb11g+2phf0ujfTe5bokf6y5zMA0DxQiBiA=;
+        b=B/jjBNSTypcC+joaCW6KBpHZMJp0zGfpqOXg+zBPIJ4NWlwYrPSMxjdSJy75T7U+3W
+         U3p3HotHjbkZlaRKmFC8qc1Afx6oeTJ5uQpH2hG5w6sceSXtWvhwqD0ty4GTJOrTqqUL
+         idO/30jacGJYN69+SVScPsn3OHD9k8oRdDeFIGHLcMZu3eu8rF9Xwdo+4T1+slcDtYsU
+         YH0NOP8VGLe82rREMYx2QH+7wkX8dWpsJjPbWWLufPzhXmFeBT9DiKG3mgcWZ9nD2lka
+         J4Q7aWlsb6BWQEoFbqY6WJkyrIjqnRCGYJf4CUJlNWaYPJ0je3GRhXlmjShv2pC79kPd
+         uijw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112; t=1681306682; x=1683898682;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=WWdLpuhyNb11g+2phf0ujfTe5bokf6y5zMA0DxQiBiA=;
+        b=b6gBQOYwn0iv6j28deCPgMLLksHtVWvph94bSzJdnLF+eBjV2wF3XjmJ1prFZrdHYU
+         Ac9Fa6HZR3LHWVeJhKeiBG6V1DZ8iBpipYwJVQkgDQPfWcYmKdmIe63FQ28dq99VOFgW
+         a3oxs0sgKdKVhxjubS5iuqkBkJmhLG4hgBwNQ38zte8uuroy1kajWTCk+pFqOtgQzm+y
+         Yw7sTMLu0XTVzVrjTzav8PlihjuCCwGHu9SWNQs0oL4+UjvJelfxqBwMYlhJBn9uZ74+
+         XKFGLGy7nlmcGZHZFvfYZtbWrlVlDifU/zvJaorRO5FrfPeXPMl19toEN4Ut4qiIpZQU
+         R7bA==
+X-Gm-Message-State: AAQBX9dmLvbkbOCHa4I7kp452wdamYNpIBB1ZuEgl0I08sBI5+YjTpIL
+        UuYqCkyVnuicMXHfpa4M+Y11A4uSHw/Pvk9zUYM=
+X-Google-Smtp-Source: AKy350bQZX93U7KKOQF4PJTiOvTycKd+ntmsVru9e/foHUOInkoawqILTSPuq4LXHeg8osg4IFMokyT1/kYfdkvFekQ=
+X-Received: by 2002:a05:620a:4482:b0:746:83cd:8d1d with SMTP id
+ x2-20020a05620a448200b0074683cd8d1dmr2165203qkp.6.1681306681702; Wed, 12 Apr
+ 2023 06:38:01 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230408115936.6631-1-jiaxun.yang@flygoat.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20230405141710.3551-1-ubizjak@gmail.com> <20230405141710.3551-4-ubizjak@gmail.com>
+ <20230412113231.GA628377@hirez.programming.kicks-ass.net>
+In-Reply-To: <20230412113231.GA628377@hirez.programming.kicks-ass.net>
+From:   Uros Bizjak <ubizjak@gmail.com>
+Date:   Wed, 12 Apr 2023 15:37:50 +0200
+Message-ID: <CAFULd4aCNNcyQm3Av+KkWVXuU9Cb0G5H5cFmqVR_T5LwCW=YJA@mail.gmail.com>
+Subject: Re: [PATCH v2 3/5] locking/arch: Wire up local_try_cmpxchg
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     linux-alpha@vger.kernel.org, loongarch@lists.linux.dev,
+        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        x86@kernel.org, linux-arch@vger.kernel.org,
+        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Richard Henderson <richard.henderson@linaro.org>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        WANG Xuerui <kernel@xen0n.name>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Jun Yi <yijun@loongson.cn>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Sat, Apr 08, 2023 at 12:59:36PM +0100, Jiaxun Yang wrote:
-> Set default CPU model to Release 2 CPUs (MIPS64R2 if 64 bit CPU
-> is present, otherwise MIPS32R2) to get better feature coverage
-> on various default configs.
-> 
-> Also set default kernel code model to 64 bit since nowadays it
-> doesn't make much sense to run 32 bit kernel on a 64 bit system.
-> 
-> Reported-by: Guenter Roeck <linux@roeck-us.net>
-> Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
-> ---
->  arch/mips/Kconfig | 3 +++
->  1 file changed, 3 insertions(+)
-> 
-> diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-> index ecc7a755fae6..1d681dd87bb0 100644
-> --- a/arch/mips/Kconfig
-> +++ b/arch/mips/Kconfig
-> @@ -1260,6 +1260,8 @@ menu "CPU selection"
->  
->  choice
->  	prompt "CPU type"
-> +	default CPU_MIPS64_R2 if SYS_HAS_CPU_MIPS64_R2
-> +	default CPU_MIPS32_R2 if SYS_HAS_CPU_MIPS32_R2
->  	default CPU_R4X00
+On Wed, Apr 12, 2023 at 1:33=E2=80=AFPM Peter Zijlstra <peterz@infradead.or=
+g> wrote:
+>
+> On Wed, Apr 05, 2023 at 04:17:08PM +0200, Uros Bizjak wrote:
+> > diff --git a/arch/powerpc/include/asm/local.h b/arch/powerpc/include/as=
+m/local.h
+> > index bc4bd19b7fc2..45492fb5bf22 100644
+> > --- a/arch/powerpc/include/asm/local.h
+> > +++ b/arch/powerpc/include/asm/local.h
+> > @@ -90,6 +90,17 @@ static __inline__ long local_cmpxchg(local_t *l, lon=
+g o, long n)
+> >       return t;
+> >  }
+> >
+> > +static __inline__ bool local_try_cmpxchg(local_t *l, long *po, long n)
+> > +{
+> > +     long o =3D *po, r;
+> > +
+> > +     r =3D local_cmpxchg(l, o, n);
+> > +     if (unlikely(r !=3D o))
+> > +             *po =3D r;
+> > +
+> > +     return likely(r =3D=3D o);
+> > +}
+> > +
+>
+> Why is the ppc one different from the rest? Why can't it use the
+> try_cmpxchg_local() fallback and needs to have it open-coded?
 
-I don't think this makes things better. For systems with multiple
-possible CPU choices it's quite easy to get a kernel compiled for
-the wrong ISA.
+Please note that ppc directly defines local_cmpxchg that bypasses
+cmpxchg_local/arch_cmpxchg_local machinery. The patch takes the same
+approach for local_try_cmpxchg, because fallbacks are using
+arch_cmpxchg_local definitions.
 
->  
->  config CPU_LOONGSON64
-> @@ -2007,6 +2009,7 @@ menu "Kernel type"
->  
->  choice
->  	prompt "Kernel code model"
-> +	default 64BIT
+PPC should be converted to use arch_cmpxchg_local (to also enable
+instrumentation), but this is not the scope of the proposed patchset.
 
-I don't buy your "nowadays" argument. My SGI Indy still has 64Bit CPUs
-and has not much reason to run a 64bit kernel.
-
-Thomas.
-
--- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+Uros.

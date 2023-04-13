@@ -2,104 +2,97 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6E5E1C77B6C
-	for <linux-mips@archiver.kernel.org>; Wed, 12 Apr 2023 21:30:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7D82CC77B6C
+	for <linux-mips@archiver.kernel.org>; Thu, 13 Apr 2023 07:58:14 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229593AbjDLVav (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 12 Apr 2023 17:30:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60212 "EHLO
+        id S230225AbjDMH6N (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 13 Apr 2023 03:58:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42348 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229529AbjDLVat (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 12 Apr 2023 17:30:49 -0400
-Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EBA393DE;
-        Wed, 12 Apr 2023 14:30:23 -0700 (PDT)
-Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 33CJTWAB007793;
-        Wed, 12 Apr 2023 21:29:56 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : subject :
- date : message-id : mime-version : content-transfer-encoding;
- s=corp-2023-03-30; bh=bXdrSJqSpeC4V4Q0x3boHlrCc8/cule5AASS6t5grGE=;
- b=CpO6OHCajrI0WUVal1n9Ba/30Oyk+t6xOfwfMan1V+X/22fSPQOCFvQNtQQCMaTrqopF
- +4bf/DmxgpFMr1Gvs6vpw1X+VS5CBVTk3KV6yS9JKvzmRe9pG/qg+UP/CG2KMOx+ZfTv
- oFDlOcj5j3GOCnWanc+GWiQgcLIB5DRAudkPVjrIGhaBCHdF3DtyDlyLHPFfA7FL5Eg0
- qKW6pTNj615zz3xSnPwFPTGbCYrWthTmoi8/HuatpGbKf19gWIc4UKv49PBTV34NQy7r
- kQngQGEG2CaPW6MVBlZ0n6OMF0/WTVOtY1Q/yDTHvu3W7Pl76DCtI6XASxvaf2+cFpPh 2w== 
-Received: from iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta03.appoci.oracle.com [130.35.103.27])
-        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3pu0etscn0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 12 Apr 2023 21:29:56 +0000
-Received: from pps.filterd (iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-        by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 33CKatV3012630;
-        Wed, 12 Apr 2023 21:29:54 GMT
-Received: from brm-x62-22.us.oracle.com (brm-x62-22.us.oracle.com [10.80.150.48])
-        by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3puwe9rak4-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO);
-        Wed, 12 Apr 2023 21:29:54 +0000
-From:   Henry Willard <henry.willard@oracle.com>
-To:     tsbogend@alpha.franken.de, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 1/1] MIPS: Don't clear _PAGE_SPECIAL in _PAGE_CHG_MASK
-Date:   Wed, 12 Apr 2023 15:29:53 -0600
-Message-Id: <20230412212953.388185-1-henry.willard@oracle.com>
-X-Mailer: git-send-email 2.31.1
+        with ESMTP id S229999AbjDMH6M (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Thu, 13 Apr 2023 03:58:12 -0400
+Received: from loongson.cn (mail.loongson.cn [114.242.206.163])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 2455F7AB3;
+        Thu, 13 Apr 2023 00:58:00 -0700 (PDT)
+Received: from loongson.cn (unknown [112.20.110.113])
+        by gateway (Coremail) with SMTP id _____8CxidkItjdkKrobAA--.31458S3;
+        Thu, 13 Apr 2023 15:58:00 +0800 (CST)
+Received: from localhost.localdomain (unknown [112.20.110.113])
+        by localhost.localdomain (Coremail) with SMTP id AQAAf8BxHuQDtjdk7BciAA--.6706S3;
+        Thu, 13 Apr 2023 15:57:59 +0800 (CST)
+From:   Binbin Zhou <zhoubinbin@loongson.cn>
+To:     Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Huacai Chen <chenhuacai@loongson.cn>,
+        WANG Xuerui <kernel@xen0n.name>
+Cc:     linux-rtc@vger.kernel.org, linux-mips@vger.kernel.org,
+        loongarch@lists.linux.dev, Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        devicetree@vger.kernel.org, Qing Zhang <zhangqing@loongson.cn>,
+        zhaoxiao <zhaoxiao@uniontech.com>, keguang.zhang@gmail.com,
+        Binbin Zhou <zhoubinbin@loongson.cn>
+Subject: [PATCH V3 1/7] dt-bindings: rtc: Subdivision of LS2X RTC compatible
+Date:   Thu, 13 Apr 2023 15:57:33 +0800
+Message-Id: <35f43a8cfc32b5a065e4a04eb6cc6abf311f2700.1681370153.git.zhoubinbin@loongson.cn>
+X-Mailer: git-send-email 2.39.1
+In-Reply-To: <cover.1681370153.git.zhoubinbin@loongson.cn>
+References: <cover.1681370153.git.zhoubinbin@loongson.cn>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.942,Hydra:6.0.573,FMLib:17.11.170.22
- definitions=2023-04-12_12,2023-04-12_01,2023-02-09_01
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 phishscore=0
- adultscore=0 spamscore=0 suspectscore=0 bulkscore=0 mlxlogscore=999
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2303200000 definitions=main-2304120183
-X-Proofpoint-GUID: 2_Y7AlEXgNk-dEm2slUp1j_nW3Jx5VIL
-X-Proofpoint-ORIG-GUID: 2_Y7AlEXgNk-dEm2slUp1j_nW3Jx5VIL
+X-CM-TRANSID: AQAAf8BxHuQDtjdk7BciAA--.6706S3
+X-CM-SenderInfo: p2kr3uplqex0o6or00hjvr0hdfq/
+X-Coremail-Antispam: 1Uk129KBjvdXoWrtw4fArW5Jr4DWrW3Xr15XFb_yoWkZrbE9a
+        4Iy34kCws8tF1Sga1DWw4ftw13Z3y2k3W2kwnrtr4Sy34aqrs8KF97tw1akr1fuFW3u3W5
+        WFs3GrZ7Z3Z7GjkaLaAFLSUrUUUU5b8apTn2vfkv8UJUUUU8wcxFpf9Il3svdxBIdaVrn0
+        xqx4xG64xvF2IEw4CE5I8CrVC2j2Jv73VFW2AGmfu7bjvjm3AaLaJ3UjIYCTnIWjp_UUUY
+        C7kC6x804xWl14x267AKxVWUJVW8JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0rVWrJVCq3w
+        AFIxvE14AKwVWUXVWUAwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK
+        6xIIjxv20xvE14v26ryj6F1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4j6F4UM28EF7
+        xvwVC2z280aVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gr1j6F4UJwAa
+        w2AFwI0_JF0_Jw1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqjxCEc2xF0cIa020Ex4CE44
+        I27wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jw0_WrylYx0Ex4A2
+        jsIE14v26r4j6F4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwCY1x0262
+        kKe7AKxVWUAVWUtwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwCFI7km
+        07C267AKxVWUAVWUtwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r
+        1rMI8E67AF67kF1VAFwI0_GFv_WrylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVW8
+        JVW5JwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6r
+        1j6r1xMIIF0xvEx4A2jsIE14v26r4j6F4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1U
+        YxBIdaVFxhVjvjDU0xZFpf9x07jz5lbUUUUU=
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-In the special case where
+The LS2X RTC alarm depends on the associated registers in a separate
+power management domain.
 
-	p = mmap(NULL, ALLOC_SIZE, PROT_READ,
-                MAP_PRIVATE | MAP_ANONYMOUS | MAP_POPULATE, -1, 0);
+In order to define the PM domain addresses of the different chips, a
+more detailed description of compatible is required.
 
-is followed by
-
-	rc = mprotect(p, ALLOC_SIZE, PROT_NONE);
-
-the _PAGE_SPECIAL bit in the page tables will be cleared by
-mistake and the later unmapped operations will incorrectly
-modify the struct page for the the zero page. This sequence
-occurs in the madvise05 test of the Linux Test Project
-suite of tests.
-
-This was discovered while testing an older version of the kernel
-(5.4.17) on a MIPS device. Unfortunately, support for this device
-is not available in newer kernels, so I can't test this with the
-latest Linux kernel code. It looks like the problem exists in
-newer kernels, but I can't verify it. Except for the LTP test,
-this sequence of calls is probably not common.
-
-Passing it along in the hope it will be useful to someone.
-
-Signed-off-by: Henry Willard <henry.willard@oracle.com>
+Signed-off-by: Binbin Zhou <zhoubinbin@loongson.cn>
 ---
- arch/mips/include/asm/pgtable-bits.h | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ Documentation/devicetree/bindings/rtc/trivial-rtc.yaml | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
-diff --git a/arch/mips/include/asm/pgtable-bits.h b/arch/mips/include/asm/pgtable-bits.h
-index 2362842ee2b5..1c576679aa87 100644
---- a/arch/mips/include/asm/pgtable-bits.h
-+++ b/arch/mips/include/asm/pgtable-bits.h
-@@ -280,6 +280,7 @@ static inline uint64_t pte_to_entrylo(unsigned long pte_val)
- #define __WRITEABLE	(_PAGE_SILENT_WRITE | _PAGE_WRITE | _PAGE_MODIFIED)
- 
- #define _PAGE_CHG_MASK	(_PAGE_ACCESSED | _PAGE_MODIFIED |	\
--			 _PAGE_SOFT_DIRTY | _PFN_MASK | _CACHE_MASK)
-+			 _PAGE_SOFT_DIRTY | _PFN_MASK |   \
-+			 _CACHE_MASK | _PAGE_SPECIAL)
- 
- #endif /* _ASM_PGTABLE_BITS_H */
+diff --git a/Documentation/devicetree/bindings/rtc/trivial-rtc.yaml b/Documentation/devicetree/bindings/rtc/trivial-rtc.yaml
+index a3603e638c37..2928811b83a0 100644
+--- a/Documentation/devicetree/bindings/rtc/trivial-rtc.yaml
++++ b/Documentation/devicetree/bindings/rtc/trivial-rtc.yaml
+@@ -47,8 +47,11 @@ properties:
+       - isil,isl1218
+       # Intersil ISL12022 Real-time Clock
+       - isil,isl12022
+-      # Loongson-2K Socs/LS7A bridge Real-time Clock
+-      - loongson,ls2x-rtc
++      # Loongson LS7A bridge Real-time Clock
++      - loongson,ls7a-rtc
++      # Loongson-2K Socs Real-time Clock
++      - loongson,ls2k0500-rtc
++      - loongson,ls2k1000-rtc
+       # Real Time Clock Module with I2C-Bus
+       - microcrystal,rv3029
+       # Real Time Clock
 -- 
-2.31.1
+2.39.1
 

@@ -2,36 +2,36 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 775F7C77B79
-	for <linux-mips@archiver.kernel.org>; Fri, 14 Apr 2023 23:45:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A725CC77B72
+	for <linux-mips@archiver.kernel.org>; Fri, 14 Apr 2023 23:46:09 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230361AbjDNXpx (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 14 Apr 2023 19:45:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55230 "EHLO
+        id S230254AbjDNXqI (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 14 Apr 2023 19:46:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55086 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230215AbjDNXpV (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Fri, 14 Apr 2023 19:45:21 -0400
+        with ESMTP id S230311AbjDNXpc (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Fri, 14 Apr 2023 19:45:32 -0400
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06B17A5CD;
-        Fri, 14 Apr 2023 16:44:44 -0700 (PDT)
-Message-ID: <20230414232310.256412375@linutronix.de>
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3B74AD12;
+        Fri, 14 Apr 2023 16:44:51 -0700 (PDT)
+Message-ID: <20230414232310.506665258@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1681515881;
+        s=2020; t=1681515888;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         references:references; bh=e1FMo66EmKhD6c9vNMbCMEr10b7nb30z1HTBJhSwsws=;
-        b=gZ0HEhv3acCl5QBYyuBxsWswUfiT2pTSEiPx8KAuYf607AwMRXvsLBlYW5dljp8oWs/ntm
-        Rl62blc06B+wdYag6mxiaHF4d6UazbaaiGafHMeetJ/A7Hs5RVhUzMngs/dEe59idC0O2F
-        aA4jOVKszqOh4s2mn+PKplYpnPle5vYAOnMKw27lKXhJvIh/kbhLy4lRj7cXXA/G581Bej
-        PsarGBYF6AEmBjKJMVj8L9q7SGw5rle2qMtTuVh6V6kezaC/bwaovVLX9d1Zsm+GX8ANmu
-        PhMCi/IYxY/Oqm30JTDcZDBgs/Y7EGdHwcz8miDR/Arr0Wrr//IGKwmjd5YAMQ==
+         references:references; bh=BWuCF2CiZKIQbbVy6vgpgYODjXTXdK2iLGuwNDfmq40=;
+        b=f+z8dnbF0VfVZ2drfvyKG7CFHH0pFiyt/pWm7ehfcpt37yeWoaaqrXqvZgx9e/X+XvrZce
+        gt4gtyv6t++LGb/9kB1kGkXRTvx7bPDMmlE2YCfC4bhE+s0E3cJidnKxtsU1uFW28KmFrm
+        Eh1JSahdrCC66cB1rpXpEnDQUWYAaCehtBdvR4JcyEbKg1e1N2/wIL2n3XDGfkKj7+6Kc2
+        i/dgOOZylb3sazc82Iv1WIdzwGBFxWc2QRD+sOwDm8QUeivjB4vTaM4N2GaxbzQoD4goZa
+        9mik80mRNDqag2mcRqOovhsRU7cr3S59unOU29PAZedSzmpwu0Vl+6WwRIUstA==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1681515881;
+        s=2020e; t=1681515888;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         references:references; bh=e1FMo66EmKhD6c9vNMbCMEr10b7nb30z1HTBJhSwsws=;
-        b=4fNwIQeLJaYUXs5/LQAEGEGLbWkObI//eYOHt1swXrTx799wwKeZFlTzry5MJCiAr70s7q
-        ypFOiCNeSLElyzBg==
+         references:references; bh=BWuCF2CiZKIQbbVy6vgpgYODjXTXdK2iLGuwNDfmq40=;
+        b=HrYkhb/PC8lVyjiszH07tO75RvI9fVkc6wkdtUyyzhBuNuOW308LHInmD5FALuyFMFj8ZV
+        PF23VUQhymsOP5DA==
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     x86@kernel.org, David Woodhouse <dwmw@infradead.org>,
@@ -46,14 +46,14 @@ Cc:     x86@kernel.org, David Woodhouse <dwmw@infradead.org>,
         Paul Menzel <pmenzel@molgen.mpg.de>,
         "Guilherme G. Piccoli" <gpiccoli@igalia.com>,
         Piotr Gorski <lucjan.lucjanov@gmail.com>,
-        Juergen Gross <jgross@suse.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        xen-devel@lists.xenproject.org,
-        David Woodhouse <dwmw@amazon.co.uk>,
-        Usama Arif <usama.arif@bytedance.com>,
         Russell King <linux@armlinux.org.uk>,
         Arnd Bergmann <arnd@arndb.de>,
         linux-arm-kernel@lists.infradead.org,
+        David Woodhouse <dwmw@amazon.co.uk>,
+        Usama Arif <usama.arif@bytedance.com>,
+        Juergen Gross <jgross@suse.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        xen-devel@lists.xenproject.org,
         Catalin Marinas <catalin.marinas@arm.com>,
         Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>,
         linux-csky@vger.kernel.org,
@@ -66,49 +66,84 @@ Cc:     x86@kernel.org, David Woodhouse <dwmw@infradead.org>,
         linux-riscv@lists.infradead.org,
         Mark Rutland <mark.rutland@arm.com>,
         Sabin Rapan <sabrapan@amazon.com>
-Subject: [patch 17/37] x86/xen/hvm: Get rid of DEAD_FROZEN handling
+Subject: [patch 21/37] ARM: smp: Switch to hotplug core state synchronization
 References: <20230414225551.858160935@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-Date:   Sat, 15 Apr 2023 01:44:41 +0200 (CEST)
+Date:   Sat, 15 Apr 2023 01:44:47 +0200 (CEST)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-No point in this conditional voodoo. Un-initializing the lock mechanism is
-safe to be called unconditionally even if it was already invoked when the
-CPU died.
-
-Remove the invocation of xen_smp_intr_free() as that has been already
-cleaned up in xen_cpu_dead_hvm().
+Switch to the CPU hotplug core state tracking and synchronization
+mechanim. No functional change intended.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Cc: Juergen Gross <jgross@suse.com>
-Cc: Boris Ostrovsky <boris.ostrovsky@oracle.com>
-Cc: xen-devel@lists.xenproject.org
+Cc: Russell King <linux@armlinux.org.uk>
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: linux-arm-kernel@lists.infradead.org
 ---
- arch/x86/xen/enlighten_hvm.c |   11 +++++------
- 1 file changed, 5 insertions(+), 6 deletions(-)
+ arch/arm/Kconfig           |    1 +
+ arch/arm/include/asm/smp.h |    2 +-
+ arch/arm/kernel/smp.c      |   18 +++++++-----------
+ 3 files changed, 9 insertions(+), 12 deletions(-)
 
---- a/arch/x86/xen/enlighten_hvm.c
-+++ b/arch/x86/xen/enlighten_hvm.c
-@@ -161,13 +161,12 @@ static int xen_cpu_up_prepare_hvm(unsign
- 	int rc = 0;
+--- a/arch/arm/Kconfig
++++ b/arch/arm/Kconfig
+@@ -124,6 +124,7 @@ config ARM
+ 	select HAVE_SYSCALL_TRACEPOINTS
+ 	select HAVE_UID16
+ 	select HAVE_VIRT_CPU_ACCOUNTING_GEN
++	select HOTPLUG_CORE_SYNC_DEAD if HOTPLUG_CPU
+ 	select IRQ_FORCED_THREADING
+ 	select MODULES_USE_ELF_REL
+ 	select NEED_DMA_MAP_STATE
+--- a/arch/arm/include/asm/smp.h
++++ b/arch/arm/include/asm/smp.h
+@@ -64,7 +64,7 @@ extern void secondary_startup_arm(void);
+ 
+ extern int __cpu_disable(void);
+ 
+-extern void __cpu_die(unsigned int cpu);
++static inline void __cpu_die(unsigned int cpu) { }
+ 
+ extern void arch_send_call_function_single_ipi(int cpu);
+ extern void arch_send_call_function_ipi_mask(const struct cpumask *mask);
+--- a/arch/arm/kernel/smp.c
++++ b/arch/arm/kernel/smp.c
+@@ -289,15 +289,11 @@ int __cpu_disable(void)
+ }
+ 
+ /*
+- * called on the thread which is asking for a CPU to be shutdown -
+- * waits until shutdown has completed, or it is timed out.
++ * called on the thread which is asking for a CPU to be shutdown after the
++ * shutdown completed.
+  */
+-void __cpu_die(unsigned int cpu)
++void arch_cpuhp_cleanup_dead_cpu(unsigned int cpu)
+ {
+-	if (!cpu_wait_death(cpu, 5)) {
+-		pr_err("CPU%u: cpu didn't die\n", cpu);
+-		return;
+-	}
+ 	pr_debug("CPU%u: shutdown\n", cpu);
+ 
+ 	clear_tasks_mm_cpumask(cpu);
+@@ -337,11 +333,11 @@ void arch_cpu_idle_dead(void)
+ 	flush_cache_louis();
  
  	/*
--	 * This can happen if CPU was offlined earlier and
--	 * offlining timed out in common_cpu_die().
-+	 * If a CPU was offlined earlier and offlining timed out then the
-+	 * lock mechanism is still initialized. Uninit it unconditionally
-+	 * as it's safe to call even if already uninited. Interrupts and
-+	 * timer have already been handled in xen_cpu_dead_hvm().
+-	 * Tell __cpu_die() that this CPU is now safe to dispose of.  Once
+-	 * this returns, power and/or clocks can be removed at any point
+-	 * from this CPU and its cache by platform_cpu_kill().
++	 * Tell cpuhp_bp_sync_dead() that this CPU is now safe to dispose
++	 * of. Once this returns, power and/or clocks can be removed at
++	 * any point from this CPU and its cache by platform_cpu_kill().
  	 */
--	if (cpu_report_state(cpu) == CPU_DEAD_FROZEN) {
--		xen_smp_intr_free(cpu);
--		xen_uninit_lock_cpu(cpu);
--	}
-+	xen_uninit_lock_cpu(cpu);
+-	(void)cpu_report_death();
++	cpuhp_ap_report_dead();
  
- 	if (cpu_acpi_id(cpu) != U32_MAX)
- 		per_cpu(xen_vcpu_id, cpu) = cpu_acpi_id(cpu);
+ 	/*
+ 	 * Ensure that the cache lines associated with that completion are
 

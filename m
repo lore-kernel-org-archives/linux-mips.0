@@ -2,36 +2,36 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DA610C77B7C
-	for <linux-mips@archiver.kernel.org>; Fri, 14 Apr 2023 23:46:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5BB42C77B71
+	for <linux-mips@archiver.kernel.org>; Fri, 14 Apr 2023 23:46:45 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230459AbjDNXqY (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 14 Apr 2023 19:46:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55164 "EHLO
+        id S230290AbjDNXqo (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 14 Apr 2023 19:46:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55428 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230033AbjDNXpq (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Fri, 14 Apr 2023 19:45:46 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C185FB764;
-        Fri, 14 Apr 2023 16:45:04 -0700 (PDT)
-Message-ID: <20230414232310.880220709@linutronix.de>
+        with ESMTP id S230183AbjDNXqF (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Fri, 14 Apr 2023 19:46:05 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D77C5243;
+        Fri, 14 Apr 2023 16:45:23 -0700 (PDT)
+Message-ID: <20230414232310.444204883@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1681515898;
+        s=2020; t=1681515886;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         references:references; bh=auQqEwsU9PrP6dmLhZ2HNf+yKNnP8AcVm6NVRhQvyDs=;
-        b=UQ9zo5ANA3bXro6uBe1FOBxXvcfoSQEiD24Xrn7vh8KjSNUhNMcqLW1wljHJEJ+e8j4GDJ
-        N1EWMYIroPUN4YgTfbVjru09sBWEDKR5SQth1/0kGQgcTNZpj5XjpFfxTvJhJa1qZtvmXw
-        wJMkqQYqdVRSHK1GBFiS97ApX5A77MdAt+hpRt1LADSzZH/uFNSbjXsbu3HZBSvh8G0y2P
-        EK0CnndcvpELSRQBHbYZKRgcaUhr6Z8TtUOgSj+l3dKGuu0eZBB3TQY8X7TLCDbAdL4JaV
-        dJXPejZzrfw0jpwXNhC/giE+cyNnTnS/yF70lli9Oe14OjMbSX5LRocaBNalvA==
+         references:references; bh=OJmMK1DNsYZsN6fUmGwfeq4ERjaNgScwoVZRQqH8yUw=;
+        b=GcFPtrg7k9VQxG3rMlumRMw5nuKtsJmdDMoJ6TSceXuK1zdHd+N9joDWuAZdo46YFNxZMP
+        Bsg8W/+6nBYJRVuCztzAyHJQvPJSb23Tablj/SGjhsX/WUeCrmSA9nsuhw8G2JGX2NZ97t
+        THjsQ+3MT5axiGFvQ/sUAHek0hFvHwgQKNG5VvKo8oZKr/4skgr04uS53dj+ol0BYWxhal
+        5oIGYZdmtf3qGjw5V88nnPJqYy7bxEgNOIlxEv9+tW18PGEfux4IdshBI1Y1RLHv+TPNLz
+        Ddqx3nRleBLOQcei7th1ojLHd0sg0KKVmzdvEaltZ8B7BxlHVYGVjXaqhkZyww==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1681515898;
+        s=2020e; t=1681515886;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         references:references; bh=auQqEwsU9PrP6dmLhZ2HNf+yKNnP8AcVm6NVRhQvyDs=;
-        b=3UjUp0tk+qEdheiIONrPumzFg6y/RDymanoMKy3WCuwS6WRIh+kUkt2pm7bfL23mY4jSCI
-        ishR5iLfVIQKiiCw==
+         references:references; bh=OJmMK1DNsYZsN6fUmGwfeq4ERjaNgScwoVZRQqH8yUw=;
+        b=l2/PUI4LfABzfYrIQxeqJjxovlQLjpZzH9GEF/bgX07OlI0hCc/156VAzkEe/0KLuss+2I
+        g5EEfqF03SuN2wDg==
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     x86@kernel.org, David Woodhouse <dwmw@infradead.org>,
@@ -66,113 +66,132 @@ Cc:     x86@kernel.org, David Woodhouse <dwmw@infradead.org>,
         linux-riscv@lists.infradead.org,
         Mark Rutland <mark.rutland@arm.com>,
         Sabin Rapan <sabrapan@amazon.com>
-Subject: [patch 27/37] cpu/hotplug: Remove unused state functions
+Subject: [patch 20/37] cpu/hotplug: Remove cpu_report_state() and related unused cruft
 References: <20230414225551.858160935@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-Date:   Sat, 15 Apr 2023 01:44:57 +0200 (CEST)
+Date:   Sat, 15 Apr 2023 01:44:46 +0200 (CEST)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-All users converted to the hotplug core mechanism.
+No more users.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 ---
  include/linux/cpu.h |    2 -
- kernel/smpboot.c    |   75 ----------------------------------------------------
- 2 files changed, 77 deletions(-)
+ kernel/smpboot.c    |   90 ----------------------------------------------------
+ 2 files changed, 92 deletions(-)
 
 --- a/include/linux/cpu.h
 +++ b/include/linux/cpu.h
-@@ -193,8 +193,6 @@ static inline void play_idle(unsigned lo
- }
+@@ -184,8 +184,6 @@ void arch_cpu_idle_enter(void);
+ void arch_cpu_idle_exit(void);
+ void arch_cpu_idle_dead(void);
  
- #ifdef CONFIG_HOTPLUG_CPU
--bool cpu_wait_death(unsigned int cpu, int seconds);
--bool cpu_report_death(void);
- void cpuhp_report_idle_dead(void);
- #else
- static inline void cpuhp_report_idle_dead(void) { }
+-int cpu_report_state(int cpu);
+-int cpu_check_up_prepare(int cpu);
+ void cpu_set_state_online(int cpu);
+ void play_idle_precise(u64 duration_ns, u64 latency_ns);
+ 
 --- a/kernel/smpboot.c
 +++ b/kernel/smpboot.c
-@@ -325,78 +325,3 @@ void smpboot_unregister_percpu_thread(st
- 	cpus_read_unlock();
- }
- EXPORT_SYMBOL_GPL(smpboot_unregister_percpu_thread);
--
--#ifndef CONFIG_HOTPLUG_CORE_SYNC
--static DEFINE_PER_CPU(atomic_t, cpu_hotplug_state) = ATOMIC_INIT(CPU_POST_DEAD);
--
--#ifdef CONFIG_HOTPLUG_CPU
+@@ -329,97 +329,7 @@ EXPORT_SYMBOL_GPL(smpboot_unregister_per
+ #ifndef CONFIG_HOTPLUG_CORE_SYNC
+ static DEFINE_PER_CPU(atomic_t, cpu_hotplug_state) = ATOMIC_INIT(CPU_POST_DEAD);
+ 
 -/*
-- * Wait for the specified CPU to exit the idle loop and die.
+- * Called to poll specified CPU's state, for example, when waiting for
+- * a CPU to come online.
 - */
--bool cpu_wait_death(unsigned int cpu, int seconds)
+-int cpu_report_state(int cpu)
 -{
--	int jf_left = seconds * HZ;
--	int oldstate;
--	bool ret = true;
--	int sleep_jf = 1;
--
--	might_sleep();
--
--	/* The outgoing CPU will normally get done quite quickly. */
--	if (atomic_read(&per_cpu(cpu_hotplug_state, cpu)) == CPU_DEAD)
--		goto update_state_early;
--	udelay(5);
--
--	/* But if the outgoing CPU dawdles, wait increasingly long times. */
--	while (atomic_read(&per_cpu(cpu_hotplug_state, cpu)) != CPU_DEAD) {
--		schedule_timeout_uninterruptible(sleep_jf);
--		jf_left -= sleep_jf;
--		if (jf_left <= 0)
--			break;
--		sleep_jf = DIV_ROUND_UP(sleep_jf * 11, 10);
--	}
--update_state_early:
--	oldstate = atomic_read(&per_cpu(cpu_hotplug_state, cpu));
--update_state:
--	if (oldstate == CPU_DEAD) {
--		/* Outgoing CPU died normally, update state. */
--		smp_mb(); /* atomic_read() before update. */
--		atomic_set(&per_cpu(cpu_hotplug_state, cpu), CPU_POST_DEAD);
--	} else {
--		/* Outgoing CPU still hasn't died, set state accordingly. */
--		if (!atomic_try_cmpxchg(&per_cpu(cpu_hotplug_state, cpu),
--					&oldstate, CPU_BROKEN))
--			goto update_state;
--		ret = false;
--	}
--	return ret;
+-	return atomic_read(&per_cpu(cpu_hotplug_state, cpu));
 -}
 -
 -/*
-- * Called by the outgoing CPU to report its successful death.  Return
-- * false if this report follows the surviving CPU's timing out.
+- * If CPU has died properly, set its state to CPU_UP_PREPARE and
+- * return success.  Otherwise, return -EBUSY if the CPU died after
+- * cpu_wait_death() timed out.  And yet otherwise again, return -EAGAIN
+- * if cpu_wait_death() timed out and the CPU still hasn't gotten around
+- * to dying.  In the latter two cases, the CPU might not be set up
+- * properly, but it is up to the arch-specific code to decide.
+- * Finally, -EIO indicates an unanticipated problem.
 - *
-- * A separate "CPU_DEAD_FROZEN" is used when the surviving CPU
-- * timed out.  This approach allows architectures to omit calls to
-- * cpu_check_up_prepare() and cpu_set_state_online() without defeating
-- * the next cpu_wait_death()'s polling loop.
+- * Note that it is permissible to omit this call entirely, as is
+- * done in architectures that do no CPU-hotplug error checking.
 - */
--bool cpu_report_death(void)
+-int cpu_check_up_prepare(int cpu)
 -{
--	int oldstate;
--	int newstate;
--	int cpu = smp_processor_id();
+-	if (!IS_ENABLED(CONFIG_HOTPLUG_CPU)) {
+-		atomic_set(&per_cpu(cpu_hotplug_state, cpu), CPU_UP_PREPARE);
+-		return 0;
+-	}
 -
--	oldstate = atomic_read(&per_cpu(cpu_hotplug_state, cpu));
--	do {
--		if (oldstate != CPU_BROKEN)
--			newstate = CPU_DEAD;
--		else
--			newstate = CPU_DEAD_FROZEN;
--	} while (!atomic_try_cmpxchg(&per_cpu(cpu_hotplug_state, cpu),
--				     &oldstate, newstate));
--	return newstate == CPU_DEAD;
+-	switch (atomic_read(&per_cpu(cpu_hotplug_state, cpu))) {
+-
+-	case CPU_POST_DEAD:
+-
+-		/* The CPU died properly, so just start it up again. */
+-		atomic_set(&per_cpu(cpu_hotplug_state, cpu), CPU_UP_PREPARE);
+-		return 0;
+-
+-	case CPU_DEAD_FROZEN:
+-
+-		/*
+-		 * Timeout during CPU death, so let caller know.
+-		 * The outgoing CPU completed its processing, but after
+-		 * cpu_wait_death() timed out and reported the error. The
+-		 * caller is free to proceed, in which case the state
+-		 * will be reset properly by cpu_set_state_online().
+-		 * Proceeding despite this -EBUSY return makes sense
+-		 * for systems where the outgoing CPUs take themselves
+-		 * offline, with no post-death manipulation required from
+-		 * a surviving CPU.
+-		 */
+-		return -EBUSY;
+-
+-	case CPU_BROKEN:
+-
+-		/*
+-		 * The most likely reason we got here is that there was
+-		 * a timeout during CPU death, and the outgoing CPU never
+-		 * did complete its processing.  This could happen on
+-		 * a virtualized system if the outgoing VCPU gets preempted
+-		 * for more than five seconds, and the user attempts to
+-		 * immediately online that same CPU.  Trying again later
+-		 * might return -EBUSY above, hence -EAGAIN.
+-		 */
+-		return -EAGAIN;
+-
+-	case CPU_UP_PREPARE:
+-		/*
+-		 * Timeout while waiting for the CPU to show up. Allow to try
+-		 * again later.
+-		 */
+-		return 0;
+-
+-	default:
+-
+-		/* Should not happen.  Famous last words. */
+-		return -EIO;
+-	}
 -}
 -
--#endif /* #ifdef CONFIG_HOTPLUG_CPU */
--#endif /* !CONFIG_HOTPLUG_CORE_SYNC */
+-/*
+- * Mark the specified CPU online.
+- *
+- * Note that it is permissible to omit this call entirely, as is
+- * done in architectures that do no CPU-hotplug error checking.
+- */
+-void cpu_set_state_online(int cpu)
+-{
+-	(void)atomic_xchg(&per_cpu(cpu_hotplug_state, cpu), CPU_ONLINE);
+-}
+-
+ #ifdef CONFIG_HOTPLUG_CPU
+-
+ /*
+  * Wait for the specified CPU to exit the idle loop and die.
+  */
 

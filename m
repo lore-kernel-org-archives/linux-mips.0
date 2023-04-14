@@ -2,36 +2,36 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2629EC77B77
-	for <linux-mips@archiver.kernel.org>; Fri, 14 Apr 2023 23:47:24 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 74650C77B76
+	for <linux-mips@archiver.kernel.org>; Fri, 14 Apr 2023 23:47:28 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230383AbjDNXrX (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 14 Apr 2023 19:47:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54982 "EHLO
+        id S230447AbjDNXrZ (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 14 Apr 2023 19:47:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55010 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230413AbjDNXq4 (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Fri, 14 Apr 2023 19:46:56 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2932EBB96;
-        Fri, 14 Apr 2023 16:45:53 -0700 (PDT)
-Message-ID: <20230414232311.505152290@linutronix.de>
+        with ESMTP id S230449AbjDNXrA (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Fri, 14 Apr 2023 19:47:00 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02009C140;
+        Fri, 14 Apr 2023 16:46:00 -0700 (PDT)
+Message-ID: <20230414232311.066246849@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1681515914;
+        s=2020; t=1681515902;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         references:references; bh=nUZSh5064m2aKoxr+KQn5JPMu6mMKtsaGAC9NSZVNms=;
-        b=tXdZ+JNXwmoFAj/D4wiLzLK3B9Tdjf372IqdJt5Tv46gv42xMEL/Nl0g5kdyiZHT7x9AOz
-        mlFylzsIhnrXORGzmbDeoOd0v4PWWxn8r5JfaFvKB5y4Myd0UBCMyCyRl33Zi088uSB2Ir
-        SvONUInWoGIX09mANT0wqHnMa8plhV/+A02oVVT5ueBVnLW3psXBgZVX1wGuoSRuwDa/iV
-        WCxZeGiReQ8KfEt87/havCjKqbuogL4jZdqFqdulIebLR5I3xNrYIQ3tyIgS/ypjvwLm3u
-        ZY0rsKukGMk7diouGwNhACQ22cLpXT7hOtDVbk+HLvlFHbrtTgmHuHYua/2ZDA==
+         references:references; bh=cY/Vb0k8l53HgnPO915OdGCDzaj2v7X/LK/0bhlR+ZM=;
+        b=Rl28BYLRw1xoqBY2XVna4334ensDR9FZzUXIXCLNtZ0ZnRftdKxlp0PMWMq1HaFMs/Nvoh
+        XqGn6TtnTp761vrtUa5+ABOqgv49/+dDRkb1k96bmalthN4bjNP4h3EacgIX7TIRoFoQ1L
+        UV+FOsaKzNfqWlzPpun3ecs+zhYGqo6qHGZzsNZ57SQvznqryxMS+L3SqK9W/dGy+VDKv9
+        YxTV8knnunEjK8aSQH5isteVb77I0eCsLEqmlSmZcWsTyG9EdV1bj0iMexF7biZ5gNOCfj
+        ROw3zMy677VniDryW+1xRSofiRytmHDazA6lDPsXJmr7uXM+XbDSfwEveQWQlQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1681515914;
+        s=2020e; t=1681515902;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         references:references; bh=nUZSh5064m2aKoxr+KQn5JPMu6mMKtsaGAC9NSZVNms=;
-        b=pkIQhDhWjPpGLy6aH5XoCk5G1NoyA94urqDixfl4xi4JgoGh52mUmdlWbRdLMez3lvqnCR
-        cNwc4JXhAqWj08Aw==
+         references:references; bh=cY/Vb0k8l53HgnPO915OdGCDzaj2v7X/LK/0bhlR+ZM=;
+        b=D1VjUKIFe77+cdNW6ebx9l5dhZNCMlm+6Ti8d+rxHqlUBIfv17CftGyUs1Xi5cbqbTIHp+
+        wg0OL2V4Mj/Lh/Bw==
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     x86@kernel.org, David Woodhouse <dwmw@infradead.org>,
@@ -46,7 +46,6 @@ Cc:     x86@kernel.org, David Woodhouse <dwmw@infradead.org>,
         Paul Menzel <pmenzel@molgen.mpg.de>,
         "Guilherme G. Piccoli" <gpiccoli@igalia.com>,
         Piotr Gorski <lucjan.lucjanov@gmail.com>,
-        Sabin Rapan <sabrapan@amazon.com>,
         David Woodhouse <dwmw@amazon.co.uk>,
         Usama Arif <usama.arif@bytedance.com>,
         Juergen Gross <jgross@suse.com>,
@@ -65,157 +64,141 @@ Cc:     x86@kernel.org, David Woodhouse <dwmw@infradead.org>,
         Paul Walmsley <paul.walmsley@sifive.com>,
         Palmer Dabbelt <palmer@dabbelt.com>,
         linux-riscv@lists.infradead.org,
-        Mark Rutland <mark.rutland@arm.com>
-Subject: [patch 37/37] x86/smpboot: Allow parallel bringup for SEV-ES
+        Mark Rutland <mark.rutland@arm.com>,
+        Sabin Rapan <sabrapan@amazon.com>
+Subject: [patch 30/37] x86/smpboot: Enable split CPU startup
 References: <20230414225551.858160935@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-Date:   Sat, 15 Apr 2023 01:45:13 +0200 (CEST)
+Date:   Sat, 15 Apr 2023 01:45:02 +0200 (CEST)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-From: David Woodhouse <dwmw@amazon.co.uk>
+The x86 CPU bringup state currently does AP wake-up, wait for AP to
+respond and then release it for full bringup.
 
-Enable parallel bringup for SEV-ES guests. The APs can't actually execute
-the CPUID instruction directly during early startup, but they can make the
-GHCB call directly instead, just as the #VC trap handler would do.
+It is safe to be split into a wake-up and and a separate wait+release
+state.
 
-Thanks to Sabin for talking me through the way this works.
+Provide the required functions and enable the split CPU bringup, which
+prepares for parallel bringup, where the bringup of the non-boot CPUs takes
+two iterations: One to prepare and wake all APs and the second to wait and
+release them. Depending on timing this can eliminate the wait time
+completely.
 
-Suggested-by: Sabin Rapan <sabrapan@amazon.com>
-Signed-off-by: David Woodhouse <dwmw@amazon.co.uk>
-Signed-off-by: Usama Arif <usama.arif@bytedance.com>
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Reviewed-by: Tom Lendacky <thomas.lendacky@amd.com>
-
 ---
- arch/x86/include/asm/sev-common.h |    3 +++
- arch/x86/include/asm/smp.h        |    1 +
- arch/x86/kernel/head_64.S         |   30 ++++++++++++++++++++++++++++++
- arch/x86/kernel/smpboot.c         |   14 ++++++++++++--
- 4 files changed, 46 insertions(+), 2 deletions(-)
+ arch/x86/Kconfig           |    2 +-
+ arch/x86/include/asm/smp.h |    9 ++-------
+ arch/x86/kernel/smp.c      |    2 +-
+ arch/x86/kernel/smpboot.c  |    8 ++++----
+ arch/x86/xen/smp_pv.c      |    4 ++--
+ 5 files changed, 10 insertions(+), 15 deletions(-)
 
---- a/arch/x86/include/asm/sev-common.h
-+++ b/arch/x86/include/asm/sev-common.h
-@@ -70,6 +70,7 @@
- 	/* GHCBData[63:12] */				\
- 	(((u64)(v) & GENMASK_ULL(63, 12)) >> 12)
- 
-+#ifndef __ASSEMBLY__
- /*
-  * SNP Page State Change Operation
-  *
-@@ -161,6 +162,8 @@ struct snp_psc_desc {
- 
- #define GHCB_RESP_CODE(v)		((v) & GHCB_MSR_INFO_MASK)
- 
-+#endif /* __ASSEMBLY__ */
-+
- /*
-  * Error codes related to GHCB input that can be communicated back to the guest
-  * by setting the lower 32-bits of the GHCB SW_EXITINFO1 field to 2.
+--- a/arch/x86/Kconfig
++++ b/arch/x86/Kconfig
+@@ -272,8 +272,8 @@ config X86
+ 	select HAVE_UNSTABLE_SCHED_CLOCK
+ 	select HAVE_USER_RETURN_NOTIFIER
+ 	select HAVE_GENERIC_VDSO
+-	select HOTPLUG_CORE_SYNC_FULL		if SMP
+ 	select HOTPLUG_SMT			if SMP
++	select HOTPLUG_SPLIT_STARTUP		if SMP
+ 	select IRQ_FORCED_THREADING
+ 	select NEED_PER_CPU_EMBED_FIRST_CHUNK
+ 	select NEED_PER_CPU_PAGE_FIRST_CHUNK
 --- a/arch/x86/include/asm/smp.h
 +++ b/arch/x86/include/asm/smp.h
-@@ -202,6 +202,7 @@ extern unsigned int smpboot_control;
- #define STARTUP_APICID_CPUID_1F 0x80000000
- #define STARTUP_APICID_CPUID_0B 0x40000000
- #define STARTUP_APICID_CPUID_01 0x20000000
-+#define STARTUP_APICID_SEV_ES	0x10000000
+@@ -40,7 +40,7 @@ struct smp_ops {
  
- /* Top 8 bits are reserved for control */
- #define STARTUP_PARALLEL_MASK	0xFF000000
---- a/arch/x86/kernel/head_64.S
-+++ b/arch/x86/kernel/head_64.S
-@@ -26,6 +26,7 @@
- #include <asm/nospec-branch.h>
- #include <asm/fixmap.h>
- #include <asm/smp.h>
-+#include <asm/sev-common.h>
+ 	void (*cleanup_dead_cpu)(unsigned cpu);
+ 	void (*poll_sync_state)(void);
+-	int (*cpu_up)(unsigned cpu, struct task_struct *tidle);
++	int (*kick_ap_alive)(unsigned cpu, struct task_struct *tidle);
+ 	int (*cpu_disable)(void);
+ 	void (*cpu_die)(unsigned int cpu);
+ 	void (*play_dead)(void);
+@@ -80,11 +80,6 @@ static inline void smp_cpus_done(unsigne
+ 	smp_ops.smp_cpus_done(max_cpus);
+ }
  
- /*
-  * We are not able to switch in one step to the final KERNEL ADDRESS SPACE
-@@ -243,9 +244,14 @@ SYM_INNER_LABEL(secondary_startup_64_no_
- 	 * Bit 31	STARTUP_APICID_CPUID_1F flag (use CPUID 0x1f)
- 	 * Bit 30	STARTUP_APICID_CPUID_0B flag (use CPUID 0x0b)
- 	 * Bit 29	STARTUP_APICID_CPUID_01 flag (use CPUID 0x01)
-+	 * Bit 28	STARTUP_APICID_SEV_ES flag (CPUID 0x0b via GHCB MSR)
- 	 * Bit 0-23	CPU# if STARTUP_APICID_CPUID_xx flags are not set
- 	 */
- 	movl	smpboot_control(%rip), %ecx
-+#ifdef CONFIG_AMD_MEM_ENCRYPT
-+	testl	$STARTUP_APICID_SEV_ES, %ecx
-+	jnz	.Luse_sev_cpuid_0b
-+#endif
- 	testl	$STARTUP_APICID_CPUID_1F, %ecx
- 	jnz	.Luse_cpuid_1f
- 	testl	$STARTUP_APICID_CPUID_0B, %ecx
-@@ -262,6 +268,30 @@ SYM_INNER_LABEL(secondary_startup_64_no_
- 	shr	$24, %edx
- 	jmp	.Lsetup_AP
+-static inline int __cpu_up(unsigned int cpu, struct task_struct *tidle)
+-{
+-	return smp_ops.cpu_up(cpu, tidle);
+-}
+-
+ static inline int __cpu_disable(void)
+ {
+ 	return smp_ops.cpu_disable();
+@@ -123,7 +118,7 @@ void native_smp_prepare_cpus(unsigned in
+ void calculate_max_logical_packages(void);
+ void native_smp_cpus_done(unsigned int max_cpus);
+ int common_cpu_up(unsigned int cpunum, struct task_struct *tidle);
+-int native_cpu_up(unsigned int cpunum, struct task_struct *tidle);
++int native_kick_ap(unsigned int cpu, struct task_struct *tidle);
+ int native_cpu_disable(void);
+ void hlt_play_dead(void);
+ void native_play_dead(void);
+--- a/arch/x86/kernel/smp.c
++++ b/arch/x86/kernel/smp.c
+@@ -268,7 +268,7 @@ struct smp_ops smp_ops = {
+ #endif
+ 	.smp_send_reschedule	= native_smp_send_reschedule,
  
-+#ifdef CONFIG_AMD_MEM_ENCRYPT
-+.Luse_sev_cpuid_0b:
-+	/* Set the GHCB MSR to request CPUID 0x0B_EDX */
-+	movl	$MSR_AMD64_SEV_ES_GHCB, %ecx
-+	movl	$(GHCB_CPUID_REQ_EDX << 30) | GHCB_MSR_CPUID_REQ, %eax
-+	movl	$0x0b, %edx
-+	wrmsr
-+
-+	/* Perform GHCB MSR protocol */
-+	rep; vmmcall		/* vmgexit */
-+
-+	/*
-+	 * Get the result. After the RDMSR:
-+	 *   EAX should be 0xc0000005
-+	 *   EDX should have the CPUID register value and since EDX
-+	 *   is the target register, no need to move the result.
-+	 */
-+	rdmsr
-+	andl	$GHCB_MSR_INFO_MASK, %eax
-+	cmpl	$GHCB_MSR_CPUID_RESP, %eax
-+	jne	1f
-+	jmp	.Lsetup_AP
-+#endif
-+
- .Luse_cpuid_0b:
- 	mov	$0x0B, %eax
- 	xorl	%ecx, %ecx
+-	.cpu_up			= native_cpu_up,
++	.kick_ap_alive		= native_kick_ap,
+ 	.cpu_disable		= native_cpu_disable,
+ 	.play_dead		= native_play_dead,
+ 
 --- a/arch/x86/kernel/smpboot.c
 +++ b/arch/x86/kernel/smpboot.c
-@@ -86,6 +86,7 @@
- #include <asm/hw_irq.h>
- #include <asm/stackprotector.h>
- #include <asm/sev.h>
-+#include <asm/coco.h>
+@@ -1070,7 +1070,7 @@ static int do_boot_cpu(int apicid, int c
+ 	return ret;
+ }
  
- /* representing HT siblings of each logical CPU */
- DEFINE_PER_CPU_READ_MOSTLY(cpumask_var_t, cpu_sibling_map);
-@@ -1266,8 +1267,16 @@ bool __init arch_cpuhp_init_parallel_bri
+-static int native_kick_ap(unsigned int cpu, struct task_struct *tidle)
++int native_kick_ap(unsigned int cpu, struct task_struct *tidle)
+ {
+ 	int apicid = apic->cpu_present_to_apicid(cpu);
+ 	int err;
+@@ -1106,15 +1106,15 @@ static int native_kick_ap(unsigned int c
+ 	return err;
+ }
  
- 	/* Encrypted guests require special CPUID handling. */
- 	if (cc_platform_has(CC_ATTR_GUEST_STATE_ENCRYPT)) {
--		pr_info("Parallel CPU startup disabled due to guest state encryption\n");
--		return false;
-+		switch (cc_get_vendor()) {
-+		case CC_VENDOR_AMD:
-+			ctrl = STARTUP_APICID_SEV_ES;
-+			if (topology_extended_leaf == 0x0b)
-+				goto setup;
-+			fallthrough;
-+		default:
-+			pr_info("Parallel CPU startup disabled due to guest state encryption\n");
-+			return false;
-+		}
- 	}
+-int native_cpu_up(unsigned int cpu, struct task_struct *tidle)
++int arch_cpuhp_kick_ap_alive(unsigned int cpu, struct task_struct *tidle)
+ {
+-	return native_kick_ap(cpu, tidle);
++	return smp_ops.kick_ap_alive(cpu, tidle);
+ }
  
- 	switch (topology_extended_leaf) {
-@@ -1290,6 +1299,7 @@ bool __init arch_cpuhp_init_parallel_bri
- 		return false;
- 	}
+ void arch_cpuhp_cleanup_kick_cpu(unsigned int cpu)
+ {
+ 	/* Cleanup possible dangling ends... */
+-	if (smp_ops.cpu_up == native_cpu_up && x86_platform.legacy.warm_reset)
++	if (smp_ops.kick_ap_alive == native_kick_ap && x86_platform.legacy.warm_reset)
+ 		smpboot_restore_warm_reset_vector();
+ }
  
-+setup:
- 	pr_debug("Parallel CPU startup enabled: 0x%08x\n", ctrl);
- 	smpboot_control = ctrl;
- 	return true;
+--- a/arch/x86/xen/smp_pv.c
++++ b/arch/x86/xen/smp_pv.c
+@@ -314,7 +314,7 @@ cpu_initialize_context(unsigned int cpu,
+ 	return 0;
+ }
+ 
+-static int xen_pv_cpu_up(unsigned int cpu, struct task_struct *idle)
++static int xen_pv_kick_ap(unsigned int cpu, struct task_struct *idle)
+ {
+ 	int rc;
+ 
+@@ -438,7 +438,7 @@ static const struct smp_ops xen_smp_ops
+ 	.smp_prepare_cpus = xen_pv_smp_prepare_cpus,
+ 	.smp_cpus_done = xen_smp_cpus_done,
+ 
+-	.cpu_up = xen_pv_cpu_up,
++	.kick_ap_alive = xen_pv_kick_ap,
+ 	.cpu_die = xen_pv_cpu_die,
+ 	.cleanup_dead_cpu = xen_pv_cleanup_dead_cpu,
+ 	.poll_sync_state = xen_pv_poll_sync_state,
 

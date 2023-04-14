@@ -2,36 +2,36 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 31E86C77B77
-	for <linux-mips@archiver.kernel.org>; Fri, 14 Apr 2023 23:48:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E3E38C77B77
+	for <linux-mips@archiver.kernel.org>; Fri, 14 Apr 2023 23:52:00 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231213AbjDNXsn (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 14 Apr 2023 19:48:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55724 "EHLO
+        id S230182AbjDNXwA (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 14 Apr 2023 19:52:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35544 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231150AbjDNXsX (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Fri, 14 Apr 2023 19:48:23 -0400
+        with ESMTP id S230219AbjDNXv6 (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Fri, 14 Apr 2023 19:51:58 -0400
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D85C86AA;
-        Fri, 14 Apr 2023 16:47:05 -0700 (PDT)
-Message-ID: <20230414232310.817955867@linutronix.de>
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F11B959ED;
+        Fri, 14 Apr 2023 16:51:27 -0700 (PDT)
+Message-ID: <20230414232311.441918776@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1681515896;
+        s=2020; t=1681515912;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         references:references; bh=ayzVJgXuvflj3xjg1mGXZolHpFmSekkZ0AyhKY70H0Q=;
-        b=GY2K7k5oePF4smJsnVlCWc197Gnvm2xpV+H4Y4U8e+jaRt3VB8iE9Bg1axBb2bpO+/I7XE
-        wTG8GN8vNucA/g3rxDLFU6mc1SvUhxpbP0wveuvbhDGNZd++q35ihkBqOmSICTjhquJjYJ
-        gQ/8Bkd6FpRUM+MX/SRhgi0pwhuLuSCrUZwmZ1fPuiU+CEObkKTMFIVqx8V0B6LfZdF2Zy
-        vTSM8z3vPt6+fF/Bmw0aE9UGx+RqDICSvY+n8F5aACJ8IZ8FOG+IfKxylVEweXpqRrNp+K
-        c5k4vI/XDc1rGZAhq8CumldbXaaUQJlgNjb18yycd/3lTwMlhsF9uxtK+pKsOQ==
+         references:references; bh=6cGHgynMBCaHRwYTrISGgGUY8IfBttwd4gSW6/8ncwo=;
+        b=Y6MvVoIRD+b308pDJWowuLkJP8xTk8BgVllbAchtET5SCLxH3pPaTbpOYvBSvJgt29AjQn
+        ezcDEAwpvw4go5HJCn0jDdZCGPT9MLW24qpZKb8kz2KJNNnr6JcyXOPyaUGlM/ANv9N+fq
+        tuEJRuRxzNty3GrkhGsgHYpRhP/0DX3AEiMTFdAHD/hkrve/Z/OGirQHyoZehUi+ZLj2of
+        nh0+zW/XB9E47Zv4MWfj7UgDu31M48dyxxMexXPIhf0Fh2Xfz56PypK/Z4RNZ1QuLpDfkl
+        MzM4X40h1quxb59BK38sroOGy3J6fRyyYS1Nn/XWNH7x+1QZ0XFumeRWVGSB2A==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1681515896;
+        s=2020e; t=1681515912;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         references:references; bh=ayzVJgXuvflj3xjg1mGXZolHpFmSekkZ0AyhKY70H0Q=;
-        b=K/mg+lwQlwHWac81k54xHqleQCPzjnE1varYnMwenALS/XLp9IX7NBh95fkmdnzkG0JM9N
-        NgO+APSKFCAt65CA==
+         references:references; bh=6cGHgynMBCaHRwYTrISGgGUY8IfBttwd4gSW6/8ncwo=;
+        b=62z6QxHlYDjrTs4WKqbuHCfVc8G+x+AUIAn0i55mZeGFgkDCFd3an/Sr2oboSn6ZUcOcEh
+        Lf1/KZWBw97ffRDQ==
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     x86@kernel.org, David Woodhouse <dwmw@infradead.org>,
@@ -46,9 +46,6 @@ Cc:     x86@kernel.org, David Woodhouse <dwmw@infradead.org>,
         Paul Menzel <pmenzel@molgen.mpg.de>,
         "Guilherme G. Piccoli" <gpiccoli@igalia.com>,
         Piotr Gorski <lucjan.lucjanov@gmail.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        linux-riscv@lists.infradead.org,
         David Woodhouse <dwmw@amazon.co.uk>,
         Usama Arif <usama.arif@bytedance.com>,
         Juergen Gross <jgross@suse.com>,
@@ -64,93 +61,152 @@ Cc:     x86@kernel.org, David Woodhouse <dwmw@infradead.org>,
         linux-mips@vger.kernel.org,
         "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
         Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        linux-riscv@lists.infradead.org,
         Mark Rutland <mark.rutland@arm.com>,
         Sabin Rapan <sabrapan@amazon.com>
-Subject: [patch 26/37] riscv: Switch to hotplug core state synchronization
+Subject: [patch 36/37] x86/smpboot/64: Implement
+ arch_cpuhp_init_parallel_bringup() and enable it
 References: <20230414225551.858160935@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-Date:   Sat, 15 Apr 2023 01:44:55 +0200 (CEST)
+Date:   Sat, 15 Apr 2023 01:45:12 +0200 (CEST)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Switch to the CPU hotplug core state tracking and synchronization
-mechanim. No functional change intended.
+Implement the validation function which tells the core code whether
+parallel bringup is possible:
 
+  1) Valid CPUID leaf for APIC ID retrieval. For non x2APIC systmms leaf
+     0x1 is sufficient, otherwise leaf 0xb or 0x1f must be available.
+
+  2) Prevent parallel bringup on encrypted guests as this requires a
+     different handling of the CPUID leaf retrieval via a call into the
+     trusted firmware module. This is what the #VC trap handler does later
+     on, which is not available during the very early startup.
+
+Originally-by: David Woodhouse <dwmw@amazon.co.uk>
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Cc: Paul Walmsley <paul.walmsley@sifive.com>
-Cc: Palmer Dabbelt <palmer@dabbelt.com>
-Cc: linux-riscv@lists.infradead.org
 ---
- arch/riscv/Kconfig              |    1 +
- arch/riscv/include/asm/smp.h    |    2 +-
- arch/riscv/kernel/cpu-hotplug.c |   14 +++++++-------
- 3 files changed, 9 insertions(+), 8 deletions(-)
+ arch/x86/Kconfig             |    3 +-
+ arch/x86/kernel/cpu/common.c |    6 -----
+ arch/x86/kernel/smpboot.c    |   49 +++++++++++++++++++++++++++++++++++++++++--
+ 3 files changed, 50 insertions(+), 8 deletions(-)
 
---- a/arch/riscv/Kconfig
-+++ b/arch/riscv/Kconfig
-@@ -116,6 +116,7 @@ config RISCV
- 	select HAVE_RSEQ
- 	select HAVE_STACKPROTECTOR
- 	select HAVE_SYSCALL_TRACEPOINTS
-+	select HOTPLUG_CORE_SYNC_DEAD if HOTPLUG_CPU
- 	select IRQ_DOMAIN
+--- a/arch/x86/Kconfig
++++ b/arch/x86/Kconfig
+@@ -272,8 +272,9 @@ config X86
+ 	select HAVE_UNSTABLE_SCHED_CLOCK
+ 	select HAVE_USER_RETURN_NOTIFIER
+ 	select HAVE_GENERIC_VDSO
++	select HOTPLUG_PARALLEL			if SMP && X86_64
+ 	select HOTPLUG_SMT			if SMP
+-	select HOTPLUG_SPLIT_STARTUP		if SMP
++	select HOTPLUG_SPLIT_STARTUP		if SMP && X86_32
  	select IRQ_FORCED_THREADING
- 	select MODULES_USE_ELF_RELA if MODULES
---- a/arch/riscv/include/asm/smp.h
-+++ b/arch/riscv/include/asm/smp.h
-@@ -64,7 +64,7 @@ asmlinkage void smp_callin(void);
- 
- #if defined CONFIG_HOTPLUG_CPU
- int __cpu_disable(void);
--void __cpu_die(unsigned int cpu);
-+static inline void __cpu_die(unsigned int cpu) { }
- #endif /* CONFIG_HOTPLUG_CPU */
- 
- #else
---- a/arch/riscv/kernel/cpu-hotplug.c
-+++ b/arch/riscv/kernel/cpu-hotplug.c
-@@ -8,6 +8,7 @@
- #include <linux/sched.h>
- #include <linux/err.h>
- #include <linux/irq.h>
-+#include <linux/cpuhotplug.h>
- #include <linux/cpu.h>
- #include <linux/sched/hotplug.h>
- #include <asm/irq.h>
-@@ -48,17 +49,15 @@ int __cpu_disable(void)
- 	return ret;
+ 	select NEED_PER_CPU_EMBED_FIRST_CHUNK
+ 	select NEED_PER_CPU_PAGE_FIRST_CHUNK
+--- a/arch/x86/kernel/cpu/common.c
++++ b/arch/x86/kernel/cpu/common.c
+@@ -2127,11 +2127,7 @@ static inline void setup_getcpu(int cpu)
  }
  
-+#ifdef CONFIG_HOTPLUG_CPU
- /*
-- * Called on the thread which is asking for a CPU to be shutdown.
-+ * Called on the thread which is asking for a CPU to be shutdown, if the
-+ * CPU reported dead to the hotplug core.
-  */
--void __cpu_die(unsigned int cpu)
-+void arch_cpuhp_cleanup_dead_cpu(unsigned int cpu)
+ #ifdef CONFIG_X86_64
+-static inline void ucode_cpu_init(int cpu)
+-{
+-	if (cpu)
+-		load_ucode_ap();
+-}
++static inline void ucode_cpu_init(int cpu) { }
+ 
+ static inline void tss_setup_ist(struct tss_struct *tss)
  {
- 	int ret = 0;
+--- a/arch/x86/kernel/smpboot.c
++++ b/arch/x86/kernel/smpboot.c
+@@ -58,6 +58,7 @@
+ #include <linux/overflow.h>
+ #include <linux/stackprotector.h>
+ #include <linux/cpuhotplug.h>
++#include <linux/mc146818rtc.h>
  
--	if (!cpu_wait_death(cpu, 5)) {
--		pr_err("CPU %u: didn't die\n", cpu);
--		return;
--	}
- 	pr_notice("CPU%u: off\n", cpu);
- 
- 	/* Verify from the firmware if the cpu is really stopped*/
-@@ -75,9 +74,10 @@ void arch_cpu_idle_dead(void)
- {
- 	idle_task_exit();
- 
--	(void)cpu_report_death();
-+	cpuhp_ap_report_dead();
- 
- 	cpu_ops[smp_processor_id()]->cpu_stop();
- 	/* It should never reach here */
- 	BUG();
+ #include <asm/acpi.h>
+ #include <asm/cacheinfo.h>
+@@ -75,7 +76,7 @@
+ #include <asm/fpu/api.h>
+ #include <asm/setup.h>
+ #include <asm/uv/uv.h>
+-#include <linux/mc146818rtc.h>
++#include <asm/microcode.h>
+ #include <asm/i8259.h>
+ #include <asm/misc.h>
+ #include <asm/qspinlock.h>
+@@ -128,7 +129,6 @@ int arch_update_cpu_topology(void)
+ 	return retval;
  }
+ 
+-
+ static unsigned int smpboot_warm_reset_vector_count;
+ 
+ static inline void smpboot_setup_warm_reset_vector(unsigned long start_eip)
+@@ -247,6 +247,8 @@ static void notrace start_secondary(void
+ #endif
+ 	cpu_init_exception_handling();
+ 
++	load_ucode_ap();
++
+ 	/*
+ 	 * Sync point with the hotplug core. Sets the sync state to ALIVE
+ 	 * and waits for the control CPU to release it.
+@@ -1251,6 +1253,49 @@ void __init smp_prepare_cpus_common(void
+ 	set_cpu_sibling_map(0);
+ }
+ 
++#ifdef CONFIG_X86_64
++/* Establish whether parallel bringup can be supported. */
++bool __init arch_cpuhp_init_parallel_bringup(void)
++{
++	unsigned int ctrl;
++
++	if (boot_cpu_data.cpuid_level < 0x01) {
++		pr_info("Parallel CPU startup disabled due to lack of CPUID\n");
++		return false;
++	}
++
++	/* Encrypted guests require special CPUID handling. */
++	if (cc_platform_has(CC_ATTR_GUEST_STATE_ENCRYPT)) {
++		pr_info("Parallel CPU startup disabled due to guest state encryption\n");
++		return false;
++	}
++
++	switch (topology_extended_leaf) {
++	case 0x0b:
++		ctrl = STARTUP_APICID_CPUID_0B;
++		break;
++	case 0x1f:
++		ctrl = STARTUP_APICID_CPUID_1F;
++		break;
++	case 0x00:
++		/* For !x2APIC mode 8 bits from leaf 0x01 are sufficient. */
++		if (!x2apic_mode) {
++			ctrl = STARTUP_APICID_CPUID_01;
++			break;
++		}
++		fallthrough;
++	default:
++		pr_info("Parallel CPU startup disabled. Unsupported topology leaf %u\n",
++			topology_extended_leaf);
++		return false;
++	}
++
++	pr_debug("Parallel CPU startup enabled: 0x%08x\n", ctrl);
++	smpboot_control = ctrl;
++	return true;
++}
 +#endif
++
+ /*
+  * Prepare for SMP bootup.
+  * @max_cpus: configured maximum number of CPUs, It is a legacy parameter
 

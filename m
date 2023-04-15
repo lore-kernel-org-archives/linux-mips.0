@@ -2,124 +2,99 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 30770C77B73
-	for <linux-mips@archiver.kernel.org>; Thu, 27 Apr 2023 15:05:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0D33DC77B7E
+	for <linux-mips@archiver.kernel.org>; Thu, 27 Apr 2023 17:42:13 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243630AbjD0PFF (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 27 Apr 2023 11:05:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39604 "EHLO
+        id S244196AbjD0RmM (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 27 Apr 2023 13:42:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48812 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243444AbjD0PFE (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Thu, 27 Apr 2023 11:05:04 -0400
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9B1D1992;
-        Thu, 27 Apr 2023 08:05:02 -0700 (PDT)
-Received: by mail-pl1-x642.google.com with SMTP id d9443c01a7336-1a92513abebso88028595ad.2;
-        Thu, 27 Apr 2023 08:05:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1682607902; x=1685199902;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Gex4mcejY+ML9kJqmdxIpGp3zwNecRO+t5VAo3FtdUM=;
-        b=rvjBrFTBOhzRXQ6NobP8T0GcD22Ng+4F7E9xbLlKoIVnRUzj+qyq1iTS+p1NqykxA5
-         dlgqHNclnv2tg9TM/eWgt/SW+YFQYfGMeRXzJHFFOxeaF448oyaF52MjYhCnStvvWmT3
-         HG1MUNH5xP9SnliTp2cwYT4p5e/Zken4ogGQy+8eEzBOUrtaMZoAOAQLb3eHwT6P+EOa
-         Yhg/1rGH0tNdxu6i2ClyDfP4PMZbWTY/P6chvcwyUJLyVpnerufM8pqDzpOhSBbujeR+
-         A5GGo4acfvllyCVPJ8aCxsS3WTYNz1W8b5LFMpwcbWvumhzrziuLgOpwm5S392mjtR3t
-         s2Sg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1682607902; x=1685199902;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Gex4mcejY+ML9kJqmdxIpGp3zwNecRO+t5VAo3FtdUM=;
-        b=COVPG6na5mXyOGAe7De4tF/eFK5md5hStZiD3LlgwKaH5eutntbh6FECuGQVob3xi8
-         KZxNIINvglfBBNBOVATD+z3teKL/iQNS0hSxPqhPwms/Sj7nBxDWYuLFBDe6I3Y35GyR
-         ZHOWJvZ5fHDFTgnrptpFsdN3IP1BF3pPWyYEX9WDcmFltKuAtVZ6ftqp5vPczrPXNqcP
-         AlR0gkiEAFKsXrh0HfQ/13EIYt4X61153C6w6v5WdwvCKfwfPNEvC3bZESpj5mthlpOE
-         VBYGz/mqqWXJYf9M9LTE0i4Yz7hXWjpeQudoyQhGWlrf1uM+XhDTrmZoYQMq5VSJ0bft
-         Lukw==
-X-Gm-Message-State: AC+VfDwts7hSm8wGJ2rRI7/LppCkKjZLcvEbKI8+GCxKNExc8qJwojKi
-        yRKOtjIlJLvIgMi51VF0jvpiHh3oRUYdmolO
-X-Google-Smtp-Source: ACHHUZ4oqWLsf9paLUHIFHbZCz5kq0EyCKnBpkP+qSiWxyZ+Pq1D0bgXMnyav17iuL1evzJivfPzXw==
-X-Received: by 2002:a17:902:e84f:b0:1a6:c12d:9020 with SMTP id t15-20020a170902e84f00b001a6c12d9020mr2020049plg.24.1682607902241;
-        Thu, 27 Apr 2023 08:05:02 -0700 (PDT)
-Received: from localhost.localdomain ([116.128.244.169])
-        by smtp.gmail.com with ESMTPSA id q7-20020a170902bd8700b001a6ff7bd4d9sm11793941pls.15.2023.04.27.08.05.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 27 Apr 2023 08:05:01 -0700 (PDT)
-From:   Genjian <zhanggenjian123@gmail.com>
-X-Google-Original-From: Genjian <zhanggenjian@kylinos.cn>
-To:     tsbogend@alpha.franken.de, rdunlap@infradead.org
-Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        zhanggenjian123@gmail.com, Genjian Zhang <zhanggenjian@kylinos.cn>,
-        k2ci <kernel-bot@kylinos.cn>
-Subject: [PATCH v2] fix ___SYNC () build error when PROFILE_ALL_BRANCHES is enabled
-Date:   Thu, 27 Apr 2023 23:03:32 +0800
-Message-Id: <20230427150332.2978867-1-zhanggenjian@kylinos.cn>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <CAOd03yRAmPULzi8fYTnukCpRPHa1Zsv5ZFFeQRcQ7B1abQCGqA@mail.gmail.com>
-References: <CAOd03yRAmPULzi8fYTnukCpRPHa1Zsv5ZFFeQRcQ7B1abQCGqA@mail.gmail.com>
+        with ESMTP id S244281AbjD0RmK (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Thu, 27 Apr 2023 13:42:10 -0400
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id B15EB5584;
+        Thu, 27 Apr 2023 10:41:54 -0700 (PDT)
+Received: from skinsburskii.localdomain (c-67-170-100-148.hsd1.wa.comcast.net [67.170.100.148])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 2EDFA21C33DF;
+        Thu, 27 Apr 2023 10:41:52 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 2EDFA21C33DF
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1682617312;
+        bh=tQBmtbcpqnp+RILjBR0oqwhW0pMzwxDvx3m4tXPmSeg=;
+        h=Subject:From:Cc:Date:From;
+        b=koFTR0U8zfUvb5Uc+C+Hbp/AJH8F6PVoyRgqvwqagczF7i9s34sgxAtQuetm20+XS
+         5Qm+28Pt+pSiCHLtISTWzADXqXkirskMRFVFEdzGl5W3ecGwC3+rdF73jW6Ou0nhTs
+         O5MdjQWqF4ihM7lRjxSdq9BjhqMcNktql7ZPF+I0=
+Subject: [PATCH 0/7] Expect immutable pointer in virt_to_phys/isa_virt_to_bus
+ prototypes
+From:   Stanislav Kinsburskii <skinsburskii@linux.microsoft.com>
+Cc:     Matt Turner <mattst88@gmail.com>, x86@kernel.org,
+        Stanislav Kinsburskii <stanislav.kinsburskii@gmail.com>,
+        Borislav Petkov <bp@alien8.de>, linux-ia64@vger.kernel.org,
+        Mark Brown <broonie@kernel.org>,
+        Richard Henderson <richard.henderson@linaro.org>,
+        linux-kernel@vger.kernel.org, Brian Cain <bcain@quicinc.com>,
+        linux-mips@vger.kernel.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-alpha@vger.kernel.org, linux-arch@vger.kernel.org,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Omar Sandoval <osandov@fb.com>, Helge Deller <deller@gmx.de>,
+        linuxppc-dev@lists.ozlabs.org, linux-hexagon@vger.kernel.org,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Ingo Molnar <mingo@redhat.com>, Arnd Bergmann <arnd@arndb.de>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Chris Down <chris@chrisdown.name>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>
+Date:   Sat, 15 Apr 2023 04:17:19 -0700
+Message-ID: <168155718437.13678.714141668943813263.stgit@skinsburskii.localdomain>
+User-Agent: StGit/0.19
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-From: Genjian Zhang <zhanggenjian@kylinos.cn>
+This series is aimed to address compilation warnings when a constant pointer
+is passed to virt_to_phys and isa_virt_to_bus functions:
 
-compiler error (mips-linux-gnu-gcc (Debian 10.2.1-6) 10.2.1 20210110):
+  warning: passing argument 1 of ‘virt_to_phys’ discards ‘const’ qualifier from pointer target type
+  warning: passing argument 1 of ‘isa_virt_to_bus’ discards ‘const’ qualifier from pointer target type
 
-{standard input}: Assembler messages:
-{standard input}:171: Error: found '(', expected: ')'
-{standard input}:171: Error: found '(', expected: ')'
-{standard input}:171: Error: non-constant expression in ".if" statement
-{standard input}:171: Error: junk at end of line, first unrecognized
-character is `('
+The change(s) is the same for all architectures, but it's split into a series on
+per-arch basis to simplify applying and testing on the maintainers side.
 
-Expands ___SYNC() macros. However, 'if' statement will be wrong
-assembly.This Compilers report a lot of errors like the above.
-this problem is caused by the #define of if() in
-include/linux/compiler.h when CONFIG_PROFILE_ALL_BRANCHES
-is set. Move '.if' into quoted strings to fix it.
+The following series implements...
 
-Reported-by: k2ci <kernel-bot@kylinos.cn>
-Signed-off-by: Genjian Zhang <zhanggenjian@kylinos.cn>
 ---
- arch/mips/include/asm/sync.h | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/arch/mips/include/asm/sync.h b/arch/mips/include/asm/sync.h
-index aabd097933fe..56a4f6f6cdef 100644
---- a/arch/mips/include/asm/sync.h
-+++ b/arch/mips/include/asm/sync.h
-@@ -175,7 +175,7 @@
-  */
- #ifdef CONFIG_CPU_HAS_SYNC
- # define ____SYNC(_type, _reason, _else)			\
--	.if	(( _type ) != -1) && ( _reason );		\
-+	((_type) != -1) && (_reason);				\
- 	.set	push;						\
- 	.set	MIPS_ISA_LEVEL_RAW;				\
- 	.rept	__SYNC_rpt(_type);				\
-@@ -192,13 +192,14 @@
- /*
-  * Preprocessor magic to expand macros used as arguments before we insert them
-  * into assembly code.
-+ * In addition,'if' cannot be enabled.
-  */
- #ifdef __ASSEMBLY__
- # define ___SYNC(type, reason, else)				\
--	____SYNC(type, reason, else)
-+	.if	____SYNC(type, reason, else)
- #else
- # define ___SYNC(type, reason, else)				\
--	__stringify(____SYNC(type, reason, else))
-+	".if"	__stringify(____SYNC(type, reason, else))
- #endif
- 
- #define __SYNC(type, reason)					\
--- 
-2.25.1
+Stanislav Kinsburskii (7):
+      x86: asm/io.h: Expect immutable pointer in virt_to_phys/isa_virt_to_bus prototypes
+      alpha: asm/io.h: Expect immutable pointer in virt_to_phys/isa_virt_to_bus prototypes
+      mips: asm/io.h: Expect immutable pointer in isa_virt_to_bus prototype
+      hexagon: asm/io.h: Expect immutable pointer in virt_to_phys prototype
+      ia64: asm/io.h: Expect immutable pointer in virt_to_phys prototype
+      powerpc: asm/io.h: Expect immutable pointer in virt_to_phys prototype
+      asm-generic/io.h: Expect immutable pointer in virt_to_phys
+
+
+ arch/alpha/include/asm/io.h   |    6 +++---
+ arch/hexagon/include/asm/io.h |    2 +-
+ arch/ia64/include/asm/io.h    |    2 +-
+ arch/mips/include/asm/io.h    |    2 +-
+ arch/powerpc/include/asm/io.h |    2 +-
+ arch/x86/include/asm/io.h     |    4 ++--
+ include/asm-generic/io.h      |    2 +-
+ 7 files changed, 10 insertions(+), 10 deletions(-)
+
 

@@ -2,153 +2,145 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 000A6C6FD18
-	for <linux-mips@archiver.kernel.org>; Wed, 19 Apr 2023 23:37:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 00678C77B78
+	for <linux-mips@archiver.kernel.org>; Thu, 20 Apr 2023 08:32:27 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231735AbjDSXhR (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 19 Apr 2023 19:37:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49284 "EHLO
+        id S234245AbjDTIc1 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 20 Apr 2023 04:32:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60994 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229542AbjDSXhQ (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 19 Apr 2023 19:37:16 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9871B2D62;
-        Wed, 19 Apr 2023 16:37:14 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 314D263AA2;
-        Wed, 19 Apr 2023 23:37:13 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0DAB3C433EF;
-        Wed, 19 Apr 2023 23:37:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1681947432;
-        bh=RiJ8sZ4WJ7UP8H/LsivAO4Ph8LGZecE5A2kFeALbdlQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=g/HNMFE3cV1lmfiJJLo0zG9dTyRVVtMRJJzo13C1YO8PtnV8bzZHXkkzOwTxzPaIA
-         1rxSt03W4s1Xul0xSnleXAazIoJuD84e0q2lUvZ+u28hBiAa3zM18HIoK72QyJHqpW
-         suGYAzGdwXNe7JFLclUiB7sXCmaBMk66cdqtcDd6+2E/cwPegZiVtTijvYHPcq8qhe
-         LIJLcLFbs3zu1XPufO7yDh7EgGqhFIX4wbp9PtZRh5tXdPugMCxGX/NCuZH32M4oXQ
-         4v9Qf7rmvI9aiHZIC8YyfKXduvP0WT9oh4bLWg98sGydFVCbDMmW8dglPcl/w3/S+o
-         jvpYBM6bTPghw==
-Date:   Wed, 19 Apr 2023 16:37:10 -0700
-From:   Nathan Chancellor <nathan@kernel.org>
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        jpoimboe@kernel.org, peterz@infradead.org,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        llvm@lists.linux.dev, patches@lists.linux.dev
-Subject: Re: [PATCH] MIPS: Mark check_bugs{,_early}() as __init
-Message-ID: <20230419233710.GA1314058@dev-arch.thelio-3990X>
-References: <20230419-mips-check_bugs-init-attribute-v1-1-91e6eed55b89@kernel.org>
- <CAKwvOdmuQBnZR_pB5bUdsF+OoB_4pxBT9TNFF83fZhzwZ1gbxw@mail.gmail.com>
+        with ESMTP id S233914AbjDTIcY (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Thu, 20 Apr 2023 04:32:24 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A677B40C9;
+        Thu, 20 Apr 2023 01:32:22 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1681979541;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=I+ebiUykc2oGiW9xPV9ZKUG/P8FsTezy0HSUaGX7/pY=;
+        b=Jz/cXv5/DHLlLjV0z8BL66SPZKoeNMGD449tum189TN4LYaNtkzbsEgLqCXxeR5D2x4DmB
+        AiiH4E3wu4mBGTwiuHyl8BJq1iKIMjEryKHI4Rwh2aIdHQXjHwgf71hZZEbZyP9aBjU6fv
+        3zXpJo+I3lE6AOTbjLnufJBUwJfr8usMbNL18Mci5Spg10fimG4h36b3KXVFHqqEKIS4NL
+        6O/vuWFYSqyD35wd+FaTjGBiDpyu2BeCfT9L9YjBMhEbpDoYxV0wuRUxlhwDe39bW/c/BG
+        Fut9OwTjPUuzPGtLKQMIt2adUOVPSweDTmlzV8g0EUacW9ueX1QxUKw2lpWF0g==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1681979541;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=I+ebiUykc2oGiW9xPV9ZKUG/P8FsTezy0HSUaGX7/pY=;
+        b=fiV2/prU9cb5dhmyq+s9y7Q+ypTlDxy8b3yL8uPmb2zNIq4Xu7UguxKO2bu7hAd0D1st/s
+        PIPzYABPo+6ab0BQ==
+To:     Andrew Cooper <andrew.cooper3@citrix.com>,
+        Paul Menzel <pmenzel@molgen.mpg.de>
+Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
+        David Woodhouse <dwmw2@infradead.org>,
+        Brian Gerst <brgerst@gmail.com>,
+        Arjan van de Veen <arjan@linux.intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Paul McKenney <paulmck@kernel.org>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Oleksandr Natalenko <oleksandr@natalenko.name>,
+        "Guilherme G. Piccoli" <gpiccoli@igalia.com>,
+        Piotr Gorski <lucjan.lucjanov@gmail.com>,
+        David Woodhouse <dwmw@amazon.co.uk>,
+        Usama Arif <usama.arif@bytedance.com>,
+        =?utf-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        xen-devel@lists.xenproject.org,
+        Russell King <linux@armlinux.org.uk>,
+        Arnd Bergmann <arnd@arndb.de>,
+        linux-arm-kernel@lists.infradead.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>,
+        linux-csky@vger.kernel.org,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        linux-mips@vger.kernel.org,
+        "James E. J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        linux-riscv@lists.infradead.org,
+        Mark Rutland <mark.rutland@arm.com>,
+        Sabin Rapan <sabrapan@amazon.com>
+Subject: Re: [patch 00/37] cpu/hotplug, x86: Reworked parallel CPU bringup
+In-Reply-To: <c2aaa4fb-a5ba-d5bf-634a-dcf4fd8ad246@citrix.com>
+References: <20230414225551.858160935@linutronix.de>
+ <8247ce4d-15b7-03b2-0c9b-74f8cd6cad50@molgen.mpg.de> <87wn2a4la5.ffs@tglx>
+ <bd5a6a93-def1-9248-2258-c3d3b40071ef@molgen.mpg.de> <87ttxd4qxz.ffs@tglx>
+ <87r0sh4m7a.ffs@tglx> <8592a301-9933-1cad-bd61-8d97e7c7493b@molgen.mpg.de>
+ <87a5z443g2.ffs@tglx> <877cu83v45.ffs@tglx> <874jpc3s3r.ffs@tglx>
+ <0f5463fd-9c4a-6361-adbb-dd89dbb9138d@citrix.com>
+ <c2aaa4fb-a5ba-d5bf-634a-dcf4fd8ad246@citrix.com>
+Date:   Thu, 20 Apr 2023 10:32:19 +0200
+Message-ID: <871qkf3qek.ffs@tglx>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAKwvOdmuQBnZR_pB5bUdsF+OoB_4pxBT9TNFF83fZhzwZ1gbxw@mail.gmail.com>
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Wed, Apr 19, 2023 at 03:03:31PM -0700, Nick Desaulniers wrote:
-> On Wed, Apr 19, 2023 at 11:43 AM Nathan Chancellor <nathan@kernel.org> wrote:
-> >
-> > After commit ac7c3e4ff401 ("compiler: enable CONFIG_OPTIMIZE_INLINING
-> > forcibly"), a compiler may choose not to inline a function marked with
-> > just 'inline'. If check_bugs() is not inlined into start_kernel(), which
-> > occurs when building with clang after commit 9ea7e6b62c2b ("init: Mark
-> > [arch_call_]rest_init() __noreturn"), modpost complains with:
-> >
-> >   WARNING: modpost: vmlinux.o: section mismatch in reference: check_bugs (section: .text) -> check_bugs32 (section: .init.text)
-> >
-> > check_bugs() is only called from start_kernel(), which itself is marked
-> > __init, so mark check_bugs() as __init as well to clear up the warning
-> > and make everything work properly.
-> >
-> > While there is currently no warning about check_bugs_early(), it could
-> > have the same problem, as it is called from arch_setup() and calls
-> > check_bugs64_early(), both marked __init. Mark it as __init for the same
-> > reason as above.
-> >
-> > Signed-off-by: Nathan Chancellor <nathan@kernel.org>
-> > ---
-> > NOTE: This is based on v6.3-rc7, as the issue shows up due to a patch in
-> > the tip tree, but this appears to be an ancient issue that could have
-> > showed up at any point (hence why no explicit Fixes tag), so I chose a
-> > base that should allow either the MIPS or tip folks to apply this patch.
-> 
-> Probably for the MIPS tree.
-> 
-> >
-> > Additionally, I was tempted to remove the explicit 'inline' since the
-> > compiler is free to do whatever it wants anyways but this is a static
-> > function in a header so we would need to add '__maybe_unused', which is
-> > already added with 'inline' in a normal build so I just left it alone.
-> > ---
-> >  arch/mips/include/asm/bugs.h | 4 ++--
-> >  1 file changed, 2 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/arch/mips/include/asm/bugs.h b/arch/mips/include/asm/bugs.h
-> > index d72dc6e1cf3c..9b9bf9bc7d24 100644
-> > --- a/arch/mips/include/asm/bugs.h
-> > +++ b/arch/mips/include/asm/bugs.h
-> > @@ -24,13 +24,13 @@ extern void check_bugs64_early(void);
-> >  extern void check_bugs32(void);
-> >  extern void check_bugs64(void);
-> >
-> > -static inline void check_bugs_early(void)
-> > +static inline void __init check_bugs_early(void)
-> >  {
-> >         if (IS_ENABLED(CONFIG_CPU_R4X00_BUGS64))
-> >                 check_bugs64_early();
-> >  }
-> 
-> If the only call site is in arch/mips/kernel/setup.c, then perhaps we
-> can move the definition of check_bugs_early there and mark it static
-> __init and drop inline?
+On Wed, Apr 19 2023 at 17:21, Andrew Cooper wrote:
+> On 19/04/2023 2:50 pm, Andrew Cooper wrote:
+>> What I'm confused by is why this system boots in the first place.=C2=A0 =
+I can
+>> only think that's is a system which only has 4-bit APIC IDs, and happens
+>> to function when bit 4 gets truncated off the top of the SIPI destinatio=
+n...
+>
+> https://www.amd.com/system/files/TechDocs/42300_15h_Mod_10h-1Fh_BKDG.pdf
+>
+> This system does still require the IO-APICs to be at 0, and the LAPICs
+> to start at some offset, which is clearly 16 in this case.=C2=A0 Also, th=
+is
+> system has configurable 4-bit or 8-bit wide APIC IDs, and I can't tell
+> which mode is active just from the manual.
 
-Sure, we could even go a step further and just copy the body into the
-one call site ourselves, I see little reason for this to be a dedicated
-function. That is probably best done in a separate patch altogether in
-lieu of just adding __init.
+That document contradicts itself:
 
-> Unless we foresee other callers potentially in the future?  Patch
-> otherwise LGTM.  Thanks for the patch!
+  "The ApicId of core j must be enumerated/assigned as:
+   ApicId[core=3Dj] =3D (OFFSET_IDX) * MNC + j
 
-Seems unlikely, I did a super scientific survey of several different
-revisions (:P) and check_bugs_early() is called once in each one:
+   Where OFFSET_IDX is an integer offset (0 to N) used to shift up the
+   core ApicId values to allow room for IOAPIC devices.
 
-v3.0:arch/mips/kernel/setup.c:    check_bugs_early();
-v3.5:arch/mips/kernel/setup.c:    check_bugs_early();
-v3.10:arch/mips/kernel/setup.c:    check_bugs_early();
-v4.0:arch/mips/kernel/setup.c:    check_bugs_early();
-v4.5:arch/mips/kernel/setup.c:    check_bugs_early();
-v5.0:arch/mips/kernel/setup.c:    check_bugs_early();
-v4.10:arch/mips/kernel/setup.c:    check_bugs_early();
-v5.5:arch/mips/kernel/setup.c:    check_bugs_early();
-v5.10:arch/mips/kernel/setup.c:    check_bugs_early();
-v6.0:arch/mips/kernel/setup.c:    check_bugs_early();
+   It is recommended that BIOS use the following APIC ID assignments for
+   the broadest operating system sup- port. Given N =3D MNC and M =3D
+   Number_Of_IOAPICs:
 
-I'll do whatever Thomas would prefer.
+   =E2=80=A2 Assign the core ApicId=E2=80=99s first from 0 to N-1, and the =
+IOAPIC IDs
+     from N to N+(M-1)."
 
-> >
-> > -static inline void check_bugs(void)
-> > +static inline void __init check_bugs(void)
-> >  {
-> >         unsigned int cpu = smp_processor_id();
-> >
-> >
-> > ---
-> > base-commit: 6a8f57ae2eb07ab39a6f0ccad60c760743051026
-> > change-id: 20230419-mips-check_bugs-init-attribute-026103bdb255
-> >
-> > Best regards,
-> > --
-> > Nathan Chancellor <nathan@kernel.org>
-> >
-> 
-> 
-> -- 
-> Thanks,
-> ~Nick Desaulniers
+Oh well. If the rest of these docs is of the same quality then it's not
+a surprise that BIOSes are trainwrecks.
+
+> But, it does mean that the BIOS has genuinely modified the APIC IDs of
+> the logic processors.=C2=A0 This does highlight an error in reasoning with
+> the parallel bringup code.
+
+Yes.
+
+> For xAPIC, the APIC_ID register is writeable (at least, model
+> specifically), and CPUID is only the value it would have had at reset.=C2=
+=A0
+> So the AP bringup logic can't actually use CPUID reliably.
+>
+> This was changed in x2APIC, which made the x2APIC_ID immutable.
+>
+> I don't see an option other than the AP bringup code query for xAPIC vs
+> x2APIC mode, and either looking at the real APIC_ID register, or falling
+> back to CPUID.
+
+I'm pondering to simply deny parallel mode if x2APIC is not there.
+
+Thanks,
+
+        tglx

@@ -2,57 +2,57 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E5304C77B61
-	for <linux-mips@archiver.kernel.org>; Fri, 21 Apr 2023 17:00:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B7DA7C77B76
+	for <linux-mips@archiver.kernel.org>; Fri, 21 Apr 2023 17:00:22 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231459AbjDURAV (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 21 Apr 2023 13:00:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40628 "EHLO
+        id S233032AbjDURAW (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 21 Apr 2023 13:00:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41416 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232834AbjDUQ7j (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Fri, 21 Apr 2023 12:59:39 -0400
-Received: from mail-pl1-f202.google.com (mail-pl1-f202.google.com [209.85.214.202])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F260F167E3
-        for <linux-mips@vger.kernel.org>; Fri, 21 Apr 2023 09:59:15 -0700 (PDT)
-Received: by mail-pl1-f202.google.com with SMTP id d9443c01a7336-1a52677bd54so15773345ad.3
-        for <linux-mips@vger.kernel.org>; Fri, 21 Apr 2023 09:59:15 -0700 (PDT)
+        with ESMTP id S233533AbjDUQ7x (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Fri, 21 Apr 2023 12:59:53 -0400
+Received: from mail-pg1-f201.google.com (mail-pg1-f201.google.com [209.85.215.201])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1570F1560C
+        for <linux-mips@vger.kernel.org>; Fri, 21 Apr 2023 09:59:30 -0700 (PDT)
+Received: by mail-pg1-f201.google.com with SMTP id 41be03b00d2f7-517a659f877so1493204a12.1
+        for <linux-mips@vger.kernel.org>; Fri, 21 Apr 2023 09:59:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1682096001; x=1684688001;
+        d=google.com; s=20221208; t=1682095996; x=1684687996;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=gE2N+oWt7hK60UExWH8Apuvl/6Zc9TUNxMrpzS6/3Tk=;
-        b=gSJswkUtsqGy+NAfu8py5auMpkfLQNTOEqX3uJ9U9Og/ThQanQOKyGUkdPpPpGces1
-         JpO7/8XndhNyW9IWOI0DDDaGS4u0h+nk5XDS2GaU/CIIPt+gKrJUunjiSwrs3SD6+lmK
-         wh8ezPSLRVsI9k+kb5tXPIHwUoJgXCm0nOXfCCMzRUm+aSooj6bPriuueEgRC25O2ve2
-         DnSPWIvPfpaLGGXJeHYj1BpIYqB/JxSdn66Mw4UCn5rgAEpuf+2j/iCwE5JFs61Ikr7f
-         Ym5a7YO8FpydTjeb6RKG5TTrhNhKd8qH9v5YJRVyuzemRjvxOLMfGgUvt+dkgVK1UreB
-         wi4Q==
+        bh=QAMadok09XxgFvaDO3J6Lgqv+ZDwnOLb2IYSq9G7u+A=;
+        b=5l1CzLumfw4VvnGKs1LekidIOHm6RR2ZhVTA1I+whH2HeXgm2o8PhxoPUQLTHfydb9
+         MbBxamdeRZWqIzwIX6cPpq9NGQ3282H+LGUyBZpLlO6iAgfWncKkZnXQevgjEqCzsFvI
+         /ie9WS7cdYCl1aCB7+4MGfZNo6IMNnRdfZplWSdxceYc0BIUM6d0gO/blOvoZokSUVGw
+         Y1vWnwlcSKtpR4AbEKzTUp+leY3IooaW0MIg6qShyiSd1O990V5j6KZFgnSxmwclrSfF
+         iRRS2VvoFH4pfGHIeK5C/wh3ElWiAy4UgpcFTrfc4JtiPWNVC38kZkoYq7eJ04Cn12As
+         uI2A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1682096001; x=1684688001;
+        d=1e100.net; s=20221208; t=1682095996; x=1684687996;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=gE2N+oWt7hK60UExWH8Apuvl/6Zc9TUNxMrpzS6/3Tk=;
-        b=lKHslnXDgLLBd2Li73JKO0gGZbC5RAwCijI87XozwnZVPhCUvH2Zi5rjIvE1l7wE+H
-         GNqEqK86UZ3ejKdLMugszHbMDOxqpYJI1huNpFebCc2NmeuHmf+GrjFAqj25RDRM5OSv
-         UCNp/3f+6NxhF3dz3S/Bvu4Qpy5uBRpKZmEOCSIUrEtuIfqHTolrIExE91bOmPqtDjr7
-         i7E3NKBeWEaGxeCP0ulDW8J0dfWptrIihADy2cMPS+DllSnnRFKo0019sY7cOF8Bi7pk
-         NvZvk+LMAgAFc19fO3Jtkx4JwtfzfqLqe8cG5ZUCD8vInaSR4NRO0EAyHQAN5j/mwTZT
-         z47A==
-X-Gm-Message-State: AAQBX9eis3oNmgt6fNuuNjybE6CIWkwp7+ate/+qxdUuODuZKI1NMn78
-        w+qm/O669w7lHXGDtYMSruhRYXi6V6zk
-X-Google-Smtp-Source: AKy350Zm39wmROPzIjLdWsr/QX3YmQtoV9lDDZ9cKibG8CUkTfGAonW6liBLjD1f7VOqEfq8woe5teAtwAON
+        bh=QAMadok09XxgFvaDO3J6Lgqv+ZDwnOLb2IYSq9G7u+A=;
+        b=dly6KoRk1mg0ZiMM+Jtu3DVjXO/1PmnFkzDrgscOabQP3ZVD1jnh2L8p19tMTE/U6s
+         mAka2x1sgOXbr3mMtYU21dTXfTbVvnR0khbbecZyhUCpZAzuLw1c7vGAcNweOGHx269S
+         NkrKOMWilL50rX/dTMhOT5+lIuZhP3Ixm2c4faQeZEL4KQITycLJy8naKABs+xJbApQS
+         erFtA3J4iN6adjz33i7x2M2Q0rwWf/ukar7Vnpp+1HRNRtnKiAykPoU4qh+9koLhSS4t
+         kulLFEyVT1MBWSZsUW2m+p/hBNDp5LW9yM3AMA0q+81bRQwU234eEiSsjg18W7Omgw4T
+         RRXQ==
+X-Gm-Message-State: AAQBX9dc1n4DroDtP9HxGtKKGYRwibNAlHcfUjkAI/mj7ChMh7xhAj35
+        T0Sjth7FdmXjAJKocQfSJ890VH36fvrC
+X-Google-Smtp-Source: AKy350ZjCHa4QHnHiWhcJq+auFhrVPVMASZyckOmf5zCb6ojNKQ4+uKrop3naLHjd6GRNHOZE2DYdu7UHwlH
 X-Received: from vipin.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:479f])
- (user=vipinsh job=sendgmr) by 2002:a17:902:ca14:b0:1a6:b4bf:8956 with SMTP id
- w20-20020a170902ca1400b001a6b4bf8956mr1835188pld.12.1682096001326; Fri, 21
- Apr 2023 09:53:21 -0700 (PDT)
-Date:   Fri, 21 Apr 2023 09:53:03 -0700
+ (user=vipinsh job=sendgmr) by 2002:a63:105e:0:b0:520:53fa:9878 with SMTP id
+ 30-20020a63105e000000b0052053fa9878mr1424111pgq.6.1682095996166; Fri, 21 Apr
+ 2023 09:53:16 -0700 (PDT)
+Date:   Fri, 21 Apr 2023 09:53:00 -0700
 In-Reply-To: <20230421165305.804301-1-vipinsh@google.com>
 Mime-Version: 1.0
 References: <20230421165305.804301-1-vipinsh@google.com>
 X-Mailer: git-send-email 2.40.0.634.g4ca3ef3211-goog
-Message-ID: <20230421165305.804301-8-vipinsh@google.com>
-Subject: [PATCH 7/9] KVM: mmu: Move mmu lock/unlock to arch code for clear
- dirty log
+Message-ID: <20230421165305.804301-5-vipinsh@google.com>
+Subject: [PATCH 4/9] KVM: selftests: Print read and write accesses of pages by
+ vCPUs in dirty_log_perf_test
 From:   Vipin Sharma <vipinsh@google.com>
 To:     maz@kernel.org, oliver.upton@linux.dev, james.morse@arm.com,
         suzuki.poulose@arm.com, yuzenghui@huawei.com,
@@ -72,148 +72,103 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Move mmu_lock lock and unlock calls from common code in
-kvm_clear_dirty_log_protect() to arch specific code in
-kvm_arch_mmu_enable_log_dirty_pt_masked(). None of the other code inside
-the for loop of kvm_arch_mmu_enable_log_dirty_pt_masked() needs mmu_lock
-exclusivity apart from the arch specific API call.
+Fetch read and write accesses of pages from guest code and print count
+across all vCPUs in dirty_log_perf_test.
 
-Future commits will change clear dirty log operations under mmu read
-lock instead of write lock for ARM and, potentially, x86 architectures.
-
-No functional changes intended.
+This data provides progress made by vCPUs during dirty logging
+operations. Since, vCPUs execute in lockstep with userspace dirty log
+iterations, this metric is not very interesting. However, in future
+commits when dirty_log_perf_test can execute vCPUs independently from
+dirty log iterations then this metric can give good measure of vCPUs
+performance during dirty logging.
 
 Signed-off-by: Vipin Sharma <vipinsh@google.com>
 ---
- arch/arm64/kvm/mmu.c   | 2 ++
- arch/mips/kvm/mmu.c    | 2 ++
- arch/riscv/kvm/mmu.c   | 2 ++
- arch/x86/kvm/mmu/mmu.c | 3 +++
- virt/kvm/dirty_ring.c  | 2 --
- virt/kvm/kvm_main.c    | 4 ----
- 6 files changed, 9 insertions(+), 6 deletions(-)
+ .../selftests/kvm/dirty_log_perf_test.c        | 18 +++++++++++++++++-
+ 1 file changed, 17 insertions(+), 1 deletion(-)
 
-diff --git a/arch/arm64/kvm/mmu.c b/arch/arm64/kvm/mmu.c
-index 7113587222ff..dc1c9059604e 100644
---- a/arch/arm64/kvm/mmu.c
-+++ b/arch/arm64/kvm/mmu.c
-@@ -1002,7 +1002,9 @@ void kvm_arch_mmu_enable_log_dirty_pt_masked(struct kvm *kvm,
- 		struct kvm_memory_slot *slot,
- 		gfn_t gfn_offset, unsigned long mask)
+diff --git a/tools/testing/selftests/kvm/dirty_log_perf_test.c b/tools/testing/selftests/kvm/dirty_log_perf_test.c
+index 338f03a4a550..0a08a3d21123 100644
+--- a/tools/testing/selftests/kvm/dirty_log_perf_test.c
++++ b/tools/testing/selftests/kvm/dirty_log_perf_test.c
+@@ -12,6 +12,7 @@
+ #include <stdlib.h>
+ #include <time.h>
+ #include <pthread.h>
++#include <stdatomic.h>
+ #include <linux/bitmap.h>
+ 
+ #include "kvm_util.h"
+@@ -66,17 +67,22 @@ static u64 dirty_log_manual_caps;
+ static bool host_quit;
+ static int iteration;
+ static int vcpu_last_completed_iteration[KVM_MAX_VCPUS];
++static atomic_ullong total_reads;
++static atomic_ullong total_writes;
+ 
+ static void vcpu_worker(struct memstress_vcpu_args *vcpu_args)
  {
-+	write_lock(&kvm->mmu_lock);
- 	kvm_mmu_write_protect_pt_masked(kvm, slot, gfn_offset, mask);
-+	write_unlock(&kvm->mmu_lock);
+ 	struct kvm_vcpu *vcpu = vcpu_args->vcpu;
+ 	int vcpu_idx = vcpu_args->vcpu_idx;
+ 	uint64_t pages_count = 0;
++	uint64_t reads = 0;
++	uint64_t writes = 0;
+ 	struct kvm_run *run;
+ 	struct timespec start;
+ 	struct timespec ts_diff;
+ 	struct timespec total = (struct timespec){0};
+ 	struct timespec avg;
++	struct ucall uc = {};
+ 	int ret;
+ 
+ 	run = vcpu->run;
+@@ -89,7 +95,7 @@ static void vcpu_worker(struct memstress_vcpu_args *vcpu_args)
+ 		ts_diff = timespec_elapsed(start);
+ 
+ 		TEST_ASSERT(ret == 0, "vcpu_run failed: %d\n", ret);
+-		TEST_ASSERT(get_ucall(vcpu, NULL) == UCALL_SYNC,
++		TEST_ASSERT(get_ucall(vcpu, &uc) == UCALL_SYNC,
+ 			    "Invalid guest sync status: exit_reason=%s\n",
+ 			    exit_reason_str(run->exit_reason));
+ 
+@@ -101,6 +107,8 @@ static void vcpu_worker(struct memstress_vcpu_args *vcpu_args)
+ 		if (current_iteration) {
+ 			pages_count += vcpu_args->pages;
+ 			total = timespec_add(total, ts_diff);
++			reads += uc.args[2];
++			writes += uc.args[3];
+ 			pr_debug("vCPU %d iteration %d dirty memory time: %ld.%.9lds\n",
+ 				vcpu_idx, current_iteration, ts_diff.tv_sec,
+ 				ts_diff.tv_nsec);
+@@ -123,6 +131,8 @@ static void vcpu_worker(struct memstress_vcpu_args *vcpu_args)
+ 	pr_debug("\nvCPU %d dirtied 0x%lx pages over %d iterations in %ld.%.9lds. (Avg %ld.%.9lds/iteration)\n",
+ 		vcpu_idx, pages_count, vcpu_last_completed_iteration[vcpu_idx],
+ 		total.tv_sec, total.tv_nsec, avg.tv_sec, avg.tv_nsec);
++	atomic_fetch_add(&total_reads, reads);
++	atomic_fetch_add(&total_writes, writes);
  }
  
- static void kvm_send_hwpoison_signal(unsigned long address, short lsb)
-diff --git a/arch/mips/kvm/mmu.c b/arch/mips/kvm/mmu.c
-index e8c08988ed37..b8d4723d197e 100644
---- a/arch/mips/kvm/mmu.c
-+++ b/arch/mips/kvm/mmu.c
-@@ -415,11 +415,13 @@ void kvm_arch_mmu_enable_log_dirty_pt_masked(struct kvm *kvm,
- 		struct kvm_memory_slot *slot,
- 		gfn_t gfn_offset, unsigned long mask)
- {
-+	spin_lock(&kvm->mmu_lock);
- 	gfn_t base_gfn = slot->base_gfn + gfn_offset;
- 	gfn_t start = base_gfn +  __ffs(mask);
- 	gfn_t end = base_gfn + __fls(mask);
+ struct test_params {
+@@ -176,6 +186,8 @@ static void run_test(enum vm_guest_mode mode, void *arg)
+ 			      dirty_log_manual_caps);
  
- 	kvm_mips_mkclean_gpa_pt(kvm, start, end);
-+	spin_unlock(&kvm->mmu_lock);
- }
+ 	arch_setup_vm(vm, nr_vcpus);
++	atomic_store(&total_reads, 0);
++	atomic_store(&total_writes, 0);
  
- /*
-diff --git a/arch/riscv/kvm/mmu.c b/arch/riscv/kvm/mmu.c
-index 78211aed36fa..425fa11dcf9c 100644
---- a/arch/riscv/kvm/mmu.c
-+++ b/arch/riscv/kvm/mmu.c
-@@ -395,11 +395,13 @@ void kvm_arch_mmu_enable_log_dirty_pt_masked(struct kvm *kvm,
- 					     gfn_t gfn_offset,
- 					     unsigned long mask)
- {
-+	spin_lock(&kvm->mmu_lock);
- 	phys_addr_t base_gfn = slot->base_gfn + gfn_offset;
- 	phys_addr_t start = (base_gfn +  __ffs(mask)) << PAGE_SHIFT;
- 	phys_addr_t end = (base_gfn + __fls(mask) + 1) << PAGE_SHIFT;
+ 	/* Start the iterations */
+ 	iteration = 0;
+@@ -295,6 +307,10 @@ static void run_test(enum vm_guest_mode mode, void *arg)
+ 			clear_dirty_log_total.tv_nsec, avg.tv_sec, avg.tv_nsec);
+ 	}
  
- 	gstage_wp_range(kvm, start, end);
-+	spin_unlock(&kvm->mmu_lock);
- }
- 
- void kvm_arch_sync_dirty_log(struct kvm *kvm, struct kvm_memory_slot *memslot)
-diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-index 144c5a01cd77..f1dc549b01cb 100644
---- a/arch/x86/kvm/mmu/mmu.c
-+++ b/arch/x86/kvm/mmu/mmu.c
-@@ -1367,6 +1367,7 @@ void kvm_arch_mmu_enable_log_dirty_pt_masked(struct kvm *kvm,
- 				struct kvm_memory_slot *slot,
- 				gfn_t gfn_offset, unsigned long mask)
- {
-+	write_lock(&kvm->mmu_lock);
- 	/*
- 	 * Huge pages are NOT write protected when we start dirty logging in
- 	 * initially-all-set mode; must write protect them here so that they
-@@ -1397,6 +1398,8 @@ void kvm_arch_mmu_enable_log_dirty_pt_masked(struct kvm *kvm,
- 		kvm_mmu_clear_dirty_pt_masked(kvm, slot, gfn_offset, mask);
- 	else
- 		kvm_mmu_write_protect_pt_masked(kvm, slot, gfn_offset, mask);
++	pr_info("Total pages touched: %llu (Reads: %llu, Writes: %llu)\n",
++		atomic_load(&total_reads) + atomic_load(&total_writes),
++		atomic_load(&total_reads), atomic_load(&total_writes));
 +
-+	write_unlock(&kvm->mmu_lock);
- }
- 
- int kvm_cpu_dirty_log_size(void)
-diff --git a/virt/kvm/dirty_ring.c b/virt/kvm/dirty_ring.c
-index c1cd7dfe4a90..d894c58d2152 100644
---- a/virt/kvm/dirty_ring.c
-+++ b/virt/kvm/dirty_ring.c
-@@ -66,9 +66,7 @@ static void kvm_reset_dirty_gfn(struct kvm *kvm, u32 slot, u64 offset, u64 mask)
- 	if (!memslot || (offset + __fls(mask)) >= memslot->npages)
- 		return;
- 
--	KVM_MMU_LOCK(kvm);
- 	kvm_arch_mmu_enable_log_dirty_pt_masked(kvm, memslot, offset, mask);
--	KVM_MMU_UNLOCK(kvm);
- }
- 
- int kvm_dirty_ring_alloc(struct kvm_dirty_ring *ring, int index, u32 size)
-diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
-index f40b72eb0e7b..378c40e958b6 100644
---- a/virt/kvm/kvm_main.c
-+++ b/virt/kvm/kvm_main.c
-@@ -2157,7 +2157,6 @@ static int kvm_get_dirty_log_protect(struct kvm *kvm, struct kvm_dirty_log *log)
- 		dirty_bitmap_buffer = kvm_second_dirty_bitmap(memslot);
- 		memset(dirty_bitmap_buffer, 0, n);
- 
--		KVM_MMU_LOCK(kvm);
- 		for (i = 0; i < n / sizeof(long); i++) {
- 			unsigned long mask;
- 			gfn_t offset;
-@@ -2173,7 +2172,6 @@ static int kvm_get_dirty_log_protect(struct kvm *kvm, struct kvm_dirty_log *log)
- 			kvm_arch_mmu_enable_log_dirty_pt_masked(kvm, memslot,
- 								offset, mask);
- 		}
--		KVM_MMU_UNLOCK(kvm);
- 	}
- 
- 	if (flush)
-@@ -2268,7 +2266,6 @@ static int kvm_clear_dirty_log_protect(struct kvm *kvm,
- 	if (copy_from_user(dirty_bitmap_buffer, log->dirty_bitmap, n))
- 		return -EFAULT;
- 
--	KVM_MMU_LOCK(kvm);
- 	for (offset = log->first_page, i = offset / BITS_PER_LONG,
- 		 n = DIV_ROUND_UP(log->num_pages, BITS_PER_LONG); n--;
- 	     i++, offset += BITS_PER_LONG) {
-@@ -2291,7 +2288,6 @@ static int kvm_clear_dirty_log_protect(struct kvm *kvm,
- 								offset, mask);
- 		}
- 	}
--	KVM_MMU_UNLOCK(kvm);
- 
- 	if (flush)
- 		kvm_arch_flush_remote_tlbs_memslot(kvm, memslot);
+ 	memstress_free_bitmaps(bitmaps, p->slots);
+ 	arch_cleanup_vm(vm);
+ 	memstress_destroy_vm(vm);
 -- 
 2.40.0.634.g4ca3ef3211-goog
 

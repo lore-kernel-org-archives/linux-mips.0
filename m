@@ -2,103 +2,204 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 30397C77B76
-	for <linux-mips@archiver.kernel.org>; Fri, 21 Apr 2023 16:36:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5B272C7618E
+	for <linux-mips@archiver.kernel.org>; Fri, 21 Apr 2023 16:54:53 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233175AbjDUQgR (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 21 Apr 2023 12:36:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48638 "EHLO
+        id S232022AbjDUQyv (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 21 Apr 2023 12:54:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34372 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233157AbjDUQgP (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Fri, 21 Apr 2023 12:36:15 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A21291544C;
-        Fri, 21 Apr 2023 09:36:14 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1682094973;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=AMzOR95vay5pg0WrO+uJUGs+TLmecn0h01ht4y+YBW4=;
-        b=o/TkSlykoJbZmwaCartOT04EgN5C+kODI7gZukI9DsIFy2Dgj3RH1WuWvwMvvYXkyiHIQk
-        oxshpYHuRgHC8o/JYqoEGQ0sMgPeCIrVwZGLDjjKa0oD47tebLMPcc0kwKmrYNmhibL69p
-        CuPI7WXBesGu+IQZaD33O9Vh8aqxpxbvEKmf8Inm6RIaaj7YSGPtkcXqQaDLBztSRLFiTD
-        jAl7P2Gr2fqg2KdBtxFZJUc3m5xmd9qgJZ7OLjPxBmIrUzXSJ1uWPWJLXceKreW9vWpPl+
-        SmWK7o2t1K1ok1OKIOZ0yX0u1SEvxXShW0sf3Kg6kxQp0c93gSDpceB1rVFESQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1682094973;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=AMzOR95vay5pg0WrO+uJUGs+TLmecn0h01ht4y+YBW4=;
-        b=44dX9VJX+TMEmkgFv0MNfddpnQu4SMuQ4SBx4WdfdKvH1kS+zbYESmYQqIpwSH+YghznlV
-        s1xiQKd/rkmpEKCg==
-To:     Paul Menzel <pmenzel@molgen.mpg.de>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Andrew Cooper <andrew.cooper3@citrix.com>,
-        linux-kernel@vger.kernel.org, x86@kernel.org,
-        David Woodhouse <dwmw2@infradead.org>,
-        Brian Gerst <brgerst@gmail.com>,
-        Arjan van de Veen <arjan@linux.intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Paul McKenney <paulmck@kernel.org>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Oleksandr Natalenko <oleksandr@natalenko.name>,
-        "Guilherme G. Piccoli" <gpiccoli@igalia.com>,
-        Piotr Gorski <lucjan.lucjanov@gmail.com>,
-        David Woodhouse <dwmw@amazon.co.uk>,
-        Usama Arif <usama.arif@bytedance.com>,
-        =?utf-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        xen-devel@lists.xenproject.org,
-        Russell King <linux@armlinux.org.uk>,
-        Arnd Bergmann <arnd@arndb.de>,
-        linux-arm-kernel@lists.infradead.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>,
-        linux-csky@vger.kernel.org,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        linux-mips@vger.kernel.org,
-        "James E. J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        linux-riscv@lists.infradead.org,
-        Mark Rutland <mark.rutland@arm.com>,
-        Sabin Rapan <sabrapan@amazon.com>
-Subject: Re: [patch 00/37] cpu/hotplug, x86: Reworked parallel CPU bringup
-In-Reply-To: <87sfcu2wup.ffs@tglx>
-References: <87r0sh4m7a.ffs@tglx>
- <8592a301-9933-1cad-bd61-8d97e7c7493b@molgen.mpg.de> <87a5z443g2.ffs@tglx>
- <877cu83v45.ffs@tglx> <874jpc3s3r.ffs@tglx>
- <0f5463fd-9c4a-6361-adbb-dd89dbb9138d@citrix.com>
- <c2aaa4fb-a5ba-d5bf-634a-dcf4fd8ad246@citrix.com> <871qkf3qek.ffs@tglx>
- <26d385da-2ede-5d73-2959-84c8f7d89e03@citrix.com> <87y1mm3iqz.ffs@tglx>
- <ZEFRhXua6Jxvit1R@google.com> <87v8hq35sk.ffs@tglx>
- <56e59a4d-a47f-4bfe-7db5-5f921062ad69@molgen.mpg.de> <87sfcu2wup.ffs@tglx>
-Date:   Fri, 21 Apr 2023 18:36:12 +0200
-Message-ID: <87bkjh2nwj.ffs@tglx>
-MIME-Version: 1.0
-Content-Type: text/plain
+        with ESMTP id S233259AbjDUQyc (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Fri, 21 Apr 2023 12:54:32 -0400
+Received: from mail-pj1-x1049.google.com (mail-pj1-x1049.google.com [IPv6:2607:f8b0:4864:20::1049])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 978B6167C4
+        for <linux-mips@vger.kernel.org>; Fri, 21 Apr 2023 09:54:16 -0700 (PDT)
+Received: by mail-pj1-x1049.google.com with SMTP id 98e67ed59e1d1-24763adb145so2206483a91.2
+        for <linux-mips@vger.kernel.org>; Fri, 21 Apr 2023 09:54:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1682095992; x=1684687992;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=dM0sknYnz5Tr9YshwaHjySCVB3V9EWCXlRX5uFgEya8=;
+        b=cKoOxJh4k5Df809KvDrC16SHpyyANbnD88ODpXNOuka0EEfmMXb9/GGZHQjZmiaSGC
+         PHXwzp6oJJCuBjtwH55J3xqdIM10HnXCfOmj/GRFwtdNPqo3g+mBSidFvw86YFvbU0sY
+         QFH5aE4DJ8NgYwN0BX1m2H/84CVYfPBQlivAZjfI0w0gbJssCQFPLo6dhrf9i30gQDYK
+         RVT9NmA3RwkhJ9wGFaj9EOO7LpEIdOpFNM2q37g3x6fVQdiBTnwi7UMa2h5IS92inTkJ
+         5XzKSeq94NI91RbwFfXmAf2d+oezqCbzgzE8MFn7zbTcJm/Y08tOtjCRc2EpRU8GmuIw
+         Joug==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1682095992; x=1684687992;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=dM0sknYnz5Tr9YshwaHjySCVB3V9EWCXlRX5uFgEya8=;
+        b=SghAs9Gea0pDKFbGNRrEin9ihrTUiOW15UC09wtpwSnS4sEFze6u0AZYSythgGYHLE
+         Lu1grjpPzkKGetR3botpWYWB3RrYwWlMzLgwp04mniPGXXMpM7EDUXC/NzuY9tp2ky0G
+         NiQM+SqrbQVHtcNps7GcbHltBkzBIJl6+F1xCUbKXvikkZuFYAePin/mfNseJZ6J6MI8
+         Xms3eXFSGmgWAhhh0FldgFvO1AGKG0kabxWWX75Nim6frLh4ud1PU1y7fajmGAvZD/yk
+         3sqdce3KQxcDsm7DEAieBsKUIYMnvLCxBWmT0vacwjoD2tg0HvcVVo7+ZnI7qhJwcyZs
+         QoNQ==
+X-Gm-Message-State: AAQBX9c7HJ15fFJ54sDaDP2iR/d6A8cmR20abpXkt4ZtO4pFj8cGpFYo
+        mMBHmJoWz6vgpJ3wSiHgYwOUSNIU5WIv
+X-Google-Smtp-Source: AKy350YMrLXAhkSUtVuYqUb/z6RwX7RpSjICLEgXjDkxf6HBxqanxF3VIJFd0FfCazAdAkwHsavol8ftYq4a
+X-Received: from vipin.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:479f])
+ (user=vipinsh job=sendgmr) by 2002:a17:90a:740d:b0:244:8f24:783d with SMTP id
+ a13-20020a17090a740d00b002448f24783dmr1553862pjg.4.1682095992639; Fri, 21 Apr
+ 2023 09:53:12 -0700 (PDT)
+Date:   Fri, 21 Apr 2023 09:52:58 -0700
+In-Reply-To: <20230421165305.804301-1-vipinsh@google.com>
+Mime-Version: 1.0
+References: <20230421165305.804301-1-vipinsh@google.com>
+X-Mailer: git-send-email 2.40.0.634.g4ca3ef3211-goog
+Message-ID: <20230421165305.804301-3-vipinsh@google.com>
+Subject: [PATCH 2/9] KVM: selftests: Add optional delay between consecutive
+ Clear-Dirty-Log calls
+From:   Vipin Sharma <vipinsh@google.com>
+To:     maz@kernel.org, oliver.upton@linux.dev, james.morse@arm.com,
+        suzuki.poulose@arm.com, yuzenghui@huawei.com,
+        catalin.marinas@arm.com, will@kernel.org, chenhuacai@kernel.org,
+        aleksandar.qemu.devel@gmail.com, tsbogend@alpha.franken.de,
+        anup@brainfault.org, atishp@atishpatra.org,
+        paul.walmsley@sifive.com, palmer@dabbelt.com,
+        aou@eecs.berkeley.edu, seanjc@google.com, pbonzini@redhat.com,
+        dmatlack@google.com, ricarkol@google.com
+Cc:     linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        linux-mips@vger.kernel.org, kvm-riscv@lists.infradead.org,
+        linux-riscv@lists.infradead.org, linux-kselftest@vger.kernel.org,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Vipin Sharma <vipinsh@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Thu, Apr 20 2023 at 21:10, Thomas Gleixner wrote:
-> On Thu, Apr 20 2023 at 18:47, Paul Menzel wrote:
->> Am 20.04.23 um 17:57 schrieb Thomas Gleixner:
->> I quickly applied it on top of your branch, but I am getting:
->
-> As I said it was untested. I was traveling and did not have access to a
-> machine to even build it completely. Fixed up and tested version below.
+In dirty_log_perf_test, add option "-l" to wait between consecutive
+Clear-Dirty-Log calls. Accept delay in milliseconds.
 
-I've updated
+This allows dirty_log_perf_test to mimic real world use where after
+clearing dirty memory, some time is spent in transferring memory before
+making a subsequeunt Clear-Dirty-Log call.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/tglx/devel.git hotplug
+Signed-off-by: Vipin Sharma <vipinsh@google.com>
+---
+ .../testing/selftests/kvm/dirty_log_perf_test.c | 17 +++++++++++++++--
+ tools/testing/selftests/kvm/include/memstress.h |  5 +++--
+ tools/testing/selftests/kvm/lib/memstress.c     | 10 +++++++++-
+ 3 files changed, 27 insertions(+), 5 deletions(-)
 
-for your conveniance.
+diff --git a/tools/testing/selftests/kvm/dirty_log_perf_test.c b/tools/testing/selftests/kvm/dirty_log_perf_test.c
+index 0852a7ba42e1..338f03a4a550 100644
+--- a/tools/testing/selftests/kvm/dirty_log_perf_test.c
++++ b/tools/testing/selftests/kvm/dirty_log_perf_test.c
+@@ -135,6 +135,7 @@ struct test_params {
+ 	uint32_t random_seed;
+ 	bool random_access;
+ 	uint64_t clear_chunk_size;
++	int clear_chunk_wait_time_ms
+ };
+ 
+ static void run_test(enum vm_guest_mode mode, void *arg)
+@@ -249,7 +250,8 @@ static void run_test(enum vm_guest_mode mode, void *arg)
+ 			clock_gettime(CLOCK_MONOTONIC, &start);
+ 			memstress_clear_dirty_log_in_chunks(vm, bitmaps, p->slots,
+ 							    pages_per_slot,
+-							    pages_per_clear);
++							    pages_per_clear,
++							    p->clear_chunk_wait_time_ms);
+ 			ts_diff = timespec_elapsed(start);
+ 			clear_dirty_log_total = timespec_add(clear_dirty_log_total,
+ 							     ts_diff);
+@@ -352,6 +354,11 @@ static void help(char *name)
+ 	       "     the memslot size then whole memslot is cleared in one call.\n"
+ 	       "     Size must be aligned to the host page size. e.g. 10M or 3G\n"
+ 	       "     (default: UINT64_MAX, clears whole memslot in one call)\n");
++	printf(" -l: Specify time in milliseconds to wait after Clear-Dirty-Log\n"
++	       "     call. This allows to mimic use cases where flow is to get\n"
++	       "     dirty log followed by multiple clear dirty log calls and\n"
++	       "     sending corresponding memory to destination (in this test\n"
++	       "     sending will be just idle waiting)\n");
+ 	puts("");
+ 	exit(0);
+ }
+@@ -368,6 +375,7 @@ int main(int argc, char *argv[])
+ 		.random_seed = 1,
+ 		.write_percent = 100,
+ 		.clear_chunk_size = UINT64_MAX,
++		.clear_chunk_wait_time_ms = 0,
+ 	};
+ 	int opt;
+ 
+@@ -378,7 +386,7 @@ int main(int argc, char *argv[])
+ 
+ 	guest_modes_append_default();
+ 
+-	while ((opt = getopt(argc, argv, "ab:c:eghi:k:m:nop:r:s:v:x:w:")) != -1) {
++	while ((opt = getopt(argc, argv, "ab:c:eghi:k:l:m:nop:r:s:v:x:w:")) != -1) {
+ 		switch (opt) {
+ 		case 'a':
+ 			p.random_access = true;
+@@ -405,6 +413,11 @@ int main(int argc, char *argv[])
+ 		case 'k':
+ 			p.clear_chunk_size = parse_size(optarg);
+ 			break;
++		case 'l':
++			p.clear_chunk_wait_time_ms =
++					atoi_non_negative("Clear dirty log chunks wait time",
++							  optarg);
++			break;
+ 		case 'm':
+ 			guest_modes_cmdline(optarg);
+ 			break;
+diff --git a/tools/testing/selftests/kvm/include/memstress.h b/tools/testing/selftests/kvm/include/memstress.h
+index 2acc93f76fc3..01fdcea80360 100644
+--- a/tools/testing/selftests/kvm/include/memstress.h
++++ b/tools/testing/selftests/kvm/include/memstress.h
+@@ -78,12 +78,13 @@ void memstress_get_dirty_log(struct kvm_vm *vm, unsigned long *bitmaps[], int sl
+ void memstress_clear_dirty_log_in_chunks(struct kvm_vm *vm,
+ 					 unsigned long *bitmaps[], int slots,
+ 					 uint64_t pages_per_slot,
+-					 uint64_t pages_per_clear);
++					 uint64_t pages_per_clear,
++					 int wait_ms);
+ static inline void memstress_clear_dirty_log(struct kvm_vm *vm,
+ 					     unsigned long *bitmaps[], int slots,
+ 					     uint64_t pages_per_slot) {
+ 	memstress_clear_dirty_log_in_chunks(vm, bitmaps, slots, pages_per_slot,
+-					    pages_per_slot);
++					    pages_per_slot, 0);
+ }
+ unsigned long **memstress_alloc_bitmaps(int slots, uint64_t pages_per_slot);
+ void memstress_free_bitmaps(unsigned long *bitmaps[], int slots);
+diff --git a/tools/testing/selftests/kvm/lib/memstress.c b/tools/testing/selftests/kvm/lib/memstress.c
+index e0c701ab4e9a..483ecbc53a5b 100644
+--- a/tools/testing/selftests/kvm/lib/memstress.c
++++ b/tools/testing/selftests/kvm/lib/memstress.c
+@@ -358,10 +358,15 @@ void memstress_get_dirty_log(struct kvm_vm *vm, unsigned long *bitmaps[], int sl
+ void memstress_clear_dirty_log_in_chunks(struct kvm_vm *vm,
+ 					 unsigned long *bitmaps[], int slots,
+ 					 uint64_t pages_per_slot,
+-					 uint64_t pages_per_clear)
++					 uint64_t pages_per_clear,
++					 int wait_ms)
+ {
+ 	int i, slot;
+ 	uint64_t from, clear_pages_count;
++	struct timespec wait = {
++		.tv_sec = wait_ms / 1000,
++		.tv_nsec = (wait_ms % 1000) * 1000000ull,
++	};
+ 
+ 	for (i = 0; i < slots; i++) {
+ 		slot = MEMSTRESS_MEM_SLOT_INDEX + i;
+@@ -374,6 +379,9 @@ void memstress_clear_dirty_log_in_chunks(struct kvm_vm *vm,
+ 			kvm_vm_clear_dirty_log(vm, slot, bitmaps[i], from,
+ 					       clear_pages_count);
+ 			from += clear_pages_count;
++			if (wait_ms)
++				nanosleep(&wait, NULL);
++
+ 		}
+ 	}
+ 
+-- 
+2.40.0.634.g4ca3ef3211-goog
 
-Thanks,
-
-        tglx

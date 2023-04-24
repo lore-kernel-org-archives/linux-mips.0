@@ -2,143 +2,92 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 32F52C77B7F
-	for <linux-mips@archiver.kernel.org>; Mon, 24 Apr 2023 12:49:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D81BFC77B61
+	for <linux-mips@archiver.kernel.org>; Mon, 24 Apr 2023 16:45:59 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231668AbjDXMtm (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 24 Apr 2023 08:49:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45876 "EHLO
+        id S229625AbjDXQp7 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 24 Apr 2023 12:45:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58798 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230319AbjDXMtk (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Mon, 24 Apr 2023 08:49:40 -0400
-Received: from loongson.cn (mail.loongson.cn [114.242.206.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 999153C0F;
-        Mon, 24 Apr 2023 05:49:37 -0700 (PDT)
-Received: from loongson.cn (unknown [112.20.110.102])
-        by gateway (Coremail) with SMTP id _____8Bxb+vgekZkjAoAAA--.94S3;
-        Mon, 24 Apr 2023 20:49:36 +0800 (CST)
-Received: from localhost.localdomain (unknown [112.20.110.102])
-        by localhost.localdomain (Coremail) with SMTP id AQAAf8BxHLPdekZkMNA4AA--.11292S3;
-        Mon, 24 Apr 2023 20:49:35 +0800 (CST)
-From:   Binbin Zhou <zhoubinbin@loongson.cn>
-To:     Huacai Chen <chenhuacai@kernel.org>,
-        WANG Xuerui <kernel@xen0n.name>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
-Cc:     Jianmin Lv <lvjianmin@loongson.cn>,
-        Huacai Chen <chenhuacai@loongson.cn>,
-        linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
-        loongarch@lists.linux.dev, devicetree@vger.kernel.org,
-        loongson-kernel@lists.loongnix.cn,
-        Binbin Zhou <zhoubinbin@loongson.cn>
-Subject: [PATCH V4 1/2] dt-bindings: interrupt-controller: Add Loongson EIOINTC
-Date:   Mon, 24 Apr 2023 20:49:11 +0800
-Message-Id: <c45c402c1a524c89cbde6e1e42caaf04650ee480.1682328016.git.zhoubinbin@loongson.cn>
-X-Mailer: git-send-email 2.39.1
-In-Reply-To: <cover.1682328016.git.zhoubinbin@loongson.cn>
-References: <cover.1682328016.git.zhoubinbin@loongson.cn>
+        with ESMTP id S231580AbjDXQp5 (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Mon, 24 Apr 2023 12:45:57 -0400
+Received: from mail-yw1-x1132.google.com (mail-yw1-x1132.google.com [IPv6:2607:f8b0:4864:20::1132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2CA749DA
+        for <linux-mips@vger.kernel.org>; Mon, 24 Apr 2023 09:45:55 -0700 (PDT)
+Received: by mail-yw1-x1132.google.com with SMTP id 00721157ae682-54fb6ac1e44so54981227b3.1
+        for <linux-mips@vger.kernel.org>; Mon, 24 Apr 2023 09:45:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1682354755; x=1684946755;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=cogHEMsVVgTDAgj3gPVUEVuPljtJmFM5khAyIfbROPI=;
+        b=IBOU6rK79gND4DciwLkfyHJXLICK+nm1hfqmlYcnXaImIV8xf915qrkhfvrtFQ1bD9
+         8Z+ZDwfy6VoKjQweFXwu2Ekk2xB4sANXClY8YQV834aQDs+/FEV0pbYJdQjAAZN9rs34
+         f57BlCx+WuwQCSpj22oE82Xg3qgAyLXwOjmFBUce3BRWppaPMfsXHqc33YIYcz+3VNi4
+         XAZAp7pRNW06LclNSKJAgnoHgP+fH1wRI4+4eovVUts+kprnZi5lybCwL9Zgev3v81H7
+         MVICvn7IiG51PLSmT4j4PcXlaBgIbQc7j8zZ0ZG9H7yZWRSpCFId5KXjqGEfZQLGW0Na
+         Tk1g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1682354755; x=1684946755;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=cogHEMsVVgTDAgj3gPVUEVuPljtJmFM5khAyIfbROPI=;
+        b=HYyxEAmo1kAPqmwKzuGSTUzciYK4GFoTlQQ770Vp43GKB/Lvyotl08mJ1xR33EJ2N9
+         eADN1cI1ZjNfxqtdvzj9EtVGIbyAQ+2q4vLAkgOnkQHgeXYpFQjxsenvqft0iK/kIYzj
+         BrYnSyl8/yi7L2hDN5ZVZDtBRTTZkfIO38hQvyq2wm9A4mFEjRFY3ijJcpa2sq1ImKoj
+         PQNqj+mS3vecmmc0Me3bWSNmG3fbE//vh0YXGPqllzp3HVh88JMU96fDivgqI0NXxM2C
+         UR3UC6KYZAjSObrKH5qa5TCUUA6aTz3DmlFZzeyi4PXyNcjwjnLKC2BnlTuKfXBKE6CM
+         tFeg==
+X-Gm-Message-State: AAQBX9dctJd9Wx3AGXpGjk56HV9CmVtTZb9MM4R8o2wnXYQbpclD8+so
+        III7C+Fhk2VwV4V+GG04kW/SkE83UPs4o/m3t1A/3w==
+X-Google-Smtp-Source: AKy350bUMi1vCT3z4Q+q+kn/632Ww3gn+vAsPs+FHaqynFi9cqF64KYbnuQ/xodFFgeBsnoDvd5keBpYNYydhUX/nUI=
+X-Received: by 2002:a0d:ccd0:0:b0:541:8735:171e with SMTP id
+ o199-20020a0dccd0000000b005418735171emr9340453ywd.11.1682354754795; Mon, 24
+ Apr 2023 09:45:54 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: AQAAf8BxHLPdekZkMNA4AA--.11292S3
-X-CM-SenderInfo: p2kr3uplqex0o6or00hjvr0hdfq/
-X-Coremail-Antispam: 1Uk129KBjvJXoW7CFWrAF4UZF1DXw4UAFyftFb_yoW8Zw1fpF
-        W7CanxWF40qF13A39xKFy0kw15ZrZ8AwnrCws7A3yUtr9rKa4jqr4akF95J3W3Cr97Xa42
-        vFyF93W8KasrJaUanT9S1TB71UUUUjDqnTZGkaVYY2UrUUUUj1kv1TuYvTs0mT0YCTnIWj
-        qI5I8CrVACY4xI64kE6c02F40Ex7xfYxn0WfASr-VFAUDa7-sFnT9fnUUIcSsGvfJTRUUU
-        bSxYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I6I8E6xAIw20EY4v20xvaj40_Wr0E3s
-        1l1IIY67AEw4v_Jrv_JF1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xv
-        wVC0I7IYx2IY67AKxVW8JVW5JwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwA2z4
-        x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjcxK6I8E87Iv6xkF7I0E14v26r4UJVWxJr1l
-        n4kS14v26r126r1DM2AIxVAIcxkEcVAq07x20xvEncxIr21l57IF6xkI12xvs2x26I8E6x
-        ACxx1l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1q6rW5McIj6I8E
-        87Iv67AKxVW8JVWxJwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lc7CjxV
-        Aaw2AFwI0_JF0_Jw1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1l4IxY
-        O2xFxVAFwI0_JF0_Jw1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGV
-        WUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_
-        Gr0_Xr1lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rV
-        WUJVWUCwCI42IY6I8E87Iv67AKxVW8JVWxJwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4U
-        JbIYCTnIWIevJa73UjIFyTuYvjxU4Xo7DUUUU
+References: <20230421165305.804301-8-vipinsh@google.com> <202304220315.bpwbgH5n-lkp@intel.com>
+In-Reply-To: <202304220315.bpwbgH5n-lkp@intel.com>
+From:   Vipin Sharma <vipinsh@google.com>
+Date:   Mon, 24 Apr 2023 09:45:18 -0700
+Message-ID: <CAHVum0cp=wfDmuK87jq7+2t5FnK09v1LownwqgS41EisT4Gc1g@mail.gmail.com>
+Subject: Re: [PATCH 7/9] KVM: mmu: Move mmu lock/unlock to arch code for clear
+ dirty log
+To:     kernel test robot <lkp@intel.com>
+Cc:     maz@kernel.org, oliver.upton@linux.dev, james.morse@arm.com,
+        suzuki.poulose@arm.com, yuzenghui@huawei.com,
+        catalin.marinas@arm.com, will@kernel.org, chenhuacai@kernel.org,
+        aleksandar.qemu.devel@gmail.com, tsbogend@alpha.franken.de,
+        anup@brainfault.org, atishp@atishpatra.org,
+        paul.walmsley@sifive.com, palmer@dabbelt.com,
+        aou@eecs.berkeley.edu, seanjc@google.com, pbonzini@redhat.com,
+        dmatlack@google.com, ricarkol@google.com,
+        oe-kbuild-all@lists.linux.dev,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        linux-mips@vger.kernel.org, kvm-riscv@lists.infradead.org,
+        linux-riscv@lists.infradead.org, linux-kselftest@vger.kernel.org,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Add Loongson Extended I/O Interrupt controller binding with DT schema
-format using json-schema.
+On Fri, Apr 21, 2023 at 12:43=E2=80=AFPM kernel test robot <lkp@intel.com> =
+wrote:
+>
+> Hi Vipin,
+>
+> All warnings (new ones prefixed by >>):
+>
+>    arch/riscv/kvm/mmu.c: In function 'kvm_arch_mmu_enable_log_dirty_pt_ma=
+sked':
+> >> arch/riscv/kvm/mmu.c:399:9: warning: ISO C90 forbids mixed declaration=
+s and code [-Wdeclaration-after-statement]
+>      399 |         phys_addr_t base_gfn =3D slot->base_gfn + gfn_offset;
+>          |         ^~~~~~~~~~~
+>
+>
 
-Signed-off-by: Binbin Zhou <zhoubinbin@loongson.cn>
----
- .../loongson,eiointc.yaml                     | 59 +++++++++++++++++++
- 1 file changed, 59 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/interrupt-controller/loongson,eiointc.yaml
-
-diff --git a/Documentation/devicetree/bindings/interrupt-controller/loongson,eiointc.yaml b/Documentation/devicetree/bindings/interrupt-controller/loongson,eiointc.yaml
-new file mode 100644
-index 000000000000..393c128a41d8
---- /dev/null
-+++ b/Documentation/devicetree/bindings/interrupt-controller/loongson,eiointc.yaml
-@@ -0,0 +1,59 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/interrupt-controller/loongson,eiointc.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Loongson Extended I/O Interrupt Controller
-+
-+maintainers:
-+  - Binbin Zhou <zhoubinbin@loongson.cn>
-+
-+description: |
-+  This interrupt controller is found on the Loongson-3 family chips and
-+  Loongson-2K series chips and is used to distribute interrupts directly to
-+  individual cores without forwarding them through the HT's interrupt line.
-+
-+allOf:
-+  - $ref: /schemas/interrupt-controller.yaml#
-+
-+properties:
-+  compatible:
-+    enum:
-+      - loongson,ls2k0500-eiointc
-+      - loongson,ls2k2000-eiointc
-+
-+  reg:
-+    maxItems: 1
-+
-+  interrupts:
-+    maxItems: 1
-+
-+  interrupt-controller: true
-+
-+  '#interrupt-cells':
-+    const: 1
-+
-+required:
-+  - compatible
-+  - reg
-+  - interrupts
-+  - interrupt-controller
-+  - '#interrupt-cells'
-+
-+unevaluatedProperties: false
-+
-+examples:
-+  - |
-+    eiointc: interrupt-controller@1fe11600 {
-+      compatible = "loongson,ls2k0500-eiointc";
-+      reg = <0x1fe10000 0x10000>;
-+
-+      interrupt-controller;
-+      #interrupt-cells = <1>;
-+
-+      interrupt-parent = <&cpuintc>;
-+      interrupts = <3>;
-+    };
-+
-+...
--- 
-2.39.1
-
+I will fix it in v2.

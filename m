@@ -2,94 +2,140 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 04B0BC7618E
-	for <linux-mips@archiver.kernel.org>; Wed, 26 Apr 2023 17:32:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 08AC6C77B73
+	for <linux-mips@archiver.kernel.org>; Thu, 27 Apr 2023 03:16:42 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233428AbjDZRcH (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 26 Apr 2023 13:32:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56896 "EHLO
+        id S242671AbjD0DQl (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 26 Apr 2023 23:16:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48584 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231962AbjDZRcH (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 26 Apr 2023 13:32:07 -0400
-X-Greylist: delayed 596 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 26 Apr 2023 10:32:05 PDT
-Received: from out-20.mta1.migadu.com (out-20.mta1.migadu.com [IPv6:2001:41d0:203:375::14])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6C05122
-        for <linux-mips@vger.kernel.org>; Wed, 26 Apr 2023 10:32:05 -0700 (PDT)
-Date:   Wed, 26 Apr 2023 17:21:58 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1682529725;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=yLWhzFr0IaFOP7oGWZVxeoPyLpaGebSmTPqngfIpZG0=;
-        b=fX1xUvV2g81JM+0ABsdRcIjDsB/4E25/qjtfu0mosg0PvfMF9EHtEmDRZTz3iFWTYkK0dA
-        19FAfDwYGMolyePLVnuvhqZX1xWo1FbUgjHuNPt4/BF+tVLHSMDVjtXDd0o5kYB6/qHrji
-        BF94HvG+MfWGhmnvQOaFbIcWpIUF+yQ=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Oliver Upton <oliver.upton@linux.dev>
-To:     David Matlack <dmatlack@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Zenghui Yu <yuzenghui@huawei.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
-        Anup Patel <anup@brainfault.org>,
-        Atish Patra <atishp@atishpatra.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Janosch Frank <frankja@linux.ibm.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        David Hildenbrand <david@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Eric Farman <farman@linux.ibm.com>,
-        Philippe =?iso-8859-1?Q?Mathieu-Daud=E9?= <philmd@linaro.org>,
-        Sathvika Vasireddy <sv@linux.ibm.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        linux-mips@vger.kernel.org, kvm@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, kvm-riscv@lists.infradead.org,
-        linux-riscv@lists.infradead.org
-Subject: Re: [PATCH v2 0/4] KVM: Refactor KVM stats macros and enable custom
- stat names
-Message-ID: <ZEldtrUVBgmlrFOl@linux.dev>
-References: <20230306190156.434452-1-dmatlack@google.com>
+        with ESMTP id S232094AbjD0DQk (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 26 Apr 2023 23:16:40 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D95D635A6;
+        Wed, 26 Apr 2023 20:16:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+        Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+        bh=f57Zj/04myr3002sVqcVQkqmm+HfOyku1xoDDfbgmL0=; b=x7j9CudlY7a1euI+PbiS85v+KR
+        BRossHnSmCv4GPvBF5aCAXqSRVM31zSZyHrVcYHC82iVfUGEuyNK9Za2v0Hju1HxWyQEazDPe3bzC
+        7bvxRd9YHHMDTC85XvT+F494X1E8b9T+6JjOGuFhiYutabbx3TatB9vWgDslKV90qj9+yR+Vc/uJN
+        t6X5TMJYzqKvlwf9K6d2xLi0urE5mxhDXeJ2zNY6Eh2BXdHRvE4oWctbDR6Vz/6O91K75RWEWfCHR
+        eiDW3bM/tv9Bt0GxqEXmBCUHMBuefOJ0SLDjiEBw34U1sk3K4eoNDyn40Sfx/lGwbYJGMOLNGC4Ta
+        MsFj4dpg==;
+Received: from [2601:1c2:980:9ec0::2764]
+        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1prs7V-005L2i-0H;
+        Thu, 27 Apr 2023 03:16:33 +0000
+Message-ID: <17660b99-d68d-328e-5fe6-c011709fa3e4@infradead.org>
+Date:   Wed, 26 Apr 2023 20:16:29 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230306190156.434452-1-dmatlack@google.com>
-X-Migadu-Flow: FLOW_OUT
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.9.0
+Subject: Re: [PATCH] fix ___SYNC () build error when PROFILE_ALL_BRANCHES is
+ enabled
+Content-Language: en-US
+To:     genjian zhang <zhanggenjian123@gmail.com>,
+        tsbogend@alpha.franken.de
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Genjian Zhang <zhanggenjian@kylinos.cn>,
+        k2ci <kernel-bot@kylinos.cn>
+References: <20230426124948.1072216-1-zhanggenjian@kylinos.cn>
+ <CAOd03yQ98st7KvAkwfFqFvXGBdmWmOZZ-kWAH5DAi7gLd=ngaA@mail.gmail.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <CAOd03yQ98st7KvAkwfFqFvXGBdmWmOZZ-kWAH5DAi7gLd=ngaA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Mon, Mar 06, 2023 at 11:01:52AM -0800, David Matlack wrote:
-> This series refactors the KVM stats macros to reduce duplication and
-> adds the support for choosing custom names for stats.
-> 
-> Custom name makes it possible to decouple the userspace-visible stat
-> names from their internal representation in C. This can allow future
-> commits to refactor the various stats structs without impacting
-> userspace tools that read KVM stats.
-> 
-> This also allows stats to be stored in data structures such as arrays,
-> without needing unions to access specific stats. Case in point, the last
-> patch in this series removes the pages_{4k,2m,1g} union, which is a
-> useful cleanup to prepare for sharing paging code across architectures
-> [1].
-> 
-> And for full transparency, another motivation for this series it that at
-> Google we have several out-of-tree stats that use arrays. Custom name
-> support is something we added internally and it reduces our technical
-> debt to get the support merged upstream.
+Hi--
 
-For the series:
+> 
+> Maybe the readability of this modification is not very good. Any
+> comments and suggestions are welcome. Thanks.
 
-Reviewed-by: Oliver Upton <oliver.upton@linux.dev>
+Some of the patch description could use some cleaning up,
+then I have a question.
 
+
+On 4/26/23 06:02, genjian zhang wrote:
+> On Wed, Apr 26, 2023 at 8:51 PM Genjian <zhanggenjian123@gmail.com> wrote:
+>>
+>> From: Genjian Zhang <zhanggenjian@kylinos.cn>
+>>
+>> compiler error (mips-linux-gnu-gcc (Debian 10.2.1-6) 10.2.1 20210110):
+>>
+>> {standard input}: Assembler messages:
+>> {standard input}:171: Error: found '(', expected: ')'
+>> {standard input}:171: Error: found '(', expected: ')'
+>> {standard input}:171: Error: non-constant expression in ".if" statement
+>> {standard input}:171: Error: junk at end of line, first unrecognized
+>> character is `('
+>>
+>> Preprocessor expand ___SYNC () macros.However,'if' will be wrongly
+
+                expands ___SYNC() macros. However, 'if' will be wrongly
+
+>> replaced by C code when PROFILE_ALL_BRANCHES is enabled and ___SYNC
+>> is used in inline assembly.This leads to syntax errors in the code.
+
+                     assembly. This
+
+>> Compilers report a lot of errors like the above.
+>> Move '.if' into quoted strings to fix it.
+>>
+>> Reported-by: k2ci <kernel-bot@kylinos.cn>
+>> Signed-off-by: Genjian Zhang <zhanggenjian@kylinos.cn>
+>> ---
+>>  arch/mips/include/asm/sync.h | 8 +++++---
+>>  1 file changed, 5 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/arch/mips/include/asm/sync.h b/arch/mips/include/asm/sync.h
+>> index aabd097933fe..d9f5a87424e7 100644
+>> --- a/arch/mips/include/asm/sync.h
+>> +++ b/arch/mips/include/asm/sync.h
+>> @@ -175,7 +175,7 @@
+>>   */
+>>  #ifdef CONFIG_CPU_HAS_SYNC
+>>  # define ____SYNC(_type, _reason, _else)                       \
+>> -       .if     (( _type ) != -1) && ( _reason );               \
+>> +       ((_type) != -1) && (_reason);                           \
+>>         .set    push;                                           \
+>>         .set    MIPS_ISA_LEVEL_RAW;                             \
+>>         .rept   __SYNC_rpt(_type);                              \
+>> @@ -192,13 +192,15 @@
+>>  /*
+>>   * Preprocessor magic to expand macros used as arguments before we insert them
+>>   * into assembly code.
+>> + * In addition,‘if’ can not be substituted when CONFIG_PROFILE_ALL_BRANCHES is
+
+     * In addition, 'if' cannot be
+
+>> + * enabled.
+>>   */
+>>  #ifdef __ASSEMBLY__
+>>  # define ___SYNC(type, reason, else)                           \
+>> -       ____SYNC(type, reason, else)
+>> +       .if     ____SYNC(type, reason, else)
+>>  #else
+>>  # define ___SYNC(type, reason, else)                           \
+>> -       __stringify(____SYNC(type, reason, else))
+>> +       ".if"   __stringify(____SYNC(type, reason, else))
+>>  #endif
+>>
+>>  #define __SYNC(type, reason)                                   \
+>> --
+>> 2.25.1
+
+
+Is this problem that you are fixing being aggravated (caused) by
+the #define of if() in include/linux/compiler.h when CONFIG_PROFILE_ALL_BRANCHES
+is set?  I suspect that it is.
+It wouldn't hurt to mention that (if I am correct).
+
+Thanks.
 -- 
-Thanks,
-Oliver
+~Randy

@@ -2,34 +2,36 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 29D45C7EE2A
-	for <linux-mips@archiver.kernel.org>; Thu,  4 May 2023 19:02:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7D0B0C7EE2E
+	for <linux-mips@archiver.kernel.org>; Thu,  4 May 2023 19:02:06 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229872AbjEDTCE (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 4 May 2023 15:02:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49952 "EHLO
+        id S229719AbjEDTCF (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 4 May 2023 15:02:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49962 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229714AbjEDTCC (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Thu, 4 May 2023 15:02:02 -0400
+        with ESMTP id S229947AbjEDTCE (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Thu, 4 May 2023 15:02:04 -0400
 Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BC424C07;
-        Thu,  4 May 2023 12:02:01 -0700 (PDT)
-Message-ID: <20230504185733.126511787@linutronix.de>
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B18EE4C07;
+        Thu,  4 May 2023 12:02:03 -0700 (PDT)
+Message-ID: <20230504185936.424138296@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1683226919;
+        s=2020; t=1683226922;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc; bh=Owpn3VAzXYYF5pE4nW59O5YtNe6oATS3CJHH6pOEc+Q=;
-        b=ydWEHvQKju6ua5QrgIvoNFizD1mp/ScmeGKoSzoDnG7Bbtt8/QnpnQ3+taJ6G0kL830h+i
-        7ID/utgQdKCvUYsl6w6CO2W2gJuO8HL9LCU4D0vVfB6YxemlrHUeCt4ToRjPCaRBB5yHoD
-        U1z1RXcQdP2U5KMvTNzHXSugPczS5MTUtGDtT8qHk2Yf+N4IEi6AoiUHeLjn63zurjgLOd
-        4VlOYXYRkaR1ek5ywemLfh9oakl4kmjQRYWBDRl/UvRYBt4y2JOaZBadJTEhsdykMmsR/p
-        RzfI1eYCgw7RPP+JveXpGF8/O3jsZY1WVFPEdOuBnlsQhWH5/KilpYnEwkhH7g==
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         references:references; bh=waVaB+iOXpEeeQbnpvRruizzYbSaWW2RRSBQj1T/hXA=;
+        b=fL/KXBGwhDgZ0aNNihOGlOrNlSV1oXSPmnek3reTOPzGU26K9/7I6++pxRi1WwqUlxPjOt
+        5Tyij4lipwiE5wx00Ug/OlbZuQGzLQ5bz0yPSCT5LRqx0FtA/i9SOYFEBjjKXXhsEYmcX0
+        Syt5stMGuEr0o0+HSblbMnvWZeQN7TaTrhA7dHR9yfdBmu3FPAPBUqggwPcIQGD3m48Bt5
+        zOf6iElxOZzofzp19LMFZlMc7WEm/MIBFclvIFumjzIiZLJwDWozF9bZ+XBECVGvq7VpEs
+        oWtzcnhMZlsuZosoXBPM96pPurYq5mz+wcdyir0ZGlT+xHDklreyFq9FgGAJog==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1683226919;
+        s=2020e; t=1683226922;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc; bh=Owpn3VAzXYYF5pE4nW59O5YtNe6oATS3CJHH6pOEc+Q=;
-        b=t9YK5Y1XQbyMkzjkBl9J4dD0O18uiVWSVJxE2v987VhpllLfPD1+SKL0rJE7GDXI8icRF3
-        WCaTcXYHj80XrzAw==
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         references:references; bh=waVaB+iOXpEeeQbnpvRruizzYbSaWW2RRSBQj1T/hXA=;
+        b=FgatqUwh+JsOxmHUn9Bvq7DTwB3Lr8g2wziGsZ2rOwgPZthkB6nTAdx3egi9uzi5HZxDkx
+        9oTTBrbEEnqsEmDw==
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     x86@kernel.org, David Woodhouse <dwmw2@infradead.org>,
@@ -64,160 +66,62 @@ Cc:     x86@kernel.org, David Woodhouse <dwmw2@infradead.org>,
         Mark Rutland <mark.rutland@arm.com>,
         Sabin Rapan <sabrapan@amazon.com>,
         "Michael Kelley (LINUX)" <mikelley@microsoft.com>
-Subject: [patch V2 00/38] cpu/hotplug, x86: Reworked parallel CPU bringup
-Date:   Thu,  4 May 2023 21:01:58 +0200 (CEST)
+Subject: [patch V2 02/38] cpu/hotplug: Mark arch_disable_smp_support() and
+ bringup_nonboot_cpus() __init
+References: <20230504185733.126511787@linutronix.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Date:   Thu,  4 May 2023 21:02:01 +0200 (CEST)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Hi!
+From: Thomas Gleixner <tglx@linutronix.de>
 
-This is version 2 of the reworked parallel bringup series. Version 1 can be
-found here:
+No point in keeping them around.
 
-   https://lore.kernel.org/lkml/20230414225551.858160935@linutronix.de
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 
-Background
-----------
-
-The reason why people are interested in parallel bringup is to shorten the
-(kexec) reboot time of cloud servers to reduce the downtime of the VM
-tenants.
-
-The current fully serialized bringup does the following per AP:
-
-    1) Prepare callbacks (allocate, intialize, create threads)
-    2) Kick the AP alive (e.g. INIT/SIPI on x86)
-    3) Wait for the AP to report alive state
-    4) Let the AP continue through the atomic bringup
-    5) Let the AP run the threaded bringup to full online state
-
-There are two significant delays:
-
-    #3 The time for an AP to report alive state in start_secondary() on x86
-       has been measured in the range between 350us and 3.5ms depending on
-       vendor and CPU type, BIOS microcode size etc.
-
-    #4 The atomic bringup does the microcode update. This has been measured
-       to take up to ~8ms on the primary threads depending on the microcode
-       patch size to apply.
-
-On a two socket SKL server with 56 cores (112 threads) the boot CPU spends
-on current mainline about 800ms busy waiting for the APs to come up and
-apply microcode. That's more than 80% of the actual onlining procedure.
-
-By splitting the actual bringup mechanism into two parts this can be
-reduced to waiting for the first AP to report alive or if the system is
-large enough the first AP is already waiting when the boot CPU finished the
-wake-up of the last AP. That reduces the AP bringup time on that SKL from
-~800ms to ~80ms.
-
-The actual gain varies wildly depending on the system, CPU, microcode patch
-size and other factors.
-
-The V1 cover letter has more details and a deep analysis.
-
-Changes vs. V1:
-
-  1) Switch APIC ID retrieval from CPUID to reading the APIC itself.
-
-     This is required because CPUID based APIC ID retrieval can only
-     provide the initial APIC ID, which might have been overruled by the
-     firmware. Some AMD APUs come up with APIC ID = initial APIC ID + 0x10,
-     so the APIC ID to CPU number lookup would fail miserably if based on
-     CPUID. The only requirement is that the actual APIC IDs are consistent
-     with the APCI/MADT table.
-
-  2) As a consequence of #1 parallel bootup support for SEV guest has been
-     dropped.
-
-     Reading the APIC ID in a SEV guest is done via RDMSR. That RDMSR is
-     intercepted and raises #VC which cannot be handled at that point as
-     there is no stack and no IDT. There is no GHCB protocol for RDMSR
-     like there is for CPUID. Left as an exercise for SEV wizards.
-
-  3) Address review comments from Brian and the fallout reported by the
-     kernel robot
-
-  4) Unbreak i386 which exploded when bringing up the secondary CPUs due to
-     the unconditinal load_ucode_ap() invocation in start_secondary(). That
-     happens because on 32-bit load_ucode_ap() is invoked on the secondary
-     CPUs from assembly code before paging is initialized and therefore
-     uses physical addresses which are obviously invalid after paging is
-     enabled.
-
-  5) Small enhancements and comment updates.
-
-  6) Rebased on Linux tree (1a5304fecee5)
-
-The series applies on Linus tree and is also available from git:
-
-    git://git.kernel.org/pub/scm/linux/kernel/git/tglx/devel.git hotplug
-
-Thanks,
-
-	tglx
 ---
- Documentation/admin-guide/kernel-parameters.txt |   20 
- Documentation/core-api/cpu_hotplug.rst          |   13 
- arch/Kconfig                                    |   23 +
- arch/arm/Kconfig                                |    1 
- arch/arm/include/asm/smp.h                      |    2 
- arch/arm/kernel/smp.c                           |   18 
- arch/arm64/Kconfig                              |    1 
- arch/arm64/include/asm/smp.h                    |    2 
- arch/arm64/kernel/smp.c                         |   14 
- arch/csky/Kconfig                               |    1 
- arch/csky/include/asm/smp.h                     |    2 
- arch/csky/kernel/smp.c                          |    8 
- arch/mips/Kconfig                               |    1 
- arch/mips/cavium-octeon/smp.c                   |    1 
- arch/mips/include/asm/smp-ops.h                 |    1 
- arch/mips/kernel/smp-bmips.c                    |    1 
- arch/mips/kernel/smp-cps.c                      |   14 
- arch/mips/kernel/smp.c                          |    8 
- arch/mips/loongson64/smp.c                      |    1 
- arch/parisc/Kconfig                             |    1 
- arch/parisc/kernel/process.c                    |    4 
- arch/parisc/kernel/smp.c                        |    7 
- arch/riscv/Kconfig                              |    1 
- arch/riscv/include/asm/smp.h                    |    2 
- arch/riscv/kernel/cpu-hotplug.c                 |   14 
- arch/x86/Kconfig                                |   45 --
- arch/x86/include/asm/apic.h                     |    5 
- arch/x86/include/asm/apicdef.h                  |    5 
- arch/x86/include/asm/cpu.h                      |    5 
- arch/x86/include/asm/cpumask.h                  |    5 
- arch/x86/include/asm/processor.h                |    1 
- arch/x86/include/asm/realmode.h                 |    3 
- arch/x86/include/asm/smp.h                      |   24 -
- arch/x86/include/asm/topology.h                 |   23 -
- arch/x86/include/asm/tsc.h                      |    2 
- arch/x86/kernel/acpi/sleep.c                    |    9 
- arch/x86/kernel/apic/apic.c                     |   26 -
- arch/x86/kernel/callthunks.c                    |    4 
- arch/x86/kernel/cpu/amd.c                       |    2 
- arch/x86/kernel/cpu/cacheinfo.c                 |   21 
- arch/x86/kernel/cpu/common.c                    |   50 --
- arch/x86/kernel/cpu/topology.c                  |    3 
- arch/x86/kernel/head_32.S                       |   14 
- arch/x86/kernel/head_64.S                       |   87 +++
- arch/x86/kernel/sev.c                           |    2 
- arch/x86/kernel/smp.c                           |    3 
- arch/x86/kernel/smpboot.c                       |  526 ++++++++----------------
- arch/x86/kernel/topology.c                      |   98 ----
- arch/x86/kernel/tsc.c                           |   20 
- arch/x86/kernel/tsc_sync.c                      |   36 -
- arch/x86/power/cpu.c                            |   37 -
- arch/x86/realmode/init.c                        |    3 
- arch/x86/realmode/rm/trampoline_64.S            |   27 +
- arch/x86/xen/enlighten_hvm.c                    |   11 
- arch/x86/xen/smp_hvm.c                          |   16 
- arch/x86/xen/smp_pv.c                           |   56 +-
- drivers/acpi/processor_idle.c                   |    4 
- include/linux/cpu.h                             |    4 
- include/linux/cpuhotplug.h                      |   17 
- kernel/cpu.c                                    |  396 +++++++++++++++++-
- kernel/smp.c                                    |    2 
- kernel/smpboot.c                                |  163 -------
- 62 files changed, 934 insertions(+), 982 deletions(-)
+ arch/x86/kernel/smpboot.c |    4 ++--
+ kernel/cpu.c              |    2 +-
+ kernel/smp.c              |    2 +-
+ 3 files changed, 4 insertions(+), 4 deletions(-)
+---
+--- a/arch/x86/kernel/smpboot.c
++++ b/arch/x86/kernel/smpboot.c
+@@ -1269,9 +1269,9 @@ int native_cpu_up(unsigned int cpu, stru
+ }
+ 
+ /**
+- * arch_disable_smp_support() - disables SMP support for x86 at runtime
++ * arch_disable_smp_support() - Disables SMP support for x86 at boottime
+  */
+-void arch_disable_smp_support(void)
++void __init arch_disable_smp_support(void)
+ {
+ 	disable_ioapic_support();
+ }
+--- a/kernel/cpu.c
++++ b/kernel/cpu.c
+@@ -1502,7 +1502,7 @@ int bringup_hibernate_cpu(unsigned int s
+ 	return 0;
+ }
+ 
+-void bringup_nonboot_cpus(unsigned int setup_max_cpus)
++void __init bringup_nonboot_cpus(unsigned int setup_max_cpus)
+ {
+ 	unsigned int cpu;
+ 
+--- a/kernel/smp.c
++++ b/kernel/smp.c
+@@ -892,7 +892,7 @@ EXPORT_SYMBOL(setup_max_cpus);
+  * SMP mode to <NUM>.
+  */
+ 
+-void __weak arch_disable_smp_support(void) { }
++void __weak __init arch_disable_smp_support(void) { }
+ 
+ static int __init nosmp(char *str)
+ {
+

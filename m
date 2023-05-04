@@ -2,36 +2,36 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 38A10C7EE29
-	for <linux-mips@archiver.kernel.org>; Thu,  4 May 2023 19:05:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7B345C7EE29
+	for <linux-mips@archiver.kernel.org>; Thu,  4 May 2023 19:05:44 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230270AbjEDTFH (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 4 May 2023 15:05:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51538 "EHLO
+        id S230421AbjEDTFm (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 4 May 2023 15:05:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51500 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230302AbjEDTED (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Thu, 4 May 2023 15:04:03 -0400
+        with ESMTP id S230430AbjEDTE7 (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Thu, 4 May 2023 15:04:59 -0400
 Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4B939EFF;
-        Thu,  4 May 2023 12:03:11 -0700 (PDT)
-Message-ID: <20230504185937.584277566@linutronix.de>
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C707A24C;
+        Thu,  4 May 2023 12:03:32 -0700 (PDT)
+Message-ID: <20230504185937.806324260@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1683226956;
+        s=2020; t=1683226962;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         references:references; bh=wTNocxrIkrZERW1CgHrOxDfBd1NuTsgJS4AJ8mYPyyQ=;
-        b=Mi46V8eHgoltNQxPJmnbu9i1N0WqNbjlBS5gXzUQdYuzDGSlRAwFIn42Fl4qTDQ9tpMOpi
-        9pMD9eqFIhnqecwmKQOcPdssVAfxr98Ufnj8kPfEnna6Jg1FJPiFDXjB5qyYPeKOEBzagH
-        d9bGKI26ZnIO1dmzo62pzKDwF621ZdxsTsNqH8faar1/6RQwLMfz9EzVFpDrERESz08UzT
-        RKiX6TWVgbEvDpDMLz5ptMwZldZAxWrvz613h9Whj+rnlmmRseJTa9scp2XVHyZRgXYYx9
-        W9B8x3jWUGKujnEYbsdrx7KzjQ+swT2YMyT9UZUBAmo9KzwEdkHLM2GZWs0XOQ==
+         references:references; bh=PIHn3pYsUJ8IshGaa3kU/Fr0bIJzVI5udpOrlPrYz+E=;
+        b=QNGmIIt+/To56nrNKLo3wlp/uoA0S+O2aHLtwODYUDkrU8Guyvv03S4Uol8KKlrIgPdDLI
+        qPjhMQNUAIZdRs2om4WUPJMT1jXnWhngn8GF42pSedv+mPXqPDg6dporcNAvFdzUw+egQ+
+        Vqg53SlSVRiuRBZMIzV5FPs2l5GIv84C01a0Qxu+Mq65QbnphJFA5Ir3subA78ZM6E8kf2
+        ZWThMRZ9iqmdUJfsdKFtkK4qDI92/cMPImPqXf9PZUVb/qwqechT+XgrR1ZcB+r0K7YQf/
+        HeZhI+W/xkNZVJpDF4ppx/B//2tg7mVNz3rodO8pj9sfyrrX+kNXbJXXhJW8oA==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1683226956;
+        s=2020e; t=1683226962;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         references:references; bh=wTNocxrIkrZERW1CgHrOxDfBd1NuTsgJS4AJ8mYPyyQ=;
-        b=4wN87waBqOWq8wTSM62nHwIaB3nHKF5Odvy83jhqjVG4mxeKOSh6qxwJk2zaru4HlpMduu
-        ieIS3XjNdw5x/MBw==
+         references:references; bh=PIHn3pYsUJ8IshGaa3kU/Fr0bIJzVI5udpOrlPrYz+E=;
+        b=wXxqyLYYRXuQOss/+ZoLBYE+oLaf2tb90zR4AxAwAajqpA22CmYoLXhycZjVGB2N2Jkdnq
+        PQRh0paL0Sj8j3Bw==
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     x86@kernel.org, David Woodhouse <dwmw2@infradead.org>,
@@ -66,74 +66,116 @@ Cc:     x86@kernel.org, David Woodhouse <dwmw2@infradead.org>,
         Mark Rutland <mark.rutland@arm.com>,
         Sabin Rapan <sabrapan@amazon.com>,
         "Michael Kelley (LINUX)" <mikelley@microsoft.com>
-Subject: [patch V2 23/38] csky/smp: Switch to hotplug core state synchronization
+Subject: [patch V2 27/38] cpu/hotplug: Remove unused state functions
 References: <20230504185733.126511787@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-Date:   Thu,  4 May 2023 21:02:35 +0200 (CEST)
+Date:   Thu,  4 May 2023 21:02:42 +0200 (CEST)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
 From: Thomas Gleixner <tglx@linutronix.de>
 
-Switch to the CPU hotplug core state tracking and synchronization
-mechanim. No functional change intended.
+All users converted to the hotplug core mechanism.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Cc: Guo Ren <guoren@kernel.org>
-Cc: linux-csky@vger.kernel.org
 
 ---
- arch/csky/Kconfig           |    1 +
- arch/csky/include/asm/smp.h |    2 +-
- arch/csky/kernel/smp.c      |    8 ++------
- 3 files changed, 4 insertions(+), 7 deletions(-)
+ include/linux/cpu.h |    2 -
+ kernel/smpboot.c    |   75 ----------------------------------------------------
+ 2 files changed, 77 deletions(-)
 ---
---- a/arch/csky/Kconfig
-+++ b/arch/csky/Kconfig
-@@ -96,6 +96,7 @@ config CSKY
- 	select HAVE_REGS_AND_STACK_ACCESS_API
- 	select HAVE_STACKPROTECTOR
- 	select HAVE_SYSCALL_TRACEPOINTS
-+	select HOTPLUG_CORE_SYNC_DEAD if HOTPLUG_CPU
- 	select MAY_HAVE_SPARSE_IRQ
- 	select MODULES_USE_ELF_RELA if MODULES
- 	select OF
---- a/arch/csky/include/asm/smp.h
-+++ b/arch/csky/include/asm/smp.h
-@@ -23,7 +23,7 @@ void __init set_send_ipi(void (*func)(co
- 
- int __cpu_disable(void);
- 
--void __cpu_die(unsigned int cpu);
-+static inline void __cpu_die(unsigned int cpu) { }
- 
- #endif /* CONFIG_SMP */
- 
---- a/arch/csky/kernel/smp.c
-+++ b/arch/csky/kernel/smp.c
-@@ -291,12 +291,8 @@ int __cpu_disable(void)
- 	return 0;
+--- a/include/linux/cpu.h
++++ b/include/linux/cpu.h
+@@ -193,8 +193,6 @@ static inline void play_idle(unsigned lo
  }
  
--void __cpu_die(unsigned int cpu)
-+void arch_cpuhp_cleanup_dead_cpu(unsigned int cpu)
- {
--	if (!cpu_wait_death(cpu, 5)) {
--		pr_crit("CPU%u: shutdown failed\n", cpu);
--		return;
+ #ifdef CONFIG_HOTPLUG_CPU
+-bool cpu_wait_death(unsigned int cpu, int seconds);
+-bool cpu_report_death(void);
+ void cpuhp_report_idle_dead(void);
+ #else
+ static inline void cpuhp_report_idle_dead(void) { }
+--- a/kernel/smpboot.c
++++ b/kernel/smpboot.c
+@@ -325,78 +325,3 @@ void smpboot_unregister_percpu_thread(st
+ 	cpus_read_unlock();
+ }
+ EXPORT_SYMBOL_GPL(smpboot_unregister_percpu_thread);
+-
+-#ifndef CONFIG_HOTPLUG_CORE_SYNC
+-static DEFINE_PER_CPU(atomic_t, cpu_hotplug_state) = ATOMIC_INIT(CPU_POST_DEAD);
+-
+-#ifdef CONFIG_HOTPLUG_CPU
+-/*
+- * Wait for the specified CPU to exit the idle loop and die.
+- */
+-bool cpu_wait_death(unsigned int cpu, int seconds)
+-{
+-	int jf_left = seconds * HZ;
+-	int oldstate;
+-	bool ret = true;
+-	int sleep_jf = 1;
+-
+-	might_sleep();
+-
+-	/* The outgoing CPU will normally get done quite quickly. */
+-	if (atomic_read(&per_cpu(cpu_hotplug_state, cpu)) == CPU_DEAD)
+-		goto update_state_early;
+-	udelay(5);
+-
+-	/* But if the outgoing CPU dawdles, wait increasingly long times. */
+-	while (atomic_read(&per_cpu(cpu_hotplug_state, cpu)) != CPU_DEAD) {
+-		schedule_timeout_uninterruptible(sleep_jf);
+-		jf_left -= sleep_jf;
+-		if (jf_left <= 0)
+-			break;
+-		sleep_jf = DIV_ROUND_UP(sleep_jf * 11, 10);
 -	}
- 	pr_notice("CPU%u: shutdown\n", cpu);
- }
- 
-@@ -304,7 +300,7 @@ void __noreturn arch_cpu_idle_dead(void)
- {
- 	idle_task_exit();
- 
--	cpu_report_death();
-+	cpuhp_ap_report_dead();
- 
- 	while (!secondary_stack)
- 		arch_cpu_idle();
+-update_state_early:
+-	oldstate = atomic_read(&per_cpu(cpu_hotplug_state, cpu));
+-update_state:
+-	if (oldstate == CPU_DEAD) {
+-		/* Outgoing CPU died normally, update state. */
+-		smp_mb(); /* atomic_read() before update. */
+-		atomic_set(&per_cpu(cpu_hotplug_state, cpu), CPU_POST_DEAD);
+-	} else {
+-		/* Outgoing CPU still hasn't died, set state accordingly. */
+-		if (!atomic_try_cmpxchg(&per_cpu(cpu_hotplug_state, cpu),
+-					&oldstate, CPU_BROKEN))
+-			goto update_state;
+-		ret = false;
+-	}
+-	return ret;
+-}
+-
+-/*
+- * Called by the outgoing CPU to report its successful death.  Return
+- * false if this report follows the surviving CPU's timing out.
+- *
+- * A separate "CPU_DEAD_FROZEN" is used when the surviving CPU
+- * timed out.  This approach allows architectures to omit calls to
+- * cpu_check_up_prepare() and cpu_set_state_online() without defeating
+- * the next cpu_wait_death()'s polling loop.
+- */
+-bool cpu_report_death(void)
+-{
+-	int oldstate;
+-	int newstate;
+-	int cpu = smp_processor_id();
+-
+-	oldstate = atomic_read(&per_cpu(cpu_hotplug_state, cpu));
+-	do {
+-		if (oldstate != CPU_BROKEN)
+-			newstate = CPU_DEAD;
+-		else
+-			newstate = CPU_DEAD_FROZEN;
+-	} while (!atomic_try_cmpxchg(&per_cpu(cpu_hotplug_state, cpu),
+-				     &oldstate, newstate));
+-	return newstate == CPU_DEAD;
+-}
+-
+-#endif /* #ifdef CONFIG_HOTPLUG_CPU */
+-#endif /* !CONFIG_HOTPLUG_CORE_SYNC */
 

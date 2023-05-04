@@ -2,36 +2,36 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 52027C7EE2A
-	for <linux-mips@archiver.kernel.org>; Thu,  4 May 2023 19:05:06 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 38A10C7EE29
+	for <linux-mips@archiver.kernel.org>; Thu,  4 May 2023 19:05:09 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230257AbjEDTFD (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 4 May 2023 15:05:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50880 "EHLO
+        id S230270AbjEDTFH (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 4 May 2023 15:05:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51538 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230297AbjEDTEB (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Thu, 4 May 2023 15:04:01 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EDD29EF4;
-        Thu,  4 May 2023 12:03:08 -0700 (PDT)
-Message-ID: <20230504185938.339811042@linutronix.de>
+        with ESMTP id S230302AbjEDTED (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Thu, 4 May 2023 15:04:03 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4B939EFF;
+        Thu,  4 May 2023 12:03:11 -0700 (PDT)
+Message-ID: <20230504185937.584277566@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1683226979;
+        s=2020; t=1683226956;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         references:references; bh=upC4xkPPrMs610atpDkPLXATkmq4wC3sFnO5m7xr5Mk=;
-        b=tYQKH5LD4/bbax8XIkS2IfxvQW+jtTqnFhM0UC2BJL7JwyxQQk35fQ4DnIpjghBefCJsm7
-        P+1s/BcE7c8Le2JQCtdXTEVe77jYdm91mOAH1a7Pas6H2yZPwUeewlGe6jf98m0L1QOOdl
-        l8SUUcJVumcQ3CYnqLcAdr8T4FJi3NtquA7LjD1muU3H85kQUn83bT5W0gtnGSZT7Vo9+s
-        0EfEAbAL4lNPVIulxXJipEHdvdzaxlrN/rqc9fO2zc1ZFMWBa/L5rQJPYodzEY71Kx3u7w
-        1lIeT8YLpfIQhOcV4McTONWEkRR3daf5G8z27enuu98B/SK5Mo0nAa86XKEJqA==
+         references:references; bh=wTNocxrIkrZERW1CgHrOxDfBd1NuTsgJS4AJ8mYPyyQ=;
+        b=Mi46V8eHgoltNQxPJmnbu9i1N0WqNbjlBS5gXzUQdYuzDGSlRAwFIn42Fl4qTDQ9tpMOpi
+        9pMD9eqFIhnqecwmKQOcPdssVAfxr98Ufnj8kPfEnna6Jg1FJPiFDXjB5qyYPeKOEBzagH
+        d9bGKI26ZnIO1dmzo62pzKDwF621ZdxsTsNqH8faar1/6RQwLMfz9EzVFpDrERESz08UzT
+        RKiX6TWVgbEvDpDMLz5ptMwZldZAxWrvz613h9Whj+rnlmmRseJTa9scp2XVHyZRgXYYx9
+        W9B8x3jWUGKujnEYbsdrx7KzjQ+swT2YMyT9UZUBAmo9KzwEdkHLM2GZWs0XOQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1683226979;
+        s=2020e; t=1683226956;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         references:references; bh=upC4xkPPrMs610atpDkPLXATkmq4wC3sFnO5m7xr5Mk=;
-        b=KFQyiHdPzE8IY2FhvYi2d28BxvSxl7bssB/iRxDq20Peb65/yNDsIpOVSz0WpIiOobDIBb
-        Wudxsc+Jf6JAYLCw==
+         references:references; bh=wTNocxrIkrZERW1CgHrOxDfBd1NuTsgJS4AJ8mYPyyQ=;
+        b=4wN87waBqOWq8wTSM62nHwIaB3nHKF5Odvy83jhqjVG4mxeKOSh6qxwJk2zaru4HlpMduu
+        ieIS3XjNdw5x/MBw==
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     x86@kernel.org, David Woodhouse <dwmw2@infradead.org>,
@@ -65,247 +65,75 @@ Cc:     x86@kernel.org, David Woodhouse <dwmw2@infradead.org>,
         linux-riscv@lists.infradead.org,
         Mark Rutland <mark.rutland@arm.com>,
         Sabin Rapan <sabrapan@amazon.com>,
-        "Michael Kelley (LINUX)" <mikelley@microsoft.com>,
-        David Woodhouse <dwmw@amazon.co.uk>
-Subject: [patch V2 37/38] x86/smpboot: Support parallel startup of secondary CPUs
+        "Michael Kelley (LINUX)" <mikelley@microsoft.com>
+Subject: [patch V2 23/38] csky/smp: Switch to hotplug core state synchronization
 References: <20230504185733.126511787@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-Date:   Thu,  4 May 2023 21:02:58 +0200 (CEST)
+Date:   Thu,  4 May 2023 21:02:35 +0200 (CEST)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-From: David Woodhouse <dwmw@amazon.co.uk>
+From: Thomas Gleixner <tglx@linutronix.de>
 
-In parallel startup mode the APs are kicked alive by the control CPU
-quickly after each other and run through the early startup code in
-parallel. The real-mode startup code is already serialized with a
-bit-spinlock to protect the real-mode stack.
+Switch to the CPU hotplug core state tracking and synchronization
+mechanim. No functional change intended.
 
-In parallel startup mode the smpboot_control variable obviously cannot
-contain the Linux CPU number so the APs have to determine their Linux CPU
-number on their own. This is required to find the CPUs per CPU offset in
-order to find the idle task stack and other per CPU data.
-
-To achieve this, export the cpuid_to_apicid[] array so that each AP can
-find its own CPU number by searching therein based on its APIC ID.
-
-Introduce a flag in the top bits of smpboot_control which indicates that
-the AP should find its CPU number by reading the APIC ID from the APIC.
-
-This is required because CPUID based APIC ID retrieval can only provide the
-initial APIC ID, which might have been overruled by the firmware. Some AMD
-APUs come up with APIC ID = initial APIC ID + 0x10, so the APIC ID to CPU
-number lookup would fail miserably if based on CPUID. Also virtualization
-can make its own APIC ID assignements. The only requirement is that the
-APIC IDs are consistent with the APCI/MADT table.
-
-For the boot CPU or in case parallel bringup is disabled the control bits
-are empty and the CPU number is directly available in bit 0-23 of
-smpboot_control.
-
-[ tglx: Initial proof of concept patch with bitlock and APIC ID lookup ]
-[ dwmw2: Rework and testing, commit message, CPUID 0x1 and CPU0 support ]
-[ seanc: Fix stray override of initial_gs in common_cpu_up() ]
-[ Oleksandr Natalenko: reported suspend/resume issue fixed in
-  x86_acpi_suspend_lowlevel ]
-[ tglx: Make it read the APIC ID from the APIC instead of using CPUID,
-  	split the bitlock part out ]
-
-Co-developed-by: Thomas Gleixner <tglx@linutronix.de>
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Co-developed-by: Brian Gerst <brgerst@gmail.com>
-Signed-off-by: Brian Gerst <brgerst@gmail.com>
-Signed-off-by: David Woodhouse <dwmw@amazon.co.uk>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Cc: Guo Ren <guoren@kernel.org>
+Cc: linux-csky@vger.kernel.org
 
 ---
- arch/x86/include/asm/apic.h    |    2 +
- arch/x86/include/asm/apicdef.h |    5 ++-
- arch/x86/include/asm/smp.h     |    6 +++
- arch/x86/kernel/acpi/sleep.c   |    9 +++++
- arch/x86/kernel/apic/apic.c    |    2 -
- arch/x86/kernel/head_64.S      |   62 +++++++++++++++++++++++++++++++++++++++++
- arch/x86/kernel/smpboot.c      |    2 -
- 7 files changed, 84 insertions(+), 4 deletions(-)
+ arch/csky/Kconfig           |    1 +
+ arch/csky/include/asm/smp.h |    2 +-
+ arch/csky/kernel/smp.c      |    8 ++------
+ 3 files changed, 4 insertions(+), 7 deletions(-)
 ---
---- a/arch/x86/include/asm/apic.h
-+++ b/arch/x86/include/asm/apic.h
-@@ -55,6 +55,8 @@ extern int local_apic_timer_c2_ok;
- extern int disable_apic;
- extern unsigned int lapic_timer_period;
+--- a/arch/csky/Kconfig
++++ b/arch/csky/Kconfig
+@@ -96,6 +96,7 @@ config CSKY
+ 	select HAVE_REGS_AND_STACK_ACCESS_API
+ 	select HAVE_STACKPROTECTOR
+ 	select HAVE_SYSCALL_TRACEPOINTS
++	select HOTPLUG_CORE_SYNC_DEAD if HOTPLUG_CPU
+ 	select MAY_HAVE_SPARSE_IRQ
+ 	select MODULES_USE_ELF_RELA if MODULES
+ 	select OF
+--- a/arch/csky/include/asm/smp.h
++++ b/arch/csky/include/asm/smp.h
+@@ -23,7 +23,7 @@ void __init set_send_ipi(void (*func)(co
  
-+extern int cpuid_to_apicid[];
-+
- extern enum apic_intr_mode_id apic_intr_mode;
- enum apic_intr_mode_id {
- 	APIC_PIC,
---- a/arch/x86/include/asm/apicdef.h
-+++ b/arch/x86/include/asm/apicdef.h
-@@ -138,7 +138,8 @@
- #define		APIC_EILVT_MASKED	(1 << 16)
+ int __cpu_disable(void);
  
- #define APIC_BASE (fix_to_virt(FIX_APIC_BASE))
--#define APIC_BASE_MSR	0x800
-+#define APIC_BASE_MSR		0x800
-+#define APIC_X2APIC_ID_MSR	0x802
- #define XAPIC_ENABLE	(1UL << 11)
- #define X2APIC_ENABLE	(1UL << 10)
+-void __cpu_die(unsigned int cpu);
++static inline void __cpu_die(unsigned int cpu) { }
  
-@@ -162,6 +163,7 @@
- #define APIC_CPUID(apicid)	((apicid) & XAPIC_DEST_CPUS_MASK)
- #define NUM_APIC_CLUSTERS	((BAD_APICID + 1) >> XAPIC_DEST_CPUS_SHIFT)
+ #endif /* CONFIG_SMP */
  
-+#ifndef __ASSEMBLY__
- /*
-  * the local APIC register structure, memory mapped. Not terribly well
-  * tested, but we might eventually use this one in the future - the
-@@ -435,4 +437,5 @@ enum apic_delivery_modes {
- 	APIC_DELIVERY_MODE_EXTINT	= 7,
- };
+--- a/arch/csky/kernel/smp.c
++++ b/arch/csky/kernel/smp.c
+@@ -291,12 +291,8 @@ int __cpu_disable(void)
+ 	return 0;
+ }
  
-+#endif /* !__ASSEMBLY__ */
- #endif /* _ASM_X86_APICDEF_H */
---- a/arch/x86/include/asm/smp.h
-+++ b/arch/x86/include/asm/smp.h
-@@ -200,4 +200,10 @@ extern unsigned long apic_mmio_base;
+-void __cpu_die(unsigned int cpu)
++void arch_cpuhp_cleanup_dead_cpu(unsigned int cpu)
+ {
+-	if (!cpu_wait_death(cpu, 5)) {
+-		pr_crit("CPU%u: shutdown failed\n", cpu);
+-		return;
+-	}
+ 	pr_notice("CPU%u: shutdown\n", cpu);
+ }
  
- #endif /* !__ASSEMBLY__ */
+@@ -304,7 +300,7 @@ void __noreturn arch_cpu_idle_dead(void)
+ {
+ 	idle_task_exit();
  
-+/* Control bits for startup_64 */
-+#define STARTUP_READ_APICID	0x80000000
-+
-+/* Top 8 bits are reserved for control */
-+#define STARTUP_PARALLEL_MASK	0xFF000000
-+
- #endif /* _ASM_X86_SMP_H */
---- a/arch/x86/kernel/acpi/sleep.c
-+++ b/arch/x86/kernel/acpi/sleep.c
-@@ -16,6 +16,7 @@
- #include <asm/cacheflush.h>
- #include <asm/realmode.h>
- #include <asm/hypervisor.h>
-+#include <asm/smp.h>
+-	cpu_report_death();
++	cpuhp_ap_report_dead();
  
- #include <linux/ftrace.h>
- #include "../../realmode/rm/wakeup.h"
-@@ -127,7 +128,13 @@ int x86_acpi_suspend_lowlevel(void)
- 	 * value is in the actual %rsp register.
- 	 */
- 	current->thread.sp = (unsigned long)temp_stack + sizeof(temp_stack);
--	smpboot_control = smp_processor_id();
-+	/*
-+	 * Ensure the CPU knows which one it is when it comes back, if
-+	 * it isn't in parallel mode and expected to work that out for
-+	 * itself.
-+	 */
-+	if (!(smpboot_control & STARTUP_PARALLEL_MASK))
-+		smpboot_control = smp_processor_id();
- #endif
- 	initial_code = (unsigned long)wakeup_long64;
- 	saved_magic = 0x123456789abcdef0L;
---- a/arch/x86/kernel/apic/apic.c
-+++ b/arch/x86/kernel/apic/apic.c
-@@ -2380,7 +2380,7 @@ static int nr_logical_cpuids = 1;
- /*
-  * Used to store mapping between logical CPU IDs and APIC IDs.
-  */
--static int cpuid_to_apicid[] = {
-+int cpuid_to_apicid[] = {
- 	[0 ... NR_CPUS - 1] = -1,
- };
- 
---- a/arch/x86/kernel/head_64.S
-+++ b/arch/x86/kernel/head_64.S
-@@ -24,7 +24,9 @@
- #include "../entry/calling.h"
- #include <asm/export.h>
- #include <asm/nospec-branch.h>
-+#include <asm/apicdef.h>
- #include <asm/fixmap.h>
-+#include <asm/smp.h>
- 
- /*
-  * We are not able to switch in one step to the final KERNEL ADDRESS SPACE
-@@ -234,8 +236,68 @@ SYM_INNER_LABEL(secondary_startup_64_no_
- 	ANNOTATE_NOENDBR // above
- 
- #ifdef CONFIG_SMP
-+	/*
-+	 * For parallel boot, the APIC ID is read from the APIC, and then
-+	 * used to look up the CPU number.  For booting a single CPU, the
-+	 * CPU number is encoded in smpboot_control.
-+	 *
-+	 * Bit 31	STARTUP_READ_APICID (Read APICID from APIC)
-+	 * Bit 0-23	CPU# if STARTUP_xx flags are not set
-+	 */
- 	movl	smpboot_control(%rip), %ecx
-+	testl	$STARTUP_READ_APICID, %ecx
-+	jnz	.Lread_apicid
-+	/*
-+	 * No control bit set, single CPU bringup. CPU number is provided
-+	 * in bit 0-23. This is also the boot CPU case (CPU number 0).
-+	 */
-+	andl	$(~STARTUP_PARALLEL_MASK), %ecx
-+	jmp	.Lsetup_cpu
-+
-+.Lread_apicid:
-+	/* Check whether X2APIC mode is already enabled */
-+	mov	$MSR_IA32_APICBASE, %ecx
-+	rdmsr
-+	testl	$X2APIC_ENABLE, %eax
-+	jnz	.Lread_apicid_msr
-+
-+	/* Read the APIC ID from the fix-mapped MMIO space. */
-+	movq	apic_mmio_base(%rip), %rcx
-+	addq	$APIC_ID, %rcx
-+	movl	(%rcx), %eax
-+	shr	$24, %eax
-+	jmp	.Llookup_AP
-+
-+.Lread_apicid_msr:
-+	mov	$APIC_X2APIC_ID_MSR, %ecx
-+	rdmsr
-+
-+.Llookup_AP:
-+	/* EAX contains the APIC ID of the current CPU */
-+	xorq	%rcx, %rcx
-+	leaq	cpuid_to_apicid(%rip), %rbx
-+
-+.Lfind_cpunr:
-+	cmpl	(%rbx,%rcx,4), %eax
-+	jz	.Lsetup_cpu
-+	inc	%ecx
-+#ifdef CONFIG_FORCE_NR_CPUS
-+	cmpl	$NR_CPUS, %ecx
-+#else
-+	cmpl	nr_cpu_ids(%rip), %ecx
-+#endif
-+	jb	.Lfind_cpunr
-+
-+	/*  APIC ID not found in the table. Drop the trampoline lock and bail. */
-+	movq	trampoline_lock(%rip), %rax
-+	lock
-+	btrl	$0, (%rax)
-+
-+1:	cli
-+	hlt
-+	jmp	1b
- 
-+.Lsetup_cpu:
- 	/* Get the per cpu offset for the given CPU# which is in ECX */
- 	movq	__per_cpu_offset(,%rcx,8), %rdx
- #else
---- a/arch/x86/kernel/smpboot.c
-+++ b/arch/x86/kernel/smpboot.c
-@@ -1002,7 +1002,7 @@ static int do_boot_cpu(int apicid, int c
- 	if (IS_ENABLED(CONFIG_X86_32)) {
- 		early_gdt_descr.address = (unsigned long)get_cpu_gdt_rw(cpu);
- 		initial_stack  = idle->thread.sp;
--	} else {
-+	} else if (!(smpboot_control & STARTUP_PARALLEL_MASK)) {
- 		smpboot_control = cpu;
- 	}
- 
+ 	while (!secondary_stack)
+ 		arch_cpu_idle();
 

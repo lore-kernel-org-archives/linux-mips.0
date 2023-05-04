@@ -2,36 +2,36 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DC7F8C7EE25
-	for <linux-mips@archiver.kernel.org>; Thu,  4 May 2023 19:02:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3D753C7EE2C
+	for <linux-mips@archiver.kernel.org>; Thu,  4 May 2023 19:03:05 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230059AbjEDTCw (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 4 May 2023 15:02:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50278 "EHLO
+        id S230162AbjEDTDE (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 4 May 2023 15:03:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50400 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230039AbjEDTCb (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Thu, 4 May 2023 15:02:31 -0400
+        with ESMTP id S230075AbjEDTCr (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Thu, 4 May 2023 15:02:47 -0400
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1547E86B4;
-        Thu,  4 May 2023 12:02:14 -0700 (PDT)
-Message-ID: <20230504185936.802783450@linutronix.de>
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 465FE83F1;
+        Thu,  4 May 2023 12:02:18 -0700 (PDT)
+Message-ID: <20230504185936.917560748@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1683226933;
+        s=2020; t=1683226936;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         references:references; bh=djhcX/6oz1v3ZZHjWNR6fK2ATXnp39FPHavEh8Z2jPk=;
-        b=ga7wmIakplENkJi6T5NoX0Dl4GKg+ap6nn7fRMuH4AJ0N/j8tLX4hOYKXxI82FfjNe6bvd
-        vJmMRr19EbOXhlvWVBPj00971oHJ7EVwTVpYtKkKm1bHOPAtWTEqef+PWJeugHX4N45lMG
-        uoAym6vetzrOuFxrlyf44EwZaO13wrZDfo/XkIGx0LvkxSOhnQMBCiqIzIQDgAgSp3wxnj
-        y26KQIzEJjp7eB7O+cYD+6cb4y96+ikG+vSFWeNtad9FTEpCRcUHe+gEoz7H09GJDNgB1J
-        AKbp/YjUjDEWvORBc7uiaoZEw4Hkz37CASo4CL84FTmpzcTx9pDR5194rYnnxw==
+         references:references; bh=7w0pkJKfi5BfzTn7YraeCXszLQVgaQibx9fCVrsyYLw=;
+        b=KF4OYjBu/WAVy3JeYBlPGuO/psPpP6BNMkGwUP4hVxM+/D+l51OxcfTtr1678q7sAM86+l
+        pkSbimwtfW+4xdLulA4/Enq9nqbfEKxZaT/IcZ6t/X1KbwGa9K46/CqLa2h1H1kz8voODT
+        y4AmfcuAbs0leulnqDLnh1gIEYzNbs3Hpt0le/7AsOwR44b/CdgLPyNGYtpoteTh4TSBz6
+        xBxTc2mzXrBGxYo6rlw1ZlvxoGPyU9ZhtpO28GI1g1d9zu8k+2yJftFOirkgMuWcP7q1P8
+        AsSeoEHmtH0f/Ry8sbvPf/V1KSj5/DXRuhM2P4J01rZzTyifP9FYxFi1Q1uu8g==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1683226933;
+        s=2020e; t=1683226936;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         references:references; bh=djhcX/6oz1v3ZZHjWNR6fK2ATXnp39FPHavEh8Z2jPk=;
-        b=9d54JiewPSGmVQNrhzbBmbqIIQ6FHVsRs8p39dYcszm+2PpRs6UAq3uJ7Lp1hIlyibfgPq
-        eWLViIKxHt4DgPAQ==
+         references:references; bh=7w0pkJKfi5BfzTn7YraeCXszLQVgaQibx9fCVrsyYLw=;
+        b=AOLL7N8FlgTgX4Vpe4Ih6WqHRrBw5YfnEZjwda6Z8s/doyNG0e8UyHLJJ/7vaMaivGQ2TR
+        0D5J6mUQhC4iKrBA==
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     x86@kernel.org, David Woodhouse <dwmw2@infradead.org>,
@@ -66,133 +66,127 @@ Cc:     x86@kernel.org, David Woodhouse <dwmw2@infradead.org>,
         Mark Rutland <mark.rutland@arm.com>,
         Sabin Rapan <sabrapan@amazon.com>,
         "Michael Kelley (LINUX)" <mikelley@microsoft.com>
-Subject: [patch V2 09/38] x86/smpboot: Get rid of cpu_init_secondary()
+Subject: [patch V2 11/38] x86/smpboot: Move synchronization masks to SMP boot code
 References: <20230504185733.126511787@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-Date:   Thu,  4 May 2023 21:02:13 +0200 (CEST)
+Date:   Thu,  4 May 2023 21:02:16 +0200 (CEST)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
 From: Thomas Gleixner <tglx@linutronix.de>
 
-The synchronization of the AP with the control CPU is a SMP boot problem
-and has nothing to do with cpu_init().
+The usage is in smpboot.c and not in the CPU initialization code.
 
-Open code cpu_init_secondary() in start_secondary() and move
-wait_for_master_cpu() into the SMP boot code.
-
-No functional change.
+The XEN_PV usage of cpu_callout_mask is obsolete as cpu_init() not longer
+waits and cacheinfo has its own CPU mask now, so cpu_callout_mask can be
+made static too.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 
 ---
- arch/x86/include/asm/processor.h |    1 -
- arch/x86/kernel/cpu/common.c     |   27 ---------------------------
- arch/x86/kernel/smpboot.c        |   24 +++++++++++++++++++-----
- 3 files changed, 19 insertions(+), 33 deletions(-)
+ arch/x86/include/asm/cpumask.h |    5 -----
+ arch/x86/kernel/cpu/common.c   |   17 -----------------
+ arch/x86/kernel/smpboot.c      |   16 ++++++++++++++++
+ arch/x86/xen/smp_pv.c          |    3 ---
+ 4 files changed, 16 insertions(+), 25 deletions(-)
 ---
---- a/arch/x86/include/asm/processor.h
-+++ b/arch/x86/include/asm/processor.h
-@@ -551,7 +551,6 @@ extern void switch_gdt_and_percpu_base(i
- extern void load_direct_gdt(int);
- extern void load_fixmap_gdt(int);
- extern void cpu_init(void);
--extern void cpu_init_secondary(void);
- extern void cpu_init_exception_handling(void);
- extern void cr4_init(void);
+--- a/arch/x86/include/asm/cpumask.h
++++ b/arch/x86/include/asm/cpumask.h
+@@ -4,11 +4,6 @@
+ #ifndef __ASSEMBLY__
+ #include <linux/cpumask.h>
  
+-extern cpumask_var_t cpu_callin_mask;
+-extern cpumask_var_t cpu_callout_mask;
+-extern cpumask_var_t cpu_initialized_mask;
+-extern cpumask_var_t cpu_sibling_setup_mask;
+-
+ extern void setup_cpu_local_masks(void);
+ 
+ /*
 --- a/arch/x86/kernel/cpu/common.c
 +++ b/arch/x86/kernel/cpu/common.c
-@@ -2123,19 +2123,6 @@ static void dbg_restore_debug_regs(void)
- #define dbg_restore_debug_regs()
- #endif /* ! CONFIG_KGDB */
+@@ -67,14 +67,6 @@
  
--static void wait_for_master_cpu(int cpu)
--{
--#ifdef CONFIG_SMP
--	/*
--	 * wait for ACK from master CPU before continuing
--	 * with AP initialization
--	 */
--	WARN_ON(cpumask_test_and_set_cpu(cpu, cpu_initialized_mask));
--	while (!cpumask_test_cpu(cpu, cpu_callout_mask))
--		cpu_relax();
--#endif
--}
+ u32 elf_hwcap2 __read_mostly;
+ 
+-/* all of these masks are initialized in setup_cpu_local_masks() */
+-cpumask_var_t cpu_initialized_mask;
+-cpumask_var_t cpu_callout_mask;
+-cpumask_var_t cpu_callin_mask;
 -
- static inline void setup_getcpu(int cpu)
- {
- 	unsigned long cpudata = vdso_encode_cpunode(cpu, early_cpu_to_node(cpu));
-@@ -2239,8 +2226,6 @@ void cpu_init(void)
- 	struct task_struct *cur = current;
- 	int cpu = raw_smp_processor_id();
- 
--	wait_for_master_cpu(cpu);
+-/* representing cpus for which sibling maps can be computed */
+-cpumask_var_t cpu_sibling_setup_mask;
 -
- 	ucode_cpu_init(cpu);
- 
- #ifdef CONFIG_NUMA
-@@ -2293,18 +2278,6 @@ void cpu_init(void)
- 	load_fixmap_gdt(cpu);
+ /* Number of siblings per CPU package */
+ int smp_num_siblings = 1;
+ EXPORT_SYMBOL(smp_num_siblings);
+@@ -169,15 +161,6 @@ static void ppin_init(struct cpuinfo_x86
+ 	clear_cpu_cap(c, info->feature);
  }
  
--#ifdef CONFIG_SMP
--void cpu_init_secondary(void)
+-/* correctly size the local cpu masks */
+-void __init setup_cpu_local_masks(void)
 -{
--	/*
--	 * Relies on the BP having set-up the IDT tables, which are loaded
--	 * on this CPU in cpu_init_exception_handling().
--	 */
--	cpu_init_exception_handling();
--	cpu_init();
+-	alloc_bootmem_cpumask_var(&cpu_initialized_mask);
+-	alloc_bootmem_cpumask_var(&cpu_callin_mask);
+-	alloc_bootmem_cpumask_var(&cpu_callout_mask);
+-	alloc_bootmem_cpumask_var(&cpu_sibling_setup_mask);
 -}
--#endif
 -
- #ifdef CONFIG_MICROCODE_LATE_LOADING
- /**
-  * store_cpu_caps() - Store a snapshot of CPU capabilities
+ static void default_init(struct cpuinfo_x86 *c)
+ {
+ #ifdef CONFIG_X86_64
 --- a/arch/x86/kernel/smpboot.c
 +++ b/arch/x86/kernel/smpboot.c
-@@ -220,6 +220,17 @@ static void ap_calibrate_delay(void)
- 	cpu_data(smp_processor_id()).loops_per_jiffy = loops_per_jiffy;
+@@ -101,6 +101,13 @@ EXPORT_PER_CPU_SYMBOL(cpu_die_map);
+ DEFINE_PER_CPU_READ_MOSTLY(struct cpuinfo_x86, cpu_info);
+ EXPORT_PER_CPU_SYMBOL(cpu_info);
+ 
++/* All of these masks are initialized in setup_cpu_local_masks() */
++static cpumask_var_t cpu_initialized_mask;
++static cpumask_var_t cpu_callout_mask;
++static cpumask_var_t cpu_callin_mask;
++/* Representing CPUs for which sibling maps can be computed */
++static cpumask_var_t cpu_sibling_setup_mask;
++
+ /* Logical package management. We might want to allocate that dynamically */
+ unsigned int __max_logical_packages __read_mostly;
+ EXPORT_SYMBOL(__max_logical_packages);
+@@ -1548,6 +1555,15 @@ early_param("possible_cpus", _setup_poss
+ 		set_cpu_possible(i, true);
  }
  
-+static void wait_for_master_cpu(int cpu)
++/* correctly size the local cpu masks */
++void __init setup_cpu_local_masks(void)
 +{
-+	/*
-+	 * Wait for release by control CPU before continuing with AP
-+	 * initialization.
-+	 */
-+	WARN_ON(cpumask_test_and_set_cpu(cpu, cpu_initialized_mask));
-+	while (!cpumask_test_cpu(cpu, cpu_callout_mask))
-+		cpu_relax();
++	alloc_bootmem_cpumask_var(&cpu_initialized_mask);
++	alloc_bootmem_cpumask_var(&cpu_callin_mask);
++	alloc_bootmem_cpumask_var(&cpu_callout_mask);
++	alloc_bootmem_cpumask_var(&cpu_sibling_setup_mask);
 +}
 +
- /*
-  * Activate a secondary processor.
-  */
-@@ -237,13 +248,16 @@ static void notrace start_secondary(void
- 	load_cr3(swapper_pg_dir);
- 	__flush_tlb_all();
- #endif
-+	cpu_init_exception_handling();
-+
- 	/*
--	 * Sync point with wait_cpu_initialized(). Before proceeding through
--	 * cpu_init(), the AP will call wait_for_master_cpu() which sets its
--	 * own bit in cpu_initialized_mask and then waits for the BSP to set
--	 * its bit in cpu_callout_mask to release it.
-+	 * Sync point with wait_cpu_initialized(). Sets AP in
-+	 * cpu_initialized_mask and then waits for the control CPU
-+	 * to release it.
- 	 */
--	cpu_init_secondary();
-+	wait_for_master_cpu(raw_smp_processor_id());
-+
-+	cpu_init();
- 	rcu_cpu_starting(raw_smp_processor_id());
- 	x86_cpuinit.early_percpu_clock_init();
+ #ifdef CONFIG_HOTPLUG_CPU
+ 
+ /* Recompute SMT state for all CPUs on offline */
+--- a/arch/x86/xen/smp_pv.c
++++ b/arch/x86/xen/smp_pv.c
+@@ -254,15 +254,12 @@ cpu_initialize_context(unsigned int cpu,
+ 	struct desc_struct *gdt;
+ 	unsigned long gdt_mfn;
+ 
+-	/* used to tell cpu_init() that it can proceed with initialization */
+-	cpumask_set_cpu(cpu, cpu_callout_mask);
+ 	if (cpumask_test_and_set_cpu(cpu, xen_cpu_initialized_map))
+ 		return 0;
+ 
+ 	ctxt = kzalloc(sizeof(*ctxt), GFP_KERNEL);
+ 	if (ctxt == NULL) {
+ 		cpumask_clear_cpu(cpu, xen_cpu_initialized_map);
+-		cpumask_clear_cpu(cpu, cpu_callout_mask);
+ 		return -ENOMEM;
+ 	}
  
 

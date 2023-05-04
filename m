@@ -2,36 +2,36 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7B345C7EE29
-	for <linux-mips@archiver.kernel.org>; Thu,  4 May 2023 19:05:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6ECD2C7EE2D
+	for <linux-mips@archiver.kernel.org>; Thu,  4 May 2023 19:05:48 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230421AbjEDTFm (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 4 May 2023 15:05:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51500 "EHLO
+        id S230165AbjEDTFp (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 4 May 2023 15:05:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50456 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230430AbjEDTE7 (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Thu, 4 May 2023 15:04:59 -0400
+        with ESMTP id S230284AbjEDTFJ (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Thu, 4 May 2023 15:05:09 -0400
 Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C707A24C;
-        Thu,  4 May 2023 12:03:32 -0700 (PDT)
-Message-ID: <20230504185937.806324260@linutronix.de>
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 239999008;
+        Thu,  4 May 2023 12:03:40 -0700 (PDT)
+Message-ID: <20230504185937.966056940@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1683226962;
+        s=2020; t=1683226967;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         references:references; bh=PIHn3pYsUJ8IshGaa3kU/Fr0bIJzVI5udpOrlPrYz+E=;
-        b=QNGmIIt+/To56nrNKLo3wlp/uoA0S+O2aHLtwODYUDkrU8Guyvv03S4Uol8KKlrIgPdDLI
-        qPjhMQNUAIZdRs2om4WUPJMT1jXnWhngn8GF42pSedv+mPXqPDg6dporcNAvFdzUw+egQ+
-        Vqg53SlSVRiuRBZMIzV5FPs2l5GIv84C01a0Qxu+Mq65QbnphJFA5Ir3subA78ZM6E8kf2
-        ZWThMRZ9iqmdUJfsdKFtkK4qDI92/cMPImPqXf9PZUVb/qwqechT+XgrR1ZcB+r0K7YQf/
-        HeZhI+W/xkNZVJpDF4ppx/B//2tg7mVNz3rodO8pj9sfyrrX+kNXbJXXhJW8oA==
+         references:references; bh=OPmaW7DXf6JnyvIw0i7yNDoe4KbapH95hpIdiwQiys8=;
+        b=OHQM462Vlb4JUW68TEIl6fNm2wkG4SDJ/WmVKvLWMnKsvspXVogdjc2LngewLspjgzA1Jq
+        L9eSuPiamrsyKrs8ZIYXvKQpCwzQsD/75Jm/wrxCCu2OxmCX8aK3ZbXJ/x2bOGmRyErPSO
+        atYwr+JfOvoX9acRV+IiSIOe7gwgCiejv0oRBsUcMHNCvvplg663yGDlt+xcKaV0X1m/XU
+        a5X+xuwQ5SZKVhitdTR8euHAFdO4DSjfLUG5pj4Ay6ZQljwWh0/Wr2g/g1eJ5tOUZnZOcZ
+        KSbTJC0Z3mA9V2DpMSFA7mFMz/TZyEqm0eNXH2mOdMyg3lCXhJt8qaKcz/vc6A==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1683226962;
+        s=2020e; t=1683226967;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         references:references; bh=PIHn3pYsUJ8IshGaa3kU/Fr0bIJzVI5udpOrlPrYz+E=;
-        b=wXxqyLYYRXuQOss/+ZoLBYE+oLaf2tb90zR4AxAwAajqpA22CmYoLXhycZjVGB2N2Jkdnq
-        PQRh0paL0Sj8j3Bw==
+         references:references; bh=OPmaW7DXf6JnyvIw0i7yNDoe4KbapH95hpIdiwQiys8=;
+        b=2pZygmqrbSKaKtOa6782fVVLu32t0VpQpHaUmZC3Qqmhzk/7sEVd08EWFmIUQoV6w+fmeA
+        aSMnAotAR3MHv7AA==
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     x86@kernel.org, David Woodhouse <dwmw2@infradead.org>,
@@ -66,116 +66,142 @@ Cc:     x86@kernel.org, David Woodhouse <dwmw2@infradead.org>,
         Mark Rutland <mark.rutland@arm.com>,
         Sabin Rapan <sabrapan@amazon.com>,
         "Michael Kelley (LINUX)" <mikelley@microsoft.com>
-Subject: [patch V2 27/38] cpu/hotplug: Remove unused state functions
+Subject: [patch V2 30/38] x86/smpboot: Enable split CPU startup
 References: <20230504185733.126511787@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-Date:   Thu,  4 May 2023 21:02:42 +0200 (CEST)
+Date:   Thu,  4 May 2023 21:02:46 +0200 (CEST)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
 From: Thomas Gleixner <tglx@linutronix.de>
 
-All users converted to the hotplug core mechanism.
+The x86 CPU bringup state currently does AP wake-up, wait for AP to
+respond and then release it for full bringup.
+
+It is safe to be split into a wake-up and and a separate wait+release
+state.
+
+Provide the required functions and enable the split CPU bringup, which
+prepares for parallel bringup, where the bringup of the non-boot CPUs takes
+two iterations: One to prepare and wake all APs and the second to wait and
+release them. Depending on timing this can eliminate the wait time
+completely.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 
 ---
- include/linux/cpu.h |    2 -
- kernel/smpboot.c    |   75 ----------------------------------------------------
- 2 files changed, 77 deletions(-)
+ arch/x86/Kconfig           |    2 +-
+ arch/x86/include/asm/smp.h |    9 ++-------
+ arch/x86/kernel/smp.c      |    2 +-
+ arch/x86/kernel/smpboot.c  |    8 ++++----
+ arch/x86/xen/smp_pv.c      |    4 ++--
+ 5 files changed, 10 insertions(+), 15 deletions(-)
 ---
---- a/include/linux/cpu.h
-+++ b/include/linux/cpu.h
-@@ -193,8 +193,6 @@ static inline void play_idle(unsigned lo
+--- a/arch/x86/Kconfig
++++ b/arch/x86/Kconfig
+@@ -274,8 +274,8 @@ config X86
+ 	select HAVE_UNSTABLE_SCHED_CLOCK
+ 	select HAVE_USER_RETURN_NOTIFIER
+ 	select HAVE_GENERIC_VDSO
+-	select HOTPLUG_CORE_SYNC_FULL		if SMP
+ 	select HOTPLUG_SMT			if SMP
++	select HOTPLUG_SPLIT_STARTUP		if SMP
+ 	select IRQ_FORCED_THREADING
+ 	select NEED_PER_CPU_EMBED_FIRST_CHUNK
+ 	select NEED_PER_CPU_PAGE_FIRST_CHUNK
+--- a/arch/x86/include/asm/smp.h
++++ b/arch/x86/include/asm/smp.h
+@@ -40,7 +40,7 @@ struct smp_ops {
+ 
+ 	void (*cleanup_dead_cpu)(unsigned cpu);
+ 	void (*poll_sync_state)(void);
+-	int (*cpu_up)(unsigned cpu, struct task_struct *tidle);
++	int (*kick_ap_alive)(unsigned cpu, struct task_struct *tidle);
+ 	int (*cpu_disable)(void);
+ 	void (*cpu_die)(unsigned int cpu);
+ 	void (*play_dead)(void);
+@@ -80,11 +80,6 @@ static inline void smp_cpus_done(unsigne
+ 	smp_ops.smp_cpus_done(max_cpus);
  }
  
- #ifdef CONFIG_HOTPLUG_CPU
--bool cpu_wait_death(unsigned int cpu, int seconds);
--bool cpu_report_death(void);
- void cpuhp_report_idle_dead(void);
- #else
- static inline void cpuhp_report_idle_dead(void) { }
---- a/kernel/smpboot.c
-+++ b/kernel/smpboot.c
-@@ -325,78 +325,3 @@ void smpboot_unregister_percpu_thread(st
- 	cpus_read_unlock();
+-static inline int __cpu_up(unsigned int cpu, struct task_struct *tidle)
+-{
+-	return smp_ops.cpu_up(cpu, tidle);
+-}
+-
+ static inline int __cpu_disable(void)
+ {
+ 	return smp_ops.cpu_disable();
+@@ -124,7 +119,7 @@ void native_smp_prepare_cpus(unsigned in
+ void calculate_max_logical_packages(void);
+ void native_smp_cpus_done(unsigned int max_cpus);
+ int common_cpu_up(unsigned int cpunum, struct task_struct *tidle);
+-int native_cpu_up(unsigned int cpunum, struct task_struct *tidle);
++int native_kick_ap(unsigned int cpu, struct task_struct *tidle);
+ int native_cpu_disable(void);
+ void __noreturn hlt_play_dead(void);
+ void native_play_dead(void);
+--- a/arch/x86/kernel/smp.c
++++ b/arch/x86/kernel/smp.c
+@@ -268,7 +268,7 @@ struct smp_ops smp_ops = {
+ #endif
+ 	.smp_send_reschedule	= native_smp_send_reschedule,
+ 
+-	.cpu_up			= native_cpu_up,
++	.kick_ap_alive		= native_kick_ap,
+ 	.cpu_disable		= native_cpu_disable,
+ 	.play_dead		= native_play_dead,
+ 
+--- a/arch/x86/kernel/smpboot.c
++++ b/arch/x86/kernel/smpboot.c
+@@ -1058,7 +1058,7 @@ static int do_boot_cpu(int apicid, int c
+ 	return ret;
  }
- EXPORT_SYMBOL_GPL(smpboot_unregister_percpu_thread);
--
--#ifndef CONFIG_HOTPLUG_CORE_SYNC
--static DEFINE_PER_CPU(atomic_t, cpu_hotplug_state) = ATOMIC_INIT(CPU_POST_DEAD);
--
--#ifdef CONFIG_HOTPLUG_CPU
--/*
-- * Wait for the specified CPU to exit the idle loop and die.
-- */
--bool cpu_wait_death(unsigned int cpu, int seconds)
--{
--	int jf_left = seconds * HZ;
--	int oldstate;
--	bool ret = true;
--	int sleep_jf = 1;
--
--	might_sleep();
--
--	/* The outgoing CPU will normally get done quite quickly. */
--	if (atomic_read(&per_cpu(cpu_hotplug_state, cpu)) == CPU_DEAD)
--		goto update_state_early;
--	udelay(5);
--
--	/* But if the outgoing CPU dawdles, wait increasingly long times. */
--	while (atomic_read(&per_cpu(cpu_hotplug_state, cpu)) != CPU_DEAD) {
--		schedule_timeout_uninterruptible(sleep_jf);
--		jf_left -= sleep_jf;
--		if (jf_left <= 0)
--			break;
--		sleep_jf = DIV_ROUND_UP(sleep_jf * 11, 10);
--	}
--update_state_early:
--	oldstate = atomic_read(&per_cpu(cpu_hotplug_state, cpu));
--update_state:
--	if (oldstate == CPU_DEAD) {
--		/* Outgoing CPU died normally, update state. */
--		smp_mb(); /* atomic_read() before update. */
--		atomic_set(&per_cpu(cpu_hotplug_state, cpu), CPU_POST_DEAD);
--	} else {
--		/* Outgoing CPU still hasn't died, set state accordingly. */
--		if (!atomic_try_cmpxchg(&per_cpu(cpu_hotplug_state, cpu),
--					&oldstate, CPU_BROKEN))
--			goto update_state;
--		ret = false;
--	}
--	return ret;
--}
--
--/*
-- * Called by the outgoing CPU to report its successful death.  Return
-- * false if this report follows the surviving CPU's timing out.
-- *
-- * A separate "CPU_DEAD_FROZEN" is used when the surviving CPU
-- * timed out.  This approach allows architectures to omit calls to
-- * cpu_check_up_prepare() and cpu_set_state_online() without defeating
-- * the next cpu_wait_death()'s polling loop.
-- */
--bool cpu_report_death(void)
--{
--	int oldstate;
--	int newstate;
--	int cpu = smp_processor_id();
--
--	oldstate = atomic_read(&per_cpu(cpu_hotplug_state, cpu));
--	do {
--		if (oldstate != CPU_BROKEN)
--			newstate = CPU_DEAD;
--		else
--			newstate = CPU_DEAD_FROZEN;
--	} while (!atomic_try_cmpxchg(&per_cpu(cpu_hotplug_state, cpu),
--				     &oldstate, newstate));
--	return newstate == CPU_DEAD;
--}
--
--#endif /* #ifdef CONFIG_HOTPLUG_CPU */
--#endif /* !CONFIG_HOTPLUG_CORE_SYNC */
+ 
+-static int native_kick_ap(unsigned int cpu, struct task_struct *tidle)
++int native_kick_ap(unsigned int cpu, struct task_struct *tidle)
+ {
+ 	int apicid = apic->cpu_present_to_apicid(cpu);
+ 	int err;
+@@ -1094,15 +1094,15 @@ static int native_kick_ap(unsigned int c
+ 	return err;
+ }
+ 
+-int native_cpu_up(unsigned int cpu, struct task_struct *tidle)
++int arch_cpuhp_kick_ap_alive(unsigned int cpu, struct task_struct *tidle)
+ {
+-	return native_kick_ap(cpu, tidle);
++	return smp_ops.kick_ap_alive(cpu, tidle);
+ }
+ 
+ void arch_cpuhp_cleanup_kick_cpu(unsigned int cpu)
+ {
+ 	/* Cleanup possible dangling ends... */
+-	if (smp_ops.cpu_up == native_cpu_up && x86_platform.legacy.warm_reset)
++	if (smp_ops.kick_ap_alive == native_kick_ap && x86_platform.legacy.warm_reset)
+ 		smpboot_restore_warm_reset_vector();
+ }
+ 
+--- a/arch/x86/xen/smp_pv.c
++++ b/arch/x86/xen/smp_pv.c
+@@ -314,7 +314,7 @@ cpu_initialize_context(unsigned int cpu,
+ 	return 0;
+ }
+ 
+-static int xen_pv_cpu_up(unsigned int cpu, struct task_struct *idle)
++static int xen_pv_kick_ap(unsigned int cpu, struct task_struct *idle)
+ {
+ 	int rc;
+ 
+@@ -438,7 +438,7 @@ static const struct smp_ops xen_smp_ops
+ 	.smp_prepare_cpus = xen_pv_smp_prepare_cpus,
+ 	.smp_cpus_done = xen_smp_cpus_done,
+ 
+-	.cpu_up = xen_pv_cpu_up,
++	.kick_ap_alive = xen_pv_kick_ap,
+ 	.cpu_die = xen_pv_cpu_die,
+ 	.cleanup_dead_cpu = xen_pv_cleanup_dead_cpu,
+ 	.poll_sync_state = xen_pv_poll_sync_state,
 

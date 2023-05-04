@@ -2,36 +2,36 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3468FC7EE22
-	for <linux-mips@archiver.kernel.org>; Thu,  4 May 2023 19:05:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 028FDC7EE25
+	for <linux-mips@archiver.kernel.org>; Thu,  4 May 2023 19:05:02 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230112AbjEDTFB (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 4 May 2023 15:05:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50442 "EHLO
+        id S229784AbjEDTFA (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 4 May 2023 15:05:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51462 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230289AbjEDTEB (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Thu, 4 May 2023 15:04:01 -0400
+        with ESMTP id S230267AbjEDTD7 (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Thu, 4 May 2023 15:03:59 -0400
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFA019EF3;
-        Thu,  4 May 2023 12:03:07 -0700 (PDT)
-Message-ID: <20230504185938.393373946@linutronix.de>
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8396B9EC4;
+        Thu,  4 May 2023 12:03:05 -0700 (PDT)
+Message-ID: <20230504185938.126719312@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1683226980;
+        s=2020; t=1683226972;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         references:references; bh=DnnEFfJ8qHS51cV93bPVxAhJn4egJudPWNxPdxHp+6I=;
-        b=3Ex1oay3deKBQTCKUX4Ih8IGgIbgjtd18ImqJ1vJckFzp4vqpeCRciYL26XaBXwtGetEt9
-        jQYdqvvfPpYi34oU2dU7fjuiZ3WyUQcsrd4BPREXrzjkH9groi0TU6YGHBW08cmpwip9QC
-        vnXlEPucLe8Pxu/DAQZhHSJgvAG1br+71W5AkzFErVTB5fdbrjcZJ7I/PMvvfD3nV+Fpt+
-        Y9+eS6OIW46jTxBhE1zoqPIcGpnWyrhDXCq+doarlLORorIO2HSYQo2DibMTzYhsGwQ8ko
-        wng2jKhRiMwK0oOD7H54yErcCMVtMuv2wW3qjiAj1OaBH6NB6N7JtXkq+JhyKQ==
+         references:references; bh=C2xEv0EYOzjjBDOf0WNXDnbg3SxiEflVftHaff1ezNc=;
+        b=R7TFizeMBd1vCDVjEXU0BtfNbQoQd0Q7O5Cmi/GhoH+A7DPO/eDCQYvwL8d0EzW6TZevXV
+        zTSW3dCyZNMiwvAMbTbcTVfTHbY6pLve5Gv/afd1jzhLujx3f5ZspMS2zkpgXg0oDc3s5d
+        kXcBYyWoHlipJH2VBBXdFP8QtRznLbAKZV10Ph92/Hk65CJwnRS+0u5oUwspH7khzqSQ/u
+        SpYu0bcq4JwwE/JeCF3NwhBMiC+1RMRMfogzt5BdrL549/PBdPFpI4eEajMl9aEC63+JVF
+        9zu2Vsz02+ZJpxAIfDIw2+6pnaLRSdZXjwd9Lq61E8b+1bqiBtxkam2eHoBKxg==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1683226980;
+        s=2020e; t=1683226972;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         references:references; bh=DnnEFfJ8qHS51cV93bPVxAhJn4egJudPWNxPdxHp+6I=;
-        b=6kDZyW5GTa+KS1pHyq0SY7syfYnd6TB6StPbtFwCKnOC1peAStPMetQpfCSqmue8lUL4Wc
-        NQ0I2S6hl8MhwzDA==
+         references:references; bh=C2xEv0EYOzjjBDOf0WNXDnbg3SxiEflVftHaff1ezNc=;
+        b=L3yFFvyeaWcbSL4+w4FNUsUl3Xq9FYBhGlVedajTlxgN49PBR5/K5uqBP8Q/AEH8xz/YfX
+        kk6rHy0rbLZe69Cw==
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     x86@kernel.org, David Woodhouse <dwmw2@infradead.org>,
@@ -66,217 +66,54 @@ Cc:     x86@kernel.org, David Woodhouse <dwmw2@infradead.org>,
         Mark Rutland <mark.rutland@arm.com>,
         Sabin Rapan <sabrapan@amazon.com>,
         "Michael Kelley (LINUX)" <mikelley@microsoft.com>
-Subject: [patch V2 38/38] x86/smpboot/64: Implement
- arch_cpuhp_init_parallel_bringup() and enable it
+Subject: [patch V2 33/38] x86/topology: Store extended topology leaf information
 References: <20230504185733.126511787@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-Date:   Thu,  4 May 2023 21:03:00 +0200 (CEST)
+Date:   Thu,  4 May 2023 21:02:51 +0200 (CEST)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
 From: Thomas Gleixner <tglx@linutronix.de>
 
-Implement the validation function which tells the core code whether
-parallel bringup is possible.
+Save the extended topology leaf number if it exists and is valid in
+preparation of parallel CPU bringup.
 
-The only condition for now is that the kernel does not run in an encrypted
-guest as these will trap the RDMSR via #VC, which cannot be handled at that
-point in early startup.
-
-There was an earlier variant for AMD-SEV which used the GHBC protocol for
-retrieving the APIC ID via CPUID, but there is no guarantee that the
-initial APIC ID in CPUID is the same as the real APIC ID. There is no
-enforcement from the secure firmware and the hypervisor can assign APIC IDs
-as it sees fit as long as the ACPI/MADT table is consistent with that
-assignment.
-
-Unfortunately there is no RDMSR GHCB protocol at the moment, so enabling
-AMD-SEV guests for parallel startup needs some more thought.
-
-Intel-TDX provides a secure RDMSR hypercall, but supporting that is outside
-the scope of this change.
-
-Fixup announce_cpu() as e.g. on Hyper-V CPU1 is the secondary sibling of
-CPU0, which makes the @cpu == 1 logic in announce_cpu() fall apart.
-
-[ mikelley: Reported the announce_cpu() fallout
-
-Originally-by: David Woodhouse <dwmw@amazon.co.uk>
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+
 ---
-V2: Fixup announce_cpu() - Michael Kelley
+ arch/x86/include/asm/topology.h |    1 +
+ arch/x86/kernel/cpu/topology.c  |    3 +++
+ 2 files changed, 4 insertions(+)
 ---
- arch/x86/Kconfig             |    3 +
- arch/x86/kernel/cpu/common.c |    6 ---
- arch/x86/kernel/smpboot.c    |   83 ++++++++++++++++++++++++++++++++++++-------
- 3 files changed, 73 insertions(+), 19 deletions(-)
----
---- a/arch/x86/Kconfig
-+++ b/arch/x86/Kconfig
-@@ -274,8 +274,9 @@ config X86
- 	select HAVE_UNSTABLE_SCHED_CLOCK
- 	select HAVE_USER_RETURN_NOTIFIER
- 	select HAVE_GENERIC_VDSO
-+	select HOTPLUG_PARALLEL			if SMP && X86_64
- 	select HOTPLUG_SMT			if SMP
--	select HOTPLUG_SPLIT_STARTUP		if SMP
-+	select HOTPLUG_SPLIT_STARTUP		if SMP && X86_32
- 	select IRQ_FORCED_THREADING
- 	select NEED_PER_CPU_EMBED_FIRST_CHUNK
- 	select NEED_PER_CPU_PAGE_FIRST_CHUNK
---- a/arch/x86/kernel/cpu/common.c
-+++ b/arch/x86/kernel/cpu/common.c
-@@ -2128,11 +2128,7 @@ static inline void setup_getcpu(int cpu)
- }
+--- a/arch/x86/include/asm/topology.h
++++ b/arch/x86/include/asm/topology.h
+@@ -121,6 +121,7 @@ extern unsigned int __max_die_per_packag
+ #define topology_core_cpumask(cpu)		(per_cpu(cpu_core_map, cpu))
+ #define topology_sibling_cpumask(cpu)		(per_cpu(cpu_sibling_map, cpu))
  
- #ifdef CONFIG_X86_64
--static inline void ucode_cpu_init(int cpu)
--{
--	if (cpu)
--		load_ucode_ap();
--}
-+static inline void ucode_cpu_init(int cpu) { }
++extern unsigned int topology_extended_leaf;
+ extern unsigned int __max_logical_packages;
+ #define topology_max_packages()			(__max_logical_packages)
  
- static inline void tss_setup_ist(struct tss_struct *tss)
- {
---- a/arch/x86/kernel/smpboot.c
-+++ b/arch/x86/kernel/smpboot.c
-@@ -58,6 +58,7 @@
- #include <linux/overflow.h>
- #include <linux/stackprotector.h>
- #include <linux/cpuhotplug.h>
-+#include <linux/mc146818rtc.h>
+--- a/arch/x86/kernel/cpu/topology.c
++++ b/arch/x86/kernel/cpu/topology.c
+@@ -29,6 +29,8 @@ unsigned int __max_die_per_package __rea
+ EXPORT_SYMBOL(__max_die_per_package);
  
- #include <asm/acpi.h>
- #include <asm/cacheinfo.h>
-@@ -75,7 +76,7 @@
- #include <asm/fpu/api.h>
- #include <asm/setup.h>
- #include <asm/uv/uv.h>
--#include <linux/mc146818rtc.h>
-+#include <asm/microcode.h>
- #include <asm/i8259.h>
- #include <asm/misc.h>
- #include <asm/qspinlock.h>
-@@ -128,7 +129,6 @@ int arch_update_cpu_topology(void)
- 	return retval;
- }
- 
--
- static unsigned int smpboot_warm_reset_vector_count;
- 
- static inline void smpboot_setup_warm_reset_vector(unsigned long start_eip)
-@@ -229,16 +229,43 @@ static void notrace start_secondary(void
- 	 */
- 	cr4_init();
- 
--#ifdef CONFIG_X86_32
--	/* switch away from the initial page table */
--	load_cr3(swapper_pg_dir);
--	__flush_tlb_all();
--#endif
-+	/*
-+	 * 32-bit specific. 64-bit reaches this code with the correct page
-+	 * table established. Yet another historical divergence.
-+	 */
-+	if (IS_ENABLED(CONFIG_X86_32)) {
-+		/* switch away from the initial page table */
-+		load_cr3(swapper_pg_dir);
-+		__flush_tlb_all();
-+	}
-+
- 	cpu_init_exception_handling();
- 
- 	/*
--	 * Synchronization point with the hotplug core. Sets the
--	 * synchronization state to ALIVE and waits for the control CPU to
-+	 * 32-bit systems load the microcode from the ASM startup code for
-+	 * historical reasons.
-+	 *
-+	 * On 64-bit systems load it before reaching the AP alive
-+	 * synchronization point below so it is not part of the full per
-+	 * CPU serialized bringup part when "parallel" bringup is enabled.
-+	 *
-+	 * That's even safe when hyperthreading is enabled in the CPU as
-+	 * the core code starts the primary threads first and leaves the
-+	 * secondary threads waiting for SIPI. Loading microcode on
-+	 * physical cores concurrently is a safe operation.
-+	 *
-+	 * This covers both the Intel specific issue that concurrent
-+	 * microcode loading on SMT siblings must be prohibited and the
-+	 * vendor independent issue`that microcode loading which changes
-+	 * CPUID, MSRs etc. must be strictly serialized to maintain
-+	 * software state correctness.
-+	 */
-+	if (IS_ENABLED(CONFIG_X86_64))
-+		load_ucode_ap();
-+
-+	/*
-+	 * Synchronization point with the hotplug core. Sets this CPUs
-+	 * synchronization state to ALIVE and spin-waits for the control CPU to
- 	 * release this CPU for further bringup.
- 	 */
- 	cpuhp_ap_sync_alive();
-@@ -934,10 +961,10 @@ static void announce_cpu(int cpu, int ap
- 	if (!node_width)
- 		node_width = num_digits(num_possible_nodes()) + 1; /* + '#' */
- 
--	if (cpu == 1)
--		printk(KERN_INFO "x86: Booting SMP configuration:\n");
--
- 	if (system_state < SYSTEM_RUNNING) {
-+		if (num_online_cpus() == 1)
-+			pr_info("x86: Booting SMP configuration:\n");
-+
- 		if (node != current_node) {
- 			if (current_node > (-1))
- 				pr_cont("\n");
-@@ -948,7 +975,7 @@ static void announce_cpu(int cpu, int ap
- 		}
- 
- 		/* Add padding for the BSP */
--		if (cpu == 1)
-+		if (num_online_cpus() == 1)
- 			pr_cont("%*s", width + 1, " ");
- 
- 		pr_cont("%*s#%d", width - num_digits(cpu), " ", cpu);
-@@ -1242,6 +1269,36 @@ void __init smp_prepare_cpus_common(void
- 	set_cpu_sibling_map(0);
- }
- 
-+#ifdef CONFIG_X86_64
-+/* Establish whether parallel bringup can be supported. */
-+bool __init arch_cpuhp_init_parallel_bringup(void)
-+{
-+	/*
-+	 * Encrypted guests require special handling. They enforce X2APIC
-+	 * mode but the RDMSR to read the APIC ID is intercepted and raises
-+	 * #VC or #VE which cannot be handled in the early startup code.
-+	 *
-+	 * AMD-SEV does not provide a RDMSR GHCB protocol so the early
-+	 * startup code cannot directly communicate with the secure
-+	 * firmware. The alternative solution to retrieve the APIC ID via
-+	 * CPUID(0xb), which is covered by the GHCB protocol, is not viable
-+	 * either because there is no enforcement of the CPUID(0xb)
-+	 * provided "initial" APIC ID to be the same as the real APIC ID.
-+	 *
-+	 * Intel-TDX has a secure RDMSR hypercall, but that needs to be
-+	 * implemented seperately in the low level startup ASM code.
-+	 */
-+	if (cc_platform_has(CC_ATTR_GUEST_STATE_ENCRYPT)) {
-+		pr_info("Parallel CPU startup disabled due to guest state encryption\n");
-+		return false;
-+	}
-+
-+	smpboot_control = STARTUP_READ_APICID;
-+	pr_debug("Parallel CPU startup enabled: 0x%08x\n", smpboot_control);
-+	return true;
-+}
-+#endif
+ #ifdef CONFIG_SMP
++unsigned int topology_extended_leaf __read_mostly;
 +
  /*
-  * Prepare for SMP bootup.
-  * @max_cpus: configured maximum number of CPUs, It is a legacy parameter
+  * Check if given CPUID extended topology "leaf" is implemented
+  */
+@@ -72,6 +74,7 @@ int detect_extended_topology_early(struc
+ 	if (leaf < 0)
+ 		return -1;
+ 
++	topology_extended_leaf = leaf;
+ 	set_cpu_cap(c, X86_FEATURE_XTOPOLOGY);
+ 
+ 	cpuid_count(leaf, SMT_LEVEL, &eax, &ebx, &ecx, &edx);
 

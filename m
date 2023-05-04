@@ -2,36 +2,36 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D69C9C77B78
-	for <linux-mips@archiver.kernel.org>; Thu,  4 May 2023 19:04:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2137AC7EE2D
+	for <linux-mips@archiver.kernel.org>; Thu,  4 May 2023 19:04:03 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230110AbjEDTD7 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 4 May 2023 15:03:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50222 "EHLO
+        id S230293AbjEDTEB (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 4 May 2023 15:04:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51314 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229628AbjEDTDS (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Thu, 4 May 2023 15:03:18 -0400
+        with ESMTP id S230183AbjEDTDV (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Thu, 4 May 2023 15:03:21 -0400
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FF0593F6;
-        Thu,  4 May 2023 12:02:37 -0700 (PDT)
-Message-ID: <20230504185937.531087176@linutronix.de>
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A96583FC;
+        Thu,  4 May 2023 12:02:41 -0700 (PDT)
+Message-ID: <20230504185937.637064751@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1683226954;
+        s=2020; t=1683226957;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         references:references; bh=Q8MXo4UxfGPWkYiCkH8SfFuLE8nd3MwYFSO4OPkEU0k=;
-        b=bnUOgHwWBE9hQkfsy68hlWixo+U0yYAVZfCfMXKGJisrc20Q1Webu21cChSehhJQaLZl77
-        aYcKQ8Ytt2r2NeJhvWxidSRTpvTvE+EspS4m5s+LoGulbB1pCU2KCiI4sYoDI+vWCSHJkY
-        pLu+grBlA9n7NODW06zxUNEt82sbImz6W8Kz7FepCq/gr5/IfItCe6Dkdodt5Q+vNIzgkQ
-        Xn7Gz8k6gfZophc27B+l6J4sJeUpLR0bJXlF4TZA5eQidQJCcWgls2wS0/Py/vTS1AsL0f
-        As3W35eXgUx29dMadPvgrCRe8Y9FS7s6QYZrLEoJyk9bohOWQId+pyuCBRum1w==
+         references:references; bh=ALZqTI1WqQMy7B72Ez5E7IdIQ5oXhT4SB1G1mM+q//8=;
+        b=mYnm5MYhl9rGIzht43o2lcVxhO0R8y3aB5aRyOtlB+9KK0J/QmknXcGx5x8PN1YVWVRD3B
+        GUQu025b731mf+nEkF4GI7Ob8UvQa6VPVPqdlahyw70W2WOH/igwzfOVqHBxPSurCU6YxH
+        wEkOpPoEv2xWwm6a7bLiW9tbt8M7692eEWBhWTyKA7OHmC/IgVgvkO72HGXojQ0SvaAoib
+        /bQLIpJj1VFAg0Ej8YehB8/VUFNEcW2ew88JgN73+AojuUn//mB8Tv1GcP3eB1NNPqtphq
+        S4khIQBFzuPtperawUGsq3BmEdOg4bh3XSPwjL4h9A1+3VCy4w0hb5wdRZyzeQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1683226954;
+        s=2020e; t=1683226957;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         references:references; bh=Q8MXo4UxfGPWkYiCkH8SfFuLE8nd3MwYFSO4OPkEU0k=;
-        b=HogNRfK+WKVbHXq0EreqUC5qHXGSg3L8ztEoy1FUGNc1//IkmnGiuVjwLox91YGFbTshES
-        iAwGBolutbMvD0Cw==
+         references:references; bh=ALZqTI1WqQMy7B72Ez5E7IdIQ5oXhT4SB1G1mM+q//8=;
+        b=zeGslggBYWDsSd6dEoQqGkVdC/21I+ltkoKmpa5dw1d5iL4yHtQATpFjTDZBiPLB8z5y7b
+        LQX/S5Chy8uvrCAw==
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     x86@kernel.org, David Woodhouse <dwmw2@infradead.org>,
@@ -66,11 +66,11 @@ Cc:     x86@kernel.org, David Woodhouse <dwmw2@infradead.org>,
         Mark Rutland <mark.rutland@arm.com>,
         Sabin Rapan <sabrapan@amazon.com>,
         "Michael Kelley (LINUX)" <mikelley@microsoft.com>
-Subject: [patch V2 22/38] arm64: smp: Switch to hotplug core state synchronization
+Subject: [patch V2 24/38] MIPS: SMP_CPS: Switch to hotplug core state synchronization
 References: <20230504185733.126511787@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-Date:   Thu,  4 May 2023 21:02:34 +0200 (CEST)
+Date:   Thu,  4 May 2023 21:02:37 +0200 (CEST)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
@@ -78,72 +78,135 @@ X-Mailing-List: linux-mips@vger.kernel.org
 From: Thomas Gleixner <tglx@linutronix.de>
 
 Switch to the CPU hotplug core state tracking and synchronization
-mechanim. No functional change intended.
+mechanim. This unfortunately requires to add dead reporting to the non CPS
+platforms as CPS is the only user, but it allows an overall consolidation
+of this functionality.
+
+No functional change intended.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Tested-by: Mark Rutland <mark.rutland@arm.com>
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Will Deacon <will@kernel.org>
-Cc: linux-arm-kernel@lists.infradead.org
+Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc: linux-mips@vger.kernel.org
+
 ---
- arch/arm64/Kconfig           |    1 +
- arch/arm64/include/asm/smp.h |    2 +-
- arch/arm64/kernel/smp.c      |   14 +++++---------
- 3 files changed, 7 insertions(+), 10 deletions(-)
+ arch/mips/Kconfig               |    1 +
+ arch/mips/cavium-octeon/smp.c   |    1 +
+ arch/mips/include/asm/smp-ops.h |    1 +
+ arch/mips/kernel/smp-bmips.c    |    1 +
+ arch/mips/kernel/smp-cps.c      |   14 +++++---------
+ arch/mips/kernel/smp.c          |    8 ++++++++
+ arch/mips/loongson64/smp.c      |    1 +
+ 7 files changed, 18 insertions(+), 9 deletions(-)
 ---
---- a/arch/arm64/Kconfig
-+++ b/arch/arm64/Kconfig
-@@ -222,6 +222,7 @@ config ARM64
- 	select HAVE_KPROBES
- 	select HAVE_KRETPROBES
- 	select HAVE_GENERIC_VDSO
+--- a/arch/mips/Kconfig
++++ b/arch/mips/Kconfig
+@@ -2285,6 +2285,7 @@ config MIPS_CPS
+ 	select MIPS_CM
+ 	select MIPS_CPS_PM if HOTPLUG_CPU
+ 	select SMP
 +	select HOTPLUG_CORE_SYNC_DEAD if HOTPLUG_CPU
- 	select IRQ_DOMAIN
- 	select IRQ_FORCED_THREADING
- 	select KASAN_VMALLOC if KASAN
---- a/arch/arm64/include/asm/smp.h
-+++ b/arch/arm64/include/asm/smp.h
-@@ -99,7 +99,7 @@ static inline void arch_send_wakeup_ipi_
+ 	select SYNC_R4K if (CEVT_R4K || CSRC_R4K)
+ 	select SYS_SUPPORTS_HOTPLUG_CPU
+ 	select SYS_SUPPORTS_SCHED_SMT if CPU_MIPSR6
+--- a/arch/mips/cavium-octeon/smp.c
++++ b/arch/mips/cavium-octeon/smp.c
+@@ -345,6 +345,7 @@ void play_dead(void)
+ 	int cpu = cpu_number_map(cvmx_get_core_num());
  
- extern int __cpu_disable(void);
+ 	idle_task_exit();
++	cpuhp_ap_report_dead();
+ 	octeon_processor_boot = 0xff;
+ 	per_cpu(cpu_state, cpu) = CPU_DEAD;
  
--extern void __cpu_die(unsigned int cpu);
-+static inline void __cpu_die(unsigned int cpu) { }
- extern void __noreturn cpu_die(void);
- extern void __noreturn cpu_die_early(void);
- 
---- a/arch/arm64/kernel/smp.c
-+++ b/arch/arm64/kernel/smp.c
-@@ -332,17 +332,13 @@ static int op_cpu_kill(unsigned int cpu)
- }
- 
- /*
-- * called on the thread which is asking for a CPU to be shutdown -
-- * waits until shutdown has completed, or it is timed out.
-+ * Called on the thread which is asking for a CPU to be shutdown after the
-+ * shutdown completed.
-  */
--void __cpu_die(unsigned int cpu)
-+void arch_cpuhp_cleanup_dead_cpu(unsigned int cpu)
+--- a/arch/mips/include/asm/smp-ops.h
++++ b/arch/mips/include/asm/smp-ops.h
+@@ -33,6 +33,7 @@ struct plat_smp_ops {
+ #ifdef CONFIG_HOTPLUG_CPU
+ 	int (*cpu_disable)(void);
+ 	void (*cpu_die)(unsigned int cpu);
++	void (*cleanup_dead_cpu)(unsigned cpu);
+ #endif
+ #ifdef CONFIG_KEXEC
+ 	void (*kexec_nonboot_cpu)(void);
+--- a/arch/mips/kernel/smp-bmips.c
++++ b/arch/mips/kernel/smp-bmips.c
+@@ -392,6 +392,7 @@ static void bmips_cpu_die(unsigned int c
+ void __ref play_dead(void)
  {
- 	int err;
- 
--	if (!cpu_wait_death(cpu, 5)) {
--		pr_crit("CPU%u: cpu didn't die\n", cpu);
--		return;
--	}
- 	pr_debug("CPU%u: shutdown\n", cpu);
- 
- 	/*
-@@ -369,8 +365,8 @@ void __noreturn cpu_die(void)
- 
- 	local_daif_mask();
- 
--	/* Tell __cpu_die() that this CPU is now safe to dispose of */
--	(void)cpu_report_death();
-+	/* Tell cpuhp_bp_sync_dead() that this CPU is now safe to dispose of */
+ 	idle_task_exit();
 +	cpuhp_ap_report_dead();
  
+ 	/* flush data cache */
+ 	_dma_cache_wback_inv(0, ~0);
+--- a/arch/mips/kernel/smp-cps.c
++++ b/arch/mips/kernel/smp-cps.c
+@@ -503,8 +503,7 @@ void play_dead(void)
+ 		}
+ 	}
+ 
+-	/* This CPU has chosen its way out */
+-	(void)cpu_report_death();
++	cpuhp_ap_report_dead();
+ 
+ 	cps_shutdown_this_cpu(cpu_death);
+ 
+@@ -527,7 +526,9 @@ static void wait_for_sibling_halt(void *
+ 	} while (!(halted & TCHALT_H));
+ }
+ 
+-static void cps_cpu_die(unsigned int cpu)
++static void cps_cpu_die(unsigned int cpu) { }
++
++static void cps_cleanup_dead_cpu(unsigned cpu)
+ {
+ 	unsigned core = cpu_core(&cpu_data[cpu]);
+ 	unsigned int vpe_id = cpu_vpe_id(&cpu_data[cpu]);
+@@ -535,12 +536,6 @@ static void cps_cpu_die(unsigned int cpu
+ 	unsigned stat;
+ 	int err;
+ 
+-	/* Wait for the cpu to choose its way out */
+-	if (!cpu_wait_death(cpu, 5)) {
+-		pr_err("CPU%u: didn't offline\n", cpu);
+-		return;
+-	}
+-
  	/*
- 	 * Actually shutdown the CPU. This must never fail. The specific hotplug
+ 	 * Now wait for the CPU to actually offline. Without doing this that
+ 	 * offlining may race with one or more of:
+@@ -624,6 +619,7 @@ static const struct plat_smp_ops cps_smp
+ #ifdef CONFIG_HOTPLUG_CPU
+ 	.cpu_disable		= cps_cpu_disable,
+ 	.cpu_die		= cps_cpu_die,
++	.cleanup_dead_cpu	= cps_cleanup_dead_cpu,
+ #endif
+ #ifdef CONFIG_KEXEC
+ 	.kexec_nonboot_cpu	= cps_kexec_nonboot_cpu,
+--- a/arch/mips/kernel/smp.c
++++ b/arch/mips/kernel/smp.c
+@@ -690,6 +690,14 @@ void flush_tlb_one(unsigned long vaddr)
+ EXPORT_SYMBOL(flush_tlb_page);
+ EXPORT_SYMBOL(flush_tlb_one);
+ 
++#ifdef CONFIG_HOTPLUG_CPU
++void arch_cpuhp_cleanup_dead_cpu(unsigned int cpu)
++{
++	if (mp_ops->cleanup_dead_cpu)
++		mp_ops->cleanup_dead_cpu(cpu);
++}
++#endif
++
+ #ifdef CONFIG_GENERIC_CLOCKEVENTS_BROADCAST
+ 
+ static void tick_broadcast_callee(void *info)
+--- a/arch/mips/loongson64/smp.c
++++ b/arch/mips/loongson64/smp.c
+@@ -775,6 +775,7 @@ void play_dead(void)
+ 	void (*play_dead_at_ckseg1)(int *);
+ 
+ 	idle_task_exit();
++	cpuhp_ap_report_dead();
+ 
+ 	prid_imp = read_c0_prid() & PRID_IMP_MASK;
+ 	prid_rev = read_c0_prid() & PRID_REV_MASK;
 

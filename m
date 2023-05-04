@@ -2,42 +2,39 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 98148C77B78
-	for <linux-mips@archiver.kernel.org>; Thu,  4 May 2023 18:46:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5D3EFC7EE21
+	for <linux-mips@archiver.kernel.org>; Thu,  4 May 2023 19:02:04 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229941AbjEDSqT (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 4 May 2023 14:46:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43292 "EHLO
+        id S229806AbjEDTCD (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 4 May 2023 15:02:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49954 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229680AbjEDSqS (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Thu, 4 May 2023 14:46:18 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A5F83C33;
-        Thu,  4 May 2023 11:46:17 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
+        with ESMTP id S229719AbjEDTCD (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Thu, 4 May 2023 15:02:03 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 389765247;
+        Thu,  4 May 2023 12:02:02 -0700 (PDT)
+Message-ID: <20230504185936.367031787@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1683225976;
+        s=2020; t=1683226920;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=OIAcVs2YXBnNfaPvpuizW2PEW4lhJ1YnG6MUoZkO7aY=;
-        b=3+tD+LTP2nHbLKQ6ayQSSKK8VpBIuQK3gXforAfUYbXvx4vM+fYGuufKzSpG2saVKOpTsV
-        to0Q6mzIGbAQjDqsOQkje2Tja0U/TKz3F+TviP3kf+19hr3bEm6s4uGo2F+s+PdBgPIGkj
-        gHjK9Yi0pM4GUZc5ZpONvd31Hppwcu+Bcbd8TlaOcVKhOuZIjToIAW5YXeXW3Go5sZpcCh
-        htSi5EE8To3+PKCGlsNtyNrMRTsE8PlVdNzqWmd8pkRxZ1vMQC2VO2mXVu6cVctYauCbM0
-        4H8XFlx6BIILGrhdr/EBrOtC8Cm0866nFAfWkkLlHu0QtdUMHZ2jk6jWm8xf3Q==
+         references:references; bh=Mxn87t9DPEW945il616r0H0SsMXLyUAeJz1AKeylD8A=;
+        b=gN6osUOUj5A4g4ikKpXMxZ7xRrn0bkpwHrNdWYplv0k7rI8gYfItE27E6osNTA/nV1mrk6
+        WWlzivAwHb3vuxBg3D/Ns21CditKMkPPd9EuijqE+Nl5O62KUwKu3kPrFtGxrKeH/ZJJrC
+        NGZ2k4dOGaPPd/q3/QBB7j+SwZjA+XWe0JSQ1Pjv2a+MTO268fjYE3GMmFpYdhCRR1vFB4
+        W35O70R3dhw4wdItVUsrhBSyeS38/14353iSux461nIW3VIT8Vl8zXmiSxiD/GMMsuMkzg
+        wRMAaeVRVTGibV6maAbKj32s9VnEdmCl40bZStr+bAA0dwvsHXYOC5oLT4h4Jw==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1683225976;
+        s=2020e; t=1683226920;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=OIAcVs2YXBnNfaPvpuizW2PEW4lhJ1YnG6MUoZkO7aY=;
-        b=pPb8Wqh2Bj6AkjBEVHoo9nA/DLOEH7EgQ6O+EgS1RtAjQlyepgF0Tr/3dF7rDdC5tR1PRC
-        DisRQOSHrsQxZlDw==
-To:     "Michael Kelley (LINUX)" <mikelley@microsoft.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Cc:     "x86@kernel.org" <x86@kernel.org>,
-        David Woodhouse <dwmw@infradead.org>,
+         references:references; bh=Mxn87t9DPEW945il616r0H0SsMXLyUAeJz1AKeylD8A=;
+        b=11ibvq89apUCBbI307f/UhkVNeawUcpQ0C+FqbsH6snqLrHmocC2FzctyE3MrTYESrxN+r
+        cfzlPdKVby530BCw==
+From:   Thomas Gleixner <tglx@linutronix.de>
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     x86@kernel.org, David Woodhouse <dwmw2@infradead.org>,
         Andrew Cooper <andrew.cooper3@citrix.com>,
         Brian Gerst <brgerst@gmail.com>,
         Arjan van de Veen <arjan@linux.intel.com>,
@@ -49,91 +46,103 @@ Cc:     "x86@kernel.org" <x86@kernel.org>,
         Paul Menzel <pmenzel@molgen.mpg.de>,
         "Guilherme G. Piccoli" <gpiccoli@igalia.com>,
         Piotr Gorski <lucjan.lucjanov@gmail.com>,
-        David Woodhouse <dwmw@amazon.co.uk>,
         Usama Arif <usama.arif@bytedance.com>,
         Juergen Gross <jgross@suse.com>,
         Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>,
+        xen-devel@lists.xenproject.org,
         Russell King <linux@armlinux.org.uk>,
         Arnd Bergmann <arnd@arndb.de>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
+        linux-arm-kernel@lists.infradead.org,
         Catalin Marinas <catalin.marinas@arm.com>,
         Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>,
-        "linux-csky@vger.kernel.org" <linux-csky@vger.kernel.org>,
+        linux-csky@vger.kernel.org,
         Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
+        linux-mips@vger.kernel.org,
         "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
+        Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org,
         Paul Walmsley <paul.walmsley@sifive.com>,
         Palmer Dabbelt <palmer@dabbelt.com>,
-        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
-        Mark Rutland <Mark.Rutland@arm.com>,
-        Sabin Rapan <sabrapan@amazon.com>
-Subject: RE: [patch 00/37] cpu/hotplug, x86: Reworked parallel CPU bringup
-In-Reply-To: <BYAPR21MB168888DC5432883D8866BA40D76A9@BYAPR21MB1688.namprd21.prod.outlook.com>
-References: <20230414225551.858160935@linutronix.de>
- <BYAPR21MB168888DC5432883D8866BA40D76A9@BYAPR21MB1688.namprd21.prod.outlook.com>
-Date:   Thu, 04 May 2023 20:46:15 +0200
-Message-ID: <878re43pfs.ffs@tglx>
+        linux-riscv@lists.infradead.org,
+        Mark Rutland <mark.rutland@arm.com>,
+        Sabin Rapan <sabrapan@amazon.com>,
+        "Michael Kelley (LINUX)" <mikelley@microsoft.com>
+Subject: [patch V2 01/38] x86/smpboot: Cleanup topology_phys_to_logical_pkg()/die()
+References: <20230504185733.126511787@linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=UTF-8
+Date:   Thu,  4 May 2023 21:02:00 +0200 (CEST)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Michael!
+From: Thomas Gleixner <tglx@linutronix.de>
 
-On Thu, Apr 27 2023 at 14:48, Michael Kelley wrote:
-> From: Thomas Gleixner <tglx@linutronix.de> Sent: Friday, April 14, 2023 4:44 PM
->
-> I smoke-tested several Linux guest configurations running on Hyper-V,
-> using the "kernel/git/tglx/devel.git hotplug" tree as updated on April 26th.
-> No functional issues, but encountered one cosmetic issue (details below).
->
-> Configurations tested:
-> *  16 vCPUs and 32 vCPUs
-> *  1 NUMA node and 2 NUMA nodes
-> *  Parallel bring-up enabled and disabled via kernel boot line
-> *  "Normal" VMs and SEV-SNP VMs running with a paravisor on Hyper-V.
->     This config can use parallel bring-up because most of the SNP-ness is
->     hidden in the paravisor.  I was glad to see this work properly.
->
-> There's not much difference in performance with and without parallel
-> bring-up on the 32 vCPU VM.   Without parallel, the time is about 26
-> milliseconds.  With parallel, it's about 24 ms.   So bring-up is already
-> fast in the virtual environment.
+Make topology_phys_to_logical_pkg_die() static as it's only used in
+smpboot.c and fixup the kernel-doc warnings for both functions.
 
-Depends on the environment :)
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 
-> The cosmetic issue is in the dmesg log, and arises because Hyper-V
-> enumerates SMT CPUs differently from many other environments.  In
-> a Hyper-V guest, the SMT threads in a core are numbered as <even, odd>
-> pairs.  Guest CPUs #0 & #1 are SMT threads in core, as are #2 & #3, etc.  With
-> parallel bring-up, here's the dmesg output:
->
-> [    0.444345] smp: Bringing up secondary CPUs ...
-> [    0.445139] .... node  #0, CPUs:    #2  #4  #6  #8 #10 #12 #14 #16 #18 #20 #22 #24 #26 #28 #30
-> [    0.454112] x86: Booting SMP configuration:
-> [    0.456035]       #1  #3  #5  #7  #9 #11 #13 #15 #17 #19 #21 #23 #25 #27 #29 #31
-> [    0.466120] smp: Brought up 1 node, 32 CPUs
-> [    0.467036] smpboot: Max logical packages: 1
-> [    0.468035] smpboot: Total of 32 processors activated (153240.06 BogoMIPS)
->
-> The function announce_cpu() is specifically testing for CPU #1 to output the
-> "Booting SMP configuration" message.  In a Hyper-V guest, CPU #1 is the second
-> SMT thread in a core, so it isn't started until all the even-numbered CPUs are
-> started.
+---
+ arch/x86/include/asm/topology.h |    3 ---
+ arch/x86/kernel/smpboot.c       |   10 ++++++----
+ 2 files changed, 6 insertions(+), 7 deletions(-)
+---
+--- a/arch/x86/include/asm/topology.h
++++ b/arch/x86/include/asm/topology.h
+@@ -139,7 +139,6 @@ static inline int topology_max_smt_threa
+ int topology_update_package_map(unsigned int apicid, unsigned int cpu);
+ int topology_update_die_map(unsigned int dieid, unsigned int cpu);
+ int topology_phys_to_logical_pkg(unsigned int pkg);
+-int topology_phys_to_logical_die(unsigned int die, unsigned int cpu);
+ bool topology_is_primary_thread(unsigned int cpu);
+ bool topology_smt_supported(void);
+ #else
+@@ -149,8 +148,6 @@ topology_update_package_map(unsigned int
+ static inline int
+ topology_update_die_map(unsigned int dieid, unsigned int cpu) { return 0; }
+ static inline int topology_phys_to_logical_pkg(unsigned int pkg) { return 0; }
+-static inline int topology_phys_to_logical_die(unsigned int die,
+-		unsigned int cpu) { return 0; }
+ static inline int topology_max_die_per_package(void) { return 1; }
+ static inline int topology_max_smt_threads(void) { return 1; }
+ static inline bool topology_is_primary_thread(unsigned int cpu) { return true; }
+--- a/arch/x86/kernel/smpboot.c
++++ b/arch/x86/kernel/smpboot.c
+@@ -288,6 +288,7 @@ bool topology_smt_supported(void)
+ 
+ /**
+  * topology_phys_to_logical_pkg - Map a physical package id to a logical
++ * @phys_pkg:	The physical package id to map
+  *
+  * Returns logical package id or -1 if not found
+  */
+@@ -304,15 +305,17 @@ int topology_phys_to_logical_pkg(unsigne
+ 	return -1;
+ }
+ EXPORT_SYMBOL(topology_phys_to_logical_pkg);
++
+ /**
+  * topology_phys_to_logical_die - Map a physical die id to logical
++ * @die_id:	The physical die id to map
++ * @cur_cpu:	The CPU for which the mapping is done
+  *
+  * Returns logical die id or -1 if not found
+  */
+-int topology_phys_to_logical_die(unsigned int die_id, unsigned int cur_cpu)
++static int topology_phys_to_logical_die(unsigned int die_id, unsigned int cur_cpu)
+ {
+-	int cpu;
+-	int proc_id = cpu_data(cur_cpu).phys_proc_id;
++	int cpu, proc_id = cpu_data(cur_cpu).phys_proc_id;
+ 
+ 	for_each_possible_cpu(cpu) {
+ 		struct cpuinfo_x86 *c = &cpu_data(cpu);
+@@ -323,7 +326,6 @@ int topology_phys_to_logical_die(unsigne
+ 	}
+ 	return -1;
+ }
+-EXPORT_SYMBOL(topology_phys_to_logical_die);
+ 
+ /**
+  * topology_update_package_map - Update the physical to logical package map
 
-Ah. Didn't notice that because SMT siblings are usually enumerated after
-all primary ones in ACPI.
-
-> I don't know if this cosmetic issue is worth fixing, but I thought I'd point it out.
-
-That's trivial enough to fix. I'll amend the topmost patch before
-posting V2.
-
-Thanks for giving it a ride!
-
-       tglx

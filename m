@@ -2,450 +2,167 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 65B37C7EE2E
-	for <linux-mips@archiver.kernel.org>; Fri,  5 May 2023 11:35:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 24518C77B75
+	for <linux-mips@archiver.kernel.org>; Fri,  5 May 2023 12:04:40 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229591AbjEELfy (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 5 May 2023 07:35:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41574 "EHLO
+        id S232080AbjEEMEj (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 5 May 2023 08:04:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57744 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231698AbjEELfx (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Fri, 5 May 2023 07:35:53 -0400
-Received: from wnew2-smtp.messagingengine.com (wnew2-smtp.messagingengine.com [64.147.123.27])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E39F61BF;
-        Fri,  5 May 2023 04:35:51 -0700 (PDT)
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
-        by mailnew.west.internal (Postfix) with ESMTP id CF5502B066B8;
-        Fri,  5 May 2023 07:25:53 -0400 (EDT)
+        with ESMTP id S232069AbjEEMEh (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Fri, 5 May 2023 08:04:37 -0400
+Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com [66.111.4.25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D0C39EDF;
+        Fri,  5 May 2023 05:04:32 -0700 (PDT)
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
+        by mailout.nyi.internal (Postfix) with ESMTP id E468D5C02C1;
+        Fri,  5 May 2023 08:04:28 -0400 (EDT)
 Received: from mailfrontend1 ([10.202.2.162])
-  by compute6.internal (MEProxy); Fri, 05 May 2023 07:25:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=cc
-        :cc:content-transfer-encoding:content-type:content-type:date
+  by compute2.internal (MEProxy); Fri, 05 May 2023 08:04:28 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=flygoat.com; h=
+        cc:cc:content-transfer-encoding:content-type:content-type:date
         :date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-        :references:reply-to:sender:subject:subject:to:to; s=fm2; t=
-        1683285953; x=1683293153; bh=WU20FpUx77EC9SQ4SvyGsBOJEHNPQAGkitA
-        hRG2bZ+8=; b=cgeM5GXMn3UxomTuwWA6AkOxgVn1PUeJmY+HSkE1TZA752i4fMf
-        QlYTaJ3UBsrM+xmXXoB8aMPoNfu33v/+uNcOH6qdiut5C/giuLiiL+5xpPL9JQ3q
-        KBZI2kK8gg4c7gD5R7CpKcY87dEyeTl7s1nF18OyeKxj9B28kPMuyI7bzaLQuG7F
-        jUCWx54c1O0WZ7iMU4OguTOmfgUWmsnRtWbzh20WYFo3Z2hV6z0lK9Rpe9SA8+gk
-        xun/BjXaV1djzqXT5STJvMBm9KjZTBCAJ3fnpgoAoMk4b34q1MzQLNEwCiR0sj6I
-        Yfq0t+Rzah7rVMv1mCoZhd7NmbmoteVaanw==
+        :references:reply-to:sender:subject:subject:to:to; s=fm1; t=
+        1683288268; x=1683374668; bh=LAgUMsID5w2avzf9PFHv2O+viyYgaFw1o+N
+        MLyWqG60=; b=H/bh1YSV4eq+4ZpRFAv55gNbJuhPtakE72182LsFotC8j2DgTIu
+        oXRjQ3r1ylDPH9UnBsOZZUYBJmGYmQXCLMb6viGJomasYQWeHOwZ7dDuiEThl3F4
+        CyrqrwejtER3OgqzazlYNnLJhDNIoHOb6Mfqd7GOpfW9CUMA/t43ruOSI/KrvBse
+        pb800EY/VOQmwZufAWJ/nOZoIJtk1yB1d32srLnvHxD+Tu4pp7JYVsL1sMwg9VHl
+        jgmplK0vxqzEjENNnL3IGOgAT4r0JewN+T+3OMNhOPq+Z+TiD9QkcQ2Wws/0LxwM
+        fSi/CQ8wBV7wpYIKsNQsKVmOEn6gs86yfnQ==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:cc:content-transfer-encoding
         :content-type:content-type:date:date:feedback-id:feedback-id
         :from:from:in-reply-to:in-reply-to:message-id:mime-version
         :references:reply-to:sender:subject:subject:to:to:x-me-proxy
         :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=
-        1683285953; x=1683293153; bh=WU20FpUx77EC9SQ4SvyGsBOJEHNPQAGkitA
-        hRG2bZ+8=; b=jr8lN2ghqcDZ5kqJHWWrVG+JVKxrGxFjiL2Fo6F+tO6khTu9uNC
-        3Vzfo/OsYMLD3RLfc+/5PSx3qtINZwp/2/Qs+vt62FUAIp8X+tN87wRyDj5pE/9y
-        PJokTD1FNIRNQR0hzIJGElMJPY0E/L8AV0eT2rJj7nhin7Vj/nnbY7UhIGMzeYDx
-        iZDx76QA1IsHnrUbb92BFyco9yHVZY5Uwf7/Tkjsuw9gRBiv+1/xFABEQxh5Q0cS
-        HziRpz9berfkuczUH/qZ7+c14O98hfnbgHBn//enLqYX0/76S0yKkBeLnX8FTGaH
-        oEkXYF8N3c35dQD5wyXVdIoY4aiurQAwgcA==
-X-ME-Sender: <xms:wOdUZPn2YVsOeYXvI146nyDBWr3nSH3lCpz6TRPAgUE6KZdJu7P3Fg>
-    <xme:wOdUZC36G9DFmwnj6d-CzDtfAPXXtK4y5a-_3scL858H7lwpPNUG_M4edZEEYa5N-
-    tg9xeQ-DK8K9mvYpZU>
-X-ME-Received: <xmr:wOdUZFpLil1rYYbdxZv73ZNsYdbpwpqWCmYK9efiaExczIoN6U3ELq1yOJKPCGV4y-bO_I83vIlHjCvk21D8HlpE9UvyMI4>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrfeefvddggedtucetufdoteggodetrfdotf
+        1683288268; x=1683374668; bh=LAgUMsID5w2avzf9PFHv2O+viyYgaFw1o+N
+        MLyWqG60=; b=XylrgE/FzpOkXP/38f7IkiLZCII9CBUuA/C0RjqY0nZtqr0hqGf
+        Er7A6zovX6ZSrGHXF06ocW3kOCRuzgOv/xGTpJulhNQTKVfxt29zjaa/G5iJ0lqt
+        KjSvcMrONnO05OBuI0KS1as3b1P1THDQtH+bFBQ1TSitaRCdy1iLQZuoZ6uZcCsU
+        3fs1C2g2OqupuruP9j2k+QzxXlssNm28Wvpje/URAZ16jYRL1vR/naHswlqJhY+r
+        /hSL662sDvMg09gEMJKGchvUNrJO9Iba3QU4HIxjJK13TJGD+HT2B1hke8LID+l2
+        Qy3IG/BJhm0l+wH8ALOK1YVSFRQvxAiaVBA==
+X-ME-Sender: <xms:zPBUZCenFASlTO_pgLzfRhj3VVhq5d0yCoMby11dH9buDUo_3bu2Nw>
+    <xme:zPBUZMNR4nxREst3JYpTtvPollr2prRiNpAkDIFvIyjALP4EVamT9MY--NhAiiTxY
+    71yZ2NNPKQ4VngPUNI>
+X-ME-Received: <xmr:zPBUZDha9vKFH-z6S4gVhLTI6TvDejELWo4Qgy4zw5DxGonu_EQgHF0zJ_poyXZRFZVX>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrfeefvddggeejucetufdoteggodetrfdotf
     fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
     uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhephfffufggtgfgkfhfjgfvvefosehtkeertdertdejnecuhfhrohhmpeforgig
-    ihhmvgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrf
-    grthhtvghrnhepudduudfhveejteefgedvffdvvedvjedugedukeejhedtlefhffevtefh
-    jeeltdevnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
-    epmhgrgihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:wOdUZHldcNsAc0CZDFE_9vVcrWupYRHe9dwKRyFTwC0LjLqStRUHWA>
-    <xmx:wOdUZN1GorjN-GCmdgKxvoBp8OzxFMyLWI1u7jCbHAXQD_RK26nEeA>
-    <xmx:wOdUZGtWZeNEW5CaVVPyp59BAgGJLKL2I-3qwPdfa01u7LQiEAVLhw>
-    <xmx:wedUZO9YMlrZ92sVeEfotUdtjLPxcIR6arJIzZeSlMtLRwBRhGDuJ-hp_iA>
-Feedback-ID: i8771445c:Fastmail
+    cujfgurheptggguffhjgffvefgkfhfvffosehtqhhmtdhhtdejnecuhfhrohhmpeflihgr
+    gihunhcujggrnhhguceojhhirgiguhhnrdihrghnghesfhhlhihgohgrthdrtghomheqne
+    cuggftrfgrthhtvghrnhepkeevieelveeiueekveejgeekfffhffekkeeikeejffdvkedt
+    geevfeejuefggeegnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucevlhhushhtvg
+    hrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehjihgrgihunhdrhigrnhhg
+    sehflhihghhorghtrdgtohhm
+X-ME-Proxy: <xmx:zPBUZP8ldsgMnfy2UvAp7WN6LsBGx5BMLD1pUlozbj2itgMI3nc2uQ>
+    <xmx:zPBUZOsLyeVqlHCu9HoNlDHUwGFWdpRRYEoe3WzyZN4aXOf85u9fdg>
+    <xmx:zPBUZGHR2b64arDeGudEgVNbPolyQvcVusVBFG8xKk7SMuVY2Kvxcg>
+    <xmx:zPBUZPluBgGBZ9t0c67HhrGKaSt-vb7M6DnNQK__cSvc9MmKcGMvCg>
+Feedback-ID: ifd894703:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 5 May 2023 07:25:51 -0400 (EDT)
-From:   Maxime Ripard <maxime@cerno.tech>
-Date:   Fri, 05 May 2023 13:25:06 +0200
-Subject: [PATCH v4 04/68] clk: Introduce
- clk_hw_determine_rate_no_reparent()
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Message-Id: <20221018-clk-range-checks-fixes-v4-4-971d5077e7d2@cerno.tech>
-References: <20221018-clk-range-checks-fixes-v4-0-971d5077e7d2@cerno.tech>
-In-Reply-To: <20221018-clk-range-checks-fixes-v4-0-971d5077e7d2@cerno.tech>
-To:     Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>
-Cc:     linux-clk@vger.kernel.org, Maxime Ripard <maxime@cerno.tech>,
-        Abel Vesa <abelvesa@kernel.org>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        =?utf-8?q?Andreas_F=C3=A4rber?= <afaerber@suse.de>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Baolin Wang <baolin.wang@linux.alibaba.com>,
-        Charles Keepax <ckeepax@opensource.cirrus.com>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Chen-Yu Tsai <wenst@chromium.org>,
-        Chunyan Zhang <zhang.lyra@gmail.com>,
-        Claudiu Beznea <claudiu.beznea@microchip.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@gmail.com>,
-        David Lechner <david@lechnology.com>,
-        Dinh Nguyen <dinguyen@kernel.org>,
-        Fabio Estevam <festevam@gmail.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Kishon Vijay Abraham I <kishon@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Luca Ceresoli <luca.ceresoli@bootlin.com>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Markus Schneider-Pargmann <msp@baylibre.com>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Mikko Perttunen <mperttunen@nvidia.com>,
-        Miles Chen <miles.chen@mediatek.com>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Orson Zhai <orsonzhai@gmail.com>,
-        Paul Cercueil <paul@crapouillou.net>,
-        Peng Fan <peng.fan@nxp.com>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        Prashant Gaikwad <pgaikwad@nvidia.com>,
-        Richard Fitzgerald <rf@opensource.cirrus.com>,
-        Samuel Holland <samuel@sholland.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Sekhar Nori <nsekhar@ti.com>, Shawn Guo <shawnguo@kernel.org>,
-        Takashi Iwai <tiwai@suse.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Vinod Koul <vkoul@kernel.org>, dri-devel@lists.freedesktop.org,
-        linux-actions@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
-        linux-phy@lists.infradead.org, linux-renesas-soc@vger.kernel.org,
-        linux-rtc@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-sunxi@lists.linux.dev, linux-tegra@vger.kernel.org,
-        NXP Linux Team <linux-imx@nxp.com>,
-        patches@opensource.cirrus.com,
-        Pengutronix Kernel Team <kernel@pengutronix.de>
-X-Mailer: b4 0.12.2
-X-Developer-Signature: v=1; a=openpgp-sha256; l=10829; i=maxime@cerno.tech;
- h=from:subject:message-id; bh=YBkKiWSHU6AfKueAcHZCOzbYZiY/0bHTLTOJ1X0UewY=;
- b=owGbwMvMwCX2+D1vfrpE4FHG02pJDCkhzxedUy9mc+d6kvbti+3SFwfvMnndXJS6hu1k/TrpDJGw
- on1pHaUsDGJcDLJiiiwxwuZL4k7Net3JxjcPZg4rE8gQBi5OAZjIMUdGhrc1IfwXRIW2N4U5T025te
- 74MuZT1+3CXxzLnmrrU8G66gwjw9XfZ8pdlhx7KvVmQf4Moc++3jnXPGXyivk3x50qOet1hBMA
-X-Developer-Key: i=maxime@cerno.tech; a=openpgp;
- fpr=BE5675C37E818C8B5764241C254BCFC56BF6CE8D
+ 5 May 2023 08:04:26 -0400 (EDT)
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3731.500.231\))
+Subject: Re: [PATCH AUTOSEL 6.3 08/59] bpf, mips: Implement DADDI workarounds
+ for JIT
+From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
+In-Reply-To: <20230504194142.3805425-8-sashal@kernel.org>
+Date:   Fri, 5 May 2023 13:04:14 +0100
+Cc:     linux-kernel@vger.kernel.org,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        =?utf-8?Q?Philippe_Mathieu-Daud=C3=A9?= <philmd@linaro.org>,
+        Johan Almbladh <johan.almbladh@anyfinetworks.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        "paulburton@kernel.org" <paulburton@kernel.org>,
+        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
+        bpf@vger.kernel.org
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <50FCC591-D86A-46A3-AF4A-DD68D2FACC78@flygoat.com>
+References: <20230504194142.3805425-1-sashal@kernel.org>
+ <20230504194142.3805425-8-sashal@kernel.org>
+To:     Sasha Levin <sashal@kernel.org>
+X-Mailer: Apple Mail (2.3731.500.231)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-From: Stephen Boyd <sboyd@kernel.org>
 
-Some clock drivers do not want to allow any reparenting on a given
-clock, but usually do so by not providing any determine_rate
-implementation.
 
-Whenever we call clk_round_rate() or clk_set_rate(), this leads to
-clk_core_can_round() returning false and thus the rest of the function
-either forwarding the rate request to its current parent if
-CLK_SET_RATE_PARENT is set, or just returning the current clock rate.
+> 2023=E5=B9=B45=E6=9C=884=E6=97=A5 20:40=EF=BC=8CSasha Levin =
+<sashal@kernel.org> =E5=86=99=E9=81=93=EF=BC=9A
+>=20
+> From: Jiaxun Yang <jiaxun.yang@flygoat.com>
+>=20
+> [ Upstream commit bbefef2f07080cd502a93cb1c529e1c8a6c4ac8e ]
+>=20
+> For DADDI errata we just workaround by disable immediate operation
+> for BPF_ADD / BPF_SUB to avoid generation of DADDIU.
+>=20
+> All other use cases in JIT won't cause overflow thus they are all =
+safe.
+>=20
+> Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+> Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+> Reviewed-by: Philippe Mathieu-Daud=C3=A9 <philmd@linaro.org>
+> Acked-by: Johan Almbladh <johan.almbladh@anyfinetworks.com>
+> Link: =
+https://lore.kernel.org/bpf/20230228113305.83751-2-jiaxun.yang@flygoat.com=
 
-This behaviour happens implicitly, and as we move forward to making a
-determine_rate implementation required for muxes, we need some way to
-explicitly opt-in for that behaviour.
+> Signed-off-by: Sasha Levin <sashal@kernel.org>
 
-Fortunately, this is exactly what the clk_core_determine_rate_no_reparent()
-function is doing, so we can simply make it available to drivers.
+Hi Sasha,
 
-Cc: Abel Vesa <abelvesa@kernel.org>
-Cc: Alessandro Zummo <a.zummo@towertech.it>
-Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>
-Cc: Alexandre Torgue <alexandre.torgue@foss.st.com>
-Cc: "Andreas Färber" <afaerber@suse.de>
-Cc: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-Cc: Baolin Wang <baolin.wang@linux.alibaba.com>
-Cc: Charles Keepax <ckeepax@opensource.cirrus.com>
-Cc: Chen-Yu Tsai <wens@csie.org>
-Cc: Chen-Yu Tsai <wenst@chromium.org>
-Cc: Chunyan Zhang <zhang.lyra@gmail.com>
-Cc: Claudiu Beznea <claudiu.beznea@microchip.com>
-Cc: Daniel Vetter <daniel@ffwll.ch>
-Cc: David Airlie <airlied@gmail.com>
-Cc: David Lechner <david@lechnology.com>
-Cc: Dinh Nguyen <dinguyen@kernel.org>
-Cc: Fabio Estevam <festevam@gmail.com>
-Cc: Geert Uytterhoeven <geert+renesas@glider.be>
-Cc: Jaroslav Kysela <perex@perex.cz>
-Cc: Jernej Skrabec <jernej.skrabec@gmail.com>
-Cc: Jonathan Hunter <jonathanh@nvidia.com>
-Cc: Kishon Vijay Abraham I <kishon@kernel.org>
-Cc: Liam Girdwood <lgirdwood@gmail.com>
-Cc: Linus Walleij <linus.walleij@linaro.org>
-Cc: Luca Ceresoli <luca.ceresoli@bootlin.com>
-Cc: Manivannan Sadhasivam <mani@kernel.org>
-Cc: Mark Brown <broonie@kernel.org>
-Cc: Markus Schneider-Pargmann <msp@baylibre.com>
-Cc: Max Filippov <jcmvbkbc@gmail.com>
-Cc: Maxime Coquelin <mcoquelin.stm32@gmail.com>
-Cc: Mikko Perttunen <mperttunen@nvidia.com>
-Cc: Miles Chen <miles.chen@mediatek.com>
-Cc: Nicolas Ferre <nicolas.ferre@microchip.com>
-Cc: Orson Zhai <orsonzhai@gmail.com>
-Cc: Paul Cercueil <paul@crapouillou.net>
-Cc: Peng Fan <peng.fan@nxp.com>
-Cc: Peter De Schrijver <pdeschrijver@nvidia.com>
-Cc: Prashant Gaikwad <pgaikwad@nvidia.com>
-Cc: Richard Fitzgerald <rf@opensource.cirrus.com>
-Cc: Samuel Holland <samuel@sholland.org>
-Cc: Sascha Hauer <s.hauer@pengutronix.de>
-Cc: Sekhar Nori <nsekhar@ti.com>
-Cc: Shawn Guo <shawnguo@kernel.org>
-Cc: Takashi Iwai <tiwai@suse.com>
-Cc: Thierry Reding <thierry.reding@gmail.com>
-Cc: Ulf Hansson <ulf.hansson@linaro.org>
-Cc: Vinod Koul <vkoul@kernel.org>
-Cc: dri-devel@lists.freedesktop.org
-Cc: linux-actions@lists.infradead.org
-Cc: linux-arm-kernel@lists.infradead.org
-Cc: linux-mips@vger.kernel.org
-Cc: linux-phy@lists.infradead.org
-Cc: linux-renesas-soc@vger.kernel.org
-Cc: linux-rtc@vger.kernel.org
-Cc: linux-stm32@st-md-mailman.stormreply.com
-Cc: linux-sunxi@lists.linux.dev
-Cc: linux-tegra@vger.kernel.org
-Cc: NXP Linux Team <linux-imx@nxp.com>
-Cc: patches@opensource.cirrus.com
-Cc: Pengutronix Kernel Team <kernel@pengutronix.de>
-Signed-off-by: Stephen Boyd <sboyd@kernel.org>
-Signed-off-by: Maxime Ripard <maxime@cerno.tech>
----
- drivers/clk/clk.c            |  18 +++++
- drivers/clk/clk_test.c       | 152 +++++++++++++++++++++++++++++++++++++++++++
- include/linux/clk-provider.h |   2 +
- 3 files changed, 172 insertions(+)
+I think this patch should count as a functional improvement instead of =
+regression fix.
 
-diff --git a/drivers/clk/clk.c b/drivers/clk/clk.c
-index f57f821a5e5a..5365595433c8 100644
---- a/drivers/clk/clk.c
-+++ b/drivers/clk/clk.c
-@@ -783,6 +783,24 @@ int __clk_mux_determine_rate_closest(struct clk_hw *hw,
- }
- EXPORT_SYMBOL_GPL(__clk_mux_determine_rate_closest);
- 
-+/*
-+ * clk_hw_determine_rate_no_reparent - clk_ops::determine_rate implementation for a clk that doesn't reparent
-+ * @hw: mux type clk to determine rate on
-+ * @req: rate request, also used to return preferred frequency
-+ *
-+ * Helper for finding best parent rate to provide a given frequency.
-+ * This can be used directly as a determine_rate callback (e.g. for a
-+ * mux), or from a more complex clock that may combine a mux with other
-+ * operations.
-+ *
-+ * Returns: 0 on success, -EERROR value on error
-+ */
-+int clk_hw_determine_rate_no_reparent(struct clk_hw *hw,
-+				      struct clk_rate_request *req)
-+{
-+	return clk_core_determine_rate_no_reparent(hw, req);
-+}
-+
- /***        clk api        ***/
- 
- static void clk_core_rate_unprotect(struct clk_core *core)
-diff --git a/drivers/clk/clk_test.c b/drivers/clk/clk_test.c
-index 2cb51153750d..b3ed3b0e4c31 100644
---- a/drivers/clk/clk_test.c
-+++ b/drivers/clk/clk_test.c
-@@ -141,6 +141,12 @@ static const struct clk_ops clk_multiple_parents_mux_ops = {
- 	.determine_rate = __clk_mux_determine_rate_closest,
- };
- 
-+static const struct clk_ops clk_multiple_parents_no_reparent_mux_ops = {
-+	.determine_rate = clk_hw_determine_rate_no_reparent,
-+	.get_parent = clk_multiple_parents_mux_get_parent,
-+	.set_parent = clk_multiple_parents_mux_set_parent,
-+};
-+
- static int clk_test_init_with_ops(struct kunit *test, const struct clk_ops *ops)
- {
- 	struct clk_dummy_context *ctx;
-@@ -2395,10 +2401,156 @@ static struct kunit_suite clk_mux_notifier_test_suite = {
- 	.test_cases = clk_mux_notifier_test_cases,
- };
- 
-+static int
-+clk_mux_no_reparent_test_init(struct kunit *test)
-+{
-+	struct clk_multiple_parent_ctx *ctx;
-+	const char *parents[2] = { "parent-0", "parent-1"};
-+	int ret;
-+
-+	ctx = kunit_kzalloc(test, sizeof(*ctx), GFP_KERNEL);
-+	if (!ctx)
-+		return -ENOMEM;
-+	test->priv = ctx;
-+
-+	ctx->parents_ctx[0].hw.init = CLK_HW_INIT_NO_PARENT("parent-0",
-+							    &clk_dummy_rate_ops,
-+							    0);
-+	ctx->parents_ctx[0].rate = DUMMY_CLOCK_RATE_1;
-+	ret = clk_hw_register(NULL, &ctx->parents_ctx[0].hw);
-+	if (ret)
-+		return ret;
-+
-+	ctx->parents_ctx[1].hw.init = CLK_HW_INIT_NO_PARENT("parent-1",
-+							    &clk_dummy_rate_ops,
-+							    0);
-+	ctx->parents_ctx[1].rate = DUMMY_CLOCK_RATE_2;
-+	ret = clk_hw_register(NULL, &ctx->parents_ctx[1].hw);
-+	if (ret)
-+		return ret;
-+
-+	ctx->current_parent = 0;
-+	ctx->hw.init = CLK_HW_INIT_PARENTS("test-mux", parents,
-+					   &clk_multiple_parents_no_reparent_mux_ops,
-+					   0);
-+	ret = clk_hw_register(NULL, &ctx->hw);
-+	if (ret)
-+		return ret;
-+
-+	return 0;
-+}
-+
-+static void
-+clk_mux_no_reparent_test_exit(struct kunit *test)
-+{
-+	struct clk_multiple_parent_ctx *ctx = test->priv;
-+
-+	clk_hw_unregister(&ctx->hw);
-+	clk_hw_unregister(&ctx->parents_ctx[0].hw);
-+	clk_hw_unregister(&ctx->parents_ctx[1].hw);
-+}
-+
-+/*
-+ * Test that if the we have a mux that cannot change parent and we call
-+ * clk_round_rate() on it with a rate that should cause it to change
-+ * parent, it won't.
-+ */
-+static void clk_mux_no_reparent_round_rate(struct kunit *test)
-+{
-+	struct clk_multiple_parent_ctx *ctx = test->priv;
-+	struct clk_hw *hw = &ctx->hw;
-+	struct clk *clk = clk_hw_get_clk(hw, NULL);
-+	struct clk *other_parent, *parent;
-+	unsigned long other_parent_rate;
-+	unsigned long parent_rate;
-+	long rounded_rate;
-+
-+	parent = clk_get_parent(clk);
-+	KUNIT_ASSERT_PTR_NE(test, parent, NULL);
-+
-+	parent_rate = clk_get_rate(parent);
-+	KUNIT_ASSERT_GT(test, parent_rate, 0);
-+
-+	other_parent = clk_hw_get_clk(&ctx->parents_ctx[1].hw, NULL);
-+	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, other_parent);
-+	KUNIT_ASSERT_FALSE(test, clk_is_match(parent, other_parent));
-+
-+	other_parent_rate = clk_get_rate(other_parent);
-+	KUNIT_ASSERT_GT(test, other_parent_rate, 0);
-+	clk_put(other_parent);
-+
-+	rounded_rate = clk_round_rate(clk, other_parent_rate);
-+	KUNIT_ASSERT_GT(test, rounded_rate, 0);
-+	KUNIT_EXPECT_EQ(test, rounded_rate, parent_rate);
-+
-+	clk_put(clk);
-+}
-+
-+/*
-+ * Test that if the we have a mux that cannot change parent and we call
-+ * clk_set_rate() on it with a rate that should cause it to change
-+ * parent, it won't.
-+ */
-+static void clk_mux_no_reparent_set_rate(struct kunit *test)
-+{
-+	struct clk_multiple_parent_ctx *ctx = test->priv;
-+	struct clk_hw *hw = &ctx->hw;
-+	struct clk *clk = clk_hw_get_clk(hw, NULL);
-+	struct clk *other_parent, *parent;
-+	unsigned long other_parent_rate;
-+	unsigned long parent_rate;
-+	unsigned long rate;
-+	int ret;
-+
-+	parent = clk_get_parent(clk);
-+	KUNIT_ASSERT_PTR_NE(test, parent, NULL);
-+
-+	parent_rate = clk_get_rate(parent);
-+	KUNIT_ASSERT_GT(test, parent_rate, 0);
-+
-+	other_parent = clk_hw_get_clk(&ctx->parents_ctx[1].hw, NULL);
-+	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, other_parent);
-+	KUNIT_ASSERT_FALSE(test, clk_is_match(parent, other_parent));
-+
-+	other_parent_rate = clk_get_rate(other_parent);
-+	KUNIT_ASSERT_GT(test, other_parent_rate, 0);
-+	clk_put(other_parent);
-+
-+	ret = clk_set_rate(clk, other_parent_rate);
-+	KUNIT_ASSERT_EQ(test, ret, 0);
-+
-+	rate = clk_get_rate(clk);
-+	KUNIT_ASSERT_GT(test, rate, 0);
-+	KUNIT_EXPECT_EQ(test, rate, parent_rate);
-+
-+	clk_put(clk);
-+}
-+
-+static struct kunit_case clk_mux_no_reparent_test_cases[] = {
-+	KUNIT_CASE(clk_mux_no_reparent_round_rate),
-+	KUNIT_CASE(clk_mux_no_reparent_set_rate),
-+	{}
-+};
-+
-+/*
-+ * Test suite for a clock mux that isn't allowed to change parent, using
-+ * the clk_hw_determine_rate_no_reparent() helper.
-+ *
-+ * These tests exercise that helper, and the proper selection of
-+ * rates and parents.
-+ */
-+static struct kunit_suite clk_mux_no_reparent_test_suite = {
-+	.name = "clk-mux-no-reparent",
-+	.init = clk_mux_no_reparent_test_init,
-+	.exit = clk_mux_no_reparent_test_exit,
-+	.test_cases = clk_mux_no_reparent_test_cases,
-+};
-+
- kunit_test_suites(
- 	&clk_leaf_mux_set_rate_parent_test_suite,
- 	&clk_test_suite,
- 	&clk_multiple_parents_mux_test_suite,
-+	&clk_mux_no_reparent_test_suite,
- 	&clk_mux_notifier_test_suite,
- 	&clk_orphan_transparent_multiple_parent_mux_test_suite,
- 	&clk_orphan_transparent_single_parent_test_suite,
-diff --git a/include/linux/clk-provider.h b/include/linux/clk-provider.h
-index 28ff6f1a6ada..f8f220fb5dab 100644
---- a/include/linux/clk-provider.h
-+++ b/include/linux/clk-provider.h
-@@ -1333,6 +1333,8 @@ int __clk_mux_determine_rate_closest(struct clk_hw *hw,
- int clk_mux_determine_rate_flags(struct clk_hw *hw,
- 				 struct clk_rate_request *req,
- 				 unsigned long flags);
-+int clk_hw_determine_rate_no_reparent(struct clk_hw *hw,
-+				      struct clk_rate_request *req);
- void clk_hw_reparent(struct clk_hw *hw, struct clk_hw *new_parent);
- void clk_hw_get_rate_range(struct clk_hw *hw, unsigned long *min_rate,
- 			   unsigned long *max_rate);
+Please drop it from stable queue.
 
--- 
-2.40.0
+Thanks
+Jiaxun
+
+> ---
+> arch/mips/Kconfig            | 1 -
+> arch/mips/net/bpf_jit_comp.c | 4 ++++
+> 2 files changed, 4 insertions(+), 1 deletion(-)
+>=20
+> diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
+> index e2f3ca73f40d6..edc7d8790f1e8 100644
+> --- a/arch/mips/Kconfig
+> +++ b/arch/mips/Kconfig
+> @@ -64,7 +64,6 @@ config MIPS
+> select HAVE_DMA_CONTIGUOUS
+> select HAVE_DYNAMIC_FTRACE
+> select HAVE_EBPF_JIT if !CPU_MICROMIPS && \
+> - !CPU_DADDI_WORKAROUNDS && \
+> !CPU_R4000_WORKAROUNDS && \
+> !CPU_R4400_WORKAROUNDS
+> select HAVE_EXIT_THREAD
+> diff --git a/arch/mips/net/bpf_jit_comp.c =
+b/arch/mips/net/bpf_jit_comp.c
+> index b17130d510d49..a40d926b65139 100644
+> --- a/arch/mips/net/bpf_jit_comp.c
+> +++ b/arch/mips/net/bpf_jit_comp.c
+> @@ -218,9 +218,13 @@ bool valid_alu_i(u8 op, s32 imm)
+> /* All legal eBPF values are valid */
+> return true;
+> case BPF_ADD:
+> + if (IS_ENABLED(CONFIG_CPU_DADDI_WORKAROUNDS))
+> + return false;
+> /* imm must be 16 bits */
+> return imm >=3D -0x8000 && imm <=3D 0x7fff;
+> case BPF_SUB:
+> + if (IS_ENABLED(CONFIG_CPU_DADDI_WORKAROUNDS))
+> + return false;
+> /* -imm must be 16 bits */
+> return imm >=3D -0x7fff && imm <=3D 0x8000;
+> case BPF_AND:
+> --=20
+> 2.39.2
+>=20
 

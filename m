@@ -2,36 +2,36 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BBDEEC7EE2C
-	for <linux-mips@archiver.kernel.org>; Mon,  8 May 2023 19:46:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B5F79C7EE2C
+	for <linux-mips@archiver.kernel.org>; Mon,  8 May 2023 19:46:50 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234166AbjEHTqV (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 8 May 2023 15:46:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58044 "EHLO
+        id S234057AbjEHTqt (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 8 May 2023 15:46:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58024 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232084AbjEHTpR (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Mon, 8 May 2023 15:45:17 -0400
+        with ESMTP id S233812AbjEHTqE (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Mon, 8 May 2023 15:46:04 -0400
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B976076BD;
-        Mon,  8 May 2023 12:44:33 -0700 (PDT)
-Message-ID: <20230508185219.070274100@linutronix.de>
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F062972A6;
+        Mon,  8 May 2023 12:44:46 -0700 (PDT)
+Message-ID: <20230508185218.643400362@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1683575061;
+        s=2020; t=1683575047;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         references:references; bh=rNSjycztoby2JMftnREWdlBREDazVhJLVJwM8M2fPkk=;
-        b=OpZe9lLKyKO6h5IfhQv2j9WvmIn2yf65zqaHV7y3wQleqSqr+f6etMGdIS9Efc2LFhQWS0
-        5ftRjwED05+6AZBpiAUMBSD+9Bs4XI7ErbN7ZPJB/dWcAHVXO0162v680HbB1xi5BIj6b6
-        2VmnddYXWQAy5QrMp52rjUb0ug4Nu5d4+araY9u5t682iYzuMEwChigCf9eS54/VMeAbyp
-        FHpBHrvUOTNlGmggxAiWaYQoqPnvlTGipZEoQY9ETwz7wg7cLp6+qhnkF8oJI3QMQlbXXd
-        MwefEeZHkRCA3XHukRzDC06izW3/O9wI5c+MU2Y7YPlYsyj6psxCoZFPmRCp2g==
+         references:references; bh=hx5fWQqpBJqFhc3VD4cFl0lkC1fEFtezXeQ/kkMDuYM=;
+        b=dMSiYiyMCD3/kfD6ycKkp08Cs2yGyR46ibmTbUZ4EPuuwnERkLqo1DPunwf9Bd+Lh282Kk
+        iyz5crAqn34/Z1DU1FdeHq8w2ICxkwvwPupWSapQM5bKWcd06oqKMF65CPiBv3i5Jdq5GK
+        No9UCLkO9a75FWDWNjS5cUfUlOLyZkVKjYuIut6Mde17+klVjF/vsV/x/8XZgC94CcLGgL
+        esCNz6eRqlPWNCIMyIyPzBMIvNBVYenPTUQOWaJr4izZS/Q4K0oHTNZvGzzHj78cMSROKA
+        7adYzjGge8G4Bi2MTD6vyk5VOcXBsF4npN+FHo+bMYD6KtCMSa31T9g3imKuVQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1683575061;
+        s=2020e; t=1683575047;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         references:references; bh=rNSjycztoby2JMftnREWdlBREDazVhJLVJwM8M2fPkk=;
-        b=L+J15yNAu9kuVnMklFhkCkOJaiMb9jA+tCWcI3g0yk74oGzDCt/9UexPGrZp3cttAT1h/e
-        UE8ijpRbZRAquYDA==
+         references:references; bh=hx5fWQqpBJqFhc3VD4cFl0lkC1fEFtezXeQ/kkMDuYM=;
+        b=5H4Y1AwaHO6MuLieAAEsSuc7IElwyyxQTr8AXtmBcHORWW1C5BYTyvmgYBKAcPiBa35CdM
+        lrZnB79si3SXI4BQ==
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     x86@kernel.org, David Woodhouse <dwmw2@infradead.org>,
@@ -66,68 +66,70 @@ Cc:     x86@kernel.org, David Woodhouse <dwmw2@infradead.org>,
         Mark Rutland <mark.rutland@arm.com>,
         Sabin Rapan <sabrapan@amazon.com>,
         "Michael Kelley (LINUX)" <mikelley@microsoft.com>
-Subject: [patch v3 33/36] x86/apic: Save the APIC virtual base address
+Subject: [patch v3 25/36] parisc: Switch to hotplug core state synchronization
 References: <20230508181633.089804905@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-Date:   Mon,  8 May 2023 21:44:20 +0200 (CEST)
+Date:   Mon,  8 May 2023 21:44:07 +0200 (CEST)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
 From: Thomas Gleixner <tglx@linutronix.de>
 
-For parallel CPU brinugp it's required to read the APIC ID in the low level
-startup code. The virtual APIC base address is a constant because its a
-fix-mapped address. Exposing that constant which is composed via macros to
-assembly code is non-trivial dues to header inclusion hell.
-
-Aside of that it's constant only because of the vsyscall ABI
-requirement. Once vsyscall is out of the picture the fixmap can be placed
-at runtime.
-
-Avoid header hell, stay flexible and store the address in a variable which
-can be exposed to the low level startup code.
+Switch to the CPU hotplug core state tracking and synchronization
+mechanim. No functional change intended.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 Tested-by: Michael Kelley <mikelley@microsoft.com>
 
 
 ---
- arch/x86/include/asm/smp.h  |    1 +
- arch/x86/kernel/apic/apic.c |    4 ++++
- 2 files changed, 5 insertions(+)
+ arch/parisc/Kconfig          |    1 +
+ arch/parisc/kernel/process.c |    4 ++--
+ arch/parisc/kernel/smp.c     |    7 +++----
+ 3 files changed, 6 insertions(+), 6 deletions(-)
 ---
 
---- a/arch/x86/include/asm/smp.h
-+++ b/arch/x86/include/asm/smp.h
-@@ -196,6 +196,7 @@ extern void nmi_selftest(void);
- #endif
+--- a/arch/parisc/Kconfig
++++ b/arch/parisc/Kconfig
+@@ -57,6 +57,7 @@ config PARISC
+ 	select HAVE_ARCH_SECCOMP_FILTER
+ 	select HAVE_ARCH_TRACEHOOK
+ 	select HAVE_REGS_AND_STACK_ACCESS_API
++	select HOTPLUG_CORE_SYNC_DEAD if HOTPLUG_CPU
+ 	select GENERIC_SCHED_CLOCK
+ 	select GENERIC_IRQ_MIGRATION if SMP
+ 	select HAVE_UNSTABLE_SCHED_CLOCK if SMP
+--- a/arch/parisc/kernel/process.c
++++ b/arch/parisc/kernel/process.c
+@@ -166,8 +166,8 @@ void __noreturn arch_cpu_idle_dead(void)
  
- extern unsigned int smpboot_control;
-+extern unsigned long apic_mmio_base;
+ 	local_irq_disable();
  
- #endif /* !__ASSEMBLY__ */
+-	/* Tell __cpu_die() that this CPU is now safe to dispose of. */
+-	(void)cpu_report_death();
++	/* Tell the core that this CPU is now safe to dispose of. */
++	cpuhp_ap_report_dead();
  
---- a/arch/x86/kernel/apic/apic.c
-+++ b/arch/x86/kernel/apic/apic.c
-@@ -101,6 +101,9 @@ static int apic_extnmi __ro_after_init =
-  */
- static bool virt_ext_dest_id __ro_after_init;
+ 	/* Ensure that the cache lines are written out. */
+ 	flush_cache_all_local();
+--- a/arch/parisc/kernel/smp.c
++++ b/arch/parisc/kernel/smp.c
+@@ -500,11 +500,10 @@ int __cpu_disable(void)
+ void __cpu_die(unsigned int cpu)
+ {
+ 	pdc_cpu_rendezvous_lock();
++}
  
-+/* For parallel bootup. */
-+unsigned long apic_mmio_base __ro_after_init;
-+
- /*
-  * Map cpu index to physical APIC ID
-  */
-@@ -2163,6 +2166,7 @@ void __init register_lapic_address(unsig
+-	if (!cpu_wait_death(cpu, 5)) {
+-		pr_crit("CPU%u: cpu didn't die\n", cpu);
+-		return;
+-	}
++void arch_cpuhp_cleanup_dead_cpu(unsigned int cpu)
++{
+ 	pr_info("CPU%u: is shutting down\n", cpu);
  
- 	if (!x2apic_mode) {
- 		set_fixmap_nocache(FIX_APIC_BASE, address);
-+		apic_mmio_base = APIC_BASE;
- 		apic_printk(APIC_VERBOSE, "mapped APIC to %16lx (%16lx)\n",
- 			    APIC_BASE, address);
- 	}
+ 	/* set task's state to interruptible sleep */
 
 

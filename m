@@ -2,36 +2,36 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 86DCBC7EE2A
-	for <linux-mips@archiver.kernel.org>; Mon,  8 May 2023 19:46:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BBDEEC7EE2C
+	for <linux-mips@archiver.kernel.org>; Mon,  8 May 2023 19:46:22 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229560AbjEHTqG (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 8 May 2023 15:46:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58036 "EHLO
+        id S234166AbjEHTqV (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 8 May 2023 15:46:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58044 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232518AbjEHTpN (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Mon, 8 May 2023 15:45:13 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA56A728D;
-        Mon,  8 May 2023 12:44:30 -0700 (PDT)
-Message-ID: <20230508185218.354392116@linutronix.de>
+        with ESMTP id S232084AbjEHTpR (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Mon, 8 May 2023 15:45:17 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B976076BD;
+        Mon,  8 May 2023 12:44:33 -0700 (PDT)
+Message-ID: <20230508185219.070274100@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1683575039;
+        s=2020; t=1683575061;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         references:references; bh=XHpNsJs5kSVxMByUTgiKML4QfVv98dxDjLlAQchlqtk=;
-        b=Ki8zOz4u2YoGQTHxRWvDCdJpS9rUfG7Rt8el1sEQonOE93FQ2t/Ouh6saOF5zSGR/sUwqy
-        RGwztYnIhjpNbF8b2PGA4CfI6IE5cG/4pkd5Q33EfIphmoL8ll1Ul99/6dF/RDkEojrYjr
-        EB5pH//XxOfXbRz5/okajpcb/SRh9nL9WoyZaL+b0N+3wBhaYWzQ0JAad4Cix7Pxxq45EN
-        qoUV3fffrtSRueog+x/R851Gsai56IVP/bi8/TS243MY3shbpmrcRDIo+w8Qw8dLxfZrAJ
-        3jwxSYmT//Hz16/1k1wHeOTfsamwVnUrPFdDAmzXRODZAUOo/yfyrnt7BniKSQ==
+         references:references; bh=rNSjycztoby2JMftnREWdlBREDazVhJLVJwM8M2fPkk=;
+        b=OpZe9lLKyKO6h5IfhQv2j9WvmIn2yf65zqaHV7y3wQleqSqr+f6etMGdIS9Efc2LFhQWS0
+        5ftRjwED05+6AZBpiAUMBSD+9Bs4XI7ErbN7ZPJB/dWcAHVXO0162v680HbB1xi5BIj6b6
+        2VmnddYXWQAy5QrMp52rjUb0ug4Nu5d4+araY9u5t682iYzuMEwChigCf9eS54/VMeAbyp
+        FHpBHrvUOTNlGmggxAiWaYQoqPnvlTGipZEoQY9ETwz7wg7cLp6+qhnkF8oJI3QMQlbXXd
+        MwefEeZHkRCA3XHukRzDC06izW3/O9wI5c+MU2Y7YPlYsyj6psxCoZFPmRCp2g==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1683575039;
+        s=2020e; t=1683575061;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         references:references; bh=XHpNsJs5kSVxMByUTgiKML4QfVv98dxDjLlAQchlqtk=;
-        b=nQqE0LEqpdin/188ms5Eh3E7UO6uD16LhW/aIhEdUgOoCpO7X2+xXn/WMrcSUx9PqrxIEc
-        Yg+NuqTDvr5KtUBA==
+         references:references; bh=rNSjycztoby2JMftnREWdlBREDazVhJLVJwM8M2fPkk=;
+        b=L+J15yNAu9kuVnMklFhkCkOJaiMb9jA+tCWcI3g0yk74oGzDCt/9UexPGrZp3cttAT1h/e
+        UE8ijpRbZRAquYDA==
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     x86@kernel.org, David Woodhouse <dwmw2@infradead.org>,
@@ -66,140 +66,68 @@ Cc:     x86@kernel.org, David Woodhouse <dwmw2@infradead.org>,
         Mark Rutland <mark.rutland@arm.com>,
         Sabin Rapan <sabrapan@amazon.com>,
         "Michael Kelley (LINUX)" <mikelley@microsoft.com>
-Subject: [patch v3 20/36] cpu/hotplug: Remove cpu_report_state() and related
- unused cruft
+Subject: [patch v3 33/36] x86/apic: Save the APIC virtual base address
 References: <20230508181633.089804905@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-Date:   Mon,  8 May 2023 21:43:59 +0200 (CEST)
+Date:   Mon,  8 May 2023 21:44:20 +0200 (CEST)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
 From: Thomas Gleixner <tglx@linutronix.de>
 
-No more users.
+For parallel CPU brinugp it's required to read the APIC ID in the low level
+startup code. The virtual APIC base address is a constant because its a
+fix-mapped address. Exposing that constant which is composed via macros to
+assembly code is non-trivial dues to header inclusion hell.
+
+Aside of that it's constant only because of the vsyscall ABI
+requirement. Once vsyscall is out of the picture the fixmap can be placed
+at runtime.
+
+Avoid header hell, stay flexible and store the address in a variable which
+can be exposed to the low level startup code.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 Tested-by: Michael Kelley <mikelley@microsoft.com>
 
 
 ---
- include/linux/cpu.h |    2 -
- kernel/smpboot.c    |   90 ----------------------------------------------------
- 2 files changed, 92 deletions(-)
+ arch/x86/include/asm/smp.h  |    1 +
+ arch/x86/kernel/apic/apic.c |    4 ++++
+ 2 files changed, 5 insertions(+)
 ---
 
---- a/include/linux/cpu.h
-+++ b/include/linux/cpu.h
-@@ -184,8 +184,6 @@ void arch_cpu_idle_enter(void);
- void arch_cpu_idle_exit(void);
- void __noreturn arch_cpu_idle_dead(void);
+--- a/arch/x86/include/asm/smp.h
++++ b/arch/x86/include/asm/smp.h
+@@ -196,6 +196,7 @@ extern void nmi_selftest(void);
+ #endif
  
--int cpu_report_state(int cpu);
--int cpu_check_up_prepare(int cpu);
- void cpu_set_state_online(int cpu);
- void play_idle_precise(u64 duration_ns, u64 latency_ns);
+ extern unsigned int smpboot_control;
++extern unsigned long apic_mmio_base;
  
---- a/kernel/smpboot.c
-+++ b/kernel/smpboot.c
-@@ -329,97 +329,7 @@ EXPORT_SYMBOL_GPL(smpboot_unregister_per
- #ifndef CONFIG_HOTPLUG_CORE_SYNC
- static DEFINE_PER_CPU(atomic_t, cpu_hotplug_state) = ATOMIC_INIT(CPU_POST_DEAD);
+ #endif /* !__ASSEMBLY__ */
  
--/*
-- * Called to poll specified CPU's state, for example, when waiting for
-- * a CPU to come online.
-- */
--int cpu_report_state(int cpu)
--{
--	return atomic_read(&per_cpu(cpu_hotplug_state, cpu));
--}
--
--/*
-- * If CPU has died properly, set its state to CPU_UP_PREPARE and
-- * return success.  Otherwise, return -EBUSY if the CPU died after
-- * cpu_wait_death() timed out.  And yet otherwise again, return -EAGAIN
-- * if cpu_wait_death() timed out and the CPU still hasn't gotten around
-- * to dying.  In the latter two cases, the CPU might not be set up
-- * properly, but it is up to the arch-specific code to decide.
-- * Finally, -EIO indicates an unanticipated problem.
-- *
-- * Note that it is permissible to omit this call entirely, as is
-- * done in architectures that do no CPU-hotplug error checking.
-- */
--int cpu_check_up_prepare(int cpu)
--{
--	if (!IS_ENABLED(CONFIG_HOTPLUG_CPU)) {
--		atomic_set(&per_cpu(cpu_hotplug_state, cpu), CPU_UP_PREPARE);
--		return 0;
--	}
--
--	switch (atomic_read(&per_cpu(cpu_hotplug_state, cpu))) {
--
--	case CPU_POST_DEAD:
--
--		/* The CPU died properly, so just start it up again. */
--		atomic_set(&per_cpu(cpu_hotplug_state, cpu), CPU_UP_PREPARE);
--		return 0;
--
--	case CPU_DEAD_FROZEN:
--
--		/*
--		 * Timeout during CPU death, so let caller know.
--		 * The outgoing CPU completed its processing, but after
--		 * cpu_wait_death() timed out and reported the error. The
--		 * caller is free to proceed, in which case the state
--		 * will be reset properly by cpu_set_state_online().
--		 * Proceeding despite this -EBUSY return makes sense
--		 * for systems where the outgoing CPUs take themselves
--		 * offline, with no post-death manipulation required from
--		 * a surviving CPU.
--		 */
--		return -EBUSY;
--
--	case CPU_BROKEN:
--
--		/*
--		 * The most likely reason we got here is that there was
--		 * a timeout during CPU death, and the outgoing CPU never
--		 * did complete its processing.  This could happen on
--		 * a virtualized system if the outgoing VCPU gets preempted
--		 * for more than five seconds, and the user attempts to
--		 * immediately online that same CPU.  Trying again later
--		 * might return -EBUSY above, hence -EAGAIN.
--		 */
--		return -EAGAIN;
--
--	case CPU_UP_PREPARE:
--		/*
--		 * Timeout while waiting for the CPU to show up. Allow to try
--		 * again later.
--		 */
--		return 0;
--
--	default:
--
--		/* Should not happen.  Famous last words. */
--		return -EIO;
--	}
--}
--
--/*
-- * Mark the specified CPU online.
-- *
-- * Note that it is permissible to omit this call entirely, as is
-- * done in architectures that do no CPU-hotplug error checking.
-- */
--void cpu_set_state_online(int cpu)
--{
--	(void)atomic_xchg(&per_cpu(cpu_hotplug_state, cpu), CPU_ONLINE);
--}
--
- #ifdef CONFIG_HOTPLUG_CPU
--
- /*
-  * Wait for the specified CPU to exit the idle loop and die.
+--- a/arch/x86/kernel/apic/apic.c
++++ b/arch/x86/kernel/apic/apic.c
+@@ -101,6 +101,9 @@ static int apic_extnmi __ro_after_init =
   */
+ static bool virt_ext_dest_id __ro_after_init;
+ 
++/* For parallel bootup. */
++unsigned long apic_mmio_base __ro_after_init;
++
+ /*
+  * Map cpu index to physical APIC ID
+  */
+@@ -2163,6 +2166,7 @@ void __init register_lapic_address(unsig
+ 
+ 	if (!x2apic_mode) {
+ 		set_fixmap_nocache(FIX_APIC_BASE, address);
++		apic_mmio_base = APIC_BASE;
+ 		apic_printk(APIC_VERBOSE, "mapped APIC to %16lx (%16lx)\n",
+ 			    APIC_BASE, address);
+ 	}
 
 

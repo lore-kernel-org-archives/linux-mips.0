@@ -2,79 +2,141 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C3BA7C77B7C
-	for <linux-mips@archiver.kernel.org>; Tue,  9 May 2023 17:45:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 487EDC77B75
+	for <linux-mips@archiver.kernel.org>; Tue,  9 May 2023 17:59:42 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229523AbjEIRpC (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 9 May 2023 13:45:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51160 "EHLO
+        id S234713AbjEIR7k (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 9 May 2023 13:59:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58516 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229491AbjEIRpC (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Tue, 9 May 2023 13:45:02 -0400
-X-Greylist: delayed 600 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 09 May 2023 10:45:00 PDT
-Received: from smtp.dudau.co.uk (dliviu.plus.com [80.229.23.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 8B74430F9;
-        Tue,  9 May 2023 10:45:00 -0700 (PDT)
-Received: from mail.dudau.co.uk (bart.dudau.co.uk [192.168.14.2])
-        by smtp.dudau.co.uk (Postfix) with SMTP id 18C8A41D13BF;
-        Tue,  9 May 2023 18:29:44 +0100 (BST)
-Received: by mail.dudau.co.uk (sSMTP sendmail emulation); Tue, 09 May 2023 18:29:44 +0100
-From:   Liviu Dudau <liviu@dudau.co.uk>
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc:     Paul Burton <paulburton@kernel.org>,
-        John Crispin <john@phrozen.org>,
-        =?UTF-8?q?Ar=C4=B1n=C3=A7=20=C3=9CNAL?= <arinc.unal@arinc9.com>,
-        Sergio Paracuellos <sergio.paracuellos@gmail.com>,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Liviu Dudau <liviu@dudau.co.uk>
-Subject: [PATCH] mips: Move initrd_start check after initrd address sanitisation.
-Date:   Tue,  9 May 2023 18:29:21 +0100
-Message-Id: <20230509172921.295700-1-liviu@dudau.co.uk>
-X-Mailer: git-send-email 2.40.0
+        with ESMTP id S234738AbjEIR7g (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Tue, 9 May 2023 13:59:36 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DEF240F4;
+        Tue,  9 May 2023 10:59:29 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1683655167;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Xum3/PoQhkj8+lZ0cf9sSFx6MXDYkjs5zNnUN+Pv1LU=;
+        b=Nkxxvef/gwwBJnsMEIx+ow4OwBi+0uHyp5RBmTf5nu2aiSk0OvZ3yifQpp8iu0sBDEUJcj
+        a1p/dXIoIW4cJOIsg3u9nq+3ZMGA79rnrh+h78apzOr+Woxv52xV94jRRDOLibuFSvjBwU
+        SUohqreBen1xyv3eEH/AIWmtrxMik/GCCKHEY26BeCG6MKFWZnPkyvuY6oXd/duWViLVW4
+        n9vlzd7qcknLzQIMlzIHP9a/aIzu+mUh7LOMVIovsp4Zig3bcOdy74WIwY4m1K8dtzitFX
+        d+4WVMFQBWUbsdvHH09vwdfFlTvUiShojFdmigWEUDG66lPt7MAObiHtgpD6iQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1683655167;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Xum3/PoQhkj8+lZ0cf9sSFx6MXDYkjs5zNnUN+Pv1LU=;
+        b=hLLA1dOtcFDkk6Slof++fN9bjbnwHItgF9jR7A+4LDWa4ZEHpxGnn+ndm2NGXZQsn8wojt
+        9d63Rl+ydABO0vAQ==
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
+        David Woodhouse <dwmw2@infradead.org>,
+        Andrew Cooper <andrew.cooper3@citrix.com>,
+        Brian Gerst <brgerst@gmail.com>,
+        Arjan van de Veen <arjan@linux.intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Paul McKenney <paulmck@kernel.org>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Oleksandr Natalenko <oleksandr@natalenko.name>,
+        Paul Menzel <pmenzel@molgen.mpg.de>,
+        "Guilherme G. Piccoli" <gpiccoli@igalia.com>,
+        Piotr Gorski <lucjan.lucjanov@gmail.com>,
+        Usama Arif <usama.arif@bytedance.com>,
+        Juergen Gross <jgross@suse.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        xen-devel@lists.xenproject.org,
+        Russell King <linux@armlinux.org.uk>,
+        Arnd Bergmann <arnd@arndb.de>,
+        linux-arm-kernel@lists.infradead.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>,
+        linux-csky@vger.kernel.org,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        linux-mips@vger.kernel.org,
+        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+        Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        linux-riscv@lists.infradead.org,
+        Mark Rutland <mark.rutland@arm.com>,
+        Sabin Rapan <sabrapan@amazon.com>,
+        "Michael Kelley (LINUX)" <mikelley@microsoft.com>,
+        David Woodhouse <dwmw@amazon.co.uk>
+Subject: Re: [patch v3 08/36] x86/smpboot: Split up native_cpu_up() into
+ separate phases and document them
+In-Reply-To: <87pm791zev.ffs@tglx>
+References: <20230508181633.089804905@linutronix.de>
+ <20230508185217.671595388@linutronix.de>
+ <20230509100421.GU83892@hirez.programming.kicks-ass.net>
+ <87pm791zev.ffs@tglx>
+Date:   Tue, 09 May 2023 19:59:26 +0200
+Message-ID: <87o7mtz8qp.ffs@tglx>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-PAGE_OFFSET is technically a virtual address so when checking the value of
-initrd_start against it we should make sure that it has been sanitised from
-the values passed by the bootloader. Without this change, even with a bootloader
-that passes correct addresses for an initrd, we are failing to load it on MT7621
-boards, for example.
+On Tue, May 09 2023 at 14:07, Thomas Gleixner wrote:
+> On Tue, May 09 2023 at 12:04, Peter Zijlstra wrote:
+>> On Mon, May 08, 2023 at 09:43:39PM +0200, Thomas Gleixner wrote:
+>>> +	/*
+>>> +	 * Sync point with wait_cpu_callin(). The AP doesn't wait here
+>>> +	 * but just sets the bit to let the controlling CPU (BSP) know that
+>>> +	 * it's got this far.
+>>> +	 */
+>>>  	smp_callin();
+>>>  
+>>> -	/* otherwise gcc will move up smp_processor_id before the cpu_init */
+>>> +	/* Otherwise gcc will move up smp_processor_id() before cpu_init() */
+>>>  	barrier();
+>>
+>> Not to the detriment of this patch, but this barrier() and it's comment
+>> seem weird vs smp_callin(). That function ends with an atomic bitop (it
+>> has to, at the very least it must not be weaker than store-release) but
+>> also has an explicit wmb() to order setup vs CPU_STARTING.
+>>
+>> (arguably that should be a full fence *AND* get a comment)
+>>
+>> There is no way the smp_processor_id() referred to in this comment can
+>> land before cpu_init() even without the barrier().
+>
+> Right. Let me clean that up.
 
-Signed-off-by: Liviu Dudau <liviu@dudau.co.uk>
----
- arch/mips/kernel/setup.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+So I went and tried to figure out where this comes from. It's from
+d8f19f2cac70 ("[PATCH] x86-64 merge") in the history tree. One of those
+well documented combo patches which change world and some more. The
+context back then was:
 
-diff --git a/arch/mips/kernel/setup.c b/arch/mips/kernel/setup.c
-index febdc5564638e..c0e65135481b7 100644
---- a/arch/mips/kernel/setup.c
-+++ b/arch/mips/kernel/setup.c
-@@ -158,10 +158,6 @@ static unsigned long __init init_initrd(void)
- 		pr_err("initrd start must be page aligned\n");
- 		goto disable;
- 	}
--	if (initrd_start < PAGE_OFFSET) {
--		pr_err("initrd start < PAGE_OFFSET\n");
--		goto disable;
--	}
- 
- 	/*
- 	 * Sanitize initrd addresses. For example firmware
-@@ -174,6 +170,11 @@ static unsigned long __init init_initrd(void)
- 	initrd_end = (unsigned long)__va(end);
- 	initrd_start = (unsigned long)__va(__pa(initrd_start));
- 
-+	if (initrd_start < PAGE_OFFSET) {
-+		pr_err("initrd start < PAGE_OFFSET\n");
-+		goto disable;
-+	}
-+
- 	ROOT_DEV = Root_RAM0;
- 	return PFN_UP(end);
- disable:
--- 
-2.40.0
+	/*
+	 * Dont put anything before smp_callin(), SMP
+	 * booting is too fragile that we want to limit the
+	 * things done here to the most necessary things.
+	 */
+	cpu_init();
+	smp_callin();
+
+	Dprintk("cpu %d: waiting for commence\n", smp_processor_id()); 
+
+That still does not explain what the barrier is doing. I tried to
+harvest mailing list archives, but did not find anything. The back then
+list discuss@x86-64.org was never publicly archived... Boris gave me an
+tarball, but this 'barrier()' add on was nowhere discussed in public.
+
+As the barrier has no obvious value, I'm adding a patch upfront which
+removes it.
+
+Thanks,
+
+        tglx
+
+
+
 

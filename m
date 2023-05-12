@@ -2,36 +2,36 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EF335C77B75
-	for <linux-mips@archiver.kernel.org>; Fri, 12 May 2023 21:08:42 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1ACB9C77B75
+	for <linux-mips@archiver.kernel.org>; Fri, 12 May 2023 21:08:46 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240111AbjELVIk (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 12 May 2023 17:08:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34732 "EHLO
+        id S240137AbjELVIo (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 12 May 2023 17:08:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34220 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239975AbjELVHz (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Fri, 12 May 2023 17:07:55 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEB2AE71A;
-        Fri, 12 May 2023 14:07:28 -0700 (PDT)
-Message-ID: <20230512205256.369512093@linutronix.de>
+        with ESMTP id S239979AbjELVH4 (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Fri, 12 May 2023 17:07:56 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F903CE;
+        Fri, 12 May 2023 14:07:32 -0700 (PDT)
+Message-ID: <20230512205256.263722880@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1683925644;
+        s=2020; t=1683925641;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         references:references; bh=PMK22/HxoxSZKsTx+MtkiiSihvL00YPGs/TFPEL6TlU=;
-        b=okTigxEmoNFjuISzZ3w6/Y2KcJueXtK98ysR49cIhhmzWitrnTsrr30PPjCUMPXry4xftP
-        J52lH1DVgnpuG/Rfq4wLyAmr6aBgTzg3Kcpzk53VYvl1lEluUMhVlu3W9w3D8aZ28W1fnU
-        FYwd2Sfv1zxIrxvZkgBRqufQ3iNj4eO+ry/ohM+Ld/vwoFregiASpdqfC0/pYtJYsd1OgL
-        Vlb3BzT7+3vJnR5zuW45X4PcDsWr4so0XRPW7RLUs94CbintoxNd6G1JVdbZNrIt24RqAz
-        6rW20AhO6LWDKJUuEPLhETfdZ7aGAlZBRDu8S8t35nsN64xoJdMY+fi5MrLE5Q==
+         references:references; bh=6HcPZ1S0gKGilIW8DEzs+8FA47mShbE6fcxT9xps3qM=;
+        b=wq6r7KiTpvagWfasCy7BpMaZc62MAFu3oUyN8IkTQnL9aLQt2J8dO9GuPVqDCozi0utj8B
+        4IkD4xWAu5eTIAkrXomOEfRirhMpcSmjIuqx0o7p3I34k341WcbR0oawavbm30EBV5G/SQ
+        pqVHGdr8O5AONZrQcM1b3A+l1qf3n3+2rHPsKgwNOlF2vQ3k5Npt0LMG9aJW+erlOl1Ibn
+        pyPvj+RRfga1j85S0Dc2olvz/HEP4GwJI0tr9/CeQrVpZHiYB9toQXczVgnAW4f1NLnOxh
+        6UTdAjUh2XFk2HO9QVoMZ6pTiLkYX7+zo/CatpFvhsqM4XVqS07nh/cjtfBz3A==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1683925644;
+        s=2020e; t=1683925641;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         references:references; bh=PMK22/HxoxSZKsTx+MtkiiSihvL00YPGs/TFPEL6TlU=;
-        b=6Ab3fDB1sVd28x5lyL9nkWKGbymDr5R+6KRuErqPsWXwifdYJwrujMAzLpyfU/ZQhUUikY
-        XNL6casob2M1EbBA==
+         references:references; bh=6HcPZ1S0gKGilIW8DEzs+8FA47mShbE6fcxT9xps3qM=;
+        b=kLfIJYpL8LcaVnGjQ4Dcmt10BIgjcw/Luxkj9XlqF3gpecWWEb7C3Qu2IrxE2br/1iTpq7
+        mpK48/gsNDr9qICw==
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     x86@kernel.org, David Woodhouse <dwmw2@infradead.org>,
@@ -67,49 +67,94 @@ Cc:     x86@kernel.org, David Woodhouse <dwmw2@infradead.org>,
         Sabin Rapan <sabrapan@amazon.com>,
         "Michael Kelley (LINUX)" <mikelley@microsoft.com>,
         Ross Philipson <ross.philipson@oracle.com>
-Subject: [patch V4 17/37] x86/xen/smp_pv: Remove wait for CPU online
+Subject: [patch V4 15/37] cpu/hotplug: Rework sparse_irq locking in bringup_cpu()
 References: <20230512203426.452963764@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-Date:   Fri, 12 May 2023 23:07:24 +0200 (CEST)
+Date:   Fri, 12 May 2023 23:07:21 +0200 (CEST)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
 From: Thomas Gleixner <tglx@linutronix.de>
 
-Now that the core code drops sparse_irq_lock after the idle thread
-synchronized, it's pointless to wait for the AP to mark itself online.
-
-Whether the control CPU runs in a wait loop or sleeps in the core code
-waiting for the online operation to complete makes no difference.
+There is no harm to hold sparse_irq lock until the upcoming CPU completes
+in cpuhp_online_idle(). This allows to remove cpu_online() synchronization
+from architecture code.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 Tested-by: Michael Kelley <mikelley@microsoft.com>
 ---
- arch/x86/xen/smp_pv.c |   10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+V4: Amend comment about sparse irq lock - Peter Z.
+---
+ kernel/cpu.c |   34 ++++++++++++++++++++++++----------
+ 1 file changed, 24 insertions(+), 10 deletions(-)
 
-
---- a/arch/x86/xen/smp_pv.c
-+++ b/arch/x86/xen/smp_pv.c
-@@ -340,11 +340,11 @@ static int xen_pv_cpu_up(unsigned int cp
- 
- 	xen_pmu_init(cpu);
- 
--	rc = HYPERVISOR_vcpu_op(VCPUOP_up, xen_vcpu_nr(cpu), NULL);
--	BUG_ON(rc);
--
--	while (cpu_report_state(cpu) != CPU_ONLINE)
--		HYPERVISOR_sched_op(SCHEDOP_yield, NULL);
-+	/*
-+	 * Why is this a BUG? If the hypercall fails then everything can be
-+	 * rolled back, no?
-+	 */
-+	BUG_ON(HYPERVISOR_vcpu_op(VCPUOP_up, xen_vcpu_nr(cpu), NULL));
- 
- 	return 0;
+--- a/kernel/cpu.c
++++ b/kernel/cpu.c
+@@ -558,7 +558,7 @@ static int cpuhp_kick_ap(int cpu, struct
+ 	return ret;
  }
-
-
+ 
+-static int bringup_wait_for_ap(unsigned int cpu)
++static int bringup_wait_for_ap_online(unsigned int cpu)
+ {
+ 	struct cpuhp_cpu_state *st = per_cpu_ptr(&cpuhp_state, cpu);
+ 
+@@ -579,15 +579,12 @@ static int bringup_wait_for_ap(unsigned
+ 	 */
+ 	if (!cpu_smt_allowed(cpu))
+ 		return -ECANCELED;
+-
+-	if (st->target <= CPUHP_AP_ONLINE_IDLE)
+-		return 0;
+-
+-	return cpuhp_kick_ap(cpu, st, st->target);
++	return 0;
+ }
+ 
+ static int bringup_cpu(unsigned int cpu)
+ {
++	struct cpuhp_cpu_state *st = per_cpu_ptr(&cpuhp_state, cpu);
+ 	struct task_struct *idle = idle_thread_get(cpu);
+ 	int ret;
+ 
+@@ -600,16 +597,33 @@ static int bringup_cpu(unsigned int cpu)
+ 	/*
+ 	 * Some architectures have to walk the irq descriptors to
+ 	 * setup the vector space for the cpu which comes online.
+-	 * Prevent irq alloc/free across the bringup.
++	 *
++	 * Prevent irq alloc/free across the bringup by acquiring the
++	 * sparse irq lock. Hold it until the upcoming CPU completes the
++	 * startup in cpuhp_online_idle() which allows to avoid
++	 * intermediate synchronization points in the architecture code.
+ 	 */
+ 	irq_lock_sparse();
+ 
+ 	/* Arch-specific enabling code. */
+ 	ret = __cpu_up(cpu, idle);
+-	irq_unlock_sparse();
+ 	if (ret)
+-		return ret;
+-	return bringup_wait_for_ap(cpu);
++		goto out_unlock;
++
++	ret = bringup_wait_for_ap_online(cpu);
++	if (ret)
++		goto out_unlock;
++
++	irq_unlock_sparse();
++
++	if (st->target <= CPUHP_AP_ONLINE_IDLE)
++		return 0;
++
++	return cpuhp_kick_ap(cpu, st, st->target);
++
++out_unlock:
++	irq_unlock_sparse();
++	return ret;
+ }
+ 
+ static int finish_cpu(unsigned int cpu)
 

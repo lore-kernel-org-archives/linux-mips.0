@@ -2,52 +2,53 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 67375C77B7F
-	for <linux-mips@archiver.kernel.org>; Fri, 12 May 2023 10:38:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 28F91C7EE25
+	for <linux-mips@archiver.kernel.org>; Fri, 12 May 2023 10:38:14 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240444AbjELKiG (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 12 May 2023 06:38:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38114 "EHLO
+        id S240734AbjELKiM (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 12 May 2023 06:38:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38188 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240319AbjELKiF (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Fri, 12 May 2023 06:38:05 -0400
-Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C62C2173F;
-        Fri, 12 May 2023 03:37:32 -0700 (PDT)
-Received: by mail-pf1-x432.google.com with SMTP id d2e1a72fcca58-64395e2a715so9825416b3a.3;
-        Fri, 12 May 2023 03:37:32 -0700 (PDT)
+        with ESMTP id S240707AbjELKiJ (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Fri, 12 May 2023 06:38:09 -0400
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5618D59D1;
+        Fri, 12 May 2023 03:37:38 -0700 (PDT)
+Received: by mail-pf1-x42d.google.com with SMTP id d2e1a72fcca58-6434e263962so7280552b3a.2;
+        Fri, 12 May 2023 03:37:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1683887851; x=1686479851;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=IgQuUXmZ4WixIr+d0XxzAxPcJbzSxGbi2RXLR6xLwjE=;
-        b=LsZnkVp2z5gmBN59ZR6NmCkIlcYpFR+zYSP8VdW0xUsUued/kO7rFSV40YrS/rVOoa
-         o0cER8YR4yfJKbI3cRE5nCX8gBkMs72tcNKfgzwHO4LCiXniphKa8IqWPFQy+sbxtN/M
-         NegSZrFMIJHKY/5WCPDJLUaHpam+Ke3UQtsFskWqF+AXXqx01LWEV2bRlU9TItWG043w
-         sabR8m3ldxyJgFuyQB+uCOWzR6cxU7PmiHb4s8mjlIkdimL/0zFHlpdsZkgstC28WSel
-         awXDU7wZUkiRfT3AO9oGv8TkBBiSsXYwob3lDvzN7OR9KxCkbEAq4eWgqQBxTNtqb+fw
-         ovJQ==
+        d=gmail.com; s=20221208; t=1683887857; x=1686479857;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=O4pkWtf5ZbvB3Mwr1DSQ73VhT77HryuyM9DctWSrkJQ=;
+        b=H7uyjFa2PQA21s7dZHna6CDOrkAJ1pbPcQPEJE6y4lY7fXow3TYcfSJo2hlc2Gv07R
+         m11qvMNRrigLnTGxhLv68NITruFcPp25OZJLWr3tyCJStQJwMA+MXlac0WGgJSBsEdEi
+         7f/8HSLYBwLGRp74MK1eX8LfdXRjeAcBpFR8SN2z2VMJ30ssgq4fdslhBGRyH7uDo56c
+         DAFv6URrKny/4ze/s9GJQXszLrb5rg0K9d3icMCPziNl9jKvbgjwIypH50HVoNmnGXc9
+         pt8ncfVGPbeQnmkJf5UXXAooO4pnzVnG1Ry6H8+6vDdAOuEhsb7PPH8/x0Uq20KrxAUq
+         wXJw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1683887851; x=1686479851;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=IgQuUXmZ4WixIr+d0XxzAxPcJbzSxGbi2RXLR6xLwjE=;
-        b=bGih5u31i8chjFPtjBe7o1npu/YWaFjaR9YYcg07Tc8CL9hY5by5zwZm8vSGkNrTe8
-         /GNwbTDO5kHD5QO1WQ4s5g1HTQ5+vTWvCwWNnTesp0jqEKZ38BNhWbEe+9T0uTdlAhyU
-         Y/nf2H+GkmomK7y/umNP9GBQlJPIycTOmHcMb86o6ikNR7JbXtiQYKniQ6Rde5pypMQN
-         16/P0nKpQ5qt7R0vNVgNHIb9f2PB2ejm6cRNPnKB6yU+mpxhf1MX9e+zapKpmbMhUgl2
-         ARNTA76MicqO8cKmsbbQIh0IPM970YSI7CyNXamCGn7MckyLX9IbuCeCBQ/kTum9v8ac
-         xYHQ==
-X-Gm-Message-State: AC+VfDxK2NKrf8r7yaID9F6m/Bl864wbJ508wLRelmAiTwFZomQ0em5N
-        Fcqs4t0JE32tQm5jRD0JSFV481lu/ZBBYn/p
-X-Google-Smtp-Source: ACHHUZ7axvkFryBWCSaFpqkGoWejsIOwOUONkvM7CqGo0HKtZXYBYOzUgOQhiqiU2lcA6/lEPRLw2Q==
-X-Received: by 2002:a05:6a00:b55:b0:648:c1be:496 with SMTP id p21-20020a056a000b5500b00648c1be0496mr11634178pfo.22.1683887850992;
-        Fri, 12 May 2023 03:37:30 -0700 (PDT)
+        d=1e100.net; s=20221208; t=1683887857; x=1686479857;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=O4pkWtf5ZbvB3Mwr1DSQ73VhT77HryuyM9DctWSrkJQ=;
+        b=fSopqB13Iti7QOLC3/f/tZiGLUx9d6T1UWDKBGKDIj2jzNpiubvR4pg/272becGLCk
+         P6CdzIECLQTRPrK3bdy+z3RzLQ4yG79F/eBarp48tByyr9Mn70cJ67crC3xH2DIJWIyC
+         uwC/FFzQWCwQilS7X1lmAYjuZoZsqsb6brLzXr/yOsx3gxyJ3DNQ38iqBHiqN5b2SCNY
+         UJjGk7mI3Z1gaIMtCnljL+SoFwkfdizydrRFlkrITjpA/PNmc76sVyR3B78Glx8OQctC
+         JIEtql1Dkf8KoGB7UCI6CUDYqLcKKbdatdBLmkFCgo3ZrtOHqii7x1mq5w2CchhE5QHZ
+         jp7g==
+X-Gm-Message-State: AC+VfDwzB06xUq4aLHcQEIKJmKjIcZcMLXVS0yGktbK1H1ySrTmICbIL
+        hhF0RRwKlClbcU04hHC/DVp9SbQtotIkY7dk
+X-Google-Smtp-Source: ACHHUZ6UYkantohKHOwH1sweJxcQcbFw0OgVlZhvmpXs4SaMqrMlnA544OMSqnS1dc2LJlhdQMfSrQ==
+X-Received: by 2002:a05:6a00:2448:b0:63d:3789:733f with SMTP id d8-20020a056a00244800b0063d3789733fmr30478169pfj.15.1683887857081;
+        Fri, 12 May 2023 03:37:37 -0700 (PDT)
 Received: from kelvin-ThinkPad-L14-Gen-1.lan ([103.184.129.7])
-        by smtp.gmail.com with ESMTPSA id k5-20020aa792c5000000b0063b89300347sm7009485pfa.142.2023.05.12.03.37.28
+        by smtp.gmail.com with ESMTPSA id k5-20020aa792c5000000b0063b89300347sm7009485pfa.142.2023.05.12.03.37.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 May 2023 03:37:30 -0700 (PDT)
+        Fri, 12 May 2023 03:37:36 -0700 (PDT)
 From:   Keguang Zhang <keguang.zhang@gmail.com>
 To:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
         linux-mips@vger.kernel.org
@@ -58,45 +59,84 @@ Cc:     Daniel Lezcano <daniel.lezcano@linaro.org>,
         Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
         Stephen Boyd <sboyd@kernel.org>,
         Keguang Zhang <keguang.zhang@gmail.com>
-Subject: [PATCH v4 0/3] Move Loongson1 PWM timer to clocksource framework
-Date:   Fri, 12 May 2023 18:37:21 +0800
-Message-Id: <20230512103724.587760-1-keguang.zhang@gmail.com>
+Subject: [PATCH v4 2/3] dt-bindings: timer: Add Loongson-1 clocksource
+Date:   Fri, 12 May 2023 18:37:23 +0800
+Message-Id: <20230512103724.587760-3-keguang.zhang@gmail.com>
 X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20230512103724.587760-1-keguang.zhang@gmail.com>
+References: <20230512103724.587760-1-keguang.zhang@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Move Loongson1 PWM timer to clocksource framework.
-Adapt the driver to clocksource framework with devicetree support.
-Update the Kconfig/Makefile options accordingly.
+Add devicetree binding document for Loongson-1 clocksource.
 
-Changelog
+Signed-off-by: Keguang Zhang <keguang.zhang@gmail.com>
+---
 V3 -> V4: Replaced the wildcard compatible string with specific one
-V2 -> V3: Remove the reference to regs-pwm.h
-V1 -> V2: Delete the obsolete header file regs-pwm.h
-
-Keguang Zhang (3):
-  MIPS: Loongson32: Remove deprecated PWM timer clocksource
-  dt-bindings: timer: Add Loongson-1 clocksource
-  clocksource: loongson1: Move PWM timer to clocksource framework
-
- .../timer/loongson,ls1x-pwmtimer.yaml         |  48 ++++
- .../include/asm/mach-loongson32/loongson1.h   |   1 -
- .../include/asm/mach-loongson32/regs-pwm.h    |  25 --
- arch/mips/loongson32/Kconfig                  |  37 ---
- arch/mips/loongson32/common/time.c            | 210 ----------------
- drivers/clocksource/Kconfig                   |   9 +
- drivers/clocksource/Makefile                  |   1 +
- drivers/clocksource/timer-loongson1-pwm.c     | 236 ++++++++++++++++++
- 8 files changed, 294 insertions(+), 273 deletions(-)
+V2 -> V3: None
+V1 -> V2: None
+---
+ .../timer/loongson,ls1x-pwmtimer.yaml         | 48 +++++++++++++++++++
+ 1 file changed, 48 insertions(+)
  create mode 100644 Documentation/devicetree/bindings/timer/loongson,ls1x-pwmtimer.yaml
- delete mode 100644 arch/mips/include/asm/mach-loongson32/regs-pwm.h
- create mode 100644 drivers/clocksource/timer-loongson1-pwm.c
 
-
-base-commit: 31c6ed4e89187beef8fe2f979c8881ca94839427
+diff --git a/Documentation/devicetree/bindings/timer/loongson,ls1x-pwmtimer.yaml b/Documentation/devicetree/bindings/timer/loongson,ls1x-pwmtimer.yaml
+new file mode 100644
+index 000000000000..ad61ae55850b
+--- /dev/null
++++ b/Documentation/devicetree/bindings/timer/loongson,ls1x-pwmtimer.yaml
+@@ -0,0 +1,48 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/timer/loongson,ls1x-pwmtimer.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Loongson-1 PWM timer
++
++maintainers:
++  - Keguang Zhang <keguang.zhang@gmail.com>
++
++description:
++  Loongson-1 PWM timer can be used for system clock source
++  and clock event timers.
++
++properties:
++  compatible:
++    const: loongson,ls1b-pwmtimer
++
++  reg:
++    maxItems: 1
++
++  clocks:
++    maxItems: 1
++
++  interrupts:
++    maxItems: 1
++
++required:
++  - compatible
++  - reg
++  - clocks
++  - interrupts
++
++additionalProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/clock/loongson,ls1x-clk.h>
++    #include <dt-bindings/interrupt-controller/irq.h>
++    clocksource: timer@1fe5c030 {
++        compatible = "loongson,ls1b-pwmtimer";
++        reg = <0x1fe5c030 0x10>;
++
++        clocks = <&clkc LS1X_CLKID_APB>;
++        interrupt-parent = <&intc0>;
++        interrupts = <20 IRQ_TYPE_LEVEL_HIGH>;
++    };
 -- 
 2.39.2
 

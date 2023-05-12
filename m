@@ -2,36 +2,36 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1E3D7C7EE2D
-	for <linux-mips@archiver.kernel.org>; Fri, 12 May 2023 21:10:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D1005C77B75
+	for <linux-mips@archiver.kernel.org>; Fri, 12 May 2023 21:11:11 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240575AbjELVKy (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 12 May 2023 17:10:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34380 "EHLO
+        id S240600AbjELVLK (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 12 May 2023 17:11:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34668 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240544AbjELVKZ (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Fri, 12 May 2023 17:10:25 -0400
+        with ESMTP id S239180AbjELVKo (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Fri, 12 May 2023 17:10:44 -0400
 Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A46E910A3A;
-        Fri, 12 May 2023 14:08:56 -0700 (PDT)
-Message-ID: <20230512205257.186599880@linutronix.de>
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA9D7E70C;
+        Fri, 12 May 2023 14:09:10 -0700 (PDT)
+Message-ID: <20230512205257.299231005@linutronix.de>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1683925669;
+        s=2020; t=1683925672;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         references:references; bh=Sn7EVHuimLKHkyL78WG8/WoMj36d51IE8hgcVFYO1Jg=;
-        b=PgR2wWsegIPAljVCteHv3vb3ZngXvLBqfIDF3Gmbh21DDdZ1EJBxDZerQjkrUY9SqyqwSI
-        7aCqhJcqE5EKxRul/Ekwl/+galMZgMYU/gsWyFePML5w0XtzpexbnbzcNH1ipLbmFtfUSJ
-        sqj9mWlGmLa0srSDuSb3SK3zhOMPqX+olbYzQ/7oto5OTbOj13kWkRgiBByPBzkoOvyiFh
-        s9BOzttECCt/mEPHn8jSQ7MwBRnl2KjLKTxaYYSTCPXPM0LOj5hC/jqAIJeZJlskC6CODd
-        HffzltHP+m0RInj+D1XpyMr21HkCoSFtFqybeYAqvqEeQaISI8zQCoQUIG6Y3A==
+         references:references; bh=1NEBWklEox1EHC85h866UHlaj72PU/D3Dw3p+jMC/F0=;
+        b=AxLTeRaqaMDLy4ioLj6zEL9HPmP3cx+s/iQLQ36KY9z4ru+T511Ht9KAXa6I3GInzxRIU1
+        auZCeKjxgzcWperPNzAB6/xoxSxZZT3u87ymCz3VAy/9CvphzwHc79I4z9See9dnYiwzvz
+        bYSv0JUTpntUltbnxM2mkF4WxFblikPEgXHSvRGwaVfq73pCN36um7FFZl4vXhlXIHBRyk
+        wdNVsJkRU8XRhNBC0JX4ba3dJqo9Z0BrkVvSLSPvH7jhRowqf1Jy1tcFMxYdxDiUMofIyI
+        JqzBNBvPaJetJyHovLVoc2IeuKZ0XpgQRph7CuJjaFv7vGl5Yd3+ReqjtvieoQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1683925669;
+        s=2020e; t=1683925672;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         references:references; bh=Sn7EVHuimLKHkyL78WG8/WoMj36d51IE8hgcVFYO1Jg=;
-        b=n6leXlfK754qoJremHc8EPvPr8gU3EoTvqoTXngFAP+h9W+kwsO3dRJXP1shvFCuejE5tj
-        W/Ol0BleyOREMyCg==
+         references:references; bh=1NEBWklEox1EHC85h866UHlaj72PU/D3Dw3p+jMC/F0=;
+        b=RcKUBGkIIKdhAcY84iUu32ds5jxMMcMhQacX7+NkfuyvLzMFgdSYMRTqeLxsIuyjcb0y9C
+        Eb2r1CihAReSwIBw==
 From:   Thomas Gleixner <tglx@linutronix.de>
 To:     LKML <linux-kernel@vger.kernel.org>
 Cc:     x86@kernel.org, David Woodhouse <dwmw2@infradead.org>,
@@ -67,151 +67,67 @@ Cc:     x86@kernel.org, David Woodhouse <dwmw2@infradead.org>,
         Sabin Rapan <sabrapan@amazon.com>,
         "Michael Kelley (LINUX)" <mikelley@microsoft.com>,
         Ross Philipson <ross.philipson@oracle.com>
-Subject: [patch V4 32/37] x86/apic: Provide cpu_primary_thread mask
+Subject: [patch V4 34/37] x86/apic: Save the APIC virtual base address
 References: <20230512203426.452963764@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-Date:   Fri, 12 May 2023 23:07:48 +0200 (CEST)
+Date:   Fri, 12 May 2023 23:07:51 +0200 (CEST)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
 From: Thomas Gleixner <tglx@linutronix.de>
 
-Make the primary thread tracking CPU mask based in preparation for simpler
-handling of parallel bootup.
+For parallel CPU brinugp it's required to read the APIC ID in the low level
+startup code. The virtual APIC base address is a constant because its a
+fix-mapped address. Exposing that constant which is composed via macros to
+assembly code is non-trivial due to header inclusion hell.
+
+Aside of that it's constant only because of the vsyscall ABI
+requirement. Once vsyscall is out of the picture the fixmap can be placed
+at runtime.
+
+Avoid header hell, stay flexible and store the address in a variable which
+can be exposed to the low level startup code.
 
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 Tested-by: Michael Kelley <mikelley@microsoft.com>
 ---
- arch/x86/include/asm/apic.h     |    2 --
- arch/x86/include/asm/topology.h |   19 +++++++++++++++----
- arch/x86/kernel/apic/apic.c     |   20 +++++++++-----------
- arch/x86/kernel/smpboot.c       |   12 +++---------
- 4 files changed, 27 insertions(+), 26 deletions(-)
---- a/arch/x86/include/asm/apic.h
-+++ b/arch/x86/include/asm/apic.h
-@@ -506,10 +506,8 @@ extern int default_check_phys_apicid_pre
- #endif /* CONFIG_X86_LOCAL_APIC */
- 
- #ifdef CONFIG_SMP
--bool apic_id_is_primary_thread(unsigned int id);
- void apic_smt_update(void);
- #else
--static inline bool apic_id_is_primary_thread(unsigned int id) { return false; }
- static inline void apic_smt_update(void) { }
+V4: Fixed changelog typo - Sergey
+---
+ arch/x86/include/asm/smp.h  |    1 +
+ arch/x86/kernel/apic/apic.c |    4 ++++
+ 2 files changed, 5 insertions(+)
+--- a/arch/x86/include/asm/smp.h
++++ b/arch/x86/include/asm/smp.h
+@@ -196,6 +196,7 @@ extern void nmi_selftest(void);
  #endif
  
---- a/arch/x86/include/asm/topology.h
-+++ b/arch/x86/include/asm/topology.h
-@@ -31,9 +31,9 @@
-  * CONFIG_NUMA.
-  */
- #include <linux/numa.h>
-+#include <linux/cpumask.h>
+ extern unsigned int smpboot_control;
++extern unsigned long apic_mmio_base;
  
- #ifdef CONFIG_NUMA
--#include <linux/cpumask.h>
+ #endif /* !__ASSEMBLY__ */
  
- #include <asm/mpspec.h>
- #include <asm/percpu.h>
-@@ -139,9 +139,20 @@ static inline int topology_max_smt_threa
- int topology_update_package_map(unsigned int apicid, unsigned int cpu);
- int topology_update_die_map(unsigned int dieid, unsigned int cpu);
- int topology_phys_to_logical_pkg(unsigned int pkg);
--bool topology_is_primary_thread(unsigned int cpu);
- bool topology_smt_supported(void);
--#else
-+
-+extern struct cpumask __cpu_primary_thread_mask;
-+#define cpu_primary_thread_mask ((const struct cpumask *)&__cpu_primary_thread_mask)
-+
-+/**
-+ * topology_is_primary_thread - Check whether CPU is the primary SMT thread
-+ * @cpu:	CPU to check
-+ */
-+static inline bool topology_is_primary_thread(unsigned int cpu)
-+{
-+	return cpumask_test_cpu(cpu, cpu_primary_thread_mask);
-+}
-+#else /* CONFIG_SMP */
- #define topology_max_packages()			(1)
- static inline int
- topology_update_package_map(unsigned int apicid, unsigned int cpu) { return 0; }
-@@ -152,7 +163,7 @@ static inline int topology_max_die_per_p
- static inline int topology_max_smt_threads(void) { return 1; }
- static inline bool topology_is_primary_thread(unsigned int cpu) { return true; }
- static inline bool topology_smt_supported(void) { return false; }
--#endif
-+#endif /* !CONFIG_SMP */
- 
- static inline void arch_fix_phys_package_id(int num, u32 slot)
- {
 --- a/arch/x86/kernel/apic/apic.c
 +++ b/arch/x86/kernel/apic/apic.c
-@@ -2386,20 +2386,16 @@ bool arch_match_cpu_phys_id(int cpu, u64
- }
- 
- #ifdef CONFIG_SMP
--/**
-- * apic_id_is_primary_thread - Check whether APIC ID belongs to a primary thread
-- * @apicid: APIC ID to check
-- */
--bool apic_id_is_primary_thread(unsigned int apicid)
-+static void cpu_mark_primary_thread(unsigned int cpu, unsigned int apicid)
- {
--	u32 mask;
--
--	if (smp_num_siblings == 1)
--		return true;
- 	/* Isolate the SMT bit(s) in the APICID and check for 0 */
--	mask = (1U << (fls(smp_num_siblings) - 1)) - 1;
--	return !(apicid & mask);
-+	u32 mask = (1U << (fls(smp_num_siblings) - 1)) - 1;
-+
-+	if (smp_num_siblings == 1 || !(apicid & mask))
-+		cpumask_set_cpu(cpu, &__cpu_primary_thread_mask);
- }
-+#else
-+static inline void cpu_mark_primary_thread(unsigned int cpu, unsigned int apicid) { }
- #endif
- 
- /*
-@@ -2544,6 +2540,8 @@ int generic_processor_info(int apicid, i
- 	set_cpu_present(cpu, true);
- 	num_processors++;
- 
-+	cpu_mark_primary_thread(cpu, apicid);
-+
- 	return cpu;
- }
- 
---- a/arch/x86/kernel/smpboot.c
-+++ b/arch/x86/kernel/smpboot.c
-@@ -102,6 +102,9 @@ EXPORT_PER_CPU_SYMBOL(cpu_die_map);
- DEFINE_PER_CPU_READ_MOSTLY(struct cpuinfo_x86, cpu_info);
- EXPORT_PER_CPU_SYMBOL(cpu_info);
- 
-+/* CPUs which are the primary SMT threads */
-+struct cpumask __cpu_primary_thread_mask __read_mostly;
-+
- /* Representing CPUs for which sibling maps can be computed */
- static cpumask_var_t cpu_sibling_setup_mask;
- 
-@@ -277,15 +280,6 @@ static void notrace start_secondary(void
- }
- 
- /**
-- * topology_is_primary_thread - Check whether CPU is the primary SMT thread
-- * @cpu:	CPU to check
-- */
--bool topology_is_primary_thread(unsigned int cpu)
--{
--	return apic_id_is_primary_thread(per_cpu(x86_cpu_to_apicid, cpu));
--}
--
--/**
-  * topology_smt_supported - Check whether SMT is supported by the CPUs
+@@ -101,6 +101,9 @@ static int apic_extnmi __ro_after_init =
   */
- bool topology_smt_supported(void)
+ static bool virt_ext_dest_id __ro_after_init;
+ 
++/* For parallel bootup. */
++unsigned long apic_mmio_base __ro_after_init;
++
+ /*
+  * Map cpu index to physical APIC ID
+  */
+@@ -2163,6 +2166,7 @@ void __init register_lapic_address(unsig
+ 
+ 	if (!x2apic_mode) {
+ 		set_fixmap_nocache(FIX_APIC_BASE, address);
++		apic_mmio_base = APIC_BASE;
+ 		apic_printk(APIC_VERBOSE, "mapped APIC to %16lx (%16lx)\n",
+ 			    APIC_BASE, address);
+ 	}
+
+
 

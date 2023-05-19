@@ -2,191 +2,78 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 455E1C7EE29
-	for <linux-mips@archiver.kernel.org>; Fri, 19 May 2023 16:31:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9A0ACC7EE2A
+	for <linux-mips@archiver.kernel.org>; Fri, 19 May 2023 16:46:25 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230517AbjESQbn (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 19 May 2023 12:31:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55676 "EHLO
+        id S230085AbjESQqY (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 19 May 2023 12:46:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34796 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229489AbjESQbl (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Fri, 19 May 2023 12:31:41 -0400
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45E84CA;
-        Fri, 19 May 2023 09:31:13 -0700 (PDT)
-Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 34JBfjsB011872;
-        Fri, 19 May 2023 16:29:01 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=yZ+c8uZcJrlAlno5FxTnPElzATRQ31IF/+qQxmh4X7Y=;
- b=JXYLKwcI2GbfAQOyp3pqNSg6DjU0Y7APV0UkqvAq+7mPhE6jU2niZ2R4O5GEnV8Jv3vY
- GKGhPl9R8u8z9GTQRJNoPGaU+0mzwGn4MRHzlqrkBUJqPBmbmvIdtKopPW+l45x2R2N4
- N53tfhOYno5CyDkZBijlZR00Ad7cvVpDEdEpXoDABtsI85/Pq3Lm9EQeADaOgh7BPKhU
- vCAzv/tTJH7NrLUDiiqElo6FSx31LTwIxiOoWrGKsGUnDbsEy4Z69PrEn6OpGxkbbO+u
- mhtvqcavuyOXh7qnKKh25rs7jG7FJgFRefJwgVrMfeYuSSMcB+UmlbDChCuJ2ha23dwu fw== 
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3qp4ccs7tp-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 19 May 2023 16:29:01 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 34JGSxwm014994
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 19 May 2023 16:28:59 GMT
-Received: from [10.226.59.182] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.42; Fri, 19 May
- 2023 09:28:57 -0700
-Message-ID: <16562305-3bc0-c69f-0cb5-1b9da1014f19@quicinc.com>
-Date:   Fri, 19 May 2023 10:28:56 -0600
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.6.0
-Subject: Re: [patch V4 36/37] x86/smpboot: Support parallel startup of
- secondary CPUs
-Content-Language: en-US
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        David Woodhouse <dwmw2@infradead.org>
-CC:     <x86@kernel.org>, Andrew Cooper <andrew.cooper3@citrix.com>,
-        Brian Gerst <brgerst@gmail.com>,
-        Arjan van de Veen <arjan@linux.intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Paul McKenney <paulmck@kernel.org>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Oleksandr Natalenko <oleksandr@natalenko.name>,
-        Paul Menzel <pmenzel@molgen.mpg.de>,
-        "Guilherme G. Piccoli" <gpiccoli@igalia.com>,
-        Piotr Gorski <lucjan.lucjanov@gmail.com>,
-        Usama Arif <usama.arif@bytedance.com>,
-        Juergen Gross <jgross@suse.com>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        <xen-devel@lists.xenproject.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Arnd Bergmann <arnd@arndb.de>,
-        <linux-arm-kernel@lists.infradead.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>,
-        <linux-csky@vger.kernel.org>,
+        with ESMTP id S229693AbjESQqX (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Fri, 19 May 2023 12:46:23 -0400
+Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2A82D7;
+        Fri, 19 May 2023 09:46:20 -0700 (PDT)
+Received: from meer.lwn.net (unknown [IPv6:2601:281:8300:73::5f6])
+        by ms.lwn.net (Postfix) with ESMTPA id 3333819A1;
+        Fri, 19 May 2023 16:46:20 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 3333819A1
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
+        t=1684514780; bh=Typx73HH5Gd+kwsk85KMjj7kbllgRR94xrmNw2BZIlU=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=WYI9WZkuzzYdOF/ltlyGKGxTsSsq8BvSweA7Cnufsie0rpDev0ptv3ow+LRSTtmlx
+         H/F+kFYDi6PAlZAEKinva456styPUODrq/wK0uk6CqIjrtH3sHPPzGjHj04Q8do8Yj
+         uzE97B3xrKEVOlD4H6E6iXctDnVsyJccoDBtsU/Stf/JwKwzGm5rGP5e1und4nj3mx
+         I7N2UhDJCd4yVLpJTNmmSe25xPbPvtUL3PC7Mr3k2TNl8U0LFJEOpIZBtC8Na/USdm
+         tMJ500oLGErYfQB+9qXtsn0t8bRgKO4Hc1Ba0xJPoszewn4jS1N9/Pvyq/zKeyB63+
+         aubfm6Tg3CusQ==
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     linux-doc@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        Jonathan Corbet <corbet@lwn.net>,
+        Florian Fainelli <f.fainelli@gmail.com>,
         Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        <linux-mips@vger.kernel.org>,
-        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
-        Helge Deller <deller@gmx.de>, <linux-parisc@vger.kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        <linux-riscv@lists.infradead.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Sabin Rapan <sabrapan@amazon.com>,
-        "Michael Kelley (LINUX)" <mikelley@microsoft.com>,
-        Ross Philipson <ross.philipson@oracle.com>,
-        David Woodhouse <dwmw@amazon.co.uk>
-References: <20230512203426.452963764@linutronix.de>
- <20230512205257.411554373@linutronix.de>
-From:   Jeffrey Hugo <quic_jhugo@quicinc.com>
-In-Reply-To: <20230512205257.411554373@linutronix.de>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: l2X6Bcn3k_Nws-GO_lVKOQ5EQSj3BbaM
-X-Proofpoint-ORIG-GUID: l2X6Bcn3k_Nws-GO_lVKOQ5EQSj3BbaM
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.573,FMLib:17.11.170.22
- definitions=2023-05-19_11,2023-05-17_02,2023-02-09_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 priorityscore=1501
- lowpriorityscore=0 adultscore=0 impostorscore=0 spamscore=0 bulkscore=0
- phishscore=0 mlxlogscore=999 suspectscore=0 malwarescore=0 clxscore=1011
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2304280000
- definitions=main-2305190140
+        linux-mips@vger.kernel.org
+Subject: [PATCH 4/7] mips: update a reference to a moved Arm Document
+Date:   Fri, 19 May 2023 10:46:04 -0600
+Message-Id: <20230519164607.38845-5-corbet@lwn.net>
+X-Mailer: git-send-email 2.40.1
+In-Reply-To: <20230519164607.38845-1-corbet@lwn.net>
+References: <20230519164607.38845-1-corbet@lwn.net>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On 5/12/2023 3:07 PM, Thomas Gleixner wrote:
-> From: David Woodhouse <dwmw@amazon.co.uk>
-> 
-> In parallel startup mode the APs are kicked alive by the control CPU
-> quickly after each other and run through the early startup code in
-> parallel. The real-mode startup code is already serialized with a
-> bit-spinlock to protect the real-mode stack.
-> 
-> In parallel startup mode the smpboot_control variable obviously cannot
-> contain the Linux CPU number so the APs have to determine their Linux CPU
-> number on their own. This is required to find the CPUs per CPU offset in
-> order to find the idle task stack and other per CPU data.
-> 
-> To achieve this, export the cpuid_to_apicid[] array so that each AP can
-> find its own CPU number by searching therein based on its APIC ID.
-> 
-> Introduce a flag in the top bits of smpboot_control which indicates that
-> the AP should find its CPU number by reading the APIC ID from the APIC.
-> 
-> This is required because CPUID based APIC ID retrieval can only provide the
-> initial APIC ID, which might have been overruled by the firmware. Some AMD
-> APUs come up with APIC ID = initial APIC ID + 0x10, so the APIC ID to CPU
-> number lookup would fail miserably if based on CPUID. Also virtualization
-> can make its own APIC ID assignements. The only requirement is that the
-> APIC IDs are consistent with the APCI/MADT table.
-> 
-> For the boot CPU or in case parallel bringup is disabled the control bits
-> are empty and the CPU number is directly available in bit 0-23 of
-> smpboot_control.
-> 
-> [ tglx: Initial proof of concept patch with bitlock and APIC ID lookup ]
-> [ dwmw2: Rework and testing, commit message, CPUID 0x1 and CPU0 support ]
-> [ seanc: Fix stray override of initial_gs in common_cpu_up() ]
-> [ Oleksandr Natalenko: reported suspend/resume issue fixed in
->    x86_acpi_suspend_lowlevel ]
-> [ tglx: Make it read the APIC ID from the APIC instead of using CPUID,
->    	split the bitlock part out ]
-> 
-> Co-developed-by: Thomas Gleixner <tglx@linutronix.de>
-> Co-developed-by: Brian Gerst <brgerst@gmail.com>
-> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-> Signed-off-by: Brian Gerst <brgerst@gmail.com>
-> Signed-off-by: David Woodhouse <dwmw@amazon.co.uk>
-> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-> Tested-by: Michael Kelley <mikelley@microsoft.com>
-> ---
+Arm documentation has moved to Documentation/arch/arm; update a reference
+in arch/mips/bmips/setup.c to match.
 
-I pulled in this change via the next tree, tag next-20230519 and I get a 
-build failure using the x86_64_defconfig -
+Cc: Florian Fainelli <f.fainelli@gmail.com>
+Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc: linux-mips@vger.kernel.org
+Signed-off-by: Jonathan Corbet <corbet@lwn.net>
+---
+ arch/mips/bmips/setup.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-   DESCEND objtool
-   INSTALL libsubcmd_headers
-   CALL    scripts/checksyscalls.sh
-   AS      arch/x86/kernel/head_64.o
-arch/x86/kernel/head_64.S: Assembler messages:
-arch/x86/kernel/head_64.S:261: Error: missing ')'
-arch/x86/kernel/head_64.S:261: Error: junk `UL<<10)' after expression
-   CC      arch/x86/kernel/head64.o
-   CC      arch/x86/kernel/ebda.o
-   CC      arch/x86/kernel/platform-quirks.o
-scripts/Makefile.build:374: recipe for target 
-'arch/x86/kernel/head_64.o' failed
-make[3]: *** [arch/x86/kernel/head_64.o] Error 1
-make[3]: *** Waiting for unfinished jobs....
-scripts/Makefile.build:494: recipe for target 'arch/x86/kernel' failed
-make[2]: *** [arch/x86/kernel] Error 2
-scripts/Makefile.build:494: recipe for target 'arch/x86' failed
-make[1]: *** [arch/x86] Error 2
-make[1]: *** Waiting for unfinished jobs....
-Makefile:2026: recipe for target '.' failed
-make: *** [.] Error 2
+diff --git a/arch/mips/bmips/setup.c b/arch/mips/bmips/setup.c
+index 549a6392a3d2..053805cb741c 100644
+--- a/arch/mips/bmips/setup.c
++++ b/arch/mips/bmips/setup.c
+@@ -178,7 +178,10 @@ void __init plat_mem_setup(void)
+ 	ioport_resource.start = 0;
+ 	ioport_resource.end = ~0;
+ 
+-	/* intended to somewhat resemble ARM; see Documentation/arm/booting.rst */
++	/*
++	 * intended to somewhat resemble ARM; see
++	 * Documentation/arch/arm/booting.rst
++	 */
+ 	if (fw_arg0 == 0 && fw_arg1 == 0xffffffff)
+ 		dtb = phys_to_virt(fw_arg2);
+ 	else
+-- 
+2.40.1
 
-This is with GCC 5.4.0, if it matters.
-
-Reverting this change allows the build to move forward, although I also 
-need to revert "x86/smpboot/64: Implement 
-arch_cpuhp_init_parallel_bringup() and enable it" for the build to fully 
-succeed.
-
-I'm not familiar with this code, and nothing obvious stands out to me. 
-What can I do to help root cause this?
-
--Jeff

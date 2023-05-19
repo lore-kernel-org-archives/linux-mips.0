@@ -2,220 +2,101 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C17F4C7EE29
-	for <linux-mips@archiver.kernel.org>; Fri, 19 May 2023 16:48:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1B840C7EE2E
+	for <linux-mips@archiver.kernel.org>; Fri, 19 May 2023 16:48:56 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229682AbjESQsy (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        id S230286AbjESQsy (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
         Fri, 19 May 2023 12:48:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36802 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36472 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230150AbjESQsp (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Fri, 19 May 2023 12:48:45 -0400
+        with ESMTP id S229980AbjESQso (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Fri, 19 May 2023 12:48:44 -0400
 Received: from wout1-smtp.messagingengine.com (wout1-smtp.messagingengine.com [64.147.123.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E0A110E7;
-        Fri, 19 May 2023 09:48:17 -0700 (PDT)
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
-        by mailout.west.internal (Postfix) with ESMTP id 938603200908;
-        Fri, 19 May 2023 12:48:15 -0400 (EDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F8D31998;
+        Fri, 19 May 2023 09:48:16 -0700 (PDT)
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailout.west.internal (Postfix) with ESMTP id B29B532004ED;
+        Fri, 19 May 2023 12:48:11 -0400 (EDT)
 Received: from mailfrontend1 ([10.202.2.162])
-  by compute2.internal (MEProxy); Fri, 19 May 2023 12:48:15 -0400
+  by compute1.internal (MEProxy); Fri, 19 May 2023 12:48:12 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=flygoat.com; h=
         cc:cc:content-transfer-encoding:content-type:date:date:from:from
-        :in-reply-to:in-reply-to:message-id:mime-version:references
-        :reply-to:sender:subject:subject:to:to; s=fm2; t=1684514895; x=
-        1684601295; bh=lT+iHz9VrY0aHR4mBtelHXJF3fZY/6N67rP+knhqt9U=; b=Z
-        oIO1XJyARA8XmXB70u3bHm/1ernCqXuWoVFyXEWzsVKlTzKL2FYvpqeljGShe6uy
-        B05rx0H/supgPr48Eo90PkHo5lLcori7DJHdS+WXj8aqGOf2ZOvGjgAruuajB3B8
-        pXAOdNfVObTJ1vVPiRkt46mDhfSzIkKYRuDn0aUs66NIvhTsmbdov8BkQ23MrLre
-        bgiHTNLKhDDzl26iwoBgXVPAeTvys/HlkK9qNNctljSxg5ZGGux2t9DYx8JEbxLg
-        knk38dt9u444x/9DGjs57kbiaQI6nElyIJGXGW0V+poBMwpYPDrFN6KCFBCaSEXa
-        72S9aTXTWnn0booCbzzHw==
+        :in-reply-to:message-id:mime-version:reply-to:sender:subject
+        :subject:to:to; s=fm2; t=1684514891; x=1684601291; bh=uzXVcwMzPn
+        337OiZ69IXbCexOkREs2VnsmCqgff2c4M=; b=rzRFwQtAi3RuWhL4UmunoMXNaS
+        M5O0cEAUGM5j+jpdJJ1hadON7OKZbh+Cyj1dVGTjFqXeRBkKydIggfLrZJCnlt1x
+        +eIPFJlUjSICiVBC0JHiFDhW/vqFIvwwl0nX+mCVU/K0YqZbkWPgaErIkbkjWeTb
+        ft27akKKDoyJthuxtlBD/1dBz1p0+Hoo+XotiyhFybvRGvyV1zhbSkp0WutJ7Iwm
+        /xFXeZNSQanFzsU6WQfPgOaIMh+K2zlNeaSnFxedmkboMx0EdrYZOfQtccSkIavG
+        v2Fi2MMK4fjJg5oWNb+GHSJB6wOTa94glrRPBeNJHpBv6BNeTxf4FqfXrMOg==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:cc:content-transfer-encoding
         :content-type:date:date:feedback-id:feedback-id:from:from
-        :in-reply-to:in-reply-to:message-id:mime-version:references
-        :reply-to:sender:subject:subject:to:to:x-me-proxy:x-me-proxy
-        :x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1684514895; x=
-        1684601295; bh=lT+iHz9VrY0aHR4mBtelHXJF3fZY/6N67rP+knhqt9U=; b=m
-        E8OKV/2g08djVBZlv0mfpQoEGjiasVaxF2RbczZihnZa4NiLvuTGG/cFRapcQxc2
-        GJPf5wZguII7Y7+UyJhzF8KwY/ByJKrcSJVMKbQM6UmgxqELtMEz0HF1PuF6L5+X
-        Q1xvVQPA63RabHErBotCiBtZNpHwXaB7lCm7tsyoFCuAJN67JoMCOlW+4xh+BU0q
-        /yWTi8/0zaoYq9ZJeNIOC0k1gkjzo+E+zpbXUmNv+p8ySVtchSgG3zYbKflBwzLz
-        WdwP0PMqQ4bd9UF87jZvmyYu1Cqr8R1iT6yuqJi6fq/5Sa/EtQpAI6qmJn/N/ud4
-        Qttj9Xk74WFlITMlKf2Ow==
-X-ME-Sender: <xms:T6hnZBsyFY1jrRqlJzJUReoS_X5BAIwT7A26d8k1BqIDx1LwjMBB1A>
-    <xme:T6hnZKez5P_CQXaLvdokMDdOZ8tKsmqcIYJGJXTta_iwVN8oJ7iDXrap_m29Llw6n
-    apVzOQXdf49UKMf50g>
-X-ME-Received: <xmr:T6hnZEzgHNV3p0Yp_aqIII1W_8jn8ZmldOd5BMOcIjnB-07r-A5diPX9ZS80>
+        :in-reply-to:message-id:mime-version:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm1; t=1684514891; x=1684601291; bh=uzXVcwMzPn337
+        OiZ69IXbCexOkREs2VnsmCqgff2c4M=; b=AmXeONaJ+w28DKuVsAa5u+rhVRGHM
+        SdC8sVTuCNXMNbOsQpChw9V0K8K8HuemcTKvmfnmRcR4PCa+U+SVJg4LjRpvBxPo
+        83G9isbsvE3wBlnNLa7EhoVw+wZJZ2ajYej0uuLP9H5ZWbL08RvudFPwoI4aon8C
+        AeJAggONgENLtZ7F3JzRGjkP5I7nYTzzJg2LavSSsgeNVAlGbxx2NC+eS5wCfq7o
+        NXXV6Ecz2Tc7/DRIqsuZ8T7gyYCo/9GvAa096AJOkW0ksW0IrABtmhNedv9Zo3h3
+        TzLnU8sOxFnkj2UudFRFWhwXL5b20isbSpWomhmkr+kozIki9As+dQT3A==
+X-ME-Sender: <xms:S6hnZKdX1ERu1hmFU-nPLxj_3lgmk_arisPfvqgU4_9HAE-VchSsJw>
+    <xme:S6hnZEN4E_0iN2bUCxQ35-4G0OxIwFpoGHDlanlJGq8blmynOs16r2_iQXoQAy54F
+    DmEBuKMK_NtTmWj3S8>
+X-ME-Received: <xmr:S6hnZLi-ei597fYONIw403Fz_AUUYOvuRHIw8ldgbA6854lsSZxBNR7XC3x7>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrfeeihedguddthecutefuodetggdotefrod
     ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecunecujfgurhephffvvefufffkofgjfhgggfestd
-    ekredtredttdenucfhrhhomheplfhirgiguhhnucgjrghnghcuoehjihgrgihunhdrhigr
-    nhhgsehflhihghhorghtrdgtohhmqeenucggtffrrghtthgvrhhnpeefledufeehgedvue
-    dvvdegkefgvddttedtleeiiefhgeetudegkefhvdfhjeeftdenucevlhhushhtvghrufhi
-    iigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehjihgrgihunhdrhigrnhhgsehflh
-    ihghhorghtrdgtohhm
-X-ME-Proxy: <xmx:T6hnZIM0w6Hos1IGaYKF-FMl7Ja1u73tBRv7czDsHcdg4E__GOa18A>
-    <xmx:T6hnZB_SUoAWascQSdTwsu-S6llo4lf_Mx_RDn-57S9vri-IdeU8LA>
-    <xmx:T6hnZIXthSNQT_1jDAlWbqdLVlsuO7eGtu-nZRKehyYPpxky8qE6Aw>
-    <xmx:T6hnZDJkdFewa5sIwWEnrAAMrdJCPPwSTqbCncSHUK3cJRaeBmxP6Q>
+    necuuegrihhlohhuthemuceftddtnecunecujfgurhephffvvefufffkofgggfestdekre
+    dtredttdenucfhrhhomheplfhirgiguhhnucgjrghnghcuoehjihgrgihunhdrhigrnhhg
+    sehflhihghhorghtrdgtohhmqeenucggtffrrghtthgvrhhnpefhtedutdduveeileejje
+    etffehueejudehgfffjeduhfeuleeludfffefgffevkeenucevlhhushhtvghrufhiiigv
+    pedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehjihgrgihunhdrhigrnhhgsehflhihgh
+    horghtrdgtohhm
+X-ME-Proxy: <xmx:S6hnZH_wH7j9gI5kb1jVwSUoM20c9UqCtrIS-EaP0sRXl1iSUMO83g>
+    <xmx:S6hnZGtEAyt4Vc-7sMGKSb0pv8UCxu-BepzWmPFgLHGOoc3RiAn0-A>
+    <xmx:S6hnZOHfZp1HvuPEa-K9LSWyrx1JoVXeZ7l4PvaSoZaw-lSIFScO8g>
+    <xmx:S6hnZP5TLKjQveT4fAGKjO83Ii6HFtnAgYq4M8v9f-_0cQiRgsVn_Q>
 Feedback-ID: ifd894703:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 19 May 2023 12:48:14 -0400 (EDT)
+ 19 May 2023 12:48:10 -0400 (EDT)
 From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
 To:     linux-mips@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, tsbogend@alpha.franken.de,
         Jiaxun Yang <jiaxun.yang@flygoat.com>
-Subject: [PATCH 2/3] MIPS: Introduce config options for LLSC availability
-Date:   Fri, 19 May 2023 17:47:52 +0100
-Message-Id: <20230519164753.72065-3-jiaxun.yang@flygoat.com>
+Subject: [PATCH 0/3] MIPS: Enable ARCH_SUPPORTS_ATOMIC_RMW 
+Date:   Fri, 19 May 2023 17:47:50 +0100
+Message-Id: <20230519164753.72065-1-jiaxun.yang@flygoat.com>
 X-Mailer: git-send-email 2.39.2 (Apple Git-143)
-In-Reply-To: <20230519164753.72065-1-jiaxun.yang@flygoat.com>
-References: <20230519164753.72065-1-jiaxun.yang@flygoat.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Introduce CPU_HAS_LLSC and CPU_MAY_HAVE_LLSC to determine availability
-of LLSC and Kconfig level.
+Hi all,
 
-They are both true for almost all supported CPUs besides:
+This series enables ARCH_SUPPORTS_ATOMIC_RMW for MIPS.
+The first two patches are for making LLSC availability information
+available to Kconfig, and the last one selects the actual option.
 
-R3000: Doesn't have LLSC, so both false.
-R5000 series: LLSC is unusable for 64bit kernel, so both false.
-R10000: Some platforms decided to opt-out LLSC due to errata, so only
-	select CPU_MAY_HAVE_LLSC.
-WAR_4KC_LLSC: LLSC is buggy on certain reversion, which can be detected
-	at cpu-probe or platform override, so only select CPU_MAY_HAVE_LLSC.
+Please review.
 
-Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
----
- arch/mips/Kconfig                    | 20 ++++++++++++++++++++
- arch/mips/include/asm/cpu-features.h |  7 ++++++-
- 2 files changed, 26 insertions(+), 1 deletion(-)
+Thanks
+- Jiaxun
 
-diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-index 354d033364ad..85728e4703bd 100644
---- a/arch/mips/Kconfig
-+++ b/arch/mips/Kconfig
-@@ -1539,6 +1539,7 @@ config CPU_R3000
- config CPU_R4300
- 	bool "R4300"
- 	depends on SYS_HAS_CPU_R4300
-+	select CPU_HAS_LLSC
- 	select CPU_SUPPORTS_32BIT_KERNEL
- 	select CPU_SUPPORTS_64BIT_KERNEL
- 	help
-@@ -1547,6 +1548,7 @@ config CPU_R4300
- config CPU_R4X00
- 	bool "R4x00"
- 	depends on SYS_HAS_CPU_R4X00
-+	select CPU_HAS_LLSC
- 	select CPU_SUPPORTS_32BIT_KERNEL
- 	select CPU_SUPPORTS_64BIT_KERNEL
- 	select CPU_SUPPORTS_HUGEPAGES
-@@ -1557,6 +1559,7 @@ config CPU_R4X00
- config CPU_TX49XX
- 	bool "R49XX"
- 	depends on SYS_HAS_CPU_TX49XX
-+	select CPU_HAS_LLSC
- 	select CPU_HAS_PREFETCH
- 	select CPU_SUPPORTS_32BIT_KERNEL
- 	select CPU_SUPPORTS_64BIT_KERNEL
-@@ -1565,6 +1568,7 @@ config CPU_TX49XX
- config CPU_R5000
- 	bool "R5000"
- 	depends on SYS_HAS_CPU_R5000
-+	select CPU_HAS_LLSC if !64BIT
- 	select CPU_SUPPORTS_32BIT_KERNEL
- 	select CPU_SUPPORTS_64BIT_KERNEL
- 	select CPU_SUPPORTS_HUGEPAGES
-@@ -1574,6 +1578,7 @@ config CPU_R5000
- config CPU_R5500
- 	bool "R5500"
- 	depends on SYS_HAS_CPU_R5500
-+	select CPU_HAS_LLSC
- 	select CPU_SUPPORTS_32BIT_KERNEL
- 	select CPU_SUPPORTS_64BIT_KERNEL
- 	select CPU_SUPPORTS_HUGEPAGES
-@@ -1584,6 +1589,7 @@ config CPU_R5500
- config CPU_NEVADA
- 	bool "RM52xx"
- 	depends on SYS_HAS_CPU_NEVADA
-+	select CPU_HAS_LLSC if !64BIT
- 	select CPU_SUPPORTS_32BIT_KERNEL
- 	select CPU_SUPPORTS_64BIT_KERNEL
- 	select CPU_SUPPORTS_HUGEPAGES
-@@ -1593,6 +1599,8 @@ config CPU_NEVADA
- config CPU_R10000
- 	bool "R10000"
- 	depends on SYS_HAS_CPU_R10000
-+	select CPU_HAS_LLSC if !WAR_R10000_LLSC
-+	select CPU_MAY_HAVE_LLSC
- 	select CPU_HAS_PREFETCH
- 	select CPU_SUPPORTS_32BIT_KERNEL
- 	select CPU_SUPPORTS_64BIT_KERNEL
-@@ -1604,6 +1612,7 @@ config CPU_R10000
- config CPU_RM7000
- 	bool "RM7000"
- 	depends on SYS_HAS_CPU_RM7000
-+	select CPU_HAS_LLSC
- 	select CPU_HAS_PREFETCH
- 	select CPU_SUPPORTS_32BIT_KERNEL
- 	select CPU_SUPPORTS_64BIT_KERNEL
-@@ -1613,6 +1622,7 @@ config CPU_RM7000
- config CPU_SB1
- 	bool "SB1"
- 	depends on SYS_HAS_CPU_SB1
-+	select CPU_HAS_LLSC
- 	select CPU_SUPPORTS_32BIT_KERNEL
- 	select CPU_SUPPORTS_64BIT_KERNEL
- 	select CPU_SUPPORTS_HIGHMEM
-@@ -1645,6 +1655,7 @@ config CPU_BMIPS
- 	select CPU_BMIPS4350 if SYS_HAS_CPU_BMIPS4350
- 	select CPU_BMIPS4380 if SYS_HAS_CPU_BMIPS4380
- 	select CPU_BMIPS5000 if SYS_HAS_CPU_BMIPS5000
-+	select CPU_HAS_LLSC
- 	select CPU_SUPPORTS_32BIT_KERNEL
- 	select DMA_NONCOHERENT
- 	select IRQ_MIPS_CPU
-@@ -2382,6 +2393,15 @@ config CPU_DIEI_BROKEN
- config CPU_HAS_RIXI
- 	bool
- 
-+# For CPU that must have LLSC
-+config CPU_HAS_LLSC
-+	def_bool TARGET_ISA_REV > 0 && !WAR_4KC_LLSC
-+	select CPU_MAY_HAVE_LLSC
-+
-+# For CPU that LLSC support is optional
-+config CPU_MAY_HAVE_LLSC
-+	def_bool TARGET_ISA_REV > 0
-+
- config CPU_NO_LOAD_STORE_LR
- 	bool
- 	help
-diff --git a/arch/mips/include/asm/cpu-features.h b/arch/mips/include/asm/cpu-features.h
-index 51a1737b03d0..2a0b90077b50 100644
---- a/arch/mips/include/asm/cpu-features.h
-+++ b/arch/mips/include/asm/cpu-features.h
-@@ -185,8 +185,13 @@
- #ifndef cpu_has_ejtag
- #define cpu_has_ejtag		__opt(MIPS_CPU_EJTAG)
- #endif
-+
- #ifndef cpu_has_llsc
--#define cpu_has_llsc		__isa_ge_or_opt(1, MIPS_CPU_LLSC)
-+# ifdef CONFIG_CPU_MAY_HAVE_LLSC
-+#  define cpu_has_llsc		(IS_ENABLED(CONFIG_CPU_HAS_LLSC) ||  __opt(MIPS_CPU_LLSC))
-+# else
-+#  define cpu_has_llsc		0
-+# endif
- #endif
- #ifndef kernel_uses_llsc
- #define kernel_uses_llsc	cpu_has_llsc
+Jiaxun Yang (3):
+  MIPS: Introduce WAR_4KC_LLSC config option
+  MIPS: Introduce config options for LLSC availability
+  MIPS: Select ARCH_SUPPORTS_ATOMIC_RMW when possible
+
+ arch/mips/Kconfig                             | 27 +++++++++++++++++++
+ arch/mips/include/asm/cpu-features.h          |  7 ++++-
+ arch/mips/include/asm/cpu.h                   |  1 +
+ .../asm/mach-ath25/cpu-feature-overrides.h    |  2 +-
+ arch/mips/kernel/cpu-probe.c                  |  7 +++++
+ 5 files changed, 42 insertions(+), 2 deletions(-)
+
 -- 
 2.39.2 (Apple Git-143)
 

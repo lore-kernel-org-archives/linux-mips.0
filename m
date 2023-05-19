@@ -2,73 +2,73 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 96596C7EE30
-	for <linux-mips@archiver.kernel.org>; Fri, 19 May 2023 16:48:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C9834C77B7A
+	for <linux-mips@archiver.kernel.org>; Fri, 19 May 2023 16:48:58 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230522AbjESQsz (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 19 May 2023 12:48:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36798 "EHLO
+        id S231361AbjESQs4 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 19 May 2023 12:48:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36472 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229992AbjESQsp (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Fri, 19 May 2023 12:48:45 -0400
+        with ESMTP id S230203AbjESQsr (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Fri, 19 May 2023 12:48:47 -0400
 Received: from wout1-smtp.messagingengine.com (wout1-smtp.messagingengine.com [64.147.123.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D475E10FA;
-        Fri, 19 May 2023 09:48:16 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A80DCB6;
+        Fri, 19 May 2023 09:48:18 -0700 (PDT)
 Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
-        by mailout.west.internal (Postfix) with ESMTP id 9B3C43200935;
-        Fri, 19 May 2023 12:48:13 -0400 (EDT)
+        by mailout.west.internal (Postfix) with ESMTP id 883383200979;
+        Fri, 19 May 2023 12:48:17 -0400 (EDT)
 Received: from mailfrontend1 ([10.202.2.162])
-  by compute6.internal (MEProxy); Fri, 19 May 2023 12:48:13 -0400
+  by compute6.internal (MEProxy); Fri, 19 May 2023 12:48:17 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=flygoat.com; h=
         cc:cc:content-transfer-encoding:content-type:date:date:from:from
         :in-reply-to:in-reply-to:message-id:mime-version:references
-        :reply-to:sender:subject:subject:to:to; s=fm2; t=1684514893; x=
-        1684601293; bh=F3XQUAgQCOlN5uBkLtjyaKBz6CFsqhjFQGgXG6jbvic=; b=K
-        c8WU7T8IkBvsJCSF/9uQ7LT/WB532t+YlDO+jchAXzlyhtdz8C3tQwubUgF+StP2
-        Cu95oiJfD7CO8oUELxmprroaS1CokTggSdw8/4UREl0R1R9Bq+dCCZGXYhbjIve6
-        BHJyzXj7kx7efUbZNtHnD3sB9XqpZg7U0ADrJI0jXMfoFfQNjXkA+JZ/+U3NibGl
-        V2i+JelcxBQ0ehS1eqxugCR4MpFhet2Q9oLmwNLuISyQgn+WXp8gRCE2Nu5SCIwX
-        o1vNZwQPdeNZ4Zn3YamanLYFaQAFsrWeISVqRA57FwGHPv8X8md7BmdI1jBLBqe2
-        gprhxBDAVTdr2Ft55NJyg==
+        :reply-to:sender:subject:subject:to:to; s=fm2; t=1684514897; x=
+        1684601297; bh=ER5O497djZCDIkmyCNXXy/HSN/ue8KW99etXc+TOCfI=; b=a
+        EWNFzt2I7sbRhFmICxYITPUfPLgKFg7zscKjDun7r6vn2ffLLBkT/Bg/YW/3LGNa
+        ATAKsFUtkj/s2dUzQzSms//c8Sce9kSk8xEGdXfAP44yZaP8jO0s3fw8s7KexIka
+        U1BKOiIrtAND2UcnYcvxxll19Ol1NkESkDlxwAhnosXZS068EBHNhBYFaiAc2fYg
+        3+5czIvsQ8AXdavWQ72RXrLGJWjwV3cfk8ved0ShuxfssaCEgNaw+KZiYFBiUMdW
+        Nigur28z5UKeTCDe5z6oLlY5Gxcp7dpaAJbUnpFBNXjda2DtS7KBNRcg+yMdJKfv
+        iiBkjB/BZiIlmaQ/fTWDA==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:cc:content-transfer-encoding
         :content-type:date:date:feedback-id:feedback-id:from:from
         :in-reply-to:in-reply-to:message-id:mime-version:references
         :reply-to:sender:subject:subject:to:to:x-me-proxy:x-me-proxy
-        :x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1684514893; x=
-        1684601293; bh=F3XQUAgQCOlN5uBkLtjyaKBz6CFsqhjFQGgXG6jbvic=; b=H
-        arxxgnxMHSrlbj9no4qixqDtlz+Er+fOSZuO0UcSue2pLGf96sEQhympqL8zZBb3
-        4iVpqbVEwP+EYUzDs0HZglndCIW5QuazTgFAwBt0/e9h+4MDy4ooIDRNxPrhe4QA
-        qOLLf5IR+4pnoNQf2yEJUlsDhEaByt33u/V5+kgd/jNm57Ugv7ml8lb39py1TJsb
-        hyfanwD8xzMXh6GqTt9QMoJkol+XkuZAbJeiAQbN/XtNdIgZ0U9Lc2JZBp4Prxwp
-        kvAqr+pPtCDfoXmm/6D/L7y9aC/+eLUBsvBEV6fxRyqkZOc5FW+nOJnBLl7xeM+g
-        YnJ7dpWUOCvjiYi8cF+oA==
-X-ME-Sender: <xms:TahnZCmNDv65y6eHYahQkXZydy60Eskxl7ElsTvT5-95EwAiYVomkw>
-    <xme:TahnZJ0MxzaTFgf9y-5IjPqMHT3dOYXfzHH-kbWHm0Ig6eeL5LHbF0wawcoPoz_6U
-    BX8Q9TJ7S-r6cVq0Sc>
-X-ME-Received: <xmr:TahnZArFMeavcUb-xecYHwDP9DKzVmJGj5Mhh-NqM86b6ZDYkcwRV-exUipt>
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1684514897; x=
+        1684601297; bh=ER5O497djZCDIkmyCNXXy/HSN/ue8KW99etXc+TOCfI=; b=g
+        JNcNTpiHwKMfVE2Gbv5a+qt4PNnq0StVViX5qFTV3FNezsQvLSeipYPs5hmy9m0W
+        pIKQge7rrqmYHG8w3AydIGj6K++zz53963VadSt6S83HmqAdyDkYou8mL6OeRIoO
+        FJ6uO47rZgBXkLKe1jxKZzpJEZNT2iN22t1o8ddQm9bsABI8KvDAjnQZMNqJhVaP
+        URtZLcQwFTNdIpanqOMaj7ai8mK4M0O/eGZdwFbqAZlOZ7pAlxPMFlX9H0zfA48d
+        qnWJZ/oL/aoLtRfylLQf8fo9P7oCqU33tRk0BCv1mYwqxL93kW5rul+uo7eDmuvF
+        OwY/PqMzP9f0uua0nZg8A==
+X-ME-Sender: <xms:UahnZHymM_8hV8c6u8s4bBD2c8Jmh7Assa8Wjr6BOqSMrcbNOz3ZaQ>
+    <xme:UahnZPRm11q1Lv34n0eZD_gKrjlwJfHp-oC3fXOKrHnam-g6GbERNyQ6zKEdFxv1c
+    m1JIR6CvYzyfztypXI>
+X-ME-Received: <xmr:UahnZBVmhqyibydQZ8gfRspc6A7svc8VkxhCX9cEXPADbnhwYlzRSik4fREn>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrfeeihedguddthecutefuodetggdotefrod
     ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
     necuuegrihhlohhuthemuceftddtnecunecujfgurhephffvvefufffkofgjfhgggfestd
     ekredtredttdenucfhrhhomheplfhirgiguhhnucgjrghnghcuoehjihgrgihunhdrhigr
     nhhgsehflhihghhorghtrdgtohhmqeenucggtffrrghtthgvrhhnpeefledufeehgedvue
     dvvdegkefgvddttedtleeiiefhgeetudegkefhvdfhjeeftdenucevlhhushhtvghrufhi
-    iigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehjihgrgihunhdrhigrnhhgsehflh
+    iigvpedunecurfgrrhgrmhepmhgrihhlfhhrohhmpehjihgrgihunhdrhigrnhhgsehflh
     ihghhorghtrdgtohhm
-X-ME-Proxy: <xmx:TahnZGlNU1CRXCqo2zEcE_V-O-0NRybvYjY-X61tXCPAkb89OvGkyw>
-    <xmx:TahnZA0QFLJOzNZOf_QgR8JJ_e3HaeRDPfM7dce1IW2d6i1yD3RWgA>
-    <xmx:TahnZNsf2WvqTwXiH1L8dGSyX2LBR-bBfpi86ov-1WLqakvLWe3FYA>
-    <xmx:TahnZOAxOozfzEv86nu-Yh_A3ew_z9V8Wdw4Z6Pl_Zwau0W8uHjYBA>
+X-ME-Proxy: <xmx:UahnZBjBL8uvcLlyk3rraRsDwS_Zkzj3vrBYayfYuDOMHlAlWObY-w>
+    <xmx:UahnZJCLNHmRfcSnFFgueTCqZwmA65nEMQddAtGItrTLRBHui-8b6w>
+    <xmx:UahnZKJoadrMiIRDudRusIfzG3VhcuelFk6xPN45y_J5oSCYHW7FFw>
+    <xmx:UahnZMN6D5v31iUr-jujB8UeJPQ696CFBZbin7vI6Cx37f9qW1StTg>
 Feedback-ID: ifd894703:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 19 May 2023 12:48:12 -0400 (EDT)
+ 19 May 2023 12:48:16 -0400 (EDT)
 From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
 To:     linux-mips@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, tsbogend@alpha.franken.de,
         Jiaxun Yang <jiaxun.yang@flygoat.com>
-Subject: [PATCH 1/3] MIPS: Introduce WAR_4KC_LLSC config option
-Date:   Fri, 19 May 2023 17:47:51 +0100
-Message-Id: <20230519164753.72065-2-jiaxun.yang@flygoat.com>
+Subject: [PATCH 3/3] MIPS: Select ARCH_SUPPORTS_ATOMIC_RMW when possible
+Date:   Fri, 19 May 2023 17:47:53 +0100
+Message-Id: <20230519164753.72065-4-jiaxun.yang@flygoat.com>
 X-Mailer: git-send-email 2.39.2 (Apple Git-143)
 In-Reply-To: <20230519164753.72065-1-jiaxun.yang@flygoat.com>
 References: <20230519164753.72065-1-jiaxun.yang@flygoat.com>
@@ -78,86 +78,26 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-WAR_4KC_LLSC is used to control workaround of 4KC LLSC issue
-that affects 4Kc up to version 0.9.
-
-Early ath25 chips are known to be affected.
+Select ARCH_SUPPORTS_ATOMIC_RMW when we are certain that our CPU
+have LLSC support.
 
 Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
 ---
- arch/mips/Kconfig                                        | 6 ++++++
- arch/mips/include/asm/cpu.h                              | 1 +
- arch/mips/include/asm/mach-ath25/cpu-feature-overrides.h | 2 +-
- arch/mips/kernel/cpu-probe.c                             | 7 +++++++
- 4 files changed, 15 insertions(+), 1 deletion(-)
+ arch/mips/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
 diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-index 30e90a2d53f4..354d033364ad 100644
+index 85728e4703bd..5f52bdecb4c9 100644
 --- a/arch/mips/Kconfig
 +++ b/arch/mips/Kconfig
-@@ -230,6 +230,7 @@ config ATH25
- 	select SYS_SUPPORTS_BIG_ENDIAN
- 	select SYS_SUPPORTS_32BIT_KERNEL
- 	select SYS_HAS_EARLY_PRINTK
-+	select WAR_4KC_LLSC if !SOC_AR5312
- 	help
- 	  Support for Atheros AR231x and Atheros AR531x based boards
- 
-@@ -2544,6 +2545,11 @@ config WAR_ICACHE_REFILLS
- config WAR_R10000_LLSC
- 	bool
- 
-+# On 4Kc up to version 0.9 (PRID_REV < 1) there is a bug that may cause llsc
-+# sequences to deadlock.
-+config WAR_4KC_LLSC
-+	bool
-+
- # 34K core erratum: "Problems Executing the TLBR Instruction"
- config WAR_MIPS34K_MISSED_ITLB
- 	bool
-diff --git a/arch/mips/include/asm/cpu.h b/arch/mips/include/asm/cpu.h
-index ecb9854cb432..84bb1931a8b4 100644
---- a/arch/mips/include/asm/cpu.h
-+++ b/arch/mips/include/asm/cpu.h
-@@ -247,6 +247,7 @@
- #define PRID_REV_VR4122			0x0070
- #define PRID_REV_VR4181A		0x0070	/* Same as VR4122 */
- #define PRID_REV_VR4130			0x0080
-+#define PRID_REV_4KC_V1_0		0x0001
- #define PRID_REV_34K_V1_0_2		0x0022
- #define PRID_REV_LOONGSON1B		0x0020
- #define PRID_REV_LOONGSON1C		0x0020	/* Same as Loongson-1B */
-diff --git a/arch/mips/include/asm/mach-ath25/cpu-feature-overrides.h b/arch/mips/include/asm/mach-ath25/cpu-feature-overrides.h
-index ec3604c44ef2..5df292b1ff04 100644
---- a/arch/mips/include/asm/mach-ath25/cpu-feature-overrides.h
-+++ b/arch/mips/include/asm/mach-ath25/cpu-feature-overrides.h
-@@ -24,7 +24,7 @@
- #define cpu_has_counter			1
- #define cpu_has_ejtag			1
- 
--#if !defined(CONFIG_SOC_AR5312)
-+#if !defined(WAR_4KC_LLSC)
- #  define cpu_has_llsc			1
- #else
- /*
-diff --git a/arch/mips/kernel/cpu-probe.c b/arch/mips/kernel/cpu-probe.c
-index 6d15a398d389..fd452e68cd90 100644
---- a/arch/mips/kernel/cpu-probe.c
-+++ b/arch/mips/kernel/cpu-probe.c
-@@ -152,6 +152,13 @@ static inline void check_errata(void)
- 	struct cpuinfo_mips *c = &current_cpu_data;
- 
- 	switch (current_cpu_type()) {
-+	case CPU_4KC:
-+		if ((c->processor_id & PRID_REV_MASK) < PRID_REV_4KC_V1_0) {
-+			c->options &= ~MIPS_CPU_LLSC;
-+			if (!IS_ENABLED(CONFIG_WAR_4K_LLSC))
-+				pr_err("CPU have LLSC errata, please enable CONFIG_WAR_4K_LLSC");
-+		}
-+		break;
- 	case CPU_34K:
- 		/*
- 		 * Erratum "RPS May Cause Incorrect Instruction Execution"
+@@ -21,6 +21,7 @@ config MIPS
+ 	select ARCH_USE_MEMTEST
+ 	select ARCH_USE_QUEUED_RWLOCKS
+ 	select ARCH_USE_QUEUED_SPINLOCKS
++	select ARCH_SUPPORTS_ATOMIC_RMW if CPU_HAS_LLSC
+ 	select ARCH_SUPPORTS_HUGETLBFS if CPU_SUPPORTS_HUGEPAGES
+ 	select ARCH_WANT_DEFAULT_TOPDOWN_MMAP_LAYOUT if MMU
+ 	select ARCH_WANT_IPC_PARSE_VERSION
 -- 
 2.39.2 (Apple Git-143)
 

@@ -2,24 +2,24 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DB0EDC77B7C
-	for <linux-mips@archiver.kernel.org>; Sun, 21 May 2023 17:13:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B866CC77B73
+	for <linux-mips@archiver.kernel.org>; Sun, 21 May 2023 17:47:31 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231197AbjEURNt (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Sun, 21 May 2023 13:13:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41802 "EHLO
+        id S230377AbjEURnT (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Sun, 21 May 2023 13:43:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44144 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231215AbjEURNc (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Sun, 21 May 2023 13:13:32 -0400
-Received: from fgw20-7.mail.saunalahti.fi (fgw20-7.mail.saunalahti.fi [62.142.5.81])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50D2F109
-        for <linux-mips@vger.kernel.org>; Sun, 21 May 2023 10:13:23 -0700 (PDT)
+        with ESMTP id S231402AbjEURmy (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Sun, 21 May 2023 13:42:54 -0400
+Received: from fgw23-7.mail.saunalahti.fi (fgw23-7.mail.saunalahti.fi [62.142.5.84])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9413B10D7
+        for <linux-mips@vger.kernel.org>; Sun, 21 May 2023 10:21:03 -0700 (PDT)
 Received: from localhost (88-113-26-95.elisa-laajakaista.fi [88.113.26.95])
-        by fgw20.mail.saunalahti.fi (Halon) with ESMTP
-        id c6755f98-f7fa-11ed-b3cf-005056bd6ce9;
-        Sun, 21 May 2023 20:13:18 +0300 (EEST)
+        by fgw23.mail.saunalahti.fi (Halon) with ESMTP
+        id dacd9c49-f7fb-11ed-b972-005056bdfda7;
+        Sun, 21 May 2023 20:21:00 +0300 (EEST)
 From:   andy.shevchenko@gmail.com
-Date:   Sun, 21 May 2023 20:13:16 +0300
+Date:   Sun, 21 May 2023 20:20:59 +0300
 To:     Matti Vaittinen <mazziesaccount@gmail.com>
 Cc:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
         Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
@@ -47,88 +47,56 @@ Cc:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
         linux-iio@vger.kernel.org, netdev@vger.kernel.org,
         openbmc@lists.ozlabs.org, linux-gpio@vger.kernel.org,
         linux-mips@vger.kernel.org
-Subject: Re: [PATCH v5 1/8] drivers: fwnode: fix fwnode_irq_get[_byname]()
-Message-ID: <ZGpRLLy1Snez94NQ@surfacebook>
+Subject: Re: [PATCH v5 4/8] pinctrl: wpcm450: relax return value check for
+ IRQ get
+Message-ID: <ZGpS-13CozLp-p4f@surfacebook>
 References: <cover.1684493615.git.mazziesaccount@gmail.com>
- <339cc23ccae4580d5551cc2b6b9b4afdde48f25e.1684493615.git.mazziesaccount@gmail.com>
+ <42264f1b12a91e415ffa47ff9adb53f02a6aa3ea.1684493615.git.mazziesaccount@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <339cc23ccae4580d5551cc2b6b9b4afdde48f25e.1684493615.git.mazziesaccount@gmail.com>
+In-Reply-To: <42264f1b12a91e415ffa47ff9adb53f02a6aa3ea.1684493615.git.mazziesaccount@gmail.com>
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Fri, May 19, 2023 at 02:00:54PM +0300, Matti Vaittinen kirjoitti:
-> The fwnode_irq_get() and the fwnode_irq_get_byname() return 0 upon
-> device-tree IRQ mapping failure. This is contradicting the
-> fwnode_irq_get_byname() function documentation and can potentially be a
-> source of errors like:
+Fri, May 19, 2023 at 02:02:16PM +0300, Matti Vaittinen kirjoitti:
+> fwnode_irq_get[_byname]() were changed to not return 0 anymore. The
+> special error case where device-tree based IRQ mapping fails can't no
+> longer be reliably detected from this return value. This yields a
+> functional change in the driver where the mapping failure is treated as
+> an error.
 > 
-> int probe(...) {
-> 	...
+> The mapping failure can occur for example when the device-tree IRQ
+> information translation call-back(s) (xlate) fail, IRQ domain is not
+> found, IRQ type conflicts, etc. In most cases this indicates an error in
+> the device-tree and special handling is not really required.
 > 
-> 	irq = fwnode_irq_get_byname();
-> 	if (irq <= 0)
-> 		return irq;
+> One more thing to note is that ACPI APIs do not return zero for any
+> failures so this special handling did only apply on device-tree based
+> systems.
 > 
-> 	...
-> }
-> 
-> Here we do correctly check the return value from fwnode_irq_get_byname()
-> but the driver probe will now return success. (There was already one
-> such user in-tree).
-> 
-> Change the fwnode_irq_get_byname() to work as documented and make also the
-> fwnode_irq_get() follow same common convention returning a negative errno
-> upon failure.
+> Drop the special (no error, just skip the IRQ) handling for DT mapping
+> failures as these can no longer be separated from other errors at driver
+> side.
 
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+...
 
-> Fixes: ca0acb511c21 ("device property: Add fwnode_irq_get_byname")
-> Suggested-by: Sakari Ailus <sakari.ailus@linux.intel.com>
-> Suggested-by: Jonathan Cameron <jic23@kernel.org>
-> Signed-off-by: Matti Vaittinen <mazziesaccount@gmail.com>
+> The commit message does not mention if choosing not to abort the probe
+> on device-tree mapping failure (as is done on other errors) was chosen
+> because: a) Abort would have broken some existing setup. b) Because skipping
+> an IRQ on failure is "the right thing to do", or c) because it sounded like
+> a way to minimize risk of breaking something.
 > 
-> ---
-> I dropped the existing reviewed-by tags because change to
-> fwnode_irq_get() was added.
-> 
-> Revision history:
-> v3 => v4:
->  - Change also the fwnode_irq_get()
-> ---
->  drivers/base/property.c | 12 +++++++++---
->  1 file changed, 9 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/base/property.c b/drivers/base/property.c
-> index f6117ec9805c..8c40abed7852 100644
-> --- a/drivers/base/property.c
-> +++ b/drivers/base/property.c
-> @@ -987,12 +987,18 @@ EXPORT_SYMBOL(fwnode_iomap);
->   * @fwnode:	Pointer to the firmware node
->   * @index:	Zero-based index of the IRQ
->   *
-> - * Return: Linux IRQ number on success. Other values are determined
-> - * according to acpi_irq_get() or of_irq_get() operation.
-> + * Return: Linux IRQ number on success. Negative errno on failure.
->   */
->  int fwnode_irq_get(const struct fwnode_handle *fwnode, unsigned int index)
->  {
-> -	return fwnode_call_int_op(fwnode, irq_get, index);
-> +	int ret;
-> +
-> +	ret = fwnode_call_int_op(fwnode, irq_get, index);
-> +	/* We treat mapping errors as invalid case */
-> +	if (ret == 0)
-> +		return -EINVAL;
+> If the reason is a) - then I'd appreciate receiving some more
+> information and a suggestion how to proceed (if possible). If the reason
+> is b), then it might be best to just skip the IRQ instead of aborting
+> the probe for all errors on IRQ getting. Finally, in case of c), well,
+> by acking this change you will now accept the risk :)
 
-Not sure if this is the best choice, perhaps -EEXIST or -ENOENT might be
-better, but it's just a spoken up thought.
+No need to repeat this. As I answered the case c) was in my mind when I made
+that change.
 
-> +	return ret;
->  }
->  EXPORT_SYMBOL(fwnode_irq_get);
 
 -- 
 With Best Regards,

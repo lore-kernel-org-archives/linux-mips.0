@@ -2,99 +2,201 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E2338C7EE33
-	for <linux-mips@archiver.kernel.org>; Sun, 21 May 2023 22:59:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CF900C77B73
+	for <linux-mips@archiver.kernel.org>; Sun, 21 May 2023 23:10:53 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231536AbjEUW74 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Sun, 21 May 2023 18:59:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50238 "EHLO
+        id S230083AbjEUXKw (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Sun, 21 May 2023 19:10:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52774 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231329AbjEUW7u (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Sun, 21 May 2023 18:59:50 -0400
-Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::225])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B36CBBE;
-        Sun, 21 May 2023 15:59:48 -0700 (PDT)
-Received: (Authenticated sender: contact@artur-rojek.eu)
-        by mail.gandi.net (Postfix) with ESMTPSA id 6424B1C0003;
-        Sun, 21 May 2023 22:59:45 +0000 (UTC)
-From:   Artur Rojek <contact@artur-rojek.eu>
-To:     Paul Cercueil <paul@crapouillou.net>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Chris Morgan <macromorgan@hotmail.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     linux-mips@vger.kernel.org, linux-iio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
-        Artur Rojek <contact@artur-rojek.eu>
-Subject: [PATCH v2 1/2] iio/adc: ingenic: Fix channel offsets in buffer
-Date:   Mon, 22 May 2023 00:59:00 +0200
-Message-Id: <20230521225901.388455-2-contact@artur-rojek.eu>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20230521225901.388455-1-contact@artur-rojek.eu>
-References: <20230521225901.388455-1-contact@artur-rojek.eu>
+        with ESMTP id S229481AbjEUXKv (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Sun, 21 May 2023 19:10:51 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EC8EC3;
+        Sun, 21 May 2023 16:10:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+        Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+        bh=K4WPA18aOPTDws24S0fhivh+wdB5uMs20IVqeoLDFVg=; b=hJTNXKpY1GbFcDud/StMM0mEm2
+        xOmsZsaInQKpMD9FooAVISqofGLGHm9a5H/rHHpttDavg1t7RPFnHv8iu4yaUr4I+Skm4f77Ts7dJ
+        N2rIhAHDLkfqC7vOSwQBkIZ+8V7ubQvABAmenRS2bJGr7w2aWA++bPIRU/l7QEgnL9z+xQKpIf0O8
+        gXwWSbOoxhiW+4lat9w6/+2JVZ+DJixh+RMPg1k6trv0YRuSKave9LzH9XIY2TvdiFKQwJ5R7v2gl
+        pGJdi2o9fdGbWKWa+/Afah6LjIxCRvgysMR2L09BoIET2yphe3qVs/N+Gt0oXMonLk1kEizCDctvw
+        p0QorifA==;
+Received: from [2601:1c2:980:9ec0::2764]
+        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1q0sCL-004pPC-1G;
+        Sun, 21 May 2023 23:10:47 +0000
+Message-ID: <7ee02152-d498-87dc-d372-017212888db9@infradead.org>
+Date:   Sun, 21 May 2023 16:10:44 -0700
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [PATCH 3/3] Documentation: kernel-parameters: Add some MIPS
+ parameters
+To:     Jiaxun Yang <jiaxun.yang@flygoat.com>, linux-mips@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, tsbogend@alpha.franken.de,
+        linux-doc@vger.kernel.org, corbet@lwn.net
+References: <20230521223124.21911-1-jiaxun.yang@flygoat.com>
+ <20230521223124.21911-4-jiaxun.yang@flygoat.com>
+Content-Language: en-US
+From:   Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <20230521223124.21911-4-jiaxun.yang@flygoat.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Consumers expect the buffer to only contain enabled channels. While
-preparing the buffer, the driver makes two mistakes:
-1) It inserts empty data for disabled channels.
-2) Each ADC readout contains samples for two 16-bit channels. If either
-   of them is active, the whole 32-bit sample is pushed into the buffer
-   as-is.
+Hi--
 
-Both of those issues cause the active channels to appear at the wrong
-offsets in the buffer. Fix the above by demuxing samples for active
-channels only.
+A few of these new entries are out of place, i.e., not in
+sorted order. See below.
 
-This has remained unnoticed, as all the consumers so far were only using
-channels 0 and 1, leaving them unaffected by changes introduced in this
-commit.
 
-Signed-off-by: Artur Rojek <contact@artur-rojek.eu>
-Tested-by: Paul Cercueil <paul@crapouillou.net>
----
+On 5/21/23 15:31, Jiaxun Yang wrote:
+> Those parameters lives in MIPS kernel since very start.
+> Document them for convenience.
+> 
+> Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+> ---
+>  .../admin-guide/kernel-parameters.txt         | 29 +++++++++++++++++++
+>  1 file changed, 29 insertions(+)
+> 
+> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+> index 9c502d3aa0cd..67a0c3f7eca3 100644
+> --- a/Documentation/admin-guide/kernel-parameters.txt
+> +++ b/Documentation/admin-guide/kernel-parameters.txt
+> @@ -713,6 +713,8 @@
+>  			Sets the size of memory pool for coherent, atomic dma
+>  			allocations, by default set to 256K.
+>  
+> +	coherentio	[KNL,MIPS] Force enable hardware DMA cache coherency.
+> +
 
-v2: - demux active channels from ADC readouts 
-    - clarify in the commit description that this patch doesn't impact
-      existing consumers of this driver
+This one should be just above "coherent_pool".
 
- drivers/iio/adc/ingenic-adc.c | 20 +++++++++++++-------
- 1 file changed, 13 insertions(+), 7 deletions(-)
+>  	com20020=	[HW,NET] ARCnet - COM20020 chipset
+>  			Format:
+>  			<io>[,<irq>[,<nodeID>[,<backplane>[,<ckp>[,<timeout>]]]]]
+> @@ -3626,6 +3628,8 @@
+>  
+>  	nocache		[ARM]
+>  
+> +	nocoherentio	[KNL,MIPS] Force enable software DMA cache coherency.
+> +
 
-diff --git a/drivers/iio/adc/ingenic-adc.c b/drivers/iio/adc/ingenic-adc.c
-index a7325dbbb99a..093710a7ad4c 100644
---- a/drivers/iio/adc/ingenic-adc.c
-+++ b/drivers/iio/adc/ingenic-adc.c
-@@ -802,13 +802,19 @@ static irqreturn_t ingenic_adc_irq(int irq, void *data)
- 	struct ingenic_adc *adc = iio_priv(iio_dev);
- 	unsigned long mask = iio_dev->active_scan_mask[0];
- 	unsigned int i;
--	u32 tdat[3];
--
--	for (i = 0; i < ARRAY_SIZE(tdat); mask >>= 2, i++) {
--		if (mask & 0x3)
--			tdat[i] = readl(adc->base + JZ_ADC_REG_ADTCH);
--		else
--			tdat[i] = 0;
-+	u16 tdat[6];
-+	u32 val;
-+
-+	memset(tdat, 0, ARRAY_SIZE(tdat));
-+	for (i = 0; mask && i < ARRAY_SIZE(tdat); mask >>= 2) {
-+		if (mask & 0x3) {
-+			val = readl(adc->base + JZ_ADC_REG_ADTCH);
-+			/* Two channels per sample. Demux active. */
-+			if (mask & BIT(0))
-+				tdat[i++] = val & 0xffff;
-+			if (mask & BIT(1))
-+				tdat[i++] = val >> 16;
-+		}
- 	}
- 
- 	iio_push_to_buffers(iio_dev, tdat);
+OK.
+
+>  	no_console_suspend
+>  			[HW] Never suspend the console
+>  			Disable suspending of consoles during suspend and
+> @@ -3645,6 +3649,7 @@
+>  			[KNL] Disable object debugging
+>  
+>  	nodsp		[SH] Disable hardware DSP at boot time.
+> +			[MIPS] Disable DSP ASE at boot time.
+>  
+>  	noefi		Disable EFI runtime services support.
+>  
+> @@ -3667,6 +3672,8 @@
+>  
+>  	nofsgsbase	[X86] Disables FSGSBASE instructions.
+>  
+> +	noftlb		[MIPS] Disable Fixed TLB at boot time.
+
+OK.
+
+> +
+>  	nofxsr		[BUGS=X86-32] Disables x86 floating point extended
+>  			register save and restore. The kernel will only save
+>  			legacy floating-point registers on task switch.
+> @@ -3678,6 +3685,8 @@
+>  			in certain environments such as networked servers or
+>  			real-time systems.
+>  
+> +	nohtw		[MIPS] Disable hardware page table walker at boot time.
+> +
+
+nohtw should be immediately after "nohlt".
+
+>  	no_hash_pointers
+>  			Force pointers printed to the console or buffers to be
+>  			unhashed.  By default, when a pointer is printed via %p
+> @@ -3758,6 +3767,8 @@
+>  
+>  	nolapic_timer	[X86-32,APIC] Do not use the local APIC timer.
+>  
+> +	noulri          [MIPS] Disable RDHWR ULR access for user space.
+> +
+This should be just after "no_uaccess_flush".
+
+>  	nomca		[IA-64] Disable machine check abort handling
+>  
+>  	nomce		[X86-32] Disable Machine Check Exception
+> @@ -3882,6 +3893,8 @@
+>  			[X86,PV_OPS] Disable paravirtualized VMware scheduler
+>  			clock and use the default one.
+>  
+> +	nowait		[MIPS] Disable the wait instruction for idle.
+> +
+
+OK.
+
+>  	nowatchdog	[KNL] Disable both lockup detectors, i.e.
+>  			soft-lockup and NMI watchdog (hard-lockup).
+>  
+> @@ -3893,6 +3906,8 @@
+>  			LEGACY_XAPIC_DISABLED bit set in the
+>  			IA32_XAPIC_DISABLE_STATUS MSR.
+>  
+> +	noxpa		[MIPS] Disable XPA (eXtended Physical Addressing) ASE.
+> +
+
+OK.
+
+>  	noxsave		[BUGS=X86] Disables x86 extended register state save
+>  			and restore using xsave. The kernel will fallback to
+>  			enabling legacy floating-point and sse state.
+> @@ -3936,6 +3951,8 @@
+>  
+>  	nr_uarts=	[SERIAL] maximum number of UARTs to be registered.
+>  
+> +	ntlb=		[MIPS] Override max number of TLB entries.
+> +
+
+OK.
+
+>  	numa=off 	[KNL, ARM64, PPC, RISCV, SPARC, X86] Disable NUMA, Only
+>  			set up a single NUMA node spanning all memory.
+>  
+> @@ -5273,6 +5290,18 @@
+>  	rcupdate.rcu_self_test= [KNL]
+>  			Run the RCU early boot self tests
+>  
+> +	rd_size=	[KNL,MIPS]
+> +			Specify size of initrd in memory.
+> +			Need to be used with rd_start.
+> +
+> +	rd_start=	[KNL,MIPS]
+> +			Specify a virtual address from which to load the initrd.
+> +			Must in KSEG0 or XKPHYS space.
+> +			Need to be used with rd_size.
+> +
+
+rd_size and rd_start should be just after "rdrand".
+
+> +	rdhwr_noopt	[MIPS] Disable optimization of trap and emulation for
+> +			"RDHWR v1, $29" instruction.
+> +
+
+OK.
+
+>  	rdinit=		[KNL]
+>  			Format: <full_path>
+>  			Run specified binary instead of /init from the ramdisk,
+
+thanks.
 -- 
-2.40.1
-
+~Randy

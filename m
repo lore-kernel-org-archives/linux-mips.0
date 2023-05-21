@@ -2,24 +2,24 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B866CC77B73
-	for <linux-mips@archiver.kernel.org>; Sun, 21 May 2023 17:47:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7FB71C7EE2E
+	for <linux-mips@archiver.kernel.org>; Sun, 21 May 2023 17:47:32 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230377AbjEURnT (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Sun, 21 May 2023 13:43:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44144 "EHLO
+        id S231340AbjEURn3 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Sun, 21 May 2023 13:43:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44448 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231402AbjEURmy (ORCPT
+        with ESMTP id S231362AbjEURmy (ORCPT
         <rfc822;linux-mips@vger.kernel.org>); Sun, 21 May 2023 13:42:54 -0400
-Received: from fgw23-7.mail.saunalahti.fi (fgw23-7.mail.saunalahti.fi [62.142.5.84])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9413B10D7
-        for <linux-mips@vger.kernel.org>; Sun, 21 May 2023 10:21:03 -0700 (PDT)
+Received: from fgw22-7.mail.saunalahti.fi (fgw22-7.mail.saunalahti.fi [62.142.5.83])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 755ABCA
+        for <linux-mips@vger.kernel.org>; Sun, 21 May 2023 10:19:36 -0700 (PDT)
 Received: from localhost (88-113-26-95.elisa-laajakaista.fi [88.113.26.95])
-        by fgw23.mail.saunalahti.fi (Halon) with ESMTP
-        id dacd9c49-f7fb-11ed-b972-005056bdfda7;
-        Sun, 21 May 2023 20:21:00 +0300 (EEST)
+        by fgw22.mail.saunalahti.fi (Halon) with ESMTP
+        id a73edbf3-f7fb-11ed-a9de-005056bdf889;
+        Sun, 21 May 2023 20:19:33 +0300 (EEST)
 From:   andy.shevchenko@gmail.com
-Date:   Sun, 21 May 2023 20:20:59 +0300
+Date:   Sun, 21 May 2023 20:19:33 +0300
 To:     Matti Vaittinen <mazziesaccount@gmail.com>
 Cc:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
         Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
@@ -47,56 +47,36 @@ Cc:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
         linux-iio@vger.kernel.org, netdev@vger.kernel.org,
         openbmc@lists.ozlabs.org, linux-gpio@vger.kernel.org,
         linux-mips@vger.kernel.org
-Subject: Re: [PATCH v5 4/8] pinctrl: wpcm450: relax return value check for
- IRQ get
-Message-ID: <ZGpS-13CozLp-p4f@surfacebook>
+Subject: Re: [PATCH v5 3/8] net-next: mvpp2: relax return value check for IRQ
+ get
+Message-ID: <ZGpSpZFEo5cw94U_@surfacebook>
 References: <cover.1684493615.git.mazziesaccount@gmail.com>
- <42264f1b12a91e415ffa47ff9adb53f02a6aa3ea.1684493615.git.mazziesaccount@gmail.com>
+ <7c7b1a123d6d5c15c8b37754f1f0c4bd1cad5a01.1684493615.git.mazziesaccount@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <42264f1b12a91e415ffa47ff9adb53f02a6aa3ea.1684493615.git.mazziesaccount@gmail.com>
+In-Reply-To: <7c7b1a123d6d5c15c8b37754f1f0c4bd1cad5a01.1684493615.git.mazziesaccount@gmail.com>
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Fri, May 19, 2023 at 02:02:16PM +0300, Matti Vaittinen kirjoitti:
-> fwnode_irq_get[_byname]() were changed to not return 0 anymore. The
-> special error case where device-tree based IRQ mapping fails can't no
-> longer be reliably detected from this return value. This yields a
-> functional change in the driver where the mapping failure is treated as
-> an error.
+Fri, May 19, 2023 at 02:01:47PM +0300, Matti Vaittinen kirjoitti:
+> fwnode_irq_get[_byname]() were changed to not return 0 anymore.
 > 
-> The mapping failure can occur for example when the device-tree IRQ
-> information translation call-back(s) (xlate) fail, IRQ domain is not
-> found, IRQ type conflicts, etc. In most cases this indicates an error in
-> the device-tree and special handling is not really required.
-> 
-> One more thing to note is that ACPI APIs do not return zero for any
-> failures so this special handling did only apply on device-tree based
-> systems.
-> 
-> Drop the special (no error, just skip the IRQ) handling for DT mapping
-> failures as these can no longer be separated from other errors at driver
-> side.
+> Drop check for return value 0.
 
 ...
 
-> The commit message does not mention if choosing not to abort the probe
-> on device-tree mapping failure (as is done on other errors) was chosen
-> because: a) Abort would have broken some existing setup. b) Because skipping
-> an IRQ on failure is "the right thing to do", or c) because it sounded like
-> a way to minimize risk of breaking something.
-> 
-> If the reason is a) - then I'd appreciate receiving some more
-> information and a suggestion how to proceed (if possible). If the reason
-> is b), then it might be best to just skip the IRQ instead of aborting
-> the probe for all errors on IRQ getting. Finally, in case of c), well,
-> by acking this change you will now accept the risk :)
+> -		if (v->irq <= 0) {
+> +		if (v->irq < 0) {
+>  			ret = -EINVAL;
 
-No need to repeat this. As I answered the case c) was in my mind when I made
-that change.
+			ret = v->irq;
 
+?
+
+>  			goto err;
+>  		}
 
 -- 
 With Best Regards,

@@ -2,52 +2,52 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CD5C3C7EE2E
-	for <linux-mips@archiver.kernel.org>; Sun, 21 May 2023 22:32:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D6030C77B7C
+	for <linux-mips@archiver.kernel.org>; Sun, 21 May 2023 22:33:11 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229571AbjEUWc7 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Sun, 21 May 2023 18:32:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42932 "EHLO
+        id S231446AbjEUWdL (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Sun, 21 May 2023 18:33:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43096 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231446AbjEUWc6 (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Sun, 21 May 2023 18:32:58 -0400
+        with ESMTP id S231472AbjEUWdJ (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Sun, 21 May 2023 18:33:09 -0400
 Received: from out3-smtp.messagingengine.com (out3-smtp.messagingengine.com [66.111.4.27])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4A09E45;
-        Sun, 21 May 2023 15:32:28 -0700 (PDT)
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailout.nyi.internal (Postfix) with ESMTP id 36B905C00F0;
-        Sun, 21 May 2023 18:31:31 -0400 (EDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E70B119;
+        Sun, 21 May 2023 15:32:40 -0700 (PDT)
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailout.nyi.internal (Postfix) with ESMTP id D11665C00F4;
+        Sun, 21 May 2023 18:31:33 -0400 (EDT)
 Received: from mailfrontend2 ([10.202.2.163])
-  by compute1.internal (MEProxy); Sun, 21 May 2023 18:31:31 -0400
+  by compute3.internal (MEProxy); Sun, 21 May 2023 18:31:33 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=flygoat.com; h=
         cc:cc:content-transfer-encoding:content-type:date:date:from:from
         :in-reply-to:in-reply-to:message-id:mime-version:references
-        :reply-to:sender:subject:subject:to:to; s=fm2; t=1684708291; x=
-        1684794691; bh=FXoxgR8soaAJE0zXIWRGojqbl0zMimoMys8rNjtPPdI=; b=b
-        psN3wndsrJr0wl4MmXW08m0fuIXwoyL1ZI63w4JqjW/QURuL2OMTcgVpKBSKtB28
-        k9MWxvjLL+bKzXqkvD+Dp0bgfBrwt+QvWF4DkP1Ucod53lE0kfVlV7g9wpLX1Thw
-        IM6In7ZiSgYovWhTba5cqnLyYHk8OWWA7FKQT5/xlr/fPtDC+ZLzIkYN6ws7de9D
-        Gum341qC+0eF3Vm9MXS+D+U3NVTEbx1o6b0syykxu7DkDVoUiVfL518uNkhuAEva
-        AptBfa7R5EXEuS7Yig5jozTfAq4jmorvVLFNyijrc3nILoA3jnlLzQSA2KZKzk+M
-        X/mGCN56abrIBhbCsv6jg==
+        :reply-to:sender:subject:subject:to:to; s=fm2; t=1684708293; x=
+        1684794693; bh=U6/bYfEfdJ3fMhA2vzQuq00Kk2+AAgQk/ba6AQ72FxM=; b=j
+        Y102dQi119pmHqHObrU9VmemtgwIc5xfMzXoESGQnRuZNmjAr8cyC8KwYBIOC3oX
+        3iScrmkFTFV6YjhndRsQAdICTYow058rWKDC0i4HUUaJJn+U1uJvkPIqxMvt+lIO
+        HUbWlFhdJhm+fAzKh0yRVxEgL29JVlqUz5RZnb274i93A8K+ebfCO3Tvfz/WlRVJ
+        XnK3Vd91GQJfVOWWM7LVbADOMQR6pCzDT/Ivotu5ugfhM1IGKIf/vWn6r8yo/VBA
+        NByDDsrCkhwNze/n7JYgtwpCuSa/YHaW3MxECWQgbCzR4d0sHwVTG/OrFN/le0gd
+        0px+HpQxoc+M/eujRTxvg==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:cc:content-transfer-encoding
         :content-type:date:date:feedback-id:feedback-id:from:from
         :in-reply-to:in-reply-to:message-id:mime-version:references
         :reply-to:sender:subject:subject:to:to:x-me-proxy:x-me-proxy
-        :x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1684708291; x=
-        1684794691; bh=FXoxgR8soaAJE0zXIWRGojqbl0zMimoMys8rNjtPPdI=; b=b
-        +Mj8sBtXEWwt7W2MMwZD07ND+pmeZW8vzGbaeBIOB1u3GG9m94HdUCY233nBNLkf
-        LediTkWWk3aTYVr0ZxsUrPulAmdhV4j0FYAmcxxlENuz6GYIearFrTEJqZj3LZVY
-        RoUuha7EeAh23O9+PtB/hC49WWJ78uH4qeb4BTafq6YM0vM4CTnAC+sPBsrZskN9
-        poq/vTJ1tr5WsNtKD33W5e9uOaC3cxi4hhXpfSO0jmifqAPRbQWkbx1HhJ1ysGG5
-        H/uSjNOJ0LREhomswpdOH+c0H2UBuhsSpLx3ExdR5Xch/Tt+VJ+J09WthOsVlB9F
-        1mOE4QOO0o2xBnWIb4zCw==
-X-ME-Sender: <xms:wptqZPbAt2xF-_wDWy3mqpJBQ_ie-T97Q_rLobveNq-_Mxrl3Hjh4A>
-    <xme:wptqZOZIWOChgJtDzhthzkVtpzUX9rGAU7GDgOnM--Qlt0oT8ILkHCoUo758DLIOI
-    BfZmNeqh9HIQ_C5xco>
-X-ME-Received: <xmr:wptqZB8GfnbeSnOoIuwO14RXzRaeloAvTvNmY4b1Vi6JWRHltk97ZTGsnjkk>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrfeejtddgudduucetufdoteggodetrfdotf
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1684708293; x=
+        1684794693; bh=U6/bYfEfdJ3fMhA2vzQuq00Kk2+AAgQk/ba6AQ72FxM=; b=k
+        hSs49pPR1q8viz+c3Mbo0BZ3JEiQ5GBliHmchB9B0MbbeQ399wacNtH1dQU6qwCq
+        oLXTTRrJCiwvwWJwoO82DKM2u0eYFP0K/CaBRTPFxsJ1wm4IeOBIgN/m2SqFBKpz
+        yIoGYTB0uNO3+x3u4Cjsz1WCtrdp50KrspjkMDfzA3lJJdaQfKumn+ILsBzF3h2d
+        YkA5/qDHmiWFaWR+VL/2lCyzOuHxvfV6WXispf5EmDTlC0aj6X6HzxyEvxN+x88H
+        Y6tq3ez9Qj2xopvGZ42Sur0Ln12e1mVhPu3psYeATGvAij8azh0FoSvKQ+oXYfVv
+        eTeFSlLg0VDs6gi02pL5g==
+X-ME-Sender: <xms:xZtqZPxa-PKhRtZERG7MyczOAnvmw8A3SKh_fTqNZ6cZUNo9N2YuqQ>
+    <xme:xZtqZHRBw0VvWrOSlIjYC8qmgs56Mv1WpeElx4AvAWXPjOxrM-jSITQ6aDRoUCYPJ
+    pdTiDGStqp-x5heubo>
+X-ME-Received: <xmr:xZtqZJVuQQdGMm1Zmx7EHUK6FsrMMSJsSODc8rjAtr0lOmXlAvLGyxvlJkKc>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrfeejtddguddtucetufdoteggodetrfdotf
     fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
     uceurghilhhouhhtmecufedttdenucenucfjughrpefhvfevufffkffojghfggfgsedtke
     ertdertddtnecuhfhrohhmpeflihgrgihunhcujggrnhhguceojhhirgiguhhnrdihrghn
@@ -55,21 +55,21 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrfeejtddgudduucetufdoteggod
     dvgeekgfdvtdettdelieeihfegtedugeekhfdvhfejfedtnecuvehluhhsthgvrhfuihii
     vgeptdenucfrrghrrghmpehmrghilhhfrhhomhepjhhirgiguhhnrdihrghnghesfhhlhi
     hgohgrthdrtghomh
-X-ME-Proxy: <xmx:wptqZFrhn3iYtZupmspOO3Wd3sGfwG0P4_YfnfvCUfRt7XKAei1P3w>
-    <xmx:wptqZKqTxQe-5tsI_-c93LeDWlOzej7FSenRABQpZvSKseSgAh1thw>
-    <xmx:wptqZLQ3ad8qVytXOJb48mPkj6EqwiEuHmmo3JJpX5rbJm_c26-BrA>
-    <xmx:w5tqZDnL4gliiHVyql4zn9GzmP3Q7mbriBM08s7qLfShdiaDKZezQg>
+X-ME-Proxy: <xmx:xZtqZJhfdUzqzpyrNSq0UJAGnJS2AXfdf58ytfYR7mFQKcNO0yzMKg>
+    <xmx:xZtqZBAIQC7506G9KgBOOT7Meih25e0vKtCG0-fk1F2IS_EK0ztxfA>
+    <xmx:xZtqZCJrKAjtEOClLmY2RVZwYyiIIFd-kvM-y973g0WjIu7BFKm3OQ>
+    <xmx:xZtqZM-p-S3q6tkrVQQZH706ORknvTmoMm-x-I7748KPH9h8F3YT1w>
 Feedback-ID: ifd894703:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sun,
- 21 May 2023 18:31:29 -0400 (EDT)
+ 21 May 2023 18:31:32 -0400 (EDT)
 From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
 To:     linux-mips@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, tsbogend@alpha.franken.de,
         linux-doc@vger.kernel.org, corbet@lwn.net,
         Jiaxun Yang <jiaxun.yang@flygoat.com>
-Subject: [PATCH 1/3] MIPS: Rework smt cmdline parameters
-Date:   Sun, 21 May 2023 23:31:22 +0100
-Message-Id: <20230521223124.21911-2-jiaxun.yang@flygoat.com>
+Subject: [PATCH 3/3] Documentation: kernel-parameters: Add some MIPS parameters
+Date:   Sun, 21 May 2023 23:31:24 +0100
+Message-Id: <20230521223124.21911-4-jiaxun.yang@flygoat.com>
 X-Mailer: git-send-email 2.39.2 (Apple Git-143)
 In-Reply-To: <20230521223124.21911-1-jiaxun.yang@flygoat.com>
 References: <20230521223124.21911-1-jiaxun.yang@flygoat.com>
@@ -79,129 +79,117 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Provide a generic smt parameters interface aligned with s390
-to allow users to limit smt usage and threads per core.
-
-It replaced previous undocumented "nothreads" parameter for
-smp-cps which is ambiguous and does not cover smp-mt.
+Those parameters lives in MIPS kernel since very start.
+Document them for convenience.
 
 Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
 ---
- .../admin-guide/kernel-parameters.txt          |  4 ++--
- arch/mips/include/asm/smp.h                    |  2 ++
- arch/mips/kernel/smp-cps.c                     | 13 +------------
- arch/mips/kernel/smp-mt.c                      |  3 ++-
- arch/mips/kernel/smp.c                         | 18 ++++++++++++++++++
- 5 files changed, 25 insertions(+), 15 deletions(-)
+ .../admin-guide/kernel-parameters.txt         | 29 +++++++++++++++++++
+ 1 file changed, 29 insertions(+)
 
 diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-index 91963d3f0d5c..515cd1f88ea2 100644
+index 9c502d3aa0cd..67a0c3f7eca3 100644
 --- a/Documentation/admin-guide/kernel-parameters.txt
 +++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -3830,7 +3830,7 @@
- 	nosmp		[SMP] Tells an SMP kernel to act as a UP kernel,
- 			and disable the IO APIC.  legacy for "maxcpus=0".
+@@ -713,6 +713,8 @@
+ 			Sets the size of memory pool for coherent, atomic dma
+ 			allocations, by default set to 256K.
  
--	nosmt		[KNL,S390] Disable symmetric multithreading (SMT).
-+	nosmt		[KNL,MIPS,S390] Disable symmetric multithreading (SMT).
- 			Equivalent to smt=1.
- 
- 			[KNL,X86] Disable symmetric multithreading (SMT).
-@@ -5743,7 +5743,7 @@
- 				1: Fast pin select (default)
- 				2: ATC IRMode
- 
--	smt=		[KNL,S390] Set the maximum number of threads (logical
-+	smt=		[KNL,MIPS,S390] Set the maximum number of threads (logical
- 			CPUs) to use per physical CPU on systems capable of
- 			symmetric multithreading (SMT). Will be capped to the
- 			actual hardware limit.
-diff --git a/arch/mips/include/asm/smp.h b/arch/mips/include/asm/smp.h
-index aab8981bc32c..a40d8c0e4b87 100644
---- a/arch/mips/include/asm/smp.h
-+++ b/arch/mips/include/asm/smp.h
-@@ -57,6 +57,8 @@ extern int __cpu_logical_map[NR_CPUS];
- /* Mask of CPUs which are currently definitely operating coherently */
- extern cpumask_t cpu_coherent_mask;
- 
-+extern unsigned int smp_max_threads __initdata;
++	coherentio	[KNL,MIPS] Force enable hardware DMA cache coherency.
 +
- extern asmlinkage void smp_bootstrap(void);
+ 	com20020=	[HW,NET] ARCnet - COM20020 chipset
+ 			Format:
+ 			<io>[,<irq>[,<nodeID>[,<backplane>[,<ckp>[,<timeout>]]]]]
+@@ -3626,6 +3628,8 @@
  
- extern void calculate_cpu_foreign_map(void);
-diff --git a/arch/mips/kernel/smp-cps.c b/arch/mips/kernel/smp-cps.c
-index d7fdbec232da..474318bc08cb 100644
---- a/arch/mips/kernel/smp-cps.c
-+++ b/arch/mips/kernel/smp-cps.c
-@@ -25,24 +25,13 @@
- #include <asm/time.h>
- #include <asm/uasm.h>
+ 	nocache		[ARM]
  
--static bool threads_disabled;
- static DECLARE_BITMAP(core_power, NR_CPUS);
- 
- struct core_boot_config *mips_cps_core_bootcfg;
- 
--static int __init setup_nothreads(char *s)
--{
--	threads_disabled = true;
--	return 0;
--}
--early_param("nothreads", setup_nothreads);
--
- static unsigned core_vpe_count(unsigned int cluster, unsigned core)
- {
--	if (threads_disabled)
--		return 1;
--
--	return mips_cps_numvps(cluster, core);
-+	return min(smp_max_threads, mips_cps_numvps(cluster, core));
- }
- 
- static void __init cps_smp_setup(void)
-diff --git a/arch/mips/kernel/smp-mt.c b/arch/mips/kernel/smp-mt.c
-index 5f04a0141068..7729cc733421 100644
---- a/arch/mips/kernel/smp-mt.c
-+++ b/arch/mips/kernel/smp-mt.c
-@@ -46,7 +46,8 @@ static void __init smvp_copy_vpe_config(void)
- static unsigned int __init smvp_vpe_init(unsigned int tc, unsigned int mvpconf0,
- 	unsigned int ncpu)
- {
--	if (tc > ((mvpconf0 & MVPCONF0_PVPE) >> MVPCONF0_PVPE_SHIFT))
-+	if (tc >= smp_max_threads ||
-+		(tc > ((mvpconf0 & MVPCONF0_PVPE) >> MVPCONF0_PVPE_SHIFT)))
- 		return ncpu;
- 
- 	/* Deactivate all but VPE 0 */
-diff --git a/arch/mips/kernel/smp.c b/arch/mips/kernel/smp.c
-index 90c71d800b59..8fbef537fb88 100644
---- a/arch/mips/kernel/smp.c
-+++ b/arch/mips/kernel/smp.c
-@@ -73,6 +73,24 @@ static cpumask_t cpu_core_setup_map;
- 
- cpumask_t cpu_coherent_mask;
- 
-+unsigned int smp_max_threads __initdata = UINT_MAX;
++	nocoherentio	[KNL,MIPS] Force enable software DMA cache coherency.
 +
-+static int __init early_nosmt(char *s)
-+{
-+	smp_max_threads = 1;
-+	return 0;
-+}
-+early_param("nosmt", early_nosmt);
+ 	no_console_suspend
+ 			[HW] Never suspend the console
+ 			Disable suspending of consoles during suspend and
+@@ -3645,6 +3649,7 @@
+ 			[KNL] Disable object debugging
+ 
+ 	nodsp		[SH] Disable hardware DSP at boot time.
++			[MIPS] Disable DSP ASE at boot time.
+ 
+ 	noefi		Disable EFI runtime services support.
+ 
+@@ -3667,6 +3672,8 @@
+ 
+ 	nofsgsbase	[X86] Disables FSGSBASE instructions.
+ 
++	noftlb		[MIPS] Disable Fixed TLB at boot time.
 +
-+static int __init early_smt(char *s)
-+{
-+	get_option(&s, &smp_max_threads);
-+	/* Ensure at least one thread is available */
-+	smp_max_threads = clamp_val(smp_max_threads, 1U, UINT_MAX);
-+	return 0;
-+}
-+early_param("smt", early_smt);
+ 	nofxsr		[BUGS=X86-32] Disables x86 floating point extended
+ 			register save and restore. The kernel will only save
+ 			legacy floating-point registers on task switch.
+@@ -3678,6 +3685,8 @@
+ 			in certain environments such as networked servers or
+ 			real-time systems.
+ 
++	nohtw		[MIPS] Disable hardware page table walker at boot time.
 +
- #ifdef CONFIG_GENERIC_IRQ_IPI
- static struct irq_desc *call_desc;
- static struct irq_desc *sched_desc;
+ 	no_hash_pointers
+ 			Force pointers printed to the console or buffers to be
+ 			unhashed.  By default, when a pointer is printed via %p
+@@ -3758,6 +3767,8 @@
+ 
+ 	nolapic_timer	[X86-32,APIC] Do not use the local APIC timer.
+ 
++	noulri          [MIPS] Disable RDHWR ULR access for user space.
++
+ 	nomca		[IA-64] Disable machine check abort handling
+ 
+ 	nomce		[X86-32] Disable Machine Check Exception
+@@ -3882,6 +3893,8 @@
+ 			[X86,PV_OPS] Disable paravirtualized VMware scheduler
+ 			clock and use the default one.
+ 
++	nowait		[MIPS] Disable the wait instruction for idle.
++
+ 	nowatchdog	[KNL] Disable both lockup detectors, i.e.
+ 			soft-lockup and NMI watchdog (hard-lockup).
+ 
+@@ -3893,6 +3906,8 @@
+ 			LEGACY_XAPIC_DISABLED bit set in the
+ 			IA32_XAPIC_DISABLE_STATUS MSR.
+ 
++	noxpa		[MIPS] Disable XPA (eXtended Physical Addressing) ASE.
++
+ 	noxsave		[BUGS=X86] Disables x86 extended register state save
+ 			and restore using xsave. The kernel will fallback to
+ 			enabling legacy floating-point and sse state.
+@@ -3936,6 +3951,8 @@
+ 
+ 	nr_uarts=	[SERIAL] maximum number of UARTs to be registered.
+ 
++	ntlb=		[MIPS] Override max number of TLB entries.
++
+ 	numa=off 	[KNL, ARM64, PPC, RISCV, SPARC, X86] Disable NUMA, Only
+ 			set up a single NUMA node spanning all memory.
+ 
+@@ -5273,6 +5290,18 @@
+ 	rcupdate.rcu_self_test= [KNL]
+ 			Run the RCU early boot self tests
+ 
++	rd_size=	[KNL,MIPS]
++			Specify size of initrd in memory.
++			Need to be used with rd_start.
++
++	rd_start=	[KNL,MIPS]
++			Specify a virtual address from which to load the initrd.
++			Must in KSEG0 or XKPHYS space.
++			Need to be used with rd_size.
++
++	rdhwr_noopt	[MIPS] Disable optimization of trap and emulation for
++			"RDHWR v1, $29" instruction.
++
+ 	rdinit=		[KNL]
+ 			Format: <full_path>
+ 			Run specified binary instead of /init from the ramdisk,
 -- 
 2.39.2 (Apple Git-143)
 

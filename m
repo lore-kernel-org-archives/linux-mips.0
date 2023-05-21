@@ -2,119 +2,242 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9D7EAC7EE23
-	for <linux-mips@archiver.kernel.org>; Sun, 21 May 2023 22:33:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DE506C7EE26
+	for <linux-mips@archiver.kernel.org>; Sun, 21 May 2023 22:59:55 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231499AbjEUWdi (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Sun, 21 May 2023 18:33:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43474 "EHLO
+        id S231558AbjEUW7y (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Sun, 21 May 2023 18:59:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50252 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231516AbjEUWdh (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Sun, 21 May 2023 18:33:37 -0400
-Received: from out3-smtp.messagingengine.com (out3-smtp.messagingengine.com [66.111.4.27])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AE91FE;
-        Sun, 21 May 2023 15:33:07 -0700 (PDT)
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
-        by mailout.nyi.internal (Postfix) with ESMTP id 907EA5C002F;
-        Sun, 21 May 2023 18:31:32 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute6.internal (MEProxy); Sun, 21 May 2023 18:31:32 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=flygoat.com; h=
-        cc:cc:content-transfer-encoding:content-type:date:date:from:from
-        :in-reply-to:in-reply-to:message-id:mime-version:references
-        :reply-to:sender:subject:subject:to:to; s=fm2; t=1684708292; x=
-        1684794692; bh=zsryuoGv1+n96XBFSmSM7IggLdXyxGy+UDE+DUNZJ18=; b=B
-        qlYXmYvBpidE+Qenb6cuppxjzlhYt1a5tG/Bsm57DLr77SPTNbcMrNxqLFWKEpEh
-        ne4fRaUzBcyw56zQAVCwlf5nQKTDdvgBfgOXqRr4AdP7tqAQUmZF1Qd1yBrV8yut
-        Ehjx+O5Psu2JpNZDk/DX+evM4tnTMUAK4YxWud4t5CbBUj33hWD2yIBtfFRNg3u9
-        h2VJRoxxjn9dM+dU6oJp/H34RoPEkU2hhRF8DawuabAnUqOjCR4QoRxUX2rZISG0
-        5l3inRBilBrL08VAk32ebWkqJS76i19IHc0Taci5bRsKSOK1MDnQ86yRn44iUWdq
-        BlMfpKsehBLJzA2gXZhWg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-transfer-encoding
-        :content-type:date:date:feedback-id:feedback-id:from:from
-        :in-reply-to:in-reply-to:message-id:mime-version:references
-        :reply-to:sender:subject:subject:to:to:x-me-proxy:x-me-proxy
-        :x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1684708292; x=
-        1684794692; bh=zsryuoGv1+n96XBFSmSM7IggLdXyxGy+UDE+DUNZJ18=; b=o
-        6cK3P00kK6WJNedgnlsGRiKp/ysFxsLRHVihy92pzGEwdGI45rIyDDmZjCtocenw
-        wrIFGnaue+Z1e1cPEubGXUA32rNGoquy1pSMWidxNVS0yd1V3IBdRybAmk1CRoY4
-        edHcLoiiafiilWpQz0W+nzDQXu7PQQfW+ADO8wg9Px9DNnl+lclf578i6S4Zm1Ka
-        91t8JnGdkciTljB7pT3y2VLDh5DJlsv565DnoCStRQAJvVMit3DpJBKm3L0kc0F8
-        QUX/j4eDzS6UGcTzBJmlA7F4ch5HZULOIV9qb0BrBKHsVejUHdM5zWgO0kz5shAY
-        fNOi9NtwNmaHi+aIoYp4Q==
-X-ME-Sender: <xms:xJtqZD8kq1PMIbDWgSVDJ_-HZshy6S7JDpAdxcVXOgURSryjdIoVuA>
-    <xme:xJtqZPskebalGH9Cd88fikxPFdeAQ5hVNKYpcbeIHdcmZdFpCrm9em2x6dZm7I-ZF
-    G3fdfmYoHPk4jKIK4w>
-X-ME-Received: <xmr:xJtqZBCZkkF0yYL38aR6-pi1YYaODxCEjbxNqF-jXIzzNhYSG4DKTWyp_fvd>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvhedrfeejtddgudduucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucenucfjughrpefhvfevufffkffojghfggfgsedtke
-    ertdertddtnecuhfhrohhmpeflihgrgihunhcujggrnhhguceojhhirgiguhhnrdihrghn
-    ghesfhhlhihgohgrthdrtghomheqnecuggftrfgrthhtvghrnhepfeeludefheegvdeuvd
-    dvgeekgfdvtdettdelieeihfegtedugeekhfdvhfejfedtnecuvehluhhsthgvrhfuihii
-    vgeptdenucfrrghrrghmpehmrghilhhfrhhomhepjhhirgiguhhnrdihrghnghesfhhlhi
-    hgohgrthdrtghomh
-X-ME-Proxy: <xmx:xJtqZPf3kuDvYOr3KCgnmxCfCsUC-ZDzO8kedl5TTf17yki4JLx4Fg>
-    <xmx:xJtqZINCU6_xorQghQVeVwhU0THz_iJkVT9CR8clGR2CitihukS7Sg>
-    <xmx:xJtqZBmg39-1n_JwdAaBekkH5XPDr1dUr2qnEY_odu9a0BJl2gcfWA>
-    <xmx:xJtqZFq77nxlOq_JwlrZyuNebSgra7ytvqACRZMDmUO-H9b42tX9zA>
-Feedback-ID: ifd894703:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sun,
- 21 May 2023 18:31:31 -0400 (EDT)
-From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
-To:     linux-mips@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, tsbogend@alpha.franken.de,
-        linux-doc@vger.kernel.org, corbet@lwn.net,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>
-Subject: [PATCH 2/3] MIPS: Select CONFIG_GENERIC_IDLE_POLL_SETUP
-Date:   Sun, 21 May 2023 23:31:23 +0100
-Message-Id: <20230521223124.21911-3-jiaxun.yang@flygoat.com>
-X-Mailer: git-send-email 2.39.2 (Apple Git-143)
-In-Reply-To: <20230521223124.21911-1-jiaxun.yang@flygoat.com>
-References: <20230521223124.21911-1-jiaxun.yang@flygoat.com>
+        with ESMTP id S231534AbjEUW7v (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Sun, 21 May 2023 18:59:51 -0400
+Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net [217.70.183.197])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17AEAC1;
+        Sun, 21 May 2023 15:59:49 -0700 (PDT)
+Received: (Authenticated sender: contact@artur-rojek.eu)
+        by mail.gandi.net (Postfix) with ESMTPSA id 35D0E1C0004;
+        Sun, 21 May 2023 22:59:47 +0000 (UTC)
+From:   Artur Rojek <contact@artur-rojek.eu>
+To:     Paul Cercueil <paul@crapouillou.net>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Chris Morgan <macromorgan@hotmail.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     linux-mips@vger.kernel.org, linux-iio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-input@vger.kernel.org,
+        Artur Rojek <contact@artur-rojek.eu>
+Subject: [PATCH v2 2/2] input: joystick: Fix buffer data parsing
+Date:   Mon, 22 May 2023 00:59:01 +0200
+Message-Id: <20230521225901.388455-3-contact@artur-rojek.eu>
+X-Mailer: git-send-email 2.40.1
+In-Reply-To: <20230521225901.388455-1-contact@artur-rojek.eu>
+References: <20230521225901.388455-1-contact@artur-rojek.eu>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-hlt,nohlt paramaters are useful when debugging cpuidle
-related issues.
+Don't try to access buffer data of a channel by its scan index. Instead,
+calculate its offset in the buffer.
 
-Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+This is necessary, as the scan index of a channel does not represent its
+position in a buffer - the buffer will contain data for enabled channels
+only, affecting data offsets and alignment.
+
+While at it, also fix minor style issue in probe.
+
+Reported-by: Chris Morgan <macromorgan@hotmail.com>
+Closes: https://lore.kernel.org/linux-input/20220408212857.9583-1-macroalpha82@gmail.com/
+Signed-off-by: Artur Rojek <contact@artur-rojek.eu>
+Tested-by: Paul Cercueil <paul@crapouillou.net>
 ---
- Documentation/admin-guide/kernel-parameters.txt | 4 ++--
- arch/mips/Kconfig                               | 1 +
- 2 files changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-index 515cd1f88ea2..9c502d3aa0cd 100644
---- a/Documentation/admin-guide/kernel-parameters.txt
-+++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -3694,8 +3694,8 @@
+v2: - provide new implementation for calculating channel offsets 
+    - cache the resulting offsets
+    - fix minor style issue in probe
+    - drop the "Fixes" tag
+
+ drivers/input/joystick/adc-joystick.c | 102 +++++++++++++++++++++++---
+ 1 file changed, 90 insertions(+), 12 deletions(-)
+
+diff --git a/drivers/input/joystick/adc-joystick.c b/drivers/input/joystick/adc-joystick.c
+index c0deff5d4282..2f9f0cae8f95 100644
+--- a/drivers/input/joystick/adc-joystick.c
++++ b/drivers/input/joystick/adc-joystick.c
+@@ -10,6 +10,7 @@
+ #include <linux/module.h>
+ #include <linux/platform_device.h>
+ #include <linux/property.h>
++#include <linux/sort.h>
  
- 	nohibernate	[HIBERNATION] Disable hibernation and resume.
+ #include <asm/unaligned.h>
  
--	nohlt		[ARM,ARM64,MICROBLAZE,SH] Forces the kernel to busy wait
--			in do_idle() and not use the arch_cpu_idle()
-+	nohlt		[ARM,ARM64,MICROBLAZE,MIPS,SH] Forces the kernel to
-+			busy wait in do_idle() and not use the arch_cpu_idle()
- 			implementation; requires CONFIG_GENERIC_IDLE_POLL_SETUP
- 			to be effective. This is useful on platforms where the
- 			sleep(SH) or wfi(ARM,ARM64) instructions do not work
-diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-index 5f52bdecb4c9..e437bf43ecfc 100644
---- a/arch/mips/Kconfig
-+++ b/arch/mips/Kconfig
-@@ -45,6 +45,7 @@ config MIPS
- 	select GENERIC_LIB_UCMPDI2
- 	select GENERIC_SCHED_CLOCK if !CAVIUM_OCTEON_SOC
- 	select GENERIC_SMP_IDLE_THREAD
-+	select GENERIC_IDLE_POLL_SETUP
- 	select GENERIC_TIME_VSYSCALL
- 	select GUP_GET_PXX_LOW_HIGH if CPU_MIPS32 && PHYS_ADDR_T_64BIT
- 	select HAS_IOPORT if !NO_IOPORT_MAP || ISA
+@@ -25,6 +26,7 @@ struct adc_joystick {
+ 	struct iio_cb_buffer *buffer;
+ 	struct adc_joystick_axis *axes;
+ 	struct iio_channel *chans;
++	int *offsets;
+ 	int num_chans;
+ 	bool polled;
+ };
+@@ -47,35 +49,38 @@ static int adc_joystick_handle(const void *data, void *private)
+ {
+ 	struct adc_joystick *joy = private;
+ 	enum iio_endian endianness;
+-	int bytes, msb, val, idx, i;
+-	const u16 *data_u16;
++	int bytes, msb, val, off, i;
++	const u8 *chan_data;
+ 	bool sign;
+ 
+ 	bytes = joy->chans[0].channel->scan_type.storagebits >> 3;
+ 
+ 	for (i = 0; i < joy->num_chans; ++i) {
+-		idx = joy->chans[i].channel->scan_index;
+ 		endianness = joy->chans[i].channel->scan_type.endianness;
+ 		msb = joy->chans[i].channel->scan_type.realbits - 1;
+ 		sign = tolower(joy->chans[i].channel->scan_type.sign) == 's';
++		off = joy->offsets[i];
++
++		if (off < 0)
++			return -EINVAL;
++
++		chan_data = (const u8 *)data + off;
+ 
+ 		switch (bytes) {
+ 		case 1:
+-			val = ((const u8 *)data)[idx];
++			val = *chan_data;
+ 			break;
+ 		case 2:
+-			data_u16 = (const u16 *)data + idx;
+-
+ 			/*
+ 			 * Data is aligned to the sample size by IIO core.
+ 			 * Call `get_unaligned_xe16` to hide type casting.
+ 			 */
+ 			if (endianness == IIO_BE)
+-				val = get_unaligned_be16(data_u16);
++				val = get_unaligned_be16(chan_data);
+ 			else if (endianness == IIO_LE)
+-				val = get_unaligned_le16(data_u16);
++				val = get_unaligned_le16(chan_data);
+ 			else /* IIO_CPU */
+-				val = *data_u16;
++				val = *(const u16 *)chan_data;
+ 			break;
+ 		default:
+ 			return -EINVAL;
+@@ -94,6 +99,69 @@ static int adc_joystick_handle(const void *data, void *private)
+ 	return 0;
+ }
+ 
++static int adc_joystick_si_cmp(const void *a, const void *b, const void *priv)
++{
++	const struct iio_channel *chans = priv;
++
++	return chans[*(int *)a].channel->scan_index -
++	       chans[*(int *)b].channel->scan_index;
++}
++
++static int *adc_joystick_get_chan_offsets(struct iio_channel *chans, int count)
++{
++	struct iio_dev *indio_dev = chans[0].indio_dev;
++	const struct iio_chan_spec *ch;
++	int *offsets, *si_order;
++	int idx, i, si, length, offset = 0;
++
++	offsets = kmalloc_array(count, sizeof(int), GFP_KERNEL);
++	if (!offsets)
++		return ERR_PTR(-ENOMEM);
++
++	si_order = kmalloc_array(count, sizeof(int), GFP_KERNEL);
++	if (!si_order) {
++		kfree(offsets);
++		return ERR_PTR(-ENOMEM);
++	}
++
++	for (i = 0; i < count; ++i)
++		si_order[i] = i;
++	/* Channels in buffer are ordered by scan index. Sort to match that. */
++	sort_r(si_order, count, sizeof(int), adc_joystick_si_cmp, NULL, chans);
++
++	for (i = 0; i < count; ++i) {
++		idx = si_order[i];
++		ch = chans[idx].channel;
++		si = ch->scan_index;
++
++		if (si < 0 || !test_bit(si, indio_dev->active_scan_mask)) {
++			offsets[idx] = -1;
++			continue;
++		}
++
++		/* Channels sharing scan indices also share the samples. */
++		if (idx > 0 && si == chans[idx - 1].channel->scan_index) {
++			offsets[idx] = offsets[idx - 1];
++			continue;
++		}
++
++		offsets[idx] = offset;
++
++		length = ch->scan_type.storagebits / 8;
++		if (ch->scan_type.repeat > 1)
++			length *= ch->scan_type.repeat;
++
++		/* Account for channel alignment. */
++		if (offset % length)
++			offset += length - (offset % length);
++		offset += length;
++	}
++
++	kfree(si_order);
++
++	return offsets;
++}
++
+ static int adc_joystick_open(struct input_dev *dev)
+ {
+ 	struct adc_joystick *joy = input_get_drvdata(dev);
+@@ -101,10 +169,19 @@ static int adc_joystick_open(struct input_dev *dev)
+ 	int ret;
+ 
+ 	ret = iio_channel_start_all_cb(joy->buffer);
+-	if (ret)
++	if (ret) {
+ 		dev_err(devp, "Unable to start callback buffer: %d\n", ret);
++		return ret;
++	}
+ 
+-	return ret;
++	joy->offsets = adc_joystick_get_chan_offsets(joy->chans,
++						     joy->num_chans);
++	if (IS_ERR(joy->offsets)) {
++		dev_err(devp, "Unable to allocate channel offsets\n");
++		return PTR_ERR(joy->offsets);
++	}
++
++	return 0;
+ }
+ 
+ static void adc_joystick_close(struct input_dev *dev)
+@@ -112,6 +189,7 @@ static void adc_joystick_close(struct input_dev *dev)
+ 	struct adc_joystick *joy = input_get_drvdata(dev);
+ 
+ 	iio_channel_stop_all_cb(joy->buffer);
++	kfree(joy->offsets);
+ }
+ 
+ static void adc_joystick_cleanup(void *data)
+@@ -269,7 +347,7 @@ static int adc_joystick_probe(struct platform_device *pdev)
+ 
+ 		error = devm_add_action_or_reset(dev, adc_joystick_cleanup,
+ 						 joy->buffer);
+-		if (error)  {
++		if (error) {
+ 			dev_err(dev, "Unable to add action\n");
+ 			return error;
+ 		}
 -- 
-2.39.2 (Apple Git-143)
+2.40.1
 

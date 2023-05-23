@@ -2,64 +2,62 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9DAA0C7EE2A
-	for <linux-mips@archiver.kernel.org>; Tue, 23 May 2023 09:13:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D0471C7EE2E
+	for <linux-mips@archiver.kernel.org>; Tue, 23 May 2023 09:13:56 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236140AbjEWJNy (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 23 May 2023 05:13:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42956 "EHLO
+        id S236231AbjEWJNz (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 23 May 2023 05:13:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42954 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236134AbjEWJNx (ORCPT
+        with ESMTP id S236090AbjEWJNx (ORCPT
         <rfc822;linux-mips@vger.kernel.org>); Tue, 23 May 2023 05:13:53 -0400
 Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 50FD5132
-        for <linux-mips@vger.kernel.org>; Tue, 23 May 2023 02:13:45 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 50E3012B;
+        Tue, 23 May 2023 02:13:45 -0700 (PDT)
 Received: from uucp (helo=alpha)
         by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1q1O5K-0007MY-01; Tue, 23 May 2023 11:13:38 +0200
+        id 1q1O5L-0007MY-01; Tue, 23 May 2023 11:13:39 +0200
 Received: by alpha.franken.de (Postfix, from userid 1000)
-        id C2883C02E6; Tue, 23 May 2023 11:06:11 +0200 (CEST)
-Date:   Tue, 23 May 2023 11:06:11 +0200
+        id 83A17C02E6; Tue, 23 May 2023 11:09:13 +0200 (CEST)
+Date:   Tue, 23 May 2023 11:09:13 +0200
 From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Manuel Lauss <manuel.lauss@gmail.com>
-Cc:     linux-mips@vger.kernel.org
-Subject: Re: [PATCH] MIPS: unhide PATA_PLATFORM
-Message-ID: <20230523090611.GB9484@alpha.franken.de>
-References: <20230509185744.413302-1-manuel.lauss@gmail.com>
+To:     Keguang Zhang <keguang.zhang@gmail.com>
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] MIPS: Loongson32: Remove reset.c
+Message-ID: <20230523090913.GF9484@alpha.franken.de>
+References: <20230511120648.463221-1-keguang.zhang@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230509185744.413302-1-manuel.lauss@gmail.com>
+In-Reply-To: <20230511120648.463221-1-keguang.zhang@gmail.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Tue, May 09, 2023 at 08:57:44PM +0200, Manuel Lauss wrote:
-> Alchemy DB1200/DB1300 boards can use the pata_platform driver.
-> Unhide the config entry in all of MIPS.
+On Thu, May 11, 2023 at 08:06:48PM +0800, Keguang Zhang wrote:
+> Commit 2a31bf20808a ("watchdog: loongson1_wdt: Implement restart handler")
+> implmented .restart ops, Then, _machine_restart is no longer needed.
+> The _machine_halt and pm_power_off are also unnecessary,
+> which contain no hardware operations.
 > 
-> Signed-off-by: Manuel Lauss <manuel.lauss@gmail.com>
+> Therefore, remove the entire reset.c and related header file.
+> Update the Makefile accordingly.
+> 
+> Signed-off-by: Keguang Zhang <keguang.zhang@gmail.com>
 > ---
->  arch/mips/Kconfig | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-> index c2f5498d207f..675a8660cb85 100644
-> --- a/arch/mips/Kconfig
-> +++ b/arch/mips/Kconfig
-> @@ -79,6 +79,7 @@ config MIPS
->  	select HAVE_LD_DEAD_CODE_DATA_ELIMINATION
->  	select HAVE_MOD_ARCH_SPECIFIC
->  	select HAVE_NMI
-> +	select HAVE_PATA_PLATFORM
->  	select HAVE_PERF_EVENTS
->  	select HAVE_PERF_REGS
->  	select HAVE_PERF_USER_STACK_DUMP
-> -- 
-> 2.40.1
+> V2 -> V3: Update the commit message
+> V1 -> V2: Remove the reference to regs-wdt.h
+> ---
+>  .../include/asm/mach-loongson32/loongson1.h   |  1 -
+>  .../include/asm/mach-loongson32/regs-wdt.h    | 15 ------
+>  arch/mips/loongson32/common/Makefile          |  2 +-
+>  arch/mips/loongson32/common/reset.c           | 51 -------------------
+>  4 files changed, 1 insertion(+), 68 deletions(-)
+>  delete mode 100644 arch/mips/include/asm/mach-loongson32/regs-wdt.h
+>  delete mode 100644 arch/mips/loongson32/common/reset.c
 
-applied to mips-fixes.
+applied to mips-next.
 
 Thomas.
 

@@ -2,57 +2,65 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 867D4C7EE31
-	for <linux-mips@archiver.kernel.org>; Tue, 23 May 2023 09:13:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 81526C7EE32
+	for <linux-mips@archiver.kernel.org>; Tue, 23 May 2023 09:13:58 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236244AbjEWJN4 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 23 May 2023 05:13:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42958 "EHLO
+        id S236266AbjEWJN5 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 23 May 2023 05:13:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42954 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236199AbjEWJNx (ORCPT
+        with ESMTP id S236201AbjEWJNx (ORCPT
         <rfc822;linux-mips@vger.kernel.org>); Tue, 23 May 2023 05:13:53 -0400
 Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 0BE9713E;
-        Tue, 23 May 2023 02:13:46 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id D9AEC138;
+        Tue, 23 May 2023 02:13:45 -0700 (PDT)
 Received: from uucp (helo=alpha)
         by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1q1O5K-0007MY-00; Tue, 23 May 2023 11:13:38 +0200
+        id 1q1O5K-0007MY-02; Tue, 23 May 2023 11:13:38 +0200
 Received: by alpha.franken.de (Postfix, from userid 1000)
-        id D9E9CC02E5; Tue, 23 May 2023 11:05:56 +0200 (CEST)
-Date:   Tue, 23 May 2023 11:05:56 +0200
+        id 8C0AEC02E6; Tue, 23 May 2023 11:07:06 +0200 (CEST)
+Date:   Tue, 23 May 2023 11:07:06 +0200
 From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Liviu Dudau <liviu@dudau.co.uk>
-Cc:     Paul Burton <paulburton@kernel.org>,
-        John Crispin <john@phrozen.org>,
-        =?utf-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>,
-        Sergio Paracuellos <sergio.paracuellos@gmail.com>,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mips: Move initrd_start check after initrd address
- sanitisation.
-Message-ID: <20230523090556.GA9484@alpha.franken.de>
-References: <20230509172921.295700-1-liviu@dudau.co.uk>
+To:     Aidan MacDonald <aidanmacdonald.0x0@gmail.com>
+Cc:     paul@crapouillou.net, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, linux-mips@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] mips: dts: ingenic: Remove unnecessary AIC clocks
+Message-ID: <20230523090706.GC9484@alpha.franken.de>
+References: <20230505142400.1270848-1-aidanmacdonald.0x0@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230509172921.295700-1-liviu@dudau.co.uk>
+In-Reply-To: <20230505142400.1270848-1-aidanmacdonald.0x0@gmail.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Tue, May 09, 2023 at 06:29:21PM +0100, Liviu Dudau wrote:
-> PAGE_OFFSET is technically a virtual address so when checking the value of
-> initrd_start against it we should make sure that it has been sanitised from
-> the values passed by the bootloader. Without this change, even with a bootloader
-> that passes correct addresses for an initrd, we are failing to load it on MT7621
-> boards, for example.
+On Fri, May 05, 2023 at 03:24:00PM +0100, Aidan MacDonald wrote:
+> The "ext" and "pll half" clocks don't belong in the DT. They are
+> not consumed directly by the AIC and are only used as the parent
+> clocks of the "i2s" clock. An operating system should be able to
+> figure out that information itself because it presumably knows the
+> layout of the clock tree.
 > 
-> Signed-off-by: Liviu Dudau <liviu@dudau.co.uk>
+> Removing these from the DT should be safe from a compatibility
+> point of view because the jz4740-i2s driver in Linux does not, and
+> never did depend on them.
+> 
+> Signed-off-by: Aidan MacDonald <aidanmacdonald.0x0@gmail.com>
+> Link: https://lore.kernel.org/all/20221028103418.17578-1-aidanmacdonald.0x0@gmail.com/
 > ---
->  arch/mips/kernel/setup.c | 9 +++++----
->  1 file changed, 5 insertions(+), 4 deletions(-)
+> This is a resend of patch 2/3 from a previous submission which is linked above.
+> 
+> v1->v2: updated commit message
+> 
+>  arch/mips/boot/dts/ingenic/jz4725b.dtsi | 7 ++-----
+>  arch/mips/boot/dts/ingenic/jz4740.dtsi  | 7 ++-----
+>  arch/mips/boot/dts/ingenic/jz4770.dtsi  | 5 ++---
+>  3 files changed, 6 insertions(+), 13 deletions(-)
 
-applied to mips-fixes.
+applied to mips-next.
 
 Thomas.
 

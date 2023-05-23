@@ -2,85 +2,77 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2B269C77B75
-	for <linux-mips@archiver.kernel.org>; Tue, 23 May 2023 09:13:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F2A97C7EE23
+	for <linux-mips@archiver.kernel.org>; Tue, 23 May 2023 09:14:14 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236243AbjEWJN6 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 23 May 2023 05:13:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42982 "EHLO
+        id S236344AbjEWJOO (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 23 May 2023 05:14:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43116 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236220AbjEWJNx (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Tue, 23 May 2023 05:13:53 -0400
+        with ESMTP id S236325AbjEWJOC (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Tue, 23 May 2023 05:14:02 -0400
 Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 0B1E4139;
-        Tue, 23 May 2023 02:13:46 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 82A38129
+        for <linux-mips@vger.kernel.org>; Tue, 23 May 2023 02:13:54 -0700 (PDT)
 Received: from uucp (helo=alpha)
         by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1q1O5K-0007MY-03; Tue, 23 May 2023 11:13:38 +0200
+        id 1q1O5L-0007MY-03; Tue, 23 May 2023 11:13:39 +0200
 Received: by alpha.franken.de (Postfix, from userid 1000)
-        id B2B70C02E6; Tue, 23 May 2023 11:08:22 +0200 (CEST)
-Date:   Tue, 23 May 2023 11:08:22 +0200
+        id 48418C02E6; Tue, 23 May 2023 11:13:31 +0200 (CEST)
+Date:   Tue, 23 May 2023 11:13:31 +0200
 From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Aidan MacDonald <aidanmacdonald.0x0@gmail.com>
-Cc:     broonie@kernel.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        paul@crapouillou.net, lgirdwood@gmail.com, perex@perex.cz,
-        tiwai@suse.com, alsa-devel@alsa-project.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mips@vger.kernel.org
-Subject: Re: [PATCH v1 3/3] mips: dts: ingenic: x1000: Add AIC device tree
- node
-Message-ID: <20230523090822.GD9484@alpha.franken.de>
-References: <20230509124238.195191-1-aidanmacdonald.0x0@gmail.com>
- <20230509124238.195191-3-aidanmacdonald.0x0@gmail.com>
+To:     sunying@nj.iscas.ac.cn
+Cc:     linux-mips@vger.kernel.org
+Subject: Re: Bug: arch/mips/txx9/generic/setup.c: 714-716: dead code
+Message-ID: <20230523091331.GH9484@alpha.franken.de>
+References: <61c44cda.1230d.188426efee3.Coremail.sunying@nj.iscas.ac.cn>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230509124238.195191-3-aidanmacdonald.0x0@gmail.com>
+In-Reply-To: <61c44cda.1230d.188426efee3.Coremail.sunying@nj.iscas.ac.cn>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Tue, May 09, 2023 at 01:42:38PM +0100, Aidan MacDonald wrote:
-> Add a node for the on-board I2S audio controller.
+On Mon, May 22, 2023 at 03:49:10PM +0800, sunying@nj.iscas.ac.cn wrote:
+> The second element of array "struct resource res []" in arch/mips/txx9/generic/setup.c: 714-716 will run
+> only if the conditions "#if IS_ENABLED(CONFIG_TXX9_DMAC)"(line 707) and "#ifndef CONFIG_MACH_TX49XX" (line 713) both are true.
 > 
-> Signed-off-by: Aidan MacDonald <aidanmacdonald.0x0@gmail.com>
-> ---
->  arch/mips/boot/dts/ingenic/x1000.dtsi | 18 ++++++++++++++++++
->  1 file changed, 18 insertions(+)
+> 707 #if IS_ENABLED(CONFIG_TXX9_DMAC)
+> 708         struct resource res[] = {
+> 709                 {
+> 710                         .start = baseaddr,
+> 711                         .end = baseaddr + 0x800 - 1,
+> 712                         .flags = IORESOURCE_MEM,
+> 713 #ifndef CONFIG_MACH_TX49XX
+> 714                 }, {
+> 715                         .start = irq,
+> 716                         .flags = IORESOURCE_IRQ,
+> 717 #endif
+> 718                 }
+> 719          };
 > 
-> diff --git a/arch/mips/boot/dts/ingenic/x1000.dtsi b/arch/mips/boot/dts/ingenic/x1000.dtsi
-> index 42e69664efd9..cc264cfff826 100644
-> --- a/arch/mips/boot/dts/ingenic/x1000.dtsi
-> +++ b/arch/mips/boot/dts/ingenic/x1000.dtsi
-> @@ -417,4 +417,22 @@ otg: usb@13500000 {
->  
->  		status = "disabled";
->  	};
-> +
-> +	aic: audio-controller@10020000 {
-> +		compatible = "ingenic,x1000-i2s";
-> +		reg = <0x10020000 0x38>;
-> +
-> +		#sound-dai-cells = <0>;
-> +
-> +		interrupt-parent = <&intc>;
-> +		interrupts = <1>;
-> +
-> +		clocks = <&cgu X1000_CLK_AIC>,
-> +			 <&cgu X1000_CLK_I2S>;
-> +		clock-names = "aic", "i2s";
-> +
-> +		dmas = <&pdma X1000_DMA_I2S0_RX 0xffffffff>,
-> +			   <&pdma X1000_DMA_I2S0_TX 0xffffffff>;
-> +		dma-names = "rx", "tx";
-> +	};
->  };
-> -- 
-> 2.39.2
+> 
+> But according to the definition of the configuration option CONFIG_TXX9_DMAC (drivers/dma/Kconfig:614):
+> 
+> config TXX9_DMAC
+>         tristate "Toshiba TXx9 SoC DMA support"
+>         depends on MACH_TX49XX
+>         select DMA_ENGINE
+>         help
+>           Support the TXx9 SoC internal DMA controller.  This can be
+>           integrated in chips such as the Toshiba TX4927/38/39.
+> 
+> "CONFIG_TXX9_DMAC" depends on "CONFIG_MACH_TX49XX". "CONFIG_TXX9_DMAC" will only be enabled 
+> if "CONFIG_MACH_TX49XX" is enabled. So the lines 714-716 in arch/mips/txx9/generic/setup.c is a dead code.
+> 
+> I am not sure whether directly delete this dead code or 
+> modify the dependency of the configuration option.
+> May I ask how to modify it?
 
-applied to mips-next.
+just remove the dead code. This part was for TX39 SoCs and support for
+them has been removed.
 
 Thomas.
 

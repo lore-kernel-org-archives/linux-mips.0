@@ -2,74 +2,60 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6608BC7EE2F
-	for <linux-mips@archiver.kernel.org>; Tue, 23 May 2023 09:13:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9DAA0C7EE2A
+	for <linux-mips@archiver.kernel.org>; Tue, 23 May 2023 09:13:55 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236134AbjEWJNz (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 23 May 2023 05:13:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42958 "EHLO
+        id S236140AbjEWJNy (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 23 May 2023 05:13:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42956 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236159AbjEWJNx (ORCPT
+        with ESMTP id S236134AbjEWJNx (ORCPT
         <rfc822;linux-mips@vger.kernel.org>); Tue, 23 May 2023 05:13:53 -0400
 Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 512B3133
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 50FD5132
         for <linux-mips@vger.kernel.org>; Tue, 23 May 2023 02:13:45 -0700 (PDT)
 Received: from uucp (helo=alpha)
         by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1q1O5L-0007MY-00; Tue, 23 May 2023 11:13:39 +0200
+        id 1q1O5K-0007MY-01; Tue, 23 May 2023 11:13:38 +0200
 Received: by alpha.franken.de (Postfix, from userid 1000)
-        id CD31CC02E6; Tue, 23 May 2023 11:08:45 +0200 (CEST)
-Date:   Tue, 23 May 2023 11:08:45 +0200
+        id C2883C02E6; Tue, 23 May 2023 11:06:11 +0200 (CEST)
+Date:   Tue, 23 May 2023 11:06:11 +0200
 From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 To:     Manuel Lauss <manuel.lauss@gmail.com>
 Cc:     linux-mips@vger.kernel.org
-Subject: Re: [PATCH] MIPS: Restore Au1300 support
-Message-ID: <20230523090845.GE9484@alpha.franken.de>
-References: <20230510103323.301065-1-manuel.lauss@gmail.com>
+Subject: Re: [PATCH] MIPS: unhide PATA_PLATFORM
+Message-ID: <20230523090611.GB9484@alpha.franken.de>
+References: <20230509185744.413302-1-manuel.lauss@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230510103323.301065-1-manuel.lauss@gmail.com>
+In-Reply-To: <20230509185744.413302-1-manuel.lauss@gmail.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Wed, May 10, 2023 at 12:33:23PM +0200, Manuel Lauss wrote:
-> The Au1300, at least the one I have to test, uses the NetLogic vendor
-> ID, but commit 95b8a5e0111a ("MIPS: Remove NETLOGIC support") also
-> dropped Au1300 detection.  Restore Au1300 detection.
-> 
-> Tested on DB1300 with Au1380 chip.
+On Tue, May 09, 2023 at 08:57:44PM +0200, Manuel Lauss wrote:
+> Alchemy DB1200/DB1300 boards can use the pata_platform driver.
+> Unhide the config entry in all of MIPS.
 > 
 > Signed-off-by: Manuel Lauss <manuel.lauss@gmail.com>
 > ---
->  arch/mips/kernel/cpu-probe.c | 5 +++++
->  1 file changed, 5 insertions(+)
+>  arch/mips/Kconfig | 1 +
+>  1 file changed, 1 insertion(+)
 > 
-> diff --git a/arch/mips/kernel/cpu-probe.c b/arch/mips/kernel/cpu-probe.c
-> index 6d15a398d389..e79adcb128e6 100644
-> --- a/arch/mips/kernel/cpu-probe.c
-> +++ b/arch/mips/kernel/cpu-probe.c
-> @@ -1502,6 +1502,10 @@ static inline void cpu_probe_alchemy(struct cpuinfo_mips *c, unsigned int cpu)
->  			break;
->  		}
->  		break;
-> +	case PRID_IMP_NETLOGIC_AU13XX:
-> +		c->cputype = CPU_ALCHEMY;
-> +		__cpu_name[cpu] = "Au1300";
-> +		break;
->  	}
->  }
->  
-> @@ -1863,6 +1867,7 @@ void cpu_probe(void)
->  		cpu_probe_mips(c, cpu);
->  		break;
->  	case PRID_COMP_ALCHEMY:
-> +	case PRID_COMP_NETLOGIC:
->  		cpu_probe_alchemy(c, cpu);
->  		break;
->  	case PRID_COMP_SIBYTE:
+> diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
+> index c2f5498d207f..675a8660cb85 100644
+> --- a/arch/mips/Kconfig
+> +++ b/arch/mips/Kconfig
+> @@ -79,6 +79,7 @@ config MIPS
+>  	select HAVE_LD_DEAD_CODE_DATA_ELIMINATION
+>  	select HAVE_MOD_ARCH_SPECIFIC
+>  	select HAVE_NMI
+> +	select HAVE_PATA_PLATFORM
+>  	select HAVE_PERF_EVENTS
+>  	select HAVE_PERF_REGS
+>  	select HAVE_PERF_USER_STACK_DUMP
 > -- 
 > 2.40.1
 

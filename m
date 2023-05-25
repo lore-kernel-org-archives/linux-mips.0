@@ -2,166 +2,153 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F01DFC7EE37
-	for <linux-mips@archiver.kernel.org>; Thu, 25 May 2023 09:19:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DACF7C77B7A
+	for <linux-mips@archiver.kernel.org>; Thu, 25 May 2023 12:56:30 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240638AbjEYJTa (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 25 May 2023 05:19:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53718 "EHLO
+        id S239497AbjEYM43 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 25 May 2023 08:56:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39346 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229663AbjEYJT2 (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Thu, 25 May 2023 05:19:28 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B3D9191;
-        Thu, 25 May 2023 02:19:27 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 190476442C;
-        Thu, 25 May 2023 09:19:27 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C3CF9C433EF;
-        Thu, 25 May 2023 09:19:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1685006366;
-        bh=wqsrR+VLdLpuPAmDdXqCVY2XwnsXyfpXvlaNwL8b95Y=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=foE41UqPH1HgRiXHDcvmNVSgga8+6+movhrIvHcP0lKkim5d2C0CveXiAkrsugwUY
-         mTMqHgjGefxYEA1DbMZBeEKmAQcDqRXgChs6yPJ6RFCubSjjaqUfXH5DibAVcYpUBA
-         aCcKgzmG5mhVSa4fQNmh2lbUtoTD+weF0ODUHN0azy9cnLxTNG6czawfKdDGiZ3h9+
-         eQhVfl9VDk2zYUu2V/zd6ljbuCqaKQw9PEhJG6TAu5DceAsH/0TRlb4M7Mib7O0vr6
-         Y2yg35as+E26Oh74LjFv8mXxr+pdJYlNpysggvOKmpyB8i+xjdzE7MqNjdH/FF5KDP
-         bMNE7SNyaBLAA==
-Date:   Thu, 25 May 2023 12:19:00 +0300
-From:   Mike Rapoport <rppt@kernel.org>
-To:     "Vishal Moola (Oracle)" <vishal.moola@gmail.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>, linux-mm@kvack.org,
-        linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
-        loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
-        linux-mips@vger.kernel.org, linux-openrisc@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
-        linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
-        sparclinux@vger.kernel.org, linux-um@lists.infradead.org,
-        xen-devel@lists.xenproject.org, kvm@vger.kernel.org
-Subject: Re: [PATCH v2 13/34] mm: Create ptdesc equivalents for
- pgtable_{pte,pmd}_page_{ctor,dtor}
-Message-ID: <20230525091900.GY4967@kernel.org>
-References: <20230501192829.17086-1-vishal.moola@gmail.com>
- <20230501192829.17086-14-vishal.moola@gmail.com>
+        with ESMTP id S231451AbjEYM42 (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Thu, 25 May 2023 08:56:28 -0400
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 5797CE4A;
+        Thu, 25 May 2023 05:55:56 -0700 (PDT)
+Received: from loongson.cn (unknown [223.106.25.146])
+        by gateway (Coremail) with SMTP id _____8CxpPDJWm9kVv8AAA--.2414S3;
+        Thu, 25 May 2023 20:55:37 +0800 (CST)
+Received: from localhost.localdomain (unknown [223.106.25.146])
+        by localhost.localdomain (Coremail) with SMTP id AQAAf8BxFLXFWm9kdYR3AA--.1778S3;
+        Thu, 25 May 2023 20:55:36 +0800 (CST)
+From:   Binbin Zhou <zhoubinbin@loongson.cn>
+To:     Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        linux-rtc@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org,
+        Huacai Chen <chenhuacai@loongson.cn>
+Cc:     Huacai Chen <chenhuacai@kernel.org>,
+        Xuerui Wang <kernel@xen0n.name>, loongarch@lists.linux.dev,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        linux-mips@vger.kernel.org,
+        Keguang Zhang <keguang.zhang@gmail.com>,
+        zhao zhang <zhzhl555@gmail.com>,
+        Yang Ling <gnaygnil@gmail.com>,
+        loongson-kernel@lists.loongnix.cn,
+        Binbin Zhou <zhoubinbin@loongson.cn>
+Subject: [PATCH V4 1/5] dt-bindings: rtc: Remove the LS2X from the trivial RTCs
+Date:   Thu, 25 May 2023 20:55:23 +0800
+Message-Id: <9a2fbd6860f37760ca6089c150fd6f67628405f6.1684983279.git.zhoubinbin@loongson.cn>
+X-Mailer: git-send-email 2.39.1
+In-Reply-To: <cover.1684983279.git.zhoubinbin@loongson.cn>
+References: <cover.1684983279.git.zhoubinbin@loongson.cn>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230501192829.17086-14-vishal.moola@gmail.com>
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: AQAAf8BxFLXFWm9kdYR3AA--.1778S3
+X-CM-SenderInfo: p2kr3uplqex0o6or00hjvr0hdfq/
+X-Coremail-Antispam: 1Uk129KBjvJXoW7uFy5tryDZFyrJr1Utw43Jrb_yoW8KFWxpa
+        nrC3Z8KF4jqF17u39rta48Cw15Zas5C3ZrGFsFyw1xKas8Ca4Yqw4akw1DX3W3CFW8uFW7
+        WFyv9r4rKF9rAr7anT9S1TB71UUUUbUqnTZGkaVYY2UrUUUUj1kv1TuYvTs0mT0YCTnIWj
+        qI5I8CrVACY4xI64kE6c02F40Ex7xfYxn0WfASr-VFAUDa7-sFnT9fnUUIcSsGvfJTRUUU
+        bfAYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I6I8E6xAIw20EY4v20xvaj40_Wr0E3s
+        1l1IIY67AEw4v_Jrv_JF1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xv
+        wVC0I7IYx2IY67AKxVW5JVW7JwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwA2z4
+        x0Y4vEx4A2jsIE14v26F4UJVW0owA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Cr1j6rxdM2kK
+        e7AKxVWUAVWUtwAS0I0E0xvYzxvE52x082IY62kv0487Mc804VCY07AIYIkI8VC2zVCFFI
+        0UMc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUtVWrXwAv7VC2z280
+        aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JMxkF7I0En4
+        kS14v26r1q6r43MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMxCIbckI
+        1I0E14v26r126r1DMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_Jr
+        Wlx4CE17CEb7AF67AKxVW8ZVWrXwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r4j
+        6ryUMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr
+        0_JF4lIxAIcVC2z280aVAFwI0_Gr0_Cr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUv
+        cSsGvfC2KfnxnUUI43ZEXa7IU8XTm3UUUUU==
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Mon, May 01, 2023 at 12:28:08PM -0700, Vishal Moola (Oracle) wrote:
-> Creates ptdesc_pte_ctor(), ptdesc_pmd_ctor(), ptdesc_pte_dtor(), and
-> ptdesc_pmd_dtor() and make the original pgtable constructor/destructors
-> wrappers.
+Move Loongson RTC bindings from trivial-rtc.yaml into loongson,rtc.yaml.
 
-I think pgtable_pXY_ctor/dtor names would be better.
- 
-> Signed-off-by: Vishal Moola (Oracle) <vishal.moola@gmail.com>
-> ---
->  include/linux/mm.h | 56 ++++++++++++++++++++++++++++++++++------------
->  1 file changed, 42 insertions(+), 14 deletions(-)
-> 
-> diff --git a/include/linux/mm.h b/include/linux/mm.h
-> index 58c911341a33..dc61aeca9077 100644
-> --- a/include/linux/mm.h
-> +++ b/include/linux/mm.h
-> @@ -2847,20 +2847,34 @@ static inline bool ptlock_init(struct ptdesc *ptdesc) { return true; }
->  static inline void ptlock_free(struct ptdesc *ptdesc) {}
->  #endif /* USE_SPLIT_PTE_PTLOCKS */
->  
-> -static inline bool pgtable_pte_page_ctor(struct page *page)
-> +static inline bool ptdesc_pte_ctor(struct ptdesc *ptdesc)
->  {
-> -	if (!ptlock_init(page_ptdesc(page)))
-> +	struct folio *folio = ptdesc_folio(ptdesc);
-> +
-> +	if (!ptlock_init(ptdesc))
->  		return false;
-> -	__SetPageTable(page);
-> -	inc_lruvec_page_state(page, NR_PAGETABLE);
-> +	__folio_set_table(folio);
-> +	lruvec_stat_add_folio(folio, NR_PAGETABLE);
->  	return true;
->  }
->  
-> +static inline bool pgtable_pte_page_ctor(struct page *page)
-> +{
-> +	return ptdesc_pte_ctor(page_ptdesc(page));
-> +}
-> +
-> +static inline void ptdesc_pte_dtor(struct ptdesc *ptdesc)
-> +{
-> +	struct folio *folio = ptdesc_folio(ptdesc);
-> +
-> +	ptlock_free(ptdesc);
-> +	__folio_clear_table(folio);
-> +	lruvec_stat_sub_folio(folio, NR_PAGETABLE);
-> +}
-> +
->  static inline void pgtable_pte_page_dtor(struct page *page)
->  {
-> -	ptlock_free(page_ptdesc(page));
-> -	__ClearPageTable(page);
-> -	dec_lruvec_page_state(page, NR_PAGETABLE);
-> +	ptdesc_pte_dtor(page_ptdesc(page));
->  }
->  
->  #define pte_offset_map_lock(mm, pmd, address, ptlp)	\
-> @@ -2942,20 +2956,34 @@ static inline spinlock_t *pmd_lock(struct mm_struct *mm, pmd_t *pmd)
->  	return ptl;
->  }
->  
-> -static inline bool pgtable_pmd_page_ctor(struct page *page)
-> +static inline bool ptdesc_pmd_ctor(struct ptdesc *ptdesc)
->  {
-> -	if (!pmd_ptlock_init(page_ptdesc(page)))
-> +	struct folio *folio = ptdesc_folio(ptdesc);
-> +
-> +	if (!pmd_ptlock_init(ptdesc))
->  		return false;
-> -	__SetPageTable(page);
-> -	inc_lruvec_page_state(page, NR_PAGETABLE);
-> +	__folio_set_table(folio);
-> +	lruvec_stat_add_folio(folio, NR_PAGETABLE);
->  	return true;
->  }
->  
-> +static inline bool pgtable_pmd_page_ctor(struct page *page)
-> +{
-> +	return ptdesc_pmd_ctor(page_ptdesc(page));
-> +}
-> +
-> +static inline void ptdesc_pmd_dtor(struct ptdesc *ptdesc)
-> +{
-> +	struct folio *folio = ptdesc_folio(ptdesc);
-> +
-> +	pmd_ptlock_free(ptdesc);
-> +	__folio_clear_table(folio);
-> +	lruvec_stat_sub_folio(folio, NR_PAGETABLE);
-> +}
-> +
->  static inline void pgtable_pmd_page_dtor(struct page *page)
->  {
-> -	pmd_ptlock_free(page_ptdesc(page));
-> -	__ClearPageTable(page);
-> -	dec_lruvec_page_state(page, NR_PAGETABLE);
-> +	ptdesc_pmd_dtor(page_ptdesc(page));
->  }
->  
->  /*
-> -- 
-> 2.39.2
-> 
-> 
+Also, we will discard the use of wildcards in compatible (ls2x-rtc),
+soc-based compatible is more accurate for hardware differences between
+chips.
 
+Signed-off-by: Binbin Zhou <zhoubinbin@loongson.cn>
+---
+ .../devicetree/bindings/rtc/loongson,rtc.yaml | 47 +++++++++++++++++++
+ .../devicetree/bindings/rtc/trivial-rtc.yaml  |  2 -
+ 2 files changed, 47 insertions(+), 2 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/rtc/loongson,rtc.yaml
+
+diff --git a/Documentation/devicetree/bindings/rtc/loongson,rtc.yaml b/Documentation/devicetree/bindings/rtc/loongson,rtc.yaml
+new file mode 100644
+index 000000000000..68e56829e390
+--- /dev/null
++++ b/Documentation/devicetree/bindings/rtc/loongson,rtc.yaml
+@@ -0,0 +1,49 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/rtc/loongson,rtc.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Loongson Real-Time Clock
++
++maintainers:
++  - Binbin Zhou <zhoubinbin@loongson.cn>
++
++allOf:
++  - $ref: rtc.yaml#
++
++properties:
++  compatible:
++    enum:
++      - loongson,ls1b-rtc
++      - loongson,ls1c-rtc
++      - loongson,ls7a-rtc
++      - loongson,ls2k0500-rtc
++      - loongson,ls2k1000-rtc
++      - loongson,ls2k2000-rtc
++
++  reg:
++    maxItems: 1
++
++  interrupts:
++    maxItems: 1
++
++required:
++  - compatible
++  - reg
++
++unevaluatedProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/interrupt-controller/irq.h>
++
++    rtc_dev: rtc@1fe27800 {
++      compatible = "loongson,ls2k0500-rtc";
++      reg = <0x1fe27800 0x100>;
++
++      interrupt-parent = <&liointc1>;
++      interrupts = <8 IRQ_TYPE_LEVEL_HIGH>;
++    };
++
++...
+diff --git a/Documentation/devicetree/bindings/rtc/trivial-rtc.yaml b/Documentation/devicetree/bindings/rtc/trivial-rtc.yaml
+index a3603e638c37..9af77f21bb7f 100644
+--- a/Documentation/devicetree/bindings/rtc/trivial-rtc.yaml
++++ b/Documentation/devicetree/bindings/rtc/trivial-rtc.yaml
+@@ -47,8 +47,6 @@ properties:
+       - isil,isl1218
+       # Intersil ISL12022 Real-time Clock
+       - isil,isl12022
+-      # Loongson-2K Socs/LS7A bridge Real-time Clock
+-      - loongson,ls2x-rtc
+       # Real Time Clock Module with I2C-Bus
+       - microcrystal,rv3029
+       # Real Time Clock
 -- 
-Sincerely yours,
-Mike.
+2.39.1
+

@@ -2,22 +2,22 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AD762C7EE23
-	for <linux-mips@archiver.kernel.org>; Mon, 29 May 2023 15:08:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1FB7CC7EE2E
+	for <linux-mips@archiver.kernel.org>; Mon, 29 May 2023 15:09:01 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229854AbjE2PI7 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 29 May 2023 11:08:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52572 "EHLO
+        id S229907AbjE2PJA (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 29 May 2023 11:09:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52568 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229774AbjE2PI6 (ORCPT
+        with ESMTP id S229485AbjE2PI6 (ORCPT
         <rfc822;linux-mips@vger.kernel.org>); Mon, 29 May 2023 11:08:58 -0400
 Received: from smtp.dudau.co.uk (dliviu.plus.com [80.229.23.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 24CC1C4;
-        Mon, 29 May 2023 08:08:52 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A3408D2;
+        Mon, 29 May 2023 08:08:50 -0700 (PDT)
 Received: from mail.dudau.co.uk (bart.dudau.co.uk [192.168.14.2])
-        by smtp.dudau.co.uk (Postfix) with SMTP id 6AB2C41D13AD;
-        Mon, 29 May 2023 16:08:50 +0100 (BST)
-Received: by mail.dudau.co.uk (sSMTP sendmail emulation); Mon, 29 May 2023 16:08:50 +0100
+        by smtp.dudau.co.uk (Postfix) with SMTP id 556CF41D13A6;
+        Mon, 29 May 2023 16:08:48 +0100 (BST)
+Received: by mail.dudau.co.uk (sSMTP sendmail emulation); Mon, 29 May 2023 16:08:48 +0100
 From:   Liviu Dudau <liviu@dudau.co.uk>
 To:     =?UTF-8?q?Ar=C4=B1n=C3=A7=20=C3=9CNAL?= <arinc.unal@arinc9.com>
 Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
@@ -26,39 +26,37 @@ Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
         Sergio Paracuellos <sergio.paracuellos@gmail.com>,
         linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
         devicetree@vger.kernel.org, Liviu Dudau <liviu@dudau.co.uk>
-Subject: [PATCH v2 2/2] dt-bindings: mips: Add bindings for TP-Link HC220 G5 v1 board
-Date:   Mon, 29 May 2023 16:08:33 +0100
-Message-Id: <20230529150833.526084-3-liviu@dudau.co.uk>
+Subject: [PATCH v2 0/2] mips: dts: ralink: Add support for TP-Link HC220 G5 v1 board
+Date:   Mon, 29 May 2023 16:08:31 +0100
+Message-Id: <20230529150833.526084-1-liviu@dudau.co.uk>
 X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20230529150833.526084-1-liviu@dudau.co.uk>
+In-Reply-To: <84b31c59-81d3-c83d-ece9-a120b1cdcdd7@arinc9.com>
 References: <84b31c59-81d3-c83d-ece9-a120b1cdcdd7@arinc9.com>
- <20230529150833.526084-1-liviu@dudau.co.uk>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Add bindings for the compatible string used for the TP-Link's
-HC220 G5 V1 board, a wireless AP based on MT7621.
+Add device tree and bindings for the TP-Link HC220 G5 v1 wireless AP,
+a consumer product from TP-Link based on MT7621.
 
-Signed-off-by: Liviu Dudau <liviu@dudau.co.uk>
----
- Documentation/devicetree/bindings/mips/ralink.yaml | 1 +
- 1 file changed, 1 insertion(+)
+Changes since v1:
+ - Changed compatible for the board to "tplink,hc220-g5-v1"
+ - Updated the DSA switch nodes to better reflect actual usage.
+ - Disabled the fixed-link in gmac1
+ - Added device tree bindings in Documentation/
 
-diff --git a/Documentation/devicetree/bindings/mips/ralink.yaml b/Documentation/devicetree/bindings/mips/ralink.yaml
-index 704b5b5951271..53c1f66353770 100644
---- a/Documentation/devicetree/bindings/mips/ralink.yaml
-+++ b/Documentation/devicetree/bindings/mips/ralink.yaml
-@@ -80,6 +80,7 @@ properties:
-           - enum:
-               - gnubee,gb-pc1
-               - gnubee,gb-pc2
-+              - tplink,hc220-g5-v1
-           - const: mediatek,mt7621-soc
- 
- additionalProperties: true
+Liviu Dudau (2):
+  mips: dts: ralink: Add support for TP-Link HC220 G5 v1 board
+  dt-bindings: mips: Add bindings for TP-Link HC220 G5 v1 board
+
+ .../devicetree/bindings/mips/ralink.yaml      |   1 +
+ arch/mips/boot/dts/ralink/Makefile            |   3 +-
+ .../dts/ralink/mt7621-tplink-hc220-g5-v1.dts  | 129 ++++++++++++++++++
+ 3 files changed, 132 insertions(+), 1 deletion(-)
+ create mode 100644 arch/mips/boot/dts/ralink/mt7621-tplink-hc220-g5-v1.dts
+
 -- 
 2.40.1
 

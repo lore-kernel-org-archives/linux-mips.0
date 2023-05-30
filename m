@@ -2,103 +2,112 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F260FC77B7A
-	for <linux-mips@archiver.kernel.org>; Tue, 30 May 2023 13:37:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7F407C7EE2C
+	for <linux-mips@archiver.kernel.org>; Tue, 30 May 2023 16:00:53 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232717AbjE3Nhr (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 30 May 2023 09:37:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58128 "EHLO
+        id S233039AbjE3QAw (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 30 May 2023 12:00:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48132 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230261AbjE3Nhq (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Tue, 30 May 2023 09:37:46 -0400
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88669A1;
-        Tue, 30 May 2023 06:37:44 -0700 (PDT)
-Received: by mail-lf1-x130.google.com with SMTP id 2adb3069b0e04-4f3b9755961so4886919e87.0;
-        Tue, 30 May 2023 06:37:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1685453863; x=1688045863;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=L62hZYIJeAwZ9usNe6gVxdmiFJEVpK/92EzkmikJeAc=;
-        b=nxh6Bv8kYKSXo0qN2fySHv2hANhTTro5mrIyiRfi6cgxasQgIOaJSY9pXRT9Pwqiqo
-         HqmryrFyfl+vAVi8o+n2t/gTaMJvoESYqCnx5lFwjYydRDFT1+D65fQw1KZi/BuFjmF4
-         xRNaaiZRHZ2jgLWkTnnSgDO7+fjJMyi60IEG6N6vN6JTkOCbiNrEFug8b+yAsjwp15py
-         RlQ59rq+WkzKwk6iaok0EquaacPVk4r86bhnxYYM+PhX/ipN/1ya/OdBCfS56f2ngEil
-         stTzjzYYDRSrOEY/jX420FveVvc6KDMyoHk+xMiSAT0STET/X8YBM28skeyO6lIoZMNX
-         TDeA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1685453863; x=1688045863;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=L62hZYIJeAwZ9usNe6gVxdmiFJEVpK/92EzkmikJeAc=;
-        b=hswiA/c3XM+d0zEG3t2Uo6nsjSpHf3Ds4JCcqWvuxx9I7iWhyPjHvJOPIcqL2/ZCtX
-         ChZdSbzeOSsHgYVT/m8w7S1CVztG82yVT/qGGd47l9zMIY3BYqiBnkAkfQ821HUBQw+3
-         zqpcoCp2ljjUuDum4Z+8n7gst9bCn2Im+gqkBCqtBSvORQZVLiSk43tTC1VzGqYRwV5B
-         teKAp+C0Py7x/dP7B3qJ4uHKgWVWcs5L7n9ItZe7k6tkQuGZ8fPjqdA0f80SgRKGUtuP
-         8NZIQZw2NgAR7Aw7GacQ2W5fwZstTzW891KkCRZEN44Y3EZSAwk76QnSaraazitJ7h8j
-         5W3Q==
-X-Gm-Message-State: AC+VfDwHvU0ZvEKZELYjh/HskLqpFoF1X4/NOR6eODtpWIwbcGDo1Nxh
-        kZphkthRQHPS4hRnLOemxtHlPchIJ/A=
-X-Google-Smtp-Source: ACHHUZ7hwGBCWY/vgg5RqBO5TG0PwY5kN7FhGacLOsnjJrz5hMcVM2XaZ87cGC8MBaVIfkkQ6ZHk0A==
-X-Received: by 2002:ac2:43ba:0:b0:4f1:5015:43c4 with SMTP id t26-20020ac243ba000000b004f1501543c4mr800676lfl.38.1685453862683;
-        Tue, 30 May 2023 06:37:42 -0700 (PDT)
-Received: from mobilestation ([95.79.140.35])
-        by smtp.gmail.com with ESMTPSA id s6-20020a19ad46000000b004efff420b11sm343522lfd.181.2023.05.30.06.37.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 May 2023 06:37:42 -0700 (PDT)
-Date:   Tue, 30 May 2023 16:37:40 +0300
-From:   Serge Semin <fancer.lancer@gmail.com>
-To:     Jiaxun Yang <jiaxun.yang@flygoat.com>
-Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        tsbogend@alpha.franken.de
-Subject: Re: [PATCH 2/2] MIPS: generic: Allow R5 CPUs to be selected
-Message-ID: <20230530133740.2w2sbqg3hjhe2q2q@mobilestation>
-References: <20230529135245.4085-1-jiaxun.yang@flygoat.com>
- <20230529135245.4085-2-jiaxun.yang@flygoat.com>
+        with ESMTP id S233089AbjE3QAu (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Tue, 30 May 2023 12:00:50 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B074B2;
+        Tue, 30 May 2023 09:00:49 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1685462447;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=m93yS995VjAenJm1Tq30bXHcCehNtX8a6hAD3sks2W4=;
+        b=AfBAWRGV89Mc653n/xLqy7vteib+6M5/l2mZj+wR8AGKO3PMoCQnprQPz2JjGFxvFh3npR
+        75LwJDM0EE4g+P7BnJV6fDBo0D5A2wsMq2qcoO+Epgc1++GT/hm/IsyZQlfl88sd3wNdLj
+        HacEZyX2iikiKMUlVpHMaBRfI2+ABpbUurQzM9ir/bGUnTaJbVHwLys+6ejBpuK/Ql2gfK
+        8t5edlP2m1H7BWSDdUEp+QUPxhedXZYO6JcbMtV5DS0rwT2VI36zKlSE9ot+0iGtjPkQ+7
+        L4moXOZFPonmdPVRaj68CTj/NyhRRfgqXsWZ04Esn64uoqL2rtpo8bp2DKqCyA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1685462447;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=m93yS995VjAenJm1Tq30bXHcCehNtX8a6hAD3sks2W4=;
+        b=kHOcw6J0QHtLvp0yEL0d0xC3npNrA5vZH/XdZXuEI3If84/jq/yLIElk56Kjr2Nz9yF9mV
+        nI3pJZIHdR0bsSDw==
+To:     "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Tom Lendacky <thomas.lendacky@amd.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, x86@kernel.org,
+        David Woodhouse <dwmw2@infradead.org>,
+        Andrew Cooper <andrew.cooper3@citrix.com>,
+        Brian Gerst <brgerst@gmail.com>,
+        Arjan van de Veen <arjan@linux.intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Paul McKenney <paulmck@kernel.org>,
+        Sean Christopherson <seanjc@google.com>,
+        Oleksandr Natalenko <oleksandr@natalenko.name>,
+        Paul Menzel <pmenzel@molgen.mpg.de>,
+        "Guilherme G. Piccoli" <gpiccoli@igalia.com>,
+        Piotr Gorski <lucjan.lucjanov@gmail.com>,
+        Usama Arif <usama.arif@bytedance.com>,
+        Juergen Gross <jgross@suse.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        xen-devel@lists.xenproject.org,
+        Russell King <linux@armlinux.org.uk>,
+        Arnd Bergmann <arnd@arndb.de>,
+        linux-arm-kernel@lists.infradead.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>,
+        linux-csky@vger.kernel.org,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        linux-mips@vger.kernel.org,
+        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
+        Helge Deller <deller@gmx.de>, linux-parisc@vger.kernel.org,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        linux-riscv@lists.infradead.org,
+        Mark Rutland <mark.rutland@arm.com>,
+        Sabin Rapan <sabrapan@amazon.com>,
+        "Michael Kelley (LINUX)" <mikelley@microsoft.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>
+Subject: Re: [patch] x86/smpboot: Disable parallel bootup if cc_vendor != NONE
+In-Reply-To: <20230530122951.2wu5rwcu26ofov6f@box.shutemov.name>
+References: <20230524204818.3tjlwah2euncxzmh@box.shutemov.name>
+ <87y1lbl7r6.ffs@tglx> <87sfbhlwp9.ffs@tglx>
+ <20230529023939.mc2akptpxcg3eh2f@box.shutemov.name> <87bki3kkfi.ffs@tglx>
+ <20230529203129.sthnhzgds7ynddxd@box.shutemov.name>
+ <20230530005428.jyrc2ezx5raohlrt@box.shutemov.name> <87mt1mjhk3.ffs@tglx>
+ <87jzwqjeey.ffs@tglx> <87cz2ija1e.ffs@tglx>
+ <20230530122951.2wu5rwcu26ofov6f@box.shutemov.name>
+Date:   Tue, 30 May 2023 18:00:46 +0200
+Message-ID: <87wn0pizbl.ffs@tglx>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230529135245.4085-2-jiaxun.yang@flygoat.com>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Mon, May 29, 2023 at 02:52:45PM +0100, Jiaxun Yang wrote:
-> Since we do have P5600 bitfile for boston board, we should
-> allow generic kernel to be compiled for R5 CPUs.
+On Tue, May 30 2023 at 15:29, Kirill A. Shutemov wrote:
+> On Tue, May 30, 2023 at 02:09:17PM +0200, Thomas Gleixner wrote:
+>> The decision to allow parallel bringup of secondary CPUs checks
+>> CC_ATTR_GUEST_STATE_ENCRYPT to detect encrypted guests. Those cannot use
+>> parallel bootup because accessing the local APIC is intercepted and raises
+>> a #VC or #VE, which cannot be handled at that point.
+>> 
+>> The check works correctly, but only for AMD encrypted guests. TDX does not
+>> set that flag.
+>> 
+>> Check for cc_vendor != CC_VENDOR_NONE instead. That might be overbroad, but
+>> definitely works for both AMD and Intel.
+>
+> It boots fine with TDX, but I think it is wrong. cc_get_vendor() will
+> report CC_VENDOR_AMD even on bare metal if SME is enabled. I don't think
+> we want it.
 
-Would be good to place the outcomes from the Patch 1/2 discussion here.
+Right. Did not think about that.
 
-> 
-> Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+But the same way is CC_ATTR_GUEST_MEM_ENCRYPT overbroad for AMD. Only
+SEV-ES traps RDMSR if I'm understandig that maze correctly.
 
-Anyway. Thanks for the patch.
-Reviewed-by: Serge Semin <fancer.lancer@gmail.com>
+Thanks,
 
--Serge(y)
-
-> ---
->  arch/mips/Kconfig | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-> index e437bf43ecfc..215fcdc059d2 100644
-> --- a/arch/mips/Kconfig
-> +++ b/arch/mips/Kconfig
-> @@ -154,9 +154,11 @@ config MIPS_GENERIC_KERNEL
->  	select SWAP_IO_SPACE
->  	select SYS_HAS_CPU_MIPS32_R1
->  	select SYS_HAS_CPU_MIPS32_R2
-> +	select SYS_HAS_CPU_MIPS32_R5
->  	select SYS_HAS_CPU_MIPS32_R6
->  	select SYS_HAS_CPU_MIPS64_R1
->  	select SYS_HAS_CPU_MIPS64_R2
-> +	select SYS_HAS_CPU_MIPS64_R5
->  	select SYS_HAS_CPU_MIPS64_R6
->  	select SYS_SUPPORTS_32BIT_KERNEL
->  	select SYS_SUPPORTS_64BIT_KERNEL
-> -- 
-> 2.39.2 (Apple Git-143)
-> 
+        tglx

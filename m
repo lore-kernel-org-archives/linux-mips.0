@@ -2,47 +2,47 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 683AEC87FF2
-	for <linux-mips@archiver.kernel.org>; Wed, 31 May 2023 13:51:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 17977C7EE2E
+	for <linux-mips@archiver.kernel.org>; Wed, 31 May 2023 13:54:33 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237191AbjEaNvP (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 31 May 2023 09:51:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60602 "EHLO
+        id S237434AbjEaNyb (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 31 May 2023 09:54:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38232 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237561AbjEaNuy (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 31 May 2023 09:50:54 -0400
+        with ESMTP id S237447AbjEaNxz (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 31 May 2023 09:53:55 -0400
 Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27DB73A89;
-        Wed, 31 May 2023 06:46:26 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36D88448C;
+        Wed, 31 May 2023 06:47:27 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 078B563B35;
-        Wed, 31 May 2023 13:46:26 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 91826C433D2;
-        Wed, 31 May 2023 13:46:24 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id C63C863B9B;
+        Wed, 31 May 2023 13:46:04 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5BF3AC433EF;
+        Wed, 31 May 2023 13:46:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1685540785;
-        bh=Nf0sgHpLiHFr81n72nHj6LFAvUY7W1n5UsPyv7F0P9s=;
+        s=k20201202; t=1685540764;
+        bh=iNSIX/q69BO9D9C8quIGMYIKKtzREPqOzGa8/KIbOUY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=p3iIMn5Qy2q7OVELGFiL7yeM9z+RNzKe2+vOg4R0bDoZkvA9izzEzhhkIuPQ6DiL4
-         a0A2DbJIF+YwE1IqPnqCLo3FPhSLD670Mj/ET0W/dmoOQNTsYhYqwNXpp8Eb8/8y4k
-         kDKA9W6xcrYbELybw6UFVI7wR4zYbHXNAN2Xnc3gpWm/H7yQI+h2KPDODqg8ifCIx7
-         kVf6V6R34/5v55h8hwSP3Di2coGnTWJZ/t/SBX+6mWI9cAWogzMfIsfIvLNmzaci8a
-         UPdudar1+kOeIeS0XuRYUpaz8PZoDngInT254bwn2RxigBnxR2Z3UcY5HYbpKcBI8Y
-         dxAPbazGeA8oQ==
+        b=UVEcZ7G5AHUfhPr1OhmwE0CLaXJuu0CCz5ksVipt9ls6bm8aMpjrxNP+cpwRwU1pK
+         WYV8YuI8B98YOITXHnmU3OB2PQsDHFwrB7IXHs+AjElpffCoOsLPsHVM5SOx4N53bk
+         F/v2jtjtknpK4tvF8o9rMbZddwz2xzBez+p6NTnQyahFPmBckZ4khBu+y9pngw3tI0
+         b7+c1wgdsIMNYwWennYwWTyEoyOJNxAB8/d0DwfprQqYyggHobXDZiNezyK6sI+ahZ
+         ES9ctoZtnYBXC0JLR3BnNq2ZQw1zyxyjpB5d+x8L3Y95eVqol7jEsC0ciPRRwm68nq
+         t9HEan2xLOKVQ==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Liviu Dudau <liviu@dudau.co.uk>,
         Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
         Sasha Levin <sashal@kernel.org>, nathan@kernel.org,
         yury.norov@gmail.com, Jason@zx2c4.com, linux-mips@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.14 09/10] mips: Move initrd_start check after initrd address sanitisation.
-Date:   Wed, 31 May 2023 09:46:05 -0400
-Message-Id: <20230531134606.3385210-9-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.19 12/13] mips: Move initrd_start check after initrd address sanitisation.
+Date:   Wed, 31 May 2023 09:45:40 -0400
+Message-Id: <20230531134541.3385043-12-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230531134606.3385210-1-sashal@kernel.org>
-References: <20230531134606.3385210-1-sashal@kernel.org>
+In-Reply-To: <20230531134541.3385043-1-sashal@kernel.org>
+References: <20230531134541.3385043-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -69,10 +69,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 5 insertions(+), 4 deletions(-)
 
 diff --git a/arch/mips/kernel/setup.c b/arch/mips/kernel/setup.c
-index abd7ee9e90ab0..d205d3875e2c2 100644
+index 2c2480be3f365..124bc842306d6 100644
 --- a/arch/mips/kernel/setup.c
 +++ b/arch/mips/kernel/setup.c
-@@ -257,10 +257,6 @@ static unsigned long __init init_initrd(void)
+@@ -265,10 +265,6 @@ static unsigned long __init init_initrd(void)
  		pr_err("initrd start must be page aligned\n");
  		goto disable;
  	}
@@ -83,7 +83,7 @@ index abd7ee9e90ab0..d205d3875e2c2 100644
  
  	/*
  	 * Sanitize initrd addresses. For example firmware
-@@ -273,6 +269,11 @@ static unsigned long __init init_initrd(void)
+@@ -281,6 +277,11 @@ static unsigned long __init init_initrd(void)
  	initrd_end = (unsigned long)__va(end);
  	initrd_start = (unsigned long)__va(__pa(initrd_start));
  

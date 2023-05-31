@@ -2,46 +2,47 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 56896C7EE37
-	for <linux-mips@archiver.kernel.org>; Wed, 31 May 2023 13:51:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E3A66C87FE7
+	for <linux-mips@archiver.kernel.org>; Wed, 31 May 2023 13:51:14 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237115AbjEaNvM (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 31 May 2023 09:51:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32768 "EHLO
+        id S237135AbjEaNvN (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 31 May 2023 09:51:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60104 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236961AbjEaNtJ (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 31 May 2023 09:49:09 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 954E11BC1;
-        Wed, 31 May 2023 06:45:07 -0700 (PDT)
+        with ESMTP id S237512AbjEaNus (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 31 May 2023 09:50:48 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0BE41FC8;
+        Wed, 31 May 2023 06:46:19 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 5E49263B6A;
-        Wed, 31 May 2023 13:44:44 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1D7DDC4339B;
-        Wed, 31 May 2023 13:44:43 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 8254463B10;
+        Wed, 31 May 2023 13:46:19 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 41869C433D2;
+        Wed, 31 May 2023 13:46:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1685540683;
-        bh=qEUsjwhhl3BEEVwSGFW2pv6M333EyUzh6VO+NOAFXjg=;
+        s=k20201202; t=1685540778;
+        bh=m+GOwXUa0kziIQ5hoJSwAPnamzkvs1sMWWSnsC3soOM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Q3pOjk76FYy4bL9TYAxuwssEIu4p+TJhFTxbgec992nbDDY+TFbY5KsjHlIMAN2ow
-         BNDMG//eujC3Ii97/R8ygu1Ncyo+1qVn4f0GOdDx8jFkILcEEv/yJ2rClCRKenwgfY
-         hQkj9xJPr8EZKBcKUPZjMV/QIfhTKsmUHsyjnNvJOe8k4VmavJ6F0Ho8BkRYBjHDki
-         PtExoW3GX2VDy44G6+6YKgRUQRm9OdakRcgpPe4DULaADNiGomWZRlquyGSyCuqMjC
-         IVc4eajPhywCtIZgZ5BVpVCrPXtgc+uOr8XyOvT0Z4QhqRO6GfWe9GOQ5+XOxZvorf
-         NRUAi8orwYsJg==
+        b=s+B8omqRSlj0ZSs2G8ZH5D7hAz1GP2GnDjgt793A0hCIGom06RUMlqtbtKkwoYTLb
+         Gn2Fcz3RIfrlBMTdPPyoiFG8uyPZri4c19YqcAP0r9gPhmYn99mEddiagWL9HZAbXi
+         YTTsCF1FOWr70vFZaZ0GvatN6rmvbzhGWg2LJtlK8uWkHm0g8t49WG9zyZATChW2IC
+         psTH8PK9+0crAfsipreQkCxNBahjPrVhr9pdozMdoeJqgJqVRBdFgHrjfbqITAzyfH
+         YZx2qAWC94BVKcWik3V0PRQNxN6Ejvdt/gbRnmBJrh1uI2s3VTRdIAuhQ4Vx2IGmsH
+         A5v3jwMBxbCDg==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Manuel Lauss <manuel.lauss@gmail.com>,
         Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Sasha Levin <sashal@kernel.org>, linux-mips@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.10 17/21] MIPS: Alchemy: fix dbdma2
-Date:   Wed, 31 May 2023 09:44:10 -0400
-Message-Id: <20230531134415.3384458-17-sashal@kernel.org>
+        Sasha Levin <sashal@kernel.org>, jiaxun.yang@flygoat.com,
+        linux-mips@vger.kernel.org
+Subject: [PATCH AUTOSEL 4.14 07/10] MIPS: Restore Au1300 support
+Date:   Wed, 31 May 2023 09:46:03 -0400
+Message-Id: <20230531134606.3385210-7-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230531134415.3384458-1-sashal@kernel.org>
-References: <20230531134415.3384458-1-sashal@kernel.org>
+In-Reply-To: <20230531134606.3385210-1-sashal@kernel.org>
+References: <20230531134606.3385210-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -52,83 +53,44 @@ X-Mailing-List: linux-mips@vger.kernel.org
 
 From: Manuel Lauss <manuel.lauss@gmail.com>
 
-[ Upstream commit 2d645604f69f3a772d58ead702f9a8e84ab2b342 ]
+[ Upstream commit f2041708dee30a3425f680265c337acd28293782 ]
 
-Various fixes for the Au1200/Au1550/Au1300 DBDMA2 code:
+The Au1300, at least the one I have to test, uses the NetLogic vendor
+ID, but commit 95b8a5e0111a ("MIPS: Remove NETLOGIC support") also
+dropped Au1300 detection.  Restore Au1300 detection.
 
-- skip cache invalidation if chip has working coherency circuitry.
-- invalidate KSEG0-portion of the (physical) data address.
-- force the dma channel doorbell write out to bus immediately with
-  a sync.
+Tested on DB1300 with Au1380 chip.
 
+Signed-off-by: Manuel Lauss <manuel.lauss@gmail.com>
 Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/mips/alchemy/common/dbdma.c | 27 +++++++++++++++------------
- 1 file changed, 15 insertions(+), 12 deletions(-)
+ arch/mips/kernel/cpu-probe.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/arch/mips/alchemy/common/dbdma.c b/arch/mips/alchemy/common/dbdma.c
-index 4ca2c28878e0f..e9ee9ab90a0c6 100644
---- a/arch/mips/alchemy/common/dbdma.c
-+++ b/arch/mips/alchemy/common/dbdma.c
-@@ -30,6 +30,7 @@
-  *
-  */
+diff --git a/arch/mips/kernel/cpu-probe.c b/arch/mips/kernel/cpu-probe.c
+index cf3fd549e16d0..f9368071a6bd9 100644
+--- a/arch/mips/kernel/cpu-probe.c
++++ b/arch/mips/kernel/cpu-probe.c
+@@ -1686,6 +1686,10 @@ static inline void cpu_probe_alchemy(struct cpuinfo_mips *c, unsigned int cpu)
+ 			break;
+ 		}
+ 		break;
++	case PRID_IMP_NETLOGIC_AU13XX:
++		c->cputype = CPU_ALCHEMY;
++		__cpu_name[cpu] = "Au1300";
++		break;
+ 	}
+ }
  
-+#include <linux/dma-map-ops.h> /* for dma_default_coherent */
- #include <linux/init.h>
- #include <linux/kernel.h>
- #include <linux/slab.h>
-@@ -623,17 +624,18 @@ u32 au1xxx_dbdma_put_source(u32 chanid, dma_addr_t buf, int nbytes, u32 flags)
- 		dp->dscr_cmd0 &= ~DSCR_CMD0_IE;
- 
- 	/*
--	 * There is an errata on the Au1200/Au1550 parts that could result
--	 * in "stale" data being DMA'ed. It has to do with the snoop logic on
--	 * the cache eviction buffer.  DMA_NONCOHERENT is on by default for
--	 * these parts. If it is fixed in the future, these dma_cache_inv will
--	 * just be nothing more than empty macros. See io.h.
-+	 * There is an erratum on certain Au1200/Au1550 revisions that could
-+	 * result in "stale" data being DMA'ed. It has to do with the snoop
-+	 * logic on the cache eviction buffer.  dma_default_coherent is set
-+	 * to false on these parts.
- 	 */
--	dma_cache_wback_inv((unsigned long)buf, nbytes);
-+	if (!dma_default_coherent)
-+		dma_cache_wback_inv(KSEG0ADDR(buf), nbytes);
- 	dp->dscr_cmd0 |= DSCR_CMD0_V;	/* Let it rip */
- 	wmb(); /* drain writebuffer */
- 	dma_cache_wback_inv((unsigned long)dp, sizeof(*dp));
- 	ctp->chan_ptr->ddma_dbell = 0;
-+	wmb(); /* force doorbell write out to dma engine */
- 
- 	/* Get next descriptor pointer. */
- 	ctp->put_ptr = phys_to_virt(DSCR_GET_NXTPTR(dp->dscr_nxtptr));
-@@ -685,17 +687,18 @@ u32 au1xxx_dbdma_put_dest(u32 chanid, dma_addr_t buf, int nbytes, u32 flags)
- 			  dp->dscr_source1, dp->dscr_dest0, dp->dscr_dest1);
- #endif
- 	/*
--	 * There is an errata on the Au1200/Au1550 parts that could result in
--	 * "stale" data being DMA'ed. It has to do with the snoop logic on the
--	 * cache eviction buffer.  DMA_NONCOHERENT is on by default for these
--	 * parts. If it is fixed in the future, these dma_cache_inv will just
--	 * be nothing more than empty macros. See io.h.
-+	 * There is an erratum on certain Au1200/Au1550 revisions that could
-+	 * result in "stale" data being DMA'ed. It has to do with the snoop
-+	 * logic on the cache eviction buffer.  dma_default_coherent is set
-+	 * to false on these parts.
- 	 */
--	dma_cache_inv((unsigned long)buf, nbytes);
-+	if (!dma_default_coherent)
-+		dma_cache_inv(KSEG0ADDR(buf), nbytes);
- 	dp->dscr_cmd0 |= DSCR_CMD0_V;	/* Let it rip */
- 	wmb(); /* drain writebuffer */
- 	dma_cache_wback_inv((unsigned long)dp, sizeof(*dp));
- 	ctp->chan_ptr->ddma_dbell = 0;
-+	wmb(); /* force doorbell write out to dma engine */
- 
- 	/* Get next descriptor pointer. */
- 	ctp->put_ptr = phys_to_virt(DSCR_GET_NXTPTR(dp->dscr_nxtptr));
+@@ -1988,6 +1992,7 @@ void cpu_probe(void)
+ 		cpu_probe_mips(c, cpu);
+ 		break;
+ 	case PRID_COMP_ALCHEMY:
++	case PRID_COMP_NETLOGIC:
+ 		cpu_probe_alchemy(c, cpu);
+ 		break;
+ 	case PRID_COMP_SIBYTE:
 -- 
 2.39.2
 

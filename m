@@ -2,43 +2,43 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DD6E3C7EE2E
-	for <linux-mips@archiver.kernel.org>; Wed, 31 May 2023 13:47:55 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CD4E3C7EE2F
+	for <linux-mips@archiver.kernel.org>; Wed, 31 May 2023 13:49:27 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236782AbjEaNry (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 31 May 2023 09:47:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33136 "EHLO
+        id S237061AbjEaNt1 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 31 May 2023 09:49:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60424 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236840AbjEaNrX (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 31 May 2023 09:47:23 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C4462113;
-        Wed, 31 May 2023 06:43:55 -0700 (PDT)
+        with ESMTP id S237009AbjEaNsr (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 31 May 2023 09:48:47 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D615DE43;
+        Wed, 31 May 2023 06:44:56 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 5CF9963B22;
-        Wed, 31 May 2023 13:43:55 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 35A45C433D2;
-        Wed, 31 May 2023 13:43:54 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 088FE63703;
+        Wed, 31 May 2023 13:43:48 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C3129C4339C;
+        Wed, 31 May 2023 13:43:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1685540634;
-        bh=qEUsjwhhl3BEEVwSGFW2pv6M333EyUzh6VO+NOAFXjg=;
+        s=k20201202; t=1685540627;
+        bh=svi6qGxnp1fm22+G3/CI2v8WGSS1aZUBN7qrdBbVMgs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Xz4gX4ttQIQ3cwX26Vvweo4EIBObeVwCGdS48gn8P7+maJHSMiYPXHuuX7cClkbuV
-         622RtfMGUaZHJ5U9+cLRUHU4VXqSftpLMUcHQdawBHSs/I7Tvw+IeKVnFJBb9eYI9e
-         QpZs3psetVdushf/Cijr8wVfTNXVNlE/63/I3j4atwDP+FdbY4sFger1NmHgVAAJcI
-         DrReq0s7h1zABv6s3ZfQlA0+g8uD50qWcsH7Iw+93+M4FiJZa0We8IOnFvCQnxHqwg
-         uTj3KyZo1VLsVaQvghIxvv+snc6H6f+MNZWWGwXnqQuwflc+dHVwzSmfCNkI/sFjEs
-         8SEzEZLnKQkWg==
+        b=CpTDsp4WxZUuaCuN5BXVf4enU4UdGHTp9uIc2EHiTbOIbCQ4P5CQHMKP0OqWUffk1
+         ji9JRvIRyC9+MjZwPdQzae0d8nXp0tHXfe7LcCmWBbuyx1yK69cem9S3SIBme4UgBl
+         7DtzfNey2VlzN6mqqW0EtbitnU9DxEWxONKDkKwuWh9HNiYDcBM/c65/a1GS00CVoi
+         pyikvFcLv9k8YpW2OR2PjToCvMnt+cq6s5kg262Fntto5veE1j0AK/fOZHOAiRBqK9
+         lcZxFUZaYSanM/bGKlEWyzyP+AzfYj3d3Ck7fqrhEfI4+hyLTWg1rbBzdDiI5abpl6
+         tlQ+gAOQslj2w==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Manuel Lauss <manuel.lauss@gmail.com>,
         Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
         Sasha Levin <sashal@kernel.org>, linux-mips@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.15 19/24] MIPS: Alchemy: fix dbdma2
-Date:   Wed, 31 May 2023 09:43:15 -0400
-Message-Id: <20230531134320.3384102-19-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.15 17/24] MIPS: unhide PATA_PLATFORM
+Date:   Wed, 31 May 2023 09:43:13 -0400
+Message-Id: <20230531134320.3384102-17-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230531134320.3384102-1-sashal@kernel.org>
 References: <20230531134320.3384102-1-sashal@kernel.org>
@@ -52,83 +52,30 @@ X-Mailing-List: linux-mips@vger.kernel.org
 
 From: Manuel Lauss <manuel.lauss@gmail.com>
 
-[ Upstream commit 2d645604f69f3a772d58ead702f9a8e84ab2b342 ]
+[ Upstream commit 75b18aac6fa39a1720677970cfcb52ecea1eb44c ]
 
-Various fixes for the Au1200/Au1550/Au1300 DBDMA2 code:
+Alchemy DB1200/DB1300 boards can use the pata_platform driver.
+Unhide the config entry in all of MIPS.
 
-- skip cache invalidation if chip has working coherency circuitry.
-- invalidate KSEG0-portion of the (physical) data address.
-- force the dma channel doorbell write out to bus immediately with
-  a sync.
-
+Signed-off-by: Manuel Lauss <manuel.lauss@gmail.com>
 Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/mips/alchemy/common/dbdma.c | 27 +++++++++++++++------------
- 1 file changed, 15 insertions(+), 12 deletions(-)
+ arch/mips/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/arch/mips/alchemy/common/dbdma.c b/arch/mips/alchemy/common/dbdma.c
-index 4ca2c28878e0f..e9ee9ab90a0c6 100644
---- a/arch/mips/alchemy/common/dbdma.c
-+++ b/arch/mips/alchemy/common/dbdma.c
-@@ -30,6 +30,7 @@
-  *
-  */
- 
-+#include <linux/dma-map-ops.h> /* for dma_default_coherent */
- #include <linux/init.h>
- #include <linux/kernel.h>
- #include <linux/slab.h>
-@@ -623,17 +624,18 @@ u32 au1xxx_dbdma_put_source(u32 chanid, dma_addr_t buf, int nbytes, u32 flags)
- 		dp->dscr_cmd0 &= ~DSCR_CMD0_IE;
- 
- 	/*
--	 * There is an errata on the Au1200/Au1550 parts that could result
--	 * in "stale" data being DMA'ed. It has to do with the snoop logic on
--	 * the cache eviction buffer.  DMA_NONCOHERENT is on by default for
--	 * these parts. If it is fixed in the future, these dma_cache_inv will
--	 * just be nothing more than empty macros. See io.h.
-+	 * There is an erratum on certain Au1200/Au1550 revisions that could
-+	 * result in "stale" data being DMA'ed. It has to do with the snoop
-+	 * logic on the cache eviction buffer.  dma_default_coherent is set
-+	 * to false on these parts.
- 	 */
--	dma_cache_wback_inv((unsigned long)buf, nbytes);
-+	if (!dma_default_coherent)
-+		dma_cache_wback_inv(KSEG0ADDR(buf), nbytes);
- 	dp->dscr_cmd0 |= DSCR_CMD0_V;	/* Let it rip */
- 	wmb(); /* drain writebuffer */
- 	dma_cache_wback_inv((unsigned long)dp, sizeof(*dp));
- 	ctp->chan_ptr->ddma_dbell = 0;
-+	wmb(); /* force doorbell write out to dma engine */
- 
- 	/* Get next descriptor pointer. */
- 	ctp->put_ptr = phys_to_virt(DSCR_GET_NXTPTR(dp->dscr_nxtptr));
-@@ -685,17 +687,18 @@ u32 au1xxx_dbdma_put_dest(u32 chanid, dma_addr_t buf, int nbytes, u32 flags)
- 			  dp->dscr_source1, dp->dscr_dest0, dp->dscr_dest1);
- #endif
- 	/*
--	 * There is an errata on the Au1200/Au1550 parts that could result in
--	 * "stale" data being DMA'ed. It has to do with the snoop logic on the
--	 * cache eviction buffer.  DMA_NONCOHERENT is on by default for these
--	 * parts. If it is fixed in the future, these dma_cache_inv will just
--	 * be nothing more than empty macros. See io.h.
-+	 * There is an erratum on certain Au1200/Au1550 revisions that could
-+	 * result in "stale" data being DMA'ed. It has to do with the snoop
-+	 * logic on the cache eviction buffer.  dma_default_coherent is set
-+	 * to false on these parts.
- 	 */
--	dma_cache_inv((unsigned long)buf, nbytes);
-+	if (!dma_default_coherent)
-+		dma_cache_inv(KSEG0ADDR(buf), nbytes);
- 	dp->dscr_cmd0 |= DSCR_CMD0_V;	/* Let it rip */
- 	wmb(); /* drain writebuffer */
- 	dma_cache_wback_inv((unsigned long)dp, sizeof(*dp));
- 	ctp->chan_ptr->ddma_dbell = 0;
-+	wmb(); /* force doorbell write out to dma engine */
- 
- 	/* Get next descriptor pointer. */
- 	ctp->put_ptr = phys_to_virt(DSCR_GET_NXTPTR(dp->dscr_nxtptr));
+diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
+index 393eb2133243f..56c0f75e7a76e 100644
+--- a/arch/mips/Kconfig
++++ b/arch/mips/Kconfig
+@@ -81,6 +81,7 @@ config MIPS
+ 	select HAVE_LD_DEAD_CODE_DATA_ELIMINATION
+ 	select HAVE_MOD_ARCH_SPECIFIC
+ 	select HAVE_NMI
++	select HAVE_PATA_PLATFORM
+ 	select HAVE_PERF_EVENTS
+ 	select HAVE_PERF_REGS
+ 	select HAVE_PERF_USER_STACK_DUMP
 -- 
 2.39.2
 

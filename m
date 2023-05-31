@@ -2,47 +2,47 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2036AC7EE2F
-	for <linux-mips@archiver.kernel.org>; Wed, 31 May 2023 13:45:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8ECEEC7EE23
+	for <linux-mips@archiver.kernel.org>; Wed, 31 May 2023 13:47:43 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236749AbjEaNpe (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 31 May 2023 09:45:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54832 "EHLO
+        id S236793AbjEaNrm (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 31 May 2023 09:47:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60054 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236764AbjEaNo6 (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 31 May 2023 09:44:58 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B31151BDC;
-        Wed, 31 May 2023 06:43:03 -0700 (PDT)
+        with ESMTP id S236803AbjEaNq4 (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 31 May 2023 09:46:56 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF529E7B;
+        Wed, 31 May 2023 06:43:51 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 94C37628FE;
-        Wed, 31 May 2023 13:43:00 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2DFA3C433D2;
-        Wed, 31 May 2023 13:42:59 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id CE4FF636E2;
+        Wed, 31 May 2023 13:43:51 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8C759C4339E;
+        Wed, 31 May 2023 13:43:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1685540580;
-        bh=apa5LjQUCPwHfND7dLxHBsRZpGi5SwgtmBlh59yV+Bw=;
+        s=k20201202; t=1685540631;
+        bh=rJ4/TuBUV7TUlNl0eyT+AG9mKGL/fA+RhX3jj2Jg250=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=O1NMdhomWpTRvA2POediM5hikpZ1BiqrlqZNrUkRl0r43nL5sdr86JWlWBZISvePT
-         vZFzQR8V0SIQIt/w/cNqkYb4cgfabtE/J8LC+zweSbzzCX9D8Pi3Tt1sJ1E/w4fM8x
-         79u5du6+zF8U5ERSoGbK+YiqpE50IFzn5N2lbWl4512sriiz179ulNk8w15nu4VdeJ
-         s97Ts+DUuXpjPYLcyQztQbkyZoyNKr3iiQ3AGzgkwMvTZJOA9ipDv3uwwowAI70y22
-         mSK+QvZJTkbr79dj052Olt9RosIrJ+hVJngkSD44Z3yK00G0LmK+Rhec86xSldRlgF
-         RVICXNPeJ7boA==
+        b=GNey6RTXfn4DBVlw3RYHPtkXaK2E33Jpgrd56qTpOVCnElj1QzngW43tlRfvcZC9E
+         RM5K7+59GE2oGrRoDols8wFCsiOwXQN47ph4dj2NhwngGFoumhe/E1Lmw+fa+nwCQm
+         U47oROFOvWUzJEP36KAxwDK5RCj+y8J1zlTfkTLSddYiYIfB8bt8IfD/HKzW0yDqap
+         yqASKQsMwEg9auggxBqBqHpmFhzAtEruCc/vNr6whJUs5acPpuJGkuh1sbcUN1EglA
+         hibcTvrzOrtRRm00NIfmGI/yaHeCh3iWIgSQmWaTBjKI8Egd5JFlK5Hv5Lj2b7MZ23
+         x1k7YvvXmQnGg==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Liviu Dudau <liviu@dudau.co.uk>,
+Cc:     Manuel Lauss <manuel.lauss@gmail.com>,
         Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Sasha Levin <sashal@kernel.org>, yury.norov@gmail.com,
-        nathan@kernel.org, Jason@zx2c4.com, linux-mips@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.1 27/33] mips: Move initrd_start check after initrd address sanitisation.
-Date:   Wed, 31 May 2023 09:41:53 -0400
-Message-Id: <20230531134159.3383703-27-sashal@kernel.org>
+        Sasha Levin <sashal@kernel.org>, jiaxun.yang@flygoat.com,
+        linux-mips@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.15 18/24] MIPS: Restore Au1300 support
+Date:   Wed, 31 May 2023 09:43:14 -0400
+Message-Id: <20230531134320.3384102-18-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230531134159.3383703-1-sashal@kernel.org>
-References: <20230531134159.3383703-1-sashal@kernel.org>
+In-Reply-To: <20230531134320.3384102-1-sashal@kernel.org>
+References: <20230531134320.3384102-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -51,50 +51,46 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-From: Liviu Dudau <liviu@dudau.co.uk>
+From: Manuel Lauss <manuel.lauss@gmail.com>
 
-[ Upstream commit 4897a898a216058dec55e5e5902534e6e224fcdf ]
+[ Upstream commit f2041708dee30a3425f680265c337acd28293782 ]
 
-PAGE_OFFSET is technically a virtual address so when checking the value of
-initrd_start against it we should make sure that it has been sanitised from
-the values passed by the bootloader. Without this change, even with a bootloader
-that passes correct addresses for an initrd, we are failing to load it on MT7621
-boards, for example.
+The Au1300, at least the one I have to test, uses the NetLogic vendor
+ID, but commit 95b8a5e0111a ("MIPS: Remove NETLOGIC support") also
+dropped Au1300 detection.  Restore Au1300 detection.
 
-Signed-off-by: Liviu Dudau <liviu@dudau.co.uk>
+Tested on DB1300 with Au1380 chip.
+
+Signed-off-by: Manuel Lauss <manuel.lauss@gmail.com>
 Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/mips/kernel/setup.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+ arch/mips/kernel/cpu-probe.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/arch/mips/kernel/setup.c b/arch/mips/kernel/setup.c
-index f1c88f8a1dc51..81dbb4ef52317 100644
---- a/arch/mips/kernel/setup.c
-+++ b/arch/mips/kernel/setup.c
-@@ -158,10 +158,6 @@ static unsigned long __init init_initrd(void)
- 		pr_err("initrd start must be page aligned\n");
- 		goto disable;
+diff --git a/arch/mips/kernel/cpu-probe.c b/arch/mips/kernel/cpu-probe.c
+index 7c861e6a89529..df40880d84495 100644
+--- a/arch/mips/kernel/cpu-probe.c
++++ b/arch/mips/kernel/cpu-probe.c
+@@ -1565,6 +1565,10 @@ static inline void cpu_probe_alchemy(struct cpuinfo_mips *c, unsigned int cpu)
+ 			break;
+ 		}
+ 		break;
++	case PRID_IMP_NETLOGIC_AU13XX:
++		c->cputype = CPU_ALCHEMY;
++		__cpu_name[cpu] = "Au1300";
++		break;
  	}
--	if (initrd_start < PAGE_OFFSET) {
--		pr_err("initrd start < PAGE_OFFSET\n");
--		goto disable;
--	}
+ }
  
- 	/*
- 	 * Sanitize initrd addresses. For example firmware
-@@ -174,6 +170,11 @@ static unsigned long __init init_initrd(void)
- 	initrd_end = (unsigned long)__va(end);
- 	initrd_start = (unsigned long)__va(__pa(initrd_start));
- 
-+	if (initrd_start < PAGE_OFFSET) {
-+		pr_err("initrd start < PAGE_OFFSET\n");
-+		goto disable;
-+	}
-+
- 	ROOT_DEV = Root_RAM0;
- 	return PFN_UP(end);
- disable:
+@@ -2005,6 +2009,7 @@ void cpu_probe(void)
+ 		cpu_probe_mips(c, cpu);
+ 		break;
+ 	case PRID_COMP_ALCHEMY:
++	case PRID_COMP_NETLOGIC:
+ 		cpu_probe_alchemy(c, cpu);
+ 		break;
+ 	case PRID_COMP_SIBYTE:
 -- 
 2.39.2
 

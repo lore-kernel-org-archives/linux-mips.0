@@ -2,44 +2,43 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 41E07C7EE23
-	for <linux-mips@archiver.kernel.org>; Wed, 31 May 2023 13:43:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 791A0C7EE23
+	for <linux-mips@archiver.kernel.org>; Wed, 31 May 2023 13:44:18 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236268AbjEaNnR (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 31 May 2023 09:43:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55064 "EHLO
+        id S236651AbjEaNoR (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 31 May 2023 09:44:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54368 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235773AbjEaNmd (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 31 May 2023 09:42:33 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64E85E62;
-        Wed, 31 May 2023 06:41:38 -0700 (PDT)
+        with ESMTP id S236518AbjEaNnp (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 31 May 2023 09:43:45 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDE611994;
+        Wed, 31 May 2023 06:42:17 -0700 (PDT)
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 813F863B05;
-        Wed, 31 May 2023 13:41:37 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 16E54C433EF;
-        Wed, 31 May 2023 13:41:36 +0000 (UTC)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 3AD5E63B10;
+        Wed, 31 May 2023 13:41:25 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 138C2C433D2;
+        Wed, 31 May 2023 13:41:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1685540497;
-        bh=apa5LjQUCPwHfND7dLxHBsRZpGi5SwgtmBlh59yV+Bw=;
+        s=k20201202; t=1685540484;
+        bh=YWUI4LhLQsaZku+adHmUfwJvksQC3BFmITBA1sBc9Dw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=lVslzGxFXpIMGi6lRIq2C630HyxPTEAaiDLs0kAUmGJBYdo9fKyLRb/iaHfTikthF
-         Ao2SLjqmuQUJdnRzT1Gy40PPEfXEsKiDrNzOlbRrzbM2VK97otkaeo/j8fuGq1Rd7V
-         wshbOLqMY5gyYrEgNhkgx76DTQgb6A6LLhQPyk4sEiUiGCDUO4TpC7em2lKH39Gd38
-         eALeoGocPl9gWeg4Sn7IQilMoz33fTftN79hbwua8IG/LZsMgdJae6rSxGllYNdBMM
-         nUxajsVTcQ6Lq8WGXZg367CF1rIm8MO4VRYOQJHWqxNTVV2zvy4i1nDWjqqNlPi0ZT
-         nAp0rCdnTPgmA==
+        b=M5L0UxC1FFlFePoEL9MYta9YonTFfcRWw9AkjJP+QDqawM6fi1tJaxhIBUpF6iiL/
+         MiZL3dTu4C0px3k5cnx/OUR6hMpH5LNSc+EB6Vm3d8Ew5SUNZJOVBzIUdTVIoMa8K8
+         3i63ASfXTBdm2ZHOUsmBz2EqMpcaQvWs/VYw0rQG241zYpPOE5nBv0N52x54jm8Omh
+         hhkh+ks7bJ/DaClyXfYeWdUMPN6n0ZDblqmc0ZKTYeUXpEoY5nhqffqHSDrCVjulGQ
+         XFFUYdcGcFRW78fECERBFM9SN1WXelAbOQcuNI92yWN3cF5BjE+3MakoWqig3QJb40
+         eOqBzeL2LOnmA==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Liviu Dudau <liviu@dudau.co.uk>,
+Cc:     Manuel Lauss <manuel.lauss@gmail.com>,
         Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Sasha Levin <sashal@kernel.org>, yury.norov@gmail.com,
-        nathan@kernel.org, Jason@zx2c4.com, linux-mips@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.3 31/37] mips: Move initrd_start check after initrd address sanitisation.
-Date:   Wed, 31 May 2023 09:40:13 -0400
-Message-Id: <20230531134020.3383253-31-sashal@kernel.org>
+        Sasha Levin <sashal@kernel.org>, linux-mips@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.3 28/37] MIPS: unhide PATA_PLATFORM
+Date:   Wed, 31 May 2023 09:40:10 -0400
+Message-Id: <20230531134020.3383253-28-sashal@kernel.org>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230531134020.3383253-1-sashal@kernel.org>
 References: <20230531134020.3383253-1-sashal@kernel.org>
@@ -51,50 +50,32 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-From: Liviu Dudau <liviu@dudau.co.uk>
+From: Manuel Lauss <manuel.lauss@gmail.com>
 
-[ Upstream commit 4897a898a216058dec55e5e5902534e6e224fcdf ]
+[ Upstream commit 75b18aac6fa39a1720677970cfcb52ecea1eb44c ]
 
-PAGE_OFFSET is technically a virtual address so when checking the value of
-initrd_start against it we should make sure that it has been sanitised from
-the values passed by the bootloader. Without this change, even with a bootloader
-that passes correct addresses for an initrd, we are failing to load it on MT7621
-boards, for example.
+Alchemy DB1200/DB1300 boards can use the pata_platform driver.
+Unhide the config entry in all of MIPS.
 
-Signed-off-by: Liviu Dudau <liviu@dudau.co.uk>
+Signed-off-by: Manuel Lauss <manuel.lauss@gmail.com>
 Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/mips/kernel/setup.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+ arch/mips/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/arch/mips/kernel/setup.c b/arch/mips/kernel/setup.c
-index f1c88f8a1dc51..81dbb4ef52317 100644
---- a/arch/mips/kernel/setup.c
-+++ b/arch/mips/kernel/setup.c
-@@ -158,10 +158,6 @@ static unsigned long __init init_initrd(void)
- 		pr_err("initrd start must be page aligned\n");
- 		goto disable;
- 	}
--	if (initrd_start < PAGE_OFFSET) {
--		pr_err("initrd start < PAGE_OFFSET\n");
--		goto disable;
--	}
- 
- 	/*
- 	 * Sanitize initrd addresses. For example firmware
-@@ -174,6 +170,11 @@ static unsigned long __init init_initrd(void)
- 	initrd_end = (unsigned long)__va(end);
- 	initrd_start = (unsigned long)__va(__pa(initrd_start));
- 
-+	if (initrd_start < PAGE_OFFSET) {
-+		pr_err("initrd start < PAGE_OFFSET\n");
-+		goto disable;
-+	}
-+
- 	ROOT_DEV = Root_RAM0;
- 	return PFN_UP(end);
- disable:
+diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
+index e2f3ca73f40d6..5b3f1f1dfd164 100644
+--- a/arch/mips/Kconfig
++++ b/arch/mips/Kconfig
+@@ -82,6 +82,7 @@ config MIPS
+ 	select HAVE_LD_DEAD_CODE_DATA_ELIMINATION
+ 	select HAVE_MOD_ARCH_SPECIFIC
+ 	select HAVE_NMI
++	select HAVE_PATA_PLATFORM
+ 	select HAVE_PERF_EVENTS
+ 	select HAVE_PERF_REGS
+ 	select HAVE_PERF_USER_STACK_DUMP
 -- 
 2.39.2
 

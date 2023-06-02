@@ -2,57 +2,57 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BA1E0C77B7A
-	for <linux-mips@archiver.kernel.org>; Fri,  2 Jun 2023 16:10:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 84154C7EE2A
+	for <linux-mips@archiver.kernel.org>; Fri,  2 Jun 2023 16:10:18 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236618AbjFBQJ7 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 2 Jun 2023 12:09:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35022 "EHLO
+        id S236173AbjFBQKP (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 2 Jun 2023 12:10:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35724 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236671AbjFBQJp (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Fri, 2 Jun 2023 12:09:45 -0400
-Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B076E5D
-        for <linux-mips@vger.kernel.org>; Fri,  2 Jun 2023 09:09:34 -0700 (PDT)
-Received: by mail-pg1-x549.google.com with SMTP id 41be03b00d2f7-53f44c2566dso974057a12.2
-        for <linux-mips@vger.kernel.org>; Fri, 02 Jun 2023 09:09:34 -0700 (PDT)
+        with ESMTP id S236698AbjFBQKF (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Fri, 2 Jun 2023 12:10:05 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 196EEE41
+        for <linux-mips@vger.kernel.org>; Fri,  2 Jun 2023 09:09:48 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-bb2202e0108so1016889276.1
+        for <linux-mips@vger.kernel.org>; Fri, 02 Jun 2023 09:09:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1685722174; x=1688314174;
+        d=google.com; s=20221208; t=1685722188; x=1688314188;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=XlXfZDaqwtQ8jb+NBFxxHmMdNa0dhVq7sf+3J9mNCvc=;
-        b=Cav0E0cCrA4YixnMBQKMfIUVj88wiap2lnIB8ag1Iz/8mWp6WkXueCvYRCBiVgJMpL
-         yz6b5GmGWPhdoaqfWLr4eMh+mes1ArSi+nNH2aSvBuPWl2X06K+1JFMN+UK2I8zKDZ+Y
-         An4/Ccw/5HBcgWIwlUsNKHK+GBxiwi6UrW0Rt5OfBwhcgGTE2dlnkWyH08h03FWRL/+p
-         PpYax2iQC4+/Q7s8QR0zA1oOFG5toYWxuVQyxHq17uCmAv8sJvsjFT497G95S2n7vNCo
-         An7ffox8QUfjjPO3WBaFb5yO8HO3WOQ44El3H8raJwdkFn/AASepix+It/ssVM4Hws1C
-         WsIA==
+        bh=ATfYeV4iZLydVfrv7VkfrrcrF6Iyfqli3wOIB/41cFU=;
+        b=Rqyu16keB0kE0WrdwrfeOOljSmmTEf5ym2HasOLzHF8ArvodVvyp0S6Lr0lp8jhqaO
+         yU7vlRlNbGqDi7zvQpbHT6R5zFRE8DckASYhOzfH9V34Q20hh77zuuNe12GxNtHCZXh5
+         lnbwZ2Svz+2HB81mY68YPRkYswYr7F2GvqW0LS+zjsO1U81VkyPUwY6eD2Ki1IgFqmLS
+         03LcT6Q3zPmFBx5Lk1wR2QR7kJ2u+CVAlb7S/W7GXhPrjwIAChkVcnGC08nkCFgLZ6+3
+         IJyon3TZZUbxyP2iFDZRsS+2chcqzC8RuTMktYv6Efxwhi8TOTgmYLyH3MqqUylTOe6h
+         6cPw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1685722174; x=1688314174;
+        d=1e100.net; s=20221208; t=1685722188; x=1688314188;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=XlXfZDaqwtQ8jb+NBFxxHmMdNa0dhVq7sf+3J9mNCvc=;
-        b=BM/nvZnJZZNaZo1JN8LlIY+GNrxFV8JlQM899lSKUL7W9gphRAEki9Yq0nfM2RU+NF
-         ZysPoQJ1OccdkBBKiAY7VSozmnIDDFfnoV5+/g3qFwiLIpZSf7YNSa0QN8FoAUHj+YAx
-         B9SIpNw1Ee7C5rxUNL9RNs+9mnjpwQ4wbFMAEyLtFf+SvbaHSAVZNLCU2jk8q/mRFrbN
-         VEoZfHPAzpsFI9LiExkFWxKQfkN5SmEzXi+CaBy+ksbA1Gs6rt9A0fTGVUefUZjzfANS
-         fcd/Q6EPyJLYdfzCYdLJneYT5n4IZRG+XZPOMQ7ASEG+r8x8Zr9mfDL7GEsNwZ5J/0w2
-         H9lw==
-X-Gm-Message-State: AC+VfDwQ5WSS2mz20WHvM2e8Oq5g/rdMWckvLHIwWvqAygs5Bazf0ZKT
-        OyXV4WipImOIO2NB7CDWAmuUuwuHuaQB
-X-Google-Smtp-Source: ACHHUZ63/E8GjVgWNJSqqa8vS+/kUt+EPMZ2lBAM1R4WdW2tBWK9Y4EulGJYzAllZOblN3IVUjTbhEd8OzIe
+        bh=ATfYeV4iZLydVfrv7VkfrrcrF6Iyfqli3wOIB/41cFU=;
+        b=VsBv2yPj295x5w0fPree82mHOG807wmnru8I2i1yJ1YCptKhw47SRPfuYtPjAl6DWL
+         ssgU+KFOMSG9uL83+c53l16HBri2nYTkguLpD6AMU9CVjYbcMFtrq5wi0gXp140Y6EAe
+         wVZ34epOR0H6Fs/OdhiRjYTPvzDHIPGlaQdw2KFJr2jOC8yEKE6Scfpu6c4u7ProPLa/
+         aKJd2Nb7wqnkMYDX/YFXxe23oVaj0xgZ8f0fJZRe++evJXuvFGuEiUPaPV0/oys/emoS
+         zYurS6sh2bfRI9NeiRYfBmS0Ef06YTbxm6w0qJzgG8wpJAnSgY3152cepLCRGQjI9nUz
+         Z6jg==
+X-Gm-Message-State: AC+VfDxLudFhE+o17MSWqRB1rXhtZwXTkw0h9SEkEQ+JaI2mmt15Wp4P
+        BZ5xDwECHfRJyTLsDiA3okUmy9yUyQZy
+X-Google-Smtp-Source: ACHHUZ4IW8kR8j7bn7igS1kcMhvfZS4XncKRF7NLGQ8SgKKpwW4y3+9yGIJ+PiwzD8LO4pWUxsLhYeKpfotT
 X-Received: from vipin.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:479f])
- (user=vipinsh job=sendgmr) by 2002:a63:385:0:b0:530:70cb:6da9 with SMTP id
- 127-20020a630385000000b0053070cb6da9mr2521810pgd.10.1685722173764; Fri, 02
- Jun 2023 09:09:33 -0700 (PDT)
-Date:   Fri,  2 Jun 2023 09:09:05 -0700
+ (user=vipinsh job=sendgmr) by 2002:a25:e706:0:b0:bac:5d2c:844b with SMTP id
+ e6-20020a25e706000000b00bac5d2c844bmr1305917ybh.8.1685722187745; Fri, 02 Jun
+ 2023 09:09:47 -0700 (PDT)
+Date:   Fri,  2 Jun 2023 09:09:12 -0700
 In-Reply-To: <20230602160914.4011728-1-vipinsh@google.com>
 Mime-Version: 1.0
 References: <20230602160914.4011728-1-vipinsh@google.com>
 X-Mailer: git-send-email 2.41.0.rc0.172.g3f132b7071-goog
-Message-ID: <20230602160914.4011728-8-vipinsh@google.com>
-Subject: [PATCH v2 07/16] KVM: mmu: Move mmu lock/unlock to arch code for
- clear dirty log
+Message-ID: <20230602160914.4011728-15-vipinsh@google.com>
+Subject: [PATCH v2 14/16] KVM: arm64: Pass page walker flags from callers of
+ stage 2 split walker
 From:   Vipin Sharma <vipinsh@google.com>
 To:     maz@kernel.org, oliver.upton@linux.dev, james.morse@arm.com,
         suzuki.poulose@arm.com, yuzenghui@huawei.com,
@@ -72,146 +72,73 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Move mmu_lock lock and unlock calls from common code in
-kvm_clear_dirty_log_protect() to arch specific code in
-kvm_arch_mmu_enable_log_dirty_pt_masked(). None of the other code inside
-the for loop of kvm_arch_mmu_enable_log_dirty_pt_masked() needs mmu_lock
-exclusivity apart from the arch specific API call.
+Pass enum kvm_pgtable_walk_flags{} to kvm_pgtable_stage2_split() walker
+from its caller.
 
-Future commits will change clear dirty log operations under mmu read
-lock instead of write lock for ARM and, potentially, x86 architectures.
-
-No functional changes intended.
+This allows split walker users to specify if they want to run split
+logic via shared walker or non-shared walker.
 
 Signed-off-by: Vipin Sharma <vipinsh@google.com>
 ---
- arch/arm64/kvm/mmu.c   | 2 ++
- arch/mips/kvm/mmu.c    | 2 ++
- arch/riscv/kvm/mmu.c   | 2 ++
- arch/x86/kvm/mmu/mmu.c | 3 +++
- virt/kvm/dirty_ring.c  | 2 --
- virt/kvm/kvm_main.c    | 4 ----
- 6 files changed, 9 insertions(+), 6 deletions(-)
+ arch/arm64/include/asm/kvm_pgtable.h | 4 +++-
+ arch/arm64/kvm/hyp/pgtable.c         | 5 +++--
+ arch/arm64/kvm/mmu.c                 | 2 +-
+ 3 files changed, 7 insertions(+), 4 deletions(-)
 
+diff --git a/arch/arm64/include/asm/kvm_pgtable.h b/arch/arm64/include/asm/kvm_pgtable.h
+index 145be12a5fc2..fbf5c6c509fb 100644
+--- a/arch/arm64/include/asm/kvm_pgtable.h
++++ b/arch/arm64/include/asm/kvm_pgtable.h
+@@ -684,6 +684,7 @@ int kvm_pgtable_stage2_flush(struct kvm_pgtable *pgt, u64 addr, u64 size,
+  * @size:	 Size of the range.
+  * @mc:		 Cache of pre-allocated and zeroed memory from which to allocate
+  *		 page-table pages.
++ * @flags:	 Page walker flags
+  *
+  * The function tries to split any level 1 or 2 entry that overlaps
+  * with the input range (given by @addr and @size).
+@@ -693,7 +694,8 @@ int kvm_pgtable_stage2_flush(struct kvm_pgtable *pgt, u64 addr, u64 size,
+  * blocks in the input range as allowed by @mc_capacity.
+  */
+ int kvm_pgtable_stage2_split(struct kvm_pgtable *pgt, u64 addr, u64 size,
+-			     struct kvm_mmu_memory_cache *mc);
++			     struct kvm_mmu_memory_cache *mc,
++			     enum kvm_pgtable_walk_flags flags);
+ 
+ /**
+  * kvm_pgtable_walk() - Walk a page-table.
+diff --git a/arch/arm64/kvm/hyp/pgtable.c b/arch/arm64/kvm/hyp/pgtable.c
+index 23cda3de2dd4..7e84be13d76d 100644
+--- a/arch/arm64/kvm/hyp/pgtable.c
++++ b/arch/arm64/kvm/hyp/pgtable.c
+@@ -1408,11 +1408,12 @@ static int stage2_split_walker(const struct kvm_pgtable_visit_ctx *ctx,
+ }
+ 
+ int kvm_pgtable_stage2_split(struct kvm_pgtable *pgt, u64 addr, u64 size,
+-			     struct kvm_mmu_memory_cache *mc)
++			     struct kvm_mmu_memory_cache *mc,
++			     enum kvm_pgtable_walk_flags flags)
+ {
+ 	struct kvm_pgtable_walker walker = {
+ 		.cb	= stage2_split_walker,
+-		.flags	= KVM_PGTABLE_WALK_LEAF,
++		.flags	= flags | KVM_PGTABLE_WALK_LEAF,
+ 		.arg	= mc,
+ 	};
+ 
 diff --git a/arch/arm64/kvm/mmu.c b/arch/arm64/kvm/mmu.c
-index 6db9ef288ec3..0c2c2c0846f1 100644
+index 7c966f6f1a41..34d2bd03cf5f 100644
 --- a/arch/arm64/kvm/mmu.c
 +++ b/arch/arm64/kvm/mmu.c
-@@ -1125,6 +1125,7 @@ void kvm_arch_mmu_enable_log_dirty_pt_masked(struct kvm *kvm,
- 	phys_addr_t start = (base_gfn +  __ffs(mask)) << PAGE_SHIFT;
- 	phys_addr_t end = (base_gfn + __fls(mask) + 1) << PAGE_SHIFT;
+@@ -153,7 +153,7 @@ static int kvm_mmu_split_huge_pages(struct kvm *kvm, phys_addr_t addr,
+ 			return -EINVAL;
  
-+	write_lock(&kvm->mmu_lock);
- 	lockdep_assert_held_write(&kvm->mmu_lock);
- 
- 	stage2_wp_range(&kvm->arch.mmu, start, end);
-@@ -1139,6 +1140,7 @@ void kvm_arch_mmu_enable_log_dirty_pt_masked(struct kvm *kvm,
- 	 */
- 	if (kvm_dirty_log_manual_protect_and_init_set(kvm))
- 		kvm_mmu_split_huge_pages(kvm, start, end);
-+	write_unlock(&kvm->mmu_lock);
- }
- 
- static void kvm_send_hwpoison_signal(unsigned long address, short lsb)
-diff --git a/arch/mips/kvm/mmu.c b/arch/mips/kvm/mmu.c
-index e8c08988ed37..33c5af333ff9 100644
---- a/arch/mips/kvm/mmu.c
-+++ b/arch/mips/kvm/mmu.c
-@@ -419,7 +419,9 @@ void kvm_arch_mmu_enable_log_dirty_pt_masked(struct kvm *kvm,
- 	gfn_t start = base_gfn +  __ffs(mask);
- 	gfn_t end = base_gfn + __fls(mask);
- 
-+	spin_lock(&kvm->mmu_lock);
- 	kvm_mips_mkclean_gpa_pt(kvm, start, end);
-+	spin_unlock(&kvm->mmu_lock);
- }
- 
- /*
-diff --git a/arch/riscv/kvm/mmu.c b/arch/riscv/kvm/mmu.c
-index f2eb47925806..fe026ff5eb65 100644
---- a/arch/riscv/kvm/mmu.c
-+++ b/arch/riscv/kvm/mmu.c
-@@ -399,7 +399,9 @@ void kvm_arch_mmu_enable_log_dirty_pt_masked(struct kvm *kvm,
- 	phys_addr_t start = (base_gfn +  __ffs(mask)) << PAGE_SHIFT;
- 	phys_addr_t end = (base_gfn + __fls(mask) + 1) << PAGE_SHIFT;
- 
-+	spin_lock(&kvm->mmu_lock);
- 	gstage_wp_range(kvm, start, end);
-+	spin_unlock(&kvm->mmu_lock);
- }
- 
- void kvm_arch_sync_dirty_log(struct kvm *kvm, struct kvm_memory_slot *memslot)
-diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-index c8961f45e3b1..6fff4228e31c 100644
---- a/arch/x86/kvm/mmu/mmu.c
-+++ b/arch/x86/kvm/mmu/mmu.c
-@@ -1382,6 +1382,7 @@ void kvm_arch_mmu_enable_log_dirty_pt_masked(struct kvm *kvm,
- 				struct kvm_memory_slot *slot,
- 				gfn_t gfn_offset, unsigned long mask)
- {
-+	write_lock(&kvm->mmu_lock);
- 	/*
- 	 * Huge pages are NOT write protected when we start dirty logging in
- 	 * initially-all-set mode; must write protect them here so that they
-@@ -1412,6 +1413,8 @@ void kvm_arch_mmu_enable_log_dirty_pt_masked(struct kvm *kvm,
- 		kvm_mmu_clear_dirty_pt_masked(kvm, slot, gfn_offset, mask);
- 	else
- 		kvm_mmu_write_protect_pt_masked(kvm, slot, gfn_offset, mask);
-+
-+	write_unlock(&kvm->mmu_lock);
- }
- 
- int kvm_cpu_dirty_log_size(void)
-diff --git a/virt/kvm/dirty_ring.c b/virt/kvm/dirty_ring.c
-index c1cd7dfe4a90..d894c58d2152 100644
---- a/virt/kvm/dirty_ring.c
-+++ b/virt/kvm/dirty_ring.c
-@@ -66,9 +66,7 @@ static void kvm_reset_dirty_gfn(struct kvm *kvm, u32 slot, u64 offset, u64 mask)
- 	if (!memslot || (offset + __fls(mask)) >= memslot->npages)
- 		return;
- 
--	KVM_MMU_LOCK(kvm);
- 	kvm_arch_mmu_enable_log_dirty_pt_masked(kvm, memslot, offset, mask);
--	KVM_MMU_UNLOCK(kvm);
- }
- 
- int kvm_dirty_ring_alloc(struct kvm_dirty_ring *ring, int index, u32 size)
-diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
-index 13aed654111a..747bfa2f1dd3 100644
---- a/virt/kvm/kvm_main.c
-+++ b/virt/kvm/kvm_main.c
-@@ -2160,7 +2160,6 @@ static int kvm_get_dirty_log_protect(struct kvm *kvm, struct kvm_dirty_log *log)
- 		dirty_bitmap_buffer = kvm_second_dirty_bitmap(memslot);
- 		memset(dirty_bitmap_buffer, 0, n);
- 
--		KVM_MMU_LOCK(kvm);
- 		for (i = 0; i < n / sizeof(long); i++) {
- 			unsigned long mask;
- 			gfn_t offset;
-@@ -2176,7 +2175,6 @@ static int kvm_get_dirty_log_protect(struct kvm *kvm, struct kvm_dirty_log *log)
- 			kvm_arch_mmu_enable_log_dirty_pt_masked(kvm, memslot,
- 								offset, mask);
- 		}
--		KVM_MMU_UNLOCK(kvm);
- 	}
- 
- 	if (flush)
-@@ -2271,7 +2269,6 @@ static int kvm_clear_dirty_log_protect(struct kvm *kvm,
- 	if (copy_from_user(dirty_bitmap_buffer, log->dirty_bitmap, n))
- 		return -EFAULT;
- 
--	KVM_MMU_LOCK(kvm);
- 	for (offset = log->first_page, i = offset / BITS_PER_LONG,
- 		 n = DIV_ROUND_UP(log->num_pages, BITS_PER_LONG); n--;
- 	     i++, offset += BITS_PER_LONG) {
-@@ -2294,7 +2291,6 @@ static int kvm_clear_dirty_log_protect(struct kvm *kvm,
- 								offset, mask);
- 		}
- 	}
--	KVM_MMU_UNLOCK(kvm);
- 
- 	if (flush)
- 		kvm_arch_flush_remote_tlbs_memslot(kvm, memslot);
+ 		next = __stage2_range_addr_end(addr, end, chunk_size);
+-		ret = kvm_pgtable_stage2_split(pgt, addr, next - addr, cache);
++		ret = kvm_pgtable_stage2_split(pgt, addr, next - addr, cache, 0);
+ 		if (ret)
+ 			break;
+ 	} while (addr = next, addr != end);
 -- 
 2.41.0.rc0.172.g3f132b7071-goog
 

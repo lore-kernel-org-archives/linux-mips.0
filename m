@@ -2,56 +2,57 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D5F38C7EE2E
-	for <linux-mips@archiver.kernel.org>; Fri,  2 Jun 2023 16:09:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E7908C77B7A
+	for <linux-mips@archiver.kernel.org>; Fri,  2 Jun 2023 16:10:03 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236565AbjFBQJ6 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 2 Jun 2023 12:09:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35066 "EHLO
+        id S236673AbjFBQKC (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 2 Jun 2023 12:10:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35412 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236661AbjFBQJo (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Fri, 2 Jun 2023 12:09:44 -0400
-Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B12A91AB
-        for <linux-mips@vger.kernel.org>; Fri,  2 Jun 2023 09:09:32 -0700 (PDT)
-Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-568ab5c813eso33691937b3.2
-        for <linux-mips@vger.kernel.org>; Fri, 02 Jun 2023 09:09:32 -0700 (PDT)
+        with ESMTP id S236803AbjFBQJv (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Fri, 2 Jun 2023 12:09:51 -0400
+Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB25910DA
+        for <linux-mips@vger.kernel.org>; Fri,  2 Jun 2023 09:09:38 -0700 (PDT)
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-5693861875fso24476467b3.1
+        for <linux-mips@vger.kernel.org>; Fri, 02 Jun 2023 09:09:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1685722172; x=1688314172;
+        d=google.com; s=20221208; t=1685722178; x=1688314178;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=fngtlIXFBOk5ojPhoCZKxdftJsl/PCjzcivfHulUfxM=;
-        b=KTqFTUl8/O/otunDnIcW8NMT9NoZpURoL+fT5x3jr7xLTtmqLTsOpMHELHqceBBNBQ
-         AmDayYQtgKFH5Z55J+qEEznt7CMzcfBLKa9rXdwkcbaxYdDyFrpWK5tIf+OgM6RdtGyq
-         GQdHIK3QOQ2drYG/ZFFk+kHjBy+s90SO6eGGqGaoiIn9r7XkEBIEo/mXJtp3GumBEOA+
-         p4STDDMfVtsOTK10O8PNGuXazkAWxMkEfK3iCnrl9MiWc43AYLln6h9/+ty9OxynFFMd
-         DAYdFz0PuZJQnqyg+7O9VnZBBnLY/2RVdSpDM0DZZNDzkFP0BkvcK+wZMlJvwm1mfdaV
-         VyLQ==
+        bh=NyrihgmYesBmBKLp4ITVdJ3LGNh6LVDPlJHbJ3BWmKo=;
+        b=6JvB68luEiFeoyKEfjP/g+vMwC/sRddTQaYllS5g+5bpQDmhXIgwwZiHHiYhNY6/hh
+         +N3LQSiNtnyna/XZaiM18ivCXXQ4yuX/15A1AGZwy0Qa/f1hIAf3oKXB2h5AuHkYQgCs
+         xj8Y82H0f8TZvkTqQ0Hx5MWBndbNiI7NCzZ3czEuYGWHs7LAUCirzskxbkVOl+noMZFx
+         tm27fSCTKAwfbeEstcfEbI/nW6D9qAihf0lb2MdszgnmyhfNayDhGNG1boLJ+W+UNY9A
+         PKxN0bCcFoMuNsJAFUnK+mzP9snrdOrZPjuzoVjhjXEuIkdNPWm6zU7rdhcbdNuxMxHK
+         DaOA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1685722172; x=1688314172;
+        d=1e100.net; s=20221208; t=1685722178; x=1688314178;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=fngtlIXFBOk5ojPhoCZKxdftJsl/PCjzcivfHulUfxM=;
-        b=C/XOKuTWPYiA5x8k8Tomslzu0dN9wtgC4ohL8jNLu7zTtalwmMtGrXxnvfX7c3wv33
-         gCp9rE26Q8uRvNsVPkw0VW88sgXa/24t2oayawLXrJ3xwgcWKLzW9u2rupFw1J/nJzQ1
-         2wr7eSXvapDOysbmOh3nKfkP92vchBjudaadcgv3SwPZfO7ATwbF2j/tVlN76BedtGPB
-         ftKCtU7vWVzrLiAk2SYMarnKmMx0B1WQGE3Rp6P4LZzkkcg0S8+641oAvL8QkBVc12k8
-         PN3g8fbE+WMajQhT8cEmmkRNdN7+8LxTYThp81ayOXDHZQNcKOE7avb9vFUjVMF5mUPl
-         goQg==
-X-Gm-Message-State: AC+VfDywQhKU5415noLomwc8IqCXKPOeo6RDronQ8Rpj80RnraEsNdLS
-        12AA7y4uSBDYFtcX/rFzbKCRGl4cxT0Z
-X-Google-Smtp-Source: ACHHUZ6gan5YlBkZGg9KteJiKVhKxkJ5gsh9dOHqcHA/QTL4d+xT++IRNn1eOG3Ha8PAz+KvOVFz0vRB3dhD
+        bh=NyrihgmYesBmBKLp4ITVdJ3LGNh6LVDPlJHbJ3BWmKo=;
+        b=M3A4QsrxjWunQvbF6xUCmp6kRUhwCecUpNcbEpQt0SX9iuIAbOf3nmDcppYcYphOvD
+         OAcxocE3G8+a2arkszRVhi6b7uPXkfwGIkvuotA7fP+TD74URwwM6XRyJH2L2EgyOq8f
+         wdGEJiU3px4T6FVnXFSn5OChvbERd6JKNvdjWgns8f/7mjRvbevnqzmgrOIudpXcVYAD
+         hFvVbSmLRDxTUf8Y9LCE2ZQH8ilyspzSb53kvQbFOALC5cYPN2knSv82/L0t5uKARuvr
+         0agD86z1XJPQJYXk2NRY7rpK1j4Q1/QYp2i9iuiTnM9Aglo7d5ZmqwNAJdobKIUpaQH/
+         8rXg==
+X-Gm-Message-State: AC+VfDxPgqEHzKHeT1jVrQVzr8zEjqVqn1+Bvd/a7bfm9EEqMZNg2vWq
+        gYyyswBxVSv0NKaRDwjNQHEOdLvjw5yD
+X-Google-Smtp-Source: ACHHUZ7z74Jy0Y96qFW+7u40ZiTgX4ucCC/5bWAvnbf5ZGF1cU7Xjv0z02cQ2QpbWgJAAII5qTnOdyVeR9zk
 X-Received: from vipin.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:479f])
- (user=vipinsh job=sendgmr) by 2002:a81:c509:0:b0:55a:3133:86fa with SMTP id
- k9-20020a81c509000000b0055a313386famr182818ywi.3.1685722171727; Fri, 02 Jun
- 2023 09:09:31 -0700 (PDT)
-Date:   Fri,  2 Jun 2023 09:09:04 -0700
+ (user=vipinsh job=sendgmr) by 2002:a81:b620:0:b0:561:b8d1:743b with SMTP id
+ u32-20020a81b620000000b00561b8d1743bmr170869ywh.10.1685722178126; Fri, 02 Jun
+ 2023 09:09:38 -0700 (PDT)
+Date:   Fri,  2 Jun 2023 09:09:07 -0700
 In-Reply-To: <20230602160914.4011728-1-vipinsh@google.com>
 Mime-Version: 1.0
 References: <20230602160914.4011728-1-vipinsh@google.com>
 X-Mailer: git-send-email 2.41.0.rc0.172.g3f132b7071-goog
-Message-ID: <20230602160914.4011728-7-vipinsh@google.com>
-Subject: [PATCH v2 06/16] KVM: arm64: Correct the kvm_pgtable_stage2_flush() documentation
+Message-ID: <20230602160914.4011728-10-vipinsh@google.com>
+Subject: [PATCH v2 09/16] KVM: arm64: Document the page table walker actions
+ based on the callback's return value
 From:   Vipin Sharma <vipinsh@google.com>
 To:     maz@kernel.org, oliver.upton@linux.dev, james.morse@arm.com,
         suzuki.poulose@arm.com, yuzenghui@huawei.com,
@@ -71,32 +72,48 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Remove _range suffix from kvm_pgtable_stage2_flush_range which is used
-in documentation of kvm_pgtable_stage2_flush(). There is no function
-named kvm_pgtable_stage2_flush_range().
+Document what the page table walker do when walker callback function returns
+a value.
 
-Fixes: 93c66b40d728 ("KVM: arm64: Add support for stage-2 cache flushing in generic page-table")
+Current documentation is not correct as negative error of -EAGAIN on a
+non-shared page table walker doesn't terminate the walker and continues
+to the next step.
+
+There might be a better place to keep this information, for now this
+documentation will work as a reference guide until a better way is
+found.
+
 Signed-off-by: Vipin Sharma <vipinsh@google.com>
 ---
- arch/arm64/include/asm/kvm_pgtable.h | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ arch/arm64/include/asm/kvm_pgtable.h | 15 +++++++++++++--
+ 1 file changed, 13 insertions(+), 2 deletions(-)
 
 diff --git a/arch/arm64/include/asm/kvm_pgtable.h b/arch/arm64/include/asm/kvm_pgtable.h
-index 850d65f705fa..d542a671c564 100644
+index 8ef7e8f3f054..957bc20dab00 100644
 --- a/arch/arm64/include/asm/kvm_pgtable.h
 +++ b/arch/arm64/include/asm/kvm_pgtable.h
-@@ -657,9 +657,8 @@ int kvm_pgtable_stage2_relax_perms(struct kvm_pgtable *pgt, u64 addr,
- bool kvm_pgtable_stage2_is_young(struct kvm_pgtable *pgt, u64 addr);
- 
- /**
-- * kvm_pgtable_stage2_flush_range() - Clean and invalidate data cache to Point
-- * 				      of Coherency for guest stage-2 address
-- *				      range.
-+ * kvm_pgtable_stage2_flush() - Clean and invalidate data cache to Point of
-+ *				Coherency for guest stage-2 address range.
-  * @pgt:	Page-table structure initialised by kvm_pgtable_stage2_init*().
-  * @addr:	Intermediate physical address from which to flush.
-  * @size:	Size of the range.
+@@ -711,8 +711,19 @@ int kvm_pgtable_stage2_split(struct kvm_pgtable *pgt, u64 addr, u64 size,
+  * after invoking the walker callback, allowing the walker to descend into
+  * a newly installed table.
+  *
+- * Returning a negative error code from the walker callback function will
+- * terminate the walk immediately with the same error code.
++ * Depending on the return value from the walker callback function, the page
++ * table walk will continue or exit the walk. This is also dependent on the
++ * type of the walker, i.e. shared walker (vCPU fault handlers) or non-shared
++ * walker.
++ *
++ * Walker Type  | Callback         | Walker action
++ * -------------|------------------|--------------
++ * Non-Shared   | 0                | Continue
++ * Non-Shared   | -EAGAIN          | Continue
++ * Non-Shared   | Any other        | Exit
++ * -------------|------------------|--------------
++ * Shared       | 0                | Continue
++ * Shared       | Any other        | Exit
+  *
+  * Return: 0 on success, negative error code on failure.
+  */
 -- 
 2.41.0.rc0.172.g3f132b7071-goog
 

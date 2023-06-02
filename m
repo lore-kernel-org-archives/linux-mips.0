@@ -2,56 +2,57 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BA12FC7EE39
-	for <linux-mips@archiver.kernel.org>; Fri,  2 Jun 2023 16:10:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 950E2C7EE2D
+	for <linux-mips@archiver.kernel.org>; Fri,  2 Jun 2023 16:10:09 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236053AbjFBQKD (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 2 Jun 2023 12:10:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35056 "EHLO
+        id S236484AbjFBQKB (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 2 Jun 2023 12:10:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35354 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236844AbjFBQJ5 (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Fri, 2 Jun 2023 12:09:57 -0400
-Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17B0110FB
-        for <linux-mips@vger.kernel.org>; Fri,  2 Jun 2023 09:09:40 -0700 (PDT)
-Received: by mail-pl1-x649.google.com with SMTP id d9443c01a7336-1b01aa55219so22123525ad.0
-        for <linux-mips@vger.kernel.org>; Fri, 02 Jun 2023 09:09:40 -0700 (PDT)
+        with ESMTP id S236561AbjFBQJn (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Fri, 2 Jun 2023 12:09:43 -0400
+Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50206E50
+        for <linux-mips@vger.kernel.org>; Fri,  2 Jun 2023 09:09:30 -0700 (PDT)
+Received: by mail-pg1-x549.google.com with SMTP id 41be03b00d2f7-53f6f7d1881so2076479a12.3
+        for <linux-mips@vger.kernel.org>; Fri, 02 Jun 2023 09:09:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1685722180; x=1688314180;
+        d=google.com; s=20221208; t=1685722169; x=1688314169;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=i16qvWrTxXmM44zqvAfMO+VQ2ZgLrONxQcP35eFduXw=;
-        b=7epqj+D7b/Vs8MJCaB/Yaig4pdk6Xsa6+PhHha/KiUX7vkzJuwNVRvh/QKSBOYWOoF
-         9Kl1CGagQi1DXxlGyYvTod7C6g15Jc/lvseccbcVTnZGlpUMuN85YotpNb24SiVNDe/4
-         jJWg+BewppQ9iRi+5TbG/EFvPtgidVbx51XdS+ZgnSZfKoodj1WI4tk7ctB/2mpU7ujt
-         5GR5L1lxyi6Yc/dQP61OizppKV4BxJWb97C2tfKTvu6BWLjF7QcXhyPnKGED9xXxbRV0
-         rkKjEao0Yem9n3mVyvzo3PMl7x2joHF/KT0tNezMLtd5RxYZ9imnBCUvokvJr8Ssuvgw
-         mKhg==
+        bh=TCZIk7VgxCOZOGj9BrulapCebBiXjQ5+VJfBT1Ieq9g=;
+        b=48Jv9Ndg6W2FWtv0TNF+EvHQkuzevnf0de3wNHQhiINnd1y+TJ3ZHZNsYvgiBjl6lh
+         9WUrwiuBOv0A4GYPSawEV6yVx5LbPQL0U+gQGnFWAFVUnyrF1z1qm1xlbl6HRjy6NNwE
+         8XB2SVK1dbUaEeLrM/H8JHaqBSIup+A6xNFpzpaufkcVOP+VAaTUukUdmKNrTQcISuZt
+         yTtWhk1kuZr3BXzyN9NP6mKp7IAXkKM1nK9WQaTXO/PtqFm7I9EIaNt4fcwETtWcECAj
+         9ktEJ+8oLB8jJgpGPXgzImfVTKXWHcOIgbQS6xiesRZonieLTn89FjSta0ZVX6QUoqee
+         mZLw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1685722180; x=1688314180;
+        d=1e100.net; s=20221208; t=1685722169; x=1688314169;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=i16qvWrTxXmM44zqvAfMO+VQ2ZgLrONxQcP35eFduXw=;
-        b=dSHj+QZQjiIUccRSwpf9b3ajC8RcllzojgySTveP4n7/egSVoN3fyCXrP+6rU6IUs3
-         Ee2kyDPn2h9mVsMsgwqkW8fxEXPN63p8EjEehtQa1j65p9hj1ZwnqckoAyXj3a9hHOI8
-         JFFfjT5Y9ZzW9F57GhHERyn3y/eK5etdvWY/5kZVAHkZaWj0QogwAf59ObPnQoGRlPIB
-         9Z/oXGfiR5D+toLCST3peIESKhZlAgoeicy0DIOlJI+h59OVboD7Kbar4bEf2gz8ezGc
-         cGe9n6I7is/5UY2fu9oJWHSC04+S6j69VtQPhdx1TGYJ7Q1KwM76vB/XVjuWelqi/fTA
-         1UUw==
-X-Gm-Message-State: AC+VfDzjDN3rs9yRcEhsq9JgV7VoK/iKukRCJz4l3UcaE6+2Hc/o3uvs
-        NqGQqbWD6ulfe779M1mIhc0T0D/xBVyQ
-X-Google-Smtp-Source: ACHHUZ50eFmYtmjd+7phpNHJVAKKYKF0b2Pf24cv0bbiOkOy3oeWBFiQvv39uMwyDgbA4q0xlnPSa5qY2vtt
+        bh=TCZIk7VgxCOZOGj9BrulapCebBiXjQ5+VJfBT1Ieq9g=;
+        b=dMFudBK8aqKNUJRFuDNBqMKV1Y89pXlFCVnrLDsGZeftbwNL0zACTutFBBcu/w7+rC
+         CX5YbqubI4zXHU/jJPCdt7BFJPcdin146dOB7xSe+zRIeWckbhN3hMCzPEYumScgZDyV
+         YYbIfQiHWgLmXN/bqz4/WYHt05SnxHDQ5rNe0Wqhl6zmJAeWZDqchi6gC5n4hkA13fmO
+         4q6vJ6BzEsTkLCiAnucvqL3qBVGgqmphMXI8XHoh9eckDx7Aa5jnrEKHIRpdcg7MtGEY
+         oQLSFWw/7ksmMV0oplMNkCrkh5MNCn1UGbE/kH5qHOMApmIOA7eFFVuYPkBjzK67ht5t
+         CffQ==
+X-Gm-Message-State: AC+VfDyVKW2jF+jbkfgvaQfdQRF9leIboxt746fM3w7vWQqG5jpGB6MF
+        Q3mhh3FurJkLlcho041wqFOO6hK7VYwg
+X-Google-Smtp-Source: ACHHUZ5eYF/RV9lQrAgLH67VBGXqFnNNXk0G34PjM3lxGa6/KnJxp9P54a/FAO5X5SRVmoZXvlFdh+lSImCS
 X-Received: from vipin.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:479f])
- (user=vipinsh job=sendgmr) by 2002:a17:903:3251:b0:1b0:6a10:1ba1 with SMTP id
- ji17-20020a170903325100b001b06a101ba1mr117384plb.13.1685722180001; Fri, 02
- Jun 2023 09:09:40 -0700 (PDT)
-Date:   Fri,  2 Jun 2023 09:09:08 -0700
+ (user=vipinsh job=sendgmr) by 2002:a63:d044:0:b0:53f:32cf:bcd1 with SMTP id
+ s4-20020a63d044000000b0053f32cfbcd1mr2492124pgi.5.1685722169678; Fri, 02 Jun
+ 2023 09:09:29 -0700 (PDT)
+Date:   Fri,  2 Jun 2023 09:09:03 -0700
 In-Reply-To: <20230602160914.4011728-1-vipinsh@google.com>
 Mime-Version: 1.0
 References: <20230602160914.4011728-1-vipinsh@google.com>
 X-Mailer: git-send-email 2.41.0.rc0.172.g3f132b7071-goog
-Message-ID: <20230602160914.4011728-11-vipinsh@google.com>
-Subject: [PATCH v2 10/16] KVM: arm64: Return -ENOENT if PTE is not valid in stage2_attr_walker
+Message-ID: <20230602160914.4011728-6-vipinsh@google.com>
+Subject: [PATCH v2 05/16] KVM: selftests: Allow independent execution of vCPUs
+ in dirty_log_perf_test
 From:   Vipin Sharma <vipinsh@google.com>
 To:     maz@kernel.org, oliver.upton@linux.dev, james.morse@arm.com,
         suzuki.poulose@arm.com, yuzenghui@huawei.com,
@@ -71,115 +72,152 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Return -ENOENT from stage2_attr_walker for invalid PTE. Continue page
-table walk if walker callback returns -ENOENT outside of the fault
-handler path else terminate the walk. In fault handler path, similar to
--EAGAIN in user_mem_abort, retry guest execution.
+Give users command line option (-j) to execute vCPUs independently of
+dirty log iterations after initialization is complete.
 
-stage2_attr_walker() is used from multiple places like, write
-protection, MMU notifier callbacks, and relaxing permission during vCPU
-faults. This function returns -EAGAIN for different cases:
-1. When PTE is not valid.
-2. When cmpxchg() fails while setting new SPTE.
-
-For non-shared walkers, like write protection and MMU notifier, above 2
-cases are just ignored by walker and it moves to the next SPTE. #2 will
-never happen for non-shared walkers as they don't use cmpxchg() for
-updating SPTEs.
-
-For shared walkers, like vCPU fault handler, above 2 cases results in
-walk termination.
-
-In future commits, clear-dirty-log walker will write protect SPTEs under
-MMU read lock and use shared page table walker. This will result in two
-shared page table walkers type, vCPUs fault handler and clear-dirty-log,
-competing with each other and sometime causing cmpxchg() failure. So,
--EAGAIN in clear-dirty-log walker due to cmpxchg() failure must be
-retried. Whereas, -EAGAIN in the clear-dirty-log due to invalid SPTE
-must be ignored instead of exiting as per the current logic of shared
-page table walker. This is not needed for vCPU fault handler which also
-runs via shared page table walker and terminates walk on getting -EAGAIN
-due to invalid SPTE.
-
-To handle all these scenarios, stage2_attr_walker must return different
-error codes for invalid SPTEs and cmxchg() failure. -ENOENT for invalid
-SPTE is chosen because it is not used by any other shared walker. When
-clear-dirty-log will be changed to use shared page table walker, it will
-be possible to differentiate cases of retrying, continuing or
-terminating the walk for shared fault handler and shared
-clear-dirty-log.
+This change makes dirty_log_perf_test behave like real world workflows
+where guest vCPUs keep on executing while VMM collects and clear dirty
+logs. Total pages touched during execution of test will give good
+estimate of how vCPUs are performing while dirty logging is enabled.
 
 Signed-off-by: Vipin Sharma <vipinsh@google.com>
 ---
- arch/arm64/include/asm/kvm_pgtable.h |  1 +
- arch/arm64/kvm/hyp/pgtable.c         | 19 ++++++++++++-------
- arch/arm64/kvm/mmu.c                 |  2 +-
- 3 files changed, 14 insertions(+), 8 deletions(-)
+ .../selftests/kvm/dirty_log_perf_test.c       | 64 +++++++++++++------
+ 1 file changed, 44 insertions(+), 20 deletions(-)
 
-diff --git a/arch/arm64/include/asm/kvm_pgtable.h b/arch/arm64/include/asm/kvm_pgtable.h
-index 957bc20dab00..23e7e7851f1d 100644
---- a/arch/arm64/include/asm/kvm_pgtable.h
-+++ b/arch/arm64/include/asm/kvm_pgtable.h
-@@ -720,6 +720,7 @@ int kvm_pgtable_stage2_split(struct kvm_pgtable *pgt, u64 addr, u64 size,
-  * -------------|------------------|--------------
-  * Non-Shared   | 0                | Continue
-  * Non-Shared   | -EAGAIN          | Continue
-+ * Non-Shared   | -ENOENT          | Continue
-  * Non-Shared   | Any other        | Exit
-  * -------------|------------------|--------------
-  * Shared       | 0                | Continue
-diff --git a/arch/arm64/kvm/hyp/pgtable.c b/arch/arm64/kvm/hyp/pgtable.c
-index a3a0812b2301..bc8c5c4ac1cf 100644
---- a/arch/arm64/kvm/hyp/pgtable.c
-+++ b/arch/arm64/kvm/hyp/pgtable.c
-@@ -186,14 +186,19 @@ static bool kvm_pgtable_walk_continue(const struct kvm_pgtable_walker *walker,
+diff --git a/tools/testing/selftests/kvm/dirty_log_perf_test.c b/tools/testing/selftests/kvm/dirty_log_perf_test.c
+index 14b012a0dcb1..fbf973d6cc66 100644
+--- a/tools/testing/selftests/kvm/dirty_log_perf_test.c
++++ b/tools/testing/selftests/kvm/dirty_log_perf_test.c
+@@ -69,6 +69,7 @@ static int iteration;
+ static int vcpu_last_completed_iteration[KVM_MAX_VCPUS];
+ static atomic_ullong total_reads;
+ static atomic_ullong total_writes;
++static bool lockstep_iterations;
+ 
+ static void vcpu_worker(struct memstress_vcpu_args *vcpu_args)
+ {
+@@ -83,12 +84,16 @@ static void vcpu_worker(struct memstress_vcpu_args *vcpu_args)
+ 	struct timespec total = (struct timespec){0};
+ 	struct timespec avg;
+ 	struct ucall uc = {};
++	int current_iteration = -1;
+ 	int ret;
+ 
+ 	run = vcpu->run;
+ 
+ 	while (!READ_ONCE(host_quit)) {
+-		int current_iteration = READ_ONCE(iteration);
++		if (lockstep_iterations)
++			current_iteration = READ_ONCE(iteration);
++		else
++			current_iteration++;
+ 
+ 		clock_gettime(CLOCK_MONOTONIC, &start);
+ 		ret = _vcpu_run(vcpu);
+@@ -118,13 +123,19 @@ static void vcpu_worker(struct memstress_vcpu_args *vcpu_args)
+ 				ts_diff.tv_nsec);
+ 		}
+ 
+-		/*
+-		 * Keep running the guest while dirty logging is being disabled
+-		 * (iteration is negative) so that vCPUs are accessing memory
+-		 * for the entire duration of zapping collapsible SPTEs.
+-		 */
+-		while (current_iteration == READ_ONCE(iteration) &&
+-		       READ_ONCE(iteration) >= 0 && !READ_ONCE(host_quit)) {}
++		if (lockstep_iterations) {
++			/*
++			 * Keep running the guest while dirty logging is being disabled
++			 * (iteration is negative) so that vCPUs are accessing memory
++			 * for the entire duration of zapping collapsible SPTEs.
++			 */
++			while (current_iteration == READ_ONCE(iteration) &&
++			       READ_ONCE(iteration) >= 0 && !READ_ONCE(host_quit))
++				;
++		} else {
++			while (!READ_ONCE(iteration) && !READ_ONCE(host_quit))
++				;
++		}
+ 	}
+ 
+ 	avg = timespec_div(total, vcpu_last_completed_iteration[vcpu_idx]);
+@@ -332,18 +343,20 @@ static void run_test(enum vm_guest_mode mode, void *arg)
+ 		clock_gettime(CLOCK_MONOTONIC, &start);
+ 		iteration++;
+ 
+-		pr_debug("Starting iteration %d\n", iteration);
+-		for (i = 0; i < nr_vcpus; i++) {
+-			while (READ_ONCE(vcpu_last_completed_iteration[i])
+-			       != iteration)
+-				;
++		if (lockstep_iterations) {
++			pr_debug("Starting iteration %d\n", iteration);
++			for (i = 0; i < nr_vcpus; i++) {
++				while (READ_ONCE(vcpu_last_completed_iteration[i])
++				       != iteration)
++					;
++			}
++
++			ts_diff = timespec_elapsed(start);
++			vcpu_dirty_total = timespec_add(vcpu_dirty_total, ts_diff);
++			pr_info("Iteration %d dirty memory time: %ld.%.9lds\n",
++				iteration, ts_diff.tv_sec, ts_diff.tv_nsec);
+ 		}
+ 
+-		ts_diff = timespec_elapsed(start);
+-		vcpu_dirty_total = timespec_add(vcpu_dirty_total, ts_diff);
+-		pr_info("Iteration %d dirty memory time: %ld.%.9lds\n",
+-			iteration, ts_diff.tv_sec, ts_diff.tv_nsec);
+-
+ 		clock_gettime(CLOCK_MONOTONIC, &start);
+ 		get_dirty_log(vm, bitmaps, p->slots);
+ 		ts_diff = timespec_elapsed(start);
+@@ -365,6 +378,10 @@ static void run_test(enum vm_guest_mode mode, void *arg)
+ 		}
+ 	}
+ 
++	/* Block further vCPUs execution */
++	if (!lockstep_iterations)
++		WRITE_ONCE(iteration, 0);
++
  	/*
- 	 * Visitor callbacks return EAGAIN when the conditions that led to a
- 	 * fault are no longer reflected in the page tables due to a race to
--	 * update a PTE. In the context of a fault handler this is interpreted
--	 * as a signal to retry guest execution.
-+	 * update a PTE.
- 	 *
--	 * Ignore the return code altogether for walkers outside a fault handler
--	 * (e.g. write protecting a range of memory) and chug along with the
--	 * page table walk.
-+	 * Callbacks can also return ENOENT when PTE which is visited is not
-+	 * valid.
-+	 *
-+	 * In the context of a fault handler interpret these as a signal
-+	 * to retry guest execution.
-+	 *
-+	 * Ignore these return codes altogether for walkers outside a fault
-+	 * handler (e.g. write protecting a range of memory) and chug along
-+	 * with the page table walk.
- 	 */
--	if (r == -EAGAIN)
-+	if (r == -EAGAIN || r == -ENOENT)
- 		return !(walker->flags & KVM_PGTABLE_WALK_HANDLE_FAULT);
+ 	 * Run vCPUs while dirty logging is being disabled to stress disabling
+ 	 * in terms of both performance and correctness.  Opt-in via command
+@@ -458,6 +475,10 @@ static void help(char *name)
+ 	       "     To leave the application task unpinned, drop the final entry:\n\n"
+ 	       "         ./dirty_log_perf_test -v 3 -c 22,23,24\n\n"
+ 	       "     (default: no pinning)\n");
++	printf(" -j: Execute vCPUs independent of dirty log iterations\n"
++	       "     Independent vCPUs execution will allow them to continuously\n"
++	       "     dirty memory while main thread is collecting and clearing\n"
++	       "     dirty logs in each iteration.\n");
+ 	printf(" -k: Specify the chunk size in which dirty memory gets cleared\n"
+ 	       "     in memslots in each iteration. If the size is bigger than\n"
+ 	       "     the memslot size then whole memslot is cleared in one call.\n"
+@@ -492,10 +513,10 @@ int main(int argc, char *argv[])
+ 		kvm_check_cap(KVM_CAP_MANUAL_DIRTY_LOG_PROTECT2);
+ 	dirty_log_manual_caps &= (KVM_DIRTY_LOG_MANUAL_PROTECT_ENABLE |
+ 				  KVM_DIRTY_LOG_INITIALLY_SET);
+-
++	lockstep_iterations = true;
+ 	guest_modes_append_default();
  
- 	return !r;
-@@ -1072,7 +1077,7 @@ static int stage2_attr_walker(const struct kvm_pgtable_visit_ctx *ctx,
- 	struct kvm_pgtable_mm_ops *mm_ops = ctx->mm_ops;
- 
- 	if (!kvm_pte_valid(ctx->old))
--		return -EAGAIN;
-+		return -ENOENT;
- 
- 	data->level = ctx->level;
- 	data->pte = pte;
-diff --git a/arch/arm64/kvm/mmu.c b/arch/arm64/kvm/mmu.c
-index 1030921d89f8..356dc4131023 100644
---- a/arch/arm64/kvm/mmu.c
-+++ b/arch/arm64/kvm/mmu.c
-@@ -1551,7 +1551,7 @@ static int user_mem_abort(struct kvm_vcpu *vcpu, phys_addr_t fault_ipa,
- 	read_unlock(&kvm->mmu_lock);
- 	kvm_set_pfn_accessed(pfn);
- 	kvm_release_pfn_clean(pfn);
--	return ret != -EAGAIN ? ret : 0;
-+	return (ret != -EAGAIN && ret != -ENOENT) ? ret : 0;
- }
- 
- /* Resolve the access fault by making the page young again. */
+-	while ((opt = getopt(argc, argv, "ab:c:eghi:k:l:m:nop:r:s:v:x:w:")) != -1) {
++	while ((opt = getopt(argc, argv, "ab:c:eghi:jk:l:m:nop:r:s:v:x:w:")) != -1) {
+ 		switch (opt) {
+ 		case 'a':
+ 			p.random_access = true;
+@@ -519,6 +540,9 @@ int main(int argc, char *argv[])
+ 		case 'i':
+ 			p.iterations = atoi_positive("Number of iterations", optarg);
+ 			break;
++		case 'j':
++			lockstep_iterations = false;
++			break;
+ 		case 'k':
+ 			p.clear_chunk_size = parse_size(optarg);
+ 			break;
 -- 
 2.41.0.rc0.172.g3f132b7071-goog
 

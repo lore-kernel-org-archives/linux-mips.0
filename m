@@ -2,57 +2,56 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 950E2C7EE2D
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 85CD5C7EE24
 	for <linux-mips@archiver.kernel.org>; Fri,  2 Jun 2023 16:10:09 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236484AbjFBQKB (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 2 Jun 2023 12:10:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35354 "EHLO
+        id S236607AbjFBQKA (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 2 Jun 2023 12:10:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35370 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236561AbjFBQJn (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Fri, 2 Jun 2023 12:09:43 -0400
-Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50206E50
-        for <linux-mips@vger.kernel.org>; Fri,  2 Jun 2023 09:09:30 -0700 (PDT)
-Received: by mail-pg1-x549.google.com with SMTP id 41be03b00d2f7-53f6f7d1881so2076479a12.3
-        for <linux-mips@vger.kernel.org>; Fri, 02 Jun 2023 09:09:30 -0700 (PDT)
+        with ESMTP id S236769AbjFBQJr (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Fri, 2 Jun 2023 12:09:47 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32A9710CC
+        for <linux-mips@vger.kernel.org>; Fri,  2 Jun 2023 09:09:36 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-babb5e91ab4so3222986276.0
+        for <linux-mips@vger.kernel.org>; Fri, 02 Jun 2023 09:09:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1685722169; x=1688314169;
+        d=google.com; s=20221208; t=1685722176; x=1688314176;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=TCZIk7VgxCOZOGj9BrulapCebBiXjQ5+VJfBT1Ieq9g=;
-        b=48Jv9Ndg6W2FWtv0TNF+EvHQkuzevnf0de3wNHQhiINnd1y+TJ3ZHZNsYvgiBjl6lh
-         9WUrwiuBOv0A4GYPSawEV6yVx5LbPQL0U+gQGnFWAFVUnyrF1z1qm1xlbl6HRjy6NNwE
-         8XB2SVK1dbUaEeLrM/H8JHaqBSIup+A6xNFpzpaufkcVOP+VAaTUukUdmKNrTQcISuZt
-         yTtWhk1kuZr3BXzyN9NP6mKp7IAXkKM1nK9WQaTXO/PtqFm7I9EIaNt4fcwETtWcECAj
-         9ktEJ+8oLB8jJgpGPXgzImfVTKXWHcOIgbQS6xiesRZonieLTn89FjSta0ZVX6QUoqee
-         mZLw==
+        bh=GJx+yypKzd3COmz5TQWkFGxt9Sb1HD5xNFJXRHqVvy0=;
+        b=szBGu+EQ2vs8Q3A0ZT1RS79FNLRJxSOVkrDrBBX7rmCKLzKn/b+E4mNymytABzCLif
+         EgUFXaPy7nG7KM6jDjkYBO0vsJLxZ4XBjsoF6X75ZimJDOLxnKGoSfjvnPNLfA9vSHBD
+         s9ihl+kXGelNmLHAJZYRz4+yQ+Fx6J3bT5bOlL9FOfNpgH6MN5wQNIGrZvk2XbL68tHF
+         B/csW1RkKWfzpRPcNxb+4yNUfWvhAhXwGpxjibheJUkN4+CaHLLPZUdUbJv/P8pKuPN/
+         Cvmf4i9nzVBBvNWz3J0YGn8SEauVZOkYjg+xhiWvEBlTBwkFZHPSrYROctUU+loxAFaS
+         zjKQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1685722169; x=1688314169;
+        d=1e100.net; s=20221208; t=1685722176; x=1688314176;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=TCZIk7VgxCOZOGj9BrulapCebBiXjQ5+VJfBT1Ieq9g=;
-        b=dMFudBK8aqKNUJRFuDNBqMKV1Y89pXlFCVnrLDsGZeftbwNL0zACTutFBBcu/w7+rC
-         CX5YbqubI4zXHU/jJPCdt7BFJPcdin146dOB7xSe+zRIeWckbhN3hMCzPEYumScgZDyV
-         YYbIfQiHWgLmXN/bqz4/WYHt05SnxHDQ5rNe0Wqhl6zmJAeWZDqchi6gC5n4hkA13fmO
-         4q6vJ6BzEsTkLCiAnucvqL3qBVGgqmphMXI8XHoh9eckDx7Aa5jnrEKHIRpdcg7MtGEY
-         oQLSFWw/7ksmMV0oplMNkCrkh5MNCn1UGbE/kH5qHOMApmIOA7eFFVuYPkBjzK67ht5t
-         CffQ==
-X-Gm-Message-State: AC+VfDyVKW2jF+jbkfgvaQfdQRF9leIboxt746fM3w7vWQqG5jpGB6MF
-        Q3mhh3FurJkLlcho041wqFOO6hK7VYwg
-X-Google-Smtp-Source: ACHHUZ5eYF/RV9lQrAgLH67VBGXqFnNNXk0G34PjM3lxGa6/KnJxp9P54a/FAO5X5SRVmoZXvlFdh+lSImCS
+        bh=GJx+yypKzd3COmz5TQWkFGxt9Sb1HD5xNFJXRHqVvy0=;
+        b=b/2j3WsPfJz2G+wOw+kBHM0frvvuJLHaLmIBF9TYkWCuZAxivuWT00H9Zwsw49sqfp
+         J32p5fFzFi5IwFORTuWx9YtapeW0/cZOPtCm4V/svLD9UTTiN77ByryssEKPPBubuP8R
+         FbsNA8iGtQk/3Jw5C1LxXApBa6PvhSdkiMt5GcSudDRnjW/gXBlfIZsHF6ca26ePlfxi
+         AYWdCCzkkDir5lYc9hEGtkaRCrJ+WIGtYDtO4J908+YX381SxKiuTZRVi/Euz6p7C2/1
+         nMAvPq3BYA981F03KSSTj2/NMoK6Jn3EVg9W440rP8QknZ/QRZxVZzVQ0WaRlaHLTDpw
+         Jmdg==
+X-Gm-Message-State: AC+VfDz8qRgAK7SL3tgZl50qDTNf8g26L0N8X5MihsDHIvK+Stebsm1C
+        KSwKcnV453CmIfFmGSFXX0L4un4/uYSi
+X-Google-Smtp-Source: ACHHUZ55GAWUbCX2pBxCQpbjCqZ+MgzCwRW5rUzsUOGzP4VGdNUP2AN+4xPnboHdKBOoO7J5TTwkex+IpQ+T
 X-Received: from vipin.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:479f])
- (user=vipinsh job=sendgmr) by 2002:a63:d044:0:b0:53f:32cf:bcd1 with SMTP id
- s4-20020a63d044000000b0053f32cfbcd1mr2492124pgi.5.1685722169678; Fri, 02 Jun
- 2023 09:09:29 -0700 (PDT)
-Date:   Fri,  2 Jun 2023 09:09:03 -0700
+ (user=vipinsh job=sendgmr) by 2002:a05:6902:100a:b0:bad:600:1833 with SMTP id
+ w10-20020a056902100a00b00bad06001833mr2072241ybt.0.1685722176005; Fri, 02 Jun
+ 2023 09:09:36 -0700 (PDT)
+Date:   Fri,  2 Jun 2023 09:09:06 -0700
 In-Reply-To: <20230602160914.4011728-1-vipinsh@google.com>
 Mime-Version: 1.0
 References: <20230602160914.4011728-1-vipinsh@google.com>
 X-Mailer: git-send-email 2.41.0.rc0.172.g3f132b7071-goog
-Message-ID: <20230602160914.4011728-6-vipinsh@google.com>
-Subject: [PATCH v2 05/16] KVM: selftests: Allow independent execution of vCPUs
- in dirty_log_perf_test
+Message-ID: <20230602160914.4011728-9-vipinsh@google.com>
+Subject: [PATCH v2 08/16] KMV: arm64: Pass page table walker flags to stage2_apply_range_*()
 From:   Vipin Sharma <vipinsh@google.com>
 To:     maz@kernel.org, oliver.upton@linux.dev, james.morse@arm.com,
         suzuki.poulose@arm.com, yuzenghui@huawei.com,
@@ -72,152 +71,243 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Give users command line option (-j) to execute vCPUs independently of
-dirty log iterations after initialization is complete.
+Allow stage2_apply_range_*() to accept enum kvm_pgtable_walk_flags{}
+for stage 2 walkers. Pass 0 as the flag value from all of its caller
+effectively making it a no-op.
 
-This change makes dirty_log_perf_test behave like real world workflows
-where guest vCPUs keep on executing while VMM collects and clear dirty
-logs. Total pages touched during execution of test will give good
-estimate of how vCPUs are performing while dirty logging is enabled.
+Page table walker flags  will be used in future commits to enable
+clear-dirty-log operation under MMU read lock.
+
+Current users of stage2_apply_range_*() API runs under assumption of
+holding MMU write lock. Stage2 page table walkers then run under the
+same assumption. In future commits, when clear-dirty-log is modified to
+run under MMU read lock then this flag will be used to pass shared page
+walk intent.
+
+No functional changes intended.
 
 Signed-off-by: Vipin Sharma <vipinsh@google.com>
 ---
- .../selftests/kvm/dirty_log_perf_test.c       | 64 +++++++++++++------
- 1 file changed, 44 insertions(+), 20 deletions(-)
+ arch/arm64/include/asm/kvm_pgtable.h  | 12 +++++++++---
+ arch/arm64/kvm/hyp/nvhe/mem_protect.c |  4 ++--
+ arch/arm64/kvm/hyp/pgtable.c          | 16 ++++++++++------
+ arch/arm64/kvm/mmu.c                  | 26 ++++++++++++++++----------
+ 4 files changed, 37 insertions(+), 21 deletions(-)
 
-diff --git a/tools/testing/selftests/kvm/dirty_log_perf_test.c b/tools/testing/selftests/kvm/dirty_log_perf_test.c
-index 14b012a0dcb1..fbf973d6cc66 100644
---- a/tools/testing/selftests/kvm/dirty_log_perf_test.c
-+++ b/tools/testing/selftests/kvm/dirty_log_perf_test.c
-@@ -69,6 +69,7 @@ static int iteration;
- static int vcpu_last_completed_iteration[KVM_MAX_VCPUS];
- static atomic_ullong total_reads;
- static atomic_ullong total_writes;
-+static bool lockstep_iterations;
+diff --git a/arch/arm64/include/asm/kvm_pgtable.h b/arch/arm64/include/asm/kvm_pgtable.h
+index d542a671c564..8ef7e8f3f054 100644
+--- a/arch/arm64/include/asm/kvm_pgtable.h
++++ b/arch/arm64/include/asm/kvm_pgtable.h
+@@ -560,6 +560,7 @@ int kvm_pgtable_stage2_set_owner(struct kvm_pgtable *pgt, u64 addr, u64 size,
+  * @pgt:	Page-table structure initialised by kvm_pgtable_stage2_init*().
+  * @addr:	Intermediate physical address from which to remove the mapping.
+  * @size:	Size of the mapping.
++ * @flags:	Page-table walker flags.
+  *
+  * The offset of @addr within a page is ignored and @size is rounded-up to
+  * the next page boundary.
+@@ -572,7 +573,8 @@ int kvm_pgtable_stage2_set_owner(struct kvm_pgtable *pgt, u64 addr, u64 size,
+  *
+  * Return: 0 on success, negative error code on failure.
+  */
+-int kvm_pgtable_stage2_unmap(struct kvm_pgtable *pgt, u64 addr, u64 size);
++int kvm_pgtable_stage2_unmap(struct kvm_pgtable *pgt, u64 addr, u64 size,
++			     enum kvm_pgtable_walk_flags flags);
  
- static void vcpu_worker(struct memstress_vcpu_args *vcpu_args)
+ /**
+  * kvm_pgtable_stage2_wrprotect() - Write-protect guest stage-2 address range
+@@ -580,6 +582,7 @@ int kvm_pgtable_stage2_unmap(struct kvm_pgtable *pgt, u64 addr, u64 size);
+  * @pgt:	Page-table structure initialised by kvm_pgtable_stage2_init*().
+  * @addr:	Intermediate physical address from which to write-protect,
+  * @size:	Size of the range.
++ * @flags:	Page-table walker flags.
+  *
+  * The offset of @addr within a page is ignored and @size is rounded-up to
+  * the next page boundary.
+@@ -590,7 +593,8 @@ int kvm_pgtable_stage2_unmap(struct kvm_pgtable *pgt, u64 addr, u64 size);
+  *
+  * Return: 0 on success, negative error code on failure.
+  */
+-int kvm_pgtable_stage2_wrprotect(struct kvm_pgtable *pgt, u64 addr, u64 size);
++int kvm_pgtable_stage2_wrprotect(struct kvm_pgtable *pgt, u64 addr, u64 size,
++				 enum kvm_pgtable_walk_flags flags);
+ 
+ /**
+  * kvm_pgtable_stage2_mkyoung() - Set the access flag in a page-table entry.
+@@ -662,13 +666,15 @@ bool kvm_pgtable_stage2_is_young(struct kvm_pgtable *pgt, u64 addr);
+  * @pgt:	Page-table structure initialised by kvm_pgtable_stage2_init*().
+  * @addr:	Intermediate physical address from which to flush.
+  * @size:	Size of the range.
++ * @flags:	Page-table walker flags.
+  *
+  * The offset of @addr within a page is ignored and @size is rounded-up to
+  * the next page boundary.
+  *
+  * Return: 0 on success, negative error code on failure.
+  */
+-int kvm_pgtable_stage2_flush(struct kvm_pgtable *pgt, u64 addr, u64 size);
++int kvm_pgtable_stage2_flush(struct kvm_pgtable *pgt, u64 addr, u64 size,
++			     enum kvm_pgtable_walk_flags flags);
+ 
+ /**
+  * kvm_pgtable_stage2_split() - Split a range of huge pages into leaf PTEs pointing
+diff --git a/arch/arm64/kvm/hyp/nvhe/mem_protect.c b/arch/arm64/kvm/hyp/nvhe/mem_protect.c
+index d35e75b13ffe..13f5cf5f87c3 100644
+--- a/arch/arm64/kvm/hyp/nvhe/mem_protect.c
++++ b/arch/arm64/kvm/hyp/nvhe/mem_protect.c
+@@ -333,11 +333,11 @@ static int host_stage2_unmap_dev_all(void)
+ 	/* Unmap all non-memory regions to recycle the pages */
+ 	for (i = 0; i < hyp_memblock_nr; i++, addr = reg->base + reg->size) {
+ 		reg = &hyp_memory[i];
+-		ret = kvm_pgtable_stage2_unmap(pgt, addr, reg->base - addr);
++		ret = kvm_pgtable_stage2_unmap(pgt, addr, reg->base - addr, 0);
+ 		if (ret)
+ 			return ret;
+ 	}
+-	return kvm_pgtable_stage2_unmap(pgt, addr, BIT(pgt->ia_bits) - addr);
++	return kvm_pgtable_stage2_unmap(pgt, addr, BIT(pgt->ia_bits) - addr, 0);
+ }
+ 
+ struct kvm_mem_range {
+diff --git a/arch/arm64/kvm/hyp/pgtable.c b/arch/arm64/kvm/hyp/pgtable.c
+index 364b68013038..a3a0812b2301 100644
+--- a/arch/arm64/kvm/hyp/pgtable.c
++++ b/arch/arm64/kvm/hyp/pgtable.c
+@@ -1044,12 +1044,14 @@ static int stage2_unmap_walker(const struct kvm_pgtable_visit_ctx *ctx,
+ 	return 0;
+ }
+ 
+-int kvm_pgtable_stage2_unmap(struct kvm_pgtable *pgt, u64 addr, u64 size)
++int kvm_pgtable_stage2_unmap(struct kvm_pgtable *pgt, u64 addr, u64 size,
++			     enum kvm_pgtable_walk_flags flags)
  {
-@@ -83,12 +84,16 @@ static void vcpu_worker(struct memstress_vcpu_args *vcpu_args)
- 	struct timespec total = (struct timespec){0};
- 	struct timespec avg;
- 	struct ucall uc = {};
-+	int current_iteration = -1;
- 	int ret;
+ 	struct kvm_pgtable_walker walker = {
+ 		.cb	= stage2_unmap_walker,
+ 		.arg	= pgt,
+-		.flags	= KVM_PGTABLE_WALK_LEAF | KVM_PGTABLE_WALK_TABLE_POST,
++		.flags	= flags | KVM_PGTABLE_WALK_LEAF |
++			  KVM_PGTABLE_WALK_TABLE_POST,
+ 	};
  
- 	run = vcpu->run;
+ 	return kvm_pgtable_walk(pgt, addr, size, &walker);
+@@ -1128,11 +1130,12 @@ static int stage2_update_leaf_attrs(struct kvm_pgtable *pgt, u64 addr,
+ 	return 0;
+ }
  
- 	while (!READ_ONCE(host_quit)) {
--		int current_iteration = READ_ONCE(iteration);
-+		if (lockstep_iterations)
-+			current_iteration = READ_ONCE(iteration);
-+		else
-+			current_iteration++;
+-int kvm_pgtable_stage2_wrprotect(struct kvm_pgtable *pgt, u64 addr, u64 size)
++int kvm_pgtable_stage2_wrprotect(struct kvm_pgtable *pgt, u64 addr, u64 size,
++				 enum kvm_pgtable_walk_flags flags)
+ {
+ 	return stage2_update_leaf_attrs(pgt, addr, size, 0,
+ 					KVM_PTE_LEAF_ATTR_LO_S2_S2AP_W,
+-					NULL, NULL, 0);
++					NULL, NULL, flags);
+ }
  
- 		clock_gettime(CLOCK_MONOTONIC, &start);
- 		ret = _vcpu_run(vcpu);
-@@ -118,13 +123,19 @@ static void vcpu_worker(struct memstress_vcpu_args *vcpu_args)
- 				ts_diff.tv_nsec);
- 		}
+ kvm_pte_t kvm_pgtable_stage2_mkyoung(struct kvm_pgtable *pgt, u64 addr)
+@@ -1213,11 +1216,12 @@ static int stage2_flush_walker(const struct kvm_pgtable_visit_ctx *ctx,
+ 	return 0;
+ }
  
--		/*
--		 * Keep running the guest while dirty logging is being disabled
--		 * (iteration is negative) so that vCPUs are accessing memory
--		 * for the entire duration of zapping collapsible SPTEs.
--		 */
--		while (current_iteration == READ_ONCE(iteration) &&
--		       READ_ONCE(iteration) >= 0 && !READ_ONCE(host_quit)) {}
-+		if (lockstep_iterations) {
-+			/*
-+			 * Keep running the guest while dirty logging is being disabled
-+			 * (iteration is negative) so that vCPUs are accessing memory
-+			 * for the entire duration of zapping collapsible SPTEs.
-+			 */
-+			while (current_iteration == READ_ONCE(iteration) &&
-+			       READ_ONCE(iteration) >= 0 && !READ_ONCE(host_quit))
-+				;
-+		} else {
-+			while (!READ_ONCE(iteration) && !READ_ONCE(host_quit))
-+				;
-+		}
- 	}
+-int kvm_pgtable_stage2_flush(struct kvm_pgtable *pgt, u64 addr, u64 size)
++int kvm_pgtable_stage2_flush(struct kvm_pgtable *pgt, u64 addr, u64 size,
++			     enum kvm_pgtable_walk_flags flags)
+ {
+ 	struct kvm_pgtable_walker walker = {
+ 		.cb	= stage2_flush_walker,
+-		.flags	= KVM_PGTABLE_WALK_LEAF,
++		.flags	= flags | KVM_PGTABLE_WALK_LEAF,
+ 		.arg	= pgt,
+ 	};
  
- 	avg = timespec_div(total, vcpu_last_completed_iteration[vcpu_idx]);
-@@ -332,18 +343,20 @@ static void run_test(enum vm_guest_mode mode, void *arg)
- 		clock_gettime(CLOCK_MONOTONIC, &start);
- 		iteration++;
+diff --git a/arch/arm64/kvm/mmu.c b/arch/arm64/kvm/mmu.c
+index 0c2c2c0846f1..1030921d89f8 100644
+--- a/arch/arm64/kvm/mmu.c
++++ b/arch/arm64/kvm/mmu.c
+@@ -55,7 +55,9 @@ static phys_addr_t stage2_range_addr_end(phys_addr_t addr, phys_addr_t end)
+  */
+ static int stage2_apply_range(struct kvm_s2_mmu *mmu, phys_addr_t addr,
+ 			      phys_addr_t end,
+-			      int (*fn)(struct kvm_pgtable *, u64, u64),
++			      enum kvm_pgtable_walk_flags flags,
++			      int (*fn)(struct kvm_pgtable *, u64, u64,
++					enum kvm_pgtable_walk_flags),
+ 			      bool resched)
+ {
+ 	struct kvm *kvm = kvm_s2_mmu_to_kvm(mmu);
+@@ -68,7 +70,7 @@ static int stage2_apply_range(struct kvm_s2_mmu *mmu, phys_addr_t addr,
+ 			return -EINVAL;
  
--		pr_debug("Starting iteration %d\n", iteration);
--		for (i = 0; i < nr_vcpus; i++) {
--			while (READ_ONCE(vcpu_last_completed_iteration[i])
--			       != iteration)
--				;
-+		if (lockstep_iterations) {
-+			pr_debug("Starting iteration %d\n", iteration);
-+			for (i = 0; i < nr_vcpus; i++) {
-+				while (READ_ONCE(vcpu_last_completed_iteration[i])
-+				       != iteration)
-+					;
-+			}
-+
-+			ts_diff = timespec_elapsed(start);
-+			vcpu_dirty_total = timespec_add(vcpu_dirty_total, ts_diff);
-+			pr_info("Iteration %d dirty memory time: %ld.%.9lds\n",
-+				iteration, ts_diff.tv_sec, ts_diff.tv_nsec);
- 		}
+ 		next = stage2_range_addr_end(addr, end);
+-		ret = fn(pgt, addr, next - addr);
++		ret = fn(pgt, addr, next - addr, flags);
+ 		if (ret)
+ 			break;
  
--		ts_diff = timespec_elapsed(start);
--		vcpu_dirty_total = timespec_add(vcpu_dirty_total, ts_diff);
--		pr_info("Iteration %d dirty memory time: %ld.%.9lds\n",
--			iteration, ts_diff.tv_sec, ts_diff.tv_nsec);
--
- 		clock_gettime(CLOCK_MONOTONIC, &start);
- 		get_dirty_log(vm, bitmaps, p->slots);
- 		ts_diff = timespec_elapsed(start);
-@@ -365,6 +378,10 @@ static void run_test(enum vm_guest_mode mode, void *arg)
- 		}
- 	}
+@@ -79,8 +81,8 @@ static int stage2_apply_range(struct kvm_s2_mmu *mmu, phys_addr_t addr,
+ 	return ret;
+ }
  
-+	/* Block further vCPUs execution */
-+	if (!lockstep_iterations)
-+		WRITE_ONCE(iteration, 0);
-+
+-#define stage2_apply_range_resched(mmu, addr, end, fn)			\
+-	stage2_apply_range(mmu, addr, end, fn, true)
++#define stage2_apply_range_resched(mmu, addr, end, flags, fn)		\
++	stage2_apply_range(mmu, addr, end, flags, fn, true)
+ 
+ /*
+  * Get the maximum number of page-tables pages needed to split a range
+@@ -316,7 +318,7 @@ static void __unmap_stage2_range(struct kvm_s2_mmu *mmu, phys_addr_t start, u64
+ 
+ 	lockdep_assert_held_write(&kvm->mmu_lock);
+ 	WARN_ON(size & ~PAGE_MASK);
+-	WARN_ON(stage2_apply_range(mmu, start, end, kvm_pgtable_stage2_unmap,
++	WARN_ON(stage2_apply_range(mmu, start, end, 0, kvm_pgtable_stage2_unmap,
+ 				   may_block));
+ }
+ 
+@@ -331,7 +333,8 @@ static void stage2_flush_memslot(struct kvm *kvm,
+ 	phys_addr_t addr = memslot->base_gfn << PAGE_SHIFT;
+ 	phys_addr_t end = addr + PAGE_SIZE * memslot->npages;
+ 
+-	stage2_apply_range_resched(&kvm->arch.mmu, addr, end, kvm_pgtable_stage2_flush);
++	stage2_apply_range_resched(&kvm->arch.mmu, addr, end, 0,
++				   kvm_pgtable_stage2_flush);
+ }
+ 
+ /**
+@@ -1041,10 +1044,13 @@ int kvm_phys_addr_ioremap(struct kvm *kvm, phys_addr_t guest_ipa,
+  * @mmu:        The KVM stage-2 MMU pointer
+  * @addr:	Start address of range
+  * @end:	End address of range
++ * @flags:	Page-table walker flags.
+  */
+-static void stage2_wp_range(struct kvm_s2_mmu *mmu, phys_addr_t addr, phys_addr_t end)
++static void stage2_wp_range(struct kvm_s2_mmu *mmu, phys_addr_t addr, phys_addr_t end,
++			    enum kvm_pgtable_walk_flags flags)
+ {
+-	stage2_apply_range_resched(mmu, addr, end, kvm_pgtable_stage2_wrprotect);
++	stage2_apply_range_resched(mmu, addr, end, flags,
++				   kvm_pgtable_stage2_wrprotect);
+ }
+ 
+ /**
+@@ -1073,7 +1079,7 @@ static void kvm_mmu_wp_memory_region(struct kvm *kvm, int slot)
+ 	end = (memslot->base_gfn + memslot->npages) << PAGE_SHIFT;
+ 
+ 	write_lock(&kvm->mmu_lock);
+-	stage2_wp_range(&kvm->arch.mmu, start, end);
++	stage2_wp_range(&kvm->arch.mmu, start, end, 0);
+ 	write_unlock(&kvm->mmu_lock);
+ 	kvm_flush_remote_tlbs(kvm);
+ }
+@@ -1128,7 +1134,7 @@ void kvm_arch_mmu_enable_log_dirty_pt_masked(struct kvm *kvm,
+ 	write_lock(&kvm->mmu_lock);
+ 	lockdep_assert_held_write(&kvm->mmu_lock);
+ 
+-	stage2_wp_range(&kvm->arch.mmu, start, end);
++	stage2_wp_range(&kvm->arch.mmu, start, end, 0);
+ 
  	/*
- 	 * Run vCPUs while dirty logging is being disabled to stress disabling
- 	 * in terms of both performance and correctness.  Opt-in via command
-@@ -458,6 +475,10 @@ static void help(char *name)
- 	       "     To leave the application task unpinned, drop the final entry:\n\n"
- 	       "         ./dirty_log_perf_test -v 3 -c 22,23,24\n\n"
- 	       "     (default: no pinning)\n");
-+	printf(" -j: Execute vCPUs independent of dirty log iterations\n"
-+	       "     Independent vCPUs execution will allow them to continuously\n"
-+	       "     dirty memory while main thread is collecting and clearing\n"
-+	       "     dirty logs in each iteration.\n");
- 	printf(" -k: Specify the chunk size in which dirty memory gets cleared\n"
- 	       "     in memslots in each iteration. If the size is bigger than\n"
- 	       "     the memslot size then whole memslot is cleared in one call.\n"
-@@ -492,10 +513,10 @@ int main(int argc, char *argv[])
- 		kvm_check_cap(KVM_CAP_MANUAL_DIRTY_LOG_PROTECT2);
- 	dirty_log_manual_caps &= (KVM_DIRTY_LOG_MANUAL_PROTECT_ENABLE |
- 				  KVM_DIRTY_LOG_INITIALLY_SET);
--
-+	lockstep_iterations = true;
- 	guest_modes_append_default();
- 
--	while ((opt = getopt(argc, argv, "ab:c:eghi:k:l:m:nop:r:s:v:x:w:")) != -1) {
-+	while ((opt = getopt(argc, argv, "ab:c:eghi:jk:l:m:nop:r:s:v:x:w:")) != -1) {
- 		switch (opt) {
- 		case 'a':
- 			p.random_access = true;
-@@ -519,6 +540,9 @@ int main(int argc, char *argv[])
- 		case 'i':
- 			p.iterations = atoi_positive("Number of iterations", optarg);
- 			break;
-+		case 'j':
-+			lockstep_iterations = false;
-+			break;
- 		case 'k':
- 			p.clear_chunk_size = parse_size(optarg);
- 			break;
+ 	 * Eager-splitting is done when manual-protect is set.  We
 -- 
 2.41.0.rc0.172.g3f132b7071-goog
 

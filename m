@@ -2,72 +2,56 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 336EDC87FE4
-	for <linux-mips@archiver.kernel.org>; Fri,  9 Jun 2023 08:27:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 40DA6C7EE29
+	for <linux-mips@archiver.kernel.org>; Fri,  9 Jun 2023 08:38:47 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240607AbjFII0u (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 9 Jun 2023 04:26:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57818 "EHLO
+        id S240594AbjFIIiq (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 9 Jun 2023 04:38:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41362 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241431AbjFIIZz (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Fri, 9 Jun 2023 04:25:55 -0400
+        with ESMTP id S240625AbjFIIig (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Fri, 9 Jun 2023 04:38:36 -0400
 Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id CE89149EE;
-        Fri,  9 Jun 2023 01:24:53 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 2E69E30D8;
+        Fri,  9 Jun 2023 01:38:11 -0700 (PDT)
 Received: from uucp (helo=alpha)
         by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1q7XQE-0004Jv-04; Fri, 09 Jun 2023 10:24:38 +0200
+        id 1q7Xca-0004UX-00; Fri, 09 Jun 2023 10:37:24 +0200
 Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 7DCFAC02EE; Fri,  9 Jun 2023 10:21:47 +0200 (CEST)
-Date:   Fri, 9 Jun 2023 10:21:47 +0200
+        id A3D56C02EE; Fri,  9 Jun 2023 10:36:29 +0200 (CEST)
+Date:   Fri, 9 Jun 2023 10:36:29 +0200
 From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     "Maciej W. Rozycki" <macro@orcam.me.uk>
-Cc:     Manuel Lauss <manuel.lauss@gmail.com>, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] MIPS: Alchemy: Enable PATA_PLATFORM support
-Message-ID: <20230609082147.GE8160@alpha.franken.de>
-References: <alpine.DEB.2.21.2306011327300.59991@angie.orcam.me.uk>
- <alpine.DEB.2.21.2306011331530.59991@angie.orcam.me.uk>
+To:     Jiaxun Yang <jiaxun.yang@flygoat.com>
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, corbet@lwn.net
+Subject: Re: [PATCH 1/3] MIPS: Rework smt cmdline parameters
+Message-ID: <20230609083629.GA9563@alpha.franken.de>
+References: <20230521223124.21911-1-jiaxun.yang@flygoat.com>
+ <20230521223124.21911-2-jiaxun.yang@flygoat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <alpine.DEB.2.21.2306011331530.59991@angie.orcam.me.uk>
+In-Reply-To: <20230521223124.21911-2-jiaxun.yang@flygoat.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Thu, Jun 01, 2023 at 01:56:19PM +0100, Maciej W. Rozycki wrote:
-> We have limited demand for platform PATA support across MIPS platforms:
+On Sun, May 21, 2023 at 11:31:22PM +0100, Jiaxun Yang wrote:
+> Provide a generic smt parameters interface aligned with s390
+> to allow users to limit smt usage and threads per core.
 > 
-> $ find arch/mips -type f | sort | xargs grep -l pata_platform_info
-> arch/mips/alchemy/devboards/db1200.c
-> arch/mips/alchemy/devboards/db1300.c
-> arch/mips/sibyte/swarm/platform.c
-> $ 
+> It replaced previous undocumented "nothreads" parameter for
+> smp-cps which is ambiguous and does not cover smp-mt.
 > 
-> certainly not high enough to justify enabling support for PATA_PLATFORM 
-> port-wide.  SiByte platforms are handled selectively already, so just 
-> make a similar arrangement for Alchemy DB1XXX platforms.
-> 
-> Signed-off-by: Maciej W. Rozycki <macro@orcam.me.uk>
+> Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
 > ---
->  arch/mips/alchemy/Kconfig |    1 +
->  1 file changed, 1 insertion(+)
-> 
-> linux-mips-alchemy-pata-platform.diff
-> Index: linux-macro/arch/mips/alchemy/Kconfig
-> ===================================================================
-> --- linux-macro.orig/arch/mips/alchemy/Kconfig
-> +++ linux-macro/arch/mips/alchemy/Kconfig
-> @@ -14,6 +14,7 @@ config MIPS_DB1XXX
->  	bool "Alchemy DB1XXX / PB1XXX boards"
->  	select GPIOLIB
->  	select HAVE_PCI
-> +	select HAVE_PATA_PLATFORM
->  	select SYS_SUPPORTS_LITTLE_ENDIAN
->  	select SYS_HAS_EARLY_PRINTK
->  	help
+>  .../admin-guide/kernel-parameters.txt          |  4 ++--
+>  arch/mips/include/asm/smp.h                    |  2 ++
+>  arch/mips/kernel/smp-cps.c                     | 13 +------------
+>  arch/mips/kernel/smp-mt.c                      |  3 ++-
+>  arch/mips/kernel/smp.c                         | 18 ++++++++++++++++++
+>  5 files changed, 25 insertions(+), 15 deletions(-)
 
 applied to mips-next.
 

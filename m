@@ -2,63 +2,67 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AC983C8300C
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DDBC4C87FDE
 	for <linux-mips@archiver.kernel.org>; Fri,  9 Jun 2023 08:27:12 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240531AbjFII0k (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 9 Jun 2023 04:26:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57294 "EHLO
+        id S240580AbjFII0p (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 9 Jun 2023 04:26:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56618 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241417AbjFIIZx (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Fri, 9 Jun 2023 04:25:53 -0400
+        with ESMTP id S241409AbjFIIZv (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Fri, 9 Jun 2023 04:25:51 -0400
 Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 37E6F3C03;
-        Fri,  9 Jun 2023 01:24:52 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 44D4A4C15;
+        Fri,  9 Jun 2023 01:24:48 -0700 (PDT)
 Received: from uucp (helo=alpha)
         by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1q7XQE-0004Jv-00; Fri, 09 Jun 2023 10:24:38 +0200
+        id 1q7XQE-0004Jv-02; Fri, 09 Jun 2023 10:24:38 +0200
 Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 7C157C02EB; Fri,  9 Jun 2023 10:16:25 +0200 (CEST)
-Date:   Fri, 9 Jun 2023 10:16:25 +0200
+        id 28227C02EE; Fri,  9 Jun 2023 10:21:02 +0200 (CEST)
+Date:   Fri, 9 Jun 2023 10:21:02 +0200
 From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] mips: provide unxlate_dev_mem_ptr() in asm/io.h
-Message-ID: <20230609081625.GA8160@alpha.franken.de>
-References: <20230516194000.548487-1-arnd@kernel.org>
+To:     Jiaxun Yang <jiaxun.yang@flygoat.com>
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] MIPS: generic: Allow R5 CPUs to be selected
+Message-ID: <20230609082102.GC8160@alpha.franken.de>
+References: <20230529135245.4085-1-jiaxun.yang@flygoat.com>
+ <20230529135245.4085-2-jiaxun.yang@flygoat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230516194000.548487-1-arnd@kernel.org>
+In-Reply-To: <20230529135245.4085-2-jiaxun.yang@flygoat.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Tue, May 16, 2023 at 09:39:42PM +0200, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
+On Mon, May 29, 2023 at 02:52:45PM +0100, Jiaxun Yang wrote:
+> Since we do have P5600 bitfile for boston board, we should
+> allow generic kernel to be compiled for R5 CPUs.
 > 
-> The unxlate_dev_mem_ptr() function has no prototype on the mips
-> architecture, which does not include asm-generic/io.h, so gcc warns
-> about the __weak definition:
-> 
-> drivers/char/mem.c:94:29: error: no previous prototype for 'unxlate_dev_mem_ptr' [-Werror=missing-prototypes]
-> 
-> Since everyone else already gets the generic definition or has a custom
-> one, there is not really much point in having a __weak version as well.
-> 
-> Remove this one, and instead add a trivial macro to the mips header.
-> Once we convert mips to use the asm-generic header, this can go away
-> again.
-> 
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
 > ---
->  arch/mips/include/asm/io.h | 1 +
->  drivers/char/mem.c         | 7 -------
->  2 files changed, 1 insertion(+), 7 deletions(-)
+>  arch/mips/Kconfig | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
+> index e437bf43ecfc..215fcdc059d2 100644
+> --- a/arch/mips/Kconfig
+> +++ b/arch/mips/Kconfig
+> @@ -154,9 +154,11 @@ config MIPS_GENERIC_KERNEL
+>  	select SWAP_IO_SPACE
+>  	select SYS_HAS_CPU_MIPS32_R1
+>  	select SYS_HAS_CPU_MIPS32_R2
+> +	select SYS_HAS_CPU_MIPS32_R5
+>  	select SYS_HAS_CPU_MIPS32_R6
+>  	select SYS_HAS_CPU_MIPS64_R1
+>  	select SYS_HAS_CPU_MIPS64_R2
+> +	select SYS_HAS_CPU_MIPS64_R5
+>  	select SYS_HAS_CPU_MIPS64_R6
+>  	select SYS_SUPPORTS_32BIT_KERNEL
+>  	select SYS_SUPPORTS_64BIT_KERNEL
+> -- 
+> 2.39.2 (Apple Git-143)
 
 applied to mips-next.
 

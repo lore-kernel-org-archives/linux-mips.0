@@ -2,67 +2,58 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DDBC4C87FDE
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F2A6DC87FDC
 	for <linux-mips@archiver.kernel.org>; Fri,  9 Jun 2023 08:27:12 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240580AbjFII0p (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 9 Jun 2023 04:26:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56618 "EHLO
+        id S240596AbjFII0q (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 9 Jun 2023 04:26:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57478 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241409AbjFIIZv (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Fri, 9 Jun 2023 04:25:51 -0400
+        with ESMTP id S241419AbjFIIZx (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Fri, 9 Jun 2023 04:25:53 -0400
 Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 44D4A4C15;
-        Fri,  9 Jun 2023 01:24:48 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 53A213C13;
+        Fri,  9 Jun 2023 01:24:52 -0700 (PDT)
 Received: from uucp (helo=alpha)
         by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1q7XQE-0004Jv-02; Fri, 09 Jun 2023 10:24:38 +0200
+        id 1q7XQE-0004Jv-06; Fri, 09 Jun 2023 10:24:38 +0200
 Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 28227C02EE; Fri,  9 Jun 2023 10:21:02 +0200 (CEST)
-Date:   Fri, 9 Jun 2023 10:21:02 +0200
+        id EE916C02EE; Fri,  9 Jun 2023 10:22:42 +0200 (CEST)
+Date:   Fri, 9 Jun 2023 10:22:42 +0200
 From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Jiaxun Yang <jiaxun.yang@flygoat.com>
-Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] MIPS: generic: Allow R5 CPUs to be selected
-Message-ID: <20230609082102.GC8160@alpha.franken.de>
-References: <20230529135245.4085-1-jiaxun.yang@flygoat.com>
- <20230529135245.4085-2-jiaxun.yang@flygoat.com>
+To:     Paul Cercueil <paul@crapouillou.net>
+Cc:     Paul Burton <paulburton@kernel.org>,
+        Siarhei Volkau <lis8215@gmail.com>, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org, list@opendingux.net
+Subject: Re: [PATCH 1/4] MIPS: uaccess: emulate Ingenic LXW/LXH/LXHU uaccess
+Message-ID: <20230609082242.GG8160@alpha.franken.de>
+References: <20230604122655.69698-1-paul@crapouillou.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230529135245.4085-2-jiaxun.yang@flygoat.com>
+In-Reply-To: <20230604122655.69698-1-paul@crapouillou.net>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Mon, May 29, 2023 at 02:52:45PM +0100, Jiaxun Yang wrote:
-> Since we do have P5600 bitfile for boston board, we should
-> allow generic kernel to be compiled for R5 CPUs.
+On Sun, Jun 04, 2023 at 02:26:52PM +0200, Paul Cercueil wrote:
+> From: Siarhei Volkau <lis8215@gmail.com>
 > 
-> Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+> The LXW, LXH, LXHU opcodes are part of the MXU ASE found in Ingenic
+> XBurst based SoCs.
+> 
+> While technically part of the MXU ASE, they do not touch any of the SIMD
+> registers, and can be used even when the MXU ASE is disabled.
+> 
+> This patch makes it possible to emulate unaligned access for those
+> instructions.
+> 
+> Signed-off-by: Siarhei Volkau <lis8215@gmail.com>
 > ---
->  arch/mips/Kconfig | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-> index e437bf43ecfc..215fcdc059d2 100644
-> --- a/arch/mips/Kconfig
-> +++ b/arch/mips/Kconfig
-> @@ -154,9 +154,11 @@ config MIPS_GENERIC_KERNEL
->  	select SWAP_IO_SPACE
->  	select SYS_HAS_CPU_MIPS32_R1
->  	select SYS_HAS_CPU_MIPS32_R2
-> +	select SYS_HAS_CPU_MIPS32_R5
->  	select SYS_HAS_CPU_MIPS32_R6
->  	select SYS_HAS_CPU_MIPS64_R1
->  	select SYS_HAS_CPU_MIPS64_R2
-> +	select SYS_HAS_CPU_MIPS64_R5
->  	select SYS_HAS_CPU_MIPS64_R6
->  	select SYS_SUPPORTS_32BIT_KERNEL
->  	select SYS_SUPPORTS_64BIT_KERNEL
-> -- 
-> 2.39.2 (Apple Git-143)
+>  arch/mips/include/uapi/asm/inst.h | 33 +++++++++++++++++++++++++
+>  arch/mips/kernel/unaligned.c      | 41 +++++++++++++++++++++++++++++++
+>  2 files changed, 74 insertions(+)
 
 applied to mips-next.
 

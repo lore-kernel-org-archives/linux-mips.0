@@ -2,81 +2,59 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4A348C7EE43
-	for <linux-mips@archiver.kernel.org>; Fri,  9 Jun 2023 09:25:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2D9CDC7EE25
+	for <linux-mips@archiver.kernel.org>; Fri,  9 Jun 2023 11:10:43 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231300AbjFIJZl (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 9 Jun 2023 05:25:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47758 "EHLO
+        id S239280AbjFILKm (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 9 Jun 2023 07:10:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55784 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241632AbjFIJY7 (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Fri, 9 Jun 2023 05:24:59 -0400
+        with ESMTP id S231182AbjFILKT (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Fri, 9 Jun 2023 07:10:19 -0400
 Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 9AC6D4C3D;
-        Fri,  9 Jun 2023 02:19:04 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 8A0692113;
+        Fri,  9 Jun 2023 04:10:18 -0700 (PDT)
 Received: from uucp (helo=alpha)
         by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1q7XQE-0004Jv-0C; Fri, 09 Jun 2023 10:24:38 +0200
+        id 1q7a0U-0005gn-00; Fri, 09 Jun 2023 13:10:14 +0200
 Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 73C6EC02EE; Fri,  9 Jun 2023 10:24:23 +0200 (CEST)
-Date:   Fri, 9 Jun 2023 10:24:23 +0200
+        id 9781DC02F4; Fri,  9 Jun 2023 12:24:28 +0200 (CEST)
+Date:   Fri, 9 Jun 2023 12:24:28 +0200
 From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Jiaxun Yang <jiaxun.yang@flygoat.com>
-Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org
-Subject: Re: [PATCH] MIPS: cpu-features: Use boot_cpu_type for CPU type based
- features
-Message-ID: <20230609082423.GM8160@alpha.franken.de>
-References: <20230607055122.26175-1-jiaxun.yang@flygoat.com>
+To:     Tony Lindgren <tony@atomide.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        devicetree@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+Subject: Re: [PATCH] mips: dts: ralink: mt7628a: Unify pinctrl-single pin
+ group nodes
+Message-ID: <20230609102428.GA12327@alpha.franken.de>
+References: <20230523065959.15831-1-tony@atomide.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230607055122.26175-1-jiaxun.yang@flygoat.com>
+In-Reply-To: <20230523065959.15831-1-tony@atomide.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Wed, Jun 07, 2023 at 01:51:22PM +0800, Jiaxun Yang wrote:
-> Some CPU feature macros were using current_cpu_type to mark feature
-> availability.
+On Tue, May 23, 2023 at 09:59:58AM +0300, Tony Lindgren wrote:
+> We want to unify the pinctrl-single pin group nodes to use naming "pins".
+> Otherwise non-standad pin group names will add make dtbs checks errors
+> when the pinctrl-single yaml binding gets merged.
 > 
-> However current_cpu_type will use smp_processor_id, which is prohibited
-> under preemptable context.
-> 
-> Since those features are all uniform on all CPUs in a SMP system, use
-> boot_cpu_type instead of current_cpu_type to fix preemptable kernel.
-> 
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+> Cc: Conor Dooley <conor+dt@kernel.org>
+> Cc: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
+> Cc: Rob Herring <robh+dt@kernel.org>
+> Signed-off-by: Tony Lindgren <tony@atomide.com>
 > ---
->  arch/mips/include/asm/cpu-features.h | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/arch/mips/include/asm/cpu-features.h b/arch/mips/include/asm/cpu-features.h
-> index 2a0b90077b50..8c6d4a87db37 100644
-> --- a/arch/mips/include/asm/cpu-features.h
-> +++ b/arch/mips/include/asm/cpu-features.h
-> @@ -125,7 +125,7 @@
->  ({									\
->  	int __res;							\
->  									\
-> -	switch (current_cpu_type()) {					\
-> +	switch (boot_cpu_type()) {					\
->  	case CPU_CAVIUM_OCTEON:						\
->  	case CPU_CAVIUM_OCTEON_PLUS:					\
->  	case CPU_CAVIUM_OCTEON2:					\
-> @@ -373,7 +373,7 @@
->  ({									\
->  	int __res;							\
->  									\
-> -	switch (current_cpu_type()) {					\
-> +	switch (boot_cpu_type()) {					\
->  	case CPU_M14KC:							\
->  	case CPU_74K:							\
->  	case CPU_1074K:							\
-> -- 
-> 2.39.2 (Apple Git-143)
+>  arch/mips/boot/dts/ralink/mt7628a.dtsi | 40 +++++++++++++-------------
 
 applied to mips-next.
 

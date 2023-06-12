@@ -2,358 +2,290 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BFBDFC88CB4
-	for <linux-mips@archiver.kernel.org>; Mon, 12 Jun 2023 15:15:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7D159C88CB7
+	for <linux-mips@archiver.kernel.org>; Mon, 12 Jun 2023 17:29:19 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235867AbjFLPPJ (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 12 Jun 2023 11:15:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43932 "EHLO
+        id S232411AbjFLR3S (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 12 Jun 2023 13:29:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39770 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237099AbjFLPPI (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Mon, 12 Jun 2023 11:15:08 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB2A198;
-        Mon, 12 Jun 2023 08:15:06 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 8481861E2D;
-        Mon, 12 Jun 2023 15:15:06 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8A8ACC433D2;
-        Mon, 12 Jun 2023 15:15:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1686582905;
-        bh=dGC149c5x01RTzK/Vu79dUHLei19YO73aaltgb70V8k=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Yz7WOJ9+2MdrrAB7Pu166c9/NWzPb/G53ppcA3TywMNI0ghx0CvTLpr2SkwqeMS/l
-         zJuAc95rD8LjN4nwHGn0O7wmSH0uxEp+M9z56ZPfhIjkzMtVW7xYq7Bbbg9WuGKqIa
-         ViB9KeD13dEkiLDGZwqGZaaz4my+ePX5gH/HhI7XflKDZmweXD2VPXdgoPLlO475Ni
-         JATJY/Uea9wMGDT6BSa1Di3EBpewvTORQMx8sg2RwpoUf3Eb95VPiMAp/CMbNyu7QT
-         F3RzcJsHxY/yku5H8fFk1c26LoChFrHz+CySAOjRtJRxDDDnzxVKBxZU0NAmBJm7CD
-         lrHA6UZlJ/kuA==
-Date:   Mon, 12 Jun 2023 17:15:03 +0200
-From:   Maxime Ripard <mripard@kernel.org>
-To:     Sui Jingfeng <suijingfeng@loongson.cn>
-Cc:     Paul Cercueil <paul@crapouillou.net>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        loongson-kernel@lists.loongnix.cn
-Subject: Re: [PATCH] drm: gem: add an option for supporting the dma-coherent
- hardware.
-Message-ID: <lebytp7civogcw3eluwja74g5w4jvpnjug7jp4ec5rzuch6wu6@inmzzvnaozuq>
-References: <20230607053053.345101-1-suijingfeng@loongson.cn>
- <d4378aad1cf179d308068ef6072c5c7ff2bf2502.camel@crapouillou.net>
- <6db23d14-652e-4b13-24cb-bfb92fa3faed@loongson.cn>
- <e9714a0c29b1c4268081827571ad2545b0e6d5ec.camel@crapouillou.net>
- <d5494751-0af0-42f6-bcad-f75415e4a6bd@loongson.cn>
- <2dd4c870a5605a79105fb621c97a5f59a18c8c24.camel@crapouillou.net>
- <ae085320-c93c-5d96-58ef-c5ee8b58c306@loongson.cn>
- <i2odidvev3ztxit4iv4ndxcuk4opckgs5fg4jjjfrq5nike35u@mlo7hshexe2n>
- <f9cef1ed-fc46-bad5-e2d7-b734aaeb16c1@loongson.cn>
+        with ESMTP id S237471AbjFLR3M (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Mon, 12 Jun 2023 13:29:12 -0400
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56B23107;
+        Mon, 12 Jun 2023 10:29:11 -0700 (PDT)
+Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 35CHNuNN026608;
+        Mon, 12 Jun 2023 17:28:48 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : in-reply-to : references :
+ content-transfer-encoding : content-type : mime-version;
+ s=corp-2023-03-30; bh=vED0vM0rUFE1/R0ZEFiOpkkcyhoFTOCtE4HNXD2bros=;
+ b=jFlGCpPyvt8i6vaEO4zZ0BRsjTyO8h6m4S0rpAaYoznkaNij3ZQAKuIH+J4ShZYaoixp
+ ZVuwRclvB7OaKB1XmdxS4whpo8OzHBHeR1Yr6m562JQr6rfyhW9L3s9hwr4Mt1rr+LF9
+ 7nbHVS0ouee4u8k0DY7zNrRcsF7Rq4A0Rfz4RxjJ+9KwgaEt0c3Hvr6Oev4ZIz4L4dbt
+ W7hVfcSeyygXr+obSTKL/8wCCsPZKrx9DTokM9zapgvBxAv+mWl5uUDplNMf3CvKXUfe
+ GVR/JLPmW2dobPO+kC/MW13rmkb+1X6JJG5AJm3h9R0PFi4lIpOz59781lDkRi7OspYM FA== 
+Received: from iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta02.appoci.oracle.com [147.154.18.20])
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3r4fs1ujrs-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 12 Jun 2023 17:28:47 +0000
+Received: from pps.filterd (iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+        by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 35CH4MlA016344;
+        Mon, 12 Jun 2023 17:28:46 GMT
+Received: from nam12-dm6-obe.outbound.protection.outlook.com (mail-dm6nam12lp2172.outbound.protection.outlook.com [104.47.59.172])
+        by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3r4fm32y0u-7
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 12 Jun 2023 17:28:46 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=FyQY2xbQk9PLsFVK8DgWpo5Eekl3KazzmIueIxA6XzpSp6jC8wlb1mrcf86gtm+13yBYbNCaJ58sxqgft5CcG4O1jo8Q7Qi3++jb/y23P9m/FwWllOSwO1RsiBtvyzgXKNQjxfTd7I1DxNLv7DD/Mt6cOz4Ugfq8mZFTn9UF0njBY1tlsoTByx/tRydZXwF9x3gOvNafmDoGqqPI8ZWzNZ5ec5udHEoB9Tmvo70K1zAJ9wrL2B69fLkz40IiBHiAtZKp7Yw19QdgivCzI+F6cesGSHQ/GN1ndEArlGEDn7dfHxph6+SVKvDrWDDnmT1MMLwk2l2rEC7CjWxaIcP6ig==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=vED0vM0rUFE1/R0ZEFiOpkkcyhoFTOCtE4HNXD2bros=;
+ b=fYkHaG4PFlWLC41gtcNiFYy40AbXflV2oYPs1cvHp5R+47UpGFWWQxjA/ybXWzZq/c1GD63bcRbvrOFPAq2pIdfx2CiFLLNXqQHgjXAO9voOW/Wuf54Csrrd6iGNEPTawIUtEzZ8U05B5K0rxs0VLqndayfyggqrSqw4S29BgzkXLZRWH2d1gdvbasr+ufP3WkhYR0G+Cw2+ycAE0fWU8BW7jHGwTwuRfuR9x2/DW332oZewJve+jhiYVD+4kzgDE9JRc5e8LcnCBtCo8nXn5Qyh7TA3HtfQwRJ4kWwIOMnrXbqCkYEriYGRcUE1MKW+Zu8u6Iyx3E+Eb0rjMchhdA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=vED0vM0rUFE1/R0ZEFiOpkkcyhoFTOCtE4HNXD2bros=;
+ b=bZjmVEVKftucdIs+nIeBwVldyy8Kjd7YKfDe3+PBeLjO/XpHArkOVCG9WmMKPm9gc92LI4CG6Qh/Fy1Eqt/Izoo/7y/Y9sYQTGTfU8VpR1DOpuqTDp4zOz7HnaMOUsb/mMd0AOTqWLUzytHq4N/mIjzIO5ItFTH5s1m2Rz2kKZ4=
+Received: from CO1PR10MB4531.namprd10.prod.outlook.com (2603:10b6:303:6c::22)
+ by MW4PR10MB6509.namprd10.prod.outlook.com (2603:10b6:303:21b::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6477.29; Mon, 12 Jun
+ 2023 17:28:42 +0000
+Received: from CO1PR10MB4531.namprd10.prod.outlook.com
+ ([fe80::8b8f:b4b1:bb78:b048]) by CO1PR10MB4531.namprd10.prod.outlook.com
+ ([fe80::8b8f:b4b1:bb78:b048%5]) with mapi id 15.20.6477.028; Mon, 12 Jun 2023
+ 17:28:42 +0000
+From:   Eric DeVolder <eric.devolder@oracle.com>
+To:     linux@armlinux.org.uk, catalin.marinas@arm.com, will@kernel.org,
+        chenhuacai@kernel.org, geert@linux-m68k.org,
+        tsbogend@alpha.franken.de, James.Bottomley@HansenPartnership.com,
+        deller@gmx.de, ysato@users.sourceforge.jp, dalias@libc.org,
+        glaubitz@physik.fu-berlin.de, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, dave.hansen@linux.intel.com, 86@kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-ia64@vger.kernel.org, loongarch@lists.linux.dev,
+        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
+        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
+        linux-sh@vger.kernel.org
+Cc:     kernel@xen0n.name, mpe@ellerman.id.au, npiggin@gmail.com,
+        christophe.leroy@csgroup.eu, paul.walmsley@sifive.com,
+        palmer@dabbelt.com, aou@eecs.berkeley.edu, hca@linux.ibm.com,
+        gor@linux.ibm.com, agordeev@linux.ibm.com,
+        borntraeger@linux.ibm.com, svens@linux.ibm.com, hpa@zytor.com,
+        keescook@chromium.org, paulmck@kernel.org, peterz@infradead.org,
+        frederic@kernel.org, akpm@linux-foundation.org, ardb@kernel.org,
+        samitolvanen@google.com, juerg.haefliger@canonical.com,
+        arnd@arndb.de, rmk+kernel@armlinux.org.uk,
+        linus.walleij@linaro.org, sebastian.reichel@collabora.com,
+        rppt@kernel.org, kirill.shutemov@linux.intel.com,
+        anshuman.khandual@arm.com, ziy@nvidia.com, masahiroy@kernel.org,
+        ndesaulniers@google.com, mhiramat@kernel.org, ojeda@kernel.org,
+        thunder.leizhen@huawei.com, xin3.li@intel.com, tj@kernel.org,
+        gregkh@linuxfoundation.org, tsi@tuyoix.net, bhe@redhat.com,
+        hbathini@linux.ibm.com, sourabhjain@linux.ibm.com,
+        eric.devolder@oracle.com, boris.ostrovsky@oracle.com,
+        konrad.wilk@oracle.com
+Subject: [PATCH v1 10/21] powerpc/kexec: refactor for kernel/Kconfig.kexec
+Date:   Mon, 12 Jun 2023 13:28:02 -0400
+Message-Id: <20230612172805.681179-11-eric.devolder@oracle.com>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20230612172805.681179-1-eric.devolder@oracle.com>
+References: <20230612172805.681179-1-eric.devolder@oracle.com>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: BY3PR03CA0007.namprd03.prod.outlook.com
+ (2603:10b6:a03:39a::12) To CO1PR10MB4531.namprd10.prod.outlook.com
+ (2603:10b6:303:6c::22)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="dtzbhhtxjptopns7"
-Content-Disposition: inline
-In-Reply-To: <f9cef1ed-fc46-bad5-e2d7-b734aaeb16c1@loongson.cn>
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CO1PR10MB4531:EE_|MW4PR10MB6509:EE_
+X-MS-Office365-Filtering-Correlation-Id: d8372e75-29d0-44df-3706-08db6b6a778f
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: DfMXRJ7kQuMg61bPxO4tAfvEc1SMvPYJ3E2IYcR3Xga/MtTTByJd3vigtSnDXAc9iQdWc0OeDiKZs9xA7arPoN8JehR9swJRgpn+YFHoLmx5R5/rDPLXhttjHnSomD6dhngRokmSxo8xknlJ1UtqHccfT8QRFJdxFFemhP/X0TfbhE7Gfg/whWaq0oB1xgVqq6Z3IFKKzrv/3EL5rpZq9tv3d7PWjVfi6x1H7/kZOlpKkLSL/Fo2Vn72tS+WqYlFFNMi7YFVARbMXzMaZSR7IoiBArbnpiGywRxwBhIoQimvucz1qppejN42AUHDkjR77dI9r2MrBsIpZ030ImuyZtsKmar00tcJ05qMDbpkWHCtgSuZ9IutMNgQLS4gELU7CmfWS/Etimw9FG+14ZwkY5L8WGliGV6wAymyqeOW8EQAz1pCI6Zbl/q75cgK0vBHEw1l+P+Kaii4OS4YVzYknO5PS3OM16bD+ds4WIk4JnyOKbJsLw0/KhFfKxTSzVfSgzTRi1BDV/ug0VuCl6svmsQHD2bZeqXeBWypVR2s8AJncP3ZnUKasOcjnMXgM16DqmeT75o3XXzxHWCv/ZzpdhquX5rdfMpuJMQWwRgCy0A=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO1PR10MB4531.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(366004)(396003)(376002)(346002)(39860400002)(136003)(451199021)(66556008)(66476007)(66946007)(6666004)(107886003)(316002)(4326008)(478600001)(86362001)(36756003)(6512007)(6506007)(1076003)(26005)(83380400001)(186003)(5660300002)(8936002)(7366002)(7416002)(8676002)(2906002)(6486002)(7406005)(921005)(41300700001)(2616005)(38100700002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?grAfxRNy44OAu1xkzmVDmQOK60SBQCAFRunllVIu6A9YEpi1otzmpa0xVvoD?=
+ =?us-ascii?Q?cCX5bRmSShhInQB/Ai2X670mtxIC1cIgZ9DaX49rJtMEzhvZP+KL6jcXlng8?=
+ =?us-ascii?Q?+6UI3fyjeBzgYyZ/agHJuWzjduseRPNVfMgTSOQgTSmVJBQJ1v+8Ly/eOJ8S?=
+ =?us-ascii?Q?d0LdSog46d82nS5EAsjUIOAwmBNkAkF1xmQw3ycEyeSHJf1IrbNUenfin6IK?=
+ =?us-ascii?Q?XMw6/ixyIOLNW0fnjl/wNMD1WHIAGlFu9vS7nJip0umw8g9IWb5QBiG/RG3r?=
+ =?us-ascii?Q?UE9NhioUz67mdluURoPctuIzmkZk+ZX5GAmz2qR4q35Zk3CNtUPqCfqae3Uo?=
+ =?us-ascii?Q?irbeblf06vKy5MPtoWwkO9hk+AILWNo+W15L0Z8s0CkHApf0GThozqByUvH2?=
+ =?us-ascii?Q?Tx9AJpWsejg7lgObXxdj4wkYFQ+uvUZbrkpUhmMBIMxokGSJTnvcTbgDbr0T?=
+ =?us-ascii?Q?nMh5ZBCc+ikStqUKEj0zWj5XcgatxD/4ANsjJ0tGkppjR7coMEUpLj7oflUh?=
+ =?us-ascii?Q?gcmEYaGl4FhyzYhWnKIcL7JGETvXpvy3Aw1x6EEyI4N78FeyM3zgDBtUhkih?=
+ =?us-ascii?Q?sZfhq/mCsro4kES/CeBBejyMFzxroTwuq2H2IDrSjeI1fw15SOLeueOYp0HB?=
+ =?us-ascii?Q?uHTRzyxJYjzMxXpylQXY7xMGWrhHXjKWQyygmOgOmp0+ln7B9STJBBNir400?=
+ =?us-ascii?Q?3hZHhBKP3g3ADTV9NtLQWbEcLBTvvoEuARC6DoFS9Injmlh2eYgY6hmC8sv/?=
+ =?us-ascii?Q?3Tgsru9YD9NZ8Xbl8lsRQ1GEAjjwz4rfma5UCoI9198u3vVffcdsxQabpmHu?=
+ =?us-ascii?Q?5Wf0jEZZraYicJmgQ5/p2YJvqAVEG+jg9lAsU8z8UVgj+840e/HexWXRepXF?=
+ =?us-ascii?Q?98Lcs9794qsXiJQLbgdgdLQBquxJ51LEw8i/hq+W6jRgL5jUauHXTu6sYVc1?=
+ =?us-ascii?Q?anzyo5Axb/PSmY5Y3GzYyXkpTaPklq2Iit1uuqnbKid4sfyLf4XGjFmICP1p?=
+ =?us-ascii?Q?npg7cUawu2DlVFyPPsgvOM46mnVY7IQRQcwE/rJxyWofkd3u20Gz/WP4YKly?=
+ =?us-ascii?Q?2MIJAKG/bDZ5N9gygiM6kheYWsQqDvoPytEGvdEdiMAXowxfdgoZRG96FRYB?=
+ =?us-ascii?Q?Dm79H7eGgdCBNcE/oDNGzXyyxkUiU7oySezUGRqA+QPXguC1hfZaNpdPxf15?=
+ =?us-ascii?Q?CFXgZrC9tjxP54vEMTYWOJf5XPdNXyYnIHNqH5Xv7wOP41fFiKwzmNeqBLeB?=
+ =?us-ascii?Q?7Hz5i5MXIpP4JL2GHyvCkyt3aN56Gx12Ku11XoqJ20wce/pdOhdLZ2NGVRZT?=
+ =?us-ascii?Q?Lwh6vMglZO44oayTKCnknKuymOidZ067P4Uegk+yDDbtFla7f/vno0fsJ7mi?=
+ =?us-ascii?Q?JotSZix+uRfebfl3pfxXc0aFh9eIGtKiH4iKiU+eM2nRqkv9VmunEYZgBKiO?=
+ =?us-ascii?Q?ikTGBhCK9AM2Q2Rh0mAeIKvWBKHUKl69oqxVYeCQHFjGvXaJbzcA0goT/GIk?=
+ =?us-ascii?Q?kkKkBPQtN4aEOS44EDhFc/i2GwDJGHaKDrI7f3sZxbZSeY2NcSCR7snc0oo/?=
+ =?us-ascii?Q?Ec5fHGc84X+vD9mMhsMY3hSKLIAqZUrwKyAdTRlziPU2ZZT9ILTIa8GaK/45?=
+ =?us-ascii?Q?1Q=3D=3D?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 2
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: =?us-ascii?Q?JTARE6FOFT4nrKCeHEluUxAwunzDfwTlxoa21ppHRwfNdP5ZDbRlcHOqmuyd?=
+ =?us-ascii?Q?tnM4GMFC9D0i4wGUHc7AVn+83kou6hXVutklF2RVp2mrbFm+w3cu9YgE7R3R?=
+ =?us-ascii?Q?NfP5dD/xjyokFJ1P6scGA47tU3VMuk4SZuOdKGyYm1vNIUbPxDNFQRjV+cRC?=
+ =?us-ascii?Q?MnXDHZr+mdHqLUtgmB55LwDq7B2TuorYlHcEfP5DUJFqpEhfUa/22M5ma5xS?=
+ =?us-ascii?Q?a0jZ7xSgGZR1Eb8Nq0jRclRSmveaW7h1M7FKMC5eVvIEqvoEf1kp4uBes72l?=
+ =?us-ascii?Q?qpkFqjmQNJwY/c22QCVkMTrFXq6xCVxIsYLSlm0GE2zxLWhYy9qpiQnCPLha?=
+ =?us-ascii?Q?RANLf5gKnKVBq15DUvbjvfJ0y6iFmRehnCN6eQqJiaHlBke6th6r+D3qlgjf?=
+ =?us-ascii?Q?JqWSYEAN6SneKFcMMMpVTQhzMWgdwc8yrKwRY458VJ4Bs8aAHK0tdXmAPbY+?=
+ =?us-ascii?Q?E2SD+e6n5SeQ/saAtrh2f8VRZx7xZe0j6jpcUZcXEGXBSFw0ZWf8fOjw4yUD?=
+ =?us-ascii?Q?teLXNYw750lIjZX0Pdmrw9IaUiM/la2YhfrjY9g5p+JOhVFrawWa7vZACTuT?=
+ =?us-ascii?Q?W3iL2UuLIIMCbHbLUIk0V++6iSFWER5eX3L+w06I6OcI+lxnOnSxzafLVMtm?=
+ =?us-ascii?Q?gpnQf76XK8ONwaOIPhFxyH9L7fMrmijZwK+fACfhZgxxmOwXWcOzCsGkOLNX?=
+ =?us-ascii?Q?U/7Gok/eKdlFjh1ItKfvVJa7ojhYSqSdaK/t4JrpMCctyKiAdBAAtc4/naEZ?=
+ =?us-ascii?Q?50ua1kB4pEgyHcVspaj3IE4l63xU9J7GzxNj0Yg4lJOCxr6iztzwx/33jtys?=
+ =?us-ascii?Q?rTziPaAhtX2b1PuVBm9ewofuREL3w7pinvjLZqiahUgA/MR/b9r/yBojU2ra?=
+ =?us-ascii?Q?q4iiDptRH9OB9WYxeYpwERZ9Bc9ASpUj3nTWnYyaIEFB7euwRr66WkIj8zao?=
+ =?us-ascii?Q?KOiU9rXB5UXa9Yb68erqcQSLPBSKL3+tIqI3BKFx327XR8EesXcQKpcmy04i?=
+ =?us-ascii?Q?S4rabFUB4k2RMkrhBUwwTTzi4mQWYxUQQJYP5dn44Izx0JZFjrl3Jn+f6OPB?=
+ =?us-ascii?Q?4nDmmmH6YRMjAgFE48Fxa6lnBX7snjZyHkmf/eRYQQycJKXXs6KI/ifdmLqa?=
+ =?us-ascii?Q?LrvruqZdBAgKy9EPON/PWIKhdOyWCXO7qvTNXaRgYijj+7c+1s3v/o4F5WA3?=
+ =?us-ascii?Q?mvE8t+1NjP6h6RnKkjXOaguq7NhFjx9aczQrOITZsYFnyGSentKbJSykL4Sq?=
+ =?us-ascii?Q?qRsfvzPalKQAgbYkpQcBvayBNqMjkj5Cmvfbws0m12sBAifoFBBJ/qjnUL3R?=
+ =?us-ascii?Q?xj0D4F/M6ke8htut66t14m6/aB8hVBV51fl79ozWdZevUBtQ5dQseEMYpL+x?=
+ =?us-ascii?Q?BKZaMCFrn3ryyXmxt20TUHlABaOkMhOf3w97LVgGEq3vCtaUZhEteoTaZAX1?=
+ =?us-ascii?Q?ZQYHd4n/oUo3lhJOhTcWlZI/P7wygTgLEulGC2To5ZIdltfa4h5vvs6qy/i3?=
+ =?us-ascii?Q?Rrbm9U+EOilz5jMv6718J+I9jclj7xFGPt0lWhJ24KDPrtG8f6VKmRUxwO+O?=
+ =?us-ascii?Q?2GdY4MQh9mfmsp4SW+z551rn67ZGBYJ5+hF91EX2BaPJJxH0IIbBNhRiTO5C?=
+ =?us-ascii?Q?Atkf+vpmLdjEp+s7+k25aNQ5tSN6R7yMp7iyxME5iN7jJ+CoTOqBYtVt5FDW?=
+ =?us-ascii?Q?NsoIemgaRBluIkRZAHpscLw0cWv3zcSWjNRiOHBsF0tIqgy175SpJxKXEm5h?=
+ =?us-ascii?Q?lAaGEZBu3HS6no33GZ6zzXvHRIdvClEV3AiRDy8EiD2dmPQwxBAeo1V/sKdD?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-1: ZyCIQkpkQYX372tPbObH7Mr272xKGWceRKtN0+NAoxJ+0Ml8JOgxWZZDItadBQiGOsE6ipL/FlQqcY9I6HvG8WcRvzXW6vBIEn7YinlePxu5BJ6wXrtkuucmI1bOo30ujTnKAlNch3UaRZN8Ch5XJxwWfG5bLVkH1fHifMBiJXnYkUIpgOIbtLBkgxO5WCrYLQw1wzfsIYByAWoeI5cLU1dNveUAiSnmIGkOVG8FQV4Dyy/qO2dP4JMWQcz84Qa+3zTFmN8ls05/H0CKYkGTeeB8+k2x0dAMXO/a5adOJr3lgnN30Fa38flbd4wrPJNCFgKn+R6zDqBGxo8A8TIshCCQRtLHDDDeD54YUmNOadwa/YiHo7orciDQrNgLa957z42r0GJXmbzw2/Y1e7S6om5QWyewvSwPvxhmvKKj4kaPqJucU2h9hNMMPKaYXhvQbjrKcXQnOP5O/w==
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d8372e75-29d0-44df-3706-08db6b6a778f
+X-MS-Exchange-CrossTenant-AuthSource: CO1PR10MB4531.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Jun 2023 17:28:42.0623
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: KK0gfcLYeaHGeJVtDBeMjT/XKVdvGxcLRRwIpFhx29P6KLng5fXfh5EpgIgvIAYeIy0nrFHSrqQbxGwaMSLWsInEyccvFrTcT9mxc+Mmjh4=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR10MB6509
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.573,FMLib:17.11.176.26
+ definitions=2023-06-12_12,2023-06-12_02,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 bulkscore=0 mlxscore=0
+ spamscore=0 malwarescore=0 adultscore=0 phishscore=0 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2305260000
+ definitions=main-2306120152
+X-Proofpoint-GUID: EIOS7zdBNjv-6dP9PE9hlbW-KKF1KdCZ
+X-Proofpoint-ORIG-GUID: EIOS7zdBNjv-6dP9PE9hlbW-KKF1KdCZ
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
+The kexec and crash kernel options are provided in the common
+kernel/Kconfig.kexec. Utilize the common options and provide
+the ARCH_HAS_ and ARCH_SUPPORTS_ entries to recreate the
+equivalent set of KEXEC and CRASH options.
 
---dtzbhhtxjptopns7
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Eric DeVolder <eric.devolder@oracle.com>
+Reviewed-by: Sourabh Jain <sourabhjain@linux.ibm.com>
+---
+ arch/powerpc/Kconfig | 55 ++++++++++++++------------------------------
+ 1 file changed, 17 insertions(+), 38 deletions(-)
 
-On Thu, Jun 08, 2023 at 04:17:52PM +0800, Sui Jingfeng wrote:
-> Hi,
->=20
-> On 2023/6/8 15:39, Maxime Ripard wrote:
-> > On Thu, Jun 08, 2023 at 01:18:38AM +0800, Sui Jingfeng wrote:
-> > > Hi,
-> > >=20
-> > > On 2023/6/8 00:12, Paul Cercueil wrote:
-> > > > Hi Sui,
-> > > >=20
-> > > > Le mercredi 07 juin 2023 =E0 22:38 +0800, Sui Jingfeng a =E9crit=A0:
-> > > > > Hi,=A0 welcome to discussion.
-> > > > >=20
-> > > > >=20
-> > > > > I have limited skills in manipulating English.
-> > > > >=20
-> > > > > It may not express what I'm really means in the short time.
-> > > > >=20
-> > > > > Part of word in the sentence may not as accurate as your.
-> > > > >=20
-> > > > > Well, please don't misunderstand, I'm not doing the rude to you.
-> > > > No problem.
-> > > >=20
-> > > > > I will explain it with more details.
-> > > > >=20
-> > > > > See below:
-> > > > >=20
-> > > > >=20
-> > > > > On 2023/6/7 20:09, Paul Cercueil wrote:
-> > > > > > Hi Sui,
-> > > > > >=20
-> > > > > > Le mercredi 07 juin 2023 =E0 18:30 +0800, Sui Jingfeng a =E9cri=
-t=A0:
-> > > > > > > Hi,
-> > > > > > >=20
-> > > > > > >=20
-> > > > > > > On 2023/6/7 17:36, Paul Cercueil wrote:
-> > > > > > > > Hi Sui,
-> > > > > > > >=20
-> > > > > > > > Le mercredi 07 juin 2023 =E0 13:30 +0800, Sui Jingfeng a =
-=E9crit=A0:
-> > > > > > > > > The single map_noncoherent member of struct
-> > > > > > > > > drm_gem_dma_object
-> > > > > > > > > may
-> > > > > > > > > not
-> > > > > > > > > sufficient for describing the backing memory of the GEM
-> > > > > > > > > buffer
-> > > > > > > > > object.
-> > > > > > > > >=20
-> > > > > > > > > Especially on dma-coherent systems, the backing memory is
-> > > > > > > > > both
-> > > > > > > > > cached
-> > > > > > > > > coherent for multi-core CPUs and dma-coherent for periphe=
-ral
-> > > > > > > > > device.
-> > > > > > > > > Say architectures like X86-64, LoongArch64, Loongson Mips=
-64,
-> > > > > > > > > etc.
-> > > > > > > > >=20
-> > > > > > > > > Whether a peripheral device is dma-coherent or not can be
-> > > > > > > > > implementation-dependent. The single map_noncoherent opti=
-on
-> > > > > > > > > is
-> > > > > > > > > not
-> > > > > > > > > enough
-> > > > > > > > > to reflect real hardware anymore. For example, the Loongs=
-on
-> > > > > > > > > LS3A4000
-> > > > > > > > > CPU
-> > > > > > > > > and LS2K2000/LS2K1000 SoC, peripheral device of such hard=
-ware
-> > > > > > > > > platform
-> > > > > > > > > allways snoop CPU's cache. Doing the allocation with
-> > > > > > > > > dma_alloc_coherent
-> > > > > > > > > function is preferred. The return buffer is cached, it sh=
-ould
-> > > > > > > > > not
-> > > > > > > > > using
-> > > > > > > > > the default write-combine mapping. While with the current
-> > > > > > > > > implement,
-> > > > > > > > > there
-> > > > > > > > > no way to tell the drm core to reflect this.
-> > > > > > > > >=20
-> > > > > > > > > This patch adds cached and coherent members to struct
-> > > > > > > > > drm_gem_dma_object.
-> > > > > > > > > which allow driver implements to inform the core. Introdu=
-cing
-> > > > > > > > > new
-> > > > > > > > > mappings
-> > > > > > > > > while keeping the original default behavior unchanged.
-> > > > > > > > Did you try to simply set the "dma-coherent" property to the
-> > > > > > > > device's
-> > > > > > > > node?
-> > > > > > > But this approach can only be applied for the device driver w=
-ith
-> > > > > > > DT
-> > > > > > > support.
-> > > > > > >=20
-> > > > > > > X86-64, Loongson ls3a4000 mips64, Loongson ls3a5000 CPU typic=
-ally
-> > > > > > > do
-> > > > > > > not
-> > > > > > > have DT support.
-> > > > > > >=20
-> > > > > > > They using ACPI to pass parameter from the firmware to Linux
-> > > > > > > kernel.
-> > > > > > >=20
-> > > > > > > You approach will lost the effectiveness on such a case.
-> > > > > > Well, I don't really know how ACPI handles it - but it should j=
-ust
-> > > > > > be a
-> > > > > > matter of setting dev->dma_coherent. That's basically what the =
-DT
-> > > > > > code
-> > > > > > does.
-> > > > > >=20
-> > > > > > Some MIPS boards set it in their setup code for instance.
-> > > > > >=20
-> > > > > This is a *strategy*, not a *mechanism*.
-> > > > >=20
-> > > > > In this case, DT is just used to describing the hardware.
-> > > > >=20
-> > > > > (It is actually a hardware feature describing language, the
-> > > > > granularity
-> > > > > is large)
-> > > > >=20
-> > > > > It does not changing the state of the hardware.
-> > > > >=20
-> > > > > It's your platform firmware or kernel setting up code who actuall=
-y do
-> > > > > such a things.
-> > > > >=20
-> > > > >=20
-> > > > > It's just that it works on *one* platform, it does not guarantee =
-it
-> > > > > will
-> > > > > works on others.
-> > > > If you add the "dma-coherent" property in a device node in DT, you
-> > > > effectively specify that the device is DMA-coherent; so you describe
-> > > > the hardware, which is what DT is for, and you are not changing the
-> > > > state of the hardware.
-> > > >=20
-> > > > Note that some MIPS platforms (arch/mips/alchemy/common/setup.c)
-> > > > default to DMA-coherent mapping; I believe you could do something
-> > > > similar with your Loongson LS3A4000 CPU and LS2K2000/LS2K1000 SoC.
-> > > >=20
-> > > The preblem is that device driver can have various demand.
-> > >=20
-> > > It probably want to create different kind of buffers for different th=
-ing
-> > > simultaneously.
-> > >=20
-> > > Say, one allocated with dma_alloc_coherent for command buffer or dma
-> > > descriptor
-> > >=20
-> > > another one allocated with=A0 dma_alloc_wc for uploading shader etc.
-> > >=20
-> > > also has the third one allocated with dma_alloc_noncoherent() for doi=
-ng some
-> > > else.
-> > And it will work just fine.
-> >=20
-> > struct device dma_coherent, or DT's dma-coherent property define that
-> > the device doesn't need any kind of cache maintenance, ever. If it's
-> > missing, we need to perform cache maintenance to keep coherency.
-> >=20
-> > dma_alloc_* functions provide guarantees to the driver. With
-> > dma_alloc_wc and dma_alloc_coherent, the buffer is coherent, and thus
-> > you don't need to perform cache maintenance operations by hand in the
-> > driver.
->=20
-> BO returned by dma_alloc_wc() doesn't works on some platform.
+diff --git a/arch/powerpc/Kconfig b/arch/powerpc/Kconfig
+index bff5820b7cda..36f2fe0cc8a5 100644
+--- a/arch/powerpc/Kconfig
++++ b/arch/powerpc/Kconfig
+@@ -588,41 +588,21 @@ config PPC64_SUPPORTS_MEMORY_FAILURE
+ 	default "y" if PPC_POWERNV
+ 	select ARCH_SUPPORTS_MEMORY_FAILURE
+ 
+-config KEXEC
+-	bool "kexec system call"
+-	depends on PPC_BOOK3S || PPC_E500 || (44x && !SMP)
+-	select KEXEC_CORE
+-	help
+-	  kexec is a system call that implements the ability to shutdown your
+-	  current kernel, and to start another kernel.  It is like a reboot
+-	  but it is independent of the system firmware.   And like a reboot
+-	  you can start any kernel with it, not just Linux.
+-
+-	  The name comes from the similarity to the exec system call.
+-
+-	  It is an ongoing process to be certain the hardware in a machine
+-	  is properly shutdown, so do not be surprised if this code does not
+-	  initially work for you.  As of this writing the exact hardware
+-	  interface is strongly in flux, so no good recommendation can be
+-	  made.
+-
+-config KEXEC_FILE
+-	bool "kexec file based system call"
+-	select KEXEC_CORE
+-	select HAVE_IMA_KEXEC if IMA
+-	select KEXEC_ELF
+-	depends on PPC64
+-	depends on CRYPTO=y
+-	depends on CRYPTO_SHA256=y
+-	help
+-	  This is a new version of the kexec system call. This call is
+-	  file based and takes in file descriptors as system call arguments
+-	  for kernel and initramfs as opposed to a list of segments as is the
+-	  case for the older kexec call.
++config ARCH_HAS_KEXEC
++	def_bool PPC_BOOK3S || PPC_E500 || (44x && !SMP)
++
++config ARCH_HAS_KEXEC_FILE
++	def_bool PPC64 && CRYPTO && CRYPTO_SHA256
+ 
+ config ARCH_HAS_KEXEC_PURGATORY
+ 	def_bool KEXEC_FILE
+ 
++config ARCH_SUPPORTS_KEXEC_FILE
++	def_bool y
++	depends on KEXEC_FILE
++	select KEXEC_ELF
++	select HAVE_IMA_KEXEC if IMA
++
+ config PPC64_BIG_ENDIAN_ELF_ABI_V2
+ 	bool "Build big-endian kernel using ELF ABI V2 (EXPERIMENTAL)"
+ 	depends on PPC64 && CPU_BIG_ENDIAN
+@@ -682,14 +662,13 @@ config RELOCATABLE_TEST
+ 	  loaded at, which tends to be non-zero and therefore test the
+ 	  relocation code.
+ 
+-config CRASH_DUMP
+-	bool "Build a dump capture kernel"
+-	depends on PPC64 || PPC_BOOK3S_32 || PPC_85xx || (44x && !SMP)
++config ARCH_HAS_CRASH_DUMP
++	def_bool PPC64 || PPC_BOOK3S_32 || PPC_85xx || (44x && !SMP)
++
++config ARCH_SUPPORTS_CRASH_DUMP
++	def_bool y
++	depends on CRASH_DUMP
+ 	select RELOCATABLE if PPC64 || 44x || PPC_85xx
+-	help
+-	  Build a kernel suitable for use as a dump capture kernel.
+-	  The same kernel binary can be used as production kernel and dump
+-	  capture kernel.
+ 
+ config FA_DUMP
+ 	bool "Firmware-assisted dump"
+-- 
+2.31.1
 
-What do you mean by "it doesn't work" ? Because then, it's definitely
-the platform that's broken if it doesn't provide a coherent buffer.
-
-> This may only guarantee for the CPU side. There is no guarantee for
-> the GPU side.
->=20
-> For example, the GPU always snoop CPU's cache. The GPU fetch data from
-> the CPU's cache if hit.
->=20
-> if not hit, the GPU fetch the data from the system RAM.
-
-Right, that's still a coherent buffer.
-
-> But when call dma_alloc_wc(), the BO at cpu side is marked as write
-> combine property.
->=20
-> The write buffer within the CPU will gather the CPU side write access.
->=20
-> This is to say, there may have some data reside(stall) in the write buffe=
-r.
->=20
-> while the GPU will fetch data from the system RAM or CPU's cache.
->=20
-> the GPU will fetch wrong data.
-
-If that's the case, your buffer isn't coherent, and your platform
-probably breaks the expectations of the DMA API.
-
-> This is the condition for our hardware, I don't know how does the ARM
-> platform guarantee
->=20
-> the coherency in this case.
->
-> If it relay on software to guarantee, then it is still non hardware
-> maintained coherency.
->=20
->=20
-> When it relay on software, I called it implement-dependent.
->=20
-> there are some archs without the implement or don't know how to implement.
->=20
->=20
-> If it can't even snoop cpu's cache, I don't believe it can snoop cpu's wr=
-ite
-> buffer.
->=20
-> I not sure dma api can do guarantee for all arch.
->=20
->=20
-> > With dma_alloc_noncoherent, the buffer is non-coherent and the driver
-> > needs to perform them when relevant.
-> >=20
-> > How those buffers are created is platform specific, but the guarantees
-> > provided *to the driver* are always there.
-> >=20
-> > A buffer allocated with dma_alloc_coherent might be provided by
-> > different means (at the hardware level with a coherency unit, by mapping
-> > it non-cacheable), but as far as the driver is concerned it's always
-> > going to be coherent.
-> >=20
-> > Similarly, a driver using dma_alloc_noncoherent will always require
-> > cache maintenance operations to use the API properly, even if the
-> > hardware provides coherency (in which case, those operations will be
-> > nop).
-> >=20
-> > So, yeah, like I was saying in the other mail, it looks like you're
-> > confusing a bunch of things. dma_alloc_* functions are about the driver
-> > expectations and guarantees. DT's dma-coherent property is about how we
-> > can implement them on a given platform.
->=20
-> That is ideal situation.
->=20
-> You don't have seen the actual bugs.
-
-Probably not :)
-
-> Yeah, I do have a bit confusing about the DMA api.
->=20
-> Maybe you and Paul can continue work on this.
-
-As far as I'm concerned, there's nothing to fix but your platform
-support. I won't work on that.
-
-> But DT's dma-coherent property is definitely not a system level
-> solution.
->=20
-> drm/amdgpu, drm/radeon and drm/i915 don't support DT.
->=20
-> If ARM is dma-noncoherent, I suspect drm/amdgpu, drm/radeon will not
-> works on ARM.
->=20
-> there no function call dma_sync_for_device() dma_sync_for_cpu() etc
->=20
-> These driver assume dma-coherent hardware.
-
-No, these drivers assume they have a dma-coherent *buffer*. Which on
-devices that don't get hardware coherency mean that they probably get a
-non-cacheable buffer.
-
-Maxime
-
---dtzbhhtxjptopns7
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZIc2dwAKCRDj7w1vZxhR
-xX+KAP0f01Nyls5VR0A4BOxlsfmnHMEa2CQZB8CAewfcNEhfwgD9GFfwHIQI4Wy1
-nJs179eAwl3YIf5EMc3ffWlphla2SQU=
-=SfdS
------END PGP SIGNATURE-----
-
---dtzbhhtxjptopns7--

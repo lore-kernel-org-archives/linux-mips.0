@@ -2,111 +2,104 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 01D90EB64D8
-	for <linux-mips@archiver.kernel.org>; Wed, 14 Jun 2023 17:38:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 93C63C001B1
+	for <linux-mips@archiver.kernel.org>; Wed, 14 Jun 2023 18:05:19 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236991AbjFNRie (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 14 Jun 2023 13:38:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53228 "EHLO
+        id S235429AbjFNSEq (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 14 Jun 2023 14:04:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37412 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230388AbjFNRid (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 14 Jun 2023 13:38:33 -0400
-Received: from mail-io1-f53.google.com (mail-io1-f53.google.com [209.85.166.53])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 416EF10FE;
-        Wed, 14 Jun 2023 10:38:32 -0700 (PDT)
-Received: by mail-io1-f53.google.com with SMTP id ca18e2360f4ac-77a62a84855so273308139f.1;
-        Wed, 14 Jun 2023 10:38:32 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1686764311; x=1689356311;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=4AzIfgp2T+o1encwZlg2BP9N2PGCvG8KAxb0WUXTbaA=;
-        b=WsaDMIrpnSLwIqqldn34MWu2sKw3HindMBvKSXpBROS/Q7ZdF29tfkcMXzh5LiJV3H
-         Z8Sihnu5vkJuwegr9BO4WcCh6Zzd2p7rhdO3JTtDKUEj2EQbSbxoVX4ksYeDuYCUs/JO
-         SOj+TUukxh8tv6VYr4opnW7YR3DRTj8ZAPUMy2Mkyuag+8HbM6mHbFaYjxVw3hOGNJXq
-         xRvvnvqz9ekWc5uw0K9YiS279Pt7M7mhO+kPanBU4SLe1EpaiUIHG46FPWWb0Qm77c+y
-         iY9oxKZxvrBWKy3Zi7+uW/awMZG4M9SKSAbP1qZCaG4dEXp1+0rdtVD+ZscREXmarrRe
-         P48w==
-X-Gm-Message-State: AC+VfDxR+u1kOEyYajaNviVWAtWvB1KjCG7anS52RuMxCdDIU8ljgmAW
-        TYCLBjrGkr6q+L3ObLmxAEUxpvIVFg==
-X-Google-Smtp-Source: ACHHUZ4+zkUe4iA37124C8HV/+nPoXe1InO+Fi+eyYwXZkiDrm2NeUOpaRk5ZdFyrjJz8LtEtGs6Cg==
-X-Received: by 2002:a05:6e02:684:b0:33b:ef57:65bc with SMTP id o4-20020a056e02068400b0033bef5765bcmr13558330ils.20.1686764311406;
-        Wed, 14 Jun 2023 10:38:31 -0700 (PDT)
-Received: from robh_at_kernel.org ([64.188.179.250])
-        by smtp.gmail.com with ESMTPSA id p20-20020a02c814000000b004165ce4456fsm5009151jao.33.2023.06.14.10.38.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Jun 2023 10:38:30 -0700 (PDT)
-Received: (nullmailer pid 2433146 invoked by uid 1000);
-        Wed, 14 Jun 2023 17:38:29 -0000
-From:   Rob Herring <robh@kernel.org>
-To:     Damien Le Moal <dlemoal@kernel.org>,
-        Sergey Shtylyov <s.shtylyov@omp.ru>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc:     linux-ide@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] ata: octeon: Add compile test support
-Date:   Wed, 14 Jun 2023 11:36:33 -0600
-Message-Id: <20230614173633.2430653-2-robh@kernel.org>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230614173633.2430653-1-robh@kernel.org>
-References: <20230614173633.2430653-1-robh@kernel.org>
+        with ESMTP id S233915AbjFNSEo (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 14 Jun 2023 14:04:44 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4A182125;
+        Wed, 14 Jun 2023 11:04:42 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 096FF64402;
+        Wed, 14 Jun 2023 18:04:42 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CEF2FC433AB;
+        Wed, 14 Jun 2023 18:04:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1686765881;
+        bh=SsMrL8wc7CcvmkEovviFBB5N7SShCz7j/dN3zOyZUGE=;
+        h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
+        b=i0JEdFswdWdX5pFkVPJo1Dtb6LQWkcpgIMBhxe81rtgjJVzzjds8cQ1XCJ4ZNJACL
+         G9nl2s+ujFi+Ge4oH0815eKkd4mI+sBMqdtappRVcrd7U9X0ihJiGspVKVgAxQD3Fx
+         rYfsU4oJQdvxa6E6YPN2W79cN+B7Ulo1Jq8PgkrFPN8r/A+UE8BRUmwtkxPKuhbln8
+         kB355YUXjswk5Qdq2+onfNUqWTLiNqKFiDgUWS5kh31c6RzighoSnzNbhpq0Mhf7lX
+         d8NQrQMJc+cs46zJYTWoFvbXsne2jaWbV20Vtfz6/75DbIVrvyXgAjweDjjEGGAjhx
+         vK6R+NPEVwQMA==
+From:   Nathan Chancellor <nathan@kernel.org>
+Date:   Wed, 14 Jun 2023 11:04:36 -0700
+Subject: [PATCH 6.1 2/4] MIPS: Move '-Wa,-msoft-float' check from as-option
+ to cc-option
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20230612-6-1-asssembler-target-llvm-17-v1-2-75605d553401@kernel.org>
+References: <20230612-6-1-asssembler-target-llvm-17-v1-0-75605d553401@kernel.org>
+In-Reply-To: <20230612-6-1-asssembler-target-llvm-17-v1-0-75605d553401@kernel.org>
+To:     gregkh@linuxfoundation.org, sashal@kernel.org,
+        ndesaulniers@google.com
+Cc:     naresh.kamboju@linaro.org, stable@vger.kernel.org,
+        llvm@lists.linux.dev, Nathan Chancellor <nathan@kernel.org>,
+        tsbogend@alpha.franken.de, linux-mips@vger.kernel.org
+X-Mailer: b4 0.13-dev
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1689; i=nathan@kernel.org;
+ h=from:subject:message-id; bh=SsMrL8wc7CcvmkEovviFBB5N7SShCz7j/dN3zOyZUGE=;
+ b=owGbwMvMwCEmm602sfCA1DTG02pJDCldjGZcTQHapxZYPJ/k8rDda8Heyuxj969ceJL0la9ox
+ 6H/l34c6ChlYRDjYJAVU2Spfqx63NBwzlnGG6cmwcxhZQIZwsDFKQATUddi+Kd28kXCJFExL+v3
+ 8hVL+DUMDi/MCFnCtldbcf+lCNd3SUsYGY5azdzwTPqYOD+rRWPRwUWPDv0OtXcKj7buup/BmOn
+ /lBcA
+X-Developer-Key: i=nathan@kernel.org; a=openpgp;
+ fpr=2437CB76E544CB6AB3D9DFD399739260CB6CB716
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Add COMPILE_TEST to enable building Cavium Octeon drivers in MIPS
-allyesconfig/allmodconfig builds. There's a dependency on MIPS headers,
-so other arches can't be enabled.
+This patch is for linux-6.1.y and earlier, it has no direct mainline
+equivalent.
 
-Signed-off-by: Rob Herring <robh@kernel.org>
+In order to backport commit d5c8d6e0fa61 ("kbuild: Update assembler
+calls to use proper flags and language target") to resolve a separate
+issue regarding PowerPC, the problem noticed and fixed by
+commit 80a20d2f8288 ("MIPS: Always use -Wa,-msoft-float and eliminate
+GAS_HAS_SET_HARDFLOAT") needs to be addressed. Unfortunately, 6.1 and
+earlier do not contain commit e4412739472b ("Documentation: raise
+minimum supported version of binutils to 2.25"), so it cannot be assumed
+that all supported versions of GNU as have support for -msoft-float.
+
+In order to switch from KBUILD_CFLAGS to KBUILD_AFLAGS in as-option
+without consequence, move the '-Wa,-msoft-float' check to cc-option,
+including '$(cflags-y)' directly to avoid the issue mentioned in
+commit 80a20d2f8288 ("MIPS: Always use -Wa,-msoft-float and eliminate
+GAS_HAS_SET_HARDFLOAT").
+
+Signed-off-by: Nathan Chancellor <nathan@kernel.org>
 ---
-Tested on allmodconfig build. Not sure if there's other MIPS configs 
-where this doesn't work. We'll see what 0-day says.
+Cc: tsbogend@alpha.franken.de
+Cc: linux-mips@vger.kernel.org
+---
+ arch/mips/Makefile | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
- drivers/ata/Kconfig          | 4 ++--
- drivers/ata/pata_octeon_cf.c | 4 ++--
- 2 files changed, 4 insertions(+), 4 deletions(-)
+diff --git a/arch/mips/Makefile b/arch/mips/Makefile
+index b296e33f8e33..de8d508f27af 100644
+--- a/arch/mips/Makefile
++++ b/arch/mips/Makefile
+@@ -109,7 +109,7 @@ endif
+ # (specifically newer than 2.24.51.20140728) we then also need to explicitly
+ # set ".set hardfloat" in all files which manipulate floating point registers.
+ #
+-ifneq ($(call as-option,-Wa$(comma)-msoft-float,),)
++ifneq ($(call cc-option,$(cflags-y) -Wa$(comma)-msoft-float,),)
+ 	cflags-y		+= -DGAS_HAS_SET_HARDFLOAT -Wa,-msoft-float
+ endif
+ 
 
-diff --git a/drivers/ata/Kconfig b/drivers/ata/Kconfig
-index 42b51c9812a0..4572f837e504 100644
---- a/drivers/ata/Kconfig
-+++ b/drivers/ata/Kconfig
-@@ -239,7 +239,7 @@ config AHCI_MVEBU
- 
- config AHCI_OCTEON
- 	tristate "Cavium Octeon Soc Serial ATA"
--	depends on SATA_AHCI_PLATFORM && CAVIUM_OCTEON_SOC
-+	depends on SATA_AHCI_PLATFORM && MIPS && (CAVIUM_OCTEON_SOC || COMPILE_TEST)
- 	default y
- 	help
- 	  This option enables support for Cavium Octeon SoC Serial ATA.
-@@ -373,7 +373,7 @@ config PDC_ADMA
- 
- config PATA_OCTEON_CF
- 	tristate "OCTEON Boot Bus Compact Flash support"
--	depends on CAVIUM_OCTEON_SOC
-+	depends on MIPS && (CAVIUM_OCTEON_SOC || COMPILE_TEST)
- 	select PATA_TIMINGS
- 	help
- 	  This option enables a polled compact flash driver for use with
-diff --git a/drivers/ata/pata_octeon_cf.c b/drivers/ata/pata_octeon_cf.c
-index 57b2166a6d5d..cc9e4b63ded9 100644
---- a/drivers/ata/pata_octeon_cf.c
-+++ b/drivers/ata/pata_octeon_cf.c
-@@ -853,8 +853,8 @@ static int octeon_cf_probe(struct platform_device *pdev)
- 					of_node_put(dma_node);
- 					return -EINVAL;
- 				}
--				cf_port->dma_base = (u64)devm_ioremap(&pdev->dev, res_dma->start,
--									 resource_size(res_dma));
-+				cf_port->dma_base = (uintptr_t)devm_ioremap(&pdev->dev, res_dma->start,
-+									    resource_size(res_dma));
- 				if (!cf_port->dma_base) {
- 					put_device(&dma_dev->dev);
- 					of_node_put(dma_node);
 -- 
-2.39.2
+2.41.0
 

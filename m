@@ -2,161 +2,208 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A6F82C001B1
-	for <linux-mips@archiver.kernel.org>; Thu, 15 Jun 2023 07:20:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 249DEEB64DB
+	for <linux-mips@archiver.kernel.org>; Thu, 15 Jun 2023 07:57:34 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245052AbjFOHUL (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 15 Jun 2023 03:20:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41278 "EHLO
+        id S239020AbjFOH5d (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 15 Jun 2023 03:57:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39926 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244612AbjFOHTP (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Thu, 15 Jun 2023 03:19:15 -0400
-Received: from mo4-p02-ob.smtp.rzone.de (mo4-p02-ob.smtp.rzone.de [85.215.255.81])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A171C2683;
-        Thu, 15 Jun 2023 00:18:14 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1686812433; cv=none;
-    d=strato.com; s=strato-dkim-0002;
-    b=l6x7t9JDP8p6zgSDcEHnbEe8irqjs+QmLHJFUP8LWgQFo/aaS1OUikj4hmTZQbxy5v
-    fzOTjvamNmggkdR3IYLoaiHveMmKWzgugRhSo7txY/eJXRqZIdHTcIJgUxGhV4DWJ3yL
-    CKPRTe6fKxN3BP/aHVeDFgJtnG0P0R9Ch4PJv4GDC81nMovHeYeIvrA9EghcYD70QGbs
-    ZiVVBqu042fCQBKxGuDzcepKBj/6y9coq/fIJIxb/CL8jsZ6+kCRFUsqgt5UOJg34kjB
-    LSbeN5ZnNAz/VVkmfx9sIdQnq+Ol5lLkBxp4hitL5COUNq4NLCaGWalBvf4fx2k/+xCB
-    FI+A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1686812433;
-    s=strato-dkim-0002; d=strato.com;
-    h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:Cc:Date:
-    From:Subject:Sender;
-    bh=Pun22zFGCocM+PFhnmP2zLNHFo+3iLvVLg8m4mkXy9I=;
-    b=dMrPlCZK5WjVh/A/B1N/bEOie/Kt0cqI/6EJmzOA5C85UGk8jdL5OTvQ02hiKHo7u5
-    hmECgSuq0KF5yyt36aBAi0aQaZSt9tQC1U5qiGCpSHPEFHcI8SwiNEMWlNTTRI+E4+SR
-    dGTybg/3Q7tejMNURNArXiFJfL/mvnNTorcJDRmv2TNxJcU8sFCI3wFvxyEsPvIexLjT
-    AGjCZ5lcNXw0YeUAB64vaa+jvFrKZhLWChySlBa9TpOfQ/bIJJvsVpBvhhVAhVIE0mK7
-    U+bSCo5oiQKVyATjvD4hgT1KbK24yiQBDSrATDsYjocsLtcU2BEGPfKkC5xgs63GJ8Cq
-    raZA==
-ARC-Authentication-Results: i=1; strato.com;
-    arc=none;
-    dkim=none
-X-RZG-CLASS-ID: mo02
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1686812433;
-    s=strato-dkim-0002; d=goldelico.com;
-    h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:Cc:Date:
-    From:Subject:Sender;
-    bh=Pun22zFGCocM+PFhnmP2zLNHFo+3iLvVLg8m4mkXy9I=;
-    b=kQEPjfPTkNizYEok7XVFXpdg+9Wnj1PgARJfI0UtN6G5kmkWrOI0lna15VTRmepcIW
-    /vTIWk7QINBuGgSUdim+AHEOmT75f+ma9lR7z8+x1kVveYydE/bpXqUr8lTaJFh2RQt3
-    E5aIdhPKrXLS6eOJhnVHHWSwE0RtEkU5ZUBNCLHhuZefSD2A8dhRitKWsEmTcNo9XJ0+
-    pv0AQ6eUgOFllwFU4XEGnASj5cWDjyHUBfu+RKT10Rcz6okq7IdhJS04Nt+1YhFEyFXO
-    WojQjGBVzTvtW7uESWftHhlZqlPF0kKp1EYqUHMZ0Qm2vTNpiyoGVJFI4yJ5Uaksnt4N
-    51dA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1686812433;
-    s=strato-dkim-0003; d=goldelico.com;
-    h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:Cc:Date:
-    From:Subject:Sender;
-    bh=Pun22zFGCocM+PFhnmP2zLNHFo+3iLvVLg8m4mkXy9I=;
-    b=rpZocAaZVFG/akDJ33Etz6ZWna5ywcfCrhGMR+xT2KjhhtzLaUha3wGbNMsp1ZRSpb
-    9V1m3RES+Ja8u4iKZTDw==
-X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMgPgp8VKxflSZ1P34KBj5Apz9PSN6LgsXcGeonQ="
-Received: from imac.fritz.box
-    by smtp.strato.de (RZmta 49.6.0 DYNA|AUTH)
-    with ESMTPSA id jaf17fz5F70X23O
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (curve X9_62_prime256v1 with 256 ECDH bits, eq. 3072 bits RSA))
-        (Client did not present a certificate);
-    Thu, 15 Jun 2023 09:00:33 +0200 (CEST)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.21\))
-Subject: Re: [PATCH 3/9] MIPS: DTS: CI20: Add parent supplies to ACT8600
- regulators
-From:   "H. Nikolaus Schaller" <hns@goldelico.com>
-In-Reply-To: <20230604145642.200577-4-paul@crapouillou.net>
-Date:   Thu, 15 Jun 2023 09:00:32 +0200
-Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, linux-mips@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        list@opendingux.net
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <D6E7498A-3172-42C6-804A-CB5A323F91DC@goldelico.com>
-References: <20230604145642.200577-1-paul@crapouillou.net>
- <20230604145642.200577-4-paul@crapouillou.net>
-To:     Paul Cercueil <paul@crapouillou.net>
-X-Mailer: Apple Mail (2.3445.104.21)
+        with ESMTP id S238184AbjFOH5c (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Thu, 15 Jun 2023 03:57:32 -0400
+Received: from mail-yw1-x112f.google.com (mail-yw1-x112f.google.com [IPv6:2607:f8b0:4864:20::112f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 306341A3
+        for <linux-mips@vger.kernel.org>; Thu, 15 Jun 2023 00:57:30 -0700 (PDT)
+Received: by mail-yw1-x112f.google.com with SMTP id 00721157ae682-5702415be17so9154487b3.2
+        for <linux-mips@vger.kernel.org>; Thu, 15 Jun 2023 00:57:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1686815849; x=1689407849;
+        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=xLt61v9ssqW8THTFBubZKFO6yUx9jJyRuoagCfuj5p4=;
+        b=sqOjHZl7egAhowGBIl8syIGU5uGIW1wSh5YqCADkB0Zmhbwaikuj12BL/Atk+qYS71
+         8dY5tiV1rX4DjXNhrE2xJeIEdceT4TUB4AfmV60Sg7nUR26TxpBkZUfQbEPDRpELwXiM
+         3HDz0uXJ5pPS05kzKVjfB3TERQuwjHm7feUY48emv6g2FTDXB9kM0valHSq3MAkeYNdE
+         mA/iBYPYSlEE3tWbGq5EWumSWyWn91B8nqrAaue3xEBOGl9H7R/5SfVVFZg7lrOxN+sl
+         dQY9293XfHEDMeAx5R4qX4oCaN7KwBo3Iv/M+KCSiSSfPpdtHzovKysKwSYDtQgZOCuN
+         1f9Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1686815849; x=1689407849;
+        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=xLt61v9ssqW8THTFBubZKFO6yUx9jJyRuoagCfuj5p4=;
+        b=HN8IwyuhqBkdhDDhCmp1Se3xW9DbXKchCI6I4CURgiVXz2dLJcOEv283s3Wjk125xl
+         tik1CCht02EFCx1vcD4YWkE3XGr6NSdpTbayb9F4hegYlizFZkrdSm+GCt2m/GrxXtUo
+         XINMAxPoiyZUJWB150yGAY9zF1vvfOAj9fQrRgECs92AsuJPXChJDo5wUGxCk/LPUTmX
+         umd/G4jVPrGLB/DrR3vtt2qBFDOiYMThv/w6rdDB+x6ZabVRVMLDAE1gdpdBoZmS99z2
+         YW7HXOae3D7VkKS8aPRBLiOMhctwnxICoAzW6672wpwMldq4AQFgyj3jeBrRRAfmYi3t
+         ZHcw==
+X-Gm-Message-State: AC+VfDzgfYwqg5her5NvgWnENxiQyWM+8FQxyQOwAzQA8ai5MuWLojUs
+        Ng2TV0QFCWlx/mrs0pjr99/C5A==
+X-Google-Smtp-Source: ACHHUZ7WkxW4gg02vDJcQOsCLmdXn2XBXedO6GCP0YsU33dh0gQYY291P8lwRaex9WlgnYowIiPsYQ==
+X-Received: by 2002:a0d:d9c9:0:b0:56d:244:ab13 with SMTP id b192-20020a0dd9c9000000b0056d0244ab13mr4185666ywe.28.1686815849226;
+        Thu, 15 Jun 2023 00:57:29 -0700 (PDT)
+Received: from ripple.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
+        by smtp.gmail.com with ESMTPSA id w10-20020a0dd40a000000b00568a207aaedsm4237877ywd.68.2023.06.15.00.57.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 15 Jun 2023 00:57:28 -0700 (PDT)
+Date:   Thu, 15 Jun 2023 00:57:19 -0700 (PDT)
+From:   Hugh Dickins <hughd@google.com>
+X-X-Sender: hugh@ripple.attlocal.net
+To:     "Vishal Moola (Oracle)" <vishal.moola@gmail.com>
+cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>, linux-mm@kvack.org,
+        linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
+        loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
+        linux-mips@vger.kernel.org, linux-openrisc@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
+        linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
+        sparclinux@vger.kernel.org, linux-um@lists.infradead.org,
+        xen-devel@lists.xenproject.org, kvm@vger.kernel.org,
+        Hugh Dickins <hughd@google.com>
+Subject: Re: [PATCH v4 04/34] pgtable: Create struct ptdesc
+In-Reply-To: <20230612210423.18611-5-vishal.moola@gmail.com>
+Message-ID: <fd63179-6ad6-fd86-79d6-2833c91111f8@google.com>
+References: <20230612210423.18611-1-vishal.moola@gmail.com> <20230612210423.18611-5-vishal.moola@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
+On Mon, 12 Jun 2023, Vishal Moola (Oracle) wrote:
 
+> Currently, page table information is stored within struct page. As part
+> of simplifying struct page, create struct ptdesc for page table
+> information.
+> 
+> Signed-off-by: Vishal Moola (Oracle) <vishal.moola@gmail.com>
 
-> Am 04.06.2023 um 16:56 schrieb Paul Cercueil <paul@crapouillou.net>:
->=20
-> Provide parent regulators to the ACT8600 regulators that need one.
->=20
-> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+Vishal, as I think you have already guessed, your ptdesc series and
+my pte_free_defer() "mm: free retracted page table by RCU" series are
+on a collision course.
+
+Probably just trivial collisions in most architectures, which either
+of us can easily adjust to the other; powerpc likely to be more awkward,
+but fairly easily resolved; s390 quite a problem.
+
+I've so far been unable to post a v2 of my series (and powerpc and s390
+were stupidly wrong in the v1), because a good s390 patch is not yet
+decided - Gerald Schaefer and I are currently working on that, on the
+s390 list (I took off most Ccs until we are settled and I can post v2).
+
+As you have no doubt found yourself, s390 has sophisticated handling of
+free half-pages already, and I need to add rcu_head usage in there too:
+it's tricky to squeeze it all in, and ptdesc does not appear to help us
+in any way (though mostly it's just changing some field names, okay).
+
+If ptdesc were actually allowing a flexible structure which architectures
+could add into, that would (in some future) be nice; but of course at
+present it's still fitting it all into one struct page, and mandating
+new restrictions which just make an architecture's job harder.
+
+Some notes on problematic fields below FYI.
+
 > ---
-> arch/mips/boot/dts/ingenic/ci20.dts | 7 +++++++
-> 1 file changed, 7 insertions(+)
->=20
-> diff --git a/arch/mips/boot/dts/ingenic/ci20.dts =
-b/arch/mips/boot/dts/ingenic/ci20.dts
-> index 5361606c5e13..662796acda41 100644
-> --- a/arch/mips/boot/dts/ingenic/ci20.dts
-> +++ b/arch/mips/boot/dts/ingenic/ci20.dts
-> @@ -242,16 +242,19 @@ regulators {
-> 			vddcore: DCDC1 {
-> 				regulator-min-microvolt =3D <1100000>;
-> 				regulator-max-microvolt =3D <1100000>;
-> +				vp1-supply =3D <&vcc_33v>;
+>  include/linux/pgtable.h | 51 +++++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 51 insertions(+)
+> 
+> diff --git a/include/linux/pgtable.h b/include/linux/pgtable.h
+> index c5a51481bbb9..330de96ebfd6 100644
+> --- a/include/linux/pgtable.h
+> +++ b/include/linux/pgtable.h
+> @@ -975,6 +975,57 @@ static inline void ptep_modify_prot_commit(struct vm_area_struct *vma,
+>  #endif /* __HAVE_ARCH_PTEP_MODIFY_PROT_TRANSACTION */
+>  #endif /* CONFIG_MMU */
+>  
+> +
+> +/**
+> + * struct ptdesc - Memory descriptor for page tables.
+> + * @__page_flags: Same as page flags. Unused for page tables.
+> + * @pt_list: List of used page tables. Used for s390 and x86.
+> + * @_pt_pad_1: Padding that aliases with page's compound head.
+> + * @pmd_huge_pte: Protected by ptdesc->ptl, used for THPs.
+> + * @_pt_s390_gaddr: Aliases with page's mapping. Used for s390 gmap only.
+> + * @pt_mm: Used for x86 pgds.
+> + * @pt_frag_refcount: For fragmented page table tracking. Powerpc and s390 only.
+> + * @ptl: Lock for the page table.
+> + *
+> + * This struct overlays struct page for now. Do not modify without a good
+> + * understanding of the issues.
+> + */
+> +struct ptdesc {
+> +	unsigned long __page_flags;
+> +
+> +	union {
+> +		struct list_head pt_list;
 
-where is vcc_33v defined?
+I shall be needing struct rcu_head rcu_head (or pt_rcu_head or whatever,
+if you prefer) in this union too.  Sharing the lru or pt_list with rcu_head
+is what's difficult to get right and efficient on s390 - and if ptdesc gave
+us an independent rcu_head for each page table, that would be a blessing!
+but sadly not, it still has to squeeze into a struct page.
 
-Unless [7/9] "MIPS: DTS: CI20: Enable support for WiFi / Bluetooth" is =
-applied?
+> +		struct {
+> +			unsigned long _pt_pad_1;
+> +			pgtable_t pmd_huge_pte;
+> +		};
+> +	};
+> +	unsigned long _pt_s390_gaddr;
+> +
+> +	union {
+> +		struct mm_struct *pt_mm;
+> +		atomic_t pt_frag_refcount;
 
-This way the patches in between can't be bisected.
+Whether s390 will want pt_mm is not yet decided: I want to use it,
+Gerald prefers to go without it; but if we do end up using it,
+then pt_frag_refcount is a luxury we would have to give up.
 
-> 				regulator-always-on;
-> 			};
-> 			vddmem: DCDC2 {
-> 				regulator-min-microvolt =3D <1500000>;
-> 				regulator-max-microvolt =3D <1500000>;
-> +				vp2-supply =3D <&vcc_33v>;
-> 				regulator-always-on;
-> 			};
-> 			vcc_33: DCDC3 {
-> 				regulator-min-microvolt =3D <3300000>;
-> 				regulator-max-microvolt =3D <3300000>;
-> +				vp3-supply =3D <&vcc_33v>;
-> 				regulator-always-on;
-> 			};
-> 			vcc_50: SUDCDC_REG4 {
-> @@ -262,21 +265,25 @@ vcc_50: SUDCDC_REG4 {
-> 			vcc_25: LDO5 {
-> 				regulator-min-microvolt =3D <2500000>;
-> 				regulator-max-microvolt =3D <2500000>;
-> +				inl-supply =3D <&vcc_33v>;
-> 				regulator-always-on;
-> 			};
-> 			wifi_io: LDO6 {
-> 				regulator-min-microvolt =3D <2500000>;
-> 				regulator-max-microvolt =3D <2500000>;
-> +				inl-supply =3D <&vcc_33v>;
-> 				regulator-always-on;
-> 			};
-> 			cim_io_28: LDO7 {
-> 				regulator-min-microvolt =3D <2800000>;
-> 				regulator-max-microvolt =3D <2800000>;
-> +				inl-supply =3D <&vcc_33v>;
-> 				regulator-always-on;
-> 			};
-> 			cim_io_15: LDO8 {
-> 				regulator-min-microvolt =3D <1500000>;
-> 				regulator-max-microvolt =3D <1500000>;
-> +				inl-supply =3D <&vcc_33v>;
-> 				regulator-always-on;
-> 			};
-> 			vrtc_18: LDO_REG9 {
-> --=20
-> 2.39.2
->=20
+s390 does very well already with its _refcount tricks, and I'd expect
+powerpc's simpler but more wasteful implementation to work as well
+with _refcount too - I know that a few years back, powerpc did misuse
+_refcount (it did not allow for speculative accesses, thought it had
+sole ownership of that field); but s390 copes well with that, and I
+expect powerpc can do so too, without the luxury of pt_frag_refcount.
 
+But I've no desire to undo powerpc's use of pt_frag_refcount:
+just warning that we may want to undo any use of it in s390.
+
+I thought I had more issues to mention, probably Gerald will
+remind me of a whole new unexplored dimension! gmap perhaps.
+
+Hugh
+
+> +	};
+> +
+> +#if ALLOC_SPLIT_PTLOCKS
+> +	spinlock_t *ptl;
+> +#else
+> +	spinlock_t ptl;
+> +#endif
+> +};
+> +
+> +#define TABLE_MATCH(pg, pt)						\
+> +	static_assert(offsetof(struct page, pg) == offsetof(struct ptdesc, pt))
+> +TABLE_MATCH(flags, __page_flags);
+> +TABLE_MATCH(compound_head, pt_list);
+> +TABLE_MATCH(compound_head, _pt_pad_1);
+> +TABLE_MATCH(pmd_huge_pte, pmd_huge_pte);
+> +TABLE_MATCH(mapping, _pt_s390_gaddr);
+> +TABLE_MATCH(pt_mm, pt_mm);
+> +TABLE_MATCH(ptl, ptl);
+> +#undef TABLE_MATCH
+> +static_assert(sizeof(struct ptdesc) <= sizeof(struct page));
+> +
+>  /*
+>   * No-op macros that just return the current protection value. Defined here
+>   * because these macros can be used even if CONFIG_MMU is not defined.
+> -- 
+> 2.40.1

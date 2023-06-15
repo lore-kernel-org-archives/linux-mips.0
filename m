@@ -2,151 +2,143 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 03EA8EB64DB
-	for <linux-mips@archiver.kernel.org>; Thu, 15 Jun 2023 07:11:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 19821EB64D9
+	for <linux-mips@archiver.kernel.org>; Thu, 15 Jun 2023 07:16:04 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244711AbjFOHLL (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 15 Jun 2023 03:11:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35658 "EHLO
+        id S244706AbjFOHQD (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 15 Jun 2023 03:16:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38900 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244722AbjFOHJz (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Thu, 15 Jun 2023 03:09:55 -0400
-X-Greylist: delayed 152 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 15 Jun 2023 00:08:44 PDT
-Received: from mo4-p02-ob.smtp.rzone.de (mo4-p02-ob.smtp.rzone.de [85.215.255.84])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68A1C297B;
-        Thu, 15 Jun 2023 00:08:42 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1686812912; cv=none;
+        with ESMTP id S245066AbjFOHPZ (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Thu, 15 Jun 2023 03:15:25 -0400
+Received: from mo4-p02-ob.smtp.rzone.de (mo4-p02-ob.smtp.rzone.de [85.215.255.81])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E372B4692;
+        Thu, 15 Jun 2023 00:12:10 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1686812462; cv=none;
     d=strato.com; s=strato-dkim-0002;
-    b=L6Unz2wogBCGZpNCk/2gHso29R2v034P4hfnLPsJ2uHlUoEw/91KrSQzzKrauhOxYe
-    QLBj0RtcSRB/beCifgPIxx0kT38gihAKzCZe7WX4kB2uwOO3lmYQenLXUZst+xO2qJil
-    klfLGP8Sw1CRAFNBwHhQV1waUwfydLi2zIOdl5qAfBy5nDtARx8a/eVo2oqVNOmMCB7z
-    AdZZM7qHb87PdnD3IQIchCtuFXAcf9oxWzrksiSaFg2zw1bZQL+YomXGPPCnYg2xBxnc
-    ag4v7tZjlhYcGKDIO/XGLaGNdrnDcAGFvK9KSyCKaQocbLb74GMR+RbBDg+WdX7fahRY
-    nnuQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1686812912;
+    b=A7+OEOe2tKbtr0Wfk5CpOaVff+0K09lqCd/PqvcPh2jVucV7eUE45BmWIoVb3zWCYf
+    BryJ/xt7P43eKgFAfp+8X1sCAKzL8lVbBOpye1UQUNpTtcBJyoS34xhmfMAhWum6s+bz
+    ER+yhYcRmU7kcnjszSOw58oEUN0xWcJuCIInBvXOhglfm3uv0xr2Yfc738aFSztPersC
+    18aCfGnJZUy1fHvhJN7x+RafayHRUeo+u0OlcMWrs8+hYLXpbshwg6HECp4mxadE/4QA
+    h2ovQ+DSx0WMKJ3efOj5Ah9EVvHcIdHu1mKPOpYU2+JqPMMof+BsKIPekeyM4I062TTR
+    j5Gw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1686812462;
     s=strato-dkim-0002; d=strato.com;
     h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:Cc:Date:
     From:Subject:Sender;
-    bh=8+qFfB1rN2Sj/O8U/wDDRxw1z4CJQphmlltjDLoIQFU=;
-    b=tSAjbAtEsAWBhxQGs1TY183UuZlIbWR3xA/T+9FpUCYYgH/WIbR22bnvWfzB4o//Xk
-    48t7wqwXrtvUDk4NX52PR2wUmEDaf8gFey3I8AWgl+PHgs1Ogt5g6DoFAMuXLXu2bPmU
-    dnLjuc0ovZHm57YUgsIO+tQrYxa7+gCbYAxonwq2HM8dWv7g86GBjP8oDzHWHWfPiTPu
-    GFneu73YJfOSoWOFkHqnG4VRJ+BiBfVvqhonyJYpoQp48SEAlQaM7Ho+h0zOVNT47b0M
-    D94KJIMgDNyQgE5jZ1VtHwWIbz6QtTNdFL16CYdX3St+aWvR9b/oBsJulNuEW5pIj2Jm
-    Usfg==
+    bh=TDJy/nCvrrGgkIeB/WaaG50bfZku9SJeUReU+whMQHM=;
+    b=Qze99mfNNKROeAMDb9pHHvLhlTe3ooeVHYTRiNt0jqoX1tbEKaowG7HSnZSjxLVr9j
+    zBvcS9EkgnXHM6kTJjzw8PmrBuxj11upbwFHwMpV7f2pEAjhSF9cRId7vnr+4tMKJDXI
+    Evk4Vkh3wN8lsVk58MywyDriG1GVjLGxZ8f/+r/BrNkD94JNypyxlbIyzh7ZbeNdAEA4
+    iBLrZ7tqxK1heSXQieDXk+kmswAoHizjUhDgW0O5jTZeqyfqj7bbadGJBJRi6GhZa/Hl
+    NW7apQ7nga4eO7buYqpGPzgQNSvALcqtPhyKJfz3P3YdJa+823JVIcJieuozZCevsvUg
+    evUA==
 ARC-Authentication-Results: i=1; strato.com;
     arc=none;
     dkim=none
 X-RZG-CLASS-ID: mo02
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1686812912;
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1686812462;
     s=strato-dkim-0002; d=goldelico.com;
     h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:Cc:Date:
     From:Subject:Sender;
-    bh=8+qFfB1rN2Sj/O8U/wDDRxw1z4CJQphmlltjDLoIQFU=;
-    b=fqsxASzjL94hytAHlMkUBSz2aEPp+JdkcxdjbQvHDS1gaILhHXC6l8eKPjhNBIg9IM
-    EBheQZN42MweYYolbuctyWuGz0e/ZRfR0hoHsafu8qvGTht3hN8bQC3NgyULvoJ0YJ8o
-    C8MVp1zbKAiiEac/h+wtgU+Rb2800aTBbVBUA7HVfJKYuBIV0eqA6QXAriI+ZEACVqdX
-    HIqPMYpKszjTYaIdk1ktSBUVoaPYijhe1dyOj24j3tYeclc7Hsw6L8bUWUD8UcGKEnK1
-    VUp+XRvEI1E+6qBu4t5xJ7jO3F8EyyDY5Bq70z8yp+ZkcfbCbQFOwRD/2QlvE/0R5wF7
-    V6Kw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1686812912;
+    bh=TDJy/nCvrrGgkIeB/WaaG50bfZku9SJeUReU+whMQHM=;
+    b=TOOJyLeYcYS5BsZh7jMAykirrC2ykQROoRBe5dSkhNP7mlgxS9coH3uuFfNlXy74j9
+    TH/aJzAOlOTFg6xKr4VP+efWy1ZXRkfX1nUBLZuJO/BWmYyJqgy8OZB/wmUAcYE/EmhC
+    pIoIieaJnPTCKdSqpHM1fDOVPiXtS6S515WIeMAnrYdwkm3nlH/Hkb7vzKTEo/HWn1my
+    gKgUiVFm2gSwKm9W2bdkBtfEaZ2WGo7tzokb9al3/LWtw1DHginIkaF/My7TeVcME1P3
+    yj2gg2kZRzcM7N3GI5v/RQ9YVQ4ceCsBzvdkBFVtSJwUENmS3l2FAHoWjOZ/lO+mJlCT
+    AqgQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1686812462;
     s=strato-dkim-0003; d=goldelico.com;
     h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:Cc:Date:
     From:Subject:Sender;
-    bh=8+qFfB1rN2Sj/O8U/wDDRxw1z4CJQphmlltjDLoIQFU=;
-    b=G5prsUdaZypuOfJGqNK67nTIA8+mflVABVlfs7lbDsZEKLKnrcq3m8VVM3kEq2vw/s
-    LjwkO1m/d6GaGJy2pnAQ==
+    bh=TDJy/nCvrrGgkIeB/WaaG50bfZku9SJeUReU+whMQHM=;
+    b=1LVB8RGilMdBNbH1Ibn85Q47fByovt/rlfHl9hpXUn87z2NWBSdfLqdVh76W61v2PO
+    sdpmIhj2T+NQXKYiT3Dw==
 X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMgPgp8VKxflSZ1P34KBj5Apz9PSN6LgsXcGeonQ="
 Received: from imac.fritz.box
     by smtp.strato.de (RZmta 49.6.0 DYNA|AUTH)
-    with ESMTPSA id jaf17fz5F78W25s
+    with ESMTPSA id jaf17fz5F71223U
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (curve X9_62_prime256v1 with 256 ECDH bits, eq. 3072 bits RSA))
         (Client did not present a certificate);
-    Thu, 15 Jun 2023 09:08:32 +0200 (CEST)
+    Thu, 15 Jun 2023 09:01:02 +0200 (CEST)
 Content-Type: text/plain;
         charset=us-ascii
 Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.21\))
-Subject: Re: [PATCH 0/9] MIPS: CI20: Add WiFi / Bluetooth support
+Subject: Re: [PATCH 5/9] MIPS: DTS: CI20: Misc. cleanups
 From:   "H. Nikolaus Schaller" <hns@goldelico.com>
-In-Reply-To: <20230609082348.GK8160@alpha.franken.de>
-Date:   Thu, 15 Jun 2023 09:08:32 +0200
-Cc:     Paul Cercueil <paul@crapouillou.net>,
+In-Reply-To: <20230604145642.200577-6-paul@crapouillou.net>
+Date:   Thu, 15 Jun 2023 09:01:02 +0200
+Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
         Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
         Conor Dooley <conor+dt@kernel.org>, linux-mips@vger.kernel.org,
         devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
         list@opendingux.net
 Content-Transfer-Encoding: quoted-printable
-Message-Id: <E3586962-A5A0-476E-8B5C-AFB1E1B0C4E6@goldelico.com>
+Message-Id: <7895ACE7-2D31-4858-891A-44C2BC7B9D9D@goldelico.com>
 References: <20230604145642.200577-1-paul@crapouillou.net>
- <20230609082348.GK8160@alpha.franken.de>
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+ <20230604145642.200577-6-paul@crapouillou.net>
+To:     Paul Cercueil <paul@crapouillou.net>
 X-Mailer: Apple Mail (2.3445.104.21)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Hi Thomas,
+Please find a more useful subject.
 
-> Am 09.06.2023 um 10:23 schrieb Thomas Bogendoerfer =
-<tsbogend@alpha.franken.de>:
+> Am 04.06.2023 um 16:56 schrieb Paul Cercueil <paul@crapouillou.net>:
 >=20
-> On Sun, Jun 04, 2023 at 04:56:33PM +0200, Paul Cercueil wrote:
->> Hi,
->>=20
->> Here's a set of patches to add support for the WiFi / Bluetooth chip =
-on
->> the CI20.
->>=20
->> WiFi works pretty well, provided it is used with the latest firmware
->> provided by linux-firmware. Bluetooth does not work very well here, =
-as
->> I cannot get my wireless keyboard to pair; but it does detect it, and =
-it
->> does see they key presses when I type the pairing code.
->>=20
->> I only tested with a somewhat recent (~2022) Buildroot-based =
-userspace.
->> I enabled WEXT compatibility because the CI20 is typically used with =
-a
->> very old userspace, but I did not try to use it with old tools like
->> ifconfig/iwconfig.
->>=20
->> Cheers,
->> -Paul
->>=20
->> Paul Cercueil (9):
->>  MIPS: DTS: CI20: Fix regulators
->>  MIPS: DTS: CI20: Fix ACT8600 regulator node names
->>  MIPS: DTS: CI20: Add parent supplies to ACT8600 regulators
->>  MIPS: DTS: CI20: Do not force-enable CIM and WiFi regulators
->>  MIPS: DTS: CI20: Misc. cleanups
->>  MIPS: DTS: CI20: Parent MSCMUX clock to MPLL
->>  MIPS: DTS: CI20: Enable support for WiFi / Bluetooth
->>  MIPS: configs: CI20: Regenerate defconfig
->>  MIPS: configs: CI20: Enable WiFi / Bluetooth
->>=20
->> arch/mips/boot/dts/ingenic/ci20.dts | 148 =
-+++++++++++++++++++---------
->> arch/mips/configs/ci20_defconfig    |  47 ++++++---
->> 2 files changed, 133 insertions(+), 62 deletions(-)
->>=20
->> --=20
->> 2.39.2
+> - Use the standard "ecc-engine" property instead of the custom
+> "ingenic,bch-controller" to get a handle to the BCH controller.
 >=20
-> series applied to mips-next.
+> - Respect cell sizes in the Ethernet controller node.
+>=20
+> - Use proper macro for interrupt type instead of hardcoding magic
+>  values.
+>=20
+> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+> ---
+> arch/mips/boot/dts/ingenic/ci20.dts | 8 ++++----
+> 1 file changed, 4 insertions(+), 4 deletions(-)
+>=20
+> diff --git a/arch/mips/boot/dts/ingenic/ci20.dts =
+b/arch/mips/boot/dts/ingenic/ci20.dts
+> index 7f6e7a4e3915..b7dbafa1f85d 100644
+> --- a/arch/mips/boot/dts/ingenic/ci20.dts
+> +++ b/arch/mips/boot/dts/ingenic/ci20.dts
+> @@ -356,7 +356,7 @@ nandc: nand-controller@1 {
+> 		#address-cells =3D <1>;
+> 		#size-cells =3D <0>;
+>=20
+> -		ingenic,bch-controller =3D <&bch>;
+> +		ecc-engine =3D <&bch>;
+>=20
+> 		ingenic,nemc-tAS =3D <10>;
+> 		ingenic,nemc-tAH =3D <5>;
+> @@ -422,8 +422,8 @@ dm9000@6 {
+> 		pinctrl-names =3D "default";
+> 		pinctrl-0 =3D <&pins_nemc_cs6>;
+>=20
+> -		reg =3D <6 0 1   /* addr */
+> -		       6 2 1>; /* data */
+> +		reg =3D <6 0 1>, /* addr */
+> +		      <6 2 1>; /* data */
+>=20
+> 		ingenic,nemc-tAS =3D <15>;
+> 		ingenic,nemc-tAH =3D <10>;
+> @@ -435,7 +435,7 @@ dm9000@6 {
+> 		vcc-supply =3D <&eth0_power>;
+>=20
+> 		interrupt-parent =3D <&gpe>;
+> -		interrupts =3D <19 4>;
+> +		interrupts =3D <19 IRQ_TYPE_EDGE_RISING>;
+>=20
+> 		nvmem-cells =3D <&eth0_addr>;
+> 		nvmem-cell-names =3D "mac-address";
 
-I think this was a little too early. Please see my review.
 
-Best regards,
-Nikolaus
+For better bisecting it would be helpful to split this into 3 patches.
 
->=20
-> Thomas.
->=20
-> --=20
-> Crap can work. Given enough thrust pigs will fly, but it's not =
-necessarily a
-> good idea.                                                [ RFC1925, =
-2.3 ]
+And they are not really related to WiFi/Bluetooth.
 

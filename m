@@ -2,119 +2,161 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D51A8EB64D9
-	for <linux-mips@archiver.kernel.org>; Thu, 15 Jun 2023 07:17:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A6F82C001B1
+	for <linux-mips@archiver.kernel.org>; Thu, 15 Jun 2023 07:20:12 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244841AbjFOHRf (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 15 Jun 2023 03:17:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39308 "EHLO
+        id S245052AbjFOHUL (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 15 Jun 2023 03:20:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41278 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244251AbjFOHQY (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Thu, 15 Jun 2023 03:16:24 -0400
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 522952688;
-        Thu, 15 Jun 2023 00:14:46 -0700 (PDT)
-Received: from loongson.cn (unknown [10.20.42.43])
-        by gateway (Coremail) with SMTP id _____8AxV+lkuopk4XcFAA--.9700S3;
-        Thu, 15 Jun 2023 15:14:44 +0800 (CST)
-Received: from [10.20.42.43] (unknown [10.20.42.43])
-        by localhost.localdomain (Coremail) with SMTP id AQAAf8BxNeRiuopk1qcbAA--.13198S3;
-        Thu, 15 Jun 2023 15:14:43 +0800 (CST)
-Message-ID: <f2fae469-2a39-119b-8512-c4ad78a896f8@loongson.cn>
-Date:   Thu, 15 Jun 2023 15:14:42 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [PATCH] drm/ingenic: Kconfig: select REGMAP and REGMAP_MMIO
-To:     Paul Cercueil <paul@crapouillou.net>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>
-Cc:     linux-mips@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-References: <20230607072253.440613-1-suijingfeng@loongson.cn>
- <845a483ed09728c712ad57b1fe9bc5c930a72d98.camel@crapouillou.net>
-Content-Language: en-US
-From:   Sui Jingfeng <suijingfeng@loongson.cn>
-Organization: Loongson
-In-Reply-To: <845a483ed09728c712ad57b1fe9bc5c930a72d98.camel@crapouillou.net>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: AQAAf8BxNeRiuopk1qcbAA--.13198S3
-X-CM-SenderInfo: xvxlyxpqjiv03j6o00pqjv00gofq/
-X-Coremail-Antispam: 1Uk129KBj93XoWxJry8tFy5tr1DJF18Zr13GFX_yoW8CF15pF
-        s5ta45uFWxuF4vkr42yFy7WFy5Xw15Ja4rCr1kJa4q9ryDAr1jqrZrZFWY9FyDAr4xGr4U
-        X3s3GFy7ZF17XrbCm3ZEXasCq-sJn29KB7ZKAUJUUUU5529EdanIXcx71UUUUU7KY7ZEXa
-        sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
-        0xBIdaVrnRJUUUvIb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
-        IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
-        e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
-        0_Jr0_Gr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AK
-        xVW8Jr0_Cr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l57IF6xkI12xvs2x26I8E6xACxx
-        1l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1Y6r17McIj6I8E87Iv
-        67AKxVW8JVWxJwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lc7I2V7IY0VAS07
-        AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02
-        F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw
-        1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7Cj
-        xVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r
-        4j6F4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07jY
-        SoJUUUUU=
+        with ESMTP id S244612AbjFOHTP (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Thu, 15 Jun 2023 03:19:15 -0400
+Received: from mo4-p02-ob.smtp.rzone.de (mo4-p02-ob.smtp.rzone.de [85.215.255.81])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A171C2683;
+        Thu, 15 Jun 2023 00:18:14 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1686812433; cv=none;
+    d=strato.com; s=strato-dkim-0002;
+    b=l6x7t9JDP8p6zgSDcEHnbEe8irqjs+QmLHJFUP8LWgQFo/aaS1OUikj4hmTZQbxy5v
+    fzOTjvamNmggkdR3IYLoaiHveMmKWzgugRhSo7txY/eJXRqZIdHTcIJgUxGhV4DWJ3yL
+    CKPRTe6fKxN3BP/aHVeDFgJtnG0P0R9Ch4PJv4GDC81nMovHeYeIvrA9EghcYD70QGbs
+    ZiVVBqu042fCQBKxGuDzcepKBj/6y9coq/fIJIxb/CL8jsZ6+kCRFUsqgt5UOJg34kjB
+    LSbeN5ZnNAz/VVkmfx9sIdQnq+Ol5lLkBxp4hitL5COUNq4NLCaGWalBvf4fx2k/+xCB
+    FI+A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1686812433;
+    s=strato-dkim-0002; d=strato.com;
+    h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:Cc:Date:
+    From:Subject:Sender;
+    bh=Pun22zFGCocM+PFhnmP2zLNHFo+3iLvVLg8m4mkXy9I=;
+    b=dMrPlCZK5WjVh/A/B1N/bEOie/Kt0cqI/6EJmzOA5C85UGk8jdL5OTvQ02hiKHo7u5
+    hmECgSuq0KF5yyt36aBAi0aQaZSt9tQC1U5qiGCpSHPEFHcI8SwiNEMWlNTTRI+E4+SR
+    dGTybg/3Q7tejMNURNArXiFJfL/mvnNTorcJDRmv2TNxJcU8sFCI3wFvxyEsPvIexLjT
+    AGjCZ5lcNXw0YeUAB64vaa+jvFrKZhLWChySlBa9TpOfQ/bIJJvsVpBvhhVAhVIE0mK7
+    U+bSCo5oiQKVyATjvD4hgT1KbK24yiQBDSrATDsYjocsLtcU2BEGPfKkC5xgs63GJ8Cq
+    raZA==
+ARC-Authentication-Results: i=1; strato.com;
+    arc=none;
+    dkim=none
+X-RZG-CLASS-ID: mo02
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1686812433;
+    s=strato-dkim-0002; d=goldelico.com;
+    h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:Cc:Date:
+    From:Subject:Sender;
+    bh=Pun22zFGCocM+PFhnmP2zLNHFo+3iLvVLg8m4mkXy9I=;
+    b=kQEPjfPTkNizYEok7XVFXpdg+9Wnj1PgARJfI0UtN6G5kmkWrOI0lna15VTRmepcIW
+    /vTIWk7QINBuGgSUdim+AHEOmT75f+ma9lR7z8+x1kVveYydE/bpXqUr8lTaJFh2RQt3
+    E5aIdhPKrXLS6eOJhnVHHWSwE0RtEkU5ZUBNCLHhuZefSD2A8dhRitKWsEmTcNo9XJ0+
+    pv0AQ6eUgOFllwFU4XEGnASj5cWDjyHUBfu+RKT10Rcz6okq7IdhJS04Nt+1YhFEyFXO
+    WojQjGBVzTvtW7uESWftHhlZqlPF0kKp1EYqUHMZ0Qm2vTNpiyoGVJFI4yJ5Uaksnt4N
+    51dA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1686812433;
+    s=strato-dkim-0003; d=goldelico.com;
+    h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:Cc:Date:
+    From:Subject:Sender;
+    bh=Pun22zFGCocM+PFhnmP2zLNHFo+3iLvVLg8m4mkXy9I=;
+    b=rpZocAaZVFG/akDJ33Etz6ZWna5ywcfCrhGMR+xT2KjhhtzLaUha3wGbNMsp1ZRSpb
+    9V1m3RES+Ja8u4iKZTDw==
+X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMgPgp8VKxflSZ1P34KBj5Apz9PSN6LgsXcGeonQ="
+Received: from imac.fritz.box
+    by smtp.strato.de (RZmta 49.6.0 DYNA|AUTH)
+    with ESMTPSA id jaf17fz5F70X23O
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (curve X9_62_prime256v1 with 256 ECDH bits, eq. 3072 bits RSA))
+        (Client did not present a certificate);
+    Thu, 15 Jun 2023 09:00:33 +0200 (CEST)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.21\))
+Subject: Re: [PATCH 3/9] MIPS: DTS: CI20: Add parent supplies to ACT8600
+ regulators
+From:   "H. Nikolaus Schaller" <hns@goldelico.com>
+In-Reply-To: <20230604145642.200577-4-paul@crapouillou.net>
+Date:   Thu, 15 Jun 2023 09:00:32 +0200
+Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, linux-mips@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        list@opendingux.net
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <D6E7498A-3172-42C6-804A-CB5A323F91DC@goldelico.com>
+References: <20230604145642.200577-1-paul@crapouillou.net>
+ <20230604145642.200577-4-paul@crapouillou.net>
+To:     Paul Cercueil <paul@crapouillou.net>
+X-Mailer: Apple Mail (2.3445.104.21)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Hi,
 
-On 2023/6/7 17:46, Paul Cercueil wrote:
-> Hi Sui,
->
-> Le mercredi 07 juin 2023 à 15:22 +0800, Sui Jingfeng a écrit :
->> Otherwise its failed to pass basic compile test on platform without
->> REGMAP_MMIO selected by defconfig
->>
->> make -j$(nproc) ARCH=mips CROSS_COMPILE=mips64el-linux-gnuabi64-
->>
->>    SYNC    include/config/auto.conf.cmd
->>    Checking missing-syscalls for N32
->>    CALL    scripts/checksyscalls.sh
->>    Checking missing-syscalls for O32
->>    CALL    scripts/checksyscalls.sh
->>    CALL    scripts/checksyscalls.sh
->>    MODPOST Module.symvers
->> ERROR: modpost: "__devm_regmap_init_mmio_clk"
->> [drivers/gpu/drm/ingenic/ingenic-drm.ko] undefined!
->> make[1]: *** [scripts/Makefile.modpost:136: Module.symvers] Error 1
->> make: *** [Makefile:1978: modpost] Error 2
->>
->> Signed-off-by: Sui Jingfeng <suijingfeng@loongson.cn>
->> ---
->>   drivers/gpu/drm/ingenic/Kconfig | 2 ++
->>   1 file changed, 2 insertions(+)
->>
->> diff --git a/drivers/gpu/drm/ingenic/Kconfig
->> b/drivers/gpu/drm/ingenic/Kconfig
->> index a53f475d33df..7457c0b65034 100644
->> --- a/drivers/gpu/drm/ingenic/Kconfig
->> +++ b/drivers/gpu/drm/ingenic/Kconfig
->> @@ -5,6 +5,8 @@ config DRM_INGENIC
->>          depends on CMA
->>          depends on OF
->>          depends on COMMON_CLK
->> +       select REGMAP
->> +       select REGMAP_MMIO
-> nit: order alphabetically (move them after the DRM_* ones).
 
-Fixed, I already send a updated version[1].
+> Am 04.06.2023 um 16:56 schrieb Paul Cercueil <paul@crapouillou.net>:
+>=20
+> Provide parent regulators to the ACT8600 regulators that need one.
+>=20
+> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
+> ---
+> arch/mips/boot/dts/ingenic/ci20.dts | 7 +++++++
+> 1 file changed, 7 insertions(+)
+>=20
+> diff --git a/arch/mips/boot/dts/ingenic/ci20.dts =
+b/arch/mips/boot/dts/ingenic/ci20.dts
+> index 5361606c5e13..662796acda41 100644
+> --- a/arch/mips/boot/dts/ingenic/ci20.dts
+> +++ b/arch/mips/boot/dts/ingenic/ci20.dts
+> @@ -242,16 +242,19 @@ regulators {
+> 			vddcore: DCDC1 {
+> 				regulator-min-microvolt =3D <1100000>;
+> 				regulator-max-microvolt =3D <1100000>;
+> +				vp1-supply =3D <&vcc_33v>;
 
-[1] 
-https://lore.kernel.org/dri-devel/20230607110650.569522-1-suijingfeng@loongson.cn/
+where is vcc_33v defined?
 
-> Cheers,
-> -Paul
->
->>          select DRM_BRIDGE
->>          select DRM_PANEL_BRIDGE
->>          select DRM_KMS_HELPER
+Unless [7/9] "MIPS: DTS: CI20: Enable support for WiFi / Bluetooth" is =
+applied?
 
--- 
-Jingfeng
+This way the patches in between can't be bisected.
+
+> 				regulator-always-on;
+> 			};
+> 			vddmem: DCDC2 {
+> 				regulator-min-microvolt =3D <1500000>;
+> 				regulator-max-microvolt =3D <1500000>;
+> +				vp2-supply =3D <&vcc_33v>;
+> 				regulator-always-on;
+> 			};
+> 			vcc_33: DCDC3 {
+> 				regulator-min-microvolt =3D <3300000>;
+> 				regulator-max-microvolt =3D <3300000>;
+> +				vp3-supply =3D <&vcc_33v>;
+> 				regulator-always-on;
+> 			};
+> 			vcc_50: SUDCDC_REG4 {
+> @@ -262,21 +265,25 @@ vcc_50: SUDCDC_REG4 {
+> 			vcc_25: LDO5 {
+> 				regulator-min-microvolt =3D <2500000>;
+> 				regulator-max-microvolt =3D <2500000>;
+> +				inl-supply =3D <&vcc_33v>;
+> 				regulator-always-on;
+> 			};
+> 			wifi_io: LDO6 {
+> 				regulator-min-microvolt =3D <2500000>;
+> 				regulator-max-microvolt =3D <2500000>;
+> +				inl-supply =3D <&vcc_33v>;
+> 				regulator-always-on;
+> 			};
+> 			cim_io_28: LDO7 {
+> 				regulator-min-microvolt =3D <2800000>;
+> 				regulator-max-microvolt =3D <2800000>;
+> +				inl-supply =3D <&vcc_33v>;
+> 				regulator-always-on;
+> 			};
+> 			cim_io_15: LDO8 {
+> 				regulator-min-microvolt =3D <1500000>;
+> 				regulator-max-microvolt =3D <1500000>;
+> +				inl-supply =3D <&vcc_33v>;
+> 				regulator-always-on;
+> 			};
+> 			vrtc_18: LDO_REG9 {
+> --=20
+> 2.39.2
+>=20
 

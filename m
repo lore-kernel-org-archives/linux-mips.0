@@ -2,143 +2,119 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 19821EB64D9
-	for <linux-mips@archiver.kernel.org>; Thu, 15 Jun 2023 07:16:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D51A8EB64D9
+	for <linux-mips@archiver.kernel.org>; Thu, 15 Jun 2023 07:17:36 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244706AbjFOHQD (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 15 Jun 2023 03:16:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38900 "EHLO
+        id S244841AbjFOHRf (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 15 Jun 2023 03:17:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39308 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245066AbjFOHPZ (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Thu, 15 Jun 2023 03:15:25 -0400
-Received: from mo4-p02-ob.smtp.rzone.de (mo4-p02-ob.smtp.rzone.de [85.215.255.81])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E372B4692;
-        Thu, 15 Jun 2023 00:12:10 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1686812462; cv=none;
-    d=strato.com; s=strato-dkim-0002;
-    b=A7+OEOe2tKbtr0Wfk5CpOaVff+0K09lqCd/PqvcPh2jVucV7eUE45BmWIoVb3zWCYf
-    BryJ/xt7P43eKgFAfp+8X1sCAKzL8lVbBOpye1UQUNpTtcBJyoS34xhmfMAhWum6s+bz
-    ER+yhYcRmU7kcnjszSOw58oEUN0xWcJuCIInBvXOhglfm3uv0xr2Yfc738aFSztPersC
-    18aCfGnJZUy1fHvhJN7x+RafayHRUeo+u0OlcMWrs8+hYLXpbshwg6HECp4mxadE/4QA
-    h2ovQ+DSx0WMKJ3efOj5Ah9EVvHcIdHu1mKPOpYU2+JqPMMof+BsKIPekeyM4I062TTR
-    j5Gw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1686812462;
-    s=strato-dkim-0002; d=strato.com;
-    h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:Cc:Date:
-    From:Subject:Sender;
-    bh=TDJy/nCvrrGgkIeB/WaaG50bfZku9SJeUReU+whMQHM=;
-    b=Qze99mfNNKROeAMDb9pHHvLhlTe3ooeVHYTRiNt0jqoX1tbEKaowG7HSnZSjxLVr9j
-    zBvcS9EkgnXHM6kTJjzw8PmrBuxj11upbwFHwMpV7f2pEAjhSF9cRId7vnr+4tMKJDXI
-    Evk4Vkh3wN8lsVk58MywyDriG1GVjLGxZ8f/+r/BrNkD94JNypyxlbIyzh7ZbeNdAEA4
-    iBLrZ7tqxK1heSXQieDXk+kmswAoHizjUhDgW0O5jTZeqyfqj7bbadGJBJRi6GhZa/Hl
-    NW7apQ7nga4eO7buYqpGPzgQNSvALcqtPhyKJfz3P3YdJa+823JVIcJieuozZCevsvUg
-    evUA==
-ARC-Authentication-Results: i=1; strato.com;
-    arc=none;
-    dkim=none
-X-RZG-CLASS-ID: mo02
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1686812462;
-    s=strato-dkim-0002; d=goldelico.com;
-    h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:Cc:Date:
-    From:Subject:Sender;
-    bh=TDJy/nCvrrGgkIeB/WaaG50bfZku9SJeUReU+whMQHM=;
-    b=TOOJyLeYcYS5BsZh7jMAykirrC2ykQROoRBe5dSkhNP7mlgxS9coH3uuFfNlXy74j9
-    TH/aJzAOlOTFg6xKr4VP+efWy1ZXRkfX1nUBLZuJO/BWmYyJqgy8OZB/wmUAcYE/EmhC
-    pIoIieaJnPTCKdSqpHM1fDOVPiXtS6S515WIeMAnrYdwkm3nlH/Hkb7vzKTEo/HWn1my
-    gKgUiVFm2gSwKm9W2bdkBtfEaZ2WGo7tzokb9al3/LWtw1DHginIkaF/My7TeVcME1P3
-    yj2gg2kZRzcM7N3GI5v/RQ9YVQ4ceCsBzvdkBFVtSJwUENmS3l2FAHoWjOZ/lO+mJlCT
-    AqgQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1686812462;
-    s=strato-dkim-0003; d=goldelico.com;
-    h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:Cc:Date:
-    From:Subject:Sender;
-    bh=TDJy/nCvrrGgkIeB/WaaG50bfZku9SJeUReU+whMQHM=;
-    b=1LVB8RGilMdBNbH1Ibn85Q47fByovt/rlfHl9hpXUn87z2NWBSdfLqdVh76W61v2PO
-    sdpmIhj2T+NQXKYiT3Dw==
-X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMgPgp8VKxflSZ1P34KBj5Apz9PSN6LgsXcGeonQ="
-Received: from imac.fritz.box
-    by smtp.strato.de (RZmta 49.6.0 DYNA|AUTH)
-    with ESMTPSA id jaf17fz5F71223U
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (curve X9_62_prime256v1 with 256 ECDH bits, eq. 3072 bits RSA))
-        (Client did not present a certificate);
-    Thu, 15 Jun 2023 09:01:02 +0200 (CEST)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.21\))
-Subject: Re: [PATCH 5/9] MIPS: DTS: CI20: Misc. cleanups
-From:   "H. Nikolaus Schaller" <hns@goldelico.com>
-In-Reply-To: <20230604145642.200577-6-paul@crapouillou.net>
-Date:   Thu, 15 Jun 2023 09:01:02 +0200
-Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, linux-mips@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        list@opendingux.net
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <7895ACE7-2D31-4858-891A-44C2BC7B9D9D@goldelico.com>
-References: <20230604145642.200577-1-paul@crapouillou.net>
- <20230604145642.200577-6-paul@crapouillou.net>
-To:     Paul Cercueil <paul@crapouillou.net>
-X-Mailer: Apple Mail (2.3445.104.21)
+        with ESMTP id S244251AbjFOHQY (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Thu, 15 Jun 2023 03:16:24 -0400
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 522952688;
+        Thu, 15 Jun 2023 00:14:46 -0700 (PDT)
+Received: from loongson.cn (unknown [10.20.42.43])
+        by gateway (Coremail) with SMTP id _____8AxV+lkuopk4XcFAA--.9700S3;
+        Thu, 15 Jun 2023 15:14:44 +0800 (CST)
+Received: from [10.20.42.43] (unknown [10.20.42.43])
+        by localhost.localdomain (Coremail) with SMTP id AQAAf8BxNeRiuopk1qcbAA--.13198S3;
+        Thu, 15 Jun 2023 15:14:43 +0800 (CST)
+Message-ID: <f2fae469-2a39-119b-8512-c4ad78a896f8@loongson.cn>
+Date:   Thu, 15 Jun 2023 15:14:42 +0800
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [PATCH] drm/ingenic: Kconfig: select REGMAP and REGMAP_MMIO
+To:     Paul Cercueil <paul@crapouillou.net>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>
+Cc:     linux-mips@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+References: <20230607072253.440613-1-suijingfeng@loongson.cn>
+ <845a483ed09728c712ad57b1fe9bc5c930a72d98.camel@crapouillou.net>
+Content-Language: en-US
+From:   Sui Jingfeng <suijingfeng@loongson.cn>
+Organization: Loongson
+In-Reply-To: <845a483ed09728c712ad57b1fe9bc5c930a72d98.camel@crapouillou.net>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: AQAAf8BxNeRiuopk1qcbAA--.13198S3
+X-CM-SenderInfo: xvxlyxpqjiv03j6o00pqjv00gofq/
+X-Coremail-Antispam: 1Uk129KBj93XoWxJry8tFy5tr1DJF18Zr13GFX_yoW8CF15pF
+        s5ta45uFWxuF4vkr42yFy7WFy5Xw15Ja4rCr1kJa4q9ryDAr1jqrZrZFWY9FyDAr4xGr4U
+        X3s3GFy7ZF17XrbCm3ZEXasCq-sJn29KB7ZKAUJUUUU5529EdanIXcx71UUUUU7KY7ZEXa
+        sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
+        0xBIdaVrnRJUUUvIb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
+        IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
+        e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
+        0_Jr0_Gr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AK
+        xVW8Jr0_Cr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l57IF6xkI12xvs2x26I8E6xACxx
+        1l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1Y6r17McIj6I8E87Iv
+        67AKxVW8JVWxJwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lc7I2V7IY0VAS07
+        AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02
+        F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw
+        1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7Cj
+        xVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r
+        4j6F4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07jY
+        SoJUUUUU=
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Please find a more useful subject.
+Hi,
 
-> Am 04.06.2023 um 16:56 schrieb Paul Cercueil <paul@crapouillou.net>:
->=20
-> - Use the standard "ecc-engine" property instead of the custom
-> "ingenic,bch-controller" to get a handle to the BCH controller.
->=20
-> - Respect cell sizes in the Ethernet controller node.
->=20
-> - Use proper macro for interrupt type instead of hardcoding magic
->  values.
->=20
-> Signed-off-by: Paul Cercueil <paul@crapouillou.net>
-> ---
-> arch/mips/boot/dts/ingenic/ci20.dts | 8 ++++----
-> 1 file changed, 4 insertions(+), 4 deletions(-)
->=20
-> diff --git a/arch/mips/boot/dts/ingenic/ci20.dts =
-b/arch/mips/boot/dts/ingenic/ci20.dts
-> index 7f6e7a4e3915..b7dbafa1f85d 100644
-> --- a/arch/mips/boot/dts/ingenic/ci20.dts
-> +++ b/arch/mips/boot/dts/ingenic/ci20.dts
-> @@ -356,7 +356,7 @@ nandc: nand-controller@1 {
-> 		#address-cells =3D <1>;
-> 		#size-cells =3D <0>;
->=20
-> -		ingenic,bch-controller =3D <&bch>;
-> +		ecc-engine =3D <&bch>;
->=20
-> 		ingenic,nemc-tAS =3D <10>;
-> 		ingenic,nemc-tAH =3D <5>;
-> @@ -422,8 +422,8 @@ dm9000@6 {
-> 		pinctrl-names =3D "default";
-> 		pinctrl-0 =3D <&pins_nemc_cs6>;
->=20
-> -		reg =3D <6 0 1   /* addr */
-> -		       6 2 1>; /* data */
-> +		reg =3D <6 0 1>, /* addr */
-> +		      <6 2 1>; /* data */
->=20
-> 		ingenic,nemc-tAS =3D <15>;
-> 		ingenic,nemc-tAH =3D <10>;
-> @@ -435,7 +435,7 @@ dm9000@6 {
-> 		vcc-supply =3D <&eth0_power>;
->=20
-> 		interrupt-parent =3D <&gpe>;
-> -		interrupts =3D <19 4>;
-> +		interrupts =3D <19 IRQ_TYPE_EDGE_RISING>;
->=20
-> 		nvmem-cells =3D <&eth0_addr>;
-> 		nvmem-cell-names =3D "mac-address";
+On 2023/6/7 17:46, Paul Cercueil wrote:
+> Hi Sui,
+>
+> Le mercredi 07 juin 2023 à 15:22 +0800, Sui Jingfeng a écrit :
+>> Otherwise its failed to pass basic compile test on platform without
+>> REGMAP_MMIO selected by defconfig
+>>
+>> make -j$(nproc) ARCH=mips CROSS_COMPILE=mips64el-linux-gnuabi64-
+>>
+>>    SYNC    include/config/auto.conf.cmd
+>>    Checking missing-syscalls for N32
+>>    CALL    scripts/checksyscalls.sh
+>>    Checking missing-syscalls for O32
+>>    CALL    scripts/checksyscalls.sh
+>>    CALL    scripts/checksyscalls.sh
+>>    MODPOST Module.symvers
+>> ERROR: modpost: "__devm_regmap_init_mmio_clk"
+>> [drivers/gpu/drm/ingenic/ingenic-drm.ko] undefined!
+>> make[1]: *** [scripts/Makefile.modpost:136: Module.symvers] Error 1
+>> make: *** [Makefile:1978: modpost] Error 2
+>>
+>> Signed-off-by: Sui Jingfeng <suijingfeng@loongson.cn>
+>> ---
+>>   drivers/gpu/drm/ingenic/Kconfig | 2 ++
+>>   1 file changed, 2 insertions(+)
+>>
+>> diff --git a/drivers/gpu/drm/ingenic/Kconfig
+>> b/drivers/gpu/drm/ingenic/Kconfig
+>> index a53f475d33df..7457c0b65034 100644
+>> --- a/drivers/gpu/drm/ingenic/Kconfig
+>> +++ b/drivers/gpu/drm/ingenic/Kconfig
+>> @@ -5,6 +5,8 @@ config DRM_INGENIC
+>>          depends on CMA
+>>          depends on OF
+>>          depends on COMMON_CLK
+>> +       select REGMAP
+>> +       select REGMAP_MMIO
+> nit: order alphabetically (move them after the DRM_* ones).
 
+Fixed, I already send a updated version[1].
 
-For better bisecting it would be helpful to split this into 3 patches.
+[1] 
+https://lore.kernel.org/dri-devel/20230607110650.569522-1-suijingfeng@loongson.cn/
 
-And they are not really related to WiFi/Bluetooth.
+> Cheers,
+> -Paul
+>
+>>          select DRM_BRIDGE
+>>          select DRM_PANEL_BRIDGE
+>>          select DRM_KMS_HELPER
+
+-- 
+Jingfeng
 

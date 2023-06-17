@@ -2,53 +2,53 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5179DEB64D9
-	for <linux-mips@archiver.kernel.org>; Sat, 17 Jun 2023 05:24:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A7A54C001B1
+	for <linux-mips@archiver.kernel.org>; Sat, 17 Jun 2023 05:24:54 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233039AbjFQFYy (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Sat, 17 Jun 2023 01:24:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47948 "EHLO
+        id S233528AbjFQFYp (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Sat, 17 Jun 2023 01:24:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47938 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233362AbjFQFYo (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Sat, 17 Jun 2023 01:24:44 -0400
-Received: from mail-ej1-x633.google.com (mail-ej1-x633.google.com [IPv6:2a00:1450:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA5781FD3;
-        Fri, 16 Jun 2023 22:24:42 -0700 (PDT)
-Received: by mail-ej1-x633.google.com with SMTP id a640c23a62f3a-970028cfb6cso224238666b.1;
-        Fri, 16 Jun 2023 22:24:42 -0700 (PDT)
+        with ESMTP id S233169AbjFQFYl (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Sat, 17 Jun 2023 01:24:41 -0400
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4142A1FD3;
+        Fri, 16 Jun 2023 22:24:40 -0700 (PDT)
+Received: by mail-ed1-x52d.google.com with SMTP id 4fb4d7f45d1cf-51a426e4f4bso1086825a12.1;
+        Fri, 16 Jun 2023 22:24:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1686979480; x=1689571480;
+        d=gmail.com; s=20221208; t=1686979478; x=1689571478;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=n/vu+BfaX9/nXtP9I6CrmyWiA7s/9ryNRPNRydMSfbw=;
-        b=jCovODCcHOh+h7XzvfTbf2spQ2eSL/9of4yKqaXBTH2BzrftbexcEQPJML9XXTvvfM
-         fFOkZOA/wt+o3AuXYtS+F9kOdFKFioDdxsYwUDiE55dyI+40kLAxNtN1W459wwWT6PIX
-         Zt4pPEWuRs+wp1uq6Jn4iHZxKz+FeZ2AvoSjKXzIVOEJCv5LXqZBh6O9wL6MqgJStsCr
-         +aFb/wN+SIrt2Me+GPYmPtEjALEI9W4ZiU99vcPZT1dUr9Cn59RlUaEfbY3WzTEivRNM
-         CrR+ubJAdbKn4SaGHJidxLls1fz1zsR9O3ZU8aWtEEkB8jB7reC8bhzOkLA5/Asu0wXj
-         SpEQ==
+        bh=wZJ3aYj6oFIr1S67mCK0XTYhjmw5NjBbpLCLF9cYcTg=;
+        b=namhjf0fYV2UD2ZwtTX+l/bykLFBFUQYRGIb6QAZRkI84FGD5mUIV43cIOdmjWM88O
+         fl6N4xiBUmBU55LJZ0h3PgkGxLVKZLFT39uq5563g6ztgQnUR6JjR8d90lslkHvrpYQN
+         YhEmz/IxWKQRcvHnjLM3MmdIy4W0GAwrXX5GUrjeMYSwGbKpCdJCRzXJ6146rtt/OL2v
+         6A6PftpgHfIitkyRMB+JnJkWekssI6iWGHZ/m6ldg6Jn3Ocn1X4C7Gl7Rc1D+IAcNCtS
+         svcz56foHZFzSmGurmxcZT9DN/qF/hmRkBPW1Z0NMHpcIg2L+bRVASrrSSHUCTjjYUjd
+         KOdg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1686979480; x=1689571480;
+        d=1e100.net; s=20221208; t=1686979478; x=1689571478;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=n/vu+BfaX9/nXtP9I6CrmyWiA7s/9ryNRPNRydMSfbw=;
-        b=JO5gwWDw2ZSf2dra/GUkDhfZyEOD5s1rDlfIVoGaIlytD69NQD4d6mv7wnsXUbjjkX
-         eWWj7t8tPHhMYdDa7qdBJRNZ+Uo7c0N68MAwwyZDVpmamUMO0Zvz+Aa3arENI0n8ukb9
-         a3EGuQ3NJ6zjrk5PdsQ3mLqmYAQ6lnOd5W2W8EzASqmnb7dNBdSByB0GLtNl3KvdRLq5
-         izJFm7CZu+UVzH7+sGqal9VGR8GW9Wo3dvOEcWl6dzL5Q5RjCusQW8QNJBfCPlRRe36H
-         dTIAiz/dRnYCSiESBho5w1szM0xN7kFfB6LGA+AO6ZAOhaKeHTIh7/KdF1XawP0xKTRX
-         q6ow==
-X-Gm-Message-State: AC+VfDxpcYPE9wieF5FothhAzvtR8synybiuJsnJ3FicoJwO+6eYcz9K
-        /6i9JQXWwwpZZOBw0Z94sGdISqNrjDc=
-X-Google-Smtp-Source: ACHHUZ6oAetfMIbsVagmnia6ogpkx0PGADiCp1PmhrXXIJ/ipt/Jbwq99GGw9FcVL7WYvUkev1/vcw==
-X-Received: by 2002:a17:907:36c9:b0:987:9203:64b7 with SMTP id bj9-20020a17090736c900b00987920364b7mr685827ejc.18.1686979480702;
-        Fri, 16 Jun 2023 22:24:40 -0700 (PDT)
+        bh=wZJ3aYj6oFIr1S67mCK0XTYhjmw5NjBbpLCLF9cYcTg=;
+        b=lScQmWsK50pd3vzjRwU+cYUUbpL5gHdEYcJZk7K8Jyv7sBlgLcAJ6XakDbKq69FiYI
+         /qeUvl8M3X2P86cgMi4GPqeh7yeKEkzJmuQNyK262xOSZRny37G/4B+Gdmz5+sNTOx7i
+         0eE8PDRgw+vw/quGseB+ZSL84RKjkfNPaztXA5n4wM0c6FPp0aUvLlBdGn6AL73hDOga
+         2IIX2o8rRFl7to86F/aYNzcwkQxxQgpqiK4iPnN1lTwK8iom92I2CmrjYhLZ2f87tJpC
+         F7UL6w2Xqv8sGvonasjUjxuOrijabI4eNGPrIl2/2SnSlIUA8PsJrYkSdNM4zFLFS+8t
+         AQxA==
+X-Gm-Message-State: AC+VfDxr/lBxBgvEB7HLA333i1ruzv49XD2tvxzacuw/EXHyfE4oTOFm
+        5g7y5Ji9LI8keihQCzXoMrM1frU9v10=
+X-Google-Smtp-Source: ACHHUZ74Z14uTmfTRWbvZXqCvyW1VvFlxwzh9dkNoN5I1svmva7NUAbyYYz7v0RkkEzBng65zpeNDg==
+X-Received: by 2002:a17:907:7b96:b0:97d:ee82:920a with SMTP id ne22-20020a1709077b9600b0097dee82920amr4077156ejc.74.1686979477824;
+        Fri, 16 Jun 2023 22:24:37 -0700 (PDT)
 Received: from localhost.localdomain (61.red-88-10-54.dynamicip.rima-tde.net. [88.10.54.61])
-        by smtp.gmail.com with ESMTPSA id a3-20020a056000050300b003068f5cca8csm25198228wrf.94.2023.06.16.22.24.39
+        by smtp.gmail.com with ESMTPSA id a3-20020a056000050300b003068f5cca8csm25198228wrf.94.2023.06.16.22.24.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Jun 2023 22:24:40 -0700 (PDT)
+        Fri, 16 Jun 2023 22:24:37 -0700 (PDT)
 From:   Sergio Paracuellos <sergio.paracuellos@gmail.com>
 To:     linux-clk@vger.kernel.org
 Cc:     linux-mips@vger.kernel.org, tsbogend@alpha.franken.de,
@@ -56,10 +56,10 @@ Cc:     linux-mips@vger.kernel.org, tsbogend@alpha.franken.de,
         p.zabel@pengutronix.de, mturquette@baylibre.com, sboyd@kernel.org,
         robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
         matthias.bgg@gmail.com, devicetree@vger.kernel.org,
-        arinc.unal@arinc9.com
-Subject: [PATCH v4 3/9] mips: ralink: rt288x: remove clock related code
-Date:   Sat, 17 Jun 2023 07:24:29 +0200
-Message-Id: <20230617052435.359177-4-sergio.paracuellos@gmail.com>
+        arinc.unal@arinc9.com, Rob Herring <robh@kernel.org>
+Subject: [PATCH v4 1/9] dt-bindings: clock: add mtmips SoCs system controller
+Date:   Sat, 17 Jun 2023 07:24:27 +0200
+Message-Id: <20230617052435.359177-2-sergio.paracuellos@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20230617052435.359177-1-sergio.paracuellos@gmail.com>
 References: <20230617052435.359177-1-sergio.paracuellos@gmail.com>
@@ -69,85 +69,90 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-A properly clock driver for ralink SoCs has been added. Hence there is no
-need to have clock related code in 'arch/mips/ralink' folder anymore.
+Adds device tree binding documentation for system controller node present
+in Mediatek MIPS and Ralink SOCs. This node is a clock and reset provider
+for the rest of the world. This covers RT2880, RT3050, RT3052, RT3350,
+RT3883, RT5350, MT7620, MT7628 and MT7688 SoCs.
 
+Reviewed-by: Rob Herring <robh@kernel.org>
+Acked-by: Stephen Boyd <sboyd@kernel.org>
 Signed-off-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
 ---
- arch/mips/include/asm/mach-ralink/rt288x.h | 10 -------
- arch/mips/ralink/rt288x.c                  | 31 ----------------------
- 2 files changed, 41 deletions(-)
+ .../bindings/clock/mediatek,mtmips-sysc.yaml  | 65 +++++++++++++++++++
+ 1 file changed, 65 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/clock/mediatek,mtmips-sysc.yaml
 
-diff --git a/arch/mips/include/asm/mach-ralink/rt288x.h b/arch/mips/include/asm/mach-ralink/rt288x.h
-index 66a999cd1d80..66d190358e3a 100644
---- a/arch/mips/include/asm/mach-ralink/rt288x.h
-+++ b/arch/mips/include/asm/mach-ralink/rt288x.h
-@@ -18,7 +18,6 @@
- #define SYSC_REG_CHIP_NAME1		0x04
- #define SYSC_REG_CHIP_ID		0x0c
- #define SYSC_REG_SYSTEM_CONFIG		0x10
--#define SYSC_REG_CLKCFG			0x30
- 
- #define RT2880_CHIP_NAME0		0x38325452
- #define RT2880_CHIP_NAME1		0x20203038
-@@ -27,15 +26,6 @@
- #define CHIP_ID_ID_SHIFT		8
- #define CHIP_ID_REV_MASK		0xff
- 
--#define SYSTEM_CONFIG_CPUCLK_SHIFT	20
--#define SYSTEM_CONFIG_CPUCLK_MASK	0x3
--#define SYSTEM_CONFIG_CPUCLK_250	0x0
--#define SYSTEM_CONFIG_CPUCLK_266	0x1
--#define SYSTEM_CONFIG_CPUCLK_280	0x2
--#define SYSTEM_CONFIG_CPUCLK_300	0x3
--
--#define CLKCFG_SRAM_CS_N_WDT		BIT(9)
--
- #define RT2880_SDRAM_BASE		0x08000000
- #define RT2880_MEM_SIZE_MIN		2
- #define RT2880_MEM_SIZE_MAX		128
-diff --git a/arch/mips/ralink/rt288x.c b/arch/mips/ralink/rt288x.c
-index 456ba0b2599e..0c6a87452dd1 100644
---- a/arch/mips/ralink/rt288x.c
-+++ b/arch/mips/ralink/rt288x.c
-@@ -21,37 +21,6 @@
- 
- static struct ralink_soc_info *soc_info_ptr;
- 
--void __init ralink_clk_init(void)
--{
--	unsigned long cpu_rate, wmac_rate = 40000000;
--	u32 t = rt_sysc_r32(SYSC_REG_SYSTEM_CONFIG);
--	t = ((t >> SYSTEM_CONFIG_CPUCLK_SHIFT) & SYSTEM_CONFIG_CPUCLK_MASK);
--
--	switch (t) {
--	case SYSTEM_CONFIG_CPUCLK_250:
--		cpu_rate = 250000000;
--		break;
--	case SYSTEM_CONFIG_CPUCLK_266:
--		cpu_rate = 266666667;
--		break;
--	case SYSTEM_CONFIG_CPUCLK_280:
--		cpu_rate = 280000000;
--		break;
--	case SYSTEM_CONFIG_CPUCLK_300:
--		cpu_rate = 300000000;
--		break;
--	}
--
--	ralink_clk_add("cpu", cpu_rate);
--	ralink_clk_add("300100.timer", cpu_rate / 2);
--	ralink_clk_add("300120.watchdog", cpu_rate / 2);
--	ralink_clk_add("300500.uart", cpu_rate / 2);
--	ralink_clk_add("300900.i2c", cpu_rate / 2);
--	ralink_clk_add("300c00.uartlite", cpu_rate / 2);
--	ralink_clk_add("400000.ethernet", cpu_rate / 2);
--	ralink_clk_add("480000.wmac", wmac_rate);
--}
--
- void __init ralink_of_remap(void)
- {
- 	rt_sysc_membase = plat_of_remap_node("ralink,rt2880-sysc");
+diff --git a/Documentation/devicetree/bindings/clock/mediatek,mtmips-sysc.yaml b/Documentation/devicetree/bindings/clock/mediatek,mtmips-sysc.yaml
+new file mode 100644
+index 000000000000..0b29dcacd686
+--- /dev/null
++++ b/Documentation/devicetree/bindings/clock/mediatek,mtmips-sysc.yaml
+@@ -0,0 +1,65 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/clock/mediatek,mtmips-sysc.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: MTMIPS SoCs System Controller
++
++maintainers:
++  - Sergio Paracuellos <sergio.paracuellos@gmail.com>
++
++description: |
++  MediaTek MIPS and Ralink SoCs provides a system controller to allow
++  to access to system control registers. These registers include clock
++  and reset related ones so this node is both clock and reset provider
++  for the rest of the world.
++
++  These SoCs have an XTAL from where the cpu clock is
++  provided as well as derived clocks for the bus and the peripherals.
++
++properties:
++  compatible:
++    items:
++      - enum:
++          - ralink,mt7620-sysc
++          - ralink,mt7628-sysc
++          - ralink,mt7688-sysc
++          - ralink,mt7620a-sysc
++          - ralink,rt2880-sysc
++          - ralink,rt3050-sysc
++          - ralink,rt3052-sysc
++          - ralink,rt3352-sysc
++          - ralink,rt3883-sysc
++          - ralink,rt5350-sysc
++      - const: syscon
++
++  reg:
++    maxItems: 1
++
++  '#clock-cells':
++    description:
++      The first cell indicates the clock number.
++    const: 1
++
++  '#reset-cells':
++    description:
++      The first cell indicates the reset bit within the register.
++    const: 1
++
++required:
++  - compatible
++  - reg
++  - '#clock-cells'
++  - '#reset-cells'
++
++additionalProperties: false
++
++examples:
++  - |
++    syscon@0 {
++      compatible = "ralink,rt5350-sysc", "syscon";
++      reg = <0x0 0x100>;
++      #clock-cells = <1>;
++      #reset-cells = <1>;
++    };
 -- 
 2.25.1
 

@@ -2,171 +2,149 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 979F4EB64DA
-	for <linux-mips@archiver.kernel.org>; Mon, 19 Jun 2023 04:10:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8A6AEEB64D9
+	for <linux-mips@archiver.kernel.org>; Mon, 19 Jun 2023 04:43:05 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229698AbjFSEK2 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 19 Jun 2023 00:10:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41160 "EHLO
+        id S229612AbjFSEnE (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 19 Jun 2023 00:43:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48300 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229803AbjFSEKC (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Mon, 19 Jun 2023 00:10:02 -0400
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18BEE136;
-        Sun, 18 Jun 2023 21:09:57 -0700 (PDT)
-Received: by mail-lf1-x12e.google.com with SMTP id 2adb3069b0e04-4f76a0a19d4so3608809e87.2;
-        Sun, 18 Jun 2023 21:09:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1687147795; x=1689739795;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=VYtDZyF0WoEWQ1plW2ceJSRw4b2t8G0Pprfn6lRFwQY=;
-        b=fMwUIgG9I8eZar1K6k9TKYp6nYtLYLmJrqtDvhVj+jg7gnYtJ3QYDKlkBvckg7gXkd
-         foKwcbTga478MAG9WaunjZYidYNGadZhuU5OF3CEtblRevUtrd0tbPIMsTrIebxOzKMZ
-         0aCpRWTjsW8FRX2c1aZpirVOyeZFz2FdxgWsxWuKIFCO9KsCxYqkLSBIP5ug8dukzodn
-         /SMW9F+PJq5hRMssaaRF/19ELicxlSP2YT0UhhF6xRrjHOWVbI/KUidLRCHr0MATNvuz
-         PFNDNnpesNgCcBji67f/lw1r9G8Okn6pfxO9BgSUXi+pMSJp6e6Fd3xtAx3aoD7KakNo
-         wkSw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1687147795; x=1689739795;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=VYtDZyF0WoEWQ1plW2ceJSRw4b2t8G0Pprfn6lRFwQY=;
-        b=CL0EEBZs7cgtDwqUEPERnswbxB0LBXHvKOjrRCCaMSSVP5eda2nnqT+Rx2CeOdNgyA
-         ifJtcsGwyYr7Od3QrpjUkhh6yYF67sPh0YHKOJUa/zTk3Oe1IpWyz/9czTCixfNajnBW
-         n3MWYdgZ1geeKgZBLhqGrzK6biIl/o88awptU8ookyHNQzg9BEvdQZUSvrfi44ulO51r
-         bXZm+d6uBQf1haj5Nc6lmRe9NjkAabuNMoDMCqU4aT8mtCR4tXbwWx4DkMzN69Av14eC
-         0h5lUobDv4CSsWJid8s6u4u6PQc2PLm/GOAtnh5BKgxrh/3k7aqDcM0mvvgZGhUOyUQ1
-         SqVg==
-X-Gm-Message-State: AC+VfDw1WZFjfR8yAFwNMonlEM/xtTucJq0Ng396YqrlPkGVpIaNToHL
-        qJxhKTT7VT4c7f+MUSkEUbm3nv4bC8U=
-X-Google-Smtp-Source: ACHHUZ4oGXxUm6faTWmGR4k58VgP8mrIDXFKieK8hPsgHjzCraQ2Dpjef1Bv+KCKIALaUndcpBDYqg==
-X-Received: by 2002:a05:6512:3290:b0:4f7:5f9e:fc59 with SMTP id p16-20020a056512329000b004f75f9efc59mr4235673lfe.39.1687147794901;
-        Sun, 18 Jun 2023 21:09:54 -0700 (PDT)
-Received: from localhost.localdomain (61.red-88-10-54.dynamicip.rima-tde.net. [88.10.54.61])
-        by smtp.gmail.com with ESMTPSA id h14-20020a5d6e0e000000b003078354f774sm30004052wrz.36.2023.06.18.21.09.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 18 Jun 2023 21:09:54 -0700 (PDT)
-From:   Sergio Paracuellos <sergio.paracuellos@gmail.com>
-To:     linux-clk@vger.kernel.org
-Cc:     linux-mips@vger.kernel.org, tsbogend@alpha.franken.de,
-        john@phrozen.org, linux-kernel@vger.kernel.org,
-        p.zabel@pengutronix.de, mturquette@baylibre.com, sboyd@kernel.org,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        matthias.bgg@gmail.com, devicetree@vger.kernel.org,
-        arinc.unal@arinc9.com, yangshiji66@outlook.com
-Subject: [PATCH v5 8/9] mips: ralink: get cpu rate from new driver code
-Date:   Mon, 19 Jun 2023 06:09:40 +0200
-Message-Id: <20230619040941.1340372-9-sergio.paracuellos@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20230619040941.1340372-1-sergio.paracuellos@gmail.com>
-References: <20230619040941.1340372-1-sergio.paracuellos@gmail.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        with ESMTP id S229592AbjFSEnD (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Mon, 19 Jun 2023 00:43:03 -0400
+Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de [81.169.146.164])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0C851B8;
+        Sun, 18 Jun 2023 21:43:01 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1687149767; cv=none;
+    d=strato.com; s=strato-dkim-0002;
+    b=VpVgzpR6PCCUn6kx74GhMVJK9aSwq/xS7P/wUQeqgsovFhhsHN3irQIfOgHivkhEzF
+    P3pLWbFHTrFwLYPOPV44zVYOa7EzpIyL2DyCnp+Kig4Tb6kx/BM6I+ZkfOXH4nQ5FKQQ
+    MHQNi5RTZXorzKcvgn8ifsgiV6qf0Wvk3AZLuUl9rAqSnNwmVQC+VHnSzKpCQYONRh1p
+    65TYL+RQpz9OiFZv/C0A554bgR3hGB36Pmfqvax0nQRDs89RlcciCsF3/3W/csy5gUrG
+    bY6uP3T7O6j+ckbUDfbnmFkMcF15YbKOUQObM87P6hSy1ADZA1a7CLTNhat+2Q8A9m7O
+    JOuA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1687149767;
+    s=strato-dkim-0002; d=strato.com;
+    h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:Cc:Date:
+    From:Subject:Sender;
+    bh=JG15ksB+d5M5Is+HF2zvoL07mEewhS2UrKIpTdHlrw4=;
+    b=h7Q/hq6HfP+CxuZCOX8bgb+BLtgHDavPBJvBaC8S9EeT+nZ2Spcr8uIgYn6PMciyiq
+    9SuYoMZn0K5M1AV2rDv9rwhpOQkE45jjph45P086hS0KYnfzcNLkkmvuJQ7pNP0nhB6Y
+    9aj7KC+WVXmdtfZ3ltKQ0SZek3NZcjnfSe+ne6H2vy/t4YbpYv6uhyZuYc0mTumVTulF
+    PX2YHYg8CZsFU7vgHNuRoaaijgTAKIgyFG47D5cv/F3GfSe7GYr0h1ROMauRVyXB/HGv
+    /hc3XTg04FFe2T3EInUoTAHcStk340wbVFdw+WWLdq2VohbKTec5EUl0j0DS88P5QWAi
+    6rCA==
+ARC-Authentication-Results: i=1; strato.com;
+    arc=none;
+    dkim=none
+X-RZG-CLASS-ID: mo01
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1687149767;
+    s=strato-dkim-0002; d=goldelico.com;
+    h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:Cc:Date:
+    From:Subject:Sender;
+    bh=JG15ksB+d5M5Is+HF2zvoL07mEewhS2UrKIpTdHlrw4=;
+    b=m8Q7JlXg15C3YvlV0FJZCuoDCSEAQK6y+9P/ZgHoDPyh8ld4sWfPiN5Z5kI5Aqf6Dx
+    1UDO4vfCndd0KTR95Lp/zYErBP/b35imEbysCCxkGdsg5jw6ub1Iq9NGGnjZTMGLzHc7
+    1iPEEA5bR34QmvP0MF/7SAhaZKetjvYgR7EtGyuCZad7cz/rqAOXB4x90EJLYFDp7B6V
+    Kc6kTjEROZ6gEz6fFSfztnnLJ2+wLhqCKrNu5P0m/aV1iHhflLxq8dghFbLttOyJnL9F
+    M4rBz8pZWci7tIjTou82yXZiyw+jKwi40HgYLTbxCSkPy09jXaMqTIWZliUrxxpMhGtP
+    lfBA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1687149767;
+    s=strato-dkim-0003; d=goldelico.com;
+    h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:Cc:Date:
+    From:Subject:Sender;
+    bh=JG15ksB+d5M5Is+HF2zvoL07mEewhS2UrKIpTdHlrw4=;
+    b=NfYgr2rw4BurEfKYRMxSft6uimz3zqFrhOslbXjFv2J6v3BKLDBGscrQFnQ74eeYOo
+    pPQq5pw0Y5Fk/w9rf4Dw==
+X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMgPgp8VKxflSZ1P34KBj5Apz9PSN6LgsXcGfpWU="
+Received: from imac.fritz.box
+    by smtp.strato.de (RZmta 49.6.0 DYNA|AUTH)
+    with ESMTPSA id jaf17fz5J4glD2t
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (curve X9_62_prime256v1 with 256 ECDH bits, eq. 3072 bits RSA))
+        (Client did not present a certificate);
+    Mon, 19 Jun 2023 06:42:47 +0200 (CEST)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.21\))
+Subject: Re: [PATCH 0/9] MIPS: CI20: Add WiFi / Bluetooth support
+From:   "H. Nikolaus Schaller" <hns@goldelico.com>
+In-Reply-To: <ebf776a8fb8dee045e7661daaca4564fe39917a6.camel@crapouillou.net>
+Date:   Mon, 19 Jun 2023 06:42:46 +0200
+Cc:     list@opendingux.net, Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        Conor Dooley <conor+dt@kernel.org>, linux-mips@vger.kernel.org,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Paul Boddie <paul@boddie.org.uk>,
+        Paul Burton <paulburton@kernel.org>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <92BF3D49-42EB-4153-BB64-20031CF25A11@goldelico.com>
+References: <20230615084006.79194526F801@goldelico.com>
+ <C1924536-FA97-4E75-9D22-99E5AF24EE5B@goldelico.com>
+ <A8EBCBA4-D9BA-4C2F-9C91-38128D06EDBA@goldelico.com>
+ <AA802E24-A97B-42B6-90A4-5ECB1E4D9294@goldelico.com>
+ <5EF6B0D2-2B84-4C98-B799-88062E035EC1@goldelico.com>
+ <43DCEEA5-C013-44BE-85C7-D61A980B0EA5@goldelico.com>
+ <ebf776a8fb8dee045e7661daaca4564fe39917a6.camel@crapouillou.net>
+To:     Paul Cercueil <paul@crapouillou.net>
+X-Mailer: Apple Mail (2.3445.104.21)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-At very early stage on boot, there is a need to set 'mips_hpt_frequency'.
-This timer frequency is a half of the CPU frequency. To get clocks properly
-set we need to call to 'of_clk_init()' and properly get cpu clock frequency
-afterwards. Depending on the SoC, CPU clock index and compatible differs, so
-use them to get the proper clock frm the clock provider. Hence, adapt code
-to be aligned with new clock driver.
+Hi Paul,
 
-Signed-off-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
----
- arch/mips/ralink/clk.c | 61 +++++++++++++++++++++++++++++++++++-------
- 1 file changed, 52 insertions(+), 9 deletions(-)
+> Am 18.06.2023 um 13:51 schrieb Paul Cercueil <paul@crapouillou.net>:
 
-diff --git a/arch/mips/ralink/clk.c b/arch/mips/ralink/clk.c
-index 5b02bb7e0829..9db73fcac522 100644
---- a/arch/mips/ralink/clk.c
-+++ b/arch/mips/ralink/clk.c
-@@ -11,29 +11,72 @@
- #include <linux/clkdev.h>
- #include <linux/clk.h>
- #include <linux/clk-provider.h>
-+#include <asm/mach-ralink/ralink_regs.h>
- 
- #include <asm/time.h>
- 
- #include "common.h"
- 
--void ralink_clk_add(const char *dev, unsigned long rate)
-+static const char *clk_cpu(int *idx)
- {
--	struct clk *clk = clk_register_fixed_rate(NULL, dev, NULL, 0, rate);
--
--	if (!clk)
--		panic("failed to add clock");
--
--	clkdev_create(clk, NULL, "%s", dev);
-+	switch (ralink_soc) {
-+	case RT2880_SOC:
-+		*idx = 0;
-+		return "ralink,rt2880-sysc";
-+	case RT3883_SOC:
-+		*idx = 0;
-+		return "ralink,rt3883-sysc";
-+	case RT305X_SOC_RT3050:
-+		*idx = 0;
-+		return "ralink,rt3050-sysc";
-+	case RT305X_SOC_RT3052:
-+		*idx = 0;
-+		return "ralink,rt3052-sysc";
-+	case RT305X_SOC_RT3350:
-+		*idx = 1;
-+		return "ralink,rt3350-sysc";
-+	case RT305X_SOC_RT3352:
-+		*idx = 1;
-+		return "ralink,rt3352-sysc";
-+	case RT305X_SOC_RT5350:
-+		*idx = 1;
-+		return "ralink,rt5350-sysc";
-+	case MT762X_SOC_MT7620A:
-+		*idx = 2;
-+		return "ralink,mt7620-sysc";
-+	case MT762X_SOC_MT7620N:
-+		*idx = 2;
-+		return "ralink,mt7620-sysc";
-+	case MT762X_SOC_MT7628AN:
-+		*idx = 1;
-+		return "ralink,mt7628-sysc";
-+	case MT762X_SOC_MT7688:
-+		*idx = 1;
-+		return "ralink,mt7688-sysc";
-+	default:
-+		*idx = -1;
-+		return "invalid";
-+	}
- }
- 
- void __init plat_time_init(void)
- {
-+	struct of_phandle_args clkspec;
-+	const char *compatible;
- 	struct clk *clk;
-+	int cpu_clk_idx;
- 
- 	ralink_of_remap();
- 
--	ralink_clk_init();
--	clk = clk_get_sys("cpu", NULL);
-+	compatible = clk_cpu(&cpu_clk_idx);
-+	if (cpu_clk_idx == -1)
-+		panic("unable to get CPU clock index");
-+
-+	of_clk_init(NULL);
-+	clkspec.np = of_find_compatible_node(NULL, NULL, compatible);
-+	clkspec.args_count = 1;
-+	clkspec.args[0] = cpu_clk_idx;
-+	clk = of_clk_get_from_provider(&clkspec);
- 	if (IS_ERR(clk))
- 		panic("unable to get CPU clock, err=%ld", PTR_ERR(clk));
- 	pr_info("CPU Clock: %ldMHz\n", clk_get_rate(clk) / 1000000);
--- 
-2.25.1
+>> And the issue seems to be that without matching the node names the
+>> voltages in the device tree may have been ignored completely all the
+>> time... Now it sets up voltages, which should happen. But different
+>> ones for my board which breaks boot.
+>=20
+> So the node names fix caused the driver to actually use the info from
+> DT, which doesn't allow the board to boot. Nice.
+
+Very good summary :)
+
+As usual the fix is just a one-liner, finding what to do is multi-hours.
+
+>=20
+>> Finally I did risk (I have no replacement CI20 board and they are no
+>> longer
+>> on sale... RS part# was 125-3305 Mouser 456-VL-62851) to run a test
+>> with
+>> rename to "DCDC1" but changing the voltage to 1200mV. And this
+>> version boots.
+>=20
+> Looking at the JZ4780_DS.PDF file, the SoC actually wants 1.1V so the
+> DT is not wrong - in theory. But in practice it does not work, as you
+> experienced yourself. However, if the ACT8600 defaults to 1.2V, or if
+> the bootloader configures it to 1.2V, I would think that this is
+> actually a voltage that the SoC can handle - otherwise the SoC would =
+be
+> overvolted until the kernel starts, and the board design would be
+> flawed.
+>=20
+> I measured that the old 3.x kernel keeps the SoC voltage at 1.2V, so =
+it
+> sounds like a better default. Therefore the fix here would be to raise
+> the DCDC1 regulator to 1.2V.
+
+I finally found my JZ4780_DS.pdf (Release Date: Nov. 20, 2014).
+
+According to Table 3-1 the absolute maximum for VDDcore is 1.21V.
+According to Table 3-2 the recommended range is 0.99V to 1.21V. 1.1V is =
+only "typical".
+According to 1.3 Characteristic: "the Core should run at 1.1 -0.1/+0.2V"
+
+So 1.1V should be right...
+
+But in practise it may be that the ACT8 seems to come up with 1.2V
+as chip-internal default during boot. Or U-Boot is initializing it as =
+well.
+
+Maybe I find some time to measure some test point or capacitor while
+breaking into U-Boot.
+
+BR,
+Nikolaus
 

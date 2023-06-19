@@ -2,381 +2,390 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E700BEB64DB
-	for <linux-mips@archiver.kernel.org>; Mon, 19 Jun 2023 14:20:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 35371EB64DA
+	for <linux-mips@archiver.kernel.org>; Mon, 19 Jun 2023 14:59:21 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230075AbjFSOUd convert rfc822-to-8bit (ORCPT
-        <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 19 Jun 2023 10:20:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60358 "EHLO
+        id S232298AbjFSO7Q (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 19 Jun 2023 10:59:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49960 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229629AbjFSOUc (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Mon, 19 Jun 2023 10:20:32 -0400
-Received: from mail-ot1-f42.google.com (mail-ot1-f42.google.com [209.85.210.42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B93CE7;
-        Mon, 19 Jun 2023 07:20:30 -0700 (PDT)
-Received: by mail-ot1-f42.google.com with SMTP id 46e09a7af769-6b16cbe4fb6so3356963a34.1;
-        Mon, 19 Jun 2023 07:20:30 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1687184429; x=1689776429;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=jFntx4YXgadpDVJ2Ga1nOHhwiQ9Nxhf2XabKx8SJuMo=;
-        b=Zoh+kKb4472tgecDyBKfYW3/eedm8pazhMdrW5B+QVa3ityBj3y9VEirW5WdYl1LYW
-         8YJfY7YbhfItBXDfboeuqNc3iIWmvdmcxhMruKa/im6wG+WeVkoptbvQSBc/MM2eBPqC
-         FDTV0o9vl44qxgY/tVvPdBpMF2NXBhan/iibMSEbTNZABJtL4jkU22VwL6wHItNgfwou
-         Hkz3UQUGr3Z/NOmHc+pE0e8oWq3nmKdtGIVIaccLDryC6FYNE5Hl6o1jc9l67UubofFI
-         p/oU1+17MsZUyUbgAy6N2n33u8Z0OoUm6MNJFp35AhIMfu2eJvbCo3F7P/Te5jLbKxIR
-         OldQ==
-X-Gm-Message-State: AC+VfDxXEEfkgYXCiPcc1Hl/lvma5Sh6f+A2buqFu0wsIdP3t3UepPE8
-        YQq9GsnewHN7YppNY8BQAHp9i5CrNDYVJTqL
-X-Google-Smtp-Source: ACHHUZ6Xh9eV38S2DnaLo1ZrZH0xo5XacJSuvhbN/uXJqFyLxSxjrBpL1wwT1qfKY2sQIWnWIYog1g==
-X-Received: by 2002:a05:6358:6157:b0:12f:2567:db9d with SMTP id 23-20020a056358615700b0012f2567db9dmr989530rwt.20.1687184429313;
-        Mon, 19 Jun 2023 07:20:29 -0700 (PDT)
-Received: from mail-yb1-f179.google.com (mail-yb1-f179.google.com. [209.85.219.179])
-        by smtp.gmail.com with ESMTPSA id o204-20020a0dccd5000000b005702597583fsm2809064ywd.26.2023.06.19.07.20.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 19 Jun 2023 07:20:28 -0700 (PDT)
-Received: by mail-yb1-f179.google.com with SMTP id 3f1490d57ef6-bcad7f7dabcso2623104276.0;
-        Mon, 19 Jun 2023 07:20:27 -0700 (PDT)
-X-Received: by 2002:a5b:88e:0:b0:ba8:33d9:b583 with SMTP id
- e14-20020a5b088e000000b00ba833d9b583mr987140ybq.13.1687184427316; Mon, 19 Jun
- 2023 07:20:27 -0700 (PDT)
+        with ESMTP id S232277AbjFSO7N (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Mon, 19 Jun 2023 10:59:13 -0400
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E88C10C7;
+        Mon, 19 Jun 2023 07:58:54 -0700 (PDT)
+Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 35J9nd67030275;
+        Mon, 19 Jun 2023 14:58:31 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : in-reply-to : references :
+ content-transfer-encoding : content-type : mime-version;
+ s=corp-2023-03-30; bh=Jb1WHDJ5NFGzhYGWXkIj4BLtXsbHmNL3RB67Tz30+Eo=;
+ b=2ko/9cH93e/3XDGl+rOP+R7WciLNShPPLuLVsKcAR86aBsgkrx0e9JW5xItSI+mnh2Ow
+ MFsKEOGso6vFY1tSQd1fRomCPp26n91JpQ3aW/rO1zpnph1E2DuwwvvMc/sCoTm/AFqt
+ rbsIbz+zk2+3jDrhioiNSu4hmf+eRUpYpAGrknYSLrnlWp8VwQ+RUXkuZeFudApXTiIX
+ 982jJf3M2LKXPuabPHUfhcGL6gT9O6ztIRXUKP7LQoe91RpjXsdyeZGe0NLzPL5En+y0
+ PMhMAMSaVwnmmtoHOm8PPGYEMWB+AuhaAFqDpm9htyQ/8Wd6JHI59C+8BFPjDlPBLXnK Ig== 
+Received: from iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta03.appoci.oracle.com [130.35.103.27])
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3r95cttv1w-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 19 Jun 2023 14:58:31 +0000
+Received: from pps.filterd (iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+        by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 35JD9md9005929;
+        Mon, 19 Jun 2023 14:58:29 GMT
+Received: from nam04-bn8-obe.outbound.protection.outlook.com (mail-bn8nam04lp2047.outbound.protection.outlook.com [104.47.74.47])
+        by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3r93939jdk-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 19 Jun 2023 14:58:29 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=NktQOvk1dHwMlr5KV5+6B2EUnp5V/XyyQ5JvyYbv02j3gakAoTQu5QsGqB2DyCN+cbYb2z56PSptJzffRXi4L6lz5Ds0FiPH0SxftGkkeM6exiuOhzvnHNTaoq2JS8uhGhixQJw4bX8m7v9fgkDHN0PE7M3B7qWn0wlZ0h2ScyyacePMTGWubCEY7F2qsZBRIP+rqW2dzDMyZknOs/HSvJvwF5fMw62UIQLHY5QzYSYbryrxChE95TybgkgUk/tndEluAeE0Khv2n8fciEqvSsQtKSiKPCgLT0H1/8m8iKIjRBvsSEDqGC909fO+Kl4dztIUnmDXLgNe8XzMjqQ8Ew==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Jb1WHDJ5NFGzhYGWXkIj4BLtXsbHmNL3RB67Tz30+Eo=;
+ b=jssx1ZKN6L3X+0gqzOhtpHZVGWk7g3mXzyA93k4XYem5Ke5c26zZlJyqhvA6OaSBN/X0b0rqPNdUcaum5g4Bb0eb3XPdQgeBAXRFeBm8dnNmi5tYBA6cM5Pp7XhTcR+e45b0IR1ebvYV35YUbfpl8DTpQUhsfYm0R39zWyPWr5cHcaJUAWAaZTCfUDFWTovnfpI98aW+od3ywN+DkSYoheJBFwWWJEOTZpgYp3uY5MoJjIrvl4ePaDyGNj22RIUjHfQ78RUIwTB3HmLUdeaYiKZ1w5wUaa4fYct0VsZR97/5zN9GBFGnTzaRGP4yYC3QnUdI5Xy/Qw4rPOVshZsFxQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Jb1WHDJ5NFGzhYGWXkIj4BLtXsbHmNL3RB67Tz30+Eo=;
+ b=MOI6mtfgSYfXhqsHzFxHSY4o+iaS99Q3BmAIaoUxQR2EHUkfA9zgGg2dJxcgr4GgDyJjAXLu+ErhPcLybddCDMM9/WAXr2GS8gpfqqYeOXertr89C1JRVXPQS9jK3dQEPj85R+cgi6OjVm2gVq2G9bznqTRvwYaxNNT86s7mbV0=
+Received: from CO1PR10MB4531.namprd10.prod.outlook.com (2603:10b6:303:6c::22)
+ by SA1PR10MB6543.namprd10.prod.outlook.com (2603:10b6:806:2bc::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6500.36; Mon, 19 Jun
+ 2023 14:58:16 +0000
+Received: from CO1PR10MB4531.namprd10.prod.outlook.com
+ ([fe80::8b8f:b4b1:bb78:b048]) by CO1PR10MB4531.namprd10.prod.outlook.com
+ ([fe80::8b8f:b4b1:bb78:b048%5]) with mapi id 15.20.6500.036; Mon, 19 Jun 2023
+ 14:58:13 +0000
+From:   Eric DeVolder <eric.devolder@oracle.com>
+To:     linux@armlinux.org.uk, catalin.marinas@arm.com, will@kernel.org,
+        chenhuacai@kernel.org, geert@linux-m68k.org,
+        tsbogend@alpha.franken.de, James.Bottomley@HansenPartnership.com,
+        deller@gmx.de, ysato@users.sourceforge.jp, dalias@libc.org,
+        glaubitz@physik.fu-berlin.de, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-ia64@vger.kernel.org, loongarch@lists.linux.dev,
+        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
+        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
+        linux-sh@vger.kernel.org
+Cc:     kernel@xen0n.name, mpe@ellerman.id.au, npiggin@gmail.com,
+        christophe.leroy@csgroup.eu, paul.walmsley@sifive.com,
+        palmer@dabbelt.com, aou@eecs.berkeley.edu, hca@linux.ibm.com,
+        gor@linux.ibm.com, agordeev@linux.ibm.com,
+        borntraeger@linux.ibm.com, svens@linux.ibm.com, hpa@zytor.com,
+        keescook@chromium.org, paulmck@kernel.org, peterz@infradead.org,
+        frederic@kernel.org, akpm@linux-foundation.org, ardb@kernel.org,
+        samitolvanen@google.com, juerg.haefliger@canonical.com,
+        arnd@arndb.de, rmk+kernel@armlinux.org.uk,
+        linus.walleij@linaro.org, sebastian.reichel@collabora.com,
+        rppt@kernel.org, kirill.shutemov@linux.intel.com,
+        anshuman.khandual@arm.com, ziy@nvidia.com, masahiroy@kernel.org,
+        ndesaulniers@google.com, mhiramat@kernel.org, ojeda@kernel.org,
+        thunder.leizhen@huawei.com, xin3.li@intel.com, tj@kernel.org,
+        gregkh@linuxfoundation.org, tsi@tuyoix.net, bhe@redhat.com,
+        hbathini@linux.ibm.com, sourabhjain@linux.ibm.com,
+        eric.devolder@oracle.com, boris.ostrovsky@oracle.com,
+        konrad.wilk@oracle.com
+Subject: [PATCH v2 01/13] kexec: consolidate kexec and crash options into kernel/Kconfig.kexec
+Date:   Mon, 19 Jun 2023 10:57:49 -0400
+Message-Id: <20230619145801.1064716-2-eric.devolder@oracle.com>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20230619145801.1064716-1-eric.devolder@oracle.com>
+References: <20230619145801.1064716-1-eric.devolder@oracle.com>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: DM6PR06CA0085.namprd06.prod.outlook.com
+ (2603:10b6:5:336::18) To CO1PR10MB4531.namprd10.prod.outlook.com
+ (2603:10b6:303:6c::22)
 MIME-Version: 1.0
-References: <CAD=FV=WvP--wJwBQtnSoW_xb57R1Wf9dH0XzWxe+NorczXfeAw@mail.gmail.com>
- <20230617161222.wy55pbomnrrlfy5u@pengutronix.de> <CAD=FV=U5gbMUNteyyFcTvHVBDWzfthM0aDirJC+yXGovDwMOBA@mail.gmail.com>
- <20230618123915.hmy66z7e532jhwgk@pengutronix.de> <jlq2xayh4dxfigfsh2fms2kt4hlrqcwxblffmqq7czbhqhhvz7@hsvol72f5i3y>
- <20230618162950.6th2yo66baqay5mv@pengutronix.de> <vxjp5c4wojcvbnp3ghsspwkgrc4mjmskzl56jkuxlgfhcji7kx@m3hg525p7y6a>
- <20230619105342.ugf5gz26gcalcsi6@pengutronix.de> <a6ex232lwyovzzazfh6jfvlwszppr2624czgcc5sa4nthkgecf@asauiw3rf4vi>
- <CAMuHMdWERLXOa4bQvsb7=gx+Q=Hn8v=XJZxahV0j3Vw1xKUYiQ@mail.gmail.com> <vegkiv4puxederjvonyyqsg4j5swpi2h7ttg7ng6gq2tibk4gy@afa5vexshp7q>
-In-Reply-To: <vegkiv4puxederjvonyyqsg4j5swpi2h7ttg7ng6gq2tibk4gy@afa5vexshp7q>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 19 Jun 2023 16:20:12 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdXf5Pao+Fjf42iRV_iMFEcb+F=s09NG+mudB-L5wWF_OA@mail.gmail.com>
-Message-ID: <CAMuHMdXf5Pao+Fjf42iRV_iMFEcb+F=s09NG+mudB-L5wWF_OA@mail.gmail.com>
-Subject: Re: patches dropped from drm-misc-next [Was: Re: [PATCH 00/53] drm:
- Convert to platform remove callback returning] void
-To:     Maxime Ripard <mripard@kernel.org>
-Cc:     =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Raymond Tan <raymond.tan@intel.com>,
-        =?UTF-8?Q?Heiko_St=C3=BCbner?= <heiko@sntech.de>,
-        Akhil P Oommen <quic_akhilpo@quicinc.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        dri-devel@lists.freedesktop.org,
-        Stanislaw Gruszka <stanislaw.gruszka@linux.intel.com>,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Anitha Chrisanthus <anitha.chrisanthus@intel.com>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        linux-samsung-soc@vger.kernel.org, Robert Foss <rfoss@kernel.org>,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        Samuel Holland <samuel@sholland.org>,
-        Kevin Hilman <khilman@baylibre.com>,
-        =?UTF-8?B?TWHDrXJhIENhbmFs?= <mcanal@igalia.com>,
-        Javier Martinez Canillas <javierm@redhat.com>,
-        Kuogee Hsieh <quic_khsieh@quicinc.com>,
-        Xinliang Liu <xinliang.liu@linaro.org>,
-        Danilo Krummrich <dakr@redhat.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        linux-sunxi@lists.linux.dev, Rahul T R <r-ravikumar@ti.com>,
-        Raphael Gallais-Pou <raphael.gallais-pou@foss.st.com>,
-        Jani Nikula <jani.nikula@intel.com>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        etnaviv@lists.freedesktop.org, Yuan Can <yuancan@huawei.com>,
-        Inki Dae <inki.dae@samsung.com>,
-        Jessica Zhang <quic_jesszhan@quicinc.com>,
-        Sean Paul <sean@poorly.run>,
-        Johan Hovold <johan+linaro@kernel.org>,
-        Hyun Kwon <hyun.kwon@xilinx.com>,
-        Andrew Jeffery <andrew@aj.id.au>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        Seung-Woo Kim <sw0312.kim@samsung.com>,
-        =?UTF-8?Q?Noralf_Tr=C3=B8nnes?= <noralf@tronnes.org>,
-        kernel@pengutronix.de, Alex Deucher <alexander.deucher@amd.com>,
-        freedreno@lists.freedesktop.org,
-        Claudiu Beznea <claudiu.beznea@microchip.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        linux-aspeed@lists.ozlabs.org,
-        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        John Stultz <jstultz@google.com>,
-        Mihail Atanassov <mihail.atanassov@arm.com>,
-        Liang He <windhl@126.com>,
-        =?UTF-8?B?VmlsbGUgU3lyasOkbMOk?= <ville.syrjala@linux.intel.com>,
-        lima@lists.freedesktop.org, Chunyan Zhang <zhang.lyra@gmail.com>,
-        Alexey Brodkin <abrodkin@synopsys.com>,
-        Minghao Chi <chi.minghao@zte.com.cn>,
-        Steven Price <steven.price@arm.com>,
-        linux-rockchip@lists.infradead.org,
-        Ben Skeggs <bskeggs@redhat.com>,
-        Russell King <linux+etnaviv@armlinux.org.uk>,
-        Alain Volmat <alain.volmat@foss.st.com>,
-        Liu Ying <victor.liu@nxp.com>, linux-arm-msm@vger.kernel.org,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        Wang Jianzheng <wangjianzheng@vivo.com>,
-        linux-amlogic@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Boris Brezillon <bbrezillon@kernel.org>,
-        Sandy Huang <hjc@rock-chips.com>,
-        Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Brian Starkey <brian.starkey@arm.com>,
-        Karol Herbst <kherbst@redhat.com>,
-        Miaoqian Lin <linmq006@gmail.com>,
-        Stefan Agner <stefan@agner.ch>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Andrzej Hajda <andrzej.hajda@intel.com>,
-        Sam Ravnborg <sam@ravnborg.org>, Rob Herring <robh@kernel.org>,
-        Xinwei Kong <kong.kongxinwei@hisilicon.com>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Mali DP Maintainers <malidp@foss.arm.com>,
-        Joel Stanley <joel@jms.id.au>, nouveau@lists.freedesktop.org,
-        Orson Zhai <orsonzhai@gmail.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Lyude Paul <lyude@redhat.com>, Arnd Bergmann <arnd@arndb.de>,
-        Guo Zhengkui <guozhengkui@vivo.com>,
-        Liviu Dudau <liviu.dudau@arm.com>,
-        Alison Wang <alison.wang@nxp.com>,
-        Abhinav Kumar <quic_abhinavk@quicinc.com>,
-        Christian Gmeiner <christian.gmeiner@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Baolin Wang <baolin.wang@linux.alibaba.com>,
-        Paul Cercueil <paul@crapouillou.net>,
-        Tomi Valkeinen <tomba@kernel.org>,
-        Deepak R Varma <drv@mailo.com>,
-        Karol Wachowski <karol.wachowski@linux.intel.com>,
-        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
-        Ricardo Ribalda <ribalda@chromium.org>,
-        Tian Tao <tiantao6@hisilicon.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        linux-stm32@st-md-mailman.stormreply.com,
-        Emma Anholt <emma@anholt.net>,
-        Konrad Dybcio <konrad.dybcio@somainline.org>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Doug Anderson <dianders@chromium.org>,
-        Liu Shixin <liushixin2@huawei.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Laura Nao <laura.nao@collabora.com>,
-        David Airlie <airlied@gmail.com>, Marek Vasut <marex@denx.de>,
-        linux-renesas-soc@vger.kernel.org,
-        Yongqin Liu <yongqin.liu@linaro.org>,
-        Jayshri Pawar <jpawar@cadence.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Russell King <linux@armlinux.org.uk>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        Qiang Yu <yuq825@gmail.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Melissa Wen <mwen@igalia.com>,
-        linux-mediatek@lists.infradead.org,
-        Fabio Estevam <festevam@gmail.com>,
-        Laurentiu Palcu <laurentiu.palcu@oss.nxp.com>,
-        linux-tegra@vger.kernel.org, Stephen Boyd <swboyd@chromium.org>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Yannick Fertre <yannick.fertre@foss.st.com>,
-        linux-mips@vger.kernel.org, Rob Clark <robdclark@gmail.com>,
-        Philippe Cornu <philippe.cornu@foss.st.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Jyri Sarha <jyri.sarha@iki.fi>,
-        Lucas Stach <l.stach@pengutronix.de>,
-        Stephen Rothwell <sfr@canb.auug.org.au>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CO1PR10MB4531:EE_|SA1PR10MB6543:EE_
+X-MS-Office365-Filtering-Correlation-Id: a0721874-1b29-4c90-e547-08db70d59af9
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: nOTZJgdlls9eZZLHhmYhSGmjQG7dhaLS1uftQAxMauNgMCwNlsTuWkmCu9Q/KHHJB1flu4GJOUE7GD+ZUy+27YjG/vfRPb5f0mgMKxV1lbDFDJKhD3ZpIgEHOjrBbgFgio+v1QfLHck5LDjcoblzkviJvYU68/2XCnltsn74KyPb/snI18MqRayxl30S4AyzK4ed31iqTvA5xSqdeD/gYc2nyYEYNvihNQLo9/BsM+SwZI2KZTeDhTLHSi5jyXj/Mri+7qvCv+Pe3d8OxM/1yvO2HBvQ2lqMJl7k4+yiVmOaupZSI+ed1SVHovMisd2Pq3GMxDX0lCutN9pWVehipmgzw9DN0Jk8Xp5oslz7afiaddszA+hnuMUK+qHb/YgRriF0EYomXLWOEF+x7Zo0IkUc0AMVEloJ8gpF5Izoj7yZUOqoN6v2RLlyzsN62IGj3Hy3Yp87UA6BdwgL9gR7coh2FQgoDeUgpAVJQmk62wIt6oghV29Anaz6dWh5O1WOos2FXr9vTIq8a2x2571pYAj0zqD6sHsK/cbEKLS9MWoKY4sCF97DOVWEX5ruoSz6AyCfl1L2d3j+s3gZJQlozMTIhPmd/OCS+NsATx8hR5I=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO1PR10MB4531.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(39860400002)(396003)(346002)(366004)(136003)(376002)(451199021)(7416002)(7366002)(66946007)(7406005)(8936002)(8676002)(66556008)(66476007)(107886003)(1076003)(26005)(186003)(6506007)(6512007)(36756003)(83380400001)(41300700001)(38100700002)(5660300002)(4326008)(316002)(2616005)(921005)(6666004)(6486002)(478600001)(2906002)(86362001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?WNE2kpkmjVDNO/im1rfUQU3qbaANaUbJRF7M37gDCCF7Q1kSIa639Ozqozis?=
+ =?us-ascii?Q?bm7gLio4T9Ze2E9Ua0rJ8re5gsT7HYRUYVkdeUYI7TswAgz13kZapn7oqxui?=
+ =?us-ascii?Q?IVSmMi9wXCcbJU99bGLy3XY2q2xCylsLXVw3H6UKTL60uXye62Xp78Ggai8H?=
+ =?us-ascii?Q?P+3CTmhhFCPWsDnMZBiRb39B6Ase27N0wuAQoPjHFg4eAagBX7vOKU3nRLeX?=
+ =?us-ascii?Q?vQiMBQc1bqBS8a1PG4lrP9Ay9YH4NAf2Dl1aoC0TYdyGTTmAX0XDhwCU+WuM?=
+ =?us-ascii?Q?KzlqMlIZRStL1swUxG7B62ddBEzl52+OH/WBoODrcRbexHCnZ4uscRbTCwkI?=
+ =?us-ascii?Q?9D6DRjW1M8oPLMHhNcHMEvFWacjfgOkrpC5K3cceWPQfyBzzwqxOicYDWRZw?=
+ =?us-ascii?Q?wdUD/1GWUysiTh7bd/UZM7+lxR+V+DRU3UWhJpCLsdejf5oVKKPm6jpNjGRa?=
+ =?us-ascii?Q?k1y7tmq7lCVfJFo/DAUGjZjEw6tmmWMlpoirvxuKYIPO+SCPGnsqYh68NqZ8?=
+ =?us-ascii?Q?8xyoIVFV21hBZPwVvIg1cf4Blmu6jrXSlDZYRNAx22m72u1O6fkcfVo/A88S?=
+ =?us-ascii?Q?zUVpt1kt4JAxRHsmWojJ8nYnT+2pAmQW/JE8dd1u1DYv7EdgTnhPfRxsPA9V?=
+ =?us-ascii?Q?51DNoTXCk6y2uBzlX04N9s9DqsC8wid0cdmtWZs3HF3sJj/JumzkNVEe6Rz4?=
+ =?us-ascii?Q?yll/Lw7jTrBWZd06hovyJkPXocRMSZa0Gq1vF5WSvCKvbyJCKtxiG7lEmTIn?=
+ =?us-ascii?Q?nxqr2A7yIx5m5loQaP9BqLQTkhE9dGo+9zDW7KHbfj5YSF+fgcJMXC8pIMBS?=
+ =?us-ascii?Q?0iX92LbnM27BVxORbw2mYs0fSQCoCDHDsvT8MdliZFbYp+FdDG2ApoEGxeVs?=
+ =?us-ascii?Q?YQsgcZcMtWj4M1enGYigx0ikhp84zwBAxEa0QVSaaouAsS49sfgX+IsFH1nA?=
+ =?us-ascii?Q?PLUBRTZeZ1FcakWfLfjUwFQ55mrzd1VXuka5awgsBViEaVxeGkQBrDhq70x6?=
+ =?us-ascii?Q?hsE9ioriKF/zl6x8bGNbrodaG6S4JJH/oHBRiKz81rS8l+ssKXm3cpa9wVbs?=
+ =?us-ascii?Q?Yvg4qNT9fusB3abGGkBFC/P5i8sz/XdVtlKCD/5hHvWmyjGShUBH0Qc2V/n8?=
+ =?us-ascii?Q?pvxLcbkpE6utTu/uUWFs+UI3XDSeQWQcTqKw/p8ltigv70T9v7msIKiTO8Cf?=
+ =?us-ascii?Q?0+zzKemmILG2S0crB1iRT9JhrhF8nkTmFVdTVB/GjMjNximOU1loHRs9XQjJ?=
+ =?us-ascii?Q?HdzNsG4lgWUcmlbkida6Sls581sMkygOVAi2m7qiQKBIbk6f1KJroRCf1+eO?=
+ =?us-ascii?Q?AVNFks6bJW2dmR8bM9vATMqZMEbfPA/7W4bGeLCTrSiV9cFTHd/6Bvj/6a8I?=
+ =?us-ascii?Q?RyCWBONfXEULka5oToX9BGbNk3qEtpzwgyYt1tlWBbNxTW1n7wEaiVVLivoM?=
+ =?us-ascii?Q?gERhM6rG/YMCUmcUQ3XOPXFOfIu0PD5wcBlckAoimjPbnOml2vBUG1KJWwyo?=
+ =?us-ascii?Q?0F5s+rq2RGsQavB2yedwcQwZlCYCKiN+8DAyiDgKf45DpuqjFxslUJkLhS3I?=
+ =?us-ascii?Q?bgbHQW+K0qH2QMBlD33CwR+lywIXUkU6ilKJ54n+MxeYKno6U8YvvHpFCp76?=
+ =?us-ascii?Q?ig=3D=3D?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 2
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: =?us-ascii?Q?JrpIWkbL7vS4zUlL7WQ29hWg5eFKHd7s4kDpOlkxIwpR8x+Y74rZcVTb44VK?=
+ =?us-ascii?Q?iY8/xIz64ul/+KuELkGjQ0Fs1bXXGCCpQf1k89I0I52yB9s3pMEyM82u+zdp?=
+ =?us-ascii?Q?lByuyC7EjNo165Rw707MKNywpR/bSR/zO68GxBJPuzwIiOm6MmONNzYuMWGj?=
+ =?us-ascii?Q?nKw2n/7j1NaYvpm4IASsEz0zyV3Z7PzkWiQK1+gZsKCp7uAXyjaWzsqD4S7Z?=
+ =?us-ascii?Q?Uoe/YBInFbJPyjilTKSzhwm6/Xzj3A/X1pEUT9GIUxNLJ2Mme+bFtCpl7/hc?=
+ =?us-ascii?Q?167AXv12zWgm/ZmwRxYoqBcyGgsZa+RQ7CTsZGJZY12UY1tdF9ZTCQheHdIY?=
+ =?us-ascii?Q?B7EBVgVMl5abG4JCM97XETAQMPOQaVBS7mHLaSg5BHSswOvHIVHGvL+2yteP?=
+ =?us-ascii?Q?SKaG/pFiWmbhlbmX4TLZtTrPBVjDVUw3EpVhUUM4KJMh632eqVDJDXGOMDj+?=
+ =?us-ascii?Q?IsvgU6wMf1NhWBE4U1BFfmKygLZLFuH/m2V08veise81yy8LQ0Ck8ZDZeomb?=
+ =?us-ascii?Q?eNbBko5WRuI9Lnz0mrxnoBnjFgtIGivXYdYVFXttkT7B6sJszjLI4zJIh0WJ?=
+ =?us-ascii?Q?SBBTipkoJQUCMFrGV5exHamrwDKGIk7w6OfUZBwLKkyOjTgIg82KN0v97j/r?=
+ =?us-ascii?Q?mlCa1scgC5i7Et170pbx0O45yaCg7hAX8oCzxTpHDzv4sYXjpdFXg3MvxSBd?=
+ =?us-ascii?Q?ho00Ae3/5p5iJngieW5AnYmlZrWi1xDZJIJWlVexs5DPuHzXZ4da8j+7jlF0?=
+ =?us-ascii?Q?xA7ehIGqFQrpJAmM42CAGXWPil9zY3haepPBoGuJc/0X1SX5+7TlpD23wxC/?=
+ =?us-ascii?Q?8rlzQ5OaqntRevVB+Z32URM7b3TfuvvNI/hvM91g0wmdK9XxBI+rxG6HOcE7?=
+ =?us-ascii?Q?tRVG/+GTYl4j3Mg1ddEpoVTetFYFoEXNeqzpy3mj9I4xjke912VgfXPhe1wm?=
+ =?us-ascii?Q?qVadokLs3rqZHI7DdiqZ3Tu38XAvNFfBFIF0LLCll9+FFuTKDCm0zcI6Tf7D?=
+ =?us-ascii?Q?eEnosazgkBo0ECCVxZuxYudcfGx2ge0SWUKAULHg+YVoRCPO2bAX8oKCgrw7?=
+ =?us-ascii?Q?W7lcDksZWIYMnEVvu/HEFknEgilgYJ4P6FhRhItkwx8pYB1kkWs4AGz6KjAk?=
+ =?us-ascii?Q?6p7PCJIeaJ6TKuSn7VevtzumOfBjz5ANaCVjPttfCeFLTRIrLxtioxCRn5uh?=
+ =?us-ascii?Q?RJfLdu95JOAUFMQf50isSz3Ohb858yQmiyMNZpM4rqxi3vk7oZ7J4sdZUPOW?=
+ =?us-ascii?Q?yJzH789gj67ke3l5rnCgUfhSDP5Fro4QgNPxFstmNfuLZBOIILvvSxHAWjYb?=
+ =?us-ascii?Q?jicTsbHlY+391aq/oU5YEqFeaIKolalmGmWlfDtgSi2GHyJw7onp2RgVTWiz?=
+ =?us-ascii?Q?uFcasDieNv/EEkUbhFOvEubU5nJXF60ts5yjkJLSMKlRqv+3SPSYpkY2iikF?=
+ =?us-ascii?Q?BDNgr2/eLUa+UmmHSYT2cMcnyQkSsL/2fS4p+4eNhsVtCfFravrv547Xu8Mz?=
+ =?us-ascii?Q?yi79fiKWSRALcpff5nPORVpqFEN84M25tKOyCKC6s17w6o9lSq2iG3lqQZd2?=
+ =?us-ascii?Q?8esfJPgouu+V/8wOWmMpMZKBrMJD43demvn3qBOq0wkKeqV4tc4XB14dc6rS?=
+ =?us-ascii?Q?YU5FZHkXR2mwvdvEelEqx/6rY/kMVK7suI3gEbTrvZ7dq9KjKubrqjutGK/T?=
+ =?us-ascii?Q?8KFpmuNmNqum7NQmg3LFr3sVheQC0/0qw3w1xxwrXoIzrPxPpaaJDKYJGwVM?=
+ =?us-ascii?Q?DSteEfXQYIHl2NfW1au70CYQRce3tHD7mLa2Pz4pP1LuVBXCFAmkfKaa9h6c?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-1: bj3GZE1Qk9qJGO0sfPCNOQASImFx2hasK+uYAWLHKF2kxkj6vV+5XBCm5zzs3tqNGME6XJczbYTzz5VerJpXxtqQPB0LYm/ZOnOqay351lVnUGs5S2kf3eyFMHgDgW7d6XdUxK/5BK5NYBI2L1q2j+P+a8S7RfJ5Qj/tPJ5G1XqLpoaifkutZ8DfZzgyJC27ybWp16m1zNmDMxf31LlYdphA0ousD2Vq3gxbiN/47SM11IAT31q1QvIEyL6jid79mMVtoAShLOPB+hd1bkbnPSR4JqNIavxvFRAy1OuC6bp+l5XqdhwG2h+wtBEQQe9Q/OIBL2gUIn/JOP6vwvIzlnXUZC9NdhfS6uHPqc9BoJsXygLYGpZP0X6GHQTycCZYLoemEz1+04PwgHffKEQZsriheu6oxjCzF0YqtlfzUJVQ3Tt+Hi2J7hwHQ/VIJ/IhzN8LzNmvvWn3rg==
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a0721874-1b29-4c90-e547-08db70d59af9
+X-MS-Exchange-CrossTenant-AuthSource: CO1PR10MB4531.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Jun 2023 14:58:13.4842
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: mr0aEaQHPPjBPdJXtsL8GVJSL9dTBX1q4MPdonxQ8VAIyASokYn5F1R2HL+bufcaL/1niNzjOxwl7FKy60hKlF0rL8GWfWUN2v+pfoKHDF4=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR10MB6543
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
+ definitions=2023-06-19_11,2023-06-16_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 adultscore=0
+ spamscore=0 bulkscore=0 malwarescore=0 phishscore=0 mlxscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2305260000 definitions=main-2306190137
+X-Proofpoint-GUID: XVcus6t9SsaBSRbxiEba_Q-kMxU2JwX1
+X-Proofpoint-ORIG-GUID: XVcus6t9SsaBSRbxiEba_Q-kMxU2JwX1
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Hi Maxime,
+The config options for kexec and crash features are consolidated
+into new file kernel/Kconfig.kexec. Under the "General Setup" submenu
+is a new submenu "Kexec and crash handling" where all the kexec and
+crash options that were once in the arch-dependent submenu "Processor
+type and features" are now consolidated.
 
-On Mon, Jun 19, 2023 at 4:02 PM Maxime Ripard <mripard@kernel.org> wrote:
-> On Mon, Jun 19, 2023 at 03:25:28PM +0200, Geert Uytterhoeven wrote:
-> > On Mon, Jun 19, 2023 at 2:51 PM Maxime Ripard <mripard@kernel.org> wrote:
-> > > On Mon, Jun 19, 2023 at 12:53:42PM +0200, Uwe Kleine-König wrote:
-> > > > On Mon, Jun 19, 2023 at 11:45:37AM +0200, Maxime Ripard wrote:
-> > > > > On Sun, Jun 18, 2023 at 06:29:50PM +0200, Uwe Kleine-König wrote:
-> > > > > > On Sun, Jun 18, 2023 at 04:32:55PM +0200, Maxime Ripard wrote:
-> > > > > > > On Sun, Jun 18, 2023 at 02:39:15PM +0200, Uwe Kleine-König wrote:
-> > > > > > > > On Sat, Jun 17, 2023 at 10:57:23AM -0700, Doug Anderson wrote:
-> > > > > > > > > On Sat, Jun 17, 2023 at 9:15 AM Uwe Kleine-König
-> > > > > > > > > <u.kleine-koenig@pengutronix.de> wrote:
-> > > > > > > > > > Together with the patches that were applied later the topmost commit
-> > > > > > > > > > from this series is c2807ecb5290 ("drm/omap: Convert to platform remove
-> > > > > > > > > > callback returning void"). This commit was part for the following next
-> > > > > > > > > > tags:
-> > > > > > > > > >
-> > > > > > > > > >         $ git tag -l --contains c2807ecb5290
-> > > > > > > > > >         next-20230609
-> > > > > > > > > >         next-20230613
-> > > > > > > > > >         next-20230614
-> > > > > > > > > >         next-20230615
-> > > > > > > > > >
-> > > > > > > > > > However in next-20230616 they are missing. In next-20230616
-> > > > > > > > > > drm-misc/for-linux-next was cf683e8870bd4be0fd6b98639286700a35088660.
-> > > > > > > > > > Compared to c2807ecb5290 this adds 1149 patches but drops 37 (that are
-> > > > > > > > > > also not included with a different commit id). The 37 patches dropped
-> > > > > > > > > > are 13cdd12a9f934158f4ec817cf048fcb4384aa9dc..c2807ecb5290:
-> > > > > > > > > >
-> > > > > > > > > >         $ git shortlog -s 13cdd12a9f934158f4ec817cf048fcb4384aa9dc..c2807ecb5290
-> > > > > > > > > >              1  Christophe JAILLET
-> > > > > > > > > >              2  Jessica Zhang
-> > > > > > > > > >              5  Karol Wachowski
-> > > > > > > > > >              1  Laura Nao
-> > > > > > > > > >             27  Uwe Kleine-König
-> > > > > > > > > >              1  Wang Jianzheng
-> > > > > > > > > >
-> > > > > > > > > >
-> > > > > > > > > > I guess this was done by mistake because nobody told me about dropping
-> > > > > > > > > > my/these patches? Can c2807ecb5290 please be merged into drm-misc-next
-> > > > > > > > > > again?
-> > > > > > > > >
-> > > > > > > > > Actually, it was probably a mistake that these patches got merged to
-> > > > > > > > > linuxnext during the 4 days that you noticed. However, your patches
-> > > > > > > > > aren't dropped and are still present in drm-misc-next.
-> > > > > > > > >
-> > > > > > > > > drm-misc has a bit of a unique model and it's documented fairly well here:
-> > > > > > > > >
-> > > > > > > > > https://drm.pages.freedesktop.org/maintainer-tools/drm-misc.html
-> > > > > > > >
-> > > > > > > > Is there a flaw then in this unique model (or its implementation) when
-> > > > > > > > drm-misc/for-linux-next moves in a non-fast-forward manner? This isn't
-> > > > > > > > expected, is it?
-> > > > > > >
-> > > > > > > There's no expectation afaik. Any tree merged in linux-next can be
-> > > > > > > rebased, drop a patch, amend one, etc. without any concern.
-> > > > > >
-> > > > > > I agree that there are no rules broken for a tree that is included in
-> > > > > > next and a maintainer is free to rewrite their tree independant of the
-> > > > > > tree being included in next.
-> > > > > >
-> > > > > > Still I think that shouldn't be used as an excuse.
-> > > > >
-> > > > > As an excuse for what?
-> > > >
-> > > > Just because the rules for trees in next allow the merged branch to be
-> > > > rewritten, shouldn't be used to justify rewriting the branch.
-> > > >
-> > > > IMHO you still should ensure that only commits make it into any next
-> > > > snapshot via your tree before X-rc1 for some X (e.g. v6.5) that you
-> > > > intend to be included in X-rc1.
-> > >
-> > > That's never been a next rule either. Rust support has been in next for
-> > > almost a year without being sent as a PR for example.
-> >
-> > https://elixir.bootlin.com/linux/latest/source/Documentation/process/2.Process.rst#L297
-> >
-> >    "The linux-next tree is, by design, a snapshot of what the mainline
-> >     is expected to look like after the next merge window closes."
-> >
-> > The general rule for linux-next is that its contents are intended to end
-> > up in the next kernel release, and that it should not contain commits
-> > that are intended for the next-next release, cfr. what Stephen sends
-> > out to new trees:
-> >
-> >    "You will need to ensure that the patches/commits in your tree/series have
-> >     been:
-> >             [...]
-> >          * destined for the current or next Linux merge window."
-> >
-> > and what he requests regularly in his announces, e.g.:
-> >
-> >    "Please do not add any v6.4 related commits to your linux-next included
-> >     branches until after v6.3-rc1 has been released."
->
-> Which is why those patches aren't in next anymore.
+The following options are impacted:
 
-So why were they in linux-next before?
-Was this a genuine mistake (things happen), or is there process
-or tooling to improve?
+ - KEXEC
+ - KEXEC_FILE
+ - KEXEC_SIG
+ - KEXEC_SIG_FORCE
+ - KEXEC_BZIMAGE_VERIFY_SIG
+ - KEXEC_JUMP
+ - CRASH_DUMP
 
-> > AFAIU, the exception to the rule is new, self-contained, and sometimes
-> > controversial development, which may have to cook for a few more cycles,
-> > if it ends up in a PR at all.
-> >
-> > > > > > For me, if a maintainer puts some patch into next that's a statement
-> > > > > > saying (approximately) "I think this patch is fine and I intend to
-> > > > > > send it to Linus during the next merge window.".
-> > > > >
-> > > > > I mean, that's what we're saying and doing?
-> > > >
-> > > > No, on 2023-06-09 I assumed that my patches will go into v6.5-rc1 (as it
-> > > > was part of next-20230609). A few days later however the patches were
-> > > > dropped.
-> > > >
-> > > > The two options that would have made the experience smoother for me are:
-> > > >
-> > > >  a) keep c2807ecb5290 in next and send it for v6.5-rc1; or
-> > >
-> > > That's not an option. You were simply too late for v6.5-rc1, unless you
-> > > expect us to get rid of timezones and work on week-ends. But surely you
-> > > don't.
-> >
-> > I don't think anyone expects you to do that...
-> >
-> > > >  b) keep c2807ecb5290 in a branch that doesn't result it entering next
-> > > >     before v6.5-rc1.
-> > >
-> > > All the drm-misc committers use dim. If that's a concern for you, feel
-> > > free to send a patch addressing this to dim.
-> >
-> > So you say this is an issue with the tooling? ;-)
-> > If the tooling breaks the rules, perhaps the tooling should be fixed?
->
-> We've been using dim for more than 5 years. It doesn't seem to work too bad?
+The three main options are KEXEC, KEXEC_FILE and CRASH_DUMP.
 
-I don't know anything about dim, so I cannot commit on that.
+Architectures specify support of certain KEXEC and CRASH features with
+similarly named new ARCH_SUPPORTS_<option> config options.
 
-> And it does feel like the goalposts are moving there: the discussion
-> started by "you shouldn't rebase a tree" and is now at "patches should
-> never be in a next branch if they can't reach the next merge window,
-> even though it's not apparent yet"
+Architectures can utilize the new ARCH_SELECTS_<option> config
+options to specify additional components when <option> is enabled.
 
-There is no such anti-rebasing rule for linux-next.
-Some branches and some subsystems do have a non-rebasing rule,
-but that's not applicable here, AFAIU.
+To summarize, the ARCH_SUPPORTS_<option> permits the <option> to be
+enabled, and the ARCH_SELECTS_<option> handles side effects (ie.
+select statements).
 
-Besides, won't you have to rebase the remaining commits from
-drm-misc-next on top of v6.5-rc1 anyway later?
+Signed-off-by: Eric DeVolder <eric.devolder@oracle.com>
+---
+ arch/Kconfig         |  13 -----
+ init/Kconfig         |   2 +
+ kernel/Kconfig.kexec | 110 +++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 112 insertions(+), 13 deletions(-)
+ create mode 100644 kernel/Kconfig.kexec
 
-> But yeah, I now that complaining about how much drm-misc sucks is fun
-> and all, but it's still not clear to me what a potential solution to
-> this would be?
-
-I'm so glad I'm not the one making personal attacks on drm-misc ;-)
-
-> Knowing that we can't rebase or close drm-misc-next, and that it should
-> be automated in dim somehow, what would that fix be?
-
-Again, I don't know what dim does.
-But I think the solution involves not merging anything in drm-next
-if there is reason to believe it won't make the next merge window
-(in this case: when it is applied to drm-misc-next after the cut-off point).
-
-Personally, I use foo-for-vX.Y branches.  Despite some of my
-foo-for-v6.6 branches already having new commits, I just hold off
-merging any of them in a for-next branch until after v6.5-rc1.
-
-Thanks!
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
+diff --git a/arch/Kconfig b/arch/Kconfig
+index 205fd23e0cad..a37730679730 100644
+--- a/arch/Kconfig
++++ b/arch/Kconfig
+@@ -11,19 +11,6 @@ source "arch/$(SRCARCH)/Kconfig"
+ 
+ menu "General architecture-dependent options"
+ 
+-config CRASH_CORE
+-	bool
+-
+-config KEXEC_CORE
+-	select CRASH_CORE
+-	bool
+-
+-config KEXEC_ELF
+-	bool
+-
+-config HAVE_IMA_KEXEC
+-	bool
+-
+ config ARCH_HAS_SUBPAGE_FAULTS
+ 	bool
+ 	help
+diff --git a/init/Kconfig b/init/Kconfig
+index 32c24950c4ce..4424447e23a5 100644
+--- a/init/Kconfig
++++ b/init/Kconfig
+@@ -1917,6 +1917,8 @@ config BINDGEN_VERSION_TEXT
+ config TRACEPOINTS
+ 	bool
+ 
++source "kernel/Kconfig.kexec"
++
+ endmenu		# General setup
+ 
+ source "arch/Kconfig"
+diff --git a/kernel/Kconfig.kexec b/kernel/Kconfig.kexec
+new file mode 100644
+index 000000000000..5d576ddfd999
+--- /dev/null
++++ b/kernel/Kconfig.kexec
+@@ -0,0 +1,110 @@
++# SPDX-License-Identifier: GPL-2.0-only
++
++menu "Kexec and crash features"
++
++config CRASH_CORE
++	bool
++
++config KEXEC_CORE
++	select CRASH_CORE
++	bool
++
++config KEXEC_ELF
++	bool
++
++config HAVE_IMA_KEXEC
++	bool
++
++config KEXEC
++	bool "Enable kexec system call"
++	default ARCH_DEFAULT_KEXEC
++	depends on ARCH_SUPPORTS_KEXEC
++	select KEXEC_CORE
++	help
++	  kexec is a system call that implements the ability to shutdown your
++	  current kernel, and to start another kernel. It is like a reboot
++	  but it is independent of the system firmware. And like a reboot
++	  you can start any kernel with it, not just Linux.
++
++	  The name comes from the similarity to the exec system call.
++
++	  It is an ongoing process to be certain the hardware in a machine
++	  is properly shutdown, so do not be surprised if this code does not
++	  initially work for you. As of this writing the exact hardware
++	  interface is strongly in flux, so no good recommendation can be
++	  made.
++
++config KEXEC_FILE
++	bool "Enable kexec file based system call"
++	depends on ARCH_SUPPORTS_KEXEC_FILE
++	select KEXEC_CORE
++	help
++	  This is new version of kexec system call. This system call is
++	  file based and takes file descriptors as system call argument
++	  for kernel and initramfs as opposed to list of segments as
++	  accepted by kexec system call.
++
++config KEXEC_SIG
++	bool "Verify kernel signature during kexec_file_load() syscall"
++	depends on KEXEC_FILE
++	help
++	  This option makes the kexec_file_load() syscall check for a valid
++	  signature of the kernel image. The image can still be loaded without
++	  a valid signature unless you also enable KEXEC_SIG_FORCE, though if
++	  there's a signature that we can check, then it must be valid.
++
++	  In addition to this option, you need to enable signature
++	  verification for the corresponding kernel image type being
++	  loaded in order for this to work.
++
++config KEXEC_SIG_FORCE
++	bool "Require a valid signature in kexec_file_load() syscall"
++	depends on KEXEC_SIG
++	help
++	  This option makes kernel signature verification mandatory for
++	  the kexec_file_load() syscall.
++
++config KEXEC_IMAGE_VERIFY_SIG
++	bool "Enable Image signature verification support"
++	default ARCH_DEFAULT_KEXEC_IMAGE_VERIFY_SIG
++	depends on KEXEC_SIG
++	depends on EFI && SIGNED_PE_FILE_VERIFICATION
++	help
++	  Enable Image signature verification support.
++
++config KEXEC_BZIMAGE_VERIFY_SIG
++	bool "Enable bzImage signature verification support"
++	depends on KEXEC_SIG
++	depends on SIGNED_PE_FILE_VERIFICATION
++	select SYSTEM_TRUSTED_KEYRING
++	help
++	  Enable bzImage signature verification support.
++
++config KEXEC_JUMP
++	bool "kexec jump"
++	depends on KEXEC && HIBERNATION
++	depends on ARCH_SUPPORTS_KEXEC_JUMP
++	help
++	  Jump between original kernel and kexeced kernel and invoke
++	  code in physical address mode via KEXEC
++
++config CRASH_DUMP
++	bool "kernel crash dumps"
++	depends on ARCH_SUPPORTS_CRASH_DUMP
++	select KEXEC_CORE
++	select CRASH_CORE
++	help
++	  Generate crash dump after being started by kexec.
++	  This should be normally only set in special crash dump kernels
++	  which are loaded in the main kernel with kexec-tools into
++	  a specially reserved region and then later executed after
++	  a crash by kdump/kexec. The crash dump kernel must be compiled
++	  to a memory address not used by the main kernel or BIOS using
++	  PHYSICAL_START, or it must be built as a relocatable image
++	  (CONFIG_RELOCATABLE=y).
++	  For more details see Documentation/admin-guide/kdump/kdump.rst
++
++	  For s390, this option also enables zfcpdump.
++	  See also <file:Documentation/s390/zfcpdump.rst>
++
++endmenu
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+2.31.1
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds

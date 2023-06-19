@@ -2,53 +2,53 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 78115C00528
-	for <linux-mips@archiver.kernel.org>; Mon, 19 Jun 2023 04:10:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5D50EEB64DB
+	for <linux-mips@archiver.kernel.org>; Mon, 19 Jun 2023 04:10:04 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229750AbjFSEJ6 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 19 Jun 2023 00:09:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41068 "EHLO
+        id S229802AbjFSEKB (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 19 Jun 2023 00:10:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41092 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229638AbjFSEJv (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Mon, 19 Jun 2023 00:09:51 -0400
-Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19BD1E4D;
-        Sun, 18 Jun 2023 21:09:50 -0700 (PDT)
-Received: by mail-wr1-x42b.google.com with SMTP id ffacd0b85a97d-3112c11fdc9so1137200f8f.3;
-        Sun, 18 Jun 2023 21:09:50 -0700 (PDT)
+        with ESMTP id S229711AbjFSEJ4 (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Mon, 19 Jun 2023 00:09:56 -0400
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7483D1BB;
+        Sun, 18 Jun 2023 21:09:55 -0700 (PDT)
+Received: by mail-wm1-x32e.google.com with SMTP id 5b1f17b1804b1-3f907f311ccso19192645e9.1;
+        Sun, 18 Jun 2023 21:09:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1687147788; x=1689739788;
+        d=gmail.com; s=20221208; t=1687147793; x=1689739793;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=n/vu+BfaX9/nXtP9I6CrmyWiA7s/9ryNRPNRydMSfbw=;
-        b=rWSUKJvt/jGydpbQj+ieYSPxqrAh2IzA8yRlhBExkpXNM13zRMkZ6yL08Ph9643jPV
-         o+y0aN0l/ePqnKbqaKJEuWCpKUeHTs/ZFRrv/D5Y/qenuajAnEJ4drn9Qdum/qRdNADr
-         liuDGifl+ZZyMTlL2TwyvsEs0t9egpO2N1oR5BLlpz9OwwRZ30sLxh3v8VZXsJZYmDfA
-         glrDJATPnOHJ6W5vty3X+q6cfj0POaT5Y2PKxVFd/oN/bd+mxqeK84+smgSEDiknVLPl
-         qDy0VC2LZnfVzBFvI8oIrVtbCs6pgbRZTj3G5w3tD9DcZFLl4hgo4x8828F1iUILgNo5
-         KLzQ==
+        bh=/LE+IJWXi7tfgCTNCrrJQAxQtllNFJS6/BWkoAapNRE=;
+        b=PnkZkZpxaAiwmnP6qwVfvAhgi5ppqxFoHoxW0zoaRz6A+HSVY6zatqwYWwKgtiwR9e
+         j8H5G4MAkhcbW7nr85JVQD19Mv8E5wnm9G/bSPZk38FS+vxBuNSJZEQSn5OfhZl2/+jF
+         21ZmPEWNtqnVzXp8L/Gh39LC7s5ki01q4Wa1sGKBMufZtN68/zmC5C3jBDLUI+pkLQMF
+         FMbRpXXst9vty5xT0w1N8zmbf1ZFMnye7PcWP24QDEvJxMD3XrMkKTfG14MneF02MudH
+         oEDYN04PgoKlQHMRIdeWoKAh4eW8+UdqTSv907GKpjSgUnOuL2ZpkViF9xtTrET8iYEN
+         My/w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1687147788; x=1689739788;
+        d=1e100.net; s=20221208; t=1687147793; x=1689739793;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=n/vu+BfaX9/nXtP9I6CrmyWiA7s/9ryNRPNRydMSfbw=;
-        b=fydiCjwhHFez1XnrWHc7/gvwCUVjyUdfE8q043e/3qwdUEWb660EP7IE/h10hMco/l
-         zuJTuKI1ygXUR+AFXD0VAKnk3XmNNC6k5KbM0vtrwAX46vls69yJa1y2k6gTl3ecuAJ4
-         1gGWxH1SAMdhQU1ql5cpRpLJSdrY1KWBKf0U15Q2EuAuTfIkyNoN6WaYN69iUgOxC2N/
-         vSq8VRLvrJNuAwWbRygKyEr6XYMxzQYD+m0fDMX1vTAMedjj2HMR6XdlG35eQt6+e6j4
-         xO3WRvI4wBZtdYUp6EDimSvyoBzlsmagNaRhFfcoPbND3sZWdfjwz9yXTil+txE9W9cQ
-         vhRA==
-X-Gm-Message-State: AC+VfDzevVCKGKb8aDvQNWC/6ySkHS+cTZwUy+xfKE5ZDYu+5HnOnP4n
-        761sh/9NgfSicUAO1b0+dCUWSp0QhZs=
-X-Google-Smtp-Source: ACHHUZ6P2TeuW/m4nhpy2Mlx9kH++dqvNshhspERPDkG917wc6QGSxRuYVgidSurWG7b96Zxqcfa8A==
-X-Received: by 2002:adf:ffc3:0:b0:30f:c3ec:e78f with SMTP id x3-20020adfffc3000000b0030fc3ece78fmr4583025wrs.21.1687147788273;
-        Sun, 18 Jun 2023 21:09:48 -0700 (PDT)
+        bh=/LE+IJWXi7tfgCTNCrrJQAxQtllNFJS6/BWkoAapNRE=;
+        b=jAihW4Ipxue/Dz1WAiy82VNqHrHHTCSu4qSfam57nLuK/RWgxHI4hDb+g2noCHHOz/
+         sFDFSfrOChF8Xym98Cy9BmDkHk7LyADdAmiMxm9o5OASSd4wvV1V++0t/CIgeSnTjq/H
+         xL6IGgMjn19J1GZKjIpAG7VbbZrn34ZfEnYjJ2xhrI3syF68OiFpgufdF6f0p5Fy7csB
+         0h9OQr71XRFjixSC+KS5cAIkff6B4QlGuIa0sAhrYmLcr9/HBJZ2+4AyGN+Ylbg7mb4y
+         SKKHJ7pNuBUGYHWU1ghWMIi8iJSJza5/ujZk6R5FbCgaZTq1r3nE4AdRS0EYaTQPS5/3
+         vXCA==
+X-Gm-Message-State: AC+VfDy5bd3HmjJmstLEoOBGCxzOyU4xXq1dSISZXI5fIeP3eebbaXgD
+        cJJnb0ZZ4D7Cfh+QUaphiuyDg9cx29Q=
+X-Google-Smtp-Source: ACHHUZ4JC/fli78EtYqECZqhF1tI0bQGCRVYvdGHHsNggh+3561s5jw8oEPxdePI1OfPPY3zHHEKkQ==
+X-Received: by 2002:a05:600c:21d6:b0:3f9:a4e:190b with SMTP id x22-20020a05600c21d600b003f90a4e190bmr2986700wmj.7.1687147793648;
+        Sun, 18 Jun 2023 21:09:53 -0700 (PDT)
 Received: from localhost.localdomain (61.red-88-10-54.dynamicip.rima-tde.net. [88.10.54.61])
-        by smtp.gmail.com with ESMTPSA id h14-20020a5d6e0e000000b003078354f774sm30004052wrz.36.2023.06.18.21.09.47
+        by smtp.gmail.com with ESMTPSA id h14-20020a5d6e0e000000b003078354f774sm30004052wrz.36.2023.06.18.21.09.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 18 Jun 2023 21:09:47 -0700 (PDT)
+        Sun, 18 Jun 2023 21:09:53 -0700 (PDT)
 From:   Sergio Paracuellos <sergio.paracuellos@gmail.com>
 To:     linux-clk@vger.kernel.org
 Cc:     linux-mips@vger.kernel.org, tsbogend@alpha.franken.de,
@@ -57,9 +57,9 @@ Cc:     linux-mips@vger.kernel.org, tsbogend@alpha.franken.de,
         robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
         matthias.bgg@gmail.com, devicetree@vger.kernel.org,
         arinc.unal@arinc9.com, yangshiji66@outlook.com
-Subject: [PATCH v5 3/9] mips: ralink: rt288x: remove clock related code
-Date:   Mon, 19 Jun 2023 06:09:35 +0200
-Message-Id: <20230619040941.1340372-4-sergio.paracuellos@gmail.com>
+Subject: [PATCH v5 7/9] mips: ralink: remove reset related code
+Date:   Mon, 19 Jun 2023 06:09:39 +0200
+Message-Id: <20230619040941.1340372-8-sergio.paracuellos@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20230619040941.1340372-1-sergio.paracuellos@gmail.com>
 References: <20230619040941.1340372-1-sergio.paracuellos@gmail.com>
@@ -69,85 +69,127 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-A properly clock driver for ralink SoCs has been added. Hence there is no
-need to have clock related code in 'arch/mips/ralink' folder anymore.
+A proper clock driver for ralink SoCs has been added. This driver is also
+a reset provider for the SoC. Hence there is no need to have reset related
+code in 'arch/mips/ralink' folder anymore. The only code that remains is
+the one related with mips_reboot_setup where a PCI reset is performed.
+We maintain this because I cannot test old ralink board with PCI to be
+sure all works if we remove also this code.
 
 Signed-off-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
 ---
- arch/mips/include/asm/mach-ralink/rt288x.h | 10 -------
- arch/mips/ralink/rt288x.c                  | 31 ----------------------
- 2 files changed, 41 deletions(-)
+ arch/mips/ralink/common.h |  2 --
+ arch/mips/ralink/of.c     |  4 ---
+ arch/mips/ralink/reset.c  | 61 ---------------------------------------
+ 3 files changed, 67 deletions(-)
 
-diff --git a/arch/mips/include/asm/mach-ralink/rt288x.h b/arch/mips/include/asm/mach-ralink/rt288x.h
-index 66a999cd1d80..66d190358e3a 100644
---- a/arch/mips/include/asm/mach-ralink/rt288x.h
-+++ b/arch/mips/include/asm/mach-ralink/rt288x.h
-@@ -18,7 +18,6 @@
- #define SYSC_REG_CHIP_NAME1		0x04
- #define SYSC_REG_CHIP_ID		0x0c
- #define SYSC_REG_SYSTEM_CONFIG		0x10
--#define SYSC_REG_CLKCFG			0x30
+diff --git a/arch/mips/ralink/common.h b/arch/mips/ralink/common.h
+index fcdfc9dc6210..b0d671442966 100644
+--- a/arch/mips/ralink/common.h
++++ b/arch/mips/ralink/common.h
+@@ -23,8 +23,6 @@ extern struct ralink_soc_info soc_info;
  
- #define RT2880_CHIP_NAME0		0x38325452
- #define RT2880_CHIP_NAME1		0x20203038
-@@ -27,15 +26,6 @@
- #define CHIP_ID_ID_SHIFT		8
- #define CHIP_ID_REV_MASK		0xff
+ extern void ralink_of_remap(void);
  
--#define SYSTEM_CONFIG_CPUCLK_SHIFT	20
--#define SYSTEM_CONFIG_CPUCLK_MASK	0x3
--#define SYSTEM_CONFIG_CPUCLK_250	0x0
--#define SYSTEM_CONFIG_CPUCLK_266	0x1
--#define SYSTEM_CONFIG_CPUCLK_280	0x2
--#define SYSTEM_CONFIG_CPUCLK_300	0x3
+-extern void ralink_rst_init(void);
 -
--#define CLKCFG_SRAM_CS_N_WDT		BIT(9)
+ extern void __init prom_soc_init(struct ralink_soc_info *soc_info);
+ 
+ __iomem void *plat_of_remap_node(const char *node);
+diff --git a/arch/mips/ralink/of.c b/arch/mips/ralink/of.c
+index 4d06de77d92a..df29e6c896aa 100644
+--- a/arch/mips/ralink/of.c
++++ b/arch/mips/ralink/of.c
+@@ -81,10 +81,6 @@ static int __init plat_of_setup(void)
+ {
+ 	__dt_register_buses(soc_info.compatible, "palmbus");
+ 
+-	/* make sure that the reset controller is setup early */
+-	if (ralink_soc != MT762X_SOC_MT7621AT)
+-		ralink_rst_init();
 -
- #define RT2880_SDRAM_BASE		0x08000000
- #define RT2880_MEM_SIZE_MIN		2
- #define RT2880_MEM_SIZE_MAX		128
-diff --git a/arch/mips/ralink/rt288x.c b/arch/mips/ralink/rt288x.c
-index 456ba0b2599e..0c6a87452dd1 100644
---- a/arch/mips/ralink/rt288x.c
-+++ b/arch/mips/ralink/rt288x.c
-@@ -21,37 +21,6 @@
+ 	return 0;
+ }
  
- static struct ralink_soc_info *soc_info_ptr;
+diff --git a/arch/mips/ralink/reset.c b/arch/mips/ralink/reset.c
+index 274d33078c5e..4875637ef469 100644
+--- a/arch/mips/ralink/reset.c
++++ b/arch/mips/ralink/reset.c
+@@ -10,7 +10,6 @@
+ #include <linux/io.h>
+ #include <linux/of.h>
+ #include <linux/delay.h>
+-#include <linux/reset-controller.h>
  
--void __init ralink_clk_init(void)
+ #include <asm/reboot.h>
+ 
+@@ -22,66 +21,6 @@
+ #define RSTCTL_RESET_PCI	BIT(26)
+ #define RSTCTL_RESET_SYSTEM	BIT(0)
+ 
+-static int ralink_assert_device(struct reset_controller_dev *rcdev,
+-				unsigned long id)
 -{
--	unsigned long cpu_rate, wmac_rate = 40000000;
--	u32 t = rt_sysc_r32(SYSC_REG_SYSTEM_CONFIG);
--	t = ((t >> SYSTEM_CONFIG_CPUCLK_SHIFT) & SYSTEM_CONFIG_CPUCLK_MASK);
+-	u32 val;
 -
--	switch (t) {
--	case SYSTEM_CONFIG_CPUCLK_250:
--		cpu_rate = 250000000;
--		break;
--	case SYSTEM_CONFIG_CPUCLK_266:
--		cpu_rate = 266666667;
--		break;
--	case SYSTEM_CONFIG_CPUCLK_280:
--		cpu_rate = 280000000;
--		break;
--	case SYSTEM_CONFIG_CPUCLK_300:
--		cpu_rate = 300000000;
--		break;
--	}
+-	if (id == 0)
+-		return -1;
 -
--	ralink_clk_add("cpu", cpu_rate);
--	ralink_clk_add("300100.timer", cpu_rate / 2);
--	ralink_clk_add("300120.watchdog", cpu_rate / 2);
--	ralink_clk_add("300500.uart", cpu_rate / 2);
--	ralink_clk_add("300900.i2c", cpu_rate / 2);
--	ralink_clk_add("300c00.uartlite", cpu_rate / 2);
--	ralink_clk_add("400000.ethernet", cpu_rate / 2);
--	ralink_clk_add("480000.wmac", wmac_rate);
+-	val = rt_sysc_r32(SYSC_REG_RESET_CTRL);
+-	val |= BIT(id);
+-	rt_sysc_w32(val, SYSC_REG_RESET_CTRL);
+-
+-	return 0;
 -}
 -
- void __init ralink_of_remap(void)
+-static int ralink_deassert_device(struct reset_controller_dev *rcdev,
+-				  unsigned long id)
+-{
+-	u32 val;
+-
+-	if (id == 0)
+-		return -1;
+-
+-	val = rt_sysc_r32(SYSC_REG_RESET_CTRL);
+-	val &= ~BIT(id);
+-	rt_sysc_w32(val, SYSC_REG_RESET_CTRL);
+-
+-	return 0;
+-}
+-
+-static int ralink_reset_device(struct reset_controller_dev *rcdev,
+-			       unsigned long id)
+-{
+-	ralink_assert_device(rcdev, id);
+-	return ralink_deassert_device(rcdev, id);
+-}
+-
+-static const struct reset_control_ops reset_ops = {
+-	.reset = ralink_reset_device,
+-	.assert = ralink_assert_device,
+-	.deassert = ralink_deassert_device,
+-};
+-
+-static struct reset_controller_dev reset_dev = {
+-	.ops			= &reset_ops,
+-	.owner			= THIS_MODULE,
+-	.nr_resets		= 32,
+-	.of_reset_n_cells	= 1,
+-};
+-
+-void ralink_rst_init(void)
+-{
+-	reset_dev.of_node = of_find_compatible_node(NULL, NULL,
+-						"ralink,rt2880-reset");
+-	if (!reset_dev.of_node)
+-		pr_err("Failed to find reset controller node");
+-	else
+-		reset_controller_register(&reset_dev);
+-}
+-
+ static void ralink_restart(char *command)
  {
- 	rt_sysc_membase = plat_of_remap_node("ralink,rt2880-sysc");
+ 	if (IS_ENABLED(CONFIG_PCI)) {
 -- 
 2.25.1
 

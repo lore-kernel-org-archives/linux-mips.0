@@ -2,75 +2,79 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 31EA2C001B3
+	by smtp.lore.kernel.org (Postfix) with ESMTP id EC947C001DD
 	for <linux-mips@archiver.kernel.org>; Tue, 20 Jun 2023 12:53:03 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230466AbjFTMxB (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 20 Jun 2023 08:53:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36236 "EHLO
+        id S232424AbjFTMxC (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 20 Jun 2023 08:53:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36242 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232424AbjFTMw7 (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Tue, 20 Jun 2023 08:52:59 -0400
+        with ESMTP id S230253AbjFTMxB (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Tue, 20 Jun 2023 08:53:01 -0400
 Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id DC73210F8
-        for <linux-mips@vger.kernel.org>; Tue, 20 Jun 2023 05:52:58 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 75AF110F8;
+        Tue, 20 Jun 2023 05:53:00 -0700 (PDT)
 Received: from uucp by elvis.franken.de with local-rmail (Exim 3.36 #1)
-        id 1qBaqt-00087t-00; Tue, 20 Jun 2023 14:52:55 +0200
+        id 1qBaqt-000889-00; Tue, 20 Jun 2023 14:52:55 +0200
 Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 300C5C02FD; Tue, 20 Jun 2023 14:49:48 +0200 (CEST)
-Date:   Tue, 20 Jun 2023 14:49:48 +0200
+        id AD602C03C3; Tue, 20 Jun 2023 14:52:36 +0200 (CEST)
+Date:   Tue, 20 Jun 2023 14:52:36 +0200
 From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Sui Jingfeng <suijingfeng@loongson.cn>
-Cc:     Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        linux-mips@vger.kernel.org, Jiaxun Yang <jiaxun.yang@flygoat.com>
-Subject: Re: [PATCH] MIPS: Loongson64: loongson3_defconfig: Enable amdgpu drm
- driver
-Message-ID: <20230620124948.GA10520@alpha.franken.de>
-References: <20230611055903.802801-1-suijingfeng@loongson.cn>
+To:     Eric DeVolder <eric.devolder@oracle.com>
+Cc:     linux@armlinux.org.uk, catalin.marinas@arm.com, will@kernel.org,
+        chenhuacai@kernel.org, geert@linux-m68k.org,
+        James.Bottomley@HansenPartnership.com, deller@gmx.de,
+        ysato@users.sourceforge.jp, dalias@libc.org,
+        glaubitz@physik.fu-berlin.de, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-ia64@vger.kernel.org, loongarch@lists.linux.dev,
+        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
+        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
+        linux-sh@vger.kernel.org, kernel@xen0n.name, mpe@ellerman.id.au,
+        npiggin@gmail.com, christophe.leroy@csgroup.eu,
+        paul.walmsley@sifive.com, palmer@dabbelt.com,
+        aou@eecs.berkeley.edu, hca@linux.ibm.com, gor@linux.ibm.com,
+        agordeev@linux.ibm.com, borntraeger@linux.ibm.com,
+        svens@linux.ibm.com, hpa@zytor.com, keescook@chromium.org,
+        paulmck@kernel.org, peterz@infradead.org, frederic@kernel.org,
+        akpm@linux-foundation.org, ardb@kernel.org,
+        samitolvanen@google.com, juerg.haefliger@canonical.com,
+        arnd@arndb.de, rmk+kernel@armlinux.org.uk,
+        linus.walleij@linaro.org, sebastian.reichel@collabora.com,
+        rppt@kernel.org, kirill.shutemov@linux.intel.com,
+        anshuman.khandual@arm.com, ziy@nvidia.com, masahiroy@kernel.org,
+        ndesaulniers@google.com, mhiramat@kernel.org, ojeda@kernel.org,
+        thunder.leizhen@huawei.com, xin3.li@intel.com, tj@kernel.org,
+        gregkh@linuxfoundation.org, tsi@tuyoix.net, bhe@redhat.com,
+        hbathini@linux.ibm.com, sourabhjain@linux.ibm.com,
+        boris.ostrovsky@oracle.com, konrad.wilk@oracle.com
+Subject: Re: [PATCH v2 08/13] mips/kexec: refactor for kernel/Kconfig.kexec
+Message-ID: <20230620125236.GF10520@alpha.franken.de>
+References: <20230619145801.1064716-1-eric.devolder@oracle.com>
+ <20230619145801.1064716-9-eric.devolder@oracle.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230611055903.802801-1-suijingfeng@loongson.cn>
+In-Reply-To: <20230619145801.1064716-9-eric.devolder@oracle.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Sun, Jun 11, 2023 at 01:59:03PM +0800, Sui Jingfeng wrote:
-> As it's usuable on LS3A4000 platform. Tested with RX550, glmark2
-> got about 4235 score.
+On Mon, Jun 19, 2023 at 10:57:56AM -0400, Eric DeVolder wrote:
+> The kexec and crash kernel options are provided in the common
+> kernel/Kconfig.kexec. Utilize the common options and provide
+> the ARCH_SUPPORTS_ and ARCH_SELECTS_ entries to recreate the
+> equivalent set of KEXEC and CRASH options.
 > 
-> Signed-off-by: Sui Jingfeng <suijingfeng@loongson.cn>
+> Signed-off-by: Eric DeVolder <eric.devolder@oracle.com>
 > ---
->  arch/mips/configs/loongson3_defconfig | 7 +++++++
->  1 file changed, 7 insertions(+)
-> 
-> diff --git a/arch/mips/configs/loongson3_defconfig b/arch/mips/configs/loongson3_defconfig
-> index 6f4a52608ea4..3087e64e6ebe 100644
-> --- a/arch/mips/configs/loongson3_defconfig
-> +++ b/arch/mips/configs/loongson3_defconfig
-> @@ -276,6 +276,13 @@ CONFIG_MEDIA_SUPPORT=m
->  CONFIG_MEDIA_USB_SUPPORT=y
->  CONFIG_USB_VIDEO_CLASS=m
->  CONFIG_DRM=y
-> +CONFIG_DRM_AMDGPU=m
-> +CONFIG_DRM_AMDGPU_SI=y
-> +CONFIG_DRM_AMDGPU_CIK=y
-> +CONFIG_DRM_AMDGPU_USERPTR=y
-> +CONFIG_DRM_AMD_ACP=y
-> +CONFIG_DRM_AMD_DC=y
-> +CONFIG_DRM_AMD_DC_SI=y
->  CONFIG_DRM_RADEON=m
->  CONFIG_DRM_QXL=y
->  CONFIG_DRM_VIRTIO_GPU=y
-> -- 
-> 2.25.1
+>  arch/mips/Kconfig | 32 +++++---------------------------
+>  1 file changed, 5 insertions(+), 27 deletions(-)
 
-applied to mips-next.
-
-Thomas.
+Acked-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 
 -- 
 Crap can work. Given enough thrust pigs will fly, but it's not necessarily a

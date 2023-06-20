@@ -2,45 +2,68 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5E56CEB64D8
-	for <linux-mips@archiver.kernel.org>; Tue, 20 Jun 2023 12:53:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 6FAF5EB64D7
+	for <linux-mips@archiver.kernel.org>; Tue, 20 Jun 2023 12:53:01 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232236AbjFTMw7 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        id S232541AbjFTMw7 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
         Tue, 20 Jun 2023 08:52:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36226 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36224 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230253AbjFTMw6 (ORCPT
+        with ESMTP id S229506AbjFTMw6 (ORCPT
         <rfc822;linux-mips@vger.kernel.org>); Tue, 20 Jun 2023 08:52:58 -0400
 Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 8F5A510FA;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 8EF0D10F8;
         Tue, 20 Jun 2023 05:52:56 -0700 (PDT)
 Received: from uucp by elvis.franken.de with local-rmail (Exim 3.36 #1)
-        id 1qBaqt-00087v-00; Tue, 20 Jun 2023 14:52:55 +0200
+        id 1qBaqt-000882-00; Tue, 20 Jun 2023 14:52:55 +0200
 Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 5461DC0301; Tue, 20 Jun 2023 14:50:17 +0200 (CEST)
-Date:   Tue, 20 Jun 2023 14:50:17 +0200
+        id 0EDBDC0388; Tue, 20 Jun 2023 14:51:14 +0200 (CEST)
+Date:   Tue, 20 Jun 2023 14:51:14 +0200
 From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] MIPS: mm: Remove special handling for OCTEON CPUs
-Message-ID: <20230620125017.GB10520@alpha.franken.de>
-References: <20230615093933.121329-1-tsbogend@alpha.franken.de>
+To:     Yu Zhao <yuzhao@google.com>
+Cc:     Huacai Chen <chenhuacai@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
+        linux-mips@vger.kernel.org, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] kvm/mips: update MAINTAINERS
+Message-ID: <20230620125113.GE10520@alpha.franken.de>
+References: <20230617185335.2025859-1-yuzhao@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230615093933.121329-1-tsbogend@alpha.franken.de>
+In-Reply-To: <20230617185335.2025859-1-yuzhao@google.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Thu, Jun 15, 2023 at 11:39:33AM +0200, Thomas Bogendoerfer wrote:
-> Macro cpu_has_mips_r2_exec_hazard correctly handles OCTEON CPUs,
-> so we don't need the extra switch cases for them.
+On Sat, Jun 17, 2023 at 12:53:35PM -0600, Yu Zhao wrote:
+> Aleksandar Markovic was last seen in Oct 2020 [1] and cannot be
+> reached for multiple days because of "Recipient inbox full".
 > 
-> Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+> [1] https://lore.kernel.org/all/1602103041-32017-4-git-send-email-aleksandar.qemu.devel@gmail.com/
+> 
+> Signed-off-by: Yu Zhao <yuzhao@google.com>
 > ---
->  arch/mips/mm/tlbex.c | 24 ++++--------------------
->  1 file changed, 4 insertions(+), 20 deletions(-)
+>  MAINTAINERS | 1 -
+>  1 file changed, 1 deletion(-)
+> 
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 6992b7cc7095..9de60ba04b6d 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -11379,7 +11379,6 @@ F:	tools/testing/selftests/kvm/aarch64/
+>  
+>  KERNEL VIRTUAL MACHINE FOR MIPS (KVM/mips)
+>  M:	Huacai Chen <chenhuacai@kernel.org>
+> -M:	Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>
+>  L:	linux-mips@vger.kernel.org
+>  L:	kvm@vger.kernel.org
+>  S:	Maintained
+> -- 
+> 2.41.0.162.gfafddb0af9-goog
+> 
 
 applied to mips-next.
 

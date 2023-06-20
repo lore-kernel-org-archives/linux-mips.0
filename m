@@ -2,68 +2,61 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6FAF5EB64D7
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F0AC0EB64DC
 	for <linux-mips@archiver.kernel.org>; Tue, 20 Jun 2023 12:53:01 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232541AbjFTMw7 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 20 Jun 2023 08:52:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36224 "EHLO
+        id S232605AbjFTMxB (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 20 Jun 2023 08:53:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36228 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229506AbjFTMw6 (ORCPT
+        with ESMTP id S232171AbjFTMw6 (ORCPT
         <rfc822;linux-mips@vger.kernel.org>); Tue, 20 Jun 2023 08:52:58 -0400
 Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 8EF0D10F8;
-        Tue, 20 Jun 2023 05:52:56 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 0187C10FF
+        for <linux-mips@vger.kernel.org>; Tue, 20 Jun 2023 05:52:57 -0700 (PDT)
 Received: from uucp by elvis.franken.de with local-rmail (Exim 3.36 #1)
-        id 1qBaqt-000882-00; Tue, 20 Jun 2023 14:52:55 +0200
+        id 1qBaqt-000880-00; Tue, 20 Jun 2023 14:52:55 +0200
 Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 0EDBDC0388; Tue, 20 Jun 2023 14:51:14 +0200 (CEST)
-Date:   Tue, 20 Jun 2023 14:51:14 +0200
+        id B074AC0375; Tue, 20 Jun 2023 14:51:02 +0200 (CEST)
+Date:   Tue, 20 Jun 2023 14:51:02 +0200
 From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Yu Zhao <yuzhao@google.com>
-Cc:     Huacai Chen <chenhuacai@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>,
-        linux-mips@vger.kernel.org, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] kvm/mips: update MAINTAINERS
-Message-ID: <20230620125113.GE10520@alpha.franken.de>
-References: <20230617185335.2025859-1-yuzhao@google.com>
+To:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>
+Cc:     linux-mips@vger.kernel.org, kernel@pengutronix.de
+Subject: Re: [PATCH] MIPS: PCI: Convert to platform remove callback returning
+ void
+Message-ID: <20230620125102.GD10520@alpha.franken.de>
+References: <20230616165127.1055386-1-u.kleine-koenig@pengutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20230617185335.2025859-1-yuzhao@google.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20230616165127.1055386-1-u.kleine-koenig@pengutronix.de>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Sat, Jun 17, 2023 at 12:53:35PM -0600, Yu Zhao wrote:
-> Aleksandar Markovic was last seen in Oct 2020 [1] and cannot be
-> reached for multiple days because of "Recipient inbox full".
+On Fri, Jun 16, 2023 at 06:51:27PM +0200, Uwe Kleine-König wrote:
+> The .remove() callback for a platform driver returns an int which makes
+> many driver authors wrongly assume it's possible to do error handling by
+> returning an error code. However the value returned is ignored (apart
+> from emitting a warning) and this typically results in resource leaks.
+> To improve here there is a quest to make the remove callback return
+> void. In the first step of this quest all drivers are converted to
+> .remove_new() which already returns void. Eventually after all drivers
+> are converted, .remove_new() is renamed to .remove().
 > 
-> [1] https://lore.kernel.org/all/1602103041-32017-4-git-send-email-aleksandar.qemu.devel@gmail.com/
+> Trivially convert this driver from always returning zero in the remove
+> callback to the void returning variant.
 > 
-> Signed-off-by: Yu Zhao <yuzhao@google.com>
+> While destroying alignment of the assignments in bridge_driver, do it
+> consistently and use a single space before =.
+> 
+> Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
 > ---
->  MAINTAINERS | 1 -
->  1 file changed, 1 deletion(-)
-> 
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 6992b7cc7095..9de60ba04b6d 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -11379,7 +11379,6 @@ F:	tools/testing/selftests/kvm/aarch64/
->  
->  KERNEL VIRTUAL MACHINE FOR MIPS (KVM/mips)
->  M:	Huacai Chen <chenhuacai@kernel.org>
-> -M:	Aleksandar Markovic <aleksandar.qemu.devel@gmail.com>
->  L:	linux-mips@vger.kernel.org
->  L:	kvm@vger.kernel.org
->  S:	Maintained
-> -- 
-> 2.41.0.162.gfafddb0af9-goog
-> 
+>  arch/mips/pci/pci-xtalk-bridge.c | 8 +++-----
+>  1 file changed, 3 insertions(+), 5 deletions(-)
 
 applied to mips-next.
 

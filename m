@@ -2,53 +2,61 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 155D5EB64DC
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9E402EB64D8
 	for <linux-mips@archiver.kernel.org>; Wed, 21 Jun 2023 14:08:57 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231953AbjFUOIz (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 21 Jun 2023 10:08:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55872 "EHLO
+        id S232235AbjFUOI4 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 21 Jun 2023 10:08:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55910 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230416AbjFUOIx (ORCPT
+        with ESMTP id S231949AbjFUOIx (ORCPT
         <rfc822;linux-mips@vger.kernel.org>); Wed, 21 Jun 2023 10:08:53 -0400
 Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 5FD4A107;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 6139218C;
         Wed, 21 Jun 2023 07:08:52 -0700 (PDT)
 Received: from uucp by elvis.franken.de with local-rmail (Exim 3.36 #1)
-        id 1qByVq-0004An-00; Wed, 21 Jun 2023 16:08:46 +0200
+        id 1qByVq-0004Ap-00; Wed, 21 Jun 2023 16:08:46 +0200
 Received: by alpha.franken.de (Postfix, from userid 1000)
-        id CA5D2C0301; Wed, 21 Jun 2023 16:07:56 +0200 (CEST)
-Date:   Wed, 21 Jun 2023 16:07:56 +0200
+        id F1A4EC0346; Wed, 21 Jun 2023 16:08:22 +0200 (CEST)
+Date:   Wed, 21 Jun 2023 16:08:22 +0200
 From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 To:     Shiji Yang <yangshiji66@outlook.com>
-Cc:     linux-mips@vger.kernel.org, matthias.bgg@gmail.com,
-        angelogioacchino.delregno@collabora.com,
+Cc:     linux-mips@vger.kernel.org, john@phrozen.org,
+        matthias.bgg@gmail.com, angelogioacchino.delregno@collabora.com,
         linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org
-Subject: Re: [PATCH 0/2] mips: pci-mt7620: reduce unnecessary error logs
-Message-ID: <20230621140756.GB7206@alpha.franken.de>
-References: <TYAP286MB0315B9598EC3BBB0783203CBBC5CA@TYAP286MB0315.JPNP286.PROD.OUTLOOK.COM>
+Subject: Re: [PATCH] mips: ralink: introduce commonly used remap node function
+Message-ID: <20230621140822.GC7206@alpha.franken.de>
+References: <OSYP286MB03120BABB25900E113ED42B7BC5CA@OSYP286MB0312.JPNP286.PROD.OUTLOOK.COM>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <TYAP286MB0315B9598EC3BBB0783203CBBC5CA@TYAP286MB0315.JPNP286.PROD.OUTLOOK.COM>
+In-Reply-To: <OSYP286MB03120BABB25900E113ED42B7BC5CA@OSYP286MB0312.JPNP286.PROD.OUTLOOK.COM>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Tue, Jun 20, 2023 at 06:43:21PM +0800, Shiji Yang wrote:
-> These patches silence some mt7620 PCIe driver error messeges by
-> removing the useless debugging codes and replacing incorrectly
-> used 'dev_err()' with 'dev_info()'. 
+On Tue, Jun 20, 2023 at 07:44:32PM +0800, Shiji Yang wrote:
+> The ralink_of_remap() function is repeated several times on SoC specific
+> source files. They have the same structure, but just differ in compatible
+> strings. In order to make commonly use of these codes, this patch
+> introduces a newly designed mtmips_of_remap_node() function to match and
+> remap all supported system controller and memory controller nodes.
 > 
-> Shiji Yang (2):
->   mips: pci-mt7620: do not print NFTS register value as error log
->   mips: pci-mt7620: use dev_info() to log PCIe device detection result
+> Build and run tested on MT7620 and MT7628.
 > 
->  arch/mips/pci/pci-mt7620.c | 7 ++-----
->  1 file changed, 2 insertions(+), 5 deletions(-)
+> Signed-off-by: Shiji Yang <yangshiji66@outlook.com>
+> ---
+>  arch/mips/ralink/common.h |  2 --
+>  arch/mips/ralink/mt7620.c |  9 ---------
+>  arch/mips/ralink/mt7621.c |  9 ---------
+>  arch/mips/ralink/of.c     | 42 ++++++++++++++++++++++++++++++++-------
+>  arch/mips/ralink/rt288x.c |  9 ---------
+>  arch/mips/ralink/rt305x.c |  9 ---------
+>  arch/mips/ralink/rt3883.c |  9 ---------
+>  7 files changed, 35 insertions(+), 54 deletions(-)
 
-series applied to mips-next.
+applied to mips-next.
 
 Thomas.
 

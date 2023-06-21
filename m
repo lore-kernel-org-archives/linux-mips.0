@@ -2,162 +2,138 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 42765C0015E
-	for <linux-mips@archiver.kernel.org>; Tue, 20 Jun 2023 23:10:38 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 78698EB64D8
+	for <linux-mips@archiver.kernel.org>; Wed, 21 Jun 2023 01:04:15 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229547AbjFTXKg (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 20 Jun 2023 19:10:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57150 "EHLO
+        id S229521AbjFUBEO (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 20 Jun 2023 21:04:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56012 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229595AbjFTXKf (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Tue, 20 Jun 2023 19:10:35 -0400
-Received: from mail-yw1-x1133.google.com (mail-yw1-x1133.google.com [IPv6:2607:f8b0:4864:20::1133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97CD71703;
-        Tue, 20 Jun 2023 16:10:33 -0700 (PDT)
-Received: by mail-yw1-x1133.google.com with SMTP id 00721157ae682-5701eaf0d04so54950507b3.2;
-        Tue, 20 Jun 2023 16:10:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1687302633; x=1689894633;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=nozU+u202dwuRZdJGKz18i7nEQxa/ZPqnuIXPcARxTk=;
-        b=Srt/QiH6vSlV6ltPf9H8KdAeCpbz7L591o99Craxfn8w/jM66I5hACYYF7kGTNoYRf
-         37MNDI/F8R1g44q3mAPdvv0ch2USGp6Xr2QpXeRs4zwys088B20V4rigZMbQAUtCAcnv
-         ujlqxNx2s65vbfsZd3k+2DjIHKhHJIWAfpgn7QYgmI+NGmP+FiWPPp675PKwGH44ORfj
-         zOUT1l13zV/ZQbeHYvFRsincMrSLLgcM09n9imSEGZWNpBzKYFGwq1+DONOYFih8u36L
-         jrVhBZXiCnjwgLIXcNbQ+C7KfkKQcJy9rAKazTyykVFlz02AVb/RzeIKJrXQdve86D2m
-         bp4A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1687302633; x=1689894633;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=nozU+u202dwuRZdJGKz18i7nEQxa/ZPqnuIXPcARxTk=;
-        b=Pta0kUzRGAU+JrRjYT+RwFONfEG+W5Hwm06qfLyu8fXbixMliXRDsIpsppHLmAPDv2
-         wHFZZtNrit0aowNbHCUmxDxC7lf4kAC9RnM0YIeCK/Bcqzd1FGrbibk82PMWHrwOI/19
-         f/JzISR5R2UZhlUqpeXmjzTA3si9IZeSfmnWYktk9/tzW5vnxvVMdoN2zYG4sBGS6+wq
-         CukGAILbev5abKqY7m6213DunVoQ5eEPR9m/tf+p+b4VM84E1IYNUw9BKB4pxrBx4V3v
-         DHIe5Ps5oyxXI6vKosCcvtDixIDfihSC37NhzJ7O5KMnxQHCcKvpWVRCWo0ORFka8ls6
-         cMQg==
-X-Gm-Message-State: AC+VfDx/kpwyGx1O2YaT7K8DemrtKlCqBrztqeFShTEm9FLXJqQfONlJ
-        bymyTJAOKBLZJOj6B1hlg82vtfMAAq0H25/6IY4MYfZxk1A=
-X-Google-Smtp-Source: ACHHUZ7+vWx7il1X3ew5mkzUq07+yx6XfH7tiB7mbTeTUr9bW7PRwJQYCTYOe/jG083Yaru2U6b3dhZd45Wu7Dtq2+o=
-X-Received: by 2002:a0d:dfcb:0:b0:570:89bf:6f10 with SMTP id
- i194-20020a0ddfcb000000b0057089bf6f10mr9653803ywe.25.1687302632746; Tue, 20
- Jun 2023 16:10:32 -0700 (PDT)
+        with ESMTP id S229479AbjFUBEO (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Tue, 20 Jun 2023 21:04:14 -0400
+Received: from JPN01-TYC-obe.outbound.protection.outlook.com (mail-tycjpn01olkn2062.outbound.protection.outlook.com [40.92.99.62])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B52DE10CE;
+        Tue, 20 Jun 2023 18:04:12 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=DKAq0+b6gMXAhXc5vFeSTnej9t94nW3M8fT5tHHRvDbEhbwMtCtfy7JaXEJ0vX/YpQ5NxHi1YuUCVvrUeXRsaL7SxV6C3gkYgNqVmEuvybk8Q2VS2y0Ey+2GAgK5zwsGCSkaj9/PeAS4EEGRsHILOj62luQvSuzOy4+wR+m5OKuM1IQM/6ugKVF8DHdIO4v75RUyd3FB1K/oBJf2Wx2ONRLyGPlnhy3b1q0Qqi1sYCY8YYxwGvsfJrUXUz995R687fI9QAxOK+6DC/3eokcNvdQ4w6+6vsEgwXKuyUFKaCB0TIJHUYcM3GJbLtrwqWj8DQmEwlernUnVT63yF6TpqA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Mpy8TtOhiDM9BKeWvI8gUSgJfwVq+vYA474HpMHQqsU=;
+ b=MDyo3iXrGlVcjFlw/kWg1AA7P9uXtWJaqSoaqaJDTl8B/KruoMw6iyCDk788NQ5PXAYZ0MDpBoybkHI6GqEeFRSnKUIimtlGBpxhoSPEa/Vwpigq2sPFgBxoNgBYJgGnOWsyBc3EX1kfEfD8Tw1T5FYr7nazs7LO/vDGrqTEDlL+pZUymjm9Xfcf4gcZWZDPmaMzEsBPiHsHq7nL7VL8j4/IZ1kwMXpT+iljwaiaSYfJm823fPaH1zy8Xmibo5IJKXnHKt6Tu8ccyxxR6aafJncAZoZ4j0dxZrVFUBsfxEbGflM78I0vhDp/LzOpEY87Hymdi/U073MAQFVYGgq8oA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Mpy8TtOhiDM9BKeWvI8gUSgJfwVq+vYA474HpMHQqsU=;
+ b=c02PRwF+TV66FSLaRpSf49GSz9rD2x/pcRA0CgmVxk7wUJoXYd17vAIqrbBJiAmLGRRkbeACIdCCiJ4CNyY+QgtWm9tlmPyKDDqbbkHR92GU+TffI2B1U11XeeyJYJSEkLwlyw0ns13ExI0QmMOCsW247snZtXoF9+W3U/cKYNYaYzMneXSgJOyG8KBByhhZOgt6NPivYyX+5VFizXVE7soKPNK5FXoG57duxA38yVNpVKAFFuCx8RNKqpP42XeDzuyCLg9WceBcsA4IzQb6/LLGRlWzT4dcSL5GKPjBsE0udxvHDxonrlz8km5Rs6kqPjDLd0MREza+RBLEnSzOPw==
+Received: from TYAP286MB0315.JPNP286.PROD.OUTLOOK.COM (2603:1096:404:8041::8)
+ by OSZP286MB1999.JPNP286.PROD.OUTLOOK.COM (2603:1096:604:182::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6521.23; Wed, 21 Jun
+ 2023 01:04:09 +0000
+Received: from TYAP286MB0315.JPNP286.PROD.OUTLOOK.COM
+ ([fe80::ca7e:d73d:ba3f:64a6]) by TYAP286MB0315.JPNP286.PROD.OUTLOOK.COM
+ ([fe80::ca7e:d73d:ba3f:64a6%5]) with mapi id 15.20.6521.023; Wed, 21 Jun 2023
+ 01:04:09 +0000
+From:   Shiji Yang <yangshiji66@outlook.com>
+To:     sergio.paracuellos@gmail.com
+Cc:     angelogioacchino.delregno@collabora.com,
+        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        linux-mips@vger.kernel.org, matthias.bgg@gmail.com,
+        tsbogend@alpha.franken.de
+Subject: Re: [PATCH 0/2] mips: pci-mt7620: reduce unnecessary error logs
+Date:   Wed, 21 Jun 2023 09:03:56 +0800
+Message-ID: <TYAP286MB0315167833A9801E56BBFE91BC5DA@TYAP286MB0315.JPNP286.PROD.OUTLOOK.COM>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <CAMhs-H96z65X5L-8=ouuKS-fkBUS4Uo4GTaYYgMDkw5G+v73hQ@mail.gmail.com>
+References: <CAMhs-H96z65X5L-8=ouuKS-fkBUS4Uo4GTaYYgMDkw5G+v73hQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-TMN:  [N2S7f7sQ6fR3LUoAaMGybKIRdke9ZuEE]
+X-ClientProxiedBy: SI2PR01CA0049.apcprd01.prod.exchangelabs.com
+ (2603:1096:4:193::13) To TYAP286MB0315.JPNP286.PROD.OUTLOOK.COM
+ (2603:1096:404:8041::8)
+X-Microsoft-Original-Message-ID: <20230621010356.3017-1-yangshiji66@outlook.com>
 MIME-Version: 1.0
-References: <20230612210423.18611-1-vishal.moola@gmail.com>
- <20230612210423.18611-5-vishal.moola@gmail.com> <ZIxXw9ERkYv+ipdd@nvidia.com>
- <CAOzc2pwMW64O0m4Zu4zVFTY+qCJRK7V+7niN_t1m7pLaJrtb2A@mail.gmail.com> <ZJIwpO68kc3zMB/c@nvidia.com>
-In-Reply-To: <ZJIwpO68kc3zMB/c@nvidia.com>
-From:   Vishal Moola <vishal.moola@gmail.com>
-Date:   Tue, 20 Jun 2023 16:10:22 -0700
-Message-ID: <CAOzc2pwNc-9bRbAV8=_yROU5uq96q6v-dEfcYuzJyDrRygNsbA@mail.gmail.com>
-Subject: Re: [PATCH v4 04/34] pgtable: Create struct ptdesc
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>, linux-mm@kvack.org,
-        linux-arch@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
-        loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
-        linux-mips@vger.kernel.org, linux-openrisc@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
-        linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
-        sparclinux@vger.kernel.org, linux-um@lists.infradead.org,
-        xen-devel@lists.xenproject.org, kvm@vger.kernel.org,
-        Hugh Dickins <hughd@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: TYAP286MB0315:EE_|OSZP286MB1999:EE_
+X-MS-Office365-Filtering-Correlation-Id: ffc3913b-ff71-428d-e138-08db71f36aef
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: CCIG0+2ikeznNsQoQGzaOuges14z3MyL7TAVZaIHyMj9SCyRtlLhnYmY7u5A++hmcOQ4U8CsGSPZPxoFp5/clv1kCg7MqfZTnJndGd0VBvDLMetIJaTs8Udy+abUyrsKJlUVFTm27sRZIxfv406NGte6NkiRDXkt7VwRXvrQAcWqrxRfv0vL1m9Jg69pTdfhpKBUAU035noqbYZp8xkCmfNvppJFH3in7Hw875vQfIB2RU0X9Ald55kQ6yElSoWUql8uTP0Qm9P/jVM6+lCmTFVldimgabqJGksFC/NV2EvinrFMyZuSBQo2nVCk8+urRUPWtRL2ReBm8PIeUxrZ9j/eglCX9UKf+pEjat5dRRQLo+Zdsyu5lzgXyqhZH0I9loikE5nXkUVs23tdJRrgFerBeIS7ZqzddNny6XPoIHv10+PHDX8oUFuDc370Sz2RF/bHMQ/vfxpjYEPTo1OOsNj8GjgQCY7tvqUoWJZVq39ukVkSP6f1oRJLD469MjGsqnl4avS7hI2f9K2n0TrR5Cwu+esKHgXRdWGbdrJ9BzleMroHxKhFKyqpKujO6coozCrCZbhWolWaQXjfMi6m8qpvffI62/eQChTtq3LX2Rk=
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?TzBybmp2YW1SYVprM1NuZ29jcllWVU1Lb1daQkd1bG9Ga09EM2hiMVJFUmpk?=
+ =?utf-8?B?QWFaQ3YyTTJDTDhLRDA4eXBpc0RQVkxSL2RtQzZ3Z2pGeUd4NmxUd2kyMlZG?=
+ =?utf-8?B?Y1Q1ekpIVWpQMGR6SDBwT3hjR0RqSXlIcDBvMEYyTSt0N2V1NTNPQnVFczdp?=
+ =?utf-8?B?TU5RRGUrNjRoY2JESUNoT2ZQbnZQSVVzN1BFbER1Mjh2NURteTIzdGFWbjBK?=
+ =?utf-8?B?elkzYzJDVzNLMUxkbkY0NEF2NXZaVk91NURHVzdNWENaQWlDNzZjWDkvWFRk?=
+ =?utf-8?B?SjdUS2ZXRnhjc2cyR3BONXBKOG8zMnpxVW1NOHBaM2NWOHpuRFZFeGZHWXVR?=
+ =?utf-8?B?Y1dLL0JKbUhpSmNEUjF5d3grK1BsSk1ydVJBZXNGMHExaURvQ1BpbVNLbDhE?=
+ =?utf-8?B?Yk5oMHhOa3pZQVh5WmcvUUs4dkdhQVVoaUx6eVN1ZEYyN1poZ3NBSjlyUGtk?=
+ =?utf-8?B?OFNKaVBZemlqd2EydVFUd20wdktVQktxWGRYM2w5R0h2TnBGZ3BzeHBDWXlT?=
+ =?utf-8?B?RVJaTDBzZjdxMGZLMjVKNnlFK2ZpZm9iSlJrdURHVGhEcWd1eVkrUjhPUmZY?=
+ =?utf-8?B?OTNuZHg4ZlEwa2wzWk1nUGpWVkFTakRQbkFvNit3VXRQRWNic3hMUGdRVkEr?=
+ =?utf-8?B?T2ltYjFVc1pNb2lzVUtVMnd6bEE3UEFDMkNlcmp1aGJIcUJBUlc5YXZJSHpX?=
+ =?utf-8?B?YUtUei9wc3pKSHVwRHJzV1NkVGk2c3B4ZXl6c0hVeHdiaHl0UnVqdFJyaG15?=
+ =?utf-8?B?RHowR2Q2eXE2RHFxN0JlSlhKcTJyYUxJblVSbytwekU0YXY3c3Z0R0JublVq?=
+ =?utf-8?B?RnZWZW5DUzJjSDNiVitLSGxZMXEyZnVESzhIMk5WN1hOUzB6Slk0QytaK1hQ?=
+ =?utf-8?B?OHlHTWxGMXY5UEhzdTMrRnVqaVVkeEFQTVRodjh3NGt4UFVaWmw1VWxPT0dR?=
+ =?utf-8?B?NnMrbUYyTmdHNVRHeWppMjRKeGpMRTYyNFN5SjdtTXA5blR1bEpzYndDR2FI?=
+ =?utf-8?B?QmhaNWhSUHZWY3FyVWV6VGJOSkhRM29RbkVlaXFtUWI4MnR3RE9CbUZXWXBW?=
+ =?utf-8?B?YzFmMzhJUWozczA1aFJrMzQ5bXlTOElQQ3RwV2VrWXZybzNlZVZONStvTXd2?=
+ =?utf-8?B?S0ZQeDQzVVVBQXgrU2xkalBMcDlGWEJqWUM3YmNHa1BuZGhwOFkrMlpUMFRD?=
+ =?utf-8?B?OThYWlhYZ0hMcExaVmozNHl5WVdJelR1ZVlvV1cxNzdNZk9wNENlU0wvMGQ5?=
+ =?utf-8?B?NmpKSC9uUWJ1cStNcWxLd0N0SzZCcGJjNUJlRkJDS0NaQ1pXRDYzblJWTWxT?=
+ =?utf-8?B?UHVSSFFManFhS2t0dUt6RnphNVFDRjR4NnhYclJJNW5QdWlCOGsweEpEbkJS?=
+ =?utf-8?B?bTdQaWlzR0c3VC9vcmVXS0hHUlN2UlU5WS9iam5BZVhEZnpiOEgzSElJUERC?=
+ =?utf-8?B?bU9scm15c2VLZjZpQkNDcGdKVm5zaDhvV1krWTdxajU0NmQvWVR4MlZCTE01?=
+ =?utf-8?B?Mm9Rb0czK3FrdTNKNHFHaFMxQmVEb1V6aERoZm9uYWZ3aGVTZlhJbFVNOGJK?=
+ =?utf-8?B?YUNjQzFPR2QxT3A0NVdUSnI0RFd3VTFPekIvNFAxdklqZUtITE04Myt6enlp?=
+ =?utf-8?Q?9Ef+hA+3Dp2ZPNfxQI86noiVr/GE72X9omVNJWPUuFO0=3D?=
+X-OriginatorOrg: outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ffc3913b-ff71-428d-e138-08db71f36aef
+X-MS-Exchange-CrossTenant-AuthSource: TYAP286MB0315.JPNP286.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Jun 2023 01:04:09.3157
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: OSZP286MB1999
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Tue, Jun 20, 2023 at 4:05=E2=80=AFPM Jason Gunthorpe <jgg@nvidia.com> wr=
-ote:
+>On Tue, Jun 20, 2023 at 12:48 PM Shiji Yang <yangshiji66@outlook.com> wrote:
+>>
+>> These patches silence some mt7620 PCIe driver error messeges by
+>> removing the useless debugging codes and replacing incorrectly
+>> used 'dev_err()' with 'dev_info()'.
+>>
+>> Shiji Yang (2):
+>>   mips: pci-mt7620: do not print NFTS register value as error log
+>>   mips: pci-mt7620: use dev_info() to log PCIe device detection result
+>>
+>>  arch/mips/pci/pci-mt7620.c | 7 ++-----
+>>  1 file changed, 2 insertions(+), 5 deletions(-)
 >
-> On Tue, Jun 20, 2023 at 01:01:39PM -0700, Vishal Moola wrote:
-> > On Fri, Jun 16, 2023 at 5:38=E2=80=AFAM Jason Gunthorpe <jgg@nvidia.com=
-> wrote:
-> > >
-> > > On Mon, Jun 12, 2023 at 02:03:53PM -0700, Vishal Moola (Oracle) wrote=
-:
-> > > > Currently, page table information is stored within struct page. As =
-part
-> > > > of simplifying struct page, create struct ptdesc for page table
-> > > > information.
-> > > >
-> > > > Signed-off-by: Vishal Moola (Oracle) <vishal.moola@gmail.com>
-> > > > ---
-> > > >  include/linux/pgtable.h | 51 +++++++++++++++++++++++++++++++++++++=
-++++
-> > > >  1 file changed, 51 insertions(+)
-> > > >
-> > > > diff --git a/include/linux/pgtable.h b/include/linux/pgtable.h
-> > > > index c5a51481bbb9..330de96ebfd6 100644
-> > > > --- a/include/linux/pgtable.h
-> > > > +++ b/include/linux/pgtable.h
-> > > > @@ -975,6 +975,57 @@ static inline void ptep_modify_prot_commit(str=
-uct vm_area_struct *vma,
-> > > >  #endif /* __HAVE_ARCH_PTEP_MODIFY_PROT_TRANSACTION */
-> > > >  #endif /* CONFIG_MMU */
-> > > >
-> > > > +
-> > > > +/**
-> > > > + * struct ptdesc - Memory descriptor for page tables.
-> > > > + * @__page_flags: Same as page flags. Unused for page tables.
-> > > > + * @pt_list: List of used page tables. Used for s390 and x86.
-> > > > + * @_pt_pad_1: Padding that aliases with page's compound head.
-> > > > + * @pmd_huge_pte: Protected by ptdesc->ptl, used for THPs.
-> > > > + * @_pt_s390_gaddr: Aliases with page's mapping. Used for s390 gma=
-p only.
-> > > > + * @pt_mm: Used for x86 pgds.
-> > > > + * @pt_frag_refcount: For fragmented page table tracking. Powerpc =
-and s390 only.
-> > > > + * @ptl: Lock for the page table.
-> > > > + *
-> > > > + * This struct overlays struct page for now. Do not modify without=
- a good
-> > > > + * understanding of the issues.
-> > > > + */
-> > > > +struct ptdesc {
-> > > > +     unsigned long __page_flags;
-> > > > +
-> > > > +     union {
-> > > > +             struct list_head pt_list;
-> > > > +             struct {
-> > > > +                     unsigned long _pt_pad_1;
-> > > > +                     pgtable_t pmd_huge_pte;
-> > > > +             };
-> > > > +     };
-> > > > +     unsigned long _pt_s390_gaddr;
-> > > > +
-> > > > +     union {
-> > > > +             struct mm_struct *pt_mm;
-> > > > +             atomic_t pt_frag_refcount;
-> > > > +     };
-> > > > +
-> > > > +#if ALLOC_SPLIT_PTLOCKS
-> > > > +     spinlock_t *ptl;
-> > > > +#else
-> > > > +     spinlock_t ptl;
-> > > > +#endif
-> > > > +};
-> > >
-> > > I think you should include the memcg here too? It needs to be valid
-> > > for a ptdesc, even if we don't currently deref it through the ptdesc
-> > > type.
-> >
-> > Yes, thanks for catching that! I'll add it to v5.
-> >
-> > > Also, do you see a way to someday put a 'struct rcu_head' into here?
-> >
-> > Eventually, when they're being dynamically allocated independent of
-> > struct page. Although at that point I'm not sure if we'll need one.
+>For the series:
+>Reviewed-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
 >
-> Sooner than dynamic struct page?
->
-> Probably it can overlap pt_list in alot of arches?
+>I'd really love to have this driver ported to PCI_DRIVERS_GENERIC
+>moved to 'drivers/pci/controller/pcie-mt7621.c' since they are pretty
+>similar just changing that mt7620 and mt7628 init the hardware
+>different and only use one virtual bridge. My problem is that I don't
+>have and cannot find hardware to test. Do you have interest in helping
+>me to do this?
 
-Ah yes, there will be one if v5 overlapping with pt_list
-(it already does in struct page anyways).
+Thanks,
+    Sergio Paracuellos
+
+Thank you for rewriting these drivers! I am glad to help test them. Please
+let me know at any time when they are ready.
+
+Best regards,
+    Shiji Yang

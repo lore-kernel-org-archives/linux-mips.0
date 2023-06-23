@@ -2,83 +2,53 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 59423EB64D7
-	for <linux-mips@archiver.kernel.org>; Fri, 23 Jun 2023 07:57:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 30F06EB64D7
+	for <linux-mips@archiver.kernel.org>; Fri, 23 Jun 2023 13:16:43 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230125AbjFWH5O (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 23 Jun 2023 03:57:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46880 "EHLO
+        id S230373AbjFWNQm (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 23 Jun 2023 09:16:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48734 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229484AbjFWH5O (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Fri, 23 Jun 2023 03:57:14 -0400
-Received: from h4.cmg1.smtp.forpsi.com (h4.cmg1.smtp.forpsi.com [185.129.138.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27BD910D
-        for <linux-mips@vger.kernel.org>; Fri, 23 Jun 2023 00:57:11 -0700 (PDT)
-Received: from lenoch ([80.95.121.122])
-        by cmgsmtp with ESMTPSA
-        id CbfIqcb0fPm6CCbfJqV2Gq; Fri, 23 Jun 2023 09:57:09 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=triops.cz; s=f2019;
-        t=1687507029; bh=QoB62eMd+PzjPV+XKDJnYkzx9hrgIoE2s5IcTPgrTbc=;
-        h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type;
-        b=39BWEsiCVRja17yq8umxc+tiFN/Nqm3cl0ydBLKR4gqK/iRlKG+VLGtC1h1uBwV7d
-         J2+qVXYZ11aIP3TOzIOp44hwmIPTSf2xNz3XK4kz3JS9fr3qIyZtqOkxgxXG8hnZze
-         3VHkyi3t4cmGPOZqCB0skG4+pQsBpP/Wy2ETekFOLLZuuH0wUOo1NrGls92sOS8maB
-         90Q2EIjcU18Nt8D6JolsVB4EPDiqQH8cZTW3qdJMO+ccciOEAMv5Stw23Z0WdxkWsB
-         ejWRbBh3oBOqGWWZwtOagoEc8LlW7m5kBL+ywDpfQ26nl46PmzTwC/ixT47cHSQBLh
-         9FZHY+MG7fOAw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=triops.cz; s=f2019;
-        t=1687507029; bh=QoB62eMd+PzjPV+XKDJnYkzx9hrgIoE2s5IcTPgrTbc=;
-        h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type;
-        b=39BWEsiCVRja17yq8umxc+tiFN/Nqm3cl0ydBLKR4gqK/iRlKG+VLGtC1h1uBwV7d
-         J2+qVXYZ11aIP3TOzIOp44hwmIPTSf2xNz3XK4kz3JS9fr3qIyZtqOkxgxXG8hnZze
-         3VHkyi3t4cmGPOZqCB0skG4+pQsBpP/Wy2ETekFOLLZuuH0wUOo1NrGls92sOS8maB
-         90Q2EIjcU18Nt8D6JolsVB4EPDiqQH8cZTW3qdJMO+ccciOEAMv5Stw23Z0WdxkWsB
-         ejWRbBh3oBOqGWWZwtOagoEc8LlW7m5kBL+ywDpfQ26nl46PmzTwC/ixT47cHSQBLh
-         9FZHY+MG7fOAw==
-Date:   Fri, 23 Jun 2023 09:57:07 +0200
-From:   Ladislav Michl <oss-lists@triops.cz>
-To:     Thinh Nguyen <Thinh.Nguyen@synopsys.com>
-Cc:     "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        with ESMTP id S230348AbjFWNQl (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Fri, 23 Jun 2023 09:16:41 -0400
+Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 434782680;
+        Fri, 23 Jun 2023 06:16:40 -0700 (PDT)
+Received: from uucp by elvis.franken.de with local-rmail (Exim 3.36 #1)
+        id 1qCgeU-0002sp-00; Fri, 23 Jun 2023 15:16:38 +0200
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id 41C2DC0388; Fri, 23 Jun 2023 15:14:45 +0200 (CEST)
+Date:   Fri, 23 Jun 2023 15:14:45 +0200
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Ladislav Michl <oss-lists@triops.cz>
+Cc:     Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
         "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>
 Subject: Re: [PATCH 00/11] Cleanup Octeon DWC3 glue code
-Message-ID: <ZJVQUzVW+NzCgH7i@lenoch>
+Message-ID: <20230623131445.GE11636@alpha.franken.de>
 References: <ZJC165p0Mj4jHcBh@lenoch>
  <20230622230149.4wpvtlpsu7473txr@synopsys.com>
+ <ZJVQUzVW+NzCgH7i@lenoch>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230622230149.4wpvtlpsu7473txr@synopsys.com>
-X-CMAE-Envelope: MS4wfJintxM30TZ37w43kOiAuZzWtIgmzBHD7Ryj8hATIO+pMyEsNl7d+h9w1CY8UImasrX/+ReVLUCZVg7jmN8YTDHNx1/J6mzdtPYgf5e/SbHjOSbsloL7
- 7EUY/JM916nb/gwmm7VelEjBrsmUcHq9GHIhRwDGmb06HloLXNS4y+0zXg+ZUfs/IZ1qwhohgK8WYayTD8zo3yqDTJBb7Hxhpdi3vCcwMBXRpE32opQTbMOR
- 167XoQYQv1a+l3HmVvjv9Q==
+In-Reply-To: <ZJVQUzVW+NzCgH7i@lenoch>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Hi,
+On Fri, Jun 23, 2023 at 09:57:07AM +0200, Ladislav Michl wrote:
+> That's pretty straightforward as patchset is arranged exactly this way,
+> so MIPS maintainer is free to apply patches till driver move.
 
-On Thu, Jun 22, 2023 at 11:01:54PM +0000, Thinh Nguyen wrote:
-> Hi,
-[snip]
-> Please use get_maintainer.pl to get all the proper maintainers to review
-> the changes.
+just to get things moving I've applied patch 1-7 to mips-next.
+If I should take the whole thing I need ACKs for it, otherwise
+I'm going to add an Acked-by for the moving patch (patch 8), which
+then could be accepted after next merge window.
 
-That's what I did. Thomas, MIPS maintainer is reading linux-mips list,
-Greg is reading linux-usb list, you were the one who receives changes,
-hence all patcheset was sent to you in a hope you provide some comments
-about actual code changes.
+Thomas.
 
-> Since this is a large change involving different subsystems, if
-> possible, please split the changes related to MIPS and try to upstream
-> those first as they will affect how dwc3 glue driver will look.
-
-That's pretty straightforward as patchset is arranged exactly this way,
-so MIPS maintainer is free to apply patches till driver move.
-However, any actual feedback would be still usefull. In case it gets
-some acks I'll add them and rebase patches to the latest -next.
-
-> Thanks,
-> Thinh
-
-Thanks,
-ladis
+-- 
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]

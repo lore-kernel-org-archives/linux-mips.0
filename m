@@ -2,83 +2,96 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C84CAC001DD
-	for <linux-mips@archiver.kernel.org>; Fri, 23 Jun 2023 13:16:45 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 055ADC001E0
+	for <linux-mips@archiver.kernel.org>; Fri, 23 Jun 2023 13:16:47 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231631AbjFWNQo (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 23 Jun 2023 09:16:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48742 "EHLO
+        id S231757AbjFWNQq (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 23 Jun 2023 09:16:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48748 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231271AbjFWNQm (ORCPT
+        with ESMTP id S231286AbjFWNQm (ORCPT
         <rfc822;linux-mips@vger.kernel.org>); Fri, 23 Jun 2023 09:16:42 -0400
 Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 42AC5BA;
-        Fri, 23 Jun 2023 06:16:40 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 22CCC2684;
+        Fri, 23 Jun 2023 06:16:41 -0700 (PDT)
 Received: from uucp by elvis.franken.de with local-rmail (Exim 3.36 #1)
-        id 1qCgeU-0002sn-00; Fri, 23 Jun 2023 15:16:38 +0200
+        id 1qCgeU-0002sh-00; Fri, 23 Jun 2023 15:16:38 +0200
 Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 72D90C0375; Fri, 23 Jun 2023 15:10:19 +0200 (CEST)
-Date:   Fri, 23 Jun 2023 15:10:19 +0200
+        id 32743C0301; Fri, 23 Jun 2023 15:09:23 +0200 (CEST)
+Date:   Fri, 23 Jun 2023 15:09:23 +0200
 From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     "Maciej W. Rozycki" <macro@orcam.me.uk>,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org
-Subject: Re: [PATCH][next] MIPS: dec: prom: Address -Warray-bounds warning
-Message-ID: <20230623131019.GD11636@alpha.franken.de>
-References: <ZJTcvfpvhvF+OLjc@work>
+To:     Nathan Chancellor <nathan@kernel.org>
+Cc:     sergio.paracuellos@gmail.com, sboyd@kernel.org,
+        ndesaulniers@google.com, trix@redhat.com,
+        linux-clk@vger.kernel.org, linux-mips@vger.kernel.org,
+        patches@lists.linux.dev, llvm@lists.linux.dev
+Subject: Re: [PATCH] clk: ralink: mtmips: Fix uninitialized use of ret in
+ mtmips_register_{fixed,factor}_clocks()
+Message-ID: <20230623130923.GB11636@alpha.franken.de>
+References: <20230622-mips-ralink-clk-wuninitialized-v1-1-ea9041240d10@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZJTcvfpvhvF+OLjc@work>
+In-Reply-To: <20230622-mips-ralink-clk-wuninitialized-v1-1-ea9041240d10@kernel.org>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Thu, Jun 22, 2023 at 05:43:57PM -0600, Gustavo A. R. Silva wrote:
-> Zero-length arrays are deprecated, and we are replacing them with flexible
-> array members instead. So, replace zero-length array with flexible-array
-> member in struct memmap.
+On Thu, Jun 22, 2023 at 03:56:19PM +0000, Nathan Chancellor wrote:
+> Clang warns:
 > 
-> Address the following warning found after building (with GCC-13) mips64
-> with decstation_64_defconfig:
-> In function 'rex_setup_memory_region',
->     inlined from 'prom_meminit' at arch/mips/dec/prom/memory.c:91:3:
-> arch/mips/dec/prom/memory.c:72:31: error: array subscript i is outside array bounds of 'unsigned char[0]' [-Werror=array-bounds=]
->    72 |                 if (bm->bitmap[i] == 0xff)
->       |                     ~~~~~~~~~~^~~
-> In file included from arch/mips/dec/prom/memory.c:16:
-> ./arch/mips/include/asm/dec/prom.h: In function 'prom_meminit':
-> ./arch/mips/include/asm/dec/prom.h:73:23: note: while referencing 'bitmap'
->    73 |         unsigned char bitmap[0];
+>   drivers/clk/ralink/clk-mtmips.c:309:9: error: variable 'ret' is uninitialized when used here [-Werror,-Wuninitialized]
+>     309 |         return ret;
+>         |                ^~~
+>   drivers/clk/ralink/clk-mtmips.c:285:9: note: initialize the variable 'ret' to silence this warning
+>     285 |         int ret, i;
+>         |                ^
+>         |                 = 0
+>   drivers/clk/ralink/clk-mtmips.c:359:9: error: variable 'ret' is uninitialized when used here [-Werror,-Wuninitialized]
+>     359 |         return ret;
+>         |                ^~~
+>   drivers/clk/ralink/clk-mtmips.c:335:9: note: initialize the variable 'ret' to silence this warning
+>     335 |         int ret, i;
+>         |                ^
+>         |                 = 0
+>   2 errors generated.
 > 
-> This helps with the ongoing efforts to globally enable -Warray-bounds.
+> Set ret to the return value of clk_hw_register_fixed_rate() using the
+> PTR_ERR() macro, which ensures ret is not used uninitialized, clearing
+> up the warning.
 > 
-> This results in no differences in binary output.
-> 
-> Link: https://github.com/KSPP/linux/issues/79
-> Link: https://github.com/KSPP/linux/issues/323
-> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+> Fixes: 6f3b15586eef ("clk: ralink: add clock and reset driver for MTMIPS SoCs")
+> Closes: https://github.com/ClangBuiltLinux/linux/issues/1879
+> Signed-off-by: Nathan Chancellor <nathan@kernel.org>
 > ---
->  arch/mips/include/asm/dec/prom.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  drivers/clk/ralink/clk-mtmips.c | 2 ++
+>  1 file changed, 2 insertions(+)
 > 
-> diff --git a/arch/mips/include/asm/dec/prom.h b/arch/mips/include/asm/dec/prom.h
-> index 1e1247add1cf..908e96e3a311 100644
-> --- a/arch/mips/include/asm/dec/prom.h
-> +++ b/arch/mips/include/asm/dec/prom.h
-> @@ -70,7 +70,7 @@ static inline bool prom_is_rex(u32 magic)
->   */
->  typedef struct {
->  	int pagesize;
-> -	unsigned char bitmap[0];
-> +	unsigned char bitmap[];
->  } memmap;
->  
->  
-> -- 
-> 2.34.1
+> diff --git a/drivers/clk/ralink/clk-mtmips.c b/drivers/clk/ralink/clk-mtmips.c
+> index 9322c6210a33..1e7991439527 100644
+> --- a/drivers/clk/ralink/clk-mtmips.c
+> +++ b/drivers/clk/ralink/clk-mtmips.c
+> @@ -292,6 +292,7 @@ static int mtmips_register_fixed_clocks(struct clk_hw_onecell_data *clk_data,
+>  						      sclk->parent, 0,
+>  						      sclk->rate);
+>  		if (IS_ERR(sclk->hw)) {
+> +			ret = PTR_ERR(sclk->hw);
+>  			pr_err("Couldn't register fixed clock %d\n", idx);
+>  			goto err_clk_unreg;
+>  		}
+> @@ -342,6 +343,7 @@ static int mtmips_register_factor_clocks(struct clk_hw_onecell_data *clk_data,
+>  						  sclk->parent, sclk->flags,
+>  						  sclk->mult, sclk->div);
+>  		if (IS_ERR(sclk->hw)) {
+> +			ret = PTR_ERR(sclk->hw);
+>  			pr_err("Couldn't register factor clock %d\n", idx);
+>  			goto err_clk_unreg;
+>  		}
+> 
+> ---
+> base-commit: fd99ac5055d4705e91c73d1adba18bc71c8511a8
+> change-id: 20230622-mips-ralink-clk-wuninitialized-150bd0336187
 
 applied to mips-next.
 

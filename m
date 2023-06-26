@@ -2,65 +2,65 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BECB3C001B3
-	for <linux-mips@archiver.kernel.org>; Mon, 26 Jun 2023 16:15:20 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 742DFC04A6A
+	for <linux-mips@archiver.kernel.org>; Mon, 26 Jun 2023 16:15:23 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230085AbjFZQPS (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 26 Jun 2023 12:15:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48146 "EHLO
+        id S230329AbjFZQPV (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 26 Jun 2023 12:15:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48280 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230249AbjFZQO3 (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Mon, 26 Jun 2023 12:14:29 -0400
+        with ESMTP id S230154AbjFZQO2 (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Mon, 26 Jun 2023 12:14:28 -0400
 Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81B8910FD;
-        Mon, 26 Jun 2023 09:14:26 -0700 (PDT)
-Received: from pps.filterd (m0246631.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 35QCoXMb022694;
-        Mon, 26 Jun 2023 16:14:00 GMT
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1362510F3;
+        Mon, 26 Jun 2023 09:14:25 -0700 (PDT)
+Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 35QBO28l012807;
+        Mon, 26 Jun 2023 16:13:52 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : content-transfer-encoding : content-type :
- mime-version; s=corp-2023-03-30;
- bh=KYtU6Il15CL3Ctw3ntIsTV4KFnUo2JVIqnGKOO5dxVI=;
- b=ur8EzlZEsvVpbR4WZ9ZVW5Wc73oJ51vznVUg0UQXNCCYWRfmwtrK5TmPwIy0iwVZVrPV
- TzlzocW3TI/vhtJs7g/2TSnWK4ouPEiogBPrdWSiSbqi/peLmsq/4cGA+sdj3t/yt9+y
- SkQO+9RP3AOIhODwO6mflLeLIqvXiHcZV1opmbyhxx5AF+Kr9Q+aLcNCX4khLXHDnwu/
- 8JSBwWAQZUlkY/CjKxuFv3ZiGeYiduxb+bEB7wLwiSPbLawjiNpPVX/X+lEVYOau0jBN
- 1801Zc077E++ub2W36R/qCMtKb36i+83TQXDfgeWagjTjEXGLKpWHrpU9sBCGslUFcXR xg== 
+ subject : date : message-id : in-reply-to : references :
+ content-transfer-encoding : content-type : mime-version;
+ s=corp-2023-03-30; bh=INO9jwnm7sy85thqLZ7evmCj4T//oZgOVoVhGsr8Lhw=;
+ b=YH23y4suGGdD/Bjm43UxQwUAT4SLzdwAT/7izuWgHLG7LH+/v3Kn6H6TdOSfwuICt/S4
+ +BCO/SAaiZz2lnePbwrwtpkc7FPi2I3H8RLJC9RMBFwztna3doqy7sn56yCK/VKByVoj
+ blpNrsppFvnQpct4se72ds4L/SZ2NYAfbuC5iQ2XnvZoap2h8fNEIrBYPw0CMcRQ1E6o
+ VX8w14p2Q9JREPhBvVGdvca/PzecRGaK7esnY2f+T+Vyv6ulDsB8SnN7OJR5rQP86aF0
+ nkyH4Wjeq1UDxJj072Vod3/iYfOTYufh9En1cgerrLgIxcaREnU5PrOxWCQIdX9pkg2n 0g== 
 Received: from iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta01.appoci.oracle.com [130.35.100.223])
-        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3rdq9331wk-1
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3rdpwdb2wa-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 26 Jun 2023 16:13:59 +0000
+        Mon, 26 Jun 2023 16:13:51 +0000
 Received: from pps.filterd (iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-        by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 35QFGIIZ005121;
-        Mon, 26 Jun 2023 16:13:46 GMT
-Received: from nam10-dm6-obe.outbound.protection.outlook.com (mail-dm6nam10lp2102.outbound.protection.outlook.com [104.47.58.102])
-        by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3rdpx9a8sk-1
+        by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 35QEtYCV005110;
+        Mon, 26 Jun 2023 16:13:51 GMT
+Received: from nam10-dm6-obe.outbound.protection.outlook.com (mail-dm6nam10lp2100.outbound.protection.outlook.com [104.47.58.100])
+        by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3rdpx9a8w1-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 26 Jun 2023 16:13:46 +0000
+        Mon, 26 Jun 2023 16:13:51 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=mVaz2EG/7EO8exZoUHqc0xa4Thsgogbk+Mz68w531Pk9vqKnEe+WrhXh52j0V+qaFK/XYKowSwDmlgSLSuJEzZiPnoROF4rb6sBS7zLI3X5lyCLcBfIjTc9oBPBL2iwaJEAhASCTi4N0V7YVd6kUxJJkpTpLZ3qBnOHjM7NrMCJPYVjGbz+revnHvttFZOqKMG3xJQHiQ56kB2ON808FgpEhq34XhlNP0cXcsZ0fk+Xgr+4lxhTs2rbCLTsKXkcwKklfUqziVl0/va6SAU288E7XCsjxCkQHqrEC+6M+8avFf0gZobVarc6g4TRV+Wek7MdxRstXNnbvFxVZH14Fnw==
+ b=Nswf83g/vXPZdxDn+PeTpOHXUk5LilcEq3cj/RbbkWu8PiIKZ4E7hzsL+nxO4mgDAh+pXakdBuqVkIqkp8AkNBafiXkil8WAnYaRFvISPa3HsVF/9gwoRaXdH3h4zq4prtDzf3aZGqNvlwdjiQPTq6yr7joYPZ/Trh8H+kvI9ts0QfSUuM3m5SkNPtVsvfz1Djwftk1z814LEXX/Zm3j7a7ZiNUFM0CMwxWgN2RQURjfXe+nPTLCew8uMhrhiz0I146jH/wtGyVzAHs7fAOuakACM+3yLitUzcdmcy2KgQIpiqnP8YUs0pNJryeXmMaOxbZ9Biv5ni7ZbHGP9X4Jcg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=KYtU6Il15CL3Ctw3ntIsTV4KFnUo2JVIqnGKOO5dxVI=;
- b=K7prlgu1jOkvr981u3uca1m9Aso2GutgtwMDq8SY0CgqEOyFzIGGILysQc6KhQH1zuzs2Eh1uzAsve3zjb1aYMVMa1mU0IgIRYL78s02qyM/eIBrStj/YNMI1bK7+xVzhuinK8Iw+Fmqr9JXBR+UfYbjKtE5Chd3+WXqNWb88W6y3I5gSxMs+lbr7a4EZoT74C767DyzmzqRiyjcGMru66Tp0AW8ExRWCa65YPpuFbNVY7YV12G0+lQ8gdP0lfX01c5b4b/dYjXaqo5pPT0Yao/b1+Ozxo0NeUmDnOiujToEt+Z9cIsPS24vPtkIpfhJ1+/UR/enbng9O7MzgQL/wQ==
+ bh=INO9jwnm7sy85thqLZ7evmCj4T//oZgOVoVhGsr8Lhw=;
+ b=XJa4BBPm97+45ydmcKuE2kW0TLl8FIkJ3WUo+6Rt2j/o17IGRVjVj/dwkDw0lepMYSZqscQ4u+QeCDsdpZ8JZZj+I5RVRFwJBpc4Q6uaXY+2tjd5dLymE8ft2+2pfhAU8LvSmJjbrAytSXlkdAZoVgHJqEbOgj88rsB+p4vYQkJcfOwU+gnfL16RCf40zfNowwvlK6dEO2HtybD+7L7cO75cCBLDeUoMNEFOo2kMQnkSRyi8qFWLO8fyvUO0grw2O7l1sd1twkkkkJrZpTxzLAocppbyiOjlUBU6+VFBb5btTCgZdo4ES4pfB3Pah2vfs/EC4eoufoOc8Aqmcx46Vw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
  dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=KYtU6Il15CL3Ctw3ntIsTV4KFnUo2JVIqnGKOO5dxVI=;
- b=TbKZb+cSmf/clji5mJNeHFf1zKZNCdTkSvnC5/cyamSAida0prgbgcN8I3lMB9Aq/38cnkr8WUSkP1boVPM7Knku6ch9Vnb0asn6lx+FEFcYPr5aGZoqy1htllimof4/++5E5Go0wAdtG550fxdAfAMc8upRHZS82Fzh6a9kDpE=
+ bh=INO9jwnm7sy85thqLZ7evmCj4T//oZgOVoVhGsr8Lhw=;
+ b=VBBqGThNvOLrNNkz0dDBT/9YCsMpsE3BPEJ7BDp6EsAvmEsjmJJUKdtC3yPuL1FsDn6UYNM/YsMiIilq9SSqdenImpwNCUdfxVtr1iz9zAjwHLuo8xz1vASsUdj87PKhZSOPnk8R2YpKAj4AVjmlm7oGa9rwElNkCQZwLrXq45w=
 Received: from CO1PR10MB4531.namprd10.prod.outlook.com (2603:10b6:303:6c::22)
  by DS7PR10MB7178.namprd10.prod.outlook.com (2603:10b6:8:e1::16) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6521.24; Mon, 26 Jun
- 2023 16:13:42 +0000
+ 2023 16:13:47 +0000
 Received: from CO1PR10MB4531.namprd10.prod.outlook.com
  ([fe80::8b8f:b4b1:bb78:b048]) by CO1PR10MB4531.namprd10.prod.outlook.com
  ([fe80::8b8f:b4b1:bb78:b048%5]) with mapi id 15.20.6521.024; Mon, 26 Jun 2023
- 16:13:42 +0000
+ 16:13:47 +0000
 From:   Eric DeVolder <eric.devolder@oracle.com>
 To:     linux@armlinux.org.uk, catalin.marinas@arm.com, will@kernel.org,
         chenhuacai@kernel.org, geert@linux-m68k.org,
@@ -92,95 +92,97 @@ Cc:     kernel@xen0n.name, mpe@ellerman.id.au, npiggin@gmail.com,
         hbathini@linux.ibm.com, sourabhjain@linux.ibm.com,
         eric.devolder@oracle.com, boris.ostrovsky@oracle.com,
         konrad.wilk@oracle.com
-Subject: [PATCH v3 00/13] refactor Kconfig to consolidate KEXEC and CRASH options
-Date:   Mon, 26 Jun 2023 12:13:19 -0400
-Message-Id: <20230626161332.183214-1-eric.devolder@oracle.com>
+Subject: [PATCH v3 02/13] x86/kexec: refactor for kernel/Kconfig.kexec
+Date:   Mon, 26 Jun 2023 12:13:21 -0400
+Message-Id: <20230626161332.183214-3-eric.devolder@oracle.com>
 X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20230626161332.183214-1-eric.devolder@oracle.com>
+References: <20230626161332.183214-1-eric.devolder@oracle.com>
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-ClientProxiedBy: SN7PR04CA0160.namprd04.prod.outlook.com
- (2603:10b6:806:125::15) To CO1PR10MB4531.namprd10.prod.outlook.com
+X-ClientProxiedBy: SA9PR13CA0135.namprd13.prod.outlook.com
+ (2603:10b6:806:27::20) To CO1PR10MB4531.namprd10.prod.outlook.com
  (2603:10b6:303:6c::22)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: CO1PR10MB4531:EE_|DS7PR10MB7178:EE_
-X-MS-Office365-Filtering-Correlation-Id: c8896451-50cf-474c-a050-08db76604f2a
+X-MS-Office365-Filtering-Correlation-Id: 91a944b0-6bc3-47de-ef2e-08db7660526c
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: SKMFTsz/kpb6rdRREt/q6Ms6aW2hqPpL8ADXfNG9xY+dEC/vWb21Fu+NSMRGEgeMwqH2IVmL61vrOSYzFfMxXn64BvQloiWI3tDhX2Nq8u7r1bgqyxMcWlqs5rymqi9HcKJI+YIfuya+nPsSP0cz57aSAyheRfW2Y6a+fJ9dImlkPaqUZGwf2vTqoC6C30vtaRSw6is0caehmG2QxFcrEJJMfROtiunvZ5h/AMOAz7FI1wliyd2/JnbvBVsmUFBBn1ebQRH4cePbq7HShqe5vDa/x44OPxMMTLNkQgEvZHFNdtQrbxxyOvB4i5S2X/eRDs4u7J50upJTv8UGWyanEyaAwDa2NoHVzTHDhTmzxJlDHMybRk9vBBYmrjEMssfa1vX5+MUGLebeccTfr7iWY2gvUm3rfxR4EWEbhCRCLd39y3sgEdmj9EzWyOhi2+NGoQoeb+lZopIfFf2+96cffajjQyHxuO6I1F9VXlT+532eU95ggH5TcuegyCLEVgFCQ4bh0agKIjt4iIFHC11pntANaMpGJegthXmVHYhBlJgS7/L1asjpBAu8RIw+ieBtFuaoKp6mwfeKbf8MrmCl9tJ6RbLEfRA0Sj3jPjSxUKFpO7rCSQrh48ZoPZCkMbw1
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO1PR10MB4531.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(136003)(346002)(39860400002)(396003)(376002)(366004)(451199021)(966005)(107886003)(6486002)(478600001)(2616005)(83380400001)(6666004)(26005)(6512007)(1076003)(6506007)(186003)(2906002)(30864003)(5660300002)(7406005)(7366002)(7416002)(36756003)(921005)(38100700002)(4326008)(66946007)(316002)(8936002)(8676002)(41300700001)(86362001)(66556008)(66476007);DIR:OUT;SFP:1101;
+X-Microsoft-Antispam-Message-Info: GyPTOYp3//gMJhUVoFQJR8YABuKgkoI9obtJPKQDSrj75kZHd4zyuWz2BYJ6ijRnJmk8cAxkLGd8V8gVjhXIeoTb5ihCtDRww+3X60Q83uDYaqFx1P93eL2HeZVbL4sBPrgROLbKTH1ZQkoSc7vypyrtIm46bQ1QSzeIOgSTBTAQcNYv31tMkycVmLvKwWdXpkMeGNg8gwDBdOSvlTim9e8mPd5ArsnIGuoqJYBAq9O7usBTRSHmXM599qbO3i4FqqWEz09Oxz3rf3gcY9u6yONCu1EVu+8VetgU5QiMFrnhMTjv/o7NROM9qaAkxOHqtvi5o1krfy9MdtbvUccmGjzpFr+po5/JavxZgHBFHCD1Sn2pk879Ox0dVTDbgjHCCEJDMLbpipQ3u87pdADBlUTA56kBPVoLdNIPcrUxBUpk/ZJD+MLkecXufEjT70iJyiTo3X+460YBFUX/lCf3SVWLG1eRlnlrORnBhYHXfGwmcmcFIxZQUjkTvGKYSPuh63A9Cex+5ZhqHRB0Cyw6YRtlEO3nCJxfc2CBolSkppnSG15iTwV9+pti/goVbqBkB6AEYLHBHPaj6u21iUDqSBxwX5dEh4nMXJvZXNmoHZY=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CO1PR10MB4531.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230028)(136003)(346002)(39860400002)(396003)(376002)(366004)(451199021)(107886003)(6486002)(478600001)(2616005)(83380400001)(6666004)(26005)(6512007)(1076003)(6506007)(186003)(2906002)(5660300002)(7406005)(7366002)(7416002)(36756003)(921005)(38100700002)(4326008)(66946007)(316002)(8936002)(8676002)(41300700001)(86362001)(66556008)(66476007);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?eNlWcqV3OxeoBKua7CLXgcgLU14pCAEs9MYGbzm4We2TZ/e2OUJpz6QwozNc?=
- =?us-ascii?Q?avtTw29REGRZ38q6HuC7aEM5FV+uPb2rSCwALexTsIwi5FLO69xtnHRRSqgp?=
- =?us-ascii?Q?gxTD+NjaS7qVyplcR4sr9KRZKSWBR8IF77v1ZUFDeeLkfinWMHqfTHsqmiAd?=
- =?us-ascii?Q?8JvnsBcwJOhKOohUA33LfNvYfX6AdUQcvccQ51uBj6SDQSxOY82QFJ1WS9LH?=
- =?us-ascii?Q?pZciolpya6+Y/C1wfqicwpEvigqW/AmY/B3f5uHNR+8wJrEDhz/iIEieqxjN?=
- =?us-ascii?Q?wQZdaCDZ21dvi9uQl7oO3ztYj3h0aa35UG2cR+GLttRCc8mqXFfYkcFl9yvo?=
- =?us-ascii?Q?A2FSRlpedAMGxqFeO1eJaxcoPhftAv3PFXgHO1rsfBXzdCAyI8+dHRAm4qiC?=
- =?us-ascii?Q?vlIngXWnC7BPVl3d6W7ExXPJmgdnUFpaQQbXEuycEbmcsODVgr3JLBXbMTWi?=
- =?us-ascii?Q?lSxg5n+nhDdeGEzuLeFkeBqe+o9L5cUH6nUku09SI4YkiMlyDaXyofz861xx?=
- =?us-ascii?Q?wlbedKvss0k2LWscA50zPvvpxDEs/Zpc5d1aO+SzyPkTKC0GR28cCanlcEId?=
- =?us-ascii?Q?9/mkI2vX4e6Kp+Bk6ZpnmgLMLxmZXpwPwH/8/zGaMxeIeVOhtMji+/owtPR0?=
- =?us-ascii?Q?YaRWz1ZVGzMembQ/C0CN2CCF87ftN9Lgrxfy/0TwuL9qIOqLGVIpaYfTCKfd?=
- =?us-ascii?Q?AEdNj5YUR232lTWC6YESCN1Ei5g0nC3RW8DaPYfJeax0pB7KssPfrdAXoloD?=
- =?us-ascii?Q?UgNl4J6o9isf6uHHkjef/2EDEn1U5iT/arX6ddSbAWjbtKkd9VgI4XUV9hT+?=
- =?us-ascii?Q?rZuDuitS+uRanKah3UxdKiJfQo0zSinA+Rif7dDqYfd5719GjYvfwAGZw1cH?=
- =?us-ascii?Q?yNivguRiCholPJ9Jx4nis065v71rnYP6hIAHhw0eDO/5olVgGV/VFjr06Eyc?=
- =?us-ascii?Q?53lBLfnf8v3xT7Bhwk5mjwdtTol0JFwWl6RUErv/bUMKwZFAiDrolTHWuCN+?=
- =?us-ascii?Q?HdkaJMiGy16xjkiKUEY1zwXpzauvXekueCfjw8+NgLFHjQqhhD9xgstWwvaG?=
- =?us-ascii?Q?G09uDz+fgIvkm01qe5ViU+ljnN/Qn7Q/4CeuzCrHBoFwfGtiy7hjQny2Fmdd?=
- =?us-ascii?Q?ACZezaHAZeomgHtXUIKjTlsnGgP3WdtY3v+OtV5imgcWJiNgvbQaD63HXyKz?=
- =?us-ascii?Q?3/aOC9x34g1RIhhuOPeiqDv6ffqVM5Yf3M63s8v10w8w3RGrAqwhCvSFNuOt?=
- =?us-ascii?Q?XKzYZjgqesO/gfuS/BaksWaabulanjdWk7E3NWzf6yRHLpuT+FsIv3fLnm8M?=
- =?us-ascii?Q?TQ63zyFHjtPJBdlri/mzKCcbUEQgKN5ciG8xXjpqU2ICpwJJtOOKq5/DnCyT?=
- =?us-ascii?Q?uVzwpeB6doyEzzVvNucykNkDE/pIfMf76hX3lBw/Ei7pZFQjeOv7JVPwVeET?=
- =?us-ascii?Q?fdWR1DO73JzYQC6zwzC24Evb2ukriiGRl3PTdjiUDANd5G0LVfr0mSPx8Yc7?=
- =?us-ascii?Q?xRNg/0meycCTDhMpspj42/AlJZ5zZMYJV1/Y5eNPzImylmQhNX2Opvit8FIU?=
- =?us-ascii?Q?6y+H8QKygO2ltntGO2S3u3tS9pLQNVL4azpO8L6nAg25ZefbqkSSpiEJsqhq?=
- =?us-ascii?Q?Ow=3D=3D?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?YJ4q3Rng0/MQaBWpo/OfDyXJqHB5yxH1G9elpWwGV4ZI4O6n2kXP0xufN689?=
+ =?us-ascii?Q?/R3uazQ4K2QeteLc2xg0DFnw9pci3U2XSArMPrwtEgcHEvtkeoo9MMyb30hM?=
+ =?us-ascii?Q?ggm3ON4IzVTLkIceGsEva04p/pzSOgUd7u6oMCUC2ymlAaYIP+M6MzR9+CNR?=
+ =?us-ascii?Q?FMjTXcL2vWYMv5D1GahCaa/KJyF+QJl2y68ZctRbjIqeTY1kQMF5BPmkY6wP?=
+ =?us-ascii?Q?s9acH5yhttmF9KT13LnffZoM/szHPcPL8RqB3N+fvf4Ns/tukjrjgtDnstkI?=
+ =?us-ascii?Q?bzfHGfF+vRb6RkBTA6vXWsyrTE2UcfHs6UuesDs6c23+AtT9fqWyEi3Dt1cQ?=
+ =?us-ascii?Q?u8FYXy0uPs0ATNGmUSs0KnUuXI3izBohFRPkCAWuzyd00sYWYXrtVqTw0x7Q?=
+ =?us-ascii?Q?9NqftLcUoGfz+BAdAQIUutrd0KI1m0SjNHIZplQERGzJEVhgRXxld9y4usj0?=
+ =?us-ascii?Q?lUAYfjE58g7ex9Tp5y2gaTJalWyIslTMj+0MPuFwDfYrmHnow62ffcQvJZ2N?=
+ =?us-ascii?Q?gGIycgXMsQ7YMI8gIT0kZX7lvFuqoMSah9AnSSnecIrZ6JUwVXrJ0LqTzYIn?=
+ =?us-ascii?Q?wOw2n+l+5HOraA1dlDkCRmy6MpZFFn0decqQkVDsaNoxnp7KBSKtwpLO+31n?=
+ =?us-ascii?Q?0FuoudPBYaVrjkN6YdaeQ0mvecCm9ALTqpeY8ohTgNtif4hWOUpT+DILErDp?=
+ =?us-ascii?Q?jP5OcQ7IHaMylSpjBGHQ9SN+8Mkfoqg2j1YJeMY1X6CwkPz1vAf1uamnzUHM?=
+ =?us-ascii?Q?s7f8BJWYU1yqxqCvsmxeX6ZXTmKpdYr+5gUxVHX+6zjpG+Esbx91+mMVnnN1?=
+ =?us-ascii?Q?uzQkrFgpP5dEe5RpliMnZHfl5nGnreWy5PHgk6Ur7EP76kaCnf6LXV7PtJSY?=
+ =?us-ascii?Q?J0A8VCZrxkPWcHy18yM4zsWokZXWjy3Fe1yCkw/68u1tTvdAoCy3obAJAO29?=
+ =?us-ascii?Q?oB1aFu4UiOocVyecMlSmBeuTWpHGnG434IMwIVOC2rW1pd4MU6IXvaPNOkuN?=
+ =?us-ascii?Q?E9ubhd7RdF2WzcsSfixqSl/l2xZ/vOcWvQW/1bM7hA6SD2PEfYZinbwFSJKz?=
+ =?us-ascii?Q?7US3ejIfCO8pqgUB3yt6zBggmLBTViHJ54DijhawfSz2dCMHCYEXe7r9Q3F6?=
+ =?us-ascii?Q?WUWvyz+lcB5rKcovDPY7udpT0WYGPfpbVUYx8BzZ69xXXfUCzVnFkBGpL2l0?=
+ =?us-ascii?Q?MmTqJ4lsvALLBkYWRPgVklG1Msm43QMwx3gAwo0Xb2e45lDssKgWJtbvrcq5?=
+ =?us-ascii?Q?yP1jDg7gpzFQnJEuMpjkKiWtPfNsF+ZVf8vu1lOIsTgYaYlzSF1bJ4KNhubB?=
+ =?us-ascii?Q?ukxVGx3JXfREstYwpQMcwUsnZWwOqvSmkVlkseoy+31bPa8abXsydEjKq7Iv?=
+ =?us-ascii?Q?w9HCTR/0amfvaSF3bZ/yEGjOUF7MKTFW0amhybQKTUhMyRjWUB+ae+Mn1r0d?=
+ =?us-ascii?Q?9LE6BrJW5AWHFKNr8Gc6i/C3j5hh60yksPo6HlmN8dEOiRaf6d/ivupGORpH?=
+ =?us-ascii?Q?vSO502PeYyKVnDCt9f2W7ogSYcqa90YTU2/2pgj1R1s4fCtT1KmrJymCqj0U?=
+ =?us-ascii?Q?Rmy8taBkuaBwxs2rnoGeneuLsAnUF1rfq/mvVtIIE7Eu1jWYWyq/lUaoSaKr?=
+ =?us-ascii?Q?DA=3D=3D?=
 X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 2
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: =?us-ascii?Q?zJshn9QMdHiz4+n7tK8VTRcMCOu6NPViKyVKSnHNuZ6Qk4AMxWoxbWeOknqa?=
- =?us-ascii?Q?tfiPQbSvn2iytWvVzwEHd26+LR4yoXcfSeRgby0KHB3MCWylzaCXj07TxlUS?=
- =?us-ascii?Q?CSIXgFY0WJhqQAaIRSUgN3DpZQEwjBeM4fHOAE5S6qNw2chjWe45RKmhkVsH?=
- =?us-ascii?Q?QAILg/BGWoYaEr3NguzH90vBpORmk0cbYn2wWxxI876wLnLY7s/v3FAodGqc?=
- =?us-ascii?Q?iYuFxYgAJGWtU65XeiJtvcrNJD5M10qlQfH6hpnRYG5ZPUSKzXL+v+70sCDj?=
- =?us-ascii?Q?OsqviJIufZSZOhQDV0LDxl1GXHUvhtEo9T70TBQKt0zBDMp/lC9+tcccPqTO?=
- =?us-ascii?Q?RmnmafzdVqbp/iNJmh/a4o3z66kGaBSAF+cuKIsCfpbcOTS4/l7D8Snnt0sc?=
- =?us-ascii?Q?MeNVvUnSGWPa4JLBuTx9ZYav8qWzBnXiS+7JOSSB6iV4m1KiPdMAacC0pAoV?=
- =?us-ascii?Q?XzZVwqTm/6C6Yzt4LMe5Fp7UW+y/mjiMfu+nZ+jPereYMX51qIOvnu3vznp5?=
- =?us-ascii?Q?bbppMnkTOzmsHT2ke3r9QJXNMnH7upMm8sl+dExfnaxVNLlqHn/pVU2AtItF?=
- =?us-ascii?Q?QpPlB9VTCB5j6w5l/n+IGhBSAW1OD8SCTN0FGg2IYBdctUlwr6jTILeVnPy7?=
- =?us-ascii?Q?88VMZBoBMu2JdBcd1reIzJvP9rZo8lP2eO+yl+SpFKR3lXQskSJva4NLyHC+?=
- =?us-ascii?Q?LMh5L1SCGsS3ctqUm+uWuddDjR4QKHn1TOuRnGaVMzEClBlJBY3+9N1OObJ5?=
- =?us-ascii?Q?fhcQGKh5Rp1/f55kcKczqor8vLRE8vNX26isivYKg2r8AZVSJOqW0GrnZU9T?=
- =?us-ascii?Q?s5A+LbTwX2G9F9urikaJjhcbbLoOBbAX7azPHAeRsCzQszKZPIhvroiwbYuh?=
- =?us-ascii?Q?pE/5nt3HYEkgN0kWSBbnIInDo4VulCWrUmzcrwyd6FhS5j9uXqYost1Lf6M/?=
- =?us-ascii?Q?xJTadfJcQG/64bU6Rm0sUgfSnaBZqoBK1VOPy1jjvePtvW5AZK7d2L+wKbTz?=
- =?us-ascii?Q?DyCRo0YZALJVLmCV15aBccWfvkizhX942WdWv84/Zv9TpTzygKP1EeQ/63h4?=
- =?us-ascii?Q?VI+f5tZznw4Xv1vj9bD+ID6SvHUPm22Tuo2G9VQKTt2eAuEOfAxovUaJE5fo?=
- =?us-ascii?Q?RdJ1+TXnu5NaOjmF4mW4t/VwYcXJp/wDQQoO18hQvyDAdRawYyfnHZloEK7c?=
- =?us-ascii?Q?J1B27bHqHOwEwWyGZqkEK0oPcgT1hAx+rJWcLxyc6M6HhW5AQMs9Fubm5oPF?=
- =?us-ascii?Q?tDbATQnMMIO7MkHCcsMUb+ZdEegbI9VzD4qnX3kqTPj1rMSqHRKnOQuzHbWC?=
- =?us-ascii?Q?tL8/OEkTWByYulc8/fpwNUmdJpXvUw446LlqqIkOTciRb16vImnkWR/hrh+d?=
- =?us-ascii?Q?LJkJ/FY8li0pFuPw4afU1FPFYzxe9vN1uSF/7pQ4zocifeS7iI43TnK4qKg2?=
- =?us-ascii?Q?Jo3sch3JTpNRaDUZaRiwEyT3YgMIARf4E3owP8jaQ+dy1nXHYFXcrGaEldYT?=
- =?us-ascii?Q?pB+DhXqAeN7SWR5uW5JWZUWgiZODOLtGwNz8h9Cwzxl1SdCYEFnfLJcy62OB?=
- =?us-ascii?Q?+R63KESM8gLCMKyvMn0TD/uJunIker2xAfUdRXGy/78UWHusq7cC18SiLOg1?=
- =?us-ascii?Q?jYhOtlD9Q+WnCcdf/gG1SgfrqYjGZnpmFfw160dq2BVtDUiq0gBbtOhxzWem?=
- =?us-ascii?Q?Ay7Q7xSOEdkhw7y066ka9CXQYL9pIanHfhrTL/5tl819Q+68EguKc38Wkv1W?=
- =?us-ascii?Q?AaaB1lDd/tA3vZohGepUQnMjvKV4eUOM5mVIbe4SI9Xil60XliZkthsNh5Iy?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-1: VIThY7IchRvOERhBfaMewz0PxWvSDAqS4aH8K6SHHJDoH0gJUPsQl7VZ/QRsnsjF4B17Dqc5HuHwyG6AEIn28VZ1wsqpXewZo01tYNvlbImIRaxSQk0fGHAyfDNEDGB1YDVskDYzmdnKMcMUvkeknLVR4f/Mm34i96AcdRb/rkKmaZSS35OpFtInmq9eGtb9C9qgKjvP+MhJBV0u+6aGPJIpiOD3l7yjoeMOpxQr67SDHNhuwAEsz7zjUpEbwkfYyuq4S4luLqZEwZwWCuyPwG3CJGX7U/p6E4EpM3LNS65/WJGM+9+Q9cKohZEkFu4I7UVStufLZs/we/dQIN/+4e6/JXrGMZCtMqm1m4fFUAD7BGKoKNzhU2Rteds2VLcF2q4AR3X4sdFr5VvxHVrF+v62yO2+JzrAk2inXeghDC6mtNmLueNbL53yzopcBGvfo1+fKJCxOYUmDg==
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: =?us-ascii?Q?YzgCiIhnwKHOU2rx067ItZ+cp6Axjw3COK3ixsSDu6sbWVO1sdKtlfhgSEIj?=
+ =?us-ascii?Q?q//PHAflw6Mq9ThUCXBJWl3P9F0KtzZ3ui0zxqU68KeFrIXbw8lxfu2Fr9Qq?=
+ =?us-ascii?Q?yUmckpMg2n9usdlbNYTxGEzbLi4wTtoS09Myl0VlpFyFYh/38E7uRg0OUCyo?=
+ =?us-ascii?Q?WK3i3snDsphYWQA0G7agh3bvAR4LEjk2yPBV6g/pYSeVmjG5IaUHT5T++5Yd?=
+ =?us-ascii?Q?RZMryTR4DxMEvhTlctPR4PsdMHYEY8Tunn273bgiHhIoO1vqyeGxr+IaU/Ux?=
+ =?us-ascii?Q?EHFuN635UiKJOTOpO0cRhWnaDiZfvq9T3q7zhnGoj/TDuj94c8FXLp//BtDp?=
+ =?us-ascii?Q?kjwu7pMCkTcyK55EY+zk8vmYtVYy25/Ul6m5n0EA4hkLjeuZHOWMnSqgcWCs?=
+ =?us-ascii?Q?WxwLGCfhTLmhMng/cDYUcNijeZTH3dFZ5C8t+uHnjEoE2o0jHd9Jd/EzxGrb?=
+ =?us-ascii?Q?49LlijHo9STYaur3SnyozfE33nfejQ/5Zd12fQSryhBQ1grpJ6oMx2I4iQYo?=
+ =?us-ascii?Q?+Qn/ZhUkIxfCp2R8XgZU8axZSXBkD28US+yBtdE0+mr47DA/ULm7gYb0iYCp?=
+ =?us-ascii?Q?uF9aEWHgIVgxgsANCnt38TjLYwmmKJ3jVofD7VrjDJnPLzF/QMxC1WfGEvNJ?=
+ =?us-ascii?Q?FdmhL2Z1FSnl6E2nk8HOoEUBXaqDkEF9+CkL6CsZ/iZbCqYsaeVleTjemrrd?=
+ =?us-ascii?Q?9R0UZKelwSy8FW6wSAI5XSJT6w+r8z9KuFWFatN+w4feqLNR4DeELVGyLEKX?=
+ =?us-ascii?Q?GleA+5xjIM048uw2QjtwBg5aYyxz+2G5Uyzhkc8DHVv1ZzPPovBXeXAkLMs6?=
+ =?us-ascii?Q?sS8AVxk7WSVxyZe24Mjmfv+BRIes/A3OLkEBKUL3AxNPrtKIBu086YkVSelh?=
+ =?us-ascii?Q?27XRmTW1JhXZBPgFDCoVPDF5EEqSgQZk34tHJ27JpwrARri3SsB9V9FiEP7T?=
+ =?us-ascii?Q?WrtyPq0u/8Tsz61dBsYpukv4cEhMV4QxLfsLt6+Hb6nhheeeDKQHc4B235d/?=
+ =?us-ascii?Q?k93G8EEeoEWX20b+PI/JQRXapOEr4Ykr39q6/EH+1ebttSbdl0H+nNs01qYe?=
+ =?us-ascii?Q?gstvDOEmdHjhCWzhgFrMQu2bKtuil/wt2NxpDJHVk1ilQcw1VeaWSnC2boZ1?=
+ =?us-ascii?Q?gcmkd4XZAtoPPUZ5wXBwsnDgX7Wtqth/Y8c/vXADcAvY24GkOV4iVGwcgR7i?=
+ =?us-ascii?Q?MZp8e9EZmhIi9UJDxw9YXU9+mSXG4JzcPTLaVGTVa+WTGN5jTd6L8j8xcyr1?=
+ =?us-ascii?Q?Wjx5xmTvlyXMQg2n9dW1x+PZtYjNYNUVoxay+GiccUJ+w/f6u6mcQOHLfqoM?=
+ =?us-ascii?Q?02JmnS8WQ3SxETHIyjBDU2qGTrqfDWUNzUFZmgqzCSoW8f5Dx3SawLnilBCw?=
+ =?us-ascii?Q?kRic/97w6O3XFsmf81c2lwDEw0/rH/f3f7q/OEGvfaN9PIhl6/hGq77IWzmW?=
+ =?us-ascii?Q?B1NjGblur6I6hjHY6bIUz0iuxnn1eDjLXA8x1DtzrOq8priDLce9gEpQ0qyd?=
+ =?us-ascii?Q?uM+qXGp2mGYCVxh1lVZ473J4ocN3LXgvZl8IIGxm/U2WOctrQA+PzD/5yfmP?=
+ =?us-ascii?Q?kJOb0w/GLtvLUP3q8kuvIRINyzsaXOCMU0iVgDJNsakVWixNTTsfZPBOeZqx?=
+ =?us-ascii?Q?f6rChvsEUR7p0efL9h1aUJSAzdUhsigJrEUUeDo6GsQNgadl1RuR46iYbmsx?=
+ =?us-ascii?Q?7m7qXL0nI+gr/1xlaq/eLZvlt4dIh0BGEw9SIpew8xAdGe9iD0PnBsvZhlXw?=
+ =?us-ascii?Q?GdNzLfsoqwdfnVeSodkVUhK+EQxS1T7EO/mWQC1UHrPrRVGuTIGNt8erIVkW?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-1: iGVZ9wfaLFqt12h87Bh5GTzLZ5/HjkqKeWLwv0vkuYU/59F5ZCrNLYlyXVihSf89OM/hb2dqLxyB9nomglYWb8oOscCitNLaxOC5HFY2aJAawodwFOZEanv1xpyWueatYhcsyJpd0Y7EL7KLow9PE1gQy1xw8iZ7v5PGBlpLntwry6tT6Go5HAfZJZpgtKg6o+ZLnR2pCHYwxxB3ItRHQqpvPGF46+EXmtJyHNwm1VURL6XMSVh/rcXYpGxXV7DBetj+JVNp6kpLxTX34aGWFouriY+UYrSs2zB3qHrxwhpCv/O9s6MoY95H5V0X4lnXJc3dKGOU71ENh+r556BTrYlVCmIbr5OzA1H8HrQ3kKfJDfSGAmecd4AfuEMJevRzMbtC7D3sR5epHIvAlCSItt5LNFuFgDGemukZCAjzYS3AFYETGvSk3dr4P3ygmVVxmhUMXHj6b6doNQ==
 X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c8896451-50cf-474c-a050-08db76604f2a
+X-MS-Exchange-CrossTenant-Network-Message-Id: 91a944b0-6bc3-47de-ef2e-08db7660526c
 X-MS-Exchange-CrossTenant-AuthSource: CO1PR10MB4531.namprd10.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Jun 2023 16:13:42.2094
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Jun 2023 16:13:47.6790
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: NQAqwqXMttPdEoXtpuOJ4taKRIOFMzTyucpyMWnTtBGB10pUhyyVEeIPN02fkjxWY/UIP9Q/f/Qt+6s4PrjXH08LmsZoap5xMeZNXk9d0nM=
+X-MS-Exchange-CrossTenant-UserPrincipalName: xrx7ySdpGYw7f+W4DECQLYwCTmud5zb1/sEAovmT173s5sVC9qhGZ4+um56ZE7sPRutU+TORbKRdGPTmpl2TeWEJKpmdIgOj9tRRa2RA3eA=
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS7PR10MB7178
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.254,Aquarius:18.0.957,Hydra:6.0.591,FMLib:17.11.176.26
@@ -189,413 +191,128 @@ X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 malw
  mlxlogscore=999 bulkscore=0 spamscore=0 phishscore=0 suspectscore=0
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2305260000
  definitions=main-2306260148
-X-Proofpoint-ORIG-GUID: zZAi0D9iU83bJGaTsNXhXKR1_ajJTh1E
-X-Proofpoint-GUID: zZAi0D9iU83bJGaTsNXhXKR1_ajJTh1E
+X-Proofpoint-GUID: XtoJZrUjqKS-ucsD_wTBzagWKMjD3Bl0
+X-Proofpoint-ORIG-GUID: XtoJZrUjqKS-ucsD_wTBzagWKMjD3Bl0
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-The Kconfig is refactored to consolidate KEXEC and CRASH options from
-various arch/<arch>/Kconfig files into new file kernel/Kconfig.kexec.
-
-The Kconfig.kexec is now a submenu titled "Kexec and crash features"
-located under "General Setup".
-
-The following options are impacted:
-
- - KEXEC
- - KEXEC_FILE
- - KEXEC_SIG
- - KEXEC_SIG_FORCE
- - KEXEC_BZIMAGE_VERIFY_SIG
- - KEXEC_JUMP
- - CRASH_DUMP
-
-Over time, these options have been copied between Kconfig files and
-are very similar to one another, but with slight differences.
-
-The following architectures are impacted by the refactor (because of
-use of one or more KEXEC/CRASH options):
-
- - arm
- - arm64
- - ia64
- - loongarch
- - m68k
- - mips
- - parisc
- - powerpc
- - riscv
- - s390
- - sh
- - x86 
-
-More information:
-
-In the patch series "crash: Kernel handling of CPU and memory hot
-un/plug"
-
- https://lore.kernel.org/lkml/20230503224145.7405-1-eric.devolder@oracle.com/
-
-the new kernel feature introduces the config option CRASH_HOTPLUG.
-
-In reviewing, Thomas Gleixner requested that the new config option
-not be placed in x86 Kconfig. Rather the option needs a generic/common
-home. To Thomas' point, the KEXEC and CRASH options have largely been
-duplicated in the various arch/<arch>/Kconfig files, with minor
-differences. This kind of proliferation is to be avoid/stopped.
-
- https://lore.kernel.org/lkml/875y91yv63.ffs@tglx/
-
-To that end, I have refactored the arch Kconfigs so as to consolidate
-the various KEXEC and CRASH options. Generally speaking, this work has
-the following themes:
-
-- KEXEC and CRASH options are moved into new file kernel/Kconfig.kexec
-  - These items from arch/Kconfig:
-      CRASH_CORE KEXEC_CORE KEXEC_ELF HAVE_IMA_KEXEC
-  - These items from arch/x86/Kconfig form the common options:
-      KEXEC KEXEC_FILE KEXEC_SIG KEXEC_SIG_FORCE
-      KEXEC_BZIMAGE_VERIFY_SIG KEXEC_JUMP CRASH_DUMP
-  - The crash hotplug series appends CRASH_HOTPLUG to Kconfig.kexec
-  NOTE: PHYSICAL_START could be argued to be included in this series.
-- The Kconfig.kexec is now a submenu titled "Kexec and crash features"
-- The Kconfig.kexec is now listed in "General Setup" submenu from
-  init/Kconfig
-- To control the main common options, new options ARCH_SUPPORTS_KEXEC,
-  ARCH_SUPPORTS_KEXEC_FILE and ARCH_SUPPORTS_CRASH_DUMP are introduced.
-  NOTE: The existing ARCH_HAS_KEXEC_PURGATORY remains unchanged.
-- To account for the slight differences, new options ARCH_SELECTS_KEXEC,
-  ARCH_SELECTS_KEXEC_FILE and ARCH_SELECTS_CRASH_DUMP are used to
-  elicit the same side effects as the original arch/<arch>/Kconfig
-  files for KEXEC and CRASH options.
-
-An example, 'make menuconfig' illustrating the submenu:
-
-  > General setup > Kexec and crash features
-  [*] Enable kexec system call
-  [*] Enable kexec file based system call
-  [*]   Verify kernel signature during kexec_file_load() syscall
-  [ ]     Require a valid signature in kexec_file_load() syscall
-  [ ]     Enable bzImage signature verification support
-  [*] kexec jump
-  [*] kernel crash dumps
-  [*]   Update the crash elfcorehdr on system configuration changes
-
-The three main options are KEXEC, KEXEC_FILE and CRASH_DUMP. In the
-process of consolidating these options, I encountered slight differences
-in the coding of these options in several of the architectures. As a
-result, I settled on the following solution:
-
-- Each of three main options has a 'depends on ARCH_SUPPORTS_<option>'
-  statement: ARCH_SUPPORTS_KEXEC, ARCH_SUPPORTS_KEXEC_FILE,
-  ARCH_SUPPORTS_CRASH_DUMP.
-
-  For example, the KEXEC_FILE option has a 'depends on
-  ARCH_SUPPORTS_KEXEC_FILE' statement.
-
-- The boolean ARCH_SUPPORTS_<option> in effect allows the arch to
-  determine when the feature is allowed.  Archs which don't have the
-  feature simply do not provide the corresponding ARCH_SUPPORTS_<option>.
-  For each arch, where there previously were KEXEC and/or CRASH
-  options, these have been replaced with the corresponding boolean
-  ARCH_SUPPORTS_<option>, and an appropriate def_bool statement.
-
-  For example, if the arch supports KEXEC_FILE, then the
-  ARCH_SUPPORTS_KEXEC_FILE simply has a 'def_bool y'. This permits the
-  KEXEC_FILE option to be available.
-
-  If the arch has a 'depends on' statement in its original coding
-  of the option, then that expression becomes part of the def_bool
-  expression. For example, arm64 had:
-
-  config KEXEC
-    depends on PM_SLEEP_SMP
-
-  and in this solution, this converts to:
-
-  config ARCH_SUPPORTS_KEXEC
-    def_bool PM_SLEEP_SMP
-
-
-- In order to account for the differences in the config coding for
-  the three common options, the ARCH_SELECTS_<option> is used.
-  This options has a 'depends on <option>' statement to couple it
-  to the main option, and from there can insert the differences
-  from the common option and the arch original coding of that option.
-
-  For example, a few archs enable CRYPTO and CRYTPO_SHA256 for
-  KEXEC_FILE. These require a ARCH_SELECTS_KEXEC_FILE and
-  'select CRYPTO' and 'select CRYPTO_SHA256' statements.
-
-Illustrating the option relationships:
-
-For KEXEC:
- ARCH_SUPPORTS_KEXEC <- KEXEC <- ARCH_SELECTS_KEXEC
-
- KEXEC                      # in Kconfig.kexec
- ARCH_SUPPORTS_KEXEC        # in arch/<arch>/Kconfig, as needed
- ARCH_SELECTS_KEXEC         # in arch/<arch>/Kconfig, as needed
-
-
-For KEXEC_FILE:
- ARCH_SUPPORTS_KEXEC_FILE <- KEXEC_FILE <- ARCH_SELECTS_KEXEC_FILE
-
- KEXEC_FILE                 # in Kconfig.kexec
- ARCH_SUPPORTS_KEXEC_FILE   # in arch/<arch>/Kconfig, as needed
- ARCH_SELECTS_KEXEC_FILE    # in arch/<arch>/Kconfig, as needed
-
-
-For CRASH:
- ARCH_SUPPORTS_CRASH_DUMP <- CRASH_DUMP <- ARCH_SELECTS_CRASH_DUMP
-
- CRASH_DUMP                 # in Kconfig.kexec
- ARCH_SUPPORTS_CRASH_DUMP   # in arch/<arch>/Kconfig, as needed
- ARCH_SELECTS_CRASH_DUMP    # in arch/<arch>/Kconfig, as needed
-
-To summarize, the ARCH_SUPPORTS_<option> permits the <option> to be
-enabled, and the ARCH_SELECTS_<option> handles side effects (ie.
-select statements).
-
-Examples:
-A few examples to show the new strategy in action:
-
-===== x86 (minus the help section) =====
-Original:
- config KEXEC
-    bool "kexec system call"
-    select KEXEC_CORE
-
- config KEXEC_FILE
-    bool "kexec file based system call"
-    select KEXEC_CORE
-    select HAVE_IMA_KEXEC if IMA
-    depends on X86_64
-    depends on CRYPTO=y
-    depends on CRYPTO_SHA256=y
-
- config ARCH_HAS_KEXEC_PURGATORY
-    def_bool KEXEC_FILE
-
- config KEXEC_SIG
-    bool "Verify kernel signature during kexec_file_load() syscall"
-    depends on KEXEC_FILE
-
- config KEXEC_SIG_FORCE
-    bool "Require a valid signature in kexec_file_load() syscall"
-    depends on KEXEC_SIG
-
- config KEXEC_BZIMAGE_VERIFY_SIG
-    bool "Enable bzImage signature verification support"
-    depends on KEXEC_SIG
-    depends on SIGNED_PE_FILE_VERIFICATION
-    select SYSTEM_TRUSTED_KEYRING
-
- config CRASH_DUMP
-    bool "kernel crash dumps"
-    depends on X86_64 || (X86_32 && HIGHMEM)
-
- config KEXEC_JUMP
-    bool "kexec jump"
-    depends on KEXEC && HIBERNATION
-    help
-
-becomes...
-New:
- config ARCH_SUPPORTS_KEXEC
-    def_bool y
-
- config ARCH_SUPPORTS_KEXEC_FILE
-    def_bool X86_64 && CRYPTO && CRYPTO_SHA256
-
- config ARCH_SELECTS_KEXEC_FILE
-    def_bool y
-    depends on KEXEC_FILE
-    select HAVE_IMA_KEXEC if IMA
-
- config ARCH_HAS_KEXEC_PURGATORY
-    def_bool KEXEC_FILE
-
- config ARCH_SUPPORTS_KEXEC_JUMP
-    def_bool y
-
- config ARCH_SUPPORTS_CRASH_DUMP
-    def_bool X86_64 || (X86_32 && HIGHMEM)
-
-
-===== powerpc (minus the help section) =====
-Original:
- config KEXEC
-    bool "kexec system call"
-    depends on PPC_BOOK3S || PPC_E500 || (44x && !SMP)
-    select KEXEC_CORE
-
- config KEXEC_FILE
-    bool "kexec file based system call"
-    select KEXEC_CORE
-    select HAVE_IMA_KEXEC if IMA
-    select KEXEC_ELF
-    depends on PPC64
-    depends on CRYPTO=y
-    depends on CRYPTO_SHA256=y
-
- config ARCH_HAS_KEXEC_PURGATORY
-    def_bool KEXEC_FILE
-
- config CRASH_DUMP
-    bool "Build a dump capture kernel"
-    depends on PPC64 || PPC_BOOK3S_32 || PPC_85xx || (44x && !SMP)
-    select RELOCATABLE if PPC64 || 44x || PPC_85xx
-
-becomes...
-New:
-config ARCH_SUPPORTS_KEXEC
-    def_bool PPC_BOOK3S || PPC_E500 || (44x && !SMP)
-
-config ARCH_SUPPORTS_KEXEC_FILE
-    def_bool PPC64 && CRYPTO=y && CRYPTO_SHA256=y
-
-config ARCH_HAS_KEXEC_PURGATORY
-    def_bool KEXEC_FILE
-
-config ARCH_SELECTS_KEXEC_FILE
-    def_bool y
-    depends on KEXEC_FILE
-    select KEXEC_ELF
-    select HAVE_IMA_KEXEC if IMA
-
-config ARCH_SUPPORTS_CRASH_DUMP
-    def_bool PPC64 || PPC_BOOK3S_32 || PPC_85xx || (44x && !SMP)
-
-config ARCH_SELECTS_CRASH_DUMP
-    def_bool y
-    depends on CRASH_DUMP
-    select RELOCATABLE if PPC64 || 44x || PPC_85xx
-
-
-Testing Approach and Results
-
-There are 388 config files in the arch/<arch>/configs directories.
-For each of these config files, a .config is generated both before and
-after this Kconfig series, and checked for equivalence. This approach
-allows for a rather rapid check of all architectures and a wide
-variety of configs wrt/ KEXEC and CRASH, and avoids requiring
-compiling for all architectures and running kernels and run-time
-testing.
-
-As such, the following script steps compare the before and after
-of 'make olddefconfig'. The new symbols introduced by this series
-are filtered out, but otherwise the config files are PASS only if
-they were equivalent, and FAIL otherwise.
-
-The script performs the test by doing the following:
-
- # Obtain the "golden" .config output for given config file
- # Reset test sandbox
- git checkout master
- git branch -D test_Kconfig
- git checkout -B test_Kconfig master
- make distclean
- # Write out updated config
- cp -f <config file> .config
- make ARCH=<arch> olddefconfig
- # Track each item in .config, LHSB is "golden"
- scoreboard .config 
-
- # Obtain the "changed" .config output for given config file
- # Reset test sandbox
- make distclean
- # Apply this Kconfig series
- git am <this Kconfig series>
- # Write out updated config
- cp -f <config file> .config
- make ARCH=<arch> olddefconfig
- # Track each item in .config, RHSB is "changed"
- scoreboard .config 
-
- # Determine test result
- # Filter-out new symbols introduced by this series
- # Filter-out symbol=n which not in either scoreboard
- # Compare LHSB "golden" and RHSB "changed" scoreboards and issue PASS/FAIL
-
-The script was instrumental during the refactoring of Kconfig as it
-continually revealed problems. The end result being that the solution
-presented in this series passes all configs as checked by the script.
-
-Regards,
-eric
-
+The kexec and crash kernel options are provided in the common
+kernel/Kconfig.kexec. Utilize the common options and provide
+the ARCH_SUPPORTS_ and ARCH_SELECTS_ entries to recreate the
+equivalent set of KEXEC and CRASH options.
+
+Signed-off-by: Eric DeVolder <eric.devolder@oracle.com>
 ---
-v3: 26jun2023
- - Rebased onto 6.4.0
- - Reworded s390 commit message to clarify MODULE_SIG_FORMAT,
-   per Alexander Gordeev
- - Applied Acked-by's from:
-   m68k: Geert Uytterhoeven <geert@linux-m68k.org>
-   mips: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-   sh: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+ arch/x86/Kconfig | 89 +++++++-----------------------------------------
+ 1 file changed, 13 insertions(+), 76 deletions(-)
 
-v2: 19jun2023
- https://lore.kernel.org/lkml/20230619145801.1064716-1-eric.devolder@oracle.com/
- - The ARCH_HAS_ and ARCH_SUPPORTS_ combination was found to be
-   too similar/confusing. Renamed these two new options as such:
-   ARCH_HAS_<option> ---> ARCH_SUPPORTS_<option>
-   ARCH_SUPPORTS_<option> ---> ARCH_SELECTS_<option>
-   Per Kees Cook, Michael Ellerman
-   NOTE: ARCH_HAS_KEXEC_PURGATORY was left as-is, as that is what
-   it is prior to this series.
-   Updated this cover letter to reflect the same.
- - Some minor cleaning up of the help sections, per Zhen Lei and
-   Alexander Gordeev.
- - Removed the MODULE_SIG_FORMAT dependency from KEXEC_SIG in
-   kernel/Kconfig.kexec. Only s390 had it prior to this series.
-   See also commit message in
-   "s390/kexec: refactor for kernel/Kconfig.kexec"
- - Added to Kconfig.kexec the KEXEC_IMAGE_VERIFY_SIG from arm64,
-   per Zhen Lei.
- - Fixed the powerpc ARCH_SUPPORTS_KEXEC_FILE conversion, per
-   Michael Ellerman.
-   
-v1: 12jun2023
- https://lore.kernel.org/lkml/20230612172805.681179-1-eric.devolder@oracle.com/
- - Initial
- - Based on 6.4.0-rc6
-
----
-
-Eric DeVolder (13):
-  kexec: consolidate kexec and crash options into kernel/Kconfig.kexec
-  x86/kexec: refactor for kernel/Kconfig.kexec
-  arm/kexec: refactor for kernel/Kconfig.kexec
-  ia64/kexec: refactor for kernel/Kconfig.kexec
-  arm64/kexec: refactor for kernel/Kconfig.kexec
-  loongarch/kexec: refactor for kernel/Kconfig.kexec
-  m68k/kexec: refactor for kernel/Kconfig.kexec
-  mips/kexec: refactor for kernel/Kconfig.kexec
-  parisc/kexec: refactor for kernel/Kconfig.kexec
-  powerpc/kexec: refactor for kernel/Kconfig.kexec
-  riscv/kexec: refactor for kernel/Kconfig.kexec
-  s390/kexec: refactor for kernel/Kconfig.kexec
-  sh/kexec: refactor for kernel/Kconfig.kexec
-
- arch/Kconfig           |  13 -----
- arch/arm/Kconfig       |  29 ++---------
- arch/arm64/Kconfig     |  62 +++++------------------
- arch/ia64/Kconfig      |  28 ++---------
- arch/loongarch/Kconfig |  26 +++-------
- arch/m68k/Kconfig      |  19 +------
- arch/mips/Kconfig      |  32 ++----------
- arch/parisc/Kconfig    |  34 +++++--------
- arch/powerpc/Kconfig   |  55 +++++++--------------
- arch/riscv/Kconfig     |  48 ++++++------------
- arch/s390/Kconfig      |  65 +++++++-----------------
- arch/sh/Kconfig        |  46 +++--------------
- arch/x86/Kconfig       |  89 +++++----------------------------
- init/Kconfig           |   2 +
- kernel/Kconfig.kexec   | 110 +++++++++++++++++++++++++++++++++++++++++
- 15 files changed, 229 insertions(+), 429 deletions(-)
- create mode 100644 kernel/Kconfig.kexec
-
+diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+index 53bab123a8ee..1afc6ca2986b 100644
+--- a/arch/x86/Kconfig
++++ b/arch/x86/Kconfig
+@@ -2043,88 +2043,25 @@ config EFI_RUNTIME_MAP
+ 
+ source "kernel/Kconfig.hz"
+ 
+-config KEXEC
+-	bool "kexec system call"
+-	select KEXEC_CORE
+-	help
+-	  kexec is a system call that implements the ability to shutdown your
+-	  current kernel, and to start another kernel.  It is like a reboot
+-	  but it is independent of the system firmware.   And like a reboot
+-	  you can start any kernel with it, not just Linux.
+-
+-	  The name comes from the similarity to the exec system call.
+-
+-	  It is an ongoing process to be certain the hardware in a machine
+-	  is properly shutdown, so do not be surprised if this code does not
+-	  initially work for you.  As of this writing the exact hardware
+-	  interface is strongly in flux, so no good recommendation can be
+-	  made.
+-
+-config KEXEC_FILE
+-	bool "kexec file based system call"
+-	select KEXEC_CORE
+-	select HAVE_IMA_KEXEC if IMA
+-	depends on X86_64
+-	depends on CRYPTO=y
+-	depends on CRYPTO_SHA256=y
+-	help
+-	  This is new version of kexec system call. This system call is
+-	  file based and takes file descriptors as system call argument
+-	  for kernel and initramfs as opposed to list of segments as
+-	  accepted by previous system call.
++config ARCH_SUPPORTS_KEXEC
++	def_bool y
+ 
+-config ARCH_HAS_KEXEC_PURGATORY
+-	def_bool KEXEC_FILE
++config ARCH_SUPPORTS_KEXEC_FILE
++	def_bool X86_64 && CRYPTO && CRYPTO_SHA256
+ 
+-config KEXEC_SIG
+-	bool "Verify kernel signature during kexec_file_load() syscall"
++config ARCH_SELECTS_KEXEC_FILE
++	def_bool y
+ 	depends on KEXEC_FILE
+-	help
+-
+-	  This option makes the kexec_file_load() syscall check for a valid
+-	  signature of the kernel image.  The image can still be loaded without
+-	  a valid signature unless you also enable KEXEC_SIG_FORCE, though if
+-	  there's a signature that we can check, then it must be valid.
+-
+-	  In addition to this option, you need to enable signature
+-	  verification for the corresponding kernel image type being
+-	  loaded in order for this to work.
+-
+-config KEXEC_SIG_FORCE
+-	bool "Require a valid signature in kexec_file_load() syscall"
+-	depends on KEXEC_SIG
+-	help
+-	  This option makes kernel signature verification mandatory for
+-	  the kexec_file_load() syscall.
++	select HAVE_IMA_KEXEC if IMA
+ 
+-config KEXEC_BZIMAGE_VERIFY_SIG
+-	bool "Enable bzImage signature verification support"
+-	depends on KEXEC_SIG
+-	depends on SIGNED_PE_FILE_VERIFICATION
+-	select SYSTEM_TRUSTED_KEYRING
+-	help
+-	  Enable bzImage signature verification support.
++config ARCH_HAS_KEXEC_PURGATORY
++	def_bool KEXEC_FILE
+ 
+-config CRASH_DUMP
+-	bool "kernel crash dumps"
+-	depends on X86_64 || (X86_32 && HIGHMEM)
+-	help
+-	  Generate crash dump after being started by kexec.
+-	  This should be normally only set in special crash dump kernels
+-	  which are loaded in the main kernel with kexec-tools into
+-	  a specially reserved region and then later executed after
+-	  a crash by kdump/kexec. The crash dump kernel must be compiled
+-	  to a memory address not used by the main kernel or BIOS using
+-	  PHYSICAL_START, or it must be built as a relocatable image
+-	  (CONFIG_RELOCATABLE=y).
+-	  For more details see Documentation/admin-guide/kdump/kdump.rst
++config ARCH_SUPPORTS_KEXEC_JUMP
++	def_bool y
+ 
+-config KEXEC_JUMP
+-	bool "kexec jump"
+-	depends on KEXEC && HIBERNATION
+-	help
+-	  Jump between original kernel and kexeced kernel and invoke
+-	  code in physical address mode via KEXEC
++config ARCH_SUPPORTS_CRASH_DUMP
++	def_bool X86_64 || (X86_32 && HIGHMEM)
+ 
+ config PHYSICAL_START
+ 	hex "Physical address where the kernel is loaded" if (EXPERT || CRASH_DUMP)
 -- 
 2.31.1
 

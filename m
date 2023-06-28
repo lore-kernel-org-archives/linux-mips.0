@@ -2,170 +2,205 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 79EA2EB64DC
-	for <linux-mips@archiver.kernel.org>; Wed, 28 Jun 2023 08:12:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 42703EB64DC
+	for <linux-mips@archiver.kernel.org>; Wed, 28 Jun 2023 08:25:20 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233698AbjF1IMp (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 28 Jun 2023 04:12:45 -0400
-Received: from dfw.source.kernel.org ([139.178.84.217]:51716 "EHLO
-        dfw.source.kernel.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233752AbjF1IJv (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 28 Jun 2023 04:09:51 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id CA9726132E;
-        Wed, 28 Jun 2023 07:34:45 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 35155C433CB;
-        Wed, 28 Jun 2023 07:34:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1687937685;
-        bh=1RvYG/zNfvaMvzYdsiasDFPUFxo2X7mXbyQadTutm14=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=H1RUK0rPadZYlBM2PFBs8Y0zb/rFJtcnbd93GXhOMrDxiioXfaMYeAd7wReRjzdIJ
-         5c2d+9mB3qnRUAmgYHBuRW7U/Noyj0Kf916vuTKLEH29vtLN9OBZG0warX9jo9TLfu
-         +1mL1UsWSs/jzhPKDy9eqDrte27NWRt6UOFApwBwA18eF/xKj1xV8EBizjvuD7mISE
-         F8VBNyCWr84HEhddggLUfgN5ttYZqqw8MnL2mJfDrLmFKyRZlt5KKJlulxIKC+2O5/
-         G4gIsWLxQpyFkOBiQ7uaM+iq/VWY5BPgoVPQ85wr7nmGDou3+LC9FEQO4JCzRfRw3W
-         vHAjecBBlNjGA==
-Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-991aac97802so447145066b.1;
-        Wed, 28 Jun 2023 00:34:45 -0700 (PDT)
-X-Gm-Message-State: AC+VfDxAYnTgj7qb3u7386i7C0IAOBrP9iQGf7wjQVhVWIZIPwBTEiWM
-        J75zbNlcVIq3Atw/Vf+TRisbSX/7/RNLeX7BWTk=
-X-Google-Smtp-Source: ACHHUZ6JL3g1iyyrEhvtgl6EfKUhA+/PI4WX7hcVO+KzuuEGLTNZV4wFqRkqjAXpyVuNwo4/H31vvrP4Aght7wyWGN8=
-X-Received: by 2002:a17:907:80c:b0:974:1d8b:ca5f with SMTP id
- wv12-20020a170907080c00b009741d8bca5fmr30253899ejb.9.1687937683374; Wed, 28
- Jun 2023 00:34:43 -0700 (PDT)
+        id S233130AbjF1IYi (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 28 Jun 2023 04:24:38 -0400
+Received: from esa.microchip.iphmx.com ([68.232.153.233]:24222 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231911AbjF1IV2 (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 28 Jun 2023 04:21:28 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1687940488; x=1719476488;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=UMkXk+bPbzGfZkrBHrsW/8MysrRy74gOjizdruOTAJs=;
+  b=ws+yuToO/QR5a9BxSMvZrJpj/+Ahn2JZotQ33ZP56QH75SWadrTw3wXb
+   BX1fZyRswX1bZYoNSa5a2t5JoojzTzgsvYPFcWXGUZKIpcRb+IhvBxSNv
+   qrwfocm11hAGXKNs8c8oGeGzKHjbNwGDAVQEdMHbq0uPAKCzFY42WHg6h
+   BbPIUC3+5Inqtge+ZBDq9e1xWcZ9EXR947c9zgO+eVJfWgYjUbqQbehGL
+   9DaKyhdRjwz9VjOXnGA4fvGKaufyCJ18SwjUyVXqc96IVwl0uwCzReg3q
+   noPZ0YbIxOi7A6Ptlra0h2l0CVsH0/oTIYciZOXHIAA1zgK8GwNjqX+/X
+   Q==;
+X-IronPort-AV: E=Sophos;i="6.01,165,1684825200"; 
+   d="asc'?scan'208";a="220938489"
+X-Amp-Result: UNKNOWN
+X-Amp-Original-Verdict: FILE UNKNOWN
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa5.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 28 Jun 2023 01:21:26 -0700
+Received: from chn-vm-ex03.mchp-main.com (10.10.85.151) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.21; Wed, 28 Jun 2023 01:21:15 -0700
+Received: from wendy (10.10.115.15) by chn-vm-ex03.mchp-main.com
+ (10.10.85.151) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.21 via Frontend
+ Transport; Wed, 28 Jun 2023 01:21:04 -0700
+Date:   Wed, 28 Jun 2023 09:20:36 +0100
+From:   Conor Dooley <conor.dooley@microchip.com>
+To:     Eric DeVolder <eric.devolder@oracle.com>
+CC:     <linux@armlinux.org.uk>, <catalin.marinas@arm.com>,
+        <will@kernel.org>, <chenhuacai@kernel.org>, <geert@linux-m68k.org>,
+        <tsbogend@alpha.franken.de>,
+        <James.Bottomley@hansenpartnership.com>, <deller@gmx.de>,
+        <ysato@users.sourceforge.jp>, <dalias@libc.org>,
+        <glaubitz@physik.fu-berlin.de>, <tglx@linutronix.de>,
+        <mingo@redhat.com>, <bp@alien8.de>, <dave.hansen@linux.intel.com>,
+        <x86@kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-ia64@vger.kernel.org>, <loongarch@lists.linux.dev>,
+        <linux-m68k@lists.linux-m68k.org>, <linux-mips@vger.kernel.org>,
+        <linux-parisc@vger.kernel.org>, <linuxppc-dev@lists.ozlabs.org>,
+        <linux-riscv@lists.infradead.org>, <linux-s390@vger.kernel.org>,
+        <linux-sh@vger.kernel.org>, <kernel@xen0n.name>,
+        <mpe@ellerman.id.au>, <npiggin@gmail.com>,
+        <christophe.leroy@csgroup.eu>, <paul.walmsley@sifive.com>,
+        <palmer@dabbelt.com>, <aou@eecs.berkeley.edu>, <hca@linux.ibm.com>,
+        <gor@linux.ibm.com>, <agordeev@linux.ibm.com>,
+        <borntraeger@linux.ibm.com>, <svens@linux.ibm.com>,
+        <hpa@zytor.com>, <keescook@chromium.org>, <paulmck@kernel.org>,
+        <peterz@infradead.org>, <frederic@kernel.org>,
+        <akpm@linux-foundation.org>, <ardb@kernel.org>,
+        <samitolvanen@google.com>, <juerg.haefliger@canonical.com>,
+        <arnd@arndb.de>, <rmk+kernel@armlinux.org.uk>,
+        <linus.walleij@linaro.org>, <sebastian.reichel@collabora.com>,
+        <rppt@kernel.org>, <kirill.shutemov@linux.intel.com>,
+        <anshuman.khandual@arm.com>, <ziy@nvidia.com>,
+        <masahiroy@kernel.org>, <ndesaulniers@google.com>,
+        <mhiramat@kernel.org>, <ojeda@kernel.org>,
+        <thunder.leizhen@huawei.com>, <xin3.li@intel.com>, <tj@kernel.org>,
+        <gregkh@linuxfoundation.org>, <tsi@tuyoix.net>, <bhe@redhat.com>,
+        <hbathini@linux.ibm.com>, <sourabhjain@linux.ibm.com>,
+        <boris.ostrovsky@oracle.com>, <konrad.wilk@oracle.com>
+Subject: Re: [PATCH v3 11/13] riscv/kexec: refactor for kernel/Kconfig.kexec
+Message-ID: <20230628-urologist-faction-42ebe5372206@wendy>
+References: <20230626161332.183214-1-eric.devolder@oracle.com>
+ <20230626161332.183214-12-eric.devolder@oracle.com>
 MIME-Version: 1.0
-References: <20230626074919.1871944-1-chenhuacai@loongson.cn> <961c855a-81ea-c628-3e67-81877a748027@linaro.org>
-In-Reply-To: <961c855a-81ea-c628-3e67-81877a748027@linaro.org>
-From:   Huacai Chen <chenhuacai@kernel.org>
-Date:   Wed, 28 Jun 2023 15:34:31 +0800
-X-Gmail-Original-Message-ID: <CAAhV-H7FL73KQiciTUCSwzOBQ9KDH5bfwbChV3oe+A+qpx=gsg@mail.gmail.com>
-Message-ID: <CAAhV-H7FL73KQiciTUCSwzOBQ9KDH5bfwbChV3oe+A+qpx=gsg@mail.gmail.com>
-Subject: Re: [PATCH] MIPS: KVM: Fix NULL pointer dereference
-To:     =?UTF-8?Q?Philippe_Mathieu=2DDaud=C3=A9?= <philmd@linaro.org>
-Cc:     Huacai Chen <chenhuacai@loongson.cn>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        linux-mips@vger.kernel.org, kvm@vger.kernel.org,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>, stable@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="dNpbxT7522GzDtJd"
+Content-Disposition: inline
+In-Reply-To: <20230626161332.183214-12-eric.devolder@oracle.com>
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Hi, Philippe,
+--dNpbxT7522GzDtJd
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Jun 26, 2023 at 6:28=E2=80=AFPM Philippe Mathieu-Daud=C3=A9
-<philmd@linaro.org> wrote:
->
-> On 26/6/23 09:49, Huacai Chen wrote:
-> > After commit 45c7e8af4a5e3f0bea4ac209 ("MIPS: Remove KVM_TE support") w=
-e
-> > get a NULL pointer dereference when creating a KVM guest:
-> >
-> > [  146.243409] Starting KVM with MIPS VZ extensions
-> > [  149.849151] CPU 3 Unable to handle kernel paging request at virtual =
-address 0000000000000300, epc =3D=3D ffffffffc06356ec, ra =3D=3D ffffffffc0=
-63568c
-> > [  149.849177] Oops[#1]:
-> > [  149.849182] CPU: 3 PID: 2265 Comm: qemu-system-mip Not tainted 6.4.0=
--rc3+ #1671
-> > [  149.849188] Hardware name: THTF CX TL630 Series/THTF-LS3A4000-7A1000=
--ML4A, BIOS KL4.1F.TF.D.166.201225.R 12/25/2020
-> > [  149.849192] $ 0   : 0000000000000000 000000007400cce0 00000000004000=
-04 ffffffff8119c740
-> > [  149.849209] $ 4   : 000000007400cce1 000000007400cce1 00000000000000=
-00 0000000000000000
-> > [  149.849221] $ 8   : 000000240058bb36 ffffffff81421ac0 00000000000000=
-00 0000000000400dc0
-> > [  149.849233] $12   : 9800000102a07cc8 ffffffff80e40e38 00000000000000=
-01 0000000000400dc0
-> > [  149.849245] $16   : 0000000000000000 9800000106cd0000 9800000106cd00=
-00 9800000100cce000
-> > [  149.849257] $20   : ffffffffc0632b28 ffffffffc05b31b0 9800000100ccca=
-00 0000000000400000
-> > [  149.849269] $24   : 9800000106cd09ce ffffffff802f69d0
-> > [  149.849281] $28   : 9800000102a04000 9800000102a07cd0 98000001106a80=
-00 ffffffffc063568c
-> > [  149.849293] Hi    : 00000335b2111e66
-> > [  149.849295] Lo    : 6668d90061ae0ae9
-> > [  149.849298] epc   : ffffffffc06356ec kvm_vz_vcpu_setup+0xc4/0x328 [k=
-vm]
-> > [  149.849324] ra    : ffffffffc063568c kvm_vz_vcpu_setup+0x64/0x328 [k=
-vm]
-> > [  149.849336] Status: 7400cce3 KX SX UX KERNEL EXL IE
-> > [  149.849351] Cause : 1000000c (ExcCode 03)
-> > [  149.849354] BadVA : 0000000000000300
-> > [  149.849357] PrId  : 0014c004 (ICT Loongson-3)
-> > [  149.849360] Modules linked in: kvm nfnetlink_queue nfnetlink_log nfn=
-etlink fuse sha256_generic libsha256 cfg80211 rfkill binfmt_misc vfat fat s=
-nd_hda_codec_hdmi input_leds led_class snd_hda_intel snd_intel_dspcfg snd_h=
-da_codec snd_hda_core snd_pcm snd_timer snd serio_raw xhci_pci radeon drm_s=
-uballoc_helper drm_display_helper xhci_hcd ip_tables x_tables
-> > [  149.849432] Process qemu-system-mip (pid: 2265, threadinfo=3D0000000=
-0ae2982d2, task=3D0000000038e09ad4, tls=3D000000ffeba16030)
-> > [  149.849439] Stack : 9800000000000003 9800000100ccca00 9800000100ccc0=
-00 ffffffffc062cef4
-> > [  149.849453]         9800000102a07d18 c89b63a7ab338e00 00000000000000=
-00 ffffffff811a0000
-> > [  149.849465]         0000000000000000 9800000106cd0000 ffffffff80e599=
-38 98000001106a8920
-> > [  149.849476]         ffffffff80e57f30 ffffffffc062854c ffffffff811a00=
-00 9800000102bf4240
-> > [  149.849488]         ffffffffc05b0000 ffffffff80e3a798 000000ff780000=
-00 000000ff78000010
-> > [  149.849500]         0000000000000255 98000001021f7de0 98000001023f00=
-78 ffffffff81434000
-> > [  149.849511]         0000000000000000 0000000000000000 9800000102ae00=
-00 980000025e92ae28
-> > [  149.849523]         0000000000000000 c89b63a7ab338e00 00000000000000=
-01 ffffffff8119dce0
-> > [  149.849535]         000000ff78000010 ffffffff804f3d3c 9800000102a07e=
-b0 0000000000000255
-> > [  149.849546]         0000000000000000 ffffffff8049460c 000000ff780000=
-10 0000000000000255
-> > [  149.849558]         ...
-> > [  149.849565] Call Trace:
-> > [  149.849567] [<ffffffffc06356ec>] kvm_vz_vcpu_setup+0xc4/0x328 [kvm]
-> > [  149.849586] [<ffffffffc062cef4>] kvm_arch_vcpu_create+0x184/0x228 [k=
-vm]
-> > [  149.849605] [<ffffffffc062854c>] kvm_vm_ioctl+0x64c/0xf28 [kvm]
-> > [  149.849623] [<ffffffff805209c0>] sys_ioctl+0xc8/0x118
-> > [  149.849631] [<ffffffff80219eb0>] syscall_common+0x34/0x58
-> >
-> > The root cause is the deletion of kvm_mips_commpage_init() leaves vcpu-=
->
-> > arch.cop0 NULL. So fix it by make cop0 from a pointer to an embed objec=
-t.
->
-> "by making ... to an embedded object."
-OK, thanks.
+Hey Eric,
 
->
-> >
-> > Fixes: 45c7e8af4a5e3f0bea4ac209 ("MIPS: Remove KVM_TE support")
-> > Cc: stable@vger.kernel.org
->
-> Reported-by: Yu Zhao <yuzhao@google.com>
-OK, thanks.
+On Mon, Jun 26, 2023 at 12:13:30PM -0400, Eric DeVolder wrote:
+> The kexec and crash kernel options are provided in the common
+> kernel/Kconfig.kexec. Utilize the common options and provide
+> the ARCH_SUPPORTS_ and ARCH_SELECTS_ entries to recreate the
 
->
-> > Suggested-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-> > Signed-off-by: Huacai Chen <chenhuacai@loongson.cn>
-> > ---
-> >   arch/mips/include/asm/kvm_host.h |  6 +++---
-> >   arch/mips/kvm/emulate.c          | 22 +++++++++++-----------
-> >   arch/mips/kvm/mips.c             | 16 ++++++++--------
-> >   arch/mips/kvm/trace.h            |  8 ++++----
-> >   arch/mips/kvm/vz.c               | 20 ++++++++++----------
-> >   5 files changed, 36 insertions(+), 36 deletions(-)
->
-> Reviewed-by: Philippe Mathieu-Daud=C3=A9 <philmd@linaro.org>
-OK, thanks.
+> equivalent set of KEXEC and CRASH options.
 
-Huacai
+I find this diff a little hard to follow (since the other half off the
+change is in another patch), so it may be me missing something, but are
+you sure?
+
+>=20
+> Signed-off-by: Eric DeVolder <eric.devolder@oracle.com>
+> ---
+>  arch/riscv/Kconfig | 48 ++++++++++++++--------------------------------
+>  1 file changed, 14 insertions(+), 34 deletions(-)
+>=20
+> diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
+> index 5966ad97c30c..c484abd9bbfd 100644
+> --- a/arch/riscv/Kconfig
+> +++ b/arch/riscv/Kconfig
+> @@ -585,48 +585,28 @@ config RISCV_BOOT_SPINWAIT
+> =20
+>  	  If unsure what to do here, say N.
+> =20
+> -config KEXEC
+> -	bool "Kexec system call"
+> -	depends on MMU
+> +config ARCH_SUPPORTS_KEXEC
+> +	def_bool MMU
+> +
+> +config ARCH_SELECTS_KEXEC
+> +	def_bool y
+> +	depends on KEXEC
+>  	select HOTPLUG_CPU if SMP
+> -	select KEXEC_CORE
+> -	help
+> -	  kexec is a system call that implements the ability to shutdown your
+> -	  current kernel, and to start another kernel. It is like a reboot
+> -	  but it is independent of the system firmware. And like a reboot
+> -	  you can start any kernel with it, not just Linux.
+> =20
+> -	  The name comes from the similarity to the exec system call.
+> +config ARCH_SUPPORTS_KEXEC_FILE
+> +	def_bool 64BIT && MMU && CRYPTO=3Dy && CRYPTO_SHA256=3Dy
+
+This looks like a change to me. Previously, only KEXEC_PURGATORY
+required these crypto options to be like so, but now KEXEC_FILE needs
+them too.
+
+What am I missing?
+
+Cheers,
+Conor.
+
+> =20
+> -config KEXEC_FILE
+> -	bool "kexec file based systmem call"
+> -	depends on 64BIT && MMU
+> -	select HAVE_IMA_KEXEC if IMA
+> -	select KEXEC_CORE
+> +config ARCH_SELECTS_KEXEC_FILE
+> +	def_bool y
+> +	depends on KEXEC_FILE
+>  	select KEXEC_ELF
+> -	help
+> -	  This is new version of kexec system call. This system call is
+> -	  file based and takes file descriptors as system call argument
+> -	  for kernel and initramfs as opposed to list of segments as
+> -	  accepted by previous system call.
+> -
+> -	  If you don't know what to do here, say Y.
+> +	select HAVE_IMA_KEXEC if IMA
+> =20
+>  config ARCH_HAS_KEXEC_PURGATORY
+>  	def_bool KEXEC_FILE
+> -	depends on CRYPTO=3Dy
+> -	depends on CRYPTO_SHA256=3Dy
+> =20
+> -config CRASH_DUMP
+> -	bool "Build kdump crash kernel"
+> -	help
+> -	  Generate crash dump after being started by kexec. This should
+> -	  be normally only set in special crash dump kernels which are
+> -	  loaded in the main kernel with kexec-tools into a specially
+> -	  reserved region and then later executed after a crash by
+> -	  kdump/kexec.
+> -
+> -	  For more details see Documentation/admin-guide/kdump/kdump.rst
+> +config ARCH_SUPPORTS_CRASH_DUMP
+> +	def_bool y
+> =20
+>  config COMPAT
+>  	bool "Kernel support for 32-bit U-mode"
+> --=20
+> 2.31.1
 >
+
+--dNpbxT7522GzDtJd
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZJvtVAAKCRB4tDGHoIJi
+0nmiAQDOO3BHXlme661CQ5d0WA+9UNnblFm/cWV3USIeSzvJAQD9Ev9vbdYVY6Uu
+ypalgd3Ta51Btqo6Gv+Pn5Xaf3a3lg4=
+=9sLY
+-----END PGP SIGNATURE-----
+
+--dNpbxT7522GzDtJd--

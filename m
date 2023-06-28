@@ -2,186 +2,120 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3215EEB64D7
-	for <linux-mips@archiver.kernel.org>; Wed, 28 Jun 2023 08:27:19 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E2EC2EB64DC
+	for <linux-mips@archiver.kernel.org>; Wed, 28 Jun 2023 10:07:02 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233919AbjF1I1O (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 28 Jun 2023 04:27:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40046 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234241AbjF1IZJ (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 28 Jun 2023 04:25:09 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 804574201;
-        Wed, 28 Jun 2023 01:14:49 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 354656132F;
-        Wed, 28 Jun 2023 07:37:02 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 85CD1C43395;
-        Wed, 28 Jun 2023 07:37:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1687937821;
-        bh=FHd2lTbvsIIzHQmCcMNd3oy0ZJaK0w1A6wsgplCYx0Y=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=epi3Q9iu50HKC/yrjUTLCNGFjXwatUn07RqG5KEcnk5iICVsWh8vTqMgNZFsP/vug
-         3+HkNGr33pAMFS4gWSgIIVxRk/UVvtFWZClfqQ5WWNayoynyyZ6nv4dzQviGv3v0qE
-         iu3OH6yE5fKUwX0UF1CJDnamufoAdAEQEzNWGalNT6OI31Jcphms3/Iz0TT7hjpwMd
-         Al6Dvy7YMKls0dz3YCgR1HXVfprvtqcpIl99CQxGQQFfX6NC2Bd2IiXN+woaWIB/8a
-         OOyF2K3QGEOMe/lNwv+nM/DBIOM1TaW8cgwCVAwmpsFy17bqBKFgczugdKl6PmpPaH
-         b7DbX9rmZVU6A==
-Received: by mail-ed1-f51.google.com with SMTP id 4fb4d7f45d1cf-51d884a22e7so5306688a12.3;
-        Wed, 28 Jun 2023 00:37:01 -0700 (PDT)
-X-Gm-Message-State: AC+VfDwwYnwOaDz0P3eyqjbiY1z9F72YdEmNo7NhwUR2iFymOU4plO+U
-        pLFMhbAHqcoHZSdYwej+6Laos88Q6fbe1sy8u0U=
-X-Google-Smtp-Source: ACHHUZ6NB5UruUH/V0e7QCYg9qAl4dtFgcinn2A4NlMDpQnIZXsZ+O8yFsnpArkDKOcNDewJivafbdv7a7wjyVxNDSA=
-X-Received: by 2002:a50:ef01:0:b0:51d:adc5:22c1 with SMTP id
- m1-20020a50ef01000000b0051dadc522c1mr2565093eds.36.1687937819590; Wed, 28 Jun
- 2023 00:36:59 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230626075047.1872818-1-chenhuacai@loongson.cn>
- <20230626160720.GA2174263@dev-arch.thelio-3990X> <CAAhV-H6nyXa+wG-J50d=FrHX=4saVNAePW8HHQ2hm+EsGR9Umw@mail.gmail.com>
- <20230627212839.GA1806408@dev-arch.thelio-3990X>
-In-Reply-To: <20230627212839.GA1806408@dev-arch.thelio-3990X>
-From:   Huacai Chen <chenhuacai@kernel.org>
-Date:   Wed, 28 Jun 2023 15:36:47 +0800
-X-Gmail-Original-Message-ID: <CAAhV-H5VDvNnBixrm9nhKeSQ1pj9N-fkW-cRY99OpduVd=5+Mw@mail.gmail.com>
-Message-ID: <CAAhV-H5VDvNnBixrm9nhKeSQ1pj9N-fkW-cRY99OpduVd=5+Mw@mail.gmail.com>
-Subject: Re: [PATCH] MIPS: Loongson: Fix build error when make modules_install
-To:     Nathan Chancellor <nathan@kernel.org>
-Cc:     Huacai Chen <chenhuacai@loongson.cn>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        linux-mips@vger.kernel.org, Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        stable@vger.kernel.org, Nick Desaulniers <ndesaulniers@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        id S231672AbjF1KG7 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 28 Jun 2023 06:06:59 -0400
+Received: from wout5-smtp.messagingengine.com ([64.147.123.21]:53607 "EHLO
+        wout5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235289AbjF1KCZ (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>);
+        Wed, 28 Jun 2023 06:02:25 -0400
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
+        by mailout.west.internal (Postfix) with ESMTP id CBDC43200065;
+        Wed, 28 Jun 2023 06:02:21 -0400 (EDT)
+Received: from imap51 ([10.202.2.101])
+  by compute6.internal (MEProxy); Wed, 28 Jun 2023 06:02:23 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+        :cc:content-type:content-type:date:date:from:from:in-reply-to
+        :in-reply-to:message-id:mime-version:references:reply-to:sender
+        :subject:subject:to:to; s=fm1; t=1687946541; x=1688032941; bh=jr
+        26aMNCJW0isrXg6UfE/c6yGNQaJhjRzD6v2gyhJiU=; b=go17TU7pTv/88ZkN9V
+        azy1f3TEVC4eh2cFjnlQc2THDkHBS+hRIb/NP5smWX8p6PlBu7xeOqAwlNdA81xY
+        TUkBeDN7zTDh3o36eA21ZlUjbEU5candTuxAFq3YHskdZd/8uzhKvCwlBRFaGmdd
+        aw1DR0kZe/ksoI20WFqSBO+gM8dqlB2IUHdEh7hlP+DT2hdznnJW574L5g0d9Vwg
+        D5GtZjfLSEZm7snNwyXu0b74sIjEKF42ZMc7wLhJUDcHtrRk1pCpLasCCyCNEkNH
+        gV3ANc4YxQxjgWGLghO3x/mfFHkqhgIEr6KQRrJWV7koAkLG/LAXcn4K1lzvyzUI
+        urqw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:content-type:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm2; t=1687946541; x=1688032941; bh=jr26aMNCJW0is
+        rXg6UfE/c6yGNQaJhjRzD6v2gyhJiU=; b=gu+CZY1l55I1TAbIiJdtfb7gL+Up+
+        PXTJtGjBdA7pyur7SHIEFhf45EIjdwgUuG47YxZDuzXjF4zqkDy4OiEdtckEj+KR
+        hT3c4gY9Y8Zbs1P5SY8EHl0lfEF5tOTz1ibyRcHsSCjras6I5fLzCyyxANm9O9rU
+        FVjvcx80F96DvBDGL+up2UfzkUD00xBJwSuVlTnkAORCl20tNBC0S4IY68yWazFd
+        sRTsJIk0gTG0ZZ6ABFprGWXtT33+zqf8wgcxS5IQc5dg10rRJNJvCtnze0zHHTMT
+        BP1xXByoUkKMsH9aQ8m1uEdksBkSYB7QcQVWzSEgMwfeR+G/jQ51lOkLA==
+X-ME-Sender: <xms:LAWcZED4fNZxTlKrdjBmHxJP-sckGwx35hV9UkqQISEoQIfhRmo-JQ>
+    <xme:LAWcZGhPNT2BfytOOn8bcbgj-iEhpLaDXkzpKrTalDsNK6BfgCbkrCcgQAl4ySoEj
+    TpHsdXpmtJtJ4PC5BI>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrtddvgddvudcutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefofgggkfgjfhffhffvvefutgesthdtredtreertdenucfhrhhomhepfdetrhhn
+    ugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrghtth
+    gvrhhnpeevhfffledtgeehfeffhfdtgedvheejtdfgkeeuvefgudffteettdekkeeufeeh
+    udenucffohhmrghinhepkhgvrhhnvghlrdhorhhgnecuvehluhhsthgvrhfuihiivgeptd
+    enucfrrghrrghmpehmrghilhhfrhhomheprghrnhgusegrrhhnuggsrdguvg
+X-ME-Proxy: <xmx:LAWcZHmXSlCpeeyNoZE7_0LnoPbJ74fdoPhH1-tEgZSeUBVdS7LK5g>
+    <xmx:LAWcZKygSArf1RXeJy6o-saV1OnxLw5eXJf69NNMxU3YltpCM4robQ>
+    <xmx:LAWcZJS1GiS98HbAAxa5aqyjTH6zrMIgmdtULLLD7yJ2KFbTG__paQ>
+    <xmx:LQWcZIAyk7e_edqPJYxvNmmrL7ukerO_p8vou2sRrc2B0RKlJg_Qaw>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 2F7CEB6008D; Wed, 28 Jun 2023 06:02:20 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.9.0-alpha0-499-gf27bbf33e2-fm-20230619.001-gf27bbf33
+Mime-Version: 1.0
+Message-Id: <afe5194e-fd49-4cc9-9a8c-e7671c55d664@app.fastmail.com>
+In-Reply-To: <d9ffc44c-c4ae-4f01-bc0b-ee5359a24a0a@app.fastmail.com>
+References: <20230417125651.25126-18-tzimmermann@suse.de>
+ <c525adc9-6623-4660-8718-e0c9311563b8@roeck-us.net>
+ <55130a50-d129-4336-99ce-3be4229b1c7d@app.fastmail.com>
+ <d4156e51-102f-36b4-e42c-938268b4b608@roeck-us.net>
+ <d9ffc44c-c4ae-4f01-bc0b-ee5359a24a0a@app.fastmail.com>
+Date:   Wed, 28 Jun 2023 12:01:58 +0200
+From:   "Arnd Bergmann" <arnd@arndb.de>
+To:     "Guenter Roeck" <linux@roeck-us.net>,
+        "Thomas Zimmermann" <tzimmermann@suse.de>
+Cc:     "Daniel Vetter" <daniel.vetter@ffwll.ch>,
+        "Helge Deller" <deller@gmx.de>,
+        "Javier Martinez Canillas" <javierm@redhat.com>,
+        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
+        Linux-Arch <linux-arch@vger.kernel.org>,
+        linux-fbdev@vger.kernel.org, linux-ia64@vger.kernel.org,
+        linux-parisc@vger.kernel.org, linux-sh@vger.kernel.org,
+        x86@kernel.org, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linux-mips@vger.kernel.org,
+        linux-m68k@lists.linux-m68k.org, loongarch@lists.linux.dev,
+        sparclinux@vger.kernel.org, linux-snps-arc@lists.infradead.org,
+        linuxppc-dev@lists.ozlabs.org,
+        "David S . Miller" <davem@davemloft.net>,
+        linux-arm-kernel@lists.infradead.org,
+        "Mark Rutland" <mark.rutland@arm.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        "KKees Cook" <keescook@chromium.org>,
+        "ees Cook" <keescook@chromium.org>
+Subject: Re: [v3,17/19] arch/sparc: Implement fb_is_primary_device() in source file
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Hi, Nathan,
+On Sat, Jun 24, 2023, at 16:21, Arnd Bergmann wrote:
+> On Sat, Jun 24, 2023, at 15:26, Guenter Roeck wrote:
+>> On 6/24/23 02:27, Arnd Bergmann wrote:
+>>> On Sat, Jun 24, 2023, at 03:55, Guenter Roeck wrote:
+>>>>
+>>>> ERROR: modpost: "__xchg_called_with_bad_pointer" [lib/atomic64_test.ko]
+>>>> undefined!
+>>> 
+>>> These all look like old bugs that would be trivially fixed if
+>>> anyone cared about sparc.
+>>> 
+>>
+>> Odd argument, given that this _is_ a sparc patch. Those may be old
+>> bugs, but at least in 6.4-rc7 sparc64:allmodconfig does at least compile.
+>
+> I think we clearly want to fix the fbdev regression you found, and
+> maybe bisect the atomic64_test as well to see if that was caused by
+> a recent patch to get it into a working state again.
 
-On Wed, Jun 28, 2023 at 5:28=E2=80=AFAM Nathan Chancellor <nathan@kernel.or=
-g> wrote:
->
-> Hi Huacai,
->
-> + Masahiro
->
-> On Tue, Jun 27, 2023 at 11:11:27AM +0800, Huacai Chen wrote:
-> > Hi, Nathan,
-> >
-> > On Tue, Jun 27, 2023 at 12:07=E2=80=AFAM Nathan Chancellor <nathan@kern=
-el.org> wrote:
-> > >
-> > > On Mon, Jun 26, 2023 at 03:50:47PM +0800, Huacai Chen wrote:
-> > > > After commit 0e96ea5c3eb5904e5dc2f ("MIPS: Loongson64: Clean up use=
- of
-> > > > cc-ifversion") we get a build error when make modules_install:
-> > > >
-> > > > cc1: error: '-mloongson-mmi' must be used with '-mhard-float'
-> > > >
-> > > > The reason is when make modules_install, 'call cc-option' doesn't w=
-ork
-> > > > in $(KBUILD_CFLAGS) of 'CHECKFLAGS'. Then there is no -mno-loongson=
--mmi
-> > > > applied and -march=3Dloongson3a enable MMI instructions.
-> > >
-> > > The first sentence does not make much sense to me, specifically "in
-> > > $(KBUILD_CFLAGS) of 'CHECKFLAGS'". What configuration and build comma=
-nd
-> > > reproduces this? I do not see how '-mno-loongson-mmi' would fail to g=
-et
-> > > added to cflags-y after 0e96ea5c3eb5, which should have had no
-> > > functional change... I don't want to hang this change up since there =
-is
-> > > real breakage but I want to make sure we fully understand why
-> > > 0e96ea5c3eb5 broke things and why this patch resolves it.
-> > Please use loongson3_defconfig to build a loongson kernel with
-> > toolchains from here [1]:
-> > 'make' will succeed, but there is a build error when 'make
-> > modules_install'. And you should be careful because 'make
-> > modules_install' doesn't stop when the error occurs.
->
-> Excellent, thank you! I understand what is going on here and your patch
-> should work to resolve it (although I think the commit message should be
-> flushed out a little more with the following details) but I am curious
-> if Masahiro has any thoughts around this.
->
-> As you note, the error message comes from the CHECKFLAGS invocation of
-> $(CC) but it has no impact on the final result of modules_install, it is
-> purely a cosmetic issue from what I can tell. The error occurs because
-> cc-option is defined in scripts/Makefile.compiler, which is not included
-> in Makefile when running modules_install, as install targets are not
-> supposed to require the compiler; see commit 805b2e1d427a ("kbuild:
-> include Makefile.compiler only when compiler is needed"). As a result,
-> the call to check for '-mno-loongson-mmi' just never happens.
->
-> It would nice if '-mno-loongson-mmi' could be added unconditionally when
-> using GCC but I can see that the flag has only existed since 9.x, so we
-> do need to keep the cc-option call.
->
-> I am fine with your change as long as it includes some of the above
-> information (basically noting that while the original change should have
-> been equivalent, the requirement of '-mno-loongson-mmi' when using
-> certain Loongson '-march=3D' values with '-msoft-float' means that those
-> Loongson '-march=3D' values need to be called with cc-option as well),
-> even if clang will incur two more cc-option calls as a result (not the
-> end of the world).
->
-> Additionally, it seems like the same issue will occur when running
-> modules_install when CONFIG_CPU_LOONGSON2E or CONFIG_CPU_LOONGSON2F are
-> enabled, which I guess I also broke in commit 13ceb48bc19c ("MIPS:
-> Loongson2ef: Remove unnecessary {as,cc}-option calls") :/
->
-> Sorry again for the breakage and thanks for the fix!
-OK, I will update the commit message and fix for LOONGSON2EF together.
+I have bisected this as well now and sent a trivial fix, see
+https://lore.kernel.org/lkml/20230628094938.2318171-1-arnd@kernel.org/
 
-Huacai
->
-> Cheers,
-> Nathan
->
-> > > > Fix this by partially reverting to the old logic, use 'call cc-opti=
-on'
-> > > > to conditionally apply -march=3Dloongson3a and -march=3Dmips64r2.
-> > > >
-> > > > Fixes: 0e96ea5c3eb5904e5dc2f ("MIPS: Loongson64: Clean up use of cc=
--ifversion")
-> > > > Cc: stable@vger.kernel.org
-> > > > Cc: Nathan Chancellor <nathan@kernel.org>
-> > > > Cc: Nick Desaulniers <ndesaulniers@google.com>
-> > > > Signed-off-by: Huacai Chen <chenhuacai@loongson.cn>
-> > > > ---
-> > > >  arch/mips/Makefile | 5 +----
-> > > >  1 file changed, 1 insertion(+), 4 deletions(-)
-> > > >
-> > > > diff --git a/arch/mips/Makefile b/arch/mips/Makefile
-> > > > index a7a4ee66a9d3..7fb76d12829e 100644
-> > > > --- a/arch/mips/Makefile
-> > > > +++ b/arch/mips/Makefile
-> > > > @@ -186,11 +186,8 @@ cflags-$(CONFIG_CPU_LOONGSON2F) +=3D -march=3D=
-loongson2f -Wa,--trap
-> > > >  # Some -march=3D flags enable MMI instructions, and GCC complains =
-about that
-> > > >  # support being enabled alongside -msoft-float. Thus explicitly di=
-sable MMI.
-> > > >  cflags-$(CONFIG_CPU_LOONGSON2EF) +=3D $(call cc-option,-mno-loongs=
-on-mmi)
-> > > > -ifdef CONFIG_CPU_LOONGSON64
-> > > >  cflags-$(CONFIG_CPU_LOONGSON64)      +=3D -Wa,--trap
-> > > > -cflags-$(CONFIG_CC_IS_GCC) +=3D -march=3Dloongson3a
-> > > > -cflags-$(CONFIG_CC_IS_CLANG) +=3D -march=3Dmips64r2
-> > > > -endif
-> > > > +cflags-$(CONFIG_CPU_LOONGSON64) +=3D $(call cc-option,-march=3Dloo=
-ngson3a,-march=3Dmips64r2)
-> > > >  cflags-$(CONFIG_CPU_LOONGSON64) +=3D $(call cc-option,-mno-loongso=
-n-mmi)
-> > > >
-> > > >  cflags-$(CONFIG_CPU_R4000_WORKAROUNDS)       +=3D $(call cc-option=
-,-mfix-r4000,)
-> > > > --
-> > > > 2.39.3
-> > > >
+      Arnd

@@ -2,48 +2,52 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 85944C001DF
-	for <linux-mips@archiver.kernel.org>; Thu, 29 Jun 2023 12:20:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 655E8EB64DC
+	for <linux-mips@archiver.kernel.org>; Thu, 29 Jun 2023 12:20:12 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232355AbjF2MUH (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 29 Jun 2023 08:20:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52218 "EHLO
+        id S231208AbjF2MUJ (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 29 Jun 2023 08:20:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52258 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231208AbjF2MT5 (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Thu, 29 Jun 2023 08:19:57 -0400
+        with ESMTP id S232084AbjF2MT7 (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Thu, 29 Jun 2023 08:19:59 -0400
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA03E1FD8;
-        Thu, 29 Jun 2023 05:19:56 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C29B82681;
+        Thu, 29 Jun 2023 05:19:58 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 4573E1F8D6;
-        Thu, 29 Jun 2023 12:19:55 +0000 (UTC)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 52FDB1FD68;
+        Thu, 29 Jun 2023 12:19:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1688041195; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=nwKCg0ASpMSj/N7nk6+LAWl9eqN5SgDZ9SSsI3CKIes=;
-        b=ifsv+rsuemSFYPhJ/STIdTvx6x75qUEhLLGZ2g9AvONK3jL91ZNzeWNAtZraZVcGWThcHM
-        EfQbM+qs5azyCMPqS9sZhBhwKPyBWCHJQhLVHCTMFRSDdi3SXNdEiGVeBJdlRqG6pE2rO7
-        z3oGS2FeItnucroHvhtx1EF9mKdmXIA=
+        t=1688041197; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=VSCnNOTIHcBHYP1H47mhSWWMU/cUgjzIXzIZqp//59s=;
+        b=JGOebDL4XjP7zTfKng4P+h6jtTTgakd2fjixPEvmz/HdvzbYOg1LD8peXmLP0KwXI3FUzx
+        9ccjQzWoVuNCFHnkDDDbq3+AKuSJLX39AmuIZpfRBb96CPOqEJ5FQ7RbtqMNbiFXZeA/wl
+        pCwVkAFVOTNLvMhnEKrzdAem0Ahs6hE=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1688041195;
+        s=susede2_ed25519; t=1688041197;
         h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-        bh=nwKCg0ASpMSj/N7nk6+LAWl9eqN5SgDZ9SSsI3CKIes=;
-        b=E6n/U6MQ4f+3rPbM2UsNu1qwtOXOlMais+WpB4FpCxfnJZvfgaxmYOknSshObU0+YcztfQ
-        wODdqbuTw1DsqWBw==
+         mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=VSCnNOTIHcBHYP1H47mhSWWMU/cUgjzIXzIZqp//59s=;
+        b=PW/o667y7EHsEjtoqDiPRKJQ3VACKqdZligZ3HBaVCmmMwC0zrBZm6NldMzu/wXTM544nR
+        IeOPLeAMnpTux8Bg==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id CCBF713905;
-        Thu, 29 Jun 2023 12:19:54 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D192513905;
+        Thu, 29 Jun 2023 12:19:56 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id 1lzwMOp2nWRlVAAAMHmgww
-        (envelope-from <tzimmermann@suse.de>); Thu, 29 Jun 2023 12:19:54 +0000
+        id wNs2Mux2nWRlVAAAMHmgww
+        (envelope-from <tzimmermann@suse.de>); Thu, 29 Jun 2023 12:19:56 +0000
 From:   Thomas Zimmermann <tzimmermann@suse.de>
 To:     arnd@arndb.de, deller@gmx.de, daniel@ffwll.ch, airlied@gmail.com
 Cc:     linux-kernel@vger.kernel.org, linux-alpha@vger.kernel.org,
@@ -55,114 +59,82 @@ Cc:     linux-kernel@vger.kernel.org, linux-alpha@vger.kernel.org,
         sparclinux@vger.kernel.org, dri-devel@lists.freedesktop.org,
         linux-hyperv@vger.kernel.org, linux-fbdev@vger.kernel.org,
         linux-staging@lists.linux.dev, linux-arch@vger.kernel.org,
-        Thomas Zimmermann <tzimmermann@suse.de>
-Subject: [PATCH 00/12] arch,fbdev: Move screen_info into arch/
-Date:   Thu, 29 Jun 2023 13:45:39 +0200
-Message-ID: <20230629121952.10559-1-tzimmermann@suse.de>
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
+        Teddy Wang <teddy.wang@siliconmotion.com>
+Subject: [PATCH 04/12] staging/sm750fb: Do not include <linux/screen_info.h>
+Date:   Thu, 29 Jun 2023 13:45:43 +0200
+Message-ID: <20230629121952.10559-5-tzimmermann@suse.de>
 X-Mailer: git-send-email 2.41.0
+In-Reply-To: <20230629121952.10559-1-tzimmermann@suse.de>
+References: <20230629121952.10559-1-tzimmermann@suse.de>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-The variables screen_info and edid_info provide information about
-the system's screen, and possibly EDID data of the connected display.
-Both are defined and set by architecture code. But both variables are
-declared in non-arch header files. Dependencies are at bease loosely
-tracked. To resolve this, move the global state screen_info and its
-companion edid_info into arch/. Only declare them on architectures
-that define them. List dependencies on the variables in the Kconfig
-files. Also clean up the callers.
+The sm750fb driver does not need anything from <linux/screen_info.h>.
+Remove the include statements.
 
-Patch 1 to 4 resolve a number of unnecessary include statements of
-<linux/screen_info.h>. The header should only be included in source
-files that access struct screen_info.
+Signed-off-by: Thomas Zimmermann <tzimmermann@suse.de>
+Cc: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Cc: Teddy Wang <teddy.wang@siliconmotion.com>
+---
+ drivers/staging/sm750fb/sm750.c        | 1 -
+ drivers/staging/sm750fb/sm750_accel.c  | 1 -
+ drivers/staging/sm750fb/sm750_cursor.c | 1 -
+ drivers/staging/sm750fb/sm750_hw.c     | 1 -
+ 4 files changed, 4 deletions(-)
 
-Patches 5 to 7 move the declaration of screen_info and edid_info to
-<asm-generic/screen_info.h>. Architectures that provide either set
-a Kconfig token to enable them.
-
-Patches 8 to 9 make users of screen_info depend on the architecture's
-feature.
-
-Finally, patches 10 to 12 rework fbdev's handling of firmware EDID
-data to make use of existing helpers and the refactored edid_info.
-
-Tested on x86-64. Built for a variety of platforms.
-
-Future directions: with the patchset in place, it will become possible
-to provide screen_info and edid_info only if there are users. Some
-architectures do this by testing for CONFIG_VT, CONFIG_DUMMY_CONSOLE,
-etc. A more uniform approach would be nice. We should also attempt
-to minimize access to the global screen_info as much as possible. To
-do so, some drivers, such as efifb and vesafb, would require an update.
-The firmware's EDID data could possibly made available outside of fbdev.
-For example, the simpledrm and ofdrm drivers could provide such data
-to userspace compositors.
-
-Thomas Zimmermann (12):
-  efi: Do not include <linux/screen_info.h> from EFI header
-  fbdev/sm712fb: Do not include <linux/screen_info.h>
-  sysfb: Do not include <linux/screen_info.h> from sysfb header
-  staging/sm750fb: Do not include <linux/screen_info.h>
-  arch: Remove trailing whitespaces
-  arch: Declare screen_info in <asm/screen_info.h>
-  arch/x86: Declare edid_info in <asm/screen_info.h>
-  drivers/firmware: Remove trailing whitespaces
-  drivers: Add dependencies on CONFIG_ARCH_HAS_SCREEN_INFO
-  fbdev/core: Use fb_is_primary_device() in fb_firmware_edid()
-  fbdev/core: Protect edid_info with CONFIG_ARCH_HAS_EDID_INFO
-  fbdev/core: Define empty fb_firmware_edid() in <linux/fb.h>
-
- arch/Kconfig                                  | 12 +++++++
- arch/alpha/Kconfig                            |  1 +
- arch/arm/Kconfig                              |  1 +
- arch/arm/kernel/efi.c                         |  2 ++
- arch/arm64/Kconfig                            |  1 +
- arch/arm64/kernel/efi.c                       |  1 +
- arch/csky/Kconfig                             |  1 +
- arch/hexagon/Kconfig                          |  1 +
- arch/ia64/Kconfig                             |  5 +--
- arch/loongarch/Kconfig                        |  1 +
- arch/mips/Kconfig                             |  1 +
- arch/nios2/Kconfig                            |  1 +
- arch/powerpc/Kconfig                          |  1 +
- arch/riscv/Kconfig                            |  1 +
- arch/sh/Kconfig                               |  7 ++--
- arch/sparc/Kconfig                            |  1 +
- arch/x86/Kconfig                              |  2 ++
- arch/xtensa/Kconfig                           |  1 +
- drivers/firmware/Kconfig                      |  3 +-
- drivers/firmware/efi/Kconfig                  |  1 +
- drivers/firmware/efi/libstub/efi-stub-entry.c |  2 ++
- drivers/firmware/efi/libstub/screen_info.c    |  2 ++
- drivers/gpu/drm/Kconfig                       |  1 +
- drivers/hv/Kconfig                            |  1 +
- drivers/staging/sm750fb/sm750.c               |  1 -
- drivers/staging/sm750fb/sm750_accel.c         |  1 -
- drivers/staging/sm750fb/sm750_cursor.c        |  1 -
- drivers/staging/sm750fb/sm750_hw.c            |  1 -
- drivers/video/console/Kconfig                 |  2 ++
- drivers/video/fbdev/Kconfig                   |  4 +++
- drivers/video/fbdev/core/fbmon.c              | 34 ++++++-------------
- drivers/video/fbdev/i810/i810-i2c.c           |  2 +-
- drivers/video/fbdev/intelfb/intelfbdrv.c      |  2 +-
- drivers/video/fbdev/nvidia/nv_i2c.c           |  2 +-
- drivers/video/fbdev/savage/savagefb-i2c.c     |  2 +-
- drivers/video/fbdev/sm712fb.c                 |  9 +++--
- include/asm-generic/Kbuild                    |  1 +
- include/asm-generic/screen_info.h             | 18 ++++++++++
- include/linux/efi.h                           |  3 +-
- include/linux/fb.h                            | 10 +++++-
- include/linux/screen_info.h                   |  2 +-
- include/linux/sysfb.h                         |  3 +-
- include/video/edid.h                          |  3 --
- 43 files changed, 105 insertions(+), 47 deletions(-)
- create mode 100644 include/asm-generic/screen_info.h
-
-
-base-commit: d2f0af8472494398a42153684b790b723a79f143
+diff --git a/drivers/staging/sm750fb/sm750.c b/drivers/staging/sm750fb/sm750.c
+index 55e302a27847d..c260f73cf570a 100644
+--- a/drivers/staging/sm750fb/sm750.c
++++ b/drivers/staging/sm750fb/sm750.c
+@@ -14,7 +14,6 @@
+ #include <linux/mm_types.h>
+ #include <linux/vmalloc.h>
+ #include <linux/pagemap.h>
+-#include <linux/screen_info.h>
+ #include <linux/console.h>
+ 
+ #include "sm750.h"
+diff --git a/drivers/staging/sm750fb/sm750_accel.c b/drivers/staging/sm750fb/sm750_accel.c
+index 24b9077a634a6..44b9e3fe3a41d 100644
+--- a/drivers/staging/sm750fb/sm750_accel.c
++++ b/drivers/staging/sm750fb/sm750_accel.c
+@@ -14,7 +14,6 @@
+ #include <linux/pagemap.h>
+ #include <linux/console.h>
+ #include <linux/platform_device.h>
+-#include <linux/screen_info.h>
+ 
+ #include "sm750.h"
+ #include "sm750_accel.h"
+diff --git a/drivers/staging/sm750fb/sm750_cursor.c b/drivers/staging/sm750fb/sm750_cursor.c
+index 43e6f52c2551f..eea4d1bd36ce7 100644
+--- a/drivers/staging/sm750fb/sm750_cursor.c
++++ b/drivers/staging/sm750fb/sm750_cursor.c
+@@ -14,7 +14,6 @@
+ #include <linux/pagemap.h>
+ #include <linux/console.h>
+ #include <linux/platform_device.h>
+-#include <linux/screen_info.h>
+ 
+ #include "sm750.h"
+ #include "sm750_cursor.h"
+diff --git a/drivers/staging/sm750fb/sm750_hw.c b/drivers/staging/sm750fb/sm750_hw.c
+index 55cb00e8b0d1c..71247eaf26eef 100644
+--- a/drivers/staging/sm750fb/sm750_hw.c
++++ b/drivers/staging/sm750fb/sm750_hw.c
+@@ -17,7 +17,6 @@
+ #include <asm/mtrr.h>
+ #endif
+ #include <linux/platform_device.h>
+-#include <linux/screen_info.h>
+ #include <linux/sizes.h>
+ 
+ #include "sm750.h"
 -- 
 2.41.0
 

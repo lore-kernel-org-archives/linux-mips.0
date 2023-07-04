@@ -2,86 +2,97 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 535CFEB64DC
-	for <linux-mips@archiver.kernel.org>; Mon,  3 Jul 2023 14:13:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 89084EB64D9
+	for <linux-mips@archiver.kernel.org>; Tue,  4 Jul 2023 13:22:14 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230092AbjGCOMd (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 3 Jul 2023 10:12:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44176 "EHLO
+        id S231153AbjGDNVw (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 4 Jul 2023 09:21:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42186 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231256AbjGCOM1 (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Mon, 3 Jul 2023 10:12:27 -0400
-Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A93E1E5B;
-        Mon,  3 Jul 2023 07:12:25 -0700 (PDT)
-Received: from uucp by elvis.franken.de with local-rmail (Exim 3.36 #1)
-        id 1qGKHs-0008Fn-00; Mon, 03 Jul 2023 16:12:20 +0200
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 87CF9C0301; Mon,  3 Jul 2023 16:09:13 +0200 (CEST)
-Date:   Mon, 3 Jul 2023 16:09:13 +0200
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Huacai Chen <chenhuacai@loongson.cn>
-Cc:     Huacai Chen <chenhuacai@gmail.com>, linux-mips@vger.kernel.org,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>, stable@vger.kernel.org,
-        Feiyang Chen <chenfeiyang@loongson.cn>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>
-Subject: Re: [PATCH V2] MIPS: Loongson: Fix build error when make
- modules_install
-Message-ID: <20230703140913.GB16247@alpha.franken.de>
-References: <20230628110847.3168269-1-chenhuacai@loongson.cn>
+        with ESMTP id S231666AbjGDNVT (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Tue, 4 Jul 2023 09:21:19 -0400
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 3FF4210E0;
+        Tue,  4 Jul 2023 06:21:10 -0700 (PDT)
+Received: from loongson.cn (unknown [10.2.9.158])
+        by gateway (Coremail) with SMTP id _____8DxxPDFHKRkuQYAAA--.96S3;
+        Tue, 04 Jul 2023 21:21:09 +0800 (CST)
+Received: from kvm-1-158.loongson.cn (unknown [10.2.9.158])
+        by localhost.localdomain (Coremail) with SMTP id AQAAf8CxbSPEHKRk7zYbAA--.34335S3;
+        Tue, 04 Jul 2023 21:21:08 +0800 (CST)
+From:   Bibo Mao <maobibo@loongson.cn>
+To:     Huacai Chen <chenhuacai@kernel.org>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Marc Zyngier <maz@kernel.org>
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jianmin Lv <lvjianmin@loongson.cn>,
+        loongson-kernel@lists.loongnix.cn
+Subject: [PATCH 1/2] irqchip/loongson-eiointc: fix return value checking of eiointc_index
+Date:   Tue,  4 Jul 2023 21:21:07 +0800
+Message-Id: <20230704132108.1096940-2-maobibo@loongson.cn>
+X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20230704132108.1096940-1-maobibo@loongson.cn>
+References: <20230704132108.1096940-1-maobibo@loongson.cn>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230628110847.3168269-1-chenhuacai@loongson.cn>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: AQAAf8CxbSPEHKRk7zYbAA--.34335S3
+X-CM-SenderInfo: xpdruxter6z05rqj20fqof0/
+X-Coremail-Antispam: 1Uk129KBj93XoW7tFW3Zr4DCFyfZF1fZr4kZrc_yoW8JFyUpF
+        W3AFZFvr15Wa4xCrZrKF48JryYyws3t3y7tayxJay7XFs8J34DJr4rA3Z0yr10krW3uFy2
+        gF4rXFWUC3Z8AwcCm3ZEXasCq-sJn29KB7ZKAUJUUUUr529EdanIXcx71UUUUU7KY7ZEXa
+        sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
+        0xBIdaVrnRJUUU9jb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
+        IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
+        e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_JFI_Gr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
+        0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVWxJVW8Jr1l84ACjcxK6I8E87Iv6xkF7I0E14v2
+        6r4j6r4UJwAaw2AFwI0_Jrv_JF1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqjxCEc2xF0c
+        Ia020Ex4CE44I27wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_JF0_
+        Jw1lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwI
+        xGrwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwCFI7km07C267AKxVWU
+        XVWUAwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67
+        kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUCVW8JwCI42IY
+        6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0x
+        vEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2Kfnx
+        nUUI43ZEXa7IU8q2NtUUUUU==
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Wed, Jun 28, 2023 at 07:08:47PM +0800, Huacai Chen wrote:
-> After commit 0e96ea5c3eb5904e5dc2f ("MIPS: Loongson64: Clean up use of
-> cc-ifversion") we get a build error when make modules_install:
-> 
-> cc1: error: '-mloongson-mmi' must be used with '-mhard-float'
-> 
-> The reason is when make modules_install, 'call cc-option' doesn't work
-> in $(KBUILD_CFLAGS) of 'CHECKFLAGS'. Then there is no -mno-loongson-mmi
-> applied and -march=loongson3a enable MMI instructions.
-> 
-> To be detail, the error message comes from the CHECKFLAGS invocation of
-> $(CC) but it has no impact on the final result of make modules_install,
-> it is purely a cosmetic issue. The error occurs because cc-option is
-> defined in scripts/Makefile.compiler, which is not included in Makefile
-> when running 'make modules_install', as install targets are not supposed
-> to require the compiler; see commit 805b2e1d427aab4b ("kbuild: include
-> Makefile.compiler only when compiler is needed"). As a result, the call
-> to check for '-mno-loongson-mmi' just never happens.
-> 
-> Fix this by partially reverting to the old logic, use 'call cc-option'
-> to conditionally apply -march=loongson3a and -march=mips64r2.
-> 
-> By the way, Loongson-2E/2F is also broken in commit 13ceb48bc19c563e05f4
-> ("MIPS: Loongson2ef: Remove unnecessary {as,cc}-option calls") so fix it
-> together.
-> 
-> Fixes: 13ceb48bc19c563e05f4 ("MIPS: Loongson2ef: Remove unnecessary {as,cc}-option calls")
-> Fixes: 0e96ea5c3eb5904e5dc2 ("MIPS: Loongson64: Clean up use of cc-ifversion")
-> Cc: stable@vger.kernel.org
-> Cc: Feiyang Chen <chenfeiyang@loongson.cn>
-> Cc: Nathan Chancellor <nathan@kernel.org>
-> Cc: Nick Desaulniers <ndesaulniers@google.com>
-> Signed-off-by: Huacai Chen <chenhuacai@loongson.cn>
-> ---
-> V2: Update commit message and fix for LOONGSON2EF together.
-> 
->  arch/mips/Makefile | 10 +++-------
->  1 file changed, 3 insertions(+), 7 deletions(-)
+return value of function eiointc_index is int, however it is
+converted uint32_t when used. This causes logic problem when
+checking return value. There is eioi initial problem on qemu
+virt-machine where there is only one eioi node and more than 4
+vcpus, external device intr can only be routed to vcpu 0-3.
 
-applied to mips-next.
+Signed-off-by: Bibo Mao <maobibo@loongson.cn>
+---
+ drivers/irqchip/irq-loongson-eiointc.c | 12 +++++++-----
+ 1 file changed, 7 insertions(+), 5 deletions(-)
 
-Thomas.
-
+diff --git a/drivers/irqchip/irq-loongson-eiointc.c b/drivers/irqchip/irq-loongson-eiointc.c
+index 92d8aa28bdf5..1c5a5b59f199 100644
+--- a/drivers/irqchip/irq-loongson-eiointc.c
++++ b/drivers/irqchip/irq-loongson-eiointc.c
+@@ -144,12 +144,14 @@ static int eiointc_router_init(unsigned int cpu)
+ 	int i, bit;
+ 	uint32_t data;
+ 	uint32_t node = cpu_to_eio_node(cpu);
+-	uint32_t index = eiointc_index(node);
++	int index = eiointc_index(node);
+ 
+-	if (index < 0) {
+-		pr_err("Error: invalid nodemap!\n");
+-		return -1;
+-	}
++	/*
++	 * qemu virt-machine has only one eio intc and more than four cpus
++	 * irq from eio can only be routed to cpu 0-3 on virt machine
++	 */
++	if (index < 0)
++		return 0;
+ 
+ 	if ((cpu_logical_map(cpu) % CORES_PER_EIO_NODE) == 0) {
+ 		eiointc_enable();
 -- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+2.27.0
+

@@ -2,134 +2,114 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2FCB3EB64DA
-	for <linux-mips@archiver.kernel.org>; Wed,  5 Jul 2023 08:03:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B024EC0015E
+	for <linux-mips@archiver.kernel.org>; Wed,  5 Jul 2023 08:07:10 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231923AbjGEID0 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 5 Jul 2023 04:03:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35656 "EHLO
+        id S232412AbjGEIHK (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 5 Jul 2023 04:07:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38466 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231638AbjGEIDZ (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 5 Jul 2023 04:03:25 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E0EA198C
-        for <linux-mips@vger.kernel.org>; Wed,  5 Jul 2023 01:02:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1688544151;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=XDgcQtPSCk85F9YjOuVpAuyCl327gSG/7+9nyPHiobU=;
-        b=HVNH53ZDOszA2ZQz3FXyXsIdeqgezqU0uNVYe9yOyAHL6wluM2dvAM16LhKgyJWDFGOQmn
-        tb2JRp6RWWHzNzPXI9PkC+ELtVg840KchYLERyVasoxVVEy+OMxCArJ6ecJOa0Aa21JF+6
-        cOz8UIM1odQz1gioutujRaqMF28O6Tc=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-70-Rtb9zbhFN2GIHDBRE-NXfg-1; Wed, 05 Jul 2023 04:02:30 -0400
-X-MC-Unique: Rtb9zbhFN2GIHDBRE-NXfg-1
-Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-3fbe356b8deso7664775e9.0
-        for <linux-mips@vger.kernel.org>; Wed, 05 Jul 2023 01:02:30 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1688544149; x=1691136149;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=XDgcQtPSCk85F9YjOuVpAuyCl327gSG/7+9nyPHiobU=;
-        b=mEWWv/lKLGMSG0zkyxWkQRdxzx1LE+Nl1z1d9aAjwVPEMphsXAdDmCSsRrnzYKCekL
-         rk1sssfdd/Y+FFqcbwNXl/70H+4K5F4EOWX+82Pya3euMmJsuxx2GqanC/DV2uUgPyK4
-         d6A9A3zqE/poKLGy4m+H5jD4LShZAn8z4TnW1WZnB6CnbXkVTZQTazkhSCdvZ79NI/RN
-         AQxJwBnUBE3AllWh+730rN3sHrWhpZ9HkCFeE3L1RkomnIQsWY3FWqPUAC/b1rp+b3vK
-         yS7EjHBgiYnqqn2asyi7BAbV5flWnkIi7Pxh3ylF08JBDhHPn/ATfHRmX8huSjYPWlNy
-         TODQ==
-X-Gm-Message-State: AC+VfDzLuVLt/c5vKwRH6cl6moN/UgF/sqLS8Pu4q2oH9RgRTURTwBfh
-        hFNIa9jHvoHT32DQkGtYAPP3wuYXhNP63rihJG18TjIbJWuQyIdYRnXYxtaZRPDKT3NYutLhrhU
-        fMFvF11KjblodklAkTkO9qQ==
-X-Received: by 2002:a05:600c:b54:b0:3f5:ffe3:46a7 with SMTP id k20-20020a05600c0b5400b003f5ffe346a7mr12254783wmr.9.1688544149372;
-        Wed, 05 Jul 2023 01:02:29 -0700 (PDT)
-X-Google-Smtp-Source: ACHHUZ4vylDlXvfuU9EWjWb12pZMcRCpkOIK+1WjIMZRSIYzVmT0WCKJ1Gd1jMG8KQnYrrWHnxleng==
-X-Received: by 2002:a05:600c:b54:b0:3f5:ffe3:46a7 with SMTP id k20-20020a05600c0b5400b003f5ffe346a7mr12254706wmr.9.1688544148234;
-        Wed, 05 Jul 2023 01:02:28 -0700 (PDT)
-Received: from localhost (205.pool92-176-231.dynamic.orange.es. [92.176.231.205])
-        by smtp.gmail.com with ESMTPSA id x8-20020a5d4908000000b0031432c2fb95sm8956824wrq.88.2023.07.05.01.02.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 05 Jul 2023 01:02:27 -0700 (PDT)
-From:   Javier Martinez Canillas <javierm@redhat.com>
-To:     Thomas Zimmermann <tzimmermann@suse.de>, arnd@arndb.de,
-        deller@gmx.de, daniel@ffwll.ch, airlied@gmail.com
-Cc:     linux-hyperv@vger.kernel.org, linux-efi@vger.kernel.org,
-        linux-ia64@vger.kernel.org, linux-sh@vger.kernel.org,
-        linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-mips@vger.kernel.org, sparclinux@vger.kernel.org,
-        linux-riscv@lists.infradead.org, linux-arch@vger.kernel.org,
-        linux-hexagon@vger.kernel.org, linux-staging@lists.linux.dev,
-        linux-csky@vger.kernel.org, Antonino Daplas <adaplas@gmail.com>,
-        Maik Broemme <mbroemme@libmpq.org>, loongarch@lists.linux.dev,
-        linux-arm-kernel@lists.infradead.org,
-        Randy Dunlap <rdunlap@infradead.org>,
-        linux-kernel@vger.kernel.org,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        linux-alpha@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH 10/12] fbdev/core: Use fb_is_primary_device() in
- fb_firmware_edid()
-In-Reply-To: <20230629121952.10559-11-tzimmermann@suse.de>
-References: <20230629121952.10559-1-tzimmermann@suse.de>
- <20230629121952.10559-11-tzimmermann@suse.de>
-Date:   Wed, 05 Jul 2023 10:02:27 +0200
-Message-ID: <878rbuss4s.fsf@minerva.mail-host-address-is-not-set>
+        with ESMTP id S232399AbjGEIHJ (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 5 Jul 2023 04:07:09 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0B571710
+        for <linux-mips@vger.kernel.org>; Wed,  5 Jul 2023 01:07:04 -0700 (PDT)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1qGxXN-0003pE-5h; Wed, 05 Jul 2023 10:06:57 +0200
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+        by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.94.2)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1qGxXM-00CDNF-6i; Wed, 05 Jul 2023 10:06:56 +0200
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1qGxXL-002Ob0-8J; Wed, 05 Jul 2023 10:06:55 +0200
+From:   =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>
+To:     Thierry Reding <thierry.reding@gmail.com>
+Cc:     Paul Cercueil <paul@crapouillou.net>,
+        =?utf-8?q?Philippe_Mathieu-Daud=C3=A9?= <philmd@linaro.org>,
+        linux-mips@vger.kernel.org, linux-pwm@vger.kernel.org,
+        kernel@pengutronix.de
+Subject: [PATCH v2 3/8] pwm: jz4740: Put per-channel clk into driver data
+Date:   Wed,  5 Jul 2023 10:06:45 +0200
+Message-Id: <20230705080650.2353391-4-u.kleine-koenig@pengutronix.de>
+X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20230705080650.2353391-1-u.kleine-koenig@pengutronix.de>
+References: <20230705080650.2353391-1-u.kleine-koenig@pengutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=UTF-8
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1884; i=u.kleine-koenig@pengutronix.de; h=from:subject; bh=X7RU3MBp/iCxYXwRbGqtkm5an8LKIPGwfp19wJYuFEg=; b=owEBbQGS/pANAwAKAY+A+1h9Ev5OAcsmYgBkpSSQUrnMMqQB9sb9Wx7QwilFKhSmjx/wTwq1O rKT2JxBCDeJATMEAAEKAB0WIQQ/gaxpOnoeWYmt/tOPgPtYfRL+TgUCZKUkkAAKCRCPgPtYfRL+ Tl7eB/9Ew8rmwAGX2vfpOdayuDiKvPHdBVZH7kpFeJvCqpxYDCXe1aXSJNn9skjmLY3AiO1G6Rq qny893Hn05STsz1LLehDSn3vIGuCV9BpjT2ilzIPz8lNRmQOi+I2zfYn6o9SSSSPMta7zbKE74/ spj3+SNXXmTLADzhXj53kLgaxc8ODaPZTRyGGtXcTnK1i7cijvxCGHD4LL3Im/CLHnBv+hmOqfI xVWamugt86WVlG/ZFzKywd1lEs0kh064gg/jlVsyey7P1/oAzVtic5EvTkfBtI6Oe+qB5p52+kY Nmm5qMvf+lYcD92dp+k3M1fZFpyKO8ucz+R8qrrnbj/KFt5S
+X-Developer-Key: i=u.kleine-koenig@pengutronix.de; a=openpgp; fpr=0D2511F322BFAB1C1580266BE2DCDD9132669BD6
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-mips@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Thomas Zimmermann <tzimmermann@suse.de> writes:
+Stop using chip_data which is about to go away. Instead track the
+per-channel clk in struct jz4740_pwm_chip.
 
-> Detect the primary VGA device with fb_is_primary_device() in the
-> implementation of fb_firmware_edid(). Remove the existing code.
->
+Reviewed-by: Philippe Mathieu-Daudé <philmd@linaro.org>
+Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+---
+ drivers/pwm/pwm-jz4740.c | 11 +++++++----
+ 1 file changed, 7 insertions(+), 4 deletions(-)
 
-An explanation about why this is possible would be useful here.
-
-> Adapt the function to receive an instance of struct fb_info and
-> update all callers.
->
-
-[...]
-
-> -const unsigned char *fb_firmware_edid(struct device *device)
-> +const unsigned char *fb_firmware_edid(struct fb_info *info)
->  {
-> -	struct pci_dev *dev = NULL;
-> -	struct resource *res = NULL;
->  	unsigned char *edid = NULL;
->  
-> -	if (device)
-> -		dev = to_pci_dev(device);
-> -
-> -	if (dev)
-> -		res = &dev->resource[PCI_ROM_RESOURCE];
-> -
-> -	if (res && res->flags & IORESOURCE_ROM_SHADOW)
-
-This open codes what used to be the fb_is_primary_device() logic before
-commit 5ca1479cd35d ("fbdev: Simplify fb_is_primary_device for x86").
-But now after that commit there is functional change since the ROM
-shadowing check would be dropped.
-
-I believe that's OK and Sima explains in their commit message that
-vga_default_device() should be enough and the check is redundant.
-
-Still, I think that this change should be documented in your commit
-message. 
-
-With that change,
-
-Reviewed-by: Javier Martinez Canillas <javierm@redhat.com>
-
+diff --git a/drivers/pwm/pwm-jz4740.c b/drivers/pwm/pwm-jz4740.c
+index 3b7067f6cd0d..8b01819df67d 100644
+--- a/drivers/pwm/pwm-jz4740.c
++++ b/drivers/pwm/pwm-jz4740.c
+@@ -27,6 +27,7 @@ struct soc_info {
+ struct jz4740_pwm_chip {
+ 	struct pwm_chip chip;
+ 	struct regmap *map;
++	struct clk *clk[];
+ };
+ 
+ static inline struct jz4740_pwm_chip *to_jz4740(struct pwm_chip *chip)
+@@ -70,14 +71,15 @@ static int jz4740_pwm_request(struct pwm_chip *chip, struct pwm_device *pwm)
+ 		return err;
+ 	}
+ 
+-	pwm_set_chip_data(pwm, clk);
++	jz->clk[pwm->hwpwm] = clk;
+ 
+ 	return 0;
+ }
+ 
+ static void jz4740_pwm_free(struct pwm_chip *chip, struct pwm_device *pwm)
+ {
+-	struct clk *clk = pwm_get_chip_data(pwm);
++	struct jz4740_pwm_chip *jz = to_jz4740(chip);
++	struct clk *clk = jz->clk[pwm->hwpwm];
+ 
+ 	clk_disable_unprepare(clk);
+ 	clk_put(clk);
+@@ -123,7 +125,7 @@ static int jz4740_pwm_apply(struct pwm_chip *chip, struct pwm_device *pwm,
+ {
+ 	struct jz4740_pwm_chip *jz4740 = to_jz4740(pwm->chip);
+ 	unsigned long long tmp = 0xffffull * NSEC_PER_SEC;
+-	struct clk *clk = pwm_get_chip_data(pwm);
++	struct clk *clk = jz4740->clk[pwm->hwpwm];
+ 	unsigned long period, duty;
+ 	long rate;
+ 	int err;
+@@ -229,7 +231,8 @@ static int jz4740_pwm_probe(struct platform_device *pdev)
+ 	if (!info)
+ 		return -EINVAL;
+ 
+-	jz4740 = devm_kzalloc(dev, sizeof(*jz4740), GFP_KERNEL);
++	jz4740 = devm_kzalloc(dev, struct_size(jz4740, clk, info->num_pwms),
++			      GFP_KERNEL);
+ 	if (!jz4740)
+ 		return -ENOMEM;
+ 
 -- 
-Best regards,
-
-Javier Martinez Canillas
-Core Platforms
-Red Hat
+2.39.2
 

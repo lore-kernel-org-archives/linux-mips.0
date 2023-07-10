@@ -2,77 +2,104 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F212DEB64DA
-	for <linux-mips@archiver.kernel.org>; Mon, 10 Jul 2023 06:08:37 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A2C93EB64D9
+	for <linux-mips@archiver.kernel.org>; Mon, 10 Jul 2023 08:43:20 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230319AbjGJGIh (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 10 Jul 2023 02:08:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57324 "EHLO
+        id S229732AbjGJInT (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 10 Jul 2023 04:43:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52236 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229701AbjGJGIg (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Mon, 10 Jul 2023 02:08:36 -0400
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC71EFB;
-        Sun,  9 Jul 2023 23:08:35 -0700 (PDT)
-Received: by mail-lf1-x130.google.com with SMTP id 2adb3069b0e04-4f122ff663eso6240678e87.2;
-        Sun, 09 Jul 2023 23:08:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1688969314; x=1691561314;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from:sender
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=NXia2U3SWywM/hgPSo6QNGfwgRNgV0ikhWDqRGHWyow=;
-        b=HKCxpGZnD2pgMSzpbNh8IquC6IK/Cs60+egpUYi+JkMiQE9ZL8uUawtO1FhUHTMCTM
-         kh/aR1gWDTUL77+cCgzKpna3F8uDKnXrALx7Gixrv8jOxSHZM5fnFTkjKUSWhgSuV7WG
-         CSbct344kxPAt2xJQdMUeiSgfmKGF4Y4htpY09KOD3bOBLnkZuQE+wPweeb4YpwgCd+k
-         w1SvQxA9hSXmf++bwvxDlIhJ2wg3Gx87uVLVT0TwSBytOZWc2NNyMQ2/HUChfWKmWaMI
-         w1VSv8JEfoPf4Hc8XCaJ4c/XVG6xG8pb9iijIUFuFteBnhN9vKjRNiv0E7EtrOCViET5
-         nZIQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1688969314; x=1691561314;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from:sender
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=NXia2U3SWywM/hgPSo6QNGfwgRNgV0ikhWDqRGHWyow=;
-        b=YXpa5mub5uUIWHyXTZxgeEEaRe5Oa4apmTU16HR1oj0C3fA6iRG31LbmMP5VyrLxS6
-         8hGeJYvSQ5LWx8YgGggsNB/kn7XoE1YZ6Ikd2T0qXgYbHyF17zuKOXUt6jaieNzI/B1L
-         9p+xtyslICroCIgglsX6hp/h6+Jp4qE9hdcTw8UBsPX3xZFP2W7Xy0L1iyfhiGbIK2gW
-         ID/Co7wIR4FNq1O5Z2ogc4cnK7/wqm0teJxYWJTh3fuqmzS08n7RzM0RSn1+eexatimZ
-         Irr5GyVCqatbBStZzNJ8VjOUKxRZwSjlx+4XenC5PPwxRvgnAx3UatILAgEnTjv39c99
-         QYvw==
-X-Gm-Message-State: ABy/qLamoGsNx6rBWdxhmiicxUq25fXdWKUeS2KPslzoDW/dCCndCPqg
-        HwIpdJVlvBs5yebS2QZDJDZlbK/ISqN05bPwPys=
-X-Google-Smtp-Source: APBJJlE8XIYfjCdCDXPrHG6nw7Sgw5sSnfiFWvlGRkezdt73Fjqia4/P0t1EsaNJnFEs91knAXPndHjlDk95M+E/dNc=
-X-Received: by 2002:a05:6512:3d8e:b0:4f8:7568:e948 with SMTP id
- k14-20020a0565123d8e00b004f87568e948mr10523457lfv.51.1688969313700; Sun, 09
- Jul 2023 23:08:33 -0700 (PDT)
+        with ESMTP id S233265AbjGJIm7 (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Mon, 10 Jul 2023 04:42:59 -0400
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADF691992;
+        Mon, 10 Jul 2023 01:41:41 -0700 (PDT)
+Received: from canpemm500009.china.huawei.com (unknown [172.30.72.54])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4Qzy8Y75pSzPk2S;
+        Mon, 10 Jul 2023 16:38:53 +0800 (CST)
+Received: from localhost.localdomain (10.50.163.32) by
+ canpemm500009.china.huawei.com (7.192.105.203) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.27; Mon, 10 Jul 2023 16:41:11 +0800
+From:   Yicong Yang <yangyicong@huawei.com>
+To:     <akpm@linux-foundation.org>, <catalin.marinas@arm.com>,
+        <linux-mm@kvack.org>, <linux-arm-kernel@lists.infradead.org>,
+        <x86@kernel.org>, <mark.rutland@arm.com>, <ryan.roberts@arm.com>,
+        <will@kernel.org>, <anshuman.khandual@arm.com>,
+        <linux-doc@vger.kernel.org>
+CC:     <corbet@lwn.net>, <peterz@infradead.org>, <arnd@arndb.de>,
+        <punit.agrawal@bytedance.com>, <linux-kernel@vger.kernel.org>,
+        <darren@os.amperecomputing.com>, <yangyicong@hisilicon.com>,
+        <huzhanyuan@oppo.com>, <lipeifeng@oppo.com>,
+        <zhangshiming@oppo.com>, <guojian@oppo.com>, <realmz6@gmail.com>,
+        <linux-mips@vger.kernel.org>, <openrisc@lists.librecores.org>,
+        <linuxppc-dev@lists.ozlabs.org>, <linux-riscv@lists.infradead.org>,
+        <linux-s390@vger.kernel.org>, Barry Song <21cnbao@gmail.com>,
+        <wangkefeng.wang@huawei.com>, <xhao@linux.alibaba.com>,
+        <prime.zeng@hisilicon.com>, <Jonathan.Cameron@Huawei.com>
+Subject: [PATCH v10 3/4] mm/tlbbatch: Introduce arch_flush_tlb_batched_pending()
+Date:   Mon, 10 Jul 2023 16:39:13 +0800
+Message-ID: <20230710083914.18336-4-yangyicong@huawei.com>
+X-Mailer: git-send-email 2.31.0
+In-Reply-To: <20230710083914.18336-1-yangyicong@huawei.com>
+References: <20230710083914.18336-1-yangyicong@huawei.com>
 MIME-Version: 1.0
-References: <tencent_54C2A2746A83BA29EE92248CE9683F0C6509@qq.com> <f7fab4fc-a8db-d2f7-52e9-3522f7c298b8@web.de>
-In-Reply-To: <f7fab4fc-a8db-d2f7-52e9-3522f7c298b8@web.de>
-Sender: cl1ntlov3@gmail.com
-X-Google-Sender-Delegation: cl1ntlov3@gmail.com
-From:   linke li <lilinke99@gmail.com>
-Date:   Mon, 10 Jul 2023 14:08:22 +0800
-X-Google-Sender-Auth: Y3flxkSIwAbIAD5U_PVxyV6si1E
-Message-ID: <CAKdjhyAtxk21YR-wxZn5Ga_+3HuHfxuJX7_czLBw8tuJFmXgsg@mail.gmail.com>
-Subject: Re: [PATCH] MIPS: Fix undefined behavior in PAGE_MASK calculation
-To:     Markus Elfring <Markus.Elfring@web.de>
-Cc:     linux-mips@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linke Li <lilinke99@foxmail.com>,
-        =?UTF-8?Q?Thomas_Bogend=C3=B6rfer?= <tsbogend@alpha.franken.de>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.50.163.32]
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ canpemm500009.china.huawei.com (7.192.105.203)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-> How do you think about a wording variant like the following?
+From: Yicong Yang <yangyicong@hisilicon.com>
 
-What you said is exactly what I want to express.
+Currently we'll flush the mm in flush_tlb_batched_pending() to
+avoid race between reclaim unmaps pages by batched TLB flush
+and mprotect/munmap/etc. Other architectures like arm64 may
+only need a synchronization barrier(dsb) here rather than
+a full mm flush. So add arch_flush_tlb_batched_pending() to
+allow an arch-specific implementation here. This intends no
+functional changes on x86 since still a full mm flush for
+x86.
 
-> Would you like to add the tag =E2=80=9CFixes=E2=80=9D?
+Signed-off-by: Yicong Yang <yangyicong@hisilicon.com>
+---
+ arch/x86/include/asm/tlbflush.h | 5 +++++
+ mm/rmap.c                       | 2 +-
+ 2 files changed, 6 insertions(+), 1 deletion(-)
 
-I agree with that.
+diff --git a/arch/x86/include/asm/tlbflush.h b/arch/x86/include/asm/tlbflush.h
+index 1c7d3a36e16c..837e4a50281a 100644
+--- a/arch/x86/include/asm/tlbflush.h
++++ b/arch/x86/include/asm/tlbflush.h
+@@ -284,6 +284,11 @@ static inline void arch_tlbbatch_add_pending(struct arch_tlbflush_unmap_batch *b
+ 	cpumask_or(&batch->cpumask, &batch->cpumask, mm_cpumask(mm));
+ }
+ 
++static inline void arch_flush_tlb_batched_pending(struct mm_struct *mm)
++{
++	flush_tlb_mm(mm);
++}
++
+ extern void arch_tlbbatch_flush(struct arch_tlbflush_unmap_batch *batch);
+ 
+ static inline bool pte_flags_need_flush(unsigned long oldflags,
+diff --git a/mm/rmap.c b/mm/rmap.c
+index 9699c6011b0e..3a16c91be7e2 100644
+--- a/mm/rmap.c
++++ b/mm/rmap.c
+@@ -717,7 +717,7 @@ void flush_tlb_batched_pending(struct mm_struct *mm)
+ 	int flushed = batch >> TLB_FLUSH_BATCH_FLUSHED_SHIFT;
+ 
+ 	if (pending != flushed) {
+-		flush_tlb_mm(mm);
++		arch_flush_tlb_batched_pending(mm);
+ 		/*
+ 		 * If the new TLB flushing is pending during flushing, leave
+ 		 * mm->tlb_flush_batched as is, to avoid losing flushing.
+-- 
+2.24.0
 
-Thank you for your feedback and suggestion.

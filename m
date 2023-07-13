@@ -2,172 +2,156 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CA430C001B0
-	for <linux-mips@archiver.kernel.org>; Thu, 13 Jul 2023 15:25:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DFB86C001B0
+	for <linux-mips@archiver.kernel.org>; Thu, 13 Jul 2023 15:25:59 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234529AbjGMPZy (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 13 Jul 2023 11:25:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57236 "EHLO
+        id S234607AbjGMPZ6 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 13 Jul 2023 11:25:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57288 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234506AbjGMPZx (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Thu, 13 Jul 2023 11:25:53 -0400
-Received: from frasgout12.his.huawei.com (unknown [14.137.139.154])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A2FC2706;
-        Thu, 13 Jul 2023 08:25:45 -0700 (PDT)
-Received: from mail02.huawei.com (unknown [172.18.147.227])
-        by frasgout12.his.huawei.com (SkyGuard) with ESMTP id 4R1ylg4t2pz9xFqw;
-        Thu, 13 Jul 2023 23:12:47 +0800 (CST)
-Received: from A2101119013HW2.china.huawei.com (unknown [10.81.218.161])
-        by APP1 (Coremail) with SMTP id LxC2BwA3k94BF7BkxG6BBA--.7207S6;
-        Thu, 13 Jul 2023 16:25:00 +0100 (CET)
-From:   Petr Tesarik <petrtesarik@huaweicloud.com>
-To:     Stefano Stabellini <sstabellini@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
+        with ESMTP id S234546AbjGMPZz (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Thu, 13 Jul 2023 11:25:55 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8DAC1FD6;
+        Thu, 13 Jul 2023 08:25:47 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 6706D61881;
+        Thu, 13 Jul 2023 15:25:47 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4FB4CC433C7;
+        Thu, 13 Jul 2023 15:25:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1689261946;
+        bh=7VIAFpE7UhHFxQZU5H0rEJICPl8n8m4rhnC5KAKiqgg=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=prE5FLdbBTLejc0h1uZgpzQeMQtg3bhmc/2zA1Cu0h7FIQJXQevO52b8n1RvHbHeY
+         CKEcO2OGbXUln72n8msQ8rMBVXjH9IFy/t3oE286Qt7kBtr7VAE3b7pvrqFeMjeB+2
+         hrj7kIU7Lj/X+K3O0Cok7Wdc7HDIgWi+8EO4pKacFlybhRIBVNWA2sgaxcMBAVDkF+
+         leKgIikWStHYai4U0OZJkkO6PG3ClerhWAWhY7TpqpdGMBaRcqn9blwFmUOw7n8i72
+         t2dbuUs2WRGt5N2CSEyR6rSVPsjzDbo/KUqyzi1ULT4SBXnA2TXY5pRVD8K8HjV8Y2
+         awqbN1w4lkvmQ==
+Date:   Thu, 13 Jul 2023 10:25:44 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Alexander Sverdlin <alexander.sverdlin@nokia.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-pci@vger.kernel.org,
         Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Bjorn Helgaas <bhelgaas@google.com>,
         Thomas Gleixner <tglx@linutronix.de>,
         Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        x86@kernel.org (maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)),
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Juergen Gross <jgross@suse.com>,
-        Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Petr Tesarik <petr.tesarik.ext@huawei.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        James Seo <james@equiv.tech>,
-        James Clark <james.clark@arm.com>,
-        Kees Cook <keescook@chromium.org>,
-        xen-devel@lists.xenproject.org (moderated list:XEN HYPERVISOR ARM),
-        linux-arm-kernel@lists.infradead.org (moderated list:ARM PORT),
-        linux-kernel@vger.kernel.org (open list),
-        linux-mips@vger.kernel.org (open list:MIPS),
-        iommu@lists.linux.dev (open list:XEN SWIOTLB SUBSYSTEM)
-Cc:     Roberto Sassu <roberto.sassu@huaweicloud.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>, petr@tesarici.cz
-Subject: [PATCH v4 4/8] swiotlb: add a flag whether a SWIOTLB is allowed to grow
-Date:   Thu, 13 Jul 2023 17:23:15 +0200
-Message-Id: <80501ecd65a7089ccfe9577a666dcaaddcafb4e7.1689261692.git.petr.tesarik.ext@huawei.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <cover.1689261692.git.petr.tesarik.ext@huawei.com>
-References: <cover.1689261692.git.petr.tesarik.ext@huawei.com>
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>
+Subject: Re: [PATCH v1 1/1] range.h: Move resource API and constant to
+ respective headers
+Message-ID: <20230713152544.GA317144@bhelgaas>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: LxC2BwA3k94BF7BkxG6BBA--.7207S6
-X-Coremail-Antispam: 1UD129KBjvJXoWxWrW8XF1fKr1fZr13Wr4UArb_yoW5CFWUpF
-        15Aa1UKF42qF1xArZ7CwnxJF929a1vkay7urWY9ry5Ar13Gr13tF4DKay5tryFqr4jvF4S
-        vFyIvr4YyFnFvw7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUQG14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_JF0E3s1l82xGYI
-        kIc2x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2
-        z4x0Y4vE2Ix0cI8IcVAFwI0_JFI_Gr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j6F
-        4UJwA2z4x0Y4vEx4A2jsIE14v26r4j6F4UM28EF7xvwVC2z280aVCY1x0267AKxVWxJr0_
-        GcWle2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2I
-        x0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8
-        JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2Y2
-        ka0xkIwI1lc7CjxVAaw2AFwI0_Jw0_GFylc7CjxVAKzI0EY4vE52x082I5MxAIw28IcxkI
-        7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxV
-        Cjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWrXVW8Jr1lIxkGc2Ij64vIr41lIxAI
-        cVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr1j6F4UJwCI42
-        IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Gr0_Cr1lIxAIcVC2z280
-        aVCY1x0267AKxVW8Jr0_Cr1UYxBIdaVFxhVjvjDU0xZFpf9x0JU3l19UUUUU=
-X-CM-SenderInfo: hshw23xhvd2x3n6k3tpzhluzxrxghudrp/
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230710131142.32284-1-andriy.shevchenko@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-From: Petr Tesarik <petr.tesarik.ext@huawei.com>
+On Mon, Jul 10, 2023 at 04:11:42PM +0300, Andy Shevchenko wrote:
+> range.h works with struct range data type. The resource_size_t
+> is an alien here. Move the related pieces to the respective
+> headers and rename MAX_RESOURCE using pattern ${TYPE}_MAX.
+> 
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-Mark the default SWIOTLB as able to grow and restricted DMA pools as
-unable.
+No objection from me, although I might include more specifics in the
+commit log, e.g., (1) move cap_resource() implementation into its only
+user, and (2) rename and move RESOURCE_SIZE_MAX to limits.h.
 
-However, if the address of the default memory pool is explicitly queried,
-make the default SWIOTLB also unable to grow. This is currently used to set
-up PCI BAR movable regions on some Octeon MIPS boards which may not be able
-to use a SWIOTLB pool elsewhere in physical memory. See octeon_pci_setup()
-for more details.
+Acked-by: Bjorn Helgaas <bhelgaas@google.com>
 
-If a remap function is specified, it must be also called on any dynamically
-allocated pools, but there are some issues:
-
-- The remap function may block, so it should not be called from an atomic
-  context.
-- There is no corresponding unremap() function if the memory pool is
-  freed.
-- The only in-tree implementation (xen_swiotlb_fixup) requires that the
-  number of slots in the memory pool is a multiple of SWIOTLB_SEGSIZE.
-
-Keep it simple for now and disable growing the SWIOTLB if a remap function
-was specified.
-
-Signed-off-by: Petr Tesarik <petr.tesarik.ext@huawei.com>
----
- include/linux/swiotlb.h | 2 ++
- kernel/dma/swiotlb.c    | 4 ++++
- 2 files changed, 6 insertions(+)
-
-diff --git a/include/linux/swiotlb.h b/include/linux/swiotlb.h
-index d669e11e2827..81f8c901e888 100644
---- a/include/linux/swiotlb.h
-+++ b/include/linux/swiotlb.h
-@@ -102,6 +102,7 @@ struct io_tlb_pool {
-  * @debugfs:	The dentry to debugfs.
-  * @force_bounce: %true if swiotlb bouncing is forced
-  * @for_alloc:  %true if the pool is used for memory allocation
-+ * @can_grow:	%true if more pools can be allocated dynamically.
-  * @total_used:	The total number of slots in the pool that are currently used
-  *		across all areas. Used only for calculating used_hiwater in
-  *		debugfs.
-@@ -114,6 +115,7 @@ struct io_tlb_mem {
- 	struct dentry *debugfs;
- 	bool force_bounce;
- 	bool for_alloc;
-+	bool can_grow;
- #ifdef CONFIG_DEBUG_FS
- 	atomic_long_t total_used;
- 	atomic_long_t used_hiwater;
-diff --git a/kernel/dma/swiotlb.c b/kernel/dma/swiotlb.c
-index a80b77de8829..16e5b9a82902 100644
---- a/kernel/dma/swiotlb.c
-+++ b/kernel/dma/swiotlb.c
-@@ -332,6 +332,7 @@ void __init swiotlb_init_remap(bool addressing_limit, unsigned int flags,
- 
- 	io_tlb_default_mem.force_bounce =
- 		swiotlb_force_bounce || (flags & SWIOTLB_FORCE);
-+	io_tlb_default_mem.can_grow = !remap;
- 
- 	if (!default_nareas)
- 		swiotlb_adjust_nareas(num_possible_cpus());
-@@ -399,6 +400,7 @@ int swiotlb_init_late(size_t size, gfp_t gfp_mask,
- 		return 0;
- 
- 	io_tlb_default_mem.force_bounce = swiotlb_force_bounce;
-+	io_tlb_default_mem.can_grow = !remap;
- 
- 	if (!default_nareas)
- 		swiotlb_adjust_nareas(num_possible_cpus());
-@@ -1074,6 +1076,7 @@ EXPORT_SYMBOL_GPL(is_swiotlb_active);
-  */
- phys_addr_t default_swiotlb_start(void)
- {
-+	io_tlb_default_mem.can_grow = false;
- 	return io_tlb_default_pool.start;
- }
- 
-@@ -1236,6 +1239,7 @@ static int rmem_swiotlb_device_init(struct reserved_mem *rmem,
- 					 false, nareas);
- 		mem->force_bounce = true;
- 		mem->for_alloc = true;
-+		mem->can_grow = false;
- 		mem->pool = pool;
- 		mem->nslabs = nslabs;
- 
--- 
-2.25.1
-
+> ---
+>  arch/mips/cavium-octeon/setup.c | 2 +-
+>  arch/x86/pci/amd_bus.c          | 8 ++++++++
+>  arch/x86/pci/bus_numa.c         | 2 +-
+>  include/linux/limits.h          | 2 ++
+>  include/linux/range.h           | 8 --------
+>  5 files changed, 12 insertions(+), 10 deletions(-)
+> 
+> diff --git a/arch/mips/cavium-octeon/setup.c b/arch/mips/cavium-octeon/setup.c
+> index c5561016f577..1ad2602a0383 100644
+> --- a/arch/mips/cavium-octeon/setup.c
+> +++ b/arch/mips/cavium-octeon/setup.c
+> @@ -1240,7 +1240,7 @@ static int __init octeon_no_pci_init(void)
+>  	 */
+>  	octeon_dummy_iospace = vzalloc(IO_SPACE_LIMIT);
+>  	set_io_port_base((unsigned long)octeon_dummy_iospace);
+> -	ioport_resource.start = MAX_RESOURCE;
+> +	ioport_resource.start = RESOURCE_SIZE_MAX;
+>  	ioport_resource.end = 0;
+>  	return 0;
+>  }
+> diff --git a/arch/x86/pci/amd_bus.c b/arch/x86/pci/amd_bus.c
+> index dd40d3fea74e..631512f7ec85 100644
+> --- a/arch/x86/pci/amd_bus.c
+> +++ b/arch/x86/pci/amd_bus.c
+> @@ -51,6 +51,14 @@ static struct pci_root_info __init *find_pci_root_info(int node, int link)
+>  	return NULL;
+>  }
+>  
+> +static inline resource_size_t cap_resource(u64 val)
+> +{
+> +	if (val > RESOURCE_SIZE_MAX)
+> +		return RESOURCE_SIZE_MAX;
+> +
+> +	return val;
+> +}
+> +
+>  /**
+>   * early_root_info_init()
+>   * called before pcibios_scan_root and pci_scan_bus
+> diff --git a/arch/x86/pci/bus_numa.c b/arch/x86/pci/bus_numa.c
+> index 2752c02e3f0e..e4a525e59eaf 100644
+> --- a/arch/x86/pci/bus_numa.c
+> +++ b/arch/x86/pci/bus_numa.c
+> @@ -101,7 +101,7 @@ void update_res(struct pci_root_info *info, resource_size_t start,
+>  	if (start > end)
+>  		return;
+>  
+> -	if (start == MAX_RESOURCE)
+> +	if (start == RESOURCE_SIZE_MAX)
+>  		return;
+>  
+>  	if (!merge)
+> diff --git a/include/linux/limits.h b/include/linux/limits.h
+> index f6bcc9369010..38eb7f6f7e88 100644
+> --- a/include/linux/limits.h
+> +++ b/include/linux/limits.h
+> @@ -10,6 +10,8 @@
+>  #define SSIZE_MAX	((ssize_t)(SIZE_MAX >> 1))
+>  #define PHYS_ADDR_MAX	(~(phys_addr_t)0)
+>  
+> +#define RESOURCE_SIZE_MAX	((resource_size_t)~0)
+> +
+>  #define U8_MAX		((u8)~0U)
+>  #define S8_MAX		((s8)(U8_MAX >> 1))
+>  #define S8_MIN		((s8)(-S8_MAX - 1))
+> diff --git a/include/linux/range.h b/include/linux/range.h
+> index 7efb6a9b069b..6ad0b73cb7ad 100644
+> --- a/include/linux/range.h
+> +++ b/include/linux/range.h
+> @@ -31,12 +31,4 @@ int clean_sort_range(struct range *range, int az);
+>  
+>  void sort_range(struct range *range, int nr_range);
+>  
+> -#define MAX_RESOURCE ((resource_size_t)~0)
+> -static inline resource_size_t cap_resource(u64 val)
+> -{
+> -	if (val > MAX_RESOURCE)
+> -		return MAX_RESOURCE;
+> -
+> -	return val;
+> -}
+>  #endif
+> -- 
+> 2.40.0.1.gaa8946217a0b
+> 

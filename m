@@ -2,59 +2,59 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6A676EB64DD
-	for <linux-mips@archiver.kernel.org>; Tue, 18 Jul 2023 23:52:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5CE4FC04E69
+	for <linux-mips@archiver.kernel.org>; Tue, 18 Jul 2023 23:53:00 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231638AbjGRXws (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 18 Jul 2023 19:52:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48752 "EHLO
+        id S231465AbjGRXw7 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 18 Jul 2023 19:52:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49608 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231445AbjGRXvd (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Tue, 18 Jul 2023 19:51:33 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E889E1FC8
-        for <linux-mips@vger.kernel.org>; Tue, 18 Jul 2023 16:49:53 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-c0d62f4487cso5474432276.0
-        for <linux-mips@vger.kernel.org>; Tue, 18 Jul 2023 16:49:53 -0700 (PDT)
+        with ESMTP id S231481AbjGRXvh (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Tue, 18 Jul 2023 19:51:37 -0400
+Received: from mail-pl1-x64a.google.com (mail-pl1-x64a.google.com [IPv6:2607:f8b0:4864:20::64a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E2CC30C7
+        for <linux-mips@vger.kernel.org>; Tue, 18 Jul 2023 16:50:02 -0700 (PDT)
+Received: by mail-pl1-x64a.google.com with SMTP id d9443c01a7336-1b89e3715acso32243715ad.3
+        for <linux-mips@vger.kernel.org>; Tue, 18 Jul 2023 16:50:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1689724154; x=1692316154;
+        d=google.com; s=20221208; t=1689724158; x=1692316158;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:reply-to:from:to:cc:subject:date:message-id:reply-to;
-        bh=JHyOFUOJNrHCsG8hxo3NWWS2w8rJ24DtuKIoDCRGyag=;
-        b=xEjga5LwPPSSdY8SIx3jyoncD3GGf3WPGooyrkM0KnahhnaL4mCb4YwQt0GO0HS22c
-         NEcfXNGBndDk4nsku/Y91YS1hHA5MX/cUUC80CuRLM1bK9lLy4VQpDRd1Xi2xWiJI6o1
-         9/UCIe7gQuFQ2+gvKJ9C6ii8/xbm2jFSze0SQ3v0PRjd1NOqJPDidQ7wUtuL19wRUrTE
-         yGaIkqqRPEKiBe0hyG7ZRrXgE8SEXgjc2KYKv831pMLCu06jrX+LffHvzIu5EPSPB+OK
-         JqyI7fhSc4r9xeqc00aXehzDSyLGCvqUsUwXUuUYEMMNJQvdcAepZR51lMeVVKDz3MhJ
-         Gd2A==
+        bh=AUBNLiIlxTx1F6mRQya+iPZZUvsAoMeHoSeivXTBAJs=;
+        b=m1E5CQsRhxPohHIaVjXNzAfw9sKja8GxErI8tb88+m9ohtM/2UTUV4KI0EStxpO4aq
+         e3MZZP48Hes3EH+ziFJ16ESLBaMphjB9wBUbLKvQFLpYn2bcEMb9Uv2TfKXvMSlsG4ax
+         +5bc2E2M24iRgByLib+vhoObgGZN9pfMuLHGBIbrmouSiZYtP7I+o1+DUjs0jJquORQM
+         WZA9ZhPgQfZ0ViRdW+5zM3kLeIAxBI958QaGMn+cpDeKcYSO3MEZRWesl52iNilZN/Ay
+         f7w1zt9jHHbnKZaxjQB9PYpmQD1oIBOzEUWtcHD4Ui+04jNinOeJzuhQDL4PbgsMw1sC
+         a+1A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689724154; x=1692316154;
+        d=1e100.net; s=20221208; t=1689724158; x=1692316158;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:reply-to:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=JHyOFUOJNrHCsG8hxo3NWWS2w8rJ24DtuKIoDCRGyag=;
-        b=g6EPRKbsBLMN7SQNMPd1Y7rW1JDOoqquHZ0iZEEudcySb6g01FpzNtBpmQFC6L1dxm
-         RP5+hVTeP97qNlZufnYGWDxbhUjtjkBYN5JPJTBDJk+CCBonvKw9tP3yfPz0+wrUQRAb
-         NarVvRgudt/f5loElWYMRJHVlebGz+r+Tddpdz0uJiDXv4jIC829G4ImfvIaQJ6J/knj
-         u60XOOcoV8mWLF/t4H6z9VmERsN/DOWu2oFlA/z1S8bGJDETM+7qw4pk7OcUkH7WBzdS
-         QwRv6XG12y9+GVi+xZJv+picZJjUn/zsKc4w8JqFCsiyh1qNsQbr7h5nW/pOiHUrUOPJ
-         F8xA==
-X-Gm-Message-State: ABy/qLZIwPrqok/lRWemw1xJovVPwMhzieG/iy/hqg7qzsHK5cRNceWW
-        9BRLwKrlsxNLNsJr3Mq2d1WOpOiM6GA=
-X-Google-Smtp-Source: APBJJlG18o++4c+4o8gvKjis+x9wRH2pDI/AJGKQKbbl3lcmVj0vggAD6gv2GfLwBQuIOlyc9qDjI+M6sT4=
+        bh=AUBNLiIlxTx1F6mRQya+iPZZUvsAoMeHoSeivXTBAJs=;
+        b=O/4wfWGKFaEfpN8SdZWpbBPhOkPKZGycbKsVTZw3ROS1j46wX3uJ+WzOxrrzMwBq+z
+         XzSuy6kd+MyhwDcQUNSN8ew/D7kZ3u3IHo+/IoBDQpPcjQuVedGKQGrtUW/hM7gkKdii
+         M4gAD1PKxUkEZ2u8SdKMIvIAWy6E+Z13q764rWbK5PdBbmruYycSlSFgmCvzx3e2gnsQ
+         Qo0PrIfmlx4koJTwpQe0/lWzFgxbIlV2fekWTsJjvz/lHagNm3SwWQrw/Ztbo0beL9c1
+         J/h0Q9DX7v+o51D1edn7Oa2BhSeYp+kMucVhTS2F2o4bgY/E3VFvYO6XL8ffjy7J2+BU
+         ECRA==
+X-Gm-Message-State: ABy/qLYksMg0e9IRIjZ6MRDvVF35N+gL+K5UabRwwyJMB13Ijru0YaRx
+        gqxCAVxzTGW5QB1hJQIsy1hnThkML/M=
+X-Google-Smtp-Source: APBJJlGZj18kUtv2DZbfIQmZu2TXCF9UTMkYGVm3bO/BF1sxl/m3e0941s7v3QsOSVZsOvdKY/T33+qfBEc=
 X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a25:a021:0:b0:cf2:9e82:a5b5 with SMTP id
- x30-20020a25a021000000b00cf29e82a5b5mr7746ybh.8.1689724154115; Tue, 18 Jul
- 2023 16:49:14 -0700 (PDT)
+ (user=seanjc job=sendgmr) by 2002:a17:902:d4c6:b0:1b1:7336:2637 with SMTP id
+ o6-20020a170902d4c600b001b173362637mr16836plg.11.1689724157723; Tue, 18 Jul
+ 2023 16:49:17 -0700 (PDT)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Tue, 18 Jul 2023 16:45:05 -0700
+Date:   Tue, 18 Jul 2023 16:45:07 -0700
 In-Reply-To: <20230718234512.1690985-1-seanjc@google.com>
 Mime-Version: 1.0
 References: <20230718234512.1690985-1-seanjc@google.com>
 X-Mailer: git-send-email 2.41.0.255.g8b1d071c50-goog
-Message-ID: <20230718234512.1690985-23-seanjc@google.com>
-Subject: [RFC PATCH v11 22/29] KVM: selftests: Add helpers to do
- KVM_HC_MAP_GPA_RANGE hypercalls (x86)
+Message-ID: <20230718234512.1690985-25-seanjc@google.com>
+Subject: [RFC PATCH v11 24/29] KVM: selftests: Add GUEST_SYNC[1-6] macros for
+ synchronizing more data
 From:   Sean Christopherson <seanjc@google.com>
 To:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
         Oliver Upton <oliver.upton@linux.dev>,
@@ -96,48 +96,34 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-From: Vishal Annapurve <vannapurve@google.com>
-
-Signed-off-by: Vishal Annapurve <vannapurve@google.com>
-[sean: drop shared/private helpers (let tests specify flags)]
 Signed-off-by: Sean Christopherson <seanjc@google.com>
 ---
- .../selftests/kvm/include/x86_64/processor.h      | 15 +++++++++++++++
- 1 file changed, 15 insertions(+)
+ tools/testing/selftests/kvm/include/ucall_common.h | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
-diff --git a/tools/testing/selftests/kvm/include/x86_64/processor.h b/tools/testing/selftests/kvm/include/x86_64/processor.h
-index aa434c8f19c5..8857143d400a 100644
---- a/tools/testing/selftests/kvm/include/x86_64/processor.h
-+++ b/tools/testing/selftests/kvm/include/x86_64/processor.h
-@@ -15,6 +15,7 @@
- #include <asm/msr-index.h>
- #include <asm/prctl.h>
- 
-+#include <linux/kvm_para.h>
- #include <linux/stringify.h>
- 
- #include "../kvm_util.h"
-@@ -1166,6 +1167,20 @@ uint64_t kvm_hypercall(uint64_t nr, uint64_t a0, uint64_t a1, uint64_t a2,
- uint64_t __xen_hypercall(uint64_t nr, uint64_t a0, void *a1);
- void xen_hypercall(uint64_t nr, uint64_t a0, void *a1);
- 
-+static inline uint64_t __kvm_hypercall_map_gpa_range(uint64_t gpa,
-+						     uint64_t size, uint64_t flags)
-+{
-+	return kvm_hypercall(KVM_HC_MAP_GPA_RANGE, gpa, size >> PAGE_SHIFT, flags, 0);
-+}
+diff --git a/tools/testing/selftests/kvm/include/ucall_common.h b/tools/testing/selftests/kvm/include/ucall_common.h
+index 1a6aaef5ccae..8087c877fd58 100644
+--- a/tools/testing/selftests/kvm/include/ucall_common.h
++++ b/tools/testing/selftests/kvm/include/ucall_common.h
+@@ -46,6 +46,18 @@ void ucall_init(struct kvm_vm *vm, vm_paddr_t mmio_gpa);
+ #define GUEST_SYNC_ARGS(stage, arg1, arg2, arg3, arg4)	\
+ 				ucall(UCALL_SYNC, 6, "hello", stage, arg1, arg2, arg3, arg4)
+ #define GUEST_SYNC(stage)	ucall(UCALL_SYNC, 2, "hello", stage)
 +
-+static inline void kvm_hypercall_map_gpa_range(uint64_t gpa, uint64_t size,
-+					       uint64_t flags)
-+{
-+	uint64_t ret = __kvm_hypercall_map_gpa_range(gpa, size, flags);
++#define GUEST_SYNC1(arg0)	ucall(UCALL_SYNC, 1, arg0)
++#define GUEST_SYNC2(arg0, arg1)	ucall(UCALL_SYNC, 2, arg0, arg1)
++#define GUEST_SYNC3(arg0, arg1, arg2) \
++				ucall(UCALL_SYNC, 3, arg0, arg1, arg2)
++#define GUEST_SYNC4(arg0, arg1, arg2, arg3) \
++				ucall(UCALL_SYNC, 4, arg0, arg1, arg2, arg3)
++#define GUEST_SYNC5(arg0, arg1, arg2, arg3, arg4) \
++				ucall(UCALL_SYNC, 5, arg0, arg1, arg2, arg3, arg4)
++#define GUEST_SYNC6(arg0, arg1, arg2, arg3, arg4, arg5) \
++				ucall(UCALL_SYNC, 6, arg0, arg1, arg2, arg3, arg4, arg5)
 +
-+	GUEST_ASSERT_1(!ret, ret);
-+}
-+
- void __vm_xsave_require_permission(uint64_t xfeature, const char *name);
+ #define GUEST_DONE()		ucall(UCALL_DONE, 0)
  
- #define vm_xsave_require_permission(xfeature)	\
+ enum guest_assert_builtin_args {
 -- 
 2.41.0.255.g8b1d071c50-goog
 

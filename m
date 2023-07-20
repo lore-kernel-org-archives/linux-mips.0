@@ -2,144 +2,121 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1DCD3C00528
-	for <linux-mips@archiver.kernel.org>; Thu, 20 Jul 2023 19:24:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8D608EB64DD
+	for <linux-mips@archiver.kernel.org>; Thu, 20 Jul 2023 20:20:18 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230261AbjGTTYN (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 20 Jul 2023 15:24:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36428 "EHLO
+        id S229642AbjGTUUR (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 20 Jul 2023 16:20:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58152 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229684AbjGTTYM (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Thu, 20 Jul 2023 15:24:12 -0400
-Received: from mailout.easymail.ca (mailout.easymail.ca [64.68.200.34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC1B7171D;
-        Thu, 20 Jul 2023 12:24:09 -0700 (PDT)
-Received: from localhost (localhost [127.0.0.1])
-        by mailout.easymail.ca (Postfix) with ESMTP id 479C0623ED;
-        Thu, 20 Jul 2023 18:48:50 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at emo07-pco.easydns.vpn
-Received: from mailout.easymail.ca ([127.0.0.1])
-        by localhost (emo07-pco.easydns.vpn [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id YkMMq7FPWqRc; Thu, 20 Jul 2023 18:48:49 +0000 (UTC)
-Received: from mail.gonehiking.org (unknown [38.15.45.1])
-        by mailout.easymail.ca (Postfix) with ESMTPA id C8ABC61E38;
-        Thu, 20 Jul 2023 18:48:49 +0000 (UTC)
-Received: from [192.168.1.4] (internal [192.168.1.4])
-        by mail.gonehiking.org (Postfix) with ESMTP id CC21F3EED6;
-        Thu, 20 Jul 2023 12:48:47 -0600 (MDT)
-Message-ID: <aea82980-358a-863f-d6a0-66f4ce3f87b7@gonehiking.org>
-Date:   Thu, 20 Jul 2023 12:48:47 -0600
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Reply-To: khalid@gonehiking.org
-Subject: Re: [PATCH v2 1/9] vgacon: rework Kconfig dependencies
-Content-Language: en-US
-To:     Arnd Bergmann <arnd@kernel.org>, linux-fbdev@vger.kernel.org,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Helge Deller <deller@gmx.de>,
-        Javier Martinez Canillas <javierm@redhat.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Borislav Petkov <bp@alien8.de>, Brian Cain <bcain@quicinc.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        David Airlie <airlied@gmail.com>,
-        Deepak Rawat <drawat.floss@gmail.com>,
-        Dexuan Cui <decui@microsoft.com>,
-        Dinh Nguyen <dinguyen@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Guo Ren <guoren@kernel.org>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
+        with ESMTP id S229652AbjGTUUQ (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Thu, 20 Jul 2023 16:20:16 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64F2F2726
+        for <linux-mips@vger.kernel.org>; Thu, 20 Jul 2023 13:20:14 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-c6db61f7f64so1041028276.0
+        for <linux-mips@vger.kernel.org>; Thu, 20 Jul 2023 13:20:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1689884413; x=1690489213;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=s1/m4T5EZ9UQZdIAs+CFQOUhGGMJn3z6NAlZtvxtssM=;
+        b=mbsHztlENnOTDgeCIXRdF8x4x9OfLSlTRQf7EJhk2yHC8ssudjPjJb663muGwwAUde
+         HXusCSecX8QAy71He4xwRicW2VAZ7RFVOVmJQZun5eygpfocaFcEhJVdz1DXPqrP14f5
+         Q9r/63tqP/iMmto5FytBtXhV7bicbpwNBGhhzc7AVroN6uvn7SvVpiEQCLnIHWcphWhi
+         L6PAVpT/JWEQDmjGRRbXmNFkgwEJImoyKV1xDjpLesAAmXECVa9yb/PUNJmSrVHElsLh
+         RUk/Cxj/0yokxjf+pISM5EmdcaPLl3odQz7EeG720kJEtO6hviZvCg7ubhY+cpI9tJBr
+         NkXw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1689884413; x=1690489213;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=s1/m4T5EZ9UQZdIAs+CFQOUhGGMJn3z6NAlZtvxtssM=;
+        b=bTzXPqKURZ2IMosTidsxs8i0nwGcglyI3wqP8/Hd6iwORJlt7eiexhUO+/S1iMR80z
+         sbXL7inuXGpfRSB9f05eRaZERq9FqbLAJuGpcN/b7B1/Z0ZAo3W1Wbq8UQqVKQb3fAJc
+         Na/0oXDR7d4w4xuUmA04irSD3o7nrmip/2Dgtu1kPdsbaZr1ezmon5brvqTMnS9b5pgu
+         tIoPhqjRyxop6goKLyfXHHX4KagV2PpwoKWsz8Cw5z/dCbQLxcZQranY1xZoiqq1W7bq
+         u3lF3JpylpqYoW8wZVWY+AwvjvPiRiHqPHFDm0tmyGB3fsmw7ykWw+QNyJ+RgkoPrEYc
+         S9Uw==
+X-Gm-Message-State: ABy/qLbR4wrp6KFJ8hIZSAZrSkkf80TF9qdomHYYKcR6Z+jIJ9/lQY9W
+        B/bYd+d5E8ei/WHIRua6iiftHFoTJCk=
+X-Google-Smtp-Source: APBJJlHJCm6H269xOtL/2AMirqWxt3kOhxlKiB8lLLwF2CbQnv6wXW7fNhFjFSiI4U52DqkXiLsyKn98s/w=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a25:4d08:0:b0:c6c:6122:5b69 with SMTP id
+ a8-20020a254d08000000b00c6c61225b69mr236ybb.8.1689884413509; Thu, 20 Jul 2023
+ 13:20:13 -0700 (PDT)
+Date:   Thu, 20 Jul 2023 13:20:11 -0700
+In-Reply-To: <20230720190211.GF25699@ls.amr.corp.intel.com>
+Mime-Version: 1.0
+References: <20230718234512.1690985-1-seanjc@google.com> <20230718234512.1690985-9-seanjc@google.com>
+ <20230720080912.g56zi5hywazrhnam@yy-desk-7060> <20230720190211.GF25699@ls.amr.corp.intel.com>
+Message-ID: <ZLmW+9G6EbKLkOOz@google.com>
+Subject: Re: [RFC PATCH v11 08/29] KVM: Introduce per-page memory attributes
+From:   Sean Christopherson <seanjc@google.com>
+To:     Isaku Yamahata <isaku.yamahata@gmail.com>
+Cc:     Yuan Yao <yuan.yao@linux.intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
         Huacai Chen <chenhuacai@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Matt Turner <mattst88@gmail.com>,
-        Max Filippov <jcmvbkbc@gmail.com>,
         Michael Ellerman <mpe@ellerman.id.au>,
-        Nicholas Piggin <npiggin@gmail.com>,
+        Anup Patel <anup@brainfault.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
         Palmer Dabbelt <palmer@dabbelt.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        WANG Xuerui <kernel@xen0n.name>, Wei Liu <wei.liu@kernel.org>,
-        Will Deacon <will@kernel.org>, x86@kernel.org,
-        linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-efi@vger.kernel.org,
-        linux-csky@vger.kernel.org, linux-hexagon@vger.kernel.org,
-        linux-ia64@vger.kernel.org, loongarch@lists.linux.dev,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Paul Moore <paul@paul-moore.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>, kvm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
         linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-riscv@lists.infradead.org, linux-sh@vger.kernel.org,
-        sparclinux@vger.kernel.org, linux-hyperv@vger.kernel.org,
-        dri-devel@lists.freedesktop.org
-References: <20230719123944.3438363-1-arnd@kernel.org>
- <20230719123944.3438363-2-arnd@kernel.org>
-From:   Khalid Aziz <khalid@gonehiking.org>
-In-Reply-To: <20230719123944.3438363-2-arnd@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Chao Peng <chao.p.peng@linux.intel.com>,
+        Fuad Tabba <tabba@google.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Yu Zhang <yu.c.zhang@linux.intel.com>,
+        Vishal Annapurve <vannapurve@google.com>,
+        Ackerley Tng <ackerleytng@google.com>,
+        Maciej Szmigiero <mail@maciej.szmigiero.name>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        David Hildenbrand <david@redhat.com>,
+        Quentin Perret <qperret@google.com>,
+        Michael Roth <michael.roth@amd.com>,
+        Wang <wei.w.wang@intel.com>,
+        Liam Merwick <liam.merwick@oracle.com>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On 7/19/23 6:39 AM, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
+On Thu, Jul 20, 2023, Isaku Yamahata wrote:
+> On Thu, Jul 20, 2023 at 04:09:12PM +0800,
+> Yuan Yao <yuan.yao@linux.intel.com> wrote:
 > 
-> The list of dependencies here is phrased as an opt-out, but this is missing
-> a lot of architectures that don't actually support VGA consoles, and some
-> of the entries are stale:
+> > On Tue, Jul 18, 2023 at 04:44:51PM -0700, Sean Christopherson wrote:
+> > > @@ -2301,4 +2305,14 @@ static inline void kvm_account_pgtable_pages(void *virt, int nr)
+> > >  /* Max number of entries allowed for each kvm dirty ring */
+> > >  #define  KVM_DIRTY_RING_MAX_ENTRIES  65536
+> > >
+> > > +#ifdef CONFIG_KVM_GENERIC_MEMORY_ATTRIBUTES
+> > > +static inline unsigned long kvm_get_memory_attributes(struct kvm *kvm, gfn_t gfn)
+> > > +{
+> > > +	return xa_to_value(xa_load(&kvm->mem_attr_array, gfn));
+> > > +}
+> > > +
+> > > +bool kvm_arch_post_set_memory_attributes(struct kvm *kvm,
+> > > +					 struct kvm_gfn_range *range);
+> > 
+> > Used but no definition in this patch, it's defined in next patch 09.
+> > How about add weak version in this patch and let ARCHs to overide it ?
 > 
->   - powerpc used to support VGA consoles in the old arch/ppc codebase, but
->     the merged arch/powerpc never did
-> 
->   - arm lists footbridge, integrator and netwinder, but netwinder is actually
->     part of footbridge, and integrator does not appear to have an actual
->     VGA hardware, or list it in its ATAG or DT.
-> 
->   - mips has a few platforms (malta, sibyte, and sni) that initialize
->     screen_info, on everything else the console is selected but cannot
->     actually work.
-> 
->   - csky, hexgagon, loongarch, nios2, riscv and xtensa are not listed
->     in the opt-out table and declare a screen_info to allow building
->     vga_con, but this cannot work because the console is never selected.
-> 
-> Replace this with an opt-in table that lists only the platforms that
-> remain. This is effectively x86, plus a couple of historic workstation
-> and server machines that reused parts of the x86 system architecture.
-> 
-> Reviewed-by: Javier Martinez Canillas <javierm@redhat.com>
-> Reviewed-by: Thomas Zimmermann <tzimmermann@suse.de>
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> It is guarded by CONFIG_KVM_GENERIC_MEMORY_ATTRIBUTES.
 
-
-Reviewed-by: Khalid Aziz <khalid@gonehiking.org>
-
-
-> ---
->   drivers/video/console/Kconfig | 6 +++---
->   1 file changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/video/console/Kconfig b/drivers/video/console/Kconfig
-> index 1b5a319971ed0..6af90db6d2da9 100644
-> --- a/drivers/video/console/Kconfig
-> +++ b/drivers/video/console/Kconfig
-> @@ -7,9 +7,9 @@ menu "Console display driver support"
->   
->   config VGA_CONSOLE
->   	bool "VGA text console" if EXPERT || !X86
-> -	depends on !4xx && !PPC_8xx && !SPARC && !M68K && !PARISC &&  !SUPERH && \
-> -		(!ARM || ARCH_FOOTBRIDGE || ARCH_INTEGRATOR || ARCH_NETWINDER) && \
-> -		!ARM64 && !ARC && !MICROBLAZE && !OPENRISC && !S390 && !UML
-> +	depends on ALPHA || IA64 || X86 || \
-> +		(ARM && ARCH_FOOTBRIDGE) || \
-> +		(MIPS && (MIPS_MALTA || SIBYTE_BCM112X || SIBYTE_SB1250 || SIBYTE_BCM1x80 || SNI_RM))
->   	select APERTURE_HELPERS if (DRM || FB || VFIO_PCI_CORE)
->   	default y
->   	help
-
+Yep.  I don't love the ordering, e.g. this patch can't even be compile tested
+until later in the series, but I wanted to separate x86 usage from the generic
+support code.

@@ -2,131 +2,145 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 63A56C41513
-	for <linux-mips@archiver.kernel.org>; Fri, 21 Jul 2023 22:33:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 34711EB64DD
+	for <linux-mips@archiver.kernel.org>; Sat, 22 Jul 2023 02:23:10 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230064AbjGUWdU (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 21 Jul 2023 18:33:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39594 "EHLO
+        id S230383AbjGVCXJ (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 21 Jul 2023 22:23:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51936 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229646AbjGUWdT (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Fri, 21 Jul 2023 18:33:19 -0400
-Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1C283583
-        for <linux-mips@vger.kernel.org>; Fri, 21 Jul 2023 15:33:17 -0700 (PDT)
-Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-58398367e4eso10358397b3.0
-        for <linux-mips@vger.kernel.org>; Fri, 21 Jul 2023 15:33:17 -0700 (PDT)
+        with ESMTP id S231172AbjGVCXF (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Fri, 21 Jul 2023 22:23:05 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3567172D
+        for <linux-mips@vger.kernel.org>; Fri, 21 Jul 2023 19:23:03 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-d052f49702dso1013777276.3
+        for <linux-mips@vger.kernel.org>; Fri, 21 Jul 2023 19:23:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1689978797; x=1690583597;
+        d=google.com; s=20221208; t=1689992583; x=1690597383;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=7T9EVRBobAr4a8JPgfiIjIX72kF/VyhERBKOIDOEvTo=;
-        b=N3JmIIRFuucWrTRji2j76NW5FMl4jS4wLA3POQW0VLRrR4sFhmKgj7pRUj3gSs0yqe
-         WZvjiVqpyglaAnq94LWefXiOIlgXr/PrbktD6W+TBAFf6s+alvi+gxgQyH8TNpVAsODx
-         OCRkSmym8Xr89af+taUXT0Vhz6Xh0SqYzK++E+LxDlItaWIfk/xiv3hy/q9bOsyCLBei
-         XOyxBMd+5ThifDUK6/o5f+QTqfW/eyfYM90Y+kU5f1e/gaMgZLzn2OVn9bd0Flf7Aat3
-         ovp2GWeXuTu2BrzRvrwJog7aZBAUD7Ob8wE6NUPaB8bQmPi6OopUS5w2j6M71SZpRLW7
-         K0fQ==
+        bh=E8R5tRLm4LxOnjTEGwM7a4ioC3VdBYtUr1OruyGFhsg=;
+        b=cfBIBtaMGZEf4AhY6J0548A+CtaTY7s4VELnEIeFABxI92SvaWQW27WRnp+/q887jd
+         b1TjIDORVqU07EPUQ/Q19Kx672JDaqfeiAMzany/gcKSRQRyhlDPKz73ZGnNHtbWJBcs
+         UdVEkbrC7PTnQ3AO+JgNGaP9tE7X1Jr8LevbOQPisjvpV/1GUqvSezpBlGv+V1Pa8Bk/
+         Dz7iMBvzxCmA92YdIR4l8vs0QhvpSPRaa9AWLGqWcLL0gam+6TRFZut+BKtU94QsycPh
+         UUDfnGqhH3nalOxviTCBnCVfFkZB08T951R3KSDpXW/NULcZOSqnOMHnzE4x6FrSPe5l
+         ug3w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1689978797; x=1690583597;
+        d=1e100.net; s=20221208; t=1689992583; x=1690597383;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=7T9EVRBobAr4a8JPgfiIjIX72kF/VyhERBKOIDOEvTo=;
-        b=cCFuVLwFQ8mlIPf/VfnewOdtsTzQ6QinDXvQEh70NLRImtgK0Wx/SWk/P8FVkpvjG1
-         rzqX3d6Tcs5T+T0rr6hdQTqLL9d7iwdY+kLBjvhw8e7KpurA/Rm6I1FAwqnM44Cdliot
-         hG9cemrm6Ig9Qlb+ITvW84O3ENF9V///kAa2lvHgxlKHDRSBAPLi7HYnvY5TWKk2nJEO
-         urK1wDdiwT3AbHo4nn1WU5iVGqWsw2rOlKNBwr7CBfRDxn87yIElK96czePC3gtaUmpz
-         pMf0nDjmoGFHmeWUKlCtxvJzvEMSjkDlR2BcVORl70g0tIUiKDwhCACd7PjN3mjHerNy
-         /4Ag==
-X-Gm-Message-State: ABy/qLZyFozG3w/1Ns9+2IfyAcTi3pT6JhktBDEzYLNulqdTVGTj8BII
-        XnyRTC7bf5Rf8/0ikg0xn0VrhoPztPE=
-X-Google-Smtp-Source: APBJJlHilhePzxpErmYmDQimNKPr2Kn3t6yMJLQXIDH2a2VxS3jSVStiMTfJxkBt/UbXzPR1R9iVHrOiOZs=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a25:ce82:0:b0:d04:faa6:e62b with SMTP id
- x124-20020a25ce82000000b00d04faa6e62bmr11683ybe.6.1689978797172; Fri, 21 Jul
- 2023 15:33:17 -0700 (PDT)
-Date:   Fri, 21 Jul 2023 15:33:15 -0700
-In-Reply-To: <20230721222704.GJ25699@ls.amr.corp.intel.com>
+        bh=E8R5tRLm4LxOnjTEGwM7a4ioC3VdBYtUr1OruyGFhsg=;
+        b=d5nkcGop2lIFgwfCdH5wUuhDOowdlrB1+/Z16il+ZtbZPZejbuSjDOPB1MdFDAsFTq
+         JgTeUx/zNxAe4Oey3XX5XjBhD6c9Hz+vhupTLAEJBO+PCIpdY6pXluC7xNAjjkgCRoqj
+         8CQW5HQnvjrumjS7bgbmKwHr/NEbCvehehxD4QWSAF0IGRM4CaZ4VmL6hRaoF7mfo3RE
+         U1wz4ysNbujWpDzCuwcvb6GMEI+nqIfQYERI7uF+wyMRdKQKAs/NG47K1G31JdZqmBX+
+         0iQ3ANQ+b7B6Z3eSycRsswTOQhwtyp8VMFmcIVxjI/8mgPGeZ1kfzhTMCChAb4sJHsdH
+         EMcw==
+X-Gm-Message-State: ABy/qLanO3RfrvCzMdN8INpKYBve5yvy+OAAeH0lEoj7rL86LfYy/AMj
+        j2RlH+WD0CvspOAUai22FCfAlwUocwuV
+X-Google-Smtp-Source: APBJJlHQt1NDcPAocmh72u+0bhsq/dtXjKO55NUZwrSeo0TWR6BjgNiz1KwqJUxErtKe8+mwZ90j9gI+Kx9y
+X-Received: from rananta-linux.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:22b5])
+ (user=rananta job=sendgmr) by 2002:a05:6902:102f:b0:c22:38c2:43de with SMTP
+ id x15-20020a056902102f00b00c2238c243demr26408ybt.11.1689992582937; Fri, 21
+ Jul 2023 19:23:02 -0700 (PDT)
+Date:   Sat, 22 Jul 2023 02:22:47 +0000
+In-Reply-To: <20230722022251.3446223-1-rananta@google.com>
 Mime-Version: 1.0
-References: <20230718234512.1690985-1-seanjc@google.com> <20230718234512.1690985-13-seanjc@google.com>
- <20230721061314.3ls6stdawz53drv3@yy-desk-7060> <20230721222704.GJ25699@ls.amr.corp.intel.com>
-Message-ID: <ZLsHq69sMG7pmRiz@google.com>
-Subject: Re: [RFC PATCH v11 12/29] KVM: Add KVM_CREATE_GUEST_MEMFD ioctl() for
- guest-specific backing memory
-From:   Sean Christopherson <seanjc@google.com>
-To:     Isaku Yamahata <isaku.yamahata@gmail.com>
-Cc:     Yuan Yao <yuan.yao@linux.intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
+References: <20230722022251.3446223-1-rananta@google.com>
+X-Mailer: git-send-email 2.41.0.487.g6d72f3e995-goog
+Message-ID: <20230722022251.3446223-9-rananta@google.com>
+Subject: [PATCH v7 08/12] KVM: arm64: Define kvm_tlb_flush_vmid_range()
+From:   Raghavendra Rao Ananta <rananta@google.com>
+To:     Oliver Upton <oliver.upton@linux.dev>,
         Marc Zyngier <maz@kernel.org>,
-        Oliver Upton <oliver.upton@linux.dev>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
         Huacai Chen <chenhuacai@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
+        Zenghui Yu <yuzenghui@huawei.com>,
         Anup Patel <anup@brainfault.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Paul Moore <paul@paul-moore.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>, kvm@vger.kernel.org,
+        Atish Patra <atishp@atishpatra.org>,
+        Jing Zhang <jingzhangos@google.com>,
+        Reiji Watanabe <reijiw@google.com>,
+        Colton Lewis <coltonlewis@google.com>,
+        Raghavendra Rao Anata <rananta@google.com>,
+        David Matlack <dmatlack@google.com>,
         linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Chao Peng <chao.p.peng@linux.intel.com>,
-        Fuad Tabba <tabba@google.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Yu Zhang <yu.c.zhang@linux.intel.com>,
-        Vishal Annapurve <vannapurve@google.com>,
-        Ackerley Tng <ackerleytng@google.com>,
-        Maciej Szmigiero <mail@maciej.szmigiero.name>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        David Hildenbrand <david@redhat.com>,
-        Quentin Perret <qperret@google.com>,
-        Michael Roth <michael.roth@amd.com>,
-        Wang <wei.w.wang@intel.com>,
-        Liam Merwick <liam.merwick@oracle.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
-Content-Type: text/plain; charset="us-ascii"
+        linux-mips@vger.kernel.org, kvm-riscv@lists.infradead.org,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, Gavin Shan <gshan@redhat.com>,
+        Shaoqin Huang <shahuang@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Fri, Jul 21, 2023, Isaku Yamahata wrote:
-> On Fri, Jul 21, 2023 at 02:13:14PM +0800,
-> Yuan Yao <yuan.yao@linux.intel.com> wrote:
-> > > +static int kvm_gmem_error_page(struct address_space *mapping, struct page *page)
-> > > +{
-> > > +	struct list_head *gmem_list = &mapping->private_list;
-> > > +	struct kvm_memory_slot *slot;
-> > > +	struct kvm_gmem *gmem;
-> > > +	unsigned long index;
-> > > +	pgoff_t start, end;
-> > > +	gfn_t gfn;
-> > > +
-> > > +	filemap_invalidate_lock_shared(mapping);
-> > > +
-> > > +	start = page->index;
-> > > +	end = start + thp_nr_pages(page);
-> > > +
-> > > +	list_for_each_entry(gmem, gmem_list, entry) {
-> > > +		xa_for_each_range(&gmem->bindings, index, slot, start, end - 1) {
-> > > +			for (gfn = start; gfn < end; gfn++) {
-> > 
-> > Why the start end range used as gfn here ?
+Implement the helper kvm_tlb_flush_vmid_range() that acts
+as a wrapper for range-based TLB invalidations. For the
+given VMID, use the range-based TLBI instructions to do
+the job or fallback to invalidating all the TLB entries.
 
-Math is hard?  I almost always mess up these types of things, and then catch my
-bugs via tests.  But I don't have tests for this particular flow...   Which
-reminds me, we need tests for this :-)  Hopefully error injection provides most
-of what we need?
+Signed-off-by: Raghavendra Rao Ananta <rananta@google.com>
+Reviewed-by: Gavin Shan <gshan@redhat.com>
+Reviewed-by: Shaoqin Huang <shahuang@redhat.com>
+---
+ arch/arm64/include/asm/kvm_pgtable.h | 10 ++++++++++
+ arch/arm64/kvm/hyp/pgtable.c         | 20 ++++++++++++++++++++
+ 2 files changed, 30 insertions(+)
 
-> > the page->index is offset of inode's page cache mapping and
-> > gmem address space, IIUC, gfn calculation should follow same
-> > way as kvm_gmem_invalidate_begin().
-> 
-> Also instead of sending signal multiple times, we can utilize lsb argument.
+diff --git a/arch/arm64/include/asm/kvm_pgtable.h b/arch/arm64/include/asm/kvm_pgtable.h
+index 8294a9a7e566..5e8b1ff07854 100644
+--- a/arch/arm64/include/asm/kvm_pgtable.h
++++ b/arch/arm64/include/asm/kvm_pgtable.h
+@@ -754,4 +754,14 @@ enum kvm_pgtable_prot kvm_pgtable_stage2_pte_prot(kvm_pte_t pte);
+  *	   kvm_pgtable_prot format.
+  */
+ enum kvm_pgtable_prot kvm_pgtable_hyp_pte_prot(kvm_pte_t pte);
++
++/**
++ * kvm_tlb_flush_vmid_range() - Invalidate/flush a range of TLB entries
++ *
++ * @mmu:	Stage-2 KVM MMU struct
++ * @addr:	The base Intermediate physical address from which to invalidate
++ * @size:	Size of the range from the base to invalidate
++ */
++void kvm_tlb_flush_vmid_range(struct kvm_s2_mmu *mmu,
++				phys_addr_t addr, size_t size);
+ #endif	/* __ARM64_KVM_PGTABLE_H__ */
+diff --git a/arch/arm64/kvm/hyp/pgtable.c b/arch/arm64/kvm/hyp/pgtable.c
+index aa740a974e02..5d14d5d5819a 100644
+--- a/arch/arm64/kvm/hyp/pgtable.c
++++ b/arch/arm64/kvm/hyp/pgtable.c
+@@ -670,6 +670,26 @@ static bool stage2_has_fwb(struct kvm_pgtable *pgt)
+ 	return !(pgt->flags & KVM_PGTABLE_S2_NOFWB);
+ }
+ 
++void kvm_tlb_flush_vmid_range(struct kvm_s2_mmu *mmu,
++				phys_addr_t addr, size_t size)
++{
++	unsigned long pages, inval_pages;
++
++	if (!system_supports_tlb_range()) {
++		kvm_call_hyp(__kvm_tlb_flush_vmid, mmu);
++		return;
++	}
++
++	pages = size >> PAGE_SHIFT;
++	while (pages > 0) {
++		inval_pages = min(pages, MAX_TLBI_RANGE_PAGES);
++		kvm_call_hyp(__kvm_tlb_flush_vmid_range, mmu, addr, inval_pages);
++
++		addr += inval_pages << PAGE_SHIFT;
++		pages -= inval_pages;
++	}
++}
++
+ #define KVM_S2_MEMATTR(pgt, attr) PAGE_S2_MEMATTR(attr, stage2_has_fwb(pgt))
+ 
+ static int stage2_set_prot_attr(struct kvm_pgtable *pgt, enum kvm_pgtable_prot prot,
+-- 
+2.41.0.487.g6d72f3e995-goog
 
-As Vishal pointed out, this code shouldn't be sending signals in the first place.

@@ -2,148 +2,163 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 42B48C04FE0
-	for <linux-mips@archiver.kernel.org>; Mon, 24 Jul 2023 12:16:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D92E3C0015E
+	for <linux-mips@archiver.kernel.org>; Mon, 24 Jul 2023 12:16:19 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230339AbjGXMQC convert rfc822-to-8bit (ORCPT
-        <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 24 Jul 2023 08:16:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46102 "EHLO
+        id S230353AbjGXMQS (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 24 Jul 2023 08:16:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46256 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230317AbjGXMQA (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Mon, 24 Jul 2023 08:16:00 -0400
-Received: from mail-ot1-f46.google.com (mail-ot1-f46.google.com [209.85.210.46])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B63110E4;
-        Mon, 24 Jul 2023 05:15:34 -0700 (PDT)
-Received: by mail-ot1-f46.google.com with SMTP id 46e09a7af769-6bb140cd5a5so2034274a34.3;
-        Mon, 24 Jul 2023 05:15:34 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690200925; x=1690805725;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=9nNGOJzgymf6gQYpdxd2UIkw90HSJ+oAIVzOwuAShWk=;
-        b=Uy62wyMg9w8t+mqXu0QFMNYQLHegY1Q65joGU4ncPvQPGwYptIiN2f6DmsYUouk6+7
-         JtAWmLG197KYoHDOmAfg3ZxOMrjHz4xE3hYyT76AcEWP1/NbfEO6q8JRB5nr/BxAzOyg
-         a7+QOuyPI2rhvw7/jP5F4BBg9IY8T8XHLcAMM5ohppGtr7R86x2IuaPjPO9X/nWI0OoX
-         EtvgGcsk0r/ueEy3TzgJuT1uDqG0x03uxNtyt02jDdb+T8/6bg+fyCYc4tnNsnN92/Ld
-         LEs75sY2hdIgCGspHVn8/auJuTwf5Te67YoZrN0CdTPjjYJTQVBra4cPZU4AkhkcKXZg
-         UqmA==
-X-Gm-Message-State: ABy/qLbLYusZCq828Ib/fOAikT1ZT1JurJbDna2ZiunMDfG28vkcu73f
-        FuQTMKLHFf9zJHCLdakK0mBA/eVijJEt8w==
-X-Google-Smtp-Source: APBJJlGibdh4VyCHZRuKbHeK83kZpT8FPuPgZrxRhKw6BlST+Wy1ddPXguufHTrmJ8wIiimetINKUg==
-X-Received: by 2002:a05:6830:188:b0:6b9:91da:484f with SMTP id q8-20020a056830018800b006b991da484fmr8804468ota.27.1690200924916;
-        Mon, 24 Jul 2023 05:15:24 -0700 (PDT)
-Received: from mail-oo1-f50.google.com (mail-oo1-f50.google.com. [209.85.161.50])
-        by smtp.gmail.com with ESMTPSA id d9-20020a056830004900b006b8c6eb962esm3835164otp.52.2023.07.24.05.15.24
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 24 Jul 2023 05:15:24 -0700 (PDT)
-Received: by mail-oo1-f50.google.com with SMTP id 006d021491bc7-56368c40e8eso2620523eaf.0;
-        Mon, 24 Jul 2023 05:15:24 -0700 (PDT)
-X-Received: by 2002:a25:238e:0:b0:d05:abaf:9933 with SMTP id
- j136-20020a25238e000000b00d05abaf9933mr7019302ybj.36.1690200457350; Mon, 24
- Jul 2023 05:07:37 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230719123944.3438363-1-arnd@kernel.org> <20230719123944.3438363-2-arnd@kernel.org>
- <87pm4lj1w3.fsf@mail.lhotse> <19631e74-415e-4dcb-b79d-33dcf03d2dfc@app.fastmail.com>
-In-Reply-To: <19631e74-415e-4dcb-b79d-33dcf03d2dfc@app.fastmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 24 Jul 2023 14:07:25 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdVszR+oZi8x8L0iXx=ydTiaNUZxToBSdf=2ZH5t85+D_Q@mail.gmail.com>
-Message-ID: <CAMuHMdVszR+oZi8x8L0iXx=ydTiaNUZxToBSdf=2ZH5t85+D_Q@mail.gmail.com>
-Subject: Re: [PATCH v2 1/9] vgacon: rework Kconfig dependencies
-To:     Arnd Bergmann <arnd@arndb.de>
-Cc:     Michael Ellerman <mpe@ellerman.id.au>,
-        Arnd Bergmann <arnd@kernel.org>, linux-fbdev@vger.kernel.org,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Helge Deller <deller@gmx.de>,
-        Javier Martinez Canillas <javierm@redhat.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Borislav Petkov <bp@alien8.de>, Brian Cain <bcain@quicinc.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Dave Airlie <airlied@gmail.com>,
-        Deepak Rawat <drawat.floss@gmail.com>,
-        Dexuan Cui <decui@microsoft.com>,
-        Dinh Nguyen <dinguyen@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        guoren <guoren@kernel.org>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        Khalid Aziz <khalid@gonehiking.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Matt Turner <mattst88@gmail.com>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
+        with ESMTP id S230352AbjGXMQJ (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Mon, 24 Jul 2023 08:16:09 -0400
+Received: from frasgout11.his.huawei.com (unknown [14.137.139.23])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 614301994;
+        Mon, 24 Jul 2023 05:15:41 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.18.147.228])
+        by frasgout11.his.huawei.com (SkyGuard) with ESMTP id 4R8f321FSdz9ynSq;
+        Mon, 24 Jul 2023 20:04:14 +0800 (CST)
+Received: from A2101119013HW2.china.huawei.com (unknown [10.81.222.124])
+        by APP2 (Coremail) with SMTP id GxC2BwA3_lTGar5ky0byBA--.27936S9;
+        Mon, 24 Jul 2023 13:14:51 +0100 (CET)
+From:   Petr Tesarik <petrtesarik@huaweicloud.com>
+To:     Stefano Stabellini <sstabellini@kernel.org>,
         Russell King <linux@armlinux.org.uk>,
         Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
         Thomas Gleixner <tglx@linutronix.de>,
-        WANG Xuerui <kernel@xen0n.name>, Wei Liu <wei.liu@kernel.org>,
-        Will Deacon <will@kernel.org>, x86@kernel.org,
-        linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-efi@vger.kernel.org,
-        "linux-csky@vger.kernel.org" <linux-csky@vger.kernel.org>,
-        linux-hexagon@vger.kernel.org, linux-ia64@vger.kernel.org,
-        loongarch@lists.linux.dev, linux-mips@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
-        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
-        linux-hyperv@vger.kernel.org, dri-devel@lists.freedesktop.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        x86@kernel.org (maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)),
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Juergen Gross <jgross@suse.com>,
+        Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        James Seo <james@equiv.tech>,
+        James Clark <james.clark@arm.com>,
+        Kees Cook <keescook@chromium.org>,
+        xen-devel@lists.xenproject.org (moderated list:XEN HYPERVISOR ARM),
+        linux-arm-kernel@lists.infradead.org (moderated list:ARM PORT),
+        linux-kernel@vger.kernel.org (open list),
+        linux-mips@vger.kernel.org (open list:MIPS),
+        iommu@lists.linux.dev (open list:XEN SWIOTLB SUBSYSTEM)
+Cc:     Roberto Sassu <roberto.sassu@huaweicloud.com>, petr@tesarici.cz
+Subject: [PATCH v5 7/9] swiotlb: determine potential physical address limit
+Date:   Mon, 24 Jul 2023 14:12:43 +0200
+Message-Id: <0d4d789bf4d7caddb88c5690a82c66f146532a3e.1690200598.git.petr.tesarik.ext@huawei.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <cover.1690200598.git.petr.tesarik.ext@huawei.com>
+References: <cover.1690200598.git.petr.tesarik.ext@huawei.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: GxC2BwA3_lTGar5ky0byBA--.27936S9
+X-Coremail-Antispam: 1UD129KBjvJXoWxXw4fJr1kZrW7Cry5Cw4xtFb_yoW5AF4DpF
+        y8Jr4FgFsFqF12yrWxCw1IyFn5Ga18CrW29rW5urnxZr17Ww13Wrs7Kr45trySqF4IgF4S
+        9Fyxua4Y9FsFv37anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUml14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_JF0E3s1l82xGYI
+        kIc2x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2
+        z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j6F
+        4UJwA2z4x0Y4vEx4A2jsIE14v26r4j6F4UM28EF7xvwVC2z280aVCY1x0267AKxVW8Jr0_
+        Cr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6x
+        IIjxv20xvE14v26r106r15McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_
+        Gr1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7M4IIrI8v6xkF7I0E8c
+        xan2IY04v7MxkF7I0Ew4C26cxK6c8Ij28IcwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE
+        7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI
+        8E67AF67kF1VAFwI0_Wrv_Gr1UMIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_JFI_
+        Gr1lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4UJVWxJr1lIxAIcVCF04k26cxKx2IYs7xG6r
+        1j6r1xMIIF0xvEx4A2jsIE14v26r4j6F4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr1j6F4U
+        JbIYCTnIWIevJa73UjIFyTuYvjfUnzVbDUUUU
+X-CM-SenderInfo: hshw23xhvd2x3n6k3tpzhluzxrxghudrp/
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Hi Arnd,
+From: Petr Tesarik <petr.tesarik.ext@huawei.com>
 
-On Fri, Jul 21, 2023 at 10:29 AM Arnd Bergmann <arnd@arndb.de> wrote:
-> On Fri, Jul 21, 2023, at 06:59, Michael Ellerman wrote:
-> > Arnd Bergmann <arnd@kernel.org> writes:
-> >> From: Arnd Bergmann <arnd@arndb.de>
-> >>
-> >> The list of dependencies here is phrased as an opt-out, but this is missing
-> >> a lot of architectures that don't actually support VGA consoles, and some
-> >> of the entries are stale:
-> >>
-> >>  - powerpc used to support VGA consoles in the old arch/ppc codebase, but
-> >>    the merged arch/powerpc never did
-> >
-> > Not disputing this, but how did you come to that conclusion? I grepped
-> > around and couldn't convince myself whether it can work on powerpc or
-> > not. ie. currently it's possible to enable CONFIG_VGA_CONSOLE and
-> > powerpc does have a struct screen_info defined which seems like it would
-> > allow vgacon_startup() to complete.
->
-> The VGA console needs both screen_info and vga_con to work. In arch/ppc
-> we had both, but in arch/powerpc we only retained the screen_info:
->
-> $ git grep vga_con v2.6.26 -- arch/ppc arch/ppc64 arch/powerpc
-> v2.6.26:arch/ppc/platforms/pplus.c:     conswitchp = &vga_con;
-> v2.6.26:arch/ppc/platforms/prep_setup.c:        conswitchp = &vga_con;
->
-> so after arch/ppc was removed, this became impossible to use on both
-> pplus and prep. These two platforms were also (as far as I can tell)
-> the only ones to support vga16fb as an alternative to vgacon, but
-> both platforms were removed later on.
+The value returned by default_swiotlb_limit() should be constant, because
+it is used to decide whether DMA can be used. To allow allocating memory
+pools on the fly, use the maximum possible physical address rather than the
+highest address used by the default pool.
 
-I did use vgacon and vga16fb on CHRP on a second video card
-(initialized using Gabriel Paubert's x86 BIOS emulator), but that was
-definitely before the advent of arch/powerpc/.
+For swiotlb_init_remap(), this is either an arch-specific limit used by
+memblock_alloc_low(), or the highest directly mapped physical address if
+the initialization flags include SWIOTLB_ANY. For swiotlb_init_late(), the
+highest address is determined by the GFP flags.
 
-Gr{oetje,eeting}s,
+Signed-off-by: Petr Tesarik <petr.tesarik.ext@huawei.com>
+---
+ include/linux/swiotlb.h |  2 ++
+ kernel/dma/swiotlb.c    | 14 ++++++++++++++
+ 2 files changed, 16 insertions(+)
 
-                        Geert
-
+diff --git a/include/linux/swiotlb.h b/include/linux/swiotlb.h
+index ad5bdf66ed7a..d5ce51657fac 100644
+--- a/include/linux/swiotlb.h
++++ b/include/linux/swiotlb.h
+@@ -109,6 +109,7 @@ struct io_tlb_pool {
+  * @force_bounce: %true if swiotlb bouncing is forced
+  * @for_alloc:  %true if the pool is used for memory allocation
+  * @can_grow:	%true if more pools can be allocated dynamically.
++ * @phys_limit:	Maximum allowed physical address.
+  * @total_used:	The total number of slots in the pool that are currently used
+  *		across all areas. Used only for calculating used_hiwater in
+  *		debugfs.
+@@ -123,6 +124,7 @@ struct io_tlb_mem {
+ 	bool for_alloc;
+ #ifdef CONFIG_SWIOTLB_DYNAMIC
+ 	bool can_grow;
++	u64 phys_limit;
+ #endif
+ #ifdef CONFIG_DEBUG_FS
+ 	atomic_long_t total_used;
+diff --git a/kernel/dma/swiotlb.c b/kernel/dma/swiotlb.c
+index 8672810f7c56..7e8edf011bba 100644
+--- a/kernel/dma/swiotlb.c
++++ b/kernel/dma/swiotlb.c
+@@ -334,6 +334,10 @@ void __init swiotlb_init_remap(bool addressing_limit, unsigned int flags,
+ #ifdef CONFIG_SWIOTLB_DYNAMIC
+ 	if (!remap)
+ 		io_tlb_default_mem.can_grow = true;
++	if (flags & SWIOTLB_ANY)
++		io_tlb_default_mem.phys_limit = virt_to_phys(high_memory - 1);
++	else
++		io_tlb_default_mem.phys_limit = ARCH_LOW_ADDRESS_LIMIT;
+ #endif
+ 
+ 	if (!default_nareas)
+@@ -409,6 +413,12 @@ int swiotlb_init_late(size_t size, gfp_t gfp_mask,
+ #ifdef CONFIG_SWIOTLB_DYNAMIC
+ 	if (!remap)
+ 		io_tlb_default_mem.can_grow = true;
++	if (IS_ENABLED(CONFIG_ZONE_DMA) && (gfp_mask & __GFP_DMA))
++		io_tlb_default_mem.phys_limit = DMA_BIT_MASK(zone_dma_bits);
++	else if (IS_ENABLED(CONFIG_ZONE_DMA32) && (gfp_mask & __GFP_DMA32))
++		io_tlb_default_mem.phys_limit = DMA_BIT_MASK(32);
++	else
++		io_tlb_default_mem.phys_limit = virt_to_phys(high_memory - 1);
+ #endif
+ 
+ 	if (!default_nareas)
+@@ -1390,7 +1400,11 @@ phys_addr_t default_swiotlb_base(void)
+  */
+ phys_addr_t default_swiotlb_limit(void)
+ {
++#ifdef CONFIG_SWIOTLB_DYNAMIC
++	return io_tlb_default_mem.phys_limit;
++#else
+ 	return io_tlb_default_mem.defpool.end - 1;
++#endif
+ }
+ 
+ #ifdef CONFIG_DEBUG_FS
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+2.25.1
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds

@@ -2,236 +2,318 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6CDE7C0015E
-	for <linux-mips@archiver.kernel.org>; Mon, 24 Jul 2023 09:35:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5BE52C001DE
+	for <linux-mips@archiver.kernel.org>; Mon, 24 Jul 2023 12:14:02 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231277AbjGXJfr (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 24 Jul 2023 05:35:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43348 "EHLO
+        id S230229AbjGXMN7 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 24 Jul 2023 08:13:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43728 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229721AbjGXJfq (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Mon, 24 Jul 2023 05:35:46 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFCF4133
-        for <linux-mips@vger.kernel.org>; Mon, 24 Jul 2023 02:35:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1690191300;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=+aRVEy8W9VZsmtykV3MS4fg+1kXzADTBk7CG7c2ZXbE=;
-        b=P9Ibuf78xvmbAVG5pRCv8SRC2oUYUIx5v9y1yvFFhX156UX4EyoGqLuHCBi1V0NwAXR5hJ
-        ODhyeUvpIQJl8wwO8nLzQnVe/TJ/r7uQQyhjZPbWY96r9OW8iZa+VvokDMzKtBPtnYxKtV
-        ZB+6Oe5czTeCKhyi5YvgZxeO0FlEusM=
-Received: from mail-il1-f197.google.com (mail-il1-f197.google.com
- [209.85.166.197]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-504-4uhAhY0JMbWCz2jGbJg4mQ-1; Mon, 24 Jul 2023 05:34:58 -0400
-X-MC-Unique: 4uhAhY0JMbWCz2jGbJg4mQ-1
-Received: by mail-il1-f197.google.com with SMTP id e9e14a558f8ab-34659f3d04cso4388395ab.1
-        for <linux-mips@vger.kernel.org>; Mon, 24 Jul 2023 02:34:58 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690191297; x=1690796097;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=+aRVEy8W9VZsmtykV3MS4fg+1kXzADTBk7CG7c2ZXbE=;
-        b=IbP0AuktJydYEIbNThqBdcllAf/MpGw992YfGiOCaiy4KdGvub21LndF09f9r+5d9o
-         utUt4xxgQe/0Qx2o1J3XzMFrAkdT3GDsQiXM4BsCgZchVsan7aZpIUZYFV2LeE/vayrA
-         iZRKP/aj4zluxyiG1UH1CkYZDRmWzhyZZlvkvm108SRcYl3f7hVPRm9EsrVb7INVneyF
-         DkOcYqUtRLuzbTYUGeul+vx8o/LWyY0xW00JnSqH91XLG5lSpz3XVFqD1Yz6QLey8KNd
-         drXSvtHfCE66tqRtVMMLYVySI/Eh0pGqPNZ0ChELzdeOWOujjuRUVO0Bsjwi1K6mnsUD
-         QqsQ==
-X-Gm-Message-State: ABy/qLblO+I3J+CxyKXnx5piFkQvjpmhjZOnKj0hKMiTVgPhEkT5pajf
-        n9G+ZXFrdyaIJMroztoZM9+ExGPkRZ81PQ4asp+cxhvEphxCvBqmwO+Xw11nev6bJwsIoaj195S
-        Gum1kzb18tIVTH10c4jhCmg==
-X-Received: by 2002:a92:cecf:0:b0:348:d2e9:399a with SMTP id z15-20020a92cecf000000b00348d2e9399amr1415923ilq.1.1690191297454;
-        Mon, 24 Jul 2023 02:34:57 -0700 (PDT)
-X-Google-Smtp-Source: APBJJlG6NmNRqSH1n6n4EBMT9iuWXK0UDAK+VvUY/g4ptdk4KWrWf/bvtDD8DcAuDIFVkgfhDqFXAA==
-X-Received: by 2002:a92:cecf:0:b0:348:d2e9:399a with SMTP id z15-20020a92cecf000000b00348d2e9399amr1415902ilq.1.1690191297214;
-        Mon, 24 Jul 2023 02:34:57 -0700 (PDT)
-Received: from [10.66.61.39] ([43.228.180.230])
-        by smtp.gmail.com with ESMTPSA id gv17-20020a17090b11d100b00265dc26d8dfsm7966842pjb.27.2023.07.24.02.34.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 24 Jul 2023 02:34:56 -0700 (PDT)
-Message-ID: <0841aca6-2824-6a1b-a568-119f8bd220de@redhat.com>
-Date:   Mon, 24 Jul 2023 17:34:51 +0800
+        with ESMTP id S230230AbjGXMN6 (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Mon, 24 Jul 2023 08:13:58 -0400
+Received: from frasgout13.his.huawei.com (unknown [14.137.139.46])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFE42E6C;
+        Mon, 24 Jul 2023 05:13:54 -0700 (PDT)
+Received: from mail02.huawei.com (unknown [172.18.147.228])
+        by frasgout13.his.huawei.com (SkyGuard) with ESMTP id 4R8f1667wKz9yh97;
+        Mon, 24 Jul 2023 20:02:34 +0800 (CST)
+Received: from A2101119013HW2.china.huawei.com (unknown [10.81.222.124])
+        by APP2 (Coremail) with SMTP id GxC2BwA3_lTGar5ky0byBA--.27936S2;
+        Mon, 24 Jul 2023 13:13:10 +0100 (CET)
+From:   Petr Tesarik <petrtesarik@huaweicloud.com>
+To:     Stefano Stabellini <sstabellini@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        x86@kernel.org (maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)),
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Juergen Gross <jgross@suse.com>,
+        Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        James Seo <james@equiv.tech>,
+        James Clark <james.clark@arm.com>,
+        Kees Cook <keescook@chromium.org>,
+        xen-devel@lists.xenproject.org (moderated list:XEN HYPERVISOR ARM),
+        linux-arm-kernel@lists.infradead.org (moderated list:ARM PORT),
+        linux-kernel@vger.kernel.org (open list),
+        linux-mips@vger.kernel.org (open list:MIPS),
+        iommu@lists.linux.dev (open list:XEN SWIOTLB SUBSYSTEM)
+Cc:     Roberto Sassu <roberto.sassu@huaweicloud.com>, petr@tesarici.cz
+Subject: [PATCH v5 0/9] Allow dynamic allocation of software IO TLB bounce buffers
+Date:   Mon, 24 Jul 2023 14:12:36 +0200
+Message-Id: <cover.1690200598.git.petr.tesarik.ext@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.10.0
-Subject: Re: [PATCH v7 12/12] KVM: arm64: Use TLBI range-based intructions for
- unmap
-Content-Language: en-US
-To:     Raghavendra Rao Ananta <rananta@google.com>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        Marc Zyngier <maz@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Zenghui Yu <yuzenghui@huawei.com>,
-        Anup Patel <anup@brainfault.org>,
-        Atish Patra <atishp@atishpatra.org>,
-        Jing Zhang <jingzhangos@google.com>,
-        Reiji Watanabe <reijiw@google.com>,
-        Colton Lewis <coltonlewis@google.com>,
-        David Matlack <dmatlack@google.com>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        linux-mips@vger.kernel.org, kvm-riscv@lists.infradead.org,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
-References: <20230722022251.3446223-1-rananta@google.com>
- <20230722022251.3446223-13-rananta@google.com>
-From:   Shaoqin Huang <shahuang@redhat.com>
-In-Reply-To: <20230722022251.3446223-13-rananta@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: GxC2BwA3_lTGar5ky0byBA--.27936S2
+X-Coremail-Antispam: 1UD129KBjvJXoW3Wr1Dtw1rJr47Aw4kKrykZrb_yoWfKr43pF
+        WrK34ftF4qqryxA3s7Ca18GF1rKa1kGry5GrWFvryrur13Cr1j93WktayFqFWUGr40vF12
+        qFyjvw13uw1DZ3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUU9S14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26r1j6r1xM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
+        6r4UJwA2z4x0Y4vEx4A2jsIE14v26r4j6F4UM28EF7xvwVC2z280aVCY1x0267AKxVW8Jr
+        0_Cr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj
+        6xIIjxv20xvE14v26r106r15McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr
+        0_Gr1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7M4IIrI8v6xkF7I0E
+        8cxan2IY04v7MxkF7I0Ew4C26cxK6c8Ij28IcwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4
+        IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1r
+        MI8E67AF67kF1VAFwI0_Wrv_Gr1UMIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr
+        0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVW3
+        JVWrJr1lIxAIcVC2z280aVAFwI0_Gr0_Cr1lIxAIcVC2z280aVCY1x0267AKxVW8Jr0_Cr
+        1UYxBIdaVFxhVjvjDU0xZFpf9x0JU-yCJUUUUU=
+X-CM-SenderInfo: hshw23xhvd2x3n6k3tpzhluzxrxghudrp/
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Hi Raghavendra,
+From: Petr Tesarik <petr.tesarik.ext@huawei.com>
 
-On 7/22/23 10:22, Raghavendra Rao Ananta wrote:
-> The current implementation of the stage-2 unmap walker traverses
-> the given range and, as a part of break-before-make, performs
-> TLB invalidations with a DSB for every PTE. A multitude of this
-> combination could cause a performance bottleneck on some systems.
-> 
-> Hence, if the system supports FEAT_TLBIRANGE, defer the TLB
-> invalidations until the entire walk is finished, and then
-> use range-based instructions to invalidate the TLBs in one go.
-> Condition deferred TLB invalidation on the system supporting FWB,
-> as the optimization is entirely pointless when the unmap walker
-> needs to perform CMOs.
-> 
-> Rename stage2_put_pte() to stage2_unmap_put_pte() as the function
-> now serves the stage-2 unmap walker specifically, rather than
-> acting generic.
-> 
-> Signed-off-by: Raghavendra Rao Ananta <rananta@google.com>
-> ---
->   arch/arm64/kvm/hyp/pgtable.c | 67 +++++++++++++++++++++++++++++++-----
->   1 file changed, 58 insertions(+), 9 deletions(-)
-> 
-> diff --git a/arch/arm64/kvm/hyp/pgtable.c b/arch/arm64/kvm/hyp/pgtable.c
-> index 5ef098af1736..cf88933a2ea0 100644
-> --- a/arch/arm64/kvm/hyp/pgtable.c
-> +++ b/arch/arm64/kvm/hyp/pgtable.c
-> @@ -831,16 +831,54 @@ static void stage2_make_pte(const struct kvm_pgtable_visit_ctx *ctx, kvm_pte_t n
->   	smp_store_release(ctx->ptep, new);
->   }
->   
-> -static void stage2_put_pte(const struct kvm_pgtable_visit_ctx *ctx, struct kvm_s2_mmu *mmu,
-> -			   struct kvm_pgtable_mm_ops *mm_ops)
-> +struct stage2_unmap_data {
-> +	struct kvm_pgtable *pgt;
-> +	bool defer_tlb_flush_init;
-> +};
-> +
-> +static bool __stage2_unmap_defer_tlb_flush(struct kvm_pgtable *pgt)
-> +{
-> +	/*
-> +	 * If FEAT_TLBIRANGE is implemented, defer the individual
-> +	 * TLB invalidations until the entire walk is finished, and
-> +	 * then use the range-based TLBI instructions to do the
-> +	 * invalidations. Condition deferred TLB invalidation on the
-> +	 * system supporting FWB, as the optimization is entirely
-> +	 * pointless when the unmap walker needs to perform CMOs.
-> +	 */
-> +	return system_supports_tlb_range() && stage2_has_fwb(pgt);
-> +}
-> +
-> +static bool stage2_unmap_defer_tlb_flush(struct stage2_unmap_data *unmap_data)
-> +{
-> +	bool defer_tlb_flush = __stage2_unmap_defer_tlb_flush(unmap_data->pgt);
-> +
-> +	/*
-> +	 * Since __stage2_unmap_defer_tlb_flush() is based on alternative
-> +	 * patching and the TLBIs' operations behavior depend on this,
-> +	 * track if there's any change in the state during the unmap sequence.
-> +	 */
-> +	WARN_ON(unmap_data->defer_tlb_flush_init != defer_tlb_flush);
-> +	return defer_tlb_flush;
-> +}
-> +
-> +static void stage2_unmap_put_pte(const struct kvm_pgtable_visit_ctx *ctx,
-> +				struct kvm_s2_mmu *mmu,
-> +				struct kvm_pgtable_mm_ops *mm_ops)
->   {
-> +	struct stage2_unmap_data *unmap_data = ctx->arg;
-> +
->   	/*
-> -	 * Clear the existing PTE, and perform break-before-make with
-> -	 * TLB maintenance if it was valid.
-> +	 * Clear the existing PTE, and perform break-before-make if it was
-> +	 * valid. Depending on the system support, the TLB maintenance for
-> +	 * the same can be deferred until the entire unmap is completed.
->   	 */
->   	if (kvm_pte_valid(ctx->old)) {
->   		kvm_clear_pte(ctx->ptep);
-> -		kvm_call_hyp(__kvm_tlb_flush_vmid_ipa, mmu, ctx->addr, ctx->level);
-> +
-> +		if (!stage2_unmap_defer_tlb_flush(unmap_data))
-Why not directly check (unmap_data->defer_tlb_flush_init) here?
+Motivation
+==========
 
-> +			kvm_call_hyp(__kvm_tlb_flush_vmid_ipa, mmu,
-> +					ctx->addr, ctx->level);
-Small indent hint. The ctx->addr can align with __kvm_tlb_flush_vmid_ipa.
+The software IO TLB was designed with these assumptions:
 
-Thanks,
-Shaoqin
->   	}
->   
->   	mm_ops->put_page(ctx->ptep);
-> @@ -1070,7 +1108,8 @@ int kvm_pgtable_stage2_set_owner(struct kvm_pgtable *pgt, u64 addr, u64 size,
->   static int stage2_unmap_walker(const struct kvm_pgtable_visit_ctx *ctx,
->   			       enum kvm_pgtable_walk_flags visit)
->   {
-> -	struct kvm_pgtable *pgt = ctx->arg;
-> +	struct stage2_unmap_data *unmap_data = ctx->arg;
-> +	struct kvm_pgtable *pgt = unmap_data->pgt;
->   	struct kvm_s2_mmu *mmu = pgt->mmu;
->   	struct kvm_pgtable_mm_ops *mm_ops = ctx->mm_ops;
->   	kvm_pte_t *childp = NULL;
-> @@ -1098,7 +1137,7 @@ static int stage2_unmap_walker(const struct kvm_pgtable_visit_ctx *ctx,
->   	 * block entry and rely on the remaining portions being faulted
->   	 * back lazily.
->   	 */
-> -	stage2_put_pte(ctx, mmu, mm_ops);
-> +	stage2_unmap_put_pte(ctx, mmu, mm_ops);
->   
->   	if (need_flush && mm_ops->dcache_clean_inval_poc)
->   		mm_ops->dcache_clean_inval_poc(kvm_pte_follow(ctx->old, mm_ops),
-> @@ -1112,13 +1151,23 @@ static int stage2_unmap_walker(const struct kvm_pgtable_visit_ctx *ctx,
->   
->   int kvm_pgtable_stage2_unmap(struct kvm_pgtable *pgt, u64 addr, u64 size)
->   {
-> +	int ret;
-> +	struct stage2_unmap_data unmap_data = {
-> +		.pgt = pgt,
-> +		.defer_tlb_flush_init = __stage2_unmap_defer_tlb_flush(pgt),
-> +	};
->   	struct kvm_pgtable_walker walker = {
->   		.cb	= stage2_unmap_walker,
-> -		.arg	= pgt,
-> +		.arg	= &unmap_data,
->   		.flags	= KVM_PGTABLE_WALK_LEAF | KVM_PGTABLE_WALK_TABLE_POST,
->   	};
->   
-> -	return kvm_pgtable_walk(pgt, addr, size, &walker);
-> +	ret = kvm_pgtable_walk(pgt, addr, size, &walker);
-> +	if (stage2_unmap_defer_tlb_flush(&unmap_data))
-> +		/* Perform the deferred TLB invalidations */
-> +		kvm_tlb_flush_vmid_range(pgt->mmu, addr, size);
-> +
-> +	return ret;
->   }
->   
->   struct stage2_attr_data {
+1) It would not be used much. Small systems (little RAM) don't need it, and
+   big systems (lots of RAM) would have modern DMA controllers and an IOMMU
+   chip to handle legacy devices.
+2) A small fixed memory area (64 MiB by default) is sufficient to
+   handle the few cases which require a bounce buffer.
+3) 64 MiB is little enough that it has no impact on the rest of the
+   system.
+4) Bounce buffers require large contiguous chunks of low memory. Such
+   memory is precious and can be allocated only early at boot.
+
+It turns out they are not always true:
+
+1) Embedded systems may have more than 4GiB RAM but no IOMMU and legacy
+   32-bit peripheral busses and/or DMA controllers.
+2) CoCo VMs use bounce buffers for all I/O but may need substantially more
+   than 64 MiB.
+3) Embedded developers put as many features as possible into the available
+   memory. A few dozen "missing" megabytes may limit what features can be
+   implemented.
+4) If CMA is available, it can allocate large continuous chunks even after
+   the system has run for some time.
+
+Goals
+=====
+
+The goal of this work is to start with a small software IO TLB at boot and
+expand it later when/if needed.
+
+Design
+======
+
+This version of the patch series retains the current slot allocation
+algorithm with multiple areas to reduce lock contention, but additional
+slots can be added when necessary.
+
+These alternatives have been considered:
+
+- Allocate and free buffers as needed using direct DMA API. This works
+  quite well, except in CoCo VMs where each allocation/free requires
+  decrypting/encrypting memory, which is a very expensive operation.
+
+- Allocate a very large software IO TLB at boot, but allow to migrate pages
+  to/from it (like CMA does). For systems with CMA, this would mean two big
+  allocations at boot. Finding the balance between CMA, SWIOTLB and rest of
+  available RAM can be challenging. More importantly, there is no clear
+  benefit compared to allocating SWIOTLB memory pools from the CMA.
+
+Implementation Constraints
+==========================
+
+These constraints have been taken into account:
+
+1) Minimize impact on devices which do not benefit from the change.
+2) Minimize the number of memory decryption/encryption operations.
+3) Avoid contention on a lock or atomic variable to preserve parallel
+   scalability.
+
+Additionally, the software IO TLB code is also used to implement restricted
+DMA pools. These pools are restricted to a pre-defined physical memory
+region and must not use any other memory. In other words, dynamic
+allocation of memory pools must be disabled for restricted DMA pools.
+
+Data Structures
+===============
+
+The existing struct io_tlb_mem is the central type for a SWIOTLB allocator,
+but it now contains multiple memory pools::
+
+  io_tlb_mem
+  +---------+   io_tlb_pool
+  | SWIOTLB | 	+-------+   +-------+   +-------+
+  |allocator|-->|default|-->|dynamic|-->|dynamic|-->...
+  |    	    |  	|memory |   |memory |   |memory |
+  +---------+ 	| pool  |   | pool  |   | pool  |
+	      	+-------+   +-------+   +-------+
+
+The allocator structure contains global state (such as flags and counters)
+and structures needed to schedule new allocations. Each memory pool
+contains the actual buffer slots and metadata. The first memory pool in the
+list is the default memory pool allocated statically at early boot.
+
+New memory pools are allocated from a kernel worker thread. That's because
+bounce buffers are allocated when mapping a DMA buffer, which may happen in
+interrupt context where large atomic allocations would probably fail.
+Allocation from process context is much more likely to succeed, especially
+if it can use CMA.
+
+Nonetheless, the onset of a load spike may fill up the SWIOTLB before the
+worker has a chance to run. In that case, try to allocate a small transient
+memory pool to accommodate the request. If memory is encrypted and the
+device cannot do DMA to encrypted memory, this buffer is allocated from the
+coherent atomic DMA memory pool. Reducing the size of SWIOTLB may therefore
+require increasing the size of the coherent pool with the "coherent_pool"
+command-line parameter.
+
+Performance
+===========
+
+All testing compared a vanilla v6.4-rc6 kernel with a fully patched
+kernel. The kernel was booted with "swiotlb=force" to allow stress-testing
+the software IO TLB on a high-performance device that would otherwise not
+need it. CONFIG_DEBUG_FS was set to 'y' to match the configuration of
+popular distribution kernels; it is understood that parallel workloads
+suffer from contention on the recently added debugfs atomic counters.
+
+These benchmarks were run:
+
+- small: single-threaded I/O of 4 KiB blocks,
+- big: single-threaded I/O of 64 KiB blocks,
+- 4way: 4-way parallel I/O of 4 KiB blocks.
+
+In all tested cases, the default 64 MiB SWIOTLB would be sufficient (but
+wasteful). The "default" pair of columns shows performance impact when
+booted with 64 MiB SWIOTLB (i.e. current state). The "growing" pair of
+columns shows the impact when booted with a 1 MiB initial SWIOTLB, which
+grew to 5 MiB at run time. The "var" column in the tables below is the
+coefficient of variance over 5 runs of the test, the "diff" column is the
+difference in read-write I/O bandwidth (MiB/s). The very first column is
+the coefficient of variance in the results of the base unpatched kernel.
+
+First, on an x86 VM against a QEMU virtio SATA driver backed by a RAM-based
+block device on the host:
+
+	base	   default	   growing
+	var	var	diff	var	diff
+small	1.96%	0.47%	-1.5%	0.52%	-2.2%
+big	2.03%	1.35%	+0.9%	2.22%	+2.9%
+4way	0.80%	0.45%	-0.7%	1.22%	<0.1%
+
+Second, on a Raspberry Pi4 with 8G RAM and a class 10 A1 microSD card:
+
+	base	   default	   growing
+	var	var	diff	var	diff
+small	1.09%	1.69%	+0.5%	2.14%	-0.2%
+big	0.03%	0.28%	-0.5%	0.03%	-0.1%
+4way	5.15%	2.39%	+0.2%	0.66%	<0.1%
+
+Third, on a CoCo VM. This was a bigger system, so I also added a 24-thread
+parallel I/O test:
+
+	base	   default	   growing
+	var	var	diff	var	diff
+small	2.41%	6.02%	+1.1%	10.33%	+6.7%
+big	9.20%	2.81%	-0.6%	16.84%	-0.2%
+4way	0.86%	2.66%	-0.1%	 2.22%	-4.9%
+24way	3.19%	6.19%	+4.4%	 4.08%	-5.9%
+
+Note the increased variance of the CoCo VM, although the host was not
+otherwise loaded. These are caused by the first run, which includes the
+overhead of allocating additional bounce buffers and sharing them with the
+hypervisor. The system was not rebooted between successive runs.
+
+Parallel tests suffer from a reduced number of areas in the dynamically
+allocated memory pools. This can be improved by allocating a larger pool
+from CMA (not implemented in this series yet).
+
+I have no good explanation for the increase in performance of the
+24-thread I/O test with the default (non-growing) memory pool. Although the
+difference is within variance, it seems to be real. The average bandwidth
+is consistently above that of the unpatched kernel.
+
+To sum it up:
+
+- All workloads benefit from reduced memory footprint.
+- No performance regressions have been observed with the default size of
+  the software IO TLB.
+- Most workloads retain their former performance even if the software IO
+  TLB grows at run time.
+
+Changelog
+=========
+
+Changes from v4:
+- Guard the code with a CONFIG_SWIOTLB_DYNAMIC option
+- Remove is_swiotlb_allocated(); instead, prevent repeated initialization
+  in swiotlb_init_late()
+- Rename default_swiotlb_start() to default_swiotlb_base()
+- Embed the default struct io_tlb_pool into struct io_tlb_mem
+- Do not re-introduce struct io_tlb_pool.used
+
+Changes from v3:
+- Provide swiotlb_is_allocated() instead of extending swiotlb_is_active().
+- Do not grow SWIOTLB if its address has been queried (affects Octeon).
+- Do not grow SWIOTLB if a remap function is used (affects Xen PV).
+- Use dma_mask instead of coherent_dma_mask.
+- Replace complex ternary operators with if-else blocks.
+
+Changes from v2:
+- Complete rewrite using dynamically allocated memory pools rather
+  than a list of individual buffers
+- Depend on other SWIOTLB fixes (already sent)
+- Fix Xen and MIPS Octeon builds
+
+Changes from RFC:
+- Track dynamic buffers per device instead of per swiotlb
+- Use a linked list instead of a maple tree
+- Move initialization of swiotlb fields of struct device to a
+  helper function
+- Rename __lookup_dyn_slot() to lookup_dyn_slot_locked()
+- Introduce per-device flag if dynamic buffers are in use
+- Add one more user of DMA_ATTR_MAY_SLEEP
+- Add kernel-doc comments for new (and some old) code
+- Properly escape '*' in dma-attributes.rst
+
+Petr Tesarik (9):
+  swiotlb: bail out of swiotlb_init_late() if swiotlb is already
+    allocated
+  swiotlb: make io_tlb_default_mem local to swiotlb.c
+  swiotlb: add documentation and rename swiotlb_do_find_slots()
+  swiotlb: separate memory pool data from other allocator data
+  swiotlb: add a flag whether SWIOTLB is allowed to grow
+  swiotlb: if swiotlb is full, fall back to a transient memory pool
+  swiotlb: determine potential physical address limit
+  swiotlb: allocate a new memory pool when existing pools are full
+  swiotlb: search the software IO TLB only if the device makes use of it
+
+ arch/arm/xen/mm.c           |  10 +-
+ arch/mips/pci/pci-octeon.c  |   2 +-
+ arch/x86/kernel/pci-dma.c   |  12 +-
+ drivers/base/core.c         |   4 +-
+ drivers/xen/swiotlb-xen.c   |   2 +-
+ include/linux/device.h      |  10 +-
+ include/linux/dma-mapping.h |   2 +
+ include/linux/swiotlb.h     | 125 +++++--
+ kernel/dma/Kconfig          |  13 +
+ kernel/dma/direct.c         |   2 +-
+ kernel/dma/swiotlb.c        | 675 ++++++++++++++++++++++++++++++++----
+ 11 files changed, 754 insertions(+), 103 deletions(-)
 
 -- 
-Shaoqin
+2.25.1
 

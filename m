@@ -2,102 +2,69 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 48043C04A6A
-	for <linux-mips@archiver.kernel.org>; Tue, 25 Jul 2023 09:00:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 00801C41513
+	for <linux-mips@archiver.kernel.org>; Tue, 25 Jul 2023 09:00:00 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232575AbjGYJAB (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 25 Jul 2023 05:00:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44582 "EHLO
+        id S232508AbjGYI77 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 25 Jul 2023 04:59:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44574 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232405AbjGYI77 (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Tue, 25 Jul 2023 04:59:59 -0400
+        with ESMTP id S232345AbjGYI76 (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Tue, 25 Jul 2023 04:59:58 -0400
 Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 2AA19126;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 29B0EBD;
         Tue, 25 Jul 2023 01:59:53 -0700 (PDT)
 Received: from uucp by elvis.franken.de with local-rmail (Exim 3.36 #1)
-        id 1qODtS-0008Gr-00; Tue, 25 Jul 2023 10:59:46 +0200
+        id 1qODtS-0008Gv-00; Tue, 25 Jul 2023 10:59:46 +0200
 Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 018B8C01D2; Tue, 25 Jul 2023 10:47:03 +0200 (CEST)
-Date:   Tue, 25 Jul 2023 10:47:03 +0200
+        id 1D79DC01F0; Tue, 25 Jul 2023 10:48:40 +0200 (CEST)
+Date:   Tue, 25 Jul 2023 10:48:40 +0200
 From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Keguang Zhang <keguang.zhang@gmail.com>
-Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] MIPS: loongson32: Remove regs-rtc.h
-Message-ID: <ZL+MB6P2tSHvgPHw@alpha.franken.de>
-References: <20230707111151.461373-1-keguang.zhang@gmail.com>
- <20230707111151.461373-3-keguang.zhang@gmail.com>
+To:     Rob Herring <robh@kernel.org>
+Cc:     Florian Fainelli <florian.fainelli@broadcom.com>,
+        Broadcom internal kernel review list 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        John Crispin <john@phrozen.org>, devicetree@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] MIPS: Explicitly include correct DT includes
+Message-ID: <ZL+MaK820fzdfw+5@alpha.franken.de>
+References: <20230714174028.4040093-1-robh@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230707111151.461373-3-keguang.zhang@gmail.com>
+In-Reply-To: <20230714174028.4040093-1-robh@kernel.org>
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Fri, Jul 07, 2023 at 07:11:51PM +0800, Keguang Zhang wrote:
-> Since commit 9fb23090658a ("rtc: Remove the
-> Loongson-1 RTC driver"), no one is using regs-rtc.h.
-> Therefore, remove this obsolete header file.
+On Fri, Jul 14, 2023 at 11:40:27AM -0600, Rob Herring wrote:
+> The DT of_device.h and of_platform.h date back to the separate
+> of_platform_bus_type before it as merged into the regular platform bus.
+> As part of that merge prepping Arm DT support 13 years ago, they
+> "temporarily" include each other. They also include platform_device.h
+> and of.h. As a result, there's a pretty much random mix of those include
+> files used throughout the tree. In order to detangle these headers and
+> replace the implicit includes with struct declarations, users need to
+> explicitly include the correct includes.
 > 
-> Signed-off-by: Keguang Zhang <keguang.zhang@gmail.com>
+> Signed-off-by: Rob Herring <robh@kernel.org>
 > ---
->  .../include/asm/mach-loongson32/loongson1.h   |  1 -
->  .../include/asm/mach-loongson32/regs-rtc.h    | 19 -------------------
->  2 files changed, 20 deletions(-)
->  delete mode 100644 arch/mips/include/asm/mach-loongson32/regs-rtc.h
-> 
-> diff --git a/arch/mips/include/asm/mach-loongson32/loongson1.h b/arch/mips/include/asm/mach-loongson32/loongson1.h
-> index bc27fcee3176..84f45461c832 100644
-> --- a/arch/mips/include/asm/mach-loongson32/loongson1.h
-> +++ b/arch/mips/include/asm/mach-loongson32/loongson1.h
-> @@ -46,6 +46,5 @@
->  #define LS1X_CLK_BASE			0x1fe78030
->  
->  #include <regs-mux.h>
-> -#include <regs-rtc.h>
->  
->  #endif /* __ASM_MACH_LOONGSON32_LOONGSON1_H */
-> diff --git a/arch/mips/include/asm/mach-loongson32/regs-rtc.h b/arch/mips/include/asm/mach-loongson32/regs-rtc.h
-> deleted file mode 100644
-> index a3d096be1607..000000000000
-> --- a/arch/mips/include/asm/mach-loongson32/regs-rtc.h
-> +++ /dev/null
-> @@ -1,19 +0,0 @@
-> -/* SPDX-License-Identifier: GPL-2.0-or-later */
-> -/*
-> - * Copyright (c) 2016 Yang Ling <gnaygnil@gmail.com>
-> - *
-> - * Loongson 1 RTC timer Register Definitions.
-> - */
-> -
-> -#ifndef __ASM_MACH_LOONGSON32_REGS_RTC_H
-> -#define __ASM_MACH_LOONGSON32_REGS_RTC_H
-> -
-> -#define LS1X_RTC_REG(x) \
-> -		((void __iomem *)KSEG1ADDR(LS1X_RTC_BASE + (x)))
-> -
-> -#define LS1X_RTC_CTRL	LS1X_RTC_REG(0x40)
-> -
-> -#define RTC_EXTCLK_OK	(BIT(5) | BIT(8))
-> -#define RTC_EXTCLK_EN	BIT(8)
-> -
-> -#endif /* __ASM_MACH_LOONGSON32_REGS_RTC_H */
-> -- 
-> 2.39.2
+>  arch/mips/bmips/setup.c               | 1 -
+>  arch/mips/cavium-octeon/flash_setup.c | 3 ++-
+>  arch/mips/lantiq/irq.c                | 2 +-
+>  arch/mips/lantiq/xway/dcdc.c          | 3 ++-
+>  arch/mips/lantiq/xway/gptu.c          | 4 ++--
+>  arch/mips/lantiq/xway/sysctrl.c       | 1 -
+>  arch/mips/lantiq/xway/vmmc.c          | 3 ++-
+>  arch/mips/pci/pci-lantiq.c            | 4 ++--
+>  arch/mips/pci/pci-rt2880.c            | 5 ++---
+>  arch/mips/pic32/pic32mzda/config.c    | 1 -
+>  arch/mips/ralink/irq.c                | 2 +-
+>  arch/mips/ralink/of.c                 | 2 +-
+>  arch/mips/ralink/prom.c               | 2 --
+>  13 files changed, 15 insertions(+), 18 deletions(-)
 
-I get these build error when this patch is applied:
-
-linux/arch/mips/loongson32/common/platform.c: In function ‘ls1x_rtc_set_extclk’:
-/local/tbogendoerfer/korg/linux/arch/mips/loongson32/common/platform.c:270:24: error: ‘LS1X_RTC_CTRL’ undeclared (first use in this function)
-  u32 val = __raw_readl(LS1X_RTC_CTRL);
-                        ^~~~~~~~~~~~~
-linux/arch/mips/loongson32/common/platform.c:270:24: note: each undeclared identifier is reported only once for each function it appears in
-/local/tbogendoerfer/korg/linux/arch/mips/loongson32/common/platform.c:272:14: error: ‘RTC_EXTCLK_OK’ undeclared (first use in this function)
-  if (!(val & RTC_EXTCLK_OK))
-              ^~~~~~~~~~~~~
-linux/arch/mips/loongson32/common/platform.c:273:22: error: ‘RTC_EXTCLK_EN’ undeclared (first use in this function)
-   __raw_writel(val | RTC_EXTCLK_EN, LS1X_RTC_CTRL);
+applied to mips-next.
 
 Thomas.
 

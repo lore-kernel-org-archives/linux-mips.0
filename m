@@ -2,58 +2,156 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 29C87C04FE1
-	for <linux-mips@archiver.kernel.org>; Tue, 25 Jul 2023 09:00:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 195B3C001DE
+	for <linux-mips@archiver.kernel.org>; Tue, 25 Jul 2023 10:15:40 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232590AbjGYJAC (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 25 Jul 2023 05:00:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44590 "EHLO
+        id S232389AbjGYKPj (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 25 Jul 2023 06:15:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40750 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232505AbjGYI77 (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Tue, 25 Jul 2023 04:59:59 -0400
-Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 33E9D131;
-        Tue, 25 Jul 2023 01:59:56 -0700 (PDT)
-Received: from uucp by elvis.franken.de with local-rmail (Exim 3.36 #1)
-        id 1qODtS-0008Gt-00; Tue, 25 Jul 2023 10:59:46 +0200
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 6A349C01E6; Tue, 25 Jul 2023 10:48:03 +0200 (CEST)
-Date:   Tue, 25 Jul 2023 10:48:03 +0200
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     linke li <lilinke99@gmail.com>
-Cc:     Markus Elfring <Markus.Elfring@web.de>, linux-mips@vger.kernel.org,
-        kernel-janitors@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linke Li <lilinke99@foxmail.com>
-Subject: Re: [PATCH] MIPS: Fix undefined behavior in PAGE_MASK calculation
-Message-ID: <ZL+MQwq31kDcLI80@alpha.franken.de>
-References: <tencent_54C2A2746A83BA29EE92248CE9683F0C6509@qq.com>
- <f7fab4fc-a8db-d2f7-52e9-3522f7c298b8@web.de>
- <CAKdjhyAOfbsxthU38=vSPJ080YxQvbGpbc5pupbz1gUQ=USwrQ@mail.gmail.com>
+        with ESMTP id S232628AbjGYKPh (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Tue, 25 Jul 2023 06:15:37 -0400
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC70810F9;
+        Tue, 25 Jul 2023 03:15:25 -0700 (PDT)
+Received: by mail-ed1-x532.google.com with SMTP id 4fb4d7f45d1cf-52256241c66so515598a12.1;
+        Tue, 25 Jul 2023 03:15:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1690280124; x=1690884924;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=stZvY5U9wSZTs5ds6eBy5fhaT/Xhl9PttBLPwX46gHo=;
+        b=Zd+TfiK6QjysIfwcqshz3riRH9eDjKMkLVQHalEsW7A2lCezdTeTYsuDR+b8W5TV3j
+         trncykuABFsnq/ZL/wATBQpxI4491zYNzFHyfLjWDkDizPL5yi8tU+oXV2wOqbYlXamp
+         iyvVvum4XpoXIEopgV3qp1W6kGCLfzh3LsRNJjGCxUlfLKQp7LRAeEZenadG0aJpnWdu
+         fCDR7hRde0HP4B+WIu9MLqDVm+N8e48S4Q386V4nJP56nbv2kNXGxoiABKui2fptjkZU
+         b2hatoO91JCcF9Ou+6QOWGdLPSdIICbqjXTrSaw/7/K75BzuThXlDayMuzcaHtQkCtk6
+         TlFg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1690280124; x=1690884924;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=stZvY5U9wSZTs5ds6eBy5fhaT/Xhl9PttBLPwX46gHo=;
+        b=QfdxZKFQ1imazxfBeNHpis+IpwGM5tiWK7dUCWYIdOTO08J5lcSKoLDolyaohTrSXy
+         Idu8h5eF8QTRnrgXfAUP7I8Yz/CDxZZrqjpzam+SKC4wNz9EYxctI/r85Boz7lTJFQgw
+         GVfEyKQvhwhb08PHpZWYJKLoN5/s2LVfOJAWlR1J5ThHgaud21oECdqI5UoYdebR6moI
+         D8jjFV9IxV+vNc/5a+Dv9WYsLizmvA2B/F9AhQ8LALU1FEXQ6JQQvtDCtvkx3V6tLbd3
+         iyibiiHS0TZpGLq2FbzftcciPn5mQIZc8qIPO9m+1MrLnhmA3BkLbquMAT7wXXU8TprJ
+         +g0Q==
+X-Gm-Message-State: ABy/qLYMGL2WeexvJWFy9t2tDFd3VihJOFI6qJ0HWsjMOq46Gkzxn5iZ
+        gnr0kXHzGknuVZJKoZuO4lYUr+Q1qisTmlaAEhg=
+X-Google-Smtp-Source: APBJJlEGc8Qqtx3M3xk7xfxVMkEIUKq+V578qF8fgJcopnKeKZwBb2Kzhr090da4HCcP1DY4c4v4cpT332l5IKkyo18=
+X-Received: by 2002:a05:6402:104b:b0:521:985d:7314 with SMTP id
+ e11-20020a056402104b00b00521985d7314mr2215492edu.18.1690280123484; Tue, 25
+ Jul 2023 03:15:23 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAKdjhyAOfbsxthU38=vSPJ080YxQvbGpbc5pupbz1gUQ=USwrQ@mail.gmail.com>
+References: <20230707111151.461373-1-keguang.zhang@gmail.com>
+ <20230707111151.461373-3-keguang.zhang@gmail.com> <ZL+MB6P2tSHvgPHw@alpha.franken.de>
+In-Reply-To: <ZL+MB6P2tSHvgPHw@alpha.franken.de>
+From:   Keguang Zhang <keguang.zhang@gmail.com>
+Date:   Tue, 25 Jul 2023 18:15:07 +0800
+Message-ID: <CAJhJPsUV_f_t-faHY-4Jay9AJO848UMVhtxgFh_AuvQnurpnRw@mail.gmail.com>
+Subject: Re: [PATCH 2/2] MIPS: loongson32: Remove regs-rtc.h
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Mon, Jul 10, 2023 at 02:02:00PM +0800, linke li wrote:
-> > How do you think about a wording variant like the following?
-> 
-> What you said is exactly what I want to express.
-> 
-> > Would you like to add the tag “Fixes”?
-> 
-> I agree with that.
-> 
-> Thank you for your feedback and suggestion.
+On Tue, Jul 25, 2023 at 4:59=E2=80=AFPM Thomas Bogendoerfer
+<tsbogend@alpha.franken.de> wrote:
+>
+> On Fri, Jul 07, 2023 at 07:11:51PM +0800, Keguang Zhang wrote:
+> > Since commit 9fb23090658a ("rtc: Remove the
+> > Loongson-1 RTC driver"), no one is using regs-rtc.h.
+> > Therefore, remove this obsolete header file.
+> >
+> > Signed-off-by: Keguang Zhang <keguang.zhang@gmail.com>
+> > ---
+> >  .../include/asm/mach-loongson32/loongson1.h   |  1 -
+> >  .../include/asm/mach-loongson32/regs-rtc.h    | 19 -------------------
+> >  2 files changed, 20 deletions(-)
+> >  delete mode 100644 arch/mips/include/asm/mach-loongson32/regs-rtc.h
+> >
+> > diff --git a/arch/mips/include/asm/mach-loongson32/loongson1.h b/arch/m=
+ips/include/asm/mach-loongson32/loongson1.h
+> > index bc27fcee3176..84f45461c832 100644
+> > --- a/arch/mips/include/asm/mach-loongson32/loongson1.h
+> > +++ b/arch/mips/include/asm/mach-loongson32/loongson1.h
+> > @@ -46,6 +46,5 @@
+> >  #define LS1X_CLK_BASE                        0x1fe78030
+> >
+> >  #include <regs-mux.h>
+> > -#include <regs-rtc.h>
+> >
+> >  #endif /* __ASM_MACH_LOONGSON32_LOONGSON1_H */
+> > diff --git a/arch/mips/include/asm/mach-loongson32/regs-rtc.h b/arch/mi=
+ps/include/asm/mach-loongson32/regs-rtc.h
+> > deleted file mode 100644
+> > index a3d096be1607..000000000000
+> > --- a/arch/mips/include/asm/mach-loongson32/regs-rtc.h
+> > +++ /dev/null
+> > @@ -1,19 +0,0 @@
+> > -/* SPDX-License-Identifier: GPL-2.0-or-later */
+> > -/*
+> > - * Copyright (c) 2016 Yang Ling <gnaygnil@gmail.com>
+> > - *
+> > - * Loongson 1 RTC timer Register Definitions.
+> > - */
+> > -
+> > -#ifndef __ASM_MACH_LOONGSON32_REGS_RTC_H
+> > -#define __ASM_MACH_LOONGSON32_REGS_RTC_H
+> > -
+> > -#define LS1X_RTC_REG(x) \
+> > -             ((void __iomem *)KSEG1ADDR(LS1X_RTC_BASE + (x)))
+> > -
+> > -#define LS1X_RTC_CTRL        LS1X_RTC_REG(0x40)
+> > -
+> > -#define RTC_EXTCLK_OK        (BIT(5) | BIT(8))
+> > -#define RTC_EXTCLK_EN        BIT(8)
+> > -
+> > -#endif /* __ASM_MACH_LOONGSON32_REGS_RTC_H */
+> > --
+> > 2.39.2
+>
+> I get these build error when this patch is applied:
+>
+> linux/arch/mips/loongson32/common/platform.c: In function =E2=80=98ls1x_r=
+tc_set_extclk=E2=80=99:
+> /local/tbogendoerfer/korg/linux/arch/mips/loongson32/common/platform.c:27=
+0:24: error: =E2=80=98LS1X_RTC_CTRL=E2=80=99 undeclared (first use in this =
+function)
+>   u32 val =3D __raw_readl(LS1X_RTC_CTRL);
+>                         ^~~~~~~~~~~~~
+> linux/arch/mips/loongson32/common/platform.c:270:24: note: each undeclare=
+d identifier is reported only once for each function it appears in
+> /local/tbogendoerfer/korg/linux/arch/mips/loongson32/common/platform.c:27=
+2:14: error: =E2=80=98RTC_EXTCLK_OK=E2=80=99 undeclared (first use in this =
+function)
+>   if (!(val & RTC_EXTCLK_OK))
+>               ^~~~~~~~~~~~~
+> linux/arch/mips/loongson32/common/platform.c:273:22: error: =E2=80=98RTC_=
+EXTCLK_EN=E2=80=99 undeclared (first use in this function)
+>    __raw_writel(val | RTC_EXTCLK_EN, LS1X_RTC_CTRL);
+>
+> Thomas.
+>
 
-plesas resend with this changes.
+Sorry! I will send v2 to fix this ASAP.
 
-Thomas.
+> --
+> Crap can work. Given enough thrust pigs will fly, but it's not necessaril=
+y a
+> good idea.                                                [ RFC1925, 2.3 =
+]
 
--- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+
+
+--=20
+Best regards,
+
+Keguang Zhang

@@ -2,178 +2,95 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C34D5C001DE
-	for <linux-mips@archiver.kernel.org>; Mon, 31 Jul 2023 18:26:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A2D30C41513
+	for <linux-mips@archiver.kernel.org>; Mon, 31 Jul 2023 19:46:50 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231551AbjGaS0Z (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 31 Jul 2023 14:26:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53784 "EHLO
+        id S231249AbjGaTqt (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 31 Jul 2023 15:46:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36514 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230423AbjGaS0X (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Mon, 31 Jul 2023 14:26:23 -0400
-Received: from mail-il1-x12c.google.com (mail-il1-x12c.google.com [IPv6:2607:f8b0:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35BB919AE
-        for <linux-mips@vger.kernel.org>; Mon, 31 Jul 2023 11:26:22 -0700 (PDT)
-Received: by mail-il1-x12c.google.com with SMTP id e9e14a558f8ab-348c7075afcso12475ab.1
-        for <linux-mips@vger.kernel.org>; Mon, 31 Jul 2023 11:26:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1690827981; x=1691432781;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=6LZEdaDlAMdQP6JhmjsArIuxox1zxEtjjTY2SzD6PsU=;
-        b=5fgkkTfZTjvrkPsV2OAsWS7fGDKlkOo6NBkGxlUad6Djf9YF4mNXTcZwmQCCLJ1nBy
-         ytvPZa3KoE6pLMDaS1L4gdmZaOfNzKXtsa1fikLeZSNL0jSNWYpUTY8GHiEMpPSUIhEf
-         GKZr2wZjg6oExHWyVPblSGkoydBcnRJu278I6bHizaXll85ZaXfkAb9ISQ34veJLXVin
-         H4LgRU66ITkpG1C45xmAlPZe5ifFrojIcI163nCjGKu3BAHmTrdfA2g91PJ4XmMzNAwE
-         6qNdJbd/ZgVe0FTRRBae2q8TCC7NnJ6KmTDr6JnJgqJf5rkyLUFJCut3v7Lu9kIPHxwj
-         tGnw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1690827981; x=1691432781;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=6LZEdaDlAMdQP6JhmjsArIuxox1zxEtjjTY2SzD6PsU=;
-        b=huTdnLDdQvEIJTD9scRCpGexjiuOZM033XpX2ePySy/Kq4CQHXCbZ5MZY8YZtCUpiv
-         U2LUyokAMJIAJ9Frt0Dyt1+tkG4qwOhpt3XR9K9rFTe9/iDsIKI+2sjNaISXQtfmiCoC
-         Akfag10kT7TDw81XxBM0DGlb02VIG19iSsMCDkmB9VQ6CU/lUdkackOPxikVu7/chLup
-         7W5NWrbCoZmbonJRWccDUM22zgGL7Gb0tDnkztAiwVrwINaCxd2lQUcHnfhsJZGEgvdB
-         rN8gDRq1h9nIrbYghtkJ8Zo2rZqxHW7woOzzMBmYEq7Y7U+5Eze/5coE/AnSjzw4sykK
-         ztOw==
-X-Gm-Message-State: ABy/qLY9KjX55j+1Lct6n5vQiXgRejY81x5uqw0Nj8fqNupy0V3648Pn
-        ugLQ1vFG8nBzSBHU/yUfCC3/AHu4FtDmfU+id8EF4A==
-X-Google-Smtp-Source: APBJJlHJ2q+Ibhsyd21GC77gr96XZana1MhNnQDJBDO6Init3JyGxBHBc9FYe6705xtGHxT1vNNwqYdqSlhzUk4wwtA=
-X-Received: by 2002:a05:6e02:16c5:b0:345:dcdf:206b with SMTP id
- 5-20020a056e0216c500b00345dcdf206bmr693992ilx.25.1690827981339; Mon, 31 Jul
- 2023 11:26:21 -0700 (PDT)
+        with ESMTP id S230163AbjGaTqr (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Mon, 31 Jul 2023 15:46:47 -0400
+Received: from bee.tesarici.cz (bee.tesarici.cz [77.93.223.253])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2639E1BE7;
+        Mon, 31 Jul 2023 12:46:26 -0700 (PDT)
+Received: from meshulam.tesarici.cz (dynamic-2a00-1028-83b8-1e7a-b985-910f-39e1-703f.ipv6.o2.cz [IPv6:2a00:1028:83b8:1e7a:b985:910f:39e1:703f])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by bee.tesarici.cz (Postfix) with ESMTPSA id EAA8B178227;
+        Mon, 31 Jul 2023 21:46:18 +0200 (CEST)
+Authentication-Results: mail.tesarici.cz; dmarc=fail (p=none dis=none) header.from=tesarici.cz
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=tesarici.cz; s=mail;
+        t=1690832779; bh=KWGiVMKtI706Wwo+DM5RpfJ8QcAflbLeZoJQleXTj7w=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=DCbut2Q1V/o96bevVJ5VH0tsE8RBOG34SkaIN2hyTrDSOvmqWteKWg9WSSEmkSDR/
+         7zEcP3LPJCP0C30n9bKPAcmiiYpu7Srh/GV83YQ3KdTEhs0WmTtBNg9apNXr3D4vM9
+         l+cuuubqpoexTeGXas2IjL8jUpRGjQ4lIgZ7qtkkxPLv/dtnfOM4sW9s/NJ/VXCJbW
+         bPmzFIP6+7hKJ/ThN/ccfBtqYIIyBpGyv67t5YdZ3SQFvyi67polQGKVblNs06g0Hr
+         I86Dg302FpL39M5+5q5pMGvrRpcg2f/33XsKuUuAZUtFISY1nQ6bvC7px1r0e4AGzy
+         6AOiYmUbWlVNw==
+Date:   Mon, 31 Jul 2023 21:46:18 +0200
+From:   Petr =?UTF-8?B?VGVzYcWZw61r?= <petr@tesarici.cz>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Petr Tesarik <petrtesarik@huaweicloud.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Juergen Gross <jgross@suse.com>,
+        Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Hyeonggon Yoo <42.hyeyoo@gmail.com>,
+        Petr Tesarik <petr.tesarik.ext@huawei.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        James Seo <james@equiv.tech>,
+        James Clark <james.clark@arm.com>,
+        Kees Cook <keescook@chromium.org>,
+        "moderated list:XEN HYPERVISOR ARM" <xen-devel@lists.xenproject.org>,
+        "moderated list:ARM PORT" <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:MIPS" <linux-mips@vger.kernel.org>,
+        "open list:XEN SWIOTLB SUBSYSTEM" <iommu@lists.linux.dev>,
+        "open list:SLAB ALLOCATOR" <linux-mm@kvack.org>,
+        Roberto Sassu <roberto.sassu@huaweicloud.com>
+Subject: Re: [PATCH v6 0/9] Allow dynamic allocation of software IO TLB
+ bounce buffers
+Message-ID: <20230731214618.6e7cde05@meshulam.tesarici.cz>
+In-Reply-To: <20230731160409.GA8991@lst.de>
+References: <cover.1690459412.git.petr.tesarik.ext@huawei.com>
+        <20230731160409.GA8991@lst.de>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-suse-linux-gnu)
 MIME-Version: 1.0
-References: <20230722022251.3446223-1-rananta@google.com> <20230722022251.3446223-13-rananta@google.com>
- <87jzulqz0v.wl-maz@kernel.org>
-In-Reply-To: <87jzulqz0v.wl-maz@kernel.org>
-From:   Raghavendra Rao Ananta <rananta@google.com>
-Date:   Mon, 31 Jul 2023 11:26:09 -0700
-Message-ID: <CAJHc60zGzAqWw2iZwNEG_bWERXkz_io7ae-K_tf_kh6xcOBxLA@mail.gmail.com>
-Subject: Re: [PATCH v7 12/12] KVM: arm64: Use TLBI range-based intructions for unmap
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     Oliver Upton <oliver.upton@linux.dev>,
-        James Morse <james.morse@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Zenghui Yu <yuzenghui@huawei.com>,
-        Anup Patel <anup@brainfault.org>,
-        Atish Patra <atishp@atishpatra.org>,
-        Jing Zhang <jingzhangos@google.com>,
-        Reiji Watanabe <reijiw@google.com>,
-        Colton Lewis <coltonlewis@google.com>,
-        David Matlack <dmatlack@google.com>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        linux-mips@vger.kernel.org, kvm-riscv@lists.infradead.org,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Thu, Jul 27, 2023 at 6:12=E2=80=AFAM Marc Zyngier <maz@kernel.org> wrote=
-:
->
-> On Sat, 22 Jul 2023 03:22:51 +0100,
-> Raghavendra Rao Ananta <rananta@google.com> wrote:
-> >
-> > The current implementation of the stage-2 unmap walker traverses
-> > the given range and, as a part of break-before-make, performs
-> > TLB invalidations with a DSB for every PTE. A multitude of this
-> > combination could cause a performance bottleneck on some systems.
-> >
-> > Hence, if the system supports FEAT_TLBIRANGE, defer the TLB
-> > invalidations until the entire walk is finished, and then
-> > use range-based instructions to invalidate the TLBs in one go.
-> > Condition deferred TLB invalidation on the system supporting FWB,
-> > as the optimization is entirely pointless when the unmap walker
-> > needs to perform CMOs.
-> >
-> > Rename stage2_put_pte() to stage2_unmap_put_pte() as the function
-> > now serves the stage-2 unmap walker specifically, rather than
-> > acting generic.
-> >
-> > Signed-off-by: Raghavendra Rao Ananta <rananta@google.com>
-> > ---
-> >  arch/arm64/kvm/hyp/pgtable.c | 67 +++++++++++++++++++++++++++++++-----
-> >  1 file changed, 58 insertions(+), 9 deletions(-)
-> >
-> > diff --git a/arch/arm64/kvm/hyp/pgtable.c b/arch/arm64/kvm/hyp/pgtable.=
-c
-> > index 5ef098af1736..cf88933a2ea0 100644
-> > --- a/arch/arm64/kvm/hyp/pgtable.c
-> > +++ b/arch/arm64/kvm/hyp/pgtable.c
-> > @@ -831,16 +831,54 @@ static void stage2_make_pte(const struct kvm_pgta=
-ble_visit_ctx *ctx, kvm_pte_t n
-> >       smp_store_release(ctx->ptep, new);
-> >  }
-> >
-> > -static void stage2_put_pte(const struct kvm_pgtable_visit_ctx *ctx, st=
-ruct kvm_s2_mmu *mmu,
-> > -                        struct kvm_pgtable_mm_ops *mm_ops)
-> > +struct stage2_unmap_data {
-> > +     struct kvm_pgtable *pgt;
-> > +     bool defer_tlb_flush_init;
-> > +};
-> > +
-> > +static bool __stage2_unmap_defer_tlb_flush(struct kvm_pgtable *pgt)
-> > +{
-> > +     /*
-> > +      * If FEAT_TLBIRANGE is implemented, defer the individual
-> > +      * TLB invalidations until the entire walk is finished, and
-> > +      * then use the range-based TLBI instructions to do the
-> > +      * invalidations. Condition deferred TLB invalidation on the
-> > +      * system supporting FWB, as the optimization is entirely
-> > +      * pointless when the unmap walker needs to perform CMOs.
-> > +      */
-> > +     return system_supports_tlb_range() && stage2_has_fwb(pgt);
-> > +}
-> > +
-> > +static bool stage2_unmap_defer_tlb_flush(struct stage2_unmap_data *unm=
-ap_data)
-> > +{
-> > +     bool defer_tlb_flush =3D __stage2_unmap_defer_tlb_flush(unmap_dat=
-a->pgt);
-> > +
-> > +     /*
-> > +      * Since __stage2_unmap_defer_tlb_flush() is based on alternative
-> > +      * patching and the TLBIs' operations behavior depend on this,
-> > +      * track if there's any change in the state during the unmap sequ=
-ence.
-> > +      */
-> > +     WARN_ON(unmap_data->defer_tlb_flush_init !=3D defer_tlb_flush);
-> > +     return defer_tlb_flush;
->
-> I really don't understand what you're testing here. The ability to
-> defer TLB invalidation is a function of the system capabilities
-> (range+FWB) and a single flag that is only set on the host for pKVM.
->
-> How could that change in the middle of the life of the system? if
-> further begs the question about the need for the unmap_data data
-> structure.
->
-> It looks to me that we could simply pass the pgt pointer around and be
-> done with it. Am I missing something obvious?
->
-From one of the previous comments [1] (used in a different context),
-I'm given to understand that since these feature checks are governed
-by alternative patching, they can potentially change (at runtime?). Is
-that not the case and I have misunderstood the idea in comment [1]
-entirely? Is it solely used for optimization purposes and set only
-once?
-If that's the case, I can get rid of the WARN_ON() and unmap_data.
+V Mon, 31 Jul 2023 18:04:09 +0200
+Christoph Hellwig <hch@lst.de> naps=C3=A1no:
 
-- Raghavendra
+> I was just going to apply this, but patch 1 seems to have a non-trivial
+> conflict with the is_swiotlb_active removal in pci-dma.c.  Can you resend
+> against the current dma-mapping for-next tree?
 
-[1]: https://lore.kernel.org/all/ZGPPj1AXS0Uah2Ug@linux.dev/
->         M.
->
-> --
-> Without deviation from the norm, progress is not possible.
+Sure thing, will re-send tomorrow morning.
+
+Petr T

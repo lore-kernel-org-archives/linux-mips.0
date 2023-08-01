@@ -2,120 +2,132 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8935EEB64DD
-	for <linux-mips@archiver.kernel.org>; Tue,  1 Aug 2023 08:43:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B7740C001DF
+	for <linux-mips@archiver.kernel.org>; Tue,  1 Aug 2023 11:06:44 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231384AbjHAInE (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 1 Aug 2023 04:43:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49250 "EHLO
+        id S232262AbjHALGm (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 1 Aug 2023 07:06:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44274 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232169AbjHAImv (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Tue, 1 Aug 2023 04:42:51 -0400
-Received: from h1.cmg2.smtp.forpsi.com (h1.cmg2.smtp.forpsi.com [81.2.195.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C848C10C7
-        for <linux-mips@vger.kernel.org>; Tue,  1 Aug 2023 01:42:49 -0700 (PDT)
-Received: from lenoch ([91.218.190.200])
-        by cmgsmtp with ESMTPSA
-        id QkxoqAnWFv5uIQkxpqFl1S; Tue, 01 Aug 2023 10:42:47 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=triops.cz; s=f2019;
-        t=1690879367; bh=JWpGmZjXUjgR7yQlSUk5xck/N4ztdufJt7qH4vqz7mc=;
-        h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type;
-        b=J1AJYSiZanDiGhwgc38fTBPfllxVmp/STXFdXKyxZTNLfMHEd9Wxbwte1IE1LW1cY
-         LCCKIrQ/hj+CisnNS8ErYF9s6MsiFbdXIsT/qGFNhTln+ujjYiT6HXI2Jfa8B+lBht
-         9l214Lz8UUG6tZddEOmkau0GMXRkdtZgBB2p6TTe/hj7YTIh7+UKzZgZpESBTOElA+
-         97jRINpWDm4FmfmNNk6PN8EgBYRBxWOw1UW4n+4rfo/t6I83++5wrT3G5N8OAAiRXE
-         59W/e/j/AT7ehOdGFXGaE1ZDTd9y5a/aZGvl5Mok0bvwRGUIx7hFWMVlIgU2KHmTax
-         3H8KKfSfThwJg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=triops.cz; s=f2019;
-        t=1690879367; bh=JWpGmZjXUjgR7yQlSUk5xck/N4ztdufJt7qH4vqz7mc=;
-        h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type;
-        b=J1AJYSiZanDiGhwgc38fTBPfllxVmp/STXFdXKyxZTNLfMHEd9Wxbwte1IE1LW1cY
-         LCCKIrQ/hj+CisnNS8ErYF9s6MsiFbdXIsT/qGFNhTln+ujjYiT6HXI2Jfa8B+lBht
-         9l214Lz8UUG6tZddEOmkau0GMXRkdtZgBB2p6TTe/hj7YTIh7+UKzZgZpESBTOElA+
-         97jRINpWDm4FmfmNNk6PN8EgBYRBxWOw1UW4n+4rfo/t6I83++5wrT3G5N8OAAiRXE
-         59W/e/j/AT7ehOdGFXGaE1ZDTd9y5a/aZGvl5Mok0bvwRGUIx7hFWMVlIgU2KHmTax
-         3H8KKfSfThwJg==
-Date:   Tue, 1 Aug 2023 10:42:44 +0200
-From:   Ladislav Michl <oss-lists@triops.cz>
-To:     Thinh Nguyen <Thinh.Nguyen@synopsys.com>
-Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Liang He <windhl@126.com>,
-        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>
-Subject: Re: [PATCH v5 4/7] usb: dwc3: dwc3-octeon: Avoid half-initialized
- controller state
-Message-ID: <ZMjFhMrnrJRQ2Qlf@lenoch>
-References: <ZMd/HzISn0mPsNWt@lenoch>
- <ZMd/oMRx8ze22/kK@lenoch>
- <20230801003838.ifbydrbwq34df3n3@synopsys.com>
- <ZMiaIUy6d5gVl7mA@lenoch>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZMiaIUy6d5gVl7mA@lenoch>
-X-CMAE-Envelope: MS4wfFPiDbeufM4QXtXC/gck9KMHReF52FSTt92B82pVsT4ontnMmjF6s0bRsx4IlSjUP7+R8w99DqpRS1MhRaZg4AM03barvp4s+Y8FGarak+KldTT1KmIa
- A+S1kngsnG4gFIY4B7gky5rfXfxu3cOEikHGfc8uBLkq6XIaXrjXqoJMYjz6QvIP3XqTLoJo5D1ywnoaqBWqQo4fgXSF1f1Q2dX/XPXhOakDEZ8iXQSIMcoW
- GbnQNpUOKEFiaYNa20egGpuTI3DXSEpUMcYZwqeQGV+8mFk4HoOyB8XZ9i7T1ePTJaJ7DO9pEeF/WaitK0m70f5yW3Jfvr8SaV91z9l95pFR/VdfYzaNLok/
- 7LE2A2io
+        with ESMTP id S232225AbjHALGJ (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Tue, 1 Aug 2023 07:06:09 -0400
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id BC43C59CF;
+        Tue,  1 Aug 2023 04:00:02 -0700 (PDT)
+Received: from loongson.cn (unknown [113.200.148.30])
+        by gateway (Coremail) with SMTP id _____8AxXOqx5chk6wwOAA--.5918S3;
+        Tue, 01 Aug 2023 19:00:01 +0800 (CST)
+Received: from linux.localdomain (unknown [113.200.148.30])
+        by localhost.localdomain (Coremail) with SMTP id AQAAf8CxLCOv5chkAd9DAA--.26809S2;
+        Tue, 01 Aug 2023 19:00:00 +0800 (CST)
+From:   Tiezhu Yang <yangtiezhu@loongson.cn>
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        loongson-kernel@lists.loongnix.cn
+Subject: [PATCH] MIPS: Remove noreturn attribute for die()
+Date:   Tue,  1 Aug 2023 18:59:59 +0800
+Message-Id: <1690887599-11442-1-git-send-email-yangtiezhu@loongson.cn>
+X-Mailer: git-send-email 2.1.0
+X-CM-TRANSID: AQAAf8CxLCOv5chkAd9DAA--.26809S2
+X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
+X-Coremail-Antispam: 1Uk129KBj93XoWxZF4DZF1xuw1rCFWDJF1rKrX_yoW5WFyDpa
+        yqkasrGrW8CFs8u3s8Jr4kCrWayrZ5t3yjkw18KwnaywnIv3yrJF4kJFyjvw4rKry0ga4U
+        XFWjqwn5AFs3ZabCm3ZEXasCq-sJn29KB7ZKAUJUUUU5529EdanIXcx71UUUUU7KY7ZEXa
+        sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
+        0xBIdaVrnRJUUUk2b4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
+        IYs7xG6rWj6s0DM7CIcVAFz4kK6r106r15M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
+        e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
+        0_Jr0_Gr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AK
+        xVW8Jr0_Cr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l57IF6xkI12xvs2x26I8E6xACxx
+        1l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1Y6r17McIj6I8E87Iv
+        67AKxVW8JVWxJwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41l42xK82IYc2
+        Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s02
+        6x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0x
+        vE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE
+        42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVW8JVWxJwCI42IY6I8E87Iv6x
+        kF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUcrWFUUUUU
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Tue, Aug 01, 2023 at 07:37:37AM +0200, Ladislav Michl wrote:
-> Anyway, what about just passing octeon into dwc3_octeon_config_gpio
-> and use all that dirty magic inside. Would that work work for you?
+If notify_die() returns NOTIFY_STOP, there is no need to call
+make_task_dead(), we can remove noreturn attribute for die(),
+this is similar with arm64, riscv and csky.
 
-Something like this:
+While at it, modify the die() declaration in ptrace.h to fix
+the following checkpatch warnings:
 
-[PATCH] usb: dwc3: dwc3-octeon: Consolidate pinmux configuration
+  WARNING: function definition argument 'const char *' should also have an identifier name
+  WARNING: function definition argument 'struct pt_regs *' should also have an identifier name
 
-As there is no pinctrl driver for Octeon, pinmux configuration is done
-in dwc3_octeon_config_gpio function. It has been always done the tricky
-way: there are two UCTLs; first at 0x1180068000000 and second at
-0x1180069000000, so address based test is used to get index to configure
-pin muxing, because DT does not provide that information.
+Additionally, also remove noreturn attribute for nmi_exception_handler
+due to it calls die(), otherwise there exists the following build error:
 
-To make pinmux configuration a little less hackish until proper solution
-is developed, move all its logic into dwc3_octeon_config_gpio function.
+  arch/mips/kernel/traps.c:2001:1: error: 'noreturn' function does return [-Werror]
+
+Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
 ---
- drivers/usb/dwc3/dwc3-octeon.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ arch/mips/include/asm/ptrace.h |  2 +-
+ arch/mips/kernel/traps.c       | 14 +++++++-------
+ 2 files changed, 8 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/usb/dwc3/dwc3-octeon.c b/drivers/usb/dwc3/dwc3-octeon.c
-index 90e1ae66769f..f35dca899d6e 100644
---- a/drivers/usb/dwc3/dwc3-octeon.c
-+++ b/drivers/usb/dwc3/dwc3-octeon.c
-@@ -206,9 +206,10 @@ static inline void dwc3_octeon_writeq(void __iomem *base, uint64_t val)
- 	cvmx_writeq_csr(base, val);
+diff --git a/arch/mips/include/asm/ptrace.h b/arch/mips/include/asm/ptrace.h
+index daf3cf2..14d2ee9 100644
+--- a/arch/mips/include/asm/ptrace.h
++++ b/arch/mips/include/asm/ptrace.h
+@@ -159,7 +159,7 @@ static inline long regs_return_value(struct pt_regs *regs)
+ extern asmlinkage long syscall_trace_enter(struct pt_regs *regs, long syscall);
+ extern asmlinkage void syscall_trace_leave(struct pt_regs *regs);
+ 
+-extern void die(const char *, struct pt_regs *) __noreturn;
++void die(const char *str, struct pt_regs *regs);
+ 
+ static inline void die_if_kernel(const char *str, struct pt_regs *regs)
+ {
+diff --git a/arch/mips/kernel/traps.c b/arch/mips/kernel/traps.c
+index 246c6a6..4f5140f 100644
+--- a/arch/mips/kernel/traps.c
++++ b/arch/mips/kernel/traps.c
+@@ -391,16 +391,15 @@ void show_registers(struct pt_regs *regs)
+ 
+ static DEFINE_RAW_SPINLOCK(die_lock);
+ 
+-void __noreturn die(const char *str, struct pt_regs *regs)
++void die(const char *str, struct pt_regs *regs)
+ {
+ 	static int die_counter;
+-	int sig = SIGSEGV;
++	int ret;
+ 
+ 	oops_enter();
+ 
+-	if (notify_die(DIE_OOPS, str, regs, 0, current->thread.trap_nr,
+-		       SIGSEGV) == NOTIFY_STOP)
+-		sig = 0;
++	ret = notify_die(DIE_OOPS, str, regs, 0,
++			 current->thread.trap_nr, SIGSEGV);
+ 
+ 	console_verbose();
+ 	raw_spin_lock_irq(&die_lock);
+@@ -422,7 +421,8 @@ void __noreturn die(const char *str, struct pt_regs *regs)
+ 	if (regs && kexec_should_crash(current))
+ 		crash_kexec(regs);
+ 
+-	make_task_dead(sig);
++	if (ret != NOTIFY_STOP)
++		make_task_dead(SIGSEGV);
  }
  
--static void dwc3_octeon_config_gpio(int index, int gpio)
-+static void dwc3_octeon_config_gpio(struct dwc3_octeon *octeon, int gpio)
+ extern struct exception_table_entry __start___dbe_table[];
+@@ -1986,7 +1986,7 @@ int register_nmi_notifier(struct notifier_block *nb)
+ 	return raw_notifier_chain_register(&nmi_chain, nb);
+ }
+ 
+-void __noreturn nmi_exception_handler(struct pt_regs *regs)
++void nmi_exception_handler(struct pt_regs *regs)
  {
- 	union cvmx_gpio_bit_cfgx gpio_bit;
-+	int index = ((__force uintptr_t)octeon->base >> 24) & 1;
+ 	char str[100];
  
- 	if ((OCTEON_IS_MODEL(OCTEON_CN73XX) ||
- 	    OCTEON_IS_MODEL(OCTEON_CNF75XX))
-@@ -237,7 +238,7 @@ static inline uint64_t dwc3_octeon_readq(void __iomem *addr)
- 
- static inline void dwc3_octeon_writeq(void __iomem *base, uint64_t val) { }
- 
--static inline void dwc3_octeon_config_gpio(int index, int gpio) { }
-+static inline void dwc3_octeon_config_gpio(struct dwc3_octeon *octeon, int gpio) { }
- 
- static uint64_t octeon_get_io_clock_rate(void)
- {
-@@ -422,7 +423,7 @@ static int dwc3_octeon_setup(struct dwc3_octeon *octeon,
- 		val &= ~USBDRD_UCTL_HOST_PPC_EN;
- 	} else {
- 		val |= USBDRD_UCTL_HOST_PPC_EN;
--		dwc3_octeon_config_gpio(((u64)octeon->base >> 24) & 1, power_gpio);
-+		dwc3_octeon_config_gpio(octeon, power_gpio);
- 		dev_dbg(dev, "power control is using gpio%d\n", power_gpio);
- 	}
- 	if (power_active_low)
 -- 
-2.39.2
+2.1.0
 

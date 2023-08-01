@@ -2,132 +2,133 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B7740C001DF
-	for <linux-mips@archiver.kernel.org>; Tue,  1 Aug 2023 11:06:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2BC16C001DF
+	for <linux-mips@archiver.kernel.org>; Tue,  1 Aug 2023 11:09:08 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232262AbjHALGm (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 1 Aug 2023 07:06:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44274 "EHLO
+        id S234195AbjHALJH (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 1 Aug 2023 07:09:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47664 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232225AbjHALGJ (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Tue, 1 Aug 2023 07:06:09 -0400
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id BC43C59CF;
-        Tue,  1 Aug 2023 04:00:02 -0700 (PDT)
-Received: from loongson.cn (unknown [113.200.148.30])
-        by gateway (Coremail) with SMTP id _____8AxXOqx5chk6wwOAA--.5918S3;
-        Tue, 01 Aug 2023 19:00:01 +0800 (CST)
-Received: from linux.localdomain (unknown [113.200.148.30])
-        by localhost.localdomain (Coremail) with SMTP id AQAAf8CxLCOv5chkAd9DAA--.26809S2;
-        Tue, 01 Aug 2023 19:00:00 +0800 (CST)
-From:   Tiezhu Yang <yangtiezhu@loongson.cn>
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        loongson-kernel@lists.loongnix.cn
-Subject: [PATCH] MIPS: Remove noreturn attribute for die()
-Date:   Tue,  1 Aug 2023 18:59:59 +0800
-Message-Id: <1690887599-11442-1-git-send-email-yangtiezhu@loongson.cn>
-X-Mailer: git-send-email 2.1.0
-X-CM-TRANSID: AQAAf8CxLCOv5chkAd9DAA--.26809S2
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
-X-Coremail-Antispam: 1Uk129KBj93XoWxZF4DZF1xuw1rCFWDJF1rKrX_yoW5WFyDpa
-        yqkasrGrW8CFs8u3s8Jr4kCrWayrZ5t3yjkw18KwnaywnIv3yrJF4kJFyjvw4rKry0ga4U
-        XFWjqwn5AFs3ZabCm3ZEXasCq-sJn29KB7ZKAUJUUUU5529EdanIXcx71UUUUU7KY7ZEXa
-        sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
-        0xBIdaVrnRJUUUk2b4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
-        IYs7xG6rWj6s0DM7CIcVAFz4kK6r106r15M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
-        e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
-        0_Jr0_Gr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AK
-        xVW8Jr0_Cr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l57IF6xkI12xvs2x26I8E6xACxx
-        1l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1Y6r17McIj6I8E87Iv
-        67AKxVW8JVWxJwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41l42xK82IYc2
-        Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s02
-        6x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0x
-        vE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE
-        42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVW8JVWxJwCI42IY6I8E87Iv6x
-        kF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUcrWFUUUUU
+        with ESMTP id S234264AbjHALIe (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Tue, 1 Aug 2023 07:08:34 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A2E846AD
+        for <linux-mips@vger.kernel.org>; Tue,  1 Aug 2023 04:02:47 -0700 (PDT)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1qQn9I-0006eu-HN; Tue, 01 Aug 2023 13:02:44 +0200
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+        by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.94.2)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1qQn9H-000MYt-Ps; Tue, 01 Aug 2023 13:02:43 +0200
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1qQn9H-009bbJ-05; Tue, 01 Aug 2023 13:02:43 +0200
+From:   =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>
+To:     Paul Cercueil <paul@crapouillou.net>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>
+Cc:     linux-mips@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        kernel@pengutronix.de, Thomas Zimmermann <tzimmermann@suse.de>,
+        Jyri Sarha <jyri.sarha@iki.fi>
+Subject: [PATCH v2 05/12] drm/ingenic: Convert to platform remove callback returning void
+Date:   Tue,  1 Aug 2023 13:02:32 +0200
+Message-Id: <20230801110239.831099-6-u.kleine-koenig@pengutronix.de>
+X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20230801110239.831099-1-u.kleine-koenig@pengutronix.de>
+References: <20230801110239.831099-1-u.kleine-koenig@pengutronix.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2991; i=u.kleine-koenig@pengutronix.de; h=from:subject; bh=QsfehW8ezjUN08uPi6B/PUxytJsI7RQqYsdVg8dQLo8=; b=owEBbQGS/pANAwAKAY+A+1h9Ev5OAcsmYgBkyOW5X0wrdRdNmXLWrRUk3FcIxTOnCbRPWyz8K 3t2wQGkTlaJATMEAAEKAB0WIQQ/gaxpOnoeWYmt/tOPgPtYfRL+TgUCZMjluQAKCRCPgPtYfRL+ TqMrB/9qujLInsuxJ98a/BJo58kLNEaDiYQ8uC1IjnHrUI71dHFlYQAYmoGi3j+6oNpdplV903h u+8hpH5m7vJ7fPmLiPsFUKSakLrx96se/SaouivS+3wSNs1uMrMweMlvaHa3b1ewl42fZBcTH4i 3gD1KoX81UoGcDE2ssxgZ5oVAn9E2VYFPMw7DQGTHhxQEc6trF1T7wNmf1tDZU7bCTtOLnCrSaT loL7GbRlpR00WH65RrzmFaeZtH+QvA066JzKoUotLVM6qBKRDicqxs5m1RCGX2+RFNYvlUndm7p cO6PFGEWqTofrDKPk5bIrjIoTpmeoaKkzlDRHV4PK0PiHwNc
+X-Developer-Key: i=u.kleine-koenig@pengutronix.de; a=openpgp; fpr=0D2511F322BFAB1C1580266BE2DCDD9132669BD6
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-mips@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-If notify_die() returns NOTIFY_STOP, there is no need to call
-make_task_dead(), we can remove noreturn attribute for die(),
-this is similar with arm64, riscv and csky.
+The .remove() callback for a platform driver returns an int which makes
+many driver authors wrongly assume it's possible to do error handling by
+returning an error code. However the value returned is (mostly) ignored
+and this typically results in resource leaks. To improve here there is a
+quest to make the remove callback return void. In the first step of this
+quest all drivers are converted to .remove_new() which already returns
+void.
 
-While at it, modify the die() declaration in ptrace.h to fix
-the following checkpatch warnings:
+Trivially convert the ingenic drm drivers from always returning zero in
+the remove callback to the void returning variant.
 
-  WARNING: function definition argument 'const char *' should also have an identifier name
-  WARNING: function definition argument 'struct pt_regs *' should also have an identifier name
-
-Additionally, also remove noreturn attribute for nmi_exception_handler
-due to it calls die(), otherwise there exists the following build error:
-
-  arch/mips/kernel/traps.c:2001:1: error: 'noreturn' function does return [-Werror]
-
-Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+Reviewed-by: Paul Cercueil <paul@crapouillou.net>
+Reviewed-by: Thomas Zimmermann <tzimmermann@suse.de>
+Reviewed-by: Jyri Sarha <jyri.sarha@iki.fi>
+Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
 ---
- arch/mips/include/asm/ptrace.h |  2 +-
- arch/mips/kernel/traps.c       | 14 +++++++-------
- 2 files changed, 8 insertions(+), 8 deletions(-)
+ drivers/gpu/drm/ingenic/ingenic-drm-drv.c | 6 ++----
+ drivers/gpu/drm/ingenic/ingenic-ipu.c     | 5 ++---
+ 2 files changed, 4 insertions(+), 7 deletions(-)
 
-diff --git a/arch/mips/include/asm/ptrace.h b/arch/mips/include/asm/ptrace.h
-index daf3cf2..14d2ee9 100644
---- a/arch/mips/include/asm/ptrace.h
-+++ b/arch/mips/include/asm/ptrace.h
-@@ -159,7 +159,7 @@ static inline long regs_return_value(struct pt_regs *regs)
- extern asmlinkage long syscall_trace_enter(struct pt_regs *regs, long syscall);
- extern asmlinkage void syscall_trace_leave(struct pt_regs *regs);
- 
--extern void die(const char *, struct pt_regs *) __noreturn;
-+void die(const char *str, struct pt_regs *regs);
- 
- static inline void die_if_kernel(const char *str, struct pt_regs *regs)
- {
-diff --git a/arch/mips/kernel/traps.c b/arch/mips/kernel/traps.c
-index 246c6a6..4f5140f 100644
---- a/arch/mips/kernel/traps.c
-+++ b/arch/mips/kernel/traps.c
-@@ -391,16 +391,15 @@ void show_registers(struct pt_regs *regs)
- 
- static DEFINE_RAW_SPINLOCK(die_lock);
- 
--void __noreturn die(const char *str, struct pt_regs *regs)
-+void die(const char *str, struct pt_regs *regs)
- {
- 	static int die_counter;
--	int sig = SIGSEGV;
-+	int ret;
- 
- 	oops_enter();
- 
--	if (notify_die(DIE_OOPS, str, regs, 0, current->thread.trap_nr,
--		       SIGSEGV) == NOTIFY_STOP)
--		sig = 0;
-+	ret = notify_die(DIE_OOPS, str, regs, 0,
-+			 current->thread.trap_nr, SIGSEGV);
- 
- 	console_verbose();
- 	raw_spin_lock_irq(&die_lock);
-@@ -422,7 +421,8 @@ void __noreturn die(const char *str, struct pt_regs *regs)
- 	if (regs && kexec_should_crash(current))
- 		crash_kexec(regs);
- 
--	make_task_dead(sig);
-+	if (ret != NOTIFY_STOP)
-+		make_task_dead(SIGSEGV);
+diff --git a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
+index 8dbd4847d3a6..c2547d48d6aa 100644
+--- a/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
++++ b/drivers/gpu/drm/ingenic/ingenic-drm-drv.c
+@@ -1449,7 +1449,7 @@ static int ingenic_drm_probe(struct platform_device *pdev)
+ 	return component_master_add_with_match(dev, &ingenic_master_ops, match);
  }
  
- extern struct exception_table_entry __start___dbe_table[];
-@@ -1986,7 +1986,7 @@ int register_nmi_notifier(struct notifier_block *nb)
- 	return raw_notifier_chain_register(&nmi_chain, nb);
+-static int ingenic_drm_remove(struct platform_device *pdev)
++static void ingenic_drm_remove(struct platform_device *pdev)
+ {
+ 	struct device *dev = &pdev->dev;
+ 
+@@ -1457,8 +1457,6 @@ static int ingenic_drm_remove(struct platform_device *pdev)
+ 		ingenic_drm_unbind(dev);
+ 	else
+ 		component_master_del(dev, &ingenic_master_ops);
+-
+-	return 0;
  }
  
--void __noreturn nmi_exception_handler(struct pt_regs *regs)
-+void nmi_exception_handler(struct pt_regs *regs)
- {
- 	char str[100];
+ static int ingenic_drm_suspend(struct device *dev)
+@@ -1611,7 +1609,7 @@ static struct platform_driver ingenic_drm_driver = {
+ 		.of_match_table = of_match_ptr(ingenic_drm_of_match),
+ 	},
+ 	.probe = ingenic_drm_probe,
+-	.remove = ingenic_drm_remove,
++	.remove_new = ingenic_drm_remove,
+ };
  
+ static int ingenic_drm_init(void)
+diff --git a/drivers/gpu/drm/ingenic/ingenic-ipu.c b/drivers/gpu/drm/ingenic/ingenic-ipu.c
+index 6d236547f611..5bd9072352b5 100644
+--- a/drivers/gpu/drm/ingenic/ingenic-ipu.c
++++ b/drivers/gpu/drm/ingenic/ingenic-ipu.c
+@@ -922,10 +922,9 @@ static int ingenic_ipu_probe(struct platform_device *pdev)
+ 	return component_add(&pdev->dev, &ingenic_ipu_ops);
+ }
+ 
+-static int ingenic_ipu_remove(struct platform_device *pdev)
++static void ingenic_ipu_remove(struct platform_device *pdev)
+ {
+ 	component_del(&pdev->dev, &ingenic_ipu_ops);
+-	return 0;
+ }
+ 
+ static const u32 jz4725b_ipu_formats[] = {
+@@ -992,7 +991,7 @@ static struct platform_driver ingenic_ipu_driver = {
+ 		.of_match_table = ingenic_ipu_of_match,
+ 	},
+ 	.probe = ingenic_ipu_probe,
+-	.remove = ingenic_ipu_remove,
++	.remove_new = ingenic_ipu_remove,
+ };
+ 
+ struct platform_driver *ingenic_ipu_driver_ptr = &ingenic_ipu_driver;
 -- 
-2.1.0
+2.39.2
 

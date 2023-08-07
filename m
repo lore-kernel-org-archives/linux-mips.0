@@ -2,120 +2,154 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 580CEC2FC06
-	for <linux-mips@archiver.kernel.org>; Mon,  7 Aug 2023 23:09:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8BAD8C04A94
+	for <linux-mips@archiver.kernel.org>; Mon,  7 Aug 2023 23:18:12 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231699AbjHGXJA (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 7 Aug 2023 19:09:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45394 "EHLO
+        id S229653AbjHGXSL (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 7 Aug 2023 19:18:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54788 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230322AbjHGXHO (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Mon, 7 Aug 2023 19:07:14 -0400
-Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F5F81FD0;
-        Mon,  7 Aug 2023 16:06:24 -0700 (PDT)
-Received: by mail-yb1-xb2d.google.com with SMTP id 3f1490d57ef6-d0548cf861aso5310963276.3;
-        Mon, 07 Aug 2023 16:06:24 -0700 (PDT)
+        with ESMTP id S230026AbjHGXRy (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Mon, 7 Aug 2023 19:17:54 -0400
+Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCB77121
+        for <linux-mips@vger.kernel.org>; Mon,  7 Aug 2023 16:17:51 -0700 (PDT)
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-585fb08172bso58801547b3.2
+        for <linux-mips@vger.kernel.org>; Mon, 07 Aug 2023 16:17:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691449574; x=1692054374;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=SuJFa6mAGFwbCAvFBsdWEeQAHJIQ94yaq1s2El5pO5M=;
-        b=sRCgndxFhKIflL3dRUOciVixuY3um2CsOH9mqCT4RfpcBNQLoC/2xIlVP2BC0LrRXg
-         d0Mfnrp8G1Gq70+B6oCgBqzc+N7zHH9xY0+av47l7B8CO6Tt+n9pMVSoswf5Jzx8/yzy
-         NzCNQAVK/Lkid61qiT1qq4e/dSW3T9N7fVh6BXy/whyNG/50NiRv4160ULtNDt7ZAJ8u
-         ZEinV12wAdQdY0FHQSDiTfa7/P6pGvAR+Q1UWR0j31w4+0ktiAC1WT1q41QbYEtl/+hQ
-         cKdjsvUfk2w2q52f0mVtR4dPNDq1UHAYwd2r0wZzmsP36I/aPnhCen/ej73PJ82E0WBs
-         UQzg==
+        d=google.com; s=20221208; t=1691450271; x=1692055071;
+        h=cc:to:from:subject:message-id:mime-version:in-reply-to:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=O6ADKvrj6NKuTG8K0De5TN5TBG7YUj/XYIH2D8dp568=;
+        b=rHwQlDZDzym7DX7JPTeHFjVedtFRUtAMiKX2VU1EjC3DDPS+GKehZ420ny5GaoR1ql
+         DJZSgsfTVJl3vHuTgVdsaoMbYWxHvGzjOU0b7lDeewUWBnmHCx4rEyCV+u7mMO4LYlh5
+         X/eCH8/74nhTzgvQgUg3W7ew8mnRsIapj5OejxlfXYe7B7oIEIOpl62BZW0oI322fnfO
+         0Voq/X8G0TvKlJzbTSRNfra4zE+z5UETF5mjVUp3srNKrf5MdQ1+J9GDHb9R/7Klrk79
+         sQ7ciz1qdHaVGW7a/1FblT/tag2WVBkp7Xupx92Rz9XtAvp0t79KGYAXs3GugjDd4DWz
+         Be4g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691449574; x=1692054374;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=SuJFa6mAGFwbCAvFBsdWEeQAHJIQ94yaq1s2El5pO5M=;
-        b=lyIxMfUA9H/tyWrl0uEtP4kLBJkYiBs7cZapW73wURRpo0l1ocFZP/dcglw1DW/JmS
-         f9xzMejxJE8dIDMozLfXsqHvaa4ajHbh8NtbSHFx+QL+mQ3nNwLm/iXU93OaasouHr/k
-         Ko8EhttKKfwvNq0+frehvdoPKALr6BgmmBDTtedVxK77WFT4I3X3r0sy/iQcRsjCHK03
-         eWF+y3/XEEkRnIG1pb9CBFKoEp9xHc8X71iwMqDkktN1uuLiATps9l83f1yxgpfHt8AA
-         +9AZcnPEDKDmiXrfpqTinTT+caQUGFz1KgQ//B8C88IHneKhkw82a0wT21wpjGaVPsLT
-         EKaA==
-X-Gm-Message-State: AOJu0YxHoj/E++oh/A6qC6NfYVlTLpIGkRPooEdAybzSRsXc3Xl9je16
-        jsqCbn0iefc0iwXNLvBHykw=
-X-Google-Smtp-Source: AGHT+IHDPhUgl52q/fREvy7LWtCvyksQLzlkWI4tWrtb//A8NgqAG/s+XL1YOkSBACmJ6FF0msS3mA==
-X-Received: by 2002:a25:4081:0:b0:d4c:82ff:7bde with SMTP id n123-20020a254081000000b00d4c82ff7bdemr6684894yba.63.1691449574044;
-        Mon, 07 Aug 2023 16:06:14 -0700 (PDT)
-Received: from unknowna0e70b2ca394.attlocal.net ([2600:1700:2f7d:1800::16])
-        by smtp.googlemail.com with ESMTPSA id d190-20020a25cdc7000000b00d3596aca5bcsm2545203ybf.34.2023.08.07.16.06.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Aug 2023 16:06:13 -0700 (PDT)
-From:   "Vishal Moola (Oracle)" <vishal.moola@gmail.com>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>
-Cc:     linux-mm@kvack.org, linux-arch@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org,
-        linux-hexagon@vger.kernel.org, loongarch@lists.linux.dev,
-        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
-        linux-openrisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
-        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
-        linux-um@lists.infradead.org, xen-devel@lists.xenproject.org,
-        kvm@vger.kernel.org, Hugh Dickins <hughd@google.com>,
-        "Vishal Moola (Oracle)" <vishal.moola@gmail.com>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        Mike Rapoport <rppt@kernel.org>
-Subject: [PATCH mm-unstable v9 27/31] sh: Convert pte_free_tlb() to use ptdescs
-Date:   Mon,  7 Aug 2023 16:05:09 -0700
-Message-Id: <20230807230513.102486-28-vishal.moola@gmail.com>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20230807230513.102486-1-vishal.moola@gmail.com>
-References: <20230807230513.102486-1-vishal.moola@gmail.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        d=1e100.net; s=20221208; t=1691450271; x=1692055071;
+        h=cc:to:from:subject:message-id:mime-version:in-reply-to:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=O6ADKvrj6NKuTG8K0De5TN5TBG7YUj/XYIH2D8dp568=;
+        b=lI3qR1sRvFaMZgQZx/36FtVYoLZDMRf+JH1CkZjhS345Bs9Y12PFu80Ci6gKk3vWIB
+         eCeGopmw7zudxwhZQ+tFJC0ZEVDcb/G0mC1nJg5neGyo9KDIcLJYRYvuXkmc4daUqeuQ
+         aRdpmPTOkWCCjW17r4NJgNplTUMURa8O4S1Qrf6HQJkQXcpu7UPyDY4VBEgruySstHrI
+         n7NA8zCI00WNKJFxNPwuK9gVmo94ZXnU31O5JKeuSKXIc6MNyMVPh78GFMApI4Iy/bUT
+         9rNDlPrlZIYwy54L/7JiquySmIplC2jjoiWIKqK0kxLSyGsAWmmKg5b1WmN35g3ahiOl
+         Vrbw==
+X-Gm-Message-State: AOJu0Ywt33MwcfiuuoxCa1EemiB77a0tWKrZhadKMei0CTUqBb+fQMR4
+        6YLM6m1cWSkfM8PpOeRMbnJZnCiJTONYBRnAuw==
+X-Google-Smtp-Source: AGHT+IGSgl+5gSINX//lCEXF+ifa5KuvDte/Vqkh35HGceplFQQ8fBj/FZjwVUabZs4KoYQYU07HEfGWMf/BZUZt+g==
+X-Received: from ackerleytng-ctop.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:13f8])
+ (user=ackerleytng job=sendgmr) by 2002:a25:ce50:0:b0:d4f:d7a5:ba3b with SMTP
+ id x77-20020a25ce50000000b00d4fd7a5ba3bmr34924ybe.8.1691450270921; Mon, 07
+ Aug 2023 16:17:50 -0700 (PDT)
+Date:   Mon, 07 Aug 2023 23:17:49 +0000
+In-Reply-To: <20230718234512.1690985-28-seanjc@google.com> (message from Sean
+ Christopherson on Tue, 18 Jul 2023 16:45:10 -0700)
+Mime-Version: 1.0
+Message-ID: <diqzr0oe30iq.fsf@ackerleytng-ctop.c.googlers.com>
+Subject: Re: [RFC PATCH v11 27/29] KVM: selftests: Expand set_memory_region_test
+ to validate guest_memfd()
+From:   Ackerley Tng <ackerleytng@google.com>
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     pbonzini@redhat.com, maz@kernel.org, oliver.upton@linux.dev,
+        chenhuacai@kernel.org, mpe@ellerman.id.au, anup@brainfault.org,
+        paul.walmsley@sifive.com, palmer@dabbelt.com,
+        aou@eecs.berkeley.edu, seanjc@google.com, willy@infradead.org,
+        akpm@linux-foundation.org, paul@paul-moore.com, jmorris@namei.org,
+        serge@hallyn.com, kvm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org, chao.p.peng@linux.intel.com,
+        tabba@google.com, jarkko@kernel.org, yu.c.zhang@linux.intel.com,
+        vannapurve@google.com, mail@maciej.szmigiero.name, vbabka@suse.cz,
+        david@redhat.com, qperret@google.com, michael.roth@amd.com,
+        wei.w.wang@intel.com, liam.merwick@oracle.com,
+        isaku.yamahata@gmail.com, kirill.shutemov@linux.intel.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Part of the conversions to replace pgtable constructor/destructors with
-ptdesc equivalents. Also cleans up some spacing issues.
+Sean Christopherson <seanjc@google.com> writes:
 
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Acked-by: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Acked-by: Mike Rapoport (IBM) <rppt@kernel.org>
-Signed-off-by: Vishal Moola (Oracle) <vishal.moola@gmail.com>
----
- arch/sh/include/asm/pgalloc.h | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+> From: Chao Peng <chao.p.peng@linux.intel.com>
+>
+> Expand set_memory_region_test to exercise various positive and negative
+> testcases for private memory.
+>
+>  - Non-guest_memfd() file descriptor for private memory
+>  - guest_memfd() from different VM
+>  - Overlapping bindings
+>  - Unaligned bindings
+>
+> Signed-off-by: Chao Peng <chao.p.peng@linux.intel.com>
+> Co-developed-by: Ackerley Tng <ackerleytng@google.com>
+> Signed-off-by: Ackerley Tng <ackerleytng@google.com>
+> [sean: trim the testcases to remove duplicate coverage]
+> Signed-off-by: Sean Christopherson <seanjc@google.com>
+> ---
+>  .../selftests/kvm/include/kvm_util_base.h     | 10 ++
+>  .../selftests/kvm/set_memory_region_test.c    | 99 +++++++++++++++++++
+>  2 files changed, 109 insertions(+)
+>
+> diff --git a/tools/testing/selftests/kvm/include/kvm_util_base.h b/tools/testing/selftests/kvm/include/kvm_util_base.h
+> index 334df27a6f43..39b38c75b99c 100644
+> --- a/tools/testing/selftests/kvm/include/kvm_util_base.h
+> +++ b/tools/testing/selftests/kvm/include/kvm_util_base.h
+> @@ -789,6 +789,16 @@ static inline struct kvm_vm *vm_create_barebones(void)
+>  	return ____vm_create(VM_SHAPE_DEFAULT);
+>  }
+>  
 
-diff --git a/arch/sh/include/asm/pgalloc.h b/arch/sh/include/asm/pgalloc.h
-index a9e98233c4d4..5d8577ab1591 100644
---- a/arch/sh/include/asm/pgalloc.h
-+++ b/arch/sh/include/asm/pgalloc.h
-@@ -2,6 +2,7 @@
- #ifndef __ASM_SH_PGALLOC_H
- #define __ASM_SH_PGALLOC_H
- 
-+#include <linux/mm.h>
- #include <asm/page.h>
- 
- #define __HAVE_ARCH_PMD_ALLOC_ONE
-@@ -31,10 +32,10 @@ static inline void pmd_populate(struct mm_struct *mm, pmd_t *pmd,
- 	set_pmd(pmd, __pmd((unsigned long)page_address(pte)));
- }
- 
--#define __pte_free_tlb(tlb,pte,addr)			\
--do {							\
--	pgtable_pte_page_dtor(pte);			\
--	tlb_remove_page((tlb), (pte));			\
-+#define __pte_free_tlb(tlb, pte, addr)				\
-+do {								\
-+	pagetable_pte_dtor(page_ptdesc(pte));			\
-+	tlb_remove_page_ptdesc((tlb), (page_ptdesc(pte)));	\
- } while (0)
- 
- #endif /* __ASM_SH_PGALLOC_H */
--- 
-2.40.1
+> <snip>
 
+> +
+> +static void test_add_private_memory_region(void)
+> +{
+> +	struct kvm_vm *vm, *vm2;
+> +	int memfd, i;
+> +
+> +	pr_info("Testing ADD of KVM_MEM_PRIVATE memory regions\n");
+> +
+> +	vm = vm_create_barebones_protected_vm();
+> +
+> +	test_invalid_guest_memfd(vm, vm->kvm_fd, 0, "KVM fd should fail");
+> +	test_invalid_guest_memfd(vm, vm->fd, 0, "VM's fd should fail");
+> +
+> +	memfd = kvm_memfd_alloc(MEM_REGION_SIZE, false);
+> +	test_invalid_guest_memfd(vm, vm->fd, 0, "Regular memfd() should fail");
+
+This should be
+
+test_invalid_guest_memfd(vm, memfd, 0, "Regular memfd() should fail");
+
+> +	close(memfd);
+> +
+> +	vm2 = vm_create_barebones_protected_vm();
+> +	memfd = vm_create_guest_memfd(vm2, MEM_REGION_SIZE, 0);
+> +	test_invalid_guest_memfd(vm, memfd, 0, "Other VM's guest_memfd() should fail");
+> +
+> +	vm_set_user_memory_region2(vm2, MEM_REGION_SLOT, KVM_MEM_PRIVATE,
+> +				   MEM_REGION_GPA, MEM_REGION_SIZE, 0, memfd, 0);
+> +	close(memfd);
+> +	kvm_vm_free(vm2);
+> +
+> +	memfd = vm_create_guest_memfd(vm, MEM_REGION_SIZE, 0);
+> +	for (i = 1; i < PAGE_SIZE; i++)
+> +		test_invalid_guest_memfd(vm, memfd, i, "Unaligned offset should fail");
+> +
+> +	vm_set_user_memory_region2(vm, MEM_REGION_SLOT, KVM_MEM_PRIVATE,
+> +				   MEM_REGION_GPA, MEM_REGION_SIZE, 0, memfd, 0);
+> +	close(memfd);
+> +
+> +	kvm_vm_free(vm);
+> +}
+> +
+
+> <snip>

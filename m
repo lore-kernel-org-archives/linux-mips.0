@@ -2,284 +2,242 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F4161C10F19
-	for <linux-mips@archiver.kernel.org>; Mon,  7 Aug 2023 23:08:48 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D649DC18E72
+	for <linux-mips@archiver.kernel.org>; Mon,  7 Aug 2023 23:08:50 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231539AbjHGXIq (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 7 Aug 2023 19:08:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45104 "EHLO
+        id S230403AbjHGXIs (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 7 Aug 2023 19:08:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45212 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231748AbjHGXI1 (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Mon, 7 Aug 2023 19:08:27 -0400
-Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1662030DB
-        for <linux-mips@vger.kernel.org>; Mon,  7 Aug 2023 16:07:09 -0700 (PDT)
-Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-5734d919156so43922667b3.3
-        for <linux-mips@vger.kernel.org>; Mon, 07 Aug 2023 16:07:09 -0700 (PDT)
+        with ESMTP id S231270AbjHGXHL (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Mon, 7 Aug 2023 19:07:11 -0400
+Received: from mail-yw1-x112b.google.com (mail-yw1-x112b.google.com [IPv6:2607:f8b0:4864:20::112b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AE191FFC;
+        Mon,  7 Aug 2023 16:06:18 -0700 (PDT)
+Received: by mail-yw1-x112b.google.com with SMTP id 00721157ae682-584388ec441so52574687b3.3;
+        Mon, 07 Aug 2023 16:06:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1691449607; x=1692054407;
-        h=content-transfer-encoding:cc:to:from:subject:message-id
-         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=h7A5aUX2ecj7Bbl/7ce/OdAJyafyQZh2jovAmUQfIOU=;
-        b=BwuvQdbCy2eUR+bp2NSDknEVbKVENYiDa6uZlyXUwJVmlF4iKp7HjX09JvbwikelLF
-         rKNAwCIOjLOCd9hfp54t7rYGOQkDWMmLVeB7tC4wNPL/xp+tqM5HxKngfQKLrmiljVMH
-         iSIS4pBQ45QD1qQyRXNJtH27IiaYgguvgYTqI/+bBLhU+TqFpp7Sutp2QK2jo2kiAyxG
-         IG//K3Uxz4ck43yxOcKsJnHFISIoIpmEz14csW59Ae6FEeel85qKxKoUZusz6vFuY6is
-         pXI++E1KnyDArrSs+pWezCptJywjGpfbd67K7HxwhlAzqazZgZUp2EXPv3WY6f0/mDR8
-         iGnw==
+        d=gmail.com; s=20221208; t=1691449563; x=1692054363;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=b5UN203jFDiNo/YHJ5VSjgxwvcpHMPrLplz2RQSMCvk=;
+        b=OTPDdNMzu7YNnKXhv+Q3ZqqlENNm5aYdj6D71YWlelfDeuCfloDRpvW/2blg63fLEM
+         wp2lqLun+gv7jM76tgF3SL5EUSik6EQoGHQg/la3vssrqrbUd6clAJJZm9oTnkSFnW3p
+         rrak3TkX2TlgthUOthGhnmNqe2u92uklZfoOWmy63Mi41aONrji7aHLiDQehYWfjAdaZ
+         soPZkqDTfcWv3Jopxt6sr0srYUxYWkTWEBaSK7GkVRhdyRSTtqcke1kGItccZqtqhkia
+         YtUOs+TmHqOaN+5n3hq45fmviaiyb+cOIccc/DlZdoNJ1+R3sKq7dO2/Ljgq8Rru35Tt
+         Yo/w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691449607; x=1692054407;
-        h=content-transfer-encoding:cc:to:from:subject:message-id
-         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=h7A5aUX2ecj7Bbl/7ce/OdAJyafyQZh2jovAmUQfIOU=;
-        b=C67T4Zh2A0+xVu3AHBkoP/oKL0QNUDgR9EXZyMogaINlMpGhwXhE36hhEWJPk/pQxV
-         /AVBlMjAwaz+gR0ZkHUwkoucOxFZGjBe4E4W1eXKXPNUDG46cbTYJ+Be0dL3pFE01GNq
-         0DhdgzUq2XR5MlW7WDiqHDQ9RNH4iay5gFBEzQByDk6r8sT7J/hmalaz2VxZpkqykuEB
-         rD5wM2nq9uds5XfWdPt6CF4BlOEDCV8lSHhIAF1hVNIYF5sGB5jWWHAcOcPUVoPtGCb4
-         fLgxtYJvPg93YmnAON13o/ncBvv/ukMOShqKgkE0+Ju+2g8XnlQC9nDkThPG8tdVJm8v
-         utFg==
-X-Gm-Message-State: AOJu0YwMfqEx7Zd42/VjXxLKYFxsN4vzEpFlV/qcCsJm9+v9EchChRuk
-        1qZrOkFCG35+nLRZjtWZ3VwxT0/WqTLJxP9PJA==
-X-Google-Smtp-Source: AGHT+IGQixIKGybe4T+GVPibQ4+cbo9epXOA0dv0EjBAf7syaC6i5AoszZ6gyEUK9SdsuOsgoX+oe0ThmUR8eGJG6g==
-X-Received: from ackerleytng-ctop.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:13f8])
- (user=ackerleytng job=sendgmr) by 2002:a25:dbcf:0:b0:d01:60ec:d0e with SMTP
- id g198-20020a25dbcf000000b00d0160ec0d0emr68969ybf.9.1691449607047; Mon, 07
- Aug 2023 16:06:47 -0700 (PDT)
-Date:   Mon, 07 Aug 2023 23:06:45 +0000
-In-Reply-To: <20230718234512.1690985-13-seanjc@google.com> (message from Sean
- Christopherson on Tue, 18 Jul 2023 16:44:55 -0700)
-Mime-Version: 1.0
-Message-ID: <diqzv8dq3116.fsf@ackerleytng-ctop.c.googlers.com>
-Subject: Re: [RFC PATCH v11 12/29] KVM: Add KVM_CREATE_GUEST_MEMFD ioctl() for
- guest-specific backing memory
-From:   Ackerley Tng <ackerleytng@google.com>
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     pbonzini@redhat.com, maz@kernel.org, oliver.upton@linux.dev,
-        chenhuacai@kernel.org, mpe@ellerman.id.au, anup@brainfault.org,
-        paul.walmsley@sifive.com, palmer@dabbelt.com,
-        aou@eecs.berkeley.edu, seanjc@google.com, willy@infradead.org,
-        akpm@linux-foundation.org, paul@paul-moore.com, jmorris@namei.org,
-        serge@hallyn.com, kvm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org, chao.p.peng@linux.intel.com,
-        tabba@google.com, jarkko@kernel.org, yu.c.zhang@linux.intel.com,
-        vannapurve@google.com, mail@maciej.szmigiero.name, vbabka@suse.cz,
-        david@redhat.com, qperret@google.com, michael.roth@amd.com,
-        wei.w.wang@intel.com, liam.merwick@oracle.com,
-        isaku.yamahata@gmail.com, kirill.shutemov@linux.intel.com
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+        d=1e100.net; s=20221208; t=1691449563; x=1692054363;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=b5UN203jFDiNo/YHJ5VSjgxwvcpHMPrLplz2RQSMCvk=;
+        b=ZgMMQ7Ry+PsLiEW/1Kh2g/SFgLJv7pcusyBSEnM3OJCDa6sjaugE3OkZdEgB41lwWK
+         rJzx56I6wXlEEr/ThRxy6a7tF2eJME/73+qJEzMyOXKHN1uhfKGXqN9VH/s+DFxTZGgP
+         +5vYfEnYs4FEurmhTdm9bXPJPPoALXKKeA80MvUgLwR0Cbfd9GkrEcyb8FFAizI7I4B7
+         EyR+ESFJ6cSzBsxQmjyz32RbFczVDq35QOxlok5OOKQYdbl/5V9ofFk1EfrvvC4svOTi
+         C5RGMceuH8/rzSghl9qiOJOHk2hk88xJq83wo3QOgFo7ac5kyLbtrglSTT75Qq3jzfD8
+         mvig==
+X-Gm-Message-State: AOJu0YxM50tXhI+uDiD6zUtG3QDYxVD6brjKIaKuhNNpFJNC3s75tMRa
+        IfhI5mF8Lwx2t/S45sQuks8=
+X-Google-Smtp-Source: AGHT+IGso2idiavqhjdtI0le+b51Epzt0Ore5+PmjI6n65mRaKN/pRbN2Fu2wELJlR9Tq3E7Uha1dg==
+X-Received: by 2002:a25:be08:0:b0:d0e:2e5c:2f80 with SMTP id h8-20020a25be08000000b00d0e2e5c2f80mr8938705ybk.64.1691449563064;
+        Mon, 07 Aug 2023 16:06:03 -0700 (PDT)
+Received: from unknowna0e70b2ca394.attlocal.net ([2600:1700:2f7d:1800::16])
+        by smtp.googlemail.com with ESMTPSA id d190-20020a25cdc7000000b00d3596aca5bcsm2545203ybf.34.2023.08.07.16.06.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 07 Aug 2023 16:06:02 -0700 (PDT)
+From:   "Vishal Moola (Oracle)" <vishal.moola@gmail.com>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Matthew Wilcox <willy@infradead.org>
+Cc:     linux-mm@kvack.org, linux-arch@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org,
+        linux-hexagon@vger.kernel.org, loongarch@lists.linux.dev,
+        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
+        linux-openrisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
+        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
+        linux-um@lists.infradead.org, xen-devel@lists.xenproject.org,
+        kvm@vger.kernel.org, Hugh Dickins <hughd@google.com>,
+        "Vishal Moola (Oracle)" <vishal.moola@gmail.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH mm-unstable v9 22/31] m68k: Convert various functions to use ptdescs
+Date:   Mon,  7 Aug 2023 16:05:04 -0700
+Message-Id: <20230807230513.102486-23-vishal.moola@gmail.com>
+X-Mailer: git-send-email 2.40.1
+In-Reply-To: <20230807230513.102486-1-vishal.moola@gmail.com>
+References: <20230807230513.102486-1-vishal.moola@gmail.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Sean Christopherson <seanjc@google.com> writes:
+As part of the conversions to replace pgtable constructor/destructors with
+ptdesc equivalents, convert various page table functions to use ptdescs.
 
->   <snip>
+Some of the functions use the *get*page*() helper functions. Convert
+these to use pagetable_alloc() and ptdesc_address() instead to help
+standardize page tables further.
 
-> +static int kvm_gmem_release(struct inode *inode, struct file *file)
-> +{
-> +	struct kvm_gmem *gmem =3D file->private_data;
-> +	struct kvm_memory_slot *slot;
-> +	struct kvm *kvm =3D gmem->kvm;
-> +	unsigned long index;
-> +
-> +	filemap_invalidate_lock(inode->i_mapping);
-> +
-> +	/*
-> +	 * Prevent concurrent attempts to *unbind* a memslot.  This is the last
-> +	 * reference to the file and thus no new bindings can be created, but
-> +	 * dereferencing the slot for existing bindings needs to be protected
-> +	 * against memslot updates, specifically so that unbind doesn't race
-> +	 * and free the memslot (kvm_gmem_get_file() will return NULL).
-> +	 */
-> +	mutex_lock(&kvm->slots_lock);
-> +
-> +	xa_for_each(&gmem->bindings, index, slot)
-> +		rcu_assign_pointer(slot->gmem.file, NULL);
-> +
-> +	synchronize_rcu();
-> +
-> +	/*
-> +	 * All in-flight operations are gone and new bindings can be created.
-> +	 * Zap all SPTEs pointed at by this file.  Do not free the backing
-> +	 * memory, as its lifetime is associated with the inode, not the file.
-> +	 */
-> +	kvm_gmem_invalidate_begin(gmem, 0, -1ul);
-> +	kvm_gmem_invalidate_end(gmem, 0, -1ul);
-> +
-> +	mutex_unlock(&kvm->slots_lock);
-> +
-> +	list_del(&gmem->entry);
-> +
-> +	filemap_invalidate_unlock(inode->i_mapping);
-> +
-> +	xa_destroy(&gmem->bindings);
-> +	kfree(gmem);
-> +
-> +	kvm_put_kvm(kvm);
-> +
-> +	return 0;
-> +}
-> +
+Acked-by: Mike Rapoport (IBM) <rppt@kernel.org>
+Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Signed-off-by: Vishal Moola (Oracle) <vishal.moola@gmail.com>
+---
+ arch/m68k/include/asm/mcf_pgalloc.h  | 47 ++++++++++++++--------------
+ arch/m68k/include/asm/sun3_pgalloc.h |  8 ++---
+ arch/m68k/mm/motorola.c              |  4 +--
+ 3 files changed, 30 insertions(+), 29 deletions(-)
 
-> <snip>
+diff --git a/arch/m68k/include/asm/mcf_pgalloc.h b/arch/m68k/include/asm/mcf_pgalloc.h
+index 5c2c0a864524..302c5bf67179 100644
+--- a/arch/m68k/include/asm/mcf_pgalloc.h
++++ b/arch/m68k/include/asm/mcf_pgalloc.h
+@@ -5,22 +5,22 @@
+ #include <asm/tlb.h>
+ #include <asm/tlbflush.h>
+ 
+-extern inline void pte_free_kernel(struct mm_struct *mm, pte_t *pte)
++static inline void pte_free_kernel(struct mm_struct *mm, pte_t *pte)
+ {
+-	free_page((unsigned long) pte);
++	pagetable_free(virt_to_ptdesc(pte));
+ }
+ 
+ extern const char bad_pmd_string[];
+ 
+-extern inline pte_t *pte_alloc_one_kernel(struct mm_struct *mm)
++static inline pte_t *pte_alloc_one_kernel(struct mm_struct *mm)
+ {
+-	unsigned long page = __get_free_page(GFP_DMA);
++	struct ptdesc *ptdesc = pagetable_alloc((GFP_DMA | __GFP_ZERO) &
++			~__GFP_HIGHMEM, 0);
+ 
+-	if (!page)
++	if (!ptdesc)
+ 		return NULL;
+ 
+-	memset((void *)page, 0, PAGE_SIZE);
+-	return (pte_t *) (page);
++	return ptdesc_address(ptdesc);
+ }
+ 
+ extern inline pmd_t *pmd_alloc_kernel(pgd_t *pgd, unsigned long address)
+@@ -35,36 +35,34 @@ extern inline pmd_t *pmd_alloc_kernel(pgd_t *pgd, unsigned long address)
+ static inline void __pte_free_tlb(struct mmu_gather *tlb, pgtable_t pgtable,
+ 				  unsigned long address)
+ {
+-	struct page *page = virt_to_page(pgtable);
++	struct ptdesc *ptdesc = virt_to_ptdesc(pgtable);
+ 
+-	pgtable_pte_page_dtor(page);
+-	__free_page(page);
++	pagetable_pte_dtor(ptdesc);
++	pagetable_free(ptdesc);
+ }
+ 
+ static inline pgtable_t pte_alloc_one(struct mm_struct *mm)
+ {
+-	struct page *page = alloc_pages(GFP_DMA, 0);
++	struct ptdesc *ptdesc = pagetable_alloc(GFP_DMA | __GFP_ZERO, 0);
+ 	pte_t *pte;
+ 
+-	if (!page)
++	if (!ptdesc)
+ 		return NULL;
+-	if (!pgtable_pte_page_ctor(page)) {
+-		__free_page(page);
++	if (!pagetable_pte_ctor(ptdesc)) {
++		pagetable_free(ptdesc);
+ 		return NULL;
+ 	}
+ 
+-	pte = page_address(page);
+-	clear_page(pte);
+-
++	pte = ptdesc_address(ptdesc);
+ 	return pte;
+ }
+ 
+ static inline void pte_free(struct mm_struct *mm, pgtable_t pgtable)
+ {
+-	struct page *page = virt_to_page(pgtable);
++	struct ptdesc *ptdesc = virt_to_ptdesc(pgtable);
+ 
+-	pgtable_pte_page_dtor(page);
+-	__free_page(page);
++	pagetable_pte_dtor(ptdesc);
++	pagetable_free(ptdesc);
+ }
+ 
+ /*
+@@ -75,16 +73,19 @@ static inline void pte_free(struct mm_struct *mm, pgtable_t pgtable)
+ 
+ static inline void pgd_free(struct mm_struct *mm, pgd_t *pgd)
+ {
+-	free_page((unsigned long) pgd);
++	pagetable_free(virt_to_ptdesc(pgd));
+ }
+ 
+ static inline pgd_t *pgd_alloc(struct mm_struct *mm)
+ {
+ 	pgd_t *new_pgd;
++	struct ptdesc *ptdesc = pagetable_alloc((GFP_DMA | __GFP_NOWARN) &
++			~__GFP_HIGHMEM, 0);
+ 
+-	new_pgd = (pgd_t *)__get_free_page(GFP_DMA | __GFP_NOWARN);
+-	if (!new_pgd)
++	if (!ptdesc)
+ 		return NULL;
++	new_pgd = ptdesc_address(ptdesc);
++
+ 	memcpy(new_pgd, swapper_pg_dir, PTRS_PER_PGD * sizeof(pgd_t));
+ 	memset(new_pgd, 0, PAGE_OFFSET >> PGDIR_SHIFT);
+ 	return new_pgd;
+diff --git a/arch/m68k/include/asm/sun3_pgalloc.h b/arch/m68k/include/asm/sun3_pgalloc.h
+index 198036aff519..ff48573db2c0 100644
+--- a/arch/m68k/include/asm/sun3_pgalloc.h
++++ b/arch/m68k/include/asm/sun3_pgalloc.h
+@@ -17,10 +17,10 @@
+ 
+ extern const char bad_pmd_string[];
+ 
+-#define __pte_free_tlb(tlb,pte,addr)			\
+-do {							\
+-	pgtable_pte_page_dtor(pte);			\
+-	tlb_remove_page((tlb), pte);			\
++#define __pte_free_tlb(tlb, pte, addr)				\
++do {								\
++	pagetable_pte_dtor(page_ptdesc(pte));			\
++	tlb_remove_page_ptdesc((tlb), page_ptdesc(pte));	\
+ } while (0)
+ 
+ static inline void pmd_populate_kernel(struct mm_struct *mm, pmd_t *pmd, pte_t *pte)
+diff --git a/arch/m68k/mm/motorola.c b/arch/m68k/mm/motorola.c
+index 8bca46e51e94..c1761d309fc6 100644
+--- a/arch/m68k/mm/motorola.c
++++ b/arch/m68k/mm/motorola.c
+@@ -161,7 +161,7 @@ void *get_pointer_table(int type)
+ 			 * m68k doesn't have SPLIT_PTE_PTLOCKS for not having
+ 			 * SMP.
+ 			 */
+-			pgtable_pte_page_ctor(virt_to_page(page));
++			pagetable_pte_ctor(virt_to_ptdesc(page));
+ 		}
+ 
+ 		mmu_page_ctor(page);
+@@ -201,7 +201,7 @@ int free_pointer_table(void *table, int type)
+ 		list_del(dp);
+ 		mmu_page_dtor((void *)page);
+ 		if (type == TABLE_PTE)
+-			pgtable_pte_page_dtor(virt_to_page((void *)page));
++			pagetable_pte_dtor(virt_to_ptdesc((void *)page));
+ 		free_page (page);
+ 		return 1;
+ 	} else if (ptable_list[type].next != dp) {
+-- 
+2.40.1
 
-> +
-> +int kvm_gmem_bind(struct kvm *kvm, struct kvm_memory_slot *slot,
-> +		  unsigned int fd, loff_t offset)
-> +{
-> +	loff_t size =3D slot->npages << PAGE_SHIFT;
-> +	unsigned long start, end, flags;
-> +	struct kvm_gmem *gmem;
-> +	struct inode *inode;
-> +	struct file *file;
-> +
-> +	BUILD_BUG_ON(sizeof(gfn_t) !=3D sizeof(slot->gmem.pgoff));
-> +
-> +	file =3D fget(fd);
-> +	if (!file)
-> +		return -EINVAL;
-> +
-> +	if (file->f_op !=3D &kvm_gmem_fops)
-> +		goto err;
-> +
-> +	gmem =3D file->private_data;
-> +	if (gmem->kvm !=3D kvm)
-> +		goto err;
-> +
-> +	inode =3D file_inode(file);
-> +	flags =3D (unsigned long)inode->i_private;
-> +
-> +	/*
-> +	 * For simplicity, require the offset into the file and the size of the
-> +	 * memslot to be aligned to the largest possible page size used to back
-> +	 * the file (same as the size of the file itself).
-> +	 */
-> +	if (!kvm_gmem_is_valid_size(offset, flags) ||
-> +	    !kvm_gmem_is_valid_size(size, flags))
-> +		goto err;
-> +
-> +	if (offset + size > i_size_read(inode))
-> +		goto err;
-> +
-> +	filemap_invalidate_lock(inode->i_mapping);
-> +
-> +	start =3D offset >> PAGE_SHIFT;
-> +	end =3D start + slot->npages;
-> +
-> +	if (!xa_empty(&gmem->bindings) &&
-> +	    xa_find(&gmem->bindings, &start, end - 1, XA_PRESENT)) {
-> +		filemap_invalidate_unlock(inode->i_mapping);
-> +		goto err;
-> +	}
-> +
-> +	/*
-> +	 * No synchronize_rcu() needed, any in-flight readers are guaranteed to
-> +	 * be see either a NULL file or this new file, no need for them to go
-> +	 * away.
-> +	 */
-> +	rcu_assign_pointer(slot->gmem.file, file);
-> +	slot->gmem.pgoff =3D start;
-> +
-> +	xa_store_range(&gmem->bindings, start, end - 1, slot, GFP_KERNEL);
-> +	filemap_invalidate_unlock(inode->i_mapping);
-> +
-> +	/*
-> +	 * Drop the reference to the file, even on success.  The file pins KVM,
-> +	 * not the other way 'round.  Active bindings are invalidated if the
-> +	 * file is closed before memslots are destroyed.
-> +	 */
-> +	fput(file);
-> +	return 0;
-> +
-> +err:
-> +	fput(file);
-> +	return -EINVAL;
-> +}
-> +
-
-I=E2=80=99d like to propose an alternative to the refcounting approach betw=
-een
-the gmem file and associated kvm, where we think of KVM=E2=80=99s memslots =
-as
-users of the gmem file.
-
-Instead of having the gmem file pin the VM (i.e. take a refcount on
-kvm), we could let memslot take a refcount on the gmem file when the
-memslots are configured.
-
-Here=E2=80=99s a POC patch that flips the refcounting (and modified selftes=
-ts in
-the next commit):
-https://github.com/googleprodkernel/linux-cc/commit/7f487b029b89b9f3e9b094a=
-721bc0772f3c8c797
-
-One side effect of having the gmem file pin the VM is that now the gmem
-file becomes sort of a false handle on the VM:
-
-+ Closing the file destroys the file pointers in the VM and invalidates
-  the pointers
-+ Keeping the file open keeps the VM around in the kernel even though
-  the VM fd may already be closed.
-
-I feel that memslots form a natural way of managing usage of the gmem
-file. When a memslot is created, it is using the file; hence we take a
-refcount on the gmem file, and as memslots are removed, we drop
-refcounts on the gmem file.
-
-The KVM pointer is shared among all the bindings in gmem=E2=80=99s xarray, =
-and we can enforce that a gmem file is used only with one VM:
-
-+ When binding a memslot to the file, if a kvm pointer exists, it must
-  be the same kvm as the one in this binding
-+ When the binding to the last memslot is removed from a file, NULL the
-  kvm pointer.
-
-When the VM is freed, KVM will iterate over all the memslots, removing
-them one at a time and eventually NULLing the kvm pointer.
-
-I believe the =E2=80=9CKVM=E2=80=99s memslots using the file=E2=80=9D appro=
-ach is also simpler
-because all accesses to the bindings xarray and kvm pointer can be
-serialized using filemap_invalidate_lock(), and we are already using
-this lock regardless of refcounting approach. This serialization means
-we don=E2=80=99t need to use RCU on file/kvm pointers since accesses are al=
-ready
-serialized.
-
-There=E2=80=99s also no need to specially clean up the associated KVM when =
-the
-file reference close, because by the time the .release() handler is
-called, any file references held by memslots would have been dropped,
-and so the bindings would have been removed, and the kvm pointer would
-have been NULLed out.
-
-The corollary to this approach is that at creation time, the file won=E2=80=
-=99t
-be associated with any kvm, and we can use a system ioctl instead of a
-VM-specific ioctl as Fuad brought up [1] (Association with kvm before
-the file is used with memslots is possible would mean more tracking so
-that kvm can close associated files when it is closed.)
-
-One reason for binding gmem files to a specific VM on creation is to
-allow (in future) a primary VM to control permissions on the memory for
-other files [2]. This permission control can still be enforced with the
-=E2=80=9CKVM=E2=80=99s memslots using the file=E2=80=9D approach. The enfor=
-cement rules will
-just be delayed till the first binding between a VM and a gmem file.
-
-Could binding gmem files not on creation, but at memslot configuration
-time be sufficient and simpler?
-
-[1] https://lore.kernel.org/lkml/CA+EHjTzP2fypgkJbRpSPrKaWytW7v8ANEifofMnQC=
-kdvYaX6Eg@mail.gmail.com/
-[2] https://lore.kernel.org/lkml/ZMKlo+Fe8n%2FeLQ82@google.com/
-
-> <snip>

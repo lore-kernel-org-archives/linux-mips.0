@@ -2,111 +2,130 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D6C9CC001DB
-	for <linux-mips@archiver.kernel.org>; Tue,  8 Aug 2023 21:23:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 06A2CC001DB
+	for <linux-mips@archiver.kernel.org>; Tue,  8 Aug 2023 21:25:11 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236234AbjHHVXq (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 8 Aug 2023 17:23:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33808 "EHLO
+        id S235578AbjHHVZK (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 8 Aug 2023 17:25:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51296 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236384AbjHHVXg (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Tue, 8 Aug 2023 17:23:36 -0400
-Received: from mail-qv1-xf30.google.com (mail-qv1-xf30.google.com [IPv6:2607:f8b0:4864:20::f30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31AAB19B0
-        for <linux-mips@vger.kernel.org>; Tue,  8 Aug 2023 14:22:56 -0700 (PDT)
-Received: by mail-qv1-xf30.google.com with SMTP id 6a1803df08f44-63c70dc7ed2so41771906d6.0
-        for <linux-mips@vger.kernel.org>; Tue, 08 Aug 2023 14:22:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691529775; x=1692134575;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=EAfKJttSc6RMc1kx0NwaeBECgsM9wq/2wY2wW3WfpNE=;
-        b=oIVhyAjqBOJNoiGz6lvKgE8mlWUf2Y/T25UZpV5fAES7nnfjTe4zOepgKsThzfr3rE
-         y9xJXQRJ6v0Rrxd4idkaeVA589BXOhLh0McwPExujxhjgbCO286PfZaJRi6zM9KBT1Kb
-         oHnntKzPAa9/nIbdiwWSQnLF3P38vkNNIIRKVe81qwqF8YsfVtS3x85Pq3RYeOju7XAG
-         vYJ2zX9418NYXXvLRD7WUEFqFERiqjmaU5IbqfhVFQxRUHQj//99P02W0ujfZJnlAhp8
-         0XxnfG1ipbiYlim5bUEx21nnsxbJuS5mlX8rNeP/4Fj/3Vr13oBxWY1Y8j+z6ETNRpBA
-         uMfg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691529775; x=1692134575;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=EAfKJttSc6RMc1kx0NwaeBECgsM9wq/2wY2wW3WfpNE=;
-        b=EbYRpmSLwk6jFWKj3LOjgTBFkgpjhhkiOkCabpyO5jsOsUovLzIHIiNyOK4WCJJiaC
-         2Q6BH7NkpWhicj/ejzJYKdrIWl3yAm8Cv9V7fajeAEk+nc59CbSNigG91mQaBUaBxjme
-         oj0uYw6uDz9Jtmzy0VVzvUQdcWjT7jM/KmLQ6DcQ9KQ8Q4aeMLNZLJVPOTGg/vlg22JU
-         1QKu/pbL3Q/EMnbRO5r69dHZ9e3Vm8+fNYIfrhwncDUBFc9a0OKQzvBBz96kCCBwwlVT
-         Al/rkgYomgVvMxZr1hF+hs6F4WHV6HcG3daF9T2SdqYlLhMh5QYr/qEE87QrBcDCNOTz
-         bE+g==
-X-Gm-Message-State: AOJu0Yz2lJUWhlPi32iS9RBXnRh0e8GJuL+j72rp0WEik7/Mi5FKLgn6
-        HlPW3rXO/qGQT/RTieY1gXp00UjDNqJh1w==
-X-Google-Smtp-Source: AGHT+IHYG2JV8Jokbcp3rDkyodhSV1xwHvPv8yyV4J6pG+XC97wbTohly6+IfKZGBSDcPcG+5D7lWA==
-X-Received: by 2002:a05:6214:440f:b0:62f:fd5d:4ff with SMTP id oj15-20020a056214440f00b0062ffd5d04ffmr610950qvb.21.1691529775208;
-        Tue, 08 Aug 2023 14:22:55 -0700 (PDT)
-Received: from [10.67.48.245] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id d28-20020a0caa1c000000b0063f78bc8685sm3262319qvb.139.2023.08.08.14.22.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 08 Aug 2023 14:22:54 -0700 (PDT)
-Message-ID: <48b77305-6b92-c453-d222-aad9a8834c69@gmail.com>
-Date:   Tue, 8 Aug 2023 14:22:52 -0700
+        with ESMTP id S235519AbjHHVZK (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Tue, 8 Aug 2023 17:25:10 -0400
+Received: from h2.cmg1.smtp.forpsi.com (h2.cmg1.smtp.forpsi.com [81.2.195.163])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8D8990
+        for <linux-mips@vger.kernel.org>; Tue,  8 Aug 2023 14:25:07 -0700 (PDT)
+Received: from [192.168.1.166] ([91.218.190.200])
+        by cmgsmtp with ESMTPSA
+        id THPBqHCO9Pm6CTHPBq8ssJ; Tue, 08 Aug 2023 09:45:26 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=triops.cz; s=f2019;
+        t=1691480726; bh=dK8y32VSPfv+uSmARxH/e37aIn+O3g97fmYoKJta8qw=;
+        h=Message-ID:Subject:From:To:Date:Content-Type:MIME-Version;
+        b=HCsEgBNiY5ROL/dh0khzXv4yMIKED5HaYSQJMzZlqk2US/LX3Xj+P6DYAG/NK/j7V
+         dCTVSnhW+fns4ZlYEbXckXiMKWU0XKuStJzWRhhe8HzsGzmKHxhn+xMWlFGkL7ERk5
+         wZGRQcXu+X+aTO3EAYyjdbIk7hV1E4C+ThFI9/F5aDtnwnQqe2QBOeaCiVFioYVaOA
+         2zdfZntSBr2RE1FMJIJJ4787eV9cFvVWTgqVtSBvav+dva0dwf6PCW479oM737LrQy
+         61AOv0bgt5PKbDbiWWZGOBPWTRNeoc41+izWmy9YiONmmzuzXHjl262wez1C6OyFy9
+         G2H3d4nLng6Cg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=triops.cz; s=f2019;
+        t=1691480726; bh=dK8y32VSPfv+uSmARxH/e37aIn+O3g97fmYoKJta8qw=;
+        h=Message-ID:Subject:From:To:Date:Content-Type:MIME-Version;
+        b=HCsEgBNiY5ROL/dh0khzXv4yMIKED5HaYSQJMzZlqk2US/LX3Xj+P6DYAG/NK/j7V
+         dCTVSnhW+fns4ZlYEbXckXiMKWU0XKuStJzWRhhe8HzsGzmKHxhn+xMWlFGkL7ERk5
+         wZGRQcXu+X+aTO3EAYyjdbIk7hV1E4C+ThFI9/F5aDtnwnQqe2QBOeaCiVFioYVaOA
+         2zdfZntSBr2RE1FMJIJJ4787eV9cFvVWTgqVtSBvav+dva0dwf6PCW479oM737LrQy
+         61AOv0bgt5PKbDbiWWZGOBPWTRNeoc41+izWmy9YiONmmzuzXHjl262wez1C6OyFy9
+         G2H3d4nLng6Cg==
+Message-ID: <1ab766fca893588d75590d2faf624eb7d9d27a8a.camel@triops.cz>
+Subject: Re: next: mips: cavium_octeon_defconfig: gcc-8 -
+ dwc3-octeon.c:502:8: include/linux/compiler_types.h:397:38: error: call to
+ '__compiletime_assert_335' declared with attribute error: FIELD_PREP: value
+ too large for the field _compiletime_assert
+From:   Ladislav Michl <ladis@triops.cz>
+To:     Naresh Kamboju <naresh.kamboju@linaro.org>,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        linux-usb@vger.kernel.org, linux-mips@vger.kernel.org,
+        lkft-triage@lists.linaro.org
+Cc:     Thinh.Nguyen@synopsys.com,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Anders Roxell <anders.roxell@linaro.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Date:   Tue, 08 Aug 2023 09:45:25 +0200
+In-Reply-To: <CA+G9fYspyEdT9wmVpL04J-p0CwqA+_v_L4H+ihY9VYqpCMmQ1Q@mail.gmail.com>
+References: <CA+G9fYspyEdT9wmVpL04J-p0CwqA+_v_L4H+ihY9VYqpCMmQ1Q@mail.gmail.com>
+Organization: Triops, s.r.o.
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.46.4-2 
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: soft and hard float n32 and n64 binaries getting illegal
- instructions on Cobalt Qube2
-Content-Language: en-US
-To:     "Maciej W. Rozycki" <macro@orcam.me.uk>
-Cc:     linux-mips@vger.kernel.org,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Serge Semin <fancer.lancer@gmail.com>
-References: <733b4eec-6297-e72e-0803-a32a25d83072@gmail.com>
- <alpine.DEB.2.21.2308051412570.38537@angie.orcam.me.uk>
- <3afb0b00-e4f2-15a7-c68f-8b2475dc9f77@gmail.com>
- <alpine.DEB.2.21.2308081027580.38537@angie.orcam.me.uk>
- <alpine.DEB.2.21.2308081153240.38537@angie.orcam.me.uk>
- <e161f63c-e573-7bb6-b988-d949c8ef0ac4@gmail.com>
- <alpine.DEB.2.21.2308082044400.38537@angie.orcam.me.uk>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-In-Reply-To: <alpine.DEB.2.21.2308082044400.38537@angie.orcam.me.uk>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4wfDsx0vWaX5UBDYoWotNwmlrPCGV8ftMgIhITKomVTAP0kzNEBHBWmnQOnh5vNO60zgTtfJv993OMrbVAKAz1bRg3nHt33FGcrb76ESqsdG+MDMmT5gX+
+ HK3l8DXcR0nprDy17Bg5HWZ5+9ngoY9JkkI8/QTT+QNbQcUpxWkwM59PQ931npl/c1z6LimwkleA+iDNH5USBWXGDY278fY4daKu+yWuIzSftUgUx45CW3ov
+ RmxYAYkdR5chvedeuGAamHCjqkXyVqO/+vdyGApmM9nIP+8LM8m+UaxjxBU+Z5ROIJzG9KWv+oD80C1g/VnwMLRI1ZHyHRQ08nhivGDENIi35kZsD+dDUnSF
+ xpbdZ6jryhY2Ivz+Dy/Nxjq9DMGx0j/J3mh7MX5JUJFhe5LdaNhRvhrpVocpBSGjkIWu8Ds2hnYMll5IY4BB2drs4QeIWvhryNs/ZXLg/zfUVKtONwwivDyL
+ 2XhWDeBo7YrqyXovx7Fe2fsixnWillkBvtVPdcETWl3PhaBCxq0OBO3wRH4=
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On 8/8/23 12:54, Maciej W. Rozycki wrote:
-> On Tue, 8 Aug 2023, Florian Fainelli wrote:
-> 
->> Now GDB tells me the faulting instruction is the following:
->>
->> #0  0x77dcf190 in _dlstart_data () from target/lib/ld-musl-mipsn32el.so.1
->> #1  0x77e28bfc in ?? () from target/lib/ld-musl-mipsn32el.so.1
->> (gdb) display/i $pc
->> 2: x/i $pc
->> => 0x77dcf190 <_dlstart_data+17976>:    dclz    v1,a0
-> 
->   So this is a MIPS64r1 instruction and Cobalt Qube2 is what, MIPS III?
+Hi Naresh,
 
-It goes all the way through MIPS IV:
+On Tue, 2023-08-08 at 12:41 +0530, Naresh Kamboju wrote:
+> [My two cents]
+>=20
+> While building Linux next-20230808 mips cavium_octeon_defconfig with
+> gcc-8
+> failed with below warnings and errors.
+>=20
+> Build log:
+> ----------
+>=20
+> In function 'dwc3_octeon_setup.isra.4',
+> =C2=A0=C2=A0=C2=A0 inlined from 'dwc3_octeon_probe' at drivers/usb/dwc3/d=
+wc3-
+> octeon.c:502:8:
+> include/linux/compiler_types.h:397:38: error: call to
+> '__compiletime_assert_335' declared with attribute error: FIELD_PREP:
+> value too large for the field
+> =C2=A0 _compiletime_assert(condition, msg, __compiletime_assert_,
+> __COUNTER__)
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+ ^
+> include/linux/compiler_types.h:378:4: note: in definition of macro
+> '__compiletime_assert'
+> =C2=A0=C2=A0=C2=A0 prefix ## suffix();=C2=A0=C2=A0=C2=A0 \
+> =C2=A0=C2=A0=C2=A0 ^~~~~~
 
-isa                     : mips1 mips2 mips3 mips4
+Not sure what is really going on there. Code compiles even using 32bit
+toochains without warnings and such an assignments are used in other
+kernel drivers. See for example drivers/cxl/core/hdm.c:534 which is
+using the same types. Also=20
+drivers/net/ethernet/marvell/octeontx2/af/rvu_npc_hash.c in
+rvu_exact_prepare_table_entry...
 
-> It looks like you've got a broken binary that expects a higher ISA version
-> than what your hardware supports.  Assuming that you have built it with
-> the correct compilation options (which I take it is the case given that
-> your installation mostly works), you need to sort it out with the supplier
-> of your software.  Perhaps there's inline assembly there that has been
-> guarded incorrectly (though it shouldn't be necessary as GCC is itself
-> able to produce DCLZ where suitable).
+Anyway, let me setup gcc-8 toolchain :)
 
-It is my bad having assumed that the RM5231 CPU was MIPS64R1 capable and 
-I completely forgot that it was not the case, thanks a lot for your 
-help. I have now told GCC to build for -march=mips4 by default and it 
-works properly.
-
-I will in in that corner over there to hide ->
--- 
-Florian
+> =C2=A0 Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+>=20
+> Links:
+> -----
+> =C2=A0-
+> https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20230808/=
+testrun/18882876/suite/build/test/gcc-8-cavium_octeon_defconfig/log
+> =C2=A0-
+> https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20230808/=
+testrun/18882876/suite/build/test/gcc-8-cavium_octeon_defconfig/history/
+>=20
+> Steps to reproduce:
+> ------------
+> =C2=A0 tuxmake --runtime podman --target-arch mips --toolchain gcc-8
+> --kconfig cavium_octeon_defconfig
+> =C2=A0=C2=A0 -
+> https://storage.tuxsuite.com/public/linaro/lkft/builds/2TgoAZwerJ28UWHyqf=
+QUiaYYhrl/tuxmake_reproducer.sh
+>=20
+> --
+> Linaro LKFT
+> https://lkft.linaro.org
 

@@ -2,167 +2,149 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BE597C001DF
-	for <linux-mips@archiver.kernel.org>; Mon,  7 Aug 2023 23:25:08 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 86CE0C001DB
+	for <linux-mips@archiver.kernel.org>; Tue,  8 Aug 2023 15:48:52 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230135AbjHGXZI (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 7 Aug 2023 19:25:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58354 "EHLO
+        id S230123AbjHHPsv (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 8 Aug 2023 11:48:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40878 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229841AbjHGXZG (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Mon, 7 Aug 2023 19:25:06 -0400
-Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 206BF121
-        for <linux-mips@vger.kernel.org>; Mon,  7 Aug 2023 16:25:05 -0700 (PDT)
-Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-586b0ef8b04so40114867b3.3
-        for <linux-mips@vger.kernel.org>; Mon, 07 Aug 2023 16:25:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1691450704; x=1692055504;
-        h=cc:to:from:subject:message-id:mime-version:in-reply-to:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=iwb23aAhSO8tTiEFGOvNlQCsoOox6vBjb8gCypJE4mI=;
-        b=R4PwviCR8DjVobdiirsmlaUW+2G2OreWXDR1oudY0WdYIlf/tRBxovHV7VVaY5H2D7
-         s6z9nsA/hZZOzOlAXwj0GlLszUfPpUcqxoVPBkJopNIVm5p7oN0Kjjk8CNCU0uvTetel
-         32HvbTwQx+uTw/DQ0hiV2GccLkJL/LCqkzOCOWamh7kng72/soRCwM6up6P8iJdnPSBO
-         x/GLCUjk6m180XrAeVCUYgLoKf2lX03dUyg16yLerbR/XPy1Dd0ljJbOlBwH8tdW8OEH
-         2D0Guisqm80uErrMhMIOa5wS5t40qQeuRJl0ljw9a+5siKs8Y3hopoVBYIWmqvB1hWx2
-         ivOw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691450704; x=1692055504;
-        h=cc:to:from:subject:message-id:mime-version:in-reply-to:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=iwb23aAhSO8tTiEFGOvNlQCsoOox6vBjb8gCypJE4mI=;
-        b=GUAr4BEUtiYwU7jqAyc0hQpe/Kr/lXrSjtHFNz+nfF6W/473B5WdAtzJ5wloxwJIWB
-         sFR+gB5HOl3dxK+vIJZv0usLCcRsAf/e+tCYjzwagtLD7DW+nzhrSnoTGtZKT9ECXA42
-         MWT7XgtVtrcCmt+EgK2rOk1Es0KHOYyM04I4MCQMQYoBa1FGb5aIQaaoG8GrkXkc/Od0
-         8+dikf27m54LRx34NGBfNC4p25/JANM9NN+hizToTKno72QHJB0+F/DTQVbI1Gsgd3v9
-         7mwY7Oxvwqbr47yFflI6S7haS9Q299AsX6dz8cOw2VrUh2bMm3cTXCao83AYCvVzxBec
-         jTcw==
-X-Gm-Message-State: AOJu0YzeFn43eZ5mAgWaDpaAfm+Cq932M98wHWrr0zBbRX0GlSsV3rdD
-        TtlVjwJfVH1cyY37E+SAd7v/38B/nIv3IlbViA==
-X-Google-Smtp-Source: AGHT+IFETd5g4M85TFzvRFwf955/8WReyRF2E8l7BIM0KMZjnxLWho58vfoUb+v3YvXkNVl+0ZtvnZ9xmC/A9UkLTg==
-X-Received: from ackerleytng-ctop.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:13f8])
- (user=ackerleytng job=sendgmr) by 2002:a25:445:0:b0:d4c:2a34:aeab with SMTP
- id 66-20020a250445000000b00d4c2a34aeabmr47419ybe.11.1691450704306; Mon, 07
- Aug 2023 16:25:04 -0700 (PDT)
-Date:   Mon, 07 Aug 2023 23:25:02 +0000
-In-Reply-To: <20230718234512.1690985-29-seanjc@google.com> (message from Sean
- Christopherson on Tue, 18 Jul 2023 16:45:11 -0700)
+        with ESMTP id S229775AbjHHPr1 (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Tue, 8 Aug 2023 11:47:27 -0400
+Received: from wout5-smtp.messagingengine.com (wout5-smtp.messagingengine.com [64.147.123.21])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFB2D10C0;
+        Tue,  8 Aug 2023 08:41:32 -0700 (PDT)
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
+        by mailout.west.internal (Postfix) with ESMTP id F125A3200906;
+        Tue,  8 Aug 2023 09:46:05 -0400 (EDT)
+Received: from imap51 ([10.202.2.101])
+  by compute6.internal (MEProxy); Tue, 08 Aug 2023 09:46:06 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+        :cc:content-transfer-encoding:content-type:content-type:date
+        :date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:sender:subject:subject:to:to; s=fm3; t=
+        1691502365; x=1691588765; bh=QCX/lpfXwJ5z0pSWhPcBrqLzzwFNbbABXjK
+        ojnNk55A=; b=iDzl4ABAxMRM9X/i6koq5ZbUzWXbe9LzbrZAIxzX+cb6szPrCcQ
+        THyakH0okjmXwZAL7f9WOa3F6XbffGdSy3qdvZxJplREiPRmpCkj3BLlCeYEHSCP
+        Bj/KNmQNLXWcGMLlD0YGuGaaM0rw0bNvfh4G5XBN07rZrD3+xO4rYgaWnvZC93uA
+        65tbwHRL9Ef2AsCWWChos13pW9a4OFLZRVYbdtVgspv/2tvlSUaXrucuEDuGWrUR
+        gJZckq3LePJdWDZoE+oO3fvqigBxNt9I5E7ID/PjdQ2sJVYm+wyzXwUGFJtcX9SN
+        k8WU0LXJnUBacFFywxNOi67mewEHMUBTfyw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-transfer-encoding
+        :content-type:content-type:date:date:feedback-id:feedback-id
+        :from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:sender:subject:subject:to:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=
+        1691502365; x=1691588765; bh=QCX/lpfXwJ5z0pSWhPcBrqLzzwFNbbABXjK
+        ojnNk55A=; b=m+0uuOPj8DzZFQauay0myP3ngR+pxV68xX3itgWvbpw0uI7V5fC
+        HDeEk7v3dtDZzbKchxhT5j3fFtiw4bl4QVuM6p/p28GaEMy6Yg0KinVVLUn15Tic
+        cZ+UBJ2zIxFjVpG3w//acLwNDEQxb/Vv7+PlhjSpQTv9lPcqwKnfPtXDZgaKp71D
+        QjlPhp9BrnzlINKuisfQ4R7ORzXRfFH+mpEmsmVqhht3zW/f+wbKAIxh544er92k
+        9QUnNdVQu+bEHGkKU01h3j4GYGTblgDnC+VnQf98B0/JuERLqdJf7dr8K1EDZGm2
+        aKjsq36wVxB4rOe+PwtSfCB6a4+urkHoK6A==
+X-ME-Sender: <xms:G0fSZCdWAFkJZrFe2FTFPv3hpC8M5SlrEYjdTDyqJi2XYgy7-4FXpw>
+    <xme:G0fSZMPUdbhRVRKklMvcSS5C8ht5I_wdt40kiw3viLPtin-pRLxvNh2hD9rlSghLn
+    sKgXoh4vazVX9upJOg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrledvgdeijecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefofgggkfgjfhffhffvvefutgfgsehtqhertderreejnecuhfhrohhmpedftehr
+    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
+    htvghrnhepgfekueelgeeigefhudduledtkeefffejueelheelfedutedttdfgveeufeef
+    ieegnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucevlhhushhtvghrufhiiigvpe
+    dtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrrhhnugesrghrnhgusgdruggv
+X-ME-Proxy: <xmx:G0fSZDghd5wQbVZ8EdKhEfd-jHfxsmr1j9wGiZ174Ohs8LAoWDt8VA>
+    <xmx:G0fSZP_gFBuSKNoV9BlTrCBqoRTNcC6is7IiyN7CKJnKy8qyO3g8BA>
+    <xmx:G0fSZOuqYBPQedoW5Ouh9pVTyYN8FPXXMnxuj_pfeMFgOOfAJ0jqxA>
+    <xmx:HUfSZAJLDRrcSoLfW8aqhOdectWfFwB346rzaGubRotAzDaZltuUAw>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 430EDB6008D; Tue,  8 Aug 2023 09:46:03 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.9.0-alpha0-624-g7714e4406d-fm-20230801.001-g7714e440
 Mime-Version: 1.0
-Message-ID: <diqzleem306p.fsf@ackerleytng-ctop.c.googlers.com>
-Subject: Re: [RFC PATCH v11 28/29] KVM: selftests: Add basic selftest for guest_memfd()
-From:   Ackerley Tng <ackerleytng@google.com>
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     pbonzini@redhat.com, maz@kernel.org, oliver.upton@linux.dev,
-        chenhuacai@kernel.org, mpe@ellerman.id.au, anup@brainfault.org,
-        paul.walmsley@sifive.com, palmer@dabbelt.com,
-        aou@eecs.berkeley.edu, seanjc@google.com, willy@infradead.org,
-        akpm@linux-foundation.org, paul@paul-moore.com, jmorris@namei.org,
-        serge@hallyn.com, kvm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org, chao.p.peng@linux.intel.com,
-        tabba@google.com, jarkko@kernel.org, yu.c.zhang@linux.intel.com,
-        vannapurve@google.com, mail@maciej.szmigiero.name, vbabka@suse.cz,
-        david@redhat.com, qperret@google.com, michael.roth@amd.com,
-        wei.w.wang@intel.com, liam.merwick@oracle.com,
-        isaku.yamahata@gmail.com, kirill.shutemov@linux.intel.com
-Content-Type: text/plain; charset="UTF-8"
+Message-Id: <d025d95e-b12e-4502-b3fe-dc03d5ec831d@app.fastmail.com>
+In-Reply-To: <CACRpkdYisteBTk9DOeCZiCeH5hJW87O-m+zsWAU7uwg7ud=ZYw@mail.gmail.com>
+References: <20230808-virt-to-phys-mips-v1-1-af6fcd45ed31@linaro.org>
+ <CACRpkdYisteBTk9DOeCZiCeH5hJW87O-m+zsWAU7uwg7ud=ZYw@mail.gmail.com>
+Date:   Tue, 08 Aug 2023 15:45:41 +0200
+From:   "Arnd Bergmann" <arnd@arndb.de>
+To:     "Linus Walleij" <linus.walleij@linaro.org>,
+        "Thomas Bogendoerfer" <tsbogend@alpha.franken.de>,
+        "Florian Fainelli" <f.fainelli@gmail.com>,
+        "Baoquan He" <bhe@redhat.com>,
+        "Jiaxun Yang" <jiaxun.yang@flygoat.com>
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] MIPS: Drop virt_to_phys define to self
+Content-Type: text/plain;charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Sean Christopherson <seanjc@google.com> writes:
-
-> Add a selftest to verify the basic functionality of guest_memfd():
+On Tue, Aug 8, 2023, at 15:12, Linus Walleij wrote:
+> On Tue, Aug 8, 2023 at 11:29=E2=80=AFAM Linus Walleij <linus.walleij@l=
+inaro.org> wrote:
 >
-> <snip>
+>> The function virt_to_phys was defined to virt_to_phys and then
+>> implemented right below.
+>>
+>> I can't understand why, just drop it and let the actual function
+>> slot in.
+>>
+>> Fixes: dfad83cb7193 ("MIPS: Add support for CONFIG_DEBUG_VIRTUAL")
+>> Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+>> ---
+>>  arch/mips/include/asm/io.h | 1 -
+>>  1 file changed, 1 deletion(-)
+>>
+>> diff --git a/arch/mips/include/asm/io.h b/arch/mips/include/asm/io.h
+>> index affd21e9c20b..18ed44843541 100644
+>> --- a/arch/mips/include/asm/io.h
+>> +++ b/arch/mips/include/asm/io.h
+>> @@ -111,7 +111,6 @@ extern phys_addr_t __virt_to_phys(volatile const =
+void *x);
+>>  #define __virt_to_phys(x)      __virt_to_phys_nodebug(x)
+>>  #endif
+>>
+>> -#define virt_to_phys virt_to_phys
+>>  static inline phys_addr_t virt_to_phys(const volatile void *x)
+>>  {
+>>         return __virt_to_phys(x);
+>
+> Just have to CC Arnd on this because I never feel I understand this
+> properly.
+>
+> Normally you would do this so as to override the default virt_to_phys()
+> from include/asm-generic/io.h, but we do not seem to be using it here?
 
-Here's one more test:
+Correct. In linux-next, we have converted arch/sh to use
+include/asm-generic/io.h, so arch/mips is now the last one
+to not use it.=20
 
-From 72dc6836f01bdd613d64d4c6a4f2af8f2b777ba2 Mon Sep 17 00:00:00 2001
-From: Ackerley Tng <ackerleytng@google.com>
-Date: Tue, 1 Aug 2023 18:02:50 +0000
-Subject: [PATCH] KVM: selftests: Add tests - invalid inputs for
- KVM_CREATE_GUEST_MEMFD
+I see that Jiaxun Yang posted a patch for this in May and it looked
+like it should finally work [1], but there seems to still be something
+missing.
 
-Test that invalid inputs for KVM_CREATE_GUEST_MEMFD, such as
-non-page-aligned page size and invalid flags, are rejected by the
-KVM_CREATE_GUEST_MEMFD with EINVAL
+> Further right below we are implementing phys_to_virt() with no
+> corresponding define, so in any case this needs to go or that one
+> needs a define.
+>
+> That said they seem like a good candidate to replace with the
+> generic variant because the content is the same sans some debug
+> hacks that I doubt are still needed.
 
-Signed-off-by: Ackerley Tng <ackerleytng@google.com>
----
- tools/testing/selftests/kvm/guest_memfd_test.c  | 17 +++++++++++++++++
- .../selftests/kvm/include/kvm_util_base.h       | 11 +++++++++--
- 2 files changed, 26 insertions(+), 2 deletions(-)
+I think the ARCH_HAS_DEBUG_VIRTUAL option is useful in
+general, I'd rather move that into the common code if
+we were to unify it.
 
-diff --git a/tools/testing/selftests/kvm/guest_memfd_test.c b/tools/testing/selftests/kvm/guest_memfd_test.c
-index eb93c608a7e0..ad20f11b2d2c 100644
---- a/tools/testing/selftests/kvm/guest_memfd_test.c
-+++ b/tools/testing/selftests/kvm/guest_memfd_test.c
-@@ -90,6 +90,21 @@ static void test_fallocate(int fd, size_t page_size, size_t total_size)
- 	TEST_ASSERT(!ret, "fallocate to restore punched hole should succeed");
- }
- 
-+static void test_create_guest_memfd_invalid(struct kvm_vm *vm, size_t page_size)
-+{
-+	int fd;
-+
-+	/* Non-page-aligned page_size */
-+	fd = __vm_create_guest_memfd(vm, 1, 0);
-+	ASSERT_EQ(fd, -1);
-+	ASSERT_EQ(errno, EINVAL);
-+
-+	/* Invalid flags */
-+	fd = __vm_create_guest_memfd(vm, page_size, 99);
-+	ASSERT_EQ(fd, -1);
-+	ASSERT_EQ(errno, EINVAL);
-+}
-+
- 
- int main(int argc, char *argv[])
- {
-@@ -103,6 +118,8 @@ int main(int argc, char *argv[])
- 
- 	vm = vm_create_barebones();
- 
-+	test_create_guest_memfd_invalid(vm, page_size);
-+
- 	fd = vm_create_guest_memfd(vm, total_size, 0);
- 
- 	test_file_read_write(fd);
-diff --git a/tools/testing/selftests/kvm/include/kvm_util_base.h b/tools/testing/selftests/kvm/include/kvm_util_base.h
-index 39b38c75b99c..8bdfadd72349 100644
---- a/tools/testing/selftests/kvm/include/kvm_util_base.h
-+++ b/tools/testing/selftests/kvm/include/kvm_util_base.h
-@@ -474,7 +474,8 @@ static inline uint64_t vm_get_stat(struct kvm_vm *vm, const char *stat_name)
- }
- 
- void vm_create_irqchip(struct kvm_vm *vm);
--static inline int vm_create_guest_memfd(struct kvm_vm *vm, uint64_t size,
-+
-+static inline int __vm_create_guest_memfd(struct kvm_vm *vm, uint64_t size,
- 					uint64_t flags)
- {
- 	struct kvm_create_guest_memfd gmem = {
-@@ -482,7 +483,13 @@ static inline int vm_create_guest_memfd(struct kvm_vm *vm, uint64_t size,
- 		.flags = flags,
- 	};
- 
--	int fd = __vm_ioctl(vm, KVM_CREATE_GUEST_MEMFD, &gmem);
-+	return __vm_ioctl(vm, KVM_CREATE_GUEST_MEMFD, &gmem);
-+}
-+
-+static inline int vm_create_guest_memfd(struct kvm_vm *vm, uint64_t size,
-+					uint64_t flags)
-+{
-+	int fd = __vm_create_guest_memfd(vm, size, flags);
- 
- 	TEST_ASSERT(fd >= 0, KVM_IOCTL_ERROR(KVM_CREATE_GUEST_MEMFD, fd));
- 	return fd;
--- 
-2.41.0.640.ga95def55d0-goog
+For the moment, I'd suggest we leave the #define in place
+here in order to finish the patch that starts using the
+asm-generic header, and then we can look into using more
+of the generic code.
 
+       Arnd
+
+[1] https://lore.kernel.org/linux-mips/20230519195135.79600-1-jiaxun.yan=
+g@flygoat.com/

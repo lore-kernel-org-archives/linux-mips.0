@@ -2,130 +2,150 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 06A2CC001DB
-	for <linux-mips@archiver.kernel.org>; Tue,  8 Aug 2023 21:25:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B2C02C04FDF
+	for <linux-mips@archiver.kernel.org>; Tue,  8 Aug 2023 23:13:40 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235578AbjHHVZK (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 8 Aug 2023 17:25:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51296 "EHLO
+        id S231776AbjHHXNk (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 8 Aug 2023 19:13:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54864 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235519AbjHHVZK (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Tue, 8 Aug 2023 17:25:10 -0400
-Received: from h2.cmg1.smtp.forpsi.com (h2.cmg1.smtp.forpsi.com [81.2.195.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8D8990
-        for <linux-mips@vger.kernel.org>; Tue,  8 Aug 2023 14:25:07 -0700 (PDT)
-Received: from [192.168.1.166] ([91.218.190.200])
-        by cmgsmtp with ESMTPSA
-        id THPBqHCO9Pm6CTHPBq8ssJ; Tue, 08 Aug 2023 09:45:26 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=triops.cz; s=f2019;
-        t=1691480726; bh=dK8y32VSPfv+uSmARxH/e37aIn+O3g97fmYoKJta8qw=;
-        h=Message-ID:Subject:From:To:Date:Content-Type:MIME-Version;
-        b=HCsEgBNiY5ROL/dh0khzXv4yMIKED5HaYSQJMzZlqk2US/LX3Xj+P6DYAG/NK/j7V
-         dCTVSnhW+fns4ZlYEbXckXiMKWU0XKuStJzWRhhe8HzsGzmKHxhn+xMWlFGkL7ERk5
-         wZGRQcXu+X+aTO3EAYyjdbIk7hV1E4C+ThFI9/F5aDtnwnQqe2QBOeaCiVFioYVaOA
-         2zdfZntSBr2RE1FMJIJJ4787eV9cFvVWTgqVtSBvav+dva0dwf6PCW479oM737LrQy
-         61AOv0bgt5PKbDbiWWZGOBPWTRNeoc41+izWmy9YiONmmzuzXHjl262wez1C6OyFy9
-         G2H3d4nLng6Cg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=triops.cz; s=f2019;
-        t=1691480726; bh=dK8y32VSPfv+uSmARxH/e37aIn+O3g97fmYoKJta8qw=;
-        h=Message-ID:Subject:From:To:Date:Content-Type:MIME-Version;
-        b=HCsEgBNiY5ROL/dh0khzXv4yMIKED5HaYSQJMzZlqk2US/LX3Xj+P6DYAG/NK/j7V
-         dCTVSnhW+fns4ZlYEbXckXiMKWU0XKuStJzWRhhe8HzsGzmKHxhn+xMWlFGkL7ERk5
-         wZGRQcXu+X+aTO3EAYyjdbIk7hV1E4C+ThFI9/F5aDtnwnQqe2QBOeaCiVFioYVaOA
-         2zdfZntSBr2RE1FMJIJJ4787eV9cFvVWTgqVtSBvav+dva0dwf6PCW479oM737LrQy
-         61AOv0bgt5PKbDbiWWZGOBPWTRNeoc41+izWmy9YiONmmzuzXHjl262wez1C6OyFy9
-         G2H3d4nLng6Cg==
-Message-ID: <1ab766fca893588d75590d2faf624eb7d9d27a8a.camel@triops.cz>
-Subject: Re: next: mips: cavium_octeon_defconfig: gcc-8 -
- dwc3-octeon.c:502:8: include/linux/compiler_types.h:397:38: error: call to
- '__compiletime_assert_335' declared with attribute error: FIELD_PREP: value
- too large for the field _compiletime_assert
-From:   Ladislav Michl <ladis@triops.cz>
-To:     Naresh Kamboju <naresh.kamboju@linaro.org>,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        linux-usb@vger.kernel.org, linux-mips@vger.kernel.org,
-        lkft-triage@lists.linaro.org
-Cc:     Thinh.Nguyen@synopsys.com,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Anders Roxell <anders.roxell@linaro.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Date:   Tue, 08 Aug 2023 09:45:25 +0200
-In-Reply-To: <CA+G9fYspyEdT9wmVpL04J-p0CwqA+_v_L4H+ihY9VYqpCMmQ1Q@mail.gmail.com>
-References: <CA+G9fYspyEdT9wmVpL04J-p0CwqA+_v_L4H+ihY9VYqpCMmQ1Q@mail.gmail.com>
-Organization: Triops, s.r.o.
+        with ESMTP id S231738AbjHHXNj (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Tue, 8 Aug 2023 19:13:39 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1A4919A1
+        for <linux-mips@vger.kernel.org>; Tue,  8 Aug 2023 16:13:38 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-d11f35a0d5cso7292573276.1
+        for <linux-mips@vger.kernel.org>; Tue, 08 Aug 2023 16:13:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20221208; t=1691536418; x=1692141218;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=yofTwj8ZWcGjgw9v2JlEZNUSzmrec+LwekHHUJcpAoM=;
+        b=dpvxAljlEqRicljPQxNOJb+MByUQynWkaoJYtNkwzaTYBVofoDLxhXQ4NUQQ/PzLSf
+         NAtCKDbb8oJ0I+3uBtvhYWPM5zzVcZGZW3pDxQOMxKp+lvQ7BjdFrNc/q/apmXEYUx/b
+         QhVGqmoFiocVQByOfmb4QZxlbWrg6Ieus4zhxHuCqIJKlof4GWqyS/gC4YZttzjEIT/h
+         Whg24RDAmIE9PEXxBdCoM/i4l/H27VeCyO3o8GhqYAZYL0To+EyyDC+2J360ckq2AoBz
+         pk0d/gNWDg05ec8YE3MwSGw7fdP5YwY4vaL8VuAGMAaNIrbzBVJmLTs6Pw2oc6uWyPcm
+         NgSg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691536418; x=1692141218;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=yofTwj8ZWcGjgw9v2JlEZNUSzmrec+LwekHHUJcpAoM=;
+        b=Nyq2J5CUGDWRlBh7cXdh/L7okBS4GExRJbMdL8UzpzWehgPy8Aq3qwZfRO8UtUr2b+
+         GiOnesAdk7WimU1ZoDdxD2w2E88J4IqGU0YGutdZBioyjMrK7ptci3ewgFggfwj+FRmc
+         Uw4Btlj0/NeFsZZLfvGaqZn0OFRMjg9nzvj1iTfEbO6mQVBwxJfTEOs5mWkjKHAM/0D+
+         AZt+3akSXVfqlqEmD87wYqaqbbHJOrjeth2/FcVOBSSD6HU34Xuw2x2rVPblQF5/Vo89
+         s4ONQYGs+bRwyGMW4M2YvBwOwBafrwXqWikGwwJYF5MlkolliginePmg9W6aIVauAhpZ
+         gI4Q==
+X-Gm-Message-State: AOJu0Ywl7egjMzbppu0px6D/7is1Os526cm9YyUc/PbPJyGGfY9KM6e0
+        TCanmwtHdVgrHY+lIPMHg5YmRrk6PQo5
+X-Google-Smtp-Source: AGHT+IEMoPWfeZ+OLCK2D9UT69oNcAo0brgl53831EkFIxzA/BaKPU3QvQO6q12mm6VixOduKcfqU57b7CIQ
+X-Received: from rananta-linux.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:22b5])
+ (user=rananta job=sendgmr) by 2002:a25:e90b:0:b0:d35:bf85:5aa0 with SMTP id
+ n11-20020a25e90b000000b00d35bf855aa0mr23366ybd.4.1691536418029; Tue, 08 Aug
+ 2023 16:13:38 -0700 (PDT)
+Date:   Tue,  8 Aug 2023 23:13:19 +0000
+In-Reply-To: <20230808231330.3855936-1-rananta@google.com>
+Mime-Version: 1.0
+References: <20230808231330.3855936-1-rananta@google.com>
+X-Mailer: git-send-email 2.41.0.640.ga95def55d0-goog
+Message-ID: <20230808231330.3855936-4-rananta@google.com>
+Subject: [PATCH v8 03/14] KVM: arm64: Use kvm_arch_flush_remote_tlbs()
+From:   Raghavendra Rao Ananta <rananta@google.com>
+To:     Oliver Upton <oliver.upton@linux.dev>,
+        Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Zenghui Yu <yuzenghui@huawei.com>,
+        Anup Patel <anup@brainfault.org>,
+        Atish Patra <atishp@atishpatra.org>,
+        Jing Zhang <jingzhangos@google.com>,
+        Reiji Watanabe <reijiw@google.com>,
+        Colton Lewis <coltonlewis@google.com>,
+        Raghavendra Rao Anata <rananta@google.com>,
+        David Matlack <dmatlack@google.com>,
+        Fuad Tabba <tabba@google.com>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        linux-mips@vger.kernel.org, kvm-riscv@lists.infradead.org,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, Shaoqin Huang <shahuang@redhat.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.46.4-2 
-MIME-Version: 1.0
-X-CMAE-Envelope: MS4wfDsx0vWaX5UBDYoWotNwmlrPCGV8ftMgIhITKomVTAP0kzNEBHBWmnQOnh5vNO60zgTtfJv993OMrbVAKAz1bRg3nHt33FGcrb76ESqsdG+MDMmT5gX+
- HK3l8DXcR0nprDy17Bg5HWZ5+9ngoY9JkkI8/QTT+QNbQcUpxWkwM59PQ931npl/c1z6LimwkleA+iDNH5USBWXGDY278fY4daKu+yWuIzSftUgUx45CW3ov
- RmxYAYkdR5chvedeuGAamHCjqkXyVqO/+vdyGApmM9nIP+8LM8m+UaxjxBU+Z5ROIJzG9KWv+oD80C1g/VnwMLRI1ZHyHRQ08nhivGDENIi35kZsD+dDUnSF
- xpbdZ6jryhY2Ivz+Dy/Nxjq9DMGx0j/J3mh7MX5JUJFhe5LdaNhRvhrpVocpBSGjkIWu8Ds2hnYMll5IY4BB2drs4QeIWvhryNs/ZXLg/zfUVKtONwwivDyL
- 2XhWDeBo7YrqyXovx7Fe2fsixnWillkBvtVPdcETWl3PhaBCxq0OBO3wRH4=
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Hi Naresh,
+Stop depending on CONFIG_HAVE_KVM_ARCH_TLB_FLUSH_ALL and opt to
+standardize on kvm_arch_flush_remote_tlbs() since it avoids
+duplicating the generic TLB stats across architectures that implement
+their own remote TLB flush.
 
-On Tue, 2023-08-08 at 12:41 +0530, Naresh Kamboju wrote:
-> [My two cents]
->=20
-> While building Linux next-20230808 mips cavium_octeon_defconfig with
-> gcc-8
-> failed with below warnings and errors.
->=20
-> Build log:
-> ----------
->=20
-> In function 'dwc3_octeon_setup.isra.4',
-> =C2=A0=C2=A0=C2=A0 inlined from 'dwc3_octeon_probe' at drivers/usb/dwc3/d=
-wc3-
-> octeon.c:502:8:
-> include/linux/compiler_types.h:397:38: error: call to
-> '__compiletime_assert_335' declared with attribute error: FIELD_PREP:
-> value too large for the field
-> =C2=A0 _compiletime_assert(condition, msg, __compiletime_assert_,
-> __COUNTER__)
-> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
- ^
-> include/linux/compiler_types.h:378:4: note: in definition of macro
-> '__compiletime_assert'
-> =C2=A0=C2=A0=C2=A0 prefix ## suffix();=C2=A0=C2=A0=C2=A0 \
-> =C2=A0=C2=A0=C2=A0 ^~~~~~
+This adds an extra function call to the ARM64 kvm_flush_remote_tlbs()
+path, but that is a small cost in comparison to flushing remote TLBs.
 
-Not sure what is really going on there. Code compiles even using 32bit
-toochains without warnings and such an assignments are used in other
-kernel drivers. See for example drivers/cxl/core/hdm.c:534 which is
-using the same types. Also=20
-drivers/net/ethernet/marvell/octeontx2/af/rvu_npc_hash.c in
-rvu_exact_prepare_table_entry...
+In addition, instead of just incrementing remote_tlb_flush_requests
+stat, the generic interface would also increment the
+remote_tlb_flush stat.
 
-Anyway, let me setup gcc-8 toolchain :)
+Signed-off-by: Raghavendra Rao Ananta <rananta@google.com>
+Reviewed-by: Shaoqin Huang <shahuang@redhat.com>
+---
+ arch/arm64/include/asm/kvm_host.h | 2 ++
+ arch/arm64/kvm/Kconfig            | 1 -
+ arch/arm64/kvm/mmu.c              | 6 +++---
+ 3 files changed, 5 insertions(+), 4 deletions(-)
 
-> =C2=A0 Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
->=20
-> Links:
-> -----
-> =C2=A0-
-> https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20230808/=
-testrun/18882876/suite/build/test/gcc-8-cavium_octeon_defconfig/log
-> =C2=A0-
-> https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20230808/=
-testrun/18882876/suite/build/test/gcc-8-cavium_octeon_defconfig/history/
->=20
-> Steps to reproduce:
-> ------------
-> =C2=A0 tuxmake --runtime podman --target-arch mips --toolchain gcc-8
-> --kconfig cavium_octeon_defconfig
-> =C2=A0=C2=A0 -
-> https://storage.tuxsuite.com/public/linaro/lkft/builds/2TgoAZwerJ28UWHyqf=
-QUiaYYhrl/tuxmake_reproducer.sh
->=20
-> --
-> Linaro LKFT
-> https://lkft.linaro.org
+diff --git a/arch/arm64/include/asm/kvm_host.h b/arch/arm64/include/asm/kvm_host.h
+index 8b6096753740c..20f2ba149c70c 100644
+--- a/arch/arm64/include/asm/kvm_host.h
++++ b/arch/arm64/include/asm/kvm_host.h
+@@ -1111,6 +1111,8 @@ int __init kvm_set_ipa_limit(void);
+ #define __KVM_HAVE_ARCH_VM_ALLOC
+ struct kvm *kvm_arch_alloc_vm(void);
+ 
++#define __KVM_HAVE_ARCH_FLUSH_REMOTE_TLBS
++
+ static inline bool kvm_vm_is_protected(struct kvm *kvm)
+ {
+ 	return false;
+diff --git a/arch/arm64/kvm/Kconfig b/arch/arm64/kvm/Kconfig
+index f531da6b362e9..6b730fcfee379 100644
+--- a/arch/arm64/kvm/Kconfig
++++ b/arch/arm64/kvm/Kconfig
+@@ -25,7 +25,6 @@ menuconfig KVM
+ 	select MMU_NOTIFIER
+ 	select PREEMPT_NOTIFIERS
+ 	select HAVE_KVM_CPU_RELAX_INTERCEPT
+-	select HAVE_KVM_ARCH_TLB_FLUSH_ALL
+ 	select KVM_MMIO
+ 	select KVM_GENERIC_DIRTYLOG_READ_PROTECT
+ 	select KVM_XFER_TO_GUEST_WORK
+diff --git a/arch/arm64/kvm/mmu.c b/arch/arm64/kvm/mmu.c
+index 6db9ef288ec38..0ac721fa27f18 100644
+--- a/arch/arm64/kvm/mmu.c
++++ b/arch/arm64/kvm/mmu.c
+@@ -161,15 +161,15 @@ static bool memslot_is_logging(struct kvm_memory_slot *memslot)
+ }
+ 
+ /**
+- * kvm_flush_remote_tlbs() - flush all VM TLB entries for v7/8
++ * kvm_arch_flush_remote_tlbs() - flush all VM TLB entries for v7/8
+  * @kvm:	pointer to kvm structure.
+  *
+  * Interface to HYP function to flush all VM TLB entries
+  */
+-void kvm_flush_remote_tlbs(struct kvm *kvm)
++int kvm_arch_flush_remote_tlbs(struct kvm *kvm)
+ {
+-	++kvm->stat.generic.remote_tlb_flush_requests;
+ 	kvm_call_hyp(__kvm_tlb_flush_vmid, &kvm->arch.mmu);
++	return 0;
+ }
+ 
+ static bool kvm_is_device_pfn(unsigned long pfn)
+-- 
+2.41.0.640.ga95def55d0-goog
 

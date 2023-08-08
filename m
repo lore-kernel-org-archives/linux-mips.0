@@ -2,56 +2,56 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DA909C04FE2
-	for <linux-mips@archiver.kernel.org>; Tue,  8 Aug 2023 23:13:41 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0151DC001DB
+	for <linux-mips@archiver.kernel.org>; Tue,  8 Aug 2023 23:13:43 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231178AbjHHXNk (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        id S231738AbjHHXNk (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
         Tue, 8 Aug 2023 19:13:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54824 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39454 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231472AbjHHXNi (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Tue, 8 Aug 2023 19:13:38 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D363E19A0
-        for <linux-mips@vger.kernel.org>; Tue,  8 Aug 2023 16:13:37 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-d4e1be2dd10so4149093276.0
-        for <linux-mips@vger.kernel.org>; Tue, 08 Aug 2023 16:13:37 -0700 (PDT)
+        with ESMTP id S231748AbjHHXNk (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Tue, 8 Aug 2023 19:13:40 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFE6A199F
+        for <linux-mips@vger.kernel.org>; Tue,  8 Aug 2023 16:13:39 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-d47a02fc63fso4747519276.0
+        for <linux-mips@vger.kernel.org>; Tue, 08 Aug 2023 16:13:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1691536417; x=1692141217;
+        d=google.com; s=20221208; t=1691536419; x=1692141219;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=fF9z3Q1T3iKa1+NaqgmsAKQ9ZnVImh9YcGmD8OzK9j4=;
-        b=Ld1x0UAAPCU2iNVMHuMjG6B0mRqC01G5XmrR49OD5ekBM+hQ47Lz1vPTQOE9Tr5Br5
-         BX4nU2fyQoGGqakeZ7MocsuWSlLwxNgdhGBwiNTVlmTbC+b+hhEmvF5KQzcDGXQHniHf
-         dyBlM/h1HcV1T3N3V+nLOLW7Ezrkt/Pno3Kgysbh2Q6+afbzKckk0AnL00fLjdc2sRnT
-         VlzSKBNqhrU3kXNgERrGdXMA6yHTAQeK1SKxpS4/hFwjbsJV3fXh7O3sMLhqgXSqH2/5
-         7bx3QZPwlmmukhHDNyNKKv+4o0fEeYSAzOCOzLhRc8WynuLwSpq0v0AjFElLDtSI3e7L
-         E4XQ==
+        bh=rRsJm5KN8y0omlFlyBVh6FOC8Y/5Pdk4ttGOceHQNGg=;
+        b=CQf/TxanV6OEd32ELCfkkts3XxnHA4pKxGHkzWqcVZLhDHcGXQK8pxhlEmtKwP/tpP
+         UAyUov8OA4rqJcX0xB4frWPFkoC8zGz0reXRyqNoFb6QQc7uiAJt57EURlLsfXhtvSua
+         dVYnrRYGo2ZXskRE7T0A21bujPL542X8vcR00OPyT91QR3v88w0f/6FbYWXk1Xzn0erM
+         sTAg25XQTO1XYYl95Z33YL5N1hptl2XY6pPHEzG2zsJje3brq/4ttctRSjL4Be7i5xzH
+         VbfCPWiV7RKvMZQeOm7dW2jfJtV7whha+buhr6WES83vayzqgg3bRBsrouX7l2lyMHB5
+         9ejw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691536417; x=1692141217;
+        d=1e100.net; s=20221208; t=1691536419; x=1692141219;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=fF9z3Q1T3iKa1+NaqgmsAKQ9ZnVImh9YcGmD8OzK9j4=;
-        b=WRHn/l0d9tf4Wk31+4vxBWtn2YmrFH6WRLA7myDpV5M1WQuatt0turjBRUY5dcic9u
-         2dZgvU2oxb9uWbySlZiBj/jt39KGEm0vYBunoX7kA9evs/NsjLmr0s7bkXytdT6mCjCz
-         /UkNYycQ0yrm0ztf0HR+Lx3SN6ejO8sLbyqSH65SDoouXdEvjvw8vmU73gwj8gYO21hu
-         fWrDdffB49dh6FBDcF+B1hMSeaA9pZVosTARymOfbtDv/JvnDiRfjaA0dRjunFSusr1a
-         QkC9j+HIBA5orAG+P32gNGFZKLSAc4CMJK5HfTHGL01e2I/dPqdz43Rl2VDKg/fHf3Yf
-         bRgA==
-X-Gm-Message-State: AOJu0Yy2orI+f5XmEnfOoBzbgwRXr/9n2zxyOwTl7g6ud6eyZbWNjYey
-        6B5up0WTLJ7CP86oboaHHVtwX6Q7UZdZ
-X-Google-Smtp-Source: AGHT+IEkNRtlsA4ms3b9+CUTzSiCBd52BXOcAxUcg/jLLvdvbtpcQ/Jup7ZubXa24xkvWpmhph0yYPJIU1oJ
+        bh=rRsJm5KN8y0omlFlyBVh6FOC8Y/5Pdk4ttGOceHQNGg=;
+        b=jSXvfagfnzp78v1pKiWX23rVjvcaqVWWT0Za9hltLBRD+DWGHz61zpjpeW7K+tuizC
+         nmv4dIP4yBcRnjmVrw9ZXR5ycyUG2cpBkL0ayGKf/pIGnGiwhuwvR47brGaHgpNID9wI
+         XuABYY/Cwc379q2+BoEhzJz6CRT9umt/O3L0EGUSKhdP5CWZNUnWZIvUHFX1xZfHhMb2
+         jv3xtcPoNz6xg9LAl+yGOvuhozJMY/1PzU/o8GS3iGwrTUafIa+YKV7JVO5dOF6LgQWQ
+         FxMCyv3kar7KL5NsX+u3lGr2d0lsPovSP3jEeL61oikFjuKpb+mLwjRFfYEIgrMcwAfV
+         ktiw==
+X-Gm-Message-State: AOJu0Yw2tHKScLFLH2kbBMHfijyxyeAwhCoegBVoRhfyke68xzC0enBj
+        /XfswQ47DYGRQ1pTJ0KCYwrJZsGuRHdZ
+X-Google-Smtp-Source: AGHT+IFGVRqil1pLKlKZOPozuSk7xjlyKiysAnrSD74F/QH1sqvC3Ds73i/UAyOLkTltrm9Gi6kXcopawKrT
 X-Received: from rananta-linux.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:22b5])
- (user=rananta job=sendgmr) by 2002:a25:3288:0:b0:d44:585f:dfa8 with SMTP id
- y130-20020a253288000000b00d44585fdfa8mr21095yby.0.1691536417147; Tue, 08 Aug
- 2023 16:13:37 -0700 (PDT)
-Date:   Tue,  8 Aug 2023 23:13:18 +0000
+ (user=rananta job=sendgmr) by 2002:a05:6902:1788:b0:d45:1b81:1154 with SMTP
+ id ca8-20020a056902178800b00d451b811154mr21428ybb.2.1691536419023; Tue, 08
+ Aug 2023 16:13:39 -0700 (PDT)
+Date:   Tue,  8 Aug 2023 23:13:20 +0000
 In-Reply-To: <20230808231330.3855936-1-rananta@google.com>
 Mime-Version: 1.0
 References: <20230808231330.3855936-1-rananta@google.com>
 X-Mailer: git-send-email 2.41.0.640.ga95def55d0-goog
-Message-ID: <20230808231330.3855936-3-rananta@google.com>
-Subject: [PATCH v8 02/14] KVM: Declare kvm_arch_flush_remote_tlbs() globally
+Message-ID: <20230808231330.3855936-5-rananta@google.com>
+Subject: [PATCH v8 04/14] KVM: Remove CONFIG_HAVE_KVM_ARCH_TLB_FLUSH_ALL
 From:   Raghavendra Rao Ananta <rananta@google.com>
 To:     Oliver Upton <oliver.upton@linux.dev>,
         Marc Zyngier <maz@kernel.org>,
@@ -72,48 +72,62 @@ Cc:     Paolo Bonzini <pbonzini@redhat.com>,
         linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
         linux-mips@vger.kernel.org, kvm-riscv@lists.infradead.org,
         linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
+        kvm@vger.kernel.org, Shaoqin Huang <shahuang@redhat.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-There's no reason for the architectures to declare
-kvm_arch_flush_remote_tlbs() in their own headers. Hence to
-avoid this duplication, make the declaration global, leaving
-the architectures to define only __KVM_HAVE_ARCH_FLUSH_REMOTE_TLBS
-as needed.
+kvm_arch_flush_remote_tlbs() or CONFIG_HAVE_KVM_ARCH_TLB_FLUSH_ALL
+are two mechanisms to solve the same problem, allowing
+architecture-specific code to provide a non-IPI implementation of
+remote TLB flushing.
+
+Dropping CONFIG_HAVE_KVM_ARCH_TLB_FLUSH_ALL allows KVM to standardize
+all architectures on kvm_arch_flush_remote_tlbs() instead of
+maintaining two mechanisms.
 
 Signed-off-by: Raghavendra Rao Ananta <rananta@google.com>
+Reviewed-by: Shaoqin Huang <shahuang@redhat.com>
 ---
- arch/mips/include/asm/kvm_host.h | 1 -
- include/linux/kvm_host.h         | 2 ++
- 2 files changed, 2 insertions(+), 1 deletion(-)
+ virt/kvm/Kconfig    | 3 ---
+ virt/kvm/kvm_main.c | 2 --
+ 2 files changed, 5 deletions(-)
 
-diff --git a/arch/mips/include/asm/kvm_host.h b/arch/mips/include/asm/kvm_host.h
-index 9b0ad8f3bf327..54a85f1d4f2c8 100644
---- a/arch/mips/include/asm/kvm_host.h
-+++ b/arch/mips/include/asm/kvm_host.h
-@@ -897,6 +897,5 @@ static inline void kvm_arch_vcpu_blocking(struct kvm_vcpu *vcpu) {}
- static inline void kvm_arch_vcpu_unblocking(struct kvm_vcpu *vcpu) {}
+diff --git a/virt/kvm/Kconfig b/virt/kvm/Kconfig
+index b74916de5183a..484d0873061ca 100644
+--- a/virt/kvm/Kconfig
++++ b/virt/kvm/Kconfig
+@@ -62,9 +62,6 @@ config HAVE_KVM_CPU_RELAX_INTERCEPT
+ config KVM_VFIO
+        bool
  
- #define __KVM_HAVE_ARCH_FLUSH_REMOTE_TLBS
--int kvm_arch_flush_remote_tlbs(struct kvm *kvm);
+-config HAVE_KVM_ARCH_TLB_FLUSH_ALL
+-       bool
+-
+ config HAVE_KVM_INVALID_WAKEUPS
+        bool
  
- #endif /* __MIPS_KVM_HOST_H__ */
-diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
-index e3f968b38ae97..ade5d4500c2ce 100644
---- a/include/linux/kvm_host.h
-+++ b/include/linux/kvm_host.h
-@@ -1484,6 +1484,8 @@ static inline int kvm_arch_flush_remote_tlbs(struct kvm *kvm)
- {
- 	return -ENOTSUPP;
+diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+index 70e5479797ac3..d6b0507861550 100644
+--- a/virt/kvm/kvm_main.c
++++ b/virt/kvm/kvm_main.c
+@@ -345,7 +345,6 @@ bool kvm_make_all_cpus_request(struct kvm *kvm, unsigned int req)
  }
-+#else
-+int kvm_arch_flush_remote_tlbs(struct kvm *kvm);
- #endif
+ EXPORT_SYMBOL_GPL(kvm_make_all_cpus_request);
  
- #ifdef __KVM_HAVE_ARCH_NONCOHERENT_DMA
+-#ifndef CONFIG_HAVE_KVM_ARCH_TLB_FLUSH_ALL
+ void kvm_flush_remote_tlbs(struct kvm *kvm)
+ {
+ 	++kvm->stat.generic.remote_tlb_flush_requests;
+@@ -366,7 +365,6 @@ void kvm_flush_remote_tlbs(struct kvm *kvm)
+ 		++kvm->stat.generic.remote_tlb_flush;
+ }
+ EXPORT_SYMBOL_GPL(kvm_flush_remote_tlbs);
+-#endif
+ 
+ static void kvm_flush_shadow_all(struct kvm *kvm)
+ {
 -- 
 2.41.0.640.ga95def55d0-goog
 

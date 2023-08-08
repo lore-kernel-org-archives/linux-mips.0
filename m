@@ -2,162 +2,134 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AD86CC001DB
-	for <linux-mips@archiver.kernel.org>; Tue,  8 Aug 2023 19:51:03 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B5C77C04A6A
+	for <linux-mips@archiver.kernel.org>; Tue,  8 Aug 2023 20:31:42 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232297AbjHHTvC (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 8 Aug 2023 15:51:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46520 "EHLO
+        id S233670AbjHHUbl (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 8 Aug 2023 16:31:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50190 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233163AbjHHTup (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Tue, 8 Aug 2023 15:50:45 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52BEF53F23
-        for <linux-mips@vger.kernel.org>; Tue,  8 Aug 2023 09:56:44 -0700 (PDT)
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1qTGAZ-0007if-FO; Tue, 08 Aug 2023 08:26:15 +0200
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-        by drehscheibe.grey.stw.pengutronix.de with esmtp (Exim 4.94.2)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1qTGAY-001v5N-3j; Tue, 08 Aug 2023 08:26:14 +0200
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1qTGAX-00BKsD-04; Tue, 08 Aug 2023 08:26:13 +0200
-From:   =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>
-To:     Thierry Reding <thierry.reding@gmail.com>
-Cc:     Paul Cercueil <paul@crapouillou.net>,
-        Aidan MacDonald <aidanmacdonald.0x0@gmail.com>,
-        linux-mips@vger.kernel.org, linux-pwm@vger.kernel.org,
-        kernel@pengutronix.de
-Subject: [PATCH] pwm: jz4740: Consistently name driver data "jz"
-Date:   Tue,  8 Aug 2023 08:26:08 +0200
-Message-Id: <20230808062608.897710-1-u.kleine-koenig@pengutronix.de>
-X-Mailer: git-send-email 2.40.1
+        with ESMTP id S233790AbjHHUbW (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Tue, 8 Aug 2023 16:31:22 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB74F44806;
+        Tue,  8 Aug 2023 09:43:13 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 7512662509;
+        Tue,  8 Aug 2023 16:43:05 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C06C2C433C8;
+        Tue,  8 Aug 2023 16:43:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1691512984;
+        bh=qn/5n73aPx19R3sftb3hyCv0xP0bVP4jPYkwssW5D70=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=EI/M+9L9WfV7CfX9Gg3l8wginZaWaHFChW2GM/OsGfB64YDDzgU8NJsfkDrHXAvR5
+         VAaNmxsPoqAHDEiP8QulOu4i3ulD9YXkGKshknFhvU2u/SxvikGwp/YsrNUGVLkPw1
+         FTzl+keanf3MdzsjLZoGYa7oT0z7q0DKG1X4hSjicnx40hnIFKQ1T80kw3emqiyqrU
+         qSJHtLdCG2fha5vwJPzSzfRqjDfWoP2oD1r97l9SogvHJSiPgP8wzPENILebk1zzmj
+         2zFUZQP4wQ/G7opUpEJ2KrCWciEWKfgvHzrrOBU53m0/AjNq+SZusg16vaM6+4MQNT
+         uUWZZf7j9O3Ag==
+Received: from disco-boy.misterjones.org ([217.182.43.188] helo=www.loen.fr)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.95)
+        (envelope-from <maz@kernel.org>)
+        id 1qTPnS-003BwZ-B2;
+        Tue, 08 Aug 2023 17:43:02 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-X-Developer-Signature: v=1; a=openpgp-sha256; l=4302; i=u.kleine-koenig@pengutronix.de; h=from:subject; bh=CgCI6Nwvk9+sysDh3jA/wC6GMwE7Q3uqtKVdUn6NQqE=; b=owEBbQGS/pANAwAKAY+A+1h9Ev5OAcsmYgBk0d//BGdKQSIjqbmTKx1EqIjjeJIj/3pWze3B+ 0Q5sqqYYquJATMEAAEKAB0WIQQ/gaxpOnoeWYmt/tOPgPtYfRL+TgUCZNHf/wAKCRCPgPtYfRL+ TgvmCACesHKB5NI1pvKf4rTN1vuMShRlk4XkvVlj0uVqmIn5HMncpkaLM8YpEeJT06OlyOVfyEe lkXj+MkSpkBFBbDfxEo++qM/zWvhf908sn0IRbWvGYhenBu29DIIGdPVJxwSNhu+lK/OJZtwlDE DlDcEgy0zpU46tmj8zqVlmxYXhkVoPYwZCgGIybgO+XXPEtklgG9MZigsDg4q9G/YVK3F/EZUe7 6MuaCt0j/OHU7nuK2mBfN4Qa7ZdtF9AVik+bPyokqVpUbvYe8rW6kbxXiKuch35mOvmdGn7UQ0J vaFQdor8d3m4wTmt6WAC9IIZmNawMmGoHQLuJoVFbc+YY+a0
-X-Developer-Key: i=u.kleine-koenig@pengutronix.de; a=openpgp; fpr=0D2511F322BFAB1C1580266BE2DCDD9132669BD6
+Date:   Tue, 08 Aug 2023 17:43:02 +0100
+From:   Marc Zyngier <maz@kernel.org>
+To:     Raghavendra Rao Ananta <rananta@google.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Zenghui Yu <yuzenghui@huawei.com>,
+        Anup Patel <anup@brainfault.org>,
+        Atish Patra <atishp@atishpatra.org>,
+        Jing Zhang <jingzhangos@google.com>,
+        Reiji Watanabe <reijiw@google.com>,
+        Colton Lewis <coltonlewis@google.com>,
+        David Matlack <dmatlack@google.com>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        linux-mips@vger.kernel.org, kvm-riscv@lists.infradead.org,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org
+Subject: Re: [PATCH v7 02/12] KVM: arm64: Use kvm_arch_flush_remote_tlbs()
+In-Reply-To: <CAJHc60yiGnVc=ysdOaNemWaDpTBSk02mRLenK3sN2XtN_Cp98g@mail.gmail.com>
+References: <20230722022251.3446223-1-rananta@google.com>
+ <20230722022251.3446223-3-rananta@google.com> <87tttpr6qy.wl-maz@kernel.org>
+ <ZMgsjx8dwKd4xBGe@google.com> <877cqdqw12.wl-maz@kernel.org>
+ <CAJHc60xAUVt5fbhEkOqeC-VF8SWVOt3si=1yxVVAUW=+Hu_wNg@mail.gmail.com>
+ <CAJHc60zN-dc2E-fS7fuXgkrfGD9bqW6tMy2GRZxbHOeZv0ZOBw@mail.gmail.com>
+ <ZNJaPxTtPRCv0HOl@google.com>
+ <CAJHc60yiGnVc=ysdOaNemWaDpTBSk02mRLenK3sN2XtN_Cp98g@mail.gmail.com>
+User-Agent: Roundcube Webmail/1.4.13
+Message-ID: <fc430350dd7d8ac664054a99f1e452c1@kernel.org>
+X-Sender: maz@kernel.org
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
 Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-mips@vger.kernel.org
+X-SA-Exim-Connect-IP: 217.182.43.188
+X-SA-Exim-Rcpt-To: rananta@google.com, seanjc@google.com, oliver.upton@linux.dev, james.morse@arm.com, suzuki.poulose@arm.com, pbonzini@redhat.com, chenhuacai@kernel.org, yuzenghui@huawei.com, anup@brainfault.org, atishp@atishpatra.org, jingzhangos@google.com, reijiw@google.com, coltonlewis@google.com, dmatlack@google.com, linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev, linux-mips@vger.kernel.org, kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Most but not all pointers to driver data are already called "jz":
+On 2023-08-08 17:19, Raghavendra Rao Ananta wrote:
+> On Tue, Aug 8, 2023 at 8:07 AM Sean Christopherson <seanjc@google.com> 
+> wrote:
+>> 
+>> On Fri, Aug 04, 2023, Raghavendra Rao Ananta wrote:
+>> > On Wed, Aug 2, 2023 at 4:28 PM Raghavendra Rao Ananta
+>> > <rananta@google.com> wrote:
+>> > >
+>> > > Sure, I'll change it to kvm_arch_flush_vm_tlbs() in v8.
+>> > >
+>> > While working on the renaming, I realized that since this function is
+>> > called from kvm_main.c's kvm_flush_remote_tlbs(). Do we want to rename
+>> > this and the other kvm_flush_*() functions that the series introduces
+>> > to match their kvm_arch_flush_*() counterparts?
+>> 
+>> Hmm, if we're going to rename one arch hook, then yes, I think it 
+>> makes sense to
+>> rename all the common APIs and arch hooks to match.
+>> 
+>> However, x86 is rife with the "remote_tlbs" nomenclature, and renaming 
+>> the common
+>> APIs will just push the inconsistencies into x86.  While I 100% agree 
+>> that the
+>> current naming is flawed, I am not willing to end up with x86 being 
+>> partially
+>> converted.
+>> 
+>> I think I'm ok renaming all of x86's many hooks?  But I'd definitely 
+>> want input
+>> from more x86 folks, and the size and scope of this series would 
+>> explode.  Unless
+>> Marc objects and/or has a better idea, the least awful option is 
+>> probably to ignore
+>> the poor "remote_tlbs" naming and tackle it in a separate series.
+>> 
+> Sure, I think it's better to do it in a separate series as well. I'm
+> happy to carry out the task after this one gets merged. But, let's
+> wait for Marc and others' opinion on the matter.
 
-	$ git grep 'struct jz4740_pwm_chip \*' v6.5-rc1 -- drivers/pwm/pwm-jz4740.c
-	v6.5-rc1:drivers/pwm/pwm-jz4740.c:static inline struct jz4740_pwm_chip *to_jz4740(struct pwm_chip *chip)
-	v6.5-rc1:drivers/pwm/pwm-jz4740.c:static bool jz4740_pwm_can_use_chn(struct jz4740_pwm_chip *jz,
-	v6.5-rc1:drivers/pwm/pwm-jz4740.c:      struct jz4740_pwm_chip *jz = to_jz4740(chip);
-	v6.5-rc1:drivers/pwm/pwm-jz4740.c:      struct jz4740_pwm_chip *jz = to_jz4740(chip);
-	v6.5-rc1:drivers/pwm/pwm-jz4740.c:      struct jz4740_pwm_chip *jz = to_jz4740(chip);
-	v6.5-rc1:drivers/pwm/pwm-jz4740.c:      struct jz4740_pwm_chip *jz4740 = to_jz4740(pwm->chip);
-	v6.5-rc1:drivers/pwm/pwm-jz4740.c:      struct jz4740_pwm_chip *jz4740;
+Yeah, let's punt that to a separate series. I'm more interested in
+getting this code merged than in the inevitable bike-shedding that
+will result from such a proposal.
 
-Adapt the two variables called "jz4740" to use the same name for
-consistency.
+Raghavendra, any chance you could respin the series this week?
+I'd really like it to spend some quality time in -next...
 
-Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
----
- drivers/pwm/pwm-jz4740.c | 36 ++++++++++++++++++------------------
- 1 file changed, 18 insertions(+), 18 deletions(-)
+Thanks,
 
-diff --git a/drivers/pwm/pwm-jz4740.c b/drivers/pwm/pwm-jz4740.c
-index ef1293f2a897..6b2124266273 100644
---- a/drivers/pwm/pwm-jz4740.c
-+++ b/drivers/pwm/pwm-jz4740.c
-@@ -121,7 +121,7 @@ static void jz4740_pwm_disable(struct pwm_chip *chip, struct pwm_device *pwm)
- static int jz4740_pwm_apply(struct pwm_chip *chip, struct pwm_device *pwm,
- 			    const struct pwm_state *state)
- {
--	struct jz4740_pwm_chip *jz4740 = to_jz4740(pwm->chip);
-+	struct jz4740_pwm_chip *jz = to_jz4740(pwm->chip);
- 	unsigned long long tmp = 0xffffull * NSEC_PER_SEC;
- 	struct clk *clk = pwm_get_chip_data(pwm);
- 	unsigned long period, duty;
-@@ -173,16 +173,16 @@ static int jz4740_pwm_apply(struct pwm_chip *chip, struct pwm_device *pwm,
- 	}
- 
- 	/* Reset counter to 0 */
--	regmap_write(jz4740->map, TCU_REG_TCNTc(pwm->hwpwm), 0);
-+	regmap_write(jz->map, TCU_REG_TCNTc(pwm->hwpwm), 0);
- 
- 	/* Set duty */
--	regmap_write(jz4740->map, TCU_REG_TDHRc(pwm->hwpwm), duty);
-+	regmap_write(jz->map, TCU_REG_TDHRc(pwm->hwpwm), duty);
- 
- 	/* Set period */
--	regmap_write(jz4740->map, TCU_REG_TDFRc(pwm->hwpwm), period);
-+	regmap_write(jz->map, TCU_REG_TDFRc(pwm->hwpwm), period);
- 
- 	/* Set abrupt shutdown */
--	regmap_set_bits(jz4740->map, TCU_REG_TCSRc(pwm->hwpwm),
-+	regmap_set_bits(jz->map, TCU_REG_TCSRc(pwm->hwpwm),
- 			TCU_TCSR_PWM_SD);
- 
- 	/*
-@@ -199,10 +199,10 @@ static int jz4740_pwm_apply(struct pwm_chip *chip, struct pwm_device *pwm,
- 	 * state instead of its inactive state.
- 	 */
- 	if ((state->polarity == PWM_POLARITY_NORMAL) ^ state->enabled)
--		regmap_update_bits(jz4740->map, TCU_REG_TCSRc(pwm->hwpwm),
-+		regmap_update_bits(jz->map, TCU_REG_TCSRc(pwm->hwpwm),
- 				   TCU_TCSR_PWM_INITL_HIGH, 0);
- 	else
--		regmap_update_bits(jz4740->map, TCU_REG_TCSRc(pwm->hwpwm),
-+		regmap_update_bits(jz->map, TCU_REG_TCSRc(pwm->hwpwm),
- 				   TCU_TCSR_PWM_INITL_HIGH,
- 				   TCU_TCSR_PWM_INITL_HIGH);
- 
-@@ -222,28 +222,28 @@ static const struct pwm_ops jz4740_pwm_ops = {
- static int jz4740_pwm_probe(struct platform_device *pdev)
- {
- 	struct device *dev = &pdev->dev;
--	struct jz4740_pwm_chip *jz4740;
-+	struct jz4740_pwm_chip *jz;
- 	const struct soc_info *info;
- 
- 	info = device_get_match_data(dev);
- 	if (!info)
- 		return -EINVAL;
- 
--	jz4740 = devm_kzalloc(dev, sizeof(*jz4740), GFP_KERNEL);
--	if (!jz4740)
-+	jz = devm_kzalloc(dev, sizeof(*jz), GFP_KERNEL);
-+	if (!jz)
- 		return -ENOMEM;
- 
--	jz4740->map = device_node_to_regmap(dev->parent->of_node);
--	if (IS_ERR(jz4740->map)) {
--		dev_err(dev, "regmap not found: %ld\n", PTR_ERR(jz4740->map));
--		return PTR_ERR(jz4740->map);
-+	jz->map = device_node_to_regmap(dev->parent->of_node);
-+	if (IS_ERR(jz->map)) {
-+		dev_err(dev, "regmap not found: %ld\n", PTR_ERR(jz->map));
-+		return PTR_ERR(jz->map);
- 	}
- 
--	jz4740->chip.dev = dev;
--	jz4740->chip.ops = &jz4740_pwm_ops;
--	jz4740->chip.npwm = info->num_pwms;
-+	jz->chip.dev = dev;
-+	jz->chip.ops = &jz4740_pwm_ops;
-+	jz->chip.npwm = info->num_pwms;
- 
--	return devm_pwmchip_add(dev, &jz4740->chip);
-+	return devm_pwmchip_add(dev, &jz->chip);
- }
- 
- static const struct soc_info jz4740_soc_info = {
-
-base-commit: 3ccb179aa40d931eb00ef8910d7b812a95659563
+         M.
 -- 
-2.40.1
-
+Jazz is not dead. It just smells funny...

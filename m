@@ -2,34 +2,34 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E9B1BC04FE2
-	for <linux-mips@archiver.kernel.org>; Tue,  8 Aug 2023 16:25:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 11C82C001B0
+	for <linux-mips@archiver.kernel.org>; Tue,  8 Aug 2023 16:42:30 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230512AbjHHQYp (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 8 Aug 2023 12:24:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48980 "EHLO
+        id S229795AbjHHQm3 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 8 Aug 2023 12:42:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59336 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231771AbjHHQXL (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Tue, 8 Aug 2023 12:23:11 -0400
+        with ESMTP id S229610AbjHHQlM (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Tue, 8 Aug 2023 12:41:12 -0400
 Received: from angie.orcam.me.uk (angie.orcam.me.uk [IPv6:2001:4190:8020::34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id F3D569EF3;
-        Tue,  8 Aug 2023 08:49:38 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 6FB3415CA5
+        for <linux-mips@vger.kernel.org>; Tue,  8 Aug 2023 08:54:52 -0700 (PDT)
 Received: by angie.orcam.me.uk (Postfix, from userid 500)
-        id 57C369200C6; Tue,  8 Aug 2023 17:31:43 +0200 (CEST)
+        id 6560C9200C3; Tue,  8 Aug 2023 13:07:47 +0200 (CEST)
 Received: from localhost (localhost [127.0.0.1])
-        by angie.orcam.me.uk (Postfix) with ESMTP id 4DBE59200C5;
-        Tue,  8 Aug 2023 16:31:43 +0100 (BST)
-Date:   Tue, 8 Aug 2023 16:31:43 +0100 (BST)
+        by angie.orcam.me.uk (Postfix) with ESMTP id 585269200BF;
+        Tue,  8 Aug 2023 12:07:47 +0100 (BST)
+Date:   Tue, 8 Aug 2023 12:07:47 +0100 (BST)
 From:   "Maciej W. Rozycki" <macro@orcam.me.uk>
-To:     Yuan Tan <tanyuan@tinylab.org>
-cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux@weissschuh.net, w@1wt.eu, falcon@tinylab.org
-Subject: Re: [RFC 0/1] mips: malta: Select PCI_QUIRKS if POWER_RESET_PIIX4_POWEROFF
- is enabled
-In-Reply-To: <cover.1690968173.git.tanyuan@tinylab.org>
-Message-ID: <alpine.DEB.2.21.2308081628470.38537@angie.orcam.me.uk>
-References: <cover.1690968173.git.tanyuan@tinylab.org>
+To:     Florian Fainelli <f.fainelli@gmail.com>
+cc:     linux-mips@vger.kernel.org,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Serge Semin <fancer.lancer@gmail.com>
+Subject: Re: soft and hard float n32 and n64 binaries getting illegal
+ instructions on Cobalt Qube2
+In-Reply-To: <alpine.DEB.2.21.2308081027580.38537@angie.orcam.me.uk>
+Message-ID: <alpine.DEB.2.21.2308081153240.38537@angie.orcam.me.uk>
+References: <733b4eec-6297-e72e-0803-a32a25d83072@gmail.com> <alpine.DEB.2.21.2308051412570.38537@angie.orcam.me.uk> <3afb0b00-e4f2-15a7-c68f-8b2475dc9f77@gmail.com> <alpine.DEB.2.21.2308081027580.38537@angie.orcam.me.uk>
 User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -37,12 +37,49 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Wed, 2 Aug 2023, Yuan Tan wrote:
+On Tue, 8 Aug 2023, Maciej W. Rozycki wrote:
 
-> I just found that the on QEMU Malta, POWER_RESET_PIIX4_POWEROFF relay on
-> PCI_QUIRKS to work, or else the reboot will hang.
+> > Looks like GDB is not too happy with the core file I obtained, see below. Is
+> > this a known issue with gdb-12.1? gdb-11.x was not faring any better
+> > unfortunately. The core dump is attached (hope it makes it to the mailing
+> > list).
+> 
+>  Sigh.  Back in 2017 I fixed numerous issues with MIPS core file handling 
+> in GDB, which was then well-tested, and I haven't looked at it since.  So 
+> it must be a regression, either in GDB or in the producer (Linux kernel).
+> 
+>  I can reproduce it and I'll see if I can debug this.  I may ask you for 
+> the corresponding binary and shared libraries at one point.
+> 
+>  NB I note that the core file is ELF32 and does not have the EF_MIPS_ABI2 
+> flag set in its file header, so it looks like an o32 core file to me.  
+> Since your subject mentions n32/n64, can you please check what kind of 
+> binary your `iperf3' is (e.g. `file iperf3', `readelf -h iperf3', etc.)?
 
- I'll check if it is reproducible with actual hardware, otherwise it might 
-be an issue to fix in QEMU.
+ I tweaked the core file and set the EF_MIPS_ABI2 flag by hand.  This has 
+let GDB proceed:
+
+[...]
+warning: File "/usr/lib/debug/.build-id" has no build-id, file skipped
+Core was generated by `iperf3 -c 192.168.254.3'.
+Program terminated with signal SIGILL, Illegal instruction.
+#0  0x77eb3190 in ?? (
+[...]
+
+but this is a partial core file only and I have no corresponding binaries, 
+so I can't tell more at this stage, i.e. what code there is at 0x77eb3190 
+(the PC address is suspiciously high in the 32-bit address space BTW, is 
+that a PIE run with address space randomisation?).
+
+ Of course GDB shouldn't have hit an internal error with a broken core 
+file anyway, it should complain and handle the situation gracefully.  But 
+in any case it's an issue with the Linux kernel producing a core file in 
+the wrong format.
+
+ Is this the most recent Linux kernel version you have obtained this with?  
+There used to be a bug (regression) in Linux with n32 core files, but I 
+fixed it also in 2017, with commit 547da673173d ("MIPS: Fix an n32 core 
+file generation regset support regression").  So if it has stopped working 
+again, then it's a new regression.  Would you be able to bisect it?
 
   Maciej

@@ -2,101 +2,84 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 289EEC001B0
-	for <linux-mips@archiver.kernel.org>; Tue,  8 Aug 2023 17:51:18 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 93C22C04FDF
+	for <linux-mips@archiver.kernel.org>; Tue,  8 Aug 2023 17:55:24 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235057AbjHHRvR (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 8 Aug 2023 13:51:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36816 "EHLO
+        id S229980AbjHHRzY (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 8 Aug 2023 13:55:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47254 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234984AbjHHRuq (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Tue, 8 Aug 2023 13:50:46 -0400
-Received: from mail-yw1-x112e.google.com (mail-yw1-x112e.google.com [IPv6:2607:f8b0:4864:20::112e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACAEE9EC3
-        for <linux-mips@vger.kernel.org>; Tue,  8 Aug 2023 09:22:41 -0700 (PDT)
-Received: by mail-yw1-x112e.google.com with SMTP id 00721157ae682-5768a7e3adbso332317b3.0
-        for <linux-mips@vger.kernel.org>; Tue, 08 Aug 2023 09:22:41 -0700 (PDT)
+        with ESMTP id S230282AbjHHRy5 (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Tue, 8 Aug 2023 13:54:57 -0400
+Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D58F4A5D5
+        for <linux-mips@vger.kernel.org>; Tue,  8 Aug 2023 09:24:44 -0700 (PDT)
+Received: by mail-lj1-x231.google.com with SMTP id 38308e7fff4ca-2b9a2033978so90881931fa.0
+        for <linux-mips@vger.kernel.org>; Tue, 08 Aug 2023 09:24:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1691511738; x=1692116538;
-        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=y6sSetytOmUwyBC8vzBUgi7mxtEE0jfVhWzzVyZzcSg=;
-        b=JhoheN3H6C/80HqucaJ0VlvAmt9SpiVKCn+6gqg+521jRNgLgUd6vvjAd/mmB+4HTm
-         iJEzuy6fVLSUMpRvA3GldiaXm4kC2Up5Sg+vKmmfe2gROHOUh2K7vrgxp48AJAxDPoMt
-         WWb341ivTLs5rcdHjyCXWR5CHOohfE1zE8uDii6kNjBRtB2Dx4iJAHvWhLp328XrA95i
-         AJRXqc4urH2HMH1BeNl36x71lAzybbwZ3AHT8DXXfVMnja5SlzuxwCSSXxxpVvWG+UK/
-         sMnQScfLqFvk77gmZBuzVK5QlSjMDvuQHIdIs1ZZnGpEwErLzT3A7gbHVyTdlybhx12f
-         DIQg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691511738; x=1692116538;
-        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
+        d=linaro.org; s=google; t=1691511873; x=1692116673;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=y6sSetytOmUwyBC8vzBUgi7mxtEE0jfVhWzzVyZzcSg=;
-        b=lJ+SS37E242fk7BnqUWS8AgXGei1aLnRUPxE65yQNoqTw+Ja9Y5Hoc8pltpRczbodI
-         UkpKcPuXHtayeWQhBwBtKSY/kq8lEMNEGAcI92rP1h7FC6y93zBVfLVJuTQFVjBPo8ws
-         ZrYa4Cd4RJn790EVOdMVsHJ/QsJ8sau5nnRxGLN2x/KMmitRj7VJBK8qIJIUNMDIiU+Q
-         9TGlQCuXFQMeHwlDnzRNF94fP4Si2RNw2gBRcAbYwUYaP3o0xr8qTLiKo51aoCwLDq3i
-         KxVaCl7F2/yFhYEm5zXj5OjDX2561FjfWp1xpGQmsUz7o76J99UgLZyubLzQScbHImHo
-         q3yA==
-X-Gm-Message-State: AOJu0YxojbYG/o0wDwZrdD8cTenj93J2CKrgXB/JSe7KgxYDTCCMrmT5
-        asU9x0XmUL/YMrKOCxmYAJV4WY0XDiEmDA2C1hBZ/T3rk6R/9nL7pKs=
-X-Google-Smtp-Source: AGHT+IHtywQ8e8sdcBJ4nEsVchvTc5SRUSLKPPN/CcX+znemohbI6SJix20yoRk10mpcbIo22CBF5AHYdgr0wG7ZGcU=
-X-Received: by 2002:a05:6102:11f8:b0:43f:3426:9e35 with SMTP id
- e24-20020a05610211f800b0043f34269e35mr3147137vsg.12.1691478715881; Tue, 08
- Aug 2023 00:11:55 -0700 (PDT)
+        bh=0wSCMvsrvGtP/SRB0drN+VU/GnJ3+psGhnVmypWifVc=;
+        b=jWIPe1z62Bpw1snQfCKhF7FMzBI1Gds3hrcmTSP98SQrTiO+xh7eEw7hmbDzqtt1Ux
+         lbkd46oDeCL0YoAtdbPhrr4xlwxBHF5Gqe6BitgDN7z6TOCn7NIOJqOMeqYBm87BdUaC
+         3rXHRPpLc9WOiT/zwpeC4THmuaiaviWd5HVvp1f9TP2OkUGUBYqK1jmOGNgXqDoKBtn3
+         XJufebBTEE9Pr5zbHysP/2b4vPfHui7h48VtpmWB/aZKtrT6dLWbgA3XqPyULK1BvhZr
+         iiy1A6bZH0QC//ykm9f5X3qaZ6hIM59bSUafbK/l3SjiUpoL/+Lc7IO3M92ahLF0LrQ/
+         1npg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1691511873; x=1692116673;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=0wSCMvsrvGtP/SRB0drN+VU/GnJ3+psGhnVmypWifVc=;
+        b=RncWY2EiFvy3Gd0ujqXRSLqTkCY9ftY6wAXyUGo0y5XRCQhd4SwJLTiGWlCdlzaGVh
+         5TP6tSODn+2wwjHVKmdUGjyzo+LEAxVJhgUaVhYcuIrXyyMetVab/QR3wfLLX98jh8IP
+         V000NEiBV/SUnkm4fbyCfJH3VuHTfkiSlZIFhP93GP5Zh3VQutSEZBhzl80lCBYMncDy
+         Ol1Z6tR1jNAGU4G7Qmv5XxlpVFBoWZy0IWsJwDG6RTMX5mnwIQp3/qIzYCxORrpqQe/n
+         b6UuaZqnjlNeWFvoABvxHGkSsR8BjXifqCnSq8Jz2/1Rhk1k+sUj2R6VtVXE1VV4/cUg
+         oBew==
+X-Gm-Message-State: AOJu0Yy6lYwky3y0GosY9ZyDsE8J/Q08n1Vk/YWDrVuwUmLzo/8P7+E/
+        /gQzK6PGw+eoRy4Jfw+nmosH+cK3TkvITjoIvyY=
+X-Google-Smtp-Source: AGHT+IEt+Kf3mPdgxinq+Mt4SlVaTOKw94gaghcqyMPjmABWGoq+4o6zGEM2ZElSHkgdewFxWTvliA==
+X-Received: by 2002:adf:ff8c:0:b0:317:df3e:13d with SMTP id j12-20020adfff8c000000b00317df3e013dmr5441304wrr.38.1691487443405;
+        Tue, 08 Aug 2023 02:37:23 -0700 (PDT)
+Received: from [192.168.69.115] ([176.176.177.253])
+        by smtp.gmail.com with ESMTPSA id o10-20020a5d474a000000b003141a3c4353sm13073883wrs.30.2023.08.08.02.37.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 08 Aug 2023 02:37:23 -0700 (PDT)
+Message-ID: <cbc22d2f-726d-86fc-1f34-c529cd91fdbe@linaro.org>
+Date:   Tue, 8 Aug 2023 11:37:20 +0200
 MIME-Version: 1.0
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Tue, 8 Aug 2023 12:41:44 +0530
-Message-ID: <CA+G9fYspyEdT9wmVpL04J-p0CwqA+_v_L4H+ihY9VYqpCMmQ1Q@mail.gmail.com>
-Subject: next: mips: cavium_octeon_defconfig: gcc-8 - dwc3-octeon.c:502:8:
- include/linux/compiler_types.h:397:38: error: call to '__compiletime_assert_335'
- declared with attribute error: FIELD_PREP: value too large for the field _compiletime_assert
-To:     Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        linux-usb@vger.kernel.org, linux-mips@vger.kernel.org,
-        lkft-triage@lists.linaro.org
-Cc:     Ladislav Michl <ladis@linux-mips.org>, Thinh.Nguyen@synopsys.com,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Anders Roxell <anders.roxell@linaro.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.13.0
+Subject: Re: [PATCH 1/3] mips: remove unneeded #include <asm/export.h>
+Content-Language: en-US
+To:     Masahiro Yamada <masahiroy@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        linux-mips@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org
+References: <20230807153243.996262-1-masahiroy@kernel.org>
+From:   =?UTF-8?Q?Philippe_Mathieu-Daud=c3=a9?= <philmd@linaro.org>
+In-Reply-To: <20230807153243.996262-1-masahiroy@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-[My two cents]
+On 7/8/23 17:32, Masahiro Yamada wrote:
+> There is no EXPORT_SYMBOL line there, hence #include <asm/export.h>
+> is unneeded.
+> 
+> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+> ---
+> 
+>   arch/mips/kernel/octeon_switch.S | 1 -
+>   arch/mips/kernel/r2300_switch.S  | 1 -
+>   2 files changed, 2 deletions(-)
 
-While building Linux next-20230808 mips cavium_octeon_defconfig with gcc-8
-failed with below warnings and errors.
+Reviewed-by: Philippe Mathieu-Daudé <philmd@linaro.org>
 
-Build log:
-----------
 
-In function 'dwc3_octeon_setup.isra.4',
-    inlined from 'dwc3_octeon_probe' at drivers/usb/dwc3/dwc3-octeon.c:502:8:
-include/linux/compiler_types.h:397:38: error: call to
-'__compiletime_assert_335' declared with attribute error: FIELD_PREP:
-value too large for the field
-  _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
-                                      ^
-include/linux/compiler_types.h:378:4: note: in definition of macro
-'__compiletime_assert'
-    prefix ## suffix();    \
-    ^~~~~~
-
-  Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
-
-Links:
------
- - https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20230808/testrun/18882876/suite/build/test/gcc-8-cavium_octeon_defconfig/log
- - https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20230808/testrun/18882876/suite/build/test/gcc-8-cavium_octeon_defconfig/history/
-
-Steps to reproduce:
-------------
-  tuxmake --runtime podman --target-arch mips --toolchain gcc-8
---kconfig cavium_octeon_defconfig
-   - https://storage.tuxsuite.com/public/linaro/lkft/builds/2TgoAZwerJ28UWHyqfQUiaYYhrl/tuxmake_reproducer.sh
-
---
-Linaro LKFT
-https://lkft.linaro.org

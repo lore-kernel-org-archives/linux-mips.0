@@ -2,101 +2,111 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 47AAAC04A6A
-	for <linux-mips@archiver.kernel.org>; Tue,  8 Aug 2023 17:07:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BE3C5C001B0
+	for <linux-mips@archiver.kernel.org>; Tue,  8 Aug 2023 17:13:46 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229623AbjHHRHb (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 8 Aug 2023 13:07:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50602 "EHLO
+        id S234073AbjHHRNp (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 8 Aug 2023 13:13:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39582 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233206AbjHHRGr (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Tue, 8 Aug 2023 13:06:47 -0400
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05D4D5FDEB
-        for <linux-mips@vger.kernel.org>; Tue,  8 Aug 2023 09:02:51 -0700 (PDT)
-Received: by mail-ej1-x631.google.com with SMTP id a640c23a62f3a-99bdf08860dso365466b.0
-        for <linux-mips@vger.kernel.org>; Tue, 08 Aug 2023 09:02:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1691510529; x=1692115329;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=anuYTtEViMW4nrjJPfmB+dcKnLZHUPG9Gjj/JVLBORE=;
-        b=ZXV2bFrtlrw2PSvWdUmzKxGBlGeRDaWFHMVkcYCiqcaG6MMBygq9eDTSJIzIZwmkES
-         KZ3HINTbjl47otnVGpKI4T8ciLBqVb3WV4gDe2i3GuefiFAom2Ze7UKTEdozoD7aXct5
-         3q/LUrVnhc7HcYxlP4Km6ltr4AHdW4j06zN5bAhSjjK/TPPxc/QMJwE+w1Ocveu2p/zv
-         SHLVmfWtFfYrozYikELxc2au6E1e8tAqBx0KY5ioEtsMtVFqtn/sSfxdCiUUlokiNAdO
-         NRHDGB+c4ukYzyXOUMlbcdyEcGEGRoLpy+s3Y5Ui8GMZzcPTNiYpwroHX7qoUw+umlaG
-         RQLw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691510529; x=1692115329;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=anuYTtEViMW4nrjJPfmB+dcKnLZHUPG9Gjj/JVLBORE=;
-        b=F3l8P7LpYEqyS3SmENM4jBuhkr2bqKmwyVHtHlWdOWhcUOQ7gL5cVY+XmVzq1qodSa
-         ayl1GIH5iDaTy9rR6wSTFImvjAn+I6DVti82wm20UtFha+XEy/k4DWjnxTAe910BsEzV
-         8aYZS0E5LaRwQ6P6qMXt9Npa1qjzfUpd78jFsz4YO6SEa2oz2VsOLlrY4b+PbfYCNDrP
-         8czjq19BZcMVt6TEAyfCxxeX+YOFLs03dL1JgKCk7sm0RJCB0jy1W6aQo3Cb/L8Z+fJV
-         akxRVl9fQvPNZugbTTWBjyrmy0YES/M+Ee20q0Pa9mh0CU2yN5wM37AXCp5+ONDKGEu5
-         OJWQ==
-X-Gm-Message-State: AOJu0YxoqapGeOr+f+SqqjWNecpUEAPnsB3i3DWSuDZAZUcv43z+pp/F
-        v0DqpOaAzs9/hy5DFh3gxBQ5TpxkFW4AiW/pbQ4=
-X-Google-Smtp-Source: AGHT+IExib52NOOu+oE06KDhOXHVNqwrDLcdqVkpVygSHkJ9Hrps2AVdFNXnNOa2I25iZ3v1cJAjCQ==
-X-Received: by 2002:ac2:4e04:0:b0:4fb:8aca:6bb4 with SMTP id e4-20020ac24e04000000b004fb8aca6bb4mr2837425lfr.20.1691486994246;
-        Tue, 08 Aug 2023 02:29:54 -0700 (PDT)
-Received: from [127.0.1.1] ([85.235.12.238])
-        by smtp.gmail.com with ESMTPSA id r20-20020ac24d14000000b004f9c44b3e6dsm1809545lfi.127.2023.08.08.02.29.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Aug 2023 02:29:53 -0700 (PDT)
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Tue, 08 Aug 2023 11:29:53 +0200
-Subject: [PATCH] MIPS: Drop virt_to_phys define to self
+        with ESMTP id S234083AbjHHRMz (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Tue, 8 Aug 2023 13:12:55 -0400
+Received: from h1.cmg2.smtp.forpsi.com (h1.cmg2.smtp.forpsi.com [81.2.195.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CEA01981
+        for <linux-mips@vger.kernel.org>; Tue,  8 Aug 2023 09:05:23 -0700 (PDT)
+Received: from lenoch ([91.218.190.200])
+        by cmgsmtp with ESMTPSA
+        id TJ9yqMTRCv5uITJA0qW2v3; Tue, 08 Aug 2023 11:37:52 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=triops.cz; s=f2019;
+        t=1691487472; bh=oEUSNGCw0ybxXydxB+QbP+KHQ2Vpk2Jeqtkmtb/Yn1A=;
+        h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type;
+        b=oWvWF6ctUorUbjEkXztq1EL9qWgyYP8epH4QHHRUCenyzwDcphM2JFPmJJy+7QUYG
+         WHqBSbDaHUslADtQNkRSgeAam+cPDYSJ5UyoAYUGwDNGhI0e21RAA41u+AC2Br51Nn
+         ZnuZC6x2vX0H0B1E2tZi53tvYhwc1xirZUW6MKZ3IANZDYwbyufqT/JTDIsJQvaK0o
+         wWjA7Il598EfhQ3VqjH5yo7u6USE075NZa+DmTzM4q/MrSV+ENP3nsR6+TcUf6OMuo
+         sTsC6fhrzrumPq+a1l8Tlb/3oW1YnKI6OEMWzvfwJXZ1ZTvBFauCJGr3GMy4+0xICH
+         Khusseph+9tsw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=triops.cz; s=f2019;
+        t=1691487472; bh=oEUSNGCw0ybxXydxB+QbP+KHQ2Vpk2Jeqtkmtb/Yn1A=;
+        h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type;
+        b=oWvWF6ctUorUbjEkXztq1EL9qWgyYP8epH4QHHRUCenyzwDcphM2JFPmJJy+7QUYG
+         WHqBSbDaHUslADtQNkRSgeAam+cPDYSJ5UyoAYUGwDNGhI0e21RAA41u+AC2Br51Nn
+         ZnuZC6x2vX0H0B1E2tZi53tvYhwc1xirZUW6MKZ3IANZDYwbyufqT/JTDIsJQvaK0o
+         wWjA7Il598EfhQ3VqjH5yo7u6USE075NZa+DmTzM4q/MrSV+ENP3nsR6+TcUf6OMuo
+         sTsC6fhrzrumPq+a1l8Tlb/3oW1YnKI6OEMWzvfwJXZ1ZTvBFauCJGr3GMy4+0xICH
+         Khusseph+9tsw==
+Date:   Tue, 8 Aug 2023 11:37:50 +0200
+From:   Ladislav Michl <oss-lists@triops.cz>
+To:     Naresh Kamboju <naresh.kamboju@linaro.org>,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        linux-usb@vger.kernel.org, linux-mips@vger.kernel.org,
+        lkft-triage@lists.linaro.org
+Cc:     Thinh.Nguyen@synopsys.com,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Anders Roxell <anders.roxell@linaro.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Subject: [PATCH] usb: dwc3: dwc3-octeon: Verify clock divider
+Message-ID: <ZNIM7tlBNdHFzXZG@lenoch>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20230808-virt-to-phys-mips-v1-1-af6fcd45ed31@linaro.org>
-X-B4-Tracking: v=1; b=H4sIABAL0mQC/x3MQQ5AMBBA0avIrE1SJZSriEXD0Fmg6UhDGnfXW
- L7F/wmEApPAUCQIFFn4PDKqsoDZ2WMj5CUbtNK1Mspg5HDhdaJ3j+DOXlDrlhrVW9PYDnLnA61
- 8/89xet8PyclIPWMAAAA=
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Florian Fainelli <f.fainelli@gmail.com>
-Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Linus Walleij <linus.walleij@linaro.org>
-X-Mailer: b4 0.12.3
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-CMAE-Envelope: MS4wfHcEf2zBKR7/2Uinq9Z4a3Cavgvad8nW6HgFS9chK9ma4OnR8Nzo3K9+h3eC9TRkFk0e8LdyC08HD8WugWuJV7PIeRT/ErG9XUCwSvTiWYRU3Y49QiYp
+ msOsH3btHP7amOrFBFtOpcbEKQ5hayObiq4YZkFth0Vl3LK80Y1qLcW6pLA7agUSVL2Gw/T/soWilybb/sdsTbNMiEX2SovGumZ147kuZ04pBtCGyyOz9qiV
+ mMjL5mh3X7GolieMwUqFsfFvqmUAyrYq6hmxoZwJMtUamS7WlyStjHqe8Syv+OM2C5GbSGftkkLqLm9hsQ7C1tP44ALdgKtm4kr4jOpVCLFH+mAy+dD7yDJ7
+ WLwqAoCdORynb4/4MimcwljXmve0MOzzHX63uw/gWhRnCGQEIZOjvLMWiQt9b5qnCaNsmo2d5yQ1sZ6TvAE5iiM7k7ZgMf6xwbmDHh1b9+vg174zFDXDqZIr
+ 4AnrF5N3iv4VER0P4lIOME36F0v1Hdgfb4iYkw==
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-The function virt_to_phys was defined to virt_to_phys and then
-implemented right below.
+From: Ladislav Michl <ladis@linux-mips.org>
 
-I can't understand why, just drop it and let the actual function
-slot in.
+Although valid USB clock divider will be calculated for all valid
+Octeon core frequencies, make code formally correct limiting
+divider not to be greater that 7 so it fits into H_CLKDIV_SEL
+field.
 
-Fixes: dfad83cb7193 ("MIPS: Add support for CONFIG_DEBUG_VIRTUAL")
-Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+Signed-off-by: Ladislav Michl <ladis@linux-mips.org>
+Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+Closes: https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20230808/testrun/18882876/suite/build/test/gcc-8-cavium_octeon_defconfig/log
 ---
- arch/mips/include/asm/io.h | 1 -
- 1 file changed, 1 deletion(-)
+ Greg, if you want to resent whole serie, just drop me a note.
+ Otherwise, this patch is meant to be applied on to of it.
+ Thank you.
 
-diff --git a/arch/mips/include/asm/io.h b/arch/mips/include/asm/io.h
-index affd21e9c20b..18ed44843541 100644
---- a/arch/mips/include/asm/io.h
-+++ b/arch/mips/include/asm/io.h
-@@ -111,7 +111,6 @@ extern phys_addr_t __virt_to_phys(volatile const void *x);
- #define __virt_to_phys(x)	__virt_to_phys_nodebug(x)
- #endif
+ drivers/usb/dwc3/dwc3-octeon.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/usb/dwc3/dwc3-octeon.c b/drivers/usb/dwc3/dwc3-octeon.c
+index 6f47262a117a..73bdcebf465c 100644
+--- a/drivers/usb/dwc3/dwc3-octeon.c
++++ b/drivers/usb/dwc3/dwc3-octeon.c
+@@ -251,11 +251,11 @@ static int dwc3_octeon_get_divider(void)
+ 	while (div < ARRAY_SIZE(clk_div)) {
+ 		uint64_t rate = octeon_get_io_clock_rate() / clk_div[div];
+ 		if (rate <= 300000000 && rate >= 150000000)
+-			break;
++			return div;
+ 		div++;
+ 	}
  
--#define virt_to_phys virt_to_phys
- static inline phys_addr_t virt_to_phys(const volatile void *x)
- {
- 	return __virt_to_phys(x);
-
----
-base-commit: 06c2afb862f9da8dc5efa4b6076a0e48c3fbaaa5
-change-id: 20230808-virt-to-phys-mips-226e409a84a7
-
-Best regards,
+-	return div;
++	return -EINVAL;
+ }
+ 
+ static int dwc3_octeon_setup(struct dwc3_octeon *octeon,
+@@ -289,6 +289,10 @@ static int dwc3_octeon_setup(struct dwc3_octeon *octeon,
+ 
+ 	/* Step 4b: Select controller clock frequency. */
+ 	div = dwc3_octeon_get_divider();
++	if (div < 0) {
++		dev_err(dev, "clock divider invalid\n");
++		return div;
++	}
+ 	val = dwc3_octeon_readq(uctl_ctl_reg);
+ 	val &= ~USBDRD_UCTL_CTL_H_CLKDIV_SEL;
+ 	val |= FIELD_PREP(USBDRD_UCTL_CTL_H_CLKDIV_SEL, div);
 -- 
-Linus Walleij <linus.walleij@linaro.org>
+2.39.2
 

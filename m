@@ -2,126 +2,82 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8CC9DC001DB
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C921EC04E69
 	for <linux-mips@archiver.kernel.org>; Tue,  8 Aug 2023 17:02:25 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231756AbjHHRCY (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 8 Aug 2023 13:02:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60052 "EHLO
+        id S233303AbjHHRCZ (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 8 Aug 2023 13:02:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51474 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233165AbjHHRBW (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Tue, 8 Aug 2023 13:01:22 -0400
-Received: from mail-oo1-xc49.google.com (mail-oo1-xc49.google.com [IPv6:2607:f8b0:4864:20::c49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E55FE1968C
-        for <linux-mips@vger.kernel.org>; Tue,  8 Aug 2023 09:00:58 -0700 (PDT)
-Received: by mail-oo1-xc49.google.com with SMTP id 006d021491bc7-560c7abdbdcso9448214eaf.0
-        for <linux-mips@vger.kernel.org>; Tue, 08 Aug 2023 09:00:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1691510423; x=1692115223;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=BaiJ+rWGolW4ovI22gadBn2AFu8/7ikdaAkBdyz0qCk=;
-        b=20HQMTORVLDVFv6fTfSRVJgW+TrHIxHg++CzjnZTJd7MF/zDHe4JkQXXxHg0rLg+bz
-         UY8RrE+cpKBNITCvIWqTWika2bDDam67MdZwbfHYbi0DOkwrlyjzHT6eTBCJ2JNxPSzy
-         7651EFNPzLz7im9XOdBFL5PuZ6jFoWVbnoaNrdvczLomDpbuyeUr9mwTvQz8feu/mx54
-         5iYtDncMKr6Phh4A2hJM2Z4RbjrlEJ4dSkynygQWQjYIpCY0VR4kImTab8hvMh5LdxM9
-         3GybIqbyAvbAVSKqWz6gh7xi2t+lY0jpQXrfV54q1LTk8HT21JlnDTIEAsKOh14dvnUn
-         9scw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691510423; x=1692115223;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=BaiJ+rWGolW4ovI22gadBn2AFu8/7ikdaAkBdyz0qCk=;
-        b=XQ3rPUgX+9KJV0ARegYkGDFIwY6XMNJj3x7Md8JwKKY0LJXC+fBDeB5lCPU6S7caPK
-         wwuloc8GXWryiHzD6MgmcMJTG6Zq+ryM18oc/fiWdlIrqsB7tCtINIGaFUoJBGrjlwC4
-         i+3Vmk6a+eKvPfRtJS7v6WS7sp3Bo0ET2eVbKunvVMZpgMg29rqQRTQtxh1TcEYAKsAd
-         lVloCRBswzZ6E2JVDSc93tmTIG6xrIQzKOX9Qpn33YciR3DnPmu6r9LNlDdOv3Qk3UZH
-         dtHLQaxiHhb1LgfFFphSEAq8doUr4C2fwv1nrza6Owj8OI6oMzEkvOchP7wmOZWudY4P
-         NtsQ==
-X-Gm-Message-State: AOJu0YzKVzB6Nff+QrsP8epIavagkDMzxQQkhPWuVdmjSE3aHCepCbpD
-        GSgNvpl/pUai9hniGzhnSupfLtgSc04=
-X-Google-Smtp-Source: AGHT+IG5/N2ZE1Ejorc8NLEsKzeCITxV+EG+130yb+21WD/iP5VWmZCCV6UyxFu6UTgxWYvax2jHbb68fQQ=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a63:3c11:0:b0:564:179a:d5cb with SMTP id
- j17-20020a633c11000000b00564179ad5cbmr56114pga.8.1691507265754; Tue, 08 Aug
- 2023 08:07:45 -0700 (PDT)
-Date:   Tue, 8 Aug 2023 08:07:43 -0700
-In-Reply-To: <CAJHc60zN-dc2E-fS7fuXgkrfGD9bqW6tMy2GRZxbHOeZv0ZOBw@mail.gmail.com>
-Mime-Version: 1.0
-References: <20230722022251.3446223-1-rananta@google.com> <20230722022251.3446223-3-rananta@google.com>
- <87tttpr6qy.wl-maz@kernel.org> <ZMgsjx8dwKd4xBGe@google.com>
- <877cqdqw12.wl-maz@kernel.org> <CAJHc60xAUVt5fbhEkOqeC-VF8SWVOt3si=1yxVVAUW=+Hu_wNg@mail.gmail.com>
- <CAJHc60zN-dc2E-fS7fuXgkrfGD9bqW6tMy2GRZxbHOeZv0ZOBw@mail.gmail.com>
-Message-ID: <ZNJaPxTtPRCv0HOl@google.com>
-Subject: Re: [PATCH v7 02/12] KVM: arm64: Use kvm_arch_flush_remote_tlbs()
-From:   Sean Christopherson <seanjc@google.com>
-To:     Raghavendra Rao Ananta <rananta@google.com>
-Cc:     Marc Zyngier <maz@kernel.org>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        James Morse <james.morse@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Zenghui Yu <yuzenghui@huawei.com>,
-        Anup Patel <anup@brainfault.org>,
-        Atish Patra <atishp@atishpatra.org>,
-        Jing Zhang <jingzhangos@google.com>,
-        Reiji Watanabe <reijiw@google.com>,
-        Colton Lewis <coltonlewis@google.com>,
-        David Matlack <dmatlack@google.com>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        linux-mips@vger.kernel.org, kvm-riscv@lists.infradead.org,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+        with ESMTP id S232927AbjHHRBb (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Tue, 8 Aug 2023 13:01:31 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87F6DAAF2;
+        Tue,  8 Aug 2023 09:01:03 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id C132762484;
+        Tue,  8 Aug 2023 10:45:09 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D497AC433C7;
+        Tue,  8 Aug 2023 10:45:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1691491509;
+        bh=6c+LvhZKfn4xLs8pROMMCTZCY+xcMxiFe16JPuh9KJc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=OK4b3vk/YmQJP6JOaVzTCBwnZS8Ryqqh48V/vOGs5TDSQxCvHiENiPgxWIWgbLXY7
+         ZQkyP+FNx4P5U5oSTg0k9JyEX6XtXcoBKgdI4hd9H2jJ2DlFe/bmwfzMFp06BBh6I4
+         XG+ZJvLgxv7etWHULcMzKpFegKGZJtUW2E22K98w=
+Date:   Tue, 8 Aug 2023 12:45:06 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Ladislav Michl <oss-lists@triops.cz>
+Cc:     Naresh Kamboju <naresh.kamboju@linaro.org>,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        linux-usb@vger.kernel.org, linux-mips@vger.kernel.org,
+        lkft-triage@lists.linaro.org, Thinh.Nguyen@synopsys.com,
+        Arnd Bergmann <arnd@arndb.de>,
+        Anders Roxell <anders.roxell@linaro.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Subject: Re: [PATCH] usb: dwc3: dwc3-octeon: Verify clock divider
+Message-ID: <2023080840-visible-chess-ab8b@gregkh>
+References: <ZNIM7tlBNdHFzXZG@lenoch>
+ <2023080830-wincing-goldmine-def9@gregkh>
+ <ZNIbNj4Orr7PEqY9@lenoch>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZNIbNj4Orr7PEqY9@lenoch>
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Fri, Aug 04, 2023, Raghavendra Rao Ananta wrote:
-> On Wed, Aug 2, 2023 at 4:28=E2=80=AFPM Raghavendra Rao Ananta
-> <rananta@google.com> wrote:
-> >
-> > Sure, I'll change it to kvm_arch_flush_vm_tlbs() in v8.
-> >
-> While working on the renaming, I realized that since this function is
-> called from kvm_main.c's kvm_flush_remote_tlbs(). Do we want to rename
-> this and the other kvm_flush_*() functions that the series introduces
-> to match their kvm_arch_flush_*() counterparts?
+On Tue, Aug 08, 2023 at 12:38:46PM +0200, Ladislav Michl wrote:
+> On Tue, Aug 08, 2023 at 12:00:42PM +0200, Greg Kroah-Hartman wrote:
+> > On Tue, Aug 08, 2023 at 11:37:50AM +0200, Ladislav Michl wrote:
+> > > From: Ladislav Michl <ladis@linux-mips.org>
+> > > 
+> > > Although valid USB clock divider will be calculated for all valid
+> > > Octeon core frequencies, make code formally correct limiting
+> > > divider not to be greater that 7 so it fits into H_CLKDIV_SEL
+> > > field.
+> > > 
+> > > Signed-off-by: Ladislav Michl <ladis@linux-mips.org>
+> > > Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+> > > Closes: https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20230808/testrun/18882876/suite/build/test/gcc-8-cavium_octeon_defconfig/log
+> > > ---
+> > >  Greg, if you want to resent whole serie, just drop me a note.
+> > >  Otherwise, this patch is meant to be applied on to of it.
+> > 
+> > On top of what series?
+> 
+> I'm sorry, "[PATCH v5 0/7] Cleanup Octeon DWC3 glue code".
+> In your usb-next, last patch of serie is:
+> d9216d3ef538 ("usb: dwc3: dwc3-octeon: Add SPDX header and copyright")
 
-Hmm, if we're going to rename one arch hook, then yes, I think it makes sen=
-se to
-rename all the common APIs and arch hooks to match.
+I already took that series, so this is fine, I don't want to revert that
+and have to add it all back :)
 
-However, x86 is rife with the "remote_tlbs" nomenclature, and renaming the =
-common
-APIs will just push the inconsistencies into x86.  While I 100% agree that =
-the
-current naming is flawed, I am not willing to end up with x86 being partial=
-ly
-converted.
+thanks,
 
-I think I'm ok renaming all of x86's many hooks?  But I'd definitely want i=
-nput
-from more x86 folks, and the size and scope of this series would explode.  =
-Unless
-Marc objects and/or has a better idea, the least awful option is probably t=
-o ignore
-the poor "remote_tlbs" naming and tackle it in a separate series.
-
-Sorry for not noticiing this earlier, I didn't realize just how much x86 us=
-es
-remote_tlbs.
-
-> (spiraling more into this, we also have the 'remote_tlb_flush_requests' a=
-nd
-> 'remote_tlb_flush' stats)
-
-Regardless of what we decide for the APIs, definitely leave the stats alone=
-.  The
-names are ABI.  We could preserve the names and changes the struct fields, =
-but that
-would be a net negative IMO.
+greg k-h

@@ -2,134 +2,109 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C2716C001DE
-	for <linux-mips@archiver.kernel.org>; Tue,  8 Aug 2023 17:46:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AC901C001DE
+	for <linux-mips@archiver.kernel.org>; Tue,  8 Aug 2023 17:50:34 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234922AbjHHRqO (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 8 Aug 2023 13:46:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36382 "EHLO
+        id S235048AbjHHRud (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 8 Aug 2023 13:50:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45694 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234243AbjHHRpc (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Tue, 8 Aug 2023 13:45:32 -0400
-Received: from mail-il1-x133.google.com (mail-il1-x133.google.com [IPv6:2607:f8b0:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 937DA25EDB
-        for <linux-mips@vger.kernel.org>; Tue,  8 Aug 2023 09:20:40 -0700 (PDT)
-Received: by mail-il1-x133.google.com with SMTP id e9e14a558f8ab-3493d0f785dso151335ab.1
-        for <linux-mips@vger.kernel.org>; Tue, 08 Aug 2023 09:20:40 -0700 (PDT)
+        with ESMTP id S232338AbjHHRuD (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Tue, 8 Aug 2023 13:50:03 -0400
+Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D38C893E2
+        for <linux-mips@vger.kernel.org>; Tue,  8 Aug 2023 09:22:13 -0700 (PDT)
+Received: by mail-yb1-xb29.google.com with SMTP id 3f1490d57ef6-c5ffb6cda23so6223258276.0
+        for <linux-mips@vger.kernel.org>; Tue, 08 Aug 2023 09:22:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1691511605; x=1692116405;
+        d=linaro.org; s=google; t=1691511702; x=1692116502;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=U4qeJyFw/gGtNGwwL76+JxYJVDiytKHvIxhzv45xt00=;
-        b=FpfAKc3XyP1qtbWBZ1r5mjM0gGcK3mBqFnQDJg0z7xglITdvPvyPFO68jQ0PYtEUYV
-         rpNDUVZsipF7n+fTt95dGPnaD80TOiS9mDENUKcX5WGNdhDAs8DDDxN/NVyVQA8z0W5P
-         25Tt2lotrmP+TltcpTJg7iP1p/XE1wX+ZjijZoVt+3tKY7bWxnQCNP5LL5wrjU0b2GnI
-         aVqQqHH8Ca7ngxoTSYzFdMaiz/kEiqSAcaMrBMBDLXzcSuPFg8+njtH5c8+y240S5y9+
-         6uPltBfXOJFc9jALMNDRbM20jjU7jRwikkRkGmhO/qF4WtwZoWK1pjQTtuAfpe/Mq/Sf
-         Sg5g==
+        bh=bDrh8BIjjcioiUiDgVZRZWHMdXQTz7RggcR/+kw0NLg=;
+        b=ekeIMF7bDLZPtzrGR7JcJpTKatkoza3RsSoO3Px5eRjlYTueHrX79bu431YI/iv8Lg
+         zxJr8+ZcE9P+luOijrip46SaGEEXLAy8e7otvL+3luYu5PyGAP7/TtIyX++58cRWXUYw
+         pH7ANA/iMBhP0/SIWwBYuX5sZjFM4N2qteedpFnZRH33ZoMyl6eau++2AH+yv2KWxIJC
+         MnJoIyzwAccxf4hS4akMw01Fui6WsqrGJQXbVtNJ6/Y/nGdciH0Q7FbNsIu3UPVjx9NX
+         CGrGJuF2kqQ44JTKEa+HEOAvbAiQv+YoKOy9NoL2EPB4n5yaVrDZOYym81XIwtw8PpFF
+         TNVA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1691511605; x=1692116405;
+        d=1e100.net; s=20221208; t=1691511702; x=1692116502;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=U4qeJyFw/gGtNGwwL76+JxYJVDiytKHvIxhzv45xt00=;
-        b=OaW44/AtBTUcVLRNd6okX6ZdOGjP9gfgewjOqziy7O7AeuYWImYeRqRNJtBuamEoox
-         Qr1rvtm6E7xoPGOc/kfmrOqZg6wcjxhvqojp4LpL9pOtQPFyW6UewOx56E/C8v5gEAg2
-         1qSb9iLwF6r8mQ3KMNvQN+mUe4KSEn1gZ9U13c7NArESTrI1qCHL9JmLfihBrpBk3OoO
-         yzSDlcZGxklRIKGxVhgKXpXjwSPaFUO2EVjVq+4gKtfr7UGKVu7PIuV6UwpAPZXaTxkh
-         WCfbYflz1EYeF5FvtzR06WYu2anC7fZBXIjMCzoFlwYRWIg0ERZehFoPXXbQFiEfbuC7
-         9FwA==
-X-Gm-Message-State: AOJu0Ywe9bOtIvcwSWEv03jyeJdcJ+L+TDzNRuJEJNnbQ+1xDVSdQ0AZ
-        +3E2aqHCMjAD0Z/0WZOXeWiNpZu/zdqPe91oxp+EIw==
-X-Google-Smtp-Source: AGHT+IE0t1UQBz7Q+Wd5oVDkD3MWrd9+fYCOI5tNf8F86oCLp/yKAd0cOFrr+Qrz9mpkQuy5myhBpG2/Eo43uNjBaY0=
-X-Received: by 2002:a05:6e02:156e:b0:33b:4a8c:2147 with SMTP id
- k14-20020a056e02156e00b0033b4a8c2147mr897399ilu.8.1691511605457; Tue, 08 Aug
- 2023 09:20:05 -0700 (PDT)
+        bh=bDrh8BIjjcioiUiDgVZRZWHMdXQTz7RggcR/+kw0NLg=;
+        b=ChMdy96FfdgMZO+UXkVwaxRhwpafYECKcVrsIjvDoV4iiUci4fnL0HaJ5fsYoQkuy0
+         kwq4qrMae62Lk1MS0cOFA5R82oi2lWXAuRh86KqIyvr+vXoOYltnlbRzRYISrP95kS+W
+         RnWUanCtOzMH/M40cuBFpqQX1GbavzBF4MWeoiH9+IrbDji8k7BMvjELQvfjgsUR3sIQ
+         39mJEuuzns1AgFWA2KCVWyXHV2Ja4Avt/2GnSLJN0Qj0ZWJQEySyD/d9MA5J7I3kVhlo
+         PcA7rs2BjLIhn1jAFBqZu0d0IDQ3pXLokY/2LnFhTbBoBBCN9P0bflZDPd9Bacy4LCg7
+         dptA==
+X-Gm-Message-State: AOJu0YxWsgONxVo8qBU1/vtzJZqjwA4VTZJSCUqA9vcXwozF1AwVs1HY
+        sOsby0uj7JrzrzcNKgI8O114xmFMn9ga4olEYUwRrk7pY8dWyJX2sno=
+X-Google-Smtp-Source: AGHT+IGgk2Gn5ioNH0AcFXHWCRiyva9Nx2L/8mMA/ydZKbkG7fAbv8oXVgFtjI3hbchGPrQFMMIeNjTdPD0hamE70pA=
+X-Received: by 2002:a25:8f84:0:b0:d3a:e626:af3a with SMTP id
+ u4-20020a258f84000000b00d3ae626af3amr9952727ybl.24.1691500372554; Tue, 08 Aug
+ 2023 06:12:52 -0700 (PDT)
 MIME-Version: 1.0
-References: <20230722022251.3446223-1-rananta@google.com> <20230722022251.3446223-3-rananta@google.com>
- <87tttpr6qy.wl-maz@kernel.org> <ZMgsjx8dwKd4xBGe@google.com>
- <877cqdqw12.wl-maz@kernel.org> <CAJHc60xAUVt5fbhEkOqeC-VF8SWVOt3si=1yxVVAUW=+Hu_wNg@mail.gmail.com>
- <CAJHc60zN-dc2E-fS7fuXgkrfGD9bqW6tMy2GRZxbHOeZv0ZOBw@mail.gmail.com> <ZNJaPxTtPRCv0HOl@google.com>
-In-Reply-To: <ZNJaPxTtPRCv0HOl@google.com>
-From:   Raghavendra Rao Ananta <rananta@google.com>
-Date:   Tue, 8 Aug 2023 09:19:53 -0700
-Message-ID: <CAJHc60yiGnVc=ysdOaNemWaDpTBSk02mRLenK3sN2XtN_Cp98g@mail.gmail.com>
-Subject: Re: [PATCH v7 02/12] KVM: arm64: Use kvm_arch_flush_remote_tlbs()
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Marc Zyngier <maz@kernel.org>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        James Morse <james.morse@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Zenghui Yu <yuzenghui@huawei.com>,
-        Anup Patel <anup@brainfault.org>,
-        Atish Patra <atishp@atishpatra.org>,
-        Jing Zhang <jingzhangos@google.com>,
-        Reiji Watanabe <reijiw@google.com>,
-        Colton Lewis <coltonlewis@google.com>,
-        David Matlack <dmatlack@google.com>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        linux-mips@vger.kernel.org, kvm-riscv@lists.infradead.org,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
+References: <20230808-virt-to-phys-mips-v1-1-af6fcd45ed31@linaro.org>
+In-Reply-To: <20230808-virt-to-phys-mips-v1-1-af6fcd45ed31@linaro.org>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Tue, 8 Aug 2023 15:12:40 +0200
+Message-ID: <CACRpkdYisteBTk9DOeCZiCeH5hJW87O-m+zsWAU7uwg7ud=ZYw@mail.gmail.com>
+Subject: Re: [PATCH] MIPS: Drop virt_to_phys define to self
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Tue, Aug 8, 2023 at 8:07=E2=80=AFAM Sean Christopherson <seanjc@google.c=
-om> wrote:
->
-> On Fri, Aug 04, 2023, Raghavendra Rao Ananta wrote:
-> > On Wed, Aug 2, 2023 at 4:28=E2=80=AFPM Raghavendra Rao Ananta
-> > <rananta@google.com> wrote:
-> > >
-> > > Sure, I'll change it to kvm_arch_flush_vm_tlbs() in v8.
-> > >
-> > While working on the renaming, I realized that since this function is
-> > called from kvm_main.c's kvm_flush_remote_tlbs(). Do we want to rename
-> > this and the other kvm_flush_*() functions that the series introduces
-> > to match their kvm_arch_flush_*() counterparts?
->
-> Hmm, if we're going to rename one arch hook, then yes, I think it makes s=
-ense to
-> rename all the common APIs and arch hooks to match.
->
-> However, x86 is rife with the "remote_tlbs" nomenclature, and renaming th=
-e common
-> APIs will just push the inconsistencies into x86.  While I 100% agree tha=
-t the
-> current naming is flawed, I am not willing to end up with x86 being parti=
-ally
-> converted.
->
-> I think I'm ok renaming all of x86's many hooks?  But I'd definitely want=
- input
-> from more x86 folks, and the size and scope of this series would explode.=
-  Unless
-> Marc objects and/or has a better idea, the least awful option is probably=
- to ignore
-> the poor "remote_tlbs" naming and tackle it in a separate series.
->
-Sure, I think it's better to do it in a separate series as well. I'm
-happy to carry out the task after this one gets merged. But, let's
-wait for Marc and others' opinion on the matter.
+On Tue, Aug 8, 2023 at 11:29=E2=80=AFAM Linus Walleij <linus.walleij@linaro=
+.org> wrote:
 
-Thank you.
-Raghavendra
-> Sorry for not noticiing this earlier, I didn't realize just how much x86 =
-uses
-> remote_tlbs.
+> The function virt_to_phys was defined to virt_to_phys and then
+> implemented right below.
 >
-> > (spiraling more into this, we also have the 'remote_tlb_flush_requests'=
- and
-> > 'remote_tlb_flush' stats)
+> I can't understand why, just drop it and let the actual function
+> slot in.
 >
-> Regardless of what we decide for the APIs, definitely leave the stats alo=
-ne.  The
-> names are ABI.  We could preserve the names and changes the struct fields=
-, but that
-> would be a net negative IMO.
+> Fixes: dfad83cb7193 ("MIPS: Add support for CONFIG_DEBUG_VIRTUAL")
+> Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+> ---
+>  arch/mips/include/asm/io.h | 1 -
+>  1 file changed, 1 deletion(-)
+>
+> diff --git a/arch/mips/include/asm/io.h b/arch/mips/include/asm/io.h
+> index affd21e9c20b..18ed44843541 100644
+> --- a/arch/mips/include/asm/io.h
+> +++ b/arch/mips/include/asm/io.h
+> @@ -111,7 +111,6 @@ extern phys_addr_t __virt_to_phys(volatile const void=
+ *x);
+>  #define __virt_to_phys(x)      __virt_to_phys_nodebug(x)
+>  #endif
+>
+> -#define virt_to_phys virt_to_phys
+>  static inline phys_addr_t virt_to_phys(const volatile void *x)
+>  {
+>         return __virt_to_phys(x);
+
+Just have to CC Arnd on this because I never feel I understand this
+properly.
+
+Normally you would do this so as to override the default virt_to_phys()
+from include/asm-generic/io.h, but we do not seem to be using it here?
+
+Further right below we are implementing phys_to_virt() with no
+corresponding define, so in any case this needs to go or that one
+needs a define.
+
+That said they seem like a good candidate to replace with the
+generic variant because the content is the same sans some debug
+hacks that I doubt are still needed.
+
+Yours,
+Linus Walleij

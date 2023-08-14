@@ -2,124 +2,215 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 488B0C04FE0
-	for <linux-mips@archiver.kernel.org>; Mon, 14 Aug 2023 09:29:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4B8A4EB64DD
+	for <linux-mips@archiver.kernel.org>; Mon, 14 Aug 2023 10:51:56 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234001AbjHNJ2k (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 14 Aug 2023 05:28:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50496 "EHLO
+        id S233208AbjHNKvZ (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 14 Aug 2023 06:51:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54132 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235527AbjHNJ2K (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Mon, 14 Aug 2023 05:28:10 -0400
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 702A610DB;
-        Mon, 14 Aug 2023 02:27:55 -0700 (PDT)
-Received: from loongson.cn (unknown [113.200.148.30])
-        by gateway (Coremail) with SMTP id _____8CxbeuH89lkpxQYAA--.47460S3;
-        Mon, 14 Aug 2023 17:27:35 +0800 (CST)
-Received: from linux.localdomain (unknown [113.200.148.30])
-        by localhost.localdomain (Coremail) with SMTP id AQAAf8Bx3yOE89lkSLlZAA--.49910S4;
-        Mon, 14 Aug 2023 17:27:34 +0800 (CST)
-From:   Tiezhu Yang <yangtiezhu@loongson.cn>
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc:     "Maciej W. Rozycki" <macro@orcam.me.uk>,
+        with ESMTP id S232676AbjHNKuw (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Mon, 14 Aug 2023 06:50:52 -0400
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F71A18F;
+        Mon, 14 Aug 2023 03:50:51 -0700 (PDT)
+Received: by mail-lf1-x131.google.com with SMTP id 2adb3069b0e04-4fe11652b64so6404529e87.0;
+        Mon, 14 Aug 2023 03:50:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1692010249; x=1692615049;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Jdzw0rHpRr91l8BAcXFT84UEK+jpp9hS9qWwexkoFFI=;
+        b=NmPp/20s/8vM+ZwsIYdJOdGC62ty7spi+o//yCDIw7eV+WtVltjdUNm1GGqB7HtOw6
+         maAiEFD8FuFnIHynzdsuaEixLZGznc6mwRG2bHcr4HU58eU5E6PfhXXRq0lIqqh8Cp6D
+         0l9gIIt6ojU9awjNQC/hmZWGGdkplUZTmOPItR4pDYPb4cqz7da0AgrnOV/LF/orhjut
+         YkE8m3149AoSPwqL3Cssu27ELbAmE6sUxq1+660NRw2KQWaSbJkoJymj06j7zrTWEHnq
+         KJnIyVMeLR4Pv5EUzuNDQmhbr00j3jbLhB7neqC88XmVaD1y9glSQprWUZC+6GWleoq2
+         TafQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1692010249; x=1692615049;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Jdzw0rHpRr91l8BAcXFT84UEK+jpp9hS9qWwexkoFFI=;
+        b=MSoNGlGcIudhEtndDd+vzLZhIP256uDJHRGqaq6jStqbgbIgpgGBtYR/baZXw0ZtF5
+         1HdwePuJySFLjA+97T0Ui7rzNEb4zrGBKKhr8VUmtml7eyAWE2E42nyipq9/AjeYgg6R
+         r+STLA+5PfmDRb/CWVnK4wH0wniA3ZOoSX1Fhr6tMUqV59p+3KBqaxD92WTEGSx1BeZa
+         DvPp4F/1i0si9IK5yWpg3SSUyRJvtKSYn0E6u4sKWcU8prB/nPFW6PYamhoVvbGMrr95
+         vR4NkLzaGGr0l/VjduE5Y8PxaCL0h4tJ9qZw1MZ+7j3WnnCJAkB35xBIqEE5hK40buOs
+         LgLA==
+X-Gm-Message-State: AOJu0YwbUXqaRJiOVc2l0w+FObqRfs1QbTNWlNvdBh8L2K3vsWRPH3rJ
+        q4JTeyU1TIBCVkmBkgkIDGM4Gsknkuz02WGazNs=
+X-Google-Smtp-Source: AGHT+IH+lmfKPWRI9A8rGnFGRYYJU7cvFv8MbgRMB14ww/vT51xVFwFoqjwMMqEahd51AXKqIih0ZuZ1P98cjYlt25U=
+X-Received: by 2002:a05:6512:3b0f:b0:4fb:cab9:ddf with SMTP id
+ f15-20020a0565123b0f00b004fbcab90ddfmr7501155lfv.57.1692010249295; Mon, 14
+ Aug 2023 03:50:49 -0700 (PDT)
+MIME-Version: 1.0
+References: <20230812151135.1028780-1-keguang.zhang@gmail.com>
+ <20230812151135.1028780-5-keguang.zhang@gmail.com> <ZNkfz1yKD90XmTFL@vergenet.net>
+In-Reply-To: <ZNkfz1yKD90XmTFL@vergenet.net>
+From:   Keguang Zhang <keguang.zhang@gmail.com>
+Date:   Mon, 14 Aug 2023 18:50:32 +0800
+Message-ID: <CAJhJPsXOUOB_0kWcKC0Sy8F9qPbkU+NfVFRz-Hkk8eS-YuUS7w@mail.gmail.com>
+Subject: Re: [PATCH 4/5] net: stmmac: Add glue layer for Loongson-1 SoC
+To:     Simon Horman <horms@kernel.org>
+Cc:     netdev@vger.kernel.org, devicetree@vger.kernel.org,
         linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        loongson-kernel@lists.loongnix.cn
-Subject: [PATCH v3 2/3] MIPS: Remove noreturn attribute for die()
-Date:   Mon, 14 Aug 2023 17:27:25 +0800
-Message-Id: <1692005246-18399-3-git-send-email-yangtiezhu@loongson.cn>
-X-Mailer: git-send-email 2.1.0
-In-Reply-To: <1692005246-18399-1-git-send-email-yangtiezhu@loongson.cn>
-References: <1692005246-18399-1-git-send-email-yangtiezhu@loongson.cn>
-X-CM-TRANSID: AQAAf8Bx3yOE89lkSLlZAA--.49910S4
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
-X-Coremail-Antispam: 1Uk129KBj93XoWxXry8KF4kZry5XrW3try7Jwc_yoW5Jw4xpa
-        1qkasrGrWDCF4kXFyDAF4DCrW5JrZ5t3y2kw10kw4F93ZIv34rXrs7GFWjvw4rtr9Yga4U
-        WFWYqr1FyFZ7AFcCm3ZEXasCq-sJn29KB7ZKAUJUUUUr529EdanIXcx71UUUUU7KY7ZEXa
-        sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
-        0xBIdaVrnRJUUU9Ib4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
-        IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
-        e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
-        0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AK
-        xVW8Jr0_Cr1UM2kKe7AKxVWUXVWUAwAS0I0E0xvYzxvE52x082IY62kv0487Mc804VCY07
-        AIYIkI8VC2zVCFFI0UMc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWU
-        tVWrXwAv7VC2z280aVAFwI0_Cr0_Gr1UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x
-        0EwIxGrwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwCFI7km07C267AK
-        xVWUXVWUAwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67
-        AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVW8JVW5JwCI
-        42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMI
-        IF0xvEx4A2jsIE14v26F4j6r4UJwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnI
-        WIevJa73UjIFyTuYvjxU2na9DUUUU
+        Lee Jones <lee@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        Serge Semin <Sergey.Semin@baikalelectronics.ru>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-If notify_die() returns NOTIFY_STOP, honor the return value from the
-handler chain invocation in die() as, through a debugger, the fault
-may have been fixed. It makes sense even if ignoring the event will
-make the system unstable, by allowing access through a debugger it
-has been compromised already anyway. So we can remove the noreturn
-attribute for die() to make our port consistent with x86, arm64,
-riscv and csky.
+On Mon, Aug 14, 2023 at 2:24=E2=80=AFAM Simon Horman <horms@kernel.org> wro=
+te:
+>
+> On Sat, Aug 12, 2023 at 11:11:34PM +0800, Keguang Zhang wrote:
+> > This glue driver is created based on the arch-code
+> > implemented earlier with the platform-specific settings.
+> >
+> > Use syscon for SYSCON register access.
+> >
+> > Partialy based on the previous work by Serge Semin.
+> >
+> > Signed-off-by: Keguang Zhang <keguang.zhang@gmail.com>
+>
+> ...
+>
+> Hi Keguang Zhang,
+>
+> some minor feedback from my side.
+>
+> > diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-loongson1.c b/dr=
+ivers/net/ethernet/stmicro/stmmac/dwmac-loongson1.c
+>
+> ...
+>
+> > +const struct reg_field ls1b_dwmac_syscon_regfields[] =3D {
+> > +     [GMAC1_USE_UART1]       =3D REG_FIELD(LS1X_SYSCON0, 4, 4),
+> > +     [GMAC1_USE_UART0]       =3D REG_FIELD(LS1X_SYSCON0, 3, 3),
+> > +     [GMAC1_SHUT]            =3D REG_FIELD(LS1X_SYSCON1, 13, 13),
+> > +     [GMAC0_SHUT]            =3D REG_FIELD(LS1X_SYSCON1, 12, 12),
+> > +     [GMAC1_USE_TXCLK]       =3D REG_FIELD(LS1X_SYSCON1, 3, 3),
+> > +     [GMAC0_USE_TXCLK]       =3D REG_FIELD(LS1X_SYSCON1, 2, 2),
+> > +     [GMAC1_USE_PWM23]       =3D REG_FIELD(LS1X_SYSCON1, 1, 1),
+> > +     [GMAC0_USE_PWM01]       =3D REG_FIELD(LS1X_SYSCON1, 0, 0)
+> > +};
+>
+> nit: Perhaps ls1b_dwmac_syscon_regfields should be static.
+>
+> > +
+> > +const struct reg_field ls1c_dwmac_syscon_regfields[] =3D {
+> > +     [GMAC_SHUT]             =3D REG_FIELD(LS1X_SYSCON0, 6, 6),
+> > +     [PHY_INTF_SELI]         =3D REG_FIELD(LS1X_SYSCON1, 28, 30)
+> > +};
+>
+> Likewise, perhaps ls1c_dwmac_syscon_regfields should be static.
+>
+Will do.
+Thanks!
+> ...
+>
+> > +static const struct of_device_id ls1x_dwmac_syscon_match[] =3D {
+> > +     { .compatible =3D "loongson,ls1b-syscon", .data =3D &ls1b_dwmac_s=
+yscon },
+> > +     { .compatible =3D "loongson,ls1c-syscon", .data =3D &ls1c_dwmac_s=
+yscon },
+> > +     { }
+> > +};o
+>
+> I am seeing a warning about ls1x_dwmac_syscon_match being unused.
+> I think this is due to CONFIG_OF being unset.
 
-Commit 20c0d2d44029 ("[PATCH] i386: pass proper trap numbers to die
-chain handlers") may be the earliest of similar changes.
+Will fix these warnings.
+>
+> > +
+> > +static int ls1x_dwmac_probe(struct platform_device *pdev)
+> > +{
+> > +     struct plat_stmmacenet_data *plat_dat;
+> > +     struct stmmac_resources stmmac_res;
+> > +     struct device_node *syscon_np;
+> > +     const struct of_device_id *match;
+> > +     struct regmap *regmap;
+> > +     struct ls1x_dwmac *dwmac;
+> > +     const struct ls1x_dwmac_syscon *syscon;
+> > +     size_t size;
+> > +     int ret;
+> > +
+> > +     ret =3D stmmac_get_platform_resources(pdev, &stmmac_res);
+> > +     if (ret)
+> > +             return ret;
+> > +
+> > +     /* Probe syscon */
+> > +     syscon_np =3D of_parse_phandle(pdev->dev.of_node, "syscon", 0);
+> > +     if (!syscon_np)
+> > +             return -ENODEV;
+> > +
+> > +     match =3D of_match_node(ls1x_dwmac_syscon_match, syscon_np);
+> > +     if (!match) {
+> > +             of_node_put(syscon_np);
+> > +             return -EINVAL;
+> > +     }
+> > +     syscon =3D (const struct ls1x_dwmac_syscon *)match->data;
+> > +
+> > +     regmap =3D syscon_node_to_regmap(syscon_np);
+> > +     of_node_put(syscon_np);
+> > +     if (IS_ERR(regmap)) {
+> > +             ret =3D PTR_ERR(regmap);
+> > +             dev_err(&pdev->dev, "Unable to map syscon: %d\n", ret);
+> > +             return ret;
+> > +     }
+> > +
+> > +     size =3D syscon->nr_reg_fields * sizeof(struct regmap_field *);
+> > +     dwmac =3D devm_kzalloc(&pdev->dev, sizeof(*dwmac) + size, GFP_KER=
+NEL);
+> > +     if (!dwmac)
+> > +             return -ENOMEM;
+> > +
+> > +     plat_dat =3D stmmac_probe_config_dt(pdev, stmmac_res.mac);
+> > +     if (IS_ERR(plat_dat)) {
+> > +             dev_err(&pdev->dev, "dt configuration failed\n");
+> > +             return PTR_ERR(plat_dat);
+> > +     }
+> > +
+> > +     plat_dat->bsp_priv =3D dwmac;
+> > +     plat_dat->init =3D ls1x_dwmac_init;
+> > +     dwmac->dev =3D &pdev->dev;
+> > +     dwmac->plat_dat =3D plat_dat;
+> > +     dwmac->syscon =3D syscon;
+> > +     dwmac->regmap =3D regmap;
+> > +
+> > +     ret =3D stmmac_pltfr_probe(pdev, plat_dat, &stmmac_res);
+> > +     if (ret)
+> > +             goto err_remove_config_dt;
+> > +
+> > +     return 0;
+> > +
+> > +err_remove_config_dt:
+> > +     if (pdev->dev.of_node)
+> > +             stmmac_remove_config_dt(pdev, plat_dat);
+> > +
+> > +     return ret;
+> > +}
+>
+> ...
 
-Link: https://lore.kernel.org/all/alpine.DEB.2.21.2308132148500.8596@angie.orcam.me.uk/
-Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
----
- arch/mips/include/asm/ptrace.h |  2 +-
- arch/mips/kernel/traps.c       | 12 ++++++------
- 2 files changed, 7 insertions(+), 7 deletions(-)
 
-diff --git a/arch/mips/include/asm/ptrace.h b/arch/mips/include/asm/ptrace.h
-index daf3cf2..aee8e0a 100644
---- a/arch/mips/include/asm/ptrace.h
-+++ b/arch/mips/include/asm/ptrace.h
-@@ -159,7 +159,7 @@ static inline long regs_return_value(struct pt_regs *regs)
- extern asmlinkage long syscall_trace_enter(struct pt_regs *regs, long syscall);
- extern asmlinkage void syscall_trace_leave(struct pt_regs *regs);
- 
--extern void die(const char *, struct pt_regs *) __noreturn;
-+extern void die(const char *, struct pt_regs *);
- 
- static inline void die_if_kernel(const char *str, struct pt_regs *regs)
- {
-diff --git a/arch/mips/kernel/traps.c b/arch/mips/kernel/traps.c
-index 7a34674..4f5140f 100644
---- a/arch/mips/kernel/traps.c
-+++ b/arch/mips/kernel/traps.c
-@@ -391,16 +391,15 @@ void show_registers(struct pt_regs *regs)
- 
- static DEFINE_RAW_SPINLOCK(die_lock);
- 
--void __noreturn die(const char *str, struct pt_regs *regs)
-+void die(const char *str, struct pt_regs *regs)
- {
- 	static int die_counter;
--	int sig = SIGSEGV;
-+	int ret;
- 
- 	oops_enter();
- 
--	if (notify_die(DIE_OOPS, str, regs, 0, current->thread.trap_nr,
--		       SIGSEGV) == NOTIFY_STOP)
--		sig = 0;
-+	ret = notify_die(DIE_OOPS, str, regs, 0,
-+			 current->thread.trap_nr, SIGSEGV);
- 
- 	console_verbose();
- 	raw_spin_lock_irq(&die_lock);
-@@ -422,7 +421,8 @@ void __noreturn die(const char *str, struct pt_regs *regs)
- 	if (regs && kexec_should_crash(current))
- 		crash_kexec(regs);
- 
--	make_task_dead(sig);
-+	if (ret != NOTIFY_STOP)
-+		make_task_dead(SIGSEGV);
- }
- 
- extern struct exception_table_entry __start___dbe_table[];
--- 
-2.1.0
 
+--=20
+Best regards,
+
+Keguang Zhang

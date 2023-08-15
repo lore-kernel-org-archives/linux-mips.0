@@ -2,71 +2,100 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AAE65C05052
-	for <linux-mips@archiver.kernel.org>; Tue, 15 Aug 2023 09:11:25 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AFC2DC41513
+	for <linux-mips@archiver.kernel.org>; Tue, 15 Aug 2023 09:24:13 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235892AbjHOJKw (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 15 Aug 2023 05:10:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46024 "EHLO
+        id S236015AbjHOJXm (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 15 Aug 2023 05:23:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60504 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235959AbjHOJKO (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Tue, 15 Aug 2023 05:10:14 -0400
-Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id B085D1BDD;
-        Tue, 15 Aug 2023 02:09:58 -0700 (PDT)
-Received: from uucp by elvis.franken.de with local-rmail (Exim 3.36 #1)
-        id 1qVq3o-0002fY-00; Tue, 15 Aug 2023 11:09:56 +0200
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 9D620C030D; Tue, 15 Aug 2023 10:27:20 +0200 (CEST)
-Date:   Tue, 15 Aug 2023 10:27:20 +0200
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arch@vger.kernel.org
-Subject: Re: [PATCH 3/3] mips: remove <asm/export.h>
-Message-ID: <ZNs26FyjZhzP+Cs5@alpha.franken.de>
-References: <20230807153243.996262-1-masahiroy@kernel.org>
- <20230807153243.996262-3-masahiroy@kernel.org>
+        with ESMTP id S236155AbjHOJWX (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Tue, 15 Aug 2023 05:22:23 -0400
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 83B9F198D;
+        Tue, 15 Aug 2023 02:21:46 -0700 (PDT)
+Received: from loongson.cn (unknown [10.20.42.43])
+        by gateway (Coremail) with SMTP id _____8AxXOqpQ9tk+bQYAA--.23671S3;
+        Tue, 15 Aug 2023 17:21:45 +0800 (CST)
+Received: from [10.20.42.43] (unknown [10.20.42.43])
+        by localhost.localdomain (Coremail) with SMTP id AQAAf8BxxsyYQ9tkLw1bAA--.4228S3;
+        Tue, 15 Aug 2023 17:21:45 +0800 (CST)
+Message-ID: <88f22101-f15b-f8f3-23b7-e7514031e367@loongson.cn>
+Date:   Tue, 15 Aug 2023 17:21:28 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230807153243.996262-3-masahiroy@kernel.org>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] Mips: loongson3_defconfig: Enable ast drm driver by
+ default
+Content-Language: en-US
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc:     "David S . Miller" <davem@davemloft.net>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20230803091637.971924-1-suijingfeng@loongson.cn>
+ <ZNs3ZwYH5N/uumJP@alpha.franken.de>
+From:   suijingfeng <suijingfeng@loongson.cn>
+In-Reply-To: <ZNs3ZwYH5N/uumJP@alpha.franken.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: AQAAf8BxxsyYQ9tkLw1bAA--.4228S3
+X-CM-SenderInfo: xvxlyxpqjiv03j6o00pqjv00gofq/
+X-Coremail-Antispam: 1Uk129KBj9xXoWrurWUCr1xKr1UArW7AFy8Xrc_yoWkWwc_tF
+        9Fka48Cr4FyrWIg397X395CrWY9a4UA3WfAFnrXryfXw1Fyr43Xw1kAr98G3W5W34DKFZ3
+        Z3y8AF97CF1SqosvyTuYvTs0mTUanT9S1TB71UUUUUDqnTZGkaVYY2UrUUUUj1kv1TuYvT
+        s0mT0YCTnIWjqI5I8CrVACY4xI64kE6c02F40Ex7xfYxn0WfASr-VFAUDa7-sFnT9fnUUI
+        cSsGvfJTRUUUbakYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I6I8E6xAIw20EY4v20x
+        vaj40_Wr0E3s1l1IIY67AEw4v_Jrv_JF1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
+        w2x7M28EF7xvwVC0I7IYx2IY67AKxVWUJVWUCwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
+        W8JVWxJwA2z4x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjcxK6I8E87Iv6xkF7I0E14v2
+        6r4UJVWxJr1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqjxCEc2xF0cIa020Ex4CE44I27w
+        Aqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jrv_JF1lYx0Ex4A2jsIE
+        14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvEwIxGrwCYjI0SjxkI62AI1c
+        AE67vIY487MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMxCIbckI1I0E
+        14v26r1Y6r17MI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4
+        CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1x
+        MIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF
+        4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVWUJVW8JbIYCTnI
+        WIevJa73UjIFyTuYvjxU7_MaUUUUU
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Tue, Aug 08, 2023 at 12:32:43AM +0900, Masahiro Yamada wrote:
-> All *.S files under arch/mips/ have been converted to include
-> <linux/export.h> instead of <asm/export.h>.
-> 
-> Remove <asm/export.h>.
-> 
-> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-> ---
-> 
->  arch/mips/include/asm/Kbuild | 1 -
->  1 file changed, 1 deletion(-)
-> 
-> diff --git a/arch/mips/include/asm/Kbuild b/arch/mips/include/asm/Kbuild
-> index dee172716581..7ba67a0d6c97 100644
-> --- a/arch/mips/include/asm/Kbuild
-> +++ b/arch/mips/include/asm/Kbuild
-> @@ -7,7 +7,6 @@ generated-y += unistd_nr_n32.h
->  generated-y += unistd_nr_n64.h
->  generated-y += unistd_nr_o32.h
->  
-> -generic-y += export.h
->  generic-y += kvm_para.h
->  generic-y += mcs_spinlock.h
->  generic-y += parport.h
-> -- 
-> 2.39.2
-> 
+Hi,
 
-applied to mips-next.
+On 2023/8/15 16:29, Thomas Bogendoerfer wrote:
+> On Thu, Aug 03, 2023 at 05:16:37PM +0800, Sui Jingfeng wrote:
+>> ASpeed GPU is typically found on the Loongson server platform, as a
+>> peripheral device driver, it generally should be compiled as a module.
+>>
+>> Tested on loongson 3B4000 server[1].
+>>
+>> [1] https://github.com/loongson-gfx/loongson_boards/tree/main/ls3b4000x2_server
+>>
+>> Signed-off-by: Sui Jingfeng <suijingfeng@loongson.cn>
+>> ---
+>>   arch/mips/configs/loongson3_defconfig | 1 +
+>>   1 file changed, 1 insertion(+)
+>>
+>> diff --git a/arch/mips/configs/loongson3_defconfig b/arch/mips/configs/loongson3_defconfig
+>> index 3087e64e6ebe..a9fadea72da5 100644
+>> --- a/arch/mips/configs/loongson3_defconfig
+>> +++ b/arch/mips/configs/loongson3_defconfig
+>> @@ -283,6 +283,7 @@ CONFIG_DRM_AMDGPU_USERPTR=y
+>>   CONFIG_DRM_AMD_ACP=y
+>>   CONFIG_DRM_AMD_DC=y
+>>   CONFIG_DRM_AMD_DC_SI=y
+>> +CONFIG_DRM_AST=m
+>>   CONFIG_DRM_RADEON=m
+>>   CONFIG_DRM_QXL=y
+>>   CONFIG_DRM_VIRTIO_GPU=y
+>> -- 
+>> 2.34.1
+>>
+> applied to mips-next.
+>
+> Thomas.
+Thanks a lot.
 
-Thomas.
-
--- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]

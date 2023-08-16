@@ -2,53 +2,53 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 456A7C41513
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5AD52C04E69
 	for <linux-mips@archiver.kernel.org>; Wed, 16 Aug 2023 11:14:48 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244426AbjHPLOR (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 16 Aug 2023 07:14:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55420 "EHLO
+        id S244446AbjHPLOS (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 16 Aug 2023 07:14:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59970 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244106AbjHPLNs (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 16 Aug 2023 07:13:48 -0400
-Received: from mail-oi1-x22f.google.com (mail-oi1-x22f.google.com [IPv6:2607:f8b0:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99078E40;
-        Wed, 16 Aug 2023 04:13:47 -0700 (PDT)
-Received: by mail-oi1-x22f.google.com with SMTP id 5614622812f47-3a412653335so4753913b6e.1;
-        Wed, 16 Aug 2023 04:13:47 -0700 (PDT)
+        with ESMTP id S244252AbjHPLN6 (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 16 Aug 2023 07:13:58 -0400
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3104E40;
+        Wed, 16 Aug 2023 04:13:57 -0700 (PDT)
+Received: by mail-pf1-x434.google.com with SMTP id d2e1a72fcca58-686f94328a4so4330210b3a.0;
+        Wed, 16 Aug 2023 04:13:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692184426; x=1692789226;
+        d=gmail.com; s=20221208; t=1692184437; x=1692789237;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=eY8kZ4eK5YIGKyTtQTf6aWVK8SyC/JpmCdjMfNKZmx0=;
-        b=lfQ6GpJ4NFcIljhwEgFCU8ohpMgZnJAr4SwUtWG1fNHZHK1FvvC3kSclpw98bv8q3w
-         usgQqJ/LtlZ5THn24bHVa+TRoeWCi3CHZ77gsz6EM7mtJu9EVZok0WS0YbudcUpH0ztT
-         EUliPlyFTWmSqDlOl8bWWYURHPqUaALmQdJvOvJoWXG24f+j8d9ekWU93rwDb6Y5tXY3
-         bnvgo1KQtNQ1EXVsQH2uVp/i4AoCoqB5QrioIrNP9vyX4PWVwYn/lgcdMPQLCGZ+WcQL
-         RS/hT+TEzdrIt6jPcOrcQMYrYNWg/2mMnR2jFuIJpOi+sphuyJIzNuUVYzsYeREtci+8
-         xrxA==
+        bh=Q9kK5DIzApBxuWnbw06RTl4SjwuCEuicEM0Xs3i511o=;
+        b=mF5rzaYtzgFfRw4XRRB0D9/JrvS5xToIOKOCT/YArIZvXZ0wx/XKain9gmorBwamVa
+         ANsCSqGu6eF13WtiisitonvMt7zMxH/IOQpU6lyuBq/PWIdq+wCwiSTeprAc83nC8q1x
+         R9FJ2LgMHySDcThrGFMmcsd+1+61WxWTY7UOX7jl7Hgi9ekuaam8Eu7qIHrUT4VBxs7w
+         nchI8nkfig6AcEFkCgiSVDmAQUIoXaCQncjje0kVcfmC/CHlqU3hvOLC+OFBGq3x8CAa
+         y0MkFqm3iadklxEwew/IvHwqH9mJqOBhDq37IBF3B4DU/UcPMMUYb/BebW1rrDE7e5/M
+         5uoA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692184426; x=1692789226;
+        d=1e100.net; s=20221208; t=1692184437; x=1692789237;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=eY8kZ4eK5YIGKyTtQTf6aWVK8SyC/JpmCdjMfNKZmx0=;
-        b=GbcXwTPH3fw+6XaisG9qdsj5y3akPpeA8IFQaeWqwDom2vIkyxgkp9sPER7jKgKz1/
-         pGc9OiC1Vu4/HgtaDPJnhPaoBX9yUgNAlFcUft3SIyeQ53zgXO/JOIUWlqV+A7pv75Y8
-         9oz2EP4Bl7kXqXJtiO8TdVtZbh570iVaCz5SUrO6AQMiFHRuEPUrwM5MZLANxsABn+b9
-         vF8jRkAByGvJoSqNF1wVGR31wiSHm/ldf4rezbx7C76jOV2LQoLQsA34YecBYlP3HMS6
-         onRF0OPx4Q9d7aAjhCngZew3DGguje0BzKVGq+XjkaYnLA31QyLFkBS9tI2jWvaVUZFu
-         xlug==
-X-Gm-Message-State: AOJu0YxJ6GWGY3+quQ0lYdAhSm2PYbpJ7DHa518DIqAgs6cff6SXaBZN
-        vB77CenmkJKQVJsRvns3Er36E/DvDV7mSOOi
-X-Google-Smtp-Source: AGHT+IFtNVqola0L7NRwZI+SnDJY+qmciey+S8mI5MeQ2DioVcESMDTnr3DjLWxNNQCcZFJEellvWw==
-X-Received: by 2002:a05:6808:1897:b0:3a7:146d:85b9 with SMTP id bi23-20020a056808189700b003a7146d85b9mr2101909oib.39.1692184426492;
-        Wed, 16 Aug 2023 04:13:46 -0700 (PDT)
+        bh=Q9kK5DIzApBxuWnbw06RTl4SjwuCEuicEM0Xs3i511o=;
+        b=P5pY/L9LtKGGjUXq1n+TuFBi91jPdz0LMaYiIUxQW4HHabpYl6xDVLIBbgkKMr4uNo
+         TCCoGJ9LgBADSJWkNnGjmzLERjZcmUZ4CWGt1gUt95Ap7qC+cYzt51KPKZQvWoaESqH0
+         8p+Eyw6UttocASVmf1dnVoh37KiFLspfmni6BSicFWuLWoznrDQc/SDqwKR71DcKmZKy
+         MpLOWYqWuk8VtDuzXjybUyUki8hpIhJsuBHyAQBezns8Ub34fsRlsQuyriT/QQm/OneD
+         rxKiEYNDyYoTffOInEmcjnZUiuwb/2t9ozjERmOUCrFmMjYuYyz3qyHXJGZlGuyMtOlQ
+         tWWA==
+X-Gm-Message-State: AOJu0YwY72j3F+Lavhve3KRqGQN4mdbvbZX+4dePTyL0MwDioYEzJG3u
+        OjWGOCtXyP3Kdm3zvqKvCXU5DG89RudYha3L
+X-Google-Smtp-Source: AGHT+IH/bC5k0/+M6D3V5ZG8pBcxMj4UoZOvrsgj/Th3yyxER0TsvysF6O71BWUZFxJ1mlTD/ZeWPA==
+X-Received: by 2002:a05:6a20:7f84:b0:137:c971:6a0c with SMTP id d4-20020a056a207f8400b00137c9716a0cmr1705965pzj.31.1692184436961;
+        Wed, 16 Aug 2023 04:13:56 -0700 (PDT)
 Received: from kelvin-ThinkPad-L14-Gen-1.. ([38.114.108.131])
-        by smtp.gmail.com with ESMTPSA id r8-20020a638f48000000b00563e1ef0491sm11750627pgn.8.2023.08.16.04.13.41
+        by smtp.gmail.com with ESMTPSA id r8-20020a638f48000000b00563e1ef0491sm11750627pgn.8.2023.08.16.04.13.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Aug 2023 04:13:46 -0700 (PDT)
+        Wed, 16 Aug 2023 04:13:56 -0700 (PDT)
 From:   Keguang Zhang <keguang.zhang@gmail.com>
 To:     netdev@vger.kernel.org, devicetree@vger.kernel.org,
         linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
@@ -65,9 +65,9 @@ Cc:     Lee Jones <lee@kernel.org>, Rob Herring <robh+dt@kernel.org>,
         Jose Abreu <joabreu@synopsys.com>,
         Serge Semin <Sergey.Semin@baikalelectronics.ru>,
         Keguang Zhang <keguang.zhang@gmail.com>
-Subject: [PATCH v2 2/4] dt-bindings: net: Add Loongson-1 DWMAC glue layer
-Date:   Wed, 16 Aug 2023 19:13:08 +0800
-Message-Id: <20230816111310.1656224-3-keguang.zhang@gmail.com>
+Subject: [PATCH v2 4/4] MAINTAINERS: Update MIPS/LOONGSON1 entry
+Date:   Wed, 16 Aug 2023 19:13:10 +0800
+Message-Id: <20230816111310.1656224-5-keguang.zhang@gmail.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20230816111310.1656224-1-keguang.zhang@gmail.com>
 References: <20230816111310.1656224-1-keguang.zhang@gmail.com>
@@ -77,124 +77,32 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Add devicetree binding document for Loongson-1 DWMAC glue layer.
+Add a new F: entry for Loongson1 DWMAC driver.
+Add a new F: entry for all Loongson-1 dt-bindings.
 
 Signed-off-by: Keguang Zhang <keguang.zhang@gmail.com>
 ---
-V1 -> V2: Fix "clock-names" and "interrupt-names" property
-          Rename the syscon property to "loongson,dwmac-syscon"
-          Drop "phy-handle" and "phy-mode" requirement
-          Revert adding loongson,ls1b-dwmac/loongson,ls1c-dwmac
-          to snps,dwmac.yaml
+V1 -> V2: Improve the commit message
 
- .../bindings/net/loongson,ls1x-dwmac.yaml     | 98 +++++++++++++++++++
- 1 file changed, 98 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/net/loongson,ls1x-dwmac.yaml
+ MAINTAINERS | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/net/loongson,ls1x-dwmac.yaml b/Documentation/devicetree/bindings/net/loongson,ls1x-dwmac.yaml
-new file mode 100644
-index 000000000000..cf5477450e29
---- /dev/null
-+++ b/Documentation/devicetree/bindings/net/loongson,ls1x-dwmac.yaml
-@@ -0,0 +1,98 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/net/loongson,ls1x-dwmac.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Loongson-1 DWMAC glue layer
-+
-+maintainers:
-+  - Keguang Zhang <keguang.zhang@gmail.com>
-+
-+select:
-+  properties:
-+    compatible:
-+      contains:
-+        enum:
-+          - loongson,ls1b-dwmac
-+          - loongson,ls1c-dwmac
-+  required:
-+    - compatible
-+
-+properties:
-+  compatible:
-+    items:
-+      - enum:
-+          - loongson,ls1b-dwmac
-+          - loongson,ls1c-dwmac
-+      - const: snps,dwmac-3.50a
-+
-+  reg:
-+    maxItems: 1
-+
-+  clocks:
-+    maxItems: 1
-+
-+  clock-names:
-+    items:
-+      - const: stmmaceth
-+
-+  interrupts:
-+    maxItems: 1
-+
-+  interrupt-names:
-+    items:
-+      - const: macirq
-+
-+  loongson,dwmac-syscon:
-+    $ref: /schemas/types.yaml#/definitions/phandle
-+    description:
-+      Phandle to the syscon containing some extra configurations
-+      including PHY interface mode.
-+
-+required:
-+  - compatible
-+  - reg
-+  - clocks
-+  - clock-names
-+  - interrupts
-+  - interrupt-names
-+  - loongson,dwmac-syscon
-+
-+allOf:
-+  - $ref: snps,dwmac.yaml#
-+
-+unevaluatedProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/clock/loongson,ls1x-clk.h>
-+    #include <dt-bindings/interrupt-controller/irq.h>
-+
-+    gmac0: ethernet@1fe10000 {
-+        compatible = "loongson,ls1b-dwmac", "snps,dwmac-3.50a";
-+        reg = <0x1fe10000 0x10000>;
-+
-+        clocks = <&clkc LS1X_CLKID_AHB>;
-+        clock-names = "stmmaceth";
-+
-+        interrupt-parent = <&intc1>;
-+        interrupts = <2 IRQ_TYPE_LEVEL_HIGH>;
-+        interrupt-names = "macirq";
-+
-+        loongson,dwmac-syscon = <&syscon>;
-+
-+        phy-handle = <&phy0>;
-+        phy-mode = "mii";
-+        snps,pbl = <1>;
-+
-+        mdio {
-+            #address-cells = <1>;
-+            #size-cells = <0>;
-+            compatible = "snps,dwmac-mdio";
-+
-+            phy0: ethernet-phy@0 {
-+                reg = <0x0>;
-+            };
-+        };
-+    };
+diff --git a/MAINTAINERS b/MAINTAINERS
+index d8700b009e22..4621facb2cc8 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -14313,9 +14313,11 @@ MIPS/LOONGSON1 ARCHITECTURE
+ M:	Keguang Zhang <keguang.zhang@gmail.com>
+ L:	linux-mips@vger.kernel.org
+ S:	Maintained
++F:	Documentation/devicetree/bindings/*/loongson,ls1x-*.yaml
+ F:	arch/mips/include/asm/mach-loongson32/
+ F:	arch/mips/loongson32/
+ F:	drivers/*/*loongson1*
++F:	drivers/net/ethernet/stmicro/stmmac/dwmac-loongson1.c
+ 
+ MIPS/LOONGSON2EF ARCHITECTURE
+ M:	Jiaxun Yang <jiaxun.yang@flygoat.com>
 -- 
 2.39.2
 

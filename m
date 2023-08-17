@@ -2,61 +2,63 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EB77DC2FC1A
-	for <linux-mips@archiver.kernel.org>; Thu, 17 Aug 2023 03:00:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0734BC2FC18
+	for <linux-mips@archiver.kernel.org>; Thu, 17 Aug 2023 03:00:57 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1347740AbjHQDA0 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 16 Aug 2023 23:00:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51760 "EHLO
+        id S1347746AbjHQDA1 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 16 Aug 2023 23:00:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44946 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1347748AbjHQC76 (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 16 Aug 2023 22:59:58 -0400
-Received: from mail-qv1-xf2a.google.com (mail-qv1-xf2a.google.com [IPv6:2607:f8b0:4864:20::f2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D29EE10E;
-        Wed, 16 Aug 2023 19:59:57 -0700 (PDT)
-Received: by mail-qv1-xf2a.google.com with SMTP id 6a1803df08f44-649c6ea6e72so2586106d6.2;
-        Wed, 16 Aug 2023 19:59:57 -0700 (PDT)
+        with ESMTP id S1347782AbjHQDAI (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 16 Aug 2023 23:00:08 -0400
+Received: from mail-qv1-xf2f.google.com (mail-qv1-xf2f.google.com [IPv6:2607:f8b0:4864:20::f2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFCFF2D69;
+        Wed, 16 Aug 2023 20:00:01 -0700 (PDT)
+Received: by mail-qv1-xf2f.google.com with SMTP id 6a1803df08f44-64723bb9e25so2535186d6.0;
+        Wed, 16 Aug 2023 20:00:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692241196; x=1692845996;
+        d=gmail.com; s=20221208; t=1692241200; x=1692846000;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=ztwugRyCoG/jPczTnAvnIkr0nq9TF+fC2+bEu6D3jFw=;
-        b=Zw4yS8EE/ONnyxUVX0vsKLQUPf5oNFxSVPTWmOyt4c9a9lq6ns/tC4610cgge8UXgh
-         fBhR1AdhwR9+pdnw5tRB+nIS+XUKsWg9lY7C9zM6eYgGoCfOBUP21kM5OM/pDhOahNSx
-         wXluh7v2jIkhQdJJifSB8i0RenT6XLhxG8V9iThazbxiTkEUJM+tJ2tWaMQtUqfPZ8f2
-         Hv99NSes3vLfyMDH56pVsPQXJYlOS0T0ENdSrkqFa1nnmUiJzDPXVhd96mWYJ6Am9Tc8
-         OwzCXEx2MpfRi0rwevYHxRB9wjuSrt2KNaXNTfPAyOnLTlIFwDrZ2INl9TTdeLMxyW+H
-         TjUA==
+        bh=n2GSnqeNoyAE/+SX3es1Oteof6ti0abAFPSQqsiZHHw=;
+        b=nQWr89uC0Ngba1SRckU+echVMfhTwA2qk0vDCbhHdOtjAAGdM19nRWPqLBgCr0Duo7
+         7rYD5dLldDIFpMazz5Tf135A0CAVP0imv6JyHkX52mUGYyUonKAhaM4xzJbZ4jbfWqpT
+         jRkxUOVXjlnyM/G6pQOhk39ERd8wIastgkFTomKSXU8WGZfyXUXiBDbO60AmhQzjBzKP
+         rEx+5tscbvHykIJgWX6AvvRShos4qB521nSQYyv2j8U1JPO3qJaP03/AX76O/sqeWF2V
+         HT6ELMnIUQFFdssAO8g4/d7WQEhfQTgKwmxtr12KhKA4izqI3id8RZR/e7rVLQH7svHa
+         uAmg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692241196; x=1692845996;
+        d=1e100.net; s=20221208; t=1692241200; x=1692846000;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=ztwugRyCoG/jPczTnAvnIkr0nq9TF+fC2+bEu6D3jFw=;
-        b=OS57n0CHmOcgodYYf2U0mP+88pOtAG3h+9bonIW+mSO/1+NjTv8qqZaHwzjDRwAhL5
-         g9DeG6ODfFbjBVe0tYzOKWs8z1k0915qj9N07o9o2MxXSaoDYhEtUQAksyMyyFXOzwKl
-         Lxg7mcm1L4n8sgxlbh9jTEOArmHQLwxpiqzcT0cj3GCfDIbm+InAZ/orU9wtdQptXMdg
-         aI+B8iRjowNtvrXxyu8kWFgcWaowcjqeGD+2X6O5kG0R5uohzoXuUmVuoQUZ9CRBTxMN
-         +77QQSWFPHqNzat60PSWBH54X3UR+exFf1QaqMaSSyMNMh0aJG1Ch8xXKxOzn2hUim6e
-         4poQ==
-X-Gm-Message-State: AOJu0YyVUIHs4oZa36NtZwaT3DHRDBuDhpqwT1fKb3kl0i9ER3B81n96
-        L5ITKZej01Sat+5Pi6ARM8/2AqxJgWA=
-X-Google-Smtp-Source: AGHT+IG+FilTVdaRFGvd3ZuP9D/ev2/97REv1ERlKBJZKe5MJQokXeEBYBnEUFUrg7AAkPP/DryCmQ==
-X-Received: by 2002:a0c:b356:0:b0:649:7b67:14d3 with SMTP id a22-20020a0cb356000000b006497b6714d3mr1869864qvf.32.1692241196259;
-        Wed, 16 Aug 2023 19:59:56 -0700 (PDT)
+        bh=n2GSnqeNoyAE/+SX3es1Oteof6ti0abAFPSQqsiZHHw=;
+        b=Cslx0llJ9PFKEE27CbqNYa+3fKtj5JPdwOaARZYzqEma7aHvspVlubj7RpTWr3y8Wk
+         yNG2fF8yfXH9bTwzOSlHWOmVfAUT6PKzAgJjySDBbwCXBrOwgTmFOuYYf4qXoqJpxSpd
+         3+Koy8WyW0t7oIFIufUePKUVP77q3oodeb3xGVfGl2xCp9yXWb/wO2d7GppIH2FDLB9Q
+         1+nMAe93+GnGQ9B519FAM1c4xaiWmH+5qvAnWTfqwI8n90hRvU6VJ6U8ZVNr3uDo0weX
+         ZgwFSJPYLnJLqsDjMr0UjkGsVw8w1xfN9jomG75Lae/C44UQG+C3c6tQKrMirnpyZ4wo
+         RcBQ==
+X-Gm-Message-State: AOJu0Yz6bcTwXTQ67OfmNQXD6p5m/OroLJ0HQ2By5O3n/sJ3RveIlYpH
+        UQNp7ftqOE6v4AMkI8MgqaNMhZBYuPI=
+X-Google-Smtp-Source: AGHT+IFng0wFZtCSDDiVOY49UxdEFehiYLDUvGYu2W+npgCx1ZI6h5QEe6nSX/rWT8xkkK8CoCgLBA==
+X-Received: by 2002:ad4:5d6d:0:b0:63f:9130:4e9c with SMTP id fn13-20020ad45d6d000000b0063f91304e9cmr1855432qvb.26.1692241200467;
+        Wed, 16 Aug 2023 20:00:00 -0700 (PDT)
 Received: from localhost.localdomain (pppoe-209-91-167-254.vianet.ca. [209.91.167.254])
-        by smtp.gmail.com with ESMTPSA id c16-20020a0cf2d0000000b0063d0159e1f6sm5260184qvm.109.2023.08.16.19.59.54
+        by smtp.gmail.com with ESMTPSA id c16-20020a0cf2d0000000b0063d0159e1f6sm5260184qvm.109.2023.08.16.19.59.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 16 Aug 2023 19:59:55 -0700 (PDT)
+        Wed, 16 Aug 2023 19:59:59 -0700 (PDT)
 From:   Trevor Woerner <twoerner@gmail.com>
-To:     linux-kernel@vger.kernel.org, Huacai Chen <chenhuacai@kernel.org>,
-        WANG Xuerui <kernel@xen0n.name>
+To:     linux-kernel@vger.kernel.org,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>
 Cc:     linux-arm-kernel@lists.infradead.org, loongarch@lists.linux.dev,
         linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Subject: [PATCH v2 2/4] arch/loongarch/configs/*_defconfig cleanup
-Date:   Wed, 16 Aug 2023 22:59:37 -0400
-Message-ID: <20230817025942.3209-3-twoerner@gmail.com>
+Subject: [PATCH v2 4/4] arch/powerpc/configs/*_defconfig cleanup
+Date:   Wed, 16 Aug 2023 22:59:39 -0400
+Message-ID: <20230817025942.3209-5-twoerner@gmail.com>
 X-Mailer: git-send-email 2.41.0.327.gaa9166bcc0ba
 In-Reply-To: <20230817025942.3209-1-twoerner@gmail.com>
 References: <20230817025942.3209-1-twoerner@gmail.com>
@@ -69,29 +71,18 @@ X-Mailing-List: linux-mips@vger.kernel.org
 Drop CONFIG_IP_NF_TARGET_CLUSTERIP as it was removed in commit 57f8e00d8a82
 ("usb: 71 musb: Drop old unused am35x glue layer").
 
-Drop CONFIG_NFT_OBJREF as it was removed in commit d037abc2414b
-("netfilter: nft_objref: make it builtin").
-
 Signed-off-by: Trevor Woerner <twoerner@gmail.com>
 ---
- arch/loongarch/configs/loongson3_defconfig | 2 --
- 1 file changed, 2 deletions(-)
+ arch/powerpc/configs/ppc6xx_defconfig | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/arch/loongarch/configs/loongson3_defconfig b/arch/loongarch/configs/loongson3_defconfig
-index d64849b4cba1..4700655b2bcb 100644
---- a/arch/loongarch/configs/loongson3_defconfig
-+++ b/arch/loongarch/configs/loongson3_defconfig
-@@ -137,7 +137,6 @@ CONFIG_NFT_MASQ=m
- CONFIG_NFT_REDIR=m
- CONFIG_NFT_NAT=m
- CONFIG_NFT_TUNNEL=m
--CONFIG_NFT_OBJREF=m
- CONFIG_NFT_QUEUE=m
- CONFIG_NFT_QUOTA=m
- CONFIG_NFT_REJECT=m
-@@ -227,7 +226,6 @@ CONFIG_IP_NF_TARGET_MASQUERADE=m
- CONFIG_IP_NF_TARGET_NETMAP=m
- CONFIG_IP_NF_TARGET_REDIRECT=m
+diff --git a/arch/powerpc/configs/ppc6xx_defconfig b/arch/powerpc/configs/ppc6xx_defconfig
+index 1034aeabdd6c..eaf3273372a9 100644
+--- a/arch/powerpc/configs/ppc6xx_defconfig
++++ b/arch/powerpc/configs/ppc6xx_defconfig
+@@ -183,7 +183,6 @@ CONFIG_IP_NF_MATCH_TTL=m
+ CONFIG_IP_NF_FILTER=m
+ CONFIG_IP_NF_TARGET_REJECT=m
  CONFIG_IP_NF_MANGLE=m
 -CONFIG_IP_NF_TARGET_CLUSTERIP=m
  CONFIG_IP_NF_TARGET_ECN=m

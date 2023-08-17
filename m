@@ -2,61 +2,63 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 842C9EB64DD
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C7743C2FC0E
 	for <linux-mips@archiver.kernel.org>; Thu, 17 Aug 2023 11:51:10 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1350478AbjHQLuj (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 17 Aug 2023 07:50:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59590 "EHLO
+        id S1350484AbjHQLuk (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 17 Aug 2023 07:50:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59622 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1350571AbjHQLug (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Thu, 17 Aug 2023 07:50:36 -0400
-Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 884582102;
-        Thu, 17 Aug 2023 04:50:26 -0700 (PDT)
-Received: by mail-qk1-x72b.google.com with SMTP id af79cd13be357-76d7fcae695so25414285a.1;
-        Thu, 17 Aug 2023 04:50:26 -0700 (PDT)
+        with ESMTP id S1350574AbjHQLuh (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Thu, 17 Aug 2023 07:50:37 -0400
+Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD34B2684;
+        Thu, 17 Aug 2023 04:50:30 -0700 (PDT)
+Received: by mail-qk1-x72a.google.com with SMTP id af79cd13be357-76d84238f01so9217685a.2;
+        Thu, 17 Aug 2023 04:50:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692273025; x=1692877825;
+        d=gmail.com; s=20221208; t=1692273029; x=1692877829;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=sbvZ0wXoAsUi3mH+OyBVc4tLRr53KILTrQvp8XOCI2I=;
-        b=TI34epmG63xD/ogdDBQlcmORfJTVgqCB9lCa/odYhTA7mGcaaXBsVMVzIoLJkRSQSX
-         cyj6CUlXhBBpxGczW9E//k7K5WcVE0awNVniGZOocUxt1fjELgDWbzmKjH/aB/Lw8haN
-         ejRcRk+qaJr5GY/7t0AgvIN6MkEqFwU/TsheIqw6pwDr60lXmZZc4/+qGwtIMqPjCStI
-         7LGDwqCEjWEvukhk68ufc+soaBCCdJqVyC3WfFdbEX15Vhznz7adSHAXxXIS41T3S+HW
-         gUgF92Cz6ETPSlKpDhxGxaPa8wHIFUKq8zBcj/64dTv6/6P+aoRQODiwtCT7tJFNbbzP
-         z9tg==
+        bh=YZ+Zsa4ZEmXdPvbwBr1YPTSACyU/1n0KQUOcgncJE3w=;
+        b=HZzLgdBA/8SEH50ZDj3oHEfSFPvocgYVgAv3TuTxssfPb3/V0hh2OR1DIM66EfLcfa
+         UsjSiTEaZaFFhTXX1vyZiQkrq6XmAO6RAYHIr6zdpHG3q3rcNi5pe30IMjGet3b6rhQT
+         3S2dXX++c+KVUybFLXY48nq11UI1IM0xiJMFUoa6wLIr4FEap6oUSgPS3ey6UorOrVn4
+         6N+NP5pwhNx1Q3n+fkuVVr+Wyvu3YLHZ0O6he9h9/4l8XR7K71XLGptWppEIqIIYtX5W
+         AZSdhcvTaX6ZFP5TPnYCRMAgupPqC+b531pzr9911ZikH6L1SDIJZzKqzx1OXvdBqcWN
+         fZlA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692273025; x=1692877825;
+        d=1e100.net; s=20221208; t=1692273029; x=1692877829;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=sbvZ0wXoAsUi3mH+OyBVc4tLRr53KILTrQvp8XOCI2I=;
-        b=g/p0QH9FZ7lHrfH1Yrl2coYjv+IWahmyxaym8A1ULADVYHW2fL69S2542jtXwx6qvV
-         QUdKJTSpDcnwn1f+4GYqGwNM7pOXFkJZXUfDG3/NiLH01fV7fax2ndv/Ap/HMnBIhGfl
-         yqMlUFYNrs/ksTFZQVoU8KXq8Pd8B0j+nzouE8VzzxXqCZDabM0BZJilSCcx8Yoe7ZmL
-         4uikPq+ceo4VUwX5WhbbK+1LjB5cY5XM76LaOb5mBToutkVkMRyLdf3K63MrpmCwnQQi
-         a1ngZFAAiki5FO/XgtQB4AKZOKCkLPZ9ZuEpgYeLk3+rxOemwv9MmmfQ+iPPI21Fd6Bx
-         fRog==
-X-Gm-Message-State: AOJu0Yx4jvqXfEjz/O230QrmZ1+IilLLsJ1INvP2hfZAZRw8rtIvT+wF
-        NYZb75bF3P4MVqADTCBdDIrHeu49R5c=
-X-Google-Smtp-Source: AGHT+IFwFJxPNX+IDoSCTYuBwePuAYwMImkYtdwD+QMIGbAdq3LaStJT3pJEeHO3wtYuDF5hW0txgA==
-X-Received: by 2002:ac8:57c8:0:b0:405:5337:4166 with SMTP id w8-20020ac857c8000000b0040553374166mr5942082qta.68.1692273024954;
-        Thu, 17 Aug 2023 04:50:24 -0700 (PDT)
+        bh=YZ+Zsa4ZEmXdPvbwBr1YPTSACyU/1n0KQUOcgncJE3w=;
+        b=IOeDavWKwBi8zdNbazhi5c0cTxg5qNK7TWyWlSr6dCWo+tQhHLhshSil/ZhNPcnCSg
+         A1a0mQrk0ldyZlgkrBmAeMUQmjBWmBl9L27hLrYDbTydjRtiN1oLkcD7rrCL8wJRWIVM
+         LYGIDsWJHTd/1/oRttnuYkQUgfu+HpZccoRK593lTuKmqFhL6fmeolkg1UrQmEDVV/+9
+         O4Y67YhyYXSIA4Co0rU19tBahoz+e/LLoDVRFQ5C7Li+CI4jtmw68hzA9251VmLdBZq3
+         5l6hZOLNU3xfnEfpnPWjGDUZESDrR8pZm5lRbPAFuimxtHDhS1H5GOPSjB+NE2sZPlmg
+         nCrA==
+X-Gm-Message-State: AOJu0Yyt3CeAOq9xWywLzeOdzeMethfXW618dofxfreGGYwgmRexoqNd
+        S510uAc0pZ9Bg0JSxuUHsAjDpXrP7vQ=
+X-Google-Smtp-Source: AGHT+IFbiQSKDSe4gTLJ2bWwz6IBwKBkogxP7lD8diDOPyUlxXuZx7qBz9naiNHemQYMcPnCfjJYFQ==
+X-Received: by 2002:a05:620a:2986:b0:76c:b8b0:769d with SMTP id r6-20020a05620a298600b0076cb8b0769dmr6603385qkp.39.1692273029121;
+        Thu, 17 Aug 2023 04:50:29 -0700 (PDT)
 Received: from localhost.localdomain (pppoe-209-91-167-254.vianet.ca. [209.91.167.254])
-        by smtp.gmail.com with ESMTPSA id h8-20020ac85148000000b0040ff387de83sm5142149qtn.45.2023.08.17.04.50.23
+        by smtp.gmail.com with ESMTPSA id h8-20020ac85148000000b0040ff387de83sm5142149qtn.45.2023.08.17.04.50.27
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Aug 2023 04:50:24 -0700 (PDT)
+        Thu, 17 Aug 2023 04:50:28 -0700 (PDT)
 From:   Trevor Woerner <twoerner@gmail.com>
-To:     linux-kernel@vger.kernel.org, Huacai Chen <chenhuacai@kernel.org>,
-        WANG Xuerui <kernel@xen0n.name>
+To:     linux-kernel@vger.kernel.org,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>
 Cc:     linux-arm-kernel@lists.infradead.org, loongarch@lists.linux.dev,
         linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Subject: [PATCH v3 2/4] arch/loongarch/configs/*_defconfig cleanup
-Date:   Thu, 17 Aug 2023 07:50:12 -0400
-Message-ID: <20230817115017.35663-3-twoerner@gmail.com>
+Subject: [PATCH v3 4/4] arch/powerpc/configs/*_defconfig cleanup
+Date:   Thu, 17 Aug 2023 07:50:14 -0400
+Message-ID: <20230817115017.35663-5-twoerner@gmail.com>
 X-Mailer: git-send-email 2.41.0.327.gaa9166bcc0ba
 In-Reply-To: <20230817115017.35663-1-twoerner@gmail.com>
 References: <20230817115017.35663-1-twoerner@gmail.com>
@@ -69,29 +71,18 @@ X-Mailing-List: linux-mips@vger.kernel.org
 Drop CONFIG_IP_NF_TARGET_CLUSTERIP as it was removed in commit 9db5d918e2c0
 ("netfilter: ip_tables: remove clusterip target").
 
-Drop CONFIG_NFT_OBJREF as it was removed in commit d037abc2414b
-("netfilter: nft_objref: make it builtin").
-
 Signed-off-by: Trevor Woerner <twoerner@gmail.com>
 ---
- arch/loongarch/configs/loongson3_defconfig | 2 --
- 1 file changed, 2 deletions(-)
+ arch/powerpc/configs/ppc6xx_defconfig | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/arch/loongarch/configs/loongson3_defconfig b/arch/loongarch/configs/loongson3_defconfig
-index d64849b4cba1..4700655b2bcb 100644
---- a/arch/loongarch/configs/loongson3_defconfig
-+++ b/arch/loongarch/configs/loongson3_defconfig
-@@ -137,7 +137,6 @@ CONFIG_NFT_MASQ=m
- CONFIG_NFT_REDIR=m
- CONFIG_NFT_NAT=m
- CONFIG_NFT_TUNNEL=m
--CONFIG_NFT_OBJREF=m
- CONFIG_NFT_QUEUE=m
- CONFIG_NFT_QUOTA=m
- CONFIG_NFT_REJECT=m
-@@ -227,7 +226,6 @@ CONFIG_IP_NF_TARGET_MASQUERADE=m
- CONFIG_IP_NF_TARGET_NETMAP=m
- CONFIG_IP_NF_TARGET_REDIRECT=m
+diff --git a/arch/powerpc/configs/ppc6xx_defconfig b/arch/powerpc/configs/ppc6xx_defconfig
+index 1034aeabdd6c..eaf3273372a9 100644
+--- a/arch/powerpc/configs/ppc6xx_defconfig
++++ b/arch/powerpc/configs/ppc6xx_defconfig
+@@ -183,7 +183,6 @@ CONFIG_IP_NF_MATCH_TTL=m
+ CONFIG_IP_NF_FILTER=m
+ CONFIG_IP_NF_TARGET_REJECT=m
  CONFIG_IP_NF_MANGLE=m
 -CONFIG_IP_NF_TARGET_CLUSTERIP=m
  CONFIG_IP_NF_TARGET_ECN=m

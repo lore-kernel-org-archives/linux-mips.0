@@ -2,83 +2,82 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B701AEE49A8
-	for <linux-mips@archiver.kernel.org>; Sat, 19 Aug 2023 08:36:32 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C6D1DEE49B0
+	for <linux-mips@archiver.kernel.org>; Sat, 19 Aug 2023 08:36:33 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229483AbjHSIgc (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Sat, 19 Aug 2023 04:36:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47166 "EHLO
+        id S230183AbjHSIgd (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Sat, 19 Aug 2023 04:36:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47194 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230024AbjHSIgb (ORCPT
+        with ESMTP id S230087AbjHSIgb (ORCPT
         <rfc822;linux-mips@vger.kernel.org>); Sat, 19 Aug 2023 04:36:31 -0400
 Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id EABF07A8EB;
-        Sat, 19 Aug 2023 01:36:27 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 72B1E7A8FB;
+        Sat, 19 Aug 2023 01:36:29 -0700 (PDT)
 Received: from loongson.cn (unknown [113.200.148.30])
-        by gateway (Coremail) with SMTP id _____8Bxd+gJf+BkOhsaAA--.17569S3;
-        Sat, 19 Aug 2023 16:36:25 +0800 (CST)
+        by gateway (Coremail) with SMTP id _____8Bxd+gLf+BkRhsaAA--.17570S3;
+        Sat, 19 Aug 2023 16:36:27 +0800 (CST)
 Received: from linux.localdomain (unknown [113.200.148.30])
-        by localhost.localdomain (Coremail) with SMTP id AQAAf8Cx_c4Hf+BkLDpeAA--.33957S3;
-        Sat, 19 Aug 2023 16:36:25 +0800 (CST)
+        by localhost.localdomain (Coremail) with SMTP id AQAAf8Cx_c4Hf+BkLDpeAA--.33957S6;
+        Sat, 19 Aug 2023 16:36:27 +0800 (CST)
 From:   Tiezhu Yang <yangtiezhu@loongson.cn>
 To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 Cc:     "Maciej W. Rozycki" <macro@orcam.me.uk>,
         linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
         loongson-kernel@lists.loongnix.cn
-Subject: [PATCH v4 1/4] MIPS: Add BUG() at the end of nmi_exception_handler()
-Date:   Sat, 19 Aug 2023 16:36:20 +0800
-Message-Id: <1692434183-2054-2-git-send-email-yangtiezhu@loongson.cn>
+Subject: [PATCH v4 4/4] MIPS: Add identifier names to arguments of die() declaration
+Date:   Sat, 19 Aug 2023 16:36:23 +0800
+Message-Id: <1692434183-2054-5-git-send-email-yangtiezhu@loongson.cn>
 X-Mailer: git-send-email 2.1.0
 In-Reply-To: <1692434183-2054-1-git-send-email-yangtiezhu@loongson.cn>
 References: <1692434183-2054-1-git-send-email-yangtiezhu@loongson.cn>
-X-CM-TRANSID: AQAAf8Cx_c4Hf+BkLDpeAA--.33957S3
+X-CM-TRANSID: AQAAf8Cx_c4Hf+BkLDpeAA--.33957S6
 X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
-X-Coremail-Antispam: 1Uk129KBj9xXoW7Gr18Cw1Uury7Gr1DAw1rZrc_yoWfCwbEkr
-        1I9w18Wwn5Ar1Yyr1UuayDWFy3Z3y2gFyfC3WqqrZIkas8CayUG3y8ZrnYqr1kXryvyrs5
-        Zr9xK3s7uanIkosvyTuYvTs0mTUanT9S1TB71UUUUUJqnTZGkaVYY2UrUUUUj1kv1TuYvT
+X-Coremail-Antispam: 1Uk129KBj9xXoW7Gr13ZryDCr4rXw4DCrW5twc_yoWkGFcEk3
+        W2ya18uw4xGr9ava4rWw4xJFyUG3y8uwsrtr18Ja4kAasavrWUCay8CrnrJrWDuw4qvF15
+        uF9xtryUAFyS9osvyTuYvTs0mTUanT9S1TB71UUUUUJqnTZGkaVYY2UrUUUUj1kv1TuYvT
         s0mT0YCTnIWjqI5I8CrVACY4xI64kE6c02F40Ex7xfYxn0WfASr-VFAUDa7-sFnT9fnUUI
-        cSsGvfJTRUUUb3xYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I6I8E6xAIw20EY4v20x
-        vaj40_Wr0E3s1l1IIY67AEw4v_Jrv_JF1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
-        w2x7M28EF7xvwVC0I7IYx2IY67AKxVWUCVW8JwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
-        WUJVW8JwA2z4x0Y4vEx4A2jsIE14v26F4j6r4UJwA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_
-        Gr0_Gr1UM2kKe7AKxVWUXVWUAwAS0I0E0xvYzxvE52x082IY62kv0487Mc804VCY07AIYI
-        kI8VC2zVCFFI0UMc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUAVWU
-        twAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI4
-        8JMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMxCIbckI1I0E14v26r1Y
-        6r17MI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7
-        AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1I6r4UMIIF0xvE
-        2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcV
-        C2z280aVAFwI0_Gr0_Cr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2Kfnx
-        nUUI43ZEXa7IU8uuWJUUUUU==
+        cSsGvfJTRUUUb3kYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I6I8E6xAIw20EY4v20x
+        vaj40_Wr0E3s1l1IIY67AEw4v_JF0_JFyl8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
+        w2x7M28EF7xvwVC0I7IYx2IY67AKxVW8JVW5JwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
+        W8JVWxJwA2z4x0Y4vEx4A2jsIE14v26F4j6r4UJwA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_
+        Gr1j6F4UJwAaw2AFwI0_Jrv_JF1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqjxCEc2xF0c
+        Ia020Ex4CE44I27wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jw0_
+        WrylYx0Ex4A2jsIE14v26r4j6F4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwI
+        xGrwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwCFI7km07C267AKxVWU
+        XVWUAwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67
+        kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVW8JVW5JwCI42IY
+        6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0x
+        vEx4A2jsIE14v26r4j6F4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVj
+        vjDU0xZFpf9x07jrPEfUUUUU=
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-In the later patch, we will remove noreturn attribute for die(), in order
-to make each patch can be built without errors and warnings, just add a
-noreturn function BUG() at the end of nmi_exception_handler() to make sure
-it does not return, otherwise there exists the following build error after
-the later patch:
+Add identifier names to arguments of die() declaration in ptrace.h
+to fix the following checkpatch warnings:
 
-  arch/mips/kernel/traps.c:2001:1: error: 'noreturn' function does return [-Werror]
+  WARNING: function definition argument 'const char *' should also have an identifier name
+  WARNING: function definition argument 'struct pt_regs *' should also have an identifier name
 
 Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
 ---
- arch/mips/kernel/traps.c | 1 +
- 1 file changed, 1 insertion(+)
+ arch/mips/include/asm/ptrace.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/mips/kernel/traps.c b/arch/mips/kernel/traps.c
-index 246c6a6..b1b68ce 100644
---- a/arch/mips/kernel/traps.c
-+++ b/arch/mips/kernel/traps.c
-@@ -1998,6 +1998,7 @@ void __noreturn nmi_exception_handler(struct pt_regs *regs)
- 	regs->cp0_epc = read_c0_errorepc();
- 	die(str, regs);
- 	nmi_exit();
-+	BUG();
- }
+diff --git a/arch/mips/include/asm/ptrace.h b/arch/mips/include/asm/ptrace.h
+index aee8e0a..d05844e 100644
+--- a/arch/mips/include/asm/ptrace.h
++++ b/arch/mips/include/asm/ptrace.h
+@@ -159,7 +159,7 @@ static inline long regs_return_value(struct pt_regs *regs)
+ extern asmlinkage long syscall_trace_enter(struct pt_regs *regs, long syscall);
+ extern asmlinkage void syscall_trace_leave(struct pt_regs *regs);
  
- unsigned long ebase;
+-extern void die(const char *, struct pt_regs *);
++extern void die(const char *str, struct pt_regs *regs);
+ 
+ static inline void die_if_kernel(const char *str, struct pt_regs *regs)
+ {
 -- 
 2.1.0
 

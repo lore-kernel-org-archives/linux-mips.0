@@ -2,386 +2,143 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C72CAEE49AB
-	for <linux-mips@archiver.kernel.org>; Thu, 24 Aug 2023 12:51:44 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CF273C71145
+	for <linux-mips@archiver.kernel.org>; Thu, 24 Aug 2023 13:41:42 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240742AbjHXMvR (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 24 Aug 2023 08:51:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35518 "EHLO
+        id S241371AbjHXNlM (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 24 Aug 2023 09:41:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52492 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S241118AbjHXMu7 (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Thu, 24 Aug 2023 08:50:59 -0400
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DDD1CD0;
-        Thu, 24 Aug 2023 05:50:57 -0700 (PDT)
-Received: by mail-pf1-x42b.google.com with SMTP id d2e1a72fcca58-68a3b66f350so4268375b3a.3;
-        Thu, 24 Aug 2023 05:50:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692881456; x=1693486256;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=b2qJ+ZrE2rzRm3KwJwNRefCH5p7DDBNIE1s+DWcekf0=;
-        b=KNy3mkRfpXrDFNb4pEQ1bSCkG3nDncH/8rFKxkV8NUK5KsNcj7g+3ZxHxJlXEU0HFm
-         8cqs1VASeUGmB951dZWObLPT9+xHKRVBBSnV8W+HprgDJelj1Vm4v5AxwZPkD+PvJ+ph
-         2fWZVJkMi2E2vnjs+yldnt6+3YB00R7cCDvk22kJOCgWbK1D1LEow+jwnwy5Xp66gcEb
-         jXqUHC8lIXfUV3Z7y7MQQs/MwNhTP91ZAtZU468XhGOqJS3nh9emQrnOoxKHFVTizZq8
-         hADjVXYP5ETWedWzA0R2AuSMn7EXp6zXc+b/oVMwGH2K8smrexUrRwKW3bGdfRgU0WBW
-         hhjQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1692881456; x=1693486256;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=b2qJ+ZrE2rzRm3KwJwNRefCH5p7DDBNIE1s+DWcekf0=;
-        b=fmUpht2iPrjL4yQlFnT6mshHpwWMu2UUCw/+FSq9A5ax9H9GfNdsjnVD8hjoK0exG3
-         fn5XUUDMd5c8XPRR/e0hcAWD8LeYtqghB5hdAt3NuZfpDszx/GLqrV8tudJLCsaJgUWs
-         fen9D03N2gTOAJon9tvGqsIyvwwFcaqZgMXfUgjPGozvjh1+X0up0R9S3bn4FtN2v5kt
-         c2sZv4JlwtVLnxQtD5KQJs8j26jmqfBMpCGrT7yCbTMsshScfN+DyruMDV9aVvZ8yWCr
-         RCStNHbY0V/B7y0UNSHriFgK+YwRkAkc0msyrhsW0Q/1aPBD0haseMm1Ow8wxxixNC6P
-         VlMA==
-X-Gm-Message-State: AOJu0YwNAd2QQhVGegM+TmhJrom+yV1B0J1k9GyEAPUGhWHrozigfWrl
-        roI+S65fqEYsByKiGTNJYbgJSxWPDyOBX+TN
-X-Google-Smtp-Source: AGHT+IHs+SBXK7T/NEjvUUeGBnWj2OMsKKo8fCDtKIuoqZNtLVyGBLkZCLRAMGU1VqCjyUd3KBRbKA==
-X-Received: by 2002:a05:6a20:3ca7:b0:149:7a49:f7be with SMTP id b39-20020a056a203ca700b001497a49f7bemr10374697pzj.4.1692881456111;
-        Thu, 24 Aug 2023 05:50:56 -0700 (PDT)
-Received: from kelvin-ThinkPad-L14-Gen-1.lan ([103.184.129.7])
-        by smtp.gmail.com with ESMTPSA id 19-20020a170902c11300b001afd821c057sm12837295pli.58.2023.08.24.05.50.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Aug 2023 05:50:55 -0700 (PDT)
-From:   Keguang Zhang <keguang.zhang@gmail.com>
-To:     netdev@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Lee Jones <lee@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
+        with ESMTP id S241399AbjHXNkr (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Thu, 24 Aug 2023 09:40:47 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DBAC12C;
+        Thu, 24 Aug 2023 06:40:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1692884445; x=1724420445;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=dhWVbX36GNW+hyT2stuqHURTJcwkPHy+42LeWoUySlo=;
+  b=E3/uOuuAx6fR7Fet8QOJSQtjpphCeTSgNiE4dN6Sd3qNCh798NwGPfZx
+   Ydh71tl9rGrV/WBI994u4W4dRWZF7jXx7uS00uiC9F5aITM/Tt+gVCLKT
+   6xUUzF9eLfpR5NBYTjiuobI8Xr/TzYubh+VNztSmuWAeZ8cY1DUGpFR9i
+   QsS6+YZdXdRQeNQbgQyfcrua9qwcY7x5bDgU5MzLBw+0EolCojO8rIAQv
+   f972I1gPaMjPo+uLBayz+WKGdNt/OkRb/ueD38L88WZUD+fdWLFWc2sCU
+   w4a38YZZ1jpJLirtX78Xp9MXtRxUgAY/aTunkEdDy0VgA7+iYQZ3j72d5
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10812"; a="440792161"
+X-IronPort-AV: E=Sophos;i="6.02,195,1688454000"; 
+   d="scan'208";a="440792161"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Aug 2023 06:28:53 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10812"; a="802539664"
+X-IronPort-AV: E=Sophos;i="6.02,195,1688454000"; 
+   d="scan'208";a="802539664"
+Received: from abedekar-mobl1.ger.corp.intel.com (HELO ijarvine-mobl2.ger.corp.intel.com) ([10.251.213.29])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Aug 2023 06:28:51 -0700
+From:   =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+To:     linux-pci@vger.kernel.org, Bjorn Helgaas <helgaas@kernel.org>,
         Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        Serge Semin <Sergey.Semin@baikalelectronics.ru>,
-        Keguang Zhang <keguang.zhang@gmail.com>
-Subject: [PATCH v3 3/4] net: stmmac: Add glue layer for Loongson-1 SoC
-Date:   Thu, 24 Aug 2023 20:50:11 +0800
-Message-Id: <20230824125012.1040288-4-keguang.zhang@gmail.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230824125012.1040288-1-keguang.zhang@gmail.com>
-References: <20230824125012.1040288-1-keguang.zhang@gmail.com>
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Subject: [PATCH 02/14] MIPS: TXx9: Do PCI error checks on own line
+Date:   Thu, 24 Aug 2023 16:28:20 +0300
+Message-Id: <20230824132832.78705-3-ilpo.jarvinen@linux.intel.com>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20230824132832.78705-1-ilpo.jarvinen@linux.intel.com>
+References: <20230824132832.78705-1-ilpo.jarvinen@linux.intel.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-This glue driver is created based on the arch-code
-implemented earlier with the platform-specific settings.
+Instead of if conditions with line splits, use the usual error handling
+pattern with a separate variable to improve readability.
 
-Use syscon for SYSCON register access.
+The second check can use reverse logic which reduces indentation level.
 
-Partially based on the previous work by Serge Semin.
+No functional changes intended.
 
-Signed-off-by: Keguang Zhang <keguang.zhang@gmail.com>
+Signed-off-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
 ---
-V2 -> V3: Determine the device ID by physical
-          base address(suggested by Serge Semin)
-          Use regmap instead of regmap fields
-          Use syscon_regmap_lookup_by_phandle()
-          Some minor fixes
-V1 -> V2: Fix the build errors due to CONFIG_OF being unset
-          Change struct reg_field definitions to const
-          Rename the syscon property to "loongson,dwmac-syscon"
-          Add MII PHY mode for LS1C
+ arch/mips/txx9/generic/pci.c | 43 +++++++++++++++++++-----------------
+ 1 file changed, 23 insertions(+), 20 deletions(-)
 
- drivers/net/ethernet/stmicro/stmmac/Kconfig   |  11 +
- drivers/net/ethernet/stmicro/stmmac/Makefile  |   1 +
- .../ethernet/stmicro/stmmac/dwmac-loongson1.c | 240 ++++++++++++++++++
- 3 files changed, 252 insertions(+)
- create mode 100644 drivers/net/ethernet/stmicro/stmmac/dwmac-loongson1.c
-
-diff --git a/drivers/net/ethernet/stmicro/stmmac/Kconfig b/drivers/net/ethernet/stmicro/stmmac/Kconfig
-index 06c6871f8788..a2b9e289aa36 100644
---- a/drivers/net/ethernet/stmicro/stmmac/Kconfig
-+++ b/drivers/net/ethernet/stmicro/stmmac/Kconfig
-@@ -239,6 +239,17 @@ config DWMAC_INTEL_PLAT
- 	  the stmmac device driver. This driver is used for the Intel Keem Bay
- 	  SoC.
+diff --git a/arch/mips/txx9/generic/pci.c b/arch/mips/txx9/generic/pci.c
+index e98845543b77..5ae30b78d38d 100644
+--- a/arch/mips/txx9/generic/pci.c
++++ b/arch/mips/txx9/generic/pci.c
+@@ -51,6 +51,7 @@ int __init txx9_pci66_check(struct pci_controller *hose, int top_bus,
+ 	unsigned short vid;
+ 	int cap66 = -1;
+ 	u16 stat;
++	int ret;
  
-+config DWMAC_LOONGSON1
-+	tristate "Loongson1 GMAC support"
-+	default MACH_LOONGSON32
-+	depends on OF && (MACH_LOONGSON32 || COMPILE_TEST)
-+	help
-+	  Support for ethernet controller on Loongson1 SoC.
-+
-+	  This selects Loongson1 SoC glue layer support for the stmmac
-+	  device driver. This driver is used for Loongson1-based boards
-+	  like Loongson LS1B/LS1C.
-+
- config DWMAC_TEGRA
- 	tristate "NVIDIA Tegra MGBE support"
- 	depends on ARCH_TEGRA || COMPILE_TEST
-diff --git a/drivers/net/ethernet/stmicro/stmmac/Makefile b/drivers/net/ethernet/stmicro/stmmac/Makefile
-index 5b57aee19267..80e598bd4255 100644
---- a/drivers/net/ethernet/stmicro/stmmac/Makefile
-+++ b/drivers/net/ethernet/stmicro/stmmac/Makefile
-@@ -29,6 +29,7 @@ obj-$(CONFIG_DWMAC_SUNXI)	+= dwmac-sunxi.o
- obj-$(CONFIG_DWMAC_SUN8I)	+= dwmac-sun8i.o
- obj-$(CONFIG_DWMAC_DWC_QOS_ETH)	+= dwmac-dwc-qos-eth.o
- obj-$(CONFIG_DWMAC_INTEL_PLAT)	+= dwmac-intel-plat.o
-+obj-$(CONFIG_DWMAC_LOONGSON1)	+= dwmac-loongson1.o
- obj-$(CONFIG_DWMAC_GENERIC)	+= dwmac-generic.o
- obj-$(CONFIG_DWMAC_IMX8)	+= dwmac-imx.o
- obj-$(CONFIG_DWMAC_TEGRA)	+= dwmac-tegra.o
-diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-loongson1.c b/drivers/net/ethernet/stmicro/stmmac/dwmac-loongson1.c
-new file mode 100644
-index 000000000000..347d842141e4
---- /dev/null
-+++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-loongson1.c
-@@ -0,0 +1,240 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Loongson-1 DWMAC glue layer
-+ *
-+ * Copyright (C) 2011-2023 Keguang Zhang <keguang.zhang@gmail.com>
-+ */
-+
-+#include <linux/mfd/syscon.h>
-+#include <linux/module.h>
-+#include <linux/of.h>
-+#include <linux/phy.h>
-+#include <linux/platform_device.h>
-+#include <linux/regmap.h>
-+
-+#include "stmmac.h"
-+#include "stmmac_platform.h"
-+
-+#define LS1X_GMAC0_BASE		(0xe10000)
-+#define LS1X_GMAC1_BASE		(0xe20000)
-+
-+/* Loongson-1 SYSCON Registers */
-+#define LS1X_SYSCON0		(0x0)
-+#define LS1X_SYSCON1		(0x4)
-+
-+/* Loongson-1B SYSCON Register Bits */
-+#define GMAC1_USE_UART1		BIT(4)
-+#define GMAC1_USE_UART0		BIT(3)
-+
-+#define GMAC1_SHUT		BIT(13)
-+#define GMAC0_SHUT		BIT(12)
-+
-+#define GMAC1_USE_TXCLK		BIT(3)
-+#define GMAC0_USE_TXCLK		BIT(2)
-+#define GMAC1_USE_PWM23		BIT(1)
-+#define GMAC0_USE_PWM01		BIT(0)
-+
-+/* Loongson-1C SYSCON Register Bits */
-+#define GMAC_SHUT		BIT(6)
-+
-+#define PHY_INTF_SELI		GENMASK(30, 28)
-+#define PHY_INTF_SELI_SHIFT	28
-+
-+struct ls1x_dwmac_syscon {
-+	int (*syscon_init)(struct plat_stmmacenet_data *plat);
-+};
-+
-+struct ls1x_dwmac {
-+	unsigned long reg_base;
-+	struct device *dev;
-+	struct plat_stmmacenet_data *plat_dat;
-+	const struct ls1x_dwmac_syscon *syscon;
-+	struct regmap *regmap;
-+};
-+
-+static int ls1b_dwmac_syscon_init(struct plat_stmmacenet_data *plat)
-+{
-+	struct ls1x_dwmac *dwmac = plat->bsp_priv;
-+	struct regmap *regmap = dwmac->regmap;
-+
-+	if ((dwmac->reg_base & LS1X_GMAC0_BASE) == LS1X_GMAC0_BASE) {
-+		switch (plat->phy_interface) {
-+		case PHY_INTERFACE_MODE_RGMII_ID:
-+			regmap_update_bits(regmap, LS1X_SYSCON0,
-+					   GMAC0_USE_TXCLK | GMAC0_USE_PWM01,
-+					   0);
-+			break;
-+		case PHY_INTERFACE_MODE_MII:
-+			regmap_update_bits(regmap, LS1X_SYSCON0,
-+					   GMAC0_USE_TXCLK | GMAC0_USE_PWM01,
-+					   GMAC0_USE_TXCLK | GMAC0_USE_PWM01);
-+			break;
-+		default:
-+			dev_err(dwmac->dev, "Unsupported PHY mode %u\n",
-+				plat->phy_interface);
-+			return -EOPNOTSUPP;
-+		}
-+
-+		regmap_update_bits(regmap, LS1X_SYSCON0, GMAC0_SHUT, 0);
-+	}
-+
-+	if ((dwmac->reg_base & LS1X_GMAC1_BASE) == LS1X_GMAC1_BASE) {
-+		regmap_update_bits(regmap, LS1X_SYSCON0,
-+				   GMAC1_USE_UART1 | GMAC1_USE_UART0,
-+				   GMAC1_USE_UART1 | GMAC1_USE_UART0);
-+
-+		switch (plat->phy_interface) {
-+		case PHY_INTERFACE_MODE_RGMII_ID:
-+			regmap_update_bits(regmap, LS1X_SYSCON1,
-+					   GMAC1_USE_TXCLK | GMAC1_USE_PWM23,
-+					   0);
-+
-+			break;
-+		case PHY_INTERFACE_MODE_MII:
-+			regmap_update_bits(regmap, LS1X_SYSCON1,
-+					   GMAC1_USE_TXCLK | GMAC1_USE_PWM23,
-+					   GMAC1_USE_TXCLK | GMAC1_USE_PWM23);
-+			break;
-+		default:
-+			dev_err(dwmac->dev, "Unsupported PHY mode %u\n",
-+				plat->phy_interface);
-+			return -EOPNOTSUPP;
-+		}
-+
-+		regmap_update_bits(regmap, LS1X_SYSCON1, GMAC1_SHUT, 0);
-+	}
-+
-+	return 0;
-+}
-+
-+static int ls1c_dwmac_syscon_init(struct plat_stmmacenet_data *plat)
-+{
-+	struct ls1x_dwmac *dwmac = plat->bsp_priv;
-+	struct regmap *regmap = dwmac->regmap;
-+
-+	switch (plat->phy_interface) {
-+	case PHY_INTERFACE_MODE_MII:
-+		regmap_update_bits(regmap, LS1X_SYSCON1, PHY_INTF_SELI, 0);
-+		break;
-+	case PHY_INTERFACE_MODE_RMII:
-+		regmap_update_bits(regmap, LS1X_SYSCON1, PHY_INTF_SELI,
-+				   4 << PHY_INTF_SELI_SHIFT);
-+		break;
-+	default:
-+		dev_err(dwmac->dev, "Unsupported PHY-mode %u\n",
-+			plat->phy_interface);
-+		return -EOPNOTSUPP;
-+	}
-+
-+	regmap_update_bits(regmap, LS1X_SYSCON0, GMAC0_SHUT, 0);
-+
-+	return 0;
-+}
-+
-+static const struct ls1x_dwmac_syscon ls1b_dwmac_syscon = {
-+	.syscon_init = ls1b_dwmac_syscon_init,
-+};
-+
-+static const struct ls1x_dwmac_syscon ls1c_dwmac_syscon = {
-+	.syscon_init = ls1c_dwmac_syscon_init,
-+};
-+
-+static int ls1x_dwmac_init(struct platform_device *pdev, void *priv)
-+{
-+	struct ls1x_dwmac *dwmac = priv;
-+	struct resource *res;
+ 	/* It seems SLC90E66 needs some time after PCI reset... */
+ 	mdelay(80);
+@@ -60,9 +61,9 @@ int __init txx9_pci66_check(struct pci_controller *hose, int top_bus,
+ 	for (pci_devfn = 0; pci_devfn < 0xff; pci_devfn++) {
+ 		if (PCI_FUNC(pci_devfn))
+ 			continue;
+-		if (early_read_config_word(hose, top_bus, current_bus,
+-					   pci_devfn, PCI_VENDOR_ID, &vid) !=
+-		    PCIBIOS_SUCCESSFUL)
++		ret = early_read_config_word(hose, top_bus, current_bus,
++					     pci_devfn, PCI_VENDOR_ID, &vid);
++		if (ret != PCIBIOS_SUCCESSFUL)
+ 			continue;
+ 		if (vid == 0xffff)
+ 			continue;
+@@ -343,26 +344,28 @@ static void tc35815_fixup(struct pci_dev *dev)
+ 
+ static void final_fixup(struct pci_dev *dev)
+ {
++	unsigned long timeout;
+ 	unsigned char bist;
 +	int ret;
+ 
+ 	/* Do build-in self test */
+-	if (pci_read_config_byte(dev, PCI_BIST, &bist) == PCIBIOS_SUCCESSFUL &&
+-	    (bist & PCI_BIST_CAPABLE)) {
+-		unsigned long timeout;
+-		pci_set_power_state(dev, PCI_D0);
+-		pr_info("PCI: %s BIST...", pci_name(dev));
+-		pci_write_config_byte(dev, PCI_BIST, PCI_BIST_START);
+-		timeout = jiffies + HZ * 2;	/* timeout after 2 sec */
+-		do {
+-			pci_read_config_byte(dev, PCI_BIST, &bist);
+-			if (time_after(jiffies, timeout))
+-				break;
+-		} while (bist & PCI_BIST_START);
+-		if (bist & (PCI_BIST_CODE_MASK | PCI_BIST_START))
+-			pr_cont("failed. (0x%x)\n", bist);
+-		else
+-			pr_cont("OK.\n");
+-	}
++	ret = pci_read_config_byte(dev, PCI_BIST, &bist);
++	if ((ret != PCIBIOS_SUCCESSFUL) || !(bist & PCI_BIST_CAPABLE))
++		return;
 +
-+	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-+	if (!res) {
-+		dev_err(&pdev->dev, "Could not get IO_MEM resources\n");
-+		return -EINVAL;
-+	}
-+	dwmac->reg_base = (unsigned long)res->start;
-+
-+	if (dwmac->syscon->syscon_init) {
-+		ret = dwmac->syscon->syscon_init(dwmac->plat_dat);
-+		if (ret)
-+			return ret;
-+	}
-+
-+	return 0;
-+}
-+
-+static int ls1x_dwmac_probe(struct platform_device *pdev)
-+{
-+	struct plat_stmmacenet_data *plat_dat;
-+	struct stmmac_resources stmmac_res;
-+	struct regmap *regmap;
-+	struct ls1x_dwmac *dwmac;
-+	const struct ls1x_dwmac_syscon *syscon;
-+	int ret;
-+
-+	ret = stmmac_get_platform_resources(pdev, &stmmac_res);
-+	if (ret)
-+		return ret;
-+
-+	/* Probe syscon */
-+	regmap = syscon_regmap_lookup_by_phandle(pdev->dev.of_node,
-+						 "loongson,ls1-syscon");
-+	if (IS_ERR(regmap)) {
-+		ret = PTR_ERR(regmap);
-+		dev_err(&pdev->dev, "Unable to map syscon: %d\n", ret);
-+		return ret;
-+	}
-+
-+	syscon = of_device_get_match_data(&pdev->dev);
-+	if (!syscon) {
-+		dev_err(&pdev->dev, "No of match data provided\n");
-+		return -EINVAL;
-+	}
-+
-+	dwmac = devm_kzalloc(&pdev->dev, sizeof(*dwmac), GFP_KERNEL);
-+	if (!dwmac)
-+		return -ENOMEM;
-+
-+	plat_dat = stmmac_probe_config_dt(pdev, stmmac_res.mac);
-+	if (IS_ERR(plat_dat)) {
-+		dev_err(&pdev->dev, "dt configuration failed\n");
-+		return PTR_ERR(plat_dat);
-+	}
-+
-+	plat_dat->bsp_priv = dwmac;
-+	plat_dat->init = ls1x_dwmac_init;
-+	dwmac->dev = &pdev->dev;
-+	dwmac->plat_dat = plat_dat;
-+	dwmac->syscon = syscon;
-+	dwmac->regmap = regmap;
-+
-+	ret = stmmac_pltfr_probe(pdev, plat_dat, &stmmac_res);
-+	if (ret)
-+		goto err_remove_config_dt;
-+
-+	return 0;
-+
-+err_remove_config_dt:
-+	stmmac_remove_config_dt(pdev, plat_dat);
-+
-+	return ret;
-+}
-+
-+static const struct of_device_id ls1x_dwmac_match[] = {
-+	{ .compatible = "loongson,ls1b-gmac", .data = &ls1b_dwmac_syscon, },
-+	{ .compatible = "loongson,ls1c-emac", .data = &ls1c_dwmac_syscon, },
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(of, ls1x_dwmac_match);
-+
-+static struct platform_driver ls1x_dwmac_driver = {
-+	.probe = ls1x_dwmac_probe,
-+	.remove_new = stmmac_pltfr_remove,
-+	.driver = {
-+		.name = "loongson1-dwmac",
-+		.of_match_table = ls1x_dwmac_match,
-+	},
-+};
-+module_platform_driver(ls1x_dwmac_driver);
-+
-+MODULE_AUTHOR("Keguang Zhang <keguang.zhang@gmail.com>");
-+MODULE_DESCRIPTION("Loongson1 DWMAC glue layer");
-+MODULE_LICENSE("GPL");
++	pci_set_power_state(dev, PCI_D0);
++	pr_info("PCI: %s BIST...", pci_name(dev));
++	pci_write_config_byte(dev, PCI_BIST, PCI_BIST_START);
++	timeout = jiffies + HZ * 2;	/* timeout after 2 sec */
++	do {
++		pci_read_config_byte(dev, PCI_BIST, &bist);
++		if (time_after(jiffies, timeout))
++			break;
++	} while (bist & PCI_BIST_START);
++	if (bist & (PCI_BIST_CODE_MASK | PCI_BIST_START))
++		pr_cont("failed. (0x%x)\n", bist);
++	else
++		pr_cont("OK.\n");
+ }
+ 
+ #ifdef CONFIG_TOSHIBA_FPCIB0
 -- 
-2.39.2
+2.30.2
 

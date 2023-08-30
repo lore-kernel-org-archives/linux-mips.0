@@ -2,116 +2,135 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AFE67C83F17
-	for <linux-mips@archiver.kernel.org>; Wed, 30 Aug 2023 18:56:17 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 41F0CC83F1B
+	for <linux-mips@archiver.kernel.org>; Wed, 30 Aug 2023 18:56:19 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S245250AbjH3S4D (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 30 Aug 2023 14:56:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39592 "EHLO
+        id S1343965AbjH3S4R (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 30 Aug 2023 14:56:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52380 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344207AbjH3S2Y (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 30 Aug 2023 14:28:24 -0400
-Received: from wout5-smtp.messagingengine.com (wout5-smtp.messagingengine.com [64.147.123.21])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 025D6198;
-        Wed, 30 Aug 2023 11:28:22 -0700 (PDT)
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailout.west.internal (Postfix) with ESMTP id 70DC23200942;
-        Wed, 30 Aug 2023 14:28:20 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute5.internal (MEProxy); Wed, 30 Aug 2023 14:28:21 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sent.com; h=cc
-        :cc:content-transfer-encoding:content-type:date:date:from:from
-        :in-reply-to:in-reply-to:message-id:mime-version:references
-        :reply-to:reply-to:sender:subject:subject:to:to; s=fm1; t=
-        1693420099; x=1693506499; bh=UaWYMjZoz/qbv6HU3P8JXTg44k1buzeqH5W
-        8mgla10I=; b=EYBx63EvFZjpL4B27TvMy7dGqT0pwxAoSEQMIg8pIUrC14oW5Qe
-        NQQkav+XRQAccBSjDYtL6wGLdshSlcg1rzwDN10arpEUSJWVjaH6IgApWfE4wz2k
-        NJrHO5LIciwfDdoPDOe6ZjYQxyAx+9Qp/yhg90D1Mu/zDRHBh+usGjHa8kak61BH
-        +wRtghRwUfwcK5/g4dAMCzoN5W7fRgb6/Fc0s9E42Y4N6bQRYuO/UkeirPUMSiZp
-        yZ2IN3lwvHgVsMMyVUZL8ujlFJZVEXlmSYvbJK3v4JmwYHq8eQAgRitNdVAr72K/
-        83+G2VVVKYJBkgGYIUdzl6PFgre20wJhuxw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-transfer-encoding
-        :content-type:date:date:feedback-id:feedback-id:from:from
-        :in-reply-to:in-reply-to:message-id:mime-version:references
-        :reply-to:reply-to:sender:subject:subject:to:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=
-        1693420099; x=1693506499; bh=UaWYMjZoz/qbv6HU3P8JXTg44k1buzeqH5W
-        8mgla10I=; b=cIqp7OcqR9mAO5om8208dHU0wNnEriPSq/ag/Nx4a6D5SqamN6H
-        u5pPrVI3kn3E2aS0lJco43LEkbh81xEEzrwAjk1UPuFe/Q1Gu0D3lR1Jd20Zu1Mb
-        gdjd18scjP00w/1McZqpwobB31v+bdGi+n1BVFMzoHn//F67+rVg9YaYsXDC1vi1
-        b49vnbHA72x2FuM7RHMCZpxiG9NycXuTOEiki0emG1ppfM0lGJf6JXWoJSRt9xrv
-        eX/aAvXfHx1aQbS9TyPhFAOhk0jRQP0Bm66uUGmD/P3FdC5dkgxYpXaV/oKOBN+Y
-        D5N/biYochIaLDXNgUc6e45rtgmFJlOkXGw==
-X-ME-Sender: <xms:Q4rvZK2ThFYHPgkFHwMbRXTHhzc9BTSa4gJ-nUYJ3WT4ARHSKKo7Ow>
-    <xme:Q4rvZNFqkmTEzG-Ob_osEiA9AJZEUzGn706jadaI56xRdlcznCo_ma30Qe8cTgy0k
-    hpvjo59WMifcCalYw>
-X-ME-Received: <xmr:Q4rvZC6ZWwz8ycvKHrjZIRY_fvfASIWEQhJtur8MfQMSbEhJTZGtQUNU1tA4XNKq3-25_37qCXAoXRz4hdJgC16NoG29j2lvng7c_Kd01KM8qKXuwDphTbog>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrudefkedguddvjecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enogfuohhrthgvugftvggtihhpvdculdegtddmnecujfgurhephffvvefufffkofgjfhhr
-    ggfgsedtqhertdertddtnecuhfhrohhmpegkihcujggrnhcuoeiiihdrhigrnhesshgvnh
-    htrdgtohhmqeenucggtffrrghtthgvrhhnpeeggeehudfgudduvdelheehteegledtteei
-    veeuhfffveekhfevueefieeijeegvdenucevlhhushhtvghrufhiiigvpedtnecurfgrrh
-    grmhepmhgrihhlfhhrohhmpeiiihdrhigrnhesshgvnhhtrdgtohhm
-X-ME-Proxy: <xmx:Q4rvZL346u1_UfBpWjzl87Rw7CyGhd0RDxasHMhGKfpImbsnOq-Y-w>
-    <xmx:Q4rvZNF6BdmO2rFxg6wRJ3qYNy7hEOIJFJn_U7Iwm5oQNp66gJ9Q9Q>
-    <xmx:Q4rvZE-tP0tveb64gnIifFzwKegTZyfdHQXCopNAlJ9sqJO-3y7aKw>
-    <xmx:Q4rvZMDCU_EPWqv6N6ufuNZGBXo8iVzJpOXRWJL1cpdCW6UGiOWS3A>
-Feedback-ID: iccd040f4:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 30 Aug 2023 14:28:19 -0400 (EDT)
-From:   Zi Yan <zi.yan@sent.com>
-To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        linux-mips@vger.kernel.org
-Cc:     Zi Yan <ziy@nvidia.com>, Andrew Morton <akpm@linux-foundation.org>,
+        with ESMTP id S244690AbjH3Nor (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 30 Aug 2023 09:44:47 -0400
+Received: from dfw.source.kernel.org (dfw.source.kernel.org [IPv6:2604:1380:4641:c500::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5D3DA3;
+        Wed, 30 Aug 2023 06:44:44 -0700 (PDT)
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by dfw.source.kernel.org (Postfix) with ESMTPS id 6B35562602;
+        Wed, 30 Aug 2023 13:44:44 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B945AC433C8;
+        Wed, 30 Aug 2023 13:44:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1693403083;
+        bh=lHfKq4d/r4SkrYm1cDQVZR/6CiTUPBxZkFaWTRcy388=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=MqECSlqX6hFw56rkBs5PwaqxFW5vDHVOVW9fWeYcnkfsfOtiOWWsMM0vd7cVD1t32
+         cbL1l/BofoYTHcfwKWRKJEQY93zavSvuwj382K4kgQbUXR7dwe7WI7nShK/8O4zlOP
+         C56rhnItr2uEJSYKPRUjukPvPiQ3HIlOQkZIcHgk7pQtv8x/frbI/qwW4BDxvdpXp8
+         b68mc4Jg5L5MT/i+8kCrgpggMF9WjfP+nf8O14CzmgZhCTip5IXnwPPEmB8jiU71N7
+         +iFP43i0H2bxXrxfmd0aE63lF/BrJ+CuWM2+cpW3VbpWYjPK/IYD7qVGz7PqkR7vJ7
+         +/LBT3GBNRFXQ==
+Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.95)
+        (envelope-from <maz@kernel.org>)
+        id 1qbLUv-009KQh-8k;
+        Wed, 30 Aug 2023 14:44:41 +0100
+Date:   Wed, 30 Aug 2023 14:44:40 +0100
+Message-ID: <86wmxcejav.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Jiaxun Yang <jiaxun.yang@flygoat.com>
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Binbin Zhou <zhoubb.aaron@gmail.com>,
+        Binbin Zhou <zhoubinbin@loongson.cn>,
+        Huacai Chen <chenhuacai@loongson.cn>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        loongson-kernel@lists.loongnix.cn, devicetree@vger.kernel.org,
         Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        David Hildenbrand <david@redhat.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Muchun Song <muchun.song@linux.dev>,
-        "Mike Rapoport (IBM)" <rppt@kernel.org>
-Subject: [PATCH 3/3] mips: use nth_page() in place of direct struct page manipulation.
-Date:   Wed, 30 Aug 2023 14:27:53 -0400
-Message-Id: <20230830182753.55367-4-zi.yan@sent.com>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20230830182753.55367-1-zi.yan@sent.com>
-References: <20230830182753.55367-1-zi.yan@sent.com>
-Reply-To: Zi Yan <ziy@nvidia.com>
-MIME-Version: 1.0
+        linux-mips@vger.kernel.org, diasyzhang@tencent.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] dt-bindings: interrupt-controller: loongson,liointc: Fix warnings about liointc-2.0
+In-Reply-To: <a084e6e9-46b0-42ef-b500-69c114ae11b2@flygoat.com>
+References: <20230821061315.3416836-1-zhoubinbin@loongson.cn>
+        <e62185ca-cdf6-bde9-ad46-f4150db9ed6d@linaro.org>
+        <CAMpQs4JhfuB4=s9VFc+xmw_+8h5u2EwPdM_0x2vO_=SYabAAxw@mail.gmail.com>
+        <6ba31912-6738-6156-d5f4-3c8d3a3ca7bc@linaro.org>
+        <CAMpQs4+GiExt9uMmV1pf8gg8rFwWxbLkx9mdW7hY9xxXDOza3Q@mail.gmail.com>
+        <d11873a1-b552-71f5-1100-7464687f8bb4@linaro.org>
+        <a084e6e9-46b0-42ef-b500-69c114ae11b2@flygoat.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/28.2
+ (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: jiaxun.yang@flygoat.com, krzysztof.kozlowski@linaro.org, zhoubb.aaron@gmail.com, zhoubinbin@loongson.cn, chenhuacai@loongson.cn, tglx@linutronix.de, robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, chenhuacai@kernel.org, loongson-kernel@lists.loongnix.cn, devicetree@vger.kernel.org, tsbogend@alpha.franken.de, linux-mips@vger.kernel.org, diasyzhang@tencent.com, linux-kernel@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-From: Zi Yan <ziy@nvidia.com>
+On Wed, 30 Aug 2023 04:59:20 +0100,
+Jiaxun Yang <jiaxun.yang@flygoat.com> wrote:
+>=20
+>=20
+>=20
+> =E5=9C=A8 2023/8/25 20:56, Krzysztof Kozlowski =E5=86=99=E9=81=93:
+> [...]
+> > How did you sneak this property? The version - v2 - which was reviewed
+> > by Rob:
+> > https://lore.kernel.org/all/20190905144316.12527-7-jiaxun.yang@flygoat.=
+com/
+> > did not have it.
+> >=20
+> > Now v3 suddenly appears with Rob's review and this property:
+> > https://lore.kernel.org/all/20200112081416.722218-4-jiaxun.yang@flygoat=
+.com/
+> >=20
+> > Please help me understand this property appeared there and how did you
+> > get it reviewed?
+> Hi all,
+>=20
+> It has been some years since this series was merged.
+> My vague memory tells me there was some off-list discussion made in IRC w=
+ith
+> linux-arch folks and IRQ folks to come up with this binding design.
+>=20
+> In this case I guess I forgot to drop Rob's R-b tag when updating this pa=
+tch
+> between reversions. I=C2=A0 apologize for any inconvenience this may have=
+ caused.
+>=20
+> >=20
+> >>                                                  <0xffffffff>, /* int1=
+ */
+> >>                                                  <0x00000000>, /* int2=
+ */
+> >>                                                  <0x00000000>; /* int3=
+ */
+> > So now you will keep bringing more hacks for a hacky property. No, this
+> > cannot go on.
+>=20
+> What's the best way, in your opinion, to overhaul this property? As we do=
+n't
+> really care backward compatibility of DTBs on those systems we can
+> just redesign it.
 
-__flush_dcache_pages() is called during hugetlb migration via
-migrate_pages() -> migrate_hugetlbs() -> unmap_and_move_huge_page()
--> move_to_new_folio() -> flush_dcache_folio(). And with hugetlb and
-without sparsemem vmemmap, struct page is not guaranteed to be contiguous
-beyond a section. Use nth_page() instead.
+You may not care about backward compatibility, but I do. We don't
+break existing systems, full stop.
 
-Signed-off-by: Zi Yan <ziy@nvidia.com>
----
- arch/mips/mm/cache.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+As for the offending property, it has no place here either. DT is not
+the place where you put "performance knobs".
 
-diff --git a/arch/mips/mm/cache.c b/arch/mips/mm/cache.c
-index 02042100e267..7f830634dbe7 100644
---- a/arch/mips/mm/cache.c
-+++ b/arch/mips/mm/cache.c
-@@ -117,7 +117,7 @@ void __flush_dcache_pages(struct page *page, unsigned i=
-nt nr)
- 	 * get faulted into the tlb (and thus flushed) anyways.
- 	 */
- 	for (i =3D 0; i < nr; i++) {
--		addr =3D (unsigned long)kmap_local_page(page + i);
-+		addr =3D (unsigned long)kmap_local_page(nth_page(page, i));
- 		flush_data_cache_page(addr);
- 		kunmap_local((void *)addr);
- 	}
+	M.
+
 --=20
-2.40.1
-
+Without deviation from the norm, progress is not possible.

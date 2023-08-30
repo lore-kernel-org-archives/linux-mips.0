@@ -2,145 +2,191 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4AC60C83F17
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 75B87C6FA8F
 	for <linux-mips@archiver.kernel.org>; Wed, 30 Aug 2023 18:56:27 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344004AbjH3S4Y (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 30 Aug 2023 14:56:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60700 "EHLO
+        id S1344012AbjH3S4Z (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 30 Aug 2023 14:56:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47398 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245140AbjH3OfL (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 30 Aug 2023 10:35:11 -0400
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93B37194
-        for <linux-mips@vger.kernel.org>; Wed, 30 Aug 2023 07:35:08 -0700 (PDT)
-Received: by mail-ej1-x62d.google.com with SMTP id a640c23a62f3a-99df431d4bfso746885666b.1
-        for <linux-mips@vger.kernel.org>; Wed, 30 Aug 2023 07:35:08 -0700 (PDT)
+        with ESMTP id S244628AbjH3Nfe (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 30 Aug 2023 09:35:34 -0400
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EB4611F;
+        Wed, 30 Aug 2023 06:35:31 -0700 (PDT)
+Received: by mail-pf1-x42b.google.com with SMTP id d2e1a72fcca58-68c3b9f85b7so2879473b3a.2;
+        Wed, 30 Aug 2023 06:35:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1693406107; x=1694010907; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=HWEvSMgNacJqUkTieejzfG9YUtgYVDcl76TESgQKKR4=;
-        b=fXoT+9vAMmL8/ramgzQkUNoMjGWwLV54SUJyCrrxE5FYpJa9edxgRiNkFI3rXg4ai5
-         1meMnsFWXsUFENt6l5vtZlNvZsnBcPPUU5p3GKlETQ/sIocRBM+xN+Wxfs/abZmsHlhm
-         Y5BmHTTBOno5UgJ1wDwuOLQOBKRH9r7bBuMFnVEbDeFh6Tg7mU+SO5DGXFxHhdo7fVdU
-         isy1a5aYsO7Jg8B2dR7JfOhYuGj8AYg6B4Oh3EurO3AaBi9TqfzulWoRyR05sc4Xc579
-         2zNBvzca/UbsqtamuRkeYhH0jFNw5lHx06mdF34XUwZKgtEvs+tuTWJTRqiQ/BLsohrP
-         W8rw==
+        d=gmail.com; s=20221208; t=1693402530; x=1694007330; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=RRQJInei7cgxScofMgcEQpUP1yaB1y4pGk98kCbHGEg=;
+        b=Qf2TXvfZ/2UTrs/1ZP71pfvOlF00tGVZKUXd+FNl8eTJFO/huiNLhtwlsGfpnKc/yx
+         dQ3vQH1K3Clv/4dmeHwH/5mRoDc9to/b9SRxnGIUZN5bvBE4LLZlWjOT19W8hMXBruuo
+         jkEj8EuyTV+fUiPWkuW3PVHuqeiPfjfeT+7a8R7P4lF+nE9s7omoW4NzWGd1GZ8zI2/m
+         up8Wek8laie3ddnvFndfesbveVVC+3DZkPFSJFq+3pQycoZLFdhX/65hRU9/6Drk3SRT
+         eOCdb2vzQJ24Oa7NcYTA5dAZ8F/rTGBdL149lPjh35K3TnxqiRE/7f6OlOw1L6IJiXwn
+         5jZw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693406107; x=1694010907;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=HWEvSMgNacJqUkTieejzfG9YUtgYVDcl76TESgQKKR4=;
-        b=UGX45CdAMkC9HqPWIp4L0wKPaLjvgbCAz1JYhCo3TMXqslb/rguxVqRdvsh+Lqbka4
-         pXiIPTINgh2ANo7wY8AcfYQMbsLxcLM+DhVoDAIB7GSXj6gcyXVjBqDn3p7F8Fr/8csA
-         5xxcwaK6AFFDaGTnR22xyDMvs8pi8YYSKeu0Ml0FTGOVQEnqPbZ4wBd1gOpa+l3GuTFu
-         t24xwQrBlzAERN20NHt8TkVWQusBQtyViXe3S+GjsCxiFEFl0jMlVhAXtw8B9DodVadh
-         opQ06vSIXdcCRV+cH1hv4wzhILWaLXj+8v0Xs1cgNpRulgU4YzjoI66z+zVOID8gn/Uw
-         ydcg==
-X-Gm-Message-State: AOJu0YygTER3svmZxQFbOY5jSkOp2X/2/FOL9ph1qsrgwcMkdLpVi8gK
-        9k8QDIMp3sHVxhs+Pp+ARyswLg==
-X-Google-Smtp-Source: AGHT+IG61XeRKRMr0t+dXqrDi4RK7A9HWvGFxAWqK1wi7P7kP2CltaFkStkaGLtj0eMm3le5F8DlFA==
-X-Received: by 2002:a17:906:5301:b0:9a5:a247:5bbc with SMTP id h1-20020a170906530100b009a5a2475bbcmr1564429ejo.28.1693406107032;
-        Wed, 30 Aug 2023 07:35:07 -0700 (PDT)
-Received: from [192.168.0.22] (77-252-46-238.static.ip.netia.com.pl. [77.252.46.238])
-        by smtp.gmail.com with ESMTPSA id q22-20020a170906361600b0099bd6026f45sm7292611ejb.198.2023.08.30.07.35.05
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 30 Aug 2023 07:35:06 -0700 (PDT)
-Message-ID: <3412e871-ae2b-bed0-88fb-2272f9db3af0@linaro.org>
-Date:   Wed, 30 Aug 2023 16:35:05 +0200
+        d=1e100.net; s=20221208; t=1693402530; x=1694007330;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=RRQJInei7cgxScofMgcEQpUP1yaB1y4pGk98kCbHGEg=;
+        b=WqLq8nysyRqo5mQVzsDJh72MJu0jlLVrUxOTGrRHCrz5wrd7n3n+jawDcT4OMglDSc
+         MYtIiG2EgtMCai/OKRVXrDFUPJxiu71nP6kCqxxnUczFW1DRdkACLJl1JYV5oMyziB8/
+         2KUK22hP6Bn6BMcF83H8tY0vnH2cwQk1/il6537w1vO7NGz2fS1gTuqhAbfrTx36WuaI
+         U/lF6+a0+8C0CyCxMNEIrya2FZtm70TKkSJI2EzI+7VM/kQeU5gbNzl7dyIq85bxRU0u
+         682upF7lNDvjqmyG2MWPR+AfLxxS3ACOMcW49ZYogEpwUaMslaA2nO5FDv4dddFdbA+8
+         s69Q==
+X-Gm-Message-State: AOJu0Ywme44v6yk98nA+xu4yaJ6ifk2NHbLscV/NTNPw1jWtBQvP6Tn7
+        7nEQ0jDMPK42Kc+zWsZMB+35DSWJi3M=
+X-Google-Smtp-Source: AGHT+IFEEjj9Q//OZZUkaG1jeG65XoVhhmKQF4+mavHG7UF9ZMUEwyUOWQzMviw9xRgfWvEsVMpHnQ==
+X-Received: by 2002:a05:6a00:1355:b0:68c:641a:8a32 with SMTP id k21-20020a056a00135500b0068c641a8a32mr2762731pfu.13.1693402530151;
+        Wed, 30 Aug 2023 06:35:30 -0700 (PDT)
+Received: from kelvin-ThinkPad-L14-Gen-1.lan ([103.184.129.7])
+        by smtp.gmail.com with ESMTPSA id h1-20020a056a00230100b0064f7c56d8b7sm6109298pfh.219.2023.08.30.06.35.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 30 Aug 2023 06:35:29 -0700 (PDT)
+From:   Keguang Zhang <keguang.zhang@gmail.com>
+To:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Keguang Zhang <keguang.zhang@gmail.com>,
+        =?UTF-8?q?Philippe=20Mathieu-Daud=C3=A9?= <philmd@linaro.org>
+Subject: [PATCH v3] MIPS: loongson32: Remove dma.h and nand.h
+Date:   Wed, 30 Aug 2023 21:35:05 +0800
+Message-Id: <20230830133505.505597-1-keguang.zhang@gmail.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [PATCH v2] dt-bindings: interrupt-controller: loongson,liointc:
- Fix warnings about liointc-2.0
-Content-Language: en-US
-To:     Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Binbin Zhou <zhoubb.aaron@gmail.com>
-Cc:     Binbin Zhou <zhoubinbin@loongson.cn>,
-        Huacai Chen <chenhuacai@loongson.cn>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        loongson-kernel@lists.loongnix.cn, devicetree@vger.kernel.org,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        linux-mips@vger.kernel.org, diasyzhang@tencent.com,
-        linux-kernel@vger.kernel.org
-References: <20230821061315.3416836-1-zhoubinbin@loongson.cn>
- <e62185ca-cdf6-bde9-ad46-f4150db9ed6d@linaro.org>
- <CAMpQs4JhfuB4=s9VFc+xmw_+8h5u2EwPdM_0x2vO_=SYabAAxw@mail.gmail.com>
- <6ba31912-6738-6156-d5f4-3c8d3a3ca7bc@linaro.org>
- <CAMpQs4+GiExt9uMmV1pf8gg8rFwWxbLkx9mdW7hY9xxXDOza3Q@mail.gmail.com>
- <d11873a1-b552-71f5-1100-7464687f8bb4@linaro.org>
- <a084e6e9-46b0-42ef-b500-69c114ae11b2@flygoat.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-In-Reply-To: <a084e6e9-46b0-42ef-b500-69c114ae11b2@flygoat.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On 30/08/2023 05:59, Jiaxun Yang wrote:
-> 
-> 
-> 在 2023/8/25 20:56, Krzysztof Kozlowski 写道:
-> [...]
->> How did you sneak this property? The version - v2 - which was reviewed
->> by Rob:
->> https://lore.kernel.org/all/20190905144316.12527-7-jiaxun.yang@flygoat.com/
->> did not have it.
->>
->> Now v3 suddenly appears with Rob's review and this property:
->> https://lore.kernel.org/all/20200112081416.722218-4-jiaxun.yang@flygoat.com/
->>
->> Please help me understand this property appeared there and how did you
->> get it reviewed?
-> Hi all,
-> 
-> It has been some years since this series was merged.
-> My vague memory tells me there was some off-list discussion made in IRC with
-> linux-arch folks and IRQ folks to come up with this binding design.
+Since commit 7b3415f581c7 ("MIPS: Loongson32: Remove
+unused platform devices"), struct plat_ls1x_dma and plat_ls1x_nand
+are unused. Then, dma.h and nand.h are useless.
+Therefore, remove these useless header files.
 
-We would not suggest you property which in the name has underscores and
-duplicates interrupt-map property.
+Signed-off-by: Keguang Zhang <keguang.zhang@gmail.com>
+Reviewed-by: Philippe Mathieu-Daudé <philmd@linaro.org>
+---
+V2 -> V3: Fix the build error
+          Add Reviewed-by tag from Philippe Mathieu-Daudé
+V1 -> V2: Remove include of dma.h and nand.h
+          Update the commit message
+---
+ arch/mips/include/asm/mach-loongson32/dma.h   | 21 ---------------
+ arch/mips/include/asm/mach-loongson32/nand.h  | 26 -------------------
+ .../include/asm/mach-loongson32/platform.h    |  3 ---
+ arch/mips/loongson32/common/platform.c        |  2 --
+ arch/mips/loongson32/ls1b/board.c             |  2 --
+ 5 files changed, 54 deletions(-)
+ delete mode 100644 arch/mips/include/asm/mach-loongson32/dma.h
+ delete mode 100644 arch/mips/include/asm/mach-loongson32/nand.h
 
-> 
-> In this case I guess I forgot to drop Rob's R-b tag when updating this patch
-> between reversions. I  apologize for any inconvenience this may have caused.
+diff --git a/arch/mips/include/asm/mach-loongson32/dma.h b/arch/mips/include/asm/mach-loongson32/dma.h
+deleted file mode 100644
+index e917b3ccb2c2..000000000000
+--- a/arch/mips/include/asm/mach-loongson32/dma.h
++++ /dev/null
+@@ -1,21 +0,0 @@
+-/* SPDX-License-Identifier: GPL-2.0-or-later */
+-/*
+- * Copyright (c) 2015 Zhang, Keguang <keguang.zhang@gmail.com>
+- *
+- * Loongson 1 NAND platform support.
+- */
+-
+-#ifndef __ASM_MACH_LOONGSON32_DMA_H
+-#define __ASM_MACH_LOONGSON32_DMA_H
+-
+-#define LS1X_DMA_CHANNEL0	0
+-#define LS1X_DMA_CHANNEL1	1
+-#define LS1X_DMA_CHANNEL2	2
+-
+-struct plat_ls1x_dma {
+-	int nr_channels;
+-};
+-
+-extern struct plat_ls1x_dma ls1b_dma_pdata;
+-
+-#endif /* __ASM_MACH_LOONGSON32_DMA_H */
+diff --git a/arch/mips/include/asm/mach-loongson32/nand.h b/arch/mips/include/asm/mach-loongson32/nand.h
+deleted file mode 100644
+index aaf5ed19d78d..000000000000
+--- a/arch/mips/include/asm/mach-loongson32/nand.h
++++ /dev/null
+@@ -1,26 +0,0 @@
+-/* SPDX-License-Identifier: GPL-2.0-or-later */
+-/*
+- * Copyright (c) 2015 Zhang, Keguang <keguang.zhang@gmail.com>
+- *
+- * Loongson 1 NAND platform support.
+- */
+-
+-#ifndef __ASM_MACH_LOONGSON32_NAND_H
+-#define __ASM_MACH_LOONGSON32_NAND_H
+-
+-#include <linux/dmaengine.h>
+-#include <linux/mtd/partitions.h>
+-
+-struct plat_ls1x_nand {
+-	struct mtd_partition *parts;
+-	unsigned int nr_parts;
+-
+-	int hold_cycle;
+-	int wait_cycle;
+-};
+-
+-extern struct plat_ls1x_nand ls1b_nand_pdata;
+-
+-bool ls1x_dma_filter_fn(struct dma_chan *chan, void *param);
+-
+-#endif /* __ASM_MACH_LOONGSON32_NAND_H */
+diff --git a/arch/mips/include/asm/mach-loongson32/platform.h b/arch/mips/include/asm/mach-loongson32/platform.h
+index 2cdcfb5f6012..f74292b13bc3 100644
+--- a/arch/mips/include/asm/mach-loongson32/platform.h
++++ b/arch/mips/include/asm/mach-loongson32/platform.h
+@@ -8,9 +8,6 @@
+ 
+ #include <linux/platform_device.h>
+ 
+-#include <dma.h>
+-#include <nand.h>
+-
+ extern struct platform_device ls1x_uart_pdev;
+ extern struct platform_device ls1x_eth0_pdev;
+ extern struct platform_device ls1x_eth1_pdev;
+diff --git a/arch/mips/loongson32/common/platform.c b/arch/mips/loongson32/common/platform.c
+index 8075590a9f83..623eb4bc7b41 100644
+--- a/arch/mips/loongson32/common/platform.c
++++ b/arch/mips/loongson32/common/platform.c
+@@ -15,8 +15,6 @@
+ 
+ #include <platform.h>
+ #include <loongson1.h>
+-#include <dma.h>
+-#include <nand.h>
+ 
+ /* 8250/16550 compatible UART */
+ #define LS1X_UART(_id)						\
+diff --git a/arch/mips/loongson32/ls1b/board.c b/arch/mips/loongson32/ls1b/board.c
+index fed8d432ef20..fe115bdcb22c 100644
+--- a/arch/mips/loongson32/ls1b/board.c
++++ b/arch/mips/loongson32/ls1b/board.c
+@@ -8,8 +8,6 @@
+ #include <linux/sizes.h>
+ 
+ #include <loongson1.h>
+-#include <dma.h>
+-#include <nand.h>
+ #include <platform.h>
+ 
+ static const struct gpio_led ls1x_gpio_leds[] __initconst = {
 
-
-> 
->>
->>>                                                  <0xffffffff>, /* int1 */
->>>                                                  <0x00000000>, /* int2 */
->>>                                                  <0x00000000>; /* int3 */
->> So now you will keep bringing more hacks for a hacky property. No, this
->> cannot go on.
-> 
-> What's the best way, in your opinion, to overhaul this property? As we don't
-> really care backward compatibility of DTBs on those systems we can just 
-> redesign it.
-
-Deprecate the property in the bindings, allow driver to work with or
-without it and finally drop it entirely from DTS.
-> 
-> A little bit background about this property, LIOINTC can route a 
-> interrupt to any of
-> 4 upstream core interrupt pins. Downstream interrupt devicies should not 
-> care about
-> which pin the interrupt go but we want to leave a knob in devicetree for 
-> performance
-> tuning. So we designed such property that use masks corresponding to 
-> each upsteam
-> interrupt pins to tell where should a interrupt go.
-
-
-Best regards,
-Krzysztof
+base-commit: e7513eccb7d7f82e28f4730210b42da71edaa6a6
+-- 
+2.39.2
 

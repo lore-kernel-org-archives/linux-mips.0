@@ -2,126 +2,107 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9A8D0C83F18
-	for <linux-mips@archiver.kernel.org>; Wed, 30 Aug 2023 18:56:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D923DC83F01
+	for <linux-mips@archiver.kernel.org>; Wed, 30 Aug 2023 22:34:23 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344027AbjH3S4c (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 30 Aug 2023 14:56:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43914 "EHLO
+        id S244374AbjH3WeZ (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 30 Aug 2023 18:34:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50962 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245518AbjH3P0B (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 30 Aug 2023 11:26:01 -0400
-Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com [66.111.4.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F2641A3;
-        Wed, 30 Aug 2023 08:25:58 -0700 (PDT)
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailout.nyi.internal (Postfix) with ESMTP id C83925C01DE;
-        Wed, 30 Aug 2023 11:25:57 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute5.internal (MEProxy); Wed, 30 Aug 2023 11:25:57 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=flygoat.com; h=
-        cc:cc:content-transfer-encoding:content-type:content-type:date
-        :date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-        :references:reply-to:sender:subject:subject:to:to; s=fm2; t=
-        1693409157; x=1693495557; bh=AaFcDVgrhZ295pye0qEwFTd49T4Nssp4TTQ
-        GsEh1xIc=; b=aDsmhzs6QI4sIrgvfiBfztY/g8BZG8Hp9jhxVOjy4aRg5cidKQo
-        u2cE+BGI/pQewviu5KmHsocF+w2KNNpSwsIjU6eKxAd2UXmMepLpqfU+Ijk8mPZF
-        Uquho0cHv3PBhHW14rZ/sFpxD81V0L4srnLi8GX4rTJGmuUnJNAnb4L5nl2tufeW
-        CvXeOEdIRpf1EcBC3L0b/m0DxOtv08TQBBXS8LKHxVzJ4wETNgqPhALxgoYTpz/2
-        RtaR81bSu3K4cZobFly2O774Ckq3w/GuwYSTrZpvPx2avELD5Awnvi9Qa2Mj3m3g
-        lZzbSKImOZIz0ziO04o/I1/41uGRDZK8FYA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-transfer-encoding
-        :content-type:content-type:date:date:feedback-id:feedback-id
-        :from:from:in-reply-to:in-reply-to:message-id:mime-version
-        :references:reply-to:sender:subject:subject:to:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=
-        1693409157; x=1693495557; bh=AaFcDVgrhZ295pye0qEwFTd49T4Nssp4TTQ
-        GsEh1xIc=; b=dwU5GwuAtASSnsI3rhPslf55tZD4oLGZvdDGCCqvtxcHaUQfC+k
-        bg3yqCFF4kRd20LC7eR9mjtzMSCh2n3otZqKVm2i7DAIvh4THvN2xycKCJsKJs5f
-        zn6z5CZFjPwtI2qiIYf6xCLodyZkvVJSQSsM5yKtxGDAjXNBhGsVz27rQNSjcvDA
-        g+C3T81IcnQ38H2rFjX7d8J99cMCEfJJMc3MUSiJIWeg3KUOCRPBHIbcNpb5FhjA
-        YV7cx93dkAiYPLMQKMMks8asSrLR9vrOLMx5CJQAxVWNZjwrgUaOgguD0gGN9VqV
-        u4Y9ZGR5Ni9EOWKTsCmDBJNFceg1YtFD3Ig==
-X-ME-Sender: <xms:gl_vZDdcOgSNIg4It0AptkReM0-Zb5bMcOLe2zUFSbOVPcnmkm3A0A>
-    <xme:gl_vZJPJXDjGH2rBxgJcHb8n_O2529xr-vqKr356rwpniGYahrJpwboITjg4_xMdz
-    dMHwM1bMDZTcFjk6fA>
-X-ME-Received: <xmr:gl_vZMg9gKHB6UHAQRVWt8-GqUgSqtzjoAsRQcUmhz7FpRyIluQbBV6SRXXaQCv5E16L>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrudefkedgledtucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepkfffgggfvfevfhfhufgjtgfgsehtkeertddtfeejnecuhfhrohhmpeflihgr
-    gihunhcujggrnhhguceojhhirgiguhhnrdihrghnghesfhhlhihgohgrthdrtghomheqne
-    cuggftrfgrthhtvghrnhephfehveeggeevieehgfdtveeigffgteehieehffetleetffeh
-    hfeuteffudehfeffnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilh
-    hfrhhomhepjhhirgiguhhnrdihrghnghesfhhlhihgohgrthdrtghomh
-X-ME-Proxy: <xmx:g1_vZE9qX6T9airAv7FZo4C16WSxh6a9ejT_LormviSnKMHlFunn6g>
-    <xmx:g1_vZPsBO3W0zimscDcE9iH_ffd2LU7h4uYse_A0-HEIq1wWuMpRWg>
-    <xmx:g1_vZDH2MexKJ8ZStTa_5Bos4yKlUbHEcaomtR72h3CoYRqYTDL6FA>
-    <xmx:hV_vZPGTWwpYRaKQPHaoh-n5Yu0rYQxPI4GHqSVQXmck_JY0S-GVmQ>
-Feedback-ID: ifd894703:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 30 Aug 2023 11:25:50 -0400 (EDT)
-Message-ID: <c7898abf-34ca-d0b4-fd0c-935100dcd3f2@flygoat.com>
-Date:   Wed, 30 Aug 2023 23:25:48 +0800
+        with ESMTP id S237283AbjH3WeY (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 30 Aug 2023 18:34:24 -0400
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 610FBA1
+        for <linux-mips@vger.kernel.org>; Wed, 30 Aug 2023 15:34:01 -0700 (PDT)
+Received: by mail-wm1-x335.google.com with SMTP id 5b1f17b1804b1-401ceda85cdso1773875e9.1
+        for <linux-mips@vger.kernel.org>; Wed, 30 Aug 2023 15:34:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1693434837; x=1694039637; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=XFgqEWtVuYdRSUZpjBvrGjrECLnZnCx4HSWx8oAmcF4=;
+        b=IRIDPSXxw+Lb0lty00OO3SLNM2W7XtLpuS1YYxLU++xh0stLYaQshOsW4DFUyv2BsQ
+         ZEsjq8VZnGUhnkvNfoVq4HtERfP6ExJk88c8i48H/C/iRgXAkwRxO4+5zntPTNLuKWCP
+         jnem7R+aFoIuRnUp960rYyVh05F01xdgknwiNNax7VcTb59AVkFgDqnToxU77N4gkG0K
+         ze+K7QufJwOR/OKs9p/Ht1rHjdfQ/JI/Cg681BHRayV/lFtt747qnGqfcMv7Ck4CwWO7
+         zKXYlk5bEDbJjQ4Wv4LnyrbTrIS8rA8Fgp2ru7+8FH6XfsT4d5A4b8q+M1edkVuDy/q1
+         /Ilg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693434837; x=1694039637;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=XFgqEWtVuYdRSUZpjBvrGjrECLnZnCx4HSWx8oAmcF4=;
+        b=PKSNzB7pEHHCLAhMwAhoqoBCnrButhvtvTo/L74viIKN2zliW+2L3/5e65WsCDqUIk
+         ZkeDMqXYZrkjr2U9Cw8OL9Whw4gWRuu4dVmcI6vzeGi+Y2axs5EjpjT3cpdpzLwjt41o
+         L8peXiBqLZCSO/qFmoKhBw79gCiO1CgvJAnNcOqaQH/TnuGwfKi2/iUg8BJM6xmqwmUt
+         8ayJ45fqofJCzXKvEVkVrDojqCDzLyqNFVl1DnnTM6bjTHB/5hXDM2HGVUkNxLIMZh+r
+         EUn5vZePPx/OjQ180Lv/SCqYpCroL+I77XgdZfwBEo8uFqf1dJ2bTtYuDoMzUUyCXcCP
+         r4wg==
+X-Gm-Message-State: AOJu0Yzf32yie8kXXZWhYo7QU86Yh8cM0EFqlW8u+L6dLWAdyVT3Pz8W
+        RxOGdSla+dHm8JGPgDKR3HXyQEhqaq6AK7708oRPwGmB
+X-Google-Smtp-Source: AGHT+IG21XBSa1NpHpt7D+LPwmJ7vTfz0uF1Uy6n+9CUCNidaI4H0QF7ZDd2THIXqsoHVG3zSka6Mw==
+X-Received: by 2002:a1c:7704:0:b0:401:daf2:2735 with SMTP id t4-20020a1c7704000000b00401daf22735mr2467982wmi.31.1693429884760;
+        Wed, 30 Aug 2023 14:11:24 -0700 (PDT)
+Received: from [192.168.69.115] ([176.176.142.89])
+        by smtp.gmail.com with ESMTPSA id w12-20020a5d4b4c000000b0031416362e23sm17719142wrs.3.2023.08.30.14.11.23
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 30 Aug 2023 14:11:24 -0700 (PDT)
+Message-ID: <34466e53-9cab-4094-7a9e-ae1f65385194@linaro.org>
+Date:   Wed, 30 Aug 2023 23:11:23 +0200
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Content-Language: en-GB
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Binbin Zhou <zhoubb.aaron@gmail.com>,
-        Binbin Zhou <zhoubinbin@loongson.cn>,
-        Huacai Chen <chenhuacai@loongson.cn>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        loongson-kernel@lists.loongnix.cn, devicetree@vger.kernel.org,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        linux-mips@vger.kernel.org, diasyzhang@tencent.com,
-        linux-kernel@vger.kernel.org
-References: <20230821061315.3416836-1-zhoubinbin@loongson.cn>
- <e62185ca-cdf6-bde9-ad46-f4150db9ed6d@linaro.org>
- <CAMpQs4JhfuB4=s9VFc+xmw_+8h5u2EwPdM_0x2vO_=SYabAAxw@mail.gmail.com>
- <6ba31912-6738-6156-d5f4-3c8d3a3ca7bc@linaro.org>
- <CAMpQs4+GiExt9uMmV1pf8gg8rFwWxbLkx9mdW7hY9xxXDOza3Q@mail.gmail.com>
- <d11873a1-b552-71f5-1100-7464687f8bb4@linaro.org>
- <a084e6e9-46b0-42ef-b500-69c114ae11b2@flygoat.com>
- <86wmxcejav.wl-maz@kernel.org>
-From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
-Subject: Re: [PATCH v2] dt-bindings: interrupt-controller: loongson,liointc:
- Fix warnings about liointc-2.0
-In-Reply-To: <86wmxcejav.wl-maz@kernel.org>
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.14.0
+Subject: Re: [PATCH v3] MIPS: loongson32: Remove dma.h and nand.h
+Content-Language: en-US
+To:     Keguang Zhang <keguang.zhang@gmail.com>,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+References: <20230830133505.505597-1-keguang.zhang@gmail.com>
+From:   =?UTF-8?Q?Philippe_Mathieu-Daud=c3=a9?= <philmd@linaro.org>
+In-Reply-To: <20230830133505.505597-1-keguang.zhang@gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
+On 30/8/23 15:35, Keguang Zhang wrote:
+> Since commit 7b3415f581c7 ("MIPS: Loongson32: Remove
+> unused platform devices"), struct plat_ls1x_dma and plat_ls1x_nand
+> are unused. Then, dma.h and nand.h are useless.
+> Therefore, remove these useless header files.
+> 
+> Signed-off-by: Keguang Zhang <keguang.zhang@gmail.com>
+> Reviewed-by: Philippe Mathieu-Daudé <philmd@linaro.org>
+> ---
+> V2 -> V3: Fix the build error
+>            Add Reviewed-by tag from Philippe Mathieu-Daudé
+> V1 -> V2: Remove include of dma.h and nand.h
+>            Update the commit message
+> ---
+>   arch/mips/include/asm/mach-loongson32/dma.h   | 21 ---------------
+>   arch/mips/include/asm/mach-loongson32/nand.h  | 26 -------------------
+>   .../include/asm/mach-loongson32/platform.h    |  3 ---
+>   arch/mips/loongson32/common/platform.c        |  2 --
+>   arch/mips/loongson32/ls1b/board.c             |  2 --
+>   5 files changed, 54 deletions(-)
+>   delete mode 100644 arch/mips/include/asm/mach-loongson32/dma.h
+>   delete mode 100644 arch/mips/include/asm/mach-loongson32/nand.h
 
 
-在 2023/8/30 21:44, Marc Zyngier 写道:
-[...]
->> What's the best way, in your opinion, to overhaul this property? As we don't
->> really care backward compatibility of DTBs on those systems we can
->> just redesign it.
-> You may not care about backward compatibility, but I do. We don't
-> break existing systems, full stop.
-Ah it won't break any existing system. Sorry for not giving enough insight
-into the platform in previous reply. As for Loongson64 all DTBs are built
-into kernel binary. So as long as binding are changed together with all DTS
-in tree we won't break any system.
-> As for the offending property, it has no place here either. DT is not
-> the place where you put "performance knobs".
-Hmm, I can see various bindings with vendor prefix exposing device
-configurations. If we seen this interrupt routing as a device configuration
-I don't think it's against devicetree design philosophy.
+> diff --git a/arch/mips/include/asm/mach-loongson32/platform.h b/arch/mips/include/asm/mach-loongson32/platform.h
+> index 2cdcfb5f6012..f74292b13bc3 100644
+> --- a/arch/mips/include/asm/mach-loongson32/platform.h
+> +++ b/arch/mips/include/asm/mach-loongson32/platform.h
+> @@ -8,9 +8,6 @@
+>   
+>   #include <linux/platform_device.h>
+>   
+> -#include <dma.h>
+> -#include <nand.h>
 
-Thanks
-- Jiaxun
->
-> 	M.
->
+Doh I missed that one in v2 :/
 
+Thanks, R-b stands.

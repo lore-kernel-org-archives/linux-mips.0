@@ -2,347 +2,178 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A2089C83F17
-	for <linux-mips@archiver.kernel.org>; Wed, 30 Aug 2023 18:56:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id F3715C83F18
+	for <linux-mips@archiver.kernel.org>; Wed, 30 Aug 2023 18:56:23 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343982AbjH3S4U (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 30 Aug 2023 14:56:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55428 "EHLO
+        id S244686AbjH3S4W (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 30 Aug 2023 14:56:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53994 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244686AbjH3NnF (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 30 Aug 2023 09:43:05 -0400
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1393EA4;
-        Wed, 30 Aug 2023 06:43:03 -0700 (PDT)
-Received: by mail-pl1-x630.google.com with SMTP id d9443c01a7336-1c1e3a4a06fso20986105ad.3;
-        Wed, 30 Aug 2023 06:43:03 -0700 (PDT)
+        with ESMTP id S1343758AbjH3Qo4 (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 30 Aug 2023 12:44:56 -0400
+Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6CDE19A
+        for <linux-mips@vger.kernel.org>; Wed, 30 Aug 2023 09:44:53 -0700 (PDT)
+Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-592210fe8easo81785747b3.3
+        for <linux-mips@vger.kernel.org>; Wed, 30 Aug 2023 09:44:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693402982; x=1694007782; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=8ItK58ZERlprQfWi7Rw1Xc+3SvWmEiPXawNp7IWBkfM=;
-        b=FK6uGIYCmfhTpdsQLrXk7lYb5JCfvorIB3sSoNKP2u7S7GUbhU8ouweFVvbgLdkF1U
-         9CsqA4j2+GdpFgazq4Eod8qgGR2iUXJeyHuCE4yg7QT0wT4QW2PjJspsvgMpMHOAf0sD
-         ucH+v51Zy7HSE/Oid6id4BIyHtSRfP8LLUg767UYI6xBTlC/1vRQoEiJZI/OGWNw7JWC
-         weQwdrmUyIUFcQHp5DYiEpJq1TwPZX5o1FobyZIkD4hKe9wS3YPlLHRLd7Y6LOS5nv8X
-         huYazoxZjrbngqczAELGDcv1VCBsQK7GN5RGFK0hMqlt48wpZo9kdslVOqO8S7YHEeEI
-         bs9A==
+        d=google.com; s=20221208; t=1693413893; x=1694018693; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:in-reply-to:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=Q7U5WETyc0Qx792+SyKBjLV43d3DHT0ObMpMrFVoeXw=;
+        b=Vrqu6jdVSxGa28aE1migk5YVHh9PHn+K3BQigSsynTqZy+1FdBGBQl1nQH4In9WVRs
+         KF+yQOaHMyhG/7vylvJ5xFxpXhxbdaWq++yLYUP/fN2VQ82tBRyWoQyVgRPj/MMHCpZe
+         jO+0V9PUab495XMFnTawLOr1RRUfzotX6k9V6ER1+dm9TYtelUtxG92oglhZ+G48OHTA
+         bw77cd5ga08rV8S2iervR+8tUMuXpINKvMhop7uskl+N/C/qylZpwCA4vMTQyd1AjsSG
+         0geLp1xw/hWTZsN/r98ZAoO7y0K3ubKpSdpRpvOm2LmVQAtpWFwGs0HAi3r6ak9bzn/q
+         y+rw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693402982; x=1694007782;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=8ItK58ZERlprQfWi7Rw1Xc+3SvWmEiPXawNp7IWBkfM=;
-        b=eMk7eEDppwvf2d+uVF6P5LNKJoP43eoY7ODig7+T/3JFzQlaBtVxm2J2O1pS3w4awU
-         y6IeWFYyA48Pzc9wnIYFILwtVUEOX3FvC45fxfkF0oOU103kHdZorGyFcYpU79elHaNJ
-         eTF3Hbt1xgc++GgB8hd6223RD5ODZQNy8pXTOPAUZRvzxfg1Az+TVm3w4YykZl0SxJ4O
-         Ca2nDytdLLTSE/VhUZc2wh7SlH1xz3Tk5jjIRPLFCeEkciFEXq0qkUdI5uhMzyJxzh9j
-         lvf7FV3d1/DDzs43WLDijbuwnFqVVEQnO5WnYyMeY1XFR7BRT3HOg+ckvYhmdarAtcK4
-         lG9g==
-X-Gm-Message-State: AOJu0YycjEcFQxjWv8oJ6LGP5n3RTNxfeOCfRJsi+HWeS5f+SVzQxFOS
-        sAklbRtGl0wnWyvf86yoWD/Hh+KxLuQ7jwYh
-X-Google-Smtp-Source: AGHT+IF1rdtWek9HyaQrG+F4oXo8P1Ok9UNJw67NeujqtOe46AZclR88y7ES7gbN+7xx6yErUBZmNA==
-X-Received: by 2002:a17:902:7481:b0:1bb:e74b:39ff with SMTP id h1-20020a170902748100b001bbe74b39ffmr2095299pll.0.1693402982133;
-        Wed, 30 Aug 2023 06:43:02 -0700 (PDT)
-Received: from kelvin-ThinkPad-L14-Gen-1.lan ([103.184.129.7])
-        by smtp.gmail.com with ESMTPSA id a11-20020a170902eccb00b001b86dd825e7sm11042280plh.108.2023.08.30.06.42.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 30 Aug 2023 06:43:01 -0700 (PDT)
-From:   Keguang Zhang <keguang.zhang@gmail.com>
-To:     netdev@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Lee Jones <lee@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        Serge Semin <Sergey.Semin@baikalelectronics.ru>,
-        Keguang Zhang <keguang.zhang@gmail.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: [PATCH v4 2/4] dt-bindings: net: Add Loongson-1 Ethernet Controller
-Date:   Wed, 30 Aug 2023 21:42:39 +0800
-Message-Id: <20230830134241.506464-3-keguang.zhang@gmail.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230830134241.506464-1-keguang.zhang@gmail.com>
-References: <20230830134241.506464-1-keguang.zhang@gmail.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        d=1e100.net; s=20221208; t=1693413893; x=1694018693;
+        h=cc:to:from:subject:message-id:mime-version:in-reply-to:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Q7U5WETyc0Qx792+SyKBjLV43d3DHT0ObMpMrFVoeXw=;
+        b=S15g3GiArJf8ZgZlQchl7bAxROHSknjN9EpYSV7Sf9M0N0pDtlf2LdbcdcPIbawmXt
+         LTqAyDtqF1+UfgzT9i+xn+3NPPEn2r1BcJFw7y/ZalJ/p1Ra/LZ7oSdLiKITP7NXTo2s
+         WCzwhFcOZ/LaQfkNdDLMlOjVS0aV0o4XNweg+mxNlcwAhV1bE4zDGq4y0xuYcfX7vlGc
+         jvmQs/XdcFz6wZgIj2y0vkYxfcHI79WFfwP5EQCS4xn58aK1gh1iFXaSlqVnjG4tCqxK
+         IGxjyAleVL3mVbwMZp78f65tTgEBmFsOpAsJ+CuA6RDJOadyxa8wEx4z9FkhQavWk9/2
+         Ee2Q==
+X-Gm-Message-State: AOJu0YyP8tZaKjiWR9IXZmkWiDu2lvdyV5nPaNliLy0sNX2mAqTaJ0sD
+        Cmv8BZxG/Z8jf1SCEg1hIkIbKVMkbCzEqsRwZg==
+X-Google-Smtp-Source: AGHT+IHtp9pD/5ci3MqPyr+0sXpcwrOb70482adH4y9FFBhT1onMN4Y2Yo7VfYMaFeFIQUgnoauWykiqo7sAzbNhxQ==
+X-Received: from ackerleytng-ctop.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:13f8])
+ (user=ackerleytng job=sendgmr) by 2002:a81:eb0b:0:b0:57a:793:7fb0 with SMTP
+ id n11-20020a81eb0b000000b0057a07937fb0mr78438ywm.3.1693413893177; Wed, 30
+ Aug 2023 09:44:53 -0700 (PDT)
+Date:   Wed, 30 Aug 2023 16:44:51 +0000
+In-Reply-To: <30ffe039-c9e2-b996-500d-5e11bf6ea789@linux.intel.com> (message
+ from Binbin Wu on Wed, 30 Aug 2023 23:12:19 +0800)
+Mime-Version: 1.0
+Message-ID: <diqz5y4wfpj0.fsf@ackerleytng-ctop.c.googlers.com>
+Subject: Re: [RFC PATCH v11 12/29] KVM: Add KVM_CREATE_GUEST_MEMFD ioctl() for
+ guest-specific backing memory
+From:   Ackerley Tng <ackerleytng@google.com>
+To:     Binbin Wu <binbin.wu@linux.intel.com>
+Cc:     seanjc@google.com, kvm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org, pbonzini@redhat.com, maz@kernel.org,
+        oliver.upton@linux.dev, chenhuacai@kernel.org, mpe@ellerman.id.au,
+        anup@brainfault.org, paul.walmsley@sifive.com, palmer@dabbelt.com,
+        aou@eecs.berkeley.edu, willy@infradead.org,
+        akpm@linux-foundation.org, paul@paul-moore.com, jmorris@namei.org,
+        serge@hallyn.com, chao.p.peng@linux.intel.com, tabba@google.com,
+        jarkko@kernel.org, yu.c.zhang@linux.intel.com,
+        vannapurve@google.com, mail@maciej.szmigiero.name, vbabka@suse.cz,
+        david@redhat.com, qperret@google.com, michael.roth@amd.com,
+        wei.w.wang@intel.com, liam.merwick@oracle.com,
+        isaku.yamahata@gmail.com, kirill.shutemov@linux.intel.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Add devicetree binding document for Loongson-1 Ethernet controller.
+Binbin Wu <binbin.wu@linux.intel.com> writes:
 
-Signed-off-by: Keguang Zhang <keguang.zhang@gmail.com>
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
----
-V3 -> V4: Add "|" to description part
-          Amend "phy-mode" property
-V2 -> V3: Split the DT-schema file into loongson,ls1b-gmac.yaml
-          and loongson,ls1c-emac.yaml (suggested by Serge Semin)
-          Change the compatibles to loongson,ls1b-gmac and loongson,ls1c-emac
-          Rename loongson,dwmac-syscon to loongson,ls1-syscon
-          Amend the title
-          Add description
-          Add Reviewed-by tag from Krzysztof Kozlowski(Sorry! I'm not sure)
-V1 -> V2: Fix "clock-names" and "interrupt-names" property
-          Rename the syscon property to "loongson,dwmac-syscon"
-          Drop "phy-handle" and "phy-mode" requirement
-          Revert adding loongson,ls1b-dwmac/loongson,ls1c-dwmac
-          to snps,dwmac.yaml
+>> <snip>
+>>
+>> +static long kvm_gmem_allocate(struct inode *inode, loff_t offset, loff_t len)
+>> +{
+>> +	struct address_space *mapping = inode->i_mapping;
+>> +	pgoff_t start, index, end;
+>> +	int r;
+>> +
+>> +	/* Dedicated guest is immutable by default. */
+>> +	if (offset + len > i_size_read(inode))
+>> +		return -EINVAL;
+>> +
+>> +	filemap_invalidate_lock_shared(mapping);
+>> +
+>> +	start = offset >> PAGE_SHIFT;
+>> +	end = (offset + len) >> PAGE_SHIFT;
+>> +
+>> +	r = 0;
+>> +	for (index = start; index < end; ) {
+>> +		struct folio *folio;
+>> +
+>> +		if (signal_pending(current)) {
+>> +			r = -EINTR;
+>> +			break;
+>> +		}
+>> +
+>> +		folio = kvm_gmem_get_folio(inode, index);
+>> +		if (!folio) {
+>> +			r = -ENOMEM;
+>> +			break;
+>> +		}
+>> +
+>> +		index = folio_next_index(folio);
+>> +
+>> +		folio_unlock(folio);
+>> +		folio_put(folio);
+> May be a dumb question, why we get the folio and then put it immediately?
+> Will it make the folio be released back to the page allocator?
+>
 
- .../bindings/net/loongson,ls1b-gmac.yaml      | 114 ++++++++++++++++++
- .../bindings/net/loongson,ls1c-emac.yaml      | 113 +++++++++++++++++
- 2 files changed, 227 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/net/loongson,ls1b-gmac.yaml
- create mode 100644 Documentation/devicetree/bindings/net/loongson,ls1c-emac.yaml
+I was wondering this too, but it is correct.
 
-diff --git a/Documentation/devicetree/bindings/net/loongson,ls1b-gmac.yaml b/Documentation/devicetree/bindings/net/loongson,ls1b-gmac.yaml
-new file mode 100644
-index 000000000000..c4f3224bad38
---- /dev/null
-+++ b/Documentation/devicetree/bindings/net/loongson,ls1b-gmac.yaml
-@@ -0,0 +1,114 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/net/loongson,ls1b-gmac.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Loongson-1B Gigabit Ethernet MAC Controller
-+
-+maintainers:
-+  - Keguang Zhang <keguang.zhang@gmail.com>
-+
-+description: |
-+  Loongson-1B Gigabit Ethernet MAC Controller is based on
-+  Synopsys DesignWare MAC (version 3.50a).
-+
-+  Main features
-+  - Dual 10/100/1000Mbps GMAC controllers
-+  - Full-duplex operation (IEEE 802.3x flow control automatic transmission)
-+  - Half-duplex operation (CSMA/CD Protocol and back-pressure support)
-+  - RX Checksum Offload
-+  - TX Checksum insertion
-+  - MII interface
-+  - RGMII interface
-+
-+select:
-+  properties:
-+    compatible:
-+      contains:
-+        enum:
-+          - loongson,ls1b-gmac
-+  required:
-+    - compatible
-+
-+properties:
-+  compatible:
-+    items:
-+      - enum:
-+          - loongson,ls1b-gmac
-+      - const: snps,dwmac-3.50a
-+
-+  reg:
-+    maxItems: 1
-+
-+  clocks:
-+    maxItems: 1
-+
-+  clock-names:
-+    items:
-+      - const: stmmaceth
-+
-+  interrupts:
-+    maxItems: 1
-+
-+  interrupt-names:
-+    items:
-+      - const: macirq
-+
-+  loongson,ls1-syscon:
-+    $ref: /schemas/types.yaml#/definitions/phandle
-+    description:
-+      Phandle to the syscon containing some extra configurations
-+      including PHY interface mode.
-+
-+  phy-mode:
-+    enum:
-+      - mii
-+      - rgmii-id
-+
-+required:
-+  - compatible
-+  - reg
-+  - clocks
-+  - clock-names
-+  - interrupts
-+  - interrupt-names
-+  - loongson,ls1-syscon
-+
-+allOf:
-+  - $ref: snps,dwmac.yaml#
-+
-+unevaluatedProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/clock/loongson,ls1x-clk.h>
-+    #include <dt-bindings/interrupt-controller/irq.h>
-+
-+    gmac0: ethernet@1fe10000 {
-+        compatible = "loongson,ls1b-gmac", "snps,dwmac-3.50a";
-+        reg = <0x1fe10000 0x10000>;
-+
-+        clocks = <&clkc LS1X_CLKID_AHB>;
-+        clock-names = "stmmaceth";
-+
-+        interrupt-parent = <&intc1>;
-+        interrupts = <2 IRQ_TYPE_LEVEL_HIGH>;
-+        interrupt-names = "macirq";
-+
-+        loongson,ls1-syscon = <&syscon>;
-+
-+        phy-handle = <&phy0>;
-+        phy-mode = "mii";
-+        snps,pbl = <1>;
-+
-+        mdio {
-+            #address-cells = <1>;
-+            #size-cells = <0>;
-+            compatible = "snps,dwmac-mdio";
-+
-+            phy0: ethernet-phy@0 {
-+                reg = <0x0>;
-+            };
-+        };
-+    };
-diff --git a/Documentation/devicetree/bindings/net/loongson,ls1c-emac.yaml b/Documentation/devicetree/bindings/net/loongson,ls1c-emac.yaml
-new file mode 100644
-index 000000000000..99001b940b83
---- /dev/null
-+++ b/Documentation/devicetree/bindings/net/loongson,ls1c-emac.yaml
-@@ -0,0 +1,113 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/net/loongson,ls1c-emac.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Loongson-1C Ethernet MAC Controller
-+
-+maintainers:
-+  - Keguang Zhang <keguang.zhang@gmail.com>
-+
-+description: |
-+  Loongson-1C Ethernet MAC Controller is based on
-+  Synopsys DesignWare MAC (version 3.50a).
-+
-+  Main features
-+  - 10/100Mbps
-+  - Full-duplex operation (IEEE 802.3x flow control automatic transmission)
-+  - Half-duplex operation (CSMA/CD Protocol and back-pressure support)
-+  - IEEE 802.1Q VLAN tag detection for reception frames
-+  - MII interface
-+  - RMII interface
-+
-+select:
-+  properties:
-+    compatible:
-+      contains:
-+        enum:
-+          - loongson,ls1c-emac
-+  required:
-+    - compatible
-+
-+properties:
-+  compatible:
-+    items:
-+      - enum:
-+          - loongson,ls1c-emac
-+      - const: snps,dwmac-3.50a
-+
-+  reg:
-+    maxItems: 1
-+
-+  clocks:
-+    maxItems: 1
-+
-+  clock-names:
-+    items:
-+      - const: stmmaceth
-+
-+  interrupts:
-+    maxItems: 1
-+
-+  interrupt-names:
-+    items:
-+      - const: macirq
-+
-+  loongson,ls1-syscon:
-+    $ref: /schemas/types.yaml#/definitions/phandle
-+    description:
-+      Phandle to the syscon containing some extra configurations
-+      including PHY interface mode.
-+
-+  phy-mode:
-+    enum:
-+      - mii
-+      - rmii
-+
-+required:
-+  - compatible
-+  - reg
-+  - clocks
-+  - clock-names
-+  - interrupts
-+  - interrupt-names
-+  - loongson,ls1-syscon
-+
-+allOf:
-+  - $ref: snps,dwmac.yaml#
-+
-+unevaluatedProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/clock/loongson,ls1x-clk.h>
-+    #include <dt-bindings/interrupt-controller/irq.h>
-+
-+    emac: ethernet@1fe10000 {
-+        compatible = "loongson,ls1c-emac", "snps,dwmac-3.50a";
-+        reg = <0x1fe10000 0x10000>;
-+
-+        clocks = <&clkc LS1X_CLKID_AHB>;
-+        clock-names = "stmmaceth";
-+
-+        interrupt-parent = <&intc1>;
-+        interrupts = <2 IRQ_TYPE_LEVEL_HIGH>;
-+        interrupt-names = "macirq";
-+
-+        loongson,ls1-syscon = <&syscon>;
-+
-+        phy-handle = <&phy0>;
-+        phy-mode = "mii";
-+        snps,pbl = <1>;
-+
-+        mdio {
-+            #address-cells = <1>;
-+            #size-cells = <0>;
-+            compatible = "snps,dwmac-mdio";
-+
-+            phy0: ethernet-phy@13 {
-+                reg = <0x13>;
-+            };
-+        };
-+    };
--- 
-2.39.2
+In filemap_grab_folio(), the refcount is incremented in three places:
 
++ When the folio is created in filemap_alloc_folio(), it is given a
+  refcount of 1 in
+
+    filemap_alloc_folio() -> folio_alloc() -> __folio_alloc_node() ->
+    __folio_alloc() -> __alloc_pages() -> get_page_from_freelist() ->
+    prep_new_page() -> post_alloc_hook() -> set_page_refcounted()
+
++ Then, in filemap_add_folio(), the refcount is incremented twice:
+
+    + The first is from the filemap (1 refcount per page if this is a
+      hugepage):
+
+        filemap_add_folio() -> __filemap_add_folio() -> folio_ref_add()
+
+    + The second is a refcount from the lru list
+
+        filemap_add_folio() -> folio_add_lru() -> folio_get() ->
+        folio_ref_inc()
+
+In the other path, if the folio exists in the page cache (filemap), the
+refcount is also incremented through
+
+    filemap_grab_folio() -> __filemap_get_folio() -> filemap_get_entry()
+    -> folio_try_get_rcu()
+
+I believe all the branches in kvm_gmem_get_folio() are taking a refcount
+on the folio while the kernel does some work on the folio like clearing
+the folio in clear_highpage() or getting the next index, and then when
+done, the kernel does folio_put().
+
+This pattern is also used in shmem and hugetlb. :)
+
+I'm not sure whose refcount the folio_put() in kvm_gmem_allocate() is
+dropping though:
+
++ The refcount for the filemap depends on whether this is a hugepage or
+  not, but folio_put() strictly drops a refcount of 1.
++ The refcount for the lru list is just 1, but doesn't the page still
+  remain in the lru list?
+
+>> +
+>> +		/* 64-bit only, wrapping the index should be impossible. */
+>> +		if (WARN_ON_ONCE(!index))
+>> +			break;
+>> +
+>> +		cond_resched();
+>> +	}
+>> +
+>> +	filemap_invalidate_unlock_shared(mapping);
+>> +
+>> +	return r;
+>> +}
+>> +
+>>
+>> <snip>

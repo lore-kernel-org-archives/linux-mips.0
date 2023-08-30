@@ -2,142 +2,216 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 04956C83F1B
-	for <linux-mips@archiver.kernel.org>; Wed, 30 Aug 2023 18:56:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D03E5C83F1A
+	for <linux-mips@archiver.kernel.org>; Wed, 30 Aug 2023 18:56:13 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343939AbjH3S4I (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 30 Aug 2023 14:56:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46360 "EHLO
+        id S1343731AbjH3S4B (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 30 Aug 2023 14:56:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44238 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244684AbjH3Nm4 (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 30 Aug 2023 09:42:56 -0400
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3D41A3;
-        Wed, 30 Aug 2023 06:42:53 -0700 (PDT)
-Received: by mail-pl1-x634.google.com with SMTP id d9443c01a7336-1bc83a96067so34830625ad.0;
-        Wed, 30 Aug 2023 06:42:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693402973; x=1694007773; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=3hvoy5sr8tqMiOZS3BEhHF+S+RG6KoTmJT68EUAGq/c=;
-        b=YFBWiQTNMhjPzYQIxwkqb71J/vkJq1nb+5sldXTELyIJ8Hx8bQY2DfB7/1gldKBk9b
-         tlo9gtZqxUqF+anldbT/UA+llLoHVMk0Dui2KWuwtrWXZOxnu+XoBnvDVsURK0jvQ01n
-         uXr4x1wW7gJxWnNpmX8Ahf5J1I6K8paKmTkrz5mHJ/LRYj47X8sMZbVCN+d7zxFe0RmC
-         PvMPzo1Ts9cwwW1Q7LgN4OnW9UECmTgJcg/5Arg/jxMaxAdnzHhpcFhL2yORj2HLYW6G
-         LCY4xpksTy0r2Ais8j5XZ5wMZYA3s/UDXoz9xa5PnZ6yldPU5IRM4/vf4d4XytJ8YsGg
-         BlRw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693402973; x=1694007773;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=3hvoy5sr8tqMiOZS3BEhHF+S+RG6KoTmJT68EUAGq/c=;
-        b=PxkBk5vQfzIbSnqJyJwWQIZooONazH0AjDClCPo/iI3oV1cSKC5u/i6vvlr7EoHN4b
-         n/gE+VRfTkIiVji5H+/qpLb1/bheTpkwKojyUe7SaD+S9/Vvx38VV1bTwjLeIS+QunOh
-         nQRbqSvPEeG2hfaFXsXc1/LQRoKi1evNE4lLR2tAlEXtuMIzgJgJB4jb36KU5sjhbp+6
-         cs3UMkRjl3CM+JoXaXNgvXQj3907ZzxPcOQ2nn/WHbEoJDHTW73mSz/A2qouZ6c1/kEH
-         RY+BQviFDEl49kyH8T45aEctqeHgz8KTseC5aRQWuzMEOMo//TrE7NOvuiznX88ZKlPN
-         nojQ==
-X-Gm-Message-State: AOJu0YwO+tHPbHL3sRr+vJUp9C70+ImYPYH1VNb9tCQHmEpQy2ms7F2p
-        DY4tOxPVim1YjWQ0FvAto4tKeFx3SBaVJSL1
-X-Google-Smtp-Source: AGHT+IHNYCBqBKdVjz0xIDBB9g8PFCd6b36ktfUPu2blBKShGdiYXmzPGnJZooI8qTUr5rN1CpnZVg==
-X-Received: by 2002:a17:902:f80d:b0:1c1:f5a6:bdfa with SMTP id ix13-20020a170902f80d00b001c1f5a6bdfamr2100502plb.7.1693402972678;
-        Wed, 30 Aug 2023 06:42:52 -0700 (PDT)
-Received: from kelvin-ThinkPad-L14-Gen-1.lan ([103.184.129.7])
-        by smtp.gmail.com with ESMTPSA id a11-20020a170902eccb00b001b86dd825e7sm11042280plh.108.2023.08.30.06.42.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 30 Aug 2023 06:42:52 -0700 (PDT)
-From:   Keguang Zhang <keguang.zhang@gmail.com>
-To:     netdev@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Lee Jones <lee@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
+        with ESMTP id S245250AbjH3Ozz (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 30 Aug 2023 10:55:55 -0400
+Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1B82198;
+        Wed, 30 Aug 2023 07:55:52 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2601:281:8300:73::646])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ms.lwn.net (Postfix) with ESMTPSA id D64B2723;
+        Wed, 30 Aug 2023 14:55:51 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net D64B2723
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
+        t=1693407352; bh=fzJ2W9IhY60MhTdZXk/DpUQem9Gos7AXFeOTf6bpkgk=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=ayp4wECHVmkq6o66QyWfc6SlfuEuvpm+WukmOx5EBL0WA3Tjchi2jo5kGRHspHxVA
+         SwNE0PV6W74pP1HvvyJCHB/HJYXdsaX4+4ZI0su0BVn6R+VI7Tnk+SxakXQgQrDYih
+         Z7CQyMXFkE4YJDU+Om1rR00QEfdnYIWD9fjVr+blRBhgj0LoCL3jNuzNRZhYpqW+p0
+         cYKX3nqF1lwrwueOku+7j0jjgfhYSo1zZyLEoQmRZNJ3O1yACrBNRDLLvh6G3bfTMY
+         WpF89u4BJ/ycMvRDSiVGQ/AAIYX143xN8fzRqY2GeLgAn1LjYuzkrTUAEkN4Pm5lw+
+         ttcU/ACVSPYKw==
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     Petr Tesarik <petrtesarik@huaweicloud.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
         Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        Serge Semin <Sergey.Semin@baikalelectronics.ru>,
-        Keguang Zhang <keguang.zhang@gmail.com>
-Subject: [PATCH v4 0/4] Move Loongson1 MAC arch-code to the driver dir
-Date:   Wed, 30 Aug 2023 21:42:37 +0800
-Message-Id: <20230830134241.506464-1-keguang.zhang@gmail.com>
-X-Mailer: git-send-email 2.39.2
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Juergen Gross <jgross@suse.com>,
+        Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Hyeonggon Yoo <42.hyeyoo@gmail.com>,
+        Petr Tesarik <petr.tesarik.ext@huawei.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        James Seo <james@equiv.tech>,
+        James Clark <james.clark@arm.com>,
+        Kees Cook <keescook@chromium.org>,
+        "moderated list:XEN HYPERVISOR ARM" <xen-devel@lists.xenproject.org>,
+        "moderated list:ARM PORT" <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:MIPS" <linux-mips@vger.kernel.org>,
+        "open list:XEN SWIOTLB SUBSYSTEM" <iommu@lists.linux.dev>,
+        "open list:SLAB ALLOCATOR" <linux-mm@kvack.org>
+Cc:     Roberto Sassu <roberto.sassu@huaweicloud.com>, petr@tesarici.cz
+Subject: Re: [PATCH v7 9/9] swiotlb: search the software IO TLB only if the
+ device makes use of it
+In-Reply-To: <87a5uz3ob8.fsf@meer.lwn.net>
+References: <cover.1690871004.git.petr.tesarik.ext@huawei.com>
+ <adea71bd1fa8660d4c3157a562431ad8127016d4.1690871004.git.petr.tesarik.ext@huawei.com>
+ <87a5uz3ob8.fsf@meer.lwn.net>
+Date:   Wed, 30 Aug 2023 08:55:51 -0600
+Message-ID: <87il8wr348.fsf@meer.lwn.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-In order to convert Loongson1 MAC platform devices to the devicetree
-nodes, Loongson1 MAC arch-code should be moved to the driver dir.
-Add dt-binding document and update MAINTAINERS file accordingly. 
-    
-In other words, this patchset is a preparation for converting
-Loongson1 platform devices to devicetree.
+So it seems this code got merged without this question ever being
+answered.  Sorry if it's a dumb one, but I don't think this
+functionality works as advertised...
 
-Changelog
-V3 -> V4: Add Acked-by tag from Krzysztof Kozlowski
-          Add "|" to description part
-          Amend "phy-mode" property
-          Drop ls1x_dwmac_syscon definition and its instances
-          Drop three redundant fields from the ls1x_dwmac structure
-          Drop the ls1x_dwmac_init() method.
-          Update the dt-binding document entry of Loongson1 Ethernet
-          Some minor improvements
-V2 -> V3: Split the DT-schema file into loongson,ls1b-gmac.yaml
-          and loongson,ls1c-emac.yaml (suggested by Serge Semin)
-          Change the compatibles to loongson,ls1b-gmac and loongson,ls1c-emac
-          Rename loongson,dwmac-syscon to loongson,ls1-syscon
-          Amend the title
-          Add description
-          Add Reviewed-by tag from Krzysztof Kozlowski
-          Change compatibles back to loongson,ls1b-syscon
-          and loongson,ls1c-syscon
-          Determine the device ID by physical
-          base address(suggested by Serge Semin)
-          Use regmap instead of regmap fields
-          Use syscon_regmap_lookup_by_phandle()
-          Some minor fixes
-          Update the entries of MAINTAINERS
-V1 -> V2: Leave the Ethernet platform data for now
-          Make the syscon compatibles more specific
-          Fix "clock-names" and "interrupt-names" property
-          Rename the syscon property to "loongson,dwmac-syscon"
-          Drop "phy-handle" and "phy-mode" requirement
-          Revert adding loongson,ls1b-dwmac/loongson,ls1c-dwmac
-          to snps,dwmac.yaml
-          Fix the build errors due to CONFIG_OF being unset
-          Change struct reg_field definitions to const
-          Rename the syscon property to "loongson,dwmac-syscon"
-          Add MII PHY mode for LS1C
-          Improve the commit message
+Thanks,
 
-Keguang Zhang (4):
-  dt-bindings: mfd: syscon: Add compatibles for Loongson-1 syscon
-  dt-bindings: net: Add Loongson-1 Ethernet Controller
-  net: stmmac: Add glue layer for Loongson-1 SoC
-  MAINTAINERS: Update MIPS/LOONGSON1 entry
+jon
 
- .../devicetree/bindings/mfd/syscon.yaml       |   2 +
- .../bindings/net/loongson,ls1b-gmac.yaml      | 114 +++++++++
- .../bindings/net/loongson,ls1c-emac.yaml      | 113 +++++++++
- MAINTAINERS                                   |   3 +
- drivers/net/ethernet/stmicro/stmmac/Kconfig   |  11 +
- drivers/net/ethernet/stmicro/stmmac/Makefile  |   1 +
- .../ethernet/stmicro/stmmac/dwmac-loongson1.c | 219 ++++++++++++++++++
- 7 files changed, 463 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/net/loongson,ls1b-gmac.yaml
- create mode 100644 Documentation/devicetree/bindings/net/loongson,ls1c-emac.yaml
- create mode 100644 drivers/net/ethernet/stmicro/stmmac/dwmac-loongson1.c
+Jonathan Corbet <corbet@lwn.net> writes:
 
-
-base-commit: 56585460cc2ec44fc5d66924f0a116f57080f0dc
--- 
-2.39.2
-
+> Petr Tesarik <petrtesarik@huaweicloud.com> writes:
+>
+>> From: Petr Tesarik <petr.tesarik.ext@huawei.com>
+>>
+>> Skip searching the software IO TLB if a device has never used it, making
+>> sure these devices are not affected by the introduction of multiple IO TLB
+>> memory pools.
+>>
+>> Additional memory barrier is required to ensure that the new value of the
+>> flag is visible to other CPUs after mapping a new bounce buffer. For
+>> efficiency, the flag check should be inlined, and then the memory barrier
+>> must be moved to is_swiotlb_buffer(). However, it can replace the existing
+>> barrier in swiotlb_find_pool(), because all callers use is_swiotlb_buffer()
+>> first to verify that the buffer address belongs to the software IO TLB.
+>>
+>> Signed-off-by: Petr Tesarik <petr.tesarik.ext@huawei.com>
+>> ---
+>
+> Excuse me if this is a silly question, but I'm not able to figure it out
+> on my own...
+>
+>>  include/linux/device.h  |  2 ++
+>>  include/linux/swiotlb.h |  7 ++++++-
+>>  kernel/dma/swiotlb.c    | 14 ++++++--------
+>>  3 files changed, 14 insertions(+), 9 deletions(-)
+>>
+>> diff --git a/include/linux/device.h b/include/linux/device.h
+>> index 5fd89c9d005c..6fc808d22bfd 100644
+>> --- a/include/linux/device.h
+>> +++ b/include/linux/device.h
+>> @@ -628,6 +628,7 @@ struct device_physical_location {
+>>   * @dma_io_tlb_mem: Software IO TLB allocator.  Not for driver use.
+>>   * @dma_io_tlb_pools:	List of transient swiotlb memory pools.
+>>   * @dma_io_tlb_lock:	Protects changes to the list of active pools.
+>> + * @dma_uses_io_tlb: %true if device has used the software IO TLB.
+>>   * @archdata:	For arch-specific additions.
+>>   * @of_node:	Associated device tree node.
+>>   * @fwnode:	Associated device node supplied by platform firmware.
+>> @@ -737,6 +738,7 @@ struct device {
+>>  #ifdef CONFIG_SWIOTLB_DYNAMIC
+>>  	struct list_head dma_io_tlb_pools;
+>>  	spinlock_t dma_io_tlb_lock;
+>> +	bool dma_uses_io_tlb;
+>
+> You add this new member here, fine...
+>
+>>  #endif
+>>  	/* arch specific additions */
+>>  	struct dev_archdata	archdata;
+>> diff --git a/include/linux/swiotlb.h b/include/linux/swiotlb.h
+>> index 8371c92a0271..b4536626f8ff 100644
+>> --- a/include/linux/swiotlb.h
+>> +++ b/include/linux/swiotlb.h
+>> @@ -172,8 +172,13 @@ static inline bool is_swiotlb_buffer(struct device *dev, phys_addr_t paddr)
+>>  	if (!mem)
+>>  		return false;
+>>  
+>> -	if (IS_ENABLED(CONFIG_SWIOTLB_DYNAMIC))
+>> +	if (IS_ENABLED(CONFIG_SWIOTLB_DYNAMIC)) {
+>> +		/* Pairs with smp_wmb() in swiotlb_find_slots() and
+>> +		 * swiotlb_dyn_alloc(), which modify the RCU lists.
+>> +		 */
+>> +		smp_rmb();
+>>  		return swiotlb_find_pool(dev, paddr);
+>> +	}
+>>  	return paddr >= mem->defpool.start && paddr < mem->defpool.end;
+>>  }
+>>  
+>> diff --git a/kernel/dma/swiotlb.c b/kernel/dma/swiotlb.c
+>> index adf80dec42d7..d7eac84f975b 100644
+>> --- a/kernel/dma/swiotlb.c
+>> +++ b/kernel/dma/swiotlb.c
+>> @@ -730,7 +730,7 @@ static void swiotlb_dyn_alloc(struct work_struct *work)
+>>  
+>>  	add_mem_pool(mem, pool);
+>>  
+>> -	/* Pairs with smp_rmb() in swiotlb_find_pool(). */
+>> +	/* Pairs with smp_rmb() in is_swiotlb_buffer(). */
+>>  	smp_wmb();
+>>  }
+>>  
+>> @@ -764,11 +764,6 @@ struct io_tlb_pool *swiotlb_find_pool(struct device *dev, phys_addr_t paddr)
+>>  	struct io_tlb_mem *mem = dev->dma_io_tlb_mem;
+>>  	struct io_tlb_pool *pool;
+>>  
+>> -	/* Pairs with smp_wmb() in swiotlb_find_slots() and
+>> -	 * swiotlb_dyn_alloc(), which modify the RCU lists.
+>> -	 */
+>> -	smp_rmb();
+>> -
+>>  	rcu_read_lock();
+>>  	list_for_each_entry_rcu(pool, &mem->pools, node) {
+>>  		if (paddr >= pool->start && paddr < pool->end)
+>> @@ -813,6 +808,7 @@ void swiotlb_dev_init(struct device *dev)
+>>  #ifdef CONFIG_SWIOTLB_DYNAMIC
+>>  	INIT_LIST_HEAD(&dev->dma_io_tlb_pools);
+>>  	spin_lock_init(&dev->dma_io_tlb_lock);
+>> +	dev->dma_uses_io_tlb = false;
+>
+> ...here you initialize it, fine...
+>
+>>  #endif
+>>  }
+>>  
+>> @@ -1157,9 +1153,11 @@ static int swiotlb_find_slots(struct device *dev, phys_addr_t orig_addr,
+>>  	list_add_rcu(&pool->node, &dev->dma_io_tlb_pools);
+>>  	spin_unlock_irqrestore(&dev->dma_io_tlb_lock, flags);
+>>  
+>> -	/* Pairs with smp_rmb() in swiotlb_find_pool(). */
+>> -	smp_wmb();
+>>  found:
+>> +	dev->dma_uses_io_tlb = true;
+>> +	/* Pairs with smp_rmb() in is_swiotlb_buffer() */
+>> +	smp_wmb();
+>> +
+>
+> ...and here you set it if swiotlb is used.
+>
+> But, as far as I can tell, you don't actually *use* this field anywhere.
+> What am I missing?
+>
+> Thanks,
+>
+> jon

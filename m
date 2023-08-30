@@ -2,191 +2,122 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 75B87C6FA8F
-	for <linux-mips@archiver.kernel.org>; Wed, 30 Aug 2023 18:56:27 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 44581C83F15
+	for <linux-mips@archiver.kernel.org>; Wed, 30 Aug 2023 18:56:32 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344012AbjH3S4Z (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 30 Aug 2023 14:56:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47398 "EHLO
+        id S1344018AbjH3S43 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 30 Aug 2023 14:56:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49154 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244628AbjH3Nfe (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 30 Aug 2023 09:35:34 -0400
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EB4611F;
-        Wed, 30 Aug 2023 06:35:31 -0700 (PDT)
-Received: by mail-pf1-x42b.google.com with SMTP id d2e1a72fcca58-68c3b9f85b7so2879473b3a.2;
-        Wed, 30 Aug 2023 06:35:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693402530; x=1694007330; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=RRQJInei7cgxScofMgcEQpUP1yaB1y4pGk98kCbHGEg=;
-        b=Qf2TXvfZ/2UTrs/1ZP71pfvOlF00tGVZKUXd+FNl8eTJFO/huiNLhtwlsGfpnKc/yx
-         dQ3vQH1K3Clv/4dmeHwH/5mRoDc9to/b9SRxnGIUZN5bvBE4LLZlWjOT19W8hMXBruuo
-         jkEj8EuyTV+fUiPWkuW3PVHuqeiPfjfeT+7a8R7P4lF+nE9s7omoW4NzWGd1GZ8zI2/m
-         up8Wek8laie3ddnvFndfesbveVVC+3DZkPFSJFq+3pQycoZLFdhX/65hRU9/6Drk3SRT
-         eOCdb2vzQJ24Oa7NcYTA5dAZ8F/rTGBdL149lPjh35K3TnxqiRE/7f6OlOw1L6IJiXwn
-         5jZw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693402530; x=1694007330;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=RRQJInei7cgxScofMgcEQpUP1yaB1y4pGk98kCbHGEg=;
-        b=WqLq8nysyRqo5mQVzsDJh72MJu0jlLVrUxOTGrRHCrz5wrd7n3n+jawDcT4OMglDSc
-         MYtIiG2EgtMCai/OKRVXrDFUPJxiu71nP6kCqxxnUczFW1DRdkACLJl1JYV5oMyziB8/
-         2KUK22hP6Bn6BMcF83H8tY0vnH2cwQk1/il6537w1vO7NGz2fS1gTuqhAbfrTx36WuaI
-         U/lF6+a0+8C0CyCxMNEIrya2FZtm70TKkSJI2EzI+7VM/kQeU5gbNzl7dyIq85bxRU0u
-         682upF7lNDvjqmyG2MWPR+AfLxxS3ACOMcW49ZYogEpwUaMslaA2nO5FDv4dddFdbA+8
-         s69Q==
-X-Gm-Message-State: AOJu0Ywme44v6yk98nA+xu4yaJ6ifk2NHbLscV/NTNPw1jWtBQvP6Tn7
-        7nEQ0jDMPK42Kc+zWsZMB+35DSWJi3M=
-X-Google-Smtp-Source: AGHT+IFEEjj9Q//OZZUkaG1jeG65XoVhhmKQF4+mavHG7UF9ZMUEwyUOWQzMviw9xRgfWvEsVMpHnQ==
-X-Received: by 2002:a05:6a00:1355:b0:68c:641a:8a32 with SMTP id k21-20020a056a00135500b0068c641a8a32mr2762731pfu.13.1693402530151;
-        Wed, 30 Aug 2023 06:35:30 -0700 (PDT)
-Received: from kelvin-ThinkPad-L14-Gen-1.lan ([103.184.129.7])
-        by smtp.gmail.com with ESMTPSA id h1-20020a056a00230100b0064f7c56d8b7sm6109298pfh.219.2023.08.30.06.35.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 30 Aug 2023 06:35:29 -0700 (PDT)
-From:   Keguang Zhang <keguang.zhang@gmail.com>
-To:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Keguang Zhang <keguang.zhang@gmail.com>,
-        =?UTF-8?q?Philippe=20Mathieu-Daud=C3=A9?= <philmd@linaro.org>
-Subject: [PATCH v3] MIPS: loongson32: Remove dma.h and nand.h
-Date:   Wed, 30 Aug 2023 21:35:05 +0800
-Message-Id: <20230830133505.505597-1-keguang.zhang@gmail.com>
-X-Mailer: git-send-email 2.39.2
+        with ESMTP id S245545AbjH3PbS (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 30 Aug 2023 11:31:18 -0400
+Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com [66.111.4.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1D60FB;
+        Wed, 30 Aug 2023 08:31:15 -0700 (PDT)
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailout.nyi.internal (Postfix) with ESMTP id 6A0BF5C00D4;
+        Wed, 30 Aug 2023 11:31:15 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute1.internal (MEProxy); Wed, 30 Aug 2023 11:31:15 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=flygoat.com; h=
+        cc:cc:content-transfer-encoding:content-type:content-type:date
+        :date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:sender:subject:subject:to:to; s=fm2; t=
+        1693409475; x=1693495875; bh=Q9MVoYIonRyskRfBCIP9y88rEy7hbWTJP9D
+        lDE+1Rek=; b=TFmdkdxDJCh6QTuwU3AGuzXumkMQLdaMGMTXZeMFQ9IJuH2+F61
+        1R6ExZnDwuJiA1eo5bcYmSqlUyuUeoL5lC+ioCfUoVhn6gh8Gfbs5eWCwYP78cZE
+        1qYiJjkUGK/u7CfbVTw2PKCo/tDuGTUeHp2RbU05cJnl+rob3rNkoPSxW72qwvvG
+        2CyBbisd4y8c4xSu4g66cB8t5UIw0U4VSizlH+21WI/QXOl7dn2PPZp6XKCT2QuH
+        Lmm7AHsgwWUqm77rLgXcMkuj7RipbSg2xsr3TTp1hijDnoQTkDPOBt+BKeJc8XEV
+        iaKvtPG8ijD0diOkC12baF7K6TIkWlGo6dQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-transfer-encoding
+        :content-type:content-type:date:date:feedback-id:feedback-id
+        :from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:sender:subject:subject:to:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=
+        1693409475; x=1693495875; bh=Q9MVoYIonRyskRfBCIP9y88rEy7hbWTJP9D
+        lDE+1Rek=; b=XDcjE7uz8kS7bQYQhlN8VpeCymR09Xs6qfFDE74Ru+FWXsan+ES
+        p5Z3+kB4Xp+vgmWW68wdwDkHIiLZow3wNbr6dGOOP4ISjtlQ88yDsaf916YwYjSr
+        ZE17fBp/h6bx57e/eWZ1co1hJ4SDFT+Pb+wJdMv5NIzdgvTzBTOisqQ7rHXLmo5Q
+        e0UFUiNGubH3z6ogzMKd/ecTblIZC8gVbSmg0vAkBa1qCdITn1xqalcTUb0e8a+C
+        0luTc1x4KuKNSOqRoUK+c39g/jPtNDQetoNrvL5vk03nZCs36bPqHXVU8c5cnjQ3
+        it0vkrIpXSXd/VgIeEwJBW6Q1CYVwCc31ag==
+X-ME-Sender: <xms:wmDvZH_TC-KVSfxtykkyEc2-g85qjUg7wfM731Eg3csCfXbVzmmn6w>
+    <xme:wmDvZDtDF0LGeGMH9-HrHiXT1tiT3GHUNnLGxs72PbHbwLQFrGL0wHtJvpbUfC0JW
+    202RJaGZDy0j7k0HfI>
+X-ME-Received: <xmr:wmDvZFD6EiZ1zh49iOvuFmx7X_RM0od-iLwDSREW_uEEvdfKsTv64fPYEynSIPt6cJsz>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrudefkedgleduucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepkfffgggfuffvvehfhfgjtgfgsehtkeertddtfeejnecuhfhrohhmpeflihgr
+    gihunhcujggrnhhguceojhhirgiguhhnrdihrghnghesfhhlhihgohgrthdrtghomheqne
+    cuggftrfgrthhtvghrnhepudfhkeevvddtueekfeefgfetlefgueegueeltddtieejgeei
+    heevgfehgfdvfeegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilh
+    hfrhhomhepjhhirgiguhhnrdihrghnghesfhhlhihgohgrthdrtghomh
+X-ME-Proxy: <xmx:wmDvZDfgm6ms3MhGnJL8V4W5wwEQT8kblLRdegrkdKvym_dK1istKw>
+    <xmx:wmDvZMOlx-PrcPBbNwKAoO_AIN49dIYUMnIckfJIJwYUfhIPoU4o3g>
+    <xmx:wmDvZFlimcU7bZzDX6ygYUJH1PmLmFOctTYjth6aLZCLPtlGWgc6Nw>
+    <xmx:w2DvZDlOME3JwXCFUc3VbCUN8nzunuyLJB2lVv3FOhUch0Bv0GaA8w>
+Feedback-ID: ifd894703:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 30 Aug 2023 11:31:08 -0400 (EDT)
+Message-ID: <a3e934eb-7517-f313-46d9-fd5335ce305e@flygoat.com>
+Date:   Wed, 30 Aug 2023 23:31:07 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH v2] dt-bindings: interrupt-controller: loongson,liointc:
+ Fix warnings about liointc-2.0
+Content-Language: en-GB
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Binbin Zhou <zhoubb.aaron@gmail.com>,
+        Huacai Chen <chenhuacai@kernel.org>
+Cc:     Binbin Zhou <zhoubinbin@loongson.cn>,
+        Huacai Chen <chenhuacai@loongson.cn>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        loongson-kernel@lists.loongnix.cn, devicetree@vger.kernel.org,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        linux-mips@vger.kernel.org, diasyzhang@tencent.com,
+        linux-kernel@vger.kernel.org
+References: <20230821061315.3416836-1-zhoubinbin@loongson.cn>
+ <e62185ca-cdf6-bde9-ad46-f4150db9ed6d@linaro.org>
+ <CAMpQs4JhfuB4=s9VFc+xmw_+8h5u2EwPdM_0x2vO_=SYabAAxw@mail.gmail.com>
+ <6ba31912-6738-6156-d5f4-3c8d3a3ca7bc@linaro.org>
+ <CAMpQs4+GiExt9uMmV1pf8gg8rFwWxbLkx9mdW7hY9xxXDOza3Q@mail.gmail.com>
+ <d11873a1-b552-71f5-1100-7464687f8bb4@linaro.org>
+ <a084e6e9-46b0-42ef-b500-69c114ae11b2@flygoat.com>
+ <3412e871-ae2b-bed0-88fb-2272f9db3af0@linaro.org>
+From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
+In-Reply-To: <3412e871-ae2b-bed0-88fb-2272f9db3af0@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Since commit 7b3415f581c7 ("MIPS: Loongson32: Remove
-unused platform devices"), struct plat_ls1x_dma and plat_ls1x_nand
-are unused. Then, dma.h and nand.h are useless.
-Therefore, remove these useless header files.
 
-Signed-off-by: Keguang Zhang <keguang.zhang@gmail.com>
-Reviewed-by: Philippe Mathieu-Daudé <philmd@linaro.org>
----
-V2 -> V3: Fix the build error
-          Add Reviewed-by tag from Philippe Mathieu-Daudé
-V1 -> V2: Remove include of dma.h and nand.h
-          Update the commit message
----
- arch/mips/include/asm/mach-loongson32/dma.h   | 21 ---------------
- arch/mips/include/asm/mach-loongson32/nand.h  | 26 -------------------
- .../include/asm/mach-loongson32/platform.h    |  3 ---
- arch/mips/loongson32/common/platform.c        |  2 --
- arch/mips/loongson32/ls1b/board.c             |  2 --
- 5 files changed, 54 deletions(-)
- delete mode 100644 arch/mips/include/asm/mach-loongson32/dma.h
- delete mode 100644 arch/mips/include/asm/mach-loongson32/nand.h
 
-diff --git a/arch/mips/include/asm/mach-loongson32/dma.h b/arch/mips/include/asm/mach-loongson32/dma.h
-deleted file mode 100644
-index e917b3ccb2c2..000000000000
---- a/arch/mips/include/asm/mach-loongson32/dma.h
-+++ /dev/null
-@@ -1,21 +0,0 @@
--/* SPDX-License-Identifier: GPL-2.0-or-later */
--/*
-- * Copyright (c) 2015 Zhang, Keguang <keguang.zhang@gmail.com>
-- *
-- * Loongson 1 NAND platform support.
-- */
--
--#ifndef __ASM_MACH_LOONGSON32_DMA_H
--#define __ASM_MACH_LOONGSON32_DMA_H
--
--#define LS1X_DMA_CHANNEL0	0
--#define LS1X_DMA_CHANNEL1	1
--#define LS1X_DMA_CHANNEL2	2
--
--struct plat_ls1x_dma {
--	int nr_channels;
--};
--
--extern struct plat_ls1x_dma ls1b_dma_pdata;
--
--#endif /* __ASM_MACH_LOONGSON32_DMA_H */
-diff --git a/arch/mips/include/asm/mach-loongson32/nand.h b/arch/mips/include/asm/mach-loongson32/nand.h
-deleted file mode 100644
-index aaf5ed19d78d..000000000000
---- a/arch/mips/include/asm/mach-loongson32/nand.h
-+++ /dev/null
-@@ -1,26 +0,0 @@
--/* SPDX-License-Identifier: GPL-2.0-or-later */
--/*
-- * Copyright (c) 2015 Zhang, Keguang <keguang.zhang@gmail.com>
-- *
-- * Loongson 1 NAND platform support.
-- */
--
--#ifndef __ASM_MACH_LOONGSON32_NAND_H
--#define __ASM_MACH_LOONGSON32_NAND_H
--
--#include <linux/dmaengine.h>
--#include <linux/mtd/partitions.h>
--
--struct plat_ls1x_nand {
--	struct mtd_partition *parts;
--	unsigned int nr_parts;
--
--	int hold_cycle;
--	int wait_cycle;
--};
--
--extern struct plat_ls1x_nand ls1b_nand_pdata;
--
--bool ls1x_dma_filter_fn(struct dma_chan *chan, void *param);
--
--#endif /* __ASM_MACH_LOONGSON32_NAND_H */
-diff --git a/arch/mips/include/asm/mach-loongson32/platform.h b/arch/mips/include/asm/mach-loongson32/platform.h
-index 2cdcfb5f6012..f74292b13bc3 100644
---- a/arch/mips/include/asm/mach-loongson32/platform.h
-+++ b/arch/mips/include/asm/mach-loongson32/platform.h
-@@ -8,9 +8,6 @@
- 
- #include <linux/platform_device.h>
- 
--#include <dma.h>
--#include <nand.h>
--
- extern struct platform_device ls1x_uart_pdev;
- extern struct platform_device ls1x_eth0_pdev;
- extern struct platform_device ls1x_eth1_pdev;
-diff --git a/arch/mips/loongson32/common/platform.c b/arch/mips/loongson32/common/platform.c
-index 8075590a9f83..623eb4bc7b41 100644
---- a/arch/mips/loongson32/common/platform.c
-+++ b/arch/mips/loongson32/common/platform.c
-@@ -15,8 +15,6 @@
- 
- #include <platform.h>
- #include <loongson1.h>
--#include <dma.h>
--#include <nand.h>
- 
- /* 8250/16550 compatible UART */
- #define LS1X_UART(_id)						\
-diff --git a/arch/mips/loongson32/ls1b/board.c b/arch/mips/loongson32/ls1b/board.c
-index fed8d432ef20..fe115bdcb22c 100644
---- a/arch/mips/loongson32/ls1b/board.c
-+++ b/arch/mips/loongson32/ls1b/board.c
-@@ -8,8 +8,6 @@
- #include <linux/sizes.h>
- 
- #include <loongson1.h>
--#include <dma.h>
--#include <nand.h>
- #include <platform.h>
- 
- static const struct gpio_led ls1x_gpio_leds[] __initconst = {
+在 2023/8/30 22:35, Krzysztof Kozlowski 写道:
+>> What's the best way, in your opinion, to overhaul this property? As we don't
+>> really care backward compatibility of DTBs on those systems we can just
+>> redesign it.
+> Deprecate the property in the bindings, allow driver to work with or
+> without it and finally drop it entirely from DTS.
 
-base-commit: e7513eccb7d7f82e28f4730210b42da71edaa6a6
--- 
-2.39.2
+I'd love to have such configuration flexibility so I'd be sad to see it go.
++ Huacai and Binbin, what's your opinion?
+
+If dropping such functionality in kernel is a must go, we can hardcode
+to route all downstream interrupt to the first pin that passed to DT.
+
+Thanks
+- Jiaxun
+> Best regards,
+> Krzysztof
+>
 

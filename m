@@ -2,265 +2,110 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D9E55C6FA8F
-	for <linux-mips@archiver.kernel.org>; Wed, 30 Aug 2023 18:56:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7D426C83F18
+	for <linux-mips@archiver.kernel.org>; Wed, 30 Aug 2023 18:56:13 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343723AbjH3Sz6 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 30 Aug 2023 14:55:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48758 "EHLO
+        id S1343928AbjH3S4G (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 30 Aug 2023 14:56:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50024 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S245441AbjH3PQZ (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 30 Aug 2023 11:16:25 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53D141A4;
-        Wed, 30 Aug 2023 08:16:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1693408582; x=1724944582;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=kuhHM9Pb2S9UA4HVLvALcSSOlQFsYNKCJA5urnK1yJE=;
-  b=UD8Pz/HW6JEgt3jfst5cGqUwsolyeM3zHBuRKLVpMHbbrSNMcE+aBj3W
-   3Fa+Zzh/aIBXDqbryWR92GLddKLUc9ssOiqe4tOpiyBS1bPto3qSqCdPw
-   bwPB0G0ymDT5MYS+qPQD7fzcKLUObuMb8innymM/cAcT3Qab8x4/+eFiA
-   JfF+T2bjINQkH9xmWwWmJiDUW/novaUDcovM7mC5f5vVh/XrKHH0zVmQ2
-   7l+EVAXcIhQzX368CPDakO74+T5pTCMMSaiTEr0r7dcsbM7fXtwzgr1hK
-   Vgvts1Ns/bVeOesVs76vX7V2YIBHuFXUL4tRRN1sD2RleY8DFSDjZJ3wI
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10818"; a="439614385"
-X-IronPort-AV: E=Sophos;i="6.02,214,1688454000"; 
-   d="scan'208";a="439614385"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Aug 2023 08:12:31 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10818"; a="804574149"
-X-IronPort-AV: E=Sophos;i="6.02,214,1688454000"; 
-   d="scan'208";a="804574149"
-Received: from binbinwu-mobl.ccr.corp.intel.com (HELO [10.93.25.116]) ([10.93.25.116])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Aug 2023 08:12:21 -0700
-Message-ID: <30ffe039-c9e2-b996-500d-5e11bf6ea789@linux.intel.com>
-Date:   Wed, 30 Aug 2023 23:12:19 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [RFC PATCH v11 12/29] KVM: Add KVM_CREATE_GUEST_MEMFD ioctl() for
- guest-specific backing memory
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     kvm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        kvmarm@lists.linux.dev, linux-mips@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, kvm-riscv@lists.infradead.org,
-        linux-riscv@lists.infradead.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Anup Patel <anup@brainfault.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
+        with ESMTP id S1344205AbjH3S2U (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 30 Aug 2023 14:28:20 -0400
+Received: from wout5-smtp.messagingengine.com (wout5-smtp.messagingengine.com [64.147.123.21])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51FE8A3;
+        Wed, 30 Aug 2023 11:28:16 -0700 (PDT)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailout.west.internal (Postfix) with ESMTP id C602B3200900;
+        Wed, 30 Aug 2023 14:28:12 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute5.internal (MEProxy); Wed, 30 Aug 2023 14:28:13 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sent.com; h=cc
+        :cc:content-transfer-encoding:content-type:date:date:from:from
+        :in-reply-to:message-id:mime-version:reply-to:reply-to:sender
+        :subject:subject:to:to; s=fm1; t=1693420092; x=1693506492; bh=fo
+        Dp5yxOH6GyIQ67vpSZpUgHB1689dLzaIy9GEckfQ4=; b=VzSy6vz/3jEqLcnt9d
+        v70cTqblMSUtCONPDq2FYgH9KbZ6oGQe1ANLeFnEgDOr5gWNNxTw5feWIR4SBX7h
+        +4hFw0pFT8WwNFeFfwmaNrk3PiwuQsrEpmwSlhMR8J48ZSSGJg/XDBrMC5aAADJw
+        3UcCiWZspWV2Gw7spuWTq1xsaDTlP45JEeacMLmsXm675V2wjdMddi0WEiedGjbD
+        rRizhHE3iwQAUHwImy4bMqWy09AtAfwywDjeXcQgWCkuL1wRGaH42LyhokgusYcn
+        GX2UJ7b4PAjUjtiTTSRhwhNONqdOnww+tHfZkNMiHFpIkuQQWf/OZEtvLKcbDhRj
+        wNGg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-transfer-encoding
+        :content-type:date:date:feedback-id:feedback-id:from:from
+        :in-reply-to:message-id:mime-version:reply-to:reply-to:sender
+        :subject:subject:to:to:x-me-proxy:x-me-proxy:x-me-sender
+        :x-me-sender:x-sasl-enc; s=fm1; t=1693420092; x=1693506492; bh=f
+        oDp5yxOH6GyIQ67vpSZpUgHB1689dLzaIy9GEckfQ4=; b=K0njS7rklou26kRAO
+        Ptbz0hqL7fAXkVMBKaRcwtNpFezNy8PJ+nXQZNAYMMePSYqhe3wUB4DAdktZx0np
+        Q+op8kthM/R+Z40rFmhR1wWiNtDfBJSE6Kd03BmyPjUGZEHtLgZr3mym6CyyUvHK
+        ooGu45R4oxwURaZm632kYTlAejmvAC1A/WVDahOgCKxjFh6jEcS55rEIiU6JeO9n
+        0nHi7Vp3VYKq3JaVU+YPuU6ewr3rKUuQtEORW9JjBjcuf64KwGzIcVkBpQz/YG6e
+        hJmCewlZS79KxxllqpZAs4ChV+VvXmtDg7FPwb7wb/xIyb30SJ8D8BvHnmSj+p7y
+        85kqw==
+X-ME-Sender: <xms:O4rvZMhFDP2YYXFFPRvINnUUYDSy1Zmb41wRFOR-1kCidF4xJV7Lig>
+    <xme:O4rvZFCCQdGeKe-bgaEHuCC8X0oOZ4UXVbc9LYt6iIj4RFlGe4kQVIUwl4pxYENWW
+    OMT3qdd8--DLJ2iMQ>
+X-ME-Received: <xmr:O4rvZEG0GG22F2Iaa-N4zkU93AduAl9MFqzBmWZTied7sYxifrlTjvzwe3XtHlMlW4ZhCCZDpnK9CDzGTcvXVHIOGEp8j3rPJBJMktgEDhx1OrUCvWlup92M>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrudefkedguddvjecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enogfuohhrthgvugftvggtihhpvdculdegtddmnecujfgurhephffvvefufffkofhrggfg
+    sedtqhertdertddtnecuhfhrohhmpegkihcujggrnhcuoeiiihdrhigrnhesshgvnhhtrd
+    gtohhmqeenucggtffrrghtthgvrhhnpedtgffhtdetledtkeeihfefueeuhedvudfhvdei
+    feevtdektdetgfeiieejuefhtdenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmh
+    epmhgrihhlfhhrohhmpeiiihdrhigrnhesshgvnhhtrdgtohhm
+X-ME-Proxy: <xmx:O4rvZNSRRnR9bqnIJ-r1O0Zr-3HOYIh35Ze72Zua9KcbhCpQmlxpUA>
+    <xmx:O4rvZJxTxGwzSP9QwnCwYv_ruTb_8htUXHXrlhUcaC4mdRxON_hA4A>
+    <xmx:O4rvZL5dbI-XW8W1PaOYhbJUBWH6WF3mEh8mDpbcSXhQnmosD-4gMg>
+    <xmx:PIrvZJfPM8RWAIKhfZY8iPKfIqaFFYLwbAZuN0TPSNbOlxEmSdDIkg>
+Feedback-ID: iccd040f4:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 30 Aug 2023 14:28:11 -0400 (EDT)
+From:   Zi Yan <zi.yan@sent.com>
+To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        linux-mips@vger.kernel.org
+Cc:     Zi Yan <ziy@nvidia.com>, Andrew Morton <akpm@linux-foundation.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
         "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Paul Moore <paul@paul-moore.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Chao Peng <chao.p.peng@linux.intel.com>,
-        Fuad Tabba <tabba@google.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Yu Zhang <yu.c.zhang@linux.intel.com>,
-        Vishal Annapurve <vannapurve@google.com>,
-        Ackerley Tng <ackerleytng@google.com>,
-        Maciej Szmigiero <mail@maciej.szmigiero.name>,
-        Vlastimil Babka <vbabka@suse.cz>,
         David Hildenbrand <david@redhat.com>,
-        Quentin Perret <qperret@google.com>,
-        Michael Roth <michael.roth@amd.com>,
-        Wang <wei.w.wang@intel.com>,
-        Liam Merwick <liam.merwick@oracle.com>,
-        Isaku Yamahata <isaku.yamahata@gmail.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
-References: <20230718234512.1690985-1-seanjc@google.com>
- <20230718234512.1690985-13-seanjc@google.com>
-From:   Binbin Wu <binbin.wu@linux.intel.com>
-In-Reply-To: <20230718234512.1690985-13-seanjc@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        "Mike Rapoport (IBM)" <rppt@kernel.org>
+Subject: [PATCH 0/3] Use nth_page() in place of direct struct page manipulation
+Date:   Wed, 30 Aug 2023 14:27:50 -0400
+Message-Id: <20230830182753.55367-1-zi.yan@sent.com>
+X-Mailer: git-send-email 2.40.1
+Reply-To: Zi Yan <ziy@nvidia.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
+From: Zi Yan <ziy@nvidia.com>
 
+On SPARSEMEM without VMEMMAP, struct page is not guaranteed to be
+contiguous, since each memory section's memmap might be allocated
+independently. hugetlb pages can go beyond a memory section size, thus
+direct struct page manipulation on hugetlb pages/subpages might give
+wrong struct page. Kernel provides nth_page() to do the manipulation
+properly. Use that whenever code can see hugetlb pages.
 
-On 7/19/2023 7:44 AM, Sean Christopherson wrote:
+The patches are on top of next-20230830.
 
-[...]
-> +
-> +static struct folio *kvm_gmem_get_folio(struct file *file, pgoff_t index)
-> +{
-> +	struct folio *folio;
-> +
-> +	/* TODO: Support huge pages. */
-> +	folio = filemap_grab_folio(file->f_mapping, index);
-> +	if (!folio)
-Should use  if ((IS_ERR(folio)) instead.
+Zi Yan (3):
+  mm: use nth_page() in place of direct struct page manipulation.
+  fs: use nth_page() in place of direct struct page manipulation.
+  mips: use nth_page() in place of direct struct page manipulation.
 
-> +		return NULL;
-> +
-> +	/*
-> +	 * Use the up-to-date flag to track whether or not the memory has been
-> +	 * zeroed before being handed off to the guest.  There is no backing
-> +	 * storage for the memory, so the folio will remain up-to-date until
-> +	 * it's removed.
-> +	 *
-> +	 * TODO: Skip clearing pages when trusted firmware will do it when
-> +	 * assigning memory to the guest.
-> +	 */
-> +	if (!folio_test_uptodate(folio)) {
-> +		unsigned long nr_pages = folio_nr_pages(folio);
-> +		unsigned long i;
-> +
-> +		for (i = 0; i < nr_pages; i++)
-> +			clear_highpage(folio_page(folio, i));
-> +
-> +		folio_mark_uptodate(folio);
-> +	}
-> +
-> +	/*
-> +	 * Ignore accessed, referenced, and dirty flags.  The memory is
-> +	 * unevictable and there is no storage to write back to.
-> +	 */
-> +	return folio;
-> +}
-[...]
-> +
-> +static long kvm_gmem_allocate(struct inode *inode, loff_t offset, loff_t len)
-> +{
-> +	struct address_space *mapping = inode->i_mapping;
-> +	pgoff_t start, index, end;
-> +	int r;
-> +
-> +	/* Dedicated guest is immutable by default. */
-> +	if (offset + len > i_size_read(inode))
-> +		return -EINVAL;
-> +
-> +	filemap_invalidate_lock_shared(mapping);
-> +
-> +	start = offset >> PAGE_SHIFT;
-> +	end = (offset + len) >> PAGE_SHIFT;
-> +
-> +	r = 0;
-> +	for (index = start; index < end; ) {
-> +		struct folio *folio;
-> +
-> +		if (signal_pending(current)) {
-> +			r = -EINTR;
-> +			break;
-> +		}
-> +
-> +		folio = kvm_gmem_get_folio(inode, index);
-> +		if (!folio) {
-> +			r = -ENOMEM;
-> +			break;
-> +		}
-> +
-> +		index = folio_next_index(folio);
-> +
-> +		folio_unlock(folio);
-> +		folio_put(folio);
-May be a dumb question, why we get the folio and then put it immediately?
-Will it make the folio be released back to the page allocator?
+ arch/mips/mm/cache.c | 2 +-
+ fs/hugetlbfs/inode.c | 4 ++--
+ mm/cma.c             | 2 +-
+ mm/hugetlb.c         | 2 +-
+ mm/memory_hotplug.c  | 2 +-
+ 5 files changed, 6 insertions(+), 6 deletions(-)
 
-> +
-> +		/* 64-bit only, wrapping the index should be impossible. */
-> +		if (WARN_ON_ONCE(!index))
-> +			break;
-> +
-> +		cond_resched();
-> +	}
-> +
-> +	filemap_invalidate_unlock_shared(mapping);
-> +
-> +	return r;
-> +}
-> +
-[...]
-> +
-> +int kvm_gmem_bind(struct kvm *kvm, struct kvm_memory_slot *slot,
-> +		  unsigned int fd, loff_t offset)
-> +{
-> +	loff_t size = slot->npages << PAGE_SHIFT;
-> +	unsigned long start, end, flags;
-> +	struct kvm_gmem *gmem;
-> +	struct inode *inode;
-> +	struct file *file;
-> +
-> +	BUILD_BUG_ON(sizeof(gfn_t) != sizeof(slot->gmem.pgoff));
-> +
-> +	file = fget(fd);
-> +	if (!file)
-> +		return -EINVAL;
-> +
-> +	if (file->f_op != &kvm_gmem_fops)
-> +		goto err;
-> +
-> +	gmem = file->private_data;
-> +	if (gmem->kvm != kvm)
-> +		goto err;
-> +
-> +	inode = file_inode(file);
-> +	flags = (unsigned long)inode->i_private;
-> +
-> +	/*
-> +	 * For simplicity, require the offset into the file and the size of the
-> +	 * memslot to be aligned to the largest possible page size used to back
-> +	 * the file (same as the size of the file itself).
-> +	 */
-> +	if (!kvm_gmem_is_valid_size(offset, flags) ||
-> +	    !kvm_gmem_is_valid_size(size, flags))
-> +		goto err;
-> +
-> +	if (offset + size > i_size_read(inode))
-> +		goto err;
-> +
-> +	filemap_invalidate_lock(inode->i_mapping);
-> +
-> +	start = offset >> PAGE_SHIFT;
-> +	end = start + slot->npages;
-> +
-> +	if (!xa_empty(&gmem->bindings) &&
-> +	    xa_find(&gmem->bindings, &start, end - 1, XA_PRESENT)) {
-> +		filemap_invalidate_unlock(inode->i_mapping);
-> +		goto err;
-> +	}
-> +
-> +	/*
-> +	 * No synchronize_rcu() needed, any in-flight readers are guaranteed to
-> +	 * be see either a NULL file or this new file, no need for them to go
-> +	 * away.
-> +	 */
-> +	rcu_assign_pointer(slot->gmem.file, file);
-> +	slot->gmem.pgoff = start;
-> +
-> +	xa_store_range(&gmem->bindings, start, end - 1, slot, GFP_KERNEL);
-> +	filemap_invalidate_unlock(inode->i_mapping);
-> +
-> +	/*
-> +	 * Drop the reference to the file, even on success.  The file pins KVM,
-> +	 * not the other way 'round.  Active bindings are invalidated if the
-an extra ',  or maybe around?
-
-
-> +	 * file is closed before memslots are destroyed.
-> +	 */
-> +	fput(file);
-> +	return 0;
-> +
-> +err:
-> +	fput(file);
-> +	return -EINVAL;
-> +}
-> +
-[...]
-> []
+--=20
+2.40.1
 

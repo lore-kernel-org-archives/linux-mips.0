@@ -2,110 +2,108 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 7D426C83F18
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E0310C83F19
 	for <linux-mips@archiver.kernel.org>; Wed, 30 Aug 2023 18:56:13 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343928AbjH3S4G (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 30 Aug 2023 14:56:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50024 "EHLO
+        id S1343922AbjH3S4E (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 30 Aug 2023 14:56:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46366 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344205AbjH3S2U (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 30 Aug 2023 14:28:20 -0400
-Received: from wout5-smtp.messagingengine.com (wout5-smtp.messagingengine.com [64.147.123.21])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51FE8A3;
-        Wed, 30 Aug 2023 11:28:16 -0700 (PDT)
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailout.west.internal (Postfix) with ESMTP id C602B3200900;
-        Wed, 30 Aug 2023 14:28:12 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute5.internal (MEProxy); Wed, 30 Aug 2023 14:28:13 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sent.com; h=cc
-        :cc:content-transfer-encoding:content-type:date:date:from:from
-        :in-reply-to:message-id:mime-version:reply-to:reply-to:sender
-        :subject:subject:to:to; s=fm1; t=1693420092; x=1693506492; bh=fo
-        Dp5yxOH6GyIQ67vpSZpUgHB1689dLzaIy9GEckfQ4=; b=VzSy6vz/3jEqLcnt9d
-        v70cTqblMSUtCONPDq2FYgH9KbZ6oGQe1ANLeFnEgDOr5gWNNxTw5feWIR4SBX7h
-        +4hFw0pFT8WwNFeFfwmaNrk3PiwuQsrEpmwSlhMR8J48ZSSGJg/XDBrMC5aAADJw
-        3UcCiWZspWV2Gw7spuWTq1xsaDTlP45JEeacMLmsXm675V2wjdMddi0WEiedGjbD
-        rRizhHE3iwQAUHwImy4bMqWy09AtAfwywDjeXcQgWCkuL1wRGaH42LyhokgusYcn
-        GX2UJ7b4PAjUjtiTTSRhwhNONqdOnww+tHfZkNMiHFpIkuQQWf/OZEtvLKcbDhRj
-        wNGg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-transfer-encoding
-        :content-type:date:date:feedback-id:feedback-id:from:from
-        :in-reply-to:message-id:mime-version:reply-to:reply-to:sender
-        :subject:subject:to:to:x-me-proxy:x-me-proxy:x-me-sender
-        :x-me-sender:x-sasl-enc; s=fm1; t=1693420092; x=1693506492; bh=f
-        oDp5yxOH6GyIQ67vpSZpUgHB1689dLzaIy9GEckfQ4=; b=K0njS7rklou26kRAO
-        Ptbz0hqL7fAXkVMBKaRcwtNpFezNy8PJ+nXQZNAYMMePSYqhe3wUB4DAdktZx0np
-        Q+op8kthM/R+Z40rFmhR1wWiNtDfBJSE6Kd03BmyPjUGZEHtLgZr3mym6CyyUvHK
-        ooGu45R4oxwURaZm632kYTlAejmvAC1A/WVDahOgCKxjFh6jEcS55rEIiU6JeO9n
-        0nHi7Vp3VYKq3JaVU+YPuU6ewr3rKUuQtEORW9JjBjcuf64KwGzIcVkBpQz/YG6e
-        hJmCewlZS79KxxllqpZAs4ChV+VvXmtDg7FPwb7wb/xIyb30SJ8D8BvHnmSj+p7y
-        85kqw==
-X-ME-Sender: <xms:O4rvZMhFDP2YYXFFPRvINnUUYDSy1Zmb41wRFOR-1kCidF4xJV7Lig>
-    <xme:O4rvZFCCQdGeKe-bgaEHuCC8X0oOZ4UXVbc9LYt6iIj4RFlGe4kQVIUwl4pxYENWW
-    OMT3qdd8--DLJ2iMQ>
-X-ME-Received: <xmr:O4rvZEG0GG22F2Iaa-N4zkU93AduAl9MFqzBmWZTied7sYxifrlTjvzwe3XtHlMlW4ZhCCZDpnK9CDzGTcvXVHIOGEp8j3rPJBJMktgEDhx1OrUCvWlup92M>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrudefkedguddvjecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enogfuohhrthgvugftvggtihhpvdculdegtddmnecujfgurhephffvvefufffkofhrggfg
-    sedtqhertdertddtnecuhfhrohhmpegkihcujggrnhcuoeiiihdrhigrnhesshgvnhhtrd
-    gtohhmqeenucggtffrrghtthgvrhhnpedtgffhtdetledtkeeihfefueeuhedvudfhvdei
-    feevtdektdetgfeiieejuefhtdenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmh
-    epmhgrihhlfhhrohhmpeiiihdrhigrnhesshgvnhhtrdgtohhm
-X-ME-Proxy: <xmx:O4rvZNSRRnR9bqnIJ-r1O0Zr-3HOYIh35Ze72Zua9KcbhCpQmlxpUA>
-    <xmx:O4rvZJxTxGwzSP9QwnCwYv_ruTb_8htUXHXrlhUcaC4mdRxON_hA4A>
-    <xmx:O4rvZL5dbI-XW8W1PaOYhbJUBWH6WF3mEh8mDpbcSXhQnmosD-4gMg>
-    <xmx:PIrvZJfPM8RWAIKhfZY8iPKfIqaFFYLwbAZuN0TPSNbOlxEmSdDIkg>
-Feedback-ID: iccd040f4:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 30 Aug 2023 14:28:11 -0400 (EDT)
-From:   Zi Yan <zi.yan@sent.com>
-To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        linux-mips@vger.kernel.org
-Cc:     Zi Yan <ziy@nvidia.com>, Andrew Morton <akpm@linux-foundation.org>,
+        with ESMTP id S244685AbjH3NnA (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 30 Aug 2023 09:43:00 -0400
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E29AA3;
+        Wed, 30 Aug 2023 06:42:58 -0700 (PDT)
+Received: by mail-pl1-x62f.google.com with SMTP id d9443c01a7336-1c1ff5b741cso14707735ad.2;
+        Wed, 30 Aug 2023 06:42:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1693402977; x=1694007777; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=8QYflLN+TBQxWEao5rA2zFP+OREduZFJfAoqQQOBR08=;
+        b=R8AOk08DKdD3vqMyA5CLM1JR7K14eWh/AptARSr24HHHGUuVUk7XAcBu7+hCwal9DM
+         LKJQ4wZpffNZwHbB28vMh94qqltRRTHL39NLLyylAUwiVtb2+kSiquZ96tbUwPH7yctg
+         85JmVjFn+oE0sTbOxThIWf1dyvSA5fQy7LmwNE7Ac5L2i7ouhZRrRzXP8/rREMUKiwf8
+         gsaEyOKo2AgfmAkVDymnSQ/isqKLHBTQp/GbfAq19Gy3j7soVzfr4s64mgu0+mn3dA0R
+         B9tfcc9tocYMayMpH/2RfqQtFaCEy/9Nudc95IOz7H583bnrYZ/LXaU0CPAlM9z8A/wY
+         WOBw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20221208; t=1693402977; x=1694007777;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=8QYflLN+TBQxWEao5rA2zFP+OREduZFJfAoqQQOBR08=;
+        b=KHGj8SSMh9R/1rwI/hNEFoWZKsQL8qjKkDivMAdoehcukfe+rbRkY/13KKAvKnKsx/
+         5SB8+paWLSRiziq3a001GNOGbD2HwpHDEOo82LWsLDBKb0awbgCjDu3WXdUZNV2r0QEP
+         jWB9ApoxDgmgUpy4ryVkDQqFxU/jRIVYMQVHddSmva9+J/kEZeH7dmH8OrHBLelIvQ3z
+         gq0kADw9A7o8JOd8xMNuTwuzoHuLAl7zuwJSQcktWeLVrasqO5FnpPH+LPDudUzf227f
+         hJ3PMYELvmzCFYRSIOGGGWeXsqX3JkxbI0KZjJ2AItY6+WkC72MGA/fwxDHvPMQvvVeW
+         OKxA==
+X-Gm-Message-State: AOJu0YxcAawLI2lj8u7FSrHFPLpX+Z5HqPeZyVLNhbb9RwtKIVGycKzk
+        Q9TGR1myPx3oii75EfQKxV6GLxkDPOfLVUgv
+X-Google-Smtp-Source: AGHT+IFh5wkZQupO8sIk8dfdn3Qtxodop1819qgtCcsgkRBsMm4gB/lAsQpL+ksI2jSw1mffaE6MbQ==
+X-Received: by 2002:a17:902:f9c4:b0:1bc:5b36:a2e8 with SMTP id kz4-20020a170902f9c400b001bc5b36a2e8mr1905232plb.34.1693402977602;
+        Wed, 30 Aug 2023 06:42:57 -0700 (PDT)
+Received: from kelvin-ThinkPad-L14-Gen-1.lan ([103.184.129.7])
+        by smtp.gmail.com with ESMTPSA id a11-20020a170902eccb00b001b86dd825e7sm11042280plh.108.2023.08.30.06.42.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 30 Aug 2023 06:42:56 -0700 (PDT)
+From:   Keguang Zhang <keguang.zhang@gmail.com>
+To:     netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Lee Jones <lee@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
         Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        David Hildenbrand <david@redhat.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Muchun Song <muchun.song@linux.dev>,
-        "Mike Rapoport (IBM)" <rppt@kernel.org>
-Subject: [PATCH 0/3] Use nth_page() in place of direct struct page manipulation
-Date:   Wed, 30 Aug 2023 14:27:50 -0400
-Message-Id: <20230830182753.55367-1-zi.yan@sent.com>
-X-Mailer: git-send-email 2.40.1
-Reply-To: Zi Yan <ziy@nvidia.com>
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        Serge Semin <Sergey.Semin@baikalelectronics.ru>,
+        Keguang Zhang <keguang.zhang@gmail.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: [PATCH v4 1/4] dt-bindings: mfd: syscon: Add compatibles for Loongson-1 syscon
+Date:   Wed, 30 Aug 2023 21:42:38 +0800
+Message-Id: <20230830134241.506464-2-keguang.zhang@gmail.com>
+X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20230830134241.506464-1-keguang.zhang@gmail.com>
+References: <20230830134241.506464-1-keguang.zhang@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-From: Zi Yan <ziy@nvidia.com>
+Add Loongson LS1B and LS1C compatibles for system controller.
 
-On SPARSEMEM without VMEMMAP, struct page is not guaranteed to be
-contiguous, since each memory section's memmap might be allocated
-independently. hugetlb pages can go beyond a memory section size, thus
-direct struct page manipulation on hugetlb pages/subpages might give
-wrong struct page. Kernel provides nth_page() to do the manipulation
-properly. Use that whenever code can see hugetlb pages.
+Signed-off-by: Keguang Zhang <keguang.zhang@gmail.com>
+Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+---
+V3 -> V4: Add Acked-by tag from Krzysztof Kozlowski
+V2 -> V3: Change compatibles back to loongson,ls1b-syscon
+          and loongson,ls1c-syscon
+V1 -> V2: Make the syscon compatibles more specific
 
-The patches are on top of next-20230830.
+ Documentation/devicetree/bindings/mfd/syscon.yaml | 2 ++
+ 1 file changed, 2 insertions(+)
 
-Zi Yan (3):
-  mm: use nth_page() in place of direct struct page manipulation.
-  fs: use nth_page() in place of direct struct page manipulation.
-  mips: use nth_page() in place of direct struct page manipulation.
-
- arch/mips/mm/cache.c | 2 +-
- fs/hugetlbfs/inode.c | 4 ++--
- mm/cma.c             | 2 +-
- mm/hugetlb.c         | 2 +-
- mm/memory_hotplug.c  | 2 +-
- 5 files changed, 6 insertions(+), 6 deletions(-)
-
---=20
-2.40.1
+diff --git a/Documentation/devicetree/bindings/mfd/syscon.yaml b/Documentation/devicetree/bindings/mfd/syscon.yaml
+index 8103154bbb52..c77d7b155a4c 100644
+--- a/Documentation/devicetree/bindings/mfd/syscon.yaml
++++ b/Documentation/devicetree/bindings/mfd/syscon.yaml
+@@ -49,6 +49,8 @@ properties:
+               - hisilicon,peri-subctrl
+               - hpe,gxp-sysreg
+               - intel,lgm-syscon
++              - loongson,ls1b-syscon
++              - loongson,ls1c-syscon
+               - marvell,armada-3700-usb2-host-misc
+               - mediatek,mt8135-pctl-a-syscfg
+               - mediatek,mt8135-pctl-b-syscfg
+-- 
+2.39.2
 

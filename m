@@ -2,522 +2,116 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2538CC83F18
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AFE67C83F17
 	for <linux-mips@archiver.kernel.org>; Wed, 30 Aug 2023 18:56:17 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343959AbjH3S4P (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 30 Aug 2023 14:56:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57170 "EHLO
+        id S245250AbjH3S4D (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 30 Aug 2023 14:56:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39592 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244701AbjH3NqW (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 30 Aug 2023 09:46:22 -0400
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0C1EA3;
-        Wed, 30 Aug 2023 06:46:18 -0700 (PDT)
-Received: by mail-lf1-x129.google.com with SMTP id 2adb3069b0e04-500a8b2b73eso8229795e87.0;
-        Wed, 30 Aug 2023 06:46:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1693403177; x=1694007977; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=FuDbNuThVjyYyG8SOd+p3FdA7BGQ0yYBzKne/5GehDY=;
-        b=A9QIFQNkn/9NTjuk03QWbHWz1GzTQ7/ukdHQc3c87vpJkJ/vLiWvp5IVYZxJtbj7hk
-         1s/JHCcsr/ONz/57xwoH1wvNyrbEu2/U4c/KMd/v8AtFeHr3tuO+fmebAtdMZP9ycLC4
-         7dmju1ZP7wFgS9g4JYxWLud6QxgQhxu70US+HEq1oxYK/8b60TEnKRFhAYetj9N3pQwS
-         /Nw7pmCpJv/rpTZ5PKfRsfGbbadqui7SiWSM2ZBlBwVU26azDOaEhn+olquY6UdK9agY
-         V1EO+Mne20N8ZmmWceaQ5rOQNRbkDImytG1aUd/9kRnnsObdkWOA+wBo5TLgdTYgMmqp
-         AYoA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693403177; x=1694007977;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=FuDbNuThVjyYyG8SOd+p3FdA7BGQ0yYBzKne/5GehDY=;
-        b=XtFRzB9gAtKX02Qlq+b6hywqmc9OI308Pkyu4QdfeK0mho8M0rw04iWDibGR/GOx4r
-         t4uMho3OVe8m0Zc1KG2tpQWMbCT6Xbp2EVYABv7Ofy2fKv9JHrCFjso7jbTTqwJ1c4U4
-         ezdBo+i0luw+wBcSlP37WJ7eRF94Y9Ct9yA4zxUrpnC14T+BIzLV1kpgrbmCFpxtfG+f
-         LUL3s0dQC7IOdmG3AyNbFTHpSnZpomZPjqrgkYuxzzoN0b9zNoSGSVGJWLYWUKoK7kpI
-         Lci/CkugmtLXztsXyeMc2E4fsVFGxqdKpJOglqEyFnk25djOZG+ScIh0x/2VmIQsO7Fa
-         4D4Q==
-X-Gm-Message-State: AOJu0YxcQVPgAEJK+OskDX0HewyIUjvLeSfks1VaDLc/NbhHUOmyOqMt
-        7XAzFEGpxyoDa2PMM26E/e4cqsJ2YcCm4OsYx8g=
-X-Google-Smtp-Source: AGHT+IEZAAsca9PWYYBEnHGO8eA/kNKmQBise/B7S/TkDQ3pMr9wjWAHRBlPLntqPU9mUrcOzObwrbDvHs8qOYBiKXY=
-X-Received: by 2002:a05:6512:118e:b0:4fd:d64f:c0a6 with SMTP id
- g14-20020a056512118e00b004fdd64fc0a6mr1869313lfr.48.1693403176842; Wed, 30
- Aug 2023 06:46:16 -0700 (PDT)
-MIME-Version: 1.0
-References: <20230824125012.1040288-1-keguang.zhang@gmail.com>
- <20230824125012.1040288-4-keguang.zhang@gmail.com> <c3k77fijjiq6osz53jbryulm77f2hmmk6jpiptzthokuzg4tpt@d7h6x7a3dbdg>
-In-Reply-To: <c3k77fijjiq6osz53jbryulm77f2hmmk6jpiptzthokuzg4tpt@d7h6x7a3dbdg>
-From:   Keguang Zhang <keguang.zhang@gmail.com>
-Date:   Wed, 30 Aug 2023 21:45:40 +0800
-Message-ID: <CAJhJPsVk9xkA5zp=x+NiFBMeyeLk7uLuUx_m6XQM2PZq10aVLA@mail.gmail.com>
-Subject: Re: [PATCH v3 3/4] net: stmmac: Add glue layer for Loongson-1 SoC
-To:     Serge Semin <fancer.lancer@gmail.com>
-Cc:     netdev@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Lee Jones <lee@kernel.org>, Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
+        with ESMTP id S1344207AbjH3S2Y (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 30 Aug 2023 14:28:24 -0400
+Received: from wout5-smtp.messagingengine.com (wout5-smtp.messagingengine.com [64.147.123.21])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 025D6198;
+        Wed, 30 Aug 2023 11:28:22 -0700 (PDT)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailout.west.internal (Postfix) with ESMTP id 70DC23200942;
+        Wed, 30 Aug 2023 14:28:20 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute5.internal (MEProxy); Wed, 30 Aug 2023 14:28:21 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sent.com; h=cc
+        :cc:content-transfer-encoding:content-type:date:date:from:from
+        :in-reply-to:in-reply-to:message-id:mime-version:references
+        :reply-to:reply-to:sender:subject:subject:to:to; s=fm1; t=
+        1693420099; x=1693506499; bh=UaWYMjZoz/qbv6HU3P8JXTg44k1buzeqH5W
+        8mgla10I=; b=EYBx63EvFZjpL4B27TvMy7dGqT0pwxAoSEQMIg8pIUrC14oW5Qe
+        NQQkav+XRQAccBSjDYtL6wGLdshSlcg1rzwDN10arpEUSJWVjaH6IgApWfE4wz2k
+        NJrHO5LIciwfDdoPDOe6ZjYQxyAx+9Qp/yhg90D1Mu/zDRHBh+usGjHa8kak61BH
+        +wRtghRwUfwcK5/g4dAMCzoN5W7fRgb6/Fc0s9E42Y4N6bQRYuO/UkeirPUMSiZp
+        yZ2IN3lwvHgVsMMyVUZL8ujlFJZVEXlmSYvbJK3v4JmwYHq8eQAgRitNdVAr72K/
+        83+G2VVVKYJBkgGYIUdzl6PFgre20wJhuxw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-transfer-encoding
+        :content-type:date:date:feedback-id:feedback-id:from:from
+        :in-reply-to:in-reply-to:message-id:mime-version:references
+        :reply-to:reply-to:sender:subject:subject:to:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=
+        1693420099; x=1693506499; bh=UaWYMjZoz/qbv6HU3P8JXTg44k1buzeqH5W
+        8mgla10I=; b=cIqp7OcqR9mAO5om8208dHU0wNnEriPSq/ag/Nx4a6D5SqamN6H
+        u5pPrVI3kn3E2aS0lJco43LEkbh81xEEzrwAjk1UPuFe/Q1Gu0D3lR1Jd20Zu1Mb
+        gdjd18scjP00w/1McZqpwobB31v+bdGi+n1BVFMzoHn//F67+rVg9YaYsXDC1vi1
+        b49vnbHA72x2FuM7RHMCZpxiG9NycXuTOEiki0emG1ppfM0lGJf6JXWoJSRt9xrv
+        eX/aAvXfHx1aQbS9TyPhFAOhk0jRQP0Bm66uUGmD/P3FdC5dkgxYpXaV/oKOBN+Y
+        D5N/biYochIaLDXNgUc6e45rtgmFJlOkXGw==
+X-ME-Sender: <xms:Q4rvZK2ThFYHPgkFHwMbRXTHhzc9BTSa4gJ-nUYJ3WT4ARHSKKo7Ow>
+    <xme:Q4rvZNFqkmTEzG-Ob_osEiA9AJZEUzGn706jadaI56xRdlcznCo_ma30Qe8cTgy0k
+    hpvjo59WMifcCalYw>
+X-ME-Received: <xmr:Q4rvZC6ZWwz8ycvKHrjZIRY_fvfASIWEQhJtur8MfQMSbEhJTZGtQUNU1tA4XNKq3-25_37qCXAoXRz4hdJgC16NoG29j2lvng7c_Kd01KM8qKXuwDphTbog>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrudefkedguddvjecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enogfuohhrthgvugftvggtihhpvdculdegtddmnecujfgurhephffvvefufffkofgjfhhr
+    ggfgsedtqhertdertddtnecuhfhrohhmpegkihcujggrnhcuoeiiihdrhigrnhesshgvnh
+    htrdgtohhmqeenucggtffrrghtthgvrhhnpeeggeehudfgudduvdelheehteegledtteei
+    veeuhfffveekhfevueefieeijeegvdenucevlhhushhtvghrufhiiigvpedtnecurfgrrh
+    grmhepmhgrihhlfhhrohhmpeiiihdrhigrnhesshgvnhhtrdgtohhm
+X-ME-Proxy: <xmx:Q4rvZL346u1_UfBpWjzl87Rw7CyGhd0RDxasHMhGKfpImbsnOq-Y-w>
+    <xmx:Q4rvZNF6BdmO2rFxg6wRJ3qYNy7hEOIJFJn_U7Iwm5oQNp66gJ9Q9Q>
+    <xmx:Q4rvZE-tP0tveb64gnIifFzwKegTZyfdHQXCopNAlJ9sqJO-3y7aKw>
+    <xmx:Q4rvZMDCU_EPWqv6N6ufuNZGBXo8iVzJpOXRWJL1cpdCW6UGiOWS3A>
+Feedback-ID: iccd040f4:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 30 Aug 2023 14:28:19 -0400 (EDT)
+From:   Zi Yan <zi.yan@sent.com>
+To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        linux-mips@vger.kernel.org
+Cc:     Zi Yan <ziy@nvidia.com>, Andrew Morton <akpm@linux-foundation.org>,
         Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        Serge Semin <Sergey.Semin@baikalelectronics.ru>
-Content-Type: text/plain; charset="UTF-8"
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        David Hildenbrand <david@redhat.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        "Mike Rapoport (IBM)" <rppt@kernel.org>
+Subject: [PATCH 3/3] mips: use nth_page() in place of direct struct page manipulation.
+Date:   Wed, 30 Aug 2023 14:27:53 -0400
+Message-Id: <20230830182753.55367-4-zi.yan@sent.com>
+X-Mailer: git-send-email 2.40.1
+In-Reply-To: <20230830182753.55367-1-zi.yan@sent.com>
+References: <20230830182753.55367-1-zi.yan@sent.com>
+Reply-To: Zi Yan <ziy@nvidia.com>
+MIME-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Sun, Aug 27, 2023 at 4:40=E2=80=AFAM Serge Semin <fancer.lancer@gmail.co=
-m> wrote:
->
-> On Thu, Aug 24, 2023 at 08:50:11PM +0800, Keguang Zhang wrote:
-> > This glue driver is created based on the arch-code
-> > implemented earlier with the platform-specific settings.
-> >
-> > Use syscon for SYSCON register access.
-> >
-> > Partially based on the previous work by Serge Semin.
-> >
-> > Signed-off-by: Keguang Zhang <keguang.zhang@gmail.com>
-> > ---
-> > V2 -> V3: Determine the device ID by physical
-> >           base address(suggested by Serge Semin)
-> >           Use regmap instead of regmap fields
-> >           Use syscon_regmap_lookup_by_phandle()
-> >           Some minor fixes
-> > V1 -> V2: Fix the build errors due to CONFIG_OF being unset
-> >           Change struct reg_field definitions to const
-> >           Rename the syscon property to "loongson,dwmac-syscon"
-> >           Add MII PHY mode for LS1C
-> >
-> >  drivers/net/ethernet/stmicro/stmmac/Kconfig   |  11 +
-> >  drivers/net/ethernet/stmicro/stmmac/Makefile  |   1 +
-> >  .../ethernet/stmicro/stmmac/dwmac-loongson1.c | 240 ++++++++++++++++++
-> >  3 files changed, 252 insertions(+)
-> >  create mode 100644 drivers/net/ethernet/stmicro/stmmac/dwmac-loongson1=
-.c
-> >
-> > diff --git a/drivers/net/ethernet/stmicro/stmmac/Kconfig b/drivers/net/=
-ethernet/stmicro/stmmac/Kconfig
-> > index 06c6871f8788..a2b9e289aa36 100644
-> > --- a/drivers/net/ethernet/stmicro/stmmac/Kconfig
-> > +++ b/drivers/net/ethernet/stmicro/stmmac/Kconfig
-> > @@ -239,6 +239,17 @@ config DWMAC_INTEL_PLAT
-> >         the stmmac device driver. This driver is used for the Intel Kee=
-m Bay
-> >         SoC.
-> >
-> > +config DWMAC_LOONGSON1
-> > +     tristate "Loongson1 GMAC support"
-> > +     default MACH_LOONGSON32
-> > +     depends on OF && (MACH_LOONGSON32 || COMPILE_TEST)
-> > +     help
-> > +       Support for ethernet controller on Loongson1 SoC.
-> > +
-> > +       This selects Loongson1 SoC glue layer support for the stmmac
-> > +       device driver. This driver is used for Loongson1-based boards
-> > +       like Loongson LS1B/LS1C.
-> > +
-> >  config DWMAC_TEGRA
-> >       tristate "NVIDIA Tegra MGBE support"
-> >       depends on ARCH_TEGRA || COMPILE_TEST
-> > diff --git a/drivers/net/ethernet/stmicro/stmmac/Makefile b/drivers/net=
-/ethernet/stmicro/stmmac/Makefile
-> > index 5b57aee19267..80e598bd4255 100644
-> > --- a/drivers/net/ethernet/stmicro/stmmac/Makefile
-> > +++ b/drivers/net/ethernet/stmicro/stmmac/Makefile
-> > @@ -29,6 +29,7 @@ obj-$(CONFIG_DWMAC_SUNXI)   +=3D dwmac-sunxi.o
-> >  obj-$(CONFIG_DWMAC_SUN8I)    +=3D dwmac-sun8i.o
-> >  obj-$(CONFIG_DWMAC_DWC_QOS_ETH)      +=3D dwmac-dwc-qos-eth.o
-> >  obj-$(CONFIG_DWMAC_INTEL_PLAT)       +=3D dwmac-intel-plat.o
-> > +obj-$(CONFIG_DWMAC_LOONGSON1)        +=3D dwmac-loongson1.o
-> >  obj-$(CONFIG_DWMAC_GENERIC)  +=3D dwmac-generic.o
-> >  obj-$(CONFIG_DWMAC_IMX8)     +=3D dwmac-imx.o
-> >  obj-$(CONFIG_DWMAC_TEGRA)    +=3D dwmac-tegra.o
-> > diff --git a/drivers/net/ethernet/stmicro/stmmac/dwmac-loongson1.c b/dr=
-ivers/net/ethernet/stmicro/stmmac/dwmac-loongson1.c
-> > new file mode 100644
-> > index 000000000000..347d842141e4
-> > --- /dev/null
-> > +++ b/drivers/net/ethernet/stmicro/stmmac/dwmac-loongson1.c
-> > @@ -0,0 +1,240 @@
-> > +// SPDX-License-Identifier: GPL-2.0-or-later
-> > +/*
-> > + * Loongson-1 DWMAC glue layer
-> > + *
-> > + * Copyright (C) 2011-2023 Keguang Zhang <keguang.zhang@gmail.com>
-> > + */
-> > +
-> > +#include <linux/mfd/syscon.h>
-> > +#include <linux/module.h>
-> > +#include <linux/of.h>
-> > +#include <linux/phy.h>
-> > +#include <linux/platform_device.h>
-> > +#include <linux/regmap.h>
-> > +
-> > +#include "stmmac.h"
-> > +#include "stmmac_platform.h"
-> > +
-> > +#define LS1X_GMAC0_BASE              (0xe10000)
->
-> > +#define LS1X_GMAC1_BASE              (0xe20000)
->
-> If LS1C doesn't have the second GMAC then what about changing the
-> macros name to LS1B_GMAC1_BASE?
->
-> > +
-> > +/* Loongson-1 SYSCON Registers */
-> > +#define LS1X_SYSCON0         (0x0)
-> > +#define LS1X_SYSCON1         (0x4)
-> > +
-> > +/* Loongson-1B SYSCON Register Bits */
->
-> > +#define GMAC1_USE_UART1              BIT(4)
-> > +#define GMAC1_USE_UART0              BIT(3)
-> > +
-> > +#define GMAC1_SHUT           BIT(13)
-> > +#define GMAC0_SHUT           BIT(12)
-> > +
-> > +#define GMAC1_USE_TXCLK              BIT(3)
-> > +#define GMAC0_USE_TXCLK              BIT(2)
-> > +#define GMAC1_USE_PWM23              BIT(1)
-> > +#define GMAC0_USE_PWM01              BIT(0)
-> > +
-> > +/* Loongson-1C SYSCON Register Bits */
-> > +#define GMAC_SHUT            BIT(6)
-> > +
-> > +#define PHY_INTF_SELI                GENMASK(30, 28)
->
-> IMO having the SoC-specific prefixes (LS1B_ and LS1C_) in these names
-> would make the driver a bit more readable. But it's up to you to
-> decide.
->
-> > +#define PHY_INTF_SELI_SHIFT  28
->
-> Use FIELD_PREP():
-> #define PHY_INTF_MII                    FIELD_PREP(PHY_INTF_SELI, 0)
-> #define PHY_INTF_RMII                   FIELD_PREP(PHY_INTF_SELI, 4)
->
-> > +
-> > +struct ls1x_dwmac_syscon {
-> > +     int (*syscon_init)(struct plat_stmmacenet_data *plat);
-> > +};
->
-> This struct is redundant. See further for details.
->
-> > +
-> > +struct ls1x_dwmac {
->
-> > +     unsigned long reg_base;
->
-> this field
->
-> > +     struct device *dev;
->
-> > +     struct plat_stmmacenet_data *plat_dat;
-> > +     const struct ls1x_dwmac_syscon *syscon;
->
-> and these fields are also redundant. See further for details.
->
-> > +     struct regmap *regmap;
-> > +};
-> > +
-> > +static int ls1b_dwmac_syscon_init(struct plat_stmmacenet_data *plat)
-> > +{
-> > +     struct ls1x_dwmac *dwmac =3D plat->bsp_priv;
-> > +     struct regmap *regmap =3D dwmac->regmap;
-> > +
->
-> > +     if ((dwmac->reg_base & LS1X_GMAC0_BASE) =3D=3D LS1X_GMAC0_BASE) {
->
-> Is it necessary to bitwise-and-ing? What if LS1X_GMAC0_BASE would be
-> just a full physical base address? Then you'll be able to just compare
-> the base addresses.
->
-> > +             switch (plat->phy_interface) {
-> > +             case PHY_INTERFACE_MODE_RGMII_ID:
-> > +                     regmap_update_bits(regmap, LS1X_SYSCON0,
-> > +                                        GMAC0_USE_TXCLK | GMAC0_USE_PW=
-M01,
-> > +                                        0);
-> > +                     break;
-> > +             case PHY_INTERFACE_MODE_MII:
-> > +                     regmap_update_bits(regmap, LS1X_SYSCON0,
-> > +                                        GMAC0_USE_TXCLK | GMAC0_USE_PW=
-M01,
-> > +                                        GMAC0_USE_TXCLK | GMAC0_USE_PW=
-M01);
-> > +                     break;
-> > +             default:
-> > +                     dev_err(dwmac->dev, "Unsupported PHY mode %u\n",
-> > +                             plat->phy_interface);
-> > +                     return -EOPNOTSUPP;
-> > +             }
-> > +
-> > +             regmap_update_bits(regmap, LS1X_SYSCON0, GMAC0_SHUT, 0);
->
-> > +     }
-> > +
-> > +     if ((dwmac->reg_base & LS1X_GMAC1_BASE) =3D=3D LS1X_GMAC1_BASE) {
->
-> else if?
->
-> > +             regmap_update_bits(regmap, LS1X_SYSCON0,
-> > +                                GMAC1_USE_UART1 | GMAC1_USE_UART0,
-> > +                                GMAC1_USE_UART1 | GMAC1_USE_UART0);
-> > +
-> > +             switch (plat->phy_interface) {
-> > +             case PHY_INTERFACE_MODE_RGMII_ID:
-> > +                     regmap_update_bits(regmap, LS1X_SYSCON1,
-> > +                                        GMAC1_USE_TXCLK | GMAC1_USE_PW=
-M23,
-> > +                                        0);
-> > +
-> > +                     break;
-> > +             case PHY_INTERFACE_MODE_MII:
-> > +                     regmap_update_bits(regmap, LS1X_SYSCON1,
-> > +                                        GMAC1_USE_TXCLK | GMAC1_USE_PW=
-M23,
-> > +                                        GMAC1_USE_TXCLK | GMAC1_USE_PW=
-M23);
-> > +                     break;
-> > +             default:
-> > +                     dev_err(dwmac->dev, "Unsupported PHY mode %u\n",
-> > +                             plat->phy_interface);
-> > +                     return -EOPNOTSUPP;
-> > +             }
-> > +
-> > +             regmap_update_bits(regmap, LS1X_SYSCON1, GMAC1_SHUT, 0);
->
-> > +     }
->
-> else {
->         dev_err(...)
->         return -EINVAL;
-> }
-> ?
->
-> * unless you have some more DW GMACs on the SoC which don't require the
-> syscon setups.
->
-> > +
-> > +     return 0;
-> > +}
-> > +
-> > +static int ls1c_dwmac_syscon_init(struct plat_stmmacenet_data *plat)
-> > +{
-> > +     struct ls1x_dwmac *dwmac =3D plat->bsp_priv;
-> > +     struct regmap *regmap =3D dwmac->regmap;
-> > +
-> > +     switch (plat->phy_interface) {
-> > +     case PHY_INTERFACE_MODE_MII:
->
-> > +             regmap_update_bits(regmap, LS1X_SYSCON1, PHY_INTF_SELI, 0=
-);
->
->
->                 regmap_update_bits(regmap, LS1X_SYSCON1, PHY_INTF_SELI,
->                                    PHY_INTF_MII);
->
-> > +             break;
-> > +     case PHY_INTERFACE_MODE_RMII:
->
-> > +             regmap_update_bits(regmap, LS1X_SYSCON1, PHY_INTF_SELI,
-> > +                                4 << PHY_INTF_SELI_SHIFT);
->
->                 regmap_update_bits(regmap, LS1X_SYSCON1, PHY_INTF_SELI,
->                                    PHY_INTF_RMII);
->
-> > +             break;
-> > +     default:
-> > +             dev_err(dwmac->dev, "Unsupported PHY-mode %u\n",
-> > +                     plat->phy_interface);
-> > +             return -EOPNOTSUPP;
-> > +     }
-> > +
-> > +     regmap_update_bits(regmap, LS1X_SYSCON0, GMAC0_SHUT, 0);
-> > +
-> > +     return 0;
-> > +}
-> > +
->
-> > +static const struct ls1x_dwmac_syscon ls1b_dwmac_syscon =3D {
-> > +     .syscon_init =3D ls1b_dwmac_syscon_init,
-> > +};
-> > +
-> > +static const struct ls1x_dwmac_syscon ls1c_dwmac_syscon =3D {
-> > +     .syscon_init =3D ls1c_dwmac_syscon_init,
-> > +};
->
-> This can be dropped. See the next comment for details.
->
-> > +
-> > +static int ls1x_dwmac_init(struct platform_device *pdev, void *priv)
-> > +{
-> > +     struct ls1x_dwmac *dwmac =3D priv;
-> > +     struct resource *res;
-> > +     int ret;
-> > +
->
-> > +     res =3D platform_get_resource(pdev, IORESOURCE_MEM, 0);
-> > +     if (!res) {
-> > +             dev_err(&pdev->dev, "Could not get IO_MEM resources\n");
-> > +             return -EINVAL;
-> > +     }
-> > +     dwmac->reg_base =3D (unsigned long)res->start;
->
-> What about moving this to ls1b_dwmac_syscon_init() seeing it's used
-> for LS1B only? Thus you won't need to have the reg_base defined in the
-> private data and can get rid from the ls1x_dwmac_init() method setting
-> the ls1b_dwmac_syscon_init() and ls1c_dwmac_syscon_init() pointers
-> directly to the device match data.
->
-> > +
-> > +     if (dwmac->syscon->syscon_init) {
-> > +             ret =3D dwmac->syscon->syscon_init(dwmac->plat_dat);
-> > +             if (ret)
-> > +                     return ret;
-> > +     }
-> > +
-> > +     return 0;
-> > +}
-> > +
-> > +static int ls1x_dwmac_probe(struct platform_device *pdev)
-> > +{
-> > +     struct plat_stmmacenet_data *plat_dat;
-> > +     struct stmmac_resources stmmac_res;
-> > +     struct regmap *regmap;
-> > +     struct ls1x_dwmac *dwmac;
->
-> > +     const struct ls1x_dwmac_syscon *syscon;
->
-> This can be replaced with just
-> int (*init)(struct platform_device *pdev, void *priv);
->
-> > +     int ret;
-> > +
-> > +     ret =3D stmmac_get_platform_resources(pdev, &stmmac_res);
-> > +     if (ret)
-> > +             return ret;
-> > +
-> > +     /* Probe syscon */
-> > +     regmap =3D syscon_regmap_lookup_by_phandle(pdev->dev.of_node,
-> > +                                              "loongson,ls1-syscon");
-> > +     if (IS_ERR(regmap)) {
->
-> > +             ret =3D PTR_ERR(regmap);
-> > +             dev_err(&pdev->dev, "Unable to map syscon: %d\n", ret);
-> > +             return ret;
->
-> return dev_err_probe(&pdev->dev, PTR_ERR(regmap), "Unable to find syscon\=
-n");
->
-> > +     }
-> > +
->
-> > +     syscon =3D of_device_get_match_data(&pdev->dev);
->
-> init =3D of_device_get_match_data(&pdev->dev);
->
-> > +     if (!syscon) {
-> > +             dev_err(&pdev->dev, "No of match data provided\n");
-> > +             return -EINVAL;
-> > +     }
-> > +
-> > +     dwmac =3D devm_kzalloc(&pdev->dev, sizeof(*dwmac), GFP_KERNEL);
-> > +     if (!dwmac)
-> > +             return -ENOMEM;
-> > +
-> > +     plat_dat =3D stmmac_probe_config_dt(pdev, stmmac_res.mac);
-> > +     if (IS_ERR(plat_dat)) {
-> > +             dev_err(&pdev->dev, "dt configuration failed\n");
-> > +             return PTR_ERR(plat_dat);
-> > +     }
-> > +
-> > +     plat_dat->bsp_priv =3D dwmac;
->
-> > +     plat_dat->init =3D ls1x_dwmac_init;
->
-> plat_dat->init =3D init;
->
-> > +     dwmac->dev =3D &pdev->dev;
-> > +     dwmac->plat_dat =3D plat_dat;
-> > +     dwmac->syscon =3D syscon;
-> > +     dwmac->regmap =3D regmap;
-> > +
-> > +     ret =3D stmmac_pltfr_probe(pdev, plat_dat, &stmmac_res);
-> > +     if (ret)
-> > +             goto err_remove_config_dt;
-> > +
-> > +     return 0;
-> > +
-> > +err_remove_config_dt:
-> > +     stmmac_remove_config_dt(pdev, plat_dat);
-> > +
-> > +     return ret;
-> > +}
-> > +
-> > +static const struct of_device_id ls1x_dwmac_match[] =3D {
->
-> > +     { .compatible =3D "loongson,ls1b-gmac", .data =3D &ls1b_dwmac_sys=
-con, },
-> > +     { .compatible =3D "loongson,ls1c-emac", .data =3D &ls1c_dwmac_sys=
-con, },
->
-> { .compatible =3D "loongson,ls1b-gmac", .data =3D &ls1b_dwmac_syscon_init=
-, },
-> { .compatible =3D "loongson,ls1c-emac", .data =3D &ls1c_dwmac_syscon_init=
-, },
->
-> Thus you can simplify the driver by:
-> 1. dropping ls1x_dwmac_syscon definition and its instances.
-> 2. dropping three redundant fields from the ls1x_dwmac structure.
-> 3. dropping the ls1x_dwmac_init() method.
-> Sounds like worth it.)
->
-> Note if no further driver update is planned then you can drop the
-> ls1x_dwmac->dev field too. Otherwise you can keep it seeing some of
-> the plat_stmmacenet_data data callbacks do have any device instance
-> passed.
->
-All done in v4.
-Thanks!
+From: Zi Yan <ziy@nvidia.com>
 
-> -Serge(y)
->
-> > +     { }
-> > +};
-> > +MODULE_DEVICE_TABLE(of, ls1x_dwmac_match);
-> > +
-> > +static struct platform_driver ls1x_dwmac_driver =3D {
-> > +     .probe =3D ls1x_dwmac_probe,
-> > +     .remove_new =3D stmmac_pltfr_remove,
-> > +     .driver =3D {
-> > +             .name =3D "loongson1-dwmac",
-> > +             .of_match_table =3D ls1x_dwmac_match,
-> > +     },
-> > +};
-> > +module_platform_driver(ls1x_dwmac_driver);
-> > +
-> > +MODULE_AUTHOR("Keguang Zhang <keguang.zhang@gmail.com>");
-> > +MODULE_DESCRIPTION("Loongson1 DWMAC glue layer");
-> > +MODULE_LICENSE("GPL");
-> > --
-> > 2.39.2
-> >
-> >
+__flush_dcache_pages() is called during hugetlb migration via
+migrate_pages() -> migrate_hugetlbs() -> unmap_and_move_huge_page()
+-> move_to_new_folio() -> flush_dcache_folio(). And with hugetlb and
+without sparsemem vmemmap, struct page is not guaranteed to be contiguous
+beyond a section. Use nth_page() instead.
 
+Signed-off-by: Zi Yan <ziy@nvidia.com>
+---
+ arch/mips/mm/cache.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-
+diff --git a/arch/mips/mm/cache.c b/arch/mips/mm/cache.c
+index 02042100e267..7f830634dbe7 100644
+--- a/arch/mips/mm/cache.c
++++ b/arch/mips/mm/cache.c
+@@ -117,7 +117,7 @@ void __flush_dcache_pages(struct page *page, unsigned i=
+nt nr)
+ 	 * get faulted into the tlb (and thus flushed) anyways.
+ 	 */
+ 	for (i =3D 0; i < nr; i++) {
+-		addr =3D (unsigned long)kmap_local_page(page + i);
++		addr =3D (unsigned long)kmap_local_page(nth_page(page, i));
+ 		flush_data_cache_page(addr);
+ 		kunmap_local((void *)addr);
+ 	}
 --=20
-Best regards,
+2.40.1
 
-Keguang Zhang

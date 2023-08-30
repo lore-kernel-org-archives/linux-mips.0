@@ -2,178 +2,145 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id F3715C83F18
-	for <linux-mips@archiver.kernel.org>; Wed, 30 Aug 2023 18:56:23 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 4AC60C83F17
+	for <linux-mips@archiver.kernel.org>; Wed, 30 Aug 2023 18:56:27 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244686AbjH3S4W (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 30 Aug 2023 14:56:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53994 "EHLO
+        id S1344004AbjH3S4Y (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 30 Aug 2023 14:56:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60700 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343758AbjH3Qo4 (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 30 Aug 2023 12:44:56 -0400
-Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6CDE19A
-        for <linux-mips@vger.kernel.org>; Wed, 30 Aug 2023 09:44:53 -0700 (PDT)
-Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-592210fe8easo81785747b3.3
-        for <linux-mips@vger.kernel.org>; Wed, 30 Aug 2023 09:44:53 -0700 (PDT)
+        with ESMTP id S245140AbjH3OfL (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 30 Aug 2023 10:35:11 -0400
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93B37194
+        for <linux-mips@vger.kernel.org>; Wed, 30 Aug 2023 07:35:08 -0700 (PDT)
+Received: by mail-ej1-x62d.google.com with SMTP id a640c23a62f3a-99df431d4bfso746885666b.1
+        for <linux-mips@vger.kernel.org>; Wed, 30 Aug 2023 07:35:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20221208; t=1693413893; x=1694018693; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:in-reply-to:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=Q7U5WETyc0Qx792+SyKBjLV43d3DHT0ObMpMrFVoeXw=;
-        b=Vrqu6jdVSxGa28aE1migk5YVHh9PHn+K3BQigSsynTqZy+1FdBGBQl1nQH4In9WVRs
-         KF+yQOaHMyhG/7vylvJ5xFxpXhxbdaWq++yLYUP/fN2VQ82tBRyWoQyVgRPj/MMHCpZe
-         jO+0V9PUab495XMFnTawLOr1RRUfzotX6k9V6ER1+dm9TYtelUtxG92oglhZ+G48OHTA
-         bw77cd5ga08rV8S2iervR+8tUMuXpINKvMhop7uskl+N/C/qylZpwCA4vMTQyd1AjsSG
-         0geLp1xw/hWTZsN/r98ZAoO7y0K3ubKpSdpRpvOm2LmVQAtpWFwGs0HAi3r6ak9bzn/q
-         y+rw==
+        d=linaro.org; s=google; t=1693406107; x=1694010907; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=HWEvSMgNacJqUkTieejzfG9YUtgYVDcl76TESgQKKR4=;
+        b=fXoT+9vAMmL8/ramgzQkUNoMjGWwLV54SUJyCrrxE5FYpJa9edxgRiNkFI3rXg4ai5
+         1meMnsFWXsUFENt6l5vtZlNvZsnBcPPUU5p3GKlETQ/sIocRBM+xN+Wxfs/abZmsHlhm
+         Y5BmHTTBOno5UgJ1wDwuOLQOBKRH9r7bBuMFnVEbDeFh6Tg7mU+SO5DGXFxHhdo7fVdU
+         isy1a5aYsO7Jg8B2dR7JfOhYuGj8AYg6B4Oh3EurO3AaBi9TqfzulWoRyR05sc4Xc579
+         2zNBvzca/UbsqtamuRkeYhH0jFNw5lHx06mdF34XUwZKgtEvs+tuTWJTRqiQ/BLsohrP
+         W8rw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20221208; t=1693413893; x=1694018693;
-        h=cc:to:from:subject:message-id:mime-version:in-reply-to:date
+        d=1e100.net; s=20221208; t=1693406107; x=1694010907;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Q7U5WETyc0Qx792+SyKBjLV43d3DHT0ObMpMrFVoeXw=;
-        b=S15g3GiArJf8ZgZlQchl7bAxROHSknjN9EpYSV7Sf9M0N0pDtlf2LdbcdcPIbawmXt
-         LTqAyDtqF1+UfgzT9i+xn+3NPPEn2r1BcJFw7y/ZalJ/p1Ra/LZ7oSdLiKITP7NXTo2s
-         WCzwhFcOZ/LaQfkNdDLMlOjVS0aV0o4XNweg+mxNlcwAhV1bE4zDGq4y0xuYcfX7vlGc
-         jvmQs/XdcFz6wZgIj2y0vkYxfcHI79WFfwP5EQCS4xn58aK1gh1iFXaSlqVnjG4tCqxK
-         IGxjyAleVL3mVbwMZp78f65tTgEBmFsOpAsJ+CuA6RDJOadyxa8wEx4z9FkhQavWk9/2
-         Ee2Q==
-X-Gm-Message-State: AOJu0YyP8tZaKjiWR9IXZmkWiDu2lvdyV5nPaNliLy0sNX2mAqTaJ0sD
-        Cmv8BZxG/Z8jf1SCEg1hIkIbKVMkbCzEqsRwZg==
-X-Google-Smtp-Source: AGHT+IHtp9pD/5ci3MqPyr+0sXpcwrOb70482adH4y9FFBhT1onMN4Y2Yo7VfYMaFeFIQUgnoauWykiqo7sAzbNhxQ==
-X-Received: from ackerleytng-ctop.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:13f8])
- (user=ackerleytng job=sendgmr) by 2002:a81:eb0b:0:b0:57a:793:7fb0 with SMTP
- id n11-20020a81eb0b000000b0057a07937fb0mr78438ywm.3.1693413893177; Wed, 30
- Aug 2023 09:44:53 -0700 (PDT)
-Date:   Wed, 30 Aug 2023 16:44:51 +0000
-In-Reply-To: <30ffe039-c9e2-b996-500d-5e11bf6ea789@linux.intel.com> (message
- from Binbin Wu on Wed, 30 Aug 2023 23:12:19 +0800)
-Mime-Version: 1.0
-Message-ID: <diqz5y4wfpj0.fsf@ackerleytng-ctop.c.googlers.com>
-Subject: Re: [RFC PATCH v11 12/29] KVM: Add KVM_CREATE_GUEST_MEMFD ioctl() for
- guest-specific backing memory
-From:   Ackerley Tng <ackerleytng@google.com>
-To:     Binbin Wu <binbin.wu@linux.intel.com>
-Cc:     seanjc@google.com, kvm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org, pbonzini@redhat.com, maz@kernel.org,
-        oliver.upton@linux.dev, chenhuacai@kernel.org, mpe@ellerman.id.au,
-        anup@brainfault.org, paul.walmsley@sifive.com, palmer@dabbelt.com,
-        aou@eecs.berkeley.edu, willy@infradead.org,
-        akpm@linux-foundation.org, paul@paul-moore.com, jmorris@namei.org,
-        serge@hallyn.com, chao.p.peng@linux.intel.com, tabba@google.com,
-        jarkko@kernel.org, yu.c.zhang@linux.intel.com,
-        vannapurve@google.com, mail@maciej.szmigiero.name, vbabka@suse.cz,
-        david@redhat.com, qperret@google.com, michael.roth@amd.com,
-        wei.w.wang@intel.com, liam.merwick@oracle.com,
-        isaku.yamahata@gmail.com, kirill.shutemov@linux.intel.com
-Content-Type: text/plain; charset="UTF-8"
+        bh=HWEvSMgNacJqUkTieejzfG9YUtgYVDcl76TESgQKKR4=;
+        b=UGX45CdAMkC9HqPWIp4L0wKPaLjvgbCAz1JYhCo3TMXqslb/rguxVqRdvsh+Lqbka4
+         pXiIPTINgh2ANo7wY8AcfYQMbsLxcLM+DhVoDAIB7GSXj6gcyXVjBqDn3p7F8Fr/8csA
+         5xxcwaK6AFFDaGTnR22xyDMvs8pi8YYSKeu0Ml0FTGOVQEnqPbZ4wBd1gOpa+l3GuTFu
+         t24xwQrBlzAERN20NHt8TkVWQusBQtyViXe3S+GjsCxiFEFl0jMlVhAXtw8B9DodVadh
+         opQ06vSIXdcCRV+cH1hv4wzhILWaLXj+8v0Xs1cgNpRulgU4YzjoI66z+zVOID8gn/Uw
+         ydcg==
+X-Gm-Message-State: AOJu0YygTER3svmZxQFbOY5jSkOp2X/2/FOL9ph1qsrgwcMkdLpVi8gK
+        9k8QDIMp3sHVxhs+Pp+ARyswLg==
+X-Google-Smtp-Source: AGHT+IG61XeRKRMr0t+dXqrDi4RK7A9HWvGFxAWqK1wi7P7kP2CltaFkStkaGLtj0eMm3le5F8DlFA==
+X-Received: by 2002:a17:906:5301:b0:9a5:a247:5bbc with SMTP id h1-20020a170906530100b009a5a2475bbcmr1564429ejo.28.1693406107032;
+        Wed, 30 Aug 2023 07:35:07 -0700 (PDT)
+Received: from [192.168.0.22] (77-252-46-238.static.ip.netia.com.pl. [77.252.46.238])
+        by smtp.gmail.com with ESMTPSA id q22-20020a170906361600b0099bd6026f45sm7292611ejb.198.2023.08.30.07.35.05
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 30 Aug 2023 07:35:06 -0700 (PDT)
+Message-ID: <3412e871-ae2b-bed0-88fb-2272f9db3af0@linaro.org>
+Date:   Wed, 30 Aug 2023 16:35:05 +0200
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.14.0
+Subject: Re: [PATCH v2] dt-bindings: interrupt-controller: loongson,liointc:
+ Fix warnings about liointc-2.0
+Content-Language: en-US
+To:     Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Binbin Zhou <zhoubb.aaron@gmail.com>
+Cc:     Binbin Zhou <zhoubinbin@loongson.cn>,
+        Huacai Chen <chenhuacai@loongson.cn>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        loongson-kernel@lists.loongnix.cn, devicetree@vger.kernel.org,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        linux-mips@vger.kernel.org, diasyzhang@tencent.com,
+        linux-kernel@vger.kernel.org
+References: <20230821061315.3416836-1-zhoubinbin@loongson.cn>
+ <e62185ca-cdf6-bde9-ad46-f4150db9ed6d@linaro.org>
+ <CAMpQs4JhfuB4=s9VFc+xmw_+8h5u2EwPdM_0x2vO_=SYabAAxw@mail.gmail.com>
+ <6ba31912-6738-6156-d5f4-3c8d3a3ca7bc@linaro.org>
+ <CAMpQs4+GiExt9uMmV1pf8gg8rFwWxbLkx9mdW7hY9xxXDOza3Q@mail.gmail.com>
+ <d11873a1-b552-71f5-1100-7464687f8bb4@linaro.org>
+ <a084e6e9-46b0-42ef-b500-69c114ae11b2@flygoat.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+In-Reply-To: <a084e6e9-46b0-42ef-b500-69c114ae11b2@flygoat.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Binbin Wu <binbin.wu@linux.intel.com> writes:
-
->> <snip>
+On 30/08/2023 05:59, Jiaxun Yang wrote:
+> 
+> 
+> 在 2023/8/25 20:56, Krzysztof Kozlowski 写道:
+> [...]
+>> How did you sneak this property? The version - v2 - which was reviewed
+>> by Rob:
+>> https://lore.kernel.org/all/20190905144316.12527-7-jiaxun.yang@flygoat.com/
+>> did not have it.
 >>
->> +static long kvm_gmem_allocate(struct inode *inode, loff_t offset, loff_t len)
->> +{
->> +	struct address_space *mapping = inode->i_mapping;
->> +	pgoff_t start, index, end;
->> +	int r;
->> +
->> +	/* Dedicated guest is immutable by default. */
->> +	if (offset + len > i_size_read(inode))
->> +		return -EINVAL;
->> +
->> +	filemap_invalidate_lock_shared(mapping);
->> +
->> +	start = offset >> PAGE_SHIFT;
->> +	end = (offset + len) >> PAGE_SHIFT;
->> +
->> +	r = 0;
->> +	for (index = start; index < end; ) {
->> +		struct folio *folio;
->> +
->> +		if (signal_pending(current)) {
->> +			r = -EINTR;
->> +			break;
->> +		}
->> +
->> +		folio = kvm_gmem_get_folio(inode, index);
->> +		if (!folio) {
->> +			r = -ENOMEM;
->> +			break;
->> +		}
->> +
->> +		index = folio_next_index(folio);
->> +
->> +		folio_unlock(folio);
->> +		folio_put(folio);
-> May be a dumb question, why we get the folio and then put it immediately?
-> Will it make the folio be released back to the page allocator?
->
-
-I was wondering this too, but it is correct.
-
-In filemap_grab_folio(), the refcount is incremented in three places:
-
-+ When the folio is created in filemap_alloc_folio(), it is given a
-  refcount of 1 in
-
-    filemap_alloc_folio() -> folio_alloc() -> __folio_alloc_node() ->
-    __folio_alloc() -> __alloc_pages() -> get_page_from_freelist() ->
-    prep_new_page() -> post_alloc_hook() -> set_page_refcounted()
-
-+ Then, in filemap_add_folio(), the refcount is incremented twice:
-
-    + The first is from the filemap (1 refcount per page if this is a
-      hugepage):
-
-        filemap_add_folio() -> __filemap_add_folio() -> folio_ref_add()
-
-    + The second is a refcount from the lru list
-
-        filemap_add_folio() -> folio_add_lru() -> folio_get() ->
-        folio_ref_inc()
-
-In the other path, if the folio exists in the page cache (filemap), the
-refcount is also incremented through
-
-    filemap_grab_folio() -> __filemap_get_folio() -> filemap_get_entry()
-    -> folio_try_get_rcu()
-
-I believe all the branches in kvm_gmem_get_folio() are taking a refcount
-on the folio while the kernel does some work on the folio like clearing
-the folio in clear_highpage() or getting the next index, and then when
-done, the kernel does folio_put().
-
-This pattern is also used in shmem and hugetlb. :)
-
-I'm not sure whose refcount the folio_put() in kvm_gmem_allocate() is
-dropping though:
-
-+ The refcount for the filemap depends on whether this is a hugepage or
-  not, but folio_put() strictly drops a refcount of 1.
-+ The refcount for the lru list is just 1, but doesn't the page still
-  remain in the lru list?
-
->> +
->> +		/* 64-bit only, wrapping the index should be impossible. */
->> +		if (WARN_ON_ONCE(!index))
->> +			break;
->> +
->> +		cond_resched();
->> +	}
->> +
->> +	filemap_invalidate_unlock_shared(mapping);
->> +
->> +	return r;
->> +}
->> +
+>> Now v3 suddenly appears with Rob's review and this property:
+>> https://lore.kernel.org/all/20200112081416.722218-4-jiaxun.yang@flygoat.com/
 >>
->> <snip>
+>> Please help me understand this property appeared there and how did you
+>> get it reviewed?
+> Hi all,
+> 
+> It has been some years since this series was merged.
+> My vague memory tells me there was some off-list discussion made in IRC with
+> linux-arch folks and IRQ folks to come up with this binding design.
+
+We would not suggest you property which in the name has underscores and
+duplicates interrupt-map property.
+
+> 
+> In this case I guess I forgot to drop Rob's R-b tag when updating this patch
+> between reversions. I  apologize for any inconvenience this may have caused.
+
+
+> 
+>>
+>>>                                                  <0xffffffff>, /* int1 */
+>>>                                                  <0x00000000>, /* int2 */
+>>>                                                  <0x00000000>; /* int3 */
+>> So now you will keep bringing more hacks for a hacky property. No, this
+>> cannot go on.
+> 
+> What's the best way, in your opinion, to overhaul this property? As we don't
+> really care backward compatibility of DTBs on those systems we can just 
+> redesign it.
+
+Deprecate the property in the bindings, allow driver to work with or
+without it and finally drop it entirely from DTS.
+> 
+> A little bit background about this property, LIOINTC can route a 
+> interrupt to any of
+> 4 upstream core interrupt pins. Downstream interrupt devicies should not 
+> care about
+> which pin the interrupt go but we want to leave a knob in devicetree for 
+> performance
+> tuning. So we designed such property that use masks corresponding to 
+> each upsteam
+> interrupt pins to tell where should a interrupt go.
+
+
+Best regards,
+Krzysztof
+

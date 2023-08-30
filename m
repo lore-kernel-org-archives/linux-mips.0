@@ -2,110 +2,122 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 19FAFC6FA8F
-	for <linux-mips@archiver.kernel.org>; Wed, 30 Aug 2023 06:24:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5CE25C83F01
+	for <linux-mips@archiver.kernel.org>; Wed, 30 Aug 2023 18:55:59 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230435AbjH3GYX (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 30 Aug 2023 02:24:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49178 "EHLO
+        id S245418AbjH3Sz6 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 30 Aug 2023 14:55:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34528 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231588AbjH3GYA (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 30 Aug 2023 02:24:00 -0400
-Received: from dfw.source.kernel.org (dfw.source.kernel.org [139.178.84.217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFD43E9;
-        Tue, 29 Aug 2023 23:23:57 -0700 (PDT)
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by dfw.source.kernel.org (Postfix) with ESMTPS id 4DE6A62A11;
-        Wed, 30 Aug 2023 06:23:57 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id ADCB1C433C7;
-        Wed, 30 Aug 2023 06:23:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1693376636;
-        bh=RYSnPcWKe633760Uix59PDBhfOKOvleACAnROEZxNeE=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=W0JiNj0qryyt6+tgjN+v22hFaVrF4TtDXaTGhshK1A60gI+oEBquXQ24WyIvRlFlo
-         XMsD3Ece5ktC+vLU1xTnx4D8GbmlOxXUjIHlrDSry7RnM9t+JKEGVlQuj2579tHDj2
-         9slPeuf0x/+6HTRp7wCn+x+1j/Z08l7bFC9Onmnz+DBZtkmHrx75R0XiR2SbJOBGuP
-         zqC0Lf1GS6bXD5+dV4uneWoKUARtTkKqVXzyncenZs3jJ45l5HPTyuaf045VhvMqwR
-         jCIifF6sops5o7jj3zwqrdeUptG87YMPvLDUriZO54fDYUhHxfwMhH3L2UOTnmr0p0
-         2Vo4L9kX4XYAw==
-Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-99bf1f632b8so702763466b.1;
-        Tue, 29 Aug 2023 23:23:56 -0700 (PDT)
-X-Gm-Message-State: AOJu0YxpfFSjEDz1z/0E2mMymphgyvPs8tCzbfn2IpXZfUx/4zXEdv69
-        EaiR0N/T8DVvuhgTMRS5OJCMB6JnaIGMAK4myn8=
-X-Google-Smtp-Source: AGHT+IHw34WkfmCXFTSf4XA+iMg7UzvONtAWWlBKIoZBaadfF6M0zvmKa9Ot/m5tpS4tEkMHn3FvLUJXjo6h9oxNiVs=
-X-Received: by 2002:a17:906:cc18:b0:9a1:ddb9:6547 with SMTP id
- ml24-20020a170906cc1800b009a1ddb96547mr936705ejb.57.1693376634841; Tue, 29
- Aug 2023 23:23:54 -0700 (PDT)
-MIME-Version: 1.0
-References: <1692434183-2054-1-git-send-email-yangtiezhu@loongson.cn>
- <ZOxkt/6EkQIy+Jkt@alpha.franken.de> <ZO4Mdr9/XUkXDK9j@alpha.franken.de>
-In-Reply-To: <ZO4Mdr9/XUkXDK9j@alpha.franken.de>
-From:   Huacai Chen <chenhuacai@kernel.org>
-Date:   Wed, 30 Aug 2023 14:23:42 +0800
-X-Gmail-Original-Message-ID: <CAAhV-H4XDRGkFaqyOnTyDQo8M=nEUYf4B8kSiEWQpq6QB-yz5g@mail.gmail.com>
-Message-ID: <CAAhV-H4XDRGkFaqyOnTyDQo8M=nEUYf4B8kSiEWQpq6QB-yz5g@mail.gmail.com>
-Subject: Re: [PATCH v4 0/4] Modify die() for MIPS
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc:     Tiezhu Yang <yangtiezhu@loongson.cn>,
-        "Maciej W. Rozycki" <macro@orcam.me.uk>,
+        with ESMTP id S1343809AbjH3RBN (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 30 Aug 2023 13:01:13 -0400
+Received: from angie.orcam.me.uk (angie.orcam.me.uk [IPv6:2001:4190:8020::34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E21FB19A;
+        Wed, 30 Aug 2023 10:01:05 -0700 (PDT)
+Received: by angie.orcam.me.uk (Postfix, from userid 500)
+        id 396A392009C; Wed, 30 Aug 2023 19:01:04 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by angie.orcam.me.uk (Postfix) with ESMTP id 2A5C692009B;
+        Wed, 30 Aug 2023 18:01:04 +0100 (BST)
+Date:   Wed, 30 Aug 2023 18:01:04 +0100 (BST)
+From:   "Maciej W. Rozycki" <macro@orcam.me.uk>
+To:     Huacai Chen <chenhuacai@kernel.org>
+cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Tiezhu Yang <yangtiezhu@loongson.cn>,
         linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
         loongson-kernel@lists.loongnix.cn
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH v4 0/4] Modify die() for MIPS
+In-Reply-To: <CAAhV-H4XDRGkFaqyOnTyDQo8M=nEUYf4B8kSiEWQpq6QB-yz5g@mail.gmail.com>
+Message-ID: <alpine.DEB.2.21.2308301619300.43104@angie.orcam.me.uk>
+References: <1692434183-2054-1-git-send-email-yangtiezhu@loongson.cn> <ZOxkt/6EkQIy+Jkt@alpha.franken.de> <ZO4Mdr9/XUkXDK9j@alpha.franken.de> <CAAhV-H4XDRGkFaqyOnTyDQo8M=nEUYf4B8kSiEWQpq6QB-yz5g@mail.gmail.com>
+User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Hi, Thomas,
+On Wed, 30 Aug 2023, Huacai Chen wrote:
 
-On Tue, Aug 29, 2023 at 11:44=E2=80=AFPM Thomas Bogendoerfer
-<tsbogend@alpha.franken.de> wrote:
->
-> On Mon, Aug 28, 2023 at 11:11:19AM +0200, Thomas Bogendoerfer wrote:
-> > On Sat, Aug 19, 2023 at 04:36:19PM +0800, Tiezhu Yang wrote:
-> > > v4:
-> > >   -- Add BUG() at the end of nmi_exception_handler()
-> > >   -- Return earlier in die() if notify_die() returns NOTIFY_STOP
-> > >   -- Update the patch titles and commit messages
-> > >
-> > > v3:
-> > >   -- Make each patch can be built without errors and warnings.
-> > >
-> > > v2:
-> > >   -- Update the commit message to give more detailed info, split into
-> > >      three individual patches, suggested by Maciej, thank you.
-> > >
-> > > Tiezhu Yang (4):
-> > >   MIPS: Add BUG() at the end of nmi_exception_handler()
-> > >   MIPS: Do not kill the task in die() if notify_die() returns
-> > >     NOTIFY_STOP
-> > >   MIPS: Return earlier in die() if notify_die() returns NOTIFY_STOP
-> > >   MIPS: Add identifier names to arguments of die() declaration
-> > >
-> > >  arch/mips/include/asm/ptrace.h |  2 +-
-> > >  arch/mips/kernel/traps.c       | 15 +++++++++------
-> > >  2 files changed, 10 insertions(+), 7 deletions(-)
+> > > series applied to mips-next.
 > >
-> > series applied to mips-next.
->
-> I've dropped the series again after feedback from Maciej, that this
-> still needs more changes.
-I feel a little surprised. This series has appeared for more than ten
-days and received some R-b, and we haven't seen any objections from
-Maciej. If there are really some bugs that need to be fixed, I think
-the normal operation is making additional patches...
+> > I've dropped the series again after feedback from Maciej, that this
+> > still needs more changes.
+> I feel a little surprised. This series has appeared for more than ten
+> days and received some R-b, and we haven't seen any objections from
+> Maciej. If there are really some bugs that need to be fixed, I think
+> the normal operation is making additional patches...
 
-Huacai
+ You haven't received any ack from me either, and I stopped reviewing the 
+series as it was taking too much of my time and mental effort and yet 
+changes were going in the wrong direction.  Silence never means an ack.
 
->
-> Thomas.
->
-> --
-> Crap can work. Given enough thrust pigs will fly, but it's not necessaril=
-y a
-> good idea.                                                [ RFC1925, 2.3 =
-]
+ It's up to the submitter to get things right and not to expect from the
+reviewer to get issues pointed at by finger one by one, effectively 
+demanding someone else's effort to get their own objectives complete even 
+with the most obvious things.
+
+ And then for a hypothetical case only that the submitter is not able to 
+verify.  For such cases the usual approach is to do nothing until an 
+actual real case is found.
+
+ Very simple such a change that one can verify to an acceptable degree
+that it is correct by just proofreading might be accepted anyway, but it 
+cannot be guaranteed.
+
+ The missed NMI case only proved the submitter didn't do their homework 
+and didn't track down all the call sites as expected with such a change, 
+and instead relied on reviewer's vigilance.
+
+ As to the changes, specifically:
+
+- 1/4 is bogus, the kernel must not BUG on user activities.  Most simply
+  die() should be told by the NMI caller that it must not return in this 
+  case and then it should ignore the NOTIFY_STOP condition.
+
+  I realise we may not be able to just return from the NMI handler to the 
+  location at CP0.ErrorEPC and continue, because owing to the privileged 
+  ISA design we won't be able to make such an NMI handler reentrant, let 
+  alone SMP-safe.  But it should have been given in the change description 
+  as rationale for not handling the NOTIFY_STOP condition for the NMI.
+
+  I leave it as an exercise to the reader to figure out why a returning 
+  NMI handler cannot be made reentrant.
+
+- 2/4 should be a one-liner to handle the NOTIFY_STOP condition just as 
+  with the x86 port, which I already (!) communicated, and which was (!!!) 
+  ignored.  There is no need to rewrite the rest of die() and make it more 
+  complex too just because it can be done.
+
+- 3/4 is not needed if 2/4 was done properly.  And as it stands it should 
+  have been folded into 2/4, because fixes to an own pending submission 
+  mustn't be made with a separate patch: the original change has to be 
+  corrected instead.
+
+- 4/4 is OK (and I believe the only one that actually got a Reviewed-by: 
+  tag).
+
+Most of these issues would have been avoided if the submitter made 
+themselves familiar with Documentation/process/submitting-patches.rst and 
+followed the rules specified there.
+
+ Otherwise this takes valuable reviewer resources that would best be used 
+elsewhere and it puts submitters of quality changes at a disadvantage, 
+which is not fair.
+
+ It is not our policy to accept known-broken changes and then fix them up 
+afterwards.  Changes are expected to be technically sound to the best of 
+everyone's involved knowledge and it's up to the submitter to prove that 
+it is the case and that a change is worth including.  You would have 
+learnt it from the document referred.  Nobody's perfect and issues may 
+slip through, but we need to make every effort so as to avoid it.
+
+ Mind that we're doing reviews as volunteers entirely in our free time we 
+might instead want to spend with friends or in another enjoyable way.  It 
+is not my day job to review random MIPS/Linux patches posted to a mailing 
+list.  Even composing this reply took a considerable amount of time and 
+effort, which would best be spent elsewhere, because I am talking obvious 
+things here and repeating Documentation/process/submitting-patches.rst 
+stuff.
+
+  Maciej

@@ -2,38 +2,37 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 40724C83F2E
-	for <linux-mips@archiver.kernel.org>; Thu, 31 Aug 2023 07:17:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D89D8C83F2B
+	for <linux-mips@archiver.kernel.org>; Thu, 31 Aug 2023 07:21:33 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237694AbjHaHRw (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 31 Aug 2023 03:17:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45808 "EHLO
+        id S232741AbjHaHVf (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 31 Aug 2023 03:21:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37934 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235662AbjHaHRw (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Thu, 31 Aug 2023 03:17:52 -0400
-X-Greylist: delayed 165 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 31 Aug 2023 00:17:46 PDT
-Received: from out-251.mta0.migadu.com (out-251.mta0.migadu.com [91.218.175.251])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0039E1A4;
-        Thu, 31 Aug 2023 00:17:45 -0700 (PDT)
+        with ESMTP id S230455AbjHaHVe (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Thu, 31 Aug 2023 03:21:34 -0400
+Received: from out-245.mta0.migadu.com (out-245.mta0.migadu.com [91.218.175.245])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1964F1A3
+        for <linux-mips@vger.kernel.org>; Thu, 31 Aug 2023 00:21:32 -0700 (PDT)
 Content-Type: text/plain;
         charset=us-ascii
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1693466264;
+        t=1693466094;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=DFazo8t+x34pBbM7FhZAQZ14ar3Xb4GsuBZugiC8qbg=;
-        b=TmoDr3ge1UyYX8ugRY7XZkb1xippW67sMxQbI3dFiX3Dbs/J/HBs2sO7VWfWEzPmxOfLQe
-        irrOtXTt8xSQ97Xkijkm0FIC9OgQEr/Td6ezNmKG3h7hR9QGia9r5MoB5IEtbw4+D4m6uq
-        CfCbsYqz98UwThxz+SvZ0LkR7PL5hUE=
+        bh=LgfDUD9JxgKk0bOKrlX8A97Lfcy1zdSTIsO3Ef+Irq8=;
+        b=uFnC/+7+D8DFe3uA+HDNBKNtTPnc4K9PHKGYfmxgN/OnXNuCUJUKklisT2ssOequlntqf7
+        kE5OIt+EhR7R3JGMyIoBAnAyT5ClJPL2kRmfHQqcLXZecAKLmTrTczRBTS3xOUsenQHSyX
+        0JHcJG6pZlRupddQsGT8QMOn6PmX2uk=
 Mime-Version: 1.0
-Subject: Re: [PATCH 2/3] use nth_page() in place of direct struct page
+Subject: Re: [PATCH 1/3] mm: use nth_page() in place of direct struct page
  manipulation.
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From:   Muchun Song <muchun.song@linux.dev>
-In-Reply-To: <20230830182753.55367-3-zi.yan@sent.com>
-Date:   Thu, 31 Aug 2023 15:17:15 +0800
+In-Reply-To: <20230830182753.55367-2-zi.yan@sent.com>
+Date:   Thu, 31 Aug 2023 15:14:15 +0800
 Cc:     Linux-MM <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>,
         linux-mips@vger.kernel.org,
         Andrew Morton <akpm@linux-foundation.org>,
@@ -43,9 +42,9 @@ Cc:     Linux-MM <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>,
         Mike Kravetz <mike.kravetz@oracle.com>,
         "Mike Rapoport (IBM)" <rppt@kernel.org>
 Content-Transfer-Encoding: 7bit
-Message-Id: <50EF53C6-0CE2-4256-B8AB-AE9BF290419D@linux.dev>
+Message-Id: <A40C2788-050A-4A1D-8804-5B718B72E879@linux.dev>
 References: <20230830182753.55367-1-zi.yan@sent.com>
- <20230830182753.55367-3-zi.yan@sent.com>
+ <20230830182753.55367-2-zi.yan@sent.com>
 To:     Zi Yan <ziy@nvidia.com>
 X-Migadu-Flow: FLOW_OUT
 Precedence: bulk
@@ -58,15 +57,14 @@ X-Mailing-List: linux-mips@vger.kernel.org
 > 
 > From: Zi Yan <ziy@nvidia.com>
 > 
-> When dealing with hugetlb pages, struct page is not guaranteed to be
-> contiguous on SPARSEMEM without VMEMMAP. Use nth_page() to handle it
-> properly.
+> When dealing with hugetlb pages, manipulating struct page pointers
+> directly can get to wrong struct page, since struct page is not guaranteed
+> to be contiguous on SPARSEMEM without VMEMMAP. Use nth_page() to handle
+> it properly.
 > 
-> Signed-off-by: Zi Yan <ziy@nvidia.com <mailto:ziy@nvidia.com>>
+> Signed-off-by: Zi Yan <ziy@nvidia.com>
 
 Reviewed-by: Muchun Song <songmuchun@bytedance.com>
 
-It's better to add a Fixes tag to the commit 38c1ddbde6.
-
-Thanks.
+Maybe 3 separate patches would be better for backporting purpose.
 

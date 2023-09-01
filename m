@@ -2,158 +2,115 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6390FCA0FE6
-	for <linux-mips@archiver.kernel.org>; Fri,  1 Sep 2023 08:23:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7CB9BCA0FE1
+	for <linux-mips@archiver.kernel.org>; Fri,  1 Sep 2023 14:27:08 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343885AbjIAIXd (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 1 Sep 2023 04:23:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34558 "EHLO
+        id S1349995AbjIAO1J (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 1 Sep 2023 10:27:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35702 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236869AbjIAIXc (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Fri, 1 Sep 2023 04:23:32 -0400
+        with ESMTP id S1349988AbjIAO1J (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Fri, 1 Sep 2023 10:27:09 -0400
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C86D193;
-        Fri,  1 Sep 2023 01:23:26 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61A5E10F8;
+        Fri,  1 Sep 2023 07:27:04 -0700 (PDT)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id CBCAF1F45E;
-        Fri,  1 Sep 2023 08:23:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1693556604; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
+        by smtp-out2.suse.de (Postfix) with ESMTPS id D36AA1F86C;
+        Fri,  1 Sep 2023 14:27:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1693578422; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=lM2jFMiCbU/7Z0Wt66YsVsUtlY4aIj0FUbivaBixA/c=;
-        b=zT4zGINVx2k3wPqz3jcmE9bmJBpBcsDBUwenKzhLerIp+oH2aCkG4+EXh39zRNryjQv5Db
-        syu8c53NOsHAVW9SIMV7rmXaawFxBmlGIS7oN+eGtRpy7NQAkXpdI57c9wkvRp8eiDiXja
-        uA4epJ/r7clJCygmuQc278PsV8l56iM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1693556604;
+        bh=QETxACuLG117Ppkadvcn1KtVg/Yq0288OgnzhzA/ULk=;
+        b=tTb6ATZYkM5FNNeKaXMkOL4QJI48iFJt1y+xae4e6Sni0Qo27M2NlefCoxXCM+ZPwuj5tY
+        r6xiCRU9xE1ETGEIZu5/kgrkooxMs/C9oh6EIsNPIXVUeTWz4BFtm8DB8Ne72nR4yY5uHC
+        CKnY5HhPDRktVXU0PL1grEur0ikDxHE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1693578422;
         h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
+         mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=lM2jFMiCbU/7Z0Wt66YsVsUtlY4aIj0FUbivaBixA/c=;
-        b=ZsrMXAmASwR20bAW12DsiBEXD871qEuKP0anx4duKH2O41WOTWfcG8WLKUJiaYTSgmrfs1
-        lQlapOLm5eLYniDg==
+        bh=QETxACuLG117Ppkadvcn1KtVg/Yq0288OgnzhzA/ULk=;
+        b=r9L0JRZVYTtkWaU2SguMwkS3pjaoQE7s9J2buuvT1wa6t0fpg65RTcSNZfXNjZynX0yed+
+        2ppvNK3qFb4vS+CA==
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 3A66A1358B;
-        Fri,  1 Sep 2023 08:23:24 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 8E69913A12;
+        Fri,  1 Sep 2023 14:27:02 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id BOk4DXyf8WREHQAAMHmgww
-        (envelope-from <vbabka@suse.cz>); Fri, 01 Sep 2023 08:23:24 +0000
-Message-ID: <2d9312bf-a5ad-0427-c197-fef6ea5cfe0a@suse.cz>
-Date:   Fri, 1 Sep 2023 10:23:23 +0200
+        id WKLZIbb08WQGYAAAMHmgww
+        (envelope-from <tzimmermann@suse.de>); Fri, 01 Sep 2023 14:27:02 +0000
+From:   Thomas Zimmermann <tzimmermann@suse.de>
+To:     mpe@ellerman.id.au, npiggin@gmail.com, christophe.leroy@csgroup.eu,
+        arnd@arndb.de, deller@gmx.de
+Cc:     linuxppc-dev@lists.ozlabs.org, linux-fbdev@vger.kernel.org,
+        linux-ia64@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+        linux-mips@vger.kernel.org, sparclinux@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linux-arch@vger.kernel.org,
+        Thomas Zimmermann <tzimmermann@suse.de>
+Subject: [PATCH 1/4] arch/powerpc: Remove trailing whitespaces
+Date:   Fri,  1 Sep 2023 16:16:33 +0200
+Message-ID: <20230901142659.31787-2-tzimmermann@suse.de>
+X-Mailer: git-send-email 2.41.0
+In-Reply-To: <20230901142659.31787-1-tzimmermann@suse.de>
+References: <20230901142659.31787-1-tzimmermann@suse.de>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.14.0
-Subject: Re: [RFC PATCH v11 10/29] mm: Add AS_UNMOVABLE to mark mapping as
- completely unmovable
-To:     Matthew Wilcox <willy@infradead.org>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Anup Patel <anup@brainfault.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Paul Moore <paul@paul-moore.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>, kvm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Chao Peng <chao.p.peng@linux.intel.com>,
-        Fuad Tabba <tabba@google.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Yu Zhang <yu.c.zhang@linux.intel.com>,
-        Vishal Annapurve <vannapurve@google.com>,
-        Ackerley Tng <ackerleytng@google.com>,
-        Maciej Szmigiero <mail@maciej.szmigiero.name>,
-        David Hildenbrand <david@redhat.com>,
-        Quentin Perret <qperret@google.com>,
-        Michael Roth <michael.roth@amd.com>,
-        Wang <wei.w.wang@intel.com>,
-        Liam Merwick <liam.merwick@oracle.com>,
-        Isaku Yamahata <isaku.yamahata@gmail.com>
-References: <20230718234512.1690985-1-seanjc@google.com>
- <20230718234512.1690985-11-seanjc@google.com>
- <20230725102403.xywjqlhyqkrzjok6@box.shutemov.name>
- <ZL/Fa4W2Ne9EVxoh@casper.infradead.org>
-Content-Language: en-US
-From:   Vlastimil Babka <vbabka@suse.cz>
-In-Reply-To: <ZL/Fa4W2Ne9EVxoh@casper.infradead.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On 7/25/23 14:51, Matthew Wilcox wrote:
-> On Tue, Jul 25, 2023 at 01:24:03PM +0300, Kirill A . Shutemov wrote:
->> On Tue, Jul 18, 2023 at 04:44:53PM -0700, Sean Christopherson wrote:
->> > diff --git a/mm/compaction.c b/mm/compaction.c
->> > index dbc9f86b1934..a3d2b132df52 100644
->> > --- a/mm/compaction.c
->> > +++ b/mm/compaction.c
->> > @@ -1047,6 +1047,10 @@ isolate_migratepages_block(struct compact_control *cc, unsigned long low_pfn,
->> >  		if (!mapping && (folio_ref_count(folio) - 1) > folio_mapcount(folio))
->> >  			goto isolate_fail_put;
->> >  
->> > +		/* The mapping truly isn't movable. */
->> > +		if (mapping && mapping_unmovable(mapping))
->> > +			goto isolate_fail_put;
->> > +
->> 
->> I doubt that it is safe to dereference mapping here. I believe the folio
->> can be truncated from under us and the mapping freed with the inode.
->> 
->> The folio has to be locked to dereference mapping safely (given that the
->> mapping is still tied to the folio).
-> 
-> There's even a comment to that effect later on in the function:
-> 
->                         /*
->                          * Only pages without mappings or that have a
->                          * ->migrate_folio callback are possible to migrate
->                          * without blocking. However, we can be racing with
->                          * truncation so it's necessary to lock the page
->                          * to stabilise the mapping as truncation holds
->                          * the page lock until after the page is removed
->                          * from the page cache.
->                          */
-> 
-> (that could be reworded to make it clear how dangerous dereferencing
-> ->mapping is without the lock ... and it does need to be changed to say
-> "folio lock" instead of "page lock", so ...)
-> 
-> How does this look?
-> 
->                         /*
->                          * Only folios without mappings or that have
->                          * a ->migrate_folio callback are possible to
->                          * migrate without blocking. However, we can
->                          * be racing with truncation, which can free
->                          * the mapping.  Truncation holds the folio lock
->                          * until after the folio is removed from the page
->                          * cache so holding it ourselves is sufficient.
->                          */
+Fix coding style. No functional changes.
 
-Incorporated to my attempt at a fix (posted separately per the requested
-process):
+Signed-off-by: Thomas Zimmermann <tzimmermann@suse.de>
+---
+ arch/powerpc/include/asm/machdep.h | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-https://lore.kernel.org/all/20230901082025.20548-2-vbabka@suse.cz/
+diff --git a/arch/powerpc/include/asm/machdep.h b/arch/powerpc/include/asm/machdep.h
+index 4f6e7d7ee388..933465ed4c43 100644
+--- a/arch/powerpc/include/asm/machdep.h
++++ b/arch/powerpc/include/asm/machdep.h
+@@ -10,7 +10,7 @@
+ #include <linux/export.h>
+ 
+ struct pt_regs;
+-struct pci_bus;	
++struct pci_bus;
+ struct device_node;
+ struct iommu_table;
+ struct rtc_time;
+@@ -78,8 +78,8 @@ struct machdep_calls {
+ 	unsigned char 	(*nvram_read_val)(int addr);
+ 	void		(*nvram_write_val)(int addr, unsigned char val);
+ 	ssize_t		(*nvram_write)(char *buf, size_t count, loff_t *index);
+-	ssize_t		(*nvram_read)(char *buf, size_t count, loff_t *index);	
+-	ssize_t		(*nvram_size)(void);		
++	ssize_t		(*nvram_read)(char *buf, size_t count, loff_t *index);
++	ssize_t		(*nvram_size)(void);
+ 	void		(*nvram_sync)(void);
+ 
+ 	/* Exception handlers */
+@@ -102,9 +102,9 @@ struct machdep_calls {
+ 	 */
+ 	long	 	(*feature_call)(unsigned int feature, ...);
+ 
+-	/* Get legacy PCI/IDE interrupt mapping */ 
++	/* Get legacy PCI/IDE interrupt mapping */
+ 	int		(*pci_get_legacy_ide_irq)(struct pci_dev *dev, int channel);
+-	
++
+ 	/* Get access protection for /dev/mem */
+ 	pgprot_t	(*phys_mem_access_prot)(struct file *file,
+ 						unsigned long pfn,
+-- 
+2.41.0
+

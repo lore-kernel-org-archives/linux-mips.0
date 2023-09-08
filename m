@@ -2,243 +2,218 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4C551EC8758
-	for <linux-mips@archiver.kernel.org>; Thu,  7 Sep 2023 19:35:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 8120CEE57E5
+	for <linux-mips@archiver.kernel.org>; Fri,  8 Sep 2023 07:42:37 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232297AbjIGTfB (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 7 Sep 2023 15:35:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51244 "EHLO
+        id S241672AbjIHHmj (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 8 Sep 2023 03:42:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43518 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229977AbjIGTfB (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Thu, 7 Sep 2023 15:35:01 -0400
-X-Greylist: delayed 4200 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 07 Sep 2023 12:34:55 PDT
-Received: from bee.tesarici.cz (bee.tesarici.cz [77.93.223.253])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACF37E47;
-        Thu,  7 Sep 2023 12:34:55 -0700 (PDT)
-Received: from meshulam.tesarici.cz (dynamic-2a00-1028-83b8-1e7a-4427-cc85-6706-c595.ipv6.o2.cz [IPv6:2a00:1028:83b8:1e7a:4427:cc85:6706:c595])
+        with ESMTP id S236549AbjIHHmh (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Fri, 8 Sep 2023 03:42:37 -0400
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBB7D1BD2;
+        Fri,  8 Sep 2023 00:42:28 -0700 (PDT)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by bee.tesarici.cz (Postfix) with ESMTPSA id EA87A18CBB2;
-        Thu,  7 Sep 2023 13:12:24 +0200 (CEST)
-Authentication-Results: mail.tesarici.cz; dmarc=fail (p=none dis=none) header.from=tesarici.cz
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=tesarici.cz; s=mail;
-        t=1694085145; bh=fbplRXoTU4SArEuqSCeWcBdBKDzKAfUk7UIh+zzJ294=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=UeWu1Ze8yhdkAQSYLwMwA5Evs8is8jd9+WRDve9QstEAJCVJk4EyPrZUvt2GlulJO
-         Acv8RNSZT4NRo56VbHVjN1Qces1eN30pA/Z8XXCRCYRiG42VIaxfqRB+JiaUWDiSNI
-         7vNLYKFtmaNGH7exnrZYJl77SUb4GDfp5VfGRbajxxQjYFEMgAhMtBIGZd04dwv9py
-         LsW5QNMFeGMU27vzeZa8jYcSznJj+rq7+myvFYGpQ5xn1ltALy9BQiZ0pdCtmt5J0/
-         dC6nWffmW3QcD4g/Ya4kxdbnZOi4vIJaCWhouPtZgmgytg1/Um76VBACnHThhWcUwa
-         sohl8kzvr6NyA==
-Date:   Thu, 7 Sep 2023 13:12:23 +0200
-From:   Petr =?UTF-8?B?VGVzYcWZw61r?= <petr@tesarici.cz>
-To:     Jonathan Corbet <corbet@lwn.net>
-Cc:     Petr Tesarik <petrtesarik@huaweicloud.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Juergen Gross <jgross@suse.com>,
-        Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Hyeonggon Yoo <42.hyeyoo@gmail.com>,
-        Petr Tesarik <petr.tesarik.ext@huawei.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        James Seo <james@equiv.tech>,
-        James Clark <james.clark@arm.com>,
-        Kees Cook <keescook@chromium.org>,
-        "moderated list:XEN HYPERVISOR ARM" <xen-devel@lists.xenproject.org>,
-        "moderated list:ARM PORT" <linux-arm-kernel@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:MIPS" <linux-mips@vger.kernel.org>,
-        "open list:XEN SWIOTLB SUBSYSTEM" <iommu@lists.linux.dev>,
-        "open list:SLAB ALLOCATOR" <linux-mm@kvack.org>,
-        Roberto Sassu <roberto.sassu@huaweicloud.com>
-Subject: Re: [PATCH v7 9/9] swiotlb: search the software IO TLB only if the
- device makes use of it
-Message-ID: <20230907131223.587c1a88@meshulam.tesarici.cz>
-In-Reply-To: <87il8wr348.fsf@meer.lwn.net>
-References: <cover.1690871004.git.petr.tesarik.ext@huawei.com>
-        <adea71bd1fa8660d4c3157a562431ad8127016d4.1690871004.git.petr.tesarik.ext@huawei.com>
-        <87a5uz3ob8.fsf@meer.lwn.net>
-        <87il8wr348.fsf@meer.lwn.net>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-suse-linux-gnu)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 2588421832;
+        Fri,  8 Sep 2023 07:42:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+        t=1694158947; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=NHJKcpKlZ/+yii6ZB0cLfqW7JVxO+ELAe/deKUrmJ80=;
+        b=0Tr1RiLsGK9TKLdxwSc9RwxLIVKmEae8PGUWUTGhYIhqkvcnxmKXE3HYt5+5SqUjjUpxEZ
+        DCTZmPbwNt5ToqgWZJ00UT0I0Plhw1i14U2HJUY0Px379BJbaU56+RSKEu8z+V/xOMo2xd
+        woPLeoFeQ7kp5dfAXicDw3PDice1ftM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+        s=susede2_ed25519; t=1694158947;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=NHJKcpKlZ/+yii6ZB0cLfqW7JVxO+ELAe/deKUrmJ80=;
+        b=r9UDzDCi5/bP4K3dBarcJVpQtk/FZHh8rlyYCrXu3EqfT7loeAs6cgqxhTivXkBssY2kKX
+        lV8TgWuOzutVQyDw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 96D2A132F2;
+        Fri,  8 Sep 2023 07:42:26 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id WIYoJGLQ+mTfFQAAMHmgww
+        (envelope-from <vbabka@suse.cz>); Fri, 08 Sep 2023 07:42:26 +0000
+From:   Vlastimil Babka <vbabka@suse.cz>
+To:     seanjc@google.com
+Cc:     ackerleytng@google.com, akpm@linux-foundation.org,
+        anup@brainfault.org, aou@eecs.berkeley.edu,
+        chao.p.peng@linux.intel.com, chenhuacai@kernel.org,
+        david@redhat.com, isaku.yamahata@gmail.com, jarkko@kernel.org,
+        jmorris@namei.org, kirill.shutemov@linux.intel.com,
+        kvm-riscv@lists.infradead.org, kvm@vger.kernel.org,
+        kvmarm@lists.linux.dev, liam.merwick@oracle.com,
+        linux-arm-kernel@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-mm@kvack.org,
+        linux-riscv@lists.infradead.org,
+        linux-security-module@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, mail@maciej.szmigiero.name,
+        maz@kernel.org, michael.roth@amd.com, mpe@ellerman.id.au,
+        oliver.upton@linux.dev, palmer@dabbelt.com,
+        paul.walmsley@sifive.com, paul@paul-moore.com, pbonzini@redhat.com,
+        qperret@google.com, serge@hallyn.com, tabba@google.com,
+        vannapurve@google.com, vbabka@suse.cz, wei.w.wang@intel.com,
+        willy@infradead.org, yu.c.zhang@linux.intel.com
+Subject: [PATCH gmem FIXUP v2] mm, compaction: make testing mapping_unmovable() safe
+Date:   Fri,  8 Sep 2023 09:42:23 +0200
+Message-ID: <20230908074222.28723-2-vbabka@suse.cz>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Hi all,
+As Kirill pointed out, mapping can be removed under us due to
+truncation. Test it under folio lock as already done for the async
+compaction / dirty folio case. To prevent locking every folio with
+mapping to do the test, do it only for unevictable folios, as we can
+expect the unmovable mapping folios are also unevictable. To enforce
+that expecation, make mapping_set_unmovable() also set AS_UNEVICTABLE.
 
-sorry for my late reply; I've been away from my work setup for a
-month...
+Also incorporate comment update suggested by Matthew.
 
-On Wed, 30 Aug 2023 08:55:51 -0600
-Jonathan Corbet <corbet@lwn.net> wrote:
+Fixes: 3424873596ce ("mm: Add AS_UNMOVABLE to mark mapping as completely unmovable")
+Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
+---
+v2: mapping_set_unmovable() sets also AS_UNEVICTABLE, as Sean suggested.
 
-> So it seems this code got merged without this question ever being
-> answered.  Sorry if it's a dumb one, but I don't think this
-> functionality works as advertised...
+ include/linux/pagemap.h |  6 +++++
+ mm/compaction.c         | 49 +++++++++++++++++++++++++++--------------
+ virt/kvm/guest_mem.c    |  2 +-
+ 3 files changed, 39 insertions(+), 18 deletions(-)
 
-Yes, I believe the check was originally in is_swiotlb_buffer(), but it
-got lost during one of the numerous rebases of this patch set. Let me
-send a follow-up patch after making sure it actually works.
-
-Petr T
-
-> Thanks,
-> 
-> jon
-> 
-> Jonathan Corbet <corbet@lwn.net> writes:
-> 
-> > Petr Tesarik <petrtesarik@huaweicloud.com> writes:
-> >  
-> >> From: Petr Tesarik <petr.tesarik.ext@huawei.com>
-> >>
-> >> Skip searching the software IO TLB if a device has never used it,
-> >> making sure these devices are not affected by the introduction of
-> >> multiple IO TLB memory pools.
-> >>
-> >> Additional memory barrier is required to ensure that the new value
-> >> of the flag is visible to other CPUs after mapping a new bounce
-> >> buffer. For efficiency, the flag check should be inlined, and then
-> >> the memory barrier must be moved to is_swiotlb_buffer(). However,
-> >> it can replace the existing barrier in swiotlb_find_pool(),
-> >> because all callers use is_swiotlb_buffer() first to verify that
-> >> the buffer address belongs to the software IO TLB.
-> >>
-> >> Signed-off-by: Petr Tesarik <petr.tesarik.ext@huawei.com>
-> >> ---  
-> >
-> > Excuse me if this is a silly question, but I'm not able to figure
-> > it out on my own...
-> >  
-> >>  include/linux/device.h  |  2 ++
-> >>  include/linux/swiotlb.h |  7 ++++++-
-> >>  kernel/dma/swiotlb.c    | 14 ++++++--------
-> >>  3 files changed, 14 insertions(+), 9 deletions(-)
-> >>
-> >> diff --git a/include/linux/device.h b/include/linux/device.h
-> >> index 5fd89c9d005c..6fc808d22bfd 100644
-> >> --- a/include/linux/device.h
-> >> +++ b/include/linux/device.h
-> >> @@ -628,6 +628,7 @@ struct device_physical_location {
-> >>   * @dma_io_tlb_mem: Software IO TLB allocator.  Not for driver
-> >> use.
-> >>   * @dma_io_tlb_pools:	List of transient swiotlb memory
-> >> pools.
-> >>   * @dma_io_tlb_lock:	Protects changes to the list of
-> >> active pools.
-> >> + * @dma_uses_io_tlb: %true if device has used the software IO TLB.
-> >>   * @archdata:	For arch-specific additions.
-> >>   * @of_node:	Associated device tree node.
-> >>   * @fwnode:	Associated device node supplied by platform
-> >> firmware. @@ -737,6 +738,7 @@ struct device {
-> >>  #ifdef CONFIG_SWIOTLB_DYNAMIC
-> >>  	struct list_head dma_io_tlb_pools;
-> >>  	spinlock_t dma_io_tlb_lock;
-> >> +	bool dma_uses_io_tlb;  
-> >
-> > You add this new member here, fine...
-> >  
-> >>  #endif
-> >>  	/* arch specific additions */
-> >>  	struct dev_archdata	archdata;
-> >> diff --git a/include/linux/swiotlb.h b/include/linux/swiotlb.h
-> >> index 8371c92a0271..b4536626f8ff 100644
-> >> --- a/include/linux/swiotlb.h
-> >> +++ b/include/linux/swiotlb.h
-> >> @@ -172,8 +172,13 @@ static inline bool is_swiotlb_buffer(struct
-> >> device *dev, phys_addr_t paddr) if (!mem)
-> >>  		return false;
-> >>  
-> >> -	if (IS_ENABLED(CONFIG_SWIOTLB_DYNAMIC))
-> >> +	if (IS_ENABLED(CONFIG_SWIOTLB_DYNAMIC)) {
-> >> +		/* Pairs with smp_wmb() in swiotlb_find_slots()
-> >> and
-> >> +		 * swiotlb_dyn_alloc(), which modify the RCU
-> >> lists.
-> >> +		 */
-> >> +		smp_rmb();
-> >>  		return swiotlb_find_pool(dev, paddr);
-> >> +	}
-> >>  	return paddr >= mem->defpool.start && paddr <
-> >> mem->defpool.end; }
-> >>  
-> >> diff --git a/kernel/dma/swiotlb.c b/kernel/dma/swiotlb.c
-> >> index adf80dec42d7..d7eac84f975b 100644
-> >> --- a/kernel/dma/swiotlb.c
-> >> +++ b/kernel/dma/swiotlb.c
-> >> @@ -730,7 +730,7 @@ static void swiotlb_dyn_alloc(struct
-> >> work_struct *work) 
-> >>  	add_mem_pool(mem, pool);
-> >>  
-> >> -	/* Pairs with smp_rmb() in swiotlb_find_pool(). */
-> >> +	/* Pairs with smp_rmb() in is_swiotlb_buffer(). */
-> >>  	smp_wmb();
-> >>  }
-> >>  
-> >> @@ -764,11 +764,6 @@ struct io_tlb_pool *swiotlb_find_pool(struct
-> >> device *dev, phys_addr_t paddr) struct io_tlb_mem *mem =
-> >> dev->dma_io_tlb_mem; struct io_tlb_pool *pool;
-> >>  
-> >> -	/* Pairs with smp_wmb() in swiotlb_find_slots() and
-> >> -	 * swiotlb_dyn_alloc(), which modify the RCU lists.
-> >> -	 */
-> >> -	smp_rmb();
-> >> -
-> >>  	rcu_read_lock();
-> >>  	list_for_each_entry_rcu(pool, &mem->pools, node) {
-> >>  		if (paddr >= pool->start && paddr < pool->end)
-> >> @@ -813,6 +808,7 @@ void swiotlb_dev_init(struct device *dev)
-> >>  #ifdef CONFIG_SWIOTLB_DYNAMIC
-> >>  	INIT_LIST_HEAD(&dev->dma_io_tlb_pools);
-> >>  	spin_lock_init(&dev->dma_io_tlb_lock);
-> >> +	dev->dma_uses_io_tlb = false;  
-> >
-> > ...here you initialize it, fine...
-> >  
-> >>  #endif
-> >>  }
-> >>  
-> >> @@ -1157,9 +1153,11 @@ static int swiotlb_find_slots(struct device
-> >> *dev, phys_addr_t orig_addr, list_add_rcu(&pool->node,
-> >> &dev->dma_io_tlb_pools);
-> >> spin_unlock_irqrestore(&dev->dma_io_tlb_lock, flags); 
-> >> -	/* Pairs with smp_rmb() in swiotlb_find_pool(). */
-> >> -	smp_wmb();
-> >>  found:
-> >> +	dev->dma_uses_io_tlb = true;
-> >> +	/* Pairs with smp_rmb() in is_swiotlb_buffer() */
-> >> +	smp_wmb();
-> >> +  
-> >
-> > ...and here you set it if swiotlb is used.
-> >
-> > But, as far as I can tell, you don't actually *use* this field
-> > anywhere. What am I missing?
-> >
-> > Thanks,
-> >
-> > jon  
+diff --git a/include/linux/pagemap.h b/include/linux/pagemap.h
+index 931d2f1da7d5..4070c59e6f25 100644
+--- a/include/linux/pagemap.h
++++ b/include/linux/pagemap.h
+@@ -276,6 +276,12 @@ static inline int mapping_use_writeback_tags(struct address_space *mapping)
+ 
+ static inline void mapping_set_unmovable(struct address_space *mapping)
+ {
++	/*
++	 * It's expected unmovable mappings are also unevictable. Compaction
++	 * migrate scanner (isolate_migratepages_block()) relies on this to
++	 * reduce page locking.
++	 */
++	set_bit(AS_UNEVICTABLE, &mapping->flags);
+ 	set_bit(AS_UNMOVABLE, &mapping->flags);
+ }
+ 
+diff --git a/mm/compaction.c b/mm/compaction.c
+index a3d2b132df52..e0e439b105b5 100644
+--- a/mm/compaction.c
++++ b/mm/compaction.c
+@@ -862,6 +862,7 @@ isolate_migratepages_block(struct compact_control *cc, unsigned long low_pfn,
+ 
+ 	/* Time to isolate some pages for migration */
+ 	for (; low_pfn < end_pfn; low_pfn++) {
++		bool is_dirty, is_unevictable;
+ 
+ 		if (skip_on_failure && low_pfn >= next_skip_pfn) {
+ 			/*
+@@ -1047,10 +1048,6 @@ isolate_migratepages_block(struct compact_control *cc, unsigned long low_pfn,
+ 		if (!mapping && (folio_ref_count(folio) - 1) > folio_mapcount(folio))
+ 			goto isolate_fail_put;
+ 
+-		/* The mapping truly isn't movable. */
+-		if (mapping && mapping_unmovable(mapping))
+-			goto isolate_fail_put;
+-
+ 		/*
+ 		 * Only allow to migrate anonymous pages in GFP_NOFS context
+ 		 * because those do not depend on fs locks.
+@@ -1062,8 +1059,10 @@ isolate_migratepages_block(struct compact_control *cc, unsigned long low_pfn,
+ 		if (!folio_test_lru(folio))
+ 			goto isolate_fail_put;
+ 
++		is_unevictable = folio_test_unevictable(folio);
++
+ 		/* Compaction might skip unevictable pages but CMA takes them */
+-		if (!(mode & ISOLATE_UNEVICTABLE) && folio_test_unevictable(folio))
++		if (!(mode & ISOLATE_UNEVICTABLE) && is_unevictable)
+ 			goto isolate_fail_put;
+ 
+ 		/*
+@@ -1075,26 +1074,42 @@ isolate_migratepages_block(struct compact_control *cc, unsigned long low_pfn,
+ 		if ((mode & ISOLATE_ASYNC_MIGRATE) && folio_test_writeback(folio))
+ 			goto isolate_fail_put;
+ 
+-		if ((mode & ISOLATE_ASYNC_MIGRATE) && folio_test_dirty(folio)) {
+-			bool migrate_dirty;
++		is_dirty = folio_test_dirty(folio);
++
++		if (((mode & ISOLATE_ASYNC_MIGRATE) && is_dirty)
++		    || (mapping && is_unevictable)) {
++			bool migrate_dirty = true;
++			bool is_unmovable;
+ 
+ 			/*
+-			 * Only pages without mappings or that have a
+-			 * ->migrate_folio callback are possible to migrate
+-			 * without blocking. However, we can be racing with
+-			 * truncation so it's necessary to lock the page
+-			 * to stabilise the mapping as truncation holds
+-			 * the page lock until after the page is removed
+-			 * from the page cache.
++			 * Only folios without mappings or that have
++			 * a ->migrate_folio callback are possible to migrate
++			 * without blocking.
++			 *
++			 * Folios from unmovable mappings are not migratable.
++			 *
++			 * However, we can be racing with truncation, which can
++			 * free the mapping that we need to check. Truncation
++			 * holds the folio lock until after the folio is removed
++			 * from the page so holding it ourselves is sufficient.
++			 *
++			 * To avoid this folio locking to inspect every folio
++			 * with mapping for being unmovable, we assume every
++			 * such folio is also unevictable, which is a cheaper
++			 * test. If our assumption goes wrong, it's not a bug,
++			 * just potentially wasted cycles.
+ 			 */
+ 			if (!folio_trylock(folio))
+ 				goto isolate_fail_put;
+ 
+ 			mapping = folio_mapping(folio);
+-			migrate_dirty = !mapping ||
+-					mapping->a_ops->migrate_folio;
++			if ((mode & ISOLATE_ASYNC_MIGRATE) && is_dirty) {
++				migrate_dirty = !mapping ||
++						mapping->a_ops->migrate_folio;
++			}
++			is_unmovable = mapping && mapping_unmovable(mapping);
+ 			folio_unlock(folio);
+-			if (!migrate_dirty)
++			if (!migrate_dirty || is_unmovable)
+ 				goto isolate_fail_put;
+ 		}
+ 
+diff --git a/virt/kvm/guest_mem.c b/virt/kvm/guest_mem.c
+index c81d2bb9ae93..85903c32163f 100644
+--- a/virt/kvm/guest_mem.c
++++ b/virt/kvm/guest_mem.c
+@@ -390,7 +390,7 @@ static int __kvm_gmem_create(struct kvm *kvm, loff_t size, u64 flags,
+ 	inode->i_size = size;
+ 	mapping_set_gfp_mask(inode->i_mapping, GFP_HIGHUSER);
+ 	mapping_set_large_folios(inode->i_mapping);
+-	mapping_set_unevictable(inode->i_mapping);
++	/* this also sets the mapping as unevictable */
+ 	mapping_set_unmovable(inode->i_mapping);
+ 
+ 	fd = get_unused_fd_flags(0);
+-- 
+2.42.0
 

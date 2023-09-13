@@ -2,107 +2,162 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AD326CA5509
-	for <linux-mips@archiver.kernel.org>; Wed, 13 Sep 2023 08:10:39 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9BC16EDEC48
+	for <linux-mips@archiver.kernel.org>; Wed, 13 Sep 2023 11:50:22 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238750AbjIMIKm convert rfc822-to-8bit (ORCPT
-        <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 13 Sep 2023 04:10:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50040 "EHLO
+        id S240540AbjIMLuZ (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 13 Sep 2023 07:50:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47086 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238777AbjIMIKF (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 13 Sep 2023 04:10:05 -0400
-Received: from mail-yw1-f175.google.com (mail-yw1-f175.google.com [209.85.128.175])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6424719B4;
-        Wed, 13 Sep 2023 01:09:24 -0700 (PDT)
-Received: by mail-yw1-f175.google.com with SMTP id 00721157ae682-59bbdb435bfso6342307b3.3;
-        Wed, 13 Sep 2023 01:09:24 -0700 (PDT)
+        with ESMTP id S239722AbjIMLuY (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 13 Sep 2023 07:50:24 -0400
+Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 734911990
+        for <linux-mips@vger.kernel.org>; Wed, 13 Sep 2023 04:50:20 -0700 (PDT)
+Received: by mail-wm1-x336.google.com with SMTP id 5b1f17b1804b1-400a087b0bfso71590865e9.2
+        for <linux-mips@vger.kernel.org>; Wed, 13 Sep 2023 04:50:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1694605819; x=1695210619; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=YzyriHXDyGfsqSRGhB6U9l6fcpz9mRdaLbPmEard1K0=;
+        b=wlAimHdr0JCDmOb03eTk5kgHiJqcEUNDbeZJ17Ujyb8Bulg1333oDjT+W/JAqjYg5R
+         nAT7fWijaClkmMZOXkVBGTtoluxqI6Z0z7OhNUjguWteV4O2JZCeVrhkz5YKjTyz7iZl
+         d0tWbaipDjCQUMogpTM30YSWslaRmlF1S7Xlw7EzgcyXsmValJ9zR/vPu8lb4CAnddEh
+         IFK5uFQXqT6ZlZ1wE8PeibMEnIb6wX2KFbNuVnMuEvTkV3454cGKU6kAoKfObFQzlqFx
+         cONcCEmSZnvbMzK9tno4pPDzt/8IN91qnFHwixCtechAHiD8MGhlyS+jWXl8kzIv/y7Y
+         A3uw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694592563; x=1695197363;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1694605819; x=1695210619;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=uCz1YqPLlml0me4QSAkCQsY8FV1Cudx91zoZbXBVMOA=;
-        b=BeElRkB1CATd6mKPq8RoLrRadz6xAOfpPbZUjhJx+t+OvoODubPyT7xtzMrwXDquuY
-         EqM72LdAfemAyocjOLzauU4WeD8Spk644nCSFWeNKHEiW7FVf9qtjOBaqF7usX/H4WI3
-         tmzY/jGNLEiQUYUALASJTJLMyplXy/5Ge5xVaAw4KBnFT5m3bHgqq/GjDDqE/vbKzNNn
-         5GLnEvJwr0xHD1ppdAUB8qf4XVrLc3D0si/ZDyW6FPUEhVzTT3I8fphWghju6iilZPCx
-         2r+tgYB+ejvBNyWyRzJ3ZVAeRbQ1pFnW9dpA3Gu9qRqMFIeCN4Zt0BnzHARSaStb6fvn
-         Gzsg==
-X-Gm-Message-State: AOJu0YxG8mRZKy37YSJj0nLTpWUyDTO6VVKoS5hsMkge7rShJbwbq35i
-        ZarEv/7cEPaLP/8Aeztlt6hFPj+JFd8YgA==
-X-Google-Smtp-Source: AGHT+IFO+rvt4ojVBQ2tebVg0XDEybdj1FyTPO36buG4UjXjdMhv6eYEqWKAgfV6plEnsus/Iyw4yg==
-X-Received: by 2002:a81:6c04:0:b0:594:e4d1:bd7e with SMTP id h4-20020a816c04000000b00594e4d1bd7emr1644354ywc.5.1694592563414;
-        Wed, 13 Sep 2023 01:09:23 -0700 (PDT)
-Received: from mail-yb1-f179.google.com (mail-yb1-f179.google.com. [209.85.219.179])
-        by smtp.gmail.com with ESMTPSA id x83-20020a0dd556000000b0058c4e33b2d6sm3002279ywd.90.2023.09.13.01.09.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 13 Sep 2023 01:09:22 -0700 (PDT)
-Received: by mail-yb1-f179.google.com with SMTP id 3f1490d57ef6-d7d50ba994eso5677604276.1;
-        Wed, 13 Sep 2023 01:09:22 -0700 (PDT)
-X-Received: by 2002:a25:9844:0:b0:d81:4e98:4f5c with SMTP id
- k4-20020a259844000000b00d814e984f5cmr1178332ybo.47.1694592562230; Wed, 13 Sep
- 2023 01:09:22 -0700 (PDT)
+        bh=YzyriHXDyGfsqSRGhB6U9l6fcpz9mRdaLbPmEard1K0=;
+        b=IH/FUnj+MdRYjv7kS/jhg0YL8S2FR1XHCumA2CuhVK4+5QKk6p3YjHl1Pplenx4tWo
+         TE9oUnETK7+g6+/OjUJOOiFkBTF3EfdZdqAQmeJdX+WF8U9ELEf6qUO2NBKIw5V/C89a
+         8XNAuujEMvY0ZryErWU/xqesEolSsrGvsKrbettGmkOGTf/cD5m4O6NS52KyVjM5m3xv
+         YVj7ExjmAnryiKP7+yKcnR6IEFHcNjUOKiRrEopZ92xGHN8O4BNyN4u03Ll5kp4EKpA9
+         i8aD1hHJbhZlzxEJoAmVAKGOkvGTv3JdmuCm8ELW9Iu/WX1QE+cHhiGHISY9O439wv2B
+         zKXg==
+X-Gm-Message-State: AOJu0YzJ8ChCz0To5uMsUE/L3ZFtxTpUU0NXPl285V00titH0HnzF7ZH
+        4+eEF3cRwXNZCkYVd100d0Gi4w==
+X-Google-Smtp-Source: AGHT+IHc3Nnqh7FxXn5j82zlMwGGyFk0UEacPknUOdO1EfjviMuMeXi35mpFtRpdkqCvV2719fQtUA==
+X-Received: by 2002:a5d:620a:0:b0:313:f61c:42ab with SMTP id y10-20020a5d620a000000b00313f61c42abmr1731997wru.56.1694605818963;
+        Wed, 13 Sep 2023 04:50:18 -0700 (PDT)
+Received: from brgl-uxlite.home ([2a01:cb1d:334:ac00:3b50:bca5:a754:7463])
+        by smtp.gmail.com with ESMTPSA id j14-20020adfd20e000000b0031fc4c31d77sm1932689wrh.88.2023.09.13.04.50.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 13 Sep 2023 04:50:18 -0700 (PDT)
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        Andy Shevchenko <andy@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Paul Cercueil <paul@crapouillou.net>,
+        Harvey Hunt <harveyhuntnexus@gmail.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Daniel Scally <djrscally@gmail.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <markgross@kernel.org>,
+        Heiner Kallweit <hkallweit1@gmail.com>
+Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mmc@vger.kernel.org, linux-mips@vger.kernel.org,
+        linux-mtd@lists.infradead.org, platform-driver-x86@vger.kernel.org,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Subject: [PATCH 1/5] gpiolib: provide gpiod_set_active_[low/high]()
+Date:   Wed, 13 Sep 2023 13:49:57 +0200
+Message-Id: <20230913115001.23183-2-brgl@bgdev.pl>
+X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20230913115001.23183-1-brgl@bgdev.pl>
+References: <20230913115001.23183-1-brgl@bgdev.pl>
 MIME-Version: 1.0
-References: <20230912135050.17155-1-tzimmermann@suse.de> <20230912135050.17155-3-tzimmermann@suse.de>
-In-Reply-To: <20230912135050.17155-3-tzimmermann@suse.de>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Wed, 13 Sep 2023 10:09:10 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdU66MLdWM9Qjk-2qmHUZA6F8L-W1iAoc73-HvSB1n-drg@mail.gmail.com>
-Message-ID: <CAMuHMdU66MLdWM9Qjk-2qmHUZA6F8L-W1iAoc73-HvSB1n-drg@mail.gmail.com>
-Subject: Re: [PATCH v4 2/5] fbdev: Replace fb_pgprotect() with pgprot_framebuffer()
-To:     Thomas Zimmermann <tzimmermann@suse.de>
-Cc:     mpe@ellerman.id.au, npiggin@gmail.com, christophe.leroy@csgroup.eu,
-        arnd@arndb.de, deller@gmx.de, linuxppc-dev@lists.ozlabs.org,
-        linux-fbdev@vger.kernel.org, linux-ia64@vger.kernel.org,
-        linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
-        sparclinux@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-arch@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Hi Thomas,
+From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 
-On Tue, Sep 12, 2023 at 5:32 PM Thomas Zimmermann <tzimmermann@suse.de> wrote:
-> Rename the fbdev mmap helper fb_pgprotect() to pgprot_framebuffer(
-> The helper sets VMA page-access flags for framebuffers in device I/O
-> memory.
->
-> Also clean up the helper's parameters and return value. Instead of
-> the VMA instance, pass the individial parameters separately: existing
-> page-access flags, the VMAs start and end addresses and the offset
-> in the underlying device memory rsp file. Return the new page-access
-> flags. These changes align pgprot_framebuffer() with other pgprot_()
-> functions.
->
-> v4:
->         * fix commit message (Christophe)
-> v3:
->         * rename fb_pgprotect() to pgprot_framebuffer() (Arnd)
->
-> Signed-off-by: Thomas Zimmermann <tzimmermann@suse.de>
+Out current interface for changing line polarity is quite cumbersome to
+use as it only "toggles" the current state instead of deterministically
+setting it. Because of that all but one user in the kernel first need
+check the current state anyway. Let's provide two new functions that
+allow users to set this value explicitly with the aim of removing the
+existing function.
 
-Thanks for your patch!
+Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+---
+ drivers/gpio/gpiolib.c        | 22 ++++++++++++++++++++++
+ include/linux/gpio/consumer.h | 14 ++++++++++++++
+ 2 files changed, 36 insertions(+)
 
->  arch/m68k/include/asm/fb.h           | 19 ++++++++++---------
+diff --git a/drivers/gpio/gpiolib.c b/drivers/gpio/gpiolib.c
+index edffa0d2acaa..131965814a7c 100644
+--- a/drivers/gpio/gpiolib.c
++++ b/drivers/gpio/gpiolib.c
+@@ -2725,6 +2725,28 @@ void gpiod_toggle_active_low(struct gpio_desc *desc)
+ }
+ EXPORT_SYMBOL_GPL(gpiod_toggle_active_low);
+ 
++/**
++ * gpiod_set_active_low() - set the GPIO as active-low
++ * @desc: the GPIO descriptor to set the active-low setting for
++ */
++void gpiod_set_active_low(struct gpio_desc *desc)
++{
++	VALIDATE_DESC_VOID(desc);
++	set_bit(FLAG_ACTIVE_LOW, &desc->flags);
++}
++EXPORT_SYMBOL_GPL(gpiod_set_active_low);
++
++/**
++ * gpiod_set_active_high() - set the GPIO as active-high
++ * @desc: the GPIO descriptor to set the active-low setting for
++ */
++void gpiod_set_active_high(struct gpio_desc *desc)
++{
++	VALIDATE_DESC_VOID(desc);
++	clear_bit(FLAG_ACTIVE_LOW, &desc->flags);
++}
++EXPORT_SYMBOL_GPL(gpiod_set_active_high);
++
+ static int gpio_chip_get_value(struct gpio_chip *gc, const struct gpio_desc *desc)
+ {
+ 	return gc->get ? gc->get(gc, gpio_chip_hwgpio(desc)) : -EIO;
+diff --git a/include/linux/gpio/consumer.h b/include/linux/gpio/consumer.h
+index 6cc345440a5b..ddbf0d8e4a75 100644
+--- a/include/linux/gpio/consumer.h
++++ b/include/linux/gpio/consumer.h
+@@ -160,6 +160,8 @@ int gpiod_set_raw_array_value_cansleep(unsigned int array_size,
+ int gpiod_set_config(struct gpio_desc *desc, unsigned long config);
+ int gpiod_set_debounce(struct gpio_desc *desc, unsigned int debounce);
+ void gpiod_toggle_active_low(struct gpio_desc *desc);
++void gpiod_set_active_low(struct gpio_desc *desc);
++void gpiod_set_active_high(struct gpio_desc *desc);
+ 
+ int gpiod_is_active_low(const struct gpio_desc *desc);
+ int gpiod_cansleep(const struct gpio_desc *desc);
+@@ -499,6 +501,18 @@ static inline void gpiod_toggle_active_low(struct gpio_desc *desc)
+ 	WARN_ON(desc);
+ }
+ 
++static inline void gpiod_set_active_low(struct gpio_desc *desc
++{
++	/* GPIO can never have been requested */
++	WARN_ON(desc);
++}
++
++static inline void gpiod_set_active_high(struct gpio_desc *desc)
++{
++	/* GPIO can never have been requested */
++	WARN_ON(desc);
++}
++
+ static inline int gpiod_is_active_low(const struct gpio_desc *desc)
+ {
+ 	/* GPIO can never have been requested */
+-- 
+2.39.2
 
-Looks like you forgot to apply my
-Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
-given on v1.
-
-I didn't notice before, as I never received v2 and v3 due to the
-gmail/vger email issues.
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds

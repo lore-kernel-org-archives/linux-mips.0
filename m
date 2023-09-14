@@ -2,59 +2,59 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8A5C5EE0217
-	for <linux-mips@archiver.kernel.org>; Thu, 14 Sep 2023 01:58:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BB17CEE0203
+	for <linux-mips@archiver.kernel.org>; Thu, 14 Sep 2023 01:59:06 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234203AbjINB6w (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 13 Sep 2023 21:58:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39362 "EHLO
+        id S234437AbjINB7J (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 13 Sep 2023 21:59:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60506 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234002AbjINB6V (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 13 Sep 2023 21:58:21 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F369D1BCC
-        for <linux-mips@vger.kernel.org>; Wed, 13 Sep 2023 18:56:06 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-d814a1f7378so2790825276.1
-        for <linux-mips@vger.kernel.org>; Wed, 13 Sep 2023 18:56:06 -0700 (PDT)
+        with ESMTP id S234560AbjINB6Y (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 13 Sep 2023 21:58:24 -0400
+Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89BE21FEB
+        for <linux-mips@vger.kernel.org>; Wed, 13 Sep 2023 18:56:10 -0700 (PDT)
+Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-59bee08c13aso2133877b3.0
+        for <linux-mips@vger.kernel.org>; Wed, 13 Sep 2023 18:56:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1694656566; x=1695261366; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1694656570; x=1695261370; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:reply-to:from:to:cc:subject:date:message-id:reply-to;
-        bh=tmZ4Pf+Lkz5wRFy1K0dmYcmTbZlsWWC8lS02Q/mSk0M=;
-        b=pcVnX91ks2Ul7rg+s7dS8UJjyMksnDHMKMgwFQKQl91juTTlN6JfeOMU8uVlIs61vQ
-         YtvnZTtIdImrZhSmRjPBWKXWQnMaFZxWS3CMoy6hBtHjM4hgqPhupZdEDxv3XJAQrKD+
-         gxhewgxQB3nDVYqqGdnL+Uo5d7o7AJK8ExFKlCy6I0E+2frB4qACVgV+gtJ60B1xb6+s
-         DEkjdwoPD0tDnKCkMf2oJiAeWsWJ/40mXpPAAb6FRyFes3ZG7dGOzijoNj2fcxQ30TeP
-         IuJBuGOg7EHWMZeWONaEqmmN25fNF/5RQs3rcQ+zSfmiQ7+7cZP+Et5Y66+vncGHqNQ8
-         TmWQ==
+        bh=hXg+c13z5FpxpMh0dTDS8MDb5ldwgANdA63niVsOR7o=;
+        b=XOgQ+BIUQpyRBoHtPwDbpt+SW3P3ARosHcjB/Uf7RYA4VZHM+RzCwKxT2vYV27Z4Jo
+         MQ9NhTtoICBZEYgD/4fubr4T30I2Lqdo/yFMs8lwnE176lr9A8qeJfhZtaU5iqbkbO5h
+         Qi3sz0TXlrW2FWaXreLY7hCqo53IJEw2A9NP0kxN0CyJjnklz2HyQFwxYIx4oStn4g5Z
+         NtUcu307kp88lC39Ay0K/vIUI0N5mx2U62HoLkzZmdN3s0N2QhvETyo/XicjCjtbC9Y1
+         sWvToehki8bz9wUptri/uj7XVYcsbkNm+8Uvv/3gSHiARrUYIxz7TaMouYHH/T5MBHc1
+         AH/w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694656566; x=1695261366;
+        d=1e100.net; s=20230601; t=1694656570; x=1695261370;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:reply-to:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=tmZ4Pf+Lkz5wRFy1K0dmYcmTbZlsWWC8lS02Q/mSk0M=;
-        b=qcQlPEj1mvilLmjormJDW0rnybVdpy3rRTI4OdOliGFYI4FCN6+27SUGwxpDewvbcF
-         emXdwXuTJbdEr7tRo6u3Sgp+j5CUDyBS8obCZ3fq3sy8wJqGu+S6XcR3F8AYpwTQ2Tmg
-         6S9q5d8Lc5j9+yEPVgWzEtcDp6rNVJRX6q03YxReB0kOZlowJulddf8MDZ2aysKkqThu
-         GnTDJgaCV2Iat4Q8O2FODKovF1n35MnHP10F6vGmmGgxJs6Yy9Alzlv8bq/DAaJABuuY
-         cZ/pSILvYSsfxB16RlFIuzY3IhvLiDzcC+faWXMft3zVkz46plZmkY7mOVKl34Lp/ev4
-         yymQ==
-X-Gm-Message-State: AOJu0Yw9EJ+Xmik6ZaiEICEOOsqpsn8fZqYXjxzBme0vt31ZOELhLWWC
-        I6xH/LNAFMMMibK6E+WcDRZacV4AQpk=
-X-Google-Smtp-Source: AGHT+IEewm62VrPkwfcYWKCbnDgTMcslgQzN36+Ag8qFabvQ71jteqZnAdWKs/X98zA5hLrpiwS+nbPNXc8=
+        bh=hXg+c13z5FpxpMh0dTDS8MDb5ldwgANdA63niVsOR7o=;
+        b=i9TuVuqSm4VloMd8T0nLj3pDtrCnSAHo9IUk17Og1E3T94HElEoB2CZA4d3Q6cmZY4
+         PoAlgrhN6F6KaX2GPkugAtWDFyL6GKeJxJZRoUbh9926LgdSKtydhidgvKfYC82O1T3Z
+         +gBHCiA6JyyQ9y4lH3VV9ZeD2eYtqAmDjwbbmHfv5hc/EVw1d8ZMqwDb3CjBSqnlxYSZ
+         bDQr6mBTFg/1693qa1wvC1XcXOdb85CckM9PBLBdLrcTNTn+31wG7RyvVA6IZnf5w72N
+         QHEVJdvXwfzUr3d2zL6p21/Q03h/YYmhlxGDTmeMjurclqJLUngD/EShLFVzPN6h3J6Y
+         VmLQ==
+X-Gm-Message-State: AOJu0YyIz5s5361JtD3fYGozgQ1P7R96SOPlqbGMjphQ8VeQuEbTyFlD
+        mlC3fO/pjtEtGLPUsSUBEiVeykMGD/8=
+X-Google-Smtp-Source: AGHT+IHPiLkfoLFlIeGbzzjp2cxBfgGGv6hvIzEJvebBRPzJegHp6YgbGy/UCdWVr8MsxooaabenVz16PQA=
 X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a25:ab47:0:b0:d7e:78db:d264 with SMTP id
- u65-20020a25ab47000000b00d7e78dbd264mr13061ybi.5.1694656566137; Wed, 13 Sep
- 2023 18:56:06 -0700 (PDT)
+ (user=seanjc job=sendgmr) by 2002:a05:690c:72a:b0:59b:b8bf:5973 with SMTP id
+ bt10-20020a05690c072a00b0059bb8bf5973mr115588ywb.0.1694656569799; Wed, 13 Sep
+ 2023 18:56:09 -0700 (PDT)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Wed, 13 Sep 2023 18:55:13 -0700
+Date:   Wed, 13 Sep 2023 18:55:15 -0700
 In-Reply-To: <20230914015531.1419405-1-seanjc@google.com>
 Mime-Version: 1.0
 References: <20230914015531.1419405-1-seanjc@google.com>
 X-Mailer: git-send-email 2.42.0.283.g2d96d420d3-goog
-Message-ID: <20230914015531.1419405-16-seanjc@google.com>
-Subject: [RFC PATCH v12 15/33] KVM: Add transparent hugepage support for
- dedicated guest memory
+Message-ID: <20230914015531.1419405-18-seanjc@google.com>
+Subject: [RFC PATCH v12 17/33] KVM: x86: Disallow hugepages when memory
+ attributes are mixed
 From:   Sean Christopherson <seanjc@google.com>
 To:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
         Oliver Upton <oliver.upton@linux.dev>,
@@ -99,124 +99,234 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-TODO: writeme
+From: Chao Peng <chao.p.peng@linux.intel.com>
 
+Disallow creating hugepages with mixed memory attributes, e.g. shared
+versus private, as mapping a hugepage in this case would allow the guest
+to access memory with the wrong attributes, e.g. overlaying private memory
+with a shared hugepage.
+
+Tracking whether or not attributes are mixed via the existing
+disallow_lpage field, but use the most significant bit in 'disallow_lpage'
+to indicate a hugepage has mixed attributes instead using the normal
+refcounting.  Whether or not attributes are mixed is binary; either they
+are or they aren't.  Attempting to squeeze that info into the refcount is
+unnecessarily complex as it would require knowing the previous state of
+the mixed count when updating attributes.  Using a flag means KVM just
+needs to ensure the current status is reflected in the memslots.
+
+Signed-off-by: Chao Peng <chao.p.peng@linux.intel.com>
+Co-developed-by: Sean Christopherson <seanjc@google.com>
 Signed-off-by: Sean Christopherson <seanjc@google.com>
 ---
- include/uapi/linux/kvm.h |  2 ++
- virt/kvm/guest_mem.c     | 54 ++++++++++++++++++++++++++++++++++++----
- 2 files changed, 51 insertions(+), 5 deletions(-)
+ arch/x86/include/asm/kvm_host.h |   3 +
+ arch/x86/kvm/mmu/mmu.c          | 152 +++++++++++++++++++++++++++++++-
+ arch/x86/kvm/x86.c              |   4 +
+ 3 files changed, 157 insertions(+), 2 deletions(-)
 
-diff --git a/include/uapi/linux/kvm.h b/include/uapi/linux/kvm.h
-index b6f90a273e2e..2df18796fd8e 100644
---- a/include/uapi/linux/kvm.h
-+++ b/include/uapi/linux/kvm.h
-@@ -2314,6 +2314,8 @@ struct kvm_memory_attributes {
+diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
+index 3a2b53483524..91a28ddf7cfd 100644
+--- a/arch/x86/include/asm/kvm_host.h
++++ b/arch/x86/include/asm/kvm_host.h
+@@ -1838,6 +1838,9 @@ int kvm_mmu_create(struct kvm_vcpu *vcpu);
+ int kvm_mmu_init_vm(struct kvm *kvm);
+ void kvm_mmu_uninit_vm(struct kvm *kvm);
  
- #define KVM_CREATE_GUEST_MEMFD	_IOWR(KVMIO,  0xd4, struct kvm_create_guest_memfd)
- 
-+#define KVM_GUEST_MEMFD_ALLOW_HUGEPAGE		(1ULL << 0)
++void kvm_mmu_init_memslot_memory_attributes(struct kvm *kvm,
++					    struct kvm_memory_slot *slot);
 +
- struct kvm_create_guest_memfd {
- 	__u64 size;
- 	__u64 flags;
-diff --git a/virt/kvm/guest_mem.c b/virt/kvm/guest_mem.c
-index 0dd3f836cf9c..a819367434e9 100644
---- a/virt/kvm/guest_mem.c
-+++ b/virt/kvm/guest_mem.c
-@@ -17,15 +17,48 @@ struct kvm_gmem {
- 	struct list_head entry;
- };
- 
--static struct folio *kvm_gmem_get_folio(struct file *file, pgoff_t index)
-+static struct folio *kvm_gmem_get_huge_folio(struct inode *inode, pgoff_t index)
- {
-+#ifdef CONFIG_TRANSPARENT_HUGEPAGE
-+	unsigned long huge_index = round_down(index, HPAGE_PMD_NR);
-+	unsigned long flags = (unsigned long)inode->i_private;
-+	struct address_space *mapping  = inode->i_mapping;
-+	gfp_t gfp = mapping_gfp_mask(mapping);
- 	struct folio *folio;
- 
--	/* TODO: Support huge pages. */
--	folio = filemap_grab_folio(file->f_mapping, index);
--	if (IS_ERR_OR_NULL(folio))
-+	if (!(flags & KVM_GUEST_MEMFD_ALLOW_HUGEPAGE))
- 		return NULL;
- 
-+	if (filemap_range_has_page(mapping, huge_index << PAGE_SHIFT,
-+				   (huge_index + HPAGE_PMD_NR - 1) << PAGE_SHIFT))
-+		return NULL;
-+
-+	folio = filemap_alloc_folio(gfp, HPAGE_PMD_ORDER);
-+	if (!folio)
-+		return NULL;
-+
-+	if (filemap_add_folio(mapping, folio, huge_index, gfp)) {
-+		folio_put(folio);
-+		return NULL;
-+	}
-+
-+	return folio;
-+#else
-+	return NULL;
-+#endif
-+}
-+
-+static struct folio *kvm_gmem_get_folio(struct inode *inode, pgoff_t index)
-+{
-+	struct folio *folio;
-+
-+	folio = kvm_gmem_get_huge_folio(inode, index);
-+	if (!folio) {
-+		folio = filemap_grab_folio(inode->i_mapping, index);
-+		if (IS_ERR_OR_NULL(folio))
-+			return NULL;
-+	}
-+
- 	/*
- 	 * Use the up-to-date flag to track whether or not the memory has been
- 	 * zeroed before being handed off to the guest.  There is no backing
-@@ -323,7 +356,8 @@ static const struct inode_operations kvm_gmem_iops = {
- 	.setattr	= kvm_gmem_setattr,
- };
- 
--static int __kvm_gmem_create(struct kvm *kvm, loff_t size, struct vfsmount *mnt)
-+static int __kvm_gmem_create(struct kvm *kvm, loff_t size, u64 flags,
-+			     struct vfsmount *mnt)
- {
- 	const char *anon_name = "[kvm-gmem]";
- 	const struct qstr qname = QSTR_INIT(anon_name, strlen(anon_name));
-@@ -346,6 +380,7 @@ static int __kvm_gmem_create(struct kvm *kvm, loff_t size, struct vfsmount *mnt)
- 	inode->i_mode |= S_IFREG;
- 	inode->i_size = size;
- 	mapping_set_gfp_mask(inode->i_mapping, GFP_HIGHUSER);
-+	mapping_set_large_folios(inode->i_mapping);
- 	mapping_set_unmovable(inode->i_mapping);
- 	/* Unmovable mappings are supposed to be marked unevictable as well. */
- 	WARN_ON_ONCE(!mapping_unevictable(inode->i_mapping));
-@@ -396,6 +431,12 @@ static bool kvm_gmem_is_valid_size(loff_t size, u64 flags)
- 	if (size < 0 || !PAGE_ALIGNED(size))
- 		return false;
- 
-+#ifdef CONFIG_TRANSPARENT_HUGEPAGE
-+	if ((flags & KVM_GUEST_MEMFD_ALLOW_HUGEPAGE) &&
-+	    !IS_ALIGNED(size, HPAGE_PMD_SIZE))
-+		return false;
-+#endif
-+
- 	return true;
+ void kvm_mmu_after_set_cpuid(struct kvm_vcpu *vcpu);
+ void kvm_mmu_reset_context(struct kvm_vcpu *vcpu);
+ void kvm_mmu_slot_remove_write_access(struct kvm *kvm,
+diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+index 0f0231d2b74f..a079f36a8bf5 100644
+--- a/arch/x86/kvm/mmu/mmu.c
++++ b/arch/x86/kvm/mmu/mmu.c
+@@ -795,16 +795,26 @@ static struct kvm_lpage_info *lpage_info_slot(gfn_t gfn,
+ 	return &slot->arch.lpage_info[level - 2][idx];
  }
  
-@@ -405,6 +446,9 @@ int kvm_gmem_create(struct kvm *kvm, struct kvm_create_guest_memfd *args)
- 	u64 flags = args->flags;
- 	u64 valid_flags = 0;
- 
-+	if (IS_ENABLED(CONFIG_TRANSPARENT_HUGEPAGE))
-+		valid_flags |= KVM_GUEST_MEMFD_ALLOW_HUGEPAGE;
++/*
++ * The most significant bit in disallow_lpage tracks whether or not memory
++ * attributes are mixed, i.e. not identical for all gfns at the current level.
++ * The lower order bits are used to refcount other cases where a hugepage is
++ * disallowed, e.g. if KVM has shadow a page table at the gfn.
++ */
++#define KVM_LPAGE_MIXED_FLAG	BIT(31)
 +
- 	if (flags & ~valid_flags)
- 		return -EINVAL;
+ static void update_gfn_disallow_lpage_count(const struct kvm_memory_slot *slot,
+ 					    gfn_t gfn, int count)
+ {
+ 	struct kvm_lpage_info *linfo;
+-	int i;
++	int old, i;
+ 
+ 	for (i = PG_LEVEL_2M; i <= KVM_MAX_HUGEPAGE_LEVEL; ++i) {
+ 		linfo = lpage_info_slot(gfn, slot, i);
++
++		old = linfo->disallow_lpage;
+ 		linfo->disallow_lpage += count;
+-		WARN_ON_ONCE(linfo->disallow_lpage < 0);
++		WARN_ON_ONCE((old ^ linfo->disallow_lpage) & KVM_LPAGE_MIXED_FLAG);
+ 	}
+ }
+ 
+@@ -7172,3 +7182,141 @@ void kvm_mmu_pre_destroy_vm(struct kvm *kvm)
+ 	if (kvm->arch.nx_huge_page_recovery_thread)
+ 		kthread_stop(kvm->arch.nx_huge_page_recovery_thread);
+ }
++
++#ifdef CONFIG_KVM_GENERIC_MEMORY_ATTRIBUTES
++static bool hugepage_test_mixed(struct kvm_memory_slot *slot, gfn_t gfn,
++				int level)
++{
++	return lpage_info_slot(gfn, slot, level)->disallow_lpage & KVM_LPAGE_MIXED_FLAG;
++}
++
++static void hugepage_clear_mixed(struct kvm_memory_slot *slot, gfn_t gfn,
++				 int level)
++{
++	lpage_info_slot(gfn, slot, level)->disallow_lpage &= ~KVM_LPAGE_MIXED_FLAG;
++}
++
++static void hugepage_set_mixed(struct kvm_memory_slot *slot, gfn_t gfn,
++			       int level)
++{
++	lpage_info_slot(gfn, slot, level)->disallow_lpage |= KVM_LPAGE_MIXED_FLAG;
++}
++
++static bool hugepage_has_attrs(struct kvm *kvm, struct kvm_memory_slot *slot,
++			       gfn_t gfn, int level, unsigned long attrs)
++{
++	const unsigned long start = gfn;
++	const unsigned long end = start + KVM_PAGES_PER_HPAGE(level);
++
++	if (level == PG_LEVEL_2M)
++		return kvm_range_has_memory_attributes(kvm, start, end, attrs);
++
++	for (gfn = start; gfn < end; gfn += KVM_PAGES_PER_HPAGE(level - 1)) {
++		if (hugepage_test_mixed(slot, gfn, level - 1) ||
++		    attrs != kvm_get_memory_attributes(kvm, gfn))
++			return false;
++	}
++	return true;
++}
++
++bool kvm_arch_post_set_memory_attributes(struct kvm *kvm,
++					 struct kvm_gfn_range *range)
++{
++	unsigned long attrs = range->arg.attributes;
++	struct kvm_memory_slot *slot = range->slot;
++	int level;
++
++	lockdep_assert_held_write(&kvm->mmu_lock);
++	lockdep_assert_held(&kvm->slots_lock);
++
++	/*
++	 * KVM x86 currently only supports KVM_MEMORY_ATTRIBUTE_PRIVATE, skip
++	 * the slot if the slot will never consume the PRIVATE attribute.
++	 */
++	if (!kvm_slot_can_be_private(slot))
++		return false;
++
++	/*
++	 * The sequence matters here: upper levels consume the result of lower
++	 * level's scanning.
++	 */
++	for (level = PG_LEVEL_2M; level <= KVM_MAX_HUGEPAGE_LEVEL; level++) {
++		gfn_t nr_pages = KVM_PAGES_PER_HPAGE(level);
++		gfn_t gfn = gfn_round_for_level(range->start, level);
++
++		/* Process the head page if it straddles the range. */
++		if (gfn != range->start || gfn + nr_pages > range->end) {
++			/*
++			 * Skip mixed tracking if the aligned gfn isn't covered
++			 * by the memslot, KVM can't use a hugepage due to the
++			 * misaligned address regardless of memory attributes.
++			 */
++			if (gfn >= slot->base_gfn) {
++				if (hugepage_has_attrs(kvm, slot, gfn, level, attrs))
++					hugepage_clear_mixed(slot, gfn, level);
++				else
++					hugepage_set_mixed(slot, gfn, level);
++			}
++			gfn += nr_pages;
++		}
++
++		/*
++		 * Pages entirely covered by the range are guaranteed to have
++		 * only the attributes which were just set.
++		 */
++		for ( ; gfn + nr_pages <= range->end; gfn += nr_pages)
++			hugepage_clear_mixed(slot, gfn, level);
++
++		/*
++		 * Process the last tail page if it straddles the range and is
++		 * contained by the memslot.  Like the head page, KVM can't
++		 * create a hugepage if the slot size is misaligned.
++		 */
++		if (gfn < range->end &&
++		    (gfn + nr_pages) <= (slot->base_gfn + slot->npages)) {
++			if (hugepage_has_attrs(kvm, slot, gfn, level, attrs))
++				hugepage_clear_mixed(slot, gfn, level);
++			else
++				hugepage_set_mixed(slot, gfn, level);
++		}
++	}
++	return false;
++}
++
++void kvm_mmu_init_memslot_memory_attributes(struct kvm *kvm,
++					    struct kvm_memory_slot *slot)
++{
++	int level;
++
++	if (!kvm_slot_can_be_private(slot))
++		return;
++
++	for (level = PG_LEVEL_2M; level <= KVM_MAX_HUGEPAGE_LEVEL; level++) {
++		/*
++		 * Don't bother tracking mixed attributes for pages that can't
++		 * be huge due to alignment, i.e. process only pages that are
++		 * entirely contained by the memslot.
++		 */
++		gfn_t end = gfn_round_for_level(slot->base_gfn + slot->npages, level);
++		gfn_t start = gfn_round_for_level(slot->base_gfn, level);
++		gfn_t nr_pages = KVM_PAGES_PER_HPAGE(level);
++		gfn_t gfn;
++
++		if (start < slot->base_gfn)
++			start += nr_pages;
++
++		/*
++		 * Unlike setting attributes, every potential hugepage needs to
++		 * be manually checked as the attributes may already be mixed.
++		 */
++		for (gfn = start; gfn < end; gfn += nr_pages) {
++			unsigned long attrs = kvm_get_memory_attributes(kvm, gfn);
++
++			if (hugepage_has_attrs(kvm, slot, gfn, level, attrs))
++				hugepage_clear_mixed(slot, gfn, level);
++			else
++				hugepage_set_mixed(slot, gfn, level);
++		}
++	}
++}
++#endif
+diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+index 8d21b7b09bb5..ac36a5b7b5a3 100644
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -12598,6 +12598,10 @@ static int kvm_alloc_memslot_metadata(struct kvm *kvm,
+ 		}
+ 	}
+ 
++#ifdef CONFIG_KVM_GENERIC_MEMORY_ATTRIBUTES
++	kvm_mmu_init_memslot_memory_attributes(kvm, slot);
++#endif
++
+ 	if (kvm_page_track_create_memslot(kvm, slot, npages))
+ 		goto out_free;
  
 -- 
 2.42.0.283.g2d96d420d3-goog

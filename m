@@ -2,59 +2,58 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BF738EE021A
-	for <linux-mips@archiver.kernel.org>; Thu, 14 Sep 2023 01:56:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id D53A5EE021F
+	for <linux-mips@archiver.kernel.org>; Thu, 14 Sep 2023 01:56:17 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234349AbjINB4T (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 13 Sep 2023 21:56:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39408 "EHLO
+        id S233954AbjINB4U (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 13 Sep 2023 21:56:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60490 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234081AbjINBzr (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 13 Sep 2023 21:55:47 -0400
-Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B7E21BEF
-        for <linux-mips@vger.kernel.org>; Wed, 13 Sep 2023 18:55:38 -0700 (PDT)
-Received: by mail-pl1-x649.google.com with SMTP id d9443c01a7336-1c08a15fcf4so3862935ad.3
-        for <linux-mips@vger.kernel.org>; Wed, 13 Sep 2023 18:55:38 -0700 (PDT)
+        with ESMTP id S233549AbjINB4A (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 13 Sep 2023 21:56:00 -0400
+Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7E3E2103
+        for <linux-mips@vger.kernel.org>; Wed, 13 Sep 2023 18:55:42 -0700 (PDT)
+Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-58cb845f2f2so6170947b3.1
+        for <linux-mips@vger.kernel.org>; Wed, 13 Sep 2023 18:55:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1694656538; x=1695261338; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1694656542; x=1695261342; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:reply-to:from:to:cc:subject:date:message-id:reply-to;
-        bh=/cDQ8+RWss5y1dl7//cmz9qd0NB/VeUV6+/tNlKTQHI=;
-        b=I61QeonfDfbPpd4GYcwE0QD/p/5nFsuyazAl0/5THkU78bB6zFnLULWVQMViErK366
-         4fwSun3TIxw0TPsCKO7+AffbVvASa3E4cR9oJFRSNRzq4t+o1+QaPFt73vTk/9HBR7JS
-         BhB6ro1LiHAXYVTveA5K9NTX87g0nmbV1/P0LXOViUJj8do3vIkoBQ15MnpFUn6KL3N4
-         FsSIwKbB/N9tSfvIgH5gsMZPRfAqX/N+kltJ5NEWRnyFjsuFzmWco17OT5y3gWtCkaFf
-         o8f1oPkix4j2vsnzO3QU2r0ZH+CG2+V4AnvfRbDny3TjdQt1aMzwQiTz5QuBQEjfQqyk
-         Ql5Q==
+        bh=ipMZPiP5QxzJYr8+L2XHaFOQ2agfNk5lTTsPLIZe0Eo=;
+        b=IYqzzwJlcplJX/r3J2tz2Ie0U2pJa6yJcoFIB2mB3qtz8aNbHRzP/mQbr+c1Q4EAD9
+         WzQ6HwL6/29VikUHsAqcBLdxf2EvUtO2LVzfI30VLqUj3j6/z36Z3ki3tYTVTuWVQ0JX
+         eQqYMl9YiacRKgBEVR+bHlHlUvWTxHAcMvGXmw0pOgmG2GxWIOR2hFPo4S5hUmw4jhhF
+         X0k81+npQ2v0TL4UTz84eaHb9zta3wNn+5IKYz4udxRG0wLrqCUIWlM37rOk87V68NqQ
+         ZN4axMlE4i8JIPbNMc00N0jXXDwV7FgxAcYSAueGtP0VB/6fETCF571k696jITYuJl5D
+         ovqw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694656538; x=1695261338;
+        d=1e100.net; s=20230601; t=1694656542; x=1695261342;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:reply-to:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=/cDQ8+RWss5y1dl7//cmz9qd0NB/VeUV6+/tNlKTQHI=;
-        b=asTjA7Lk1cV5SDMOgpoDYVBxKYAcOTM1yUJK/PVjmxu1gRhCiW9ECrZeYEiaimqBj5
-         VM8Jo7tRJRwkaEqBHNc7dSIcobjqr9qsB4xfRXB8p+eLZRg8dhVwhl/yroriEGxRJK0b
-         hcz42f8fhM34ZgkxDyfqd3ga1/I19A/5rtZNmfVkHk+KRvVwv0JzhLpmRis789QIHkJ6
-         pisgVsllHicbd7LWX8TVfnpDkStzk82Ekqlv+3eRRuR59UMGq4bWXMYr7jHWbjIy8JE/
-         T0gasu+/vXpsv/u3e2ECENx66DLZ5jXbzJO12gZ22mKqW+HRtsx6cMXuxO46+z4tesmr
-         9a7g==
-X-Gm-Message-State: AOJu0YxZFb+gRCRprNatXmOUsLN2dMD+9OIh4som8WBeiBgcD7a0Uv10
-        RACAG/OzkpxPjcvbCxbzCfpEzaRvrpE=
-X-Google-Smtp-Source: AGHT+IE0PXMQEm/IFGrVOf6ppWkIN82E9wFoqnKGFhjVJyi0Xqws7PTmRSBCpdZciUBlWguOQ7crfgDDDDg=
+        bh=ipMZPiP5QxzJYr8+L2XHaFOQ2agfNk5lTTsPLIZe0Eo=;
+        b=Yzptk7vFHOWk92KZmPuHdnY9mVutLrRcj1o/U6vKZr+BDXlnGcDpqyFJvznj0gVUAB
+         BMxqAwhtItoJA65lDsk7MvXDw39rRYjuRcwX6xGbrNssqSss7YijJPlafn6INvVZQOvR
+         obmoX0mABJq0oLxhj2x1rgc6VyG2yVbgvbW55RfvFd2+wxuM0s07dT7mzcPsiUMliFa3
+         uk9+VxtAtQEnw91ps8e9D+ZDWty4dIWM54EMHBMQnIiq/tcejDB2yhl3XXx8YGuYDN0U
+         mgkyKhgeNkn9FKg3ZIR7k2p7ic0q/0rTe7fxb42Vcio02rjWRyxXlPRdHZLKY3IySWId
+         Yu/A==
+X-Gm-Message-State: AOJu0YxG0zw7inNWZyDlRBZgv8jOu/4pmnwfc2vTnOgkiF+ulxWnhc+S
+        lrgeM0MFFhQ7NbGuOEf9XBH5+XGrxqA=
+X-Google-Smtp-Source: AGHT+IHZ9maMkZbk/mDeS4QG3cCYdpuky8EXqvBvcYXtjkjg3bX1mPxWKIK7RZclMdxYQ1SdoMO1l2xcItw=
 X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a17:902:e88f:b0:1b8:8c7:31e6 with SMTP id
- w15-20020a170902e88f00b001b808c731e6mr201908plg.1.1694656537960; Wed, 13 Sep
- 2023 18:55:37 -0700 (PDT)
+ (user=seanjc job=sendgmr) by 2002:a05:690c:b0a:b0:59b:ebe0:9fd6 with SMTP id
+ cj10-20020a05690c0b0a00b0059bebe09fd6mr14465ywb.6.1694656542028; Wed, 13 Sep
+ 2023 18:55:42 -0700 (PDT)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Wed, 13 Sep 2023 18:54:59 -0700
+Date:   Wed, 13 Sep 2023 18:55:01 -0700
 In-Reply-To: <20230914015531.1419405-1-seanjc@google.com>
 Mime-Version: 1.0
 References: <20230914015531.1419405-1-seanjc@google.com>
 X-Mailer: git-send-email 2.42.0.283.g2d96d420d3-goog
-Message-ID: <20230914015531.1419405-2-seanjc@google.com>
-Subject: [RFC PATCH v12 01/33] KVM: Tweak kvm_hva_range and hva_handler_t to
- allow reusing for gfn ranges
+Message-ID: <20230914015531.1419405-4-seanjc@google.com>
+Subject: [RFC PATCH v12 03/33] KVM: PPC: Drop dead code related to KVM_ARCH_WANT_MMU_NOTIFIER
 From:   Sean Christopherson <seanjc@google.com>
 To:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
         Oliver Upton <oliver.upton@linux.dev>,
@@ -99,117 +98,51 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Rework and rename "struct kvm_hva_range" into "kvm_mmu_notifier_range" so
-that the structure can be used to handle notifications that operate on gfn
-context, i.e. that aren't tied to a host virtual address.
+Assert that both KVM_ARCH_WANT_MMU_NOTIFIER and CONFIG_MMU_NOTIFIER are
+defined when KVM is enabled, and return '1' unconditionally for the
+CONFIG_KVM_BOOK3S_HV_POSSIBLE=n path.  All flavors of PPC support for KVM
+select MMU_NOTIFIER, and KVM_ARCH_WANT_MMU_NOTIFIER is unconditionally
+defined by arch/powerpc/include/asm/kvm_host.h.
 
-Practically speaking, this is a nop for 64-bit kernels as the only
-meaningful change is to store start+end as u64s instead of unsigned longs.
+Effectively dropping use of KVM_ARCH_WANT_MMU_NOTIFIER will simplify a
+future cleanup to turn KVM_ARCH_WANT_MMU_NOTIFIER into a Kconfig, i.e.
+will allow combining all of the
 
-Reviewed-by: Paolo Bonzini <pbonzini@redhat.com>
+  #if defined(CONFIG_MMU_NOTIFIER) && defined(KVM_ARCH_WANT_MMU_NOTIFIER)
+
+checks into a single
+
+  #ifdef CONFIG_KVM_GENERIC_MMU_NOTIFIER
+
+without having to worry about PPC's "bare" usage of
+KVM_ARCH_WANT_MMU_NOTIFIER.
+
 Signed-off-by: Sean Christopherson <seanjc@google.com>
 ---
- virt/kvm/kvm_main.c | 34 +++++++++++++++++++---------------
- 1 file changed, 19 insertions(+), 15 deletions(-)
+ arch/powerpc/kvm/powerpc.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
-index 486800a7024b..0524933856d4 100644
---- a/virt/kvm/kvm_main.c
-+++ b/virt/kvm/kvm_main.c
-@@ -541,18 +541,22 @@ static inline struct kvm *mmu_notifier_to_kvm(struct mmu_notifier *mn)
- 	return container_of(mn, struct kvm, mmu_notifier);
- }
- 
--typedef bool (*hva_handler_t)(struct kvm *kvm, struct kvm_gfn_range *range);
-+typedef bool (*gfn_handler_t)(struct kvm *kvm, struct kvm_gfn_range *range);
- 
- typedef void (*on_lock_fn_t)(struct kvm *kvm, unsigned long start,
- 			     unsigned long end);
- 
- typedef void (*on_unlock_fn_t)(struct kvm *kvm);
- 
--struct kvm_hva_range {
--	unsigned long start;
--	unsigned long end;
-+struct kvm_mmu_notifier_range {
-+	/*
-+	 * 64-bit addresses, as KVM notifiers can operate on host virtual
-+	 * addresses (unsigned long) and guest physical addresses (64-bit).
-+	 */
-+	u64 start;
-+	u64 end;
- 	union kvm_mmu_notifier_arg arg;
--	hva_handler_t handler;
-+	gfn_handler_t handler;
- 	on_lock_fn_t on_lock;
- 	on_unlock_fn_t on_unlock;
- 	bool flush_on_ret;
-@@ -581,7 +585,7 @@ static const union kvm_mmu_notifier_arg KVM_MMU_NOTIFIER_NO_ARG;
- 	     node = interval_tree_iter_next(node, start, last))	     \
- 
- static __always_inline int __kvm_handle_hva_range(struct kvm *kvm,
--						  const struct kvm_hva_range *range)
-+						  const struct kvm_mmu_notifier_range *range)
- {
- 	bool ret = false, locked = false;
- 	struct kvm_gfn_range gfn_range;
-@@ -608,9 +612,9 @@ static __always_inline int __kvm_handle_hva_range(struct kvm *kvm,
- 			unsigned long hva_start, hva_end;
- 
- 			slot = container_of(node, struct kvm_memory_slot, hva_node[slots->node_idx]);
--			hva_start = max(range->start, slot->userspace_addr);
--			hva_end = min(range->end, slot->userspace_addr +
--						  (slot->npages << PAGE_SHIFT));
-+			hva_start = max_t(unsigned long, range->start, slot->userspace_addr);
-+			hva_end = min_t(unsigned long, range->end,
-+					slot->userspace_addr + (slot->npages << PAGE_SHIFT));
- 
- 			/*
- 			 * To optimize for the likely case where the address
-@@ -660,10 +664,10 @@ static __always_inline int kvm_handle_hva_range(struct mmu_notifier *mn,
- 						unsigned long start,
- 						unsigned long end,
- 						union kvm_mmu_notifier_arg arg,
--						hva_handler_t handler)
-+						gfn_handler_t handler)
- {
- 	struct kvm *kvm = mmu_notifier_to_kvm(mn);
--	const struct kvm_hva_range range = {
-+	const struct kvm_mmu_notifier_range range = {
- 		.start		= start,
- 		.end		= end,
- 		.arg		= arg,
-@@ -680,10 +684,10 @@ static __always_inline int kvm_handle_hva_range(struct mmu_notifier *mn,
- static __always_inline int kvm_handle_hva_range_no_flush(struct mmu_notifier *mn,
- 							 unsigned long start,
- 							 unsigned long end,
--							 hva_handler_t handler)
-+							 gfn_handler_t handler)
- {
- 	struct kvm *kvm = mmu_notifier_to_kvm(mn);
--	const struct kvm_hva_range range = {
-+	const struct kvm_mmu_notifier_range range = {
- 		.start		= start,
- 		.end		= end,
- 		.handler	= handler,
-@@ -771,7 +775,7 @@ static int kvm_mmu_notifier_invalidate_range_start(struct mmu_notifier *mn,
- 					const struct mmu_notifier_range *range)
- {
- 	struct kvm *kvm = mmu_notifier_to_kvm(mn);
--	const struct kvm_hva_range hva_range = {
-+	const struct kvm_mmu_notifier_range hva_range = {
- 		.start		= range->start,
- 		.end		= range->end,
- 		.handler	= kvm_unmap_gfn_range,
-@@ -835,7 +839,7 @@ static void kvm_mmu_notifier_invalidate_range_end(struct mmu_notifier *mn,
- 					const struct mmu_notifier_range *range)
- {
- 	struct kvm *kvm = mmu_notifier_to_kvm(mn);
--	const struct kvm_hva_range hva_range = {
-+	const struct kvm_mmu_notifier_range hva_range = {
- 		.start		= range->start,
- 		.end		= range->end,
- 		.handler	= (void *)kvm_null_fn,
+diff --git a/arch/powerpc/kvm/powerpc.c b/arch/powerpc/kvm/powerpc.c
+index 7197c8256668..b0a512ede764 100644
+--- a/arch/powerpc/kvm/powerpc.c
++++ b/arch/powerpc/kvm/powerpc.c
+@@ -632,12 +632,13 @@ int kvm_vm_ioctl_check_extension(struct kvm *kvm, long ext)
+ 		break;
+ #endif
+ 	case KVM_CAP_SYNC_MMU:
++#if !defined(CONFIG_MMU_NOTIFIER) || !defined(KVM_ARCH_WANT_MMU_NOTIFIER)
++		BUILD_BUG();
++#endif
+ #ifdef CONFIG_KVM_BOOK3S_HV_POSSIBLE
+ 		r = hv_enabled;
+-#elif defined(KVM_ARCH_WANT_MMU_NOTIFIER)
+-		r = 1;
+ #else
+-		r = 0;
++		r = 1;
+ #endif
+ 		break;
+ #ifdef CONFIG_KVM_BOOK3S_HV_POSSIBLE
 -- 
 2.42.0.283.g2d96d420d3-goog
 

@@ -2,58 +2,58 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4D680CD37B4
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C60DECD3422
 	for <linux-mips@archiver.kernel.org>; Sat, 16 Sep 2023 00:33:24 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238742AbjIPAdA (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 15 Sep 2023 20:33:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60612 "EHLO
+        id S238761AbjIPAdB (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 15 Sep 2023 20:33:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57026 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238766AbjIPAcm (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Fri, 15 Sep 2023 20:32:42 -0400
-Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 374C61FCE
-        for <linux-mips@vger.kernel.org>; Fri, 15 Sep 2023 17:31:59 -0700 (PDT)
-Received: by mail-pl1-x649.google.com with SMTP id d9443c01a7336-1bf6e47b5efso25507835ad.2
-        for <linux-mips@vger.kernel.org>; Fri, 15 Sep 2023 17:31:59 -0700 (PDT)
+        with ESMTP id S238792AbjIPAcp (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Fri, 15 Sep 2023 20:32:45 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A990E1BC1
+        for <linux-mips@vger.kernel.org>; Fri, 15 Sep 2023 17:32:07 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-d7b957fd276so3276375276.0
+        for <linux-mips@vger.kernel.org>; Fri, 15 Sep 2023 17:32:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1694824318; x=1695429118; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1694824327; x=1695429127; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:reply-to:from:to:cc:subject:date:message-id:reply-to;
-        bh=I1k7UlFLK1e3KB496SGnrZE1fwTPdTtkvkYnZUVfXtU=;
-        b=lseo9L1/jBB6ERFsVcrklzOw152JBvVjSAVuQrW9I2BUrY5Xycghdsb8xzIUyBC1/y
-         a+cO6Os/+olItJ4ggzA1YxvtvKJKwTIVUFfxeKR3ueGBXvf3YBIO2Mupa0tLpzQjtE+v
-         9umKJktMvZo0DvfYB1C9qj2fNS9wEmSXR7z0ZPmaqvw/kYbKwy4J0FdaaHTfuveshnMo
-         yfgURvaJra4OS5CeXl/Ceq5K0FJKdKAeKlw0R5Dwd5AkOYYLPknw5/JLFR9NTHdEJgTR
-         DcIqO/CWRqlIhU7s9D56/kK9uR23DO9H7h+znQx3YcDlOZcx6wB10zEQRjTQY0kU+ljm
-         Ebcw==
+        bh=g87cF9aMFFIIQhALNgZyjDSNT/0Iy7aXKR5wCizfY2Q=;
+        b=giSg+gCVVOrEc5FageiFHVw+1BxDfcFg66J/ZK03jIn36YcQJk+0YdoenOOm/R/oor
+         a6/ngPIASQipZXnEE77CELpl9diiITyIIh4TnRIqTGgT4YIhNXP+iHw6YPv1LKJnK6Ei
+         qL6X04A6yM7kcWetXaCIFFt+0VQXyr1zOy3CDM7BpsbM3FwLgTbKTAqqO6AVkdGggrvv
+         MRnZNzzkxCyLUheux/fXhwHwIV1fehB4bA4KbUdMZF+F/wKTeL3zVEvQEmA/8u3GJ84b
+         gyDZvo481bvF5xePOkCFKztqAczCgieO4PAWhkCniU7jMdWbkJP6atgKTXgoAe1wmSud
+         2a+g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694824318; x=1695429118;
+        d=1e100.net; s=20230601; t=1694824327; x=1695429127;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:reply-to:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=I1k7UlFLK1e3KB496SGnrZE1fwTPdTtkvkYnZUVfXtU=;
-        b=vnex+iiXeJT2pCwzx8IPmsk2crTeCrUX+ZjI4b+Yt0xaSB+W51wGPj5XobsSvVlCtd
-         sTxx9vUbL0mrFkmJESX6QfCauo9glCo/tlclV2spGJcf1icUfgwb52xePKyn7OvN4903
-         JMEj/yiKdN8KAEc/+oeqf1KQwAAxvjSCyRRYyoiV02OaMPktoB1u+tAeTXMdCvIowwpk
-         2BoIllXjoGhz1PAdwc0NBiCRth4sf9xhqOuhGCTVhHs0TTGXCU3wGZ1M7htWWutFr9w7
-         Z0JmzG4cIOxuAK+jcEEC8NyEWRaO3ssBe9Clje6imDtuYpdGwIw65X7dxPAf1irRjua6
-         C3Dg==
-X-Gm-Message-State: AOJu0YwmdcRnVCehjYdCi+kde7L9qWlYkynam/EryhRn4GxlqCw5QcBW
-        5HOUWjwRYB5x8kpXdySLhKy2B+iMrKM=
-X-Google-Smtp-Source: AGHT+IFCF5MUMD869yhPhgA85k1sz5CoJq/QTd908FyvX67dvIc3xBcuRDs8mX3N7g5mT6MCs9yGRfwK12c=
+        bh=g87cF9aMFFIIQhALNgZyjDSNT/0Iy7aXKR5wCizfY2Q=;
+        b=SL9lfrMLJoxxwu0mghiD1y3L45KFlQ/BeJSU2nbIeUNVcW8AGM1O1ypXXSTWjHvNyv
+         KHEin3vMWOq6/cVZqI0UexbAN56SjX+TvFppbQJKJT38z28vlH+yzKed3bDOLgB1PNEa
+         NtjdUhjXKBh++3LToGJAR31tMQtp/HME7hguZpmt2zK37612OIdV11cJKColaApd8lfv
+         vv4rtlgHhJnJP6mectZmFU75hYM355oyYzl7wcojfbkPQztfnznG037+1f/Xjnn+SJYF
+         WHNw24j8oIetC02RxNw16piJQamdg2X3HnlkAqqZ5dKoa4HoS+zY9LGicjSMNQhWxezJ
+         3Atw==
+X-Gm-Message-State: AOJu0YzXD6ovUDk0Z+vdqMDQRAMkcd44OFrrvPj3AKWdN8Q4l0UWTo6U
+        TJEsAQu3iMkOwayCPqPyXfQrNAZQ3gc=
+X-Google-Smtp-Source: AGHT+IFjtTFMkJb5nyS/TbDu5WGvlim/mDgHE3y34bDt9PwwLEa+gj6fWVowFGkCoq7czWyFJVVkIfy0aAQ=
 X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a17:902:ec8b:b0:1bf:cc5:7b53 with SMTP id
- x11-20020a170902ec8b00b001bf0cc57b53mr68748plg.1.1694824318653; Fri, 15 Sep
- 2023 17:31:58 -0700 (PDT)
+ (user=seanjc job=sendgmr) by 2002:a25:d28b:0:b0:d0c:c83b:94ed with SMTP id
+ j133-20020a25d28b000000b00d0cc83b94edmr70330ybg.10.1694824326852; Fri, 15 Sep
+ 2023 17:32:06 -0700 (PDT)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Fri, 15 Sep 2023 17:31:11 -0700
+Date:   Fri, 15 Sep 2023 17:31:15 -0700
 In-Reply-To: <20230916003118.2540661-1-seanjc@google.com>
 Mime-Version: 1.0
 References: <20230916003118.2540661-1-seanjc@google.com>
 X-Mailer: git-send-email 2.42.0.459.ge4e396fd5e-goog
-Message-ID: <20230916003118.2540661-20-seanjc@google.com>
-Subject: [PATCH 19/26] KVM: Standardize include paths across all architectures
+Message-ID: <20230916003118.2540661-24-seanjc@google.com>
+Subject: [PATCH 23/26] KVM: arm64: Move and consolidate "public" functions in asm/kvm_host.h
 From:   Sean Christopherson <seanjc@google.com>
 To:     Catalin Marinas <catalin.marinas@arm.com>,
         Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>,
@@ -96,124 +96,97 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Standardize KVM's include paths across all architectures by declaring
-the KVM-specific includes in the common Makefile.kvm.  Having common KVM
-"own" the included paths reduces the temptation to unnecessarily add
-virt/kvm to arch include paths, and conversely if allowing arch code to
-grab headers from virt/kvm becomes desirable, virt/kvm can be added to
-all architecture's include path with a single line update.
-
-Having the common KVM makefile append to ccflags also provides a
-convenient location to append other things, e.g. KVM-specific #defines.
-
-Note, this changes the behavior of s390 and PPC, as s390 and PPC
-previously overwrote ccflags-y instead of adding on.  There is no evidence
-that overwriting ccflags-y was necessary or even deliberate, as both s390
-and PPC switched to the overwrite behavior without so much as a passing
-mention when EXTRA_CFLAGS was replaced with ccflags-y (commit c73028a02887
-("s390: change to new flag variable") and commit 4108d9ba9091
-("powerpc/Makefiles: Change to new flag variables")).
+Move a variety of "public" symbols in arm64's kvm_host.h, i.e. symbols and
+functions that are used by non-KVM code, towards the top of the header.
+This will allow hiding the "private" code in kvm_host.h, i.e. the stuff
+that is intended to be KVM-internal, with a minimal amount of #ifdeffery.
 
 Signed-off-by: Sean Christopherson <seanjc@google.com>
 ---
- arch/arm64/kvm/Makefile   | 2 --
- arch/mips/kvm/Makefile    | 2 --
- arch/powerpc/kvm/Makefile | 2 --
- arch/riscv/kvm/Makefile   | 2 --
- arch/s390/kvm/Makefile    | 2 --
- arch/x86/kvm/Makefile     | 1 -
- virt/kvm/Makefile.kvm     | 2 ++
- 7 files changed, 2 insertions(+), 11 deletions(-)
+ arch/arm64/include/asm/kvm_host.h | 48 ++++++++++++++-----------------
+ 1 file changed, 22 insertions(+), 26 deletions(-)
 
-diff --git a/arch/arm64/kvm/Makefile b/arch/arm64/kvm/Makefile
-index c0c050e53157..3996489baeef 100644
---- a/arch/arm64/kvm/Makefile
-+++ b/arch/arm64/kvm/Makefile
-@@ -3,8 +3,6 @@
- # Makefile for Kernel-based Virtual Machine module
- #
- 
--ccflags-y += -I $(srctree)/$(src)
--
- include $(srctree)/virt/kvm/Makefile.kvm
- 
- obj-$(CONFIG_KVM) += kvm.o
-diff --git a/arch/mips/kvm/Makefile b/arch/mips/kvm/Makefile
-index 96a7cd21b140..d198e1addea7 100644
---- a/arch/mips/kvm/Makefile
-+++ b/arch/mips/kvm/Makefile
-@@ -4,8 +4,6 @@
- 
- include $(srctree)/virt/kvm/Makefile.kvm
- 
--ccflags-y += -Iarch/mips/kvm
--
- kvm-$(CONFIG_CPU_HAS_MSA) += msa.o
- 
- kvm-y +=    mips.o emulate.o entry.o \
-diff --git a/arch/powerpc/kvm/Makefile b/arch/powerpc/kvm/Makefile
-index 08a0e53d58c7..d6c6678ddf65 100644
---- a/arch/powerpc/kvm/Makefile
-+++ b/arch/powerpc/kvm/Makefile
-@@ -3,8 +3,6 @@
- # Makefile for Kernel-based Virtual Machine module
- #
- 
--ccflags-y := -Iarch/powerpc/kvm
--
- include $(srctree)/virt/kvm/Makefile.kvm
- 
- common-objs-y += powerpc.o emulate_loadstore.o
-diff --git a/arch/riscv/kvm/Makefile b/arch/riscv/kvm/Makefile
-index 4c2067fc59fc..ff7d5f67e229 100644
---- a/arch/riscv/kvm/Makefile
-+++ b/arch/riscv/kvm/Makefile
-@@ -3,8 +3,6 @@
- # Makefile for RISC-V KVM support
- #
- 
--ccflags-y += -I $(srctree)/$(src)
--
- include $(srctree)/virt/kvm/Makefile.kvm
- 
- obj-$(CONFIG_KVM) += kvm.o
-diff --git a/arch/s390/kvm/Makefile b/arch/s390/kvm/Makefile
-index f17249ab2a72..f8153189e003 100644
---- a/arch/s390/kvm/Makefile
-+++ b/arch/s390/kvm/Makefile
-@@ -5,8 +5,6 @@
- 
- include $(srctree)/virt/kvm/Makefile.kvm
- 
--ccflags-y := -Iarch/s390/kvm
--
- kvm-y += kvm-s390.o intercept.o interrupt.o priv.o sigp.o
- kvm-y += diag.o gaccess.o guestdbg.o vsie.o pv.o
- 
-diff --git a/arch/x86/kvm/Makefile b/arch/x86/kvm/Makefile
-index 80e3fe184d17..d13f1a7b7b3d 100644
---- a/arch/x86/kvm/Makefile
-+++ b/arch/x86/kvm/Makefile
-@@ -1,6 +1,5 @@
- # SPDX-License-Identifier: GPL-2.0
- 
--ccflags-y += -I $(srctree)/arch/x86/kvm
- ccflags-$(CONFIG_KVM_WERROR) += -Werror
- 
- ifeq ($(CONFIG_FRAME_POINTER),y)
-diff --git a/virt/kvm/Makefile.kvm b/virt/kvm/Makefile.kvm
-index 29373b59d89a..e85079ad245d 100644
---- a/virt/kvm/Makefile.kvm
-+++ b/virt/kvm/Makefile.kvm
-@@ -3,6 +3,8 @@
- # Makefile for Kernel-based Virtual Machine module
- #
- 
-+ccflags-y += -I$(srctree)/$(src)
+diff --git a/arch/arm64/include/asm/kvm_host.h b/arch/arm64/include/asm/kvm_host.h
+index 90cfbf420545..89b40c34f0af 100644
+--- a/arch/arm64/include/asm/kvm_host.h
++++ b/arch/arm64/include/asm/kvm_host.h
+@@ -67,10 +67,32 @@ enum kvm_mode {
+ };
+ #ifdef CONFIG_KVM
+ enum kvm_mode kvm_get_mode(void);
 +
- KVM ?= ../../../virt/kvm
++extern phys_addr_t hyp_mem_base;
++extern phys_addr_t hyp_mem_size;
++void __init kvm_hyp_reserve(void);
++
++void kvm_set_pmu_events(u32 set, struct perf_event_attr *attr);
++void kvm_clr_pmu_events(u32 clr);
++bool kvm_set_pmuserenr(u64 val);
+ #else
+ static inline enum kvm_mode kvm_get_mode(void) { return KVM_MODE_NONE; };
++
++static inline void kvm_hyp_reserve(void) { }
++
++static inline void kvm_set_pmu_events(u32 set, struct perf_event_attr *attr) {}
++static inline void kvm_clr_pmu_events(u32 clr) {}
++static inline bool kvm_set_pmuserenr(u64 val)
++{
++	return false;
++}
+ #endif
  
- kvm-y := $(KVM)/kvm_main.o $(KVM)/eventfd.o $(KVM)/binary_stats.o
++static inline bool kvm_pmu_counter_deferred(struct perf_event_attr *attr)
++{
++	return (!has_vhe() && attr->exclude_host);
++}
++
+ DECLARE_STATIC_KEY_FALSE(userspace_irqchip_in_use);
+ 
+ extern unsigned int __ro_after_init kvm_sve_max_vl;
+@@ -1086,28 +1108,10 @@ void kvm_arch_vcpu_ctxsync_fp(struct kvm_vcpu *vcpu);
+ void kvm_arch_vcpu_put_fp(struct kvm_vcpu *vcpu);
+ void kvm_vcpu_unshare_task_fp(struct kvm_vcpu *vcpu);
+ 
+-static inline bool kvm_pmu_counter_deferred(struct perf_event_attr *attr)
+-{
+-	return (!has_vhe() && attr->exclude_host);
+-}
+-
+ /* Flags for host debug state */
+ void kvm_arch_vcpu_load_debug_state_flags(struct kvm_vcpu *vcpu);
+ void kvm_arch_vcpu_put_debug_state_flags(struct kvm_vcpu *vcpu);
+ 
+-#ifdef CONFIG_KVM
+-void kvm_set_pmu_events(u32 set, struct perf_event_attr *attr);
+-void kvm_clr_pmu_events(u32 clr);
+-bool kvm_set_pmuserenr(u64 val);
+-#else
+-static inline void kvm_set_pmu_events(u32 set, struct perf_event_attr *attr) {}
+-static inline void kvm_clr_pmu_events(u32 clr) {}
+-static inline bool kvm_set_pmuserenr(u64 val)
+-{
+-	return false;
+-}
+-#endif
+-
+ void kvm_vcpu_load_sysregs_vhe(struct kvm_vcpu *vcpu);
+ void kvm_vcpu_put_sysregs_vhe(struct kvm_vcpu *vcpu);
+ 
+@@ -1142,14 +1146,6 @@ bool kvm_arm_vcpu_is_finalized(struct kvm_vcpu *vcpu);
+ 	(test_bit(KVM_ARCH_FLAG_HAS_RAN_ONCE, &(kvm)->arch.flags))
+ 
+ int kvm_trng_call(struct kvm_vcpu *vcpu);
+-#ifdef CONFIG_KVM
+-extern phys_addr_t hyp_mem_base;
+-extern phys_addr_t hyp_mem_size;
+-void __init kvm_hyp_reserve(void);
+-#else
+-static inline void kvm_hyp_reserve(void) { }
+-#endif
+-
+ void kvm_arm_vcpu_power_off(struct kvm_vcpu *vcpu);
+ bool kvm_arm_vcpu_stopped(struct kvm_vcpu *vcpu);
+ 
 -- 
 2.42.0.459.ge4e396fd5e-goog
 

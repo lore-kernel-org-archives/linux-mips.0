@@ -2,41 +2,43 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 251CACD37BB
-	for <linux-mips@archiver.kernel.org>; Sat, 16 Sep 2023 12:08:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 81798CD37BB
+	for <linux-mips@archiver.kernel.org>; Sat, 16 Sep 2023 12:08:48 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231226AbjIPMHs (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Sat, 16 Sep 2023 08:07:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44966 "EHLO
+        id S236593AbjIPMIU (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Sat, 16 Sep 2023 08:08:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37458 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231897AbjIPMHf (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Sat, 16 Sep 2023 08:07:35 -0400
+        with ESMTP id S238089AbjIPMII (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Sat, 16 Sep 2023 08:08:08 -0400
 Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.155.65.254])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5694CF4;
-        Sat, 16 Sep 2023 05:07:25 -0700 (PDT)
-X-QQ-mid: bizesmtp73t1694866031tds2w2vm
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DBE6CED;
+        Sat, 16 Sep 2023 05:08:02 -0700 (PDT)
+X-QQ-mid: bizesmtp91t1694866064t8l0a72a
 Received: from main2-ubuntu.tail147f4.ts.net ( [202.201.15.117])
         by bizesmtp.qq.com (ESMTP) with 
-        id ; Sat, 16 Sep 2023 20:07:08 +0800 (CST)
-X-QQ-SSF: 01200000000000907000000A0000000
-X-QQ-FEAT: +ynUkgUhZJmtm7vTiltTVNwsjg9955kZ3PdLjei3hto1fWGdv1AVL3fguQtlM
-        99dLqedZSquFlCbtmWadTwBHkVhnXSkhPRUdcqjBECcYxQIgb18YaQ3wqAVPCs+91GWvIkm
-        nQkK3K0VwC7sYFt/Qm/D2ppsTX5VrwwdaosAt8Ubkq5+CIwAcW5bXztHm9lK2eC4zKFBFT1
-        NPXzgbvteyy0swArgiR7+1Nn189gg5ELUng7ZooQbujJRlcnrk9mAxetGhi6lWdR2y8RgsQ
-        vXFnUC+xUaFpm06O0icC9xLVJZKIFAdf/p8v/IYQSudkLGk0MmxsHNkoiG4NMA5wqvDqQeC
-        YfwxdwBlqHKSUoBGs36a2eZyua5L3SSOjLLKJQbDWgGv9WXkQs=
+        id ; Sat, 16 Sep 2023 20:07:41 +0800 (CST)
+X-QQ-SSF: 00200000000000907000000A0000000
+X-QQ-FEAT: znfcQSa1hKbOWPpeocnk9p3hBnV5lSgG39wRYFvZp0ZJo2u0QcBtKK5FxZqXs
+        CLQ8iul5Q9g8SR3Wml2ccUAdeART+ZB6BgDiABmmbknJBW9jgGQvf1u1llhBm1sk28dH5h4
+        OyqWYbVqmE6AVz8vNsyKjU6+4LWQ/6ab6V6fhvIzfpKglzNnxxGbNDxEp8s16rdGTPKljvT
+        eh8TdwkkN97uLINi0GmdeSD6mY6QP/RUPid/jGolVosHsxBnee4s5SpI5aFZz4awZnhMwUr
+        MQB9cSoDmAIO7mbIdvg1HBW/Kp2snNj5ZOdNr7hgNXRmQVRAjs9q6/v1XqV6NzMRZk2o2q1
+        gIW+mola5Ket6yGL/PuDcjhqJQ/K1nxsk/RXKYNV4Prdoo9nL8=
 X-QQ-GoodBg: 0
-X-BIZMAIL-ID: 13584893247443327529
+X-BIZMAIL-ID: 14865914680998969880
 From:   Yuan Tan <tanyuan@tinylab.org>
 To:     philmd@linaro.org
 Cc:     tsbogend@alpha.franken.de, 42.hyeyoo@gmail.com,
         linux-mips@vger.kernel.org, christophe.leroy@csgroup.eu,
         linux-kernel@vger.kernel.org, falcon@tinylab.org, w@1wt.eu,
         linux@weissschuh.net, tanyuan@tinylab.org
-Subject: [PATCH v4 0/2] Kconfig: Add dependencies of POWER_RESET for MIPS Malta
-Date:   Sat, 16 Sep 2023 20:07:07 +0800
-Message-Id: <cover.1694865711.git.tanyuan@tinylab.org>
+Subject: [PATCH v4 2/2] Kconfig: add dependencies of POWER_RESET for mips malta
+Date:   Sat, 16 Sep 2023 20:07:40 +0800
+Message-Id: <413b332868bac086c32b7486a7cb9c6fc81c15c0.1694865711.git.tanyuan@tinylab.org>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <cover.1694865711.git.tanyuan@tinylab.org>
+References: <cover.1694865711.git.tanyuan@tinylab.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -46,64 +48,54 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-These patches are to add dependencies of POWER_RESET for MIPS Malta.
+MIPS Malta's power off depends on PCI, PCI_QUIRKS, and
+POWER_RESET_PIIX4_POWEROFF to work. Enable them when POWER_RESET is set
+for convenience.
+Then regenerate malta_defconfig with 'make savedefconfig'.
 
-To simplify the enablement of the poweroff support, selecting the
-required options for CONFIG_POWER_RESET=y may make many people happy
-especially when they are using a customized config (maybe tinyconfig
-based) for a target qemu board. Without normal poweroff support from the
-kernel side, qemu will simply hang[1] there after a 'poweroff' command,
-which is a very bad experience for the automatical tests.
-
-However, CONFIG_POWER_RESET is ineffective if there are no
-dependencies that enable certain devices in Kconfig.
-
-Currently, based on tinyconfig, it is very hard to find the exact
-poweroff related option[2]. Some architectures' poweroff works well without
-any dependence, the others' poweroff options are hidden deeply, which
-make things hard.
-
-After multiple verifications, these options have been identified as the
-minimum dependencies required for poweroff to function normally.
-Additionally, 'make savedefconfig' simplifies the defconfig
-automatically.
-
-Zhangjin and I invested a significant amount of time in searching for
-the current options on these devices. We hope that this set of patches
-will save time for others. If community like it, we will consider adding
-dependencies for POWER_RESET on other devices.
-
-We hope every device's CONFIG_POWER_RESET will have proper dependencies. :)
-
+Suggested-by: Philippe Mathieu-Daudé <philmd@linaro.org>
+Suggested-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+Suggested-by: Zhangjin Wu <falcon@tinylab.org>
+Signed-off-by: Yuan Tan <tanyuan@tinylab.org>
 ---
-[1]: https://lore.kernel.org/lkml/511b2f6009fb830b3f32b4be3dca99596c684fa3.1689759351.git.falcon@tinylab.org/
-[2]: https://lore.kernel.org/all/983843582e52e83fba79ad45cea6c79e1f62ec6c.1690489039.git.falcon@tinylab.org/
+ arch/mips/Kconfig                 | 3 +++
+ arch/mips/configs/malta_defconfig | 2 --
+ 2 files changed, 3 insertions(+), 2 deletions(-)
 
-v1: https://lore.kernel.org/all/20230831201727.3177853-1-tanyuan@tinylab.org/
-v2: https://lore.kernel.org/all/cover.1693535514.git.tanyuan@tinylab.org/
-v3: https://lore.kernel.org/all/cover.1694680448.git.tanyuan@tinylab.org/
-
----
-Changes in v2:
-- Fix the mistake of using spaces instead of tabs in kconfig.
-
-Changes in v3:
-- Enable POWER_RESET and simplify the deconfig.
-- Select ADB_CUDA in PPC_PMAC32 only.
-
-Changes in v4:
-- Squash last two commits.
-
-Yuan Tan (2):
-  MIPS: Cleanup malta_defconfig
-  Kconfig: add dependencies of POWER_RESET for mips malta
-
- arch/mips/Kconfig                 |  3 +++
- arch/mips/configs/malta_defconfig | 39 ++++++-------------------------
- 2 files changed, 10 insertions(+), 32 deletions(-)
-
-
-base-commit: e7513eccb7d7f82e28f4730210b42da71edaa6a6
+diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
+index fc6fba925aea..b63a93e39f23 100644
+--- a/arch/mips/Kconfig
++++ b/arch/mips/Kconfig
+@@ -547,6 +547,9 @@ config MIPS_MALTA
+ 	select MIPS_L1_CACHE_SHIFT_6
+ 	select MIPS_MSC
+ 	select PCI_GT64XXX_PCI0
++	select PCI if POWER_RESET
++	select PCI_QUIRKS if POWER_RESET
++	select POWER_RESET_PIIX4_POWEROFF if POWER_RESET
+ 	select SMP_UP if SMP
+ 	select SWAP_IO_SPACE
+ 	select SYS_HAS_CPU_MIPS32_R1
+diff --git a/arch/mips/configs/malta_defconfig b/arch/mips/configs/malta_defconfig
+index 7ae07d57b79a..99049e993192 100644
+--- a/arch/mips/configs/malta_defconfig
++++ b/arch/mips/configs/malta_defconfig
+@@ -192,7 +192,6 @@ CONFIG_CFG80211=m
+ CONFIG_MAC80211=m
+ CONFIG_MAC80211_MESH=y
+ CONFIG_RFKILL=m
+-CONFIG_PCI=y
+ CONFIG_DEVTMPFS=y
+ CONFIG_CONNECTOR=m
+ CONFIG_MTD=y
+@@ -284,7 +283,6 @@ CONFIG_MOUSE_PS2_ELANTECH=y
+ CONFIG_SERIAL_8250=y
+ CONFIG_SERIAL_8250_CONSOLE=y
+ CONFIG_POWER_RESET=y
+-CONFIG_POWER_RESET_PIIX4_POWEROFF=y
+ CONFIG_POWER_RESET_SYSCON=y
+ # CONFIG_HWMON is not set
+ CONFIG_FB=y
 -- 
 2.34.1
 

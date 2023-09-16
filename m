@@ -2,58 +2,58 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 41196C2BA16
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B4D54C2BA1A
 	for <linux-mips@archiver.kernel.org>; Sat, 16 Sep 2023 00:33:22 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238700AbjIPAcx (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 15 Sep 2023 20:32:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34228 "EHLO
+        id S238717AbjIPAc4 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 15 Sep 2023 20:32:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34354 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238607AbjIPAcX (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Fri, 15 Sep 2023 20:32:23 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38B38271D
-        for <linux-mips@vger.kernel.org>; Fri, 15 Sep 2023 17:31:35 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-d8186d705a9so3253412276.3
-        for <linux-mips@vger.kernel.org>; Fri, 15 Sep 2023 17:31:35 -0700 (PDT)
+        with ESMTP id S238660AbjIPAc0 (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Fri, 15 Sep 2023 20:32:26 -0400
+Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF0A32D7E
+        for <linux-mips@vger.kernel.org>; Fri, 15 Sep 2023 17:31:53 -0700 (PDT)
+Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-597f461adc5so35697287b3.1
+        for <linux-mips@vger.kernel.org>; Fri, 15 Sep 2023 17:31:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1694824294; x=1695429094; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1694824313; x=1695429113; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:reply-to:from:to:cc:subject:date:message-id:reply-to;
-        bh=XQRlLqUbNuYp1+FU2drQZXL0G0BiKv3N4ijMXeK3kKU=;
-        b=pj+m+tw+Vr/7p8Y5xI2nRJIZqZ/Aw+drvFtF210Mgaro8VDbTprQ03KYl+1DG+Mvl2
-         /bdOATaYzWI/O45mTeZvtWzhWrTvGZXveG3TkQVLbNXmY4oarqZBSdBXu6mi0Bpij+Jn
-         x0qNy9xNJ6AddCeezhpXBS6bbXEd5lyUgNoG5RF280zx+bPVBT836B0ZYrGoS3Ers/v3
-         o5F/EuxdVMrweazOTgz2lLagFBmcXPX/gbRLmEk6NNvwPTLcWPU6oWBEHq9LcBTp9Zct
-         1+LXloWwjp6h8rjp+cKpuJfk7yPEH9ApKIJIquVdMZ5HEtoO9NFyc9oZ4Gfl9RpP4sfP
-         Hz0w==
+        bh=pl7bBxxWVXjTf9iTQwKV6iNN5dTCLVhIVjlh92R6IC4=;
+        b=zOLzyvf9Xh9Oyip0BwJ83PeBHCS/GkeIkYW7amwKWpbVRBulRSs+M2ewlVHSYEk8Y1
+         fZi/rLeXSktTS8MyrHSb7oSjjoji3mP8DLBFys3HTkweHkzNEjUj/MYjO6bhCObLf6WI
+         C4epHaQCDHjamTfPTIFUVJo9uV7rJeD8D3Ev5VTy1GaRUXNCbP9vUakULPRry3f2UmYw
+         gyw5WDenpiA4SZAJNYLZ4b5c/W6CHbsXfPj0GoeSA/wcWsneuM9gT86MPn9Q/cBxCCsq
+         e6qXt7/vwX6T3FspiyVRjD7e2hTXM1HQsLlpY6p8Z4vdzbokFmWoStzOeNzcENym+vhB
+         +SRw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1694824294; x=1695429094;
+        d=1e100.net; s=20230601; t=1694824313; x=1695429113;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:reply-to:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=XQRlLqUbNuYp1+FU2drQZXL0G0BiKv3N4ijMXeK3kKU=;
-        b=FRvmPeZdXfdVqIFU4GUMTzxAe0pXxJd+lQM//LR265VTFVw3QLKvQoBRRz7j86Qy9S
-         qLiUUqvRN30QKbZB+rwVR//rMgZ5VPHNecLYu0S1aAavHW3F5/xtaiKAd/FyLgo5jGIT
-         NbE/4X8LqMtQ0DvHcNZsm8ne56rGiEyiS8vtj6X5+7nBuTK25o72kRFT0SImyTxYh5XO
-         RDhM7umpGlNXOgnmCCmnF9RtOSAAAmpWZtowFHLXsyzS0Mqtc1s8gE7GVm83UhQ381pF
-         GocxjPlUWtxxMAMzfRXYNJOt1vz0gXYl6kAeg8pmOjy9opkVQ/TbFwEfRcovVt94UBVb
-         gzSg==
-X-Gm-Message-State: AOJu0YzSwc92B6WHwZ4+ddImm6DAXIHyM1cu2L8t/hh+UkwLUSE/EGrg
-        bHYgaKrMNAIvFI8Z3MV5YLbWta1Zr58=
-X-Google-Smtp-Source: AGHT+IHBAJpKVTk5K4TnqnuCpKfAMfti0UcZajyltDkU/ESq4jqN2J77nrZn8mACY7DFJ5DSU6KVipQ1KO4=
+        bh=pl7bBxxWVXjTf9iTQwKV6iNN5dTCLVhIVjlh92R6IC4=;
+        b=gBRyAm9k0V/yBQ4R6x0wa/+IwqN6jylbyza8f7Hwac0MdvdwVPmEgalysCJT8rflTY
+         ziBh58PFAkwMFO+a8xNjuxgb3X1MpHxah3Pf/4hXg/fxmS7g65qnDzkKFksss1vWMFIa
+         9Yq9szCoYRjeTu16+72Wt/JsVY2MA4ffLsjwtnXYEruUsbP7RuvtXw27km2NjC1W9rRl
+         GballUcUVSvFxmX1HvVNwxGotlfHOGCPxzAVXJ78N+dMcnbiMfQs/ic/ZPiAFXPq56Ap
+         DQLRp/+q5SsQ9T2UhUdq4+k8bZ2bZJvqFT+8w2GZYOF/Y1MDOPhApHon33qv+0UD/ltI
+         xOUg==
+X-Gm-Message-State: AOJu0YxENw1TBH8BQhKQl/+cxUGrAyeZhayXjA0oPUONd7pz1IQIwDYA
+        w+UX4cqEIwj3Sp4l+0C7lHeFuDIaOw0=
+X-Google-Smtp-Source: AGHT+IHIEoJ5Qp0cT7058FSDnFlcgu0NfKZ+k2cnwo0UQE0i+ifeNt8ssvIZEJlieWuqLdMggeWcLX6T9W4=
 X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a25:aa6c:0:b0:d7e:a025:2672 with SMTP id
- s99-20020a25aa6c000000b00d7ea0252672mr72126ybi.9.1694824294437; Fri, 15 Sep
- 2023 17:31:34 -0700 (PDT)
+ (user=seanjc job=sendgmr) by 2002:a05:6902:4cf:b0:d7b:92d7:5629 with SMTP id
+ v15-20020a05690204cf00b00d7b92d75629mr82335ybs.8.1694824312956; Fri, 15 Sep
+ 2023 17:31:52 -0700 (PDT)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Fri, 15 Sep 2023 17:30:59 -0700
+Date:   Fri, 15 Sep 2023 17:31:08 -0700
 In-Reply-To: <20230916003118.2540661-1-seanjc@google.com>
 Mime-Version: 1.0
 References: <20230916003118.2540661-1-seanjc@google.com>
 X-Mailer: git-send-email 2.42.0.459.ge4e396fd5e-goog
-Message-ID: <20230916003118.2540661-8-seanjc@google.com>
-Subject: [PATCH 07/26] x86/idt: Wrap KVM logic with CONFIG_KVM instead of CONFIG_HAVE_KVM
+Message-ID: <20230916003118.2540661-17-seanjc@google.com>
+Subject: [PATCH 16/26] KVM: MIPS: Stop adding virt/kvm to the arch include path
 From:   Sean Christopherson <seanjc@google.com>
 To:     Catalin Marinas <catalin.marinas@arm.com>,
         Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>,
@@ -96,156 +96,30 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Wrap all of the IDT-related code that deals with KVM in CONFIG_KVM instead
-of CONFIG_HAVE_KVM.  x86 always "has" KVM, i.e. checking CONFIG_HAVE_KVM
-is pointless.
-
-Alternatively, the #ifdefs could simply be deleted, but the only potential
-value is in printing the number of posted interrupts that end up being
-handled by the host, everything else is completely dead code when KVM is
-disabled.  And if KVM is disabled, there should not be any posted
-interrupts, i.e. NOT wiring up the "dummy" handlers and treating IRQs on
-those vectors as spurious is the right thing to do.
+Don't add virt/kvm to KVM MIPS' include path, the headers in virt/kvm are
+intended to be used only by other code in virt/kvm, i.e. are "private" to
+the core KVM code.  It's not clear that MIPS *ever* included a header from
+virt/kvm, i.e. odds are good the "-Ivirt/kvm" was copied from a different
+architecture's Makefile when MIPS support was first added.
 
 Signed-off-by: Sean Christopherson <seanjc@google.com>
 ---
- arch/x86/include/asm/hardirq.h           | 2 +-
- arch/x86/include/asm/idtentry.h          | 2 +-
- arch/x86/include/asm/irq.h               | 2 +-
- arch/x86/include/asm/irq_vectors.h       | 2 +-
- arch/x86/kernel/idt.c                    | 2 +-
- arch/x86/kernel/irq.c                    | 4 ++--
- scripts/gdb/linux/constants.py.in        | 2 +-
- scripts/gdb/linux/interrupts.py          | 2 +-
- tools/arch/x86/include/asm/irq_vectors.h | 2 +-
- 9 files changed, 10 insertions(+), 10 deletions(-)
+ arch/mips/kvm/Makefile | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/x86/include/asm/hardirq.h b/arch/x86/include/asm/hardirq.h
-index 66837b8c67f1..fbc7722b87d1 100644
---- a/arch/x86/include/asm/hardirq.h
-+++ b/arch/x86/include/asm/hardirq.h
-@@ -15,7 +15,7 @@ typedef struct {
- 	unsigned int irq_spurious_count;
- 	unsigned int icr_read_retry_count;
- #endif
--#ifdef CONFIG_HAVE_KVM
-+#if IS_ENABLED(CONFIG_KVM)
- 	unsigned int kvm_posted_intr_ipis;
- 	unsigned int kvm_posted_intr_wakeup_ipis;
- 	unsigned int kvm_posted_intr_nested_ipis;
-diff --git a/arch/x86/include/asm/idtentry.h b/arch/x86/include/asm/idtentry.h
-index 05fd175cec7d..8eef16d0d72b 100644
---- a/arch/x86/include/asm/idtentry.h
-+++ b/arch/x86/include/asm/idtentry.h
-@@ -671,7 +671,7 @@ DECLARE_IDTENTRY_SYSVEC(IRQ_WORK_VECTOR,		sysvec_irq_work);
- # endif
- #endif
+diff --git a/arch/mips/kvm/Makefile b/arch/mips/kvm/Makefile
+index 805aeea2166e..96a7cd21b140 100644
+--- a/arch/mips/kvm/Makefile
++++ b/arch/mips/kvm/Makefile
+@@ -4,7 +4,7 @@
  
--#ifdef CONFIG_HAVE_KVM
-+#if IS_ENABLED(CONFIG_KVM)
- DECLARE_IDTENTRY_SYSVEC(POSTED_INTR_VECTOR,		sysvec_kvm_posted_intr_ipi);
- DECLARE_IDTENTRY_SYSVEC(POSTED_INTR_WAKEUP_VECTOR,	sysvec_kvm_posted_intr_wakeup_ipi);
- DECLARE_IDTENTRY_SYSVEC(POSTED_INTR_NESTED_VECTOR,	sysvec_kvm_posted_intr_nested_ipi);
-diff --git a/arch/x86/include/asm/irq.h b/arch/x86/include/asm/irq.h
-index 836c170d3087..194dfff84cb1 100644
---- a/arch/x86/include/asm/irq.h
-+++ b/arch/x86/include/asm/irq.h
-@@ -29,7 +29,7 @@ struct irq_desc;
+ include $(srctree)/virt/kvm/Makefile.kvm
  
- extern void fixup_irqs(void);
+-ccflags-y += -Ivirt/kvm -Iarch/mips/kvm
++ccflags-y += -Iarch/mips/kvm
  
--#ifdef CONFIG_HAVE_KVM
-+#if IS_ENABLED(CONFIG_KVM)
- extern void kvm_set_posted_intr_wakeup_handler(void (*handler)(void));
- #endif
+ kvm-$(CONFIG_CPU_HAS_MSA) += msa.o
  
-diff --git a/arch/x86/include/asm/irq_vectors.h b/arch/x86/include/asm/irq_vectors.h
-index 3a19904c2db6..3f73ac3ed3a0 100644
---- a/arch/x86/include/asm/irq_vectors.h
-+++ b/arch/x86/include/asm/irq_vectors.h
-@@ -84,7 +84,7 @@
- #define HYPERVISOR_CALLBACK_VECTOR	0xf3
- 
- /* Vector for KVM to deliver posted interrupt IPI */
--#ifdef CONFIG_HAVE_KVM
-+#if IS_ENABLED(CONFIG_KVM)
- #define POSTED_INTR_VECTOR		0xf2
- #define POSTED_INTR_WAKEUP_VECTOR	0xf1
- #define POSTED_INTR_NESTED_VECTOR	0xf0
-diff --git a/arch/x86/kernel/idt.c b/arch/x86/kernel/idt.c
-index b786d48f5a0f..a9e6363d88c2 100644
---- a/arch/x86/kernel/idt.c
-+++ b/arch/x86/kernel/idt.c
-@@ -149,7 +149,7 @@ static const __initconst struct idt_data apic_idts[] = {
- #ifdef CONFIG_X86_LOCAL_APIC
- 	INTG(LOCAL_TIMER_VECTOR,		asm_sysvec_apic_timer_interrupt),
- 	INTG(X86_PLATFORM_IPI_VECTOR,		asm_sysvec_x86_platform_ipi),
--# ifdef CONFIG_HAVE_KVM
-+#if IS_ENABLED(CONFIG_KVM)
- 	INTG(POSTED_INTR_VECTOR,		asm_sysvec_kvm_posted_intr_ipi),
- 	INTG(POSTED_INTR_WAKEUP_VECTOR,		asm_sysvec_kvm_posted_intr_wakeup_ipi),
- 	INTG(POSTED_INTR_NESTED_VECTOR,		asm_sysvec_kvm_posted_intr_nested_ipi),
-diff --git a/arch/x86/kernel/irq.c b/arch/x86/kernel/irq.c
-index 11761c124545..35fde0107901 100644
---- a/arch/x86/kernel/irq.c
-+++ b/arch/x86/kernel/irq.c
-@@ -164,7 +164,7 @@ int arch_show_interrupts(struct seq_file *p, int prec)
- #if defined(CONFIG_X86_IO_APIC)
- 	seq_printf(p, "%*s: %10u\n", prec, "MIS", atomic_read(&irq_mis_count));
- #endif
--#ifdef CONFIG_HAVE_KVM
-+#if IS_ENABLED(CONFIG_KVM)
- 	seq_printf(p, "%*s: ", prec, "PIN");
- 	for_each_online_cpu(j)
- 		seq_printf(p, "%10u ", irq_stats(j)->kvm_posted_intr_ipis);
-@@ -290,7 +290,7 @@ DEFINE_IDTENTRY_SYSVEC(sysvec_x86_platform_ipi)
- }
- #endif
- 
--#ifdef CONFIG_HAVE_KVM
-+#if IS_ENABLED(CONFIG_KVM)
- static void dummy_handler(void) {}
- static void (*kvm_posted_intr_wakeup_handler)(void) = dummy_handler;
- 
-diff --git a/scripts/gdb/linux/constants.py.in b/scripts/gdb/linux/constants.py.in
-index e3517d4ab8ec..054630f511e0 100644
---- a/scripts/gdb/linux/constants.py.in
-+++ b/scripts/gdb/linux/constants.py.in
-@@ -129,7 +129,7 @@ LX_CONFIG(CONFIG_X86_MCE_THRESHOLD)
- LX_CONFIG(CONFIG_X86_MCE_AMD)
- LX_CONFIG(CONFIG_X86_MCE)
- LX_CONFIG(CONFIG_X86_IO_APIC)
--LX_CONFIG(CONFIG_HAVE_KVM)
-+LX_CONFIG(CONFIG_KVM)
- LX_CONFIG(CONFIG_NUMA)
- LX_CONFIG(CONFIG_ARM64)
- LX_CONFIG(CONFIG_ARM64_4K_PAGES)
-diff --git a/scripts/gdb/linux/interrupts.py b/scripts/gdb/linux/interrupts.py
-index ef478e273791..66ae5c7690cf 100644
---- a/scripts/gdb/linux/interrupts.py
-+++ b/scripts/gdb/linux/interrupts.py
-@@ -151,7 +151,7 @@ def x86_show_interupts(prec):
-         if cnt is not None:
-             text += "%*s: %10u\n" % (prec, "MIS", cnt['counter'])
- 
--    if constants.LX_CONFIG_HAVE_KVM:
-+    if constants.LX_CONFIG_KVM:
-         text += x86_show_irqstat(prec, "PIN", 'kvm_posted_intr_ipis', 'Posted-interrupt notification event')
-         text += x86_show_irqstat(prec, "NPI", 'kvm_posted_intr_nested_ipis', 'Nested posted-interrupt event')
-         text += x86_show_irqstat(prec, "PIW", 'kvm_posted_intr_wakeup_ipis', 'Posted-interrupt wakeup event')
-diff --git a/tools/arch/x86/include/asm/irq_vectors.h b/tools/arch/x86/include/asm/irq_vectors.h
-index 3a19904c2db6..3f73ac3ed3a0 100644
---- a/tools/arch/x86/include/asm/irq_vectors.h
-+++ b/tools/arch/x86/include/asm/irq_vectors.h
-@@ -84,7 +84,7 @@
- #define HYPERVISOR_CALLBACK_VECTOR	0xf3
- 
- /* Vector for KVM to deliver posted interrupt IPI */
--#ifdef CONFIG_HAVE_KVM
-+#if IS_ENABLED(CONFIG_KVM)
- #define POSTED_INTR_VECTOR		0xf2
- #define POSTED_INTR_WAKEUP_VECTOR	0xf1
- #define POSTED_INTR_NESTED_VECTOR	0xf0
 -- 
 2.42.0.459.ge4e396fd5e-goog
 

@@ -2,322 +2,149 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3DB7DCD37B4
-	for <linux-mips@archiver.kernel.org>; Sun, 17 Sep 2023 16:31:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5DC92CD37B4
+	for <linux-mips@archiver.kernel.org>; Mon, 18 Sep 2023 01:15:14 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230360AbjIQQas (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Sun, 17 Sep 2023 12:30:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60160 "EHLO
+        id S234983AbjIRBOq (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Sun, 17 Sep 2023 21:14:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59248 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229957AbjIQQaR (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Sun, 17 Sep 2023 12:30:17 -0400
-Received: from relay9-d.mail.gandi.net (relay9-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10DE4131;
-        Sun, 17 Sep 2023 09:30:10 -0700 (PDT)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id A6BEAFF809;
-        Sun, 17 Sep 2023 16:29:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arinc9.com; s=gm1;
-        t=1694968209;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=HzNM+NPfJ5CDr5hTobSDl1+YnN2TJtED/tkotJW0Ydg=;
-        b=NtbKG7FFhvBrf/tNHIlYz/nCRJmUGzH/VPSVuqbS+jQwh0NTv5diQfbNoVS9Za4paxzpMl
-        bNV4el4FuS4ai6rl+bvdyy3MQYBgds/MSOxulYa4Ni7e2v/49dJSFbBkKJlRnfaTPwumPv
-        gRYdnSz4vCwpsrQIO7SI4wRdrZCqu82tKFuehH4OoVu9SlN03H9KkclXd0wkqCg9laZlPD
-        T8BJXhgNynFSTXGGwDwSQ3dC3JO/mvloFEQkQqu87amjLs7+PPy9q+UzqjnRnb4tbDjU49
-        D/jmc/gm+BmuPObu5rvDMuhbN/3/DjSqYCjjsqH+JExxCY6bWqtneJ9dsnwS/Q==
-From:   =?UTF-8?q?Ar=C4=B1n=C3=A7=20=C3=9CNAL?= <arinc.unal@arinc9.com>
-To:     =?UTF-8?q?Ar=C4=B1n=C3=A7=20=C3=9CNAL?= <arinc.unal@arinc9.com>,
-        Sergio Paracuellos <sergio.paracuellos@gmail.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-Cc:     mithat.guner@xeront.com, erkin.bozoglu@xeront.com,
-        linux-mediatek@lists.infradead.org, linux-mips@vger.kernel.org,
-        linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: [PATCH 2/2] dt-bindings: pinctrl: mtmips: document pins of groups
-Date:   Sun, 17 Sep 2023 19:28:37 +0300
-Message-Id: <20230917162837.277405-2-arinc.unal@arinc9.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20230917162837.277405-1-arinc.unal@arinc9.com>
-References: <20230917162837.277405-1-arinc.unal@arinc9.com>
+        with ESMTP id S234809AbjIRBOb (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Sun, 17 Sep 2023 21:14:31 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECA21124;
+        Sun, 17 Sep 2023 18:14:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1694999666; x=1726535666;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=oa/nrZXu3pJ1XHmH6ZVv7iF/X9/VnJhZeXvizU+honc=;
+  b=XNC0i8/3WoZYSa3FV5A0gKvhuxa/IPj6toJJwkiWG5xWauzfcgmillHd
+   X1ID5rQsktH3AoFEjIpUzJzUjSO4JggJkinLN2dOIwBl2YHlJfu+N8bbx
+   55QV2kE+rqlGdOG6ADule1ZUqf+aO/cNWe8cyjazcIXa9LMpqhz5w+BaG
+   yJO9Edd15z9Axywn0IGnjIWQYSIcFw2rqUGPIv4oInTryWh57qXb1TZT5
+   f3izvD5TPQtR+rqm4X3FrxCi6gQSRG9mC1luYXdMk0c1WwJI7e1FT1Ocv
+   KfHhQrz1ecSPE7uYAFsq5VUp1uXsndcCVeENPqS16VB0SVV2rq7UXoLtr
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10836"; a="383364151"
+X-IronPort-AV: E=Sophos;i="6.02,155,1688454000"; 
+   d="scan'208";a="383364151"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Sep 2023 18:14:25 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10836"; a="835840579"
+X-IronPort-AV: E=Sophos;i="6.02,155,1688454000"; 
+   d="scan'208";a="835840579"
+Received: from binbinwu-mobl.ccr.corp.intel.com (HELO [10.238.8.84]) ([10.238.8.84])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Sep 2023 18:14:15 -0700
+Message-ID: <9925e01b-7fa9-95e4-dc21-1d760ef9cde4@linux.intel.com>
+Date:   Mon, 18 Sep 2023 09:14:13 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-GND-Sasl: arinc.unal@arinc9.com
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [RFC PATCH v12 10/33] KVM: Set the stage for handling only shared
+ mappings in mmu_notifier events
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     kvm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        kvmarm@lists.linux.dev, linux-mips@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, kvm-riscv@lists.infradead.org,
+        linux-riscv@lists.infradead.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Anup Patel <anup@brainfault.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Paul Moore <paul@paul-moore.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Chao Peng <chao.p.peng@linux.intel.com>,
+        Fuad Tabba <tabba@google.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Anish Moorthy <amoorthy@google.com>,
+        Yu Zhang <yu.c.zhang@linux.intel.com>,
+        Isaku Yamahata <isaku.yamahata@intel.com>,
+        Xu Yilun <yilun.xu@intel.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Vishal Annapurve <vannapurve@google.com>,
+        Ackerley Tng <ackerleytng@google.com>,
+        Maciej Szmigiero <mail@maciej.szmigiero.name>,
+        David Hildenbrand <david@redhat.com>,
+        Quentin Perret <qperret@google.com>,
+        Michael Roth <michael.roth@amd.com>,
+        Wang <wei.w.wang@intel.com>,
+        Liam Merwick <liam.merwick@oracle.com>,
+        Isaku Yamahata <isaku.yamahata@gmail.com>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
+References: <20230914015531.1419405-1-seanjc@google.com>
+ <20230914015531.1419405-11-seanjc@google.com>
+From:   Binbin Wu <binbin.wu@linux.intel.com>
+In-Reply-To: <20230914015531.1419405-11-seanjc@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Document the pins of each group on the MediaTek MTMIPS SoC pin controllers.
 
-Signed-off-by: Arınç ÜNAL <arinc.unal@arinc9.com>
----
- .../pinctrl/mediatek,mt7620-pinctrl.yaml      | 22 ++++++++++++-
- .../pinctrl/mediatek,mt7621-pinctrl.yaml      | 18 +++++++++-
- .../pinctrl/mediatek,mt76x8-pinctrl.yaml      | 33 ++++++++++++++++++-
- .../pinctrl/ralink,rt2880-pinctrl.yaml        | 17 +++++++++-
- .../pinctrl/ralink,rt305x-pinctrl.yaml        | 16 ++++++++-
- .../pinctrl/ralink,rt3352-pinctrl.yaml        | 17 +++++++++-
- .../pinctrl/ralink,rt3883-pinctrl.yaml        | 16 ++++++++-
- .../pinctrl/ralink,rt5350-pinctrl.yaml        | 13 +++++++-
- 8 files changed, 144 insertions(+), 8 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/pinctrl/mediatek,mt7620-pinctrl.yaml b/Documentation/devicetree/bindings/pinctrl/mediatek,mt7620-pinctrl.yaml
-index 221adcef6e14..eb9d9d2bd90f 100644
---- a/Documentation/devicetree/bindings/pinctrl/mediatek,mt7620-pinctrl.yaml
-+++ b/Documentation/devicetree/bindings/pinctrl/mediatek,mt7620-pinctrl.yaml
-@@ -44,8 +44,28 @@ patternProperties:
-                    wdt refclk, wdt rst, wled]
- 
-           groups:
--            description:
-+            description: |
-               An array of strings. Each string contains the name of a group.
-+
-+              group             pins
-+              ------------------------------------------------------------------
-+              "i2c"             1, 2
-+              "spi"             3, 4, 5, 6
-+              "uartf"           7, 8, 9, 10, 11, 12, 13, 14
-+              "uartlite"        15, 16
-+              "wdt"             17
-+              "pa"              18, 19, 20, 21
-+              "mdio"            22, 23
-+              "rgmii1"          24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35
-+              "pcie"            36
-+              "spi refclk"      37, 38, 39
-+              "ephy"            40, 41, 42, 43, 44
-+              "nd_sd"           45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56,
-+                                57, 58, 59
-+
-+              "rgmii2"          60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71
-+              "wled"            72
-+
-             maxItems: 1
- 
-         required:
-diff --git a/Documentation/devicetree/bindings/pinctrl/mediatek,mt7621-pinctrl.yaml b/Documentation/devicetree/bindings/pinctrl/mediatek,mt7621-pinctrl.yaml
-index 5e29332c794b..71d1ef203d38 100644
---- a/Documentation/devicetree/bindings/pinctrl/mediatek,mt7621-pinctrl.yaml
-+++ b/Documentation/devicetree/bindings/pinctrl/mediatek,mt7621-pinctrl.yaml
-@@ -43,8 +43,24 @@ patternProperties:
-                    uart1, uart2, uart3, wdt refclk, wdt rst]
- 
-           groups:
--            description:
-+            description: |
-               An array of strings. Each string contains the name of a group.
-+
-+              group             pins
-+              ------------------------------------------------------------------
-+              "uart1"           1, 2
-+              "i2c"             3, 4
-+              "uart3"           5, 6, 7, 8
-+              "uart2"           9, 10, 11, 12
-+              "jtag"            13, 14, 15, 16, 17
-+              "wdt"             18
-+              "pcie"            19
-+              "mdio"            20, 21
-+              "rgmii2"          22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33
-+              "spi"             34, 35, 36, 37, 38, 39, 40
-+              "sdhci"           41, 42, 43, 44, 45, 46, 47, 48
-+              "rgmii1"          49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60
-+
-             maxItems: 1
- 
-         required:
-diff --git a/Documentation/devicetree/bindings/pinctrl/mediatek,mt76x8-pinctrl.yaml b/Documentation/devicetree/bindings/pinctrl/mediatek,mt76x8-pinctrl.yaml
-index fef7728a5220..3831c04fa37c 100644
---- a/Documentation/devicetree/bindings/pinctrl/mediatek,mt76x8-pinctrl.yaml
-+++ b/Documentation/devicetree/bindings/pinctrl/mediatek,mt76x8-pinctrl.yaml
-@@ -46,8 +46,39 @@ patternProperties:
-                    wled_an, wled_kn, -]
- 
-           groups:
--            description:
-+            description: |
-               An array of strings. Each string contains the name of a group.
-+
-+              group             pins
-+              ------------------------------------------------------------------
-+              "i2s"             0, 1, 2, 3
-+              "i2c"             4, 5
-+              "spi cs1"         6
-+              "spi"             7, 8, 9, 10
-+              "gpio"            11
-+              "uart0"           12, 13
-+              "spis"            14, 15, 16, 17
-+              "pwm0"            18
-+              "pwm1"            19
-+              "uart2"           20, 21
-+              "sdmode"          22, 23, 24, 25, 26, 27, 28, 29
-+              "p4led_kn"        30
-+              "p3led_kn"        31
-+              "p2led_kn"        32
-+              "p1led_kn"        33
-+              "p0led_kn"        34
-+              "wled_kn"         35
-+              "perst"           36
-+              "refclk"          37
-+              "wdt"             38
-+              "p4led_an"        39
-+              "p3led_an"        40
-+              "p2led_an"        41
-+              "p1led_an"        42
-+              "p0led_an"        43
-+              "wled_an"         44
-+              "uart1"           45, 46
-+
-             maxItems: 1
- 
-         required:
-diff --git a/Documentation/devicetree/bindings/pinctrl/ralink,rt2880-pinctrl.yaml b/Documentation/devicetree/bindings/pinctrl/ralink,rt2880-pinctrl.yaml
-index 71bc961b856e..b1a6a6236737 100644
---- a/Documentation/devicetree/bindings/pinctrl/ralink,rt2880-pinctrl.yaml
-+++ b/Documentation/devicetree/bindings/pinctrl/ralink,rt2880-pinctrl.yaml
-@@ -41,8 +41,23 @@ patternProperties:
-             enum: [gpio, i2c, spi, uartlite, jtag, mdio, sdram, pci]
- 
-           groups:
--            description:
-+            description: |
-               An array of strings. Each string contains the name of a group.
-+
-+              group             pins
-+              ------------------------------------------------------------------
-+              "i2c"             1, 2
-+              "spi"             3, 4, 5, 6
-+              "uartlite"        7, 8, 9, 10, 11, 12, 13, 14
-+              "jtag"            17, 18, 19, 20, 21
-+              "mdio"            22, 23
-+              "sdram"           24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35,
-+                                36, 37, 38, 39
-+
-+              "pci"             40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51,
-+                                52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63,
-+                                64, 65, 66, 67, 68, 69, 70, 71
-+
-             maxItems: 1
- 
-         required:
-diff --git a/Documentation/devicetree/bindings/pinctrl/ralink,rt305x-pinctrl.yaml b/Documentation/devicetree/bindings/pinctrl/ralink,rt305x-pinctrl.yaml
-index bde19a00af80..214fb17d6b82 100644
---- a/Documentation/devicetree/bindings/pinctrl/ralink,rt305x-pinctrl.yaml
-+++ b/Documentation/devicetree/bindings/pinctrl/ralink,rt305x-pinctrl.yaml
-@@ -43,8 +43,22 @@ patternProperties:
-                    uartlite]
- 
-           groups:
--            description:
-+            description: |
-               An array of strings. Each string contains the name of a group.
-+
-+              group             pins
-+              ------------------------------------------------------------------
-+              "i2c"             1, 2
-+              "spi"             3, 4, 5, 6
-+              "uartf"           7, 8, 9, 10, 11, 12, 13, 14
-+              "uartlite"        15, 16
-+              "jtag"            17, 18, 19, 20, 21
-+              "mdio"            22, 23
-+              "sdram"           24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35,
-+                                36, 37, 38, 39
-+
-+              "rgmii"           40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51
-+
-             maxItems: 1
- 
-         required:
-diff --git a/Documentation/devicetree/bindings/pinctrl/ralink,rt3352-pinctrl.yaml b/Documentation/devicetree/bindings/pinctrl/ralink,rt3352-pinctrl.yaml
-index f87038cadfc8..65f04d85e9fc 100644
---- a/Documentation/devicetree/bindings/pinctrl/ralink,rt3352-pinctrl.yaml
-+++ b/Documentation/devicetree/bindings/pinctrl/ralink,rt3352-pinctrl.yaml
-@@ -43,8 +43,23 @@ patternProperties:
-                    uartf, uartlite, wdg_cs1]
- 
-           groups:
--            description:
-+            description: |
-               An array of strings. Each string contains the name of a group.
-+
-+              group             pins
-+              ------------------------------------------------------------------
-+              "i2c"             1, 2
-+              "spi"             3, 4, 5, 6
-+              "uartf"           7, 8, 9, 10, 11, 12, 13, 14
-+              "uartlite"        15, 16
-+              "jtag"            17, 18, 19, 20, 21
-+              "mdio"            22, 23
-+              "rgmii"           24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35
-+              "lna"             36, 37
-+              "pa"              38, 39
-+              "led"             40, 41, 42, 43, 44
-+              "spi_cs1"         45
-+
-             maxItems: 1
- 
-         required:
-diff --git a/Documentation/devicetree/bindings/pinctrl/ralink,rt3883-pinctrl.yaml b/Documentation/devicetree/bindings/pinctrl/ralink,rt3883-pinctrl.yaml
-index 3a13a69f7752..61beb78b9d1c 100644
---- a/Documentation/devicetree/bindings/pinctrl/ralink,rt3883-pinctrl.yaml
-+++ b/Documentation/devicetree/bindings/pinctrl/ralink,rt3883-pinctrl.yaml
-@@ -43,8 +43,22 @@ patternProperties:
-                    pcm gpio, pcm i2s, pcm uartf, spi, uartf, uartlite]
- 
-           groups:
--            description:
-+            description: |
-               An array of strings. Each string contains the name of a group.
-+
-+              group             pins
-+              ------------------------------------------------------------------
-+              "i2c"             1, 2
-+              "spi"             3, 4, 5, 6
-+              "uartf"           7, 8, 9, 10, 11, 12, 13, 14
-+              "uartlite"        15, 16
-+              "jtag"            17, 18, 19, 20, 21
-+              "mdio"            22, 23
-+              "lna a"           32, 33, 34
-+              "lna g"           35, 36, 37
-+              "ge1"             72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83
-+              "ge2"             84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95
-+
-             maxItems: 1
- 
-         required:
-diff --git a/Documentation/devicetree/bindings/pinctrl/ralink,rt5350-pinctrl.yaml b/Documentation/devicetree/bindings/pinctrl/ralink,rt5350-pinctrl.yaml
-index 1231f442afbc..49025783247e 100644
---- a/Documentation/devicetree/bindings/pinctrl/ralink,rt5350-pinctrl.yaml
-+++ b/Documentation/devicetree/bindings/pinctrl/ralink,rt5350-pinctrl.yaml
-@@ -43,8 +43,19 @@ patternProperties:
-                    wdg_cs1]
- 
-           groups:
--            description:
-+            description: |
-               An array of strings. Each string contains the name of a group.
-+
-+              group             pins
-+              ------------------------------------------------------------------
-+              "i2c"             1, 2
-+              "spi"             3, 4, 5, 6
-+              "uartf"           7, 8, 9, 10, 11, 12, 13, 14
-+              "uartlite"        15, 16
-+              "jtag"            17, 18, 19, 20, 21
-+              "led"             22, 23, 24, 25, 26
-+              "spi_cs1"         27
-+
-             maxItems: 1
- 
-         required:
--- 
-2.39.2
+On 9/14/2023 9:55 AM, Sean Christopherson wrote:
+> Add flags to "struct kvm_gfn_range" to let notifier events target only
+> shared and only private mappings, and write up the existing mmu_notifier
+> events to be shared-only (private memory is never associated with a
+> userspace virtual address, i.e. can't be reached via mmu_notifiers).
+>
+> Add two flags so that KVM can handle the three possibilities (shared,
+> private, and shared+private) without needing something like a tri-state
+> enum.
+
+How to understand the word "stage" in short log?
+
+
+>
+> Link: https://lore.kernel.org/all/ZJX0hk+KpQP0KUyB@google.com
+> Signed-off-by: Sean Christopherson <seanjc@google.com>
+> ---
+>   include/linux/kvm_host.h | 2 ++
+>   virt/kvm/kvm_main.c      | 7 +++++++
+>   2 files changed, 9 insertions(+)
+>
+> diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
+> index d8c6ce6c8211..b5373cee2b08 100644
+> --- a/include/linux/kvm_host.h
+> +++ b/include/linux/kvm_host.h
+> @@ -263,6 +263,8 @@ struct kvm_gfn_range {
+>   	gfn_t start;
+>   	gfn_t end;
+>   	union kvm_mmu_notifier_arg arg;
+> +	bool only_private;
+> +	bool only_shared;
+>   	bool may_block;
+>   };
+>   bool kvm_unmap_gfn_range(struct kvm *kvm, struct kvm_gfn_range *range);
+> diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+> index 174de2789657..a41f8658dfe0 100644
+> --- a/virt/kvm/kvm_main.c
+> +++ b/virt/kvm/kvm_main.c
+> @@ -635,6 +635,13 @@ static __always_inline kvm_mn_ret_t __kvm_handle_hva_range(struct kvm *kvm,
+>   			 * the second or later invocation of the handler).
+>   			 */
+>   			gfn_range.arg = range->arg;
+> +
+> +			/*
+> +			 * HVA-based notifications aren't relevant to private
+> +			 * mappings as they don't have a userspace mapping.
+> +			 */
+> +			gfn_range.only_private = false;
+> +			gfn_range.only_shared = true;
+>   			gfn_range.may_block = range->may_block;
+>   
+>   			/*
 

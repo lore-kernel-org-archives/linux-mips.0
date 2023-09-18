@@ -2,99 +2,133 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 104F0C46CA1
-	for <linux-mips@archiver.kernel.org>; Mon, 18 Sep 2023 18:33:53 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A6F7ACD37B0
+	for <linux-mips@archiver.kernel.org>; Mon, 18 Sep 2023 20:42:56 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229632AbjIRSd4 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 18 Sep 2023 14:33:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53082 "EHLO
+        id S229518AbjIRUnA (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 18 Sep 2023 16:43:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47246 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229485AbjIRSd4 (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Mon, 18 Sep 2023 14:33:56 -0400
-Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53D6A116;
-        Mon, 18 Sep 2023 11:33:50 -0700 (PDT)
-Received: by mail-pf1-x431.google.com with SMTP id d2e1a72fcca58-68fbd31d9deso4429627b3a.3;
-        Mon, 18 Sep 2023 11:33:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695062030; x=1695666830; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=0JJqXk8saT1UpZJqWSNTHDvRdSuIsq2vpeQit0b051c=;
-        b=V2/HgMbl+dEmIgoo5DgNYValLUruv0a9FrJ4f0ANRcbb7deHonr19XKiXecU6/e5C6
-         ok8/b6IOnnBz4bWZQT6+wf8Y6zbQoRjqKwEQgv3hokNF7Ho9gUFQCfhzXWw8L6sP2WMA
-         uVUU07A/HaGXkxo7rXEvXLBsdo5Y5SiSWBKSe9tS485Sad2knRGe2oCp8vY4zkPnoDFc
-         s7R+J9WpMWSoA9js5FcAmEsvh3O3r/wCV1Bp5HPVdcwBQIYI6FhWRK6NKtj1fQwFPpmM
-         RZc79u6ZnJx/NJM7GhyNyUl0bXQmOKcgGl00p0Wn+c3xQG3pVfkJsGbIRpOsJ3+IjTxH
-         Hsjg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695062030; x=1695666830;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=0JJqXk8saT1UpZJqWSNTHDvRdSuIsq2vpeQit0b051c=;
-        b=Iq6OnE3ywJBI7yDcM5tTW5YZ/y4TTt69bNGFx+4bTEoOnTL/VDQQpDI0siHxed+V2q
-         umGAeoWpPKPz1EdHtrDDqzcECBqtEkXmiD3yqQgPyplPdmf/XWuR0DBtW29i3MW7kmCQ
-         8T59z4QJO/klZoK0pQAbwSr3hYcNpUI9ZFbIU3/0u5YjUXtKZ88QHthnZI9sY5Y2VD+j
-         ZFgylXBtA30fMaJjXUSuuunkW6aOWQvqF0nlWZrwgDMzpWiAOJLaK6dFoFAgH7OjD9tM
-         k/iJaisAdJbVMZ0X42a5xAY9OX3vMb33MyO04shiiZEhxQP7vdMWEJaVMrFuS1itcK1N
-         zENg==
-X-Gm-Message-State: AOJu0Yy8OL0HpyNEy8EspuMeSr86Od4UiIzsZy11a09J1OtJikal0IY5
-        smOPYRIXpEB6bDHlYjWwANfbusM0oOA49Q==
-X-Google-Smtp-Source: AGHT+IGfxE6j5T4ue1S0pIcaoeFiyewjrAsKE9T16y2pWxVymCWMFQRMFc9HTouMNyoTACDYYbOjGg==
-X-Received: by 2002:a05:6a00:21cd:b0:690:3a0f:4164 with SMTP id t13-20020a056a0021cd00b006903a0f4164mr10605379pfj.19.1695062029732;
-        Mon, 18 Sep 2023 11:33:49 -0700 (PDT)
-Received: from [10.67.49.139] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id a26-20020aa780da000000b0068fe6ad4e18sm7446894pfn.157.2023.09.18.11.33.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 18 Sep 2023 11:33:49 -0700 (PDT)
-Message-ID: <19db0278-b11d-49f3-819b-cbc998769832@gmail.com>
-Date:   Mon, 18 Sep 2023 11:33:47 -0700
+        with ESMTP id S229447AbjIRUm7 (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Mon, 18 Sep 2023 16:42:59 -0400
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0048F118
+        for <linux-mips@vger.kernel.org>; Mon, 18 Sep 2023 13:42:53 -0700 (PDT)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1qiL4x-0007Lw-6V; Mon, 18 Sep 2023 22:42:47 +0200
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1qiL4w-007IkJ-8u; Mon, 18 Sep 2023 22:42:46 +0200
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1qiL4v-002mq3-Vm; Mon, 18 Sep 2023 22:42:45 +0200
+From:   =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>
+To:     "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>
+Cc:     Ralf Baechle <ralf@linux-mips.org>, linux-mips@vger.kernel.org,
+        netdev@vger.kernel.org, kernel@pengutronix.de
+Subject: [PATCH net-next 44/54] net: ethernet: sgi: Convert to platform remove callback returning void
+Date:   Mon, 18 Sep 2023 22:42:16 +0200
+Message-Id: <20230918204227.1316886-45-u.kleine-koenig@pengutronix.de>
+X-Mailer: git-send-email 2.40.1
+In-Reply-To: <20230918204227.1316886-1-u.kleine-koenig@pengutronix.de>
+References: <20230918204227.1316886-1-u.kleine-koenig@pengutronix.de>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [RFC PATCH 0/2] vlynq: remove bus support
-Content-Language: en-US
-To:     Wolfram Sang <wsa@kernel.org>,
-        Jonas Gorski <jonas.gorski@gmail.com>,
-        linux-kernel@vger.kernel.org, Greg KH <gregkh@linuxfoundation.org>,
-        linux-mips@vger.kernel.org
-References: <20230916091125.3221-1-wsa@kernel.org>
- <CAOiHx=kLQzTTzuGM0tyuv=e9J3Oi7EbWWYFRK5mEfqNrVj05NQ@mail.gmail.com>
- <3395161f-2543-46f0-83d9-b918800305e1@gmail.com> <ZQhOGY+tr25CDuI3@shikoro>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-In-Reply-To: <ZQhOGY+tr25CDuI3@shikoro>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2611; i=u.kleine-koenig@pengutronix.de; h=from:subject; bh=1DfXxq+y2p1Dyfrf6rxiLk24YbNQXHKjjEfqzpFmej8=; b=owGbwMvMwMXY3/A7olbonx/jabUkhlSObaIt22rk/xs8EnQ7/qCaW0Z+9qKCbVvK61gFItuqt fkPzWbpZDRmYWDkYpAVU2Sxb1yTaVUlF9m59t9lmEGsTCBTGLg4BWAiHfrs/50fbu55eIRBeWnL hrubD0ZUyLimTXdPaZkwRzY9O2gv71TLtdZTHhkvfr4sb2bYmgA/V2dFrrR3i3ml/nFYGPpYa3R dOmd7+qBQ5KUauR0cB4x/9btpK0ed3dbrEegWqHX85pOgSRpzlUxVr8o/FTvwN1BDiktPbVFWFX t39M+navmSVZZPFup/eijUzF/A9XYHxz/NpbVCATcElCsaz4j9sXb1CQ3OSzawkDSItz+58fzq/ JXWtxPKinOcypLztiVP99GQWLfKyUT0QZzKwxv8M44VxD7zyCnJ8NGaes+14NIGm6x+ibCts7Tu 7I3eJqlVbHrmE8OfzasucSnk+ztbT1jGoP7w/d66+HsA
+X-Developer-Key: i=u.kleine-koenig@pengutronix.de; a=openpgp; fpr=0D2511F322BFAB1C1580266BE2DCDD9132669BD6
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-mips@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On 9/18/23 06:18, Wolfram Sang wrote:
-> Hi all,
-> 
->> Agreed, TI AR7 is nearly 25 years old now, we should be able to remove that.
->> Wolfram, do you feel like doing that or would you rather have me do it, say
->> next week?
-> 
-> So, I pushed out an RC here:
-> 
-> git://git.kernel.org/pub/scm/linux/kernel/git/wsa/linux.git renesas/cleanup/remove_ar7
-> 
-> Just waiting for the buildbot report before I send out patches. buildbot
-> was already happy with my protoype, though. But I needed to reorder the
-> patches. (I do wonder, though, if they build AR7. I would have expected
-> a build failure with my prototype).
+The .remove() callback for a platform driver returns an int which makes
+many driver authors wrongly assume it's possible to do error handling by
+returning an error code. However the value returned is ignored (apart
+from emitting a warning) and this typically results in resource leaks.
+To improve here there is a quest to make the remove callback return
+void. In the first step of this quest all drivers are converted to
+.remove_new() which already returns void. Eventually after all drivers
+are converted, .remove_new() is renamed to .remove().
 
-Looks good to me, just a few nits:
+Trivially convert these drivers from always returning zero in the remove
+callback to the void returning variant.
 
-arch/arm/configs/pxa_defconfig:CONFIG_MTD_AR7_PARTS=m
+Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+---
+ drivers/net/ethernet/sgi/ioc3-eth.c | 6 ++----
+ drivers/net/ethernet/sgi/meth.c     | 6 ++----
+ 2 files changed, 4 insertions(+), 8 deletions(-)
 
-this is clearly a stray reference to begin with, but should be folded in 
-your commit removing the MTD partition parser.
-
-Other than that, LGTM and thanks for doing that clean up.
+diff --git a/drivers/net/ethernet/sgi/ioc3-eth.c b/drivers/net/ethernet/sgi/ioc3-eth.c
+index 8fc3f5272fa7..98d0b561a057 100644
+--- a/drivers/net/ethernet/sgi/ioc3-eth.c
++++ b/drivers/net/ethernet/sgi/ioc3-eth.c
+@@ -962,7 +962,7 @@ static int ioc3eth_probe(struct platform_device *pdev)
+ 	return err;
+ }
+ 
+-static int ioc3eth_remove(struct platform_device *pdev)
++static void ioc3eth_remove(struct platform_device *pdev)
+ {
+ 	struct net_device *dev = platform_get_drvdata(pdev);
+ 	struct ioc3_private *ip = netdev_priv(dev);
+@@ -973,8 +973,6 @@ static int ioc3eth_remove(struct platform_device *pdev)
+ 	unregister_netdev(dev);
+ 	del_timer_sync(&ip->ioc3_timer);
+ 	free_netdev(dev);
+-
+-	return 0;
+ }
+ 
+ 
+@@ -1275,7 +1273,7 @@ static void ioc3_set_multicast_list(struct net_device *dev)
+ 
+ static struct platform_driver ioc3eth_driver = {
+ 	.probe  = ioc3eth_probe,
+-	.remove = ioc3eth_remove,
++	.remove_new = ioc3eth_remove,
+ 	.driver = {
+ 		.name = "ioc3-eth",
+ 	}
+diff --git a/drivers/net/ethernet/sgi/meth.c b/drivers/net/ethernet/sgi/meth.c
+index 6d850ea2b94c..18b6f93d875e 100644
+--- a/drivers/net/ethernet/sgi/meth.c
++++ b/drivers/net/ethernet/sgi/meth.c
+@@ -854,19 +854,17 @@ static int meth_probe(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
+-static int meth_remove(struct platform_device *pdev)
++static void meth_remove(struct platform_device *pdev)
+ {
+ 	struct net_device *dev = platform_get_drvdata(pdev);
+ 
+ 	unregister_netdev(dev);
+ 	free_netdev(dev);
+-
+-	return 0;
+ }
+ 
+ static struct platform_driver meth_driver = {
+ 	.probe	= meth_probe,
+-	.remove	= meth_remove,
++	.remove_new = meth_remove,
+ 	.driver = {
+ 		.name	= "meth",
+ 	}
 -- 
-Florian
+2.40.1
 

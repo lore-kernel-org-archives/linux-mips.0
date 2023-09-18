@@ -2,66 +2,61 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2A842C46CA1
-	for <linux-mips@archiver.kernel.org>; Mon, 18 Sep 2023 16:02:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 552E4CD37B0
+	for <linux-mips@archiver.kernel.org>; Mon, 18 Sep 2023 16:03:33 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229838AbjIRQCj (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 18 Sep 2023 12:02:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45718 "EHLO
+        id S229840AbjIRQDh (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 18 Sep 2023 12:03:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57886 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229675AbjIRQCi (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Mon, 18 Sep 2023 12:02:38 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C54BF30F4
-        for <linux-mips@vger.kernel.org>; Mon, 18 Sep 2023 09:02:23 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-d7ec535fe42so4844489276.1
-        for <linux-mips@vger.kernel.org>; Mon, 18 Sep 2023 09:01:43 -0700 (PDT)
+        with ESMTP id S229838AbjIRQDg (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Mon, 18 Sep 2023 12:03:36 -0400
+Received: from mail-oo1-xc49.google.com (mail-oo1-xc49.google.com [IPv6:2607:f8b0:4864:20::c49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56AD1468F
+        for <linux-mips@vger.kernel.org>; Mon, 18 Sep 2023 09:01:36 -0700 (PDT)
+Received: by mail-oo1-xc49.google.com with SMTP id 006d021491bc7-57332cb9adfso6337688eaf.0
+        for <linux-mips@vger.kernel.org>; Mon, 18 Sep 2023 09:01:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1695052667; x=1695657467; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1695052640; x=1695657440; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=s17YssV/eLMk3v6BQw21PztJLVQ1uDSUDnGyHA0nJic=;
-        b=29mFCgzEaKXgI7BJZgdelVVGImtdHCE2jfWHG7m0Kw0Ihmz69s1VSQ4NvYUCM6MJol
-         A9yr4B7MUuqqWO9htV1FHHai+1Wf6SeDdosUaIQhlIdAVUWgadhsgqOCJHybVx08RyUf
-         j0KXbhEe6dYJ9g7Sh2neYuUkRUevWzwLdDSU8u6cCI4tPtvcvBprx15w0BN8eTfqO7kl
-         6Dgqn4BODRv4r+XzJjGkwpkVWEUz3GbSoYbMgBJhlqUoasBORVmSAQFFSiGpTtJQrEOl
-         YwQpxNh3jBhjxcv5+WtUiau53mI8EgAEEqSkeKzyPNuAqZ4PkfjAnfhBVK+JuhypuyiU
-         CN4w==
+        bh=sNXD76U7haNeW91VMZlpdLB8TVqFEiovhx95zes76gg=;
+        b=RRXggicHTzfdwEWCphG/MJTsC/CIPnhJhlwTDAfnVT+tK3AGV3znmWyWptu9nZPF0x
+         KPjT1UsVcrH17v7AeL0Kzd88HYaFIseUuWvMJGBbpsxpHlJbYdcZTPtro9wKCjRp5fdw
+         2qyxlHWaP3S4uLkjDg8Mxk8gH/YE+GS0xudUW4pJPeSx9+x5ipux2aG2g6hzKl6dYU28
+         Eqz9HUvi032kzZCZ3CJ5jo4dMLDajHN4r3WGA8sLgbfMh3QmcKA+UE7EhmgFOY2KLfbA
+         Bldq998Vb6/HcGS1M6+Oa8z1FQndcHQkqCMcg1OB2ZlOpfX6RlZdD3JVVbHdTv17l72v
+         phAw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695052667; x=1695657467;
+        d=1e100.net; s=20230601; t=1695052640; x=1695657440;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=s17YssV/eLMk3v6BQw21PztJLVQ1uDSUDnGyHA0nJic=;
-        b=V5BKGDkVhi51T5csfPCrspEiZbN9CrnUGLJ6OodCya0mdxfwFtAnoRFf8U4vb1f5mm
-         zwZX88hyWhmSPejlgZcfZGIao3Jhfi/Fk9frFr78VXxMwoFhmkAHGxFUjQJXwLRaUKlk
-         1+JOB5lOKQqXVwMXIEwh/HF+uLxtyhkdkOe8/6Mt74yXt/s8X7lZO7dp6i0sXUhCwF//
-         4h5ibTmP7XuswDIaDF9l96xdqjCIuPkCohhvWSliaNh8jpjGrMKtp7CAJuko5f4sFqIb
-         WFkAlYsj5fPhHZnMSULx64IzHsvybSOJxagHd1bw5jN7S8qDJqrOkdzzV8LCbFX5t9tq
-         slUg==
-X-Gm-Message-State: AOJu0Ywdpc7gBdJ8hWz+cHG47z739RkHxRkVDsGs8/k2kHvukZpf9URr
-        LBltEOOHU/rVAiaqaJaBsJjguxMheKE=
-X-Google-Smtp-Source: AGHT+IFqXVMaW5EWUR3sn7RRHAULv1S9Ax+JzluU+Y462jgw29bgpZAEkbL739S68Hx7QOlYkiFqSLcGAUw=
+        bh=sNXD76U7haNeW91VMZlpdLB8TVqFEiovhx95zes76gg=;
+        b=DB/3HPIGLtgeBfFQl0sspCYJNqUr6OkXRq4eL3j/w4EnpT3l3g1d6Dvfxx/emXy4Dm
+         Sv4faYSvmzPBLSuVbsZF/TujJ4QcOv5PDHhjwe1SMCM395/+FpB3erPRypoQ9nU7wYdg
+         87EIkqVJWAETb9dEmlyV1GEILBUjSypIik9zYl3WheVnTp5aCeZudLCm5ceY37c8kAM3
+         L32nDAgdGh2oR4P4y8+rZ1YKtfo+6h1wgaG67i002FXNkiBRI7xzAg2GDz6/44WYKIyU
+         pgWNK/oKZvTKmGpleC8ZsQsJO+/Z/WTDvP5fk3AMklyWIDD47D5vtii4m2nhjzEMKaa6
+         XZXg==
+X-Gm-Message-State: AOJu0Ywj1tyOr7zHMm2XV5YngeVsL4Wj/7wtMtAntmVZykUjxl6Z4s1j
+        sCkxJ5iY+yYz5pwpndE/6LhzrF8Bmes=
+X-Google-Smtp-Source: AGHT+IE1DPoRp0N2nDleDeL+nMknRqhKzdJCPwHMJrwMUBjkYLBNjcfJz91+ASKxJdGzFGGlGgloaP/fXoU=
 X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a05:6902:4cf:b0:d7f:f3e:74ab with SMTP id
- v15-20020a05690204cf00b00d7f0f3e74abmr227961ybs.1.1695052667494; Mon, 18 Sep
- 2023 08:57:47 -0700 (PDT)
-Date:   Mon, 18 Sep 2023 08:57:45 -0700
-In-Reply-To: <9925e01b-7fa9-95e4-dc21-1d760ef9cde4@linux.intel.com>
+ (user=seanjc job=sendgmr) by 2002:a25:2411:0:b0:d81:78ec:c403 with SMTP id
+ k17-20020a252411000000b00d8178ecc403mr192905ybk.12.1695052199184; Mon, 18 Sep
+ 2023 08:49:59 -0700 (PDT)
+Date:   Mon, 18 Sep 2023 08:49:57 -0700
+In-Reply-To: <20230918152110.GI13795@ziepe.ca>
 Mime-Version: 1.0
-References: <20230914015531.1419405-1-seanjc@google.com> <20230914015531.1419405-11-seanjc@google.com>
- <9925e01b-7fa9-95e4-dc21-1d760ef9cde4@linux.intel.com>
-Message-ID: <ZQhzeQLbB5zz2yIc@google.com>
-Subject: Re: [RFC PATCH v12 10/33] KVM: Set the stage for handling only shared
- mappings in mmu_notifier events
+References: <20230916003118.2540661-1-seanjc@google.com> <20230916003118.2540661-6-seanjc@google.com>
+ <20230918152110.GI13795@ziepe.ca>
+Message-ID: <ZQhxpesyXeG+qbS6@google.com>
+Subject: Re: [PATCH 05/26] vfio: KVM: Pass get/put helpers from KVM to VFIO,
+ don't do circular lookup
 From:   Sean Christopherson <seanjc@google.com>
-To:     Binbin Wu <binbin.wu@linux.intel.com>
-Cc:     kvm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        kvmarm@lists.linux.dev, linux-mips@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, kvm-riscv@lists.infradead.org,
-        linux-riscv@lists.infradead.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
-        Marc Zyngier <maz@kernel.org>,
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>,
         Oliver Upton <oliver.upton@linux.dev>,
         Huacai Chen <chenhuacai@kernel.org>,
         Michael Ellerman <mpe@ellerman.id.au>,
@@ -69,50 +64,72 @@ Cc:     kvm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         Paul Walmsley <paul.walmsley@sifive.com>,
         Palmer Dabbelt <palmer@dabbelt.com>,
         Albert Ou <aou@eecs.berkeley.edu>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Paul Moore <paul@paul-moore.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Chao Peng <chao.p.peng@linux.intel.com>,
-        Fuad Tabba <tabba@google.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Anish Moorthy <amoorthy@google.com>,
-        Yu Zhang <yu.c.zhang@linux.intel.com>,
-        Isaku Yamahata <isaku.yamahata@intel.com>,
-        Xu Yilun <yilun.xu@intel.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Vishal Annapurve <vannapurve@google.com>,
-        Ackerley Tng <ackerleytng@google.com>,
-        Maciej Szmigiero <mail@maciej.szmigiero.name>,
-        David Hildenbrand <david@redhat.com>,
-        Quentin Perret <qperret@google.com>,
-        Michael Roth <michael.roth@amd.com>,
-        Wang <wei.w.wang@intel.com>,
-        Liam Merwick <liam.merwick@oracle.com>,
-        Isaku Yamahata <isaku.yamahata@gmail.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Janosch Frank <frankja@linux.ibm.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Tony Krowiak <akrowiak@linux.ibm.com>,
+        Halil Pasic <pasic@linux.ibm.com>,
+        Jason Herne <jjherne@linux.ibm.com>,
+        Harald Freudenberger <freude@linux.ibm.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        linux-mips@vger.kernel.org, kvm@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, kvm-riscv@lists.infradead.org,
+        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        Anish Ghulati <aghulati@google.com>,
+        Venkatesh Srinivas <venkateshs@chromium.org>,
+        Andrew Thornton <andrewth@google.com>
 Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Mon, Sep 18, 2023, Binbin Wu wrote:
-> 
-> 
-> On 9/14/2023 9:55 AM, Sean Christopherson wrote:
-> > Add flags to "struct kvm_gfn_range" to let notifier events target only
-> > shared and only private mappings, and write up the existing mmu_notifier
-> > events to be shared-only (private memory is never associated with a
-> > userspace virtual address, i.e. can't be reached via mmu_notifiers).
+On Mon, Sep 18, 2023, Jason Gunthorpe wrote:
+> On Fri, Sep 15, 2023 at 05:30:57PM -0700, Sean Christopherson wrote:
+> > Explicitly pass KVM's get/put helpers to VFIO when attaching a VM to
+> > VFIO instead of having VFIO do a symbol lookup back into KVM.  Having both
+> > KVM and VFIO do symbol lookups increases the overall complexity and places
+> > an unnecessary dependency on KVM (from VFIO) without adding any value.
 > > 
-> > Add two flags so that KVM can handle the three possibilities (shared,
-> > private, and shared+private) without needing something like a tri-state
-> > enum.
+> > Signed-off-by: Sean Christopherson <seanjc@google.com>
+> > ---
+> >  drivers/vfio/vfio.h      |  2 ++
+> >  drivers/vfio/vfio_main.c | 74 +++++++++++++++++++---------------------
+> >  include/linux/vfio.h     |  4 ++-
+> >  virt/kvm/vfio.c          |  9 +++--
+> >  4 files changed, 47 insertions(+), 42 deletions(-)
 > 
-> How to understand the word "stage" in short log?
+> I don't mind this, but Christoph had disliked my prior attempt to do
+> this with function pointers..
+> 
+> The get can be inlined, IIRC, what about putting a pointer to the put
+> inside the kvm struct?
 
-Sorry, it's an idiom[*] that essentially means "to prepare for".  I'll rephrase
-the shortlog to be more straightforward (I have a bad habit of using idioms).
+That wouldn't allow us to achieve our goal, which is to hide the details of
+"struct kvm" from VFIO (and the rest of the kernel).
 
-[*] https://dictionary.cambridge.org/us/dictionary/english/set-the-stage-for
+What's the objection to handing VFIO a function pointer?
+
+> The the normal kvm get/put don't have to exported symbols at all?
+
+The export of kvm_get_kvm_safe() can go away (I forgot to do that in this series),
+but kvm_get_kvm() will hang around as it's needed by KVM sub-modules (PPC and x86),
+KVMGT (x86), and drivers/s390/crypto/vfio_ap_ops.c (no idea what to call that beast).
+
+Gah, KVMGT doesn't actually need to call get/put, that can be handled by
+kvm_page_track_register_notifier().
+
+I am planning on making exports for sub-modules conditional on there actually
+being submodules, so that's 2 of the 3 gone, but tackling the s390 crypto driver
+is an entirely different story.

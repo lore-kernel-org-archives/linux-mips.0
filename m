@@ -2,94 +2,123 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 27B30CD37B0
-	for <linux-mips@archiver.kernel.org>; Mon, 18 Sep 2023 08:48:47 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2A276CD37B0
+	for <linux-mips@archiver.kernel.org>; Mon, 18 Sep 2023 15:16:48 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238736AbjIRIsT (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 18 Sep 2023 04:48:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58174 "EHLO
+        id S231171AbjIRPQu (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 18 Sep 2023 11:16:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40436 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S240940AbjIRIay (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Mon, 18 Sep 2023 04:30:54 -0400
-Received: from mail-oo1-xc2c.google.com (mail-oo1-xc2c.google.com [IPv6:2607:f8b0:4864:20::c2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0298D114;
-        Mon, 18 Sep 2023 01:30:35 -0700 (PDT)
-Received: by mail-oo1-xc2c.google.com with SMTP id 006d021491bc7-5734b893a11so2800765eaf.1;
-        Mon, 18 Sep 2023 01:30:35 -0700 (PDT)
+        with ESMTP id S230307AbjIRPQt (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Mon, 18 Sep 2023 11:16:49 -0400
+Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com [IPv6:2607:f8b0:4864:20::82b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4CB7106
+        for <linux-mips@vger.kernel.org>; Mon, 18 Sep 2023 08:16:40 -0700 (PDT)
+Received: by mail-qt1-x82b.google.com with SMTP id d75a77b69052e-41214998fc2so27335341cf.0
+        for <linux-mips@vger.kernel.org>; Mon, 18 Sep 2023 08:16:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1695025835; x=1695630635; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=3gxUVSVCUEW7zut2SflwjM4pYcypiURMBMDu4ko25UQ=;
-        b=QtLJTewZQlOhMGjKbwuWodACZeXhFMHj+l21jGQEoV3ME/+wFK3OF1sKcQwgqcz/U/
-         VQYhRJ4kdA8T5/mJL1A6P+YyULYI1FN+nuYS7XReQgo2Po0sUAR15fCvL/xJfq7NWRTY
-         brDPM1v3voobhB/HdKwGmNbmxgB1K4ruNuj1c6/+/3N6Ua3Qwft4hhgGzdfXFZdd3Y4w
-         zHYWe1u/wiPIxbeFfES5unMQu6w7NDIFQrxEDrws632SQ7M1yUej10gU462D3xHqWLIV
-         kc+XBBQGigt0QdN4ejZ3o4+2pH340fP5njc4aTA6KwBVNo7rEnCVd9/Lcog1Y3SHrtBs
-         cJSQ==
+        d=ziepe.ca; s=google; t=1695050199; x=1695654999; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=6Ucvab0+WYvq4UufE5S4SV2ca9jdWUsP9GGHLs6BCgo=;
+        b=Yt+fVUsRMeORje6bqjAG46AN7VUYwHvk4anPaOKB66pzIfsa7eGN7PwwGYazw/Ml4G
+         zSJDa2fRaak6DQ/2yDdUGrk/jJfT7gqXnEfglMmlEHHM6QHOhKUoHu/JuJtoUPkSf3gZ
+         bXzhhINWlQwAEpfO2I/jpm/Yf0X6kgykhzvZVtEHdtQLop7zWQYyXg8e55+4hoUS+Nv1
+         3Nvt1SloiwIIA2fREypyrGT1qo+Nk5fCWKtTBNewRRc9j09t+3B9QhG2h24hoHSTtPec
+         Vbd8eRyFh+MJ5I+I7Yz+QIpc+iC1aOF6XmzN1DLY5zUvsy6kn9Wy7C3j3qUq5WVFEl/r
+         Ls3Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695025835; x=1695630635;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=3gxUVSVCUEW7zut2SflwjM4pYcypiURMBMDu4ko25UQ=;
-        b=uLvVuDzobv9Eqyfha538L/G53AYvcCdBoJASK68h0oOZXPI66UTc6r27AfiS4ER9EU
-         pj035zFXQ1RXyOOLGLLEJ3ywsQmC1TC2QAA+mZMzUNKS7pHd9prR0Se2RQxPJ5NtAy+a
-         WS4gMuR/OWckkNuqcWP5J2SOULYRPwFMXoaRO3LI2JVTWnS+3Ho1chdLgs7E+NBhVGCf
-         CzrAZYTPrBbT62ZywDlbbKfS5j2ru+4zEkcIuYY0Wx1Q3dEauly8Y9/f5KMsy7HMkaAY
-         CcSxsJQzNTJTXonyVFY/7Em33XEFDYJrKnsjF1FGg0nvL7w3wfxA+B4LCDBwbBLgsI7p
-         /z/g==
-X-Gm-Message-State: AOJu0YzaezOFCkhUTvUvk3Cq+e3zIFhuIiR2lM16A4PHXbITJaD/JHxn
-        akn69hcUfcd8iH1RTfpxr+yGXwvYKaiNfBOpqyI=
-X-Google-Smtp-Source: AGHT+IHrSDRkd5WNauUdlZMq5j/Pp4W7T1SSLTlkg0boyakoxeUeVrdmPvAbatnVgTgjJF89LlTtpEB1FizNovQ6HuM=
-X-Received: by 2002:a05:6870:95aa:b0:1ba:d044:8a4 with SMTP id
- k42-20020a05687095aa00b001bad04408a4mr10884539oao.18.1695025835198; Mon, 18
- Sep 2023 01:30:35 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1695050199; x=1695654999;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=6Ucvab0+WYvq4UufE5S4SV2ca9jdWUsP9GGHLs6BCgo=;
+        b=sLYZBL1dth+ctGd4NIAnWfreuwehRymJENkwDmpHVFlzZ8UvkA8skC0Xelyb0nuWsb
+         mmGGm6k4BpazhJRDuyMLg5TeEnDjP38E+/rxyfRZxkOeGGuqgpfLyomCa5d/FRMDT+g9
+         AzI0ZoYZaqtEoW/GZORFguNx1UR/C9Ss8OM1c+n1udGgLOxTkzr+xT10kUwCIEDnT09O
+         ++7Q7UTsY0dt/sHac1WUGYalUbLYjd15uPOhk3eNgO1Iy3HbmNQ8hwjmK1zDH8I7O32i
+         9ZLQtwp3t6uM/ih0wNRbgMCkoGQBPfN+gwSfsTCeB6TldIjAPe+4XTKZ9pTQfdlvwwjJ
+         Rxmw==
+X-Gm-Message-State: AOJu0YwfQxACozM76rImNfs08HXyej28NkCpbs+3LrszgQZB5v2AsAZA
+        jQKEpQ2BlCGVBcifYg2owGNRxg==
+X-Google-Smtp-Source: AGHT+IE1nILLKPaFxe5im/MfVjUE0HuRytyibnYnzCmrjBnu/bqUhqldLHu9krEWO371lIWoHdHJrg==
+X-Received: by 2002:ac8:5ac9:0:b0:403:ef0a:ac69 with SMTP id d9-20020ac85ac9000000b00403ef0aac69mr11892621qtd.62.1695050199490;
+        Mon, 18 Sep 2023 08:16:39 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-142-68-26-201.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.68.26.201])
+        by smtp.gmail.com with ESMTPSA id z22-20020ac87116000000b004108f6788a6sm3081779qto.41.2023.09.18.08.16.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 Sep 2023 08:16:38 -0700 (PDT)
+Received: from jgg by wakko with local (Exim 4.95)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1qiFzJ-0005Nh-7L;
+        Mon, 18 Sep 2023 12:16:37 -0300
+Date:   Mon, 18 Sep 2023 12:16:37 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Anup Patel <anup@brainfault.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Janosch Frank <frankja@linux.ibm.com>,
+        Claudio Imbrenda <imbrenda@linux.ibm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Tony Krowiak <akrowiak@linux.ibm.com>,
+        Halil Pasic <pasic@linux.ibm.com>,
+        Jason Herne <jjherne@linux.ibm.com>,
+        Harald Freudenberger <freude@linux.ibm.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        linux-mips@vger.kernel.org, kvm@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, kvm-riscv@lists.infradead.org,
+        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        Anish Ghulati <aghulati@google.com>,
+        Venkatesh Srinivas <venkateshs@chromium.org>,
+        Andrew Thornton <andrewth@google.com>
+Subject: Re: [PATCH 01/26] vfio: Wrap KVM helpers with CONFIG_KVM instead of
+ CONFIG_HAVE_KVM
+Message-ID: <20230918151637.GF13795@ziepe.ca>
+References: <20230916003118.2540661-1-seanjc@google.com>
+ <20230916003118.2540661-2-seanjc@google.com>
 MIME-Version: 1.0
-References: <20230917162837.277405-1-arinc.unal@arinc9.com> <20230917162837.277405-2-arinc.unal@arinc9.com>
-In-Reply-To: <20230917162837.277405-2-arinc.unal@arinc9.com>
-From:   Sergio Paracuellos <sergio.paracuellos@gmail.com>
-Date:   Mon, 18 Sep 2023 10:30:24 +0200
-Message-ID: <CAMhs-H-MPjiRLY1khOdj7AXhvU62HKTZfoXTH=fsvngF-rsnCg@mail.gmail.com>
-Subject: Re: [PATCH 2/2] dt-bindings: pinctrl: mtmips: document pins of groups
-To:     =?UTF-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>, mithat.guner@xeront.com,
-        erkin.bozoglu@xeront.com, linux-mediatek@lists.infradead.org,
-        linux-mips@vger.kernel.org, linux-gpio@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230916003118.2540661-2-seanjc@google.com>
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Sun, Sep 17, 2023 at 6:30=E2=80=AFPM Ar=C4=B1n=C3=A7 =C3=9CNAL <arinc.un=
-al@arinc9.com> wrote:
->
-> Document the pins of each group on the MediaTek MTMIPS SoC pin controller=
-s.
->
-> Signed-off-by: Ar=C4=B1n=C3=A7 =C3=9CNAL <arinc.unal@arinc9.com>
+On Fri, Sep 15, 2023 at 05:30:53PM -0700, Sean Christopherson wrote:
+> Wrap the helpers for getting references to KVM instances with a check on
+> CONFIG_KVM being enabled, not on CONFIG_HAVE_KVM being defined.  PPC does
+> NOT select HAVE_KVM, despite obviously supporting KVM, and guarding code
+> to get references to KVM based on whether or not the architecture supports
+> KVM is nonsensical.
+> 
+> Drop the guard around linux/kvm_host.h entirely, conditionally including a
+> generic headers is completely unnecessary.
+> 
+> Signed-off-by: Sean Christopherson <seanjc@google.com>
 > ---
->  .../pinctrl/mediatek,mt7620-pinctrl.yaml      | 22 ++++++++++++-
->  .../pinctrl/mediatek,mt7621-pinctrl.yaml      | 18 +++++++++-
->  .../pinctrl/mediatek,mt76x8-pinctrl.yaml      | 33 ++++++++++++++++++-
->  .../pinctrl/ralink,rt2880-pinctrl.yaml        | 17 +++++++++-
->  .../pinctrl/ralink,rt305x-pinctrl.yaml        | 16 ++++++++-
->  .../pinctrl/ralink,rt3352-pinctrl.yaml        | 17 +++++++++-
->  .../pinctrl/ralink,rt3883-pinctrl.yaml        | 16 ++++++++-
->  .../pinctrl/ralink,rt5350-pinctrl.yaml        | 13 +++++++-
->  8 files changed, 144 insertions(+), 8 deletions(-)
+>  drivers/vfio/vfio.h      | 2 +-
+>  drivers/vfio/vfio_main.c | 4 +---
+>  2 files changed, 2 insertions(+), 4 deletions(-)
 
-Acked-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
+Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
 
-Thanks,
-    Sergio Paracuellos
+Jason

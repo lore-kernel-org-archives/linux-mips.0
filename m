@@ -2,97 +2,106 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3FCF2C46CA1
-	for <linux-mips@archiver.kernel.org>; Mon, 18 Sep 2023 16:57:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BE818CD13D8
+	for <linux-mips@archiver.kernel.org>; Mon, 18 Sep 2023 17:56:31 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231240AbjIRQ5q (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 18 Sep 2023 12:57:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49870 "EHLO
+        id S229844AbjIRR4f (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 18 Sep 2023 13:56:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33802 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231176AbjIRQ5i (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Mon, 18 Sep 2023 12:57:38 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81A388E;
-        Mon, 18 Sep 2023 09:57:32 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 30439C433D9;
-        Mon, 18 Sep 2023 13:18:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1695043100;
-        bh=hXDd8ZCR0qFWfMru86jsT7snWkFtdp7y7o+jqhKajTc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=XUuoVqbsWrH9NHQOfmm9OTzkx99X39N3feJNW9gHBFNWYSIId0hq9EyItJDMK4n8Q
-         lOVjjYbLJcqpwcn16Sca83cFIVlmv+edAg9zsxlOdKAIOPByr3LO8JM4uqUoapJQ3s
-         e7RMxpwW6wjIrDu/6ZmoNSxy8FfcOsfFliSgI48wxpCg2IU6XSci4Vk6LlxhrLJ4kj
-         +4oZjWSa52KFiHXi1ng3F17sEBH8hDXdZCXn+GyUcF6YvbNklNIvcSSeI4WGo6Bpun
-         brZ7kIrD2AbcppczMYkDUetjhAT4X4FNKjw1XGv3CHjfKJsYEtqq3z8IhuVwrcRYlu
-         BbUMixdBUb27Q==
-Date:   Mon, 18 Sep 2023 15:18:17 +0200
-From:   Wolfram Sang <wsa@kernel.org>
-To:     Florian Fainelli <f.fainelli@gmail.com>
-Cc:     Jonas Gorski <jonas.gorski@gmail.com>,
-        linux-kernel@vger.kernel.org, Greg KH <gregkh@linuxfoundation.org>,
-        linux-mips@vger.kernel.org
-Subject: Re: [RFC PATCH 0/2] vlynq: remove bus support
-Message-ID: <ZQhOGY+tr25CDuI3@shikoro>
-Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Jonas Gorski <jonas.gorski@gmail.com>, linux-kernel@vger.kernel.org,
-        Greg KH <gregkh@linuxfoundation.org>, linux-mips@vger.kernel.org
-References: <20230916091125.3221-1-wsa@kernel.org>
- <CAOiHx=kLQzTTzuGM0tyuv=e9J3Oi7EbWWYFRK5mEfqNrVj05NQ@mail.gmail.com>
- <3395161f-2543-46f0-83d9-b918800305e1@gmail.com>
+        with ESMTP id S229561AbjIRR4b (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Mon, 18 Sep 2023 13:56:31 -0400
+Received: from mail-0301.mail-europe.com (mail-0301.mail-europe.com [188.165.51.139])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53D8EDB;
+        Mon, 18 Sep 2023 10:56:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=n8pjl.ca;
+        s=protonmail2; t=1695059779; x=1695318979;
+        bh=KDmGL0149HMvYz0D68P8rK9iJncYI66ZFd51OEaftAc=;
+        h=Date:To:From:Cc:Subject:Message-ID:Feedback-ID:From:To:Cc:Date:
+         Subject:Reply-To:Feedback-ID:Message-ID:BIMI-Selector;
+        b=XDyAGqfxs1IhZyrSbs3kXmWVIDtAAGsbXg/jRzsX7fuS5Oxw4QNBzYWsvFGPZ+ksw
+         S5Zcze4DfsU+j4F71vMZOBVGe3BZKYabMh1wfnbZ2ABquD3iq/MryJ0VB04GGHqRW3
+         gnQBHdLwQI3E7N3+pV5UgFQGhEjTazGFHroCb4KlhwP9A18gG508T7Pqs5jbffIgxO
+         cUkXsv81IXGY6O6u6TWRNYFNwN9rAhwcn1b7zAnxuUbHTSaeD2idJu0SKxFygNCYtF
+         S9e7CJc5qlz+kEo5lV3WyEyT1tOTgZkgAyKcyZB3b18aHv/xFJwzM9+FJT8sFeXCTe
+         SfZ1idLrRGTVw==
+Date:   Mon, 18 Sep 2023 17:56:09 +0000
+To:     reiserfs-devel@vger.kernel.org
+From:   Peter Lafreniere <peter@n8pjl.ca>
+Cc:     Peter Lafreniere <peter@n8pjl.ca>, jack@suse.cz,
+        linux-kernel@vger.kernel.org, richard@nod.at,
+        anton.ivanov@cambridgegreys.com, johannes@sipsolutions.net,
+        linuxppc-dev@lists.ozlabs.org, linux-um@lists.infradead.org,
+        linux-sh@vger.kernel.org, tsbogend@alpha.franken.de,
+        linux-mips@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
+        geert@linux-m68k.org, linux-arm-kernel@lists.infradead.org,
+        linux@armlinux.org.uk, linux-alpha@vger.kernel.org,
+        richard.henderson@linaro.org, ink@jurassic.park.msu.ru
+Subject: [PATCH 0/7] arch/*: config: Remove ReiserFS from defconfig
+Message-ID: <20230918175529.19011-1-peter@n8pjl.ca>
+Feedback-ID: 53133685:user:proton
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="/qD4GUSmuXgfBJs4"
-Content-Disposition: inline
-In-Reply-To: <3395161f-2543-46f0-83d9-b918800305e1@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
+ReiserFS has been considered deprecated for 19 months since commit
+eb103a51640e ("reiserfs: Deprecate reiserfs"). However, there are
+several architectures that still build it into their defconfig kernels.
 
---/qD4GUSmuXgfBJs4
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+As ReiserFS will be removed in 2025, delete all ReiserFS-related options
+from defconfig files before the filesystem's removal.
 
-Hi all,
+The series is intended to be approved/rejected on an arch-by-arch basis.
+No patch is dependant upon another in the series.
 
-> Agreed, TI AR7 is nearly 25 years old now, we should be able to remove that.
-> Wolfram, do you feel like doing that or would you rather have me do it, say
-> next week?
+See discussion originating in,
+Link: https://lore.kernel.org/linux-um/20230918125744.4342-1-peter@n8pjl.ca=
+/
 
-So, I pushed out an RC here:
+Peter Lafreniere (7):
+  arch: um: remove ReiserFS from defconfig
+  arch: powerpc: remove ReiserFS from defconfig
+  arch: sh: remove ReiserFS from defconfig
+  arch: mips: remove ReiserFS from defconfig
+  arch: m68k: remove ReiserFS from defconfig
+  arch: arm: remove ReiserFS from defconfig
+  arch: alpha: remove ReiserFS from defconfig
 
-git://git.kernel.org/pub/scm/linux/kernel/git/wsa/linux.git renesas/cleanup/remove_ar7
+ arch/alpha/configs/defconfig                | 1 -
+ arch/arm/configs/pxa_defconfig              | 4 ----
+ arch/m68k/configs/amiga_defconfig           | 1 -
+ arch/m68k/configs/apollo_defconfig          | 1 -
+ arch/m68k/configs/atari_defconfig           | 1 -
+ arch/m68k/configs/bvme6000_defconfig        | 1 -
+ arch/m68k/configs/hp300_defconfig           | 1 -
+ arch/m68k/configs/mac_defconfig             | 1 -
+ arch/m68k/configs/multi_defconfig           | 1 -
+ arch/m68k/configs/mvme147_defconfig         | 1 -
+ arch/m68k/configs/mvme16x_defconfig         | 1 -
+ arch/m68k/configs/q40_defconfig             | 1 -
+ arch/m68k/configs/sun3_defconfig            | 1 -
+ arch/m68k/configs/sun3x_defconfig           | 1 -
+ arch/mips/configs/fuloong2e_defconfig       | 1 -
+ arch/mips/configs/jazz_defconfig            | 4 ----
+ arch/mips/configs/lemote2f_defconfig        | 3 ---
+ arch/mips/configs/malta_defconfig           | 5 -----
+ arch/mips/configs/malta_kvm_defconfig       | 5 -----
+ arch/mips/configs/maltaup_xpa_defconfig     | 5 -----
+ arch/mips/configs/rm200_defconfig           | 4 ----
+ arch/powerpc/configs/44x/sam440ep_defconfig | 1 -
+ arch/powerpc/configs/g5_defconfig           | 4 ----
+ arch/powerpc/configs/ppc64e_defconfig       | 4 ----
+ arch/powerpc/configs/ppc6xx_defconfig       | 5 -----
+ arch/sh/configs/landisk_defconfig           | 1 -
+ arch/sh/configs/titan_defconfig             | 1 -
+ arch/um/configs/i386_defconfig              | 1 -
+ arch/um/configs/x86_64_defconfig            | 1 -
+ 29 files changed, 62 deletions(-)
 
-Just waiting for the buildbot report before I send out patches. buildbot
-was already happy with my protoype, though. But I needed to reorder the
-patches. (I do wonder, though, if they build AR7. I would have expected
-a build failure with my prototype).
-
-Happy hacking,
-
-   Wolfram
+--=20
+2.42.0
 
 
---/qD4GUSmuXgfBJs4
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmUIThUACgkQFA3kzBSg
-KbYItA/9FoAXTY6n1hIFgTMAnBKyBWqJ4GXd7L8RSp/NghlIGQAy+GELs4VQLKad
-fOPPY2RlGf0WSvj+ao0/7+Pjsx3DnIhZ5mpSCvx5XERdUdiCe9Gt4dvP7RLG1yq8
-rYAWaRqBsa9v6IUKldjvIx54DGRclpMvOkOdolhpZFqxOFzzlgwEsD3M1fayDzIU
-X3xkSFAMqpBKeP5vqATgP+5ess6/BtFAr/BcnhuvmlxcJIDsb4BiECdRJPXdwouH
-FADRrEg+F0hDCzRwttkXEeMMYfe3NmyQdQJc6wzA2K7oRvJhDRCOoHiaeaVkezJ0
-iSa4pmqAJiuohESbnIX1rosnUTkX9a704ksSlh/F8xKsr0xsCpAY/KO+/i3NK4oJ
-2lHKWQLjl+ul7CPfTVzbPWThnwebkxL8xDSzKgPSj//4WXFbe8HI1NJAn828SpNr
-IpjwPj6hLJivGt+YiBY5Qy8FIeHMtiuXXstEmIPjsFhYWVsES7EAKARYJZ5X/wSj
-151RBps/xFB8UF6Qf7kZs1BSt4T9A3UiVH0EUkUpyxG2iKl+TJvB9OZjTx6sj4w/
-SQk/ne1cT6aqXucDSTByd8z5SKhwOBEp+YOHmqUyRrQFGjiylAlpfXoAep8M+kcj
-8S+bx1W9qhcgL7bbgJQU3HrS69LD7/Apadq9nP29UuJoyfBGdx0=
-=bTSj
------END PGP SIGNATURE-----
-
---/qD4GUSmuXgfBJs4--

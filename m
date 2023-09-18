@@ -2,268 +2,181 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A0552CD13D2
-	for <linux-mips@archiver.kernel.org>; Mon, 18 Sep 2023 01:23:46 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id ABD1CCD13D1
+	for <linux-mips@archiver.kernel.org>; Mon, 18 Sep 2023 06:34:05 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231827AbjIRBXS (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Sun, 17 Sep 2023 21:23:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39326 "EHLO
+        id S229632AbjIRGdh (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 18 Sep 2023 02:33:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33070 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236990AbjIRBXM (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Sun, 17 Sep 2023 21:23:12 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C99A124;
-        Sun, 17 Sep 2023 18:23:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695000187; x=1726536187;
-  h=date:from:to:cc:subject:message-id:reply-to:references:
-   in-reply-to:mime-version;
-  bh=6EbWrAqaFv/oHwPa3uHaSjB2vXOYqABxuhluMCXJBeU=;
-  b=VOEYMjEc+GF43u5sl6ky8S+gjFASjzsMp8R58sGjT/goZgWYcgEz7+il
-   IXohIMpjWUnHBOHjaJEPo+6xya4nn8S1VgPia2EDRsbtpTlMdf2YUI4kl
-   Ffajd5NVhLIgmuQCJ88PXLjpTmPrPy9GNeqpt58S9eqyxMKrHYOJ+KJid
-   N0ShU5wgMpOP1zIcVd+RFefxqlNusFjZLfg3Pf1CG3Vd01ubi/4MjJG+F
-   0ERAi3P+l8pgzMI8ZmOcCx+wGrUcdPJwKsn+hIwmGgHs5tn+qd/Eu9UMn
-   hoEPhbdMHQ/FJUp/JuN/Ze0KpjnAQPvsdkvmkkJaNBMQYD3+qZCc9etDG
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10836"; a="378457085"
-X-IronPort-AV: E=Sophos;i="6.02,155,1688454000"; 
-   d="scan'208";a="378457085"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Sep 2023 18:23:06 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10836"; a="780722719"
-X-IronPort-AV: E=Sophos;i="6.02,155,1688454000"; 
-   d="scan'208";a="780722719"
-Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
-  by orsmga001.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 17 Sep 2023 18:23:05 -0700
-Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
- fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32; Sun, 17 Sep 2023 18:23:04 -0700
-Received: from fmsmsx603.amr.corp.intel.com (10.18.126.83) by
- fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32; Sun, 17 Sep 2023 18:23:04 -0700
-Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
- fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32 via Frontend Transport; Sun, 17 Sep 2023 18:23:04 -0700
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (104.47.58.105)
- by edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.32; Sun, 17 Sep 2023 18:23:03 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=J4lxWoZMRzAo59z1I2pLgOx3hN8lzTQUlvMzOM7K9OUhvudB00Qu/9HvqCF01lRRIFdsVZYY4bo2vYGAyqFY2JnT3Hp1bTWC37DE99k4emtDOJrGX8tczu6KpmKbc9BCONTtGewX269+ksZt40semzuXvnEC/lgn4eKQpVQ8aUidPgoMYo/p31pTas3eSXPWIpVJdbrQquQrQkbtV0GSwrcfbtDKDfNoYX+e5HUZZPKrBKA+supJxWF99rV/qLXh9yLR+MQAZEWKoDTRQDJtm1djuk2qzmdFSiGSOYcv4dqTXby1GbSKzv0XxdQHY9T4mwqIsYx89A4AcSChZB65Yg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ur7Su/Z1/S0UvJGlJ+MkSZAJR/Mdw50edtAS62R+TIo=;
- b=k6QX1ZS3kU/YiOJYmeT2AbpagbgPgVCgip9actldoQxQLS3Uhb9BVf8hLUs3I/2xOfp8Zd1rcj8PP//MlxYOAZJ8eX/DpeJf7P4SUhRkrbhbp2zuQnqrKPm8KovJ31tPVyfcc1ISYWq+DwrGFv2xPo4mEqIY6VUoslpzfXlG9jAE0nujlh1zJUVBM6M4oPxuAjGcgnzFGK5n92SSOgKZ+7b+TV014UQxoZ4tRx1rzqLtX6wwY/crBgkLcNuaXC6o2RLZySmU1npKh7CXTJta3R9cc88G0FB6Ntf3LeKosCl8sAnINhHKy52VWbsahhWCaTE3EzA+91kxrcgGHMpBKw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from DS7PR11MB5966.namprd11.prod.outlook.com (2603:10b6:8:71::6) by
- LV3PR11MB8529.namprd11.prod.outlook.com (2603:10b6:408:1b3::9) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6792.26; Mon, 18 Sep 2023 01:23:01 +0000
-Received: from DS7PR11MB5966.namprd11.prod.outlook.com
- ([fe80::5e79:2d52:51e:f602]) by DS7PR11MB5966.namprd11.prod.outlook.com
- ([fe80::5e79:2d52:51e:f602%6]) with mapi id 15.20.6792.024; Mon, 18 Sep 2023
- 01:23:01 +0000
-Date:   Mon, 18 Sep 2023 08:54:55 +0800
-From:   Yan Zhao <yan.y.zhao@intel.com>
-To:     Sean Christopherson <seanjc@google.com>
-CC:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Anup Patel <anup@brainfault.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Paul Moore <paul@paul-moore.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>, <kvm@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <kvmarm@lists.linux.dev>,
-        <linux-mips@vger.kernel.org>, <linuxppc-dev@lists.ozlabs.org>,
-        <kvm-riscv@lists.infradead.org>, <linux-riscv@lists.infradead.org>,
-        <linux-fsdevel@vger.kernel.org>, <linux-mm@kvack.org>,
-        <linux-security-module@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        Chao Peng <chao.p.peng@linux.intel.com>,
-        Fuad Tabba <tabba@google.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Anish Moorthy <amoorthy@google.com>,
-        Yu Zhang <yu.c.zhang@linux.intel.com>,
-        Isaku Yamahata <isaku.yamahata@intel.com>,
-        Xu Yilun <yilun.xu@intel.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Vishal Annapurve <vannapurve@google.com>,
-        Ackerley Tng <ackerleytng@google.com>,
-        Maciej Szmigiero <mail@maciej.szmigiero.name>,
-        David Hildenbrand <david@redhat.com>,
-        Quentin Perret <qperret@google.com>,
-        Michael Roth <michael.roth@amd.com>,
-        Wang <wei.w.wang@intel.com>,
-        "Liam Merwick" <liam.merwick@oracle.com>,
-        Isaku Yamahata <isaku.yamahata@gmail.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
-Subject: Re: [RFC PATCH v12 18/33] KVM: x86/mmu: Handle page fault for
- private memory
-Message-ID: <ZQef3zAEYjZMkn9k@yzhao56-desk.sh.intel.com>
-Reply-To: Yan Zhao <yan.y.zhao@intel.com>
-References: <20230914015531.1419405-1-seanjc@google.com>
- <20230914015531.1419405-19-seanjc@google.com>
- <ZQPuMK6D/7UzDH+D@yzhao56-desk.sh.intel.com>
- <ZQRpiOd1DNDDJQ3r@google.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <ZQRpiOd1DNDDJQ3r@google.com>
-X-ClientProxiedBy: SG3P274CA0022.SGPP274.PROD.OUTLOOK.COM (2603:1096:4:be::34)
- To DS7PR11MB5966.namprd11.prod.outlook.com (2603:10b6:8:71::6)
+        with ESMTP id S239901AbjIRGdZ (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Mon, 18 Sep 2023 02:33:25 -0400
+Received: from out30-113.freemail.mail.aliyun.com (out30-113.freemail.mail.aliyun.com [115.124.30.113])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DDC71B9;
+        Sun, 17 Sep 2023 23:31:57 -0700 (PDT)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R541e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046060;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=22;SR=0;TI=SMTPD_---0VsH48PF_1695018713;
+Received: from localhost(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0VsH48PF_1695018713)
+          by smtp.aliyun-inc.com;
+          Mon, 18 Sep 2023 14:31:54 +0800
+From:   Baolin Wang <baolin.wang@linux.alibaba.com>
+To:     akpm@linux-foundation.org
+Cc:     will@kernel.org, aneesh.kumar@linux.ibm.com, npiggin@gmail.com,
+        peterz@infradead.org, catalin.marinas@arm.com,
+        chenhuacai@kernel.org, tsbogend@alpha.franken.de,
+        dave.hansen@linux.intel.com, luto@kernel.org, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, arnd@arndb.de, willy@infradead.org,
+        baolin.wang@linux.alibaba.com, linux-arch@vger.kernel.org,
+        linux-mm@kvack.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, loongarch@lists.linux.dev,
+        linux-mips@vger.kernel.org
+Subject: [PATCH] mm: add statistics for PUD level pagetable
+Date:   Mon, 18 Sep 2023 14:31:42 +0800
+Message-Id: <876c71c03a7e69c17722a690e3225a4f7b172fb2.1695017383.git.baolin.wang@linux.alibaba.com>
+X-Mailer: git-send-email 2.39.3
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS7PR11MB5966:EE_|LV3PR11MB8529:EE_
-X-MS-Office365-Filtering-Correlation-Id: bef82a8b-4508-4e7d-100d-08dbb7e5cbca
-X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: GZxw9XyHnvNfIg4V0xpSa90vulloD9GcHC30G1Pw4rK3AUp1NRWTn5y1psz16m6Xh0yVXYUN7RDdbZ+hoV4XCEVwXJScoqGutuzZ5YzCFx48WmwGwGaLybzjZQ07kNE3TggRY4kw3uNShmRsjCB6WcZXOt3CaxU81WtdmMMKk6y4Mu5pNPVIe+1erm2urVM1ZyPXkTSAgKRHNBjvWJcr3wXpWuWIgfRgNqzB7bP17BgSY2ZVU53gbUwIzw2Q1hqVHXeqOttx+VoHQnVaoLLJZ18qqL1/MzG37wwjWs9bBtb92t2UYNSiO/ovuqWUQ0spY6/Y7dpRpOhKjSmhzaYKI6gjO/bnLUCZb0je/vKQYSzyiMHyzx13aI6nNCehFizXVw+aEy4ukTVv+bdmi3vvPHPjEQx2KBvj2yuM6d1g4HtjEJWg2p59LcUfPLU2tgvexeUoy98urVFXh0BQldeoZBaAlFAS3Np1fV2TJFJn3k8ZIFSCM8SvresZfG+iSLzgqlLUhiiCxa8PG51n43VjT66WWfZCK5TXa1Urt9e/S1Z7UzE+g8k9nf0d+prm0p/Q
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS7PR11MB5966.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(39850400004)(396003)(136003)(346002)(366004)(186009)(1800799009)(451199024)(478600001)(66476007)(6916009)(54906003)(316002)(66946007)(66556008)(6506007)(26005)(6486002)(6512007)(6666004)(8936002)(8676002)(41300700001)(7416002)(7406005)(5660300002)(2906002)(4326008)(3450700001)(38100700002)(82960400001)(86362001)(83380400001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?+QC4LkLcreg4ZiO8oKZsUBSIAB3DK50h5w8kyIS8oDZ5L6oRmkpsZ6uGBagA?=
- =?us-ascii?Q?Htgj33E49Bvr/fWfSYMLNIJVnzwWNRu6lt8KmuBxfHg1+OGAcpqUBOjSwMT9?=
- =?us-ascii?Q?J5RiEdOZHc+HD1vo3+N1STPQPVSqeXfiyvN9ePFhCmVtJN/mL7cd5TzxMnkd?=
- =?us-ascii?Q?BpE0AP7ZZqjlD3mRCE/JPBYbTIfkFsZnzCkihlUR3ohS4aFhrpL16/GB6N4/?=
- =?us-ascii?Q?JTs1x/MzR7WG9RmD+eA+2YbPK91cA1PJ/MpnODua/dBAYlkFmKgfcqo9udcN?=
- =?us-ascii?Q?S2YFarnz9ZRKzz2vVc+4wuOvjIiGpV3VHhwOgg6BBNAEzb7NaYiKwdBud/h4?=
- =?us-ascii?Q?NHnjDcbWl9ZYBlORS7KDRjtwraieDcGk+jTHeAaPrSTAwjI9pl2yxgkTExRp?=
- =?us-ascii?Q?J19vr6+qSFwMmmJcEfOBk+8b6ItzuF7gU3arbmmc0GUz/AwIKHZNbDaYgYRd?=
- =?us-ascii?Q?SwbjPV0NsOGHO0Oywr0W6nksTLg2wZeCrg/ic2Z+Up8S8s+oFSq2t/D0SE8J?=
- =?us-ascii?Q?XlUt2BpflFhLcO52+VfrYno66dvD9HvhwVobPSVH60xOpvdOrj0Z7Y+Rhqow?=
- =?us-ascii?Q?XZnOphonStxah3V7SXZEgDMSBT1V3dVgbOafMkvNgovXXZXSzRCWaonngOyl?=
- =?us-ascii?Q?mvy+zkmHC7No1lLPilhos7sTp2oC/31F3XNxUHS0KM5RfpyinTRqV0oarC4r?=
- =?us-ascii?Q?L+fzuIw8YRX6wkBFEbqzqnMqhypC34rbHUlC4XVBZFLGEgCQTVc2xPpBtHou?=
- =?us-ascii?Q?Wb/bTY0oqLzU/lUgsVkzIXZtv+z4KCBOrTpfQ7JEzbs9NBBP5Wz6qd5rH5uD?=
- =?us-ascii?Q?tpI7ESebV9jzaJBT8q8GCfykL9LoIDZawx+FGQij45abNHDZVYIxRdjMu8BX?=
- =?us-ascii?Q?vyVh8BFwVF1+F5QINLZU8jeSOnSdaA/ZRoz/2qyjlR0P419mqvewsNqSas8g?=
- =?us-ascii?Q?OEtEehOMirrIa46yE0JZmTznT/1UOoKAwWgP13gAiaHiX005TAR9zY+YYT6x?=
- =?us-ascii?Q?KUGnGU2Sp/Q1FrWJ26lIqHR71ieEPfVl+PdHnN3eRynxCYX5N22ieneMcFNS?=
- =?us-ascii?Q?sqq2Uba8I8TzECItrY9TKxKWA83oU1KlMihP8tjvI393y6ela0gzuolkO/zo?=
- =?us-ascii?Q?fJUe5dQfg5tCFwc33T9DZjNjzomBoFrMZw7pRI5iUFERScaGbvvqDpVBp8G3?=
- =?us-ascii?Q?LMbYSQPuE++1toe2Astb3QOAY4upFR5HVJxIermEr63HR3yjBlsLIe5XRsTq?=
- =?us-ascii?Q?ozqzFpdTvvcNkCewLJCg3QW4MRRzW73itY0RDaOtG6aQyke2r3Z1iie7HUYH?=
- =?us-ascii?Q?n8+kW5zTok+ClZm8Xk2Xx6bdlfxgDMVD+CDA2rtGzjXZVzjJzT0xiUN4PHWu?=
- =?us-ascii?Q?folYGbFtU8vB+oZ09iU/NHKy33Dc07am9LdgztlQMbZAgr1MixN6sJfin9PD?=
- =?us-ascii?Q?zSkEW/bCTtNLDQ4rWtvL1HIE2yVH6PN+PSCe2N2IiQiQz8/TGEQ04WY3ts3L?=
- =?us-ascii?Q?zxwGATpFJPp6fyd2szMQIcAeOeyojmMH4bQUYSCeYV4Ocu94qwOKprLdGqRj?=
- =?us-ascii?Q?Be9OHBH+r7cTaQwMZHWurNzQxfohkAnrJS6zucCj?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: bef82a8b-4508-4e7d-100d-08dbb7e5cbca
-X-MS-Exchange-CrossTenant-AuthSource: DS7PR11MB5966.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Sep 2023 01:22:59.9211
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: RGUJS95eCjqGyaHpC1kPLEmwQl1il+Ri5x/Lf061Du/Wdw2FNu22cj+zYJ/uHmeOZDW0s7WR0Jxjl66m0PIz0Q==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV3PR11MB8529
-X-OriginatorOrg: intel.com
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Fri, Sep 15, 2023 at 07:26:16AM -0700, Sean Christopherson wrote:
-> On Fri, Sep 15, 2023, Yan Zhao wrote:
-> > On Wed, Sep 13, 2023 at 06:55:16PM -0700, Sean Christopherson wrote:
-> > ....
-> > > +static void kvm_mmu_prepare_memory_fault_exit(struct kvm_vcpu *vcpu,
-> > > +					      struct kvm_page_fault *fault)
-> > > +{
-> > > +	kvm_prepare_memory_fault_exit(vcpu, fault->gfn << PAGE_SHIFT,
-> > > +				      PAGE_SIZE, fault->write, fault->exec,
-> > > +				      fault->is_private);
-> > > +}
-> > > +
-> > > +static int kvm_faultin_pfn_private(struct kvm_vcpu *vcpu,
-> > > +				   struct kvm_page_fault *fault)
-> > > +{
-> > > +	int max_order, r;
-> > > +
-> > > +	if (!kvm_slot_can_be_private(fault->slot)) {
-> > > +		kvm_mmu_prepare_memory_fault_exit(vcpu, fault);
-> > > +		return -EFAULT;
-> > > +	}
-> > > +
-> > > +	r = kvm_gmem_get_pfn(vcpu->kvm, fault->slot, fault->gfn, &fault->pfn,
-> > > +			     &max_order);
-> > > +	if (r) {
-> > > +		kvm_mmu_prepare_memory_fault_exit(vcpu, fault);
-> > > +		return r;
-> > > +	}
-> > > +
-> > > +	fault->max_level = min(kvm_max_level_for_order(max_order),
-> > > +			       fault->max_level);
-> > > +	fault->map_writable = !(fault->slot->flags & KVM_MEM_READONLY);
-> > > +
-> > > +	return RET_PF_CONTINUE;
-> > > +}
-> > > +
-> > >  static int __kvm_faultin_pfn(struct kvm_vcpu *vcpu, struct kvm_page_fault *fault)
-> > >  {
-> > >  	struct kvm_memory_slot *slot = fault->slot;
-> > > @@ -4293,6 +4356,14 @@ static int __kvm_faultin_pfn(struct kvm_vcpu *vcpu, struct kvm_page_fault *fault
-> > >  			return RET_PF_EMULATE;
-> > >  	}
-> > >  
-> > > +	if (fault->is_private != kvm_mem_is_private(vcpu->kvm, fault->gfn)) {
-> > In patch 21,
-> > fault->is_private is set as:
-> > 	".is_private = kvm_mem_is_private(vcpu->kvm, cr2_or_gpa >> PAGE_SHIFT)",
-> > then, the inequality here means memory attribute has been updated after
-> > last check.
-> > So, why an exit to user space for converting is required instead of a mere retry?
-> > 
-> > Or, is it because how .is_private is assigned in patch 21 is subjected to change
-> > in future? 
-> 
-> This.  Retrying on SNP or TDX would hang the guest.  I suppose we could special
-Is this because if the guest access a page in private way (e.g. via
-private key in TDX), the returned page must be a private page?
+Recently, we found that cross-die access to pagetable pages on ARM64
+machines can cause performance fluctuations in our business. Currently,
+there are no PMU events available to track this situation on our ARM64
+machines, so an accurate pagetable accounting can help to analyze this
+issue, but now the PUD level pagetable accounting is missed.
 
-> case VMs where .is_private is derived from the memory attributes, but the
-> SW_PROTECTED_VM type is primary a development vehicle at this point.  I'd like to
-> have it mimic SNP/TDX as much as possible; performance is a secondary concern.
-Ok. But this mimic is somewhat confusing as it may be problematic in below scenario,
-though sane guest should ensure no one is accessing a page before doing memory
-conversion.
+So introducing pagetable_pud_ctor/dtor() to help to get an accurate
+PUD pagetable accounting, as well as converting the architectures with
+using generic PUD pagatable allocation to add corresponding PUD pagetable
+accounting. Moreover this patch will also mark the PUD level pagetable
+with PG_table flag, which will help to do sanity validation in unpoison_memory().
 
+On my testing machine, I can see more pagetables statistics after the patch
+with page-types tool:
 
-CPU 0                           CPU 1
-access GFN A in private way
-fault->is_private=true
-                                convert GFN A to shared
-			        set memory attribute of A to shared
+Before patch:
+        flags           page-count      MB  symbolic-flags                     long-symbolic-flags
+0x0000000004000000           27326      106  __________________________g_________________       pgtable
+After patch:
+0x0000000004000000           27541      107  __________________________g_________________       pgtable
 
-faultin, mismatch and exit
-set memory attribute of A
-to private
+Signed-off-by: Baolin Wang <baolin.wang@linux.alibaba.com>
+---
+ arch/arm64/include/asm/tlb.h         |  5 ++++-
+ arch/loongarch/include/asm/pgalloc.h |  1 +
+ arch/mips/include/asm/pgalloc.h      |  1 +
+ arch/x86/mm/pgtable.c                |  3 +++
+ include/asm-generic/pgalloc.h        |  7 ++++++-
+ include/linux/mm.h                   | 16 ++++++++++++++++
+ 6 files changed, 31 insertions(+), 2 deletions(-)
 
-                                vCPU access GFN A in shared way
-                                fault->is_private = true
-                                faultin, match and map a private PFN B
+diff --git a/arch/arm64/include/asm/tlb.h b/arch/arm64/include/asm/tlb.h
+index 2c29239d05c3..846c563689a8 100644
+--- a/arch/arm64/include/asm/tlb.h
++++ b/arch/arm64/include/asm/tlb.h
+@@ -96,7 +96,10 @@ static inline void __pmd_free_tlb(struct mmu_gather *tlb, pmd_t *pmdp,
+ static inline void __pud_free_tlb(struct mmu_gather *tlb, pud_t *pudp,
+ 				  unsigned long addr)
+ {
+-	tlb_remove_ptdesc(tlb, virt_to_ptdesc(pudp));
++	struct ptdesc *ptdesc = virt_to_ptdesc(pudp);
++
++	pagetable_pud_dtor(ptdesc);
++	tlb_remove_ptdesc(tlb, ptdesc);
+ }
+ #endif
+ 
+diff --git a/arch/loongarch/include/asm/pgalloc.h b/arch/loongarch/include/asm/pgalloc.h
+index 79470f0b4f1d..4e2d6b7ca2ee 100644
+--- a/arch/loongarch/include/asm/pgalloc.h
++++ b/arch/loongarch/include/asm/pgalloc.h
+@@ -84,6 +84,7 @@ static inline pud_t *pud_alloc_one(struct mm_struct *mm, unsigned long address)
+ 
+ 	if (!ptdesc)
+ 		return NULL;
++	pagetable_pud_ctor(ptdesc);
+ 	pud = ptdesc_address(ptdesc);
+ 
+ 	pud_init(pud);
+diff --git a/arch/mips/include/asm/pgalloc.h b/arch/mips/include/asm/pgalloc.h
+index 40e40a7eb94a..f4440edcd8fe 100644
+--- a/arch/mips/include/asm/pgalloc.h
++++ b/arch/mips/include/asm/pgalloc.h
+@@ -95,6 +95,7 @@ static inline pud_t *pud_alloc_one(struct mm_struct *mm, unsigned long address)
+ 
+ 	if (!ptdesc)
+ 		return NULL;
++	pagetable_pud_ctor(ptdesc);
+ 	pud = ptdesc_address(ptdesc);
+ 
+ 	pud_init(pud);
+diff --git a/arch/x86/mm/pgtable.c b/arch/x86/mm/pgtable.c
+index 9deadf517f14..0cbc1b8e8e3d 100644
+--- a/arch/x86/mm/pgtable.c
++++ b/arch/x86/mm/pgtable.c
+@@ -76,6 +76,9 @@ void ___pmd_free_tlb(struct mmu_gather *tlb, pmd_t *pmd)
+ #if CONFIG_PGTABLE_LEVELS > 3
+ void ___pud_free_tlb(struct mmu_gather *tlb, pud_t *pud)
+ {
++	struct ptdesc *ptdesc = virt_to_ptdesc(pud);
++
++	pagetable_pud_dtor(ptdesc);
+ 	paravirt_release_pud(__pa(pud) >> PAGE_SHIFT);
+ 	paravirt_tlb_remove_table(tlb, virt_to_page(pud));
+ }
+diff --git a/include/asm-generic/pgalloc.h b/include/asm-generic/pgalloc.h
+index c75d4a753849..879e5f8aa5e9 100644
+--- a/include/asm-generic/pgalloc.h
++++ b/include/asm-generic/pgalloc.h
+@@ -169,6 +169,8 @@ static inline pud_t *__pud_alloc_one(struct mm_struct *mm, unsigned long addr)
+ 	ptdesc = pagetable_alloc(gfp, 0);
+ 	if (!ptdesc)
+ 		return NULL;
++
++	pagetable_pud_ctor(ptdesc);
+ 	return ptdesc_address(ptdesc);
+ }
+ 
+@@ -190,8 +192,11 @@ static inline pud_t *pud_alloc_one(struct mm_struct *mm, unsigned long addr)
+ 
+ static inline void __pud_free(struct mm_struct *mm, pud_t *pud)
+ {
++	struct ptdesc *ptdesc = virt_to_ptdesc(pud);
++
+ 	BUG_ON((unsigned long)pud & (PAGE_SIZE-1));
+-	pagetable_free(virt_to_ptdesc(pud));
++	pagetable_pud_dtor(ptdesc);
++	pagetable_free(ptdesc);
+ }
+ 
+ #ifndef __HAVE_ARCH_PUD_FREE
+diff --git a/include/linux/mm.h b/include/linux/mm.h
+index 12335de50140..2232bfebb88a 100644
+--- a/include/linux/mm.h
++++ b/include/linux/mm.h
+@@ -3049,6 +3049,22 @@ static inline spinlock_t *pud_lock(struct mm_struct *mm, pud_t *pud)
+ 	return ptl;
+ }
+ 
++static inline void pagetable_pud_ctor(struct ptdesc *ptdesc)
++{
++	struct folio *folio = ptdesc_folio(ptdesc);
++
++	__folio_set_pgtable(folio);
++	lruvec_stat_add_folio(folio, NR_PAGETABLE);
++}
++
++static inline void pagetable_pud_dtor(struct ptdesc *ptdesc)
++{
++	struct folio *folio = ptdesc_folio(ptdesc);
++
++	__folio_clear_pgtable(folio);
++	lruvec_stat_sub_folio(folio, NR_PAGETABLE);
++}
++
+ extern void __init pagecache_init(void);
+ extern void free_initmem(void);
+ 
+-- 
+2.39.3
 
-                                vCPU accesses private PFN B in shared way
-
-> 
-> E.g. userspace needs to be prepared for "spurious" exits due to races on SNP and
-> TDX, which this can theoretically exercise.  Though the window is quite small so
-> I doubt that'll actually happen in practice; which of course also makes it less
-> important to retry instead of exiting.

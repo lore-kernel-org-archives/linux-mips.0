@@ -2,61 +2,94 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D36CECD342E
-	for <linux-mips@archiver.kernel.org>; Tue, 19 Sep 2023 00:40:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1531ACD343F
+	for <linux-mips@archiver.kernel.org>; Tue, 19 Sep 2023 06:37:27 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230246AbjISAkk (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Mon, 18 Sep 2023 20:40:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54662 "EHLO
+        id S229690AbjISGhb (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 19 Sep 2023 02:37:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42668 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229671AbjISAkk (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Mon, 18 Sep 2023 20:40:40 -0400
-X-Greylist: delayed 2892 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 18 Sep 2023 17:40:33 PDT
-Received: from gate.crashing.org (gate.crashing.org [63.228.1.57])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id B19B9107;
-        Mon, 18 Sep 2023 17:40:33 -0700 (PDT)
-Received: from gate.crashing.org (localhost.localdomain [127.0.0.1])
-        by gate.crashing.org (8.14.1/8.14.1) with ESMTP id 38INfC75019228;
-        Mon, 18 Sep 2023 18:41:12 -0500
-Received: (from segher@localhost)
-        by gate.crashing.org (8.14.1/8.14.1/Submit) id 38INf80d019225;
-        Mon, 18 Sep 2023 18:41:08 -0500
-X-Authentication-Warning: gate.crashing.org: segher set sender to segher@kernel.crashing.org using -f
-Date:   Mon, 18 Sep 2023 18:41:08 -0500
-From:   Segher Boessenkool <segher@kernel.crashing.org>
-To:     Peter Lafreniere <peter@n8pjl.ca>
-Cc:     reiserfs-devel@vger.kernel.org, tsbogend@alpha.franken.de,
-        jack@suse.cz, linux-sh@vger.kernel.org, ink@jurassic.park.msu.ru,
-        richard@nod.at, linux-um@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
-        linux-m68k@vger.kernel.org, geert@linux-m68k.org,
-        linux-alpha@vger.kernel.org, linux@armlinux.org.uk,
-        johannes@sipsolutions.net, richard.henderson@linaro.org,
-        linuxppc-dev@lists.ozlabs.org,
-        linux-arm-kernel@lists.infradead.org,
-        anton.ivanov@cambridgegreys.com
-Subject: Re: [PATCH 0/7] arch/*: config: Remove ReiserFS from defconfig
-Message-ID: <20230918234108.GN19790@gate.crashing.org>
-References: <20230918175529.19011-1-peter@n8pjl.ca>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+        with ESMTP id S229553AbjISGha (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Tue, 19 Sep 2023 02:37:30 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89240100;
+        Mon, 18 Sep 2023 23:37:25 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7DFBBC433C7;
+        Tue, 19 Sep 2023 06:37:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695105445;
+        bh=UDYumHKPlmcyCLhfdVia1htA+iJ4cgkrKSyPRLPHfrg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=dxzoyAqEa5DZswD9+uFFntb7JNdvPcgOJXDH7Z3e3V2Rgi1kg9OOgSltjjTMGGDmO
+         2MB5z5COqXwfpRHG0gSepxV89d2Y+EYCbHGfrsmMceoWp/FUBRWDHJx305DEdL0uGS
+         Lq+zBOJIz9YykKe738bo7o+wzHGWPU5z4nhMsAZA6m6ErxQP+If2y1JRnKS4oazqVk
+         2FxrjTzuF4do1xpMMg9edK0fkIJc7DXkcAS83dArr7y9iWbfNCoCfYPViQpK/Shtue
+         F0bmFMPQQ1FLPV+e8woX2TlEL0r/wHa3seK8Ccnu1UEsoVBpT4cx6ZCREao06X4xrZ
+         3ElH+etWX6SxQ==
+Date:   Tue, 19 Sep 2023 08:37:21 +0200
+From:   Wolfram Sang <wsa@kernel.org>
+To:     Florian Fainelli <f.fainelli@gmail.com>
+Cc:     Jonas Gorski <jonas.gorski@gmail.com>,
+        linux-kernel@vger.kernel.org, Greg KH <gregkh@linuxfoundation.org>,
+        linux-mips@vger.kernel.org
+Subject: Re: [RFC PATCH 0/2] vlynq: remove bus support
+Message-ID: <ZQlBoYARkOBbk6TQ@shikoro>
+Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Jonas Gorski <jonas.gorski@gmail.com>, linux-kernel@vger.kernel.org,
+        Greg KH <gregkh@linuxfoundation.org>, linux-mips@vger.kernel.org
+References: <20230916091125.3221-1-wsa@kernel.org>
+ <CAOiHx=kLQzTTzuGM0tyuv=e9J3Oi7EbWWYFRK5mEfqNrVj05NQ@mail.gmail.com>
+ <3395161f-2543-46f0-83d9-b918800305e1@gmail.com>
+ <ZQhOGY+tr25CDuI3@shikoro>
+ <19db0278-b11d-49f3-819b-cbc998769832@gmail.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="MxqMt97sE1YYoKnr"
 Content-Disposition: inline
-In-Reply-To: <20230918175529.19011-1-peter@n8pjl.ca>
-User-Agent: Mutt/1.4.2.3i
+In-Reply-To: <19db0278-b11d-49f3-819b-cbc998769832@gmail.com>
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Mon, Sep 18, 2023 at 05:56:09PM +0000, Peter Lafreniere wrote:
-> ReiserFS has been considered deprecated for 19 months since commit
-> eb103a51640e ("reiserfs: Deprecate reiserfs"). However, there are
-> several architectures that still build it into their defconfig kernels.
-> 
-> As ReiserFS will be removed in 2025, delete all ReiserFS-related options
-> from defconfig files before the filesystem's removal.
 
-This is essentially equivalent to deleting the filesystem now.  Why do
-this?  Is there such a hurry?
+--MxqMt97sE1YYoKnr
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+Hi Florian,
+
+> arch/arm/configs/pxa_defconfig:CONFIG_MTD_AR7_PARTS=m
+
+Thanks, I removed this line as well.
+
+> Other than that, LGTM and thanks for doing that clean up.
+
+Cool, thanks for the review!
+
+Happy hacking,
+
+   Wolfram
 
 
-Segher
+--MxqMt97sE1YYoKnr
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmUJQZ0ACgkQFA3kzBSg
+KbYVEA/8CsioS2Lk02C/5WfGfw0udn2xWu/xGXBndxCsobxCNoBpkaHSkErFD76m
+YRkFo9TQ1j6FrjTd5CHxSBFCM1wq0THwZE6vYkHHmIM6N+plDppDmuvVFyRL1xE7
+XqrSpFaPQO2+qBzLUBX/LueP9WDTc53ZQNTgEzVfIne+9HNVni04dp1VubTBRpaf
+5L/tVGBFAz/+QL9KWP1O+TQXOiIAYdUYTPqVUOWe1AQ79uE83iz+27caQ0AsNMtu
+We+x1se1VWzo4wHmn5ARs4Ze3vaXe/NQYdwT0BfsLslWsmJ9g8HRqA8CPv1E9B/5
+k7TL3Clyo3DI3LDYeyLGiWWwN+WZfm9Lx6hULwe3G7JarUJ8tkcydipSUtD3WFj/
+o+YSUn6/RpmBTsxnNAxvbwAn4hoHt7zIfcdAaqxqngVgHNdt0ps1CT9fgwC2QCZc
+DNFikwzJP4h4ahnEx5lDOZYZcagGM7sX+3xf94nJqrj1I0TN+xd0be3IXY6d/4DK
+Qv+kL8FPgGLohN/GGxkxmJ0+rzgVIT0hFf1nWmgNFLcKDdeRl1qSPINHmZKZncSn
+RVF5CShK/NpTeyHa7086fpY4eUPhJC+qxpkIKa8MxxG8WjpuspbbEKkW/8tJwEKN
+FbHA4DiudK63rJUPMi2tjdoEE44LJ0yMNcmjR4jyVE0zBe3Pdrs=
+=tGSp
+-----END PGP SIGNATURE-----
+
+--MxqMt97sE1YYoKnr--

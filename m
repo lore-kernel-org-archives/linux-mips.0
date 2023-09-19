@@ -2,73 +2,103 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 6ECA9CD54AF
-	for <linux-mips@archiver.kernel.org>; Tue, 19 Sep 2023 11:05:21 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3D082CD5BC0
+	for <linux-mips@archiver.kernel.org>; Tue, 19 Sep 2023 13:32:21 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232077AbjISLFY (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 19 Sep 2023 07:05:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36976 "EHLO
+        id S232390AbjISNcZ (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 19 Sep 2023 09:32:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50060 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232083AbjISLFM (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Tue, 19 Sep 2023 07:05:12 -0400
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 7D78519A;
-        Tue, 19 Sep 2023 04:05:04 -0700 (PDT)
-Received: from loongson.cn (unknown [113.200.148.30])
-        by gateway (Coremail) with SMTP id _____8CxbetfgAllzeUpAA--.12741S3;
-        Tue, 19 Sep 2023 19:05:03 +0800 (CST)
-Received: from linux.localdomain (unknown [113.200.148.30])
-        by localhost.localdomain (Coremail) with SMTP id AQAAf8CxfNxdgAllNn4LAA--.22959S2;
-        Tue, 19 Sep 2023 19:05:01 +0800 (CST)
-From:   Tiezhu Yang <yangtiezhu@loongson.cn>
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v1] MIPS: Remove dead code in relocate_new_kernel
-Date:   Tue, 19 Sep 2023 19:05:01 +0800
-Message-Id: <1695121501-13216-1-git-send-email-yangtiezhu@loongson.cn>
-X-Mailer: git-send-email 2.1.0
-X-CM-TRANSID: AQAAf8CxfNxdgAllNn4LAA--.22959S2
-X-CM-SenderInfo: p1dqw3xlh2x3gn0dqz5rrqw2lrqou0/
-X-Coremail-Antispam: 1Uk129KBj9xXoWrXr4xKw1xCryxZFWfJr1xtFc_yoWxGFc_KF
-        12qw1kCr4rJr42vw10qayfWryFv34YgF95C3ZFy3yay3sIyryUZ3yrtas8Wwn8Gr4vkrZ5
-        Zws8GFsxtr4xtosvyTuYvTs0mTUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUj1kv1TuYvT
-        s0mT0YCTnIWjqI5I8CrVACY4xI64kE6c02F40Ex7xfYxn0WfASr-VFAUDa7-sFnT9fnUUI
-        cSsGvfJTRUUUb7AYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I6I8E6xAIw20EY4v20x
-        vaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
-        w2x7M28EF7xvwVC0I7IYx2IY67AKxVWUJVWUCwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
-        WUJVW8JwA2z4x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjcxK6I8E87Iv6xkF7I0E14v2
-        6F4UJVW0owAS0I0E0xvYzxvE52x082IY62kv0487Mc804VCY07AIYIkI8VC2zVCFFI0UMc
-        02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAF
-        wI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JMxAIw28IcxkI7V
-        AKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCj
-        r7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUXVWUAwCIc40Y0x0EwIxGrwCI42IY6x
-        IIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAI
-        w20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Gr0_Cr1lIxAIcVC2z280aVCY1x
-        0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU1MKZJUUUUU==
+        with ESMTP id S232367AbjISNcX (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Tue, 19 Sep 2023 09:32:23 -0400
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93BDBF1
+        for <linux-mips@vger.kernel.org>; Tue, 19 Sep 2023 06:32:16 -0700 (PDT)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1qiapp-0004d6-3J; Tue, 19 Sep 2023 15:32:13 +0200
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1qiapo-007T3A-NC; Tue, 19 Sep 2023 15:32:12 +0200
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1qiapo-0030e4-Dr; Tue, 19 Sep 2023 15:32:12 +0200
+From:   =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>
+To:     Vinod Koul <vkoul@kernel.org>
+Cc:     Paul Cercueil <paul@crapouillou.net>, linux-mips@vger.kernel.org,
+        dmaengine@vger.kernel.org, kernel@pengutronix.de
+Subject: [PATCH 09/59] dma: dma-jz4780: Convert to platform remove callback returning void
+Date:   Tue, 19 Sep 2023 15:31:17 +0200
+Message-Id: <20230919133207.1400430-10-u.kleine-koenig@pengutronix.de>
+X-Mailer: git-send-email 2.40.1
+In-Reply-To: <20230919133207.1400430-1-u.kleine-koenig@pengutronix.de>
+References: <20230919133207.1400430-1-u.kleine-koenig@pengutronix.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1903; i=u.kleine-koenig@pengutronix.de; h=from:subject; bh=FhsjLKXvVHLLB+zkXg/qHNDpBgdi8jSzi44XfTan6ls=; b=owEBbQGS/pANAwAKAY+A+1h9Ev5OAcsmYgBlCaG4SWKJOyMrNoDskwDjVRmbL0ID5DzKo6Xs9 764yF+j56mJATMEAAEKAB0WIQQ/gaxpOnoeWYmt/tOPgPtYfRL+TgUCZQmhuAAKCRCPgPtYfRL+ TpOZCACFiaHhK8kdTVr7p7RiSCKcsur1lW4OiwJfh32kPSkZgU3amtNn7LH6EcS7kp6D1hrlfzc zqxtix9oNQEKnEtbOQoalACsGfRiHvf5A2FlPmg/g5DROt82jsmFu3xRBDmVYcH9ctU+rxQAvZg px8q4r1jfTfAhYj3dKgXpWwJxkuTPcE5rsdGk83YRmIFf4hSFKmY9kRvx7ORuuyvci2jSgVwnxT MTRN4CrfD5vm+O6nlt54gRXxwdIoqiJkthCw1Xw3nsiYdcekE2r8zDpDZ3VnmC24nALwnfuL+GC SU+pFS3mwFozwSmrWWBTGqtIfZYcgfN4oTbfu+3AZKgzKMJ4
+X-Developer-Key: i=u.kleine-koenig@pengutronix.de; a=openpgp; fpr=0D2511F322BFAB1C1580266BE2DCDD9132669BD6
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-mips@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-There are two adjacent "b" instructions, the second one is unreachable,
-it is dead code, just remove it.
+The .remove() callback for a platform driver returns an int which makes
+many driver authors wrongly assume it's possible to do error handling by
+returning an error code. However the value returned is ignored (apart
+from emitting a warning) and this typically results in resource leaks.
+To improve here there is a quest to make the remove callback return
+void. In the first step of this quest all drivers are converted to
+.remove_new() which already returns void. Eventually after all drivers
+are converted, .remove_new() is renamed to .remove().
 
-Signed-off-by: Tiezhu Yang <yangtiezhu@loongson.cn>
+Trivially convert this driver from always returning zero in the remove
+callback to the void returning variant.
+
+Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
 ---
- arch/mips/kernel/relocate_kernel.S | 1 -
- 1 file changed, 1 deletion(-)
+ drivers/dma/dma-jz4780.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/arch/mips/kernel/relocate_kernel.S b/arch/mips/kernel/relocate_kernel.S
-index f5b2ef97..8f0a726 100644
---- a/arch/mips/kernel/relocate_kernel.S
-+++ b/arch/mips/kernel/relocate_kernel.S
-@@ -66,7 +66,6 @@ copy_word:
- 	LONG_ADDIU	s6, s6, -1
- 	beq		s6, zero, process_entry
- 	b		copy_word
--	b		process_entry
+diff --git a/drivers/dma/dma-jz4780.c b/drivers/dma/dma-jz4780.c
+index adbd47bd6adf..c9cfa341db51 100644
+--- a/drivers/dma/dma-jz4780.c
++++ b/drivers/dma/dma-jz4780.c
+@@ -1008,7 +1008,7 @@ static int jz4780_dma_probe(struct platform_device *pdev)
+ 	return ret;
+ }
  
- done:
- #ifdef CONFIG_SMP
+-static int jz4780_dma_remove(struct platform_device *pdev)
++static void jz4780_dma_remove(struct platform_device *pdev)
+ {
+ 	struct jz4780_dma_dev *jzdma = platform_get_drvdata(pdev);
+ 	int i;
+@@ -1020,8 +1020,6 @@ static int jz4780_dma_remove(struct platform_device *pdev)
+ 
+ 	for (i = 0; i < jzdma->soc_data->nb_channels; i++)
+ 		tasklet_kill(&jzdma->chan[i].vchan.task);
+-
+-	return 0;
+ }
+ 
+ static const struct jz4780_dma_soc_data jz4740_dma_soc_data = {
+@@ -1124,7 +1122,7 @@ MODULE_DEVICE_TABLE(of, jz4780_dma_dt_match);
+ 
+ static struct platform_driver jz4780_dma_driver = {
+ 	.probe		= jz4780_dma_probe,
+-	.remove		= jz4780_dma_remove,
++	.remove_new	= jz4780_dma_remove,
+ 	.driver	= {
+ 		.name	= "jz4780-dma",
+ 		.of_match_table = jz4780_dma_dt_match,
 -- 
-2.1.0
+2.40.1
 

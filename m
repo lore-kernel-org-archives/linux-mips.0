@@ -2,109 +2,105 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 4A7B0C04AB4
-	for <linux-mips@archiver.kernel.org>; Wed, 20 Sep 2023 16:57:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A951EC04FF7
+	for <linux-mips@archiver.kernel.org>; Wed, 20 Sep 2023 20:10:48 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234875AbjITQ5I (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 20 Sep 2023 12:57:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57888 "EHLO
+        id S229593AbjITUKw (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 20 Sep 2023 16:10:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44404 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234457AbjITQ5H (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 20 Sep 2023 12:57:07 -0400
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E67F99;
-        Wed, 20 Sep 2023 09:57:01 -0700 (PDT)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 54B642017D;
-        Wed, 20 Sep 2023 16:57:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1695229020; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=arrJUNtqjU/izONia38ns6kqz5a2Ljs8vzyYYK7Z784=;
-        b=B5zucAFR4XyR8/5tRFN24icRoW3Li46w9AYROy5fgeQHJjHHmWe1VBSTJAgJzltxBUTQfj
-        A2xO9YmlmCUAHIhnO6bcsmBlTch94Tqw9Zrs2J99gUVXgRrg7N5SnwIhK/ADmsG7DqDXb5
-        NyDsDzox8Vmqa0S6njAX9jt6GCL7qPo=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1695229020;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=arrJUNtqjU/izONia38ns6kqz5a2Ljs8vzyYYK7Z784=;
-        b=TEI3317KDo5yb9aq6yYTvDHKSUd5zcn5XGrWvmgB48JFj1/RVX24vTZ5l0fScD+mlAMJpN
-        CaN28xdVs9HUPMBA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 420581333E;
-        Wed, 20 Sep 2023 16:57:00 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id s1QXEFwkC2UDdgAAMHmgww
-        (envelope-from <jack@suse.cz>); Wed, 20 Sep 2023 16:57:00 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-        id AE8E8A077D; Wed, 20 Sep 2023 18:56:59 +0200 (CEST)
-Date:   Wed, 20 Sep 2023 18:56:59 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Peter Lafreniere <peter@n8pjl.ca>, segher@kernel.crashing.org,
-        anton.ivanov@cambridgegreys.com, ink@jurassic.park.msu.ru,
-        jack@suse.cz, johannes@sipsolutions.net,
-        linux-alpha@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-m68k@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-sh@vger.kernel.org,
-        linux-um@lists.infradead.org, linux@armlinux.org.uk,
-        linuxppc-dev@lists.ozlabs.org, reiserfs-devel@vger.kernel.org,
-        richard.henderson@linaro.org, richard@nod.at,
-        tsbogend@alpha.franken.de
-Subject: Re: [PATCH 0/7] arch/*: config: Remove ReiserFS from defconfig
-Message-ID: <20230920165659.coe7d2lydiaatoby@quack3>
-References: <20230918175529.19011-1-peter@n8pjl.ca>
- <20230918234108.GN19790@gate.crashing.org>
- <20230919000026.7409-1-peter@n8pjl.ca>
- <20230919151630.GO19790@gate.crashing.org>
- <20230919155832.4179-1-peter@n8pjl.ca>
- <CAMuHMdXQ=xpeY3tmLXe1kgJbRtmVAn62rEhvzO+VB7GCgy4F8w@mail.gmail.com>
+        with ESMTP id S229485AbjITUKw (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 20 Sep 2023 16:10:52 -0400
+Received: from mail.zeus03.de (www.zeus03.de [194.117.254.33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0CD8D3
+        for <linux-mips@vger.kernel.org>; Wed, 20 Sep 2023 13:10:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        sang-engineering.com; h=from:to:cc:subject:date:message-id
+        :in-reply-to:references:mime-version:content-transfer-encoding;
+         s=k1; bh=Ke7MWwiVf9//t6v+IkBiNGOrHjI51uuQ1nwsG7+ZaAw=; b=MbI/kY
+        eMqf2sCwUzAQGytVQlTayFe513+vdJqK7SFCvO0s/Vs8PrHbshTWMfVBhnwG203W
+        UGosj85tfVxMPJ4ukwIKy5M5kYppSlHEcj94A0A5kyjpUzGyyAuwhQGeHbPwkjoO
+        WXh4Cre5Q3n5dPKW6UCdQ+RenaBu/3ysAMfuw+UgzXNcJtyvWNZ2ceag7keFklmR
+        F8zr/2fAq4EoJjaSYaPkxIKWa/JUf/h/PVWKWx9mUrWctL+pchu1QnIAu09rkjcL
+        4A+yhtMnkHIOzljaNQNt0ASvKyg9+IgBblvIJUjAsUsGvJHDIoGYZKpdUC/6Zhng
+        ViyDRwkp3rlObqTw==
+Received: (qmail 720226 invoked from network); 20 Sep 2023 22:10:42 +0200
+Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 20 Sep 2023 22:10:42 +0200
+X-UD-Smtp-Session: l3s3148p1@x31J+M8F3tgujntX
+From:   Wolfram Sang <wsa+renesas@sang-engineering.com>
+To:     linux-mips@vger.kernel.org
+Cc:     Jonas Gorski <jonas.gorski@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mtd@lists.infradead.org
+Subject: [PATCH 2/6] mtd: parsers: ar7: remove support
+Date:   Wed, 20 Sep 2023 22:10:28 +0200
+Message-Id: <20230920201035.3445-3-wsa+renesas@sang-engineering.com>
+X-Mailer: git-send-email 2.35.1
+In-Reply-To: <20230920201035.3445-1-wsa+renesas@sang-engineering.com>
+References: <20230920201035.3445-1-wsa+renesas@sang-engineering.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAMuHMdXQ=xpeY3tmLXe1kgJbRtmVAn62rEhvzO+VB7GCgy4F8w@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Tue 19-09-23 18:02:39, Geert Uytterhoeven wrote:
-> Hi Peter,
-> 
-> On Tue, Sep 19, 2023 at 5:58 PM Peter Lafreniere <peter@n8pjl.ca> wrote:
-> >  2) Stops building an obsolete and largely-unused filesystem unnecessarily.
-> >     Some hobbyist targets like m68k and alpha may prefer to keep all filesystems
-> >     available until total removal, but others like arm and UML have no need for
-> >     ReiserFS to be built unless specifically configured.
-> 
-> As UML is used a lot for testing, isn't it actually counter-productive
-> to remove ReiserFS from the UML defconfig?  The less testing it
-> receives, the higher the chance of introducing regressions.
+AR7 is going to be removed from the Kernel, so remove its support for
+MTD.
 
-The only testing I know about for reiserfs (besides build testing) is
-syzbot. And regarding the people / bots doing filesystem testing I know
-none of them uses UML. Rather it is x86 VMs these days where reiserfs is
-disabled in the defconfig for a *long* time (many years). Also when you do
-filesystem testing, you usually just test the few filesystems you care
-about and for which you have all the tools installed. So frankly I don't
-see a good reason to leave reiserfs enabled in defconfigs. But sure if
-m68k or other arch wants to keep reiserfs in it's defconfig for some
-consistency reasons, I'm fine with it. I just suspect that for most archs
-this is just a historical reason.
+Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
+---
+ arch/arm/configs/pxa_defconfig |   1 -
+ drivers/mtd/parsers/Kconfig    |   5 --
+ drivers/mtd/parsers/Makefile   |   1 -
+ drivers/mtd/parsers/ar7part.c  | 129 ---------------------------------
+ 4 files changed, 136 deletions(-)
+ delete mode 100644 drivers/mtd/parsers/ar7part.c
 
-								Honza
+diff --git a/arch/arm/configs/pxa_defconfig b/arch/arm/configs/pxa_defconfig
+index 23c131b0854b..9e81b1849e4c 100644
+--- a/arch/arm/configs/pxa_defconfig
++++ b/arch/arm/configs/pxa_defconfig
+@@ -100,7 +100,6 @@ CONFIG_DEVTMPFS=y
+ CONFIG_DEVTMPFS_MOUNT=y
+ CONFIG_CONNECTOR=y
+ CONFIG_MTD=y
+-CONFIG_MTD_AR7_PARTS=m
+ CONFIG_MTD_CMDLINE_PARTS=m
+ CONFIG_MTD_OF_PARTS=m
+ CONFIG_MTD_AFS_PARTS=m
+diff --git a/drivers/mtd/parsers/Kconfig b/drivers/mtd/parsers/Kconfig
+index 60738edcd5d5..da03ab6efe04 100644
+--- a/drivers/mtd/parsers/Kconfig
++++ b/drivers/mtd/parsers/Kconfig
+@@ -1,9 +1,4 @@
+ # SPDX-License-Identifier: GPL-2.0-only
+-config MTD_AR7_PARTS
+-	tristate "TI AR7 partitioning parser"
+-	help
+-	  TI AR7 partitioning parser support
+-
+ config MTD_BCM47XX_PARTS
+ 	tristate "BCM47XX partitioning parser"
+ 	depends on BCM47XX || ARCH_BCM_5301X
+diff --git a/drivers/mtd/parsers/Makefile b/drivers/mtd/parsers/Makefile
+index 0e70b621a1d8..9b00c62b837a 100644
+--- a/drivers/mtd/parsers/Makefile
++++ b/drivers/mtd/parsers/Makefile
+@@ -1,5 +1,4 @@
+ # SPDX-License-Identifier: GPL-2.0-only
+-obj-$(CONFIG_MTD_AR7_PARTS)		+= ar7part.o
+ obj-$(CONFIG_MTD_BCM47XX_PARTS)		+= bcm47xxpart.o
+ obj-$(CONFIG_MTD_BCM63XX_PARTS)		+= bcm63xxpart.o
+ obj-$(CONFIG_MTD_BRCM_U_BOOT)		+= brcm_u-boot.o
+diff --git a/drivers/mtd/parsers/ar7part.c b/drivers/mtd/parsers/ar7part.c
+deleted file mode 100644
+index 8cd683711ac6..000000000000
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+2.35.1
+

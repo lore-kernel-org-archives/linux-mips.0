@@ -2,95 +2,120 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id ACFBFE7D0B3
-	for <linux-mips@archiver.kernel.org>; Thu, 21 Sep 2023 21:53:57 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0CAA8E7D0AB
+	for <linux-mips@archiver.kernel.org>; Thu, 21 Sep 2023 22:13:42 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232784AbjIUVyA (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 21 Sep 2023 17:54:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34368 "EHLO
+        id S233157AbjIUWNq (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 21 Sep 2023 18:13:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50532 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232875AbjIUVx2 (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Thu, 21 Sep 2023 17:53:28 -0400
-Received: from mail.zeus03.de (www.zeus03.de [194.117.254.33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FB8B663CE
-        for <linux-mips@vger.kernel.org>; Thu, 21 Sep 2023 10:34:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        sang-engineering.com; h=date:from:to:cc:subject:message-id
-        :references:mime-version:content-type:in-reply-to; s=k1; bh=B3IM
-        ao2Q2IxNVAWNCXVLHyU4C/DuZeL0FIlKs8Fvzcg=; b=Q/mAwEGNru0HsS7pDT8Q
-        F11FmHFXzVXe/KEzNG/f/4wMqv3GFdZX4372wzmjhI+KRLxnpX1/sj/ZptLsA9vw
-        toy2h4l68nsrVlGZ7hUhT1N87DNvUOFp+bQoBA1jcZlgud7mxb8s5xxsHOhcO42q
-        kq9GTHykmZ1c4pEBEruz8k/B5dj7mfpcRuRFc80j5WRmqFS51TEZyIt+CiRib+xH
-        G1pnFWIvm2OXd6ss/rHghzWcLb5nTjAqcjdJHqxYzaYRJTUDQ1IDe5SxvotOzLta
-        wBVh3mWyBFvh11j7GlubP9jw8rKe4KQybn0xy6lgYTkJTSL7g9JlJFfLcY/IENCV
-        fQ==
-Received: (qmail 941082 invoked from network); 21 Sep 2023 14:06:26 +0200
-Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 21 Sep 2023 14:06:26 +0200
-X-UD-Smtp-Session: l3s3148p1@K784Ut0Fw3wuciJ+
-Date:   Thu, 21 Sep 2023 14:06:25 +0200
-From:   Wolfram Sang <wsa+renesas@sang-engineering.com>
-To:     Philippe =?utf-8?Q?Mathieu-Daud=C3=A9?= <philmd@linaro.org>
-Cc:     linux-mips@vger.kernel.org, Jonas Gorski <jonas.gorski@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/6] vlynq: remove bus driver
-Message-ID: <ZQwxwUm3HbqqwEzb@shikoro>
-Mail-Followup-To: Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Philippe =?utf-8?Q?Mathieu-Daud=C3=A9?= <philmd@linaro.org>,
-        linux-mips@vger.kernel.org, Jonas Gorski <jonas.gorski@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-References: <20230920201035.3445-1-wsa+renesas@sang-engineering.com>
- <20230920201035.3445-4-wsa+renesas@sang-engineering.com>
- <30279c62-c80b-330f-260f-0c64a7893555@linaro.org>
+        with ESMTP id S232874AbjIUWN3 (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Thu, 21 Sep 2023 18:13:29 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C42F61BD;
+        Thu, 21 Sep 2023 15:10:40 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6D5E4C433CB;
+        Thu, 21 Sep 2023 22:10:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1695334240;
+        bh=N5hdFpyXSiGpYG0511NDyp6fv24cJcs4QSVnP7w1UAU=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=Wvqk0n6jq0ct52sblCUd8L/Xq8+N+SorW8zAWVSuS8RApVD17k7plQRRz/k5AtqcZ
+         GfT0CHWwJxWi4gUehtxR+8ljjuQTqjvYKgxWb2XNuVdjKevxRu1ENJFvPX5YXAHSbF
+         Ix9CdbGlyzCm8uVsj2Qxltwpt5fiLP3w48irVYCfZTdJDqTfRku6xjijf57j/ZypWU
+         97yg0mO2y5J78oLs+yCmKD+nXRc3T+EFcvHppUt3wuFXOaWZdvIvQ4j8dq0mhxHV1+
+         hn7FVpnRYo4KhRE7dodDocdh21fQMMb+Di7kRnH5vPdK32pTNVgx3GHtydByNaiHSX
+         2EmQpYW6b+alA==
+Received: by mail-lf1-f49.google.com with SMTP id 2adb3069b0e04-5041bb9ce51so2466137e87.1;
+        Thu, 21 Sep 2023 15:10:40 -0700 (PDT)
+X-Gm-Message-State: AOJu0YxFcVtmEm3oEWo8idFtMNYq2G4WIU9xIxKGAeDSLaC8XzC5nHA6
+        A/Os7unXe6c0ie2bw3wFW2fEWkGcW0nssbBNJ5k=
+X-Google-Smtp-Source: AGHT+IFpnRd6TFzlAtTmG0SVL+ey3URugDNbqT5vmaLEkxDXDZHK88BxPcak1tSmyXSq9q54rWpyKjCd5XFO26LBHOk=
+X-Received: by 2002:a19:6903:0:b0:4fe:2d93:2b50 with SMTP id
+ e3-20020a196903000000b004fe2d932b50mr5173357lfc.31.1695334238605; Thu, 21 Sep
+ 2023 15:10:38 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="uTWIX+buPLkNnnAP"
-Content-Disposition: inline
-In-Reply-To: <30279c62-c80b-330f-260f-0c64a7893555@linaro.org>
+References: <20230918072955.2507221-1-rppt@kernel.org> <20230918072955.2507221-3-rppt@kernel.org>
+In-Reply-To: <20230918072955.2507221-3-rppt@kernel.org>
+From:   Song Liu <song@kernel.org>
+Date:   Thu, 21 Sep 2023 15:10:26 -0700
+X-Gmail-Original-Message-ID: <CAPhsuW4bQY5fo_+K2z4uUdd4r0wYF1eT3bAya=YqcEcmqdGXvg@mail.gmail.com>
+Message-ID: <CAPhsuW4bQY5fo_+K2z4uUdd4r0wYF1eT3bAya=YqcEcmqdGXvg@mail.gmail.com>
+Subject: Re: [PATCH v3 02/13] mm: introduce execmem_text_alloc() and execmem_free()
+To:     Mike Rapoport <rppt@kernel.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        "David S. Miller" <davem@davemloft.net>,
+        Dinh Nguyen <dinguyen@kernel.org>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Helge Deller <deller@gmx.de>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Kent Overstreet <kent.overstreet@linux.dev>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Puranjay Mohan <puranjay12@gmail.com>,
+        Rick Edgecombe <rick.p.edgecombe@intel.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Will Deacon <will@kernel.org>, bpf@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
+        linux-mm@kvack.org, linux-modules@vger.kernel.org,
+        linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org,
+        linux-s390@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev,
+        netdev@vger.kernel.org, sparclinux@vger.kernel.org, x86@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
+On Mon, Sep 18, 2023 at 12:30=E2=80=AFAM Mike Rapoport <rppt@kernel.org> wr=
+ote:
+>
+[...]
+> +
+> +#include <linux/mm.h>
+> +#include <linux/vmalloc.h>
+> +#include <linux/execmem.h>
+> +#include <linux/moduleloader.h>
+> +
+> +static void *execmem_alloc(size_t size)
+> +{
+> +       return module_alloc(size);
+> +}
+> +
+> +void *execmem_text_alloc(enum execmem_type type, size_t size)
+> +{
+> +       return execmem_alloc(size);
+> +}
 
---uTWIX+buPLkNnnAP
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+execmem_text_alloc (and later execmem_data_alloc) both take "type" as
+input. I guess we can just use execmem_alloc(type, size) for everything?
 
-On Thu, Sep 21, 2023 at 12:37:54PM +0200, Philippe Mathieu-Daud=C3=A9 wrote:
-> On 20/9/23 22:10, Wolfram Sang wrote:
-> > There are no users with a vlynq_driver in the Kernel tree. Also, only
-> > the AR7 platform ever initialized a VLYNQ bus, but AR7 is going to be
-> > removed from the Kernel. OpenWRT had some out-of-tree drivers which they
-> > probably intended to upport, but AR7 devices are even there not
->=20
-> Typo "support".
+Thanks,
+Song
 
-"support" would also fit, but we use the term "upporting" frequently to
-express that we want to bring some code from downstream to upstream.
-
-
---uTWIX+buPLkNnnAP
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmUMMcEACgkQFA3kzBSg
-KbaZEQ//WmAKG0+HLioziXTOXss/qa1sW4PU8KSM+nOjF8OU+986UDQ0BoqBOAA5
-4bvrJWzAz0m2o2Vx6HKqKp/msgYp0OnRSnXU/kkYjxlPtOEm6K7PoLHA0zjlx2WP
-jXYLH3yhjQ10IF9qKyCfX7/SSaNhpiu4QuGJR1byKzNVDcMbsDdXHnUQm0hfY9Ui
-Q6akxg+WzQjI8bUaHV/lQbkU9yuXII2eXfyesLIB5RdpKn1TnaMwIa7EHVt2CE9z
-NoanTLJWsylhnFLFWg3ZTT6bOpsWkawXNWzmkbpsXsDmpeKrxduwRwSrpBeBsOqK
-8CCGoVHytYnkBR82kSwrnx6jXY7rNnvHQZ4Va06VFdYqlRWymwhitkiC0AXew0tu
-/iF92A6ZDel7Zd7wcJYA1mF8m3tY7F0UVfo3N2jeTXiCexV+5yNeGtpVZutGSZ6T
-7xvGci3EIbTHZxTR20l/tzn0bLqS/2cNVoK7QmmiEFaHvU4YHnS37OtvchsuVo2q
-UozYyZex5I/hi8QaY2+a3E4tW3PQ1KpuKkfi8j/k+Lt9EBSLINfmZsvUwD3e+lU/
-8XcxVNX1I0KsLrRwP8Upx7LXdlbVaNw9jesBgrx8sUsfdsPPA6hSCGMXZOaXSH52
-YV1rDq+eqaKlE88sW9cOBnPYul5z51rdBZTZYhkJd14X1tY9vfE=
-=UpnR
------END PGP SIGNATURE-----
-
---uTWIX+buPLkNnnAP--
+> +
+> +void execmem_free(void *ptr)
+> +{
+> +       /*
+> +        * This memory may be RO, and freeing RO memory in an interrupt i=
+s not
+> +        * supported by vmalloc.
+> +        */
+> +       WARN_ON(in_interrupt());
+> +       vfree(ptr);
+> +}
+> --
+> 2.39.2
+>

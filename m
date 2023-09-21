@@ -2,121 +2,218 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5FCDCE7D0B0
-	for <linux-mips@archiver.kernel.org>; Thu, 21 Sep 2023 21:20:51 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C422DE7D0B0
+	for <linux-mips@archiver.kernel.org>; Thu, 21 Sep 2023 21:46:30 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232688AbjIUVUx (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 21 Sep 2023 17:20:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46084 "EHLO
+        id S232786AbjIUVqe (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 21 Sep 2023 17:46:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58316 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232801AbjIUVOw (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Thu, 21 Sep 2023 17:14:52 -0400
-Received: from wnew1-smtp.messagingengine.com (wnew1-smtp.messagingengine.com [64.147.123.26])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4FEA7EF5;
-        Thu, 21 Sep 2023 10:10:52 -0700 (PDT)
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
-        by mailnew.west.internal (Postfix) with ESMTP id 0FCFB2B00167;
-        Thu, 21 Sep 2023 08:27:35 -0400 (EDT)
-Received: from imap51 ([10.202.2.101])
-  by compute6.internal (MEProxy); Thu, 21 Sep 2023 08:27:37 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-        :cc:content-type:content-type:date:date:from:from:in-reply-to
-        :in-reply-to:message-id:mime-version:references:reply-to:sender
-        :subject:subject:to:to; s=fm1; t=1695299255; x=1695306455; bh=Xq
-        U4+PADbmN/YvqQXLrRCGcZ07y18plfxqgBBJgIpjw=; b=Xdx4hQsTzl4c24llIz
-        192HiWdE2r0Z17h7hha/5B+uybwHOw+lHySp5dgSFIyremltJv6BupWCCE7vqAtS
-        DUduuni5p7SDjaoxP7Y0c3dI1L3DDC96hM3q6xwLck95D6CeqCmsxrkKZ6Zgv2mQ
-        ih8pZz4GlPyAEKT2EByi/sbL53k7F9MpaztW3ubpkI67GluVKqoEgJAoZkJac6xf
-        L40yx+zPXQSonM/qQqXr+/44QEGY/LW3tmoWxfCIXGmvbDY8YlzEj56Y1t4Q3Ooi
-        aLhMW+mRkUenODaIJ7pTKXCN8HhFkJ2SLPpatk0e1cLMSpNqYk1QxmquZjzyFqfT
-        dFiw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:content-type:date:date
-        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm2; t=1695299255; x=1695306455; bh=XqU4+PADbmN/Y
-        vqQXLrRCGcZ07y18plfxqgBBJgIpjw=; b=AsHXnvbTE0NoKn8UR1wNiZEQ0Izgl
-        oJ1le/svDXQKmB5iunzfl757K0xMqaKgwpjVCaw2UuP2Vt2mi2RMkN55AQsiD+0o
-        /NGYpK0Q1N3N8f+y8hlvcaJaEnVYzzUXulTecLj6OPE2kfCABIE81WZlt/TQWRym
-        a3YS2kb9o3UDiIqmT6Muw7WaDcpWDjOLS4FEg9ERk6Zsv5Hp/uVcGqvfRusPbRxs
-        /TkNZpWQa1QyBFLzjTES+Opz/HvajxF5Bnwti4DvpslyUHWi81WsLXmneMghKGmm
-        5uLl0cSZ1BQNDmkjOK4WmcBmk5Rvp6jy4BVNblrnY0nqT6NYPATO7irCQ==
-X-ME-Sender: <xms:tzYMZUXcSuZhEjYsCWLs0tRkqLt6ojmPoMPl4a4ip4r-sgw8vTC6og>
-    <xme:tzYMZYnjV322WYYdSTMoXm4rPGFrj126uFz03pQ5jZLRtclncn1Vn2e5IKuSknQur
-    nwLBT-aUOiRNbskyLQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrudekiedgheduucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
-    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
-    htvghrnhepffehueegteeihfegtefhjefgtdeugfegjeelheejueethfefgeeghfektdek
-    teffnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprg
-    hrnhgusegrrhhnuggsrdguvg
-X-ME-Proxy: <xmx:tzYMZYZPhdycibP7W_ddmUBtLn0YGUONRmMTwUtOUl4FxP4TbdnjHQ>
-    <xmx:tzYMZTWsoHJEmyjcJspV67bM8725seq0dG7wF9ka6iwdPlA97rgN6Q>
-    <xmx:tzYMZem0QBzUTaJpXkKhVHcTIdTE5qwySok6bADpAf29P4FWOrLpBA>
-    <xmx:tzYMZdec6437asUuro7oN_lGHpAgzzqxstK0csnQRsD1an1TXXRMnjq-9-g>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 0F24AB60089; Thu, 21 Sep 2023 08:27:34 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-761-gece9e40c48-fm-20230913.001-gece9e40c
+        with ESMTP id S231373AbjIUVqY (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Thu, 21 Sep 2023 17:46:24 -0400
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4BA05158C;
+        Thu, 21 Sep 2023 10:15:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1695316539; x=1726852539;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=D2Ofh4NhqIgE7X1sOt5XtBxAR4C9rpdFRo7VG5iLwuA=;
+  b=KHvCncRSrBruGvH+50Kzeqz0hI190vMoeAaMPYNqi/DKx6bH/+pwcu+T
+   7ISPlgSAOpVv/9rAQ1AASpc3LdOc2ec90SoxCzTu8LfL7ORZE97YCK38+
+   LPCEZIzg9RI7BB4jSnpCEvfcmED2C1PVm/raU41zajX11Crudp3clWwTe
+   mSeTYJLXS7U3wbJ8czV5XhnqjiUQdYx8EQzWGn2XmPEV2003tRaJVFcYV
+   R/H5YvNaDJvUyOH64W3we1R/l2tY0qolAyk42QfnVun/FuWlzezSY33Ny
+   GIFb6FBEg2K+ZpDplNCdxU//pzcvuXI+qrnPySJkp5Obw0Tek+e7x+YXF
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10839"; a="380337398"
+X-IronPort-AV: E=Sophos;i="6.03,164,1694761200"; 
+   d="scan'208";a="380337398"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Sep 2023 22:58:13 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10839"; a="740494287"
+X-IronPort-AV: E=Sophos;i="6.03,164,1694761200"; 
+   d="scan'208";a="740494287"
+Received: from binbinwu-mobl.ccr.corp.intel.com (HELO [10.93.17.222]) ([10.93.17.222])
+  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Sep 2023 22:58:02 -0700
+Message-ID: <f9ca9457-ca64-484c-7306-97a3236210da@linux.intel.com>
+Date:   Thu, 21 Sep 2023 13:58:00 +0800
 MIME-Version: 1.0
-Message-Id: <c4a96578-b27c-44fa-82ef-1c5bf43b972a@app.fastmail.com>
-In-Reply-To: <20230921110424.215592-4-bhe@redhat.com>
-References: <20230921110424.215592-1-bhe@redhat.com>
- <20230921110424.215592-4-bhe@redhat.com>
-Date:   Thu, 21 Sep 2023 08:27:14 -0400
-From:   "Arnd Bergmann" <arnd@arndb.de>
-To:     "Baoquan He" <bhe@redhat.com>, linux-kernel@vger.kernel.org
-Cc:     Linux-Arch <linux-arch@vger.kernel.org>, linux-mm@kvack.org,
-        "Andrew Morton" <akpm@linux-foundation.org>,
-        "Jiaxun Yang" <jiaxun.yang@flygoat.com>,
-        "Michael Ellerman" <mpe@ellerman.id.au>,
-        "Geert Uytterhoeven" <geert@linux-m68k.org>,
-        "Luis Chamberlain" <mcgrof@kernel.org>,
-        "Christoph Hellwig" <hch@infradead.org>,
-        "Thomas Bogendoerfer" <tsbogend@alpha.franken.de>,
-        "Florian Fainelli" <f.fainelli@gmail.com>,
-        "Helge Deller" <deller@gmx.de>, linux-alpha@vger.kernel.org,
-        linux-hexagon@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-sh@vger.kernel.org,
-        sparclinux@vger.kernel.org
-Subject: Re: [PATCH v5 3/4] arch/*/io.h: remove ioremap_uc in some architectures
-Content-Type: text/plain
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [RFC PATCH v12 14/33] KVM: Add KVM_CREATE_GUEST_MEMFD ioctl() for
+ guest-specific backing memory
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     kvm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        kvmarm@lists.linux.dev, linux-mips@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, kvm-riscv@lists.infradead.org,
+        linux-riscv@lists.infradead.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Anup Patel <anup@brainfault.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Paul Moore <paul@paul-moore.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Chao Peng <chao.p.peng@linux.intel.com>,
+        Fuad Tabba <tabba@google.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Anish Moorthy <amoorthy@google.com>,
+        Yu Zhang <yu.c.zhang@linux.intel.com>,
+        Isaku Yamahata <isaku.yamahata@intel.com>,
+        Xu Yilun <yilun.xu@intel.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Vishal Annapurve <vannapurve@google.com>,
+        Ackerley Tng <ackerleytng@google.com>,
+        Maciej Szmigiero <mail@maciej.szmigiero.name>,
+        David Hildenbrand <david@redhat.com>,
+        Quentin Perret <qperret@google.com>,
+        Michael Roth <michael.roth@amd.com>,
+        Wang <wei.w.wang@intel.com>,
+        Liam Merwick <liam.merwick@oracle.com>,
+        Isaku Yamahata <isaku.yamahata@gmail.com>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
+References: <20230914015531.1419405-1-seanjc@google.com>
+ <20230914015531.1419405-15-seanjc@google.com>
+ <e397d30c-c6af-e68f-d18e-b4e3739c5389@linux.intel.com>
+ <ZQsAiGuw/38jIOV7@google.com>
+From:   Binbin Wu <binbin.wu@linux.intel.com>
+In-Reply-To: <ZQsAiGuw/38jIOV7@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Thu, Sep 21, 2023, at 07:04, Baoquan He wrote:
-> ioremap_uc() is only meaningful on old x86-32 systems with the PAT
-> extension, and on ia64 with its slightly unconventional ioremap()
-> behavior. So remove the ioremap_uc() definition in architecutures
-> other than x86 and ia64. These architectures all have asm-generic/io.h
-> included and will have the default ioremap_uc() definition which
-> returns NULL.
->
-> This changes the existing behaviour, while no need to worry about
-> any breakage because in the only callsite of ioremap_uc(), code
-> has been adjusted to eliminate the impact. Please see
-> atyfb_setup_generic() of drivers/video/fbdev/aty/atyfb_base.c.
->
-> If any new invocation of ioremap_uc() need be added, please consider
-> using ioremap() intead or adding a ARCH specific version if necessary.
->
-> Signed-off-by: Baoquan He <bhe@redhat.com>
-> Acked-by: Geert Uytterhoeven <geert@linux-m68k.org>
-> Acked-by: Michael Ellerman <mpe@ellerman.id.au> (powerpc)
-> Acked-by: Helge Deller <deller@gmx.de>  # parisc
-> Cc: linux-alpha@vger.kernel.org
-> Cc: linux-hexagon@vger.kernel.org
-> Cc: linux-m68k@lists.linux-m68k.org
-> Cc: linux-mips@vger.kernel.org
-> Cc: linux-parisc@vger.kernel.org
-> Cc: linuxppc-dev@lists.ozlabs.org
-> Cc: linux-sh@vger.kernel.org
-> Cc: sparclinux@vger.kernel.org
 
-Acked-by: Arnd Bergmann <arnd@arndb.de>
+
+On 9/20/2023 10:24 PM, Sean Christopherson wrote:
+> On Tue, Sep 19, 2023, Binbin Wu wrote:
+>>
+>> On 9/14/2023 9:55 AM, Sean Christopherson wrote:
+>> [...]
+>>> +
+>>> +static void kvm_gmem_invalidate_begin(struct kvm_gmem *gmem, pgoff_t start,
+>>> +				      pgoff_t end)
+>>> +{
+>>> +	struct kvm_memory_slot *slot;
+>>> +	struct kvm *kvm = gmem->kvm;
+>>> +	unsigned long index;
+>>> +	bool flush = false;
+>>> +
+>>> +	KVM_MMU_LOCK(kvm);
+>>> +
+>>> +	kvm_mmu_invalidate_begin(kvm);
+>>> +
+>>> +	xa_for_each_range(&gmem->bindings, index, slot, start, end - 1) {
+>>> +		pgoff_t pgoff = slot->gmem.pgoff;
+>>> +
+>>> +		struct kvm_gfn_range gfn_range = {
+>>> +			.start = slot->base_gfn + max(pgoff, start) - pgoff,
+>>> +			.end = slot->base_gfn + min(pgoff + slot->npages, end) - pgoff,
+>>> +			.slot = slot,
+>>> +			.may_block = true,
+>>> +		};
+>>> +
+>>> +		flush |= kvm_mmu_unmap_gfn_range(kvm, &gfn_range);
+>>> +	}
+>>> +
+>>> +	if (flush)
+>>> +		kvm_flush_remote_tlbs(kvm);
+>>> +
+>>> +	KVM_MMU_UNLOCK(kvm);
+>>> +}
+>>> +
+>>> +static void kvm_gmem_invalidate_end(struct kvm_gmem *gmem, pgoff_t start,
+>>> +				    pgoff_t end)
+>>> +{
+>>> +	struct kvm *kvm = gmem->kvm;
+>>> +
+>>> +	KVM_MMU_LOCK(kvm);
+>>> +	if (xa_find(&gmem->bindings, &start, end - 1, XA_PRESENT))
+>>> +		kvm_mmu_invalidate_end(kvm);
+>> kvm_mmu_invalidate_begin() is called unconditionally in
+>> kvm_gmem_invalidate_begin(),
+>> but kvm_mmu_invalidate_end() is not here.
+>> This makes the kvm_gmem_invalidate_{begin, end}() calls asymmetric.
+> Another ouch :-(
+>
+> And there should be no need to acquire mmu_lock() unconditionally, the inode's
+> mutex protects the bindings, not mmu_lock.
+>
+> I'll get a fix posted today.  I think KVM can also add a sanity check to detect
+> unresolved invalidations, e.g.
+>
+> diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+> index 7ba1ab1832a9..2a2d18070856 100644
+> --- a/virt/kvm/kvm_main.c
+> +++ b/virt/kvm/kvm_main.c
+> @@ -1381,8 +1381,13 @@ static void kvm_destroy_vm(struct kvm *kvm)
+>           * No threads can be waiting in kvm_swap_active_memslots() as the
+>           * last reference on KVM has been dropped, but freeing
+>           * memslots would deadlock without this manual intervention.
+> +        *
+> +        * If the count isn't unbalanced, i.e. KVM did NOT unregister between
+> +        * a start() and end(), then there shouldn't be any in-progress
+> +        * invalidations.
+>           */
+>          WARN_ON(rcuwait_active(&kvm->mn_memslots_update_rcuwait));
+> +       WARN_ON(!kvm->mn_active_invalidate_count && kvm->mmu_invalidate_in_progress);
+>          kvm->mn_active_invalidate_count = 0;
+>   #else
+>          kvm_flush_shadow_all(kvm);
+>
+>
+> or an alternative style
+>
+> 	if (kvm->mn_active_invalidate_count)
+> 		kvm->mn_active_invalidate_count = 0;
+> 	else
+> 		WARN_ON(kvm->mmu_invalidate_in_progress)
+>
+>>> +	KVM_MMU_UNLOCK(kvm);
+>>> +}
+>>> +
+>>> +static long kvm_gmem_punch_hole(struct inode *inode, loff_t offset, loff_t len)
+>>> +{
+>>> +	struct list_head *gmem_list = &inode->i_mapping->private_list;
+>>> +	pgoff_t start = offset >> PAGE_SHIFT;
+>>> +	pgoff_t end = (offset + len) >> PAGE_SHIFT;
+>>> +	struct kvm_gmem *gmem;
+>>> +
+>>> +	/*
+>>> +	 * Bindings must stable across invalidation to ensure the start+end
+>>> +	 * are balanced.
+>>> +	 */
+>>> +	filemap_invalidate_lock(inode->i_mapping);
+>>> +
+>>> +	list_for_each_entry(gmem, gmem_list, entry) {
+>>> +		kvm_gmem_invalidate_begin(gmem, start, end);
+>>> +		kvm_gmem_invalidate_end(gmem, start, end);
+>>> +	}
+>> Why to loop for each gmem in gmem_list here?
+>>
+>> IIUIC, offset is the offset according to the inode, it is only meaningful to
+>> the inode passed in, i.e, it is only meaningful to the gmem binding with the
+>> inode, not others.
+> The code is structured to allow for multiple gmem instances per inode.  This isn't
+> actually possible in the initial code base, but it's on the horizon[*].  I included
+> the list-based infrastructure in this initial series to ensure that guest_memfd
+> can actually support multiple files per inode, and to minimize the churn when the
+> "link" support comes along.
+>
+> [*] https://lore.kernel.org/all/cover.1691446946.git.ackerleytng@google.com
+Got it, thanks for the explanation!
+
+
+

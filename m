@@ -2,171 +2,98 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 413D5E71094
-	for <linux-mips@archiver.kernel.org>; Thu, 21 Sep 2023 17:01:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1B2E6E7D0AD
+	for <linux-mips@archiver.kernel.org>; Thu, 21 Sep 2023 17:10:58 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229836AbjIURBR (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 21 Sep 2023 13:01:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60424 "EHLO
+        id S230163AbjIURLB (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 21 Sep 2023 13:11:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58072 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229914AbjIURBA (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Thu, 21 Sep 2023 13:01:00 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14CB1CDD;
-        Thu, 21 Sep 2023 09:59:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1695315562; x=1726851562;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=oZ26NaKC2zv5YONE8y6jW8KHDfibqQbE4Lcj557476A=;
-  b=Xkm+iGlBE6orJWszf3h/H4m+HtQA60DEUHwyUtmg9i5jaWDT1S9FR8hj
-   YtEipiPub8bi9mHzl/Fr81HyOkvRvNtT0YrBXT+3HaBEzzQ1sUxwsaS6C
-   pfHGU46eOVUiEDEZ3xb645ixhLZ5XlzmImCHNozhHQ/WlHR72aSrebSFc
-   TxYc74ca32GhUTwfalEh0chny9CW4gkGVohFKopw0l0Iht8Tv4JsBnkWO
-   hKQ/Fk8xJlhLWLLqa3LBD+Nq4ScdGTjikwcKLZBYF21Or2parWQ2yty81
-   CBbWjQLqAU+4W7BZ7L7xXcz7UlbJalHuoJWQ44Gfcpm3XagCA84ek5F7u
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10839"; a="466734468"
-X-IronPort-AV: E=Sophos;i="6.03,164,1694761200"; 
-   d="scan'208";a="466734468"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Sep 2023 22:51:47 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10839"; a="837187245"
-X-IronPort-AV: E=Sophos;i="6.03,164,1694761200"; 
-   d="scan'208";a="837187245"
-Received: from binbinwu-mobl.ccr.corp.intel.com (HELO [10.93.17.222]) ([10.93.17.222])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Sep 2023 22:51:36 -0700
-Message-ID: <ef36db9d-bb9c-e042-2617-830cf44602de@linux.intel.com>
-Date:   Thu, 21 Sep 2023 13:51:34 +0800
+        with ESMTP id S231359AbjIURKb (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Thu, 21 Sep 2023 13:10:31 -0400
+Received: from wout1-smtp.messagingengine.com (wout1-smtp.messagingengine.com [64.147.123.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98B1EA5C9;
+        Thu, 21 Sep 2023 10:05:54 -0700 (PDT)
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
+        by mailout.west.internal (Postfix) with ESMTP id D723832009EB;
+        Thu, 21 Sep 2023 08:25:22 -0400 (EDT)
+Received: from imap51 ([10.202.2.101])
+  by compute6.internal (MEProxy); Thu, 21 Sep 2023 08:25:24 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+        :cc:content-type:content-type:date:date:from:from:in-reply-to
+        :in-reply-to:message-id:mime-version:references:reply-to:sender
+        :subject:subject:to:to; s=fm1; t=1695299122; x=1695385522; bh=Qt
+        VbcPXLwmPHbqM7Z1JFnFzIc7YAtI2BYnyrt95OPhk=; b=Cu8cylWkfAYqM4kdKA
+        E0MUXpGBIZnygnpCeE2qbClbzc+r82AC9G4kcFl6d1f3KQ9tZrKxdWm358GD10FS
+        9A+C918gXnGOtCToboUZLWoDRNUVoJaIy+r3JpfHBeMRhjQpQNCyEFOTDeb7SxiU
+        TR/aIxr7lhgp2kJxbXovIZc3qBCBRm8amFslmXGS5B6bAmUycT5hpwJMkw+mizKH
+        mwzax1tg1v/Pj9uP/kgxsP+qwQxqWkUnkRVdcoDpES9bGtlPC9dWgoT71IhvgLYd
+        w0Wxq4wdNoEj4M1ps7kktxszrSjUuQpJj1Tg42EhY1N0/zfctp1UZeDFx0NNX3jF
+        f+gQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-type:content-type:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm2; t=1695299122; x=1695385522; bh=QtVbcPXLwmPHb
+        qM7Z1JFnFzIc7YAtI2BYnyrt95OPhk=; b=DDeBOwHhwDXEaTztHATTvfe4jIk3Y
+        4FIjRbYQ0f9lgPxfl0ZlMvexXSzxTp4DQ53S2Vnm+3vjxu7Y2lLSW0Ro7rBnV4ka
+        3OkI0SKH5tgaLTClViXESDyvCGcS3m5Ky0PAaCNuETCPt9EOW9iqURw3B3vg6I8W
+        3pva8IVYF+FH+UR7vBPjaYU1RKQTORhvnX6ryUkq+wIZoANCzbunVeqB4honcHEZ
+        N+yIOBxhjzNubNM90lyVdk4NM71Y86FLGKYRdpg2E9Df79DsBbfX+J/kyee5NZs8
+        EsoYTAz0Ko1lEzgI+VdpRcUJxDFUUIM7QQ8dNks8sZcWhfxnMoX7yFxbg==
+X-ME-Sender: <xms:MTYMZSSEg_SSqGx5AGZe4oU9f0aKxlr-qUhBubmHtIx8pVYcnMCn-Q>
+    <xme:MTYMZXy33ZVSyvUq9BX316kG4OfB-mZMOPOiTUehtC2J2ttC6xtsAe2WiBeeojUEA
+    LD0EcVt96vrCtR5E7I>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedviedrudekiedghedtucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
+    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
+    htvghrnhepffehueegteeihfegtefhjefgtdeugfegjeelheejueethfefgeeghfektdek
+    teffnecuvehluhhsthgvrhfuihiivgepudenucfrrghrrghmpehmrghilhhfrhhomheprg
+    hrnhgusegrrhhnuggsrdguvg
+X-ME-Proxy: <xmx:MTYMZf3f8KfjcqJQRDz8SU1PHtJvnR0afaNP21xbMt37zhvmWSoXOg>
+    <xmx:MTYMZeAY7BKRDTnqh1zyDybLCkYzoVpj29UVdZ2Am7NmWDsHcr8JaQ>
+    <xmx:MTYMZbibo5dvZkxXU98F6xDuuKRk5XuShs5_fQaka5qHJiOnHPAvwg>
+    <xmx:MjYMZWR-kXl52lIkKZjN4zS-ggkjUeUB_2c2-uIknDLPgbAtRzT8iA>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 50E5CB60089; Thu, 21 Sep 2023 08:25:21 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.9.0-alpha0-761-gece9e40c48-fm-20230913.001-gece9e40c
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [RFC PATCH v12 18/33] KVM: x86/mmu: Handle page fault for private
- memory
-To:     Sean Christopherson <seanjc@google.com>,
-        Yan Zhao <yan.y.zhao@intel.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Anup Patel <anup@brainfault.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Paul Moore <paul@paul-moore.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>, kvm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Chao Peng <chao.p.peng@linux.intel.com>,
-        Fuad Tabba <tabba@google.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Anish Moorthy <amoorthy@google.com>,
-        Yu Zhang <yu.c.zhang@linux.intel.com>,
-        Isaku Yamahata <isaku.yamahata@intel.com>,
-        Xu Yilun <yilun.xu@intel.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Vishal Annapurve <vannapurve@google.com>,
-        Ackerley Tng <ackerleytng@google.com>,
-        Maciej Szmigiero <mail@maciej.szmigiero.name>,
-        David Hildenbrand <david@redhat.com>,
-        Quentin Perret <qperret@google.com>,
-        Michael Roth <michael.roth@amd.com>,
-        Wang <wei.w.wang@intel.com>,
-        Liam Merwick <liam.merwick@oracle.com>,
-        Isaku Yamahata <isaku.yamahata@gmail.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
-References: <20230914015531.1419405-1-seanjc@google.com>
- <20230914015531.1419405-19-seanjc@google.com>
- <ZQPuMK6D/7UzDH+D@yzhao56-desk.sh.intel.com> <ZQRpiOd1DNDDJQ3r@google.com>
-From:   Binbin Wu <binbin.wu@linux.intel.com>
-In-Reply-To: <ZQRpiOd1DNDDJQ3r@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Message-Id: <2c3e0545-c00e-412f-9ab3-d736d07df045@app.fastmail.com>
+In-Reply-To: <20230921110424.215592-5-bhe@redhat.com>
+References: <20230921110424.215592-1-bhe@redhat.com>
+ <20230921110424.215592-5-bhe@redhat.com>
+Date:   Thu, 21 Sep 2023 08:24:59 -0400
+From:   "Arnd Bergmann" <arnd@arndb.de>
+To:     "Baoquan He" <bhe@redhat.com>, linux-kernel@vger.kernel.org
+Cc:     Linux-Arch <linux-arch@vger.kernel.org>, linux-mm@kvack.org,
+        "Andrew Morton" <akpm@linux-foundation.org>,
+        "Jiaxun Yang" <jiaxun.yang@flygoat.com>,
+        "Michael Ellerman" <mpe@ellerman.id.au>,
+        "Geert Uytterhoeven" <geert@linux-m68k.org>,
+        "Luis Chamberlain" <mcgrof@kernel.org>,
+        "Christoph Hellwig" <hch@infradead.org>,
+        "Thomas Bogendoerfer" <tsbogend@alpha.franken.de>,
+        "Florian Fainelli" <f.fainelli@gmail.com>,
+        "Helge Deller" <deller@gmx.de>,
+        "Serge Semin" <fancer.lancer@gmail.com>,
+        "Huacai Chen" <chenhuacai@kernel.org>, linux-mips@vger.kernel.org
+Subject: Re: [PATCH v5 4/4] mips: io: remove duplicated codes
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-
-
-On 9/15/2023 10:26 PM, Sean Christopherson wrote:
-> On Fri, Sep 15, 2023, Yan Zhao wrote:
->> On Wed, Sep 13, 2023 at 06:55:16PM -0700, Sean Christopherson wrote:
->> ....
->>> +static void kvm_mmu_prepare_memory_fault_exit(struct kvm_vcpu *vcpu,
->>> +					      struct kvm_page_fault *fault)
->>> +{
->>> +	kvm_prepare_memory_fault_exit(vcpu, fault->gfn << PAGE_SHIFT,
->>> +				      PAGE_SIZE, fault->write, fault->exec,
->>> +				      fault->is_private);
->>> +}
->>> +
->>> +static int kvm_faultin_pfn_private(struct kvm_vcpu *vcpu,
->>> +				   struct kvm_page_fault *fault)
->>> +{
->>> +	int max_order, r;
->>> +
->>> +	if (!kvm_slot_can_be_private(fault->slot)) {
->>> +		kvm_mmu_prepare_memory_fault_exit(vcpu, fault);
->>> +		return -EFAULT;
->>> +	}
->>> +
->>> +	r = kvm_gmem_get_pfn(vcpu->kvm, fault->slot, fault->gfn, &fault->pfn,
->>> +			     &max_order);
->>> +	if (r) {
->>> +		kvm_mmu_prepare_memory_fault_exit(vcpu, fault);
->>> +		return r;
->>> +	}
->>> +
->>> +	fault->max_level = min(kvm_max_level_for_order(max_order),
->>> +			       fault->max_level);
->>> +	fault->map_writable = !(fault->slot->flags & KVM_MEM_READONLY);
->>> +
->>> +	return RET_PF_CONTINUE;
->>> +}
->>> +
->>>   static int __kvm_faultin_pfn(struct kvm_vcpu *vcpu, struct kvm_page_fault *fault)
->>>   {
->>>   	struct kvm_memory_slot *slot = fault->slot;
->>> @@ -4293,6 +4356,14 @@ static int __kvm_faultin_pfn(struct kvm_vcpu *vcpu, struct kvm_page_fault *fault
->>>   			return RET_PF_EMULATE;
->>>   	}
->>>   
->>> +	if (fault->is_private != kvm_mem_is_private(vcpu->kvm, fault->gfn)) {
->> In patch 21,
->> fault->is_private is set as:
->> 	".is_private = kvm_mem_is_private(vcpu->kvm, cr2_or_gpa >> PAGE_SHIFT)",
->> then, the inequality here means memory attribute has been updated after
->> last check.
->> So, why an exit to user space for converting is required instead of a mere retry?
->>
->> Or, is it because how .is_private is assigned in patch 21 is subjected to change
->> in future?
-> This.  Retrying on SNP or TDX would hang the guest.  I suppose we could special
-> case VMs where .is_private is derived from the memory attributes, but the
-> SW_PROTECTED_VM type is primary a development vehicle at this point.  I'd like to
-> have it mimic SNP/TDX as much as possible; performance is a secondary concern.
-So when .is_private is derived from the memory attributes, and if I 
-didn't miss
-anything, there is no explicit conversion mechanism introduced yet so 
-far, does
-it mean for pure sw-protected VM (withouth SNP/TDX), the page fault will be
-handled according to the memory attributes setup by host/user vmm, no 
-implicit
-conversion will be triggered, right?
-
-
+On Thu, Sep 21, 2023, at 07:04, Baoquan He wrote:
+> By adding <asm-generic/io.h> support, the duplicated phys_to_virt
+> can be removed to use the default version in <asm-gneneric/io.h>.
 >
-> E.g. userspace needs to be prepared for "spurious" exits due to races on SNP and
-> TDX, which this can theoretically exercise.  Though the window is quite small so
-> I doubt that'll actually happen in practice; which of course also makes it less
-> important to retry instead of exiting.
+> Meanwhile move isa_bus_to_virt() down below <asm-generic/io.h> including
+> to fix the compiling error of missing phys_to_virt definition.
+>
 
+Acked-by: Arnd Bergmann <arnd@arndb.de>

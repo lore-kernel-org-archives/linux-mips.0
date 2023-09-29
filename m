@@ -2,246 +2,111 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 65C80E743C8
-	for <linux-mips@archiver.kernel.org>; Thu, 28 Sep 2023 22:23:58 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9723FE743EF
+	for <linux-mips@archiver.kernel.org>; Fri, 29 Sep 2023 07:03:48 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232603AbjI1WX6 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 28 Sep 2023 18:23:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34592 "EHLO
+        id S231774AbjI2HDs (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 29 Sep 2023 03:03:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33928 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232552AbjI1WXw (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Thu, 28 Sep 2023 18:23:52 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37672CCA
-        for <linux-mips@vger.kernel.org>; Thu, 28 Sep 2023 15:21:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1695939706;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=yJlZv5KfytnzZmRqZMI7mLTWvvegYQeNtr0CrdJHxrc=;
-        b=Ez/Uh1kmKg7MrjRNPCLulA36pOVjQ5gy+yOz1Jj2F1p7YDVNjgYUbnohzK5m8M6UMihyZI
-        5Nir5HLf1gp7t9/HQZBBB6HClzl4nxU3aSfeXGRqbjnDrAU/ebPMJyYLmqfB83zPhdfkUg
-        YN8894ftLye1JsVY6MxPTN61qhGbvyI=
-Received: from mail-io1-f71.google.com (mail-io1-f71.google.com
- [209.85.166.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-88-3Sr1PEIlNMuhtPG6cpKsfA-1; Thu, 28 Sep 2023 18:21:45 -0400
-X-MC-Unique: 3Sr1PEIlNMuhtPG6cpKsfA-1
-Received: by mail-io1-f71.google.com with SMTP id ca18e2360f4ac-79fc8c8b1dbso1190255739f.2
-        for <linux-mips@vger.kernel.org>; Thu, 28 Sep 2023 15:21:44 -0700 (PDT)
+        with ESMTP id S229754AbjI2HDr (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Fri, 29 Sep 2023 03:03:47 -0400
+Received: from mail-vs1-xe2f.google.com (mail-vs1-xe2f.google.com [IPv6:2607:f8b0:4864:20::e2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72E9A195
+        for <linux-mips@vger.kernel.org>; Fri, 29 Sep 2023 00:03:44 -0700 (PDT)
+Received: by mail-vs1-xe2f.google.com with SMTP id ada2fe7eead31-45289425da1so5713189137.1
+        for <linux-mips@vger.kernel.org>; Fri, 29 Sep 2023 00:03:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1695971023; x=1696575823; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=yVYuURB2cheQTyHOhbnV0CiyPuHwKJiKEUrZ0k9NBTk=;
+        b=Vgl4obYEXH9vsMgejsYBa8wKVYAN+ArOHls5/Ytc0GESgxWeZCRNXNCqE/zunqQ08C
+         p73wO533ELQssUGYN8FISNN9J1ceqZh7zGlyXhvl6fg8b6x0XC/k9UA3akBOyLASYvkc
+         Z4NGKQsJ2K/FpNDac0q6mYNHPeVF/hgm4fxx0+gleIYe90SY8IJqRVGDt1npNMM6AaRV
+         3AGubP4shNTONwbWnBK5fvHDxK9lDWlPNxBHWF/6EBmNPwOc2jbeXH+ucFskeuKer/pA
+         n7L9AZOiJP92Pb1IpunAhB0z7bx/ApPRKNKzfBWCB4kwBHUln+2oeImyNthRvZKbpKdb
+         eDAA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1695939704; x=1696544504;
-        h=content-transfer-encoding:mime-version:organization:references
-         :in-reply-to:message-id:subject:cc:to:from:date:x-gm-message-state
+        d=1e100.net; s=20230601; t=1695971023; x=1696575823;
+        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=yJlZv5KfytnzZmRqZMI7mLTWvvegYQeNtr0CrdJHxrc=;
-        b=XHUtLkSdutwdK6mQxHyT/J58GHtVsfZjDAaoqjADeGdE1yBs+MTqUAsElhY5X6LOcl
-         9n3wz3leBcv9AoKRJbQ4sSZ2m6dBBAczex+xQAPQV2itE6WQs6rC0RU/ypPKtlkygX/X
-         5BK3/XwELKF0ke1CdUVep1OPphxKb96Ii+9slFdj3q6oDhTQDaaQhvynWtc1UlGIhZTi
-         arlNGTDwbYlXsmCsQvDr2GFmgEysNTOWMyo/Z1sRizSxebdPxjws/WErHB9XOtZQ8G7a
-         Zp3QdpCVzZijLlsQo7JID49LyvZ9Jik88xhe6F2BaOAPNE9SbTYJHd8yCuxjPZFAbIt4
-         /PWQ==
-X-Gm-Message-State: AOJu0YzKU2TXb8eHckANwPWI3ClBHLzYa2agguXxRO+iuTyvHDFv3A0W
-        bPyl3pomO1i25G/AZTN8zEnqYJ9cfSwhWcShO2uFfhRH361BGrn+9MebP9GAkDGHqT0xbOadRdY
-        j93QfEL0m17BGuDBatQwlwg==
-X-Received: by 2002:a5e:9e09:0:b0:795:8805:1378 with SMTP id i9-20020a5e9e09000000b0079588051378mr2451922ioq.9.1695939704270;
-        Thu, 28 Sep 2023 15:21:44 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGAEb9IDAtgYjj6uLy0BK3ZEot+uDPg45XlWdcKZXMCg89/F3JSTuwB2CMQYAcH0oVDsnNUFw==
-X-Received: by 2002:a5e:9e09:0:b0:795:8805:1378 with SMTP id i9-20020a5e9e09000000b0079588051378mr2451906ioq.9.1695939703976;
-        Thu, 28 Sep 2023 15:21:43 -0700 (PDT)
-Received: from redhat.com ([38.15.60.12])
-        by smtp.gmail.com with ESMTPSA id t23-20020a02c497000000b0042b10d42c90sm4610172jam.113.2023.09.28.15.21.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Sep 2023 15:21:42 -0700 (PDT)
-Date:   Thu, 28 Sep 2023 16:21:05 -0600
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Anup Patel <anup@brainfault.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Janosch Frank <frankja@linux.ibm.com>,
-        Claudio Imbrenda <imbrenda@linux.ibm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Tony Krowiak <akrowiak@linux.ibm.com>,
-        Halil Pasic <pasic@linux.ibm.com>,
-        Jason Herne <jjherne@linux.ibm.com>,
-        Harald Freudenberger <freude@linux.ibm.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        linux-mips@vger.kernel.org, kvm@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, kvm-riscv@lists.infradead.org,
-        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        Anish Ghulati <aghulati@google.com>,
-        Venkatesh Srinivas <venkateshs@chromium.org>,
-        Andrew Thornton <andrewth@google.com>
-Subject: Re: [PATCH 02/26] vfio: Move KVM get/put helpers to colocate it
- with other KVM related code
-Message-ID: <20230928162105.2e347cd5.alex.williamson@redhat.com>
-In-Reply-To: <20230916003118.2540661-3-seanjc@google.com>
-References: <20230916003118.2540661-1-seanjc@google.com>
-        <20230916003118.2540661-3-seanjc@google.com>
-Organization: Red Hat
+        bh=yVYuURB2cheQTyHOhbnV0CiyPuHwKJiKEUrZ0k9NBTk=;
+        b=cE/DRwhnBKXk+JeKwMLuzbBY5o+w6dcqiIfvJPFSsmh6DbyYGctFsfcizeYTa4pEoU
+         M9Oai1/etE7Rqf7DWZktXTKH/y/74bTJ1aRHXySts+BhdsDCpGn2zIuzm11QRQTUf1Ul
+         uK6TXiNzO52v0nuPkhTESND74RrCqSGEzfFtzUwE8WDjxxTKG8CUXPdjK9fvMAZoSjCu
+         9gTZalD6NlUgsV6b/jQdDBWBgV1uZQFfo7LjYOCflbPC9a4rTFWlNJCj2Rwqza8Yxo4C
+         K5+EYI59mF8yCHN9+IZj8hGE/yTO+86h3dQu5Hb7b07tCHRK+1zNw/TBA4ATEysF/gNe
+         Cz7g==
+X-Gm-Message-State: AOJu0YzuGSCfTgd9PGM/cxglu4pLfvaJ0pFxBuTSEZJgYZB5Yotgak3g
+        8boiRKtadhJ+PD1Cg3NbYPhWxknuiPJV/znZN4pJTA==
+X-Google-Smtp-Source: AGHT+IHQAyrtYw6eFyGn+nC8nJKCAAl7jmDDfoPwLpeWUIuOh3FxqsVtkdL3fgC7qCAGj2sBL8dOQY9dTeRAdFaA1BY=
+X-Received: by 2002:a67:cd01:0:b0:44e:9afe:c5b9 with SMTP id
+ u1-20020a67cd01000000b0044e9afec5b9mr2704237vsl.23.1695971023130; Fri, 29 Sep
+ 2023 00:03:43 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Fri, 29 Sep 2023 12:33:31 +0530
+Message-ID: <CA+G9fYvVETLEtiZ=MFRrxgXpmgirVHz-tDOxhU=7_9dtmx7o5g@mail.gmail.com>
+Subject: next: mips: cavium_octeon_defconfig failed - drivers/staging/octeon/ethernet.c:204:37:
+ error: storage size of 'rx_status' isn't known
+To:     Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        linux-mips@vger.kernel.org, linux-staging@lists.linux.dev
+Cc:     Oliver Crumrine <ozlinux@hotmail.com>,
+        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Fri, 15 Sep 2023 17:30:54 -0700
-Sean Christopherson <seanjc@google.com> wrote:
+The mips cavium_octeon_defconfig builds failing on Linux next from
+Sept 19th tag.
 
-> Move the definitions of vfio_device_get_kvm_safe() and vfio_device_put_kvm()
-> down in vfio_main.c to colocate them with other KVM-specific functions,
-> e.g. to allow wrapping them all with a single CONFIG_KVM check.
-> 
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
-> ---
->  drivers/vfio/vfio_main.c | 104 +++++++++++++++++++--------------------
->  1 file changed, 52 insertions(+), 52 deletions(-)
+Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+
+Build log:
+--------
+drivers/staging/octeon/ethernet.c: In function 'cvm_oct_common_get_stats':
+drivers/staging/octeon/ethernet.c:204:37: error: storage size of
+'rx_status' isn't known
+  204 |         struct cvmx_pip_port_status rx_status;
+      |                                     ^~~~~~~~~
+drivers/staging/octeon/ethernet.c:205:37: error: storage size of
+'tx_status' isn't known
+  205 |         struct cvmx_pko_port_status tx_status;
+      |                                     ^~~~~~~~~
+drivers/staging/octeon/ethernet.c:205:37: warning: unused variable
+'tx_status' [-Wunused-variable]
+drivers/staging/octeon/ethernet.c:204:37: warning: unused variable
+'rx_status' [-Wunused-variable]
+  204 |         struct cvmx_pip_port_status rx_status;
+      |                                     ^~~~~~~~~
+drivers/staging/octeon/ethernet.c: In function 'cvm_oct_probe':
+drivers/staging/octeon/ethernet.c:801:22: error: variable 'imode' has
+initializer but incomplete type
+  801 |                 enum cvmx_helper_interface_mode imode =
+      |                      ^~~~~~~~~~~~~~~~~~~~~~~~~~
+drivers/staging/octeon/ethernet.c:801:49: error: storage size of
+'imode' isn't known
+  801 |                 enum cvmx_helper_interface_mode imode =
+      |                                                 ^~~~~
+drivers/staging/octeon/ethernet.c:801:49: warning: unused variable
+'imode' [-Wunused-variable]
+make[6]: *** [scripts/Makefile.build:243:
+drivers/staging/octeon/ethernet.o] Error 1
+make[6]: Target 'drivers/staging/octeon/' not remade because of errors.
+make[5]: *** [scripts/Makefile.build:480: drivers/staging/octeon] Error 2
 
 
-Reviewed-by: Alex Williamson <alex.williamson@redhat.com>
 
- 
-> diff --git a/drivers/vfio/vfio_main.c b/drivers/vfio/vfio_main.c
-> index 80e39f7a6d8f..6368eed7b7b2 100644
-> --- a/drivers/vfio/vfio_main.c
-> +++ b/drivers/vfio/vfio_main.c
-> @@ -381,58 +381,6 @@ void vfio_unregister_group_dev(struct vfio_device *device)
->  }
->  EXPORT_SYMBOL_GPL(vfio_unregister_group_dev);
->  
-> -#if IS_ENABLED(CONFIG_KVM)
-> -void vfio_device_get_kvm_safe(struct vfio_device *device, struct kvm *kvm)
-> -{
-> -	void (*pfn)(struct kvm *kvm);
-> -	bool (*fn)(struct kvm *kvm);
-> -	bool ret;
-> -
-> -	lockdep_assert_held(&device->dev_set->lock);
-> -
-> -	if (!kvm)
-> -		return;
-> -
-> -	pfn = symbol_get(kvm_put_kvm);
-> -	if (WARN_ON(!pfn))
-> -		return;
-> -
-> -	fn = symbol_get(kvm_get_kvm_safe);
-> -	if (WARN_ON(!fn)) {
-> -		symbol_put(kvm_put_kvm);
-> -		return;
-> -	}
-> -
-> -	ret = fn(kvm);
-> -	symbol_put(kvm_get_kvm_safe);
-> -	if (!ret) {
-> -		symbol_put(kvm_put_kvm);
-> -		return;
-> -	}
-> -
-> -	device->put_kvm = pfn;
-> -	device->kvm = kvm;
-> -}
-> -
-> -void vfio_device_put_kvm(struct vfio_device *device)
-> -{
-> -	lockdep_assert_held(&device->dev_set->lock);
-> -
-> -	if (!device->kvm)
-> -		return;
-> -
-> -	if (WARN_ON(!device->put_kvm))
-> -		goto clear;
-> -
-> -	device->put_kvm(device->kvm);
-> -	device->put_kvm = NULL;
-> -	symbol_put(kvm_put_kvm);
-> -
-> -clear:
-> -	device->kvm = NULL;
-> -}
-> -#endif
-> -
->  /* true if the vfio_device has open_device() called but not close_device() */
->  static bool vfio_assert_device_open(struct vfio_device *device)
->  {
-> @@ -1354,6 +1302,58 @@ bool vfio_file_enforced_coherent(struct file *file)
->  }
->  EXPORT_SYMBOL_GPL(vfio_file_enforced_coherent);
->  
-> +#if IS_ENABLED(CONFIG_KVM)
-> +void vfio_device_get_kvm_safe(struct vfio_device *device, struct kvm *kvm)
-> +{
-> +	void (*pfn)(struct kvm *kvm);
-> +	bool (*fn)(struct kvm *kvm);
-> +	bool ret;
-> +
-> +	lockdep_assert_held(&device->dev_set->lock);
-> +
-> +	if (!kvm)
-> +		return;
-> +
-> +	pfn = symbol_get(kvm_put_kvm);
-> +	if (WARN_ON(!pfn))
-> +		return;
-> +
-> +	fn = symbol_get(kvm_get_kvm_safe);
-> +	if (WARN_ON(!fn)) {
-> +		symbol_put(kvm_put_kvm);
-> +		return;
-> +	}
-> +
-> +	ret = fn(kvm);
-> +	symbol_put(kvm_get_kvm_safe);
-> +	if (!ret) {
-> +		symbol_put(kvm_put_kvm);
-> +		return;
-> +	}
-> +
-> +	device->put_kvm = pfn;
-> +	device->kvm = kvm;
-> +}
-> +
-> +void vfio_device_put_kvm(struct vfio_device *device)
-> +{
-> +	lockdep_assert_held(&device->dev_set->lock);
-> +
-> +	if (!device->kvm)
-> +		return;
-> +
-> +	if (WARN_ON(!device->put_kvm))
-> +		goto clear;
-> +
-> +	device->put_kvm(device->kvm);
-> +	device->put_kvm = NULL;
-> +	symbol_put(kvm_put_kvm);
-> +
-> +clear:
-> +	device->kvm = NULL;
-> +}
-> +#endif
-> +
->  static void vfio_device_file_set_kvm(struct file *file, struct kvm *kvm)
->  {
->  	struct vfio_device_file *df = file->private_data;
+Links:
+ - https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20230928/testrun/20145550/suite/build/test/gcc-12-cavium_octeon_defconfig/log
+ - https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20230928/testrun/20145550/suite/build/test/gcc-12-cavium_octeon_defconfig/details/
+ - https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20230928/testrun/20145550/suite/build/test/gcc-12-cavium_octeon_defconfig/history/
 
+
+
+--
+Linaro LKFT
+https://lkft.linaro.org

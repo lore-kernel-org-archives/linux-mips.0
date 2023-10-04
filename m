@@ -2,32 +2,32 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A8A30E7C4DA
-	for <linux-mips@archiver.kernel.org>; Wed,  4 Oct 2023 16:11:15 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3FC46E7C4DA
+	for <linux-mips@archiver.kernel.org>; Wed,  4 Oct 2023 16:11:33 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S243297AbjJDQLQ (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 4 Oct 2023 12:11:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58610 "EHLO
+        id S243263AbjJDQLf (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 4 Oct 2023 12:11:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43108 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S243265AbjJDQLD (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 4 Oct 2023 12:11:03 -0400
-Received: from relay4-d.mail.gandi.net (relay4-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::224])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B27FEA;
-        Wed,  4 Oct 2023 09:10:58 -0700 (PDT)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id C5C46E000B;
-        Wed,  4 Oct 2023 16:10:55 +0000 (UTC)
+        with ESMTP id S243289AbjJDQLJ (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 4 Oct 2023 12:11:09 -0400
+Received: from relay8-d.mail.gandi.net (relay8-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::228])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CC89109;
+        Wed,  4 Oct 2023 09:11:02 -0700 (PDT)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id C756B1BF207;
+        Wed,  4 Oct 2023 16:10:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1696435857;
+        t=1696435861;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=NbiHukxXHtfMlJb+CEN6liIu+XF9nH8/hmBYmzodN1k=;
-        b=TBGgKq8PXQ8vlq4nuLeUcJcz+BtZfXNd/ki69O9VOavoe9dWDcAr2i7tqcF0qZm0TCAtpO
-        I93ekBeHUg5qLqha6C4xmsX/YQZMsf7Kitea/5P1yFCSXQY8Nd6hZPXlrSRV/Co5eY4PZl
-        QxXdchNXkrkw0UhgBYO4QCq++09ahwOcDCdmOdYGhQmz+67EtFK+Qa5pVhYu4WAvSSxfbg
-        Ff+Zp+aQzF0nVC9ry7XxoHZbgCE+O/pX1hffOOM8VSR3/7afqwlZ+vPaJ4Gz2LdGzzgspv
-        q99wYlTmYjb8yOMdpuMAuUsIilALVrayy46aVxPxKzK88UyKltmWVPK8e16D7Q==
+        bh=xelqXHCBbR0Afr1R7OtV1jiWI/pXI1JW1EUAz/IsmrY=;
+        b=JpC0P08glaozT8Oq04At1NJCGr8LOReO617bSKDlLrnXivT/T/RQTxBL6EYRZiztaCuGNa
+        eNsVNnyPw1RF/qraF/lQBkW26RBiqyqwndM0jwekhdCtAAqa4LoBn+MO+LIM5La6Jlj/Kg
+        fmRpuXzL3c51620ez6yqLKZgdH8f36e1dAYmbQS65RDSGvzlItDEUN2B8TkDaqDdk9dAK1
+        SKDiejEZqDmxPrZuc0GOuVBzuMBBbJGHWxkuidxYNlxmqW3QFFnDY++VDe1Sm5Dx+DCYg2
+        OtMgjyaJcgyPCXmGiKXDkwPqmuDA1TNx6CdjlmpOdHtPqUhXzcKstiFPJ9d1+w==
 From:   Gregory CLEMENT <gregory.clement@bootlin.com>
 To:     Paul Burton <paulburton@kernel.org>,
         Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
@@ -40,9 +40,9 @@ Cc:     Vladimir Kondratiev <vladimir.kondratiev@intel.com>,
         =?UTF-8?q?Th=C3=A9o=20Lebrun?= <theo.lebrun@bootlin.com>,
         Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
         Gregory CLEMENT <gregory.clement@bootlin.com>
-Subject: [PATCH 07/11] dt-bindings: mfd: syscon: Document EyeQ5 OLB
-Date:   Wed,  4 Oct 2023 18:10:34 +0200
-Message-Id: <20231004161038.2818327-8-gregory.clement@bootlin.com>
+Subject: [PATCH 09/11] MIPS: mobileye: Add EPM5 device tree
+Date:   Wed,  4 Oct 2023 18:10:36 +0200
+Message-Id: <20231004161038.2818327-10-gregory.clement@bootlin.com>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20231004161038.2818327-1-gregory.clement@bootlin.com>
 References: <20231004161038.2818327-1-gregory.clement@bootlin.com>
@@ -53,26 +53,56 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Document Mobileye EyeQ5 compatibles for OLB registers that are
-misceallanous SoC related registers.
+Add a device tree for the Mobileye EPM5 evaluation board.
 
 Signed-off-by: Gregory CLEMENT <gregory.clement@bootlin.com>
 ---
- Documentation/devicetree/bindings/mfd/syscon.yaml | 1 +
- 1 file changed, 1 insertion(+)
+ arch/mips/boot/dts/mobileye/Makefile       |  2 ++
+ arch/mips/boot/dts/mobileye/eyeq5-epm5.dts | 24 ++++++++++++++++++++++
+ 2 files changed, 26 insertions(+)
+ create mode 100644 arch/mips/boot/dts/mobileye/eyeq5-epm5.dts
 
-diff --git a/Documentation/devicetree/bindings/mfd/syscon.yaml b/Documentation/devicetree/bindings/mfd/syscon.yaml
-index 8103154bbb52..70bc6e8d15ba 100644
---- a/Documentation/devicetree/bindings/mfd/syscon.yaml
-+++ b/Documentation/devicetree/bindings/mfd/syscon.yaml
-@@ -53,6 +53,7 @@ properties:
-               - mediatek,mt8135-pctl-a-syscfg
-               - mediatek,mt8135-pctl-b-syscfg
-               - mediatek,mt8365-syscfg
-+              - mobileye,eyeq5-olb
-               - microchip,lan966x-cpu-syscon
-               - microchip,sparx5-cpu-syscon
-               - mstar,msc313-pmsleep
+diff --git a/arch/mips/boot/dts/mobileye/Makefile b/arch/mips/boot/dts/mobileye/Makefile
+index 99c4124fd4c0..539b2e1f4e07 100644
+--- a/arch/mips/boot/dts/mobileye/Makefile
++++ b/arch/mips/boot/dts/mobileye/Makefile
+@@ -1,4 +1,6 @@
+ # SPDX-License-Identifier: GPL-2.0-only
+ # Copyright 2023 Mobileye Vision Technologies Ltd.
+ 
++dtb-$(CONFIG_SOC_EYEQ5)		+= eyeq5-epm5.dtb
++
+ obj-$(CONFIG_BUILTIN_DTB)	+= $(addsuffix .o, $(dtb-y))
+diff --git a/arch/mips/boot/dts/mobileye/eyeq5-epm5.dts b/arch/mips/boot/dts/mobileye/eyeq5-epm5.dts
+new file mode 100644
+index 000000000000..ca03115a2858
+--- /dev/null
++++ b/arch/mips/boot/dts/mobileye/eyeq5-epm5.dts
+@@ -0,0 +1,24 @@
++// SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++/*
++ * Copyright 2023 Mobileye Vision Technologies Ltd.
++ */
++
++/dts-v1/;
++
++#include "eyeq5.dtsi"
++
++/ {
++	compatible = "mobileye,eyeq5-epm5", "mobileye,eyeq5";
++	model = "Mobile EyeQ5 MP5 Evaluation board";
++
++	chosen {
++		bootargs = "cca=5 earlycon console=ttyAMA2 ddr32_alias=0x40000000";
++		stdout-path = "serial2:115200n8";
++	};
++
++	memory@0 {
++		device_type = "memory";
++		reg = <0x8 0x00000000 0x0 0x80000000>;
++	};
++};
++
 -- 
 2.40.1
 

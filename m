@@ -2,141 +2,95 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C728BE936EC
-	for <linux-mips@archiver.kernel.org>; Thu,  5 Oct 2023 00:09:50 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 3E307E92705
+	for <linux-mips@archiver.kernel.org>; Thu,  5 Oct 2023 14:25:54 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S244152AbjJEAJw (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 4 Oct 2023 20:09:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33776 "EHLO
+        id S234095AbjJEOZ1 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 5 Oct 2023 10:25:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38518 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S244055AbjJEAJv (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 4 Oct 2023 20:09:51 -0400
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF7EC95;
-        Wed,  4 Oct 2023 17:09:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1696464585; x=1728000585;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=vD9VEolBkptu3ld3JXFL+7vX77/UDE2BMoEaEvzGOjk=;
-  b=cbrtMiQalejOiuXysqp7G2hc5/BesTnJ1JLcLd3TuAHGU4ZuA2SM/app
-   +TIh33WOIpKYIU7Obw9TCPaVpnbTyppnZ2EXIgW4W+NCk/+ccFCBLulKH
-   bwnzvmRmC1E+VnQEJD4DojP2/1MCerk5DfsCNZHDCxK/vhmC7o89v9RRA
-   lkHwqnubIRQOvAHNr4nHO9bFRevCIp9iiL7kjrg49kBft6CLDjqGjwYx1
-   BM0rsVw2y76sUzWR6537S7oTr6GxFweiJyI0h01r+qX0A+xRSt93sVhi8
-   XVpXMWXQS4jr9hR7BcdTNZfSp+ONPbXvlhh/GXdiNXcXSGk12ffrfCrBv
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10853"; a="383252183"
-X-IronPort-AV: E=Sophos;i="6.03,201,1694761200"; 
-   d="scan'208";a="383252183"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Oct 2023 17:09:44 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10853"; a="875327203"
-X-IronPort-AV: E=Sophos;i="6.03,201,1694761200"; 
-   d="scan'208";a="875327203"
-Received: from lkp-server02.sh.intel.com (HELO c3b01524d57c) ([10.239.97.151])
-  by orsmga004.jf.intel.com with ESMTP; 04 Oct 2023 17:09:39 -0700
-Received: from kbuild by c3b01524d57c with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1qoBvf-000Kn6-0S;
-        Thu, 05 Oct 2023 00:09:36 +0000
-Date:   Thu, 5 Oct 2023 08:08:30 +0800
-From:   kernel test robot <lkp@intel.com>
+        with ESMTP id S234764AbjJEOXi (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Thu, 5 Oct 2023 10:23:38 -0400
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D50C36E99
+        for <linux-mips@vger.kernel.org>; Wed,  4 Oct 2023 23:40:30 -0700 (PDT)
+Received: by mail-wm1-x335.google.com with SMTP id 5b1f17b1804b1-406619b53caso5274085e9.1
+        for <linux-mips@vger.kernel.org>; Wed, 04 Oct 2023 23:40:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1696488029; x=1697092829; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=tROpxLYGMDkyFdqUPXWOJc3MtyUdL4H9fegc8WkclBw=;
+        b=q6zOiG9xaqUySoXzIkqxRT8ulWdyisWkoPmPI9HKvSI67t5i4+dw9C+o6v6Db+TOVy
+         1BYeTbfcrU3ShqpwnPnSlMo84dni4QOcFl4KVZTXB+dLFGKs2QTDSGbqGoRqAHcFwA4V
+         R/bRwlQWH5K82MA1SgRWKva+SS5SspVdWQmuQ+z7jdaSDKuBoGJbYHME3WCvumUGE3rX
+         3FyiMh9tHIvGq6al/VyJOxRS7wYedtNtc9CPw56M8DOfzvhnzm09YbVRje+eR3IkScBi
+         FTwHuUihH/fNW8Bv5bAcrIXbBYlARZ/FB/x6Zz1TbrLnzAT1n+tfUYFKdoxVQ7aTsD/j
+         y2CQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1696488029; x=1697092829;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=tROpxLYGMDkyFdqUPXWOJc3MtyUdL4H9fegc8WkclBw=;
+        b=PsoOmJrqTWXHM9q3jkD9PMU6PLNRyI+IbXpAfN7et9NH6dGopG1jaLbhEZB9TJ2EEc
+         CPLQY/R7pEK1LUsBZdh/B1y/PeLpUCPbgiUa3l2IowTHGrDq+i+10ZaL2YOR7Ob+tc84
+         JZ8U/IdIaRugt9InKPHlcqx53cIrB4ZEd4CSKW4/NTcL2taBTbzNnL4SpKiL8w5tVH+W
+         V30i1bV19M7jK+wDK5lm7qKI5YO4NqHZuBQQeGNTBQfGvR5bqGRhDegmYU9vlYuAF2Gi
+         f3tJBCfQyQLfh+9jyhZ5uy2lTarTp70p5ghFmBEIAEOLxqIIfHNpSTxHrKSIm/1z+gFO
+         7vww==
+X-Gm-Message-State: AOJu0Yw4fetqC/dUJfr/DeSkaTcwvxqBa+KRbPSWLluKH4yBNghC2gvP
+        k/E/kykKDSOTs8NvirYS+zLJDQ==
+X-Google-Smtp-Source: AGHT+IEVJWkytNJYJ735DpbRDrNt+oBa4NgUTSipOTb3lsNog5C0x0m1w6O5C7sBwclpPNVEDHKQGg==
+X-Received: by 2002:a5d:458f:0:b0:321:6ff5:9256 with SMTP id p15-20020a5d458f000000b003216ff59256mr3531020wrq.58.1696488029316;
+        Wed, 04 Oct 2023 23:40:29 -0700 (PDT)
+Received: from [192.168.69.115] (tbo33-h01-176-171-211-120.dsl.sta.abo.bbox.fr. [176.171.211.120])
+        by smtp.gmail.com with ESMTPSA id q8-20020a05600000c800b00324ae863ac1sm970129wrx.35.2023.10.04.23.40.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 04 Oct 2023 23:40:28 -0700 (PDT)
+Message-ID: <4e0c9028-832f-24cb-3bf0-1ee98d6ecdf8@linaro.org>
+Date:   Thu, 5 Oct 2023 08:40:25 +0200
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
+ Gecko/20100101 Thunderbird/102.15.1
+Subject: Re: [PATCH 01/11] MIPS: compressed: Use correct instruction for 64
+ bit code
+Content-Language: en-US
 To:     Gregory CLEMENT <gregory.clement@bootlin.com>,
         Paul Burton <paulburton@kernel.org>,
         Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
         linux-mips@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
         devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     oe-kbuild-all@lists.linux.dev,
-        Vladimir Kondratiev <vladimir.kondratiev@intel.com>,
+Cc:     Vladimir Kondratiev <vladimir.kondratiev@intel.com>,
         Tawfik Bayouk <tawfik.bayouk@mobileye.com>,
         Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        =?iso-8859-1?Q?Th=E9o?= Lebrun <theo.lebrun@bootlin.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Gregory CLEMENT <gregory.clement@bootlin.com>
-Subject: Re: [PATCH 10/11] MIPS: generic: Add support for Mobileye EyeQ5
-Message-ID: <202310050726.GDpZbMDO-lkp@intel.com>
-References: <20231004161038.2818327-11-gregory.clement@bootlin.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231004161038.2818327-11-gregory.clement@bootlin.com>
+        =?UTF-8?Q?Th=c3=a9o_Lebrun?= <theo.lebrun@bootlin.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+References: <20231004161038.2818327-1-gregory.clement@bootlin.com>
+ <20231004161038.2818327-2-gregory.clement@bootlin.com>
+From:   =?UTF-8?Q?Philippe_Mathieu-Daud=c3=a9?= <philmd@linaro.org>
+In-Reply-To: <20231004161038.2818327-2-gregory.clement@bootlin.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Hi Gregory,
+On 4/10/23 18:10, Gregory CLEMENT wrote:
+> The code clearing BSS already use macro or use correct instruction
+> depending id the CPU is 32 bits or 64 bits. However, a few
+> instructions remained 32 bits only.
+> 
+> By using the accurate MACRO, it is now possible to deal with memory
+> address beyond 32 bits. As a side effect, when using 64bits processor,
+> it also divides the loop number needed to clear the BSS by 2.
+> 
+> Signed-off-by: Gregory CLEMENT <gregory.clement@bootlin.com>
+> ---
+>   arch/mips/boot/compressed/head.S | 4 ++--
+>   1 file changed, 2 insertions(+), 2 deletions(-)
 
-kernel test robot noticed the following build errors:
+Reviewed-by: Philippe Mathieu-Daudé <philmd@linaro.org>
 
-[auto build test ERROR on robh/for-next]
-[also build test ERROR on lee-mfd/for-mfd-next linus/master v6.6-rc4 next-20231004]
-[cannot apply to lee-mfd/for-mfd-fixes]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Gregory-CLEMENT/MIPS-compressed-Use-correct-instruction-for-64-bit-code/20231005-001314
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/robh/linux.git for-next
-patch link:    https://lore.kernel.org/r/20231004161038.2818327-11-gregory.clement%40bootlin.com
-patch subject: [PATCH 10/11] MIPS: generic: Add support for Mobileye EyeQ5
-config: mips-allmodconfig (https://download.01.org/0day-ci/archive/20231005/202310050726.GDpZbMDO-lkp@intel.com/config)
-compiler: mips-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231005/202310050726.GDpZbMDO-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202310050726.GDpZbMDO-lkp@intel.com/
-
-All error/warnings (new ones prefixed by >>):
-
-   drivers/tty/serial/amba-pl011.c: In function 'pl011_sgbuf_init':
->> drivers/tty/serial/amba-pl011.c:380:30: error: implicit declaration of function 'phys_to_page'; did you mean 'pfn_to_page'? [-Werror=implicit-function-declaration]
-     380 |         sg_set_page(&sg->sg, phys_to_page(dma_addr),
-         |                              ^~~~~~~~~~~~
-         |                              pfn_to_page
->> drivers/tty/serial/amba-pl011.c:380:30: warning: passing argument 2 of 'sg_set_page' makes pointer from integer without a cast [-Wint-conversion]
-     380 |         sg_set_page(&sg->sg, phys_to_page(dma_addr),
-         |                              ^~~~~~~~~~~~~~~~~~~~~~
-         |                              |
-         |                              int
-   In file included from include/linux/kfifo.h:42,
-                    from include/linux/tty_port.h:5,
-                    from include/linux/tty.h:12,
-                    from drivers/tty/serial/amba-pl011.c:26:
-   include/linux/scatterlist.h:136:69: note: expected 'struct page *' but argument is of type 'int'
-     136 | static inline void sg_set_page(struct scatterlist *sg, struct page *page,
-         |                                                        ~~~~~~~~~~~~~^~~~
-   cc1: some warnings being treated as errors
-
-
-vim +380 drivers/tty/serial/amba-pl011.c
-
-68b65f7305e54b drivers/serial/amba-pl011.c     Russell King   2010-12-22  368  
-ead76f329f777c drivers/tty/serial/amba-pl011.c Linus Walleij  2011-02-24  369  static int pl011_sgbuf_init(struct dma_chan *chan, struct pl011_sgbuf *sg,
-ead76f329f777c drivers/tty/serial/amba-pl011.c Linus Walleij  2011-02-24  370  	enum dma_data_direction dir)
-ead76f329f777c drivers/tty/serial/amba-pl011.c Linus Walleij  2011-02-24  371  {
-cb06ff102e2d79 drivers/tty/serial/amba-pl011.c Chanho Min     2013-03-27  372  	dma_addr_t dma_addr;
-cb06ff102e2d79 drivers/tty/serial/amba-pl011.c Chanho Min     2013-03-27  373  
-cb06ff102e2d79 drivers/tty/serial/amba-pl011.c Chanho Min     2013-03-27  374  	sg->buf = dma_alloc_coherent(chan->device->dev,
-cb06ff102e2d79 drivers/tty/serial/amba-pl011.c Chanho Min     2013-03-27  375  		PL011_DMA_BUFFER_SIZE, &dma_addr, GFP_KERNEL);
-ead76f329f777c drivers/tty/serial/amba-pl011.c Linus Walleij  2011-02-24  376  	if (!sg->buf)
-ead76f329f777c drivers/tty/serial/amba-pl011.c Linus Walleij  2011-02-24  377  		return -ENOMEM;
-ead76f329f777c drivers/tty/serial/amba-pl011.c Linus Walleij  2011-02-24  378  
-cb06ff102e2d79 drivers/tty/serial/amba-pl011.c Chanho Min     2013-03-27  379  	sg_init_table(&sg->sg, 1);
-cb06ff102e2d79 drivers/tty/serial/amba-pl011.c Chanho Min     2013-03-27 @380  	sg_set_page(&sg->sg, phys_to_page(dma_addr),
-cb06ff102e2d79 drivers/tty/serial/amba-pl011.c Chanho Min     2013-03-27  381  		PL011_DMA_BUFFER_SIZE, offset_in_page(dma_addr));
-cb06ff102e2d79 drivers/tty/serial/amba-pl011.c Chanho Min     2013-03-27  382  	sg_dma_address(&sg->sg) = dma_addr;
-c64be9231e0893 drivers/tty/serial/amba-pl011.c Andrew Jackson 2014-11-07  383  	sg_dma_len(&sg->sg) = PL011_DMA_BUFFER_SIZE;
-ead76f329f777c drivers/tty/serial/amba-pl011.c Linus Walleij  2011-02-24  384  
-ead76f329f777c drivers/tty/serial/amba-pl011.c Linus Walleij  2011-02-24  385  	return 0;
-ead76f329f777c drivers/tty/serial/amba-pl011.c Linus Walleij  2011-02-24  386  }
-ead76f329f777c drivers/tty/serial/amba-pl011.c Linus Walleij  2011-02-24  387  
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki

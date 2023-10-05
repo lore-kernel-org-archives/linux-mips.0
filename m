@@ -2,92 +2,112 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B3286E92706
-	for <linux-mips@archiver.kernel.org>; Thu,  5 Oct 2023 14:35:56 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 65466E9270A
+	for <linux-mips@archiver.kernel.org>; Thu,  5 Oct 2023 14:47:36 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236392AbjJEOf4 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 5 Oct 2023 10:35:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38948 "EHLO
+        id S239279AbjJEOrD (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 5 Oct 2023 10:47:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56544 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235751AbjJEOeW (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Thu, 5 Oct 2023 10:34:22 -0400
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D8326A6E
-        for <linux-mips@vger.kernel.org>; Wed,  4 Oct 2023 23:34:18 -0700 (PDT)
-Received: by mail-wr1-x436.google.com with SMTP id ffacd0b85a97d-3248ac76acbso570255f8f.1
-        for <linux-mips@vger.kernel.org>; Wed, 04 Oct 2023 23:34:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1696487656; x=1697092456; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=hAGnF6ivb9XCkOa0cJSmkl42J0d0u2NBYDWoXIvrcGA=;
-        b=L5IV3LnWLMZdlbi5AOr0h0w+p/Rp4qQU3q1CD6x1KYACQ0tDqvYuqMY8nr/Tvvltml
-         J5UzF1aaYEAEEoENq7j20LRzJepLoYzZMsdRQ4LXnCmoyIPO1Qbz7DZjPiVWttOptOp7
-         k8htvW9bEdmnkxF7O73midHTCeI7ZiMQhsFFCNe00v+8kXo6R3slyrk/HcDqTZJ/0SJO
-         h7d+yqrBIzVT3O7KOu+5aq9tYnl+U0kX3HJb/n3ST9bT40UZSq+qo2Qy1HYjsqxM5TYC
-         KMVcVz/zxnq94NcYlSTr47vY0jmXPF7v6RASjf6fZTUHK2XqTfmtKEbY+fH1Pg2SIr2w
-         ns3A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1696487656; x=1697092456;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=hAGnF6ivb9XCkOa0cJSmkl42J0d0u2NBYDWoXIvrcGA=;
-        b=Ae32y6kaRRmAXKv3kXGnkuqwSo/bUsjCvhAvOISK29OINDihgj4J8kZVw9CDPXxtOM
-         Jd0+tuEOKOTsvDR2pR138MkDroLJ42q1IZ5czSHCaB0XB6nr2vQawI7AAEqslxRqLvaV
-         aXtRM1t0Lv/YioJv2yT6Z8SdcjAgofe3WAYl9x46vhRi1UQp86Mh4bN36BSe6L/i6Ug9
-         g2oycsxYkjZYrGfGq2wI2lQDAiKynzP6vhsiih3NLfyaJCiNbB5O55hcVzLHohr+va2y
-         cioIk8nbPl5tpOInioC/BlxeEj9Eb2+OrlI9UOREN94wEQk0m3SxjF5x8IvGPd/201Ct
-         SnLA==
-X-Gm-Message-State: AOJu0YwhyWz07JTsKCdvLZxlNSUTwItspEIJtGIm2CAcXCFop95ehwk8
-        MmCcKKbDQcm0eW/L9mMpYfGTFw==
-X-Google-Smtp-Source: AGHT+IHfu1g/GRdrcugnUpqlXYMQCy3BPpNW7d/xBS1RRTEcQ3OcEzpLb8O0GphuzAvpN62W7P2H6g==
-X-Received: by 2002:adf:d08e:0:b0:319:74b5:b67d with SMTP id y14-20020adfd08e000000b0031974b5b67dmr3741813wrh.66.1696487656662;
-        Wed, 04 Oct 2023 23:34:16 -0700 (PDT)
-Received: from [192.168.69.115] (tbo33-h01-176-171-211-120.dsl.sta.abo.bbox.fr. [176.171.211.120])
-        by smtp.gmail.com with ESMTPSA id x14-20020a5d60ce000000b0032763287473sm946899wrt.75.2023.10.04.23.34.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 04 Oct 2023 23:34:16 -0700 (PDT)
-Message-ID: <9415563e-1429-8bca-25e2-12b474c3c5c8@linaro.org>
-Date:   Thu, 5 Oct 2023 08:34:13 +0200
+        with ESMTP id S240091AbjJEOox (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Thu, 5 Oct 2023 10:44:53 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB9CE6E91;
+        Thu,  5 Oct 2023 07:22:50 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E2146C43391;
+        Thu,  5 Oct 2023 05:27:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1696483656;
+        bh=hXymtCmkQgS1mz4WN4LARQgIXsgfg8oCoZqTgfgSt/M=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=BbpCpY2Q0zEwY41GucwBsBZTdMge6AGCY7bXU/clMyyCXKJTV0EDLKXZQhP6Gmvyb
+         i7tzzZViGYUX1/BLXHrp9MgUNcssHkKZ+E07sMIo2XQd9Xhgj8wBFQLGyOjD2kEs17
+         PxOhx0u+oKdQ8lrzOhlumXDQrrVIpZHitXF+j0a79GixClpVIz2eZl61qc1UDcG73I
+         FDMmfOiG2H8IzEuKKw/M7PogaSgM8X2WZc5kjl+Dp1+hjjwCugO78vBqHSBJRgrtI8
+         iiiR0aNTydrnms7VNPMV5M6X+tEx0k+2XJsejW9H5dww52kR9ESsW7JTvRKWQR81qv
+         y9fkPnEwbon1w==
+Date:   Thu, 5 Oct 2023 08:26:22 +0300
+From:   Mike Rapoport <rppt@kernel.org>
+To:     "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "deller@gmx.de" <deller@gmx.de>,
+        "mcgrof@kernel.org" <mcgrof@kernel.org>,
+        "bjorn@kernel.org" <bjorn@kernel.org>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "nadav.amit@gmail.com" <nadav.amit@gmail.com>,
+        "linux@armlinux.org.uk" <linux@armlinux.org.uk>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
+        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
+        "hca@linux.ibm.com" <hca@linux.ibm.com>,
+        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
+        "kent.overstreet@linux.dev" <kent.overstreet@linux.dev>,
+        "puranjay12@gmail.com" <puranjay12@gmail.com>,
+        "palmer@dabbelt.com" <palmer@dabbelt.com>,
+        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
+        "chenhuacai@kernel.org" <chenhuacai@kernel.org>,
+        "tsbogend@alpha.franken.de" <tsbogend@alpha.franken.de>,
+        "linux-trace-kernel@vger.kernel.org" 
+        <linux-trace-kernel@vger.kernel.org>,
+        "mpe@ellerman.id.au" <mpe@ellerman.id.au>,
+        "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "mark.rutland@arm.com" <mark.rutland@arm.com>,
+        "christophe.leroy@csgroup.eu" <christophe.leroy@csgroup.eu>,
+        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+        "rostedt@goodmis.org" <rostedt@goodmis.org>,
+        "will@kernel.org" <will@kernel.org>,
+        "dinguyen@kernel.org" <dinguyen@kernel.org>,
+        "naveen.n.rao@linux.ibm.com" <naveen.n.rao@linux.ibm.com>,
+        "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>,
+        "linux-modules@vger.kernel.org" <linux-modules@vger.kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "song@kernel.org" <song@kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "loongarch@lists.linux.dev" <loongarch@lists.linux.dev>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>
+Subject: Re: [PATCH v3 03/13] mm/execmem, arch: convert simple overrides of
+ module_alloc to execmem
+Message-ID: <20231005052622.GD3303@kernel.org>
+References: <20230918072955.2507221-1-rppt@kernel.org>
+ <20230918072955.2507221-4-rppt@kernel.org>
+ <607927885bb8ca12d4cd5787f01207c256cc8798.camel@intel.com>
+ <00277a3acb36d2309156264c7e8484071bc91614.camel@intel.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.15.1
-Subject: Re: [PATCH 04/11] dt-bindings: Add vendor prefix for Mobileye Vision
- Technologies Ltd.
-Content-Language: en-US
-To:     Gregory CLEMENT <gregory.clement@bootlin.com>,
-        Paul Burton <paulburton@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        linux-mips@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Vladimir Kondratiev <vladimir.kondratiev@intel.com>,
-        Tawfik Bayouk <tawfik.bayouk@mobileye.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        =?UTF-8?Q?Th=c3=a9o_Lebrun?= <theo.lebrun@bootlin.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-References: <20231004161038.2818327-1-gregory.clement@bootlin.com>
- <20231004161038.2818327-5-gregory.clement@bootlin.com>
-From:   =?UTF-8?Q?Philippe_Mathieu-Daud=c3=a9?= <philmd@linaro.org>
-In-Reply-To: <20231004161038.2818327-5-gregory.clement@bootlin.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <00277a3acb36d2309156264c7e8484071bc91614.camel@intel.com>
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On 4/10/23 18:10, Gregory CLEMENT wrote:
-> Mobileye Vision Technologies Ltd. is a company developing autonomous
-> driving technologies and advanced driver-assistance systems (ADAS)
-> including cameras, computer chips and software.
+On Wed, Oct 04, 2023 at 03:39:26PM +0000, Edgecombe, Rick P wrote:
+> On Tue, 2023-10-03 at 17:29 -0700, Rick Edgecombe wrote:
+> > It seems a bit weird to copy all of this. Is it trying to be faster
+> > or
+> > something?
+> > 
+> > Couldn't it just check r->start in execmem_text/data_alloc() path and
+> > switch to EXECMEM_DEFAULT if needed then? The execmem_range_is_data()
+> > part that comes later could be added to the logic there too. So this
+> > seems like unnecessary complexity to me or I don't see the reason.
 > 
-> Signed-off-by: Gregory CLEMENT <gregory.clement@bootlin.com>
-> ---
->   Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 ++
->   1 file changed, 2 insertions(+)
+> I guess this is a bad idea because if you have the full size array
+> sitting around anyway you might as well use it and reduce the
+> exec_mem_alloc() logic.
 
-Reviewed-by: Philippe Mathieu-Daudé <philmd@linaro.org>
+That's was the idea, indeed. :)
 
+> Just looking at it from the x86 side (and
+> similar) though, where there is actually only one execmem_range and it
+> building this whole array with identical data and it seems weird.
 
+Right, most architectures have only one range, but to support all variants
+that we have, execmem has to maintain the whole array.
+
+-- 
+Sincerely yours,
+Mike.

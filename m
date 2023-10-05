@@ -2,126 +2,69 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 83CF7E9270D
-	for <linux-mips@archiver.kernel.org>; Thu,  5 Oct 2023 15:42:26 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B1CEDE92718
+	for <linux-mips@archiver.kernel.org>; Thu,  5 Oct 2023 15:51:49 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233755AbjJEPmZ (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 5 Oct 2023 11:42:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41154 "EHLO
+        id S234854AbjJEPve (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 5 Oct 2023 11:51:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38950 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234164AbjJEPmJ (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Thu, 5 Oct 2023 11:42:09 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6192569226;
-        Thu,  5 Oct 2023 07:57:31 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8CBD6C433CC;
-        Thu,  5 Oct 2023 05:29:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696483777;
-        bh=0Btg3YXrlgdZvN9c5GBtYXuhH18hqWIB+5O6R7ueqJA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=htbvcSdKFwWteJskCo57Zoc+HETH4Yk4itDoLxeJ1ZG4lHI/6dRpo8c5g9SXm397o
-         Eun4d3xnthNfZVwdWsofKvM4QWBVN4HTm3hLqzLiQBrntUL8UgEGY5xtChyLJeLSvA
-         +kiu09tPGlxznwtPobf/uLurpuN8CBF2/SLMhDWs179ymyb2Urny866sSuGF/ojv6+
-         iWewEluv5jVsvROGeyy57su15Hs4TbNbwzhji63ZqwBfc3BmxOSDIm1/YBjJDN2t9v
-         ZHq7tnS5BF0NS66xJ3m6K4ABlSRKqepeLUIUEhNo390B9QIPXevXF5ZN3BxZUTA4Ed
-         Ef2zRBvRZ4gnQ==
-Date:   Thu, 5 Oct 2023 08:28:24 +0300
-From:   Mike Rapoport <rppt@kernel.org>
-To:     "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "deller@gmx.de" <deller@gmx.de>,
-        "mcgrof@kernel.org" <mcgrof@kernel.org>,
-        "bjorn@kernel.org" <bjorn@kernel.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "nadav.amit@gmail.com" <nadav.amit@gmail.com>,
-        "linux@armlinux.org.uk" <linux@armlinux.org.uk>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
-        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
-        "hca@linux.ibm.com" <hca@linux.ibm.com>,
-        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
-        "kent.overstreet@linux.dev" <kent.overstreet@linux.dev>,
-        "puranjay12@gmail.com" <puranjay12@gmail.com>,
-        "palmer@dabbelt.com" <palmer@dabbelt.com>,
-        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
-        "chenhuacai@kernel.org" <chenhuacai@kernel.org>,
-        "tsbogend@alpha.franken.de" <tsbogend@alpha.franken.de>,
-        "linux-trace-kernel@vger.kernel.org" 
-        <linux-trace-kernel@vger.kernel.org>,
-        "mpe@ellerman.id.au" <mpe@ellerman.id.au>,
-        "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "mark.rutland@arm.com" <mark.rutland@arm.com>,
-        "christophe.leroy@csgroup.eu" <christophe.leroy@csgroup.eu>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-        "rostedt@goodmis.org" <rostedt@goodmis.org>,
-        "will@kernel.org" <will@kernel.org>,
-        "dinguyen@kernel.org" <dinguyen@kernel.org>,
-        "naveen.n.rao@linux.ibm.com" <naveen.n.rao@linux.ibm.com>,
-        "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>,
-        "linux-modules@vger.kernel.org" <linux-modules@vger.kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "song@kernel.org" <song@kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "loongarch@lists.linux.dev" <loongarch@lists.linux.dev>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>
-Subject: Re: [PATCH v3 04/13] mm/execmem, arch: convert remaining overrides
- of module_alloc to execmem
-Message-ID: <20231005052824.GE3303@kernel.org>
-References: <20230918072955.2507221-1-rppt@kernel.org>
- <20230918072955.2507221-5-rppt@kernel.org>
- <3483c4712306060ac56f07f5db9b146d69fc7e9e.camel@intel.com>
+        with ESMTP id S233602AbjJEPuy (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Thu, 5 Oct 2023 11:50:54 -0400
+Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 170E664D74;
+        Thu,  5 Oct 2023 07:09:08 -0700 (PDT)
+Received: from uucp by elvis.franken.de with local-rmail (Exim 3.36 #1)
+        id 1qoP2H-0000yp-00; Thu, 05 Oct 2023 16:09:05 +0200
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id 836FEC0148; Thu,  5 Oct 2023 16:08:55 +0200 (CEST)
+Date:   Thu, 5 Oct 2023 16:08:55 +0200
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Wolfram Sang <wsa+renesas@sang-engineering.com>
+Cc:     linux-mips@vger.kernel.org, Jonas Gorski <jonas.gorski@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org
+Subject: Re: [PATCH net-next v2 5/6] net: cpmac: remove driver to prepare for
+ platform removal
+Message-ID: <ZR7Dd8wy91+G2U3v@alpha.franken.de>
+References: <20230922061530.3121-1-wsa+renesas@sang-engineering.com>
+ <20230922061530.3121-6-wsa+renesas@sang-engineering.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <3483c4712306060ac56f07f5db9b146d69fc7e9e.camel@intel.com>
+In-Reply-To: <20230922061530.3121-6-wsa+renesas@sang-engineering.com>
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Wed, Oct 04, 2023 at 12:29:36AM +0000, Edgecombe, Rick P wrote:
-> On Mon, 2023-09-18 at 10:29 +0300, Mike Rapoport wrote:
-> > diff --git a/arch/x86/kernel/module.c b/arch/x86/kernel/module.c
-> > index 5f71a0cf4399..9d37375e2f05 100644
-> > --- a/arch/x86/kernel/module.c
-> > +++ b/arch/x86/kernel/module.c
-> >
-> > -void *module_alloc(unsigned long size)
-> > +struct execmem_params __init *execmem_arch_params(void)
-> >  {
-> > -       gfp_t gfp_mask = GFP_KERNEL;
-> > -       void *p;
-> > -
-> > -       if (PAGE_ALIGN(size) > MODULES_LEN)
-> > -               return NULL;
-> > +       unsigned long module_load_offset = 0;
-> > +       unsigned long start;
-> >  
-> > -       p = __vmalloc_node_range(size, MODULE_ALIGN,
-> > -                                MODULES_VADDR +
-> > get_module_load_offset(),
-> > -                                MODULES_END, gfp_mask, PAGE_KERNEL,
-> > -                                VM_FLUSH_RESET_PERMS |
-> > VM_DEFER_KMEMLEAK,
-> > -                                NUMA_NO_NODE,
-> > __builtin_return_address(0));
-> > +       if (IS_ENABLED(CONFIG_RANDOMIZE_BASE) && kaslr_enabled())
-> > +               module_load_offset =
-> > +                       get_random_u32_inclusive(1, 1024) *
-> > PAGE_SIZE;
+On Fri, Sep 22, 2023 at 08:15:26AM +0200, Wolfram Sang wrote:
+> AR7 is going to be removed from the Kernel, so remove its networking
+> support in form of the cpmac driver. This allows us to remove the
+> platform because this driver includes a platform specific header.
 > 
-> Minor:
-> I think you can skip the IS_ENABLED(CONFIG_RANDOMIZE_BASE) part because
-> CONFIG_RANDOMIZE_MEMORY depends on CONFIG_RANDOMIZE_BASE (which is
-> checked in kaslr_enabled()).
+> Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
+> Acked-by: Florian Fainelli <f.fainelli@gmail.com>
+> ---
+> Changes since v1:
+> * added ack
+> 
+>  MAINTAINERS                      |    6 -
+>  drivers/net/ethernet/ti/Kconfig  |    9 +-
+>  drivers/net/ethernet/ti/Makefile |    1 -
+>  drivers/net/ethernet/ti/cpmac.c  | 1251 ------------------------------
+>  4 files changed, 1 insertion(+), 1266 deletions(-)
+>  delete mode 100644 drivers/net/ethernet/ti/cpmac.c
+> [..]
 
-Thanks, I'll look into it.
+is it ok for network people to route this patch via mips-next tree
+or do you want to apply to net-next ?
+
+Thomas.
 
 -- 
-Sincerely yours,
-Mike.
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]

@@ -2,78 +2,233 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 74AE3E92718
-	for <linux-mips@archiver.kernel.org>; Thu,  5 Oct 2023 15:52:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AF9C8E92723
+	for <linux-mips@archiver.kernel.org>; Thu,  5 Oct 2023 16:00:07 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234206AbjJEPw2 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 5 Oct 2023 11:52:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48074 "EHLO
+        id S240437AbjJEQAF (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 5 Oct 2023 12:00:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50796 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235433AbjJEPvI (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Thu, 5 Oct 2023 11:51:08 -0400
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD3908C27;
-        Thu,  5 Oct 2023 07:16:35 -0700 (PDT)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1B3ACC43140;
-        Thu,  5 Oct 2023 14:16:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1696515395;
-        bh=nNp35xI077yQXxP8uX1fwQCGUbyzwbzHw+RybI+zhrU=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=fz60a5EalsIPlI5xmAewZKSyJP5mY4XoFeQDpBsnmgL9e7G3G8SljF26stQkNdgNS
-         HILBXuyxFF8L90iDCJZAHTiMcIsmnVR6DjcB3jDHb4St7B8foBOfQcLv0hFXxLjJg3
-         7IpJA8Pukze6X5P3okmQPKniObWAkfUBWBtgAu1PNSga3fZg0+qfhgqxv8lsOWXTR4
-         bmcI1hsszsN8RyCCYkOwQOZGLqYfdfa8dJYOaml+R1cz5vw2z5j1xlbX6ZC1U78mnM
-         cZjyEBd9R9bJgTvrWr03+hGL1ZngMpOrph7iiQMnoluZB8btSQNcR6VeVuuAwgeHMn
-         Y2JAy24wGJspg==
-Date:   Thu, 5 Oct 2023 07:16:34 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc:     Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        linux-mips@vger.kernel.org, Jonas Gorski <jonas.gorski@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org
-Subject: Re: [PATCH net-next v2 5/6] net: cpmac: remove driver to prepare
- for platform removal
-Message-ID: <20231005071634.581fa8c2@kernel.org>
-In-Reply-To: <ZR7Dd8wy91+G2U3v@alpha.franken.de>
-References: <20230922061530.3121-1-wsa+renesas@sang-engineering.com>
-        <20230922061530.3121-6-wsa+renesas@sang-engineering.com>
-        <ZR7Dd8wy91+G2U3v@alpha.franken.de>
+        with ESMTP id S234704AbjJEP5n (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Thu, 5 Oct 2023 11:57:43 -0400
+Received: from relay4-d.mail.gandi.net (relay4-d.mail.gandi.net [217.70.183.196])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86FBA4695;
+        Thu,  5 Oct 2023 08:17:49 -0700 (PDT)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 3EE6BE0010;
+        Thu,  5 Oct 2023 15:17:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+        t=1696519067;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=nvH8TojWLX5PBOVWWWtrIYBix9PjUxHjvbmCvPQRWkE=;
+        b=iuj2Hf/o0T6P92uvZ0fWwcbUtAvIpStnI6H/7KBQEoGLMSa1VL4jOjF+/UvE1MfEYUy/CW
+        77vDVJjOyLBExgbxDHtiDz84KzSrxp3OnDH+RvgMWW+PaKOR0N+Sjkdqcu+LDW2WeSyKBh
+        bF2Z1+LMcDuCzLOuc9adjddmWhISxGvg3ZxBXv0r72M42BjJrjumsUd+hiXqfC5FJe+nyP
+        XBviODz8fWkbFSsvFRLMsF1gul/fpCcTg8JKUzTmPzq++AkUeUwpynPlDGhFJ28rZKMIwJ
+        AvUgu8nqDCysAe5zC98Kc/DYZ0G255+S9tRU5m/hfK5DZ5tT849KxdSphJZFfA==
+From:   Gregory CLEMENT <gregory.clement@bootlin.com>
+To:     Rob Herring <robh+dt@kernel.org>
+Cc:     Paul Burton <paulburton@kernel.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        linux-mips@vger.kernel.org,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Vladimir Kondratiev <vladimir.kondratiev@intel.com>,
+        Tawfik Bayouk <tawfik.bayouk@mobileye.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        =?utf-8?Q?Th=C3=A9o?= Lebrun <theo.lebrun@bootlin.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+Subject: Re: [PATCH 08/11] MIPS: mobileye: Add EyeQ5 dtsi
+In-Reply-To: <CAL_Jsq+Pn=kWFL32Cit-vnyJg2pnap2TMn4LPVr9nTmyK-FrZw@mail.gmail.com>
+References: <20231004161038.2818327-1-gregory.clement@bootlin.com>
+ <20231004161038.2818327-9-gregory.clement@bootlin.com>
+ <CAL_Jsq+Pn=kWFL32Cit-vnyJg2pnap2TMn4LPVr9nTmyK-FrZw@mail.gmail.com>
+Date:   Thu, 05 Oct 2023 17:17:45 +0200
+Message-ID: <87mswxcd46.fsf@BL-laptop>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-GND-Sasl: gregory.clement@bootlin.com
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Thu, 5 Oct 2023 16:08:55 +0200 Thomas Bogendoerfer wrote:
-> On Fri, Sep 22, 2023 at 08:15:26AM +0200, Wolfram Sang wrote:
-> > AR7 is going to be removed from the Kernel, so remove its networking
-> > support in form of the cpmac driver. This allows us to remove the
-> > platform because this driver includes a platform specific header.
-> > 
-> > Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
-> > Acked-by: Florian Fainelli <f.fainelli@gmail.com>
-> > ---
-> > Changes since v1:
-> > * added ack
-> > 
-> >  MAINTAINERS                      |    6 -
-> >  drivers/net/ethernet/ti/Kconfig  |    9 +-
-> >  drivers/net/ethernet/ti/Makefile |    1 -
-> >  drivers/net/ethernet/ti/cpmac.c  | 1251 ------------------------------
-> >  4 files changed, 1 insertion(+), 1266 deletions(-)
-> >  delete mode 100644 drivers/net/ethernet/ti/cpmac.c
-> > [..]  
-> 
-> is it ok for network people to route this patch via mips-next tree
-> or do you want to apply to net-next ?
+Hello Rob,
 
-We have a ".remove callback should return void" conversion from Uwe
-queued for the deleted driver (231ea972ccaf5b). The conflict will be
-really trivial, but I guess no conflict beats trivial conflict so better
-if we take it? :S
+> On Wed, Oct 4, 2023 at 11:11=E2=80=AFAM Gregory CLEMENT
+> <gregory.clement@bootlin.com> wrote:
+>>
+>> Add a device tree include file for the Mobileye EyeQ5 SoC.
+>>
+>> Based on the work of Slava Samsonov <stanislav.samsonov@intel.com>
+>>
+>> Signed-off-by: Gregory CLEMENT <gregory.clement@bootlin.com>
+>> ---
+>>  arch/mips/boot/dts/Makefile                   |   1 +
+>>  arch/mips/boot/dts/mobileye/Makefile          |   4 +
+>>  .../boot/dts/mobileye/eyeq5-fixed-clocks.dtsi | 315 ++++++++++++++++++
+>>  arch/mips/boot/dts/mobileye/eyeq5.dtsi        | 138 ++++++++
+>>  4 files changed, 458 insertions(+)
+>>  create mode 100644 arch/mips/boot/dts/mobileye/Makefile
+>>  create mode 100644 arch/mips/boot/dts/mobileye/eyeq5-fixed-clocks.dtsi
+>>  create mode 100644 arch/mips/boot/dts/mobileye/eyeq5.dtsi
+>>
+>> diff --git a/arch/mips/boot/dts/Makefile b/arch/mips/boot/dts/Makefile
+>> index 928f38a79dff..edb8e8dee758 100644
+>> --- a/arch/mips/boot/dts/Makefile
+>> +++ b/arch/mips/boot/dts/Makefile
+>> @@ -8,6 +8,7 @@ subdir-$(CONFIG_LANTIQ)                 +=3D lantiq
+>>  subdir-$(CONFIG_MACH_LOONGSON64)       +=3D loongson
+>>  subdir-$(CONFIG_SOC_VCOREIII)          +=3D mscc
+>>  subdir-$(CONFIG_MIPS_MALTA)            +=3D mti
+>> +subdir-$(CONFIG_SOC_EYEQ5)             +=3D mobileye
+>>  subdir-$(CONFIG_LEGACY_BOARD_SEAD3)    +=3D mti
+>>  subdir-$(CONFIG_FIT_IMAGE_FDT_NI169445)        +=3D ni
+>>  subdir-$(CONFIG_MACH_PIC32)            +=3D pic32
+>> diff --git a/arch/mips/boot/dts/mobileye/Makefile b/arch/mips/boot/dts/m=
+obileye/Makefile
+>> new file mode 100644
+>> index 000000000000..99c4124fd4c0
+>> --- /dev/null
+>> +++ b/arch/mips/boot/dts/mobileye/Makefile
+>> @@ -0,0 +1,4 @@
+>> +# SPDX-License-Identifier: GPL-2.0-only
+>> +# Copyright 2023 Mobileye Vision Technologies Ltd.
+>> +
+>> +obj-$(CONFIG_BUILTIN_DTB)      +=3D $(addsuffix .o, $(dtb-y))
+>
+> You didn't add anything to 'dtb-y'. Did you test this?
+
+Initially yes, and finally we switch on the FIT image generation, so we
+don't use it anymore
+
+>
+> Also, CONFIG_BUILTIN_DTB is supposed to be for legacy bootloaders
+> which don't understand DT. For a new SoC, fix the bootloader.
+
+I can remove it
+
+>
+>> diff --git a/arch/mips/boot/dts/mobileye/eyeq5-fixed-clocks.dtsi b/arch/=
+mips/boot/dts/mobileye/eyeq5-fixed-clocks.dtsi
+>> new file mode 100644
+>> index 000000000000..a0066465ac8b
+>> --- /dev/null
+>> +++ b/arch/mips/boot/dts/mobileye/eyeq5-fixed-clocks.dtsi
+>> @@ -0,0 +1,315 @@
+>> +// SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+>> +/*
+>> + * Copyright 2023 Mobileye Vision Technologies Ltd.
+>> + */
+>
+> I assume these aren't all really fixed, but just 'I don't have a clock
+> driver yet'. That creates an ABI issue when you add the clock
+> driver(s). Just FYI.
+
+Indeed they aren't all fixed. The plan is to replace the relevant ones by a
+real clock driver when ready.
+
+In this case some part of the dts file will be modified. But is it a
+real issue ?
+
+Booting with a new kernel with an old dtb will still continue to work in
+the same way. it's only new tdb with old kernel that won't work, but we
+are not supposed to support this case.
+
+
+>
+>> +
+>> +/ {
+>> +       /* Fixed clock */
+>> +       pll_cpu: pll_cpu {
+>
+> Don't use _ in node names.
+
+OK
+[...]
+
+>> +/* PLL_CPU derivatives */
+>> +       occ_cpu: occ_cpu {
+>> +               compatible =3D "fixed-factor-clock";
+>> +               clocks =3D <&pll_cpu>;
+>> +               #clock-cells =3D <0>;
+>> +               clock-div =3D <1>;
+>> +               clock-mult =3D <1>;
+>> +               clock-output-names =3D "occ_cpu";
+>
+> Isn't the default name the node name? Drop these unless you really
+> have a need and they aren't redundant.
+
+indeed it's not used, I remove them too.
+[...]
+
+>> --- /dev/null
+>> +++ b/arch/mips/boot/dts/mobileye/eyeq5.dtsi
+>> @@ -0,0 +1,138 @@
+>> +// SPDX-License-Identifier: GPL-2.0
+>
+> Doesn't match eyeq5-fixed-clocks.dtsi
+
+OK
+
+>
+>> +/*
+>> + * Copyright 2023 Mobileye Vision Technologies Ltd.
+>> + */
+>> +
+>> +#include <dt-bindings/interrupt-controller/mips-gic.h>
+>> +#include <dt-bindings/soc/mobileye,eyeq5.h>
+>> +
+>> +/memreserve/ 0x40000000 0xc0000000; /* DDR32 */
+>> +/memreserve/ 0x08000000 0x08000000; /* DDR_LOW */
+>> +
+>> +#include "eyeq5-fixed-clocks.dtsi"
+>> +
+>> +/* almost all GIC IRQs has the same characteristics. provide short form=
+ */
+>
+> Maybe so, but I prefer not having 2 levels of lookup to figure out values.
+>
+>> +#define GIC_IRQ(x) GIC_SHARED (x) IRQ_TYPE_LEVEL_HIGH
+
+OK I remove it.
+
+>> +
+>> +/ {
+>> +       #address-cells =3D <2>;
+>> +       #size-cells =3D <2>;
+>> +       cpus {
+>> +               #address-cells =3D <1>;
+>> +               #size-cells =3D <0>;
+>> +               cpu@0 {
+>> +                       device_type =3D "cpu";
+>> +                       compatible =3D "mti,i6500";
+>> +                       reg =3D <0>;
+>> +                       clocks =3D <&core0_clk>;
+>> +               };
+>> +       };
+>> +
+>> +       reserved-memory {
+>> +               #address-cells =3D <2>;
+>> +               #size-cells =3D <2>;
+>> +               ranges;
+>> +
+>> +/* These reserved memory regions are also defined in bootmanager
+>> + * for configuring inbound translation for BARS, don't change
+>> + * these without syncing with bootmanager
+>> + */
+>
+> Indent with the rest of the node.
+
+OK
+
+Thanks,
+
+Gregory
+
+--=20
+Gregory Clement, Bootlin
+Embedded Linux and Kernel engineering
+http://bootlin.com

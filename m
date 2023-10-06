@@ -2,86 +2,64 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id D7F92E92FFA
-	for <linux-mips@archiver.kernel.org>; Fri,  6 Oct 2023 08:25:02 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 07315E92FFB
+	for <linux-mips@archiver.kernel.org>; Fri,  6 Oct 2023 08:25:12 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231177AbjJFIZA (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 6 Oct 2023 04:25:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35996 "EHLO
+        id S231244AbjJFIZK (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 6 Oct 2023 04:25:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36042 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231140AbjJFIY4 (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Fri, 6 Oct 2023 04:24:56 -0400
+        with ESMTP id S231162AbjJFIZE (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Fri, 6 Oct 2023 04:25:04 -0400
 Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 2B5BDFC;
-        Fri,  6 Oct 2023 01:24:54 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 46660112;
+        Fri,  6 Oct 2023 01:24:57 -0700 (PDT)
 Received: from uucp by elvis.franken.de with local-rmail (Exim 3.36 #1)
-        id 1qog8g-0002lN-00; Fri, 06 Oct 2023 10:24:50 +0200
+        id 1qog8g-0002lV-00; Fri, 06 Oct 2023 10:24:50 +0200
 Received: by alpha.franken.de (Postfix, from userid 1000)
-        id E4D8CC0250; Fri,  6 Oct 2023 10:22:14 +0200 (CEST)
-Date:   Fri, 6 Oct 2023 10:22:14 +0200
+        id CBB03C01C1; Fri,  6 Oct 2023 10:06:02 +0200 (CEST)
+Date:   Fri, 6 Oct 2023 10:06:02 +0200
 From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     =?utf-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>
-Cc:     Sergio Paracuellos <sergio.paracuellos@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        linux-mips@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-Subject: Re: [PATCH] mips: dts: ralink: mt7621: define each reset as an item
-Message-ID: <ZR/Dtm0wTCa/V26h@alpha.franken.de>
-References: <20230917103753.52644-1-arinc.unal@arinc9.com>
+To:     Baoquan He <bhe@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-mm@kvack.org, akpm@linux-foundation.org, arnd@arndb.de,
+        jiaxun.yang@flygoat.com, mpe@ellerman.id.au, geert@linux-m68k.org,
+        mcgrof@kernel.org, hch@infradead.org, f.fainelli@gmail.com,
+        deller@gmx.de, Serge Semin <fancer.lancer@gmail.com>,
+        Huacai Chen <chenhuacai@kernel.org>, linux-mips@vger.kernel.org
+Subject: Re: [PATCH v5 4/4] mips: io: remove duplicated codes
+Message-ID: <ZR+/6lm+huWH3vuk@alpha.franken.de>
+References: <20230921110424.215592-1-bhe@redhat.com>
+ <20230921110424.215592-5-bhe@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20230917103753.52644-1-arinc.unal@arinc9.com>
+In-Reply-To: <20230921110424.215592-5-bhe@redhat.com>
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Sun, Sep 17, 2023 at 01:37:53PM +0300, Arınç ÜNAL wrote:
-> Each item of the resets property should define a reset. Split the item with
-> two resets on the ethernet node into two separate items.
+On Thu, Sep 21, 2023 at 07:04:24PM +0800, Baoquan He wrote:
+> By adding <asm-generic/io.h> support, the duplicated phys_to_virt
+> can be removed to use the default version in <asm-gneneric/io.h>.
 > 
-> Sort the items of the clocks property to the same line as a trivial change.
+> Meanwhile move isa_bus_to_virt() down below <asm-generic/io.h> including
+> to fix the compiling error of missing phys_to_virt definition.
 > 
-> Signed-off-by: Arınç ÜNAL <arinc.unal@arinc9.com>
+> Signed-off-by: Baoquan He <bhe@redhat.com>
+> Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+> Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+> Cc: Helge Deller <deller@gmx.de>
+> Cc: Serge Semin <fancer.lancer@gmail.com>
+> Cc: Florian Fainelli <f.fainelli@gmail.com>
+> Cc: Huacai Chen <chenhuacai@kernel.org>
+> Cc: Jiaxun Yang <jiaxun.yang@flygoat.com>
+> Cc: linux-mips@vger.kernel.org
 > ---
->  arch/mips/boot/dts/ralink/mt7621.dtsi | 5 ++---
->  1 file changed, 2 insertions(+), 3 deletions(-)
-> 
-> diff --git a/arch/mips/boot/dts/ralink/mt7621.dtsi b/arch/mips/boot/dts/ralink/mt7621.dtsi
-> index 7caed0d14f11..35a10258f235 100644
-> --- a/arch/mips/boot/dts/ralink/mt7621.dtsi
-> +++ b/arch/mips/boot/dts/ralink/mt7621.dtsi
-> @@ -300,14 +300,13 @@ ethernet: ethernet@1e100000 {
->  		compatible = "mediatek,mt7621-eth";
->  		reg = <0x1e100000 0x10000>;
->  
-> -		clocks = <&sysc MT7621_CLK_FE>,
-> -			 <&sysc MT7621_CLK_ETH>;
-> +		clocks = <&sysc MT7621_CLK_FE>, <&sysc MT7621_CLK_ETH>;
->  		clock-names = "fe", "ethif";
->  
->  		#address-cells = <1>;
->  		#size-cells = <0>;
->  
-> -		resets = <&sysc MT7621_RST_FE &sysc MT7621_RST_ETH>;
-> +		resets = <&sysc MT7621_RST_FE>, <&sysc MT7621_RST_ETH>;
->  		reset-names = "fe", "eth";
->  
->  		interrupt-parent = <&gic>;
-> -- 
-> 2.39.2
-> 
+>  arch/mips/include/asm/io.h | 28 +++++-----------------------
+>  1 file changed, 5 insertions(+), 23 deletions(-)
 
-applied to mips-next.
-
-Thomas.
+Acked-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 
 -- 
 Crap can work. Given enough thrust pigs will fly, but it's not necessarily a

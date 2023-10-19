@@ -2,89 +2,92 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BFB4ACDB484
-	for <linux-mips@archiver.kernel.org>; Thu, 19 Oct 2023 08:52:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 47037CDB465
+	for <linux-mips@archiver.kernel.org>; Thu, 19 Oct 2023 12:32:27 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235263AbjJSIwb (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 19 Oct 2023 04:52:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60100 "EHLO
+        id S235364AbjJSMc1 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 19 Oct 2023 08:32:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39420 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235238AbjJSIw3 (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Thu, 19 Oct 2023 04:52:29 -0400
-Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 7C6F6121;
-        Thu, 19 Oct 2023 01:52:27 -0700 (PDT)
-Received: from uucp by elvis.franken.de with local-rmail (Exim 3.36 #1)
-        id 1qtOlP-0004JN-00; Thu, 19 Oct 2023 10:52:19 +0200
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 6910EC01C1; Thu, 19 Oct 2023 10:50:33 +0200 (CEST)
-Date:   Thu, 19 Oct 2023 10:50:33 +0200
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Huacai Chen <chenhuacai@loongson.cn>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Huacai Chen <chenhuacai@kernel.org>, kvm@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>, stable@vger.kernel.org,
-        kernel test robot <lkp@intel.com>
-Subject: Re: [PATCH] MIPS: KVM: Fix a build warning about variable set but
- not used
-Message-ID: <ZTDt2ZRn1kWqTz5Z@alpha.franken.de>
-References: <20231010085434.2678144-1-chenhuacai@loongson.cn>
+        with ESMTP id S235344AbjJSMcZ (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Thu, 19 Oct 2023 08:32:25 -0400
+Received: from mail.zeus03.de (www.zeus03.de [194.117.254.33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B80E59B
+        for <linux-mips@vger.kernel.org>; Thu, 19 Oct 2023 05:32:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        sang-engineering.com; h=date:from:to:cc:subject:message-id
+        :references:mime-version:content-type:in-reply-to; s=k1; bh=aqk3
+        wiGiuSIoeN9W9kpG0br5Mv4pr5LCTTheHJq9Ffw=; b=XyLCKf/FUin84lXyJWgf
+        rb/fi89+hdDjEQXKM0WSddyhJNlDO8zFdkouVLDrU8AKZeUSafCE/X3TvSPVf8/y
+        kMK+48qNmO1o1w8g7TcC97ynZNOSzlP+Q+TslcDZgXHXmi0r+Iy3XqtElO7SHKvJ
+        FgmbWZQ5MiBB+bu0majIkn9A3Yb5edUj3zAovMAp2GQtsxxrc4NoiE+ygWjbZmwH
+        2pkqyX2pAMfh58F7D8Ss27dnbBzg5x8TRqaHgn1lM77bb4spuWSzaoGu6vB16Xcz
+        2BxVx7dZw4DUjDa/GySdVxMSq53vJOgpvVc2pIjrmcMYJsqNumPaYhH1NnshWU7T
+        3g==
+Received: (qmail 862571 invoked from network); 19 Oct 2023 14:32:17 +0200
+Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 19 Oct 2023 14:32:17 +0200
+X-UD-Smtp-Session: l3s3148p1@BdkZ8hAIgJUujnvb
+Date:   Thu, 19 Oct 2023 14:32:13 +0200
+From:   Wolfram Sang <wsa+renesas@sang-engineering.com>
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc:     linux-mips@vger.kernel.org, Jonas Gorski <jonas.gorski@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 6/6] MIPS: AR7: remove platform
+Message-ID: <ZTEhzYNw+bneveHj@shikoro>
+Mail-Followup-To: Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        linux-mips@vger.kernel.org, Jonas Gorski <jonas.gorski@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        linux-kernel@vger.kernel.org
+References: <20230922061530.3121-1-wsa+renesas@sang-engineering.com>
+ <20230922061530.3121-7-wsa+renesas@sang-engineering.com>
+ <ZRUl6+i/o0cqCV+6@ninjato>
+ <ZRUrVgHyJvvhteGs@alpha.franken.de>
+ <ZRUwEjpfILlF5dgE@ninjato>
+ <ZR/DNeUMn+BD2NMD@alpha.franken.de>
+ <ZTDtkjXcOkxVataJ@alpha.franken.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="UOEar4E6NE9EU2b3"
 Content-Disposition: inline
-In-Reply-To: <20231010085434.2678144-1-chenhuacai@loongson.cn>
+In-Reply-To: <ZTDtkjXcOkxVataJ@alpha.franken.de>
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Tue, Oct 10, 2023 at 04:54:34PM +0800, Huacai Chen wrote:
-> After commit 411740f5422a ("KVM: MIPS/MMU: Implement KVM_CAP_SYNC_MMU")
-> old_pte is no longer used in kvm_mips_map_page(). So remove it to fix a
-> build warning about variable set but not used:
-> 
->    arch/mips/kvm/mmu.c: In function 'kvm_mips_map_page':
-> >> arch/mips/kvm/mmu.c:701:29: warning: variable 'old_pte' set but not used [-Wunused-but-set-variable]
->      701 |         pte_t *ptep, entry, old_pte;
->          |                             ^~~~~~~
-> 
-> Cc: stable@vger.kernel.org
-> Fixes: 411740f5422a960 ("KVM: MIPS/MMU: Implement KVM_CAP_SYNC_MMU")
-> Reported-by: kernel test robot <lkp@intel.com>
-> Closes: https://lore.kernel.org/oe-kbuild-all/202310070530.aARZCSfh-lkp@intel.com/
-> Signed-off-by: Huacai Chen <chenhuacai@loongson.cn>
-> ---
->  arch/mips/kvm/mmu.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
-> 
-> diff --git a/arch/mips/kvm/mmu.c b/arch/mips/kvm/mmu.c
-> index e8c08988ed37..cc09fd23aae3 100644
-> --- a/arch/mips/kvm/mmu.c
-> +++ b/arch/mips/kvm/mmu.c
-> @@ -592,7 +592,7 @@ static int kvm_mips_map_page(struct kvm_vcpu *vcpu, unsigned long gpa,
->  	gfn_t gfn = gpa >> PAGE_SHIFT;
->  	int srcu_idx, err;
->  	kvm_pfn_t pfn;
-> -	pte_t *ptep, entry, old_pte;
-> +	pte_t *ptep, entry;
->  	bool writeable;
->  	unsigned long prot_bits;
->  	unsigned long mmu_seq;
-> @@ -664,7 +664,6 @@ static int kvm_mips_map_page(struct kvm_vcpu *vcpu, unsigned long gpa,
->  	entry = pfn_pte(pfn, __pgprot(prot_bits));
->  
->  	/* Write the PTE */
-> -	old_pte = *ptep;
->  	set_pte(ptep, entry);
->  
->  	err = 0;
-> -- 
-> 2.39.3
 
-applied to mips-next.
+--UOEar4E6NE9EU2b3
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Thomas.
 
--- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+> nevermind, I've did it by hand, but using --irreversible-delete isn't very
+> maintainer friendly as patches won't apply and I need to do the git rm
+> manually.
+
+I am really sorry, this slipped through the cracks :( Thanks for doing
+it and feel free to ping me again and again next time!
+
+
+--UOEar4E6NE9EU2b3
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmUxIckACgkQFA3kzBSg
+KbaS7RAAkeqeipd6WzMfsw8eMlMw7WvZhzSTQ3gpF/d8658RK2kbeevwM3+eCfMr
+6RzyVBr1IdTyBzFggd8nnVQSwOCnIigIWeXQFjicTaul1q2ElG6D2h61pGn8L6ni
+DZOvjE4clIVy0bkyCk/oHukpelhZu29yHsSVMJHmqrUi5bs0IdBQboTs+rgSV+06
+3KaB/RjDXHuVA70Idmpf30aM6emNB/NJ804/M1LKxmDsGaTE3aSODfyasGVdUhHL
+ZNZKg59x6t6D9Bszg/Twcrm2YqvS3Pqo1NKY62d/Vov8K48xRNsldSOiLmCE/0rO
+EAQ+pF32GJNPNffkz+hL9K9Jl8CJ7XWxR8aEGBg1eq+J49NhNwwuS2FaiXAtBHwi
+t70FChyG6Vop+NznDmFrA9+1eW5BPhF1JigA3F86NcrMt+wt06oZBVuPb/RgrUAX
+nJf36y2cjKR6X9w+6hujJ7jxyYJYl5CqMfMsKkan1MoBxHejp35wH/6iUF/VeNmE
+LViTpQLjV4rR6HDOQzMz/UoZkCvwnOXRHeew7moCTso6J2I+TzCdGgcsfC4HeoIv
+HGFRraagC+h4DIQ80lSegxeeP+rbgXoeGhbLeGzmaZPepvDjUD2ngyUnREzFzU1E
+pgpnlG18iD/8YKhh9gVTAitelWu0iQd7ckefGGhKD7MnbDAqAhs=
+=8SQN
+-----END PGP SIGNATURE-----
+
+--UOEar4E6NE9EU2b3--

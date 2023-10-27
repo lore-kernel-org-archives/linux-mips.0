@@ -2,58 +2,59 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3CFC6C25B6F
-	for <linux-mips@archiver.kernel.org>; Fri, 27 Oct 2023 18:25:40 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E0C1AC25B47
+	for <linux-mips@archiver.kernel.org>; Fri, 27 Oct 2023 18:26:08 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346401AbjJ0SZk (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 27 Oct 2023 14:25:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44436 "EHLO
+        id S235012AbjJ0S0I (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 27 Oct 2023 14:26:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36504 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235203AbjJ0SY3 (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Fri, 27 Oct 2023 14:24:29 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B176F26AA
-        for <linux-mips@vger.kernel.org>; Fri, 27 Oct 2023 11:23:33 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-d9bc6447193so1955416276.3
-        for <linux-mips@vger.kernel.org>; Fri, 27 Oct 2023 11:23:33 -0700 (PDT)
+        with ESMTP id S1346581AbjJ0SZs (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Fri, 27 Oct 2023 14:25:48 -0400
+Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E0CC2133
+        for <linux-mips@vger.kernel.org>; Fri, 27 Oct 2023 11:23:26 -0700 (PDT)
+Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-5a7b9e83b70so22729457b3.0
+        for <linux-mips@vger.kernel.org>; Fri, 27 Oct 2023 11:23:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1698431009; x=1699035809; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1698431005; x=1699035805; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:reply-to:from:to:cc:subject:date:message-id:reply-to;
-        bh=rHCSEdVT91A5ySy8HWpIrikDyrYgztwmDmnD7EhGGWM=;
-        b=ct+ZvQnqfpDvR1VShXo/aKJjIzKWImnxYQCrcLfAs6kKFEKTaJHyZppFFbPKOUpDl6
-         xwzjcL5/lG4xYhwe8c5bbcPcEqCgwAuucB/DZf3sbS13OwbqbnlAZAMp10FlTLUdbF14
-         88iOnCapUzXKVjbl7Pl4Muq2SdgtrbxHWJpJ+Etxt58KiFY9LwoRWbvH/am6Twu7eFMI
-         EkSKKz6YDJsBgihddcTfnaPmz5s924QsjAh+1hfPB+BXCHZhgg8UhroTj3OCKgl7sUsc
-         3lMjRk2kYqiIJ7TE+Q5p36brA3/isWJhXiSMEIcX2GVUnQfD/dtQUXsSIuJtXJuqfGpA
-         xaYA==
+        bh=zYKW06Y9tS7nzBZmp5ooZeVm0pRKPQ996s+RZNHFHDA=;
+        b=rsKK6rbAYAiqifh8LhXS1YdjAp9NYCnrVBnqxDXeeDHPkXkVjrFtIaXuf0bO9vldaY
+         XTLN/9io74yTG1HpPu8yrr38SKhcOycy5u+Tc5vbQ6CjISXnL17i0IKFlOrGKezVK94M
+         WFLEEbx8e6r0SxponlANBHJLAd21E44zLw/HXeFDjvAWkdcS3Abnvfnpwr9lPUrrDBRq
+         FTQkZ6QelqhadvtgIN5Lv6GQsdXZP5QxgTH2iIQ/LUYa6awa34vMDm6uFwccnyeHnqzi
+         FbILyWx0w55rNwvnuLEMEV9k9KbkHHKHHUW4SocqFUrRzwOfaXtrvsvp1jQsMeoSxx93
+         86NA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698431009; x=1699035809;
+        d=1e100.net; s=20230601; t=1698431005; x=1699035805;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:reply-to:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=rHCSEdVT91A5ySy8HWpIrikDyrYgztwmDmnD7EhGGWM=;
-        b=jzvUZH+Fqw8WSzDgoB/HaVb1DDcrJwZPVT0pUQVhK0BrEs7dV8hFlfPz5IKrRaCE3p
-         HQRlGRXMhpdHD40Jg+qG7pmMtmFLJSD600BDt8P9HbnL4pi+L54Ei9gjQ6tV3bkinyOy
-         WWrkcbzAy5YXO1G8Kb2KxBJVI0Dc0VfTjSeoe8/ec1F8HMnl+YaOgdD1k02gzaofrDeX
-         NRj5b39QJzDSEwDLBUhb0AFA1fhkqt/evvS0B18xN3jWKOetGoVRSk12o+KJQZYUX6kz
-         E7UArM4OAp16f9WVNl2wYpnFjyT3V1HV4g/bpawWWiemwphGAKHGMUGas4e6d7/rfzPz
-         9XUQ==
-X-Gm-Message-State: AOJu0YxloX07Kzx9pvcz+fYi5kagBxnHEzONJw4uGUo1h+ihxh3tAd/r
-        ZrU+oE+pZCET0iGKPhl+EU33Cm1Wxu0=
-X-Google-Smtp-Source: AGHT+IGBlPG7wn0887XfDb8cENXXLGU58G9yJP5jBeCkKIucbC9oYDwWXkdT4FgaevehYCQITd+4fshLciA=
+        bh=zYKW06Y9tS7nzBZmp5ooZeVm0pRKPQ996s+RZNHFHDA=;
+        b=ujX/pQSkB73AQ//6/8UC8Z1EalkiM5EaejlSRNaCt0v6BISBC1zWcJAt3+4YVMar27
+         S7IADZTxlMwbbq/UYdPKziUiyFg9dVHuUaDr+hA/C0jTADae6Z60le7OTbclhhAm9W2r
+         OHuY8+sR12FEWbsWxdsOqm2B0GfA2gGsNvLJdfgjLcWrTfkXGsaIBhRc89c8bRB9Akza
+         hVeeCP0JY4mqN96o+r9WwmCTRnkj4eAZaxcPntbFUtA6Jp2EURIbtL9DLxlU4K1bQcin
+         m/dwbIFLsY7fxQPQh44DKH8EMOIJ4Zs7JRBr96C/TzuxpUIaC4ZBawNf5lh+S0sByLU9
+         H2IA==
+X-Gm-Message-State: AOJu0Yy0zpZDMk0dW86ZkxufAeIqJeM4nWv6gxn+YrdtU4jPMmnyblf5
+        NfixlfY/kHutv+Z5Jz834lljKbGyqfk=
+X-Google-Smtp-Source: AGHT+IErWdjWWNGtxZOL2jGOuLZz5+Zkhfhc0XQVVHxJSZZLCXWd4MbZY0rGLoG0iR2uIHcgyGOCoD0Mx1Q=
 X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a05:6902:565:b0:da0:c979:fd70 with SMTP id
- a5-20020a056902056500b00da0c979fd70mr69913ybt.9.1698431009012; Fri, 27 Oct
- 2023 11:23:29 -0700 (PDT)
+ (user=seanjc job=sendgmr) by 2002:a0d:ca0f:0:b0:59b:e663:23b0 with SMTP id
+ m15-20020a0dca0f000000b0059be66323b0mr102891ywd.4.1698431004987; Fri, 27 Oct
+ 2023 11:23:24 -0700 (PDT)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Fri, 27 Oct 2023 11:22:14 -0700
+Date:   Fri, 27 Oct 2023 11:22:12 -0700
 In-Reply-To: <20231027182217.3615211-1-seanjc@google.com>
 Mime-Version: 1.0
 References: <20231027182217.3615211-1-seanjc@google.com>
 X-Mailer: git-send-email 2.42.0.820.g83a721a137-goog
-Message-ID: <20231027182217.3615211-33-seanjc@google.com>
-Subject: [PATCH v13 32/35] KVM: selftests: Add KVM_SET_USER_MEMORY_REGION2 helper
+Message-ID: <20231027182217.3615211-31-seanjc@google.com>
+Subject: [PATCH v13 30/35] KVM: selftests: Add GUEST_SYNC[1-6] macros for
+ synchronizing more data
 From:   Sean Christopherson <seanjc@google.com>
 To:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
         Oliver Upton <oliver.upton@linux.dev>,
@@ -99,81 +100,37 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-From: Chao Peng <chao.p.peng@linux.intel.com>
+Add GUEST_SYNC[1-6]() so that tests can pass the maximum amount of
+information supported via ucall(), without needing to resort to shared
+memory.
 
-Add helpers to invoke KVM_SET_USER_MEMORY_REGION2 directly so that tests
-can validate of features that are unique to "version 2" of "set user
-memory region", e.g. do negative testing on gmem_fd and gmem_offset.
-
-Provide a raw version as well as an assert-success version to reduce
-the amount of boilerplate code need for basic usage.
-
-Signed-off-by: Chao Peng <chao.p.peng@linux.intel.com>
-Signed-off-by: Ackerley Tng <ackerleytng@google.com>
 Signed-off-by: Sean Christopherson <seanjc@google.com>
 ---
- .../selftests/kvm/include/kvm_util_base.h     |  7 +++++
- tools/testing/selftests/kvm/lib/kvm_util.c    | 29 +++++++++++++++++++
- 2 files changed, 36 insertions(+)
+ tools/testing/selftests/kvm/include/ucall_common.h | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
-diff --git a/tools/testing/selftests/kvm/include/kvm_util_base.h b/tools/testing/selftests/kvm/include/kvm_util_base.h
-index 157508c071f3..8ec122f5fcc8 100644
---- a/tools/testing/selftests/kvm/include/kvm_util_base.h
-+++ b/tools/testing/selftests/kvm/include/kvm_util_base.h
-@@ -522,6 +522,13 @@ void vm_set_user_memory_region(struct kvm_vm *vm, uint32_t slot, uint32_t flags,
- 			       uint64_t gpa, uint64_t size, void *hva);
- int __vm_set_user_memory_region(struct kvm_vm *vm, uint32_t slot, uint32_t flags,
- 				uint64_t gpa, uint64_t size, void *hva);
-+void vm_set_user_memory_region2(struct kvm_vm *vm, uint32_t slot, uint32_t flags,
-+				uint64_t gpa, uint64_t size, void *hva,
-+				uint32_t guest_memfd, uint64_t guest_memfd_offset);
-+int __vm_set_user_memory_region2(struct kvm_vm *vm, uint32_t slot, uint32_t flags,
-+				 uint64_t gpa, uint64_t size, void *hva,
-+				 uint32_t guest_memfd, uint64_t guest_memfd_offset);
+diff --git a/tools/testing/selftests/kvm/include/ucall_common.h b/tools/testing/selftests/kvm/include/ucall_common.h
+index ce33d306c2cb..0fb472a5a058 100644
+--- a/tools/testing/selftests/kvm/include/ucall_common.h
++++ b/tools/testing/selftests/kvm/include/ucall_common.h
+@@ -52,6 +52,17 @@ int ucall_nr_pages_required(uint64_t page_size);
+ #define GUEST_SYNC_ARGS(stage, arg1, arg2, arg3, arg4)	\
+ 				ucall(UCALL_SYNC, 6, "hello", stage, arg1, arg2, arg3, arg4)
+ #define GUEST_SYNC(stage)	ucall(UCALL_SYNC, 2, "hello", stage)
++#define GUEST_SYNC1(arg0)	ucall(UCALL_SYNC, 1, arg0)
++#define GUEST_SYNC2(arg0, arg1)	ucall(UCALL_SYNC, 2, arg0, arg1)
++#define GUEST_SYNC3(arg0, arg1, arg2) \
++				ucall(UCALL_SYNC, 3, arg0, arg1, arg2)
++#define GUEST_SYNC4(arg0, arg1, arg2, arg3) \
++				ucall(UCALL_SYNC, 4, arg0, arg1, arg2, arg3)
++#define GUEST_SYNC5(arg0, arg1, arg2, arg3, arg4) \
++				ucall(UCALL_SYNC, 5, arg0, arg1, arg2, arg3, arg4)
++#define GUEST_SYNC6(arg0, arg1, arg2, arg3, arg4, arg5) \
++				ucall(UCALL_SYNC, 6, arg0, arg1, arg2, arg3, arg4, arg5)
 +
- void vm_userspace_mem_region_add(struct kvm_vm *vm,
- 	enum vm_mem_backing_src_type src_type,
- 	uint64_t guest_paddr, uint32_t slot, uint64_t npages,
-diff --git a/tools/testing/selftests/kvm/lib/kvm_util.c b/tools/testing/selftests/kvm/lib/kvm_util.c
-index 52b131e3aca5..1620452c1cf7 100644
---- a/tools/testing/selftests/kvm/lib/kvm_util.c
-+++ b/tools/testing/selftests/kvm/lib/kvm_util.c
-@@ -873,6 +873,35 @@ void vm_set_user_memory_region(struct kvm_vm *vm, uint32_t slot, uint32_t flags,
- 		    errno, strerror(errno));
- }
+ #define GUEST_PRINTF(_fmt, _args...) ucall_fmt(UCALL_PRINTF, _fmt, ##_args)
+ #define GUEST_DONE()		ucall(UCALL_DONE, 0)
  
-+int __vm_set_user_memory_region2(struct kvm_vm *vm, uint32_t slot, uint32_t flags,
-+				 uint64_t gpa, uint64_t size, void *hva,
-+				 uint32_t guest_memfd, uint64_t guest_memfd_offset)
-+{
-+	struct kvm_userspace_memory_region2 region = {
-+		.slot = slot,
-+		.flags = flags,
-+		.guest_phys_addr = gpa,
-+		.memory_size = size,
-+		.userspace_addr = (uintptr_t)hva,
-+		.guest_memfd = guest_memfd,
-+		.guest_memfd_offset = guest_memfd_offset,
-+	};
-+
-+	return ioctl(vm->fd, KVM_SET_USER_MEMORY_REGION2, &region);
-+}
-+
-+void vm_set_user_memory_region2(struct kvm_vm *vm, uint32_t slot, uint32_t flags,
-+				uint64_t gpa, uint64_t size, void *hva,
-+				uint32_t guest_memfd, uint64_t guest_memfd_offset)
-+{
-+	int ret = __vm_set_user_memory_region2(vm, slot, flags, gpa, size, hva,
-+					       guest_memfd, guest_memfd_offset);
-+
-+	TEST_ASSERT(!ret, "KVM_SET_USER_MEMORY_REGION2 failed, errno = %d (%s)",
-+		    errno, strerror(errno));
-+}
-+
-+
- /* FIXME: This thing needs to be ripped apart and rewritten. */
- void vm_mem_add(struct kvm_vm *vm, enum vm_mem_backing_src_type src_type,
- 		uint64_t guest_paddr, uint32_t slot, uint64_t npages,
 -- 
 2.42.0.820.g83a721a137-goog
 

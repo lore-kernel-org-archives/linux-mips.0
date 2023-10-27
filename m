@@ -2,145 +2,186 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EEBCEC25B72
-	for <linux-mips@archiver.kernel.org>; Fri, 27 Oct 2023 22:11:22 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 70D45C25B48
+	for <linux-mips@archiver.kernel.org>; Fri, 27 Oct 2023 22:11:24 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346583AbjJ0WLX (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        id S1346644AbjJ0WLX (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
         Fri, 27 Oct 2023 18:11:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51534 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51540 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346636AbjJ0WLV (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Fri, 27 Oct 2023 18:11:21 -0400
+        with ESMTP id S1346630AbjJ0WLW (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Fri, 27 Oct 2023 18:11:22 -0400
 Received: from wout4-smtp.messagingengine.com (wout4-smtp.messagingengine.com [64.147.123.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E66AF1B8;
-        Fri, 27 Oct 2023 15:11:19 -0700 (PDT)
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailout.west.internal (Postfix) with ESMTP id 665E932008FB;
-        Fri, 27 Oct 2023 18:11:11 -0400 (EDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D4651B9;
+        Fri, 27 Oct 2023 15:11:20 -0700 (PDT)
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailout.west.internal (Postfix) with ESMTP id 0D05E3200930;
+        Fri, 27 Oct 2023 18:11:18 -0400 (EDT)
 Received: from mailfrontend1 ([10.202.2.162])
-  by compute5.internal (MEProxy); Fri, 27 Oct 2023 18:11:11 -0400
+  by compute4.internal (MEProxy); Fri, 27 Oct 2023 18:11:19 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=flygoat.com; h=
         cc:cc:content-transfer-encoding:content-type:date:date:from:from
-        :in-reply-to:message-id:mime-version:reply-to:sender:subject
-        :subject:to:to; s=fm1; t=1698444670; x=1698531070; bh=+pfzMKfDeQ
-        MzwHOXJDWiQZICV087zj2gVTi0fZPI8qs=; b=DlDiXG06ZTpS7+rF7PHhLhBPke
-        vPw3vAnkgNQvrzJJ5/tZAf7oOe9Ae/yoYrQoJorQXD3ah8Hvmw4oanD95umtHXqK
-        geRq4C6Ou4QRinj6vZ27OqYwAjTtcREVEjel1WNdUubtsnp1lbseHdf4knYiNHv7
-        lVDaGypXMLK8nIdnTvDHMSe7SkYxuUdQMA/oN2sAA7EnW+xV1GlBWT57VVUXUopm
-        sVZOHTymsWdAAT4BL9lZZzOmgSnqGcUTatVh5wstIdMGK8jrtKt9VhDIvMlUX7yo
-        EIVWGQv0YfmgCpbT+VJti/CuY3RGKz3plE/R6qN7x+/ZOzKeEi9SeUTVDIfA==
+        :in-reply-to:in-reply-to:message-id:mime-version:references
+        :reply-to:sender:subject:subject:to:to; s=fm1; t=1698444678; x=
+        1698531078; bh=JcLDvuqq+aysWCP3Ln7wvhxjBzjiN4xGl+qlurq8eWo=; b=I
+        HoYk5b3fVp4rsN5Fq+3FfYElLjRacfsGjWAOBn+q/4r9URgWVxABRQAHygc7PKm8
+        BBz11S7wsWLaZ79RrRf9Jk5AGQ2sShaMD2oMGfSzGE5BpvLdKZrnpWiig3GFjMXn
+        CNRsksMOv1eA/AHxozvixxATwtzNKsezZl7q2Zw2Ra3Xo7USVEmmSYU6YRhV5klh
+        gyRG9TMjnKukgbuHxp6MfRlPXS5OwNwaIhMgu31Of9ljT66o9SpiBxiFtWQT78vD
+        T7zpQ9ICItVdoDCovppnkDKSBo0ocp25NemDmjl+kfALb4x1yx8ScUuGjYlw+xox
+        WYWgzVTvCu5Ue6V7cvcTg==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:cc:content-transfer-encoding
         :content-type:date:date:feedback-id:feedback-id:from:from
-        :in-reply-to:message-id:mime-version:reply-to:sender:subject
-        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm3; t=1698444670; x=1698531070; bh=+pfzMKfDeQMzw
-        HOXJDWiQZICV087zj2gVTi0fZPI8qs=; b=s9Q/EuMYvqX25dUrxABgywfoOe0jZ
-        /KS0NViMkVHM6vuY92nZ4O7J3JHZ2sns3pPAUsEKZNkEpvv7X+ytq56Il0UTiXzz
-        V00oikWpuKDlA1ip4iypQQaEsNKZwqpAL2ioEi7D0VN8zfJjTVAZtVWbmSJNSuaW
-        NNpaeJOxZmEMSTgeyC8FDAqacenUnVllaoW1wFJ88da3zGQu+K9ECo2JiMDdZKPe
-        5xmi4lSLZmMSTZGmgadHcarkAYWKCTJFPtZfFdIRpiGgMTmABx+DXPbTMrUqjnK6
-        jPkBvARayTKj4gBa4IWNTzVRlNIZEtmLkql58suPlf/LUDZCPJP1yCE1A==
-X-ME-Sender: <xms:fjU8ZViwRGx-FfAbbZgaAlAPckfOfDD4vHEBaXNS13H13mF5NwxxXA>
-    <xme:fjU8ZaBBxPiCTCSlGeLEUrSDnxiH9gIl6MEMnJ-lpIGpZWcgtRMdEkQ8Zp-OgQZxy
-    lLchyNyJU_KaHgVilU>
-X-ME-Received: <xmr:fjU8ZVEJZnWqv4aLbhhl710OAfGvBlFS7E3huGuDo4Av0N7s6xpSQlZoaluG36O1LmNsGJwobLs>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrleehgddtiecutefuodetggdotefrodftvf
+        :in-reply-to:in-reply-to:message-id:mime-version:references
+        :reply-to:sender:subject:subject:to:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=1698444678; x=
+        1698531078; bh=JcLDvuqq+aysWCP3Ln7wvhxjBzjiN4xGl+qlurq8eWo=; b=n
+        929qJ+dflF17rVICz5mADaJbZqcxuvXiB0RCM2k2fdJAcIAYlUXgO/D6RfVpZiX1
+        Q6+RtWMBnkXXc/ykAmUy0MF/GOD4yhKru5dlRRJRdOMt1FEL1ROcTHublV1ym+fy
+        evMECJZ/92eLmr819kD1QJZLGMOHiOyuZDbSHfBVNQ9YBpNhsTKrpozsk6xOOsHZ
+        sq+Bt8deQUtJ4N7NVzy4++ehVwoZO7aRS0VkgZHuoo/twh3F2LDjDesI3M0hxRiE
+        LPVJCNsru+vGIlB+n29aChgelrg5pHSWkny5cXJE5F7cJOuLnspjx7fASjsO46dV
+        Dv8jdUdUJ6T6+FmTzVdFg==
+X-ME-Sender: <xms:hjU8ZfX1wAcfzAM5BrJij1f1-clfrsxiIowA8K_zYWq7abjBoI_4Tg>
+    <xme:hjU8ZXnz9CUYe5vncjW6tVhDbV11ha7mkjUSWN9lRev9PH36BEu--YmIikq5T3O3u
+    hHGJc1DWGEs1WbeafU>
+X-ME-Received: <xmr:hjU8Zba49pQ2EHyTuE5RnuaKBA-5Q2G9d0WhKKtx5zaaEqW7-kRr9ZG35bOmxnwZ3tdEEKK1CFY>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrleehgddtjecutefuodetggdotefrodftvf
     curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecunecujfgurhephffvvefufffkofgggfestdekredtre
-    dttdenucfhrhhomheplfhirgiguhhnucgjrghnghcuoehjihgrgihunhdrhigrnhhgsehf
-    lhihghhorghtrdgtohhmqeenucggtffrrghtthgvrhhnpedvueetkeeluedugfeuteehtd
-    dutdfhtdelffeghfeiheefieegvddtueevteeiudenucffohhmrghinhepkhgvrhhnvghl
-    rdhorhhgnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
+    uegrihhlohhuthemuceftddtnecunecujfgurhephffvvefufffkofgjfhgggfestdekre
+    dtredttdenucfhrhhomheplfhirgiguhhnucgjrghnghcuoehjihgrgihunhdrhigrnhhg
+    sehflhihghhorghtrdgtohhmqeenucggtffrrghtthgvrhhnpeeiveekveegleffhfeufe
+    egteekheffffdutddvleeigeehvdehgeekvdduledthfenucffohhmrghinhepghgvnhgv
+    gidrshgsnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
     epjhhirgiguhhnrdihrghnghesfhhlhihgohgrthdrtghomh
-X-ME-Proxy: <xmx:fjU8ZaQpYMJjw5T9BfqZvYuudFxOCSLCytLt_K6YD1bdBZw-9ADNTw>
-    <xmx:fjU8ZSzXzv8b-v7JnYrNCjH4XEEEUkuf3NS7Ee42H6t5t0df-VsyKw>
-    <xmx:fjU8ZQ7C2cX9FUtP30SkcF1tbSKEJw9rbC9WO6asv2MtVuTuKJT9yQ>
-    <xmx:fjU8ZcsH1PnJsa5UlmxXlTsKidy5ZiU9TpjY4TzjDDP3n5udum9XOw>
+X-ME-Proxy: <xmx:hjU8ZaWVq3elbVQgOnqmWMUQLQ-833NeADM36gnINraD0GYHg8JZDw>
+    <xmx:hjU8ZZm54GJMT8rivhYO1ldTSw3VupL-5T-h7eibsmiZfI0LFn4RkQ>
+    <xmx:hjU8ZXcYYUiX-qWVb-beprrNa8UmWEcFVEZye_O8oHGAUudTYcW75g>
+    <xmx:hjU8ZSCqHwltXOHE62-ww2sqYdG7sPjbKO6gH3Ko9WLpT4kBRFPj9g>
 Feedback-ID: ifd894703:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 27 Oct 2023 18:11:09 -0400 (EDT)
+ 27 Oct 2023 18:11:17 -0400 (EDT)
 From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
 To:     linux-mips@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, tsbogend@alpha.franken.de,
         gregory.clement@bootlin.com, vladimir.kondratiev@intel.com,
         Jiaxun Yang <jiaxun.yang@flygoat.com>
-Subject: [PATCH v2 00/10] MIPS: Fix kernel in XKPHYS
-Date:   Fri, 27 Oct 2023 23:10:56 +0100
-Message-Id: <20231027221106.405666-1-jiaxun.yang@flygoat.com>
+Subject: [PATCH v2 03/10] MIPS: genex: Fix except_vec_vi for kernel in XKPHYS
+Date:   Fri, 27 Oct 2023 23:10:59 +0100
+Message-Id: <20231027221106.405666-4-jiaxun.yang@flygoat.com>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20231027221106.405666-1-jiaxun.yang@flygoat.com>
+References: <20231027221106.405666-1-jiaxun.yang@flygoat.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Hi all,
+Use {highest, higher, hi, lo} immediate loading sequence
+to load 64 bit jump address for handler when kernel is
+loaded to XKPHYS.
 
-This series fixes support for loading kernel to XKPHYS space.
-It is derived from "MIPS: use virtual addresses from xkphys for MIPS64" [1].
+Co-developed-by: Vladimir Kondratiev <vladimir.kondratiev@intel.com>
+Signed-off-by: Vladimir Kondratiev <vladimir.kondratiev@intel.com>
+Co-developed-by: Gregory CLEMENT <gregory.clement@bootlin.com>
+Signed-off-by: Gregory CLEMENT <gregory.clement@bootlin.com>
+Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+---
+ arch/mips/kernel/genex.S | 19 +++++++++++++++----
+ arch/mips/kernel/traps.c | 34 ++++++++++++++++++++++++----------
+ 2 files changed, 39 insertions(+), 14 deletions(-)
 
-Boot tested on boston and QEMU with loading address set to 0xa800000090000000.
-QEMU patch on the way.
-
-For EyeQ5's memory layout, I think you just need to write devicetree memory
-node as:
-
-memory@0 {
-	device_type = "memory";
-	reg = < 0x0 0x08000000 0x0 0x08000000
-		0x8 0x08000000 0x0 0x78000000>;
-};
-
-And set kernel load addesss to somewhere in RAM, everything should work.
-
-It makes me a little bit confused that in EyeQ5 enablement patch, you set
-load address to:
-> +else
-> +load-$(CONFIG_MIPS_GENERIC)	+= 0xa800000080100000
-> +endif
-Where does not have memory aviailable.
-
-I guess you might want to set it to 0xa800000800100000?
-Though I would suggest you to set it to 0xa800000808000000, to avoid
-collisions with low mem and reserved mem.
-
-Gregory and Vladimir, do let me know if I missed anything.
-
-Thanks
-- Jiaxun
-
-[1]: https://lore.kernel.org/lkml/20231004161038.2818327-3-gregory.clement@bootlin.com/
-
-Jiaxun Yang (10):
-  MIPS: Export higher/highest relocation functions in uasm
-  MIPS: spaces: Define a couple of handy macros
-  MIPS: genex: Fix except_vec_vi for kernel in XKPHYS
-  MIPS: Fix set_uncached_handler for ebase in XKPHYS
-  MIPS: Refactor mips_cps_core_entry implementation
-  MIPS: Allow kernel base to be set from Kconfig for all platforms
-  MIPS: traps: Handle CPU with non standard vint offset
-  MIPS: Avoid unnecessary reservation of exception space
-  MIPS: traps: Enhance memblock ebase allocation process
-  MIPS: Get rid of CONFIG_NO_EXCEPT_FILL
-
- arch/mips/Kconfig                           |  27 ++--
- arch/mips/include/asm/addrspace.h           |   5 +
- arch/mips/include/asm/mach-generic/spaces.h |   5 +-
- arch/mips/include/asm/mips-cm.h             |   1 +
- arch/mips/include/asm/smp-cps.h             |   4 +-
- arch/mips/include/asm/traps.h               |   1 -
- arch/mips/include/asm/uasm.h                |   2 +
- arch/mips/kernel/cps-vec.S                  | 110 +++++--------
- arch/mips/kernel/cpu-probe.c                |   5 -
- arch/mips/kernel/cpu-r3k-probe.c            |   2 -
- arch/mips/kernel/genex.S                    |  19 ++-
- arch/mips/kernel/head.S                     |   7 +-
- arch/mips/kernel/smp-cps.c                  | 167 +++++++++++++++++---
- arch/mips/kernel/traps.c                    |  85 +++++++---
- arch/mips/mm/uasm.c                         |   6 +-
- 15 files changed, 293 insertions(+), 153 deletions(-)
-
+diff --git a/arch/mips/kernel/genex.S b/arch/mips/kernel/genex.S
+index b6de8e88c1bd..fd765ad9ecac 100644
+--- a/arch/mips/kernel/genex.S
++++ b/arch/mips/kernel/genex.S
+@@ -272,11 +272,22 @@ NESTED(except_vec_vi, 0, sp)
+ 	.set	push
+ 	.set	noreorder
+ 	PTR_LA	v1, except_vec_vi_handler
+-FEXPORT(except_vec_vi_lui)
+-	lui	v0, 0		/* Patched */
++#if defined(CONFIG_32BIT) || defined(KBUILD_64BIT_SYM32)
++FEXPORT(except_vec_vi_hi)
++	lui	v0, 0			/* Patched */
++#else
++FEXPORT(except_vec_vi_highest)
++	lui	v0, 0			/* Patched */
++FEXPORT(except_vec_vi_higher)
++	daddiu	v0, 0			/* Patched */
++	dsll	v0, 16
++FEXPORT(except_vec_vi_hi)
++	daddiu	v0, 0			/* Patched */
++	dsll	v0, 16
++#endif
+ 	jr	v1
+-FEXPORT(except_vec_vi_ori)
+-	 ori	v0, 0		/* Patched */
++FEXPORT(except_vec_vi_lo)
++	PTR_ADDIU	v0, 0		/* Patched */
+ 	.set	pop
+ 	END(except_vec_vi)
+ EXPORT(except_vec_vi_end)
+diff --git a/arch/mips/kernel/traps.c b/arch/mips/kernel/traps.c
+index 246c6a6b0261..60c513c51684 100644
+--- a/arch/mips/kernel/traps.c
++++ b/arch/mips/kernel/traps.c
+@@ -2091,18 +2091,26 @@ static void *set_vi_srs_handler(int n, vi_handler_t addr, int srs)
+ 		 * If no shadow set is selected then use the default handler
+ 		 * that does normal register saving and standard interrupt exit
+ 		 */
+-		extern const u8 except_vec_vi[], except_vec_vi_lui[];
+-		extern const u8 except_vec_vi_ori[], except_vec_vi_end[];
++		extern const u8 except_vec_vi[], except_vec_vi_hi[];
++		extern const u8 except_vec_vi_lo[], except_vec_vi_end[];
++#if defined(CONFIG_64BIT) && !defined(KBUILD_64BIT_SYM32)
++		extern const u8 except_vec_vi_highest[], except_vec_vi_higher[];
++#endif
+ 		extern const u8 rollback_except_vec_vi[];
+ 		const u8 *vec_start = using_rollback_handler() ?
+ 				      rollback_except_vec_vi : except_vec_vi;
+ #if defined(CONFIG_CPU_MICROMIPS) || defined(CONFIG_CPU_BIG_ENDIAN)
+-		const int lui_offset = except_vec_vi_lui - vec_start + 2;
+-		const int ori_offset = except_vec_vi_ori - vec_start + 2;
++		const int imm_offset = 2;
+ #else
+-		const int lui_offset = except_vec_vi_lui - vec_start;
+-		const int ori_offset = except_vec_vi_ori - vec_start;
++		const int imm_offset = 0;
++#endif
++#if defined(CONFIG_64BIT) && !defined(KBUILD_64BIT_SYM32)
++		const int highest_offset = except_vec_vi_highest - vec_start + imm_offset;
++		const int higher_offset = except_vec_vi_higher - vec_start + imm_offset;
+ #endif
++		const int hi_offset = except_vec_vi_hi - vec_start + imm_offset;
++		const int lo_offset = except_vec_vi_lo - vec_start + imm_offset;
++
+ 		const int handler_len = except_vec_vi_end - vec_start;
+ 
+ 		if (handler_len > VECTORSPACING) {
+@@ -2119,10 +2127,16 @@ static void *set_vi_srs_handler(int n, vi_handler_t addr, int srs)
+ #else
+ 				handler_len);
+ #endif
+-		h = (u16 *)(b + lui_offset);
+-		*h = (handler >> 16) & 0xffff;
+-		h = (u16 *)(b + ori_offset);
+-		*h = (handler & 0xffff);
++#if defined(CONFIG_64BIT) && !defined(KBUILD_64BIT_SYM32)
++		h = (u16 *)(b + highest_offset);
++		*h = uasm_rel_highest(handler);
++		h = (u16 *)(b + higher_offset);
++		*h = uasm_rel_higher(handler);
++#endif
++		h = (u16 *)(b + hi_offset);
++		*h = uasm_rel_hi(handler);
++		h = (u16 *)(b + lo_offset);
++		*h = uasm_rel_lo(handler);
+ 		local_flush_icache_range((unsigned long)b,
+ 					 (unsigned long)(b+handler_len));
+ 	}
 -- 
 2.34.1
 

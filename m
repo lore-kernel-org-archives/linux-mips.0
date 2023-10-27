@@ -2,138 +2,217 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2F6A1C25B6B
-	for <linux-mips@archiver.kernel.org>; Thu, 26 Oct 2023 11:36:59 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 2BDF9C25B6F
+	for <linux-mips@archiver.kernel.org>; Fri, 27 Oct 2023 18:22:31 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230105AbjJZLg7 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 26 Oct 2023 07:36:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55046 "EHLO
+        id S232483AbjJ0SWb (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 27 Oct 2023 14:22:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47654 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231127AbjJZLg5 (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Thu, 26 Oct 2023 07:36:57 -0400
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABAFF1A6
-        for <linux-mips@vger.kernel.org>; Thu, 26 Oct 2023 04:36:50 -0700 (PDT)
-Received: by mail-ej1-x632.google.com with SMTP id a640c23a62f3a-9be7e3fa1daso127134166b.3
-        for <linux-mips@vger.kernel.org>; Thu, 26 Oct 2023 04:36:50 -0700 (PDT)
+        with ESMTP id S230101AbjJ0SWa (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Fri, 27 Oct 2023 14:22:30 -0400
+Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29B85AC
+        for <linux-mips@vger.kernel.org>; Fri, 27 Oct 2023 11:22:28 -0700 (PDT)
+Received: by mail-pl1-x649.google.com with SMTP id d9443c01a7336-1c9f973d319so23488775ad.0
+        for <linux-mips@vger.kernel.org>; Fri, 27 Oct 2023 11:22:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1698320209; x=1698925009; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=xWYalsuNl0GeQaeoBCkFUvRNJn+nLsde/vTacVego88=;
-        b=yTIgMX5bryGl0i1x9TUOkBQE9Gc2luBG5YqBBRiGfhFJk3JxwQ0NIRnJMMpA/MJbd/
-         IzEWyz9lS9kTjQmOYxziERNjb1plnPEwfAWfb4FptCkH+EDqtU+IXZefPA/rBVsztnq/
-         neseqPHXCpq1BRrfrkY+KPzCkKV5HVeBuG9X91I+Aluc4P/CKlfK4jfYqI7dp4/diiwM
-         C7/jAxiBWPAOqTGQqhO80fDiXQtR6xaGeZcPDWr1LPS4h4dvSjEb91MkNhO0mGyKO8gk
-         UcLBsQWtom4LchH3H7xP6wrorVEPg7DYy5Dmiu0VEC25u+7LEjXRI0upyp+9kYsVlN8b
-         GOJg==
+        d=google.com; s=20230601; t=1698430947; x=1699035747; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:reply-to:from:to:cc:subject:date:message-id:reply-to;
+        bh=ySJgJVuGTMb9d8TKULAih8JyrrSd4YVeUb9Jc+6kES0=;
+        b=s0jU3Rgpw7Sefpwq7Aoxxr4+RVgqsmAczpwZnarGUs2RS98QnByA3C5i80GMz3YEhY
+         qS12VS7IWyeVBLqP9Zdvj6K1vZ+UU4LHH/sxr+jOHxQfwMj0OSmYJSwNa1BH601Rtpj1
+         riFTpK8dqTlZY0liKk4y7VyhLvbhwrePGU8EclNb93exDl//evBoAzVdKQetLr8+j7BZ
+         uSlfO+A9jXtDULNLK/XgmIT5zz+u7iSzKIzKEwi73cdyE9FsQj2SbIll4EPvpvGFMq3q
+         kHOrLt/1QQAzqW6fwLU4b6nHJnpPaACtmwLFqbRQ4nc3Il3U4UYbke0V5OCgZgqxrnUU
+         r/rA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698320209; x=1698925009;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=xWYalsuNl0GeQaeoBCkFUvRNJn+nLsde/vTacVego88=;
-        b=Z28IA3lDLU6r4APd14MFaX3kOJhoJ7tqhf62L7jhGXSiM0sksXRxRnYoFkOSR29XHf
-         wfR1TJfgygfAokPOdRwbtPeumzN0Acvnh1zVlrrocUU4JLXYdXfERCgEEasaZMNOQcS1
-         TEOxF2LFqUDApBcIfR5Bd/r2gJvi/ifuyp606BOLQLrC04RXTwPKiMuzQeTAP0YA/EUN
-         DnfVC31RhUl04klnn6lA1FGY2c7/s1X9++XlUCZyaimbotG8SjRJPl5fXrA4X/l7+ZRd
-         qKHWFpkeTk6qiteiVAFBLkuTu7Ty9d0TPir95MvKh1IKw2/y1tM1StxAz1EKgyEXBGjw
-         j+jQ==
-X-Gm-Message-State: AOJu0YyMNGmECbx7HaVJF6w4K8WMH5BQrlgpuBuKb/FPSBncqXmSLLk1
-        3XFu0gyUXXuMBE5q1OwuS0RGzw==
-X-Google-Smtp-Source: AGHT+IHXwIFVuNxcH7UCbPkIezQHWYd4SBnppICs6qQor099TsfDj9s962Ec5yeaukOYXULEnOSmkA==
-X-Received: by 2002:a17:907:31ce:b0:9be:ef46:6b9c with SMTP id xf14-20020a17090731ce00b009beef466b9cmr15859738ejb.70.1698320208894;
-        Thu, 26 Oct 2023 04:36:48 -0700 (PDT)
-Received: from [192.168.69.115] (aif79-h01-176-172-114-150.dsl.sta.abo.bbox.fr. [176.172.114.150])
-        by smtp.gmail.com with ESMTPSA id s22-20020a170906221600b009ce03057c48sm2209258ejs.214.2023.10.26.04.36.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 26 Oct 2023 04:36:48 -0700 (PDT)
-Message-ID: <b50e4d3a-5b9b-4f3e-5660-69ec96831790@linaro.org>
-Date:   Thu, 26 Oct 2023 13:36:46 +0200
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.15.1
-Subject: Re: [PATCH] MIPS: process: Remove lazy context flags for new kernel
- thread
-Content-Language: en-US
-To:     Jiaxun Yang <jiaxun.yang@flygoat.com>, linux-mips@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, tsbogend@alpha.franken.de,
-        syq@debian.org, stable@vger.kernel.org,
-        Aurelien Jarno <aurel32@debian.org>
-References: <20231026111715.1281728-1-jiaxun.yang@flygoat.com>
-From:   =?UTF-8?Q?Philippe_Mathieu-Daud=c3=a9?= <philmd@linaro.org>
-In-Reply-To: <20231026111715.1281728-1-jiaxun.yang@flygoat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+        d=1e100.net; s=20230601; t=1698430947; x=1699035747;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:reply-to:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ySJgJVuGTMb9d8TKULAih8JyrrSd4YVeUb9Jc+6kES0=;
+        b=iezfUKgJ4n5oLZ/m4fE9hL3vh/HsPrvyv8MPa1DU9tVU5r8rGG+u3wL00l8D4jgywy
+         9PbFQ3NAnP4XDkRdB1LnH1t60sZl4vDH5oNOmELGBTw5LM7+aWNxUAcMEy00M56RrIu7
+         2CKHkovg3Rs+nPDzW0coxh7yisMPtOJjASJDWVVKiiOqbYgbUbOvh2C1eXuoLBqAaOaN
+         gNs1xuEqcs2VWZeiYkyNsDibKYqKzaNcOw5XRelUN8kcT4vxMD+fsuV4cKNIcnvj2cpc
+         0HTvnJu5X/e0E4egGe/uAfxkfi6ArOd3d+r+NBysLxn3q2VH9CsmAe4O8AufXATF/980
+         gEqg==
+X-Gm-Message-State: AOJu0Yxm2kc18f7wsJcTyb9tM/qFed+wH7Mg0Uo4F/ANu8ImrjAKkb/U
+        tm6lOVadf7RaU/eFs/nXn81qIupFpic=
+X-Google-Smtp-Source: AGHT+IEjsuFrlNkUUm601K8PUP+r8R6hCJNbQUJrGpc/pHCXTUzh4iBnaMaTICwCQxjFnojaM1raJDMMRNs=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a17:902:ac8e:b0:1cc:30cf:eae6 with SMTP id
+ h14-20020a170902ac8e00b001cc30cfeae6mr955plr.10.1698430947671; Fri, 27 Oct
+ 2023 11:22:27 -0700 (PDT)
+Reply-To: Sean Christopherson <seanjc@google.com>
+Date:   Fri, 27 Oct 2023 11:21:43 -0700
+In-Reply-To: <20231027182217.3615211-1-seanjc@google.com>
+Mime-Version: 1.0
+References: <20231027182217.3615211-1-seanjc@google.com>
+X-Mailer: git-send-email 2.42.0.820.g83a721a137-goog
+Message-ID: <20231027182217.3615211-2-seanjc@google.com>
+Subject: [PATCH v13 01/35] KVM: Tweak kvm_hva_range and hva_handler_t to allow
+ reusing for gfn ranges
+From:   Sean Christopherson <seanjc@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Anup Patel <anup@brainfault.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Sean Christopherson <seanjc@google.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     kvm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        kvmarm@lists.linux.dev, linux-mips@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, kvm-riscv@lists.infradead.org,
+        linux-riscv@lists.infradead.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Xiaoyao Li <xiaoyao.li@intel.com>,
+        Xu Yilun <yilun.xu@intel.com>,
+        Chao Peng <chao.p.peng@linux.intel.com>,
+        Fuad Tabba <tabba@google.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Anish Moorthy <amoorthy@google.com>,
+        David Matlack <dmatlack@google.com>,
+        Yu Zhang <yu.c.zhang@linux.intel.com>,
+        Isaku Yamahata <isaku.yamahata@intel.com>,
+        "=?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?=" <mic@digikod.net>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Vishal Annapurve <vannapurve@google.com>,
+        Ackerley Tng <ackerleytng@google.com>,
+        Maciej Szmigiero <mail@maciej.szmigiero.name>,
+        David Hildenbrand <david@redhat.com>,
+        Quentin Perret <qperret@google.com>,
+        Michael Roth <michael.roth@amd.com>,
+        Wang <wei.w.wang@intel.com>,
+        Liam Merwick <liam.merwick@oracle.com>,
+        Isaku Yamahata <isaku.yamahata@gmail.com>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On 26/10/23 13:17, Jiaxun Yang wrote:
-> We received a report from debian infra team, says their build machine
-> crashes regularly with:
-> 
-> [ 4066.698500] do_cpu invoked from kernel context![#1]:
-> [ 4066.703455] CPU: 1 PID: 76608 Comm: iou-sqp-76326 Not tainted 5.10.0-21-loongson-3 #1 Debian 5.10.162-1
-> [ 4066.712793] Hardware name: Loongson Lemote-3A4000-7A-1w-V1.00-A1901/Lemote-3A4000-7A-1w-V1.00-A1901, BIOS Loongson-PMON-V3.3-20201222 12/22/2020
-> [ 4066.725672] $ 0   : 0000000000000000 ffffffff80bf2e48 0000000000000001 9800000200804000
-> [ 4066.733642] $ 4   : 9800000105115280 ffffffff80db4728 0000000000000008 0000020080000200
-> [ 4066.741607] $ 8   : 0000000000000001 0000000000000001 0000000000000000 0000000002e85400
-> [ 4066.749571] $12   : 000000005400cce0 ffffffff80199c00 000000000000036f 000000000000036f
-> [ 4066.757536] $16   : 980000010025c080 ffffffff80ec4740 0000000000000000 980000000234b8c0
-> [ 4066.765501] $20   : ffffffff80ec5ce0 9800000105115280 98000001051158a0 0000000000000000
-> [ 4066.773466] $24   : 0000000000000028 9800000200807e58
-> [ 4066.781431] $28   : 9800000200804000 9800000200807d40 980000000234b8c0 ffffffff80bf3074
-> [ 4066.789395] Hi    : 00000000000002fb
-> [ 4066.792943] Lo    : 00000000428f6816
-> [ 4066.796500] epc   : ffffffff802177c0 _save_fp+0x10/0xa0
-> [ 4066.801695] ra    : ffffffff80bf3074 __schedule+0x804/0xe08
-> [ 4066.807230] Status: 5400cce2 KX SX UX KERNEL EXL
-> [ 4066.811917] Cause : 1000002c (ExcCode 0b)
-> [ 4066.815899] PrId  : 0014c004 (ICT Loongson-3)
-> [ 4066.820228] Modules linked in: asix usbnet mii sg ip6t_REJECT nf_reject_ipv6 ip6table_filter ip6_tables nfnetlink_log nfnetlink xt_hashlimit ipt_REJECT nf_reject_ipv4 xt_NFLOG xt_multiport xt_tcpudp xt_state xt_conntrack nf_conntrack nf_defrag_ipv6 nf_defrag_ipv4 libcrc32c iptable_filter sch_fq tcp_bbr fuse drm drm_panel_orientation_quirks configfs ip_tables x_tables autofs4 ext4 crc16 mbcache jbd2 crc32c_generic ohci_pci dm_mod r8169 realtek mdio_devres ohci_hcd ehci_pci of_mdio xhci_pci fixed_phy xhci_hcd ehci_hcd libphy usbcore usb_common
-> [ 4066.868085] Process iou-sqp-76326 (pid: 76608, threadinfo=0000000056dd346c, task=000000001209ac62, tls=000000fff18298e0)
-> [ 4066.878897] Stack : ffffffff80ec0000 0000000000000000 ffffffff80ec0000 980000010db34100
-> [ 4066.886867]         9800000100000004 d253a55201683fdc 9800000105115280 0000000000000000
-> [ 4066.894832]         0000000000000000 0000000000000001 980000010db340e8 0000000000000001
-> [ 4066.902796]         0000000000000004 0000000000000000 980000010db33d28 ffffffff80bf36d0
-> [ 4066.910761]         980000010db340e8 980000010db34100 980000010db340c8 ffffffff8070d740
-> [ 4066.918726]         980000010946cc80 9800000104b56c80 980000010db340c0 0000000000000000
-> [ 4066.926690]         ffffffff80ec0000 980000010db340c8 980000010025c080 ffffffff80ec5ce0
-> [ 4066.934654]         0000000000000000 9800000105115280 ffffffff802c59b8 980000010db34108
-> [ 4066.942619]         980000010db34108 2d7071732d756f69 ffff003632333637 d253a55201683fdc
-> [ 4066.950585]         ffffffff8070d1c8 980000010db340c0 98000001092276c8 000000007400cce0
-> [ 4066.958552]         ...
-> [ 4066.960981] Call Trace:
-> [ 4066.963414] [<ffffffff802177c0>] _save_fp+0x10/0xa0
-> [ 4066.968270] [<ffffffff80bf3074>] __schedule+0x804/0xe08
-> [ 4066.973462] [<ffffffff80bf36d0>] schedule+0x58/0x150
-> [ 4066.978397] [<ffffffff8070d740>] io_sq_thread+0x578/0x5a0
-> [ 4066.983764] [<ffffffff8020518c>] ret_from_kernel_thread+0x14/0x1c
-> [ 4066.989823]
-> [ 4066.991297] Code: 000c6940  05a10011  00000000 <f4810af0> f4830b10  f4850b30  f4870b50  f4890b70  f48b0b90
-> 
-> It seems like kernel is trying to save a FP context for a kthread.
-> Since we don't use FPU in kernel for now, TIF_USEDFPU must be set
-> accidentally for that kthread.
-> 
-> Inspecting the code it seems like create_io_thread may be invoked
-> from threads that have FP context alive, causing TIF_USEDFPU to be
-> copied from that context to kthread unexpectedly.
-> 
-> Move around code blocks to ensure flags regarding lazy hardware
-> context get cleared for kernel threads as well.
-> 
-> Cc: stable@vger.kernel.org
-> Reported-by: Aurelien Jarno <aurel32@debian.org>
-> Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
-> ---
-> Folks, it might be helpful to check ST0_CU1 in is_fpu_owner
-> to catch this kind of problem in future, what's your opinion?
-> ---
->   arch/mips/kernel/process.c | 35 +++++++++++++++++------------------
->   1 file changed, 17 insertions(+), 18 deletions(-)
+Rework and rename "struct kvm_hva_range" into "kvm_mmu_notifier_range" so
+that the structure can be used to handle notifications that operate on gfn
+context, i.e. that aren't tied to a host virtual address.  Rename the
+handler typedef too (arguably it should always have been gfn_handler_t).
 
-Reviewed-by: Philippe Mathieu-Daudé <philmd@linaro.org>
+Practically speaking, this is a nop for 64-bit kernels as the only
+meaningful change is to store start+end as u64s instead of unsigned longs.
+
+Reviewed-by: Paolo Bonzini <pbonzini@redhat.com>
+Reviewed-by: Xiaoyao Li <xiaoyao.li@intel.com>
+Signed-off-by: Sean Christopherson <seanjc@google.com>
+---
+ virt/kvm/kvm_main.c | 34 +++++++++++++++++++---------------
+ 1 file changed, 19 insertions(+), 15 deletions(-)
+
+diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+index 486800a7024b..0524933856d4 100644
+--- a/virt/kvm/kvm_main.c
++++ b/virt/kvm/kvm_main.c
+@@ -541,18 +541,22 @@ static inline struct kvm *mmu_notifier_to_kvm(struct mmu_notifier *mn)
+ 	return container_of(mn, struct kvm, mmu_notifier);
+ }
+ 
+-typedef bool (*hva_handler_t)(struct kvm *kvm, struct kvm_gfn_range *range);
++typedef bool (*gfn_handler_t)(struct kvm *kvm, struct kvm_gfn_range *range);
+ 
+ typedef void (*on_lock_fn_t)(struct kvm *kvm, unsigned long start,
+ 			     unsigned long end);
+ 
+ typedef void (*on_unlock_fn_t)(struct kvm *kvm);
+ 
+-struct kvm_hva_range {
+-	unsigned long start;
+-	unsigned long end;
++struct kvm_mmu_notifier_range {
++	/*
++	 * 64-bit addresses, as KVM notifiers can operate on host virtual
++	 * addresses (unsigned long) and guest physical addresses (64-bit).
++	 */
++	u64 start;
++	u64 end;
+ 	union kvm_mmu_notifier_arg arg;
+-	hva_handler_t handler;
++	gfn_handler_t handler;
+ 	on_lock_fn_t on_lock;
+ 	on_unlock_fn_t on_unlock;
+ 	bool flush_on_ret;
+@@ -581,7 +585,7 @@ static const union kvm_mmu_notifier_arg KVM_MMU_NOTIFIER_NO_ARG;
+ 	     node = interval_tree_iter_next(node, start, last))	     \
+ 
+ static __always_inline int __kvm_handle_hva_range(struct kvm *kvm,
+-						  const struct kvm_hva_range *range)
++						  const struct kvm_mmu_notifier_range *range)
+ {
+ 	bool ret = false, locked = false;
+ 	struct kvm_gfn_range gfn_range;
+@@ -608,9 +612,9 @@ static __always_inline int __kvm_handle_hva_range(struct kvm *kvm,
+ 			unsigned long hva_start, hva_end;
+ 
+ 			slot = container_of(node, struct kvm_memory_slot, hva_node[slots->node_idx]);
+-			hva_start = max(range->start, slot->userspace_addr);
+-			hva_end = min(range->end, slot->userspace_addr +
+-						  (slot->npages << PAGE_SHIFT));
++			hva_start = max_t(unsigned long, range->start, slot->userspace_addr);
++			hva_end = min_t(unsigned long, range->end,
++					slot->userspace_addr + (slot->npages << PAGE_SHIFT));
+ 
+ 			/*
+ 			 * To optimize for the likely case where the address
+@@ -660,10 +664,10 @@ static __always_inline int kvm_handle_hva_range(struct mmu_notifier *mn,
+ 						unsigned long start,
+ 						unsigned long end,
+ 						union kvm_mmu_notifier_arg arg,
+-						hva_handler_t handler)
++						gfn_handler_t handler)
+ {
+ 	struct kvm *kvm = mmu_notifier_to_kvm(mn);
+-	const struct kvm_hva_range range = {
++	const struct kvm_mmu_notifier_range range = {
+ 		.start		= start,
+ 		.end		= end,
+ 		.arg		= arg,
+@@ -680,10 +684,10 @@ static __always_inline int kvm_handle_hva_range(struct mmu_notifier *mn,
+ static __always_inline int kvm_handle_hva_range_no_flush(struct mmu_notifier *mn,
+ 							 unsigned long start,
+ 							 unsigned long end,
+-							 hva_handler_t handler)
++							 gfn_handler_t handler)
+ {
+ 	struct kvm *kvm = mmu_notifier_to_kvm(mn);
+-	const struct kvm_hva_range range = {
++	const struct kvm_mmu_notifier_range range = {
+ 		.start		= start,
+ 		.end		= end,
+ 		.handler	= handler,
+@@ -771,7 +775,7 @@ static int kvm_mmu_notifier_invalidate_range_start(struct mmu_notifier *mn,
+ 					const struct mmu_notifier_range *range)
+ {
+ 	struct kvm *kvm = mmu_notifier_to_kvm(mn);
+-	const struct kvm_hva_range hva_range = {
++	const struct kvm_mmu_notifier_range hva_range = {
+ 		.start		= range->start,
+ 		.end		= range->end,
+ 		.handler	= kvm_unmap_gfn_range,
+@@ -835,7 +839,7 @@ static void kvm_mmu_notifier_invalidate_range_end(struct mmu_notifier *mn,
+ 					const struct mmu_notifier_range *range)
+ {
+ 	struct kvm *kvm = mmu_notifier_to_kvm(mn);
+-	const struct kvm_hva_range hva_range = {
++	const struct kvm_mmu_notifier_range hva_range = {
+ 		.start		= range->start,
+ 		.end		= range->end,
+ 		.handler	= (void *)kvm_null_fn,
+-- 
+2.42.0.820.g83a721a137-goog
 

@@ -2,249 +2,137 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B7577C25B48
-	for <linux-mips@archiver.kernel.org>; Fri, 27 Oct 2023 20:49:11 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 93A28C25B48
+	for <linux-mips@archiver.kernel.org>; Fri, 27 Oct 2023 22:11:20 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232617AbjJ0UtM (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 27 Oct 2023 16:49:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49532 "EHLO
+        id S1346624AbjJ0WLV (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 27 Oct 2023 18:11:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51500 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229712AbjJ0UtL (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Fri, 27 Oct 2023 16:49:11 -0400
+        with ESMTP id S1346583AbjJ0WLT (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Fri, 27 Oct 2023 18:11:19 -0400
 Received: from wout4-smtp.messagingengine.com (wout4-smtp.messagingengine.com [64.147.123.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3B991B6;
-        Fri, 27 Oct 2023 13:49:05 -0700 (PDT)
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailout.west.internal (Postfix) with ESMTP id E95153200996;
-        Fri, 27 Oct 2023 16:49:04 -0400 (EDT)
-Received: from imap44 ([10.202.2.94])
-  by compute3.internal (MEProxy); Fri, 27 Oct 2023 16:49:05 -0400
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B18181B6;
+        Fri, 27 Oct 2023 15:11:17 -0700 (PDT)
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailout.west.internal (Postfix) with ESMTP id D0BC43200930;
+        Fri, 27 Oct 2023 18:11:13 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute1.internal (MEProxy); Fri, 27 Oct 2023 18:11:14 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=flygoat.com; h=
-        cc:cc:content-transfer-encoding:content-type:content-type:date
-        :date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-        :references:reply-to:sender:subject:subject:to:to; s=fm1; t=
-        1698439744; x=1698526144; bh=dtOld/txYEOwF3Z5A2XVbShO6PkSrUylLU0
-        +N0ne2fI=; b=YI7V5BNQfndHxfn7jpabB9fYqmIj+CRgL4ysUxV4nYvbo+5zVCW
-        +9txpKvXCf2MIBhuP29eBKTgByfwLd24YCLCtpLXzsju0A/E+slD2B4er9T0Je4y
-        6fGgiQEF5zPMOgALq/DnyMw7GT2KNJLeiRPdHeg+gIYx3s6+aFvaMZTB1jbzaOUg
-        nugSnN9YJeBHRBDgE4ykcBtUZ/1s9HdoC+/VPlDYBZFgfoAi1eNqsQcsk7R9vN5A
-        JDz21zIlE5Cv6iMvUgjdvZn1wHnRynCIJ9c+Ct+9JQTXTIAEez25cQ8kpQ4mZwiZ
-        4D4fl9hj+dnmzSEaFWZGXEWfb0fXT2leWlA==
+        cc:cc:content-transfer-encoding:content-type:date:date:from:from
+        :in-reply-to:in-reply-to:message-id:mime-version:references
+        :reply-to:sender:subject:subject:to:to; s=fm1; t=1698444673; x=
+        1698531073; bh=QkagzItTcmygJhd+IgCnn6qdrUYk56vVzdHfbFmNb0k=; b=U
+        5qTKlfx1FZYPNAKnzlTeLKGKoofCV7h76mwVgJ50l/M6yFvDiBQrVIRc3F3UIamy
+        RNdQTuGM3mqjx+YXckktQGhOPZy0iggxdsf59DjA8s2e29ANS/6kMEEfoOiOQEIi
+        I0C+R/BuYbWM/InhMq1Y9ZTH8awtTpJG9tgUcySj7KuTFnJlAns2fLgbUnz/RXCk
+        xV0Z1vsKuHqotYnHQWDnsCKOL9/6GBvhzmaPeSTTvmn61/gx6VteF2wTx49AErHQ
+        J3meEd9xI2tsXBX+0CqLVKzZdLXQd90xrmovm5tBi/kdQDd/dfiDAbw+0pXu9rws
+        knnY8gcrDNT2F2kqA+F2A==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:cc:content-transfer-encoding
-        :content-type:content-type:date:date:feedback-id:feedback-id
-        :from:from:in-reply-to:in-reply-to:message-id:mime-version
-        :references:reply-to:sender:subject:subject:to:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=
-        1698439744; x=1698526144; bh=dtOld/txYEOwF3Z5A2XVbShO6PkSrUylLU0
-        +N0ne2fI=; b=YaTDunpVdvmvwSu7OfYWGjPB0iVxw+pZu8jN6KzAcmHfrBdmh7C
-        IN1WadDtE3ay1uxZ+yvqrQk1FzQErkaXzyX4rO0p7vPgRlh/Q8M8p5kyHgr90+kv
-        6+WN01EqXXm5NjBYpSP0fbHrrwC2VFQQsAJnMJLt8V+4fOEdbyqBPsoBqs82Oxuw
-        4EeLECVPQHqXh7BDooGBfuqX/olIwuwRStzx0XQ/sA6XWO/DBN5Ol3NLezoXZYuj
-        qYG5MUaVMlkAKyuS/vGohmPUpsk23gQHQ6vO6b3JpCh6hC2R9AEkScWJ8sn7t5J4
-        ZtLyzHgwnmbULT8pSNNpt7xLz7cP+s4U6TA==
-X-ME-Sender: <xms:QCI8ZUN9Y6scGzHKDTV_4XERCJ7c4dnWrS_zlbQbIQSwQopVYxlFXA>
-    <xme:QCI8Za-joDeTMvv4l3Bm8RI2tf8O1ZnV5cQawY2LCMFPAXRE-Pynipp2NZalti64A
-    PWVXQ9Y6QZXI8gQ4EE>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrleeggdduheegucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvfevufgtgfesthhqredtreerjeenucfhrhhomhepfdfl
-    ihgrgihunhcujggrnhhgfdcuoehjihgrgihunhdrhigrnhhgsehflhihghhorghtrdgtoh
-    hmqeenucggtffrrghtthgvrhhnpedufeegfeetudeghefftdehfefgveffleefgfehhfej
-    ueegveethfduuddvieehgfenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmh
-    grihhlfhhrohhmpehjihgrgihunhdrhigrnhhgsehflhihghhorghtrdgtohhm
-X-ME-Proxy: <xmx:QCI8ZbRDKaF-fy8xo4u3Iga4END5S3_jR3tAED7QxBdc4Dvl0Gp-rQ>
-    <xmx:QCI8Zcv3OHjULDmtL01KgJoMOgJPual9Gx9XUG7GErEVuJ2ip9RBAw>
-    <xmx:QCI8ZcenSRTI_FSViz_Lj1cbqmFd0NVuhTDvl1v9G7A6p8z-_dLVGw>
-    <xmx:QCI8ZU4Qajc6nRZPYbhX0eBxUNBdowEMSaDEcQSc3xYM_UJ1u9Ydhw>
+        :content-type:date:date:feedback-id:feedback-id:from:from
+        :in-reply-to:in-reply-to:message-id:mime-version:references
+        :reply-to:sender:subject:subject:to:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=1698444673; x=
+        1698531073; bh=QkagzItTcmygJhd+IgCnn6qdrUYk56vVzdHfbFmNb0k=; b=e
+        cq6gFaFi5FoZ0T12bdQZf0URDU0JWp3hUeKNP5Ien5CVyaSgB+YaR3JdtEy179cg
+        ZIPpHfRnST41jiFW9SbwYbObuhqVbHdYRFTMIB9mOqRCk5NqN+Jjx9KUyhHtS2rO
+        eOpQBo5ROzqDAlkwbwZse46nHo1WiCcN+wshDLtlkGI2jWA3OyVrpN1OINqmthI6
+        Zxp3guM85S8wVpsIZ8Jtfum+0uXb1Mii4+5GIooKn/SrSrj6/av54t7VsIYft6kG
+        VeGr2xSZWfvuynaAkROFIOd3ML7wd7U5TjaKHYb1d/BO9T+lxgYqw1s/UuiJKMtg
+        waHNVGX1XEZ+zl4gBfV3g==
+X-ME-Sender: <xms:gTU8ZSHlf4PqSKbeUEEOBoXPB0wsw2Hrsi4XnAQp64iSfaKINQb6ZA>
+    <xme:gTU8ZTVRsgV6PtZhpsoa9X57xIfbTGh6Ludj3FUPFIOR-U-TOcYJSP1GCfT20A-lg
+    pVBL8cXvQqTIC2qLaA>
+X-ME-Received: <xmr:gTU8ZcKJHmxBhf7_nMSt6qUu6ujs4tsImd6DtLSB8BeEak7OvNO24sIznmiwM2R7e_WDRABeYMA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrleehgddtjecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecunecujfgurhephffvvefufffkofgjfhgggfestdekre
+    dtredttdenucfhrhhomheplfhirgiguhhnucgjrghnghcuoehjihgrgihunhdrhigrnhhg
+    sehflhihghhorghtrdgtohhmqeenucggtffrrghtthgvrhhnpeefledufeehgedvuedvvd
+    egkefgvddttedtleeiiefhgeetudegkefhvdfhjeeftdenucevlhhushhtvghrufhiiigv
+    pedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehjihgrgihunhdrhigrnhhgsehflhihgh
+    horghtrdgtohhm
+X-ME-Proxy: <xmx:gTU8ZcFfgPhCGYE75ffg29uz6mziHFBYyQkek3Dnym9bYLLm9xGk_w>
+    <xmx:gTU8ZYXv3wSEja2EBiKibohJlQzpA2AgwLqyi07FoK1dxC9QR7922A>
+    <xmx:gTU8ZfMVDepWTGGip1mGByHWLEMA_ZdGgCNWDd_BXw2iQfBqHaTZ1A>
+    <xmx:gTU8ZWxtOOw48qHAeo89s3ESXTeCgLVLwY5JIB7pkaq3vp_53C_CdQ>
 Feedback-ID: ifd894703:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 3988636A0075; Fri, 27 Oct 2023 16:49:04 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-1048-g9229b632c5-fm-20231019.001-g9229b632
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 27 Oct 2023 18:11:12 -0400 (EDT)
+From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
+To:     linux-mips@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, tsbogend@alpha.franken.de,
+        gregory.clement@bootlin.com, vladimir.kondratiev@intel.com,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>
+Subject: [PATCH v2 01/10] MIPS: Export higher/highest relocation functions in uasm
+Date:   Fri, 27 Oct 2023 23:10:57 +0100
+Message-Id: <20231027221106.405666-2-jiaxun.yang@flygoat.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20231027221106.405666-1-jiaxun.yang@flygoat.com>
+References: <20231027221106.405666-1-jiaxun.yang@flygoat.com>
 MIME-Version: 1.0
-Message-Id: <c6503877-b120-4685-9665-7d728b8fd760@app.fastmail.com>
-In-Reply-To: <20231027182650.281405-8-jiaxun.yang@flygoat.com>
-References: <20231027182650.281405-1-jiaxun.yang@flygoat.com>
- <20231027182650.281405-8-jiaxun.yang@flygoat.com>
-Date:   Fri, 27 Oct 2023 21:48:44 +0100
-From:   "Jiaxun Yang" <jiaxun.yang@flygoat.com>
-To:     "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>
-Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "Thomas Bogendoerfer" <tsbogend@alpha.franken.de>,
-        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
-        jirislaby@kernel.org
-Subject: Re: [PATCH 3/3] serial: Add an earlycon driver for MIPS UHI semihosting
-Content-Type: text/plain;charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
+Export uasm_rel_{higher,highest} functions.
+Those functions can be helpful in dealing with 64bit immediates.
 
+Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+---
+ arch/mips/include/asm/uasm.h | 2 ++
+ arch/mips/mm/uasm.c          | 6 ++++--
+ 2 files changed, 6 insertions(+), 2 deletions(-)
 
-=E5=9C=A82023=E5=B9=B410=E6=9C=8827=E6=97=A5=E5=8D=81=E6=9C=88 =E4=B8=8B=
-=E5=8D=887:26=EF=BC=8CJiaxun Yang=E5=86=99=E9=81=93=EF=BC=9A
-> UHI is MIPS's implementation of semihosting.
-> Add an earlycon driver to help with debugging on boot.
->
-> This driver is capable for print log using UHI's "Plog" or interact
-> with KGDB using UHI's stdio function.
->
-> Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
-> ---
->  drivers/tty/serial/Kconfig             | 13 ++++
->  drivers/tty/serial/Makefile            |  1 +
->  drivers/tty/serial/earlycon-mips-uhi.c | 85 ++++++++++++++++++++++++++
->  3 files changed, 99 insertions(+)
->  create mode 100644 drivers/tty/serial/earlycon-mips-uhi.c
->
-> diff --git a/drivers/tty/serial/Kconfig b/drivers/tty/serial/Kconfig
-> index bdc568a4ab66..04c62c6b45cd 100644
-> --- a/drivers/tty/serial/Kconfig
-> +++ b/drivers/tty/serial/Kconfig
-> @@ -85,6 +85,19 @@ config SERIAL_EARLYCON_SEMIHOST
->  	  This is enabled with "earlycon=3Dsmh" on the kernel command line.
->  	  The console is enabled when early_param is processed.
->=20
-> +config SERIAL_EARLYCON_UHI
+diff --git a/arch/mips/include/asm/uasm.h b/arch/mips/include/asm/uasm.h
+index 296bcf31abb5..12db6d2fca07 100644
+--- a/arch/mips/include/asm/uasm.h
++++ b/arch/mips/include/asm/uasm.h
+@@ -196,6 +196,8 @@ void uasm_build_label(struct uasm_label **lab, u32 *addr,
+ #ifdef CONFIG_64BIT
+ int uasm_in_compat_space_p(long addr);
+ #endif
++int uasm_rel_highest(long val);
++int uasm_rel_higher(long val);
+ int uasm_rel_hi(long val);
+ int uasm_rel_lo(long val);
+ void UASM_i_LA_mostly(u32 **buf, unsigned int rs, long addr);
+diff --git a/arch/mips/mm/uasm.c b/arch/mips/mm/uasm.c
+index 125140979d62..6846bf2084c5 100644
+--- a/arch/mips/mm/uasm.c
++++ b/arch/mips/mm/uasm.c
+@@ -425,7 +425,7 @@ int uasm_in_compat_space_p(long addr)
+ }
+ UASM_EXPORT_SYMBOL(uasm_in_compat_space_p);
+ 
+-static int uasm_rel_highest(long val)
++int uasm_rel_highest(long val)
+ {
+ #ifdef CONFIG_64BIT
+ 	return ((((val + 0x800080008000L) >> 48) & 0xffff) ^ 0x8000) - 0x8000;
+@@ -433,8 +433,9 @@ static int uasm_rel_highest(long val)
+ 	return 0;
+ #endif
+ }
++UASM_EXPORT_SYMBOL(uasm_rel_highest);
+ 
+-static int uasm_rel_higher(long val)
++int uasm_rel_higher(long val)
+ {
+ #ifdef CONFIG_64BIT
+ 	return ((((val + 0x80008000L) >> 32) & 0xffff) ^ 0x8000) - 0x8000;
+@@ -442,6 +443,7 @@ static int uasm_rel_higher(long val)
+ 	return 0;
+ #endif
+ }
++UASM_EXPORT_SYMBOL(uasm_rel_higher);
+ 
+ int uasm_rel_hi(long val)
+ {
+-- 
+2.34.1
 
-^ Oops there is a symbol name mismatch, will fix in v2.
-
-Sorry for the noise.
-
-Thanks
-- Jiaxun
-
-> +	bool "Early console using MIPS UHI semihosting"
-> +	depends on MIPS
-> +	select SERIAL_CORE
-> +	select SERIAL_CORE_CONSOLE
-> +	select SERIAL_EARLYCON
-> +	help
-> +	  Support for early debug console using UHI semihosting.
-> +	  This enables the console before standard serial driver is probed.
-> +	  This is enabled with "earlycon=3Duhi" or "earlycon=3Duhi_stdio" on=
- the
-> +	  kernel command line.
-> +	  The console is enabled when early_param is processed.
-> +
->  config SERIAL_EARLYCON_RISCV_SBI
->  	bool "Early console using RISC-V SBI"
->  	depends on RISCV_SBI_V01
-> diff --git a/drivers/tty/serial/Makefile b/drivers/tty/serial/Makefile
-> index f6b8c220dcfb..ef5e9c87aea1 100644
-> --- a/drivers/tty/serial/Makefile
-> +++ b/drivers/tty/serial/Makefile
-> @@ -9,6 +9,7 @@ serial_base-y :=3D serial_core.o serial_base_bus.o=20
-> serial_ctrl.o serial_port.o
->  obj-$(CONFIG_SERIAL_EARLYCON) +=3D earlycon.o
->  obj-$(CONFIG_SERIAL_EARLYCON_SEMIHOST) +=3D earlycon-semihost.o
->  obj-$(CONFIG_SERIAL_EARLYCON_RISCV_SBI) +=3D earlycon-riscv-sbi.o
-> +obj-$(CONFIG_SERIAL_EARLYCON_MIPS_UHI) +=3D earlycon-mips-uhi.o
->=20
->  # These Sparc drivers have to appear before others such as 8250
->  # which share ttySx minor node space.  Otherwise console device
-> diff --git a/drivers/tty/serial/earlycon-mips-uhi.c=20
-> b/drivers/tty/serial/earlycon-mips-uhi.c
-> new file mode 100644
-> index 000000000000..002bb2c37064
-> --- /dev/null
-> +++ b/drivers/tty/serial/earlycon-mips-uhi.c
-> @@ -0,0 +1,85 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * MIPS UHI semihosting based earlycon
-> + *
-> + * Copyright (C) 2023 Jiaxun Yang <jiaxun.yang@flygoat.com>
-> + */
-> +
-> +#include <linux/kernel.h>
-> +#include <linux/console.h>
-> +#include <linux/init.h>
-> +#include <linux/serial_core.h>
-> +#include <asm/uhi.h>
-> +
-> +static int stdin_fd =3D -1;
-> +static int stdout_fd =3D -1;
-> +
-> +static void uhi_plog_write(struct console *con, const char *s,=20
-> unsigned int n)
-> +{
-> +	uhi_plog(s, 0);
-> +}
-> +
-> +static void uhi_stdout_write(struct console *con, const char *s,=20
-> unsigned int n)
-> +{
-> +	if (stdout_fd < 0)
-> +		return;
-> +
-> +	uhi_write(stdout_fd, s, n);
-> +}
-> +
-> +#ifdef CONFIG_CONSOLE_POLL
-> +static int uhi_stdin_read(struct console *con, char *s, unsigned int =
-n)
-> +{
-> +	if (stdin_fd < 0)
-> +		return 0;
-> +
-> +	return uhi_read(stdin_fd, s, n);
-> +}
-> +#endif
-> +
-> +static int uhi_stdio_fd_open(struct console *co, char *options)
-> +{
-> +	/*
-> +	 * You have to open both stdin and stdout to get console work
-> +	 * properly on some old CodeScape debugger.
-> +	 */
-> +	stdin_fd =3D uhi_open("/dev/stdin", UHI_O_RDONLY, 0);
-> +	stdout_fd =3D uhi_open("/dev/stdout", UHI_O_WRONLY, 0);
-> +
-> +	return (stdin_fd < 0 || stdout_fd < 0) ? -ENODEV : 0;
-> +}
-> +
-> +static int uhi_stdio_fd_close(struct console *co)
-> +{
-> +	int ret1 =3D 0, ret2 =3D 0;
-> +
-> +	if (stdin_fd >=3D 0)
-> +		ret1 =3D uhi_close(stdin_fd);
-> +	if (stdout_fd >=3D 0)
-> +		ret2 =3D uhi_close(stdout_fd);
-> +
-> +	return (ret1 < 0 || ret2 < 0) ? -ENODEV : 0;
-> +}
-> +
-> +static int
-> +__init early_uhi_setup(struct earlycon_device *device, const char *op=
-t)
-> +{
-> +	device->con->write =3D uhi_plog_write;
-> +	return 0;
-> +}
-> +
-> +static int
-> +__init early_uhi_stdio_setup(struct earlycon_device *device, const=20
-> char *opt)
-> +{
-> +
-> +	device->con->setup =3D uhi_stdio_fd_open;
-> +	device->con->exit =3D uhi_stdio_fd_close;
-> +	device->con->write =3D uhi_stdout_write;
-> +#ifdef CONFIG_CONSOLE_POLL
-> +	device->con->read =3D uhi_stdin_read;
-> +#endif
-> +	return 0;
-> +}
-> +
-> +EARLYCON_DECLARE(uhi, early_uhi_setup);
-> +EARLYCON_DECLARE(uhi_stdio, early_uhi_stdio_setup);
-> --=20
-> 2.34.1
-
---=20
-- Jiaxun

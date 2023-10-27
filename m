@@ -2,117 +2,368 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8CE1AC25B48
-	for <linux-mips@archiver.kernel.org>; Fri, 27 Oct 2023 18:31:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 09F74C25B48
+	for <linux-mips@archiver.kernel.org>; Fri, 27 Oct 2023 18:31:46 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345827AbjJ0SbJ (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 27 Oct 2023 14:31:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39386 "EHLO
+        id S235222AbjJ0Sbp (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 27 Oct 2023 14:31:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51046 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235142AbjJ0Sa7 (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Fri, 27 Oct 2023 14:30:59 -0400
-Received: from wout2-smtp.messagingengine.com (wout2-smtp.messagingengine.com [64.147.123.25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1D503AA9;
-        Fri, 27 Oct 2023 11:30:23 -0700 (PDT)
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
-        by mailout.west.internal (Postfix) with ESMTP id BDEBA3200A13;
-        Fri, 27 Oct 2023 14:27:10 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute2.internal (MEProxy); Fri, 27 Oct 2023 14:27:11 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=flygoat.com; h=
-        cc:cc:content-transfer-encoding:content-type:date:date:from:from
-        :in-reply-to:in-reply-to:message-id:mime-version:references
-        :reply-to:sender:subject:subject:to:to; s=fm1; t=1698431230; x=
-        1698517630; bh=SX5fl+EhwuJvuJSgszNvKWpCysGddZbGyxPGegx2anM=; b=j
-        FRAXDUuK2CFPQX5/xA0kUTtyU567S0snECMD+OHTNcU8aQCUTpOb9inZjuSuKJvd
-        zGvLRA1OFzH1Y5NZTXse/wulq+xgRyWzBvnmxITUUOlJBAMIhCAlECE/qu6ntzrn
-        F3nY1dvVHx3m+YB6DaLmW5xNJvPmZbMyTTC8fxLv5OOqqgWywO3ANEftOLW22kIm
-        HS+QPnl8cxWrGk5zgI9JYpIk2cy6/Opf/ecV0oQ1otlikweEgKE+esZRqbId3BSW
-        iWdp0imEGPBt+5DXXDOfksjtacbFfWqY3hwRRyEHKUVx1Iej+fBhdFRfjlggETmx
-        F1E86efsjDfbTsD4hvixg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-transfer-encoding
-        :content-type:date:date:feedback-id:feedback-id:from:from
-        :in-reply-to:in-reply-to:message-id:mime-version:references
-        :reply-to:sender:subject:subject:to:to:x-me-proxy:x-me-proxy
-        :x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=1698431230; x=
-        1698517630; bh=SX5fl+EhwuJvuJSgszNvKWpCysGddZbGyxPGegx2anM=; b=F
-        wk4pn7WFZEFlB6XbJ3pn0TwDefOr50L7wsw59vOtX4b5fWI0awk4sVgWYr4DMKyC
-        +uDiOBSgBZxlPTTMXSvtslyXP+FptDNdGSrS89LvFb5OdfmGZ9boOsiZDskflHSM
-        erxHbOOQaVebV/950eJ0A2jhVhlXce95GQddvpTsNn7F5qkZIsv3W8d0fcqTA1zk
-        R4U35v+iZwkLAqN2fkk3lXnx4dwEyniCY1mEwiq6v+PtMGq1bdsXP2D5CWkNNu3W
-        0lrbF8+fXDvEc/WT7e+EQQV6QW+QDN1iSZNQXtEO9NkrYQChkVDaWL/ptnExaKM3
-        hJLNelkDszevOZcTWlBmw==
-X-ME-Sender: <xms:_QA8ZccQ54tfTkmXKGJqd5XrTcy1n7ePLwL0MX2Cx7XNDwDP0eshdQ>
-    <xme:_QA8ZeMK33uPp_jWvnlkJOOuOoM9xlzZtuSYqyGGM38VS5-1rzTDe0m9oPIPGOExU
-    5uIwd4DhpUyYZ8Ri3A>
-X-ME-Received: <xmr:_QA8ZdjsY_xYP_gQPeu4H7g8CmOimDWAQACyxQZV9MS1uXT0cPqPTrpWsPySR0resaAqCVp8CG4>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrleeggdduvdeiucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucenucfjughrpefhvfevufffkffojghfggfgsedtke
-    ertdertddtnecuhfhrohhmpeflihgrgihunhcujggrnhhguceojhhirgiguhhnrdihrghn
-    ghesfhhlhihgohgrthdrtghomheqnecuggftrfgrthhtvghrnhepfeeludefheegvdeuvd
-    dvgeekgfdvtdettdelieeihfegtedugeekhfdvhfejfedtnecuvehluhhsthgvrhfuihii
-    vgeptdenucfrrghrrghmpehmrghilhhfrhhomhepjhhirgiguhhnrdihrghnghesfhhlhi
-    hgohgrthdrtghomh
-X-ME-Proxy: <xmx:_QA8ZR9UWSkqkTO8VVe1_lN1OTFffYAUdcFkx7wJ91BEl_-dGquWZg>
-    <xmx:_QA8ZYtvdIcWLPKsXwpLfb_mAvxtQ4TnDKxd2okYHyeI5bO_ZAbnMA>
-    <xmx:_QA8ZYH81Cc6ovOM7V6e4U-R9iqN2sv00WTqq-D_Uhb3ZWPP8-wG6g>
-    <xmx:_gA8ZSW70abzJYYV1_K4QNmwZ00aAPcDdo4VFm4q273IneEapd3Gag>
-Feedback-ID: ifd894703:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 27 Oct 2023 14:27:08 -0400 (EDT)
-From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
-To:     linux-mips@vger.kernel.org
-Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
-        tsbogend@alpha.franken.de, gregkh@linuxfoundation.org,
-        jirislaby@kernel.org, Jiaxun Yang <jiaxun.yang@flygoat.com>
-Subject: [PATCH 0/3] serial, MIPS: Add MIPS UHI semihosting support
-Date:   Fri, 27 Oct 2023 19:26:47 +0100
-Message-Id: <20231027182650.281405-5-jiaxun.yang@flygoat.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231027182650.281405-1-jiaxun.yang@flygoat.com>
-References: <20231027182650.281405-1-jiaxun.yang@flygoat.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        with ESMTP id S235175AbjJ0Sbf (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Fri, 27 Oct 2023 14:31:35 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B93D271E
+        for <linux-mips@vger.kernel.org>; Fri, 27 Oct 2023 11:23:38 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-d9b9f56489fso1910125276.1
+        for <linux-mips@vger.kernel.org>; Fri, 27 Oct 2023 11:23:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1698431013; x=1699035813; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:reply-to:from:to:cc:subject:date:message-id:reply-to;
+        bh=Gf3qZUfKxr1l5xs4a4PCSuBn/K/kT1FM/O66ERGfDAo=;
+        b=pxyeX/YFzcyWwbb1oGDetDRFJdJDeXx6siCl1Qi3OFmmZ6Ai2Zv2+O/pgz8rKpQof5
+         61ugfhianvJUsk0Lnx5Ai7rvfS/TEO4tKkJ+za/mlroX1RAK6bGW8LcI+zw6jVfbgqSG
+         dUgPOrEn2GXOeTVdXcsi9Wj7f1ZY36NtiX19X/XYBw6tIyBSojGA9zLOzmT6wrbzkYRs
+         N9Mgie+uxTGffWIuq0P19RweHRo52ur6A9HbwfRQBInXzdfHwgv2a3gF2RWv1m6WrMoo
+         Ay+Hvo097sfW1FmAWKYk5DB8vyz8PI7nXrrpUqF7VgGapwlg2jOsBytCqB3f2q7kbFnm
+         qYhQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698431013; x=1699035813;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:reply-to:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Gf3qZUfKxr1l5xs4a4PCSuBn/K/kT1FM/O66ERGfDAo=;
+        b=BJ5fcAy+wxLzn0rBX1/NL8X94y2tCv8paYS1Oyr3EGeqyoJh/kJhM26qHcpX7FpsRH
+         43GuTB61LQjdGgaSixil1k0BeFRtdIb4E5tm3rw6GpC9a9QBIithcfZ6vpc1igAeGt0Q
+         jBUkuRs6WwtFaW8UKcoNBb46zpBoy7sbOaHw8nEM1pN0k0UmqHpdkgnmxlfyqRvhUEZ6
+         VWc0AhI8LqhQrTSORDdEuVskY460miTFwvaDLLVt2AvzaUcL1Fbo1cM2KcJubZ6HlbKl
+         KmzbAY2paUv33BFHyuVqZ8GconQ11Rh3uR5TgPk3wjyngMMSe4NDj6hnblbGOLeG/Ubo
+         3OYw==
+X-Gm-Message-State: AOJu0YygtjZJy4pJqX6cR4cqyYwwMIWkVXC0900J5caEBZEMVDQBP2T5
+        6TfI41l975x17H97kgqpuP+UyU01PNw=
+X-Google-Smtp-Source: AGHT+IFvLwrndU5RN7JLgZaUSfmAls7MFUJfuK8Cz4IhpSWC48U7qmoJK4uE/MrHKdWeSCjIUJubQh1tXXM=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a25:aa47:0:b0:d9a:d272:ee58 with SMTP id
+ s65-20020a25aa47000000b00d9ad272ee58mr68414ybi.9.1698431013458; Fri, 27 Oct
+ 2023 11:23:33 -0700 (PDT)
+Reply-To: Sean Christopherson <seanjc@google.com>
+Date:   Fri, 27 Oct 2023 11:22:16 -0700
+In-Reply-To: <20231027182217.3615211-1-seanjc@google.com>
+Mime-Version: 1.0
+References: <20231027182217.3615211-1-seanjc@google.com>
+X-Mailer: git-send-email 2.42.0.820.g83a721a137-goog
+Message-ID: <20231027182217.3615211-35-seanjc@google.com>
+Subject: [PATCH v13 34/35] KVM: selftests: Add basic selftest for guest_memfd()
+From:   Sean Christopherson <seanjc@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Anup Patel <anup@brainfault.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Sean Christopherson <seanjc@google.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     kvm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        kvmarm@lists.linux.dev, linux-mips@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, kvm-riscv@lists.infradead.org,
+        linux-riscv@lists.infradead.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Xiaoyao Li <xiaoyao.li@intel.com>,
+        Xu Yilun <yilun.xu@intel.com>,
+        Chao Peng <chao.p.peng@linux.intel.com>,
+        Fuad Tabba <tabba@google.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Anish Moorthy <amoorthy@google.com>,
+        David Matlack <dmatlack@google.com>,
+        Yu Zhang <yu.c.zhang@linux.intel.com>,
+        Isaku Yamahata <isaku.yamahata@intel.com>,
+        "=?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?=" <mic@digikod.net>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Vishal Annapurve <vannapurve@google.com>,
+        Ackerley Tng <ackerleytng@google.com>,
+        Maciej Szmigiero <mail@maciej.szmigiero.name>,
+        David Hildenbrand <david@redhat.com>,
+        Quentin Perret <qperret@google.com>,
+        Michael Roth <michael.roth@amd.com>,
+        Wang <wei.w.wang@intel.com>,
+        Liam Merwick <liam.merwick@oracle.com>,
+        Isaku Yamahata <isaku.yamahata@gmail.com>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Hi all,
+From: Chao Peng <chao.p.peng@linux.intel.com>
 
-This patchset adds support for MIPS UHI semihosting.
-It has been implemented on many debugers such as MIPS CodeScape debugger
-and OpenOCD.
+Add a selftest to verify the basic functionality of guest_memfd():
 
-It is also supported by QEMU's -semihosting option.
++ file descriptor created with the guest_memfd() ioctl does not allow
+  read/write/mmap operations
++ file size and block size as returned from fstat are as expected
++ fallocate on the fd checks that offset/length on
+  fallocate(FALLOC_FL_PUNCH_HOLE) should be page aligned
++ invalid inputs (misaligned size, invalid flags) are rejected
++ file size and inode are unique (the innocuous-sounding
+  anon_inode_getfile() backs all files with a single inode...)
 
-I didn't add MAINTAINERS entry for this driver because I find other
-simple earlycon drivers don't have one either. Do let me know if it
-should be added.
+Signed-off-by: Chao Peng <chao.p.peng@linux.intel.com>
+Co-developed-by: Ackerley Tng <ackerleytng@google.com>
+Signed-off-by: Ackerley Tng <ackerleytng@google.com>
+Co-developed-by: Paolo Bonzini <pbonzini@redhat.com>
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+Co-developed-by: Sean Christopherson <seanjc@google.com>
+Signed-off-by: Sean Christopherson <seanjc@google.com>
+---
+ tools/testing/selftests/kvm/Makefile          |   1 +
+ .../testing/selftests/kvm/guest_memfd_test.c  | 221 ++++++++++++++++++
+ 2 files changed, 222 insertions(+)
+ create mode 100644 tools/testing/selftests/kvm/guest_memfd_test.c
 
-Thanks
-Jiaxun
-
-Jiaxun Yang (3):
-  MIPS: Add header for UHI semihosting defines
-  MIPS: zboot: Add UHI semihosting debug print support
-  serial: Add an earlycon driver for MIPS UHI semihosting
-
- arch/mips/Kconfig.debug                |  11 +
- arch/mips/boot/compressed/Makefile     |   1 +
- arch/mips/boot/compressed/dbg-uhi.c    |  11 +
- arch/mips/boot/compressed/dbg.c        |   4 +-
- arch/mips/boot/compressed/decompress.c |   4 +
- arch/mips/include/asm/uhi.h            | 309 +++++++++++++++++++++++++
- drivers/tty/serial/Kconfig             |  13 ++
- drivers/tty/serial/Makefile            |   1 +
- drivers/tty/serial/earlycon-mips-uhi.c |  85 +++++++
- 9 files changed, 437 insertions(+), 2 deletions(-)
- create mode 100644 arch/mips/boot/compressed/dbg-uhi.c
- create mode 100644 arch/mips/include/asm/uhi.h
- create mode 100644 drivers/tty/serial/earlycon-mips-uhi.c
-
+diff --git a/tools/testing/selftests/kvm/Makefile b/tools/testing/selftests/kvm/Makefile
+index b709a52d5cdb..2b1ef809d73a 100644
+--- a/tools/testing/selftests/kvm/Makefile
++++ b/tools/testing/selftests/kvm/Makefile
+@@ -124,6 +124,7 @@ TEST_GEN_PROGS_x86_64 += access_tracking_perf_test
+ TEST_GEN_PROGS_x86_64 += demand_paging_test
+ TEST_GEN_PROGS_x86_64 += dirty_log_test
+ TEST_GEN_PROGS_x86_64 += dirty_log_perf_test
++TEST_GEN_PROGS_x86_64 += guest_memfd_test
+ TEST_GEN_PROGS_x86_64 += guest_print_test
+ TEST_GEN_PROGS_x86_64 += hardware_disable_test
+ TEST_GEN_PROGS_x86_64 += kvm_create_max_vcpus
+diff --git a/tools/testing/selftests/kvm/guest_memfd_test.c b/tools/testing/selftests/kvm/guest_memfd_test.c
+new file mode 100644
+index 000000000000..c15de9852316
+--- /dev/null
++++ b/tools/testing/selftests/kvm/guest_memfd_test.c
+@@ -0,0 +1,221 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Copyright Intel Corporation, 2023
++ *
++ * Author: Chao Peng <chao.p.peng@linux.intel.com>
++ */
++
++#define _GNU_SOURCE
++#include "test_util.h"
++#include "kvm_util_base.h"
++#include <linux/bitmap.h>
++#include <linux/falloc.h>
++#include <sys/mman.h>
++#include <sys/types.h>
++#include <sys/stat.h>
++
++#include <stdlib.h>
++#include <string.h>
++#include <unistd.h>
++#include <errno.h>
++#include <stdio.h>
++#include <fcntl.h>
++
++static void test_file_read_write(int fd)
++{
++	char buf[64];
++
++	TEST_ASSERT(read(fd, buf, sizeof(buf)) < 0,
++		    "read on a guest_mem fd should fail");
++	TEST_ASSERT(write(fd, buf, sizeof(buf)) < 0,
++		    "write on a guest_mem fd should fail");
++	TEST_ASSERT(pread(fd, buf, sizeof(buf), 0) < 0,
++		    "pread on a guest_mem fd should fail");
++	TEST_ASSERT(pwrite(fd, buf, sizeof(buf), 0) < 0,
++		    "pwrite on a guest_mem fd should fail");
++}
++
++static void test_mmap(int fd, size_t page_size)
++{
++	char *mem;
++
++	mem = mmap(NULL, page_size, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
++	TEST_ASSERT_EQ(mem, MAP_FAILED);
++}
++
++static void test_file_size(int fd, size_t page_size, size_t total_size)
++{
++	struct stat sb;
++	int ret;
++
++	ret = fstat(fd, &sb);
++	TEST_ASSERT(!ret, "fstat should succeed");
++	TEST_ASSERT_EQ(sb.st_size, total_size);
++	TEST_ASSERT_EQ(sb.st_blksize, page_size);
++}
++
++static void test_fallocate(int fd, size_t page_size, size_t total_size)
++{
++	int ret;
++
++	ret = fallocate(fd, FALLOC_FL_KEEP_SIZE, 0, total_size);
++	TEST_ASSERT(!ret, "fallocate with aligned offset and size should succeed");
++
++	ret = fallocate(fd, FALLOC_FL_KEEP_SIZE | FALLOC_FL_PUNCH_HOLE,
++			page_size - 1, page_size);
++	TEST_ASSERT(ret, "fallocate with unaligned offset should fail");
++
++	ret = fallocate(fd, FALLOC_FL_KEEP_SIZE, total_size, page_size);
++	TEST_ASSERT(ret, "fallocate beginning at total_size should fail");
++
++	ret = fallocate(fd, FALLOC_FL_KEEP_SIZE, total_size + page_size, page_size);
++	TEST_ASSERT(ret, "fallocate beginning after total_size should fail");
++
++	ret = fallocate(fd, FALLOC_FL_KEEP_SIZE | FALLOC_FL_PUNCH_HOLE,
++			total_size, page_size);
++	TEST_ASSERT(!ret, "fallocate(PUNCH_HOLE) at total_size should succeed");
++
++	ret = fallocate(fd, FALLOC_FL_KEEP_SIZE | FALLOC_FL_PUNCH_HOLE,
++			total_size + page_size, page_size);
++	TEST_ASSERT(!ret, "fallocate(PUNCH_HOLE) after total_size should succeed");
++
++	ret = fallocate(fd, FALLOC_FL_KEEP_SIZE | FALLOC_FL_PUNCH_HOLE,
++			page_size, page_size - 1);
++	TEST_ASSERT(ret, "fallocate with unaligned size should fail");
++
++	ret = fallocate(fd, FALLOC_FL_KEEP_SIZE | FALLOC_FL_PUNCH_HOLE,
++			page_size, page_size);
++	TEST_ASSERT(!ret, "fallocate(PUNCH_HOLE) with aligned offset and size should succeed");
++
++	ret = fallocate(fd, FALLOC_FL_KEEP_SIZE, page_size, page_size);
++	TEST_ASSERT(!ret, "fallocate to restore punched hole should succeed");
++}
++
++static void test_invalid_punch_hole(int fd, size_t page_size, size_t total_size)
++{
++	struct {
++		off_t offset;
++		off_t len;
++	} testcases[] = {
++		{0, 1},
++		{0, page_size - 1},
++		{0, page_size + 1},
++
++		{1, 1},
++		{1, page_size - 1},
++		{1, page_size},
++		{1, page_size + 1},
++
++		{page_size, 1},
++		{page_size, page_size - 1},
++		{page_size, page_size + 1},
++	};
++	int ret, i;
++
++	for (i = 0; i < ARRAY_SIZE(testcases); i++) {
++		ret = fallocate(fd, FALLOC_FL_KEEP_SIZE | FALLOC_FL_PUNCH_HOLE,
++				testcases[i].offset, testcases[i].len);
++		TEST_ASSERT(ret == -1 && errno == EINVAL,
++			    "PUNCH_HOLE with !PAGE_SIZE offset (%lx) and/or length (%lx) should fail",
++			    testcases[i].offset, testcases[i].len);
++	}
++}
++
++static void test_create_guest_memfd_invalid(struct kvm_vm *vm)
++{
++	uint64_t valid_flags = 0;
++	size_t page_size = getpagesize();
++	uint64_t flag;
++	size_t size;
++	int fd;
++
++	for (size = 1; size < page_size; size++) {
++		fd = __vm_create_guest_memfd(vm, size, 0);
++		TEST_ASSERT(fd == -1 && errno == EINVAL,
++			    "guest_memfd() with non-page-aligned page size '0x%lx' should fail with EINVAL",
++			    size);
++	}
++
++	if (thp_configured()) {
++		for (size = page_size * 2; size < get_trans_hugepagesz(); size += page_size) {
++			fd = __vm_create_guest_memfd(vm, size, KVM_GUEST_MEMFD_ALLOW_HUGEPAGE);
++			TEST_ASSERT(fd == -1 && errno == EINVAL,
++				    "guest_memfd() with non-hugepage-aligned page size '0x%lx' should fail with EINVAL",
++				    size);
++		}
++
++		valid_flags = KVM_GUEST_MEMFD_ALLOW_HUGEPAGE;
++	}
++
++	for (flag = 1; flag; flag <<= 1) {
++		uint64_t bit;
++
++		if (flag & valid_flags)
++			continue;
++
++		fd = __vm_create_guest_memfd(vm, page_size, flag);
++		TEST_ASSERT(fd == -1 && errno == EINVAL,
++			    "guest_memfd() with flag '0x%lx' should fail with EINVAL",
++			    flag);
++
++		for_each_set_bit(bit, &valid_flags, 64) {
++			fd = __vm_create_guest_memfd(vm, page_size, flag | BIT_ULL(bit));
++			TEST_ASSERT(fd == -1 && errno == EINVAL,
++				    "guest_memfd() with flags '0x%llx' should fail with EINVAL",
++				    flag | BIT_ULL(bit));
++		}
++	}
++}
++
++static void test_create_guest_memfd_multiple(struct kvm_vm *vm)
++{
++	int fd1, fd2, ret;
++	struct stat st1, st2;
++
++	fd1 = __vm_create_guest_memfd(vm, 4096, 0);
++	TEST_ASSERT(fd1 != -1, "memfd creation should succeed");
++
++	ret = fstat(fd1, &st1);
++	TEST_ASSERT(ret != -1, "memfd fstat should succeed");
++	TEST_ASSERT(st1.st_size == 4096, "memfd st_size should match requested size");
++
++	fd2 = __vm_create_guest_memfd(vm, 8192, 0);
++	TEST_ASSERT(fd2 != -1, "memfd creation should succeed");
++
++	ret = fstat(fd2, &st2);
++	TEST_ASSERT(ret != -1, "memfd fstat should succeed");
++	TEST_ASSERT(st2.st_size == 8192, "second memfd st_size should match requested size");
++
++	ret = fstat(fd1, &st1);
++	TEST_ASSERT(ret != -1, "memfd fstat should succeed");
++	TEST_ASSERT(st1.st_size == 4096, "first memfd st_size should still match requested size");
++	TEST_ASSERT(st1.st_ino != st2.st_ino, "different memfd should have different inode numbers");
++}
++
++int main(int argc, char *argv[])
++{
++	size_t page_size;
++	size_t total_size;
++	int fd;
++	struct kvm_vm *vm;
++
++	TEST_REQUIRE(kvm_has_cap(KVM_CAP_GUEST_MEMFD));
++
++	page_size = getpagesize();
++	total_size = page_size * 4;
++
++	vm = vm_create_barebones();
++
++	test_create_guest_memfd_invalid(vm);
++	test_create_guest_memfd_multiple(vm);
++
++	fd = vm_create_guest_memfd(vm, total_size, 0);
++
++	test_file_read_write(fd);
++	test_mmap(fd, page_size);
++	test_file_size(fd, page_size, total_size);
++	test_fallocate(fd, page_size, total_size);
++	test_invalid_punch_hole(fd, page_size, total_size);
++
++	close(fd);
++}
 -- 
-2.34.1
+2.42.0.820.g83a721a137-goog
 

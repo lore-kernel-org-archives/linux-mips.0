@@ -2,59 +2,59 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9F0C8C25B70
-	for <linux-mips@archiver.kernel.org>; Fri, 27 Oct 2023 18:24:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id B78ABC25B48
+	for <linux-mips@archiver.kernel.org>; Fri, 27 Oct 2023 18:25:01 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346531AbjJ0SYa (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Fri, 27 Oct 2023 14:24:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44468 "EHLO
+        id S235195AbjJ0SZB (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Fri, 27 Oct 2023 14:25:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46428 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346583AbjJ0SX4 (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Fri, 27 Oct 2023 14:23:56 -0400
-Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E72C11BE6
-        for <linux-mips@vger.kernel.org>; Fri, 27 Oct 2023 11:23:09 -0700 (PDT)
-Received: by mail-pl1-x649.google.com with SMTP id d9443c01a7336-1cc20955634so8190815ad.3
-        for <linux-mips@vger.kernel.org>; Fri, 27 Oct 2023 11:23:09 -0700 (PDT)
+        with ESMTP id S232633AbjJ0SX6 (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Fri, 27 Oct 2023 14:23:58 -0400
+Received: from mail-pl1-x64a.google.com (mail-pl1-x64a.google.com [IPv6:2607:f8b0:4864:20::64a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E1A41FDA
+        for <linux-mips@vger.kernel.org>; Fri, 27 Oct 2023 11:23:14 -0700 (PDT)
+Received: by mail-pl1-x64a.google.com with SMTP id d9443c01a7336-1cc20955634so8191455ad.3
+        for <linux-mips@vger.kernel.org>; Fri, 27 Oct 2023 11:23:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1698430987; x=1699035787; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1698430993; x=1699035793; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:reply-to:from:to:cc:subject:date:message-id:reply-to;
-        bh=o8gdvYQ3/1yqqCN7M6+cUJLwJKILjEFSh0R8bjlKI1I=;
-        b=z0yniC61HgtWYnWXIzqHhRWnYFO7dk29Lb+UY/7V0Rm3ANBPFj2TiG89YaE5XGqZyY
-         5DU2Q6l9ZA9EUgJyK1ihxL+lyL9eoJjeDV7QZzf1HhhZiOCMroFjvAQzPSBaPxt0cQlv
-         JET/xo731zcF3XaINoqOqH4377ypoXdw+VBj2Sz4YjwCerZ8+/hQcGvsEZo3Lo/fMo64
-         A/2+oaBOCZUAi27gkEhulNbia65jQyCHeBcy+iY298NQJBZzM60lFCwwkG+9r3OLJpuz
-         0wOUyjnGgIKuMxZDvM/Q71msQg+L6ciZWRX4rI2gkhrMEGaukl3ZKPBQfNK9BJwx4H1c
-         uEYw==
+        bh=+S4AiipPfUUKpJ2ruaZ4ElxK7cYS7w8+XYANZ6GAwNM=;
+        b=JPBSHdpXM2j676/0toy6g/49D7ujzaj/cc3K00wiLgiGOZfsFSI4RBIoKZTncF6O5T
+         8SeBl0l0j5PgFbu84nWwCFaqp4pHsBEnf2JyTm0Z6yIidw1yzjx5WXISlPo2tDE/fYoj
+         Rw1AzB3Nav2mc6DT5guttLvOcR1gSnKRIwB2W9JtY80vGehc6hhVgWXTnhT/BCxcKb3M
+         zKuu2WgPeowQYtzdpvDcCqb6x5GwjXdBchRIPlsaDNdTyMN/3EtuE8eHCTZ1bi0Xtwsv
+         xVoxNzHKSJF8B5AxEQpzAiGSmyawryouPerv6S4N6SfwSX1QsoCkJrGEy3u+fmbpmgbQ
+         cwgA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698430987; x=1699035787;
+        d=1e100.net; s=20230601; t=1698430993; x=1699035793;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:reply-to:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=o8gdvYQ3/1yqqCN7M6+cUJLwJKILjEFSh0R8bjlKI1I=;
-        b=AEFCzCSDP8werLkQINZyd2wUkxxOpoD+V52J1z9ybRX3pWOuuPP9q8kO2I1sizOjMV
-         odJnqzHLU0igw0ymiqyrUfRdqn8FlbRVlGz/gaYy+BSDhUq59eX8DzpiO7VPrKOcZq8j
-         AJT+n8YPWzjiv7dYH1qYmZhKxKKeqy+wMKDqVaL3FdZPUtPY/C9rDfTT94ruch1pg5HN
-         tA71fq09rhcy265rCe4hMtp2sFvptMXaKN+CP4AsG5Tq7+cGsd5Tp8bXsXf9XFB15wKM
-         m146PpUPTrlZqp45aLA0+EKm+zcXeUme4aXfILzNtp8SqctBxsOBm3NT5FqPB65R7HQX
-         OLPw==
-X-Gm-Message-State: AOJu0Yy4Hbv7aeucedlQBFQYfGgBrxoOy0TUuWD73hlRJpnCVEEnu5Vg
-        q17sV9asTQ37gOduU8uCGL85Yryjttg=
-X-Google-Smtp-Source: AGHT+IGxPKYh61YDaE4Ab16I5616FjNw5G/WLIOxqZ93NjDEP07jn0icTkqJBzjVXPbdr7XzvwkO91qMX/M=
+        bh=+S4AiipPfUUKpJ2ruaZ4ElxK7cYS7w8+XYANZ6GAwNM=;
+        b=V1n+9HpSc4XzJpORbnUXp0rWVr4dpZzV+lfSPWxlxXm2qKaC0nKVMU1q2KeN76b++I
+         ci3aldPj85q083Ae//fvcVCKTEHCQTdqrqxxh3Oqfd0ip9xSGtIsi+nf7duEXf4hCIlR
+         NGmNh841BK8GXmW11+PP2Qj8tOBc2OeE/qNNIm2OFlpEcYpAfc28GGVD6jHZIQh2PWn/
+         ZGD9Ge4wpC7YBh1b9W+/+xcxwEwvyEz4RiVZxgDDLH2LDlOC0B9LuPpTG7C9Siydy0bh
+         QqDCno2THejV8B4rZMFavh59XCHfXnipxQd6eMFtifShDSrxKmm4KBueNVAHG9CpQx96
+         ZJQg==
+X-Gm-Message-State: AOJu0Yx7gEVIMPKKeL2TvMLfhXQRStPT6LBXKmo8ooCbODfTE5CjKYCi
+        h+pkM161WNyekFJeMeSm1ZnoBUdz77E=
+X-Google-Smtp-Source: AGHT+IEqIkKuv5DX25uHuP2fYVc0fUSbsifhQGdV1yLQ889bX1DKci/qdjsCIFlDcD5dVWlFtax8M8nrsME=
 X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a17:902:c144:b0:1cc:281a:8463 with SMTP id
- 4-20020a170902c14400b001cc281a8463mr32544plj.7.1698430987435; Fri, 27 Oct
- 2023 11:23:07 -0700 (PDT)
+ (user=seanjc job=sendgmr) by 2002:a17:903:4296:b0:1c9:e3ea:750d with SMTP id
+ ju22-20020a170903429600b001c9e3ea750dmr58852plb.11.1698430993223; Fri, 27 Oct
+ 2023 11:23:13 -0700 (PDT)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Fri, 27 Oct 2023 11:22:03 -0700
+Date:   Fri, 27 Oct 2023 11:22:06 -0700
 In-Reply-To: <20231027182217.3615211-1-seanjc@google.com>
 Mime-Version: 1.0
 References: <20231027182217.3615211-1-seanjc@google.com>
 X-Mailer: git-send-email 2.42.0.820.g83a721a137-goog
-Message-ID: <20231027182217.3615211-22-seanjc@google.com>
-Subject: [PATCH v13 21/35] KVM: Drop superfluous __KVM_VCPU_MULTIPLE_ADDRESS_SPACE
- macro
+Message-ID: <20231027182217.3615211-25-seanjc@google.com>
+Subject: [PATCH v13 24/35] KVM: selftests: Drop unused kvm_userspace_memory_region_find()
+ helper
 From:   Sean Christopherson <seanjc@google.com>
 To:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
         Oliver Upton <oliver.upton@linux.dev>,
@@ -100,43 +100,72 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Drop __KVM_VCPU_MULTIPLE_ADDRESS_SPACE and instead check the value of
-KVM_ADDRESS_SPACE_NUM.
+Drop kvm_userspace_memory_region_find(), it's unused and a terrible API
+(probably why it's unused).  If anything outside of kvm_util.c needs to
+get at the memslot, userspace_mem_region_find() can be exposed to give
+others full access to all memory region/slot information.
 
-No functional change intended.
-
-Reviewed-by: Paolo Bonzini <pbonzini@redhat.com>
 Signed-off-by: Sean Christopherson <seanjc@google.com>
 ---
- arch/x86/include/asm/kvm_host.h | 1 -
- include/linux/kvm_host.h        | 2 +-
- 2 files changed, 1 insertion(+), 2 deletions(-)
+ .../selftests/kvm/include/kvm_util_base.h     |  4 ---
+ tools/testing/selftests/kvm/lib/kvm_util.c    | 29 -------------------
+ 2 files changed, 33 deletions(-)
 
-diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-index 8d60e4745e8b..6702f795c862 100644
---- a/arch/x86/include/asm/kvm_host.h
-+++ b/arch/x86/include/asm/kvm_host.h
-@@ -2124,7 +2124,6 @@ enum {
- #define HF_SMM_MASK		(1 << 1)
- #define HF_SMM_INSIDE_NMI_MASK	(1 << 2)
+diff --git a/tools/testing/selftests/kvm/include/kvm_util_base.h b/tools/testing/selftests/kvm/include/kvm_util_base.h
+index a18db6a7b3cf..967eaaeacd75 100644
+--- a/tools/testing/selftests/kvm/include/kvm_util_base.h
++++ b/tools/testing/selftests/kvm/include/kvm_util_base.h
+@@ -776,10 +776,6 @@ vm_adjust_num_guest_pages(enum vm_guest_mode mode, unsigned int num_guest_pages)
+ 	return n;
+ }
  
--# define __KVM_VCPU_MULTIPLE_ADDRESS_SPACE
- # define KVM_ADDRESS_SPACE_NUM 2
- # define kvm_arch_vcpu_memslots_id(vcpu) ((vcpu)->arch.hflags & HF_SMM_MASK ? 1 : 0)
- # define kvm_memslots_for_spte_role(kvm, role) __kvm_memslots(kvm, (role).smm)
-diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
-index e3223cafd7db..c3cfe08b1300 100644
---- a/include/linux/kvm_host.h
-+++ b/include/linux/kvm_host.h
-@@ -692,7 +692,7 @@ bool kvm_arch_irqchip_in_kernel(struct kvm *kvm);
- #define KVM_MEM_SLOTS_NUM SHRT_MAX
- #define KVM_USER_MEM_SLOTS (KVM_MEM_SLOTS_NUM - KVM_INTERNAL_MEM_SLOTS)
+-struct kvm_userspace_memory_region *
+-kvm_userspace_memory_region_find(struct kvm_vm *vm, uint64_t start,
+-				 uint64_t end);
+-
+ #define sync_global_to_guest(vm, g) ({				\
+ 	typeof(g) *_p = addr_gva2hva(vm, (vm_vaddr_t)&(g));	\
+ 	memcpy(_p, &(g), sizeof(g));				\
+diff --git a/tools/testing/selftests/kvm/lib/kvm_util.c b/tools/testing/selftests/kvm/lib/kvm_util.c
+index 7a8af1821f5d..f09295d56c23 100644
+--- a/tools/testing/selftests/kvm/lib/kvm_util.c
++++ b/tools/testing/selftests/kvm/lib/kvm_util.c
+@@ -590,35 +590,6 @@ userspace_mem_region_find(struct kvm_vm *vm, uint64_t start, uint64_t end)
+ 	return NULL;
+ }
  
--#ifndef __KVM_VCPU_MULTIPLE_ADDRESS_SPACE
-+#if KVM_ADDRESS_SPACE_NUM == 1
- static inline int kvm_arch_vcpu_memslots_id(struct kvm_vcpu *vcpu)
+-/*
+- * KVM Userspace Memory Region Find
+- *
+- * Input Args:
+- *   vm - Virtual Machine
+- *   start - Starting VM physical address
+- *   end - Ending VM physical address, inclusive.
+- *
+- * Output Args: None
+- *
+- * Return:
+- *   Pointer to overlapping region, NULL if no such region.
+- *
+- * Public interface to userspace_mem_region_find. Allows tests to look up
+- * the memslot datastructure for a given range of guest physical memory.
+- */
+-struct kvm_userspace_memory_region *
+-kvm_userspace_memory_region_find(struct kvm_vm *vm, uint64_t start,
+-				 uint64_t end)
+-{
+-	struct userspace_mem_region *region;
+-
+-	region = userspace_mem_region_find(vm, start, end);
+-	if (!region)
+-		return NULL;
+-
+-	return &region->region;
+-}
+-
+ __weak void vcpu_arch_free(struct kvm_vcpu *vcpu)
  {
- 	return 0;
+ 
 -- 
 2.42.0.820.g83a721a137-goog
 

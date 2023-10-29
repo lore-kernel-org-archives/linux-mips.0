@@ -2,73 +2,74 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 3E9C9C4167B
-	for <linux-mips@archiver.kernel.org>; Sun, 29 Oct 2023 13:46:01 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 92E30C4332F
+	for <linux-mips@archiver.kernel.org>; Sun, 29 Oct 2023 13:46:05 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230133AbjJ2NqB (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Sun, 29 Oct 2023 09:46:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48062 "EHLO
+        id S230274AbjJ2NqF (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Sun, 29 Oct 2023 09:46:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48154 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230132AbjJ2Np5 (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Sun, 29 Oct 2023 09:45:57 -0400
+        with ESMTP id S230267AbjJ2NqE (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Sun, 29 Oct 2023 09:46:04 -0400
 Received: from wout5-smtp.messagingengine.com (wout5-smtp.messagingengine.com [64.147.123.21])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A1B4C0;
-        Sun, 29 Oct 2023 06:45:55 -0700 (PDT)
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailout.west.internal (Postfix) with ESMTP id 73D683200914;
-        Sun, 29 Oct 2023 09:45:54 -0400 (EDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30C84C5;
+        Sun, 29 Oct 2023 06:46:01 -0700 (PDT)
+Received: from compute7.internal (compute7.nyi.internal [10.202.2.48])
+        by mailout.west.internal (Postfix) with ESMTP id 620DE320070D;
+        Sun, 29 Oct 2023 09:46:00 -0400 (EDT)
 Received: from mailfrontend1 ([10.202.2.162])
-  by compute5.internal (MEProxy); Sun, 29 Oct 2023 09:45:54 -0400
+  by compute7.internal (MEProxy); Sun, 29 Oct 2023 09:46:00 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=flygoat.com; h=
         cc:cc:content-transfer-encoding:content-type:content-type:date
         :date:from:from:in-reply-to:in-reply-to:message-id:mime-version
         :references:reply-to:sender:subject:subject:to:to; s=fm1; t=
-        1698587153; x=1698673553; bh=nkW4taJQaUsRU866lha58WkbM4sO1ApMx1W
-        OQCLwoj4=; b=W70be8GJ+XiQ5Rpdfmn+3ZRG050zZEgnxWKfzqBC1btiaMirs9e
-        kJW2XMWoBb39R3GrNlSYQ7ISgI3E31TSDxw+iCKyz9xv5k/B/a2BEj2YadjufXkZ
-        O7i1PGWJciX3esg16b6/HSlbsKnM33KCQi5pPPehsb9tIJzn04JkT8bRXpoIQd6/
-        DsdU8z9ykJGlapb5M/kBfn3a1ldaB/YTqqG6VqeSqEYoasWgTxMDbbniV1qtMsjS
-        YJRwr4TBckcxObIjjedu8P/2SuIVYA5Vd2D36PHL8I2sbFp5rwj+G18nQp2s6Z4p
-        zy5chTnCbxR95nU/0B9Q6UdQ8eKHdpr+owg==
+        1698587159; x=1698673559; bh=0mxEqLNYpkEtGR4Posnw0M8UDvrKtPSNjSi
+        y1sxuJiA=; b=qcHTygireRJ+119oNEtXJkQOL4JovTnhh4ugALeMKoec5nd1kLA
+        fD5jdb4DSiuqE+3JPEeeJpnZJFuWf8EgkjCnbikC7aAZXsIJE0BIOyKt2P9QOjPI
+        qfwpTmgfDBQLFfavig6IxHedjzNvfWZWoiAbStktdmX5Ty5h+pbMHUFMGGY28Zy6
+        5yCy0ftmU9nBBhYTpjiHr+Z8WNtjPG0Jmrwym7nnVCLuLalYPxR8ua3C49SXAJQm
+        qSDlR7nsbw8M3M6MHvm46tAR9SlCU4CxVE5o9c3erWl5PnQwPw8dWT40CFwP/ojB
+        qBCWnZwKwgNUQterkSZ8W1FwojOY6UFjCFQ==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:cc:content-transfer-encoding
         :content-type:content-type:date:date:feedback-id:feedback-id
         :from:from:in-reply-to:in-reply-to:message-id:mime-version
         :references:reply-to:sender:subject:subject:to:to:x-me-proxy
         :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=
-        1698587153; x=1698673553; bh=nkW4taJQaUsRU866lha58WkbM4sO1ApMx1W
-        OQCLwoj4=; b=P2vGki3XTDzjvSr99YGyGE5GWN30BSSddhl4Yly4fXwnwPT+WD4
-        EfNGzkjmFEI4iqQQXSnr03SLLJi31E7HDsi2AYQMh+eZT0g6UXzoFDyDw2dJgSUw
-        rBpDaTeIxGNOdJo8uibuO5f8xgpAHpSWcrGZBr/oiBwfcTXpAyfFvfCo6MXHXwZi
-        7+egwMrfjmUVbR90//2/nrtN6OVsB8Ayl9kVKcTZUNhBC9p1rI84d29YzJ74DZ36
-        vmETjAUlCQhrfUNVohu02hJHEIbLvaOJvTgo737KpVSKbSlQE0o5Sewgyul64Hih
-        d/AfHlNJoPfEMYRmLw7HYvtepj1IC0mEpWg==
-X-ME-Sender: <xms:EWI-ZRtzAD8gHss7uvEYClEq4ayHkN9eYAK8pXQUGJktYq_BO6UGGA>
-    <xme:EWI-ZadgdQmTF-UTPGuAbk61zPd7oiM5KXH3v_g2776eXQmt_TncjcUhV0Q8DxvvL
-    avrRja_hUkCZFwKHKA>
-X-ME-Received: <xmr:EWI-ZUyJJF_1Y3QqefXf1XbJqt6bdvS9qdYUV8xWK7_kHjuYAUwsI9Y>
+        1698587159; x=1698673559; bh=0mxEqLNYpkEtGR4Posnw0M8UDvrKtPSNjSi
+        y1sxuJiA=; b=bJ55o6IRLo32F9p8iFtT2c72V2KZeo0YYdF/ukgMVhz9flSQh7J
+        LaJO6hezmKg8S493ldpRGUJfxC0UIh8vgHNUa79r/X2AMchSrK5OnyxvwicSsaww
+        0w+2/cSo3Zk3qFHlLPkypKFSmBYfKB/xjTewahyByUNYp9MRI+XwOaxQyW5QRz0f
+        TdP/jw2Ks+EAodUBRQ/0Nkd30ZsVpnw5CpwcIQriU4GeKCc9+bB4NC5O1tD1xLTc
+        eQhxq/IOLpjICfd/zbeyiZfmmiFFi231fqCCvznOSQDODyKKEiHKAa6EeeyWGA+E
+        /XYU0qRjwdfgN3L4cmnDYmA/sHtNq/qXJbQ==
+X-ME-Sender: <xms:F2I-ZYEkpEoRyAtV38RkbC84TbZqTmuCWf4Ajsn7Y8nU73ipXFrJXA>
+    <xme:F2I-ZRWNkQ3CCJ-ggxneWA1JYVu32mZP5UgUYuBFKM4EH1ZN-0bkpjblSTPjEXOu4
+    CDiw6Tx0W7rD7BE4PU>
+X-ME-Received: <xmr:F2I-ZSJIdsisLD_-3GDRfJDIBZ7C-whydGZ-UDBMuzW9UW0a8BV3r2A>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrleekgdehgecutefuodetggdotefrodftvf
     curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
     uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
     fjughrpefhfffugggtgffkfhgjvfevofesthejredtredtjeenucfhrhhomheplfhirgig
     uhhnucgjrghnghcuoehjihgrgihunhdrhigrnhhgsehflhihghhorghtrdgtohhmqeenuc
-    ggtffrrghtthgvrhhnpedvkeeihfefveekueevteefleffkeegudeghfdtuddugefhueev
-    geffgedukeejleenucevlhhushhtvghrufhiiigvpedunecurfgrrhgrmhepmhgrihhlfh
-    hrohhmpehjihgrgihunhdrhigrnhhgsehflhihghhorghtrdgtohhm
-X-ME-Proxy: <xmx:EWI-ZYMp3BTrB83Vn1DfHxFALsQgXzyh9d-Nzc3rsar1P2CulpCrqA>
-    <xmx:EWI-ZR8jEcrD8tk8ihhfXqash2vPVBLnYLTHzLpgupbHE7hWKcuvTQ>
-    <xmx:EWI-ZYVqVDINwFJUfjcaODBMVPpnjOlSJK1no1AkvdTAYOu0_kfuWA>
-    <xmx:EWI-ZTLVS8KaLDizXyjP21vN1eFiLmGoTmIyWFXZSvityQivEXbSRQ>
+    ggtffrrghtthgvrhhnpedvvddtvdffgfejledtjeevveehieevjefgleejkeetffetueej
+    uddtgeeghfejjeenucffohhmrghinheprghltghhvghmhidrshgsnecuvehluhhsthgvrh
+    fuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepjhhirgiguhhnrdihrghnghes
+    fhhlhihgohgrthdrtghomh
+X-ME-Proxy: <xmx:F2I-ZaGuZt-zzVX5hjmb_9JaczZdGpAFtAr7FwAddHOZScNBv35cLA>
+    <xmx:F2I-ZeXETDZMWNfcJCc0bhPuJ1D5f7F2a_jOd8tWMq52MBvzxZ_xbA>
+    <xmx:F2I-ZdMvmLFANOpj-TpDMIfcICv0xAeY7X1SI4_mK_gZaUnvYtMKeA>
+    <xmx:F2I-ZbipExt6Wm-RvOorYZS7XLt3Of7AO5QLh9jKa8Ng5ZZ-dleYdw>
 Feedback-ID: ifd894703:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sun,
- 29 Oct 2023 09:45:53 -0400 (EDT)
+ 29 Oct 2023 09:45:59 -0400 (EDT)
 From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
-Date:   Sun, 29 Oct 2023 02:53:04 +0000
-Subject: [PATCH 3/8] MIPS: debug: Hook up DEBUG_LL with early printk
+Date:   Sun, 29 Oct 2023 02:53:07 +0000
+Subject: [PATCH 6/8] MIPS: debug_ll: Implement support for Alchemy uarts
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20231029-mips_debug_ll-v1-3-d7a491e8c278@flygoat.com>
+Message-Id: <20231029-mips_debug_ll-v1-6-d7a491e8c278@flygoat.com>
 References: <20231029-mips_debug_ll-v1-0-d7a491e8c278@flygoat.com>
 In-Reply-To: <20231029-mips_debug_ll-v1-0-d7a491e8c278@flygoat.com>
 To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
@@ -79,69 +80,102 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Output earlyprintk to low-level debug functions when it's
-available.
+Alchemy uart is a 8250 derivative that requires some special care
+on barriers and readys, also they have a wired register layout.
 
-DEBUG_LL takes priority over platform earlyprintk because
-people must know what are they doing when they are trying
-to enable DEBUG_LL.
+Implement it as a special include.
 
 Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
 ---
- arch/mips/Kconfig.debug         |  2 +-
- arch/mips/kernel/early_printk.c | 19 +++++++++++++++++++
- 2 files changed, 20 insertions(+), 1 deletion(-)
+ arch/mips/Kconfig.debug           | 10 +++++++++
+ arch/mips/include/debug/alchemy.S | 46 +++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 56 insertions(+)
 
 diff --git a/arch/mips/Kconfig.debug b/arch/mips/Kconfig.debug
-index 892e31804982..6ef42edc7d67 100644
+index 3609d298a9eb..aef116058654 100644
 --- a/arch/mips/Kconfig.debug
 +++ b/arch/mips/Kconfig.debug
-@@ -2,7 +2,7 @@
+@@ -257,11 +257,20 @@ choice
+ 		  Say Y here if you want kernel low-level debugging support
+ 		  on uart0 of Ingenic SoCs.
  
- config EARLY_PRINTK
- 	bool "Early printk" if EXPERT
--	depends on SYS_HAS_EARLY_PRINTK
-+	depends on SYS_HAS_EARLY_PRINTK || DEBUG_LL
- 	default y
++	config DEBUG_ALCHEMY_UART
++		bool "Kernel low-level debugging messages via Alchemy UART"
++		depends on MIPS_ALCHEMY
++		select DEBUG_LL_UART
++		help
++		  Say Y here if you want kernel low-level debugging support
++		  on uart of alchemy SoCs.
++
+ endchoice
+ 
+ config DEBUG_LL_INCLUDE
+ 	string
+ 	default "debug/8250.S" if DEBUG_LL_UART_8250 || DEBUG_UART_8250
++	default "debug/alchemy.S" if DEBUG_ALCHEMY_UART
+ 	default "debug/uhi.S" if DEBUG_MIPS_UHI
+ 	default "debug-macro.S"
+ 
+@@ -293,6 +302,7 @@ config DEBUG_UART_PHYS
+ 	default 0x1fd003f8 if DEBUG_LOONGSON3_UART
+ 	default 0x1fe00000 if DEBUG_LOONGSON2K_UART
+ 	default 0x10030000 if DEBUG_INGENIC_UART
++	default 0x11100000 if DEBUG_ALCHEMY_UART
  	help
- 	  This option enables special console drivers which allow the kernel
-diff --git a/arch/mips/kernel/early_printk.c b/arch/mips/kernel/early_printk.c
-index 4a1647ddfbd9..c3f3b0a930f0 100644
---- a/arch/mips/kernel/early_printk.c
-+++ b/arch/mips/kernel/early_printk.c
-@@ -14,6 +14,24 @@
- 
- #include <asm/setup.h>
- 
-+#ifdef CONFIG_DEBUG_LL
-+extern void printascii(const char *);
+ 	  This is the physical base address of the debug UART. It must be
+ 	  accessible from unmapped kernel space (i.e. KSEG1 for 32bit kernels
+diff --git a/arch/mips/include/debug/alchemy.S b/arch/mips/include/debug/alchemy.S
+new file mode 100644
+index 000000000000..933efc6e828c
+--- /dev/null
++++ b/arch/mips/include/debug/alchemy.S
+@@ -0,0 +1,46 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++/*
++ * Copyright (C) 2023, Jiaxun Yang <jiaxun.yang@flygoat.com>
++ * MIPS Low level debug include file for Au1xxx UART
++ * Dereived from drivers/tty/serial/8250/8250_rt288x.c
++ */
 +
-+static void early_console_write(struct console *con, const char *s, unsigned n)
-+{
-+	char buf[128];
++#include <asm/addrspace.h>
++#include <asm/asm.h>
++#include <linux/serial_reg.h>
 +
-+	while (n) {
-+		unsigned int l = min(n, sizeof(buf)-1);
++#define DEBUG_LL_UART
 +
-+		memcpy(buf, s, l);
-+		buf[l] = 0;
-+		s += l;
-+		n -= l;
-+		printascii(buf);
-+	}
-+}
-+#else
- static void early_console_write(struct console *con, const char *s, unsigned n)
- {
- 	while (n-- && *s) {
-@@ -23,6 +41,7 @@ static void early_console_write(struct console *con, const char *s, unsigned n)
- 		s++;
- 	}
- }
-+#endif
- 
- static struct console early_console_prom = {
- 	.name	= "early",
++#define UART_BASE	CKSEG1ADDR(CONFIG_DEBUG_UART_PHYS)
++
++#define UART_TX_OFS	(1 << 2)
++#define UART_LSR_OFS	(7 << 2)
++
++# define UART_L		lw
++# define UART_S		sw
++
++		.macro	addruart,rd,rx
++		PTR_LA	\rd, UART_BASE
++		.endm
++
++		.macro	senduart,rd,rx
++		UART_S   \rd, UART_TX_OFS(\rx)
++		sync	/* wmb */
++		.endm
++
++		.macro	busyuart,rd,rx
++1002:
++		UART_L	\rd, UART_LSR_OFS(\rx)
++		andi	\rd, \rd, (UART_LSR_TEMT | UART_LSR_THRE)
++		xori	\rd, (UART_LSR_TEMT | UART_LSR_THRE)
++		sync	/* cpu_relax */
++		bnez	\rd, 1002b
++		.endm
++
++		.macro	waituarttxrdy,rd,rx
++		busyuart \rd, \rx
++		.endm
++
++		/* Au1xxx has no MSR */
++		.macro	waituartcts,rd,rx
++		.endm
 
 -- 
 2.34.1

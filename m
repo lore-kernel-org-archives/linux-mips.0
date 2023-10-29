@@ -2,74 +2,75 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id DDA8AC4167B
-	for <linux-mips@archiver.kernel.org>; Sun, 29 Oct 2023 13:46:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id AD495C4332F
+	for <linux-mips@archiver.kernel.org>; Sun, 29 Oct 2023 13:58:05 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230050AbjJ2NqO (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Sun, 29 Oct 2023 09:46:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55208 "EHLO
+        id S229795AbjJ2N6F (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Sun, 29 Oct 2023 09:58:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48094 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230299AbjJ2NqI (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Sun, 29 Oct 2023 09:46:08 -0400
+        with ESMTP id S230246AbjJ2Np7 (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Sun, 29 Oct 2023 09:45:59 -0400
 Received: from wout5-smtp.messagingengine.com (wout5-smtp.messagingengine.com [64.147.123.21])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33080C1;
-        Sun, 29 Oct 2023 06:46:05 -0700 (PDT)
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailout.west.internal (Postfix) with ESMTP id 624D8320027A;
-        Sun, 29 Oct 2023 09:46:04 -0400 (EDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 451AAC2;
+        Sun, 29 Oct 2023 06:45:57 -0700 (PDT)
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailout.west.internal (Postfix) with ESMTP id 7A10A3200914;
+        Sun, 29 Oct 2023 09:45:56 -0400 (EDT)
 Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Sun, 29 Oct 2023 09:46:04 -0400
+  by compute1.internal (MEProxy); Sun, 29 Oct 2023 09:45:56 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=flygoat.com; h=
         cc:cc:content-transfer-encoding:content-type:content-type:date
         :date:from:from:in-reply-to:in-reply-to:message-id:mime-version
         :references:reply-to:sender:subject:subject:to:to; s=fm1; t=
-        1698587163; x=1698673563; bh=VVYQuKINHnFBqLPFiy0T5mZFPavh5Li6d87
-        JmtCWe1g=; b=r4/sB/RNAf+8H/ZblgdqntptF1qsxVLiggVCcaODYwPTMuTPxsW
-        BtJnenaecIW2fUx7LXBJQTC7PQ5cIoRoNxozUnMoNKN2UemL4XvbgFRCv4ApFC8A
-        zX5HNfHQ8r9eCDvAkKF/D4XHub1O6EhvIEUJlf96IqwUm4nPEr8PnxNtZtQ6SBPz
-        yzHF/GtzgwH0Gs0kG6Ojvuxkyx8FWHgS3EIcz8M6ZJBOMEx/gNWXEzPaNkAXU+dE
-        PcKhgx53i1sJD5Kg2pUnvNKctllG4SZsUG3SZh69G9++hH+26XTa/aIy5D7t/0wu
-        eCIxUb1AY/F0PUOCQWf84G9u2UayL3m1Scg==
+        1698587155; x=1698673555; bh=jYhHcxouhYM9tIGaxyoEYXSEAO4S1yV0g4K
+        J6UP/5LE=; b=nZfuiwP+PXXle2tGhlSmAI9dBZhPF+nWLnrOezM3i/m4rawbW3p
+        1uH8KislQr5NZI2F3+Vp61X2+oA3By4HGscjETcOLPnuPiv3KLrBkMMD+YJAQLxe
+        uvbSiNc8c/7SNxyLC7WmbSOTm8HGnAxGwDqqoeyMD1fR1Xfbeee4iwzgxoaU4Kki
+        WpjNiLQ/4auZuyeYiudj8zYNQZrproDW1nm4s4kviLGXRGZVdx2XhMA6NbJcUX84
+        C3I/jfw/RHy1RwWeZShXr2TM1lX9MOlY2/1eacaqjKVDr6TlsJPWQjBLBRnCFAyz
+        4yAieZCNE16A9rUK8kOoxddVY5YeTuBgGXA==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:cc:content-transfer-encoding
         :content-type:content-type:date:date:feedback-id:feedback-id
         :from:from:in-reply-to:in-reply-to:message-id:mime-version
         :references:reply-to:sender:subject:subject:to:to:x-me-proxy
         :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=
-        1698587163; x=1698673563; bh=VVYQuKINHnFBqLPFiy0T5mZFPavh5Li6d87
-        JmtCWe1g=; b=qLprJQ/cZj/lB6XRG7ZcXsGloRyM+Du2tFgSSEpTgbuKyXKzGqt
-        UaxhbLDwENuxNzFAydMVJwAPyhg6A4z1qrmbB68At2LY6ltoDXjq+6yJhGLarAX0
-        E+vlBnie7/1WbW8sgKOqcjEjIvBf9arMGTeU5RlrQ8OY16VmR4yt1198N0aQ+vf1
-        Msu6dttZWuHaFC04k7InfRHH2AjVdr79vXc+59nxJwHEzoks3qGNVMXcPr97CzfN
-        lJLGMmD4yh6c86fj1eqcRTzZBP09wDCHNST48+KJq+6pR547QmJm/CRkoJC+QOJy
-        zQ3pnZKcIg7bYFJsSFnvv4likhNW/d6+Hig==
-X-ME-Sender: <xms:G2I-ZSUfKvj2k-SRO0hQ7iCmIS-d_G4_EchENqKtkKG1437jOgvbzQ>
-    <xme:G2I-Zemc_JUwhTh0dHZ3W0gUyOlwtb8rgVtoTtbRxWmeZ_xh7sTb2_DexFE4pT6Lu
-    8-UF3rLeijWT-9mKuY>
-X-ME-Received: <xmr:G2I-ZWZ9tH2DymZ7abOT_o2FQBhbVgeLZojQg8fWS6HgddIXHPHAmvY>
+        1698587155; x=1698673555; bh=jYhHcxouhYM9tIGaxyoEYXSEAO4S1yV0g4K
+        J6UP/5LE=; b=ZabQEQ8l9OG5fXEOUlTQMG2r8x74zsw0B4ybW4XtmEzKio+T30k
+        PJjcBWZojguCiS+hBfLJxNRUcDpSchdkAqxs9z9RlJWkYiV2IO6yVdBNATLy8uRV
+        31YQSNDIdnkbSxMezXEUZ/A2NCpRx4km+n5bYOBTCFOGX7DtKyCrHwEDNhm9rCRx
+        ZMKAfbkPwvdr4xgfDBfYKia60HZjr5vk6h5MFInQfpi+3d+ked9M5N8vjP+ymJo8
+        44kvcLTzyjeVLYRkGgjQ9lnGVNKFHODjoLsDnjSIKkpT+1H7IfzkWWVHsY0jkNPM
+        q5QFOhn+1eT+sBsQrbZVF1GQrPt6FgimrDQ==
+X-ME-Sender: <xms:E2I-ZYeinM0-QXWgNo8Cvdqp_CwQ-BnAq1bbbdf2P4_WznqX_5WeIA>
+    <xme:E2I-ZaOZIHTV9IfbX5f9mRfHj9ubwOORMlpFw-Jg6st5wELyzmUt4-9UqSzcovpYR
+    E5sTYlHdPBD1mIKY3M>
+X-ME-Received: <xmr:E2I-ZZg0jq-8VBxmaZ2tzfgqPG0i8WP3rMLuUklXxs8zsWRgnMif_kg>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrleekgdehhecutefuodetggdotefrodftvf
     curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
     uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
     fjughrpefhfffugggtgffkfhgjvfevofesthejredtredtjeenucfhrhhomheplfhirgig
     uhhnucgjrghnghcuoehjihgrgihunhdrhigrnhhgsehflhihghhorghtrdgtohhmqeenuc
-    ggtffrrghtthgvrhhnpeduudekveevvddtffegkeevieehheehieejueekkedvuddvheeg
-    heevueeujeehheenucffohhmrghinhepuggvsghughdqvhgvtgdrshgspdguvggsuhhgrd
-    hssgdphhgvrggurdhssgenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgr
-    ihhlfhhrohhmpehjihgrgihunhdrhigrnhhgsehflhihghhorghtrdgtohhm
-X-ME-Proxy: <xmx:G2I-ZZV0bgGtZu50nsqCs69CiU8G_fIUqPqOYXyCtxUzEj81cC9dHQ>
-    <xmx:G2I-ZclFZcRdKybkKt_9MdalhlTdthw_4HNpA8o8oMVS3AdLcDGBrw>
-    <xmx:G2I-ZefoA8Bd1voDJdH-atSbVqsYpeXP0MSiah5vgkD84d-kYBl08A>
-    <xmx:G2I-ZRzjPeEZdLrwxcqsp0QVRIgXazxjcbw1Gsi_pqB3TCHyrVtQvQ>
+    ggtffrrghtthgvrhhnpeelieduudfftdegfeeukeduudevkeegtdeliefhfeeggfevleef
+    ledvgeeftdelteenucffohhmrghinhepuggvsghughdqvhgvtgdrshgspdhnohhprdhorh
+    hgpdhhvggrugdrshgsnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghi
+    lhhfrhhomhepjhhirgiguhhnrdihrghnghesfhhlhihgohgrthdrtghomh
+X-ME-Proxy: <xmx:E2I-Zd9g0BNP6JdUtXXHUw5IWDsWGXw-Sg61MTXhWwQA8pEkuhqgIg>
+    <xmx:E2I-ZUtdmZK5k_ylaudndMe_DTDKB6x2KhmTyRHQbA5wNv8WkkPc_A>
+    <xmx:E2I-ZUG3KMF9KZ-NzeHHQ98SEwzmLSIVHFWUmOrSCnMhvkKZYuE5vg>
+    <xmx:E2I-Zd6oWPT-DKBXKBlm5cOktznJR1iUyyoEnIontJsJXoKpAVR9Iw>
 Feedback-ID: ifd894703:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sun,
- 29 Oct 2023 09:46:03 -0400 (EDT)
+ 29 Oct 2023 09:45:55 -0400 (EDT)
 From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
-Date:   Sun, 29 Oct 2023 02:53:09 +0000
-Subject: [PATCH 8/8] MIPS: zboot: Convert to use debug_ll facilities
+Date:   Sun, 29 Oct 2023 02:53:05 +0000
+Subject: [PATCH 4/8] MIPS: debug: Provide an early exception vector for
+ low-level debugging
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20231029-mips_debug_ll-v1-8-d7a491e8c278@flygoat.com>
+Message-Id: <20231029-mips_debug_ll-v1-4-d7a491e8c278@flygoat.com>
 References: <20231029-mips_debug_ll-v1-0-d7a491e8c278@flygoat.com>
 In-Reply-To: <20231029-mips_debug_ll-v1-0-d7a491e8c278@flygoat.com>
 To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
@@ -80,326 +81,279 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Since now debug_ll facilities can cover all platforms supported
-by zboot debug print, and it provides extra capability on debugging
-exceptions, switch zboot to use those facilities.
+This is helpful for debugging of early boot crash when exceptions
+happens before trap_init(), or for debugging SMP bringup code.
+
+It will install exception handler very early on kernel_entry by
+setting ebase or copy itself to start of CKSEG0, and print off
+exception vectors and other status registers like:
+
+Low level exception: ffffffff8011e180
+
+GlobalNumber: 0x00000000
+EBase:    0xffffffff8011e000
+Xcontext: 0x0000000000000000
+Cause:    0x0000000c
+Status:   0x14000082
+EPC:      0xffffffff80d324e0
+BadVAddr: 0x0000000000000000
+BadInstr: 0xac000000
 
 Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
 ---
- arch/mips/Kconfig                        | 12 ++------
- arch/mips/Kconfig.debug                  | 46 +++++++++++++------------------
- arch/mips/boot/compressed/Makefile       |  9 ++----
- arch/mips/boot/compressed/dbg.c          | 37 -------------------------
- arch/mips/boot/compressed/debug-vec.S    |  3 ++
- arch/mips/boot/compressed/debug.S        |  3 ++
- arch/mips/boot/compressed/decompress.c   |  6 ++--
- arch/mips/boot/compressed/head.S         |  6 ++++
- arch/mips/boot/compressed/uart-16550.c   | 47 --------------------------------
- arch/mips/boot/compressed/uart-alchemy.c |  7 -----
- arch/mips/boot/compressed/uart-ath79.c   |  2 --
- arch/mips/boot/compressed/uart-prom.c    |  7 -----
- 12 files changed, 39 insertions(+), 146 deletions(-)
+ arch/mips/Kconfig.debug      |   9 ++
+ arch/mips/kernel/Makefile    |   1 +
+ arch/mips/kernel/debug-vec.S | 194 +++++++++++++++++++++++++++++++++++++++++++
+ arch/mips/kernel/head.S      |   4 +
+ 4 files changed, 208 insertions(+)
 
-diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-index 76db82542519..0442b44da32f 100644
---- a/arch/mips/Kconfig
-+++ b/arch/mips/Kconfig
-@@ -232,7 +232,7 @@ config ATH79
- 	select SYS_SUPPORTS_32BIT_KERNEL
- 	select SYS_SUPPORTS_BIG_ENDIAN
- 	select SYS_SUPPORTS_MIPS16
--	select SYS_SUPPORTS_ZBOOT_UART_PROM
-+	select SYS_SUPPORTS_ZBOOT
- 	select USE_OF
- 	select USB_EHCI_ROOT_HUB_TT if USB_EHCI_HCD_PLATFORM
- 	help
-@@ -413,7 +413,7 @@ config MACH_INGENIC_SOC
- 	bool "Ingenic SoC based machines"
- 	select MIPS_GENERIC
- 	select MACH_INGENIC
--	select SYS_SUPPORTS_ZBOOT_UART16550
-+	select SYS_SUPPORTS_ZBOOT
- 	select CPU_SUPPORTS_CPUFREQ
- 	select MIPS_EXTERNAL_TIMER
- 
-@@ -1727,14 +1727,6 @@ config SYS_SUPPORTS_ZBOOT
- 	select HAVE_KERNEL_XZ
- 	select HAVE_KERNEL_ZSTD
- 
--config SYS_SUPPORTS_ZBOOT_UART16550
--	bool
--	select SYS_SUPPORTS_ZBOOT
--
--config SYS_SUPPORTS_ZBOOT_UART_PROM
--	bool
--	select SYS_SUPPORTS_ZBOOT
--
- config CPU_LOONGSON2EF
- 	bool
- 	select CPU_SUPPORTS_32BIT_KERNEL
 diff --git a/arch/mips/Kconfig.debug b/arch/mips/Kconfig.debug
-index a6687c503c34..0ce6d24d05b3 100644
+index 6ef42edc7d67..323ad3ec643b 100644
 --- a/arch/mips/Kconfig.debug
 +++ b/arch/mips/Kconfig.debug
-@@ -79,33 +79,6 @@ config SB1XXX_CORELIS
- 	  Select compile flags that produce code that can be processed by the
- 	  Corelis mksym utility and UDB Emulator.
+@@ -180,6 +180,15 @@ config DEBUG_LL
+ 	  this option should not be enabled for kernels that are intended to
+ 	  be portable.
  
--config DEBUG_ZBOOT
--	bool "Enable compressed kernel support debugging"
--	depends on DEBUG_KERNEL && SYS_SUPPORTS_ZBOOT
--	default n
--	help
--	  If you want to add compressed kernel support to a new board, and the
--	  board supports uart16550 compatible serial port, please select
--	  SYS_SUPPORTS_ZBOOT_UART16550 for your board and enable this option to
--	  debug it.
--
--	  If your board doesn't support uart16550 compatible serial port, you
--	  can try to select SYS_SUPPORTS_ZBOOT and use the other methods to
--	  debug it. for example, add a new serial port support just as
--	  arch/mips/boot/compressed/uart-16550.c does.
--
--	  After the compressed kernel support works, please disable this option
--	  to reduce the kernel image size and speed up the booting procedure a
--	  little.
--
--config ZBOOT_INGENIC_UART
--	int "UART to use for compressed kernel debugging"
--	depends on DEBUG_ZBOOT && MACH_INGENIC_SOC
--	default 0
--	range 0 4
--	help
--	  Specify the UART that should be used for compressed kernel debugging.
--
- config SPINLOCK_TEST
- 	bool "Enable spinlock timing tests in debugfs"
- 	depends on DEBUG_FS
-@@ -328,3 +301,22 @@ config DEBUG_UART_8250_WIDTH
- 	int "Register width for the 8250 debug UART"
- 	depends on DEBUG_LL_UART_8250 || DEBUG_UART_8250
- 	default 1
-+
-+config DEBUG_ZBOOT
-+	bool "Enable compressed kernel debugging via DEBUG_LL output"
-+	depends on DEBUG_LL && SYS_SUPPORTS_ZBOOT
++config DEBUG_LL_EXCEPT
++	bool "Kernel low-level debugging of exceptions"
++	depends on DEBUG_LL
 +	help
-+	  Say Y here if you want to enable debugging of a compressed kernel
-+	  via the DEBUG_LL output.  This is useful if you are debugging
-+	  decompressor issues.
++	  Say Y here to enable debugging prints for low-level exceptions.
++	  This is helpful if you are debugging a early boot crash when
++	  exceptions happens before trap_init(), or if you are debugging
++	  SMP bringup code.
 +
-+	  If unsure, say N.
-+
-+config DEBUG_ZBOOT_EXCEPT
-+	bool "Enable compressed kernel debugging of exceptions"
-+	depends on DEBUG_ZBOOT
-+	help
-+	  Say Y here if you want to enable debugging of exceptions happen
-+	  during decompression of a compressed kernel via the DEBUG_LL output.
-+
-+	  If unsure, say N.
-diff --git a/arch/mips/boot/compressed/Makefile b/arch/mips/boot/compressed/Makefile
-index 6cc28173bee8..78c65db8dd04 100644
---- a/arch/mips/boot/compressed/Makefile
-+++ b/arch/mips/boot/compressed/Makefile
-@@ -43,13 +43,8 @@ KCSAN_SANITIZE			:= n
- # decompressor objects (linked with vmlinuz)
- vmlinuzobjs-y := $(obj)/head.o $(obj)/decompress.o $(obj)/string.o $(obj)/bswapsi.o
+ choice
+ 	prompt "Kernel low-level debugging port"
+ 	depends on DEBUG_LL
+diff --git a/arch/mips/kernel/Makefile b/arch/mips/kernel/Makefile
+index 10c0a224efe4..400e35f9f82f 100644
+--- a/arch/mips/kernel/Makefile
++++ b/arch/mips/kernel/Makefile
+@@ -79,6 +79,7 @@ obj-$(CONFIG_MIPS32_N32)	+= scall64-n32.o signal_n32.o
+ obj-$(CONFIG_MIPS32_O32)	+= scall64-o32.o signal_o32.o
  
--ifdef CONFIG_DEBUG_ZBOOT
--vmlinuzobjs-$(CONFIG_DEBUG_ZBOOT)		   += $(obj)/dbg.o
--vmlinuzobjs-$(CONFIG_SYS_SUPPORTS_ZBOOT_UART16550) += $(obj)/uart-16550.o
--vmlinuzobjs-$(CONFIG_SYS_SUPPORTS_ZBOOT_UART_PROM) += $(obj)/uart-prom.o
--vmlinuzobjs-$(CONFIG_MIPS_ALCHEMY)		   += $(obj)/uart-alchemy.o
--vmlinuzobjs-$(CONFIG_ATH79)			   += $(obj)/uart-ath79.o
--endif
-+vmlinuzobjs-$(CONFIG_DEBUG_ZBOOT)		+= $(obj)/debug.o
-+vmlinuzobjs-$(CONFIG_DEBUG_ZBOOT_EXCEPT)	+= $(obj)/debug-vec.o
+ obj-$(CONFIG_DEBUG_LL)		+= debug.o
++obj-$(CONFIG_DEBUG_LL_EXCEPT)	+= debug-vec.o
  
- vmlinuzobjs-$(CONFIG_KERNEL_XZ) += $(obj)/ashldi3.o
- 
-diff --git a/arch/mips/boot/compressed/dbg.c b/arch/mips/boot/compressed/dbg.c
-deleted file mode 100644
-index f6728a8fd1c3..000000000000
---- a/arch/mips/boot/compressed/dbg.c
-+++ /dev/null
-@@ -1,37 +0,0 @@
--// SPDX-License-Identifier: GPL-2.0
--/*
-- * MIPS-specific debug support for pre-boot environment
-- *
-- * NOTE: putc() is board specific, if your board have a 16550 compatible uart,
-- * please select SYS_SUPPORTS_ZBOOT_UART16550 for your machine. othewise, you
-- * need to implement your own putc().
-- */
--#include <linux/compiler.h>
--#include <linux/types.h>
--
--void __weak putc(char c)
--{
--}
--
--void puts(const char *s)
--{
--	char c;
--	while ((c = *s++) != '\0') {
--		putc(c);
--		if (c == '\n')
--			putc('\r');
--	}
--}
--
--void puthex(unsigned long long val)
--{
--
--	unsigned char buf[10];
--	int i;
--	for (i = 7; i >= 0; i--) {
--		buf[i] = "0123456789ABCDEF"[val & 0x0F];
--		val >>= 4;
--	}
--	buf[8] = '\0';
--	puts(buf);
--}
-diff --git a/arch/mips/boot/compressed/debug-vec.S b/arch/mips/boot/compressed/debug-vec.S
+ obj-$(CONFIG_KGDB)		+= kgdb.o
+ obj-$(CONFIG_PROC_FS)		+= proc.o
+diff --git a/arch/mips/kernel/debug-vec.S b/arch/mips/kernel/debug-vec.S
 new file mode 100644
-index 000000000000..e7bedb183da8
+index 000000000000..4530bf3d5b75
 --- /dev/null
-+++ b/arch/mips/boot/compressed/debug-vec.S
-@@ -0,0 +1,3 @@
++++ b/arch/mips/kernel/debug-vec.S
+@@ -0,0 +1,194 @@
 +/* SPDX-License-Identifier: GPL-2.0 */
++/*
++ *  Copyright (C) 2023, Jiaxun Yang <jiaxun.yang@flygoat.com>
++ *  MIPS Low level exception vectors and handler
++ */
 +
-+#include "../../kernel/debug-vec.S"
-diff --git a/arch/mips/boot/compressed/debug.S b/arch/mips/boot/compressed/debug.S
-new file mode 100644
-index 000000000000..0cf3da958f7e
---- /dev/null
-+++ b/arch/mips/boot/compressed/debug.S
-@@ -0,0 +1,3 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
++#include <asm/addrspace.h>
++#include <asm/asm.h>
++#include <asm/asm-offsets.h>
++#include <asm/asmmacro.h>
 +
-+#include "../../kernel/debug.S"
-diff --git a/arch/mips/boot/compressed/decompress.c b/arch/mips/boot/compressed/decompress.c
-index c5dd415254d3..2317f44307e1 100644
---- a/arch/mips/boot/compressed/decompress.c
-+++ b/arch/mips/boot/compressed/decompress.c
-@@ -31,8 +31,10 @@ extern unsigned char __image_begin[], __image_end[];
- 
- /* debug interfaces  */
- #ifdef CONFIG_DEBUG_ZBOOT
--extern void puts(const char *s);
--extern void puthex(unsigned long long val);
-+extern void printascii(const char *s);
-+extern void printhexl(unsigned long val);
-+#define puts(s) printascii(s)
-+#define puthex(val) printhexl(val)
- #else
- #define puts(s) do {} while (0)
- #define puthex(val) do {} while (0)
-diff --git a/arch/mips/boot/compressed/head.S b/arch/mips/boot/compressed/head.S
-index 5795d0af1e1b..c347d2273ae8 100644
---- a/arch/mips/boot/compressed/head.S
-+++ b/arch/mips/boot/compressed/head.S
-@@ -22,6 +22,12 @@
- 	move	s2, a2
- 	move	s3, a3
- 
-+#ifdef CONFIG_DEBUG_ZBOOT_EXCEP
-+	/* Set up the exception vector */
-+	PTR_LA	t9, setup_debug_ll_exception
++
++.balign 0x1000
++LEAF(debug_ll_vecs)
++	.set	push
++	.set	noreorder
++	move	a0, zero
++	PTR_LA  t9, debug_ll_exception
 +	jalr	t9
++	nop
++	b	.
++	nop
++
++.org	0x80
++	move	a0, zero
++	PTR_LA  t9, debug_ll_exception
++	jalr	t9
++	nop
++	b	.
++	nop
++
++.org	0x100
++	move	a0, zero
++	PTR_LA  t9, debug_ll_exception
++	jalr	t9
++	nop
++	b	.
++	nop
++
++.org	0x180
++	move	a0, zero
++	PTR_LA  t9, debug_ll_exception
++	jalr	t9
++	nop
++	b	.
++	nop
++
++.org	0x200
++	move	a0, zero
++	PTR_LA  t9, debug_ll_exception
++	jalr	t9
++	nop
++	b	.
++	nop
++
++.org	0x280
++	move	a0, zero
++	PTR_LA  t9, debug_ll_exception
++	jalr	t9
++	nop
++	b	.
++	nop
++
++.org	0x300
++	move	a0, zero
++	PTR_LA  t9, debug_ll_exception
++	jalr	t9
++	nop
++	b	.
++	nop
++
++.org	0x380
++	move	a0, zero
++	PTR_LA  t9, debug_ll_exception
++	jalr	t9
++	nop
++	b	.
++	nop
++
++.org	0x400
++	move	a0, zero
++	PTR_LA  t9, debug_ll_exception
++	jalr	t9
++	nop
++	b	.
++	nop
++
++.org	0x480
++	move	a0, zero
++	PTR_LA  t9, debug_ll_exception
++	jalr	t9
++	nop
++	b	.
++	nop
++
++	.set	pop
++END(debug_ll_vecs)
++
++
++/**
++ * debug_ll_exception() - dump relevant exception state to LL outputs
++ * @a0: pointer to NULL-terminated ASCII string naming the exception
++ *
++ * If a0 is NULL, it will print out exception vector number calculated
++ * from the ra insted. This is useful for debugging exceptions that
++ * happen before the exception handler is set up, or routed from BEV.
++ */
++LEAF(debug_ll_exception)
++	move		k0, ra
++	move		k1, a0
++	PTR_LA		t3, printascii
++
++	PTR_LA		a0, str_newline
++	jalr		t3  /* Call printascii */
++	PTR_LA		a0, str_exp
++	jalr		t3  /* Call printascii */
++	beqz		k1, 1f
++	move		a0, k1
++	jalr		t3  /* Call printascii */
++	b		2f
++1:
++	PTR_SRL		a0, k0, 7
++	PTR_SLL		a0, a0, 7
++	PTR_LA		t2, printhexl
++	jalr		t2
++2:
++	PTR_LA		a0, str_newline
++	jalr		t3  /* Call printascii */
++	PTR_LA		a0, str_newline
++	jalr		t3  /* Call printascii */
++
++#define DUMP_COP0_REG(reg, name, sz, _mfc0)		\
++	PTR_LA		a0, 8f;				\
++	jalr		t3;				\
++	_mfc0		a0, reg;			\
++	PTR_LA		t2, printhex##sz;		\
++	jalr		t2;				\
++	PTR_LA		a0, str_newline;		\
++	jalr		t3;				\
++	TEXT(name)
++
++#if defined(CONFIG_SMP) && defined(CONFIG_CPU_MIPSR6)
++	DUMP_COP0_REG(CP0_GLOBALNUMBER, "GlobalNumber: 0x", 4, mfc0)
++#endif
++#if MIPS_ISA_REV >= 2
++	DUMP_COP0_REG(CP0_EBASE,    "EBase:    0x", l, MFC0)
++#endif
++#ifdef CONFIG_64BIT
++	DUMP_COP0_REG(CP0_XCONTEXT, "Xcontext: 0x", 8, dmfc0)
++#else
++	DUMP_COP0_REG(CP0_CONTEXT,  "Context:  0x", 4, mfc0)
++#endif
++	DUMP_COP0_REG(CP0_CAUSE,    "Cause:    0x", 4, mfc0)
++	DUMP_COP0_REG(CP0_STATUS,   "Status:   0x", 4, mfc0)
++	DUMP_COP0_REG(CP0_EPC,      "EPC:      0x", l, MFC0)
++	DUMP_COP0_REG(CP0_BADVADDR, "BadVAddr: 0x", l, MFC0)
++#if MIPS_ISA_REV >= 6
++	DUMP_COP0_REG(CP0_BADINSTR, "BadInstr: 0x", 4, mfc0)
++#endif
++	PTR_LA		a0, str_newline
++	jalr		t3  /* Call printascii */
++	jr		k0
++	END(debug_ll_exception)
++
++.pushsection	.rodata.str
++str_exp: .asciiz "Low level exception: "
++str_newline: .asciiz "\r\n"
++.popsection
++
++NESTED(setup_debug_ll_exception, 0, ra)
++	PTR_LA		t0, debug_ll_vecs
++#if MIPS_ISA_REV >= 2
++	/* Set ebase to debug_ll_vecs */
++#if defined (CONFIG_64BIT) && !defined(KBUILD_64BIT_SYM32)
++	ori		t0, MIPS_EBASE_WG
++#endif
++	MTC0		t0, CP0_EBASE
++#else
++	/* Copy debug_ll_vecs to start of KSEG0 */
++	PTR_LI		t1, CKSEG0
++	PTR_ADDIU	t2, t0, 0x400 /* Only copy 0x400 as that is what reserved on old systems */
++copy_word:
++	PTR_LW		t3, 0(t0)
++	PTR_SW		t3, 0(t1)
++	PTR_ADDIU	t0, t0, PTRSIZE
++	PTR_ADDIU	t1, t1, PTRSIZE
++	PTR_BNE		t0, t2, copy_word
++#endif
++	/* Clear BEV bit in status register */
++	mfc0		t0, CP0_STATUS
++	and		t0, t0, ~ST0_BEV
++	mtc0		t0, CP0_STATUS
++	jr		ra
++	END(setup_debug_ll_exception)
+diff --git a/arch/mips/kernel/head.S b/arch/mips/kernel/head.S
+index b825ed4476c7..9be1c4ce6324 100644
+--- a/arch/mips/kernel/head.S
++++ b/arch/mips/kernel/head.S
+@@ -106,6 +106,10 @@ NESTED(kernel_entry, 16, sp)			# kernel entry point
+ 	LONG_S		a2, fw_arg2
+ 	LONG_S		a3, fw_arg3
+ 
++#ifdef CONFIG_DEBUG_LL_EXCEPT
++	jal		setup_debug_ll_exception
 +#endif
 +
- 	/* Clear BSS */
- 	PTR_LA	a0, _edata
- 	PTR_LA	a2, _end
-diff --git a/arch/mips/boot/compressed/uart-16550.c b/arch/mips/boot/compressed/uart-16550.c
-deleted file mode 100644
-index 09dcd2c561d9..000000000000
---- a/arch/mips/boot/compressed/uart-16550.c
-+++ /dev/null
-@@ -1,47 +0,0 @@
--// SPDX-License-Identifier: GPL-2.0
--/*
-- * 16550 compatible uart based serial debug support for zboot
-- */
--
--#include <linux/types.h>
--#include <linux/serial_reg.h>
--
--#include <asm/addrspace.h>
--
--#if defined(CONFIG_MACH_LOONGSON64) || defined(CONFIG_MIPS_MALTA)
--#define UART_BASE 0x1fd003f8
--#define PORT(offset) (CKSEG1ADDR(UART_BASE) + (offset))
--#endif
--
--#ifdef CONFIG_MACH_INGENIC
--#define INGENIC_UART_BASE_ADDR	(0x10030000 + 0x1000 * CONFIG_ZBOOT_INGENIC_UART)
--#define PORT(offset) (CKSEG1ADDR(INGENIC_UART_BASE_ADDR) + (4 * offset))
--#endif
--
--#ifndef IOTYPE
--#define IOTYPE char
--#endif
--
--#ifndef PORT
--#error please define the serial port address for your own machine
--#endif
--
--static inline unsigned int serial_in(int offset)
--{
--	return *((volatile IOTYPE *)PORT(offset)) & 0xFF;
--}
--
--static inline void serial_out(int offset, int value)
--{
--	*((volatile IOTYPE *)PORT(offset)) = value & 0xFF;
--}
--
--void putc(char c)
--{
--	int timeout = 1000000;
--
--	while (((serial_in(UART_LSR) & UART_LSR_THRE) == 0) && (timeout-- > 0))
--		;
--
--	serial_out(UART_TX, c);
--}
-diff --git a/arch/mips/boot/compressed/uart-alchemy.c b/arch/mips/boot/compressed/uart-alchemy.c
-deleted file mode 100644
-index 8ec63011e7dc..000000000000
---- a/arch/mips/boot/compressed/uart-alchemy.c
-+++ /dev/null
-@@ -1,7 +0,0 @@
--// SPDX-License-Identifier: GPL-2.0
--#include <asm/mach-au1x00/au1000.h>
--
--void putc(char c)
--{
--	alchemy_uart_putchar(AU1000_UART0_PHYS_ADDR, c);
--}
-diff --git a/arch/mips/boot/compressed/uart-ath79.c b/arch/mips/boot/compressed/uart-ath79.c
-deleted file mode 100644
-index d686820921be..000000000000
---- a/arch/mips/boot/compressed/uart-ath79.c
-+++ /dev/null
-@@ -1,2 +0,0 @@
--// SPDX-License-Identifier: GPL-2.0-only
--#include "../../ath79/early_printk.c"
-diff --git a/arch/mips/boot/compressed/uart-prom.c b/arch/mips/boot/compressed/uart-prom.c
-deleted file mode 100644
-index a8a0a32e05d1..000000000000
---- a/arch/mips/boot/compressed/uart-prom.c
-+++ /dev/null
-@@ -1,7 +0,0 @@
--// SPDX-License-Identifier: GPL-2.0
--#include <asm/setup.h>
--
--void putc(char c)
--{
--	prom_putchar(c);
--}
+ 	MTC0		zero, CP0_CONTEXT	# clear context register
+ #ifdef CONFIG_64BIT
+ 	MTC0		zero, CP0_XCONTEXT
 
 -- 
 2.34.1

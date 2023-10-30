@@ -2,359 +2,119 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id AD495C4332F
-	for <linux-mips@archiver.kernel.org>; Sun, 29 Oct 2023 13:58:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C880DC4332F
+	for <linux-mips@archiver.kernel.org>; Mon, 30 Oct 2023 07:01:16 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229795AbjJ2N6F (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Sun, 29 Oct 2023 09:58:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48094 "EHLO
+        id S230458AbjJ3HBR (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Mon, 30 Oct 2023 03:01:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48396 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230246AbjJ2Np7 (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Sun, 29 Oct 2023 09:45:59 -0400
-Received: from wout5-smtp.messagingengine.com (wout5-smtp.messagingengine.com [64.147.123.21])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 451AAC2;
-        Sun, 29 Oct 2023 06:45:57 -0700 (PDT)
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailout.west.internal (Postfix) with ESMTP id 7A10A3200914;
-        Sun, 29 Oct 2023 09:45:56 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute1.internal (MEProxy); Sun, 29 Oct 2023 09:45:56 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=flygoat.com; h=
-        cc:cc:content-transfer-encoding:content-type:content-type:date
-        :date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-        :references:reply-to:sender:subject:subject:to:to; s=fm1; t=
-        1698587155; x=1698673555; bh=jYhHcxouhYM9tIGaxyoEYXSEAO4S1yV0g4K
-        J6UP/5LE=; b=nZfuiwP+PXXle2tGhlSmAI9dBZhPF+nWLnrOezM3i/m4rawbW3p
-        1uH8KislQr5NZI2F3+Vp61X2+oA3By4HGscjETcOLPnuPiv3KLrBkMMD+YJAQLxe
-        uvbSiNc8c/7SNxyLC7WmbSOTm8HGnAxGwDqqoeyMD1fR1Xfbeee4iwzgxoaU4Kki
-        WpjNiLQ/4auZuyeYiudj8zYNQZrproDW1nm4s4kviLGXRGZVdx2XhMA6NbJcUX84
-        C3I/jfw/RHy1RwWeZShXr2TM1lX9MOlY2/1eacaqjKVDr6TlsJPWQjBLBRnCFAyz
-        4yAieZCNE16A9rUK8kOoxddVY5YeTuBgGXA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-transfer-encoding
-        :content-type:content-type:date:date:feedback-id:feedback-id
-        :from:from:in-reply-to:in-reply-to:message-id:mime-version
-        :references:reply-to:sender:subject:subject:to:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=
-        1698587155; x=1698673555; bh=jYhHcxouhYM9tIGaxyoEYXSEAO4S1yV0g4K
-        J6UP/5LE=; b=ZabQEQ8l9OG5fXEOUlTQMG2r8x74zsw0B4ybW4XtmEzKio+T30k
-        PJjcBWZojguCiS+hBfLJxNRUcDpSchdkAqxs9z9RlJWkYiV2IO6yVdBNATLy8uRV
-        31YQSNDIdnkbSxMezXEUZ/A2NCpRx4km+n5bYOBTCFOGX7DtKyCrHwEDNhm9rCRx
-        ZMKAfbkPwvdr4xgfDBfYKia60HZjr5vk6h5MFInQfpi+3d+ked9M5N8vjP+ymJo8
-        44kvcLTzyjeVLYRkGgjQ9lnGVNKFHODjoLsDnjSIKkpT+1H7IfzkWWVHsY0jkNPM
-        q5QFOhn+1eT+sBsQrbZVF1GQrPt6FgimrDQ==
-X-ME-Sender: <xms:E2I-ZYeinM0-QXWgNo8Cvdqp_CwQ-BnAq1bbbdf2P4_WznqX_5WeIA>
-    <xme:E2I-ZaOZIHTV9IfbX5f9mRfHj9ubwOORMlpFw-Jg6st5wELyzmUt4-9UqSzcovpYR
-    E5sTYlHdPBD1mIKY3M>
-X-ME-Received: <xmr:E2I-ZZg0jq-8VBxmaZ2tzfgqPG0i8WP3rMLuUklXxs8zsWRgnMif_kg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrleekgdehhecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefhfffugggtgffkfhgjvfevofesthejredtredtjeenucfhrhhomheplfhirgig
-    uhhnucgjrghnghcuoehjihgrgihunhdrhigrnhhgsehflhihghhorghtrdgtohhmqeenuc
-    ggtffrrghtthgvrhhnpeelieduudfftdegfeeukeduudevkeegtdeliefhfeeggfevleef
-    ledvgeeftdelteenucffohhmrghinhepuggvsghughdqvhgvtgdrshgspdhnohhprdhorh
-    hgpdhhvggrugdrshgsnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghi
-    lhhfrhhomhepjhhirgiguhhnrdihrghnghesfhhlhihgohgrthdrtghomh
-X-ME-Proxy: <xmx:E2I-Zd9g0BNP6JdUtXXHUw5IWDsWGXw-Sg61MTXhWwQA8pEkuhqgIg>
-    <xmx:E2I-ZUtdmZK5k_ylaudndMe_DTDKB6x2KhmTyRHQbA5wNv8WkkPc_A>
-    <xmx:E2I-ZUG3KMF9KZ-NzeHHQ98SEwzmLSIVHFWUmOrSCnMhvkKZYuE5vg>
-    <xmx:E2I-Zd6oWPT-DKBXKBlm5cOktznJR1iUyyoEnIontJsJXoKpAVR9Iw>
-Feedback-ID: ifd894703:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sun,
- 29 Oct 2023 09:45:55 -0400 (EDT)
-From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
-Date:   Sun, 29 Oct 2023 02:53:05 +0000
-Subject: [PATCH 4/8] MIPS: debug: Provide an early exception vector for
- low-level debugging
+        with ESMTP id S229517AbjJ3HBQ (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Mon, 30 Oct 2023 03:01:16 -0400
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B19191;
+        Mon, 30 Oct 2023 00:01:14 -0700 (PDT)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 30B1CC433C7;
+        Mon, 30 Oct 2023 07:01:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1698649274;
+        bh=EmJn7V2xcCxlebppxaDAhU12OFutDZWRBy0vMaSrWuA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=fyer+0uyv1jhu2jxdwK+n1O2/sIgGI7ezOwxQC871hHJ3Cd/JKl9lBlO3pXltUpO2
+         tybWUbFkw8nG3yYnKj5NWsk/KsMeh5cYt2Zf06cFoE4cK0SwwSOQ0meQsCZJmwrLES
+         ZjfIwnoeXu/25/54cCJrG0ThSOL/VsSYVOr1W/9QTaMgDvrgblTvcHPZrDSbxEy8fw
+         AT95UrDI+b348FRlIe6JpCkizTZtGaE3kNe+nAOZWv5ZyGWJevSARlVxf0OsNjI/Uk
+         BM7kNTKVl9T3dS3d/hE9ctd5XEbBUeRh4TuIA6DuyqF/4ni+SgBncpCAAQy/vXTAcB
+         87xr+yc2RIXWg==
+Date:   Mon, 30 Oct 2023 09:00:53 +0200
+From:   Mike Rapoport <rppt@kernel.org>
+To:     Will Deacon <will@kernel.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        "David S. Miller" <davem@davemloft.net>,
+        Dinh Nguyen <dinguyen@kernel.org>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Helge Deller <deller@gmx.de>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Kent Overstreet <kent.overstreet@linux.dev>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Puranjay Mohan <puranjay12@gmail.com>,
+        Rick Edgecombe <rick.p.edgecombe@intel.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Song Liu <song@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Thomas Gleixner <tglx@linutronix.de>, bpf@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
+        linux-mm@kvack.org, linux-modules@vger.kernel.org,
+        linux-parisc@vger.kernel.org, linux-riscv@lists.infradead.org,
+        linux-s390@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, loongarch@lists.linux.dev,
+        netdev@vger.kernel.org, sparclinux@vger.kernel.org, x86@kernel.org
+Subject: Re: [PATCH v3 04/13] mm/execmem, arch: convert remaining overrides
+ of module_alloc to execmem
+Message-ID: <20231030070053.GL2824@kernel.org>
+References: <20230918072955.2507221-1-rppt@kernel.org>
+ <20230918072955.2507221-5-rppt@kernel.org>
+ <20231023171420.GA4041@willie-the-truck>
+ <20231026085800.GK2824@kernel.org>
+ <20231026102438.GA6924@willie-the-truck>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20231029-mips_debug_ll-v1-4-d7a491e8c278@flygoat.com>
-References: <20231029-mips_debug_ll-v1-0-d7a491e8c278@flygoat.com>
-In-Reply-To: <20231029-mips_debug_ll-v1-0-d7a491e8c278@flygoat.com>
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>
-X-Mailer: b4 0.12.4
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231026102438.GA6924@willie-the-truck>
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-This is helpful for debugging of early boot crash when exceptions
-happens before trap_init(), or for debugging SMP bringup code.
+On Thu, Oct 26, 2023 at 11:24:39AM +0100, Will Deacon wrote:
+> On Thu, Oct 26, 2023 at 11:58:00AM +0300, Mike Rapoport wrote:
+> > On Mon, Oct 23, 2023 at 06:14:20PM +0100, Will Deacon wrote:
+> > > On Mon, Sep 18, 2023 at 10:29:46AM +0300, Mike Rapoport wrote:
+> > > > diff --git a/arch/arm64/kernel/module.c b/arch/arm64/kernel/module.c
+> > > > index dd851297596e..cd6320de1c54 100644
+> > > > --- a/arch/arm64/kernel/module.c
+> > > > +++ b/arch/arm64/kernel/module.c
 
-It will install exception handler very early on kernel_entry by
-setting ebase or copy itself to start of CKSEG0, and print off
-exception vectors and other status registers like:
+...
 
-Low level exception: ffffffff8011e180
+> > > > -	if (module_direct_base) {
+> > > > -		p = __vmalloc_node_range(size, MODULE_ALIGN,
+> > > > -					 module_direct_base,
+> > > > -					 module_direct_base + SZ_128M,
+> > > > -					 GFP_KERNEL | __GFP_NOWARN,
+> > > > -					 PAGE_KERNEL, 0, NUMA_NO_NODE,
+> > > > -					 __builtin_return_address(0));
+> > > > -	}
+> > > > +	module_init_limits();
+> > > 
+> > > Hmm, this used to be run from subsys_initcall(), but now you're running
+> > > it _really_ early, before random_init(), so randomization of the module
+> > > space is no longer going to be very random if we don't have early entropy
+> > > from the firmware or the CPU, which is likely to be the case on most SoCs.
+> > 
+> > Well, it will be as random as KASLR. Won't that be enough?
+> 
+> I don't think that's true -- we have the 'kaslr-seed' property for KASLR,
+> but I'm not seeing anything like that for the module randomisation and I
+> also don't see why we need to set these limits so early.
 
-GlobalNumber: 0x00000000
-EBase:    0xffffffff8011e000
-Xcontext: 0x0000000000000000
-Cause:    0x0000000c
-Status:   0x14000082
-EPC:      0xffffffff80d324e0
-BadVAddr: 0x0000000000000000
-BadInstr: 0xac000000
+x86 needs execmem initialized before ftrace_init() so I thought it would be
+best to setup execmem along with most of MM in mm_core_init().
 
-Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
----
- arch/mips/Kconfig.debug      |   9 ++
- arch/mips/kernel/Makefile    |   1 +
- arch/mips/kernel/debug-vec.S | 194 +++++++++++++++++++++++++++++++++++++++++++
- arch/mips/kernel/head.S      |   4 +
- 4 files changed, 208 insertions(+)
-
-diff --git a/arch/mips/Kconfig.debug b/arch/mips/Kconfig.debug
-index 6ef42edc7d67..323ad3ec643b 100644
---- a/arch/mips/Kconfig.debug
-+++ b/arch/mips/Kconfig.debug
-@@ -180,6 +180,15 @@ config DEBUG_LL
- 	  this option should not be enabled for kernels that are intended to
- 	  be portable.
+I'll move execmem initialization for !x86 to a later point, say
+core_initcall.
  
-+config DEBUG_LL_EXCEPT
-+	bool "Kernel low-level debugging of exceptions"
-+	depends on DEBUG_LL
-+	help
-+	  Say Y here to enable debugging prints for low-level exceptions.
-+	  This is helpful if you are debugging a early boot crash when
-+	  exceptions happens before trap_init(), or if you are debugging
-+	  SMP bringup code.
-+
- choice
- 	prompt "Kernel low-level debugging port"
- 	depends on DEBUG_LL
-diff --git a/arch/mips/kernel/Makefile b/arch/mips/kernel/Makefile
-index 10c0a224efe4..400e35f9f82f 100644
---- a/arch/mips/kernel/Makefile
-+++ b/arch/mips/kernel/Makefile
-@@ -79,6 +79,7 @@ obj-$(CONFIG_MIPS32_N32)	+= scall64-n32.o signal_n32.o
- obj-$(CONFIG_MIPS32_O32)	+= scall64-o32.o signal_o32.o
- 
- obj-$(CONFIG_DEBUG_LL)		+= debug.o
-+obj-$(CONFIG_DEBUG_LL_EXCEPT)	+= debug-vec.o
- 
- obj-$(CONFIG_KGDB)		+= kgdb.o
- obj-$(CONFIG_PROC_FS)		+= proc.o
-diff --git a/arch/mips/kernel/debug-vec.S b/arch/mips/kernel/debug-vec.S
-new file mode 100644
-index 000000000000..4530bf3d5b75
---- /dev/null
-+++ b/arch/mips/kernel/debug-vec.S
-@@ -0,0 +1,194 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+/*
-+ *  Copyright (C) 2023, Jiaxun Yang <jiaxun.yang@flygoat.com>
-+ *  MIPS Low level exception vectors and handler
-+ */
-+
-+#include <asm/addrspace.h>
-+#include <asm/asm.h>
-+#include <asm/asm-offsets.h>
-+#include <asm/asmmacro.h>
-+
-+
-+.balign 0x1000
-+LEAF(debug_ll_vecs)
-+	.set	push
-+	.set	noreorder
-+	move	a0, zero
-+	PTR_LA  t9, debug_ll_exception
-+	jalr	t9
-+	nop
-+	b	.
-+	nop
-+
-+.org	0x80
-+	move	a0, zero
-+	PTR_LA  t9, debug_ll_exception
-+	jalr	t9
-+	nop
-+	b	.
-+	nop
-+
-+.org	0x100
-+	move	a0, zero
-+	PTR_LA  t9, debug_ll_exception
-+	jalr	t9
-+	nop
-+	b	.
-+	nop
-+
-+.org	0x180
-+	move	a0, zero
-+	PTR_LA  t9, debug_ll_exception
-+	jalr	t9
-+	nop
-+	b	.
-+	nop
-+
-+.org	0x200
-+	move	a0, zero
-+	PTR_LA  t9, debug_ll_exception
-+	jalr	t9
-+	nop
-+	b	.
-+	nop
-+
-+.org	0x280
-+	move	a0, zero
-+	PTR_LA  t9, debug_ll_exception
-+	jalr	t9
-+	nop
-+	b	.
-+	nop
-+
-+.org	0x300
-+	move	a0, zero
-+	PTR_LA  t9, debug_ll_exception
-+	jalr	t9
-+	nop
-+	b	.
-+	nop
-+
-+.org	0x380
-+	move	a0, zero
-+	PTR_LA  t9, debug_ll_exception
-+	jalr	t9
-+	nop
-+	b	.
-+	nop
-+
-+.org	0x400
-+	move	a0, zero
-+	PTR_LA  t9, debug_ll_exception
-+	jalr	t9
-+	nop
-+	b	.
-+	nop
-+
-+.org	0x480
-+	move	a0, zero
-+	PTR_LA  t9, debug_ll_exception
-+	jalr	t9
-+	nop
-+	b	.
-+	nop
-+
-+	.set	pop
-+END(debug_ll_vecs)
-+
-+
-+/**
-+ * debug_ll_exception() - dump relevant exception state to LL outputs
-+ * @a0: pointer to NULL-terminated ASCII string naming the exception
-+ *
-+ * If a0 is NULL, it will print out exception vector number calculated
-+ * from the ra insted. This is useful for debugging exceptions that
-+ * happen before the exception handler is set up, or routed from BEV.
-+ */
-+LEAF(debug_ll_exception)
-+	move		k0, ra
-+	move		k1, a0
-+	PTR_LA		t3, printascii
-+
-+	PTR_LA		a0, str_newline
-+	jalr		t3  /* Call printascii */
-+	PTR_LA		a0, str_exp
-+	jalr		t3  /* Call printascii */
-+	beqz		k1, 1f
-+	move		a0, k1
-+	jalr		t3  /* Call printascii */
-+	b		2f
-+1:
-+	PTR_SRL		a0, k0, 7
-+	PTR_SLL		a0, a0, 7
-+	PTR_LA		t2, printhexl
-+	jalr		t2
-+2:
-+	PTR_LA		a0, str_newline
-+	jalr		t3  /* Call printascii */
-+	PTR_LA		a0, str_newline
-+	jalr		t3  /* Call printascii */
-+
-+#define DUMP_COP0_REG(reg, name, sz, _mfc0)		\
-+	PTR_LA		a0, 8f;				\
-+	jalr		t3;				\
-+	_mfc0		a0, reg;			\
-+	PTR_LA		t2, printhex##sz;		\
-+	jalr		t2;				\
-+	PTR_LA		a0, str_newline;		\
-+	jalr		t3;				\
-+	TEXT(name)
-+
-+#if defined(CONFIG_SMP) && defined(CONFIG_CPU_MIPSR6)
-+	DUMP_COP0_REG(CP0_GLOBALNUMBER, "GlobalNumber: 0x", 4, mfc0)
-+#endif
-+#if MIPS_ISA_REV >= 2
-+	DUMP_COP0_REG(CP0_EBASE,    "EBase:    0x", l, MFC0)
-+#endif
-+#ifdef CONFIG_64BIT
-+	DUMP_COP0_REG(CP0_XCONTEXT, "Xcontext: 0x", 8, dmfc0)
-+#else
-+	DUMP_COP0_REG(CP0_CONTEXT,  "Context:  0x", 4, mfc0)
-+#endif
-+	DUMP_COP0_REG(CP0_CAUSE,    "Cause:    0x", 4, mfc0)
-+	DUMP_COP0_REG(CP0_STATUS,   "Status:   0x", 4, mfc0)
-+	DUMP_COP0_REG(CP0_EPC,      "EPC:      0x", l, MFC0)
-+	DUMP_COP0_REG(CP0_BADVADDR, "BadVAddr: 0x", l, MFC0)
-+#if MIPS_ISA_REV >= 6
-+	DUMP_COP0_REG(CP0_BADINSTR, "BadInstr: 0x", 4, mfc0)
-+#endif
-+	PTR_LA		a0, str_newline
-+	jalr		t3  /* Call printascii */
-+	jr		k0
-+	END(debug_ll_exception)
-+
-+.pushsection	.rodata.str
-+str_exp: .asciiz "Low level exception: "
-+str_newline: .asciiz "\r\n"
-+.popsection
-+
-+NESTED(setup_debug_ll_exception, 0, ra)
-+	PTR_LA		t0, debug_ll_vecs
-+#if MIPS_ISA_REV >= 2
-+	/* Set ebase to debug_ll_vecs */
-+#if defined (CONFIG_64BIT) && !defined(KBUILD_64BIT_SYM32)
-+	ori		t0, MIPS_EBASE_WG
-+#endif
-+	MTC0		t0, CP0_EBASE
-+#else
-+	/* Copy debug_ll_vecs to start of KSEG0 */
-+	PTR_LI		t1, CKSEG0
-+	PTR_ADDIU	t2, t0, 0x400 /* Only copy 0x400 as that is what reserved on old systems */
-+copy_word:
-+	PTR_LW		t3, 0(t0)
-+	PTR_SW		t3, 0(t1)
-+	PTR_ADDIU	t0, t0, PTRSIZE
-+	PTR_ADDIU	t1, t1, PTRSIZE
-+	PTR_BNE		t0, t2, copy_word
-+#endif
-+	/* Clear BEV bit in status register */
-+	mfc0		t0, CP0_STATUS
-+	and		t0, t0, ~ST0_BEV
-+	mtc0		t0, CP0_STATUS
-+	jr		ra
-+	END(setup_debug_ll_exception)
-diff --git a/arch/mips/kernel/head.S b/arch/mips/kernel/head.S
-index b825ed4476c7..9be1c4ce6324 100644
---- a/arch/mips/kernel/head.S
-+++ b/arch/mips/kernel/head.S
-@@ -106,6 +106,10 @@ NESTED(kernel_entry, 16, sp)			# kernel entry point
- 	LONG_S		a2, fw_arg2
- 	LONG_S		a3, fw_arg3
- 
-+#ifdef CONFIG_DEBUG_LL_EXCEPT
-+	jal		setup_debug_ll_exception
-+#endif
-+
- 	MTC0		zero, CP0_CONTEXT	# clear context register
- #ifdef CONFIG_64BIT
- 	MTC0		zero, CP0_XCONTEXT
+> Will
 
 -- 
-2.34.1
-
+Sincerely yours,
+Mike.

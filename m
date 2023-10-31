@@ -2,44 +2,44 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id B7B77C4167D
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DB213C4708E
 	for <linux-mips@archiver.kernel.org>; Tue, 31 Oct 2023 16:52:34 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346792AbjJaQwe (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        id S1347002AbjJaQwe (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
         Tue, 31 Oct 2023 12:52:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44474 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35210 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346983AbjJaQwQ (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Tue, 31 Oct 2023 12:52:16 -0400
+        with ESMTP id S1346911AbjJaQwR (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Tue, 31 Oct 2023 12:52:17 -0400
 Received: from EUR05-VI1-obe.outbound.protection.outlook.com (mail-vi1eur05on2093.outbound.protection.outlook.com [40.107.21.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAAFB11A;
-        Tue, 31 Oct 2023 09:49:43 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3355BD4C;
+        Tue, 31 Oct 2023 09:49:47 -0700 (PDT)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=hpILFy7yCT2980Thvy4sy3m7MgbsHcJPLDhUrqOGd9mP3avfgjXixCawxKQ56N224tzoUMKbo6/evc+Oh8fKbGwbX4glPt5lwcxZvdCRPApETq6qsmYOeqalupn9B6Nt3IAvMzSm34UDEvRFFFxWNqbkGwN5sbzzhtUyW0gO0AdyxhGd3X4tvuGDhBGTSP4UcclU+XnG1YCuN7CRRX44Y8UB4pxQl1asLmzacsJZLuhtjKQdL/akhaiH1mTwF0YnzqbRwCWE/bOFWIxKXtzxI6wiJxgbdXC7lGDtpl6E5GNgx+nylJEocbD0A1jIRxDKVICbHrMUkDEOwCmf+wOxig==
+ b=JjcRJCW+e/sakOy+cTxQLJB6Qq52C9QiNfEpZCH3TEElWNxU/BUXufuUSZLxjWRDHm4/iUBrwxAMtYbeWhKvUNjoqU5XsFXnAitX3wEd+aB51cA3sjrV6e5z7/cgE8qChrclbqUO2fGxbO48YwIxY/az9bkvvhp66i2d3KPyfpRXgtXilvy/dxMdvLTSBlR2FDpEPEo4+Tv71kU9JhW87pOFrJdoOCfBsOGw+KkpoSHtNFoYxDp9upNW525MGK7CtxfoiHU2yiYLfo/1664DP//oaHQF8z7pC4VM+BNDgz1rI+5qc3Z2E6nsBpA6jXHPpNB/trQVMCy8+kZZODbmkw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=6L+xQIcU/M2AFE9gICKDEMemb0+dOzf9wEODUdS5KNo=;
- b=fiMaqD8mnlzo0YrNItisW0OGbnEd0Z3zPwfKrB8n5GRAwAvtXUmKuHmDesBA2TjuwO7f7RAuTx0xkmw/I6BybXZeku9wwgxMAYc4Nj3qNC3/jjPUe+eoS2Omj+3RuOcOKpNs1LAIdDB1uheO3T3uO+zYZrFpgL44rBnDa+jssz0JgGZLvkSQoxjz4PvZxZ9bfU3SR3lf7wiTfWhJI0m1po/4EPIYjfRI5B7WrlBLg9Vcfoo+gZjuQWgK8BOTRTrSdyUidh8jg5WFEQQE6d8o06AO2R4neLfbtXnlWQBPwZHVc2hv5W1SAvnsX8ykM3W2WNqN6uhK0TBXEO3eP/8q9g==
+ bh=38E6eM+S/5PuGgIFZvPuBnf0H+1kJD3Y+e8qzqv2r1s=;
+ b=V9gKpJs21886leUkNCYlhvM92cnxF0/rpdigSBsFI7GFlSe3yPEymCNwxIdBs2ipHUau7/0GmGwfOEsJxos4hqDXjjW7IWGynNqvfb1or0cq6a5jrPjXEVDLkI9GEtcRsEoh+EZCpWAgXinL5LD/xkvi6tj0FITJ04/v1558/4BvqW3FDjTFNrPRy9yOdBnRGgdLZZtFWyf5jn+F0Ow55fPYzIP0qpk+j81yyrz8Dl19PT0R91IpFEgZw9TuvOgN91IRzvhs/ZZfWyPRfCOLBftgS8qiYR068GTXfsoRnBOkoQHyr8YvuubaJOcMfYMiQwJK7YoMykM5CxmnLvD5DQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=syrmia.com; dmarc=pass action=none header.from=syrmia.com;
  dkim=pass header.d=syrmia.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=syrmia.com;
  s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=6L+xQIcU/M2AFE9gICKDEMemb0+dOzf9wEODUdS5KNo=;
- b=Rnxl0E0jc/MI/exgNJS+tgOArdRCiiyMb05STfP//d1xJsVlyZCTIIGfd7k04XC6P5b4rFJUSokh/gaK+OB7Kjiwlb3iIglY4Ow0WampccZGcYntOT4+38GT4y2iBIZseBw5jx/EsBqFx9vOqYB09M75l2v/wKWvBmbbo6z7HjY=
+ bh=38E6eM+S/5PuGgIFZvPuBnf0H+1kJD3Y+e8qzqv2r1s=;
+ b=Yb9eAwTGC9yw0PBLq5EDVIGfTo2BDdN1GgliqQdZkDeVzHpmYC5bVhu3HUjPlifEQc5z4F87C7oLz/u6ECftN+Q/mnQ+us/NoqZHXn0yvvjXtrKaYi+mkp4frwj3gIILzEh9rqwXRbPh2JcYTr9KkeSUdIEbwx1dw1F5TyavVRU=
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=syrmia.com;
 Received: from VI1PR0302MB3486.eurprd03.prod.outlook.com
  (2603:10a6:803:1e::32) by AM9PR03MB7187.eurprd03.prod.outlook.com
  (2603:10a6:20b:26f::18) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6933.19; Tue, 31 Oct
- 2023 16:49:41 +0000
+ 2023 16:49:45 +0000
 Received: from VI1PR0302MB3486.eurprd03.prod.outlook.com
  ([fe80::59be:1f7c:f22b:baaa]) by VI1PR0302MB3486.eurprd03.prod.outlook.com
  ([fe80::59be:1f7c:f22b:baaa%4]) with mapi id 15.20.6907.032; Tue, 31 Oct 2023
- 16:49:41 +0000
+ 16:49:45 +0000
 From:   Aleksandar Rikalo <aleksandar.rikalo@syrmia.com>
 To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 Cc:     Aleksandar Rikalo <arikalo@gmail.com>,
@@ -58,9 +58,9 @@ Cc:     Aleksandar Rikalo <arikalo@gmail.com>,
         Serge Semin <fancer.lancer@gmail.com>,
         Thomas Gleixner <tglx@linutronix.de>,
         Tiezhu Yang <yangtiezhu@loongson.cn>
-Subject: [PATCH v3 03/11] irqchip: mips-gic: Introduce for_each_online_cpu_gic()
-Date:   Tue, 31 Oct 2023 17:49:19 +0100
-Message-Id: <20231031164927.371663-4-aleksandar.rikalo@syrmia.com>
+Subject: [PATCH v3 05/11] irqchip: mips-gic: Setup defaults in each cluster
+Date:   Tue, 31 Oct 2023 17:49:21 +0100
+Message-Id: <20231031164927.371663-6-aleksandar.rikalo@syrmia.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20231031164927.371663-1-aleksandar.rikalo@syrmia.com>
 References: <20231031164927.371663-1-aleksandar.rikalo@syrmia.com>
@@ -72,176 +72,120 @@ X-ClientProxiedBy: AM0PR10CA0065.EURPRD10.PROD.OUTLOOK.COM
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: VI1PR0302MB3486:EE_|AM9PR03MB7187:EE_
-X-MS-Office365-Filtering-Correlation-Id: ac47c71d-db40-4c4a-4eec-08dbda3160ae
+X-MS-Office365-Filtering-Correlation-Id: e389fbf5-ca02-460c-7120-08dbda3162d7
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: zhhAWW8jZqpEJ9TgzoEroN07DQlZsH2aYp/+R5uLOr3jVXBKp8a8LtnqPgipPls9KXkuw9b8M3xt7Fr/lu7VDbYDipijTwMohGW3cY2gNpnopmy+yXJMWY36B+rCbExFcXf7m+KAqaNb1BzFHwEcnDonOoPFannc5SAnV6KUD/b1fCuDZNQjk2CK6N2nWzkIiyZdl0kFzYA4u0Dn9RYMUeQotOyAP3V99i0ROlIH7bvoXFpC8qWgzFGUN+lRatV3mdSTTh9AdlZxIumB5BgmAFpF2XQK78vAbxuCDd2jaB72V1Glln7M1mVvr/8N7g5yGgGi9d0FfQrtMM/nV1p15sZUPc/yTLDrFxR0WLBzTHXlYe5rMudwCbAlEd1Jg7Ey79yc4zeqiUi+lfMTeWktdv+qUKsUKoXGnf12Mjo70rEPWse6mQA8zEVm2I65prSP8nZlzG/VHHY6fGNnMjCaw6eweM00F2zLHppfezs2jy9jBKSzjwde5ceTNRLjWs8sQxA90/x16VVZGsHtgzC0FZ2z2gTxhes/GHYVBq4/VaCYGfDDfyZwNXJpeMwilgNQ13LuJopEbI4TSQ56SVDDxr/uPvl5cQsqcCnbhirFesKgZdGuwE+Vvz4dihJSyDzM
+X-Microsoft-Antispam-Message-Info: Ebos1BIIuH61sr81rw72KWDOgPwx5z4OsyXo6GEh445oLSWzMXmIBzfvYRxmsOV0xZimHS5wjGJ2vNM6pVq1oIZ+0RXnEZhTkBmGqtXilAPbHtuL3tMtaozHwwHvUTPUQCSBU0OnhBMMA6cUMFWNok3/Jy60XKzyVhc09a68WwJLDyiPo+Lu1XGGJn25F/4EsTH3T+y1+GndxJ5kVQ0EPdPJJim5VULLiwcL/hSuzliBaG7QFwQrA3n8BkN36DGP5mizFmtNunPVs3jf45xZ/yveWpbAtNYAqeWvf9WeIFGfDS/6eAYchYNzYD6tjw9uRMnMF7xuOgQk0oA002fIMPthdrfmFDN+WQI5Iri0HuuAJBHfqOHzPozUxlKw9MwjraUZZs67JF2m5P2brjyrzt8olhBT173LqL04bHPIWiqGYgF9ChI6323SHs4tUA3iUZbabLA3S+qJEihyUgbdtNMUJ9S0JGb529Firm8za5s/AYDh2KWndQ+qDqcYy+C7KgZof5a+Ny7l6cSgKl67fz9jGcQO3HOzDqFLpT7yZ3Utl95eb5rD9aPgj2lAeekGWV2GRieNu+t+YCUYRrD8/3k089bdCkwmNRXpfhkxvcPKunnKGXyyIX7ZEIaTriuy
 X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR0302MB3486.eurprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(366004)(376002)(136003)(346002)(39840400004)(230922051799003)(1800799009)(64100799003)(451199024)(186009)(41300700001)(44832011)(316002)(54906003)(6916009)(66946007)(66556008)(66476007)(8936002)(7416002)(478600001)(2906002)(4326008)(5660300002)(8676002)(6486002)(26005)(52116002)(6512007)(6506007)(2616005)(83380400001)(36756003)(1076003)(38350700005)(38100700002)(6666004)(86362001);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?y8r+B4Res9tRcGHWGhN/env3YcGyqMLvmsuLzUCSbR5S4avvzJlwQ8uwYIiz?=
- =?us-ascii?Q?g7bu2acuKaYbOINZTDiId26XdX1qzExlJhvop3qHzkd5NBlzxAUEUM7V1zfK?=
- =?us-ascii?Q?k/dC/+YXnbjGfI5ISIc7ulZilWqjWRteHH5y58JoGh7NB7pQF4PLghPZ8Qpl?=
- =?us-ascii?Q?GRmWz0jYhQWUebnTJY9NeOenoC6Vpos5K61jCK8SLOYWqXLfHUqFBJV5oIUY?=
- =?us-ascii?Q?75QcyHVQU66e1u0/4vVkNbsJP8j4lq7++O2ADwxNbTHzT4LfnhnD90uJQVRH?=
- =?us-ascii?Q?+IK9PZ/Ca02HR60sBsBlM0+WoUt7IaeZSt1ahGtD0JVlDEajV5xQqpTT7FQD?=
- =?us-ascii?Q?xNg0F9vWxd2hPzCeSylFe6uxpVaW07Tk/PQYY5VfFgyCZOKbmOQO5Y1DBq8U?=
- =?us-ascii?Q?lTDBtGDswxEHoIEi8STZedJKlWe3kPiao6NTAq3WgC0/OCacMwta80rosx6h?=
- =?us-ascii?Q?0wNQ1sIrG2yiTzEdDIJQR8kqpmh+EYRr2ar4e0uHFvtMETxbCtO1WJciaUKx?=
- =?us-ascii?Q?kd3kAFgZUJUTk8zavV/5sG8bzKAYrc/phL7Cvvw0IKoWrVaDE1+sNFvQxIpn?=
- =?us-ascii?Q?pnt80L/cy8NTI0FLp9roQoSTa8CeQTzJgB/aKbwWL5Uy10bXAQXHpxG78Xq/?=
- =?us-ascii?Q?pzhVl4cYy1dGdIN9NMZFEad5osQJgNsjNYBLlHsQCrhz6OE4QTnsr80vyjHL?=
- =?us-ascii?Q?DME3rhnsDDEWlhUbah/BZxc2RCs5OrfWJF8fm6z8LFpG5IgCdYjiXylaQQPX?=
- =?us-ascii?Q?2ZcMQPx75WzqhDMFhttGbg3wyE5L/nq9ChZbyseLxeC8/86WaNlJus62e6Dh?=
- =?us-ascii?Q?E1dFl7BdN0SO6dniWBPRzgYGD0Zv22NNzSVv3SUeIr9vRwkoH6G6n5jlzsBW?=
- =?us-ascii?Q?ab71Jwj1qHZbqs7kmoKUSFqhC98IjzGVJx2Jqafmc5mNBEDMwFZskd0BR11H?=
- =?us-ascii?Q?s6xaJ0nIt+n/f+s+CWDq48RnYMA7Of7R9TNT7eOs52wQCQKh6sBvrOarQy6F?=
- =?us-ascii?Q?MBzCa0V9DL2mQcV4iRJy+tl5ljnqrG47ShhQVkTx+X0N8DTevbB8rbdA/PEN?=
- =?us-ascii?Q?XUuJh+EbXUVukdVWik1JcYOuCNgDMDrb1KkuvvI47w+13Q1BgNQMbIu+1IbZ?=
- =?us-ascii?Q?nhpSbPWsFaTkS4PtAUcr95blQEY5Zh/4o2el/5FF6RadJpynYLHpgufjB+3c?=
- =?us-ascii?Q?g12Bzqvf/ga/SNnHWLSNvGP9HGtv7cp5CSoPjZ/SCIHllQtG6mUzQgp/AIWg?=
- =?us-ascii?Q?fEcMeeqmTmbrP3wbNQivz96s0YM0k9qqMWV0HJ1uZv+Up2wjuL5tJkocpBts?=
- =?us-ascii?Q?1Zu7F90PDKlW566bGEMF9u9Nx2vvAFiFV4y1wfKdrujNGIsqFhdSTY37DGfQ?=
- =?us-ascii?Q?7kLnf3f5ndzXnsOK4TCp9w1jA7KDchuHtMlxMBjo4MuZTWTWWsFUJiIK7U4T?=
- =?us-ascii?Q?JTogCs+9XASAm9qXQfiBv0WRkL3WXfwlKDF4wzBSBpgJ2Kw1x+7e0pjwIB+F?=
- =?us-ascii?Q?JLxw8vSiHMHr9ECDWTh7r213Y7wrNNJUKtwhK89G80nlZQEm0xOUxZiLJ+7U?=
- =?us-ascii?Q?66Vj9RfauyLleyS5DfC4d0GQwa+/b+7UBzhZYXc808g42XCib7iPV69bV8dA?=
- =?us-ascii?Q?8Q=3D=3D?=
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?r1UkWIKcKj7Ix5HpBF4MBumoUdlZMT9Hdxtgt5e5xP6sRY9MCLJ2kpMoDfYA?=
+ =?us-ascii?Q?5NaJN5LY56nFylc42sTxidlhOpLqcK4iQw5dIrKuVlgU6fPu9w06dnqDZsOh?=
+ =?us-ascii?Q?9L4SyuLYHkgdWXc7OmWMIYWrGL5ZlhgEzK9k+7hljLod+T6TbLjqSh8Bk/JM?=
+ =?us-ascii?Q?TA9J+82WbmMS66zJgLRAZ6T25r5WLsK83o3xP7NGNm3ak5efEyn/SurBZeCl?=
+ =?us-ascii?Q?/cj/4U5C5YLnyxjqHK0maBhbtztY3YI9SX5JhfmGG2sVktM0JZ/ZvYx+/ccd?=
+ =?us-ascii?Q?JgNuHsBxo3sf5UW5ANorq4IXQXoI7YJ81fUQ1KRRuR9K6Zqgeyn3AVNavFzI?=
+ =?us-ascii?Q?VAcP7j8BtLzr2++msBxWcYMNCCLm8enAh7bwHr0eAKhOqdnD/vJWJWqlYry/?=
+ =?us-ascii?Q?HFXKsC2/4bZGjvATrzNkJUGaIvWZVKGZoU7rw6EgYwBYTpJN8/WeqbAaPkgr?=
+ =?us-ascii?Q?iuKENLXLeP+VlV7dDQzquQZsmlZqF5YA3UE4gT16M2IEBnWgKrZ0/IgU0c7a?=
+ =?us-ascii?Q?qR/KTuwqi2kQo5ibMjtWlPyUf0yssmUUSBgg5tUtSCbYA03FMEaY74jfEAIC?=
+ =?us-ascii?Q?jLTi+AvE8Rsm28WEiA8ni32GAUuWCsBwYuYf0DyFBr0kGGdH94ZhSyYLQ5RS?=
+ =?us-ascii?Q?M/THJVTYQhqwQURv1Qy87SEmusio22fAJbxcL4Cbfb59HIur3bkyDvj++dwK?=
+ =?us-ascii?Q?EHsHipACr27VVQ5tvMcW98vLN9OR2HnnBSHiPmsezFwqITXnPfQg34QsqcpE?=
+ =?us-ascii?Q?px/VxngwDgJMA6tPwoDhRhnst9F0b0NkPNj0GSbYY3/pzF0yBqEp43Zic2Pc?=
+ =?us-ascii?Q?mX93jHVOqnUkbOXCjj4JxoQQr0RdftBVMc95DAhHIl5fXJiRPJQ9hELdEv7N?=
+ =?us-ascii?Q?5WNFpv4SL9aoEB0LcRPiMu3sGsPPayxNO8HGrVdmDLQEKxsnkDPiS8wPQ3US?=
+ =?us-ascii?Q?bAWq5eQK+NwWI9VZuHAymND+pHz8BYcqYhv6KV8KwNlW3D0zku7jH+Ppjphn?=
+ =?us-ascii?Q?M372nlNPbc0ci6M5058bOg5B/8zNPSV24rmu5bevomimAgEFNqv7ULE9/Gnv?=
+ =?us-ascii?Q?hgGQLGhgYKQ8P7cdItE0b+hnL6AD4M1OWxWuFjhdvIuXaf0F+/EoVoKVxM5T?=
+ =?us-ascii?Q?HsQ76oW6/GkG0Fi+yTgGrDXbAeG/mXoHbWApNYlRabh+SK7+dAsjKq+NTrkH?=
+ =?us-ascii?Q?ZbHDs8cfcrWiPxXt+fG5dH+CsWWctAtwS4hZ2E3R2m/WXnFQp13yvQVyuxDr?=
+ =?us-ascii?Q?18IYhoaZqbO1gQzv5AQqQgpyn9BO3j3at5F90Rj1fsBMz547jzxordaMnZ6v?=
+ =?us-ascii?Q?ce2j05jkQvdE9j2m8DNrDDNhent8EIQF5QjJRDyGQwtIuFnOMgUCTB5cwe3i?=
+ =?us-ascii?Q?pkPEykKr9MQPlvWkCoS7HdgXkDFtZLv/HNJT8GEgN1imiYzUKrnL5MCCotzt?=
+ =?us-ascii?Q?ghebQsl75CHsekIGBu6BMeNNOI4Y8e5kiL+E/D5sQRuZkAdNYfd0Ymme+V9r?=
+ =?us-ascii?Q?Feepp/7fuq7PAy4qR8kUuFR211wELBNyIRDWtYB34biJieyXDL47cjJcGUnm?=
+ =?us-ascii?Q?lNoUImnkj7iX4/p4R0R0YYPykc0W9SiirTNMWEbyGAFw8G/ek7HztgKj92c8?=
+ =?us-ascii?Q?NA=3D=3D?=
 X-OriginatorOrg: syrmia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ac47c71d-db40-4c4a-4eec-08dbda3160ae
+X-MS-Exchange-CrossTenant-Network-Message-Id: e389fbf5-ca02-460c-7120-08dbda3162d7
 X-MS-Exchange-CrossTenant-AuthSource: VI1PR0302MB3486.eurprd03.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 31 Oct 2023 16:49:41.4592
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 31 Oct 2023 16:49:45.0911
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 19214a73-c1ab-4e19-8f59-14bdcb09a66e
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: HoqN+gM0JP0Ia3LhJA31cSyc7BX5hdRY0omzCeS5j/Mkc+OCeaDi2xrGgZwJah/xK8U0FcZBxaTjAXtCP8aIU8o/ZFNe5FrDDg0DcqMHrdw=
+X-MS-Exchange-CrossTenant-UserPrincipalName: vRoPS8Ti+rh8Hn5VGmD65h318+S82Um1bX2QiSLRze4LyvnBft4bYKsBJXDYwvsFz4loj72czRUbGhfjUL1UBgAMB9RpAvHd6v7ZERpHgmY=
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM9PR03MB7187
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-From: Paul Burton <paulburton@kernel.org>
+From: Chao-ying Fu <cfu@wavecomp.com>
 
-A few pieces of code in the MIPS GIC driver operate on the GIC local
-register block for each online CPU, accessing each via the GIC's
-other/redirect register block. This patch abstracts the process of
-iterating over online CPUs & configuring the other/redirect region to
-access their registers through a new for_each_online_cpu_gic() macro.
+In multi-cluster MIPS I6500 systems we have a GIC per cluster. The
+default shared interrupt setup that we configure in gic_of_init() will
+only apply to the GIC in the cluster containing the boot CPU, leaving
+the GICs of other clusters unconfigured. Similarly configure other
+clusters here.
 
-This simplifies users of the new macro slightly, and more importantly
-prepares us for handling multi-cluster systems where the register
-configuration will be done via the CM's GCR_CL_REDIRECT register. By
-abstracting all other/redirect block configuration through this macro,
-and the __gic_with_next_online_cpu() function which backs it, users will
-trivially gain support for multi-cluster when it is implemented in
-__gic_with_next_online_cpu().
-
-Signed-off-by: Paul Burton <paulburton@kernel.org>
 Signed-off-by: Chao-ying Fu <cfu@wavecomp.com>
 Signed-off-by: Dragan Mladjenovic <dragan.mladjenovic@syrmia.com>
 Signed-off-by: Aleksandar Rikalo <aleksandar.rikalo@syrmia.com>
 ---
- drivers/irqchip/irq-mips-gic.c | 61 +++++++++++++++++++++++++++++-----
- 1 file changed, 52 insertions(+), 9 deletions(-)
+ drivers/irqchip/irq-mips-gic.c | 31 +++++++++++++++++++++++++------
+ 1 file changed, 25 insertions(+), 6 deletions(-)
 
 diff --git a/drivers/irqchip/irq-mips-gic.c b/drivers/irqchip/irq-mips-gic.c
-index 76253e864f23..9e7182150b5c 100644
+index 317ccc2593d1..cdd8973912a9 100644
 --- a/drivers/irqchip/irq-mips-gic.c
 +++ b/drivers/irqchip/irq-mips-gic.c
-@@ -66,6 +66,52 @@ static struct gic_all_vpes_chip_data {
- 	bool	mask;
- } gic_all_vpes_chip_data[GIC_NUM_LOCAL_INTRS];
- 
-+static int __gic_with_next_online_cpu(int prev)
-+{
-+	unsigned int cpu;
-+
-+	/* Discover the next online CPU */
-+	cpu = cpumask_next(prev, cpu_online_mask);
-+
-+	/* If there isn't one, we're done */
-+	if (cpu >= nr_cpu_ids)
-+		return cpu;
-+
-+	/*
-+	 * Lock access to the next CPU's GIC local register block.
-+	 *
-+	 * In the single cluster case we simply set GIC_VL_OTHER. The caller
-+	 * holds gic_lock so nothing can clobber the value we write.
-+	 */
-+	write_gic_vl_other(mips_cm_vp_id(cpu));
-+
-+	return cpu;
-+}
-+
-+static inline void __lockdep_assert_held(raw_spinlock_t *gic_lock)
-+{
-+	lockdep_assert_held(gic_lock);
-+}
-+
-+/**
-+ * for_each_online_cpu_gic() - Iterate over online CPUs, access local registers
-+ * @cpu: An integer variable to hold the current CPU number
-+ * @gic_lock: A pointer to raw spin lock used as a guard
-+ *
-+ * Iterate over online CPUs & configure the other/redirect register region to
-+ * access each CPUs GIC local register block, which can be accessed from the
-+ * loop body using read_gic_vo_*() or write_gic_vo_*() accessor functions or
-+ * their derivatives.
-+ *
-+ * The caller must hold gic_lock throughout the loop, such that GIC_VL_OTHER
-+ * cannot be clobbered.
-+ */
-+#define for_each_online_cpu_gic(cpu, gic_lock)		\
-+	for (__lockdep_assert_held(gic_lock),		\
-+	     (cpu) = __gic_with_next_online_cpu(-1);	\
-+	     (cpu) = __gic_with_next_online_cpu(cpu),	\
-+	     (cpu) < nr_cpu_ids;)
-+
- static void gic_clear_pcpu_masks(unsigned int intr)
+@@ -800,7 +800,7 @@ static int gic_cpu_startup(unsigned int cpu)
+ static int __init gic_of_init(struct device_node *node,
+ 			      struct device_node *parent)
  {
- 	unsigned int i;
-@@ -358,10 +404,9 @@ static void gic_mask_local_irq_all_vpes(struct irq_data *d)
- 	cd->mask = false;
+-	unsigned int cpu_vec, i, gicconfig;
++	unsigned int cpu_vec, i, gicconfig, cl, nclusters;
+ 	unsigned long reserved;
+ 	phys_addr_t gic_base;
+ 	struct resource res;
+@@ -881,11 +881,30 @@ static int __init gic_of_init(struct device_node *node,
  
- 	raw_spin_lock_irqsave(&gic_lock, flags);
--	for_each_online_cpu(cpu) {
--		write_gic_vl_other(mips_cm_vp_id(cpu));
-+	for_each_online_cpu_gic(cpu, &gic_lock)
- 		write_gic_vo_rmask(BIT(intr));
--	}
-+
- 	raw_spin_unlock_irqrestore(&gic_lock, flags);
- }
+ 	board_bind_eic_interrupt = &gic_bind_eic_interrupt;
  
-@@ -376,10 +421,9 @@ static void gic_unmask_local_irq_all_vpes(struct irq_data *d)
- 	cd->mask = true;
+-	/* Setup defaults */
+-	for (i = 0; i < gic_shared_intrs; i++) {
+-		change_gic_pol(i, GIC_POL_ACTIVE_HIGH);
+-		change_gic_trig(i, GIC_TRIG_LEVEL);
+-		write_gic_rmask(i);
++	/*
++	 * Initialise each cluster's GIC shared registers to sane default
++	 * values.
++	 * Otherwise, the IPI set up will be erased if we move code
++	 * to gic_cpu_startup for each cpu.
++	 */
++	nclusters = mips_cps_numclusters();
++	for (cl = 0; cl < nclusters; cl++) {
++		if (cl == cpu_cluster(&current_cpu_data)) {
++			for (i = 0; i < gic_shared_intrs; i++) {
++				change_gic_pol(i, GIC_POL_ACTIVE_HIGH);
++				change_gic_trig(i, GIC_TRIG_LEVEL);
++				write_gic_rmask(i);
++			}
++		} else {
++			mips_cm_lock_other(cl, 0, 0,
++					   CM_GCR_Cx_OTHER_BLOCK_GLOBAL);
++			for (i = 0; i < gic_shared_intrs; i++) {
++				change_gic_redir_pol(i, GIC_POL_ACTIVE_HIGH);
++				change_gic_redir_trig(i, GIC_TRIG_LEVEL);
++				write_gic_redir_rmask(i);
++			}
++			mips_cm_unlock_other();
++		}
+ 	}
  
- 	raw_spin_lock_irqsave(&gic_lock, flags);
--	for_each_online_cpu(cpu) {
--		write_gic_vl_other(mips_cm_vp_id(cpu));
-+	for_each_online_cpu_gic(cpu, &gic_lock)
- 		write_gic_vo_smask(BIT(intr));
--	}
-+
- 	raw_spin_unlock_irqrestore(&gic_lock, flags);
- }
- 
-@@ -534,10 +578,9 @@ static int gic_irq_domain_map(struct irq_domain *d, unsigned int virq,
- 		return -EPERM;
- 
- 	raw_spin_lock_irqsave(&gic_lock, flags);
--	for_each_online_cpu(cpu) {
--		write_gic_vl_other(mips_cm_vp_id(cpu));
-+	for_each_online_cpu_gic(cpu, &gic_lock)
- 		write_gic_vo_map(mips_gic_vx_map_reg(intr), map);
--	}
-+
- 	raw_spin_unlock_irqrestore(&gic_lock, flags);
- 
- 	return 0;
+ 	return cpuhp_setup_state(CPUHP_AP_IRQ_MIPS_GIC_STARTING,
 -- 
 2.25.1
 

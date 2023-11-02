@@ -2,69 +2,63 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 83F66C4332F
-	for <linux-mips@archiver.kernel.org>; Thu,  2 Nov 2023 11:15:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C0F3FC4167B
+	for <linux-mips@archiver.kernel.org>; Thu,  2 Nov 2023 13:53:04 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229782AbjKBLPM (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 2 Nov 2023 07:15:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60462 "EHLO
+        id S234984AbjKBNxF (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 2 Nov 2023 09:53:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34584 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229770AbjKBLPL (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Thu, 2 Nov 2023 07:15:11 -0400
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91655130
-        for <linux-mips@vger.kernel.org>; Thu,  2 Nov 2023 04:14:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1698923660;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=nE+jpziewfIiESFBa36vSQ59b0yur6c77ORQ4q4A4TQ=;
-        b=VMjjnme95siBMGJmpyz6WxwVYbrc9lgpnUMkAtw9NP6iASHrjDoMMm5SzTitgQz4Bcf3DY
-        wCbp6o9iCcdq94+f8rsVxEDUTZB5AaN0z9zb/nB4IU6hpVET+9EM8MydeXiQICKm97d5pK
-        IIee8Twyb6jAWJG3fTGcHQrOOcIu9sg=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-221-MSlTC5VbMECe2i2aYA4ToA-1; Thu, 02 Nov 2023 07:14:19 -0400
-X-MC-Unique: MSlTC5VbMECe2i2aYA4ToA-1
-Received: by mail-ed1-f69.google.com with SMTP id 4fb4d7f45d1cf-53e3bfec5bdso617091a12.0
-        for <linux-mips@vger.kernel.org>; Thu, 02 Nov 2023 04:14:19 -0700 (PDT)
+        with ESMTP id S230134AbjKBNxF (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Thu, 2 Nov 2023 09:53:05 -0400
+Received: from mail-qv1-xf33.google.com (mail-qv1-xf33.google.com [IPv6:2607:f8b0:4864:20::f33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C2F418C
+        for <linux-mips@vger.kernel.org>; Thu,  2 Nov 2023 06:53:01 -0700 (PDT)
+Received: by mail-qv1-xf33.google.com with SMTP id 6a1803df08f44-6705379b835so5757576d6.1
+        for <linux-mips@vger.kernel.org>; Thu, 02 Nov 2023 06:53:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1698933181; x=1699537981; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=8MiH+OD80Lz6N2WkoQWVzzSH5wdFrVwABmyWNvMjndg=;
+        b=puJ1+etwmG1T9jWC97a5D1hZmH3E7zo8G+dkgE6ehm7uZxvMFernk9/nmUG201fqhM
+         L0dTDeR0LgHpkAOVOYzE2x9qhC8h6zX3vgvuZDlxCx1aj7SzmQl1ub1s01z+0mmQMkAj
+         jGhdLpgZpiEkiBjfD0UXKVOP3AKUkZACWhu+XpYTGmKtXUNjom5hzruY8f0Xss7UdqnX
+         LHKHO33djXgPrvLgdZ9ZVMibV/bvkTDp0aBvAdpDzYiG1O03h4WoasCfyySf0942UtQv
+         NTOIvK3Xrv/eRKBwsuvQoNcXIwNzQ5sL+8fQ5EplF5RrEzG2ENRo9DAUcQKl21B8IaR+
+         GcPQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698923658; x=1699528458;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=nE+jpziewfIiESFBa36vSQ59b0yur6c77ORQ4q4A4TQ=;
-        b=DH6K1rNpjPG0voiqip/Il0BBLGNvHiYPDz9jZlJQXRq/sqBLx/2y5EWYNmDM/ZImX4
-         DqkL90G5CidcZz+QWhcsTAIlNCjJPNUAKy2VN6V2EXB+ZAWGeo03FN9PuxSxAj+Mhubi
-         7l93yvUjP6a4Ay9RuTOk2VrM+9LOwjYjFSJmL8GCS5zmO2Q/GrlJgKI00uzpBulBsdgT
-         1cw04itNBKVhQwoAs4lfA+CBKHtwZ4vNjenUDA8hkIpP9umLA4TkLGzgggb6LLnGO7/l
-         Oegl/ay8BLV6AgUDi1ztGJE05/LSIlP64nlWxI/GNAVmGsIMzehmvFkbqQTDP2+mHdlz
-         CVbQ==
-X-Gm-Message-State: AOJu0YyvHghgBUbx4juwF1jKwOjAdQSsJlm7xUpZ4hDSq67YHVZ45dnB
-        RYUn5PAeLnmycKng13ED5a+CARjylJuiSeJwCy+T5183hOUSs80rxYg5YjEed58u1efjD17MzXx
-        G8l8PKh8I1RhFFG0xbw2xsQ==
-X-Received: by 2002:a05:6402:d6b:b0:541:29c8:959b with SMTP id ec43-20020a0564020d6b00b0054129c8959bmr12074277edb.39.1698923658430;
-        Thu, 02 Nov 2023 04:14:18 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEXhppfRa15KEqVY2rnJoTwoiSC4PZM5XqKpBQUyQg58A1nLwAa47Vx7RLL9LFOmphAlpAU2Q==
-X-Received: by 2002:a05:6402:d6b:b0:541:29c8:959b with SMTP id ec43-20020a0564020d6b00b0054129c8959bmr12074247edb.39.1698923658101;
-        Thu, 02 Nov 2023 04:14:18 -0700 (PDT)
-Received: from ?IPV6:2001:b07:6468:f312:9af8:e5f5:7516:fa89? ([2001:b07:6468:f312:9af8:e5f5:7516:fa89])
-        by smtp.googlemail.com with ESMTPSA id r25-20020a50c019000000b00537666d307csm2257960edb.32.2023.11.02.04.14.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 02 Nov 2023 04:14:17 -0700 (PDT)
-Message-ID: <cbd46f04-c53b-4d22-9730-76f2ace141d9@redhat.com>
-Date:   Thu, 2 Nov 2023 12:14:13 +0100
+        d=1e100.net; s=20230601; t=1698933181; x=1699537981;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=8MiH+OD80Lz6N2WkoQWVzzSH5wdFrVwABmyWNvMjndg=;
+        b=YUkbdIIiRgWA484jA7jKkFEr5KrlWWCk+hWlEPbtSafLzm+KfGqeBjWUgS4SzO+/T9
+         JKVdIoPvuMQZf3ZYpTA4lI+cTKf7HwyrVeyyYNR6Scw3AoSedx/2txUy+SP1k7TukdkS
+         9WurdD66MSSnOYyL8gaB11U2xjGnVgiteyD4V1uR8JUXys9hTcLNxEMlga/UWaMXUdIR
+         ZgWaXy+yg3tJ4/sjChvRK30ltcFkgDpKTnKNwRNsGEar2ZgPM9f6m48+y56+l2Hudmb0
+         YrwUyA2Nz/bVzrnvFDYNCfi4MS720nzqbwELgH/7UcnMQF3tUSKAXegEHdBOsEpQINlZ
+         I7Jw==
+X-Gm-Message-State: AOJu0YzxHbkiqsxn+Y1lY0iunWRkwPGBQ/MgxwnxFFFjCjtMUlS8HhFe
+        fTwGATYNxJEhMs9kIgCvDNfwboi6gGw03k1Y+zql3w==
+X-Google-Smtp-Source: AGHT+IHABEQi7q2gF4GYbu+6KWyVOhp4LTc7vcuWRR/ds6omy7P2Nr93O+4ItCwG4g8ZUZhgbGUZVOPe8u3aj0mVGQs=
+X-Received: by 2002:ad4:5761:0:b0:672:4e8c:9aa5 with SMTP id
+ r1-20020ad45761000000b006724e8c9aa5mr14682447qvx.47.1698933180583; Thu, 02
+ Nov 2023 06:53:00 -0700 (PDT)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v13 12/35] KVM: Prepare for handling only shared mappings
- in mmu_notifier events
-Content-Language: en-US
-To:     Binbin Wu <binbin.wu@linux.intel.com>,
-        Sean Christopherson <seanjc@google.com>
-Cc:     Marc Zyngier <maz@kernel.org>,
+References: <20231027182217.3615211-1-seanjc@google.com> <20231027182217.3615211-17-seanjc@google.com>
+ <CA+EHjTzj4drYKONVOLP19DYpJ4O8kSXcFzw2AKier1QdcFKx_Q@mail.gmail.com>
+ <ZUF8A5KpwpA6IKUH@google.com> <CA+EHjTwTT9cFzYTtwT43nLJS01Sgt0NqzUgKAnfo2fiV3tEvXg@mail.gmail.com>
+ <ZULJYg5cf1UrNq3e@google.com>
+In-Reply-To: <ZULJYg5cf1UrNq3e@google.com>
+From:   Fuad Tabba <tabba@google.com>
+Date:   Thu, 2 Nov 2023 13:52:23 +0000
+Message-ID: <CA+EHjTzGzXnfXHh0m5iHt9m3BxerkUS56EVPDA_az6n2FRnk3w@mail.gmail.com>
+Subject: Re: [PATCH v13 16/35] KVM: Add KVM_CREATE_GUEST_MEMFD ioctl() for
+ guest-specific backing memory
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
         Oliver Upton <oliver.upton@linux.dev>,
         Huacai Chen <chenhuacai@kernel.org>,
         Michael Ellerman <mpe@ellerman.id.au>,
@@ -83,13 +77,12 @@ Cc:     Marc Zyngier <maz@kernel.org>,
         linux-kernel@vger.kernel.org, Xiaoyao Li <xiaoyao.li@intel.com>,
         Xu Yilun <yilun.xu@intel.com>,
         Chao Peng <chao.p.peng@linux.intel.com>,
-        Fuad Tabba <tabba@google.com>,
         Jarkko Sakkinen <jarkko@kernel.org>,
         Anish Moorthy <amoorthy@google.com>,
         David Matlack <dmatlack@google.com>,
         Yu Zhang <yu.c.zhang@linux.intel.com>,
         Isaku Yamahata <isaku.yamahata@intel.com>,
-        =?UTF-8?B?TWlja2HDq2wgU2FsYcO8?= =?UTF-8?Q?n?= <mic@digikod.net>,
+        =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>,
         Vlastimil Babka <vbabka@suse.cz>,
         Vishal Annapurve <vannapurve@google.com>,
         Ackerley Tng <ackerleytng@google.com>,
@@ -101,70 +94,123 @@ Cc:     Marc Zyngier <maz@kernel.org>,
         Liam Merwick <liam.merwick@oracle.com>,
         Isaku Yamahata <isaku.yamahata@gmail.com>,
         "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
-References: <20231027182217.3615211-1-seanjc@google.com>
- <20231027182217.3615211-13-seanjc@google.com>
- <9963b77c-3a38-4f89-b21e-48d0fdda8f53@linux.intel.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Autocrypt: addr=pbonzini@redhat.com; keydata=
- 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
-In-Reply-To: <9963b77c-3a38-4f89-b21e-48d0fdda8f53@linux.intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On 11/2/23 06:59, Binbin Wu wrote:
-> 
->> Add flags to "struct kvm_gfn_range" to let notifier events target
->> only shared and only private mappings, and write up the existing
->> mmu_notifier events to be shared-only (private memory is never
->> associated with a userspace virtual address, i.e. can't be reached
->> via mmu_notifiers).
->> 
->> Add two flags so that KVM can handle the three possibilities
->> (shared, private, and shared+private) without needing something
->> like a tri-state enum.
+On Wed, Nov 1, 2023 at 9:55=E2=80=AFPM Sean Christopherson <seanjc@google.c=
+om> wrote:
 >
-> I see the two flags are set/cleared in __kvm_handle_hva_range() in
-> this patch and kvm_handle_gfn_range() from the later patch 13/35, but
-> I didn't see they are used/read in this patch series if I didn't miss
-> anything.  How are they supposed to be used in KVM?
+> On Wed, Nov 01, 2023, Fuad Tabba wrote:
+> > > > > @@ -1034,6 +1034,9 @@ static void kvm_destroy_dirty_bitmap(struct=
+ kvm_memory_slot *memslot)
+> > > > >  /* This does not remove the slot from struct kvm_memslots data s=
+tructures */
+> > > > >  static void kvm_free_memslot(struct kvm *kvm, struct kvm_memory_=
+slot *slot)
+> > > > >  {
+> > > > > +       if (slot->flags & KVM_MEM_PRIVATE)
+> > > > > +               kvm_gmem_unbind(slot);
+> > > > > +
+> > > >
+> > > > Should this be called after kvm_arch_free_memslot()? Arch-specific =
+ode
+> > > > might need some of the data before the unbinding, something I thoug=
+ht
+> > > > might be necessary at one point for the pKVM port when deleting a
+> > > > memslot, but realized later that kvm_invalidate_memslot() ->
+> > > > kvm_arch_guest_memory_reclaimed() was the more logical place for it=
+.
+> > > > Also, since that seems to be the pattern for arch-specific handlers=
+ in
+> > > > KVM.
+> > >
+> > > Maybe?  But only if we can about symmetry between the allocation and =
+free paths
+> > > I really don't think kvm_arch_free_memslot() should be doing anything=
+ beyond a
+> > > "pure" free.  E.g. kvm_arch_free_memslot() is also called after movin=
+g a memslot,
+> > > which hopefully we never actually have to allow for guest_memfd, but =
+any code in
+> > > kvm_arch_free_memslot() would bring about "what if" questions regardi=
+ng memslot
+> > > movement.  I.e. the API is intended to be a "free arch metadata assoc=
+iated with
+> > > the memslot".
+> > >
+> > > Out of curiosity, what does pKVM need to do at kvm_arch_guest_memory_=
+reclaimed()?
+> >
+> > It's about the host reclaiming ownership of guest memory when tearing
+> > down a protected guest. In pKVM, we currently teardown the guest and
+> > reclaim its memory when kvm_arch_destroy_vm() is called. The problem
+> > with guestmem is that kvm_gmem_unbind() could get called before that
+> > happens, after which the host might try to access the unbound guest
+> > memory. Since the host hasn't reclaimed ownership of the guest memory
+> > from hyp, hilarity ensues (it crashes).
+> >
+> > Initially, I hooked reclaim guest memory to kvm_free_memslot(), but
+> > then I needed to move the unbind later in the function. I realized
+> > later that kvm_arch_guest_memory_reclaimed() gets called earlier (at
+> > the right time), and is more aptly named.
+>
+> Aha!  I suspected that might be the case.
+>
+> TDX and SNP also need to solve the same problem of "reclaiming" memory be=
+fore it
+> can be safely accessed by the host.  The plan is to add an arch hook (or =
+two?)
+> into guest_memfd that is invoked when memory is freed from guest_memfd.
+>
+> Hooking kvm_arch_guest_memory_reclaimed() isn't completely correct as del=
+eting a
+> memslot doesn't *guarantee* that guest memory is actually reclaimed (whic=
+h reminds
+> me, we need to figure out a better name for that thing before introducing
+> kvm_arch_gmem_invalidate()).
 
-They are going to be used by SNP/TDX patches.
+I see. I'd assumed that that was what you're using. I agree that it's
+not completely correct, so for the moment, I assume that if that
+happens we have a misbehaving host, teardown the guest and reclaim its
+memory.
 
-Paolo
+> The effective false positives aren't fatal for the current usage because =
+the hook
+> is used only for x86 SEV guests to flush caches.  An unnecessary flush ca=
+n cause
+> performance issues, but it doesn't affect correctness. For TDX and SNP, a=
+nd IIUC
+> pKVM, false positives are fatal because KVM could assign memory back to t=
+he host
+> that is still owned by guest_memfd.
 
+Yup.
+
+> E.g. a misbehaving userspace could prematurely delete a memslot.  And the=
+ more
+> fun example is intrahost migration, where the plan is to allow pointing m=
+ultiple
+> guest_memfd files at a single guest_memfd inode:
+> https://lore.kernel.org/all/cover.1691446946.git.ackerleytng@google.com
+>
+> There was a lot of discussion for this, but it's scattered all over the p=
+lace.
+> The TL;DR is is that the inode will represent physical memory, and a file=
+ will
+> represent a given "struct kvm" instance's view of that memory.  And so th=
+e memory
+> isn't reclaimed until the inode is truncated/punched.
+>
+> I _think_ this reflects the most recent plan from the guest_memfd side:
+> https://lore.kernel.org/all/1233d749211c08d51f9ca5d427938d47f008af1f.1689=
+893403.git.isaku.yamahata@intel.com
+
+Thanks for pointing that out. I think this might be the way to go.
+I'll have a closer look at this and see how to get it to work with
+pKVM.
+
+Cheers,
+/fuad

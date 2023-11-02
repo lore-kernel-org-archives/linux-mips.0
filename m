@@ -2,179 +2,161 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A3EC8C4167B
-	for <linux-mips@archiver.kernel.org>; Thu,  2 Nov 2023 14:57:52 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 30DDDC4167B
+	for <linux-mips@archiver.kernel.org>; Thu,  2 Nov 2023 15:44:57 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229822AbjKBO5x (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Thu, 2 Nov 2023 10:57:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38002 "EHLO
+        id S234629AbjKBPo6 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Thu, 2 Nov 2023 11:44:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34838 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229569AbjKBO5w (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Thu, 2 Nov 2023 10:57:52 -0400
-Received: from mail-qv1-xf2a.google.com (mail-qv1-xf2a.google.com [IPv6:2607:f8b0:4864:20::f2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B4EB186
-        for <linux-mips@vger.kernel.org>; Thu,  2 Nov 2023 07:57:48 -0700 (PDT)
-Received: by mail-qv1-xf2a.google.com with SMTP id 6a1803df08f44-66cfc96f475so5952536d6.3
-        for <linux-mips@vger.kernel.org>; Thu, 02 Nov 2023 07:57:48 -0700 (PDT)
+        with ESMTP id S229525AbjKBPo5 (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Thu, 2 Nov 2023 11:44:57 -0400
+Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D93413D
+        for <linux-mips@vger.kernel.org>; Thu,  2 Nov 2023 08:44:54 -0700 (PDT)
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-5b053454aeeso16140307b3.0
+        for <linux-mips@vger.kernel.org>; Thu, 02 Nov 2023 08:44:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1698937067; x=1699541867; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=oO6y6W0Hx2JX7rhY2F9inSHXy5EHTr89TCOrnU0rbjw=;
-        b=WABnDmPn5on4qHZIWANY+CuhNh4heHUUGc6Z1RpTJLvLhxOk+sFyH+7L2AMchSpL+J
-         PqTaI1s7f8Li/A5NPoBSePZDyRbPHpIjbQibERvyfmOYab7P1mS/fEx/Ot1dD7SS07Sq
-         n9IDH2JN36ixe5W+G1wkbrhTu0CciPOYRUXpGTs/Np6efSo4vcQl9aTaK6cHnRj/iEhT
-         qAwV4QY/CeuwrE7DRseMVwtFTV8DJd0oawbA/2gsPZ7fZzws34hrWcbJ0hQ4jxOHVpMk
-         t16vU8dc5ir/4snBt+0cgtgoUpngRtkZeb9eKQw/qFTh/kpSmArsYS3sMQiq1pXXbwx9
-         MGNg==
+        d=google.com; s=20230601; t=1698939894; x=1699544694; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=MWop9ChiDn+5U1d7ZFSKgT7XQaKJkOCdphsca+5hdRc=;
+        b=2HWGoThmgpVyvN9kveIIciJRpecImS9TZEgN45xXW9mHLuu9UUMwkP7Ihh7vkQrPfD
+         fN5nF1K+tpUujdqrvoFgUr4pZJCPpkGN84BDbVFsR1YOsBua0Ygy0M7PER2kk56p0c16
+         mD/QAqjgcJScNuOPijWGMD+Vnpe3YssMeRsNFLa5946MrhmQSiTvyJlAxBiIQlwJIRK9
+         gvfEaKatBvklsQErDH+doyL9YdAiVrI0vMGbPZjkaEO80f6Jkxaq5SgOdUMCG6aRWPPI
+         W9XGBitq36uGiwh4/LmRufUr22rX3mFn3fIna5zJ+JiZAdyEQE1tSTRj5cshaKKjCieh
+         +f3g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698937067; x=1699541867;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=oO6y6W0Hx2JX7rhY2F9inSHXy5EHTr89TCOrnU0rbjw=;
-        b=U2Noc6/b+bjDoML3T+bRtk4I7uIDvap6pbCaX0xOqDRXWnpzG42bKLGYn0gLG489AK
-         SURbVT4kabTR9yRPZ0ZFkrCAf7a2zhYPq6DPCj2XC0Us7gbKiaIJ+NWsQnbd5WmN8h/D
-         5GXRuHXDKGcJoQt3+wbCfxvuGjL/sHBvkWMOJfU46d1GKZ0qVruU5qLWPSh3D2SIAo0v
-         cLBAaYGZV861pwCOoC49JIZd7G5TH/IFWlmT+nUcaV4MtjNYp73yqwUJmTgJ7THT7Tgw
-         OmpQC9pZlzMLiuB7KIwGWaj/4LCJ90yK8i9UptCqBNSka22qUPsOyiE61rsi0x09ukW9
-         v67A==
-X-Gm-Message-State: AOJu0YyMwTG3X4TcpeTc4GUGjeD6tmyi2XUCUmnRPlCh71NEUcOCdNkK
-        rFxi84ibqBuZsxiiZv+FJ+wMytJscmjuRvB0EJr2JA==
-X-Google-Smtp-Source: AGHT+IHH5fWOUl6XWE3cRbRkmtci3EQG11sJ5sTElOUO4i3o8jogptvsMwjY2tQIjVOiF2P5A518xtVBqTDVb2uPT1o=
-X-Received: by 2002:a05:6214:252d:b0:66d:1b2f:3f64 with SMTP id
- gg13-20020a056214252d00b0066d1b2f3f64mr24532994qvb.31.1698937066885; Thu, 02
- Nov 2023 07:57:46 -0700 (PDT)
-MIME-Version: 1.0
-References: <20231027182217.3615211-1-seanjc@google.com> <20231027182217.3615211-13-seanjc@google.com>
- <CA+EHjTyAU9XZ3OgqXjmAKh-BKsLrH_8QtnJihQxF4fhk8WPSYg@mail.gmail.com> <ZUO1Giju0GkUdF0o@google.com>
-In-Reply-To: <ZUO1Giju0GkUdF0o@google.com>
-From:   Fuad Tabba <tabba@google.com>
-Date:   Thu, 2 Nov 2023 14:57:10 +0000
-Message-ID: <CA+EHjTwpVSyUC8oiii3EYU8pqEJ0D0NXA1EZt76wjfPBpk2rFA@mail.gmail.com>
-Subject: Re: [PATCH v13 12/35] KVM: Prepare for handling only shared mappings
- in mmu_notifier events
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Anup Patel <anup@brainfault.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>, kvm@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Xiaoyao Li <xiaoyao.li@intel.com>,
-        Xu Yilun <yilun.xu@intel.com>,
-        Chao Peng <chao.p.peng@linux.intel.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Anish Moorthy <amoorthy@google.com>,
-        David Matlack <dmatlack@google.com>,
-        Yu Zhang <yu.c.zhang@linux.intel.com>,
+        d=1e100.net; s=20230601; t=1698939894; x=1699544694;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=MWop9ChiDn+5U1d7ZFSKgT7XQaKJkOCdphsca+5hdRc=;
+        b=s2ejSkgqUcKHjoOPbVKxKOsD7Yjp26nj85fSGh2C3B01ssRf+aCdyeWGjbZQ7UOiuo
+         G48K9oyMd+tza/q2wYvj8zRCGnGwOBiPpYxarChadw+4qWkmbc6MOr/gyBlopLDqBQD/
+         dlG9cejiCY7LNP8aPa32VICNFYKGBskIyVypHA9cuqVk3Em2RrIiB6W7M3Au3VOuyQDf
+         soWdOKs7OD7OMZ4XFJOYPrCXH8T4bRi+T4yr1+4lJjbB+17JCU1yImRyfvHgHBcbfP6i
+         aKhDVaqIDjb6l7Y91VB/oHoRAnfdt2B/jB/r8TS5bfDdP06wljrx0zogGhiemwPJwl7R
+         vJQg==
+X-Gm-Message-State: AOJu0YwJZsJEYeSTqzqWkdvySn7nODrNGqXvK20+/KbyYucIN7iDycdZ
+        1ySRsfDn1kAqrvXUYq1eOJNkikoiqnU=
+X-Google-Smtp-Source: AGHT+IEDx2fXN1mZpC4wdLenC0gEZqGHeyYGeZi/NHNboFx849UKp0hRFulm5OGynaHR+kwHxlTzuAC9hXU=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a0d:d785:0:b0:59b:c811:a709 with SMTP id
+ z127-20020a0dd785000000b0059bc811a709mr3270ywd.0.1698939893755; Thu, 02 Nov
+ 2023 08:44:53 -0700 (PDT)
+Date:   Thu, 2 Nov 2023 08:44:52 -0700
+In-Reply-To: <496b78bb-ad12-4eed-a62c-8c2fd725ec61@redhat.com>
+Mime-Version: 1.0
+References: <20231027182217.3615211-1-seanjc@google.com> <20231027182217.3615211-10-seanjc@google.com>
+ <482bfea6f54ea1bb7d1ad75e03541d0ba0e5be6f.camel@intel.com>
+ <ZUKMsOdg3N9wmEzy@google.com> <64e3764e36ba7a00d94cc7db1dea1ef06b620aaf.camel@intel.com>
+ <32cb71700aedcbd1f65276cf44a601760ffc364b.camel@intel.com> <496b78bb-ad12-4eed-a62c-8c2fd725ec61@redhat.com>
+Message-ID: <ZUPD9NWF4eOXqeiA@google.com>
+Subject: Re: [PATCH v13 09/35] KVM: Add KVM_EXIT_MEMORY_FAULT exit to report
+ faults to userspace
+From:   Sean Christopherson <seanjc@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Kai Huang <kai.huang@intel.com>, Xiaoyao Li <xiaoyao.li@intel.com>,
+        "kvm-riscv@lists.infradead.org" <kvm-riscv@lists.infradead.org>,
+        "mic@digikod.net" <mic@digikod.net>,
+        "liam.merwick@oracle.com" <liam.merwick@oracle.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
         Isaku Yamahata <isaku.yamahata@intel.com>,
-        =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>,
-        Vlastimil Babka <vbabka@suse.cz>,
+        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
+        "kirill.shutemov@linux.intel.com" <kirill.shutemov@linux.intel.com>,
+        "david@redhat.com" <david@redhat.com>,
+        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
+        "amoorthy@google.com" <amoorthy@google.com>,
+        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+        "tabba@google.com" <tabba@google.com>,
+        "kvmarm@lists.linux.dev" <kvmarm@lists.linux.dev>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "oliver.upton@linux.dev" <oliver.upton@linux.dev>,
+        "michael.roth@amd.com" <michael.roth@amd.com>,
+        "chao.p.peng@linux.intel.com" <chao.p.peng@linux.intel.com>,
+        "palmer@dabbelt.com" <palmer@dabbelt.com>,
+        "chenhuacai@kernel.org" <chenhuacai@kernel.org>,
+        "aou@eecs.berkeley.edu" <aou@eecs.berkeley.edu>,
+        "mpe@ellerman.id.au" <mpe@ellerman.id.au>,
         Vishal Annapurve <vannapurve@google.com>,
-        Ackerley Tng <ackerleytng@google.com>,
-        Maciej Szmigiero <mail@maciej.szmigiero.name>,
-        David Hildenbrand <david@redhat.com>,
-        Quentin Perret <qperret@google.com>,
-        Michael Roth <michael.roth@amd.com>,
-        Wang <wei.w.wang@intel.com>,
-        Liam Merwick <liam.merwick@oracle.com>,
-        Isaku Yamahata <isaku.yamahata@gmail.com>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        "vbabka@suse.cz" <vbabka@suse.cz>,
+        "mail@maciej.szmigiero.name" <mail@maciej.szmigiero.name>,
+        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
+        "maz@kernel.org" <maz@kernel.org>,
+        "willy@infradead.org" <willy@infradead.org>,
+        "dmatlack@google.com" <dmatlack@google.com>,
+        "anup@brainfault.org" <anup@brainfault.org>,
+        "yu.c.zhang@linux.intel.com" <yu.c.zhang@linux.intel.com>,
+        Yilun Xu <yilun.xu@intel.com>,
+        "qperret@google.com" <qperret@google.com>,
+        "brauner@kernel.org" <brauner@kernel.org>,
+        "isaku.yamahata@gmail.com" <isaku.yamahata@gmail.com>,
+        "ackerleytng@google.com" <ackerleytng@google.com>,
+        "jarkko@kernel.org" <jarkko@kernel.org>,
+        "paul.walmsley@sifive.com" <paul.walmsley@sifive.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        Wei W Wang <wei.w.wang@intel.com>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Thu, Nov 2, 2023 at 2:41=E2=80=AFPM Sean Christopherson <seanjc@google.c=
-om> wrote:
->
-> On Thu, Nov 02, 2023, Fuad Tabba wrote:
-> > Hi,
-> >
-> > On Fri, Oct 27, 2023 at 7:22=E2=80=AFPM Sean Christopherson <seanjc@goo=
-gle.com> wrote:
-> > >
-> > > Add flags to "struct kvm_gfn_range" to let notifier events target onl=
-y
-> > > shared and only private mappings, and write up the existing mmu_notif=
-ier
-> > > events to be shared-only (private memory is never associated with a
-> > > userspace virtual address, i.e. can't be reached via mmu_notifiers).
-> > >
-> > > Add two flags so that KVM can handle the three possibilities (shared,
-> > > private, and shared+private) without needing something like a tri-sta=
-te
-> > > enum.
-> > >
-> > > Link: https://lore.kernel.org/all/ZJX0hk+KpQP0KUyB@google.com
-> > > Signed-off-by: Sean Christopherson <seanjc@google.com>
-> > > ---
-> > >  include/linux/kvm_host.h | 2 ++
-> > >  virt/kvm/kvm_main.c      | 7 +++++++
-> > >  2 files changed, 9 insertions(+)
-> > >
-> > > diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
-> > > index 96aa930536b1..89c1a991a3b8 100644
-> > > --- a/include/linux/kvm_host.h
-> > > +++ b/include/linux/kvm_host.h
-> > > @@ -263,6 +263,8 @@ struct kvm_gfn_range {
-> > >         gfn_t start;
-> > >         gfn_t end;
-> > >         union kvm_mmu_notifier_arg arg;
-> > > +       bool only_private;
-> > > +       bool only_shared;
-> >
-> > If these flags aren't used in this patch series, should this patch be
-> > moved to the other series?
->
-> If *both* TDX and SNP need this patch, then I think it's probably worth a=
-pplying
-> it now to make their lives easier.  But if only one needs the support, th=
-en I
-> completely agree this should be punted to whichever series needs it (this=
- also
-> came up in v11, but we didn't force the issue).
->
-> Mike, Isaku?
->
-> > Also, if shared+private is a possibility, doesn't the prefix "only_"
-> > confuse things a bit? I.e., what is shared+private, is it when both
-> > are 0 or when both are 1? I assume it's the former (both are 0), but
-> > it might be clearer.
->
-> Heh, I was hoping that "only_private && only_shared" would be obviously n=
-onsensical.
->
-> The only alternative I can think would be to add an enum, e.g.
->
->         enum {
->                 PROCESS_PRIVATE_AND_SHARED,
->                 PROCESS_ONLY_PRIVATE,
->                 PROCESS_ONLY_SHARED,
->         };
->
-> because every other way of expressing the flags either results in more co=
-nfusion
-> or an unsafe default.  I.e. I want zapping only private or only shared to=
- require
-> the caller to explicitly set a non-zero value, which is how I ended up wi=
-th
-> "only_{private,shared}" as opposed to "process_{private,shared}".
+On Thu, Nov 02, 2023, Paolo Bonzini wrote:
+> On 11/2/23 10:35, Huang, Kai wrote:
+> > IIUC KVM can already handle the case of poisoned
+> > page by sending signal to user app:
+> > 
+> > 	static int kvm_handle_error_pfn(struct kvm_vcpu *vcpu, 			struct
+> > kvm_page_fault *fault)                                               	{
+> > 		...
+> > 
+> >        		if (fault->pfn == KVM_PFN_ERR_HWPOISON) {
+> >               		kvm_send_hwpoison_signal(fault->slot, fault->gfn);
 
-I don't have a strong opinion about this. Having an enum looks good to me.
+No, this doesn't work, because that signals the host virtual address
 
-Cheers,
-/fuad
+	unsigned long hva = gfn_to_hva_memslot(slot, gfn);
+
+	send_sig_mceerr(BUS_MCEERR_AR, (void __user *)hva, PAGE_SHIFT, current);
+
+which is the *shared* page.
+
+> >                 	return RET_PF_RETRY;
+> > 	}
+> > 	}
+> 
+> EHWPOISON is not implemented by this series, so it should be left out of the
+> documentation.
+
+EHWPOISON *is* implemented.  kvm_gmem_get_pfn() returns -EWPOISON as appropriate,
+and kvm_faultin_pfn() returns that directly without going through kvm_handle_error_pfn().
+
+  kvm_faultin_pfn_private()
+  |
+  |-> kvm_gmem_get_pfn()
+      |
+      |-> if (folio_test_hwpoison(folio)) {
+		r = -EHWPOISON;
+		goto out_unlock;
+	  }
+
+          |
+          |-> 	r = kvm_gmem_get_pfn(vcpu->kvm, fault->slot, fault->gfn, &fault->pfn,
+			     &max_order);
+		if (r) {
+			kvm_mmu_prepare_memory_fault_exit(vcpu, fault);
+			return r;
+		}
+
+		|
+		|-> ret = __kvm_faultin_pfn(vcpu, fault);
+		    if (ret != RET_PF_CONTINUE)
+			    return ret;
+
+		    if (unlikely(is_error_pfn(fault->pfn)))
+			    return kvm_handle_error_pfn(vcpu, fault);

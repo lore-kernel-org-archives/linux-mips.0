@@ -2,42 +2,42 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 551C6C4167B
-	for <linux-mips@archiver.kernel.org>; Sun,  5 Nov 2023 16:38:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id C18DCC4332F
+	for <linux-mips@archiver.kernel.org>; Sun,  5 Nov 2023 16:38:35 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229530AbjKEQiO (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Sun, 5 Nov 2023 11:38:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60936 "EHLO
+        id S230356AbjKEQig (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Sun, 5 Nov 2023 11:38:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43312 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229826AbjKEQhq (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Sun, 5 Nov 2023 11:37:46 -0500
+        with ESMTP id S230477AbjKEQiS (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Sun, 5 Nov 2023 11:38:18 -0500
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 224873241
-        for <linux-mips@vger.kernel.org>; Sun,  5 Nov 2023 08:35:31 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EF0C1B2
+        for <linux-mips@vger.kernel.org>; Sun,  5 Nov 2023 08:35:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1699202130;
+        s=mimecast20190719; t=1699202103;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=8ZW+m7fzifdbbb8Tiv4ZhouifvIpC5SDmH0wH7ReCao=;
-        b=MgaRyQ/MgGhUQg00I7eL+uZNuQdOVzbbc84+3su6abLGuaOJ4g+pggTcTgS3YleJSovihr
-        LFEuEFWd+xApNVmboOiY1O9y1AUEtTiUC1mERPWLtytWk5DDz4Z4Ro+gExqLXG6nvOVPUb
-        R7NEujJfjSMFRk/lgxOJ3fRpEn22Uek=
+        bh=spqhuF0PZGaMSdHDZ1KRxocAKbjvl7sJJnsJWiVNP2k=;
+        b=DsEzRa0FhUR3FE9kA4gbmfBUiJAKIoyC5lhBD6TGp7miv268YaiGQDx9tMk1o4Bmg4N3T0
+        kEj1q9xzFI0tVeGSx8HZY5CoOsu7RJit2nPTk9WlvSnnOBLsSIzGWZgV/3G8pJvgFUEsQ3
+        AKYJEQGUs2aTHLM3ltM6fYey9XNffOA=
 Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
  [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-451-vnKJsSWtOUuKYV4SpqWoPg-1; Sun, 05 Nov 2023 11:35:27 -0500
-X-MC-Unique: vnKJsSWtOUuKYV4SpqWoPg-1
+ us-mta-591-9xnWxafYO26IbHoplvKORA-1; Sun, 05 Nov 2023 11:34:58 -0500
+X-MC-Unique: 9xnWxafYO26IbHoplvKORA-1
 Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 2AA34185A782;
-        Sun,  5 Nov 2023 16:35:25 +0000 (UTC)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 39603810FC1;
+        Sun,  5 Nov 2023 16:34:56 +0000 (UTC)
 Received: from avogadro.redhat.com (unknown [10.39.192.93])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 3AD9D2166B26;
-        Sun,  5 Nov 2023 16:35:18 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 5ED902166B26;
+        Sun,  5 Nov 2023 16:34:48 +0000 (UTC)
 From:   Paolo Bonzini <pbonzini@redhat.com>
 To:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
         Oliver Upton <oliver.upton@linux.dev>,
@@ -78,9 +78,9 @@ Cc:     kvm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         Liam Merwick <liam.merwick@oracle.com>,
         Isaku Yamahata <isaku.yamahata@gmail.com>,
         "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-Subject: [PATCH 36/34] KVM: Add transparent hugepage support for dedicated guest memory
-Date:   Sun,  5 Nov 2023 17:30:39 +0100
-Message-ID: <20231105163040.14904-37-pbonzini@redhat.com>
+Subject: [PATCH 32/34] KVM: selftests: Add basic selftest for guest_memfd()
+Date:   Sun,  5 Nov 2023 17:30:35 +0100
+Message-ID: <20231105163040.14904-33-pbonzini@redhat.com>
 In-Reply-To: <20231105163040.14904-1-pbonzini@redhat.com>
 References: <20231105163040.14904-1-pbonzini@redhat.com>
 MIME-Version: 1.0
@@ -91,282 +91,259 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-From: Sean Christopherson <seanjc@google.com>
+From: Chao Peng <chao.p.peng@linux.intel.com>
 
-Extended guest_memfd to allow backing guest memory with transparent
-hugepages.  Require userspace to opt-in via a flag even though there's no
-known/anticipated use case for forcing small pages as THP is optional,
-i.e. to avoid ending up in a situation where userspace is unaware that
-KVM can't provide hugepages.
+Add a selftest to verify the basic functionality of guest_memfd():
 
-For simplicity, require the guest_memfd size to be a multiple of the
-hugepage size, e.g. so that KVM doesn't need to do bounds checking when
-deciding whether or not to allocate a huge folio.
++ file descriptor created with the guest_memfd() ioctl does not allow
+  read/write/mmap operations
++ file size and block size as returned from fstat are as expected
++ fallocate on the fd checks that offset/length on
+  fallocate(FALLOC_FL_PUNCH_HOLE) should be page aligned
++ invalid inputs (misaligned size, invalid flags) are rejected
++ file size and inode are unique (the innocuous-sounding
+  anon_inode_getfile() backs all files with a single inode...)
 
-When reporting the max order when KVM gets a pfn from guest_memfd, force
-order-0 pages if the hugepage is not fully contained by the memslot
-binding, e.g. if userspace requested hugepages but punches a hole in the
-memslot bindings in order to emulate x86's VGA hole.
-
+Signed-off-by: Chao Peng <chao.p.peng@linux.intel.com>
+Co-developed-by: Ackerley Tng <ackerleytng@google.com>
+Signed-off-by: Ackerley Tng <ackerleytng@google.com>
+Co-developed-by: Paolo Bonzini <pbonzini@redhat.com>
+Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+Co-developed-by: Sean Christopherson <seanjc@google.com>
 Signed-off-by: Sean Christopherson <seanjc@google.com>
-Message-Id: <20231027182217.3615211-18-seanjc@google.com>
-[Allow even with CONFIG_TRANSPARENT_HUGEPAGE; dropped momentarily due to
- uneasiness about the API. - Paolo]
+Message-Id: <20231027182217.3615211-35-seanjc@google.com>
 Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
 ---
- Documentation/virt/kvm/api.rst                |  7 ++
- include/uapi/linux/kvm.h                      |  2 +
- .../testing/selftests/kvm/guest_memfd_test.c  | 15 ++++
- tools/testing/selftests/kvm/lib/kvm_util.c    |  9 +++
- .../kvm/x86_64/private_mem_conversions_test.c |  7 +-
- virt/kvm/guest_memfd.c                        | 70 ++++++++++++++++---
- 6 files changed, 101 insertions(+), 9 deletions(-)
+ tools/testing/selftests/kvm/Makefile          |   1 +
+ .../testing/selftests/kvm/guest_memfd_test.c  | 206 ++++++++++++++++++
+ 2 files changed, 207 insertions(+)
+ create mode 100644 tools/testing/selftests/kvm/guest_memfd_test.c
 
-diff --git a/Documentation/virt/kvm/api.rst b/Documentation/virt/kvm/api.rst
-index 38882263278d..c13ede498369 100644
---- a/Documentation/virt/kvm/api.rst
-+++ b/Documentation/virt/kvm/api.rst
-@@ -6318,6 +6318,8 @@ and cannot be resized  (guest_memfd files do however support PUNCH_HOLE).
- 	__u64 reserved[6];
-   };
- 
-+  #define KVM_GUEST_MEMFD_ALLOW_HUGEPAGE         (1ULL << 0)
-+
- Conceptually, the inode backing a guest_memfd file represents physical memory,
- i.e. is coupled to the virtual machine as a thing, not to a "struct kvm".  The
- file itself, which is bound to a "struct kvm", is that instance's view of the
-@@ -6334,6 +6336,11 @@ most one mapping per page, i.e. binding multiple memory regions to a single
- guest_memfd range is not allowed (any number of memory regions can be bound to
- a single guest_memfd file, but the bound ranges must not overlap).
- 
-+If KVM_GUEST_MEMFD_ALLOW_HUGEPAGE is set in flags, KVM will attempt to allocate
-+and map hugepages for the guest_memfd file.  This is currently best effort.  If
-+KVM_GUEST_MEMFD_ALLOW_HUGEPAGE is set, the size must be aligned to the maximum
-+transparent hugepage size supported by the kernel
-+
- See KVM_SET_USER_MEMORY_REGION2 for additional details.
- 
- 5. The kvm_run structure
-diff --git a/include/uapi/linux/kvm.h b/include/uapi/linux/kvm.h
-index e9cb2df67a1d..b4ba4b53b834 100644
---- a/include/uapi/linux/kvm.h
-+++ b/include/uapi/linux/kvm.h
-@@ -2316,4 +2316,6 @@ struct kvm_create_guest_memfd {
- 	__u64 reserved[6];
- };
- 
-+#define KVM_GUEST_MEMFD_ALLOW_HUGEPAGE		(1ULL << 0)
-+
- #endif /* __LINUX_KVM_H */
+diff --git a/tools/testing/selftests/kvm/Makefile b/tools/testing/selftests/kvm/Makefile
+index ecdea5e7afa8..fd3b30a4ca7b 100644
+--- a/tools/testing/selftests/kvm/Makefile
++++ b/tools/testing/selftests/kvm/Makefile
+@@ -134,6 +134,7 @@ TEST_GEN_PROGS_x86_64 += access_tracking_perf_test
+ TEST_GEN_PROGS_x86_64 += demand_paging_test
+ TEST_GEN_PROGS_x86_64 += dirty_log_test
+ TEST_GEN_PROGS_x86_64 += dirty_log_perf_test
++TEST_GEN_PROGS_x86_64 += guest_memfd_test
+ TEST_GEN_PROGS_x86_64 += guest_print_test
+ TEST_GEN_PROGS_x86_64 += hardware_disable_test
+ TEST_GEN_PROGS_x86_64 += kvm_create_max_vcpus
 diff --git a/tools/testing/selftests/kvm/guest_memfd_test.c b/tools/testing/selftests/kvm/guest_memfd_test.c
-index ea0ae7e25330..c15de9852316 100644
---- a/tools/testing/selftests/kvm/guest_memfd_test.c
+new file mode 100644
+index 000000000000..ea0ae7e25330
+--- /dev/null
 +++ b/tools/testing/selftests/kvm/guest_memfd_test.c
-@@ -123,6 +123,7 @@ static void test_invalid_punch_hole(int fd, size_t page_size, size_t total_size)
- 
- static void test_create_guest_memfd_invalid(struct kvm_vm *vm)
- {
-+	uint64_t valid_flags = 0;
- 	size_t page_size = getpagesize();
- 	uint64_t flag;
- 	size_t size;
-@@ -135,9 +136,23 @@ static void test_create_guest_memfd_invalid(struct kvm_vm *vm)
- 			    size);
- 	}
- 
-+	if (thp_configured()) {
-+		for (size = page_size * 2; size < get_trans_hugepagesz(); size += page_size) {
-+			fd = __vm_create_guest_memfd(vm, size, KVM_GUEST_MEMFD_ALLOW_HUGEPAGE);
-+			TEST_ASSERT(fd == -1 && errno == EINVAL,
-+				    "guest_memfd() with non-hugepage-aligned page size '0x%lx' should fail with EINVAL",
-+				    size);
-+		}
+@@ -0,0 +1,206 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Copyright Intel Corporation, 2023
++ *
++ * Author: Chao Peng <chao.p.peng@linux.intel.com>
++ */
 +
-+		valid_flags = KVM_GUEST_MEMFD_ALLOW_HUGEPAGE;
-+	}
++#define _GNU_SOURCE
++#include "test_util.h"
++#include "kvm_util_base.h"
++#include <linux/bitmap.h>
++#include <linux/falloc.h>
++#include <sys/mman.h>
++#include <sys/types.h>
++#include <sys/stat.h>
 +
- 	for (flag = 1; flag; flag <<= 1) {
- 		uint64_t bit;
- 
-+		if (flag & valid_flags)
-+			continue;
++#include <stdlib.h>
++#include <string.h>
++#include <unistd.h>
++#include <errno.h>
++#include <stdio.h>
++#include <fcntl.h>
 +
- 		fd = __vm_create_guest_memfd(vm, page_size, flag);
- 		TEST_ASSERT(fd == -1 && errno == EINVAL,
- 			    "guest_memfd() with flag '0x%lx' should fail with EINVAL",
-diff --git a/tools/testing/selftests/kvm/lib/kvm_util.c b/tools/testing/selftests/kvm/lib/kvm_util.c
-index d05d95cc3693..ed81a00e5df1 100644
---- a/tools/testing/selftests/kvm/lib/kvm_util.c
-+++ b/tools/testing/selftests/kvm/lib/kvm_util.c
-@@ -1022,6 +1022,15 @@ void vm_mem_add(struct kvm_vm *vm, enum vm_mem_backing_src_type src_type,
- 	if (flags & KVM_MEM_GUEST_MEMFD) {
- 		if (guest_memfd < 0) {
- 			uint32_t guest_memfd_flags = 0;
-+
-+			/*
-+			 * Allow hugepages for the guest memfd backing if the
-+			 * "normal" backing is allowed/required to be huge.
-+			 */
-+			if (src_type != VM_MEM_SRC_ANONYMOUS &&
-+			    src_type != VM_MEM_SRC_SHMEM)
-+				guest_memfd_flags |= KVM_GUEST_MEMFD_ALLOW_HUGEPAGE;
-+
- 			TEST_ASSERT(!guest_memfd_offset,
- 				    "Offset must be zero when creating new guest_memfd");
- 			guest_memfd = vm_create_guest_memfd(vm, mem_size, guest_memfd_flags);
-diff --git a/tools/testing/selftests/kvm/x86_64/private_mem_conversions_test.c b/tools/testing/selftests/kvm/x86_64/private_mem_conversions_test.c
-index 4d6a37a5d896..f707fd401a4f 100644
---- a/tools/testing/selftests/kvm/x86_64/private_mem_conversions_test.c
-+++ b/tools/testing/selftests/kvm/x86_64/private_mem_conversions_test.c
-@@ -380,6 +380,7 @@ static void test_mem_conversions(enum vm_mem_backing_src_type src_type, uint32_t
- 	const size_t slot_size = memfd_size / nr_memslots;
- 	struct kvm_vcpu *vcpus[KVM_MAX_VCPUS];
- 	pthread_t threads[KVM_MAX_VCPUS];
-+	uint64_t memfd_flags;
- 	struct kvm_vm *vm;
- 	int memfd, i, r;
- 
-@@ -395,7 +396,11 @@ static void test_mem_conversions(enum vm_mem_backing_src_type src_type, uint32_t
- 
- 	vm_enable_cap(vm, KVM_CAP_EXIT_HYPERCALL, (1 << KVM_HC_MAP_GPA_RANGE));
- 
--	memfd = vm_create_guest_memfd(vm, memfd_size, 0);
-+	if (backing_src_can_be_huge(src_type))
-+		memfd_flags = KVM_GUEST_MEMFD_ALLOW_HUGEPAGE;
-+	else
-+		memfd_flags = 0;
-+	memfd = vm_create_guest_memfd(vm, memfd_size, memfd_flags);
- 
- 	for (i = 0; i < nr_memslots; i++)
- 		vm_mem_add(vm, src_type, BASE_DATA_GPA + slot_size * i,
-diff --git a/virt/kvm/guest_memfd.c b/virt/kvm/guest_memfd.c
-index e65f4170425c..3e48e8997626 100644
---- a/virt/kvm/guest_memfd.c
-+++ b/virt/kvm/guest_memfd.c
-@@ -13,14 +13,44 @@ struct kvm_gmem {
- 	struct list_head entry;
- };
- 
-+static struct folio *kvm_gmem_get_huge_folio(struct inode *inode, pgoff_t index, unsigned order)
++static void test_file_read_write(int fd)
 +{
-+	pgoff_t npages = 1UL << order;
-+	pgoff_t huge_index = round_down(index, npages);
-+	unsigned long flags = (unsigned long)inode->i_private;
-+	struct address_space *mapping  = inode->i_mapping;
-+	gfp_t gfp = mapping_gfp_mask(mapping);
-+	struct folio *folio;
++	char buf[64];
 +
-+	if (!(flags & KVM_GUEST_MEMFD_ALLOW_HUGEPAGE))
-+		return NULL;
-+
-+	if (filemap_range_has_page(mapping, (loff_t)huge_index << PAGE_SHIFT,
-+				   (loff_t)(huge_index + npages - 1) << PAGE_SHIFT))
-+		return NULL;
-+
-+	folio = filemap_alloc_folio(gfp, order);
-+	if (!folio)
-+		return NULL;
-+
-+	if (filemap_add_folio(mapping, folio, huge_index, gfp)) {
-+		folio_put(folio);
-+		return NULL;
-+	}
-+
-+	return folio;
++	TEST_ASSERT(read(fd, buf, sizeof(buf)) < 0,
++		    "read on a guest_mem fd should fail");
++	TEST_ASSERT(write(fd, buf, sizeof(buf)) < 0,
++		    "write on a guest_mem fd should fail");
++	TEST_ASSERT(pread(fd, buf, sizeof(buf), 0) < 0,
++		    "pread on a guest_mem fd should fail");
++	TEST_ASSERT(pwrite(fd, buf, sizeof(buf), 0) < 0,
++		    "pwrite on a guest_mem fd should fail");
 +}
 +
- static struct folio *kvm_gmem_get_folio(struct inode *inode, pgoff_t index)
- {
- 	struct folio *folio;
- 
--	/* TODO: Support huge pages. */
--	folio = filemap_grab_folio(inode->i_mapping, index);
--	if (IS_ERR_OR_NULL(folio))
--		return NULL;
-+	folio = kvm_gmem_get_huge_folio(inode, index, PMD_ORDER);
-+	if (!folio) {
-+		folio = filemap_grab_folio(inode->i_mapping, index);
-+		if (IS_ERR_OR_NULL(folio))
-+			return NULL;
++static void test_mmap(int fd, size_t page_size)
++{
++	char *mem;
++
++	mem = mmap(NULL, page_size, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
++	TEST_ASSERT_EQ(mem, MAP_FAILED);
++}
++
++static void test_file_size(int fd, size_t page_size, size_t total_size)
++{
++	struct stat sb;
++	int ret;
++
++	ret = fstat(fd, &sb);
++	TEST_ASSERT(!ret, "fstat should succeed");
++	TEST_ASSERT_EQ(sb.st_size, total_size);
++	TEST_ASSERT_EQ(sb.st_blksize, page_size);
++}
++
++static void test_fallocate(int fd, size_t page_size, size_t total_size)
++{
++	int ret;
++
++	ret = fallocate(fd, FALLOC_FL_KEEP_SIZE, 0, total_size);
++	TEST_ASSERT(!ret, "fallocate with aligned offset and size should succeed");
++
++	ret = fallocate(fd, FALLOC_FL_KEEP_SIZE | FALLOC_FL_PUNCH_HOLE,
++			page_size - 1, page_size);
++	TEST_ASSERT(ret, "fallocate with unaligned offset should fail");
++
++	ret = fallocate(fd, FALLOC_FL_KEEP_SIZE, total_size, page_size);
++	TEST_ASSERT(ret, "fallocate beginning at total_size should fail");
++
++	ret = fallocate(fd, FALLOC_FL_KEEP_SIZE, total_size + page_size, page_size);
++	TEST_ASSERT(ret, "fallocate beginning after total_size should fail");
++
++	ret = fallocate(fd, FALLOC_FL_KEEP_SIZE | FALLOC_FL_PUNCH_HOLE,
++			total_size, page_size);
++	TEST_ASSERT(!ret, "fallocate(PUNCH_HOLE) at total_size should succeed");
++
++	ret = fallocate(fd, FALLOC_FL_KEEP_SIZE | FALLOC_FL_PUNCH_HOLE,
++			total_size + page_size, page_size);
++	TEST_ASSERT(!ret, "fallocate(PUNCH_HOLE) after total_size should succeed");
++
++	ret = fallocate(fd, FALLOC_FL_KEEP_SIZE | FALLOC_FL_PUNCH_HOLE,
++			page_size, page_size - 1);
++	TEST_ASSERT(ret, "fallocate with unaligned size should fail");
++
++	ret = fallocate(fd, FALLOC_FL_KEEP_SIZE | FALLOC_FL_PUNCH_HOLE,
++			page_size, page_size);
++	TEST_ASSERT(!ret, "fallocate(PUNCH_HOLE) with aligned offset and size should succeed");
++
++	ret = fallocate(fd, FALLOC_FL_KEEP_SIZE, page_size, page_size);
++	TEST_ASSERT(!ret, "fallocate to restore punched hole should succeed");
++}
++
++static void test_invalid_punch_hole(int fd, size_t page_size, size_t total_size)
++{
++	struct {
++		off_t offset;
++		off_t len;
++	} testcases[] = {
++		{0, 1},
++		{0, page_size - 1},
++		{0, page_size + 1},
++
++		{1, 1},
++		{1, page_size - 1},
++		{1, page_size},
++		{1, page_size + 1},
++
++		{page_size, 1},
++		{page_size, page_size - 1},
++		{page_size, page_size + 1},
++	};
++	int ret, i;
++
++	for (i = 0; i < ARRAY_SIZE(testcases); i++) {
++		ret = fallocate(fd, FALLOC_FL_KEEP_SIZE | FALLOC_FL_PUNCH_HOLE,
++				testcases[i].offset, testcases[i].len);
++		TEST_ASSERT(ret == -1 && errno == EINVAL,
++			    "PUNCH_HOLE with !PAGE_SIZE offset (%lx) and/or length (%lx) should fail",
++			    testcases[i].offset, testcases[i].len);
 +	}
- 
- 	/*
- 	 * Use the up-to-date flag to track whether or not the memory has been
-@@ -366,6 +396,7 @@ static int __kvm_gmem_create(struct kvm *kvm, loff_t size, u64 flags)
- 	inode->i_mode |= S_IFREG;
- 	inode->i_size = size;
- 	mapping_set_gfp_mask(inode->i_mapping, GFP_HIGHUSER);
-+	mapping_set_large_folios(inode->i_mapping);
- 	mapping_set_unmovable(inode->i_mapping);
- 	/* Unmovable mappings are supposed to be marked unevictable as well. */
- 	WARN_ON_ONCE(!mapping_unevictable(inode->i_mapping));
-@@ -389,7 +420,7 @@ int kvm_gmem_create(struct kvm *kvm, struct kvm_create_guest_memfd *args)
- {
- 	loff_t size = args->size;
- 	u64 flags = args->flags;
--	u64 valid_flags = 0;
-+	u64 valid_flags = KVM_GUEST_MEMFD_ALLOW_HUGEPAGE;
- 
- 	if (flags & ~valid_flags)
- 		return -EINVAL;
-@@ -397,6 +428,13 @@ int kvm_gmem_create(struct kvm *kvm, struct kvm_create_guest_memfd *args)
- 	if (size <= 0 || !PAGE_ALIGNED(size))
- 		return -EINVAL;
- 
-+#ifdef CONFIG_TRANSPARENT_HUGEPAGE
-+	BUILD_BUG_ON(PMD_SIZE != HPAGE_PMD_SIZE);
-+#endif
-+	if ((flags & KVM_GUEST_MEMFD_ALLOW_HUGEPAGE) &&
-+	    !IS_ALIGNED(size, PMD_SIZE))
-+		return -EINVAL;
++}
 +
- 	return __kvm_gmem_create(kvm, size, flags);
- }
- 
-@@ -491,7 +529,7 @@ void kvm_gmem_unbind(struct kvm_memory_slot *slot)
- int kvm_gmem_get_pfn(struct kvm *kvm, struct kvm_memory_slot *slot,
- 		     gfn_t gfn, kvm_pfn_t *pfn, int *max_order)
- {
--	pgoff_t index = gfn - slot->base_gfn + slot->gmem.pgoff;
-+	pgoff_t index, huge_index;
- 	struct kvm_gmem *gmem;
- 	struct folio *folio;
- 	struct page *page;
-@@ -504,6 +542,7 @@ int kvm_gmem_get_pfn(struct kvm *kvm, struct kvm_memory_slot *slot,
- 
- 	gmem = file->private_data;
- 
-+	index = gfn - slot->base_gfn + slot->gmem.pgoff;
- 	if (WARN_ON_ONCE(xa_load(&gmem->bindings, index) != slot)) {
- 		r = -EIO;
- 		goto out_fput;
-@@ -523,9 +562,24 @@ int kvm_gmem_get_pfn(struct kvm *kvm, struct kvm_memory_slot *slot,
- 	page = folio_file_page(folio, index);
- 
- 	*pfn = page_to_pfn(page);
--	if (max_order)
--		*max_order = 0;
-+	if (!max_order)
-+		goto success;
- 
-+	*max_order = compound_order(compound_head(page));
-+	if (!*max_order)
-+		goto success;
++static void test_create_guest_memfd_invalid(struct kvm_vm *vm)
++{
++	size_t page_size = getpagesize();
++	uint64_t flag;
++	size_t size;
++	int fd;
 +
-+	/*
-+	 * The folio can be mapped with a hugepage if and only if the folio is
-+	 * fully contained by the range the memslot is bound to.  Note, the
-+	 * caller is responsible for handling gfn alignment, this only deals
-+	 * with the file binding.
-+	 */
-+	huge_index = ALIGN(index, 1ull << *max_order);
-+	if (huge_index < ALIGN(slot->gmem.pgoff, 1ull << *max_order) ||
-+	    huge_index + (1ull << *max_order) > slot->gmem.pgoff + slot->npages)
-+		*max_order = 0;
-+success:
- 	r = 0;
- 
- out_unlock:
++	for (size = 1; size < page_size; size++) {
++		fd = __vm_create_guest_memfd(vm, size, 0);
++		TEST_ASSERT(fd == -1 && errno == EINVAL,
++			    "guest_memfd() with non-page-aligned page size '0x%lx' should fail with EINVAL",
++			    size);
++	}
++
++	for (flag = 1; flag; flag <<= 1) {
++		uint64_t bit;
++
++		fd = __vm_create_guest_memfd(vm, page_size, flag);
++		TEST_ASSERT(fd == -1 && errno == EINVAL,
++			    "guest_memfd() with flag '0x%lx' should fail with EINVAL",
++			    flag);
++
++		for_each_set_bit(bit, &valid_flags, 64) {
++			fd = __vm_create_guest_memfd(vm, page_size, flag | BIT_ULL(bit));
++			TEST_ASSERT(fd == -1 && errno == EINVAL,
++				    "guest_memfd() with flags '0x%llx' should fail with EINVAL",
++				    flag | BIT_ULL(bit));
++		}
++	}
++}
++
++static void test_create_guest_memfd_multiple(struct kvm_vm *vm)
++{
++	int fd1, fd2, ret;
++	struct stat st1, st2;
++
++	fd1 = __vm_create_guest_memfd(vm, 4096, 0);
++	TEST_ASSERT(fd1 != -1, "memfd creation should succeed");
++
++	ret = fstat(fd1, &st1);
++	TEST_ASSERT(ret != -1, "memfd fstat should succeed");
++	TEST_ASSERT(st1.st_size == 4096, "memfd st_size should match requested size");
++
++	fd2 = __vm_create_guest_memfd(vm, 8192, 0);
++	TEST_ASSERT(fd2 != -1, "memfd creation should succeed");
++
++	ret = fstat(fd2, &st2);
++	TEST_ASSERT(ret != -1, "memfd fstat should succeed");
++	TEST_ASSERT(st2.st_size == 8192, "second memfd st_size should match requested size");
++
++	ret = fstat(fd1, &st1);
++	TEST_ASSERT(ret != -1, "memfd fstat should succeed");
++	TEST_ASSERT(st1.st_size == 4096, "first memfd st_size should still match requested size");
++	TEST_ASSERT(st1.st_ino != st2.st_ino, "different memfd should have different inode numbers");
++}
++
++int main(int argc, char *argv[])
++{
++	size_t page_size;
++	size_t total_size;
++	int fd;
++	struct kvm_vm *vm;
++
++	TEST_REQUIRE(kvm_has_cap(KVM_CAP_GUEST_MEMFD));
++
++	page_size = getpagesize();
++	total_size = page_size * 4;
++
++	vm = vm_create_barebones();
++
++	test_create_guest_memfd_invalid(vm);
++	test_create_guest_memfd_multiple(vm);
++
++	fd = vm_create_guest_memfd(vm, total_size, 0);
++
++	test_file_read_write(fd);
++	test_mmap(fd, page_size);
++	test_file_size(fd, page_size, total_size);
++	test_fallocate(fd, page_size, total_size);
++	test_invalid_punch_hole(fd, page_size, total_size);
++
++	close(fd);
++}
 -- 
 2.39.1
+
 

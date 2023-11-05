@@ -2,42 +2,42 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id BD4E1C4332F
-	for <linux-mips@archiver.kernel.org>; Sun,  5 Nov 2023 16:37:30 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1C27DC4167B
+	for <linux-mips@archiver.kernel.org>; Sun,  5 Nov 2023 16:37:49 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229599AbjKEQha (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Sun, 5 Nov 2023 11:37:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60996 "EHLO
+        id S230358AbjKEQhs (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Sun, 5 Nov 2023 11:37:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54856 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230307AbjKEQhI (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Sun, 5 Nov 2023 11:37:08 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 303D819AA
-        for <linux-mips@vger.kernel.org>; Sun,  5 Nov 2023 08:34:54 -0800 (PST)
+        with ESMTP id S229879AbjKEQhS (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Sun, 5 Nov 2023 11:37:18 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC7132D7B
+        for <linux-mips@vger.kernel.org>; Sun,  5 Nov 2023 08:35:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1699202093;
+        s=mimecast20190719; t=1699202121;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=D/lhWGWGrQ6KTenP/DS+/XR8+yfBHvDZZ4ODppqjVMQ=;
-        b=J5wG7fnPHZlDXLNSzJLV4TRsienoJH5lPcWz/b5ccwSOhG2KMch1pk58YiMvZ4XUv2MsL7
-        Ap2foAv2EEsISLsBM2u9AhZYTIPfrwHaocEE+43ZUG74Hy+TSWEj3lpUPgPz/2rnXPl3HL
-        EmSpBoRqLl9Gw5QnKeGJUsUgUfzFq0s=
+        bh=JI038vGa+9l4j36u3/UOgkDOr4COidrQJinDT6XHM/0=;
+        b=Dej9DMXROu+KZX4sEjPqmB8+UbX3lnfktcxq65NDwlqvG9CWnHXdYZibAS9HKYnmsIyaeB
+        qT/irzj+wixURfCgr0gCOuj4tllX/ujvi3zEPHCbummDPOSH3Cl3HthllFqewdap4r6Ug7
+        xfT5uKI3nS5ccpDugwZPGAH8FQH+4oM=
 Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
  [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-132-56_0juESPsatACszOU-i_w-1; Sun, 05 Nov 2023 11:34:50 -0500
-X-MC-Unique: 56_0juESPsatACszOU-i_w-1
+ us-mta-299-4FlDTlVyN5-dKH0IlJkdsg-1; Sun, 05 Nov 2023 11:35:19 -0500
+X-MC-Unique: 4FlDTlVyN5-dKH0IlJkdsg-1
 Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 0F838810FC1;
-        Sun,  5 Nov 2023 16:34:48 +0000 (UTC)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id DD3E7101A52D;
+        Sun,  5 Nov 2023 16:35:17 +0000 (UTC)
 Received: from avogadro.redhat.com (unknown [10.39.192.93])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id E5BED2166B26;
-        Sun,  5 Nov 2023 16:34:40 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 2596C2166B26;
+        Sun,  5 Nov 2023 16:35:11 +0000 (UTC)
 From:   Paolo Bonzini <pbonzini@redhat.com>
 To:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
         Oliver Upton <oliver.upton@linux.dev>,
@@ -78,9 +78,9 @@ Cc:     kvm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         Liam Merwick <liam.merwick@oracle.com>,
         Isaku Yamahata <isaku.yamahata@gmail.com>,
         "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-Subject: [PATCH 31/34] KVM: selftests: Expand set_memory_region_test to validate guest_memfd()
-Date:   Sun,  5 Nov 2023 17:30:34 +0100
-Message-ID: <20231105163040.14904-32-pbonzini@redhat.com>
+Subject: [PATCH 35/34] KVM: Prepare for handling only shared mappings in mmu_notifier events
+Date:   Sun,  5 Nov 2023 17:30:38 +0100
+Message-ID: <20231105163040.14904-36-pbonzini@redhat.com>
 In-Reply-To: <20231105163040.14904-1-pbonzini@redhat.com>
 References: <20231105163040.14904-1-pbonzini@redhat.com>
 MIME-Version: 1.0
@@ -91,167 +91,74 @@ Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-From: Chao Peng <chao.p.peng@linux.intel.com>
+From: Sean Christopherson <seanjc@google.com>
 
-Expand set_memory_region_test to exercise various positive and negative
-testcases for private memory.
+Add flags to "struct kvm_gfn_range" to let notifier events target only
+shared and only private mappings, and write up the existing mmu_notifier
+events to be shared-only (private memory is never associated with a
+userspace virtual address, i.e. can't be reached via mmu_notifiers).
 
- - Non-guest_memfd() file descriptor for private memory
- - guest_memfd() from different VM
- - Overlapping bindings
- - Unaligned bindings
+Add two flags so that KVM can handle the three possibilities (shared,
+private, and shared+private) without needing something like a tri-state
+enum.
 
-Signed-off-by: Chao Peng <chao.p.peng@linux.intel.com>
-Co-developed-by: Ackerley Tng <ackerleytng@google.com>
-Signed-off-by: Ackerley Tng <ackerleytng@google.com>
-[sean: trim the testcases to remove duplicate coverage]
+Link: https://lore.kernel.org/all/ZJX0hk+KpQP0KUyB@google.com
 Signed-off-by: Sean Christopherson <seanjc@google.com>
-Message-Id: <20231027182217.3615211-34-seanjc@google.com>
+Message-Id: <20231027182217.3615211-13-seanjc@google.com>
 Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
 ---
- .../selftests/kvm/include/kvm_util_base.h     |  10 ++
- .../selftests/kvm/set_memory_region_test.c    | 100 ++++++++++++++++++
- 2 files changed, 110 insertions(+)
+ include/linux/kvm_host.h |  2 ++
+ virt/kvm/kvm_main.c      | 17 +++++++++++++++++
+ 2 files changed, 19 insertions(+)
 
-diff --git a/tools/testing/selftests/kvm/include/kvm_util_base.h b/tools/testing/selftests/kvm/include/kvm_util_base.h
-index 8ec122f5fcc8..e4d2cd9218b2 100644
---- a/tools/testing/selftests/kvm/include/kvm_util_base.h
-+++ b/tools/testing/selftests/kvm/include/kvm_util_base.h
-@@ -819,6 +819,16 @@ static inline struct kvm_vm *vm_create_barebones(void)
- 	return ____vm_create(VM_SHAPE_DEFAULT);
- }
+diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
+index 3ebc6912c54a..4d5d139b0bde 100644
+--- a/include/linux/kvm_host.h
++++ b/include/linux/kvm_host.h
+@@ -264,6 +264,8 @@ struct kvm_gfn_range {
+ 	gfn_t start;
+ 	gfn_t end;
+ 	union kvm_mmu_notifier_arg arg;
++	bool only_private;
++	bool only_shared;
+ 	bool may_block;
+ };
+ bool kvm_unmap_gfn_range(struct kvm *kvm, struct kvm_gfn_range *range);
+diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+index 8758cb799e18..9170a61ea99f 100644
+--- a/virt/kvm/kvm_main.c
++++ b/virt/kvm/kvm_main.c
+@@ -635,6 +635,13 @@ static __always_inline kvm_mn_ret_t __kvm_handle_hva_range(struct kvm *kvm,
+ 			 * the second or later invocation of the handler).
+ 			 */
+ 			gfn_range.arg = range->arg;
++
++			/*
++			 * HVA-based notifications provide a userspace address,
++			 * and as such are only relevant for shared mappings.
++			 */
++			gfn_range.only_private = false;
++			gfn_range.only_shared = true;
+ 			gfn_range.may_block = range->may_block;
  
-+static inline struct kvm_vm *vm_create_barebones_protected_vm(void)
-+{
-+	const struct vm_shape shape = {
-+		.mode = VM_MODE_DEFAULT,
-+		.type = KVM_X86_SW_PROTECTED_VM,
-+	};
-+
-+	return ____vm_create(shape);
-+}
-+
- static inline struct kvm_vm *vm_create(uint32_t nr_runnable_vcpus)
- {
- 	return __vm_create(VM_SHAPE_DEFAULT, nr_runnable_vcpus, 0);
-diff --git a/tools/testing/selftests/kvm/set_memory_region_test.c b/tools/testing/selftests/kvm/set_memory_region_test.c
-index b32960189f5f..1891774eb6d4 100644
---- a/tools/testing/selftests/kvm/set_memory_region_test.c
-+++ b/tools/testing/selftests/kvm/set_memory_region_test.c
-@@ -385,6 +385,98 @@ static void test_add_max_memory_regions(void)
- 	kvm_vm_free(vm);
- }
+ 			/*
+@@ -2493,6 +2500,16 @@ static __always_inline void kvm_handle_gfn_range(struct kvm *kvm,
+ 	gfn_range.arg = range->arg;
+ 	gfn_range.may_block = range->may_block;
  
-+
-+static void test_invalid_guest_memfd(struct kvm_vm *vm, int memfd,
-+				     size_t offset, const char *msg)
-+{
-+	int r = __vm_set_user_memory_region2(vm, MEM_REGION_SLOT, KVM_MEM_GUEST_MEMFD,
-+					     MEM_REGION_GPA, MEM_REGION_SIZE,
-+					     0, memfd, offset);
-+	TEST_ASSERT(r == -1 && errno == EINVAL, "%s", msg);
-+}
-+
-+static void test_add_private_memory_region(void)
-+{
-+	struct kvm_vm *vm, *vm2;
-+	int memfd, i;
-+
-+	pr_info("Testing ADD of KVM_MEM_GUEST_MEMFD memory regions\n");
-+
-+	vm = vm_create_barebones_protected_vm();
-+
-+	test_invalid_guest_memfd(vm, vm->kvm_fd, 0, "KVM fd should fail");
-+	test_invalid_guest_memfd(vm, vm->fd, 0, "VM's fd should fail");
-+
-+	memfd = kvm_memfd_alloc(MEM_REGION_SIZE, false);
-+	test_invalid_guest_memfd(vm, memfd, 0, "Regular memfd() should fail");
-+	close(memfd);
-+
-+	vm2 = vm_create_barebones_protected_vm();
-+	memfd = vm_create_guest_memfd(vm2, MEM_REGION_SIZE, 0);
-+	test_invalid_guest_memfd(vm, memfd, 0, "Other VM's guest_memfd() should fail");
-+
-+	vm_set_user_memory_region2(vm2, MEM_REGION_SLOT, KVM_MEM_GUEST_MEMFD,
-+				   MEM_REGION_GPA, MEM_REGION_SIZE, 0, memfd, 0);
-+	close(memfd);
-+	kvm_vm_free(vm2);
-+
-+	memfd = vm_create_guest_memfd(vm, MEM_REGION_SIZE, 0);
-+	for (i = 1; i < PAGE_SIZE; i++)
-+		test_invalid_guest_memfd(vm, memfd, i, "Unaligned offset should fail");
-+
-+	vm_set_user_memory_region2(vm, MEM_REGION_SLOT, KVM_MEM_GUEST_MEMFD,
-+				   MEM_REGION_GPA, MEM_REGION_SIZE, 0, memfd, 0);
-+	close(memfd);
-+
-+	kvm_vm_free(vm);
-+}
-+
-+static void test_add_overlapping_private_memory_regions(void)
-+{
-+	struct kvm_vm *vm;
-+	int memfd;
-+	int r;
-+
-+	pr_info("Testing ADD of overlapping KVM_MEM_GUEST_MEMFD memory regions\n");
-+
-+	vm = vm_create_barebones_protected_vm();
-+
-+	memfd = vm_create_guest_memfd(vm, MEM_REGION_SIZE * 4, 0);
-+
-+	vm_set_user_memory_region2(vm, MEM_REGION_SLOT, KVM_MEM_GUEST_MEMFD,
-+				   MEM_REGION_GPA, MEM_REGION_SIZE * 2, 0, memfd, 0);
-+
-+	vm_set_user_memory_region2(vm, MEM_REGION_SLOT + 1, KVM_MEM_GUEST_MEMFD,
-+				   MEM_REGION_GPA * 2, MEM_REGION_SIZE * 2,
-+				   0, memfd, MEM_REGION_SIZE * 2);
-+
 +	/*
-+	 * Delete the first memslot, and then attempt to recreate it except
-+	 * with a "bad" offset that results in overlap in the guest_memfd().
++	 * If/when KVM supports more attributes beyond private .vs shared, this
++	 * _could_ set only_{private,shared} appropriately if the entire target
++	 * range already has the desired private vs. shared state (it's unclear
++	 * if that is a net win).  For now, KVM reaches this point if and only
++	 * if the private flag is being toggled, i.e. all mappings are in play.
 +	 */
-+	vm_set_user_memory_region2(vm, MEM_REGION_SLOT, KVM_MEM_GUEST_MEMFD,
-+				   MEM_REGION_GPA, 0, NULL, -1, 0);
++	gfn_range.only_private = false;
++	gfn_range.only_shared = false;
 +
-+	/* Overlap the front half of the other slot. */
-+	r = __vm_set_user_memory_region2(vm, MEM_REGION_SLOT, KVM_MEM_GUEST_MEMFD,
-+					 MEM_REGION_GPA * 2 - MEM_REGION_SIZE,
-+					 MEM_REGION_SIZE * 2,
-+					 0, memfd, 0);
-+	TEST_ASSERT(r == -1 && errno == EEXIST, "%s",
-+		    "Overlapping guest_memfd() bindings should fail with EEXIST");
-+
-+	/* And now the back half of the other slot. */
-+	r = __vm_set_user_memory_region2(vm, MEM_REGION_SLOT, KVM_MEM_GUEST_MEMFD,
-+					 MEM_REGION_GPA * 2 + MEM_REGION_SIZE,
-+					 MEM_REGION_SIZE * 2,
-+					 0, memfd, 0);
-+	TEST_ASSERT(r == -1 && errno == EEXIST, "%s",
-+		    "Overlapping guest_memfd() bindings should fail with EEXIST");
-+
-+	close(memfd);
-+	kvm_vm_free(vm);
-+}
-+
- int main(int argc, char *argv[])
- {
- #ifdef __x86_64__
-@@ -401,6 +493,14 @@ int main(int argc, char *argv[])
+ 	for (i = 0; i < kvm_arch_nr_memslot_as_ids(kvm); i++) {
+ 		slots = __kvm_memslots(kvm, i);
  
- 	test_add_max_memory_regions();
- 
-+	if (kvm_has_cap(KVM_CAP_GUEST_MEMFD) &&
-+	    (kvm_check_cap(KVM_CAP_VM_TYPES) & BIT(KVM_X86_SW_PROTECTED_VM))) {
-+		test_add_private_memory_region();
-+		test_add_overlapping_private_memory_regions();
-+	} else {
-+		pr_info("Skipping tests for KVM_MEM_GUEST_MEMFD memory regions\n");
-+	}
-+
- #ifdef __x86_64__
- 	if (argc > 1)
- 		loops = atoi_positive("Number of iterations", argv[1]);
 -- 
 2.39.1
 

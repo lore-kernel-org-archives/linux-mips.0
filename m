@@ -2,348 +2,151 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C18DCC4332F
-	for <linux-mips@archiver.kernel.org>; Sun,  5 Nov 2023 16:38:35 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 07AABC4332F
+	for <linux-mips@archiver.kernel.org>; Sun,  5 Nov 2023 17:56:26 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230356AbjKEQig (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Sun, 5 Nov 2023 11:38:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43312 "EHLO
+        id S229475AbjKER42 (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Sun, 5 Nov 2023 12:56:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39674 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230477AbjKEQiS (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Sun, 5 Nov 2023 11:38:18 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EF0C1B2
-        for <linux-mips@vger.kernel.org>; Sun,  5 Nov 2023 08:35:04 -0800 (PST)
+        with ESMTP id S229455AbjKER41 (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Sun, 5 Nov 2023 12:56:27 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D238DD
+        for <linux-mips@vger.kernel.org>; Sun,  5 Nov 2023 09:55:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1699202103;
+        s=mimecast20190719; t=1699206939;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=spqhuF0PZGaMSdHDZ1KRxocAKbjvl7sJJnsJWiVNP2k=;
-        b=DsEzRa0FhUR3FE9kA4gbmfBUiJAKIoyC5lhBD6TGp7miv268YaiGQDx9tMk1o4Bmg4N3T0
-        kEj1q9xzFI0tVeGSx8HZY5CoOsu7RJit2nPTk9WlvSnnOBLsSIzGWZgV/3G8pJvgFUEsQ3
-        AKYJEQGUs2aTHLM3ltM6fYey9XNffOA=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+        bh=fd/39Q+ldoVf5VWKnHQ/ghXrqcDy2syROa9KrYZuz/I=;
+        b=IqXVHE7tfpxVOeimPXn4vyvH7OY2t3kQqxvtrcPGQru73zPBo30S+fpExZk81iANyfk6tv
+        boEQWrMeaDpMj0U1KyE0BeObcS+QyzrEbIfSfyZeZh4N1wpGH4GP+kg0Dqdu8fPz5NfynA
+        LRW05RH0mhNQrWV3FT5v268dz1WrbPI=
+Received: from mail-pf1-f198.google.com (mail-pf1-f198.google.com
+ [209.85.210.198]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-591-9xnWxafYO26IbHoplvKORA-1; Sun, 05 Nov 2023 11:34:58 -0500
-X-MC-Unique: 9xnWxafYO26IbHoplvKORA-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 39603810FC1;
-        Sun,  5 Nov 2023 16:34:56 +0000 (UTC)
-Received: from avogadro.redhat.com (unknown [10.39.192.93])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 5ED902166B26;
-        Sun,  5 Nov 2023 16:34:48 +0000 (UTC)
-From:   Paolo Bonzini <pbonzini@redhat.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Anup Patel <anup@brainfault.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
+ us-mta-464-FbYItnY_MGaqCJoyB8twgw-1; Sun, 05 Nov 2023 12:55:37 -0500
+X-MC-Unique: FbYItnY_MGaqCJoyB8twgw-1
+Received: by mail-pf1-f198.google.com with SMTP id d2e1a72fcca58-6c334d2fd40so3305204b3a.2
+        for <linux-mips@vger.kernel.org>; Sun, 05 Nov 2023 09:55:37 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699206936; x=1699811736;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=fd/39Q+ldoVf5VWKnHQ/ghXrqcDy2syROa9KrYZuz/I=;
+        b=iwBZmn5XDMenolmAeP6p11DeRA3oLFcCUWo+vxd1uPLt9XJw175AE8CgjmC7DeNhC3
+         rkWyl++V+bTup3j9ljidemXAX3H/eObrxLmgmMflOzLq1joaZOHzCei8eJRsfLFf5w+Z
+         5B/fRffhY+GfgVjYRFtGLebW7i2YHIkAglC9p60Eu7PgVoq/MurPExadp/gCi0LtFyoJ
+         g3uYQlnmiZli4SekeoWuOBIgZOrYtJK6Che6hNGobEEcGfNh66poedQXGv2G8V+DPu30
+         WL7FEaa602EJosd30IKEbiilY42qUSKSVPMuR+WbVWq4VR4PeAnyA82c6xzniTisI2xF
+         oYjA==
+X-Gm-Message-State: AOJu0YwOCrbDRqrsTPiyevSjx4BYnEBxpups467chkRMc36+iNF41PNL
+        n7D/Wq25om5qHtkfseekpvnitEs8pU8gYeKx0ZCZZbCwsTMlrDqCFfC8BLYq0ffvbxM47LgzHa5
+        h9Wq29yVO1ng1GfjbL1HkuQ==
+X-Received: by 2002:a05:6a00:14d6:b0:6be:4e6e:2a85 with SMTP id w22-20020a056a0014d600b006be4e6e2a85mr36240595pfu.30.1699206936708;
+        Sun, 05 Nov 2023 09:55:36 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IFk2pBjd4CJ2rMONJoZ1WOco/rxQ9zWrHoyH1EeQbHLv9sJvLzIuEzeP3ARVcsr8N00dE/hMg==
+X-Received: by 2002:a05:6a00:14d6:b0:6be:4e6e:2a85 with SMTP id w22-20020a056a0014d600b006be4e6e2a85mr36240554pfu.30.1699206936324;
+        Sun, 05 Nov 2023 09:55:36 -0800 (PST)
+Received: from localhost (ip98-179-76-75.ph.ph.cox.net. [98.179.76.75])
+        by smtp.gmail.com with ESMTPSA id ff7-20020a056a002f4700b0068620bee456sm4312142pfb.209.2023.11.05.09.55.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 05 Nov 2023 09:55:35 -0800 (PST)
+Date:   Sun, 5 Nov 2023 10:55:34 -0700
+From:   Jerry Snitselaar <jsnitsel@redhat.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     acpica-devel@lists.linuxfoundation.org,
+        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
+        Albert Ou <aou@eecs.berkeley.edu>, asahi@lists.linux.dev,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Dexuan Cui <decui@microsoft.com>, devicetree@vger.kernel.org,
+        David Woodhouse <dwmw2@infradead.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Hanjun Guo <guohanjun@huawei.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Christoph Hellwig <hch@lst.de>, iommu@lists.linux.dev,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Len Brown <lenb@kernel.org>, linux-acpi@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-hyperv@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-riscv@lists.infradead.org,
+        linux-snps-arc@lists.infradead.org, linux-tegra@vger.kernel.org,
+        Russell King <linux@armlinux.org.uk>,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Hector Martin <marcan@marcan.st>,
         Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Sean Christopherson <seanjc@google.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     kvm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        kvmarm@lists.linux.dev, linux-mips@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, kvm-riscv@lists.infradead.org,
-        linux-riscv@lists.infradead.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Xiaoyao Li <xiaoyao.li@intel.com>,
-        Xu Yilun <yilun.xu@intel.com>,
-        Chao Peng <chao.p.peng@linux.intel.com>,
-        Fuad Tabba <tabba@google.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Anish Moorthy <amoorthy@google.com>,
-        David Matlack <dmatlack@google.com>,
-        Yu Zhang <yu.c.zhang@linux.intel.com>,
-        Isaku Yamahata <isaku.yamahata@intel.com>,
-        =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Vishal Annapurve <vannapurve@google.com>,
-        Ackerley Tng <ackerleytng@google.com>,
-        Maciej Szmigiero <mail@maciej.szmigiero.name>,
-        David Hildenbrand <david@redhat.com>,
-        Quentin Perret <qperret@google.com>,
-        Michael Roth <michael.roth@amd.com>,
-        Wang <wei.w.wang@intel.com>,
-        Liam Merwick <liam.merwick@oracle.com>,
-        Isaku Yamahata <isaku.yamahata@gmail.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-Subject: [PATCH 32/34] KVM: selftests: Add basic selftest for guest_memfd()
-Date:   Sun,  5 Nov 2023 17:30:35 +0100
-Message-ID: <20231105163040.14904-33-pbonzini@redhat.com>
-In-Reply-To: <20231105163040.14904-1-pbonzini@redhat.com>
-References: <20231105163040.14904-1-pbonzini@redhat.com>
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Robert Moore <robert.moore@intel.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
+        Sven Peter <sven@svenpeter.dev>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Krishna Reddy <vdumpa@nvidia.com>,
+        Vineet Gupta <vgupta@kernel.org>,
+        virtualization@lists.linux-foundation.org,
+        Wei Liu <wei.liu@kernel.org>, Will Deacon <will@kernel.org>,
+        Zhenhua Huang <quic_zhenhuah@quicinc.com>
+Subject: Re: [PATCH RFC 04/17] acpi: Do not return struct iommu_ops from
+ acpi_iommu_configure_id()
+Message-ID: <oe2b62jjtcki7ti4qw6ktzvat7eszrpm7vphgsdvfp5uwdoj3r@wc62cpauchw6>
+References: <0-v1-5f734af130a3+34f-iommu_fwspec_jgg@nvidia.com>
+ <4-v1-5f734af130a3+34f-iommu_fwspec_jgg@nvidia.com>
+ <xvgdxrlcpvafst6qypgwehtleaihsedgoiat6akv6au2j4xrjw@rk4dl4xbnq6o>
+ <20231105132409.GA258408@nvidia.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231105132409.GA258408@nvidia.com>
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-From: Chao Peng <chao.p.peng@linux.intel.com>
+On Sun, Nov 05, 2023 at 09:24:09AM -0400, Jason Gunthorpe wrote:
+> On Fri, Nov 03, 2023 at 05:48:01PM -0700, Jerry Snitselaar wrote:
+> > > @@ -1632,10 +1633,15 @@ int acpi_dma_configure_id(struct device *dev, enum dev_dma_attr attr,
+> > >  
+> > >  	acpi_arch_dma_setup(dev);
+> > >  
+> > > -	iommu = acpi_iommu_configure_id(dev, input_id);
+> > > -	if (PTR_ERR(iommu) == -EPROBE_DEFER)
+> > > +	ret = acpi_iommu_configure_id(dev, input_id);
+> > > +	if (ret == -EPROBE_DEFER)
+> > >  		return -EPROBE_DEFER;
+> > >  
+> >                 return ret; ?
+> 
+> Maybe? Like this seemed to be a pattern in this code so I left it
 
-Add a selftest to verify the basic functionality of guest_memfd():
+Yeah, it is fine. I think it just caught my eye, because of this earlier
+bit in the patch:
 
-+ file descriptor created with the guest_memfd() ioctl does not allow
-  read/write/mmap operations
-+ file size and block size as returned from fstat are as expected
-+ fallocate on the fd checks that offset/length on
-  fallocate(FALLOC_FL_PUNCH_HOLE) should be page aligned
-+ invalid inputs (misaligned size, invalid flags) are rejected
-+ file size and inode are unique (the innocuous-sounding
-  anon_inode_getfile() backs all files with a single inode...)
+        if (err == -EPROBE_DEFER) {
+-               return ERR_PTR(err);
++               return err;
 
-Signed-off-by: Chao Peng <chao.p.peng@linux.intel.com>
-Co-developed-by: Ackerley Tng <ackerleytng@google.com>
-Signed-off-by: Ackerley Tng <ackerleytng@google.com>
-Co-developed-by: Paolo Bonzini <pbonzini@redhat.com>
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
-Co-developed-by: Sean Christopherson <seanjc@google.com>
-Signed-off-by: Sean Christopherson <seanjc@google.com>
-Message-Id: <20231027182217.3615211-35-seanjc@google.com>
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
----
- tools/testing/selftests/kvm/Makefile          |   1 +
- .../testing/selftests/kvm/guest_memfd_test.c  | 206 ++++++++++++++++++
- 2 files changed, 207 insertions(+)
- create mode 100644 tools/testing/selftests/kvm/guest_memfd_test.c
+which needed to get rid of the ERR_PTR.
 
-diff --git a/tools/testing/selftests/kvm/Makefile b/tools/testing/selftests/kvm/Makefile
-index ecdea5e7afa8..fd3b30a4ca7b 100644
---- a/tools/testing/selftests/kvm/Makefile
-+++ b/tools/testing/selftests/kvm/Makefile
-@@ -134,6 +134,7 @@ TEST_GEN_PROGS_x86_64 += access_tracking_perf_test
- TEST_GEN_PROGS_x86_64 += demand_paging_test
- TEST_GEN_PROGS_x86_64 += dirty_log_test
- TEST_GEN_PROGS_x86_64 += dirty_log_perf_test
-+TEST_GEN_PROGS_x86_64 += guest_memfd_test
- TEST_GEN_PROGS_x86_64 += guest_print_test
- TEST_GEN_PROGS_x86_64 += hardware_disable_test
- TEST_GEN_PROGS_x86_64 += kvm_create_max_vcpus
-diff --git a/tools/testing/selftests/kvm/guest_memfd_test.c b/tools/testing/selftests/kvm/guest_memfd_test.c
-new file mode 100644
-index 000000000000..ea0ae7e25330
---- /dev/null
-+++ b/tools/testing/selftests/kvm/guest_memfd_test.c
-@@ -0,0 +1,206 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright Intel Corporation, 2023
-+ *
-+ * Author: Chao Peng <chao.p.peng@linux.intel.com>
-+ */
-+
-+#define _GNU_SOURCE
-+#include "test_util.h"
-+#include "kvm_util_base.h"
-+#include <linux/bitmap.h>
-+#include <linux/falloc.h>
-+#include <sys/mman.h>
-+#include <sys/types.h>
-+#include <sys/stat.h>
-+
-+#include <stdlib.h>
-+#include <string.h>
-+#include <unistd.h>
-+#include <errno.h>
-+#include <stdio.h>
-+#include <fcntl.h>
-+
-+static void test_file_read_write(int fd)
-+{
-+	char buf[64];
-+
-+	TEST_ASSERT(read(fd, buf, sizeof(buf)) < 0,
-+		    "read on a guest_mem fd should fail");
-+	TEST_ASSERT(write(fd, buf, sizeof(buf)) < 0,
-+		    "write on a guest_mem fd should fail");
-+	TEST_ASSERT(pread(fd, buf, sizeof(buf), 0) < 0,
-+		    "pread on a guest_mem fd should fail");
-+	TEST_ASSERT(pwrite(fd, buf, sizeof(buf), 0) < 0,
-+		    "pwrite on a guest_mem fd should fail");
-+}
-+
-+static void test_mmap(int fd, size_t page_size)
-+{
-+	char *mem;
-+
-+	mem = mmap(NULL, page_size, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
-+	TEST_ASSERT_EQ(mem, MAP_FAILED);
-+}
-+
-+static void test_file_size(int fd, size_t page_size, size_t total_size)
-+{
-+	struct stat sb;
-+	int ret;
-+
-+	ret = fstat(fd, &sb);
-+	TEST_ASSERT(!ret, "fstat should succeed");
-+	TEST_ASSERT_EQ(sb.st_size, total_size);
-+	TEST_ASSERT_EQ(sb.st_blksize, page_size);
-+}
-+
-+static void test_fallocate(int fd, size_t page_size, size_t total_size)
-+{
-+	int ret;
-+
-+	ret = fallocate(fd, FALLOC_FL_KEEP_SIZE, 0, total_size);
-+	TEST_ASSERT(!ret, "fallocate with aligned offset and size should succeed");
-+
-+	ret = fallocate(fd, FALLOC_FL_KEEP_SIZE | FALLOC_FL_PUNCH_HOLE,
-+			page_size - 1, page_size);
-+	TEST_ASSERT(ret, "fallocate with unaligned offset should fail");
-+
-+	ret = fallocate(fd, FALLOC_FL_KEEP_SIZE, total_size, page_size);
-+	TEST_ASSERT(ret, "fallocate beginning at total_size should fail");
-+
-+	ret = fallocate(fd, FALLOC_FL_KEEP_SIZE, total_size + page_size, page_size);
-+	TEST_ASSERT(ret, "fallocate beginning after total_size should fail");
-+
-+	ret = fallocate(fd, FALLOC_FL_KEEP_SIZE | FALLOC_FL_PUNCH_HOLE,
-+			total_size, page_size);
-+	TEST_ASSERT(!ret, "fallocate(PUNCH_HOLE) at total_size should succeed");
-+
-+	ret = fallocate(fd, FALLOC_FL_KEEP_SIZE | FALLOC_FL_PUNCH_HOLE,
-+			total_size + page_size, page_size);
-+	TEST_ASSERT(!ret, "fallocate(PUNCH_HOLE) after total_size should succeed");
-+
-+	ret = fallocate(fd, FALLOC_FL_KEEP_SIZE | FALLOC_FL_PUNCH_HOLE,
-+			page_size, page_size - 1);
-+	TEST_ASSERT(ret, "fallocate with unaligned size should fail");
-+
-+	ret = fallocate(fd, FALLOC_FL_KEEP_SIZE | FALLOC_FL_PUNCH_HOLE,
-+			page_size, page_size);
-+	TEST_ASSERT(!ret, "fallocate(PUNCH_HOLE) with aligned offset and size should succeed");
-+
-+	ret = fallocate(fd, FALLOC_FL_KEEP_SIZE, page_size, page_size);
-+	TEST_ASSERT(!ret, "fallocate to restore punched hole should succeed");
-+}
-+
-+static void test_invalid_punch_hole(int fd, size_t page_size, size_t total_size)
-+{
-+	struct {
-+		off_t offset;
-+		off_t len;
-+	} testcases[] = {
-+		{0, 1},
-+		{0, page_size - 1},
-+		{0, page_size + 1},
-+
-+		{1, 1},
-+		{1, page_size - 1},
-+		{1, page_size},
-+		{1, page_size + 1},
-+
-+		{page_size, 1},
-+		{page_size, page_size - 1},
-+		{page_size, page_size + 1},
-+	};
-+	int ret, i;
-+
-+	for (i = 0; i < ARRAY_SIZE(testcases); i++) {
-+		ret = fallocate(fd, FALLOC_FL_KEEP_SIZE | FALLOC_FL_PUNCH_HOLE,
-+				testcases[i].offset, testcases[i].len);
-+		TEST_ASSERT(ret == -1 && errno == EINVAL,
-+			    "PUNCH_HOLE with !PAGE_SIZE offset (%lx) and/or length (%lx) should fail",
-+			    testcases[i].offset, testcases[i].len);
-+	}
-+}
-+
-+static void test_create_guest_memfd_invalid(struct kvm_vm *vm)
-+{
-+	size_t page_size = getpagesize();
-+	uint64_t flag;
-+	size_t size;
-+	int fd;
-+
-+	for (size = 1; size < page_size; size++) {
-+		fd = __vm_create_guest_memfd(vm, size, 0);
-+		TEST_ASSERT(fd == -1 && errno == EINVAL,
-+			    "guest_memfd() with non-page-aligned page size '0x%lx' should fail with EINVAL",
-+			    size);
-+	}
-+
-+	for (flag = 1; flag; flag <<= 1) {
-+		uint64_t bit;
-+
-+		fd = __vm_create_guest_memfd(vm, page_size, flag);
-+		TEST_ASSERT(fd == -1 && errno == EINVAL,
-+			    "guest_memfd() with flag '0x%lx' should fail with EINVAL",
-+			    flag);
-+
-+		for_each_set_bit(bit, &valid_flags, 64) {
-+			fd = __vm_create_guest_memfd(vm, page_size, flag | BIT_ULL(bit));
-+			TEST_ASSERT(fd == -1 && errno == EINVAL,
-+				    "guest_memfd() with flags '0x%llx' should fail with EINVAL",
-+				    flag | BIT_ULL(bit));
-+		}
-+	}
-+}
-+
-+static void test_create_guest_memfd_multiple(struct kvm_vm *vm)
-+{
-+	int fd1, fd2, ret;
-+	struct stat st1, st2;
-+
-+	fd1 = __vm_create_guest_memfd(vm, 4096, 0);
-+	TEST_ASSERT(fd1 != -1, "memfd creation should succeed");
-+
-+	ret = fstat(fd1, &st1);
-+	TEST_ASSERT(ret != -1, "memfd fstat should succeed");
-+	TEST_ASSERT(st1.st_size == 4096, "memfd st_size should match requested size");
-+
-+	fd2 = __vm_create_guest_memfd(vm, 8192, 0);
-+	TEST_ASSERT(fd2 != -1, "memfd creation should succeed");
-+
-+	ret = fstat(fd2, &st2);
-+	TEST_ASSERT(ret != -1, "memfd fstat should succeed");
-+	TEST_ASSERT(st2.st_size == 8192, "second memfd st_size should match requested size");
-+
-+	ret = fstat(fd1, &st1);
-+	TEST_ASSERT(ret != -1, "memfd fstat should succeed");
-+	TEST_ASSERT(st1.st_size == 4096, "first memfd st_size should still match requested size");
-+	TEST_ASSERT(st1.st_ino != st2.st_ino, "different memfd should have different inode numbers");
-+}
-+
-+int main(int argc, char *argv[])
-+{
-+	size_t page_size;
-+	size_t total_size;
-+	int fd;
-+	struct kvm_vm *vm;
-+
-+	TEST_REQUIRE(kvm_has_cap(KVM_CAP_GUEST_MEMFD));
-+
-+	page_size = getpagesize();
-+	total_size = page_size * 4;
-+
-+	vm = vm_create_barebones();
-+
-+	test_create_guest_memfd_invalid(vm);
-+	test_create_guest_memfd_multiple(vm);
-+
-+	fd = vm_create_guest_memfd(vm, total_size, 0);
-+
-+	test_file_read_write(fd);
-+	test_mmap(fd, page_size);
-+	test_file_size(fd, page_size, total_size);
-+	test_fallocate(fd, page_size, total_size);
-+	test_invalid_punch_hole(fd, page_size, total_size);
-+
-+	close(fd);
-+}
--- 
-2.39.1
+Regards,
+Jerry
 
+> 
+> > > +	/*
+> > > +	 * Historically this routine doesn't fail driver probing due to errors
+> > > +	 * in acpi_iommu_configure()
+> > 
+> >               acpi_iommu_configure_id()
+> 
+> Thanks
+> 
+> Jason
 

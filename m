@@ -2,130 +2,392 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 8E387C4332F
-	for <linux-mips@archiver.kernel.org>; Tue,  7 Nov 2023 11:49:13 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 433E8C4167D
+	for <linux-mips@archiver.kernel.org>; Tue,  7 Nov 2023 13:11:31 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232147AbjKGLtO (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Tue, 7 Nov 2023 06:49:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46286 "EHLO
+        id S235181AbjKGNLc (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Tue, 7 Nov 2023 08:11:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47484 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233674AbjKGLtO (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Tue, 7 Nov 2023 06:49:14 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E1FF10A
-        for <linux-mips@vger.kernel.org>; Tue,  7 Nov 2023 03:49:11 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 38904C433C7
-        for <linux-mips@vger.kernel.org>; Tue,  7 Nov 2023 11:49:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699357751;
-        bh=zG1AG6s9H4mVUWEREHKyWLjEcAuuHQCGHsj0eiqoWjY=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=cvWca5F7Y53oEf2uLuJyty+BZ1hmHcO+zzvwX/4Q7yNDAzRI7tWy4lYqPf6HyExsU
-         e1hzr1wToEgt4cE9nCwW6TzgNNsMlIJwF3/tog7YLUNF+erADlqU6YN6DiXGfYrP4p
-         ctvZkRF3mTWvYRRPPs8SvueBUngPhCneKMax8G2sWiZdWYTSUrKcj8K4o9mpG71Nd/
-         Adkotxn0zE9Wpctat0FmphCxGHTe8Kr+nwIZF1gRF9bFc5kio3n1PtHpnVTSjouVWH
-         5GCodX9YnMuIUoD66hV7A8k9NP1Mz9pI+uqEZNapZwG1HOPn/INE/gtRo3PgDjvYhq
-         b+bzABR2vF+qQ==
-Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-9e2838bcb5eso70004466b.0
-        for <linux-mips@vger.kernel.org>; Tue, 07 Nov 2023 03:49:11 -0800 (PST)
-X-Gm-Message-State: AOJu0YxThIDQs5gjbm39z3okOT4/ERoixbInSHWIuL1p+e/y8dXs33Ki
-        /3mhOQ3GNjDdGRfCulexIU6y+8eMIFvzI9DSYlc=
-X-Google-Smtp-Source: AGHT+IEMFIJo0PX1nm5d6zO9FOaZgW3caWPL9frZMn/i8nvR3Adus6PZH+wE9M3bXY9q3O2rI0PNVe2N9Jqkgm0XNb8=
-X-Received: by 2002:a17:907:783:b0:9b9:f980:8810 with SMTP id
- xd3-20020a170907078300b009b9f9808810mr18190379ejb.34.1699357749604; Tue, 07
- Nov 2023 03:49:09 -0800 (PST)
+        with ESMTP id S234895AbjKGNLF (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Tue, 7 Nov 2023 08:11:05 -0500
+Received: from mail-oa1-x34.google.com (mail-oa1-x34.google.com [IPv6:2001:4860:4864:20::34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A685047B3
+        for <linux-mips@vger.kernel.org>; Tue,  7 Nov 2023 05:07:55 -0800 (PST)
+Received: by mail-oa1-x34.google.com with SMTP id 586e51a60fabf-1e993765c1bso3595538fac.3
+        for <linux-mips@vger.kernel.org>; Tue, 07 Nov 2023 05:07:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1699362475; x=1699967275; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=7VRoxoxM3bk/ddMYA7RkVxhIt7sN32CxDfhJasXbdTQ=;
+        b=d+AqvpjiFbFAWRV9cRJNKM3v3+qxl1cKA38dut0JjiA4ZbvMBxHGiFdgjCsutproHH
+         6HnqdEbNqk0h/X0h52BLPSv3pILQ6OucibhTiP7uDR3GnEkBHBWQnf9hG6p0JVzcviQC
+         aY9Ojx2Mztp6zUpbe5e9YEeKDWtdBIkSNLBThIGCKPJKRlP48841vRZ5iB4Uj0BdizKf
+         M9PGkCSbajupx+ldPomAqseDO/W0+69X4hr3QQdNE9Onj+F79btBCLki3H9VRTSSO7co
+         Zz9FQYfrvqEiG2x5YPNAv5Ud1E/XsNf4yucjlAKenbi1kIrzw8HR08VQVCqGalDrGrq+
+         ZbDQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699362475; x=1699967275;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=7VRoxoxM3bk/ddMYA7RkVxhIt7sN32CxDfhJasXbdTQ=;
+        b=rMiV2uX9JYwvlwfiRZ+z3AIsKMww8//n0Ls5RE6LOuUGcAyoeVJty+Lf9HFZQHGvj0
+         0nNpP53F/+fxvVviRVWKUZ3uwHvGth5bJPu4csLeZA/VyTH9PuhuXpYPM5+gyWBH/Wkw
+         DKqH6jRVhtCa02aq6HRQ4sNBFgNJA82vWXhSvzIsriX2IwGUwwLyJ9gld2ZgQg7/U0oL
+         bz2tQO92FuuexnYrpnRgnyPu2bvuT12UvKuKzkK3nNNdpR/ArofuYGvB2fklZvyKXQxI
+         CUdIs5Fora6Mldg5F6LUtq+xYPSSzJKfkOC7NqqNdxqz+8IDxNUxf/k7TmbD01Cj3UiT
+         wz3g==
+X-Gm-Message-State: AOJu0Yyjb/rNn5BKtiN84CYoVfRjCfrMPWI+8yK2yVcs3frqHjqF2Np7
+        YL0C3/i7w2o7QFenyhNqRkW8EpZaBJVgpoK+VHRujA==
+X-Google-Smtp-Source: AGHT+IEc/OoLKiW5UzIza8k0AJcg/cvGrUiQc/SGatsr9amhK5Gck/VoGoIGcZKiRYhIoVxvQmPBVV/w9nNgSokWHaw=
+X-Received: by 2002:a05:6871:3227:b0:1ef:ace4:f360 with SMTP id
+ mo39-20020a056871322700b001eface4f360mr2023903oac.17.1699362474620; Tue, 07
+ Nov 2023 05:07:54 -0800 (PST)
 MIME-Version: 1.0
-References: <20231106121206.62650-1-stefan.wiehler@nokia.com>
-In-Reply-To: <20231106121206.62650-1-stefan.wiehler@nokia.com>
-From:   Huacai Chen <chenhuacai@kernel.org>
-Date:   Tue, 7 Nov 2023 19:48:58 +0800
-X-Gmail-Original-Message-ID: <CAAhV-H4V3t=f9r95kBROj37my0OYOsJ73X_7kJ7UkCOaJQNCnA@mail.gmail.com>
-Message-ID: <CAAhV-H4V3t=f9r95kBROj37my0OYOsJ73X_7kJ7UkCOaJQNCnA@mail.gmail.com>
-Subject: Re: [PATCH v2] mips/smp: Call rcutree_report_cpu_starting() earlier
-To:     Stefan Wiehler <stefan.wiehler@nokia.com>
-Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        linux-mips@vger.kernel.org
+References: <20231105163040.14904-1-pbonzini@redhat.com> <20231105163040.14904-33-pbonzini@redhat.com>
+In-Reply-To: <20231105163040.14904-33-pbonzini@redhat.com>
+From:   Fuad Tabba <tabba@google.com>
+Date:   Tue, 7 Nov 2023 13:07:18 +0000
+Message-ID: <CA+EHjTxMK2G3WSQsjPA5zn94+a91HsoaWXx8tz1TTGuq1tVZ5Q@mail.gmail.com>
+Subject: Re: [PATCH 32/34] KVM: selftests: Add basic selftest for guest_memfd()
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Marc Zyngier <maz@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Anup Patel <anup@brainfault.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Sean Christopherson <seanjc@google.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>, kvm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        kvm-riscv@lists.infradead.org, linux-riscv@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Xiaoyao Li <xiaoyao.li@intel.com>,
+        Xu Yilun <yilun.xu@intel.com>,
+        Chao Peng <chao.p.peng@linux.intel.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Anish Moorthy <amoorthy@google.com>,
+        David Matlack <dmatlack@google.com>,
+        Yu Zhang <yu.c.zhang@linux.intel.com>,
+        Isaku Yamahata <isaku.yamahata@intel.com>,
+        =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Vishal Annapurve <vannapurve@google.com>,
+        Ackerley Tng <ackerleytng@google.com>,
+        Maciej Szmigiero <mail@maciej.szmigiero.name>,
+        David Hildenbrand <david@redhat.com>,
+        Quentin Perret <qperret@google.com>,
+        Michael Roth <michael.roth@amd.com>,
+        Wang <wei.w.wang@intel.com>,
+        Liam Merwick <liam.merwick@oracle.com>,
+        Isaku Yamahata <isaku.yamahata@gmail.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Reviewed-by: Huacai Chen <chenhuacai@loongson.cn>
+Hi,
 
-On Mon, Nov 6, 2023 at 8:16=E2=80=AFPM Stefan Wiehler <stefan.wiehler@nokia=
-.com> wrote:
+On Sun, Nov 5, 2023 at 4:35=E2=80=AFPM Paolo Bonzini <pbonzini@redhat.com> =
+wrote:
 >
-> rcutree_report_cpu_starting() must be called before
-> clockevents_register_device() to avoid the following lockdep splat trigge=
-red by
-> calling list_add() when CONFIG_PROVE_RCU_LIST=3Dy:
+> From: Chao Peng <chao.p.peng@linux.intel.com>
 >
->   WARNING: suspicious RCU usage
->   ...
->   -----------------------------
->   kernel/locking/lockdep.c:3680 RCU-list traversed in non-reader section!=
-!
+> Add a selftest to verify the basic functionality of guest_memfd():
 >
->   other info that might help us debug this:
+> + file descriptor created with the guest_memfd() ioctl does not allow
+>   read/write/mmap operations
+> + file size and block size as returned from fstat are as expected
+> + fallocate on the fd checks that offset/length on
+>   fallocate(FALLOC_FL_PUNCH_HOLE) should be page aligned
+> + invalid inputs (misaligned size, invalid flags) are rejected
+> + file size and inode are unique (the innocuous-sounding
+>   anon_inode_getfile() backs all files with a single inode...)
 >
->   RCU used illegally from offline CPU!
->   rcu_scheduler_active =3D 1, debug_locks =3D 1
->   no locks held by swapper/1/0.
->   ...
->   Call Trace:
->   [<ffffffff8012a434>] show_stack+0x64/0x158
->   [<ffffffff80a93d98>] dump_stack_lvl+0x90/0xc4
->   [<ffffffff801c9e9c>] __lock_acquire+0x1404/0x2940
->   [<ffffffff801cbf3c>] lock_acquire+0x14c/0x448
->   [<ffffffff80aa4260>] _raw_spin_lock_irqsave+0x50/0x88
->   [<ffffffff8021e0c8>] clockevents_register_device+0x60/0x1e8
->   [<ffffffff80130ff0>] r4k_clockevent_init+0x220/0x3a0
->   [<ffffffff801339d0>] start_secondary+0x50/0x3b8
->
-> raw_smp_processor_id() is required in order to avoid calling into lockdep
-> before RCU has declared the CPU to be watched for readers.
->
-> See also commit 29368e093921 ("x86/smpboot:  Move rcu_cpu_starting() earl=
-ier"),
-> commit de5d9dae150c ("s390/smp: move rcu_cpu_starting() earlier") and com=
-mit
-> 99f070b62322 ("powerpc/smp: Call rcu_cpu_starting() earlier").
->
-> Signed-off-by: Stefan Wiehler <stefan.wiehler@nokia.com>
+> Signed-off-by: Chao Peng <chao.p.peng@linux.intel.com>
+> Co-developed-by: Ackerley Tng <ackerleytng@google.com>
+> Signed-off-by: Ackerley Tng <ackerleytng@google.com>
+> Co-developed-by: Paolo Bonzini <pbonzini@redhat.com>
+> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
+> Co-developed-by: Sean Christopherson <seanjc@google.com>
+> Signed-off-by: Sean Christopherson <seanjc@google.com>
+> Message-Id: <20231027182217.3615211-35-seanjc@google.com>
+> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
 > ---
-> - Rename rcu_cpu_starting() to rcutree_report_cpu_starting() due to commi=
-t
-> 448e9f34d91d ("rcu: Standardize explicit CPU-hotplug calls")
-> ---
->  arch/mips/kernel/smp.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+>  tools/testing/selftests/kvm/Makefile          |   1 +
+>  .../testing/selftests/kvm/guest_memfd_test.c  | 206 ++++++++++++++++++
+>  2 files changed, 207 insertions(+)
+>  create mode 100644 tools/testing/selftests/kvm/guest_memfd_test.c
 >
-> diff --git a/arch/mips/kernel/smp.c b/arch/mips/kernel/smp.c
-> index 8fbef537fb88..82e2e051b416 100644
-> --- a/arch/mips/kernel/smp.c
-> +++ b/arch/mips/kernel/smp.c
-> @@ -351,10 +351,11 @@ early_initcall(mips_smp_ipi_init);
->   */
->  asmlinkage void start_secondary(void)
->  {
-> -       unsigned int cpu;
-> +       unsigned int cpu =3D raw_smp_processor_id();
->
->         cpu_probe();
->         per_cpu_trap_init(false);
-> +       rcutree_report_cpu_starting(cpu);
->         mips_clockevent_init();
->         mp_ops->init_secondary();
->         cpu_report();
-> @@ -366,7 +367,6 @@ asmlinkage void start_secondary(void)
->          */
->
->         calibrate_delay();
-> -       cpu =3D smp_processor_id();
->         cpu_data[cpu].udelay_val =3D loops_per_jiffy;
->
->         set_cpu_sibling_map(cpu);
+> diff --git a/tools/testing/selftests/kvm/Makefile b/tools/testing/selftes=
+ts/kvm/Makefile
+> index ecdea5e7afa8..fd3b30a4ca7b 100644
+> --- a/tools/testing/selftests/kvm/Makefile
+> +++ b/tools/testing/selftests/kvm/Makefile
+> @@ -134,6 +134,7 @@ TEST_GEN_PROGS_x86_64 +=3D access_tracking_perf_test
+>  TEST_GEN_PROGS_x86_64 +=3D demand_paging_test
+>  TEST_GEN_PROGS_x86_64 +=3D dirty_log_test
+>  TEST_GEN_PROGS_x86_64 +=3D dirty_log_perf_test
+> +TEST_GEN_PROGS_x86_64 +=3D guest_memfd_test
+>  TEST_GEN_PROGS_x86_64 +=3D guest_print_test
+>  TEST_GEN_PROGS_x86_64 +=3D hardware_disable_test
+>  TEST_GEN_PROGS_x86_64 +=3D kvm_create_max_vcpus
+> diff --git a/tools/testing/selftests/kvm/guest_memfd_test.c b/tools/testi=
+ng/selftests/kvm/guest_memfd_test.c
+> new file mode 100644
+> index 000000000000..ea0ae7e25330
+> --- /dev/null
+> +++ b/tools/testing/selftests/kvm/guest_memfd_test.c
+> @@ -0,0 +1,206 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Copyright Intel Corporation, 2023
+> + *
+> + * Author: Chao Peng <chao.p.peng@linux.intel.com>
+> + */
+> +
+> +#define _GNU_SOURCE
+> +#include "test_util.h"
+> +#include "kvm_util_base.h"
+> +#include <linux/bitmap.h>
+> +#include <linux/falloc.h>
+> +#include <sys/mman.h>
+> +#include <sys/types.h>
+> +#include <sys/stat.h>
+> +
+> +#include <stdlib.h>
+> +#include <string.h>
+> +#include <unistd.h>
+> +#include <errno.h>
+> +#include <stdio.h>
+> +#include <fcntl.h>
+
+The include ordering should be fixed. Otherwise,
+
+Reviewed-by: Fuad Tabba <tabba@google.com>
+Tested-by: Fuad Tabba <tabba@google.com>
+
+Cheers,
+/fuad
+
+
+> +
+> +static void test_file_read_write(int fd)
+> +{
+> +       char buf[64];
+> +
+> +       TEST_ASSERT(read(fd, buf, sizeof(buf)) < 0,
+> +                   "read on a guest_mem fd should fail");
+> +       TEST_ASSERT(write(fd, buf, sizeof(buf)) < 0,
+> +                   "write on a guest_mem fd should fail");
+> +       TEST_ASSERT(pread(fd, buf, sizeof(buf), 0) < 0,
+> +                   "pread on a guest_mem fd should fail");
+> +       TEST_ASSERT(pwrite(fd, buf, sizeof(buf), 0) < 0,
+> +                   "pwrite on a guest_mem fd should fail");
+> +}
+> +
+> +static void test_mmap(int fd, size_t page_size)
+> +{
+> +       char *mem;
+> +
+> +       mem =3D mmap(NULL, page_size, PROT_READ | PROT_WRITE, MAP_SHARED,=
+ fd, 0);
+> +       TEST_ASSERT_EQ(mem, MAP_FAILED);
+> +}
+> +
+> +static void test_file_size(int fd, size_t page_size, size_t total_size)
+> +{
+> +       struct stat sb;
+> +       int ret;
+> +
+> +       ret =3D fstat(fd, &sb);
+> +       TEST_ASSERT(!ret, "fstat should succeed");
+> +       TEST_ASSERT_EQ(sb.st_size, total_size);
+> +       TEST_ASSERT_EQ(sb.st_blksize, page_size);
+> +}
+> +
+> +static void test_fallocate(int fd, size_t page_size, size_t total_size)
+> +{
+> +       int ret;
+> +
+> +       ret =3D fallocate(fd, FALLOC_FL_KEEP_SIZE, 0, total_size);
+> +       TEST_ASSERT(!ret, "fallocate with aligned offset and size should =
+succeed");
+> +
+> +       ret =3D fallocate(fd, FALLOC_FL_KEEP_SIZE | FALLOC_FL_PUNCH_HOLE,
+> +                       page_size - 1, page_size);
+> +       TEST_ASSERT(ret, "fallocate with unaligned offset should fail");
+> +
+> +       ret =3D fallocate(fd, FALLOC_FL_KEEP_SIZE, total_size, page_size)=
+;
+> +       TEST_ASSERT(ret, "fallocate beginning at total_size should fail")=
+;
+> +
+> +       ret =3D fallocate(fd, FALLOC_FL_KEEP_SIZE, total_size + page_size=
+, page_size);
+> +       TEST_ASSERT(ret, "fallocate beginning after total_size should fai=
+l");
+> +
+> +       ret =3D fallocate(fd, FALLOC_FL_KEEP_SIZE | FALLOC_FL_PUNCH_HOLE,
+> +                       total_size, page_size);
+> +       TEST_ASSERT(!ret, "fallocate(PUNCH_HOLE) at total_size should suc=
+ceed");
+> +
+> +       ret =3D fallocate(fd, FALLOC_FL_KEEP_SIZE | FALLOC_FL_PUNCH_HOLE,
+> +                       total_size + page_size, page_size);
+> +       TEST_ASSERT(!ret, "fallocate(PUNCH_HOLE) after total_size should =
+succeed");
+> +
+> +       ret =3D fallocate(fd, FALLOC_FL_KEEP_SIZE | FALLOC_FL_PUNCH_HOLE,
+> +                       page_size, page_size - 1);
+> +       TEST_ASSERT(ret, "fallocate with unaligned size should fail");
+> +
+> +       ret =3D fallocate(fd, FALLOC_FL_KEEP_SIZE | FALLOC_FL_PUNCH_HOLE,
+> +                       page_size, page_size);
+> +       TEST_ASSERT(!ret, "fallocate(PUNCH_HOLE) with aligned offset and =
+size should succeed");
+> +
+> +       ret =3D fallocate(fd, FALLOC_FL_KEEP_SIZE, page_size, page_size);
+> +       TEST_ASSERT(!ret, "fallocate to restore punched hole should succe=
+ed");
+> +}
+> +
+> +static void test_invalid_punch_hole(int fd, size_t page_size, size_t tot=
+al_size)
+> +{
+> +       struct {
+> +               off_t offset;
+> +               off_t len;
+> +       } testcases[] =3D {
+> +               {0, 1},
+> +               {0, page_size - 1},
+> +               {0, page_size + 1},
+> +
+> +               {1, 1},
+> +               {1, page_size - 1},
+> +               {1, page_size},
+> +               {1, page_size + 1},
+> +
+> +               {page_size, 1},
+> +               {page_size, page_size - 1},
+> +               {page_size, page_size + 1},
+> +       };
+> +       int ret, i;
+> +
+> +       for (i =3D 0; i < ARRAY_SIZE(testcases); i++) {
+> +               ret =3D fallocate(fd, FALLOC_FL_KEEP_SIZE | FALLOC_FL_PUN=
+CH_HOLE,
+> +                               testcases[i].offset, testcases[i].len);
+> +               TEST_ASSERT(ret =3D=3D -1 && errno =3D=3D EINVAL,
+> +                           "PUNCH_HOLE with !PAGE_SIZE offset (%lx) and/=
+or length (%lx) should fail",
+> +                           testcases[i].offset, testcases[i].len);
+> +       }
+> +}
+> +
+> +static void test_create_guest_memfd_invalid(struct kvm_vm *vm)
+> +{
+> +       size_t page_size =3D getpagesize();
+> +       uint64_t flag;
+> +       size_t size;
+> +       int fd;
+> +
+> +       for (size =3D 1; size < page_size; size++) {
+> +               fd =3D __vm_create_guest_memfd(vm, size, 0);
+> +               TEST_ASSERT(fd =3D=3D -1 && errno =3D=3D EINVAL,
+> +                           "guest_memfd() with non-page-aligned page siz=
+e '0x%lx' should fail with EINVAL",
+> +                           size);
+> +       }
+> +
+> +       for (flag =3D 1; flag; flag <<=3D 1) {
+> +               uint64_t bit;
+> +
+> +               fd =3D __vm_create_guest_memfd(vm, page_size, flag);
+> +               TEST_ASSERT(fd =3D=3D -1 && errno =3D=3D EINVAL,
+> +                           "guest_memfd() with flag '0x%lx' should fail =
+with EINVAL",
+> +                           flag);
+> +
+> +               for_each_set_bit(bit, &valid_flags, 64) {
+> +                       fd =3D __vm_create_guest_memfd(vm, page_size, fla=
+g | BIT_ULL(bit));
+> +                       TEST_ASSERT(fd =3D=3D -1 && errno =3D=3D EINVAL,
+> +                                   "guest_memfd() with flags '0x%llx' sh=
+ould fail with EINVAL",
+> +                                   flag | BIT_ULL(bit));
+> +               }
+> +       }
+> +}
+> +
+> +static void test_create_guest_memfd_multiple(struct kvm_vm *vm)
+> +{
+> +       int fd1, fd2, ret;
+> +       struct stat st1, st2;
+> +
+> +       fd1 =3D __vm_create_guest_memfd(vm, 4096, 0);
+> +       TEST_ASSERT(fd1 !=3D -1, "memfd creation should succeed");
+> +
+> +       ret =3D fstat(fd1, &st1);
+> +       TEST_ASSERT(ret !=3D -1, "memfd fstat should succeed");
+> +       TEST_ASSERT(st1.st_size =3D=3D 4096, "memfd st_size should match =
+requested size");
+> +
+> +       fd2 =3D __vm_create_guest_memfd(vm, 8192, 0);
+> +       TEST_ASSERT(fd2 !=3D -1, "memfd creation should succeed");
+> +
+> +       ret =3D fstat(fd2, &st2);
+> +       TEST_ASSERT(ret !=3D -1, "memfd fstat should succeed");
+> +       TEST_ASSERT(st2.st_size =3D=3D 8192, "second memfd st_size should=
+ match requested size");
+> +
+> +       ret =3D fstat(fd1, &st1);
+> +       TEST_ASSERT(ret !=3D -1, "memfd fstat should succeed");
+> +       TEST_ASSERT(st1.st_size =3D=3D 4096, "first memfd st_size should =
+still match requested size");
+> +       TEST_ASSERT(st1.st_ino !=3D st2.st_ino, "different memfd should h=
+ave different inode numbers");
+> +}
+> +
+> +int main(int argc, char *argv[])
+> +{
+> +       size_t page_size;
+> +       size_t total_size;
+> +       int fd;
+> +       struct kvm_vm *vm;
+> +
+> +       TEST_REQUIRE(kvm_has_cap(KVM_CAP_GUEST_MEMFD));
+> +
+> +       page_size =3D getpagesize();
+> +       total_size =3D page_size * 4;
+> +
+> +       vm =3D vm_create_barebones();
+> +
+> +       test_create_guest_memfd_invalid(vm);
+> +       test_create_guest_memfd_multiple(vm);
+> +
+> +       fd =3D vm_create_guest_memfd(vm, total_size, 0);
+> +
+> +       test_file_read_write(fd);
+> +       test_mmap(fd, page_size);
+> +       test_file_size(fd, page_size, total_size);
+> +       test_fallocate(fd, page_size, total_size);
+> +       test_invalid_punch_hole(fd, page_size, total_size);
+> +
+> +       close(fd);
+> +}
 > --
-> 2.31.0
+> 2.39.1
+>
 >

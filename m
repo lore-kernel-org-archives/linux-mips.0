@@ -2,131 +2,82 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EFADEC4332F
-	for <linux-mips@archiver.kernel.org>; Wed,  8 Nov 2023 18:35:05 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 83934C4332F
+	for <linux-mips@archiver.kernel.org>; Wed,  8 Nov 2023 19:11:29 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229715AbjKHSfH (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 8 Nov 2023 13:35:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53900 "EHLO
+        id S230118AbjKHTLa (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 8 Nov 2023 14:11:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56334 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229583AbjKHSfF (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 8 Nov 2023 13:35:05 -0500
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 900B42105
-        for <linux-mips@vger.kernel.org>; Wed,  8 Nov 2023 10:35:03 -0800 (PST)
-Received: by mail-wm1-x32a.google.com with SMTP id 5b1f17b1804b1-4079ed65582so53613895e9.1
-        for <linux-mips@vger.kernel.org>; Wed, 08 Nov 2023 10:35:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1699468502; x=1700073302; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=n9ZiV2Esj98CTfgH59OBDcgahkXqDMdEC5lhTkmlSa0=;
-        b=Ag/sekfgYdN+QO2qNzC+r6BzqCMo9dzcsxvOu4xJN0ribyHewu9zogJx6FWNSomfI9
-         4Sjlt/qA4mplNZMnvot6/g+6cmnze23j+AP62wX8o67Qahuu0IX9K7PX266zjkQY/wRe
-         hNpOh576uhk6o2F1atbxeeQelw6dBU2ObOSQ9yQGCGBdBys3mjvoiuXA1WEspYXM7dqL
-         8or59NUpDHRURUG6WDvo92ajLicd3w5fF4NJHO6NtHIf4rNDQeB2t6EQLDVDKgiNAp4S
-         f8GgfhkHm4K6E2W6wIdOxZzpJIJC9NgohDiD7zD6auJ87yEubapy07YfOPudCdJ85XuR
-         nD9Q==
+        with ESMTP id S229610AbjKHTLa (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 8 Nov 2023 14:11:30 -0500
+Received: from mail-ot1-f51.google.com (mail-ot1-f51.google.com [209.85.210.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D02CB210A;
+        Wed,  8 Nov 2023 11:11:27 -0800 (PST)
+Received: by mail-ot1-f51.google.com with SMTP id 46e09a7af769-6ce31c4a653so4418730a34.3;
+        Wed, 08 Nov 2023 11:11:27 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699468502; x=1700073302;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=n9ZiV2Esj98CTfgH59OBDcgahkXqDMdEC5lhTkmlSa0=;
-        b=ec8Wa8t05P/u3iYjNGYA6VmeZYO6TTwXXdriA5l8N6VzdrM9m7P1PHIUqfemI9knEV
-         k6x8y9MQ8+0kneUCgR0YgDS0TxF9pm0x972NxEE3SUivqF+RgzituT4sG9jkIIkfFr77
-         4xlAv5CtjawgDlSznkfevCcLGEcC8UsNmqsDO4iwNKz5BT6XP/RP6ElSJ3WZxW9TSlZl
-         1Tk41w0By3FUAWndC9vEdahnrGQQS4CA+LqFnT+++OuXoVkQmfx9QbbSppBxtHEaaRHn
-         H4ZvRcUjfoXbLXXGTQGNNwvii12xrrvrtt+RHCyP5owIYJVJwPE/YlbkbyJTtiZTao2X
-         sbyg==
-X-Gm-Message-State: AOJu0YzhiH43WPzQNHLpeEUKfJYaDGX67H5fvlekgw6uEAL83Nhb5k2G
-        zRVVvnf/f+wfXtpMbwJvNQJjkw==
-X-Google-Smtp-Source: AGHT+IEerzRoblFu8LqWqAyQVzl32Dow78v7sZDoe2sPpmQgBWRRfSrEcftCpyNmsXV1yimnvtHQ6A==
-X-Received: by 2002:a05:600c:190e:b0:405:1c19:b747 with SMTP id j14-20020a05600c190e00b004051c19b747mr2262734wmq.15.1699468501866;
-        Wed, 08 Nov 2023 10:35:01 -0800 (PST)
-Received: from salami.lan ([80.111.64.44])
-        by smtp.gmail.com with ESMTPSA id g4-20020a05600c310400b004068e09a70bsm20156528wmo.31.2023.11.08.10.34.58
+        d=1e100.net; s=20230601; t=1699470687; x=1700075487;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=1u7VYnOagIS9pU6lT0JPQUPsCHt998/w+J9rxTrBSoA=;
+        b=XSR6jNL9ozufKPBv09tppwB9pjHHuH/c3aYJm/Pmvn6B7V6StsjBwqjJfpTrF/Gir7
+         AOrqjOVsSHnNxSkz6jIWhR/opGcQY1aHTpEUPxWnnsylK5v7TTc4gPrbyAYbyLoQi4cw
+         f4WXpxF1+uOMp0xF6ctjxaF5vEBbeBdhOn2q3PQGtzcTv1zyss5ItTy49hoXr9Di6bcd
+         xChZlswVVwEdLHyeuksqfkG4HPG88//2wxs0nqkAImUlNRZkB2vljj4jypL3JM2mWfX8
+         OH9TVOrB3RPzzihY98klFE8SYs6zl3vOfyFawUUtkHhkISbjdfHotMl5X98DkLA5wLEq
+         G3vw==
+X-Gm-Message-State: AOJu0Yxzlt3NX6RkuSi5JKxrd3fIV0KLVVFlprIYT1kwAch4LR1Q8B62
+        +wGJ1BajIZ2mctLaX0rM6A==
+X-Google-Smtp-Source: AGHT+IEQxcoP2w100Rf4cT1thURGIfqiKk7j/H0pCBg1+7YdEio2W+/30kOdWF9bH2ez152xfdG2Sg==
+X-Received: by 2002:a05:6830:1bc6:b0:6c4:c3ac:a9dc with SMTP id v6-20020a0568301bc600b006c4c3aca9dcmr3256504ota.21.1699470687064;
+        Wed, 08 Nov 2023 11:11:27 -0800 (PST)
+Received: from herring.priv (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
+        by smtp.gmail.com with ESMTPSA id az5-20020a056830458500b006c4727812fdsm1983578otb.15.2023.11.08.11.11.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 08 Nov 2023 10:35:00 -0800 (PST)
-Message-ID: <d6664edcccd81edc5caa54e8da43b5c571a3ea76.camel@linaro.org>
-Subject: Re: [PATCH RFC 00/17] Solve iommu probe races around iommu_fwspec
-From:   =?ISO-8859-1?Q?Andr=E9?= Draszik <andre.draszik@linaro.org>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Zhenhua Huang <quic_zhenhuah@quicinc.com>,
-        acpica-devel@lists.linuxfoundation.org,
-        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
-        Albert Ou <aou@eecs.berkeley.edu>, asahi@lists.linux.dev,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Dexuan Cui <decui@microsoft.com>, devicetree@vger.kernel.org,
-        David Woodhouse <dwmw2@infradead.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Hanjun Guo <guohanjun@huawei.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Christoph Hellwig <hch@lst.de>, iommu@lists.linux.dev,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Len Brown <lenb@kernel.org>, linux-acpi@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-hyperv@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-riscv@lists.infradead.org,
-        linux-snps-arc@lists.infradead.org, linux-tegra@vger.kernel.org,
-        Russell King <linux@armlinux.org.uk>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Hector Martin <marcan@marcan.st>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Robert Moore <robert.moore@intel.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
-        Sven Peter <sven@svenpeter.dev>,
-        Thierry Reding <thierry.reding@gmail.com>,
+        Wed, 08 Nov 2023 11:11:26 -0800 (PST)
+Received: (nullmailer pid 2771930 invoked by uid 1000);
+        Wed, 08 Nov 2023 19:11:25 -0000
+Date:   Wed, 8 Nov 2023 13:11:25 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Aaro Koskinen <aaro.koskinen@iki.fi>,
+        Janusz Krzysztofik <jmkrzyszt@gmail.com>,
+        Tony Lindgren <tony@atomide.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
         Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Krishna Reddy <vdumpa@nvidia.com>,
-        Vineet Gupta <vgupta@kernel.org>,
-        virtualization@lists.linux-foundation.org,
-        Wei Liu <wei.liu@kernel.org>, Will Deacon <will@kernel.org>
-Date:   Wed, 08 Nov 2023 18:34:58 +0000
-In-Reply-To: <0-v1-5f734af130a3+34f-iommu_fwspec_jgg@nvidia.com>
-References: <0-v1-5f734af130a3+34f-iommu_fwspec_jgg@nvidia.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.1-1 
+        Ben Dooks <ben.dooks@codethink.co.uk>,
+        linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+        devicetree@vger.kernel.org, linux-mips@vger.kernel.org,
+        Howard Harte <hharte@magicandroidapps.com>
+Subject: Re: [PATCH 2/6] dt-bindings: mtd: Rewrite gpio-control-nand in schema
+Message-ID: <20231108191125.GA2754195-robh@kernel.org>
+References: <20231108-fix-mips-nand-v1-0-5fc5586d04de@linaro.org>
+ <20231108-fix-mips-nand-v1-2-5fc5586d04de@linaro.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231108-fix-mips-nand-v1-2-5fc5586d04de@linaro.org>
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-Hi Jason,
+On Wed, Nov 08, 2023 at 03:33:50PM +0100, Linus Walleij wrote:
+> This creates a schema for GPIO controlled NAND. The txt
+> schema was old and wrong.
+> 
+> Mark the old way of passing GPIOs in a long array as
+> deprecated and encourage per-pin GPIO assignments with
+> the named nnn-gpios phandles.
 
-On Fri, 2023-11-03 at 13:44 -0300, Jason Gunthorpe wrote:
-> This is a more complete solution that the first attempt here:
-> https://lore.kernel.org/r/1698825902-10685-1-git-send-email-quic_zhenhuah=
-@quicinc.com
->=20
-> I haven't been able to test this on any HW that touches these paths, so i=
-f
-> some people with HW can help get it in shape it can become non-RFC.
+We have 1 user upstream with only a single commit adding it in 2017. 
+This doesn't seem like something that's going to gain new users either. 
+Is it really worth modernizing this binding? 
 
-Thank you for this series.
-
-Please note that we're also observing this issue on 6.1.
-I think this series is a good candidate for a back port (slightly complicat=
-ed by
-the fact that various refactors have happened since).
-
-For me, it's working fine so far on master, and I've also done my own back =
-port
-to 6.1 and am currently testing both. An official back port once finalised
-could be useful, though :-)
-
-
-Cheers,
-Andre'
-
+Rob

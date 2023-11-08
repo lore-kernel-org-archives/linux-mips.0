@@ -2,169 +2,133 @@ Return-Path: <linux-mips-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 81DC1C4332F
-	for <linux-mips@archiver.kernel.org>; Wed,  8 Nov 2023 19:22:14 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1719DC4167D
+	for <linux-mips@archiver.kernel.org>; Wed,  8 Nov 2023 19:27:02 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231177AbjKHTWP (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
-        Wed, 8 Nov 2023 14:22:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47412 "EHLO
+        id S229555AbjKHT1D (ORCPT <rfc822;linux-mips@archiver.kernel.org>);
+        Wed, 8 Nov 2023 14:27:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38822 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230017AbjKHTWO (ORCPT
-        <rfc822;linux-mips@vger.kernel.org>); Wed, 8 Nov 2023 14:22:14 -0500
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2057.outbound.protection.outlook.com [40.107.94.57])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A4792110;
-        Wed,  8 Nov 2023 11:22:12 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=nCzV3zqGRwGfZRRYn40OKH7OcmXqx4emEQwQ2uAHHvKkb9MBFPFICSCAYNYRZk9vvgYG3quVjeG15W6HIwkCcbkc3tlqBTLEdGrkQnRdBeX1T2ukOhTnkhhOZuMZoVNMgqfaO7uJyHCeNokVQBo+EYOMylmo62wY1YBhRDklwcJP5YjLcPU2/yDBRCO9fYRORVulYIdhQQh0qQ6Wuvrnoe9cFlC0iLRkcPbcttfKf48F9OKftIUd+/VnbsVXqE34gABql0KnhTnBJRx5t4NqtlEnS0DRqCaVUH1HH1UIz+TArbyiXW6st7i8F9mhE9TVKK8b9Kgkt/nhE991BTKtGA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=bhI/syNnnLZfO82lXNasbC8mRMqQloP0BGi253z0Ies=;
- b=Y9P7O19asJZsOrnEEJloKFDwEKQxw44gol70UA8BPAQoz5OmlqO75SSNK0/lGac/Yp4L1VSu3YHH/jJcqruxUQfxhfpeSeMKurYVoSombdEeBLRxwLGlAn4vVjLU5N1ArOsz9tmPMspo/ALscNSr54rXNgkOid89UDU9tFQEN/kRor0UVNsqvgv991xLuZGi1dU2AD+9GME4R1vnXZM8vvRb3mru1wGJURNNcrB8YgO/zJm3tNBNGGFnBkQ9tcls2jnIQQ/zmzh2yqa7y6XtKZ0vMpXMGvvlWkem4xybKKM5QPD44WTjPvu5exUxKbNYzPRCVjAIkhr90g3iJXReYw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=bhI/syNnnLZfO82lXNasbC8mRMqQloP0BGi253z0Ies=;
- b=Okr8wsayB1BTwoC/SF8LFsrGPbL2sn/TgLmSDf1XLrQXoWuVvAbiDrhv3/0II1b0aUFZ2T/DGplFdb+8FoIIgLhcRwoA5Q2kQqWQCfGCljy+CLJXONAVlW1TghPoVnIYn14/Y0NBU4rM1OgVhOzfMPahd0kqABB2/eEr0lLF4oiyuy5xjjQDMAT72iYYR1mtOdbny05S7ON81a/U52+y4xiEroHdo8QUi9oa4tWJGjEMxIKCrc4dTB1kJeE5CDU1t9D0RK8PNi9tO6fEEc5JWUicL9UwSARTE32UZGYDUr4NV1gvcCZLItwhb8lUOEerw8G8waxu6ECbYlm8BehWrw==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com (2603:10b6:408:176::16)
- by BL0PR12MB4884.namprd12.prod.outlook.com (2603:10b6:208:1ca::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6954.29; Wed, 8 Nov
- 2023 19:22:09 +0000
-Received: from LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::60d4:c1e3:e1aa:8f93]) by LV2PR12MB5869.namprd12.prod.outlook.com
- ([fe80::60d4:c1e3:e1aa:8f93%4]) with mapi id 15.20.6977.018; Wed, 8 Nov 2023
- 19:22:09 +0000
-Date:   Wed, 8 Nov 2023 15:22:07 -0400
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     =?utf-8?B?QW5kcsOp?= Draszik <andre.draszik@linaro.org>
-Cc:     Zhenhua Huang <quic_zhenhuah@quicinc.com>,
-        acpica-devel@lists.linuxfoundation.org,
-        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
-        Albert Ou <aou@eecs.berkeley.edu>, asahi@lists.linux.dev,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Dexuan Cui <decui@microsoft.com>, devicetree@vger.kernel.org,
-        David Woodhouse <dwmw2@infradead.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Hanjun Guo <guohanjun@huawei.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Christoph Hellwig <hch@lst.de>, iommu@lists.linux.dev,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Len Brown <lenb@kernel.org>, linux-acpi@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-hyperv@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-riscv@lists.infradead.org,
-        linux-snps-arc@lists.infradead.org, linux-tegra@vger.kernel.org,
-        Russell King <linux@armlinux.org.uk>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Hector Martin <marcan@marcan.st>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Robert Moore <robert.moore@intel.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
-        Sven Peter <sven@svenpeter.dev>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Krishna Reddy <vdumpa@nvidia.com>,
+        with ESMTP id S229711AbjKHT1C (ORCPT
+        <rfc822;linux-mips@vger.kernel.org>); Wed, 8 Nov 2023 14:27:02 -0500
+X-Greylist: delayed 965 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 08 Nov 2023 11:27:00 PST
+Received: from mailrelay2-1.pub.mailoutpod2-cph3.one.com (mailrelay2-1.pub.mailoutpod2-cph3.one.com [IPv6:2a02:2350:5:401::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CF072113
+        for <linux-mips@vger.kernel.org>; Wed,  8 Nov 2023 11:27:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ravnborg.org; s=rsa2;
+        h=in-reply-to:content-type:mime-version:references:message-id:subject:cc:to:
+         from:date:from;
+        bh=t0PhdPpL9ITFkVHWShkqwebGTKveq1EAqYCULbPtu5I=;
+        b=HOH6miiY3B+TPoRIYH1MiG21R2R+dh1yYG8FVwEQyDXIhn1Ao3kJLxPWfeHQZl9v5C+Z5Chab0l7C
+         HikW4LWGdU4we9PVHZJww6fDwD1yj+77Jj5I/65wiERNQSINaBzToUrUeOoJSPC/FGkywpiTFZYc/w
+         G5VUedzBJU7HvjvKlrHVnE6S2n/CsFEdiawBE7NIbof73jQYss2IVV4HvlcVLH+T8ZX3pzF6bx9t1o
+         bMg34L0eMDuXbRC6rLKy6PjcIUoJKPRTeePAKA2fUAAx68YXNhrJFCda5nk8ULj+i07dneXw+hSXiH
+         JNZyftfJd+q/T1+u1UqHapE9CdUwJnw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed;
+        d=ravnborg.org; s=ed2;
+        h=in-reply-to:content-type:mime-version:references:message-id:subject:cc:to:
+         from:date:from;
+        bh=t0PhdPpL9ITFkVHWShkqwebGTKveq1EAqYCULbPtu5I=;
+        b=xWIbuz4e/7unjVoPKeu7dePVTkZEjAQgGTQa2oJ1BHdQOZexDAZtyLcvnX3YqDagH5rAul9U45aVe
+         EhYmmucCA==
+X-HalOne-ID: 87baf6c1-7e6a-11ee-909c-a34c9b1f9040
+Received: from ravnborg.org (2-105-2-98-cable.dk.customer.tdc.net [2.105.2.98])
+        by mailrelay2 (Halon) with ESMTPSA
+        id 87baf6c1-7e6a-11ee-909c-a34c9b1f9040;
+        Wed, 08 Nov 2023 19:10:52 +0000 (UTC)
+Date:   Wed, 8 Nov 2023 20:10:50 +0100
+From:   Sam Ravnborg <sam@ravnborg.org>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        linux-kbuild@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        Matt Turner <mattst88@gmail.com>,
         Vineet Gupta <vgupta@kernel.org>,
-        virtualization@lists.linux-foundation.org,
-        Wei Liu <wei.liu@kernel.org>, Will Deacon <will@kernel.org>
-Subject: Re: [PATCH RFC 00/17] Solve iommu probe races around iommu_fwspec
-Message-ID: <20231108192207.GV4488@nvidia.com>
-References: <0-v1-5f734af130a3+34f-iommu_fwspec_jgg@nvidia.com>
- <d6664edcccd81edc5caa54e8da43b5c571a3ea76.camel@linaro.org>
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <d6664edcccd81edc5caa54e8da43b5c571a3ea76.camel@linaro.org>
-X-ClientProxiedBy: SN7PR04CA0181.namprd04.prod.outlook.com
- (2603:10b6:806:126::6) To LV2PR12MB5869.namprd12.prod.outlook.com
- (2603:10b6:408:176::16)
+        Russell King <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Guo Ren <guoren@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Greg Ungerer <gerg@linux-m68k.org>,
+        Michal Simek <monstr@monstr.eu>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Dinh Nguyen <dinguyen@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Geoff Levand <geoff@infradead.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Andy Lutomirski <luto@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
+        Helge Deller <deller@gmx.de>,
+        Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Timur Tabi <timur@kernel.org>,
+        Kent Overstreet <kent.overstreet@linux.dev>,
+        David Woodhouse <dwmw2@infradead.org>,
+        "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
+        Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
+        Kees Cook <keescook@chromium.org>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nicolas Schier <nicolas@fjasle.eu>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>, linux-alpha@vger.kernel.org,
+        linux-snps-arc@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-trace-kernel@vger.kernel.org, linux-csky@vger.kernel.org,
+        loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
+        linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
+        linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
+        netdev@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linux-usb@vger.kernel.org, linux-fbdev@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linux-bcachefs@vger.kernel.org,
+        linux-mtd@lists.infradead.org
+Subject: Re: [PATCH 09/22] [v2] arch: fix asm-offsets.c building with
+ -Wmissing-prototypes
+Message-ID: <20231108191050.GA171153@ravnborg.org>
+References: <20231108125843.3806765-1-arnd@kernel.org>
+ <20231108125843.3806765-10-arnd@kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: LV2PR12MB5869:EE_|BL0PR12MB4884:EE_
-X-MS-Office365-Filtering-Correlation-Id: d0ab60bf-adcf-42c9-ccac-08dbe0900060
-X-LD-Processed: 43083d15-7273-40c1-b7db-39efd9ccc17a,ExtAddr
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: gJjK4yfFfRd8HivVDOWysBZIAEQFz8CLebpcVIMK017+pIGgezWjN4pBfT/LD1Dt8NWCw6RptD4sooCyaGgDZbLpq+6Fnrsq/ClAJEr4ZrVUHFDyvw9ESIMycoSpzTNng29sFmnF8wsfe5Hu/nqyW5APwUr1RlE7I6VuDV54DkAxyJIXbAsJzx/PyD6UkRe5NTxzI5HTMOsTGNNVg3CbnSZQ8YxAQkLGl4ZZLF9I3dn4qWdTUCvciwU/iOn09XI+BOssVZ6pTb0y0HzjePtohaohNajphWAxS/FgW+Orv1XZ2Vv+bh+UjBVWUnT/8OCB79dj217hhwpeimkjXDa1+SfqgPOS1V0N9vFtTPuuq6op5wtMDfE0KXNvrJ/cUHu+WmD+to+roCCATBntstZ0pymT3ath995pCRmThrbXcdHM7H91XCRR1/22BzTMottlISO+Uee3bpjhqAnnSMrpqEfknkvkKYQFP7a+CP1++nF1zfC/07lpVdmxHU/YHlKXYTV8gnX4a9EF4E6MznSHZkFcWBwRftDCRKzVP3CwFV709ysRDK5bMAWa7HfQOt2Q
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV2PR12MB5869.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(136003)(346002)(366004)(39860400002)(376002)(230922051799003)(64100799003)(451199024)(1800799009)(186009)(33656002)(36756003)(6506007)(5660300002)(8676002)(4326008)(8936002)(6486002)(6512007)(41300700001)(2906002)(7416002)(2616005)(4744005)(7406005)(316002)(54906003)(6916009)(26005)(1076003)(66556008)(66946007)(478600001)(66476007)(86362001)(38100700002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?VnNQSVppNVIrM2RsSGtkSkFaRmNwZ1lJSTBwSlJoRjdYZTBLbW14UjJFdHA4?=
- =?utf-8?B?NzRlVVZaM1U5Q21BZWc3bURrVTZKU09CTXhibVZNemJsS1lLTllnT245WnpI?=
- =?utf-8?B?SUNmT1BSK04zd0tJMEhiOWRBRDRDNk9WOXBYMk5TcEY5RG5lNlJtWWNweDRB?=
- =?utf-8?B?YlQ1VHhVK1ROQ1Rib0xsVEJ0TTB4WFYxYW1sSmU2aW5WYm4yNTRhdmh1TW54?=
- =?utf-8?B?Z3pDbGlsSWhISmRHVnlsSTNoTjczNnRIeWVqaGFERG9ZT1NJaXpEWTF6Ti9q?=
- =?utf-8?B?dXJKdTZYU1RXTWdtVy8xbGVVWnMwSU50YkI3TFZjb0NhWGp0Z1ZnUm1Geitt?=
- =?utf-8?B?dzF1VTU3QkNGR3FkSytYN0hQb3N0ZU93c1Bta3F6ZmZoWkRkZUl2dTFUWk5X?=
- =?utf-8?B?cWluQ2o0SDhYUCtDU1pPUUlCVTV4OC9YQmttbEFEcUVmdzFXcHhOUzJFemZU?=
- =?utf-8?B?SVB5Z0djYnY1OTFaTXg0QU1WS2I3TEp6cDFncmNyOTBtQkxuQUxDYXNVRDRr?=
- =?utf-8?B?Q2tqdG9ISXRmVDZNOS91YzhmRjRsbS8wdnBXQXhHd1NxNnRha1FGYXI5Y0VP?=
- =?utf-8?B?WkR5b2djbkp2eVJIZVdlZklacGZXQ3g0aC92ZVBpSzR1SnU4eW5zMDdBa01R?=
- =?utf-8?B?aXNTZTVrTjFaeUR6cDQrWElEUkw0cjdDREc2ejJtVjNzRlArRDhEZGJOcXZG?=
- =?utf-8?B?K2Zvc1Mva3NkZU1oeFNuME5BYWhDYUpscmhOSGVSYmdBVlVVQnQ2ajJhLzZP?=
- =?utf-8?B?RkVrUWpZY1RXbXo5cmtaQ2tRRFczUlltM2ZURVVoalg5TWJmVDM4YmZrVXUx?=
- =?utf-8?B?cUpFL2ZDeHZVR1NNbXZrMFpZcmlWSnA4SDkzcW5xendPcEQ1Q2NOYkRMS2ZU?=
- =?utf-8?B?Z2tsM2tXS2k3QW4zUDhhUTdzOFlGQXVxazlTZVM3bXRoTVQvUlZOSm1qNTZu?=
- =?utf-8?B?WXlEaXVoZm9zS2lXMTJtYUF2SjdoTkVYZW1DN1B6VWlPd3oweS9kYjl5cy9q?=
- =?utf-8?B?bWxlTForOWdTbnk2VDZjOXQwK2FXbEYycTJBS09xRHF1cjQ5ZFNjL3A0OVE4?=
- =?utf-8?B?eXFvR3pjYmFJWFByWjVYZlFocVIxQTZaelI3d3h6ZHJ4NWFzcGxWTlJ1THEz?=
- =?utf-8?B?ZzdoZXdGanFLZHpjMmxsNjkxelFWRi9nRmVuRkRrYkp0TlhkUWlkQk5DNEVL?=
- =?utf-8?B?ZXVUVWpCZWZOTXpBNmlJMzlqUFJ3YlZac3lwTVFJNHpiQ3BwZUtmdFFSVjA3?=
- =?utf-8?B?djdhSXNmUVk0TjdxM2FLR3ZoSlU4Vi9pOXdHeVI1NXAvdTBybkxNaEtZem55?=
- =?utf-8?B?Sm5NWnFXeFNTSm9RSjg4bjkzYzljcGpKQnNJSGFhUkVZWlMrenpLMlZla2pH?=
- =?utf-8?B?UVQwVXBKM3JjQkt0REFrOXhJZ0RPQ2x2WmVaY3poeHo2T2dmenZKYUljMUp5?=
- =?utf-8?B?OGF0S1psSDRHZUIweFZRYUFac2JydGMvVkk3K3ZJSnFhSlVTNUhaL3lnVDlU?=
- =?utf-8?B?Z1RvMkNQNVFCMHh1QW1YZFpUeERJblZSaFNOQ3ZxMHloNVMvTVpRMmRrOHpu?=
- =?utf-8?B?L0gwQjU0SmdvWXErdlN4QUxua0NwdWZ5bzcva2R6SC9rbVFsN2dyMVI0VVB2?=
- =?utf-8?B?Y3poSDlHeUxtQkdLYlQ4bE95d1FXSGphdHlKbXdmOWE1L21XUzFNYjB4bHlH?=
- =?utf-8?B?UEU2WE5ESHBIM3RyWmlKaStnWE1iZUdKK0NqanZXeHpWcE4xUUpCNTVLOURK?=
- =?utf-8?B?bDdWZFQ1NCtWbmdLOGo0enIzTFByTloxbmlTam04QXMyNWtaaENnaUdZV1JY?=
- =?utf-8?B?a2NaMVd3aHplak1pYU81K1VBbWVzWStyOFFZQVpFK3hqRjY2eXVEZ1NKdFFj?=
- =?utf-8?B?cHFPbEdZNGlxNUtBL1A2Mll1R0VrdGJoS251bE1qQTI3SzBuRE80a3poRHRJ?=
- =?utf-8?B?WWpNbkppK2tzdDlIM2xTMjc1U0kzZlY3TnJBNEg0ZE9JSDh3d01MaUN4ZkZU?=
- =?utf-8?B?a1YzTGM4ZjJuM3Z6OTVTUm95Rk54ekIveXlCaVMwZTZpMzlFQlIxK0lzRktv?=
- =?utf-8?B?RXNTU1dNWXNZTE5oVUdwL3pWQlE4cEFyUS95YXVxUXZOTVptakRHN1hsOUVk?=
- =?utf-8?Q?OZhk=3D?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d0ab60bf-adcf-42c9-ccac-08dbe0900060
-X-MS-Exchange-CrossTenant-AuthSource: LV2PR12MB5869.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Nov 2023 19:22:09.1244
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: xHLey/g4iVAxmaibMCMXp0RFpBSIvC1cJKJHiXUfEsdys9J/0xAEAfbfwVg+yc8w
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR12MB4884
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231108125843.3806765-10-arnd@kernel.org>
 Precedence: bulk
 List-ID: <linux-mips.vger.kernel.org>
 X-Mailing-List: linux-mips@vger.kernel.org
 
-On Wed, Nov 08, 2023 at 06:34:58PM +0000, André Draszik wrote:
-
-> For me, it's working fine so far on master, and I've also done my own back port
-> to 6.1 and am currently testing both. An official back port once finalised
-> could be useful, though :-)
-
-Great, I'll post a non-RFC version next week (LPC permitting)
-
-BTW, kbuild 0-day caught your note in the other email and a bunch of
-other wonky stuff I've fixed on the github version.
-
-Thanks,
-Jason
+On Wed, Nov 08, 2023 at 01:58:30PM +0100, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> When -Wmissing-prototypes is enabled, the some asm-offsets.c files fail
+> to build, even when this warning is disabled in the Makefile for normal
+> files:
+> 
+> arch/sparc/kernel/asm-offsets.c:22:5: error: no previous prototype for 'sparc32_foo' [-Werror=missing-prototypes]
+> arch/sparc/kernel/asm-offsets.c:48:5: error: no previous prototype for 'foo' [-Werror=missing-prototypes]
+> 
+> Address this by making use of the same trick as x86, marking these
+> functions as 'static __used' to avoid the need for a prototype
+> by not drop them in dead-code elimination.
+> 
+> Suggested-by: Masahiro Yamada <masahiroy@kernel.org>
+> Link: https://lore.kernel.org/lkml/CAK7LNARfEmFk0Du4Hed19eX_G6tUC5wG0zP+L1AyvdpOF4ybXQ@mail.gmail.com/
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Looks good. I sometimes looks at sparc patches so I looked at this one.
+Reviewed-by: Sam Ravnborg <sam@ravnborg.org>

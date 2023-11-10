@@ -1,165 +1,147 @@
-Return-Path: <linux-mips+bounces-5-linux-mips=archiver.kernel.org@vger.kernel.org>
+Return-Path: <linux-mips+bounces-6-linux-mips=archiver.kernel.org@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 638E9C4167D
-	for <linux-mips@archiver.kernel.org>; Fri, 10 Nov 2023 17:48:12 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 94318C4332F
+	for <linux-mips@archiver.kernel.org>; Fri, 10 Nov 2023 17:49:07 +0000 (UTC)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CE0B01C20E3C
-	for <linux-mips@archiver.kernel.org>; Fri, 10 Nov 2023 17:48:11 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0E706B21F53
+	for <linux-mips@archiver.kernel.org>; Fri, 10 Nov 2023 17:49:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B03503B791;
-	Fri, 10 Nov 2023 17:46:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dkim=none
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B3A233C699;
+	Fri, 10 Nov 2023 17:46:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="gM/Z/sXC"
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 35E843B281
-	for <linux-mips@vger.kernel.org>; Fri, 10 Nov 2023 17:46:43 +0000 (UTC)
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5312834821
-	for <linux-mips@vger.kernel.org>; Fri, 10 Nov 2023 04:44:55 -0800 (PST)
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1r1Qqm-0008RY-G3; Fri, 10 Nov 2023 13:43:04 +0100
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1r1Qqd-0081VE-CM; Fri, 10 Nov 2023 13:42:55 +0100
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1r1Qqd-00Gimy-0Z; Fri, 10 Nov 2023 13:42:55 +0100
-Date: Fri, 10 Nov 2023 13:41:23 +0100
-From: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To: Arnd Bergmann <arnd@kernel.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org,
-	Masahiro Yamada <masahiroy@kernel.org>,
-	linux-kbuild@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-	Matt Turner <mattst88@gmail.com>, Vineet Gupta <vgupta@kernel.org>,
-	Russell King <linux@armlinux.org.uk>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>, Steven Rostedt <rostedt@goodmis.org>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Mark Rutland <mark.rutland@arm.com>, Guo Ren <guoren@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Ard Biesheuvel <ardb@kernel.org>,
-	Huacai Chen <chenhuacai@kernel.org>,
-	Greg Ungerer <gerg@linux-m68k.org>, Michal Simek <monstr@monstr.eu>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	Dinh Nguyen <dinguyen@kernel.org>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Nicholas Piggin <npiggin@gmail.com>,
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 208A83C06F
+	for <linux-mips@vger.kernel.org>; Fri, 10 Nov 2023 17:46:52 +0000 (UTC)
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81F8F7687;
+	Thu,  9 Nov 2023 22:32:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1699597955; x=1731133955;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=P+HrsfTgmIAQuHJtSIDJylsGuedtQJzyUXRzKrUPFZE=;
+  b=gM/Z/sXC1M6lin0iLAtVJHOIYq/3Om9u/JMwWFANqvTIAlwpi57WbU7u
+   ePvmUWwSqOU0QK7s3nKmnXF6AGutTGjjCUq/yTrAFTyHxH2zlkTKztCow
+   2wr64xNT5hWaOZRzIofaZOVNKkC0KlN4zDVGxD/D2Ab6i8tGyF95HswY3
+   EFyKfjOdqqMftIveIJdaPtxNnBorKnDLxZApyLcsueN+rJO0SEdzJ5wKz
+   RnaW+QlOVhm50F5G8fQWsuE68EnysvH6v5x7zObf9DO7vBmC/o/HZgJB7
+   wTEmxg5FsjrHIc+5WeCWEP39Wday0NjYERMseNO4sLrbsSoOcE6ME4OD+
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10889"; a="370336242"
+X-IronPort-AV: E=Sophos;i="6.03,291,1694761200"; 
+   d="scan'208";a="370336242"
+Received: from orviesa002.jf.intel.com ([10.64.159.142])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2023 20:23:49 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.03,291,1694761200"; 
+   d="scan'208";a="4745660"
+Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
+  by orviesa002.jf.intel.com with ESMTP; 09 Nov 2023 20:23:44 -0800
+Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1r1J3V-0009Q4-27;
+	Fri, 10 Nov 2023 04:23:41 +0000
+Date: Fri, 10 Nov 2023 12:23:33 +0800
+From: kernel test robot <lkp@intel.com>
+To: Daniel Walker <danielwa@cisco.com>, Will Deacon <will@kernel.org>,
 	Christophe Leroy <christophe.leroy@csgroup.eu>,
-	Geoff Levand <geoff@infradead.org>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Heiko Carstens <hca@linux.ibm.com>,
-	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-	"David S. Miller" <davem@davemloft.net>,
-	Andy Lutomirski <luto@kernel.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
-	Helge Deller <deller@gmx.de>,
-	Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Timur Tabi <timur@kernel.org>,
-	Kent Overstreet <kent.overstreet@linux.dev>,
-	David Woodhouse <dwmw2@infradead.org>,
-	"Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
-	Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
-	Kees Cook <keescook@chromium.org>,
-	Vincenzo Frascino <vincenzo.frascino@arm.com>,
-	Juri Lelli <juri.lelli@redhat.com>,
-	Vincent Guittot <vincent.guittot@linaro.org>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Nick Desaulniers <ndesaulniers@google.com>,
-	Nicolas Schier <nicolas@fjasle.eu>,
-	Al Viro <viro@zeniv.linux.org.uk>, linux-alpha@vger.kernel.org,
-	linux-snps-arc@lists.infradead.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-trace-kernel@vger.kernel.org, linux-csky@vger.kernel.org,
-	loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
-	linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-	linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
-	linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
-	netdev@vger.kernel.org, linux-parisc@vger.kernel.org,
-	linux-usb@vger.kernel.org, linux-fbdev@vger.kernel.org,
-	dri-devel@lists.freedesktop.org, linux-bcachefs@vger.kernel.org,
-	linux-mtd@lists.infradead.org
-Subject: Re: [PATCH 04/22] [RESEND] time: make sysfs_get_uname() function
- visible in header
-Message-ID: <20231110124123.5mado2cc5vnywqfx@pengutronix.de>
-References: <20231108125843.3806765-1-arnd@kernel.org>
- <20231108125843.3806765-5-arnd@kernel.org>
+	Rob Herring <robh@kernel.org>,
+	Daniel Gimpelevich <daniel@gimpelevich.san-francisco.ca.us>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Pratyush Brahma <quic_pbrahma@quicinc.com>,
+	Tomas Mudrunka <tomas.mudrunka@gmail.com>,
+	Sean Anderson <sean.anderson@seco.com>, x86@kernel.org,
+	linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Cc: oe-kbuild-all@lists.linux.dev,
+	Linux Memory Management List <linux-mm@kvack.org>,
+	xe-linux-external@cisco.com, Ard Biesheuvel <ardb@kernel.org>,
+	linux-efi@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 5/8] drivers: firmware: efi: libstub: enable generic
+ commandline
+Message-ID: <202311101224.evyh4zgY-lkp@intel.com>
+References: <20231110013817.2378507-6-danielwa@cisco.com>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="ljpauxr7qypfgjtq"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231108125843.3806765-5-arnd@kernel.org>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-mips@vger.kernel.org
+In-Reply-To: <20231110013817.2378507-6-danielwa@cisco.com>
+
+Hi Daniel,
+
+kernel test robot noticed the following build warnings:
+
+[auto build test WARNING on v6.6]
+[cannot apply to arm64/for-next/core efi/next tip/x86/core robh/for-next linus/master next-20231110]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Daniel-Walker/CMDLINE-add-generic-builtin-command-line/20231110-094423
+base:   v6.6
+patch link:    https://lore.kernel.org/r/20231110013817.2378507-6-danielwa%40cisco.com
+patch subject: [PATCH 5/8] drivers: firmware: efi: libstub: enable generic commandline
+config: loongarch-randconfig-002-20231110 (https://download.01.org/0day-ci/archive/20231110/202311101224.evyh4zgY-lkp@intel.com/config)
+compiler: loongarch64-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231110/202311101224.evyh4zgY-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202311101224.evyh4zgY-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+>> drivers/firmware/efi/libstub/efi-stub-helper.c:43: warning: expecting prototype for efi_handle_cmdline(). Prototype was for efi_handle_builtin_cmdline() instead
+   drivers/firmware/efi/libstub/efi-stub-helper.c:592: warning: Function parameter or member 'out' not described in 'efi_load_initrd'
 
 
---ljpauxr7qypfgjtq
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+vim +43 drivers/firmware/efi/libstub/efi-stub-helper.c
 
-Hello Arnd,
+    32	
+    33	/**
+    34	 * efi_handle_cmdline() - handle adding in built-in parts of the command line
+    35	 * @cmdline:	kernel command line
+    36	 *
+    37	 * Add in the generic parts of the commandline and start the parsing of the
+    38	 * command line.
+    39	 *
+    40	 * Return:	status code
+    41	 */
+    42	efi_status_t efi_handle_builtin_cmdline(char const *cmdline)
+  > 43	{
+    44		efi_status_t status = EFI_SUCCESS;
+    45	
+    46		if (sizeof(CMDLINE_STATIC_PREPEND) > 1)
+    47			status |= efi_parse_options(CMDLINE_STATIC_PREPEND);
+    48	
+    49		if (!IS_ENABLED(CONFIG_CMDLINE_OVERRIDE))
+    50			status |= efi_parse_options(cmdline);
+    51	
+    52		if (sizeof(CMDLINE_STATIC_APPEND) > 1)
+    53			status |= efi_parse_options(CMDLINE_STATIC_APPEND);
+    54	
+    55		if (status != EFI_SUCCESS)
+    56			efi_err("Failed to parse options\n");
+    57	
+    58		return status;
+    59	}
+    60	
 
-On Wed, Nov 08, 2023 at 01:58:25PM +0100, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
->=20
-> This function is defined globally in clocksource.c and used conditionally
-> in clockevent.c, which the declaration hidden when clockevent support
-
-s/which/with/ ?
-
-> is disabled. This causes a harmless warning in the definition:
->=20
-> kernel/time/clocksource.c:1324:9: warning: no previous prototype for 'sys=
-fs_get_uname' [-Wmissing-prototypes]
->  1324 | ssize_t sysfs_get_uname(const char *buf, char *dst, size_t cnt)
->=20
-> Move the declaration out of the #ifdef so it is always visible.
->=20
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-
-Other than that:
-
-Reviewed-by: Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de>
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---ljpauxr7qypfgjtq
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmVOJO4ACgkQj4D7WH0S
-/k65EAf/UjDsSsmivHFeg9uWSJLPICzRXZuL3swrSrbDypaI8PuJaX8767ZWsiYT
-oDeWDpXzpAvyvz7WUCuFkRJIytR6EpscoR2t39XsflnxAYmcgYmiBDesY/A6xtuZ
-k2ZldHp9NVszzJP3PiXQ8JOcEFA1LEc08SjHzEz4F6QAsno6WZD/do4yBIU+ikEg
-57Rbk4CJghGfXhgOAmwcWrN91qOFQwhPpKHHDgFfYSZ3zLo+f6H9hSUkzOuLGDhx
-zbK1UnRCuRi3iiJlIqS2LzaSySmRQ9tsbtjk9aQx7+GqdGprHajLMikxQ13xn8jh
-U+F4kOqRAwsIV6i5/GUFGEGtLnMsSQ==
-=9raj
------END PGP SIGNATURE-----
-
---ljpauxr7qypfgjtq--
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 

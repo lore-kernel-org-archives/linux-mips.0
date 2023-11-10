@@ -1,147 +1,605 @@
-Return-Path: <linux-mips+bounces-6-linux-mips=archiver.kernel.org@vger.kernel.org>
+Return-Path: <linux-mips+bounces-7-linux-mips=archiver.kernel.org@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.lore.kernel.org (Postfix) with ESMTPS id 94318C4332F
-	for <linux-mips@archiver.kernel.org>; Fri, 10 Nov 2023 17:49:07 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTPS id 89F8AC04A95
+	for <linux-mips@archiver.kernel.org>; Fri, 10 Nov 2023 17:50:44 +0000 (UTC)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0E706B21F53
-	for <linux-mips@archiver.kernel.org>; Fri, 10 Nov 2023 17:49:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4461B2819E4
+	for <linux-mips@archiver.kernel.org>; Fri, 10 Nov 2023 17:50:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B3A233C699;
-	Fri, 10 Nov 2023 17:46:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="gM/Z/sXC"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6833D3A291;
+	Fri, 10 Nov 2023 17:47:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dkim=none
 Received: from lindbergh.monkeyblade.net (lindbergh.monkeyblade.net [23.128.96.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 208A83C06F
-	for <linux-mips@vger.kernel.org>; Fri, 10 Nov 2023 17:46:52 +0000 (UTC)
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81F8F7687;
-	Thu,  9 Nov 2023 22:32:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699597955; x=1731133955;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=P+HrsfTgmIAQuHJtSIDJylsGuedtQJzyUXRzKrUPFZE=;
-  b=gM/Z/sXC1M6lin0iLAtVJHOIYq/3Om9u/JMwWFANqvTIAlwpi57WbU7u
-   ePvmUWwSqOU0QK7s3nKmnXF6AGutTGjjCUq/yTrAFTyHxH2zlkTKztCow
-   2wr64xNT5hWaOZRzIofaZOVNKkC0KlN4zDVGxD/D2Ab6i8tGyF95HswY3
-   EFyKfjOdqqMftIveIJdaPtxNnBorKnDLxZApyLcsueN+rJO0SEdzJ5wKz
-   RnaW+QlOVhm50F5G8fQWsuE68EnysvH6v5x7zObf9DO7vBmC/o/HZgJB7
-   wTEmxg5FsjrHIc+5WeCWEP39Wday0NjYERMseNO4sLrbsSoOcE6ME4OD+
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10889"; a="370336242"
-X-IronPort-AV: E=Sophos;i="6.03,291,1694761200"; 
-   d="scan'208";a="370336242"
-Received: from orviesa002.jf.intel.com ([10.64.159.142])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Nov 2023 20:23:49 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.03,291,1694761200"; 
-   d="scan'208";a="4745660"
-Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
-  by orviesa002.jf.intel.com with ESMTP; 09 Nov 2023 20:23:44 -0800
-Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1r1J3V-0009Q4-27;
-	Fri, 10 Nov 2023 04:23:41 +0000
-Date: Fri, 10 Nov 2023 12:23:33 +0800
-From: kernel test robot <lkp@intel.com>
-To: Daniel Walker <danielwa@cisco.com>, Will Deacon <will@kernel.org>,
-	Christophe Leroy <christophe.leroy@csgroup.eu>,
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 98B1B3A269
+	for <linux-mips@vger.kernel.org>; Fri, 10 Nov 2023 17:47:07 +0000 (UTC)
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D26CA1BFF
+	for <linux-mips@vger.kernel.org>; Fri, 10 Nov 2023 07:31:34 -0800 (PST)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1r1TT1-00066X-WF; Fri, 10 Nov 2023 16:30:44 +0100
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1r1TSy-0083Ip-Hq; Fri, 10 Nov 2023 16:30:40 +0100
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1r1TSy-00Gnuv-6r; Fri, 10 Nov 2023 16:30:40 +0100
+From: =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Jiri Slaby <jirislaby@kernel.org>
+Cc: Joel Stanley <joel@jms.id.au>,
+	Andrew Jeffery <andrew@codeconstruct.com.au>,
+	Florian Fainelli <florian.fainelli@broadcom.com>,
+	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>,
+	Ray Jui <rjui@broadcom.com>,
+	Scott Branden <sbranden@broadcom.com>,
+	Al Cooper <alcooperx@gmail.com>,
+	=?utf-8?q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+	Paul Cercueil <paul@crapouillou.net>,
+	Vladimir Zapolskiy <vz@mleia.com>,
+	Matthias Brugger <matthias.bgg@gmail.com>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+	Thierry Reding <thierry.reding@gmail.com>,
+	Jonathan Hunter <jonathanh@nvidia.com>,
+	Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	John Ogness <john.ogness@linutronix.de>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Tony Lindgren <tony@atomide.com>,
+	Petr Mladek <pmladek@suse.com>,
+	Biju Das <biju.das.jz@bp.renesas.com>,
+	Johan Hovold <johan@kernel.org>,
+	Chen-Yu Tsai <wenst@chromium.org>,
+	Andi Shyti <andi.shyti@linux.intel.com>,
+	Thomas Richard <thomas.richard@bootlin.com>,
 	Rob Herring <robh@kernel.org>,
-	Daniel Gimpelevich <daniel@gimpelevich.san-francisco.ca.us>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Pratyush Brahma <quic_pbrahma@quicinc.com>,
-	Tomas Mudrunka <tomas.mudrunka@gmail.com>,
-	Sean Anderson <sean.anderson@seco.com>, x86@kernel.org,
-	linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Cc: oe-kbuild-all@lists.linux.dev,
-	Linux Memory Management List <linux-mm@kvack.org>,
-	xe-linux-external@cisco.com, Ard Biesheuvel <ardb@kernel.org>,
-	linux-efi@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 5/8] drivers: firmware: efi: libstub: enable generic
- commandline
-Message-ID: <202311101224.evyh4zgY-lkp@intel.com>
-References: <20231110013817.2378507-6-danielwa@cisco.com>
+	Geert Uytterhoeven <geert@linux-m68k.org>,
+	Arnd Bergmann <arnd@arndb.de>,
+	=?utf-8?q?Duje_Mihanovi=C4=87?= <duje.mihanovic@skole.hr>,
+	"Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+	Jacob Keller <jacob.e.keller@intel.com>,
+	Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+	kernel@pengutronix.de,
+	linux-serial@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-aspeed@lists.ozlabs.org,
+	linux-rpi-kernel@lists.infradead.org,
+	linux-mips@vger.kernel.org,
+	linux-mediatek@lists.infradead.org,
+	linux-tegra@vger.kernel.org
+Subject: [PATCH 03/52] serial: 8250: Convert to platform remove callback returning void
+Date: Fri, 10 Nov 2023 16:29:31 +0100
+Message-ID: <20231110152927.70601-4-u.kleine-koenig@pengutronix.de>
+X-Mailer: git-send-email 2.42.0.586.gbc5204569f7d.dirty
+In-Reply-To: <20231110152927.70601-1-u.kleine-koenig@pengutronix.de>
+References: <20231110152927.70601-1-u.kleine-koenig@pengutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231110013817.2378507-6-danielwa@cisco.com>
+Content-Type: text/plain; charset=UTF-8
+X-Developer-Signature: v=1; a=openpgp-sha256; l=17844; i=u.kleine-koenig@pengutronix.de; h=from:subject; bh=SBPFcKWa6NB/v/5MNIwJgX3pYO+Ck7IZD+w6LhM7A7A=; b=owEBbQGS/pANAwAKAY+A+1h9Ev5OAcsmYgBlTkxbmWyzh3UImIKd3qRLPqxwKSuSyHHtCPBeN EIGT55g+saJATMEAAEKAB0WIQQ/gaxpOnoeWYmt/tOPgPtYfRL+TgUCZU5MWwAKCRCPgPtYfRL+ TtGmCACmOvIoBxQVB+3Uhb3EeMk/Iq+XIcbCzKxG8psKsMcks/lhsquBdNP42CTlD+Y2NyB0uxI 2DsR59ZA5kSck2DemqiGqmtW0Oj4O7iq9D7Rwid9MK2EGGKaNPJFxj9Herc0jrV35onWeiQaYyt UrtcqhTOxyu/EPXCL3bgj+p8QtbvfcZm/p6OscPgC2T8oyoOHC2hsQLvY8k5GmZPQQW4ve90ivb 4XC+JLDxahgWipWD4KqAwyAygQ0GmpiLVNk+UDREzO828rw5DMwzk7c+pQMH9zvDSf4D3LB6tnw epL3X9KMWFqvJzeaOpjJcmMW6b1xpcv0S6Hdkq0xr9JIUvHR
+X-Developer-Key: i=u.kleine-koenig@pengutronix.de; a=openpgp; fpr=0D2511F322BFAB1C1580266BE2DCDD9132669BD6
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-mips@vger.kernel.org
 
-Hi Daniel,
+The .remove() callback for a platform driver returns an int which makes
+many driver authors wrongly assume it's possible to do error handling by
+returning an error code. However the value returned is ignored (apart
+from emitting a warning) and this typically results in resource leaks.
 
-kernel test robot noticed the following build warnings:
+To improve here there is a quest to make the remove callback return
+void. In the first step of this quest all drivers are converted to
+.remove_new(), which already returns void. Eventually after all drivers
+are converted, .remove_new() will be renamed to .remove().
 
-[auto build test WARNING on v6.6]
-[cannot apply to arm64/for-next/core efi/next tip/x86/core robh/for-next linus/master next-20231110]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+Trivially convert this driver from always returning zero in the remove
+callback to the void returning variant.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Daniel-Walker/CMDLINE-add-generic-builtin-command-line/20231110-094423
-base:   v6.6
-patch link:    https://lore.kernel.org/r/20231110013817.2378507-6-danielwa%40cisco.com
-patch subject: [PATCH 5/8] drivers: firmware: efi: libstub: enable generic commandline
-config: loongarch-randconfig-002-20231110 (https://download.01.org/0day-ci/archive/20231110/202311101224.evyh4zgY-lkp@intel.com/config)
-compiler: loongarch64-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231110/202311101224.evyh4zgY-lkp@intel.com/reproduce)
+Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+---
+ drivers/tty/serial/8250/8250_aspeed_vuart.c | 6 ++----
+ drivers/tty/serial/8250/8250_bcm2835aux.c   | 6 ++----
+ drivers/tty/serial/8250/8250_bcm7271.c      | 5 ++---
+ drivers/tty/serial/8250/8250_core.c         | 5 ++---
+ drivers/tty/serial/8250/8250_dw.c           | 6 ++----
+ drivers/tty/serial/8250/8250_em.c           | 5 ++---
+ drivers/tty/serial/8250/8250_fsl.c          | 5 ++---
+ drivers/tty/serial/8250/8250_ingenic.c      | 5 ++---
+ drivers/tty/serial/8250/8250_ioc3.c         | 5 ++---
+ drivers/tty/serial/8250/8250_lpc18xx.c      | 6 ++----
+ drivers/tty/serial/8250/8250_mtk.c          | 6 ++----
+ drivers/tty/serial/8250/8250_of.c           | 5 ++---
+ drivers/tty/serial/8250/8250_omap.c         | 5 ++---
+ drivers/tty/serial/8250/8250_pxa.c          | 6 ++----
+ drivers/tty/serial/8250/8250_tegra.c        | 6 ++----
+ drivers/tty/serial/8250/8250_uniphier.c     | 6 ++----
+ 16 files changed, 32 insertions(+), 56 deletions(-)
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202311101224.evyh4zgY-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
->> drivers/firmware/efi/libstub/efi-stub-helper.c:43: warning: expecting prototype for efi_handle_cmdline(). Prototype was for efi_handle_builtin_cmdline() instead
-   drivers/firmware/efi/libstub/efi-stub-helper.c:592: warning: Function parameter or member 'out' not described in 'efi_load_initrd'
-
-
-vim +43 drivers/firmware/efi/libstub/efi-stub-helper.c
-
-    32	
-    33	/**
-    34	 * efi_handle_cmdline() - handle adding in built-in parts of the command line
-    35	 * @cmdline:	kernel command line
-    36	 *
-    37	 * Add in the generic parts of the commandline and start the parsing of the
-    38	 * command line.
-    39	 *
-    40	 * Return:	status code
-    41	 */
-    42	efi_status_t efi_handle_builtin_cmdline(char const *cmdline)
-  > 43	{
-    44		efi_status_t status = EFI_SUCCESS;
-    45	
-    46		if (sizeof(CMDLINE_STATIC_PREPEND) > 1)
-    47			status |= efi_parse_options(CMDLINE_STATIC_PREPEND);
-    48	
-    49		if (!IS_ENABLED(CONFIG_CMDLINE_OVERRIDE))
-    50			status |= efi_parse_options(cmdline);
-    51	
-    52		if (sizeof(CMDLINE_STATIC_APPEND) > 1)
-    53			status |= efi_parse_options(CMDLINE_STATIC_APPEND);
-    54	
-    55		if (status != EFI_SUCCESS)
-    56			efi_err("Failed to parse options\n");
-    57	
-    58		return status;
-    59	}
-    60	
-
+diff --git a/drivers/tty/serial/8250/8250_aspeed_vuart.c b/drivers/tty/serial/8250/8250_aspeed_vuart.c
+index d7482ae33a1c..8c2aaf7af7b7 100644
+--- a/drivers/tty/serial/8250/8250_aspeed_vuart.c
++++ b/drivers/tty/serial/8250/8250_aspeed_vuart.c
+@@ -566,7 +566,7 @@ static int aspeed_vuart_probe(struct platform_device *pdev)
+ 	return rc;
+ }
+ 
+-static int aspeed_vuart_remove(struct platform_device *pdev)
++static void aspeed_vuart_remove(struct platform_device *pdev)
+ {
+ 	struct aspeed_vuart *vuart = platform_get_drvdata(pdev);
+ 
+@@ -574,8 +574,6 @@ static int aspeed_vuart_remove(struct platform_device *pdev)
+ 	aspeed_vuart_set_enabled(vuart, false);
+ 	serial8250_unregister_port(vuart->line);
+ 	sysfs_remove_group(&vuart->dev->kobj, &aspeed_vuart_attr_group);
+-
+-	return 0;
+ }
+ 
+ static const struct of_device_id aspeed_vuart_table[] = {
+@@ -590,7 +588,7 @@ static struct platform_driver aspeed_vuart_driver = {
+ 		.of_match_table = aspeed_vuart_table,
+ 	},
+ 	.probe = aspeed_vuart_probe,
+-	.remove = aspeed_vuart_remove,
++	.remove_new = aspeed_vuart_remove,
+ };
+ 
+ module_platform_driver(aspeed_vuart_driver);
+diff --git a/drivers/tty/serial/8250/8250_bcm2835aux.c b/drivers/tty/serial/8250/8250_bcm2835aux.c
+index 15a2387a5b25..b5760f914a8c 100644
+--- a/drivers/tty/serial/8250/8250_bcm2835aux.c
++++ b/drivers/tty/serial/8250/8250_bcm2835aux.c
+@@ -195,14 +195,12 @@ static int bcm2835aux_serial_probe(struct platform_device *pdev)
+ 	return ret;
+ }
+ 
+-static int bcm2835aux_serial_remove(struct platform_device *pdev)
++static void bcm2835aux_serial_remove(struct platform_device *pdev)
+ {
+ 	struct bcm2835aux_data *data = platform_get_drvdata(pdev);
+ 
+ 	serial8250_unregister_port(data->line);
+ 	clk_disable_unprepare(data->clk);
+-
+-	return 0;
+ }
+ 
+ static const struct bcm2835_aux_serial_driver_data bcm2835_acpi_data = {
+@@ -228,7 +226,7 @@ static struct platform_driver bcm2835aux_serial_driver = {
+ 		.acpi_match_table = bcm2835aux_serial_acpi_match,
+ 	},
+ 	.probe  = bcm2835aux_serial_probe,
+-	.remove = bcm2835aux_serial_remove,
++	.remove_new = bcm2835aux_serial_remove,
+ };
+ module_platform_driver(bcm2835aux_serial_driver);
+ 
+diff --git a/drivers/tty/serial/8250/8250_bcm7271.c b/drivers/tty/serial/8250/8250_bcm7271.c
+index 55dea2539c47..504c4c020857 100644
+--- a/drivers/tty/serial/8250/8250_bcm7271.c
++++ b/drivers/tty/serial/8250/8250_bcm7271.c
+@@ -1121,7 +1121,7 @@ static int brcmuart_probe(struct platform_device *pdev)
+ 	return ret;
+ }
+ 
+-static int brcmuart_remove(struct platform_device *pdev)
++static void brcmuart_remove(struct platform_device *pdev)
+ {
+ 	struct brcmuart_priv *priv = platform_get_drvdata(pdev);
+ 
+@@ -1131,7 +1131,6 @@ static int brcmuart_remove(struct platform_device *pdev)
+ 	brcmuart_free_bufs(&pdev->dev, priv);
+ 	if (priv->dma_enabled)
+ 		brcmuart_arbitration(priv, 0);
+-	return 0;
+ }
+ 
+ static int __maybe_unused brcmuart_suspend(struct device *dev)
+@@ -1207,7 +1206,7 @@ static struct platform_driver brcmuart_platform_driver = {
+ 		.of_match_table = brcmuart_dt_ids,
+ 	},
+ 	.probe		= brcmuart_probe,
+-	.remove		= brcmuart_remove,
++	.remove_new	= brcmuart_remove,
+ };
+ 
+ static int __init brcmuart_init(void)
+diff --git a/drivers/tty/serial/8250/8250_core.c b/drivers/tty/serial/8250/8250_core.c
+index 912733151858..b62ad9006780 100644
+--- a/drivers/tty/serial/8250/8250_core.c
++++ b/drivers/tty/serial/8250/8250_core.c
+@@ -883,7 +883,7 @@ static int serial8250_probe(struct platform_device *dev)
+ /*
+  * Remove serial ports registered against a platform device.
+  */
+-static int serial8250_remove(struct platform_device *dev)
++static void serial8250_remove(struct platform_device *dev)
+ {
+ 	int i;
+ 
+@@ -893,7 +893,6 @@ static int serial8250_remove(struct platform_device *dev)
+ 		if (up->port.dev == &dev->dev)
+ 			serial8250_unregister_port(i);
+ 	}
+-	return 0;
+ }
+ 
+ static int serial8250_suspend(struct platform_device *dev, pm_message_t state)
+@@ -926,7 +925,7 @@ static int serial8250_resume(struct platform_device *dev)
+ 
+ static struct platform_driver serial8250_isa_driver = {
+ 	.probe		= serial8250_probe,
+-	.remove		= serial8250_remove,
++	.remove_new	= serial8250_remove,
+ 	.suspend	= serial8250_suspend,
+ 	.resume		= serial8250_resume,
+ 	.driver		= {
+diff --git a/drivers/tty/serial/8250/8250_dw.c b/drivers/tty/serial/8250/8250_dw.c
+index b94f567647cb..63b14ce9c009 100644
+--- a/drivers/tty/serial/8250/8250_dw.c
++++ b/drivers/tty/serial/8250/8250_dw.c
+@@ -663,7 +663,7 @@ static int dw8250_probe(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
+-static int dw8250_remove(struct platform_device *pdev)
++static void dw8250_remove(struct platform_device *pdev)
+ {
+ 	struct dw8250_data *data = platform_get_drvdata(pdev);
+ 	struct device *dev = &pdev->dev;
+@@ -680,8 +680,6 @@ static int dw8250_remove(struct platform_device *pdev)
+ 
+ 	pm_runtime_disable(dev);
+ 	pm_runtime_put_noidle(dev);
+-
+-	return 0;
+ }
+ 
+ static int dw8250_suspend(struct device *dev)
+@@ -789,7 +787,7 @@ static struct platform_driver dw8250_platform_driver = {
+ 		.acpi_match_table = dw8250_acpi_match,
+ 	},
+ 	.probe			= dw8250_probe,
+-	.remove			= dw8250_remove,
++	.remove_new		= dw8250_remove,
+ };
+ 
+ module_platform_driver(dw8250_platform_driver);
+diff --git a/drivers/tty/serial/8250/8250_em.c b/drivers/tty/serial/8250/8250_em.c
+index ef5019e944ea..a754755100ff 100644
+--- a/drivers/tty/serial/8250/8250_em.c
++++ b/drivers/tty/serial/8250/8250_em.c
+@@ -200,12 +200,11 @@ static int serial8250_em_probe(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
+-static int serial8250_em_remove(struct platform_device *pdev)
++static void serial8250_em_remove(struct platform_device *pdev)
+ {
+ 	struct serial8250_em_priv *priv = platform_get_drvdata(pdev);
+ 
+ 	serial8250_unregister_port(priv->line);
+-	return 0;
+ }
+ 
+ static const struct of_device_id serial8250_em_dt_ids[] = {
+@@ -220,7 +219,7 @@ static struct platform_driver serial8250_em_platform_driver = {
+ 		.of_match_table = serial8250_em_dt_ids,
+ 	},
+ 	.probe			= serial8250_em_probe,
+-	.remove			= serial8250_em_remove,
++	.remove_new		= serial8250_em_remove,
+ };
+ 
+ module_platform_driver(serial8250_em_platform_driver);
+diff --git a/drivers/tty/serial/8250/8250_fsl.c b/drivers/tty/serial/8250/8250_fsl.c
+index f522eb5026c9..5cf675eadefe 100644
+--- a/drivers/tty/serial/8250/8250_fsl.c
++++ b/drivers/tty/serial/8250/8250_fsl.c
+@@ -159,12 +159,11 @@ static int fsl8250_acpi_probe(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
+-static int fsl8250_acpi_remove(struct platform_device *pdev)
++static void fsl8250_acpi_remove(struct platform_device *pdev)
+ {
+ 	struct fsl8250_data *data = platform_get_drvdata(pdev);
+ 
+ 	serial8250_unregister_port(data->line);
+-	return 0;
+ }
+ 
+ static const struct acpi_device_id fsl_8250_acpi_id[] = {
+@@ -179,7 +178,7 @@ static struct platform_driver fsl8250_platform_driver = {
+ 		.acpi_match_table	= ACPI_PTR(fsl_8250_acpi_id),
+ 	},
+ 	.probe			= fsl8250_acpi_probe,
+-	.remove			= fsl8250_acpi_remove,
++	.remove_new		= fsl8250_acpi_remove,
+ };
+ 
+ module_platform_driver(fsl8250_platform_driver);
+diff --git a/drivers/tty/serial/8250/8250_ingenic.c b/drivers/tty/serial/8250/8250_ingenic.c
+index 4c4c4da73ad0..a12f737924c0 100644
+--- a/drivers/tty/serial/8250/8250_ingenic.c
++++ b/drivers/tty/serial/8250/8250_ingenic.c
+@@ -320,14 +320,13 @@ static int ingenic_uart_probe(struct platform_device *pdev)
+ 	return err;
+ }
+ 
+-static int ingenic_uart_remove(struct platform_device *pdev)
++static void ingenic_uart_remove(struct platform_device *pdev)
+ {
+ 	struct ingenic_uart_data *data = platform_get_drvdata(pdev);
+ 
+ 	serial8250_unregister_port(data->line);
+ 	clk_disable_unprepare(data->clk_module);
+ 	clk_disable_unprepare(data->clk_baud);
+-	return 0;
+ }
+ 
+ static const struct ingenic_uart_config jz4740_uart_config = {
+@@ -368,7 +367,7 @@ static struct platform_driver ingenic_uart_platform_driver = {
+ 		.of_match_table	= of_match,
+ 	},
+ 	.probe			= ingenic_uart_probe,
+-	.remove			= ingenic_uart_remove,
++	.remove_new		= ingenic_uart_remove,
+ };
+ 
+ module_platform_driver(ingenic_uart_platform_driver);
+diff --git a/drivers/tty/serial/8250/8250_ioc3.c b/drivers/tty/serial/8250/8250_ioc3.c
+index d5a39e105a76..50c77c3dacf2 100644
+--- a/drivers/tty/serial/8250/8250_ioc3.c
++++ b/drivers/tty/serial/8250/8250_ioc3.c
+@@ -75,17 +75,16 @@ static int serial8250_ioc3_probe(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
+-static int serial8250_ioc3_remove(struct platform_device *pdev)
++static void serial8250_ioc3_remove(struct platform_device *pdev)
+ {
+ 	struct ioc3_8250_data *data = platform_get_drvdata(pdev);
+ 
+ 	serial8250_unregister_port(data->line);
+-	return 0;
+ }
+ 
+ static struct platform_driver serial8250_ioc3_driver = {
+ 	.probe  = serial8250_ioc3_probe,
+-	.remove = serial8250_ioc3_remove,
++	.remove_new = serial8250_ioc3_remove,
+ 	.driver = {
+ 		.name = "ioc3-serial8250",
+ 	}
+diff --git a/drivers/tty/serial/8250/8250_lpc18xx.c b/drivers/tty/serial/8250/8250_lpc18xx.c
+index 6dc85aaba5d0..8d728a6a5991 100644
+--- a/drivers/tty/serial/8250/8250_lpc18xx.c
++++ b/drivers/tty/serial/8250/8250_lpc18xx.c
+@@ -182,15 +182,13 @@ static int lpc18xx_serial_probe(struct platform_device *pdev)
+ 	return ret;
+ }
+ 
+-static int lpc18xx_serial_remove(struct platform_device *pdev)
++static void lpc18xx_serial_remove(struct platform_device *pdev)
+ {
+ 	struct lpc18xx_uart_data *data = platform_get_drvdata(pdev);
+ 
+ 	serial8250_unregister_port(data->line);
+ 	clk_disable_unprepare(data->clk_uart);
+ 	clk_disable_unprepare(data->clk_reg);
+-
+-	return 0;
+ }
+ 
+ static const struct of_device_id lpc18xx_serial_match[] = {
+@@ -201,7 +199,7 @@ MODULE_DEVICE_TABLE(of, lpc18xx_serial_match);
+ 
+ static struct platform_driver lpc18xx_serial_driver = {
+ 	.probe  = lpc18xx_serial_probe,
+-	.remove = lpc18xx_serial_remove,
++	.remove_new = lpc18xx_serial_remove,
+ 	.driver = {
+ 		.name = "lpc18xx-uart",
+ 		.of_match_table = lpc18xx_serial_match,
+diff --git a/drivers/tty/serial/8250/8250_mtk.c b/drivers/tty/serial/8250/8250_mtk.c
+index 23457daae8a1..9ff6bbe9c086 100644
+--- a/drivers/tty/serial/8250/8250_mtk.c
++++ b/drivers/tty/serial/8250/8250_mtk.c
+@@ -581,7 +581,7 @@ static int mtk8250_probe(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
+-static int mtk8250_remove(struct platform_device *pdev)
++static void mtk8250_remove(struct platform_device *pdev)
+ {
+ 	struct mtk8250_data *data = platform_get_drvdata(pdev);
+ 
+@@ -591,8 +591,6 @@ static int mtk8250_remove(struct platform_device *pdev)
+ 
+ 	pm_runtime_disable(&pdev->dev);
+ 	pm_runtime_put_noidle(&pdev->dev);
+-
+-	return 0;
+ }
+ 
+ static int __maybe_unused mtk8250_suspend(struct device *dev)
+@@ -652,7 +650,7 @@ static struct platform_driver mtk8250_platform_driver = {
+ 		.of_match_table	= mtk8250_of_match,
+ 	},
+ 	.probe			= mtk8250_probe,
+-	.remove			= mtk8250_remove,
++	.remove_new		= mtk8250_remove,
+ };
+ module_platform_driver(mtk8250_platform_driver);
+ 
+diff --git a/drivers/tty/serial/8250/8250_of.c b/drivers/tty/serial/8250/8250_of.c
+index ef3e745bd09c..34f17a9785e7 100644
+--- a/drivers/tty/serial/8250/8250_of.c
++++ b/drivers/tty/serial/8250/8250_of.c
+@@ -251,7 +251,7 @@ static int of_platform_serial_probe(struct platform_device *ofdev)
+ /*
+  * Release a line
+  */
+-static int of_platform_serial_remove(struct platform_device *ofdev)
++static void of_platform_serial_remove(struct platform_device *ofdev)
+ {
+ 	struct of_serial_info *info = platform_get_drvdata(ofdev);
+ 
+@@ -261,7 +261,6 @@ static int of_platform_serial_remove(struct platform_device *ofdev)
+ 	pm_runtime_put_sync(&ofdev->dev);
+ 	pm_runtime_disable(&ofdev->dev);
+ 	kfree(info);
+-	return 0;
+ }
+ 
+ #ifdef CONFIG_PM_SLEEP
+@@ -337,7 +336,7 @@ static struct platform_driver of_platform_serial_driver = {
+ 		.pm = &of_serial_pm_ops,
+ 	},
+ 	.probe = of_platform_serial_probe,
+-	.remove = of_platform_serial_remove,
++	.remove_new = of_platform_serial_remove,
+ };
+ 
+ module_platform_driver(of_platform_serial_driver);
+diff --git a/drivers/tty/serial/8250/8250_omap.c b/drivers/tty/serial/8250/8250_omap.c
+index 661a83dbc11b..5a89a8cd7f71 100644
+--- a/drivers/tty/serial/8250/8250_omap.c
++++ b/drivers/tty/serial/8250/8250_omap.c
+@@ -1584,7 +1584,7 @@ static int omap8250_probe(struct platform_device *pdev)
+ 	return ret;
+ }
+ 
+-static int omap8250_remove(struct platform_device *pdev)
++static void omap8250_remove(struct platform_device *pdev)
+ {
+ 	struct omap8250_priv *priv = platform_get_drvdata(pdev);
+ 	struct uart_8250_port *up;
+@@ -1604,7 +1604,6 @@ static int omap8250_remove(struct platform_device *pdev)
+ 	pm_runtime_disable(&pdev->dev);
+ 	cpu_latency_qos_remove_request(&priv->pm_qos_request);
+ 	device_init_wakeup(&pdev->dev, false);
+-	return 0;
+ }
+ 
+ static int omap8250_prepare(struct device *dev)
+@@ -1863,7 +1862,7 @@ static struct platform_driver omap8250_platform_driver = {
+ 		.of_match_table = omap8250_dt_ids,
+ 	},
+ 	.probe			= omap8250_probe,
+-	.remove			= omap8250_remove,
++	.remove_new		= omap8250_remove,
+ };
+ module_platform_driver(omap8250_platform_driver);
+ 
+diff --git a/drivers/tty/serial/8250/8250_pxa.c b/drivers/tty/serial/8250/8250_pxa.c
+index a5b3ea27fc90..77686da42ce8 100644
+--- a/drivers/tty/serial/8250/8250_pxa.c
++++ b/drivers/tty/serial/8250/8250_pxa.c
+@@ -146,20 +146,18 @@ static int serial_pxa_probe(struct platform_device *pdev)
+ 	return ret;
+ }
+ 
+-static int serial_pxa_remove(struct platform_device *pdev)
++static void serial_pxa_remove(struct platform_device *pdev)
+ {
+ 	struct pxa8250_data *data = platform_get_drvdata(pdev);
+ 
+ 	serial8250_unregister_port(data->line);
+ 
+ 	clk_unprepare(data->clk);
+-
+-	return 0;
+ }
+ 
+ static struct platform_driver serial_pxa_driver = {
+ 	.probe          = serial_pxa_probe,
+-	.remove         = serial_pxa_remove,
++	.remove_new     = serial_pxa_remove,
+ 
+ 	.driver		= {
+ 		.name	= "pxa2xx-uart",
+diff --git a/drivers/tty/serial/8250/8250_tegra.c b/drivers/tty/serial/8250/8250_tegra.c
+index 89956bbf34d9..ba352262df75 100644
+--- a/drivers/tty/serial/8250/8250_tegra.c
++++ b/drivers/tty/serial/8250/8250_tegra.c
+@@ -128,15 +128,13 @@ static int tegra_uart_probe(struct platform_device *pdev)
+ 	return ret;
+ }
+ 
+-static int tegra_uart_remove(struct platform_device *pdev)
++static void tegra_uart_remove(struct platform_device *pdev)
+ {
+ 	struct tegra_uart *uart = platform_get_drvdata(pdev);
+ 
+ 	serial8250_unregister_port(uart->line);
+ 	reset_control_assert(uart->rst);
+ 	clk_disable_unprepare(uart->clk);
+-
+-	return 0;
+ }
+ 
+ #ifdef CONFIG_PM_SLEEP
+@@ -192,7 +190,7 @@ static struct platform_driver tegra_uart_driver = {
+ 		.acpi_match_table = ACPI_PTR(tegra_uart_acpi_match),
+ 	},
+ 	.probe = tegra_uart_probe,
+-	.remove = tegra_uart_remove,
++	.remove_new = tegra_uart_remove,
+ };
+ 
+ module_platform_driver(tegra_uart_driver);
+diff --git a/drivers/tty/serial/8250/8250_uniphier.c b/drivers/tty/serial/8250/8250_uniphier.c
+index a405155264b1..6399a38ecce2 100644
+--- a/drivers/tty/serial/8250/8250_uniphier.c
++++ b/drivers/tty/serial/8250/8250_uniphier.c
+@@ -241,14 +241,12 @@ static int uniphier_uart_probe(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
+-static int uniphier_uart_remove(struct platform_device *pdev)
++static void uniphier_uart_remove(struct platform_device *pdev)
+ {
+ 	struct uniphier8250_priv *priv = platform_get_drvdata(pdev);
+ 
+ 	serial8250_unregister_port(priv->line);
+ 	clk_disable_unprepare(priv->clk);
+-
+-	return 0;
+ }
+ 
+ static int __maybe_unused uniphier_uart_suspend(struct device *dev)
+@@ -293,7 +291,7 @@ MODULE_DEVICE_TABLE(of, uniphier_uart_match);
+ 
+ static struct platform_driver uniphier_uart_platform_driver = {
+ 	.probe		= uniphier_uart_probe,
+-	.remove		= uniphier_uart_remove,
++	.remove_new	= uniphier_uart_remove,
+ 	.driver = {
+ 		.name	= "uniphier-uart",
+ 		.of_match_table = uniphier_uart_match,
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.42.0
+
 

@@ -1,54 +1,89 @@
-Authentication-Results: smtp.subspace.kernel.org; dkim=none
-X-Greylist: delayed 4253 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 20 Nov 2023 09:15:10 PST
-Received: from GHMG01.great-harvest.local (mail.great-harvest.com.hk [202.82.82.2])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 003F3BA
-	for <linux-mips@vger.kernel.org>; Mon, 20 Nov 2023 09:15:10 -0800 (PST)
-X-AuditID: c0a80a26-927612400000462b-32-655b7f41a041
-Received: from [45.154.98.249] (Unknown_Domain [45.154.98.249])
-	(using TLS with cipher DHE-RSA-AES256-SHA (256/256 bits))
-	(Client did not present a certificate)
-	by GHMG01.great-harvest.local (Symantec Messaging Gateway) with SMTP id 66.F0.17963.14F7B556; Mon, 20 Nov 2023 23:46:10 +0800 (HKT)
-Content-Type: text/plain; charset="iso-8859-1"
-Message-ID: <66.F0.17963.14F7B556@GHMG01.great-harvest.local>
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="signature verification failed" (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="OWwEBM9P"
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F37B1BE;
+	Mon, 20 Nov 2023 09:22:31 -0800 (PST)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 3339640E0031;
+	Mon, 20 Nov 2023 17:22:29 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id Giv1lRArfQMf; Mon, 20 Nov 2023 17:22:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+	t=1700500946; bh=T5VVznuzCd2a8UX5KPiD1fC5qSKUkPIUpjwSGVtPbk4=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=OWwEBM9PkqTrnSvy4yDjYJ0ZhJryM/rAtmW/2s6oM+uOMLP0V9mr1ejXHu0BEE53e
+	 suV84gojqesjvwuhW3/YAOjJ53YgayY1R8mlJZC1Uw34To88V0MHACS8KPGph30ooq
+	 eA//+1ShMxFZ7UdW3O+RxL59JN+yv5ZKCJsavenToPhh9ZWGortQGauczkkBwUevb/
+	 YNoKrf59reRxf+zjxpMIzTjAbdFEC/l7SGA8Urv7knXFnfoa+8TO+z7WO/HvAW+BMg
+	 MtW52+j6bh37JbYXT140+t4iZL0ZYN9pOeqK7CxFotFGUdt+M9IdWM3m3IYkAQp7/d
+	 eDKZBwSqtlOwk73mKp+PdthwPavh4ySD60MXTP/3VgPdq5iUCh0BUhIu3BgiefrED7
+	 G0tsdv06DhMl1z/ntDDxJubu6smwekD53rIJQpZ1q8eaa4+IYLTQ6fUAGIz9nMGahN
+	 Lscr1Nn0M0uV1rdbKoUxb2So+egniBwR42zxfHYPq0WEzGawD7zqygG1oECSILT6OP
+	 JHhOLTRu8N+oM9f3FCR1Wbc6z7VzUPSLVsyRQijLtVK0qC3ribaI3rufTRfHVObTiJ
+	 pJJND1HyEYqIrI2aK/tFe9D3cFDkIMP/dBZpa4Nb/YPDJ2NvsDW8aKkBTjEVk4/kmU
+	 DIUtoZbg/SxzMYPiFqR1xsnc=
+Received: from zn.tnic (pd95304da.dip0.t-ipconnect.de [217.83.4.218])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id BB74940E01A5;
+	Mon, 20 Nov 2023 17:21:46 +0000 (UTC)
+Date: Mon, 20 Nov 2023 18:21:45 +0100
+From: Borislav Petkov <bp@alien8.de>
+To: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+Cc: Tony Luck <tony.luck@intel.com>, Tomer Maimon <tmaimon77@gmail.com>,
+	linux-aspeed@lists.ozlabs.org, Tali Perry <tali.perry1@gmail.com>,
+	Shubhrajyoti Datta <shubhrajyoti.datta@amd.com>,
+	Sai Krishna Potthuri <sai.krishna.potthuri@amd.com>,
+	Khuong Dinh <khuong@os.amperecomputing.com>,
+	Benjamin Fair <benjaminfair@google.com>,
+	Dinh Nguyen <dinguyen@kernel.org>, openbmc@lists.ozlabs.org,
+	Nancy Yuen <yuenn@google.com>, Andy Gross <agross@kernel.org>,
+	Joel Stanley <joel@jms.id.au>, linux-arm-msm@vger.kernel.org,
+	Stanley Chu <yschu@nuvoton.com>, Robert Richter <rric@kernel.org>,
+	Jan Luebbe <jlu@pengutronix.de>,
+	Shravan Kumar Ramani <shravankr@nvidia.com>,
+	Manivannan Sadhasivam <mani@kernel.org>,
+	Andre Przywara <andre.przywara@arm.com>,
+	Mauro Carvalho Chehab <mchehab@kernel.org>,
+	Michal Simek <michal.simek@amd.com>,
+	linux-arm-kernel@lists.infradead.org, linux-edac@vger.kernel.org,
+	Johannes Thumshirn <morbidrsa@gmail.com>,
+	Tero Kristo <kristo@kernel.org>,
+	Avi Fishman <avifishman70@gmail.com>,
+	Patrick Venture <venture@google.com>,
+	Bjorn Andersson <andersson@kernel.org>, linux-mips@vger.kernel.org,
+	Ralf Baechle <ralf@linux-mips.org>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Andrew Jeffery <andrew@aj.id.au>, James Morse <james.morse@arm.com>,
+	kernel@pengutronix.de, Lei Wang <lewan@microsoft.com>,
+	Stefan Schaeckeler <sschaeck@cisco.com>,
+	Marvin Lin <kflin@nuvoton.com>
+Subject: Re: [PATCH 00/21] EDAC: Convert to platform remove callback
+ returning void
+Message-ID: <20231120172145.GHZVuVqXpKtX2nbTE4@fat_crate.local>
+References: <20231004131254.2673842-1-u.kleine-koenig@pengutronix.de>
+ <20231120162054.haryuye4qedlfd7j@pengutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20231120162054.haryuye4qedlfd7j@pengutronix.de>
 Content-Transfer-Encoding: quoted-printable
-Content-Description: Mail message body
-Subject: Investment Expression of Interest (IEOI)
-To: linux-mips@vger.kernel.org
-From: "Ramadan Ahmad" <Ahmadramcfacffa3@pobox.com>
-Date: Mon, 20 Nov 2023 16:46:08 +0100
-Reply-To: finance@almnadrinvestment.com
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrFJMWRmVeSWpSXmKPExsWiOyvpp65TfXSqwa9ii85NWxkdGD0+b5IL
-	YIzisklJzcksSy3St0vgynj87TxLwUHmitftX9gbGN8zdTFyckgImEj07TvK1sXIxSEksIpJ
-	4mzLJ0aQBLOAnsSNqVPYQGxeAVuJjRfmsELYghInZz5hgajRlli28DVzFyMHkK0m8bWrBCQs
-	LGAo8fTIVbAxIgJyEp1/94K1sgkYSbRPPwvWyiKgKrF900WwGiEBdYnzU68wTWDkmYVk8ywk
-	22Yh2TYLYdsCRpZVjFLuHr7uBoZ66UWpiSW6GYlFZanFJXo5+cmJOZsYgcFzYAWX2g7Gj5M+
-	6h1iZOJgPMQowcGsJML7TSgiVYg3JbGyKrUoP76oNCe1+BCjNAeLkjhvQIBUvJBAemJJanZq
-	akFqEUyWiYNTqoEprvrv26z0OWtOr7/HfOpuvtGMxt7/uS+FuE+Fl1S/KHZnOOYtcmV+/op/
-	TOG6DcZc02xnlT2aeve8dkmv9rLu57rexpVCF3cqnfGcd2TJ/Sa5Yratt/pfeRddfbur85j0
-	m27/296O/7NtTC7MMj/+LfFtVPLcaRPP5t5QuC7GFc3Rr7bvMMO71b9O+s2p+etnnf4z5Myr
-	zO9cP12sQi6s5vKQW12pdN7lkbhdBveMHSJtU44fNOqd1rY29OrWh1mSdnNStws4vgyySdIu
-	aPLriKyS6IsrWtPw3rvYLS2a793/kBeHz0zekeCx61RSyds7GnvvT2B+fDKZ82fGl/5XgSeP
-	X2cWj/G0niBpH7RQiaU4I9FQi7moOBEAZBoqNY0CAAA=
-X-Spam-Level: ***
 
-Attn: linux-mips@vger.kernel.org
-Date: 20-11-2023
-Subject: Investment Expression of Interest (IEOI)
+On Mon, Nov 20, 2023 at 05:20:54PM +0100, Uwe Kleine-K=C3=B6nig wrote:
+> Any news on this series? Would a resend help?
 
-Dear Sir,
+Nah, lemme have a look.
 
-Having been referred to your investment by my team, we would be honored to =
-review your available investment projects for onward referral to my princip=
-al investors who can allocate capital for the financing of it.
+--=20
+Regards/Gruss,
+    Boris.
 
-kindly advise at your convenience
-
-Best Regards,
-Ramadan Ahmad CFA
-Chartered Finance Investment Analyst
+https://people.kernel.org/tglx/notes-about-netiquette

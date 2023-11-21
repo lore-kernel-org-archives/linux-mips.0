@@ -1,98 +1,130 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D197136C;
-	Tue, 21 Nov 2023 14:52:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="poue5VPW"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 580D7C433C7;
-	Tue, 21 Nov 2023 14:52:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1700578360;
-	bh=dGYz6IxNOUY4NpvhlMLeIB3Xxc/hARJYIHJyki7wDHE=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=poue5VPWyYd+HrTAPC2kL1JwV02FvsHlUJ1z3W9FXk/U2czUqklkcawHdmmtSEsoY
-	 IlPddu/gpJsZ1UpOPQIgrM7BkkvyXf2F3hIfHrb2U18/fsMMvTR4wCzYJDyNBuBtzP
-	 SpQfWPT1cgV1qEShQyzt0KdJxLEsOUDx610rqzSQ=
-Date: Tue, 21 Nov 2023 15:12:23 +0100
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: Arnd Bergmann <arnd@kernel.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org,
-	Masahiro Yamada <masahiroy@kernel.org>,
-	linux-kbuild@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
-	Matt Turner <mattst88@gmail.com>, Vineet Gupta <vgupta@kernel.org>,
-	Russell King <linux@armlinux.org.uk>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>, Steven Rostedt <rostedt@goodmis.org>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Mark Rutland <mark.rutland@arm.com>, Guo Ren <guoren@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Ard Biesheuvel <ardb@kernel.org>,
-	Huacai Chen <chenhuacai@kernel.org>,
-	Greg Ungerer <gerg@linux-m68k.org>, Michal Simek <monstr@monstr.eu>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	Dinh Nguyen <dinguyen@kernel.org>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Nicholas Piggin <npiggin@gmail.com>,
-	Christophe Leroy <christophe.leroy@csgroup.eu>,
-	Geoff Levand <geoff@infradead.org>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Heiko Carstens <hca@linux.ibm.com>,
-	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-	"David S. Miller" <davem@davemloft.net>,
-	Andy Lutomirski <luto@kernel.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
-	Helge Deller <deller@gmx.de>,
-	Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
-	Timur Tabi <timur@kernel.org>,
-	Kent Overstreet <kent.overstreet@linux.dev>,
-	David Woodhouse <dwmw2@infradead.org>,
-	"Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
-	Anil S Keshavamurthy <anil.s.keshavamurthy@intel.com>,
-	Kees Cook <keescook@chromium.org>,
-	Vincenzo Frascino <vincenzo.frascino@arm.com>,
-	Juri Lelli <juri.lelli@redhat.com>,
-	Vincent Guittot <vincent.guittot@linaro.org>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Nick Desaulniers <ndesaulniers@google.com>,
-	Nicolas Schier <nicolas@fjasle.eu>,
-	Al Viro <viro@zeniv.linux.org.uk>,
-	Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>,
-	linux-alpha@vger.kernel.org, linux-snps-arc@lists.infradead.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-trace-kernel@vger.kernel.org, linux-csky@vger.kernel.org,
-	loongarch@lists.linux.dev, linux-m68k@lists.linux-m68k.org,
-	linux-mips@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-	linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
-	linux-sh@vger.kernel.org, sparclinux@vger.kernel.org,
-	netdev@vger.kernel.org, linux-parisc@vger.kernel.org,
-	linux-usb@vger.kernel.org, linux-fbdev@vger.kernel.org,
-	dri-devel@lists.freedesktop.org, linux-bcachefs@vger.kernel.org,
-	linux-mtd@lists.infradead.org
-Subject: Re: [PATCH 20/22] usb: fsl-mph-dr-of: mark fsl_usb2_mpc5121_init()
- static
-Message-ID: <2023112114-cried-ramble-b3f9@gregkh>
-References: <20231108125843.3806765-1-arnd@kernel.org>
- <20231108125843.3806765-21-arnd@kernel.org>
+Authentication-Results: smtp.subspace.kernel.org; dkim=none
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86365125
+	for <linux-mips@vger.kernel.org>; Tue, 21 Nov 2023 07:52:00 -0800 (PST)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1r5T2b-0006Jz-7c; Tue, 21 Nov 2023 16:51:57 +0100
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1r5T2a-00AcF7-KQ; Tue, 21 Nov 2023 16:51:56 +0100
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1r5T2a-0052T6-BI; Tue, 21 Nov 2023 16:51:56 +0100
+Date: Tue, 21 Nov 2023 16:51:56 +0100
+From: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To: Paul Cercueil <paul@crapouillou.net>
+Cc: Thierry Reding <thierry.reding@gmail.com>, linux-pwm@vger.kernel.org,
+	linux-mips@vger.kernel.org, kernel@pengutronix.de
+Subject: Re: [PATCH v3 014/108] pwm: jz4740: Make use of pwmchip_parent()
+ macro
+Message-ID: <20231121155156.pi6e4mlov2ke2rfx@pengutronix.de>
+References: <20231121134901.208535-1-u.kleine-koenig@pengutronix.de>
+ <20231121134901.208535-15-u.kleine-koenig@pengutronix.de>
+ <ba21c20b20364a39d5ffff81dac8bd300a746dbb.camel@crapouillou.net>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="ic7kkssgaahevrve"
 Content-Disposition: inline
-In-Reply-To: <20231108125843.3806765-21-arnd@kernel.org>
+In-Reply-To: <ba21c20b20364a39d5ffff81dac8bd300a746dbb.camel@crapouillou.net>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-mips@vger.kernel.org
 
-On Wed, Nov 08, 2023 at 01:58:41PM +0100, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> This function is only called locally and should always have been static:
-> 
-> drivers/usb/host/fsl-mph-dr-of.c:291:5: error: no previous prototype for 'fsl_usb2_mpc5121_init' [-Werror=missing-prototypes]
-> 
-> Fixes: 230f7ede6c2f ("USB: add USB EHCI support for MPC5121 SoC")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-Acked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+--ic7kkssgaahevrve
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+Hello Paul,
+
+On Tue, Nov 21, 2023 at 03:13:58PM +0100, Paul Cercueil wrote:
+> Le mardi 21 novembre 2023 =E0 14:49 +0100, Uwe Kleine-K=F6nig a =E9crit=
+=A0:
+> > struct pwm_chip::dev is about to change. To not have to touch this
+> > driver in the same commit as struct pwm_chip::dev, use the macro
+> > provided for exactly this purpose.
+> >=20
+> > Signed-off-by: Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de>
+> > ---
+> > =A0drivers/pwm/pwm-jz4740.c | 17 ++++++++---------
+> > =A01 file changed, 8 insertions(+), 9 deletions(-)
+> >=20
+> > diff --git a/drivers/pwm/pwm-jz4740.c b/drivers/pwm/pwm-jz4740.c
+> > index e9375de60ad6..555c2db3968d 100644
+> > --- a/drivers/pwm/pwm-jz4740.c
+> > +++ b/drivers/pwm/pwm-jz4740.c
+> > @@ -35,13 +35,12 @@ static inline struct jz4740_pwm_chip
+> > *to_jz4740(struct pwm_chip *chip)
+> > =A0	return container_of(chip, struct jz4740_pwm_chip, chip);
+> > =A0}
+> > =A0
+> > -static bool jz4740_pwm_can_use_chn(struct jz4740_pwm_chip *jz,
+> > -				=A0=A0 unsigned int channel)
+> > +static bool jz4740_pwm_can_use_chn(struct pwm_chip *chip, unsigned
+> > int channel)
+> > =A0{
+> > =A0	/* Enable all TCU channels for PWM use by default except
+> > channels 0/1 */
+> > -	u32 pwm_channels_mask =3D GENMASK(jz->chip.npwm - 1, 2);
+> > +	u32 pwm_channels_mask =3D GENMASK(chip->npwm - 1, 2);
+> > =A0
+> > -	device_property_read_u32(jz->chip.dev->parent,
+> > +	device_property_read_u32(pwmchip_parent(chip)->parent,
+> > =A0				 "ingenic,pwm-channels-mask",
+> > =A0				 &pwm_channels_mask);
+>=20
+> You could have used pwmchip_parent(&jz->chip) and not change the
+> prototype.
+
+Later in the series jz->chip goes away. So following your advice only
+makes me touch this code once more later.
+
+> > @@ -149,7 +148,7 @@ static int jz4740_pwm_apply(struct pwm_chip
+> > *chip, struct pwm_device *pwm,
+> > =A0	 */
+> > =A0	rate =3D clk_round_rate(clk, tmp);
+> > =A0	if (rate < 0) {
+> > -		dev_err(chip->dev, "Unable to round rate: %ld",
+> > rate);
+> > +		dev_err(pwmchip_parent(chip), "Unable to round rate:
+> > %ld", rate);
+>=20
+> While you're at it - and if you need a v4 - maybe sneak in a \n there?
+
+I'll try to remember :-)
+
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--ic7kkssgaahevrve
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmVc0hsACgkQj4D7WH0S
+/k5x+wf/aMnntCuRfV1rG8EiIOlMpAvPqa8iJIJ/Rt8LLmTjtMir9i+/qzUJcy6M
+TqQN61e2vawrSa7PGJvFd5qlUWRKnzLtCHLS32xGcoL1oesAxWMUNH2/sE9Y8RXy
+SKL65r/S5fEDCwWIUwnJ91vlc3qHkof3YHLwHqnVf6GmRLJEH6py5PJYlY9yYllZ
+GyRRVaD5JeXrQ2+XK122ETY+VbuCdiY6FeP09anuQzwjOFK33mCAzmmIrLPikWq9
+nIJKEgax9dDCb5I2djhh8XG5jRMkwsVqVTDzxUZ0qcZqR/5dWrr68C7bTYK6lB0l
+/mDPXm9WUJU1ABuqCMCDkRnYU6djgA==
+=/I1Y
+-----END PGP SIGNATURE-----
+
+--ic7kkssgaahevrve--

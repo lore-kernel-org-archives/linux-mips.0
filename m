@@ -1,162 +1,107 @@
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nFo3rrRt"
-Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 926A9BC;
-	Wed, 22 Nov 2023 05:50:07 -0800 (PST)
-Received: by mail-lj1-x235.google.com with SMTP id 38308e7fff4ca-2c887d1fb8fso33751431fa.0;
-        Wed, 22 Nov 2023 05:50:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700661006; x=1701265806; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=VGvo2wK/qUHrm7e4nS+FqOamAmN2Y01aRBg4wudRWCI=;
-        b=nFo3rrRtfsbe3+X6hbnd2uJJiwLwJWqkz/JmWE/HGWtroXsPBhUfnwRtgZEnf5oL/w
-         JjRZyljTXeyIpmc+ngJKrt/TtejzxmGvUbw8+6GCpoLpl24eH29XpehMYjRqh9oXdlbF
-         BF6ILc93UmA8eHIDqHAH8UcHQQTemBeEATlPLdubNojn9ZEtjJirKGr4HK6EAUWaJcla
-         yZqkuFZM4pxbr29U/6OrXaqvfJWia8SYfCF7y0+X+ND3ud3dy1/Oue/lOoQfrGVdr0Hj
-         9ZPkcHfwxQ5GS3Vyn3Mu/NwRXhex81TN9csm01Z+Rh6sEfHik6yZkA5/2/LGFD2kd11I
-         KS+A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700661006; x=1701265806;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=VGvo2wK/qUHrm7e4nS+FqOamAmN2Y01aRBg4wudRWCI=;
-        b=LkcHq0Wc5gwKjLMPy2yjhPUkNgCy3CDBJGRbz94+BvL4No/PlNJFvnTNDsLw1W/dcJ
-         ip0iClPAw59qLsWh4GdzRjYs+A3gPPU/PrJBXLrMNBvJ6MpKx0DOVNxckXrA0pYlE9gz
-         wJ5VbKlqnfznRQZN+rop7TxTU1J9hbKXlZV2ZMVNyONW34ukxANgp6k0AvW0kwklu+4u
-         czuZX258qvVosVQDoVsI9VdhYOcou5MAYbQq7ecjIMVkYbvr/jX3f857WVv5fQ0oGGo3
-         4YmbgsJR71nmWFB3I5Pk1Ght5cZ6o0hkRxRMZCcGZ4G+RFS03lRIUAUuzoeQr5A+UJet
-         8UUQ==
-X-Gm-Message-State: AOJu0YwvHrMrs4WCG0yXv9qDJui0OauBilofsDNev16Rcbgy4RAs9g1A
-	UsNizHH63bMuvYEW8ecAPmFYrMea98YrslyeCTU=
-X-Google-Smtp-Source: AGHT+IGADla5AngdafjZj4xVSn2bMpwu94RIXGs1aggs+dTW20GqVt+KqN6QW83yuruj4ESEnG/vy5fguAMd3CGAzQY=
-X-Received: by 2002:a2e:908f:0:b0:2c8:874b:8f19 with SMTP id
- l15-20020a2e908f000000b002c8874b8f19mr1706701ljg.51.1700661005611; Wed, 22
- Nov 2023 05:50:05 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="O1BlsWJy"
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACD3710F2;
+	Wed, 22 Nov 2023 08:40:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1700671255; x=1732207255;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=mMbruSBIhN6yytGf1T9i3S2OJs+TIbgzVI2rHK9D8Qk=;
+  b=O1BlsWJyHmLu7qlZSOQ1+NZxyJqVbNdaySGD8rEU6FORi+Cs3BG9iz7e
+   wfmkX7P7AEbWzD0lfXYD+J2LIw6d3FBbudyNoaG5Q2ccwVlauzdLX2cMH
+   cIWlDB1ui2IsR7KAmGFGYFZo6cstdz2evE5KPC4T6DkfDfIhuzZls0AgG
+   tV12H5hx60Iwv8cv+wpcusQz92JaxUcvwZsgDL1FMf11TNtuflSWEMlPD
+   XPWKnLmwJsy3H+GVIUaD/y/7ti7em/zkvu19li/atknxljGMFVWzdLL7e
+   kDKsBykSCMgOwptmog8nQi+6OUv7YtVgYlr76XiHeBaGsepgyo2yQs1j0
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10902"; a="456414199"
+X-IronPort-AV: E=Sophos;i="6.04,219,1695711600"; 
+   d="scan'208";a="456414199"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Nov 2023 08:40:53 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10902"; a="884681487"
+X-IronPort-AV: E=Sophos;i="6.04,219,1695711600"; 
+   d="scan'208";a="884681487"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga002.fm.intel.com with ESMTP; 22 Nov 2023 08:40:46 -0800
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+	id 0E42738C; Wed, 22 Nov 2023 18:40:45 +0200 (EET)
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Linus Walleij <linus.walleij@linaro.org>,
+	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+	Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+	=?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
+	Geert Uytterhoeven <geert+renesas@glider.be>,
+	Biju Das <biju.das.jz@bp.renesas.com>,
+	Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>,
+	Jianlong Huang <jianlong.huang@starfivetech.com>,
+	linux-arm-kernel@lists.infradead.org,
+	linux-gpio@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-mediatek@lists.infradead.org,
+	openbmc@lists.ozlabs.org,
+	linux-mips@vger.kernel.org,
+	linux-arm-msm@vger.kernel.org,
+	linux-renesas-soc@vger.kernel.org
+Cc: Ray Jui <rjui@broadcom.com>,
+	Scott Branden <sbranden@broadcom.com>,
+	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>,
+	Dong Aisheng <aisheng.dong@nxp.com>,
+	Fabio Estevam <festevam@gmail.com>,
+	Shawn Guo <shawnguo@kernel.org>,
+	Jacky Bai <ping.bai@nxp.com>,
+	Pengutronix Kernel Team <kernel@pengutronix.de>,
+	Sascha Hauer <s.hauer@pengutronix.de>,
+	NXP Linux Team <linux-imx@nxp.com>,
+	Sean Wang <sean.wang@kernel.org>,
+	=?UTF-8?q?Jonathan=20Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
+	Paul Cercueil <paul@crapouillou.net>,
+	Lakshmi Sowjanya D <lakshmi.sowjanya.d@intel.com>,
+	Bjorn Andersson <andersson@kernel.org>,
+	Andy Gross <agross@kernel.org>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Emil Renner Berthing <kernel@esmil.dk>,
+	Hal Feng <hal.feng@starfivetech.com>
+Subject: [PATCH v1 03/17] pinctrl: qcom: lpass-lpi: Replace kernel.h with what is being used
+Date: Wed, 22 Nov 2023 18:35:35 +0200
+Message-ID: <20231122164040.2262742-4-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.43.0.rc1.1.gbec44491f096
+In-Reply-To: <20231122164040.2262742-1-andriy.shevchenko@linux.intel.com>
+References: <20231122164040.2262742-1-andriy.shevchenko@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231122054142.31322-1-lukas.bulwahn@gmail.com> <mku6gvd4rfkxzk2vrdjbizglte526ygyfhnwialtri44oqzikt@pq2l7mk25jgc>
-In-Reply-To: <mku6gvd4rfkxzk2vrdjbizglte526ygyfhnwialtri44oqzikt@pq2l7mk25jgc>
-From: Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Date: Wed, 22 Nov 2023 14:49:54 +0100
-Message-ID: <CAKXUXMwGgtJVWmrFX0chpgNC++Ok54t-qXxware+aEDiyZFszw@mail.gmail.com>
-Subject: Re: [PATCH] MAINTAINERS: add section MIPS BAIKAL-T1 SOC DRIVERS
-To: Serge Semin <Sergey.Semin@baikalelectronics.ru>
-Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>, linux-mips@vger.kernel.org, 
-	kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Serge Semin <fancer.lancer@gmail.com>, 
-	Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Wed, Nov 22, 2023 at 2:32=E2=80=AFPM Serge Semin
-<Sergey.Semin@baikalelectronics.ru> wrote:
->
-> Hi Lukas
->
-> On Wed, Nov 22, 2023 at 06:41:42AM +0100, Lukas Bulwahn wrote:
-> > In recent years, a number of drivers for the MIPS Baikal-T1 SoC have be=
-en
-> > added to the kernel tree, but there is no dedicated MAINTAINERS section=
- for
-> > this SoC.
-> >
-> > As all of the code has been contributed by Serge Semin, let us assume h=
-e is
-> > still the active maintainer for this code rather than marking it orphan=
-.
-> >
-> > Add a new section MIPS BAIKAL-T1 SOC DRIVERS in MAINTAINERS.
->
-> Thanks for submitting this patch. I was going to send a similar change
-> in the framework of the arch-series which is hanging up in my local
-> repo and alas is still under construction. I know I shouldn't have
-> been waiting (I'm sorry about that), but I didn't expect the entire
-> work would have taken so much time. On a way to finishing it up I had
-> to switch my efforts to the EDAC and network drivers and got sucked by
-> the amount of work there. But I will definitely submit the Baikal-T1
-> SoC arch patchset when my work on another area is finally over.
->
-> Here are several comments about this patch. (Please see my last
-> comment should you be ok with accepting the patches with already fixed
-> notes.)
->
-> >
-> > Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
-> > ---
-> >  MAINTAINERS | 13 +++++++++++++
-> >  1 file changed, 13 insertions(+)
-> >
-> > diff --git a/MAINTAINERS b/MAINTAINERS
-> > index 9613c9c3cc97..820f1ab1ee80 100644
-> > --- a/MAINTAINERS
-> > +++ b/MAINTAINERS
-> > @@ -14474,6 +14474,19 @@ F:   arch/mips/
-> >  F:   drivers/platform/mips/
-> >  F:   include/dt-bindings/mips/
-> >
-> > +MIPS BAIKAL-T1 SOC DRIVERS
->
-> > +M:   Serge Semin <Sergey.Semin@baikalelectronics.ru>
->
-> It's better to change the email to
-> +M:     Serge Semin <fancer.lancer@gmail.com>
-> I quicker respond from my private inbox, than from the corporate one.
-> This will also be useful should the corporate email eventually change.
->
-> > +S:   Maintained
->
-> +F:     Documentation/devicetree/bindings/bus/baikal,bt1-*.yaml
-> +F:     Documentation/devicetree/bindings/clock/baikal,bt1-*.yaml
->
-> > +F:   Documentation/hwmon/bt1-pvt.rst
->
-> I'd prefer this and these -+ being in a separate entry (see the
-> attached patches), because | the respective device IP-cores have been
-> re-used in another SoC. So | eventually the entries will be updated to
-> reflect that.              +---------------------------------+
->                                                              |
-> > +F:   drivers/ata/ahci_dwc.c                               |
->                                                              |
-> I believe this is already listed in the MAINTAINERS file.    |
->                                                              |
-> > +F:   drivers/bus/bt1-*.c                                  |
-> > +F:   drivers/clk/baikal-t1/                               |
-> > +F:   drivers/hwmon/bt1-pvt.[ch] <-------------------------+
-> > +F:   drivers/memory/bt1-l2-ctl.c                          |
-> > +F:   drivers/mtd/maps/physmap-bt1-rom.[ch]                |
-> > +F:   drivers/pci/controller/dwc/pcie-bt1.c <--------------+
->
-> > +F:   drivers/spi/spi-dw-bt1.c
->
-> This is already marked as maintained by me in the framework of the
-> generic DW APB SSI driver (See the "SYNOPSYS DESIGNWARE APB SSI
-> DRIVER" entry in the MAINTAINERS file).
->
-> Anyway in order to save your time from editing this patch. I've
-> prepared a series which takes into account all the comments above. If
-> you are ok with it, I can submit it for review. What do you think?
->
+Replace kernel.h with what exactly is being used, i.e. array_size.h.
 
-Sure, go ahead and submit your series. I just wanted to have all files
-in ./drivers/bus/ have a proper maintainer and then got to look at the
-BAIKAL T1 files.
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+ drivers/pinctrl/qcom/pinctrl-lpass-lpi.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Lukas
+diff --git a/drivers/pinctrl/qcom/pinctrl-lpass-lpi.h b/drivers/pinctrl/qcom/pinctrl-lpass-lpi.h
+index 206b2c0ca828..2017bc80314d 100644
+--- a/drivers/pinctrl/qcom/pinctrl-lpass-lpi.h
++++ b/drivers/pinctrl/qcom/pinctrl-lpass-lpi.h
+@@ -6,8 +6,8 @@
+ #ifndef __PINCTRL_LPASS_LPI_H__
+ #define __PINCTRL_LPASS_LPI_H__
+ 
++#include <linux/array_size.h>
+ #include <linux/bits.h>
+-#include <linux/kernel.h>
+ 
+ #include "../core.h"
+ 
+-- 
+2.43.0.rc1.1.gbec44491f096
 
-> -Serge(y)
->
-> > +
-> >  MIPS BOSTON DEVELOPMENT BOARD
-> >  M:   Paul Burton <paulburton@kernel.org>
-> >  L:   linux-mips@vger.kernel.org
-> > --
-> > 2.17.1
-> >
-> >

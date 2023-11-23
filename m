@@ -1,105 +1,194 @@
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="bf5Nk4oJ"
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9ABC11F;
-	Wed, 22 Nov 2023 15:23:42 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="HkDkgejS"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 166A31A4;
+	Wed, 22 Nov 2023 19:12:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700695422; x=1732231422;
+  t=1700709139; x=1732245139;
   h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=wLu90c2ONU3nwRPuECsbNVwdI6Y/3s1bCFsGjUjQWds=;
-  b=bf5Nk4oJ25NpqPjcgoH0qyyZwaybM8J+HOuiEmIO+HYRtQc7HJtYqal7
-   Xs6igblHASFh/Y92xTaxgbiG4V3iH0btRpQW8ZIkVrC5Fijb+x6nfUubX
-   kmDfCySXX0xtVXGnB2zosltPyG8fEZmZdgr0egi+j+szfzdU1V1u19SnK
-   B0K0ta1uZwmDnPK+ye3IU6hZVH4wdaN/LF8wPNHFd0jtn1LdujloI3HCd
-   3x5oYtSHQvxUN/dL2QoZVyznAo+5s2Y0cnuuL4oPJt15WKo60XkD73Osx
-   jBZj8XLvkvmJAw82wWq7HTfR3tshGqVD80KOiVry0/Kpqyp39vNQYt9So
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10902"; a="391935051"
-X-IronPort-AV: E=Sophos;i="6.04,219,1695711600"; 
-   d="scan'208";a="391935051"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Nov 2023 15:23:41 -0800
+   mime-version:in-reply-to;
+  bh=3sBlfJImwRaqa6aryIZaVq3UckHfBRFnYA7tVrAvU28=;
+  b=HkDkgejSTaKHw0KrfZzucjWPtINUcXlHo85Zfuh6vyo0ndxkUvzr0UUI
+   q6qQACLh1E22hnbms7xxvohwvkPnC4Jl3RAgQTVRHwLjdWQPMlm1K14Cb
+   vmjD9ftI3+Wo6WTQB4W8aTwPfk3cu1QRXOYO8FsdPae/YErv9QmIgX0lG
+   x4ldtN1ReiTmF8MwEwMUM9WmpZ+yvcOzeFclFAfAw5D2UD8uIqTdNCuHS
+   Crahd8QZkX9ImMkXRN+4gDWby532nPkAEYHxcRyVvdXuQdEp9hRSdfvyl
+   Tm2L0Pq8ehsOSRhMsGK0jrbnnDw7fnM6u0AH5uheCHWVEosZmkCABYzjF
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10902"; a="13744904"
+X-IronPort-AV: E=Sophos;i="6.04,220,1695711600"; 
+   d="scan'208";a="13744904"
+Received: from fmviesa002.fm.intel.com ([10.60.135.142])
+  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Nov 2023 19:12:18 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10902"; a="760507612"
-X-IronPort-AV: E=Sophos;i="6.04,219,1695711600"; 
-   d="scan'208";a="760507612"
-Received: from amongesa-mobl.ger.corp.intel.com (HELO intel.com) ([10.252.57.132])
-  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Nov 2023 15:23:31 -0800
-Date: Thu, 23 Nov 2023 00:23:28 +0100
-From: Andi Shyti <andi.shyti@linux.intel.com>
-To: Uwe =?iso-8859-15?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Jiri Slaby <jirislaby@kernel.org>, Joel Stanley <joel@jms.id.au>,
-	Andrew Jeffery <andrew@codeconstruct.com.au>,
-	Florian Fainelli <florian.fainelli@broadcom.com>,
-	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>,
-	Ray Jui <rjui@broadcom.com>, Scott Branden <sbranden@broadcom.com>,
-	Al Cooper <alcooperx@gmail.com>,
-	Ilpo =?iso-8859-15?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-	Paul Cercueil <paul@crapouillou.net>,
-	Vladimir Zapolskiy <vz@mleia.com>,
-	Matthias Brugger <matthias.bgg@gmail.com>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
-	Thierry Reding <thierry.reding@gmail.com>,
-	Jonathan Hunter <jonathanh@nvidia.com>,
-	Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	John Ogness <john.ogness@linutronix.de>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Tony Lindgren <tony@atomide.com>, Petr Mladek <pmladek@suse.com>,
+X-IronPort-AV: E=Sophos;i="6.04,220,1695711600"; 
+   d="scan'208";a="8712749"
+Received: from lkp-server01.sh.intel.com (HELO d584ee6ebdcc) ([10.239.97.150])
+  by fmviesa002.fm.intel.com with ESMTP; 22 Nov 2023 19:12:11 -0800
+Received: from kbuild by d584ee6ebdcc with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1r608P-00019r-1j;
+	Thu, 23 Nov 2023 03:12:09 +0000
+Date: Thu, 23 Nov 2023 11:11:25 +0800
+From: kernel test robot <lkp@intel.com>
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+	Linus Walleij <linus.walleij@linaro.org>,
+	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
+	Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+	Krzysztof Kozlowski <krzk@kernel.org>,
+	Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>,
+	Geert Uytterhoeven <geert+renesas@glider.be>,
 	Biju Das <biju.das.jz@bp.renesas.com>,
-	Johan Hovold <johan@kernel.org>, Chen-Yu Tsai <wenst@chromium.org>,
-	Andi Shyti <andi.shyti@linux.intel.com>,
-	Thomas Richard <thomas.richard@bootlin.com>,
-	Rob Herring <robh@kernel.org>,
-	Geert Uytterhoeven <geert@linux-m68k.org>,
-	Arnd Bergmann <arnd@arndb.de>,
-	Duje =?utf-8?Q?Mihanovi=C4=87?= <duje.mihanovic@skole.hr>,
-	"Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-	Jacob Keller <jacob.e.keller@intel.com>,
-	Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-	kernel@pengutronix.de, linux-serial@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, linux-aspeed@lists.ozlabs.org,
-	linux-rpi-kernel@lists.infradead.org, linux-mips@vger.kernel.org,
-	linux-mediatek@lists.infradead.org, linux-tegra@vger.kernel.org
-Subject: Re: [PATCH 03/52] serial: 8250: Convert to platform remove callback
- returning void
-Message-ID: <ZV6NcAXBUcj5wYx8@ashyti-mobl2.lan>
-References: <20231110152927.70601-1-u.kleine-koenig@pengutronix.de>
- <20231110152927.70601-4-u.kleine-koenig@pengutronix.de>
+	Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>,
+	Jianlong Huang <jianlong.huang@starfivetech.com>,
+	linux-arm-kernel@lists.infradead.org, linux-gpio@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
+	openbmc@lists.ozlabs.org, linux-mips@vger.kernel.org,
+	linux-arm-msm@vger.kernel.org, linux-renesas-soc@vger.kernel.org
+Cc: oe-kbuild-all@lists.linux.dev, Ray Jui <rjui@broadcom.com>,
+	Scott Branden <sbranden@broadcom.com>,
+	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>,
+	Dong Aisheng <aisheng.dong@nxp.com>,
+	Fabio Estevam <festevam@gmail.com>, Shawn Guo <shawnguo@kernel.org>,
+	Jacky Bai <ping.bai@nxp.com>,
+	Pengutronix Kernel Team <kernel@pengutronix.de>,
+	Sascha Hauer <s.hauer@pengutronix.de>,
+	NXP Linux Team <linux-imx@nxp.com>,
+	Sean Wang <sean.wang@kernel.org>,
+	Jonathan =?iso-8859-1?Q?Neusch=E4fer?= <j.neuschaefer@gmx.net>
+Subject: Re: [PATCH v1 01/17] pinctrl: equilibrium: Convert to use struct
+ pingroup
+Message-ID: <202311230820.MGDyVHJW-lkp@intel.com>
+References: <20231122164040.2262742-2-andriy.shevchenko@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20231110152927.70601-4-u.kleine-koenig@pengutronix.de>
+In-Reply-To: <20231122164040.2262742-2-andriy.shevchenko@linux.intel.com>
 
-Hi Uwe,
+Hi Andy,
 
-On Fri, Nov 10, 2023 at 04:29:31PM +0100, Uwe Kleine-König wrote:
-> The .remove() callback for a platform driver returns an int which makes
-> many driver authors wrongly assume it's possible to do error handling by
-> returning an error code. However the value returned is ignored (apart
-> from emitting a warning) and this typically results in resource leaks.
-> 
-> To improve here there is a quest to make the remove callback return
-> void. In the first step of this quest all drivers are converted to
-> .remove_new(), which already returns void. Eventually after all drivers
-> are converted, .remove_new() will be renamed to .remove().
-> 
-> Trivially convert this driver from always returning zero in the remove
-> callback to the void returning variant.
-> 
-> Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+kernel test robot noticed the following build warnings:
 
-Reviewed-by: Andi Shyti <andi.shyti@linux.intel.com>
+[auto build test WARNING on linusw-pinctrl/devel]
+[also build test WARNING on linusw-pinctrl/for-next geert-renesas-drivers/renesas-pinctrl pinctrl-samsung/for-next linus/master v6.7-rc2 next-20231122]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-Thanks,
-Andi
+url:    https://github.com/intel-lab-lkp/linux/commits/Andy-Shevchenko/pinctrl-equilibrium-Convert-to-use-struct-pingroup/20231123-005932
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/linusw/linux-pinctrl.git devel
+patch link:    https://lore.kernel.org/r/20231122164040.2262742-2-andriy.shevchenko%40linux.intel.com
+patch subject: [PATCH v1 01/17] pinctrl: equilibrium: Convert to use struct pingroup
+config: i386-randconfig-001-20231123 (https://download.01.org/0day-ci/archive/20231123/202311230820.MGDyVHJW-lkp@intel.com/config)
+compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231123/202311230820.MGDyVHJW-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202311230820.MGDyVHJW-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+   drivers/pinctrl/pinctrl-equilibrium.c: In function 'eqbr_build_groups':
+   drivers/pinctrl/pinctrl-equilibrium.c:750:17: error: assignment of read-only location '*(grp->pins + (sizetype)((unsigned int)j * 4))'
+     750 |    grp->pins[j] = pin_id;
+         |                 ^
+   drivers/pinctrl/pinctrl-equilibrium.c:761:23: error: 'struct pingroup' has no member named 'num_pins'; did you mean 'npins'?
+     761 |       grp->pins, grp->num_pins,
+         |                       ^~~~~~~~
+         |                       npins
+>> drivers/pinctrl/pinctrl-equilibrium.c:761:10: warning: passing argument 3 of 'pinctrl_generic_add_group' discards 'const' qualifier from pointer target type [-Wdiscarded-qualifiers]
+     761 |       grp->pins, grp->num_pins,
+         |       ~~~^~~~~~
+   In file included from drivers/pinctrl/pinctrl-equilibrium.c:16:
+   drivers/pinctrl/core.h:225:15: note: expected 'int *' but argument is of type 'const unsigned int *'
+     225 |          int *gpins, int ngpins, void *data);
+         |          ~~~~~^~~~~
+
+
+vim +761 drivers/pinctrl/pinctrl-equilibrium.c
+
+   702	
+   703	static int eqbr_build_groups(struct eqbr_pinctrl_drv_data *drvdata)
+   704	{
+   705		struct device *dev = drvdata->dev;
+   706		struct device_node *node = dev->of_node;
+   707		unsigned int *pinmux, pin_id, pinmux_id;
+   708		struct pingroup group, *grp = &group;
+   709		struct device_node *np;
+   710		struct property *prop;
+   711		int j, err;
+   712	
+   713		for_each_child_of_node(node, np) {
+   714			prop = of_find_property(np, "groups", NULL);
+   715			if (!prop)
+   716				continue;
+   717	
+   718			grp->npins = of_property_count_u32_elems(np, "pins");
+   719			if (grp->npins < 0) {
+   720				dev_err(dev, "No pins in the group: %s\n", prop->name);
+   721				of_node_put(np);
+   722				return -EINVAL;
+   723			}
+   724			grp->name = prop->value;
+   725			grp->pins = devm_kcalloc(dev, grp->npins, sizeof(*grp->pins), GFP_KERNEL);
+   726			if (!grp->pins) {
+   727				of_node_put(np);
+   728				return -ENOMEM;
+   729			}
+   730	
+   731			pinmux = devm_kcalloc(dev, grp->npins, sizeof(*pinmux), GFP_KERNEL);
+   732			if (!pinmux) {
+   733				of_node_put(np);
+   734				return -ENOMEM;
+   735			}
+   736	
+   737			for (j = 0; j < grp->npins; j++) {
+   738				if (of_property_read_u32_index(np, "pins", j, &pin_id)) {
+   739					dev_err(dev, "Group %s: Read intel pins id failed\n",
+   740						grp->name);
+   741					of_node_put(np);
+   742					return -EINVAL;
+   743				}
+   744				if (pin_id >= drvdata->pctl_desc.npins) {
+   745					dev_err(dev, "Group %s: Invalid pin ID, idx: %d, pin %u\n",
+   746						grp->name, j, pin_id);
+   747					of_node_put(np);
+   748					return -EINVAL;
+   749				}
+   750				grp->pins[j] = pin_id;
+   751				if (of_property_read_u32_index(np, "pinmux", j, &pinmux_id)) {
+   752					dev_err(dev, "Group %s: Read intel pinmux id failed\n",
+   753						grp->name);
+   754					of_node_put(np);
+   755					return -EINVAL;
+   756				}
+   757				pinmux[j] = pinmux_id;
+   758			}
+   759	
+   760			err = pinctrl_generic_add_group(drvdata->pctl_dev, grp->name,
+ > 761							grp->pins, grp->num_pins,
+   762							pinmux);
+   763			if (err < 0) {
+   764				dev_err(dev, "Failed to register group %s\n", grp->name);
+   765				of_node_put(np);
+   766				return err;
+   767			}
+   768			memset(&group, 0, sizeof(group));
+   769			pinmux = NULL;
+   770		}
+   771	
+   772		return 0;
+   773	}
+   774	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki

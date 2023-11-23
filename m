@@ -1,22 +1,22 @@
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="I5spGNdD"
-Received: from relay1-d.mail.gandi.net (relay1-d.mail.gandi.net [217.70.183.193])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E60BB172D;
-	Thu, 23 Nov 2023 07:27:13 -0800 (PST)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 22F76240003;
-	Thu, 23 Nov 2023 15:27:12 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="ZT17fTN6"
+Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::225])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C42B170D;
+	Thu, 23 Nov 2023 07:27:15 -0800 (PST)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 8B0521C0008;
+	Thu, 23 Nov 2023 15:27:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1700753232;
+	t=1700753234;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=PyCSrF1JgQ4iScyRiIk/6IapzgqC+RV3b88nNkBvQYI=;
-	b=I5spGNdDTyZF9Px7uya/D2or4dtiHN02/WkO8SnPHN0g1AX8FAUVCvkqT/Yur+qZAnwYi7
-	XTljlHbR6aSs7FX9K+qtoKTbTYqmKcwB1ieU3pOejSZruFDP4lRrK3z/w8MIVICr3O1krB
-	duGvfscdAtGK76E5/jvtxaCCEDWnTQVmzcwuofATN02q5t08pa0K5HhWltr4jGFWr0uOBK
-	gx55k2gdPLNEVYoVMUbWpz0/ynl/I3AJwmZjTMuJ1Q68mFiNs5T/qe8ogSs1y5DQqXrsql
-	+6iLO/BpCnHcgQ1cx684Se83hG5chH0pYSh9g3kgkk/47po5XxXGG1ZvwuT5vw==
+	bh=NF5qApw6fMhlr7kXSD5A4ZD9LfVmR7kuExevs+ZXZcs=;
+	b=ZT17fTN6J/+GY3gKZqd/0adq9IDJgYSd4cEaqM5qjEHu/zeXJG3646VsxpjcCKm0alpwCO
+	X+rNkovbKD8GaP6IwSjhMYarUZ3l0wlJvdJ2z+5lkNlTF0LTgzwoew2F79qXgYzvN3cVZ5
+	heCDULrk7lfU0ANT9QP0/uQPqDL66xWx1m6z3VAy2/Yo6IRbiCnjKNtgMmp8BSHbWW2UUN
+	idnCPRDWRJeab+qeUE+GwY1qKWMnglzzcksuSf1Nv6bvXctQPfc9ySf5QlCNmvo0Yj5on3
+	CWrsgx+fItCzoLU8mNcfQLVKzltTWiT3Yfqa7GKlse0T2gNs9wVq2iqrjq+Dsw==
 From: Gregory CLEMENT <gregory.clement@bootlin.com>
 To: Paul Burton <paulburton@kernel.org>,
 	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
@@ -32,9 +32,9 @@ Cc: Vladimir  Kondratiev <vladimir.kondratiev@mobileye.com>,
 	=?UTF-8?q?Th=C3=A9o=20Lebrun?= <theo.lebrun@bootlin.com>,
 	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
 	Gregory CLEMENT <gregory.clement@bootlin.com>
-Subject: [PATCH v2 19/21] MIPS: mobileye: Add EPM5 device tree
-Date: Thu, 23 Nov 2023 16:26:36 +0100
-Message-ID: <20231123152639.561231-20-gregory.clement@bootlin.com>
+Subject: [PATCH v2 21/21] MAINTAINERS: Add entry for Mobileye MIPS SoCs
+Date: Thu, 23 Nov 2023 16:26:38 +0100
+Message-ID: <20231123152639.561231-22-gregory.clement@bootlin.com>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231123152639.561231-1-gregory.clement@bootlin.com>
 References: <20231123152639.561231-1-gregory.clement@bootlin.com>
@@ -44,59 +44,43 @@ List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-GND-Sasl: gregory.clement@bootlin.com
 
-Add a device tree for the Mobileye EPM5 evaluation board.
+Add Vlad, Théo and myself as co-maintainers for the Mobileye MIPS
+SoCs.
 
+Signed-off-by: Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>
+Signed-off-by: Théo Lebrun <theo.lebrun@bootlin.com>
 Signed-off-by: Gregory CLEMENT <gregory.clement@bootlin.com>
 ---
- arch/mips/boot/dts/mobileye/Makefile       |  4 ++++
- arch/mips/boot/dts/mobileye/eyeq5-epm5.dts | 24 ++++++++++++++++++++++
- 2 files changed, 28 insertions(+)
- create mode 100644 arch/mips/boot/dts/mobileye/Makefile
- create mode 100644 arch/mips/boot/dts/mobileye/eyeq5-epm5.dts
+ MAINTAINERS | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
-diff --git a/arch/mips/boot/dts/mobileye/Makefile b/arch/mips/boot/dts/mobileye/Makefile
-new file mode 100644
-index 0000000000000..b6fa261f0a3a0
---- /dev/null
-+++ b/arch/mips/boot/dts/mobileye/Makefile
-@@ -0,0 +1,4 @@
-+# SPDX-License-Identifier: GPL-2.0-only
-+# Copyright 2023 Mobileye Vision Technologies Ltd.
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 97f51d5ec1cfd..b9ddedc154091 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -14607,6 +14607,18 @@ W:	http://palosaari.fi/linux/
+ Q:	http://patchwork.linuxtv.org/project/linux-media/list/
+ F:	drivers/media/dvb-frontends/mn88473*
+ 
++MOBILEYE MIPS SOCS
++M:	Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>
++M:	Gregory CLEMENT <gregory.clement@bootlin.com>
++M:	Théo Lebrun <theo.lebrun@bootlin.com>
++L:	linux-mips@vger.kernel.org
++S:	Maintained
++F:	Documentation/devicetree/bindings/mips/mobileye.yaml
++F:	arch/mips/boot/dts/mobileye/
++F:	arch/mips/configs/generic/board-eyeq5.config
++F:	arch/mips/generic/board-epm5.its.S
++F:	include/dt-bindings/soc/mobileye,eyeq5.h
 +
-+dtb-$(CONFIG_SOC_EYEQ5)		+= eyeq5-epm5.dtb
-diff --git a/arch/mips/boot/dts/mobileye/eyeq5-epm5.dts b/arch/mips/boot/dts/mobileye/eyeq5-epm5.dts
-new file mode 100644
-index 0000000000000..ff16c3c760a19
---- /dev/null
-+++ b/arch/mips/boot/dts/mobileye/eyeq5-epm5.dts
-@@ -0,0 +1,24 @@
-+// SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+/*
-+ * Copyright 2023 Mobileye Vision Technologies Ltd.
-+ */
-+
-+/dts-v1/;
-+
-+#include "eyeq5.dtsi"
-+
-+/ {
-+	compatible = "mobileye,eyeq5-epm5", "mobileye,eyeq5";
-+	model = "Mobile EyeQ5 MP5 Evaluation board";
-+
-+	chosen {
-+		bootargs = "earlycon";
-+		stdout-path = "serial2:115200n8";
-+	};
-+
-+	memory@0 {
-+		device_type = "memory";
-+		reg = <0x0 0x08000000 0x0 0x08000000>,
-+		      <0x8 0x00000000 0x0 0x78000000>;
-+	};
-+};
+ MODULE SUPPORT
+ M:	Luis Chamberlain <mcgrof@kernel.org>
+ L:	linux-modules@vger.kernel.org
 -- 
 2.42.0
 

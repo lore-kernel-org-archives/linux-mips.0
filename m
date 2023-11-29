@@ -1,154 +1,233 @@
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="NkzyZlgS"
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B82AF1FF1;
-	Wed, 29 Nov 2023 08:15:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1701274550; x=1732810550;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=ZTe3P1t1nP9zU91mwbbjJ6s//dd7HhfH9LawRMEcJGc=;
-  b=NkzyZlgSwi8lGBs7QZOrk9dJKVEFS1d/YI89q8O4ETwdzKHmTKeLZ2Fz
-   akxX6GiGZ1f+zEdLZblpDhwqptpsjVApOMkh7Z178SvVSa7ztyJfT6hpU
-   QLYDmJT73p00gZNuOwTlaXFPIjQlfoAO25e1B7R+VUVmKkyUeiUzJzYeg
-   BDH0Qw01rmT7gjRLsgo465fDZzP3dPcvtKjS8FPEO1Pv95H61/Yqa6LEm
-   mfliqKoQ0/RL2mjW6UY8v8GnqzuxZcqgjPuEUQbeWgils48KvqYmvbBrF
-   MOBY5Jk7ws7vpuVUk9vgkI726c2dyZw09344CqzebQpngcYFVIad1q2sJ
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10909"; a="373372937"
-X-IronPort-AV: E=Sophos;i="6.04,235,1695711600"; 
-   d="scan'208";a="373372937"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Nov 2023 08:15:32 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10909"; a="892498916"
-X-IronPort-AV: E=Sophos;i="6.04,235,1695711600"; 
-   d="scan'208";a="892498916"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by orsmga004.jf.intel.com with ESMTP; 29 Nov 2023 08:15:21 -0800
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-	id 7FADFCC8; Wed, 29 Nov 2023 18:15:02 +0200 (EET)
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Linus Walleij <linus.walleij@linaro.org>,
-	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-	Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-	=?UTF-8?q?Jonathan=20Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="O4cmTLl6"
+Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 674D0D6E;
+	Wed, 29 Nov 2023 08:23:19 -0800 (PST)
+Received: by mail-lj1-x22a.google.com with SMTP id 38308e7fff4ca-2c9b5e50c1fso25831781fa.0;
+        Wed, 29 Nov 2023 08:23:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701274997; x=1701879797; darn=vger.kernel.org;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=BE4DN2NIJid+M8TUF/vMVc9hXeYzBXdHSi7xojD4wk4=;
+        b=O4cmTLl6QBc6pJNGiHjiiSuJ4biDjlMAMFUhGxxNCtex+BDHhQG1eUHWXl3DOfZbLi
+         Y8PzIeyy9VonlB6G6qR1GZ/RscEKyWoWPHbvrNRNF1ldR4QKOKaf43nVBhv8fJ6Rzu8z
+         JJWRW6D4ROLQQyXhGzavjFwxEU7cOFjFnGu0sTG6BbJ4YP0aFo7AH8WF2nCFqFeS7of6
+         /hpbklK5QJbEfpj8W7r/7NN2fito64byko1KpPBC0UYcqo+y6JdpXQa5Z/zKoaFEgXpw
+         2I2I+YnAYF1nM07IgxY0nM5lPA6VUsAQyTZVHnG17OyYuLQHCub3oVKOVQeDVytQ6M+u
+         dUhA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701274997; x=1701879797;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=BE4DN2NIJid+M8TUF/vMVc9hXeYzBXdHSi7xojD4wk4=;
+        b=qxtVNo8AJxsZOiREvpQAVr8VQISaK/lTfRTrH4Hn3zUC/pk71SsMH72RptecNiGNh3
+         0USDm7B3Lnpn6Yx1CasBhasVOfmZLXhVbeYrUU2mphtCrNiAQRF1XNuxrbDMwoMJ6JE6
+         KM2nlKFzCSrlpysz7PrJy9UmIPTdYUtBhQYt1yMLLaXu9ROEJ64D6214rQJbygMCItB3
+         h8+TvsAEjyocupguonxWLI2X1GZfv2PEcZq3h1ghZQTxcXjLhduAvLEpcM1yxU47ipAe
+         6X5Lqh08riu/ts+HhMLxlh/NkE2/ahz5kbWV/Ahy2T3c3ByQz0Gnr/zpKdJsorju24jr
+         mOdw==
+X-Gm-Message-State: AOJu0YyW5huD//ZIKJD71/qQi0XL1D4yJMeBbXWuELg68uQwTOJX5xWX
+	AAPcqcFJMvGXOOXx8T0ID6o=
+X-Google-Smtp-Source: AGHT+IFpkXFRA9JtjkMulyQU+vE6lllIuj8DaTvHOgPc7kkDjVJCH1EZdgBzk/x+Nxw/nDpm1ZgC3Q==
+X-Received: by 2002:a2e:9557:0:b0:2c9:b623:ddf1 with SMTP id t23-20020a2e9557000000b002c9b623ddf1mr3708530ljh.51.1701274997225;
+        Wed, 29 Nov 2023 08:23:17 -0800 (PST)
+Received: from orome.fritz.box (p200300e41f0fa600f22f74fffe1f3a53.dip0.t-ipconnect.de. [2003:e4:1f0f:a600:f22f:74ff:fe1f:3a53])
+        by smtp.gmail.com with ESMTPSA id n16-20020a05600c501000b00407b93d8085sm2743768wmr.27.2023.11.29.08.23.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 29 Nov 2023 08:23:16 -0800 (PST)
+Date: Wed, 29 Nov 2023 17:23:13 +0100
+From: Thierry Reding <thierry.reding@gmail.com>
+To: Jason Gunthorpe <jgg@nvidia.com>
+Cc: David Airlie <airlied@gmail.com>,
+	Alyssa Rosenzweig <alyssa@rosenzweig.io>,
+	Albert Ou <aou@eecs.berkeley.edu>, asahi@lists.linux.dev,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Danilo Krummrich <dakr@redhat.com>, Daniel Vetter <daniel@ffwll.ch>,
+	Dexuan Cui <decui@microsoft.com>, devicetree@vger.kernel.org,
+	dmaengine@vger.kernel.org, dri-devel@lists.freedesktop.org,
+	David Woodhouse <dwmw2@infradead.org>,
+	Frank Rowand <frowand.list@gmail.com>,
+	Hanjun Guo <guohanjun@huawei.com>,
+	Haiyang Zhang <haiyangz@microsoft.com>, iommu@lists.linux.dev,
+	Jon Hunter <jonathanh@nvidia.com>, Joerg Roedel <joro@8bytes.org>,
+	Karol Herbst <kherbst@redhat.com>,
 	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-	=?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
-	Geert Uytterhoeven <geert+renesas@glider.be>,
-	Biju Das <biju.das.jz@bp.renesas.com>,
-	Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>,
-	Jianlong Huang <jianlong.huang@starfivetech.com>,
-	linux-arm-kernel@lists.infradead.org,
-	linux-gpio@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-mediatek@lists.infradead.org,
-	openbmc@lists.ozlabs.org,
-	linux-mips@vger.kernel.org,
-	linux-arm-msm@vger.kernel.org,
-	linux-renesas-soc@vger.kernel.org
-Cc: Ray Jui <rjui@broadcom.com>,
-	Scott Branden <sbranden@broadcom.com>,
-	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>,
-	Dong Aisheng <aisheng.dong@nxp.com>,
-	Fabio Estevam <festevam@gmail.com>,
-	Shawn Guo <shawnguo@kernel.org>,
-	Jacky Bai <ping.bai@nxp.com>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	NXP Linux Team <linux-imx@nxp.com>,
-	Sean Wang <sean.wang@kernel.org>,
-	Paul Cercueil <paul@crapouillou.net>,
-	Lakshmi Sowjanya D <lakshmi.sowjanya.d@intel.com>,
-	Bjorn Andersson <andersson@kernel.org>,
-	Andy Gross <agross@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Emil Renner Berthing <kernel@esmil.dk>,
-	Hal Feng <hal.feng@starfivetech.com>
-Subject: [PATCH v4 22/23] pinctrl: core: Remove unused members from struct group_desc
-Date: Wed, 29 Nov 2023 18:06:45 +0200
-Message-ID: <20231129161459.1002323-23-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.43.0.rc1.1.gbec44491f096
-In-Reply-To: <20231129161459.1002323-1-andriy.shevchenko@linux.intel.com>
-References: <20231129161459.1002323-1-andriy.shevchenko@linux.intel.com>
+	"K. Y. Srinivasan" <kys@microsoft.com>,
+	Laxman Dewangan <ldewangan@nvidia.com>, Len Brown <lenb@kernel.org>,
+	linux-acpi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-hyperv@vger.kernel.org, linux-mips@vger.kernel.org,
+	linux-riscv@lists.infradead.org, linux-snps-arc@lists.infradead.org,
+	linux-tegra@vger.kernel.org, Russell King <linux@armlinux.org.uk>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Lyude Paul <lyude@redhat.com>,
+	Marek Szyprowski <m.szyprowski@samsung.com>,
+	nouveau@lists.freedesktop.org, Palmer Dabbelt <palmer@dabbelt.com>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	"Rafael J. Wysocki" <rafael@kernel.org>,
+	Rob Herring <robh+dt@kernel.org>,
+	Robin Murphy <robin.murphy@arm.com>,
+	Sudeep Holla <sudeep.holla@arm.com>,
+	Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
+	Sven Peter <sven@svenpeter.dev>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	Vineet Gupta <vgupta@kernel.org>, Vinod Koul <vkoul@kernel.org>,
+	Wei Liu <wei.liu@kernel.org>, Will Deacon <will@kernel.org>,
+	Lu Baolu <baolu.lu@linux.intel.com>, Christoph Hellwig <hch@lst.de>,
+	Jerry Snitselaar <jsnitsel@redhat.com>,
+	Hector Martin <marcan@marcan.st>, Moritz Fischer <mdf@kernel.org>,
+	patches@lists.linux.dev,
+	"Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+	Rob Herring <robh@kernel.org>
+Subject: Re: [PATCH 08/10] iommu/tegra: Use tegra_dev_iommu_get_stream_id()
+ in the remaining places
+Message-ID: <ZWdlcboM4Xzs38NI@orome.fritz.box>
+References: <0-v1-720585788a7d+811b-iommu_fwspec_p1_jgg@nvidia.com>
+ <8-v1-720585788a7d+811b-iommu_fwspec_p1_jgg@nvidia.com>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="OR6CuieIvqboqm08"
+Content-Disposition: inline
+In-Reply-To: <8-v1-720585788a7d+811b-iommu_fwspec_p1_jgg@nvidia.com>
+User-Agent: Mutt/2.2.12 (2023-09-09)
 
-All drivers are converted to use embedded struct pingroup.
-Remove unused members from struct group_desc.
 
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
- drivers/pinctrl/core.c | 9 ---------
- drivers/pinctrl/core.h | 9 ---------
- 2 files changed, 18 deletions(-)
+--OR6CuieIvqboqm08
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/drivers/pinctrl/core.c b/drivers/pinctrl/core.c
-index 744f03edbdb2..6688911c00db 100644
---- a/drivers/pinctrl/core.c
-+++ b/drivers/pinctrl/core.c
-@@ -557,9 +557,6 @@ const char *pinctrl_generic_get_group_name(struct pinctrl_dev *pctldev,
- 	if (!group)
- 		return NULL;
- 
--	if (group->name)
--		return group->name;
--
- 	return group->grp.name;
- }
- EXPORT_SYMBOL_GPL(pinctrl_generic_get_group_name);
-@@ -586,12 +583,6 @@ int pinctrl_generic_get_group_pins(struct pinctrl_dev *pctldev,
- 		return -EINVAL;
- 	}
- 
--	if (group->pins) {
--		*pins = group->pins;
--		*num_pins = group->num_pins;
--		return 0;
--	}
--
- 	*pins = group->grp.pins;
- 	*num_pins = group->grp.npins;
- 
-diff --git a/drivers/pinctrl/core.h b/drivers/pinctrl/core.h
-index 60892950bbab..0c1803dd85e5 100644
---- a/drivers/pinctrl/core.h
-+++ b/drivers/pinctrl/core.h
-@@ -199,16 +199,10 @@ struct pinctrl_maps {
- /**
-  * struct group_desc - generic pin group descriptor
-  * @grp: generic data of the pin group (name and pins)
-- * @name: name of the pin group
-- * @pins: array of pins that belong to the group
-- * @num_pins: number of pins in the group
-  * @data: pin controller driver specific data
-  */
- struct group_desc {
- 	struct pingroup grp;
--	const char *name;
--	const unsigned int *pins;
--	int num_pins;
- 	void *data;
- };
- 
-@@ -216,9 +210,6 @@ struct group_desc {
- #define PINCTRL_GROUP_DESC(_name, _pins, _num_pins, _data)	\
- (struct group_desc) {						\
- 	.grp = PINCTRL_PINGROUP(_name, _pins, _num_pins),	\
--	.name = _name,						\
--	.pins = _pins,						\
--	.num_pins = _num_pins,					\
- 	.data = _data,						\
- }
- 
--- 
-2.43.0.rc1.1.gbec44491f096
+On Tue, Nov 28, 2023 at 08:48:04PM -0400, Jason Gunthorpe wrote:
+> This API was defined to formalize the access to internal iommu details on
+> some Tegra SOCs, but a few callers got missed. Add them.
+>=20
+> The helper already masks by 0xFFFF so remove this code from the callers.
+>=20
+> Suggested-by: Thierry Reding <thierry.reding@gmail.com>
+> Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+> ---
+>  drivers/dma/tegra186-gpc-dma.c                  |  8 +++-----
+>  drivers/gpu/drm/nouveau/nvkm/subdev/ltc/gp10b.c |  7 ++-----
+>  drivers/memory/tegra/tegra186.c                 | 12 ++++++------
+>  3 files changed, 11 insertions(+), 16 deletions(-)
+>=20
+> diff --git a/drivers/dma/tegra186-gpc-dma.c b/drivers/dma/tegra186-gpc-dm=
+a.c
+> index fa4d4142a68a21..88547a23825b18 100644
+> --- a/drivers/dma/tegra186-gpc-dma.c
+> +++ b/drivers/dma/tegra186-gpc-dma.c
+> @@ -1348,8 +1348,8 @@ static int tegra_dma_program_sid(struct tegra_dma_c=
+hannel *tdc, int stream_id)
+>  static int tegra_dma_probe(struct platform_device *pdev)
+>  {
+>  	const struct tegra_dma_chip_data *cdata =3D NULL;
+> -	struct iommu_fwspec *iommu_spec;
+> -	unsigned int stream_id, i;
+> +	unsigned int i;
+> +	u32 stream_id;
+>  	struct tegra_dma *tdma;
+>  	int ret;
+> =20
+> @@ -1378,12 +1378,10 @@ static int tegra_dma_probe(struct platform_device=
+ *pdev)
+> =20
+>  	tdma->dma_dev.dev =3D &pdev->dev;
+> =20
+> -	iommu_spec =3D dev_iommu_fwspec_get(&pdev->dev);
+> -	if (!iommu_spec) {
+> +	if (!tegra_dev_iommu_get_stream_id(&pdev->dev, &stream_id)) {
+>  		dev_err(&pdev->dev, "Missing iommu stream-id\n");
+>  		return -EINVAL;
+>  	}
+> -	stream_id =3D iommu_spec->ids[0] & 0xffff;
+> =20
+>  	ret =3D device_property_read_u32(&pdev->dev, "dma-channel-mask",
+>  				       &tdma->chan_mask);
+> diff --git a/drivers/gpu/drm/nouveau/nvkm/subdev/ltc/gp10b.c b/drivers/gp=
+u/drm/nouveau/nvkm/subdev/ltc/gp10b.c
+> index e7e8fdf3adab7a..b40fd1dbb21617 100644
+> --- a/drivers/gpu/drm/nouveau/nvkm/subdev/ltc/gp10b.c
+> +++ b/drivers/gpu/drm/nouveau/nvkm/subdev/ltc/gp10b.c
+> @@ -28,16 +28,13 @@ static void
+>  gp10b_ltc_init(struct nvkm_ltc *ltc)
+>  {
+>  	struct nvkm_device *device =3D ltc->subdev.device;
+> -	struct iommu_fwspec *spec;
+> +	u32 sid;
+> =20
+>  	nvkm_wr32(device, 0x17e27c, ltc->ltc_nr);
+>  	nvkm_wr32(device, 0x17e000, ltc->ltc_nr);
+>  	nvkm_wr32(device, 0x100800, ltc->ltc_nr);
+> =20
+> -	spec =3D dev_iommu_fwspec_get(device->dev);
+> -	if (spec) {
+> -		u32 sid =3D spec->ids[0] & 0xffff;
+> -
+> +	if (tegra_dev_iommu_get_stream_id(device->dev, &sid)) {
+>  		/* stream ID */
+>  		nvkm_wr32(device, 0x160000, sid << 2);
 
+We could probably also remove the comment now since the function and
+variable names make it obvious what's being written here.
+
+>  	}
+> diff --git a/drivers/memory/tegra/tegra186.c b/drivers/memory/tegra/tegra=
+186.c
+> index 533f85a4b2bdb7..3e4fbe94dd666e 100644
+> --- a/drivers/memory/tegra/tegra186.c
+> +++ b/drivers/memory/tegra/tegra186.c
+> @@ -111,21 +111,21 @@ static void tegra186_mc_client_sid_override(struct =
+tegra_mc *mc,
+>  static int tegra186_mc_probe_device(struct tegra_mc *mc, struct device *=
+dev)
+>  {
+>  #if IS_ENABLED(CONFIG_IOMMU_API)
+> -	struct iommu_fwspec *fwspec =3D dev_iommu_fwspec_get(dev);
+>  	struct of_phandle_args args;
+>  	unsigned int i, index =3D 0;
+> +	u32 sid;
+> =20
+> +	WARN_ON(!tegra_dev_iommu_get_stream_id(dev, &sid));
+
+I know the code previously didn't check for any errors, but we may want
+to do so now. If tegra_dev_iommu_get_stream_id() ever fails we may end
+up writing some undefined value into the override register.
+
+I'm also unsure if WARN_ON() is appropriate here. I vaguely recall that
+->probe_device() was called for all devices on the bus and not all of
+them may have been associated with the IOMMU. Not all of them may in
+fact access memory in the first place.
+
+Perhaps I'm misremembering and the IOMMU core now takes care of only
+calling this when fwspec is indeed valid?
+
+Thierry
+
+--OR6CuieIvqboqm08
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEiOrDCAFJzPfAjcif3SOs138+s6EFAmVnZW8ACgkQ3SOs138+
+s6H3xA/+PnJPzNAATgGeEaxpY8VPfo7h0kY98vc1QYnUCiV46yzQPUq+/nVkkq24
+ybBtQ8hr0vl4ZxtflekHYxb0WsXO560ODmmckXEYPWRfVyxckFz+CRyvDx+zxyxJ
+d/TtD8p0l6DGFlZGume2h/cDafF5+3td2JEJ2vEfu0tMmRLIFC7L+Pj2IB4/Fz21
+2M6M6T0Al7obecinfW9jzg00G20RybQSrdPq+H9z3BNhOXGKy+1fjIzCsnr4H0gD
+kE4WooU9uLbMdpEYYZ8idqC1OieIr6p2IF802/4/TAvWHreHlH7uPcDRry8rxkwQ
+j0CAwBlcvLLtLj2pw7kYgxMpXwahgXSuhxX42CXDWsUUW4mxiZkvG0o8Cv2EGtSD
+emTIMrC3w1R2MSemI8+RQdOHhOnTNC0sADGo9EyurPrYC9TzwqTOPI35kNqJ8ZAw
+zCmhDKieZM9dxlOdFrpC+eLz8eVEjo5oV+OchMT6k8nw7TkD6dGHBOJlDhQeJNWZ
+tZBnlBamoEmlD5Kz/Oe90S47MnYtx8EX7o9bpEV6/ZO13P+F07rasP3l6hCJuybO
+c2YAeCxY8cuwHLnIJZTm3hR7UU9PQwPn4utolLuSqaXkL5wSdVr+1eZyTye25W0J
+CSzMCL3SkMgfKaZ7L6ptSRFtOWxiH6943ahvYpDBXlgEp/R9aVg=
+=ORi/
+-----END PGP SIGNATURE-----
+
+--OR6CuieIvqboqm08--

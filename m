@@ -1,21 +1,22 @@
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="N8HfEVAf"
-Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::225])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23D7C1B2;
-	Fri,  1 Dec 2023 03:15:23 -0800 (PST)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 420B71C0004;
-	Fri,  1 Dec 2023 11:15:21 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="XUkmNmNZ"
+Received: from relay7-d.mail.gandi.net (relay7-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::227])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCC0A10E5;
+	Fri,  1 Dec 2023 03:15:26 -0800 (PST)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id D846E2000B;
+	Fri,  1 Dec 2023 11:15:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1701429322;
+	t=1701429325;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=4imsoNotdCY9kpBwQ1K6ybkxBX5vA3o4lFD6+R+1ft4=;
-	b=N8HfEVAf50Nq7BZnY9kfsTYlgt4koQNK4FTPx+aaqu0yEt9V94CP51O/Xjn9jRYS12H6ix
-	+Mbcjzox9UdKl3AzQ7I9rjshWPK9cZ7EWuiUVOpghkqa/MMhDYG9p7v+wAkryb6zokEk7B
-	HkEmv6MptCwILz7flJbOHQWvjI0p+qtLsamokxexGHGkHy+q3ej0CNHNSHy8jqDB1nReHm
-	6/hQjLpBq1a0VP0R8ZrXMQWcGVcppMVDfpSowvGWPnMDdTonxZrofs17XmkzfUAfFhWfLv
-	BJuRCh8qsGmrRVhCG9Mxi4jl7KPxkQyVRQ4Fsm4v25RySjE7brdB73yYpUi0CQ==
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=AagYqurduAd05kHY0ow9kHcvI+mUo3FUEEyQW1aeXWI=;
+	b=XUkmNmNZbAI8ZBUM/abQ1IVZSBWxfK27/ZesXuxSyGIdve2+WQ5TB9iTAf7u/yzdIbZEOn
+	Nz9p0a28Nm1DR1Nx7/XzxpnPLQUT0Ek1VSiDnAZDZNNVAQYy6PQogxBbX1iWEDJKHyerct
+	Oczg5zYdGiODwlsSvVo7tJYYLBM9Hmr9uw5hAzC6Kps75J51nBlD2xC8J/znpukJDWEV9l
+	K3+mKsnbyfKyhuN8IpTS9sVCZPcpcjdaA7zwAY3xA0FRYfMzB9ZqueMVsiLcTIEQ0boHs6
+	dU81PvbKl4syGjdKmtf6WFpXEy4LSdF1b8YEnicj2bPJBNBTKBkFRJGQx5IRCg==
 From: Gregory CLEMENT <gregory.clement@bootlin.com>
 To: Paul Burton <paulburton@kernel.org>,
 	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
@@ -30,200 +31,128 @@ Cc: Vladimir  Kondratiev <vladimir.kondratiev@mobileye.com>,
 	Alexandre Belloni <alexandre.belloni@bootlin.com>,
 	=?UTF-8?q?Th=C3=A9o=20Lebrun?= <theo.lebrun@bootlin.com>,
 	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+	Vladimir Kondratiev <vladimir.kondratiev@intel.com>,
 	Gregory CLEMENT <gregory.clement@bootlin.com>
-Subject: [PATCH v3 00/22] Add support for the Mobileye EyeQ5 SoC
-Date: Fri,  1 Dec 2023 12:14:43 +0100
-Message-ID: <20231201111512.803120-1-gregory.clement@bootlin.com>
+Subject: [PATCH v3 04/22] MIPS: genex: Fix except_vec_vi for kernel in XKPHYS
+Date: Fri,  1 Dec 2023 12:14:47 +0100
+Message-ID: <20231201111512.803120-5-gregory.clement@bootlin.com>
 X-Mailer: git-send-email 2.42.0
+In-Reply-To: <20231201111512.803120-1-gregory.clement@bootlin.com>
+References: <20231201111512.803120-1-gregory.clement@bootlin.com>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-GND-Sasl: gregory.clement@bootlin.com
 
+From: Jiaxun Yang <jiaxun.yang@flygoat.com>
 
-Hello,
+Use {highest, higher, hi, lo} immediate loading sequence
+to load 64 bit jump address for handler when kernel is
+loaded to XKPHYS.
 
-The EyeQ5 SoC from Mobileye is based on the MIPS I6500 architecture
-and features multiple controllers such as the classic UART, I2C, SPI,
-as well as CAN-FD, PCIe, Octal/Quad SPI Flash interface, Gigabit
-Ethernet, MIPI CSI-2, and eMMC 5.1. It also includes a Hardware
-Security Module, Functional Safety Hardware, and MJPEG encoder.
+Co-developed-by: Vladimir Kondratiev <vladimir.kondratiev@intel.com>
+Signed-off-by: Vladimir Kondratiev <vladimir.kondratiev@intel.com>
+Co-developed-by: Gregory CLEMENT <gregory.clement@bootlin.com>
+Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+Signed-off-by: Gregory CLEMENT <gregory.clement@bootlin.com>
+---
+ arch/mips/kernel/genex.S | 19 +++++++++++++++----
+ arch/mips/kernel/traps.c | 34 ++++++++++++++++++++++++----------
+ 2 files changed, 39 insertions(+), 14 deletions(-)
 
-One peculiarity of this SoC is that the physical address of the DDDR
-exceeds 32 bits. Given that the architecture is 64 bits, this is not
-an issue, but it requires some changes in how the mips64 is currently
-managed during boot.
-
-In this third version there are only few changes done in the device
-tree related part. I however managed to test this series on top of the
-Jiaxun patches enabling SPARSMEM[1], and it fixed my issue about memory
-consumption for memmap.
-
-To build and test the kernel, we need to run the following commands:
-
-make 64r6el_defconfig BOARDS=eyeq5
-make vmlinuz.itb
-
-I noticed that if the kernel can't be in kseg0 at all by using
-low memory at 0x40000000, then I got the following message during
-boot:
-
- Run /init as init process
- Unhandled kernel unaligned access[#1]:
- CPU: 0 PID: 22 Comm: kcompactd0 Not tainted 6.7.0-rc1-00024-g7d48f10cb2bb-dirty #409
- $ 0   : 0000000000000000 0000000000000001 0000000000000010 a80000080800e100
- $ 4   : a8000008088fe758 00000000088fe758 0000000000000004 0000000000000002
- $ 8   : 0000000000000089 0000000008fa0000 0000000000000000 0000000008ad0000
- $12   : 00000000140000e1 000000001000001e 0000000000000000 0000000000000141
- $16   : a80000080321fa30 0000000000000000 b88f553ba6dfc404 a8000008081bfe9c
- $20   : a800000808ad0000 a8000008081c03e4 0000000000012488 a80000080907afb4
- $24   : 0000000000000000 0000000008ad0000                                  
- $28   : a80000080321c000 a80000080321f950 0000000000000000 a80000080800dcd0
- epc   : a80000080800e104 emulate_load_store_insn+0x544/0xba0
- ra    : a80000080800dcd0 emulate_load_store_insn+0x110/0xba0
- Status: 140000e3 KX SX UX KERNEL EXL IE 
- Cause : 80800410 (ExcCode 04)
- BadVA : b88f553ba6dfc40b
- PrId  : 0001b028 (MIPS I6500)
- Modules linked in:
- Process kcompactd0 (pid: 22, threadinfo=(____ptrval____), task=(____ptrval____), tls=0000000000000000)
- Stack : 0000000000000000 0000000000000000 00000000dc420010 a8afa5b0e1346800
-         0000000000012488 a80000080907af80 a80000080321fd28 a800000808acfb80
-         a800000808ad0000 0000000000000000 a80000080321fa30 a80000080800e90c
-         0000000000000000 0000000000000000 0000000000000000 0000000000000000
-         0000000000000000 a8afa5b0e1346800 0000000000000000 a80000080907afb4
-         0000000000012488 a80000080907af80 a80000080321fd28 a800000809078d80
-         0000000000000000 0000000000000000 0000000000000000 a800000808003174
-         0000000000000000 0000000000000001 b88f553ba6dfc3f4 f91f7fb9d6d87a3d
-         0000000000000002 fffffffffffffffc 0000000000000080 0000000008b90000
-         0000000000000089 0000000008fc0000 0000000000000000 0000000000000000
-         ...
- Call Trace:
- [<a80000080800e104>] emulate_load_store_insn+0x544/0xba0
- [<a80000080800e90c>] do_ade+0x1ac/0x1520
- [<a800000808003174>] handle_adel_int+0x30/0x3c
+diff --git a/arch/mips/kernel/genex.S b/arch/mips/kernel/genex.S
+index b6de8e88c1bd4..fd765ad9ecac0 100644
+--- a/arch/mips/kernel/genex.S
++++ b/arch/mips/kernel/genex.S
+@@ -272,11 +272,22 @@ NESTED(except_vec_vi, 0, sp)
+ 	.set	push
+ 	.set	noreorder
+ 	PTR_LA	v1, except_vec_vi_handler
+-FEXPORT(except_vec_vi_lui)
+-	lui	v0, 0		/* Patched */
++#if defined(CONFIG_32BIT) || defined(KBUILD_64BIT_SYM32)
++FEXPORT(except_vec_vi_hi)
++	lui	v0, 0			/* Patched */
++#else
++FEXPORT(except_vec_vi_highest)
++	lui	v0, 0			/* Patched */
++FEXPORT(except_vec_vi_higher)
++	daddiu	v0, 0			/* Patched */
++	dsll	v0, 16
++FEXPORT(except_vec_vi_hi)
++	daddiu	v0, 0			/* Patched */
++	dsll	v0, 16
++#endif
+ 	jr	v1
+-FEXPORT(except_vec_vi_ori)
+-	 ori	v0, 0		/* Patched */
++FEXPORT(except_vec_vi_lo)
++	PTR_ADDIU	v0, 0		/* Patched */
+ 	.set	pop
+ 	END(except_vec_vi)
+ EXPORT(except_vec_vi_end)
+diff --git a/arch/mips/kernel/traps.c b/arch/mips/kernel/traps.c
+index 246c6a6b02614..60c513c51684f 100644
+--- a/arch/mips/kernel/traps.c
++++ b/arch/mips/kernel/traps.c
+@@ -2091,18 +2091,26 @@ static void *set_vi_srs_handler(int n, vi_handler_t addr, int srs)
+ 		 * If no shadow set is selected then use the default handler
+ 		 * that does normal register saving and standard interrupt exit
+ 		 */
+-		extern const u8 except_vec_vi[], except_vec_vi_lui[];
+-		extern const u8 except_vec_vi_ori[], except_vec_vi_end[];
++		extern const u8 except_vec_vi[], except_vec_vi_hi[];
++		extern const u8 except_vec_vi_lo[], except_vec_vi_end[];
++#if defined(CONFIG_64BIT) && !defined(KBUILD_64BIT_SYM32)
++		extern const u8 except_vec_vi_highest[], except_vec_vi_higher[];
++#endif
+ 		extern const u8 rollback_except_vec_vi[];
+ 		const u8 *vec_start = using_rollback_handler() ?
+ 				      rollback_except_vec_vi : except_vec_vi;
+ #if defined(CONFIG_CPU_MICROMIPS) || defined(CONFIG_CPU_BIG_ENDIAN)
+-		const int lui_offset = except_vec_vi_lui - vec_start + 2;
+-		const int ori_offset = except_vec_vi_ori - vec_start + 2;
++		const int imm_offset = 2;
+ #else
+-		const int lui_offset = except_vec_vi_lui - vec_start;
+-		const int ori_offset = except_vec_vi_ori - vec_start;
++		const int imm_offset = 0;
++#endif
++#if defined(CONFIG_64BIT) && !defined(KBUILD_64BIT_SYM32)
++		const int highest_offset = except_vec_vi_highest - vec_start + imm_offset;
++		const int higher_offset = except_vec_vi_higher - vec_start + imm_offset;
+ #endif
++		const int hi_offset = except_vec_vi_hi - vec_start + imm_offset;
++		const int lo_offset = except_vec_vi_lo - vec_start + imm_offset;
++
+ 		const int handler_len = except_vec_vi_end - vec_start;
  
- Code: 3c03a800  cbffff4d  24020010 <205100f0> 82510007  92410006  00118a38  02218825  92410005 
- 
- ---[ end trace 0000000000000000 ]---
-
-But then I don't see other error when running the system.
-So I don't know if this is a "real" error and how to fix it.
-
-Changelog:
- v2 -> v3
-
- - Add more reviewed-by and acked-by tags
-
- - Fix sorting for cpus entries in Documentation/devicetree/bindings/mips/cpus.yaml
-
- - Fix indentation issue in Documentation/devicetree/bindings/mips/mobileye.yaml
-
- - Move gic node under soc node in arch/mips/boot/dts/mobileye/eyeq5.dtsi
-
- v1 -> v2
-
- - Added reviewed-by and acked-by tags
-
- - Fix typos reported
-
- - In patch 15 use 'img' vendor string instead of mti
-
- - In patch 16 modify licence
-
- - In patch 17 give more explanations about the block usage.
-
- - In patch 18, remove _ in node names, don't use anymore
-   CONFIG_BUILTIN_DTB in Makefile, remove macro, modify licence.
-
- - In patch 19 remove most of the bootargs and only keeps earlycon. I
-   also split the memory in 2 part in the device tree.
-
- - Integrate the series from Jiaxun Yang
-   https://lore.kernel.org/linux-mips/20231027221106.405666-1-jiaxun.yang@flygoat.com/
-
-  They are patches 2 to 6 and 8 to 12
-
-  Then I added patch 7 to fix the cache issue visible on the Mobileye
-  platform, I also add patch 13 to improve warning message when ebase
-  doesn't belong to KSEG0
-
-Regards,
-
-Gregory
-
-[1]: https://lore.kernel.org/linux-mips/20231028-mm-v1-0-45377cd158cf@flygoat.com/
-
-Gregory CLEMENT (12):
-  MIPS: compressed: Use correct instruction for 64 bit code
-  MIPS: Fix cache issue with mips_cps_core_entry
-  MIPS: traps: Give more explanations if ebase doesn't belong to KSEG0
-  dt-bindings: Add vendor prefix for Mobileye Vision Technologies Ltd.
-  dt-bindings: mips: cpus: Sort the entries
-  dt-bindings: mips: cpu: Add I-Class I6500 Multiprocessor Core
-  dt-bindings: mips: Add bindings for Mobileye SoCs
-  dt-bindings: mfd: syscon: Document EyeQ5 OLB
-  MIPS: mobileye: Add EyeQ5 dtsi
-  MIPS: mobileye: Add EPM5 device tree
-  MIPS: generic: Add support for Mobileye EyeQ5
-  MAINTAINERS: Add entry for Mobileye MIPS SoCs
-
-Jiaxun Yang (10):
-  MIPS: Export higher/highest relocation functions in uasm
-  MIPS: spaces: Define a couple of handy macros
-  MIPS: genex: Fix except_vec_vi for kernel in XKPHYS
-  MIPS: Fix set_uncached_handler for ebase in XKPHYS
-  MIPS: Refactor mips_cps_core_entry implementation
-  MIPS: Allow kernel base to be set from Kconfig for all platforms
-  MIPS: traps: Handle CPU with non standard vint offset
-  MIPS: Avoid unnecessary reservation of exception space
-  MIPS: traps: Enhance memblock ebase allocation process
-  MIPS: Get rid of CONFIG_NO_EXCEPT_FILL
-
- .../devicetree/bindings/mfd/syscon.yaml       |   1 +
- .../devicetree/bindings/mips/cpus.yaml        |  13 +-
- .../devicetree/bindings/mips/mobileye.yaml    |  32 ++
- .../devicetree/bindings/vendor-prefixes.yaml  |   2 +
- MAINTAINERS                                   |  12 +
- arch/mips/Kconfig                             |  26 +-
- arch/mips/boot/compressed/head.S              |   4 +-
- arch/mips/boot/dts/Makefile                   |   1 +
- arch/mips/boot/dts/mobileye/Makefile          |   4 +
- arch/mips/boot/dts/mobileye/eyeq5-epm5.dts    |  24 ++
- .../boot/dts/mobileye/eyeq5-fixed-clocks.dtsi | 292 ++++++++++++++++++
- arch/mips/boot/dts/mobileye/eyeq5.dtsi        | 134 ++++++++
- arch/mips/configs/generic/board-eyeq5.config  |  43 +++
- arch/mips/generic/Kconfig                     |  15 +
- arch/mips/generic/Platform                    |   2 +
- arch/mips/generic/board-epm5.its.S            |  24 ++
- arch/mips/include/asm/addrspace.h             |   5 +
- arch/mips/include/asm/mach-generic/spaces.h   |   5 +-
- arch/mips/include/asm/mips-cm.h               |   1 +
- arch/mips/include/asm/smp-cps.h               |   4 +-
- arch/mips/include/asm/traps.h                 |   1 -
- arch/mips/include/asm/uasm.h                  |   2 +
- arch/mips/kernel/cps-vec.S                    | 110 +++----
- arch/mips/kernel/cpu-probe.c                  |   5 -
- arch/mips/kernel/cpu-r3k-probe.c              |   2 -
- arch/mips/kernel/genex.S                      |  19 +-
- arch/mips/kernel/head.S                       |   7 +-
- arch/mips/kernel/smp-cps.c                    | 171 ++++++++--
- arch/mips/kernel/traps.c                      |  90 ++++--
- arch/mips/mm/uasm.c                           |   6 +-
- 30 files changed, 896 insertions(+), 161 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/mips/mobileye.yaml
- create mode 100644 arch/mips/boot/dts/mobileye/Makefile
- create mode 100644 arch/mips/boot/dts/mobileye/eyeq5-epm5.dts
- create mode 100644 arch/mips/boot/dts/mobileye/eyeq5-fixed-clocks.dtsi
- create mode 100644 arch/mips/boot/dts/mobileye/eyeq5.dtsi
- create mode 100644 arch/mips/configs/generic/board-eyeq5.config
- create mode 100644 arch/mips/generic/board-epm5.its.S
-
+ 		if (handler_len > VECTORSPACING) {
+@@ -2119,10 +2127,16 @@ static void *set_vi_srs_handler(int n, vi_handler_t addr, int srs)
+ #else
+ 				handler_len);
+ #endif
+-		h = (u16 *)(b + lui_offset);
+-		*h = (handler >> 16) & 0xffff;
+-		h = (u16 *)(b + ori_offset);
+-		*h = (handler & 0xffff);
++#if defined(CONFIG_64BIT) && !defined(KBUILD_64BIT_SYM32)
++		h = (u16 *)(b + highest_offset);
++		*h = uasm_rel_highest(handler);
++		h = (u16 *)(b + higher_offset);
++		*h = uasm_rel_higher(handler);
++#endif
++		h = (u16 *)(b + hi_offset);
++		*h = uasm_rel_hi(handler);
++		h = (u16 *)(b + lo_offset);
++		*h = uasm_rel_lo(handler);
+ 		local_flush_icache_range((unsigned long)b,
+ 					 (unsigned long)(b+handler_len));
+ 	}
 -- 
 2.42.0
 

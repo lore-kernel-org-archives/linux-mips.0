@@ -1,45 +1,45 @@
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="bUYFjHII"
-Received: from mail-wm1-x32a.google.com (mail-wm1-x32a.google.com [IPv6:2a00:1450:4864:20::32a])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD3D010F
-	for <linux-mips@vger.kernel.org>; Tue,  5 Dec 2023 00:45:48 -0800 (PST)
-Received: by mail-wm1-x32a.google.com with SMTP id 5b1f17b1804b1-40c0f3a7717so12362895e9.1
-        for <linux-mips@vger.kernel.org>; Tue, 05 Dec 2023 00:45:48 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="JxbHmGjj"
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D16B9A
+	for <linux-mips@vger.kernel.org>; Tue,  5 Dec 2023 01:28:01 -0800 (PST)
+Received: by mail-wm1-x332.google.com with SMTP id 5b1f17b1804b1-40c0e7b8a9bso17936595e9.3
+        for <linux-mips@vger.kernel.org>; Tue, 05 Dec 2023 01:28:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1701765947; x=1702370747; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1701768479; x=1702373279; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=foy1E6jPkvjBjLRqorRNUVjsBOmiv4lrJD7Tk5mocv0=;
-        b=bUYFjHIIZi0GkC7/nWFI7aQottt3//WACwDKHlNhWCeVr4H/Gq0rwglEQmhXbg3vHX
-         oqZMpqFvA6xy7qpagjQMZrXe018FtU2HDSvoHyIkVrcj91Y0NEDxD0wnKNaw8RlU2q0D
-         xfqCAWGRSTTHhWaRDUSxsZHb8i8akdqn2q58ggngNHvCI7CpALYiJlrmHNjrSABmtjW2
-         pcRY9GyxLkUhTWSFZP0Va5wFmc2Ikr1b+aDlko3qRrO2ELeX2oCKnDQrXHjFfs5Kcf5T
-         nKzS+57aMzE7EKlztRsAabr7vafxPMe6pBv6GNtB0jSJNWb1UJYNIwOqA4dP+dUgmCCC
-         xarw==
+        bh=CS8J4q12YedWzT2gH/0LjzjeAMQwNUR2jyKyMPxxBZo=;
+        b=JxbHmGjj4Sb3PUx637x9D9ZtjtOblWVs7w4ZLATyWWZFBNjcVdjSpcoWHEk14L7kay
+         IiU3qUbVz/JeTdvAAndlg06wAi1IA40HcK//WnGt/6a8kAsDcQlv8JYExR0ezKpFfdWV
+         j/pg8eaAk0u1IKjBcCovohs87FpMjSxufls/88xerpuPpPlWmmX2uSKaYnDb7sX6kxbU
+         Gy+SXhSxsqpQrWKSam5dvWSjhtTZBK6OhWmhmdQFs+zM28ERQx6sxWmX2EPdhGz7o1aI
+         VBPkRpNAeyYOt6aAdJoRwujTa/qG04DjLE5eP/eajcxaUCrJDyLBC1PI3HOjvJDtVBWB
+         C3zg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701765947; x=1702370747;
+        d=1e100.net; s=20230601; t=1701768479; x=1702373279;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=foy1E6jPkvjBjLRqorRNUVjsBOmiv4lrJD7Tk5mocv0=;
-        b=VL/TH7na3LQFShLMiSL0YRmNdWhGUWScTLpDE8BvO5Uo3OR9BcmNSTFjCH2upTL35+
-         RFOGgeZXHjnTFt6y9CXs8sTl34Ief/KobcvMHhu0jO2kL3A7uwnB23ASzecIKDQtvjLX
-         91cKfEDiIAIEYoBcPeBQCiX2ZWSAQreUi4Gthdndb+2a4hTYnsZqyKMrlVEPPD45Jbed
-         PoId97ILUHH5D2jjY+vxRRWefrvRwOV8qwRi4MY1+le57n5IQuEzldEkNejm6eefllms
-         DlJRyv7zCSedyRaRGZcxpHOmIyCEQbKPHzLBiyKNWkH/CFzGMutMFYxcuD0oVMBBnXO/
-         UPcA==
-X-Gm-Message-State: AOJu0YxapKqeEjYCzwG3t8B9ngRurYmeuiYKUfunW/qnXEn0ba3J0pD9
-	OoG7eIwh9ldvT2lk8Bwir474Dw==
-X-Google-Smtp-Source: AGHT+IFQg1DbA6yWhFZ/AhXeebw/bFd2Epl0OcuGC7gqaWr0PAe4JZIbtV9Fr4uV6uR5h1hz2QYrbA==
-X-Received: by 2002:a05:600c:5489:b0:40b:5e1c:2f9e with SMTP id iv9-20020a05600c548900b0040b5e1c2f9emr1525955wmb.46.1701765947129;
-        Tue, 05 Dec 2023 00:45:47 -0800 (PST)
+        bh=CS8J4q12YedWzT2gH/0LjzjeAMQwNUR2jyKyMPxxBZo=;
+        b=ILgvXBkYMIJlYz10IeWbsHPZlR6gHa0yCVpZpJtILRhODAWbR14MsdhAp8lQU1yOCc
+         Z4AgbXS1aAMIxc+UpWtbGS8PGd3PdY/ZFMp0iXvJOZHckYRT49H5FA2q6XF61uE+10VP
+         hOh3z4fvpGOZYxWi4/eVsgqwj6GpBKhAvFsLvA9o+tQQSBjMtDl4oEt1tPMaGFj/JNrD
+         6HUOYc9hJnBkro/+p4/sp3HU22I75DWLeZDN4DDSJ/Xef0Ws0kGf8fnt8ck/9Y6rDBk6
+         ubY7cY4+pKdUMkXZCpyQtCDZYQobzYXR1QQHAPTRh7E15SnGutOHSPzatYrbXH3zFjwG
+         qh8g==
+X-Gm-Message-State: AOJu0YxRyGPNGE7mgN13lV67Ufy+VtF6wnxPla9rhzztSzEf7LcoBXWT
+	9j2JKNrk8zl6XzmHpoP1RItjsg==
+X-Google-Smtp-Source: AGHT+IHp0w+gdLsV8lTWGvMje0TOphY3F9ZkUPGE9sTLVZ3z6dH8XGaCGDduDsC7FdZ9FSafLrmTzw==
+X-Received: by 2002:a05:600c:4ecf:b0:40b:4b93:a369 with SMTP id g15-20020a05600c4ecf00b0040b4b93a369mr304894wmq.14.1701768479600;
+        Tue, 05 Dec 2023 01:27:59 -0800 (PST)
 Received: from [192.168.1.20] ([178.197.218.27])
-        by smtp.gmail.com with ESMTPSA id fs16-20020a05600c3f9000b0040b48690c49sm17828305wmb.6.2023.12.05.00.45.45
+        by smtp.gmail.com with ESMTPSA id fc9-20020a05600c524900b0040b34720206sm18034665wmb.12.2023.12.05.01.27.56
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 05 Dec 2023 00:45:46 -0800 (PST)
-Message-ID: <27f2e3a3-0791-4278-adb2-55ed76820a3a@linaro.org>
-Date: Tue, 5 Dec 2023 09:45:44 +0100
+        Tue, 05 Dec 2023 01:27:59 -0800 (PST)
+Message-ID: <78a81d54-f12c-401e-9a26-5125eb0b1c65@linaro.org>
+Date: Tue, 5 Dec 2023 10:27:56 +0100
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
@@ -49,8 +49,9 @@ MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
 Subject: Re: [PATCH RFC 01/10] dt-bindings: gpu: Add PowerVR Series5 SGX GPUs
 Content-Language: en-US
-To: Tony Lindgren <tony@atomide.com>
-Cc: Andrew Davis <afd@ti.com>, Frank Binns <frank.binns@imgtec.com>,
+To: Andreas Kemnade <andreas@kemnade.info>
+Cc: Tony Lindgren <tony@atomide.com>, Andrew Davis <afd@ti.com>,
+ Frank Binns <frank.binns@imgtec.com>,
  Donald Robson <donald.robson@imgtec.com>,
  Matt Coster <matt.coster@imgtec.com>,
  "H . Nikolaus Schaller" <hns@goldelico.com>, Adam Ford <aford173@gmail.com>,
@@ -76,6 +77,8 @@ References: <20231204182245.33683-1-afd@ti.com>
  <20231205081031.GO5169@atomide.com>
  <efcd64f4-00d2-4671-af3a-e27764f70e8d@linaro.org>
  <20231205083001.GP5169@atomide.com>
+ <27f2e3a3-0791-4278-adb2-55ed76820a3a@linaro.org>
+ <20231205100246.5db0d6a1@aktux>
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -121,41 +124,36 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231205083001.GP5169@atomide.com>
+In-Reply-To: <20231205100246.5db0d6a1@aktux>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On 05/12/2023 09:30, Tony Lindgren wrote:
-> * Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org> [231205 08:16]:
->> On 05/12/2023 09:10, Tony Lindgren wrote:
->>> * Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org> [231205 08:03]:
->>>> What does runtime PM have to do with it? If runtime PM enables clocks,
->>>> these are real signals and not optional.
->>>
->>> Runtime PM propagates to the parent device.
+On 05/12/2023 10:02, Andreas Kemnade wrote:
+> On Tue, 5 Dec 2023 09:45:44 +0100
+> Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org> wrote:
+> 
+>>> Sure the clock nodes can be there for the child IP, but they won't do
+>>> anything. And still need to be managed separately by the device driver if
+>>> added.  
 >>
->> Then it is not really relevant to the hardware talk here, unless you put
->> this device clocks in parent node, but then it's just wrong hardware
->> description.
+>> So if OS does not have runtime PM, the bindings are wrong? Bindings
+>> should not depend on some particular feature of some particular OS.
 > 
-> No it's not. The interconnect target module may have one or more separate
+> Any user of the devicetree sees that there is a parent and the parent needs
+> to be enabled by some mechanism.
+> E.g. I2c devices do not specify the clocks of the parent (the i2c master)
 
-Interconnects are not parents of devices, so I still don't get why do
-you bring it here.
-
-> devices with the same shared clocks. See for example the am3 usb module that
-> has usb controllers, phys and dma at target-module@47400000 in am33xx.dtsi.
-
-There is no interconnect-cells there, so why do we talk about
-interconnect here?
+If you use this analogy, then compare it with an I2C device which has
+these clock inputs. Such device must have clocks in the bindings.
 
 > 
-> Sure the clock nodes can be there for the child IP, but they won't do
-> anything. And still need to be managed separately by the device driver if
-> added.
+> Maybe it is just more fine-grained on omap.
+> 
+> look e.g. at ti/omap/omap4-l4.dtsi
+> there are target-module@xxxx
+> with the devices as a child and a clock in the parent.
 
-So if OS does not have runtime PM, the bindings are wrong? Bindings
-should not depend on some particular feature of some particular OS.
+Not related to runtime PM...
 
 Best regards,
 Krzysztof

@@ -1,19 +1,17 @@
 Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTP id 122D81BE;
-	Tue,  5 Dec 2023 10:01:45 -0800 (PST)
+	by lindbergh.monkeyblade.net (Postfix) with ESMTP id BFDA21BD
+	for <linux-mips@vger.kernel.org>; Tue,  5 Dec 2023 10:01:44 -0800 (PST)
 Received: from uucp by elvis.franken.de with local-rmail (Exim 3.36 #1)
-	id 1rAZjs-0003nS-00; Tue, 05 Dec 2023 19:01:44 +0100
+	id 1rAZjs-0003nQ-00; Tue, 05 Dec 2023 19:01:44 +0100
 Received: by alpha.franken.de (Postfix, from userid 1000)
-	id 6B96BC0A7C; Tue,  5 Dec 2023 18:54:15 +0100 (CET)
-Date: Tue, 5 Dec 2023 18:54:15 +0100
+	id A282FC0A5A; Tue,  5 Dec 2023 18:53:48 +0100 (CET)
+Date: Tue, 5 Dec 2023 18:53:48 +0100
 From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To: Jiaxun Yang <jiaxun.yang@flygoat.com>
-Cc: Huacai Chen <chenhuacai@kernel.org>, linux-mips@vger.kernel.org,
-	linux-kernel@vger.kernel.org, Sergey Shtylyov <s.shtylyov@omp.ru>,
-	stable@vger.kernel.org
-Subject: Re: [PATCH fixes v2 0/3] MIPS: Loongson64: Fix some long-term issues
-Message-ID: <ZW9jxxoJF0IHcYyl@alpha.franken.de>
-References: <20231107-loongson64_fixes-v2-0-5c49ceed7950@flygoat.com>
+To: Stefan Wiehler <stefan.wiehler@nokia.com>
+Cc: linux-mips@vger.kernel.org
+Subject: Re: [PATCH v2] mips/smp: Call rcutree_report_cpu_starting() earlier
+Message-ID: <ZW9jrPnM4/OXZzz/@alpha.franken.de>
+References: <20231106121206.62650-1-stefan.wiehler@nokia.com>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
@@ -22,37 +20,50 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231107-loongson64_fixes-v2-0-5c49ceed7950@flygoat.com>
+In-Reply-To: <20231106121206.62650-1-stefan.wiehler@nokia.com>
 
-On Tue, Nov 07, 2023 at 11:15:17AM +0000, Jiaxun Yang wrote:
-> Hi all,
+On Mon, Nov 06, 2023 at 01:12:07PM +0100, Stefan Wiehler wrote:
+> rcutree_report_cpu_starting() must be called before
+> clockevents_register_device() to avoid the following lockdep splat triggered by
+> calling list_add() when CONFIG_PROVE_RCU_LIST=y:
 > 
-> This series fixes some long-term issues in kernel that preventing
-> some machine from work properly.
+>   WARNING: suspicious RCU usage
+>   ...
+>   -----------------------------
+>   kernel/locking/lockdep.c:3680 RCU-list traversed in non-reader section!!
 > 
-> Hopefully that will rescue some system in wild :-)
+>   other info that might help us debug this:
 > 
-> Thanks
+>   RCU used illegally from offline CPU!
+>   rcu_scheduler_active = 1, debug_locks = 1
+>   no locks held by swapper/1/0.
+>   ...
+>   Call Trace:
+>   [<ffffffff8012a434>] show_stack+0x64/0x158
+>   [<ffffffff80a93d98>] dump_stack_lvl+0x90/0xc4
+>   [<ffffffff801c9e9c>] __lock_acquire+0x1404/0x2940
+>   [<ffffffff801cbf3c>] lock_acquire+0x14c/0x448
+>   [<ffffffff80aa4260>] _raw_spin_lock_irqsave+0x50/0x88
+>   [<ffffffff8021e0c8>] clockevents_register_device+0x60/0x1e8
+>   [<ffffffff80130ff0>] r4k_clockevent_init+0x220/0x3a0
+>   [<ffffffff801339d0>] start_secondary+0x50/0x3b8
 > 
-> Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+> raw_smp_processor_id() is required in order to avoid calling into lockdep
+> before RCU has declared the CPU to be watched for readers.
+> 
+> See also commit 29368e093921 ("x86/smpboot:  Move rcu_cpu_starting() earlier"),
+> commit de5d9dae150c ("s390/smp: move rcu_cpu_starting() earlier") and commit
+> 99f070b62322 ("powerpc/smp: Call rcu_cpu_starting() earlier").
+> 
+> Signed-off-by: Stefan Wiehler <stefan.wiehler@nokia.com>
 > ---
-> Changes in v2:
-> - Typo and style fixes
-> - Link to v1: https://lore.kernel.org/r/20231101-loongson64_fixes-v1-0-2a2582a4bfa9@flygoat.com
-> 
+> - Rename rcu_cpu_starting() to rcutree_report_cpu_starting() due to commit
+> 448e9f34d91d ("rcu: Standardize explicit CPU-hotplug calls")
 > ---
-> Jiaxun Yang (3):
->       MIPS: Loongson64: Reserve vgabios memory on boot
->       MIPS: Loongson64: Enable DMA noncoherent support
->       MIPS: Loongson64: Handle more memory types passed from firmware
-> 
->  arch/mips/Kconfig                                  |  2 +
->  arch/mips/include/asm/mach-loongson64/boot_param.h |  9 ++++-
->  arch/mips/loongson64/env.c                         | 10 ++++-
->  arch/mips/loongson64/init.c                        | 47 ++++++++++++++--------
->  4 files changed, 49 insertions(+), 19 deletions(-)
+>  arch/mips/kernel/smp.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 
-series applied to mips-fixes.
+applied to mips-fixes.
 
 Thomas.
 

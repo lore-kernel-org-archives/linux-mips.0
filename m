@@ -1,18 +1,19 @@
 Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTP id AA5FC122;
-	Tue,  5 Dec 2023 10:01:44 -0800 (PST)
+	by lindbergh.monkeyblade.net (Postfix) with ESMTP id 122D81BE;
+	Tue,  5 Dec 2023 10:01:45 -0800 (PST)
 Received: from uucp by elvis.franken.de with local-rmail (Exim 3.36 #1)
-	id 1rAZjr-0003nM-00; Tue, 05 Dec 2023 19:01:43 +0100
+	id 1rAZjs-0003nS-00; Tue, 05 Dec 2023 19:01:44 +0100
 Received: by alpha.franken.de (Postfix, from userid 1000)
-	id 97F56C028A; Tue,  5 Dec 2023 18:51:31 +0100 (CET)
-Date: Tue, 5 Dec 2023 18:51:31 +0100
+	id 6B96BC0A7C; Tue,  5 Dec 2023 18:54:15 +0100 (CET)
+Date: Tue, 5 Dec 2023 18:54:15 +0100
 From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To: linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc: stable@vger.kernel.org, Aurelien Jarno <aurel32@debian.org>
-Subject: Re: [PATCH] MIPS: kernel: Clear FPU states when setting up kernel
- threads
-Message-ID: <ZW9jI7gZRv/+qEce@alpha.franken.de>
-References: <20231130163601.185270-1-tsbogend@alpha.franken.de>
+To: Jiaxun Yang <jiaxun.yang@flygoat.com>
+Cc: Huacai Chen <chenhuacai@kernel.org>, linux-mips@vger.kernel.org,
+	linux-kernel@vger.kernel.org, Sergey Shtylyov <s.shtylyov@omp.ru>,
+	stable@vger.kernel.org
+Subject: Re: [PATCH fixes v2 0/3] MIPS: Loongson64: Fix some long-term issues
+Message-ID: <ZW9jxxoJF0IHcYyl@alpha.franken.de>
+References: <20231107-loongson64_fixes-v2-0-5c49ceed7950@flygoat.com>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
@@ -21,24 +22,37 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231130163601.185270-1-tsbogend@alpha.franken.de>
+In-Reply-To: <20231107-loongson64_fixes-v2-0-5c49ceed7950@flygoat.com>
 
-On Thu, Nov 30, 2023 at 05:36:01PM +0100, Thomas Bogendoerfer wrote:
-> io_uring sets up the io worker kernel thread via a syscall out of an
-> user space prrocess. This process might have used FPU and since
-> copy_thread() didn't clear FPU states for kernel threads a BUG()
-> is triggered for using FPU inside kernel. Move code around
-> to always clear FPU state for user and kernel threads.
+On Tue, Nov 07, 2023 at 11:15:17AM +0000, Jiaxun Yang wrote:
+> Hi all,
 > 
-> Cc: stable@vger.kernel.org
-> Reported-by: Aurelien Jarno <aurel32@debian.org>
-> Closes: https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=1055021
-> Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+> This series fixes some long-term issues in kernel that preventing
+> some machine from work properly.
+> 
+> Hopefully that will rescue some system in wild :-)
+> 
+> Thanks
+> 
+> Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
 > ---
->  arch/mips/kernel/process.c | 25 +++++++++++++------------
->  1 file changed, 13 insertions(+), 12 deletions(-)
+> Changes in v2:
+> - Typo and style fixes
+> - Link to v1: https://lore.kernel.org/r/20231101-loongson64_fixes-v1-0-2a2582a4bfa9@flygoat.com
+> 
+> ---
+> Jiaxun Yang (3):
+>       MIPS: Loongson64: Reserve vgabios memory on boot
+>       MIPS: Loongson64: Enable DMA noncoherent support
+>       MIPS: Loongson64: Handle more memory types passed from firmware
+> 
+>  arch/mips/Kconfig                                  |  2 +
+>  arch/mips/include/asm/mach-loongson64/boot_param.h |  9 ++++-
+>  arch/mips/loongson64/env.c                         | 10 ++++-
+>  arch/mips/loongson64/init.c                        | 47 ++++++++++++++--------
+>  4 files changed, 49 insertions(+), 19 deletions(-)
 
-applied to mips-fixes.
+series applied to mips-fixes.
 
 Thomas.
 

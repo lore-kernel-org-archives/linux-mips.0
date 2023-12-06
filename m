@@ -1,122 +1,113 @@
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fgM84tow"
-Received: from mail-oo1-xc2b.google.com (mail-oo1-xc2b.google.com [IPv6:2607:f8b0:4864:20::c2b])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B19CE18D;
-	Wed,  6 Dec 2023 00:27:54 -0800 (PST)
-Received: by mail-oo1-xc2b.google.com with SMTP id 006d021491bc7-58d439e3e15so304386eaf.1;
-        Wed, 06 Dec 2023 00:27:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701851274; x=1702456074; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=X1sLit740GBBRQL8zggDwdmRF3hDduJsMAShvja4R2M=;
-        b=fgM84towgSAi4Fo8IC2l55RoGKfhOPgaq5A9V/GSqEgljzmIPug70h7LrenPPl6PTd
-         PDAqfC++BmmUtYWTtc4cTPJ4UZdvcycBtjJZxoVJm2qUPREaywSBBNNA11XHq1O8nhww
-         JtVo2SxAsxQCbkiFPsfze4rv6SMEDVPnAE//Fl9rvb9DZQS7HmEyXsecybMVR8PHqGrW
-         W0SzpSOBf7lQnQ2ognddU+5lCBH2XhXMAw1Tasr92jajZQTHBYOlxWti2wvsVImJ5rCr
-         nIc5g44ZpbweIwao94kizIGQatGazsNpgdMXv844AUjmigrJuRDeyOFrGH0W5NjtH8RC
-         JsTQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701851274; x=1702456074;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=X1sLit740GBBRQL8zggDwdmRF3hDduJsMAShvja4R2M=;
-        b=xAG3i80GWN6Y3oe2L4gRIncz7tILyU5RUp6bA3Do7ztiGeFwghGC/vMZHioG95Ifqx
-         YIJtEQmXMZVufR4wrOb6gFJbjPBrFR/Js4BqmqVuUZUEbjF6A8R7Sn9b4+mO/Aj+BxmI
-         D5Mo/Ry+x7CiZxSA3kJqL2XrJZCi4EjA7laEyeIQ+HdOhtytcNOfUeUG6sg7LAie2HYK
-         B5g9nRj9BKMRLTKIPfbVwM8jjSwlaJ0qKnD4aVEcnDqrKCQX3upOqWheZmIcwpCrvCre
-         MBi77rVGwtlhlBoaxu2VLeGW7lOmlLr5qW9PqruPqkfqgG3gI9WzR9WXHCTuGBM+dha8
-         TJRA==
-X-Gm-Message-State: AOJu0YzWj8bGxOS9jLVm53Aerw2XXzpGcw3A4JzsyYiin5LLo1yYpYH0
-	DkaH8ItoHs6mS7EUO4d1lMVQUHISgj6vVeeNNBQ=
-X-Google-Smtp-Source: AGHT+IFbwC82objqk/yZRySWvh7dDm4eJDRrlhHPkv0gM+1Twv7yvk3J0MOW2D1+Gz5b3T9qzMg8k64/Wrw9NGx+Xd0=
-X-Received: by 2002:a05:6870:8194:b0:1fa:ef9d:3f45 with SMTP id
- k20-20020a056870819400b001faef9d3f45mr302490oae.18.1701851273991; Wed, 06 Dec
- 2023 00:27:53 -0800 (PST)
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73AD5D45
+	for <linux-mips@vger.kernel.org>; Wed,  6 Dec 2023 03:48:26 -0800 (PST)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1rAqO8-0006BJ-8s; Wed, 06 Dec 2023 12:48:24 +0100
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1rAqO7-00DwsW-QJ; Wed, 06 Dec 2023 12:48:23 +0100
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1rAqO7-00FQxf-Hh; Wed, 06 Dec 2023 12:48:23 +0100
+From: =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To: Thierry Reding <thierry.reding@gmail.com>
+Cc: kernel@pengutronix.de,
+	Paul Cercueil <paul@crapouillou.net>,
+	linux-mips@vger.kernel.org,
+	linux-pwm@vger.kernel.org
+Subject: [PATCH v4 019/115] pwm: jz4740: Make use of pwmchip_parent() macro
+Date: Wed,  6 Dec 2023 12:43:33 +0100
+Message-ID:  <e52d09b461b13e9aaeb989ceeaf2360ec66720ac.1701860672.git.u.kleine-koenig@pengutronix.de>
+X-Mailer: git-send-email 2.42.0
+In-Reply-To: <cover.1701860672.git.u.kleine-koenig@pengutronix.de>
+References: <cover.1701860672.git.u.kleine-koenig@pengutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231022090633.792831-1-sergio.paracuellos@gmail.com>
- <513bc341-25b8-5a57-d760-861a3e88a4a1@linaro.org> <CAMhs-H8A0p=nFSnU9pRn=rTC_=CH6jXFQdYgZdimFNq9+dVqSw@mail.gmail.com>
- <ZVxlRE0tcAv1iaoA@alpha.franken.de> <CAMhs-H8bs89SFWPVOEJFT6B+zYh2Anf=DqCJXNaq=Tjiq5X5Ow@mail.gmail.com>
- <CAMhs-H_ojHprCxsRwfXo_xavSYv9YH0eppg9ZobscvQamcDNxg@mail.gmail.com> <ZW+LwrhW9m/vrmnN@alpha.franken.de>
-In-Reply-To: <ZW+LwrhW9m/vrmnN@alpha.franken.de>
-From: Sergio Paracuellos <sergio.paracuellos@gmail.com>
-Date: Wed, 6 Dec 2023 09:27:42 +0100
-Message-ID: <CAMhs-H_uK+0n-1GwyMegU2x5zNuP7yyAZRzkW4p+OkXiKmK=mw@mail.gmail.com>
-Subject: Re: [PATCH] MAINTAINERS: Add myself as maintainer of the Ralink architecture
-To: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc: =?UTF-8?Q?Philippe_Mathieu=2DDaud=C3=A9?= <philmd@linaro.org>, 
-	linux-mips@vger.kernel.org, john@phrozen.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2494; i=u.kleine-koenig@pengutronix.de; h=from:subject:message-id; bh=Q/T4RqrA7nugEcKTaYZvDEjZxWPzehWomsMNLs5V/yA=; b=owEBbQGS/pANAwAKAY+A+1h9Ev5OAcsmYgBlcF5sQAXPvNjOV//InU2yTesi3vpIj0WoRjNHE KpC58IR56aJATMEAAEKAB0WIQQ/gaxpOnoeWYmt/tOPgPtYfRL+TgUCZXBebAAKCRCPgPtYfRL+ TtTsB/9fcjwbaPTFrgtvXNxgwMmx1nlywpIf9ksjURP3x7oxf6n6ZviGxrdOimueK8DOKQscwvu vkFyrwF+0QygOxtP88UVPnnFXDXwcJHozXMQZnQTgLmNzYXzqDg27NPYkk7eN5NZtFEGh4nZsKg V2/Z6GnTASIlHVLHU2tQLi17oz6227zoJLdi9Mqn+G5h/nrrT1kLyeQ6wCtVTVOwj6JalNHwp/I i7WitrdN2fHXOoeLCkU5kBjdalm2/TeTvSqqrEFa9vh99fybHPjtpx1ASbYM1wWEjmFEiLj/X1s z9Wj0BbTVPL+NtY4SGbIQzsJvBISTapiS6+o4FWGG95z+/cA
+X-Developer-Key: i=u.kleine-koenig@pengutronix.de; a=openpgp; fpr=0D2511F322BFAB1C1580266BE2DCDD9132669BD6
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-mips@vger.kernel.org
 
-On Tue, Dec 5, 2023 at 11:29=E2=80=AFPM Thomas Bogendoerfer
-<tsbogend@alpha.franken.de> wrote:
->
-> On Tue, Dec 05, 2023 at 08:58:29PM +0100, Sergio Paracuellos wrote:
-> > On Tue, Nov 21, 2023 at 1:43=E2=80=AFPM Sergio Paracuellos
-> > <sergio.paracuellos@gmail.com> wrote:
-> > >
-> > > On Tue, Nov 21, 2023 at 10:02=E2=80=AFAM Thomas Bogendoerfer
-> > > <tsbogend@alpha.franken.de> wrote:
-> > > >
-> > > > On Mon, Nov 20, 2023 at 08:59:25PM +0100, Sergio Paracuellos wrote:
-> > > > > On Wed, Oct 25, 2023 at 2:58=E2=80=AFPM Philippe Mathieu-Daud=C3=
-=A9
-> > > > > <philmd@linaro.org> wrote:
-> > > > > >
-> > > > > > On 22/10/23 11:06, Sergio Paracuellos wrote:
-> > > > > > > Its been a while since I am making contributions to this arch=
-itecture.
-> > > > > > > Hence add myself as maintainer.
-> > > > > > >
-> > > > > > > Signed-off-by: Sergio Paracuellos <sergio.paracuellos@gmail.c=
-om>
-> > > > > > > ---
-> > > > > > > Hi John, if you are not ok with this please let me know. In o=
-ther case
-> > > > > > > please ack this patch. I can add myself as Reviewer if you pr=
-efer to
-> > > > > > > maintain alone this.
-> > > > > > >
-> > > > > > > Thanks in advance for your time!
-> > > > > > >
-> > > > > > > Best regards,
-> > > > > > >      Sergio Paracuellos
-> > > > > > >
-> > > > > > >   MAINTAINERS | 1 +
-> > > > > > >   1 file changed, 1 insertion(+)
-> > > > > >
-> > > > > > Reviewed-by: Philippe Mathieu-Daud=C3=A9 <philmd@linaro.org>
-> > > > > >
-> > > > >
-> > > > > Thomas, can you take this patch through the mips tree?
-> > > >
-> > > > sure
-> > >
-> > > Thanks!
-> >
-> > Gentle ping for this patch :)
->
-> I've not forgotten it
+struct pwm_chip::dev is about to change. To not have to touch this
+driver in the same commit as struct pwm_chip::dev, use the macro
+provided for exactly this purpose.
 
-Thanks for letting me know. I thought it might be lost since I saw
-activity in mips-next branch.
+Acked-by: Paul Cercueil <paul@crapouillou.net>
+Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+---
+ drivers/pwm/pwm-jz4740.c | 17 ++++++++---------
+ 1 file changed, 8 insertions(+), 9 deletions(-)
 
-Best regards,
-    Sergio Paracuellos
+diff --git a/drivers/pwm/pwm-jz4740.c b/drivers/pwm/pwm-jz4740.c
+index 80dcff237a15..36763134cd87 100644
+--- a/drivers/pwm/pwm-jz4740.c
++++ b/drivers/pwm/pwm-jz4740.c
+@@ -35,13 +35,12 @@ static inline struct jz4740_pwm_chip *to_jz4740(struct pwm_chip *chip)
+ 	return container_of(chip, struct jz4740_pwm_chip, chip);
+ }
+ 
+-static bool jz4740_pwm_can_use_chn(struct jz4740_pwm_chip *jz,
+-				   unsigned int channel)
++static bool jz4740_pwm_can_use_chn(struct pwm_chip *chip, unsigned int channel)
+ {
+ 	/* Enable all TCU channels for PWM use by default except channels 0/1 */
+-	u32 pwm_channels_mask = GENMASK(jz->chip.npwm - 1, 2);
++	u32 pwm_channels_mask = GENMASK(chip->npwm - 1, 2);
+ 
+-	device_property_read_u32(jz->chip.dev->parent,
++	device_property_read_u32(pwmchip_parent(chip)->parent,
+ 				 "ingenic,pwm-channels-mask",
+ 				 &pwm_channels_mask);
+ 
+@@ -55,14 +54,14 @@ static int jz4740_pwm_request(struct pwm_chip *chip, struct pwm_device *pwm)
+ 	char name[16];
+ 	int err;
+ 
+-	if (!jz4740_pwm_can_use_chn(jz, pwm->hwpwm))
++	if (!jz4740_pwm_can_use_chn(chip, pwm->hwpwm))
+ 		return -EBUSY;
+ 
+ 	snprintf(name, sizeof(name), "timer%u", pwm->hwpwm);
+ 
+-	clk = clk_get(chip->dev, name);
++	clk = clk_get(pwmchip_parent(chip), name);
+ 	if (IS_ERR(clk))
+-		return dev_err_probe(chip->dev, PTR_ERR(clk),
++		return dev_err_probe(pwmchip_parent(chip), PTR_ERR(clk),
+ 				     "Failed to get clock\n");
+ 
+ 	err = clk_prepare_enable(clk);
+@@ -149,7 +148,7 @@ static int jz4740_pwm_apply(struct pwm_chip *chip, struct pwm_device *pwm,
+ 	 */
+ 	rate = clk_round_rate(clk, tmp);
+ 	if (rate < 0) {
+-		dev_err(chip->dev, "Unable to round rate: %ld\n", rate);
++		dev_err(pwmchip_parent(chip), "Unable to round rate: %ld\n", rate);
+ 		return rate;
+ 	}
+ 
+@@ -170,7 +169,7 @@ static int jz4740_pwm_apply(struct pwm_chip *chip, struct pwm_device *pwm,
+ 
+ 	err = clk_set_rate(clk, rate);
+ 	if (err) {
+-		dev_err(chip->dev, "Unable to set rate: %d\n", err);
++		dev_err(pwmchip_parent(chip), "Unable to set rate: %d\n", err);
+ 		return err;
+ 	}
+ 
+-- 
+2.42.0
 
->
-> Thomas.
->
-> --
-> Crap can work. Given enough thrust pigs will fly, but it's not necessaril=
-y a
-> good idea.                                                [ RFC1925, 2.3 =
-]

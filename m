@@ -1,231 +1,119 @@
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QGidZ4iR"
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06F7618F;
-	Tue,  5 Dec 2023 21:25:16 -0800 (PST)
-Received: by mail-pf1-x42b.google.com with SMTP id d2e1a72fcca58-6ce6dd83945so1359304b3a.3;
-        Tue, 05 Dec 2023 21:25:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1701840315; x=1702445115; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=6huBbZbAII0X6eZV6S+b7knvK6KuHJo8Bh0bkLgUxxE=;
-        b=QGidZ4iRu5/YncLQwNVlWgTHz7jez7T2YHYyySJDAUl1LybKELv67VrH6KN+e8TxRh
-         /s5VSFFVvQRiwkXNmKLJi/wEnIBiOGQwnngb6oYZMoG6eQc0QbJ/T0Ec0db6vzr1k+Dx
-         srQWLLbmQFs5EhWEp5zC/IaHKoTJiY8bXU5IS602EgbG9LYXq+G5ffcY+0jnsGCyRyAk
-         7+ZWoAymYRZSRJgPK/kil/e23SdlpEsI7jueZ//dM4yB7IHleHRJ+/PQQLHSiUNJ84tI
-         tOtIp+BHegPALNw4/RtwVHj2rBou199ZGUBCDO3mLTFwdzB+80PTnm4Fc0QdTZHYALAf
-         NEJQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701840315; x=1702445115;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=6huBbZbAII0X6eZV6S+b7knvK6KuHJo8Bh0bkLgUxxE=;
-        b=J2b0FKDZyCK+e5YG3hPYVqsm96iXFc1DuCjGft3nU29htWngmgXURBAKy6LSskvXsc
-         OlwaUaL+5EN/6u7FgAONCyt94/N94DvXh3D4HeMkqLpjiugMkbh9I8T/h8ecFBGT6oo+
-         bBF7PUATUXLdMVYFO7IvwjBNP0iu5NE6arIG4eYzZ8D+aFktqrYfj6JhEcs9DQMBWBDf
-         kbBFrkua9jujvMMFVH6lL8lpzV+nmnybr/z6ilzjRywIN/dJlnLy2pCqZ+YCTKLfpKDl
-         b87csaO4/TXV8CcKaJT3HFSgWjWds5g9kbrD67w6oNhQhjh5fZK0GbncA1Te8IJg3p16
-         SAoQ==
-X-Gm-Message-State: AOJu0YyH7TAIz+i+HfbrAQNnJb8M6GbmVheSEHS7vLvZsf7l4/8SFM7S
-	B7EPEUC20m7UnlvO5u56YqE=
-X-Google-Smtp-Source: AGHT+IFMxfqg8FxPkhbWeYw87iiXO3hRoVhFhH1xtCbWG3FZaVDEj9UfTpo1oYq4IqfLZ3ft2t7YHQ==
-X-Received: by 2002:a05:6a00:98e:b0:6ce:6420:e174 with SMTP id u14-20020a056a00098e00b006ce6420e174mr407397pfg.36.1701840315262;
-        Tue, 05 Dec 2023 21:25:15 -0800 (PST)
-Received: from localhost ([216.228.127.130])
-        by smtp.gmail.com with ESMTPSA id ka32-20020a056a0093a000b006ce455a7faasm5350125pfb.150.2023.12.05.21.25.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Dec 2023 21:25:14 -0800 (PST)
-Date: Tue, 5 Dec 2023 21:22:59 -0800
-From: Yury Norov <yury.norov@gmail.com>
-To: Jan Kara <jack@suse.cz>
-Cc: linux-kernel@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
-	"H. Peter Anvin" <hpa@zytor.com>,
-	"James E.J. Bottomley" <jejb@linux.ibm.com>,
-	"K. Y. Srinivasan" <kys@microsoft.com>,
-	"Md. Haris Iqbal" <haris.iqbal@ionos.com>,
-	Akinobu Mita <akinobu.mita@gmail.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Bjorn Andersson <andersson@kernel.org>,
-	Borislav Petkov <bp@alien8.de>, Chaitanya Kulkarni <kch@nvidia.com>,
-	Christian Brauner <brauner@kernel.org>,
-	Damien Le Moal <damien.lemoal@opensource.wdc.com>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	David Disseldorp <ddiss@suse.de>,
-	Edward Cree <ecree.xilinx@gmail.com>,
-	Eric Dumazet <edumazet@google.com>,
-	Fenghua Yu <fenghua.yu@intel.com>,
-	Geert Uytterhoeven <geert@linux-m68k.org>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Gregory Greenman <gregory.greenman@intel.com>,
-	Hans Verkuil <hverkuil@xs4all.nl>,
-	Hans de Goede <hdegoede@redhat.com>,
-	Hugh Dickins <hughd@google.com>, Ingo Molnar <mingo@redhat.com>,
-	Jakub Kicinski <kuba@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
-	Jason Gunthorpe <jgg@ziepe.ca>, Jens Axboe <axboe@kernel.dk>,
-	Jiri Pirko <jiri@resnulli.us>, Jiri Slaby <jirislaby@kernel.org>,
-	Kalle Valo <kvalo@kernel.org>, Karsten Graul <kgraul@linux.ibm.com>,
-	Karsten Keil <isdn@linux-pingi.de>,
-	Kees Cook <keescook@chromium.org>,
-	Leon Romanovsky <leon@kernel.org>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Martin Habets <habetsm.xilinx@gmail.com>,
-	Mauro Carvalho Chehab <mchehab@kernel.org>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Michal Simek <monstr@monstr.eu>,
-	Nicholas Piggin <npiggin@gmail.com>,
-	Oliver Neukum <oneukum@suse.com>, Paolo Abeni <pabeni@redhat.com>,
-	Paolo Bonzini <pbonzini@redhat.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Ping-Ke Shih <pkshih@realtek.com>, Rich Felker <dalias@libc.org>,
-	Rob Herring <robh@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
-	Sean Christopherson <seanjc@google.com>,
-	Shuai Xue <xueshuai@linux.alibaba.com>,
-	Stanislaw Gruszka <stf_xl@wp.pl>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Valentin Schneider <vschneid@redhat.com>,
-	Vitaly Kuznetsov <vkuznets@redhat.com>,
-	Wenjia Zhang <wenjia@linux.ibm.com>, Will Deacon <will@kernel.org>,
-	Yoshinori Sato <ysato@users.sourceforge.jp>,
-	GR-QLogic-Storage-Upstream@marvell.com, alsa-devel@alsa-project.org,
-	ath10k@lists.infradead.org, dmaengine@vger.kernel.org,
-	iommu@lists.linux.dev, kvm@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, linux-arm-msm@vger.kernel.org,
-	linux-block@vger.kernel.org, linux-bluetooth@vger.kernel.org,
-	linux-hyperv@vger.kernel.org, linux-m68k@lists.linux-m68k.org,
-	linux-media@vger.kernel.org, linux-mips@vger.kernel.org,
-	linux-net-drivers@amd.com, linux-pci@vger.kernel.org,
-	linux-rdma@vger.kernel.org, linux-s390@vger.kernel.org,
-	linux-scsi@vger.kernel.org, linux-serial@vger.kernel.org,
-	linux-sh@vger.kernel.org, linux-sound@vger.kernel.org,
-	linux-usb@vger.kernel.org, linux-wireless@vger.kernel.org,
-	linuxppc-dev@lists.ozlabs.org, mpi3mr-linuxdrv.pdl@broadcom.com,
-	netdev@vger.kernel.org, sparclinux@vger.kernel.org, x86@kernel.org,
-	Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>,
-	Matthew Wilcox <willy@infradead.org>,
-	Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-	Maxim Kuvyrkov <maxim.kuvyrkov@linaro.org>,
-	Alexey Klimov <klimov.linux@gmail.com>,
-	Bart Van Assche <bvanassche@acm.org>,
-	Sergey Shtylyov <s.shtylyov@omp.ru>
-Subject: Re: [PATCH v2 00/35] bitops: add atomic find_bit() operations
-Message-ID: <ZXAFM2VZugdhM3oE@yury-ThinkPad>
-References: <20231203192422.539300-1-yury.norov@gmail.com>
- <20231204185101.ddmkvsr2xxsmoh2u@quack3>
+	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="QfPx6a9G";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="GH+CucaS"
+Received: from wout4-smtp.messagingengine.com (wout4-smtp.messagingengine.com [64.147.123.20])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B632C135;
+	Tue,  5 Dec 2023 22:53:34 -0800 (PST)
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+	by mailout.west.internal (Postfix) with ESMTP id DC3203200B13;
+	Wed,  6 Dec 2023 01:53:30 -0500 (EST)
+Received: from imap51 ([10.202.2.101])
+  by compute5.internal (MEProxy); Wed, 06 Dec 2023 01:53:31 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+	:cc:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:sender
+	:subject:subject:to:to; s=fm1; t=1701845610; x=1701932010; bh=PW
+	66L1dPgZW8LDxXB4sVa/5vk2EkvICnU+1XTg3NMCw=; b=QfPx6a9GTa1f8QF0e9
+	lEuKcFsJPTVPzqFVzdlUGuPbTX1bXF+m0OSM+YNNfRN1dBbSz3fYmLlgBf+4qu50
+	MSc3XV6QJBw/wNLDMYH0KHgRRX++edlijcqtOR4DqA4Ea4CgvszljPYzldmUD26q
+	X3QGbL/vfndBP62fcpHygQeXYNT4laXNuAZ9+yI/mu2Zr1wAHJzcWNi/vCh6laQS
+	zIadvRovi+y6hW9eDsJ4ps08lv51m+a/UswS+91VJGQW3/7P5fGNEGyNm7mmao6Y
+	VYt6MlBaRPA0p7V67U8kA+AsECGyy9Vy4akvg0ruNp+JfnaQjW1PN3/7Fop5WikR
+	fb/w==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:sender:subject
+	:subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+	:x-sasl-enc; s=fm1; t=1701845610; x=1701932010; bh=PW66L1dPgZW8L
+	DxXB4sVa/5vk2EkvICnU+1XTg3NMCw=; b=GH+CucaS/2CicMAeMT4S2qz+0QUxW
+	siBhRM00FdK7bQYs0lqFqLWVH9ZhljqfelKYSu8lZZkIjExFiG4mE5HSbFn9TVcb
+	btqbpsjRCPqgqFDCm8m1HhMEB1avddz+lKBrKr5XHAhwMwrTuXU51xCEwPXtAqzh
+	s13xg4Mjp0wQ8tFG0xuX7CYR5Z8RYQ5pM7u4P6puIwTGKTpHlN6yAwiynTfzeQVT
+	d6r8qyJ362D6BWSC1M5lh3CmkQeFxV+pI63VXlBDG6vvZlJlrbOu+aHT68GwQNrJ
+	YmdSSyJWOGUJffDa9EAVThSRmPpUSy4a+g3N182uNx7YNX6SYa1XicWYA==
+X-ME-Sender: <xms:aRpwZR_vUtWbJQM2foiiiZyKFQR3HaPMIprLyJIT7duQYU_vi8kxSw>
+    <xme:aRpwZVvGr_Fh3c2gmaIvLahauUx3siYA3pFKtK_HJCaw2eLIFeH6xVVemPJn8brff
+    3HX3_tbFcpcQM3WdvI>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudejledgkeeiucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedftehr
+    nhguuceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrth
+    htvghrnhepffehueegteeihfegtefhjefgtdeugfegjeelheejueethfefgeeghfektdek
+    teffnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprg
+    hrnhgusegrrhhnuggsrdguvg
+X-ME-Proxy: <xmx:aRpwZfCOUZHZkntdpX7ADkGLEOJJ-EDgM_1SmHXZ6mf2Np6EmQi0ZQ>
+    <xmx:aRpwZVfoSFCHWUo_VIyqeD5DKi5Tg8Bt0cLOGDJSd2C1Wnih5_wCJA>
+    <xmx:aRpwZWPbQI4CiTpCOsJ6vNoQRmxO0vRyePMO8I6SXlp9Y24mCU3trw>
+    <xmx:ahpwZd2ZWm_fEU9gcGqpRlAFAr7FWC0RGK6dqA6-uokNMj0btiqozQ>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+	id 5AAB1B60089; Wed,  6 Dec 2023 01:53:29 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.9.0-alpha0-1178-geeaf0069a7-fm-20231114.001-geeaf0069
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231204185101.ddmkvsr2xxsmoh2u@quack3>
+Message-Id: <f712a65b-4984-46e8-bd43-1309b5cd41f0@app.fastmail.com>
+In-Reply-To: <5f1caaf8-1edf-444a-b017-c4d08e52213b@infradead.org>
+References: <202312041909.lwhcU35R-lkp@intel.com>
+ <5f1caaf8-1edf-444a-b017-c4d08e52213b@infradead.org>
+Date: Wed, 06 Dec 2023 07:52:58 +0100
+From: "Arnd Bergmann" <arnd@arndb.de>
+To: "Randy Dunlap" <rdunlap@infradead.org>,
+ "kernel test robot" <lkp@intel.com>, "Masahiro Yamada" <masahiroy@kernel.org>
+Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+ "Nicolas Schier" <nicolas@fjasle.eu>,
+ "Jiaxun Yang" <jiaxun.yang@flygoat.com>, linux-mips@vger.kernel.org
+Subject: Re: pm.c:undefined reference to `i8042_command'
+Content-Type: text/plain
 
-On Mon, Dec 04, 2023 at 07:51:01PM +0100, Jan Kara wrote:
-> Hello Yury!
-> 
-> On Sun 03-12-23 11:23:47, Yury Norov wrote:
-> > Add helpers around test_and_{set,clear}_bit() that allow to search for
-> > clear or set bits and flip them atomically.
-> > 
-> > The target patterns may look like this:
-> > 
-> > 	for (idx = 0; idx < nbits; idx++)
-> > 		if (test_and_clear_bit(idx, bitmap))
-> > 			do_something(idx);
-> > 
-> > Or like this:
-> > 
-> > 	do {
-> > 		bit = find_first_bit(bitmap, nbits);
-> > 		if (bit >= nbits)
-> > 			return nbits;
-> > 	} while (!test_and_clear_bit(bit, bitmap));
-> > 	return bit;
-> > 
-> > In both cases, the opencoded loop may be converted to a single function
-> > or iterator call. Correspondingly:
-> > 
-> > 	for_each_test_and_clear_bit(idx, bitmap, nbits)
-> > 		do_something(idx);
-> > 
-> > Or:
-> > 	return find_and_clear_bit(bitmap, nbits);
-> 
-> These are fine cleanups but they actually don't address the case that has
-> triggered all these changes - namely the xarray use of find_next_bit() in
-> xas_find_chunk().
-> 
-> ...
-> > This series is a result of discussion [1]. All find_bit() functions imply
-> > exclusive access to the bitmaps. However, KCSAN reports quite a number
-> > of warnings related to find_bit() API. Some of them are not pointing
-> > to real bugs because in many situations people intentionally allow
-> > concurrent bitmap operations.
-> > 
-> > If so, find_bit() can be annotated such that KCSAN will ignore it:
-> > 
-> >         bit = data_race(find_first_bit(bitmap, nbits));
-> 
-> No, this is not a correct thing to do. If concurrent bitmap changes can
-> happen, find_first_bit() as it is currently implemented isn't ever a safe
-> choice because it can call __ffs(0) which is dangerous as you properly note
-> above. I proposed adding READ_ONCE() into find_first_bit() / find_next_bit()
-> implementation to fix this issue but you disliked that. So other option we
-> have is adding find_first_bit() and find_next_bit() variants that take
-> volatile 'addr' and we have to use these in code like xas_find_chunk()
-> which cannot be converted to your new helpers.
+On Wed, Dec 6, 2023, at 06:24, Randy Dunlap wrote:
+>> All errors (new ones prefixed by >>):
+>> 
+>>    mips64el-linux-ld: arch/mips/loongson2ef/lemote-2f/pm.o: in function `setup_wakeup_events':
+>>>> pm.c:(.text+0x118): undefined reference to `i8042_command'
+>>>> mips64el-linux-ld: pm.c:(.text+0x154): undefined reference to `i8042_command'
+>
+>
+> How do we feel about this?
+> I suppose that an ARCH or mach or board should know what it requires.
+>
+>
+> ---
+>  arch/mips/loongson2ef/Kconfig |    3 +++
+>  1 file changed, 3 insertions(+)
+>
+> diff -- a/arch/mips/loongson2ef/Kconfig b/arch/mips/loongson2ef/Kconfig
+> --- a/arch/mips/loongson2ef/Kconfig
+> +++ b/arch/mips/loongson2ef/Kconfig
+> @@ -40,6 +40,9 @@ config LEMOTE_MACH2F
+>  	select ARCH_HAS_PHYS_TO_DMA
+>  	select ARCH_MIGHT_HAVE_PC_PARPORT
+>  	select ARCH_MIGHT_HAVE_PC_SERIO
+> +	select INPUT
+> +	select SERIO
+> +	select SERIO_I8042
+>  	select BOARD_SCACHE
+>  	select BOOT_ELF32
 
-Here is some examples when concurrent operations with plain find_bit()
-are acceptable:
+I think it's bad style to force-select an optional subsystem.
+How about making the entire file optional? It seems that there
+are already __weak functions in its place.
 
- - two threads running find_*_bit(): safe wrt ffs(0) and returns correct
-   value, because underlying bitmap is unchanged;
- - find_next_bit() in parallel with set or clear_bit(), when modifying
-   a bit prior to the start bit to search: safe and correct;
- - find_first_bit() in parallel with set_bit(): safe, but may return wrong
-   bit number;
- - find_first_zero_bit() in parallel with clear_bit(): same as above.
+--- a/arch/mips/loongson2ef/lemote-2f/Makefile
++++ b/arch/mips/loongson2ef/lemote-2f/Makefile
+@@ -8,5 +8,6 @@ obj-y += clock.o machtype.o irq.o reset.o dma.o ec_kb3310b.o
+ #
+ # Suspend Support
+ #
+-
++ifdef CONFIG_SERIO_I8042
+ obj-$(CONFIG_SUSPEND) += pm.o
++endif
 
-In last 2 cases find_bit() may not return a correct bit number, but
-it may be OK if caller requires any (not exactly first) set or clear
-bit, correspondingly.
-
-In such cases, KCSAN may be safely silenced.
- 
-> > This series addresses the other important case where people really need
-> > atomic find ops. As the following patches show, the resulting code
-> > looks safer and more verbose comparing to opencoded loops followed by
-> > atomic bit flips.
-> > 
-> > In [1] Mirsad reported 2% slowdown in a single-thread search test when
-> > switching find_bit() function to treat bitmaps as volatile arrays. On
-> > the other hand, kernel robot in the same thread reported +3.7% to the
-> > performance of will-it-scale.per_thread_ops test.
-> 
-> It was actually me who reported the regression here [2] but whatever :)
-> 
-> [2] https://lore.kernel.org/all/20231011150252.32737-1-jack@suse.cz
-
-My apologize.
-
-> > Assuming that our compilers are sane and generate better code against
-> > properly annotated data, the above discrepancy doesn't look weird. When
-> > running on non-volatile bitmaps, plain find_bit() outperforms atomic
-> > find_and_bit(), and vice-versa.
-> > 
-> > So, all users of find_bit() API, where heavy concurrency is expected,
-> > are encouraged to switch to atomic find_and_bit() as appropriate.
-> 
-> Well, all users where any concurrency can happen should switch. Otherwise
-> they are prone to the (admittedly mostly theoretical) data race issue.
-> 
-> 								Honza
-> -- 
-> Jan Kara <jack@suse.com>
-> SUSE Labs, CR
+     Arnd

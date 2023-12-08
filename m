@@ -1,22 +1,22 @@
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="ZgOZUfh1"
-Received: from relay2-d.mail.gandi.net (relay2-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::222])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40EB519B7;
-	Fri,  8 Dec 2023 08:13:05 -0800 (PST)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 70D2740009;
-	Fri,  8 Dec 2023 16:13:03 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="DIUQTvSt"
+Received: from relay8-d.mail.gandi.net (relay8-d.mail.gandi.net [217.70.183.201])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EFAC199A;
+	Fri,  8 Dec 2023 08:13:06 -0800 (PST)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id CBB351BF207;
+	Fri,  8 Dec 2023 16:13:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1702051983;
+	t=1702051985;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=NIhoVxVD5CTXDcniNp5rYpom7jfM8QqJjfzFliLqoD0=;
-	b=ZgOZUfh1LANhEN/Bf3MT6GUFDlBY+NH+O8iGMC3KV/i7F/aX8JbtFbSjY4Nfxhpph/5lqp
-	rPMNUVbSZj4KbCJX9m+gBze9AAsghziJaLzmu0CFir/C0sbRq2c7jTxpSD3Q6o7yeVBwgf
-	NS1HyVm1dm+oKMH1Tb22LD8NqpZe94N3V3rdFgYJUxgbnWND1jS/A3oiWL5aOGySniDSLQ
-	tqbzZeEiEQq3M48j3sFUkYz6PKCXuEDVcZRerwTDn/VOVSglyktUJbjWA8tygSZyA3050R
-	Xf1mVXM9XTtQpeKdFntTYP0eJ9GTmvfvXgne6Rvv1s3Et+91DFjqxPSCMAWgSg==
+	bh=gZ7oKcw0eqw6lprpX+dDIOb31hPprI1Sem1ITgrbMiU=;
+	b=DIUQTvStCYaZCDNw2BKwsppgi1MyThi3GXWMjAyOLJJcwJ1m9PBM/Wp3Ejk8O3M1yW/GyM
+	L1iAWLVv/mfPfz9Mpw5TYNrR8IPlI1ufz3IFJYsHJBJ+prBBC2ksd8w0il8iLz4b/pjZST
+	Gql0ivCMa8Uro6MxN4mWqBGHGIPTyQPVqbjrTUOH8mRfLPtQ3piR1Od92HRv7NPmZijJdG
+	o+Wlbo7zBRFgGFDMp3yZ9pn9J6hT/DxlzvX9+LNXNnh6M36L6M6Y2wppmMp8Kw418Y9jsw
+	XyN6lDHf80yBU9EPMa4TztePaWc/nJ3RnW6/RJsDXu+V8U2bv1jTGm7WlLCJcQ==
 From: Gregory CLEMENT <gregory.clement@bootlin.com>
 To: Paul Burton <paulburton@kernel.org>,
 	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
@@ -30,10 +30,13 @@ Cc: Vladimir  Kondratiev <vladimir.kondratiev@mobileye.com>,
 	Tawfik Bayouk <tawfik.bayouk@mobileye.com>,
 	Alexandre Belloni <alexandre.belloni@bootlin.com>,
 	=?UTF-8?q?Th=C3=A9o=20Lebrun?= <theo.lebrun@bootlin.com>,
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: [PATCH v4 12/22] MIPS: Get rid of CONFIG_NO_EXCEPT_FILL
-Date: Fri,  8 Dec 2023 17:12:28 +0100
-Message-ID: <20231208161249.1827174-13-gregory.clement@bootlin.com>
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+	Gregory CLEMENT <gregory.clement@bootlin.com>,
+	=?UTF-8?q?Philippe=20Mathieu-Daud=C3=A9?= <philmd@linaro.org>,
+	Rob Herring <robh@kernel.org>
+Subject: [PATCH v4 14/22] dt-bindings: Add vendor prefix for Mobileye Vision Technologies Ltd.
+Date: Fri,  8 Dec 2023 17:12:30 +0100
+Message-ID: <20231208161249.1827174-15-gregory.clement@bootlin.com>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231208161249.1827174-1-gregory.clement@bootlin.com>
 References: <20231208161249.1827174-1-gregory.clement@bootlin.com>
@@ -43,102 +46,34 @@ List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-GND-Sasl: gregory.clement@bootlin.com
 
-From: Jiaxun Yang <jiaxun.yang@flygoat.com>
+Mobileye Vision Technologies Ltd. is a company developing autonomous
+driving technologies and advanced driver-assistance systems (ADAS)
+including cameras, computer chips and software.
 
-NO_EXCEPT_FILL is used to indicate platform that does not
-need to reserve ebase memory at start of kernel.
-
-This is true for all R2+ platform as they allocate ebase
-memory on fly, and also true for any platform that does
-not load kernel at start of physical memory.
-
-Get rid this Kconfig symbol by use macro to detect conditions
-above.
-
-gc: use KSEG0 only for 32 bit configuration
-Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+Reviewed-by: Philippe Mathieu-Daudé <philmd@linaro.org>
+Acked-by: Rob Herring <robh@kernel.org>
+Signed-off-by: Gregory CLEMENT <gregory.clement@bootlin.com>
 ---
- arch/mips/Kconfig       | 8 --------
- arch/mips/kernel/head.S | 7 +++++--
- 2 files changed, 5 insertions(+), 10 deletions(-)
+ Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-index 11bacbd3971f6..88965b8f8fcc4 100644
---- a/arch/mips/Kconfig
-+++ b/arch/mips/Kconfig
-@@ -150,7 +150,6 @@ config MIPS_GENERIC_KERNEL
- 	select MIPS_CPU_SCACHE
- 	select MIPS_GIC
- 	select MIPS_L1_CACHE_SHIFT_7
--	select NO_EXCEPT_FILL
- 	select PCI_DRIVERS_GENERIC
- 	select SMP_UP if SMP
- 	select SWAP_IO_SPACE
-@@ -244,7 +243,6 @@ config BMIPS_GENERIC
- 	select ARCH_HAS_RESET_CONTROLLER
- 	select ARCH_HAS_SYNC_DMA_FOR_CPU_ALL
- 	select BOOT_RAW
--	select NO_EXCEPT_FILL
- 	select USE_OF
- 	select CEVT_R4K
- 	select CSRC_R4K
-@@ -288,7 +286,6 @@ config BCM47XX
- 	select HAVE_PCI
- 	select IRQ_MIPS_CPU
- 	select SYS_HAS_CPU_MIPS32_R1
--	select NO_EXCEPT_FILL
- 	select SYS_SUPPORTS_32BIT_KERNEL
- 	select SYS_SUPPORTS_LITTLE_ENDIAN
- 	select SYS_SUPPORTS_MIPS16
-@@ -424,7 +421,6 @@ config LANTIQ
- 	select IRQ_MIPS_CPU
- 	select CEVT_R4K
- 	select CSRC_R4K
--	select NO_EXCEPT_FILL
- 	select SYS_HAS_CPU_MIPS32_R1
- 	select SYS_HAS_CPU_MIPS32_R2
- 	select SYS_SUPPORTS_BIG_ENDIAN
-@@ -473,7 +469,6 @@ config MACH_LOONGSON64
- 	select ISA
- 	select I8259
- 	select IRQ_MIPS_CPU
--	select NO_EXCEPT_FILL
- 	select NR_CPUS_DEFAULT_64
- 	select USE_GENERIC_EARLY_PRINTK_8250
- 	select PCI_DRIVERS_GENERIC
-@@ -1156,9 +1151,6 @@ config PCI_GT64XXX_PCI0
- config PCI_XTALK_BRIDGE
- 	bool
- 
--config NO_EXCEPT_FILL
--	bool
--
- config MIPS_SPRAM
- 	bool
- 
-diff --git a/arch/mips/kernel/head.S b/arch/mips/kernel/head.S
-index b825ed4476c70..51a0ad49ac388 100644
---- a/arch/mips/kernel/head.S
-+++ b/arch/mips/kernel/head.S
-@@ -59,10 +59,13 @@
- #endif
- 	.endm
- 
--#ifndef CONFIG_NO_EXCEPT_FILL
-+#if (MIPS_ISA_REV < 2) &&					     \
-+    ((!defined( CONFIG_64BIT) && (VMLINUX_LOAD_ADDRESS == KSEG0)) || \
-+    (VMLINUX_LOAD_ADDRESS == CKSEG0))
- 	/*
- 	 * Reserved space for exception handlers.
--	 * Necessary for machines which link their kernels at KSEG0.
-+	 * Necessary for machines which link their kernels at KSEG0
-+	 * and incapable of moving ebase.
- 	 */
- 	.fill	0x400
- #endif
+diff --git a/Documentation/devicetree/bindings/vendor-prefixes.yaml b/Documentation/devicetree/bindings/vendor-prefixes.yaml
+index 309b94c328c84..b45279bc97c14 100644
+--- a/Documentation/devicetree/bindings/vendor-prefixes.yaml
++++ b/Documentation/devicetree/bindings/vendor-prefixes.yaml
+@@ -897,6 +897,8 @@ patternProperties:
+     description: Miyoo
+   "^mntre,.*":
+     description: MNT Research GmbH
++  "^mobileye,.*":
++    description: Mobileye Vision Technologies Ltd.
+   "^modtronix,.*":
+     description: Modtronix Engineering
+   "^moortec,.*":
 -- 
 2.42.0
 

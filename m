@@ -1,22 +1,22 @@
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="M3D+hiW/"
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="ZgOZUfh1"
 Received: from relay2-d.mail.gandi.net (relay2-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::222])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50D2B19B3;
-	Fri,  8 Dec 2023 08:13:04 -0800 (PST)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 429FA4000A;
-	Fri,  8 Dec 2023 16:13:02 +0000 (UTC)
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40EB519B7;
+	Fri,  8 Dec 2023 08:13:05 -0800 (PST)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 70D2740009;
+	Fri,  8 Dec 2023 16:13:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1702051982;
+	t=1702051983;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=Ss+D9T5Uh+7fUYrH2xTy2RKRoXOlo2BBLgHNahkRQoc=;
-	b=M3D+hiW/lX4+qnJ4aFIJLgwUJ/MXrOlPGFApd7eut7kxrhgSHrEACqqie+Ujnwm+cwmo0n
-	MUuL76ydDD9qA1njh4Ew4OVPjU8hNxgJlVddYtl8Sfqq4W9IO4s0vuTCcQCKLM05IgHQ/s
-	y92uWh3Vh9ENa4SyoRZz9hXHPgNBxMWIzpvYPgoUorxv7tWZaew9vm3y/kpo3sTyjwmfOk
-	cdgKjLPP86qnwcIq2cP+AL0sTQpg3/KMmwNtnNF18TKaSUiDqs1nmEErmUjNMMnj3BDcMq
-	WijDvCFsWY0QP0+cxiU/zVteTFDZsNyu7tVpYT9OANZddPME7DNBh8C32CMnyw==
+	bh=NIhoVxVD5CTXDcniNp5rYpom7jfM8QqJjfzFliLqoD0=;
+	b=ZgOZUfh1LANhEN/Bf3MT6GUFDlBY+NH+O8iGMC3KV/i7F/aX8JbtFbSjY4Nfxhpph/5lqp
+	rPMNUVbSZj4KbCJX9m+gBze9AAsghziJaLzmu0CFir/C0sbRq2c7jTxpSD3Q6o7yeVBwgf
+	NS1HyVm1dm+oKMH1Tb22LD8NqpZe94N3V3rdFgYJUxgbnWND1jS/A3oiWL5aOGySniDSLQ
+	tqbzZeEiEQq3M48j3sFUkYz6PKCXuEDVcZRerwTDn/VOVSglyktUJbjWA8tygSZyA3050R
+	Xf1mVXM9XTtQpeKdFntTYP0eJ9GTmvfvXgne6Rvv1s3Et+91DFjqxPSCMAWgSg==
 From: Gregory CLEMENT <gregory.clement@bootlin.com>
 To: Paul Burton <paulburton@kernel.org>,
 	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
@@ -31,9 +31,9 @@ Cc: Vladimir  Kondratiev <vladimir.kondratiev@mobileye.com>,
 	Alexandre Belloni <alexandre.belloni@bootlin.com>,
 	=?UTF-8?q?Th=C3=A9o=20Lebrun?= <theo.lebrun@bootlin.com>,
 	Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: [PATCH v4 10/22] MIPS: Avoid unnecessary reservation of exception space
-Date: Fri,  8 Dec 2023 17:12:26 +0100
-Message-ID: <20231208161249.1827174-11-gregory.clement@bootlin.com>
+Subject: [PATCH v4 12/22] MIPS: Get rid of CONFIG_NO_EXCEPT_FILL
+Date: Fri,  8 Dec 2023 17:12:28 +0100
+Message-ID: <20231208161249.1827174-13-gregory.clement@bootlin.com>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231208161249.1827174-1-gregory.clement@bootlin.com>
 References: <20231208161249.1827174-1-gregory.clement@bootlin.com>
@@ -48,114 +48,97 @@ X-GND-Sasl: gregory.clement@bootlin.com
 
 From: Jiaxun Yang <jiaxun.yang@flygoat.com>
 
-Nowadays we allocate exception base from memblock for r2_r6,
-so we don't need to reverse exception space at the start of
-the memory for r2_r6 processors.
+NO_EXCEPT_FILL is used to indicate platform that does not
+need to reserve ebase memory at start of kernel.
 
-For older processors the reservation is moved to traps_init
-where we have knowledge of exact size we need. We also add
-a sanity check to detect possible overlap with kernel.
+This is true for all R2+ platform as they allocate ebase
+memory on fly, and also true for any platform that does
+not load kernel at start of physical memory.
 
+Get rid this Kconfig symbol by use macro to detect conditions
+above.
+
+gc: use KSEG0 only for 32 bit configuration
 Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
 ---
- arch/mips/include/asm/traps.h    |  1 -
- arch/mips/kernel/cpu-probe.c     |  5 -----
- arch/mips/kernel/cpu-r3k-probe.c |  2 --
- arch/mips/kernel/traps.c         | 12 +++++++-----
- 4 files changed, 7 insertions(+), 13 deletions(-)
+ arch/mips/Kconfig       | 8 --------
+ arch/mips/kernel/head.S | 7 +++++--
+ 2 files changed, 5 insertions(+), 10 deletions(-)
 
-diff --git a/arch/mips/include/asm/traps.h b/arch/mips/include/asm/traps.h
-index 15cde638b4070..d3dddd1c083a9 100644
---- a/arch/mips/include/asm/traps.h
-+++ b/arch/mips/include/asm/traps.h
-@@ -24,7 +24,6 @@ extern void (*board_ebase_setup)(void);
- extern void (*board_cache_error_setup)(void);
+diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
+index 11bacbd3971f6..88965b8f8fcc4 100644
+--- a/arch/mips/Kconfig
++++ b/arch/mips/Kconfig
+@@ -150,7 +150,6 @@ config MIPS_GENERIC_KERNEL
+ 	select MIPS_CPU_SCACHE
+ 	select MIPS_GIC
+ 	select MIPS_L1_CACHE_SHIFT_7
+-	select NO_EXCEPT_FILL
+ 	select PCI_DRIVERS_GENERIC
+ 	select SMP_UP if SMP
+ 	select SWAP_IO_SPACE
+@@ -244,7 +243,6 @@ config BMIPS_GENERIC
+ 	select ARCH_HAS_RESET_CONTROLLER
+ 	select ARCH_HAS_SYNC_DMA_FOR_CPU_ALL
+ 	select BOOT_RAW
+-	select NO_EXCEPT_FILL
+ 	select USE_OF
+ 	select CEVT_R4K
+ 	select CSRC_R4K
+@@ -288,7 +286,6 @@ config BCM47XX
+ 	select HAVE_PCI
+ 	select IRQ_MIPS_CPU
+ 	select SYS_HAS_CPU_MIPS32_R1
+-	select NO_EXCEPT_FILL
+ 	select SYS_SUPPORTS_32BIT_KERNEL
+ 	select SYS_SUPPORTS_LITTLE_ENDIAN
+ 	select SYS_SUPPORTS_MIPS16
+@@ -424,7 +421,6 @@ config LANTIQ
+ 	select IRQ_MIPS_CPU
+ 	select CEVT_R4K
+ 	select CSRC_R4K
+-	select NO_EXCEPT_FILL
+ 	select SYS_HAS_CPU_MIPS32_R1
+ 	select SYS_HAS_CPU_MIPS32_R2
+ 	select SYS_SUPPORTS_BIG_ENDIAN
+@@ -473,7 +469,6 @@ config MACH_LOONGSON64
+ 	select ISA
+ 	select I8259
+ 	select IRQ_MIPS_CPU
+-	select NO_EXCEPT_FILL
+ 	select NR_CPUS_DEFAULT_64
+ 	select USE_GENERIC_EARLY_PRINTK_8250
+ 	select PCI_DRIVERS_GENERIC
+@@ -1156,9 +1151,6 @@ config PCI_GT64XXX_PCI0
+ config PCI_XTALK_BRIDGE
+ 	bool
  
- extern int register_nmi_notifier(struct notifier_block *nb);
--extern void reserve_exception_space(phys_addr_t addr, unsigned long size);
- extern char except_vec_nmi[];
+-config NO_EXCEPT_FILL
+-	bool
+-
+ config MIPS_SPRAM
+ 	bool
  
- #define VECTORSPACING 0x100	/* for EI/VI mode */
-diff --git a/arch/mips/kernel/cpu-probe.c b/arch/mips/kernel/cpu-probe.c
-index b406d8bfb15a3..54e8b0fd4a2ab 100644
---- a/arch/mips/kernel/cpu-probe.c
-+++ b/arch/mips/kernel/cpu-probe.c
-@@ -1570,7 +1570,6 @@ static inline void cpu_probe_broadcom(struct cpuinfo_mips *c, unsigned int cpu)
- 		c->cputype = CPU_BMIPS3300;
- 		__cpu_name[cpu] = "Broadcom BMIPS3300";
- 		set_elf_platform(cpu, "bmips3300");
--		reserve_exception_space(0x400, VECTORSPACING * 64);
- 		break;
- 	case PRID_IMP_BMIPS43XX: {
- 		int rev = c->processor_id & PRID_REV_MASK;
-@@ -1581,7 +1580,6 @@ static inline void cpu_probe_broadcom(struct cpuinfo_mips *c, unsigned int cpu)
- 			__cpu_name[cpu] = "Broadcom BMIPS4380";
- 			set_elf_platform(cpu, "bmips4380");
- 			c->options |= MIPS_CPU_RIXI;
--			reserve_exception_space(0x400, VECTORSPACING * 64);
- 		} else {
- 			c->cputype = CPU_BMIPS4350;
- 			__cpu_name[cpu] = "Broadcom BMIPS4350";
-@@ -1598,7 +1596,6 @@ static inline void cpu_probe_broadcom(struct cpuinfo_mips *c, unsigned int cpu)
- 			__cpu_name[cpu] = "Broadcom BMIPS5000";
- 		set_elf_platform(cpu, "bmips5000");
- 		c->options |= MIPS_CPU_ULRI | MIPS_CPU_RIXI;
--		reserve_exception_space(0x1000, VECTORSPACING * 64);
- 		break;
- 	}
- }
-@@ -1996,8 +1993,6 @@ void cpu_probe(void)
- 	if (cpu == 0)
- 		__ua_limit = ~((1ull << cpu_vmbits) - 1);
+diff --git a/arch/mips/kernel/head.S b/arch/mips/kernel/head.S
+index b825ed4476c70..51a0ad49ac388 100644
+--- a/arch/mips/kernel/head.S
++++ b/arch/mips/kernel/head.S
+@@ -59,10 +59,13 @@
  #endif
--
--	reserve_exception_space(0, 0x1000);
- }
+ 	.endm
  
- void cpu_report(void)
-diff --git a/arch/mips/kernel/cpu-r3k-probe.c b/arch/mips/kernel/cpu-r3k-probe.c
-index be93469c0e0ec..05410b743e571 100644
---- a/arch/mips/kernel/cpu-r3k-probe.c
-+++ b/arch/mips/kernel/cpu-r3k-probe.c
-@@ -137,8 +137,6 @@ void cpu_probe(void)
- 		cpu_set_fpu_opts(c);
- 	else
- 		cpu_set_nofpu_opts(c);
--
--	reserve_exception_space(0, 0x400);
- }
- 
- void cpu_report(void)
-diff --git a/arch/mips/kernel/traps.c b/arch/mips/kernel/traps.c
-index 651c9ec6265a9..b6e94654f6211 100644
---- a/arch/mips/kernel/traps.c
-+++ b/arch/mips/kernel/traps.c
-@@ -2007,10 +2007,6 @@ unsigned long exception_handlers[32];
- static unsigned long vi_vecbase;
- unsigned long vi_handlers[64];
- 
--void reserve_exception_space(phys_addr_t addr, unsigned long size)
--{
--	memblock_reserve(addr, size);
--}
- 
- void __init *set_except_vector(int n, void *addr)
- {
-@@ -2394,7 +2390,13 @@ void __init trap_init(void)
- 	}
- 
- 	if (!cpu_has_mips_r2_r6) {
--		ebase = CAC_BASE;
-+		ebase_pa = 0x0;
-+		ebase = CKSEG0ADDR(ebase_pa);
-+
-+		if (__pa_symbol(_stext) < (ebase_pa + vec_size))
-+			pr_err("Insufficient space for exception vectors\n");
-+
-+		memblock_reserve(ebase_pa, vec_size);
- 	} else {
- 		vec_size = max(vec_size, PAGE_SIZE);
- 		ebase_pa = memblock_phys_alloc(vec_size, 1 << fls(vec_size));
+-#ifndef CONFIG_NO_EXCEPT_FILL
++#if (MIPS_ISA_REV < 2) &&					     \
++    ((!defined( CONFIG_64BIT) && (VMLINUX_LOAD_ADDRESS == KSEG0)) || \
++    (VMLINUX_LOAD_ADDRESS == CKSEG0))
+ 	/*
+ 	 * Reserved space for exception handlers.
+-	 * Necessary for machines which link their kernels at KSEG0.
++	 * Necessary for machines which link their kernels at KSEG0
++	 * and incapable of moving ebase.
+ 	 */
+ 	.fill	0x400
+ #endif
 -- 
 2.42.0
 

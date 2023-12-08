@@ -1,12 +1,11 @@
 Received: from mx01.omp.ru (mx01.omp.ru [90.154.21.10])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C09F2198E;
-	Fri,  8 Dec 2023 08:45:32 -0800 (PST)
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EACC41712;
+	Fri,  8 Dec 2023 09:03:01 -0800 (PST)
 Received: from [192.168.1.104] (178.176.72.145) by msexch01.omp.ru
  (10.188.4.12) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.1258.12; Fri, 8 Dec
- 2023 19:45:21 +0300
-Subject: Re: [PATCH v4 13/22] MIPS: traps: Give more explanations if ebase
- doesn't belong to KSEG0
+ 2023 20:02:53 +0300
+Subject: Re: [PATCH v4 12/22] MIPS: Get rid of CONFIG_NO_EXCEPT_FILL
 To: Gregory CLEMENT <gregory.clement@bootlin.com>, Paul Burton
 	<paulburton@kernel.org>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
 	<linux-mips@vger.kernel.org>, Jiaxun Yang <jiaxun.yang@flygoat.com>, Rob
@@ -18,11 +17,11 @@ CC: Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>, Tawfik Bayouk
 	<alexandre.belloni@bootlin.com>, =?UTF-8?Q?Th=c3=a9o_Lebrun?=
 	<theo.lebrun@bootlin.com>, Thomas Petazzoni <thomas.petazzoni@bootlin.com>
 References: <20231208161249.1827174-1-gregory.clement@bootlin.com>
- <20231208161249.1827174-14-gregory.clement@bootlin.com>
+ <20231208161249.1827174-13-gregory.clement@bootlin.com>
 From: Sergey Shtylyov <s.shtylyov@omp.ru>
 Organization: Open Mobile Platform
-Message-ID: <dc3f201b-308c-a2b9-d64c-530fd32f6b9d@omp.ru>
-Date: Fri, 8 Dec 2023 19:45:20 +0300
+Message-ID: <bdce5a4b-6173-e1cf-e2a6-be4f51330f61@omp.ru>
+Date: Fri, 8 Dec 2023 20:02:52 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.10.1
 Precedence: bulk
@@ -31,7 +30,7 @@ List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20231208161249.1827174-14-gregory.clement@bootlin.com>
+In-Reply-To: <20231208161249.1827174-13-gregory.clement@bootlin.com>
 Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -39,7 +38,7 @@ X-ClientProxiedBy: msexch01.omp.ru (10.188.4.12) To msexch01.omp.ru
  (10.188.4.12)
 X-KSE-ServerInfo: msexch01.omp.ru, 9
 X-KSE-AntiSpam-Interceptor-Info: scan successful
-X-KSE-AntiSpam-Version: 6.0.0, Database issued on: 12/08/2023 16:36:06
+X-KSE-AntiSpam-Version: 6.0.0, Database issued on: 12/08/2023 16:51:05
 X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
 X-KSE-AntiSpam-Method: none
 X-KSE-AntiSpam-Rate: 59
@@ -56,7 +55,7 @@ X-KSE-AntiSpam-Info: {Found in DNSBL: 178.176.72.145 in (user)
 X-KSE-AntiSpam-Info: {Found in DNSBL: 178.176.72.145 in (user)
  dbl.spamhaus.org}
 X-KSE-AntiSpam-Info:
-	d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;omp.ru:7.1.1;127.0.0.199:7.1.2
+	omp.ru:7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2
 X-KSE-AntiSpam-Info: ApMailHostAddress: 178.176.72.145
 X-KSE-AntiSpam-Info: {DNS response errors}
 X-KSE-AntiSpam-Info: Rate: 59
@@ -67,7 +66,7 @@ X-KSE-AntiSpam-Info: Auth:dmarc=temperror header.from=omp.ru;spf=temperror
 X-KSE-Antiphishing-Info: Clean
 X-KSE-Antiphishing-ScanningType: Heuristic
 X-KSE-Antiphishing-Method: None
-X-KSE-Antiphishing-Bases: 12/08/2023 16:40:00
+X-KSE-Antiphishing-Bases: 12/08/2023 16:55:00
 X-KSE-Antivirus-Interceptor-Info: scan successful
 X-KSE-Antivirus-Info: Clean, bases: 12/8/2023 1:21:00 PM
 X-KSE-Attachment-Filter-Triggered-Rules: Clean
@@ -76,39 +75,26 @@ X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
 
 On 12/8/23 7:12 PM, Gregory CLEMENT wrote:
 
-> Now that we support having the kernel in XPHYS and not only in KSEG0,
-> the case where ebase doesn't belong to KSEG0 is more likely to
-> occur. However, in this scenariowe encounter a significant and
-
-   Scenario we? :-)
-
-> intimidating stack dump without any explanation. To address this, we
-> should eliminate the uninformative stack dump and replace it with a
-> warning that provides a clear explanation of the issue.
+> From: Jiaxun Yang <jiaxun.yang@flygoat.com>
 > 
-> Signed-off-by: Gregory CLEMENT <gregory.clement@bootlin.com>
-> ---
->  arch/mips/kernel/traps.c | 5 ++++-
->  1 file changed, 4 insertions(+), 1 deletion(-)
+> NO_EXCEPT_FILL is used to indicate platform that does not
+> need to reserve ebase memory at start of kernel.
 > 
-> diff --git a/arch/mips/kernel/traps.c b/arch/mips/kernel/traps.c
-> index 68f1dd54cde1c..ec0cebfd2ef7b 100644
-> --- a/arch/mips/kernel/traps.c
-> +++ b/arch/mips/kernel/traps.c
-> @@ -2420,10 +2420,13 @@ void __init trap_init(void)
->  		 * EVA is special though as it allows segments to be rearranged
->  		 * and to become uncached during cache error handling.
->  		 */
-> -		if (!IS_ENABLED(CONFIG_EVA) && !WARN_ON(ebase_pa >= 0x20000000))
-> +		if (!IS_ENABLED(CONFIG_EVA) && ebase_pa < 0x20000000)
->  			ebase = CKSEG0ADDR(ebase_pa);
->  		else
->  			ebase = (unsigned long)phys_to_virt(ebase_pa);
-> +		if (ebase_pa >= 0x20000000)
-> +			pr_warn("ebase(%pa) should better be in KSeg0",
+> This is true for all R2+ platform as they allocate ebase
+> memory on fly, and also true for any platform that does
 
-   I think it's called KSEG0...
+  On the fly?
 
+> not load kernel at start of physical memory.
+>   Using
+> Get rid this Kconfig symbol by use macro to detect conditions
+
+   Using.
+
+> above.
+> 
+> gc: use KSEG0 only for 32 bit configuration
+> Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
 [...]
 
 MBR, Sergey

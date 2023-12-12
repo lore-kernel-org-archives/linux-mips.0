@@ -1,22 +1,22 @@
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="hIA5vBGh"
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="Tf9jdRrS"
 Received: from relay8-d.mail.gandi.net (relay8-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::228])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 459A810E;
-	Tue, 12 Dec 2023 08:35:31 -0800 (PST)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 1460E1BF20A;
-	Tue, 12 Dec 2023 16:35:30 +0000 (UTC)
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4939CE3;
+	Tue, 12 Dec 2023 08:35:33 -0800 (PST)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 678F01BF20E;
+	Tue, 12 Dec 2023 16:35:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1702398930;
+	t=1702398931;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=csnOaxSt7JZQCahT2bN5IGKlGaknLCMr5TUNqVz3qJ8=;
-	b=hIA5vBGh5rMpBv0vKsUu7Rg7W7AO/jBlwSka/ljxzqaiEaB2ZkNbWXZAKSd5qB6VefULty
-	LPCLV5sxclUHKu9XCVjae1NgsUuyK3AbUb5+z+svtLAHbND+JEILQC6UsVpXBB2qe89JFH
-	ceDLGQUtQQh7Wg0QgeZu0u6EnoZzksEGwBAchn2SVLtg339fB1lCSfv4/4LZpCyReoF35w
-	jgsgW7It+BOpuvuYSUGWLwwfzZXVOw8PiyLscZGbqmu1x0uM+W9KjGpDWS2XGPKSz3MEB7
-	HLIaXe6dSzxVuairq4z54zjYUbC6hqU6YsVv7ZVSl7Cmj9b/dUrsSSjdUqm2Tg==
+	bh=s2HCa2+WQTWUMv9knwwE3fae1I7Q3ql8eVrDv9QUTaY=;
+	b=Tf9jdRrSxXhoqOSFjwX/EXp1SxnnFjE15jIf+AR/W97xv7LdNXNXSiQKMPBtJBaI8jsM8u
+	SOqyEZyudl2wAnWdTGS8im3yKZxp+EcuYsmEaTHSQoDPcQtO9bWp5CcsVK16xiTHfNJxf4
+	zK8EtY1PpfaouL3na3P0lEvbAVjnjLTMiYV5AY1DdBmYzc951qg3qT12Ck1zmx/613V4In
+	oKEV3dQ3SZyMlhdXo1SxKXirl8s7fIPySmjxznNgRtwEoGdoHfdARgmJK/llgpF2DEg2Jw
+	B996h7VjwNbbVaLSn4EzA0gIxTTZFkggUFXU5Sm4VJEPZQNfi0QNnbFHoml5cA==
 From: Gregory CLEMENT <gregory.clement@bootlin.com>
 To: Paul Burton <paulburton@kernel.org>,
 	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
@@ -30,11 +30,10 @@ Cc: Vladimir  Kondratiev <vladimir.kondratiev@mobileye.com>,
 	Tawfik Bayouk <tawfik.bayouk@mobileye.com>,
 	Alexandre Belloni <alexandre.belloni@bootlin.com>,
 	=?UTF-8?q?Th=C3=A9o=20Lebrun?= <theo.lebrun@bootlin.com>,
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-	Gregory CLEMENT <gregory.clement@bootlin.com>
-Subject: [PATCH v5 07/22] MIPS: Fix cache issue with mips_cps_core_entry
-Date: Tue, 12 Dec 2023 17:34:39 +0100
-Message-ID: <20231212163459.1923041-8-gregory.clement@bootlin.com>
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+Subject: [PATCH v5 09/22] MIPS: traps: Handle CPU with non standard vint offset
+Date: Tue, 12 Dec 2023 17:34:41 +0100
+Message-ID: <20231212163459.1923041-10-gregory.clement@bootlin.com>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231212163459.1923041-1-gregory.clement@bootlin.com>
 References: <20231212163459.1923041-1-gregory.clement@bootlin.com>
@@ -47,94 +46,95 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-GND-Sasl: gregory.clement@bootlin.com
 
-Split setup_cps_vecs and move back the cache management latter in
-cps_smp_setup when the cache subsystem had been initialized. Without
-this the blast_inv_dcache_range() call can lead to a crash.
+From: Jiaxun Yang <jiaxun.yang@flygoat.com>
 
-Signed-off-by: Gregory CLEMENT <gregory.clement@bootlin.com>
+Some BMIPS cpus has none standard start offset for vector interrupts.
+
+Handle those CPUs in vector size calculation and handler setup process.
+
+Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
 ---
- arch/mips/kernel/smp-cps.c | 32 ++++++++++++++++++--------------
- 1 file changed, 18 insertions(+), 14 deletions(-)
+ arch/mips/kernel/traps.c | 32 +++++++++++++++++++++++---------
+ 1 file changed, 23 insertions(+), 9 deletions(-)
 
-diff --git a/arch/mips/kernel/smp-cps.c b/arch/mips/kernel/smp-cps.c
-index 9aad678a32bd7..6cbdff917d147 100644
---- a/arch/mips/kernel/smp-cps.c
-+++ b/arch/mips/kernel/smp-cps.c
-@@ -53,6 +53,7 @@ UASM_L_LA(_not_nmi)
+diff --git a/arch/mips/kernel/traps.c b/arch/mips/kernel/traps.c
+index ea59d321f713e..7e6e6df59e6d7 100644
+--- a/arch/mips/kernel/traps.c
++++ b/arch/mips/kernel/traps.c
+@@ -74,7 +74,6 @@
  
- static DECLARE_BITMAP(core_power, NR_CPUS);
- static uint32_t core_entry_reg;
-+static phys_addr_t cps_vec_pa;
+ #include "access-helper.h"
  
- struct core_boot_config *mips_cps_core_bootcfg;
+-#define MAX(a, b) ((a) >= (b) ? (a) : (b))
  
-@@ -112,17 +113,8 @@ static void __init *mips_cps_build_core_entry(void *addr)
- 	return p;
- }
+ extern void check_wait(void);
+ extern asmlinkage void rollback_handle_int(void);
+@@ -2005,6 +2004,7 @@ void __noreturn nmi_exception_handler(struct pt_regs *regs)
+ unsigned long ebase;
+ EXPORT_SYMBOL_GPL(ebase);
+ unsigned long exception_handlers[32];
++static unsigned long vi_vecbase;
+ unsigned long vi_handlers[64];
  
--static int __init setup_cps_vecs(void)
-+static int __init allocate_cps_vecs(void)
- {
--	extern void excep_tlbfill(void);
--	extern void excep_xtlbfill(void);
--	extern void excep_cache(void);
--	extern void excep_genex(void);
--	extern void excep_intex(void);
--	extern void excep_ejtag(void);
--	phys_addr_t cps_vec_pa;
--	void *cps_vec;
--
- 	/* Try to allocate in KSEG1 first */
- 	cps_vec_pa = memblock_phys_alloc_range(BEV_VEC_SIZE, BEV_VEC_ALIGN,
- 						0x0, KSEGX_SIZE - 1);
-@@ -142,6 +134,19 @@ static int __init setup_cps_vecs(void)
- 	if (!cps_vec_pa)
- 		return -ENOMEM;
+ void reserve_exception_space(phys_addr_t addr, unsigned long size)
+@@ -2074,7 +2074,7 @@ static void *set_vi_srs_handler(int n, vi_handler_t addr, int srs)
+ 		handler = (unsigned long) addr;
+ 	vi_handlers[n] = handler;
  
-+	return 0;
-+}
+-	b = (unsigned char *)(ebase + 0x200 + n*VECTORSPACING);
++	b = (unsigned char *)(vi_vecbase + n * VECTORSPACING);
+ 
+ 	if (srs >= srssets)
+ 		panic("Shadow register set %d not supported", srs);
+@@ -2370,20 +2370,33 @@ void __init trap_init(void)
+ 	extern char except_vec3_generic;
+ 	extern char except_vec4;
+ 	extern char except_vec3_r4000;
+-	unsigned long i, vec_size;
++	unsigned long i, vec_size, vi_vec_offset;
+ 	phys_addr_t ebase_pa;
+ 
+ 	check_wait();
+ 
++	if (cpu_has_veic || cpu_has_vint) {
++		switch (current_cpu_type()) {
++		case CPU_BMIPS3300:
++		case CPU_BMIPS4380:
++			vi_vec_offset = 0x400;
++			break;
++		case CPU_BMIPS5000:
++			vi_vec_offset = 0x1000;
++			break;
++		default:
++			vi_vec_offset = 0x200;
++			break;
++		}
++		vec_size = vi_vec_offset + VECTORSPACING * 64;
++	} else {
++		vec_size = 0x400;
++	}
 +
-+static void __init setup_cps_vecs(void)
-+{
-+	extern void excep_tlbfill(void);
-+	extern void excep_xtlbfill(void);
-+	extern void excep_cache(void);
-+	extern void excep_genex(void);
-+	extern void excep_intex(void);
-+	extern void excep_ejtag(void);
-+	void *cps_vec;
-+
- 	/* We want to ensure cache is clean before writing uncached mem */
- 	blast_dcache_range(TO_CAC(cps_vec_pa), TO_CAC(cps_vec_pa) + BEV_VEC_SIZE);
- 	bc_wback_inv(TO_CAC(cps_vec_pa), BEV_VEC_SIZE);
-@@ -161,8 +166,6 @@ static int __init setup_cps_vecs(void)
- 	blast_inv_dcache_range(TO_CAC(cps_vec_pa), TO_CAC(cps_vec_pa) + BEV_VEC_SIZE);
- 	bc_inv(TO_CAC(cps_vec_pa), BEV_VEC_SIZE);
- 	__sync();
+ 	if (!cpu_has_mips_r2_r6) {
+ 		ebase = CAC_BASE;
+-		vec_size = 0x400;
+ 	} else {
+-		if (cpu_has_veic || cpu_has_vint)
+-			vec_size = 0x200 + VECTORSPACING*64;
+-		else
+-			vec_size = PAGE_SIZE;
 -
--	return 0;
- }
- 
- static void __init cps_smp_setup(void)
-@@ -224,8 +227,8 @@ static void __init cps_smp_setup(void)
- 	/* Make core 0 coherent with everything */
- 	write_gcr_cl_coherence(0xff);
- 
--	if (setup_cps_vecs())
--		pr_err("Failed to setup CPS vectors\n");
-+	if (allocate_cps_vecs())
-+		pr_err("Failed to allocate CPS vectors\n");
- 
- 	if (core_entry_reg && mips_cm_revision() >= CM_REV_CM3)
- 		write_gcr_bev_base(core_entry_reg);
-@@ -280,6 +283,7 @@ static void __init cps_prepare_cpus(unsigned int max_cpus)
- 			(cca_unsuitable && cpu_has_dc_aliases) ? " & " : "",
- 			cpu_has_dc_aliases ? "dcache aliasing" : "");
- 
-+	setup_cps_vecs();
- 
- 	/* Allocate core boot configuration structs */
- 	ncores = mips_cps_numcores(0);
++		vec_size = max(vec_size, PAGE_SIZE);
+ 		ebase_pa = memblock_phys_alloc(vec_size, 1 << fls(vec_size));
+ 		if (!ebase_pa)
+ 			panic("%s: Failed to allocate %lu bytes align=0x%x\n",
+@@ -2450,6 +2463,7 @@ void __init trap_init(void)
+ 	 * Initialise interrupt handlers
+ 	 */
+ 	if (cpu_has_veic || cpu_has_vint) {
++		vi_vecbase = ebase + vi_vec_offset;
+ 		int nvec = cpu_has_veic ? 64 : 8;
+ 		for (i = 0; i < nvec; i++)
+ 			set_vi_handler(i, NULL);
 -- 
 2.42.0
 

@@ -1,22 +1,22 @@
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="pM3zmtSl"
-Received: from relay6-d.mail.gandi.net (relay6-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::226])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20656118;
-	Tue, 12 Dec 2023 08:35:27 -0800 (PST)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 21F4DC0002;
-	Tue, 12 Dec 2023 16:35:25 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="kY+6zB9s"
+Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::225])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F09D106;
+	Tue, 12 Dec 2023 08:35:29 -0800 (PST)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 209671C0004;
+	Tue, 12 Dec 2023 16:35:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1702398925;
+	t=1702398927;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=1f+FndhwKpT84ogIpFFowDtfhlo7ZPzn2H3k9c4MjvQ=;
-	b=pM3zmtSlclr+D1O/xCkzLaAjtI/B72lxCilVSaiuiSSCUG7EzetyTCB7pOG1Yy8WSqyG81
-	arsA8Q1c8A1TpE0B9PMhO9aWdW6coq3yWFsFoEpJahjVQNXFFyfpxaN1SltHyBmR5cA9Xk
-	U8lXpJWOm5UafZMAclHkoTO4pwtkzPp7HBIgUNBa8PNrGGV3RZFG9EDIaQ67hQpM2E6ghS
-	Ici687NvFqfQxZXDUgOucl7+7J+OTbQVEZ9ADkJUpZwhAhzNAfN8TnVl2XcP994NxXBbW4
-	yco/O0bmEUwpjh4nLjHNGmPRZgURf7W7u5mtjpXt71pGwJgMjtLFVGRBCg7GTA==
+	bh=AagYqurduAd05kHY0ow9kHcvI+mUo3FUEEyQW1aeXWI=;
+	b=kY+6zB9s1rabD6l04MICojRVNhyiCEEhBssxMcg1X+ZVrIUR6KcrtPnNtjvFgg3BplaAup
+	0S9DxFPZop5D/ZIvrWUseLESjUb5ZCGcM5eG0DoahEGyg96axhs/Xe+zALd7ASjWWagXNG
+	w/XzpcDPZdoim46eJvVqResHZXtgOIbPJH84VRvMOQosvRup7c8D51zOTPdTN4UJwXSBSd
+	c2ZeTeI7rfKjdSBhcPspmybPuNTxDowIEHPMeXgH+AzC9VWGbNumt+125/d4eJQNEXKNwU
+	AJsFZx71k6rL1zrx0rvNAaRSLcaLAQJm5HqQwKOQGXOugmCTTWickyi4fVQXmg==
 From: Gregory CLEMENT <gregory.clement@bootlin.com>
 To: Paul Burton <paulburton@kernel.org>,
 	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
@@ -30,10 +30,12 @@ Cc: Vladimir  Kondratiev <vladimir.kondratiev@mobileye.com>,
 	Tawfik Bayouk <tawfik.bayouk@mobileye.com>,
 	Alexandre Belloni <alexandre.belloni@bootlin.com>,
 	=?UTF-8?q?Th=C3=A9o=20Lebrun?= <theo.lebrun@bootlin.com>,
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: [PATCH v5 02/22] MIPS: Export higher/highest relocation functions in uasm
-Date: Tue, 12 Dec 2023 17:34:34 +0100
-Message-ID: <20231212163459.1923041-3-gregory.clement@bootlin.com>
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+	Vladimir Kondratiev <vladimir.kondratiev@intel.com>,
+	Gregory CLEMENT <gregory.clement@bootlin.com>
+Subject: [PATCH v5 04/22] MIPS: genex: Fix except_vec_vi for kernel in XKPHYS
+Date: Tue, 12 Dec 2023 17:34:36 +0100
+Message-ID: <20231212163459.1923041-5-gregory.clement@bootlin.com>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231212163459.1923041-1-gregory.clement@bootlin.com>
 References: <20231212163459.1923041-1-gregory.clement@bootlin.com>
@@ -48,60 +50,109 @@ X-GND-Sasl: gregory.clement@bootlin.com
 
 From: Jiaxun Yang <jiaxun.yang@flygoat.com>
 
-Export uasm_rel_{higher,highest} functions.
-Those functions can be helpful in dealing with 64bit immediates.
+Use {highest, higher, hi, lo} immediate loading sequence
+to load 64 bit jump address for handler when kernel is
+loaded to XKPHYS.
 
+Co-developed-by: Vladimir Kondratiev <vladimir.kondratiev@intel.com>
+Signed-off-by: Vladimir Kondratiev <vladimir.kondratiev@intel.com>
+Co-developed-by: Gregory CLEMENT <gregory.clement@bootlin.com>
 Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+Signed-off-by: Gregory CLEMENT <gregory.clement@bootlin.com>
 ---
- arch/mips/include/asm/uasm.h | 2 ++
- arch/mips/mm/uasm.c          | 6 ++++--
- 2 files changed, 6 insertions(+), 2 deletions(-)
+ arch/mips/kernel/genex.S | 19 +++++++++++++++----
+ arch/mips/kernel/traps.c | 34 ++++++++++++++++++++++++----------
+ 2 files changed, 39 insertions(+), 14 deletions(-)
 
-diff --git a/arch/mips/include/asm/uasm.h b/arch/mips/include/asm/uasm.h
-index 296bcf31abb57..12db6d2fca070 100644
---- a/arch/mips/include/asm/uasm.h
-+++ b/arch/mips/include/asm/uasm.h
-@@ -196,6 +196,8 @@ void uasm_build_label(struct uasm_label **lab, u32 *addr,
- #ifdef CONFIG_64BIT
- int uasm_in_compat_space_p(long addr);
+diff --git a/arch/mips/kernel/genex.S b/arch/mips/kernel/genex.S
+index b6de8e88c1bd4..fd765ad9ecac0 100644
+--- a/arch/mips/kernel/genex.S
++++ b/arch/mips/kernel/genex.S
+@@ -272,11 +272,22 @@ NESTED(except_vec_vi, 0, sp)
+ 	.set	push
+ 	.set	noreorder
+ 	PTR_LA	v1, except_vec_vi_handler
+-FEXPORT(except_vec_vi_lui)
+-	lui	v0, 0		/* Patched */
++#if defined(CONFIG_32BIT) || defined(KBUILD_64BIT_SYM32)
++FEXPORT(except_vec_vi_hi)
++	lui	v0, 0			/* Patched */
++#else
++FEXPORT(except_vec_vi_highest)
++	lui	v0, 0			/* Patched */
++FEXPORT(except_vec_vi_higher)
++	daddiu	v0, 0			/* Patched */
++	dsll	v0, 16
++FEXPORT(except_vec_vi_hi)
++	daddiu	v0, 0			/* Patched */
++	dsll	v0, 16
++#endif
+ 	jr	v1
+-FEXPORT(except_vec_vi_ori)
+-	 ori	v0, 0		/* Patched */
++FEXPORT(except_vec_vi_lo)
++	PTR_ADDIU	v0, 0		/* Patched */
+ 	.set	pop
+ 	END(except_vec_vi)
+ EXPORT(except_vec_vi_end)
+diff --git a/arch/mips/kernel/traps.c b/arch/mips/kernel/traps.c
+index 246c6a6b02614..60c513c51684f 100644
+--- a/arch/mips/kernel/traps.c
++++ b/arch/mips/kernel/traps.c
+@@ -2091,18 +2091,26 @@ static void *set_vi_srs_handler(int n, vi_handler_t addr, int srs)
+ 		 * If no shadow set is selected then use the default handler
+ 		 * that does normal register saving and standard interrupt exit
+ 		 */
+-		extern const u8 except_vec_vi[], except_vec_vi_lui[];
+-		extern const u8 except_vec_vi_ori[], except_vec_vi_end[];
++		extern const u8 except_vec_vi[], except_vec_vi_hi[];
++		extern const u8 except_vec_vi_lo[], except_vec_vi_end[];
++#if defined(CONFIG_64BIT) && !defined(KBUILD_64BIT_SYM32)
++		extern const u8 except_vec_vi_highest[], except_vec_vi_higher[];
++#endif
+ 		extern const u8 rollback_except_vec_vi[];
+ 		const u8 *vec_start = using_rollback_handler() ?
+ 				      rollback_except_vec_vi : except_vec_vi;
+ #if defined(CONFIG_CPU_MICROMIPS) || defined(CONFIG_CPU_BIG_ENDIAN)
+-		const int lui_offset = except_vec_vi_lui - vec_start + 2;
+-		const int ori_offset = except_vec_vi_ori - vec_start + 2;
++		const int imm_offset = 2;
+ #else
+-		const int lui_offset = except_vec_vi_lui - vec_start;
+-		const int ori_offset = except_vec_vi_ori - vec_start;
++		const int imm_offset = 0;
++#endif
++#if defined(CONFIG_64BIT) && !defined(KBUILD_64BIT_SYM32)
++		const int highest_offset = except_vec_vi_highest - vec_start + imm_offset;
++		const int higher_offset = except_vec_vi_higher - vec_start + imm_offset;
  #endif
-+int uasm_rel_highest(long val);
-+int uasm_rel_higher(long val);
- int uasm_rel_hi(long val);
- int uasm_rel_lo(long val);
- void UASM_i_LA_mostly(u32 **buf, unsigned int rs, long addr);
-diff --git a/arch/mips/mm/uasm.c b/arch/mips/mm/uasm.c
-index 125140979d62c..6846bf2084c5e 100644
---- a/arch/mips/mm/uasm.c
-+++ b/arch/mips/mm/uasm.c
-@@ -425,7 +425,7 @@ int uasm_in_compat_space_p(long addr)
- }
- UASM_EXPORT_SYMBOL(uasm_in_compat_space_p);
++		const int hi_offset = except_vec_vi_hi - vec_start + imm_offset;
++		const int lo_offset = except_vec_vi_lo - vec_start + imm_offset;
++
+ 		const int handler_len = except_vec_vi_end - vec_start;
  
--static int uasm_rel_highest(long val)
-+int uasm_rel_highest(long val)
- {
- #ifdef CONFIG_64BIT
- 	return ((((val + 0x800080008000L) >> 48) & 0xffff) ^ 0x8000) - 0x8000;
-@@ -433,8 +433,9 @@ static int uasm_rel_highest(long val)
- 	return 0;
+ 		if (handler_len > VECTORSPACING) {
+@@ -2119,10 +2127,16 @@ static void *set_vi_srs_handler(int n, vi_handler_t addr, int srs)
+ #else
+ 				handler_len);
  #endif
- }
-+UASM_EXPORT_SYMBOL(uasm_rel_highest);
- 
--static int uasm_rel_higher(long val)
-+int uasm_rel_higher(long val)
- {
- #ifdef CONFIG_64BIT
- 	return ((((val + 0x80008000L) >> 32) & 0xffff) ^ 0x8000) - 0x8000;
-@@ -442,6 +443,7 @@ static int uasm_rel_higher(long val)
- 	return 0;
- #endif
- }
-+UASM_EXPORT_SYMBOL(uasm_rel_higher);
- 
- int uasm_rel_hi(long val)
- {
+-		h = (u16 *)(b + lui_offset);
+-		*h = (handler >> 16) & 0xffff;
+-		h = (u16 *)(b + ori_offset);
+-		*h = (handler & 0xffff);
++#if defined(CONFIG_64BIT) && !defined(KBUILD_64BIT_SYM32)
++		h = (u16 *)(b + highest_offset);
++		*h = uasm_rel_highest(handler);
++		h = (u16 *)(b + higher_offset);
++		*h = uasm_rel_higher(handler);
++#endif
++		h = (u16 *)(b + hi_offset);
++		*h = uasm_rel_hi(handler);
++		h = (u16 *)(b + lo_offset);
++		*h = uasm_rel_lo(handler);
+ 		local_flush_icache_range((unsigned long)b,
+ 					 (unsigned long)(b+handler_len));
+ 	}
 -- 
 2.42.0
 

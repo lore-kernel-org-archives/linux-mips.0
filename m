@@ -1,22 +1,22 @@
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="Vy3ckR3V"
-Received: from relay2-d.mail.gandi.net (relay2-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::222])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 307EA110;
-	Tue, 12 Dec 2023 08:35:38 -0800 (PST)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id A83564000F;
-	Tue, 12 Dec 2023 16:35:36 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="be2euZz7"
+Received: from relay9-d.mail.gandi.net (relay9-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::229])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47E84E9;
+	Tue, 12 Dec 2023 08:35:40 -0800 (PST)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 51793FF819;
+	Tue, 12 Dec 2023 16:35:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1702398937;
+	t=1702398938;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=/+KygOxw7upzFkFkKPQuC0aojbbTgfulc0YH1c5kUVo=;
-	b=Vy3ckR3VwxVy0nDMIHY7AbZzMDkQZukS+BXdEbip5cfNtQrRqzzJidZAC9WKKRjuPI/7FV
-	WDmR1yOTMW2lvj9umhgtO/iiHhcw/MnCB2tpgiCz0rZZfB1lej3l0JdMPmcPj3uK+D/zip
-	q5fp30z/i10h9oIXr5cyzoX9S/T4WRUMKyMZ4rNM9Hc6X+CgUJotDjQCMSzDvuflElwkpW
-	vQKyT+aYfcLEW/0qwup9Y1qKS6nEmeasmEtPXC5XHWbh52z0Eqrkohnt7Ivk4mwoGoruMu
-	LggSuEKd9Gw8mOy8aD7D8ZRqucPweJaFGt1vjDa7o7ZSQXrhxJ1u/0u8csVeYg==
+	bh=CCkW8mMra/OC394XuBHllm2zOVLtoeHjnt7KGkK+CU0=;
+	b=be2euZz7xzQtYIH2FICjS7NGoVdb8qwxryMGyfqWcP/ijmZVTfAR5jJIE4hZOt32uZ2AxS
+	oYEsL29k/qGL3rzX80nigvkeDU0Mq+pfvjBMiH9krieVjts6vpvDKaBoCaJTfVX8npEpiH
+	9v8Hf8GtEndpYDKb221qCWJxKMZ/iLKKmNbSbyoi/cr7Fwr5/oYfkyW0mX/dXRFrI+t9WL
+	VeaciV7+YqnxAeCgwLPWqmIZV13LBypwmfKMuQw0t87tYmqd6i8kCCzpVTMXBuXF2ySLhu
+	Ow59ii35bZMTyOIg7OA6aJVXvhpx9ShLMQQifQ3GxfLeu5LVP+Cv/5l9+4wu7w==
 From: Gregory CLEMENT <gregory.clement@bootlin.com>
 To: Paul Burton <paulburton@kernel.org>,
 	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
@@ -32,13 +32,10 @@ Cc: Vladimir  Kondratiev <vladimir.kondratiev@mobileye.com>,
 	=?UTF-8?q?Th=C3=A9o=20Lebrun?= <theo.lebrun@bootlin.com>,
 	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
 	Gregory CLEMENT <gregory.clement@bootlin.com>,
-	Arnd Bergmann <arnd@arndb.de>,
-	=?UTF-8?q?Philippe=20Mathieu-Daud=C3=A9?= <philmd@linaro.org>,
-	Serge Semin <fancer.lancer@gmail.com>,
 	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: [PATCH v5 16/22] dt-bindings: mips: cpu: Add I-Class I6500 Multiprocessor Core
-Date: Tue, 12 Dec 2023 17:34:48 +0100
-Message-ID: <20231212163459.1923041-17-gregory.clement@bootlin.com>
+Subject: [PATCH v5 18/22] dt-bindings: mfd: syscon: Document EyeQ5 OLB
+Date: Tue, 12 Dec 2023 17:34:50 +0100
+Message-ID: <20231212163459.1923041-19-gregory.clement@bootlin.com>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231212163459.1923041-1-gregory.clement@bootlin.com>
 References: <20231212163459.1923041-1-gregory.clement@bootlin.com>
@@ -48,34 +45,33 @@ List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-GND-Sasl: gregory.clement@bootlin.com
 
-The MIPS Warrior I-class I6500 was announced by Imagination
-Technologies in 2016 and is used in the Mobileye SoC EyeQ5.
+Document Mobileye EyeQ5 compatibles for OLB registers that are
+miscellaneous SoC related registers.
 
-Acked-by: Arnd Bergmann <arnd@arndb.de>
-Reviewed-by: Philippe Mathieu-Daudé <philmd@linaro.org>
-Reviewed-by: Serge Semin <fancer.lancer@gmail.com>
+It is used to expose SoC specific configuration such as for example
+reset, clock or pinctrl.
+
 Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Signed-off-by: Gregory CLEMENT <gregory.clement@bootlin.com>
 ---
- Documentation/devicetree/bindings/mips/cpus.yaml | 1 +
+ Documentation/devicetree/bindings/mfd/syscon.yaml | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/Documentation/devicetree/bindings/mips/cpus.yaml b/Documentation/devicetree/bindings/mips/cpus.yaml
-index 9bc47868d28b6..a85137add6689 100644
---- a/Documentation/devicetree/bindings/mips/cpus.yaml
-+++ b/Documentation/devicetree/bindings/mips/cpus.yaml
-@@ -23,6 +23,7 @@ properties:
-       - brcm,bmips4380
-       - brcm,bmips5000
-       - brcm,bmips5200
-+      - img,i6500
-       - ingenic,xburst-fpu1.0-mxu1.1
-       - ingenic,xburst-fpu2.0-mxu2.0
-       - ingenic,xburst-mxu1.0
+diff --git a/Documentation/devicetree/bindings/mfd/syscon.yaml b/Documentation/devicetree/bindings/mfd/syscon.yaml
+index 084b5c2a2a3c2..c90633460eeca 100644
+--- a/Documentation/devicetree/bindings/mfd/syscon.yaml
++++ b/Documentation/devicetree/bindings/mfd/syscon.yaml
+@@ -55,6 +55,7 @@ properties:
+               - mediatek,mt8135-pctl-a-syscfg
+               - mediatek,mt8135-pctl-b-syscfg
+               - mediatek,mt8365-syscfg
++              - mobileye,eyeq5-olb
+               - microchip,lan966x-cpu-syscon
+               - microchip,sparx5-cpu-syscon
+               - mstar,msc313-pmsleep
 -- 
 2.42.0
 

@@ -1,92 +1,85 @@
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="BkYDT2p7"
-Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A7741FC8
-	for <linux-mips@vger.kernel.org>; Tue, 12 Dec 2023 07:28:57 -0800 (PST)
-Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-5e1ee53972dso8563027b3.1
-        for <linux-mips@vger.kernel.org>; Tue, 12 Dec 2023 07:28:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1702394936; x=1702999736; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ESTPXNxaOVzfRXXRx0Fvol8yzry2uxBEEuLKqef2q4U=;
-        b=BkYDT2p7AZjoPKT1n33qcBzraBObsSid1Kav0bwVkxm03TEVNC9zjkvdoIvsP0gO75
-         moN91EoItYKY7bE8DYrJiANZQGFCmkf5HIebed+p+oequNpXhL+YOR4EpL4dpgIKSQ5Q
-         rdxafRPM1EMvN39DPwz196VoqroHUedjHpsNgY60Ny4L70huLqKg9p0/ZqM3NMyNGdm6
-         B2u/IQXRbgTONYPciifuv1nD9dRK0KUIoy1No1oaQwluBNg6Ll9BXgX2qVuEIV52N94P
-         uqorvgEZE7Y9ffnxMRIbnnF1PGv2zPAMLd+YB1lWZuWINHkNV+Y+C0LRq892mFgzBrA5
-         /IwQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702394936; x=1702999736;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=ESTPXNxaOVzfRXXRx0Fvol8yzry2uxBEEuLKqef2q4U=;
-        b=Yq0x+YeSu447Jv6MxFrwjABpe7STW0rqNuOgnf5gm2q+djMkJOSOetxKh6yIZb3Uxi
-         RFYTL9jzZcWHHvk2FptkVORRKM7humEKC7EGW/YozkbpVprPDY0cQOgHE/au8CA9jk6O
-         qqZ3q8Ifdp2KSW/+ZbJGY4FfBNx9VSh6cYG3ddet1d/CJQERBGUqn4SVfkCrPiqNLC7A
-         EKOdEXXgdTxGdIzBt/xv6C7SJz3CyrOtnti3RfSaqIe7tra7Lk8Lad6Cr1YWG7y2bPeZ
-         vpnkpPOOeunLq1RDHZ2RsDSKyVHjqUkUZmIwLwbjB1iDEyWAm9EjaSLt//dyNu5q+uqP
-         MQTw==
-X-Gm-Message-State: AOJu0YwlJFF9aarNpeY/4VZcUE8h09YIsG+luckCy4GcBp7QzLzh1CLa
-	lhtkqa66pAfOUO1q+iVC8PXMtjIM7q8=
-X-Google-Smtp-Source: AGHT+IHBX6jt6VDhWuABWGol0Nx+Ii84S8r8nT9g/gNamSIHnZwQhzhs+bFmpCR2BuKO/hKALNdpvESE74w=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a25:db94:0:b0:db4:7ac:fea6 with SMTP id
- g142-20020a25db94000000b00db407acfea6mr41805ybf.7.1702394935890; Tue, 12 Dec
- 2023 07:28:55 -0800 (PST)
-Date: Tue, 12 Dec 2023 07:28:54 -0800
-In-Reply-To: <CALMp9eTT97oDmQT7pxeOMLQbt-371aMtC2Kev+-kWXVRDVrjeg@mail.gmail.com>
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="MJdEjsFp"
+Received: from relay9-d.mail.gandi.net (relay9-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::229])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F72710B;
+	Tue, 12 Dec 2023 08:35:26 -0800 (PST)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 1185FFF809;
+	Tue, 12 Dec 2023 16:35:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1702398924;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=F1EYqlVYF1fJ33cC2a0Mertg3uhTJJ/NIkImZDHepJg=;
+	b=MJdEjsFpVJ8ioDiw5His3fbeOd2bjIxm4S8sl0YNzERg/it60cuiPt/dVohY1zArlA7RPd
+	J/LPXx9OPkZopk+jPGol+vP9nY2NPZEaFcWrjAF64ytr48w3FwE8H2Tzo7TeFiyHBvI0ML
+	0gyE6P1LJySEyPz9tEiKyCR/8DY/1ZgtHdpE/i3buNqi1bbeagMTRUNHutjCyfKwGxUgs7
+	ehc+A4gcnYxxG7Swuz36Zc5coOMuvHIMJrMjOzFkJU73Pcpb6KnZamxbPyxqFM3aO+fQtW
+	EmHU0yGnK9ZMOCnuJ4XWbjp5h1Ies5nloy/gr64dj0CPMpdrAOtuMWjitwmSZg==
+From: Gregory CLEMENT <gregory.clement@bootlin.com>
+To: Paul Burton <paulburton@kernel.org>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	linux-mips@vger.kernel.org,
+	Jiaxun Yang <jiaxun.yang@flygoat.com>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: Vladimir  Kondratiev <vladimir.kondratiev@mobileye.com>,
+	Tawfik Bayouk <tawfik.bayouk@mobileye.com>,
+	Alexandre Belloni <alexandre.belloni@bootlin.com>,
+	=?UTF-8?q?Th=C3=A9o=20Lebrun?= <theo.lebrun@bootlin.com>,
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+	Gregory CLEMENT <gregory.clement@bootlin.com>,
+	=?UTF-8?q?Philippe=20Mathieu-Daud=C3=A9?= <philmd@linaro.org>,
+	Florian Fainelli <florian.fainelli@broadcom.com>
+Subject: [PATCH v5 01/22] MIPS: compressed: Use correct instruction for 64 bit code
+Date: Tue, 12 Dec 2023 17:34:33 +0100
+Message-ID: <20231212163459.1923041-2-gregory.clement@bootlin.com>
+X-Mailer: git-send-email 2.42.0
+In-Reply-To: <20231212163459.1923041-1-gregory.clement@bootlin.com>
+References: <20231212163459.1923041-1-gregory.clement@bootlin.com>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20220921003201.1441511-11-seanjc@google.com> <20231207010302.2240506-1-jmattson@google.com>
- <ZXHw7tykubfG04Um@google.com> <CALMp9eTT97oDmQT7pxeOMLQbt-371aMtC2Kev+-kWXVRDVrjeg@mail.gmail.com>
-Message-ID: <ZXh8Nq_y_szj1WN0@google.com>
-Subject: Re: [PATCH v4 10/12] KVM: x86: never write to memory from kvm_vcpu_check_block()
-From: Sean Christopherson <seanjc@google.com>
-To: Jim Mattson <jmattson@google.com>
-Cc: alexandru.elisei@arm.com, anup@brainfault.org, aou@eecs.berkeley.edu, 
-	atishp@atishpatra.org, borntraeger@linux.ibm.com, chenhuacai@kernel.org, 
-	david@redhat.com, frankja@linux.ibm.com, imbrenda@linux.ibm.com, 
-	james.morse@arm.com, kvm-riscv@lists.infradead.org, kvm@vger.kernel.org, 
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, 
-	linux-mips@vger.kernel.org, linux-riscv@lists.infradead.org, 
-	linuxppc-dev@lists.ozlabs.org, maz@kernel.org, mlevitsk@redhat.com, 
-	oliver.upton@linux.dev, palmer@dabbelt.com, paul.walmsley@sifive.com, 
-	pbonzini@redhat.com, suzuki.poulose@arm.com
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-GND-Sasl: gregory.clement@bootlin.com
 
-On Sun, Dec 10, 2023, Jim Mattson wrote:
-> On Thu, Dec 7, 2023 at 8:21=E2=80=AFAM Sean Christopherson <seanjc@google=
-.com> wrote:
-> > Doh.  We got the less obvious cases and missed the obvious one.
-> >
-> > Ugh, and we also missed a related mess in kvm_guest_apic_has_interrupt(=
-).  That
-> > thing should really be folded into vmx_has_nested_events().
-> >
-> > Good gravy.  And vmx_interrupt_blocked() does the wrong thing because t=
-hat
-> > specifically checks if L1 interrupts are blocked.
-> >
-> > Compile tested only, and definitely needs to be chunked into multiple p=
-atches,
-> > but I think something like this mess?
->=20
-> The proposed patch does not fix the problem. In fact, it messes things
-> up so much that I don't get any test results back.
+The code clearing BSS already use macro or use correct instruction
+depending if the CPU is 32 bits or 64 bits. However, a few
+instructions remained 32 bits only.
 
-Drat.
+By using the accurate MACRO, it is now possible to deal with memory
+address beyond 32 bits. As a side effect, when using 64bits processor,
+it also divides the loop number needed to clear the BSS by 2.
 
-> Google has an internal K-U-T test that demonstrates the problem. I
-> will post it soon.
+Reviewed-by: Philippe Mathieu-Daudé <philmd@linaro.org>
+Reviewed-by: Florian Fainelli <florian.fainelli@broadcom.com>
+Signed-off-by: Gregory CLEMENT <gregory.clement@bootlin.com>
+---
+ arch/mips/boot/compressed/head.S | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Received, I'll dig in soonish, though "soonish" might unfortunately might m=
-ean
-2024.
+diff --git a/arch/mips/boot/compressed/head.S b/arch/mips/boot/compressed/head.S
+index 5795d0af1e1b2..d237a834b85ee 100644
+--- a/arch/mips/boot/compressed/head.S
++++ b/arch/mips/boot/compressed/head.S
+@@ -25,8 +25,8 @@
+ 	/* Clear BSS */
+ 	PTR_LA	a0, _edata
+ 	PTR_LA	a2, _end
+-1:	sw	zero, 0(a0)
+-	addiu	a0, a0, 4
++1:	PTR_S	zero, 0(a0)
++	PTR_ADDIU a0, a0, PTRSIZE
+ 	bne	a2, a0, 1b
+ 
+ 	PTR_LA	a0, (.heap)	     /* heap address */
+-- 
+2.42.0
+

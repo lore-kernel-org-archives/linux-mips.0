@@ -1,22 +1,22 @@
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="Ch3z9zB4"
-Received: from relay4-d.mail.gandi.net (relay4-d.mail.gandi.net [217.70.183.196])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF4BA110;
-	Tue, 12 Dec 2023 08:35:30 -0800 (PST)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 48ED3E0003;
-	Tue, 12 Dec 2023 16:35:28 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="hV61DdsZ"
+Received: from relay8-d.mail.gandi.net (relay8-d.mail.gandi.net [217.70.183.201])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63CB7CF;
+	Tue, 12 Dec 2023 08:35:28 -0800 (PST)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id EC60D1BF206;
+	Tue, 12 Dec 2023 16:35:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1702398929;
+	t=1702398926;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=D5cCBpjLVQJIEyNHt7kbmGhJLdSXgsITn2458HFNHoY=;
-	b=Ch3z9zB4RfHk6MKx0YDBteFeS7lmL3PQi6ptvM+2yfXzfwg0lvT/drOiiKQG0bjH5mLVpa
-	cys/hkO9rn4Qc6k7GtEsdRdJYEhLHFJ2rTGnrgfdPvs+Gyq36bHYt5agBmyZNF69bhjXH4
-	Tg5Q5rupmYUy2pYZFtNYVdfyfhQkY/nEQZDWUDI6cT0E6tcmMgnLMIPETXHXN8POQa45N9
-	CSpu5Rgeg7C5oY2hOjUNYEIdQPRGv3pAGWHY0JIgl3Z1Cb54g/M+gxUpdc6H6rBqxlH7YB
-	uiLGgwb8fDhiw+GEJovOacpEiIf+ABroJmV+BuEW5TuVLISbzEpluTBqFbELkw==
+	bh=lKcme3eaH65euvc/e2P73RSdLcgnsk0eRcbckWPUCdg=;
+	b=hV61DdsZAAj98ndi9omfMHJ64OQ103h1zci1b7xPMPI1LEe6X2UpwRXzSwRTP/3K71WgTO
+	4xbWq2ONnAmjcVGBPXj8Ed3viBxklngetrxWiKpw3UpPk1GG262+vfczvzm4jeAj14H5FK
+	cg/ZVreDQSR7LUJ+457DJdUb6m9Sm8PEMrTrULk3xsBQ0OqFDaXd8wCwPcGX4mn7riw6JP
+	rcSkchf6mhbGT9zrClx1kSOVargaobSp0kX9ciKayh2lW/t1HQtlwZd13tBauicNAC7QzA
+	RZ9fT/zbzPwTfbpvNhw6XmMgi6aoy89132BttBKG0Wt9FXXKyezjYx15F9UMfQ==
 From: Gregory CLEMENT <gregory.clement@bootlin.com>
 To: Paul Burton <paulburton@kernel.org>,
 	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
@@ -31,11 +31,10 @@ Cc: Vladimir  Kondratiev <vladimir.kondratiev@mobileye.com>,
 	Alexandre Belloni <alexandre.belloni@bootlin.com>,
 	=?UTF-8?q?Th=C3=A9o=20Lebrun?= <theo.lebrun@bootlin.com>,
 	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-	Vladimir Kondratiev <vladimir.kondratiev@intel.com>,
 	Gregory CLEMENT <gregory.clement@bootlin.com>
-Subject: [PATCH v5 05/22] MIPS: Fix set_uncached_handler for ebase in XKPHYS
-Date: Tue, 12 Dec 2023 17:34:37 +0100
-Message-ID: <20231212163459.1923041-6-gregory.clement@bootlin.com>
+Subject: [PATCH v5 03/22] MIPS: spaces: Define a couple of handy macros
+Date: Tue, 12 Dec 2023 17:34:35 +0100
+Message-ID: <20231212163459.1923041-4-gregory.clement@bootlin.com>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231212163459.1923041-1-gregory.clement@bootlin.com>
 References: <20231212163459.1923041-1-gregory.clement@bootlin.com>
@@ -48,36 +47,52 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-GND-Sasl: gregory.clement@bootlin.com
 
-From: Jiaxun Yang <jiaxun.yang@flygoat.com>
+Define KSEGX_SIZE to represent the size of each KSEG segment.
 
-ebase might reside in XKPHYS if memblock is unable to allocate memory
-within the KSEG0 physical range.
+Introduce TO_CAC and TO_UNCAC specifically for 32-bit builds, pointing
+to KSEG0 and KSEG1.
 
-To map EBASE into uncached space, we convert it back to its physical
-address and utilize the platform's TO_UNCAC helper for mapping.
+TO_PHYS remains exclusive to 64-bit builds to encourage the use of
+__pa and prevent compatibility address space confusion.
 
-Co-developed-by: Vladimir Kondratiev <vladimir.kondratiev@intel.com>
-Signed-off-by: Vladimir Kondratiev <vladimir.kondratiev@intel.com>
-Co-developed-by: Gregory CLEMENT <gregory.clement@bootlin.com>
-Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+KSEGX_SIZE is defined to size of each KSEG segment.
+
+Co-developed-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
 Signed-off-by: Gregory CLEMENT <gregory.clement@bootlin.com>
 ---
- arch/mips/kernel/traps.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/mips/include/asm/addrspace.h           | 5 +++++
+ arch/mips/include/asm/mach-generic/spaces.h | 2 ++
+ 2 files changed, 7 insertions(+)
 
-diff --git a/arch/mips/kernel/traps.c b/arch/mips/kernel/traps.c
-index 60c513c51684f..230728d76d11f 100644
---- a/arch/mips/kernel/traps.c
-+++ b/arch/mips/kernel/traps.c
-@@ -2346,7 +2346,7 @@ static const char panic_null_cerr[] =
- void set_uncached_handler(unsigned long offset, void *addr,
- 	unsigned long size)
- {
--	unsigned long uncached_ebase = CKSEG1ADDR(ebase);
-+	unsigned long uncached_ebase = TO_UNCAC(__pa(ebase));
+diff --git a/arch/mips/include/asm/addrspace.h b/arch/mips/include/asm/addrspace.h
+index 59a48c60a065c..03a5e2c8b5dc9 100644
+--- a/arch/mips/include/asm/addrspace.h
++++ b/arch/mips/include/asm/addrspace.h
+@@ -47,6 +47,11 @@
+  */
+ #define KSEGX(a)		((_ACAST32_(a)) & _ACAST32_(0xe0000000))
  
- 	if (!addr)
- 		panic(panic_null_cerr);
++/*
++ * Gives the size of each kernel segment
++ */
++#define KSEGX_SIZE		0x20000000
++
+ /*
+  * Returns the physical address of a CKSEGx / XKPHYS address
+  */
+diff --git a/arch/mips/include/asm/mach-generic/spaces.h b/arch/mips/include/asm/mach-generic/spaces.h
+index b247575c5e699..c502bdd98aad0 100644
+--- a/arch/mips/include/asm/mach-generic/spaces.h
++++ b/arch/mips/include/asm/mach-generic/spaces.h
+@@ -49,6 +49,8 @@
+ #define HIGHMEM_START		_AC(0x20000000, UL)
+ #endif
+ 
++#define TO_UNCAC(x)		CKSEG1ADDR(x)
++#define TO_CAC(x)		CKSEG0ADDR(x)
+ #endif /* CONFIG_32BIT */
+ 
+ #ifdef CONFIG_64BIT
 -- 
 2.42.0
 

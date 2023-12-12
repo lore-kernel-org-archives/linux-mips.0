@@ -1,22 +1,22 @@
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="XLZzoBPL"
-Received: from relay7-d.mail.gandi.net (relay7-d.mail.gandi.net [217.70.183.200])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6647A136;
-	Tue, 12 Dec 2023 08:35:41 -0800 (PST)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 4119620003;
-	Tue, 12 Dec 2023 16:35:39 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="ECU3izDz"
+Received: from relay6-d.mail.gandi.net (relay6-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::226])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C972D182;
+	Tue, 12 Dec 2023 08:35:42 -0800 (PST)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id EEDE0C0002;
+	Tue, 12 Dec 2023 16:35:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1702398939;
+	t=1702398941;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=nfmmkPLG/ll5NZfOYiII8ssFiuAZWR9wcDBKqL8DiFA=;
-	b=XLZzoBPLuTYtdYVeQxybUA2re125RE9xwJ8R12YqVwLAEWQKaeQBQT3kR8lMarUebkNCjB
-	FTO5mg5GFGfWXHhTOEIPSz8xTbpWCz/jwovjOKeJNqvq7SgzT1k1GyTXUtC8QhIz7AbIJ4
-	hh5h2V8hmegVgx2xKKC0Y50YU+QFG/ZsUT5iDC8x012qmGEKEgzube63p6nrnBcrOs7Pid
-	Ht14umsaz/E62OvI22dcim3y/jqF87eQOV+iLDpLI/bEIIuh1E4OAMqkblEM9wHktJ1lO9
-	bZFGaR3h/PG/Om2xiwZX/eT1o+Gmoq7mugHZT1LhDUs0VfkT0C4Qbxd2Ch/TJA==
+	bh=4e+9fOmpE4/IwZbJIJGAaMmx3iR6uUYWvdhHh8JnvMg=;
+	b=ECU3izDzrr5b8h90ffNyzCOwGcNweM42CctUvGlGzXcaSc3afQ86TVHIDYdAUZMNV7n2Ia
+	FrCwj3J/4BSaUh9omYPL7W9ZaHSftFNdCz9U/HBwWkFcnr3k1FYSwES3XgkND9+hdS+HE8
+	ePWvCmi1UrYoif0YNX1TIdP4KyRznjV+FbMOd2/jBgYHhSmmlVxV9FCKUs8HaW+aps7nHt
+	9o/sj/CxcDr2ZzNNgstM2ifAMq8c1G94+V7RsFrsjVDGrhwOU6ujOu56wXm5zrITEs8U/b
+	z/0gSi8HfBt/OwTMCLh9hvCgfDmMYYcjRaTSh13vEF/7tL1WNYcLZTBCN3hjhw==
 From: Gregory CLEMENT <gregory.clement@bootlin.com>
 To: Paul Burton <paulburton@kernel.org>,
 	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
@@ -32,9 +32,9 @@ Cc: Vladimir  Kondratiev <vladimir.kondratiev@mobileye.com>,
 	=?UTF-8?q?Th=C3=A9o=20Lebrun?= <theo.lebrun@bootlin.com>,
 	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
 	Gregory CLEMENT <gregory.clement@bootlin.com>
-Subject: [PATCH v5 19/22] MIPS: mobileye: Add EyeQ5 dtsi
-Date: Tue, 12 Dec 2023 17:34:51 +0100
-Message-ID: <20231212163459.1923041-20-gregory.clement@bootlin.com>
+Subject: [PATCH v5 21/22] MIPS: generic: Add support for Mobileye EyeQ5
+Date: Tue, 12 Dec 2023 17:34:53 +0100
+Message-ID: <20231212163459.1923041-22-gregory.clement@bootlin.com>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231212163459.1923041-1-gregory.clement@bootlin.com>
 References: <20231212163459.1923041-1-gregory.clement@bootlin.com>
@@ -47,469 +47,138 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-GND-Sasl: gregory.clement@bootlin.com
 
-Add a device tree include file for the Mobileye EyeQ5 SoC.
-
-Based on the work of Slava Samsonov <stanislav.samsonov@intel.com>
+Introduce support for the MIPS based Mobileye EyeQ5 SoCs.
 
 Signed-off-by: Gregory CLEMENT <gregory.clement@bootlin.com>
 ---
- arch/mips/boot/dts/Makefile                   |   1 +
- .../boot/dts/mobileye/eyeq5-fixed-clocks.dtsi | 292 ++++++++++++++++++
- arch/mips/boot/dts/mobileye/eyeq5.dtsi        | 134 ++++++++
- 3 files changed, 427 insertions(+)
- create mode 100644 arch/mips/boot/dts/mobileye/eyeq5-fixed-clocks.dtsi
- create mode 100644 arch/mips/boot/dts/mobileye/eyeq5.dtsi
+ arch/mips/configs/generic/board-eyeq5.config | 42 ++++++++++++++++++++
+ arch/mips/generic/Kconfig                    | 15 +++++++
+ arch/mips/generic/Platform                   |  2 +
+ arch/mips/generic/board-epm5.its.S           | 24 +++++++++++
+ 4 files changed, 83 insertions(+)
+ create mode 100644 arch/mips/configs/generic/board-eyeq5.config
+ create mode 100644 arch/mips/generic/board-epm5.its.S
 
-diff --git a/arch/mips/boot/dts/Makefile b/arch/mips/boot/dts/Makefile
-index 928f38a79dff9..edb8e8dee7583 100644
---- a/arch/mips/boot/dts/Makefile
-+++ b/arch/mips/boot/dts/Makefile
-@@ -8,6 +8,7 @@ subdir-$(CONFIG_LANTIQ)			+= lantiq
- subdir-$(CONFIG_MACH_LOONGSON64)	+= loongson
- subdir-$(CONFIG_SOC_VCOREIII)		+= mscc
- subdir-$(CONFIG_MIPS_MALTA)		+= mti
-+subdir-$(CONFIG_SOC_EYEQ5)		+= mobileye
- subdir-$(CONFIG_LEGACY_BOARD_SEAD3)	+= mti
- subdir-$(CONFIG_FIT_IMAGE_FDT_NI169445)	+= ni
- subdir-$(CONFIG_MACH_PIC32)		+= pic32
-diff --git a/arch/mips/boot/dts/mobileye/eyeq5-fixed-clocks.dtsi b/arch/mips/boot/dts/mobileye/eyeq5-fixed-clocks.dtsi
+diff --git a/arch/mips/configs/generic/board-eyeq5.config b/arch/mips/configs/generic/board-eyeq5.config
 new file mode 100644
-index 0000000000000..78f5533a95c67
+index 0000000000000..d94e408145389
 --- /dev/null
-+++ b/arch/mips/boot/dts/mobileye/eyeq5-fixed-clocks.dtsi
-@@ -0,0 +1,292 @@
-+// SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+/*
-+ * Copyright 2023 Mobileye Vision Technologies Ltd.
-+ */
++++ b/arch/mips/configs/generic/board-eyeq5.config
+@@ -0,0 +1,42 @@
++CONFIG_HIGH_RES_TIMERS=y
++CONFIG_TASKSTATS=y
++CONFIG_FIT_IMAGE_FDT_EPM5=y
++CONFIG_BOARD_EYEQ5=y
++CONFIG_PHYSICAL_START=0xa800000808000000
++CONFIG_CPU_HAS_MSA=y
++CONFIG_SPARSEMEM_MANUAL=y
++CONFIG_NET_KEY=y
++CONFIG_CAN=y
++CONFIG_PCI=y
++CONFIG_PCI_MSI=y
++CONFIG_PCI_DEBUG=y
++CONFIG_PCI_ENDPOINT=y
++CONFIG_CONNECTOR=y
++CONFIG_MTD=y
++CONFIG_MTD_CMDLINE_PARTS=y
++CONFIG_MTD_BLOCK=y
++CONFIG_MTD_RAM=y
++CONFIG_MTD_ROM=y
++CONFIG_MTD_PHYSMAP=y
++CONFIG_MTD_PHYSMAP_OF=y
++CONFIG_MTD_BLOCK2MTD=y
++CONFIG_MTD_UBI=y
++CONFIG_MTD_UBI_BLOCK=y
++CONFIG_NETDEVICES=y
++CONFIG_MACVLAN=y
++CONFIG_IPVLAN=y
++CONFIG_MACB=y
++CONFIG_MARVELL_PHY=y
++CONFIG_MICREL_PHY=y
++CONFIG_CAN_M_CAN=y
++CONFIG_SERIAL_AMBA_PL011=y
++CONFIG_SERIAL_AMBA_PL011_CONSOLE=y
++CONFIG_PINCTRL=y
++CONFIG_MMC=y
++CONFIG_MMC_SDHCI=y
++CONFIG_MMC_SDHCI_CADENCE=y
++CONFIG_RESET_CONTROLLER=y
++CONFIG_FANOTIFY=y
++CONFIG_ROMFS_FS=y
++CONFIG_ROMFS_BACKED_BY_BOTH=y
++CONFIG_PAGE_SIZE_16KB=y
+\ No newline at end of file
+diff --git a/arch/mips/generic/Kconfig b/arch/mips/generic/Kconfig
+index 7dc5b3821cc6e..04e1fc6f789b5 100644
+--- a/arch/mips/generic/Kconfig
++++ b/arch/mips/generic/Kconfig
+@@ -48,6 +48,13 @@ config SOC_VCOREIII
+ config MSCC_OCELOT
+ 	bool
+ 
++config SOC_EYEQ5
++	select ARM_AMBA
++	select WEAK_ORDERING
++	select WEAK_REORDERING_BEYOND_LLSC
++	select PHYSICAL_START_BOOL
++	bool
 +
-+/ {
-+	/* Fixed clock */
-+	pll_cpu: pll-cpu {
-+		compatible = "fixed-clock";
-+		#clock-cells = <0>;
-+		clock-frequency = <1500000000>;
-+	};
+ comment "FIT/UHI Boards"
+ 
+ config FIT_IMAGE_FDT_BOSTON
+@@ -124,4 +131,12 @@ config VIRT_BOARD_RANCHU
+ 	  Android emulator. Android emulator is based on Qemu, and contains
+ 	  the support for the same set of virtual devices.
+ 
++config FIT_IMAGE_FDT_EPM5
++	bool "Include FDT for Mobileye EyeQ5 development platforms"
++	select SOC_EYEQ5
++	default n
++	help
++	  Enable this to include the FDT for the EyeQ5 development platforms
++	  from Mobileye in the FIT kernel image.
++	  This requires u-boot on the platform.
+ endif
+diff --git a/arch/mips/generic/Platform b/arch/mips/generic/Platform
+index 0c03623f38970..45db9824a11d6 100644
+--- a/arch/mips/generic/Platform
++++ b/arch/mips/generic/Platform
+@@ -24,3 +24,5 @@ its-$(CONFIG_FIT_IMAGE_FDT_JAGUAR2)	+= board-jaguar2.its.S
+ its-$(CONFIG_FIT_IMAGE_FDT_SERVAL)	+= board-serval.its.S
+ its-$(CONFIG_FIT_IMAGE_FDT_XILFPGA)	+= board-xilfpga.its.S
+ its-$(CONFIG_FIT_IMAGE_FDT_MARDUK)	+= board-marduk.its.S
++its-$(CONFIG_FIT_IMAGE_FDT_EPM5)	+= board-epm5.its.S
 +
-+	pll_vdi: pll-vdi {
-+		compatible = "fixed-clock";
-+		#clock-cells = <0>;
-+		clock-frequency = <1280000000>;
-+	};
-+
-+	pll_per: pll-per {
-+		compatible = "fixed-clock";
-+		#clock-cells = <0>;
-+		clock-frequency = <2000000000>;
-+	};
-+
-+	pll_ddr0: pll-ddr0 {
-+		compatible = "fixed-clock";
-+		#clock-cells = <0>;
-+		clock-frequency = <1857210000>;
-+	};
-+
-+	pll_ddr1: pll-ddr1 {
-+		compatible = "fixed-clock";
-+		#clock-cells = <0>;
-+		clock-frequency = <1857210000>;
-+	};
-+
-+/* PLL_CPU derivatives */
-+	occ_cpu: occ-cpu {
-+		compatible = "fixed-factor-clock";
-+		clocks = <&pll_cpu>;
-+		#clock-cells = <0>;
-+		clock-div = <1>;
-+		clock-mult = <1>;
-+	};
-+	si_css0_ref_clk: si-css0-ref-clk { /* gate ClkRstGen_si_css0_ref */
-+		compatible = "fixed-factor-clock";
-+		clocks = <&occ_cpu>;
-+		#clock-cells = <0>;
-+		clock-div = <1>;
-+		clock-mult = <1>;
-+	};
-+	cpc_clk: cpc-clk {
-+		compatible = "fixed-factor-clock";
-+		clocks = <&si_css0_ref_clk>;
-+		#clock-cells = <0>;
-+		clock-div = <1>;
-+		clock-mult = <1>;
-+	};
-+	core0_clk: core0-clk {
-+		compatible = "fixed-factor-clock";
-+		clocks = <&si_css0_ref_clk>;
-+		#clock-cells = <0>;
-+		clock-div = <1>;
-+		clock-mult = <1>;
-+	};
-+	core1_clk: core1-clk {
-+		compatible = "fixed-factor-clock";
-+		clocks = <&si_css0_ref_clk>;
-+		#clock-cells = <0>;
-+		clock-div = <1>;
-+		clock-mult = <1>;
-+	};
-+	core2_clk: core2-clk {
-+		compatible = "fixed-factor-clock";
-+		clocks = <&si_css0_ref_clk>;
-+		#clock-cells = <0>;
-+		clock-div = <1>;
-+		clock-mult = <1>;
-+	};
-+	core3_clk: core3-clk {
-+		compatible = "fixed-factor-clock";
-+		clocks = <&si_css0_ref_clk>;
-+		#clock-cells = <0>;
-+		clock-div = <1>;
-+		clock-mult = <1>;
-+	};
-+	cm_clk: cm-clk {
-+		compatible = "fixed-factor-clock";
-+		clocks = <&si_css0_ref_clk>;
-+		#clock-cells = <0>;
-+		clock-div = <1>;
-+		clock-mult = <1>;
-+	};
-+	mem_clk: mem-clk {
-+		compatible = "fixed-factor-clock";
-+		clocks = <&si_css0_ref_clk>;
-+		#clock-cells = <0>;
-+		clock-div = <1>;
-+		clock-mult = <1>;
-+	};
-+	occ_isram: occ-isram {
-+		compatible = "fixed-factor-clock";
-+		clocks = <&pll_cpu>;
-+		#clock-cells = <0>;
-+		clock-div = <2>;
-+		clock-mult = <1>;
-+	};
-+	isram_clk: isram-clk { /* gate ClkRstGen_isram */
-+		compatible = "fixed-factor-clock";
-+		clocks = <&occ_isram>;
-+		#clock-cells = <0>;
-+		clock-div = <1>;
-+		clock-mult = <1>;
-+	};
-+	occ_dbu: occ-dbu {
-+		compatible = "fixed-factor-clock";
-+		clocks = <&pll_cpu>;
-+		#clock-cells = <0>;
-+		clock-div = <10>;
-+		clock-mult = <1>;
-+	};
-+	si_dbu_tp_pclk: si-dbu-tp-pclk { /* gate ClkRstGen_dbu */
-+		compatible = "fixed-factor-clock";
-+		clocks = <&occ_dbu>;
-+		#clock-cells = <0>;
-+		clock-div = <1>;
-+		clock-mult = <1>;
-+	};
-+/* PLL_VDI derivatives */
-+	occ_vdi: occ-vdi {
-+		compatible = "fixed-factor-clock";
-+		clocks = <&pll_vdi>;
-+		#clock-cells = <0>;
-+		clock-div = <2>;
-+		clock-mult = <1>;
-+	};
-+	vdi_clk: vdi-clk { /* gate ClkRstGen_vdi */
-+		compatible = "fixed-factor-clock";
-+		clocks = <&occ_vdi>;
-+		#clock-cells = <0>;
-+		clock-div = <1>;
-+		clock-mult = <1>;
-+	};
-+	occ_can_ser: occ-can-ser {
-+		compatible = "fixed-factor-clock";
-+		clocks = <&pll_vdi>;
-+		#clock-cells = <0>;
-+		clock-div = <16>;
-+		clock-mult = <1>;
-+	};
-+	can_ser_clk: can-ser-clk { /* gate ClkRstGen_can_ser */
-+		compatible = "fixed-factor-clock";
-+		clocks = <&occ_can_ser>;
-+		#clock-cells = <0>;
-+		clock-div = <1>;
-+		clock-mult = <1>;
-+	};
-+	i2c_ser_clk: i2c-ser-clk {
-+		compatible = "fixed-factor-clock";
-+		clocks = <&pll_vdi>;
-+		#clock-cells = <0>;
-+		clock-div = <20>;
-+		clock-mult = <1>;
-+	};
-+/* PLL_PER derivatives */
-+	occ_periph: occ-periph {
-+		compatible = "fixed-factor-clock";
-+		clocks = <&pll_per>;
-+		#clock-cells = <0>;
-+		clock-div = <16>;
-+		clock-mult = <1>;
-+	};
-+	periph_clk: periph-clk {
-+		compatible = "fixed-factor-clock";
-+		clocks = <&occ_periph>;
-+		#clock-cells = <0>;
-+		clock-div = <1>;
-+		clock-mult = <1>;
-+	};
-+	can_clk: can-clk {
-+		compatible = "fixed-factor-clock";
-+		clocks = <&occ_periph>;
-+		#clock-cells = <0>;
-+		clock-div = <1>;
-+		clock-mult = <1>;
-+	};
-+	spi_clk: spi-clk {
-+		compatible = "fixed-factor-clock";
-+		clocks = <&occ_periph>;
-+		#clock-cells = <0>;
-+		clock-div = <1>;
-+		clock-mult = <1>;
-+	};
-+	uart_clk: uart-clk {
-+		compatible = "fixed-factor-clock";
-+		clocks = <&occ_periph>;
-+		#clock-cells = <0>;
-+		clock-div = <1>;
-+		clock-mult = <1>;
-+	};
-+	i2c_clk: i2c-clk {
-+		compatible = "fixed-factor-clock";
-+		clocks = <&occ_periph>;
-+		#clock-cells = <0>;
-+		clock-div = <1>;
-+		clock-mult = <1>;
-+		clock-output-names = "i2c_clk";
-+	};
-+	timer_clk: timer-clk {
-+		compatible = "fixed-factor-clock";
-+		clocks = <&occ_periph>;
-+		#clock-cells = <0>;
-+		clock-div = <1>;
-+		clock-mult = <1>;
-+		clock-output-names = "timer_clk";
-+	};
-+	gpio_clk: gpio-clk {
-+		compatible = "fixed-factor-clock";
-+		clocks = <&occ_periph>;
-+		#clock-cells = <0>;
-+		clock-div = <1>;
-+		clock-mult = <1>;
-+		clock-output-names = "gpio_clk";
-+	};
-+	emmc_sys_clk: emmc-sys-clk {
-+		compatible = "fixed-factor-clock";
-+		clocks = <&pll_per>;
-+		#clock-cells = <0>;
-+		clock-div = <10>;
-+		clock-mult = <1>;
-+		clock-output-names = "emmc_sys_clk";
-+	};
-+	ccf_ctrl_clk: ccf-ctrl-clk {
-+		compatible = "fixed-factor-clock";
-+		clocks = <&pll_per>;
-+		#clock-cells = <0>;
-+		clock-div = <4>;
-+		clock-mult = <1>;
-+		clock-output-names = "ccf_ctrl_clk";
-+	};
-+	occ_mjpeg_core: occ-mjpeg-core {
-+		compatible = "fixed-factor-clock";
-+		clocks = <&pll_per>;
-+		#clock-cells = <0>;
-+		clock-div = <2>;
-+		clock-mult = <1>;
-+		clock-output-names = "occ_mjpeg_core";
-+	};
-+	hsm_clk: hsm-clk { /* gate ClkRstGen_hsm */
-+		compatible = "fixed-factor-clock";
-+		clocks = <&occ_mjpeg_core>;
-+		#clock-cells = <0>;
-+		clock-div = <1>;
-+		clock-mult = <1>;
-+		clock-output-names = "hsm_clk";
-+	};
-+	mjpeg_core_clk: mjpeg-core-clk { /* gate ClkRstGen_mjpeg_gen */
-+		compatible = "fixed-factor-clock";
-+		clocks = <&occ_mjpeg_core>;
-+		#clock-cells = <0>;
-+		clock-div = <1>;
-+		clock-mult = <1>;
-+		clock-output-names = "mjpeg_core_clk";
-+	};
-+	fcmu_a_clk: fcmu-a-clk {
-+		compatible = "fixed-factor-clock";
-+		clocks = <&pll_per>;
-+		#clock-cells = <0>;
-+		clock-div = <20>;
-+		clock-mult = <1>;
-+		clock-output-names = "fcmu_a_clk";
-+	};
-+	occ_pci_sys: occ-pci-sys {
-+		compatible = "fixed-factor-clock";
-+		clocks = <&pll_per>;
-+		#clock-cells = <0>;
-+		clock-div = <8>;
-+		clock-mult = <1>;
-+		clock-output-names = "occ_pci_sys";
-+	};
-+	pclk: pclk {
-+		compatible = "fixed-clock";
-+		#clock-cells = <0>;
-+		clock-frequency = <250000000>;  /* 250MHz */
-+	};
-+	tsu_clk: tsu-clk {
-+		compatible = "fixed-clock";
-+		#clock-cells = <0>;
-+		clock-frequency = <125000000>;  /* 125MHz */
-+	};
-+};
-diff --git a/arch/mips/boot/dts/mobileye/eyeq5.dtsi b/arch/mips/boot/dts/mobileye/eyeq5.dtsi
+diff --git a/arch/mips/generic/board-epm5.its.S b/arch/mips/generic/board-epm5.its.S
 new file mode 100644
-index 0000000000000..2968c467a0552
+index 0000000000000..08e8c4f183d63
 --- /dev/null
-+++ b/arch/mips/boot/dts/mobileye/eyeq5.dtsi
-@@ -0,0 +1,134 @@
-+// SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause */
-+/*
-+* Copyright 2023 Mobileye Vision Technologies Ltd.
-+*/
-+
-+#include <dt-bindings/interrupt-controller/mips-gic.h>
-+
-+/memreserve/ 0x40000000 0xc0000000; /* DDR32 */
-+/memreserve/ 0x08000000 0x08000000; /* DDR_LOW */
-+
-+#include "eyeq5-fixed-clocks.dtsi"
-+
++++ b/arch/mips/generic/board-epm5.its.S
+@@ -0,0 +1,24 @@
++/* SPDX-License-Identifier: (GPL-2.0 OR MIT) */
 +/ {
-+	#address-cells = <2>;
-+	#size-cells = <2>;
-+	cpus {
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+		cpu@0 {
-+			device_type = "cpu";
-+			compatible = "img,i6500";
-+			reg = <0>;
-+			clocks = <&core0_clk>;
-+		};
-+	};
-+
-+	reserved-memory {
-+		#address-cells = <2>;
-+		#size-cells = <2>;
-+		ranges;
-+
-+		/* These reserved memory regions are also defined in bootmanager
-+		* for configuring inbound translation for BARS, don't change
-+		* these without syncing with bootmanager
-+		*/
-+		shmem0_reserved: shmem@804000000 {
-+			reg = <0x8 0x04000000 0x0 0x1000000>;
-+		};
-+		shmem1_reserved: shmem@805000000 {
-+			reg = <0x8 0x05000000 0x0 0x1000000>;
-+		};
-+		pci0_msi_reserved: pci0-msi@806000000 {
-+			reg = <0x8 0x06000000 0x0 0x100000>;
-+		};
-+		pci1_msi_reserved: pci1-msi@806100000 {
-+			reg = <0x8 0x06100000 0x0 0x100000>;
-+		};
-+
-+		mini_coredump0_reserved: mini-coredump0@806200000 {
-+			reg = <0x8 0x06200000 0x0 0x100000>;
-+		};
-+		mhm_reserved_0: the-mhm-reserved-0@0 {
-+			reg = <0x8 0x00000000 0x0 0x0000800>;
-+		};
-+	};
-+
-+	aliases {
-+		serial0 = &uart0;
-+		serial1 = &uart1;
-+		serial2 = &uart2;
-+	};
-+
-+	cpu_intc: interrupt-controller {
-+		compatible = "mti,cpu-interrupt-controller";
-+		interrupt-controller;
-+		#address-cells = <0>;
-+		#interrupt-cells = <1>;
-+	};
-+
-+	soc: soc {
-+		#address-cells = <2>;
-+		#size-cells = <2>;
-+		ranges;
-+		compatible = "simple-bus";
-+
-+		uart0: serial@800000 {
-+			compatible = "arm,pl011", "arm,primecell";
-+			reg = <0 0x800000 0x0 0x1000>;
-+			reg-io-width = <4>;
-+			interrupt-parent = <&gic>;
-+			interrupts = <GIC_SHARED 6 IRQ_TYPE_LEVEL_HIGH>;
-+			clocks  = <&uart_clk>, <&occ_periph>;
-+			clock-names = "uartclk", "apb_pclk";
-+		};
-+
-+		uart1: serial@900000 {
-+			compatible = "arm,pl011", "arm,primecell";
-+			reg = <0 0x900000 0x0 0x1000>;
-+			reg-io-width = <4>;
-+			interrupt-parent = <&gic>;
-+			interrupts = <GIC_SHARED 6 IRQ_TYPE_LEVEL_HIGH>;
-+			clocks  = <&uart_clk>, <&occ_periph>;
-+			clock-names = "uartclk", "apb_pclk";
-+		};
-+
-+		uart2: serial@a00000 {
-+			compatible = "arm,pl011", "arm,primecell";
-+			reg = <0 0xa00000 0x0 0x1000>;
-+			reg-io-width = <4>;
-+			interrupt-parent = <&gic>;
-+			interrupts = <GIC_SHARED 6 IRQ_TYPE_LEVEL_HIGH>;
-+			clocks  = <&uart_clk>, <&occ_periph>;
-+			clock-names = "uartclk", "apb_pclk";
-+		};
-+
-+		olb: olb@e00000 {
-+			compatible = "mobileye,eyeq5-olb", "syscon", "simple-mfd";
-+			reg = <0 0xe00000 0x0 0x400>;
-+			reg-io-width = <4>;
-+		};
-+
-+		gic: interrupt-controller@140000 {
-+			compatible = "mti,gic";
-+			reg = <0x0 0x140000 0x0 0x20000>;
-+			interrupt-controller;
-+			#interrupt-cells = <3>;
-+
-+			/*
-+			* Declare the interrupt-parent even though the mti,gic
-+			* binding doesn't require it, such that the kernel can
-+			* figure out that cpu_intc is the root interrupt
-+			* controller & should be probed first.
-+			*/
-+			interrupt-parent = <&cpu_intc>;
-+
-+			timer {
-+				compatible = "mti,gic-timer";
-+				interrupts = <GIC_LOCAL 1 IRQ_TYPE_NONE>;
-+				clocks = <&core0_clk>;
++	images {
++		fdt-mobileye-epm5 {
++			description = "Mobileeye MP5 Device Tree";
++			data = /incbin/("boot/dts/mobileye/eyeq5-epm5.dtb");
++			type = "flat_dt";
++			arch = "mips";
++			compression = "none";
++			hash {
++				algo = "sha1";
 +			};
 +		};
 +	};
-+};
 +
++    configurations {
++		default = "conf-1";
++		conf-1 {
++			description = "Mobileye EPM5 Linux kernel";
++			kernel = "kernel";
++			fdt = "fdt-mobileye-epm5";
++		};
++	};
++};
 -- 
 2.42.0
 

@@ -1,122 +1,108 @@
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from aposti.net (aposti.net [89.234.176.197])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 244FA49F95
-	for <linux-mips@vger.kernel.org>; Sun, 17 Dec 2023 14:30:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rEs9f-0006VJ-OC; Sun, 17 Dec 2023 15:30:07 +0100
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rEs9b-00GUh4-VU; Sun, 17 Dec 2023 15:30:03 +0100
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rEs9b-004hyq-J9; Sun, 17 Dec 2023 15:30:03 +0100
-From: =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: kernel@pengutronix.de,
-	Markus Mayer <mmayer@broadcom.com>,
-	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>,
-	Florian Fainelli <florian.fainelli@broadcom.com>,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	Santosh Shilimkar <ssantosh@kernel.org>,
-	Paul Cercueil <paul@crapouillou.net>,
-	linux-mips@vger.kernel.org,
-	Yong Wu <yong.wu@mediatek.com>,
-	Matthias Brugger <matthias.bgg@gmail.com>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
-	linux-mediatek@lists.infradead.org,
-	Roger Quadros <rogerq@kernel.org>,
-	Tony Lindgren <tony@atomide.com>,
-	linux-omap@vger.kernel.org,
-	Lukasz Luba <lukasz.luba@arm.com>,
-	Alim Akhtar <alim.akhtar@samsung.com>,
-	linux-pm@vger.kernel.org,
-	linux-samsung-soc@vger.kernel.org,
-	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-	Alexandre Torgue <alexandre.torgue@foss.st.com>,
-	linux-stm32@st-md-mailman.stormreply.com,
-	Thierry Reding <thierry.reding@gmail.com>,
-	Jonathan Hunter <jonathanh@nvidia.com>,
-	Sumit Gupta <sumitg@nvidia.com>,
-	Nick Alcock <nick.alcock@oracle.com>,
-	linux-tegra@vger.kernel.org,
-	Rob Herring <robh@kernel.org>
-Subject: [PATCH 00/15] memory: Convert to platform remove callback returning void
-Date: Sun, 17 Dec 2023 15:29:26 +0100
-Message-ID: <cover.1702822744.git.u.kleine-koenig@pengutronix.de>
-X-Mailer: git-send-email 2.42.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D49BD44373;
+	Sun, 17 Dec 2023 14:40:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=crapouillou.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=crapouillou.net
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=crapouillou.net header.i=@crapouillou.net header.b="uy1KddWp"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=crapouillou.net;
+	s=mail; t=1702824030;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=3UMKMOKGFl2fsIk9JhzL3lZuepQtAoYkfTj1MeKujzM=;
+	b=uy1KddWps0AePYoqIJQe60Ly9AIztA/27M7bgs1tRIE82KoJhxbQwp5Gcay+lASSadjIFg
+	idLEPWloaFPGPsR7u5J6MTK/boVNts1tBFg2vpQ3jp0xzsGVU0hwZtggKmD6LFbO7cnL37
+	1h5GxTev4lKjD3Gfzn3DDXbfCzZmcYc=
+Message-ID: <11e0d8b13cc835d8f99046110842d6bc569ff7a8.camel@crapouillou.net>
+Subject: Re: [PATCH 06/15] memory: jz4780-nemc: Convert to platform remove
+ callback returning void
+From: Paul Cercueil <paul@crapouillou.net>
+To: Uwe =?ISO-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: kernel@pengutronix.de, linux-mips@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Date: Sun, 17 Dec 2023 15:40:29 +0100
+In-Reply-To: <fa609b805a7ed6e4c6ce81464528ea4163625d67.1702822744.git.u.kleine-koenig@pengutronix.de>
+References: <cover.1702822744.git.u.kleine-koenig@pengutronix.de>
+	 <fa609b805a7ed6e4c6ce81464528ea4163625d67.1702822744.git.u.kleine-koenig@pengutronix.de>
+Autocrypt: addr=paul@crapouillou.net; prefer-encrypt=mutual;
+ keydata=mQENBF0KhcEBCADkfmrzdTOp/gFOMQX0QwKE2WgeCJiHPWkpEuPH81/HB2dpjPZNW03ZMLQfECbbaEkdbN4YnPfXgcc1uBe5mwOAPV1MBlaZcEt4M67iYQwSNrP7maPS3IaQJ18ES8JJ5Uf5UzFZaUawgH+oipYGW+v31cX6L3k+dGsPRM0Pyo0sQt52fsopNPZ9iag0iY7dGNuKenaEqkYNjwEgTtNz8dt6s3hMpHIKZFL3OhAGi88wF/21isv0zkF4J0wlf9gYUTEEY3Eulx80PTVqGIcHZzfavlWIdzhe+rxHTDGVwseR2Y1WjgFGQ2F+vXetAB8NEeygXee+i9nY5qt9c07m8mzjABEBAAG0JFBhdWwgQ2VyY3VlaWwgPHBhdWxAY3JhcG91aWxsb3UubmV0PokBTgQTAQoAOBYhBNdHYd8OeCBwpMuVxnPua9InSr1BBQJdCoXBAhsDBQsJCAcCBhUKCQgLAgQWAgMBAh4BAheAAAoJEHPua9InSr1BgvIH/0kLyrI3V0f33a6D3BJwc1grbygPVYGuC5l5eMnAI+rDmLR19E2yvibRpgUc87NmPEQPpbbtAZt8On/2WZoE5OIPdlId/AHNpdgAtGXo0ZX4LGeVPjxjdkbrKVHxbcdcnY+zzaFglpbVSvp76pxqgVg8PgxkAAeeJV+ET4t0823Gz2HzCL/6JZhvKAEtHVulOWoBh368SYdolp1TSfORWmHzvQiCCCA+j0cMkYVGzIQzEQhX7Urf9N/nhU5/SGLFEi9DcBfXoGzhyQyLXflhJtKm3XGB1K/pPulbKaPcKAl6rIDWPuFpHkSbmZ9r4KFlBwgAhlGy6nqP7O3u7q23hRW5AQ0EXQqFwQEIAMo+MgvYHsyjX3Ja4Oolg1Txzm8woj30ch2nACFCqaO0R/1kLj2VVeLrDyQUOlXx9PD6IQI4M8wy8m0sR4wV2p/g/paw7k65cjzYYLh+FdLNyO7IW
+	YXndJO+wDPi3aK/YKUYepqlP+QsmaHNYNdXEQDRKqNfJg8t0f5rfzp9ryxd1tCnbV+tG8VHQWiZXNqN7062DygSNXFUfQ0vZ3J2D4oAcIAEXTymRQ2+hr3Hf7I61KMHWeSkCvCG2decTYsHlw5Erix/jYWqVOtX0roOOLqWkqpQQJWtU+biWrAksmFmCp5fXIg1Nlg39v21xCXBGxJkxyTYuhdWyu1yDQ+LSIUAEQEAAYkBNgQYAQoAIBYhBNdHYd8OeCBwpMuVxnPua9InSr1BBQJdCoXBAhsMAAoJEHPua9InSr1B4wsH/Az767YCT0FSsMNt1jkkdLCBi7nY0GTW+PLP1a4zvVqFMo/vD6uz1ZflVTUAEvcTi3VHYZrlgjcxmcGu239oruqUS8Qy/xgZBp9KF0NTWQSl1iBfVbIU5VV1vHS6r77W5x0qXgfvAUWOH4gmN3MnF01SH2zMcLiaUGF+mcwl15rHbjnT3Nu2399aSE6cep86igfCAyFUOXjYEGlJy+c6UyT+DUylpjQg0nl8MlZ/7Whg2fAU9+FALIbQYQzGlT4c71SibR9T741jnegHhlmV4WXXUD6roFt54t0MSAFSVxzG8mLcSjR2cLUJ3NIPXixYUSEn3tQhfZj07xIIjWxAYZo=
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2631; i=u.kleine-koenig@pengutronix.de; h=from:subject:message-id; bh=FyuyHaIj5jd4bPxOXQjJ+ozo7s7sihGMLWkkNmVGnME=; b=owEBbQGS/pANAwAKAY+A+1h9Ev5OAcsmYgBlfwXFp0yrTZyYp2KFK2fwTyu80UmXy69MORJAs wm48iAIgimJATMEAAEKAB0WIQQ/gaxpOnoeWYmt/tOPgPtYfRL+TgUCZX8FxQAKCRCPgPtYfRL+ TgNJB/9eFZpgOAoyZMQMzWGucpEqIvWX6W0eNcnXBmurNkaFQmk9v1UHmj1xyNFW24mvDrwXPRz PaBLdyRO1QyT7ZOOWdkxvvYU+/g6yBUmpw+P5lihn0tefw+vl6Ej1suMnbs2tMdJ0FTQYQZRyQL ZnZyl3AYPprWtaCsKyu9b4pRwdQGJ4KG1NnvRkE562N+Wg7eXkwU5ah9EQWW4t+Jcs6SgvZHMhp 1quJkD1SA//uBFFZXLUV5UysntvLZwazuV3zLV81y6r02+H5X8Y3mcj7mX2qPf8Ubh9GWDrcybC h8kJTYL4+I5P2Hh+7xPkiTW8Rt32gZGaprL2X8zZ8V/x9QkC
-X-Developer-Key: i=u.kleine-koenig@pengutronix.de; a=openpgp; fpr=0D2511F322BFAB1C1580266BE2DCDD9132669BD6
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-mips@vger.kernel.org
 
-Hello,
+Hi,
 
-this series converts the platform drivers below drivers/memory to make
-use of .remove_new. See commit 5c5a7680e67b ("platform: Provide a remove
-callback that returns no value") for an extended explanation and the
-eventual goal. The TL;DR; is to make it harder for driver authors to
-leak resources without noticing.
+Le dimanche 17 d=C3=A9cembre 2023 =C3=A0 15:29 +0100, Uwe Kleine-K=C3=B6nig=
+ a =C3=A9crit=C2=A0:
+> The .remove() callback for a platform driver returns an int which
+> makes
+> many driver authors wrongly assume it's possible to do error handling
+> by
+> returning an error code. However the value returned is ignored (apart
+> from emitting a warning) and this typically results in resource
+> leaks.
+>=20
+> To improve here there is a quest to make the remove callback return
+> void. In the first step of this quest all drivers are converted to
+> .remove_new(), which already returns void. Eventually after all
+> drivers
+> are converted, .remove_new() will be renamed to .remove().
+>=20
+> Trivially convert this driver from always returning zero in the
+> remove
+> callback to the void returning variant.
+>=20
+> Signed-off-by: Uwe Kleine-K=C3=B6nig <u.kleine-koenig@pengutronix.de>
 
-This is merge window material. All patches are pairwise independent of
-each other so they can be applied individually. Still it would be great
-to let them go in all together.
+Acked-by: Paul Cercueil <paul@crapouillou.net>
 
-Best regards
-Uwe
+Cheers,
+-Paul
 
-Uwe Kleine-König (15):
-  memory: brcmstb_dpfe: Convert to platform remove callback returning void
-  memory: brcmstb_memc: Convert to platform remove callback returning void
-  memory: emif: Convert to platform remove callback returning void
-  memory: fsl-corenet-cf: Convert to platform remove callback returning void
-  memory: fsl_ifc: Convert to platform remove callback returning void
-  memory: jz4780-nemc: Convert to platform remove callback returning void
-  memory: mtk-smi: Convert to platform remove callback returning void
-  memory: omap-gpmc: Convert to platform remove callback returning void
-  memory: renesas-rpc-if: Convert to platform remove callback returning void
-  memory: exynos5422-dmc: Convert to platform remove callback returning void
-  memory: stm32-fmc2-ebi: Convert to platform remove callback returning void
-  memory: tegra186-emc: Convert to platform remove callback returning void
-  memory: tegra210-emc: Convert to platform remove callback returning void
-  memory: ti-aemif: Convert to platform remove callback returning void
-  memory: ti-emif-pm: Convert to platform remove callback returning void
+> ---
+> =C2=A0drivers/memory/jz4780-nemc.c | 5 ++---
+> =C2=A01 file changed, 2 insertions(+), 3 deletions(-)
+>=20
+> diff --git a/drivers/memory/jz4780-nemc.c b/drivers/memory/jz4780-
+> nemc.c
+> index e5a93e7da15f..fb6db2ffe71b 100644
+> --- a/drivers/memory/jz4780-nemc.c
+> +++ b/drivers/memory/jz4780-nemc.c
+> @@ -384,12 +384,11 @@ static int jz4780_nemc_probe(struct
+> platform_device *pdev)
+> =C2=A0	return 0;
+> =C2=A0}
+> =C2=A0
+> -static int jz4780_nemc_remove(struct platform_device *pdev)
+> +static void jz4780_nemc_remove(struct platform_device *pdev)
+> =C2=A0{
+> =C2=A0	struct jz4780_nemc *nemc =3D platform_get_drvdata(pdev);
+> =C2=A0
+> =C2=A0	clk_disable_unprepare(nemc->clk);
+> -	return 0;
+> =C2=A0}
+> =C2=A0
+> =C2=A0static const struct jz_soc_info jz4740_soc_info =3D {
+> @@ -408,7 +407,7 @@ static const struct of_device_id
+> jz4780_nemc_dt_match[] =3D {
+> =C2=A0
+> =C2=A0static struct platform_driver jz4780_nemc_driver =3D {
+> =C2=A0	.probe		=3D jz4780_nemc_probe,
+> -	.remove		=3D jz4780_nemc_remove,
+> +	.remove_new	=3D jz4780_nemc_remove,
+> =C2=A0	.driver	=3D {
+> =C2=A0		.name	=3D "jz4780-nemc",
+> =C2=A0		.of_match_table =3D
+> of_match_ptr(jz4780_nemc_dt_match),
 
- drivers/memory/brcmstb_dpfe.c            |  6 ++----
- drivers/memory/brcmstb_memc.c            |  6 ++----
- drivers/memory/emif.c                    |  6 ++----
- drivers/memory/fsl-corenet-cf.c          |  6 ++----
- drivers/memory/fsl_ifc.c                 |  6 ++----
- drivers/memory/jz4780-nemc.c             |  5 ++---
- drivers/memory/mtk-smi.c                 | 10 ++++------
- drivers/memory/omap-gpmc.c               |  6 ++----
- drivers/memory/renesas-rpc-if.c          |  6 ++----
- drivers/memory/samsung/exynos5422-dmc.c  |  6 ++----
- drivers/memory/stm32-fmc2-ebi.c          |  6 ++----
- drivers/memory/tegra/tegra186-emc.c      |  6 ++----
- drivers/memory/tegra/tegra210-emc-core.c |  6 ++----
- drivers/memory/ti-aemif.c                |  5 ++---
- drivers/memory/ti-emif-pm.c              |  6 ++----
- 15 files changed, 32 insertions(+), 60 deletions(-)
-
-base-commit: 17cb8a20bde66a520a2ca7aad1063e1ce7382240
--- 
-2.42.0

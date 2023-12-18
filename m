@@ -1,105 +1,81 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from relay8-d.mail.gandi.net (relay8-d.mail.gandi.net [217.70.183.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6D8479948;
-	Mon, 18 Dec 2023 12:46:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 327E84FF9D;
+	Mon, 18 Dec 2023 17:14:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YGW4egpk"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8A380C433C8;
-	Mon, 18 Dec 2023 12:46:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1702903585;
-	bh=COVOWuG3yBU+XXom9ggK21fjpix1xoWvqSVtAX1u0vc=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=YGW4egpkCRmy3c8HeaRXkj9LtMAyeEO7PWsHrGwiDTYVdvJ51ssyjEQVn90V0LWdq
-	 BbGUqfHfQK8G0L+5/0fBP+Fs19MqH2qKA2MruS51WX5NZfEaIbbMw/8tTD0hhmBGb8
-	 BSMlauAZeEx29PxvLnfKyds7FdTFVYKj0RbrudE0sYDfqaDlssSEcxAXiA7NgLgAyN
-	 5dRbXOjUHQWkSvDGvmPVAbVBlAyl5Z3nSv7j7YenyA6d37Lj56wCMJpNhoWfds3d+x
-	 cGDUPACiEeO4unIyE5E++5/6+v5jV+Mj0KrSLfZThTHB/RNHgY3hyhdCSszBbcn3ri
-	 0KgoVq8JwAuiA==
-From: Sasha Levin <sashal@kernel.org>
-To: linux-kernel@vger.kernel.org,
-	stable@vger.kernel.org
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-	Yanteng Si <siyanteng@loongson.cn>,
-	Conor Dooley <conor.dooley@microchip.com>,
-	Jiaxun Yang <jiaxun.yang@flygoat.com>,
-	"David S . Miller" <davem@davemloft.net>,
-	Sasha Levin <sashal@kernel.org>,
-	robh+dt@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org,
-	conor+dt@kernel.org,
-	tsbogend@alpha.franken.de,
-	zhoubinbin@loongson.cn,
-	git@xen0n.name,
-	devicetree@vger.kernel.org,
-	linux-mips@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.15 11/13] MIPS: dts: loongson: drop incorrect dwmac fallback compatible
-Date: Mon, 18 Dec 2023 07:45:44 -0500
-Message-ID: <20231218124557.1380724-11-sashal@kernel.org>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20231218124557.1380724-1-sashal@kernel.org>
-References: <20231218124557.1380724-1-sashal@kernel.org>
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="dvNUBdw5"
+Received: by mail.gandi.net (Postfix) with ESMTPSA id BC8C51BF20F;
+	Mon, 18 Dec 2023 17:14:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1702919665;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=rFyXIimwYPLIE7eA8eBWoKrpWj/DqAJh+jtaCI5Vbr4=;
+	b=dvNUBdw5y180mh1uvpa+RJLWsPHzDcsIg2k7Iddi9YlUa1mAyvzuPKCnwL9nhziWvkRr0E
+	yKSgJpHcJnyjItxa0b0f3CmzeGJUcNtYVu6k6MVFtnJngV0d6dzZHgW2ZFaBYGmPOOKZUf
+	Lr5nNJO9vSgBpGD/SH0lavA5xv1HdbjcSmCdmJJTUZFg4p2z3eX2KxJjKhonOSXnebNp0P
+	L0Zmfuba6lmN5i0NE0WNZcD1dOZlFH+q0gsmnbD4A1rdPtQk57vXU2lwkQZsSGS9keDIjf
+	74IIi9unZKGn/809BgII2QSS0gP4LIRYZpvjmSz8g/aIlLsjw+S58Pl6s2q/pQ==
+From: =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
+Date: Mon, 18 Dec 2023 18:14:16 +0100
+Subject: [PATCH 1/5] clk: fixed-rate: fix
+ clk_hw_register_fixed_rate_with_accuracy_parent_hw
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-X-stable-base: Linux 5.15.143
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
+Message-Id: <20231218-mbly-clk-v1-1-44ce54108f06@bootlin.com>
+References: <20231218-mbly-clk-v1-0-44ce54108f06@bootlin.com>
+In-Reply-To: <20231218-mbly-clk-v1-0-44ce54108f06@bootlin.com>
+To: Gregory CLEMENT <gregory.clement@bootlin.com>, 
+ Michael Turquette <mturquette@baylibre.com>, 
+ Stephen Boyd <sboyd@kernel.org>, Rob Herring <robh+dt@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Conor Dooley <conor+dt@kernel.org>, 
+ Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc: Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>, 
+ linux-mips@vger.kernel.org, linux-clk@vger.kernel.org, 
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>, 
+ Tawfik Bayouk <tawfik.bayouk@mobileye.com>, 
+ =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
+X-Mailer: b4 0.12.4
+X-GND-Sasl: theo.lebrun@bootlin.com
 
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Add missing comma and remove extraneous NULL argument. The macro is
+currently used by no one which explains why the typo slipped by.
 
-[ Upstream commit 4907a3f54b12b8209864572a312cf967befcae80 ]
-
-Device binds to proper PCI ID (LOONGSON, 0x7a03), already listed in DTS,
-so checking for some other compatible does not make sense.  It cannot be
-bound to unsupported platform.
-
-Drop useless, incorrect (space in between) and undocumented compatible.
-
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Signed-off-by: Yanteng Si <siyanteng@loongson.cn>
-Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
-Acked-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: 2d34f09e79c9 ("clk: fixed-rate: Add support for specifying parents via DT/pointers")
+Signed-off-by: Théo Lebrun <theo.lebrun@bootlin.com>
 ---
- arch/mips/boot/dts/loongson/loongson64-2k1000.dtsi | 3 +--
- arch/mips/boot/dts/loongson/ls7a-pch.dtsi          | 3 +--
- 2 files changed, 2 insertions(+), 4 deletions(-)
+ include/linux/clk-provider.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/arch/mips/boot/dts/loongson/loongson64-2k1000.dtsi b/arch/mips/boot/dts/loongson/loongson64-2k1000.dtsi
-index bfc3d3243ee7f..d73d8f4fd78e6 100644
---- a/arch/mips/boot/dts/loongson/loongson64-2k1000.dtsi
-+++ b/arch/mips/boot/dts/loongson/loongson64-2k1000.dtsi
-@@ -118,8 +118,7 @@ gmac@3,0 {
- 				compatible = "pci0014,7a03.0",
- 						   "pci0014,7a03",
- 						   "pciclass0c0320",
--						   "pciclass0c03",
--						   "loongson, pci-gmac";
-+						   "pciclass0c03";
- 
- 				reg = <0x1800 0x0 0x0 0x0 0x0>;
- 				interrupts = <12 IRQ_TYPE_LEVEL_LOW>,
-diff --git a/arch/mips/boot/dts/loongson/ls7a-pch.dtsi b/arch/mips/boot/dts/loongson/ls7a-pch.dtsi
-index 2f45fce2cdc4a..ed99ee316febb 100644
---- a/arch/mips/boot/dts/loongson/ls7a-pch.dtsi
-+++ b/arch/mips/boot/dts/loongson/ls7a-pch.dtsi
-@@ -186,8 +186,7 @@ gmac@3,0 {
- 				compatible = "pci0014,7a03.0",
- 						   "pci0014,7a03",
- 						   "pciclass020000",
--						   "pciclass0200",
--						   "loongson, pci-gmac";
-+						   "pciclass0200";
- 
- 				reg = <0x1800 0x0 0x0 0x0 0x0>;
- 				interrupts = <12 IRQ_TYPE_LEVEL_HIGH>,
+diff --git a/include/linux/clk-provider.h b/include/linux/clk-provider.h
+index ace3a4ce2fc9..1293c38ddb7f 100644
+--- a/include/linux/clk-provider.h
++++ b/include/linux/clk-provider.h
+@@ -448,8 +448,8 @@ struct clk *clk_register_fixed_rate(struct device *dev, const char *name,
+  */
+ #define clk_hw_register_fixed_rate_with_accuracy_parent_hw(dev, name,	      \
+ 		parent_hw, flags, fixed_rate, fixed_accuracy)		      \
+-	__clk_hw_register_fixed_rate((dev), NULL, (name), NULL, (parent_hw)   \
+-				     NULL, NULL, (flags), (fixed_rate),	      \
++	__clk_hw_register_fixed_rate((dev), NULL, (name), NULL, (parent_hw),  \
++				     NULL, (flags), (fixed_rate),	      \
+ 				     (fixed_accuracy), 0, false)
+ /**
+  * clk_hw_register_fixed_rate_with_accuracy_parent_data - register fixed-rate
+
 -- 
 2.43.0
 

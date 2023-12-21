@@ -1,142 +1,200 @@
-Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 07753360AE;
-	Thu, 21 Dec 2023 14:56:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alpha.franken.de
-Received: from uucp by elvis.franken.de with local-rmail (Exim 3.36 #1)
-	id 1rGKSq-0002PT-00; Thu, 21 Dec 2023 15:55:56 +0100
-Received: by alpha.franken.de (Postfix, from userid 1000)
-	id F34F9C028A; Thu, 21 Dec 2023 15:38:01 +0100 (CET)
-Date: Thu, 21 Dec 2023 15:38:01 +0100
-From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To: Serge Semin <fancer.lancer@gmail.com>
-Cc: Jiaxun Yang <jiaxun.yang@flygoat.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
-	Arnd Bergmann <arnd@arndb.de>,
-	Aleksandar Rikalo <aleksandar.rikalo@syrmia.com>,
-	Aleksandar Rikalo <arikalo@gmail.com>,
-	Dragan Mladjenovic <dragan.mladjenovic@syrmia.com>,
-	Christophe Leroy <christophe.leroy@csgroup.eu>,
-	Baoquan He <bhe@redhat.com>, Chao-ying Fu <cfu@wavecomp.com>,
-	Yinglu Yang <yangyinglu@loongson.cn>,
-	Tiezhu Yang <yangtiezhu@loongson.cn>,
-	Mike Rapoport <rppt@kernel.org>,
-	Matthew Wilcox <willy@infradead.org>, Marc Zyngier <maz@kernel.org>,
-	linux-mips@vger.kernel.org, linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 0/6] MIPS: mm: Fix some memory-related issues
-Message-ID: <ZYRNyX+SnNh3LkC0@alpha.franken.de>
-References: <20231202111430.18059-1-fancer.lancer@gmail.com>
+Received: from mo4-p02-ob.smtp.rzone.de (mo4-p02-ob.smtp.rzone.de [81.169.146.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C78C14F1E9;
+	Thu, 21 Dec 2023 15:24:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=goldelico.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=goldelico.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=goldelico.com header.i=@goldelico.com header.b="UA7Q0CO0";
+	dkim=permerror (0-bit key) header.d=goldelico.com header.i=@goldelico.com header.b="SZJRLTbw"
+ARC-Seal: i=1; a=rsa-sha256; t=1703172232; cv=none;
+    d=strato.com; s=strato-dkim-0002;
+    b=UwUq/YQX2zRCRkfeyBlXslp0UWcH60extncrAjK6TFBnwi3nkGDhK7z7n4fs/T+/S2
+    A9hP3ZMOlc3HyO43nWI4FkajiLPRoVqdu3Bgv+Tq/2v0oqNYh3D7xhVqJs2Gwt9jXTLS
+    uLYEJeL1Mxgnhf+KDAzWJaZB+hZq03wsgE0/ZB+qKnC44dZLziJANpDQIfHm8OXLr5cv
+    5sDVOFwmSO/tzMtzwJq1ATYGsYVocIV5FIPunxob5oKfBA6O/pRA956O070QgybZESL4
+    2xgJfnImKuLUm5n+liNHrbhrydrnlCIVKut35ON2oCGgm7i2CIibdxLLj4msQj9c02GB
+    R0lw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1703172232;
+    s=strato-dkim-0002; d=strato.com;
+    h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:Cc:Date:
+    From:Subject:Sender;
+    bh=IlLQWtO5L6QKmPmiq2x6VX4CBIJlI6GOZ++GNJegOGk=;
+    b=pxpT2VbelrAIZDkXj9IZhQXR9SfF3KLzBbr6KVGO6OCrcKuByoIek76R7a9HocWSRY
+    4jU7M2owiVka7Db3TV1j8YGA55CIydyCi9g3ZbIiaivJmAcmG6uzXdy0ea6KAA124um+
+    aeJBNpe8KGJ0JilGgs332uGi6bFOQn2CYD6KI0k162NCKyICkskKKfvglcqduswjI+U+
+    7qRI36HuUoiUspzYHqdZKuPz2IcXNhQgT1vUWkCabCnE1uKkKAhbRDblwQsR9cdzabjh
+    PO5uZOLxdRWtK9qqRquggg8UKmwjCFJY+3iAH9dPSQ0lygp9gVfQrGTTBhj6Iv5qP5iM
+    7szg==
+ARC-Authentication-Results: i=1; strato.com;
+    arc=none;
+    dkim=none
+X-RZG-CLASS-ID: mo02
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1703172232;
+    s=strato-dkim-0002; d=goldelico.com;
+    h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:Cc:Date:
+    From:Subject:Sender;
+    bh=IlLQWtO5L6QKmPmiq2x6VX4CBIJlI6GOZ++GNJegOGk=;
+    b=UA7Q0CO0/L9rhAgeD5fPYyWE1i6CylAFokMLXBp/QAHRWSlzucUgdV0Js+Kj9kHU1j
+    KEHc7Vow77+V4YZQAqaNDN1oaMXGS4Bcu8WaSQK98VHeR/pNELscmY1tQG5jW0DOEXdU
+    9cbFsDGfhg/JHMr/5C7I6lBjLK8Lh/gdZXAWPbukVgsd9c56f7CXW4Z7DIKORqELfXkC
+    83x+KzwuBM+bC6Y9rMhrXSYqaVJDqLrro0PCf1gUlRy48qJvDH4YXy0lg+KPdyIJdDCU
+    aq2LH9NLj26sB6QJrYzXuN89rrGBsL9D2gWkDXqyjN5lJt2d61gK9eJ15LpdGZXNk6yn
+    toBA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1703172232;
+    s=strato-dkim-0003; d=goldelico.com;
+    h=To:References:Message-Id:Cc:Date:In-Reply-To:From:Subject:Cc:Date:
+    From:Subject:Sender;
+    bh=IlLQWtO5L6QKmPmiq2x6VX4CBIJlI6GOZ++GNJegOGk=;
+    b=SZJRLTbwvTIaw2c1/vOtdG1/jR1e72SIo6ZjDY5ScOp5xW1MMGbn1zATNGB9p9WqS8
+    oNccSextnPwLlTzlxTAw==
+X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMgPgp8VKxflSZ1P34KBp5hRw/qviAxtjc3yiuvr5qbMskH1rzDt9Ntflha3riRgdpClD1qY="
+Received: from smtpclient.apple
+    by smtp.strato.de (RZmta 49.10.0 AUTH)
+    with ESMTPSA id wfeb35zBLFNoFFz
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (curve X9_62_prime256v1 with 256 ECDH bits, eq. 3072 bits RSA))
+	(Client did not present a certificate);
+    Thu, 21 Dec 2023 16:23:50 +0100 (CET)
+Content-Type: text/plain;
+	charset=us-ascii
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231202111430.18059-1-fancer.lancer@gmail.com>
+Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3774.300.61.1.2\))
+Subject: Re: [PATCH RFC 01/10] dt-bindings: gpu: Add PowerVR Series5 SGX GPUs
+From: "H. Nikolaus Schaller" <hns@goldelico.com>
+In-Reply-To: <nzqeqwof44e3nxjz6lsxmxcfh235unbu343br45esxh6vinskp@xvjydpxhvsuk>
+Date: Thu, 21 Dec 2023 16:23:39 +0100
+Cc: Andrew Davis <afd@ti.com>,
+ Frank Binns <frank.binns@imgtec.com>,
+ Donald Robson <donald.robson@imgtec.com>,
+ Matt Coster <matt.coster@imgtec.com>,
+ Adam Ford <aford173@gmail.com>,
+ Ivaylo Dimitrov <ivo.g.dimitrov.75@gmail.com>,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Thomas Zimmermann <tzimmermann@suse.de>,
+ Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>,
+ Chen-Yu Tsai <wens@csie.org>,
+ Jernej Skrabec <jernej.skrabec@gmail.com>,
+ Samuel Holland <samuel@sholland.org>,
+ =?utf-8?Q?Beno=C3=AEt_Cousson?= <bcousson@baylibre.com>,
+ Tony Lindgren <tony@atomide.com>,
+ Nishanth Menon <nm@ti.com>,
+ Vignesh Raghavendra <vigneshr@ti.com>,
+ Tero Kristo <kristo@kernel.org>,
+ Paul Cercueil <paul@crapouillou.net>,
+ dri-devel@lists.freedesktop.org,
+ devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org,
+ linux-sunxi@lists.linux.dev,
+ linux-omap@vger.kernel.org,
+ linux-mips@vger.kernel.org
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <F2D7693E-7769-463A-97A8-BA952EB5320B@goldelico.com>
+References: <23livt5mcc64bb6lkeec2uxp5cyn4wfekwaj6wzrjnrkndvwgj@6tveqglqpr4v>
+ <B3A1B8A7-0363-4ECB-AFBF-576FECA569FA@goldelico.com>
+ <vawv2mwhonuyvgmp7uox4rfgdcjwg5fa7hmbcfgl3wiase6e4p@tyavpclppfvu>
+ <6BC60156-89E2-4734-BD00-B49A9A6C1D7A@goldelico.com>
+ <6gpehpoz54f5lxhmvirqbfwmq7dpgiroy27cljpvu66wtn7aqy@lgrh7wysyxnp>
+ <D8AB6CC4-DCA5-40DD-A311-94A16FF59254@goldelico.com>
+ <oobcl2kfsuph27er7rflfqvt3lu6athufomxv5chf3uctx4emh@x6rzjtlskhbf>
+ <F58855EC-D87D-4747-A363-0E7AA5DB1AEC@goldelico.com>
+ <22cny5aumc5wafsrjd3j55zcjbjf2viip64kfbjiqis2grtd6t@wg5dxeuzil6l>
+ <3E03E913-48E1-49EC-A6C9-EAC1612E65E7@goldelico.com>
+ <nzqeqwof44e3nxjz6lsxmxcfh235unbu343br45esxh6vinskp@xvjydpxhvsuk>
+To: Maxime Ripard <mripard@kernel.org>
+X-Mailer: Apple Mail (2.3774.300.61.1.2)
 
-On Sat, Dec 02, 2023 at 02:14:17PM +0300, Serge Semin wrote:
-> Just recently I've rebased my MIPS32-related work from kernel 6.5-rc4 onto
-> the latest kernel 6.7-rc1 and immediately got into a bootup-time
-> mm-related bug (see patches 3-4 in this series). After fixing it I decided
-> it was time to submit for review the generic MIPS code fixes which I have
-> been collecting in my local repo for the last year. I was going to submit
-> them a bit later after I finished working on a patchset with my SoC
-> arch-specific changes, but since it was getting bigger and bigger, it
-> turned to be reasonable to spill out the generic part of series right away
-> especially seeing it might get to be useful in the most recent kernel.
-> 
-> So this series starts with the MIPS-specific dmi_early_remap()
-> implementation fix. It is utilized by the DMI driver in the framework of
-> the dmi_setup() method, which is called at the very early boot stage - in
-> setup_arch((). No VM and slab available at that stage which is required
-> for the ioremap_cache() to properly work. Thus it was a mistake to have
-> the dmi_early_remap() macro-function defined as ioremap_cache(). It should
-> have been ioremap() in first place.
-> 
-> After that goes a fix for the high-memory zone PFNs calculation procedure
-> on MIPS. It turned out that after some not that recent commit the
-> IO-memory or just non-memory PFNs got to the high-memory even though they
-> were directly reachable, thus should have been left in the normal zone.
-> 
-> Then a series of fixes for the recently discovered mm-bug is presented.
-> Any attempt to re-map the IO-memory with the cached attribute caused the
-> bootup procedure to crash with the "Unhandled kernel unaligned access"
-> message. After some digging I found out that the problem was in the
-> uninitialized IO-memory pages. Please see the patch "mips: Fix max_mapnr
-> being uninitialized on early stages" description for the detailed
-> explanation of the problem and suggested fix.
-> 
-> After that goes a patch which adds the slab availability check into the
-> ioremap_prot() method. Indeed VM mapping performs the slab allocation in
-> the framework of the get_vm_area() method. Thus any other than uncached
-> IO-remappings must be proceeded only at the stages when slab is available.
-> A similar fix was just recently added to the generic version of
-> ioremap_prot() in the framework of commit a5f616483110 ("mm/ioremap: add
-> slab availability checking in ioremap_prot").
-> 
-> The patchset is closed with a small improvement which sets the MIPS
-> board/machine name to the dump-stack module in order to print
-> arch-personalized oopses in the same way as it's done on ARM, ARM64,
-> RISC-V, etc.
-> 
-> That's it for today.) Thanks for review in advance. Any tests are very
-> welcome.
-> 
-> Link: https://lore.kernel.org/linux-mips/20231122182419.30633-1-fancer.lancer@gmail.com/
-> Changelog v2:
-> - Drop the patches:
->   [PATCH 5/7] mm/mm_init.c: Extend init unavailable range doc info
->   [PATCH 6/7] mm/mm_init.c: Append '\n' to the unavailable ranges log-message
->   since they have been picked up by Andrew. (@Andrew)
-> - Replace ioremap_uc() with using ioremap() due to having the former one
->   deprecated. (@Arnd)
-> - Add a new patch:
->   [PATCH v2 5/6] mips: mm: add slab availability checking in ioremap_prot
->   picked up from the generic ioremap_prot() implementation.
-> - Extend early DMI mem remapping patch log with a note regarding the unsynched
->   caches concern. (@Jiaxun)
-> 
-> Signed-off-by: Serge Semin <fancer.lancer@gmail.com>
-> Cc: Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>
-> Cc: Arnd Bergmann <arnd@arndb.de>
-> Cc: Aleksandar Rikalo <aleksandar.rikalo@syrmia.com>
-> Cc: Aleksandar Rikalo <arikalo@gmail.com>
-> Cc: Dragan Mladjenovic <dragan.mladjenovic@syrmia.com>
-> Cc: Christophe Leroy <christophe.leroy@csgroup.eu>
-> Cc: Baoquan He <bhe@redhat.com>
-> Cc: Chao-ying Fu <cfu@wavecomp.com>
-> Cc: Yinglu Yang <yangyinglu@loongson.cn>
-> Cc: Tiezhu Yang <yangtiezhu@loongson.cn>
-> Cc: Mike Rapoport <rppt@kernel.org>
-> Cc: Matthew Wilcox (Oracle) <willy@infradead.org>
-> Cc: Marc Zyngier <maz@kernel.org>
-> Cc: linux-mips@vger.kernel.org
-> Cc: linux-mm@kvack.org
-> Cc: linux-kernel@vger.kernel.org
-> 
-> Serge Semin (6):
->   mips: dmi: Fix early remap on MIPS32
->   mips: Fix incorrect max_low_pfn adjustment
->   mips: Fix max_mapnr being uninitialized on early stages
->   mips: Optimize max_mapnr init procedure
->   mips: mm: add slab availability checking in ioremap_prot
->   mips: Set dump-stack arch description
-> 
->  arch/mips/include/asm/dmi.h |  2 +-
->  arch/mips/kernel/prom.c     |  2 ++
->  arch/mips/kernel/setup.c    |  4 ++--
->  arch/mips/mm/init.c         | 16 +++++++++-------
->  arch/mips/mm/ioremap.c      |  4 ++++
->  5 files changed, 18 insertions(+), 10 deletions(-)
 
-series applied to mips-next.
+> Am 21.12.2023 um 09:58 schrieb Maxime Ripard <mripard@kernel.org>:
+>=20
+> Cool, so what you're saying is that your plan is to support those GPUs
+> upstream in the imagination driver?
 
-Thomas.
+Yes, I would like to see PowerVR Series 5 SGX supported upstream since =
+there
+are still so many devices in the wild which could use it. The most =
+advanced
+being the Pyra handheld gaming computer but there are omap4 based phones
+or other omap3/amm335x based devices.
 
--- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+And the only reason the OpenPVRSGX group was founded (BTW not by me, I =
+am just
+maintaining the code and running a mailing list because it was rejected =
+to host
+it on vger.kernel.org), was to make that happen.
+
+=46rom the GitHub description:
+	This is about shaping existing GPL Linux kernel drivers for the =
+PVR/SGX5
+	architecture so that they can become accepted into =
+drivers/staging
+
+But nobody can currently tell if it can be integrated with the recently =
+upstreamed
+Rogue driver (I wouldn't call that *the* imagination driver) or if it =
+better stays
+a separate driver because the first would need touching closed =
+user-space code
+and GPU firmware.
+
+And nobody knows who is capable and willing to work on it. It depends on =
+access to
+(confidential) documentation and available time to make such a big task =
+a rewarding
+project. And discussions like this one are not at all encouraging to =
+even try.
+
+>> Now, IMHO all the pros and cons are on the table and the question is
+>> who makes a decision how to go.
+>=20
+> You haven't listed any pro so far, you're claiming that the one I =
+raise
+> are irrelevant.
+
+I have listed some "pros" for "single file" but you apparently don't see
+them as such. I can't change that. The main argument is that a single =
+file is
+simpler than two files duplicating parts, which are apparently the same
+(integration of PVR architectures into SoC doesn't differ very much: =
+shared
+register block, DMA memory, clocks, resets etc.).
+Yours is that two files duplicating such common things is "more =
+convenient".
+I just wonder for whom.
+
+But it seems as if the IMHO second best solution has already been =
+chosen.
+So let it be.
+
+>> Then the currently-out-of-tree driver for the sgx5 can be reworked in
+>> less than half an hour without loosing functionality.
+>=20
+> Again, you're making it harder than it needs to be for no particular
+> reason other than the potential file name clash that can be addressed.
+
+What I want to avoid is a situation that upstream activities do not take =
+the
+existing and working out-of-tree SGX driver into account and make =
+porting
+(not even speaking of upstreaming) that driver more difficult than =
+necessary
+and force device tree files to contain redundant information nobody will =
+need
+and use. You can of course ignore experience and suggestions of people
+who have worked on an SGX driver for a while. But that is the reason why =
+I
+participate in this discussion and raise my voice.
+
+Now, I am looking forward to a v2 of this patch.
+
+BR,
+Nikolaus
+
+

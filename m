@@ -1,116 +1,120 @@
-Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 129A856B6A;
-	Mon,  8 Jan 2024 18:33:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 714954418;
+	Tue,  9 Jan 2024 03:44:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="KhN99XDn"
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-	by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 408IXCGj126863;
-	Mon, 8 Jan 2024 12:33:12 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1704738792;
-	bh=2nMLoHZjmVIC5bz7SNEGOj0N9pS9iZCge0lbcW6Gklw=;
-	h=From:To:CC:Subject:Date:In-Reply-To:References;
-	b=KhN99XDnNgcw3jsBL59qL7fpLl9nPGHgZzCGjOySufVIgwfUbsn2gCTFASCDwTLPX
-	 o03qgn2KXtLyapu4MUyhazV+/coAieRkpdXYXtkH+snx59ladhR1/9bWB2TwHHUGok
-	 OJNrPWVPLA9fZrXPl2ZPG9S5yV+fwjvfVAsWIxtI=
-Received: from DFLE114.ent.ti.com (dfle114.ent.ti.com [10.64.6.35])
-	by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 408IXCUk057415
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Mon, 8 Jan 2024 12:33:12 -0600
-Received: from DFLE107.ent.ti.com (10.64.6.28) by DFLE114.ent.ti.com
- (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 8
- Jan 2024 12:33:11 -0600
-Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DFLE107.ent.ti.com
- (10.64.6.28) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Mon, 8 Jan 2024 12:33:11 -0600
-Received: from lelvsmtp5.itg.ti.com ([10.249.40.136])
-	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 408IX3hH051691;
-	Mon, 8 Jan 2024 12:33:10 -0600
-From: Andrew Davis <afd@ti.com>
-To: Frank Binns <frank.binns@imgtec.com>,
-        Donald Robson
-	<donald.robson@imgtec.com>,
-        Matt Coster <matt.coster@imgtec.com>,
-        "H .
- Nikolaus Schaller" <hns@goldelico.com>,
-        Adam Ford <aford173@gmail.com>,
-        Ivaylo Dimitrov <ivo.g.dimitrov.75@gmail.com>,
-        Maarten Lankhorst
-	<maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley
-	<conor+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec
-	<jernej.skrabec@gmail.com>,
-        Samuel Holland <samuel@sholland.org>,
-        =?UTF-8?q?Beno=C3=AEt=20Cousson?= <bcousson@baylibre.com>,
-        Tony Lindgren
-	<tony@atomide.com>, Nishanth Menon <nm@ti.com>,
-        Vignesh Raghavendra
-	<vigneshr@ti.com>,
-        Tero Kristo <kristo@kernel.org>, Paul Cercueil
-	<paul@crapouillou.net>
-CC: <dri-devel@lists.freedesktop.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-        <linux-sunxi@lists.linux.dev>, <linux-omap@vger.kernel.org>,
-        <linux-mips@vger.kernel.org>, Andrew Davis <afd@ti.com>
-Subject: [PATCH RFC v2 08/11] ARM: dts: DRA7xx: Add device tree entry for SGX GPU
-Date: Mon, 8 Jan 2024 12:32:59 -0600
-Message-ID: <20240108183302.255055-9-afd@ti.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20240108183302.255055-1-afd@ti.com>
-References: <20240108183302.255055-1-afd@ti.com>
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="o8X/WAVE"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 56FEEC433C7;
+	Tue,  9 Jan 2024 03:44:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1704771852;
+	bh=7dVhBfoj72xsHQ2yfVCr8QOzBAyZHEiGfUpeWkbrrjM=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=o8X/WAVERCS50ITivwMC8tmQjNyQizua4YXT04dohjGZCuDqmMMIGo3ST5mH0n4nS
+	 wdtI4SaJaNfKJYTTydj5JW0Te1ZJTebnIxr0aQfJVQ19RYdYZh6cmwGA48GGJ5GBU0
+	 sgb/Ap/hwIs6NClER3bjPiL/JdNifxgvZmigjq4Ez3S2HaBjmFb4f2w5/gOag2/CpZ
+	 Ud72sum5Ms+QT9NJtUX073pp7nWFVzVw8UYQX5X4HDy0c/YlQS0N4okMftf3tjuomX
+	 N/n2ohUyG86mH2p/sZeT0bQy4VHGZAydhDVodzUt/TNlApBg8329KKF+G476+7R72G
+	 LsipTg1Y8nEHw==
+Received: (nullmailer pid 2601202 invoked by uid 1000);
+	Tue, 09 Jan 2024 03:44:10 -0000
+Date: Mon, 8 Jan 2024 20:44:10 -0700
+From: Rob Herring <robh@kernel.org>
+To: =?iso-8859-1?Q?Th=E9o?= Lebrun <theo.lebrun@bootlin.com>
+Cc: Gregory CLEMENT <gregory.clement@bootlin.com>, Michael Turquette <mturquette@baylibre.com>, Stephen Boyd <sboyd@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>, linux-mips@vger.kernel.org, linux-clk@vger.kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, Thomas Petazzoni <thomas.petazzoni@bootlin.com>, Tawfik Bayouk <tawfik.bayouk@mobileye.com>
+Subject: Re: [PATCH v2 3/6] dt-bindings: soc: mobileye: add EyeQ5 OLB system
+ controller
+Message-ID: <20240109034410.GA2585123-robh@kernel.org>
+References: <20231227-mbly-clk-v2-0-a05db63c380f@bootlin.com>
+ <20231227-mbly-clk-v2-3-a05db63c380f@bootlin.com>
+ <CAL_JsqJD4ZeR+n09gC2fXnk1MFuqO0c0zADSg_-MiY65pck1Yw@mail.gmail.com>
+ <CY02002PZ08V.368NYASI51S@bootlin.com>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+In-Reply-To: <CY02002PZ08V.368NYASI51S@bootlin.com>
 
-Add SGX GPU device entry to base DRA7x dtsi file.
+On Thu, Dec 28, 2023 at 03:57:55PM +0100, Théo Lebrun wrote:
+> Hello,
+> 
+> On Wed Dec 27, 2023 at 7:27 PM CET, Rob Herring wrote:
+> > On Wed, Dec 27, 2023 at 10:24 AM Théo Lebrun <theo.lebrun@bootlin.com> wrote:
+> > >
+> > > Add documentation to describe the "Other Logic Block" syscon.
+> > >
+> > > Signed-off-by: Théo Lebrun <theo.lebrun@bootlin.com>
+> > > ---
+> > >  .../bindings/soc/mobileye/mobileye,eyeq5-olb.yaml  | 44 ++++++++++++++++++++++
+> > >  MAINTAINERS                                        |  1 +
+> > >  2 files changed, 45 insertions(+)
+> > >
+> > > diff --git a/Documentation/devicetree/bindings/soc/mobileye/mobileye,eyeq5-olb.yaml b/Documentation/devicetree/bindings/soc/mobileye/mobileye,eyeq5-olb.yaml
+> > > new file mode 100644
+> > > index 000000000000..b148a49b08f1
+> > > --- /dev/null
+> > > +++ b/Documentation/devicetree/bindings/soc/mobileye/mobileye,eyeq5-olb.yaml
+> > > @@ -0,0 +1,44 @@
+> > > +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> > > +%YAML 1.2
+> > > +---
+> > > +$id: http://devicetree.org/schemas/soc/mobileye/mobileye,eyeq5-olb.yaml#
+> > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > > +
+> > > +title: Mobileye EyeQ5 SoC system controller
+> > > +
+> > > +maintainers:
+> > > +  - Grégory Clement <gregory.clement@bootlin.com>
+> > > +  - Théo Lebrun <theo.lebrun@bootlin.com>
+> > > +  - Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>
+> > > +
+> > > +description:
+> > > +  OLB ("Other Logic Block") is a hardware block grouping smaller blocks. Clocks,
+> > > +  resets, pinctrl are being handled from here.
+> >
+> > I don't see resets or pinctrl in the binding. Please make it complete
+> > whether you have the driver or not.
+> >
+> > As-is, you don't need clocks to be a child node.
+> 
+> Will do. Would it make sense to have the three drivers be a single
+> series? 
 
-Signed-off-by: Andrew Davis <afd@ti.com>
----
- arch/arm/boot/dts/ti/omap/dra7.dtsi | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
+You could, but doesn't have to be. Just make the binding complete. 
+Whether you have the drivers done is up to you.
 
-diff --git a/arch/arm/boot/dts/ti/omap/dra7.dtsi b/arch/arm/boot/dts/ti/omap/dra7.dtsi
-index 6509c742fb58c..8527643cb69a8 100644
---- a/arch/arm/boot/dts/ti/omap/dra7.dtsi
-+++ b/arch/arm/boot/dts/ti/omap/dra7.dtsi
-@@ -850,12 +850,19 @@ target-module@56000000 {
- 					<SYSC_IDLE_SMART>;
- 			ti,sysc-sidle = <SYSC_IDLE_FORCE>,
- 					<SYSC_IDLE_NO>,
--					<SYSC_IDLE_SMART>;
-+					<SYSC_IDLE_SMART>,
-+					<SYSC_IDLE_SMART_WKUP>;
- 			clocks = <&gpu_clkctrl DRA7_GPU_CLKCTRL 0>;
- 			clock-names = "fck";
- 			#address-cells = <1>;
- 			#size-cells = <1>;
- 			ranges = <0 0x56000000 0x2000000>;
-+
-+			gpu@0 {
-+				compatible = "ti,am5728-gpu", "img,powervr-sgx544";
-+				reg = <0x0 0x10000>; /* 64kB */
-+				interrupts = <GIC_SPI 16 IRQ_TYPE_LEVEL_HIGH>;
-+			};
- 		};
- 
- 		crossbar_mpu: crossbar@4a002a48 {
--- 
-2.39.2
+> Else we could have the dt-bindings be part of the base platform
+> support series[1].
+> 
+> [1]: https://lore.kernel.org/lkml/20231212163459.1923041-1-gregory.clement@bootlin.com/
+> 
+> > > +properties:
+> > > +  compatible:
+> > > +    items:
+> > > +      - const: mobileye,eyeq5-olb
+> > > +      - const: syscon
+> > > +      - const: simple-mfd
+> > > +
+> > > +  reg:
+> > > +    maxItems: 1
+> > > +
+> > > +  reg-io-width:
+> > > +    const: 4
+> >
+> > Why do you need this? It is not a generic block and can only ever be 1
+> > value.
+> 
+> This block is still a syscon in the end. I wanted to explicit that
+> access width must be 4 bytes and nothing else.
+> 
+> Does you question mean you think I should be removing it?
 
+Yes. It can be implied by compatible.
+
+Rob

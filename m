@@ -1,30 +1,35 @@
 Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C453179C1;
-	Tue, 16 Jan 2024 03:27:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E96B10971
+	for <linux-mips@vger.kernel.org>; Tue, 16 Jan 2024 06:20:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=loongson.cn
 Received: from loongson.cn (unknown [111.9.175.10])
-	by gateway (Coremail) with SMTP id _____8Axjuu296Vld48AAA--.2549S3;
-	Tue, 16 Jan 2024 11:27:50 +0800 (CST)
+	by gateway (Coremail) with SMTP id _____8BxuvCo86Vlk44AAA--.2853S3;
+	Tue, 16 Jan 2024 11:10:32 +0800 (CST)
 Received: from Board-3A3000 (unknown [111.9.175.10])
-	by localhost.localdomain (Coremail) with SMTP id AQAAf8CxAOWy96VlBzADAA--.649S2;
-	Tue, 16 Jan 2024 11:27:48 +0800 (CST)
-Date: Tue, 16 Jan 2024 11:27:46 +0800
+	by localhost.localdomain (Coremail) with SMTP id AQAAf8DxzM6k86Vl4ioDAA--.665S2;
+	Tue, 16 Jan 2024 11:10:30 +0800 (CST)
+Date: Tue, 16 Jan 2024 11:10:28 +0800
 From: Huang Pei <huangpei@loongson.cn>
 To: Jiaxun Yang <jiaxun.yang@flygoat.com>
-Cc: rppt@kernel.org, linux-mm@kvack.org, Bibo Mao <maobibo@loongson.cn>,
-	linux-mips@vger.kernel.org, Paul Burton <paulburton@kernel.org>,
+Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	Bibo Mao <maobibo@loongson.cn>, linux-mips@vger.kernel.org,
+	Paul Burton <paulburton@kernel.org>,
 	Li Xuefeng <lixuefeng@loongson.cn>,
 	Yang Tiezhu <yangtiezhu@loongson.cn>,
 	Gao Juxin <gaojuxin@loongson.cn>,
-	Huacai Chen <chenhuacai@loongson.cn>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	linux-kernel@vger.kernel.org
-Subject: Re: memblock_reserve for unadded region (was: [PATCH] MIPS:
- loongson64: fix boot failure)
-Message-ID: <20240116032746.rh2jh6gihykzorg5@Board-3A3000>
-References: <20231225093025.23215-1-huangpei@loongson.cn>
- <731134fd-4b3d-418c-84ee-80646bffcc01@flygoat.com>
+	Huacai Chen <chenhuacai@loongson.cn>
+Subject: Re: [PATCH 3/3] Revert "MIPS: Loongson64: Handle more memory types
+ passed from firmware"
+Message-ID: <20240116031028.vbew7z7fjl26hlxe@Board-3A3000>
+References: <ZZ29Wr9yfAcqGxrN@alpha.franken.de>
+ <20240113095509.178697-1-huangpei@loongson.cn>
+ <20240113095509.178697-4-huangpei@loongson.cn>
+ <2ce1affb-b39f-4de3-a57f-29f9580fc083@flygoat.com>
+ <20240114085316.prb7ynh4gfytv2rb@Board-3A3000>
+ <7d4fe00c-259d-4e19-90a1-272bc2adcc7e@flygoat.com>
+ <20240115012512.y2ujt3xmks3regel@Board-3A3000>
+ <92cc976f-cd24-48c0-9ac6-b9374fba158a@flygoat.com>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
@@ -34,136 +39,70 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <731134fd-4b3d-418c-84ee-80646bffcc01@flygoat.com>
-X-CM-TRANSID:AQAAf8CxAOWy96VlBzADAA--.649S2
+In-Reply-To: <92cc976f-cd24-48c0-9ac6-b9374fba158a@flygoat.com>
+X-CM-TRANSID:AQAAf8DxzM6k86Vl4ioDAA--.665S2
 X-CM-SenderInfo: xkxd0whshlqz5rrqw2lrqou0/
-X-Coremail-Antispam: 1Uk129KBj93XoWxAF48Zr4UtrW3GFyUXF13trc_yoWrKw17pr
-	13JF17Cr48Jr1UXrW8Jr15Wr1xXa1Fk3WUJrZrJr18uF1Dur17Xr18JryrXFyDJrWUGF1I
-	qFyDXr1jvw1DAwcCm3ZEXasCq-sJn29KB7ZKAUJUUUUr529EdanIXcx71UUUUU7KY7ZEXa
+X-Coremail-Antispam: 1Uk129KBj93XoW7tFW5tryUKr47Cw4DGFyDJwc_yoW8CF4fpr
+	43JF1xAr4UGrs7tw4vyw15ur10vw4rKr4UXry5ArykWr4jvr1fAw18Gr4rZF90qrWxJr1j
+	qF4UX34DXw1DAFbCm3ZEXasCq-sJn29KB7ZKAUJUUUU5529EdanIXcx71UUUUU7KY7ZEXa
 	sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
-	0xBIdaVrnRJUUUvKb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
+	0xBIdaVrnRJUUUyEb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
 	IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
-	e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_JFI_Gr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
+	e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
 	0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVWxJVW8Jr1l84ACjcxK6I8E87Iv6xkF7I0E14v2
-	6r4UJVWxJr1ln4kS14v26r1Y6r17M2AIxVAIcxkEcVAq07x20xvEncxIr21l57IF6xkI12
-	xvs2x26I8E6xACxx1l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1Y
-	6r17McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr4
-	1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1l4IxYO2xFxVAFwI0_Jrv_
-	JF1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17
-	CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0
-	I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I
-	8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU
-	0xZFpf9x07jepB-UUUUU=
+	6r4UJVWxJr1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqjxCEc2xF0cIa020Ex4CE44I27w
+	Aqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jrv_JF1lYx0Ex4A2jsIE
+	14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvEwIxGrwCF04k20xvY0x0EwI
+	xGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480
+	Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7
+	IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k2
+	6cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxV
+	AFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7IU8zwZ7UUUUU==
+X-Gw-Check: 100e95e1ea4d306c
 
-On Mon, Jan 15, 2024 at 02:08:21PM +0000, Jiaxun Yang wrote:
-> Hi mm folks,
+On Mon, Jan 15, 2024 at 02:14:14PM +0000, Jiaxun Yang wrote:
 > 
-> Just a quick question, what is the expected behavior of memblock_reserve
-> a region that is not added to memblock with memblock_add?
 > 
-> I'm unable to find any documentation about memblock_reserve in comments and
-> boot-time-mm, but as per my understanding to the code, this should be a
-> legit usage?
+> 在 2024/1/15 01:25, Huang Pei 写道:
+> > On Sun, Jan 14, 2024 at 11:58:25AM +0000, Jiaxun Yang wrote:
+> > > 
+> > > 在 2024/1/14 08:53, Huang Pei 写道:
+> > > > On Sat, Jan 13, 2024 at 11:59:11AM +0000, Jiaxun Yang wrote:
+> > > [...]
+> > > > In my test system with kunlun firmware they are actually covered by SYSRAM
+> > > > type.
+> > > > IMO, better to add those memory to memblock as well in your case.
+> > > > 
+> > > > My test machine is PMON-based 3B1500, the SMBIOS_TABLE located in
+> > > > 0xfffe000-0xfffe7ff, which is not included in SYSTEM_RAM_LOW(0x200000-
+> > > > 0xeffffff), I think we need a check like,
+> > > > ----------------------------------------------------------------------
+> > > > 	if(memblock_is_region_memory(addr, size))
+> > > > 		memblock_reserve(addr, size);
+> > > > ----------------------------------------------------------------------
+> > > > to support both cases;
+> > > Then we are running into ordering issue. memblock_add of SYSRAM may later
+> > > then reservation.
+> > > What about unconditionally add those ranges to memblock? As it's certain
+> > > that those regions will
+> > > be RAM.
+> > > 
+> > I think we can do szmem twice, one for memblock.memory, the other for
+> > memblock_reserve.
+> IMO this is a little bit insane.
+> LoongArch made a workaround to set all reserved memory to node zero [1].
 > 
-> In practical we run into uninitialized nid of reserved block problem, should
-> we fix it
-> in our usage, or on memblock side?
+> [1]:
+> https://lore.kernel.org/all/20230911092810.3108092-1-chenhuacai@loongson.cn/
 > 
+I think they forgot MIPS totally. Their fix is right, because all the
+reserved memory is located on Node 0 by now. If we keep reserved
+memory within range of the memoryblock.memory and keep this conresponcy,
+then there would not be this bug. My fix is just another way to keep this
+conresponcy and make the memory ownership more clear between kernel and 
+firmware.
+
 > Thanks
-
-I have same question. Kernel make a dmi info(see dmi_string, or add
-memblock=debug) copy.
-
-If reserved SMIBIOS memory belong to kernel, no need to make a copy.
-
-But if not, how could it be included in a range of memblock.memory?
-
-> 
-> 在 2023/12/25 09:30, Huang Pei 写道:
-> > Since commit 61167ad5fecd("mm: pass nid to reserve_bootmem_region()),
-> > loongson64 booting failed with CONFIG_DEFERRED_STRUCT_PAGE_INIT like
-> > this:
-> > ----------------------------------------------------------------------
-> >   Call Trace:
-> >   [<ffffffff8235d088>] reserve_bootmem_region+0xa8/0x184
-> >   [<ffffffff82333940>] memblock_free_all+0x104/0x2a8
-> >   [<ffffffff8231d8e4>] mem_init+0x84/0x94
-> >   [<ffffffff82330958>] mm_core_init+0xf8/0x308
-> >   [<ffffffff82318c38>] start_kernel+0x43c/0x86c
-> > 
-> >   Code: 10400028  2402fff0  de420000 <dc432880> 0203182b 14600022
-> >   64420070  00003025  24040003
-> > 
-> >   ---[ end trace 0000000000000000 ]---
-> >   Kernel panic - not syncing: Attempted to kill the idle task!
-> >   ---[ end Kernel panic - not syncing: Attempted to kill the idle task! ]---
-> > ----------------------------------------------------------------------
-> > 
-> > The root cause is no memory region "0x0-0x1fffff" paired with
-> > memory-reserved region "0x0-0x1fffff" and "0x0-0xfff", with "memblock
-> > =debug":
-> > 
-> > ----------------------------------------------------------------------
-> >    memory[0x0]     [0x0000000000200000-0x000000000effffff],
-> >    0x000000000ee00000 bytes on node 0 flags: 0x0 !!!!here
-> >    memory[0x1]     [0x0000000090000000-0x00000000fdffffff],
-> >    0x000000006e000000 bytes on node 0 flags: 0x0
-> >    memory[0x2]     [0x0000000100000000-0x000000027fffffff],
-> >    0x0000000180000000 bytes on node 0 flags: 0x0
-> >    memory[0x3]     [0x0000100000000000-0x000010000fffffff],
-> >    0x0000000010000000 bytes on node 1 flags: 0x0
-> >    memory[0x4]     [0x0000100090000000-0x000010027fffffff],
-> >    0x00000001f0000000 bytes on node 1 flags: 0x0
-> >    reserved.cnt  = 0x1f
-> >    reserved[0x0]   [0x0000000000000000-0x000000000190c80a],
-> >    0x000000000190c80b bytes flags: 0x0 !!!!oops 0x0-0x1fffff not in memory[0]
-> >    reserved[0x1]   [0x000000000190c810-0x000000000190eea3],
-> >    0x0000000000002694 bytes flags: 0x0
-> > ----------------------------------------------------------------------
-> > 
-> > It caused memory-reserved region "0x0-0x1fffff" without valid node id
-> > in "memblock_get_region_node" from "memmap_init_reserved_pages", lead to
-> > "reserve_bootmem_region-> init_reserved_page -> early_pfn_to_nid()"
-> > accessing "node_data" out of bound.
-> > 
-> > To fix this bug, we should remove unnecessary memory block reservation.
-> > 
-> > +. no need to reserve 0x0-0x1fffff below kernel loading address, since
-> > it is not registered by "memblock_add_node"
-> > 
-> > +. no need to reserve 0x0-0xfff for exception handling if it is not
-> > registered by "memblock_add" either.
-> > 
-> > Fixes: commit 61167ad5fecd("mm: pass nid to reserve_bootmem_region())
-> > Signed-off-by: Huang Pei <huangpei@loongson.cn>
-> > ---
-> >   arch/mips/kernel/traps.c    | 3 ++-
-> >   arch/mips/loongson64/numa.c | 2 --
-> >   2 files changed, 2 insertions(+), 3 deletions(-)
-> > 
-> > diff --git a/arch/mips/kernel/traps.c b/arch/mips/kernel/traps.c
-> > index 246c6a6b0261..9b632b4c10c3 100644
-> > --- a/arch/mips/kernel/traps.c
-> > +++ b/arch/mips/kernel/traps.c
-> > @@ -2007,7 +2007,8 @@ unsigned long vi_handlers[64];
-> >   void reserve_exception_space(phys_addr_t addr, unsigned long size)
-> >   {
-> > -	memblock_reserve(addr, size);
-> > +	if(memblock_is_region_memory(addr, size))
-> > +		memblock_reserve(addr, size);
-> >   }
-> >   void __init *set_except_vector(int n, void *addr)
-> > diff --git a/arch/mips/loongson64/numa.c b/arch/mips/loongson64/numa.c
-> > index 8f61e93c0c5b..0f516dde81da 100644
-> > --- a/arch/mips/loongson64/numa.c
-> > +++ b/arch/mips/loongson64/numa.c
-> > @@ -130,8 +130,6 @@ static void __init node_mem_init(unsigned int node)
-> >   			memblock_reserve((node_addrspace_offset | 0xfe000000),
-> >   					 32 << 20);
-> > -		/* Reserve pfn range 0~node[0]->node_start_pfn */
-> > -		memblock_reserve(0, PAGE_SIZE * start_pfn);
-> >   	}
-> >   }
 > 
 > -- 
 > ---

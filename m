@@ -1,36 +1,36 @@
-Received: from relay6-d.mail.gandi.net (relay6-d.mail.gandi.net [217.70.183.198])
+Received: from relay8-d.mail.gandi.net (relay8-d.mail.gandi.net [217.70.183.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8FAC325764;
-	Thu, 18 Jan 2024 15:53:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.198
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4219628E34;
+	Thu, 18 Jan 2024 15:53:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705593193; cv=none; b=evmxX9jN72BbKZAMdw6RonmknrBR1dh/Us2LgXc2SEKO4bZZ9OH/6I4gPjUTUFZ5S2rmnOGjYEmfyUpQy7uy+EbLWuI0Nj1E+zwh1A3MtuL5X55K+cYLWOSyYIJrTUo9zI/vLGgR97QUfvdu2LHMyCMEJjPMc60nK0KdXxGHarM=
+	t=1705593196; cv=none; b=Dv/r6mUkd7Udcf/PPWa2Z5M1CRrQ0Wo35aGEKUSPdICLOsV/lkrh5DwY97ljtyzbTilvQwZGipSkqd2znnuw7iW75Iq1UsCZeU7k5MhrDHZCWY+g2s6PAysLKfQh7mTMIzbEBeiWUS1eYzxF1n4xdYOSlajIHRz7Y/2iwfh5MYI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705593193; c=relaxed/simple;
-	bh=91KuGhdZRQ3yX+KBd4TI2ZS1Tfz4GmFXyhttE3bzAFM=;
+	s=arc-20240116; t=1705593196; c=relaxed/simple;
+	bh=F69lXcW+BMK3xWuWKAunG1z8qeZUfL/FLTg148TbGsU=;
 	h=Received:DKIM-Signature:From:To:Cc:Subject:Date:Message-ID:
-	 X-Mailer:In-Reply-To:References:MIME-Version:
-	 Content-Transfer-Encoding:X-GND-Sasl; b=Lu4UlwbHdgsKJMJO4Kn31U4zadjxf6CZh4Yhf13S1svpfqHy4UfI/42p3eSxw3LkaPgWKQi+HEbjBgl8X0NCcv7EQsf9Gb9JRTEHtKHBUxYCgpiSC1T+dLcgms/sl9a/zj6E9ABDQH8suDy7IzxfT2OhJxWnuMeVDP1I3Gz5+K0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=fx6NAWUc; arc=none smtp.client-ip=217.70.183.198
+	 X-Mailer:In-Reply-To:References:MIME-Version:Content-Type:
+	 Content-Transfer-Encoding:X-GND-Sasl; b=Kg5YqeMbu6mDDxrY4T8G2LVxZ0xqTPodeip4G747Wa6uwl0PfSV3XTCJe8FPXyvEeUm/rMz3O9VqCVZanKSjbKjo9uZNezZJ6JLtgp0lZU6yeI2wyw8/LuagWwIviWpe6HZ/lJgCNlfPa4c9sKAbuKNXslKBOVMLAqC3EG2Mhtk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=ijWZhiKg; arc=none smtp.client-ip=217.70.183.201
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="fx6NAWUc"
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 59D35C0010;
-	Thu, 18 Jan 2024 15:53:09 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="ijWZhiKg"
+Received: by mail.gandi.net (Postfix) with ESMTPSA id B17721BF212;
+	Thu, 18 Jan 2024 15:53:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1705593189;
+	t=1705593192;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=6uEXIbyuTE8+uGbb2wp9Vlt8m5ypasCyIw0FxaqtHUs=;
-	b=fx6NAWUcxFTXEV431gpxyAKclV58QEtRu2YyBExSkwS/4wCp9bcQdFXl7sdJVj6c7qKSJl
-	SeZ/+0Tuv5mCMKs8O/9ZdvwAUpeALdn36z+R71NbMziDCp8ETcnCH9e2IIGPtnoyGvuShA
-	3tDApIRYTrnVh0qZ/AJ8rrpn8BMzF79E/DyY96T03izZJaGnW/wmr9P8+jaYqYykIqs4Od
-	Pcuy6h2Qfhxt06JrJB523mz5ZbR+3GuAzsIKSEt4ujcPhoL1B3haBrW3H13wZqNMqASQXD
-	oRYHUCZWQzn9YgNiiA0BikY+7yuI4aKAVnczlDBfo7ZDPKvB/1DbG2tek96peQ==
+	bh=GbsWh/XsZeOFv6yit27z5l5/TqUISO3EzDeBeQy/R68=;
+	b=ijWZhiKgkJq5am+gqMcsVyU23bFlF4705SsoMF9vBww7ioslE8wTmPvTsrHxNEEM5GCBQR
+	C2mA04RSa9WzjJvuLYF2t+83FMw9iRKYFc1IX3WbHfW3RQKnOZEK/y7mKigW1WKt1/mETX
+	YB5peySdq4KEZqBjsF1NqNwuNQVjT2kF3TE9PcMotv/7eWiQrTj2ALeY60AUMzH6Gs8ny+
+	m3pjTOXz5d6OoFkZoB3Z8cG8iHNj0iApONC9eQFkKm5NJjz3tPprB3RVtTDgMfZRggmcQP
+	Ght9qEnhVNuOcaML90e+/jxpLWIvzHb3g5soFz1NrGHaZuvLwRglm070HiueyQ==
 From: Gregory CLEMENT <gregory.clement@bootlin.com>
 To: Paul Burton <paulburton@kernel.org>,
 	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
@@ -45,10 +45,14 @@ Cc: Vladimir  Kondratiev <vladimir.kondratiev@mobileye.com>,
 	Alexandre Belloni <alexandre.belloni@bootlin.com>,
 	=?UTF-8?q?Th=C3=A9o=20Lebrun?= <theo.lebrun@bootlin.com>,
 	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-	Gregory CLEMENT <gregory.clement@bootlin.com>
-Subject: [PATCH v6 05/15] MIPS: cps-vec: Use macros for 64bits access
-Date: Thu, 18 Jan 2024 16:52:34 +0100
-Message-ID: <20240118155252.397947-6-gregory.clement@bootlin.com>
+	Gregory CLEMENT <gregory.clement@bootlin.com>,
+	Arnd Bergmann <arnd@arndb.de>,
+	=?UTF-8?q?Philippe=20Mathieu-Daud=C3=A9?= <philmd@linaro.org>,
+	Serge Semin <fancer.lancer@gmail.com>,
+	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: [PATCH v6 08/15] dt-bindings: mips: cpu: Add I-Class I6500 Multiprocessor Core
+Date: Thu, 18 Jan 2024 16:52:37 +0100
+Message-ID: <20240118155252.397947-9-gregory.clement@bootlin.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240118155252.397947-1-gregory.clement@bootlin.com>
 References: <20240118155252.397947-1-gregory.clement@bootlin.com>
@@ -58,45 +62,34 @@ List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-GND-Sasl: gregory.clement@bootlin.com
 
-Some access are 32 bits only while they seems better to be done in
-64bis for 64 bit kernel.
+The MIPS Warrior I-class I6500 was announced by Imagination
+Technologies in 2016 and is used in the Mobileye SoC EyeQ5.
 
-This was extract from an initial patch from Jiaxun
-Co-developed-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+Acked-by: Arnd Bergmann <arnd@arndb.de>
+Reviewed-by: Philippe Mathieu-Daudé <philmd@linaro.org>
+Reviewed-by: Serge Semin <fancer.lancer@gmail.com>
+Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Signed-off-by: Gregory CLEMENT <gregory.clement@bootlin.com>
 ---
- arch/mips/kernel/cps-vec.S | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ Documentation/devicetree/bindings/mips/cpus.yaml | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/arch/mips/kernel/cps-vec.S b/arch/mips/kernel/cps-vec.S
-index df610c006b443..f876309130ad1 100644
---- a/arch/mips/kernel/cps-vec.S
-+++ b/arch/mips/kernel/cps-vec.S
-@@ -396,7 +396,7 @@ LEAF(mips_cps_boot_vpes)
- 	/* Calculate a pointer to the VPEs struct vpe_boot_config */
- 	li	t0, VPEBOOTCFG_SIZE
- 	mul	t0, t0, ta1
--	addu	t0, t0, ta3
-+	PTR_ADDU t0, t0, ta3
- 
- 	/* Set the TC restart PC */
- 	lw	t1, VPEBOOTCFG_PC(t0)
-@@ -571,10 +571,10 @@ dcache_done:
- 	lw	$1, TI_CPU(gp)
- 	sll	$1, $1, LONGLOG
- 	PTR_LA	\dest, __per_cpu_offset
--	addu	$1, $1, \dest
-+	PTR_ADDU $1, $1, \dest
- 	lw	$1, 0($1)
- 	PTR_LA	\dest, cps_cpu_state
--	addu	\dest, \dest, $1
-+	PTR_ADDU \dest, \dest, $1
- 	.set	pop
- 	.endm
- 
+diff --git a/Documentation/devicetree/bindings/mips/cpus.yaml b/Documentation/devicetree/bindings/mips/cpus.yaml
+index 9bc47868d28b6..a85137add6689 100644
+--- a/Documentation/devicetree/bindings/mips/cpus.yaml
++++ b/Documentation/devicetree/bindings/mips/cpus.yaml
+@@ -23,6 +23,7 @@ properties:
+       - brcm,bmips4380
+       - brcm,bmips5000
+       - brcm,bmips5200
++      - img,i6500
+       - ingenic,xburst-fpu1.0-mxu1.1
+       - ingenic,xburst-fpu2.0-mxu2.0
+       - ingenic,xburst-mxu1.0
 -- 
 2.43.0
 

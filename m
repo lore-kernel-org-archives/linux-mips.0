@@ -1,41 +1,57 @@
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96B992421D
-	for <linux-mips@vger.kernel.org>; Thu, 18 Jan 2024 12:40:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=114.242.206.163
+Received: from relay6-d.mail.gandi.net (relay6-d.mail.gandi.net [217.70.183.198])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 06AB524B5D;
+	Thu, 18 Jan 2024 15:53:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.198
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705581637; cv=none; b=qtt2ikGbWAeHNKPLwTWaPiQpEMuzzORu62PFJJmDNnarZ2ZFlpqRiRQMpdOpQdWRr2v3mWP8gX95l3pHch+Bnr/OTcI3i5A9rNNL+laFPjRGZvM7pJ7rRYFGQtWG+HmUSAWNjFM8EWjVLWCBepmURXCHK6GkXYa8JvXju6DRf04=
+	t=1705593192; cv=none; b=MvIEa0EZv/4ybif1FwzOe/8dJX1ybvil6uPNz8R6PbM08hLz+Igj4dcctxO1z/nhNYjJzFGhuGrBtsLaeY0VxfTgWtXUYrk0fbinBGCrgfIjBno9Tnud56EMfx1OegKr6Pw6RkzwgHxsYsuWxwqVmUQq47BDU93YTIfj/PtSkD4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705581637; c=relaxed/simple;
-	bh=jQF1Ww9mDtm30PAS7TcOstj+f26QIIg3zHzDxQVsPaE=;
-	h=Received:Received:From:To:Cc:Subject:Date:Message-Id:X-Mailer:
-	 In-Reply-To:References:MIME-Version:Content-Transfer-Encoding:
-	 X-CM-TRANSID:X-CM-SenderInfo:X-Coremail-Antispam; b=iCdcUDeLZhTCnRSmCeXVVTEuY/QXaI8RAE/Ltk45rzGqADXhEhbDrkpkqw0gZV2AxBoEbKSc/+0DhtzOC/KF2GGmQ3XV3FJPmlB8PpZvNtSNatkqF2w70/uAtcqs5YCcF6qX3d/Mf0wel71Rcb/Ao1FWSLqgVBlGRkjcnGNy5pE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn; spf=pass smtp.mailfrom=loongson.cn; arc=none smtp.client-ip=114.242.206.163
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=loongson.cn
-Received: from loongson.cn (unknown [111.9.175.10])
-	by gateway (Coremail) with SMTP id _____8DxdfFBHKllb6QBAA--.8210S3;
-	Thu, 18 Jan 2024 20:40:33 +0800 (CST)
-Received: from localhost.localdomain (unknown [111.9.175.10])
-	by localhost.localdomain (Coremail) with SMTP id AQAAf8BxF80nHKll3YgIAA--.1524S4;
-	Thu, 18 Jan 2024 20:40:32 +0800 (CST)
-From: Huang Pei <huangpei@loongson.cn>
-To: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc: Bibo Mao <maobibo@loongson.cn>,
+	s=arc-20240116; t=1705593192; c=relaxed/simple;
+	bh=CaXBWxsO+R6feKBnilzrnxufzQ2BLnDif1KfoyMON+g=;
+	h=Received:DKIM-Signature:From:To:Cc:Subject:Date:Message-ID:
+	 X-Mailer:In-Reply-To:References:MIME-Version:
+	 Content-Transfer-Encoding:X-GND-Sasl; b=lhDahjjEzHJ6jaIsBoxf503XhVAQkpcdBlcxEUjA8+3ZnxCHBp8z8eXwQofmfinhVyJvy2EdAJnwca6tQZkvFfs73hhuagWJLiQ1ICdzUT3IkiFafQ/tsl63lcS27BV7F+QJAZxljDuJ5Ve+II3k62MHDL5cmZbYVK00ya+Xho8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=dem/ZL1l; arc=none smtp.client-ip=217.70.183.198
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="dem/ZL1l"
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 2CAA8C0004;
+	Thu, 18 Jan 2024 15:53:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1705593186;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=5JyLWvT61W6ZBIjMo4xtHJF4yqj1qVU6xtbzha7IAjk=;
+	b=dem/ZL1lrmT1vmTVkw54xDtbDOu80E0Yp7X/oldeTtoNFuGbH/bqvVCz0R31Uxe89FkNuS
+	3UUheL+XkD0Xg+jYBh+txPUsuFllrCChU1rN4Lz+XODuKbdy/za4SAxs8b/yzB2PGbmB2y
+	N0HVc56SKMdyjAJ22Zl+CZZGqHGQD3w3RXJXsrkgcO7mUHlv5RmEQ+YdqupsK3ywJAB7Ct
+	Evkg6/TucBW8NYPgHFbV5+EHIesH/xuuggZF9v2QTCa2Azm7T1DCNz+NM6OAg7kWdnSnlx
+	ZjtQa0f0DttkrRuZahdGSTcGT0vs2IjGbOrNKDpuu7F13F4ZLbfBKUuJ3btDcw==
+From: Gregory CLEMENT <gregory.clement@bootlin.com>
+To: Paul Burton <paulburton@kernel.org>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
 	linux-mips@vger.kernel.org,
 	Jiaxun Yang <jiaxun.yang@flygoat.com>,
-	Paul Burton <paulburton@kernel.org>,
-	Li Xuefeng <lixuefeng@loongson.cn>,
-	Yang Tiezhu <yangtiezhu@loongson.cn>,
-	Gao Juxin <gaojuxin@loongson.cn>,
-	Huacai Chen <chenhuacai@loongson.cn>
-Subject: [PATCH 2/2] MIPS: loongson64: set nid for reserved memblock region
-Date: Thu, 18 Jan 2024 20:39:29 +0800
-Message-Id: <20240118123929.369939-3-huangpei@loongson.cn>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20240118123929.369939-1-huangpei@loongson.cn>
-References: <ZZ29Wr9yfAcqGxrN@alpha.franken.de>
- <20240118123929.369939-1-huangpei@loongson.cn>
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: Vladimir  Kondratiev <vladimir.kondratiev@mobileye.com>,
+	Tawfik Bayouk <tawfik.bayouk@mobileye.com>,
+	Alexandre Belloni <alexandre.belloni@bootlin.com>,
+	=?UTF-8?q?Th=C3=A9o=20Lebrun?= <theo.lebrun@bootlin.com>,
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+	Gregory CLEMENT <gregory.clement@bootlin.com>
+Subject: [PATCH v6 01/15] MIPS: spaces: Define a couple of handy macros
+Date: Thu, 18 Jan 2024 16:52:30 +0100
+Message-ID: <20240118155252.397947-2-gregory.clement@bootlin.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240118155252.397947-1-gregory.clement@bootlin.com>
+References: <20240118155252.397947-1-gregory.clement@bootlin.com>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
@@ -43,52 +59,58 @@ List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:AQAAf8BxF80nHKll3YgIAA--.1524S4
-X-CM-SenderInfo: xkxd0whshlqz5rrqw2lrqou0/
-X-Coremail-Antispam: 1Uk129KBj9xXoW7XFy7Gr45CF48WFyDWF43twc_yoWDWrg_KF
-	129wn7ur4fJFsa93y7tryfuF4avay5WayrXF17Jw1Fv34FyF9xGFWUGrs0vF17Wr40krs5
-	Z3s8trWay3WIkosvyTuYvTs0mTUanT9S1TB71UUUUUJqnTZGkaVYY2UrUUUUj1kv1TuYvT
-	s0mT0YCTnIWjqI5I8CrVACY4xI64kE6c02F40Ex7xfYxn0WfASr-VFAUDa7-sFnT9fnUUI
-	cSsGvfJTRUUUb3kYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I6I8E6xAIw20EY4v20x
-	vaj40_Wr0E3s1l1IIY67AEw4v_Jrv_JF1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
-	w2x7M28EF7xvwVC0I7IYx2IY67AKxVW8JVW5JwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
-	W8JVWxJwA2z4x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjcxK6I8E87Iv6xkF7I0E14v2
-	6F4UJVW0owAaw2AFwI0_Jrv_JF1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqjxCEc2xF0c
-	Ia020Ex4CE44I27wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jw0_
-	WrylYx0Ex4A2jsIE14v26r4j6F4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwI
-	xGrwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwCFI7km07C267AKxVWU
-	XVWUAwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67
-	kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVW8JVW5JwCI42IY
-	6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0x
-	vEx4A2jsIE14v26r4j6F4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVj
-	vjDU0xZFpf9x07jz2NtUUUUU=
+X-GND-Sasl: gregory.clement@bootlin.com
 
-Commit 61167ad5fecd("mm: pass nid to reserve_bootmem_region()) reveals
-that reserved memblock regions have no valid node id set, just set it
-right since loongson64 firmware makes it clear in memory layout info.
+Define KSEGX_SIZE to represent the size of each KSEG segment.
 
-This work around booting failure on 3A1000+ since commit 61167ad5fecd
-("mm: pass nid to reserve_bootmem_region()) under
-CONFIG_DEFERRED_STRUCT_PAGE_INIT
+Introduce CKSEG0ADDR_OR_64BIT and CKSEG1ADDR_OR_64BIT to get an XPHYS
+address in 64bits and CKSEG[01]ADDR() in 32 bits mode.
 
-Signed-off-by: Huang Pei <huangpei@loongson.cn>
+Co-developed-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+Signed-off-by: Gregory CLEMENT <gregory.clement@bootlin.com>
 ---
- arch/mips/loongson64/init.c | 2 ++
- 1 file changed, 2 insertions(+)
+ arch/mips/include/asm/addrspace.h           | 5 +++++
+ arch/mips/include/asm/mach-generic/spaces.h | 4 ++++
+ 2 files changed, 9 insertions(+)
 
-diff --git a/arch/mips/loongson64/init.c b/arch/mips/loongson64/init.c
-index f25caa6aa9d3..5bfabc67136a 100644
---- a/arch/mips/loongson64/init.c
-+++ b/arch/mips/loongson64/init.c
-@@ -97,6 +97,8 @@ void __init szmem(unsigned int node)
- 				(u32)node_id, mem_type, &mem_start, &mem_size);
- 			break;
- 		}
-+		/* set nid for reserved memory */
-+		memblock_set_node(0, node_id << 44, &memblock.reserved, node_id);
- 	}
+diff --git a/arch/mips/include/asm/addrspace.h b/arch/mips/include/asm/addrspace.h
+index 59a48c60a065c..03a5e2c8b5dc9 100644
+--- a/arch/mips/include/asm/addrspace.h
++++ b/arch/mips/include/asm/addrspace.h
+@@ -47,6 +47,11 @@
+  */
+ #define KSEGX(a)		((_ACAST32_(a)) & _ACAST32_(0xe0000000))
  
- 	/* Reserve vgabios if it comes from firmware */
++/*
++ * Gives the size of each kernel segment
++ */
++#define KSEGX_SIZE		0x20000000
++
+ /*
+  * Returns the physical address of a CKSEGx / XKPHYS address
+  */
+diff --git a/arch/mips/include/asm/mach-generic/spaces.h b/arch/mips/include/asm/mach-generic/spaces.h
+index b247575c5e699..f8783d339fb0d 100644
+--- a/arch/mips/include/asm/mach-generic/spaces.h
++++ b/arch/mips/include/asm/mach-generic/spaces.h
+@@ -49,6 +49,8 @@
+ #define HIGHMEM_START		_AC(0x20000000, UL)
+ #endif
+ 
++#define CKSEG0ADDR_OR_64BIT(x)	CKSEG0ADDR(x)
++#define CKSEG1ADDR_OR_64BIT(x)	CKSEG1ADDR(x)
+ #endif /* CONFIG_32BIT */
+ 
+ #ifdef CONFIG_64BIT
+@@ -82,6 +84,8 @@
+ #define TO_CAC(x)		(CAC_BASE   | ((x) & TO_PHYS_MASK))
+ #define TO_UNCAC(x)		(UNCAC_BASE | ((x) & TO_PHYS_MASK))
+ 
++#define CKSEG0ADDR_OR_64BIT(x)	TO_CAC(x)
++#define CKSEG1ADDR_OR_64BIT(x)	TO_UNCAC(x)
+ #endif /* CONFIG_64BIT */
+ 
+ /*
 -- 
-2.30.2
+2.43.0
 

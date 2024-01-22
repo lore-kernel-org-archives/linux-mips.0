@@ -1,98 +1,137 @@
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 585C518C38
-	for <linux-mips@vger.kernel.org>; Mon, 22 Jan 2024 08:08:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=114.242.206.163
+Received: from mx01.omp.ru (mx01.omp.ru [90.154.21.10])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF8FF20DE2
+	for <linux-mips@vger.kernel.org>; Mon, 22 Jan 2024 08:21:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.154.21.10
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705910940; cv=none; b=rnM3zAIwxBnKd/QdB1/lqXWwISqAq+trxE1Bsda9FNo+lL8RfWbAGzG0ZM+OiLTp9EW4Sqvy0fg4dt6B8tjo+87sAndoHIsuaBtzlb+jopYXlVYIn11auYQgNcrDmC6Ek9yBSqH+GmQx16mlzQrDNGbmoktUhSfPuGtEc1LtoBY=
+	t=1705911680; cv=none; b=C3ydue33W3a1/1GQ+X1m7K7+5fmUGAw65QCgwv+TZHkazMn7IHVKqzTqB4QswFG0o7d0tMghEPJITj/RzTPshOPLcNJXyT2TFi4lqvUc+baOC0pDzURuGyO88n9dbTyCwa9IT2ZHtK2/mfOChodmkYNtrDeB8iF+udTcF1YbIa0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705910940; c=relaxed/simple;
-	bh=5JFTophZV6eHu0i7KuvQ4XKNF04Mlt7nzBh1f8P4rns=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=h9Xz6veM0VXQ71mI0cavzEJx3qdzgHkcBnieyQdF7UlY+kBNDWmW/LYRTmuPRBMsnfQsqCHkX9WBaaE8haNbhd2mqvUWbf5tLDryVb2fHi8HHmlCGypvVE7LVTynuEwc2r/xtOnoIeW76L109fVKBFuj2HIbZIZFXWij1Q9myG8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn; spf=pass smtp.mailfrom=loongson.cn; arc=none smtp.client-ip=114.242.206.163
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=loongson.cn
-Received: from loongson.cn (unknown [111.9.175.10])
-	by gateway (Coremail) with SMTP id _____8CxXOmWIq5lKXIDAA--.3954S3;
-	Mon, 22 Jan 2024 16:08:54 +0800 (CST)
-Received: from localhost.localdomain (unknown [111.9.175.10])
-	by localhost.localdomain (Coremail) with SMTP id AQAAf8DxEOWKIq5llCsRAA--.5616S3;
-	Mon, 22 Jan 2024 16:08:53 +0800 (CST)
-From: Huang Pei <huangpei@loongson.cn>
-To: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc: Bibo Mao <maobibo@loongson.cn>,
-	linux-mips@vger.kernel.org,
-	Jiaxun Yang <jiaxun.yang@flygoat.com>,
-	Paul Burton <paulburton@kernel.org>,
-	Li Xuefeng <lixuefeng@loongson.cn>,
-	Yang Tiezhu <yangtiezhu@loongson.cn>,
-	Gao Juxin <gaojuxin@loongson.cn>,
-	Huacai Chen <chenhuacai@loongson.cn>
-Subject: [PATCH 1/2] MIPS: reserve exception vector space ONLY ONCE
-Date: Mon, 22 Jan 2024 16:08:33 +0800
-Message-Id: <20240122080834.8251-2-huangpei@loongson.cn>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20240122080834.8251-1-huangpei@loongson.cn>
+	s=arc-20240116; t=1705911680; c=relaxed/simple;
+	bh=LmzMSCuxVb7fcw3fNllbh4+ycvbOKFHF5K0Qb9aCOvE=;
+	h=Subject:To:CC:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=Y+vcRhTDd6UccoiL8GPZKSW2jLHhGknuHwOdHFwjzs4R9UHGQOxcti8HlnEtMWnwhrVnMhjrFPJsQhFwTrZ3VTqfSUHcRlLqX48zsJDfG5asjpk8MYIYJet8znDmLh5mooTCTimLxV9e6kuk1KbXOH395mG2FosoZR5uYIxEm60=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=omp.ru; spf=pass smtp.mailfrom=omp.ru; arc=none smtp.client-ip=90.154.21.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=omp.ru
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=omp.ru
+Received: from [192.168.1.105] (31.173.84.44) by msexch01.omp.ru (10.188.4.12)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.1258.12; Mon, 22 Jan
+ 2024 11:21:00 +0300
+Subject: Re: [PATCH 2/2] MIPS: loongson64: set nid for reserved memblock
+ region
+To: Huang Pei <huangpei@loongson.cn>, Thomas Bogendoerfer
+	<tsbogend@alpha.franken.de>
+CC: Bibo Mao <maobibo@loongson.cn>, <linux-mips@vger.kernel.org>, Jiaxun Yang
+	<jiaxun.yang@flygoat.com>, Paul Burton <paulburton@kernel.org>, Li Xuefeng
+	<lixuefeng@loongson.cn>, Yang Tiezhu <yangtiezhu@loongson.cn>, Gao Juxin
+	<gaojuxin@loongson.cn>, Huacai Chen <chenhuacai@loongson.cn>
 References: <ZZ29Wr9yfAcqGxrN@alpha.franken.de>
  <20240122080834.8251-1-huangpei@loongson.cn>
+ <20240122080834.8251-3-huangpei@loongson.cn>
+From: Sergey Shtylyov <s.shtylyov@omp.ru>
+Organization: Open Mobile Platform
+Message-ID: <9f28d7d6-7d8d-db8a-c3c3-793c3aaf0385@omp.ru>
+Date: Mon, 22 Jan 2024 11:20:59 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:AQAAf8DxEOWKIq5llCsRAA--.5616S3
-X-CM-SenderInfo: xkxd0whshlqz5rrqw2lrqou0/
-X-Coremail-Antispam: 1Uk129KBj9xXoW7GF4UXFWxWF1xGr13Jw4fZwc_yoWDtFg_A3
-	Z2yw10gr4FqrnIvF1UWFW5CFyY9FWrGF1ku3WDGrZIkr45A3Z8Jw4UWwn0qrn8WrsYkwsx
-	Z343Jrs7Ka13KosvyTuYvTs0mTUanT9S1TB71UUUUUJqnTZGkaVYY2UrUUUUj1kv1TuYvT
-	s0mT0YCTnIWjqI5I8CrVACY4xI64kE6c02F40Ex7xfYxn0WfASr-VFAUDa7-sFnT9fnUUI
-	cSsGvfJTRUUUb3AYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I6I8E6xAIw20EY4v20x
-	vaj40_Wr0E3s1l1IIY67AEw4v_Jrv_JF1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
-	w2x7M28EF7xvwVC0I7IYx2IY67AKxVW5JVW7JwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
-	WxJVW8Jr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AK
-	xVW8Jr0_Cr1UM2kKe7AKxVWUXVWUAwAS0I0E0xvYzxvE52x082IY62kv0487Mc804VCY07
-	AIYIkI8VC2zVCFFI0UMc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWU
-	AVWUtwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7V
-	AKI48JMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMxCIbckI1I0E14v2
-	6r1Y6r17MI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17
-	CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1I6r4UMIIF
-	0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIx
-	AIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVWUJVW8JbIYCTnIWIev
-	Ja73UjIFyTuYvjxUc0eHDUUUU
+In-Reply-To: <20240122080834.8251-3-huangpei@loongson.cn>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: msexch01.omp.ru (10.188.4.12) To msexch01.omp.ru
+ (10.188.4.12)
+X-KSE-ServerInfo: msexch01.omp.ru, 9
+X-KSE-AntiSpam-Interceptor-Info: scan successful
+X-KSE-AntiSpam-Version: 6.1.0, Database issued on: 01/22/2024 08:02:58
+X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
+X-KSE-AntiSpam-Method: none
+X-KSE-AntiSpam-Rate: 59
+X-KSE-AntiSpam-Info: Lua profiles 182809 [Jan 22 2024]
+X-KSE-AntiSpam-Info: Version: 6.1.0.3
+X-KSE-AntiSpam-Info: Envelope from: s.shtylyov@omp.ru
+X-KSE-AntiSpam-Info: LuaCore: 7 0.3.7 6d6bf5bd8eea7373134f756a2fd73e9456bb7d1a
+X-KSE-AntiSpam-Info: {rep_avail}
+X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
+X-KSE-AntiSpam-Info: {relay has no DNS name}
+X-KSE-AntiSpam-Info: {SMTP from is not routable}
+X-KSE-AntiSpam-Info: {Found in DNSBL: 31.173.84.44 in (user)
+ b.barracudacentral.org}
+X-KSE-AntiSpam-Info: {Found in DNSBL: 31.173.84.44 in (user) dbl.spamhaus.org}
+X-KSE-AntiSpam-Info:
+	31.173.84.44:7.1.2;127.0.0.199:7.1.2;omp.ru:7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1
+X-KSE-AntiSpam-Info: ApMailHostAddress: 31.173.84.44
+X-KSE-AntiSpam-Info: {DNS response errors}
+X-KSE-AntiSpam-Info: Rate: 59
+X-KSE-AntiSpam-Info: Status: not_detected
+X-KSE-AntiSpam-Info: Method: none
+X-KSE-AntiSpam-Info: Auth:dmarc=temperror header.from=omp.ru;spf=temperror
+ smtp.mailfrom=omp.ru;dkim=none
+X-KSE-Antiphishing-Info: Clean
+X-KSE-Antiphishing-ScanningType: Heuristic
+X-KSE-Antiphishing-Method: None
+X-KSE-Antiphishing-Bases: 01/22/2024 08:08:00
+X-KSE-Antivirus-Interceptor-Info: scan successful
+X-KSE-Antivirus-Info: Clean, bases: 1/22/2024 7:19:00 AM
+X-KSE-Attachment-Filter-Triggered-Rules: Clean
+X-KSE-Attachment-Filter-Triggered-Filters: Clean
+X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
 
-"cpu_probe" is called both by BP and APs, but reserving exception vector
-(like 0x0-0x1000) called by "cpu_probe" need once and calling on APs is
-too late since memblock is unavailable at that time.
+On 1/22/24 11:08 AM, Huang Pei wrote:
 
-So, reserve exception vector ONLY by BP.
+> Commit 61167ad5fecd("mm: pass nid to reserve_bootmem_region()) reveals
 
-Suggested-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Signed-off-by: Huang Pei <huangpei@loongson.cn>
----
- arch/mips/kernel/traps.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+   You forgot a space before (" and " after reserve_bootmem_region(). :-)
 
-diff --git a/arch/mips/kernel/traps.c b/arch/mips/kernel/traps.c
-index 246c6a6b0261..5b778995d448 100644
---- a/arch/mips/kernel/traps.c
-+++ b/arch/mips/kernel/traps.c
-@@ -2007,7 +2007,13 @@ unsigned long vi_handlers[64];
- 
- void reserve_exception_space(phys_addr_t addr, unsigned long size)
- {
--	memblock_reserve(addr, size);
-+	/*
-+	 * reserve exception space on CPUs other than CPU0
-+	 * is too late, since memblock is unavailable when APs
-+	 * up
-+	 */
-+	if (smp_processor_id() == 0)
-+		memblock_reserve(addr, size);
- }
- 
- void __init *set_except_vector(int n, void *addr)
--- 
-2.30.2
+> that reserved memblock regions have no valid node id set, just set it
+> right since loongson64 firmware makes it clear in memory layout info.
+> 
+> This works around booting failure on 3A1000+ since commit 61167ad5fecd
+> ("mm: pass nid to reserve_bootmem_region()) under
 
+   Again, you forgot to close the quote...
+
+> CONFIG_DEFERRED_STRUCT_PAGE_INIT.
+> 
+> Signed-off-by: Huang Pei <huangpei@loongson.cn>
+> ---
+>  arch/mips/loongson64/init.c | 2 ++
+>  arch/mips/loongson64/numa.c | 2 ++
+>  2 files changed, 4 insertions(+)
+> 
+> diff --git a/arch/mips/loongson64/init.c b/arch/mips/loongson64/init.c
+> index f25caa6aa9d3..000ba91c0886 100644
+> --- a/arch/mips/loongson64/init.c
+> +++ b/arch/mips/loongson64/init.c
+> @@ -103,6 +103,8 @@ void __init szmem(unsigned int node)
+>  	if (loongson_sysconf.vgabios_addr)
+>  		memblock_reserve(virt_to_phys((void *)loongson_sysconf.vgabios_addr),
+>  				SZ_256K);
+> +	/* set nid for reserved memory */
+> +	memblock_set_node((u64)node << 44, (u64)(node+1) << 44, &memblock.reserved, node);
+
+   Please add spaces around +, at least for consistency with <<. :-)
+
+[...]
+> diff --git a/arch/mips/loongson64/numa.c b/arch/mips/loongson64/numa.c
+> index 8f61e93c0c5b..6345e096c532 100644
+> --- a/arch/mips/loongson64/numa.c
+> +++ b/arch/mips/loongson64/numa.c
+> @@ -132,6 +132,8 @@ static void __init node_mem_init(unsigned int node)
+>  
+>  		/* Reserve pfn range 0~node[0]->node_start_pfn */
+>  		memblock_reserve(0, PAGE_SIZE * start_pfn);
+> +		/* set nid for reserved memory on node 0 */
+> +		memblock_set_node(0, (u64)1 << 44, &memblock.reserved, 1);
+
+  Could use 1ULL instead of (u64)1...
+
+[...]
+
+MBR, Sergey

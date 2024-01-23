@@ -1,177 +1,212 @@
-Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from relay6-d.mail.gandi.net (relay6-d.mail.gandi.net [217.70.183.198])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CBA9A81208;
-	Tue, 23 Jan 2024 17:49:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A08361292D4;
+	Tue, 23 Jan 2024 18:47:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.198
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706032159; cv=none; b=AcecirUAylxE1pb8CXjKIwsm7xUj/KgJJsV1lNXGE/jyy0mnnogQOJHjOWO87h15nicWlBxC1YZ8Ivnu5E5/ig8vm9LW0IiT10lcAXAVhagzvYw1fvwV17nAdn8LEwnSMxTywCmsBo03/HyZAroHxvF5GNHrO9YSnA77cozkxoE=
+	t=1706035632; cv=none; b=FUj3pUb5HOhWsHpaTdbVtfu0szn+Vr0AL3AoOvx3HvgyOoZrj4fUZm9ssEKu91th7Hf8GeBQOqZnavsjllYlfF9VuhfVB+vpTxu1xPib3Vk+8CQ/DI5Qtzxr7yrPB/Ha2ASxWBYp4bL6VAQA645N+8l3muJngrNVjlzjTy5Q9/M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706032159; c=relaxed/simple;
-	bh=x1ciq3Ect+XnKhvC9H5DKv0iPFUte+VpAip+Ss55L9Q=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=XB8E18UouhCKGFgURPVLGx5PHpbCP4l//ygs3YkV5VU822dC8NEGDH6VcLsShbqEqg8XEsAXPkssXC8tSoSyzjC1y00hCDXZwEpvDVosPy+hCdVbNyEt54CsRmvwmbt26cHl8DnkX+/0SUdj3IxxKH/pPvoeDAVjOy+IKX+mHlw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RoQdUdd6; arc=none smtp.client-ip=209.85.214.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1706035632; c=relaxed/simple;
+	bh=YIEKqK5MI7C6wgG1cBeAfL6H69SH6ljkSO16YrF7vPc=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
+	 In-Reply-To:To:Cc; b=duRum4awE4/m4x/4ZyKb1CvQDkoxxgEep22E4OMDMr8teckO1Utem2z1d+CabctREIi5vPM6/v4hh0uqSYsZB0SLQYANQmeDEsILOAku5Pdvho9q7MBMixneK+1EBFI7Cv4SMWG5CNfSxB94DnXKeKVbF4m7wLOTBKRO17CIhus=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=XPDUxWDk; arc=none smtp.client-ip=217.70.183.198
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RoQdUdd6"
-Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-1d720c7fc04so25424165ad.2;
-        Tue, 23 Jan 2024 09:49:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706032157; x=1706636957; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=QDS294tSCgcvUh/yn3ryUeNvBf4lRbYL7mm8287k4Lg=;
-        b=RoQdUdd6Qs7Psa2pLkRzNSNOIaI/Yg/kOsQvIyGHW/b6yvtH6Aps07Q8KgdLABtVt1
-         VzRM6LQ4/IeDOyaIblmHkq1YtPMVcLSRSYvPS0bJ0xQ+YZ+FZXb0rIBUfXQ2VuqIkJ0P
-         5aE17LcRcf3a5MqaPK7xAWWmE/JvU5GlOANuD6CYG9Xx1yVHGTNzDaQH3qHEfQMoeSLj
-         Rs5YuW8mXH2n/CStRAyc+F0pQuoqQP2EM8Sp5RCOm15+2iIV/fS11CMG+rebdkcAqT7Q
-         tQprhy5Zcn8z3FISedswd39W6hXIJtTOtH8thHsI389bJjDQPTXox5J+wtiMuWeBluHc
-         g2wA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706032157; x=1706636957;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=QDS294tSCgcvUh/yn3ryUeNvBf4lRbYL7mm8287k4Lg=;
-        b=ZKVmfZpz2IHPVRD90972hPzBwTXaCbgISGerhqnYlIfXBurRJ3mWSM4tRSV/83Mlmq
-         +lC7BfpvgMEC0ZAJ24fFfpU+ygVH32+5w6PHmCdw239Ub96Q3zdMs0HcXwbRw5MSxf00
-         wbZxqg2Va7LkmIhGCk06YHZQQtfufdi1jBoL0K88ebYa5U5GtGvTH+TOBkRLoVYrUN1Z
-         FYvDa23LptPWyK7dfcXGhuN5Zay7UpQhNZp096+b/pkCE6qcQDuzuVqbaA4Lmu09yQ/V
-         oELa/ho5rYPRsMhoHCitEz2ZBAGQ3RJ7Tlohw68SK5jmQvISO6TKFdRwbo+u1ND8VU+b
-         DggA==
-X-Gm-Message-State: AOJu0YzdUOeHxKqO6QDV98WqBa6kXuFlPsUPQSUIzQMI1N3jBO8tVwwb
-	WxhEQl4+YOonHZoEHtE31Qn8UREGT58+3zwYnXAUl9UTVzD09TJDigI2KMeC
-X-Google-Smtp-Source: AGHT+IF5BDObdHwJFaV3mcAncY4llNAIARhElT5nS80U8qdnFsrWJL3ZXXt4SggollmDTITqqhmu0A==
-X-Received: by 2002:a17:902:e547:b0:1d7:620e:d2d8 with SMTP id n7-20020a170902e54700b001d7620ed2d8mr2366339plf.41.1706032156595;
-        Tue, 23 Jan 2024 09:49:16 -0800 (PST)
-Received: from eldorado.. (ip68-4-215-93.oc.oc.cox.net. [68.4.215.93])
-        by smtp.gmail.com with ESMTPSA id a1-20020a170902900100b001d5e7221082sm9104100plp.238.2024.01.23.09.49.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Jan 2024 09:49:16 -0800 (PST)
-From: Florian Fainelli <f.fainelli@gmail.com>
-To: linux-mips@vger.kernel.org
-Cc: jonas.gorski@gmail.com,
-	Florian Fainelli <f.fainelli@gmail.com>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH v2] MIPS: BCM63XX: Fix missing prototypes
-Date: Tue, 23 Jan 2024 09:46:54 -0800
-Message-Id: <20240123174701.210922-1-f.fainelli@gmail.com>
-X-Mailer: git-send-email 2.34.1
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="XPDUxWDk"
+Received: by mail.gandi.net (Postfix) with ESMTPSA id DB95EC000A;
+	Tue, 23 Jan 2024 18:47:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1706035622;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=pM6whmgyRwSqq5DhU05BK7t5rD5rPlWu1apIXMRZECI=;
+	b=XPDUxWDk56dPVlQg4Hwl+Y5KnNrvtzFndQXn6q3tJmJdz15glHWUKOWF2G4mckyPpf7d9V
+	cXkxEITwnC2+pu6n5xHSSyMZfMn1dAwdS5z6pJoHp/kXgUTwsY+0eHXOaXsDGN7QjYY0Wv
+	Pya5jSziHUO2Ll1XfCLFttbjnr8U4VjLu1072UukAT8fx8IFtgsdob4mebl4QdWmg6QNtK
+	0xBhgzbl5b4CXfHcKjnvxuzRN+iFSBhQqp1+yPetBL7AhxP2AA0KvvBQLsXsvLjkAl0uGG
+	oq1kYvAno0jSxIcVxNYCq0xROPBBvI6p43XwLArPNOeVSXIzfKUC+5E5W68x6g==
+From: =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
+Date: Tue, 23 Jan 2024 19:46:46 +0100
+Subject: [PATCH v3 01/17] clk: fixed-factor: add optional accuracy support
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
+Message-Id: <20240123-mbly-clk-v3-1-392b010b8281@bootlin.com>
+References: <20240123-mbly-clk-v3-0-392b010b8281@bootlin.com>
+In-Reply-To: <20240123-mbly-clk-v3-0-392b010b8281@bootlin.com>
+To: Gregory CLEMENT <gregory.clement@bootlin.com>, 
+ Michael Turquette <mturquette@baylibre.com>, 
+ Stephen Boyd <sboyd@kernel.org>, Rob Herring <robh+dt@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Conor Dooley <conor+dt@kernel.org>, 
+ Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
+ Linus Walleij <linus.walleij@linaro.org>, 
+ =?utf-8?q?Rafa=C5=82_Mi=C5=82ecki?= <rafal@milecki.pl>, 
+ Philipp Zabel <p.zabel@pengutronix.de>
+Cc: Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>, 
+ linux-mips@vger.kernel.org, linux-clk@vger.kernel.org, 
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>, 
+ Tawfik Bayouk <tawfik.bayouk@mobileye.com>, linux-gpio@vger.kernel.org, 
+ =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
+X-Mailer: b4 0.12.4
+X-GND-Sasl: theo.lebrun@bootlin.com
 
-Most of the symbols for which we do not have a prototype can actually be
-made static and for the few that cannot, there is already a declaration
-in a header for it.
+Fixed factor clock reports the parent clock accuracy. Add flags and acc
+fields to `struct clk_fixed_factor` to support setting a fixed
+accuracy. The default if no flag is set is not changed: use the parent
+clock accuracy.
 
-Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+Signed-off-by: Théo Lebrun <theo.lebrun@bootlin.com>
 ---
- arch/mips/bcm63xx/boards/board_bcm963xx.c | 2 +-
- arch/mips/bcm63xx/dev-rng.c               | 2 +-
- arch/mips/bcm63xx/dev-uart.c              | 1 +
- arch/mips/bcm63xx/dev-wdt.c               | 2 +-
- arch/mips/bcm63xx/irq.c                   | 2 +-
- arch/mips/bcm63xx/setup.c                 | 2 +-
- arch/mips/bcm63xx/timer.c                 | 2 +-
- 7 files changed, 7 insertions(+), 6 deletions(-)
+ drivers/clk/clk-fixed-factor.c | 28 +++++++++++++++++++++-------
+ include/linux/clk-provider.h   | 12 +++++++++++-
+ 2 files changed, 32 insertions(+), 8 deletions(-)
 
-diff --git a/arch/mips/bcm63xx/boards/board_bcm963xx.c b/arch/mips/bcm63xx/boards/board_bcm963xx.c
-index 01aff80a5967..99f321b6e417 100644
---- a/arch/mips/bcm63xx/boards/board_bcm963xx.c
-+++ b/arch/mips/bcm63xx/boards/board_bcm963xx.c
-@@ -702,7 +702,7 @@ static struct ssb_sprom bcm63xx_sprom = {
- 	.boardflags_hi		= 0x0000,
- };
- 
--int bcm63xx_get_fallback_sprom(struct ssb_bus *bus, struct ssb_sprom *out)
-+static int bcm63xx_get_fallback_sprom(struct ssb_bus *bus, struct ssb_sprom *out)
- {
- 	if (bus->bustype == SSB_BUSTYPE_PCI) {
- 		memcpy(out, &bcm63xx_sprom, sizeof(struct ssb_sprom));
-diff --git a/arch/mips/bcm63xx/dev-rng.c b/arch/mips/bcm63xx/dev-rng.c
-index d277b4dc6c68..f94151f7c96f 100644
---- a/arch/mips/bcm63xx/dev-rng.c
-+++ b/arch/mips/bcm63xx/dev-rng.c
-@@ -26,7 +26,7 @@ static struct platform_device bcm63xx_rng_device = {
- 	.resource	= rng_resources,
- };
- 
--int __init bcm63xx_rng_register(void)
-+static int __init bcm63xx_rng_register(void)
- {
- 	if (!BCMCPU_IS_6368())
- 		return -ENODEV;
-diff --git a/arch/mips/bcm63xx/dev-uart.c b/arch/mips/bcm63xx/dev-uart.c
-index 3bc7f3bfc9ad..5d6bf0445b29 100644
---- a/arch/mips/bcm63xx/dev-uart.c
-+++ b/arch/mips/bcm63xx/dev-uart.c
-@@ -10,6 +10,7 @@
- #include <linux/kernel.h>
- #include <linux/platform_device.h>
- #include <bcm63xx_cpu.h>
-+#include <bcm63xx_dev_uart.h>
- 
- static struct resource uart0_resources[] = {
- 	{
-diff --git a/arch/mips/bcm63xx/dev-wdt.c b/arch/mips/bcm63xx/dev-wdt.c
-index 42130914a3c2..302bf7ed5ad5 100644
---- a/arch/mips/bcm63xx/dev-wdt.c
-+++ b/arch/mips/bcm63xx/dev-wdt.c
-@@ -34,7 +34,7 @@ static struct platform_device bcm63xx_wdt_device = {
- 	},
- };
- 
--int __init bcm63xx_wdt_register(void)
-+static int __init bcm63xx_wdt_register(void)
- {
- 	wdt_resources[0].start = bcm63xx_regset_address(RSET_WDT);
- 	wdt_resources[0].end = wdt_resources[0].start;
-diff --git a/arch/mips/bcm63xx/irq.c b/arch/mips/bcm63xx/irq.c
-index 2548013442f6..6240a8f88ea3 100644
---- a/arch/mips/bcm63xx/irq.c
-+++ b/arch/mips/bcm63xx/irq.c
-@@ -72,7 +72,7 @@ static inline int enable_irq_for_cpu(int cpu, struct irq_data *d,
-  */
- 
- #define BUILD_IPIC_INTERNAL(width)					\
--void __dispatch_internal_##width(int cpu)				\
-+static void __dispatch_internal_##width(int cpu)			\
- {									\
- 	u32 pending[width / 32];					\
- 	unsigned int src, tgt;						\
-diff --git a/arch/mips/bcm63xx/setup.c b/arch/mips/bcm63xx/setup.c
-index d811e3e03f81..c13ddb544a23 100644
---- a/arch/mips/bcm63xx/setup.c
-+++ b/arch/mips/bcm63xx/setup.c
-@@ -159,7 +159,7 @@ void __init plat_mem_setup(void)
- 	board_setup();
+diff --git a/drivers/clk/clk-fixed-factor.c b/drivers/clk/clk-fixed-factor.c
+index b3e66202b942..bc2644a9bd7d 100644
+--- a/drivers/clk/clk-fixed-factor.c
++++ b/drivers/clk/clk-fixed-factor.c
+@@ -57,10 +57,22 @@ static int clk_factor_set_rate(struct clk_hw *hw, unsigned long rate,
+ 	return 0;
  }
  
--int __init bcm63xx_register_devices(void)
-+static int __init bcm63xx_register_devices(void)
- {
- 	/* register gpiochip */
- 	bcm63xx_gpio_init();
-diff --git a/arch/mips/bcm63xx/timer.c b/arch/mips/bcm63xx/timer.c
-index a86065854c0c..74b83807df30 100644
---- a/arch/mips/bcm63xx/timer.c
-+++ b/arch/mips/bcm63xx/timer.c
-@@ -178,7 +178,7 @@ int bcm63xx_timer_set(int id, int monotonic, unsigned int countdown_us)
++static unsigned long clk_factor_recalc_accuracy(struct clk_hw *hw,
++						unsigned long parent_accuracy)
++{
++	struct clk_fixed_factor *fix = to_clk_fixed_factor(hw);
++
++	if (fix->flags & CLK_FIXED_FACTOR_FIXED_ACCURACY)
++		return fix->acc;
++
++	return parent_accuracy;
++}
++
+ const struct clk_ops clk_fixed_factor_ops = {
+ 	.round_rate = clk_factor_round_rate,
+ 	.set_rate = clk_factor_set_rate,
+ 	.recalc_rate = clk_factor_recalc_rate,
++	.recalc_accuracy = clk_factor_recalc_accuracy,
+ };
+ EXPORT_SYMBOL_GPL(clk_fixed_factor_ops);
  
- EXPORT_SYMBOL(bcm63xx_timer_set);
- 
--int bcm63xx_timer_init(void)
-+static int bcm63xx_timer_init(void)
+@@ -81,7 +93,7 @@ __clk_hw_register_fixed_factor(struct device *dev, struct device_node *np,
+ 		const char *name, const char *parent_name,
+ 		const struct clk_hw *parent_hw, int index,
+ 		unsigned long flags, unsigned int mult, unsigned int div,
+-		bool devm)
++		unsigned long acc, unsigned int fixflags, bool devm)
  {
- 	int ret, irq;
- 	u32 reg;
+ 	struct clk_fixed_factor *fix;
+ 	struct clk_init_data init = { };
+@@ -105,6 +117,8 @@ __clk_hw_register_fixed_factor(struct device *dev, struct device_node *np,
+ 	fix->mult = mult;
+ 	fix->div = div;
+ 	fix->hw.init = &init;
++	fix->acc = acc;
++	fix->flags = fixflags;
+ 
+ 	init.name = name;
+ 	init.ops = &clk_fixed_factor_ops;
+@@ -152,7 +166,7 @@ struct clk_hw *devm_clk_hw_register_fixed_factor_index(struct device *dev,
+ 		unsigned int mult, unsigned int div)
+ {
+ 	return __clk_hw_register_fixed_factor(dev, NULL, name, NULL, NULL, index,
+-					      flags, mult, div, true);
++					      flags, mult, div, 0, 0, true);
+ }
+ EXPORT_SYMBOL_GPL(devm_clk_hw_register_fixed_factor_index);
+ 
+@@ -174,7 +188,7 @@ struct clk_hw *devm_clk_hw_register_fixed_factor_parent_hw(struct device *dev,
+ 		unsigned long flags, unsigned int mult, unsigned int div)
+ {
+ 	return __clk_hw_register_fixed_factor(dev, NULL, name, NULL, parent_hw,
+-					      -1, flags, mult, div, true);
++					      -1, flags, mult, div, 0, 0, true);
+ }
+ EXPORT_SYMBOL_GPL(devm_clk_hw_register_fixed_factor_parent_hw);
+ 
+@@ -184,7 +198,7 @@ struct clk_hw *clk_hw_register_fixed_factor_parent_hw(struct device *dev,
+ {
+ 	return __clk_hw_register_fixed_factor(dev, NULL, name, NULL,
+ 					      parent_hw, -1, flags, mult, div,
+-					      false);
++					      0, 0, false);
+ }
+ EXPORT_SYMBOL_GPL(clk_hw_register_fixed_factor_parent_hw);
+ 
+@@ -193,7 +207,7 @@ struct clk_hw *clk_hw_register_fixed_factor(struct device *dev,
+ 		unsigned int mult, unsigned int div)
+ {
+ 	return __clk_hw_register_fixed_factor(dev, NULL, name, parent_name, NULL, -1,
+-					      flags, mult, div, false);
++					      flags, mult, div, 0, 0, false);
+ }
+ EXPORT_SYMBOL_GPL(clk_hw_register_fixed_factor);
+ 
+@@ -240,7 +254,7 @@ struct clk_hw *devm_clk_hw_register_fixed_factor(struct device *dev,
+ 		unsigned int mult, unsigned int div)
+ {
+ 	return __clk_hw_register_fixed_factor(dev, NULL, name, parent_name, NULL, -1,
+-			flags, mult, div, true);
++			flags, mult, div, 0, 0, true);
+ }
+ EXPORT_SYMBOL_GPL(devm_clk_hw_register_fixed_factor);
+ 
+@@ -267,7 +281,7 @@ static struct clk_hw *_of_fixed_factor_clk_setup(struct device_node *node)
+ 	of_property_read_string(node, "clock-output-names", &clk_name);
+ 
+ 	hw = __clk_hw_register_fixed_factor(NULL, node, clk_name, NULL, NULL, 0,
+-					    0, mult, div, false);
++					    0, mult, div, 0, 0, false);
+ 	if (IS_ERR(hw)) {
+ 		/*
+ 		 * Clear OF_POPULATED flag so that clock registration can be
+diff --git a/include/linux/clk-provider.h b/include/linux/clk-provider.h
+index 1293c38ddb7f..7ddc952c8c67 100644
+--- a/include/linux/clk-provider.h
++++ b/include/linux/clk-provider.h
+@@ -1084,18 +1084,28 @@ void of_fixed_factor_clk_setup(struct device_node *node);
+  * @hw:		handle between common and hardware-specific interfaces
+  * @mult:	multiplier
+  * @div:	divider
++ * @acc:	fixed accuracy in ppb
++ * @flags:	behavior modifying flags
+  *
+  * Clock with a fixed multiplier and divider. The output frequency is the
+  * parent clock rate divided by div and multiplied by mult.
+- * Implements .recalc_rate, .set_rate and .round_rate
++ * Implements .recalc_rate, .set_rate, .round_rate and .recalc_accuracy
++ *
++ * Flags:
++ * * CLK_FIXED_FACTOR_FIXED_ACCURACY - Use the value in @acc instead of the
++ *                                     parent clk accuracy.
+  */
+ 
+ struct clk_fixed_factor {
+ 	struct clk_hw	hw;
+ 	unsigned int	mult;
+ 	unsigned int	div;
++	unsigned long	acc;
++	unsigned int	flags;
+ };
+ 
++#define CLK_FIXED_FACTOR_FIXED_ACCURACY	BIT(0)
++
+ #define to_clk_fixed_factor(_hw) container_of(_hw, struct clk_fixed_factor, hw)
+ 
+ extern const struct clk_ops clk_fixed_factor_ops;
+
 -- 
-2.34.1
+2.43.0
 

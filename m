@@ -1,39 +1,63 @@
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 762BD5251
-	for <linux-mips@vger.kernel.org>; Tue, 23 Jan 2024 01:48:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=114.242.206.163
+Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 329711848;
+	Tue, 23 Jan 2024 04:08:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705974510; cv=none; b=DavQu+mSEDLFHy+8CoQ/PHkiRySk35bgSJY3jnkG4bHAm3V+G1yL3XcZ8HVdkiCAIQsNYopXS/x9IZeyxNaH/U/jbdwCG7psKkUnsRY4TLrV1yDxU1p98izqXPeRMrPjv3h5oLLSq/8C4UdIJleIxZFTUHY6ppxNnFqeg4r5C3A=
+	t=1705982906; cv=none; b=odetc/PBwh9QwkuH17zgPNu0jHs6mXCE3hT+hnyZQ923ehXWSEK0gUWpS/q9dPGsUudXZY986LB3MrhMwFQjAg8gsmTitLoGzdDGwBRjyOQhNdxk/z4WYsa5P7xHP/3RDrDvVD86Tzj3VpVYR0Y3QK9AoEnPYT7X6whZjl0xDYk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705974510; c=relaxed/simple;
-	bh=5JFTophZV6eHu0i7KuvQ4XKNF04Mlt7nzBh1f8P4rns=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=ZvJunD2mBtvt4CfuiQ1o3NmRmAbx4Cpl1e+qIq59CrziHdsh1fuNtQ8NE5omEhUHXwQ8BFC4Et4yQlvdeizfA1MJi6qVab2C8efcdsYJX1c1OeWAjoz85VsDh91SK801Wsxlry9qcCsEbJuZr/d5p/wJWBG6jrZD7dXXwk66uLA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn; spf=pass smtp.mailfrom=loongson.cn; arc=none smtp.client-ip=114.242.206.163
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=loongson.cn
-Received: from loongson.cn (unknown [111.9.175.10])
-	by gateway (Coremail) with SMTP id _____8Bx3+vpGq9liPgDAA--.15943S3;
-	Tue, 23 Jan 2024 09:48:25 +0800 (CST)
-Received: from localhost.localdomain (unknown [111.9.175.10])
-	by localhost.localdomain (Coremail) with SMTP id AQAAf8BxF83bGq9lVE8TAA--.6349S2;
-	Tue, 23 Jan 2024 09:48:24 +0800 (CST)
-From: Huang Pei <huangpei@loongson.cn>
-To: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc: Bibo Mao <maobibo@loongson.cn>,
-	linux-mips@vger.kernel.org,
-	Jiaxun Yang <jiaxun.yang@flygoat.com>,
-	Paul Burton <paulburton@kernel.org>,
-	Li Xuefeng <lixuefeng@loongson.cn>,
-	Yang Tiezhu <yangtiezhu@loongson.cn>,
-	Gao Juxin <gaojuxin@loongson.cn>,
-	Huacai Chen <chenhuacai@loongson.cn>
-Subject: [PATCH 1/2] MIPS: reserve exception vector space ONLY ONCE
-Date: Tue, 23 Jan 2024 09:47:57 +0800
-Message-Id: <20240123014758.12718-1-huangpei@loongson.cn>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <ZZ29Wr9yfAcqGxrN@alpha.franken.de>
-References: <ZZ29Wr9yfAcqGxrN@alpha.franken.de>
+	s=arc-20240116; t=1705982906; c=relaxed/simple;
+	bh=UIWLpFywju+Oooap054XNWL228gqbVBCuVvK5+/Z0Hk=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=aTPeLLhEgy4wrGIDoSsHs2qlsFNDocDqEID/fm/JdxSxlHQ+2ydfvWPIErBtGW65Nn8m7XCxLETbm1Q0+qKRSizo4UJbFQ8tvdOmz6LKIUWtNH/7vthBA3ZuWkpPGJk1xhXM10Dja9Fv1s+eLQVAxDAwYgUv80yn6zI8c5Y2pDs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Ph/jz0pP; arc=none smtp.client-ip=209.85.214.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Ph/jz0pP"
+Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-1d5f252411aso20212125ad.2;
+        Mon, 22 Jan 2024 20:08:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1705982903; x=1706587703; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=NmdQPu2DwapL3rjaJJ6hE3+x7BtIY9+ECFVDwOkzgX0=;
+        b=Ph/jz0pPCwK/9HuTkdZ+XBQyq4G9E+UXGcSTsZuuWXqFgiE7ad3rvempzNhmfrQAUN
+         8YT7qjFiY+OQe4PvnV1EnWkcuNaQnjnvXRazO/fdr4T0hwdvfnAgudRfYub2bPCatxk/
+         05kP8o5yUQ215Qo6WUGiVSYjVIYp3M1Z03g0LBVJ5LX5NWNwHeY4LgWBa0+pFMgn1DDv
+         egTBuLxJph8j3+ePXD5bjoMZFC1KjBVzXz+sFMT41kZt6oHcKRcDj8vDGNRBur1rDmzQ
+         WDtI6DBkvMNxKn/IQVpbZRhOvrMHa00zYm8fcWeV/ZsZGTywLd1XHw9EuV0tbsSfkA8w
+         USAw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705982903; x=1706587703;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=NmdQPu2DwapL3rjaJJ6hE3+x7BtIY9+ECFVDwOkzgX0=;
+        b=lE4tcBiqQy+ZKOJvhNU/dxw7kkCq0lw0sIVe76pIVVEmuX2TLkh6FKRwcBAFojpd84
+         amnFPBByX5uJa2HX+mkN8ysqTsrP+6KN5UohlAv80SsRWbjwFDQ3rfX/2hn+rnwEf/nN
+         Z3aGxpHtq04EtTf7M+xc7N9zu5oKLkL7DTgoM3AzPow6ZzraiNLvW/iUY5htrToMuzHM
+         Q52y3+A8zzK5PSnhuRnYBYrMtqhJ+08xwsNI7AKRjKF8fs7UriefDWoxvTgcWDtWLoZK
+         2HUO/b0NubfBf8d6cPLHtQxDhltY5oNphP0x6IYynce3o26kUQFofEIQj/s+X4bf70HH
+         /N2Q==
+X-Gm-Message-State: AOJu0Yx+Y5tlYhDlUjSRihGm1e7mBFo4/fqJaB6Nqtp8G8oHPgzTHzIq
+	vzXmn92XG+2LzQzoe9+t7CpZY7ArliKvyruIKHiJNSdelpGATBZgljiLljTZ
+X-Google-Smtp-Source: AGHT+IGNFMGce/I3hi71qXZeOfMVW3oaPmfI5DmnSUuaM7vcJZcJ6ZqWUn1a8GxnuA4oQpstobVDiQ==
+X-Received: by 2002:a17:902:bf0c:b0:1d4:2266:64bf with SMTP id bi12-20020a170902bf0c00b001d4226664bfmr2686907plb.52.1705982902562;
+        Mon, 22 Jan 2024 20:08:22 -0800 (PST)
+Received: from eldorado.. (ip68-4-215-93.oc.oc.cox.net. [68.4.215.93])
+        by smtp.gmail.com with ESMTPSA id ks7-20020a170903084700b001d7083fe09asm7609658plb.187.2024.01.22.20.08.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Jan 2024 20:08:21 -0800 (PST)
+From: Florian Fainelli <f.fainelli@gmail.com>
+To: linux-mips@vger.kernel.org
+Cc: Florian Fainelli <f.fainelli@gmail.com>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH] MIPS: BCM63XX: Fix missing prototypes
+Date: Mon, 22 Jan 2024 20:08:13 -0800
+Message-Id: <20240123040817.200542-1-f.fainelli@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
@@ -41,56 +65,69 @@ List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:AQAAf8BxF83bGq9lVE8TAA--.6349S2
-X-CM-SenderInfo: xkxd0whshlqz5rrqw2lrqou0/
-X-Coremail-Antispam: 1Uk129KBj9xXoW7GF4UXFWxWF1xGr13Jw4fZwc_yoWDtFg_A3
-	Z2yw10gr4FqrnIvF1UWFW5CFyY9FWrGF1ku3WDGrZIkr45A3Z8Jw4UWwn0qrn8WrsYkwsx
-	Z343Jrs7Ka13KosvyTuYvTs0mTUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUj1kv1TuYvT
-	s0mT0YCTnIWjqI5I8CrVACY4xI64kE6c02F40Ex7xfYxn0WfASr-VFAUDa7-sFnT9fnUUI
-	cSsGvfJTRUUUb78YFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I6I8E6xAIw20EY4v20x
-	vaj40_Wr0E3s1l1IIY67AEw4v_JrI_Jryl8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
-	w2x7M28EF7xvwVC0I7IYx2IY67AKxVWUCVW8JwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
-	W8JVWxJwA2z4x0Y4vEx4A2jsIE14v26r4j6F4UM28EF7xvwVC2z280aVCY1x0267AKxVW8
-	JVW8Jr1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqjxCEc2xF0cIa020Ex4CE44I27wAqx4
-	xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v2
-	6r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwCF04k20xvY0x0EwI
-	xGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480
-	Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7
-	IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k2
-	6cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxV
-	AFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7IU1EksDUUUUU==
 
-"cpu_probe" is called both by BP and APs, but reserving exception vector
-(like 0x0-0x1000) called by "cpu_probe" need once and calling on APs is
-too late since memblock is unavailable at that time.
+We have a number of missing prototypes warnings for the BCM63XX machine,
+fix those by providing adequate function prototypes.
 
-So, reserve exception vector ONLY by BP.
-
-Suggested-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Signed-off-by: Huang Pei <huangpei@loongson.cn>
+Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
 ---
- arch/mips/kernel/traps.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+ arch/mips/include/asm/mach-bcm63xx/bcm63xx_cpu.h    | 8 ++++++++
+ arch/mips/include/asm/mach-bcm63xx/bcm63xx_timer.h  | 1 +
+ arch/mips/include/asm/mach-bcm63xx/board_bcm963xx.h | 2 ++
+ arch/mips/include/asm/mach-bcm63xx/irq.h            | 3 +++
+ 4 files changed, 14 insertions(+)
 
-diff --git a/arch/mips/kernel/traps.c b/arch/mips/kernel/traps.c
-index 246c6a6b0261..5b778995d448 100644
---- a/arch/mips/kernel/traps.c
-+++ b/arch/mips/kernel/traps.c
-@@ -2007,7 +2007,13 @@ unsigned long vi_handlers[64];
+diff --git a/arch/mips/include/asm/mach-bcm63xx/bcm63xx_cpu.h b/arch/mips/include/asm/mach-bcm63xx/bcm63xx_cpu.h
+index 1cad18e6681d..b9ab5ee1c7b2 100644
+--- a/arch/mips/include/asm/mach-bcm63xx/bcm63xx_cpu.h
++++ b/arch/mips/include/asm/mach-bcm63xx/bcm63xx_cpu.h
+@@ -1065,4 +1065,12 @@ void bcm63xx_machine_halt(void);
  
- void reserve_exception_space(phys_addr_t addr, unsigned long size)
- {
--	memblock_reserve(addr, size);
-+	/*
-+	 * reserve exception space on CPUs other than CPU0
-+	 * is too late, since memblock is unavailable when APs
-+	 * up
-+	 */
-+	if (smp_processor_id() == 0)
-+		memblock_reserve(addr, size);
- }
+ void bcm63xx_machine_reboot(void);
  
- void __init *set_except_vector(int n, void *addr)
++int bcm63xx_register_devices(void);
++
++int bcm63xx_rng_register(void);
++
++int bcm63xx_uart_register(unsigned int id);
++
++int bcm63xx_wdt_register(void);
++
+ #endif /* !BCM63XX_CPU_H_ */
+diff --git a/arch/mips/include/asm/mach-bcm63xx/bcm63xx_timer.h b/arch/mips/include/asm/mach-bcm63xx/bcm63xx_timer.h
+index bcbece793fd8..f920c7274f5e 100644
+--- a/arch/mips/include/asm/mach-bcm63xx/bcm63xx_timer.h
++++ b/arch/mips/include/asm/mach-bcm63xx/bcm63xx_timer.h
+@@ -8,5 +8,6 @@ int bcm63xx_timer_set(int id, int monotonic, unsigned int countdown_us);
+ int bcm63xx_timer_enable(int id);
+ int bcm63xx_timer_disable(int id);
+ unsigned int bcm63xx_timer_countdown(unsigned int countdown_us);
++int bcm63xx_timer_init(void);
+ 
+ #endif /* !BCM63XX_TIMER_H_ */
+diff --git a/arch/mips/include/asm/mach-bcm63xx/board_bcm963xx.h b/arch/mips/include/asm/mach-bcm63xx/board_bcm963xx.h
+index 830f53f28e3f..7b905c8a424d 100644
+--- a/arch/mips/include/asm/mach-bcm63xx/board_bcm963xx.h
++++ b/arch/mips/include/asm/mach-bcm63xx/board_bcm963xx.h
+@@ -51,4 +51,6 @@ struct board_info {
+ 	unsigned long ephy_reset_gpio_flags;
+ };
+ 
++int bcm63xx_get_fallback_sprom(struct ssb_bus *bus, struct ssb_sprom *out);
++
+ #endif /* ! BOARD_BCM963XX_H_ */
+diff --git a/arch/mips/include/asm/mach-bcm63xx/irq.h b/arch/mips/include/asm/mach-bcm63xx/irq.h
+index b016f0615d5f..cbb92a609835 100644
+--- a/arch/mips/include/asm/mach-bcm63xx/irq.h
++++ b/arch/mips/include/asm/mach-bcm63xx/irq.h
+@@ -5,4 +5,7 @@
+ #define NR_IRQS 128
+ #define MIPS_CPU_IRQ_BASE 0
+ 
++void __dispatch_internal_32(int cpu);
++void __dispatch_internal_64(int cpu);
++
+ #endif
 -- 
-2.30.2
+2.34.1
 

@@ -1,200 +1,127 @@
-Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net [217.70.183.197])
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B40CE33CDB;
-	Thu, 25 Jan 2024 11:53:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.197
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 989CD3EA62
+	for <linux-mips@vger.kernel.org>; Thu, 25 Jan 2024 12:10:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706183609; cv=none; b=XGdjenFL3lHG/aB62SrTofcanv7ay2PsXlCRIXLtHykIYQTywqjktD7HfMSkgjr905ldAP+O2MKhPYQeWp0tBpUaXrnyQWTlbH7Ioj5kk9NysZhdA4RFeNkA6LScvePOHHqsXZLZ1vONBlgyiMxxKMOaDTzPF2r3j/CtD/Rdclw=
+	t=1706184649; cv=none; b=uNyXuDLF7Gp9plPWd9tRvdPSRuHCVx2IP+of4Un2AXByNn2cMfj5mejvWRXn/S2xrMBB4aOrpEc4y4RelnIan5uH5u1BT4kagpD/yF0K2Gn+qn5ZUHZ6DIosteaktcwFg0qRfKr7ZxjiSuFPzSn8W+S2LaTN3p3ZHi1CiAUc+Hg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706183609; c=relaxed/simple;
-	bh=k9VgRYeNrPHdfOrpwqwrz/D5of6TTpkE5y+OALsVfuw=;
-	h=Mime-Version:Content-Type:Date:Message-Id:Cc:To:From:Subject:
-	 References:In-Reply-To; b=hwoqII6Byzyqq0gPvr1IqmIEpCkZbrmXWtCA+AhgQQDFE2008TJaVtXkaGNiLVAemTtlVtEgVN29w85etjy19B0wunFoUF6psawCJ9thGIsV+Mk8v7Jm2jn5/0PeqzWd/21oXfsu+RzsMDXiudI+Rd8UvoX8EJlzIC5l9hPlPhw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=l+pMp/Zc; arc=none smtp.client-ip=217.70.183.197
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="l+pMp/Zc"
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 44BE81C0005;
-	Thu, 25 Jan 2024 11:53:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1706183605;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=abQCJSKdwJXP9+/KbyZE7cBdmY2HQ+LTAyHc/830rpk=;
-	b=l+pMp/ZcEhB5G6Y86pGNxFWhkEksfB4aM2fqWyzqe8NEFX3qNkqSCsRe867m4DYlWmLb+Q
-	gz6Lz11UZmVNxhaFXhk0Ia+SLDi6ZdMzuetZ+QeZ7Vlp9YnWOUvv0E+k2ksOUQaZte2ITY
-	G7aUsDmDos4LPodEUXlSHd7/ttBgLZD24W2Hu3NPtOy6kDU1tI7+USe4hjLN1obejuUyvT
-	RHf0lb/N2prh8ELgiZdtqo5v05cpyunqXW/2eYaML8nY5Vs5l9REklaP7zOFJYaAnt6If+
-	S6NXTOj/Xkk33WMpYHGGqZplLX+a7pSTpvJT2sh75hwMy2Lt5SxM9ADokCGqkQ==
+	s=arc-20240116; t=1706184649; c=relaxed/simple;
+	bh=9fRxhtYIv+8dNdPKFjVdE0/oqwvKrTqfCQCejiapaBs=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=WVyRqhCQbk4D3VUJd+U6JPJ2YRIU4pORFo3RlRCIJthrnuBWGZQSz5qvh1Vga2vTHd/omd+KhNJ54sacyPRlncECOYbU/xGgIO719p5rbTGoFaTvsgi0mRIbFbOUp2gCtPEsiVj0BMdp4TVVSggqDdlW8wRLl8fc+xIH1tvpmy8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1rSyZ9-0003h5-6a; Thu, 25 Jan 2024 13:10:43 +0100
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1rSyZ8-002HPd-On; Thu, 25 Jan 2024 13:10:42 +0100
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.96)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1rSyZ8-007mz7-2D;
+	Thu, 25 Jan 2024 13:10:42 +0100
+From: =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To: Paul Cercueil <paul@crapouillou.net>,
+	linux-pwm@vger.kernel.org
+Cc: linux-mips@vger.kernel.org,
+	kernel@pengutronix.de
+Subject: [PATCH v5 015/111] pwm: jz4740: Make use of pwmchip_parent() macro
+Date: Thu, 25 Jan 2024 13:08:37 +0100
+Message-ID:  <b23bd3235e04e6181dac8d3309d33330a59bc72d.1706182805.git.u.kleine-koenig@pengutronix.de>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <cover.1706182805.git.u.kleine-koenig@pengutronix.de>
+References: <cover.1706182805.git.u.kleine-koenig@pengutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-Date: Thu, 25 Jan 2024 12:53:24 +0100
-Message-Id: <CYNRLZ2XTOGY.3ANWB33IDCN2W@bootlin.com>
-Cc: "Vladimir Kondratiev" <vladimir.kondratiev@mobileye.com>,
- <linux-mips@vger.kernel.org>, <linux-clk@vger.kernel.org>,
- <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>, "Thomas
- Petazzoni" <thomas.petazzoni@bootlin.com>, "Tawfik Bayouk"
- <tawfik.bayouk@mobileye.com>, <linux-gpio@vger.kernel.org>
-To: "Krzysztof Kozlowski" <krzysztof.kozlowski@linaro.org>, "Gregory
- CLEMENT" <gregory.clement@bootlin.com>, "Michael Turquette"
- <mturquette@baylibre.com>, "Stephen Boyd" <sboyd@kernel.org>, "Rob Herring"
- <robh+dt@kernel.org>, "Krzysztof Kozlowski"
- <krzysztof.kozlowski+dt@linaro.org>, "Conor Dooley" <conor+dt@kernel.org>,
- "Thomas Bogendoerfer" <tsbogend@alpha.franken.de>, "Linus Walleij"
- <linus.walleij@linaro.org>, =?utf-8?q?Rafa=C5=82_Mi=C5=82ecki?=
- <rafal@milecki.pl>, "Philipp Zabel" <p.zabel@pengutronix.de>
-From: =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
-Subject: Re: [PATCH v3 08/17] clk: eyeq5: add platform driver
-X-Mailer: aerc 0.15.2
-References: <20240123-mbly-clk-v3-0-392b010b8281@bootlin.com>
- <20240123-mbly-clk-v3-8-392b010b8281@bootlin.com>
- <127fd51b-cd64-4e00-99d6-7be9b79f2dcc@linaro.org>
- <CYN33YJ10HYS.2YDXB158LFZPL@bootlin.com>
- <001993b9-ea0c-49c3-a4e5-4cea10c54082@linaro.org>
-In-Reply-To: <001993b9-ea0c-49c3-a4e5-4cea10c54082@linaro.org>
-X-GND-Sasl: theo.lebrun@bootlin.com
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2491; i=u.kleine-koenig@pengutronix.de; h=from:subject:message-id; bh=9fRxhtYIv+8dNdPKFjVdE0/oqwvKrTqfCQCejiapaBs=; b=owEBbQGS/pANAwAKAY+A+1h9Ev5OAcsmYgBlsk9LDBRXb8V16ytbBWxUdPjO9nZMbBylJRyeM 16GDgKhSbaJATMEAAEKAB0WIQQ/gaxpOnoeWYmt/tOPgPtYfRL+TgUCZbJPSwAKCRCPgPtYfRL+ Tq1nB/42yj6g2AGGySh52gqicZ1X/F+l4Nq3rpjyws8RAb443ENalaB3xiW/b4K1potNlUxT38p iTlsMElU2AmS0V9ZrK9kArWxKbKgD3TG/D6YIBOJa4mfSYkbNNzMtAURPEB1iSjSYHqHruhrIwK 9tnyueWm2DqXLTKiBWSnTb8QEG2mv0pFAFFzOUROufKCumFpZS3pJwMo60I3Sq28MySSP+mZ7MX +eAymzTF1FKOb7E3jKeQ5ZXTc97k+PgaZAd94Z79WzdzjVf+r/viTnCkNA2j7FHqiEeiAx6ozBT MMPFaFT6eeysZ5klt/xvP5ua7uIfmRSuuCRkxd36KPm36YpO
+X-Developer-Key: i=u.kleine-koenig@pengutronix.de; a=openpgp; fpr=0D2511F322BFAB1C1580266BE2DCDD9132669BD6
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-mips@vger.kernel.org
 
-Hi,
+struct pwm_chip::dev is about to change. To not have to touch this
+driver in the same commit as struct pwm_chip::dev, use the macro
+provided for exactly this purpose.
 
-On Thu Jan 25, 2024 at 8:46 AM CET, Krzysztof Kozlowski wrote:
-> On 24/01/2024 17:41, Th=C3=A9o Lebrun wrote:
-> > Hello,
-> >=20
-> > On Wed Jan 24, 2024 at 8:05 AM CET, Krzysztof Kozlowski wrote:
-> >> On 23/01/2024 19:46, Th=C3=A9o Lebrun wrote:
-> >>> Add the Mobileye EyeQ5 clock controller driver. It might grow to add
-> >>> support for other platforms from Mobileye.
-> >>>
-> >>> It handles 10 read-only PLLs derived from the main crystal on board. =
-It
-> >>> exposes a table-based divider clock used for OSPI. Other platform
-> >>> clocks are not configurable and therefore kept as fixed-factor
-> >>> devicetree nodes.
-> >>>
-> >>> Two PLLs are required early on and are therefore registered at
-> >>> of_clk_init(). Those are pll-cpu for the GIC timer and pll-per for th=
-e
-> >>> UARTs.
-> >>>
-> >>
-> >>
-> >>> +#define OLB_PCSR1_RESET				BIT(0)
-> >>> +#define OLB_PCSR1_SSGC_DIV			GENMASK(4, 1)
-> >>> +/* Spread amplitude (% =3D 0.1 * SPREAD[4:0]) */
-> >>> +#define OLB_PCSR1_SPREAD			GENMASK(9, 5)
-> >>> +#define OLB_PCSR1_DIS_SSCG			BIT(10)
-> >>> +/* Down-spread or center-spread */
-> >>> +#define OLB_PCSR1_DOWN_SPREAD			BIT(11)
-> >>> +#define OLB_PCSR1_FRAC_IN			GENMASK(31, 12)
-> >>> +
-> >>> +static struct clk_hw_onecell_data *eq5c_clk_data;
-> >>> +static struct regmap *eq5c_olb;
-> >>
-> >> Drop these two. No file-scope regmaps for drivers. Use private contain=
-er
-> >> structures.
-> >=20
-> > I wouldn't know how to handle the two steps then. Two clocks and the cl=
-k
-> > provider are registered at of_clk_init() using CLK_OF_DECLARE_DRIVER().
->
-> Right, if some clocks have to be early, CLK_OF_DECLARE_DRIVER needs
-> static ones. But your commit subject says it is a platform driver and
-> all other pieces of this code is rather incompatible with this approach.
+Acked-by: Paul Cercueil <paul@crapouillou.net>
+Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+---
+ drivers/pwm/pwm-jz4740.c | 18 +++++++++---------
+ 1 file changed, 9 insertions(+), 9 deletions(-)
 
-That is my bad on the commit subject. What do you refer to by "all other
-pieces of this code is rather incompatible with this approach"?
+diff --git a/drivers/pwm/pwm-jz4740.c b/drivers/pwm/pwm-jz4740.c
+index 3933418e551b..4d39f61b86ff 100644
+--- a/drivers/pwm/pwm-jz4740.c
++++ b/drivers/pwm/pwm-jz4740.c
+@@ -35,13 +35,12 @@ static inline struct jz4740_pwm_chip *to_jz4740(struct pwm_chip *chip)
+ 	return container_of(chip, struct jz4740_pwm_chip, chip);
+ }
+ 
+-static bool jz4740_pwm_can_use_chn(struct jz4740_pwm_chip *jz,
+-				   unsigned int channel)
++static bool jz4740_pwm_can_use_chn(struct pwm_chip *chip, unsigned int channel)
+ {
+ 	/* Enable all TCU channels for PWM use by default except channels 0/1 */
+-	u32 pwm_channels_mask = GENMASK(jz->chip.npwm - 1, 2);
++	u32 pwm_channels_mask = GENMASK(chip->npwm - 1, 2);
+ 
+-	device_property_read_u32(jz->chip.dev->parent,
++	device_property_read_u32(pwmchip_parent(chip)->parent,
+ 				 "ingenic,pwm-channels-mask",
+ 				 &pwm_channels_mask);
+ 
+@@ -55,14 +54,15 @@ static int jz4740_pwm_request(struct pwm_chip *chip, struct pwm_device *pwm)
+ 	char name[16];
+ 	int err;
+ 
+-	if (!jz4740_pwm_can_use_chn(jz, pwm->hwpwm))
++	if (!jz4740_pwm_can_use_chn(chip, pwm->hwpwm))
+ 		return -EBUSY;
+ 
+ 	snprintf(name, sizeof(name), "timer%u", pwm->hwpwm);
+ 
+-	clk = clk_get(chip->dev, name);
++	clk = clk_get(pwmchip_parent(chip), name);
+ 	if (IS_ERR(clk)) {
+-		dev_err(chip->dev, "error %pe: Failed to get clock\n", clk);
++		dev_err(pwmchip_parent(chip),
++			"error %pe: Failed to get clock\n", clk);
+ 		return PTR_ERR(clk);
+ 	}
+ 
+@@ -150,7 +150,7 @@ static int jz4740_pwm_apply(struct pwm_chip *chip, struct pwm_device *pwm,
+ 	 */
+ 	rate = clk_round_rate(clk, tmp);
+ 	if (rate < 0) {
+-		dev_err(chip->dev, "Unable to round rate: %ld\n", rate);
++		dev_err(pwmchip_parent(chip), "Unable to round rate: %ld\n", rate);
+ 		return rate;
+ 	}
+ 
+@@ -171,7 +171,7 @@ static int jz4740_pwm_apply(struct pwm_chip *chip, struct pwm_device *pwm,
+ 
+ 	err = clk_set_rate(clk, rate);
+ 	if (err) {
+-		dev_err(chip->dev, "Unable to set rate: %d\n", err);
++		dev_err(pwmchip_parent(chip), "Unable to set rate: %d\n", err);
+ 		return err;
+ 	}
+ 
+-- 
+2.43.0
 
-I've tried to minimise the use of static variables. Therefore as soon as
-the probe is started, we switch to the usual way of using a private
-struct that contains our info.
-
->
-> Do not use CLK_OF_DECLARE_DRIVER for cases where you have dependencies
-> because it forces you to manually order initcalls, which is exactly what
-> we do not want.
-
-What should I be using? I got confirmation from Stephen that this
-mixture of CLK_OF_DECLARE_DRIVER() + platform driver is what I should
-be using as review in my V1.
-
-https://lore.kernel.org/lkml/fa32e6fae168e10d42051b89197855e9.sboyd@kernel.=
-org/
-
->
->
-> > The rest is at platform device probe. Without a static, there are no
-> > way to pass the struct clk_hw_onecell_data from one to the other.
-> >=20
-> > I've looked at all clock drivers that do CLK_OF_DECLARE_DRIVER() and
-> > register a platform driver.
->
-> Even though the code is correct, using arguments "other did it" will not
-> work. You want to say that you implement legacy, poor code because you
-> saw legacy, poor code?
-
-Yes I see what you mean. It's just that this is not the sort of things
-that are documented. And learning The Right Way(TM) when you don't know
-it can only be done by looking at existing stuff. I'm being exhaustive
-to avoid basing my approach on one old-school driver that is using the
-wrong approach.
-
-> >> ...
-> >>
-> >>> +static void __init eq5c_init(struct device_node *np)
-> >>> +{
-> >>> +	struct device_node *parent_np =3D of_get_parent(np);
-> >>> +	int i, ret;
-> >>> +
-> >>> +	eq5c_clk_data =3D kzalloc(struct_size(eq5c_clk_data, hws, EQ5C_NB_C=
-LKS),
-> >>> +				GFP_KERNEL);
-> >>> +	if (!eq5c_clk_data) {
-> >>> +		ret =3D -ENOMEM;
-> >>> +		goto err;
-> >>> +	}
-> >>> +
-> >>> +	eq5c_clk_data->num =3D EQ5C_NB_CLKS;
-> >>> +
-> >>> +	/*
-> >>> +	 * Mark all clocks as deferred. We register some now and others at
-> >>> +	 * platform device probe.
-> >>> +	 */
-> >>> +	for (i =3D 0; i < EQ5C_NB_CLKS; i++)
-> >>> +		eq5c_clk_data->hws[i] =3D ERR_PTR(-EPROBE_DEFER);
-> >>> +
-> >>> +	/*
-> >>> +	 * Currently, if OLB is not available, we log an error, fail init t=
-hen
-> >>
-> >> How it could be not available? Only with broken initcall ordering. Fix
-> >> your initcall ordering and then simplify all this weird code.
-> >=20
-> > of_syscon_register() and regmap_init_mmio() lists many reasons for
-> > it to not be available. Am I missing something?
->
-> Yes, initcall ordering.
-
-You said the regmap can only not be available with broken initcall
-ordering. I say that is not the only reason.
-
-About initcall, I've removed those that used initcall in the three
-drivers I'm using except this clk one that requires two clocks at
-of_clk_init().
-
-Thanks,
-
---
-Th=C3=A9o Lebrun, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com

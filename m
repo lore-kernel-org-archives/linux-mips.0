@@ -1,35 +1,29 @@
 Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B81A1CD1C
-	for <linux-mips@vger.kernel.org>; Fri, 26 Jan 2024 10:16:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BBD621CD1A;
+	Fri, 26 Jan 2024 10:16:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.175.24.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706264165; cv=none; b=i58zFDPL/cMlBoHNiyTsIUfDg2LHgCzxmp5u2rc5bwvvWj/s/F7WEg+LT+4U0MOSz0tKWrQqxLWuf8HLEq7LLXenxj2EszEr45q7WiVCcFFTKAaw+C5ETS2pRfYPbI5Jzg/DjTEIWagF7ibMTOqERyqo8MzEtRb2rWiFWuEB7h4=
+	t=1706264165; cv=none; b=AEQOUIiq8uCAJGvBQtR3thauc9UCMgg7D7f13cxno3NdTuiaeglHu2wqBU7LiBBgdJXxFDobNC3f39VDDVZzqvWK1W73FyXpgqtrgQ59jErhnqR5496XaC4JDyGd8cmZqznZrJ0jYo8pYSE9qkNW+vDv+qHFRQiaoFnrcUIXz/w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1706264165; c=relaxed/simple;
-	bh=vJJw3XH8OvfuV2OuartLbvJTnJafJ6IPpuPpK/dCTAA=;
+	bh=JzsJ1hi/HTW0sIn7Hj+aVlk0JmlpkAgZaLCD04xMdtA=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=CmtKtq7r6QiN7YmZ2LUltAH//teYAjamrbi/4ToIarev+AMMDqRqzTT2dm8HmxV2CmIF8dBYLPAEMCntY/G+nBtnDam3Y2PAUzJGaTsm56NGl7Siu7dccX5Ppf3OLvV7u+AlFREywA7+k3oPXC4Q3fSPpOI+jqNq1aD1VLEe0ks=
+	 Content-Type:Content-Disposition:In-Reply-To; b=l32eXsR73L32zXhiKvc6KUPbKO2TnqGeU4nUfmp+n/jDeymWz0FyCBaYBixqwTcsZF7zPrXFMgrhrkQ8A05OLJceqa/05FFyPb7oKV0MDJ4dN+QDwcx+bRY6VcUx6mx8YOoICv3VJk4XeTp8ghdJKTtTzU0vBDy8ES5SCSSF7C4=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de; spf=pass smtp.mailfrom=alpha.franken.de; arc=none smtp.client-ip=193.175.24.41
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alpha.franken.de
 Received: from uucp by elvis.franken.de with local-rmail (Exim 3.36 #1)
-	id 1rTJFY-0003wg-00; Fri, 26 Jan 2024 11:15:52 +0100
+	id 1rTJFY-0003wk-00; Fri, 26 Jan 2024 11:15:52 +0100
 Received: by alpha.franken.de (Postfix, from userid 1000)
-	id B635EC0489; Fri, 26 Jan 2024 11:12:12 +0100 (CET)
-Date: Fri, 26 Jan 2024 11:12:12 +0100
+	id 83452C0661; Fri, 26 Jan 2024 11:13:43 +0100 (CET)
+Date: Fri, 26 Jan 2024 11:13:43 +0100
 From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To: Huang Pei <huangpei@loongson.cn>
-Cc: Bibo Mao <maobibo@loongson.cn>, linux-mips@vger.kernel.org,
-	Jiaxun Yang <jiaxun.yang@flygoat.com>,
-	Paul Burton <paulburton@kernel.org>,
-	Li Xuefeng <lixuefeng@loongson.cn>,
-	Yang Tiezhu <yangtiezhu@loongson.cn>,
-	Gao Juxin <gaojuxin@loongson.cn>,
-	Huacai Chen <chenhuacai@loongson.cn>
-Subject: Re: [PATCH 1/2] MIPS: reserve exception vector space ONLY ONCE
-Message-ID: <ZbOFfA4nG6bQ/6WG@alpha.franken.de>
-References: <ZZ29Wr9yfAcqGxrN@alpha.franken.de>
- <20240123014758.12718-1-huangpei@loongson.cn>
+To: Aleksander Jan Bajkowski <olek2@wp.pl>
+Cc: john@phrozen.org, linux-mips@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] MIPS: lantiq: register smp_ops on non-smp platforms
+Message-ID: <ZbOF1wPz2Xa3AyU/@alpha.franken.de>
+References: <20240122184709.9625-1-olek2@wp.pl>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
@@ -38,42 +32,41 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240123014758.12718-1-huangpei@loongson.cn>
+In-Reply-To: <20240122184709.9625-1-olek2@wp.pl>
 
-On Tue, Jan 23, 2024 at 09:47:57AM +0800, Huang Pei wrote:
-> "cpu_probe" is called both by BP and APs, but reserving exception vector
-> (like 0x0-0x1000) called by "cpu_probe" need once and calling on APs is
-> too late since memblock is unavailable at that time.
+On Mon, Jan 22, 2024 at 07:47:09PM +0100, Aleksander Jan Bajkowski wrote:
+> Lantiq uses a common kernel config for devices with 24Kc and 34Kc cores.
+> The changes made previously to add support for interrupts on all cores
+> work on 24Kc platforms with SMP disabled and 34Kc platforms with SMP
+> enabled. This patch fixes boot issues on Danube (single core 24Kc) with
+> SMP enabled.
 > 
-> So, reserve exception vector ONLY by BP.
-> 
-> Suggested-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-> Signed-off-by: Huang Pei <huangpei@loongson.cn>
+> Fixes: 730320fd770d ("MIPS: lantiq: enable all hardware interrupts on second VPE")
+> Signed-off-by: Aleksander Jan Bajkowski <olek2@wp.pl>
 > ---
->  arch/mips/kernel/traps.c | 8 +++++++-
->  1 file changed, 7 insertions(+), 1 deletion(-)
+>  arch/mips/lantiq/prom.c | 7 +++----
+>  1 file changed, 3 insertions(+), 4 deletions(-)
 > 
-> diff --git a/arch/mips/kernel/traps.c b/arch/mips/kernel/traps.c
-> index 246c6a6b0261..5b778995d448 100644
-> --- a/arch/mips/kernel/traps.c
-> +++ b/arch/mips/kernel/traps.c
-> @@ -2007,7 +2007,13 @@ unsigned long vi_handlers[64];
+> diff --git a/arch/mips/lantiq/prom.c b/arch/mips/lantiq/prom.c
+> index a3cf29365858..0c45767eacf6 100644
+> --- a/arch/mips/lantiq/prom.c
+> +++ b/arch/mips/lantiq/prom.c
+> @@ -108,10 +108,9 @@ void __init prom_init(void)
+>  	prom_init_cmdline();
 >  
->  void reserve_exception_space(phys_addr_t addr, unsigned long size)
->  {
-> -	memblock_reserve(addr, size);
-> +	/*
-> +	 * reserve exception space on CPUs other than CPU0
-> +	 * is too late, since memblock is unavailable when APs
-> +	 * up
-> +	 */
-> +	if (smp_processor_id() == 0)
-> +		memblock_reserve(addr, size);
+>  #if defined(CONFIG_MIPS_MT_SMP)
+> -	if (cpu_has_mipsmt) {
+> -		lantiq_smp_ops = vsmp_smp_ops;
+> +	lantiq_smp_ops = vsmp_smp_ops;
+> +	if (cpu_has_mipsmt)
+>  		lantiq_smp_ops.init_secondary = lantiq_init_secondary;
+> -		register_smp_ops(&lantiq_smp_ops);
+> -	}
+> +	register_smp_ops(&lantiq_smp_ops);
+>  #endif
 >  }
->  
->  void __init *set_except_vector(int n, void *addr)
 > -- 
-> 2.30.2
+> 2.39.2
 
 applied to mips-fixes.
 

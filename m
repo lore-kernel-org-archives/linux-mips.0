@@ -1,29 +1,35 @@
 Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BBD3B1CD16;
-	Fri, 26 Jan 2024 10:16:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B81A1CD1C
+	for <linux-mips@vger.kernel.org>; Fri, 26 Jan 2024 10:16:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.175.24.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706264164; cv=none; b=PiHay5YutfrrnAmEjtHNYSyUab5hHWmvIGNLouRo/FCV5p2quXyc2Eh2RSB/b6+Uei2CNi0JvsB42Tf704jfW6jnxcU0wHRFcmFiERuEVp+7QfjKdwzAUoJ9Kbey1WyoQwIOFZzNBb1wwyPm8iAsx4K3s1q+8HxypM41hvwVkgA=
+	t=1706264165; cv=none; b=i58zFDPL/cMlBoHNiyTsIUfDg2LHgCzxmp5u2rc5bwvvWj/s/F7WEg+LT+4U0MOSz0tKWrQqxLWuf8HLEq7LLXenxj2EszEr45q7WiVCcFFTKAaw+C5ETS2pRfYPbI5Jzg/DjTEIWagF7ibMTOqERyqo8MzEtRb2rWiFWuEB7h4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706264164; c=relaxed/simple;
-	bh=ngM/3k/+1ku0C5kXqBcpID4zlTiXaRD3W3n801qRemY=;
+	s=arc-20240116; t=1706264165; c=relaxed/simple;
+	bh=vJJw3XH8OvfuV2OuartLbvJTnJafJ6IPpuPpK/dCTAA=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=KfyUt0txTVU3lnQyqCAA+9uhMgRIqoWN2SXTw8hzrJFJ2OIXrJlH3ok2l01nQMNyNlKJ8ZOxiUDyjhcR+4NfHO/FtEMod94g9K5lZoDJKGW0Jt/htYo69ja5R9ba8a3bCWiIndQ2fy/kvdiCbDdp2oXd8dLoNmMDP2uVEtQ2XwM=
+	 Content-Type:Content-Disposition:In-Reply-To; b=CmtKtq7r6QiN7YmZ2LUltAH//teYAjamrbi/4ToIarev+AMMDqRqzTT2dm8HmxV2CmIF8dBYLPAEMCntY/G+nBtnDam3Y2PAUzJGaTsm56NGl7Siu7dccX5Ppf3OLvV7u+AlFREywA7+k3oPXC4Q3fSPpOI+jqNq1aD1VLEe0ks=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de; spf=pass smtp.mailfrom=alpha.franken.de; arc=none smtp.client-ip=193.175.24.41
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alpha.franken.de
 Received: from uucp by elvis.franken.de with local-rmail (Exim 3.36 #1)
-	id 1rTJFY-0003wm-00; Fri, 26 Jan 2024 11:15:52 +0100
+	id 1rTJFY-0003wg-00; Fri, 26 Jan 2024 11:15:52 +0100
 Received: by alpha.franken.de (Postfix, from userid 1000)
-	id 85708C04B4; Fri, 26 Jan 2024 11:13:23 +0100 (CET)
-Date: Fri, 26 Jan 2024 11:13:23 +0100
+	id B635EC0489; Fri, 26 Jan 2024 11:12:12 +0100 (CET)
+Date: Fri, 26 Jan 2024 11:12:12 +0100
 From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To: Florian Fainelli <f.fainelli@gmail.com>
-Cc: linux-mips@vger.kernel.org, jonas.gorski@gmail.com,
-	open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2] MIPS: BCM63XX: Fix missing prototypes
-Message-ID: <ZbOFw7m7CX8SHy4F@alpha.franken.de>
-References: <20240123174701.210922-1-f.fainelli@gmail.com>
+To: Huang Pei <huangpei@loongson.cn>
+Cc: Bibo Mao <maobibo@loongson.cn>, linux-mips@vger.kernel.org,
+	Jiaxun Yang <jiaxun.yang@flygoat.com>,
+	Paul Burton <paulburton@kernel.org>,
+	Li Xuefeng <lixuefeng@loongson.cn>,
+	Yang Tiezhu <yangtiezhu@loongson.cn>,
+	Gao Juxin <gaojuxin@loongson.cn>,
+	Huacai Chen <chenhuacai@loongson.cn>
+Subject: Re: [PATCH 1/2] MIPS: reserve exception vector space ONLY ONCE
+Message-ID: <ZbOFfA4nG6bQ/6WG@alpha.franken.de>
+References: <ZZ29Wr9yfAcqGxrN@alpha.franken.de>
+ <20240123014758.12718-1-huangpei@loongson.cn>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
@@ -32,23 +38,42 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240123174701.210922-1-f.fainelli@gmail.com>
+In-Reply-To: <20240123014758.12718-1-huangpei@loongson.cn>
 
-On Tue, Jan 23, 2024 at 09:46:54AM -0800, Florian Fainelli wrote:
-> Most of the symbols for which we do not have a prototype can actually be
-> made static and for the few that cannot, there is already a declaration
-> in a header for it.
+On Tue, Jan 23, 2024 at 09:47:57AM +0800, Huang Pei wrote:
+> "cpu_probe" is called both by BP and APs, but reserving exception vector
+> (like 0x0-0x1000) called by "cpu_probe" need once and calling on APs is
+> too late since memblock is unavailable at that time.
 > 
-> Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+> So, reserve exception vector ONLY by BP.
+> 
+> Suggested-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+> Signed-off-by: Huang Pei <huangpei@loongson.cn>
 > ---
->  arch/mips/bcm63xx/boards/board_bcm963xx.c | 2 +-
->  arch/mips/bcm63xx/dev-rng.c               | 2 +-
->  arch/mips/bcm63xx/dev-uart.c              | 1 +
->  arch/mips/bcm63xx/dev-wdt.c               | 2 +-
->  arch/mips/bcm63xx/irq.c                   | 2 +-
->  arch/mips/bcm63xx/setup.c                 | 2 +-
->  arch/mips/bcm63xx/timer.c                 | 2 +-
->  7 files changed, 7 insertions(+), 6 deletions(-)
+>  arch/mips/kernel/traps.c | 8 +++++++-
+>  1 file changed, 7 insertions(+), 1 deletion(-)
+> 
+> diff --git a/arch/mips/kernel/traps.c b/arch/mips/kernel/traps.c
+> index 246c6a6b0261..5b778995d448 100644
+> --- a/arch/mips/kernel/traps.c
+> +++ b/arch/mips/kernel/traps.c
+> @@ -2007,7 +2007,13 @@ unsigned long vi_handlers[64];
+>  
+>  void reserve_exception_space(phys_addr_t addr, unsigned long size)
+>  {
+> -	memblock_reserve(addr, size);
+> +	/*
+> +	 * reserve exception space on CPUs other than CPU0
+> +	 * is too late, since memblock is unavailable when APs
+> +	 * up
+> +	 */
+> +	if (smp_processor_id() == 0)
+> +		memblock_reserve(addr, size);
+>  }
+>  
+>  void __init *set_except_vector(int n, void *addr)
+> -- 
+> 2.30.2
 
 applied to mips-fixes.
 

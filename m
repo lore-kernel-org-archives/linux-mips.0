@@ -1,80 +1,108 @@
-Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 74D7357317
-	for <linux-mips@vger.kernel.org>; Fri, 26 Jan 2024 23:15:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.175.24.41
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 037861DFCD
+	for <linux-mips@vger.kernel.org>; Sat, 27 Jan 2024 09:12:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=114.242.206.163
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706310920; cv=none; b=N31eUho9qOQnYS7nUv+TDjE31rLoV6nsfRPQlcTjHhBUq3xFBr5fQg8ygt818kqmM1fFAlX7q7It30Vd5aa85ZvDp6agDAt7T5OPFHcyga/VOu9CODsMQI8C4aEhyNPOmWFZylJj8Ysv6tH1QhT1de/LQxAKxDziBl1gqoaxz2Y=
+	t=1706346762; cv=none; b=aWc/Yv+tDlQ4ehy+WQaU63In9NKOdkqhqVWpskmH9ocyconwS0HAzETliLyDBWvKV43Cao4rRh+Scdi4TptID7n+GEfq5MoEwh8aWOylTTKc1WAubuxb4f7p0HtjJS+ZbiGj0NkxllhkfBZi1SVPiEWSmV6sEfB445ZlPzfVWOA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706310920; c=relaxed/simple;
-	bh=3976i5Rk6n2bOJxuyiTHKvrQWlah5prxCdOMlvgsv5M=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=JGQpgWkAvSadBUZvs71fDhQhulcQK2uczZxIZb8xTKbPzpAUrDigTNwpC2LST7kNUEP2vcPmo/ehh5jVhkOeWxdEzqunaPafAcBD8LA5iXYUKbo6qUp1d6J161gnQpuJe3wjIVjuY6XUp9+mjm07iU7KHi6Et5v4ns3REf7uMwU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de; spf=pass smtp.mailfrom=alpha.franken.de; arc=none smtp.client-ip=193.175.24.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alpha.franken.de
-Received: from uucp by elvis.franken.de with local-rmail (Exim 3.36 #1)
-	id 1rTVPh-0002NB-00; Sat, 27 Jan 2024 00:15:09 +0100
-Received: by alpha.franken.de (Postfix, from userid 1000)
-	id 5A605C0135; Fri, 26 Jan 2024 18:24:35 +0100 (CET)
-Date: Fri, 26 Jan 2024 18:24:35 +0100
-From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To: Huacai Chen <chenhuacai@kernel.org>
-Cc: Huang Pei <huangpei@loongson.cn>, Bibo Mao <maobibo@loongson.cn>,
-	linux-mips@vger.kernel.org, Jiaxun Yang <jiaxun.yang@flygoat.com>,
+	s=arc-20240116; t=1706346762; c=relaxed/simple;
+	bh=Zo3wkVC3E3B7p4CqFeZMkXGnXner7zxUGshBjQEaLHE=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=hrE2LKh2PuHX8vMF3vDUJXTqarUML0mL1Cg67EQ8/cJ75RuDcXrYMkn71jESAzIQwGvKD9fEuMuZpOFQf7BonYqk2TlKJSXHa/XpMRYXnYvGQXudkKZaQDVbxuN96ZWDyIMY6AYQBcMckQCDqY8ZPqCHJwmKke6nVKZzTRs6xaI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn; spf=pass smtp.mailfrom=loongson.cn; arc=none smtp.client-ip=114.242.206.163
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=loongson.cn
+Received: from loongson.cn (unknown [111.9.175.10])
+	by gateway (Coremail) with SMTP id _____8CxWOgGybRl6+gGAA--.3475S3;
+	Sat, 27 Jan 2024 17:12:38 +0800 (CST)
+Received: from localhost.localdomain (unknown [111.9.175.10])
+	by localhost.localdomain (Coremail) with SMTP id AQAAf8CxI8z3yLRl_cweAA--.401S3;
+	Sat, 27 Jan 2024 17:12:38 +0800 (CST)
+From: Huang Pei <huangpei@loongson.cn>
+To: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc: Bibo Mao <maobibo@loongson.cn>,
+	linux-mips@vger.kernel.org,
+	Jiaxun Yang <jiaxun.yang@flygoat.com>,
 	Paul Burton <paulburton@kernel.org>,
 	Li Xuefeng <lixuefeng@loongson.cn>,
 	Yang Tiezhu <yangtiezhu@loongson.cn>,
 	Gao Juxin <gaojuxin@loongson.cn>,
 	Huacai Chen <chenhuacai@loongson.cn>
-Subject: Re: [PATCH 2/2] MIPS: loongson64: set nid for reserved memblock
- region
-Message-ID: <ZbPq0yF20Qyo1rKb@alpha.franken.de>
-References: <ZZ29Wr9yfAcqGxrN@alpha.franken.de>
- <20240123014758.12718-1-huangpei@loongson.cn>
- <20240123014758.12718-2-huangpei@loongson.cn>
- <ZbOFkEikUQbvg7OU@alpha.franken.de>
- <CAAhV-H71SLi5LU_YmaPb2GdeGmsqy8FY7N5ZDxvPYrpVWazELg@mail.gmail.com>
+Subject: [PATCH] MIPS: loongson64: set nid for reserved memblock region
+Date: Sat, 27 Jan 2024 17:12:21 +0800
+Message-Id: <20240127091221.2884-2-huangpei@loongson.cn>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20240127091221.2884-1-huangpei@loongson.cn>
+References: <ZbPq0yF20Qyo1rKb@alpha.franken.de>
+ <20240127091221.2884-1-huangpei@loongson.cn>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAAhV-H71SLi5LU_YmaPb2GdeGmsqy8FY7N5ZDxvPYrpVWazELg@mail.gmail.com>
+X-CM-TRANSID:AQAAf8CxI8z3yLRl_cweAA--.401S3
+X-CM-SenderInfo: xkxd0whshlqz5rrqw2lrqou0/
+X-Coremail-Antispam: 1Uk129KBj93XoW7ZF4xAFWxXr48XFyDCFyUArc_yoW8WryDp3
+	yxA3WDuFW8Wr4xua95A345uryxZasxtrs7ZF47Zr1UWa9xW34avr4fJF1jqFyjvr48W3W0
+	gr9Ygr1UZF1xC3XCm3ZEXasCq-sJn29KB7ZKAUJUUUUr529EdanIXcx71UUUUU7KY7ZEXa
+	sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
+	0xBIdaVrnRJUUU9jb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
+	IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
+	e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_JFI_Gr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
+	0_Jr0_Gr1l84ACjcxK6I8E87Iv67AKxVWxJVW8Jr1l84ACjcxK6I8E87Iv6xkF7I0E14v2
+	6r4j6r4UJwAaw2AFwI0_Jrv_JF1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqjxCEc2xF0c
+	Ia020Ex4CE44I27wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_JF0_
+	Jw1lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwI
+	xGrwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwCFI7km07C267AKxVWU
+	AVWUtwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67
+	kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUCVW8JwCI42IY
+	6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0x
+	vEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2Kfnx
+	nUUI43ZEXa7IU8q2NtUUUUU==
 
-On Fri, Jan 26, 2024 at 10:24:29PM +0800, Huacai Chen wrote:
-> On Fri, Jan 26, 2024 at 6:30 PM Thomas Bogendoerfer
-> <tsbogend@alpha.franken.de> wrote:
-> >
-> > On Tue, Jan 23, 2024 at 09:47:58AM +0800, Huang Pei wrote:
-> > [...]
-> > > diff --git a/arch/mips/loongson64/numa.c b/arch/mips/loongson64/numa.c
-> > > index 8f61e93c0c5b..6345e096c532 100644
-> > > --- a/arch/mips/loongson64/numa.c
-> > > +++ b/arch/mips/loongson64/numa.c
-> > > @@ -132,6 +132,8 @@ static void __init node_mem_init(unsigned int node)
-> > >
-> > >               /* Reserve pfn range 0~node[0]->node_start_pfn */
-> > >               memblock_reserve(0, PAGE_SIZE * start_pfn);
-> > > +             /* set nid for reserved memory on node 0 */
-> > > +             memblock_set_node(0, (u64)1 << 44, &memblock.reserved, 1);
-> > >       }
-> > >  }
-> > >
-> > > --
-> > > 2.30.2
-> >
-> > applied to mips-fixes.
-> Oh, I'm sorry that I found a very stupid error in this patch. The
-> comment says set memory on node 0 but the code set it on node 1...
+Commit 61167ad5fecd("mm: pass nid to reserve_bootmem_region()") reveals
+that reserved memblock regions have no valid node id set, just set it
+right since loongson64 firmware makes it clear in memory layout info.
 
-and what is correct ? Please send a patch to fix it in mips-fixes.
+This works around booting failure on 3A1000+ since commit 61167ad5fecd
+("mm: pass nid to reserve_bootmem_region()") under
+CONFIG_DEFERRED_STRUCT_PAGE_INIT.
 
-Thomas.
+Signed-off-by: Huang Pei <huangpei@loongson.cn>
+---
+ arch/mips/loongson64/init.c | 3 +++
+ arch/mips/loongson64/numa.c | 2 ++
+ 2 files changed, 5 insertions(+)
 
+diff --git a/arch/mips/loongson64/init.c b/arch/mips/loongson64/init.c
+index f25caa6aa9d3..553142c1f14f 100644
+--- a/arch/mips/loongson64/init.c
++++ b/arch/mips/loongson64/init.c
+@@ -103,6 +103,9 @@ void __init szmem(unsigned int node)
+ 	if (loongson_sysconf.vgabios_addr)
+ 		memblock_reserve(virt_to_phys((void *)loongson_sysconf.vgabios_addr),
+ 				SZ_256K);
++	/* set nid for reserved memory */
++	memblock_set_node((u64)node << 44, (u64)(node + 1) << 44,
++			&memblock.reserved, node);
+ }
+ 
+ #ifndef CONFIG_NUMA
+diff --git a/arch/mips/loongson64/numa.c b/arch/mips/loongson64/numa.c
+index 8f61e93c0c5b..68dafd6d3e25 100644
+--- a/arch/mips/loongson64/numa.c
++++ b/arch/mips/loongson64/numa.c
+@@ -132,6 +132,8 @@ static void __init node_mem_init(unsigned int node)
+ 
+ 		/* Reserve pfn range 0~node[0]->node_start_pfn */
+ 		memblock_reserve(0, PAGE_SIZE * start_pfn);
++		/* set nid for reserved memory on node 0 */
++		memblock_set_node(0, 1ULL << 44, &memblock.reserved, 0);
+ 	}
+ }
+ 
 -- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+2.30.2
+

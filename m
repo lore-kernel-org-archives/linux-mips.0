@@ -1,38 +1,80 @@
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 666B357886;
-	Tue, 30 Jan 2024 08:27:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=114.242.206.163
+Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B27A4433CB
+	for <linux-mips@vger.kernel.org>; Wed, 31 Jan 2024 15:59:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706603252; cv=none; b=cwwV7uKZu3TOxVr9vt5t3xb+G344Kcpz5pQ45bci3d6OWn8jxBPjBweQL7Iye4v6eGobsbaWMppinqPyGezyHi7vmLZB4T4/WQlWTujjQUYHtlvCfZTL7lDgQbQJ5pyHt1Kw07b4UuyAc1DygAmACGMFS0+TFQmJQwZloKPJ5qc=
+	t=1706716777; cv=none; b=VbXowyjP75cz3UVEeij5xm9hg8IGLD6K+86gBJ1OubUIbbkBvTc1fvy/Cu8BlQyym6alDs+Q3c3edSoY5ccuY1zsAGn/inTy5g55WmPFmWc68fWm2aSm4gAtjlr/M9c9v7tn3h1/5NDnNR6bmrhm0Sv2MIde4eN/i3Y6cOvC4zI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706603252; c=relaxed/simple;
-	bh=rUFMw1iMjrV6a0T0yOC1gMUOEPZTRRkGB2tBNWmbmNc=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=GAz4i0olqnPuS3+C7jHgsS7+lT6nfNRXBfYBWN6SPyeO24FJVYSMPO/TvFKRF1zmGDaz0OF/Yr3NzdHUK7e2Ex1S0fEJQVG6np2UoxYQ83rzHAWuOO/QYEP64VlvkMSlKW6/TEy3VRaAUZdn+xHzxyC/UYlqcAwLavTWqBRYS3E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn; spf=pass smtp.mailfrom=loongson.cn; arc=none smtp.client-ip=114.242.206.163
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=loongson.cn
-Received: from loongson.cn (unknown [10.2.5.213])
-	by gateway (Coremail) with SMTP id _____8Bx3+vusrhlbUEIAA--.25295S3;
-	Tue, 30 Jan 2024 16:27:26 +0800 (CST)
-Received: from localhost.localdomain (unknown [10.2.5.213])
-	by localhost.localdomain (Coremail) with SMTP id AQAAf8AxHs_qsrhl4KcnAA--.23872S4;
-	Tue, 30 Jan 2024 16:27:25 +0800 (CST)
-From: Bibo Mao <maobibo@loongson.cn>
-To: Huacai Chen <chenhuacai@kernel.org>,
-	Jiaxun Yang <jiaxun.yang@flygoat.com>,
-	Thomas Gleixner <tglx@linutronix.de>
-Cc: linux-mips@vger.kernel.org,
+	s=arc-20240116; t=1706716777; c=relaxed/simple;
+	bh=KxTha3Sw2me4wQD2ZIVM7exaX0/yMCyxiR7mnGOFOLY=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=Y6ZolBe4IvT8VEuEpZOuVavnNqknqF54KaKmklCkxg3xN6MROEmtHL0Curgt9cf3T1Yij3fz22DXw9XINx5WVl1NE6/ytJ+bEJgRUP4nKvj0o/z8BX+9UjV92ghaT6z2uu5WgjrlvGkfCb/0SCvoaItd7HPCktVYnLstD19PWbM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=maakPQV0; arc=none smtp.client-ip=209.85.128.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="maakPQV0"
+Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-40faff092a2so12922655e9.2
+        for <linux-mips@vger.kernel.org>; Wed, 31 Jan 2024 07:59:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1706716773; x=1707321573; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=SJEZ1qPaiDldAW8C05rM2rqR0hTzPI1igVobAmalZsY=;
+        b=maakPQV07x86hzoHNYT3i9Df3t0aUIyYaJz0NKQqd9fS0Op0GFcCCI5uP3CgSg6jsm
+         UxQtDlKyWO6cPk/Es8dgXS/SM5OuymQnsKwJcGfjieeD76Tn125URTvOnGNdIljlsVF6
+         jVM9tvzWL/fxuBlji8zYEcOFj63FT/rGYYSJJTexxSfMACZbojeXiw7aW5kwNix3mW/5
+         7Fn9N8lD5yj7G3PLDw0CrdlSg0ft7FjyhMF7IyFmIC6LtfaQewAy8TaQmAGxZzcYS1Xx
+         Vfnka022pNgNs67dfc7PgkAq7u1FM6nBZJqQJsvvFL7wVJRm3rAeYljaTwf/v7EWxhw6
+         zggg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706716773; x=1707321573;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=SJEZ1qPaiDldAW8C05rM2rqR0hTzPI1igVobAmalZsY=;
+        b=bH3kAvdR4FSeNzcoGz78vPPFW5pZu5Dcn2Z+k6RsSXhw6fD52cAp+yv6G8mgIrM2Y/
+         lDeMD6f9WDejcsMthyRo1QR0QO1nknu54PimrsUky3NUcK8ses6MdirT28ikLv98SdeL
+         PNrXn7v4cJP5z7R3EqmOSjETaYZT+obivNjd8Qui+bf65AJG3fruyRhYX856+IWiE8oD
+         UqET/33vwMb0J8y4rmU0EsnLDfvcdjZUOWlubW1TtNSObT/fzdOaidKQffGtgmj1x92P
+         EOGOYZQLB+MGXJxYp75js1eQKJE5gGQLLYITYE6tMEZcnLVjn4xAbpvJ0dZh2NAiyRmT
+         LGbw==
+X-Gm-Message-State: AOJu0Yy+DrFMUFv71e6s9A9Wm1I4X6o9muTjOacFdOuHL8IE81Fp3yEV
+	ab9cWhoz9NT3haTyW0ruJc3hA3OQTqfNV3xKYSV1UCE0HDu3PhwdfPtrutnfrP0=
+X-Google-Smtp-Source: AGHT+IE0y4HMNlJGrQQF1/vBmusVf+vGvj5kGeOQLs8zgDMsoQ9mThbIK2SfMvCJNZS4ESF4P8sD+g==
+X-Received: by 2002:a05:600c:468b:b0:40e:e834:3d86 with SMTP id p11-20020a05600c468b00b0040ee8343d86mr1590072wmo.37.1706716772821;
+        Wed, 31 Jan 2024 07:59:32 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCU5toVRodwweHTcQIyYJFP2Sf3z6pJe8uOj3kJL8Bf9n+o3G8oH7qCtVvtBB6ZzANPh3d2Znisr/JVcpjb5tj+mnQOtD0bGrsmT4CRsS6KdtKyxWKOCl38Giy/mwdkpg1+QQxv40odbMZlnkY5SYdo2XLk0XdYDTp7WRoTnVpNlAlYCWWsQHxNfcLCDVAWDcXk3GvVdHhPFZ62Gx3ql6nSu6/WKzbRDqzGUIYgkgqpdB1vq50EO2ieKr+XUNsum2CV+pMMxiPj9TkdU06yVd81ZbG9I+ff7kAkhj9IowwAQm+N5BwHjhUoaeye58UCta73W6pRJRoGC3DvGN4oHjbsgUSKWyszDmS4NdxPTBbwp2RdU2Ks6e9clrZ+UECY6zRr/NAd2cDDBxGCLVOmgvb+jVeV5smy1Xly69fTl7+hY8866CxoOjFO1I48MgVF0UdOI5C1yuLuymZyybFPw6nm1nAcMitNsxXW/PlXLReWUH5BFV6Jriyq2AKNFsNYuHKk6srdfiXlJ0B77YIP+V0E/i01m7OxC/pDhPX+9RSpIvCQkc7ZVpcu7PMqJqsCDBi7cS4PdMDvYQwktSWOvXekDuYCwO0eKbSeWmguapyXy15tDZbbtoRH2ScNNIwiU21PKEtXagxXWu+FGng==
+Received: from alex-rivos.ba.rivosinc.com (amontpellier-656-1-456-62.w92-145.abo.wanadoo.fr. [92.145.124.62])
+        by smtp.gmail.com with ESMTPSA id t24-20020a1c7718000000b0040f0219c371sm1926678wmi.19.2024.01.31.07.59.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 31 Jan 2024 07:59:32 -0800 (PST)
+From: Alexandre Ghiti <alexghiti@rivosinc.com>
+To: Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Nicholas Piggin <npiggin@gmail.com>,
+	Christophe Leroy <christophe.leroy@csgroup.eu>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Ved Shanbhogue <ved@rivosinc.com>,
+	Matt Evans <mev@rivosinc.com>,
+	Dylan Jhong <dylan@andestech.com>,
+	linux-arm-kernel@lists.infradead.org,
 	linux-kernel@vger.kernel.org,
-	Sergey Shtylyov <s.shtylyov@omp.ru>,
-	lvjianmin@loongson.cn,
-	Huacai Chen <chenhuacai@loongson.cn>
-Subject: [PATCH v5 2/3] irqchip/loongson-eiointc: Skip handling if there is no pending irq
-Date: Tue, 30 Jan 2024 16:27:21 +0800
-Message-Id: <20240130082722.2912576-3-maobibo@loongson.cn>
-X-Mailer: git-send-email 2.39.3
-In-Reply-To: <20240130082722.2912576-1-maobibo@loongson.cn>
-References: <20240130082722.2912576-1-maobibo@loongson.cn>
+	linux-mips@vger.kernel.org,
+	linuxppc-dev@lists.ozlabs.org,
+	linux-riscv@lists.infradead.org,
+	linux-mm@kvack.org
+Cc: Alexandre Ghiti <alexghiti@rivosinc.com>
+Subject: [PATCH RFC v2 0/4] Svvptc extension to remove preventive sfence.vma
+Date: Wed, 31 Jan 2024 16:59:25 +0100
+Message-Id: <20240131155929.169961-1-alexghiti@rivosinc.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
@@ -40,59 +82,82 @@ List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:AQAAf8AxHs_qsrhl4KcnAA--.23872S4
-X-CM-SenderInfo: xpdruxter6z05rqj20fqof0/
-X-Coremail-Antispam: 1Uk129KBj93XoW7tr13Cr4DWr18try8uw47WrX_yoW8Xr1Dp3
-	y5C3Wqkr45GFWjkF9xKrW8JF1YvwnYgFZFka95G3y3Zrn8Jwn0kF4rA3WqvrsrCr4fG3W2
-	9F45WF48Ca15CwbCm3ZEXasCq-sJn29KB7ZKAUJUUUU7529EdanIXcx71UUUUU7KY7ZEXa
-	sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
-	0xBIdaVrnRJUUU92b4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
-	IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
-	e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
-	0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AK
-	xVW8Jr0_Cr1UM2kKe7AKxVWUXVWUAwAS0I0E0xvYzxvE52x082IY62kv0487Mc804VCY07
-	AIYIkI8VC2zVCFFI0UMc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWU
-	tVWrXwAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7V
-	AKI48JMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMxCIbckI1I0E14v2
-	6r1Y6r17MI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17
-	CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r4j6ryUMIIF
-	0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIx
-	AIcVC2z280aVAFwI0_Cr0_Gr1UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVF
-	xhVjvjDU0xZFpf9x07jz2NtUUUUU=
 
-It is one simple optimization in the interrupt dispatch function
-eiointc_irq_dispatch(). There are 256 IRQs supported for eiointc on
-Loongson-3A5000 and Loongson-2K2000 platform, 128 IRQs on Loongson-2K0500
-platform, eiointc irq handler reads the bitmap and find pending irqs
-when irq happens. So there are several consecutive iocsr_read64
-operations for the all bits to find all pending irqs. If the pending
-bitmap is zero, it means that there is no pending irq for the this
-irq bitmap range, we can skip handling to avoid some useless operations
-such as clearing hw ISR.
+In RISC-V, after a new mapping is established, a sfence.vma needs to be
+emitted for different reasons:
 
-Signed-off-by: Bibo Mao <maobibo@loongson.cn>
-Acked-by: Huacai Chen <chenhuacai@loongson.cn>
----
- drivers/irqchip/irq-loongson-eiointc.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+- if the uarch caches invalid entries, we need to invalidate it otherwise
+  we would trap on this invalid entry,
+- if the uarch does not cache invalid entries, a reordered access could fail
+  to see the new mapping and then trap (sfence.vma acts as a fence).
 
-diff --git a/drivers/irqchip/irq-loongson-eiointc.c b/drivers/irqchip/irq-loongson-eiointc.c
-index b3736bdd4b9f..6a71a8c29ac7 100644
---- a/drivers/irqchip/irq-loongson-eiointc.c
-+++ b/drivers/irqchip/irq-loongson-eiointc.c
-@@ -198,6 +198,12 @@ static void eiointc_irq_dispatch(struct irq_desc *desc)
- 
- 	for (i = 0; i < eiointc_priv[0]->vec_count / VEC_COUNT_PER_REG; i++) {
- 		pending = iocsr_read64(EIOINTC_REG_ISR + (i << 3));
-+
-+		/* Skip handling if pending bitmap is zero */
-+		if (!pending)
-+			continue;
-+
-+		/* Clear the IRQs */
- 		iocsr_write64(pending, EIOINTC_REG_ISR + (i << 3));
- 		while (pending) {
- 			int bit = __ffs(pending);
+We can actually avoid emitting those (mostly) useless and costly sfence.vma
+by handling the traps instead:
+
+- for new kernel mappings: only vmalloc mappings need to be taken care of,
+  other new mapping are rare and already emit the required sfence.vma if
+  needed.
+  That must be achieved very early in the exception path as explained in
+  patch 3, and this also fixes our fragile way of dealing with vmalloc faults.
+
+- for new user mappings: Svvptc makes update_mmu_cache() a no-op and no
+  traps can happen since xRET instructions now act as fences.
+
+Patch 1 and 2 introduce Svvptc extension probing.
+
+It's still an RFC because Svvptc is not ratified yet.
+
+On our uarch that does not cache invalid entries and a 6.5 kernel, the
+gains are measurable:
+
+* Kernel boot:                  6%
+* ltp - mmapstress01:           8%
+* lmbench - lat_pagefault:      20%
+* lmbench - lat_mmap:           5%
+
+Thanks to Ved and Matt Evans for triggering the discussion that led to
+this patchset!
+
+Any feedback, test or relevant benchmark are welcome :)
+
+Changes in v2:
+- Rebase on top of 6.8-rc1
+- Remove patch with runtime detection of tlb caching and debugfs patch
+- Add patch that probes Svvptc
+- Add patch that defines the new Svvptc dt-binding
+- Leave the behaviour as-is for uarchs that cache invalid TLB entries since
+  I don't have any good perf numbers
+- Address comments from Christoph on v1
+- Fix a race condition in new_vmalloc update:
+
+       ld      a2, 0(a0) <= this could load something which is != -1
+       not     a1, a1    <= here or in the instruction after, flush_cache_vmap()
+                            could make the whole bitmap to 1
+       and     a1, a2, a1
+       sd      a1, 0(a0) <= here we would clear bits that should not be cleared!
+
+   Instead, replace the whole sequence with:
+       amoxor.w        a0, a1, (a0)
+
+Alexandre Ghiti (4):
+  riscv: Add ISA extension parsing for Svvptc
+  dt-bindings: riscv: Add Svvptc ISA extension description
+  riscv: Stop emitting preventive sfence.vma for new vmalloc mappings
+  riscv: Stop emitting preventive sfence.vma for new userspace mappings
+    with Svvptc
+
+ .../devicetree/bindings/riscv/extensions.yaml |  7 ++
+ arch/riscv/include/asm/cacheflush.h           | 18 +++-
+ arch/riscv/include/asm/hwcap.h                |  1 +
+ arch/riscv/include/asm/pgtable.h              | 16 +++-
+ arch/riscv/include/asm/thread_info.h          |  5 ++
+ arch/riscv/kernel/asm-offsets.c               |  5 ++
+ arch/riscv/kernel/cpufeature.c                |  1 +
+ arch/riscv/kernel/entry.S                     | 84 +++++++++++++++++++
+ arch/riscv/mm/init.c                          |  2 +
+ arch/riscv/mm/pgtable.c                       | 13 +++
+ 10 files changed, 150 insertions(+), 2 deletions(-)
+
 -- 
-2.39.3
+2.39.2
 

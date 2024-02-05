@@ -1,76 +1,62 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C681344C66;
-	Mon,  5 Feb 2024 17:19:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8221F17C78F;
+	Mon,  5 Feb 2024 19:04:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707153558; cv=none; b=YUiT9bPOSM4itGqreOvtF2EtFpuOxZSesIg1A0rPou1RRQRcrs9K5+wWFsbizZdN1oE9X+j1l+WxQDPX9GvYLO9elQLfdqv23ecDg77siYJsJK2/b5FrAYXznnHWwOfL2WLG5lrEXevjOH/mYrkyaBTW1mLL30DDT/kMouFA7YM=
+	t=1707159857; cv=none; b=caA3ALboc7/p4PpztJhjR/xfxapyJtSAEZqcRL/Fq3NvfrsQAWKSPbM7pho9EkQVIwSgL1uBcEDK8PMTBXah+KsCSv+xon5DnbNHQJmOFfQ9It9MYVX5hX54ZacwZAi24GcNroMEwp7+VTLbUrITwVB+mxWC7/USKsvfEDudObE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707153558; c=relaxed/simple;
-	bh=I/dPQVxNsqI+9sYP9jfmmTlxuMjd/mdTPS+ppBlP91k=;
+	s=arc-20240116; t=1707159857; c=relaxed/simple;
+	bh=GWC/R9KnvqMqsuGJbyvLUE5rq9tD0443OWb0hB5RjH0=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=s302S1tHwKk9mm+gMv0U1lIshUaZtkOIkuxWCBrHcWLNJl59MWhS6HDo/0qp3dRm6IeCNycsjR7nFXK97GmG8J6gV4nZXy9B/xkaCLj4IXxKym7Lla8Eyc1CbElGBPHdY0nx+vGh6jBao1wz7DFHgLujiquDiBxAh+qXsOLS+UI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gjLMnhnS; arc=none smtp.client-ip=10.30.226.201
+	 Content-Type:Content-Disposition:In-Reply-To; b=AHN8F1Pk+VgjvIdk66g4C0e3D1vpx2V3RlswhZGeBs4DBsfNZutu0pSafLMfdEXh3yiD4cPnLi1RuYWRMfuzvRiBGb+wyvGcQIyuTszpAj2ZVN/k+1u67wNufbnmAs4V9zaV8v4mXA4farq5zjnjBZrI9jEOQsPLe9/v9kj56KI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=ro2jZQjI; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gjLMnhnS"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1CBD8C433F1;
-	Mon,  5 Feb 2024 17:19:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707153558;
-	bh=I/dPQVxNsqI+9sYP9jfmmTlxuMjd/mdTPS+ppBlP91k=;
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="ro2jZQjI"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 196AFC43399;
+	Mon,  5 Feb 2024 19:04:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1707159857;
+	bh=GWC/R9KnvqMqsuGJbyvLUE5rq9tD0443OWb0hB5RjH0=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=gjLMnhnS6bLqj5NEb2kdZC1z8lR4VQEnrshyp+MlHCJjA9yFuBHRtW3ApRELIL5Vq
-	 D1QlzYPuzqErllQIS+pbu5Fak5hAKAyUuf9S8xTCw90/v2nRz4eXBVHT760hftISK5
-	 hG6xlJ/mLI0206EygnzvudqY+8M47NFCv7JpN1RNSz/CbMn5SrkIQ00wEP7406MdQE
-	 TSuHLhB5i1JeyqdjlSQkp3+wa/+1pGKx3xQvjjmyK3Kc1u1j+A5plAEZwsVviM2Qbe
-	 mGIjWSyPOrdcW+kpHLypq/JrTs2jdf5VBd+Ec7VXO5f2JkH9u4jEMOjW71JtZPUSJz
-	 kkZzWmjmM/rQA==
-Date: Mon, 5 Feb 2024 17:19:15 +0000
-From: Rob Herring <robh@kernel.org>
-To: =?iso-8859-1?Q?Th=E9o?= Lebrun <theo.lebrun@bootlin.com>
-Cc: linux-gpio@vger.kernel.org,
-	=?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <rafal@milecki.pl>,
-	Rob Herring <robh+dt@kernel.org>,
-	Gregory CLEMENT <gregory.clement@bootlin.com>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Stephen Boyd <sboyd@kernel.org>,
-	Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>,
-	linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-	linux-mips@vger.kernel.org, Philipp Zabel <p.zabel@pengutronix.de>,
-	devicetree@vger.kernel.org,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Linus Walleij <linus.walleij@linaro.org>,
-	Tawfik Bayouk <tawfik.bayouk@mobileye.com>,
-	Michael Turquette <mturquette@baylibre.com>
-Subject: Re: [PATCH v4 06/18] dt-bindings: pinctrl: mobileye,eyeq5-pinctrl:
- add bindings
-Message-ID: <170715355367.3639066.15524146689406248436.robh@kernel.org>
-References: <20240131-mbly-clk-v4-0-bcd00510d6a0@bootlin.com>
- <20240131-mbly-clk-v4-6-bcd00510d6a0@bootlin.com>
+	b=ro2jZQjI3U/cwZ2pnMgqNNoA00k5AzWG69901vgqg3IW7qeKeGC447ywZXjKFc/nJ
+	 g7d1pz5SVg1CIdEnt7uJ16Y+tQAuPKS/LAtxz39RW8FTq4p2TS5HnVurx5g608cYwC
+	 UXCw41oKsf4+2bxFcK8kxUWHX5/ygEhmvxci5gck=
+Date: Mon, 5 Feb 2024 04:51:56 -0800
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: "Ricardo B. Marliere" <ricardo@marliere.net>
+Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/2] mips: struct bus_type cleanup
+Message-ID: <2024020550-mountable-grandkid-a4a9@gregkh>
+References: <20240204-bus_cleanup-mips-v1-0-05af5e9a7ead@marliere.net>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240131-mbly-clk-v4-6-bcd00510d6a0@bootlin.com>
+In-Reply-To: <20240204-bus_cleanup-mips-v1-0-05af5e9a7ead@marliere.net>
 
-
-On Wed, 31 Jan 2024 17:26:19 +0100, Théo Lebrun wrote:
-> Add dt-schema type bindings for the Mobileye EyeQ5 pin controller.
+On Sun, Feb 04, 2024 at 12:06:56PM -0300, Ricardo B. Marliere wrote:
+> This series is part of an effort to cleanup the users of the driver
+> core, as can be seen in many recent patches authored by Greg across the
+> tree (e.g. [1]). Specifically, this series is part of the task of
+> splitting one of his TODOs [2].
 > 
-> Signed-off-by: Théo Lebrun <theo.lebrun@bootlin.com>
 > ---
->  .../bindings/pinctrl/mobileye,eyeq5-pinctrl.yaml   | 242 +++++++++++++++++++++
->  MAINTAINERS                                        |   1 +
->  2 files changed, 243 insertions(+)
+> [1]: https://lore.kernel.org/lkml/?q=f%3Agregkh%40linuxfoundation.org+s%3A%22make%22+and+s%3A%22const%22
+> [2]: https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/driver-core.git/commit/?h=bus_cleanup&id=26105f537f0c60eacfeb430abd2e05d7ddcdd8aa
 > 
+> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Signed-off-by: Ricardo B. Marliere <ricardo@marliere.net>
+> 
+> ---
+> Ricardo B. Marliere (2):
+>       mips: sgi-ip22: make gio_bus_type const
+>       mips: txx9: make txx9_sramc_subsys const
 
-Reviewed-by: Rob Herring <robh@kernel.org>
-
+Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>

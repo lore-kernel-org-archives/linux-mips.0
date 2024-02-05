@@ -1,35 +1,35 @@
-Received: from relay8-d.mail.gandi.net (relay8-d.mail.gandi.net [217.70.183.201])
+Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net [217.70.183.197])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 82A2F2E634;
-	Mon,  5 Feb 2024 15:35:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D2EB2E62D;
+	Mon,  5 Feb 2024 15:35:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.197
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707147313; cv=none; b=In7HNgu9BS84Ct5AgkRoRaOhBPr245rlZz/rRtGDXoWYmICvBKqe6JJBPnFe3PiR4HTNTXC4SucjcAbBWCw2/GB90Le9qfqLabOjRceP3p6Rws/pEoy+nhNIuPxYyrQRB/efTsTgylL2w57CIDtfbj77zKwVPXshQMVyWRbCN+Q=
+	t=1707147314; cv=none; b=jFpiuEArImuR/kIJJEIoFpwuWZK6tMpVWzDRxCYJ7nsyb9YPUHKfN1SeWbmh1jWDb72UL0keiZTdDtI/J/2wta/1AEKunhDOxFFBLsmtDmj07Kst966m0prqoTycxOXmJm6zrP/RjrLbmEngo75lOu8jqBcxqKHlXk7HnImaR00=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707147313; c=relaxed/simple;
-	bh=oa5sejmaTh9U90I2mSDvC4U+biGVOnXDlP5i08xONzc=;
+	s=arc-20240116; t=1707147314; c=relaxed/simple;
+	bh=seWFh23w7ydoCuw+og2PCLynYdrB+dpA0lmRDxMvm3Y=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=RUVhpcumZkndubKJB/fMQtCA78wenLDdeEGNw7OIDdGD3y1agq9184wjZwt+gnlV/6I25pM1KqRz1E+liak4GKgbrMotZjqLuIWMPiSf6n7F3x1f1Xzcdjp/KEGRAGk+dKPV05GWqLtmUOUqHjFQ90MuIYcAqB51W4GuIpx1214=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=PbRjKJGe; arc=none smtp.client-ip=217.70.183.201
+	 MIME-Version; b=C+ufpHMMxLfUXDMtjLHVMdnz+EIcVNhSonLxARZ6KcOsZJv/405zYkLRcCFIugSUNFktquUcKAD2L3PSA701jp9ayyZYdKkTTPdfhx34g7Qf6S6W8JnTAETV3lG1G7Rsj5IMIHd9w7QRv1TVpcNcsMPOuQGJHRXMMLzP+ja398Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=jaTCArOJ; arc=none smtp.client-ip=217.70.183.197
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="PbRjKJGe"
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 064CA1BF208;
-	Mon,  5 Feb 2024 15:35:07 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="jaTCArOJ"
+Received: by mail.gandi.net (Postfix) with ESMTPSA id BD7A01C0015;
+	Mon,  5 Feb 2024 15:35:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1707147308;
+	t=1707147310;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=kCu7pbyVCXYyBTkd+j43VhZPPnMfAyc4JbkgYZulLro=;
-	b=PbRjKJGe20Wre3g36e4elqWGh2SQLjS5H0anTaXoffAmMjTX/ucQLd32l6/nqucNABPa5O
-	sEl7D56VJ2307krtD3AwN99Q1Zpicqt6z4WewCW2FGt1jBZpEHJsLcLuMpFhLTZA3eAGDX
-	RKw29VHd8oAQMuHKeguplFrUpm+y4igmqgaMXM/yS3HBZqOZIdtQVYdRGj3YW454exU5sf
-	vQN27JDxsiY82Cmb9OCg+RyrHXFhWlUT9iYRcLX++UzYwoMEhe5LTwFl0wZ/bXRXTcRSUV
-	S/OVcUjS+ik2QEBpbacoZBlMpP5Sh77jFv97a+AJIc5J7LQsbC1LhuNwHKZDiw==
+	bh=esfeCMI7Pwpjz+uzSpSUDXn4KCrjxw72sDAlH2LRRks=;
+	b=jaTCArOJUbwNw5HiAKOEX5uVtZ1sgVDqqQhs8RvBNz+tZCAClENSE1h3tjRDLbU56lHleX
+	yceVEgesS4BoNf7fPq7dx/2u/Y82/PjZ4IXxAptaKIWo9M50MdH13jjpgAN8mo7MD5JEkL
+	L+En+wNaMur8UHAihFC9x8H43d4rXNhM2yl+tZ3MfTngZDvr7M3XLfqY6NKjeQRjkwJzMG
+	pUDFAGIGjIiUgP4kqffMG29+BKhWahnt/dcE5twYsLDce7S+Dz7kJ8OeEHxHHAgLh8xPpH
+	EMXLdmr7DSFGTPq3KWZi6Y8c5u8jFjfscSuv9M0iY14hMAP5VJiKybGv353VGQ==
 From: Gregory CLEMENT <gregory.clement@bootlin.com>
 To: Paul Burton <paulburton@kernel.org>,
 	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
@@ -44,11 +44,10 @@ Cc: Vladimir  Kondratiev <vladimir.kondratiev@mobileye.com>,
 	Alexandre Belloni <alexandre.belloni@bootlin.com>,
 	=?UTF-8?q?Th=C3=A9o=20Lebrun?= <theo.lebrun@bootlin.com>,
 	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-	Vladimir Kondratiev <vladimir.kondratiev@intel.com>,
 	Gregory CLEMENT <gregory.clement@bootlin.com>
-Subject: [PATCH v7 02/14] MIPS: Fix set_uncached_handler for ebase in XKPHYS
-Date: Mon,  5 Feb 2024 16:34:48 +0100
-Message-ID: <20240205153503.574468-3-gregory.clement@bootlin.com>
+Subject: [PATCH v7 04/14] MIPS: traps: Give more explanations if ebase doesn't belong to KSEG0
+Date: Mon,  5 Feb 2024 16:34:50 +0100
+Message-ID: <20240205153503.574468-5-gregory.clement@bootlin.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240205153503.574468-1-gregory.clement@bootlin.com>
 References: <20240205153503.574468-1-gregory.clement@bootlin.com>
@@ -61,36 +60,38 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-GND-Sasl: gregory.clement@bootlin.com
 
-From: Jiaxun Yang <jiaxun.yang@flygoat.com>
+With the expanded support for placing the kernel in XPHYS rather than
+just KSEG0, scenarios where ebase doesn't belong to KSEG0 are more
+likely to occur. In such cases, we currently experience a substantial
+and perplexing stack dump without any accompanying explanation. To
+rectify this, we aim to replace the uninformative stack dump with a
+warning that offers a clear explanation of the issue.
 
-ebase might reside in XKPHYS if memblock is unable to allocate memory
-within the KSEG0 physical range.
-
-To map EBASE into uncached space, we convert it back to its physical
-address and utilize the new CKSEG1ADDR_OR_64BIT helper for mapping.
-
-Co-developed-by: Vladimir Kondratiev <vladimir.kondratiev@intel.com>
-Signed-off-by: Vladimir Kondratiev <vladimir.kondratiev@intel.com>
-Co-developed-by: Gregory CLEMENT <gregory.clement@bootlin.com>
-Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+Reviewed-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
 Signed-off-by: Gregory CLEMENT <gregory.clement@bootlin.com>
 ---
- arch/mips/kernel/traps.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/mips/kernel/traps.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
 diff --git a/arch/mips/kernel/traps.c b/arch/mips/kernel/traps.c
-index 0e3f2f2fa732b..355d0f0709de8 100644
+index 355d0f0709de8..911d2233d6d0b 100644
 --- a/arch/mips/kernel/traps.c
 +++ b/arch/mips/kernel/traps.c
-@@ -2295,7 +2295,7 @@ static const char panic_null_cerr[] =
- void set_uncached_handler(unsigned long offset, void *addr,
- 	unsigned long size)
- {
--	unsigned long uncached_ebase = CKSEG1ADDR(ebase);
-+	unsigned long uncached_ebase = CKSEG1ADDR_OR_64BIT(__pa(ebase));
+@@ -2347,10 +2347,13 @@ void __init trap_init(void)
+ 		 * EVA is special though as it allows segments to be rearranged
+ 		 * and to become uncached during cache error handling.
+ 		 */
+-		if (!IS_ENABLED(CONFIG_EVA) && !WARN_ON(ebase_pa >= 0x20000000))
++		if (!IS_ENABLED(CONFIG_EVA) && ebase_pa < 0x20000000)
+ 			ebase = CKSEG0ADDR(ebase_pa);
+ 		else
+ 			ebase = (unsigned long)phys_to_virt(ebase_pa);
++		if (ebase_pa >= 0x20000000)
++			pr_warn("ebase(%pa) should better be in KSeg0",
++				&ebase_pa);
+ 	}
  
- 	if (!addr)
- 		panic(panic_null_cerr);
+ 	if (cpu_has_mmips) {
 -- 
 2.43.0
 

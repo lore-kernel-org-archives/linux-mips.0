@@ -1,136 +1,181 @@
-Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2736F763E4;
-	Thu,  8 Feb 2024 12:49:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.175.24.41
+Received: from relay1-d.mail.gandi.net (relay1-d.mail.gandi.net [217.70.183.193])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A8643F9C0;
+	Fri,  9 Feb 2024 14:31:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.193
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707396596; cv=none; b=d0Nr/f+7ma081radKxGGQCHdVceTUse6PkxPQQhCU0n5BCdms3KnbBZCv6l4k2tzwLdw40tseht9PoccG3//b2j9KYE3DaY/boWrus0U2EwrS9bxYxfItbc/fxtXbnvfjcIwH1+FGpQdyZQT3pcpiQ4yQ/C3hmLvhDC0ZAtOPIQ=
+	t=1707489114; cv=none; b=ahbAgNZgPr+egkqcf02zYe3womeJJiL+fEU+xK35kbc0VAkswDKi78LB6SPTiWhBQ3DMOm1CytHoTAlWxtc2Ci9UtasBifZtw6YIaaW91emRldYR1AMdj6OYrgZeHbJUXbRdwvaJItmTWQ1uqXTGvHRvtjBJjb41ZJEx1enpDi8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707396596; c=relaxed/simple;
-	bh=/raue+ELhkH2hPh2pJ5EPvccB2rMfZ0AyREnP0RN1h4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=PuBEsCiJOflRC6iThJPN6gDHJcbZCEyOvBc54MZc0KVzffFSlGX/EGyEUX91lN6FP1X3B1XsLXsS1hYei0sS8oEiXAFk9XlYfKNy1AL4EtmZKEPlxIMAq5rrTYFl7JTAQBgl8+AnillPd+GTvP+eu3Sbjhp22GDbMueGchjlEK0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de; spf=pass smtp.mailfrom=alpha.franken.de; arc=none smtp.client-ip=193.175.24.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alpha.franken.de
-Received: from uucp by elvis.franken.de with local-rmail (Exim 3.36 #1)
-	id 1rY3Mr-000327-00; Thu, 08 Feb 2024 13:19:01 +0100
-Received: by alpha.franken.de (Postfix, from userid 1000)
-	id 71A38C0267; Thu,  8 Feb 2024 13:11:30 +0100 (CET)
-Date: Thu, 8 Feb 2024 13:11:30 +0100
-From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To: Gregory CLEMENT <gregory.clement@bootlin.com>
-Cc: Paul Burton <paulburton@kernel.org>, linux-mips@vger.kernel.org,
-	Jiaxun Yang <jiaxun.yang@flygoat.com>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>,
-	Tawfik Bayouk <tawfik.bayouk@mobileye.com>,
-	Alexandre Belloni <alexandre.belloni@bootlin.com>,
-	=?iso-8859-1?Q?Th=E9o?= Lebrun <theo.lebrun@bootlin.com>,
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: Re: [PATCH v7 03/14] MIPS: Allows relocation exception vectors
- everywhere
-Message-ID: <ZcTE8nKCaKuaUvAe@alpha.franken.de>
-References: <20240205153503.574468-1-gregory.clement@bootlin.com>
- <20240205153503.574468-4-gregory.clement@bootlin.com>
+	s=arc-20240116; t=1707489114; c=relaxed/simple;
+	bh=QyuJSJlqyr4I15nAAAdkFa3ViskJgQew0x/JXRRa0AE=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
+	 In-Reply-To:To:Cc; b=NO6l/YpIPOpSYGq9KYpD3i2uCGrRYi/JR2twhPEsuTqSN94nSSAZ1GI/cl/vR71RxRQFDSDLerMikAJBVBTlN2Zf+tjbzJhZCA9FXnNHjfzi9JdnJsDqGfvtPMnAu9aBXxeKghK4YOAL3lFBDCa91eq5V4DDdHwC/nasFoQrhQc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=QgvOrLd4; arc=none smtp.client-ip=217.70.183.193
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="QgvOrLd4"
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 8F59C240002;
+	Fri,  9 Feb 2024 14:31:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1707489109;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Aq9MbOqr21Sl0cLKaoBi7IfLbqhaI1zVPu3ITBlSL8o=;
+	b=QgvOrLd4CH0xvBJjh2lbqtPgPCmRxHnDiPDPO54ZMRSb62wQ3AT6wnzDmq+w2Xf1Hcof7n
+	cJBeXqM48r4vthLWHP8MbKcQFeeUXqprkIdIKsQv2YwtUzrWYFvbdiE7rkEvJgFEQ+Y6eg
+	vLx2t/h5u8lwh6HkRY56X5Pi+6iS3lfhed97byLmBwV4nM1HpyLOQKGEScbnkz4FUex8Gz
+	UAr7t02ETmVg9fIyLck3fz+GPlqBbnw7TK3q6KWjUXdxdaEeGxIwtR3Aff57RmzDTuYmxC
+	pht/sVt95GcBJLa6vA4Gn3ye8cthaeKBfmTVKixNwLIYyok4XuahnECr9cNHkA==
+From: =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
+Date: Fri, 09 Feb 2024 15:31:39 +0100
+Subject: [PATCH v5 03/13] dt-bindings: clock: mobileye,eyeq5-clk: add
+ bindings
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240205153503.574468-4-gregory.clement@bootlin.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Message-Id: <20240209-mbly-clk-v5-3-f094ee5e918a@bootlin.com>
+References: <20240209-mbly-clk-v5-0-f094ee5e918a@bootlin.com>
+In-Reply-To: <20240209-mbly-clk-v5-0-f094ee5e918a@bootlin.com>
+To: Gregory CLEMENT <gregory.clement@bootlin.com>, 
+ Michael Turquette <mturquette@baylibre.com>, 
+ Stephen Boyd <sboyd@kernel.org>, Rob Herring <robh+dt@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Conor Dooley <conor+dt@kernel.org>, 
+ Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
+ Linus Walleij <linus.walleij@linaro.org>, 
+ =?utf-8?q?Rafa=C5=82_Mi=C5=82ecki?= <rafal@milecki.pl>, 
+ Philipp Zabel <p.zabel@pengutronix.de>
+Cc: Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>, 
+ linux-mips@vger.kernel.org, linux-clk@vger.kernel.org, 
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>, 
+ Tawfik Bayouk <tawfik.bayouk@mobileye.com>, linux-gpio@vger.kernel.org, 
+ =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
+X-Mailer: b4 0.12.4
+X-GND-Sasl: theo.lebrun@bootlin.com
 
-On Mon, Feb 05, 2024 at 04:34:49PM +0100, Gregory CLEMENT wrote:
-> From: Jiaxun Yang <jiaxun.yang@flygoat.com>
-> 
-> Now the exception vector for CPS systems are allocated on-fly
-> with memblock as well.
-> 
-> It will try to allocate from KSEG1 first, and then try to allocate
-> in low 4G if possible.
-> 
-> The main reset vector is now generated by uasm, to avoid tons
-> of patches to the code. Other vectors are copied to the location
-> later.
-> 
-> gc: use the new macro CKSEG[0A1]DDR_OR_64BIT()
->     move 64bits fix in an other patch
->     fix cache issue with mips_cps_core_entry
->     rewrite the patch to reduce the diff stat
-> Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
-> Signed-off-by: Gregory CLEMENT <gregory.clement@bootlin.com>
-> ---
->  arch/mips/include/asm/mips-cm.h |   1 +
->  arch/mips/include/asm/smp-cps.h |   4 +-
->  arch/mips/kernel/cps-vec.S      |  48 ++-------
->  arch/mips/kernel/smp-cps.c      | 171 +++++++++++++++++++++++++++-----
->  4 files changed, 157 insertions(+), 67 deletions(-)
-> [..]
-> diff --git a/arch/mips/kernel/smp-cps.c b/arch/mips/kernel/smp-cps.c
-> index dd55d59b88db3..f4cdd50177e0b 100644
-> --- a/arch/mips/kernel/smp-cps.c
-> +++ b/arch/mips/kernel/smp-cps.c
-> @@ -7,6 +7,7 @@
->  #include <linux/cpu.h>
->  #include <linux/delay.h>
->  #include <linux/io.h>
-> +#include <linux/memblock.h>
->  #include <linux/sched/task_stack.h>
->  #include <linux/sched/hotplug.h>
->  #include <linux/slab.h>
-> @@ -25,7 +26,34 @@
->  #include <asm/time.h>
->  #include <asm/uasm.h>
->  
-> +#define BEV_VEC_SIZE	0x500
-> +#define BEV_VEC_ALIGN	0x1000
-> +
-> +#define A0		4
-> +#define A1		5
-> +#define T9		25
-> +#define K0		26
-> +#define K1		27
-> +
-> +#define C0_STATUS	12, 0
-> +#define C0_CAUSE	13, 0
-> +
-> +#define ST0_NMI_BIT	19
-> +#ifdef CONFIG_64BIT
-> +#define ST0_KX_IF_64	ST0_KX
-> +#else
-> +#define ST0_KX_IF_64	0
-> +#endif
+Add DT schema bindings for the EyeQ5 clock controller driver.
 
-please move this together with the other defines in arch/mips/kvm/entry.c
-to a header file (arch/mips/include/asm/uasm.h sounds like a good fit).
+Signed-off-by: Théo Lebrun <theo.lebrun@bootlin.com>
+---
+ .../bindings/clock/mobileye,eyeq5-clk.yaml         | 52 ++++++++++++++++++++++
+ MAINTAINERS                                        |  2 +
+ include/dt-bindings/clock/mobileye,eyeq5-clk.h     | 22 +++++++++
+ 3 files changed, 76 insertions(+)
 
-> +static void __init setup_cps_vecs(void)
-> +{
-> +	extern void excep_tlbfill(void);
-> +	extern void excep_xtlbfill(void);
-> +	extern void excep_cache(void);
-> +	extern void excep_genex(void);
-> +	extern void excep_intex(void);
-> +	extern void excep_ejtag(void);
-
-I know this used a lot in arch/mips, but don't add another one and
-put this to a header file. IMHO checkpatch should have warned you about
-that.
-
-> +	/* We want to ensure cache is clean before writing uncached mem */
-> +	blast_dcache_range(CKSEG0ADDR_OR_64BIT(cps_vec_pa), CKSEG0ADDR_OR_64BIT(cps_vec_pa) + BEV_VEC_SIZE);
-> +	bc_wback_inv(CKSEG0ADDR_OR_64BIT(cps_vec_pa), BEV_VEC_SIZE);
-> +	__sync();
-
-how about doint the generation with cached memory and flush caches
-after that ?
-
-Thomas.
+diff --git a/Documentation/devicetree/bindings/clock/mobileye,eyeq5-clk.yaml b/Documentation/devicetree/bindings/clock/mobileye,eyeq5-clk.yaml
+new file mode 100644
+index 000000000000..44eff4618ca7
+--- /dev/null
++++ b/Documentation/devicetree/bindings/clock/mobileye,eyeq5-clk.yaml
+@@ -0,0 +1,52 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/clock/mobileye,eyeq5-clk.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Mobileye EyeQ5 clock controller
++
++description:
++  The EyeQ5 clock controller handles 10 read-only PLLs derived from the main
++  crystal clock. It also exposes one divider clock, a child of one of the PLLs.
++  Its registers live in a shared region called OLB.
++
++maintainers:
++  - Grégory Clement <gregory.clement@bootlin.com>
++  - Théo Lebrun <theo.lebrun@bootlin.com>
++  - Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>
++
++properties:
++  compatible:
++    const: mobileye,eyeq5-clk
++
++  reg:
++    minItems: 2
++    maxItems: 2
++
++  reg-names:
++    items:
++      - const: plls
++      - const: ospi
++
++  "#clock-cells":
++    const: 1
++
++  clocks:
++    maxItems: 1
++    description:
++      Input parent clock to all PLLs. Expected to be the main crystal.
++
++  clock-names:
++    items:
++      - const: ref
++
++required:
++  - compatible
++  - reg
++  - reg-names
++  - "#clock-cells"
++  - clocks
++  - clock-names
++
++additionalProperties: false
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 35c752dc536b..2143f64e9e15 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -14789,10 +14789,12 @@ M:	Gregory CLEMENT <gregory.clement@bootlin.com>
+ M:	Théo Lebrun <theo.lebrun@bootlin.com>
+ L:	linux-mips@vger.kernel.org
+ S:	Maintained
++F:	Documentation/devicetree/bindings/clock/mobileye,eyeq5-clk.yaml
+ F:	Documentation/devicetree/bindings/mips/mobileye.yaml
+ F:	arch/mips/boot/dts/mobileye/
+ F:	arch/mips/configs/eyeq5_defconfig
+ F:	arch/mips/mobileye/board-epm5.its.S
++F:	include/dt-bindings/clock/mobileye,eyeq5-clk.h
+ F:	include/dt-bindings/soc/mobileye,eyeq5.h
+ 
+ MODULE SUPPORT
+diff --git a/include/dt-bindings/clock/mobileye,eyeq5-clk.h b/include/dt-bindings/clock/mobileye,eyeq5-clk.h
+new file mode 100644
+index 000000000000..26d8930335e4
+--- /dev/null
++++ b/include/dt-bindings/clock/mobileye,eyeq5-clk.h
+@@ -0,0 +1,22 @@
++/* SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause) */
++/*
++ * Copyright (C) 2024 Mobileye Vision Technologies Ltd.
++ */
++
++#ifndef _DT_BINDINGS_CLOCK_MOBILEYE_EYEQ5_CLK_H
++#define _DT_BINDINGS_CLOCK_MOBILEYE_EYEQ5_CLK_H
++
++#define EQ5C_PLL_CPU	0
++#define EQ5C_PLL_VMP	1
++#define EQ5C_PLL_PMA	2
++#define EQ5C_PLL_VDI	3
++#define EQ5C_PLL_DDR0	4
++#define EQ5C_PLL_PCI	5
++#define EQ5C_PLL_PER	6
++#define EQ5C_PLL_PMAC	7
++#define EQ5C_PLL_MPC	8
++#define EQ5C_PLL_DDR1	9
++
++#define EQ5C_DIV_OSPI	10
++
++#endif
 
 -- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+2.43.0
+

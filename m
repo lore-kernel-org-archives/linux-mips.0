@@ -1,31 +1,30 @@
 Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 912C569DFF;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 912F96A345;
 	Tue, 20 Feb 2024 13:48:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.175.24.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708436934; cv=none; b=d9mD8hBPtQagykPxKbJnl48t9HvOzL8fcNy5x+KCQzjynYwrjMmmHWIrUDRGhd8KJ5cxC75hq4kJD2xIKKaNRza49CyNPQP6DAqsKEg0M0kzZ1cuGBcw+g7AT3dgvMBh4TfPmRqderxXqr1TAdRZxAC2BksbhukZidVt6RzGboE=
+	t=1708436934; cv=none; b=fhFEi/OWzaNQ6P7D1RHcczGJL5y2sbzqGmOhes4I7FVZK0aUexif7qQlA3LTS5xzHGP7i9FKCzX7NJwyKOg840zuLtGmYsQQ/Ev3ImuBaCfwPAq3SS9BS8Limgt0D+9cdn5E9kDyFSYNCZGWfBmunUtReiE9aFG6mQJwacrmJjw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1708436934; c=relaxed/simple;
-	bh=FXC6OCaMo6PBra09rv0mQ7fmtDHn40tyIY5riwAomwY=;
+	bh=dN9MbC0dNk5OxWYWmvs4wMDcGflhy2eneDFOeyPwUIw=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=LrujmuqsVy2d3VSWVnaKDHC+6/Z1QpTfMQpo/eq67d2a2/riCvtYD7XhqB9Wb+/CRunukMLljWUXA9eev+jEIYMf372prRGGDoOMe7SA6mTu3FD5mceAvGma/ucX0xrybsLzbvwuap8yuukiTgWKzxfQt2FrikJjbBHwrfLW9OY=
+	 Content-Type:Content-Disposition:In-Reply-To; b=IZU3CdoMtnbNGHtyDL3E5Uu8/HdmpR1Ic+cUq5Qun+bkr96Zs3WrvWNEjhO8F4x1+nEQ7VM3vr8I2GliAW6h5wy+PHJsZXFAhzdKtKDXC1McU6HNbPKyoB2Cq5I3Dgag7LrgKFqYwNVB+7bIG80J50jL+4gwtWFUd0h0GSNpTLM=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de; spf=pass smtp.mailfrom=alpha.franken.de; arc=none smtp.client-ip=193.175.24.41
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alpha.franken.de
 Received: from uucp by elvis.franken.de with local-rmail (Exim 3.36 #1)
-	id 1rcQUF-0007OQ-00; Tue, 20 Feb 2024 14:48:43 +0100
+	id 1rcQUF-0007OO-00; Tue, 20 Feb 2024 14:48:43 +0100
 Received: by alpha.franken.de (Postfix, from userid 1000)
-	id 99382C0694; Tue, 20 Feb 2024 14:38:24 +0100 (CET)
-Date: Tue, 20 Feb 2024 14:38:24 +0100
+	id B2CADC066F; Tue, 20 Feb 2024 14:37:47 +0100 (CET)
+Date: Tue, 20 Feb 2024 14:37:47 +0100
 From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To: Masahiro Yamada <masahiroy@kernel.org>
-Cc: linux-mips@vger.kernel.org, linux-kbuild@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/1] MIPS: move unselectable entries out of the "CPU
- type" choice
-Message-ID: <ZdSrUKlV+Q37S3B7@alpha.franken.de>
-References: <20240127162309.1026549-1-masahiroy@kernel.org>
- <20240127162309.1026549-2-masahiroy@kernel.org>
+To: Erick Archer <erick.archer@gmx.com>
+Cc: "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+	linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-hardening@vger.kernel.org
+Subject: Re: [PATCH] MIPS: Alchemy: Use kcalloc() instead of kzalloc()
+Message-ID: <ZdSrK6QeToAl2K2h@alpha.franken.de>
+References: <20240120133443.4237-1-erick.archer@gmx.com>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
@@ -34,32 +33,42 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240127162309.1026549-2-masahiroy@kernel.org>
+In-Reply-To: <20240120133443.4237-1-erick.archer@gmx.com>
 
-On Sun, Jan 28, 2024 at 01:23:09AM +0900, Masahiro Yamada wrote:
-> Move the following entries out of the "CPU type" choice:
+On Sat, Jan 20, 2024 at 02:34:43PM +0100, Erick Archer wrote:
+> As noted in the "Deprecated Interfaces, Language Features, Attributes,
+> and Conventions" documentation [1], size calculations (especially
+> multiplication) should not be performed in memory allocator (or similar)
+> function arguments due to the risk of them overflowing. This could lead
+> to values wrapping around and a smaller allocation being made than the
+> caller was expecting. Using those allocations could lead to linear
+> overflows of heap memory and other misbehaviors.
 > 
->  - LOONGSON3_ENHANCEMENT
->  - CPU_LOONGSON3_WORKAROUNDS
->  - CPU_LOONGSON3_CPUCFG_EMULATION
+> So, use the purpose specific kcalloc() function instead of the argument
+> size * count in the kzalloc() function.
 > 
-> These entries cannot be selected from the choice because they depend on
-> CPU_LOONGSON64, which is also located in the same choice.
-> 
-> In fact, Kconfig does not consider them as choice values because they
-> become children of CPU_LOOONGSON64 due to the automatic submenu creation
-> in menu_finalize().
-> 
-> However, it is hard to understand this behavior unless you are familiar
-> with the Kconfig internals.
-> 
-> "choice" should contain only selectable entries.
-> 
-> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+> Link: https://www.kernel.org/doc/html/next/process/deprecated.html#open-coded-arithmetic-in-allocator-arguments [1]
+> Link: https://github.com/KSPP/linux/issues/162
+> Signed-off-by: Erick Archer <erick.archer@gmx.com>
 > ---
+>  arch/mips/alchemy/common/clock.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
->  arch/mips/Kconfig | 76 +++++++++++++++++++++++------------------------
->  1 file changed, 38 insertions(+), 38 deletions(-)
+> diff --git a/arch/mips/alchemy/common/clock.c b/arch/mips/alchemy/common/clock.c
+> index c01be8c45271..6c8996e20a7d 100644
+> --- a/arch/mips/alchemy/common/clock.c
+> +++ b/arch/mips/alchemy/common/clock.c
+> @@ -771,7 +771,7 @@ static int __init alchemy_clk_init_fgens(int ctype)
+>  	}
+>  	id.flags = CLK_SET_RATE_PARENT | CLK_GET_RATE_NOCACHE;
+> 
+> -	a = kzalloc((sizeof(*a)) * 6, GFP_KERNEL);
+> +	a = kcalloc(6, sizeof(*a), GFP_KERNEL);
+>  	if (!a)
+>  		return -ENOMEM;
+> 
+> --
+> 2.25.1
 
 applied to mips-next.
 

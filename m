@@ -1,29 +1,37 @@
 Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F09A96A346;
-	Tue, 20 Feb 2024 13:48:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 36F10768FF;
+	Tue, 20 Feb 2024 17:24:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.175.24.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708436934; cv=none; b=Eh1hgIu8FOawRLMqGZ13/1ssJX8l4+8410GYNFCqowe09ZTmUDZtkl9KkW6b876jkptrI/ODg6ozdGpgc6DnLSVgGJGNN6xD2UEFzn8bIiYKrHkKWoBlINUzSMNAQ+3wwkM8lz36s3dE2CPUlmNG26FdOCMrSkTjUu//IfGybuo=
+	t=1708449889; cv=none; b=upMzPjS1AAFQoGp6c2ZkwFIYKjLdL3PJ1erPb39K7bkwg0+0UwtODFGKmrAcdMPz0IWmzvDnWtfEnQ3OatqXt78gZaRMhv9wHCUfpo/FUvlO5Vk6TV3TrILpvyIeJxy7ppkdCaoxNfgITQR4LTxkuD2cmd+/0HRCfM3XKq88RUE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708436934; c=relaxed/simple;
-	bh=SynaioFw+yQpRvdCOCb1Co5Ewh+f1Mqe+AUZhxJedIo=;
+	s=arc-20240116; t=1708449889; c=relaxed/simple;
+	bh=aKwPCBXNl0gY8TjknCsbiBlOL8RUt4XBoy//XgBLfMI=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=eiloiwJMgQord0zf3T2ag9K2+24IwQ9XTwC0gRG5Q2Wu/ZWq4LOn5xIomPTjNZ6wtnrwAvwkRrlkGNS9CRQw3VWXGIX+LoF6jysrWXPh3HvMOOIa60n6A2vkuZe4Bnfzjsx8mQq8RhMksSf+ub4ixw6bZ2xlritjjWBLwdLC65A=
+	 Content-Type:Content-Disposition:In-Reply-To; b=ok1aX6EYU/9hMSHwW1wxtLg2utCIIRIxG0oHLWOQGvP4pGAwkkenUszTQdN+HYGG4/XyEvxcFujMMEWdovWuHfUdxZi0kQzVdwDCIn12qgolEysuEMqvYSdgt29AqufKNn2f5HbKbRzIlOs9y2fofaih/F4CLjDK/npyM8kKYug=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de; spf=pass smtp.mailfrom=alpha.franken.de; arc=none smtp.client-ip=193.175.24.41
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alpha.franken.de
 Received: from uucp by elvis.franken.de with local-rmail (Exim 3.36 #1)
-	id 1rcQUF-0007Od-00; Tue, 20 Feb 2024 14:48:43 +0100
+	id 1rcTrF-0000o6-00; Tue, 20 Feb 2024 18:24:41 +0100
 Received: by alpha.franken.de (Postfix, from userid 1000)
-	id 06587C0A1E; Tue, 20 Feb 2024 14:39:40 +0100 (CET)
-Date: Tue, 20 Feb 2024 14:39:40 +0100
+	id B9BA7C0267; Tue, 20 Feb 2024 18:24:25 +0100 (CET)
+Date: Tue, 20 Feb 2024 18:24:25 +0100
 From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To: Jiaxun Yang <jiaxun.yang@flygoat.com>
-Cc: Gregory CLEMENT <gregory.clement@bootlin.com>,
-	linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/8] MIPS: Unify register numbering macros for uasm
-Message-ID: <ZdSrnG493wn2U+5s@alpha.franken.de>
-References: <20240209-regname-v1-0-2125efa016ef@flygoat.com>
+To: Serge Semin <fancer.lancer@gmail.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Jiri Slaby <jirislaby@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+	Jiaxun Yang <jiaxun.yang@flygoat.com>,
+	Alexey Malahov <Alexey.Malahov@baikalelectronics.ru>,
+	Stephen Rothwell <sfr@rothwell.id.au>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	linux-mips@vger.kernel.org, linux-serial@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/4] mips: cm: Add CM GCR and L2-sync base address
+ getters declarations
+Message-ID: <ZdTgSZRTDkakekkd@alpha.franken.de>
+References: <20240215171740.14550-1-fancer.lancer@gmail.com>
+ <20240215171740.14550-3-fancer.lancer@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
@@ -32,45 +40,33 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240209-regname-v1-0-2125efa016ef@flygoat.com>
+In-Reply-To: <20240215171740.14550-3-fancer.lancer@gmail.com>
 
-On Fri, Feb 09, 2024 at 06:07:46PM +0000, Jiaxun Yang wrote:
-> Hi all,
+On Thu, Feb 15, 2024 at 08:17:27PM +0300, Serge Semin wrote:
+> Based on the design pattern utilized in the CM GCR and L2-sync base
+> address getters implementation the platform-specific code is capable to
+> re-define the getters and re-use the weakly defined initial versions. But
+> since the re-definition is supposed to be done in another source file the
+> interface methods have been globally defined which in its turn causes the
+> "no previous prototype" warning printed should the re-definition is
+> finally introduced. Since without the global declarations the pattern can
+> be considered as incomplete and causing the warning printed, fix it by
+> providing the respective methods prototype declarations in
+> "arch/mips/include/asm/mips-cm.h".
 > 
-> This is a attempt to unify register numbering macros for uasm,
-> in response to review comment [1].
+> Signed-off-by: Serge Semin <fancer.lancer@gmail.com>
 > 
-> This is a rather large cosmetic change so I decided to send
-> it as a sepreate set.
-> 
-> Please review.
-> Thanks
-> 
-> Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
 > ---
-> Jiaxun Yang (8):
->       MIPS: Unify define of CP0 registers for uasm code
->       MIPS: regdefs.h: Guard all defines with __ASSEMBLY__
->       MIPS: regdefs.h: Define a set of register numbers
->       MIPS: traps: Use GPR number macros
->       MIPS: page: Use GPR number macros
->       MIPS: tlbex: Use GPR number macros
->       MIPS: kvm/entry: Use GPR number macros
->       MIPS: pm-cps: Use GPR number macros
 > 
->  arch/mips/include/asm/mipsregs.h | 249 +++++++++++++++++-----
->  arch/mips/include/asm/regdef.h   |  91 +++++++++
->  arch/mips/kernel/pm-cps.c        | 134 ++++++------
->  arch/mips/kernel/traps.c         |   6 +-
->  arch/mips/kvm/entry.c            | 431 +++++++++++++++++----------------------
->  arch/mips/mm/page.c              | 202 +++++++++---------
->  arch/mips/mm/tlbex.c             | 214 +++++++++----------
->  7 files changed, 737 insertions(+), 590 deletions(-)
-> ---
-> base-commit: 445a555e0623387fa9b94e68e61681717e70200a
-> change-id: 20240209-regname-4c14f1147e25
+> Note as I mentioned in the previous patch, since the weak implementation
+> of the getters isn't utilized other than as a default implementation of
+> the original methods, we can convert the denoted pattern to a simple
+> __weak attributed methods. Let me know if that would be more preferable.
 
-series applied to mips-next.
+how about simply remove __mips_cm_l2sync_phys_base() and do everything
+via mips_cm_phys_base(). And at the moment without anyone overriding
+mips_cm_phys_base I tend to keep static without __weak. If someone
+needs, we can change it. Does this make sense ?
 
 Thomas.
 

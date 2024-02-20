@@ -1,197 +1,61 @@
-Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com [209.85.221.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 664266026B
-	for <linux-mips@vger.kernel.org>; Tue, 20 Feb 2024 09:50:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.46
+Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F0A3C6A34D;
+	Tue, 20 Feb 2024 13:48:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.175.24.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708422605; cv=none; b=VNNBRuUJXz+fJwH01Xz5Jr2akhvWXOeblxatlzsuSVJTBAFq3OfxvxTsz6o/z740Cjud3qlermGHlHrS+fycrrerUKR+4F20bOLDtdL1K63T/hIKKFJpIzmdZe+XCpltmE0XeNKIahzOLu+gfZJZ/S0OM4MXcBxOsUzaQ/5dM6g=
+	t=1708436933; cv=none; b=BUsz3cqLOyhXc2xhS8Skrp18Qy8vUaXKjemL7YV5X17Giq0ydKS1f1g6Dva1CVsj9VFfHD8H2EiboUVlTjbNjskLpecbvls01xhxyB8asZtDNFn5JMGnORNDvUBZwjk1ImSl+S4ys2I5ouoc2jkgzdDsySYYG8c2GytoIsX3zvI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708422605; c=relaxed/simple;
-	bh=lsQhrl07NU9DvhxC+y0Qv1a0Ty3WWDaIUaM1Cq0PIfs=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=uvlbFRpyJoLhPPTC9AdLpfAHInux8dY66isUUT+p+whPXAdPdCxrDbbmMU2CldyPsC3ty5RJgKPZPzQhYVKMRaeZ+6lLNX1CbfvMKgk1TFpMdcn4RQ1bNKP+9PYyboRf4BtS1lNFoRNpGSLyjzv7+p5EpVAtNWBOzHR277HuzHE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=S0k2SM1Z; arc=none smtp.client-ip=209.85.221.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="S0k2SM1Z"
-Received: by mail-wr1-f46.google.com with SMTP id ffacd0b85a97d-33d32f74833so1473680f8f.3
-        for <linux-mips@vger.kernel.org>; Tue, 20 Feb 2024 01:50:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1708422602; x=1709027402; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=UiakybdHbx8rY7NnuZZDYCRnrnocjLmFHQX/4uXHnW0=;
-        b=S0k2SM1Z5lY6rRgU0kB5ZH7QNEJ+xwl/+Rr6nHN28swL47UZJbGec87WJFEcCLNM/d
-         /JC7WomDg3d5yxlsmvuUQ282t+iYYLFa7saUDX0VGus6FNKdQdF9J+scPdBBzKRFKnKM
-         EDgWyDkaA/hfhcgfrQ3TbiRf6KNZp1R05fxRp3JydZe1wMZAnRZAEjpYODxkGmtxrEeS
-         3lT4MfWRQG/vh7kPrKE7nKmtfyGljuL3uXk7HSwx7l6aqZXK6UKYsyVBM2HUS291wxtk
-         Jz9UDuherpHHl6AEPzCN8ZUI+rMg7ranLRlg31XTLoSw5sDcX5NTicUwwfhpbavgwO+t
-         DNNw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708422602; x=1709027402;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=UiakybdHbx8rY7NnuZZDYCRnrnocjLmFHQX/4uXHnW0=;
-        b=J2s+1js+3HJETQF6SIa8Ih5DPk74kOgeJhJY6SI6hljTXI6JO02g4tWLxPsylsoTM4
-         WPFLI96NZ7OmXYLtBIqK0ox9k1PheD3WMiMVodH0yHrROFHS/rBN2GvPVrRmzgtkiU9U
-         cdTr1nS9jb0cfaghD6Dm0WEfMVjrOmi1A97Qysza2DcQaJrrlYg7PdY8SkrN9o8Zv/Qw
-         ok6ygNzlrpQXdqvpq9O3eVb1ONM6AVl4mO91HAnbE/hOqJJ5GTi9TzqsbLrc+Qf9HIYp
-         ufQFTncoFr83BkN3FIQEPYJJVm30BSP3NuOohIV/oDHT3MyEDYO4qMFcQveR2PuIdTJP
-         FP7Q==
-X-Forwarded-Encrypted: i=1; AJvYcCXcQ7KzpWrBhDacwZQE5lx5VoaKKq5iThD9pGESqyijRGnVFe+wqvim8fn3l2CyHx1Lc1Rl9ML/fYTdUTK5P5PWyvkmt3t3AISd6w==
-X-Gm-Message-State: AOJu0YxOuJRYRMwOleWQ1LJyS2AnIkK65jeg8eKFz7ZvhgZbI1A6qeBn
-	xUeglE2XZXhAz/sscOxXJqoKoaQOH61RCumcFJlbr2O7cAtQfMhQyBBPtwGKJEiMeTfRylC93Qd
-	Z
-X-Google-Smtp-Source: AGHT+IE0aDSPjWECdAQ7HrYvb5CxiRvQrtXOKiRy5SNiUVy0PGuLwKURzvzfKJiYt9bm15vacoJflA==
-X-Received: by 2002:a5d:6912:0:b0:33d:2629:c518 with SMTP id t18-20020a5d6912000000b0033d2629c518mr5819994wru.64.1708422601761;
-        Tue, 20 Feb 2024 01:50:01 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.222.116])
-        by smtp.gmail.com with ESMTPSA id n16-20020a5d4010000000b0033b888a0a63sm13016570wrp.0.2024.02.20.01.50.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 20 Feb 2024 01:50:01 -0800 (PST)
-Message-ID: <37116892-bb59-4c40-85e2-8e1b4bc96b5f@linaro.org>
-Date: Tue, 20 Feb 2024 10:49:59 +0100
+	s=arc-20240116; t=1708436933; c=relaxed/simple;
+	bh=SiT20wtehEPRsqC5dEyX1J9e16e0CyE5AYMI3VsMc2U=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=rdofKwK8BE8qOL0uD7tQbp3JcWlU94UQnalOVoEpfRdt+8CUOvuzyqajm0qR25q2rAivkJtfw65MuKfIZt7l02jJlSVJEXphaEfcBBb3GPc68qX3JKL1XgsCffu027K6mViitNKpz3d6URfjt+pUEdvuehMeZEGwmPPLVXCeIPc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de; spf=pass smtp.mailfrom=alpha.franken.de; arc=none smtp.client-ip=193.175.24.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alpha.franken.de
+Received: from uucp by elvis.franken.de with local-rmail (Exim 3.36 #1)
+	id 1rcQUF-0007OW-00; Tue, 20 Feb 2024 14:48:43 +0100
+Received: by alpha.franken.de (Postfix, from userid 1000)
+	id F34C6C0832; Tue, 20 Feb 2024 14:39:14 +0100 (CET)
+Date: Tue, 20 Feb 2024 14:39:14 +0100
+From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To: Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Cc: linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Sergio Paracuellos <sergio.paracuellos@gmail.com>
+Subject: Re: [PATCH v2 0/4] MIPS: Cleanups to PCI related code
+Message-ID: <ZdSrgqwuyEHUmgeq@alpha.franken.de>
+References: <20240208120959.2513-1-ilpo.jarvinen@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 02/13] dt-bindings: i2c: nomadik: add mobileye,eyeq5-i2c
- bindings and example
-Content-Language: en-US
-To: =?UTF-8?Q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>,
- Rob Herring <robh@kernel.org>
-Cc: Linus Walleij <linus.walleij@linaro.org>,
- Andi Shyti <andi.shyti@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>,
- Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
- linux-arm-kernel@lists.infradead.org, linux-i2c@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-mips@vger.kernel.org, Gregory Clement <gregory.clement@bootlin.com>,
- Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>,
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
- Tawfik Bayouk <tawfik.bayouk@mobileye.com>
-References: <20240215-mbly-i2c-v1-0-19a336e91dca@bootlin.com>
- <20240215-mbly-i2c-v1-2-19a336e91dca@bootlin.com>
- <20240216022227.GA850600-robh@kernel.org>
- <CZ6FD7EHIJDT.32IEDVT9FG2GP@bootlin.com>
- <6effca50-29a4-43b9-86eb-310bd4e08e5c@linaro.org>
- <CZ6FUECKEX2B.36QWZZA5EYPI@bootlin.com>
- <cf360cbf-7414-4024-8bdd-d2aba7f048b3@linaro.org>
- <CZ93KAA53F8G.38AUM6RZGUYY7@bootlin.com>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <CZ93KAA53F8G.38AUM6RZGUYY7@bootlin.com>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240208120959.2513-1-ilpo.jarvinen@linux.intel.com>
 
-On 19/02/2024 14:41, ThÃ©o Lebrun wrote:
-> Hello,
+On Thu, Feb 08, 2024 at 02:09:55PM +0200, Ilpo Järvinen wrote:
+> Cleans up PCI related code.
 > 
-> On Sat Feb 17, 2024 at 9:25 AM CET, Krzysztof Kozlowski wrote:
->> On 16/02/2024 11:40, ThÃ©o Lebrun wrote:
->>> On Fri Feb 16, 2024 at 11:33 AM CET, Krzysztof Kozlowski wrote:
->>>> On 16/02/2024 11:18, ThÃ©o Lebrun wrote:
->>>>>
->>>>>>> +        mobileye,id:
->>>>>>> +          $ref: /schemas/types.yaml#/definitions/uint32
->>>>>>> +          description: Platform-wide controller ID (integer starting from zero).
->>>>>>
->>>>>> instance indexes are a NAK. You can use i2cN aliases if you must.
->>>>>>
->>>>>> Why do you need it? To access OLB? If so, add cell args to the OLB 
->>>>>> phandle instead.
->>>>>
->>>>> Why we do what we do: I2C controller must write a 2 bit value depending
->>>>> on the bus speed. All I2C controllers write into the same register.
->>>>
->>>> Which register?  Your devices do not share IO address space.
->>>
->>> mobileye,olb is a prop with a phandle to a syscon. That syscon contains
->>> the register we are interested in.
->>
->> So exactly what Rob said... I don't understand why you have chosen to go
->> with alias.
+> v2:
+> - Convert also return 0 -> return PCIBIOS_SUCCESSFUL
 > 
-> I had misunderstood Rob's original message. Now that I've done some
-> tests to use cells I get what was meant. I'd have a follow-up question.
-> What should the cells contain? I see two options:
+> Ilpo Järvinen (4):
+>   MIPS: lantiq: Remove unused function pointer variables
+>   MIPS: ath79: Don't return PCIBIOS_* code from pcibios_enable_device()
+>   MIPS: PCI: Return PCIBIOS_* from tx4927_pci_config_read/write()
+>   MIPS: TXx9: Use PCI_SET_ERROR_RESPONSE()
 > 
->  - phandle + I2C controller global index (from 0 thru 4). Then Linux
->    (or other) driver know how to map that index to register + mask
->    combo. ie:
-> 
->       i2c2: i2c@500000 {
->          compatible = "mobileye,eyeq5-i2c", "arm,primecell";
->          reg = <0 0x500000 0x0 0x1000>;
->          /* ... */
->          mobileye,olb = <&olb 2>;
->       };
-> 
->  - phandle + register offset + mask. ie:
-> 
->       i2c2: i2c@500000 {
->          compatible = "mobileye,eyeq5-i2c", "arm,primecell";
->          reg = <0 0x500000 0x0 0x1000>;
->          /* ... */
->          mobileye,olb = <&olb 0xB8 0x300>; /* phandle + offset + mask */
->       };
+>  arch/mips/pci/fixup-ath79.c  |  2 +-
+>  arch/mips/pci/fixup-lantiq.c |  9 ---------
+>  arch/mips/pci/ops-tx4927.c   | 18 +++++++++++-------
+>  3 files changed, 12 insertions(+), 17 deletions(-)
 
-Whichever works for your current and possibly future needs and hardware,
-because property should have one meaning. It's anyway specific to the
-property. Second option is quite popular. Please design it for entire
-hardware, not for this one particular case.
+series applied to mips-next.
 
-Best regards,
-Krzysztof
+Thomas.
 
+-- 
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]

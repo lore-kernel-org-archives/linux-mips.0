@@ -1,58 +1,54 @@
 Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F0A3C6A34D;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F09FF6A348;
 	Tue, 20 Feb 2024 13:48:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.175.24.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708436933; cv=none; b=BUsz3cqLOyhXc2xhS8Skrp18Qy8vUaXKjemL7YV5X17Giq0ydKS1f1g6Dva1CVsj9VFfHD8H2EiboUVlTjbNjskLpecbvls01xhxyB8asZtDNFn5JMGnORNDvUBZwjk1ImSl+S4ys2I5ouoc2jkgzdDsySYYG8c2GytoIsX3zvI=
+	t=1708436934; cv=none; b=I2MWgxHTZuy6rgT9Z0wX/6FK06xQWRibTa2KSa9kEZhXOEskjR0suve3uMVpQx8M4IrcD+gWLhkbTDFSKA3mJw0NFWog6e8pxzLxEiiuTj2vWQp+UcCpXp2qF6ybG/nwO/mg7J2j1aD3whBKeSa39dvdiBZ2OX3D0XA6cO+E9xY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708436933; c=relaxed/simple;
-	bh=SiT20wtehEPRsqC5dEyX1J9e16e0CyE5AYMI3VsMc2U=;
+	s=arc-20240116; t=1708436934; c=relaxed/simple;
+	bh=8GvFNVF9duq/2bUVAkBo5DWH41frpnACDn9XWjN8Zj4=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=rdofKwK8BE8qOL0uD7tQbp3JcWlU94UQnalOVoEpfRdt+8CUOvuzyqajm0qR25q2rAivkJtfw65MuKfIZt7l02jJlSVJEXphaEfcBBb3GPc68qX3JKL1XgsCffu027K6mViitNKpz3d6URfjt+pUEdvuehMeZEGwmPPLVXCeIPc=
+	 Content-Type:Content-Disposition:In-Reply-To; b=ZcHCww2t04Lo7oD33q1djZ38xZ78ygIQV4P5lEZfUR8gUp9eKkeyDutpns3FINC5YLkJl96D47x4Uy8so5/egDnDfZIN36Ntwk5mnGNITv/H697DtLdb+m9Kj6QY8JNyxzJ6TivMxeHl6zqNkPVSJ+y1fhwELnUogzYtczI/4fc=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de; spf=pass smtp.mailfrom=alpha.franken.de; arc=none smtp.client-ip=193.175.24.41
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alpha.franken.de
 Received: from uucp by elvis.franken.de with local-rmail (Exim 3.36 #1)
-	id 1rcQUF-0007OW-00; Tue, 20 Feb 2024 14:48:43 +0100
+	id 1rcQUF-0007Of-00; Tue, 20 Feb 2024 14:48:43 +0100
 Received: by alpha.franken.de (Postfix, from userid 1000)
-	id F34C6C0832; Tue, 20 Feb 2024 14:39:14 +0100 (CET)
-Date: Tue, 20 Feb 2024 14:39:14 +0100
+	id 4C9E7C0AFC; Tue, 20 Feb 2024 14:40:10 +0100 (CET)
+Date: Tue, 20 Feb 2024 14:40:10 +0100
 From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To: Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Cc: linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Sergio Paracuellos <sergio.paracuellos@gmail.com>
-Subject: Re: [PATCH v2 0/4] MIPS: Cleanups to PCI related code
-Message-ID: <ZdSrgqwuyEHUmgeq@alpha.franken.de>
-References: <20240208120959.2513-1-ilpo.jarvinen@linux.intel.com>
+To: "Ricardo B. Marliere" <ricardo@marliere.net>
+Cc: Serge Semin <fancer.lancer@gmail.com>, linux-mips@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH] mips: bus: make mips_cdmm_bustype const
+Message-ID: <ZdSruvrpmTydq+M7@alpha.franken.de>
+References: <20240213-bus_cleanup-mips2-v1-1-9c0e3d4a1852@marliere.net>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240208120959.2513-1-ilpo.jarvinen@linux.intel.com>
+In-Reply-To: <20240213-bus_cleanup-mips2-v1-1-9c0e3d4a1852@marliere.net>
 
-On Thu, Feb 08, 2024 at 02:09:55PM +0200, Ilpo Järvinen wrote:
-> Cleans up PCI related code.
+On Tue, Feb 13, 2024 at 11:49:24AM -0300, Ricardo B. Marliere wrote:
+> Now that the driver core can properly handle constant struct bus_type,
+> move the mips_cdmm_bustype variable to be a constant structure as well,
+> placing it into read-only memory which can not be modified at runtime.
 > 
-> v2:
-> - Convert also return 0 -> return PCIBIOS_SUCCESSFUL
-> 
-> Ilpo Järvinen (4):
->   MIPS: lantiq: Remove unused function pointer variables
->   MIPS: ath79: Don't return PCIBIOS_* code from pcibios_enable_device()
->   MIPS: PCI: Return PCIBIOS_* from tx4927_pci_config_read/write()
->   MIPS: TXx9: Use PCI_SET_ERROR_RESPONSE()
-> 
->  arch/mips/pci/fixup-ath79.c  |  2 +-
->  arch/mips/pci/fixup-lantiq.c |  9 ---------
->  arch/mips/pci/ops-tx4927.c   | 18 +++++++++++-------
->  3 files changed, 12 insertions(+), 17 deletions(-)
+> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Signed-off-by: Ricardo B. Marliere <ricardo@marliere.net>
+> ---
+>  arch/mips/include/asm/cdmm.h | 2 +-
+>  drivers/bus/mips_cdmm.c      | 2 +-
+>  2 files changed, 2 insertions(+), 2 deletions(-)
 
-series applied to mips-next.
+applied to mips-next.
 
 Thomas.
 

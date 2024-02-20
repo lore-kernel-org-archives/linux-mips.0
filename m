@@ -1,35 +1,31 @@
 Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F0AEF6A351;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 912C569DFF;
 	Tue, 20 Feb 2024 13:48:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.175.24.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708436934; cv=none; b=XwkFbYIhUCOWPndzRB+FMvJuViLwxCOT8Tcy1BIv9CPAZ6XxdZn48WqISqtBjqNrc63WfTusVxd09YEq0QJYtiBzk2uKN1H+qPO6jYKC5ckPmSNWO2C5kswUcZ3ROMBT3VWU+XuCKXS9Ew4GHofZE0IfbFJln7zSIdyJ+zmwNdA=
+	t=1708436934; cv=none; b=d9mD8hBPtQagykPxKbJnl48t9HvOzL8fcNy5x+KCQzjynYwrjMmmHWIrUDRGhd8KJ5cxC75hq4kJD2xIKKaNRza49CyNPQP6DAqsKEg0M0kzZ1cuGBcw+g7AT3dgvMBh4TfPmRqderxXqr1TAdRZxAC2BksbhukZidVt6RzGboE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1708436934; c=relaxed/simple;
-	bh=Yl/icjLDZM808VaGxQ+Hf9C0/O8MQvl2Zfavr53DyuQ=;
+	bh=FXC6OCaMo6PBra09rv0mQ7fmtDHn40tyIY5riwAomwY=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=XzQXVNsRcuxCY7WcWE5Z9chBjtWs3nQu21b1H+FzudFdgoPaVe2L/H88yscFST948KXgimiwQ+G2MpPmAY/C/gQS913h1TarMUpLXH9CtarfupwBk3KrXylJegwXhS9IU1rG2U32GsJM6DR9VBlDL/o2yAMzNcGMzPkZq8DShdc=
+	 Content-Type:Content-Disposition:In-Reply-To; b=LrujmuqsVy2d3VSWVnaKDHC+6/Z1QpTfMQpo/eq67d2a2/riCvtYD7XhqB9Wb+/CRunukMLljWUXA9eev+jEIYMf372prRGGDoOMe7SA6mTu3FD5mceAvGma/ucX0xrybsLzbvwuap8yuukiTgWKzxfQt2FrikJjbBHwrfLW9OY=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de; spf=pass smtp.mailfrom=alpha.franken.de; arc=none smtp.client-ip=193.175.24.41
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alpha.franken.de
 Received: from uucp by elvis.franken.de with local-rmail (Exim 3.36 #1)
-	id 1rcQUF-0007OM-00; Tue, 20 Feb 2024 14:48:43 +0100
+	id 1rcQUF-0007OQ-00; Tue, 20 Feb 2024 14:48:43 +0100
 Received: by alpha.franken.de (Postfix, from userid 1000)
-	id DDBEAC04A2; Tue, 20 Feb 2024 14:36:43 +0100 (CET)
-Date: Tue, 20 Feb 2024 14:36:43 +0100
+	id 99382C0694; Tue, 20 Feb 2024 14:38:24 +0100 (CET)
+Date: Tue, 20 Feb 2024 14:38:24 +0100
 From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To: Serge Semin <Sergey.Semin@BAIKALELECTRONICS.ru>
-Cc: Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-	Serge Semin <fancer.lancer@gmail.com>,
-	Alexey Malahov <Alexey.Malahov@BAIKALELECTRONICS.ru>,
-	Arnd Bergmann <arnd@arndb.de>, linux-mips@vger.kernel.org,
-	linux-pci@vger.kernel.org, linux-hwmon@vger.kernel.org,
-	kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/3] MAINTAINERS: Add maintainer for MIPS Baikal-T1
- platform code
-Message-ID: <ZdSq66XhxrqgyNBy@alpha.franken.de>
-References: <20231122170506.27267-1-Sergey.Semin@baikalelectronics.ru>
- <20231122170506.27267-4-Sergey.Semin@baikalelectronics.ru>
+To: Masahiro Yamada <masahiroy@kernel.org>
+Cc: linux-mips@vger.kernel.org, linux-kbuild@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/1] MIPS: move unselectable entries out of the "CPU
+ type" choice
+Message-ID: <ZdSrUKlV+Q37S3B7@alpha.franken.de>
+References: <20240127162309.1026549-1-masahiroy@kernel.org>
+ <20240127162309.1026549-2-masahiroy@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
@@ -38,43 +34,32 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231122170506.27267-4-Sergey.Semin@baikalelectronics.ru>
+In-Reply-To: <20240127162309.1026549-2-masahiroy@kernel.org>
 
-On Wed, Nov 22, 2023 at 08:04:52PM +0300, Serge Semin wrote:
-> Add myself as a maintainer of the MIPS Baikal-T1 platform-specific
-> drivers. The arch-code hasn't been submitted yet, but will be soon enough.
-> Until then it's better to have the already available drivers marked as
-> maintained.
+On Sun, Jan 28, 2024 at 01:23:09AM +0900, Masahiro Yamada wrote:
+> Move the following entries out of the "CPU type" choice:
 > 
-> Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+>  - LOONGSON3_ENHANCEMENT
+>  - CPU_LOONGSON3_WORKAROUNDS
+>  - CPU_LOONGSON3_CPUCFG_EMULATION
+> 
+> These entries cannot be selected from the choice because they depend on
+> CPU_LOONGSON64, which is also located in the same choice.
+> 
+> In fact, Kconfig does not consider them as choice values because they
+> become children of CPU_LOOONGSON64 due to the automatic submenu creation
+> in menu_finalize().
+> 
+> However, it is hard to understand this behavior unless you are familiar
+> with the Kconfig internals.
+> 
+> "choice" should contain only selectable entries.
+> 
+> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 > ---
->  MAINTAINERS | 11 +++++++++++
->  1 file changed, 11 insertions(+)
 > 
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 52ee905c50f4..a56e241608ae 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -14491,6 +14491,17 @@ F:	arch/mips/
->  F:	drivers/platform/mips/
->  F:	include/dt-bindings/mips/
->  
-> +MIPS BAIKAL-T1 PLATFORM
-> +M:	Serge Semin <fancer.lancer@gmail.com>
-> +L:	linux-mips@vger.kernel.org
-> +S:	Supported
-> +F:	Documentation/devicetree/bindings/bus/baikal,bt1-*.yaml
-> +F:	Documentation/devicetree/bindings/clock/baikal,bt1-*.yaml
-> +F:	drivers/bus/bt1-*.c
-> +F:	drivers/clk/baikal-t1/
-> +F:	drivers/memory/bt1-l2-ctl.c
-> +F:	drivers/mtd/maps/physmap-bt1-rom.[ch]
-> +
->  MIPS BOSTON DEVELOPMENT BOARD
->  M:	Paul Burton <paulburton@kernel.org>
->  L:	linux-mips@vger.kernel.org
-> -- 
-> 2.42.1
+>  arch/mips/Kconfig | 76 +++++++++++++++++++++++------------------------
+>  1 file changed, 38 insertions(+), 38 deletions(-)
 
 applied to mips-next.
 

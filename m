@@ -1,135 +1,212 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net [217.70.183.197])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AED0A85C68;
-	Wed, 21 Feb 2024 17:43:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D79E37FBD5;
+	Wed, 21 Feb 2024 18:22:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.197
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708537439; cv=none; b=QL9xrvrDjVseL1bmB/hLCHzi+g10CAp2UEEFODriMMmH6CDvY8OVhNUCMoLBguk8q+TdbZ2UOQyj24yu15yW+4xiF3lO4SWfBh/TMoVhkRUOxunJeWL1GbePYXEqJ28LZZUOuRDLQ3AdrvJpJnw8B00hf6Q8GXx4vde2bEAdA6Y=
+	t=1708539737; cv=none; b=GwEhAvcUF2ggrpLBIYUtd4vtHNnbiXjR/ewYenRlth8aZXKJ9AHeZF7Vr7g0iVZ5sUz0nuPyBtBUFhsoZvH7MNWmrAEN6B1wToL6vmdJeBI1OA1iWxjMLOHm4AAbudO1lCWuYZPfp1noX4wCIdO2uQkXs/8lphGMRqWmhlWG32I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708537439; c=relaxed/simple;
-	bh=EAVilG+5m/AHURqch7gUgltSDg888U/L1wVF8AY+h0U=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=AY5RF0gsevp/1NndpVnoOnRhLQxQ0cE5tK7juC3qI4fcRS9xfZmZjgnlDqkD7qCAF9Zz/JczXodpPUxN7rsbhPmdew0WT93oEI9NnAia/4Y+bZCkJQRAFEbPFNOrskXwEQNBKKogarDIq6W7rt7UsQnUMz3EbUw33zMuz64J4dQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MACaeRN8; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1708539737; c=relaxed/simple;
+	bh=RFY7ut+rYoNyROemcFQ4SPLXjLR+Hh3fj3dk+W3dUTY=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
+	 In-Reply-To:To:Cc; b=UIrbOV1hE60lf79rP9jgheZCVRYpAnSfb1QvjvBLEyIBnH9TVGjz/c02eJyFU7URFKAXZE/qo6wVHoPAGuTSoNsn4wZtCtFo5sVCXm6zgZ2x0y/epK9K6A6QqgllZNC6d0ncANFHhEbIuhIJ9p6oM4vtiJgRvADAk6E6bInjcXw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=ChqVUceC; arc=none smtp.client-ip=217.70.183.197
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MACaeRN8"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8925BC433C7;
-	Wed, 21 Feb 2024 17:43:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1708537439;
-	bh=EAVilG+5m/AHURqch7gUgltSDg888U/L1wVF8AY+h0U=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=MACaeRN8lMsNMrafHUuR5tTV0m/lcwxMQQyOLOx9xox93gvIkFhnYDFoNAb8KS5ue
-	 9CItIdTwwj1ogpri6Xnrhtg6ur7BJ3ixF5oWuGIr/SZkP8ZdGmvVHBr8croJ4NAKD6
-	 kBcyV3MhYosaq9bWezqBbxvlBJ5LqRsxoe3E9K2RY52El6pCRVRv4BEiDujXNiJnOS
-	 tcRwGDfrYA+4RILVxH+jWN8NuvHOWeGrDZG6ajW3Jm8zFkaO0oWNvYPI0oJvmixQ1M
-	 sSKFRMEnTNj46VItzN9Kp7GAUEsfJBTPvVKp22nJ6m/BGI3XUnl3+j5vHDOWdR8JI+
-	 QAVAQllob8p4A==
-Date: Wed, 21 Feb 2024 18:43:55 +0100
-From: Wolfram Sang <wsa@kernel.org>
-To: =?utf-8?B?VGjDqW8=?= Lebrun <theo.lebrun@bootlin.com>
-Cc: Linus Walleij <linus.walleij@linaro.org>, Rob Herring <robh@kernel.org>,
-	Andi Shyti <andi.shyti@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	linux-arm-kernel@lists.infradead.org, linux-i2c@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-mips@vger.kernel.org,
-	Gregory Clement <gregory.clement@bootlin.com>,
-	Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>,
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-	Tawfik Bayouk <tawfik.bayouk@mobileye.com>
-Subject: Re: [PATCH 01/13] dt-bindings: i2c: nomadik: add timeout-usecs
- property bindings
-Message-ID: <ZdY2WzKbElloXC4-@shikoro>
-Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
-	=?utf-8?B?VGjDqW8=?= Lebrun <theo.lebrun@bootlin.com>,
-	Linus Walleij <linus.walleij@linaro.org>,
-	Rob Herring <robh@kernel.org>, Andi Shyti <andi.shyti@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	linux-arm-kernel@lists.infradead.org, linux-i2c@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-mips@vger.kernel.org,
-	Gregory Clement <gregory.clement@bootlin.com>,
-	Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>,
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-	Tawfik Bayouk <tawfik.bayouk@mobileye.com>
-References: <20240215-mbly-i2c-v1-0-19a336e91dca@bootlin.com>
- <20240215-mbly-i2c-v1-1-19a336e91dca@bootlin.com>
- <20240216022704.GB850600-robh@kernel.org>
- <CZ6E24VPJKJG.35LACFD6ZV5KE@bootlin.com>
- <CACRpkdZZhhzg5SY7U5dv_OfLEVejRFom4V9nCfkQXunAw1ZXSw@mail.gmail.com>
- <CZ94LGRSF9KN.15ZO1VRMIQVR8@bootlin.com>
- <CZAX02IL1N1J.2GQR9D73GLRZB@bootlin.com>
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="ChqVUceC"
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 3CF8B1C000B;
+	Wed, 21 Feb 2024 18:22:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1708539733;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=4q8B4FHnqm+Q9SZFv8e202u5pyLWu9j+3pZ0RNxIqVE=;
+	b=ChqVUceCPkJTlZw8xSx2cVMM27qR9bmOYfIwNpzLYx/+AogIhe+3hXEJbS0j4sKsZbHHlp
+	bcq8/zQVK7/akstNq074hnOEjBW85+8feh0zJHPWCMIAWetYICRvltgMW5ciHXx8gk9/Uh
+	c6g7zNLsLJ/T2OLV26sV31PkGBTKWGqaP77eTPmNgd4kiMWKZanjJe1RfyT9+c5+02LUmA
+	sr0LCfMZEcr8viAkmjKttUS74svJcyCLXNfc9F6WJlCvw7LEBIut2YbdZRMG7CAfZRPeIw
+	eousLVtd0Mp6jWKlAq5kZYB52z2LqUb9Vf6KIr4c+D2fahK12rMFBGP5t2wExQ==
+From: =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
+Date: Wed, 21 Feb 2024 19:22:09 +0100
+Subject: [PATCH v7 01/14] clk: fixed-factor: add optional accuracy support
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="F60VzApEKksHKb8j"
-Content-Disposition: inline
-In-Reply-To: <CZAX02IL1N1J.2GQR9D73GLRZB@bootlin.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Message-Id: <20240221-mbly-clk-v7-1-31d4ce3630c3@bootlin.com>
+References: <20240221-mbly-clk-v7-0-31d4ce3630c3@bootlin.com>
+In-Reply-To: <20240221-mbly-clk-v7-0-31d4ce3630c3@bootlin.com>
+To: Gregory CLEMENT <gregory.clement@bootlin.com>, 
+ Michael Turquette <mturquette@baylibre.com>, 
+ Stephen Boyd <sboyd@kernel.org>, Rob Herring <robh+dt@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Conor Dooley <conor+dt@kernel.org>, 
+ Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
+ Linus Walleij <linus.walleij@linaro.org>, 
+ =?utf-8?q?Rafa=C5=82_Mi=C5=82ecki?= <rafal@milecki.pl>, 
+ Philipp Zabel <p.zabel@pengutronix.de>
+Cc: Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>, 
+ linux-mips@vger.kernel.org, linux-clk@vger.kernel.org, 
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>, 
+ Tawfik Bayouk <tawfik.bayouk@mobileye.com>, linux-gpio@vger.kernel.org, 
+ =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
+X-Mailer: b4 0.13.0
+X-GND-Sasl: theo.lebrun@bootlin.com
 
+Fixed factor clock reports the parent clock accuracy. Add flags and acc
+fields to `struct clk_fixed_factor` to support setting a fixed
+accuracy. The default if no flag is set is not changed: use the parent
+clock accuracy.
 
---F60VzApEKksHKb8j
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Signed-off-by: Théo Lebrun <theo.lebrun@bootlin.com>
+---
+ drivers/clk/clk-fixed-factor.c | 28 +++++++++++++++++++++-------
+ include/linux/clk-provider.h   | 12 +++++++++++-
+ 2 files changed, 32 insertions(+), 8 deletions(-)
 
-Hi,
+diff --git a/drivers/clk/clk-fixed-factor.c b/drivers/clk/clk-fixed-factor.c
+index b3e66202b942..bc2644a9bd7d 100644
+--- a/drivers/clk/clk-fixed-factor.c
++++ b/drivers/clk/clk-fixed-factor.c
+@@ -57,10 +57,22 @@ static int clk_factor_set_rate(struct clk_hw *hw, unsigned long rate,
+ 	return 0;
+ }
+ 
++static unsigned long clk_factor_recalc_accuracy(struct clk_hw *hw,
++						unsigned long parent_accuracy)
++{
++	struct clk_fixed_factor *fix = to_clk_fixed_factor(hw);
++
++	if (fix->flags & CLK_FIXED_FACTOR_FIXED_ACCURACY)
++		return fix->acc;
++
++	return parent_accuracy;
++}
++
+ const struct clk_ops clk_fixed_factor_ops = {
+ 	.round_rate = clk_factor_round_rate,
+ 	.set_rate = clk_factor_set_rate,
+ 	.recalc_rate = clk_factor_recalc_rate,
++	.recalc_accuracy = clk_factor_recalc_accuracy,
+ };
+ EXPORT_SYMBOL_GPL(clk_fixed_factor_ops);
+ 
+@@ -81,7 +93,7 @@ __clk_hw_register_fixed_factor(struct device *dev, struct device_node *np,
+ 		const char *name, const char *parent_name,
+ 		const struct clk_hw *parent_hw, int index,
+ 		unsigned long flags, unsigned int mult, unsigned int div,
+-		bool devm)
++		unsigned long acc, unsigned int fixflags, bool devm)
+ {
+ 	struct clk_fixed_factor *fix;
+ 	struct clk_init_data init = { };
+@@ -105,6 +117,8 @@ __clk_hw_register_fixed_factor(struct device *dev, struct device_node *np,
+ 	fix->mult = mult;
+ 	fix->div = div;
+ 	fix->hw.init = &init;
++	fix->acc = acc;
++	fix->flags = fixflags;
+ 
+ 	init.name = name;
+ 	init.ops = &clk_fixed_factor_ops;
+@@ -152,7 +166,7 @@ struct clk_hw *devm_clk_hw_register_fixed_factor_index(struct device *dev,
+ 		unsigned int mult, unsigned int div)
+ {
+ 	return __clk_hw_register_fixed_factor(dev, NULL, name, NULL, NULL, index,
+-					      flags, mult, div, true);
++					      flags, mult, div, 0, 0, true);
+ }
+ EXPORT_SYMBOL_GPL(devm_clk_hw_register_fixed_factor_index);
+ 
+@@ -174,7 +188,7 @@ struct clk_hw *devm_clk_hw_register_fixed_factor_parent_hw(struct device *dev,
+ 		unsigned long flags, unsigned int mult, unsigned int div)
+ {
+ 	return __clk_hw_register_fixed_factor(dev, NULL, name, NULL, parent_hw,
+-					      -1, flags, mult, div, true);
++					      -1, flags, mult, div, 0, 0, true);
+ }
+ EXPORT_SYMBOL_GPL(devm_clk_hw_register_fixed_factor_parent_hw);
+ 
+@@ -184,7 +198,7 @@ struct clk_hw *clk_hw_register_fixed_factor_parent_hw(struct device *dev,
+ {
+ 	return __clk_hw_register_fixed_factor(dev, NULL, name, NULL,
+ 					      parent_hw, -1, flags, mult, div,
+-					      false);
++					      0, 0, false);
+ }
+ EXPORT_SYMBOL_GPL(clk_hw_register_fixed_factor_parent_hw);
+ 
+@@ -193,7 +207,7 @@ struct clk_hw *clk_hw_register_fixed_factor(struct device *dev,
+ 		unsigned int mult, unsigned int div)
+ {
+ 	return __clk_hw_register_fixed_factor(dev, NULL, name, parent_name, NULL, -1,
+-					      flags, mult, div, false);
++					      flags, mult, div, 0, 0, false);
+ }
+ EXPORT_SYMBOL_GPL(clk_hw_register_fixed_factor);
+ 
+@@ -240,7 +254,7 @@ struct clk_hw *devm_clk_hw_register_fixed_factor(struct device *dev,
+ 		unsigned int mult, unsigned int div)
+ {
+ 	return __clk_hw_register_fixed_factor(dev, NULL, name, parent_name, NULL, -1,
+-			flags, mult, div, true);
++			flags, mult, div, 0, 0, true);
+ }
+ EXPORT_SYMBOL_GPL(devm_clk_hw_register_fixed_factor);
+ 
+@@ -267,7 +281,7 @@ static struct clk_hw *_of_fixed_factor_clk_setup(struct device_node *node)
+ 	of_property_read_string(node, "clock-output-names", &clk_name);
+ 
+ 	hw = __clk_hw_register_fixed_factor(NULL, node, clk_name, NULL, NULL, 0,
+-					    0, mult, div, false);
++					    0, mult, div, 0, 0, false);
+ 	if (IS_ERR(hw)) {
+ 		/*
+ 		 * Clear OF_POPULATED flag so that clock registration can be
+diff --git a/include/linux/clk-provider.h b/include/linux/clk-provider.h
+index 1293c38ddb7f..7ddc952c8c67 100644
+--- a/include/linux/clk-provider.h
++++ b/include/linux/clk-provider.h
+@@ -1084,18 +1084,28 @@ void of_fixed_factor_clk_setup(struct device_node *node);
+  * @hw:		handle between common and hardware-specific interfaces
+  * @mult:	multiplier
+  * @div:	divider
++ * @acc:	fixed accuracy in ppb
++ * @flags:	behavior modifying flags
+  *
+  * Clock with a fixed multiplier and divider. The output frequency is the
+  * parent clock rate divided by div and multiplied by mult.
+- * Implements .recalc_rate, .set_rate and .round_rate
++ * Implements .recalc_rate, .set_rate, .round_rate and .recalc_accuracy
++ *
++ * Flags:
++ * * CLK_FIXED_FACTOR_FIXED_ACCURACY - Use the value in @acc instead of the
++ *                                     parent clk accuracy.
+  */
+ 
+ struct clk_fixed_factor {
+ 	struct clk_hw	hw;
+ 	unsigned int	mult;
+ 	unsigned int	div;
++	unsigned long	acc;
++	unsigned int	flags;
+ };
+ 
++#define CLK_FIXED_FACTOR_FIXED_ACCURACY	BIT(0)
++
+ #define to_clk_fixed_factor(_hw) container_of(_hw, struct clk_fixed_factor, hw)
+ 
+ extern const struct clk_ops clk_fixed_factor_ops;
 
-> > > > i2c-mpc (fsl,timeout) and i2c-gpio (i2c-gpio,timeout-ms). I agree this
-> > > > prop has no reason to be compatible-specific.
+-- 
+2.43.2
 
-Anyone up to convert these drivers to the new binding and mark the old
-ones as deprecated?
-
-> > > As Rob mentioned this isn't in the kernel schemas but in dtschema, so
-> > > you need to patch this:
-> > > https://github.com/robherring/dt-schema
-
-@Rob: My memory fails a little bit about these two schemas: we have the
-github one for generic bindings, not strictly related to Linux, right?
-But why do we have then i2c.txt in ther kernel tree? Why don't we sync
-regularly with the generic schema?
-
-> Note: I've sent a draft patch to dt-schema. See:
-> https://github.com/devicetree-org/dt-schema/pull/129
-
-I used to argue that you can set this timeout to any value in userspace.
-I have been convinced that it might make sense to set it early so it is
-in use already when booting. So, for this pull request:
-
-Reviewed-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
-
-All the best,
-
-   Wolfram
-
-
---F60VzApEKksHKb8j
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmXWNlsACgkQFA3kzBSg
-KbbCIQ//T+UfZwN5sfx3E29io7LplBxBq1Vc1X1yI094wCUlwjSfpIHwZb/eFi3l
-JTOHIoWz6fWb8zhtUfsF5VXj+Mz9R2ZaxSZpwp3ZJsn+qdhR+DpulzqhrLS1Vce/
-dD4DPsVn4fCeXijUtNFZz8fhfqYTW0/8dN1wAAkFTsREfvB99gYuPGU+Ib9f8ELQ
-jP7czMAee4luC2CN2VNmOJZSu9tdEAaxy+ePOZq1PtA2ox6QbMxM98WIURyJ3LCQ
-EpHONtSUXhY4wcVH4C0I/gpZuw5AWk3X6QRvIXyR/kA7TerokwK0F+6X0Ug6b0Hy
-SpKn7vXsPkD1Up+QlJkFQu7psTqYiHHRNPMf5kr+s9CytknreWfburno1a+LeX1j
-dyXXeoTNMRdVjmHgibV/0tAPtgOs0PxzicfsVtDrOTzJ9Qcg5aECGpszIMGD2FDK
-w230+coTWbqiGMakQUkfOM7jayHUwC7WEl+xLXpbyjqAKRYwX3VrMxIW8RHRItQd
-EdLd/FdBp82t9EGlUCabjlyMJNS1N+rQ8PLvKYPtRzl4/7IpQejYd8yZnaX99G6/
-ndJQeRCIt9Wu//PCNkAlQXsyRBkApDk8Ai7tXuJQZC+0Y9Yvuk5/rKRlNwtcoeMX
-8AgdyMQcQH6a/XmBm28kmb1s+mkAbwxDrke88y4hvascDGcJUTs=
-=DKt0
------END PGP SIGNATURE-----
-
---F60VzApEKksHKb8j--

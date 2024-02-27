@@ -1,48 +1,47 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE97A13AA43;
-	Tue, 27 Feb 2024 14:08:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 88C0013AA4C;
+	Tue, 27 Feb 2024 14:12:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709042881; cv=none; b=sSm4r/jAk7lX6PJZF17xmhP6KqDX5sCVJRoW/rlWVovHnlvC2lXErEWplLE3m2ZQ7hCY8C6ddgSqnB8TkdvQtBI1/Rjg8Q3lqDwnIBmk7jQnwoPrzIArWtyJfCrWsEL/ONop6Tl3iG64d91Aiqfi6E12OkDAZhpmsPYUYJuWGh0=
+	t=1709043145; cv=none; b=PXBn7kkSbpZrmIl6/oJpVlH4L7thSmfYvJyYzImmcmRto/dyK7k+40HCkYAa4jHlfUynqNfLDvo5cVyuz7VioOhYU1Fxm/WgeLDrMmf+otKwxVpUMGqMf7Z/ckG2tLpaqsIWfAp7b/ma02UP89p7a5tU53hQwu43aNoeRw8R3QQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709042881; c=relaxed/simple;
-	bh=2DLTWH1g5QBoJQR6b7sMrHswEuGMGQv9/Q0mVCRQ8ho=;
+	s=arc-20240116; t=1709043145; c=relaxed/simple;
+	bh=GDqF3eZttv8I5nffzcnWAWrShh9NPmYOPKLpF/LYiW0=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=jzRnQhNniAkd/QGP0fQsBluW2kPmfSRl+sIswJU4YKQNoaoq0fyMZCX6v/KDKpdQzMLliT9o5ZZJdrbinTy/CMKPAvCeqdT9QjdVL5v0vHuhi/PPrgjboem/5mGrOv/ZdvralSoy7r1Hp6zRYKEA3dLqJmHDxU9o9Y+q/jPoa8o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=A5qQx4TP; arc=none smtp.client-ip=10.30.226.201
+	 MIME-Version; b=hMlhQziEVxsYjSHG9gPL4jY4uGyt7gRonrn4axbTIIMXj1tVHjlWu56WOKETfG56MRT1maB619cmZ5DE0fa5+bCVEc51jjm/R4YgtBQgcyN5ZcrJFy0b84uRGWodLQcMsDjTxb11HbK4nO95j+nc6R/yAM4FtgyHlaAvhLFnEUk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=ZRYeIeB6; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="A5qQx4TP"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 11456C433F1;
-	Tue, 27 Feb 2024 14:08:01 +0000 (UTC)
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="ZRYeIeB6"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9D944C433F1;
+	Tue, 27 Feb 2024 14:12:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1709042881;
-	bh=2DLTWH1g5QBoJQR6b7sMrHswEuGMGQv9/Q0mVCRQ8ho=;
+	s=korg; t=1709043143;
+	bh=GDqF3eZttv8I5nffzcnWAWrShh9NPmYOPKLpF/LYiW0=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=A5qQx4TPJYMmNjcN/k1d2RYLYhhD4iP/3w3vaxVEpX/WjhuYF6Y6925EgQJJ2/6xD
-	 45lVQMzuvO3SIbQIWlABRSbsA94hH2NwYpeLYe+7jFPxIWWD/OrrZZmiXGrmVckNsY
-	 UnPdf6MA+XAxtQDyGmmgd4xJP7UjwEe/b2dCipK8=
+	b=ZRYeIeB6jyapIVk7WM59zc7Tz5iL2h0IuNlkjY5aENrcx680Tj4zOAsRmR+FpQpt6
+	 5WHdVXZYTxFaH7ubYxSjdoIjqrndfjkVfpzMSBp07JZppv0xbKvtpIXTNGVNHd1q2e
+	 sjO3axFrc4D9DEBHgC5S0Dme7FHhyIWdYnP0hlCE=
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To: stable@vger.kernel.org
 Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
 	patches@lists.linux.dev,
 	Randy Dunlap <rdunlap@infradead.org>,
-	kernel test robot <lkp@intel.com>,
-	Dengcheng Zhu <dzhu@wavecomp.com>,
-	John Crispin <john@phrozen.org>,
 	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	=?UTF-8?q?Philippe=20Mathieu-Daud=C3=A9?= <philmd@linaro.org>,
-	"Steven J. Hill" <Steven.Hill@imgtec.com>,
-	Qais Yousef <Qais.Yousef@imgtec.com>,
-	Yang Yingliang <yangyingliang@huawei.com>,
-	Hauke Mehrtens <hauke@hauke-m.de>,
-	James Hogan <jhogan@kernel.org>,
 	linux-mips@vger.kernel.org,
+	Arnd Bergmann <arnd@arndb.de>,
+	Masahiro Yamada <masahiroy@kernel.org>,
+	Nicolas Schier <nicolas@fjasle.eu>,
+	"James E.J. Bottomley" <jejb@linux.ibm.com>,
+	"Martin K. Petersen" <martin.petersen@oracle.com>,
+	linux-scsi@vger.kernel.org,
+	Geert Uytterhoeven <geert@linux-m68k.org>,
+	kernel test robot <lkp@intel.com>,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.15 127/245] MIPS: vpe-mt: drop physical_memsize
-Date: Tue, 27 Feb 2024 14:25:15 +0100
-Message-ID: <20240227131619.349656709@linuxfoundation.org>
+Subject: [PATCH 5.15 212/245] scsi: jazz_esp: Only build if SCSI core is builtin
+Date: Tue, 27 Feb 2024 14:26:40 +0100
+Message-ID: <20240227131622.093437879@linuxfoundation.org>
 X-Mailer: git-send-email 2.44.0
 In-Reply-To: <20240227131615.098467438@linuxfoundation.org>
 References: <20240227131615.098467438@linuxfoundation.org>
@@ -55,7 +54,6 @@ List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
 5.15-stable review patch.  If anyone has any objections, please let me know.
@@ -64,92 +62,50 @@ Content-Transfer-Encoding: 8bit
 
 From: Randy Dunlap <rdunlap@infradead.org>
 
-[ Upstream commit 91dc288f4edf0d768e46c2c6d33e0ab703403459 ]
+[ Upstream commit 9ddf190a7df77b77817f955fdb9c2ae9d1c9c9a3 ]
 
-When neither LANTIQ nor MIPS_MALTA is set, 'physical_memsize' is not
-declared. This causes the build to fail with:
+JAZZ_ESP is a bool kconfig symbol that selects SCSI_SPI_ATTRS.  When
+CONFIG_SCSI=m, this results in SCSI_SPI_ATTRS=m while JAZZ_ESP=y, which
+causes many undefined symbol linker errors.
 
-mips-linux-ld: arch/mips/kernel/vpe-mt.o: in function `vpe_run':
-arch/mips/kernel/vpe-mt.c:(.text.vpe_run+0x280): undefined reference to `physical_memsize'
+Fix this by only offering to build this driver when CONFIG_SCSI=y.
 
-LANTIQ is not using 'physical_memsize' and MIPS_MALTA's use of it is
-self-contained in mti-malta/malta-dtshim.c.
-Use of physical_memsize in vpe-mt.c appears to be unused, so eliminate
-this loader mode completely and require VPE programs to be compiled with
-DFLT_STACK_SIZE and DFLT_HEAP_SIZE defined.
+[mkp: JAZZ_ESP is unique in that it does not support being compiled as a
+module unlike the remaining SPI SCSI HBA drivers]
 
-Fixes: 9050d50e2244 ("MIPS: lantiq: Set physical_memsize")
-Fixes: 1a2a6d7e8816 ("MIPS: APRP: Split VPE loader into separate files.")
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
 Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Reported-by: kernel test robot <lkp@intel.com>
-Link: https://lore.kernel.org/all/202302030625.2g3E98sY-lkp@intel.com/
-Cc: Dengcheng Zhu <dzhu@wavecomp.com>
-Cc: John Crispin <john@phrozen.org>
+Link: https://lore.kernel.org/r/20240214055953.9612-1-rdunlap@infradead.org
 Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc: Philippe Mathieu-Daudé <philmd@linaro.org>
-Cc: "Steven J. Hill" <Steven.Hill@imgtec.com>
-Cc: Qais Yousef <Qais.Yousef@imgtec.com>
-Cc: Yang Yingliang <yangyingliang@huawei.com>
-Cc: Hauke Mehrtens <hauke@hauke-m.de>
-Cc: James Hogan <jhogan@kernel.org>
 Cc: linux-mips@vger.kernel.org
-Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: Masahiro Yamada <masahiroy@kernel.org>
+Cc: Nicolas Schier <nicolas@fjasle.eu>
+Cc: James E.J. Bottomley <jejb@linux.ibm.com>
+Cc: Martin K. Petersen <martin.petersen@oracle.com>
+Cc: linux-scsi@vger.kernel.org
+Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: https://lore.kernel.org/oe-kbuild-all/202402112222.Gl0udKyU-lkp@intel.com/
+Signed-off-by: Martin K. Petersen <martin.petersen@oracle.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/mips/include/asm/vpe.h | 1 -
- arch/mips/kernel/vpe-mt.c   | 7 +++----
- arch/mips/lantiq/prom.c     | 6 ------
- 3 files changed, 3 insertions(+), 11 deletions(-)
+ drivers/scsi/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/mips/include/asm/vpe.h b/arch/mips/include/asm/vpe.h
-index baa949a744cb4..ef7e078296079 100644
---- a/arch/mips/include/asm/vpe.h
-+++ b/arch/mips/include/asm/vpe.h
-@@ -102,7 +102,6 @@ struct vpe_control {
- 	struct list_head tc_list;       /* Thread contexts */
- };
+diff --git a/drivers/scsi/Kconfig b/drivers/scsi/Kconfig
+index eea574e89b872..43e6f86e08c33 100644
+--- a/drivers/scsi/Kconfig
++++ b/drivers/scsi/Kconfig
+@@ -1296,7 +1296,7 @@ source "drivers/scsi/arm/Kconfig"
  
--extern unsigned long physical_memsize;
- extern struct vpe_control vpecontrol;
- extern const struct file_operations vpe_fops;
- 
-diff --git a/arch/mips/kernel/vpe-mt.c b/arch/mips/kernel/vpe-mt.c
-index 84a82b551ec35..223d6274f2e5b 100644
---- a/arch/mips/kernel/vpe-mt.c
-+++ b/arch/mips/kernel/vpe-mt.c
-@@ -92,12 +92,11 @@ int vpe_run(struct vpe *v)
- 	write_tc_c0_tchalt(read_tc_c0_tchalt() & ~TCHALT_H);
- 
- 	/*
--	 * The sde-kit passes 'memsize' to __start in $a3, so set something
--	 * here...  Or set $a3 to zero and define DFLT_STACK_SIZE and
--	 * DFLT_HEAP_SIZE when you compile your program
-+	 * We don't pass the memsize here, so VPE programs need to be
-+	 * compiled with DFLT_STACK_SIZE and DFLT_HEAP_SIZE defined.
- 	 */
-+	mttgpr(7, 0);
- 	mttgpr(6, v->ntcs);
--	mttgpr(7, physical_memsize);
- 
- 	/* set up VPE1 */
- 	/*
-diff --git a/arch/mips/lantiq/prom.c b/arch/mips/lantiq/prom.c
-index bc9f58fcbdf94..86c743747e79a 100644
---- a/arch/mips/lantiq/prom.c
-+++ b/arch/mips/lantiq/prom.c
-@@ -22,12 +22,6 @@
- DEFINE_SPINLOCK(ebu_lock);
- EXPORT_SYMBOL_GPL(ebu_lock);
- 
--/*
-- * This is needed by the VPE loader code, just set it to 0 and assume
-- * that the firmware hardcodes this value to something useful.
-- */
--unsigned long physical_memsize = 0L;
--
- /*
-  * this struct is filled by the soc specific detection code and holds
-  * information about the specific soc type, revision and name
+ config JAZZ_ESP
+ 	bool "MIPS JAZZ FAS216 SCSI support"
+-	depends on MACH_JAZZ && SCSI
++	depends on MACH_JAZZ && SCSI=y
+ 	select SCSI_SPI_ATTRS
+ 	help
+ 	  This is the driver for the onboard SCSI host adapter of MIPS Magnum
 -- 
 2.43.0
 

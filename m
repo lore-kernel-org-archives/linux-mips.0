@@ -1,106 +1,103 @@
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+Received: from relay1-d.mail.gandi.net (relay1-d.mail.gandi.net [217.70.183.193])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C130013A275;
-	Tue, 27 Feb 2024 12:57:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4523B78B61;
+	Tue, 27 Feb 2024 13:38:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.193
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709038659; cv=none; b=r9qh2898CcWrJ2rIITG1WqNibQpD+5aMDpUoDGS5va3XwmiBatZOhYJTuLX9Zj8qD1+KXzyuzKB6R60xwZ4fupsBduZ4evriNDvaGH+4xjvtOrxPKEyMlocuBH2KILFJZcDCXNLkklAgwkKEOLUc1ZKLaRUQlY3FGuPzVCfYFy8=
+	t=1709041125; cv=none; b=kHkLaD4VVHf8/b8sICjEe7j42wRsna2DOYkWL8zuKA2QUTqcF13Q7XlMuXBNKmBHOJihk5T3JI3p06lHM2QVCbpHwftpi1cPxG6XeqiZI/t2VRbUoYin2JQzVnb+41nKskKZ+2qvwsyRTvAEGbPSPZ/Nu845SQoXxzAYoz0uuBs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709038659; c=relaxed/simple;
-	bh=swDhxalnop+40QyzTwmELhQq8fYEaBd8gs0d47AC/h8=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=VGpAUg0WaDN0rDgcV6agXVcfZxPv+8s8udkH3ie3+zOlOJJdpKEzWPiYtnd/etF5gwMEdvgk/x0YNgHD5qCss7ErpOwPw8/YNoJ+xMG0kbrIUP7xVZ7XVvUbRJTbFLye5wsyEc8bqxs/PvaVcTNnKB+IruFcvpAkfgege4pjcsk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ellerman.id.au; spf=pass smtp.mailfrom=ellerman.id.au; dkim=pass (2048-bit key) header.d=ellerman.id.au header.i=@ellerman.id.au header.b=lbeHOiis; arc=none smtp.client-ip=150.107.74.76
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ellerman.id.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ellerman.id.au
+	s=arc-20240116; t=1709041125; c=relaxed/simple;
+	bh=Ad3s8txV/LRKTi3+KCXHUIgZVNfAZ9S2VAZ3ew4nrfE=;
+	h=Mime-Version:Content-Type:Date:Message-Id:Subject:Cc:To:From:
+	 References:In-Reply-To; b=cOeh57Dc1AWTwyOMGig60WauZRu/SvzKXRAio42hrVkBkOVHHEcEC+FWKmQDrix54IRwaZgF7jquNJYuKAXHP1cGkXyAf6VFLGTsMzkv3wlNwQ3AYSheOEbE0i8sTUsMu/KuhB6uCeBPzEVmV2Sfi7c4Wzroarp51ZOVywUcFu4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=L3nHvMeK; arc=none smtp.client-ip=217.70.183.193
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ellerman.id.au header.i=@ellerman.id.au header.b="lbeHOiis"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
-	s=201909; t=1709038654;
-	bh=swDhxalnop+40QyzTwmELhQq8fYEaBd8gs0d47AC/h8=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=lbeHOiisvAviMzJQIz1moD9CMIwDWnyEkMBx5y4p+r5c4IjQoB18qgrlVCvB1x8lp
-	 iw5qgUFtP6yhK80WEdbT7VjiMz5ok3ncpSQJrzolcOlwZxH0A6OqtUbvamzsIkn3yn
-	 RBV09p6PQKg3ejTTuOeVaiqbz3dvd4in83oOIMRRq6JTZgTEUiakFeAj3srmtE6C78
-	 mi6JAHZh6pFZdAUi8XVUbjcFAS71GtwQc2qeDeH5P4Xuct27XPV7LT/rxZnWTHu126
-	 fiuYYKa4gKtFpVdOYRIR7pO1OxjT3IRFVQPGGzi+xxv3ckTfZSwTY4PM6V5s6Vt2Jl
-	 0WyDEwagYDlRA==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4Tkcvp132Mz4wbQ;
-	Tue, 27 Feb 2024 23:57:26 +1100 (AEDT)
-From: Michael Ellerman <mpe@ellerman.id.au>
-To: Christophe Leroy <christophe.leroy@csgroup.eu>, Arnd Bergmann
- <arnd@kernel.org>, Thomas Gleixner <tglx@linutronix.de>, Vincenzo Frascino
- <vincenzo.frascino@arm.com>, Kees Cook <keescook@chromium.org>, Anna-Maria
- Behnsen <anna-maria@linutronix.de>
-Cc: Arnd Bergmann <arnd@arndb.de>, Matt Turner <mattst88@gmail.com>, Vineet
- Gupta <vgupta@kernel.org>, Russell King <linux@armlinux.org.uk>, Catalin
- Marinas <catalin.marinas@arm.com>, Guo Ren <guoren@kernel.org>, Brian Cain
- <bcain@quicinc.com>, Huacai Chen <chenhuacai@kernel.org>, Geert
- Uytterhoeven <geert@linux-m68k.org>, Michal Simek <monstr@monstr.eu>,
- Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Helge Deller
- <deller@gmx.de>, Palmer Dabbelt <palmer@dabbelt.com>, John Paul Adrian
- Glaubitz <glaubitz@physik.fu-berlin.de>, Andreas Larsson
- <andreas@gaisler.com>, Richard Weinberger <richard@nod.at>,
- "x86@kernel.org" <x86@kernel.org>, Max Filippov <jcmvbkbc@gmail.com>, Andy
- Lutomirski <luto@kernel.org>, Jan Kiszka <jan.kiszka@siemens.com>, Kieran
- Bingham <kbingham@kernel.org>, Andrew Morton <akpm@linux-foundation.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "linux-alpha@vger.kernel.org" <linux-alpha@vger.kernel.org>,
- "linux-snps-arc@lists.infradead.org" <linux-snps-arc@lists.infradead.org>,
- "linux-arm-kernel@lists.infradead.org"
- <linux-arm-kernel@lists.infradead.org>, "linux-csky@vger.kernel.org"
- <linux-csky@vger.kernel.org>, "linux-hexagon@vger.kernel.org"
- <linux-hexagon@vger.kernel.org>, "loongarch@lists.linux.dev"
- <loongarch@lists.linux.dev>, "linux-m68k@lists.linux-m68k.org"
- <linux-m68k@lists.linux-m68k.org>, "linux-mips@vger.kernel.org"
- <linux-mips@vger.kernel.org>, "linux-openrisc@vger.kernel.org"
- <linux-openrisc@vger.kernel.org>, "linux-parisc@vger.kernel.org"
- <linux-parisc@vger.kernel.org>, "linuxppc-dev@lists.ozlabs.org"
- <linuxppc-dev@lists.ozlabs.org>, "linux-riscv@lists.infradead.org"
- <linux-riscv@lists.infradead.org>, "linux-s390@vger.kernel.org"
- <linux-s390@vger.kernel.org>, "linux-sh@vger.kernel.org"
- <linux-sh@vger.kernel.org>, "sparclinux@vger.kernel.org"
- <sparclinux@vger.kernel.org>, "linux-um@lists.infradead.org"
- <linux-um@lists.infradead.org>, Linux Kernel Functional Testing
- <lkft@linaro.org>
-Subject: Re: [PATCH 4/4] vdso: avoid including asm/page.h
-In-Reply-To: <80bc4de5-a351-4ac0-93c8-80c8d80fb202@csgroup.eu>
-References: <20240226161414.2316610-1-arnd@kernel.org>
- <20240226161414.2316610-5-arnd@kernel.org>
- <80bc4de5-a351-4ac0-93c8-80c8d80fb202@csgroup.eu>
-Date: Tue, 27 Feb 2024 23:57:25 +1100
-Message-ID: <87h6hu5akq.fsf@mail.lhotse>
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="L3nHvMeK"
+Received: by mail.gandi.net (Postfix) with ESMTPSA id A454D24000A;
+	Tue, 27 Feb 2024 13:38:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1709041120;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=4ugB9QxiL2b1VXZ64TujSRaUb9sqfq1WG8mbx8ms1t8=;
+	b=L3nHvMeKugiy6LAMcXCUL40zZFkFyG3stQRCERhiPdxJe3E0Hmzaxmc4okAgDcBr9U4dce
+	MabFzn95ayqAVbsXsICU+hIghagnyW62tfkH76EGxaxLevNTkTGL7T6XXxpG7c70YJRida
+	FsCqgDEloarSSvHd4W++4CkZQYK7cLR9DS9kgJNX3q+JzZ5uiocuE4/suGqZXVocBmi8S2
+	gL/nime4cLazyjWSWNAtEfsIqac3zN1ZGMiosIt069itDFdoNzDLaRnxFTn69FLMXouH+X
+	PzS/pk0jhfoT+W4YHIa8JMziWyCDQXmifs9+5/3Jp5yBpS8z6kKpuNkqLvZG2A==
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date: Tue, 27 Feb 2024 14:38:39 +0100
+Message-Id: <CZFWIJE9978P.G3TZC2YIUST9@bootlin.com>
+Subject: Re: [PATCH 09/13] i2c: nomadik: fetch timeout-usecs property from
+ devicetree
+Cc: "Linus Walleij" <linus.walleij@linaro.org>, "Andi Shyti"
+ <andi.shyti@kernel.org>, "Rob Herring" <robh+dt@kernel.org>, "Krzysztof
+ Kozlowski" <krzysztof.kozlowski+dt@linaro.org>, "Conor Dooley"
+ <conor+dt@kernel.org>, "Thomas Bogendoerfer" <tsbogend@alpha.franken.de>,
+ <linux-arm-kernel@lists.infradead.org>, <linux-i2c@vger.kernel.org>,
+ <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+ <linux-mips@vger.kernel.org>, "Gregory Clement"
+ <gregory.clement@bootlin.com>, "Vladimir Kondratiev"
+ <vladimir.kondratiev@mobileye.com>, "Thomas Petazzoni"
+ <thomas.petazzoni@bootlin.com>, "Tawfik Bayouk"
+ <tawfik.bayouk@mobileye.com>
+To: "Wolfram Sang" <wsa@kernel.org>
+From: =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
+X-Mailer: aerc 0.15.2
+References: <20240215-mbly-i2c-v1-0-19a336e91dca@bootlin.com>
+ <20240215-mbly-i2c-v1-9-19a336e91dca@bootlin.com>
+ <Zd3SJMBp23ybgdsJ@shikoro>
+In-Reply-To: <Zd3SJMBp23ybgdsJ@shikoro>
+X-GND-Sasl: theo.lebrun@bootlin.com
 
-Christophe Leroy <christophe.leroy@csgroup.eu> writes:
-> Le 26/02/2024 =C3=A0 17:14, Arnd Bergmann a =C3=A9crit=C2=A0:
->> From: Arnd Bergmann <arnd@arndb.de>
->>=20
->> The recent change to the vdso_data_store broke building compat VDSO
->> on at least arm64 because it includes headers outside of the include/vds=
-o/
->> namespace:
+Hello,
+
+On Tue Feb 27, 2024 at 1:14 PM CET, Wolfram Sang wrote:
+> > +	/* Slave response timeout */
+> > +	if (!of_property_read_u32(np, "timeout-usecs", &timeout_usecs))
+> > +		priv->timeout_usecs =3D timeout_usecs;
+> > +	else
+> > +		priv->timeout_usecs =3D 200 * USEC_PER_MSEC;
 >
-> I understand that powerpc64 also has an issue, see=20
-> https://patchwork.ozlabs.org/project/linuxppc-dev/patch/20231221120410.22=
-26678-1-mpe@ellerman.id.au/
+> I could imagine to add 'transfer_timeout_us' to struct i2c_timings.
+> Then, you could use 'i2c_parse_fw_timings' to obtain the value. What
+> values/value range do you use here? I can't find them in the DTS
+> additions.
 
-Yeah, and that patch would silently conflict with this series, which is
-not ideal.
+That sounds good. I have not used this prop in the DTS as it does not
+make much sense for an eval board. The target is production boards.
 
-I could delay merging my patch above until after this series goes in,
-mine only fixes a fairly obscure build warning.
+An order of magnitude is a few transfers every 15ms. It means a timeout
+of 15ms divided by "a few". I don't have more precise values, but I
+could if you consider it useful.
 
-cheers
+I've done some testing at 50~100=C2=B5s timeouts and it works as expected. =
+At
+those values timerslack is important to consider (default of 50=C2=B5s).
+This is at 400kHz clock frequency. Keep in mind the controllers support
+up to 3.4MHz (not yet upstreamed) so timeouts could in theory go
+lower if required by the usecase.
+
+My upcoming question is how to move forward on this series. I can do the
+patch to i2c_parse_fw_timings() in the next revision. That way it gets
+added alongside the first user of this feature. Would it work for you?
+
+Thanks,
+
+--
+Th=C3=A9o Lebrun, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
+

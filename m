@@ -1,123 +1,108 @@
-Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mslow1.mail.gandi.net (mslow1.mail.gandi.net [217.70.178.240])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F76C73516
-	for <linux-mips@vger.kernel.org>; Wed, 28 Feb 2024 11:52:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 227BF73509;
+	Wed, 28 Feb 2024 11:58:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.178.240
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709121143; cv=none; b=dLbOU/YmiGRdJYA6UEqkcCKKXA94KhmCq8Ypbt3Uf0zaTCz6HOJ78ipm4P23zadZjWogDMs+bJOZblz8wISfGSpQKQkvSxZZX6mv9sIxNIzRnXhYDS6qaduRj3IUBCzDJAF3hA2ySyZCAxLf8ewOC7XdqakMUUX+ELnQGwzmGc0=
+	t=1709121503; cv=none; b=RbJMHh+bE2n6P5Aa/vv60IuOWgeVuLTFuDfSXY0AnHLiWYLjovAT4IGRnTENN4/d8QJKENDyH3ICK1775elOn0/PBoGJHyU0dDkoYdX/u7RbwXd8QaMR3/XCjZ4HlQDhofl1bKYx5j86lMR2OdeXduMoIuJpjM6nqjhXyYrwr/c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709121143; c=relaxed/simple;
-	bh=3n/Qsn9eEC88y1T6J/WAzonTmx6UamA/Qs6tg6Zzozs=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=kndBBwsRFiy3PxLoZSiV2tIXPxNzNeEu+3OG+ykl4SuPl7wCLOiUDj2/Ekpk8bO1/4rUw/COkokLDvvXC1T+dC5pFwiMzZOHKsrwlFSIxQlXWN6oQt7cSeajOwEMIz5ifonsgYhMYoIBfss00ZS7ScQLvVAPXSdWl6RMOcAyEUc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=rMzOs0Ng; arc=none smtp.client-ip=209.85.128.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+	s=arc-20240116; t=1709121503; c=relaxed/simple;
+	bh=bmJVxea+oEzT3EtoYlqAmW+AUuUsUmFi5hATLsmQHjI=;
+	h=Mime-Version:Content-Type:Date:Message-Id:Cc:To:From:Subject:
+	 References:In-Reply-To; b=XYOYiuj/jMVfKu/7ZjL1gJPHjb5A0cXDMgAYdBXHXk1ewGcso6iCMvBI/5rxpM5nbIx3l37MLCA3GrkxxyuiAQQ7jQZR8Cf/Dx8xMOr0RHH/XJV5i85JWxImyeSmQeVKLLZMumllijgsMIZ+YXn6gYNX5ZfftZiIS0bdGQtmnCE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=HwbBgPwl; arc=none smtp.client-ip=217.70.178.240
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="rMzOs0Ng"
-Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-412a588c8b4so21877475e9.0
-        for <linux-mips@vger.kernel.org>; Wed, 28 Feb 2024 03:52:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1709121140; x=1709725940; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=0bkVtbcoc/EdAlN+I6+oL1+CCziM/Me6KnKW3KLACdQ=;
-        b=rMzOs0NgbYU6OzQizbGpZvbE3jkLlc/cjxxWKs3WEMahM1r92b8V5IBoB4cb/UQweb
-         UD+lnDPmzbP1yE9CyhCx21RJqcqGFsvnieDZgkmuhldTQAZxSJQO2pWFl2o/pWflLDS/
-         2Jtq3JOiq1c6vROIz8HnhhbP02cY2k6fXbVlfjiivuAxWZAGi0F2aUzzCWqcCzKXFuH0
-         7Y/f/wnPSWu9kdWx5uDAkETQGoTV+e6Eg8MnHaFeDIwJ7sRPCaRe8nXhv3xT6vTzXL/0
-         tkX/fcUNVd/hR2etrOlrS1MQC5Js12RbBizjQc0lgur//3qybMgB8K60+o3X77LQQqma
-         UNOg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709121140; x=1709725940;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=0bkVtbcoc/EdAlN+I6+oL1+CCziM/Me6KnKW3KLACdQ=;
-        b=K2XkSx18A9ftZz/iII50dL6YqK4L3kpjxJNV6w4aKPYK2Lv/YFCUHiwknE+In/VaAx
-         wlwSLTYK7Fq2rrdT5w+PQZEDaMJtb+OxlHTIzkNhqrRaECbDW60mljjEtCO5SGEQeexZ
-         gQM4OlCPi1COnAROvcPGEOlsJ9ttfdxVVfMzwzs3MNYypS6RAXQqkzBQWmSOfrmL2g+H
-         ZyROxY/F1mGmKQXxCAYkWKvSKDHNVC6gupj5c/gNG6V7VcV8TCmyjrycWYbpKUR1pBaf
-         QtNoiNnLVk7znaoyWh8JQWXpcIhGnBbZEa3qKeaab2l1Rqx+u39nf2hQGvK7g8zWQFwl
-         kIOQ==
-X-Gm-Message-State: AOJu0Yy0Oh55WOwTb1dFXXmaPQpcTvme+1VdEY8glOxwTkL2qCzmUPlF
-	WM6K6TeCji5TRxGi6bjEHfx0Rb2uJ1JRhSl82ZkucWwplz/52UylXHtLth/bpaE=
-X-Google-Smtp-Source: AGHT+IHh3XwNm56x8VVnZGWgAiXBjtGnlYCa910zzqHzwF2XAr5dKhzjRTtYlEXsuysr2PU3mQ3FJA==
-X-Received: by 2002:a05:600c:34d2:b0:412:afa6:cf28 with SMTP id d18-20020a05600c34d200b00412afa6cf28mr2732380wmq.30.1709121139750;
-        Wed, 28 Feb 2024 03:52:19 -0800 (PST)
-Received: from [192.168.169.175] (58.171.88.92.rev.sfr.net. [92.88.171.58])
-        by smtp.gmail.com with ESMTPSA id jn5-20020a05600c6b0500b0041228b2e179sm1853771wmb.39.2024.02.28.03.52.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 28 Feb 2024 03:52:19 -0800 (PST)
-Message-ID: <d44026e7-5ffa-4906-9b59-10fa207ecd51@linaro.org>
-Date: Wed, 28 Feb 2024 12:52:11 +0100
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="HwbBgPwl"
+Received: from relay1-d.mail.gandi.net (unknown [IPv6:2001:4b98:dc4:8::221])
+	by mslow1.mail.gandi.net (Postfix) with ESMTP id 255A0C3B08;
+	Wed, 28 Feb 2024 11:44:19 +0000 (UTC)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 1A1BC240010;
+	Wed, 28 Feb 2024 11:44:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1709120650;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=bmJVxea+oEzT3EtoYlqAmW+AUuUsUmFi5hATLsmQHjI=;
+	b=HwbBgPwlUGwdkKqhxPs0I6nUKj3VWccKez2XcK0QCJRc1E5t+YCDn6NmazS+VoH+UYgi81
+	7OWOMPQ6f+vavnK5g2BIgbR/LB0rBSZcyik1mHXAvwWnxAPJtEAKl45Ic74VkP8JHM8bD+
+	J/Qa20DdB8EK6mbrj+f6aFPqevmHv3KZHgiGoOYPyHBoyogseRFUwazKRn9nvoq87yfVWr
+	u1fo5QuK+MOiX3zstLjuf5jzJnHQgJLhwrXmpb74ingV3ccMfqVHASR/J8SyS8IzxKDd1Q
+	HYiOqUCybVVa8cFJHv7NDK4j87ys693VUgMOwKel7/h25ksp9Tnkabl2a8LlBA==
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: sibyte: pointless if tests
-Content-Language: en-US
-To: Joe Perches <joe@perches.com>,
- Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc: linux-mips@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
-References: <2cf0b77f51b907969ae83993854773961b4e159c.camel@perches.com>
-From: =?UTF-8?Q?Philippe_Mathieu-Daud=C3=A9?= <philmd@linaro.org>
-In-Reply-To: <2cf0b77f51b907969ae83993854773961b4e159c.camel@perches.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date: Wed, 28 Feb 2024 12:44:09 +0100
+Message-Id: <CZGOPF51JA1R.2YN65K6WUH9N4@bootlin.com>
+Cc: "Paul Burton" <paulburton@kernel.org>, <linux-mips@vger.kernel.org>,
+ "Jiaxun Yang" <jiaxun.yang@flygoat.com>, "Rob Herring"
+ <robh+dt@kernel.org>, "Krzysztof Kozlowski"
+ <krzysztof.kozlowski+dt@linaro.org>, <devicetree@vger.kernel.org>,
+ <linux-kernel@vger.kernel.org>, "Vladimir Kondratiev"
+ <vladimir.kondratiev@mobileye.com>, "Tawfik Bayouk"
+ <tawfik.bayouk@mobileye.com>, "Alexandre Belloni"
+ <alexandre.belloni@bootlin.com>, "Thomas Petazzoni"
+ <thomas.petazzoni@bootlin.com>
+To: "Thomas Bogendoerfer" <tsbogend@alpha.franken.de>, "Gregory CLEMENT"
+ <gregory.clement@bootlin.com>
+From: =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
+Subject: Re: [PATCH v8 00/14] Add support for the Mobileye EyeQ5 SoC
+X-Mailer: aerc 0.15.2
+References: <20240216174227.409400-1-gregory.clement@bootlin.com>
+ <ZdSst3fM3EOQGH03@alpha.franken.de>
+In-Reply-To: <ZdSst3fM3EOQGH03@alpha.franken.de>
+X-GND-Sasl: theo.lebrun@bootlin.com
 
-On 24/2/24 23:28, Joe Perches wrote:
-> A checkpatch modification was suggested privately about
-> braces around an if test like
-> 
-> 	if (foo)
-> 		;
-> 
-> so I thought I'd see how many of these possibly pointless
-> if tests exist.  There aren't many.
-> 
-> Here are a couple in sibyte:
-> 
-> Maybe this should be documented as:
-> 
-> 	"well, don't know what to do here"
+Hello Thomas,
 
-Or pr_devel() / pr_warn() if you want someone to notice it :)
+On Tue Feb 20, 2024 at 2:44 PM CET, Thomas Bogendoerfer wrote:
+> On Fri, Feb 16, 2024 at 06:42:09PM +0100, Gregory CLEMENT wrote:
+> > Hello,
+> >=20
+> > The EyeQ5 SoC from Mobileye is based on the MIPS I6500 architecture
+> > and features multiple controllers such as the classic UART, I2C, SPI,
+> > as well as CAN-FD, PCIe, Octal/Quad SPI Flash interface, Gigabit
+> > Ethernet, MIPI CSI-2, and eMMC 5.1. It also includes a Hardware
+> > Security Module, Functional Safety Hardware, and MJPEG encoder.
 
-> 
-> $ cat if_semi.cocci
-> @@
-> expression e;
-> @@
-> 
-> *	if (e) ;
-> 
-> $ spatch --very-quiet -sp-file if_semi.cocci .
-> diff -u -p ./arch/mips/sibyte/common/cfe_console.c /tmp/nothing/arch/mips/sibyte/common/cfe_console.c
-> --- ./arch/mips/sibyte/common/cfe_console.c
-> +++ /tmp/nothing/arch/mips/sibyte/common/cfe_console.c
-> @@ -22,8 +22,6 @@ static void cfe_console_write(struct con
->   		if (str[i] == '\n') {
->   			do {
->   				written = cfe_write(cfe_cons_handle, &str[last], i-last);
-> -				if (written < 0)
-> -					;
->   				last += written;
->   			} while (last < i);
->   			while (cfe_write(cfe_cons_handle, "\r", 1) <= 0)
-> @@ -33,8 +31,6 @@ static void cfe_console_write(struct con
->   	if (last != count) {
->   		do {
->   			written = cfe_write(cfe_cons_handle, &str[last], count-last);
-> -			if (written < 0)
-> -				;
->   			last += written;
->   		} while (last < count);
->   	}
-> 
+[...]
+
+> series applied to mips-next.
+>
+> I've fixed generic|ingenic|realtek builds by adding select MACH_GENERIC_C=
+ORE
+> in arch/mips/Kconfig.
+
+Would it be possible to provide an immutable branch containing the two
+series? I've got quite a few series that depend on them as they target
+EyeQ5 devicetrees and defconfig.
+
+It's been a request from Bartosz for the GPIO series, see [0].
+
+Series are:
+ - Jiaxun's "Unify register numbering macros for uasm" [1];
+ - Gr=C3=A9gory's "Add support for the Mobileye EyeQ5 SoC".
+
+Have a nice day,
+
+[0]: https://lore.kernel.org/lkml/CAMRc=3DMfLXCDXBiKKuEPZRjNoNiFN+gvhu+GjZk=
+Z1SQuF1s4=3DUQ@mail.gmail.com/
+[1]: https://lore.kernel.org/linux-mips/20240209-regname-v1-0-2125efa016ef@=
+flygoat.com/
+[2]: https://lore.kernel.org/lkml/20240216174227.409400-1-gregory.clement@b=
+ootlin.com/
+
+--
+Th=C3=A9o Lebrun, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
 

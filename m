@@ -1,126 +1,90 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from relay8-d.mail.gandi.net (relay8-d.mail.gandi.net [217.70.183.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E0E4E7FBD7;
-	Wed, 28 Feb 2024 10:49:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4116D2561D;
+	Wed, 28 Feb 2024 11:28:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709117368; cv=none; b=di/Q0/F3Bepy74vbOq6qRR6t7tjaG4VIrvUr+mgMjuFNwJFNpI3viHvPg7F16IfCA5YWHBx3GfRBam77h0Yor5fV76gvt5e+pwOWcNkllmv2wthm1xQ18ztPxlQh6FjmnIuy3PkvHtwEnFK89hC7anE2mfCMHUBaNqd9W5E8kls=
+	t=1709119700; cv=none; b=VrpYdCSkExGVsk+vDKfHmVhqb8cQEYUNFEPiyvfn9kaMMISHw8cMChpw/paBtxO8qSjkXcsltlF2t78hjv7maNA5Sw02geA+nYAdHs9FlO1mS+JwZwDsAM4G4np19Vk0gWqv+MR+ZDsye88JBz4Th7LjNQciF0NQK+yLfnY3BIg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709117368; c=relaxed/simple;
-	bh=NReh0r1OOkJ/WPAnBLnxEVaYYz6tyBjSchjL2TDVkOo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=CjKF1vaC38ajXnkTzRGkngujadESZuxcQkXwAVfsxrctlZZbz7xthOC8xl177Ytb46jUCqYGIKuMFB4VH3YXueeyiXlD7iRcyhuY7YvJBGPW1C7M4sz7cWiHPtkQMEZgYRJ6sFaMK5fCwsT4rOHuFd0KbsFxtKGY0P+PHRAGlI0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ampoXZVW; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1709119700; c=relaxed/simple;
+	bh=yr8WX4A44trJtUxl2P9pZk9ZMjMyxNKtR2O698qVrvo=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
+	 In-Reply-To:To:Cc; b=eSzc7qbFfvaybEkMbT5TsCIZaH+Mst8rnKvMlhrNpihkdBYJ7tm2L7+AtOl88CdBqJ6y10G2RP5y09W0y3dP4IgbWUzBVPTE+wir6qpHpwyEXwPWv+fb3Jg+f+BGqDjQXr/dKMvLvbxCLhkEuxEg9HPo3Y7b8aJOdXa3DgVVn4E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=Tj3Fawby; arc=none smtp.client-ip=217.70.183.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ampoXZVW"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DF263C433C7;
-	Wed, 28 Feb 2024 10:49:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709117367;
-	bh=NReh0r1OOkJ/WPAnBLnxEVaYYz6tyBjSchjL2TDVkOo=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=ampoXZVWcdsJDzSiPecqBZ+IfULM6TLhs+9C8H4SnTBekIvwYvHd0QBTNVwtYqOXL
-	 bn2ncUcxLhMaGPhE6+66ypcI1ExIuESsfSIE0RtfPYlVsMlatqODU6OvjEi+BvgpS0
-	 2EqhL/g/7Q0skBNyRT31JSA6EcToPgB6XISQy3EHmhqBR8g2cOGFNBybEzvVBbNyUs
-	 lZsaCp1TC1Y71rkwAUxsYPnbY1RgQ8fUamNqIqoaXsFsxZLv8oDdkxPsMYSMCsdOTw
-	 tNL7SfL50A7+7WfNCZAH+AqZyPKle1r8/h5Mpu4t0+vSeTfDXLA1pVVIDZqiyojCE8
-	 HmK67aoOrsptA==
-Date: Wed, 28 Feb 2024 11:49:24 +0100
-From: Wolfram Sang <wsa@kernel.org>
-To: =?utf-8?B?VGjDqW8=?= Lebrun <theo.lebrun@bootlin.com>
-Cc: Linus Walleij <linus.walleij@linaro.org>,
-	Andi Shyti <andi.shyti@kernel.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	linux-arm-kernel@lists.infradead.org, linux-i2c@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-mips@vger.kernel.org,
-	Gregory Clement <gregory.clement@bootlin.com>,
-	Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>,
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-	Tawfik Bayouk <tawfik.bayouk@mobileye.com>
-Subject: Re: [PATCH 09/13] i2c: nomadik: fetch timeout-usecs property from
- devicetree
-Message-ID: <Zd8PtLsUc0G8KR97@shikoro>
-Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
-	=?utf-8?B?VGjDqW8=?= Lebrun <theo.lebrun@bootlin.com>,
-	Linus Walleij <linus.walleij@linaro.org>,
-	Andi Shyti <andi.shyti@kernel.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	linux-arm-kernel@lists.infradead.org, linux-i2c@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-mips@vger.kernel.org,
-	Gregory Clement <gregory.clement@bootlin.com>,
-	Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>,
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-	Tawfik Bayouk <tawfik.bayouk@mobileye.com>
-References: <20240215-mbly-i2c-v1-0-19a336e91dca@bootlin.com>
- <20240215-mbly-i2c-v1-9-19a336e91dca@bootlin.com>
- <Zd3SJMBp23ybgdsJ@shikoro>
- <CZFWIJE9978P.G3TZC2YIUST9@bootlin.com>
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="Tj3Fawby"
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 2CEA91BF20D;
+	Wed, 28 Feb 2024 11:28:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1709119696;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=BpsD83BM+PlNWBQdcZslFjWvjlE691PT9L/5TLzg2mc=;
+	b=Tj3FawbyJENHxmceKliYSLPqE6Hp1GKvvRnQ3ZAyremnWZUy2b5RpAqxCnNMz2VoYuZWlp
+	UcNdL1qoKeF5I1vDuTVuHSWxNaQJpgHgnl/HUr/zGmh4Zs2MsiDzpcEZ/j2DS07mGz4s6I
+	jNJcrWwuHfCqsKIJGKgGqj4+k+kovhSZtupcbZsGlj+bOpb52PSbaGiLOTCtQee+jdQZMT
+	bvRct0OhtZyY7S85KwwFECaXG0uVPgSmVDf4+/rsNMkEHwpR3aQ8llZ+d+Iivss//yTBIr
+	LP/co5yvACfpYIT0zlalV6yoyFlGvW0EGso+wqfhr2v4ZST98wG5u4bAj8usNA==
+From: =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
+Date: Wed, 28 Feb 2024 12:28:06 +0100
+Subject: [PATCH v2 08/30] pinctrl: nomadik: fix build warning (-Wformat)
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="FC1UhtSW8OWBZjC4"
-Content-Disposition: inline
-In-Reply-To: <CZFWIJE9978P.G3TZC2YIUST9@bootlin.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Message-Id: <20240228-mbly-gpio-v2-8-3ba757474006@bootlin.com>
+References: <20240228-mbly-gpio-v2-0-3ba757474006@bootlin.com>
+In-Reply-To: <20240228-mbly-gpio-v2-0-3ba757474006@bootlin.com>
+To: Linus Walleij <linus.walleij@linaro.org>, 
+ Bartosz Golaszewski <brgl@bgdev.pl>, Rob Herring <robh+dt@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Conor Dooley <conor+dt@kernel.org>, Philipp Zabel <p.zabel@pengutronix.de>, 
+ Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc: linux-gpio@vger.kernel.org, devicetree@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+ linux-mips@vger.kernel.org, Gregory CLEMENT <gregory.clement@bootlin.com>, 
+ Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>, 
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>, 
+ Tawfik Bayouk <tawfik.bayouk@mobileye.com>, 
+ =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
+X-Mailer: b4 0.13.0
+X-GND-Sasl: theo.lebrun@bootlin.com
 
+Fix compiler warning found in the pinctrl-nomadik platform driver. GCC
+message is as such:
 
---FC1UhtSW8OWBZjC4
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+drivers/pinctrl/nomadik/pinctrl-nomadik.c:855:21: warning:
+format ‘%u’ expects argument of type ‘unsigned int’, but argument 5
+has type ‘size_t {aka const long unsigned int}’ [-Wformat=]
 
-Hi Th=C3=A9o,
+Signed-off-by: Théo Lebrun <theo.lebrun@bootlin.com>
+---
+ drivers/pinctrl/nomadik/pinctrl-nomadik.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> That sounds good. I have not used this prop in the DTS as it does not
-> make much sense for an eval board. The target is production boards.
+diff --git a/drivers/pinctrl/nomadik/pinctrl-nomadik.c b/drivers/pinctrl/nomadik/pinctrl-nomadik.c
+index 16d836157f74..1be0c48712b7 100644
+--- a/drivers/pinctrl/nomadik/pinctrl-nomadik.c
++++ b/drivers/pinctrl/nomadik/pinctrl-nomadik.c
+@@ -871,7 +871,7 @@ static int nmk_pmx_set(struct pinctrl_dev *pctldev, unsigned function,
+ 	if (g->altsetting < 0)
+ 		return -EINVAL;
+ 
+-	dev_dbg(npct->dev, "enable group %s, %u pins\n", g->grp.name, g->grp.npins);
++	dev_dbg(npct->dev, "enable group %s, %zu pins\n", g->grp.name, g->grp.npins);
+ 
+ 	/*
+ 	 * If we're setting altfunc C by setting both AFSLA and AFSLB to 1,
 
-=2E..
+-- 
+2.44.0
 
-> My upcoming question is how to move forward on this series. I can do the
-> patch to i2c_parse_fw_timings() in the next revision. That way it gets
-> added alongside the first user of this feature. Would it work for you?
-
-Hmmm, to be honest I have a bit of an issue with the 'no user' problem.
-There is a driver which uses this feature, okay. But there is no
-upstream hardware which uses this driver with this new feature. This
-makes maintaining harder ("Who uses this feature?" - "Someone" - "How do
-they use it? Can we modify it?" - "Dunno").
-
-Kind regards,
-
-   Wolfram
-
-
---FC1UhtSW8OWBZjC4
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmXfD7AACgkQFA3kzBSg
-KbZNpRAAplZcmoN+v+398lrwCBrPt7fW87i3u0pGvvs36OOmYI47d+qOyYjBaEdN
-M52Dr0jkq4NrpXVgxXk2ty2m3Tv7F6pnPwKU5+e7TzVeUoCQgJwq/vJV1ppgBY+O
-1iNfCKh6ZtzNrhuC6X+Rjxt0dZ/qc0zjjjQP4yUEYDCs5AHqc3gd5YopbJ1N0eGd
-YMKEPrY9FntcE5argMTXW1OZ/jlRMhrRziD9d+a3odezohS5kITrTuwg9b+Yckm0
-/3paBaWYXFFeAgwYPkg5vEIJHq39Y2ljKG5VhpKfMEdg2F2OWkWgxvOiRxEhlFua
-rvHkb3UFHoFx4kyheWXEjx79i5KwP/wiCrMv/gxu1Gz4l6HanCMZfoRSUhsOscbH
-0qiQBXust4YSa9BEpJD3CYOf5Z1SrWdACRgYwAmb7yUmIQLqlLbBPjxWfyvCKk5d
-nDfz34EdiE8Sc5RWJrzwFv1JOZLwg/L0m0i++8GnqKL5jvTgj0+dcg6ScetIINKW
-nayMd+ZqNBoA9g738JhlU/Xycy/CNxRda96mCbnFLZWXsEPX3bv4pyQRKapgkZxt
-UIxVw3xtwpifhg7/3EwmV5xKDi3m+OuOM+E8sA0VloVNxnpscANrQVC9V5G3YDr1
-GNpgoNp1XnZOTcCBGi1gdUUZDQnwybWDNMn+cdAlUZAM/N3WQe4=
-=fDeJ
------END PGP SIGNATURE-----
-
---FC1UhtSW8OWBZjC4--

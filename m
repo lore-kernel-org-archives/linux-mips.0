@@ -1,98 +1,115 @@
-Received: from relay8-d.mail.gandi.net (relay8-d.mail.gandi.net [217.70.183.201])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.14])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 12FF615D5A2;
-	Wed, 28 Feb 2024 11:28:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 945CD145B23;
+	Wed, 28 Feb 2024 11:51:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.14
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709119717; cv=none; b=tfPMrbgbxczQSIxfdxX2MrTmd1Xcne0RqnrkZwP9egU/RzxJLoqpLV809ONm2FDbJ5vpPOVXj0GG4lybuU9PR4e0wHuOV0sOk/n+gO2DtJS10BBw/uUI5vUwsNtZW6i6SpODxHSyV5wDb9likyQDScPUB4HfCggQIoX3jVZTjTQ=
+	t=1709121113; cv=none; b=nS4j1L//Ugx+yd160Vj+lRd7yRzOSn4W8OpdN0Xq/LvXv7xtEOZdUUu30sfpgo6EIDUSbY+yu2AZTUTf4VkOhJUCqyRbdLnlW1rUMDxsvb1jgTIhQcRBTb2PG87hD0ooLuGnPlC4S8R+IEeFAVqlsv4t8ZWC62h0VN+sulJTzY0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709119717; c=relaxed/simple;
-	bh=LZXd37PvNSwXU5xfvI/2wf4xPTyEjUPaJOZPtTjdEuk=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=HWjLO9EiAJJ1jGAKjJBy9ImUbxn59gkTW/8+fRNlfxdvmwrOr2u5Aiztyyvi+PBzF01tOsBrWNYz0DxfHXc67Cad5omYBpZ0xib3STgRi3iSJ8XT0RIeLWU3Z7VDXwvgG24zesudhB4s2nU2myBZ+A5cD59E7TZBJeWFv/sMzt0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=V0d5XFLH; arc=none smtp.client-ip=217.70.183.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+	s=arc-20240116; t=1709121113; c=relaxed/simple;
+	bh=UOHYABj412OrOe9R32rHntZ5qCSK4fekgltl0v2LzuA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Cw0mtNxdE4/5cabJ8INPrUMwwL1oTn2AvMPmzOiZpr2bi71esQVbp0JRh2u2u3TXeA5X50JW/IV6HtKHptKGsKBxBjHqGMbTaOuYlUKbQ44inaWgPteUoRXgTgVfZeTUnbysBhdd4AHJhBmKxzgZtnrhR7ifDG2GtLFub5D+Rn8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=RDBVhHu5; arc=none smtp.client-ip=198.175.65.14
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="V0d5XFLH"
-Received: by mail.gandi.net (Postfix) with ESMTPSA id F2F7B1BF21A;
-	Wed, 28 Feb 2024 11:28:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1709119713;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=VpV5SvbrLw6BtffS77u0tmC5Cq+M6dFN+xE6ca04/74=;
-	b=V0d5XFLHmBCXn5TfFeKJHIG2hVLgs1bsqH9BDqqayu45k42SOPN07miDPppVL9EpKui5zt
-	TpUkX5X7TS/35ocivrHFc0O9mHToArmHY+OL66bZIeUMyMqVp1x+4UGlTK7iDDKHB4TsDD
-	NpQq3vLV4eTSl0burMLrMvfbz2hIZk7HPB7hA5ptn0JwICHIhkHJz/vzLvR1nDAnKKH+WM
-	BgKMemBgQ1NPx2ggGomj0OaE8+uWjb3WIBARzcQsarC2XTdSCeU0FNBq3kEwCZ5evoJ/gM
-	rrYr4An8/+JqSNQ3FmfHapmTUoUV9NNPNmt8tQt9YCizfVt1TMpruFrhmp9Q7g==
-From: =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
-Date: Wed, 28 Feb 2024 12:28:28 +0100
-Subject: [PATCH v2 30/30] MIPS: mobileye: eyeq5: map GPIOs to pins using
- gpio-ranges
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="RDBVhHu5"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1709121112; x=1740657112;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=UOHYABj412OrOe9R32rHntZ5qCSK4fekgltl0v2LzuA=;
+  b=RDBVhHu5kI9HOB61cYAalpnZ0DtwYx+LtAapZMdpmtTti1t1X1gju8nt
+   c1z44b/MnstlsBpEtN+coKHYcUxG8szJs55fjXU147XR/FnOJV/SYvtx8
+   yStpCZHQMUL+2+mNzijJUbKbYQR4frglhlbWn6aAz0h0GnpSTay4K1KiS
+   IiGNHTgknp78ZyywcGudpjPoepr7mb7nd/n70LtFkTbbMhbgfZVWvX1UA
+   lGV2Ev2plHj8OAZ9T2oYa2HMzAJbZll6mnn+lcU7iL97KTVsl4aQE99Cl
+   dUNihqUkChd2VgIlYe1JlCnAkwnkgD2olR3z51GWrqQCwPsqgsW9sn4np
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10996"; a="7337755"
+X-IronPort-AV: E=Sophos;i="6.06,190,1705392000"; 
+   d="scan'208";a="7337755"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Feb 2024 03:51:51 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10996"; a="937034059"
+X-IronPort-AV: E=Sophos;i="6.06,190,1705392000"; 
+   d="scan'208";a="937034059"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga001.fm.intel.com with ESMTP; 28 Feb 2024 03:51:44 -0800
+Received: by black.fi.intel.com (Postfix, from userid 1000)
+	id B730928A; Wed, 28 Feb 2024 13:51:42 +0200 (EET)
+Date: Wed, 28 Feb 2024 13:51:42 +0200
+From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+To: Rick Edgecombe <rick.p.edgecombe@intel.com>
+Cc: Liam.Howlett@oracle.com, akpm@linux-foundation.org, debug@rivosinc.com, 
+	broonie@kernel.org, keescook@chromium.org, tglx@linutronix.de, mingo@redhat.com, 
+	bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org, luto@kernel.org, 
+	peterz@infradead.org, hpa@zytor.com, linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
+	linux-alpha@vger.kernel.org, linux-snps-arc@lists.infradead.org, 
+	linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org, loongarch@lists.linux.dev, 
+	linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, 
+	linux-s390@vger.kernel.org, linux-sh@vger.kernel.org, sparclinux@vger.kernel.org
+Subject: Re: [PATCH v2 5/9] mm: Initialize struct vm_unmapped_area_info
+Message-ID: <j7bfvig3gew3qruouxrh7z7ehjjafrgkbcmg6tcghhfh3rhmzi@wzlcoecgy5rs>
+References: <20240226190951.3240433-1-rick.p.edgecombe@intel.com>
+ <20240226190951.3240433-6-rick.p.edgecombe@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Message-Id: <20240228-mbly-gpio-v2-30-3ba757474006@bootlin.com>
-References: <20240228-mbly-gpio-v2-0-3ba757474006@bootlin.com>
-In-Reply-To: <20240228-mbly-gpio-v2-0-3ba757474006@bootlin.com>
-To: Linus Walleij <linus.walleij@linaro.org>, 
- Bartosz Golaszewski <brgl@bgdev.pl>, Rob Herring <robh+dt@kernel.org>, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- Conor Dooley <conor+dt@kernel.org>, Philipp Zabel <p.zabel@pengutronix.de>, 
- Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc: linux-gpio@vger.kernel.org, devicetree@vger.kernel.org, 
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
- linux-mips@vger.kernel.org, Gregory CLEMENT <gregory.clement@bootlin.com>, 
- Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>, 
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>, 
- Tawfik Bayouk <tawfik.bayouk@mobileye.com>, 
- =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
-X-Mailer: b4 0.13.0
-X-GND-Sasl: theo.lebrun@bootlin.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240226190951.3240433-6-rick.p.edgecombe@intel.com>
 
-Create a mapping between the GPIO controllers and the pin controllers.
-GPIO is handled in a one-instance-per-bank manner while pinctrl is done
-with a single instance for both pin banks.
+On Mon, Feb 26, 2024 at 11:09:47AM -0800, Rick Edgecombe wrote:
+> diff --git a/arch/alpha/kernel/osf_sys.c b/arch/alpha/kernel/osf_sys.c
+> index 5db88b627439..dd6801bb9240 100644
+> --- a/arch/alpha/kernel/osf_sys.c
+> +++ b/arch/alpha/kernel/osf_sys.c
+> @@ -1218,7 +1218,7 @@ static unsigned long
+>  arch_get_unmapped_area_1(unsigned long addr, unsigned long len,
+>  		         unsigned long limit)
+>  {
+> -	struct vm_unmapped_area_info info;
+> +	struct vm_unmapped_area_info info = {};
+>  
+>  	info.flags = 0;
+>  	info.length = len;
 
-See gpio-ranges documentation:
-Documentation/devicetree/bindings/gpio/gpio.txt
+Can we make a step forward and actually move initialization inside the
+initializator? Something like below.
 
-Signed-off-by: Théo Lebrun <theo.lebrun@bootlin.com>
----
- arch/mips/boot/dts/mobileye/eyeq5.dtsi | 2 ++
- 1 file changed, 2 insertions(+)
+I understand that it is substantially more work, but I think it is useful.
 
-diff --git a/arch/mips/boot/dts/mobileye/eyeq5.dtsi b/arch/mips/boot/dts/mobileye/eyeq5.dtsi
-index 5f00d129c057..68f6c81331d7 100644
---- a/arch/mips/boot/dts/mobileye/eyeq5.dtsi
-+++ b/arch/mips/boot/dts/mobileye/eyeq5.dtsi
-@@ -168,6 +168,7 @@ gpio0: gpio@1400000 {
- 			interrupts = <GIC_SHARED 14 IRQ_TYPE_LEVEL_HIGH>;
- 			gpio-controller;
- 			#gpio-cells = <2>;
-+			gpio-ranges = <&pinctrl 0 0 29>;
- 			interrupt-controller;
- 			#interrupt-cells = <2>;
- 			resets = <&reset 0 26>;
-@@ -182,6 +183,7 @@ gpio1: gpio@1500000 {
- 			interrupts = <GIC_SHARED 14 IRQ_TYPE_LEVEL_HIGH>;
- 			gpio-controller;
- 			#gpio-cells = <2>;
-+			gpio-ranges = <&pinctrl 0 29 23>;
- 			interrupt-controller;
- 			#interrupt-cells = <2>;
- 			resets = <&reset 0 26>;
+diff --git a/arch/alpha/kernel/osf_sys.c b/arch/alpha/kernel/osf_sys.c
+index 5db88b627439..c40ddede3b13 100644
+--- a/arch/alpha/kernel/osf_sys.c
++++ b/arch/alpha/kernel/osf_sys.c
+@@ -1218,14 +1218,12 @@ static unsigned long
+ arch_get_unmapped_area_1(unsigned long addr, unsigned long len,
+ 		         unsigned long limit)
+ {
+-	struct vm_unmapped_area_info info;
++	struct vm_unmapped_area_info info = {
++		.length = len;
++		.low_limit = addr,
++		.high_limit = limit,
++	};
+
+-	info.flags = 0;
+-	info.length = len;
+-	info.low_limit = addr;
+-	info.high_limit = limit;
+-	info.align_mask = 0;
+-	info.align_offset = 0;
+ 	return vm_unmapped_area(&info);
+ }
 
 -- 
-2.44.0
-
+  Kiryl Shutsemau / Kirill A. Shutemov

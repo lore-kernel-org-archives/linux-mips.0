@@ -1,181 +1,79 @@
-Received: from mail-ed1-f44.google.com (mail-ed1-f44.google.com [209.85.208.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0A266A8C5
-	for <linux-mips@vger.kernel.org>; Fri,  1 Mar 2024 10:13:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.44
+Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE3672EB0E;
+	Fri,  1 Mar 2024 10:17:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.175.24.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709288039; cv=none; b=E/U5y5upxZNbjA56SEIysyo4xE2XaQLu/GcLx/jRWdLDxEdsbWGYy+e/aULbguYixZUlQkZYVG2uYB+DcpJuAsytURkXO1CZZIsCHXkv02p4j2bW+Q5rDHMjOQ0B8i7ZRWdvW9l0kB85wrzSnUcCeoor3W9GcuTQ8W6cnJinVKY=
+	t=1709288225; cv=none; b=K3L6aqGnk+sHYUMY01hakWaaWMCjdZCU9ZC0PpLAmSrJkMSt3w4v2mGaX4kkYTCQv4DiwlKIJror4zrL98VgT89ESr6008BdNZrOMLcQLsSHNLlXBaO7171Do8cDWnd6UOOq0NeiA4+FZs5hda6oBCVwBoXxuAdrykNRFz7z5Xo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709288039; c=relaxed/simple;
-	bh=F3tVHDQ4yCFl+nmy9ofTwMigtZD2wn3lVGrcIEaO8FE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=X5pMIave+5rlDSoKTARcDuY8P2/waKpdAiOEoYhOaz+pwyR1tSZhJ8eGEcn22YM453nQzVEKlhUCg4mdA6HlmObTKnqPvteHbeF5VVihErmg5As5VSYvjjomCtUSafte8I4wuXqpn+uepIV6MAM3N3uaQnz3PhaLVl3j2UNZXhA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=gRLkuSIR; arc=none smtp.client-ip=209.85.208.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="gRLkuSIR"
-Received: by mail-ed1-f44.google.com with SMTP id 4fb4d7f45d1cf-563c595f968so3136719a12.0
-        for <linux-mips@vger.kernel.org>; Fri, 01 Mar 2024 02:13:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1709288036; x=1709892836; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=ykXza2pzmOZHpzudtWcagjuhFwlGGt23s/8vuFNnCss=;
-        b=gRLkuSIRQq00LqXBMCJ1BJ63AtV0SKnjnVSP9BQGI75qvvcoYuagMQMY4DQ1MBo2bv
-         Ch+8XUx7igz3sLrFjRmhHWfRRozURii2E2FynbKlCnPApVuEHUXv9tDOxi1yKRdbe3JR
-         9yhJONqdmwEdXT7ewM5d8yLLewAKmEpdReDLeI86MugB/Mpkw4jcUUT6pfM8oYaDbVFN
-         NNJrWQ+jz9FWGocsx1qi/Z7hrx9HGDW8gHR8BY05kechOIyHDE5yaChBRyf5nNtBEtw6
-         cJMyhy1Zrd8FkqtXlNHjcqhbe2R/2iwo/5hShD3y4X6wvB02XDLGh+EZq6LC7SLEe7pr
-         ciDA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709288036; x=1709892836;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ykXza2pzmOZHpzudtWcagjuhFwlGGt23s/8vuFNnCss=;
-        b=c6tQHyxRa/uud5pFKKUaZEFStjiA0PS2tNsdzbrGNH0He+s5e9KodYH3kAsDUVBuC8
-         jJHw2q4+VjxltiA5wyLFtw20/SIjxR3pv2dDrtf+qBCnPb2E6LtZEHkXa4p2upA0gDE8
-         bMsCOlN9i7xLH0kPCKbvJkrkve7V5Xkt6nQeZYNXFfdpIpnAkoq0XyhxgrQjREU3H6oc
-         Ze5k9r3YBULeyVx4ooUl/2yl41m10kn9jZkA5MedbJIItOWz4nfJnzj6gqZQQFrDakSz
-         zCculSnbeqDmNQCGDRUZ4Ks+X4kRQcdP2SbPrp/n7aPV4FFD/orTf1qnNX0z4qgd9KRK
-         kUuw==
-X-Forwarded-Encrypted: i=1; AJvYcCVaHtzlX68mXd4oqDu3rmERhr/LEmJnzYOVqXesE9HMZAZEL0EwjQNQHcrognogmOnkSfWxSS4MluAwT0M0KfaZQgVIE5HIvJdBPA==
-X-Gm-Message-State: AOJu0YyfRSAzDOzs4p1eelQrvcA0cl+3euBcVxtBK/jIEQxrcXIuTwXQ
-	SnPMIzNSYhOcnS6h/T2Z2ZhtIQ3qXUfsT5oeDhebNuOAZiwCAlbKrA+GqOtGVE4=
-X-Google-Smtp-Source: AGHT+IHVoZwr3ydbKwgzzPJHfpo8PG76Mo8+L0PZLPMTnudzW3e3Ex7FZduNXCPw/uNmEEK4MJ1f0w==
-X-Received: by 2002:a05:6402:1053:b0:564:d715:1d67 with SMTP id e19-20020a056402105300b00564d7151d67mr915559edu.17.1709288036091;
-        Fri, 01 Mar 2024 02:13:56 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.222.97])
-        by smtp.gmail.com with ESMTPSA id er8-20020a056402448800b00566d7e27dccsm307948edb.0.2024.03.01.02.13.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 01 Mar 2024 02:13:55 -0800 (PST)
-Message-ID: <f802a1e0-cedd-488a-a6fb-df793718d94b@linaro.org>
-Date: Fri, 1 Mar 2024 11:13:52 +0100
+	s=arc-20240116; t=1709288225; c=relaxed/simple;
+	bh=qwVIxiufJj1mr1cm23cxINBd1eTGOKopYIHThjoyex4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=iaG5YaBDQYDKdDoOQnyozHQDFvyljgi4X7nOO2IpGHaO8H0+a0BlYw/pv5ZWITphUrLIWSTYj8l+Ot7rATLSDL3jWz1ehQn8oLpvR63O0CF/zSfa5BO7+8RVEJueyQcSBxIwye+edDqVTLTvx2U4oBesR9790cpiPmJKLCu7tcE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de; spf=pass smtp.mailfrom=alpha.franken.de; arc=none smtp.client-ip=193.175.24.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alpha.franken.de
+Received: from uucp by elvis.franken.de with local-rmail (Exim 3.36 #1)
+	id 1rfzwh-0002zb-00; Fri, 01 Mar 2024 11:16:51 +0100
+Received: by alpha.franken.de (Postfix, from userid 1000)
+	id D28FDC0267; Fri,  1 Mar 2024 10:39:47 +0100 (CET)
+Date: Fri, 1 Mar 2024 10:39:47 +0100
+From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To: =?iso-8859-1?Q?Th=E9o?= Lebrun <theo.lebrun@bootlin.com>
+Cc: Gregory CLEMENT <gregory.clement@bootlin.com>,
+	Paul Burton <paulburton@kernel.org>, linux-mips@vger.kernel.org,
+	Jiaxun Yang <jiaxun.yang@flygoat.com>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>,
+	Tawfik Bayouk <tawfik.bayouk@mobileye.com>,
+	Alexandre Belloni <alexandre.belloni@bootlin.com>,
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+Subject: Re: [PATCH v8 00/14] Add support for the Mobileye EyeQ5 SoC
+Message-ID: <ZeGiYyiQQ7pwpECE@alpha.franken.de>
+References: <20240216174227.409400-1-gregory.clement@bootlin.com>
+ <ZdSst3fM3EOQGH03@alpha.franken.de>
+ <CZGOPF51JA1R.2YN65K6WUH9N4@bootlin.com>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 02/11] dt-bindings: hwmon: lm75: use common hwmon
- schema
-Content-Language: en-US
-To: =?UTF-8?Q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>,
- Guenter Roeck <linux@roeck-us.net>, Linus Walleij
- <linus.walleij@linaro.org>, Andi Shyti <andi.shyti@kernel.org>,
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>,
- Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc: linux-arm-kernel@lists.infradead.org, linux-i2c@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-mips@vger.kernel.org, Gregory Clement <gregory.clement@bootlin.com>,
- Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>,
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
- Tawfik Bayouk <tawfik.bayouk@mobileye.com>, Jean Delvare
- <jdelvare@suse.com>, linux-hwmon@vger.kernel.org
-References: <20240229-mbly-i2c-v2-0-b32ed18c098c@bootlin.com>
- <20240229-mbly-i2c-v2-2-b32ed18c098c@bootlin.com>
- <6749c8df-c545-4aca-bc18-4dfe9c9f15b0@linaro.org>
- <d78fd3ca-ed0b-40e5-8f8f-21db152a7402@roeck-us.net>
- <CZIBCBQ2IB0E.2N3HAVO0P2SHT@bootlin.com>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <CZIBCBQ2IB0E.2N3HAVO0P2SHT@bootlin.com>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <CZGOPF51JA1R.2YN65K6WUH9N4@bootlin.com>
 
-On 01/03/2024 10:41, Théo Lebrun wrote:
-> Hello,
+On Wed, Feb 28, 2024 at 12:44:09PM +0100, Th�o Lebrun wrote:
+> Hello Thomas,
 > 
-> On Fri Mar 1, 2024 at 7:53 AM CET, Guenter Roeck wrote:
->> On 2/29/24 22:37, Krzysztof Kozlowski wrote:
->>> On 29/02/2024 19:10, Théo Lebrun wrote:
->>>> Reference common hwmon schema which has the generic "label" property,
->>>> parsed by Linux hwmon subsystem.
->>>>
->>>
->>> Please do not mix independent patchsets. You create unneeded
->>> dependencies blocking this patch. This patch depends on hwmon work, so
->>> it cannot go through different tree.
+> On Tue Feb 20, 2024 at 2:44 PM CET, Thomas Bogendoerfer wrote:
+> > On Fri, Feb 16, 2024 at 06:42:09PM +0100, Gregory CLEMENT wrote:
+> > > Hello,
+> > > 
+> > > The EyeQ5 SoC from Mobileye is based on the MIPS I6500 architecture
+> > > and features multiple controllers such as the classic UART, I2C, SPI,
+> > > as well as CAN-FD, PCIe, Octal/Quad SPI Flash interface, Gigabit
+> > > Ethernet, MIPI CSI-2, and eMMC 5.1. It also includes a Hardware
+> > > Security Module, Functional Safety Hardware, and MJPEG encoder.
 > 
-> I had to pick between this or dtbs_check failing on my DTS that uses a
-> label on temperature-sensor@48.
-
-I don't see how is that relevant. You can organize your branches as you
-wish, e.g. base one b4 branch on another and you will not have any warnings.
-
+> [...]
 > 
->>> If you insist to combine independent patches, then at least clearly
->>> express merging strategy or dependency in patch changelog --- .
+> > series applied to mips-next.
+> >
+> > I've fixed generic|ingenic|realtek builds by adding select MACH_GENERIC_CORE
+> > in arch/mips/Kconfig.
 > 
-> I do not know how such indirect conflicts are usually resolved. Hwmon
-> can take it but MIPS might want to also take it to have valid DTS.
-> 
-> Any advice?
+> Would it be possible to provide an immutable branch containing the two
+> series? I've got quite a few series that depend on them as they target
+> EyeQ5 devicetrees and defconfig.
 
-I don't see any conflict.
+that's IMHO too late, as I've merged it already to mips-next. mips-linux
+itself is immutable, but contains other mips related stuff.
 
+Thomas.
 
-> 
->> For my part I have to say that I don't know what to do with it.
->> Rob's robot reported errors, so I won't apply it, and I don't
->> feel comfortable giving it an ack either because of those errors.
-> 
-> Can reproduce the error when patch "dt-bindings: hwmon: add common
-> properties" is not applied. Cannot reproduce when patch is applied.
-> Commit d590900b62f0 on hwmon-next. Cannot reproduce with hwmon-next as
-> parent.
-
-Yeah, but we see the error reported and it means something is missing.
-
-Best regards,
-Krzysztof
-
+-- 
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]

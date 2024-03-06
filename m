@@ -1,39 +1,40 @@
 Received: from outgoing6.flk.host-h.net (outgoing6.flk.host-h.net [188.40.0.77])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E75D140E25;
-	Wed,  6 Mar 2024 20:22:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 591FF2FB2;
+	Wed,  6 Mar 2024 21:50:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=188.40.0.77
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709756550; cv=none; b=czYSKZZLv+7fDpHz4m//M68l9WepXJv9fXrz5URq8PdmPI63EU0FxYrr3HEFTbNcRI5EPvH6Wmkpuj5Aj02yofVkw8mrEy+jfm+J8Zyr/XU4EBbJFgYJ9GM7Ioisi1m+dZjroqQxKmW6W199NMrsWLlCm7XeYaUw7/yegZG6yGs=
+	t=1709761832; cv=none; b=BKZmGSkZSms1DFzCMk064FFmOfukHL7cNAyxnnnslhZI9ZzO1X0pHo8H5QxxQIHowHsGmXaqutUGLco0CSpXLWPqonke0+SRK9b8RdaJ/uwf05i7SBN5nRMq3QDfbfVV0FYCxJDJMlHNAZkixjJ5+4BvDLWlOwQ/Mrt4wmknhGo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709756550; c=relaxed/simple;
-	bh=iKBxmrjRTHGaEWBsa/2VCeVm3QJ9DmZ63Q3pN6vvTvU=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=q3A5gnEHE3H3kr74cTXPGFTcXp+1IVm4s2ce6dccTAnLLK8WyeEVpFKPCxbP2ghAoiDUPiHRl17HaPvYSn5z/GZ4PYKrdhkYEdwutzVkxIJumgu89sd1AuIDBv8BqX76G5lo8wT2vaQHJRsY5z5C3VzSeO/RhP5ehvD74+Pq/yo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=risingedge.co.za; spf=pass smtp.mailfrom=risingedge.co.za; dkim=pass (2048-bit key) header.d=risingedge.co.za header.i=@risingedge.co.za header.b=bJNSTlDO; arc=none smtp.client-ip=188.40.0.77
+	s=arc-20240116; t=1709761832; c=relaxed/simple;
+	bh=jTLu/CskI1DpNPy9Pf4ohMoqztsAevuZ1PuhJaJV/t4=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=YjlAnWcR4YDvE7DtHMlvkLwFWZ254TtKMng0ZQ1cLr80xOs4FZDdMq+u04vkeA6HjjFHDuaiZgWHFD5IdhI6Mum6B/Htx/2cD1e+MkumXpbLL0RhXnWmywfXIHQo7kOyWUrz86udT9vq6WFBTTeinBQYNk8CHGIyGySQs0sTNKg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=risingedge.co.za; spf=pass smtp.mailfrom=risingedge.co.za; dkim=pass (2048-bit key) header.d=risingedge.co.za header.i=@risingedge.co.za header.b=UsPsRiTv; arc=none smtp.client-ip=188.40.0.77
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=risingedge.co.za
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=risingedge.co.za
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=risingedge.co.za header.i=@risingedge.co.za header.b="bJNSTlDO"
+	dkim=pass (2048-bit key) header.d=risingedge.co.za header.i=@risingedge.co.za header.b="UsPsRiTv"
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=risingedge.co.za; s=xneelo; h=Content-Transfer-Encoding:MIME-Version:
-	Message-Id:Date:Subject:Cc:To:From:reply-to:sender:bcc:in-reply-to:references
-	:content-type; bh=RhOLI7ajqF1MzAQANawDx0KfHIUFrOMc9rxDpzQgGmE=; b=bJNSTlDOefy
-	61b8/QuoxOvA42AWQqm1kAvHCV3qeLtR5GrQfNiVaVycHmbXFfLH4aPxUFoc+akDmZZx7Gk/QMEXE
-	cHH71/mSN3wj7/osvCMDiese8sViwqZFKCpjv+gcIeipAXRvZys3EO/GACJBHytLSTbBWPC7UxxE+
-	uvIXRQqCp4GVRLxsa65ZguHq4lkplCnhO0z6HfSNKEOX6r05t+ZYs4TxzJkf2UM4qk5qId7rwk5xB
-	9lPfVEcvoXLhq104vi7ZwgTSSQZEFB2F3x2109X9ZA/kHmpAZn/utHBNDJlUGVW5qZ6TFHv0n0NZa
-	WE8rRz0xMe/ZenNg+CehQtQ==;
+	References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:reply-to:sender:bcc
+	:content-type; bh=VpSsgGhBR4FyYxEHKoURzmKgm4LkFv8WoyeKAG8oCW8=; b=UsPsRiTvYIn
+	ONbx1DqucGDf7Chz692IAbQp8V9Bl519eP2W4rVQVL0a7P2kiYUdeaC29BCW3kCxo+y/AFMp72mMq
+	K+LlWXSJziXzZg1hFqVNtSep8PQAeYNg+vAyvqU1LTbA8AXtRmPd/+jgEmGVmuVthbXCN5+/l8nYo
+	w87JnPyZOMXid3mB71NXsD6awQZKkNOwdL6JzFhyemSW6u4P2/Sye88T1eYD/Y8yOeBbyKxH79RIf
+	q9jhvFddz0waPbWqHr4ynUn+6BPApoV5ztTpUdH320fTntyURH8QCp1jw1sonrE15sEBBuR2pq/h9
+	BceqntpkkD6+EUXNInookCA==;
 Received: from www31.flk1.host-h.net ([188.40.1.173])
 	by antispam2-flk1.host-h.net with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
 	(Exim 4.92)
 	(envelope-from <justin.swartz@risingedge.co.za>)
-	id 1rhxmP-008FKI-VC; Wed, 06 Mar 2024 22:22:23 +0200
+	id 1rhxc4-0088az-M9; Wed, 06 Mar 2024 22:11:41 +0200
 Received: from [41.144.0.96] (helo=localhost.localdomain)
 	by www31.flk1.host-h.net with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
 	(Exim 4.92)
 	(envelope-from <justin.swartz@risingedge.co.za>)
-	id 1rhxmO-000470-No; Wed, 06 Mar 2024 22:22:21 +0200
+	id 1rhxc3-0005PR-QU; Wed, 06 Mar 2024 22:11:40 +0200
 From: Justin Swartz <justin.swartz@risingedge.co.za>
 To: =?UTF-8?q?Ar=C4=B1n=C3=A7=20=C3=9CNAL?= <arinc.unal@arinc9.com>,
 	Sergio Paracuellos <sergio.paracuellos@gmail.com>,
@@ -49,9 +50,11 @@ Cc: Justin Swartz <justin.swartz@risingedge.co.za>,
 	linux-kernel@vger.kernel.org,
 	linux-arm-kernel@lists.infradead.org,
 	linux-mediatek@lists.infradead.org
-Subject: [PATCH] mips: dts: ralink: mt7621: add cell count properties to usb0
-Date: Wed,  6 Mar 2024 22:21:30 +0200
-Message-Id: <20240306202131.2009-1-justin.swartz@risingedge.co.za>
+Subject: [PATCH 2/2] mips: dts: ralink: mt7621: add serial1 and serial2 nodes
+Date: Wed,  6 Mar 2024 22:10:44 +0200
+Message-Id: <20240306201045.1475-2-justin.swartz@risingedge.co.za>
+In-Reply-To: <20240306201045.1475-1-justin.swartz@risingedge.co.za>
+References: <20240306201045.1475-1-justin.swartz@risingedge.co.za>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
@@ -65,9 +68,9 @@ X-SpamExperts-Domain: risingedge.co.za
 X-SpamExperts-Username: 
 Authentication-Results: host-h.net; auth=pass (login) smtp.auth=@risingedge.co.za
 X-SpamExperts-Outgoing-Class: ham
-X-SpamExperts-Outgoing-Evidence: Combined (0.03)
+X-SpamExperts-Outgoing-Evidence: SB/global_tokens (0.00758473274125)
 X-Recommended-Action: accept
-X-Filter-ID: Pt3MvcO5N4iKaDQ5O6lkdGlMVN6RH8bjRMzItlySaT8u1iKio0m5ENqq/v6sUdjUPUtbdvnXkggZ
+X-Filter-ID: Pt3MvcO5N4iKaDQ5O6lkdGlMVN6RH8bjRMzItlySaT8C6SK0vybqcYHmQCnhqJHcPUtbdvnXkggZ
  3YnVId/Y5jcf0yeVQAvfjHznO7+bT5wCPRB8bAzJcv2cv+UqiTTc2+CpNcmBnO4XM3Sck4bwNogU
  WCl1nkLBzZX0KuJ9bXiS85Z42w/+2OBolTNFbPomXFWCX8oNdggW7HE9XDTdSejrkEpbuUvwMvHx
  3T+KSG//gbuP7hnUK8NQdLwsVWKIFDZRrTGv3rxiw9tFrqFSCFNiLZt/QXQnOBRD+jq1HsKsDh/6
@@ -75,54 +78,78 @@ X-Filter-ID: Pt3MvcO5N4iKaDQ5O6lkdGlMVN6RH8bjRMzItlySaT8u1iKio0m5ENqq/v6sUdjUPUt
  0+Txhz2u9qvrL2PODYgMZQApJXOjDLkqunZ9NcY2bHZn7CfFscMZZf3sCkN20I5vMh4akiObI7Kj
  vK7X04QEin24qbfMFd8eGjnYW8aSH5qj4ujh/13psIvqSqJFa1CcANErDW/w69saM9prk3jNnHtn
  nuEt/J9wDZeQfiNOYsLDFBdwYt2XtlLzy7G7T4kla0JNnAWQx3FS11bhwUa9HCIwKB+TroNcRY33
- oNmH4nRQzHQazgY7lmveanvOdQzf6IMJ3345q/s6ySNrGnXycmhg3HT6l/+R2RQwiqvJZHD34MCo
- naNQbqJUPRwZtKOTN8gOLtBcNrQxKZYuPe8bdCyw79zlPbqLQkZr26Lcxdvj8cqI+CogZdOhX7v3
- ClXzrmMENhJLl6MBfhzHVBR0wHQZxzIUka7Uq615Mik1qzcz30/jNv+A51L2swh0gYW0eVWShle6
+ oNmH4nRQzHQazgY7lmveanvOdQzf6IMJ3345q/s6ySNrGnXycmhg3BNVdpEcm8g/6PJN7TvsruKC
+ n3oZFShGuGVczvnnMQuyLtBcNrQxKZYuPe8bdCyw79zlPbqLQkZr26Lcxdvj8cqI+CogZdOhX7v3
+ ClXzrmMECwtAGwNe0eOvXAXd2nqZdzIUka7Uq615Mik1qzcz30/jNv+A51L2swh0gYW0eVWShle6
  F/kpBdN+oWjoATjEFDwcaiz0R34rhTN+GTbl4uS+pZovX9cex7Ac4fawcerGI7TrGXpM/B/M0BZd
  PfIU1BX7pZc1sE3vsz58auH/srM2fgZ9JmgLbj7sqoEiwv7LCxIiAE5ODMnmwjvj2589zjbyZCiM
- WpBpW8YvoIIqmZcWhL/r/eFjMjJnMHeiAPOVAT1rE1/vP68Bb4z3v3h3gCdXrv2+9GnNX30LKqXb
- fwFKgm/rnYBl+Mj5KqOl6Jzub/f3QhLRbOgisvi5VU9eNBtgo6zjiatjNO/pnMCjuIvXs/AyV/Ns
- URB/R+FlEHyAzksgfaRvdgw0WK34QWnzHHMcN6qoXPjenLhIOF1oeRYbjF1Hp647mOWoQlc3hL3c
- AHYPcQ0eIL+UT9voGXmPy/EfqKigCkS4jvgpgnSnhVl4u/m4iBmYb1/LCV4/EuVHup06w3Vwxf9C
- F7D6LKKRTfdjzQ6YC7Heg3Xf7O1TOd6RcY/MXB8eEq3bCN2QohZvyS03iBmgsz450Kmjd3fGV352
- DiYuZ9qKjQENeFDfQ/Eil4ujX9wEjPOhkfiiTRngIbtf63VNbf0lrvssY+k7AHGi1NevGWTo2+h8
- Lhk4HCeZR7ymlGVRtthBJ2y8A5arx6JItKpFaUNPGMMlvbMX0nyK1NiAJ0y2Qvvn6ds6mor35w4f
- SfHzQbABJfgy21HclcZkPRq7NhoxyMwqi8Q23Rgadfh5T5n5D4OHHpbEIgsllZKWnzc5M5WlNtVJ
- qo05MS+4ayUpOtEhdxekWDmK9g==
+ WpBpW8YvoIIqmZcWhL/r/eFjMjJnMHeiAPOVK0T+c9pM0FteOLwuqFxkZtxbXpCgbiKBsA+Ddi6m
+ awd1jemntr2PrMOTF1fDnHo5A9JQxMw0XtBqT5kbx7zuprmKeJENT1oiQUtfU17WEZPRHu1+r6ov
+ Q/IKaojN7gdb+Glhdb8DP7Iz3Z0Qa+VGiF/lfNRtaK1t4SnssY938wKgOC3c9GkW+OmRHU05XGuW
+ g+VcQ3bZb7F7k2CvWvw8dbdRONqsj33t0is+SdoOwsk2luZvMBiCgALm/XUigxDlb5qgpERsDkCX
+ BgcGBwKlYailDNhe7w2QIanZ/NegoJ79AXUnIiEEoyCaZXMG8LAkbJoO2tY/Mg5ClXd30oBm8U++
+ JlmpaolH3tK93iPfP9/LMV7rNH+khni30uZSXlsmCOj6IY0UX9+ySU70SxRmHXLYM3A6BXfvel8O
+ EFDbU51Q2S43vcWL3lM20b9wQESc+PquLiZOpxiedGbqX4nzL9MgCv99rrli2UQdOGeuQqV2IVXB
+ o/3R5VqqcOmERbjE+D5FzT0EaduWMjGSdmMR5Ch1HY0a4RW7JP9zvdSGB9tIDxuFtg36jUhUk8/b
+ P2/Mw1j9lmNQqiIAMR1SEszVdPY4ocfmWv3Fe9Iziczdq+A=
 X-Report-Abuse-To: spam@antispamquarantine.host-h.net
 
-Add default #address-cells and #size-cells properties to usb0,
-suitable for hubs and devices without explicitly declared
-interface nodes, as:
-
-  "#address-cells":
-    description: should be 1 for hub nodes with device nodes,
-      should be 2 for device nodes with interface nodes.
-    enum: [1, 2]
-
-  "#size-cells":
-    const: 0
-
--- from Documentation/devicetree/bindings/usb/usb-device.yaml
+Add serial1 and serial2 nodes to define the existence of
+UART1 and UART2.
 
 Signed-off-by: Justin Swartz <justin.swartz@risingedge.co.za>
 ---
- arch/mips/boot/dts/ralink/mt7621.dtsi | 3 +++
- 1 file changed, 3 insertions(+)
+ arch/mips/boot/dts/ralink/mt7621.dtsi | 38 +++++++++++++++++++++++++++
+ 1 file changed, 38 insertions(+)
 
 diff --git a/arch/mips/boot/dts/ralink/mt7621.dtsi b/arch/mips/boot/dts/ralink/mt7621.dtsi
-index 2069249c8..f02965db1 100644
+index dca415fdd..2069249c8 100644
 --- a/arch/mips/boot/dts/ralink/mt7621.dtsi
 +++ b/arch/mips/boot/dts/ralink/mt7621.dtsi
-@@ -309,6 +309,9 @@ usb: usb@1e1c0000 {
+@@ -128,6 +128,44 @@ serial0: serial@c00 {
+ 			pinctrl-0 = <&uart1_pins>;
+ 		};
  
- 		interrupt-parent = <&gic>;
- 		interrupts = <GIC_SHARED 22 IRQ_TYPE_LEVEL_HIGH>;
++		serial1: serial@d00 {
++			status = "disabled";
 +
-+		#address-cells = <1>;
-+		#size-cells = <0>;
- 	};
++			compatible = "ns16550a";
++			reg = <0xd00 0x100>;
++
++			clocks = <&sysc MT7621_CLK_UART2>;
++
++			interrupt-parent = <&gic>;
++			interrupts = <GIC_SHARED 27 IRQ_TYPE_LEVEL_HIGH>;
++
++			reg-shift = <2>;
++			reg-io-width = <4>;
++			no-loopback-test;
++
++			pinctrl-names = "default";
++			pinctrl-0 = <&uart2_pins>;
++		};
++
++		serial2: serial@e00 {
++			status = "disabled";
++
++			compatible = "ns16550a";
++			reg = <0xe00 0x100>;
++
++			clocks = <&sysc MT7621_CLK_UART3>;
++
++			interrupt-parent = <&gic>;
++			interrupts = <GIC_SHARED 28 IRQ_TYPE_LEVEL_HIGH>;
++
++			reg-shift = <2>;
++			reg-io-width = <4>;
++			no-loopback-test;
++
++			pinctrl-names = "default";
++			pinctrl-0 = <&uart3_pins>;
++		};
++
+ 		spi0: spi@b00 {
+ 			status = "disabled";
  
- 	gic: interrupt-controller@1fbc0000 {
 -- 
 

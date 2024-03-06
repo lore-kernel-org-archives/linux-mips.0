@@ -1,148 +1,117 @@
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+Received: from outgoing6.flk.host-h.net (outgoing6.flk.host-h.net [188.40.0.77])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 278023FB16;
-	Wed,  6 Mar 2024 23:41:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DEF8253A7;
+	Thu,  7 Mar 2024 01:05:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=188.40.0.77
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709768482; cv=none; b=awTI0mhN82gEeAvB3C3J787toCMnN17gVRfNAI/6d8ty1gvTdw99tqqdM+FJiLvWJfBuq44XKPvr6Ka6E3EG8RZrWTSGzTckap+kZdZxOVf+tIZofMcvKtLUcULVSi78cJpTtV2V4o9nVi6G4p5lolD+HsOkqiL07gSSUrAzdSg=
+	t=1709773521; cv=none; b=rLN/K9EWtoV41VoY/n5iSlmILQ67RysjO/b9GbZ12TC3B3XpghQLadgoiuK7lRT7hQ/Ua3SMi87rFz4JOdk0dmuFfnPgJwV/rAVVj1bzHOGt2S4TKUhI1xGa21aSta4OYCdGY/fy2yivgh+CyEkC+AeX2gcTZ75LRFjVor5266s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709768482; c=relaxed/simple;
-	bh=dZ6jOLMDzgPZpijPacAiasUg5Crtb+AP4LxE80M2xBA=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=iHuEzZsu/Urn8zldaiQ5j7gzq7GJ0CTbGgp67QIz72WiI+U5gLTWlVlL5x/hkMHlzYSsaA/mHWW497z+fQSp0kyu9Jzw63h7t9EVYEfjScasjKTy5baSAkmsV9DIXOLagUXW9H6/eGvrDEXdd3NUu6o6Al788cDBoF29z2idXTw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ellerman.id.au; spf=pass smtp.mailfrom=ellerman.id.au; dkim=pass (2048-bit key) header.d=ellerman.id.au header.i=@ellerman.id.au header.b=dfxSn7ES; arc=none smtp.client-ip=150.107.74.76
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ellerman.id.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ellerman.id.au
+	s=arc-20240116; t=1709773521; c=relaxed/simple;
+	bh=VXMc0GyBOWjEHbjzKgOsPu3SsDerLX5JTe96N9EBrZA=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=g2ZwjPn0XGhRVg2ib955k/oDZt+GY+GzbK3VFQfeLqw/67+KZYkuxCMufhQuBSVhcmzlgGGTOtBdTHeVOe2bsUUSot2S3KhndSGYl50vHlKWyk3YGRhp44SpJ6O0xkFfQQlkff7QTlHhoaAXmQVpzYtM+ilIlc+BIMB/2KOGb1Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=risingedge.co.za; spf=pass smtp.mailfrom=risingedge.co.za; dkim=pass (2048-bit key) header.d=risingedge.co.za header.i=@risingedge.co.za header.b=kBghQjtt; arc=none smtp.client-ip=188.40.0.77
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=risingedge.co.za
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=risingedge.co.za
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ellerman.id.au header.i=@ellerman.id.au header.b="dfxSn7ES"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
-	s=201909; t=1709768472;
-	bh=OHx3bVLlXnvaD4Lk/LqRAXihRU8d5iuk+jHowRU57+A=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=dfxSn7ESt9feXa7Ah5VgnrgsTR94t0TrfqG0PcTuTf3mOM2nYClb7KzncEO44oWvJ
-	 z177IwNoKxwaRwuRElWO9dM9vGP1BGgcQEfox5PbPq0mqdcUVphkGszRXScQ0d7mcO
-	 jW4ikoUKpq/rq3DBl50CSj6CPBHJDbwDqtBF6NxW+foiGgFyBpZYE+I728npTZNMg3
-	 1t/2+QbQypMyzr9+0O+l4J8vO9YugJeJGU6R2JxmPiIz07vqQ4qeSoMI/Ta1CVt4Pi
-	 EW9aQ8ONAeTLEZ2I6yd+B+il/wLckJElOl67KFtvN0q8NsP2LkndTztEXc4YygJJsv
-	 te7iy+1YEdhjg==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4Tqppm50HGz4wcN;
-	Thu,  7 Mar 2024 10:41:04 +1100 (AEDT)
-From: Michael Ellerman <mpe@ellerman.id.au>
-To: Arnd Bergmann <arnd@kernel.org>, Anna-Maria Behnsen
- <anna-maria@linutronix.de>, Thomas Gleixner <tglx@linutronix.de>, Vincenzo
- Frascino <vincenzo.frascino@arm.com>, Kees Cook <keescook@chromium.org>
-Cc: Arnd Bergmann <arnd@arndb.de>, Matt Turner <mattst88@gmail.com>, Vineet
- Gupta <vgupta@kernel.org>, Russell King <linux@armlinux.org.uk>, Catalin
- Marinas <catalin.marinas@arm.com>, Guo Ren <guoren@kernel.org>, Brian Cain
- <bcain@quicinc.com>, Huacai Chen <chenhuacai@kernel.org>, Geert
- Uytterhoeven <geert@linux-m68k.org>, Michal Simek <monstr@monstr.eu>,
- Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Helge Deller
- <deller@gmx.de>, Christophe Leroy <christophe.leroy@csgroup.eu>, Palmer
- Dabbelt <palmer@dabbelt.com>, John Paul Adrian Glaubitz
- <glaubitz@physik.fu-berlin.de>, Andreas Larsson <andreas@gaisler.com>,
- Richard Weinberger <richard@nod.at>, x86@kernel.org, Max Filippov
- <jcmvbkbc@gmail.com>, Andy Lutomirski <luto@kernel.org>, Jan Kiszka
- <jan.kiszka@siemens.com>, Kieran Bingham <kbingham@kernel.org>, Andrew
- Morton <akpm@linux-foundation.org>, linux-kernel@vger.kernel.org,
- linux-alpha@vger.kernel.org, linux-snps-arc@lists.infradead.org,
- linux-arm-kernel@lists.infradead.org, linux-csky@vger.kernel.org,
- linux-hexagon@vger.kernel.org, loongarch@lists.linux.dev,
- linux-m68k@lists.linux-m68k.org, linux-mips@vger.kernel.org,
- linux-openrisc@vger.kernel.org, linux-parisc@vger.kernel.org,
- linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
- linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
- sparclinux@vger.kernel.org, linux-um@lists.infradead.org
-Subject: Re: [PATCH v2 1/3] arch: consolidate existing CONFIG_PAGE_SIZE_*KB
- definitions
-In-Reply-To: <20240306141453.3900574-2-arnd@kernel.org>
-References: <20240306141453.3900574-1-arnd@kernel.org>
- <20240306141453.3900574-2-arnd@kernel.org>
-Date: Thu, 07 Mar 2024 10:41:02 +1100
-Message-ID: <87sf13nd2p.fsf@mail.lhotse>
+	dkim=pass (2048-bit key) header.d=risingedge.co.za header.i=@risingedge.co.za header.b="kBghQjtt"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=risingedge.co.za; s=xneelo; h=Content-Transfer-Encoding:MIME-Version:
+	Message-Id:Date:Subject:Cc:To:From:reply-to:sender:bcc:in-reply-to:references
+	:content-type; bh=mak2gQmK+LcOZJ7gNnWxgFo/kAW7G7Xhm701qVAMVe8=; b=kBghQjttvxm
+	dwWS3arJHDONeKeLjYw0eO/2qv5oR/KK65mkXjcHMjs1VvH5m0XAHm3zkqeE/qC+G6S+k1xlgndXO
+	dXqra7geZqcBEnAWcsraL1MR55JtAksQUVf0LpzabhdtyjS+DvVClF+YNILJ6C+r4RDzbDlip6uhI
+	HLj+2zUzE7rNbYgBxJurZRvxE/S++KcrUOFpvnujR62vA3UJFMb0GsogcYE9QGcHVMRsZP0YaIFaV
+	pny13aafe91lerZmMGm2Pdzcuuk7qttKjAWzTGunEFWTzXmt8piAjLdC8LkYm6gowFBqOvWg8Gc2X
+	OOfEyn/LU63DBMTFH7BU2OQ==;
+Received: from www31.flk1.host-h.net ([188.40.1.173])
+	by antispam2-flk1.host-h.net with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <justin.swartz@risingedge.co.za>)
+	id 1rhxbw-0088Wt-At; Wed, 06 Mar 2024 22:11:35 +0200
+Received: from [41.144.0.96] (helo=localhost.localdomain)
+	by www31.flk1.host-h.net with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <justin.swartz@risingedge.co.za>)
+	id 1rhxbt-0005PR-Mb; Wed, 06 Mar 2024 22:11:30 +0200
+From: Justin Swartz <justin.swartz@risingedge.co.za>
+To: =?UTF-8?q?Ar=C4=B1n=C3=A7=20=C3=9CNAL?= <arinc.unal@arinc9.com>,
+	Sergio Paracuellos <sergio.paracuellos@gmail.com>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	Matthias Brugger <matthias.bgg@gmail.com>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Cc: Justin Swartz <justin.swartz@risingedge.co.za>,
+	linux-mips@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-mediatek@lists.infradead.org
+Subject: [PATCH 1/2] mips: dts: ralink: mt7621: associate uart1_pins with serial0
+Date: Wed,  6 Mar 2024 22:10:43 +0200
+Message-Id: <20240306201045.1475-1-justin.swartz@risingedge.co.za>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
+X-Authenticated-Sender: justin.swartz@risingedge.co.za
+X-Virus-Scanned: Clear
+X-SpamExperts-Domain: risingedge.co.za
+X-SpamExperts-Username: 
+Authentication-Results: host-h.net; auth=pass (login) smtp.auth=@risingedge.co.za
+X-SpamExperts-Outgoing-Class: ham
+X-SpamExperts-Outgoing-Evidence: Combined (0.02)
+X-Recommended-Action: accept
+X-Filter-ID: Pt3MvcO5N4iKaDQ5O6lkdGlMVN6RH8bjRMzItlySaT+1hD2aVajAIUWnLadiDDRQPUtbdvnXkggZ
+ 3YnVId/Y5jcf0yeVQAvfjHznO7+bT5wCPRB8bAzJcv2cv+UqiTTc2+CpNcmBnO4XM3Sck4bwNogU
+ WCl1nkLBzZX0KuJ9bXiS85Z42w/+2OBolTNFbPomXFWCX8oNdggW7HE9XDTdSejrkEpbuUvwMvHx
+ 3T+KSG//gbuP7hnUK8NQdLwsVWKIFDZRrTGv3rxiw9tFrqFSCFNiLZt/QXQnOBRD+jq1HsKsDh/6
+ Srgk2K3gr1VBfJbChkYH6fbrypLNrde+UooQVNLReLErukdelEOHUIpaBbp5GdnsN8+UvimwMinK
+ 0+Txhz2u9qvrL2PODYgMZQApJXOjDLkqunZ9NcY2bHZn7CfFscMZZf3sCkN20I5vMh4akiObI7Kj
+ vK7X04QEin24qbfMFd8eGjnYW8aSH5qj4ujh/13psIvqSqJFa1CcANErDW/w69saM9prk3jNnHtn
+ nuEt/J9wDZeQfiNOYsLDFBdwYt2XtlLzy7G7T4kla0JNnAWQx3FS11bhwUa9HCIwKB+TroNcRY33
+ oNmH4nRQzHQazgY7lmveanvOdQzf6IMJ3345q/s6ySNrGnXycmhg3DALHzJsDGw//wob8MRQyAgM
+ LbHRR8LeQMsdlnjm8uSfLtBcNrQxKZYuPe8bdCyw79zlPbqLQkZr26Lcxdvj8cqI+CogZdOhX7v3
+ ClXzrmMECwtAGwNe0eOvXAXd2nqZdzIUka7Uq615Mik1qzcz30/jNv+A51L2swh0gYW0eVWShle6
+ F/kpBdN+oWjoATjEFDwcaiz0R34rhTN+GTbl4uS+pZovX9cex7Ac4fawcerGI7TrGXpM/B/M0BZd
+ PfIU1BX7pZc1sE3vsz58auH/srM2fgZ9JmgLbj7sqoEiwv7LCxIiAE5ODMnmwjvj2589zjbyZCiM
+ WpBpW8YvoIIqmZcWhL/r/eFjMjJnMHeiAPOVAT1rE1/vP68Bb4z3v3h3gCdXrv2+9GnNX30LKqXb
+ fwFKgm/rnYBl+Mj5KqOl6Jzub/f3QhLRbOgisvi5VU9eNBtgo6zjiatjNO/pnMCjuIvXs/AyV/Ns
+ URB/R+FlEHyAzksgfaRvdgw0WK34QWnzHHMcN6qoXPjenLhIOF1oeRYbjF1Hp647mOWoQlc3hL3c
+ AHYPcQ0eIL+UT9voGXmPy1YDPNGPsKAMCPQYracH9fp4u/m4iBmYb1/LCV4/EuVHup06w3Vwxf9C
+ F7D6LKKRTfdjzQ6YC7Heg3Xf7O1TOd6RcY/MXB8eEq3bCN2QohZvyS03iBmgsz450Kmjd3fGV3+S
+ BgtkZNA5EfNT9F7hlKYDj4Bmw4Kof/5djv4DbGkDIbtf63VNbf0lrvssY+k7AHGi1NevGWTo2+h8
+ Lhk4HCeZR7ymlGVRtthBJ2y8A5arx6JItKpFaUNPGMMlvbMX0nyK1NiAJ0y2Qvvn6ds6mor35w4f
+ SfHzQbABJfgy21HclcZkPRq7NhoxyMwqi8Q23Rgadfh5T5n5D4OHHpbEIgsllZKWnzc5M5WlNtVJ
+ qo05MS+4ayUpOtEhdxekWDmK9g==
+X-Report-Abuse-To: spam@antispamquarantine.host-h.net
 
-Hi Arnd,
+Add pinctrl-name and pinctrl-0 properties to declare
+that the uart1_pins group is associated with serial0.
 
-Arnd Bergmann <arnd@kernel.org> writes:
-> From: Arnd Bergmann <arnd@arndb.de>
->
-> These four architectures define the same Kconfig symbols for configuring
-> the page size. Move the logic into a common place where it can be shared
-> with all other architectures.
->
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
-> Changes from v1:
->  - improve Kconfig help texts
->  - fix Hexagon Kconfig
->
->  arch/Kconfig                      | 92 ++++++++++++++++++++++++++++++-
->  arch/hexagon/Kconfig              | 24 ++------
->  arch/hexagon/include/asm/page.h   |  6 +-
->  arch/loongarch/Kconfig            | 21 ++-----
->  arch/loongarch/include/asm/page.h | 10 +---
->  arch/mips/Kconfig                 | 58 ++-----------------
->  arch/mips/include/asm/page.h      | 16 +-----
->  arch/sh/include/asm/page.h        | 13 +----
->  arch/sh/mm/Kconfig                | 42 ++++----------
->  9 files changed, 121 insertions(+), 161 deletions(-)
+Signed-off-by: Justin Swartz <justin.swartz@risingedge.co.za>
+---
+ arch/mips/boot/dts/ralink/mt7621.dtsi | 3 +++
+ 1 file changed, 3 insertions(+)
 
-There's a few "help" lines missing, which breaks the build:
+diff --git a/arch/mips/boot/dts/ralink/mt7621.dtsi b/arch/mips/boot/dts/ralink/mt7621.dtsi
+index 35a10258f..dca415fdd 100644
+--- a/arch/mips/boot/dts/ralink/mt7621.dtsi
++++ b/arch/mips/boot/dts/ralink/mt7621.dtsi
+@@ -123,6 +123,9 @@ serial0: serial@c00 {
+ 			reg-shift = <2>;
+ 			reg-io-width = <4>;
+ 			no-loopback-test;
++
++			pinctrl-names = "default";
++			pinctrl-0 = <&uart1_pins>;
+ 		};
+ 
+ 		spi0: spi@b00 {
+-- 
 
-  arch/Kconfig:1134: syntax error
-  arch/Kconfig:1133: invalid statement
-  arch/Kconfig:1134: invalid statement
-  arch/Kconfig:1135:warning: ignoring unsupported character '.'
-  arch/Kconfig:1135:warning: ignoring unsupported character '.'
-  arch/Kconfig:1135: invalid statement
-  arch/Kconfig:1136: invalid statement
-  arch/Kconfig:1137:warning: ignoring unsupported character '.'
-  arch/Kconfig:1137: invalid statement
-  arch/Kconfig:1143: syntax error
-  arch/Kconfig:1142: invalid statement
-  arch/Kconfig:1143: invalid statement
-  arch/Kconfig:1144:warning: ignoring unsupported character '.'
-  arch/Kconfig:1144: invalid statement
-  arch/Kconfig:1145: invalid statement
-  arch/Kconfig:1146: invalid statement
-  arch/Kconfig:1147: invalid statement
-  arch/Kconfig:1148:warning: ignoring unsupported character '.'
-  arch/Kconfig:1148: invalid statement
-  make[4]: *** [../scripts/kconfig/Makefile:85: syncconfig] Error 1
-
-Fixup diff is:
-
-diff --git a/arch/Kconfig b/arch/Kconfig
-index 56d45a75f625..f2295fa3b48c 100644
---- a/arch/Kconfig
-+++ b/arch/Kconfig
-@@ -1130,6 +1130,7 @@ config PAGE_SIZE_16KB
- config PAGE_SIZE_32KB
-        bool "32KiB pages"
-        depends on HAVE_PAGE_SIZE_32KB
-+       help
-          Using 32KiB page size will result in slightly higher performance
-          kernel at the price of higher memory consumption compared to
-          16KiB pages.  This option is available only on cnMIPS cores.
-@@ -1139,6 +1140,7 @@ config PAGE_SIZE_32KB
- config PAGE_SIZE_64KB
-        bool "64KiB pages"
-        depends on HAVE_PAGE_SIZE_64KB
-+       help
-          Using 64KiB page size will result in slightly higher performance
-          kernel at the price of much higher memory consumption compared to
-          4KiB or 16KiB pages.
-
-
-cheers

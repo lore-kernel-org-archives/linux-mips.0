@@ -1,84 +1,90 @@
-Received: from out30-100.freemail.mail.aliyun.com (out30-100.freemail.mail.aliyun.com [115.124.30.100])
+Received: from relay6-d.mail.gandi.net (relay6-d.mail.gandi.net [217.70.183.198])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 688BA524A;
-	Wed, 10 Apr 2024 06:45:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09E8D1552EF;
+	Wed, 10 Apr 2024 09:29:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.198
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712731511; cv=none; b=Fs47zeNsosy9B5CMTGiTwRasRyhKXMeQzqPIj6x1o8dU216vv364UdR7vgiEIYpMj+Pb4DEBcoyQx+nmWlA9om7QmiJDjs4NdogthsKK0Xj9mZmCgBaASrAAJcDYicMHe1H2PsIZ9tetQbsVZaGqk88X/pPDav5mQobpW+/md+s=
+	t=1712741355; cv=none; b=aKX9TXgXEzWxJPIQsaAIsLv/sGAgHOViJmzjB2R5smyuuXAMHSz2TQa48hS5qm1d5YlN67AQMGkrLvB4QKgOcphxc/gHMrBoj95VZKJfoT4gEx2J9EMX2I8s9UeQnvGtQbpTDjECaFdPhOMcaEc+5kbwGK8HLV1ZbtjZIhTnx5o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712731511; c=relaxed/simple;
-	bh=RNjTiw+z2UXgWb291KUYhTrh7oCU2XpYJTpoXJoJ2Ps=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=MGDIno2L0xoeVYQ4Frrw3h5TFsS55vWuyKAEoXkzHN93samR4FTisMCrgLkCRoHzWm3ERZIO4dfvaTK/48m/i9y0fcbKQNTMPRxmCFN0SyJlCsK+5/9eia1OJ3zwJonMgPXHGqqnH5SrkYAWWRcZDNUf4IC7+XYCo/Xk283OphU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=Asj7+RZD; arc=none smtp.client-ip=115.124.30.100
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+	s=arc-20240116; t=1712741355; c=relaxed/simple;
+	bh=j7jp4MN+LYsXlZP8dNCi02N09LjgAISkwlJ4l3i8sX0=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
+	 In-Reply-To:To:Cc; b=c01EP8ZRMPFFAiIpFppMTVzMK9dfeciyyOenGDcHpxRbWPojdCPhxX24PERttt+HZLyWanpT9NouB/PI8ZCCHXMTTILlhBguZY6o1Wex9tE6EVFmtMGjO/29aL48ekmy+42/fJUEVZN5sY5CgAb3biQ/ieNzft4qPq60VpMWpgw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=ShY5u6HQ; arc=none smtp.client-ip=217.70.183.198
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="Asj7+RZD"
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1712731506; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
-	bh=ebzbpFm8mKtEwX879U96DPZbzdY2iwe+NayJYElOkPM=;
-	b=Asj7+RZD2qJ3sk6kwrOGu/K8WACsgX4zQ/QnqQtLILH+U2iD9p19DDk+0mOnW/oklBThk5AI4z1MOorrcyXMNXUw7GLF6c9SN5gkXoJD0tFDaHt4nfwWIlWqU4joGLO/HjZxwvLcQJLpndBh9KPxU5llzB+d7hRcqatQjbraZF8=
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045176;MF=yaoma@linux.alibaba.com;NM=1;PH=DS;RN=16;SR=0;TI=SMTPD_---0W4GtVHI_1712731503;
-Received: from 30.178.67.212(mailfrom:yaoma@linux.alibaba.com fp:SMTPD_---0W4GtVHI_1712731503)
-          by smtp.aliyun-inc.com;
-          Wed, 10 Apr 2024 14:45:04 +0800
-Message-ID: <f3c7ef07-8fad-4ef6-9095-16e4bd734477@linux.alibaba.com>
-Date: Wed, 10 Apr 2024 14:45:02 +0800
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="ShY5u6HQ"
+Received: by mail.gandi.net (Postfix) with ESMTPSA id D0E77C0012;
+	Wed, 10 Apr 2024 09:29:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1712741351;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=P1LLm8lZtTD1zK+wyxxMiKmW0zGXnL2EmRjIXVJmlh0=;
+	b=ShY5u6HQKpRjc9102JH/yeSKOKqNlzqtHFNDhJUmcL6DZxI7jY7CLMsSbKxXhGvJfGdceH
+	A58Pot/m0M3MMrodrmWO/N8ROTyROR04/hvwSgY/Ah9kAjLpxtpey5UjQg5BlZZ0thqfqr
+	7CHxue0v3VWpH6KeADzxOy+BBYJlnwh5BVwCxQVkdyNB5lmzmNRIitBbbT5u2q4Pz589Qf
+	W4B1WXvJXjxazWKSN9OtitzacjGIoB310anB4VyLiKLGYP+XhEGZqAfBdZ9UI4bxfSxN2l
+	fa6ohyeNP1Y7exaFfezZ4kUQomnzGcbqqlM6rJ07sKzMeVA75laMfKfVdBZ+iw==
+From: =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
+Date: Wed, 10 Apr 2024 11:29:06 +0200
+Subject: [PATCH v3 3/9] spi: dt-bindings: cdns,qspi-nor: make
+ cdns,fifo-depth optional
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCHv12 1/4] genirq: Provide a snapshot mechanism for interrupt
- statistics
-To: Thomas Gleixner <tglx@linutronix.de>, dianders@chromium.org,
- liusong@linux.alibaba.com, akpm@linux-foundation.org, pmladek@suse.com,
- kernelfans@gmail.com, deller@gmx.de, npiggin@gmail.com,
- tsbogend@alpha.franken.de, James.Bottomley@HansenPartnership.com,
- jan.kiszka@siemens.com
-Cc: linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
- linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
- yaoma@linux.alibaba.com
-References: <20240306125208.71803-1-yaoma@linux.alibaba.com>
- <20240306125208.71803-2-yaoma@linux.alibaba.com> <87frvu7t85.ffs@tglx>
-Content-Language: en-US
-From: Bitao Hu <yaoma@linux.alibaba.com>
-In-Reply-To: <87frvu7t85.ffs@tglx>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Message-Id: <20240410-cdns-qspi-mbly-v3-3-7b7053449cf7@bootlin.com>
+References: <20240410-cdns-qspi-mbly-v3-0-7b7053449cf7@bootlin.com>
+In-Reply-To: <20240410-cdns-qspi-mbly-v3-0-7b7053449cf7@bootlin.com>
+To: Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Conor Dooley <conor+dt@kernel.org>, Vaishnav Achath <vaishnav.a@ti.com>, 
+ Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
+ Rob Herring <robh@kernel.org>
+Cc: linux-spi@vger.kernel.org, devicetree@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org, 
+ Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>, 
+ Gregory CLEMENT <gregory.clement@bootlin.com>, 
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>, 
+ Tawfik Bayouk <tawfik.bayouk@mobileye.com>, 
+ =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
+X-Mailer: b4 0.13.0
+X-GND-Sasl: theo.lebrun@bootlin.com
 
-Hi,
+Make cdns,fifo-depth devicetree property optional.
+Value can be detected at runtime.
 
-On 2024/4/9 17:58, Thomas Gleixner wrote:
-> 
-> This does not apply anymore.
-OK, I will update this patch based on the latest kernel code.
-> 
-> Also can you please split this apart to convert kstat_irqs to a struct
-> with just the count in it and then add the snapshot mechanics on top.
-> 
-OK, I will split this patch into two. The changelog for the first patch
-will be as follows.
+Upper SRAMPARTITION register bits are read-only. Procedure to find FIFO
+depth is therefore to write 0xFFFFFFFF and read back to get amount of
+writeable bits.
 
-genirq: Convert kstat_irqs to a struct
+Signed-off-by: Théo Lebrun <theo.lebrun@bootlin.com>
+---
+ Documentation/devicetree/bindings/spi/cdns,qspi-nor.yaml | 1 -
+ 1 file changed, 1 deletion(-)
 
-The irq_desc::kstat_irqs member is a per-CPU variable of type int, and
-it is only capable of counting. The snapshot mechanism for interrupt
-statistics will be added soon, which requires an additional variable to
-store snapshot. To facilitate expansion, convert kstat_irqs here to
-a struct containing only the count.
+diff --git a/Documentation/devicetree/bindings/spi/cdns,qspi-nor.yaml b/Documentation/devicetree/bindings/spi/cdns,qspi-nor.yaml
+index 587baf35e4e3..d48ecd6cd5ad 100644
+--- a/Documentation/devicetree/bindings/spi/cdns,qspi-nor.yaml
++++ b/Documentation/devicetree/bindings/spi/cdns,qspi-nor.yaml
+@@ -146,7 +146,6 @@ required:
+   - reg
+   - interrupts
+   - clocks
+-  - cdns,fifo-depth
+   - cdns,fifo-width
+   - cdns,trigger-address
+   - '#address-cells'
 
-By the way, what do you think of my reason for using printk() instead of
-pr_crit()? Should I change this part of the code in v13?
+-- 
+2.44.0
 
-Besides, are there any other issues with this set of patches? I hope we
-can resolve all points of contention in v13.
-
-Best Regards,
-
-	Bitao Hu

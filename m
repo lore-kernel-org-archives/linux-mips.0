@@ -1,90 +1,112 @@
-Received: from mslow1.mail.gandi.net (mslow1.mail.gandi.net [217.70.178.240])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-oa1-f51.google.com (mail-oa1-f51.google.com [209.85.160.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A8061598F2;
-	Wed, 10 Apr 2024 09:33:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.178.240
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0087D155385;
+	Wed, 10 Apr 2024 10:43:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712741589; cv=none; b=YrSGMM68JIOiWad51sERr2sQeIke7744hYIs+5VHQVPvKx/7MuxGaTd+WdVOdrCSvNhPAavfcZz5CaidvX7jTkvkHTDEmO0tzQuhuTLIpczns14r+M2gnijRcqu3H8BECIDDrGQ62ZWJp30cKViMo5OfRs/f2XSxXHBmUZniVQ8=
+	t=1712745835; cv=none; b=sCwg2RNkR+0cwO39tLWXHMcj153lLmvpsjk8VZOtBDMX315BClZP7wg6vlb+o2pc/6C9+ul7HCoD2HY4ObHHUuaw2rDqYMYyuQ+Z7lWy11zp9yPcw1PkXaIp+YQ0fKm+OFNVp0I+PdFuI9s2jpS6U9YFDuA2wAwcvm27HR2P3WQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712741589; c=relaxed/simple;
-	bh=1nSBf6bY6T/hjYzEOpJcKmCPuaUO6X4kXnC660BYQeA=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=XMefd/nAecj2kCLJFdqUHdMue0Zm+0CV5hWrPbX6Q0JGYen+mbg6HVxfA6ct2tPAE5S2VhO3baNjco3vYcRQXhZ7ml0vOqYEDTnITArsfZFIG/l8kHT7vtw1CfGkeaGtp1/p1oTbTgJYJOvYXt8ticio2N19Qtu6cP+/+gGn5NM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=QhsoV/B2; arc=none smtp.client-ip=217.70.178.240
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+	s=arc-20240116; t=1712745835; c=relaxed/simple;
+	bh=CMXlteTKOwFAuVMW0aMjJuXqhJP5cUNUL11/P+b21/8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=G1Mhy+FomU48vR8aq8pXg+Jw2j+HvDovNfdv7nkG/rryE2LG+mxWLkvhGQC+q6PuuaiXdiOOruwcHw7p58ppQQfCQ6L364qOzfwN6FQ2VCUVq/pK4w3lM8tHkDsMgRSELQEUKabXrAR3XBWDBDP9V67UkFO9/Y2CdyP4fGlNdK8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=m4qWInpE; arc=none smtp.client-ip=209.85.160.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="QhsoV/B2"
-Received: from relay6-d.mail.gandi.net (unknown [217.70.183.198])
-	by mslow1.mail.gandi.net (Postfix) with ESMTP id 6AD28C5F49;
-	Wed, 10 Apr 2024 09:29:13 +0000 (UTC)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 1E6EBC000D;
-	Wed, 10 Apr 2024 09:29:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1712741350;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=334v5AxGG/MkJbS2JIrPuKDmglCIG0uO//Ytkag6OEg=;
-	b=QhsoV/B2Q7n/q41p414iJ2q2qcE2w1F/o+9LMbL4tr1DYPJIhCy4HQjniVMGYH2pIBIqMD
-	Wwcmf97aVc9f1HaFA30TmvUgZF6gtRS222HrRU9wvbmo2T7cS1f3RV6btln9uRPUiEYj1R
-	LjYwSDXLlcEVkaf2nHVf9PkvgG+dvcA8bausiKuokZJy6fMq+qcI4Po2jPahKvHNV1mbnt
-	aIshsZZY/D04Yk+Ql0e1hJt+5Jap0vfL/G/HwEaIVcwl320U65mDEN/lEVOQ2FVyzCEkwR
-	UqE185WoQfqrdlVf3OTiJNnIGbJDsgi/IbfD8EV1a6QEocgWcRJ8rkaLiIKocg==
-From: =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
-Date: Wed, 10 Apr 2024 11:29:05 +0200
-Subject: [PATCH v3 2/9] spi: dt-bindings: cdns,qspi-nor: add
- mobileye,eyeq5-ospi compatible
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="m4qWInpE"
+Received: by mail-oa1-f51.google.com with SMTP id 586e51a60fabf-23333dddd8aso54356fac.1;
+        Wed, 10 Apr 2024 03:43:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712745833; x=1713350633; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=D1Sp7n1FvxcNzxiV/M3Whh5xnznJqzGBI91xq3AgOsc=;
+        b=m4qWInpEPQTK9n7pQpzT31t1omK0K8TSleOPXKDBI9LQh4tZv1MdhH/O0xKDlfEAxX
+         sOVehc+QaG8mTxlJ5SAwJwKc7xLTN94ACvbBPeebkNPTbo0utQrxomxDYMCKA6aaMme4
+         eAs7IuKkfwHjtk6tZg9WRN2lsURdmSdx9uXIxRmeHKxcN2Fq7fWZW5GqJFhqz3vCjSg7
+         hS0h0Gsa70YtMnaSGPWugFNEyC1RnINpfgiVk5s3UkGFVRiOERwWD9Gxdtqy/tJauToV
+         /zuzlqzzsRj1h1SbP7LB9PSa7EMDJiVlaw5btP76zwWH2XfCkwQOtH2ShzyCfmm3Y/oI
+         2psA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712745833; x=1713350633;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=D1Sp7n1FvxcNzxiV/M3Whh5xnznJqzGBI91xq3AgOsc=;
+        b=RQIzXWGNQJ93L/h222WePSASPA2GBawxW28OEYsG9+GWs9PcmkxxbVHt8Rc2+zrCv4
+         /X2U9viCXqb7wqQ/+F1I9aGmnlmOiYnK6M/+PWPqVaMD8Bvobym6WdyKrsLICy21MjN6
+         SGPulGSdSycgzEptLAcARUhJudBIBHLLXiX9sT/kB2qlofFIMGr3VTWg5VB+R6xwmUok
+         jnUV2gE5xbeHWfAFlk/Kv0JYh5d6Ys/jqJNL9wOtFm9aq7ye8YABu8WfmJU8t5x6DFpU
+         Z3tpZdTaMWL6zGhS6mBcnDEsfVNHZYiVDCBnbB93UbbMnYkjtKjFZoiZ/AmpSavgGMPu
+         UJ1g==
+X-Forwarded-Encrypted: i=1; AJvYcCWDVFe6HWN8xn0QKceaE4KS161a5x/O9YtVvwdeODJWCYqOU7gMoJDRXrlToY84LEFGDuG4jUB+6ChnsdfpNeSK38NsZKzYKKi7i36Zqk0e4c56HlR8lMHdg8TM/sDfC1SDgxS5wuFRjw==
+X-Gm-Message-State: AOJu0YyA40LI0MMM1vjQb3FIITmLXObFuI11eGsyFDslpMpOUEK5ouoq
+	LvQ8ypj7lQ0EUYXlB664FmIxSeO3VONImfouV7iVV7/YWOyi8Yvclahrm3Yu2YGcTfEJbU20080
+	lAd9VLiZdvUfOygBiefBQlmjpCY8=
+X-Google-Smtp-Source: AGHT+IEGPf5fgJ+Ji13oItqw8ThUKQ2lo5EoXR03Lt9sU+JG4aSaJBKXhCfpCYKEoA5qiJCcmGLynCsasGEkZeYqbCg=
+X-Received: by 2002:a05:6870:1682:b0:22e:bd35:d3fb with SMTP id
+ j2-20020a056870168200b0022ebd35d3fbmr2593686oae.22.1712745833092; Wed, 10 Apr
+ 2024 03:43:53 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Message-Id: <20240410-cdns-qspi-mbly-v3-2-7b7053449cf7@bootlin.com>
-References: <20240410-cdns-qspi-mbly-v3-0-7b7053449cf7@bootlin.com>
-In-Reply-To: <20240410-cdns-qspi-mbly-v3-0-7b7053449cf7@bootlin.com>
-To: Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- Conor Dooley <conor+dt@kernel.org>, Vaishnav Achath <vaishnav.a@ti.com>, 
- Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
- Rob Herring <robh@kernel.org>
-Cc: linux-spi@vger.kernel.org, devicetree@vger.kernel.org, 
- linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org, 
- Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>, 
- Gregory CLEMENT <gregory.clement@bootlin.com>, 
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>, 
- Tawfik Bayouk <tawfik.bayouk@mobileye.com>, 
- =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>, 
- Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-X-Mailer: b4 0.13.0
-X-GND-Sasl: theo.lebrun@bootlin.com
+References: <20240409153519.291205-2-thorsten.blum@toblux.com>
+In-Reply-To: <20240409153519.291205-2-thorsten.blum@toblux.com>
+From: Sergio Paracuellos <sergio.paracuellos@gmail.com>
+Date: Wed, 10 Apr 2024 12:43:41 +0200
+Message-ID: <CAMhs-H8EByNhBAkhDvtHL_ZUgLnMFQcR1zeYhaKQSg-13uFnVQ@mail.gmail.com>
+Subject: Re: [PATCH] MIPS: ralink: Use min() to fix Coccinelle warning
+To: Thorsten Blum <thorsten.blum@toblux.com>
+Cc: John Crispin <john@phrozen.org>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
+	linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Add Mobileye EyeQ5 compatible.
+Hi Thorsten,
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Signed-off-by: Théo Lebrun <theo.lebrun@bootlin.com>
----
- Documentation/devicetree/bindings/spi/cdns,qspi-nor.yaml | 1 +
- 1 file changed, 1 insertion(+)
+On Tue, Apr 9, 2024 at 5:36=E2=80=AFPM Thorsten Blum <thorsten.blum@toblux.=
+com> wrote:
+>
+> Fixes the following Coccinelle/coccicheck warning reported by
+> minmax.cocci:
+>
+>         WARNING opportunity for min()
+>
+> Signed-off-by: Thorsten Blum <thorsten.blum@toblux.com>
+> ---
+>  arch/mips/ralink/timer.c | 6 +-----
+>  1 file changed, 1 insertion(+), 5 deletions(-)
+>
+> diff --git a/arch/mips/ralink/timer.c b/arch/mips/ralink/timer.c
+> index 54094f6e033e..d271ac98312a 100644
+> --- a/arch/mips/ralink/timer.c
+> +++ b/arch/mips/ralink/timer.c
+> @@ -75,11 +75,7 @@ static int rt_timer_request(struct rt_timer *rt)
+>
+>  static int rt_timer_config(struct rt_timer *rt, unsigned long divisor)
+>  {
+> -       if (rt->timer_freq < divisor)
+> -               rt->timer_div =3D rt->timer_freq;
+> -       else
+> -               rt->timer_div =3D divisor;
+> -
+> +       rt->timer_div =3D min(rt->timer_freq, divisor);
 
-diff --git a/Documentation/devicetree/bindings/spi/cdns,qspi-nor.yaml b/Documentation/devicetree/bindings/spi/cdns,qspi-nor.yaml
-index b865d4cc25cc..587baf35e4e3 100644
---- a/Documentation/devicetree/bindings/spi/cdns,qspi-nor.yaml
-+++ b/Documentation/devicetree/bindings/spi/cdns,qspi-nor.yaml
-@@ -70,6 +70,7 @@ properties:
-               - amd,pensando-elba-qspi
-               - intel,lgm-qspi
-               - intel,socfpga-qspi
-+              - mobileye,eyeq5-ospi
-               - starfive,jh7110-qspi
-               - ti,am654-ospi
-               - ti,k2g-qspi
+I do find the original code more readable.
 
--- 
-2.44.0
+Best regards,
+    Sergio Paracuellos
 
+>         rt_timer_w32(rt, TIMER_REG_TMR0LOAD, rt->timer_freq / rt->timer_d=
+iv);
+>
+>         return 0;
+> --
+> 2.44.0
+>

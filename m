@@ -1,150 +1,123 @@
-Received: from mailout4.samsung.com (mailout4.samsung.com [203.254.224.34])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DEAD051016
-	for <linux-mips@vger.kernel.org>; Fri, 12 Apr 2024 09:36:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.254.224.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9044E3FBA4;
+	Fri, 12 Apr 2024 10:44:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712914587; cv=none; b=QYxQyPgsUrjUxDMEh5vVQbLFy0PDXwkrTBRaYtBY4kb2bWqp7z0DEuKjWp6mRTmorXf3iVaHbm54njhgxA/VOiIVEA4By5fzSCTyrjn1Ns1LNUSEUSSB9rhvG2gNAVdFbphS2IcdZuA+TMP3j79if6vKHQA5AchcGtgqbTIbm9c=
+	t=1712918657; cv=none; b=TK+OGF7d2kaWwNFhNFRtNoLx5wow7ZXtY7gZN36Rnsfry9XYl2sVHwb1L/x3QpzwRFUYzau/xLd+uSiisJDefEtkw8n8XDenDkMJxPdDK7Bpjv/JyrThd9PrezZLdv8uT1xo8lTCj5oQ1SL5TI/DtZZmkJPUJWDuMZ2rRCVMimA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712914587; c=relaxed/simple;
-	bh=ECG66815UF5U5UZ532M011H3Hgu9sb1nS+RlWPOzlVI=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type:
-	 References; b=ASD3f9BdGtvlrM8UQRYvG/9VHaSOR8ENnz7RVuYkwwjS1TxJFazXz7zem52vHMtxLA/Y58PBz/XdlKvq003mWlNbYRnTvum5vEagMZUDQrSZFBL5YVIDz2teC8tQWwlT3wC8/wC2L8j8Vr9m+oVtaVmelvDibxCHKpsucRDvLhk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com; spf=pass smtp.mailfrom=samsung.com; dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b=nwVeG1Lb; arc=none smtp.client-ip=203.254.224.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samsung.com
+	s=arc-20240116; t=1712918657; c=relaxed/simple;
+	bh=1VOBD4fGV0wS/+b3v+F56U0irySBTtLVMq1jk0/3aNs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=kZ5NrSGjR2vHbYESpFrN2YuDNHcmOK04iyfeOHTNeZxjqsiRqYBFem/P1ivJ8zV5RYg6WHGWhoNkka+Tx27diygzBGDek4g7aPRT4noMEB2DIcKmsEIqjZWuYNaJLVUa/jDVf3mH4lSeSfXkEcUzlyLMwNhjoK111FoOtn5pitg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=q5wzc5tB; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="nwVeG1Lb"
-Received: from epcas5p2.samsung.com (unknown [182.195.41.40])
-	by mailout4.samsung.com (KnoxPortal) with ESMTP id 20240412093622epoutp04c561e5d757478b5054701e82a7d22f7b~FfrzbYF5u1989819898epoutp04c
-	for <linux-mips@vger.kernel.org>; Fri, 12 Apr 2024 09:36:22 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20240412093622epoutp04c561e5d757478b5054701e82a7d22f7b~FfrzbYF5u1989819898epoutp04c
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-	s=mail20170921; t=1712914582;
-	bh=18OZ4wgAdnYQqHPQ+QR1sMRA2rNC7ROaX7uQYViKJU4=;
-	h=From:To:Cc:Subject:Date:References:From;
-	b=nwVeG1Lbkm8L09VoWgzd/8konc0f8a/Z7G7DuXLrz35HRtr3SSMZ/ytNm+WKxIe4a
-	 J82srKZMG8QJN+KPuDWAh56/Q4145Ce5+MnPIuuxWtLnTwYkz9IJrGCjGMuVqEoNfq
-	 TjqdWY4mClLi3jeBRsbPGDG93rLiIoYCwzKiPF4Q=
-Received: from epsmges5p3new.samsung.com (unknown [182.195.42.75]) by
-	epcas5p3.samsung.com (KnoxPortal) with ESMTP id
-	20240412093622epcas5p385256fbd7d1a71ac8596442246fd206d~Ffry0_EfB1567515675epcas5p38;
-	Fri, 12 Apr 2024 09:36:22 +0000 (GMT)
-Received: from epcas5p1.samsung.com ( [182.195.41.39]) by
-	epsmges5p3new.samsung.com (Symantec Messaging Gateway) with SMTP id
-	C1.9B.09665.69009166; Fri, 12 Apr 2024 18:36:22 +0900 (KST)
-Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
-	epcas5p1.samsung.com (KnoxPortal) with ESMTPA id
-	20240412090801epcas5p1beb5c87f7582cf4f53c245a642468763~FfTCzoULs2335923359epcas5p1O;
-	Fri, 12 Apr 2024 09:08:01 +0000 (GMT)
-Received: from epsmgms1p2new.samsung.com (unknown [182.195.42.42]) by
-	epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
-	20240412090801epsmtrp1648b0aa57349dc8c8ecdfcd74ae84238~FfTCyqBJq0149901499epsmtrp1B;
-	Fri, 12 Apr 2024 09:08:01 +0000 (GMT)
-X-AuditID: b6c32a4b-829fa700000025c1-6a-661900963857
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-	epsmgms1p2new.samsung.com (Symantec Messaging Gateway) with SMTP id
-	3B.70.08390.1F9F8166; Fri, 12 Apr 2024 18:08:01 +0900 (KST)
-Received: from localhost.localdomain (unknown [107.109.224.44]) by
-	epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
-	20240412090759epsmtip230e5033ab5bdd5f1ba3ac3202ccf54c7~FfTBKbzXQ1740317403epsmtip2g;
-	Fri, 12 Apr 2024 09:07:59 +0000 (GMT)
-From: Onkarnarth <onkarnath.1@samsung.com>
-To: paulburton@kernel.org, mturquette@baylibre.com, sboyd@kernel.org
-Cc: linux-mips@vger.kernel.org, linux-clk@vger.kernel.org,
-	linux-kernel@vger.kernel.org, r.thapliyal@samsung.com,
-	maninder1.s@samsung.com, Onkarnath <onkarnath.1@samsung.com>
-Subject: [PATCH v2 1/1] clk: imgtec: use %pe for better readability of
- errors while printing
-Date: Fri, 12 Apr 2024 14:37:49 +0530
-Message-Id: <20240412090749.15392-1-onkarnath.1@samsung.com>
-X-Mailer: git-send-email 2.25.1
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="q5wzc5tB"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E150DC2BD10;
+	Fri, 12 Apr 2024 10:44:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712918657;
+	bh=1VOBD4fGV0wS/+b3v+F56U0irySBTtLVMq1jk0/3aNs=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=q5wzc5tBoiGBsuRhpRnOXn+/JuA2Y0L1EtRojaOy61UqRCGrwmOi61B2T1bcDZaV7
+	 NbeRh9B8kksCJt8R7pFX3UfmmSq/2LH88b9pMLZWTv2gnx4GpA7DoH+Ua+/V5vG0Nk
+	 hQ9OiK295o+5817rlVHgqnSFpwuxD94ALmfSL/fo+n9Eqg2oPkF9PNzAWoq+5vRQyS
+	 L84JYDrUOnGdWUMq7ZD58Z1trqP5rnJGDBgLeKsRca2aKXrhpgBlqIPrNxvH9n1XP1
+	 tdm7TK+oNWh6Sghw9RDsr0XR1COHVxmNS79Ysf/5OIwilPqZvdbbq19zgYHTJOcM6C
+	 Q1X6HLwip4qhg==
+Date: Fri, 12 Apr 2024 11:44:09 +0100
+From: Will Deacon <will@kernel.org>
+To: Paolo Bonzini <pbonzini@redhat.com>
+Cc: linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+	Marc Zyngier <maz@kernel.org>,
+	Oliver Upton <oliver.upton@linux.dev>,
+	Tianrui Zhao <zhaotianrui@loongson.cn>,
+	Bibo Mao <maobibo@loongson.cn>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	Nicholas Piggin <npiggin@gmail.com>,
+	Anup Patel <anup@brainfault.org>,
+	Atish Patra <atishp@atishpatra.org>,
+	Sean Christopherson <seanjc@google.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	David Hildenbrand <david@redhat.com>,
+	linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
+	loongarch@lists.linux.dev, linux-mips@vger.kernel.org,
+	linuxppc-dev@lists.ozlabs.org, kvm-riscv@lists.infradead.org,
+	linux-mm@kvack.org, linux-trace-kernel@vger.kernel.org,
+	linux-perf-users@vger.kernel.org
+Subject: Re: [PATCH 1/4] KVM: delete .change_pte MMU notifier callback
+Message-ID: <20240412104408.GA27645@willie-the-truck>
+References: <20240405115815.3226315-1-pbonzini@redhat.com>
+ <20240405115815.3226315-2-pbonzini@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFupkleLIzCtJLcpLzFFi42LZdlhTXXcag2SawYF5XBYfe+6xWlzeNYfN
-	onPTVkaLw/PbWCwunnK1WNHzgdWi49tcFouN97It/l3byOLA6fH+Riu7x6ZVnWwefVtWMXp8
-	3iQXwBLFZZOSmpNZllqkb5fAlXFgwjKWgkvcFR9PNrI3MJ7l7GLk4JAQMJE4Pzuki5GLQ0hg
-	N6PEsY8djBDOJ0aJGzP6mCGcb4wSp/fvYoTpWL23touREyi+l1HiUGshRM0XRok5D88ygyTY
-	BLQkZtw5wARiiwi4SPSu2wU2lVlgE6PE0pk/wIqEBeIkVj+dzghiswioSnSs2MUGYvMK2Eic
-	O34arEZCQF5i5qXv7BBxQYmTM5+wgNjMQPHmrbPBrpMQuMYucebpFyaIBheJx3+vQdnCEq+O
-	b2GHsKUkXva3Qdn5Ei2zZzFDfFMjcfWpKkTYXuLJxYWsIGFmAU2J9bv0IcKyElNPrWOCWMsn
-	0fv7CdR0Xokd82BsVYlfU6ayQNjSEvd/z2WDsD0k3q2+zQgJrFiJl5fXs01glJ+F5JtZSL6Z
-	hbB5ASPzKkbJ1ILi3PTUYtMC47zUcr3ixNzi0rx0veT83E2M4NSi5b2D8dGDD3qHGJk4GA8x
-	SnAwK4nwSmuJpgnxpiRWVqUW5ccXleakFh9ilOZgURLnfd06N0VIID2xJDU7NbUgtQgmy8TB
-	KdXAdO7LXmYRXp/Tionitoem/jvZ89780b62g1w++ypVVn2Wrbly/YzGzSc/vfZ8syz7+qW+
-	cds2/zfi7e5i9/VqjbbbXUj+8/K3/PqY2KNzX8ufW/frY8Lts5xSWc/VJJofhHqJ+X96a1Bu
-	tN9GLbbvZbQsb3pLAevCy2k3dz+4Zzs5kDfk7xuLwwej9jbXO78rezWP+fTV1Jj4oCT/5fcC
-	/wQ13Djuf8dK2O7siUth0yVYm76qW8XqzF2ntX7Bks7Yx9w7/br+CD8KZl290f9CfZqYzo69
-	kVrFr3T0PUMEjXcuvyUpdar/y+1e7f0N18r1fjrtniix+8qP95O1Ps++eZb7/XvWaedOFE4/
-	dYAvJVSJpTgj0VCLuag4EQA6AiKTnAMAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrELMWRmVeSWpSXmKPExsWy7bCSvO7HnxJpBt+PCVl87LnHanF51xw2
-	i85NWxktDs9vY7G4eMrVYkXPB1aLjm9zWSw23su2+HdtI4sDp8f7G63sHptWdbJ59G1Zxejx
-	eZNcAEsUl01Kak5mWWqRvl0CV8aBCctYCi5xV3w82cjewHiWs4uRg0NCwERi9d7aLkYuDiGB
-	3YwSa6/tZ+li5ASKS0t8ujyHHcIWllj57zk7RNEnRomGzauZQBJsAloSM+4cALNFBDwkdh15
-	wwxSxCywg1HicvMVsG5hgRiJmTMvghWxCKhKdKzYxQZi8wrYSJw7fpoZYoO8xMxL39kh4oIS
-	J2c+AbuCGSjevHU28wRGvllIUrOQpBYwMq1ilEwtKM5Nzy02LDDKSy3XK07MLS7NS9dLzs/d
-	xAgOVi2tHYx7Vn3QO8TIxMF4iFGCg1lJhFdaSzRNiDclsbIqtSg/vqg0J7X4EKM0B4uSOO+3
-	170pQgLpiSWp2ampBalFMFkmDk6pBqboZ1teqics3SR4+FpRwiEnE1mfz7putksP/unYaHzP
-	s9x3Ss3z+Zm8a1bczStde7stcolUwrpipqXXWDf3/jhn2BbYlrJqc+p2Of6QNKvdzyrU7+7J
-	WLcsfVGaa9JTjmPW3d3cPCsUX+S0TmUomnq7o3xmWeWNzu293YI6tyy+2n+LYpQ0i41+nCbD
-	urH6XW34meM2X/+KBs/Q3/RDhmfhB/OM9J2+fifV5/X+zchoSuau55g+hz17kukexdvL9Fr4
-	DJbdMnna8KTCy+OmZUGfybu7B6Z0fD1hlypqd3bPwf7EHxLzLCPslKQubv95oVlw5tbOQxd/
-	1PvMTxeJWbjB87Ct5xHF+X7LOnZc2a/EUpyRaKjFXFScCAC1KF73xQIAAA==
-X-CMS-MailID: 20240412090801epcas5p1beb5c87f7582cf4f53c245a642468763
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: REQ_APPROVE
-CMS-TYPE: 105P
-X-CMS-RootMailID: 20240412090801epcas5p1beb5c87f7582cf4f53c245a642468763
-References: <CGME20240412090801epcas5p1beb5c87f7582cf4f53c245a642468763@epcas5p1.samsung.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240405115815.3226315-2-pbonzini@redhat.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 
-From: Onkarnath <onkarnath.1@samsung.com>
+On Fri, Apr 05, 2024 at 07:58:12AM -0400, Paolo Bonzini wrote:
+> diff --git a/arch/arm64/kvm/mmu.c b/arch/arm64/kvm/mmu.c
+> index dc04bc767865..ff17849be9f4 100644
+> --- a/arch/arm64/kvm/mmu.c
+> +++ b/arch/arm64/kvm/mmu.c
+> @@ -1768,40 +1768,6 @@ bool kvm_unmap_gfn_range(struct kvm *kvm, struct kvm_gfn_range *range)
+>  	return false;
+>  }
+>  
+> -bool kvm_set_spte_gfn(struct kvm *kvm, struct kvm_gfn_range *range)
+> -{
+> -	kvm_pfn_t pfn = pte_pfn(range->arg.pte);
+> -
+> -	if (!kvm->arch.mmu.pgt)
+> -		return false;
+> -
+> -	WARN_ON(range->end - range->start != 1);
+> -
+> -	/*
+> -	 * If the page isn't tagged, defer to user_mem_abort() for sanitising
+> -	 * the MTE tags. The S2 pte should have been unmapped by
+> -	 * mmu_notifier_invalidate_range_end().
+> -	 */
+> -	if (kvm_has_mte(kvm) && !page_mte_tagged(pfn_to_page(pfn)))
+> -		return false;
+> -
+> -	/*
+> -	 * We've moved a page around, probably through CoW, so let's treat
+> -	 * it just like a translation fault and the map handler will clean
+> -	 * the cache to the PoC.
+> -	 *
+> -	 * The MMU notifiers will have unmapped a huge PMD before calling
+> -	 * ->change_pte() (which in turn calls kvm_set_spte_gfn()) and
+> -	 * therefore we never need to clear out a huge PMD through this
+> -	 * calling path and a memcache is not required.
+> -	 */
+> -	kvm_pgtable_stage2_map(kvm->arch.mmu.pgt, range->start << PAGE_SHIFT,
+> -			       PAGE_SIZE, __pfn_to_phys(pfn),
+> -			       KVM_PGTABLE_PROT_R, NULL, 0);
+> -
+> -	return false;
+> -}
+> -
+>  bool kvm_age_gfn(struct kvm *kvm, struct kvm_gfn_range *range)
+>  {
+>  	u64 size = (range->end - range->start) << PAGE_SHIFT;
 
-instead of printing errros as a number(%ld), it's better to print in string
-format for better readability of logs.
+Thanks. It's nice to see this code retire:
 
-Signed-off-by: Onkarnath <onkarnath.1@samsung.com>
----
-v1 -> v2 : Removed unnecessary SOB tag.
+Acked-by: Will Deacon <will@kernel.org>
 
- drivers/clk/imgtec/clk-boston.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+Also, if you're in the business of hacking the MMU notifier code, it
+would be really great to change the .clear_flush_young() callback so
+that the architecture could handle the TLB invalidation. At the moment,
+the core KVM code invalidates the whole VMID courtesy of 'flush_on_ret'
+being set by kvm_handle_hva_range(), whereas we could do a much
+lighter-weight and targetted TLBI in the architecture page-table code
+when we actually update the ptes for small ranges.
 
-diff --git a/drivers/clk/imgtec/clk-boston.c b/drivers/clk/imgtec/clk-boston.c
-index b00cbd045af5..db96f8bea630 100644
---- a/drivers/clk/imgtec/clk-boston.c
-+++ b/drivers/clk/imgtec/clk-boston.c
-@@ -67,21 +67,21 @@ static void __init clk_boston_setup(struct device_node *np)
- 
- 	hw = clk_hw_register_fixed_rate(NULL, "input", NULL, 0, in_freq);
- 	if (IS_ERR(hw)) {
--		pr_err("failed to register input clock: %ld\n", PTR_ERR(hw));
-+		pr_err("failed to register input clock: %pe\n", hw);
- 		goto fail_input;
- 	}
- 	onecell->hws[BOSTON_CLK_INPUT] = hw;
- 
- 	hw = clk_hw_register_fixed_rate(NULL, "sys", "input", 0, sys_freq);
- 	if (IS_ERR(hw)) {
--		pr_err("failed to register sys clock: %ld\n", PTR_ERR(hw));
-+		pr_err("failed to register sys clock: %pe\n", hw);
- 		goto fail_sys;
- 	}
- 	onecell->hws[BOSTON_CLK_SYS] = hw;
- 
- 	hw = clk_hw_register_fixed_rate(NULL, "cpu", "input", 0, cpu_freq);
- 	if (IS_ERR(hw)) {
--		pr_err("failed to register cpu clock: %ld\n", PTR_ERR(hw));
-+		pr_err("failed to register cpu clock: %pe\n", hw);
- 		goto fail_cpu;
- 	}
- 	onecell->hws[BOSTON_CLK_CPU] = hw;
--- 
-2.25.1
-
+Will

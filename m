@@ -1,83 +1,80 @@
 Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A79F2C868
-	for <linux-mips@vger.kernel.org>; Mon, 15 Apr 2024 08:35:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A7682868D;
+	Mon, 15 Apr 2024 08:35:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.175.24.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713170162; cv=none; b=tR2H0/ndnZp7oJTrNU6KE1MBQCMMFa2uvc76KVMKaKPdMVANf5CbZD1tta8MWMS1cBhfbpuqyyE/eXJT1ZJ4uKItFHAquHB7o+hz2zFqS8rKJwosfkMp5kwInCNqUTsF+gqKaHw6xqrYgZ+ERcxsmP42tRL05DVrVT6n5qqJ3VI=
+	t=1713170162; cv=none; b=UOrxwggZnxMhr23Sm41RyHaZPFEfjIzwbt5+ykCgJRDnGw5BbxxSbryw2AMi2AyxePVYxVRL6FOBVAN6HtE65hO2sdhbOKgnTeGr42FPwCfDDcHhSsP89PVLeWuK75DiTU8CIumuKjY6dj7ESqOOSjl12sGAu5EY+9/rtqGk9/Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1713170162; c=relaxed/simple;
-	bh=Q+I7XKw1ssXmT1ZKhaI16ik6TQ/F/lbMpDMzGvbsaiI=;
+	bh=I0ov0M45VZjgvYYqhyn0aZOdOUazf6x4v6erec5mCa4=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=FD0BcB6SnOiRiTO3xEV9nXk350lumoW/402jls6KrKB9foUXtMKrHAenHlLkh1b6KbrG1URS7+LmsnRDkItTIDgqsrlcFxhVUjCtkk9VmXB+x8d0si8dnTUGniyC4KB7ST6nnhNG/JKhOU/bTBpVA5OE2b7qcjiY5BrqkEryDSs=
+	 Content-Type:Content-Disposition:In-Reply-To; b=OMUaALKKGguaiilBwPdDqFzf1yHt4dbhLqNUkigUpYqGkEUfgCSCht2uUVxnJGSkUTlmO4H9FhIu7OYrTSwjnppXKMQWxN82dpHaS+/XM2huv1lvHB+5CoS7f41sPFq62Fv+DsJkV6UqT9HRdjb4pABIcjXZLx4qv3D/1e86Rns=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de; spf=pass smtp.mailfrom=alpha.franken.de; arc=none smtp.client-ip=193.175.24.41
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alpha.franken.de
 Received: from uucp by elvis.franken.de with local-rmail (Exim 3.36 #1)
-	id 1rwHoa-0004hh-00; Mon, 15 Apr 2024 10:35:48 +0200
+	id 1rwHob-0004hn-00; Mon, 15 Apr 2024 10:35:49 +0200
 Received: by alpha.franken.de (Postfix, from userid 1000)
-	id 39646C02FE; Mon, 15 Apr 2024 10:33:27 +0200 (CEST)
-Date: Mon, 15 Apr 2024 10:33:27 +0200
+	id B9E3CC04B7; Mon, 15 Apr 2024 10:34:26 +0200 (CEST)
+Date: Mon, 15 Apr 2024 10:34:26 +0200
 From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To: Yongzhen Zhang <zhangyongzhen@kylinos.cn>
-Cc: linux-mips@vger.kernel.org
-Subject: Re: [PATCH] MIPS: RB532: Declare prom_setup_cmdline() and
- rb532_gpio_init() static
-Message-ID: <ZhzmV0QHKRaftNx6@alpha.franken.de>
-References: <20240315041043.240833-1-zhangyongzhen@kylinos.cn>
+To: Songyang Li <leesongyang@outlook.com>
+Cc: linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] MIPS: Octeon: Add PCIe link status check
+Message-ID: <ZhzmkuYJOTIVNVL9@alpha.franken.de>
+References: <TY3P286MB27542582C36379EB4A128DEFB4332@TY3P286MB2754.JPNP286.PROD.OUTLOOK.COM>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240315041043.240833-1-zhangyongzhen@kylinos.cn>
+In-Reply-To: <TY3P286MB27542582C36379EB4A128DEFB4332@TY3P286MB2754.JPNP286.PROD.OUTLOOK.COM>
 
-On Fri, Mar 15, 2024 at 12:10:43PM +0800, Yongzhen Zhang wrote:
-> early_tlb_init() and rb532_gpio_init() were local to file but not declared
-> static, leading to error:
+On Wed, Mar 20, 2024 at 11:22:00PM +0800, Songyang Li wrote:
+> The standard PCIe configuration read-write interface is used to
+> access the configuration space of the peripheral PCIe devices
+> of the mips processor after the PCIe link surprise down, it can
+> generate kernel panic caused by "Data bus error". So it is
+> necessary to add PCIe link status check for system protection.
+> When the PCIe link is down or in training, assigning a value
+> of 0 to the configuration address can prevent read-write behavior
+> to the configuration space of peripheral PCIe devices, thereby
+> preventing kernel panic.
 > 
-> arch/mips/rb532/prom.c:49:13: error: no previous prototype for ‘prom_setup_cmdline’ [-Werror=missing-prototypes]
->    49 | void __init prom_setup_cmdline(void)
->       |             ^~~~~~~~~~~~~~~~~~
-> arch/mips/rb532/gpio.c:200:12: error: no previous prototype for ‘rb532_gpio_init’ [-Werror=missing-prototypes]
->   200 | int __init rb532_gpio_init(void)
->       |            ^~~~~~~~~~~~~~~
-> 
-> Signed-off-by: Yongzhen Zhang <zhangyongzhen@kylinos.cn>
+> Signed-off-by: Songyang Li <leesongyang@outlook.com>
 > ---
->  arch/mips/rb532/gpio.c | 2 +-
->  arch/mips/rb532/prom.c | 2 +-
->  2 files changed, 2 insertions(+), 2 deletions(-)
+>  arch/mips/pci/pcie-octeon.c | 6 ++++++
+>  1 file changed, 6 insertions(+)
+>  mode change 100644 => 100755 arch/mips/pci/pcie-octeon.c
 > 
-> diff --git a/arch/mips/rb532/gpio.c b/arch/mips/rb532/gpio.c
-> index 29c21b9d42da..ea6ebfea4a67 100644
-> --- a/arch/mips/rb532/gpio.c
-> +++ b/arch/mips/rb532/gpio.c
-> @@ -197,7 +197,7 @@ void rb532_gpio_set_func(unsigned gpio)
->  }
->  EXPORT_SYMBOL(rb532_gpio_set_func);
->  
-> -int __init rb532_gpio_init(void)
-> +static int __init rb532_gpio_init(void)
+> diff --git a/arch/mips/pci/pcie-octeon.c b/arch/mips/pci/pcie-octeon.c
+> old mode 100644
+> new mode 100755
+> index 2583e318e8c6..b080c7c6cc46
+> --- a/arch/mips/pci/pcie-octeon.c
+> +++ b/arch/mips/pci/pcie-octeon.c
+> @@ -230,12 +230,18 @@ static inline uint64_t __cvmx_pcie_build_config_addr(int pcie_port, int bus,
 >  {
->  	struct resource *r;
+>  	union cvmx_pcie_address pcie_addr;
+>  	union cvmx_pciercx_cfg006 pciercx_cfg006;
+> +	union cvmx_pciercx_cfg032 pciercx_cfg032;
 >  
-> diff --git a/arch/mips/rb532/prom.c b/arch/mips/rb532/prom.c
-> index b11693715547..b88e89ec5894 100644
-> --- a/arch/mips/rb532/prom.c
-> +++ b/arch/mips/rb532/prom.c
-> @@ -46,7 +46,7 @@ static inline unsigned long tag2ul(char *arg, const char *tag)
->  	return simple_strtoul(num, 0, 10);
->  }
+>  	pciercx_cfg006.u32 =
+>  	    cvmx_pcie_cfgx_read(pcie_port, CVMX_PCIERCX_CFG006(pcie_port));
+>  	if ((bus <= pciercx_cfg006.s.pbnum) && (dev != 0))
+>  		return 0;
 >  
-> -void __init prom_setup_cmdline(void)
-> +static void __init prom_setup_cmdline(void)
->  {
->  	static char cmd_line[COMMAND_LINE_SIZE] __initdata;
->  	char *cp, *board;
+> +	pciercx_cfg032.u32 =
+> +		cvmx_pcie_cfgx_read(pcie_port, CVMX_PCIERCX_CFG032(pcie_port));
+> +	if ((pciercx_cfg032.s.dlla == 0) || (pciercx_cfg032.s.lt == 1))
+> +		return 0;
+> +
+>  	pcie_addr.u64 = 0;
+>  	pcie_addr.config.upper = 2;
+>  	pcie_addr.config.io = 1;
 > -- 
 > 2.34.1
 

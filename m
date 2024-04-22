@@ -1,137 +1,74 @@
-Received: from mail-yw1-f175.google.com (mail-yw1-f175.google.com [209.85.128.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F49944C73;
-	Mon, 22 Apr 2024 23:04:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 55AE244C9C;
+	Mon, 22 Apr 2024 23:45:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713827068; cv=none; b=GayMkHgeTo/S+WGE59WJuKRZnJATpypj9mVj5UZ+CIm5LUTL8QYQmRhXwCEohL0HNFYWuD/xroq8FnOaeKJIAN4avV7Yvx0qoh5aiTEAWQ166+bqaR9uNBFo7T+y07Vt12usP4PmuXsEo26erKpngpa08zRaCRy63xC0yne/CAc=
+	t=1713829534; cv=none; b=b5N9UHdvtLTtkFCZlOLX13MAbkYB/0sJ/S6nM3o19MP+6TqKzRH+YyHosu2Dx3hFNoplbmyaT5MunzsclCnXUv9ue8JhWAayeYBELxl2r7LhI7XR7jzZeNItA8xfNSnjGxAeAiIK/JfrPv3qtMr6yMTaWP8hUxl02wD+FQ4Vuuc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713827068; c=relaxed/simple;
-	bh=6Ac6vQ0aXcvvz3srSM0acKosA+te7+BqjbTdKTXWGyE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=gYPv0SKuGm95SpwHu2g3bE8cfa7jDe37sPSWEW1t6dXZkBqH/KUaS5Xylq7NjJ/fzwxWHJMBRZYO+WigTJdmfuTrX+dwW3zmVzGEa1ZnyRQ/M9cTe5SKSrQ3+YNFNfTEcKnuSsH4QXt7TqfL/h2XGhOjeMyuM5arBnJQVXIcfLw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jCinPE1x; arc=none smtp.client-ip=209.85.128.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1713829534; c=relaxed/simple;
+	bh=z3h+VKrcZCpunIZDiKn9M9NtXfM5z6L0iGF/2eYIpDg=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=LLtO6L4XR9PFHpTrM2jxzdzHthWDwE0qF+iReF4yZYu91Ea7mkeyXcicrHSPiEGf7rR0wQrSVS5sFsOa0qIBVL60senPA4B6OGTLQpiOdQzkltW1xRPfFlf81BpPYW/RFVVmQ/pKOTkl/pWgwnvuVZwP7fEk37pZ4C3R+lkmWyY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=SNo8ScRn; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=8WX9ZE1N; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jCinPE1x"
-Received: by mail-yw1-f175.google.com with SMTP id 00721157ae682-6114c9b4d83so40490957b3.3;
-        Mon, 22 Apr 2024 16:04:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1713827065; x=1714431865; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=H+vHDpfrpWXucDC0uFH0aat5EFwvU5PRrpWR2paW/O4=;
-        b=jCinPE1x3BqBxQMTSxeTqH8QlKgzroVdulPE2kuEZXWPEfFofPlEKflWai9QZo6CJK
-         pqUCd+rPYMeIkr+0t+sO1kLRTMIg9wK7LOrvF7PvIv9avUXHgpWdfSdxZv/TKwq96I0c
-         eGwPNUIUq6Y/UOg/m/Qa2yZVOT2ETnA0fQZq9XA5gNgS3fCifcPzHEYfu8WslSGyFxCo
-         xKouKXbNUwKeN1inf+8mYlBw87KPrpKqNaziV9dsIp3hpunR0NCBchSgTdn1xCkcw+KV
-         5ae5Iy7uSqFiFTWT4o+zoqe5E4W4v7mJ2uxn6N6Tm+Kp6H1XSWfCEc2twYJUw68duDHY
-         Ib3w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713827065; x=1714431865;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=H+vHDpfrpWXucDC0uFH0aat5EFwvU5PRrpWR2paW/O4=;
-        b=GXFwfhWTIYgntcnJqr18qYyf4+Fr0LCdxVUXksYSIroEx0/rLQjwZwj4aKKuTmRRRV
-         TN0ANHB7c4IpBtkRjjWl8iJmURJOz+CWKum8+FSYoXNWMWiZs3XdxgOPklbIw4weeD4I
-         99LCkAzZuuCHs9CbDioAex91SFx6LuzeCMC7OQaKqlWOV8FIf+ycsJwuSF4IZLpgIrUw
-         DdJBJZGDDGhG3PEBgU7AO5Hcjb+RCWAHNaJm7NYzFhdTmIohYItyBrwD+HQ8KWb6u7ho
-         2ow/Q4l/wpHVFLCWzD0PJW8eRRV0lA1cciRgVJEuIWNiPhLKheg2A5lCsuIaIeJFmXSS
-         4t7Q==
-X-Forwarded-Encrypted: i=1; AJvYcCVwaQNEwvoJT6yOEe5HaL0fYYrlibf/cmUzs8G1i9rBOG40F+jPNCizIdzH1gDS/fE4aJOTjqVMJASOKN5ymLEvhI7MQTGo/4h+qvf8r71b7WFciDkZZcanm5TZ1qcu0CSlLMmIEJ5BGA==
-X-Gm-Message-State: AOJu0YxPDTeUzjPnZJc7lEm+gkN/VtGPAT+FEWnR5aC1hu8kYOUBXXB7
-	HfQuqQesNv0xETROBzvj6vC7ABjiY3OP9En8o9hJf+9wdGVOU24w3DlOMA==
-X-Google-Smtp-Source: AGHT+IEyT5gjpNg1SKPchjhC9EvW1KlqB4FVRX3CAsfPDdO8c2iAhlqRKmL4LchCE48cnLNUOhUEzA==
-X-Received: by 2002:a05:690c:3701:b0:61b:33b7:9e11 with SMTP id fv1-20020a05690c370100b0061b33b79e11mr10814531ywb.9.1713827065225;
-        Mon, 22 Apr 2024 16:04:25 -0700 (PDT)
-Received: from localhost ([2601:344:8301:57f0:baf4:bd67:a305:2140])
-        by smtp.gmail.com with ESMTPSA id 5-20020a5b0105000000b00dcda90f43d7sm2194016ybx.59.2024.04.22.16.04.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Apr 2024 16:04:24 -0700 (PDT)
-Date: Mon, 22 Apr 2024 16:04:23 -0700
-From: Yury Norov <yury.norov@gmail.com>
-To: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc: Florian Fainelli <f.fainelli@gmail.com>, linux-mips@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/2] MIPS: SGI-IP27: micro-optimize arch_init_irq()
-Message-ID: <Zibs96v+uK/2uFT8@yury-ThinkPad>
-References: <20240416173711.613750-1-yury.norov@gmail.com>
- <20240416173711.613750-2-yury.norov@gmail.com>
- <Zh+uPB0druail4XC@alpha.franken.de>
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="SNo8ScRn";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="8WX9ZE1N"
+From: Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1713829531;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Z3iuol9n0ncMFMx3ZU/0KzyHn3TSc5ypZiXe1W2A5oM=;
+	b=SNo8ScRn/1GkRdN2RdGq8C0spZlkhHnRirTAe1ms3kV9ohl07WzEzX6H3DoNspRUYM0Ppt
+	KfaVYeZA7x29ikRk9pTWR1oE56fQEveBnqlngTBAzDYMo5kk9T5jH2DPgwXMzxc5ZeQFTP
+	g7Ld4hXuPNtVSzsC4dg0tnRQ49tgrPE5mCLXjrqQev4D9CJrKrtCXuabH+oYFYV0VVfVOf
+	58ClO2hQYBGlfsKDDrpXYndvqWshr7bfyfdbr/tda5zoxwySbSY3Rz1x/a+QheZPGGRkUg
+	R7V7UNaOqaQj7+6ZIef0Mme5uGSmAEae7IktutF9gpN7nRcOJra0k7JpgDu85A==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1713829531;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Z3iuol9n0ncMFMx3ZU/0KzyHn3TSc5ypZiXe1W2A5oM=;
+	b=8WX9ZE1N45eKmwx2FOtbDg26c+wW39hf9Ig69BrWHfZpNpLCaNB3vI0A2+vt5SPjIFekcq
+	G1TB3/M3SVk0OyCA==
+To: Florian Fainelli <f.fainelli@gmail.com>, Florian Fainelli
+ <florian.fainelli@broadcom.com>, linux-kernel@vger.kernel.org
+Cc: opendmb@gmail.com, Tim Ross <tim.ross@broadcom.com>, Broadcom internal
+ kernel review list <bcm-kernel-feedback-list@broadcom.com>, "open
+ list:BROADCOM BMIPS MIPS ARCHITECTURE" <linux-mips@vger.kernel.org>,
+ "moderated list:BROADCOM BCM7XXX ARM ARCHITECTURE"
+ <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH] irqchip/irq-brcmstb-l2: Avoid saving mask on shutdown
+In-Reply-To: <958c27b1-26d7-4927-976b-4502f33f31f7@gmail.com>
+References: <20240416194343.469318-1-florian.fainelli@broadcom.com>
+ <87le55ulw5.ffs@tglx> <958c27b1-26d7-4927-976b-4502f33f31f7@gmail.com>
+Date: Tue, 23 Apr 2024 01:45:27 +0200
+Message-ID: <87il09ufl4.ffs@tglx>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Zh+uPB0druail4XC@alpha.franken.de>
+Content-Type: text/plain
 
-On Wed, Apr 17, 2024 at 01:10:52PM +0200, Thomas Bogendoerfer wrote:
-> On Tue, Apr 16, 2024 at 10:37:10AM -0700, Yury Norov wrote:
-> > The function sets adjusted groups of bits in hub_irq_map by using
-> > for-loops. There's a bitmap_set() function dedicated to do this.
-> > 
-> > Because [0, CPU_CALL_B_IRQ] and [NI_BRDCAST_ERR_A, MSC_PANIC_INTR]
-> > ranges belong to the same machine word, bitmap_set() would boil down
-> > to an inline wrapper in both cases, avoiding generating a loop, with
-> > the associate overhead. Effectively, it would be a compile-time:
-> > 
-> > 	*hub_irq_map = GENMASK() | GENMASK();
-> > 
-> > Signed-off-by: Yury Norov <yury.norov@gmail.com>
-> > ---
-> >  arch/mips/sgi-ip27/ip27-irq.c | 8 ++------
-> >  1 file changed, 2 insertions(+), 6 deletions(-)
-> > 
-> > diff --git a/arch/mips/sgi-ip27/ip27-irq.c b/arch/mips/sgi-ip27/ip27-irq.c
-> > index 8f5299b269e7..d8acdf0439d2 100644
-> > --- a/arch/mips/sgi-ip27/ip27-irq.c
-> > +++ b/arch/mips/sgi-ip27/ip27-irq.c
-> > @@ -277,7 +277,6 @@ void __init arch_init_irq(void)
-> >  {
-> >  	struct irq_domain *domain;
-> >  	struct fwnode_handle *fn;
-> > -	int i;
-> 
-> I've already applied your first version, so I need an incremental
-> patch, which just removes the unused variable.
+On Mon, Apr 22 2024 at 15:26, Florian Fainelli wrote:
+> On 4/22/24 14:29, Thomas Gleixner wrote:
+>>> +	if (save)
+>>> +		b->saved_mask = irq_reg_readl(gc, ct->regs.mask);
+>> 
+>> what's the conditional actually buying you except more complex code?
+>
+> Not much this is an optimization that is simple to carry out. There can 
+> be dozens of such L2 interrupt controllers in a given system and the 
+> MMIO accesses start adding up eventually.
 
-Sure, please find below.
-
-From ce447fe69092c48bb59a6c4cb08ee5f9080f0ad6 Mon Sep 17 00:00:00 2001
-From: Yury Norov <yury.norov@gmail.com>
-Date: Mon, 22 Apr 2024 15:52:12 -0700
-Subject: [PATCH] MIPS: SGI-IP27: fix -Wunused-variable in arch_init_irq()
-
-Commit 40e20fbccfb722f21 (MIPS: SGI-IP27: micro-optimize arch_init_irq())
-replaced a for-loop iteration with bitmap_set() calls, but didn't remove
-an iteration variable.
-
-Fixes: 40e20fbccfb722f21 (MIPS: SGI-IP27: micro-optimize arch_init_irq())
-Reported-by: kernel test robot <lkp@intel.com>
-Closes: https://lore.kernel.org/oe-kbuild-all/202404161933.izfqZ32k-lkp@intel.com/
-Signed-off-by: Yury Norov <yury.norov@gmail.com>
----
- arch/mips/sgi-ip27/ip27-irq.c | 1 -
- 1 file changed, 1 deletion(-)
-
-diff --git a/arch/mips/sgi-ip27/ip27-irq.c b/arch/mips/sgi-ip27/ip27-irq.c
-index dcb14a234b1c..d8acdf0439d2 100644
---- a/arch/mips/sgi-ip27/ip27-irq.c
-+++ b/arch/mips/sgi-ip27/ip27-irq.c
-@@ -277,7 +277,6 @@ void __init arch_init_irq(void)
- {
- 	struct irq_domain *domain;
- 	struct fwnode_handle *fn;
--	int i;
- 
- 	mips_cpu_irq_init();
- 
--- 
-2.40.1
+I'm impressed by saving ~12 microseconds per one dozen of interrupt
+controllers on system shutdown :)
 

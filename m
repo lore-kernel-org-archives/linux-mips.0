@@ -1,95 +1,101 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net [217.70.183.197])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 688961C2AD;
-	Tue, 23 Apr 2024 05:00:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A82405FBAA;
+	Tue, 23 Apr 2024 10:01:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.197
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713848450; cv=none; b=V4Nv42J66zZLzjzweS8bcVCFKipIOKcWIPE29DV6sumZ8qUy+Ka5fDVE6rhelSxOl4PUINIvjLMV49DxykhbMLeYCqzwJS0gy6Gu+3sgXMYXYdj0HHhjOg+9UVuYU75yXbe7wIcHIPwKzxzm2Z15kdyUD9O3fdwBqn5MNaFEuHk=
+	t=1713866514; cv=none; b=tpohSanHd7DNsZ15I1xbCI+K+gNeMtIswAzfJ37o3aeYkVpiuNjfRS4d5ULC06PiDl36JtkayBslAL6sDOKzfBz1Cxi5kZ1sGd1jvOONmr773oO3A6SbHCvzZDTeDpvjj0fkx3O/pEDWz4vEKPtxT0IlE/H/5Ss4piEOOx5c5CA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713848450; c=relaxed/simple;
-	bh=SOc+Ms3uALZsNMus4DrdwDpupnWEV4dkrH8W6cFGem4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=j8FXFbbJ8kB0hzKC28NrhXnwOm7b2lB7qfbsq3aFhFwK6Tqfjxxs1prwqqTL/AYDcdUVU9VGUwOBHquYxWmfRXHc3bamO/BZNvkdsQKH2bDCSmzK2xVh74dGcou3x5BWc65CtrzHx9wXwk+cA84yBVvdvUtVz173SRCNUaOjnio=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WEULjgGt; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1713866514; c=relaxed/simple;
+	bh=BNr7Q4jmb2WwnjfsAAi09SDjB7HAi4IIuSZgRKHvw5s=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
+	 In-Reply-To:To:Cc; b=phQitGvZ/MWKW81itIWgBe0GRA9GItgThDUsutvauFzSKJUu3p9o9j94uegUSw2ds96ThFUv4OpoK+PAVD6GYvD1pj34BbN+WTgafcr3zYA+Jt+awiJGXgP0Odeq0Ffdp+OJPIKVOt+vIbrzGJJCc1Z9oGSGZLNEU7y1R7iPeGs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=p51pCjr/; arc=none smtp.client-ip=217.70.183.197
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WEULjgGt"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 89593C116B1;
-	Tue, 23 Apr 2024 05:00:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713848450;
-	bh=SOc+Ms3uALZsNMus4DrdwDpupnWEV4dkrH8W6cFGem4=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=WEULjgGtG9pUusMHkzJio7CBtJzCX0wTPpniSFhg3esEUNDapT4wPGFrizt59zDK2
-	 /RhX4VV433oK4EC/gCzHKMTtQSkZyjUJbbcgRTs3oG13pl/0jXGuJkW3CJihcX0d23
-	 kJ4l/7mSDufEODc1mr+/jTp81U8YTKf/N+/LkVRD0QMBt69qz5Jz49XbDx2P+2robK
-	 QIjSXvwQc4Zl2DAGqsMj91X016Whkq9mKnuDC2rGQtus3C9ID5FCGo0UrcklkGdCUs
-	 P71KjbG/CVeU4SVx7sCV6+VCaI5VfeGDIyPNAqGidqdLhWrObhFiuk+FVdCn6qe5x8
-	 1ugOg495aisqg==
-Date: Tue, 23 Apr 2024 14:00:41 +0900
-From: Mark Brown <broonie@kernel.org>
-To: =?iso-8859-1?Q?Th=E9o?= Lebrun <theo.lebrun@bootlin.com>
-Cc: Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Vaishnav Achath <vaishnav.a@ti.com>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	Rob Herring <robh@kernel.org>, linux-spi@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-mips@vger.kernel.org,
-	Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>,
-	Gregory CLEMENT <gregory.clement@bootlin.com>,
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-	Tawfik Bayouk <tawfik.bayouk@mobileye.com>,
-	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: Re: (subset) [PATCH v3 0/9] spi: cadence-qspi: add Mobileye EyeQ5
- support
-Message-ID: <ZidAefc0Ejrklopf@finisterre.sirena.org.uk>
-References: <20240410-cdns-qspi-mbly-v3-0-7b7053449cf7@bootlin.com>
- <171283699002.32012.7629247540689477794.b4-ty@kernel.org>
- <D0QT350IJHFH.36EXE1UT9QM10@bootlin.com>
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="p51pCjr/"
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 8189D1C001C;
+	Tue, 23 Apr 2024 10:01:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1713866511;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=9d1LWBS78fz/noWt+gqf119+B397lC3IF2943t1mJfE=;
+	b=p51pCjr/a5r4zzZu1njCWQXO3/yoPufH9zRqZh84JLpWmBtq3mWr26sDFzZ+PTatF/fC8g
+	NSUJmWPx/gMi53afkoTr4Z5ZlcmG/o5zBdmzcuDRPDDf9OXJ30v74dqB925vcGq2RBvw4o
+	tFt8hjnSzNcVdJk2vfKAmb7n8uQASlk7rmjvA/k+cdji2Qk3UvmBfhwlLe4TjAihVYdgll
+	u5thehFVolGgeg1Xg35wdrls78JW7HcgHvdAtQjVzWrISyTDSkuuu4JAd/qtDghltq2c69
+	nKRcGwdrLcTMp6Bg57uG40ChpxrXU3ptJpVFTzB3WQDw7Os4dW3UxIo9GnhPeg==
+From: =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
+Date: Tue, 23 Apr 2024 12:01:43 +0200
+Subject: [PATCH v4 4/6] spi: cadence-qspi: add mobileye,eyeq5-ospi
+ compatible
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="ulKGnILG9Yl7Nn+x"
-Content-Disposition: inline
-In-Reply-To: <D0QT350IJHFH.36EXE1UT9QM10@bootlin.com>
-X-Cookie: TANSTAAFL
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Message-Id: <20240423-cdns-qspi-mbly-v4-4-3d2a7b535ad0@bootlin.com>
+References: <20240423-cdns-qspi-mbly-v4-0-3d2a7b535ad0@bootlin.com>
+In-Reply-To: <20240423-cdns-qspi-mbly-v4-0-3d2a7b535ad0@bootlin.com>
+To: Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Conor Dooley <conor+dt@kernel.org>, Vaishnav Achath <vaishnav.a@ti.com>, 
+ Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
+ Rob Herring <robh@kernel.org>
+Cc: linux-spi@vger.kernel.org, devicetree@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org, 
+ Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>, 
+ Gregory CLEMENT <gregory.clement@bootlin.com>, 
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>, 
+ Tawfik Bayouk <tawfik.bayouk@mobileye.com>, 
+ =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
+X-Mailer: b4 0.13.0
+X-GND-Sasl: theo.lebrun@bootlin.com
 
+Declare a new mobileye,eyeq5-ospi compatible.
 
---ulKGnILG9Yl7Nn+x
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Théo Lebrun <theo.lebrun@bootlin.com>
+---
+ drivers/spi/spi-cadence-quadspi.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-On Mon, Apr 22, 2024 at 06:52:47PM +0200, Th=E9o Lebrun wrote:
+diff --git a/drivers/spi/spi-cadence-quadspi.c b/drivers/spi/spi-cadence-quadspi.c
+index 87c88ee708e4..05ebb03d319f 100644
+--- a/drivers/spi/spi-cadence-quadspi.c
++++ b/drivers/spi/spi-cadence-quadspi.c
+@@ -2055,6 +2055,12 @@ static const struct cqspi_driver_platdata pensando_cdns_qspi = {
+ 	.quirks = CQSPI_NEEDS_APB_AHB_HAZARD_WAR | CQSPI_DISABLE_DAC_MODE,
+ };
+ 
++static const struct cqspi_driver_platdata mobileye_eyeq5_ospi = {
++	.hwcaps_mask = CQSPI_SUPPORTS_OCTAL,
++	.quirks = CQSPI_DISABLE_DAC_MODE | CQSPI_NO_SUPPORT_WR_COMPLETION |
++			CQSPI_RD_NO_IRQ,
++};
++
+ static const struct of_device_id cqspi_dt_ids[] = {
+ 	{
+ 		.compatible = "cdns,qspi-nor",
+@@ -2088,6 +2094,10 @@ static const struct of_device_id cqspi_dt_ids[] = {
+ 		.compatible = "amd,pensando-elba-qspi",
+ 		.data = &pensando_cdns_qspi,
+ 	},
++	{
++		.compatible = "mobileye,eyeq5-ospi",
++		.data = &mobileye_eyeq5_ospi,
++	},
+ 	{ /* end of table */ }
+ };
+ 
 
-> All commits tagged "(no commit info)" do not show up in your for-next
-> branch. Is that expected and is there anything I can do? There was one
-> pending -Wunused-variable compiler warning to be addressed for
-> example, see [0].
+-- 
+2.44.0
 
-Please submit any patches you'd like to see included.  If there were
-outstanding issues that need fixing then fixing those prior to
-submitting would be sensible.
-
---ulKGnILG9Yl7Nn+x
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmYnQHgACgkQJNaLcl1U
-h9CiTQf+J6VV/3FJ2hxvA+80nH5z+mJ9Iwc/Kx5I/LUnP9UfIjsvyTdg6m1miSGY
-fJpY+P1GwtyJH1Vh0e8n8NrZ1m39dg4o0g3NwXH6S95rpAJcP7CXtO0/hEMIj8Ks
-q1l6E0J01/8oGfX0D9FlG/0h8srDNPe8E7CxQCibg/nN2XU3L1xnZ8wvOPGNSWMs
-oha6E/4yjhDFasrQr2PwxsCZLXSGY/DECIosUnvtJKEVLiuuvTnSOdcCn7krpdwm
-dZTzFdaQNXA82tmuRHkISObATy2ZJbEPypfx6BrH/PVO4ga6Yzy6TiQ0xUEKDRMP
-S6/8FJ/EozYzzvlQ9sKuOBu3oOTdQw==
-=OhHK
------END PGP SIGNATURE-----
-
---ulKGnILG9Yl7Nn+x--

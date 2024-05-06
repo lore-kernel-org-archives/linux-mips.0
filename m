@@ -1,134 +1,95 @@
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+Received: from relay1-d.mail.gandi.net (relay1-d.mail.gandi.net [217.70.183.193])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F3F55143877;
-	Mon,  6 May 2024 12:04:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7531A156642;
+	Mon,  6 May 2024 16:16:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.193
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714997093; cv=none; b=HZ5tEyEAiIZPLrBym2RExVaSOikwoOGQ+r1K4RMiz5L1+cHcyXv7ZQs3ny4k5i4MUZ/Has/efCnFzMyW25hjFpPJi2lf1soAgbU3QXpYbkWYdEXOCeJM4YjuUcrAzCrGNCcwznzJX1+gnvWpM0Me3HpPppOGtfoplA6RKJpE8Q0=
+	t=1715012207; cv=none; b=tflp3f7oa0kJgoInNTxYn0oPxqucQHvn6/Q9hDi7ueluqU9b1VMYwWkSYXFRl5EaPOKM1rFObAJWrFdReESGv4l2GgGkgBc+dcU1gt8oAUMsIGDBNVj3zRTRKhJ8IiV8wFH8fhB9cgsi75jVeI2EnhsQg6p1IDRtkjIiC5wYwOg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714997093; c=relaxed/simple;
-	bh=Nn6pTgW11u0x9B6Nd1xA/pfcfA/mwlQQj1++/hKvgLo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=BjwQsE9C8WSOrL4G4ol76A0+Z+D3fO+fIS9AwvdpY1O5uX8mgxklTZsP3CqaOn6F9PfuZz2mRug2ToL8VLd8F/+dv0zO1wFbw//S1rFjLuyfhQmrxgmP9aQkV6ToJJ42lOR3RLxzHxr3gs5yEDCm9/fAIdXOQlSraLELXFyo044=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=Al+5UWz0; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
+	s=arc-20240116; t=1715012207; c=relaxed/simple;
+	bh=jNzjFHwuZOa0k+BeBhpH1REqmnBk4LeQdC8qn+eFxtA=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
+	 In-Reply-To:To:Cc; b=N14uaM6yuRmGZH21sG1XyZzXg8fYnz2TN67f2lk7RTgXV5gp0oMdPf7hJEX7IaRdLKvsRLwRw+GjOo8qaYyCN6k2QnRIR7s6BtG3/YbHANTTdmSK5wjXoON0KT6d9/aggf3KUVokHRLENupvl2YJhu2tl2OzvRi1zNLhjcMsOsI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=fagDC5Ws; arc=none smtp.client-ip=217.70.183.193
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="Al+5UWz0"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
-	:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=yXYhhTIjT/JZbkFthIE5YrCYO35Pg9XXB/SziqtVej8=; b=Al+5UWz0be2VM4EzLSv4PIqpbk
-	mEbhGZD2BYZ0ghxdDv/M4uc7pKbaCXZ4PyarQux3ZBy5JBvo6vA50xgfU8v82lgkdNf0k7VB8TkyR
-	1Gjg/zwRLuHynK93w6eAQDnHxenMCnOmIgK0o5x1r065VybbArgKfhAVoC02C9UjMkG2KG+4uF37X
-	PUvC9dUF6/Yz9GjoGh1VQgNHxsTH6r2iugkT960in4C0K73F8Xd+qFtEy9u15fvhEpWWZ/5e1Thrq
-	FpyJtIxYM4xZMLaMNvucptitryFptPh5kUV3Biz+i04kUBkoV3NFYeslTqPTmvo04D4zfLxosQHAZ
-	xOJ0p5dQ==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1s3x58-00000007Bwu-1EIp;
-	Mon, 06 May 2024 12:04:34 +0000
-Date: Mon, 6 May 2024 05:04:34 -0700
-From: Christoph Hellwig <hch@infradead.org>
-To: Mina Almasry <almasrymina@google.com>
-Cc: Christoph Hellwig <hch@infradead.org>, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-	linux-alpha@vger.kernel.org, linux-mips@vger.kernel.org,
-	linux-parisc@vger.kernel.org, sparclinux@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
-	bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
-	linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Richard Henderson <richard.henderson@linaro.org>,
-	Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-	Matt Turner <mattst88@gmail.com>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-	Helge Deller <deller@gmx.de>, Andreas Larsson <andreas@gaisler.com>,
-	Jesper Dangaard Brouer <hawk@kernel.org>,
-	Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Arnd Bergmann <arnd@arndb.de>, Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
-	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-	Steffen Klassert <steffen.klassert@secunet.com>,
-	Herbert Xu <herbert@gondor.apana.org.au>,
-	David Ahern <dsahern@kernel.org>,
-	Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-	Shuah Khan <shuah@kernel.org>,
-	Sumit Semwal <sumit.semwal@linaro.org>,
-	Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-	Amritha Nambiar <amritha.nambiar@intel.com>,
-	Maciej Fijalkowski <maciej.fijalkowski@intel.com>,
-	Alexander Mikhalitsyn <alexander@mihalicyn.com>,
-	Kaiyuan Zhang <kaiyuanz@google.com>,
-	Christian Brauner <brauner@kernel.org>,
-	Simon Horman <horms@kernel.org>,
-	David Howells <dhowells@redhat.com>,
-	Florian Westphal <fw@strlen.de>,
-	Yunsheng Lin <linyunsheng@huawei.com>,
-	Kuniyuki Iwashima <kuniyu@amazon.com>, Jens Axboe <axboe@kernel.dk>,
-	Arseniy Krasnov <avkrasnov@salutedevices.com>,
-	Aleksander Lobakin <aleksander.lobakin@intel.com>,
-	Michael Lass <bevan@bi-co.net>, Jiri Pirko <jiri@resnulli.us>,
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-	Lorenzo Bianconi <lorenzo@kernel.org>,
-	Richard Gobert <richardbgobert@gmail.com>,
-	Sridhar Samudrala <sridhar.samudrala@intel.com>,
-	Xuan Zhuo <xuanzhuo@linux.alibaba.com>,
-	Johannes Berg <johannes.berg@intel.com>,
-	Abel Wu <wuyun.abel@bytedance.com>,
-	Breno Leitao <leitao@debian.org>,
-	Pavel Begunkov <asml.silence@gmail.com>, David Wei <dw@davidwei.uk>,
-	Jason Gunthorpe <jgg@ziepe.ca>,
-	Shailend Chand <shailend@google.com>,
-	Harshitha Ramamurthy <hramamurthy@google.com>,
-	Shakeel Butt <shakeel.butt@linux.dev>,
-	Jeroen de Borst <jeroendb@google.com>,
-	Praveen Kaligineedi <pkaligineedi@google.com>
-Subject: Re: [RFC PATCH net-next v8 02/14] net: page_pool: create hooks for
- custom page providers
-Message-ID: <ZjjHUh1eINPg1wkn@infradead.org>
-References: <20240403002053.2376017-1-almasrymina@google.com>
- <20240403002053.2376017-3-almasrymina@google.com>
- <ZjH1QaSSQ98mw158@infradead.org>
- <CAHS8izM0=xc2UhUxhnF_BixuFs5VaDV9W1jbso1K+Rg=35NzeA@mail.gmail.com>
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="fagDC5Ws"
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 3F6F6240007;
+	Mon,  6 May 2024 16:16:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1715012203;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=MtkU8ulaRyANNJ3DFHdYTh05NSfYT6+fSTvcm7oypUc=;
+	b=fagDC5WstxKQcQyaYTwBxF+B4XZucKnX7q9dNBd0wAs5ateSsv6u92K6xo7SO8TAaINCwj
+	Mvgi5WAqHsIC3fBNNAasM6ADObFB8VoYTiKAzfuOdURLuXYclQZamcxPUiCZ9cIumE7/oc
+	yD/MT8osUo6D4PMfGsz+alSm+8BjxoArh2zP6EDiFPSl/6U46V64kzMUpBZjnOT+fcv1KE
+	qHJQunosezXuLcDg6clTmAcs9wf9W10+nQrVguMruybp62IvPJD6FwoAJ+gSwhZ/EJfHW3
+	jEjYarx9Wx6BP6jq8CF1A6gqfhHBDx7kJxVeSu8KV6Y5vZ6g8hrgKPoYFQhGkg==
+From: Gregory CLEMENT <gregory.clement@bootlin.com>
+Date: Mon, 06 May 2024 18:16:10 +0200
+Subject: [PATCH 1/3] dt-bindings: mips: Add bindings for a new Mobileye SoC
+ EyeQ6H
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHS8izM0=xc2UhUxhnF_BixuFs5VaDV9W1jbso1K+Rg=35NzeA@mail.gmail.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20240506-eyeq6h-v1-1-f29b5269cc43@bootlin.com>
+References: <20240506-eyeq6h-v1-0-f29b5269cc43@bootlin.com>
+In-Reply-To: <20240506-eyeq6h-v1-0-f29b5269cc43@bootlin.com>
+To: Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>, 
+ =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>, 
+ Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
+ Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>, 
+ Conor Dooley <conor+dt@kernel.org>
+Cc: linux-mips@vger.kernel.org, devicetree@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, Tawfik Bayouk <tawfik.bayouk@mobileye.com>, 
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>, 
+ Alexandre Belloni <alexandre.belloni@bootlin.com>, 
+ Gregory CLEMENT <gregory.clement@bootlin.com>
+X-Mailer: b4 0.13.0
+X-Developer-Signature: v=1; a=openpgp-sha256; l=850;
+ i=gregory.clement@bootlin.com; h=from:subject:message-id;
+ bh=jNzjFHwuZOa0k+BeBhpH1REqmnBk4LeQdC8qn+eFxtA=;
+ b=owGbwMvMwCTIzSbRJ1JkfZXxtFoSQ5olU+Y529mWaZyGDU5ORx3+JwYG5sYkWy+Z2xgTq8U3f
+ fdu2YkdsSwMgkwMsmKKLBIrC86Il+t7bLNrvg4zh5UJZAgDF6cATCR0OsM8o1/ps5/tXfZjR83O
+ 4EwD1m3nlSffZJgftS05z/2/rcw939+rZr5YcPxW84HrAA==
+X-Developer-Key: i=gregory.clement@bootlin.com; a=openpgp;
+ fpr=18A970CC17772F48B63E83D70B06188E14723BD5
+X-GND-Sasl: gregory.clement@bootlin.com
 
-On Fri, May 03, 2024 at 01:10:44PM -0700, Mina Almasry wrote:
-> Is the concern still that folks may be able to hook proprietary stuff
-> into this like you mentioned before[1]?
+Add the yaml bindings for a new Mobileye SoC: EyeQ6H.
 
-That is on concern.  The other is that people will do stupid stuff
-even in tree if you give them enough rope, and they should not have
-that rope when the only sensible options are page/folio based kernel
-memory (incuding large/huge folios) and dmabuf.
+Signed-off-by: Gregory CLEMENT <gregory.clement@bootlin.com>
+---
+ Documentation/devicetree/bindings/mips/mobileye.yaml | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-> cp net/core/page_pool.c net/core/dmabuf_pool.c
-> 
-> and then modify it such that the net stack maintains 2 page_pools?
-> There are a lot of cons to that:
+diff --git a/Documentation/devicetree/bindings/mips/mobileye.yaml b/Documentation/devicetree/bindings/mips/mobileye.yaml
+index 831975f6b479..909ac9fe0b4b 100644
+--- a/Documentation/devicetree/bindings/mips/mobileye.yaml
++++ b/Documentation/devicetree/bindings/mips/mobileye.yaml
+@@ -26,6 +26,11 @@ properties:
+           - enum:
+               - mobileye,eyeq5-epm5
+           - const: mobileye,eyeq5
++      - description: Boards with Mobileye EyeQ6H SoC
++        items:
++          - enum:
++              - mobileye,eyeq6-epm6
++          - const: mobileye,eyeq6
+ 
+ additionalProperties: true
+ 
 
-No.  Just have branches for page based vs dmabuf in a few places.
+-- 
+2.43.0
 

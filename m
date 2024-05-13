@@ -1,220 +1,352 @@
-Received: from mail-qt1-f173.google.com (mail-qt1-f173.google.com [209.85.160.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from relay6-d.mail.gandi.net (relay6-d.mail.gandi.net [217.70.183.198])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8589E1DA20
-	for <linux-mips@vger.kernel.org>; Mon, 13 May 2024 15:25:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC0363D3B8;
+	Mon, 13 May 2024 18:34:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.198
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715613912; cv=none; b=k89feOt6UPkUWVpqIAQAUWAG12GxAtaQ986TBHOJfMxr+XOlg3fVfUxfpFvLKN0NqgL1kEigF5/BlYvUQS0DvKqdWxCIgBVKjHEriRK3KkeLylWahGe5sLiUPtHgPFn8LiTpGJlJyK0nIfVg4ZhNiqD0DOPTKou4rSFqDq56jXs=
+	t=1715625290; cv=none; b=P7MgV3/DQE0wKgxP7MD2FbzEmNHx4j61DbnE6murE2ZN6S3AshL+2wdvRjB7R/3B67QLq9l0ooGUb/ADci52nL8zd64vrHP6fXV8XfkOipsolyDYN32tp2vExrTrwooSU902sg8vwGS+ejGy+lXcV83X+o8UHfYaA0L18w7JkOc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715613912; c=relaxed/simple;
-	bh=xkQyVbn3y8Qjph4w5WwsELvMsrL4ljBk/WMPhrSDG0E=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=SKSHh4BmeET7CyKn6BkThag55MCEXx7y5ogQnCYt8+6zVArQ39l6eedLQup+VkXu58RGwR2hkkuDN4K+dYTYxDdJqWIywzIPZe7zN9leTgNC6Dlq5xeYgpK63DTszj52iYxC77W/qsGw/JM97u+hOL1yI2ZtbfP40DkYgLetX+E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=dd66jtLq; arc=none smtp.client-ip=209.85.160.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=broadcom.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
+	s=arc-20240116; t=1715625290; c=relaxed/simple;
+	bh=lWp3qSP9yeWeEVRrF736edtP5bAdugOS1ziOGLFtlso=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
+	 In-Reply-To:To:Cc; b=DWNXQbLmEbTw0HwtDFeB/gbqzjgk6iodVMj4o+6ajQ45rbPBDPfXEaA/NQ1DvTbZU9ykt4ArucuzLohM1eB+8XFSSN9oY53Dw8/Soz9kl38zY8ItMWwGTPN4nwyGzrBNgNZqx/JAkfPdPEN8balT38y1Ngi7Kzni5wnTKZKNJ2Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=bUMjOVnS; arc=none smtp.client-ip=217.70.183.198
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="dd66jtLq"
-Received: by mail-qt1-f173.google.com with SMTP id d75a77b69052e-43df23e034cso38060931cf.0
-        for <linux-mips@vger.kernel.org>; Mon, 13 May 2024 08:25:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1715613909; x=1716218709; darn=vger.kernel.org;
-        h=in-reply-to:autocrypt:from:references:cc:to:subject:user-agent
-         :mime-version:date:message-id:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=n0k4AtaXh8u2uX9mA728AqzCOp2Qz47UUg441ejxFB0=;
-        b=dd66jtLq7ZviphqE6KOLsEeBIMizTvJ1Lgq710EMmhAFdetEwnDi2CjVeOhUwFlo5A
-         akyvhr7ipCWjkfqQp48FHS8Zl2zzB6fkWnsar+57meVaCJdL4hswYeIvZJx7Mcjd0TBC
-         y0uAyMtrDpEOye9ujgT1e1oZpa3lXrFPq8Y8Q=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1715613909; x=1716218709;
-        h=in-reply-to:autocrypt:from:references:cc:to:subject:user-agent
-         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=n0k4AtaXh8u2uX9mA728AqzCOp2Qz47UUg441ejxFB0=;
-        b=A/bPdeWvnBHuHuW5tjznAmsSnXC3KgWGeWh1BxGpPrryfxPaeC6HbhCnd38RZxDXxB
-         fLm2QSJK3srs38lJYParNr+B6P2GeMPos68I5wNv+x8CxjSnKSRuZEYrTSijLiyUjv4O
-         crFnqah1jb29/tRKD8nAcODe56i+f1cMy2GdbcroOh0ihGH567iOF2qRKsr++ZFdODwy
-         LSDGvw9fFyo+R23ZhcyP4ppglZPV2yDwTfSSKKO/7GDOmImC5cRI6PS4K0ymY5u39imp
-         eMlHvhy9YwWa9q23ZygYsIHEHcWtg7W6lIcyF0NUi8BojYaeuFafNawMsO7Nc/tKZJqO
-         nOog==
-X-Forwarded-Encrypted: i=1; AJvYcCUX2t6yn4TSzau4dVnMqehCdOZafbrWehtoAeVi8mtoRMCdYvvRszGGJPMyd16GFfi6l7X5UbrOKH7Egu/qy/ezPx0bogUpjIlG0A==
-X-Gm-Message-State: AOJu0YwA6tKfhlptaMeHtrWWJ7XEv/61JIhL90jKc1wA/lMvk7vBNcvg
-	qVSDrIPVodO79twMfz60dabDTQm9mDPuSNj+Q0/i6EDgmUdNxWoN7W/rOPyJtQ==
-X-Google-Smtp-Source: AGHT+IESmcSy5V+HwdZ3G2EB2EsQiokSYuvLf6AGlL3ugaNzQxvquc2TEN6JAzOJ3/l/BjVs4oKzZg==
-X-Received: by 2002:a05:622a:394:b0:43a:fbe3:c2ea with SMTP id d75a77b69052e-43dec297879mr137242971cf.21.1715613909398;
-        Mon, 13 May 2024 08:25:09 -0700 (PDT)
-Received: from [192.168.1.3] (ip68-4-215-93.oc.oc.cox.net. [68.4.215.93])
-        by smtp.gmail.com with ESMTPSA id d75a77b69052e-43df8308580sm53827241cf.66.2024.05.13.08.25.05
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 13 May 2024 08:25:07 -0700 (PDT)
-Message-ID: <2ca65ebd-7b85-4bc2-8137-692991102774@broadcom.com>
-Date: Mon, 13 May 2024 08:25:03 -0700
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="bUMjOVnS"
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 42FEAC0002;
+	Mon, 13 May 2024 18:34:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1715625284;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=15TaJhhVE39xtbVy6DL0G5qguHdHmLrumCWfn8eUaIA=;
+	b=bUMjOVnSosl1+o2wPXU8AfizTsnbHdUN1HOosaMjl9o2/DlesrG03+rvJ2ykpRkqnaCd2h
+	pi3utVbne0op7m5sITWVSuv5QGHX9VpmQfcSCGvjNzt3HAvYOpkoRPC99z+4zhaIk4xz/t
+	WuV8LjVEt/vaLXhXUswcOqTEo6GRYKRLuQV+McTssWvojroqffniqX//R99YUzHOYjK5sa
+	Ic1T+6mKcz7l2PaiZDsaY3r28GbLvWBBMCdsdEPXGKbcfAF8FG9NK8QjgacCNGMRgOJyn1
+	QBK4/tEq/yyevEvjBoxh2lUkgOo0LOF4F/u8ce3zHlAOiVnP93Np88oaiFFxSA==
+From: Gregory CLEMENT <gregory.clement@bootlin.com>
+Date: Mon, 13 May 2024 20:34:17 +0200
+Subject: [PATCH v2 3/3] MIPS: mobileye: Add EyeQ6H support
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 2/4] dt-bindings: mips: brcm: Document
- brcm,bmips-cbr-reg property
-To: Christian Marangi <ansuelsmth@gmail.com>,
- Hauke Mehrtens <hauke@hauke-m.de>, =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?=
- <zajec5@gmail.com>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
- Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>,
- Broadcom internal kernel review list
- <bcm-kernel-feedback-list@broadcom.com>, linux-mips@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc: Conor Dooley <conor.dooley@microchip.com>
-References: <20240511130349.23409-1-ansuelsmth@gmail.com>
- <20240511130349.23409-3-ansuelsmth@gmail.com>
-From: Florian Fainelli <florian.fainelli@broadcom.com>
-Autocrypt: addr=florian.fainelli@broadcom.com; keydata=
- xsBNBFPAG8ABCAC3EO02urEwipgbUNJ1r6oI2Vr/+uE389lSEShN2PmL3MVnzhViSAtrYxeT
- M0Txqn1tOWoIc4QUl6Ggqf5KP6FoRkCrgMMTnUAINsINYXK+3OLe7HjP10h2jDRX4Ajs4Ghs
- JrZOBru6rH0YrgAhr6O5gG7NE1jhly+EsOa2MpwOiXO4DE/YKZGuVe6Bh87WqmILs9KvnNrQ
- PcycQnYKTVpqE95d4M824M5cuRB6D1GrYovCsjA9uxo22kPdOoQRAu5gBBn3AdtALFyQj9DQ
- KQuc39/i/Kt6XLZ/RsBc6qLs+p+JnEuPJngTSfWvzGjpx0nkwCMi4yBb+xk7Hki4kEslABEB
- AAHNMEZsb3JpYW4gRmFpbmVsbGkgPGZsb3JpYW4uZmFpbmVsbGlAYnJvYWRjb20uY29tPsLB
- IQQQAQgAywUCZWl41AUJI+Jo+hcKAAG/SMv+fS3xUQWa0NryPuoRGjsA3SAUAAAAAAAWAAFr
- ZXktdXNhZ2UtbWFza0BwZ3AuY29tjDAUgAAAAAAgAAdwcmVmZXJyZWQtZW1haWwtZW5jb2Rp
- bmdAcGdwLmNvbXBncG1pbWUICwkIBwMCAQoFF4AAAAAZGGxkYXA6Ly9rZXlzLmJyb2FkY29t
- Lm5ldAUbAwAAAAMWAgEFHgEAAAAEFQgJChYhBNXZKpfnkVze1+R8aIExtcQpvGagAAoJEIEx
- tcQpvGagWPEH/2l0DNr9QkTwJUxOoP9wgHfmVhqc0ZlDsBFv91I3BbhGKI5UATbipKNqG13Z
- TsBrJHcrnCqnTRS+8n9/myOF0ng2A4YT0EJnayzHugXm+hrkO5O9UEPJ8a+0553VqyoFhHqA
- zjxj8fUu1px5cbb4R9G4UAySqyeLLeqnYLCKb4+GklGSBGsLMYvLmIDNYlkhMdnnzsSUAS61
- WJYW6jjnzMwuKJ0ZHv7xZvSHyhIsFRiYiEs44kiYjbUUMcXor/uLEuTIazGrE3MahuGdjpT2
- IOjoMiTsbMc0yfhHp6G/2E769oDXMVxCCbMVpA+LUtVIQEA+8Zr6mX0Yk4nDS7OiBlvOwE0E
- U8AbwQEIAKxr71oqe+0+MYCc7WafWEcpQHFUwvYLcdBoOnmJPxDwDRpvU5LhqSPvk/yJdh9k
- 4xUDQu3rm1qIW2I9Puk5n/Jz/lZsqGw8T13DKyu8eMcvaA/irm9lX9El27DPHy/0qsxmxVmU
- pu9y9S+BmaMb2CM9IuyxMWEl9ruWFS2jAWh/R8CrdnL6+zLk60R7XGzmSJqF09vYNlJ6Bdbs
- MWDXkYWWP5Ub1ZJGNJQ4qT7g8IN0qXxzLQsmz6tbgLMEHYBGx80bBF8AkdThd6SLhreCN7Uh
- IR/5NXGqotAZao2xlDpJLuOMQtoH9WVNuuxQQZHVd8if+yp6yRJ5DAmIUt5CCPcAEQEAAcLB
- gQQYAQIBKwUCU8AbwgUbDAAAAMBdIAQZAQgABgUCU8AbwQAKCRCTYAaomC8PVQ0VCACWk3n+
- obFABEp5Rg6Qvspi9kWXcwCcfZV41OIYWhXMoc57ssjCand5noZi8bKg0bxw4qsg+9cNgZ3P
- N/DFWcNKcAT3Z2/4fTnJqdJS//YcEhlr8uGs+ZWFcqAPbteFCM4dGDRruo69IrHfyyQGx16s
- CcFlrN8vD066RKevFepb/ml7eYEdN5SRALyEdQMKeCSf3mectdoECEqdF/MWpfWIYQ1hEfdm
- C2Kztm+h3Nkt9ZQLqc3wsPJZmbD9T0c9Rphfypgw/SfTf2/CHoYVkKqwUIzI59itl5Lze+R5
- wDByhWHx2Ud2R7SudmT9XK1e0x7W7a5z11Q6vrzuED5nQvkhAAoJEIExtcQpvGagugcIAJd5
- EYe6KM6Y6RvI6TvHp+QgbU5dxvjqSiSvam0Ms3QrLidCtantcGT2Wz/2PlbZqkoJxMQc40rb
- fXa4xQSvJYj0GWpadrDJUvUu3LEsunDCxdWrmbmwGRKqZraV2oG7YEddmDqOe0Xm/NxeSobc
- MIlnaE6V0U8f5zNHB7Y46yJjjYT/Ds1TJo3pvwevDWPvv6rdBeV07D9s43frUS6xYd1uFxHC
- 7dZYWJjZmyUf5evr1W1gCgwLXG0PEi9n3qmz1lelQ8lSocmvxBKtMbX/OKhAfuP/iIwnTsww
- 95A2SaPiQZA51NywV8OFgsN0ITl2PlZ4Tp9hHERDe6nQCsNI/Us=
-In-Reply-To: <20240511130349.23409-3-ansuelsmth@gmail.com>
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
-	boundary="000000000000aa0a910618577d07"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Message-Id: <20240513-eyeq6h-v2-3-ae8c1974b52b@bootlin.com>
+References: <20240513-eyeq6h-v2-0-ae8c1974b52b@bootlin.com>
+In-Reply-To: <20240513-eyeq6h-v2-0-ae8c1974b52b@bootlin.com>
+To: Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>, 
+ =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>, 
+ Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
+ Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>, 
+ Conor Dooley <conor+dt@kernel.org>
+Cc: linux-mips@vger.kernel.org, devicetree@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, Tawfik Bayouk <tawfik.bayouk@mobileye.com>, 
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>, 
+ Alexandre Belloni <alexandre.belloni@bootlin.com>, 
+ Gregory CLEMENT <gregory.clement@bootlin.com>, 
+ Jiaxun Yang <jiaxun.yang@flygoat.com>
+X-Mailer: b4 0.13.0
+X-Developer-Signature: v=1; a=openpgp-sha256; l=8811;
+ i=gregory.clement@bootlin.com; h=from:subject:message-id;
+ bh=lWp3qSP9yeWeEVRrF736edtP5bAdugOS1ziOGLFtlso=;
+ b=owGbwMvMwCTIzSbRJ1JkfZXxtFoSQ5pTrL3TovnHLdXWOZ83kGLcIRQVNuNV9+zUt6/91Hl23
+ 4x1TdnREcvCIMjEICumyCKxsuCMeLm+xza75uswc1iZQIYwcHEKwEQ2pTHM9z3U6azbfzGTyevJ
+ 24leCgU1QtmZDPMjktdvNNS+vuLxtKmLHzv95w+aKd0OAA==
+X-Developer-Key: i=gregory.clement@bootlin.com; a=openpgp;
+ fpr=18A970CC17772F48B63E83D70B06188E14723BD5
+X-GND-Sasl: gregory.clement@bootlin.com
 
---000000000000aa0a910618577d07
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+EyeQ6H (or “High”) is an other SoC from Mobileye still based on the
+MIPS I6500 architecture as the EyeQ5. The 2 clusters of this SoC
+contains 4 cores which are capable of running 4 threads. Besides this,
+it features multiple controllers such as the classic UART, high speed
+I2C, SPI, as well as CAN-FD, PCIe Gen4, Octal/Quad SPI Flash
+interface, Gigabit Ethernet, MIPI CSI-2, MIPI DSI, and eMMC 5.1. It
+also includes a Hardware Security Module, Functional Safety Hardware,
+and video encoders and more.
 
+This commit provides the infrastructure to build a kernel running on
+EyeQ6H SoC. For now the support is limited and only one CPU core is
+running.
 
+Reviewed-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+Signed-off-by: Gregory CLEMENT <gregory.clement@bootlin.com>
+---
+ arch/mips/Kbuild.platforms           |   2 +-
+ arch/mips/Kconfig                    |   7 ++-
+ arch/mips/boot/dts/Makefile          |   2 +-
+ arch/mips/boot/dts/mobileye/Makefile |   1 +
+ arch/mips/configs/eyeq5_defconfig    |   1 +
+ arch/mips/configs/eyeq6_defconfig    | 111 +++++++++++++++++++++++++++++++++++
+ arch/mips/mobileye/Kconfig           |  26 ++++++++
+ arch/mips/mobileye/Platform          |   1 +
+ 8 files changed, 146 insertions(+), 5 deletions(-)
 
-On 5/11/2024 6:03 AM, Christian Marangi wrote:
-> Document brcm,bmips-cbr-reg property.
-> 
-> Some SoC suffer from a BUG where CBR(Core Base Register)
-> address might be badly or never initialized by the Bootloader
-> or reading it from co-processor registers, if the system boots
-> from secondary CPU, results in invalid address.
-> 
-> The CBR address is always the same on the SoC.
-> 
-> Usage of this property is to give an address also in these broken
-> configuration/bootloader.
-> 
-> Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
-> Acked-by: Conor Dooley <conor.dooley@microchip.com>
+diff --git a/arch/mips/Kbuild.platforms b/arch/mips/Kbuild.platforms
+index 5c145b67d3bf..bca37ddf974b 100644
+--- a/arch/mips/Kbuild.platforms
++++ b/arch/mips/Kbuild.platforms
+@@ -8,6 +8,7 @@ platform-$(CONFIG_BCM47XX)		+= bcm47xx/
+ platform-$(CONFIG_BCM63XX)		+= bcm63xx/
+ platform-$(CONFIG_BMIPS_GENERIC)	+= bmips/
+ platform-$(CONFIG_CAVIUM_OCTEON_SOC)	+= cavium-octeon/
++platform-$(CONFIG_EYEQ)			+= mobileye/
+ platform-$(CONFIG_MIPS_COBALT)		+= cobalt/
+ platform-$(CONFIG_MACH_DECSTATION)	+= dec/
+ platform-$(CONFIG_MIPS_GENERIC)		+= generic/
+@@ -17,7 +18,6 @@ platform-$(CONFIG_MACH_LOONGSON2EF)	+= loongson2ef/
+ platform-$(CONFIG_MACH_LOONGSON32)	+= loongson32/
+ platform-$(CONFIG_MACH_LOONGSON64)	+= loongson64/
+ platform-$(CONFIG_MIPS_MALTA)		+= mti-malta/
+-platform-$(CONFIG_MACH_EYEQ5)		+= mobileye/
+ platform-$(CONFIG_MACH_NINTENDO64)	+= n64/
+ platform-$(CONFIG_PIC32MZDA)		+= pic32/
+ platform-$(CONFIG_RALINK)		+= ralink/
+diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
+index 516dc7022bd7..ac330b135346 100644
+--- a/arch/mips/Kconfig
++++ b/arch/mips/Kconfig
+@@ -575,8 +575,8 @@ config MACH_PIC32
+ 	  Microchip PIC32 is a family of general-purpose 32 bit MIPS core
+ 	  microcontrollers.
+ 
+-config MACH_EYEQ5
+-	bool "Mobileye EyeQ5 SoC"
++config EYEQ
++	bool "Mobileye EyeQ SoC"
+ 	select MACH_GENERIC_CORE
+ 	select ARM_AMBA
+ 	select PHYSICAL_START_BOOL
+@@ -615,7 +615,7 @@ config MACH_EYEQ5
+ 	select USB_UHCI_BIG_ENDIAN_MMIO if CPU_BIG_ENDIAN
+ 	select USE_OF
+ 	help
+-	  Select this to build a kernel supporting EyeQ5 SoC from Mobileye.
++	  Select this to build a kernel supporting EyeQ SoC from Mobileye.
+ 
+ 	bool
+ 
+@@ -1021,6 +1021,7 @@ source "arch/mips/generic/Kconfig"
+ source "arch/mips/ingenic/Kconfig"
+ source "arch/mips/jazz/Kconfig"
+ source "arch/mips/lantiq/Kconfig"
++source "arch/mips/mobileye/Kconfig"
+ source "arch/mips/pic32/Kconfig"
+ source "arch/mips/ralink/Kconfig"
+ source "arch/mips/sgi-ip27/Kconfig"
+diff --git a/arch/mips/boot/dts/Makefile b/arch/mips/boot/dts/Makefile
+index efff87cb33a9..e2476b12bb0c 100644
+--- a/arch/mips/boot/dts/Makefile
++++ b/arch/mips/boot/dts/Makefile
+@@ -1,6 +1,7 @@
+ # SPDX-License-Identifier: GPL-2.0
+ subdir-$(CONFIG_BMIPS_GENERIC)		+= brcm
+ subdir-$(CONFIG_CAVIUM_OCTEON_SOC)	+= cavium-octeon
++subdir-$(CONFIG_EYEQ)			+= mobileye
+ subdir-$(CONFIG_FIT_IMAGE_FDT_MARDUK)   += img
+ subdir-$(CONFIG_FIT_IMAGE_FDT_BOSTON)	+= img
+ subdir-$(CONFIG_MACH_INGENIC)		+= ingenic
+@@ -8,7 +9,6 @@ subdir-$(CONFIG_LANTIQ)			+= lantiq
+ subdir-$(CONFIG_MACH_LOONGSON64)	+= loongson
+ subdir-$(CONFIG_SOC_VCOREIII)		+= mscc
+ subdir-$(CONFIG_MIPS_MALTA)		+= mti
+-subdir-$(CONFIG_MACH_EYEQ5)		+= mobileye
+ subdir-$(CONFIG_LEGACY_BOARD_SEAD3)	+= mti
+ subdir-$(CONFIG_FIT_IMAGE_FDT_NI169445)	+= ni
+ subdir-$(CONFIG_MACH_PIC32)		+= pic32
+diff --git a/arch/mips/boot/dts/mobileye/Makefile b/arch/mips/boot/dts/mobileye/Makefile
+index 01c01c3aad81..7cc89968aaac 100644
+--- a/arch/mips/boot/dts/mobileye/Makefile
++++ b/arch/mips/boot/dts/mobileye/Makefile
+@@ -2,3 +2,4 @@
+ # Copyright 2023 Mobileye Vision Technologies Ltd.
+ 
+ dtb-$(CONFIG_MACH_EYEQ5)		+= eyeq5-epm5.dtb
++dtb-$(CONFIG_MACH_EYEQ6H)		+= eyeq6h-epm6.dtb
+diff --git a/arch/mips/configs/eyeq5_defconfig b/arch/mips/configs/eyeq5_defconfig
+index c35c29a4d479..84e26ef2e3a0 100644
+--- a/arch/mips/configs/eyeq5_defconfig
++++ b/arch/mips/configs/eyeq5_defconfig
+@@ -19,6 +19,7 @@ CONFIG_USER_NS=y
+ CONFIG_SCHED_AUTOGROUP=y
+ CONFIG_BLK_DEV_INITRD=y
+ CONFIG_EXPERT=y
++CONFIG_EYEQ=y
+ CONFIG_MACH_EYEQ5=y
+ CONFIG_FIT_IMAGE_FDT_EPM5=y
+ CONFIG_PAGE_SIZE_16KB=y
+diff --git a/arch/mips/configs/eyeq6_defconfig b/arch/mips/configs/eyeq6_defconfig
+new file mode 100644
+index 000000000000..6597d5e88b33
+--- /dev/null
++++ b/arch/mips/configs/eyeq6_defconfig
+@@ -0,0 +1,111 @@
++CONFIG_SYSVIPC=y
++CONFIG_NO_HZ_IDLE=y
++CONFIG_HIGH_RES_TIMERS=y
++CONFIG_BPF_SYSCALL=y
++CONFIG_TASKSTATS=y
++CONFIG_IKCONFIG=y
++CONFIG_IKCONFIG_PROC=y
++CONFIG_MEMCG=y
++CONFIG_BLK_CGROUP=y
++CONFIG_CFS_BANDWIDTH=y
++CONFIG_RT_GROUP_SCHED=y
++CONFIG_CGROUP_PIDS=y
++CONFIG_CGROUP_FREEZER=y
++CONFIG_CPUSETS=y
++CONFIG_CGROUP_DEVICE=y
++CONFIG_CGROUP_CPUACCT=y
++CONFIG_NAMESPACES=y
++CONFIG_USER_NS=y
++CONFIG_SCHED_AUTOGROUP=y
++CONFIG_BLK_DEV_INITRD=y
++CONFIG_EXPERT=y
++CONFIG_EYEQ=y
++CONFIG_MACH_EYEQ6H=y
++CONFIG_MIPS_CPS=y
++CONFIG_CPU_HAS_MSA=y
++CONFIG_NR_CPUS=16
++CONFIG_MIPS_RAW_APPENDED_DTB=y
++CONFIG_JUMP_LABEL=y
++CONFIG_PAGE_SIZE_16KB=y
++CONFIG_COMPAT_32BIT_TIME=y
++CONFIG_MODULES=y
++CONFIG_MODULE_UNLOAD=y
++CONFIG_TRIM_UNUSED_KSYMS=y
++# CONFIG_COMPAT_BRK is not set
++CONFIG_SPARSEMEM_MANUAL=y
++CONFIG_USERFAULTFD=y
++CONFIG_NET=y
++CONFIG_PACKET=y
++CONFIG_UNIX=y
++CONFIG_NET_KEY=y
++CONFIG_INET=y
++CONFIG_IP_PNP=y
++CONFIG_IP_PNP_DHCP=y
++CONFIG_NETFILTER=y
++CONFIG_CAN=y
++CONFIG_PCI=y
++CONFIG_PCI_MSI=y
++CONFIG_PCI_DEBUG=y
++CONFIG_PCI_ENDPOINT=y
++CONFIG_DEVTMPFS=y
++CONFIG_DEVTMPFS_MOUNT=y
++CONFIG_CONNECTOR=y
++CONFIG_MTD=y
++CONFIG_MTD_UBI=y
++CONFIG_MTD_UBI_BLOCK=y
++CONFIG_SCSI=y
++CONFIG_NETDEVICES=y
++CONFIG_MACVLAN=y
++CONFIG_IPVLAN=y
++CONFIG_MACB=y
++CONFIG_MARVELL_PHY=y
++CONFIG_MICREL_PHY=y
++CONFIG_CAN_M_CAN=y
++CONFIG_SERIAL_AMBA_PL011=y
++CONFIG_SERIAL_AMBA_PL011_CONSOLE=y
++CONFIG_HW_RANDOM=y
++CONFIG_I2C=y
++CONFIG_I2C_CHARDEV=y
++# CONFIG_PTP_1588_CLOCK is not set
++CONFIG_PINCTRL=y
++CONFIG_PINCTRL_SINGLE=y
++CONFIG_MFD_SYSCON=y
++CONFIG_HID_A4TECH=y
++CONFIG_HID_BELKIN=y
++CONFIG_HID_CHERRY=y
++CONFIG_HID_CYPRESS=y
++CONFIG_HID_EZKEY=y
++CONFIG_HID_ITE=y
++CONFIG_HID_KENSINGTON=y
++CONFIG_HID_REDRAGON=y
++CONFIG_HID_MICROSOFT=y
++CONFIG_HID_MONTEREY=y
++CONFIG_MMC=y
++CONFIG_MMC_SDHCI=y
++# CONFIG_IOMMU_SUPPORT is not set
++CONFIG_RESET_CONTROLLER=y
++# CONFIG_NVMEM is not set
++CONFIG_EXT4_FS=y
++CONFIG_EXT4_FS_POSIX_ACL=y
++CONFIG_EXT4_FS_SECURITY=y
++CONFIG_FS_ENCRYPTION=y
++CONFIG_FUSE_FS=y
++CONFIG_CUSE=y
++CONFIG_MSDOS_FS=y
++CONFIG_VFAT_FS=y
++CONFIG_TMPFS=y
++CONFIG_TMPFS_POSIX_ACL=y
++CONFIG_UBIFS_FS=y
++CONFIG_NFS_FS=y
++CONFIG_NFS_V3_ACL=y
++CONFIG_NFS_V4=y
++CONFIG_NFS_V4_1=y
++CONFIG_NFS_V4_2=y
++CONFIG_ROOT_NFS=y
++CONFIG_CRYPTO_CRC32_MIPS=y
++CONFIG_FRAME_WARN=1024
++CONFIG_DEBUG_FS=y
++# CONFIG_RCU_TRACE is not set
++# CONFIG_FTRACE is not set
++CONFIG_CMDLINE_BOOL=y
++CONFIG_CMDLINE="earlycon"
+diff --git a/arch/mips/mobileye/Kconfig b/arch/mips/mobileye/Kconfig
+new file mode 100644
+index 000000000000..f9abb2d6e178
+--- /dev/null
++++ b/arch/mips/mobileye/Kconfig
+@@ -0,0 +1,26 @@
++# SPDX-License-Identifier: GPL-2.0
++if EYEQ
++
++choice
++	prompt "Mobileye EyeQ SoC selection"
++	default MACH_EYEQ5
++	help
++	  Select Mobileye EyeQ MIPS SoC type.
++
++	config MACH_EYEQ5
++		bool "Mobileye EyeQ5 SoC"
++
++	config MACH_EYEQ6H
++		bool "Mobileye EyeQ6H SoC"
++endchoice
++
++config FIT_IMAGE_FDT_EPM5
++	bool "Include FDT for Mobileye EyeQ5 development platforms"
++	depends on MACH_EYEQ5
++	default n
++	help
++	  Enable this to include the FDT for the EyeQ5 development platforms
++	  from Mobileye in the FIT kernel image.
++	  This requires u-boot on the platform.
++
++endif
+diff --git a/arch/mips/mobileye/Platform b/arch/mips/mobileye/Platform
+index c69f811dd13a..69f775bbbb1e 100644
+--- a/arch/mips/mobileye/Platform
++++ b/arch/mips/mobileye/Platform
+@@ -9,6 +9,7 @@
+ #
+ 
+ load-$(CONFIG_MACH_EYEQ5)	= 0xa800000808000000
++load-$(CONFIG_MACH_EYEQ6H)	= 0xa800000100800000
+ all-$(CONFIG_MACH_EYEQ5)	+= vmlinux.gz.itb
+ 
+ its-y					:= vmlinux.its.S
 
-Acked-by: Florian Fainelli <florian.fainelli@broadcom.com>
 -- 
-Florian
+2.43.0
 
---000000000000aa0a910618577d07
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
-
-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
-riBJ/K1AFUjRAjFhGV64l++td7dkmnq/X8ET75ti+w1s4FRpFqkD2m7pg5NxdsZphYIXAgMBAAGj
-QjBAMA4GA1UdDwEB/wQEAwIBBjAPBgNVHRMBAf8EBTADAQH/MB0GA1UdDgQWBBSP8Et/qC5FJK5N
-UPpjmove4t0bvDANBgkqhkiG9w0BAQsFAAOCAQEAS0DbwFCq/sgM7/eWVEVJu5YACUGssxOGhigH
-M8pr5nS5ugAtrqQK0/Xx8Q+Kv3NnSoPHRHt44K9ubG8DKY4zOUXDjuS5V2yq/BKW7FPGLeQkbLmU
-Y/vcU2hnVj6DuM81IcPJaP7O2sJTqsyQiunwXUaMld16WCgaLx3ezQA3QY/tRG3XUyiXfvNnBB4V
-14qWtNPeTCekTBtzc3b0F5nCH3oO4y0IrQocLP88q1UOD5F+NuvDV0m+4S4tfGCLw0FREyOdzvcy
-a5QBqJnnLDMfOjsl0oZAzjsshnjJYS8Uuu7bVW/fhO4FCU29KNhyztNiUGUe65KXgzHZs7XKR1g/
-XzCCBVgwggRAoAMCAQICDBP8P9hKRVySg3Qv5DANBgkqhkiG9w0BAQsFADBbMQswCQYDVQQGEwJC
-RTEZMBcGA1UEChMQR2xvYmFsU2lnbiBudi1zYTExMC8GA1UEAxMoR2xvYmFsU2lnbiBHQ0MgUjMg
-UGVyc29uYWxTaWduIDIgQ0EgMjAyMDAeFw0yMjA5MTAxMjE4MTFaFw0yNTA5MTAxMjE4MTFaMIGW
-MQswCQYDVQQGEwJJTjESMBAGA1UECBMJS2FybmF0YWthMRIwEAYDVQQHEwlCYW5nYWxvcmUxFjAU
-BgNVBAoTDUJyb2FkY29tIEluYy4xGTAXBgNVBAMTEEZsb3JpYW4gRmFpbmVsbGkxLDAqBgkqhkiG
-9w0BCQEWHWZsb3JpYW4uZmFpbmVsbGlAYnJvYWRjb20uY29tMIIBIjANBgkqhkiG9w0BAQEFAAOC
-AQ8AMIIBCgKCAQEA+oi3jMmHltY4LMUy8Up5+1zjd1iSgUBXhwCJLj1GJQF+GwP8InemBbk5rjlC
-UwbQDeIlOfb8xGqHoQFGSW8p9V1XUw+cthISLkycex0AJ09ufePshLZygRLREU0H4ecNPMejxCte
-KdtB4COST4uhBkUCo9BSy1gkl8DJ8j/BQ1KNUx6oYe0CntRag+EnHv9TM9BeXBBLfmMRnWNhvOSk
-nSmRX0J3d9/G2A3FIC6WY2XnLW7eAZCQPa1Tz3n2B5BGOxwqhwKLGLNu2SRCPHwOdD6e0drURF7/
-Vax85/EqkVnFNlfxtZhS0ugx5gn2pta7bTdBm1IG4TX+A3B1G57rVwIDAQABo4IB3jCCAdowDgYD
-VR0PAQH/BAQDAgWgMIGjBggrBgEFBQcBAQSBljCBkzBOBggrBgEFBQcwAoZCaHR0cDovL3NlY3Vy
-ZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAuY3J0MEEG
-CCsGAQUFBzABhjVodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9nc2djY3IzcGVyc29uYWxzaWdu
-MmNhMjAyMDBNBgNVHSAERjBEMEIGCisGAQQBoDIBKAowNDAyBggrBgEFBQcCARYmaHR0cHM6Ly93
-d3cuZ2xvYmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wCQYDVR0TBAIwADBJBgNVHR8EQjBAMD6gPKA6
-hjhodHRwOi8vY3JsLmdsb2JhbHNpZ24uY29tL2dzZ2NjcjNwZXJzb25hbHNpZ24yY2EyMDIwLmNy
-bDAoBgNVHREEITAfgR1mbG9yaWFuLmZhaW5lbGxpQGJyb2FkY29tLmNvbTATBgNVHSUEDDAKBggr
-BgEFBQcDBDAfBgNVHSMEGDAWgBSWM9HmWBdbNHWKgVZk1b5I3qGPzzAdBgNVHQ4EFgQUUwwfJ6/F
-KL0fRdVROal/Lp4lAF0wDQYJKoZIhvcNAQELBQADggEBAKBgfteDc1mChZjKBY4xAplC6uXGyBrZ
-kNGap1mHJ+JngGzZCz+dDiHRQKGpXLxkHX0BvEDZLW6LGOJ83ImrW38YMOo3ZYnCYNHA9qDOakiw
-2s1RH00JOkO5SkYdwCHj4DB9B7KEnLatJtD8MBorvt+QxTuSh4ze96Jz3kEIoHMvwGFkgObWblsc
-3/YcLBmCgaWpZ3Ksev1vJPr5n8riG3/N4on8gO5qinmmr9Y7vGeuf5dmZrYMbnb+yCBalkUmZQwY
-NxADYvcRBA0ySL6sZpj8BIIhWiXiuusuBmt2Mak2eEv0xDbovE6Z6hYyl/ZnRadbgK/ClgbY3w+O
-AfUXEZ0xggJtMIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52
-LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgwT
-/D/YSkVckoN0L+QwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIGKXLJdNd4ci37f7
-d9I+xdpKWQc9ZzmoogJvFqV+uYGuMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcN
-AQkFMQ8XDTI0MDUxMzE1MjUwOVowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZI
-AWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEH
-MAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQDfH9LAaKehk+csexDqY3hWl8eu+zOX+9oA
-ZJh3r6HlX/2fXtopw6YSbY4G1UPeYumhKjMnS95j6mbDPv9lRaCcvNSHqYkv121/MkIUtq/DGUoK
-aCnENngkrRQ/DGU5Mttfrt5Zy+vW98WyST+yW24D7QfDp5OFajDWFWGbruEZSkAS3m1ntPpBHJ/d
-9iXFigMnR+vWTjlHNjWlfCUnbgIke/sH3VsHaZ35K6HGE1ozqGD2Ln37wInsOEohCwzpI3lBWvfZ
-d1klZbTjDC5Pso24pqWb6Ua11+R3m9PoG5UjL+AjWlr5a6nXfJZUc1uPjrHn4JGHMOsyyWSoSc6K
-cv7i
---000000000000aa0a910618577d07--

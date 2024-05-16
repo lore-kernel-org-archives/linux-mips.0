@@ -1,113 +1,90 @@
-Received: from m16.mail.126.com (m16.mail.126.com [117.135.210.9])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 60461335B5;
-	Thu, 16 May 2024 12:48:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=117.135.210.9
+Received: from angie.orcam.me.uk (angie.orcam.me.uk [78.133.224.34])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 672BA1EEE0;
+	Thu, 16 May 2024 22:45:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.133.224.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715863694; cv=none; b=Crxnrm/X45q/tKYWwLJe/K8ejO7W3r4WjRtt0ZTYqLooti0w8omTF5qcalnIzvW1qwHBbKsIIFzO3J9o+2GNY81jey5Xdl0vEy3tsY+9JNu4Tdf6jwEPBD/HJ8C7zU9qX3N0QOvuZB/SwnAJevc6QkhggPW0oWdYJDw7KbLxJGw=
+	t=1715899505; cv=none; b=bxUBIL7Y653Kss1BCAg827kkrquY6PRiMUfnoefRT/kbRCnKd7kQPsG94C+N1MQG3mMpzXspAVDKUebKrMiD9SHOCU/LdXZeAx5L8/jFIuZZxerD3yZfajXzLXIfTdLQ9JQUO9NYNO2UC7HSkvi0C4VNU+WJxMFK/hS31Vd8VEI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715863694; c=relaxed/simple;
-	bh=gKmc573CtTeaZFruajBi8whb3uaaHPFcFemzrj7BzCw=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=dtbsVfchScDfUMjegs5etFCLLrOUAoOutkEaNzqQE9mRzMxcjKOMTDJMXo4Cqo6wWuOUefVC49cAFmTrscppdVoiUsWV5bNzSuKPI3QkF2KieowoC+L1O8BLodhZGTdNdi1OJNWAe0ghIUv/78tWDFQqpteTEUEKgnnwlt2iEsQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=126.com; spf=pass smtp.mailfrom=126.com; dkim=pass (1024-bit key) header.d=126.com header.i=@126.com header.b=OZ6a9/Sh; arc=none smtp.client-ip=117.135.210.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=126.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=126.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=126.com header.i=@126.com header.b="OZ6a9/Sh"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=126.com;
-	s=s110527; h=From:Subject:Date:Message-Id:MIME-Version:
-	Content-Type; bh=p5ICnfKj+P66UxcPsMwgRbXDkcNOihM/16tMz/EFdUc=;
-	b=OZ6a9/Sh+KMQq8I6Jn0Ok1zxjwIg2hZIKF821g6G7A1p3E2wtTShxDNb5xr1/1
-	TkOVoEMrG1csRt/95ugwzIlKX9M4RYve4sY2/4tz6YrjARue7GN0o3F7DFjD4Ti+
-	rsGp4gVf40T98458RHO5XTiT9+1G2akFPRs71BHMzQMWI=
-Received: from localhost.localdomain (unknown [116.128.244.171])
-	by gzga-smtp-mta-g1-4 (Coremail) with SMTP id _____wDHD+tp9UVmXt_9Bw--.21873S5;
-	Thu, 16 May 2024 20:01:57 +0800 (CST)
-From: Genjian <zhanggenjian@126.com>
-To: tsbogend@alpha.franken.de,
-	chenhuacai@kernel.org,
-	jiaxun.yang@flygoat.com,
-	ricardo@marliere.net
-Cc: linux-mips@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Genjian Zhang <zhanggenjian@kylinos.cn>,
-	k2ci <kernel-bot@kylinos.cn>
-Subject: [PATCH 2/3] MIPS: sgi-ip22: Add prototypes for several functions to header
-Date: Thu, 16 May 2024 19:59:05 +0800
-Message-Id: <20240516115906.1224164-2-zhanggenjian@126.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20240516115906.1224164-1-zhanggenjian@126.com>
-References: <20240516115906.1224164-1-zhanggenjian@126.com>
+	s=arc-20240116; t=1715899505; c=relaxed/simple;
+	bh=cKglyS+9H62XEHeJRO+8UM6DLraq8qZuLx6o1DzNa7s=;
+	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=lySDRmRADNnSoVePqw9RKT0R/RZOmrSKkJMWFqSXhoPIU3Q0HCE9DXp4gFV0id0uT7irQVlXf+KcOg34ZVG91FKBYsveByCDVHj0tJoe1WKFzff2RMJMfaT/Cc90GZQomGOZ3oRxZVfFC9F0p8bfL4Qx5QowtWBNdw5/8mxz5Dw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=orcam.me.uk; spf=none smtp.mailfrom=orcam.me.uk; arc=none smtp.client-ip=78.133.224.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=orcam.me.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=orcam.me.uk
+Received: by angie.orcam.me.uk (Postfix, from userid 500)
+	id D2C0A92009C; Fri, 17 May 2024 00:44:55 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+	by angie.orcam.me.uk (Postfix) with ESMTP id C713392009B;
+	Thu, 16 May 2024 23:44:55 +0100 (BST)
+Date: Thu, 16 May 2024 23:44:55 +0100 (BST)
+From: "Maciej W. Rozycki" <macro@orcam.me.uk>
+To: Jiaxun Yang <jiaxun.yang@flygoat.com>
+cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
+    Nathan Chancellor <nathan@kernel.org>, 
+    Nick Desaulniers <ndesaulniers@google.com>, 
+    Bill Wendling <morbo@google.com>, Justin Stitt <justinstitt@google.com>, 
+    "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>, 
+    linux-kernel@vger.kernel.org, llvm@lists.linux.dev, 
+    Guenter Roeck <linux@roeck-us.net>
+Subject: Re: [PATCH 6/8] MIPS: Limit MIPS_MT_SMP support by ISA reversion
+In-Reply-To: <4b8d0a71-f4b3-4c6b-b1e2-f67bb2908508@app.fastmail.com>
+Message-ID: <alpine.DEB.2.21.2405162315290.32322@angie.orcam.me.uk>
+References: <20240202-llvm-msym32-v1-0-52f0631057d6@flygoat.com> <20240202-llvm-msym32-v1-6-52f0631057d6@flygoat.com> <alpine.DEB.2.21.2405142235100.45291@angie.orcam.me.uk> <7fc82f8b-df9d-45f5-8e82-27eac7b4b0ab@app.fastmail.com>
+ <alpine.DEB.2.21.2405150850270.45291@angie.orcam.me.uk> <4b8d0a71-f4b3-4c6b-b1e2-f67bb2908508@app.fastmail.com>
+User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:_____wDHD+tp9UVmXt_9Bw--.21873S5
-X-Coremail-Antispam: 1Uf129KBjvJXoW7ZF4kXr18Zr4UZF43Cw1Dtrb_yoW8uw4fpF
-	WDA3Z7GrW2grWkXa4rAryUur13Z3Z8C3yFyr4Utr9FqF1xWry5JrnYqr98Xrn8WrWDZ3WF
-	gFyruanrKr4I93DanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jr9NsUUUUU=
-X-CM-SenderInfo: x2kd0wxjhqyxldq6ij2wof0z/1tbiHhTgfmV20wENggACsY
+Content-Type: text/plain; charset=US-ASCII
 
-From: Genjian Zhang <zhanggenjian@kylinos.cn>
+On Wed, 15 May 2024, Jiaxun Yang wrote:
 
-This fixes the following build warning:
+> >> There is nothing stopping us to run R1 kernel on R2 hardware, given that
+> >> those features are all detected at boot time. I understand MT was introduced
+> >> at 34K which is R2.
+> >
+> >  We can certainly choose to support R2 features at run time with R1 kernel 
+> > configurations, but it's not what the change description says (left quoted 
+> > above for reference).  And the MT ASE, indeed first implemented with the 
+> > 34K (for which I was a member of the product development team back at MIPS 
+> > UK), is not a part of the R1 ISA specification set.
+> >
+> Good to know!
+> 
+> The motivation behind this patch is to workaround some randconfig failures
+> that combines MT with early ISA release.
 
-arch/mips/sgi-ip22/ip22-time.c:119:18: error: no previous prototype for ‘indy_8254timer_irq’ [-Werror=missing-prototypes]
-arch/mips/sgi-ip22/ip22-berr.c:89:6: error: no previous prototype for ‘ip22_be_interrupt’ [-Werror=missing-prototypes]
-arch/mips/sgi-ip22/ip22-berr.c:113:13: error: no previous prototype for ‘ip22_be_init’ [-Werror=missing-prototypes]
+ I'd say it's an actual fix rather than just a workaround.
 
-Reported-by: k2ci <kernel-bot@kylinos.cn>
-Signed-off-by: Genjian Zhang <zhanggenjian@kylinos.cn>
----
- arch/mips/include/asm/sgi/ip22.h | 3 +++
- arch/mips/sgi-ip22/ip22-int.c    | 2 --
- arch/mips/sgi-ip22/ip22-setup.c  | 2 --
- 3 files changed, 3 insertions(+), 4 deletions(-)
+ Originally intention was with the MIPS port that eventually we would 
+support a generic kernel configuration, such as original x86 Linux has 
+always had or the Alpha port has at one point gained, where you can have 
+respectively an i486 (or previously even i386) or EV4 CPU kernel binary 
+that runs everywhere, even on the most recent hardware available.
 
-diff --git a/arch/mips/include/asm/sgi/ip22.h b/arch/mips/include/asm/sgi/ip22.h
-index 87ec9eaa04e3..57942afb5c86 100644
---- a/arch/mips/include/asm/sgi/ip22.h
-+++ b/arch/mips/include/asm/sgi/ip22.h
-@@ -76,5 +76,8 @@
- 
- extern unsigned short ip22_eeprom_read(unsigned int *ctrl, int reg);
- extern unsigned short ip22_nvram_read(int reg);
-+extern void ip22_be_interrupt(int irq);
-+extern void ip22_be_init(void) __init;
-+extern void indy_8254timer_irq(void);
- 
- #endif
-diff --git a/arch/mips/sgi-ip22/ip22-int.c b/arch/mips/sgi-ip22/ip22-int.c
-index 96798a4ab2de..11f8adc98cb5 100644
---- a/arch/mips/sgi-ip22/ip22-int.c
-+++ b/arch/mips/sgi-ip22/ip22-int.c
-@@ -165,8 +165,6 @@ static void __irq_entry indy_buserror_irq(void)
- #define SGI_INTERRUPTS	SGINT_LOCAL3
- #endif
- 
--extern void indy_8254timer_irq(void);
--
- /*
-  * IRQs on the INDY look basically (barring software IRQs which we don't use
-  * at all) like:
-diff --git a/arch/mips/sgi-ip22/ip22-setup.c b/arch/mips/sgi-ip22/ip22-setup.c
-index b69daa02401b..e06a818fe792 100644
---- a/arch/mips/sgi-ip22/ip22-setup.c
-+++ b/arch/mips/sgi-ip22/ip22-setup.c
-@@ -26,8 +26,6 @@
- #include <asm/sgi/hpc3.h>
- #include <asm/sgi/ip22.h>
- 
--extern void ip22_be_init(void) __init;
--
- void __init plat_mem_setup(void)
- {
- 	char *ctype;
--- 
-2.25.1
+ With the MIPS platform fragmentation it has proved too much of an effort
+for the engineering resources we've had available and consequently never 
+happened.  This is why we have retained numerous abstractions intended to 
+switch between handlers at boot time (and had even more in the past).
 
+ From R1 onwards the privileged architecture has become more uniform and
+therefore easier to handle between ISA revisions and/or implementations 
+and the choice of the CPU to build for has become more of a balance 
+between backwards compatibility and optimisation stemming from a richer 
+architecture and FWIW I fully support striving to make an R1 kernel binary 
+run with any R1-R5 hardware.  It can be especially useful with platforms 
+that have swappable CPU modules available at different ISA levels.
+
+> They are not trivial to fix, so I just ban them in Kconfig. I was a little bit
+> reluctant to admit that in commit message.
+
+ Please always state your genuine motivation in change descriptions.  It 
+lets reviewers understand what a change is about and if there is any 
+concern about the description itself, then it can always be adjusted in 
+the review if needed.
+
+  Maciej

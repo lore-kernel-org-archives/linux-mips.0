@@ -1,23 +1,23 @@
 Received: from fgw20-7.mail.saunalahti.fi (fgw20-7.mail.saunalahti.fi [62.142.5.81])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B08E416937E
-	for <linux-mips@vger.kernel.org>; Mon, 27 May 2024 21:28:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E922D167264
+	for <linux-mips@vger.kernel.org>; Mon, 27 May 2024 21:28:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.142.5.81
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716845282; cv=none; b=u/5Bqy7MBXvMafpw6ir35u/sW5gRQvrcBxVgFXPuld4G92dhq/MSi5RetHc0SQQtzNgyBuqJ/gCA2IHBzwwzOyUMQ5qpoqzt4sEfAPnhtEmXaFmWnOhbnmNoDMTVT5O5a08+t7mIYlFyQbdC2WhpfthnBhua6l6eHMp5xjnV7oM=
+	t=1716845286; cv=none; b=UWYkJBlkZWJdPMYQuSe9ujq0Uu5RQUH+apZ4Ahvet/CrqGPG9FmaGdXET/OU8tCLsG4mZx419IasLLUxGs7xwTuftt2PYmp46fC4a8ozkHolk7mTr749sa5SfA7URspHC5hmQw6tzKD4acnCiwYtDXee0owEUGKwGLa2jTVG6N0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716845282; c=relaxed/simple;
-	bh=TdIMYqHRZiMhqimAL3dwrKgZ880JC0XfF5R80wqNJbc=;
+	s=arc-20240116; t=1716845286; c=relaxed/simple;
+	bh=AtdSj8Gi5BjDdlTV9ZqdN7OUIGwv22hj9Vwr0vi/QVA=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=DGD047iL23aOwIePpKHDpmubO/9S36MplD0cKSbcrIK+yeb3KyMUPmSg2SBlEH6Dg79U6tImtD9dnhyOlbU3YslrQUoRic5bBNUhtEvBaahncKeqKmC0XrmlQ1RNCuwwWS3HJqR6Sl0hHSifhDkU68Qtc24AmDvikUdFcxJh86o=
+	 MIME-Version; b=k46cYzMGY9WMa3Lga+URMCWpbqzncZkMlkHiU5EV6e7NhDCa2ntmfRNiq7poJvxLwyeXMrlt1/QmklIEJLF92LE8Dso5QvGVsILxNnGM/kFgXnZkMuHFt83hRgleuQQmHlc+wn5+JaCx+9V3uwaEr2WcKnUKB3sxHbZmByQSdZM=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com; spf=fail smtp.mailfrom=gmail.com; arc=none smtp.client-ip=62.142.5.81
 Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=gmail.com
 Received: from localhost (88-113-26-230.elisa-laajakaista.fi [88.113.26.230])
-	by fgw21.mail.saunalahti.fi (Halon) with ESMTP
-	id fa1daa3f-1c6f-11ef-aaf3-005056bdd08f;
-	Tue, 28 May 2024 00:27:53 +0300 (EEST)
+	by fgw22.mail.saunalahti.fi (Halon) with ESMTP
+	id fd1a1bdb-1c6f-11ef-8e2a-005056bdf889;
+	Tue, 28 May 2024 00:27:58 +0300 (EEST)
 From: Andy Shevchenko <andy.shevchenko@gmail.com>
 To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
 	Linus Walleij <linus.walleij@linaro.org>,
@@ -39,9 +39,9 @@ Cc: Dong Aisheng <aisheng.dong@nxp.com>,
 	Paul Cercueil <paul@crapouillou.net>,
 	Lakshmi Sowjanya D <lakshmi.sowjanya.d@intel.com>,
 	Andy Shevchenko <andy.shevchenko@gmail.com>
-Subject: [PATCH v1 05/11] pinctrl: pinmux: Add a convenient define PINCTRL_FUNCTION_DESC()
-Date: Tue, 28 May 2024 00:24:40 +0300
-Message-ID: <20240527212742.1432960-6-andy.shevchenko@gmail.com>
+Subject: [PATCH v1 11/11] pinctrl: pinmux: Remove unused members from struct function_desc
+Date: Tue, 28 May 2024 00:24:46 +0300
+Message-ID: <20240527212742.1432960-12-andy.shevchenko@gmail.com>
 X-Mailer: git-send-email 2.45.1
 In-Reply-To: <20240527212742.1432960-1-andy.shevchenko@gmail.com>
 References: <20240527212742.1432960-1-andy.shevchenko@gmail.com>
@@ -55,84 +55,45 @@ Content-Transfer-Encoding: 8bit
 
 From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-Add PINCTRL_FUNCTION_DESC() macro for inline use.
-
-While at it, fix adjective form in the comment of PINCTRL_GROUP_DESC().
+All drivers are converted to use embedded struct pinfunction.
+Remove unused members from struct function_desc.
 
 Signed-off-by: Andy Shevchenko <andy.shevchenko@gmail.com>
 ---
- drivers/pinctrl/core.h   |  2 +-
- drivers/pinctrl/pinmux.c |  7 ++-----
- drivers/pinctrl/pinmux.h | 11 ++++++++++-
- 3 files changed, 13 insertions(+), 7 deletions(-)
+ drivers/pinctrl/pinmux.h | 9 ---------
+ 1 file changed, 9 deletions(-)
 
-diff --git a/drivers/pinctrl/core.h b/drivers/pinctrl/core.h
-index 837fd5bd903d..4e07707d2435 100644
---- a/drivers/pinctrl/core.h
-+++ b/drivers/pinctrl/core.h
-@@ -206,7 +206,7 @@ struct group_desc {
- 	void *data;
- };
- 
--/* Convenience macro to define a generic pin group descriptor */
-+/* Convenient macro to define a generic pin group descriptor */
- #define PINCTRL_GROUP_DESC(_name, _pins, _num_pins, _data)	\
- (struct group_desc) {						\
- 	.grp = PINCTRL_PINGROUP(_name, _pins, _num_pins),	\
-diff --git a/drivers/pinctrl/pinmux.c b/drivers/pinctrl/pinmux.c
-index addba55334d9..89b42e05f368 100644
---- a/drivers/pinctrl/pinmux.c
-+++ b/drivers/pinctrl/pinmux.c
-@@ -858,7 +858,7 @@ EXPORT_SYMBOL_GPL(pinmux_generic_get_function);
- int pinmux_generic_add_function(struct pinctrl_dev *pctldev,
- 				const char *name,
- 				const char * const *groups,
--				const unsigned int num_groups,
-+				const unsigned int ngroups,
- 				void *data)
- {
- 	struct function_desc *function;
-@@ -877,10 +877,7 @@ int pinmux_generic_add_function(struct pinctrl_dev *pctldev,
- 	if (!function)
- 		return -ENOMEM;
- 
--	function->name = name;
--	function->group_names = groups;
--	function->num_group_names = num_groups;
--	function->data = data;
-+	function = PINCTRL_FUNCTION_DESC(name, groups, ngroups, data);
- 
- 	error = radix_tree_insert(&pctldev->pin_function_tree, selector, function);
- 	if (error)
 diff --git a/drivers/pinctrl/pinmux.h b/drivers/pinctrl/pinmux.h
-index 7c8aa25ccc80..52e6e4db88b4 100644
+index 9b57c1cc9d50..2965ec20b77f 100644
 --- a/drivers/pinctrl/pinmux.h
 +++ b/drivers/pinctrl/pinmux.h
-@@ -145,6 +145,15 @@ struct function_desc {
+@@ -134,16 +134,10 @@ static inline void pinmux_init_device_debugfs(struct dentry *devroot,
+ /**
+  * struct function_desc - generic function descriptor
+  * @func: generic data of the pin function (name and groups of pins)
+- * @name: name of the function
+- * @group_names: array of pin group names
+- * @num_group_names: number of pin group names
+  * @data: pin controller driver specific data
+  */
+ struct function_desc {
+ 	struct pinfunction func;
+-	const char *name;
+-	const char * const *group_names;
+-	int num_group_names;
  	void *data;
  };
  
-+/* Convenient macro to define a generic pin function descriptor */
-+#define PINCTRL_FUNCTION_DESC(_name, _grps, _num_grps, _data)	\
-+(struct function_desc) {					\
-+	.name = _name,						\
-+	.group_names = _grps,					\
-+	.num_group_names = _num_grps,				\
-+	.data = _data,						\
-+}
-+
- int pinmux_generic_get_function_count(struct pinctrl_dev *pctldev);
+@@ -151,9 +145,6 @@ struct function_desc {
+ #define PINCTRL_FUNCTION_DESC(_name, _grps, _num_grps, _data)	\
+ (struct function_desc) {					\
+ 	.func = PINCTRL_PINFUNCTION(_name, _grps, _num_grps),	\
+-	.name = _name,						\
+-	.group_names = _grps,					\
+-	.num_group_names = _num_grps,				\
+ 	.data = _data,						\
+ }
  
- const char *
-@@ -162,7 +171,7 @@ struct function_desc *pinmux_generic_get_function(struct pinctrl_dev *pctldev,
- int pinmux_generic_add_function(struct pinctrl_dev *pctldev,
- 				const char *name,
- 				const char * const *groups,
--				unsigned int const num_groups,
-+				unsigned int const ngroups,
- 				void *data);
- 
- int pinmux_generic_remove_function(struct pinctrl_dev *pctldev,
 -- 
 2.45.1
 

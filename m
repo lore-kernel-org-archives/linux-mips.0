@@ -1,252 +1,108 @@
-Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
+Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B20312E639;
-	Thu,  6 Jun 2024 10:53:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DCC53198A16
+	for <linux-mips@vger.kernel.org>; Thu,  6 Jun 2024 16:41:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717671228; cv=none; b=NslVh2vc8Zio6axRiXceXuepSRdqe4Kqcvl0/jvpg9bDZ/xnODy7nHaQOtikxs58UxWYF4D40+Rm2GeFChXv1469sfNJj8tBWlwVdSNj/cL5RQoJDCcWm21xV3go6/AMKeHKPSrd2IjDhB9Nw4Yi/eSsOxQiKnNYRK/dbh5rh1g=
+	t=1717692079; cv=none; b=lI2f456pG0fZokyHE49ugIEgtd7vT+0w4bTrWg0VJHsaa+kR8XcHgtrImrSH7Nzd30F81hoJykMgXpqRACWHQMdgJi+ctR+r8sZTi4jzbU2dCvag0NFAvGAbHNf0GS1kXujluNw63gUN9o7c5/eSR0yoLk3B/jbmEiQj9FwzSlk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717671228; c=relaxed/simple;
-	bh=IwvdKHEGFEfuaUJOTiyFszzjDelzpkHXySk7OYxTe2Y=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=P4BQ2qRC+YI4L3qBFElfSnwRHLEhF5Rs2y2+rF+Qpyuwn1OHpclhbrtTniI2Ct+pCEj4Uk37vNJ3TXwjK4RS9wXsKszrn6uPqd8Uw6Zg/ya1YqCdBvcyAajjJ78ZTnmq/PAsiQFmSG3dnC9RUVbfNSspnkxcfB0bvdNyYyehnfM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RKnpftcq; arc=none smtp.client-ip=209.85.208.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1717692079; c=relaxed/simple;
+	bh=nev6dUA4PRxNyzcD33S/YOMRpL0XAMy6tgmbvFp11ZI=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=grC7ZizpVoTB/XqMH9rHYFsoTiqYyDU+7gmB0uFchhuTc28qr8LY3tV+8qnpiPG78kekNDnXNOgYkMUTVEcXQeCcTfV/T7GEyEpEXAxqMS1AKYhLfM0+1GjFR7Fpew8QnvtTlJRTLTIpl1OMBtCUvThm183ikjGkRxuzhcaGUcY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=kcCBuzAN; arc=none smtp.client-ip=209.85.221.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RKnpftcq"
-Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-579fa270e53so1084316a12.3;
-        Thu, 06 Jun 2024 03:53:46 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="kcCBuzAN"
+Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-35dca73095aso972671f8f.0
+        for <linux-mips@vger.kernel.org>; Thu, 06 Jun 2024 09:41:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1717671225; x=1718276025; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
+        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1717692075; x=1718296875; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=935StyJmCjoE4Ghn59CDu5In+96Jm1afri4FQ4OW13w=;
-        b=RKnpftcqRgiNirkGErcvS5e6Bpr24PpWVDboT+hVlx0Jf1OiKHVv02/LnmphsyTSoz
-         oxEQnn2UW5gRB2O9zMEvJCD5RNS1pMI2F3NWToGsQhGtatF+UORQjmMrB2vZmjglFGkD
-         qWYgutzUFSEDv53vmrisPkn4Oq74udG1JTaXZbz0oCbp/JzZXd77O3Z9Rxg+9evpr1w8
-         /7/jT5ET4JQeO/QV/nmx8glGKbzOAt1qchyCEJpmfGpFN9iq6gW2YCeU8vRjt5Hgipj/
-         Oc2rjFvcRlthCkSpuiTDFBJKeVoQgUejIq9PbQpA2YzWvJDi5xCFIIPMo0+m5AhtjaGQ
-         WF9Q==
+        bh=pEeTee/9GDdW4aYkXW9KgQrVIHd2u5SrXadCYSxBDm4=;
+        b=kcCBuzAN8wAb3Gq3AugnsA/bUJML4AhJmwDvB0bv27MpyaAvdt+sCzS80CL0csk4gf
+         Cdh8sRqpixfzb4oy/WOfGi5Y9Zp3i7R/k9x+jJOSsxEbKn6P3oI+xWMyqI3FBbPVtSds
+         bdUbL89HJGC9lEOqhcJarTzioT1dDkmhGnTL3fNuWYgm7ChxkFIVivVnyeWSAOMzlkDx
+         tVRclEyQ5raMQHyg646r0u1AP5dmk/g0SPwJm9H8iFkUZtMQJ+ZtVZNz6l8GdP2Cixpv
+         P/MxUy8Ykhp/zrjniBvASbdiVuDKnf0DFG+9kfLCuOE6a+dmnhhN+Z5DztCjPO6bRAJ5
+         Ol0A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1717671225; x=1718276025;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1717692075; x=1718296875;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=935StyJmCjoE4Ghn59CDu5In+96Jm1afri4FQ4OW13w=;
-        b=R10fpSJr2tXWvgnvFxN2vmu358/Q0YlWA4H/d+Aa2LfF8vJXfIs/zX+KG2zsmib6JE
-         3G5yL2czj4kAyRV7KNDYaiXkYC8IBHwch92R9y2wqTSMkSkWSNUowgRCKRDm0LsqGqRb
-         nttlr+IcoaCJl0m5ETwxLXjrcqTIScRkuSPzz0Pzs4ASrYjjDAbd/fXFZtTPScKJ2DaU
-         LKc6NefBNdi1d940uWIucPY+lYT8Vant/VGawyXyxDsgPLcNlptGSSD7mq3glHFAIn/v
-         n2ZfcFrILFkJF3Q2/0zeXpUaok+QS/NikyxzGg31KWCwpMxUy/GNa4oUYsKqx0FnzuJh
-         Q+VQ==
-X-Forwarded-Encrypted: i=1; AJvYcCU4lHZC5n93FRnJRotGe9mmbVwhcoG8Q4wF2mshSLbcKI5Kio4NA6oiddc2SE2FDpn+S95De3yKDmrg4rZahlrzuTnGIHx6jfMPulqtQqHEQybAMuByDlLbJ0eUtAb5uQoxrdxjwVqsmqW+YzfQfIew0ZDgifSC/ECd279eRb2hCs+DBdo=
-X-Gm-Message-State: AOJu0YxhsRrAvvPFN+kjknH0lQFxW6tmWUCC4MIntmXBfLCgmsUoPsjR
-	lGd04qkifgyYVes8MF3FVGI0vMZjyH/scQETJcVjWcM+hnF7Q/FjiZz46uN9GOlnm5TZXcFNCkZ
-	nTw+aC1Wa4JHmDY1EkegySK9pdao=
-X-Google-Smtp-Source: AGHT+IE0J+VGwd0Ea7QUc/PFc4yHChLtDGJkWcYqgbuGIHKRsfdwqpE5pP07w0oAGDb9xZmHKtpmnWMeMuH42TH1CSc=
-X-Received: by 2002:a50:8d54:0:b0:579:c3f8:5923 with SMTP id
- 4fb4d7f45d1cf-57a8b6a8778mr4076479a12.13.1717671224760; Thu, 06 Jun 2024
- 03:53:44 -0700 (PDT)
+        bh=pEeTee/9GDdW4aYkXW9KgQrVIHd2u5SrXadCYSxBDm4=;
+        b=GLs2Q9sfYEdcyNHwIt6j5ZsHYmpupg3ME4c+3hcdj+7btcyWGAwqPofJAcYvbXeBQp
+         utG12msUf+nTyuTa3ak9H/6IwrzzpOVTe2oR3sTZ4xzBc/FZLEXnhRwnAb8RfoV9W+ll
+         1sEUXslpkJztYo3QS6bup4eT6NWp/AuyR3MDiA4mSzWE+ZpeEsMSrsI9AQTVp1t+bVkm
+         s03fMd9O13YZxScSXm63y8/7KYg309bBGlthHAnwPHPoRKAAllDNmqdDQbbIgabhTcxS
+         bBI1f9lss1qXrWDuRF/fBePoBKm5k4NvQkP+fKe2PiTGKpJctf2hivZKfo715lpMog6b
+         IHOQ==
+X-Gm-Message-State: AOJu0YxpoDn5Y+cIDcStdAm/cSAJR6Lww1lsWuFbumziQf4K2VAcgUkf
+	6IadFK5MRjNpGdkEJLGCC/Nsi3Kf71EwPjLywaESDnphoKE072q8ntf/x+r1+eg=
+X-Google-Smtp-Source: AGHT+IHRiGM4fiCfzIB8ncxH9DQB2mmupqiR8DMIpeH+89NXTVTS9Q5+9RZxhRE4qt8vLOCy852k9A==
+X-Received: by 2002:a5d:6411:0:b0:354:e775:19ff with SMTP id ffacd0b85a97d-35efed52ce5mr117565f8f.38.1717692075142;
+        Thu, 06 Jun 2024 09:41:15 -0700 (PDT)
+Received: from localhost (p509153eb.dip0.t-ipconnect.de. [80.145.83.235])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-35ef5d49e43sm1996631f8f.31.2024.06.06.09.41.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 06 Jun 2024 09:41:14 -0700 (PDT)
+From: "=?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?=" <ukleinek@baylibre.com>
+X-Google-Original-From: =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <u.kleine-koenig@baylibre.com>
+To: Paul Cercueil <paul@crapouillou.net>
+Cc: linux-mips@vger.kernel.org,
+	linux-pwm@vger.kernel.org
+Subject: [PATCH 1/2] pwm: jz4740: Another few conversions to regmap_{set,clear}_bits()
+Date: Thu,  6 Jun 2024 18:40:46 +0200
+Message-ID: <20240606164047.534741-5-u.kleine-koenig@baylibre.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240606164047.534741-4-u.kleine-koenig@baylibre.com>
+References: <20240606164047.534741-4-u.kleine-koenig@baylibre.com>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240430-loongson1-nand-v7-0-60787c314fa4@gmail.com>
- <20240430-loongson1-nand-v7-1-60787c314fa4@gmail.com> <20240506091444.59228fa9@xps-13>
- <CAJhJPsV1aCvji1G2F94A=pJa8+x6Aw7ndkQUBPtFeeKSxJK9Nw@mail.gmail.com> <20240518124732.584f441d@xps-13>
-In-Reply-To: <20240518124732.584f441d@xps-13>
-From: Keguang Zhang <keguang.zhang@gmail.com>
-Date: Thu, 6 Jun 2024 18:53:08 +0800
-Message-ID: <CAJhJPsW9gVe2F1qvxvOkQUX_K1BsK5q_1XjT0u2+QH2gRMNqXA@mail.gmail.com>
-Subject: Re: [PATCH v7 1/3] dt-bindings: mtd: Add Loongson-1 NAND Controller
-To: Miquel Raynal <miquel.raynal@bootlin.com>
-Cc: Keguang Zhang via B4 Relay <devnull+keguang.zhang.gmail.com@kernel.org>, 
-	Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, Rob Herring <robh@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org, 
-	linux-mips@vger.kernel.org, devicetree@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1217; i=u.kleine-koenig@baylibre.com; h=from:subject; bh=nev6dUA4PRxNyzcD33S/YOMRpL0XAMy6tgmbvFp11ZI=; b=owEBbQGS/pANAwAKAY+A+1h9Ev5OAcsmYgBmYeaUzVfWQhxobNrb483+cyPM2Z3KAGdDCe2od gATs+6ysAiJATMEAAEKAB0WIQQ/gaxpOnoeWYmt/tOPgPtYfRL+TgUCZmHmlAAKCRCPgPtYfRL+ Tvj7CACV+8GYOBSDa0inXHAgxuNqC9t9qSlNhRZMAsRlY15oJ6IrQoYMm+xaDptIHtURzK+udZ+ PI4IceTvcLqZYeRcqzL+H3URAnMJ8e298x5OXR0BbS7HqzZyloKuq/q/G0rFY6ljtOAM5yYiO5V LxaJCQdScLh+HGoEWMCasXnM248aHU1mg/PYbj8XpV1XA8yLAYubXfUxshUjkeaHXAnlBpp+zhD S3qX9DEhkbNGD9QKCxUwGpb4FiECZmxDVgR/LflAdkqYR8/fvFJRhcgpqSjRXus/6/E5AP7wvlm Ez9AakZEdmqHqViXCdHl1T0wjrFz+qtcyGPcduKGYP1X3kQR
+X-Developer-Key: i=u.kleine-koenig@baylibre.com; a=openpgp; fpr=0D2511F322BFAB1C1580266BE2DCDD9132669BD6
+Content-Transfer-Encoding: 8bit
 
-Hi Miquel,
-Sorry for the late reply.
+Similar to commit 7d9199995412 ("pwm: jz4740: Use
+regmap_{set,clear}_bits") convert two more regmap_update_bits() calls to
+regmap_{set,clear}_bits() which were missed back then.
 
-On Sat, May 18, 2024 at 6:47=E2=80=AFPM Miquel Raynal <miquel.raynal@bootli=
-n.com> wrote:
->
-> Hi,
->
-> keguang.zhang@gmail.com wrote on Sat, 18 May 2024 16:01:01 +0800:
->
-> > On Mon, May 6, 2024 at 3:14=E2=80=AFPM Miquel Raynal <miquel.raynal@boo=
-tlin.com> wrote:
-> > >
-> > > Hello,
-> > >
-> > > devnull+keguang.zhang.gmail.com@kernel.org wrote on Tue, 30 Apr 2024
-> > > 19:11:10 +0800:
-> > >
-> > > > From: Keguang Zhang <keguang.zhang@gmail.com>
-> > > >
-> > > > Add devicetree binding document for Loongson-1 NAND Controller.
-> > > >
-> > > > Signed-off-by: Keguang Zhang <keguang.zhang@gmail.com>
-> > > > ---
-> > > > Changes in v7:
-> > > > - rename the file to loongson,ls1b-nfc.yaml
-> > > >
-> > > > Changes in v6:
-> > > > - A newly added patch
-> > > > ---
-> > > >  .../devicetree/bindings/mtd/loongson,ls1b-nfc.yaml | 66 ++++++++++=
-++++++++++++
-> > > >  1 file changed, 66 insertions(+)
-> > > >
-> > > > diff --git a/Documentation/devicetree/bindings/mtd/loongson,ls1b-nf=
-c.yaml b/Documentation/devicetree/bindings/mtd/loongson,ls1b-nfc.yaml
-> > > > new file mode 100644
-> > > > index 000000000000..a69f22b9fd9e
-> > > > --- /dev/null
-> > > > +++ b/Documentation/devicetree/bindings/mtd/loongson,ls1b-nfc.yaml
-> > > > @@ -0,0 +1,66 @@
-> > > > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> > > > +%YAML 1.2
-> > > > +---
-> > > > +$id: http://devicetree.org/schemas/mtd/loongson,ls1b-nfc.yaml#
-> > > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > > > +
-> > > > +title: Loongson-1 NAND Controller
-> > > > +
-> > > > +maintainers:
-> > > > +  - Keguang Zhang <keguang.zhang@gmail.com>
-> > > > +
-> > > > +allOf:
-> > > > +  - $ref: nand-controller.yaml
-> > > > +
-> > > > +properties:
-> > > > +  compatible:
-> > > > +    oneOf:
-> > > > +      - const: loongson,ls1b-nfc
-> > >
-> > > What is the rationale behind this choice? Seems like the b variant ha=
-s
-> > > two possible implementations and should always be preceded by a more
-> > > specific compatible.
-> > >
-> > > As there is currently no description of this controller upstream, I
-> > > would not care too much about any out-of-tree description and directl=
-y
-> > > go for a clean description.
-> > >
-> > Excuse me, should I add a description for this property?
->
-> No, description is not needed. But you are allowing the
-> "loongson,ls1b-nfc" compatible alone, which I think is not relevant,
-> unless you convince me it is :-)
->
-"loongson,ls1b-nfc" itself is a specific implementation.
-I was suggested to set up a fallback before.
-https://lore.kernel.org/all/20231007-untapped-masses-01f80b7c13c7@spud/
-Then "loongson,ls1b-nfc" became the fallback.
+Signed-off-by: Uwe Kleine-König <u.kleine-koenig@baylibre.com>
+---
+ drivers/pwm/pwm-jz4740.c | 9 ++++-----
+ 1 file changed, 4 insertions(+), 5 deletions(-)
 
-> > > > +      - items:
-> > > > +          - enum:
-> > > > +              - loongson,ls1a-nfc
-> > > > +              - loongson,ls1c-nfc
-> > > > +          - const: loongson,ls1b-nfc
-> > > > +
-> > > > +  reg:
-> > > > +    maxItems: 1
-> > > > +
-> > > > +  dmas:
-> > > > +    maxItems: 1
-> > > > +
-> > > > +  dma-names:
-> > > > +    const: rxtx
-> > > > +
-> > > > +patternProperties:
-> > > > +  "^nand@[0-3]$":
-> > > > +    type: object
-> > > > +    $ref: raw-nand-chip.yaml
-> > > > +
-> > > > +    unevaluatedProperties: false
-> > > > +
-> > > > +required:
-> > > > +  - compatible
-> > > > +  - reg
-> > > > +  - dmas
-> > > > +  - dma-names
-> > >
-> > > Should DMA props be required?
-> > >
-> > Yes. This NAND controller only works with DMA, which means the DMA is n=
-ecessary.
->
-> Ok
->
-> >
-> > > > +
-> > > > +unevaluatedProperties: false
-> > > > +
-> > > > +examples:
-> > > > +  - |
-> > > > +    nand-controller@1fe78000 {
-> > > > +        compatible =3D "loongson,ls1b-nfc";
-> > > > +        reg =3D <0x1fe78000 0x40>;
-> > > > +
-> > > > +        #address-cells =3D <1>;
-> > > > +        #size-cells =3D <0>;
-> > > > +
-> > > > +        dmas =3D <&dma 0>;
-> > > > +        dma-names =3D "rxtx";
-> > >
-> > > There is a preferred spacing for DT nodes, see:
-> > > https://docs.kernel.org/devicetree/bindings/dts-coding-style.html
-> > >
-> > Sorry. I don't get the meaning of preferred spacing.
-> > https://docs.kernel.org/devicetree/bindings/writing-schema.html says
-> > "For DTS examples in the schema, preferred is four-space indentation."
-> > Then I used four-space indentation.
->
-> I'm talking about the new lines (\n) between the properties.
->
-Will remove the superfluous new lines.
-> >
-> > > > +
-> > > > +        nand@0 {
-> > > > +            reg =3D <0>;
-> > > > +            nand-use-soft-ecc-engine;
-> > > > +            nand-ecc-algo =3D "hamming";
-> > >
-> > > These two properties are not needed. Unless there is no hardware ECC
-> > > capability on this controller and in this case you need to ensure the
-> > > properties are present in the schema.
-> >
-> > Exactly. This NAND controller doesn't support hardware ECC.
-> > 'nand-use-soft-ecc-engine' and 'nand-ecc-algo' are present in nand-chip=
-.yaml.
-> > Is there anything else I should do?
->
-> Thry are in nand-chip.yaml, which means they are allowed, but I want
-> them mandatory:
->
-Will do.
+diff --git a/drivers/pwm/pwm-jz4740.c b/drivers/pwm/pwm-jz4740.c
+index da4bf543d357..6bdb01619380 100644
+--- a/drivers/pwm/pwm-jz4740.c
++++ b/drivers/pwm/pwm-jz4740.c
+@@ -201,12 +201,11 @@ static int jz4740_pwm_apply(struct pwm_chip *chip, struct pwm_device *pwm,
+ 	 * state instead of its inactive state.
+ 	 */
+ 	if ((state->polarity == PWM_POLARITY_NORMAL) ^ state->enabled)
+-		regmap_update_bits(jz->map, TCU_REG_TCSRc(pwm->hwpwm),
+-				   TCU_TCSR_PWM_INITL_HIGH, 0);
++		regmap_clear_bits(jz->map, TCU_REG_TCSRc(pwm->hwpwm),
++				  TCU_TCSR_PWM_INITL_HIGH);
+ 	else
+-		regmap_update_bits(jz->map, TCU_REG_TCSRc(pwm->hwpwm),
+-				   TCU_TCSR_PWM_INITL_HIGH,
+-				   TCU_TCSR_PWM_INITL_HIGH);
++		regmap_set_bits(jz->map, TCU_REG_TCSRc(pwm->hwpwm),
++				TCU_TCSR_PWM_INITL_HIGH);
+ 
+ 	if (state->enabled)
+ 		jz4740_pwm_enable(chip, pwm);
+-- 
+2.43.0
 
-> required:
->   - foo
->   - bar
->
-> Thanks,
-> Miqu=C3=A8l
-
-
-
---=20
-Best regards,
-
-Keguang Zhang

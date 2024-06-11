@@ -1,22 +1,22 @@
 Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2DF441DDF4;
-	Tue, 11 Jun 2024 14:07:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1FC621DDF4;
+	Tue, 11 Jun 2024 14:14:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.175.24.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718114883; cv=none; b=dlJyHpIi+D5JoZfz4UpsngodjF3wnkKS/Cq3rYkN6WnIJg/z1n5dGfw6r7g1Vgz4+31sGOM9zsU74/ZpEUYegWlhahq/zIK38Esd8Rrxmh41Xs7U4oJGtc5G01w6QJTtnFWzd+822mBjwA0RfRXZuKlYhRwY/TRP2rNQCY1xEtU=
+	t=1718115295; cv=none; b=FEK+/ayTHNL/jWlenb0XGcl7u/p9qwv8rbV8hoL9tPx9ZxERBVBoBP/Ckdjg5rQSgQzihEJJKmYYOKirGSibgYeg8I4Wsl8hWDeuduGIPVyXj87Qov/+UBgtQy3XszM/NQsJ48k8v5J7AL8hbk7NfkjqxctXUCayP0D6Hnjjy/Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718114883; c=relaxed/simple;
-	bh=v75fYsSUIgFo9A9XwziCLVc5Lj+NmGuKOUWo8pr3H+Q=;
+	s=arc-20240116; t=1718115295; c=relaxed/simple;
+	bh=wQbEJocG3DYWCV/bbjuTe2rWvWiRPGvtjmOpsxe4i7E=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=h2xJedNPMBroNVDHTC2RerPG7/Zi7Vjl4x+Lk0maEg2jW2VL4qahr5zev5baow93tLgs7i5UBpkm3vdGpEOZaCbVehP/CP7yDiEbPT2yEEPoEq9tewvA3TcyZ0ZPHfYOx5wtH4LqZEcsay/FGz5EDrY4WqxzKO3+uX+vbfniByo=
+	 Content-Type:Content-Disposition:In-Reply-To; b=N9vCELntNBJjYje6Z8dvBIcjgmUKTCo66euCjlRpgxTLmNE1SjW1ZN3wJ2WcpDajJJL7iif+zSxtVShxXhvw46h3qdlW3qqozQDGnFVRMx0lSxfQxuIfHVa9WENzmIxlAylFxbxBKjSGn7q6IBxpL+E3Lm22VtHZKgKT76Wg3Tc=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de; spf=pass smtp.mailfrom=alpha.franken.de; arc=none smtp.client-ip=193.175.24.41
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alpha.franken.de
 Received: from uucp by elvis.franken.de with local-rmail (Exim 3.36 #1)
-	id 1sH2AG-00031H-00; Tue, 11 Jun 2024 16:07:56 +0200
+	id 1sH2Gu-00034I-00; Tue, 11 Jun 2024 16:14:48 +0200
 Received: by alpha.franken.de (Postfix, from userid 1000)
-	id 087DAC031A; Tue, 11 Jun 2024 16:03:41 +0200 (CEST)
-Date: Tue, 11 Jun 2024 16:03:41 +0200
+	id 54997C0411; Tue, 11 Jun 2024 16:12:57 +0200 (CEST)
+Date: Tue, 11 Jun 2024 16:12:57 +0200
 From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 To: Christian Marangi <ansuelsmth@gmail.com>
 Cc: Hauke Mehrtens <hauke@hauke-m.de>,
@@ -31,11 +31,9 @@ Cc: Hauke Mehrtens <hauke@hauke-m.de>,
 	linux-kernel@vger.kernel.org
 Subject: Re: [PATCH v7 1/5] mips: bmips: BCM6358: make sure CBR is correctly
  set
-Message-ID: <ZmhZPdr9MpESOXgm@alpha.franken.de>
+Message-ID: <ZmhbaZQbLf6Q3yoz@alpha.franken.de>
 References: <20240611113538.9004-1-ansuelsmth@gmail.com>
  <20240611113538.9004-2-ansuelsmth@gmail.com>
- <ZmhHw5QZCQ6G6EbK@alpha.franken.de>
- <6668503a.050a0220.9ec4a.4777@mx.google.com>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
@@ -44,32 +42,27 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <6668503a.050a0220.9ec4a.4777@mx.google.com>
+In-Reply-To: <20240611113538.9004-2-ansuelsmth@gmail.com>
 
-On Tue, Jun 11, 2024 at 03:04:36PM +0200, Christian Marangi wrote:
-> On Tue, Jun 11, 2024 at 02:49:07PM +0200, Thomas Bogendoerfer wrote:
-> > On Tue, Jun 11, 2024 at 01:35:33PM +0200, Christian Marangi wrote:
-> > > It was discovered that some device have CBR address set to 0 causing
-> > > kernel panic when arch_sync_dma_for_cpu_all is called.
-> > > 
-> > > This was notice in situation where the system is booted from TP1 and
-> > > BMIPS_GET_CBR() returns 0 instead of a valid address and
-> > > !!(read_c0_brcm_cmt_local() & (1 << 31)); not failing.
-> > > 
-> > > The current check whether RAC flush should be disabled or not are not
-> > > enough hence lets check if CBR is a valid address or not.
-> > > 
-> > > Fixes: ab327f8acdf8 ("mips: bmips: BCM6358: disable RAC flush for TP1")
-> > 
-> > should I apply it to mips-fixes ? If not could you just ammend
-> > it with the following patch, where this is changed again ?
-> >
+On Tue, Jun 11, 2024 at 01:35:33PM +0200, Christian Marangi wrote:
+> It was discovered that some device have CBR address set to 0 causing
+> kernel panic when arch_sync_dma_for_cpu_all is called.
 > 
-> Ideally this should be backported to stable kernel since it does cause
-> kernel panic. This is why it's split and it's the first patch of the
-> series.
+> This was notice in situation where the system is booted from TP1 and
+> BMIPS_GET_CBR() returns 0 instead of a valid address and
+> !!(read_c0_brcm_cmt_local() & (1 << 31)); not failing.
+> 
+> The current check whether RAC flush should be disabled or not are not
+> enough hence lets check if CBR is a valid address or not.
+> 
+> Fixes: ab327f8acdf8 ("mips: bmips: BCM6358: disable RAC flush for TP1")
+> Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
+> Acked-by: Florian Fainelli <florian.fainelli@broadcom.com>
+> ---
+>  arch/mips/bmips/setup.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
 
-ok, I'll apply it to mips-fixes then.
+applied to mips-fixes.
 
 Thomas.
 

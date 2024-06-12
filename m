@@ -1,122 +1,109 @@
-Received: from fhigh8-smtp.messagingengine.com (fhigh8-smtp.messagingengine.com [103.168.172.159])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C531617B437;
-	Wed, 12 Jun 2024 16:59:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.159
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D00520335;
+	Wed, 12 Jun 2024 17:01:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718211588; cv=none; b=QUjeelqce253XdeqIMkO+E7109om1Aiom7WSJi7DZbhfskmgfH3BULLuOxDVTHPp7dsi2IBex9G5r2ijtsc4xHkeKHB1EsjAB+ZGukkliAd+7FVznlIZSp/0juT3PAN8AUMN+RsTZNTg4ddCyohKHeRlo7sr9qjElp3CBtDlfpw=
+	t=1718211700; cv=none; b=JaVt4YBRqoBQ1OKvbvSBWIgWsDTHXQNjsLtfsBCEnz0IBiG3i24NMCpiN3llK1TcFsKCP/tSzcMA74s/r9U6Vlwid6fMa8pLFv24okXu6oamLf7QL1qt4mRo/pstEBr4l/TJblzFbCm+qbvgGLsdnv0Iixw8uS1bwv9KZP8hFH0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718211588; c=relaxed/simple;
-	bh=wC5RCTev5WQ9LiPQGRHBt+kEUELHELC57T6uyWsR3qo=;
-	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
-	 Subject:Content-Type; b=Y3F5tyRgESL5wP1+8ndhcydGYBh4IaugLzUtR+f2mxhOqDxrx61XVNnRBayA36FwwI2f+nk1RkeaSL4ghEVbUQYoWyiTm2RemoB+TVXRkR5CTBdCIzgnnWEtwiCKFGtqzWWFV+nKVsdOdliCmOvjFDMxEM/1TgOvxoW80r949Zg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=flygoat.com; spf=pass smtp.mailfrom=flygoat.com; dkim=pass (2048-bit key) header.d=flygoat.com header.i=@flygoat.com header.b=ivlepZVa; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=Zf5UuWr0; arc=none smtp.client-ip=103.168.172.159
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=flygoat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flygoat.com
+	s=arc-20240116; t=1718211700; c=relaxed/simple;
+	bh=FtbtPkEu/CAJOaRMod1vFsE5eWvd/eF7e60q6ZZWNBg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=aiCFs6vVEU6/v+KEs+c6pPopQWa154/oC5P3g3TJf/F8N7hF5CRTq7iqhpuqVNudNkRQwIQJcnYO/6uRcZg/BKoTtIot3Sqt89cG4ewwu2b0aWO2/ZsPGEmheQaqkRCxi2Ai4SiuhUC/sJxfcpnTo+meqUxMt+44cwu4/u3x8QQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sgzt1hqs; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=flygoat.com header.i=@flygoat.com header.b="ivlepZVa";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="Zf5UuWr0"
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-	by mailfhigh.nyi.internal (Postfix) with ESMTP id 0081111401DB;
-	Wed, 12 Jun 2024 12:59:45 -0400 (EDT)
-Received: from imap44 ([10.202.2.94])
-  by compute3.internal (MEProxy); Wed, 12 Jun 2024 12:59:45 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=flygoat.com; h=
-	cc:cc:content-transfer-encoding:content-type:content-type:date
-	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to; s=fm2; t=1718211584;
-	 x=1718297984; bh=Hv2WcLKXLnlZB4pxKAJHjjIuxbBLU4HHysJ2zfIjCN0=; b=
-	ivlepZVaDUCcS8PTqt42BfLAwK+KSzZeCtB+sva593ZHXtw9wc6KEFFOGv2yMdnk
-	eelhnPbGrMIOD3QoN0/HoUCyNL3xUJ0eQDVuaT4qfLeDjSh/WrhNB00elmNOcktJ
-	hJzc1+gDZu8W7kEonLCExkSEgswKPfmDPGMARb5gsUWebyhWCw2Bt/TcMq5C6Yue
-	TobOKhRm6uVQBOlqcDbygEQCNsDRyBoAdniAapxu9d5ohKc2jNjljLJG4zoo6O7u
-	B8NVKjRArktwxV2d45fSMjGWhlwnOxGPlNnAyjkpTGg1zE99WFMhgIb/3UKsZMFA
-	Se85pPyeE3eQbB9dxWLB3g==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1718211584; x=
-	1718297984; bh=Hv2WcLKXLnlZB4pxKAJHjjIuxbBLU4HHysJ2zfIjCN0=; b=Z
-	f5UuWr0wqIZAE8BMSl4VlSUs5mJhElVRuMDYdbrzSO81aXO55BwHPV2Q3SSdG0R9
-	EMH4lHLJ4D/9Raf9srD1yQe4d2WuXpnoQbE1VAxZCydNws7R9MytKIjbloXKuYtE
-	cJlLqGS6JnqFnzssjD6/9mRYz6lmmWcFE5esRVItMCRvHVAEqX0EDy/M3kWD+Uth
-	KQzTlLUDF4LQRJrhHZ8mYg/tgE9D7qn8DL1cuKwbbCi7u6Z8pVUBa0AbAYLmtJr9
-	adGHhljbKGDAzSAlLiuUHWfDx66WrEdTUBVaPDokEYcA1CsXEpMsBisYDVIk284j
-	QedFhsX5nKyvmuEr6MZEQ==
-X-ME-Sender: <xms:ANRpZma_V6G4s4hQYqIhpS_3Vt4YJCTVx1ZRBVJCnTO_TCvfwtiQLQ>
-    <xme:ANRpZpY-ULZoILlHQNvhFTgfDlD0kYqzKYonRlw77nRzv2_huLatkuMllzrX2h0Va
-    qRy5IMvYo_bRHO5MlQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrfedugedguddtiecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpefofgggkfgjfhffhffvvefutgfgsehtqhertderreejnecuhfhrohhmpedf
-    lfhirgiguhhnucgjrghnghdfuceojhhirgiguhhnrdihrghnghesfhhlhihgohgrthdrtg
-    homheqnecuggftrfgrthhtvghrnhepudefgeeftedugeehffdtheefgfevffelfefghefh
-    jeeugeevtefhudduvdeihefgnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpe
-    hmrghilhhfrhhomhepjhhirgiguhhnrdihrghnghesfhhlhihgohgrthdrtghomh
-X-ME-Proxy: <xmx:ANRpZg_CDXY4Lwo2CSLo8-U0p0in5jDg7z_6wC7m6WwnKI9K29AYCw>
-    <xmx:ANRpZoqG7MzZn68QzDkL0-bcpPdedsEe00XwsQKYl1icWv63nWnfXQ>
-    <xmx:ANRpZhoJEbHWJHGeD6XdNMs_0By0tBdjt76i0ki-yQzsw5OdrtrBkw>
-    <xmx:ANRpZmTYTCOUAueQ_GgU-2EPpJBTMOCN2ksBKVua7SDkNoZ9b2Bnew>
-    <xmx:ANRpZs1duLR81V24HuuyW4SmMnUsrZoDpmySND0vgJ3YQl74nN03hxFm>
-Feedback-ID: ifd894703:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-	id AB9DF36A0074; Wed, 12 Jun 2024 12:59:44 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.11.0-alpha0-515-g87b2bad5a-fm-20240604.001-g87b2bad5
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sgzt1hqs"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8BE35C116B1;
+	Wed, 12 Jun 2024 17:01:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1718211699;
+	bh=FtbtPkEu/CAJOaRMod1vFsE5eWvd/eF7e60q6ZZWNBg=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=sgzt1hqsw4z7D4sHmmUxoh06b0tjaL9KSZsFqQPFJD0/olIMiasYlPbxuGPCS8rWq
+	 SkMN60i5zdH/2goD1VYJYW504gw0f0GXaHaNxNYikijrBGCjwv33XqWh91sGD/Z4cT
+	 ttb/ZlRJ8ry2WzN2p8+wLlMRGgRvjfgBzZxmypl38eYb/w5pUL+ltDFNzDlf8BhHN/
+	 rvev+MSNQVbnNJc5ccNQ9DQn1GrxrZDpRUca3+eQY2/ly8/acY3I2ZSomVNCpp/VNu
+	 ERLNLwpsTQvNfKb8J7mnn/zoGPMvdiDDE29wrCXPyQGLPESMNIcNTcPhmKGXmNbNjd
+	 oGLO0eefq+FFA==
+Date: Wed, 12 Jun 2024 18:01:34 +0100
+From: Conor Dooley <conor@kernel.org>
+To: Jiaxun Yang <jiaxun.yang@flygoat.com>
+Cc: Paul Burton <paulburton@kernel.org>,
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzk+dt@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Serge Semin <fancer.lancer@gmail.com>, linux-mips@vger.kernel.org,
+	linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
+Subject: Re: [PATCH v2 5/6] dt-bindings: mips: Document mti,mips-cm
+Message-ID: <20240612-napping-feel-c12d52787c6d@spud>
+References: <20240612-cm_probe-v2-0-a5b55440563c@flygoat.com>
+ <20240612-cm_probe-v2-5-a5b55440563c@flygoat.com>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <ddb36d6c-b54f-4982-b9ca-48c022ce6eb8@app.fastmail.com>
-In-Reply-To: <20240612-unstuffed-figure-966c90af52bc@spud>
-References: <20240612-boston-syscon-v2-0-9f8e1a07fa63@flygoat.com>
- <20240612-boston-syscon-v2-7-9f8e1a07fa63@flygoat.com>
- <20240612-unstuffed-figure-966c90af52bc@spud>
-Date: Wed, 12 Jun 2024 17:59:24 +0100
-From: "Jiaxun Yang" <jiaxun.yang@flygoat.com>
-To: "Conor Dooley" <conor@kernel.org>
-Cc: "Lee Jones" <lee@kernel.org>, "Rob Herring" <robh@kernel.org>,
- "Krzysztof Kozlowski" <krzk+dt@kernel.org>,
- "Conor Dooley" <conor+dt@kernel.org>,
- "paulburton@kernel.org" <paulburton@kernel.org>,
- "Thomas Bogendoerfer" <tsbogend@alpha.franken.de>,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>
-Subject: Re: [PATCH v2 7/8] du-bindings: mips: cpu: Add img,mips compatible
-Content-Type: text/plain;charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="y5r+h1jTiZPlEeCq"
+Content-Disposition: inline
+In-Reply-To: <20240612-cm_probe-v2-5-a5b55440563c@flygoat.com>
+
+
+--y5r+h1jTiZPlEeCq
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
+On Wed, Jun 12, 2024 at 11:08:57AM +0100, Jiaxun Yang wrote:
+> Add devicetree binding documentation for MIPS Coherence Manager.
+>=20
+> Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+> ---
+> v2:
+>  - Better wording for register desc
+>  - cm -> coherency-manager
+>  - schema matches compatible
+> ---
+>  .../devicetree/bindings/mips/mti,mips-cm.yaml      | 38 ++++++++++++++++=
+++++++
+>  1 file changed, 38 insertions(+)
+>=20
+> diff --git a/Documentation/devicetree/bindings/mips/mti,mips-cm.yaml b/Do=
+cumentation/devicetree/bindings/mips/mti,mips-cm.yaml
+> new file mode 100644
+> index 000000000000..9f500804737d
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/mips/mti,mips-cm.yaml
+> @@ -0,0 +1,38 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/mips/mti,mips-cm.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: MIPS Coherence Manager
+> +
+> +description: |
 
+The | is not needed here.
 
-=E5=9C=A82024=E5=B9=B46=E6=9C=8812=E6=97=A5=E5=85=AD=E6=9C=88 =E4=B8=8B=E5=
-=8D=885:39=EF=BC=8CConor Dooley=E5=86=99=E9=81=93=EF=BC=9A
-> On Wed, Jun 12, 2024 at 12:56:26PM +0100, Jiaxun Yang wrote:
->> This compatible is used by boston.dts.
->>=20
->> Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
->> ---
->> note: This is a wildcard compatible for all MIPS CPUs,
->>       I think we should use something like "riscv" for riscv.
->
-> riscv systems, other than simulators etc are not meant to use the
-> "riscv" compatible. All of the real CPUs use "vendor,cpu", "riscv".
-> I'd suggest you add specific compatibles for your CPUs.
+Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
 
-Boston can be combined with many different CPUs, thus we need to have
-such compatibles.
+Thanks,
+Conor.
 
-Thanks
->
-> Thanks
-> Conor.
->
-[...]
+--y5r+h1jTiZPlEeCq
+Content-Type: application/pgp-signature; name="signature.asc"
 
---=20
-- Jiaxun
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZmnUbgAKCRB4tDGHoIJi
+0oOpAPwLiMLkcYTVmHudmjZ65NnDNEjy7hajwVhjYq8VALZWjAD/ScMoqm1gB3HV
+sAAsuOikAO4ecHkdjqnThXZ0Cv38UQQ=
+=l1vO
+-----END PGP SIGNATURE-----
+
+--y5r+h1jTiZPlEeCq--

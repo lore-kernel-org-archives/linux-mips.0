@@ -1,145 +1,295 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com [209.85.208.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9038D146019;
-	Thu, 13 Jun 2024 11:50:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 669AF145A14
+	for <linux-mips@vger.kernel.org>; Thu, 13 Jun 2024 14:18:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718279402; cv=none; b=MAc1zyYd+eMDgn+Twq1qtMsa+km+Kvi4KQu02PEMs9c9AU2AAGwwZ4iFAl/k3MzhOQc6fsZOakpAx/QYr1VFEK1bZa2+hus6OKe6HnVEzfKwqu6SywbHPvF9GnyicmmMeZVQeLUbMaYtt4SLRm5R93r2akRAxQfhgmd47W7VNsM=
+	t=1718288321; cv=none; b=kNDItw5GOWGSLw+gmZBN9qdSXdGnMAX1kAh3w57zfMLqSlg69ZEdNvk+3eMYrfM2ldcsS8FTUvuqj9yohU3SNuf936Zdzy2LLB8d0m6/JCr9zVde5ZpXXXUqycZQkc5A/M+Y8mqdl47VO/4twA5HPzdiXRhQp6dbbKvXYDquN7Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718279402; c=relaxed/simple;
-	bh=HwivC1YSyiPpQ5PwufJY8pxz6NX1ZCCTtPty8vus00c=;
-	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=hIcqwDYWiybZOnovlp22H3WvimLLnWEnTESvfVmdSmUecepqLUUyMEQbE2RYDN8cQspTyPXDWsL7GcQRBh2HcsbTPmBm20gqZAUAfb4KCsoIP3leqq8yT0+4/LJi6bqbmOP8IWxzqCeTW5X/SuCrt6UdY3ufa1PYPibO8H3+JSc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lGpdVmCY; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1718288321; c=relaxed/simple;
+	bh=85JEwVuIKe/KftRkpLke8Aoka5Lgv+YCkT+qp2fOU5U=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=DBz5h6lliVlX0rd1fiVubCmUUdOtgBr7SXonTZ3GCtx6Te0c/NdD0wXgGQEVHuFBOExv5d3HiiHeUgHzqrEh9QaK1E+Vlb+yYCXqfQIfj5kxKlz0g3XtqMCnzp+yvTZMbgCt1P/e0DJgKyTBQeUm4fdf0YRAWPtsAUZv2kd1Pm0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=tLfBRN3D; arc=none smtp.client-ip=209.85.208.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lGpdVmCY"
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 1D109C32786;
-	Thu, 13 Jun 2024 11:50:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1718279402;
-	bh=HwivC1YSyiPpQ5PwufJY8pxz6NX1ZCCTtPty8vus00c=;
-	h=From:Subject:Date:To:Cc:Reply-To:From;
-	b=lGpdVmCYExX99Xc46Lj/TebVuYnjjvN6k+MkH16R9gJhbuHFvdG3DcCYFwnqtaP+5
-	 uDa3xnEDHcb++oY7i1MhpY4J+Vwg4M45uy8ugUdQwWQU6ECJCj/5AG1hRH5PDqgKdA
-	 +Hb1jSEO++5PjvuFQKZtxN0kTijWWqiiQjRc/JLNUws63Cxt21dTq4HK3n0MFMEYPd
-	 yPSlhnu/rbingchOBGgiiOIxPm7bngCzC3QlywAWP6nw0V9ReN7dI2qX5c/d6hN8yG
-	 lNL0FcU7+K0xXgrL9juykFLJlQ++6/iC9mBmxvct8nauLhY8MavOrL49Gk5HMboD3g
-	 A/IyiYdr7yUUQ==
-Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 05653C27C4F;
-	Thu, 13 Jun 2024 11:50:02 +0000 (UTC)
-From: Keguang Zhang via B4 Relay <devnull+keguang.zhang.gmail.com@kernel.org>
-Subject: [PATCH v9 0/2] Add support for Loongson1 APB DMA
-Date: Thu, 13 Jun 2024 19:48:06 +0800
-Message-Id: <20240613-loongson1-dma-v9-0-6181f2c7dece@gmail.com>
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="tLfBRN3D"
+Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-57c83100c5fso1074954a12.3
+        for <linux-mips@vger.kernel.org>; Thu, 13 Jun 2024 07:18:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1718288318; x=1718893118; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=2wBzmun2RrCaRgPyNcy89ODI4aX7kCqGzkCYxhF3xnY=;
+        b=tLfBRN3Dc1oy1HFX8sK76unqXkHeH+h9HBReZv3Q03XfyneTzXEpmxqZuXj3OJpMJs
+         /cF+4VNYMJLhFVe01YGDWuPfin/BkU6gr7jT22cQg9tglgb8YhZXhfcOZkPytPNegntY
+         Kn9udAXQrzL8npscipfJvALpRmhC8t5rlmdbjb4FkIaeeBGNhGvs4xGiTsmxECEObLuO
+         0ynMDUeaBMEdjP0eUpR0/VFW69fM9H/H/3Xpsz7l5vmq1LdHU5MXpkFwpFF6FuVVQvL5
+         6I8pclo/9YZxE0ZqnUd2Pe6I7H9WOhxFVpEB4yRowEmIBTQTokXlP0jePi3B0o5E35RY
+         18dA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1718288318; x=1718893118;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=2wBzmun2RrCaRgPyNcy89ODI4aX7kCqGzkCYxhF3xnY=;
+        b=ewH9XYQxElzI1COprWzITZCsPt2gPmmY3l4o9ij903Hzk75/u2h5XGWcVcfKjAa1U6
+         jEAUHxrT3DwShzAE5Riie28HM3bYD8wjqhfIvPKl/xtBj6NZiRSvzD7ZU2tvmY8uTNtc
+         ZUPx0MxBYMalZk2Qk5smg1C6r2sZDxGjdYDYPcGaCBF8EfiNeFchdJeeMm3zACm7y7xd
+         Wx3QCExYzQKeBOyhH4wNvnSNZT4oK/HCBKPOulxHreRe7Ksuj98d5gfY+J4rnqNsNYOh
+         o7v/1OODX9LF9z+J2FgD1uzZtypkCpL4e+jhR0TjuoDyEBX/yU4FroV2wDUwUb0F54lD
+         y1JA==
+X-Forwarded-Encrypted: i=1; AJvYcCUpepNLjxOBYPH0HCSRticUQ1YjYyiqviyL9CviTqbHqf+1Vx7+yUCHacydocwFKU8AkejIb6V3YtVlh40F8A+25s5K2ASC1ptKtA==
+X-Gm-Message-State: AOJu0YzRekV4W95xPjAfZv8ELZePdpbRVwJLfEavVMvnarixGscIqM6c
+	i9I5V5Yra4TMcylVtXVnjatDBlbdb2rGd6B0RMBCH0JgWKpwPsUvJbwGCEHi+8VL3N3CQP0xZ2w
+	tE7AYxXA4SIRaPEbEuBY1CuXeEdlJOtuTK5s6
+X-Google-Smtp-Source: AGHT+IGGR91TbvvdCO5M/lcoYEexAy68BO6MkHDSEDuQZJK4BYVHQSKOXB6UDTw4lBZYreUPv3qYPyzkPkZtS6UL4po=
+X-Received: by 2002:a17:907:94d1:b0:a6f:4bd5:16bb with SMTP id
+ a640c23a62f3a-a6f4bd51782mr329005366b.56.1718288317233; Thu, 13 Jun 2024
+ 07:18:37 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-B4-Tracking: v=1; b=H4sIAHbcamYC/12Oy07DMBBFf6XyGkfjcf1ixX8gFm48SSyaGNklA
- qr8O3YXEGV5F+fcc2eFcqTCnk93lmmNJaalDvd0Yv3kl5F4DHUzBJRCIPBrSstY0iJ4mD0XWvq
- BlAF7cawyH5mG+PXwvb7VPeQ089uUyf9ZwKEVKJySncKzBssFf6fxs551P+3yZZx9vHZ9mptxi
- uWW8vcjcNXN2yxnkEIfWlbNgTsIhL3s+/qyE7WW1exodEfaVFqacFG2NgVSR9r+0xrMkbaVHpx
- zGFAZVLCnt237BX4MalxoAQAA
-To: Keguang Zhang <keguang.zhang@gmail.com>, Vinod Koul <vkoul@kernel.org>, 
- Rob Herring <robh@kernel.org>, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- Conor Dooley <conor+dt@kernel.org>, 
- Krzysztof Kozlowski <krzk+dt@kernel.org>
-Cc: linux-mips@vger.kernel.org, dmaengine@vger.kernel.org, 
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
- Conor Dooley <conor.dooley@microchip.com>, 
- Jiaxun Yang <jiaxun.yang@flygoat.com>
-X-Mailer: b4 0.13.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1718279399; l=2719;
- i=keguang.zhang@gmail.com; s=20231129; h=from:subject:message-id;
- bh=HwivC1YSyiPpQ5PwufJY8pxz6NX1ZCCTtPty8vus00c=;
- b=d0BjInj6FisyYPLtdiANsNixRagpX8lGqMJQCHH+96dGLwb3mFSSR7vPIKXovo7K6hRhP1y8c
- kaSOXPA+GndDe9P/kUlhGU7G0QUx/YG0D7DiHhLFp9xNvZme6mGSMYr
-X-Developer-Key: i=keguang.zhang@gmail.com; a=ed25519;
- pk=FMKGj/JgKll/MgClpNZ3frIIogsh5e5r8CeW2mr+WLs=
-X-Endpoint-Received: by B4 Relay for keguang.zhang@gmail.com/20231129 with
- auth_id=102
-X-Original-From: Keguang Zhang <keguang.zhang@gmail.com>
-Reply-To: keguang.zhang@gmail.com
+References: <20240613013557.1169171-1-almasrymina@google.com>
+ <20240613013557.1169171-6-almasrymina@google.com> <322e7317-61dc-4f1e-8706-7db6f5f7a030@bp.renesas.com>
+In-Reply-To: <322e7317-61dc-4f1e-8706-7db6f5f7a030@bp.renesas.com>
+From: Mina Almasry <almasrymina@google.com>
+Date: Thu, 13 Jun 2024 07:18:23 -0700
+Message-ID: <CAHS8izO6T-CSgdfGFw8nMu1EMLz7ZOa_t9v+YCO8jXEM_=iT7A@mail.gmail.com>
+Subject: Re: [PATCH net-next v12 05/13] page_pool: convert to use netmem
+To: Paul Barker <paul.barker.ct@bp.renesas.com>
+Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-doc@vger.kernel.org, linux-alpha@vger.kernel.org, 
+	linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org, 
+	sparclinux@vger.kernel.org, linux-renesas-soc@vger.kernel.org, 
+	linux-trace-kernel@vger.kernel.org, linux-arch@vger.kernel.org, 
+	bpf@vger.kernel.org, linux-kselftest@vger.kernel.org, 
+	linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org, 
+	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	Donald Hunter <donald.hunter@gmail.com>, Jonathan Corbet <corbet@lwn.net>, 
+	Richard Henderson <richard.henderson@linaro.org>, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, 
+	Matt Turner <mattst88@gmail.com>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
+	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>, Helge Deller <deller@gmx.de>, 
+	Andreas Larsson <andreas@gaisler.com>, Sergey Shtylyov <s.shtylyov@omp.ru>, 
+	Jesper Dangaard Brouer <hawk@kernel.org>, Ilias Apalodimas <ilias.apalodimas@linaro.org>, 
+	Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu <mhiramat@kernel.org>, 
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Arnd Bergmann <arnd@arndb.de>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, Steffen Klassert <steffen.klassert@secunet.com>, 
+	Herbert Xu <herbert@gondor.apana.org.au>, David Ahern <dsahern@kernel.org>, 
+	Willem de Bruijn <willemdebruijn.kernel@gmail.com>, Shuah Khan <shuah@kernel.org>, 
+	Sumit Semwal <sumit.semwal@linaro.org>, =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>, 
+	Bagas Sanjaya <bagasdotme@gmail.com>, Christoph Hellwig <hch@infradead.org>, 
+	Nikolay Aleksandrov <razor@blackwall.org>, Pavel Begunkov <asml.silence@gmail.com>, David Wei <dw@davidwei.uk>, 
+	Jason Gunthorpe <jgg@ziepe.ca>, Yunsheng Lin <linyunsheng@huawei.com>, 
+	Shailend Chand <shailend@google.com>, Harshitha Ramamurthy <hramamurthy@google.com>, 
+	Shakeel Butt <shakeel.butt@linux.dev>, Jeroen de Borst <jeroendb@google.com>, 
+	Praveen Kaligineedi <pkaligineedi@google.com>, linux-mm@kvack.org, 
+	Matthew Wilcox <willy@infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Add the driver and dt-binding document for Loongson1 APB DMA.
+On Thu, Jun 13, 2024 at 1:36=E2=80=AFAM Paul Barker
+<paul.barker.ct@bp.renesas.com> wrote:
+>
+> On 13/06/2024 02:35, Mina Almasry wrote:
+> > Abstrace the memory type from the page_pool so we can later add support
+>
+> s/Abstrace/Abstract/
+>
 
----
-Changes in v9:
-- Fix all the errors and warnings when building with W=1 and C=1
-- Link to v8: https://lore.kernel.org/r/20240607-loongson1-dma-v8-0-f9992d257250@gmail.com
+Thanks, will do.
 
-Changes in v8:
-- Change 'interrupts' property to an items list
-- Link to v7: https://lore.kernel.org/r/20240329-loongson1-dma-v7-0-37db58608de5@gmail.com
+> > for new memory types. Convert the page_pool to use the new netmem type
+> > abstraction, rather than use struct page directly.
+> >
+> > As of this patch the netmem type is a no-op abstraction: it's always a
+> > struct page underneath. All the page pool internals are converted to
+> > use struct netmem instead of struct page, and the page pool now exports
+> > 2 APIs:
+> >
+> > 1. The existing struct page API.
+> > 2. The new struct netmem API.
+> >
+> > Keeping the existing API is transitional; we do not want to refactor al=
+l
+> > the current drivers using the page pool at once.
+> >
+> > The netmem abstraction is currently a no-op. The page_pool uses
+> > page_to_netmem() to convert allocated pages to netmem, and uses
+> > netmem_to_page() to convert the netmem back to pages to pass to mm APIs=
+,
+> >
+> > Follow up patches to this series add non-paged netmem support to the
+> > page_pool. This change is factored out on its own to limit the code
+> > churn to this 1 patch, for ease of code review.
+> >
+> > Signed-off-by: Mina Almasry <almasrymina@google.com>
+> >
+> > ---
+> >
+> > v12:
+> > - Fix allmodconfig build error. Very recently renesas/ravb_main.c added
+> >   a dependency on page_pool that I missed in my rebase. The dependency
+> >   calls page_pool_alloc() directly as it wants to set a custom gfp_mask=
+,
+> >   which is unique as all other drivers call a wrapper to that function.
+> >   Fix it by adding netmem_to_page() in the driver.> - Fix printing netm=
+em trace printing (Pavel).
+> >
+> > v11:
+> > - Fix typing to remove sparse warning. (Paolo/Steven)
+> >
+> > v9:
+> > - Fix sparse error (Simon).
+> >
+> > v8:
+> > - Fix napi_pp_put_page() taking netmem instead of page to fix
+> >   patch-by-patch build error.
+> > - Add net/netmem.h include in this patch to fix patch-by-patch build
+> >   error.
+> >
+> > v6:
+> >
+> > - Rebased on top of the merged netmem_ref type.
+> >
+> > Cc: linux-mm@kvack.org
+> > Cc: Matthew Wilcox <willy@infradead.org>
+> >
+> > ---
+> >  drivers/net/ethernet/renesas/ravb_main.c |   5 +-
+> >  include/linux/skbuff_ref.h               |   4 +-
+> >  include/net/netmem.h                     |  15 ++
+> >  include/net/page_pool/helpers.h          | 120 ++++++---
+> >  include/net/page_pool/types.h            |  14 +-
+> >  include/trace/events/page_pool.h         |  30 +--
+> >  net/bpf/test_run.c                       |   5 +-
+> >  net/core/page_pool.c                     | 304 ++++++++++++-----------
+> >  net/core/skbuff.c                        |   8 +-
+> >  9 files changed, 305 insertions(+), 200 deletions(-)
+> >
+> > diff --git a/drivers/net/ethernet/renesas/ravb_main.c b/drivers/net/eth=
+ernet/renesas/ravb_main.c
+> > index c1546b916e4ef..093236ebfeecb 100644
+> > --- a/drivers/net/ethernet/renesas/ravb_main.c
+> > +++ b/drivers/net/ethernet/renesas/ravb_main.c
+> > @@ -303,8 +303,9 @@ ravb_alloc_rx_buffer(struct net_device *ndev, int q=
+, u32 entry, gfp_t gfp_mask,
+> >
+> >       rx_buff =3D &priv->rx_buffers[q][entry];
+> >       size =3D info->rx_buffer_size;
+> > -     rx_buff->page =3D page_pool_alloc(priv->rx_pool[q], &rx_buff->off=
+set,
+> > -                                     &size, gfp_mask);
+> > +     rx_buff->page =3D netmem_to_page(page_pool_alloc(priv->rx_pool[q]=
+,
+> > +                                                    &rx_buff->offset,
+> > +                                                    &size, gfp_mask));
+> >       if (unlikely(!rx_buff->page)) {
+> >               /* We just set the data size to 0 for a failed mapping wh=
+ich
+> >                * should prevent DMA from happening...
+>
+> [snip]
+>
+> >
+> > -static inline struct page *page_pool_alloc(struct page_pool *pool,
+> > -                                        unsigned int *offset,
+> > -                                        unsigned int *size, gfp_t gfp)
+> > +static inline netmem_ref page_pool_alloc(struct page_pool *pool,
+> > +                                      unsigned int *offset,
+> > +                                      unsigned int *size, gfp_t gfp)
+> >  {
+> >       unsigned int max_size =3D PAGE_SIZE << pool->p.order;
+> > -     struct page *page;
+> > +     netmem_ref netmem;
+> >
+> >       if ((*size << 1) > max_size) {
+> >               *size =3D max_size;
+> >               *offset =3D 0;
+> > -             return page_pool_alloc_pages(pool, gfp);
+> > +             return page_pool_alloc_netmem(pool, gfp);
+> >       }
+> >
+> > -     page =3D page_pool_alloc_frag(pool, offset, *size, gfp);
+> > -     if (unlikely(!page))
+> > -             return NULL;
+> > +     netmem =3D page_pool_alloc_frag_netmem(pool, offset, *size, gfp);
+> > +     if (unlikely(!netmem))
+> > +             return 0;
+> >
+> >       /* There is very likely not enough space for another fragment, so=
+ append
+> >        * the remaining size to the current fragment to avoid truesize
+> > @@ -140,7 +142,7 @@ static inline struct page *page_pool_alloc(struct p=
+age_pool *pool,
+> >               pool->frag_offset =3D max_size;
+> >       }
+> >
+> > -     return page;
+> > +     return netmem;
+> >  }
+> >
+> >  /**
+> > @@ -154,7 +156,7 @@ static inline struct page *page_pool_alloc(struct p=
+age_pool *pool,
+> >   * utilization and performance penalty.
+> >   *
+> >   * Return:
+> > - * Return allocated page or page fragment, otherwise return NULL.
+> > + * Return allocated page or page fragment, otherwise return 0.
+> >   */
+> >  static inline struct page *page_pool_dev_alloc(struct page_pool *pool,
+> >                                              unsigned int *offset,
+> > @@ -162,7 +164,7 @@ static inline struct page *page_pool_dev_alloc(stru=
+ct page_pool *pool,
+> >  {
+> >       gfp_t gfp =3D (GFP_ATOMIC | __GFP_NOWARN);
+> >
+> > -     return page_pool_alloc(pool, offset, size, gfp);
+> > +     return netmem_to_page(page_pool_alloc(pool, offset, size, gfp));
+> >  }
+>
+> I find this API change confusing - why should page_pool_alloc() return a
+> netmem_ref but page_pool_dev_alloc() return a struct page *?
+>
+> Is there any reason to change page_pool_alloc() anyway? It calls
+> page_pool_alloc_pages() or page_pool_alloc_frag() as appropriate, both
+> of which your patch already converts to wrappers around the appropriate
+> _netmem() functions. In all instances where page_pool_alloc() is called
+> in this patch, you wrap it with netmem_to_page() anyway, there are no
+> calls to page_pool_alloc() added which actually want a netmem_ref.
+>
 
-Changes in v7:
-- Change the comptible to 'loongson,ls1*-apbdma' (suggested by Huacai Chen)
-- Update the title and description part accordingly
-- Rename the file to loongson,ls1b-apbdma.yaml
-- Add a compatible string for LS1A
-- Delete minItems of 'interrupts'
-- Change patterns of 'interrupt-names' to const
-- Rename the file to loongson1-apb-dma.c to keep the consistency
-- Update Kconfig and Makefile accordingly
-- Link to v6: https://lore.kernel.org/r/20240316-loongson1-dma-v6-0-90de2c3cc928@gmail.com
+The general gist is that the page_pool API is being converted to use
+netmem_ref instead of page. The existing API, which uses struct page,
+is kept around transitionally, but meant to be removed and everything
+moved to netmem.
 
-Changes in v6:
-- Change the compatible to the fallback
-- Implement .device_prep_dma_cyclic for Loongson1 sound driver,
-- as well as .device_pause and .device_resume.
-- Set the limitation LS1X_DMA_MAX_DESC and put all descriptors
-- into one page to save memory
-- Move dma_pool_zalloc() into ls1x_dma_alloc_desc()
-- Drop dma_slave_config structure
-- Use .remove_new instead of .remove
-- Use KBUILD_MODNAME for the driver name
-- Improve the debug information
-- Some minor fixes
+APIs that current drivers depend on, like page_pool_dev_alloc(), I've
+kept as struct page and added netmem versions when needed. APIs that
+had no external users, like page_pool_alloc(), I took the opportunity
+to move them to netmem immediately. But you recently depended on that.
 
-Changes in v5:
-- Add the dt-binding document
-- Add DT support
-- Use DT information instead of platform data
-- Use chan_id of struct dma_chan instead of own id
-- Use of_dma_xlate_by_chan_id() instead of ls1x_dma_filter()
-- Update the author information to my official name
-
-Changes in v4:
-- Use dma_slave_map to find the proper channel.
-- Explicitly call devm_request_irq() and tasklet_kill().
-- Fix namespace issue.
-- Some minor fixes and cleanups.
-
-Changes in v3:
-- Rename ls1x_dma_filter_fn to ls1x_dma_filter.
-
-Changes in v2:
-- Change the config from 'DMA_LOONGSON1' to 'LOONGSON1_DMA',
-- and rearrange it in alphabetical order in Kconfig and Makefile.
-- Fix comment style.
-
----
-Keguang Zhang (2):
-      dt-bindings: dma: Add Loongson-1 APB DMA
-      dmaengine: Loongson1: Add Loongson-1 APB DMA driver
-
- .../bindings/dma/loongson,ls1b-apbdma.yaml         |  67 +++
- drivers/dma/Kconfig                                |   9 +
- drivers/dma/Makefile                               |   1 +
- drivers/dma/loongson1-apb-dma.c                    | 665 +++++++++++++++++++++
- 4 files changed, 742 insertions(+)
----
-base-commit: d35b2284e966c0bef3e2182a5c5ea02177dd32e4
-change-id: 20231120-loongson1-dma-163afe5708b9
-
-Best regards,
--- 
-Keguang Zhang <keguang.zhang@gmail.com>
+I thought page_pool_alloc() was an internal function to the page_pool
+not meant to be called from drivers, but the documentation actually
+mentions it. Seems like I need to keep it as page* function
+transitionally as well. I'll look into making this change you
+suggested, there is
+no needed page_pool_alloc() caller at the moment.
 
 
+--
+Thanks,
+Mina

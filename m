@@ -1,32 +1,32 @@
 Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 71FB61AC42B;
-	Thu, 20 Jun 2024 14:46:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8ACB01B1518;
+	Thu, 20 Jun 2024 16:07:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.175.24.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718894770; cv=none; b=qAoV68mfcC0bqR/o3bTq2Rr3xy0w9VQwX9xq1rm15SxSvorJaH2dOI1WDyjyXGL/Oy+vnaJAbxgOOmSrtVb1NKjDWgtXozsSoaAN3uyGW+Xu4UGt4KwQq36hTfrMnfFWc+rKiwryJT2mt2MIPIvXnR20HRyz538OeoUgCUi+3wI=
+	t=1718899682; cv=none; b=G50I6VRL7vAYqVthdgIoJSnzrEAsmnL0FS+DgpRgJPA9nBudFJukd5rK5doJwveQUzEMytDGCiL/6hPtu/XhREoExm0uwKAq2tqSJw5mNS6laZHESBT27HXDV1vV7yc1CrNLmc+VtD74No3PhHBXbB+RQm6x7QWgRIhMBfx616U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718894770; c=relaxed/simple;
-	bh=JaVmcivnWj+9Be8PMYO7S0M/Z8S5Cwc4xP0uTz/4Mac=;
+	s=arc-20240116; t=1718899682; c=relaxed/simple;
+	bh=GNVc8/vmFMgwRhMEy2TuqlraiLah1mxz5w2FWDs8fpI=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ct+1J6271FL7WtCkchJsg7J321+Liqc87Gp5u7KJhOmHExVXxPlmPn9pk/YXNAneC08sZRTlOfIIpQLieT38KqshtGpYmILESvk3ghjA0WXLv5VO3t6yEF60psfTlz4rDssswUiWqvrHW8QbGcZjjvhP9a/knkThVVhEz6VoEx4=
+	 Content-Type:Content-Disposition:In-Reply-To; b=eHIzZzHP9BCQSR7ceO8gbmOhMC6RgY2zgISX9wIq0rpZ+aWqCYdGa7Le2TDINR2nF1+k3fpgy1ZIYbO3Ceucf2abgc1yk3eGm7O1Q0UiNZ03yfsmO+4V4avhmHrJ6zo4Cvi/oJMD4zFN5xuMW6C2co4F36HNVo17JV4i4jva9tg=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de; spf=pass smtp.mailfrom=alpha.franken.de; arc=none smtp.client-ip=193.175.24.41
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alpha.franken.de
 Received: from uucp by elvis.franken.de with local-rmail (Exim 3.36 #1)
-	id 1sKJ2m-0000tJ-00; Thu, 20 Jun 2024 16:45:44 +0200
+	id 1sKKK1-0001mv-00; Thu, 20 Jun 2024 18:07:37 +0200
 Received: by alpha.franken.de (Postfix, from userid 1000)
-	id C46EFC0411; Thu, 20 Jun 2024 16:31:40 +0200 (CEST)
-Date: Thu, 20 Jun 2024 16:31:40 +0200
+	id 0F12BC0120; Thu, 20 Jun 2024 18:06:28 +0200 (CEST)
+Date: Thu, 20 Jun 2024 18:06:28 +0200
 From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To: Jeff Johnson <quic_jjohnson@quicinc.com>
-Cc: Herbert Xu <herbert@gondor.apana.org.au>,
-	"David S. Miller" <davem@davemloft.net>,
-	linux-crypto@vger.kernel.org, linux-mips@vger.kernel.org,
-	linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH] crypto: mips/poly1305 - add missing MODULE_DESCRIPTION()
- macro
-Message-ID: <ZnQ9TK9q/g3mSWga@alpha.franken.de>
-References: <20240618-md-mips-arch-mips-crypto-v1-1-1ba592871112@quicinc.com>
+To: Jiaxun Yang <jiaxun.yang@flygoat.com>
+Cc: Jonas Gorski <jonas.gorski@gmail.com>,
+	"Maciej W. Rozycki" <macro@orcam.me.uk>, linux-mips@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 2/4] MIPS: Introduce config options for LLSC
+ availability
+Message-ID: <ZnRThFlqqyDEprGz@alpha.franken.de>
+References: <20240612-mips-llsc-v2-0-a42bd5562bdb@flygoat.com>
+ <20240612-mips-llsc-v2-2-a42bd5562bdb@flygoat.com>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
@@ -35,37 +35,72 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240618-md-mips-arch-mips-crypto-v1-1-1ba592871112@quicinc.com>
+In-Reply-To: <20240612-mips-llsc-v2-2-a42bd5562bdb@flygoat.com>
 
-On Tue, Jun 18, 2024 at 06:01:29PM -0700, Jeff Johnson wrote:
-> With ARCH=mips, make allmodconfig && make W=1 C=1 reports:
-> WARNING: modpost: missing MODULE_DESCRIPTION() in arch/mips/crypto/poly1305-mips.o
+On Wed, Jun 12, 2024 at 10:53:30AM +0100, Jiaxun Yang wrote:
+> Introduce CPU_HAS_LLSC and CPU_MAY_HAVE_LLSC to determine availability
+> of LLSC and Kconfig level.
 > 
-> Add the missing invocation of the MODULE_DESCRIPTION() macro.
+> They are both true for almost all supported CPUs besides:
 > 
-> Signed-off-by: Jeff Johnson <quic_jjohnson@quicinc.com>
+> R3000: Doesn't have LLSC, so both false.
+> R5000 series: LLSC is unusable for 64bit kernel, so both false.
+> R10000: Some platforms decided to opt-out LLSC due to errata, so only
+> 	select CPU_MAY_HAVE_LLSC.
+> WAR_4KC_LLSC: LLSC is buggy on certain reversion, which can be detected
+> 	at cpu-probe or platform override, so only select CPU_MAY_HAVE_LLSC.
+> 
+> Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
 > ---
->  arch/mips/crypto/poly1305-glue.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/arch/mips/crypto/poly1305-glue.c b/arch/mips/crypto/poly1305-glue.c
-> index bc6110fb98e0..867728ee535a 100644
-> --- a/arch/mips/crypto/poly1305-glue.c
-> +++ b/arch/mips/crypto/poly1305-glue.c
-> @@ -186,6 +186,7 @@ static void __exit mips_poly1305_mod_exit(void)
->  module_init(mips_poly1305_mod_init);
->  module_exit(mips_poly1305_mod_exit);
->  
-> +MODULE_DESCRIPTION("Poly1305 transform (MIPS accelerated");
->  MODULE_LICENSE("GPL v2");
->  MODULE_ALIAS_CRYPTO("poly1305");
->  MODULE_ALIAS_CRYPTO("poly1305-mips");
-> 
+> v2: Make cpu_has_llsc logic clear
 > ---
-> base-commit: 6ba59ff4227927d3a8530fc2973b80e94b54d58f
-> change-id: 20240618-md-mips-arch-mips-crypto-19785d95418c
+>  arch/mips/Kconfig                    | 20 ++++++++++++++++++++
+>  arch/mips/include/asm/cpu-features.h |  9 ++++++++-
+>  2 files changed, 28 insertions(+), 1 deletion(-)
+> 
+> diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
+> index 8ac467c1f9c8..50260a7e9b54 100644
+> --- a/arch/mips/Kconfig
+> +++ b/arch/mips/Kconfig
+> @@ -1548,6 +1548,7 @@ config CPU_R3000
+>  config CPU_R4300
+>  	bool "R4300"
+>  	depends on SYS_HAS_CPU_R4300
+> +	select CPU_HAS_LLSC
+>  	select CPU_SUPPORTS_32BIT_KERNEL
+>  	select CPU_SUPPORTS_64BIT_KERNEL
+>  	help
+> @@ -1556,6 +1557,7 @@ config CPU_R4300
+>  config CPU_R4X00
+>  	bool "R4x00"
+>  	depends on SYS_HAS_CPU_R4X00
+> +	select CPU_HAS_LLSC
+>  	select CPU_SUPPORTS_32BIT_KERNEL
+>  	select CPU_SUPPORTS_64BIT_KERNEL
+>  	select CPU_SUPPORTS_HUGEPAGES
+> @@ -1566,6 +1568,7 @@ config CPU_R4X00
+>  config CPU_TX49XX
+>  	bool "R49XX"
+>  	depends on SYS_HAS_CPU_TX49XX
+> +	select CPU_HAS_LLSC
+>  	select CPU_HAS_PREFETCH
+>  	select CPU_SUPPORTS_32BIT_KERNEL
+>  	select CPU_SUPPORTS_64BIT_KERNEL
+> @@ -1574,6 +1577,7 @@ config CPU_TX49XX
+>  config CPU_R5000
+>  	bool "R5000"
+>  	depends on SYS_HAS_CPU_R5000
+> +	select CPU_HAS_LLSC if !64BIT
+>  	select CPU_SUPPORTS_32BIT_KERNEL
+>  	select CPU_SUPPORTS_64BIT_KERNEL
+>  	select CPU_SUPPORTS_HUGEPAGES
+> @@ -1583,6 +1587,7 @@ config CPU_R5000
+>  config CPU_R5500
+>  	bool "R5500"
+>  	depends on SYS_HAS_CPU_R5500
+> +	select CPU_HAS_LLSC
 
-applied to mips-next.
+do you have an user manual stating that the R5k bug is fixed on this CPUs ?
 
 Thomas.
 

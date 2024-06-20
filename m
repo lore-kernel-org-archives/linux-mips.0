@@ -1,119 +1,127 @@
-Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from wfhigh7-smtp.messagingengine.com (wfhigh7-smtp.messagingengine.com [64.147.123.158])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 45A221B5824;
-	Thu, 20 Jun 2024 16:27:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 76E1F1BA889;
+	Thu, 20 Jun 2024 16:31:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.158
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718900858; cv=none; b=EXciMLlA7B+bJ0/Pv4FwXUzwCH1CSOoWFCOkPB2AUhKKQdnQDkcNn3xdIcQ6pW4XMF7VmeuZZ4zTWHDOtK2pMA4OumDDlcSw70Vsk/bLhQU82boUH7d4xuzqnP7TKW5x6ZXAIjM84Y9X5t62baHqXf6dpcFAzSBiSlZMPQg9M9w=
+	t=1718901070; cv=none; b=cXl4MyQjel5R8qicUw2p8pB/Ob8fsV/QaNgCphJdo6i8WHYBemjDNjBTgqnA/0R+2bVHHrIKK5w2+ioWf7Juqp861ooznx7l+FDydyrPQf0vF6dLWAiWIPIftUI74T1lDtc0DkRTNtFvQhov1+nNhU3gpl144VVNNnpAQo0Ds3w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718900858; c=relaxed/simple;
-	bh=apJ0/kNo2UZsYa4YtPzkJl8ibvA2beUTWa1fEwZmGvc=;
-	h=Message-ID:Date:From:To:Cc:Subject:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=mDcS/PWt2DAI6WuuVALH4ZhJ/6Q7+SrZDT4FrzJHq+KBoBohF9O9Qb51E9aHbXDvrWWmyU3Pz7EEB5V9Bb/qESLAxbIFBCGLvQCKj41ADTBzmKmKEtmDm+Yz9OKjcu0vadd6L4uSgZStOWTM2NAcmgG/+Hu7DNJL8pqKWxd1VYU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=IO8PASGV; arc=none smtp.client-ip=209.85.128.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1718901070; c=relaxed/simple;
+	bh=xMb013uPEOBTWMmM5zBsJ8UlvQ2ArjFJ+gwip7i51Z0=;
+	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
+	 Subject:Content-Type; b=qETYUKnZcpcQFLao7nIyov7P7Pf8ZmzthJqyo73PpN4EgWrVYahDqSqAyJpmWaTQR5IhQrTjMn5FaecNO3TJWnNda1k7lCrQrn1djC/Syn9f/xwUBaFVJjlHq19UfJdU3Z9tIvNEALJMAd5NYU5nE7Lo81mkvIvJymD70Ecbx+g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=flygoat.com; spf=pass smtp.mailfrom=flygoat.com; dkim=pass (2048-bit key) header.d=flygoat.com header.i=@flygoat.com header.b=hNLxRoxR; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=VUGOWjv2; arc=none smtp.client-ip=64.147.123.158
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=flygoat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flygoat.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IO8PASGV"
-Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-42189d3c7efso12830465e9.2;
-        Thu, 20 Jun 2024 09:27:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1718900855; x=1719505655; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:subject:cc
-         :to:from:date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=YyMK6ZV0xdCVF8y1Q7YEZ0a3pJ8CrAW6HMQoj1k8taw=;
-        b=IO8PASGVC+7Gcy6xVJH+uKWaA5IHBYgcrplRhXkiSoyifKu+qnm4k6wUI/b4Z4sqp7
-         r3bVBF8Xw9Wnq+fT+qkVzi620e/0bCHGDGrRlN6VxUvMJ0jXZw9f22GOCYjomDfmBeMp
-         FMN4uy5iZaG3Ze69x63UKUo2fAc7ot7VSw+LKuIu1z57SlLgvNpMJ3Zumy2innyDCHY+
-         VG5BnHwN3pCHKYomQOnr7ARFSfZDoyTsbqyAJGyoFpkQgKbQPweYbFivF16EwMK82sPk
-         03NzvNQNK9qM/vSjgXP42QwyOI+dpHloYn8a/RXLA5E89O8s925+PSy26ILlN7W0lgRP
-         HLvw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1718900855; x=1719505655;
-        h=in-reply-to:content-disposition:mime-version:references:subject:cc
-         :to:from:date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=YyMK6ZV0xdCVF8y1Q7YEZ0a3pJ8CrAW6HMQoj1k8taw=;
-        b=Um37RPQNV3d+EURU7gzWz5KYEDo8JAqx1zzi6hd0JEA32Z7nnDBH2b80LsQ87cPC0u
-         qGFvWdLBYZkgogG2iKmKBlCYBRiWozVjvoMb7qgarmT262dKPSplrsAT4Ql3QbKAxHwn
-         ob2bhCfMoAO7DB7iFaisRahlRVUDKWO0pJSr57KA3QwxiHOePIw+fze700Qw25Hs4tmb
-         Gz9KB86aP1gygyaphOrDy2TExcFwmPe45ufCWP4WuZ7vAeF/3sCFRpGgONTVdIhVYGF7
-         3wQt1qkK10Y386WEH5gajD7JCNoY4YF5otagf1fDYYsiP4uZ6S0thVV3kTNdTq8MUiqL
-         XexQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWWiXWW+Ill0lBs39WZGppOxUyEwXglhiPH4EMJOuGwHMpNpBBkVBTDr3/uMVQvQSAD5uK7RzouU63G91f/OwQI+sRnhSk/R40r0fUp3VZCUlJqoW6OWSZUf5rHdl9FESsnLS3yuE3gpj6AnZR/vTyZBfkh3Q6CG6xfzScIy8hsjqzP9UI=
-X-Gm-Message-State: AOJu0YymKkNYL+gFy4Kz39KQgJ0ZxeMfwalmin/ELLPEziyx9WUwV3Po
-	EXXw5drKd/i0cWYFg1/qRsPgrjZUrTwrwx5JFUxdE0wjD1V4XNrz
-X-Google-Smtp-Source: AGHT+IFofNUfeVidCg819q1QRgkprtjFmMX3Cf/3zkluvCmtE81tZYV+0Y/oXvxwcBZq+A8+VnLFUg==
-X-Received: by 2002:a5d:6152:0:b0:362:3358:48cd with SMTP id ffacd0b85a97d-363170ed20dmr4784758f8f.6.1718900855370;
-        Thu, 20 Jun 2024 09:27:35 -0700 (PDT)
-Received: from Ansuel-XPS. (93-34-90-105.ip49.fastwebnet.it. [93.34.90.105])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4247d0be841sm30518035e9.20.2024.06.20.09.27.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 Jun 2024 09:27:34 -0700 (PDT)
-Message-ID: <66745876.050a0220.24048.c6a0@mx.google.com>
-X-Google-Original-Message-ID: <ZnRKsOhGjKdQcpus@Ansuel-XPS.>
-Date: Thu, 20 Jun 2024 17:28:48 +0200
-From: Christian Marangi <ansuelsmth@gmail.com>
-To: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Cc: Hauke Mehrtens <hauke@hauke-m.de>,
-	=?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzk+dt@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Florian Fainelli <florian.fainelli@broadcom.com>,
-	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>,
-	=?iso-8859-1?Q?=C1lvaro_Fern=E1ndez?= Rojas <noltari@gmail.com>,
-	linux-mips@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v7 2/5] mips: bmips: rework and cache CBR addr handling
-References: <20240611113538.9004-1-ansuelsmth@gmail.com>
- <20240611113538.9004-3-ansuelsmth@gmail.com>
- <ZnQ/auhuPWb1SGjb@alpha.franken.de>
+	dkim=pass (2048-bit key) header.d=flygoat.com header.i=@flygoat.com header.b="hNLxRoxR";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="VUGOWjv2"
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+	by mailfhigh.west.internal (Postfix) with ESMTP id 5EF341800131;
+	Thu, 20 Jun 2024 12:31:07 -0400 (EDT)
+Received: from imap44 ([10.202.2.94])
+  by compute3.internal (MEProxy); Thu, 20 Jun 2024 12:31:07 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=flygoat.com; h=
+	cc:cc:content-transfer-encoding:content-type:content-type:date
+	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to; s=fm3; t=1718901066;
+	 x=1718987466; bh=tvZfZePdD8ufJsjGr1KQrYgsonsCq0tGwrSVJY/6Mmc=; b=
+	hNLxRoxRW4mVdw7y1u/WTiTWqNZ8+YhBwV57h6TpiXs0UMVlqAHZHukwDJQ5ZqZB
+	SUIYCzxeDRYVeX3WwqSJDuMAlBxNTGKuI7hBRKBz5mqGPUT5rM0iK19n4QUV6B8f
+	1Z7cQFBpvAGWTP04Zoh4SKyZRyGZi6OWAzj5s7R1h7mnjzoc5nSC3T2hMk+UmIkh
+	pqJ7EQKFmkpOHiqkDdf78kWcTbWKpCXGrk8guXqWg9Vy0zoJlz5EIRNg3V+g4CKH
+	xOpoffIs7DHSezlpodhM+UK6Bh08wnWcCca01swpxIBi7lUyuXOIxwpRzCBWo+Yt
+	gCG6kKh3Z10zZ1sgeYL3pA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1718901066; x=
+	1718987466; bh=tvZfZePdD8ufJsjGr1KQrYgsonsCq0tGwrSVJY/6Mmc=; b=V
+	UGOWjv2PQpdAbjzA0oGq8n1vbOfXU4uuJ0KJLB0guPfMB+KtOqQoDKjBY5O3W5vT
+	cAaXA7zbGUTF7ejntpwqUiJBD2EbJZ6KcpRIWVoOgCL4NRw4kYwH3hcghygPlXDJ
+	EofeYKaRyAkg6DUUgVklSCOT29yVVIb5qNkH6PDs9G9yCfkUogjldBMVc4tvQa93
+	QcAIfPZpmgkJUVNMkNN59miiKSLUQp0Kvww6G/VcZLudNYnRDkBY1mwr8J7CYHa1
+	Ch2by9SAytnDVemv6DhvQsKVj/VK300fplqKwvmQ+XEf8D0fquMRHg6cupiSs94R
+	RDPV5I7l5paqZHLkvTNYw==
+X-ME-Sender: <xms:Sll0ZqRk_7TkioOfUiv1wHY7hUnazbtMGg4_aC8rXSFrwhetUjRe0A>
+    <xme:Sll0ZvxNT8wZsnCesFH9tZ5s7tQMGTX2F1vuMyZVYosJ4XMhNI2N5bM8cF7wRA-YY
+    g5YzK5lxGLkr7TNCvM>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrfeefvddguddtfecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpefofgggkfgjfhffhffvvefutgfgsehtqhertderreejnecuhfhrohhmpedf
+    lfhirgiguhhnucgjrghnghdfuceojhhirgiguhhnrdihrghnghesfhhlhihgohgrthdrtg
+    homheqnecuggftrfgrthhtvghrnhepgeeitddvvdffheegleekudfffffgkeeiteffiedt
+    keekkeevgfefleeijeelkefhnecuffhomhgrihhnpegtihhpuhhnihhtvggurdgtohhmne
+    cuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepjhhirgig
+    uhhnrdihrghnghesfhhlhihgohgrthdrtghomh
+X-ME-Proxy: <xmx:Sll0Zn30hKE9zHofCAaDgDKnApMnpbcdq0BjV6zkRxLPC9asFxeslg>
+    <xmx:Sll0ZmDTY0eyQ6SnDPl3tb1igIBK0Sk86k5FlKMF9aN-pAlbHdKdyA>
+    <xmx:Sll0ZjgELW5NXBybaVFaH8ei6hsAL5YAI05ELIgqQiiAaxdh3JyV3g>
+    <xmx:Sll0Ziq4e09G3NQVYjhIMFKGIePzGkSD82TdFjAxK7G7ZKZPuS-Abg>
+    <xmx:Sll0ZjfLcpxT8lnGFUpi_bcy2Fbq1vqc7k9P_DmID4WBWltuf3IYipZ9>
+Feedback-ID: ifd894703:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+	id 5A9BE36A0074; Thu, 20 Jun 2024 12:31:06 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.11.0-alpha0-522-ga39cca1d5-fm-20240610.002-ga39cca1d
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZnQ/auhuPWb1SGjb@alpha.franken.de>
+Message-Id: <743a2297-ff4a-4cb3-ae61-8cd4956aa565@app.fastmail.com>
+In-Reply-To: <ZnRThFlqqyDEprGz@alpha.franken.de>
+References: <20240612-mips-llsc-v2-0-a42bd5562bdb@flygoat.com>
+ <20240612-mips-llsc-v2-2-a42bd5562bdb@flygoat.com>
+ <ZnRThFlqqyDEprGz@alpha.franken.de>
+Date: Thu, 20 Jun 2024 17:30:48 +0100
+From: "Jiaxun Yang" <jiaxun.yang@flygoat.com>
+To: "Thomas Bogendoerfer" <tsbogend@alpha.franken.de>
+Cc: "Jonas Gorski" <jonas.gorski@gmail.com>,
+ "Maciej W. Rozycki" <macro@orcam.me.uk>,
+ "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 2/4] MIPS: Introduce config options for LLSC availability
+Content-Type: text/plain;charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Jun 20, 2024 at 04:40:42PM +0200, Thomas Bogendoerfer wrote:
-> On Tue, Jun 11, 2024 at 01:35:34PM +0200, Christian Marangi wrote:
-> > Rework the handling of the CBR address and cache it. This address
-> > doesn't change and can be cached instead of reading the register every
-> > time.
-> > 
-> > This is in preparation of permitting to tweak the CBR address in DT with
-> > broken SoC or bootloader.
-> > 
-> > bmips_cbr_addr is defined in smp-bmips.c to keep compatibility with
-> > legacy brcm47xx/brcm63xx and generic BMIPS target.
-> > 
-> > Acked-by: Florian Fainelli <florian.fainelli@broadcom.com>
-> > Signed-off-by: Christian Marangi <ansuelsmth@gmail.com>
-> > ---
-> >  arch/mips/bcm47xx/prom.c      | 3 +++
-> >  arch/mips/bcm63xx/prom.c      | 3 +++
-> >  arch/mips/bmips/dma.c         | 2 +-
-> >  arch/mips/bmips/setup.c       | 4 +++-
-> >  arch/mips/include/asm/bmips.h | 1 +
-> >  arch/mips/kernel/smp-bmips.c  | 6 ++++--
-> >  6 files changed, 15 insertions(+), 4 deletions(-)
-> 
-> still problems on a bcm47xx build:
-> 
-> mips64-linux-gnu-ld: arch/mips/bcm47xx/prom.o: in function `prom_init':
-> /local/tbogendoerfer/korg/linux/arch/mips/bcm47xx/prom.c:(.init.text+0x3c): undefined reference to `bmips_cbr_addr'
-> mips64-linux-gnu-ld: /local/tbogendoerfer/korg/linux/arch/mips/bcm47xx/prom.c:(.init.text+0x44): undefined reference to `bmips_cbr_addr'
+
+
+=E5=9C=A82024=E5=B9=B46=E6=9C=8820=E6=97=A5=E5=85=AD=E6=9C=88 =E4=B8=8B=E5=
+=8D=885:06=EF=BC=8CThomas Bogendoerfer=E5=86=99=E9=81=93=EF=BC=9A
+[...]
+> do you have an user manual stating that the R5k bug is fixed on this C=
+PUs ?
+
+I actually investigated R5500 a little bit.
+
+There is no explicit document mentioned this bug is fixed on R5500, but =
+it's not
+mentioned on "VR Series 64-/32-Bit Microprocessor Programming Guide" [1]=
+ either,
+while some other hardware limitations are mentioned in that guide.
+
+Plus EMMA platform, which was removed form the kernel, doesn't have
+cpu-feature-overrides.h. This means that the platform was running with L=
+LSC
+enabled.
+
+So I think this CPU is not affected.
+
+[1]: https://repo.oss.cipunited.com/archives/docs/NEC/U10710EJ5V0AN00.pdf
 >
+> Thomas.
+>
+> --=20
+> Crap can work. Given enough thrust pigs will fly, but it's not necessa=
+rily a
+> good idea.                                                [ RFC1925, 2=
+.3 ]
 
-I'm really sorry and it's embarassing (those legacy target are hard to
-compile)
-
-I pushed v8 that should handle the problem, tested bcm47xx and bmips.
-
--- 
-	Ansuel
+--=20
+- Jiaxun

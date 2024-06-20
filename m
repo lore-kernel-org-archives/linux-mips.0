@@ -1,141 +1,108 @@
-Received: from mail-lj1-f174.google.com (mail-lj1-f174.google.com [209.85.208.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6BA341B9AA8
-	for <linux-mips@vger.kernel.org>; Thu, 20 Jun 2024 18:07:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B2111B5819;
+	Thu, 20 Jun 2024 18:26:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718906829; cv=none; b=QevFkFCZpvU75kBsNQVXyu4NasmEISMEuNGRv2q0nQsr3mgb5n9TDJkSkqRclaeCH60puc0OhKd36R2++uLVX299nQxDDn5sR0pDVnrGyzUPwI7r4n+0BkfLl8rCCeEHU15d/rQqXMX8nyKjAsbS1ni1QSlAyYb08c/AqNGOewo=
+	t=1718908019; cv=none; b=H/Nwhk0V0grKYEFUFZQXKuEfhRe5zj+f5mT6Ks7p9vl/nvs5K2O8F4CjEYTKxJXoMIGsWobL5RzPZkxbnlRUUQWrw5fWvUMjnICqnyKf2rtiof1UNIm4uiBgg5sQOADDv5EneUNaKiwBs2ke72ebU0JFW2FWcVjs4f3qX9wJPF8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718906829; c=relaxed/simple;
-	bh=29OxgEL3l6wtk/wr9HSlAcydEGnms+qvS9bonjZCeq4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=EdNYYZiSj/taAvJx0ZZGyPShDmmOJA1NurpZvT2Y0QG6U/QHCBeC6qbJkvW/ltd6rMaVNbomwh0rFU6U9pRtDl/0FKboRN8FagDXFWeZyMK2iJKr7GoHnrAEZNsZrhmIdH+yDA9nTGeCdcxpPGvD8vuDyVEdD+89VQpS99sQVB4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=CiQU5BIZ; arc=none smtp.client-ip=209.85.208.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+	s=arc-20240116; t=1718908019; c=relaxed/simple;
+	bh=GCVz56YUsKhMOPZ3/lT8irkwPfCF1lu1XjYmgk8WXFo=;
+	h=Date:Content-Type:MIME-Version:From:To:Cc:In-Reply-To:References:
+	 Message-Id:Subject; b=juKOzPh7OqMfudfwCAVhQ2cydmFjgw1jCT/5wzlQ3n1oGzOcsoxGOYDIy+QRWagq2PoSQO8RfUemTVEXjBgnfI+mgGRPr3jD9pXt5+7yc8gq9t8p3eA6o3eovWlGk04ser+T3FdxejLJBSktcpfHzUQUFvHAUVmp+om2Opyy6v8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sH0IQHW6; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="CiQU5BIZ"
-Received: by mail-lj1-f174.google.com with SMTP id 38308e7fff4ca-2eaea28868dso16150481fa.3
-        for <linux-mips@vger.kernel.org>; Thu, 20 Jun 2024 11:07:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1718906825; x=1719511625; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=fuatl8An2r1cXJScFESolD1f90VPFvdc9a3mKIi/oro=;
-        b=CiQU5BIZ30qld9QZNTSL7BrCTCsHBQkTYdOrO36WO/y77qO28j8Az5Ht3Sn1o6QYng
-         +m7OHiPvUCiom596/RoIO7c+cN3Y760YXWXlypKtGnBxpwAFIRgZVeo+TbKOs9bBQYwV
-         Tj2hGbk3YIrBhtkZf7fppwKsOAg4s6UHXEDA8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1718906825; x=1719511625;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=fuatl8An2r1cXJScFESolD1f90VPFvdc9a3mKIi/oro=;
-        b=llc05WXPIE114/rafJweF0BMnm5eMD7CxhhG8wOjAsGcYFaG0pUeNYmuDP/2ZdXfE9
-         CjyNio8hiKgcxjsPlGzsS7QDgj2nezm6elpLujI07pKFf6f15j197y+cWWissyhXfsTU
-         64FRPgJMj/WYWW0ocmSj34EUZ9COtPHPl8Nkb9ebF3PeySsyGqFZIuXWxcf7hrFliYAm
-         aSTyRsvByZRptTwUdkWkcMix/CaPPPY+v/DQf2cr282SxrUFmtuYKjVJKuDLACDDCsjm
-         8vCXJDImC23xT+3XOtrZ08ozZDgJ2Ih2CLEx5avkoydCLhzuhR9+l7fMr16mGOuKXqYM
-         bB7g==
-X-Forwarded-Encrypted: i=1; AJvYcCW+BJsuD7YQTIC+BoBdjma9JyEIBh/ysNIwmAuwSdSQ14eEnwAX8xDH0jR3zTO7KgL1i7X+/IvO29WJr7fzfyTXgQd5psiB7uGSqQ==
-X-Gm-Message-State: AOJu0YyGYbqqbvjdD/CS1ELVd1/loAcUIodiCdWYeA73DlkHyohDdDtx
-	n+2Jlb9JOmIwdhhAYgy5Uhzn5/KP2IKMJ8MNRehTMp2QWjivmoxIj7FkS4Z4VJOIXi506VDqEL8
-	11Y+VhqWn
-X-Google-Smtp-Source: AGHT+IEsgzww8bcaAFtqu1Y+QyiXC9bAOIg6lfhX3QVKHyB4j5/jKEh0IK01E+a/MjA9pFELO8FBLA==
-X-Received: by 2002:a2e:2e0c:0:b0:2ea:e2d2:6231 with SMTP id 38308e7fff4ca-2ec3cfe9213mr51644461fa.33.1718906825602;
-        Thu, 20 Jun 2024 11:07:05 -0700 (PDT)
-Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com. [209.85.128.54])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a6fc3f3efb3sm78794066b.15.2024.06.20.11.07.05
-        for <linux-mips@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 20 Jun 2024 11:07:05 -0700 (PDT)
-Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-421d32fda86so14050355e9.0
-        for <linux-mips@vger.kernel.org>; Thu, 20 Jun 2024 11:07:05 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCU7iblIp1VV+R3njJYNMkgZpChNp3qyILId0iezh92tRvoxX36ARcrxuYp6qCxjpEwNsOugKVpk+yFO2PkM2oozzgBIO2oJexh+5A==
-X-Received: by 2002:a50:96cf:0:b0:57c:5874:4f5c with SMTP id
- 4fb4d7f45d1cf-57d07ea857fmr5124279a12.32.1718906455555; Thu, 20 Jun 2024
- 11:00:55 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sH0IQHW6"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5620DC4AF0D;
+	Thu, 20 Jun 2024 18:26:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1718908018;
+	bh=GCVz56YUsKhMOPZ3/lT8irkwPfCF1lu1XjYmgk8WXFo=;
+	h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
+	b=sH0IQHW62SBgLfg2w1RlHsuXBIjJKjKgC2GKV6jn5aNfgOWnsLrmbkRnSq1oBuq9s
+	 yNMFt0FuMhrxubu7q2VOFDud2LdMWRSz4zrgjNH8KKFJKnB55wdy77CN3bv6AfBImw
+	 CPKPJ96Y4OK+3COJ8NRZtzFerQN9DXQgnWe1a0WBefVHD/IPAIktInzcbY1/O3VMDJ
+	 X1O8GbAgk412PdDUnyMcHZ88gfF3iiv7Z8r063njG8NrS79wXc9NkjZbIn8Uf/ngLY
+	 eTH0HccRIvkNfVvTSr8q3aUu2DmhrL1WGocYNgq4M8votV1TsC2gRbyCfOaOb6foC7
+	 CZr6CaHy8SyPQ==
+Date: Thu, 20 Jun 2024 12:26:57 -0600
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240620175703.605111-1-yury.norov@gmail.com>
-In-Reply-To: <20240620175703.605111-1-yury.norov@gmail.com>
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Thu, 20 Jun 2024 11:00:38 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wiUTXC452qbypG3jW6XCZGfc8d-iehSavxn5JkQ=sv0zA@mail.gmail.com>
-Message-ID: <CAHk-=wiUTXC452qbypG3jW6XCZGfc8d-iehSavxn5JkQ=sv0zA@mail.gmail.com>
-Subject: Re: [PATCH v4 00/40] lib/find: add atomic find_bit() primitives
-To: Yury Norov <yury.norov@gmail.com>
-Cc: linux-kernel@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, 
-	"H. Peter Anvin" <hpa@zytor.com>, "James E.J. Bottomley" <jejb@linux.ibm.com>, 
-	"K. Y. Srinivasan" <kys@microsoft.com>, "Md. Haris Iqbal" <haris.iqbal@ionos.com>, 
-	Akinobu Mita <akinobu.mita@gmail.com>, Andrew Morton <akpm@linux-foundation.org>, 
-	Bjorn Andersson <andersson@kernel.org>, Borislav Petkov <bp@alien8.de>, Chaitanya Kulkarni <kch@nvidia.com>, 
-	Christian Brauner <brauner@kernel.org>, Damien Le Moal <damien.lemoal@opensource.wdc.com>, 
-	Dave Hansen <dave.hansen@linux.intel.com>, David Disseldorp <ddiss@suse.de>, 
-	Edward Cree <ecree.xilinx@gmail.com>, Eric Dumazet <edumazet@google.com>, 
-	Fenghua Yu <fenghua.yu@intel.com>, Geert Uytterhoeven <geert@linux-m68k.org>, 
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Gregory Greenman <gregory.greenman@intel.com>, 
-	Hans Verkuil <hverkuil@xs4all.nl>, Hans de Goede <hdegoede@redhat.com>, 
-	Hugh Dickins <hughd@google.com>, Ingo Molnar <mingo@redhat.com>, Jakub Kicinski <kuba@kernel.org>, 
-	Jaroslav Kysela <perex@perex.cz>, Jason Gunthorpe <jgg@ziepe.ca>, Jens Axboe <axboe@kernel.dk>, 
-	Jiri Pirko <jiri@resnulli.us>, Jiri Slaby <jirislaby@kernel.org>, Kalle Valo <kvalo@kernel.org>, 
-	Karsten Graul <kgraul@linux.ibm.com>, Karsten Keil <isdn@linux-pingi.de>, 
-	Kees Cook <keescook@chromium.org>, Leon Romanovsky <leon@kernel.org>, 
-	Mark Rutland <mark.rutland@arm.com>, Martin Habets <habetsm.xilinx@gmail.com>, 
-	Mauro Carvalho Chehab <mchehab@kernel.org>, Michael Ellerman <mpe@ellerman.id.au>, Michal Simek <monstr@monstr.eu>, 
-	Nicholas Piggin <npiggin@gmail.com>, Oliver Neukum <oneukum@suse.com>, Paolo Abeni <pabeni@redhat.com>, 
-	Paolo Bonzini <pbonzini@redhat.com>, Peter Zijlstra <peterz@infradead.org>, 
-	Ping-Ke Shih <pkshih@realtek.com>, Rich Felker <dalias@libc.org>, Rob Herring <robh@kernel.org>, 
-	Robin Murphy <robin.murphy@arm.com>, Sean Christopherson <seanjc@google.com>, 
-	Shuai Xue <xueshuai@linux.alibaba.com>, Stanislaw Gruszka <stf_xl@wp.pl>, 
-	Steven Rostedt <rostedt@goodmis.org>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
-	Thomas Gleixner <tglx@linutronix.de>, Valentin Schneider <vschneid@redhat.com>, 
-	Vitaly Kuznetsov <vkuznets@redhat.com>, Wenjia Zhang <wenjia@linux.ibm.com>, 
-	Will Deacon <will@kernel.org>, Yoshinori Sato <ysato@users.sourceforge.jp>, 
-	GR-QLogic-Storage-Upstream@marvell.com, alsa-devel@alsa-project.org, 
-	ath10k@lists.infradead.org, dmaengine@vger.kernel.org, iommu@lists.linux.dev, 
-	kvm@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
-	linux-arm-msm@vger.kernel.org, linux-block@vger.kernel.org, 
-	linux-bluetooth@vger.kernel.org, linux-hyperv@vger.kernel.org, 
-	linux-m68k@lists.linux-m68k.org, linux-media@vger.kernel.org, 
-	linux-mips@vger.kernel.org, linux-net-drivers@amd.com, 
-	linux-pci@vger.kernel.org, linux-rdma@vger.kernel.org, 
-	linux-s390@vger.kernel.org, linux-scsi@vger.kernel.org, 
-	linux-serial@vger.kernel.org, linux-sh@vger.kernel.org, 
-	linux-sound@vger.kernel.org, linux-usb@vger.kernel.org, 
-	linux-wireless@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, 
-	mpi3mr-linuxdrv.pdl@broadcom.com, netdev@vger.kernel.org, 
-	sparclinux@vger.kernel.org, x86@kernel.org, 
-	Alexey Klimov <alexey.klimov@linaro.org>, Bart Van Assche <bvanassche@acm.org>, Jan Kara <jack@suse.cz>, 
-	Matthew Wilcox <willy@infradead.org>, Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>, 
-	Rasmus Villemoes <linux@rasmusvillemoes.dk>, Sergey Shtylyov <s.shtylyov@omp.ru>
-Content-Type: text/plain; charset="UTF-8"
+From: "Rob Herring (Arm)" <robh@kernel.org>
+To: =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
+Cc: Thomas Petazzoni <thomas.petazzoni@bootlin.com>, 
+ Linus Walleij <linus.walleij@linaro.org>, 
+ "Rafael J. Wysocki" <rafael@kernel.org>, Conor Dooley <conor+dt@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Stephen Boyd <sboyd@kernel.org>, 
+ Gregory CLEMENT <gregory.clement@bootlin.com>, 
+ Michael Turquette <mturquette@baylibre.com>, 
+ Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>, 
+ linux-gpio@vger.kernel.org, Lee Jones <lee@kernel.org>, 
+ linux-clk@vger.kernel.org, linux-mips@vger.kernel.org, 
+ Tawfik Bayouk <tawfik.bayouk@mobileye.com>, 
+ Philipp Zabel <p.zabel@pengutronix.de>, linux-kernel@vger.kernel.org, 
+ Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>, devicetree@vger.kernel.org
+In-Reply-To: <20240620-mbly-olb-v3-2-5f29f8ca289c@bootlin.com>
+References: <20240620-mbly-olb-v3-0-5f29f8ca289c@bootlin.com>
+ <20240620-mbly-olb-v3-2-5f29f8ca289c@bootlin.com>
+Message-Id: <171890801579.3178249.13779438329936311446.robh@kernel.org>
+Subject: Re: [PATCH v3 2/9] Revert "dt-bindings: reset:
+ mobileye,eyeq5-reset: add bindings"
 
-On Thu, 20 Jun 2024 at 10:57, Yury Norov <yury.norov@gmail.com> wrote:
->
->
-> The typical lock-protected bit allocation may look like this:
 
-If it looks like this, then nobody cares. Clearly the user in question
-never actually cared about performance, and you SHOULD NOT then say
-"let's optimize this that nobody cares about":.
+On Thu, 20 Jun 2024 19:30:54 +0200, Théo Lebrun wrote:
+> Switch from one sub-node per functionality in the system-controller to a
+> single node representing the entire OLB instance. This is the
+> recommended approach for controllers handling many different
+> functionalities; it is a single controller and should be represented by
+> a single devicetree node.
+> 
+> The reset bindings is removed and all properties will be described by:
+> soc/mobileye/mobileye,eyeq5-olb.yaml
+> 
+> Signed-off-by: Théo Lebrun <theo.lebrun@bootlin.com>
+> ---
+>  .../bindings/reset/mobileye,eyeq5-reset.yaml       | 43 ----------------------
+>  1 file changed, 43 deletions(-)
+> 
 
-Yury, I spend an inordinate amount of time just double-checking your
-patches. I ended up having to basically undo one of them just days
-ago.
+My bot found errors running 'make dt_binding_check' on your patch:
 
-New rule: before you send some optimization, you need to have NUMBERS.
+yamllint warnings/errors:
 
-Some kind of "look, this code is visible in profiles, so we actually care".
+dtschema/dtc warnings/errors:
+Documentation/devicetree/bindings/sound/st,stm32-sai.example.dtb: /example-0/sai@4400b000/audio-controller@4400b004: failed to match any schema with compatible: ['st,stm32-sai-sub-a']
+Documentation/devicetree/bindings/net/wireless/qcom,ath11k.example.dtb: /example-0/remoteproc@cd00000: failed to match any schema with compatible: ['qcom,ipq8074-wcss-pil']
+Documentation/devicetree/bindings/thermal/brcm,avs-ro-thermal.example.dtb: /example-0/avs-monitor@7d5d2000: failed to match any schema with compatible: ['brcm,bcm2711-avs-monitor', 'syscon', 'simple-mfd']
+Documentation/devicetree/bindings/clock/sprd,sc9863a-clk.example.dtb: /example-1/syscon@20e00000: failed to match any schema with compatible: ['sprd,sc9863a-glbregs', 'syscon', 'simple-mfd']
+Documentation/devicetree/bindings/clock/milbeaut-clock.example.dtb: /example-2/serial@1e700010: failed to match any schema with compatible: ['socionext,milbeaut-usio-uart']
+Documentation/devicetree/bindings/arm/hisilicon/controller/hi3798cv200-perictrl.example.dtb: /example-0/peripheral-controller@8a20000/phy@850: failed to match any schema with compatible: ['hisilicon,hi3798cv200-combphy']
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/arm/stm32/st,mlahb.example.dtb: ahb@38000000: Unevaluated properties are not allowed ('reg' was unexpected)
+	from schema $id: http://devicetree.org/schemas/arm/stm32/st,mlahb.yaml#
 
-Because without numbers, I'm just not going to pull anything from you.
-These insane inlines for things that don't matter need to stop.
+doc reference errors (make refcheckdocs):
 
-And if they *DO* matter, you need to show that they matter.
+See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20240620-mbly-olb-v3-2-5f29f8ca289c@bootlin.com
 
-               Linus
+The base for the series is generally the latest rc1. A different dependency
+should be noted in *this* patch.
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
+
+pip3 install dtschema --upgrade
+
+Please check and re-submit after running the above command yourself. Note
+that DT_SCHEMA_FILES can be set to your schema file to speed up checking
+your schema. However, it must be unset to test all examples with your schema.
+

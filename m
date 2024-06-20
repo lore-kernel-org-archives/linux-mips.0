@@ -1,125 +1,105 @@
-Received: from mail-pf1-f182.google.com (mail-pf1-f182.google.com [209.85.210.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from relay9-d.mail.gandi.net (relay9-d.mail.gandi.net [217.70.183.199])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B285A1CF3CC;
-	Thu, 20 Jun 2024 17:58:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A7A41BC098;
+	Thu, 20 Jun 2024 18:00:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.199
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718906327; cv=none; b=SqfLvwd/P2sSBzAw6ulV3hFcCAjeNN3n85GxfDjFfM6ERNTyWdcnN26XNq/fvSnPpEvN4KKkgJE+IbB0FssIl56Jz79VdDBOJeG6H5gYgfYUwFXQZNFjugDkG1KPp5kikKKeGMummwBKIWEc/U8rnjiFJbxUnWiNlgVaj+x2KwI=
+	t=1718906453; cv=none; b=gEuqDP2lSPNoqpBwaNdrqd9hq+NvEVJivRcz4UDLb5VkGsiQSG45c26KZbBP+T/zpOJW39iIkbD5bzmMeb5zL1f7S1VXVoe4Njg5Kc814yalGIcS+8eWM080vC8OT44n0fWrtet4g3N+Gu2UX680+WUsFiJnjyYmakfGFKXxD7s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718906327; c=relaxed/simple;
-	bh=9VKEeJ2Bp6V9P0lgAXpETIbdOrUySYRDJ0KU4G9h1Ms=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=mMEDoiS61B9SMww9uI4dCQmbUvVoBLJ3H9fydcocjQGByQkcynC9miMoqyYlwI8fNuheYgpVb5F4LTjivNCtnclGkFfccFN82iRImotxzNeyKtJ7t0y9XcyBByzqw3+pPNWV03Wv/5OZMHAopg5Cw1GOYlJv31kysRG8Nib2yuY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=C6JVWD60; arc=none smtp.client-ip=209.85.210.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1718906453; c=relaxed/simple;
+	bh=K3FDmzmWo3PowEgtwwebEio5I5t4ZNfKyn+kSIZil5M=;
+	h=Mime-Version:Content-Type:Date:Message-Id:Subject:Cc:To:From:
+	 References:In-Reply-To; b=JA853FZdynP1zGpxBnDEusUHqQckzDdCnxb8V7xDpdb2zYsD+4PWWYFc893dvdruqpfb39/64peLeRF5QI0pJSTgUr0c/lq6g49AqI+xKpBkf/yagt3LiboDnrjBcYCgkF0Q19Wlu0I1OSszIF+C3gYmnkvEGVMzTr8worAfpGw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=nXQuPruI; arc=none smtp.client-ip=217.70.183.199
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="C6JVWD60"
-Received: by mail-pf1-f182.google.com with SMTP id d2e1a72fcca58-70635466708so1164614b3a.1;
-        Thu, 20 Jun 2024 10:58:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1718906325; x=1719511125; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=QDKUwH++JfbwJqOinFdI5jqclRMQl0q8xEbU2EXAI2M=;
-        b=C6JVWD601Os/HscPNlyGaztA/eeiPlWbKxPoioONwFNHRIQNVIRjgU+JPzZKMx/NIc
-         e9l75IKK3kQOFedyktCQMOzzfT00/2Bh3X5mZOFIBT0trs9caJ7Qo2dCnJRpZDUD3Mtn
-         damjcwNbHMdF9JCcLK7VvUu+s8jQde+sy4h++kpKU5Gabj1Y6Z4DCfbIIcXTHCvLuvf8
-         aycleffGJWTZsGLI/OU7zXmFQPOtnK5Mtr3pxockDvD5W3ow8kb/Opy/WRfYdFpi1FeO
-         QzRPKbU/FFsJdpWUGbNVrSl33T1cn2niE6yAzbDuuxVjSvgn0LjSSF8ceFrA7TTjKZgD
-         oFJA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1718906325; x=1719511125;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=QDKUwH++JfbwJqOinFdI5jqclRMQl0q8xEbU2EXAI2M=;
-        b=wTU8pZsEVOfTac+/+5jZXGLh5QIziiQaRN/zVVBC7K8Xhwa0jLvCDY3yyIVC2JKBqD
-         TZaapBnsKmBZErfOO8SbZ3Ia+IpVjFUiQx5gOQvz/nkcx/Edbq647S7skBNQYupCMJrF
-         Ypb7dHtk0B7QLcZkKCpowdM/cZ4kwLZ9StE1/K/PwS8BHk7wB7t/rOyr2sestfugNVCo
-         lJgpiYetz+z/Cg7lqGF1fWwh/4PbBj8Sb0m/va9l2HwcnmV8fv/VgNNkEDqGoQxyYoBb
-         /777S6gGthHYmHjdciPNrgCR9o5qAJbFkA0driN8JVFX5/R4H00b8bMdhQTwNKfTYZpk
-         q8HA==
-X-Forwarded-Encrypted: i=1; AJvYcCWMnGyDL4asTQ5fSxv3K3omzlqNMICi9O3bp0uwu6cT+ne6DQmcCrMVxiKwmlFLv6vOkmymV8EZDhKv0dgBfGvcYq1kkBcr66JuIA==
-X-Gm-Message-State: AOJu0YyiXzuQD25xLIZ4xF+jbkJKcnQ15oniseaU2QGhnMD/FWcqXtKR
-	qzP3FpRISsn6xSSuEs4R5qVp0X8v0Hcw3r9rL/tXO2sfK2rdAXYjqx0x9wNbql4=
-X-Google-Smtp-Source: AGHT+IGQBqThGaLy+ssIXPNfXK0T9Cj9jN1FEARMt7HY6rnbCm2HHwjb8BD1YqPuoPyBGgsGk3h3kw==
-X-Received: by 2002:a05:6a00:124f:b0:706:3ba3:a192 with SMTP id d2e1a72fcca58-7063ba3a6c5mr4518454b3a.22.1718906324947;
-        Thu, 20 Jun 2024 10:58:44 -0700 (PDT)
-Received: from localhost ([216.228.127.128])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-705cc920a4bsm12630837b3a.21.2024.06.20.10.58.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 Jun 2024 10:58:44 -0700 (PDT)
-From: Yury Norov <yury.norov@gmail.com>
-To: linux-kernel@vger.kernel.org,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	Yury Norov <yury.norov@gmail.com>,
-	Florian Fainelli <f.fainelli@gmail.com>,
-	linux-mips@vger.kernel.org
-Cc: Alexey Klimov <alexey.klimov@linaro.org>,
-	Bart Van Assche <bvanassche@acm.org>,
-	Jan Kara <jack@suse.cz>,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	Matthew Wilcox <willy@infradead.org>,
-	Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>,
-	Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-	Sergey Shtylyov <s.shtylyov@omp.ru>
-Subject: [PATCH v4 34/40] MIPS: sgi-ip27: optimize alloc_level()
-Date: Thu, 20 Jun 2024 10:56:57 -0700
-Message-ID: <20240620175703.605111-35-yury.norov@gmail.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240620175703.605111-1-yury.norov@gmail.com>
-References: <20240620175703.605111-1-yury.norov@gmail.com>
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="nXQuPruI"
+Received: by mail.gandi.net (Postfix) with ESMTPSA id B0B3AFF803;
+	Thu, 20 Jun 2024 18:00:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1718906448;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=fl1pRBkgxx3hCPtJuR7dl8WXtq89w/4Jn+JJJxvnML8=;
+	b=nXQuPruI9WoyrMqrDMEoSj6TAmBGWPemPJTZuwzaRu8cnfQXhJrw+1VecqdM6DwBIiztcK
+	cCo99uN3Xd5QYpWdH4Ue49ciSqQaD+fmAFPFCq+m8leit5G6SorLFCy2tIal8wprrhScw4
+	1DPlgfY8pUeVCfW8zYQlfnjvuCcvMXnqVQedL7r8cXX2bymjyVZaQMeoBMc60ll+Z9E6ZY
+	Kg2NWHL7QY7JZV+W/I55+ivmVoVzL61LSw+l3qVdQhbCoj884dR1bmPrXRygaF52YcCGPQ
+	cW0+1k4rntofZh+PSMqHZDKXjoZLHGdv4VY9jIY7M/eAmODySDsxFlYn6VCDbA==
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date: Thu, 20 Jun 2024 20:00:46 +0200
+Message-Id: <D251HCFITAUR.2SM3S9Q75K4C7@bootlin.com>
+Subject: Re: [PATCH v2 00/11] Add Mobileye EyeQ system controller support
+ (clk, reset, pinctrl)
+Cc: <linux-mips@vger.kernel.org>, <devicetree@vger.kernel.org>,
+ <linux-kernel@vger.kernel.org>, <linux-clk@vger.kernel.org>,
+ <linux-gpio@vger.kernel.org>, "Vladimir Kondratiev"
+ <vladimir.kondratiev@mobileye.com>, "Gregory CLEMENT"
+ <gregory.clement@bootlin.com>, "Thomas Petazzoni"
+ <thomas.petazzoni@bootlin.com>, "Tawfik Bayouk"
+ <tawfik.bayouk@mobileye.com>
+To: "Stephen Boyd" <sboyd@kernel.org>, "Conor Dooley" <conor+dt@kernel.org>,
+ "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>, "Krzysztof Kozlowski"
+ <krzysztof.kozlowski+dt@linaro.org>, "Lee Jones" <lee@kernel.org>, "Linus
+ Walleij" <linus.walleij@linaro.org>, "Michael Turquette"
+ <mturquette@baylibre.com>, "Philipp Zabel" <p.zabel@pengutronix.de>,
+ "Rafael J. Wysocki" <rafael@kernel.org>, "Rob Herring" <robh@kernel.org>,
+ "Thomas Bogendoerfer" <tsbogend@alpha.franken.de>
+From: =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
+X-Mailer: aerc 0.17.0
+References: <20240503-mbly-olb-v2-0-95ce5a1e18fe@bootlin.com>
+ <8dcdb1422cd144128c1dc6fff1c273d3.sboyd@kernel.org>
+ <D13HXGJGMS76.XIIIZLZBCZ09@bootlin.com>
+ <62e1512be0bc44acae9afb34467753db.sboyd@kernel.org>
+In-Reply-To: <62e1512be0bc44acae9afb34467753db.sboyd@kernel.org>
+X-GND-Sasl: theo.lebrun@bootlin.com
 
-Simplify alloc_level by using a dedicated atomic find() API, and make
-it a nice one-liner wrappers.
+Hello Stephen,
 
-Signed-off-by: Yury Norov <yury.norov@gmail.com>
----
- arch/mips/sgi-ip27/ip27-irq.c | 13 +++----------
- 1 file changed, 3 insertions(+), 10 deletions(-)
+So, you should have received the latest revision [0]. It takes the
+approach you advised:
 
-diff --git a/arch/mips/sgi-ip27/ip27-irq.c b/arch/mips/sgi-ip27/ip27-irq.c
-index 00e63e9ef61d..fc29252860a3 100644
---- a/arch/mips/sgi-ip27/ip27-irq.c
-+++ b/arch/mips/sgi-ip27/ip27-irq.c
-@@ -13,6 +13,7 @@
- #include <linux/ioport.h>
- #include <linux/kernel.h>
- #include <linux/bitops.h>
-+#include <linux/find_atomic.h>
- #include <linux/sched.h>
- 
- #include <asm/io.h>
-@@ -36,17 +37,9 @@ static DEFINE_PER_CPU(unsigned long [2], irq_enable_mask);
- 
- static inline int alloc_level(void)
- {
--	int level;
-+	int level = find_and_set_bit(hub_irq_map, IP27_HUB_IRQ_COUNT);
- 
--again:
--	level = find_first_zero_bit(hub_irq_map, IP27_HUB_IRQ_COUNT);
--	if (level >= IP27_HUB_IRQ_COUNT)
--		return -ENOSPC;
--
--	if (test_and_set_bit(level, hub_irq_map))
--		goto again;
--
--	return level;
-+	return level < IP27_HUB_IRQ_COUNT ? level : -ENOSPC;
- }
- 
- static void enable_hub_irq(struct irq_data *d)
--- 
-2.43.0
+ - One driver (clk) is platform. Others (reset, pinctrl) are auxiliary
+   drivers.
+ - The clk driver spawns auxiliary devices, passing to it the iomem
+   pointer using ->platform_data.
+ - The auxdevs spawned are based on compatible match data. We don't need
+   any info to spawn them except their name, so match data only has an
+   optional string. No array needed even, just two pointers: plain, simple.
+ - This means the iomem register logic is split across each driver.
+
+[0]: https://lore.kernel.org/lkml/20240620-mbly-olb-v3-0-5f29f8ca289c@bootl=
+in.com/
+
+On Tue May 7, 2024 at 11:48 PM CEST, Stephen Boyd wrote:
+> I could see the MFD subsystem gaining support for creating child
+> auxiliary devices for some compatible string node, and passing those
+> devices a regmap. Maybe that would be preferable to having to pick a
+> driver subsystem to put the platform driver in. Outside of making a
+> general purpose framework, you could put the platform driver in
+> drivers/mfd and have that populate the child devices like clk, reset,
+> pinctrl, etc.
+
+Having one of the driver be platform and spawn others reduces the amount
+of boilerplate (no driver that only creates sub devices). That sounds
+like a nice advantage; to be contrasted with having unrelated code in
+subsystems (eg auxdev spawning code in drivers/clk/).
+
+Thanks for your pieces of advice Stephen,
+
+--
+Th=C3=A9o Lebrun, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
 

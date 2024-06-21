@@ -1,74 +1,69 @@
 Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4DF5916D4F4;
-	Fri, 21 Jun 2024 08:22:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C66D916D32F;
+	Fri, 21 Jun 2024 08:26:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.175.24.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718958143; cv=none; b=sUSi2zXhztXWYYsfEJhN3zIYa2LHTq0cM+tEsOLNrddRRtMsmhr28dwXSSgGGTa4OY+G1+Vd0sXPWsYjs89ZO1vNJvLLiNJ7LdSHC69scFGO3kZPk6q66aWa+2vkoUn6FsrJcFfYYgeDBI/UoWXcwVAoQ9ZgT3oxOpjDDMqOQIw=
+	t=1718958421; cv=none; b=K3JVEiY+D4fNNpFsM54ocn/xZMbXG5AQCbY6QJip4YuxezzSm7welQrCGDwJR4aLl/xSBYYuwOErXlKYbp8vqBvBcGaYlwVzUFRyvUmAYmMf0ScB75dd+7esbOcom7Wb06D9WITEwLDaTGxDc+FRBMtb/c5iz6t31Y8dWIJeniw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718958143; c=relaxed/simple;
-	bh=dgT8q2RUD4AsRrCrgspBvokTXMmqeYQLjIWJc/q4mjM=;
+	s=arc-20240116; t=1718958421; c=relaxed/simple;
+	bh=UK3fsbl77oLkGrCcvOZTG9mXf/uwZCAocQBlI7NgwXI=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ZFDfmdP5ufbVCFcTVwxhk7RyUp/qO+V/6PANDyvNmT7H2zftfGK79Sky5XAhHZ9tlrNgb39CZxqTQajvNUdSQX9UvY3IsMbdt6HfyPTx/R6DVA8QP1bY0hOolO7QcnE2EwNbMu8u1aKznHoHfgBgj4j7o/TSVaT3FTGgOeIKGEo=
+	 Content-Type:Content-Disposition:In-Reply-To; b=WjLOI3KH3EQKtEk3wzM4Y74X9ohjBG9DX3dzqG94hZ4R31v5m3dYmfyCYhAh5NmOLtXP61HdWmEvtnP7Q+Q2G1SUYF8w1B+TRcABByIQBNvQCAgyDc6L3+SAUVpKttJXWuyI/eFiqygaFUWktNCYeO4AMiQThZqYjnhq4Gv7rQs=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de; spf=pass smtp.mailfrom=alpha.franken.de; arc=none smtp.client-ip=193.175.24.41
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alpha.franken.de
 Received: from uucp by elvis.franken.de with local-rmail (Exim 3.36 #1)
-	id 1sKZWX-0001Oj-00; Fri, 21 Jun 2024 10:21:33 +0200
+	id 1sKZbl-0001Sk-00; Fri, 21 Jun 2024 10:26:57 +0200
 Received: by alpha.franken.de (Postfix, from userid 1000)
-	id 88B31C0120; Fri, 21 Jun 2024 10:21:17 +0200 (CEST)
-Date: Fri, 21 Jun 2024 10:21:17 +0200
+	id 73B3BC0411; Fri, 21 Jun 2024 10:25:48 +0200 (CEST)
+Date: Fri, 21 Jun 2024 10:25:48 +0200
 From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 To: Jiaxun Yang <jiaxun.yang@flygoat.com>
-Cc: Aleksandar Rikalo <aleksandar.rikalo@syrmia.com>,
-	Aleksandar Rikalo <arikalo@gmail.com>,
-	Chao-ying Fu <cfu@wavecomp.com>,
-	Daniel Lezcano <daniel.lezcano@linaro.org>,
-	Geert Uytterhoeven <geert@linux-m68k.org>,
-	Greg Ungerer <gerg@kernel.org>, Hauke Mehrtens <hauke@hauke-m.de>,
-	Ilya Lipnitskiy <ilya.lipnitskiy@gmail.com>,
-	linux-kernel@vger.kernel.org,
-	"linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
-	Marc Zyngier <maz@kernel.org>,
-	"paulburton@kernel.org" <paulburton@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Serge Semin <fancer.lancer@gmail.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Tiezhu Yang <yangtiezhu@loongson.cn>
-Subject: Re: [PATCH v4 00/14] MIPS: Support I6500 multi-cluster configuration
-Message-ID: <ZnU3/c1T55k4WbYx@alpha.franken.de>
-References: <20240511104341.151550-1-aleksandar.rikalo@syrmia.com>
- <ZnRtYFr5HFffyK7E@alpha.franken.de>
- <ff6fe06d-6209-4e34-9cc8-eb516fa4ffae@app.fastmail.com>
+Cc: linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+	stable@vger.kernel.org
+Subject: Re: [PATCH fixes 1/4] MIPS: mipsmtregs: Fix target register for MFTC0
+Message-ID: <ZnU5DGtw7aeZUtJ0@alpha.franken.de>
+References: <20240616-mips-mt-fixes-v1-0-83913e0e60fc@flygoat.com>
+ <20240616-mips-mt-fixes-v1-1-83913e0e60fc@flygoat.com>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ff6fe06d-6209-4e34-9cc8-eb516fa4ffae@app.fastmail.com>
+In-Reply-To: <20240616-mips-mt-fixes-v1-1-83913e0e60fc@flygoat.com>
 
-On Fri, Jun 21, 2024 at 12:05:32AM +0100, Jiaxun Yang wrote:
+On Sun, Jun 16, 2024 at 02:25:02PM +0100, Jiaxun Yang wrote:
+> Target register of mftc0 should be __res instead of $1, this is
+> a leftover from old .insn code.
 > 
+> Fixes: dd6d29a61489 ("MIPS: Implement microMIPS MT ASE helpers")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+> ---
+>  arch/mips/include/asm/mipsmtregs.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> 在2024年6月20日六月 下午6:56，Thomas Bogendoerfer写道：
-> > On Sat, May 11, 2024 at 12:43:27PM +0200, Aleksandar Rikalo wrote:
-> >> Taken from Paul Burton MIPS repo with minor changes from Chao-ying Fu.
-> >> Tested with 64r6el_defconfig on Boston board in 2 cluster/2 VPU and
-> >> 1 cluster/4 VPU configurations.
-> >
-> > which existing CPUs can use this ?
+> diff --git a/arch/mips/include/asm/mipsmtregs.h b/arch/mips/include/asm/mipsmtregs.h
+> index 30e86861c206..b1ee3c48e84b 100644
+> --- a/arch/mips/include/asm/mipsmtregs.h
+> +++ b/arch/mips/include/asm/mipsmtregs.h
+> @@ -322,7 +322,7 @@ static inline void ehb(void)
+>  	"	.set	push				\n"	\
+>  	"	.set	"MIPS_ISA_LEVEL"		\n"	\
+>  	_ASM_SET_MFTC0							\
+> -	"	mftc0	$1, " #rt ", " #sel "		\n"	\
+> +	"	mftc0	%0, " #rt ", " #sel "		\n"	\
+>  	_ASM_UNSET_MFTC0						\
+>  	"	.set	pop				\n"	\
+>  	: "=r" (__res));						\
 > 
-> Besides Boston are some multi cluster I6500 systems in wild, including Fungible F1,
-> which comes with 52 cores in data panel.
-> 
-> Those vendors show no interest on mainline kernel support though.
+> -- 
+> 2.43.0
 
-ok, so looking at the series it touches areas with different maintainers,
-I'm fine taking the MIPS parts, can I simply cherry-pick them out
-of the series ?
+applied to mips-fixes.
 
 Thomas.
 

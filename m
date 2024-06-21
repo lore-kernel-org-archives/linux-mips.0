@@ -1,64 +1,151 @@
-Received: from angie.orcam.me.uk (angie.orcam.me.uk [78.133.224.34])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C46715EFDA;
-	Fri, 21 Jun 2024 00:00:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.133.224.34
+Received: from gate2.alliedtelesis.co.nz (gate2.alliedtelesis.co.nz [202.36.163.20])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 273FB12C475
+	for <linux-mips@vger.kernel.org>; Fri, 21 Jun 2024 04:27:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.36.163.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718928016; cv=none; b=WRDpnzh8ULq7AudYgcvE2elgFYOzpemM7jlDVt8+UdnNrzfiE6q62JU7YUuGN9ipqBRU1QjF9Ymwy/3Zm69mfkryRIXzh4PQ5VtNYNlKeIth2SlQpISjSIu5Eh6n1ttcTiLZK/RWBTh3eAUbkmhqvNXbtSOcqwTzUrITPRUQCls=
+	t=1718944075; cv=none; b=Yq/VRm0nORJh8ood6xGOVWG/y76sV4Nhtfo55Hhf9KcKCDR3j8ew5JGooh+M6zdDlVO10IiPhkV/7qhysNWKPhFU1ARwvFTBAedT9D+Ee5Lk1UMQ4xnLK/PqyT7YbVk81gqdjfFUgDIUv4R3MKu1zdtH4K5Dzm5Y2PraRg9aWaw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718928016; c=relaxed/simple;
-	bh=cLIe4zxxt7eDpaPerSWkS0kgxNdOiT72HIp+sn+C6XM=;
-	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=RgbKXllcxwZIUJdnO6Dc5FDYoDHw406qCgmCCaEDPSxomTMaA8P9jWwO3nsCjgYIyPgraYKSoeaJyAtkhTM+K+WN5/oxyGciH6xZBUyEf3cc7V5KTNlruC19lqlzCwcCc2Fzfl9M9aJMw7dI73ZyPQivk/JHnZbm8sRaDp88IYI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=orcam.me.uk; spf=none smtp.mailfrom=orcam.me.uk; arc=none smtp.client-ip=78.133.224.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=orcam.me.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=orcam.me.uk
-Received: by angie.orcam.me.uk (Postfix, from userid 500)
-	id EBC7692009C; Fri, 21 Jun 2024 02:00:04 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-	by angie.orcam.me.uk (Postfix) with ESMTP id E7CF792009B;
-	Fri, 21 Jun 2024 01:00:04 +0100 (BST)
-Date: Fri, 21 Jun 2024 01:00:04 +0100 (BST)
-From: "Maciej W. Rozycki" <macro@orcam.me.uk>
-To: Jiaxun Yang <jiaxun.yang@flygoat.com>
-cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
-    Jonas Gorski <jonas.gorski@gmail.com>, linux-mips@vger.kernel.org, 
-    linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/4] MIPS: Introduce config options for LLSC
- availability
-In-Reply-To: <20240612-mips-llsc-v2-2-a42bd5562bdb@flygoat.com>
-Message-ID: <alpine.DEB.2.21.2406210041140.43454@angie.orcam.me.uk>
-References: <20240612-mips-llsc-v2-0-a42bd5562bdb@flygoat.com> <20240612-mips-llsc-v2-2-a42bd5562bdb@flygoat.com>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+	s=arc-20240116; t=1718944075; c=relaxed/simple;
+	bh=+oU+DEZI0B6EKIcE4wdNt7df75AzkxYpi/IZIH32jog=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=F9qr2R4ze5boCB50+m3BW2/OXNNdqdKamDhLLYxd//L3lNop4uzIDQRJoAI0RhMvof2IzBLen3WFoxcJDjHJQnxsNQUo9F6igph+x0sxAEvrwiGviDMcv7XYvGTWp3gd/+eTI4ohLKfDKVBLUdHa8JOVX4wFmtfShlKPlTkE054=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=alliedtelesis.co.nz; spf=pass smtp.mailfrom=alliedtelesis.co.nz; dkim=pass (2048-bit key) header.d=alliedtelesis.co.nz header.i=@alliedtelesis.co.nz header.b=v8uw59F8; arc=none smtp.client-ip=202.36.163.20
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=alliedtelesis.co.nz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alliedtelesis.co.nz
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=alliedtelesis.co.nz header.i=@alliedtelesis.co.nz header.b="v8uw59F8"
+Received: from svr-chch-seg1.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(Client did not present a certificate)
+	by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id C6C502C03CB;
+	Fri, 21 Jun 2024 16:27:44 +1200 (NZST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
+	s=mail181024; t=1718944064;
+	bh=B4udn6ozOdQHTpD6L6MTO+8afBfxICz46dbXpmmA708=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=v8uw59F8pRPC+iOXvlyTwL0gbKUT5schW65daisnsXCMnIpGnccJmQakLq6RqCcPT
+	 aBZR5RV27TYsWIZh5h588EkT32yaLp/hG5vT5DDeGLC7ZEzWp9HHqbNDLkErukeF79
+	 pfLjMnNnuNqtMqeGB7liEzE/Pd68+cBZoom0DPPE3CChc0J1sBgLsLsp2xAJu1nUiU
+	 fDWlWspKOTAo9WrxZ1ARd7Oq0eikXYzQiu+343RshRx1AKnlxQi5ZDKAbDWZJzns9x
+	 JhXhI7e6VuN3xgZdlX4DVmRnemmAAO+pf9z6hQytp/vzYmWvNsLLLtc3L5TDZvj9v+
+	 +3aR1OlvTnx2Q==
+Received: from pat.atlnz.lc (Not Verified[10.32.16.33]) by svr-chch-seg1.atlnz.lc with Trustwave SEG (v8,2,6,11305)
+	id <B667501400002>; Fri, 21 Jun 2024 16:27:44 +1200
+Received: from chrisp-dl.ws.atlnz.lc (chrisp-dl.ws.atlnz.lc [10.33.22.30])
+	by pat.atlnz.lc (Postfix) with ESMTP id 4A00F13EE84;
+	Fri, 21 Jun 2024 16:27:44 +1200 (NZST)
+Received: by chrisp-dl.ws.atlnz.lc (Postfix, from userid 1030)
+	id 4692B280C0C; Fri, 21 Jun 2024 16:27:44 +1200 (NZST)
+From: Chris Packham <chris.packham@alliedtelesis.co.nz>
+To: tglx@linutronix.de,
+	robh@kernel.org,
+	krzk+dt@kernel.org,
+	conor+dt@kernel.org,
+	tsbogend@alpha.franken.de,
+	daniel.lezcano@linaro.org,
+	paulburton@kernel.org,
+	peterz@infradead.org,
+	mail@birger-koblitz.de,
+	bert@biot.com,
+	john@phrozen.org,
+	sander@svanheule.net
+Cc: linux-kernel@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	linux-mips@vger.kernel.org,
+	kabel@kernel.org,
+	ericwouds@gmail.com,
+	Chris Packham <chris.packham@alliedtelesis.co.nz>
+Subject: [PATCH 2/6] dt-bindings: timer: Add schema for realtek,otto-timer
+Date: Fri, 21 Jun 2024 16:27:33 +1200
+Message-ID: <20240621042737.674128-3-chris.packham@alliedtelesis.co.nz>
+X-Mailer: git-send-email 2.45.2
+In-Reply-To: <20240621042737.674128-1-chris.packham@alliedtelesis.co.nz>
+References: <20240621042737.674128-1-chris.packham@alliedtelesis.co.nz>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
+X-SEG-SpamProfiler-Analysis: v=2.4 cv=CvQccW4D c=1 sm=1 tr=0 ts=66750140 a=KLBiSEs5mFS1a/PbTCJxuA==:117 a=T1WGqf2p2xoA:10 a=gEfo2CItAAAA:8 a=gAKjGDGbJ80CxQtUxh0A:9 a=3ZKOabzyN94A:10 a=TRDAMGBw1lysTYkqMS0v:22 a=sptkURWiP4Gy88Gu7hUp:22
+X-SEG-SpamProfiler-Score: 0
+x-atlnz-ls: pat
 
-On Wed, 12 Jun 2024, Jiaxun Yang wrote:
+Add the devicetree schema for the realtek,otto-timer present on a number
+of Realtek SoCs.
 
-> Introduce CPU_HAS_LLSC and CPU_MAY_HAVE_LLSC to determine availability
-> of LLSC and Kconfig level.
+Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
+---
+ .../bindings/timer/realtek,otto-timer.yaml    | 54 +++++++++++++++++++
+ 1 file changed, 54 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/timer/realtek,otto-=
+timer.yaml
 
- Taking the subsequent patches in this series into account this seems to 
-create a parallel universe in which the availability of LL/SC for certain 
-features is handled at the Kconfig level while in the other universe it's 
-handled via <asm/mach-*/cpu-feature-overrides.h>.
+diff --git a/Documentation/devicetree/bindings/timer/realtek,otto-timer.y=
+aml b/Documentation/devicetree/bindings/timer/realtek,otto-timer.yaml
+new file mode 100644
+index 000000000000..b6e85aadbc99
+--- /dev/null
++++ b/Documentation/devicetree/bindings/timer/realtek,otto-timer.yaml
+@@ -0,0 +1,54 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/timer/realtek,otto-timer.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Realtek Otto SoCs Timer/Counter
++
++description:
++  Realtek SoCs support a number of timers/counters. These are used
++  as a per CPU clock event generator and an overall CPU clocksource.
++
++maintainers:
++  - Chris Packham <chris.packham@alliedtelesis.co.nz>
++
++properties:
++  $nodename:
++    pattern: "^timer@[0-9a-f]+$"
++
++  compatible:
++    items:
++      - enum:
++          - realtek,rtl930x-timer
++      - const: realtek,otto-timer
++  reg:
++    minItems: 5
++    maxItems: 5
++
++  clocks:
++    maxItems: 1
++
++  interrupts:
++    minItems: 5
++    maxItems: 5
++
++required:
++  - compatible
++  - reg
++  - clocks
++  - interrupts
++
++additionalProperties: false
++
++examples:
++  - |
++    timer0: timer@3200 {
++      compatible =3D "realtek,rtl930x-timer", "realtek,otto-timer";
++      reg =3D <0x3200 0x10>, <0x3210 0x10>, <0x3220 0x10>,
++            <0x3230 0x10>, <0x3240 0x10>;
++
++      interrupt-parent =3D <&intc>;
++      interrupts =3D <7 4>, <8 4>, <9 4>, <10 4>, <11 4>;
++      clocks =3D <&lx_clk>;
++    };
+--=20
+2.45.2
 
- I think this ought not to be done in two places independently and the 
-pieces in <asm/mach-*/cpu-feature-overrides.h> need to be removed, likely 
-in the same change even, *however* not without double-checking whether 
-there is not a case among them where a platform actually has LL/SC support 
-disabled despite the CPU used there having architectural support for the 
-feature.  Otherwise we may end up with a case where a platform has LL/SC 
-support disabled via its <asm/mach-*/cpu-feature-overrides.h> setting and 
-yet we enable ARCH_SUPPORTS_ATOMIC_RMW or ARCH_HAVE_NMI_SAFE_CMPXCHG for 
-it via Kconfig.
-
- The note from <asm/mach-ip32/cpu-feature-overrides.h> seems a candidate 
-to move to arch/mips/Kconfig at the relevant place on this occasion too.
-There may be more such notes and they ought not to be lost.
-
-  Maciej

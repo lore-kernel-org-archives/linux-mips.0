@@ -1,273 +1,171 @@
-Received: from mail-lf1-f45.google.com (mail-lf1-f45.google.com [209.85.167.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from gate2.alliedtelesis.co.nz (gate2.alliedtelesis.co.nz [202.36.163.20])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 85F7233D5;
-	Mon, 24 Jun 2024 00:13:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B647179E1
+	for <linux-mips@vger.kernel.org>; Mon, 24 Jun 2024 01:23:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.36.163.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719188024; cv=none; b=UqDu1PfL4zXyoOQtIKl2cBoWdhyQHhQdyfghctZvqC0oFvW+yeYp8yAhvSiwVwUxOKUCAHCtos0K6I10EVLk7aYsapOvFxEGldRGLFquV50tO3QLgcbVsdWAFJkVQCCZmSCSyetA8zny20HGjmNbWwj7oaYnnRbQXXvGOX4I4n4=
+	t=1719192195; cv=none; b=Ta1JMu18/boIehIDU4QzkHEFaBt0NxhopYD9n7Ln0JSLjd/6lzgLRB8hG3rdKmEEkL4kwoCHQA3h0yI/nWcbq6pShFDkqWGK9IlsT8c85Yhoj9ZEi1PCH+OI65I6VcB486oekz3FnwqiUsO2nK47S6pKLMZc8jjTFMmNdNA/nVc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719188024; c=relaxed/simple;
-	bh=gLzfNh2sD0Snt/c/PSgDu7vQo2JbZYPugwHufL1hitI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=EO4vew/UpHWKs8tGTGm/CxYFDVoQeH0XH/AP9AwTe4fna410Jb7Xp9N/iQmwoxByGKlyOzxa4aOYpp0sMnbNuQfTgY91i56mRIhEdNsGXtew8kW86XUHTKIGMXTcjErKoPRzdkLSMaSAlm4htuAgcPNbWAedrwrufg02XDGQBDc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=a06ab9WT; arc=none smtp.client-ip=209.85.167.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1719192195; c=relaxed/simple;
+	bh=LC629owmAJjPS+xghml3T6BLacNPlmP4E4nZxEDOjOc=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=Q+JfkkWXJghuznmunf8IVqIvdqQxCinC8Pzskcd61leYz5kTTYXX1MIO3zY8DBPdSF/ZKGWJ9LRLl7hXbX2UN4Y9I8DxdzhZ9Ov8gljo7U1Yzq7xIZ2fWAKcFcGlieDtxcvZbSGOXKxq5Vl2y+KeIrD//dbgCc/85+U45d+EwOo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=alliedtelesis.co.nz; spf=pass smtp.mailfrom=alliedtelesis.co.nz; dkim=pass (2048-bit key) header.d=alliedtelesis.co.nz header.i=@alliedtelesis.co.nz header.b=aRvEiflr; arc=none smtp.client-ip=202.36.163.20
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=alliedtelesis.co.nz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alliedtelesis.co.nz
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="a06ab9WT"
-Received: by mail-lf1-f45.google.com with SMTP id 2adb3069b0e04-52cd628f21cso2671764e87.3;
-        Sun, 23 Jun 2024 17:13:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1719188020; x=1719792820; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=GK3XqR+PJ1d4Fz6hBIhYUON//yKPUubXeIxccDTP36Q=;
-        b=a06ab9WTRhJynHAl+mLZ8WF34RB89lS00xXi4hrLX/5qd/V8YmgRbAnGsX/ncPfmAY
-         NQRamRqOoX3H9w+AxYeGOqt6g7Hfkxp7NCRbm4/qTRf9XzTbjBOvnFcu5Ab5seBQE/wh
-         CqvqiD+1lynMtw9KBureXZ/urzYIZKbAM5EUuebXEtLa8KEND4MblPLyCmM3TgdlmZP7
-         D1zrNIlm+5BXtf3LHCVeMlf0Vdv+7gDXzxg2u+jIOJ31oGU6+grOHOzpS2gDkxGxcPH4
-         TCMyhCWBJCTwJzR0r3TBtqhLnjWvlPVAc3g7ig8VJZoaiQ+qq30jaQjUBi1MGJ48AtOv
-         1bmg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1719188020; x=1719792820;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=GK3XqR+PJ1d4Fz6hBIhYUON//yKPUubXeIxccDTP36Q=;
-        b=hsxIj8qMkI75NvBZrrMtP9vFmJzapokL6PoaSIn5xygboh855xsu1wtWwCJHg+gMRp
-         JNmJIFDPdrXRCIcsaWh9DLtbrMhmkCWx9AnF0SDynRKwAqMHQoH9DcV6yCXrhKGmfWLK
-         D0PNr7LgfL4TEyPHEhStwoaZD9T866VF6LPVPrg21D/BZeCNsKCpHfBF5iC/oVdL+rG2
-         8x+vAo9b7bUepxWS4dJWbtY5lrx0EGeuoYjOsqJirw2UFImn/5djCEOrWBBr+SZnAEqT
-         pxreI2h5jCoXRzZk980WEDcfNqqaXGG0BMuVw2EP7BJnJM+tASmK8eVhLLhPDrW4ZfhN
-         jUNA==
-X-Forwarded-Encrypted: i=1; AJvYcCW/7jgwsP6mqpXZ9d6TBc8J3sHaJBnZuGNerUk40yh0m0xMQ1LIsPY94IRF0nRak58HxRpeFEzrma8XYD/jGbBXcBnnDhNqJGWp9OXYc5s33EBoYdM2WZXwZoXvEL4AHwtObjLZYlp2BIfW+LQtwjaRpFpIh4R3xiB3T08o5RqdIbCKGsTSRASNkZLiF82J+OnNAgBLL/fLxRmENR3e8Hu/BHnQOm+J1IebCYctjO3H6ui3OPRhmlxjMZ8ktbJMafWcZyAz0yGu48F94kn9U02hRJEF0HjM3WodKgQkVzX8tUsibXKZ4vzT06TdRKROaSJitCimM2SPiY3+cQsNdumxxxOTAbPCVzC9r8FE68LMGeuNQaWUxZL16i7KuHSCt0Q910ev6xtX4VcNrWDlw0K+fPm14PXHsfuPglMUeXBkAf45Lvzls3nisPE8aXIcTvMMcKzWdpnyeMm7frAoSuhKKyQwYTAY4Nk+a0t0QYH12KJGhJ+0beQMGnFjP9zuUj/7GPsptYJ90MvWr8y5rnPz
-X-Gm-Message-State: AOJu0YzsteuoHvEdseYFzizqjHjFOU22IaQrm0BUF9rBLmKpmHyXaI0H
-	O6KV46Dk0ZjBrzSjtA0ZWYBE/8HDTsXid7YrkQlDQOSsTeXH+qZ+
-X-Google-Smtp-Source: AGHT+IF2Bfeow77JRmsfl+qYe07q4SCYIXRmBXwU95g0HYBerXLLikzR2pgaDVKgp0/53mQUmpDsKw==
-X-Received: by 2002:ac2:4437:0:b0:52c:c9d1:ad32 with SMTP id 2adb3069b0e04-52ce1835a80mr1726400e87.22.1719188020234;
-        Sun, 23 Jun 2024 17:13:40 -0700 (PDT)
-Received: from [192.168.8.113] ([148.252.133.212])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a725060340csm88197066b.22.2024.06.23.17.13.35
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 23 Jun 2024 17:13:39 -0700 (PDT)
-Message-ID: <ae0d02f0-b304-4847-a88a-cd5bd4b9bc76@gmail.com>
-Date: Mon, 24 Jun 2024 01:13:41 +0100
+	dkim=pass (2048-bit key) header.d=alliedtelesis.co.nz header.i=@alliedtelesis.co.nz header.b="aRvEiflr"
+Received: from svr-chch-seg1.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(Client did not present a certificate)
+	by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id D142F2C06C7;
+	Mon, 24 Jun 2024 13:23:09 +1200 (NZST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
+	s=mail181024; t=1719192189;
+	bh=G1Zkpz2iC8asQsjxyhbhzMGxkY752yPBadS03nWjL6M=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=aRvEiflr/WgM2Z4csl50vCWZ9YzEpI25h+pwoLL7phWoWJC3u6LDuYQaOeC8zapD9
+	 Kv/wrNlECn/pblC4gUjGBjXoDCufoWHPngKmdJ5bhm0djpG8f50p5HGYkEStcevB8g
+	 R+PBNeACCaz84bkLpWuZtDemD8hVDmkqigbWQhalTVFq+TdNXj2WfDRfuueTyXr/iX
+	 Ku7uf4v2E1hxc2FMHnU1TU63WzvJx1kIU3/8JZZTvBTSHQwj985pLfjza6qykmX4tZ
+	 16+aKJ6yhh5tVlL1FxteL1k9TMSiBMOJRIcC2ZBvX4yZ+gmA/k3CVACKhi9SPyvrDq
+	 oMAxi5lQ6SSpw==
+Received: from pat.atlnz.lc (Not Verified[10.32.16.33]) by svr-chch-seg1.atlnz.lc with Trustwave SEG (v8,2,6,11305)
+	id <B6678ca7d0004>; Mon, 24 Jun 2024 13:23:09 +1200
+Received: from chrisp-dl.ws.atlnz.lc (chrisp-dl.ws.atlnz.lc [10.33.22.30])
+	by pat.atlnz.lc (Postfix) with ESMTP id 3C36A13ED63;
+	Mon, 24 Jun 2024 13:23:09 +1200 (NZST)
+Received: by chrisp-dl.ws.atlnz.lc (Postfix, from userid 1030)
+	id 38320280AE5; Mon, 24 Jun 2024 13:23:09 +1200 (NZST)
+From: Chris Packham <chris.packham@alliedtelesis.co.nz>
+To: tglx@linutronix.de,
+	robh@kernel.org,
+	krzk+dt@kernel.org,
+	conor+dt@kernel.org,
+	tsbogend@alpha.franken.de,
+	daniel.lezcano@linaro.org,
+	paulburton@kernel.org,
+	peterz@infradead.org,
+	mail@birger-koblitz.de,
+	bert@biot.com,
+	john@phrozen.org,
+	sander@svanheule.net
+Cc: linux-kernel@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	linux-mips@vger.kernel.org,
+	kabel@kernel.org,
+	ericwouds@gmail.com,
+	Chris Packham <chris.packham@alliedtelesis.co.nz>
+Subject: [PATCH v2 4/8] dt-bindings: timer: Add schema for realtek,otto-timer
+Date: Mon, 24 Jun 2024 13:22:56 +1200
+Message-ID: <20240624012300.1713290-5-chris.packham@alliedtelesis.co.nz>
+X-Mailer: git-send-email 2.45.2
+In-Reply-To: <20240624012300.1713290-1-chris.packham@alliedtelesis.co.nz>
+References: <20240624012300.1713290-1-chris.packham@alliedtelesis.co.nz>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next v12 10/13] tcp: RX path for devmem TCP
-To: Mina Almasry <almasrymina@google.com>
-Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-doc@vger.kernel.org, linux-alpha@vger.kernel.org,
- linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
- sparclinux@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
- linux-trace-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
- bpf@vger.kernel.org, linux-kselftest@vger.kernel.org,
- linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
- Donald Hunter <donald.hunter@gmail.com>, Jonathan Corbet <corbet@lwn.net>,
- Richard Henderson <richard.henderson@linaro.org>,
- Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Matt Turner
- <mattst88@gmail.com>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
- "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
- Helge Deller <deller@gmx.de>, Andreas Larsson <andreas@gaisler.com>,
- Sergey Shtylyov <s.shtylyov@omp.ru>, Jesper Dangaard Brouer
- <hawk@kernel.org>, Ilias Apalodimas <ilias.apalodimas@linaro.org>,
- Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu
- <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- Arnd Bergmann <arnd@arndb.de>, Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
- Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman
- <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
- Yonghong Song <yonghong.song@linux.dev>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>, Steffen Klassert
- <steffen.klassert@secunet.com>, Herbert Xu <herbert@gondor.apana.org.au>,
- David Ahern <dsahern@kernel.org>,
- Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
- Shuah Khan <shuah@kernel.org>, Sumit Semwal <sumit.semwal@linaro.org>,
- =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
- Bagas Sanjaya <bagasdotme@gmail.com>, Christoph Hellwig <hch@infradead.org>,
- Nikolay Aleksandrov <razor@blackwall.org>, David Wei <dw@davidwei.uk>,
- Jason Gunthorpe <jgg@ziepe.ca>, Yunsheng Lin <linyunsheng@huawei.com>,
- Shailend Chand <shailend@google.com>,
- Harshitha Ramamurthy <hramamurthy@google.com>,
- Shakeel Butt <shakeel.butt@linux.dev>, Jeroen de Borst
- <jeroendb@google.com>, Praveen Kaligineedi <pkaligineedi@google.com>,
- Willem de Bruijn <willemb@google.com>, Kaiyuan Zhang <kaiyuanz@google.com>
-References: <20240613013557.1169171-1-almasrymina@google.com>
- <20240613013557.1169171-11-almasrymina@google.com>
- <20a6a727-d9f2-495c-bf75-72c27740dd82@gmail.com>
- <CAHS8izMce36FwLhFB0znHQYmxpe5hmTSXtZA7+b5VsmSJUfhRw@mail.gmail.com>
-Content-Language: en-US
-From: Pavel Begunkov <asml.silence@gmail.com>
-In-Reply-To: <CAHS8izMce36FwLhFB0znHQYmxpe5hmTSXtZA7+b5VsmSJUfhRw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+X-SEG-SpamProfiler-Analysis: v=2.4 cv=CvQccW4D c=1 sm=1 tr=0 ts=6678ca7d a=KLBiSEs5mFS1a/PbTCJxuA==:117 a=T1WGqf2p2xoA:10 a=gEfo2CItAAAA:8 a=2AJCWd3gv_sDiQv9-YsA:9 a=3ZKOabzyN94A:10 a=7p-po5nT6doXOX8LVc8m:22 a=sptkURWiP4Gy88Gu7hUp:22
+X-SEG-SpamProfiler-Score: 0
+x-atlnz-ls: pat
 
-On 6/21/24 21:31, Mina Almasry wrote:
-> On Mon, Jun 17, 2024 at 9:36 AM Pavel Begunkov <asml.silence@gmail.com> wrote:
->>
->> On 6/13/24 02:35, Mina Almasry wrote:
->>>
->>> The pages awaiting freeing are stored in the newly added
->>> sk->sk_user_frags, and each page passed to userspace is get_page()'d.
->>> This reference is dropped once the userspace indicates that it is
->>> done reading this page.  All pages are released when the socket is
->>> destroyed.
->>
->> One small concern is that if the pool gets destroyed (i.e.
->> page_pool_destroy) before sockets holding netiov, page pool will
->> semi-busily poll until the sockets die or such and will spam with
->> pr_warn(). E.g. when a user drops the nl but leaks data sockets
->> and continues with its userspace business. You can probably do
->> it in a loop and create dozens of such pending
->> page_pool_release_retry().
->>
-> 
-> Yes, true, but this is not really an issue with netiovs per se, it's a
-> quirk with the page_pool in general. If a non-devmem page_pool is
+Add the devicetree schema for the realtek,otto-timer present on a number
+of Realtek SoCs.
 
-True, devmem is just a new convenient way of doing that ...
+Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
+---
 
-> destroyed while there are pages waiting in the receive queues to be
-> recvmsg'd, the behavior you described happens anyway AFAIU.
-> 
-> Jakub did some work to improve this. IIRC he disabled the regular
-> warning and he reparents the orphan page_pools so they appear in the
-> stats of his netlink API.
-> 
-> Since this is behavior already applying to pages, I did not seek to
-> improve it as I add devmem support, I just retain it. We could improve
-> it in a separate patchset, but I do not see this behavior as a
-> critical issue really, especially since the alarming pr_warn has been
-> removed.
+Notes:
+    Changes in v2:
+    - Use specific compatible
+    - Remove unnecessary label
+    - Remove unused irq flags (interrupt controller is one-cell)
+    - Set minItems for reg and interrupts based on compatible
 
-... fair enough. I haven't noticed it being removed, but was
-thinking to suggest to conver to ratelimited.
+ .../bindings/timer/realtek,otto-timer.yaml    | 66 +++++++++++++++++++
+ 1 file changed, 66 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/timer/realtek,otto-=
+timer.yaml
 
->>> +static int tcp_xa_pool_refill(struct sock *sk, struct tcp_xa_pool *p,
->>> +                           unsigned int max_frags)
->>> +{
->>> +     int err, k;
->>> +
->>> +     if (p->idx < p->max)
->>> +             return 0;
->>> +
->>> +     xa_lock_bh(&sk->sk_user_frags);
->>> +
->>> +     tcp_xa_pool_commit_locked(sk, p);
->>> +
->>> +     for (k = 0; k < max_frags; k++) {
->>> +             err = __xa_alloc(&sk->sk_user_frags, &p->tokens[k],
->>> +                              XA_ZERO_ENTRY, xa_limit_31b, GFP_KERNEL);
->>> +             if (err)
->>> +                     break;
->>> +     }
->>> +
->>> +     xa_unlock_bh(&sk->sk_user_frags);
->>> +
->>> +     p->max = k;
->>> +     p->idx = 0;
->>> +     return k ? 0 : err;
->>> +}
->>
->> Personally, I'd prefer this optimisation to be in a separate patch,
->> especially since there is some degree of hackiness to it.
->>
->>
-> 
-> To be honest this optimization is very necessary from my POV. We ran
-> into real production problems due to the excessive locking when we use
-> regular xa_alloc(), and Eric implemented this optimization to resolve
-> that. I simply squashed the optimization for this upstream series.
-> 
-> If absolutely necessary I can refactor it into a separate patch or
-> carry the optimization locally, but this seems like a problem everyone
-> looking to use devmem TCP will re-discover, so probably worth just
-> having here?
+diff --git a/Documentation/devicetree/bindings/timer/realtek,otto-timer.y=
+aml b/Documentation/devicetree/bindings/timer/realtek,otto-timer.yaml
+new file mode 100644
+index 000000000000..13ea7aa946fe
+--- /dev/null
++++ b/Documentation/devicetree/bindings/timer/realtek,otto-timer.yaml
+@@ -0,0 +1,66 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/timer/realtek,otto-timer.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Realtek Otto SoCs Timer/Counter
++
++description:
++  Realtek SoCs support a number of timers/counters. These are used
++  as a per CPU clock event generator and an overall CPU clocksource.
++
++maintainers:
++  - Chris Packham <chris.packham@alliedtelesis.co.nz>
++
++properties:
++  $nodename:
++    pattern: "^timer@[0-9a-f]+$"
++
++  compatible:
++    items:
++      - enum:
++          - realtek,rtl9302-timer
++      - const: realtek,otto-timer
++
++  reg:
++    maxItems: 5
++
++  clocks:
++    maxItems: 1
++
++  interrupts:
++    maxItems: 5
++
++allOf:
++  - if:
++      properties:
++        compatible:
++          contains:
++            const: realtek,rtl9302-timer
++    then:
++      properties:
++        reg:
++          minItems: 2
++        interrupts:
++          minItems: 2
++
++required:
++  - compatible
++  - reg
++  - clocks
++  - interrupts
++
++additionalProperties: false
++
++examples:
++  - |
++    timer@3200 {
++      compatible =3D "realtek,rtl9302-timer", "realtek,otto-timer";
++      reg =3D <0x3200 0x10>, <0x3210 0x10>, <0x3220 0x10>,
++            <0x3230 0x10>, <0x3240 0x10>;
++
++      interrupt-parent =3D <&intc>;
++      interrupts =3D <7>, <8>, <9>, <10>, <11>;
++      clocks =3D <&lx_clk>;
++    };
+--=20
+2.45.2
 
-I specifically mean how it's split into patches within the set. It'd
-have been easier to review, understand for people looking it up in
-history and so on. However, not insisting on changing it now, might
-be safer to leave it alone
-
->>> +             /* if remaining_len is not satisfied yet, we need to go to the
->>> +              * next frag in the frag_list to satisfy remaining_len.
->>> +              */
->>> +             skb = skb_shinfo(skb)->frag_list ?: skb->next;
->>> +
->>> +             offset = offset - start;
->>
->> It's an offset into the current skb, isn't it? Wouldn't
->> offset = 0; be less confusing?
->>
-> 
-> Seems so, AFAICT. Let me try to apply this and see if it trips up any tests.
-> 
->>> +     } while (skb);
->>> +
->>> +     if (remaining_len) {
->>> +             err = -EFAULT;
->>> +             goto out;
->>> +     }
->>
->> Having data left is not a fault,
-> 
-> I think it is. The caller of tcp_recvmsg_dmabuf() expects all of
-> remaining_len to be used up, otherwise it messes up with the math in
-> the caller. __skb_datagram_iter(), which is the equivalent to this one
-> for pages, regards having left over data as a fault and also returns
-> -EFAULT, AFAICT.
-
-I mean "Having data left is not a fault, not receiving
-anything is", and you correctly return a partial result
-if that was the case.
-
->> and to get here you
->> need to get an skb with no data left, which shouldn't
->> happen. Seems like everything you need is covered by
->> the "!sent" check below.
->>
-> 
-> I think we can get here if we run out of skbs with data, no?
-
-IIRC the caller clamps it so that it's within the skb with
-its frags. Well, safer to have the check, I agree. It's just
-looked a bit odd since the value is complementary to @sent,
-but I guess it's just a way to propagate -EFAULT.
-
->>> @@ -2503,6 +2504,15 @@ static void tcp_md5sig_info_free_rcu(struct rcu_head *head)
->>>    void tcp_v4_destroy_sock(struct sock *sk)
->>>    {
->>>        struct tcp_sock *tp = tcp_sk(sk);
->>> +     __maybe_unused unsigned long index;
->>> +     __maybe_unused void *netmem;
->>
->> How about adding a function to get rid of __maybe_unused?.
->>
->> static void sock_release_devmem_frags() {
->> #ifdef PP
->>          unsigned index;
->>          ...
->> #endif PP
->> }
->>
-> 
-> Will do.
-> 
->> Also, even though you wire it up for TCP, since ->sk_user_frags
->> is in struct sock I'd expect the release to be somewhere in the
->> generic sock path like __sk_destruct(), and same for init.
->> Perhpas, it's better to leave it for later.
-
--- 
-Pavel Begunkov

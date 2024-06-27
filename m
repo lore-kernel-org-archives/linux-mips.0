@@ -1,64 +1,55 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6388C1F94A;
-	Thu, 27 Jun 2024 11:01:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F3F36148310;
+	Thu, 27 Jun 2024 11:05:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.175.24.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719486086; cv=none; b=e4VuyDE61rog+oQzK74+0x8y4zNVxEA3NiMSo55G1vQG56drEQujbAroRfHPl2v7vnbeGaZ8nGbq6c0TAyAqX+qzpwBpty4tRxWel3W9FsT2ybd9prgQpCoQH3z/7puMvzDzvVG24aTZ5QZ5tdDWrC18Yc5cJsQXNyHU43jg77Y=
+	t=1719486333; cv=none; b=Uog4+0HVEuC2fpyxEfedS0wJ/nc4QtQsvGM/rzRBxeDXxEvpUD3wm/Mb/O9p5Gj0Hbc75MPRAE4/9rd/XpeLCSxPfCal6zllGoxH3iJkjL70lT67vmSgNAQ1Ff2Au8poMTO4TtSn6PA8oV8WZzyXpRj04zs9Py8lftyG3zPW9pg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719486086; c=relaxed/simple;
-	bh=XpS4P703igk3O8Ga/2LoeenBi8suYKyiHNWEM3es3+c=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=d/uvlonhu8NUDU/IoCbZCB+M/9HV/MPqY/SQO1RKhz2loIUU8D1/75ezCYZC3ZAnxendmXMdXRYivyrXKcF6xGbe9+Fzi0R1jrOjzyC42hifkfp12TCzMUsbcT30zNKRIcY8+DRoRN/YZnEDqpJjYrsFRT/nnCmwQGlh6EwElSU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KqUpoyPq; arc=none smtp.client-ip=10.30.226.201
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KqUpoyPq"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 615DFC32786;
-	Thu, 27 Jun 2024 11:01:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1719486086;
-	bh=XpS4P703igk3O8Ga/2LoeenBi8suYKyiHNWEM3es3+c=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=KqUpoyPq+xyYY2f+baWNtrli5lqiNIU1jE9MLO2/EYg2hwkjdOY0Vm+VoSE5my5tL
-	 F1/E310fx5Ahvt1rJ56LHh1Wa6AURwatAhW+Q+3ytNuAFUu/8jDPThX81GWZtOXqFY
-	 sfOSCHiPkDzSwmOHDq/klnNGov4CuJy2swayUOcsh4R9gRm11Cde5rxR2HENO9F/GO
-	 ImGStPW3UFurh6NF7eYDLOubZU4ysWzCNkLeUcCKr0SUZB0MW1IN8beuu6Y8S+Czjz
-	 PYRELH/sZxd1DZhy3ZH6bLgbqomWFepL9EBfm9r6n7idmUeUoj4Eemhym1IMHrdh+J
-	 4rxOZ4yMGNuLw==
-Date: Thu, 27 Jun 2024 13:01:19 +0200
-From: Marek =?UTF-8?B?QmVow7pu?= <kabel@kernel.org>
-To: Chris Packham <chris.packham@alliedtelesis.co.nz>
-Cc: tglx@linutronix.de, robh@kernel.org, krzk+dt@kernel.org,
- conor+dt@kernel.org, tsbogend@alpha.franken.de, daniel.lezcano@linaro.org,
- paulburton@kernel.org, peterz@infradead.org, mail@birger-koblitz.de,
- bert@biot.com, john@phrozen.org, sander@svanheule.net,
- linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
- linux-mips@vger.kernel.org, ericwouds@gmail.com
-Subject: Re: [PATCH v3 2/9] mips: dts: realtek: add device_type property to
- cpu node
-Message-ID: <20240627130119.5673aa68@dellmb>
-In-Reply-To: <20240627043317.3751996-3-chris.packham@alliedtelesis.co.nz>
-References: <20240627043317.3751996-1-chris.packham@alliedtelesis.co.nz>
-	<20240627043317.3751996-3-chris.packham@alliedtelesis.co.nz>
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1719486333; c=relaxed/simple;
+	bh=B8HlRHtRvGCLPcANh6rc9BTx0hDMXgw8LgJnHLFEqu8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=M6CdC0uiLAp5x3E0+BhP+gc1RrXwcbYAAH5x/WNbxBYnQYBNQ7ddBf5M6xD+C/U5ieP+kyIe+QkKHluaFjUVDY8qC9nuavzboVaPSDhwWRfOtg8HvTYk1GS5yXeEW2w2HmPWDzblg0F95nVv3zsa+mA5FrLvsiySs1AqBJieZGU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de; spf=pass smtp.mailfrom=alpha.franken.de; arc=none smtp.client-ip=193.175.24.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alpha.franken.de
+Received: from uucp by elvis.franken.de with local-rmail (Exim 3.36 #1)
+	id 1sMmwE-0003Wq-00; Thu, 27 Jun 2024 13:05:14 +0200
+Received: by alpha.franken.de (Postfix, from userid 1000)
+	id EC248C0120; Thu, 27 Jun 2024 12:58:03 +0200 (CEST)
+Date: Thu, 27 Jun 2024 12:58:03 +0200
+From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To: Jiaxun Yang <jiaxun.yang@flygoat.com>
+Cc: Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
+	Philippe =?iso-8859-1?Q?Mathieu-Daud=E9?= <philmd@linaro.org>
+Subject: Re: [PATCH v3] MIPS: Implement ieee754 NAN2008 emulation mode
+Message-ID: <Zn1FuxNw2CUttzdg@alpha.franken.de>
+References: <20240612-mips_ieee754_emul-v3-1-2c21b450abdb@flygoat.com>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240612-mips_ieee754_emul-v3-1-2c21b450abdb@flygoat.com>
 
-On Thu, 27 Jun 2024 16:33:10 +1200
-Chris Packham <chris.packham@alliedtelesis.co.nz> wrote:
+On Wed, Jun 12, 2024 at 09:38:19AM +0100, Jiaxun Yang wrote:
+> +++ b/arch/mips/kernel/elf.c
+> @@ -318,6 +318,10 @@ void mips_set_personality_nan(struct arch_elf_state *state)
+>  	t->thread.fpu.fcr31 = c->fpu_csr31;
+>  	switch (state->nan_2008) {
+>  	case 0:
+> +		if (!(c->fpu_msk31 & FPU_CSR_NAN2008))
+> +			t->thread.fpu.fcr31 &= ~FPU_CSR_NAN2008;
+> +		if (!(c->fpu_msk31 & FPU_CSR_ABS2008))
+> +			t->thread.fpu.fcr31 &= ~FPU_CSR_ABS2008;
 
-> Add device_type =3D "cpu" to the cpu node for the rtl838x SoC. This
-> resolves the following dtbs_check complaint:
->=20
->  cpus: cpu@0: 'cache-level' is a required property
->=20
-> Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
+why is this needed ?
 
-Reviewed-by: Marek Beh=C3=BAn <kabel@kernel.org>
+Thomas.
+
+-- 
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]

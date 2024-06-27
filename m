@@ -1,126 +1,106 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from gate2.alliedtelesis.co.nz (gate2.alliedtelesis.co.nz [202.36.163.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E69A5A50;
-	Thu, 27 Jun 2024 00:46:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC5001BC44
+	for <linux-mips@vger.kernel.org>; Thu, 27 Jun 2024 04:33:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.36.163.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719449198; cv=none; b=dffrzsLCroNS9h1WB8+Yu55SaT96NPALW5h/2VQC3peqhoUQ0TsJRAHHteGw+rESE3dbN9LNOUtCSajqxo84xnNnj7h/OWBurqNALw12isCUzqpyMzNNHzZVpRfqdxvfqRxdXnYMWpDCpvlsXI6hmw3f3OV3o8A24o3xoMk9+bA=
+	t=1719462807; cv=none; b=cIuHJzHwGGzS13XukaD0skrN2WttMBCQnZeDlDbUpWPi9ReuhQvp6wGTDB4DkIBzEg3Kx5EvG7gHo03qyrn5Ctg6VqBlaS+jxM9EeQL6e4rOKOXyVXSiwn3HzXe74VupSp5tzGkm968AyGvCChZ8viKQf6Ic7V8PufBLkENr81Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719449198; c=relaxed/simple;
-	bh=0SG3laByZlaFUISZCHp29XT3JkoNZdaHE8iSnv9r4Ww=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=e29aBtSG5yk6cFLdUcnnEn6RFj9wDNBzdPp4zP4Jeksm16qg7avahlVDm3hjcfYB1tuokJ7m8F0h5j8sHtVSHbcpiJavSUIB+oANT8FQcdSqYLj8khQpxh5DFfPrNxtkiohAGM319MfYbv0dYgDPImW5PuOPgaAsYTCHYpKL3b0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mBlNUmVM; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1719462807; c=relaxed/simple;
+	bh=SxKy6c8aH+qBN/CAmRz9nQAaQ/ZLS4PmvHvoZ7ft5Ns=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=m9cKzLoMAhU+hV5XPrhRa+LaNS9w/TJ545F+T94SwiIeRcbp2U9HWqHy6RHHTBfY9otuXAkm+kw/YjG8IJydwW1TjHAsWZcVf6wdn7WaEY+d6fspL8T9C2/GmLCtCtHPcKaAOWYgWP8T5ASNJu8Ag82ZLumD673vNxiBtFAuynM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=alliedtelesis.co.nz; spf=pass smtp.mailfrom=alliedtelesis.co.nz; dkim=pass (2048-bit key) header.d=alliedtelesis.co.nz header.i=@alliedtelesis.co.nz header.b=kIHa8te4; arc=none smtp.client-ip=202.36.163.20
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=alliedtelesis.co.nz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alliedtelesis.co.nz
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mBlNUmVM"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6B63CC116B1;
-	Thu, 27 Jun 2024 00:46:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1719449197;
-	bh=0SG3laByZlaFUISZCHp29XT3JkoNZdaHE8iSnv9r4Ww=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=mBlNUmVMzPFiiYZI8a8E65frgk5k1lxp0RkrYfN3Nlf/2A5ch4UMQN/KRSpXjJb2O
-	 djBU41eFDkc5BhBiVK+bvijq7reE+WvVLOjI6abwchbipLi50MqkLBcE9HAZXML2ZB
-	 vcXNkl0oVc41ZWhheArOwYfFHV0uN/gdJSrWAvNZjaO4ES7wR4BNnUbOfdxD7g2qby
-	 10el+2M74ZCpdaxOCG4dY/gaD016jFvumOcdSt4+KsTBMcEqxEPu2v7WSj29kUUMx0
-	 pwpxnw8AxBcF47BxCRsv11U6w9kvZBBbsJL9xFpmJWoMiS8guNVpQsYJOkzW+Fd5BG
-	 bUJejdYs3QDaw==
-Date: Wed, 26 Jun 2024 17:46:34 -0700
-From: Jakub Kicinski <kuba@kernel.org>
-To: Mina Almasry <almasrymina@google.com>
-Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-doc@vger.kernel.org, linux-alpha@vger.kernel.org,
- linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
- sparclinux@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
- linux-arch@vger.kernel.org, bpf@vger.kernel.org,
- linux-kselftest@vger.kernel.org, linux-media@vger.kernel.org,
- dri-devel@lists.freedesktop.org, Donald Hunter <donald.hunter@gmail.com>,
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet
- <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, Jonathan Corbet
- <corbet@lwn.net>, Richard Henderson <richard.henderson@linaro.org>, Ivan
- Kokshaysky <ink@jurassic.park.msu.ru>, Matt Turner <mattst88@gmail.com>,
- Thomas Bogendoerfer <tsbogend@alpha.franken.de>, "James E.J. Bottomley"
- <James.Bottomley@HansenPartnership.com>, Helge Deller <deller@gmx.de>,
- Andreas Larsson <andreas@gaisler.com>, Jesper Dangaard Brouer
- <hawk@kernel.org>, Ilias Apalodimas <ilias.apalodimas@linaro.org>, Steven
- Rostedt <rostedt@goodmis.org>, Masami Hiramatsu <mhiramat@kernel.org>,
- Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Arnd Bergmann
- <arnd@arndb.de>, Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann
- <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, Martin KaFai
- Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu
- <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, John Fastabend
- <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, Stanislav
- Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>, Jiri Olsa
- <jolsa@kernel.org>, Steffen Klassert <steffen.klassert@secunet.com>,
- Herbert Xu <herbert@gondor.apana.org.au>, David Ahern <dsahern@kernel.org>,
- Willem de Bruijn <willemdebruijn.kernel@gmail.com>, Shuah Khan
- <shuah@kernel.org>, Sumit Semwal <sumit.semwal@linaro.org>, "Christian
- =?UTF-8?B?S8O2bmln?=" <christian.koenig@amd.com>, Bagas Sanjaya
- <bagasdotme@gmail.com>, Christoph Hellwig <hch@infradead.org>, Nikolay
- Aleksandrov <razor@blackwall.org>, Pavel Begunkov <asml.silence@gmail.com>,
- David Wei <dw@davidwei.uk>, Jason Gunthorpe <jgg@ziepe.ca>, Yunsheng Lin
- <linyunsheng@huawei.com>, Shailend Chand <shailend@google.com>, Harshitha
- Ramamurthy <hramamurthy@google.com>, Shakeel Butt <shakeel.butt@linux.dev>,
- Jeroen de Borst <jeroendb@google.com>, Praveen Kaligineedi
- <pkaligineedi@google.com>, Stanislav Fomichev <sdf@google.com>
-Subject: Re: [PATCH net-next v14 13/13] selftests: add ncdevmem, netcat for
- devmem TCP
-Message-ID: <20240626174634.2adec19d@kernel.org>
-In-Reply-To: <20240626150822.742eaf6a@kernel.org>
-References: <20240625195407.1922912-1-almasrymina@google.com>
-	<20240625195407.1922912-14-almasrymina@google.com>
-	<20240626150822.742eaf6a@kernel.org>
+	dkim=pass (2048-bit key) header.d=alliedtelesis.co.nz header.i=@alliedtelesis.co.nz header.b="kIHa8te4"
+Received: from svr-chch-seg1.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(Client did not present a certificate)
+	by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id 8E1592C0659;
+	Thu, 27 Jun 2024 16:33:22 +1200 (NZST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
+	s=mail181024; t=1719462802;
+	bh=+6losAJiIn99Fr4mDJL5LYRb7pOWepPEf8cwsm5Q63w=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=kIHa8te4tNtrCc8P5N0rQpHy3MLeA9CFUfYNmynUKb2sYJHiZsNi6aOBPeReSWBFd
+	 4k9OZII+bdjQFdvlnkZXhklI22WAmFockwMxepznbwRR1c2x5L8q6APNETgxuMvrWL
+	 AbAKXcvK1kLwcMR3SvJTrsUDH/0ZHFE5Gmh7jr74x2IL6799DOJbwPQb5WkeaMGDAU
+	 6FTEIgqMIUjttHslAdAbpjpcLgaZ0l8LL3LeY3pyQkgQWM/WkzNI48WH4n11yRRQFj
+	 rlwULVo2VWuJHXO93kt8f6ETeXVPC2vzh51+XkN+j9yyeIXEZ99LHWeEHIqU8eJ7rH
+	 nHgmVMmPlM8jg==
+Received: from pat.atlnz.lc (Not Verified[10.32.16.33]) by svr-chch-seg1.atlnz.lc with Trustwave SEG (v8,2,6,11305)
+	id <B667ceb910003>; Thu, 27 Jun 2024 16:33:22 +1200
+Received: from chrisp-dl.ws.atlnz.lc (chrisp-dl.ws.atlnz.lc [10.33.22.30])
+	by pat.atlnz.lc (Postfix) with ESMTP id E7F2713EE87;
+	Thu, 27 Jun 2024 16:33:21 +1200 (NZST)
+Received: by chrisp-dl.ws.atlnz.lc (Postfix, from userid 1030)
+	id E4D9C28078C; Thu, 27 Jun 2024 16:33:21 +1200 (NZST)
+From: Chris Packham <chris.packham@alliedtelesis.co.nz>
+To: tglx@linutronix.de,
+	robh@kernel.org,
+	krzk+dt@kernel.org,
+	conor+dt@kernel.org,
+	tsbogend@alpha.franken.de,
+	daniel.lezcano@linaro.org,
+	paulburton@kernel.org,
+	peterz@infradead.org,
+	mail@birger-koblitz.de,
+	bert@biot.com,
+	john@phrozen.org,
+	sander@svanheule.net
+Cc: linux-kernel@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	linux-mips@vger.kernel.org,
+	kabel@kernel.org,
+	ericwouds@gmail.com,
+	Chris Packham <chris.packham@alliedtelesis.co.nz>
+Subject: [PATCH v3 3/9] dt-bindings: vendor-prefixes: Add Cameo Communications
+Date: Thu, 27 Jun 2024 16:33:11 +1200
+Message-ID: <20240627043317.3751996-4-chris.packham@alliedtelesis.co.nz>
+X-Mailer: git-send-email 2.45.2
+In-Reply-To: <20240627043317.3751996-1-chris.packham@alliedtelesis.co.nz>
+References: <20240627043317.3751996-1-chris.packham@alliedtelesis.co.nz>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
+X-SEG-SpamProfiler-Analysis: v=2.4 cv=CvQccW4D c=1 sm=1 tr=0 ts=667ceb92 a=KLBiSEs5mFS1a/PbTCJxuA==:117 a=T1WGqf2p2xoA:10 a=9AoCKF9XAAAA:8 a=L4MHaItcyTsGJ2lxC4sA:9 a=3ZKOabzyN94A:10 a=zuUzDCw_FVeVL6jMbh0G:22
+X-SEG-SpamProfiler-Score: 0
+x-atlnz-ls: pat
 
-On Wed, 26 Jun 2024 15:08:22 -0700 Jakub Kicinski wrote:
-> On Tue, 25 Jun 2024 19:54:01 +0000 Mina Almasry wrote:
-> > +CFLAGS += -I../../../net/ynl/generated/
-> > +CFLAGS += -I../../../net/ynl/lib/
-> > +
-> > +LDLIBS += ../../../net/ynl/lib/ynl.a ../../../net/ynl/generated/protos.a  
-> 
-> Not as easy as this.. Please add this commit to your series:
-> https://github.com/kuba-moo/linux/commit/c130e8cc7208be544ec4f6f3627f1d36875d8c47
-> 
-> And here's an example of how you then use ynl.mk to code gen and build
-> for desired families (note the ordering of variables vs includes,
-> I remember that part was quite inflexible..):
-> https://github.com/kuba-moo/linux/commit/5d357f97ccd0248ca6136c5e11ca3eadf5091bb3
+Add entry for Cameo Communications (https://www.cameo.com.tw/)
 
-Investigating this further my patches will not work for O=xyz builds
-either. Please squash this into the relevant changes:
+Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
+---
 
-diff --git a/tools/testing/selftests/drivers/net/Makefile b/tools/testing/selftests/drivers/net/Makefile
-index db60d2718b35..9966e5b7139b 100644
---- a/tools/testing/selftests/drivers/net/Makefile
-+++ b/tools/testing/selftests/drivers/net/Makefile
-@@ -9,7 +9,8 @@ TEST_PROGS := \
- 	stats.py \
- # end of TEST_PROGS
- 
--# YNL files
-+# YNL files, must be before "include ..lib.mk"
-+EXTRA_CLEAN += $(OUTPUT)/libynl.a
- YNL_GEN_FILES := psp_responder
- TEST_GEN_FILES += $(YNL_GEN_FILES)
- 
-diff --git a/tools/testing/selftests/net/ynl.mk b/tools/testing/selftests/net/ynl.mk
-index 0e01ad12b30e..59cb26cf3f73 100644
---- a/tools/testing/selftests/net/ynl.mk
-+++ b/tools/testing/selftests/net/ynl.mk
-@@ -18,6 +18,4 @@ $(YNL_OUTPUTS): CFLAGS += \
- 
- $(OUTPUT)/libynl.a:
- 	$(Q)$(MAKE) -C $(top_srcdir)/tools/net/ynl GENS="$(YNL_GENS)" libynl.a
--	$(Q)cp $(top_srcdir)/tools/net/ynl/libynl.a ./
--
--EXTRA_CLEAN += libynl.a
-+	$(Q)cp $(top_srcdir)/tools/net/ynl/libynl.a $(OUTPUT)/libynl.a
+Notes:
+    Changes in v3:
+    - new
+
+ Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/Documentation/devicetree/bindings/vendor-prefixes.yaml b/Doc=
+umentation/devicetree/bindings/vendor-prefixes.yaml
+index fbf47f0bacf1..67550f0dd189 100644
+--- a/Documentation/devicetree/bindings/vendor-prefixes.yaml
++++ b/Documentation/devicetree/bindings/vendor-prefixes.yaml
+@@ -246,6 +246,8 @@ patternProperties:
+     description: CALAO Systems SAS
+   "^calxeda,.*":
+     description: Calxeda
++  "^cameo,.*":
++    description: Cameo Communications, Inc
+   "^canaan,.*":
+     description: Canaan, Inc.
+   "^caninos,.*":
+--=20
+2.45.2
+

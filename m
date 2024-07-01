@@ -1,26 +1,26 @@
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 836B916939E
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA3021684B5
 	for <linux-mips@vger.kernel.org>; Mon,  1 Jul 2024 13:54:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719842065; cv=none; b=BZqjtLQOXjhbNuN6C7ZITe6gb6OyneHc00OKlhIqAbYZETj3regRGhky/H91tUjacPosEW42TT9o2t77Wqyx2lOx5P7R8GnO/Eg7PBKop9cDyNidQRRCRIPqrbiHT42IuR933wryLk5dBXEdmDURT7JWIshILfGyX8IWPf6pais=
+	t=1719842065; cv=none; b=Iey/0RKY9HhvE16zk1FOhR1TnrRqSvlmeRdBY0+z0aMW5WYXYq7JASBQnkPMdB71h3Gn07lDctigzCySFcuf1WvbjLxKZXcYgFfcwx2R41NUOXgMLKRz0uaCmOoL/GrCkEXlMUNC9jIvhSws35M6XAhe1R3j2MqdI0Ddile7eDQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1719842065; c=relaxed/simple;
-	bh=mGAuCZgA2CcqrjhV6CHTOjJSYcLUjnH7A7J5jQMNJG0=;
+	bh=Uzn7LDoOL9SlsZeIM68XzGKBB+r44Ge/qQ/yufBvw8U=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=licdapDHLzKYwG4/lWD74uHnpEWt8VgEgbuYxO/gJjMfuCbnvmOlR6x3Me0kQaRLqwgNjuiUzItEvw1SvR4IidsTOqUUau+78F9rr+TESnATdgSTR34AIbsgy7r8dSKhf/XgC6KRXzkV1EhljJQFtuhQ8SEIhCe/MdqcFjGMlPk=
+	 In-Reply-To:To:Cc; b=iJ+a0EHWGJlqkMp8IPmwsiXLfAT29WZYbbv9msqrkcAdK58TQVZpZEFXmCz4qDu4mH16/LjEAKM87rLwryVrSde/Tt8bDX7bjHikRNHxRM/m1kUtQMKupim8kE9u5G9Y8oKVO5R2Gvj4Wct1kqctQNZuPK5+q+BWo29vNN4/Oco=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
 Received: from dude02.red.stw.pengutronix.de ([2a0a:edc0:0:1101:1d::28])
 	by metis.whiteo.stw.pengutronix.de with esmtp (Exim 4.92)
 	(envelope-from <m.felsch@pengutronix.de>)
-	id 1sOHTX-0001LY-6i; Mon, 01 Jul 2024 15:53:47 +0200
+	id 1sOHTY-0001LY-20; Mon, 01 Jul 2024 15:53:48 +0200
 From: Marco Felsch <m.felsch@pengutronix.de>
-Date: Mon, 01 Jul 2024 15:53:41 +0200
-Subject: [PATCH 2/9] mtd: add mtd_is_master helper
+Date: Mon, 01 Jul 2024 15:53:48 +0200
+Subject: [PATCH 9/9] eeprom: at24: remove deprecated Kconfig symbol
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
@@ -29,7 +29,7 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240701-b4-v6-10-topic-usbc-tcpci-v1-2-3fd5f4a193cc@pengutronix.de>
+Message-Id: <20240701-b4-v6-10-topic-usbc-tcpci-v1-9-3fd5f4a193cc@pengutronix.de>
 References: <20240701-b4-v6-10-topic-usbc-tcpci-v1-0-3fd5f4a193cc@pengutronix.de>
 In-Reply-To: <20240701-b4-v6-10-topic-usbc-tcpci-v1-0-3fd5f4a193cc@pengutronix.de>
 To: Miquel Raynal <miquel.raynal@bootlin.com>, 
@@ -70,29 +70,32 @@ X-SA-Exim-Mail-From: m.felsch@pengutronix.de
 X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
 X-PTX-Original-Recipient: linux-mips@vger.kernel.org
 
-Provide a simple helper to make it easy to detect an master mtd device.
+All kernel users are shifted to the new MTD_EEPROM_AT24 Kconfig symbol
+so we can drop the old one.
 
 Signed-off-by: Marco Felsch <m.felsch@pengutronix.de>
 ---
- include/linux/mtd/mtd.h | 5 +++++
- 1 file changed, 5 insertions(+)
+ drivers/misc/eeprom/Kconfig | 7 -------
+ 1 file changed, 7 deletions(-)
 
-diff --git a/include/linux/mtd/mtd.h b/include/linux/mtd/mtd.h
-index 8d10d9d2e830..bf3fc2ea7230 100644
---- a/include/linux/mtd/mtd.h
-+++ b/include/linux/mtd/mtd.h
-@@ -408,6 +408,11 @@ static inline struct mtd_info *mtd_get_master(struct mtd_info *mtd)
- 	return mtd;
- }
+diff --git a/drivers/misc/eeprom/Kconfig b/drivers/misc/eeprom/Kconfig
+index 3a9aaec2f2c7..9e071cfdc6c6 100644
+--- a/drivers/misc/eeprom/Kconfig
++++ b/drivers/misc/eeprom/Kconfig
+@@ -1,13 +1,6 @@
+ # SPDX-License-Identifier: GPL-2.0-only
+ menu "EEPROM support"
  
-+static inline bool mtd_is_master(struct mtd_info *mtd)
-+{
-+	return mtd->parent ? false : true;
-+}
-+
- static inline u64 mtd_get_master_ofs(struct mtd_info *mtd, u64 ofs)
- {
- 	while (mtd->parent) {
+-config EEPROM_AT24
+-	tristate "I2C EEPROMs / RAMs / ROMs from most vendors"
+-	select MTD_EEPROM_AT24
+-	help
+-	  Deprecated config option to get read/write support to most I2C
+-	  EEPROMs. Please use MTD_EEPROM_AT24 instead.
+-
+ config EEPROM_AT25
+ 	tristate "SPI EEPROMs (FRAMs) from most vendors"
+ 	depends on SPI && SYSFS
 
 -- 
 2.39.2

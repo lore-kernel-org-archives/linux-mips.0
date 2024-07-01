@@ -1,26 +1,26 @@
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA3021684B5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3E0B169AC2
 	for <linux-mips@vger.kernel.org>; Mon,  1 Jul 2024 13:54:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719842065; cv=none; b=Iey/0RKY9HhvE16zk1FOhR1TnrRqSvlmeRdBY0+z0aMW5WYXYq7JASBQnkPMdB71h3Gn07lDctigzCySFcuf1WvbjLxKZXcYgFfcwx2R41NUOXgMLKRz0uaCmOoL/GrCkEXlMUNC9jIvhSws35M6XAhe1R3j2MqdI0Ddile7eDQ=
+	t=1719842065; cv=none; b=eLMN6ovlgg6l33ihrNoaQVHroBYITHmK2GXZUM6EIubx/3iRsZ0GjreTzhc7JOOaSEJvc4BJJaYYvWN/r6PdcrxrWBxAeKPXGEvnDFlRwJC07438/w3srjM/5xa7D62EF9TvRPGDPeqIgtguxz/D/uXU2dNj6S3KZD7rM+lBJbk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1719842065; c=relaxed/simple;
-	bh=Uzn7LDoOL9SlsZeIM68XzGKBB+r44Ge/qQ/yufBvw8U=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=iJ+a0EHWGJlqkMp8IPmwsiXLfAT29WZYbbv9msqrkcAdK58TQVZpZEFXmCz4qDu4mH16/LjEAKM87rLwryVrSde/Tt8bDX7bjHikRNHxRM/m1kUtQMKupim8kE9u5G9Y8oKVO5R2Gvj4Wct1kqctQNZuPK5+q+BWo29vNN4/Oco=
+	bh=TdcrekuqxkdGfFue0q5KkkRmhv3vqXpjDTGgiciypM8=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=tOXv0tNBmvflnnWs6FPmrn3ce9vI+25DhMWR+4gsuxkBq6gOrOSoTS7u9LprdRotuqCO+IJw5dTslsYrC09bLBxBM09838shUoiMEZypaCjUosMlsa+YTdNSOz5pqCD84I3J9qT7cqvKjgjMxvd/mQeR4t0fna4tDzTuVLwzmSM=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
 Received: from dude02.red.stw.pengutronix.de ([2a0a:edc0:0:1101:1d::28])
 	by metis.whiteo.stw.pengutronix.de with esmtp (Exim 4.92)
 	(envelope-from <m.felsch@pengutronix.de>)
-	id 1sOHTY-0001LY-20; Mon, 01 Jul 2024 15:53:48 +0200
+	id 1sOHTW-0001LY-Vb; Mon, 01 Jul 2024 15:53:46 +0200
 From: Marco Felsch <m.felsch@pengutronix.de>
-Date: Mon, 01 Jul 2024 15:53:48 +0200
-Subject: [PATCH 9/9] eeprom: at24: remove deprecated Kconfig symbol
+Subject: [PATCH 0/9] AT24 EEPROM MTD Support
+Date: Mon, 01 Jul 2024 15:53:39 +0200
+Message-Id: <20240701-b4-v6-10-topic-usbc-tcpci-v1-0-3fd5f4a193cc@pengutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
@@ -29,9 +29,9 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240701-b4-v6-10-topic-usbc-tcpci-v1-9-3fd5f4a193cc@pengutronix.de>
-References: <20240701-b4-v6-10-topic-usbc-tcpci-v1-0-3fd5f4a193cc@pengutronix.de>
-In-Reply-To: <20240701-b4-v6-10-topic-usbc-tcpci-v1-0-3fd5f4a193cc@pengutronix.de>
+X-B4-Tracking: v=1; b=H4sIAOO0gmYC/x3MQQqEMAxG4atI1hNIpTjoVcTF9DeO2WhpVQTx7
+ haX3+K9i7Im00xddVHSw7KtS4H7VIT5t/yVbSymWmovX3EcPB8NO+FtjQbecwBviDCGD2gDoI1
+ 4Kn1MOtn5vvvhvh826v1ZawAAAA==
 To: Miquel Raynal <miquel.raynal@bootlin.com>, 
  Richard Weinberger <richard@nod.at>, Vignesh Raghavendra <vigneshr@ti.com>, 
  Arnd Bergmann <arnd@arndb.de>, 
@@ -70,33 +70,86 @@ X-SA-Exim-Mail-From: m.felsch@pengutronix.de
 X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
 X-PTX-Original-Recipient: linux-mips@vger.kernel.org
 
-All kernel users are shifted to the new MTD_EEPROM_AT24 Kconfig symbol
-so we can drop the old one.
+This series adds the intial support to handle EEPROMs via the MTD layer
+as well. This allow the user-space to have separate paritions since
+EEPROMs can become quite large nowadays.
+
+With this patchset applied EEPROMs can be accessed via:
+  - legacy 'eeprom' device
+  - nvmem device
+  - mtd device(s)
+
+The patchset targets only the AT24 (I2C) EEPROMs since I have no access
+to AT25 (SPI) EEPROMs nor to one of the other misc/eeprom/* devices.
+
+Note: I'm not familiar with Kconfig symbol migration so I don't know if
+the last patch is required at the moment. Please be notified that the
+list of recipients is quite large due to the defconfig changes.
+
+Regards,
+  Marco
 
 Signed-off-by: Marco Felsch <m.felsch@pengutronix.de>
 ---
- drivers/misc/eeprom/Kconfig | 7 -------
- 1 file changed, 7 deletions(-)
+Marco Felsch (9):
+      mtd: core: add nvmem_write support
+      mtd: add mtd_is_master helper
+      mtd: add support to handle EEPROM devices
+      mtd: devices: add AT24 eeprom support
+      ARM: defconfig: convert to MTD_EEPROM_AT24
+      powerpc: convert to MTD_EEPROM_AT24
+      MIPS: configs: convert to MTD_EEPROM_AT24
+      LoongArch: convert to MTD_EEPROM_AT24
+      eeprom: at24: remove deprecated Kconfig symbol
 
-diff --git a/drivers/misc/eeprom/Kconfig b/drivers/misc/eeprom/Kconfig
-index 3a9aaec2f2c7..9e071cfdc6c6 100644
---- a/drivers/misc/eeprom/Kconfig
-+++ b/drivers/misc/eeprom/Kconfig
-@@ -1,13 +1,6 @@
- # SPDX-License-Identifier: GPL-2.0-only
- menu "EEPROM support"
- 
--config EEPROM_AT24
--	tristate "I2C EEPROMs / RAMs / ROMs from most vendors"
--	select MTD_EEPROM_AT24
--	help
--	  Deprecated config option to get read/write support to most I2C
--	  EEPROMs. Please use MTD_EEPROM_AT24 instead.
--
- config EEPROM_AT25
- 	tristate "SPI EEPROMs (FRAMs) from most vendors"
- 	depends on SPI && SYSFS
+ MAINTAINERS                                 |   2 +-
+ arch/arm/configs/aspeed_g4_defconfig        |   2 +-
+ arch/arm/configs/aspeed_g5_defconfig        |   2 +-
+ arch/arm/configs/at91_dt_defconfig          |   2 +-
+ arch/arm/configs/axm55xx_defconfig          |   2 +-
+ arch/arm/configs/davinci_all_defconfig      |   2 +-
+ arch/arm/configs/imx_v4_v5_defconfig        |   2 +-
+ arch/arm/configs/imx_v6_v7_defconfig        |   2 +-
+ arch/arm/configs/ixp4xx_defconfig           |   2 +-
+ arch/arm/configs/keystone_defconfig         |   2 +-
+ arch/arm/configs/lpc18xx_defconfig          |   2 +-
+ arch/arm/configs/lpc32xx_defconfig          |   2 +-
+ arch/arm/configs/multi_v5_defconfig         |   2 +-
+ arch/arm/configs/multi_v7_defconfig         |   2 +-
+ arch/arm/configs/mvebu_v5_defconfig         |   2 +-
+ arch/arm/configs/mvebu_v7_defconfig         |   2 +-
+ arch/arm/configs/mxs_defconfig              |   2 +-
+ arch/arm/configs/omap2plus_defconfig        |   2 +-
+ arch/arm/configs/pxa_defconfig              |   2 +-
+ arch/arm/configs/s3c6400_defconfig          |   2 +-
+ arch/arm/configs/sama5_defconfig            |   2 +-
+ arch/arm/configs/sama7_defconfig            |   2 +-
+ arch/arm/configs/shmobile_defconfig         |   2 +-
+ arch/arm/configs/socfpga_defconfig          |   2 +-
+ arch/arm/configs/tegra_defconfig            |   2 +-
+ arch/arm/configs/wpcm450_defconfig          |   2 +-
+ arch/loongarch/configs/loongson3_defconfig  |   2 +-
+ arch/mips/configs/cavium_octeon_defconfig   |   2 +-
+ arch/mips/configs/db1xxx_defconfig          |   2 +-
+ arch/powerpc/configs/44x/warp_defconfig     |   2 +-
+ arch/powerpc/configs/mpc512x_defconfig      |   2 +-
+ arch/powerpc/configs/mpc5200_defconfig      |   2 +-
+ arch/powerpc/configs/ppc6xx_defconfig       |   2 +-
+ arch/powerpc/configs/skiroot_defconfig      |   2 +-
+ drivers/misc/eeprom/Kconfig                 |  31 -------
+ drivers/misc/eeprom/Makefile                |   1 -
+ drivers/mtd/devices/Kconfig                 |  31 +++++++
+ drivers/mtd/devices/Makefile                |   1 +
+ drivers/{misc/eeprom => mtd/devices}/at24.c | 122 +++++++++++++++-------------
+ drivers/mtd/mtdcore.c                       |  49 ++++++++++-
+ include/linux/mtd/mtd.h                     |   5 ++
+ include/uapi/mtd/mtd-abi.h                  |   2 +
+ 42 files changed, 187 insertions(+), 123 deletions(-)
+---
+base-commit: 1613e604df0cd359cf2a7fbd9be7a0bcfacfabd0
+change-id: 20240701-b4-v6-10-topic-usbc-tcpci-c4bc9bcce604
 
+Best regards,
 -- 
-2.39.2
+Marco Felsch <m.felsch@pengutronix.de>
 

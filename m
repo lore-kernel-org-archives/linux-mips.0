@@ -1,26 +1,26 @@
 Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A170615FA9C
-	for <linux-mips@vger.kernel.org>; Mon,  1 Jul 2024 13:54:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C408D15FCE0
+	for <linux-mips@vger.kernel.org>; Mon,  1 Jul 2024 13:54:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719842066; cv=none; b=CLldPwnFTGbFXH/hjM718v+1Mp0KilfaFwdRx1gMMly0JPJLG2zBDGsuAt/385YQZrbqw5nJf4jQR4cBlo9FWrAXcdzWAMjKqbeBROE1hvsiyeBHxYXrFdrxhzqRpxMIgGYqPaIe0rmwfMCl2O0LdsXMFAhCI77Ve5TBtH6xecY=
+	t=1719842067; cv=none; b=dou49nJPTrKMonEn1T8KH0oyqUun4UYTzhyHKqXZP2z0k0cHXTUhRIGOrNSXEnl7h4HmIyLtTyr3XNOjyrp2ERyaImVHAZA57Yo1b28jYnc3QNnJsmVM620Ho7P7uy7d4YRDO1v+paN7+kCTl8Pjjb7BRW+MBSo1xl3kLRiHbGU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719842066; c=relaxed/simple;
-	bh=zHeI+GWSdz7PR0D30nDNzWXJoqqyXyai8DQT6s7xrdw=;
+	s=arc-20240116; t=1719842067; c=relaxed/simple;
+	bh=eGXy1OFvj3SosF7bnlGCLhzounuJ5ghZkNJ65LsPcFw=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=k+y2lZvmRWxwoB8UWBrYsN2ghsiOJ0QvxlWrWMYxAkyuQbzTzdMoenUR7cDocMHnhn4cJdNFxigpddHeb1EQhZmT0Hx7IMBOit3s4NeStl3Vn/K4zPPQ+zIUB64mjECRvnymrUjQIgTiCvsNRADTZ2Ucm39gRCXVWgRXD810UuU=
+	 In-Reply-To:To:Cc; b=Y35huFADk1mDfNTq05m2qPyf4s9YlUei38XO05hxZMyrV//UtAf+i3phmibLN9hRCC8b8YpZglr228oQNhgmYXXU4A16c+QtrwrN8Yasi7ENx5KpZD2/f+ebbGbuGXHxHeCWBeAc3rUpDSYTM78KFpjFzzXvWDBiBBAtzIYkrKg=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
 Received: from dude02.red.stw.pengutronix.de ([2a0a:edc0:0:1101:1d::28])
 	by metis.whiteo.stw.pengutronix.de with esmtp (Exim 4.92)
 	(envelope-from <m.felsch@pengutronix.de>)
-	id 1sOHTX-0001LY-37; Mon, 01 Jul 2024 15:53:47 +0200
+	id 1sOHTX-0001LY-MS; Mon, 01 Jul 2024 15:53:47 +0200
 From: Marco Felsch <m.felsch@pengutronix.de>
-Date: Mon, 01 Jul 2024 15:53:40 +0200
-Subject: [PATCH 1/9] mtd: core: add nvmem_write support
+Date: Mon, 01 Jul 2024 15:53:45 +0200
+Subject: [PATCH 6/9] powerpc: convert to MTD_EEPROM_AT24
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
@@ -29,7 +29,7 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240701-b4-v6-10-topic-usbc-tcpci-v1-1-3fd5f4a193cc@pengutronix.de>
+Message-Id: <20240701-b4-v6-10-topic-usbc-tcpci-v1-6-3fd5f4a193cc@pengutronix.de>
 References: <20240701-b4-v6-10-topic-usbc-tcpci-v1-0-3fd5f4a193cc@pengutronix.de>
 In-Reply-To: <20240701-b4-v6-10-topic-usbc-tcpci-v1-0-3fd5f4a193cc@pengutronix.de>
 To: Miquel Raynal <miquel.raynal@bootlin.com>, 
@@ -70,53 +70,83 @@ X-SA-Exim-Mail-From: m.felsch@pengutronix.de
 X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
 X-PTX-Original-Recipient: linux-mips@vger.kernel.org
 
-The MTD framework does support the NVMEM framework already but only the
-read support was implemented. This commit adds the write support if the
-MTD device supports writing (MTD_WRITEABLE is set).
+The EEPROM_AT24 Kconfig symbol is marked as deprecated. Make use of the
+new Kconfig symbol to select the I2C EEPROM driver support.
 
 Signed-off-by: Marco Felsch <m.felsch@pengutronix.de>
 ---
- drivers/mtd/mtdcore.c | 17 ++++++++++++++++-
- 1 file changed, 16 insertions(+), 1 deletion(-)
+ arch/powerpc/configs/44x/warp_defconfig | 2 +-
+ arch/powerpc/configs/mpc512x_defconfig  | 2 +-
+ arch/powerpc/configs/mpc5200_defconfig  | 2 +-
+ arch/powerpc/configs/ppc6xx_defconfig   | 2 +-
+ arch/powerpc/configs/skiroot_defconfig  | 2 +-
+ 5 files changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-index 724f917f91ba..dcd97e59425e 100644
---- a/drivers/mtd/mtdcore.c
-+++ b/drivers/mtd/mtdcore.c
-@@ -544,6 +544,20 @@ static int mtd_nvmem_reg_read(void *priv, unsigned int offset,
- 	return retlen == bytes ? 0 : -EIO;
- }
- 
-+static int mtd_nvmem_reg_write(void *priv, unsigned int offset,
-+			       void *val, size_t bytes)
-+{
-+	struct mtd_info *mtd = priv;
-+	size_t retlen;
-+	int err;
-+
-+	err = mtd_write(mtd, offset, bytes, &retlen, val);
-+	if (err && err != -EUCLEAN)
-+		return err;
-+
-+	return retlen == bytes ? 0 : -EIO;
-+}
-+
- static int mtd_nvmem_add(struct mtd_info *mtd)
- {
- 	struct device_node *node = mtd_get_of_node(mtd);
-@@ -555,10 +569,11 @@ static int mtd_nvmem_add(struct mtd_info *mtd)
- 	config.owner = THIS_MODULE;
- 	config.add_legacy_fixed_of_cells = of_device_is_compatible(node, "nvmem-cells");
- 	config.reg_read = mtd_nvmem_reg_read;
-+	config.reg_write = mtd_nvmem_reg_write;
- 	config.size = mtd->size;
- 	config.word_size = 1;
- 	config.stride = 1;
--	config.read_only = true;
-+	config.read_only = !(mtd->flags & MTD_WRITEABLE);
- 	config.root_only = true;
- 	config.ignore_wp = true;
- 	config.priv = mtd;
+diff --git a/arch/powerpc/configs/44x/warp_defconfig b/arch/powerpc/configs/44x/warp_defconfig
+index 20891c413149..d8cab860c9d9 100644
+--- a/arch/powerpc/configs/44x/warp_defconfig
++++ b/arch/powerpc/configs/44x/warp_defconfig
+@@ -36,7 +36,7 @@ CONFIG_MTD_RAW_NAND=y
+ CONFIG_MTD_NAND_NDFC=y
+ CONFIG_MTD_UBI=y
+ CONFIG_BLK_DEV_RAM=y
+-CONFIG_EEPROM_AT24=y
++CONFIG_MTD_EEPROM_AT24=y
+ CONFIG_SCSI=y
+ CONFIG_BLK_DEV_SD=y
+ CONFIG_SCSI_SPI_ATTRS=y
+diff --git a/arch/powerpc/configs/mpc512x_defconfig b/arch/powerpc/configs/mpc512x_defconfig
+index d24457bc5791..0a919a76cfb8 100644
+--- a/arch/powerpc/configs/mpc512x_defconfig
++++ b/arch/powerpc/configs/mpc512x_defconfig
+@@ -46,7 +46,7 @@ CONFIG_MTD_UBI=y
+ CONFIG_BLK_DEV_RAM=y
+ CONFIG_BLK_DEV_RAM_COUNT=1
+ CONFIG_BLK_DEV_RAM_SIZE=8192
+-CONFIG_EEPROM_AT24=y
++CONFIG_MTD_EEPROM_AT24=y
+ CONFIG_EEPROM_AT25=y
+ CONFIG_SCSI=y
+ # CONFIG_SCSI_PROC_FS is not set
+diff --git a/arch/powerpc/configs/mpc5200_defconfig b/arch/powerpc/configs/mpc5200_defconfig
+index c0fe5e76604a..8142836ef61a 100644
+--- a/arch/powerpc/configs/mpc5200_defconfig
++++ b/arch/powerpc/configs/mpc5200_defconfig
+@@ -38,7 +38,7 @@ CONFIG_MTD_UBI=m
+ CONFIG_BLK_DEV_LOOP=y
+ CONFIG_BLK_DEV_RAM=y
+ CONFIG_BLK_DEV_RAM_SIZE=32768
+-CONFIG_EEPROM_AT24=y
++CONFIG_MTD_EEPROM_AT24=y
+ CONFIG_BLK_DEV_SD=y
+ CONFIG_CHR_DEV_SG=y
+ CONFIG_ATA=y
+diff --git a/arch/powerpc/configs/ppc6xx_defconfig b/arch/powerpc/configs/ppc6xx_defconfig
+index 66c7b28d7450..5bca729a57c2 100644
+--- a/arch/powerpc/configs/ppc6xx_defconfig
++++ b/arch/powerpc/configs/ppc6xx_defconfig
+@@ -318,7 +318,7 @@ CONFIG_CDROM_PKTCDVD=m
+ CONFIG_VIRTIO_BLK=m
+ CONFIG_ENCLOSURE_SERVICES=m
+ CONFIG_SENSORS_TSL2550=m
+-CONFIG_EEPROM_AT24=m
++CONFIG_MTD_EEPROM_AT24=m
+ CONFIG_EEPROM_LEGACY=m
+ CONFIG_EEPROM_MAX6875=m
+ CONFIG_EEPROM_93CX6=m
+diff --git a/arch/powerpc/configs/skiroot_defconfig b/arch/powerpc/configs/skiroot_defconfig
+index 9d44e6630908..e9be7f217cea 100644
+--- a/arch/powerpc/configs/skiroot_defconfig
++++ b/arch/powerpc/configs/skiroot_defconfig
+@@ -77,7 +77,7 @@ CONFIG_BLK_DEV_RAM_SIZE=65536
+ CONFIG_VIRTIO_BLK=m
+ CONFIG_BLK_DEV_NVME=m
+ CONFIG_NVME_MULTIPATH=y
+-CONFIG_EEPROM_AT24=m
++CONFIG_MTD_EEPROM_AT24=m
+ # CONFIG_CXL is not set
+ # CONFIG_OCXL is not set
+ CONFIG_BLK_DEV_SD=m
 
 -- 
 2.39.2

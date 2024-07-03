@@ -1,36 +1,30 @@
 Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A0D5F17FAD3;
-	Wed,  3 Jul 2024 15:13:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D6071DA318;
+	Wed,  3 Jul 2024 15:24:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.175.24.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720019588; cv=none; b=o8P8gl6sXRJI2WmV+V7GSUpccirm3/bws/W3QBbz1j2+oM3LhYx4zw46VlVU1r2o5rAUMzsuoDj+cAVm9fgKg6bx4rLHaGYA7PH33YMnxir7cDcYC7VG8pmFRC3CNvCKWFCtnNwN93OyPptRw91BaLgri4vXYvrVMzjGuRqIzw4=
+	t=1720020289; cv=none; b=oJSxj1vPwfT2vcSGWJZOxGXdKO1wLr/Q2R3QE7Jf1NCWm8Z9nKFOCsRHtRqdNh6y/as012RtayED4iQjaBUnq+y7es39JochPhxdgImI6/0FiuSxIyqYz2506QVs1k26gQv9pUXMmLijEAhHW1JTKhsCU2NxhKmgJdf/IATAif4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720019588; c=relaxed/simple;
-	bh=IgiR48qZckGes9RhJYBc+AaWGNnyeZUEyB3IhSIIVJQ=;
+	s=arc-20240116; t=1720020289; c=relaxed/simple;
+	bh=f2VlntDPZyYsu2l+HIMJ//cyiso6k/4+/tCuWCWUWpM=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=THDu8654+CkeXaxbafkf8VkRjzlhA5vRpXBbvCLLl085cDj2c9FodNIPdZ0j5KVO1ScHImnarhh2Gqt+FDAshz07vgqL+Xu+qk1zFst9t0UtWzDyZ5Jeza3Uarl1ZnmpNIVc6M06IVk/ML2ySyviLFIdWRHMjD7qsFYWl7VLgio=
+	 Content-Type:Content-Disposition:In-Reply-To; b=uE3gz6Rc5Amo7zv+dh/keQZvWq29mzqzqkXoIlibAx9rt+W4r/SddQdRhJrHfiIy81rQHSpowd7ED+yZy5JAHzB1XVpARiTYDdzCQ1RpJiUqS8y+cdeM+A8odnTYkRQtjUtQ+8uD/TSwCjfMyjCMkteBMZ87nz/VedU6rljZFjk=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de; spf=pass smtp.mailfrom=alpha.franken.de; arc=none smtp.client-ip=193.175.24.41
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alpha.franken.de
 Received: from uucp by elvis.franken.de with local-rmail (Exim 3.36 #1)
-	id 1sP1eq-0000BF-00; Wed, 03 Jul 2024 17:12:32 +0200
+	id 1sP1qd-0000Hc-00; Wed, 03 Jul 2024 17:24:43 +0200
 Received: by alpha.franken.de (Postfix, from userid 1000)
-	id 0BB0CC0120; Wed,  3 Jul 2024 17:03:45 +0200 (CEST)
-Date: Wed, 3 Jul 2024 17:03:45 +0200
+	id 67022C0120; Wed,  3 Jul 2024 17:18:37 +0200 (CEST)
+Date: Wed, 3 Jul 2024 17:18:37 +0200
 From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To: Jiaxun Yang <jiaxun.yang@flygoat.com>
-Cc: Florian Fainelli <florian.fainelli@broadcom.com>,
-	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>,
-	Huacai Chen <chenhuacai@kernel.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Serge Semin <fancer.lancer@gmail.com>,
-	Paul Burton <paulburton@kernel.org>, linux-mips@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 02/10] MIPS: smp: Manage IPI interrupts as percpu_devid
- interrupts
-Message-ID: <ZoVoUabfZiiAXWKR@alpha.franken.de>
-References: <20240616-b4-mips-ipi-improvements-v1-0-e332687f1692@flygoat.com>
- <20240616-b4-mips-ipi-improvements-v1-2-e332687f1692@flygoat.com>
+To: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc: Arnd Bergmann <arnd@arndb.de>, Martin Schiller <ms@dev.tdt.de>,
+	Linus Walleij <linus.walleij@linaro.org>,
+	linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] MIPS: Alchemy: switch to use software nodes for GPIOs
+Message-ID: <ZoVrzeDowOCaq+SU@alpha.franken.de>
+References: <ZoNAWoJ12DyApZ1s@google.com>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
@@ -39,79 +33,25 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240616-b4-mips-ipi-improvements-v1-2-e332687f1692@flygoat.com>
+In-Reply-To: <ZoNAWoJ12DyApZ1s@google.com>
 
-On Sun, Jun 16, 2024 at 10:03:06PM +0100, Jiaxun Yang wrote:
-> IPI interrupts need to be enabled when a new CPU coming up.
+On Mon, Jul 01, 2024 at 04:48:42PM -0700, Dmitry Torokhov wrote:
+> Switch to use software nodes/properties to describe GPIOs for the
+> ADS7846 touchscreen and the SPI controller (away from using GPIO lookup
+> tables). This allows removing use of ADS7846 platform data, which will
+> be going away.
 > 
-> Manage them as percpu_devid interrupts and invoke enable/disable
-> functions at appropriate time to perform enabling as required,
-> similar to what RISC-V and Arm doing.
-> 
-> Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+> Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 > ---
->  arch/mips/include/asm/ipi.h | 11 +++++++++++
->  arch/mips/kernel/smp.c      | 26 ++++++++++++++++++++++++--
->  2 files changed, 35 insertions(+), 2 deletions(-)
 > 
-> diff --git a/arch/mips/include/asm/ipi.h b/arch/mips/include/asm/ipi.h
-> index df7a0ac4227a..88b507339f51 100644
-> --- a/arch/mips/include/asm/ipi.h
-> +++ b/arch/mips/include/asm/ipi.h
-> @@ -29,6 +29,17 @@ int mips_smp_ipi_allocate(const struct cpumask *mask);
->   * Return 0 on success.
->   */
->  int mips_smp_ipi_free(const struct cpumask *mask);
-> +
-> +void mips_smp_ipi_enable(void);
-> +void mips_smp_ipi_disable(void);
-> +#else
-> +static inline void mips_smp_ipi_enable(void)
-> +{
-> +}
-> +
-> +static inline void mips_smp_ipi_disable(void)
-> +{
-> +}
->  #endif /* CONFIG_GENERIC_IRQ_IPI */
->  #endif /* CONFIG_SMP */
->  #endif
-> diff --git a/arch/mips/kernel/smp.c b/arch/mips/kernel/smp.c
-> index a6cf6444533e..710644d47106 100644
-> --- a/arch/mips/kernel/smp.c
-> +++ b/arch/mips/kernel/smp.c
-> @@ -186,6 +186,7 @@ irq_handler_t ipi_handlers[IPI_MAX] __read_mostly = {
->  };
->  
->  #ifdef CONFIG_GENERIC_IRQ_IPI
-> +static DEFINE_PER_CPU_READ_MOSTLY(int, ipi_dummy_dev);
->  static int ipi_virqs[IPI_MAX] __ro_after_init;
->  static struct irq_desc *ipi_desc[IPI_MAX] __read_mostly;
->  
-> @@ -225,13 +226,29 @@ void mips_smp_send_ipi_mask(const struct cpumask *mask,
->  	local_irq_restore(flags);
->  }
->  
-> +void mips_smp_ipi_enable(void)
-> +{
-> +	int i;
-> +
-> +	for (i = 0; i < IPI_MAX; i++)
-> +		enable_percpu_irq(ipi_virqs[i], IRQ_TYPE_NONE);
-> +}
-> +
-> +void mips_smp_ipi_disable(void)
-> +{
-> +	int i;
-> +
-> +	for (i = 0; i < IPI_MAX; i++)
-> +		disable_percpu_irq(ipi_virqs[i]);
-> +}
-> +
+> Compiled only, as I do not have access to the hardware. However I would
+> very much like to get rid of ads7846_platform_data from the
+> kernel/ads7846 driver, and this is one of the last 3 users of it.
+> 
+>  arch/mips/alchemy/devboards/db1000.c | 80 +++++++++++++++-------------
+>  1 file changed, 42 insertions(+), 38 deletions(-)
 
-there is no user of mips_smp_ipi_disable() (at least I didn't see one),
-so do we need this patch at all ? Just looking like ARM or RiscV isn't
-a justification for code churn.
+applied to mips-next.
 
 Thomas.
 

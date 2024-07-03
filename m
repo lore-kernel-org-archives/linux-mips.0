@@ -1,94 +1,54 @@
-Received: from relay1-d.mail.gandi.net (relay1-d.mail.gandi.net [217.70.183.193])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C17384409;
-	Wed,  3 Jul 2024 14:52:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.193
+Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A1FCD180A86;
+	Wed,  3 Jul 2024 15:13:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.175.24.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720018330; cv=none; b=CYJqV3SaVUMWidFjJCdWXBYlZ6mp7xICcOyAInW0xumB1GsUKwI88li5kkj4xjIb1t75SR2M1vqTY1/0UPbyJXQcQb4E5LjOUpq24+R2mnraZfVCB14nu1a509o6xUtCPgkVZpbzKui9Ui+lpaLnvIWLnHpZg8awx27V4CjTjYE=
+	t=1720019587; cv=none; b=HQWlftd8Nmo+NBNjA/ChMrJ5Ic7CKkn5mwOL21Rr9PS3wdDyAcxzLCh8HHJiaz6+KBxWljEeQ4/EEh0iMG5Q52q8TlVZPRZq+/IpBTOwcvn54Olr1OSjnhiHjUyUVDVV6dwsyMv51dE5tC6Jt6wg5qx8StyfiCTFnubFrcWJzs0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720018330; c=relaxed/simple;
-	bh=opuYPOBO3CpJ/UR87r0PwPENZCJ5lJ2kN2zlHDHZooc=;
-	h=Mime-Version:Content-Type:Date:Message-Id:From:Subject:Cc:To:
-	 References:In-Reply-To; b=mrHGoO1AhQ623ubAnCvm83DAYbZxOUhNW+zhKC2l481wD++98ysOSWoKFZMWLDgqgebHMCmBgcrCj6wdonMA9FQqerMC+P6TUxFATbvvJRS3/8K9pscweJlK6sovdZGin+WG1D4DPTd6R938I0kOZJHhh1/7eTCZRtMMBZfTcvQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=J6mfbvdE; arc=none smtp.client-ip=217.70.183.193
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="J6mfbvdE"
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 72851240008;
-	Wed,  3 Jul 2024 14:52:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1720018326;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=opuYPOBO3CpJ/UR87r0PwPENZCJ5lJ2kN2zlHDHZooc=;
-	b=J6mfbvdEQcsGLS3MQ/y3pHy6zksWvA521a7dcQT+652pasbVLH3I7a8WdzbA5AwaYd7hIK
-	gu//wwGdPcqBgYvQpLSP5Mw4tDjWK9OF6wxGptBb+QhhGm1nCDvODbj1gjHOpmWb4kgBap
-	yN/gW2Ddu8sWw0uqQLrIK4HgKpH5Jjklwzk2/V9texg7lXB9TRy/nqDYlPKjSXNo9fz0SV
-	NPmUFQzKo1+1EzTTOAgqWBwVSSXMr0zFdXoLoy6ELWg57skFitEUDF2TiMOJ9LYKKv1ypV
-	MEZzSRFCwj23ChOLs4fVVw9CW1osH7vceBjXpU2+I1lGOi2RIW2HPt5eD7bv7g==
+	s=arc-20240116; t=1720019587; c=relaxed/simple;
+	bh=jKTmlKxi/yn3cFG5v91xEFOOukpAGESCC2WZcF+oqLg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Xvv11adozgLWpq7aiZsH+APDcfIx4gn79S0w/NFdWVRg27TQJX/LPju/9CkgkKaLmVTssjND3CARwWBiF3LqRctdcwk8d2C051E13GzIO42pE4oT9J/94ObJ0sCRYN1kLCMeYqZCU+LzdAoMi59gj7nemuPuKTgNuxQNHL1g7vk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de; spf=pass smtp.mailfrom=alpha.franken.de; arc=none smtp.client-ip=193.175.24.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alpha.franken.de
+Received: from uucp by elvis.franken.de with local-rmail (Exim 3.36 #1)
+	id 1sP1eq-0000BL-00; Wed, 03 Jul 2024 17:12:32 +0200
+Received: by alpha.franken.de (Postfix, from userid 1000)
+	id D500DC031A; Wed,  3 Jul 2024 17:11:38 +0200 (CEST)
+Date: Wed, 3 Jul 2024 17:11:38 +0200
+From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To: Jiaxun Yang <jiaxun.yang@flygoat.com>
+Cc: Florian Fainelli <florian.fainelli@broadcom.com>,
+	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>,
+	Huacai Chen <chenhuacai@kernel.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Serge Semin <fancer.lancer@gmail.com>,
+	Paul Burton <paulburton@kernel.org>, linux-mips@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 05/10] MIPS: smp: Implement IPI stats
+Message-ID: <ZoVqKlpQ5K+w3VDn@alpha.franken.de>
+References: <20240616-b4-mips-ipi-improvements-v1-0-e332687f1692@flygoat.com>
+ <20240616-b4-mips-ipi-improvements-v1-5-e332687f1692@flygoat.com>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date: Wed, 03 Jul 2024 16:52:04 +0200
-Message-Id: <D2FZLXUX4HHW.1R8U2P6JBH758@bootlin.com>
-From: =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
-Subject: Re: [PATCH 0/3] MIPS: Add Mobileye EyeQ OLB system-controller
-Cc: "Rob Herring" <robh@kernel.org>, "Krzysztof Kozlowski"
- <krzk+dt@kernel.org>, "Conor Dooley" <conor+dt@kernel.org>,
- <linux-mips@vger.kernel.org>, <devicetree@vger.kernel.org>,
- <linux-kernel@vger.kernel.org>, "Vladimir Kondratiev"
- <vladimir.kondratiev@mobileye.com>, =?utf-8?q?Gr=C3=A9gory_Clement?=
- <gregory.clement@bootlin.com>, "Thomas Petazzoni"
- <thomas.petazzoni@bootlin.com>, "Tawfik Bayouk"
- <tawfik.bayouk@mobileye.com>
-To: "Thomas Bogendoerfer" <tsbogend@alpha.franken.de>
-X-Mailer: aerc 0.17.0-0-g6ea74eb30457
-References: <20240628-mbly-mips-v1-0-f53f5e4c422b@bootlin.com>
- <ZoVhry8VFRx8x3w/@alpha.franken.de>
-In-Reply-To: <ZoVhry8VFRx8x3w/@alpha.franken.de>
-X-GND-Sasl: theo.lebrun@bootlin.com
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240616-b4-mips-ipi-improvements-v1-5-e332687f1692@flygoat.com>
 
-Hello Thomas,
+On Sun, Jun 16, 2024 at 10:03:09PM +0100, Jiaxun Yang wrote:
+> Show IPI statistics in arch_show_interrupts as what RISC-V
+> did.
 
-On Wed Jul 3, 2024 at 4:35 PM CEST, Thomas Bogendoerfer wrote:
-> On Fri, Jun 28, 2024 at 06:11:49PM +0200, Th=C3=A9o Lebrun wrote:
-> > This is a new iteration on the Mobileye system-controller series [0].
-> > It has been split into separate series to facilitate merging.
-> >=20
-> > This series contains a dt-bindings defining the system-controller
-> > (called OLB) used on EyeQ5, EyeQ6L and EyeQ6H. It then modifies the
-> > EyeQ5 devicetree to exploit that system-controller.
->
-> just to be sure, this replaces the v3 series ? And it's the only
-> series, which should go through the MIPS tree ?
+it probably still does, but either this is usefull on it's own or
+we don't need it. IMHO it's useful, so drop the reference to RISC-V.
 
-Sorry it was not clear enough. I confirm this replaces the V3.
-It is the only series that should go through the MIPS tree.
+Thomas.
 
-The remaining three series have had their V2 sent a few minutes ago.
-Each series contains the removal of the old dt-bindings and the three
-clk/reset/pinctrl drivers.
-
-https://lore.kernel.org/lkml/20240703-mbly-clk-v2-0-fe8c6199a579@bootlin.co=
-m/
-https://lore.kernel.org/lkml/20240703-mbly-reset-v2-0-3fe853d78139@bootlin.=
-com/
-https://lore.kernel.org/lkml/20240703-mbly-pinctrl-v2-0-eab5f69f1b01@bootli=
-n.com/
-
-Thanks,
-
---
-Th=C3=A9o Lebrun, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
-
+-- 
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]

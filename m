@@ -1,44 +1,44 @@
 Received: from gate2.alliedtelesis.co.nz (gate2.alliedtelesis.co.nz [202.36.163.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 333A642ABE
-	for <linux-mips@vger.kernel.org>; Wed, 10 Jul 2024 04:35:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42AD6482CD
+	for <linux-mips@vger.kernel.org>; Wed, 10 Jul 2024 04:35:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.36.163.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720586141; cv=none; b=GrOJKl40MCHcgImxvUcAl13tsj5VHRRwYA9lJCCtVDbiosI2aV2SfcHCTwCCGwx4VQz9264cPAWFrbVevkHYATDp14POzgnMnCESP74jFLLkOtN+35OyMWWKa9zdGJ8RDIp8PE0u4qIQIqzvPDpBtb8WthVu368iqfzwPdAYw9w=
+	t=1720586141; cv=none; b=eIHvJshVntgOQ0/IinW6LXi8NzIZYZUZMaYl4Tzp4omafq9aaRCIPkqj/+2icv2VB0R//PeC5rzfpvuBmdK9PGLLt3ouqMFP4yJ6tMN79fRYPg1aFmD5V+bticefL6BJztSHznjYhKEfXlmloLQbEUVg6RvRByuaYPr/ClnXvig=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1720586141; c=relaxed/simple;
-	bh=qTYJd2w0i5KAQ2s7Ov2O0mWKJHRIwhtqnGaNmcXmKNU=;
+	bh=bivDCxqnhGmdAOv0M7NTE3VhwmnpVCOIC7+U0rnBqrU=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=FjtlKmBQz3ta3/FdCSveP3cJojpD6zj9Qvw5J1EfrtpInMJQDULa1vnH61YkP6ODzF349FNR1gVeEg81SbkZr5t/0Rhsuq6DjU0XErQmUCK2hJyaa2OJA59dELQ1rMrCZFMpVCm3vTejhV9cHzt0QeBufdALdzvGY4U61qNGoHU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=alliedtelesis.co.nz; spf=pass smtp.mailfrom=alliedtelesis.co.nz; dkim=pass (2048-bit key) header.d=alliedtelesis.co.nz header.i=@alliedtelesis.co.nz header.b=i0Vbz1VC; arc=none smtp.client-ip=202.36.163.20
+	 MIME-Version; b=HYJTR2y27u/uQAWhEIttluBteIbvpIIXo3WoChdYcJy16PaX+jpHvspcEL5fHQIhsOH6JbSe/rkrPQ4t5cNofuUMuXwZBqAZCio1ryB/W9AdGthxTawKoZhsH5DGfmovPSl2O4RqxUalfmlmr9su/vG98XKSzho3cE/Tii8FLTw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=alliedtelesis.co.nz; spf=pass smtp.mailfrom=alliedtelesis.co.nz; dkim=pass (2048-bit key) header.d=alliedtelesis.co.nz header.i=@alliedtelesis.co.nz header.b=b3GbfSsR; arc=none smtp.client-ip=202.36.163.20
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=alliedtelesis.co.nz
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alliedtelesis.co.nz
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=alliedtelesis.co.nz header.i=@alliedtelesis.co.nz header.b="i0Vbz1VC"
+	dkim=pass (2048-bit key) header.d=alliedtelesis.co.nz header.i=@alliedtelesis.co.nz header.b="b3GbfSsR"
 Received: from svr-chch-seg1.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(Client did not present a certificate)
-	by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id 6B2752C02D1;
+	by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id CE5EE2C0BA5;
 	Wed, 10 Jul 2024 16:35:30 +1200 (NZST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
 	s=mail181024; t=1720586130;
-	bh=+uOoH5rpYokSgRgcDuG50BcqcOLnHUFomDnjH7J3RZk=;
+	bh=B+MHJ0FovgFTC5RrFAm+yxAZW0k7wMvGFaaUpE1DdBg=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=i0Vbz1VC8J1bj+MucZZe8e+y+5npeMEtLKGZUeFr6tZ47yQSiQyuTyyjGQfsDbfAF
-	 4qndiquPeBxIJM5Feju4v84PVRMDcPKArTBj/s3odwsjlVh/IiVD8JkEflzY23vgo4
-	 I6OS9DxgNorOUoDtto3TftGTclwygN/NUkRx2FqqtrwlCSbjYGlVQ1kX65B8kU6N6y
-	 VSjUjvIOm6xO/LXyZaTsr7dD0f+ThY+ezDGko4Fbnk9iUSjGqCIIdura5AkTPHwSNR
-	 jSAJXhgsV4yfB8DYWeftqBKqo1igcoPBtaHSJUBpfHVy+S7GOgKrhZwto7LuMC1rNa
-	 QzGw0/nkFtoog==
+	b=b3GbfSsRo1V7XajPb0L6PWGfXxmByWRPXZBJoIlxyus0flXz5OSrF9S7uylDjKnlQ
+	 nOChbdLVX6weq//WGmJHtRJ+5opCzrWiRjJVvCRnoYNY51gA5IJTnW3yjTihRX2lgx
+	 ZW9BT+rHroVqrHAAggzl3vxf3vUP+5UjVxe+CJG3QvD3XszGbzhEgyJ+dKJ3/B+Yah
+	 78MO6To8P/3EinlAySOmgyHsPgHUzmKMT7bv6a3qBghDUw3yK3DHKGFXdjhso6f26q
+	 MIyTrWiqRWzs6to7suYoplBfHxb1Re2rx/EXvw3pI16+3QC2lTy3PYdNc6Q8CPGkHU
+	 ecIbXlWzW90Ag==
 Received: from pat.atlnz.lc (Not Verified[10.32.16.33]) by svr-chch-seg1.atlnz.lc with Trustwave SEG (v8,2,6,11305)
-	id <B668e0f920001>; Wed, 10 Jul 2024 16:35:30 +1200
+	id <B668e0f920004>; Wed, 10 Jul 2024 16:35:30 +1200
 Received: from chrisp-dl.ws.atlnz.lc (chrisp-dl.ws.atlnz.lc [10.33.22.30])
-	by pat.atlnz.lc (Postfix) with ESMTP id 042CF13EE5B;
+	by pat.atlnz.lc (Postfix) with ESMTP id 10D7413EE2B;
 	Wed, 10 Jul 2024 16:35:30 +1200 (NZST)
 Received: by chrisp-dl.ws.atlnz.lc (Postfix, from userid 1030)
-	id F300828034A; Wed, 10 Jul 2024 16:35:29 +1200 (NZST)
+	id 0E05028206C; Wed, 10 Jul 2024 16:35:30 +1200 (NZST)
 From: Chris Packham <chris.packham@alliedtelesis.co.nz>
 To: tglx@linutronix.de,
 	robh@kernel.org,
@@ -58,9 +58,9 @@ Cc: linux-kernel@vger.kernel.org,
 	kabel@kernel.org,
 	ericwouds@gmail.com,
 	Chris Packham <chris.packham@alliedtelesis.co.nz>
-Subject: [PATCH v5 01/10] mips: dts: realtek: use "serial" instead of "uart" in node name
-Date: Wed, 10 Jul 2024 16:35:15 +1200
-Message-ID: <20240710043524.1535151-2-chris.packham@alliedtelesis.co.nz>
+Subject: [PATCH v5 04/10] dt-bindings: mips: realtek: Add rtl930x-soc compatible
+Date: Wed, 10 Jul 2024 16:35:18 +1200
+Message-ID: <20240710043524.1535151-5-chris.packham@alliedtelesis.co.nz>
 X-Mailer: git-send-email 2.45.2
 In-Reply-To: <20240710043524.1535151-1-chris.packham@alliedtelesis.co.nz>
 References: <20240710043524.1535151-1-chris.packham@alliedtelesis.co.nz>
@@ -70,58 +70,52 @@ List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
-X-SEG-SpamProfiler-Analysis: v=2.4 cv=CvQccW4D c=1 sm=1 tr=0 ts=668e0f92 a=KLBiSEs5mFS1a/PbTCJxuA==:117 a=IkcTkHD0fZMA:10 a=4kmOji7k6h8A:10 a=VwQbUJbxAAAA:8 a=fO4XG2tHwy1-jxZR0dsA:9 a=3ZKOabzyN94A:10 a=QEXdDO2ut3YA:10 a=vBONLeOcVZgRSqRidLXE:22 a=AjGcO6oz07-iQ99wixmX:22
+X-SEG-SpamProfiler-Analysis: v=2.4 cv=CvQccW4D c=1 sm=1 tr=0 ts=668e0f92 a=KLBiSEs5mFS1a/PbTCJxuA==:117 a=4kmOji7k6h8A:10 a=KKAkSRfTAAAA:8 a=NHmAL4TRMSeL2PaLwp8A:9 a=3ZKOabzyN94A:10 a=cvBusfyB2V15izCimMoJ:22
 X-SEG-SpamProfiler-Score: 0
 x-atlnz-ls: pat
 
-Update the node name for the UARTs to resolve the following dtbs_check
-complaints:
-
-  uart@2000: $nodename:0: 'uart@2000' does not match '^serial(@.*)?$'
-  uart@2100: $nodename:0: 'uart@2100' does not match '^serial(@.*)?$'
+Add the rtl9302 SoC and the Cameo RTL9302C_2xRTL8224_2XGE reference
+board to the list of Realtek compatible strings.
 
 Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
-Reviewed-by: Marek Beh=C3=BAn <kabel@kernel.org>
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 ---
 
 Notes:
     Changes in v5:
     - None
     Changes in v4:
-    - Add r-by from Marek
+    - Add r-by from Krzysztof
     Changes in v3:
-    - None
+    - Use full board name
+    - I've decided to stick with rtl9302-soc to disambiguate it from what=
+ I
+      eventually plan to add as rtl9302-switch which is in the same packa=
+ge
+      but are separate dies.
     Changes in v2:
-    - New
+    - Use specific compatible for rtl9302-soc
+    - Fix to allow correct board, soc compatible
 
- arch/mips/boot/dts/realtek/rtl83xx.dtsi | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ Documentation/devicetree/bindings/mips/realtek-rtl.yaml | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/arch/mips/boot/dts/realtek/rtl83xx.dtsi b/arch/mips/boot/dts=
-/realtek/rtl83xx.dtsi
-index de65a111b626..03ddc61f7c9e 100644
---- a/arch/mips/boot/dts/realtek/rtl83xx.dtsi
-+++ b/arch/mips/boot/dts/realtek/rtl83xx.dtsi
-@@ -22,7 +22,7 @@ soc: soc {
- 		#size-cells =3D <1>;
- 		ranges =3D <0x0 0x18000000 0x10000>;
+diff --git a/Documentation/devicetree/bindings/mips/realtek-rtl.yaml b/Do=
+cumentation/devicetree/bindings/mips/realtek-rtl.yaml
+index f8ac309d2994..d337655bfbf8 100644
+--- a/Documentation/devicetree/bindings/mips/realtek-rtl.yaml
++++ b/Documentation/devicetree/bindings/mips/realtek-rtl.yaml
+@@ -20,5 +20,9 @@ properties:
+           - enum:
+               - cisco,sg220-26
+           - const: realtek,rtl8382-soc
++      - items:
++          - enum:
++              - cameo,rtl9302c-2x-rtl8224-2xge
++          - const: realtek,rtl9302-soc
 =20
--		uart0: uart@2000 {
-+		uart0: serial@2000 {
- 			compatible =3D "ns16550a";
- 			reg =3D <0x2000 0x100>;
-=20
-@@ -39,7 +39,7 @@ uart0: uart@2000 {
- 			status =3D "disabled";
- 		};
-=20
--		uart1: uart@2100 {
-+		uart1: serial@2100 {
- 			compatible =3D "ns16550a";
- 			reg =3D <0x2100 0x100>;
-=20
+ additionalProperties: true
 --=20
 2.45.2
 

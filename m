@@ -1,216 +1,155 @@
-Received: from gate2.alliedtelesis.co.nz (gate2.alliedtelesis.co.nz [202.36.163.20])
+Received: from fhigh7-smtp.messagingengine.com (fhigh7-smtp.messagingengine.com [103.168.172.158])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 433315E091
-	for <linux-mips@vger.kernel.org>; Wed, 10 Jul 2024 04:35:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.36.163.20
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 000643C39;
+	Wed, 10 Jul 2024 05:35:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.158
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720586146; cv=none; b=eF+p6h3QsbOQJ2AFEst9mjsLJyJsYdRxA7JJRJOrU7leedLLV7cbiykQBNXZLsSea9z4kuv/pzplILXH3BIocgiLPutdMsriZD7czeIhXFup0cJhFunkDwD74Rh6jilf+DqIzBeZqXcoZ7Eb1HR9T057f5lNksV6lZw/oX7z6sQ=
+	t=1720589708; cv=none; b=sepG/Jj9W4zBNklx36KtrOM00UlowfuhFiGwk2ncxfnjHkn/tul8EGPAS7b1dYneqLFOU96Byu2npb/BXS2S2YzJIFbQVslvyZ2h1RmkSqr0lsgRxrXldXyj/qcX/YlxlfkLPlaTRc8ehBt0AKYRrd+OxdZ7soTCEwBYxYhomHE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720586146; c=relaxed/simple;
-	bh=TAbVqThQrI+FRJVrWVBoG3lIJAbFFQi3Y/j0nP6IIo0=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=ZFQiqefHlr7bKjjw73giOaBXHsiU5SGTV/CqAqrAMba5Uo11BfepNcplfkidcdiBCAVt8c4H/njNChO4JduwQ2Y6wQGi/C2CoRCQz8AdPXwMAIiqhTJchHgJlC9ipOpruNiSw0JJmqSttmlLUm7QzphDkqXQBv+h544oyOX1aQ0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=alliedtelesis.co.nz; spf=pass smtp.mailfrom=alliedtelesis.co.nz; dkim=pass (2048-bit key) header.d=alliedtelesis.co.nz header.i=@alliedtelesis.co.nz header.b=gNtfPJul; arc=none smtp.client-ip=202.36.163.20
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=alliedtelesis.co.nz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alliedtelesis.co.nz
+	s=arc-20240116; t=1720589708; c=relaxed/simple;
+	bh=QXMPRFLJqx9eEPxxL/pvEzKwGFD/HcszEzESwh8ZfjQ=;
+	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
+	 Subject:Content-Type; b=EoTtxLYass5OEVzMDOTc0bE+5BTTyTUkfVRYa/9pa0gX8nyNr/wiGXSrEmDoRB8eWsV0Lhy14UMlf9G9dcqm1BRbJPdS6Ird63mHMJ7Sf3qjisdC6lat3U5VEaPD6C+X1G1LQWVi4mc4o6m2NNGTTX3F9lP1ZJGO69CS8urKwkU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=flygoat.com; spf=pass smtp.mailfrom=flygoat.com; dkim=pass (2048-bit key) header.d=flygoat.com header.i=@flygoat.com header.b=BOuR7eIt; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=LQ7vjsm4; arc=none smtp.client-ip=103.168.172.158
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=flygoat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flygoat.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=alliedtelesis.co.nz header.i=@alliedtelesis.co.nz header.b="gNtfPJul"
-Received: from svr-chch-seg1.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(Client did not present a certificate)
-	by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id 142A22C0CD8;
-	Wed, 10 Jul 2024 16:35:31 +1200 (NZST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
-	s=mail181024; t=1720586131;
-	bh=v3fEqQjFBBKSpKQPNqtEGR0npdEdDxQZS48tOrTFB44=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=gNtfPJul5m+1A6YwSISxve+3Zo/O/zQwyLGU3YaBhlBS15v3MM4iIP5qLqwjWkvnh
-	 GP4/RJlt01A4nvESqR1fYDRzib1fJ94Qy0tRCp/3dSDDr74/pzVrfhilJWgwUffp6+
-	 xKarw2OAFyJSPci7ox/FjhnhkJLg62Ye3yY878d5wVyBWfDz8l+GFjomN1hCc5SCWt
-	 s62N4gcoxE54uBPLHgVBW9rPcm7sb9VcopJfqNfci0trY/kjqG0RSIRby2bQCZML+S
-	 rxaUXeTdZx8SzYPpKU45LQyw4LqIpDFxeX5dwDng7VNyvlXbFPto7yBBWBjFP0ajuh
-	 FJT9lL+RIa8Kg==
-Received: from pat.atlnz.lc (Not Verified[10.32.16.33]) by svr-chch-seg1.atlnz.lc with Trustwave SEG (v8,2,6,11305)
-	id <B668e0f920009>; Wed, 10 Jul 2024 16:35:30 +1200
-Received: from chrisp-dl.ws.atlnz.lc (chrisp-dl.ws.atlnz.lc [10.33.22.30])
-	by pat.atlnz.lc (Postfix) with ESMTP id 27AFD13EE85;
-	Wed, 10 Jul 2024 16:35:30 +1200 (NZST)
-Received: by chrisp-dl.ws.atlnz.lc (Postfix, from userid 1030)
-	id 2572A28206C; Wed, 10 Jul 2024 16:35:30 +1200 (NZST)
-From: Chris Packham <chris.packham@alliedtelesis.co.nz>
-To: tglx@linutronix.de,
-	robh@kernel.org,
-	krzk+dt@kernel.org,
-	conor+dt@kernel.org,
-	tsbogend@alpha.franken.de,
-	daniel.lezcano@linaro.org,
-	paulburton@kernel.org,
-	peterz@infradead.org,
-	mail@birger-koblitz.de,
-	bert@biot.com,
-	john@phrozen.org,
-	sander@svanheule.net
-Cc: linux-kernel@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	linux-mips@vger.kernel.org,
-	kabel@kernel.org,
-	ericwouds@gmail.com,
-	Chris Packham <chris.packham@alliedtelesis.co.nz>
-Subject: [PATCH v5 09/10] mips: generic: add fdt fixup for Realtek reference board
-Date: Wed, 10 Jul 2024 16:35:23 +1200
-Message-ID: <20240710043524.1535151-10-chris.packham@alliedtelesis.co.nz>
-X-Mailer: git-send-email 2.45.2
-In-Reply-To: <20240710043524.1535151-1-chris.packham@alliedtelesis.co.nz>
-References: <20240710043524.1535151-1-chris.packham@alliedtelesis.co.nz>
+	dkim=pass (2048-bit key) header.d=flygoat.com header.i=@flygoat.com header.b="BOuR7eIt";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="LQ7vjsm4"
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+	by mailfhigh.nyi.internal (Postfix) with ESMTP id 0AC9F1142294;
+	Wed, 10 Jul 2024 01:35:05 -0400 (EDT)
+Received: from imap44 ([10.202.2.94])
+  by compute3.internal (MEProxy); Wed, 10 Jul 2024 01:35:05 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=flygoat.com; h=
+	cc:cc:content-transfer-encoding:content-type:content-type:date
+	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to; s=fm3; t=1720589705;
+	 x=1720676105; bh=8YEThCembZnXJ9a0a7ch1VR3k4BKk0tw4+eg8GHnp2E=; b=
+	BOuR7eItaatlyjnB53RLOrlZ9fGBrUqOUgpbQ9X9hu70wQdWps2Hs9UVDdGPs8X5
+	1s1uBoULdR/ZnR155nLuzKP9vPrAGzUvmQbPSOaU1ZQGLv/gKKsrw7qIXqP4ibaI
+	xU/p55w9qnPSKOVO7LcNCEwUnEZPr0QqfVQLKJVug7vniW7pQObvteq6VArMjsrW
+	qHu/EJKrt+UHV/DtTXhutT3rwS09wKOXDpdq/54z1XhRTXwjfPdunKAnRiIzG2ts
+	8FSLkhA+5ep04xalSlBcf6O259T+ON8j8laMcWuLkYqcYzBAsHl6MlGD6/A1A9he
+	1BWalRviofagwMDuhz4Jxg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1720589705; x=
+	1720676105; bh=8YEThCembZnXJ9a0a7ch1VR3k4BKk0tw4+eg8GHnp2E=; b=L
+	Q7vjsm4y69ywf/hgOTIHWRMG/Qg4SqopC0tm9YkE22ZTWHt0jMsavBVAbuyxBmUk
+	M+yRj3QcA8WWHnGHIs7Jkn7xeM3Yata4rUrRffJ2KjsgvcNsQzdP/YLppKfTeJ/l
+	0OmqNcq5jr0y0WymdEW+zLdxwWOuwaZo/AYi4yGutRUfujxLVXwSJsdICPvc9WBD
+	4S84VEUDPHiv2UAnwW/aAPbVg7k0ViIbTTQ3+1LjTjCbG/IzeM39HQUvkZcJgySr
+	QIo3A6nDLPjoNHC++So/McSiu706iAFy8/oY/r4vJmBmH3vcIXdUhb9X3Q0EanHT
+	qamVOVAbGC1lRqQ/amwSw==
+X-ME-Sender: <xms:hx2OZlK2PBYiN8xMNCZNpHXHfzsMNjRfwuC59yCTkGMa1BUbE4GF0Q>
+    <xme:hx2OZhJpNXv7uO3oeZfVuw0ymQ1nJqbwRMdo6Vphpr7X-SR_y9Pqn-K4JQ2FwnJr_
+    M2DUt5JmwidC_bEqRQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeftddrfedtgdelkecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefofgggkfgjfhffhffvvefutgfgsehtqhertderreejnecuhfhrohhmpedflfhi
+    rgiguhhnucgjrghnghdfuceojhhirgiguhhnrdihrghnghesfhhlhihgohgrthdrtghomh
+    eqnecuggftrfgrthhtvghrnhepudefgeeftedugeehffdtheefgfevffelfefghefhjeeu
+    geevtefhudduvdeihefgnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrg
+    hilhhfrhhomhepjhhirgiguhhnrdihrghnghesfhhlhihgohgrthdrtghomh
+X-ME-Proxy: <xmx:hx2OZttAHOK7c9yzlyf5AcM5SMO7wCVteKuUSosc3VKw9CUlXne_og>
+    <xmx:hx2OZmbLE6H1gP7FxgB94c3QZcqTnKoYXyVEW55ynUfQfbj4L1s7dA>
+    <xmx:hx2OZsYCd5C4EPf4ahvKrKK5kRMlwLaX7ME6Rpdp9iIG9-gQiXGqfQ>
+    <xmx:hx2OZqCumDJ_9xKyolwNH0PKJwF5ESz0hQZ8vQaC8GPl7tp1uUyNJg>
+    <xmx:iR2OZhNUbCdXD_3OWJHdkOnBOzrm4tTqqbuxjhS1sOjj38fnvwvjOrMr>
+Feedback-ID: ifd894703:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+	id 294F336A0075; Wed, 10 Jul 2024 01:35:03 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.11.0-alpha0-568-g843fbadbe-fm-20240701.003-g843fbadb
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Message-Id: <7797a7b2-1bb2-4c45-b65d-678f685dfa3d@app.fastmail.com>
+In-Reply-To: <Zoz6+YmUk7CBsNFw@alpha.franken.de>
+References: <20240612-mips_ieee754_emul-v3-1-2c21b450abdb@flygoat.com>
+ <Zn1FuxNw2CUttzdg@alpha.franken.de>
+ <9cc26415-9cbc-47fa-a132-7d8c000874a4@app.fastmail.com>
+ <alpine.DEB.2.21.2406272053180.43454@angie.orcam.me.uk>
+ <fbd421a6-cf37-49ab-bdbe-6128a7cae8be@app.fastmail.com>
+ <Zoz6+YmUk7CBsNFw@alpha.franken.de>
+Date: Wed, 10 Jul 2024 13:34:41 +0800
+From: "Jiaxun Yang" <jiaxun.yang@flygoat.com>
+To: "Thomas Bogendoerfer" <tsbogend@alpha.franken.de>
+Cc: "Maciej W. Rozycki" <macro@orcam.me.uk>,
+ "Jonathan Corbet" <corbet@lwn.net>, linux-doc@vger.kernel.org,
+ linux-kernel@vger.kernel.org,
+ "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
+ =?UTF-8?Q?Philippe_Mathieu-Daud=C3=A9?= <philmd@linaro.org>
+Subject: Re: [PATCH v3] MIPS: Implement ieee754 NAN2008 emulation mode
+Content-Type: text/plain;charset=utf-8
 Content-Transfer-Encoding: quoted-printable
-X-SEG-SpamProfiler-Analysis: v=2.4 cv=CvQccW4D c=1 sm=1 tr=0 ts=668e0f92 a=KLBiSEs5mFS1a/PbTCJxuA==:117 a=4kmOji7k6h8A:10 a=x-EMvBfK1kxHbq4Brr4A:9 a=3ZKOabzyN94A:10
-X-SEG-SpamProfiler-Score: 0
-x-atlnz-ls: pat
 
-The bootloader used on the Realtek RTL9302C boards is an ancient vendor
-fork of U-Boot that doesn't understand device trees. So to run a modern
-kernel it is necessary use one of the APPENDED_DTB options.
 
-When appending the DTB the inintrd information, if present, needs to be
-inserted into the /chosen device tree node. The bootloader provides the
-initrd start/size via the firmware environment. Add a fdt fixup that
-will update the device tree with the initrd information.
 
-Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
----
+=E5=9C=A82024=E5=B9=B47=E6=9C=889=E6=97=A5=E4=B8=83=E6=9C=88 =E4=B8=8B=E5=
+=8D=884:55=EF=BC=8CThomas Bogendoerfer=E5=86=99=E9=81=93=EF=BC=9A
+> On Fri, Jun 28, 2024 at 01:33:06AM +0100, Jiaxun Yang wrote:
+>>=20
+>>=20
+>> =E5=9C=A82024=E5=B9=B46=E6=9C=8827=E6=97=A5=E5=85=AD=E6=9C=88 =E4=B8=8B=
+=E5=8D=888:54=EF=BC=8CMaciej W. Rozycki=E5=86=99=E9=81=93=EF=BC=9A
+>> > On Thu, 27 Jun 2024, Jiaxun Yang wrote:
+>> >
+>> >> >> @@ -318,6 +318,10 @@ void mips_set_personality_nan(struct arch_=
+elf_state *state)
+>> >> >>  	t->thread.fpu.fcr31 =3D c->fpu_csr31;
+>> >> >>  	switch (state->nan_2008) {
+>> >> >>  	case 0:
+>> >> >> +		if (!(c->fpu_msk31 & FPU_CSR_NAN2008))
+>> >> >> +			t->thread.fpu.fcr31 &=3D ~FPU_CSR_NAN2008;
+>> >> >> +		if (!(c->fpu_msk31 & FPU_CSR_ABS2008))
+>> >> >> +			t->thread.fpu.fcr31 &=3D ~FPU_CSR_ABS2008;
+>> >> >
+>> >> > why is this needed?
+>> >>=20
+>> >> Because t->thread.fpu.fcr31 comes from c->fpu_csr31, in this case =
+we the default
+>> >> value of c->fpu_csr31 is read from hardware and we don't know what=
+ would that be.
+>> >
+>> >  But it has always been like this.  What has changed with your patc=
+h that=20
+>> > you need to mask the bit out now?
+>>=20
+>> After this patch kernel's copy of t->thread.fpu.fcr31 can disagree wi=
+th hardware.
+>> When disagree happens, we trigger emulation.
+>>=20
+>> Before that patch for nan legacy binary running on nan2008 CPU t->thr=
+ead.fpu.fcr31
+>> will still be nan2008 (for ieee754=3Drelaxed) so that's not relevant.
+>
+> I'm considering to apply your patch, how much testing/verification did
+> this patch see ? Do have some test binaries ?
 
-Notes:
-    Changes in v5:
-    - None
-    Changes in v4:
-    - use correct compatible string
-    - include printk.h
-    - remove unnecessary include of of_address.h
-    - put realtek_of_match entry on one line
-    - one piece of feedback not addressed is whether this fixup is requir=
-ed
-      on more platforms. I don't have a supply of other mips platforms to=
- check
-      so I can't confirm. It should be relatively easy to move
-      realtek_add_initrd() to a more generic place, boards could then opt=
- in
-      to it with the existing apply_mips_fdt_fixups() mechanism.
-    Changes in v3:
-    - None
-    Changes in v2:
-    - update compatible string
+It has been tested against Debian rootfs. There is no need to test again=
+t special binary,
+but you need NaN2008 hardware such as Loongson 3A4000.
 
- arch/mips/generic/Makefile        |  1 +
- arch/mips/generic/board-realtek.c | 79 +++++++++++++++++++++++++++++++
- 2 files changed, 80 insertions(+)
- create mode 100644 arch/mips/generic/board-realtek.c
+Thanks
+- Jiaxun
+>
+> Thomas.
+>
+> --=20
+> Crap can work. Given enough thrust pigs will fly, but it's not necessa=
+rily a
+> good idea.                                                [ RFC1925, 2=
+.3 ]
 
-diff --git a/arch/mips/generic/Makefile b/arch/mips/generic/Makefile
-index 56011d738441..ea0e4ad5e600 100644
---- a/arch/mips/generic/Makefile
-+++ b/arch/mips/generic/Makefile
-@@ -13,3 +13,4 @@ obj-$(CONFIG_LEGACY_BOARD_SEAD3)	+=3D board-sead3.o
- obj-$(CONFIG_LEGACY_BOARD_OCELOT)	+=3D board-ocelot.o
- obj-$(CONFIG_MACH_INGENIC)			+=3D board-ingenic.o
- obj-$(CONFIG_VIRT_BOARD_RANCHU)		+=3D board-ranchu.o
-+obj-$(CONFIG_MACH_REALTEK_RTL)		+=3D board-realtek.o
-diff --git a/arch/mips/generic/board-realtek.c b/arch/mips/generic/board-=
-realtek.c
-new file mode 100644
-index 000000000000..9cce6103d24e
---- /dev/null
-+++ b/arch/mips/generic/board-realtek.c
-@@ -0,0 +1,79 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ * Copyright (C) 2024 Allied Telesis
-+ */
-+
-+#include <linux/errno.h>
-+#include <linux/libfdt.h>
-+#include <linux/printk.h>
-+#include <linux/types.h>
-+
-+#include <asm/fw/fw.h>
-+#include <asm/machine.h>
-+
-+static __init int realtek_add_initrd(void *fdt)
-+{
-+	int node, err;
-+	u32 start, size;
-+
-+	node =3D fdt_path_offset(fdt, "/chosen");
-+	if (node < 0) {
-+		pr_err("/chosen node not found\n");
-+		return -ENOENT;
-+	}
-+
-+	start =3D fw_getenvl("initrd_start");
-+	size =3D fw_getenvl("initrd_size");
-+
-+	if (start =3D=3D 0 && size =3D=3D 0)
-+		return 0;
-+
-+	pr_info("Adding initrd info from environment\n");
-+
-+	err =3D fdt_setprop_u32(fdt, node, "linux,initrd-start", start);
-+	if (err) {
-+		pr_err("unable to set initrd-start: %d\n", err);
-+		return err;
-+	}
-+
-+	err =3D fdt_setprop_u32(fdt, node, "linux,initrd-end", start + size);
-+	if (err) {
-+		pr_err("unable to set initrd-end: %d\n", err);
-+		return err;
-+	}
-+
-+	return 0;
-+}
-+
-+static const struct mips_fdt_fixup realtek_fdt_fixups[] __initconst =3D =
-{
-+	{ realtek_add_initrd, "add initrd" },
-+	{},
-+};
-+
-+static __init const void *realtek_fixup_fdt(const void *fdt, const void =
-*match_data)
-+{
-+	static unsigned char fdt_buf[16 << 10] __initdata;
-+	int err;
-+
-+	if (fdt_check_header(fdt))
-+		panic("Corrupt DT");
-+
-+	fw_init_cmdline();
-+
-+	err =3D apply_mips_fdt_fixups(fdt_buf, sizeof(fdt_buf), fdt, realtek_fd=
-t_fixups);
-+	if (err)
-+		panic("Unable to fixup FDT: %d", err);
-+
-+	return fdt_buf;
-+
-+}
-+
-+static const struct of_device_id realtek_of_match[] __initconst =3D {
-+	{ .compatible =3D "realtek,rtl9302-soc" },
-+	{}
-+};
-+
-+MIPS_MACHINE(realtek) =3D {
-+	.matches =3D realtek_of_match,
-+	.fixup_fdt =3D realtek_fixup_fdt,
-+};
 --=20
-2.45.2
-
+- Jiaxun

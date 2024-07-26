@@ -1,57 +1,57 @@
-Received: from mail-pg1-f202.google.com (mail-pg1-f202.google.com [209.85.215.202])
+Received: from mail-pl1-f201.google.com (mail-pl1-f201.google.com [209.85.214.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 539B118EFCE
-	for <linux-mips@vger.kernel.org>; Fri, 26 Jul 2024 23:55:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 20AE318F2ED
+	for <linux-mips@vger.kernel.org>; Fri, 26 Jul 2024 23:55:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722038105; cv=none; b=iy1T/dTOPGSa1dR5Z9hHUh8ihbosCZZHJHlKaxW1iy6ISLAI2/hCOl0MhZquK09LPjOL7h3OcqGyZ/tSbTGboceyrAKDEBXeHCT/tTUrGl7vPaxTJ3gvahuo5207+q9Fh3YHJF7XXL1rj5xYJ7Mvwu2afOYsEg5l9z+gLG76mMI=
+	t=1722038109; cv=none; b=aelrKMR4tQz/DEfk6xXeizQXq6I+3uTtl2JRResFIJVzBZwnnaUT1gqS7AVJIw6vgMxtmOybLVVGKqQHL7gsraZJlDMJ4nwTr3HlcgMBmzNEvFvKHiV3NdBbd2qMrt7CgPqlwyKey+sDTHM4qJiKYsINVBt0rPDkuD5+LFEC6FY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722038105; c=relaxed/simple;
-	bh=ziM2BhZeDvRuc7Kv6C0zNSnuZJuDBMOs3hNrlsk1v5s=;
+	s=arc-20240116; t=1722038109; c=relaxed/simple;
+	bh=LwnbsVmoSkGUot+G6cbXgIy7tatzU4elH4imBAcWXlg=;
 	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=V7hmbd4PoqtI2CekdT/IlT71DOr00y6oaNZ0VPWOwcgYxLmKKoIRLpAttyFzsgvGw35vYcgr5VKWaehdKEstY+fiXXxbCPuzWIegls/Lu7iGKh/Yu0eWqUfSRqkP7W0PlvzS7UsXP0rDiY3iCvnefUx7mH8GAdmdLTTnXxWsaHA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=tme8JUNj; arc=none smtp.client-ip=209.85.215.202
+	 To:Cc:Content-Type; b=Weqy7k/OhpHhqr2g81gmuTU1lNme7v1kPzeoSgmLvBw8q+9dyofEyhv66u54v2jjoOJjP/YV5IRwHYGjQXVxDz4btt7eMvVRiHELRCLJz25uawFMGuF5MByCRbESVdTzIi+GsUJAdAe4B6e17bSTQlZRxwEBO/1ETn+jtsfM+HA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=MZFH8Z1f; arc=none smtp.client-ip=209.85.214.201
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="tme8JUNj"
-Received: by mail-pg1-f202.google.com with SMTP id 41be03b00d2f7-5e4df21f22dso1272981a12.0
-        for <linux-mips@vger.kernel.org>; Fri, 26 Jul 2024 16:55:04 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="MZFH8Z1f"
+Received: by mail-pl1-f201.google.com with SMTP id d9443c01a7336-1fda155bc43so11486675ad.3
+        for <linux-mips@vger.kernel.org>; Fri, 26 Jul 2024 16:55:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1722038104; x=1722642904; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1722038107; x=1722642907; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:reply-to:from:to:cc:subject:date:message-id:reply-to;
-        bh=y+Ar7T6On16alzy9M8c5sPTmukkBuZuZUdMs6MViY54=;
-        b=tme8JUNjEVxgRFC3Oc1gWy+XPRFWvWtTAPAMPSI2WbEYU129+X+s0E+ZrSjVDzZNVE
-         5DlHXVGCBBObNjpvosHB7VKYw6PR6AsprQt2c5TGekb/CphFEw9zBFRw9GM3T5eTQ2bR
-         7QoPwY0hZa/rEpWR0lDeoeN6opWOGyl5kQsmzWTYQms6+WQkZnz3n8EPc8wgY9ZMv0mS
-         yiRPPHpWX1NCgxsV+SUcD3UGOOzd0pNNBi1HEmTDnehVqlxY4ncoD6/CNbholWm0WiRl
-         /klmLexZ6ygH/J+yVDwb5XSLCTW6wzxIBQbFfJ+nk19eIuVd+3h2RE1hViooxxGXKOx/
-         CKtw==
+        bh=Agw1NDopTbJHSwXqEMTAoK1oQKqohLcT4CyuwhV7hPY=;
+        b=MZFH8Z1f6H+7tRJum8lT1Vm7ri8x+Xug7jf1d83CoRP56DsICdy3/XpfWetgSX84F+
+         3O9Uygiu4wzYrBS6TGn9YuOSDHyMhkron0pg612PO657AGWM1CJoXdyZZwSGBxYTKu9L
+         uYXTaAzaSeoBPIu2hHk8gw29P9fdLK64zGzFVIjowqj6XMtueIdgrlrw6AoIVQz/Rwg5
+         nOrndP0boNuzbW9ZXOcUox7y/7Lgwpgnle+J9kMwZ1GGGeqhvu8LV1TdCWI7DaZrXiaE
+         am/ABXWN9T68epdnmT2yOBlUWf0p3L/bMPX5qNRe8KmWoJNGeJTD5sVm+abEEJgZ7Cdu
+         cJIA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1722038104; x=1722642904;
+        d=1e100.net; s=20230601; t=1722038107; x=1722642907;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:reply-to:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=y+Ar7T6On16alzy9M8c5sPTmukkBuZuZUdMs6MViY54=;
-        b=vfGHlnoMrmbwZa02dV0SNM23XAV/uC1LQgRGkFTw/nrvRNXriEUV+MjMz0NgTfgqRa
-         WLXv5z3XHLNs3ei32zeSG6xTD8aRgczJ3SK0hW/vKHBmhTh1lg8zCG4+rg+2Suvrd148
-         weHeafqo+lnmtLFdUO3xLELOgM5INTrduKLA6G7lV/rKGgyNNlBiAPLkt7OVav79Q/4J
-         1IGCpJAFCxkdXme9w37DTr+yEXk65hv/Ch3gC6XlAe7+yiLreynAbbVfxDLPikzCbMsF
-         OBG5Fzfn1n3t+aByBsNfmjACprhD8pnofxN98KNJIoVaCkEh3OJkmA7J90ATV5lAB2Cn
-         KRyw==
-X-Forwarded-Encrypted: i=1; AJvYcCU5wmCXbA4j2RBzTGJKiPW95VJHmZbbETxdcGrDnQ7hsVqiCcfcxBg4btOdyl+68oI4qJD8I7WDx0NXu1C++qQ35zc21qrTgZR/fA==
-X-Gm-Message-State: AOJu0YxsoNxzthpgvoEvFa6xtJDabOMtZz+Lf+p6NI40REpvyjQuqwJo
-	d4dJ5zWsRfNj266V4Jf9Y2N4hV3zSrRo52VmMUgeJVKC84o2ahNScZRU9+g0oceT9wnI9jy/+fj
-	53Q==
-X-Google-Smtp-Source: AGHT+IFnr9ua4KoyN+kf9dgXRrvt4SVsbQldBEs2PtVQEhle6Kqivs/NJk7PeSFySHT1lFiCWuBu3lKqAis=
+        bh=Agw1NDopTbJHSwXqEMTAoK1oQKqohLcT4CyuwhV7hPY=;
+        b=GLekB6bmA5653zqlkUHQwI4ep9dGP942PszNS3EqUkk0r8m/V5VACH1xh1jsROfBh7
+         bS8yBssHLbckn/Th1xaFMPBIhy/6dKJcJjOCWuHJKHr26ZwSAVWVBmZ9PLIipQWAKtuj
+         VWrOQJhKAZDZCklcxGLqMaSfZKplqkkCWty6VmxAHbl5vJa4ij4vzgxY2Pr1GwFxplIt
+         E7P6AUSNvHqy5Xr9wkL4JxiHF3a8oNgwnfK+y432d1LotSgHmQQIEpKuGEGgseDIHKUe
+         Gm0mtO+lKL09shkTsfRB9+0rRDricLTdt/ev/zwyCvLMPnIRwqoI7Kn1NFAWVB2pdQsM
+         GAPg==
+X-Forwarded-Encrypted: i=1; AJvYcCU+vxeVi1hc+J6GIsmwlq8G89ZyfVW/hSGzSoR0F8HIvKlACsRTwouQ/To56IYo+jy1hi8ZlkKjOnlR4tkDXa3KTrvPUcG6OlanKA==
+X-Gm-Message-State: AOJu0YwtqwQtSH/AOgNZ4EIln13FLf4UvwSRAUeAwFJpJ/4DC9uDpOiq
+	5LUttq96j61XX9sPli6SEYm42Ghbk8wO+jkhDJQVEMcIj4cF92+i4V9ykHKxzLAwFBJ3/psgKgP
+	p7g==
+X-Google-Smtp-Source: AGHT+IHxZ9LAKt5vIHU7V05HDfJ12gC6skwH/WeW9XOXHpR7B1c0ubRWlOUtq2UiALskA4rClXraM4lFVDE=
 X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a05:6a02:50a:b0:740:2b12:8780 with SMTP id
- 41be03b00d2f7-7ac8fd30684mr3158a12.5.1722038103410; Fri, 26 Jul 2024 16:55:03
+ (user=seanjc job=sendgmr) by 2002:a17:902:b18d:b0:1fd:8ebf:672c with SMTP id
+ d9443c01a7336-1ff047d8f61mr25415ad.3.1722038107293; Fri, 26 Jul 2024 16:55:07
  -0700 (PDT)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date: Fri, 26 Jul 2024 16:52:19 -0700
+Date: Fri, 26 Jul 2024 16:52:21 -0700
 In-Reply-To: <20240726235234.228822-1-seanjc@google.com>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
@@ -61,9 +61,9 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <20240726235234.228822-1-seanjc@google.com>
 X-Mailer: git-send-email 2.46.0.rc1.232.g9752f9e123-goog
-Message-ID: <20240726235234.228822-71-seanjc@google.com>
-Subject: [PATCH v12 70/84] KVM: MIPS: Mark "struct page" pfns accessed prior
- to dropping mmu_lock
+Message-ID: <20240726235234.228822-73-seanjc@google.com>
+Subject: [PATCH v12 72/84] KVM: PPC: Remove extra get_page() to fix page
+ refcount leak
 From: Sean Christopherson <seanjc@google.com>
 To: Paolo Bonzini <pbonzini@redhat.com>, Marc Zyngier <maz@kernel.org>, 
 	Oliver Upton <oliver.upton@linux.dev>, Tianrui Zhao <zhaotianrui@loongson.cn>, 
@@ -80,32 +80,27 @@ Cc: kvm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
 	David Matlack <dmatlack@google.com>, David Stevens <stevensd@chromium.org>
 Content-Type: text/plain; charset="UTF-8"
 
-Mark pages accessed before dropping mmu_lock when faulting in guest memory
-so that MIPS can convert to kvm_release_faultin_page() without tripping
-its lockdep assertion on mmu_lock being held.
+Don't manually do get_page() when patching dcbz, as gfn_to_page() gifts
+the caller a reference.  I.e. doing get_page() will leak the page due to
+not putting all references.
 
 Signed-off-by: Sean Christopherson <seanjc@google.com>
 ---
- arch/mips/kvm/mmu.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ arch/powerpc/kvm/book3s_pr.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/arch/mips/kvm/mmu.c b/arch/mips/kvm/mmu.c
-index f1e4b618ec6d..69463ab24d97 100644
---- a/arch/mips/kvm/mmu.c
-+++ b/arch/mips/kvm/mmu.c
-@@ -634,10 +634,9 @@ static int kvm_mips_map_page(struct kvm_vcpu *vcpu, unsigned long gpa,
+diff --git a/arch/powerpc/kvm/book3s_pr.c b/arch/powerpc/kvm/book3s_pr.c
+index 1bdcd4ee4813..ae4757ac0848 100644
+--- a/arch/powerpc/kvm/book3s_pr.c
++++ b/arch/powerpc/kvm/book3s_pr.c
+@@ -652,7 +652,6 @@ static void kvmppc_patch_dcbz(struct kvm_vcpu *vcpu, struct kvmppc_pte *pte)
+ 	hpage_offset &= ~0xFFFULL;
+ 	hpage_offset /= 4;
  
- 	if (writeable)
- 		kvm_set_pfn_dirty(pfn);
--
--	spin_unlock(&kvm->mmu_lock);
- 	kvm_release_pfn_clean(pfn);
--	kvm_set_pfn_accessed(pfn);
-+
-+	spin_unlock(&kvm->mmu_lock);
- out:
- 	srcu_read_unlock(&kvm->srcu, srcu_idx);
- 	return err;
+-	get_page(hpage);
+ 	page = kmap_atomic(hpage);
+ 
+ 	/* patch dcbz into reserved instruction, so we trap */
 -- 
 2.46.0.rc1.232.g9752f9e123-goog
 

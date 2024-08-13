@@ -1,137 +1,245 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B9F81A0702;
-	Tue, 13 Aug 2024 15:26:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A3721A76D2
+	for <linux-mips@vger.kernel.org>; Tue, 13 Aug 2024 21:13:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723562778; cv=none; b=FiFRPKjgBIMtckf0FQGy2769Llk6uE8x0JdewxQ8sAjTksN1TW9RAjdhOR4PhiGpwY1cmNgTivEtr3lJwhuwtxODVN9mJDSsqLNCKPWgXnW0WcBFZI5WlJItFTQ6IfzOQ3qbi7jMa/t7HXqwl1VnFuztrziuByw2HKFhebwNT9U=
+	t=1723583605; cv=none; b=AX3SVpgtnYbu5QuyLPsKkmz5mhnpm0dKpQdDmzkBOiDLMYrcoOoftLwWwMk0QXmqTNkuruKzfsIBBnGTJbFISAQbmV+DwVAZitbcp9vtdNKYEYq/YRLgYvrizpJTtu+3R5ebs6246Lxq/xl3s12nbmRHtEd7Prk9NbIqvVmwkTg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723562778; c=relaxed/simple;
-	bh=IUkzPMLKL9hxrVCRse+Tn29r759bkrevm8jISz7/NVM=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=UbsOmQQdGWMDbcfV/jpIGkSGX0p1u501CI9Yu9agfQy4Qxq04hiin40huzffZRJu7XUMLTcF3C2jxa2Q0SN7QfDrt86kDa5aBOLX2SMZcJKixc3NE5BXCQ7C9D9rEjLFqiUFseTcz8/xhvG37IrsLVGpnF/DZK98HCmld2TnxEI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lz/8AFXr; arc=none smtp.client-ip=10.30.226.201
+	s=arc-20240116; t=1723583605; c=relaxed/simple;
+	bh=HdlSzizJdXOwRG2k/ymIT58Jke7w9+SEPmQ0Rs6ax48=;
+	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=uGGQtF0jsBCb5AF2AJbNbbV/vOEoQkqRWFr4PsSH6sN1Jcwj+lcp3A0w3LLo0nH6x8bA+219rv3HJDFELShE0IsO37s1PctU7aUC7cJDO8w9eN6i+0uKnixoLa4+dDInu95VEUCDfDkKIP+BiVv1MKy292OzPZKsPjMOI42MfVs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--almasrymina.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=oLJkD5lb; arc=none smtp.client-ip=209.85.128.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--almasrymina.bounces.google.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lz/8AFXr"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1F8B9C4AF09;
-	Tue, 13 Aug 2024 15:26:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1723562778;
-	bh=IUkzPMLKL9hxrVCRse+Tn29r759bkrevm8jISz7/NVM=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=lz/8AFXrJT9670zCrN4KWrpS/qHfbJzVH2SwYK+34AfLrA0BJHSl1PU5fdFq+JWZF
-	 w9W7Lypd8K0zGJCHv5Z/sowDvHbYIfbBp7Qrv+uZy7QgzSdkZdmwtxEfMb3IxqQSoB
-	 Re677vy+gy/FDsDswIsBN++DRbLYmQgLIZBpwC/UbUBIqKIl9qfbd4QQOOynyku23w
-	 2ExdG33d3W2Y0Ga5N8uD/ONPmABMxCL57CGjbBP/gVYxH6EyTFuoBnFWbjoDlc5fQO
-	 FYeFxXWOZWcjtZi+psvbkL8E5jSTK+NUzEh6Wp+GLlYhD96vdQ4pN9L3CGpgMeVw2Q
-	 PVEWD+5jh8ZgA==
-Date: Tue, 13 Aug 2024 08:26:15 -0700
-From: Jakub Kicinski <kuba@kernel.org>
-To: Pavel Begunkov <asml.silence@gmail.com>
-Cc: Mina Almasry <almasrymina@google.com>, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
- linux-alpha@vger.kernel.org, linux-mips@vger.kernel.org,
- linux-parisc@vger.kernel.org, sparclinux@vger.kernel.org,
- linux-trace-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
- linux-kselftest@vger.kernel.org, bpf@vger.kernel.org,
- linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org, Donald Hunter
- <donald.hunter@gmail.com>, "David S. Miller" <davem@davemloft.net>, Eric
- Dumazet <edumazet@google.com>, Paolo Abeni <pabeni@redhat.com>, Jonathan
- Corbet <corbet@lwn.net>, Richard Henderson <richard.henderson@linaro.org>,
- Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Matt Turner
- <mattst88@gmail.com>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
- "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>, Helge
- Deller <deller@gmx.de>, Andreas Larsson <andreas@gaisler.com>, Jesper
- Dangaard Brouer <hawk@kernel.org>, Ilias Apalodimas
- <ilias.apalodimas@linaro.org>, Steven Rostedt <rostedt@goodmis.org>, Masami
- Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers
- <mathieu.desnoyers@efficios.com>, Arnd Bergmann <arnd@arndb.de>, Steffen
- Klassert <steffen.klassert@secunet.com>, Herbert Xu
- <herbert@gondor.apana.org.au>, David Ahern <dsahern@kernel.org>, Willem de
- Bruijn <willemdebruijn.kernel@gmail.com>, Shuah Khan <shuah@kernel.org>,
- Sumit Semwal <sumit.semwal@linaro.org>, Christian =?UTF-8?B?S8O2bmln?=
- <christian.koenig@amd.com>, Bagas Sanjaya <bagasdotme@gmail.com>, Christoph
- Hellwig <hch@infradead.org>, Nikolay Aleksandrov <razor@blackwall.org>,
- Taehee Yoo <ap420073@gmail.com>, David Wei <dw@davidwei.uk>, Jason
- Gunthorpe <jgg@ziepe.ca>, Yunsheng Lin <linyunsheng@huawei.com>, Shailend
- Chand <shailend@google.com>, Harshitha Ramamurthy <hramamurthy@google.com>,
- Shakeel Butt <shakeel.butt@linux.dev>, Jeroen de Borst
- <jeroendb@google.com>, Praveen Kaligineedi <pkaligineedi@google.com>,
- Willem de Bruijn <willemb@google.com>, Kaiyuan Zhang <kaiyuanz@google.com>
-Subject: Re: [PATCH net-next v18 07/14] memory-provider: dmabuf devmem
- memory provider
-Message-ID: <20240813082615.53693b97@kernel.org>
-In-Reply-To: <6a779dbb-ad3a-47cf-bb8e-1a50732a9694@gmail.com>
-References: <20240805212536.2172174-1-almasrymina@google.com>
-	<20240805212536.2172174-8-almasrymina@google.com>
-	<20240806135924.5bb65ec7@kernel.org>
-	<CAHS8izOA80dxpB9rzOwv7Oe_1w4A7vo5S3c3=uCES8TSnjyzpg@mail.gmail.com>
-	<20240808192410.37a49724@kernel.org>
-	<CAHS8izMH4UhD+UDYqMjt9d=gu-wpGPQBLyewzVrCWRyoVtQcgA@mail.gmail.com>
-	<fc6a8f0a-cdb4-4705-a08f-7033ef15213e@gmail.com>
-	<20240809205236.77c959b0@kernel.org>
-	<CAHS8izOXwZS-8sfvn3DuT1XWhjc--7-ZLjr8rMn1XHr5F+ckbA@mail.gmail.com>
-	<48f3a61f-9e04-4755-b50c-8fae6e6112eb@gmail.com>
-	<20240812105732.5d2845e4@kernel.org>
-	<CAHS8izPb51gvEHGHeQwWTs4YmimLLamau1c4j=Z4KGM8ZJrx5g@mail.gmail.com>
-	<a6747b29-ed79-49d4-9ffe-b62074db1e09@gmail.com>
-	<20240812165708.33234ed6@kernel.org>
-	<5a51b11d-9c35-42a5-879b-08dc7ca2ca18@gmail.com>
-	<20240813073917.690ac1cc@kernel.org>
-	<6a779dbb-ad3a-47cf-bb8e-1a50732a9694@gmail.com>
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="oLJkD5lb"
+Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-664b7a67ad4so135009167b3.2
+        for <linux-mips@vger.kernel.org>; Tue, 13 Aug 2024 14:13:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1723583601; x=1724188401; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=wJPAY1lFj5tJn3a3E+W8gFPxIVw0CcWf1YfnWNpzLOU=;
+        b=oLJkD5lbYKOcnPZrFDXvOk/dKFI4y44ZZrO1m0Dtg4QnweRsvsxRG1PBwqpaQsaJwQ
+         PjlIZaCvmfQio7BSRvstWrTMfW8yIrE4PLuaRR5mKGTb14LM22m9T668gVSYGj4WzdNp
+         eQXVw68N3Q7uERl2SFqcZ20et860lu/rbCRP5neXATxKUP3Pn/yNQw3FJzqucSnX1rir
+         R32DSaLMc28Ej6xUn+KNEa//p4YDnYfkgyGXSi5hBThJEUDRrUKObUNX67kq99dIXtwL
+         cWtxEcKsItPAwT85i1fOHzZDAbmp7uVuY/mnniehmeot2e60j12nOScw6XMWbq8RC5LP
+         J7YQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1723583601; x=1724188401;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=wJPAY1lFj5tJn3a3E+W8gFPxIVw0CcWf1YfnWNpzLOU=;
+        b=it1y1SOWmg5jzqN7bqo/9/NYSaEwfMtrH7ITR5V3nZ1zb7FPrunUctt0N5qjOxpFew
+         qeee1u1fqtY2jqjl5Drn/J5ES2T2KSFFzpKO1LPqPUqrpvEYjNQd7LrpSAfMgnbl+SZ2
+         VQamquc1nxdvK8fQaKUOW0StvLuaC7fNn8I/8ZbqhcrV2HWy0c0iK46wG2NWm8Ob25mj
+         Qg5d1XWcvi9NtBGZueWSLgEDYDZMuqjv07cwL+PxQpjPcjpG0Jtf+NjfLGr6qPyaEiDY
+         al3++Cx36VRxfl9mMk6kAIMXNN078/x0I2NrasZYJ2jYR+pTVsT1RCPkkvPT5RdMs4hb
+         P+pQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWn8Rs3zb57+oT313nwW+509GNBC+EEw9Ba6eKYMx26WjIpB0y87TfJWctI6Eju0S7l5EjWaxPe0G1I+mvXYyhTy2cGR3EIxY4pSw==
+X-Gm-Message-State: AOJu0YzyeUNokNUmoJOG3PvaetG42IUxwdusVcxiJhPmS8N9ddqq9k6x
+	f706fqeRXJb434uq/mg56LKv0EeRDIPl2+cf7Ujbqz1oQKarz1iuyg+lWKl3Pbdpv7AkzgHo/NG
+	Nwbo3ORzkRJs8/tLXTgRC1A==
+X-Google-Smtp-Source: AGHT+IFOJ+AnarAEzZ9CsLYic4GPYJ+K8HEYiQ1+sMf0GrT+bonfuMFlpBsyqXRz30xl8bG0haEExxymtAcDupW/yA==
+X-Received: from almasrymina.c.googlers.com ([fda3:e722:ac3:cc00:20:ed76:c0a8:4bc5])
+ (user=almasrymina job=sendgmr) by 2002:a81:b507:0:b0:691:55ea:8572 with SMTP
+ id 00721157ae682-6ac9a75c2e4mr86917b3.8.1723583601292; Tue, 13 Aug 2024
+ 14:13:21 -0700 (PDT)
+Date: Tue, 13 Aug 2024 21:13:03 +0000
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.46.0.76.ge559c4bf1a-goog
+Message-ID: <20240813211317.3381180-2-almasrymina@google.com>
+Subject: [PATCH net-next v19 01/13] netdev: add netdev_rx_queue_restart()
+From: Mina Almasry <almasrymina@google.com>
+To: netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-doc@vger.kernel.org, linux-alpha@vger.kernel.org, 
+	linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org, 
+	sparclinux@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
+	linux-arch@vger.kernel.org, linux-kselftest@vger.kernel.org, 
+	bpf@vger.kernel.org, linux-media@vger.kernel.org, 
+	dri-devel@lists.freedesktop.org
+Cc: Mina Almasry <almasrymina@google.com>, "David S. Miller" <davem@davemloft.net>, 
+	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	Donald Hunter <donald.hunter@gmail.com>, Jonathan Corbet <corbet@lwn.net>, 
+	Richard Henderson <richard.henderson@linaro.org>, Ivan Kokshaysky <ink@jurassic.park.msu.ru>, 
+	Matt Turner <mattst88@gmail.com>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
+	"James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>, Helge Deller <deller@gmx.de>, 
+	Andreas Larsson <andreas@gaisler.com>, Jesper Dangaard Brouer <hawk@kernel.org>, 
+	Ilias Apalodimas <ilias.apalodimas@linaro.org>, Steven Rostedt <rostedt@goodmis.org>, 
+	Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
+	Arnd Bergmann <arnd@arndb.de>, Steffen Klassert <steffen.klassert@secunet.com>, 
+	Herbert Xu <herbert@gondor.apana.org.au>, David Ahern <dsahern@kernel.org>, 
+	Willem de Bruijn <willemdebruijn.kernel@gmail.com>, Shuah Khan <shuah@kernel.org>, 
+	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
+	John Fastabend <john.fastabend@gmail.com>, Sumit Semwal <sumit.semwal@linaro.org>, 
+	"=?UTF-8?q?Christian=20K=C3=B6nig?=" <christian.koenig@amd.com>, Bagas Sanjaya <bagasdotme@gmail.com>, 
+	Christoph Hellwig <hch@infradead.org>, Nikolay Aleksandrov <razor@blackwall.org>, Taehee Yoo <ap420073@gmail.com>, 
+	Pavel Begunkov <asml.silence@gmail.com>, David Wei <dw@davidwei.uk>, Jason Gunthorpe <jgg@ziepe.ca>, 
+	Yunsheng Lin <linyunsheng@huawei.com>, Shailend Chand <shailend@google.com>, 
+	Harshitha Ramamurthy <hramamurthy@google.com>, Shakeel Butt <shakeel.butt@linux.dev>, 
+	Jeroen de Borst <jeroendb@google.com>, Praveen Kaligineedi <pkaligineedi@google.com>
+Content-Type: text/plain; charset="UTF-8"
 
-On Tue, 13 Aug 2024 16:11:15 +0100 Pavel Begunkov wrote:
-> On 8/13/24 15:39, Jakub Kicinski wrote:
-> > On Tue, 13 Aug 2024 03:31:13 +0100 Pavel Begunkov wrote:  
-> >> I'm getting lost, so repeating myself a bit. What I think
-> >> would be a good approach is if we get an error back from
-> >> the driver if it doesn't support netiov / providers.
-> >>
-> >> netdev_rx_queue_restart() {
-> >> 	...
-> >> 	err = dev->queue_mgmt_ops->ndo_queue_mem_alloc();
-> >> 	if (err == -EOPNOTSUPP) // the driver doesn't support netiov
-> >> 		return -EOPNOTSUPP;
-> >> 	...
-> >> }
-> >>
-> >> That can be done if drivers opt in to support providers,
-> >> e.g. via a page pool flag.
-> >>
-> >> What I think wouldn't be a great option is getting back a
-> >> "success" from the driver even though it ignored  
-> > 
-> > page pool params are not the right place for a supported flag.
-> > Sooner or later we'll want to expose this flag to user space.  
-> 
-> Fair enough, it appeared to me that's what you was suggesting
-> 
-> "What comes to mind is adding an "I can gobble up net_iovs from this
-> pool" flag in page pool params (the struct that comes from the driver),
-> and then on the installation path we can check ..."
+Add netdev_rx_queue_restart(), which resets an rx queue using the
+queue API recently merged[1].
 
-Yes, we still need one flag in page pool params -- functioning like 
-the inverse of PP_IGNORE_PROVIDERS, I'd call it something like
-PP_CAP_NET(MEM|IOV). To distinguish the header and data pools.
+The queue API was merged to enable the core net stack to reset individual
+rx queues to actuate changes in the rx queue's configuration. In later
+patches in this series, we will use netdev_rx_queue_restart() to reset
+rx queues after binding or unbinding dmabuf configuration, which will
+cause reallocation of the page_pool to repopulate its memory using the
+new configuration.
 
-> We can also move it from pp flags to queue API callbacks, however if we
-> want to expose it to the userspace, I'd imagine we need a queue flag set
-> by the driver, which then can be queried by netlink or whichever
-> interface is appropriate. And it can be used can be used to fail
-> netdev_rx_queue_restart() for queues/drivers that don't support mp.
-> 
-> netdev_rx_queue_restart() {
-> 	if (rxq->mp_params && !rxq->netiov_supported)
-> 		fail;
-> }
+[1] https://lore.kernel.org/netdev/20240430231420.699177-1-shailend@google.com/T/
 
-Yup!
+Signed-off-by: David Wei <dw@davidwei.uk>
+Signed-off-by: Mina Almasry <almasrymina@google.com>
+Reviewed-by: Pavel Begunkov <asml.silence@gmail.com>
+Reviewed-by: Jakub Kicinski <kuba@kernel.org>
+
+---
+
+v18:
+- Add more color to commit message (Xuan Zhuo).
+
+v17:
+- Use ASSERT_RTNL() (Jakub).
+
+v13:
+- Add reviewed-by from Pavel (thanks!)
+- Fixed comment (Pavel)
+
+v11:
+- Fix not checking dev->queue_mgmt_ops (Pavel).
+- Fix ndo_queue_mem_free call that passed the wrong pointer (David).
+
+v9: https://lore.kernel.org/all/20240502045410.3524155-4-dw@davidwei.uk/
+(submitted by David).
+- fixed SPDX license identifier (Simon).
+- Rebased on top of merged queue API definition, and changed
+  implementation to match that.
+- Replace rtnl_lock() with rtnl_is_locked() to make it useable from my
+  netlink code where rtnl is already locked.
+
+---
+ include/net/netdev_rx_queue.h |  3 ++
+ net/core/Makefile             |  1 +
+ net/core/netdev_rx_queue.c    | 74 +++++++++++++++++++++++++++++++++++
+ 3 files changed, 78 insertions(+)
+ create mode 100644 net/core/netdev_rx_queue.c
+
+diff --git a/include/net/netdev_rx_queue.h b/include/net/netdev_rx_queue.h
+index aa1716fb0e53..e78ca52d67fb 100644
+--- a/include/net/netdev_rx_queue.h
++++ b/include/net/netdev_rx_queue.h
+@@ -54,4 +54,7 @@ get_netdev_rx_queue_index(struct netdev_rx_queue *queue)
+ 	return index;
+ }
+ #endif
++
++int netdev_rx_queue_restart(struct net_device *dev, unsigned int rxq);
++
+ #endif
+diff --git a/net/core/Makefile b/net/core/Makefile
+index 62be9aef2528..f82232b358a2 100644
+--- a/net/core/Makefile
++++ b/net/core/Makefile
+@@ -19,6 +19,7 @@ obj-$(CONFIG_NETDEV_ADDR_LIST_TEST) += dev_addr_lists_test.o
+ 
+ obj-y += net-sysfs.o
+ obj-y += hotdata.o
++obj-y += netdev_rx_queue.o
+ obj-$(CONFIG_PAGE_POOL) += page_pool.o page_pool_user.o
+ obj-$(CONFIG_PROC_FS) += net-procfs.o
+ obj-$(CONFIG_NET_PKTGEN) += pktgen.o
+diff --git a/net/core/netdev_rx_queue.c b/net/core/netdev_rx_queue.c
+new file mode 100644
+index 000000000000..da11720a5983
+--- /dev/null
++++ b/net/core/netdev_rx_queue.c
+@@ -0,0 +1,74 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++
++#include <linux/netdevice.h>
++#include <net/netdev_queues.h>
++#include <net/netdev_rx_queue.h>
++
++int netdev_rx_queue_restart(struct net_device *dev, unsigned int rxq_idx)
++{
++	void *new_mem, *old_mem;
++	int err;
++
++	if (!dev->queue_mgmt_ops || !dev->queue_mgmt_ops->ndo_queue_stop ||
++	    !dev->queue_mgmt_ops->ndo_queue_mem_free ||
++	    !dev->queue_mgmt_ops->ndo_queue_mem_alloc ||
++	    !dev->queue_mgmt_ops->ndo_queue_start)
++		return -EOPNOTSUPP;
++
++	ASSERT_RTNL();
++
++	new_mem = kvzalloc(dev->queue_mgmt_ops->ndo_queue_mem_size, GFP_KERNEL);
++	if (!new_mem)
++		return -ENOMEM;
++
++	old_mem = kvzalloc(dev->queue_mgmt_ops->ndo_queue_mem_size, GFP_KERNEL);
++	if (!old_mem) {
++		err = -ENOMEM;
++		goto err_free_new_mem;
++	}
++
++	err = dev->queue_mgmt_ops->ndo_queue_mem_alloc(dev, new_mem, rxq_idx);
++	if (err)
++		goto err_free_old_mem;
++
++	err = dev->queue_mgmt_ops->ndo_queue_stop(dev, old_mem, rxq_idx);
++	if (err)
++		goto err_free_new_queue_mem;
++
++	err = dev->queue_mgmt_ops->ndo_queue_start(dev, new_mem, rxq_idx);
++	if (err)
++		goto err_start_queue;
++
++	dev->queue_mgmt_ops->ndo_queue_mem_free(dev, old_mem);
++
++	kvfree(old_mem);
++	kvfree(new_mem);
++
++	return 0;
++
++err_start_queue:
++	/* Restarting the queue with old_mem should be successful as we haven't
++	 * changed any of the queue configuration, and there is not much we can
++	 * do to recover from a failure here.
++	 *
++	 * WARN if we fail to recover the old rx queue, and at least free
++	 * old_mem so we don't also leak that.
++	 */
++	if (dev->queue_mgmt_ops->ndo_queue_start(dev, old_mem, rxq_idx)) {
++		WARN(1,
++		     "Failed to restart old queue in error path. RX queue %d may be unhealthy.",
++		     rxq_idx);
++		dev->queue_mgmt_ops->ndo_queue_mem_free(dev, old_mem);
++	}
++
++err_free_new_queue_mem:
++	dev->queue_mgmt_ops->ndo_queue_mem_free(dev, new_mem);
++
++err_free_old_mem:
++	kvfree(old_mem);
++
++err_free_new_mem:
++	kvfree(new_mem);
++
++	return err;
++}
+-- 
+2.46.0.76.ge559c4bf1a-goog
+

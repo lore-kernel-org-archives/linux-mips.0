@@ -1,22 +1,21 @@
 Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 083E8210971;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E9BA0210970;
 	Wed, 21 Aug 2024 10:11:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=114.242.206.163
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724235118; cv=none; b=FEa2H6Bz3vMJUEMn5hyWSnrp3Ys+9eZOwq+J6mj+Y+HnqeLK6B0QxQFuKiq2YqwAN+/MIOCpHR8nJrly+SeAlQhLtz4F5Od+j8aKVq4YMlyXYTBBJcVRxbIjUSPpKLIQZ69z3qzrQD9SliMXADOyWSveNnZnTOc3RyEUiRs3ZOA=
+	t=1724235119; cv=none; b=cApvMvYFihvpWk36XnzrAmen70iJKDPc+uamy+RtSY2W3qgdduwqezudtzIkjeZgWToijea5M75CmLB9q9DvKU6PBULWCqONrbR6+tyoQshCzCo7CzNVtUejcZj4iJaiBHXpK+k4DeRMAri3TRWKEjbIKFkF2+a6+7HRoTIwtoA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724235118; c=relaxed/simple;
-	bh=nizlCHfbuoGImdFJM4bzVM7rc1oIMDc3cMJIQ6PswdM=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=K5mlaG1kqU5gfJNSc73OONjf3wgJNTT7gOxsmUO4ICnCAtUrDmySc61xmfjH54MmUO+Jq+rnc5DENEX7Pp4qS1pXvL91XnTf7Avu298xcH9pLrpdum+acBegzP9PQVhaUnIZEptHWvo/6ljljf2gZguLs4h/bYkEysYUCS5mQHs=
+	s=arc-20240116; t=1724235119; c=relaxed/simple;
+	bh=/bFmMeiy0T5fSe7EuWC53jhXfJ/0O37Sn4G03HWLoBQ=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=uj77kMWEb4J3apnABXTNOUrRbqPkVygQqR/UgtjrXf6iA9AMWoJmOmSS4evCOOu25+i1ml5kECZOxYekJZ1iy8F6VNVbDKj/W0TcFmC7o78h+n0xg/AW0Yy7NItU8+CS8Ftivlra0f5ZC5ZaPxF9WnJMX6yeCmT7tFhyiVRZlcw=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn; spf=pass smtp.mailfrom=loongson.cn; arc=none smtp.client-ip=114.242.206.163
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=loongson.cn
 Received: from loongson.cn (unknown [10.2.5.213])
-	by gateway (Coremail) with SMTP id _____8Bx6elqvcVm4hAbAA--.58497S3;
+	by gateway (Coremail) with SMTP id _____8BxnptqvcVm3RAbAA--.32745S3;
 	Wed, 21 Aug 2024 18:11:54 +0800 (CST)
 Received: from localhost.localdomain (unknown [10.2.5.213])
-	by front1 (Coremail) with SMTP id qMiowMAxouFqvcVm_oIcAA--.60915S3;
+	by front1 (Coremail) with SMTP id qMiowMAxouFqvcVm_oIcAA--.60915S2;
 	Wed, 21 Aug 2024 18:11:54 +0800 (CST)
 From: Bibo Mao <maobibo@loongson.cn>
 To: Huacai Chen <chenhuacai@kernel.org>
@@ -25,12 +24,10 @@ Cc: WANG Xuerui <kernel@xen0n.name>,
 	loongarch@lists.linux.dev,
 	linux-kernel@vger.kernel.org,
 	linux-mips@vger.kernel.org
-Subject: [RFC 1/2] irqchip/loongson-eiointc: Route interrupt parsed from acpi table
-Date: Wed, 21 Aug 2024 18:11:52 +0800
-Message-Id: <20240821101153.2262290-2-maobibo@loongson.cn>
+Subject: [RFC 0/2] irqchip/loongson-eiointc: Add multiple interrupt pin routing support
+Date: Wed, 21 Aug 2024 18:11:51 +0800
+Message-Id: <20240821101153.2262290-1-maobibo@loongson.cn>
 X-Mailer: git-send-email 2.39.3
-In-Reply-To: <20240821101153.2262290-1-maobibo@loongson.cn>
-References: <20240821101153.2262290-1-maobibo@loongson.cn>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
@@ -38,88 +35,32 @@ List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:qMiowMAxouFqvcVm_oIcAA--.60915S3
+X-CM-TRANSID:qMiowMAxouFqvcVm_oIcAA--.60915S2
 X-CM-SenderInfo: xpdruxter6z05rqj20fqof0/
 X-Coremail-Antispam: 1Uk129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7KY7
 	ZEXasCq-sGcSsGvfJ3UbIjqfuFe4nvWSU5nxnvy29KBjDU0xBIdaVrnUUvcSsGvfC2Kfnx
 	nUUI43ZEXa7xR_UUUUUUUUU==
 
-Interrupt controller eiointc routes irq to cpu interface IP0 - IP7,
-now it is hard-coded that eiointc routes irq to CPU started from IP1.
-It can be parsed from acpi table, instead hwirq is used for function
-irq_create_mapping() already, routed interrupt pin must be the same
-with parent hwirq.
+There are four times about EIOINTC_REG_ISR register group access in
+eiointc irq handler, in order to get all irq status about 256 interrupt
+vectors. It causes four times VM-exits since eiointc register are
+software emulated, here multiple interrupt pin routing is introduced
+and each 64 interrupt vector is routed to one interrupt pin.
 
-Signed-off-by: Bibo Mao <maobibo@loongson.cn>
----
- drivers/irqchip/irq-loongson-eiointc.c | 19 ++++++++++++++++---
- 1 file changed, 16 insertions(+), 3 deletions(-)
+With this method, there will be only on one EIOINTC_REG_ISR register
+group acces in irq handler, it will reduce VM-exits.
 
-diff --git a/drivers/irqchip/irq-loongson-eiointc.c b/drivers/irqchip/irq-loongson-eiointc.c
-index b1f2080be2be..e9ec63d85ee8 100644
---- a/drivers/irqchip/irq-loongson-eiointc.c
-+++ b/drivers/irqchip/irq-loongson-eiointc.c
-@@ -42,6 +42,7 @@ struct eiointc_priv {
- 	cpumask_t		cpuspan_map;
- 	struct fwnode_handle	*domain_handle;
- 	struct irq_domain	*eiointc_domain;
-+	int			parent_hwirq;
- };
- 
- static struct eiointc_priv *eiointc_priv[MAX_IO_PICS];
-@@ -159,7 +160,12 @@ static int eiointc_router_init(unsigned int cpu)
- 		}
- 
- 		for (i = 0; i < eiointc_priv[0]->vec_count / 32 / 4; i++) {
--			bit = BIT(1 + index); /* Route to IP[1 + index] */
-+			/*
-+			 * Route to interrupt pin, using offset minus INT_HWI0
-+			 * Offset 0 means IP0 and so on
-+			 * Every 32 vector routing to one interrupt pin
-+			 */
-+			bit = BIT(eiointc_priv[index]->parent_hwirq - INT_HWI0);
- 			data = bit | (bit << 8) | (bit << 16) | (bit << 24);
- 			iocsr_write32(data, EIOINTC_REG_IPMAP + i * 4);
- 		}
-@@ -424,7 +430,7 @@ int __init eiointc_acpi_init(struct irq_domain *parent,
- 
- 	priv->vec_count = VEC_COUNT;
- 	priv->node = acpi_eiointc->node;
--
-+	priv->parent_hwirq = acpi_eiointc->cascade;
- 	parent_irq = irq_create_mapping(parent, acpi_eiointc->cascade);
- 
- 	ret = eiointc_init(priv, parent_irq, acpi_eiointc->node_map);
-@@ -458,6 +464,7 @@ static int __init eiointc_of_init(struct device_node *of_node,
- {
- 	int parent_irq, ret;
- 	struct eiointc_priv *priv;
-+	struct irq_data *irq_data;
- 
- 	priv = kzalloc(sizeof(*priv), GFP_KERNEL);
- 	if (!priv)
-@@ -473,6 +480,12 @@ static int __init eiointc_of_init(struct device_node *of_node,
- 	if (ret < 0)
- 		goto out_free_priv;
- 
-+	irq_data = irq_get_irq_data(parent_irq);
-+	if (!irq_data) {
-+		ret = -ENODEV;
-+		goto out_free_priv;
-+	}
-+
- 	/*
- 	 * In particular, the number of devices supported by the LS2K0500
- 	 * extended I/O interrupt vector is 128.
-@@ -484,7 +497,7 @@ static int __init eiointc_of_init(struct device_node *of_node,
- 
- 	priv->node = 0;
- 	priv->domain_handle = of_node_to_fwnode(of_node);
--
-+	priv->parent_hwirq = irqd_to_hwirq(irq_data);
- 	ret = eiointc_init(priv, parent_irq, 0);
- 	if (ret < 0)
- 		goto out_free_priv;
+Bibo Mao (2):
+  irqchip/loongson-eiointc: Route interrupt parsed from acpi table
+  irqchip/loongson-eiointc: Add multiple interrupt pin routing support
+
+ arch/loongarch/kernel/irq.c            |  3 +-
+ arch/loongarch/kernel/smp.c            |  2 +-
+ drivers/irqchip/irq-loongson-eiointc.c | 66 +++++++++++++++++++++++---
+ 3 files changed, 62 insertions(+), 9 deletions(-)
+
+
+base-commit: 1fb918967b56df3262ee984175816f0acb310501
 -- 
 2.39.3
 

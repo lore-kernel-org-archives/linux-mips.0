@@ -1,148 +1,126 @@
-Received: from fhigh3-smtp.messagingengine.com (fhigh3-smtp.messagingengine.com [103.168.172.154])
+Received: from outpost1.zedat.fu-berlin.de (outpost1.zedat.fu-berlin.de [130.133.4.66])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CDC33183CB6;
-	Thu, 22 Aug 2024 09:20:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.154
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1B1817C9EA;
+	Thu, 22 Aug 2024 09:37:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=130.133.4.66
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724318436; cv=none; b=GyARj8OQVbBL9tUYHFJScbBH6szESD2cblpYc9W40dOTO+LwXZtf9nPgnWgC0bCXjI3f5GK110dLUrWbaAFnqN+IOkPbrLK7+l6ZtMAaKCuz2ee8Y/4QxbmIcyWPqNegeLUmP5z2IDe+iBQKEUNalXifZhgJJnN24f7FZMQU2nE=
+	t=1724319441; cv=none; b=HhYRT84Tnn3p+IW76cJbVGvAAJFJJdN0gKFwVk89F04VXMq7fKHmKCSqhVMyvYrQ5znMWhn39W0c3RCO9VR0kQK7FTLGpPGUwx5up+ocH+sJZdnW6Q5UbBP5N9Rq+bllpjcYuw67pnFrKSj5zcWSuv8SNwitJhO6fcVKwJGyv40=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724318436; c=relaxed/simple;
-	bh=qv3s0CGi5ZNdpz6DyZ6n/g321A0Z/c9BiEcI2QfCxqs=;
-	h=MIME-Version:Date:From:To:Cc:Message-Id:In-Reply-To:References:
-	 Subject:Content-Type; b=sxPhlvty0DOh3yP+dbAB8cAfLJSAH8sB13Haav7i3ZltUfbQ7/4KNC341YXowiOJmxdJc1ma6eaf6P44r23H6cf9Djc2pVw21sJIxhPBKzfSzlrVISiNgDW2hl0nfhaWFzNz63UebnUeghNcRGg+R1IgUzGIG8Q4WoUu8W7Qdco=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=flygoat.com; spf=pass smtp.mailfrom=flygoat.com; dkim=pass (2048-bit key) header.d=flygoat.com header.i=@flygoat.com header.b=7kggdDlB; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=JhhPKz+J; arc=none smtp.client-ip=103.168.172.154
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=flygoat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flygoat.com
+	s=arc-20240116; t=1724319441; c=relaxed/simple;
+	bh=JfPBsxQR8Kp4umY5k36wENIPhFCipCQYrvgc2/vm00o=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=nlE15lPHsAI+1eDpy/ct/tkWhLernZAlkHcmjui3Go6TZ9u+UJFqjpsZjJAlBQIs1QzDvmyDNXnnEa6MDM2t1E7xZUWfcyQ3Kf0Gl7eobODWWND9C0ZXrmsKbqb+YvvzzwViK3Z7SjLfLP5tSLzW70dTnXGoh269ovJTU7ZSwVc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=physik.fu-berlin.de; spf=pass smtp.mailfrom=zedat.fu-berlin.de; dkim=pass (2048-bit key) header.d=fu-berlin.de header.i=@fu-berlin.de header.b=I8DhLB1n; arc=none smtp.client-ip=130.133.4.66
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=physik.fu-berlin.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zedat.fu-berlin.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=flygoat.com header.i=@flygoat.com header.b="7kggdDlB";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="JhhPKz+J"
-Received: from phl-compute-05.internal (phl-compute-05.nyi.internal [10.202.2.45])
-	by mailfhigh.nyi.internal (Postfix) with ESMTP id E62461151BC9;
-	Thu, 22 Aug 2024 05:20:33 -0400 (EDT)
-Received: from phl-imap-12 ([10.202.2.86])
-  by phl-compute-05.internal (MEProxy); Thu, 22 Aug 2024 05:20:33 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=flygoat.com; h=
-	cc:cc:content-transfer-encoding:content-type:content-type:date
-	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to; s=fm2; t=1724318433;
-	 x=1724404833; bh=NqlevIU6Cve7LDsN6A1JYwfxKGffozPjIZqiNJCdjXU=; b=
-	7kggdDlBoD4jBu6ZTyzc+Ih6UJ60zJXqJVdXpBq0yN71ikmoslDeIw3ufSLwtJe9
-	DbZBxxywq5IGTv1cSoEJDjmTdz62aB4AiKER0ZOnNzGM8rWnvf+Ng0oovZkw9HqD
-	XDX7UuJLkDQBiUse3TqQuU1X1bavRdJSOZF65wOLsB1x0S4qUtwFpH2QKeQNlOUI
-	afmDwtaGs2mDHlJZsas/UNZ6G7drn56C5ilSWVaoNLhu1ZoLkg7dYnbfGD2AESSw
-	JJGuJIgei3KbvW/v6W0/MASSNTaTN49kU3T52gMK7aaEYclJ90OT1KxLb92yIxqo
-	xvomGOJtqiOBXSfYkQ6ejA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1724318433; x=
-	1724404833; bh=NqlevIU6Cve7LDsN6A1JYwfxKGffozPjIZqiNJCdjXU=; b=J
-	hhPKz+JF1iiGaqS4+ZV3ohxu8xu0fv9wh6rOmUnXxQVthDRYToJmyw8TDIA8G0a6
-	gSDdE3psDUMMFF47GsuoU9SeIgJoMFyA7i7vNF4J+rtu9biX5Ss6VNtDUer1oie+
-	hOCufgDljU4kJohHE6c2QJr0sgACf0WIOT2nSVhBgXdPpZWb5EQr+CBFST2aIKi7
-	6K0fCGg73sxQZkzUfoGYuctaw1wawgwndpGoKqYnit7LzpIMq5dGihxU4BZ+cTcG
-	xFpdcLucc09VS3b9dNbSZqC1Vtiu1gVjuRmdgTTkO+8rj1ThXCm6pHHOYkFpzgrZ
-	V9mgnMRP8nl6BdofHKDog==
-X-ME-Sender: <xms:4QLHZvseH5wu33u2QREUJABRAwJqIzi6RRbVU-VUP8rVzfeP1Ez87g>
-    <xme:4QLHZgfPb_A4WNYt18e31sZfWINX0U9aBaRDOLhjz1kQOhKvV-cJ-Ko1GmvgDdBSI
-    pPl7FjnAuVNLqdDLqQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeftddruddvtddgudefucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggvpdfu
-    rfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnh
-    htshculddquddttddmnecujfgurhepofggfffhvfevkfgjfhfutgfgsehtqhertdertdej
-    necuhfhrohhmpedflfhirgiguhhnucgjrghnghdfuceojhhirgiguhhnrdihrghnghesfh
-    hlhihgohgrthdrtghomheqnecuggftrfgrthhtvghrnhepjeehfeduvddtgffgvdffkeet
-    hefhlefgvdevvdekuefffeekheehgeevhfevteejnecuvehluhhsthgvrhfuihiivgeptd
-    enucfrrghrrghmpehmrghilhhfrhhomhepjhhirgiguhhnrdihrghnghesfhhlhihgohgr
-    thdrtghomhdpnhgspghrtghpthhtohepjedpmhhouggvpehsmhhtphhouhhtpdhrtghpth
-    htohepthhssghoghgvnhgusegrlhhphhgrrdhfrhgrnhhkvghnrdguvgdprhgtphhtthho
-    pehphhhilhhmugeslhhinhgrrhhordhorhhgpdhrtghpthhtoheptghorhgsvghtsehlfi
-    hnrdhnvghtpdhrtghpthhtohepmhgrtghrohesohhrtggrmhdrmhgvrdhukhdprhgtphht
-    thhopehlihhnuhigqdguohgtsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoh
-    eplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthht
-    oheplhhinhhugidqmhhiphhssehvghgvrhdrkhgvrhhnvghlrdhorhhg
-X-ME-Proxy: <xmx:4QLHZizIb7dhEij1f49m7M_Y4e5B4zA5SJToAVR165wsPAufPjfU0A>
-    <xmx:4QLHZuMu430_Er1Svca--cZas2jI1X92IrLT78XzmaxnLOh2ozO0QQ>
-    <xmx:4QLHZv-sYgXfJGs8ceA2X6tiBHLpr6g5L2UNI_UaVmLsQs-oF6bKlg>
-    <xmx:4QLHZuVeaxB_bDhusegdPd4xkeLQAdPm_ZuBdgq6HCo5ZfWHdJws0w>
-    <xmx:4QLHZvw4TrcUuSKMgZZL-edFvUHNltxSB89P32XoLk4oKpVgb2shjLln>
-Feedback-ID: ifd894703:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-	id 995B41C2005C; Thu, 22 Aug 2024 05:20:33 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
+	dkim=pass (2048-bit key) header.d=fu-berlin.de header.i=@fu-berlin.de header.b="I8DhLB1n"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=fu-berlin.de; s=fub01; h=MIME-Version:Content-Transfer-Encoding:
+	Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
+	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+	List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=Ew4XJV0bOTsY5qn2+zYb5/OFku83Mlpg9puNUd46LUI=; t=1724319437; x=1724924237; 
+	b=I8DhLB1nxh88Sxy6KQ8uHtbR4aCB9rPKpTOWlEKgG7/4uV153/ftzTlNSLl1SqeOYyACBsHVqCt
+	G1pIKMgEguDUf6zJGn3eOW3+QAqKL6PqeGL48krX5nhbZJI4vcLMW6EDFf4qKIYsUcsXc+9CfeMm/
+	N0gC9skUcdiGrd7uqjtmnst78LzgOuLhN+yXCJZ3mDEAOOlEfSWIDtrznRmQ4wFkQp1QlSSbIcvdd
+	xi3dGG7J6F9yNXxMlJq/SpWCkBUAc/qpfviSRru8UgyBCjNCIo7HyuYH9A4PKQ031L3yTZFtUuofl
+	Kg6QvSKmY7f+PIKjo609beZNPiFQHtXmP23A==;
+Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
+          by outpost.zedat.fu-berlin.de (Exim 4.98)
+          with esmtps (TLS1.3)
+          tls TLS_AES_256_GCM_SHA384
+          (envelope-from <glaubitz@zedat.fu-berlin.de>)
+          id 1sh4Fi-000000011Jg-3QjS; Thu, 22 Aug 2024 11:37:10 +0200
+Received: from p5b13a2bf.dip0.t-ipconnect.de ([91.19.162.191] helo=[192.168.178.20])
+          by inpost2.zedat.fu-berlin.de (Exim 4.98)
+          with esmtpsa (TLS1.3)
+          tls TLS_AES_256_GCM_SHA384
+          (envelope-from <glaubitz@physik.fu-berlin.de>)
+          id 1sh4Fi-00000003DQ3-2PLa; Thu, 22 Aug 2024 11:37:10 +0200
+Message-ID: <c5e9996e4d2ba2a0849d65f68e3dce94fffc5828.camel@physik.fu-berlin.de>
+Subject: Re: [PATCH linux-next v3 05/14] crash: clean up kdump related
+ config items
+From: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+To: Baoquan He <bhe@redhat.com>
+Cc: linux-kernel@vger.kernel.org, Dave Vasilevsky <dave@vasilevsky.ca>, 
+ Michael Ellerman <mpe@ellerman.id.au>, kexec@lists.infradead.org,
+ debian-powerpc@lists.debian.org, x86@kernel.org, 
+ linux-arm-kernel@lists.infradead.org, linuxppc-dev@lists.ozlabs.org, 
+ linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
+ linux-mips@vger.kernel.org,  linux-riscv@lists.infradead.org,
+ loongarch@lists.linux.dev,  akpm@linux-foundation.org,
+ ebiederm@xmission.com, hbathini@linux.ibm.com,  piliu@redhat.com,
+ viro@zeniv.linux.org.uk, Sam James <sam@gentoo.org>
+Date: Thu, 22 Aug 2024 11:37:09 +0200
+In-Reply-To: <ZscCMLfNbj2MDiaB@MiWiFi-R3L-srv>
+References: <20240124051254.67105-1-bhe@redhat.com>
+	 <20240124051254.67105-6-bhe@redhat.com>
+	 <a9d9ecd1ed8d62eae47ec26257093495e6cbd44a.camel@physik.fu-berlin.de>
+	 <ZscCMLfNbj2MDiaB@MiWiFi-R3L-srv>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.52.4 
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Date: Thu, 22 Aug 2024 10:20:13 +0100
-From: "Jiaxun Yang" <jiaxun.yang@flygoat.com>
-To: "Thomas Bogendoerfer" <tsbogend@alpha.franken.de>
-Cc: "Maciej W. Rozycki" <macro@orcam.me.uk>,
- "Jonathan Corbet" <corbet@lwn.net>, linux-doc@vger.kernel.org,
- linux-kernel@vger.kernel.org,
- "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
- =?UTF-8?Q?Philippe_Mathieu-Daud=C3=A9?= <philmd@linaro.org>
-Message-Id: <b9396b1f-b2ea-4900-af81-b2c3d916be9c@app.fastmail.com>
-In-Reply-To: <ZsbwhoTS+ji41FuW@alpha.franken.de>
-References: <7797a7b2-1bb2-4c45-b65d-678f685dfa3d@app.fastmail.com>
- <Zo457UgAkhbAgm2R@alpha.franken.de>
- <alpine.DEB.2.21.2407101015120.38148@angie.orcam.me.uk>
- <a8741e38-837b-4fbb-8656-1e6d50bdfcc0@app.fastmail.com>
- <alpine.DEB.2.21.2407110315170.38148@angie.orcam.me.uk>
- <de07ff44-41ee-4158-b629-90a1835bd9cb@app.fastmail.com>
- <alpine.DEB.2.21.2407121250350.38148@angie.orcam.me.uk>
- <dad7b36f-2e37-44db-939e-cdb454875e2a@app.fastmail.com>
- <alpine.DEB.2.21.2407150225310.58077@angie.orcam.me.uk>
- <ac94941f-3ac3-4820-b94d-aeb72a7a7a5c@app.fastmail.com>
- <ZsbwhoTS+ji41FuW@alpha.franken.de>
-Subject: Re: [PATCH v3] MIPS: Implement ieee754 NAN2008 emulation mode
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+X-Original-Sender: glaubitz@physik.fu-berlin.de
+X-ZEDAT-Hint: PO
 
+Hi Baoquan,
 
+On Thu, 2024-08-22 at 17:17 +0800, Baoquan He wrote:
+> > The change to enable CONFIG_CRASH_DUMP by default apparently broke the =
+boot
+> > on 32-bit Power Macintosh systems which fail after GRUB with:
+> >=20
+> > 	"Error: You can't boot a kdump kernel from OF!"
+> >=20
+> > We may have to turn this off for 32-bit Power Macintosh systems.
+> >=20
+> > See this thread on debian-powerpc ML: https://lists.debian.org/debian-p=
+owerpc/2024/07/msg00001.html
+>=20
+> If so, fix need be made.
+>=20
+> We may need change in ARCH_SUPPORTS_CRASH_DUMP of ppc, can you or anyone
+> post a patch? I don't know how to identify 32-bit Power Macintosh.
+>=20
+> arch/powerpc/Kconfig:
+> =3D=3D=3D
+> config ARCH_SUPPORTS_CRASH_DUMP
+>         def_bool PPC64 || PPC_BOOK3S_32 || PPC_85xx || (44x && !SMP)
+>        =20
+> config ARCH_SELECTS_CRASH_DUMP
+>         def_bool y
+>         depends on CRASH_DUMP
+>         select RELOCATABLE if PPC64 || 44x || PPC_85xx
+> ......
+> config PHYSICAL_START
+>         hex "Physical address where the kernel is loaded" if PHYSICAL_STA=
+RT_BOOL
+>         default "0x02000000" if PPC_BOOK3S && CRASH_DUMP && !NONSTATIC_KE=
+RNEL
+>         default "0x00000000"
 
-=E5=9C=A82024=E5=B9=B48=E6=9C=8822=E6=97=A5=E5=85=AB=E6=9C=88 =E4=B8=8A=E5=
-=8D=889:02=EF=BC=8CThomas Bogendoerfer=E5=86=99=E9=81=93=EF=BC=9A
-> On Mon, Jul 15, 2024 at 08:35:21PM +0800, Jiaxun Yang wrote:
->> =E5=9C=A82024=E5=B9=B47=E6=9C=8815=E6=97=A5=E4=B8=83=E6=9C=88 =E4=B8=8B=
-=E5=8D=888:15=EF=BC=8CMaciej W. Rozycki=E5=86=99=E9=81=93=EF=BC=9A
->> >  It's not much to do anyway, as I have prepared `ptrace_setfcr31' a=
-lready=20
->> > to handle masking correctly, so all you have to do is to set the ma=
-sk as=20
->> > required for the right thing to happen.  I shouldn't have needed to=
- point=20
->> > you at it though, as that code is easy to find.
->>=20
->> I think I got your point, will try to implement it.
->
-> any news about this ?
-Hi Thomas,
+I think the architecture does support crash dumps, but I think the kernel h=
+as to
+be booted from kexec in this case. Booting a kernel with CRASH_DUMP enabled=
+ won't
+work from Open Firmware. So, I think CRASH_DUMP should just be disabled for
+PPC_BOOK3S_32 by default and users who want to use it on these systems, wil=
+l have to
+enable it explicitly.
 
-Sorry, I implemented it but was unsure that my test coverage was ideal a=
-s I was
-unable to access my usual switchable NaN hardware (FPGA based on interAp=
-tiv MR3)
-for testing.
-
-Will post patch after gain access to that again. Hardware ETA 10 Sept.
-
-Thanks
-- Jiaxun
-
->
-> Thomas.
->
-> --=20
-> Crap can work. Given enough thrust pigs will fly, but it's not necessa=
-rily a
-> good idea.                                                [ RFC1925, 2=
-.3 ]
+Adrian
 
 --=20
-- Jiaxun
+ .''`.  John Paul Adrian Glaubitz
+: :' :  Debian Developer
+`. `'   Physicist
+  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913

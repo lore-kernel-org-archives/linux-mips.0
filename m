@@ -1,67 +1,64 @@
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.14])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2096189512;
-	Wed, 28 Aug 2024 14:26:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.14
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5CB1B1A3BD0;
+	Wed, 28 Aug 2024 15:11:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724855163; cv=none; b=TMzXH0AXVjIbwY75rzNXFJvCvOqcrgsZ5GicmFMZVZH2VmhsWivf3XkKTp8To3B5xkev7xiu0O/4BrgOOi4UhA+HI9Mjm7nT1xvS8g/3K74gb8mmfODPT6cTM5bH6YxHeGidaDczUTSGwRX69w/SxuOCfjQNr42GgUTBbv/o4Nc=
+	t=1724857903; cv=none; b=Wtu6nfaQ5mvVZjT5HPY1EnBOzQkN/ox7MiHmZjIM9o3gR9kwVyjELZAAIrekgtOX6H1jwglA7Fn/MD4h8hTj3nGjIUg2dJX48DWz40ZhZgrV5mfICGo3Oy4b8rJ7bdFMGM3BYI8or2whwi9w5ON5vTSBrWPl/e6hD6t48BkiweE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724855163; c=relaxed/simple;
-	bh=yU5WIK6BIkbyOwE3GLh6HhhYOjF54mrhGpUrqhf5QJ8=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=ADeGglet/67tpwZ2qjUNpJ/31a2h0CbeaLIeUvCee2VfcQK7eFlIKAqwamUmEVqjXfNj9WxJVDuih7mukwFMQ+NsNiA61SihI2dCRoyghupKRvrBNQAMr51YS26gCC3LM67/2HMR6w5RxmLW6SuLXLzDDyEz17Aq5Uo4ZZL6CLo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=C4KCIPUj; arc=none smtp.client-ip=192.198.163.14
+	s=arc-20240116; t=1724857903; c=relaxed/simple;
+	bh=5YJPyU93FZIqQ3QHkGoylE4Fc+ccIKPNGyZgM50RjXw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=cfYrE7hQ0bc5FJNvrKfaUTDx51TLX2YWcl+xsHFbOUKLHkS8EaaltJJAL0nrfYVSLjatJsaCjVvQHvK+tqs2m+qzuR3o8esLv3rXvOapVG3oMystSq6+Nmdqb8+RiV69vg0yqC58HbKl4xki5g/nhNDAl/jaJ5n2RsnlSx2vv1Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=VlXAWp/h; arc=none smtp.client-ip=198.175.65.20
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="C4KCIPUj"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="VlXAWp/h"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1724855162; x=1756391162;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=yU5WIK6BIkbyOwE3GLh6HhhYOjF54mrhGpUrqhf5QJ8=;
-  b=C4KCIPUjm18haNAn1LUG9EcJ1awb5xwcxAbtWn8yfpBfjLk9wy9joFVY
-   hMoVmiMgzZf2V0f+nn4cgt3V7gFoCjFdvUuyT6QpnrO3pBVgMMAcIuBLf
-   JyzqY/ANVscclulhCvcpC/3/xw8sBfqINtRGkvdkfQvXgNUFjZj/cT0oI
-   4kbIjytc1897RtuFNKrXbPrb+ODyNFWSNafejN8OAFvbtEFmvW6dCe/ys
-   UOnOicNxT6ASTH+0XkgEDPHcx+qgpg3K72AMbJc8lSGo/FGwFwZ/Lqrsv
-   A7yXjaw8hZ9lrmgagaMdqdJQl10rxuQgt5bjDIqMD0lc0FCbSxmwlnLFf
-   A==;
-X-CSE-ConnectionGUID: d3JVgKz3TDy5NTu+ShNPKw==
-X-CSE-MsgGUID: MPoEvuSvS/m9yKzLzvegqA==
-X-IronPort-AV: E=McAfee;i="6700,10204,11178"; a="23575174"
+  t=1724857902; x=1756393902;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=5YJPyU93FZIqQ3QHkGoylE4Fc+ccIKPNGyZgM50RjXw=;
+  b=VlXAWp/hRZeg7VSm2ha+kw9MzXIjOKodLHjeoF1vpm43jq08FXIvJsdI
+   6R3feUE6dFZL557G2kfJMv3o/o03pfIEhEo1Nox3GxpMuKab+bGp+oCgl
+   sjYoqmBsUql7s+wT58rw7AaVsBmNP0+QzvTpiZPfMRPeaiK9of6Bio/7Y
+   6n0VgXZLk/9pe3PQlnG1VvkW5o0vTDD0E3v7suQCszGgwnB7As6GIE9yP
+   vk+bmHghhhg5EB7sVh4fX45mzXj0m0RWYV71vI4EvMchY7G3QbJR7uQqI
+   Drb5bs/bSVo/VSGXrIUj7KJjLQTQ5bxak0w02ECm5weN6a6dn/KDdRRhs
+   w==;
+X-CSE-ConnectionGUID: K2obO4k0QGuEHl9bAjkhpg==
+X-CSE-MsgGUID: BDXpQwj3Tk+gaGnWOikpEw==
+X-IronPort-AV: E=McAfee;i="6700,10204,11178"; a="23200976"
 X-IronPort-AV: E=Sophos;i="6.10,183,1719903600"; 
-   d="scan'208";a="23575174"
-Received: from fmviesa001.fm.intel.com ([10.60.135.141])
-  by fmvoesa108.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Aug 2024 07:26:00 -0700
-X-CSE-ConnectionGUID: lBon98/0R/2TP/tuD79jbA==
-X-CSE-MsgGUID: nMtBCdoiQM2p+v3YgGxGyQ==
+   d="scan'208";a="23200976"
+Received: from fmviesa008.fm.intel.com ([10.60.135.148])
+  by orvoesa112.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Aug 2024 08:11:41 -0700
+X-CSE-ConnectionGUID: GJ2FmotUT3i99/ZNkEtC6Q==
+X-CSE-MsgGUID: 2fokvfrRQ5KhwzXOcKAFmA==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.10,183,1719903600"; 
-   d="scan'208";a="94047452"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmviesa001.fm.intel.com with ESMTP; 28 Aug 2024 07:25:57 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-	id 0A707118; Wed, 28 Aug 2024 17:25:56 +0300 (EEST)
+   d="scan'208";a="63246069"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmviesa008.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Aug 2024 08:11:38 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.98)
+	(envelope-from <andriy.shevchenko@linux.intel.com>)
+	id 1sjKKd-00000002gZH-28Fd;
+	Wed, 28 Aug 2024 18:11:35 +0300
+Date: Wed, 28 Aug 2024 18:11:35 +0300
 From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 To: Linus Walleij <linus.walleij@linaro.org>,
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	linux-mips@vger.kernel.org,
-	linux-gpio@vger.kernel.org
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+	linux-mips@vger.kernel.org, linux-gpio@vger.kernel.org
 Cc: Hartley Sweeten <hsweeten@visionengravers.com>,
 	Alexander Sverdlin <alexander.sverdlin@gmail.com>,
 	Russell King <linux@armlinux.org.uk>,
 	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
 	Bartosz Golaszewski <brgl@bgdev.pl>
-Subject: [PATCH v1 1/2] gpiolib: legacy: Kill GPIOF_INIT_* definitions
-Date: Wed, 28 Aug 2024 17:23:57 +0300
-Message-ID: <20240828142554.2424189-2-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.43.0.rc1.1336.g36b5255a03ac
-In-Reply-To: <20240828142554.2424189-1-andriy.shevchenko@linux.intel.com>
+Subject: Re: [PATCH v1 0/2] gpiolib:legacy: Kill GPIOF_DIR_* and GPIOF_INIT_*
+Message-ID: <Zs8-J2fXH6oF7roE@smile.fi.intel.com>
 References: <20240828142554.2424189-1-andriy.shevchenko@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
@@ -69,80 +66,26 @@ List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240828142554.2424189-1-andriy.shevchenko@linux.intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-Besides the fact that (old) drivers use wrong definitions, e.g.,
-GPIOF_INIT_HIGH instead of GPIOF_OUT_INIT_HIGH, shrink the legacy
-definitions by killing those GPIOF_INIT_* completely.
+On Wed, Aug 28, 2024 at 05:23:56PM +0300, Andy Shevchenko wrote:
+> Shrink the legacy API and definition surface by killing the (internal)
+> definitions. This, in particular, will fix a couple of drivers that took
+> it wrong.
+> 
+> This is assumed to go via BPIOLIB tree as this is quite small series and
+> most of the changes related to it.
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
- arch/arm/mach-ep93xx/vision_ep9307.c      | 3 +--
- arch/mips/bcm63xx/boards/board_bcm963xx.c | 2 +-
- drivers/gpio/gpiolib-legacy.c             | 3 +--
- include/linux/gpio.h                      | 7 ++-----
- 4 files changed, 5 insertions(+), 10 deletions(-)
+Hmm... LKP complained that it can't apply them on top of Linux Next, however
+I don't see any issues as my branch based on next-20240828.
 
-diff --git a/arch/arm/mach-ep93xx/vision_ep9307.c b/arch/arm/mach-ep93xx/vision_ep9307.c
-index 9471938df64c..02c5a4724192 100644
---- a/arch/arm/mach-ep93xx/vision_ep9307.c
-+++ b/arch/arm/mach-ep93xx/vision_ep9307.c
-@@ -76,8 +76,7 @@ static int vision_lcd_setup(struct platform_device *pdev)
- {
- 	int err;
- 
--	err = gpio_request_one(VISION_LCD_ENABLE, GPIOF_INIT_HIGH,
--				dev_name(&pdev->dev));
-+	err = gpio_request_one(VISION_LCD_ENABLE, GPIOF_OUT_INIT_HIGH, dev_name(&pdev->dev));
- 	if (err)
- 		return err;
- 
-diff --git a/arch/mips/bcm63xx/boards/board_bcm963xx.c b/arch/mips/bcm63xx/boards/board_bcm963xx.c
-index 99f321b6e417..9cc8fbf218a5 100644
---- a/arch/mips/bcm63xx/boards/board_bcm963xx.c
-+++ b/arch/mips/bcm63xx/boards/board_bcm963xx.c
-@@ -42,7 +42,7 @@ static struct board_info __initdata board_cvg834g = {
- 	.expected_cpu_id = 0x3368,
- 
- 	.ephy_reset_gpio = 36,
--	.ephy_reset_gpio_flags = GPIOF_INIT_HIGH,
-+	.ephy_reset_gpio_flags = GPIOF_OUT_INIT_HIGH,
- 	.has_pci = 1,
- 	.has_uart0 = 1,
- 	.has_uart1 = 1,
-diff --git a/drivers/gpio/gpiolib-legacy.c b/drivers/gpio/gpiolib-legacy.c
-index d27142418f9f..51d5fe203111 100644
---- a/drivers/gpio/gpiolib-legacy.c
-+++ b/drivers/gpio/gpiolib-legacy.c
-@@ -46,8 +46,7 @@ int gpio_request_one(unsigned gpio, unsigned long flags, const char *label)
- 	if (flags & GPIOF_DIR_IN)
- 		err = gpiod_direction_input(desc);
- 	else
--		err = gpiod_direction_output_raw(desc,
--				(flags & GPIOF_INIT_HIGH) ? 1 : 0);
-+		err = gpiod_direction_output_raw(desc, !!(flags & GPIOF_OUT_INIT_HIGH));
- 
- 	if (err)
- 		goto free_gpio;
-diff --git a/include/linux/gpio.h b/include/linux/gpio.h
-index 063f71b18a7c..4af8ad114557 100644
---- a/include/linux/gpio.h
-+++ b/include/linux/gpio.h
-@@ -20,12 +20,9 @@ struct device;
- #define GPIOF_DIR_OUT	(0 << 0)
- #define GPIOF_DIR_IN	(1 << 0)
- 
--#define GPIOF_INIT_LOW	(0 << 1)
--#define GPIOF_INIT_HIGH	(1 << 1)
--
- #define GPIOF_IN		(GPIOF_DIR_IN)
--#define GPIOF_OUT_INIT_LOW	(GPIOF_DIR_OUT | GPIOF_INIT_LOW)
--#define GPIOF_OUT_INIT_HIGH	(GPIOF_DIR_OUT | GPIOF_INIT_HIGH)
-+#define GPIOF_OUT_INIT_LOW	(GPIOF_DIR_OUT | (0 << 1))
-+#define GPIOF_OUT_INIT_HIGH	(GPIOF_DIR_OUT | (1 << 1))
- 
- /* Gpio pin is active-low */
- #define GPIOF_ACTIVE_LOW        (1 << 2)
+Tell me if I need to resend.
+
 -- 
-2.43.0.rc1.1336.g36b5255a03ac
+With Best Regards,
+Andy Shevchenko
+
 

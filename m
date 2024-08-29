@@ -1,29 +1,29 @@
 Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A20CE18E776
-	for <linux-mips@vger.kernel.org>; Thu, 29 Aug 2024 08:52:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D66C18C901
+	for <linux-mips@vger.kernel.org>; Thu, 29 Aug 2024 08:52:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.175.24.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724921548; cv=none; b=dcnsCgTm//i8F7FYskVN7CCGDHam+L0b5vzIlMiI+1nO/hsjr6Xy/Fq3+d5FLJRtdVeKH30tDJ3U9+tdlk94s5IsiqmtHYaZKrdPh+p6m3nyYEHKR4bZ7B1EiH7mddtVHZiI+y/1IkeZ7ii1fWlTeAZonEpcV0NUbjGrEYkjKWo=
+	t=1724921550; cv=none; b=b4JgM+rRrbyITEqsfmJOF/Z+R4d2gZgGXG0oYK67t/whWoqE144hbNh4dVb/IP0GMjt3QpLmB70+W5L/XQOCCc7EQFcTb8PzYtk/yUyXWsnQR/nGUTXcJI0SCmc5NvzRl0IoUNK6C5xbvrtgZh/ujuk5BJdUTxzAcauviWR0r7Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724921548; c=relaxed/simple;
-	bh=hxRskHPhL5ptF1z/i5dh8d6LQpFJlYPNoqWU5kn8lmU=;
+	s=arc-20240116; t=1724921550; c=relaxed/simple;
+	bh=GGiVL2/b1kGkMeBJlA0R7wObAlOh5GkHvlNiQaJjFpU=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=nnvMD6wxMKodg9pnD1W9H7bcoMrp5EBZnVtC/LqfDhymQe0xZgVIWub9L2VAqSj0ID5jI1LTYIenQiLDirg1oiKi98y026xMR46USC1yLHfXd/HtCWfYqgalXHuN4DXbMerMHh9yRMjh11iEf59NZTSIrH37aoKTgrSpdTLDG6M=
+	 Content-Type:Content-Disposition:In-Reply-To; b=u/WSL/Tc290Dki6SEMk5X72zQ678uu3ZHH2l1Dzg1bhbZCMsizS8xksk8TfdJqhHH09+CamgQPEDOhEzmfpQ1YR66YJ1sn5Q0O9qb2mugqRKcIa/1tIc1UATLyXnC/P5zED2ciu9WAtDvRs04gUMeTBgLwgDmqNQimpXkDlPLLY=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de; spf=pass smtp.mailfrom=alpha.franken.de; arc=none smtp.client-ip=193.175.24.41
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alpha.franken.de
 Received: from uucp by elvis.franken.de with local-rmail (Exim 3.36 #1)
-	id 1sjat5-0005mz-00; Thu, 29 Aug 2024 10:52:15 +0200
+	id 1sjat5-0005n9-00; Thu, 29 Aug 2024 10:52:15 +0200
 Received: by alpha.franken.de (Postfix, from userid 1000)
-	id 818EBC08E0; Thu, 29 Aug 2024 10:46:58 +0200 (CEST)
-Date: Thu, 29 Aug 2024 10:46:58 +0200
+	id C02DCC0BFD; Thu, 29 Aug 2024 10:48:32 +0200 (CEST)
+Date: Thu, 29 Aug 2024 10:48:32 +0200
 From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 To: Gaosheng Cui <cuigaosheng1@huawei.com>
-Cc: rdunlap@infradead.org, bhelgaas@google.com, linux-mips@vger.kernel.org
-Subject: Re: [PATCH -next] MIPS: Remove unused function
- dump_au1000_dma_channel() in dma.c
-Message-ID: <ZtA1glA6En/ksWim@alpha.franken.de>
-References: <20240814103553.2053235-1-cuigaosheng1@huawei.com>
+Cc: macro@orcam.me.uk, linux-mips@vger.kernel.org
+Subject: Re: [PATCH -next] MIPS: dec: prom: Remove unused
+ unregister_prom_console() declaration
+Message-ID: <ZtA14BRv5u6R1MHl@alpha.franken.de>
+References: <20240814104312.2056096-1-cuigaosheng1@huawei.com>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
@@ -32,18 +32,31 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240814103553.2053235-1-cuigaosheng1@huawei.com>
+In-Reply-To: <20240814104312.2056096-1-cuigaosheng1@huawei.com>
 
-On Wed, Aug 14, 2024 at 06:35:53PM +0800, Gaosheng Cui wrote:
-> The dump_au1000_dma_channel() has not been used since
-> commit d56b9b9c464a ("[PATCH] The scheduled removal of some OSS
-> drivers"), so remove it.
+On Wed, Aug 14, 2024 at 06:43:12PM +0800, Gaosheng Cui wrote:
+> The unregister_prom_console() has been removed since
+> commit 36a885306fdf ("[MIPS] Fix and cleanup the mess that a dozen
+> prom_printf variants are."), so remove it.
 > 
 > Signed-off-by: Gaosheng Cui <cuigaosheng1@huawei.com>
 > ---
->  arch/mips/alchemy/common/dma.c                | 23 -------------------
->  .../mips/include/asm/mach-au1x00/au1000_dma.h |  1 -
->  2 files changed, 24 deletions(-)
+>  arch/mips/include/asm/dec/prom.h | 1 -
+>  1 file changed, 1 deletion(-)
+> 
+> diff --git a/arch/mips/include/asm/dec/prom.h b/arch/mips/include/asm/dec/prom.h
+> index 908e96e3a311..8fcad6984389 100644
+> --- a/arch/mips/include/asm/dec/prom.h
+> +++ b/arch/mips/include/asm/dec/prom.h
+> @@ -160,6 +160,5 @@ extern void prom_identify_arch(u32);
+>  extern void prom_init_cmdline(s32, s32 *, u32);
+>  
+>  extern void register_prom_console(void);
+> -extern void unregister_prom_console(void);
+>  
+>  #endif /* _ASM_DEC_PROM_H */
+> -- 
+> 2.25.1
 
 applied to mips-next.
 

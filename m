@@ -1,50 +1,69 @@
 Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E78A18E75D
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E73A18CC18
 	for <linux-mips@vger.kernel.org>; Thu, 29 Aug 2024 08:52:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.175.24.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724921547; cv=none; b=lZlhyE07UJc5qcdg2HRn/KOjJHZ+BlA43MBHoA73foFq2+Gjy73E1cvq0o3jlj+Z19R8GoNvdif/0mtKyx+C3Y6rjE1AknhN0qr4QXZjGDmpqtW5qOYALd+5YfXZMFlUoWr4ufZ9qy1RmJTcfo9I5LdgeQPeRSFJlWMYQbUSLkk=
+	t=1724921547; cv=none; b=fITdx4F5FlTE0tCByqMgpwHCawFLGtmEMdn45hUQOd9SeT7+G5NDXziMRTU1Hwm0B0ezZ1b7REUJij/EwsV9U1+4YlQqMaUO79KeCdAYdlcJw7e617liRM6mAr9RjtuF9aRQSM0l2wLmJpdaR1f15sG38pm6zf/iObN0El2SHFI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1724921547; c=relaxed/simple;
-	bh=lgr52ExhAwDOyxkzq+b5BeKph0CiRrYMLY8KxIBULwU=;
+	bh=JGUyrPVNzvxgNd2+o2jnOFDezWV7B9xqPWoQ1dWUaJI=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=itMrc4Iaz8C8d8ojhAB9lvG27f+q5IQjHYJKEB5/v2sqvd6o8h1VBiMs8YIxPsdIRmi6AbAqWw0ack5iNN3qDtRidxgsZFf6m1MWB182bkag/pQ1iUG/0SOBwN5sYpzEKt1ks7AQ2VucE3cVo8joThKEi/NaTAQN9TQbMCP5e5E=
+	 Content-Type:Content-Disposition:In-Reply-To; b=EIKGznubUuvtPBw/8VVPfTazzaPPd8JH02yKSbcsxRdcx51VPAN+ZCrO6sX6XgXB26U8lbPboj2FX+VxBURD63AgpXJvg2oKv0hkbthq6Syf2e06I7RvWBjxYMrflpXnXf7Yv+/cARXIHRkVJIDQhvjKvgt+79ngp3l111E5DWY=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de; spf=pass smtp.mailfrom=alpha.franken.de; arc=none smtp.client-ip=193.175.24.41
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alpha.franken.de
 Received: from uucp by elvis.franken.de with local-rmail (Exim 3.36 #1)
-	id 1sjat5-0005mt-00; Thu, 29 Aug 2024 10:52:15 +0200
+	id 1sjat5-0005n5-00; Thu, 29 Aug 2024 10:52:15 +0200
 Received: by alpha.franken.de (Postfix, from userid 1000)
-	id AE3E8C014D; Thu, 29 Aug 2024 10:35:13 +0200 (CEST)
-Date: Thu, 29 Aug 2024 10:35:13 +0200
+	id 3803AC0B3B; Thu, 29 Aug 2024 10:47:50 +0200 (CEST)
+Date: Thu, 29 Aug 2024 10:47:50 +0200
 From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 To: Gaosheng Cui <cuigaosheng1@huawei.com>
 Cc: linux-mips@vger.kernel.org
-Subject: Re: [PATCH -next] MIPS: Octeon: Remove unused codes of
- cvmx_fpa_shutdown_pool()
-Message-ID: <ZtAywfd4PehJu2VO@alpha.franken.de>
-References: <20240814103425.2051117-1-cuigaosheng1@huawei.com>
+Subject: Re: [PATCH -next] MIPS: Remove unused declarations in asm/cmp.h
+Message-ID: <ZtA1tl90wfGcoB7j@alpha.franken.de>
+References: <20240814104052.2055777-1-cuigaosheng1@huawei.com>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
 List-Subscribe: <mailto:linux-mips+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240814103425.2051117-1-cuigaosheng1@huawei.com>
+In-Reply-To: <20240814104052.2055777-1-cuigaosheng1@huawei.com>
 
-On Wed, Aug 14, 2024 at 06:34:25PM +0800, Gaosheng Cui wrote:
-> The cvmx_fpa_shutdown_pool() has been removed since
-> commit a03822ea5df6 ("MIPS: OCTEON: Remove some unused files."),
-> the declaration and cvmx_ipd_free_ptr would not be used,so remove
-> them.
+On Wed, Aug 14, 2024 at 06:40:52PM +0800, Gaosheng Cui wrote:
+> These functions have been removed since
+> commit 7fb6f7b0af67 ("MIPS: Remove deprecated CONFIG_MIPS_CMP"),
+> so remove them.
+> 
+> Signed-off-by: Gaosheng Cui <cuigaosheng1@huawei.com>
+> ---
+>  arch/mips/include/asm/cmp.h | 8 --------
+>  1 file changed, 8 deletions(-)
+> 
+> diff --git a/arch/mips/include/asm/cmp.h b/arch/mips/include/asm/cmp.h
+> index e9e87504bb0c..71e20e6cd38d 100644
+> --- a/arch/mips/include/asm/cmp.h
+> +++ b/arch/mips/include/asm/cmp.h
+> @@ -7,12 +7,4 @@
+>   */
+>  struct task_struct;
+>  
+> -extern void cmp_smp_setup(void);
+> -extern void cmp_smp_finish(void);
+> -extern void cmp_boot_secondary(int cpu, struct task_struct *t);
+> -extern void cmp_init_secondary(void);
+> -extern void cmp_prepare_cpus(unsigned int max_cpus);
+> -
+> -/* This is platform specific */
+> -extern void cmp_send_ipi(int cpu, unsigned int action);
+>  #endif /*  _ASM_CMP_H */
+> -- 
+> 2.25.1
 
-/local/tbogendoerfer/korg/linux/drivers/staging/octeon/ethernet.c:958:2: error: implicit declaration of function ‘cvmx_ipd_free_ptr’; did you mean ‘cvmx_fpa_free’? [-Werror=implicit-function-declaration]
-  958 |  cvmx_ipd_free_ptr();
- 
-Doesn't look unused to me.
+applied to mips-next.
 
 Thomas.
 

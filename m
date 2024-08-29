@@ -1,29 +1,29 @@
 Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D66C18C901
-	for <linux-mips@vger.kernel.org>; Thu, 29 Aug 2024 08:52:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3377C18F2DA;
+	Thu, 29 Aug 2024 08:52:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.175.24.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724921550; cv=none; b=b4JgM+rRrbyITEqsfmJOF/Z+R4d2gZgGXG0oYK67t/whWoqE144hbNh4dVb/IP0GMjt3QpLmB70+W5L/XQOCCc7EQFcTb8PzYtk/yUyXWsnQR/nGUTXcJI0SCmc5NvzRl0IoUNK6C5xbvrtgZh/ujuk5BJdUTxzAcauviWR0r7Q=
+	t=1724921553; cv=none; b=YH9ApUFLgALHwdus3hJQRkZiLpawIJCHAiw6PgYHiApD4EVxZ9VykeXCxqLfRuTJtwJ9R6ZHxatFNTJevaco/jDtP3AojNnd7VLNejJf3E1hkqx2MmjiaJfsHhtk3AKGlkJS5Ffa/D63bvfd79+MEaykWrEbHYZOBq09Nq6Tt9o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724921550; c=relaxed/simple;
-	bh=GGiVL2/b1kGkMeBJlA0R7wObAlOh5GkHvlNiQaJjFpU=;
+	s=arc-20240116; t=1724921553; c=relaxed/simple;
+	bh=4xjmmhD0t1RcJqf0/cUH8fQArokFO7h6U8DCNUQ+XU4=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=u/WSL/Tc290Dki6SEMk5X72zQ678uu3ZHH2l1Dzg1bhbZCMsizS8xksk8TfdJqhHH09+CamgQPEDOhEzmfpQ1YR66YJ1sn5Q0O9qb2mugqRKcIa/1tIc1UATLyXnC/P5zED2ciu9WAtDvRs04gUMeTBgLwgDmqNQimpXkDlPLLY=
+	 Content-Type:Content-Disposition:In-Reply-To; b=LlWMOFgV8uhzwgpEjHYDe7idbX1Zsw+f0woyPvHvfUOZDCCz8dGB4pUOPmyAff/U+xhpp1ieANcUzxz6M+yHKeF8Zf3NPEIK+jftcPhOLA/1APhi/TIjmJ+aBqkK7UPhu+7FJwldEoVSTHFVQBS8ZjsTmEiCeUcR3fXcCuWPtKM=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de; spf=pass smtp.mailfrom=alpha.franken.de; arc=none smtp.client-ip=193.175.24.41
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alpha.franken.de
 Received: from uucp by elvis.franken.de with local-rmail (Exim 3.36 #1)
-	id 1sjat5-0005n9-00; Thu, 29 Aug 2024 10:52:15 +0200
+	id 1sjat5-0005nB-00; Thu, 29 Aug 2024 10:52:15 +0200
 Received: by alpha.franken.de (Postfix, from userid 1000)
-	id C02DCC0BFD; Thu, 29 Aug 2024 10:48:32 +0200 (CEST)
-Date: Thu, 29 Aug 2024 10:48:32 +0200
+	id CF226C0C35; Thu, 29 Aug 2024 10:49:14 +0200 (CEST)
+Date: Thu, 29 Aug 2024 10:49:14 +0200
 From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To: Gaosheng Cui <cuigaosheng1@huawei.com>
-Cc: macro@orcam.me.uk, linux-mips@vger.kernel.org
-Subject: Re: [PATCH -next] MIPS: dec: prom: Remove unused
- unregister_prom_console() declaration
-Message-ID: <ZtA14BRv5u6R1MHl@alpha.franken.de>
-References: <20240814104312.2056096-1-cuigaosheng1@huawei.com>
+To: Xi Ruoyao <xry111@xry111.site>
+Cc: Jiaxun Yang <jiaxun.yang@flygoat.com>, linux-mips@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mips: Remove posix_types.h include from sigcontext.h
+Message-ID: <ZtA2CjzGY9CK6jPh@alpha.franken.de>
+References: <20240828030413.143930-2-xry111@xry111.site>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
@@ -32,31 +32,43 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240814104312.2056096-1-cuigaosheng1@huawei.com>
+In-Reply-To: <20240828030413.143930-2-xry111@xry111.site>
 
-On Wed, Aug 14, 2024 at 06:43:12PM +0800, Gaosheng Cui wrote:
-> The unregister_prom_console() has been removed since
-> commit 36a885306fdf ("[MIPS] Fix and cleanup the mess that a dozen
-> prom_printf variants are."), so remove it.
+On Wed, Aug 28, 2024 at 11:04:14AM +0800, Xi Ruoyao wrote:
+> Nothing in sigcontext.h seems to require anything from
+> linux/posix_types.h.
 > 
-> Signed-off-by: Gaosheng Cui <cuigaosheng1@huawei.com>
+> It seems only a relict: in a Linux 2.6.11-rc2 patch [1] the
+> linux/types.h include was unexplainedly changed to a linux/posix_types.h
+> include.  I can only assume it was just an error.  Finally headers_check
+> complained "found __[us]{8,16,32,64} type without #include
+> <linux/types.h>" and commit ae612fb05b0f ("headers_check fix: mips,
+> sigcontext.h") added back the linux/types.h include, but it didn't
+> remove the posix_types.h include.
+> 
+> Remove it now.
+> 
+> [1]:https://kernel.org/pub/linux/kernel/people/akpm/patches/2.6/2.6.11-rc2/2.6.11-rc2-mm2/broken-out/mips-generic-mips-updates.patch
+> 
+> Signed-off-by: Xi Ruoyao <xry111@xry111.site>
 > ---
->  arch/mips/include/asm/dec/prom.h | 1 -
+>  arch/mips/include/uapi/asm/sigcontext.h | 1 -
 >  1 file changed, 1 deletion(-)
 > 
-> diff --git a/arch/mips/include/asm/dec/prom.h b/arch/mips/include/asm/dec/prom.h
-> index 908e96e3a311..8fcad6984389 100644
-> --- a/arch/mips/include/asm/dec/prom.h
-> +++ b/arch/mips/include/asm/dec/prom.h
-> @@ -160,6 +160,5 @@ extern void prom_identify_arch(u32);
->  extern void prom_init_cmdline(s32, s32 *, u32);
+> diff --git a/arch/mips/include/uapi/asm/sigcontext.h b/arch/mips/include/uapi/asm/sigcontext.h
+> index d0a540e88bb4..d10afd13ee5b 100644
+> --- a/arch/mips/include/uapi/asm/sigcontext.h
+> +++ b/arch/mips/include/uapi/asm/sigcontext.h
+> @@ -56,7 +56,6 @@ struct sigcontext {
 >  
->  extern void register_prom_console(void);
-> -extern void unregister_prom_console(void);
+>  #if _MIPS_SIM == _MIPS_SIM_ABI64 || _MIPS_SIM == _MIPS_SIM_NABI32
 >  
->  #endif /* _ASM_DEC_PROM_H */
+> -#include <linux/posix_types.h>
+>  /*
+>   * Keep this struct definition in sync with the sigcontext fragment
+>   * in arch/mips/kernel/asm-offsets.c
 > -- 
-> 2.25.1
+> 2.46.0
 
 applied to mips-next.
 

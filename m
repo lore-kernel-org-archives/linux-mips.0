@@ -1,32 +1,29 @@
 Received: from elvis.franken.de (elvis.franken.de [193.175.24.41])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B423C18E76D;
-	Thu, 29 Aug 2024 08:52:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A20CE18E776
+	for <linux-mips@vger.kernel.org>; Thu, 29 Aug 2024 08:52:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.175.24.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724921548; cv=none; b=O8KodBVE91oZjeHTdqcFwsa7HjtZK67k/OXR7HmNucxDJ+d5f6NJbxmYffY8lE4eZqZRnSfTryoRYsMrGTSbY++mlhrTbgdbn/OWD2jrUvk/Cqtg+xq3+qesQKvOKxGlMxDS36pe74sebq0Itfvxxutr1JFbLSc0bUdLzWFafr8=
+	t=1724921548; cv=none; b=dcnsCgTm//i8F7FYskVN7CCGDHam+L0b5vzIlMiI+1nO/hsjr6Xy/Fq3+d5FLJRtdVeKH30tDJ3U9+tdlk94s5IsiqmtHYaZKrdPh+p6m3nyYEHKR4bZ7B1EiH7mddtVHZiI+y/1IkeZ7ii1fWlTeAZonEpcV0NUbjGrEYkjKWo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1724921548; c=relaxed/simple;
-	bh=LaCi94xmJV9tZiCC4kdqkhpdDblGRHjzTxNmEqHTJpw=;
+	bh=hxRskHPhL5ptF1z/i5dh8d6LQpFJlYPNoqWU5kn8lmU=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Uosyqc3doOkva62tIAGkoa6W7PBBD4jlAvIJuA1TLHbfzeSWkLGX2GaJ+86BJeiUzhGYuLFCgufIp2LlEBp2WdkLYGc0yHtubjAPe/QPpA/bYYhJEEYSBJ1nGZh7LaDSevTDZzpHVM9ca6WOsFYAEMSHluvcoUz3L6Gxt3fRnGM=
+	 Content-Type:Content-Disposition:In-Reply-To; b=nnvMD6wxMKodg9pnD1W9H7bcoMrp5EBZnVtC/LqfDhymQe0xZgVIWub9L2VAqSj0ID5jI1LTYIenQiLDirg1oiKi98y026xMR46USC1yLHfXd/HtCWfYqgalXHuN4DXbMerMHh9yRMjh11iEf59NZTSIrH37aoKTgrSpdTLDG6M=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de; spf=pass smtp.mailfrom=alpha.franken.de; arc=none smtp.client-ip=193.175.24.41
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alpha.franken.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alpha.franken.de
 Received: from uucp by elvis.franken.de with local-rmail (Exim 3.36 #1)
-	id 1sjat5-0005mx-00; Thu, 29 Aug 2024 10:52:15 +0200
+	id 1sjat5-0005mz-00; Thu, 29 Aug 2024 10:52:15 +0200
 Received: by alpha.franken.de (Postfix, from userid 1000)
-	id DBF84C0AD5; Thu, 29 Aug 2024 10:37:45 +0200 (CEST)
-Date: Thu, 29 Aug 2024 10:37:45 +0200
+	id 818EBC08E0; Thu, 29 Aug 2024 10:46:58 +0200 (CEST)
+Date: Thu, 29 Aug 2024 10:46:58 +0200
 From: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To: Vincent Legoll <vincent.legoll@gmail.com>
-Cc: John Crispin <john@phrozen.org>,
-	Sergio Paracuellos <sergio.paracuellos@gmail.com>,
-	linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] MIPS: ralink: Fix missing `get_c0_perfcount_int`
- prototype
-Message-ID: <ZtAzWeLojUP9cKJC@alpha.franken.de>
-References: <20240812131803.16475-1-vincent.legoll@gmail.com>
- <20240812131803.16475-3-vincent.legoll@gmail.com>
+To: Gaosheng Cui <cuigaosheng1@huawei.com>
+Cc: rdunlap@infradead.org, bhelgaas@google.com, linux-mips@vger.kernel.org
+Subject: Re: [PATCH -next] MIPS: Remove unused function
+ dump_au1000_dma_channel() in dma.c
+Message-ID: <ZtA1glA6En/ksWim@alpha.franken.de>
+References: <20240814103553.2053235-1-cuigaosheng1@huawei.com>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
 List-Id: <linux-mips.vger.kernel.org>
@@ -35,35 +32,18 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240812131803.16475-3-vincent.legoll@gmail.com>
+In-Reply-To: <20240814103553.2053235-1-cuigaosheng1@huawei.com>
 
-On Mon, Aug 12, 2024 at 03:17:43PM +0200, Vincent Legoll wrote:
-> Fix the following warning:
+On Wed, Aug 14, 2024 at 06:35:53PM +0800, Gaosheng Cui wrote:
+> The dump_au1000_dma_channel() has not been used since
+> commit d56b9b9c464a ("[PATCH] The scheduled removal of some OSS
+> drivers"), so remove it.
 > 
->   CC      arch/mips/ralink/irq-gic.o
-> arch/mips/ralink/irq-gic.c:15:5: warning: no previous prototype for 'get_c0_perfcount_int' [-Wmissing-prototypes]
->    15 | int get_c0_perfcount_int(void)
->       |     ^~~~~~~~~~~~~~~~~~~~
-> 
-> Signed-off-by: Vincent Legoll <vincent.legoll@gmail.com>
+> Signed-off-by: Gaosheng Cui <cuigaosheng1@huawei.com>
 > ---
->  arch/mips/ralink/irq-gic.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/arch/mips/ralink/irq-gic.c b/arch/mips/ralink/irq-gic.c
-> index 3bab51a5fb4c..8bc566ea00e5 100644
-> --- a/arch/mips/ralink/irq-gic.c
-> +++ b/arch/mips/ralink/irq-gic.c
-> @@ -10,6 +10,7 @@
->  #include <linux/of.h>
->  #include <linux/irqchip.h>
->  #include <asm/mips-cps.h>
-> +#include <asm/time.h>
->  
->  int get_c0_perfcount_int(void)
->  {
-> -- 
-> 2.46.0
+>  arch/mips/alchemy/common/dma.c                | 23 -------------------
+>  .../mips/include/asm/mach-au1x00/au1000_dma.h |  1 -
+>  2 files changed, 24 deletions(-)
 
 applied to mips-next.
 

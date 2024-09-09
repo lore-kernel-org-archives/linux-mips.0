@@ -1,32 +1,32 @@
 Received: from angie.orcam.me.uk (angie.orcam.me.uk [78.133.224.34])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7CA388F5A;
-	Mon,  9 Sep 2024 21:59:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E2EEE20DC4;
+	Mon,  9 Sep 2024 22:02:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.133.224.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725919156; cv=none; b=lqatT8N62N4qiypqWMyfO8Wt9leQNUPg8UVvch6iM6hyUAP1KF97yxYmUrkK3s6FIOt5o9tHHNwThKDeDXhFBIsW/CofA3WmNk9hn9ry9/iQytLIV9ZgrpB7C+xr0G/dmaH4ZeDnOisQlc++NNlXlonffme0C3m2dFL456ej6ZQ=
+	t=1725919378; cv=none; b=q9TmwTRZVwI74HDwOWfErzZYaW3Ite1t/OwMIzfQ1UhBayoiU8oK2LVkd00qddf+5wiCKx28Q+Fpfjg8rPbmMfwhEYjiTaF8o9vg9IP08QQtEf+HH+//lRBOrSQlWdrk6WrdVg2fePxIbpanzffIyG6/Z/JAEa/S5bv2RXrfTX8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725919156; c=relaxed/simple;
-	bh=jByGLbh2GqBcqZ7FHhORlpa01vEbWbVw4J0VN8uBDNs=;
+	s=arc-20240116; t=1725919378; c=relaxed/simple;
+	bh=NL2lwh6OhJuuIMqnWWsMzVHb4/X/BStI/j9zVfXjIOE=;
 	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=JywcwmTRDl3Wk+2qJiT8B/zsj+JqpYptgWRoncDji+BhNEE9MT4DZetBtzDnBcvF8T/Hks3GBkMjPOwWXeP3WJJgUVTZbGUfQwBTC9fkkfJ2SZnIBcIWpxDkzNd75fKAmvrQWfNfZIFaVTww31zS4qthibd+cAl7GiHsczz2HBk=
+	 MIME-Version:Content-Type; b=qrwoICcAumC5MPY7ghzXy/pZ3+lvAjd/fDfNFDTDxRF7f0U4bGy7BlXDLkWTRpYev2mjljJ+p4ulXrgKrH+tqhPs+e271g+33wijToA7EQ4AtZ9FOZhK7lGMOicF8LL5Tbzyn0Nq0/indTmXJyUHKMtKOX9nR9mMnajqw6WzZX8=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=orcam.me.uk; spf=none smtp.mailfrom=orcam.me.uk; arc=none smtp.client-ip=78.133.224.34
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=orcam.me.uk
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=orcam.me.uk
 Received: by angie.orcam.me.uk (Postfix, from userid 500)
-	id 18A0C92009C; Mon,  9 Sep 2024 23:59:06 +0200 (CEST)
+	id 1512392009C; Tue, 10 Sep 2024 00:02:54 +0200 (CEST)
 Received: from localhost (localhost [127.0.0.1])
-	by angie.orcam.me.uk (Postfix) with ESMTP id 1553492009B;
-	Mon,  9 Sep 2024 22:59:06 +0100 (BST)
-Date: Mon, 9 Sep 2024 22:59:06 +0100 (BST)
+	by angie.orcam.me.uk (Postfix) with ESMTP id 0F2E992009B;
+	Mon,  9 Sep 2024 23:02:54 +0100 (BST)
+Date: Mon, 9 Sep 2024 23:02:53 +0100 (BST)
 From: "Maciej W. Rozycki" <macro@orcam.me.uk>
 To: Jiaxun Yang <jiaxun.yang@flygoat.com>
 cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>, 
     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] MIPS: ftrace: Mark ftrace_get_parent_ra_addr as
- static
-In-Reply-To: <20240908-mips-chore-v1-1-9239c783f233@flygoat.com>
-Message-ID: <alpine.DEB.2.21.2409092258440.60835@angie.orcam.me.uk>
-References: <20240908-mips-chore-v1-0-9239c783f233@flygoat.com> <20240908-mips-chore-v1-1-9239c783f233@flygoat.com>
+Subject: Re: [PATCH 2/2] MIPS: kprobes: Massage previous delay slot
+ detection
+In-Reply-To: <20240908-mips-chore-v1-2-9239c783f233@flygoat.com>
+Message-ID: <alpine.DEB.2.21.2409092259110.60835@angie.orcam.me.uk>
+References: <20240908-mips-chore-v1-0-9239c783f233@flygoat.com> <20240908-mips-chore-v1-2-9239c783f233@flygoat.com>
 User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
@@ -38,19 +38,37 @@ Content-Type: text/plain; charset=US-ASCII
 
 On Sun, 8 Sep 2024, Jiaxun Yang wrote:
 
-> diff --git a/arch/mips/kernel/ftrace.c b/arch/mips/kernel/ftrace.c
-> index 8c401e42301c..96016eb1c476 100644
-> --- a/arch/mips/kernel/ftrace.c
-> +++ b/arch/mips/kernel/ftrace.c
-> @@ -248,8 +248,8 @@ int ftrace_disable_ftrace_graph_caller(void)
->  #define S_R_SP	(0xafb0 << 16)	/* s{d,w} R, offset(sp) */
->  #define OFFSET_MASK	0xffff	/* stack offset range: 0 ~ PT_SIZE */
->  
-> -unsigned long ftrace_get_parent_ra_addr(unsigned long self_ra, unsigned long
-> -		old_parent_ra, unsigned long parent_ra_addr, unsigned long fp)
-> +static unsigned long ftrace_get_parent_ra_addr(unsigned long self_ra, unsigned long old_parent_ra,
-> +					       unsigned long parent_ra_addr, unsigned long fp)
+> Expand the if condition into cascaded ifs to make code
+> readable.
 
- Overlong lines.
+ Apart from broken formatting what's making original code unreadable?
+
+> Also use sizeof(union mips_instruction) instead of
+> sizeof(mips_instruction) to match the code context.
+
+ That has to be a separate change.
+
+> diff --git a/arch/mips/kernel/kprobes.c b/arch/mips/kernel/kprobes.c
+> index dc39f5b3fb83..96139adefad2 100644
+> --- a/arch/mips/kernel/kprobes.c
+> +++ b/arch/mips/kernel/kprobes.c
+> @@ -89,12 +89,12 @@ int arch_prepare_kprobe(struct kprobe *p)
+>  		goto out;
+>  	}
+>  
+> -	if (copy_from_kernel_nofault(&prev_insn, p->addr - 1,
+> -			sizeof(mips_instruction)) == 0 &&
+> -	    insn_has_delayslot(prev_insn)) {
+> -		pr_notice("Kprobes for branch delayslot are not supported\n");
+> -		ret = -EINVAL;
+> -		goto out;
+> +	if (!copy_from_kernel_nofault(&prev_insn, p->addr - 1, sizeof(union mips_instruction))) {
+
+ Overlong line.
+
+> +		if (insn_has_delayslot(prev_insn)) {
+> +			pr_notice("Kprobes for branch delayslot are not supported\n");
+
+ This now overruns 80 columns making code *less* readable.
 
   Maciej

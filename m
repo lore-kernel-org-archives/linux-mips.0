@@ -1,55 +1,55 @@
-Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
+Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C1231A255C
-	for <linux-mips@vger.kernel.org>; Tue, 10 Sep 2024 17:15:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E225D1AB500
+	for <linux-mips@vger.kernel.org>; Tue, 10 Sep 2024 17:15:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725988529; cv=none; b=DeGud1efbqA5WQHHlykUoKDVG75+1v1CYYb9KJ3qgvhdt4d+561tOTUsv5r8tHhWnBkiS8hb0BiS26gGkRfQA1LwLutgewRJOwL1Y+UeaJOms243ubsJIuP6mHZq99zHYdxXB6rBi3YpMCMVa8YYEA+iTxH7fca37XKlVp4W7rI=
+	t=1725988534; cv=none; b=uWs4ZJgNCtAYS+FmbPQqCDDPx3ZKP1bUX5MaKSgeNmEZAHs4Q/AeqM10SqYm7ijo+M12UzI3ge0hfTWMbMan9oNOpLqi8NP7twKh8v5xjprq56ijSJ0dlPvhPbMtJGo7Am9uVNJ+ZDbS2ID/LR4f1KowrCG0Vx3glNfcXrN/nKo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725988529; c=relaxed/simple;
-	bh=uVANEC5Io/NBdef1ZHkEsM6uDVS7RL3aSO8YXYl8PEQ=;
+	s=arc-20240116; t=1725988534; c=relaxed/simple;
+	bh=Xy8VKEYnwSDTZv8an0rR9HKd/Tj5FfgAkYHF3vihv2Y=;
 	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=UreIAKVFnanjXUTQogTyubxXRPV3/0x0LdmYGag+hqy9yOSEE7JLGXzqpsxgxysHDN5udU8Jhjj1PPWBGW9Xw4VQY/F0VVGyIi9Copy2tk6NAfqHNdZAKyup4/gWTCU/iqop7hntE7VamY6anWsFgdJFbj/5gZfrfsdw1/5AHF0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--almasrymina.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Pg6sIi3e; arc=none smtp.client-ip=209.85.128.201
+	 To:Cc:Content-Type; b=cF2TStmxj5wuRGNPVK08gFjoJzZgzUKJ7t55ZEpb54Ki92pjRmNjNN71IhPTfjAXREvFi5n1DZIEXR5JixeXx+LbvoPmFCyWzr/gaBY5FUHO6+qNMgr2KJ4/k2FVdxJ7Pw3u8wSFHSJQSBYV20UXz291RI4N5i9lzV55qNv5ZqQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--almasrymina.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=ATHsfwNv; arc=none smtp.client-ip=209.85.219.202
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--almasrymina.bounces.google.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Pg6sIi3e"
-Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-6d9353e1360so30397727b3.1
-        for <linux-mips@vger.kernel.org>; Tue, 10 Sep 2024 10:15:21 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="ATHsfwNv"
+Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-e1a91576564so11795281276.0
+        for <linux-mips@vger.kernel.org>; Tue, 10 Sep 2024 10:15:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1725988520; x=1726593320; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1725988525; x=1726593325; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=sdOXB2LFY1U7Whl+dw/pp7B7g7zmM9tRRPBgefo/nXc=;
-        b=Pg6sIi3eeDXhNDgGaYd3o0asAVtPW5rwjxYiR3jyYDBIJXC3t6S9Kgun1lL8yy0aCl
-         httDxmak4TF2xa1ks83wtVnnjCl3Qo5M4DMBYw2sy2XGrtwZDtqfSP93lJxebDv93kH4
-         iFufgCt9y4lBMCl4/z9hrymm2/geBexTYHCNPTgq/yjkC9MKlXWJBykaD7OWOm468QjW
-         BSoWzCOFuX5nUFz7LMyy9PmLvb8w0hUv2Z5w1zvnjFA2nZgMXVJKqvA6dpULwlysEQo/
-         RKGOhm4lnKN6DxWDnX6iJqDGTKDfDrVGKhPUXvA0jV8uurvlwF4JYSHDJUcn72qEpclo
-         Q4AA==
+        bh=Qr6gPDE1UK5B1I6Iwow8La1ZlcxSQmU/6SFdxdUBC4Y=;
+        b=ATHsfwNvrfTKk+mFi4/+LHorWbqSOVBG4OlVIs1s4bu0WA2stczgVDF34saVXw6+D3
+         olXRbNVN8+b8ReZq6DBsR4WC8zzp+xi/kGwZNSEzTGXnskxuUZlnw4XOaiwqc+hRAVCr
+         4M4XIrVJfMC32RzuvHMvYobhittaGnD+UOFeH4ZinVxpy6eZ3ixDh+Q+8BqLTeuGnv37
+         QMGaPTdPvUgUEQUdiJCAWd7ExUYCD76iiMXj+yv0yHfsP/VpfaiiAoeCb0pT+bWgQSvl
+         TSi10y9qXu5XsKUSbIwpd9ODDDEpnzlk8VsbXHBaLSwZ5KtjMNU+1QAr3Fx5DamJnVXw
+         ih7w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1725988520; x=1726593320;
+        d=1e100.net; s=20230601; t=1725988525; x=1726593325;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=sdOXB2LFY1U7Whl+dw/pp7B7g7zmM9tRRPBgefo/nXc=;
-        b=ro1TpUiNfhyNBvczBLugVSHIQWTUtVFwXEmAjcgLO0DKPUNvgRBWFsORzPfJxvTONF
-         Go8qAO8w7ZbKOITheOLjfXgjxqwi0OLgqaQ4iywSxh+6bC07ougY/ngcE1paZtFQterL
-         tLOtAAu5FaCkhCoBS3N/gwBzhr77pox6nRwd+/bGoJctCK1LiMlRnz2oEGP7nNjR4FBc
-         KmEAHOFrhUJ8hvsKKf7ct0jMXByjXvhvEJHHX+obi5FfyH5M21zAjG0ql0kuSEDngyeU
-         s/9qUGkyP/vLA27oIVGdXFcWvWmcTIp1mB1GJYL292SQ/uXQRu8K+KOFZi9ytPnKwuie
-         0R/g==
-X-Forwarded-Encrypted: i=1; AJvYcCWfVdEYJwefMeRIHKIyEjfDer31OGt77H7RY5jseYQrc5Ot9qJujNX1agmB3OfpMOhmZSLX7pSpUaf+@vger.kernel.org
-X-Gm-Message-State: AOJu0YxDir1ygRT7v+RfrRIjjoz5w8OuM6Fy2WnUVphgBl/3puLnEgTF
-	NUmUrnZcUkXWoNQ6SOwTTw7xu/Uhm+BAEWEaT6tv32vS3qnFKvWr4JW4OFmOhZrbwkUpqtp1sMm
-	M5FO2tIQioJugmDBXvT0cIw==
-X-Google-Smtp-Source: AGHT+IGOCfxtxOEWkMf6F1XW1Cpo/N+WlxqPoBDoDrv4Oan+6cn72iQeLi0hRvSk31B40joXaJvdcGVXnQI0nNrQPA==
+        bh=Qr6gPDE1UK5B1I6Iwow8La1ZlcxSQmU/6SFdxdUBC4Y=;
+        b=IYt9EpqGBBJYHBbREGYAA8s1zc9n6h1YykCycAnmrvtIyOTA0rE7CY9QSx10+8DkZ2
+         /54UwIpYr0NkM+nYlX0lNKEP1uuM0/CMn19P1AB/Sf2Z9LpDhI3VmhMUfwGn6bBDYzkv
+         h9gIbQEtxsx/Zi5kYHHuELiyWUn4Hj9SAF5/ou7BgEtyaS3sWg6dZNhBRQVTeWPhFae4
+         lCMd3SeZ+2DLWv23vwJqdEE5YwSjz07rstYPKIA+5GxGUS8TOcKW6HjDOm2OUTCtdQ6X
+         cWMsAwLRIFbh9BI21eaUKC+uN5RFPoHvroNN6TXRePYITfjfugMx5J74lbpQeyAGMoh4
+         V1Hw==
+X-Forwarded-Encrypted: i=1; AJvYcCX8fiZ6NC0KsHNenGzsZhl34ZyIoYha/AuB4gkUnftPs5f4Gs8kdPXPaJfadJeLm28TeQ8gS4BOc3H8@vger.kernel.org
+X-Gm-Message-State: AOJu0YyFJ6Oel/jZ4SGuB4geySY83/YVcbUkvHe9mkAbpWd9JaqPt13G
+	EokyAM/3xjtQyB5QBVffjf6qa/3i57S2x/gQRzjdqpOl1Ye23cgh8GZ8vd5LG0sn7l5ZFiY9iYH
+	xrh8RYIEoPLDoco1mFHQIXA==
+X-Google-Smtp-Source: AGHT+IGZCB+Bwki1p8fPYMVywna8K28oR2ffM3Z76Sw+TMtsD9U3aR4klRuEh553qX5yh3rrwgfboDT90OGw/cXyFA==
 X-Received: from almasrymina.c.googlers.com ([fda3:e722:ac3:cc00:20:ed76:c0a8:4bc5])
- (user=almasrymina job=sendgmr) by 2002:a05:690c:f8b:b0:69a:536:afde with SMTP
- id 00721157ae682-6dba6e1440bmr59027b3.5.1725988519740; Tue, 10 Sep 2024
- 10:15:19 -0700 (PDT)
-Date: Tue, 10 Sep 2024 17:14:54 +0000
+ (user=almasrymina job=sendgmr) by 2002:a25:2e08:0:b0:e17:8e73:866c with SMTP
+ id 3f1490d57ef6-e1d34a40ec5mr105962276.10.1725988524819; Tue, 10 Sep 2024
+ 10:15:24 -0700 (PDT)
+Date: Tue, 10 Sep 2024 17:14:57 +0000
 In-Reply-To: <20240910171458.219195-1-almasrymina@google.com>
 Precedence: bulk
 X-Mailing-List: linux-mips@vger.kernel.org
@@ -59,9 +59,8 @@ List-Unsubscribe: <mailto:linux-mips+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <20240910171458.219195-1-almasrymina@google.com>
 X-Mailer: git-send-email 2.46.0.598.g6f2099f65c-goog
-Message-ID: <20240910171458.219195-11-almasrymina@google.com>
-Subject: [PATCH net-next v26 10/13] net: add SO_DEVMEM_DONTNEED setsockopt to
- release RX frags
+Message-ID: <20240910171458.219195-14-almasrymina@google.com>
+Subject: [PATCH net-next v26 13/13] netdev: add dmabuf introspection
 From: Mina Almasry <almasrymina@google.com>
 To: netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
 	linux-doc@vger.kernel.org, linux-alpha@vger.kernel.org, 
@@ -92,224 +91,221 @@ Cc: Mina Almasry <almasrymina@google.com>, "David S. Miller" <davem@davemloft.ne
 	Shailend Chand <shailend@google.com>, Harshitha Ramamurthy <hramamurthy@google.com>, 
 	Shakeel Butt <shakeel.butt@linux.dev>, Jeroen de Borst <jeroendb@google.com>, 
 	Praveen Kaligineedi <pkaligineedi@google.com>, Bagas Sanjaya <bagasdotme@gmail.com>, 
-	Christoph Hellwig <hch@infradead.org>, Nikolay Aleksandrov <razor@blackwall.org>, Taehee Yoo <ap420073@gmail.com>, 
-	Willem de Bruijn <willemb@google.com>, Kaiyuan Zhang <kaiyuanz@google.com>
+	Christoph Hellwig <hch@infradead.org>, Nikolay Aleksandrov <razor@blackwall.org>, Taehee Yoo <ap420073@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 
-Add an interface for the user to notify the kernel that it is done
-reading the devmem dmabuf frags returned as cmsg. The kernel will
-drop the reference on the frags to make them available for reuse.
+Add dmabuf information to page_pool stats:
 
-Signed-off-by: Willem de Bruijn <willemb@google.com>
-Signed-off-by: Kaiyuan Zhang <kaiyuanz@google.com>
+$ ./cli.py --spec ../netlink/specs/netdev.yaml --dump page-pool-get
+...
+ {'dmabuf': 10,
+  'id': 456,
+  'ifindex': 3,
+  'inflight': 1023,
+  'inflight-mem': 4190208},
+ {'dmabuf': 10,
+  'id': 455,
+  'ifindex': 3,
+  'inflight': 1023,
+  'inflight-mem': 4190208},
+ {'dmabuf': 10,
+  'id': 454,
+  'ifindex': 3,
+  'inflight': 1023,
+  'inflight-mem': 4190208},
+ {'dmabuf': 10,
+  'id': 453,
+  'ifindex': 3,
+  'inflight': 1023,
+  'inflight-mem': 4190208},
+ {'dmabuf': 10,
+  'id': 452,
+  'ifindex': 3,
+  'inflight': 1023,
+  'inflight-mem': 4190208},
+ {'dmabuf': 10,
+  'id': 451,
+  'ifindex': 3,
+  'inflight': 1023,
+  'inflight-mem': 4190208},
+ {'dmabuf': 10,
+  'id': 450,
+  'ifindex': 3,
+  'inflight': 1023,
+  'inflight-mem': 4190208},
+ {'dmabuf': 10,
+  'id': 449,
+  'ifindex': 3,
+  'inflight': 1023,
+  'inflight-mem': 4190208},
+
+And queue stats:
+
+$ ./cli.py --spec ../netlink/specs/netdev.yaml --dump queue-get
+...
+{'dmabuf': 10, 'id': 8, 'ifindex': 3, 'type': 'rx'},
+{'dmabuf': 10, 'id': 9, 'ifindex': 3, 'type': 'rx'},
+{'dmabuf': 10, 'id': 10, 'ifindex': 3, 'type': 'rx'},
+{'dmabuf': 10, 'id': 11, 'ifindex': 3, 'type': 'rx'},
+{'dmabuf': 10, 'id': 12, 'ifindex': 3, 'type': 'rx'},
+{'dmabuf': 10, 'id': 13, 'ifindex': 3, 'type': 'rx'},
+{'dmabuf': 10, 'id': 14, 'ifindex': 3, 'type': 'rx'},
+{'dmabuf': 10, 'id': 15, 'ifindex': 3, 'type': 'rx'},
+
+Suggested-by: Jakub Kicinski <kuba@kernel.org>
 Signed-off-by: Mina Almasry <almasrymina@google.com>
-Reviewed-by: Pavel Begunkov <asml.silence@gmail.com>
-Reviewed-by: Eric Dumazet <edumazet@google.com>
+Reviewed-by: Jakub Kicinski <kuba@kernel.org>
 
 ---
 
-v16:
-- Use sk_is_tcp().
-- Fix unnamed 128 DONTNEED limit (David).
-- Fix kernel allocating for 128 tokens even if the user didn't ask for
-  that much (Eric).
-- Fix number assignement (Arnd).
-
-v10:
-- Fix leak of tokens (Nikolay).
-
-v7:
-- Updated SO_DEVMEM_* uapi to use the next available entry (Arnd).
-
-v6:
-- Squash in locking optimizations from edumazet@google.com. With his
-  changes we lock the xarray once per sock_devmem_dontneed operation
-  rather than once per frag.
-
-Changes in v1:
-- devmemtoken -> dmabuf_token (David).
-- Use napi_pp_put_page() for refcounting (Yunsheng).
-- Fix build error with missing socket options on other asms.
+v24:
+- Code cleanup, no cast and use 1 if statement (Jakub)
 
 ---
- arch/alpha/include/uapi/asm/socket.h  |  1 +
- arch/mips/include/uapi/asm/socket.h   |  1 +
- arch/parisc/include/uapi/asm/socket.h |  1 +
- arch/sparc/include/uapi/asm/socket.h  |  1 +
- include/uapi/asm-generic/socket.h     |  1 +
- include/uapi/linux/uio.h              |  5 ++
- net/core/sock.c                       | 68 +++++++++++++++++++++++++++
- 7 files changed, 78 insertions(+)
+ Documentation/netlink/specs/netdev.yaml | 10 ++++++++++
+ include/uapi/linux/netdev.h             |  2 ++
+ net/core/netdev-genl.c                  |  7 +++++++
+ net/core/page_pool_user.c               |  5 +++++
+ tools/include/uapi/linux/netdev.h       |  2 ++
+ 5 files changed, 26 insertions(+)
 
-diff --git a/arch/alpha/include/uapi/asm/socket.h b/arch/alpha/include/uapi/asm/socket.h
-index ef4656a41058..251b73c5481e 100644
---- a/arch/alpha/include/uapi/asm/socket.h
-+++ b/arch/alpha/include/uapi/asm/socket.h
-@@ -144,6 +144,7 @@
- #define SCM_DEVMEM_LINEAR	SO_DEVMEM_LINEAR
- #define SO_DEVMEM_DMABUF	79
- #define SCM_DEVMEM_DMABUF	SO_DEVMEM_DMABUF
-+#define SO_DEVMEM_DONTNEED	80
+diff --git a/Documentation/netlink/specs/netdev.yaml b/Documentation/netlink/specs/netdev.yaml
+index 0c747530c275..08412c279297 100644
+--- a/Documentation/netlink/specs/netdev.yaml
++++ b/Documentation/netlink/specs/netdev.yaml
+@@ -167,6 +167,10 @@ attribute-sets:
+           "re-attached", they are just waiting to disappear.
+           Attribute is absent if Page Pool has not been detached, and
+           can still be used to allocate new memory.
++      -
++        name: dmabuf
++        doc: ID of the dmabuf this page-pool is attached to.
++        type: u32
+   -
+     name: page-pool-info
+     subset-of: page-pool
+@@ -268,6 +272,10 @@ attribute-sets:
+         name: napi-id
+         doc: ID of the NAPI instance which services this queue.
+         type: u32
++      -
++        name: dmabuf
++        doc: ID of the dmabuf attached to this queue, if any.
++        type: u32
  
- #if !defined(__KERNEL__)
+   -
+     name: qstats
+@@ -543,6 +551,7 @@ operations:
+             - inflight
+             - inflight-mem
+             - detach-time
++            - dmabuf
+       dump:
+         reply: *pp-reply
+       config-cond: page-pool
+@@ -607,6 +616,7 @@ operations:
+             - type
+             - napi-id
+             - ifindex
++            - dmabuf
+       dump:
+         request:
+           attributes:
+diff --git a/include/uapi/linux/netdev.h b/include/uapi/linux/netdev.h
+index 91bf3ecc5f1d..7c308f04e7a0 100644
+--- a/include/uapi/linux/netdev.h
++++ b/include/uapi/linux/netdev.h
+@@ -93,6 +93,7 @@ enum {
+ 	NETDEV_A_PAGE_POOL_INFLIGHT,
+ 	NETDEV_A_PAGE_POOL_INFLIGHT_MEM,
+ 	NETDEV_A_PAGE_POOL_DETACH_TIME,
++	NETDEV_A_PAGE_POOL_DMABUF,
  
-diff --git a/arch/mips/include/uapi/asm/socket.h b/arch/mips/include/uapi/asm/socket.h
-index 414807d55e33..8ab7582291ab 100644
---- a/arch/mips/include/uapi/asm/socket.h
-+++ b/arch/mips/include/uapi/asm/socket.h
-@@ -155,6 +155,7 @@
- #define SCM_DEVMEM_LINEAR	SO_DEVMEM_LINEAR
- #define SO_DEVMEM_DMABUF	79
- #define SCM_DEVMEM_DMABUF	SO_DEVMEM_DMABUF
-+#define SO_DEVMEM_DONTNEED	80
+ 	__NETDEV_A_PAGE_POOL_MAX,
+ 	NETDEV_A_PAGE_POOL_MAX = (__NETDEV_A_PAGE_POOL_MAX - 1)
+@@ -131,6 +132,7 @@ enum {
+ 	NETDEV_A_QUEUE_IFINDEX,
+ 	NETDEV_A_QUEUE_TYPE,
+ 	NETDEV_A_QUEUE_NAPI_ID,
++	NETDEV_A_QUEUE_DMABUF,
  
- #if !defined(__KERNEL__)
- 
-diff --git a/arch/parisc/include/uapi/asm/socket.h b/arch/parisc/include/uapi/asm/socket.h
-index 2b817efd4544..38fc0b188e08 100644
---- a/arch/parisc/include/uapi/asm/socket.h
-+++ b/arch/parisc/include/uapi/asm/socket.h
-@@ -136,6 +136,7 @@
- #define SCM_DEVMEM_LINEAR	SO_DEVMEM_LINEAR
- #define SO_DEVMEM_DMABUF	79
- #define SCM_DEVMEM_DMABUF	SO_DEVMEM_DMABUF
-+#define SO_DEVMEM_DONTNEED	80
- 
- #if !defined(__KERNEL__)
- 
-diff --git a/arch/sparc/include/uapi/asm/socket.h b/arch/sparc/include/uapi/asm/socket.h
-index 00248fc68977..57084ed2f3c4 100644
---- a/arch/sparc/include/uapi/asm/socket.h
-+++ b/arch/sparc/include/uapi/asm/socket.h
-@@ -137,6 +137,7 @@
- #define SCM_DEVMEM_LINEAR        SO_DEVMEM_LINEAR
- #define SO_DEVMEM_DMABUF         0x0058
- #define SCM_DEVMEM_DMABUF        SO_DEVMEM_DMABUF
-+#define SO_DEVMEM_DONTNEED       0x0059
- 
- #if !defined(__KERNEL__)
- 
-diff --git a/include/uapi/asm-generic/socket.h b/include/uapi/asm-generic/socket.h
-index e993edc9c0ee..3b4e3e815602 100644
---- a/include/uapi/asm-generic/socket.h
-+++ b/include/uapi/asm-generic/socket.h
-@@ -139,6 +139,7 @@
- #define SCM_DEVMEM_LINEAR	SO_DEVMEM_LINEAR
- #define SO_DEVMEM_DMABUF	79
- #define SCM_DEVMEM_DMABUF	SO_DEVMEM_DMABUF
-+#define SO_DEVMEM_DONTNEED	80
- 
- #if !defined(__KERNEL__)
- 
-diff --git a/include/uapi/linux/uio.h b/include/uapi/linux/uio.h
-index 3a22ddae376a..649739e0c404 100644
---- a/include/uapi/linux/uio.h
-+++ b/include/uapi/linux/uio.h
-@@ -33,6 +33,11 @@ struct dmabuf_cmsg {
- 				 */
- };
- 
-+struct dmabuf_token {
-+	__u32 token_start;
-+	__u32 token_count;
-+};
-+
- /*
-  *	UIO_MAXIOV shall be at least 16 1003.1g (5.4.1.1)
-  */
-diff --git a/net/core/sock.c b/net/core/sock.c
-index 468b1239606c..bbb57b5af0b1 100644
---- a/net/core/sock.c
-+++ b/net/core/sock.c
-@@ -124,6 +124,7 @@
- #include <linux/netdevice.h>
- #include <net/protocol.h>
- #include <linux/skbuff.h>
-+#include <linux/skbuff_ref.h>
- #include <net/net_namespace.h>
- #include <net/request_sock.h>
- #include <net/sock.h>
-@@ -1049,6 +1050,69 @@ static int sock_reserve_memory(struct sock *sk, int bytes)
- 	return 0;
- }
- 
-+#ifdef CONFIG_PAGE_POOL
-+
-+/* This is the number of tokens that the user can SO_DEVMEM_DONTNEED in
-+ * 1 syscall. The limit exists to limit the amount of memory the kernel
-+ * allocates to copy these tokens.
-+ */
-+#define MAX_DONTNEED_TOKENS 128
-+
-+static noinline_for_stack int
-+sock_devmem_dontneed(struct sock *sk, sockptr_t optval, unsigned int optlen)
-+{
-+	unsigned int num_tokens, i, j, k, netmem_num = 0;
-+	struct dmabuf_token *tokens;
-+	netmem_ref netmems[16];
-+	int ret = 0;
-+
-+	if (!sk_is_tcp(sk))
-+		return -EBADF;
-+
-+	if (optlen % sizeof(struct dmabuf_token) ||
-+	    optlen > sizeof(*tokens) * MAX_DONTNEED_TOKENS)
-+		return -EINVAL;
-+
-+	tokens = kvmalloc_array(optlen, sizeof(*tokens), GFP_KERNEL);
-+	if (!tokens)
-+		return -ENOMEM;
-+
-+	num_tokens = optlen / sizeof(struct dmabuf_token);
-+	if (copy_from_sockptr(tokens, optval, optlen)) {
-+		kvfree(tokens);
-+		return -EFAULT;
-+	}
-+
-+	xa_lock_bh(&sk->sk_user_frags);
-+	for (i = 0; i < num_tokens; i++) {
-+		for (j = 0; j < tokens[i].token_count; j++) {
-+			netmem_ref netmem = (__force netmem_ref)__xa_erase(
-+				&sk->sk_user_frags, tokens[i].token_start + j);
-+
-+			if (netmem &&
-+			    !WARN_ON_ONCE(!netmem_is_net_iov(netmem))) {
-+				netmems[netmem_num++] = netmem;
-+				if (netmem_num == ARRAY_SIZE(netmems)) {
-+					xa_unlock_bh(&sk->sk_user_frags);
-+					for (k = 0; k < netmem_num; k++)
-+						WARN_ON_ONCE(!napi_pp_put_page(netmems[k]));
-+					netmem_num = 0;
-+					xa_lock_bh(&sk->sk_user_frags);
-+				}
-+				ret++;
-+			}
-+		}
-+	}
-+
-+	xa_unlock_bh(&sk->sk_user_frags);
-+	for (k = 0; k < netmem_num; k++)
-+		WARN_ON_ONCE(!napi_pp_put_page(netmems[k]));
-+
-+	kvfree(tokens);
-+	return ret;
-+}
-+#endif
-+
- void sockopt_lock_sock(struct sock *sk)
+ 	__NETDEV_A_QUEUE_MAX,
+ 	NETDEV_A_QUEUE_MAX = (__NETDEV_A_QUEUE_MAX - 1)
+diff --git a/net/core/netdev-genl.c b/net/core/netdev-genl.c
+index 9153a8ab0cf8..1cb954f2d39e 100644
+--- a/net/core/netdev-genl.c
++++ b/net/core/netdev-genl.c
+@@ -295,6 +295,7 @@ static int
+ netdev_nl_queue_fill_one(struct sk_buff *rsp, struct net_device *netdev,
+ 			 u32 q_idx, u32 q_type, const struct genl_info *info)
  {
- 	/* When current->bpf_ctx is set, the setsockopt is called from
-@@ -1211,6 +1275,10 @@ int sk_setsockopt(struct sock *sk, int level, int optname,
- 			ret = -EOPNOTSUPP;
- 		return ret;
- 		}
-+#ifdef CONFIG_PAGE_POOL
-+	case SO_DEVMEM_DONTNEED:
-+		return sock_devmem_dontneed(sk, optval, optlen);
-+#endif
- 	}
++	struct net_devmem_dmabuf_binding *binding;
+ 	struct netdev_rx_queue *rxq;
+ 	struct netdev_queue *txq;
+ 	void *hdr;
+@@ -314,6 +315,12 @@ netdev_nl_queue_fill_one(struct sk_buff *rsp, struct net_device *netdev,
+ 		if (rxq->napi && nla_put_u32(rsp, NETDEV_A_QUEUE_NAPI_ID,
+ 					     rxq->napi->napi_id))
+ 			goto nla_put_failure;
++
++		binding = rxq->mp_params.mp_priv;
++		if (binding &&
++		    nla_put_u32(rsp, NETDEV_A_QUEUE_DMABUF, binding->id))
++			goto nla_put_failure;
++
+ 		break;
+ 	case NETDEV_QUEUE_TYPE_TX:
+ 		txq = netdev_get_tx_queue(netdev, q_idx);
+diff --git a/net/core/page_pool_user.c b/net/core/page_pool_user.c
+index cd6267ba6fa3..48335766c1bf 100644
+--- a/net/core/page_pool_user.c
++++ b/net/core/page_pool_user.c
+@@ -9,6 +9,7 @@
+ #include <net/page_pool/types.h>
+ #include <net/sock.h>
  
- 	sockopt_lock_sock(sk);
++#include "devmem.h"
+ #include "page_pool_priv.h"
+ #include "netdev-genl-gen.h"
+ 
+@@ -213,6 +214,7 @@ static int
+ page_pool_nl_fill(struct sk_buff *rsp, const struct page_pool *pool,
+ 		  const struct genl_info *info)
+ {
++	struct net_devmem_dmabuf_binding *binding = pool->mp_priv;
+ 	size_t inflight, refsz;
+ 	void *hdr;
+ 
+@@ -242,6 +244,9 @@ page_pool_nl_fill(struct sk_buff *rsp, const struct page_pool *pool,
+ 			 pool->user.detach_time))
+ 		goto err_cancel;
+ 
++	if (binding && nla_put_u32(rsp, NETDEV_A_PAGE_POOL_DMABUF, binding->id))
++		goto err_cancel;
++
+ 	genlmsg_end(rsp, hdr);
+ 
+ 	return 0;
+diff --git a/tools/include/uapi/linux/netdev.h b/tools/include/uapi/linux/netdev.h
+index 91bf3ecc5f1d..7c308f04e7a0 100644
+--- a/tools/include/uapi/linux/netdev.h
++++ b/tools/include/uapi/linux/netdev.h
+@@ -93,6 +93,7 @@ enum {
+ 	NETDEV_A_PAGE_POOL_INFLIGHT,
+ 	NETDEV_A_PAGE_POOL_INFLIGHT_MEM,
+ 	NETDEV_A_PAGE_POOL_DETACH_TIME,
++	NETDEV_A_PAGE_POOL_DMABUF,
+ 
+ 	__NETDEV_A_PAGE_POOL_MAX,
+ 	NETDEV_A_PAGE_POOL_MAX = (__NETDEV_A_PAGE_POOL_MAX - 1)
+@@ -131,6 +132,7 @@ enum {
+ 	NETDEV_A_QUEUE_IFINDEX,
+ 	NETDEV_A_QUEUE_TYPE,
+ 	NETDEV_A_QUEUE_NAPI_ID,
++	NETDEV_A_QUEUE_DMABUF,
+ 
+ 	__NETDEV_A_QUEUE_MAX,
+ 	NETDEV_A_QUEUE_MAX = (__NETDEV_A_QUEUE_MAX - 1)
 -- 
 2.46.0.598.g6f2099f65c-goog
 
